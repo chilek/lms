@@ -33,23 +33,24 @@ class Smarty_Prefilter_Recursive_Extends {
 	public function prefilter_recursive_extends($tpl_source, Smarty_Internal_Template $template) {
 		if (is_array($template->smarty->template_dir) === false)
 			return $tpl_source;
-	$currentPath = rtrim(dirname($template->smarty->_current_file), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-	//$currentFile = basename($template->smarty->_current_file);
-	$currentFile = $templates->resource_file;
-	// can we find an {extend} block for the current template?
-	$res = preg_match('#(?P<before>\{extends\s*file=[\'"])' . preg_quote($currentFile) . '(?P<after>[\'"][^}]*\})#i', $tpl_source, $regexResult);
-	if (empty($res))
+		$currentPath = rtrim(dirname($template->smarty->_current_file), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+		//$currentFile = basename($template->smarty->_current_file);
+		$currentFile = $templates->resource_file;
+		// can we find an {extend} block for the current template?
+		$res = preg_match('#(?P<before>\{extends\s*file=[\'"])' . preg_quote($currentFile) . '(?P<after>[\'"][^}]*\})#i', $tpl_source, $regexResult);
+		if (empty($res))
+			return $tpl_source;
+		$newTemplateDir = array_slice($template->smarty->template_dir, array_search($currentPath, $template->smarty->template_dir) + 1);
+		if (empty($newTemplateDir) === false)
+			foreach ($newTemplateDir as $key => $value)
+				if (file_exists(rtrim($value, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $currentFile)) {
+					$newExtendPath = rtrim($value, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $currentFile;
+					break;
+				}
+		if (isset($newExtendPath) === true)
+			$tpl_source = str_replace( $regexResult[0], $regexResult['before'] . $newExtendPath . $regexResult['after'], $tpl_source );
 		return $tpl_source;
-	$newTemplateDir = array_slice($template->smarty->template_dir, array_search($currentPath, $template->smarty->template_dir) + 1);
-	if (empty($newTemplateDir) === false)
-		foreach ($newTemplateDir as $key => $value)
-			if (file_exists(rtrim($value, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $currentFile)) {
-				$newExtendPath = rtrim($value, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $currentFile;
-				break;
-			}
-	if (isset($newExtendPath) === true)
-		$tpl_source = str_replace( $regexResult[0], $regexResult['before'] . $newExtendPath . $regexResult['after'], $tpl_source );
-	return $tpl_source;
+	}
 }
 
 ?>
