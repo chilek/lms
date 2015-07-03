@@ -140,6 +140,9 @@ unset($LMS); // reset LMS class to enable wrappers for LMS older versions
 
 $LMS = new ULMS($DB, $AUTH, $SYSLOG);
 
+$plugin_manager = new LMSPluginManager();
+$LMS->setPluginManager($plugin_manager);
+
 // Load plugin files and register hook callbacks
 $plugins = preg_split('/[;,\s\t\n]+/', ConfigHelper::getConfig('phpui.plugins', ''), -1, PREG_SPLIT_NO_EMPTY);
 if (!empty($plugins))
@@ -200,6 +203,10 @@ $SMARTY->assignByRef('layout', $layout);
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
 
+$plugin_manager->executeHook('lms_initialized', $LMS);
+
+$plugin_manager->executeHook('smarty_initialized', $SMARTY);
+
 if($SESSION->islogged)
 {
 	$module = isset($_GET['m']) ? $_GET['m'] : '';
@@ -221,6 +228,8 @@ if($SESSION->islogged)
 
 	// Userpanel popup for urgent notice
 	$res = $LMS->ExecHook('userpanel_module_call_before', array('module' => $USERPANEL->MODULES['notices']));
+
+	$LMS->executeHook('userpanel_' . $module . '_on_load');
 
 	if( file_exists(USERPANEL_MODULES_DIR.$module . DIRECTORY_SEPARATOR . 'functions.php')
 	    && isset($USERPANEL->MODULES[$module]) )
