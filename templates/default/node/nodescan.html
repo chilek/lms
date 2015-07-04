@@ -3,7 +3,9 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{include file="node/nodescanbox.html"}
+{block name="nodescanbox"}
+	{include file="node/nodescanbox.html"}
+{/block}
 {if $customerinfo}
 {include file="calendar_js.html"}
 {block name="customerinfobox"}
