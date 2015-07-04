@@ -60,6 +60,12 @@ interface LMSDBInterface
 
     public function Now();
 
+	public function Year($date);
+
+	public function Month($date);
+
+	public function Day($date);
+
     public function ListTables();
 
     public function BeginTrans();

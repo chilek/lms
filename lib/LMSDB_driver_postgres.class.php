@@ -405,4 +405,34 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
 
     }
 
+	/**
+	* Gets year for date.
+	* 
+	* @param string $date
+	* @return year string
+	*/
+	public function _driver_year($date) {
+		return 'DATE_PART(\'year\', ' . $date . '::timestamp)';
+	}
+
+	/**
+	* Gets month for date.
+	* 
+	* @param string $date
+	* @return month string
+	*/
+	public function _driver_month($date) {
+		return 'DATE_PART(\'month\', ' . $date . '::timestamp)';
+	}
+
+	/**
+	* Gets day for date.
+	* 
+	* @param string $date
+	* @return day string
+	*/
+	public function _driver_day($date) {
+		return 'DATE_PART(\'day\', ' . $date . '::timestamp)';
+	}
+
 }
