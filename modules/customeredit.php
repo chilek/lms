@@ -294,6 +294,6 @@ $SMARTY->assign('cstateslist',$LMS->GetCountryStates());
 $SMARTY->assign('countrieslist',$LMS->GetCountries());
 $SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname, status FROM divisions ORDER BY shortname'));
 $SMARTY->assign('recover',($action == 'recover' ? 1 : 0));
-$SMARTY->display('customer/customeredit.html');
+$SMARTY->display('extendsall:customer/customeredit.html');
 
 ?>

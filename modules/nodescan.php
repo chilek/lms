@@ -35,6 +35,6 @@ $layout['pagetitle'] = trans('Nodes Scanning');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('nodes',$LMS->ScanNodes());
-$SMARTY->display('node/nodescan.html');
+$SMARTY->display('extendsall:node/nodescan.html');
 
 ?>
