@@ -5,6 +5,8 @@ version ?.??.?? (????-??-??):
   - added support of new style plugins in userpanel - hooks executed before
     module load have 'userpanel_*_on_load' name pattern [chilan]
   - added support of new style plugins in userpanel module setup part [chilan]
+  - template inheritance chains are supported; we can use the same names
+    for all templates in chain - should be very usefull in plugins [chilan]
 
 version 1.11.17 (2015-06-29):
 
