@@ -347,6 +347,6 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('nodeinfo', $nodeinfo);
 $SMARTY->assign('objectid', $nodeinfo['id']);
 $SMARTY->assign('nodeauthtype', $nodeauthtype);
-$SMARTY->display('extendsall:node/nodeedit.html');
+$SMARTY->display('node/nodeedit.html');
 
 ?>

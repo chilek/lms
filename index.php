@@ -95,7 +95,7 @@ try {
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'upgradedb.php');
 
 // Initialize templates engine (must be before locale settings)
-$SMARTY = new Smarty;
+$SMARTY = new LMSSmarty;
 
 // test for proper version of Smarty
 

@@ -121,6 +121,6 @@ $SMARTY->assign('nodegroups', $nodegroups);
 $SMARTY->assign('othernodegroups', $othernodegroups);
 $SMARTY->assign('nodeinfo', $nodeinfo);
 $SMARTY->assign('objectid', $nodeinfo['id']);
-$SMARTY->display('extendsall:node/nodeinfo.html');
+$SMARTY->display('node/nodeinfo.html');
 
 ?>
