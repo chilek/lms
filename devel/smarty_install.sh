@@ -34,7 +34,7 @@ cp -r $TMP/${SMARTY_DIR}/libs/*		${LIB_DIR}/Smarty/
 cp -r $TMP/${SMARTY_DIR}/libs/plugins/*	${LIB_DIR}/Smarty/plugins/
 echo "done."
 if [ "$LATEST_VERSION" = "v3.1.27" ]; then
-	patch -p0 -d ${LIB_DIR}/Smarty <smarty-3.1.27.patch
+	patch -p0 -d ${LIB_DIR}/Smarty <$(dirname $0)/smarty-3.1.27.patch
 fi
 
 
