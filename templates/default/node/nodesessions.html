@@ -1,11 +1,14 @@
 <!--// $Id$ //-->
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR class="dark hand" onclick="showOrHide('nodesessionpanel');">
+<TABLE class="lmsbox">
+	<THEAD>
+	<TR onclick="showOrHide('nodesessionpanel');">
 		<TD class="fall">
 			<IMG src="img/calendar.gif" alt="">
 			<B><A name="nodesessions">{trans("Node Sessions:")}</A></B> {trans("(last 10 sessions)")}
 		</TD>
 	</TR>
+	</THEAD>
+	<TBODY>
 	<TR id="nodesessionpanel" style="display:none;">
 		<TD WIDTH="100%" class="fall">
 			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
@@ -43,6 +46,7 @@
 			</TABLE>
 		</TD>
 	</TR>
+	</TBODY>
 </TABLE>
 {literal}<SCRIPT type="text/javascript">
 <!--

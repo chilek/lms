@@ -95,7 +95,7 @@ try {
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'upgradedb.php');
 
 // Initialize templates engine (must be before locale settings)
-$SMARTY = new Smarty;
+$SMARTY = new LMSSmarty;
 
 // test for proper version of Smarty
 
@@ -226,7 +226,9 @@ if ($AUTH->islogged) {
 	$res = $LMS->ExecHook('access_table_init', array('accesstable' => $access['table']));
 	if (isset($res['accesstable']))
 		$access['table'] = $res['accesstable'];
-        
+
+	$access['table'] = $LMS->executeHook('access_table_initialized', $access['table']);
+
         LMSConfig::getConfig(array(
             'force' => true,
             'force_user_rights_only' => true,

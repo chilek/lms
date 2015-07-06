@@ -26,50 +26,8 @@
 
 define('USERPANEL_SETUPMODE', 1);
 
-// register smarty extensions
-
-function module_get_template($tpl_name, &$tpl_source, $smarty_obj)
-{
-	global $LMS;
-	$template = explode(':', $tpl_name);
-	$template_path = ConfigHelper::getConfig('directories.userpanel_dir').'/modules/'.$template[0].'/templates/'.$template[1];
-	if (file_exists($template_path))
-	{
-		$tpl_source = file_get_contents($template_path);
-		return true;
-	} else
-		return false;
-}
-
-function module_get_timestamp($tpl_name, &$tpl_timestamp, $smarty_obj)
-{
-	global $LMS;
-	$template = explode(':', $tpl_name);
-	$template_path = ConfigHelper::getConfig('directories.userpanel_dir').'/modules/'.$template[0].'/templates/'.$template[1];
-	if (file_exists($template_path))
-	{
-		$tpl_timestamp = filectime($template_path);
-		return true;
-	} else
-		return false;
-}
-
-function module_get_secure($tpl_name, &$smarty_obj)
-{
-	// assume all templates are secure
-	return true;
-}
-
-function module_get_trusted($tpl_name, &$smarty_obj)
-{
-	// not used for templates
-}
-
 // register the resource name "module"
-$SMARTY->registerResource('module', array('module_get_template',
-					'module_get_timestamp',
-					'module_get_secure',
-					'module_get_trusted'));
+$SMARTY->registerResource('module', new Smarty_Resource_Userpanel_Setup_Module());
 
 // Include locale file (main)
 @include(USERPANEL_DIR.'/lib/locale/'.$_ui_language.'/strings.php');
@@ -79,15 +37,20 @@ require_once(USERPANEL_DIR.'/lib/Userpanel.class.php');
 $USERPANEL = new USERPANEL($DB, $SESSION);
 
 // Initialize modules
-$dh  = opendir(USERPANEL_MODULES_DIR);
-while (false !== ($filename = readdir($dh))) 
-{
-	if ((preg_match('/^[a-zA-Z0-9]/',$filename)) && (is_dir(USERPANEL_MODULES_DIR.$filename)) && file_exists(USERPANEL_MODULES_DIR.$filename.'/configuration.php'))
-	{
-		@include(USERPANEL_MODULES_DIR.$filename.'/locale/'.$_ui_language.'/strings.php');
-		include(USERPANEL_MODULES_DIR.$filename.'/configuration.php');
+
+$modules_dirs = array(USERPANEL_MODULES_DIR);
+$modules_dirs = $plugin_manager->executeHook('userpanel_modules_dir_initialized', $modules_dirs);
+
+foreach ($modules_dirs as $suspected_module_dir) {
+	$dh  = opendir($suspected_module_dir);
+	while (false !== ($filename = readdir($dh))) {
+		if ((preg_match('/^[a-zA-Z0-9]/',$filename)) && (is_dir($suspected_module_dir . $filename))
+			&& file_exists($suspected_module_dir . $filename.'/configuration.php')) {
+			@include($suspected_module_dir . $filename.'/locale/'.$_ui_language.'/strings.php');
+			include($suspected_module_dir . $filename.'/configuration.php');
+		}
 	}
-};
+}
 
 $SMARTY->assignByRef('menu', $USERPANEL->MODULES);
 
@@ -98,8 +61,16 @@ $layout['pagetitle'] = trans('Configure Module: $a',$module);
 
 if($module == 'userpanel')
 	$modulefile_include = USERPANEL_DIR.'/lib/setup_functions.php';
-else
-	$modulefile_include = file_exists(USERPANEL_MODULES_DIR.$module.'/functions.php') ? USERPANEL_MODULES_DIR.$module.'/functions.php' : NULL;
+else {
+	global $module_dir;
+	$module_dir = null;
+	foreach ($modules_dirs as $suspected_module_dir)
+		if (file_exists($suspected_module_dir . $module.'/functions.php')) {
+			$module_dir = $suspected_module_dir;
+			break;
+		}
+	$modulefile_include = ($module_dir !== null ? $module_dir . $module.'/functions.php' : NULL);
+}
 
 if (isset($modulefile_include))
 {

@@ -409,4 +409,34 @@ class LMSDB_driver_mysql extends LMSDB_common implements LMSDBDriverInterface
 
     }
 
+	/**
+	* Gets year for date.
+	* 
+	* @param string $date
+	* @return year string
+	*/
+	public function _driver_year($date) {
+		return 'YEAR(' . $date . ')';
+	}
+
+	/**
+	* Gets month for date.
+	* 
+	* @param string $date
+	* @return month string
+	*/
+	public function _driver_month($date) {
+		return 'MONTH(' . $date . ')';
+	}
+
+	/**
+	* Gets day for date.
+	* 
+	* @param string $date
+	* @return day string
+	*/
+	public function _driver_day($date) {
+		return 'DAY(' . $date . ')';
+	}
+
 }

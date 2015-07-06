@@ -5,7 +5,7 @@
 
 set -e
 
-LIB_DIR="`dirname $0`/../lib/"
+LIB_DIR="$(dirname $0)/../lib/"
 TMP=`mktemp -d`
 
 # checking out latest smarty version
@@ -33,6 +33,9 @@ fi
 cp -r $TMP/${SMARTY_DIR}/libs/*		${LIB_DIR}/Smarty/
 cp -r $TMP/${SMARTY_DIR}/libs/plugins/*	${LIB_DIR}/Smarty/plugins/
 echo "done."
+if [ "$LATEST_VERSION" = "v3.1.27" ]; then
+	patch -p0 -d ${LIB_DIR}/Smarty <$(dirname $0)/smarty-3.1.27.patch
+fi
 
 
 # cleanup

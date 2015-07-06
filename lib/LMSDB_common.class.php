@@ -481,6 +481,36 @@ abstract class LMSDB_common implements LMSDBInterface
 
     }
 
+	/**
+	* Gets year for date.
+	* 
+	* @param string $date
+	* @return year string
+	*/
+	public function Year($date) {
+		return $this->_driver_year($date);
+	}
+
+	/**
+	* Gets month for date.
+	* 
+	* @param string $date
+	* @return month string
+	*/
+	public function Month($date) {
+		return $this->_driver_month($date);
+	}
+
+	/**
+	* Gets day for date.
+	* 
+	* @param string $date
+	* @return day string
+	*/
+	public function Day($date) {
+		return $this->_driver_day($date);
+	}
+
     /**
      * Prepares query before execution.
      * 
