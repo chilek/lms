@@ -57,10 +57,6 @@ if (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkCon
 	$SMARTY->assign('nodestats', $LMS->NodeStats());
 }
 
-$template_file = 'welcome/welcome.html';
-
-$template_file = $LMS->executeHook('welcome_before_display', $template_file);
-
-$SMARTY->display($template_file);
+$SMARTY->display('welcome/welcome.html');
 
 ?>

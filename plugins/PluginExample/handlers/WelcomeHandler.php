@@ -41,18 +41,5 @@ class WelcomeHandler
         error_log('welcome on load hook trigered');
         return $hook_data;
     }
-    
-    /**
-     * Example of template switch
-     * 
-     * @param mixed $hook_data
-     * @return mixed
-     */
-    public function welcomeBeforeDisplay($hook_data)
-    {
-        error_log('welcome before display hook trigered');
-        return 'copyrights.html';
-    }
-    
-    
+
 }
