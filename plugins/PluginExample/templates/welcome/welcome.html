@@ -1,0 +1,60 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1 class="text-center">{trans("LMS version")} {$layout.lmsv} ({$layout.lmsvr})</H1>
+<P class="text-center bold">Copyright &copy; 2001-{$smarty.now|date_format:'%Y'} LMS Developers</P>
+
+<P class="txt">{trans("This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License Version 2 as published by the Free Software Foundation.")}</P>
+<P class="txt">{trans("This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.")}</p>
+<P class="txt">{trans("You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.")}</p>
+
+<P class="text-center"><a href="http://www.opensource.org/docs/definition.php"><img src="img/opensource-110x95.gif" width="110" height="95" alt=""></a></p>
+<p class="text-center bold">{trans("LMS include elements of other software:")}</P>
+<p class="text-center"><A href="http://www.phpmyadmin.net/">phpMyAdmin</A><BR>
+<a href="http://phpsysinfo.sourceforge.net/">phpsysinfo</a><BR>
+<a href="http://adodb.sourceforge.net/">ADOdb</a><BR>
+<a href="http://www.openlayers.org/">OpenLayers</a><br>
+<a href="http://florian-amrhein.de/newsportal/index-english.php3">NewsPortal</A><BR>
+<a href="http://www.bosrup.com/web/overlib/">overLIB</A><BR>
+<a href="http://www.ros.co.nz/pdf/">ezpdf</A><BR>
+<a href="http://www.xajaxproject.org/">xajax</A><BR>
+<a href="http://www.softcomplex.com/products/tigra_calendar/">Tigra Calendar</A><BR>
+<a href="http://gosu.pl/dhtml/mygosumenu.html">Cezary Tomczak's mygosuMenu published under revised BSD license</a><br>
+<a href="http://github.com/phine/lib-observer">phine/lib-observer</a><br>
+{t}Piotr Kleban's number-to-words conversion procedures<BR>and code examples from <a href="http://www.php.net/manual">PHP Manual</A>{/t}</P>
+<p class="text-center bold">{trans("LMS developers (in alphabetical order):")}</P>
+<TABLE width="100%" cellpadding="5">
+	{foreach from=$authors item=author name=authors key=nick}
+	{if $smarty.foreach.authors.iteration is odd}<TR>{/if}
+		<TD style="width: 50%;" class="valign-top">
+			<TABLE width="100%" cellpadding="5">
+				<TR class="superlight">
+					<TD class="fleftu" style="width: 1%;">
+						<IMG src="img/{$nick|lower}.icon.gif" style="border: 1px solid black;" alt="">
+					</TD>
+					<TD class="frightu" style="width: 99%;">
+						<span class="bold">{$nick}</span><BR>
+						{$author.realname}<BR>
+						{if $author.www}<A href="http://{$author.www}" rel="external">{$author.www}</A>{/if}&nbsp;<BR>
+						{$author.info}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	{if $smarty.foreach.authors.iteration is even}</TR>{/if}
+	{/foreach}
+	{if $smarty.foreach.authors.iteration is odd}</TR>{/if}
+</TABLE>
+<P class="text-center bold">{trans("The rest of group:")}</P>
+<P class="text-center">
+{foreach from=$others item=other name=others key=nick}
+	{if $other.www}<A href="http://{$other.www}" rel="external">{/if}
+	{$other.realname} [{$nick}]
+	{if $other.www}</A>{/if}
+	- {$other.info}<BR>
+{/foreach}
+</P>
+<P class="text-center bold"><a href="http://www.smarty.net/">{trans("LMS uses Smarty Template Engine - http://www.smarty.net/")}</A></P>
+<P class="text-center"><a href="http://www.smarty.net/"><img src="img/smarty_icon.gif" alt="Smarty"></A></p>
+{/block}

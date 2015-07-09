@@ -38,10 +38,6 @@ class PluginExample extends LMSPlugin
                 'class' => 'WelcomeHandler',
                 'method' => 'welcomeOnLoad'
             ),
-            'welcome_before_display' => array(
-                'class' => 'WelcomeHandler',
-                'method' => 'welcomeBeforeDisplay'
-            ),
             'useradd_validation_before_submit' => array(
                 'class' => 'UseraddHandler',
                 'method' => 'useraddValidationBeforeSubmit'
