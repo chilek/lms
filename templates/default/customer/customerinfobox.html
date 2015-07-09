@@ -366,6 +366,7 @@
 	<TR>
 		<TD WIDTH="100%" ALIGN="RIGHT">
 {/if}
+			{block name="customerinfobox-buttons"}
 			{if $customerinfo.deleted}
 				<A HREF="?m=customeredit&id={$customerinfo.id}&action=recover">{trans("Restore")} <IMG SRC="img/recover.gif" ALT="[ {trans("Restore")} ]"></A>
 			{else}
@@ -383,6 +384,7 @@
 			{if $info_link}
 				<A href="?m=customerinfo&id={$customerinfo.id}">{trans("Info")} <img src="img/info.gif" alt="[ {trans("Info")} ]"></A>
 			{/if}
+			{/block}
 		</TD>
 	</TR>
         </TBODY>
