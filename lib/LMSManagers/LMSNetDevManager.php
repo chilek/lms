@@ -417,7 +417,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			case 'project':
 				if ($value > 0)
 					$where[] = '(d.invprojectid = ' . intval($value)
-						. ' OR (d.invprojectid = ' . INV_PROJECT_SYSTEM . ' AND (n.invprojectid = ' . intval($value) . ' OR n.invprojectid IS NULL)))';
+						. ' OR (d.invprojectid = ' . INV_PROJECT_SYSTEM . ' AND n.invprojectid = ' . intval($value) . '))';
 				elseif ($value == -2)
 					$where[] = '(d.invprojectid IS NULL OR (d.invprojectid = ' . INV_PROJECT_SYSTEM . ' AND n.invprojectid IS NULL))';
 				break;
