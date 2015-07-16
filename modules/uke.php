@@ -150,6 +150,11 @@ $projectid = 1;
 $sprojects = '';
 if (!empty($projects))
 	foreach ($projects as $project) {
+		if ($format == 2) { 
+			$res = preg_grep('/^PR,.+,"' . str_replace('/', '\/', $project['name']) . '",/', preg_split('/\r?\n/', $header));
+			if (!empty($res))
+				continue;
+		}
 		$data = array(
 			'proj_id' => $projectid,
 			'proj_name' => $project['name'],
