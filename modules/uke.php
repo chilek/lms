@@ -260,7 +260,7 @@ $foreigners = array();
 $netnodeid = 1;
 if ($netdevices)
 	foreach ($netdevices as $netdevid => $netdevice) {
-		$backboneports = $DB->GetAll("SELECT nl.type, technology, speed,
+		$backboneports = $DB->GetAll("SELECT nl.type, nl.technology, speed,
 				(CASE src WHEN ? THEN (CASE WHEN rssrc.frequency IS NULL THEN rsdst.frequency ELSE rssrc.frequency END)
 					ELSE (CASE WHEN rsdst.frequency IS NULL THEN rssrc.frequency ELSE rsdst.frequency END) END) AS freq,
 				COUNT(nl.id) AS portcount
@@ -274,9 +274,9 @@ if ($netdevices)
 			WHERE (src = ? OR dst = ?)
 				AND ((ndsrc.netnodeid IS NOT NULL AND nnsrc.ownership = 2)
 					OR (nddst.netnodeid IS NOT NULL AND nndst.ownership = 2))
-			GROUP BY nl.type, technology, speed, freq",
+			GROUP BY nl.type, nl.technology, speed, freq",
 			array($netdevice['id'], $netdevice['id'], $netdevice['id']));
-		$distports = $DB->GetAll("SELECT nl.type, technology, speed,
+		$distports = $DB->GetAll("SELECT nl.type, nl.technology, speed,
 				(CASE src WHEN ? THEN (CASE WHEN rssrc.frequency IS NULL THEN rsdst.frequency ELSE rssrc.frequency END)
 					ELSE (CASE WHEN rsdst.frequency IS NULL THEN rssrc.frequency ELSE rsdst.frequency END) END) AS freq,
 				COUNT(nl.id) AS portcount FROM netlinks nl
@@ -289,7 +289,7 @@ if ($netdevices)
 			WHERE (src = ? OR dst = ?)
 				AND (ndsrc.netnodeid IS NULL OR nnsrc.ownership < 2)
 				AND (nddst.netnodeid IS NULL OR nndst.ownership < 2)
-			GROUP BY nl.type, technology, speed, freq",
+			GROUP BY nl.type, nl.technology, speed, freq",
 			array($netdevice['id'], $netdevice['id'], $netdevice['id']));
 		$accessports = $DB->GetAll("SELECT linktype AS type, linktechnology AS technology,
 				linkspeed AS speed, rs.frequency, " . $DB->GroupConcat('rs.id') . " AS radiosectors,
@@ -1278,7 +1278,7 @@ $processed_netlinks = array();
 $netlinks = array();
 if ($netdevices)
 	foreach ($netdevices as $netdevice) {
-		$ndnetlinks = $DB->GetAll("SELECT src, dst, type, speed, technology,
+		$ndnetlinks = $DB->GetAll("SELECT src, dst, type, speed, nl.technology,
 			(CASE src WHEN ? THEN (CASE WHEN srcrs.license IS NULL THEN dstrs.license ELSE srcrs.license END)
 				ELSE (CASE WHEN dstrs.license IS NULL THEN srcrs.license ELSE dstrs.license END) END) AS license,
 			(CASE src WHEN ? THEN (CASE WHEN srcrs.frequency IS NULL THEN dstrs.frequency ELSE srcrs.frequency END)
