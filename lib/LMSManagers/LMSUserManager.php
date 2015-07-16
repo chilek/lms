@@ -84,7 +84,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
      */
     public function getUserNames()
     {
-        return $this->db->GetAll('SELECT id, name FROM users WHERE deleted=0 ORDER BY login ASC');
+        return $this->db->GetAll('SELECT id, name FROM users WHERE deleted=0 ORDER BY name ASC');
     }
 
     /**
