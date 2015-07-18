@@ -139,6 +139,8 @@ switch($mode)
 			} else {
 				print "false;\n";
 			}
+                        $SESSION->close();
+                        $DB->Destroy();
 			exit;
 		}
 
@@ -248,6 +250,8 @@ switch($mode)
 			} else {
 				print "false;\n";
 			}
+                        $SESSION->close();
+                        $DB->Destroy();
 			exit;
 		}
 
@@ -312,6 +316,8 @@ switch($mode)
 			} else {
 				print "false;\n";
 			}
+                        $SESSION->close();
+                        $DB->Destroy();
 			exit;
 		}
 
@@ -369,6 +375,8 @@ switch($mode)
 			} else {
 				print "false;\n";
 			}
+                        $SESSION->close();
+                        $DB->Destroy();
 			exit;
 		}
 
@@ -422,6 +430,8 @@ switch($mode)
 			} else {
 				print "false;\n";
 			}
+                        $SESSION->close();
+                        $DB->Destroy();
 			exit;
 		}
 
