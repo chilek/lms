@@ -59,7 +59,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="text-center bold nobr" style="font-size: 7pt;">&nbsp;<br>LMS {$layout.lmsv}<br>{if $layout.lmsvr}({$layout.lmsvr})<br>{/if}DB: {$layout.dbschversion}<br>@ {$layout.hostname}&nbsp;<br>&nbsp;<br></td>
+                        <td class="text-center bold nobr" style="font-size: 7pt;">&nbsp;<br>LMS {$layout.lmsv}<br>{if $layout.lmsvr}({$layout.lmsvr})<br>{/if}{foreach $layout.dbschversion as $idx => $dbver}{$idx}: {$dbver}<br>{/foreach}@ {$layout.hostname}&nbsp;<br>&nbsp;<br></td>
                     </tr>
                 </table>
                 <script type="text/javascript">

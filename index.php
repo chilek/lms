@@ -93,7 +93,7 @@ try {
 
 // Call any of upgrade process before anything else
 
-$layout['dbschversion'] = $DB->UpgradeDb();
+$layout['dbschversion'] = array('DB' => $DB->UpgradeDb());
 
 // Initialize templates engine (must be before locale settings)
 $SMARTY = new LMSSmarty;

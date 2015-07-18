@@ -744,7 +744,7 @@ abstract class LMSDB_common implements LMSDBInterface
 				// database might be installed so don't miss any error
 				$this->errors = array_merge($err_tmp, $this->errors);
 		}
-		return is_null($lastupgrade) ? $dbver : $lastupgrade;
+		return isset($lastupgrade) ? $lastupgrade : $dbver;
 	}
 
 }

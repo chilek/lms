@@ -68,13 +68,13 @@ abstract class LMSPlugin implements ObserverInterface {
 	 * Loads plugin database schema updates
 	 */
 	protected function upgradeDb() {
-		global $DB;
+		global $DB, $layout;
 
 		$constant = get_class($this) . '::DBVERSION';
 		if (defined($constant)) {
 			$libdir = $this->dirname . DIRECTORY_SEPARATOR . 'lib';
 			$docdir = $this->dirname . DIRECTORY_SEPARATOR . 'doc';
-			$DB->UpgradeDb(constant($constant), get_class($this), $libdir, $docdir);
+			$layout['dbschversion'][get_class($this) . 'DB'] = $DB->UpgradeDb(constant($constant), get_class($this), $libdir, $docdir);
 		}
 	}
 
