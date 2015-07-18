@@ -55,7 +55,9 @@ class LMSPluginManager extends Subject implements SubjectInterface
                     continue;
                 }
                 $plugin = new $plugin_name();
-		$this->dbschversions[$plugin_name . 'DB'] = $plugin->getDbSchemaVersion();
+		$dbver = $plugin->getDbSchemaVersion();
+		if (isset($dbver))
+			$this->dbschversions[$plugin_name . 'DB'] = $dbver;
                 if (!($plugin instanceof LMSPlugin)) {
                     throw new Exception("Plugin object must be instance of LMSPlugin class");
                 }

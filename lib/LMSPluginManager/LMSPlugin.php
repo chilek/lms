@@ -38,7 +38,7 @@ use Phine\Observer\SubjectInterface;
 abstract class LMSPlugin implements ObserverInterface {
 	protected $handlers;
 	private $dirname;
-	private $dbschversion;
+	private $dbschversion = null;
 
 	public function __construct() {
 		$reflector = new ReflectionClass(get_class($this));
