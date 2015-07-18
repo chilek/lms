@@ -36,6 +36,7 @@ class LMSPluginManager extends Subject implements SubjectInterface
 {
     protected $hook_name;
     protected $hook_data;
+	private $dbschversions;
     
     /**
      * Loads plugins
@@ -54,6 +55,7 @@ class LMSPluginManager extends Subject implements SubjectInterface
                     continue;
                 }
                 $plugin = new $plugin_name();
+		$this->dbschversions[$plugin_name . 'DB'] = $plugin->getDbSchemaVersion();
                 if (!($plugin instanceof LMSPlugin)) {
                     throw new Exception("Plugin object must be instance of LMSPlugin class");
                 }
@@ -64,7 +66,17 @@ class LMSPluginManager extends Subject implements SubjectInterface
             }
         }
     }
-    
+
+
+	/**
+	 * Return database schema versions of all plugins
+	 *
+	 * @return associative array of all plugin database schema versions
+	 */
+	public function getDbSchemaVersions() {
+		return $this->dbschversions;
+	}
+
     /**
      * Executes hook
      * 

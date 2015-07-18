@@ -151,6 +151,7 @@ $LMS->lang = $_language;
 
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
+$layout['dbschversion'] = array_merge($layout['dbschversion'], $plugin_manager->getDbSchemaVersions());
 
 // Initialize Swekey class
 

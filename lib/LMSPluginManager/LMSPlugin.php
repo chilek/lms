@@ -38,6 +38,7 @@ use Phine\Observer\SubjectInterface;
 abstract class LMSPlugin implements ObserverInterface {
 	protected $handlers;
 	private $dirname;
+	private $dbschversion;
 
 	public function __construct() {
 		$reflector = new ReflectionClass(get_class($this));
@@ -68,14 +69,19 @@ abstract class LMSPlugin implements ObserverInterface {
 	 * Loads plugin database schema updates
 	 */
 	protected function upgradeDb() {
-		global $DB, $layout;
-
 		$constant = get_class($this) . '::DBVERSION';
 		if (defined($constant)) {
 			$libdir = $this->dirname . DIRECTORY_SEPARATOR . 'lib';
 			$docdir = $this->dirname . DIRECTORY_SEPARATOR . 'doc';
-			$layout['dbschversion'][get_class($this) . 'DB'] = $DB->UpgradeDb(constant($constant), get_class($this), $libdir, $docdir);
+			$this->dbschversion = LMSDB::getInstance()->UpgradeDb(constant($constant), get_class($this), $libdir, $docdir);
 		}
+	}
+
+	/**
+	 * Returns current database schema version
+	 */
+	public function getDbSchemaVersion() {
+		return $this->dbschversion;
 	}
 
     /**
