@@ -24,18 +24,18 @@
  *  $Id$
  */
 
-$DB->Execute("ALTER TABLE customers CHANGE pesel ssn varchar(11) DEFAULT '' NOT NULL");
-$DB->Execute("ALTER TABLE customers CHANGE nip ten varchar(16) DEFAULT '' NOT NULL");
+$this->Execute("ALTER TABLE customers CHANGE pesel ssn varchar(11) DEFAULT '' NOT NULL");
+$this->Execute("ALTER TABLE customers CHANGE nip ten varchar(16) DEFAULT '' NOT NULL");
 
-$DB->Execute("ALTER TABLE cash DROP INDEX invoiceid");
-$DB->Execute("ALTER TABLE cash CHANGE invoiceid docid INT(11) DEFAULT '0' NOT NULL");
-$DB->Execute("ALTER TABLE cash ADD INDEX docid (docid)");
+$this->Execute("ALTER TABLE cash DROP INDEX invoiceid");
+$this->Execute("ALTER TABLE cash CHANGE invoiceid docid INT(11) DEFAULT '0' NOT NULL");
+$this->Execute("ALTER TABLE cash ADD INDEX docid (docid)");
 
-$DB->Execute("ALTER TABLE invoicecontents DROP INDEX invoiceid");
-$DB->Execute("ALTER TABLE invoicecontents CHANGE invoiceid docid INT(11) DEFAULT '0' NOT NULL");
-$DB->Execute("ALTER TABLE invoicecontents ADD INDEX docid (docid)");
+$this->Execute("ALTER TABLE invoicecontents DROP INDEX invoiceid");
+$this->Execute("ALTER TABLE invoicecontents CHANGE invoiceid docid INT(11) DEFAULT '0' NOT NULL");
+$this->Execute("ALTER TABLE invoicecontents ADD INDEX docid (docid)");
 
-$DB->Execute("CREATE TABLE documents (
+$this->Execute("CREATE TABLE documents (
 	id int(11) NOT NULL auto_increment,
 	type tinyint NOT NULL DEFAULT '0',
 	number int(11) NOT NULL DEFAULT '0',
@@ -52,15 +52,15 @@ $DB->Execute("CREATE TABLE documents (
 	paytype varchar(255) NOT NULL DEFAULT '',
 	PRIMARY KEY (id)
 )");
-$DB->Execute("INSERT INTO documents (id, type, number, cdate, paytime, paytype, customerid, userid, name, address, zip, city, ten, ssn)
+$this->Execute("INSERT INTO documents (id, type, number, cdate, paytime, paytype, customerid, userid, name, address, zip, city, ten, ssn)
 	SELECT invoices.id, 1, number, cdate, paytime, paytype, invoices.customerid, cash.userid, name, address, zip, city, nip, pesel
 	FROM invoices LEFT JOIN cash ON (invoices.id = cash.docid)
 	WHERE cash.type = 4
 	GROUP BY invoices.id, number, cdate, paytime, paytype, invoices.customerid, cash.userid, name, address, zip, city, nip, pesel");
-$DB->Execute("DROP TABLE invoices");
-$DB->Execute("ALTER TABLE documents ADD INDEX cdate (cdate)");
+$this->Execute("DROP TABLE invoices");
+$this->Execute("ALTER TABLE documents ADD INDEX cdate (cdate)");
 	
-$DB->Execute("CREATE TABLE receiptcontents (
+$this->Execute("CREATE TABLE receiptcontents (
 	docid INT(11) NOT NULL DEFAULT '0',
 	itemid TINYINT NOT NULL DEFAULT '0',
 	value decimal(9,2) NOT NULL DEFAULT '0',
@@ -68,6 +68,6 @@ $DB->Execute("CREATE TABLE receiptcontents (
 	INDEX docid (docid))
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005060300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005060300', 'dbversion'));
 
 ?>

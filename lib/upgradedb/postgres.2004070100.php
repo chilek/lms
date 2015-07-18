@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
     BEGIN;
     CREATE SEQUENCE rtrights_id_seq;
     CREATE TABLE rtrights (

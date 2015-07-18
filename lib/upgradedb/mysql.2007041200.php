@@ -24,25 +24,25 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE cashreglog ADD snapshot decimal(9,2) NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE cashreglog ADD snapshot decimal(9,2) NOT NULL DEFAULT '0'");
 
-$list = $DB->GetAll('SELECT id, regid, time FROM cashreglog');
+$list = $this->GetAll('SELECT id, regid, time FROM cashreglog');
 
 if($list) foreach($list as $row)
 {    
-	$val = $DB->GetOne('SELECT SUM(value) FROM receiptcontents
+	$val = $this->GetOne('SELECT SUM(value) FROM receiptcontents
 	                LEFT JOIN documents ON (docid = documents.id)
 			WHERE cdate <= ? AND regid = ?',
 			array($row['time'], $row['regid']));
 
-	$DB->Execute('UPDATE cashreglog SET snapshot = ? WHERE id = ?',  
+	$this->Execute('UPDATE cashreglog SET snapshot = ? WHERE id = ?',  
 			array(str_replace(',','.',floatval($val)), $row['id']));
 }
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2007041200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2007041200', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

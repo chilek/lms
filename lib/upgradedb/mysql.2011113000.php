@@ -24,15 +24,15 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE assignments CHANGE discount pdiscount decimal(4,2) NOT NULL DEFAULT '0'");
-$DB->Execute("ALTER TABLE invoicecontents CHANGE discount pdiscount decimal(4,2) NOT NULL DEFAULT '0'");
-$DB->Execute("ALTER TABLE assignments ADD vdiscount decimal(9, 2) NOT NULL DEFAULT '0'");
-$DB->Execute("ALTER TABLE invoicecontents ADD vdiscount decimal(9, 2) NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE assignments CHANGE discount pdiscount decimal(4,2) NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE invoicecontents CHANGE discount pdiscount decimal(4,2) NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE assignments ADD vdiscount decimal(9, 2) NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE invoicecontents ADD vdiscount decimal(9, 2) NOT NULL DEFAULT '0'");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2011113000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2011113000', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

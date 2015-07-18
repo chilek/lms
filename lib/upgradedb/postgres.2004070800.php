@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
     BEGIN;
     ALTER TABLE rttickets ADD userid integer;
     ALTER TABLE rttickets ALTER userid SET DEFAULT 0;

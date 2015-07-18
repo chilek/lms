@@ -7,6 +7,7 @@ version ?.??.?? (????-??-??):
   - added support of new style plugins in userpanel module setup part [chilan]
   - template inheritance chains are supported; we can use the same names
     for all templates in chain - should be very usefull in plugins [chilan]
+  - move upgrade db schema code to LMSDB class - it can also be used by plugins [chilan]
 
 version 1.11.17 (2015-06-29):
 

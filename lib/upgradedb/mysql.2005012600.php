@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
     CREATE TABLE events (
 	id int(11) NOT NULL auto_increment,
 	title varchar(255) NOT NULL default '',
@@ -40,15 +40,15 @@ $DB->Execute("
 	PRIMARY KEY (id)) ENGINE=MyISAM
 ");
 
-$DB->Execute("
+$this->Execute("
     CREATE TABLE eventassignments (
 	eventid int(11) NOT NULL default '0',
 	adminid int(11) NOT NULL default '0',
 	UNIQUE (eventid, adminid)) ENGINE=MyISAM
 ");
 
-$DB->Execute("CREATE INDEX events_date_idx ON events(date)");
+$this->Execute("CREATE INDEX events_date_idx ON events(date)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005012600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005012600', 'dbversion'));
 
 ?>

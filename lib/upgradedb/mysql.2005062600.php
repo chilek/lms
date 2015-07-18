@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->Execute("ALTER TABLE customers CHANGE gguin im int(11) DEFAULT '0' NOT NULL");
+$this->Execute("ALTER TABLE customers CHANGE gguin im int(11) DEFAULT '0' NOT NULL");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005062600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005062600', 'dbversion'));
 
 ?>

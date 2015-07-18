@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     CREATE TABLE invprojects (
         id int(11) NOT NULL auto_increment,
 	name varchar(255) NOT NULL, 
@@ -31,9 +31,9 @@ $DB->Execute("
 	PRIMARY KEY (id)
 ) ENGINE=INNODB");
 
-$DB->Execute("INSERT INTO invprojects (name,type) VALUES ('inherited',1)");
+$this->Execute("INSERT INTO invprojects (name,type) VALUES ('inherited',1)");
 
-$DB->Execute("
+$this->Execute("
     CREATE TABLE netnodes (
         id int(11) NOT NULL auto_increment,
 	name varchar(255) NOT NULL, 
@@ -56,30 +56,30 @@ $DB->Execute("
 ) ENGINE=INNODB");
 
 
-$DB->Execute("ALTER TABLE netdevices ADD COLUMN netnodeid int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (netnodeid) REFERENCES netnodes(id) ON DELETE SET NULL ON UPDATE CASCADE");
+$this->Execute("ALTER TABLE netdevices ADD COLUMN netnodeid int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (netnodeid) REFERENCES netnodes(id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-$DB->Execute("ALTER TABLE netdevices ADD COLUMN invprojectid int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE");
+$this->Execute("ALTER TABLE netdevices ADD COLUMN invprojectid int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-$DB->Execute("ALTER TABLE netdevices ADD COLUMN status tinyint DEFAULT '0'");
+$this->Execute("ALTER TABLE netdevices ADD COLUMN status tinyint DEFAULT '0'");
 
-$DB->Execute("ALTER TABLE nodes ADD COLUMN invprojectid int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE nodes ADD FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE");
+$this->Execute("ALTER TABLE nodes ADD COLUMN invprojectid int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE nodes ADD FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-$DB->Execute("DROP VIEW vnodes");
-$DB->Execute("DROP VIEW vmacs");
-$DB->Execute("CREATE VIEW vnodes AS
+$this->Execute("DROP VIEW vnodes");
+$this->Execute("DROP VIEW vmacs");
+$this->Execute("CREATE VIEW vnodes AS
 		SELECT n.*, m.mac
 		FROM nodes n
 		LEFT JOIN vnodes_mac m ON (n.id = m.nodeid)");
-$DB->Execute("CREATE VIEW vmacs AS
+$this->Execute("CREATE VIEW vmacs AS
 		SELECT n.*, m.mac, m.id AS macid
 		FROM nodes n
 		JOIN macs m ON (n.id = m.nodeid)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014111400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014111400', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

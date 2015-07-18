@@ -92,7 +92,7 @@ try {
 
 // Call any of upgrade process before anything else
 
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'upgradedb.php');
+$layout['dbschversion'] = $DB->UpgradeDb();
 
 // Initialize templates engine (must be before locale settings)
 $SMARTY = new LMSSmarty;

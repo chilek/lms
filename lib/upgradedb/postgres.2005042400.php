@@ -24,17 +24,17 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	ALTER TABLE nodes ADD ipaddr_pub bigint;
 	UPDATE nodes SET ipaddr_pub = 0;
 	ALTER TABLE nodes ALTER ipaddr_pub SET NOT NULL;
 	ALTER TABLE nodes ALTER ipaddr_pub SET DEFAULT 0;
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005042400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005042400', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

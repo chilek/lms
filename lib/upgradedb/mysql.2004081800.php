@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->Execute("ALTER TABLE assignments ADD suspended TINYINT(1) NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE assignments ADD suspended TINYINT(1) NOT NULL DEFAULT '0'");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004081800', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004081800', 'dbversion'));
 
 ?>

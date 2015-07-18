@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 CREATE SEQUENCE countries_id_seq;
 CREATE TABLE countries (
     	id 	integer DEFAULT nextval('countries_id_seq'::text) NOT NULL,
@@ -55,8 +55,8 @@ INSERT INTO countries (name) VALUES ('USA');
 
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008112400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008112400', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

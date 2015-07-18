@@ -24,13 +24,13 @@
  *  $Id$
  */
 					
-$DB->Execute("ALTER TABLE tariffs ADD uprate_n int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE tariffs ADD upceil_n int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE tariffs ADD downrate_n int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE tariffs ADD downceil_n int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE tariffs ADD climit_n int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE tariffs ADD plimit_n int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE tariffs ADD uprate_n int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE tariffs ADD upceil_n int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE tariffs ADD downrate_n int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE tariffs ADD downceil_n int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE tariffs ADD climit_n int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE tariffs ADD plimit_n int(11) DEFAULT NULL");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009101600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009101600', 'dbversion'));
 
 ?>

@@ -24,11 +24,11 @@
  *  $Id$
  */
 
-$DB->Execute("BEGIN");
-$DB->Execute("ALTER TABLE networks ADD UNIQUE (name)");
-$DB->Execute("ALTER TABLE networks ADD UNIQUE (address)");
-$DB->Execute("ALTER TABLE rtqueues ADD UNIQUE (email)");
-$DB->Execute("UPDATE dbinfo SET keyvalue='2004031401' WHERE keytype='dbversion'");
-$DB->Execute("COMMIT");
+$this->Execute("BEGIN");
+$this->Execute("ALTER TABLE networks ADD UNIQUE (name)");
+$this->Execute("ALTER TABLE networks ADD UNIQUE (address)");
+$this->Execute("ALTER TABLE rtqueues ADD UNIQUE (email)");
+$this->Execute("UPDATE dbinfo SET keyvalue='2004031401' WHERE keytype='dbversion'");
+$this->Execute("COMMIT");
 
 ?>

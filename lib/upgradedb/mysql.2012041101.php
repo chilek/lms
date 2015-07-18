@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE TABLE managementurls (
 		id int(11)		NOT NULL auto_increment,
 		netdevid int(11)	NOT NULL
@@ -33,8 +33,8 @@ $DB->Execute("
 		PRIMARY KEY (id)
 	) ENGINE=INNODB");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012041101', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012041101', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

@@ -24,13 +24,13 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE netnodes ADD CONSTRAINT netnodes_location_city_fkey FOREIGN KEY (location_city) REFERENCES location_cities(id) ON DELETE SET NULL ON UPDATE CASCADE");
-$DB->Execute("ALTER TABLE netnodes ADD CONSTRAINT netnodes_location_street_fkey FOREIGN KEY (location_street) REFERENCES location_streets(id) ON DELETE SET NULL ON UPDATE CASCADE");
+$this->Execute("ALTER TABLE netnodes ADD CONSTRAINT netnodes_location_city_fkey FOREIGN KEY (location_city) REFERENCES location_cities(id) ON DELETE SET NULL ON UPDATE CASCADE");
+$this->Execute("ALTER TABLE netnodes ADD CONSTRAINT netnodes_location_street_fkey FOREIGN KEY (location_street) REFERENCES location_streets(id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015033000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015033000', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	DROP INDEX cash_invoiceid_idx;
 	ALTER TABLE cash ADD docid integer;
 	UPDATE cash SET docid = invoiceid;
@@ -93,8 +93,8 @@ $DB->Execute("
 	CREATE INDEX receiptcontents_docid_idx ON receiptcontents(docid);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005060300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005060300', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

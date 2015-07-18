@@ -21,13 +21,13 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE events ADD moddate INT NOT NULL DEFAULT '0';");
-$DB->Execute("ALTER TABLE events ADD moduserid INT NOT NULL DEFAULT '0';");
+$this->Execute("ALTER TABLE events ADD moddate INT NOT NULL DEFAULT '0';");
+$this->Execute("ALTER TABLE events ADD moduserid INT NOT NULL DEFAULT '0';");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012092500', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012092500', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

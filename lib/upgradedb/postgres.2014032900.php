@@ -22,9 +22,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	DROP VIEW vnodes;
 	DROP VIEW vmacs;
 	ALTER TABLE netlinks ADD technology integer DEFAULT 0 NOT NULL;
@@ -40,8 +40,8 @@ $DB->Execute("
 		JOIN macs m ON (n.id = m.nodeid);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014032900', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014032900', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

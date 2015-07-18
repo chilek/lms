@@ -21,13 +21,13 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE customers CHANGE paytime paytime smallint NOT NULL DEFAULT '-1'");
+$this->Execute("ALTER TABLE customers CHANGE paytime paytime smallint NOT NULL DEFAULT '-1'");
 
-$DB->Execute("DROP VIEW IF EXISTS customersview");
+$this->Execute("DROP VIEW IF EXISTS customersview");
 
-$DB->Execute("CREATE VIEW customersview AS
+$this->Execute("CREATE VIEW customersview AS
 		SELECT c.* FROM customers c
 		WHERE NOT EXISTS (
 			SELECT 1 FROM customerassignments a
@@ -35,11 +35,11 @@ $DB->Execute("CREATE VIEW customersview AS
 			WHERE e.userid = lms_current_user() AND a.customerid = c.id)
 				AND c.type < ?", array(2));
 
-$DB->Execute("ALTER TABLE documents CHANGE paytime paytime smallint NOT NULL DEFAULT '0'");
-$DB->Execute("ALTER TABLE divisions CHANGE inv_paytime inv_paytime smallint DEFAULT NULL");
+$this->Execute("ALTER TABLE documents CHANGE paytime paytime smallint NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE divisions CHANGE inv_paytime inv_paytime smallint DEFAULT NULL");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013111900', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013111900', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->Execute("ALTER TABLE tariffs CHANGE pkwiu prodid varchar(255) DEFAULT '' NOT NULL");
-$DB->Execute("ALTER TABLE invoicecontents CHANGE pkwiu prodid varchar(255) DEFAULT '' NOT NULL");
+$this->Execute("ALTER TABLE tariffs CHANGE pkwiu prodid varchar(255) DEFAULT '' NOT NULL");
+$this->Execute("ALTER TABLE invoicecontents CHANGE pkwiu prodid varchar(255) DEFAULT '' NOT NULL");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005062100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005062100', 'dbversion'));
 
 ?>

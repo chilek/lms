@@ -24,12 +24,12 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE netdevices ADD purchasetime INT(11) NOT NULL DEFAULT '0', ADD guaranteeperiod TINYINT UNSIGNED DEFAULT '0'");
+$this->Execute("ALTER TABLE netdevices ADD purchasetime INT(11) NOT NULL DEFAULT '0', ADD guaranteeperiod TINYINT UNSIGNED DEFAULT '0'");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2007102600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2007102600', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

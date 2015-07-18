@@ -21,13 +21,13 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE tariffs DROP KEY name");
-$DB->Execute("ALTER TABLE tariffs ADD UNIQUE KEY name (name, value)");
+$this->Execute("ALTER TABLE tariffs DROP KEY name");
+$this->Execute("ALTER TABLE tariffs ADD UNIQUE KEY name (name, value)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011021700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011021700', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

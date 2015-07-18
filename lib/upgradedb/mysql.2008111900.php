@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
 CREATE TABLE voipaccounts (
 	id 		int(11) 	NOT NULL auto_increment,
 	ownerid 	int(11) 	NOT NULL DEFAULT 0,
@@ -39,6 +39,6 @@ CREATE TABLE voipaccounts (
 ) ENGINE=MyISAM;
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008111900', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008111900', 'dbversion'));
 
 ?>

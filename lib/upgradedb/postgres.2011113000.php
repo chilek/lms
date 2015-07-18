@@ -24,15 +24,15 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE assignments RENAME discount TO pdiscount");
-$DB->Execute("ALTER TABLE invoicecontents RENAME discount TO pdiscount");
-$DB->Execute("ALTER TABLE assignments ADD vdiscount numeric(9, 2) DEFAULT 0 NOT NULL");
-$DB->Execute("ALTER TABLE invoicecontents ADD vdiscount numeric(9, 2) DEFAULT 0 NOT NULL");
+$this->Execute("ALTER TABLE assignments RENAME discount TO pdiscount");
+$this->Execute("ALTER TABLE invoicecontents RENAME discount TO pdiscount");
+$this->Execute("ALTER TABLE assignments ADD vdiscount numeric(9, 2) DEFAULT 0 NOT NULL");
+$this->Execute("ALTER TABLE invoicecontents ADD vdiscount numeric(9, 2) DEFAULT 0 NOT NULL");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2011113000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2011113000', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

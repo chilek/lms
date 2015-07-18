@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 CREATE SEQUENCE numberplanassignments_id_seq;
 CREATE TABLE numberplanassignments (
         id integer DEFAULT nextval('numberplanassignments_id_seq'::text) NOT NULL,
@@ -38,13 +38,13 @@ CREATE TABLE numberplanassignments (
 CREATE INDEX numberplanassignments_divisionid_idx ON numberplanassignments (divisionid);
 ");
 
-if($divs = $DB->GetAll('SELECT id FROM divisions'))
+if($divs = $this->GetAll('SELECT id FROM divisions'))
 	foreach($divs as $div)
-		$DB->Execute('INSERT INTO numberplanassignments (planid, divisionid)
+		$this->Execute('INSERT INTO numberplanassignments (planid, divisionid)
 			SELECT id, ? FROM numberplans', array($div['id']));
 
-$DB->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?', array('2008122900', 'dbversion'));
+$this->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?', array('2008122900', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

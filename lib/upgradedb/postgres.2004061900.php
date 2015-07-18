@@ -23,7 +23,7 @@
  *
  *  $Id$
  */
-$DB->Execute("
+$this->Execute("
     BEGIN;
     ALTER TABLE tariffs ADD upceil integer;
     ALTER TABLE tariffs ALTER upceil SET DEFAULT 0;

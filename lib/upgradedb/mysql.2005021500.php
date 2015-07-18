@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->Execute("ALTER TABLE invoices CHANGE zip zip VARCHAR(10) NOT NULL DEFAULT ''");
+$this->Execute("ALTER TABLE invoices CHANGE zip zip VARCHAR(10) NOT NULL DEFAULT ''");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005021500', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005021500', 'dbversion'));
 
 ?>

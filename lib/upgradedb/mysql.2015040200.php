@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("CREATE TABLE netradiosectors (
+$this->Execute("CREATE TABLE netradiosectors (
 	id int(11) NOT NULL auto_increment,
 	name varchar(64) NOT NULL,
 	azimuth decimal(9,2) DEFAULT 0 NOT NULL,
@@ -40,22 +40,22 @@ $DB->Execute("CREATE TABLE netradiosectors (
 	FOREIGN KEY (netdev) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB");
 
-$DB->Execute("DROP VIEW vnodes");
-$DB->Execute("DROP VIEW vmacs");
-$DB->Execute("ALTER TABLE nodes ADD COLUMN linkradiosector int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE nodes ADD INDEX linkradiosector (linkradiosector)");
-$DB->Execute("ALTER TABLE nodes ADD FOREIGN KEY (linkradiosector) REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE");
-$DB->Execute("CREATE VIEW vnodes AS
+$this->Execute("DROP VIEW vnodes");
+$this->Execute("DROP VIEW vmacs");
+$this->Execute("ALTER TABLE nodes ADD COLUMN linkradiosector int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE nodes ADD INDEX linkradiosector (linkradiosector)");
+$this->Execute("ALTER TABLE nodes ADD FOREIGN KEY (linkradiosector) REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE");
+$this->Execute("CREATE VIEW vnodes AS
 		SELECT n.*, m.mac
 		FROM nodes n
 		LEFT JOIN vnodes_mac m ON (n.id = m.nodeid)");
-$DB->Execute("CREATE VIEW vmacs AS
+$this->Execute("CREATE VIEW vmacs AS
 		SELECT n.*, m.mac, m.id AS macid
 		FROM nodes n
 		JOIN macs m ON (n.id = m.nodeid)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015040200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015040200', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

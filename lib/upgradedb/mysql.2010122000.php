@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     CREATE TABLE sourcefiles (
         id int(11)          NOT NULL auto_increment,
         userid integer     DEFAULT NULL
@@ -36,24 +36,24 @@ $DB->Execute("
     ) ENGINE=InnoDB
 ");
 
-$DB->Execute("ALTER TABLE cashimport ADD sourcefileid int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE cashimport ADD INDEX sourcefileid (sourcefileid)");
-$DB->Execute("ALTER TABLE cashimport ADD FOREIGN KEY (sourcefileid)
+$this->Execute("ALTER TABLE cashimport ADD sourcefileid int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE cashimport ADD INDEX sourcefileid (sourcefileid)");
+$this->Execute("ALTER TABLE cashimport ADD FOREIGN KEY (sourcefileid)
 	REFERENCES sourcefiles (id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-$DB->Execute("ALTER TABLE cashimport MODIFY customerid int(11) DEFAULT NULL");
-$DB->Execute("UPDATE cashimport SET customerid = NULL WHERE customerid NOT IN (SELECT id FROM customers)");
-$DB->Execute("ALTER TABLE cashimport ADD INDEX customerid (customerid)");
-$DB->Execute("ALTER TABLE cashimport ADD FOREIGN KEY (customerid)
+$this->Execute("ALTER TABLE cashimport MODIFY customerid int(11) DEFAULT NULL");
+$this->Execute("UPDATE cashimport SET customerid = NULL WHERE customerid NOT IN (SELECT id FROM customers)");
+$this->Execute("ALTER TABLE cashimport ADD INDEX customerid (customerid)");
+$this->Execute("ALTER TABLE cashimport ADD FOREIGN KEY (customerid)
 	REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-$DB->Execute("UPDATE cashimport SET sourceid = NULL WHERE sourceid NOT IN (SELECT id FROM cashsources)");
-$DB->Execute("ALTER TABLE cashimport ADD INDEX sourceid (sourceid)");
-$DB->Execute("ALTER TABLE cashimport ADD FOREIGN KEY (sourceid)
+$this->Execute("UPDATE cashimport SET sourceid = NULL WHERE sourceid NOT IN (SELECT id FROM cashsources)");
+$this->Execute("ALTER TABLE cashimport ADD INDEX sourceid (sourceid)");
+$this->Execute("ALTER TABLE cashimport ADD FOREIGN KEY (sourceid)
 	REFERENCES cashsources (id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010122000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010122000', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

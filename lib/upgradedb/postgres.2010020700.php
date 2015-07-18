@@ -22,9 +22,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     CREATE SEQUENCE ewx_channels_id_seq;
     CREATE TABLE ewx_channels (
 	id          integer         DEFAULT nextval('ewx_channels_id_seq'::text) NOT NULL,
@@ -42,8 +42,8 @@ $DB->Execute("
     CREATE INDEX netdevices_channelid_idx ON netdevices (channelid);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010020700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010020700', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

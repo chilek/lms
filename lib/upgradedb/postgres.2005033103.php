@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	ALTER TABLE passwd ADD quota_sh integer;
 	UPDATE passwd SET quota_sh = 0;
 	ALTER TABLE passwd ALTER quota_sh SET NOT NULL;
@@ -58,7 +58,7 @@ $DB->Execute("
 	ALTER TABLE passwd ALTER createtime SET DEFAULT 0;
 ");
 
-$DB->Execute("
+$this->Execute("
 	CREATE SEQUENCE daemonhosts_id_seq;
 	CREATE TABLE daemonhosts (
 	id integer DEFAULT nextval('daemonhosts_id_seq'::text) NOT NULL,
@@ -69,7 +69,7 @@ $DB->Execute("
 	PRIMARY KEY (id),
 	UNIQUE (name))
 ");
-$DB->Execute("
+$this->Execute("
 	CREATE SEQUENCE daemoninstances_id_seq;
 	CREATE TABLE daemoninstances (
 	id integer DEFAULT nextval('daemoninstances_id_seq'::text) NOT NULL,
@@ -82,7 +82,7 @@ $DB->Execute("
 	disabled smallint DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id))
 ");
-$DB->Execute("
+$this->Execute("
 	CREATE SEQUENCE daemonconfig_id_seq;
 	CREATE TABLE daemonconfig (
 	id integer DEFAULT nextval('daemonconfig_id_seq'::text) NOT NULL,
@@ -95,8 +95,8 @@ $DB->Execute("
 	UNIQUE(instanceid, var))
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005033103', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005033103', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

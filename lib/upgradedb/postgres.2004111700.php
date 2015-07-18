@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
-$DB->Execute("
+$this->BeginTrans();
+$this->Execute("
     
     ALTER TABLE passwd ADD ll integer;
     UPDATE passwd SET ll=EXTRACT(EPOCH FROM lastlogin);
@@ -37,6 +37,6 @@ $DB->Execute("
 
     UPDATE dbinfo SET keyvalue = '2004111700' WHERE keytype = 'dbversion';
 ");
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

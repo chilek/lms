@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE SEQUENCE assignmentlocks_id_seq;
 	CREATE TABLE assignmentlocks (
 		id integer		DEFAULT nextval('assignmentlocks_id_seq'::text) NOT NULL,
@@ -36,8 +36,8 @@ $DB->Execute("
 	);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012021800', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012021800', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

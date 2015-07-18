@@ -24,13 +24,13 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("CREATE INDEX nodes_ownerid_idx ON nodes (ownerid)");
-$DB->Execute("CREATE INDEX nodes_ipaddr_pub_idx ON nodes (ipaddr_pub)");
+$this->Execute("CREATE INDEX nodes_ownerid_idx ON nodes (ownerid)");
+$this->Execute("CREATE INDEX nodes_ipaddr_pub_idx ON nodes (ipaddr_pub)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007011200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007011200', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

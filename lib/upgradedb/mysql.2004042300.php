@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("ALTER TABLE admins ADD deleted tinyint(1) DEFAULT '0' NOT NULL");
-$DB->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?',array('2004042300', 'dbversion'));
+$this->Execute("ALTER TABLE admins ADD deleted tinyint(1) DEFAULT '0' NOT NULL");
+$this->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?',array('2004042300', 'dbversion'));
 
 ?>

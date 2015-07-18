@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     CREATE SEQUENCE numberplans_id_seq;
     CREATE TABLE numberplans (
 	id integer DEFAULT nextval('numberplans_id_seq'::text) NOT NULL,
@@ -37,12 +37,12 @@ $DB->Execute("
 	PRIMARY KEY (id))
 ");
 
-$DB->Execute("INSERT INTO numberplans (template, period, doctype, isdefault) VALUES(?,?,1,1)", 
+$this->Execute("INSERT INTO numberplans (template, period, doctype, isdefault) VALUES(?,?,1,1)", 
 		array(str_replace('%M','%m',ConfigHelper::getConfig('invoices.number_template')), ConfigHelper::getConfig('invoices.monthly_numbering') ? 3 : 5));
-$DB->Execute("INSERT INTO numberplans (template, period, doctype, isdefault) VALUES(?,?,2,1)", 
+$this->Execute("INSERT INTO numberplans (template, period, doctype, isdefault) VALUES(?,?,2,1)", 
 		array(str_replace('%M','%m',ConfigHelper::getConfig('receipts.number_template')), ConfigHelper::getConfig('receipts.monthly_numbering') ? 3 : 5));
 
-$DB->Execute("
+$this->Execute("
     ALTER TABLE documents ADD numberplanid integer;
     UPDATE documents SET numberplanid = 0;
     ALTER TABLE documents ALTER numberplanid SET NOT NULL;
@@ -53,8 +53,8 @@ $DB->Execute("
     CREATE INDEX documents_numberplanid_idx ON documents(numberplanid);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005080300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005080300', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

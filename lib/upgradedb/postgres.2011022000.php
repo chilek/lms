@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 CREATE SEQUENCE promotions_id_seq;
 CREATE TABLE promotions (
     id integer      DEFAULT nextval('promotions_id_seq'::text) NOT NULL,
@@ -65,8 +65,8 @@ ALTER TABLE tariffs ADD CONSTRAINT tariffs_name_key UNIQUE(name, value, period);
 ");
 
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011022000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011022000', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

@@ -24,27 +24,27 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("DROP VIEW vnodes");
-$DB->Execute("DROP VIEW vmacs");
-$DB->Execute("ALTER TABLE nodes CHANGE location_house location_house varchar(32) DEFAULT NULL");
-$DB->Execute("ALTER TABLE nodes CHANGE location_flat location_flat varchar(32) DEFAULT NULL");
-$DB->Execute("CREATE VIEW vnodes AS
+$this->Execute("DROP VIEW vnodes");
+$this->Execute("DROP VIEW vmacs");
+$this->Execute("ALTER TABLE nodes CHANGE location_house location_house varchar(32) DEFAULT NULL");
+$this->Execute("ALTER TABLE nodes CHANGE location_flat location_flat varchar(32) DEFAULT NULL");
+$this->Execute("CREATE VIEW vnodes AS
 		SELECT n.*, m.mac
 		FROM nodes n
 		LEFT JOIN vnodes_mac m ON (n.id = m.nodeid)");
-$DB->Execute("CREATE VIEW vmacs AS
+$this->Execute("CREATE VIEW vmacs AS
 		SELECT n.*, m.mac, m.id AS macid
 		FROM nodes n
 		JOIN macs m ON (n.id = m.nodeid)");
-$DB->Execute("ALTER TABLE netdevices CHANGE location_house location_house varchar(32) DEFAULT NULL");
-$DB->Execute("ALTER TABLE netdevices CHANGE location_flat location_flat varchar(32) DEFAULT NULL");
-$DB->Execute("ALTER TABLE netnodes CHANGE location_house location_house varchar(32) DEFAULT NULL");
-$DB->Execute("ALTER TABLE netnodes CHANGE location_flat location_flat varchar(32) DEFAULT NULL");
+$this->Execute("ALTER TABLE netdevices CHANGE location_house location_house varchar(32) DEFAULT NULL");
+$this->Execute("ALTER TABLE netdevices CHANGE location_flat location_flat varchar(32) DEFAULT NULL");
+$this->Execute("ALTER TABLE netnodes CHANGE location_house location_house varchar(32) DEFAULT NULL");
+$this->Execute("ALTER TABLE netnodes CHANGE location_flat location_flat varchar(32) DEFAULT NULL");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015040100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015040100', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

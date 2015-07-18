@@ -24,10 +24,10 @@
  *  $Id$
  */
 
-$tables = $DB->ListTables();
-$versions = $DB->GetAllByKey("SELECT keytype, keyvalue FROM dbinfo WHERE keytype ?LIKE? 'up_%'", 'keytype');
+$tables = $this->ListTables();
+$versions = $this->GetAllByKey("SELECT keytype, keyvalue FROM dbinfo WHERE keytype ?LIKE? 'up_%'", 'keytype');
 
-if (!in_array('up_rights', $tables)) $DB->Execute("
+if (!in_array('up_rights', $tables)) $this->Execute("
 
 CREATE TABLE up_rights (
     	id int(11) NOT NULL auto_increment,
@@ -38,7 +38,7 @@ CREATE TABLE up_rights (
 	PRIMARY KEY (id)
 ) ENGINE=MyISAM");
 
-if (!in_array('up_rights_assignments', $tables)) $DB->Execute("
+if (!in_array('up_rights_assignments', $tables)) $this->Execute("
 
 CREATE TABLE up_rights_assignments (
 	id int(11) NOT NULL auto_increment,
@@ -48,7 +48,7 @@ CREATE TABLE up_rights_assignments (
 	UNIQUE KEY up_right_assignment (customerid, rightid)
 ) ENGINE=MyISAM");
 
-if (!in_array('up_customers', $tables)) $DB->Execute("
+if (!in_array('up_customers', $tables)) $this->Execute("
 
 CREATE TABLE up_customers (
         id int(11) NOT NULL auto_increment,
@@ -61,7 +61,7 @@ CREATE TABLE up_customers (
 	PRIMARY KEY (id)
 ) ENGINE=MyISAM");
 
-if (!in_array('up_help', $tables)) $DB->Execute("
+if (!in_array('up_help', $tables)) $this->Execute("
 
 CREATE TABLE up_help (
         id int(11) NOT NULL auto_increment,
@@ -71,7 +71,7 @@ CREATE TABLE up_help (
 	PRIMARY KEY id (id)
 ) ENGINE=MyISAM");
 
-if (!in_array('up_info_changes', $tables)) $DB->Execute("
+if (!in_array('up_info_changes', $tables)) $this->Execute("
 
 CREATE TABLE up_info_changes (
         id int(11) NOT NULL auto_increment,
@@ -83,62 +83,62 @@ CREATE TABLE up_info_changes (
 
 if (empty($versions['up_module_finances']) || $versions['up_module_finances'] < 2005081901)
 {
-	$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled) 
+	$this->Execute("INSERT INTO uiconfig (section, var, value, description, disabled) 
 		VALUES ('userpanel', 'disable_transferform', '0', '', 0)");
-	$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
+	$this->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
 		VALUES ('userpanel', 'disable_invoices', '0', '', 0)");
-	$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
+	$this->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
 		VALUES ('userpanel', 'invoice_duplicate', '0', '', 0)");
 }
 if (empty($versions['up_module_finances']) || $versions['up_module_finances']['keyvalue'] < 2005090601)
 {
-	$DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES ('userpanel', 'show_tariffname', '1')");
-	$DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES ('userpanel', 'show_speeds', '1')");
+	$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES ('userpanel', 'show_tariffname', '1')");
+	$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES ('userpanel', 'show_speeds', '1')");
 }
 
 if (empty($versions['up_module_helpdesk']) || $versions['up_module_helpdesk']['keyvalue'] < 2005081901)
 {
-	$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
+	$this->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
 		VALUES ('userpanel', 'default_queue', '1', '', 0)");
-	$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
+	$this->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
 		VALUES ('userpanel', 'default_userid', '0', '', 0)");
-	$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
+	$this->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
 		VALUES ('userpanel', 'debug_email', '', '', 0)");
-	$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
+	$this->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
 		VALUES ('userpanel', 'lms_url', '', '', 0)");
 }
 
 if (empty($versions['up_module_info']) || $versions['up_module_info']['keyvalue'] < 2005091701)
 {
-	$DB->Execute("INSERT INTO up_rights(module, name, description)
+	$this->Execute("INSERT INTO up_rights(module, name, description)
     		VALUES ('info', 'edit_addr_ack', 'Customer can change address information with admin acknowlegment')");
-	$DB->Execute("INSERT INTO up_rights(module, name, description)
+	$this->Execute("INSERT INTO up_rights(module, name, description)
 	        VALUES ('info', 'edit_addr', 'Customer can change address information')");
-	$DB->Execute("INSERT INTO up_rights(module, name, description, setdefault)
+	$this->Execute("INSERT INTO up_rights(module, name, description, setdefault)
 	        VALUES ('info', 'edit_contact_ack', 'Customer can change contact information with admin acknowlegment', 0)");
-	$DB->Execute("INSERT INTO up_rights(module, name, description)
+	$this->Execute("INSERT INTO up_rights(module, name, description)
 	        VALUES ('info', 'edit_contact', 'Customer can change contact information')");
 }
 
 if (empty($versions['up_module_info']) || $versions['up_module_info']['keyvalue'] < 2006070500)
 {
-	$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
+	$this->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
 		VALUES ('userpanel', 'hide_nodesbox', '0', '', 0)");
 }
 
 if (empty($versions['up_module_logout']) || $versions['up_module_logout']['keyvalue'] < 2005081901)
 {
-	$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
+	$this->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
 		VALUES ('userpanel', 'logout_url', '', '', 0)");
 }
 
 if (empty($versions['up_module_stats']) || $versions['up_module_stats']['keyvalue'] < 2005081901)
 {
-	$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
+	$this->Execute("INSERT INTO uiconfig (section, var, value, description, disabled)
 		VALUES ('userpanel', 'owner_stats', '0', '', 0)");
 }
 
-$DB->Execute("DELETE FROM dbinfo WHERE keytype ?LIKE? 'up_%'");
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008061300', 'dbversion'));
+$this->Execute("DELETE FROM dbinfo WHERE keytype ?LIKE? 'up_%'");
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008061300', 'dbversion'));
 
 ?>

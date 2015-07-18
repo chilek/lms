@@ -24,11 +24,11 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE assignments ADD attribute varchar(255) DEFAULT NULL");
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015030300', 'dbversion'));
+$this->Execute("ALTER TABLE assignments ADD attribute varchar(255) DEFAULT NULL");
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015030300', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

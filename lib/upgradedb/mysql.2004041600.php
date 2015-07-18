@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
     CREATE TABLE usergroups (
 	id int(11) NOT NULL auto_increment, 
 	name varchar(255) NOT NULL default '', 
@@ -33,7 +33,7 @@ $DB->Execute("
 	UNIQUE KEY name (name)
     )
 ");
-$DB->Execute("
+$this->Execute("
     CREATE TABLE userassignments (
 	id int(11) NOT NULL auto_increment, 
 	usergroupid int(11) NOT NULL default '0', 
@@ -42,6 +42,6 @@ $DB->Execute("
 	UNIQUE KEY userassignment (usergroupid, userid)
     )
 ");
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004041600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004041600', 'dbversion'));
 
 ?>

@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 ALTER TABLE rtqueues ADD COLUMN newticketsubject varchar(255) NOT NULL DEFAULT '';
 ALTER TABLE rtqueues ADD COLUMN newticketbody text NOT NULL DEFAULT '';
 ALTER TABLE rtqueues ADD COLUMN newmessagesubject varchar(255) NOT NULL DEFAULT '';
@@ -32,8 +32,8 @@ ALTER TABLE rtqueues ADD COLUMN resolveticketsubject varchar(255) NOT NULL DEFAU
 ALTER TABLE rtqueues ADD COLUMN resolveticketbody text NOT NULL DEFAULT '';
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014020400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014020400', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

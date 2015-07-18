@@ -21,23 +21,23 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("DROP VIEW IF EXISTS customersview");
+$this->Execute("DROP VIEW IF EXISTS customersview");
 
-$DB->Execute("ALTER TABLE customers CHANGE pin pin VARCHAR(6) NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE customers CHANGE pin pin VARCHAR(6) NOT NULL DEFAULT '0'");
 
-$DB->Execute("CREATE VIEW customersview AS
+$this->Execute("CREATE VIEW customersview AS
 		SELECT c.* FROM customers c
 		WHERE NOT EXISTS (
 		    	SELECT 1 FROM customerassignments a
 			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			WHERE e.userid = lms_current_user() AND a.customerid = c.id)");
 
-$DB->Execute("UPDATE customers SET pin = CONCAT('0', pin) WHERE LENGTH(pin) < 4");
+$this->Execute("UPDATE customers SET pin = CONCAT('0', pin) WHERE LENGTH(pin) < 4");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012041100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012041100', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

@@ -24,13 +24,13 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE netradiosectors CHANGE radius width decimal(9,2) DEFAULT 0 NOT NULL");
-$DB->Execute("ALTER TABLE netradiosectors ADD COLUMN technology int(11) DEFAULT 0 NOT NULL");
+$this->Execute("ALTER TABLE netradiosectors CHANGE radius width decimal(9,2) DEFAULT 0 NOT NULL");
+$this->Execute("ALTER TABLE netradiosectors ADD COLUMN technology int(11) DEFAULT 0 NOT NULL");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015041400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015041400', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

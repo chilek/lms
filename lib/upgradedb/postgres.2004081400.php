@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
     BEGIN;
     ALTER TABLE nodes ADD lastonline integer;
     ALTER TABLE nodes ALTER lastonline SET DEFAULT 0;

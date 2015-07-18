@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("ALTER TABLE assignments ADD datefrom INT NOT NULL, ADD dateto INT NOT NULL");
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004031402', 'dbversion'));
+$this->Execute("ALTER TABLE assignments ADD datefrom INT NOT NULL, ADD dateto INT NOT NULL");
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004031402', 'dbversion'));
 
 ?>

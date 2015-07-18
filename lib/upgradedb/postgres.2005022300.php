@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
-$DB->Execute("
+$this->BeginTrans();
+$this->Execute("
     CREATE SEQUENCE cashimport_id_seq;
     CREATE TABLE cashimport (
 	id integer DEFAULT nextval('cashimport_id_seq'::text) NOT NULL,
@@ -39,7 +39,7 @@ $DB->Execute("
 	PRIMARY KEY (id))
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005022300', 'dbversion'));
-$DB->CommitTrans();
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005022300', 'dbversion'));
+$this->CommitTrans();
 
 ?>

@@ -24,14 +24,14 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE tariffs ADD type tinyint NOT NULL DEFAULT '1'");
-$DB->Execute("UPDATE tariffs SET type=1");
-$DB->Execute("ALTER TABLE tariffs ADD INDEX type (type)");
+$this->Execute("ALTER TABLE tariffs ADD type tinyint NOT NULL DEFAULT '1'");
+$this->Execute("UPDATE tariffs SET type=1");
+$this->Execute("ALTER TABLE tariffs ADD INDEX type (type)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007111400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007111400', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

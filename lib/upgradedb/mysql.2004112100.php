@@ -24,12 +24,12 @@
  *  $Id$
  */
 
-$DB->Execute("ALTER TABLE passwd ADD type SMALLINT NOT NULL DEFAULT '0'");
-$DB->Execute("ALTER TABLE passwd ADD expdate INTEGER NOT NULL DEFAULT '0'");
-$DB->Execute("ALTER TABLE passwd ADD domain VARCHAR(255) NOT NULL DEFAULT ''");
-$DB->Execute("UPDATE passwd SET type = 32767");
-$DB->Execute("ALTER TABLE passwd ADD UNIQUE (login)");
+$this->Execute("ALTER TABLE passwd ADD type SMALLINT NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE passwd ADD expdate INTEGER NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE passwd ADD domain VARCHAR(255) NOT NULL DEFAULT ''");
+$this->Execute("UPDATE passwd SET type = 32767");
+$this->Execute("ALTER TABLE passwd ADD UNIQUE (login)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004112100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004112100', 'dbversion'));
 
 ?>

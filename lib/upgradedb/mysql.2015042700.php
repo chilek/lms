@@ -24,15 +24,15 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("DROP VIEW vnodes");
-$DB->Execute("ALTER TABLE nodes ADD COLUMN authtype tinyint DEFAULT 0 NOT NULL");
-$DB->Execute("CREATE INDEX authtype ON nodes(authtype)");
-$DB->Execute("CREATE VIEW vnodes AS SELECT n.*, m.mac FROM nodes n LEFT JOIN vnodes_mac m ON (n.id = m.nodeid)");
+$this->Execute("DROP VIEW vnodes");
+$this->Execute("ALTER TABLE nodes ADD COLUMN authtype tinyint DEFAULT 0 NOT NULL");
+$this->Execute("CREATE INDEX authtype ON nodes(authtype)");
+$this->Execute("CREATE VIEW vnodes AS SELECT n.*, m.mac FROM nodes n LEFT JOIN vnodes_mac m ON (n.id = m.nodeid)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015042700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015042700', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

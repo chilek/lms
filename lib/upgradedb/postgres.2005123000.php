@@ -24,17 +24,17 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     ALTER TABLE cashregs ADD COLUMN disabled smallint;
     UPDATE cashregs SET disabled = 0;
     ALTER TABLE cashregs ALTER disabled SET NOT NULL;
     ALTER TABLE cashregs ALTER disabled SET DEFAULT 0;
 ");    
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005123000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005123000', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

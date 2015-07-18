@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE SEQUENCE aliasassignments_id_seq;
 	CREATE TABLE aliasassignments (
 		id		integer		DEFAULT nextval('passwd_id_seq'::text) NOT NULL,
@@ -47,8 +47,8 @@ $DB->Execute("
 	ALTER TABLE aliases ADD CONSTRAINT aliases_login_key UNIQUE (login, domainid);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008021500', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008021500', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

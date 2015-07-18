@@ -24,10 +24,10 @@
  *  $Id$
  */
 
-$DB->Execute("ALTER TABLE assignments CHANGE at at int(11) NOT NULL DEFAULT '0'");
-$DB->Execute("ALTER TABLE assignments ADD liabilityid int(11) NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE assignments CHANGE at at int(11) NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE assignments ADD liabilityid int(11) NOT NULL DEFAULT '0'");
 
-$DB->Execute("CREATE TABLE liabilities (
+$this->Execute("CREATE TABLE liabilities (
 	id int(11)		NOT NULL auto_increment,
 	value decimal(9,2) 	NOT NULL DEFAULT '0',
 	name text		NOT NULL DEFAULT '',
@@ -37,6 +37,6 @@ $DB->Execute("CREATE TABLE liabilities (
 	) ENGINE=MyISAM
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005110600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005110600', 'dbversion'));
 
 ?>

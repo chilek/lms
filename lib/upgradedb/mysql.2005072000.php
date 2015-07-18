@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
 	CREATE TABLE documentcontents (
 	    docid int(11) DEFAULT '0' NOT NULL,
 	    title text DEFAULT '' NOT NULL,
@@ -38,6 +38,6 @@ $DB->Execute("
 	    UNIQUE KEY docid (docid))
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005072000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005072000', 'dbversion'));
 
 ?>

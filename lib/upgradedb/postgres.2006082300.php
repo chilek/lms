@@ -24,18 +24,18 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE assignments ADD COLUMN nodeid integer");
-$DB->Execute("UPDATE assignments SET nodeid = 0");
-$DB->Execute("ALTER TABLE assignments ALTER COLUMN nodeid SET NOT NULL");
-$DB->Execute("ALTER TABLE assignments ALTER COLUMN nodeid SET DEFAULT 0");
+$this->Execute("ALTER TABLE assignments ADD COLUMN nodeid integer");
+$this->Execute("UPDATE assignments SET nodeid = 0");
+$this->Execute("ALTER TABLE assignments ALTER COLUMN nodeid SET NOT NULL");
+$this->Execute("ALTER TABLE assignments ALTER COLUMN nodeid SET DEFAULT 0");
 
-$DB->Execute("CREATE INDEX assignments_nodeid_idx ON assignments (nodeid)");
-$DB->Execute("CREATE INDEX assignments_customerid_idx ON assignments (customerid)");
+$this->Execute("CREATE INDEX assignments_nodeid_idx ON assignments (nodeid)");
+$this->Execute("CREATE INDEX assignments_customerid_idx ON assignments (customerid)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006082300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006082300', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

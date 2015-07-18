@@ -24,10 +24,10 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
 	ALTER TABLE users DROP zip1;
 	ALTER TABLE invoices DROP zip1;
 ");
-$DB->Execute("UPDATE dbinfo SET keyvalue = '2005030100' WHERE keytype = 'dbversion'");
+$this->Execute("UPDATE dbinfo SET keyvalue = '2005030100' WHERE keytype = 'dbversion'");
 
 ?>

@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 CREATE TABLE netdeviceproducers (
 	id int(11) NOT NULL auto_increment,
 	name varchar(255) NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE netdeviceproducers (
 	UNIQUE (name)
 ) ENGINE=INNODB");
 
-$DB->Execute("
+$this->Execute("
 CREATE TABLE netdevicemodels (
 	id int(11) NOT NULL auto_increment,
 	netdeviceproducerid int(11) NOT NULL,
@@ -47,10 +47,10 @@ CREATE TABLE netdevicemodels (
 ) ENGINE=INNODB");
 
 
-$DB->Execute("INSERT INTO netdeviceproducers (name) VALUES ('Mikrotik')");
-$prodid = $DB->GetLastInsertID('netdeviceproducers');
+$this->Execute("INSERT INTO netdeviceproducers (name) VALUES ('Mikrotik')");
+$prodid = $this->GetLastInsertID('netdeviceproducers');
 
-$DB->Execute("
+$this->Execute("
 INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('RB750', NULL, $prodid),
 ('RB750UP', NULL, $prodid),
@@ -229,10 +229,10 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('mANT30', NULL, $prodid)
 ");
 
-$DB->Execute("INSERT INTO netdeviceproducers (name) VALUES ('Ubiquiti')");
-$prodid = $DB->GetLastInsertID('netdeviceproducers');
+$this->Execute("INSERT INTO netdeviceproducers (name) VALUES ('Ubiquiti')");
+$prodid = $this->GetLastInsertID('netdeviceproducers');
 
-$DB->Execute("
+$this->Execute("
 INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('3391-A', 'SR71A', $prodid),
 ('AF-24', 'AIRFIBER 1.4GBPS+ BACKHAUL 24GHZ (SHIPPED AS SINGLES)', $prodid),
@@ -380,11 +380,11 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR9', 'MINI PCI 600MW 900MHZ', $prodid)
 ");
 
-$DB->Execute("ALTER TABLE netdevices ADD COLUMN netdevicemodelid integer DEFAULT NULL");
-$DB->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (netdevicemodelid) REFERENCES netdevicemodels (id) ON UPDATE CASCADE ON DELETE SET NULL");
+$this->Execute("ALTER TABLE netdevices ADD COLUMN netdevicemodelid integer DEFAULT NULL");
+$this->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (netdevicemodelid) REFERENCES netdevicemodels (id) ON UPDATE CASCADE ON DELETE SET NULL");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015020900', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015020900', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

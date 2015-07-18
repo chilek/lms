@@ -21,12 +21,12 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("INSERT INTO uiconfig (section, var, value, description, disabled) VALUES ('zones', 'default_spf', '', '', '0')");
+$this->Execute("INSERT INTO uiconfig (section, var, value, description, disabled) VALUES ('zones', 'default_spf', '', '', '0')");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012050200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012050200', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

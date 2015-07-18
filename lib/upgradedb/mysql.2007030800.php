@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     CREATE TABLE ewx_stm_nodes (
 	id int(11)              NOT NULL auto_increment,
 	nodeid int(11)          DEFAULT '0' NOT NULL,
@@ -43,7 +43,7 @@ $DB->Execute("
     ) ENGINE=MyISAM
 ");
 
-$DB->Execute("
+$this->Execute("
     CREATE TABLE ewx_stm_channels (
 	id int(11)              NOT NULL auto_increment,
 	customerid int(11)      DEFAULT '0' NOT NULL,
@@ -54,7 +54,7 @@ $DB->Execute("
     ) ENGINE=MyISAM
 ");
 
-$DB->Execute("
+$this->Execute("
     CREATE TABLE ewx_pt_config (
         id int(11)              NOT NULL auto_increment,
 	nodeid int(11)          DEFAULT '0' NOT NULL,
@@ -67,8 +67,8 @@ $DB->Execute("
     ) ENGINE=MyISAM
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007030800', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007030800', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

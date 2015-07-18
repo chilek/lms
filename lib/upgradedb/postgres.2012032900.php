@@ -22,9 +22,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE SEQUENCE pna_id_seq;
 	CREATE TABLE pna (
 		id integer DEFAULT nextval('pna_id_seq'::text) NOT NULL,
@@ -41,8 +41,8 @@ $DB->Execute("
 	);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012032900', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012032900', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

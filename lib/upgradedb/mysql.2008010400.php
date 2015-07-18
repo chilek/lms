@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     CREATE TABLE nodegroups (
 	id 		int(11) 	NOT NULL auto_increment,
         name		varchar(255) 	NOT NULL DEFAULT '',
@@ -35,7 +35,7 @@ $DB->Execute("
 	UNIQUE KEY name (name)
     );
 ");
-$DB->Execute("
+$this->Execute("
     CREATE TABLE nodegroupassignments (
 	id 		int(11) 	NOT NULL auto_increment,
         nodegroupid	int(11) 	NOT NULL DEFAULT 0,
@@ -45,8 +45,8 @@ $DB->Execute("
     );
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008010400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008010400', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

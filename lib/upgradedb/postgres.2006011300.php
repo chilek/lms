@@ -24,17 +24,17 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     ALTER TABLE assignments ADD COLUMN settlement smallint;
     UPDATE assignments SET settlement = 0;
     ALTER TABLE assignments ALTER settlement SET NOT NULL;
     ALTER TABLE assignments ALTER settlement SET DEFAULT 0;
 ");    
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006011300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006011300', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

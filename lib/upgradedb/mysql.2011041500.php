@@ -21,13 +21,13 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE ewx_channels ADD halfduplex tinyint(1) DEFAULT NULL");
-$DB->Execute("ALTER TABLE ewx_stm_channels ADD halfduplex tinyint(1) DEFAULT NULL");
+$this->Execute("ALTER TABLE ewx_channels ADD halfduplex tinyint(1) DEFAULT NULL");
+$this->Execute("ALTER TABLE ewx_stm_channels ADD halfduplex tinyint(1) DEFAULT NULL");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011041500', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011041500', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

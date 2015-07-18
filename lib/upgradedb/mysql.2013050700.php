@@ -21,37 +21,37 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("DROP VIEW vnodes");
-$DB->Execute("DROP VIEW vmacs");
+$this->Execute("DROP VIEW vnodes");
+$this->Execute("DROP VIEW vmacs");
 
-$DB->Execute("ALTER TABLE nodes ADD COLUMN netid int(11) NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE nodes ADD COLUMN netid int(11) NOT NULL DEFAULT '0'");
 
-$DB->Execute("ALTER TABLE nodes DROP INDEX ipaddr");
-$DB->Execute("ALTER TABLE nodes ADD UNIQUE ipaddr (ipaddr, netid)");
+$this->Execute("ALTER TABLE nodes DROP INDEX ipaddr");
+$this->Execute("ALTER TABLE nodes ADD UNIQUE ipaddr (ipaddr, netid)");
 
-$nodes = $DB->GetAll("SELECT n.id, INET_NTOA(n.ipaddr) AS ipaddr, net.id AS netid
+$nodes = $this->GetAll("SELECT n.id, INET_NTOA(n.ipaddr) AS ipaddr, net.id AS netid
 	FROM nodes n JOIN networks net ON net.address = n.ipaddr & INET_ATON(net.mask)
 	ORDER BY net.id");
 if (!empty($nodes))
 	foreach ($nodes as $node)
-		$DB->Execute("UPDATE nodes SET netid = ? WHERE id = ?",
+		$this->Execute("UPDATE nodes SET netid = ? WHERE id = ?",
 			array($node['netid'], $node['id']));
 
-$DB->Execute("ALTER TABLE nodes ADD FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE");
+$this->Execute("ALTER TABLE nodes ADD FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE");
 
-$DB->Execute("CREATE VIEW vnodes AS
+$this->Execute("CREATE VIEW vnodes AS
 	SELECT n.*, m.mac
 	FROM nodes n
 	LEFT JOIN vnodes_mac m ON (n.id = m.nodeid)");
-$DB->Execute("CREATE VIEW vmacs AS
+$this->Execute("CREATE VIEW vmacs AS
 	SELECT n.*, m.mac, m.id AS macid
 	FROM nodes n
 	JOIN macs m ON (n.id = m.nodeid)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013050700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013050700', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

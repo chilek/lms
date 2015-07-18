@@ -24,14 +24,14 @@
  *  $Id$
  */
 
-$DB->Execute("ALTER TABLE userassignments DROP INDEX usergroupid");
-$DB->Execute("ALTER TABLE userassignments CHANGE usergroupid customergroupid INT(11) DEFAULT '0' NOT NULL");
-$DB->Execute("RENAME TABLE userassignments TO customerassignments");
-$DB->Execute("ALTER TABLE customerassignments ADD UNIQUE (customergroupid, customerid)");
+$this->Execute("ALTER TABLE userassignments DROP INDEX usergroupid");
+$this->Execute("ALTER TABLE userassignments CHANGE usergroupid customergroupid INT(11) DEFAULT '0' NOT NULL");
+$this->Execute("RENAME TABLE userassignments TO customerassignments");
+$this->Execute("ALTER TABLE customerassignments ADD UNIQUE (customergroupid, customerid)");
 
-$DB->Execute("RENAME TABLE usergroups TO customergroups");
-$DB->Execute("RENAME TABLE users TO customers");
+$this->Execute("RENAME TABLE usergroups TO customergroups");
+$this->Execute("RENAME TABLE users TO customers");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005052600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005052600', 'dbversion'));
 
 ?>

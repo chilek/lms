@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	ALTER TABLE netlinks ADD COLUMN srcradiosector integer DEFAULT NULL;
 	ALTER TABLE netlinks ADD COLUMN dstradiosector integer DEFAULT NULL;
 	CREATE INDEX netlinks_srcradiosector_idx ON netlinks (srcradiosector);
@@ -37,8 +37,8 @@ $DB->Execute("
 		FOREIGN KEY (dstradiosector) REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE;
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015040800', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015040800', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

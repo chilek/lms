@@ -105,4 +105,7 @@ interface LMSDBInterface
     public function SetErrors(array $errors = array());
 
     public function SetDebug($debug = true);
+
+	public function UpgradeDb($dbver = DBVERSION, $pluginclass = null, $libdir = null, $docdir = null);
+
 }

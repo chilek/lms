@@ -24,18 +24,18 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE invoicecontents ADD itemid smallint;");
-$DB->Execute("UPDATE invoicecontents set itemid = 0 where itemid is NULL;");
-$DB->Execute("ALTER TABLE invoicecontents CHANGE itemid itemid smallint NOT NULL DEFAULT 0;");
+$this->Execute("ALTER TABLE invoicecontents ADD itemid smallint;");
+$this->Execute("UPDATE invoicecontents set itemid = 0 where itemid is NULL;");
+$this->Execute("ALTER TABLE invoicecontents CHANGE itemid itemid smallint NOT NULL DEFAULT 0;");
 
-$DB->Execute("ALTER TABLE cash add itemid smallint;");
-$DB->Execute("UPDATE cash set itemid=0 where itemid is NULL;");
-$DB->Execute("ALTER TABLE cash CHANGE itemid itemid smallint NOT NULL DEFAULT 0;");
+$this->Execute("ALTER TABLE cash add itemid smallint;");
+$this->Execute("UPDATE cash set itemid=0 where itemid is NULL;");
+$this->Execute("ALTER TABLE cash CHANGE itemid itemid smallint NOT NULL DEFAULT 0;");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = '2005013000' WHERE keytype = 'dbversion'");
+$this->Execute("UPDATE dbinfo SET keyvalue = '2005013000' WHERE keytype = 'dbversion'");
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

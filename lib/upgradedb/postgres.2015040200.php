@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE SEQUENCE netradiosectors_id_seq;
 	CREATE TABLE netradiosectors (
 		id integer DEFAULT nextval('netradiosectors_id_seq'::text) NOT NULL,
@@ -58,8 +58,8 @@ $DB->Execute("
 	CREATE INDEX nodes_linkradiosector_idx ON nodes (linkradiosector);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015040200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015040200', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

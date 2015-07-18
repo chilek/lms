@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
-$DB->Execute("
+$this->BeginTrans();
+$this->Execute("
     CREATE SEQUENCE domains_id_seq;
     CREATE TABLE domains (
 	id integer DEFAULT nextval('domains_id_seq'::text) NOT NULL,
@@ -41,12 +41,12 @@ $DB->Execute("
     ALTER TABLE passwd ALTER domainid SET DEFAULT 0;
 
 ");
-if($domains = $DB->GetAll('SELECT id, name FROM domains'))
+if($domains = $this->GetAll('SELECT id, name FROM domains'))
 	foreach($domains as $row)
-		$DB->Execute('UPDATE passwd SET domainid=? WHERE domain=?', array($row['id'], $row['name']));
-$DB->Execute('ALTER TABLE passwd DROP domain');
+		$this->Execute('UPDATE passwd SET domainid=? WHERE domain=?', array($row['id'], $row['name']));
+$this->Execute('ALTER TABLE passwd DROP domain');
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = '2004120300' WHERE keytype = 'dbversion'");
-$DB->CommitTrans();
+$this->Execute("UPDATE dbinfo SET keyvalue = '2004120300' WHERE keytype = 'dbversion'");
+$this->CommitTrans();
 
 ?>

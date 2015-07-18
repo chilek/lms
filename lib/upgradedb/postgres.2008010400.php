@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     CREATE SEQUENCE nodegroups_id_seq;
     CREATE TABLE nodegroups (
 	id 		integer 	NOT NULL DEFAULT nextval('nodegroups_id_seq'::text),
@@ -46,8 +46,8 @@ $DB->Execute("
     );
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008010400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008010400', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

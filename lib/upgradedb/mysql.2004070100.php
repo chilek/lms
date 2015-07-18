@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("CREATE TABLE rtrights (
+$this->Execute("CREATE TABLE rtrights (
     id INT(11) NOT NULL auto_increment, 
     adminid INT(11) DEFAULT 0 NOT NULL,
     queueid INT(11) DEFAULT 0 NOT NULL,
@@ -33,8 +33,8 @@ $DB->Execute("CREATE TABLE rtrights (
     UNIQUE KEY (adminid, queueid)
     )
 ");
-$DB->Execute("ALTER TABLE rtqueues ADD description TEXT DEFAULT '' NOT NULL");
+$this->Execute("ALTER TABLE rtqueues ADD description TEXT DEFAULT '' NOT NULL");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004070100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004070100', 'dbversion'));
 
 ?>

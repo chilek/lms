@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
 $tables = array(
     'documents' => 'paytype',
@@ -43,27 +43,27 @@ $paytypes = array(
     7   => array('contract', 'umowa', 'sutartis'),
 );
 
-$DB->Execute("DROP VIEW customersview");
+$this->Execute("DROP VIEW customersview");
 
 foreach ($tables as $tab => $col)
 {
-    $DB->Execute("ALTER TABLE $tab ADD paytype2 smallint DEFAULT NULL");
+    $this->Execute("ALTER TABLE $tab ADD paytype2 smallint DEFAULT NULL");
 
-    $types = $DB->GetCol("SELECT LOWER($col) AS paytype FROM $tab GROUP BY LOWER($col)");
+    $types = $this->GetCol("SELECT LOWER($col) AS paytype FROM $tab GROUP BY LOWER($col)");
 
     if (!empty($types)) foreach ($types as $type) {
         foreach ($paytypes as $pid => $pname)
             if (in_array($type, $pname)) {
-                $DB->Execute("UPDATE $tab SET paytype2 = $pid WHERE LOWER($col) = ?", array($type));
+                $this->Execute("UPDATE $tab SET paytype2 = $pid WHERE LOWER($col) = ?", array($type));
                 break;
             }
     }
 
-    $DB->Execute("ALTER TABLE $tab DROP $col");
-    $DB->Execute("ALTER TABLE $tab RENAME paytype2 TO $col");
+    $this->Execute("ALTER TABLE $tab DROP $col");
+    $this->Execute("ALTER TABLE $tab RENAME paytype2 TO $col");
 }
 
-$DB->Execute("
+$this->Execute("
     CREATE VIEW customersview AS
     SELECT c.* FROM customers c
         WHERE NOT EXISTS (
@@ -72,28 +72,28 @@ $DB->Execute("
             WHERE e.userid = lms_current_user() AND a.customerid = c.id)
 ");
 
-$cfg = $DB->GetOne("SELECT value FROM uiconfig WHERE var = 'paytype' AND section = 'invoices'");
+$cfg = $this->GetOne("SELECT value FROM uiconfig WHERE var = 'paytype' AND section = 'invoices'");
 
 if ($cfg) {
     foreach ($paytypes as $pid => $pname)
         if (in_array($cfg, $pname)) {
-            $DB->Execute("UPDATE uiconfig SET value = $pid WHERE var = 'paytype' AND section = 'invoices'");
+            $this->Execute("UPDATE uiconfig SET value = $pid WHERE var = 'paytype' AND section = 'invoices'");
             break;
         }
 }
 
-$cfg = $DB->GetOne("SELECT value FROM daemonconfig WHERE var = 'paytype'");
+$cfg = $this->GetOne("SELECT value FROM daemonconfig WHERE var = 'paytype'");
 
 if ($cfg) {
     foreach ($paytypes as $pid => $pname)
         if (in_array($cfg, $pname)) {
-            $DB->Execute("UPDATE daemonconfig SET value = '$pid' WHERE var = 'paytype'");
+            $this->Execute("UPDATE daemonconfig SET value = '$pid' WHERE var = 'paytype'");
             break;
         }
 }
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010061800', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010061800', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

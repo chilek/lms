@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     CREATE TABLE customercontacts (
 	    id int(11) NOT NULL auto_increment,
 	    customerid int(11) NOT NULL DEFAULT 0,
@@ -38,28 +38,28 @@ $DB->Execute("
     ) ENGINE=MyISAM
 ");
 
-if($list = $DB->GetAll('SELECT phone1, phone2, phone3, id FROM customers'))
+if($list = $this->GetAll('SELECT phone1, phone2, phone3, id FROM customers'))
 {
 	foreach($list as $row)
 	{
 		if(trim($row['phone1']))
-			$DB->Execute('INSERT INTO customercontacts (customerid, phone)
+			$this->Execute('INSERT INTO customercontacts (customerid, phone)
 					VALUES(?, ?)', array($row['id'], $row['phone1'])); 
 		if(trim($row['phone2']))
-			$DB->Execute('INSERT INTO customercontacts (customerid, phone)
+			$this->Execute('INSERT INTO customercontacts (customerid, phone)
 					VALUES(?, ?)', array($row['id'], $row['phone2']));
 		if(trim($row['phone3']))
-			$DB->Execute('INSERT INTO customercontacts (customerid, phone)
+			$this->Execute('INSERT INTO customercontacts (customerid, phone)
 					VALUES(?, ?)', array($row['id'], $row['phone3']));
 	}
 }
 
-$DB->Execute('ALTER TABLE customers DROP phone1');
-$DB->Execute('ALTER TABLE customers DROP phone2');
-$DB->Execute('ALTER TABLE customers DROP phone3');
+$this->Execute('ALTER TABLE customers DROP phone1');
+$this->Execute('ALTER TABLE customers DROP phone2');
+$this->Execute('ALTER TABLE customers DROP phone3');
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007071100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007071100', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

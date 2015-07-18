@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	DROP VIEW vnodes;
 	DROP VIEW vmacs;
 	ALTER TABLE nodes ALTER COLUMN location_house TYPE varchar(32);
@@ -46,8 +46,8 @@ $DB->Execute("
 	ALTER TABLE netnodes ALTER COLUMN location_flat TYPE varchar(32);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015040100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015040100', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

@@ -24,8 +24,8 @@
  * $Id$
  */
 
-$DB->Execute("BEGIN");
-$DB->Execute("
+$this->Execute("BEGIN");
+$this->Execute("
 	ALTER TABLE admins ALTER lastloginip SET DEFAULT '';
 	ALTER TABLE admins ALTER failedloginip SET DEFAULT '';
 	UPDATE admins SET lastloginip='' WHERE lastloginip IS NULL;
@@ -33,9 +33,9 @@ $DB->Execute("
 	ALTER TABLE admins ALTER lastloginip SET NOT NULL;
 	ALTER TABLE admins ALTER failedloginip SET NOT NULL;
 ");
-$DB->Execute("ALTER TABLE admins ADD UNIQUE (login)");
+$this->Execute("ALTER TABLE admins ADD UNIQUE (login)");
 
-$DB->Execute("
+$this->Execute("
 	ALTER TABLE invoicecontents ALTER invoiceid SET DEFAULT 0;
 	ALTER TABLE invoicecontents ALTER count SET DEFAULT 0;
 	ALTER TABLE invoicecontents ALTER value SET DEFAULT 0;
@@ -47,7 +47,7 @@ $DB->Execute("
 	UPDATE invoicecontents SET pkwiu='' WHERE pkwiu IS NULL;
 	ALTER TABLE invoicecontents ALTER pkwiu SET NOT NULL;
 ");
-$DB->Execute("
+$this->Execute("
 	ALTER TABLE invoices ALTER number SET DEFAULT 0;
 	ALTER TABLE invoices ALTER cdate SET DEFAULT 0;
 	ALTER TABLE invoices ALTER paytime SET DEFAULT 0;
@@ -64,7 +64,7 @@ $DB->Execute("
 	ALTER TABLE invoices ALTER pesel SET NOT NULL;
 	ALTER TABLE invoices ALTER nip SET NOT NULL;
 ");
-$DB->Execute("
+$this->Execute("
 	ALTER TABLE netdevices ALTER name SET DEFAULT '';
 	UPDATE netdevices SET name='' WHERE name IS NULL;
 	ALTER TABLE netdevices ALTER name SET NOT NULL;	
@@ -87,9 +87,9 @@ $DB->Execute("
 	UPDATE netdevices SET ports=0 WHERE ports IS NULL;
 	ALTER TABLE netdevices ALTER ports SET NOT NULL;
 ");
-$DB->Execute("ALTER TABLE netlinks ADD UNIQUE (src, dst)");
+$this->Execute("ALTER TABLE netlinks ADD UNIQUE (src, dst)");
 
-$DB->Execute("
+$this->Execute("
 	ALTER TABLE networks ALTER name SET DEFAULT '';
 	ALTER TABLE networks ALTER address SET DEFAULT 0;	
 	ALTER TABLE networks ALTER mask SET DEFAULT '';
@@ -118,7 +118,7 @@ $DB->Execute("
 	ALTER TABLE networks ALTER dhcpstart SET NOT NULL;
 	ALTER TABLE networks ALTER dhcpend SET NOT NULL;
 ");
-$DB->Execute("
+$this->Execute("
 	ALTER TABLE nodes ALTER name SET DEFAULT '';
 	ALTER TABLE nodes ALTER mac SET DEFAULT '';
 	ALTER TABLE nodes ALTER ipaddr SET DEFAULT 0;
@@ -128,16 +128,16 @@ $DB->Execute("
 	ALTER TABLE nodes ADD UNIQUE (mac);	
 	ALTER TABLE nodes ADD UNIQUE (ipaddr);	
 ");	
-$DB->Execute("
+$this->Execute("
 	ALTER TABLE payments ALTER description SET DEFAULT '';
 	UPDATE payments SET description='' WHERE description IS NULL;
 	ALTER TABLE payments ALTER description SET NOT NULL;
 ");
-$DB->Execute("
+$this->Execute("
 	ALTER TABLE rtattachments ALTER filename SET DEFAULT '';
 	ALTER TABLE rtattachments ALTER contenttype SET DEFAULT '';
 ");
-$DB->Execute("
+$this->Execute("
 	ALTER TABLE tariffs ALTER name SET DEFAULT '';
 	ALTER TABLE tariffs ALTER pkwiu SET DEFAULT '';
 	UPDATE tariffs SET pkwiu='' WHERE pkwiu IS NULL;
@@ -153,9 +153,9 @@ $DB->Execute("
 	ALTER TABLE tariffs ALTER description SET NOT NULL;	
 	ALTER TABLE tariffs ADD UNIQUE (name);
 ");
-$DB->Execute("ALTER TABLE timestamps ADD UNIQUE (tablename)");
+$this->Execute("ALTER TABLE timestamps ADD UNIQUE (tablename)");
 
-$DB->Execute("
+$this->Execute("
 	ALTER TABLE users ALTER lastname SET DEFAULT '';
 	ALTER TABLE users ALTER name SET DEFAULT '';
 	UPDATE users SET lastname='' WHERE lastname IS NULL;
@@ -196,7 +196,7 @@ $DB->Execute("
 	ALTER TABLE users ALTER info SET NOT NULL;
 	ALTER TABLE users ALTER message SET NOT NULL;
 ");
-$DB->Execute("UPDATE dbinfo SET keyvalue='2004031400' WHERE keytype='dbversion'");
+$this->Execute("UPDATE dbinfo SET keyvalue='2004031400' WHERE keytype='dbversion'");
 
-$DB->Execute("COMMIT");
+$this->Execute("COMMIT");
 ?>

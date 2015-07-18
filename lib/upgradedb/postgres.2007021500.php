@@ -24,15 +24,15 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("UPDATE documents SET closed = 1 WHERE type = 2");
+$this->Execute("UPDATE documents SET closed = 1 WHERE type = 2");
 
-$DB->Execute("UPDATE cashrights SET rights = 63 WHERE rights = 2");
-$DB->Execute("UPDATE cashrights SET rights = 319 WHERE rights = 3");
+$this->Execute("UPDATE cashrights SET rights = 63 WHERE rights = 2");
+$this->Execute("UPDATE cashrights SET rights = 319 WHERE rights = 3");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007021500', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007021500', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

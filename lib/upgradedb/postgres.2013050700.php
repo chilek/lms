@@ -21,31 +21,31 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("SET CONSTRAINTS ALL IMMEDIATE");
+$this->Execute("SET CONSTRAINTS ALL IMMEDIATE");
 
-$DB->Execute("
+$this->Execute("
 	DROP VIEW vnodes;
 	DROP VIEW vmacs;
 ");
 
-$DB->Execute("ALTER TABLE nodes ADD COLUMN netid integer NOT NULL DEFAULT 0");
+$this->Execute("ALTER TABLE nodes ADD COLUMN netid integer NOT NULL DEFAULT 0");
 
-$DB->Execute("ALTER TABLE nodes DROP CONSTRAINT nodes_ipaddr_key");
-$DB->Execute("ALTER TABLE nodes ADD CONSTRAINT nodes_ipaddr_key UNIQUE (ipaddr, netid)");
+$this->Execute("ALTER TABLE nodes DROP CONSTRAINT nodes_ipaddr_key");
+$this->Execute("ALTER TABLE nodes ADD CONSTRAINT nodes_ipaddr_key UNIQUE (ipaddr, netid)");
 
-$nodes = $DB->GetAll("SELECT n.id, INET_NTOA(n.ipaddr) AS ipaddr, net.id AS netid
+$nodes = $this->GetAll("SELECT n.id, INET_NTOA(n.ipaddr) AS ipaddr, net.id AS netid
 	FROM nodes n JOIN networks net ON net.address = n.ipaddr & INET_ATON(net.mask)
 	ORDER BY net.id");
 if (!empty($nodes))
 	foreach ($nodes as $node)
-		$DB->Execute("UPDATE nodes SET netid = ? WHERE id = ?",
+		$this->Execute("UPDATE nodes SET netid = ? WHERE id = ?",
 			array($node['netid'], $node['id']));
 
-$DB->Execute("ALTER TABLE nodes ADD CONSTRAINT nodes_netid_fkey FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE");
+$this->Execute("ALTER TABLE nodes ADD CONSTRAINT nodes_netid_fkey FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE");
 
-$DB->Execute("
+$this->Execute("
 	CREATE VIEW vnodes AS
 	SELECT n.*, m.mac
 		FROM nodes n
@@ -57,8 +57,8 @@ $DB->Execute("
 		JOIN macs m ON (n.id = m.nodeid);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013050700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013050700', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

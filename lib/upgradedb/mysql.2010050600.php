@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE TABLE macs (
 		id		int(11)		NOT NULL auto_increment,
 		mac		varchar(17)	DEFAULT '' NOT NULL,
@@ -37,12 +37,12 @@ $DB->Execute("
 	) ENGINE=InnoDB
 ");
 
-$DB->Execute("INSERT INTO macs (mac, nodeid) SELECT mac, id FROM nodes");
+$this->Execute("INSERT INTO macs (mac, nodeid) SELECT mac, id FROM nodes");
 
-$DB->Execute("ALTER TABLE nodes DROP mac");
+$this->Execute("ALTER TABLE nodes DROP mac");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010050600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010050600', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

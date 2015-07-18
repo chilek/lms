@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE TABLE assignmentlocks (
 		id int(11)		NOT NULL auto_increment,
 		assignmentid int(11)	NOT NULL
@@ -34,8 +34,8 @@ $DB->Execute("
 		PRIMARY KEY (id)
 	) ENGINE=INNODB");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012021800', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012021800', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

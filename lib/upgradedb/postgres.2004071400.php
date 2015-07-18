@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
     BEGIN;
     ALTER TABLE stats ADD down bigint;
     ALTER TABLE stats ADD up bigint;

@@ -22,12 +22,12 @@
  *
  */
 
-$allTables=$DB->ListTables();
+$allTables=$this->ListTables();
 
 foreach ($allTables as $table){
-  $DB->Execute("ALTER TABLE $table engine=innodb");
+  $this->Execute("ALTER TABLE $table engine=innodb");
   }
   
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009111000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009111000', 'dbversion'));
 
 ?>

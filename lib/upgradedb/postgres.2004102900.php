@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
-$DB->Execute("
+$this->BeginTrans();
+$this->Execute("
     ALTER TABLE nodes ADD COLUMN info text;
     UPDATE nodes SET info='';
     ALTER TABLE nodes ALTER info SET DEFAULT '';
@@ -33,6 +33,6 @@ $DB->Execute("
 
     UPDATE dbinfo SET keyvalue = '2004102900' WHERE keytype = 'dbversion';
 ");
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

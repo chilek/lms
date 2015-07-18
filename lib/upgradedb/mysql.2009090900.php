@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->Execute("ALTER TABLE networks ADD notes text DEFAULT '' NOT NULL;");
+$this->Execute("ALTER TABLE networks ADD notes text DEFAULT '' NOT NULL;");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009090900', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009090900', 'dbversion'));
 
 ?>

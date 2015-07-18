@@ -24,23 +24,23 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE passwd ADD COLUMN quota_sql integer");
-$DB->Execute("UPDATE passwd SET quota_sql = 0");
-$DB->Execute("ALTER TABLE passwd ALTER COLUMN quota_sql SET NOT NULL");
-$DB->Execute("ALTER TABLE passwd ALTER COLUMN quota_sql SET DEFAULT 0");
+$this->Execute("ALTER TABLE passwd ADD COLUMN quota_sql integer");
+$this->Execute("UPDATE passwd SET quota_sql = 0");
+$this->Execute("ALTER TABLE passwd ALTER COLUMN quota_sql SET NOT NULL");
+$this->Execute("ALTER TABLE passwd ALTER COLUMN quota_sql SET DEFAULT 0");
 
-$DB->Execute("ALTER TABLE domains ADD COLUMN ownerid integer");
-$DB->Execute("UPDATE domains SET ownerid = 0");
-$DB->Execute("ALTER TABLE domains ALTER COLUMN ownerid SET NOT NULL");
-$DB->Execute("ALTER TABLE domains ALTER COLUMN ownerid SET DEFAULT 0");
+$this->Execute("ALTER TABLE domains ADD COLUMN ownerid integer");
+$this->Execute("UPDATE domains SET ownerid = 0");
+$this->Execute("ALTER TABLE domains ALTER COLUMN ownerid SET NOT NULL");
+$this->Execute("ALTER TABLE domains ALTER COLUMN ownerid SET DEFAULT 0");
 
-$DB->Execute("CREATE INDEX passwd_ownerid_idx ON passwd (ownerid)");
-$DB->Execute("CREATE INDEX domains_ownerid_idx ON domains (ownerid)");
+$this->Execute("CREATE INDEX passwd_ownerid_idx ON passwd (ownerid)");
+$this->Execute("CREATE INDEX domains_ownerid_idx ON domains (ownerid)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006061200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006061200', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

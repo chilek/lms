@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("ALTER TABLE passwd ADD quota_sh INT DEFAULT '0' NOT NULL , ADD quota_mail INT DEFAULT '0' NOT NULL , ADD quota_www INT DEFAULT '0' NOT NULL , ADD quota_ftp INT DEFAULT '0' NOT NULL");
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005033100', 'dbversion'));
+$this->Execute("ALTER TABLE passwd ADD quota_sh INT DEFAULT '0' NOT NULL , ADD quota_mail INT DEFAULT '0' NOT NULL , ADD quota_www INT DEFAULT '0' NOT NULL , ADD quota_ftp INT DEFAULT '0' NOT NULL");
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005033100', 'dbversion'));
 
 ?>

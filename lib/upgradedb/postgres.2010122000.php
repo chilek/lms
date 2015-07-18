@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     CREATE SEQUENCE sourcefiles_id_seq;
     CREATE TABLE sourcefiles (
         id integer          DEFAULT nextval('sourcefiles_id_seq'::text) NOT NULL,
@@ -55,8 +55,8 @@ $DB->Execute("
     CREATE INDEX cashimport_sourceid_idx ON cashimport (sourceid);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010122000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010122000', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

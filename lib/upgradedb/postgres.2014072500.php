@@ -23,18 +23,18 @@
 
 include(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 
-$numberplans = $DB->GetAllByKey("SELECT * FROM numberplans ORDER BY id", 'id');
+$numberplans = $this->GetAllByKey("SELECT * FROM numberplans ORDER BY id", 'id');
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE documents ADD fullnumber varchar(50) DEFAULT NULL");
-$DB->Execute("CREATE INDEX documents_fullnumber_idx ON documents (fullnumber)");
+$this->Execute("ALTER TABLE documents ADD fullnumber varchar(50) DEFAULT NULL");
+$this->Execute("CREATE INDEX documents_fullnumber_idx ON documents (fullnumber)");
 
-$DB->LockTables("documents");
+$this->LockTables("documents");
 
 $offset = 0;
 do {
-	$docs = $DB->GetAll("SELECT id, cdate, number, numberplanid FROM documents
+	$docs = $this->GetAll("SELECT id, cdate, number, numberplanid FROM documents
 		ORDER BY id LIMIT 30000 OFFSET $offset");
 	$stop = empty($docs);
 	if (!$stop) {
@@ -44,7 +44,7 @@ do {
 			else
 				$template = DEFAULT_NUMBER_TEMPLATE;
 			$fullnumber = docnumber($doc['number'], $template, $doc['cdate']);
-			$DB->Execute("UPDATE documents SET fullnumber = ? WHERE id = ?",
+			$this->Execute("UPDATE documents SET fullnumber = ? WHERE id = ?",
 				array($fullnumber, $doc['id']));
 		}
 		$offset += count($docs);
@@ -52,10 +52,10 @@ do {
 	}
 } while (!$stop);
 
-$DB->UnLockTables("documents");
+$this->UnLockTables("documents");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014072500', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014072500', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

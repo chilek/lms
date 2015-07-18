@@ -21,21 +21,21 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("DROP VIEW customersview");
+$this->Execute("DROP VIEW customersview");
 
-$DB->Execute("ALTER TABLE customers ADD post_name varchar(255) DEFAULT NULL");
+$this->Execute("ALTER TABLE customers ADD post_name varchar(255) DEFAULT NULL");
 
-$DB->Execute("CREATE VIEW customersview AS
+$this->Execute("CREATE VIEW customersview AS
     SELECT c.* FROM customers c
     WHERE NOT EXISTS (
         SELECT 1 FROM customerassignments a
         JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
         WHERE e.userid = lms_current_user() AND a.customerid = c.id)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011032400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011032400', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

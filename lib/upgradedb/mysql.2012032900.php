@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE TABLE pna (
 		id int(11)		NOT NULL auto_increment,
 		zip varchar(10)		NOT NULL,
@@ -38,8 +38,8 @@ $DB->Execute("
 		UNIQUE (zip, cityid, streetid, fromhouse, tohouse, parity)
 	) ENGINE=INNODB");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012032900', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012032900', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

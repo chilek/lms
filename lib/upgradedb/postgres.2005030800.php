@@ -24,16 +24,16 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     ALTER TABLE nodes ADD passwd varchar(32);
     UPDATE nodes SET passwd = '';
     ALTER TABLE nodes ALTER passwd SET NOT NULL;
     ALTER TABLE nodes ALTER passwd SET DEFAULT '';
 ");
-$DB->Execute("UPDATE dbinfo SET keyvalue = '2005030800' WHERE keytype = 'dbversion'");
+$this->Execute("UPDATE dbinfo SET keyvalue = '2005030800' WHERE keytype = 'dbversion'");
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

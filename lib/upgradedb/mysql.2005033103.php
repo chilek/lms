@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
 	CREATE TABLE daemonhosts (
 	id int(11) NOT NULL auto_increment,
 	name varchar(255) DEFAULT '' NOT NULL,
@@ -34,7 +34,7 @@ $DB->Execute("
 	PRIMARY KEY (id),
 	UNIQUE KEY name (name))
 ");
-$DB->Execute("
+$this->Execute("
 	CREATE TABLE daemoninstances (
 	id int(11) NOT NULL auto_increment,
 	name varchar(255) DEFAULT '' NOT NULL,
@@ -46,7 +46,7 @@ $DB->Execute("
 	disabled tinyint(1) DEFAULT '0' NOT NULL,
 	PRIMARY KEY (id))
 ");
-$DB->Execute("
+$this->Execute("
 	CREATE TABLE daemonconfig (
 	id int(11) NOT NULL auto_increment,
 	instanceid int(11) DEFAULT '0' NOT NULL,
@@ -58,6 +58,6 @@ $DB->Execute("
 	UNIQUE KEY instanceid (instanceid, var))
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005033103', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005033103', 'dbversion'));
 
 ?>

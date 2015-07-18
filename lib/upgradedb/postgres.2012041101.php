@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE SEQUENCE managementurls_id_seq;
 	CREATE TABLE managementurls (
 		id integer		DEFAULT nextval('managementurls_id_seq'::text) NOT NULL,
@@ -35,8 +35,8 @@ $DB->Execute("
 	);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012041101', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012041101', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

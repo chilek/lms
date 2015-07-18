@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
-$DB->Execute("
+$this->BeginTrans();
+$this->Execute("
     CREATE SEQUENCE \"events_id_seq\";
     CREATE TABLE events (
 	id integer default nextval('rtqueues_id_seq'::text) NOT NULL,
@@ -42,17 +42,17 @@ $DB->Execute("
 	PRIMARY KEY (id))
 ");
 
-$DB->Execute("
+$this->Execute("
     CREATE TABLE eventassignments (
 	eventid integer DEFAULT 0 NOT NULL,
 	adminid integer DEFAULT 0 NOT NULL,
 	UNIQUE (eventid, adminid))
 ");
 
-$DB->Execute("CREATE INDEX events_date_idx ON events(date)");
+$this->Execute("CREATE INDEX events_date_idx ON events(date)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005012600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005012600', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

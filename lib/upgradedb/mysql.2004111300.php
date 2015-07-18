@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
     CREATE TABLE passwd (
 	id int(11) NOT NULL auto_increment,
 	ownerid int(11) NOT NULL default '0',
@@ -37,6 +37,6 @@ $DB->Execute("
     ) ENGINE=MyISAM
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004111300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004111300', 'dbversion'));
 
 ?>

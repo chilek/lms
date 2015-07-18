@@ -24,15 +24,15 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE documents ADD COLUMN reason varchar(255)");
-$DB->Execute("UPDATE documents SET reason = ''");
-$DB->Execute("ALTER TABLE documents ALTER COLUMN reason SET NOT NULL");
-$DB->Execute("ALTER TABLE documents ALTER COLUMN reason SET DEFAULT ''");
+$this->Execute("ALTER TABLE documents ADD COLUMN reason varchar(255)");
+$this->Execute("UPDATE documents SET reason = ''");
+$this->Execute("ALTER TABLE documents ALTER COLUMN reason SET NOT NULL");
+$this->Execute("ALTER TABLE documents ALTER COLUMN reason SET DEFAULT ''");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007053100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007053100', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

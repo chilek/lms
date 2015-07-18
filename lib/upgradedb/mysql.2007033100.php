@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 CREATE TABLE imessengers (
     id int(11) NOT NULL auto_increment, 
     customerid int(11) NOT NULL DEFAULT '0', 
@@ -37,13 +37,13 @@ CREATE TABLE imessengers (
 ) ENGINE=MyISAM;
 ");
 
-$DB->Execute("INSERT INTO imessengers (customerid, uid)
+$this->Execute("INSERT INTO imessengers (customerid, uid)
         SELECT id, im FROM customers WHERE im > 0");
 	
-$DB->Execute("ALTER TABLE customers DROP im");
+$this->Execute("ALTER TABLE customers DROP im");
 	
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2007033100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2007033100', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

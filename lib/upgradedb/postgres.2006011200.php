@@ -24,17 +24,17 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     ALTER TABLE documents ADD COLUMN extnumber varchar(255);
     UPDATE documents SET extnumber = '';
     ALTER TABLE documents ALTER extnumber SET NOT NULL;
     ALTER TABLE documents ALTER extnumber SET DEFAULT '';
 ");    
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006011200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006011200', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

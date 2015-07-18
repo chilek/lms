@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 
 CREATE SEQUENCE messages_id_seq;
 CREATE TABLE messages (
@@ -60,8 +60,8 @@ CREATE INDEX messageitems_customerid_idx ON messageitems (customerid);
 
 ");
 
-$DB->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?', array('2009031300', 'dbversion'));
+$this->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?', array('2009031300', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

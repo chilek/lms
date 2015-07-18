@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     CREATE INDEX rtmessages_ticketid_idx ON rtmessages (ticketid);
 
     CREATE SEQUENCE \"rtnotes_id_seq\";
@@ -42,8 +42,8 @@ $DB->Execute("
     CREATE INDEX rtnotes_ticketid_idx ON rtnotes (ticketid);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007022200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007022200', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

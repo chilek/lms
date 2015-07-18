@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     CREATE SEQUENCE \"customercontacts_id_seq\";
     CREATE TABLE customercontacts (
 	    id integer DEFAULT nextval('customercontacts_id_seq'::text) NOT NULL,
@@ -40,30 +40,30 @@ $DB->Execute("
     CREATE INDEX customercontacts_phone_idx ON customercontacts (phone);
 ");
 
-if($list = $DB->GetAll('SELECT phone1, phone2, phone3, id FROM customers'))
+if($list = $this->GetAll('SELECT phone1, phone2, phone3, id FROM customers'))
 {
 	foreach($list as $row)
 	{
 		if(trim($row['phone1']))
-			$DB->Execute('INSERT INTO customercontacts (customerid, phone)
+			$this->Execute('INSERT INTO customercontacts (customerid, phone)
 					VALUES(?, ?)', array($row['id'], $row['phone1'])); 
 		if(trim($row['phone2']))
-			$DB->Execute('INSERT INTO customercontacts (customerid, phone)
+			$this->Execute('INSERT INTO customercontacts (customerid, phone)
 					VALUES(?, ?)', array($row['id'], $row['phone2']));
 		if(trim($row['phone3']))
-			$DB->Execute('INSERT INTO customercontacts (customerid, phone)
+			$this->Execute('INSERT INTO customercontacts (customerid, phone)
 					VALUES(?, ?)', array($row['id'], $row['phone3']));
 	}
 }
 
-$DB->Execute("
+$this->Execute("
     ALTER TABLE customers DROP phone1;
     ALTER TABLE customers DROP phone2;
     ALTER TABLE customers DROP phone3;
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007071100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007071100', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

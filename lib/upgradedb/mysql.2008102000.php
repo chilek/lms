@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("CREATE TABLE divisions (
+$this->Execute("CREATE TABLE divisions (
     	id int(11) NOT NULL auto_increment,
 	shortname       varchar(255) NOT NULL DEFAULT '',
         name        	text    NOT NULL DEFAULT '',
@@ -42,14 +42,14 @@ $DB->Execute("CREATE TABLE divisions (
 	UNIQUE KEY shortname (shortname)
 ) ENGINE=MyISAM");
 
-$DB->Execute("ALTER TABLE documents ADD divisionid int(11) NOT NULL DEFAULT '0'");
-$DB->Execute("UPDATE documents SET divisionid = 1");
+$this->Execute("ALTER TABLE documents ADD divisionid int(11) NOT NULL DEFAULT '0'");
+$this->Execute("UPDATE documents SET divisionid = 1");
 
-$DB->Execute("ALTER TABLE customers ADD divisionid int(11) NOT NULL DEFAULT '0'");
-$DB->Execute("UPDATE customers SET divisionid = 1");
+$this->Execute("ALTER TABLE customers ADD divisionid int(11) NOT NULL DEFAULT '0'");
+$this->Execute("UPDATE customers SET divisionid = 1");
 
-$DB->Execute("DROP VIEW customersview");
-$DB->Execute("CREATE VIEW customersview AS
+$this->Execute("DROP VIEW customersview");
+$this->Execute("CREATE VIEW customersview AS
         SELECT c.* FROM customers c
 	        WHERE NOT EXISTS (
 	        SELECT 1 FROM customerassignments a
@@ -67,7 +67,7 @@ $address = ConfigHelper::getConfig('finances.address');
 $city = ConfigHelper::getConfig('finances.city');
 $zip = ConfigHelper::getConfig('finances.zip');
 $account = ConfigHelper::getConfig('finances.account');
-$DB->Execute("INSERT INTO divisions (shortname, inv_header, inv_footer, inv_author, inv_cplace, name, 
+$this->Execute("INSERT INTO divisions (shortname, inv_header, inv_footer, inv_author, inv_cplace, name, 
 	address, city, zip, account) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 	array(!empty($shortname) && $shortname != 'finances/shortname' ? $shortname : 'default',
 	        !empty($header) ? str_replace("\\n", "\n", $header) : '',
@@ -81,6 +81,6 @@ $DB->Execute("INSERT INTO divisions (shortname, inv_header, inv_footer, inv_auth
 	        !empty($account) ? $account : '',
 	));
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008102000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008102000', 'dbversion'));
 
 ?>

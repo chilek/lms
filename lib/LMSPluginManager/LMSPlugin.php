@@ -35,33 +35,48 @@ use Phine\Observer\SubjectInterface;
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
-abstract class LMSPlugin implements ObserverInterface
-{
-    protected $handlers;
-    
-    public function __construct()
-    {
-        $this->registerHandlers();
-        $this->loadLocales();
-    }
-    
-    /**
-     * Registers hooks handlers
-     */
-    abstract function registerHandlers();
-    
-    /**
-     * Loads plugin locales
-     */
-    protected function loadLocales() {
-       global $_ui_language, $_LANG;
+abstract class LMSPlugin implements ObserverInterface {
+	protected $handlers;
+	private $dirname;
 
-       $reflector = new ReflectionClass(get_class($this));
-       $filename = dirname($reflector->getFileName()) . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR
-               . 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php';
-       if (is_readable($filename))
-               require_once($filename);
-    }
+	public function __construct() {
+		$reflector = new ReflectionClass(get_class($this));
+		$this->dirname = dirname($reflector->getFileName());
+		$this->registerHandlers();
+		$this->loadLocales();
+		$this->upgradeDb();
+	}
+
+	/**
+	 * Registers hooks handlers
+	 */
+	abstract function registerHandlers();
+
+	/**
+	 * Loads plugin locales
+	 */
+	protected function loadLocales() {
+		global $_ui_language, $_LANG;
+
+		$filename = $this->dirname . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR
+			. 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php';
+		if (is_readable($filename))
+			require_once($filename);
+	}
+
+	/**
+	 Load plugin database schema updates
+	 */
+	protected function upgradeDb() {
+		global $DB;
+
+		$constant = get_class($this) . '::DBVERSION';
+		if (defined($constant)) {
+			$libdir = $this->dirname . DIRECTORY_SEPARATOR . 'lib';
+			$docdir = $this->dirname . DIRECTORY_SEPARATOR . 'doc';
+			$DB->UpgradeDb(constant($constant), get_class($this), $libdir, $docdir);
+		}
+	}
 
     /**
      * Receives notification from plugin manager and processes it.

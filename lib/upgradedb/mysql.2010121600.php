@@ -21,21 +21,21 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("DROP VIEW customersview");
-$DB->Execute("DROP VIEW vnodes");
-$DB->Execute("DROP VIEW vmacs");
+$this->Execute("DROP VIEW customersview");
+$this->Execute("DROP VIEW vnodes");
+$this->Execute("DROP VIEW vmacs");
 
-$DB->Execute("ALTER TABLE customers ADD post_address varchar(255) DEFAULT NULL");
-$DB->Execute("ALTER TABLE customers ADD post_zip varchar(10) DEFAULT NULL");
-$DB->Execute("ALTER TABLE customers ADD post_city varchar(32) DEFAULT NULL");
-$DB->Execute("ALTER TABLE customers ADD post_countryid integer DEFAULT NULL");
-$DB->Execute("ALTER TABLE customers MODIFY countryid int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE customers ADD post_address varchar(255) DEFAULT NULL");
+$this->Execute("ALTER TABLE customers ADD post_zip varchar(10) DEFAULT NULL");
+$this->Execute("ALTER TABLE customers ADD post_city varchar(32) DEFAULT NULL");
+$this->Execute("ALTER TABLE customers ADD post_countryid integer DEFAULT NULL");
+$this->Execute("ALTER TABLE customers MODIFY countryid int(11) DEFAULT NULL");
 
-$DB->Execute("ALTER TABLE nodes ADD location_address varchar(255) DEFAULT NULL");
-$DB->Execute("ALTER TABLE nodes ADD location_zip varchar(10) DEFAULT NULL");
-$DB->Execute("ALTER TABLE nodes ADD location_city varchar(32) DEFAULT NULL");
+$this->Execute("ALTER TABLE nodes ADD location_address varchar(255) DEFAULT NULL");
+$this->Execute("ALTER TABLE nodes ADD location_zip varchar(10) DEFAULT NULL");
+$this->Execute("ALTER TABLE nodes ADD location_city varchar(32) DEFAULT NULL");
 
 /*
     Here, we'll try to split old address into parts
@@ -63,50 +63,50 @@ function parse_address_tmp($addr)
     return NULL;
 }
 
-$data = $DB->GetAll("SELECT id, serviceaddr FROM customers WHERE serviceaddr <> ''");
+$data = $this->GetAll("SELECT id, serviceaddr FROM customers WHERE serviceaddr <> ''");
 if (is_array($data)) {
     foreach ($data as $row) {
         $addr = parse_address_tmp($row['serviceaddr']);
         if (!empty($addr)) {
-            $DB->Execute('UPDATE customers SET post_address=?, post_zip=?, post_city=?
+            $this->Execute('UPDATE customers SET post_address=?, post_zip=?, post_city=?
                     WHERE id=?', array($addr[2], $addr[0], $addr[1], $row['id']));
         }
     }
 }
 
-$data = $DB->GetAll("SELECT id, location FROM nodes WHERE location <> ''");
+$data = $this->GetAll("SELECT id, location FROM nodes WHERE location <> ''");
 if (is_array($data)) {
     foreach ($data as $row) {
         $addr = parse_address_tmp($row['location']);
         if (!empty($addr)) {
-            $DB->Execute('UPDATE nodes SET location_address=?, location_zip=?, location_city=?
+            $this->Execute('UPDATE nodes SET location_address=?, location_zip=?, location_city=?
                 WHERE id=?', array($addr[2], $addr[0], $addr[1], $row['id']));
         }
     }
 }
 
-$DB->Execute("ALTER TABLE customers DROP serviceaddr");
-$DB->Execute("ALTER TABLE nodes DROP location");
+$this->Execute("ALTER TABLE customers DROP serviceaddr");
+$this->Execute("ALTER TABLE nodes DROP location");
 
-$DB->Execute("CREATE VIEW customersview AS
+$this->Execute("CREATE VIEW customersview AS
     SELECT c.* FROM customers c
     WHERE NOT EXISTS (
         SELECT 1 FROM customerassignments a
         JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
         WHERE e.userid = lms_current_user() AND a.customerid = c.id)");
 
-$DB->Execute("CREATE VIEW vnodes AS
+$this->Execute("CREATE VIEW vnodes AS
 	SELECT n.*, m.mac
 	FROM nodes n
     LEFT JOIN vnodes_mac m ON (n.id = m.nodeid)");
 
-$DB->Execute("CREATE VIEW vmacs AS
+$this->Execute("CREATE VIEW vmacs AS
     SELECT n.*, m.mac, m.id AS macid
     FROM nodes n
     JOIN macs m ON (n.id = m.nodeid)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010121600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010121600', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

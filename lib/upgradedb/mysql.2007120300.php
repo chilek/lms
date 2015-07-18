@@ -24,20 +24,20 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
 
-$DB->Execute("ALTER TABLE customers ADD cutoffstop int(11) NOT NULL DEFAULT '0'");
-$DB->Execute("DROP VIEW customersview");
-$DB->Execute("CREATE VIEW customersview AS
+$this->Execute("ALTER TABLE customers ADD cutoffstop int(11) NOT NULL DEFAULT '0'");
+$this->Execute("DROP VIEW customersview");
+$this->Execute("CREATE VIEW customersview AS
         SELECT c.* FROM customers c
 	WHERE NOT EXISTS (
 	        SELECT 1 FROM customerassignments a
 	        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 	        WHERE e.userid = lms_current_user() AND a.customerid = c.id)");
 								
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007120300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007120300', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

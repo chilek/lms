@@ -24,10 +24,10 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = '2005030100' WHERE keytype = 'dbversion'");
+$this->Execute("UPDATE dbinfo SET keyvalue = '2005030100' WHERE keytype = 'dbversion'");
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

@@ -24,18 +24,18 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	DROP VIEW vnodes;
 	DROP VIEW vmacs;
 ");
 
-$DB->Execute("ALTER TABLE nodes ADD longitude numeric(10, 6) DEFAULT NULL");
-$DB->Execute("ALTER TABLE nodes ADD latitude numeric(10, 6) DEFAULT NULL");
+$this->Execute("ALTER TABLE nodes ADD longitude numeric(10, 6) DEFAULT NULL");
+$this->Execute("ALTER TABLE nodes ADD latitude numeric(10, 6) DEFAULT NULL");
 
 
-$DB->Execute("
+$this->Execute("
 	CREATE VIEW vnodes AS
 	SELECT n.*, m.mac
 		FROM nodes n
@@ -47,11 +47,11 @@ $DB->Execute("
 		JOIN macs m ON (n.id = m.nodeid);
 ");
 
-$DB->Execute("ALTER TABLE netdevices ADD longitude numeric(10, 6) DEFAULT NULL");
-$DB->Execute("ALTER TABLE netdevices ADD latitude numeric(10, 6) DEFAULT NULL");
+$this->Execute("ALTER TABLE netdevices ADD longitude numeric(10, 6) DEFAULT NULL");
+$this->Execute("ALTER TABLE netdevices ADD latitude numeric(10, 6) DEFAULT NULL");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2011110800', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2011110800', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

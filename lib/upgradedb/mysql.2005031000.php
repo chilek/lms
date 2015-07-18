@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->Execute("CREATE TABLE sessions (id varchar(50) NOT NULL default '', ctime int(11) NOT NULL default 0, mtime int(11) NOT NULL default 0, atime int(11) NOT NULL default 0, vdata text NOT NULL, content text NOT NULL, PRIMARY KEY (id)) ENGINE=MyISAM");
+$this->Execute("CREATE TABLE sessions (id varchar(50) NOT NULL default '', ctime int(11) NOT NULL default 0, mtime int(11) NOT NULL default 0, atime int(11) NOT NULL default 0, vdata text NOT NULL, content text NOT NULL, PRIMARY KEY (id)) ENGINE=MyISAM");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005031000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005031000', 'dbversion'));
 
 ?>

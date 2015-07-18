@@ -21,12 +21,12 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("UPDATE uiconfig SET var = 'queues' WHERE section = 'userpanel' AND var = 'default_queue'");
+$this->Execute("UPDATE uiconfig SET var = 'queues' WHERE section = 'userpanel' AND var = 'default_queue'");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014013100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014013100', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

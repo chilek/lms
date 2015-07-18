@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("CREATE TABLE messages (
+$this->Execute("CREATE TABLE messages (
         id 	int(11) 	NOT NULL auto_increment,
         subject varchar(255)	DEFAULT '' NOT NULL,
 	body 	text		DEFAULT '' NOT NULL,
@@ -39,7 +39,7 @@ $DB->Execute("CREATE TABLE messages (
 	INDEX userid (userid)
 ) ENGINE=MyISAM");
 
-$DB->Execute("CREATE TABLE messageitems (
+$this->Execute("CREATE TABLE messageitems (
         id 		int(11) 	NOT NULL auto_increment,
 	messageid 	int(11)		DEFAULT 0 NOT NULL,
 	customerid 	int(11) 	DEFAULT 0 NOT NULL,
@@ -52,8 +52,8 @@ $DB->Execute("CREATE TABLE messageitems (
 	INDEX customerid (customerid)
 ) ENGINE=MyISAM");
 
-$DB->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?', array('2009031300', 'dbversion'));
+$this->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?', array('2009031300', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

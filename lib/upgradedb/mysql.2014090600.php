@@ -21,16 +21,16 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE managementurls CHANGE netdevid netdevid int(11) NULL DEFAULT NULL");
-$DB->Execute("ALTER TABLE managementurls ADD nodeid int(11) NULL DEFAULT NULL");
-$DB->Execute("ALTER TABLE managementurls
+$this->Execute("ALTER TABLE managementurls CHANGE netdevid netdevid int(11) NULL DEFAULT NULL");
+$this->Execute("ALTER TABLE managementurls ADD nodeid int(11) NULL DEFAULT NULL");
+$this->Execute("ALTER TABLE managementurls
 	ADD CONSTRAINT managementurls_nodeid_fkey FOREIGN KEY (nodeid)
 	REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014090600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014090600', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE SEQUENCE nodelocks_id_seq;
 	CREATE TABLE nodelocks (
 		id integer		DEFAULT nextval('nodelocks_id_seq'::text) NOT NULL,
@@ -41,8 +41,8 @@ $DB->Execute("
 	DROP TABLE assignmentlocks;
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012040700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012040700', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

@@ -23,9 +23,9 @@
 
 // TERYT
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     -- wojewodztwa
     CREATE SEQUENCE location_states_id_seq;
     CREATE TABLE location_states (
@@ -109,7 +109,7 @@ $DB->Execute("
     ALTER TABLE nodes ADD location varchar(255) DEFAULT NULL;
 ");
 
-$nodes = $DB->GetAll("SELECT id, location_city AS city, location_address AS addr
+$nodes = $this->GetAll("SELECT id, location_city AS city, location_address AS addr
     FROM nodes WHERE location_city <> '' OR location_address <> ''");
 
 if ($nodes) foreach ($nodes as $n) {
@@ -117,10 +117,10 @@ if ($nodes) foreach ($nodes as $n) {
     if ($n['city'] && strpos($loc, $n['city']) === false)
         $loc = $n['city'] . ($loc ? ', ' . $loc : '');
 
-    $DB->Execute("UPDATE nodes SET location = ? WHERE id = ?", array($loc, $n['id']));
+    $this->Execute("UPDATE nodes SET location = ? WHERE id = ?", array($loc, $n['id']));
 }
 
-$DB->Execute("
+$this->Execute("
     -- do we need zip code for node address? No.
     ALTER TABLE nodes DROP location_zip CASCADE;
     ALTER TABLE nodes DROP location_city CASCADE;
@@ -185,8 +185,8 @@ $DB->Execute("
         JOIN macs m ON (n.id = m.nodeid);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011082800', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011082800', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

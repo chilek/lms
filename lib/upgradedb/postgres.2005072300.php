@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     ALTER TABLE assignments ADD pperiod smallint;
     UPDATE assignments SET pperiod = period + 2;
     ALTER TABLE assignments DROP period;
@@ -64,8 +64,8 @@ $DB->Execute("
     ALTER TABLE payments ALTER at SET DEFAULT 0;
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005072300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005072300', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

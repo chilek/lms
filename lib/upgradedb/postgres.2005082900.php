@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     CREATE SEQUENCE hosts_id_seq;
     CREATE TABLE hosts (
 	id integer DEFAULT nextval('hosts_id_seq'::text) NOT NULL,
@@ -42,8 +42,8 @@ $DB->Execute("
     SELECT setval('hosts_id_seq', MAX(id)) FROM hosts;
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005082900', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005082900', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

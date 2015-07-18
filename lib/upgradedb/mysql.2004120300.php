@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
-$DB->Execute("
+$this->BeginTrans();
+$this->Execute("
     CREATE TABLE domains (
 	id int(11) NOT NULL auto_increment,
 	name varchar(255) NOT NULL DEFAULT '',
@@ -33,14 +33,14 @@ $DB->Execute("
 	PRIMARY KEY (id),
 	UNIQUE KEY (name)
     ) ENGINE=MyISAM");
-$DB->Execute("INSERT INTO domains (name) SELECT DISTINCT domain FROM passwd WHERE domain != ''");
-$DB->Execute("ALTER TABLE passwd ADD domainid int(11) NOT NULL DEFAULT '0'");
-if($domains = $DB->GetAll('SELECT id, name FROM domains'))
+$this->Execute("INSERT INTO domains (name) SELECT DISTINCT domain FROM passwd WHERE domain != ''");
+$this->Execute("ALTER TABLE passwd ADD domainid int(11) NOT NULL DEFAULT '0'");
+if($domains = $this->GetAll('SELECT id, name FROM domains'))
 	foreach($domains as $row)
-		$DB->Execute('UPDATE passwd SET domainid=? WHERE domain=?', array($row['id'], $row['name']));
-$DB->Execute('ALTER TABLE passwd DROP domain');
+		$this->Execute('UPDATE passwd SET domainid=? WHERE domain=?', array($row['id'], $row['name']));
+$this->Execute('ALTER TABLE passwd DROP domain');
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = '2004120300' WHERE keytype = 'dbversion'");
-$DB->CommitTrans();
+$this->Execute("UPDATE dbinfo SET keyvalue = '2004120300' WHERE keytype = 'dbversion'");
+$this->CommitTrans();
 
 ?>

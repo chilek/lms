@@ -24,11 +24,11 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE assignments ADD COLUMN settlement tinyint(1) NOT NULL DEFAULT '0'");
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006011300', 'dbversion'));
+$this->Execute("ALTER TABLE assignments ADD COLUMN settlement tinyint(1) NOT NULL DEFAULT '0'");
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006011300', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

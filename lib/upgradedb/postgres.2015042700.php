@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("DROP VIEW vnodes;
+$this->Execute("DROP VIEW vnodes;
 		ALTER TABLE nodes ADD COLUMN authtype smallint DEFAULT 0 NOT NULL;
 		CREATE INDEX nodes_authtype_idx ON nodes (authtype);
 		CREATE VIEW vnodes AS
@@ -36,8 +36,8 @@ $DB->Execute("DROP VIEW vnodes;
 		    FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid);		
 	");	
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015042700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015042700', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

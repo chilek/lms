@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
-$DB->Execute("
+$this->BeginTrans();
+$this->Execute("
 ALTER TABLE invoicecontents ADD itemid smallint;
 UPDATE invoicecontents set itemid = 0 where itemid is NULL;
 ALTER TABLE invoicecontents ALTER itemid SET DEFAULT 0;
@@ -37,6 +37,6 @@ ALTER TABLE cash ALTER itemid SET DEFAULT 0;
 ALTER TABLE cash ALTER itemid SET NOT NULL;
 	UPDATE dbinfo SET keyvalue = '2005013000' WHERE keytype = 'dbversion'
 ");
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

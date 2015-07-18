@@ -21,15 +21,15 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE users
+$this->Execute("ALTER TABLE users
 			ADD COLUMN swekey_id varchar(32) NULL DEFAULT NULL AFTER accessto,
 			DROP INDEX login,
 			ADD UNIQUE INDEX login (login, swekey_id)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013040200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013040200', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->Execute("ALTER TABLE cash ADD INDEX (userid)");
+$this->Execute("ALTER TABLE cash ADD INDEX (userid)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004090700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004090700', 'dbversion'));
 
 ?>

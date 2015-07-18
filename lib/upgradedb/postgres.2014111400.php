@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE SEQUENCE invprojects_id_seq;
 	CREATE TABLE invprojects (
 		id integer DEFAULT nextval('invprojects_id_seq'::text) NOT NULL,
@@ -33,9 +33,9 @@ $DB->Execute("
 	);
 ");
 
-$DB->Execute("INSERT INTO invprojects (name,type) VALUES ('inherited',1)");
+$this->Execute("INSERT INTO invprojects (name,type) VALUES ('inherited',1)");
 
-$DB->Execute("
+$this->Execute("
 	CREATE SEQUENCE netnodes_id_seq;
 	CREATE TABLE netnodes (
 		id integer DEFAULT nextval('netnodes_id_seq'::text) NOT NULL,
@@ -58,19 +58,19 @@ $DB->Execute("
 	);
 ");
 
-$DB->Execute("ALTER TABLE netdevices ADD COLUMN netnodeid integer DEFAULT NULL");
-$DB->Execute("ALTER TABLE netdevices ADD CONSTRAINT netdevices_netnode_fkey FOREIGN KEY (netnodeid) REFERENCES netnodes(id) ON DELETE SET NULL ON UPDATE CASCADE");
+$this->Execute("ALTER TABLE netdevices ADD COLUMN netnodeid integer DEFAULT NULL");
+$this->Execute("ALTER TABLE netdevices ADD CONSTRAINT netdevices_netnode_fkey FOREIGN KEY (netnodeid) REFERENCES netnodes(id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-$DB->Execute("ALTER TABLE netdevices ADD COLUMN invprojectid integer DEFAULT NULL");
-$DB->Execute("ALTER TABLE netdevices ADD CONSTRAINT netdevices_invproject_fkey FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE");
+$this->Execute("ALTER TABLE netdevices ADD COLUMN invprojectid integer DEFAULT NULL");
+$this->Execute("ALTER TABLE netdevices ADD CONSTRAINT netdevices_invproject_fkey FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-$DB->Execute("ALTER TABLE netdevices ADD COLUMN status smallint DEFAULT 0");
+$this->Execute("ALTER TABLE netdevices ADD COLUMN status smallint DEFAULT 0");
 
-$DB->Execute("ALTER TABLE nodes ADD COLUMN invprojectid integer DEFAULT NULL");
-$DB->Execute("ALTER TABLE nodes ADD CONSTRAINT nodes_invproject_fkey FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE");
+$this->Execute("ALTER TABLE nodes ADD COLUMN invprojectid integer DEFAULT NULL");
+$this->Execute("ALTER TABLE nodes ADD CONSTRAINT nodes_invproject_fkey FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-$DB->Execute("DROP VIEW vnodes; DROP VIEW vmacs;");
-$DB->Execute("CREATE VIEW vnodes AS
+$this->Execute("DROP VIEW vnodes; DROP VIEW vmacs;");
+$this->Execute("CREATE VIEW vnodes AS
 		SELECT n.*, m.mac
 		FROM nodes n
 		LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac
@@ -80,8 +80,8 @@ $DB->Execute("CREATE VIEW vnodes AS
 		FROM nodes n
 		JOIN macs m ON (n.id = m.nodeid);");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014111400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014111400', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

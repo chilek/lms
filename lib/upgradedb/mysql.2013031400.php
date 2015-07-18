@@ -21,10 +21,10 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute('ALTER TABLE tariffs ADD column disabled tinyint(1) NOT NULL DEFAULT "0"');
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013031400', 'dbversion'));
-$DB->CommitTrans();
+$this->Execute('ALTER TABLE tariffs ADD column disabled tinyint(1) NOT NULL DEFAULT "0"');
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013031400', 'dbversion'));
+$this->CommitTrans();
 
 ?>

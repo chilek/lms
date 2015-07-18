@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     DROP VIEW customersview;
     ALTER TABLE customers ADD post_name varchar(255) DEFAULT NULL;
     CREATE VIEW customersview AS
@@ -34,8 +34,8 @@ $DB->Execute("
             WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011032400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011032400', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

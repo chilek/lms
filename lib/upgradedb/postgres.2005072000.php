@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE TABLE documentcontents (
 	    docid integer DEFAULT 0 NOT NULL,
 	    title text DEFAULT '' NOT NULL,
@@ -38,10 +38,10 @@ $DB->Execute("
 	    description text DEFAULT '' NOT NULL,
 	    UNIQUE (docid))
 ");
-$DB->Execute("CREATE INDEX documentcontents_md5sum_idx ON documentcontents (md5sum)");
+$this->Execute("CREATE INDEX documentcontents_md5sum_idx ON documentcontents (md5sum)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005072000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005072000', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>
