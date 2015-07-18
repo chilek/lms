@@ -55,6 +55,16 @@
                 {$layout.smarty_version}
             </td>
         </tr>
+	{foreach $layout.dbschversion as $dbidx => $dbver}
+	<tr>
+		<td class="text-right bold">
+			{$dbidx}:
+		</td>
+		<td>
+			{$dbver}
+		</td>
+	</tr>
+	{/foreach}
     </tbody>
 </table>
 {/if}
