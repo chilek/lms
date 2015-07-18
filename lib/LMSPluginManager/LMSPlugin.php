@@ -65,7 +65,7 @@ abstract class LMSPlugin implements ObserverInterface {
 	}
 
 	/**
-	 Load plugin database schema updates
+	 * Loads plugin database schema updates
 	 */
 	protected function upgradeDb() {
 		global $DB;
