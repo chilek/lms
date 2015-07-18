@@ -675,17 +675,6 @@ abstract class LMSDB_common implements LMSDBInterface
 
     }
 
-	private function _getdir($pwd = './', $pattern = '^.*$') {
-		$files = array();
-		if ($handle = @opendir($pwd)) {
-			while (($file = readdir($handle)) !== FALSE)
-				if (preg_match('/' . $pattern . '/', $file))
-					$files[] = $file;
-			closedir($handle);
-		}
-		return $files;
-	}
-
 	public function UpgradeDb($dbver = DBVERSION, $pluginclass = null, $libdir = null, $docdir = null) {
 		$lastupgrade = null;
 		if ($this->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',
@@ -698,7 +687,7 @@ abstract class LMSDB_common implements LMSDBInterface
 					$libdir = LIB_DIR;
 
 				$pendingupgrades = array();
-				$upgradelist = $this->_getdir($libdir . DIRECTORY_SEPARATOR . 'upgradedb' . DIRECTORY_SEPARATOR . $this->_dbtype . '\.[0-9]{10}\.php$');
+				$upgradelist = getdir($libdir . DIRECTORY_SEPARATOR . 'upgradedb' . DIRECTORY_SEPARATOR . $this->_dbtype . '\.[0-9]{10}\.php$');
 				if (!empty($upgradelist))
 					foreach ($upgradelist as $upgrade) {
 						$upgradeversion = preg_replace('/^' . $this->_dbtype . '\.([0-9]{10})\.php$/', '\1', $upgrade);

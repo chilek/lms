@@ -922,4 +922,15 @@ function check_date($date) {
 	return preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $date);
 }
 
+function getdir($pwd = './', $pattern = '^.*$') {
+	$files = array();
+	if ($handle = @opendir($pwd)) {
+		while (($file = readdir($handle)) !== FALSE)
+			if (preg_match('/' . $pattern . '/', $file))
+				$files[] = $file;
+		closedir($handle);
+	}
+	return $files;
+}
+
 ?>
