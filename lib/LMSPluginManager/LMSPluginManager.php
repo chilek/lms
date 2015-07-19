@@ -121,9 +121,7 @@ class LMSPluginManager extends Subject implements SubjectInterface {
 	 * @return array of all plugin info
 	 */
 	public function getAllPluginInfo($style = self::ALL_STYLES) {
-		$plugins = array();
-		if ($style & self::NEW_STYLE)
-			$plugins = array_merge($plugins, $this->new_style_plugins);
+		$plugins = ($style & self::NEW_STYLE) ? $this->new_style_plugins : array();
 		if ($style & self::OLD_STYLE)
 			$plugins = array_merge($plugins, $this->old_style_plugins);
 		return $plugins;
