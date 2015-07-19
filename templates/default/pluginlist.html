@@ -37,7 +37,7 @@
 	{foreach $plugins as $name => $plugin}
 	<TR class="highlight {cycle}{if !$plugin.enabled} blend{/if}">
 		<TD onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
-			<span class="bold nobr">{if $plugin.longname}{$plugin.longname}{else}{$name}{/if}</span><br>
+			<span class="bold nobr">{if $plugin.fullname}{$plugin.fullname}{else}{$name}{/if}</span><br>
 			{$plugin.description}
 		</TD>
 		<TD onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
