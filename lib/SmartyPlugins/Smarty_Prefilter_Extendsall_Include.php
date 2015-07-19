@@ -30,7 +30,7 @@
  */
 
 class Smarty_Prefilter_Extendsall_Include {
-	public function prefilter_extendsall_include($tpl_source, Smarty_Internal_Template $template) {
+	static public function prefilter_extendsall_include($tpl_source, Smarty_Internal_Template $template) {
 		if (is_array($template->smarty->template_dir) === false)
 			return $tpl_source;
 		// prepend all files in {include} blocks with resource type 'extendsall:'

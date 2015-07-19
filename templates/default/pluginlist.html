@@ -43,7 +43,7 @@
 			{if $plugin.dbschversion}{$plugin.dbschversion}{else}{if $plugin.new_style}-{/if}{/if}
 		</TD>
 		<TD class="text-center" onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
-			{$plugin.priority}
+			{if $plugin.priority == LMSPluginManager::LAST_PRIORITY}{trans("minimal")}{else}{$plugin.priority}{/if}
 		</TD>
 		<TD class="text-right">
 			{if $plugin.enabled}
