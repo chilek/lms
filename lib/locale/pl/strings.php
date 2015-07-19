@@ -2981,6 +2981,7 @@ $_LANG['Enabled:'] = 'Włączone:';
 $_LANG['Plugin Management'] = 'Zarządzanie wtyczkami';
 $_LANG['Plugins'] = 'Wtyczki';
 $_LANG['New Style:'] = 'Nowy styl:';
+$_LANG['Current DB Schema Version:'] = 'Bieżąca wersja schematu bazy danych:';
 $_LANG['DB Schema Version:'] = 'Wersja schematu bazy danych:';
 
 ?>

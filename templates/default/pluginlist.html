@@ -20,9 +20,10 @@
 	<TR>
 		<TD style="width: 10%;" class="bold nobr">{trans("Plugin Name:")}</TD>
 		<TD style="width: 10%;" class="bold text-center nobr">{trans("New Style:")}</TD>
+		<TD style="width: 10%;" class="bold text-center nobr">{trans("Current DB Schema Version:")}</TD>
 		<TD style="width: 10%;" class="bold text-center nobr">{trans("DB Schema Version:")}</TD>
 		<TD style="width: 10%;" class="bold text-center nobr">{trans("Priority:")}</TD>
-		<TD style="width: 60%;" class="bold text-right nobr">{trans("Enabled:")}</TD>
+		<TD style="width: 50%;" class="bold text-right nobr">{trans("Enabled:")}</TD>
 	</TR>
     </THEAD>
     <TBODY>
@@ -36,7 +37,10 @@
 			{if $plugin.new_style}{trans("yes")}{else}{trans("no")}{/if}
 		</TD>
 		<TD class="text-center" onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
-			{if $plugin.dbschversion}{$plugin.dbschversion}{else}-{/if}
+			{if $plugin.dbcurrschversion}{$plugin.dbcurrschversion}{else}{if $plugin.new_style}-{/if}{/if}
+		</TD>
+		<TD class="text-center" onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
+			{if $plugin.dbschversion}{$plugin.dbschversion}{else}{if $plugin.new_style}-{/if}{/if}
 		</TD>
 		<TD class="text-center" onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
 			{$plugin.priority}

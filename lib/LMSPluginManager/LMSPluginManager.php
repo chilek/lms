@@ -69,7 +69,8 @@ class LMSPluginManager extends Subject implements SubjectInterface {
 					'name' => $plugin_name,
 					'enabled' => false,
 					'new_style' => true,
-					'dbschversion' => null,
+					'dbcurrschversion' => null,
+					'dbschversion' => defined($plugin_name . '::DBVERSION') ? constant($plugin_name . '::DBVERSION') : null,
 				);
 				if (array_key_exists($plugin_name, $plugin_priorities)) {
 					$plugin = new $plugin_name();
@@ -80,7 +81,7 @@ class LMSPluginManager extends Subject implements SubjectInterface {
 						array(
 							'enabled' => true,
 							'priority' => $plugin_priorities[$plugin_name],
-							'dbschversion' => $plugin->getDbSchemaVersion(),
+							'dbcurrschversion' => $plugin->getDbSchemaVersion(),
 						)
 					);
 
