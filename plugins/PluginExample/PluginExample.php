@@ -34,7 +34,7 @@
 class PluginExample extends LMSPlugin {
 	const PLUGIN_NAME = 'Plugin Example';
 	const PLUGIN_DESCRIPTION = 'Plugin Example';
-	const PLUGIN_AUTHOR = 'LMS Developers';
+	const PLUGIN_AUTHOR = 'Maciej Lew &lt;maciej.lew.1987@gmail.com&gt;, Tomasz Chiliński &lt;tomasz.chilinski@chilan.com&gt;';
 
     public function registerHandlers()
     {
