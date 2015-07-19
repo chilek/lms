@@ -2984,5 +2984,6 @@ $_LANG['Modern:'] = 'Nowoczesna:';
 $_LANG['Current DB Schema Version:'] = 'Bieżąca wersja schematu bazy danych:';
 $_LANG['DB Schema Version:'] = 'Wersja schematu bazy danych:';
 $_LANG['minimal'] = 'minimalny';
+$_LANG['Author:'] = 'Autor:';
 
 ?>
