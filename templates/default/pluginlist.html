@@ -18,18 +18,18 @@
 <TABLE class="lmsbox">
     <THEAD>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD style="width: 30%;" class="bold nobr">
 			{trans("Plugin Name:")}<br>
 			{trans("Description:")}
 		</TD>
-		<TD style="width: 1%;" class="bold text-center nobr">{trans("Author:")}</TD>
-		<TD style="width: 1%;" class="bold text-center nobr">{trans("Modern:")}</TD>
-		<TD style="width: 1%;" class="bold text-center nobr">
+		<TD style="width: 20%;" class="bold nobr">{trans("Author:")}</TD>
+		<TD style="width: 7%;" class="bold text-center nobr">{trans("Modern:")}</TD>
+		<TD style="width: 12%;" class="bold text-center nobr">
 			{trans("Current DB Schema Version:")}<br>
 			{trans("DB Schema Version:")}
 		</TD>
-		<TD style="width: 1%;" class="bold text-center nobr">{trans("Priority:")}</TD>
-		<TD style="width: 95%;" class="bold text-right nobr">{trans("Enabled:")}</TD>
+		<TD style="width: 30%;" class="bold text-center nobr">{trans("Priority:")}</TD>
+		<TD style="width: 1%;" class="bold text-right nobr">{trans("Enabled:")}</TD>
 	</TR>
     </THEAD>
     <TBODY>
@@ -40,7 +40,7 @@
 			<span class="bold nobr">{if $plugin.longname}{$plugin.longname}{else}{$name}{/if}</span><br>
 			{$plugin.description}
 		</TD>
-		<TD class="text-center" onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
+		<TD onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
 			{$plugin.author}
 		</TD>
 		<TD class="text-center" onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
