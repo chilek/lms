@@ -65,12 +65,16 @@ class LMSPluginManager extends Subject implements SubjectInterface {
 
 		foreach ($dirs as $plugin_name)
 			if (class_exists($plugin_name)) {
+				$plugin_name::loadLocales();
 				$plugin_info = array(
 					'name' => $plugin_name,
 					'enabled' => false,
 					'new_style' => true,
 					'dbcurrschversion' => null,
-					'dbschversion' => defined($plugin_name . '::DBVERSION') ? constant($plugin_name . '::DBVERSION') : null,
+					'dbschversion' => defined($plugin_name . '::PLUGIN_DBVERSION') ? constant($plugin_name . '::PLUGIN_DBVERSION') : null,
+					'fullname' => defined($plugin_name . '::PLUGIN_NAME') ? trans(constant($plugin_name . '::PLUGIN_NAME')) : null,
+					'description' => defined($plugin_name . '::PLUGIN_DESCRIPTION') ? trans(constant($plugin_name . '::PLUGIN_DESCRIPTION')) : null,
+					'author' => defined($plugin_name . '::PLUGIN_AUTHOR') ? constant($plugin_name . '::PLUGIN_AUTHOR') : null,
 				);
 				if (array_key_exists($plugin_name, $plugin_priorities)) {
 					$plugin = new $plugin_name();

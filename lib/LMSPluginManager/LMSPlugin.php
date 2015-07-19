@@ -44,7 +44,7 @@ abstract class LMSPlugin implements ObserverInterface {
 		$reflector = new ReflectionClass(get_class($this));
 		$this->dirname = dirname($reflector->getFileName());
 		$this->registerHandlers();
-		$this->loadLocales();
+		//$this->loadLocales();
 		$this->upgradeDb();
 	}
 
@@ -56,7 +56,7 @@ abstract class LMSPlugin implements ObserverInterface {
 	/**
 	 * Loads plugin locales
 	 */
-	protected function loadLocales() {
+	static public function loadLocales() {
 		global $_ui_language, $_LANG;
 
 		$filename = $this->dirname . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR

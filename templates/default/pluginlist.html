@@ -18,28 +18,36 @@
 <TABLE class="lmsbox">
     <THEAD>
 	<TR>
-		<TD style="width: 10%;" class="bold nobr">{trans("Plugin Name:")}</TD>
-		<TD style="width: 10%;" class="bold text-center nobr">{trans("Modern:")}</TD>
-		<TD style="width: 10%;" class="bold text-center nobr">{trans("Current DB Schema Version:")}</TD>
-		<TD style="width: 10%;" class="bold text-center nobr">{trans("DB Schema Version:")}</TD>
-		<TD style="width: 10%;" class="bold text-center nobr">{trans("Priority:")}</TD>
-		<TD style="width: 50%;" class="bold text-right nobr">{trans("Enabled:")}</TD>
+		<TD style="width: 1%;" class="bold nobr">
+			{trans("Plugin Name:")}<br>
+			{trans("Description:")}
+		</TD>
+		<TD style="width: 1%;" class="bold text-center nobr">{trans("Author:")}</TD>
+		<TD style="width: 1%;" class="bold text-center nobr">{trans("Modern:")}</TD>
+		<TD style="width: 1%;" class="bold text-center nobr">
+			{trans("Current DB Schema Version:")}<br>
+			{trans("DB Schema Version:")}
+		</TD>
+		<TD style="width: 1%;" class="bold text-center nobr">{trans("Priority:")}</TD>
+		<TD style="width: 95%;" class="bold text-right nobr">{trans("Enabled:")}</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{foreach $plugins as $name => $plugin}
 	<TR class="highlight {cycle}{if !$plugin.enabled} blend{/if}">
-		<TD class="bold nobr" onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
-			{$name}
+		<TD onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
+			<span class="bold nobr">{if $plugin.longname}{$plugin.longname}{else}{$name}{/if}</span><br>
+			{$plugin.description}
+		</TD>
+		<TD class="text-center" onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
+			{$plugin.author}
 		</TD>
 		<TD class="text-center" onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
 			{if $plugin.new_style}{trans("yes")}{else}{trans("no")}{/if}
 		</TD>
 		<TD class="text-center" onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
-			{if $plugin.dbcurrschversion}{$plugin.dbcurrschversion}{else}{if $plugin.new_style}-{/if}{/if}
-		</TD>
-		<TD class="text-center" onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
+			{if $plugin.dbcurrschversion}{$plugin.dbcurrschversion}{else}{if $plugin.new_style}-{/if}{/if}<br>
 			{if $plugin.dbschversion}{$plugin.dbschversion}{else}{if $plugin.new_style}-{/if}{/if}
 		</TD>
 		<TD class="text-center" onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
