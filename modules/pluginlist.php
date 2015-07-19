@@ -26,37 +26,18 @@
 
 $layout['pagetitle'] = trans('Plugin List');
 
-$dirs = getdir(PLUGINS_DIR, '^[a-zA-Z0-9]+$');
-$plugins = array();
-if (!empty($dirs)) {
-	asort($dirs, SORT_STRING);
+$plugins_config = ConfigHelper::getConfig('phpui.plugins', null, true);
+if (is_null($plugins_config))
+	$DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)",
+		array('phpui', 'plugins', ''));
 
-	$plugins_config = ConfigHelper::getConfig('phpui.plugins', null, true);
-	if (is_null($plugins_config))
-		$DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)",
-			array('phpui', 'plugins', ''));
-	$plugins_config = empty($plugins_config) ? array() : preg_split('/[;,\s\t\n]+/', $plugins_config, -1, PREG_SPLIT_NO_EMPTY);
-
-	foreach ($dirs as $name)
-		$plugins[$name] = array('enabled' => in_array($name, $plugins_config) !== FALSE);
-	if (isset($_POST['plugins'])) {
-		$data = $_POST['plugins'];
-		$toggle = intval($data['toggle']) ? true : false;
-		$name = $data['name'];
-		if ($toggle)
-			$plugins_config[] = $name;
-		else
-			$plugins_config = array_diff($plugins_config, array($name));
-
-		$plugins_config = array_unique($plugins_config);
-		$DB->Execute("UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?",
-			array(implode(' ',$plugins_config), 'phpui', 'plugins'));
-
-		$SESSION->redirect('?m=pluginlist');
-	}
+if (isset($_POST['plugins'])) {
+	$postdata = $_POST['plugins'];
+	$plugin_manager->enablePlugin($postdata['name'], $postdata['toggle'] ? true : false);
+	$SESSION->redirect('?m=pluginlist');
 }
 
-$SMARTY->assign('plugins', $plugins);
+$SMARTY->assign('plugins', $plugin_manager->getAllPluginInfo());
 $SMARTY->display('pluginlist.html');
 
 ?>

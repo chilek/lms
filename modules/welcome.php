@@ -57,6 +57,8 @@ if (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkCon
 	$SMARTY->assign('nodestats', $LMS->NodeStats());
 }
 
+$layout['plugins'] = $plugin_manager->getAllPluginInfo();
+
 $SMARTY->display('welcome/welcome.html');
 
 ?>

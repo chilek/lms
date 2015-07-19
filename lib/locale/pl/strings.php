@@ -2980,5 +2980,7 @@ $_LANG['Plugin List'] = 'Lista wtyczek';
 $_LANG['Enabled:'] = 'Włączone:';
 $_LANG['Plugin Management'] = 'Zarządzanie wtyczkami';
 $_LANG['Plugins'] = 'Wtyczki';
+$_LANG['New Style:'] = 'Nowy styl:';
+$_LANG['DB Schema Version:'] = 'Wersja schematu bazy danych:';
 
 ?>

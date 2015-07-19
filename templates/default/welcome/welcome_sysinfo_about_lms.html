@@ -27,6 +27,7 @@
             <td>
                 {$layout.lmsdbv}
             </td>
+	</tr>
         <tr>
             <td class="text-right bold">
                 {if $layout.dbtype == "mysql" || $layout.dbtype == "mysqli"}
@@ -55,15 +56,17 @@
                 {$layout.smarty_version}
             </td>
         </tr>
-	{foreach $layout.dbschversion as $dbidx => $dbver}
+	{foreach $layout.plugins as $plugin_name => $plugin}
+	{if $plugin.enabled}
 	<tr>
 		<td class="text-right bold">
-			{$dbidx}:
+			{$plugin_name}DB:
 		</td>
 		<td>
-			{if $dbver}{$dbver}{else}-{/if}
+			{if $plugin.dbschversion}{$plugin.dbschversion}{else}-{/if}
 		</td>
 	</tr>
+	{/if}
 	{/foreach}
     </tbody>
 </table>
