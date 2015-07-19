@@ -36,7 +36,7 @@ class LMSPluginManager extends Subject implements SubjectInterface
 {
     protected $hook_name;
     protected $hook_data;
-	private $dbschversions;
+	private $dbschversions = array();
     
     /**
      * Loads plugins
