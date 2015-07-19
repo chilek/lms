@@ -716,6 +716,12 @@ $menu = array(
 					'tip' => trans('List of promotions'),
 					'prio' => 90,
 				),
+				array(
+					'name' => trans('Plugins'),
+					'link' => '?m=pluginlist',
+					'tip' => trans('Plugin Management'),
+					'prio' => 100,
+				),
 			),
 		),
 
