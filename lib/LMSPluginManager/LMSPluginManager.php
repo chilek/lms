@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2014 LMS Developers
+ *  Copyright (C) 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -95,6 +95,7 @@ class LMSPluginManager extends Subject implements SubjectInterface {
 		$files = getdir(LIB_DIR . DIRECTORY_SEPARATOR . 'plugins', '^[0-9a-zA-Z_\-]+\.php$');
 		if (empty($files))
 			return;
+		asort($files);
 
 		$old_plugins = array_diff($plugins_tuples, array_keys($this->new_style_plugins));
 		foreach ($files as $plugin_name) {
