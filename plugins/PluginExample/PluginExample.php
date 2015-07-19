@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,9 +28,14 @@
  * PluginExample
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
+ * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
+
  */
-class PluginExample extends LMSPlugin
-{
+class PluginExample extends LMSPlugin {
+	const PLUGIN_NAME = 'Plugin Example';
+	const PLUGIN_DESCRIPTION = 'Plugin Example';
+	const PLUGIN_AUTHOR = 'LMS Developers';
+
     public function registerHandlers()
     {
         $this->handlers = array(
