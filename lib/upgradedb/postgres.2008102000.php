@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 
 CREATE SEQUENCE divisions_id_seq;
 CREATE TABLE divisions (
@@ -74,7 +74,7 @@ $address = ConfigHelper::getConfig('finances.address');
 $city = ConfigHelper::getConfig('finances.city');
 $zip = ConfigHelper::getConfig('finances.zip');
 $account = ConfigHelper::getConfig('finances.account');
-$DB->Execute("INSERT INTO divisions (shortname, inv_header, inv_footer, inv_author, inv_cplace, name, 
+$this->Execute("INSERT INTO divisions (shortname, inv_header, inv_footer, inv_author, inv_cplace, name, 
 	address, city, zip, account) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 	array(!empty($shortname) && $shortname != 'finances/shortname' ? $shortname : 'default',
 		!empty($header) ? str_replace("\\n", "\n", $header) : '',
@@ -88,8 +88,8 @@ $DB->Execute("INSERT INTO divisions (shortname, inv_header, inv_footer, inv_auth
 		!empty($account) ? $account : '',
 	));
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008102000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008102000', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

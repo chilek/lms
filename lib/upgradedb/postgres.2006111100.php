@@ -24,15 +24,15 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 CREATE INDEX rttickets_customerid_idx ON rttickets (customerid);
 CREATE INDEX rttickets_createtime_idx ON rttickets (createtime);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006111100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006111100', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

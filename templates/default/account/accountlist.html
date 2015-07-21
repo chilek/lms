@@ -1,0 +1,155 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+{if $layout.module=="accountsearch"}{assign var=suffix value="&s=1"}{/if}
+<H1>{$layout.pagetitle}</H1>
+<P><TABLE class="lmsbox">
+    <COLGROUP>
+        <COL style="width: 96%;">
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+    </COLGROUP>
+    <THEAD>
+	<TR>
+		<TH scope="col">
+                        <SPAN class="nobr">
+			<IMG src="img/account.gif" alt=""> <A href="?m={$layout.module}{$suffix}&o=login{if $listdata.direction == "asc" && $listdata.order == "login"},desc{/if}"><B>{trans("Login<!account>")}</B></A> {if $listdata.order == "login"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			@
+                        <A href="?m={$layout.module}{$suffix}&o=domain{if $listdata.direction == "asc" && $listdata.order == "domain"},desc{/if}">{trans("Domain:")}</A> {if $listdata.order == "domain"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN><BR>
+                        <SPAN class="nobr lighter"><IMG src="img/customer.gif" ALT=""> <A href="?m={$layout.module}{$suffix}&o=customername{if $listdata.direction == "asc" && $listdata.order == "customername"},desc{/if}">{trans("Owner:")}</A> {if $listdata.order == "customername"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
+		</TH>
+		<TH scope="col" class="text-right">
+                        <SPAN class="nobr lighter"><A href="?m={$layout.module}{$suffix}&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
+		</TH>
+		<TH scope="col" class="text-right lighter">
+                        <SPAN class="nobr">{trans("Type (sh/mail/www/ftp/sql):")}</SPAN><BR>
+                        <SPAN class="nobr">{trans("Quota (sh/mail/www/ftp/sql):")}</SPAN>
+		</TH>
+		<TH scope="col" class="text-right lighter">
+                        <SPAN class="nobr"><A href="?m={$layout.module}{$suffix}&o=lastlogin{if $listdata.direction == "asc" && $listdata.order == "lastlogin"},desc{/if}">{trans("Last login:")}</A>{if $listdata.order == "lastlogin"} <IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN><BR>
+                        <SPAN class="nobr"><A href="?m={$layout.module}{$suffix}&o=expdate{if $listdata.direction == "asc" && $listdata.order == "expdate"},desc{/if}">{trans("Expiration date:")}</A>{if $listdata.order == "expdate"} <IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
+		</TH>
+		<TH scope="col" class="text-right">
+                        <SPAN class="nobr">{t a=$listdata.total}Total: $a{/t}</SPAN>
+		</TH>
+	</TR>
+	<TR>
+	        <TD colspan="4">
+                        <SPAN class="nobr">
+                                <FORM method="GET" action="?m={$layout.module}" name="filter">
+                                        <INPUT type="submit" class="hiddenbtn">
+                                        <INPUT type="HIDDEN" name="m" value="{$layout.module}">
+                                        {if $suffix}<INPUT type="HIDDEN" name="s" value="1">{/if}
+                                        <INPUT type="HIDDEN" name="page" value="1">
+                                        <SPAN class="bold">{trans("Filter:")}</SPAN> {trans("Owner:")}
+                                        <SELECT size="1" name="u" OnChange="document.filter.submit();">
+                                                <OPTION value=""{if $listdata.customer == ""} SELECTED{/if}>{trans("- all owners -")}</OPTION>
+                                                <OPTION value="0"{if $listdata.customer == "0"} SELECTED{/if}>{trans("SYSTEM ACCOUNT")}</OPTION>
+                                                {foreach from=$customerlist item=customer}
+                                                <OPTION value="{$customer.id}"{if $customer.id == $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:35:"...":true}</OPTION>
+                                                {/foreach}
+                                        </SELECT>
+                                        {trans("Type:")}
+                                        <SELECT size="1" name="t" ONCHANGE="document.filter.submit();">
+                                                <OPTION value="0"{if !$listdata.type} SELECTED {/if}>{trans("- all -")}</OPTION>
+                                                <OPTION value="1"{if $listdata.type == 1} SELECTED {/if}>{trans("shell")}</OPTION>
+                                                <OPTION value="2"{if $listdata.type == 2} SELECTED {/if}>{trans("mail")}</OPTION>
+                                                <OPTION value="4"{if $listdata.type == 4} SELECTED {/if}>{trans("www")}</OPTION>
+                                                <OPTION value="8"{if $listdata.type == 8} SELECTED {/if}>{trans("ftp")}</OPTION>
+                                                <OPTION value="16"{if $listdata.type == 16} SELECTED {/if}>{trans("sql")}</OPTION>
+                                        </SELECT>
+                                        {trans("Status:")}
+                                        <SELECT size="1" name="k" OnChange="document.filter.submit();">
+                                                <OPTION value="0"{if !$listdata.kind} SELECTED {/if}>{trans("- all -")}</OPTION>
+                                                <OPTION value="1"{if $listdata.kind == 1} SELECTED {/if}>{trans("expired")}</OPTION>
+                                                <OPTION value="2"{if $listdata.kind == 2} SELECTED {/if}>{trans("active")}</OPTION>
+                                        </SELECT>
+                                        {trans("Domain:")}
+                                        <SELECT size="1" name="d" OnChange="document.filter.submit();">
+                                                <OPTION value=""{if $listdata.domain == ""} SELECTED{/if}>{trans("- all -")}</OPTION>
+                                                {section name=domainlist loop=$domainlist}
+                                                <OPTION value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id == $listdata.domain} SELECTED{/if}>{$domainlist[domainlist].name}</OPTION>
+                                                {/section}
+                                        </SELECT>
+                                </FORM>
+                        </SPAN>
+                </TD>
+                <TD class="text-right">
+                        <SPAN class="nobr">
+                                <A href="?m=accountadd{if $listdata.customer}&cid={$listdata.customer}{/if}{if $listdata.domain}&did={$listdata.domain}{/if}">{trans("New Account")} <IMG src="img/save.gif" alt=""></A>
+                        </SPAN>
+		</TD>
+	</TR>
+	{if $listdata.total != 0}
+	<TR>
+		<TD class="pagination" COLSPAN="5">
+			{include file="scroller.html" loop=$accountlist adlink=$suffix}
+		</TD>
+	</TR>
+	{/if}
+    </THEAD>
+    <TBODY>
+	{cycle values="light,lucid" print=false}
+	{section name=accountlist loop=$accountlist start=$start max=$pagelimit}
+	<TR class="highlight {cycle}{if $accountlist[accountlist].expdate != 0 && $accountlist[accountlist].expdate < $smarty.now} blend{/if}"  >
+		<TD OnClick="return self.location.href='?m=accountinfo&id={$accountlist[accountlist].id}';">
+                        <SPAN class="nobr bold"><IMG src="img/account.gif" alt=""> {$accountlist[accountlist].login}@{$accountlist[accountlist].domain}</SPAN>
+			{if $accountlist[accountlist].ownerid}
+			<BR><IMG src="img/customer.gif" alt="">
+			<A href="?m=customerinfo&id={$accountlist[accountlist].ownerid}">
+			{$accountlist[accountlist].customername|truncate:40:"...":true} ({$accountlist[accountlist].ownerid|string_format:"%04d"})
+			</A>
+			{/if}
+		</TD>
+		<TD OnClick="return self.location.href='?m=accountinfo&id={$accountlist[accountlist].id}';">
+			({$accountlist[accountlist].id|string_format:"%04d"})
+		</TD>
+		<TD class="text-right" OnClick="return self.location.href='?m=accountinfo&id={$accountlist[accountlist].id}';">
+			{if ($accountlist[accountlist].type & 1) == 1}*{else}-{/if}/{if ($accountlist[accountlist].type & 2) == 2}*{else}-{/if}/{if ($accountlist[accountlist].type & 4) == 4}*{else}-{/if}/{if ($accountlist[accountlist].type & 8) == 8}*{else}-{/if}/{if ($accountlist[accountlist].type & 16) == 16}*{else}-{/if}<BR>
+			{$accountlist[accountlist].quota_sh}/{$accountlist[accountlist].quota_mail}/{$accountlist[accountlist].quota_www}/{$accountlist[accountlist].quota_ftp}/{$accountlist[accountlist].quota_sql}
+		</TD>
+		<TD class="text-right" OnClick="return self.location.href='?m=accountinfo&id={$accountlist[accountlist].id}';">
+			<SPAN class="nobr">{if $accountlist[accountlist].lastlogin}{$accountlist[accountlist].lastlogin|date_format:"%Y/%m/%d %H:%M"}{/if}</SPAN><BR>
+			<SPAN class="nobr">{if $accountlist[accountlist].expdate}{$accountlist[accountlist].expdate|date_format:"%Y/%m/%d"}{/if}</SPAN>
+		</TD>
+		<TD class="text-right">
+			{assign var=account value="`$accountlist[accountlist].login`@`$accountlist[accountlist].domain`"}
+			<SPAN class="nobr">
+			<A href="?m=accountpasswd&id={$accountlist[accountlist].id}"><IMG src="img/pass.gif" alt="[ {trans("Change password")} ]" title="[ {trans("Change password")} ]"></A> 
+			<A href="?m=aliasadd&accountid={$accountlist[accountlist].id}"><IMG src="img/alias.gif" alt="[ {trans("Create alias")} ]" title="[ {trans("Create alias")} ]"></A> 
+			<A href="?m=accountdel&id={$accountlist[accountlist].id}" OnClick="return confirmLink(this, '{t a=$account}Are you sure, you want to delete account \'$a\' and all assigned to them aliases?{/t}')"><IMG src="img/delete.gif" title="[ {trans("Delete")} ]" alt="[ {trans("Delete")} ]"></A> 
+			<A href="?m=accountedit&id={$accountlist[accountlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A> 
+			<A href="?m=accountinfo&id={$accountlist[accountlist].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A> 
+                        </SPAN>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD colspan="5" class="empty-table">
+			{trans("No such accounts in database.")}
+		</TD>
+	</TR>
+	{/section}
+    </TBODY>
+    <TFOOT>
+	{if $listdata.total != 0}
+	<TR>
+		<TD class="pagination" COLSPAN="5">
+			{include file="scroller.html" loop=$accountlist adlink=$suffix}
+		</TD>
+	</TR>
+	{/if}
+	<TR>
+		<TD colspan="3" class="text-right bold">
+                        <SPAN class="nobr">{trans("Total:")} {sum array=$accountlist column=quota_sh}/{sum array=$accountlist column=quota_mail}/{sum array=$accountlist column=quota_www}/{sum array=$accountlist column=quota_ftp}/{sum array=$accountlist column=quota_sql}</SPAN>
+		</TD>
+		<TD colspan="2" class="text-right">
+                        <SPAN class="nobr"><A href="?m=accountadd{if $listdata.customer}&cid={$listdata.customer}{/if}{if $listdata.domain}&did={$listdata.domain}{/if}">{trans("New Account")} <IMG src="img/save.gif" alt=""></A></SPAN>
+		</TD>
+	</TR>
+    </TFOOT>
+</TABLE></P>
+{/block}

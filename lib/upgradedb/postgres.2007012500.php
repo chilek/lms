@@ -24,21 +24,21 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE nodes ADD halfduplex smallint");
-$DB->Execute("ALTER TABLE tariffs ADD dlimit integer");
+$this->Execute("ALTER TABLE nodes ADD halfduplex smallint");
+$this->Execute("ALTER TABLE tariffs ADD dlimit integer");
 
-$DB->Execute("UPDATE nodes SET halfduplex = 0");
-$DB->Execute("UPDATE tariffs SET dlimit = 0");
+$this->Execute("UPDATE nodes SET halfduplex = 0");
+$this->Execute("UPDATE tariffs SET dlimit = 0");
 
-$DB->Execute("ALTER TABLE nodes ALTER halfduplex SET NOT NULL");
-$DB->Execute("ALTER TABLE nodes ALTER halfduplex SET DEFAULT 0");
-$DB->Execute("ALTER TABLE tariffs ALTER dlimit SET NOT NULL");
-$DB->Execute("ALTER TABLE tariffs ALTER dlimit SET DEFAULT 0");
+$this->Execute("ALTER TABLE nodes ALTER halfduplex SET NOT NULL");
+$this->Execute("ALTER TABLE nodes ALTER halfduplex SET DEFAULT 0");
+$this->Execute("ALTER TABLE tariffs ALTER dlimit SET NOT NULL");
+$this->Execute("ALTER TABLE tariffs ALTER dlimit SET DEFAULT 0");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007012500', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007012500', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

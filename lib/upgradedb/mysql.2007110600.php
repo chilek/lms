@@ -24,13 +24,13 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE rttickets ADD creatorid int(11) NOT NULL DEFAULT '0'");
-$DB->Execute("ALTER TABLE rttickets ADD INDEX creatorid (creatorid)");
+$this->Execute("ALTER TABLE rttickets ADD creatorid int(11) NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE rttickets ADD INDEX creatorid (creatorid)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007110600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007110600', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

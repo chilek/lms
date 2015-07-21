@@ -115,6 +115,6 @@ $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('channels', $channels);
 $SMARTY->assign('listdata', $listdata);
-$SMARTY->display('ewxchlist.html');
+$SMARTY->display('ewxch/ewxchlist.html');
 
 ?>

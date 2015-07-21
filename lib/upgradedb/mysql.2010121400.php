@@ -21,30 +21,30 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("DELETE FROM customercontacts WHERE customerid NOT IN (SELECT id FROM customers)");
-$DB->Execute("ALTER TABLE customercontacts ADD FOREIGN KEY (customerid)
+$this->Execute("DELETE FROM customercontacts WHERE customerid NOT IN (SELECT id FROM customers)");
+$this->Execute("ALTER TABLE customercontacts ADD FOREIGN KEY (customerid)
        REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE");
-$DB->Execute("ALTER TABLE customercontacts ALTER customerid DROP DEFAULT");
+$this->Execute("ALTER TABLE customercontacts ALTER customerid DROP DEFAULT");
 
-$DB->Execute("DELETE FROM imessengers WHERE customerid NOT IN (SELECT id FROM customers)");
-$DB->Execute("ALTER TABLE imessengers ADD FOREIGN KEY (customerid)
+$this->Execute("DELETE FROM imessengers WHERE customerid NOT IN (SELECT id FROM customers)");
+$this->Execute("ALTER TABLE imessengers ADD FOREIGN KEY (customerid)
         REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE");
-$DB->Execute("ALTER TABLE imessengers ALTER customerid DROP DEFAULT");
+$this->Execute("ALTER TABLE imessengers ALTER customerid DROP DEFAULT");
 
-$DB->Execute("ALTER TABLE customercontacts ADD type smallint DEFAULT NULL");
-$DB->Execute("UPDATE customercontacts SET type = 2 WHERE name LIKE '%fax%'");
+$this->Execute("ALTER TABLE customercontacts ADD type smallint DEFAULT NULL");
+$this->Execute("UPDATE customercontacts SET type = 2 WHERE name LIKE '%fax%'");
 
 $lang = ConfigHelper::getConfig('phpui.lang');
 
 if ($lang == 'pl') {
-    $DB->Execute("UPDATE customercontacts SET type = COALESCE(type, 0) + 1
+    $this->Execute("UPDATE customercontacts SET type = COALESCE(type, 0) + 1
         WHERE REPLACE(REPLACE(phone, '-', ''), ' ', '') REGEXP '^(\\\\+?[0-9]{2}|0)?(88[0-9]|5[01][0-9]|6[069][0-9]|7[2789][0-9])[0-9]{6}$'");
 }
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010121400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010121400', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

@@ -24,15 +24,15 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE nodes ADD COLUMN chkmac smallint");
-$DB->Execute("UPDATE nodes SET chkmac = 1");
-$DB->Execute("ALTER TABLE nodes ALTER COLUMN chkmac SET NOT NULL");
-$DB->Execute("ALTER TABLE nodes ALTER COLUMN chkmac SET DEFAULT 1");
+$this->Execute("ALTER TABLE nodes ADD COLUMN chkmac smallint");
+$this->Execute("UPDATE nodes SET chkmac = 1");
+$this->Execute("ALTER TABLE nodes ALTER COLUMN chkmac SET NOT NULL");
+$this->Execute("ALTER TABLE nodes ALTER COLUMN chkmac SET DEFAULT 1");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006100700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006100700', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

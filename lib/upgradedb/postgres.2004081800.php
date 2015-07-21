@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
     BEGIN;
     ALTER TABLE assignments ADD suspended smallint;
     ALTER TABLE assignments ALTER suspended SET DEFAULT 0;

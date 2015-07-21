@@ -75,6 +75,8 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	$disabled = ($group == 5) ? 1 : 0;
 	$indebted = ($group == 6) ? 1 : 0;
 	$notindebted = ($group == 7) ? 1 : 0;
+	$indebted2 = ($group == 11) ? 1 : 0;
+	$indebted3 = ($group == 12) ? 1 : 0;
 
 	if($group>3) $group = 0;
 
@@ -101,6 +103,8 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 		) a ON a.customerid = c.id ';
 	}
 
+	$suspension_percentage = f_round(ConfigHelper::getConfig('finances.suspension_percentage'));
+
 	$recipients = $LMS->DB->GetAll('SELECT c.id, email, pin, '
 		.($type==MSG_SMS ? 'x.phone, ': '')
 		.$LMS->DB->Concat('c.lastname', "' '", 'c.name').' AS customername,
@@ -109,7 +113,30 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 		LEFT JOIN (
 			SELECT SUM(value) AS value, customerid
 			FROM cash GROUP BY customerid
-		) b ON (b.customerid = c.id) '
+		) b ON (b.customerid = c.id)
+		LEFT JOIN (SELECT a.customerid,
+			SUM((CASE a.suspended
+				WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
+				ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount) * ' . $suspension_percentage . ' / 100) END)
+			* (CASE t.period
+				WHEN ' . MONTHLY . ' THEN 1
+				WHEN ' . YEARLY . ' THEN 1/12.0
+				WHEN ' . HALFYEARLY . ' THEN 1/6.0
+				WHEN ' . QUARTERLY . ' THEN 1/3.0
+				ELSE (CASE a.period
+					WHEN ' . MONTHLY . ' THEN 1
+					WHEN ' . YEARLY . ' THEN 1/12.0
+					WHEN ' . HALFYEARLY . ' THEN 1/6.0
+					WHEN ' . QUARTERLY . ' THEN 1/3.0
+					ELSE 0 END)
+				END)
+			) AS value 
+			FROM assignments a
+			LEFT JOIN tariffs t ON (t.id = a.tariffid)
+			LEFT JOIN liabilities l ON (l.id = a.liabilityid AND a.period != ' . DISPOSABLE . ')
+			WHERE (a.datefrom <= ?NOW? OR a.datefrom = 0) AND (a.dateto > ?NOW? OR a.dateto = 0) 
+			GROUP BY a.customerid
+		) t ON (t.customerid = c.id) '
 		.(!empty($smstable) ? $smstable : '')
 		. ($tarifftype ? $tarifftable : '')
 		.'WHERE deleted = ' . $deleted
@@ -129,6 +156,8 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 		.($disabled ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id
 			GROUP BY ownerid HAVING (SUM(access) != COUNT(access)))' : '')
 		.($indebted ? ' AND COALESCE(b.value, 0) < 0' : '')
+		. ($indebted2 ? ' AND COALESCE(b.value, 0) < -t.value' : '')
+		. ($indebted3 ? ' AND COALESCE(b.value, 0) < -t.value * 2' : '')
 		.($notindebted ? ' AND COALESCE(b.value, 0) >= 0' : '')
 		. ($tarifftype ? ' AND NOT EXISTS (SELECT id FROM assignments
 			WHERE customerid = c.id AND tariffid = 0 AND liabilityid = 0
@@ -211,7 +240,7 @@ if(isset($_POST['message']))
 	else
 		$message['type'] == MSG_USERPANEL_URGENT;
 
-	if(empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 7))
+	if(empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 12))
 		$error['group'] = trans('Incorrect customers group!');
 
 	if ($message['type'] == MSG_MAIL) {
@@ -334,7 +363,7 @@ if(isset($_POST['message']))
 
 		$SMARTY->assign('message', $message);
 		$SMARTY->assign('recipcount', sizeof($recipients));
-		$SMARTY->display('messagesend.html');
+		$SMARTY->display('message/messagesend.html');
 
 		$DB->BeginTrans();
 
@@ -505,6 +534,6 @@ $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('userinfo', $LMS->GetUserInfo($AUTH->id));
 $SMARTY->assign('users', $DB->GetAll('SELECT name, phone FROM users WHERE phone <> \'\' ORDER BY name'));
-$SMARTY->display('messageadd.html');
+$SMARTY->display('message/messageadd.html');
 
 ?>

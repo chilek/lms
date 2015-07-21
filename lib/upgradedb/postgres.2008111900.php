@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 CREATE SEQUENCE voipaccounts_id_seq;
 CREATE TABLE voipaccounts (
 	id		integer		NOT NULL DEFAULT nextval(('voipaccounts_id_seq'::text)::regclass),
@@ -42,8 +42,8 @@ CREATE TABLE voipaccounts (
 );
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008111900', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008111900', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

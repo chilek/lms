@@ -1,0 +1,88 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<FORM method="POST" action="?m=numberplanedit&id={$numberplanedit.id}" name="numberplanedit">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
+			<IMG src="img/id.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Template:")}</B>
+		</TD>
+		<TD width="98%">
+			<INPUT type="text" name="numberplanedit[template]" value="{$numberplanedit.template|escape}" {tip text="Enter number template" trigger="template" bold=1}>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="1%">
+			<IMG src="img/docum.gif" alt="">
+		</TD>
+		<TD width="1%" nowrap>
+			<B>{trans("Document type:")}</B>
+		</TD>
+		<TD width="98%">
+			<SELECT name="numberplanedit[doctype]" size="1" {tip text="Select document type" trigger="doctype"}>
+			{foreach from=$_DOCTYPES item=item key=key}
+				<OPTION value="{$key}"{if $key == $numberplanedit.doctype} SELECTED{/if}>{$item}</OPTION>
+			{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="1%">
+			<IMG src="img/calendar.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Period:")}</B>
+		</TD>
+		<TD width="98%">
+			<SELECT name="numberplanedit[period]" size="1" {tip text="Select numbering period" trigger="period"}>
+			{foreach from=$_NUM_PERIODS item=item key=key}
+				<OPTION value="{$key}"{if $key == $numberplanedit.period} SELECTED{/if}>{$item}</OPTION>
+			{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="1%">
+			<IMG src="img/division.gif" alt="">
+		</TD>
+		<TD width="1%" nowrap>
+			<B>{trans("Division")}:</B>
+		</TD>
+		<TD width="98%">
+			{include file="multiselect.html" selected=$numberplanedit.selected available_tip="Available<!plural>:" selected_tip="Selected<!plural>:"}
+		</TD>
+	</TR>
+	<TR>
+		<TD width="1%">
+			<IMG src="img/empty.gif" alt="">
+		</TD>
+		<TD width="1%" nowrap>
+			<B>{trans("Default:")}</B>
+		</TD>
+		<TD width="98%">
+			<INPUT type="checkbox" name="numberplanedit[isdefault]" value="1" {tip text="Check box to make this plan a default for selected document type"}{if $numberplanedit.isdefault!="0"}CHECKED{/if}>
+		</TD>
+	</TR>
+	<TR>
+		<TD align="right" colspan="3">
+			<A href="javascript:document.numberplanedit.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=numberplanlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+<SCRIPT type="text/javascript">
+<!--
+document.forms['numberplanedit'].elements['numberplanedit[template]'].focus();
+//-->
+</SCRIPT>
+{/block}

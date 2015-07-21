@@ -359,6 +359,7 @@ if ($debtors_file)
 			WHERE (type & 1) = 1
 			GROUP BY customerid
 		) x ON (x.customerid = c.id)
+		WHERE c.mailingnotice = 1
 		GROUP BY c.id, c.pin, c.lastname, c.name, x.phone
 		HAVING SUM(value) < $limit");
 	$dbq->execute();
@@ -415,6 +416,7 @@ if ($invoices_file)
 		) ca ON (ca.customerid = d.customerid)
 		WHERE d.type = 1
 	        AND d.cdate > $utsfmt - 86400
+	        AND c.mailingnotice = 1
 		");
 	$dbq->execute();
 
@@ -475,6 +477,7 @@ if ($deadline_file)
 		WHERE d.type = 1 AND d.closed = 0 AND ca.balance < 0
 		AND d.cdate > $utsfmt - ((d.paytime + 1) * 86400)
 		AND d.cdate < $utsfmt - (d.paytime * 86400)
+		AND c.mailingnotice = 1
 		");
 	$dbq->execute();
 
@@ -534,6 +537,7 @@ if ($notes_file)
 		) ca ON (ca.customerid = d.customerid)
 		WHERE d.type = 5
 	    		AND d.cdate > $utsfmt - 86400
+	    		AND c.mailingnotice = 1
 		");
 	$dbq->execute();
 

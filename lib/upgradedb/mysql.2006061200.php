@@ -24,16 +24,16 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE passwd ADD COLUMN quota_sql int(11) NOT NULL default '0'");
-$DB->Execute("ALTER TABLE domains ADD COLUMN ownerid int(11) NOT NULL default '0'");
+$this->Execute("ALTER TABLE passwd ADD COLUMN quota_sql int(11) NOT NULL default '0'");
+$this->Execute("ALTER TABLE domains ADD COLUMN ownerid int(11) NOT NULL default '0'");
 
-$DB->Execute("ALTER TABLE passwd ADD INDEX ownerid (ownerid)");
-$DB->Execute("ALTER TABLE domains ADD INDEX ownerid (ownerid)");
+$this->Execute("ALTER TABLE passwd ADD INDEX ownerid (ownerid)");
+$this->Execute("ALTER TABLE domains ADD INDEX ownerid (ownerid)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006061200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006061200', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

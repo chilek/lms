@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE SEQUENCE taxes_id_seq;
 	CREATE TABLE taxes (
 	    id	integer DEFAULT nextval('taxes_id_seq'::text) NOT NULL,
@@ -44,7 +44,7 @@ $DB->Execute("
 ");
 
 $i=0;
-if($taxes = $DB->GetCol("SELECT taxvalue FROM cash GROUP BY taxvalue
+if($taxes = $this->GetCol("SELECT taxvalue FROM cash GROUP BY taxvalue
 			UNION
 			SELECT taxvalue FROM tariffs GROUP BY taxvalue
 			UNION
@@ -56,21 +56,21 @@ if($taxes = $DB->GetCol("SELECT taxvalue FROM cash GROUP BY taxvalue
 		$i++;
 		if( $tax=='' ) //tax-free
 		{
-			$DB->Execute("INSERT INTO taxes (value, taxed, label) VALUES(0,0,'tax-free')");
-			$DB->Execute("UPDATE cash SET taxid=? WHERE taxvalue IS NULL", array($i));
-			$DB->Execute("UPDATE tariffs SET taxid=? WHERE taxvalue IS NULL", array($i));
-			$DB->Execute("UPDATE invoicecontents SET taxid=? WHERE taxvalue IS NULL", array($i));
+			$this->Execute("INSERT INTO taxes (value, taxed, label) VALUES(0,0,'tax-free')");
+			$this->Execute("UPDATE cash SET taxid=? WHERE taxvalue IS NULL", array($i));
+			$this->Execute("UPDATE tariffs SET taxid=? WHERE taxvalue IS NULL", array($i));
+			$this->Execute("UPDATE invoicecontents SET taxid=? WHERE taxvalue IS NULL", array($i));
 		}
 		else
 		{
-			$DB->Execute("INSERT INTO taxes (value, taxed, label) VALUES(?,1,?)", array($tax, $tax.' %'));
-			$DB->Execute("UPDATE cash SET taxid=? WHERE taxvalue=?", array($i, $tax));
-			$DB->Execute("UPDATE tariffs SET taxid=? WHERE taxvalue=?", array($i, $tax));
-			$DB->Execute("UPDATE invoicecontents SET taxid=? WHERE taxvalue=?", array($i, $tax));
+			$this->Execute("INSERT INTO taxes (value, taxed, label) VALUES(?,1,?)", array($tax, $tax.' %'));
+			$this->Execute("UPDATE cash SET taxid=? WHERE taxvalue=?", array($i, $tax));
+			$this->Execute("UPDATE tariffs SET taxid=? WHERE taxvalue=?", array($i, $tax));
+			$this->Execute("UPDATE invoicecontents SET taxid=? WHERE taxvalue=?", array($i, $tax));
 		}
 	}
 	
-$DB->Execute("
+$this->Execute("
 	UPDATE cash SET taxid = 0 WHERE taxid IS NULL;
 	UPDATE tariffs SET taxid = 0 WHERE taxid IS NULL;
 	UPDATE invoicecontents SET taxid = 0 WHERE taxid IS NULL;
@@ -85,8 +85,8 @@ $DB->Execute("
 	ALTER TABLE invoicecontents DROP taxvalue;
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005061200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005061200', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

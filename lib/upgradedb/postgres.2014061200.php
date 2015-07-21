@@ -21,12 +21,12 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE templates ADD subject varchar(255) NOT NULL DEFAULT ''");
+$this->Execute("ALTER TABLE templates ADD subject varchar(255) NOT NULL DEFAULT ''");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014061200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014061200', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

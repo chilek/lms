@@ -24,15 +24,15 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$create_reg = $DB->GetOne('SELECT docid FROM receiptcontents LIMIT 1');
+$create_reg = $this->GetOne('SELECT docid FROM receiptcontents LIMIT 1');
 
-$DB->Execute("ALTER TABLE receiptcontents ADD COLUMN regid int(11) NOT NULL DEFAULT '0'");
-$DB->Execute("UPDATE receiptcontents SET regid = ?", array($create_reg ? 1 : 0));
-$DB->Execute("ALTER TABLE receiptcontents ADD INDEX regid (regid)");
+$this->Execute("ALTER TABLE receiptcontents ADD COLUMN regid int(11) NOT NULL DEFAULT '0'");
+$this->Execute("UPDATE receiptcontents SET regid = ?", array($create_reg ? 1 : 0));
+$this->Execute("ALTER TABLE receiptcontents ADD INDEX regid (regid)");
 
-$DB->Execute("CREATE TABLE cashrights (
+$this->Execute("CREATE TABLE cashrights (
 	id int(11) 	NOT NULL auto_increment,
         userid int(11) 	DEFAULT '0' NOT NULL,
 	regid int(11) 	DEFAULT '0' NOT NULL,
@@ -42,7 +42,7 @@ $DB->Execute("CREATE TABLE cashrights (
     ) ENGINE=MyISAM
 ");
 
-$DB->Execute("CREATE TABLE cashregs (
+$this->Execute("CREATE TABLE cashregs (
 	id int(11) 		NOT NULL auto_increment,
         name varchar(255) 	DEFAULT '' NOT NULL,
 	description text 	DEFAULT '' NOT NULL,
@@ -54,10 +54,10 @@ $DB->Execute("CREATE TABLE cashregs (
 ");
 
 if($create_reg)
-	$DB->Execute("INSERT INTO cashregs (name) VALUES ('default')");
+	$this->Execute("INSERT INTO cashregs (name) VALUES ('default')");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005122800', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005122800', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

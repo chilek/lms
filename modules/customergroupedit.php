@@ -90,6 +90,6 @@ $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups',$LMS->CustomergroupGetAll());
 $SMARTY->assign('membersnetid', isset($membersnetid) ? $membersnetid : 0);
 $SMARTY->assign('othersnetid', isset($othersnetid) ? $othersnetid : 0);
-$SMARTY->display('customergroupedit.html');
+$SMARTY->display('customer/customergroupedit.html');
 
 ?>

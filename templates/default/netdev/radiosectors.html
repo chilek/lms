@@ -1,0 +1,95 @@
+<!--// $Id$ //-->
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR class="hand" onclick="showOrHideRadioSectorPanel();">
+		<TD class="bold">
+			<IMG src="img/wireless.gif" alt="">
+			<A name="radiosectors">{trans("Radio sectors:")}</A>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR id="radiosectorspanel" style="display: none;">
+		<TD style="width: 100%;">
+			<FORM id="radiosectoradd" name="radiosectoradd">
+			<DIV id="radiosectortable">
+			</DIV>
+			</FORM>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+<SCRIPT type="text/javascript">
+<!--
+if (getCookie('radiosectorspanel') == '1') {
+	xjx.$('radiosectorspanel').style.display = '';
+	xajax_getRadioSectors();
+}
+
+function showOrHideRadioSectorPanel() {
+	showOrHide('radiosectorspanel');
+	if (xjx.$('radiosectorspanel').style.display == '')
+		xajax_getRadioSectors();
+}
+
+function addRadioSector() {
+	xjx.$('save_new_radiosector_button').disabled = true;
+	xjx.$('cancel_new_radiosector_button').disabled = true;
+	xajax_addRadioSector(xjx.getFormValues('radiosectoradd'));
+}
+
+function delRadioSector(id) {
+	xjx.$('radiosectortable').disabled = true;
+	xajax_delRadioSector(id);
+}
+
+function toggleEditRadioSector(id) {
+	var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'technology', 'frequency', 'frequency_separator', 'frequency2', 'bandwidth'];
+	var edit = (xjx.$('edit_button_' + id).style.display != 'none');
+
+	for (i = 0; i < elems.length; i++) {
+		xjx.$(elems[i] + '_' + id).style.display = (edit ? 'none' : '');
+		xjx.$(elems[i] + '_edit_' + id).style.display = (edit ? '' : 'none');
+	}
+	xjx.$('cancel_button_' + id).style.display = (edit ? '' : 'none');
+	xjx.$('save_button_' + id).style.display = (edit ? '' : 'none');
+	xjx.$('edit_button_' + id).style.display = (edit ? 'none' : '');
+}
+
+function showAddRadioSector() {
+	var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'frequency', 'frequency2', 'bandwidth'];
+	for (i = 0; i < elems.length; i++) {
+		xjx.$(elems[i]).value = '';
+		xjx.$(elems[i]).onmouseover = '';
+	}
+	xjx.$('technology').value = 0;
+	if (xjx.$('no_radio_sectors') != null) {
+		xjx.$('no_radio_sectors').style.display = ('none');
+	}
+	xjx.$('radiosectoraddlink').style.display = ('none');
+	xjx.$('add_radio_sector').style.display = ('');
+	xjx.$('name').focus();
+}
+
+function hideAddRadioSector() {
+	xjx.$('add_radio_sector').style.display = ('none');
+	if (xjx.$('no_radio_sectors') != null) {
+		xjx.$('no_radio_sectors').style.display = ('');
+	}
+	xjx.$('radiosectoraddlink').style.display = ('');
+	xajax_getRadioSectors();
+}
+
+function updateRadioSector(id) {
+	var elems = ['name', 'azimuth', 'width', 'altitude', 'rsrange', 'license', 'technology', 'frequency', 'frequency_separator', 'frequency2', 'bandwidth'];
+	var params = {};
+
+	xjx.$('radiosectortable').disabled = true;
+	for (i = 0; i < elems.length; i++) {
+		params[elems[i]] = xjx.$(elems[i] + '_edit_' + id).value;
+	}
+	params['rsid'] = id;
+	xajax_updateRadioSector(id, params);
+}
+//-->
+</SCRIPT>

@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 
 ALTER TABLE tariffs ADD uprate_n integer DEFAULT NULL;
 ALTER TABLE tariffs ADD upceil_n integer DEFAULT NULL;
@@ -37,8 +37,8 @@ ALTER TABLE tariffs ADD plimit_n integer DEFAULT NULL;
 
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009101600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009101600', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

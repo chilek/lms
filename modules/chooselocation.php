@@ -41,6 +41,10 @@ function get_loc_streets($cityid) {
 				$list[$idx] = $row;
 			}
 		}
+	else
+		$list = array();
+
+	array_unshift($list, array('id' => 0, 'name' => ''));
 
 	return $list;
 }
@@ -187,5 +191,5 @@ $data['formname'] = $_GET['form'];
 
 $SMARTY->assign('data', $data);
 $SMARTY->assign('states', $states);
-$SMARTY->display('chooselocation.html');
+$SMARTY->display('choose/chooselocation.html');
 ?>

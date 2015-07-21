@@ -135,7 +135,7 @@ class xajaxArgumentManager
 			
 			foreach ($aExpecting as $sExpecting => $nExpectedLength)
 			{
-				if ($sArg[$nCurrent] == $sExpecting[0])
+				if (substr($sArg, $nCurrent, 1) == $sExpecting[0])
 				{
 					if ($sExpecting == substr($sArg, $nCurrent, $nExpectedLength))
 					{

@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     CREATE TABLE excludedgroups (
 	id 		int(11) 	NOT NULL auto_increment,
         customergroupid int(11) 	NOT NULL DEFAULT 0,
@@ -36,12 +36,12 @@ $DB->Execute("
     ) ENGINE=MyISAM;
 ");
 
-$DB->Execute("
+$this->Execute("
     CREATE FUNCTION lms_current_user() RETURNS int(11) NO SQL
     RETURN @lms_current_user;
 ");
 
-$DB->Execute("
+$this->Execute("
     CREATE VIEW customersview AS
 	    SELECT c.* FROM customers c
 	    WHERE NOT EXISTS (
@@ -50,8 +50,8 @@ $DB->Execute("
 		    WHERE e.userid = lms_current_user() AND a.customerid = c.id)
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007071600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007071600', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

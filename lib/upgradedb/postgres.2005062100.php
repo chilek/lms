@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	ALTER TABLE tariffs ADD prodid VARCHAR(255);
 	UPDATE tariffs SET prodid = pkwiu;
 	ALTER TABLE tariffs ALTER prodid SET NOT NULL;
@@ -40,8 +40,8 @@ $DB->Execute("
 	ALTER TABLE invoicecontents DROP pkwiu;
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005062100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005062100', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

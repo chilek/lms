@@ -1,0 +1,51 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<FORM NAME="trafficdbcompact" METHOD="GET" ACTION="?m=trafficdbcompact">
+<INPUT type="hidden" name="m" value="trafficdbcompact">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD COLSPAN="2" ALIGN="left">
+			<B>{trans("Compacting parameters")}</B>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR>
+	 	<TD WIDTH="1%" ALIGN="right" {tip text="Compacting of database removes non-essential data from database and averages existing data. This will decrease number of records in database and reduce results latency, but also decrease stats precision."} NOWRAP>
+			<B>{trans("Data precision level:")}</B>
+		</TD>
+		<TD WIDTH="99%">
+			<B><INPUT TYPE="radio" NAME="level" ID="low" VALUE="low" {tip text="Data older than one day will be combined into one day"}><label for="low">{trans("Low")}</label><BR>
+			   <INPUT TYPE="radio" NAME="level" ID="medium" VALUE="medium" {tip text="Data older than one month will be combined into one day"}><label for="medium">{trans("Medium")}</label><BR>
+			   <INPUT TYPE="radio" NAME="level" ID="high" VALUE="high" {tip text="Data older than one month will be combined into one hour"}><label for="high">{trans("High")}</label>
+			</B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+		</TD>
+		<TD WIDTH="99%" {tip text="Check that option to remove records older than one year"}>
+		    <INPUT TYPE="checkbox" NAME="removeold" ID="removeold" VALUE="1"><B><label for="removeold">{trans("Delete data older than one year")}</label></B></INPUT>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+		</TD>
+		<TD WIDTH="99%" {tip text="Check that option to remove stats of deleted nodes"} NOWRAP>
+		    <INPUT TYPE="checkbox" NAME="removedeleted" ID="removedeleted" VALUE="1"><B><label for="removedeleted">{trans("Delete stats of non-existing (deleted) nodes")}</label></B></INPUT>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN="2" ALIGN="right">
+			<A HREF="javascript:document.trafficdbcompact.submit();" ACCESSKEY="K">{trans("Compact")} <IMG SRC="img/save.gif" alt=""></A>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+</FORM>
+{/block}

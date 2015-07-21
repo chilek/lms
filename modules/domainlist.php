@@ -152,5 +152,5 @@ $SMARTY->assign('domainlist', $domainlist);
 $SMARTY->assign('domaincount', $domaincount);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
-$SMARTY->display('domainlist.html');
+$SMARTY->display('domain/domainlist.html');
 ?>

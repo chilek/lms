@@ -45,6 +45,6 @@ $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('statelist', $statelist);
 $SMARTY->assign('listdata', $listdata);
-$SMARTY->display('statelist.html');
+$SMARTY->display('state/statelist.html');
 
 ?>

@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE TABLE taxes (
 	    id int(11) NOT NULL auto_increment,
 	    value decimal(4,2) NOT NULL DEFAULT '0',
@@ -36,45 +36,45 @@ $DB->Execute("
 	    validto int(11) NOT NULL DEFAULT '0',
 	    PRIMARY KEY (id))
 ");
-$DB->Execute("ALTER TABLE cash ADD taxid int(11) NOT NULL DEFAULT '0'");
-$DB->Execute("ALTER TABLE tariffs ADD taxid int(11) NOT NULL DEFAULT '0'");
-$DB->Execute("ALTER TABLE invoicecontents ADD taxid int(11) NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE cash ADD taxid int(11) NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE tariffs ADD taxid int(11) NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE invoicecontents ADD taxid int(11) NOT NULL DEFAULT '0'");
 
 //Mysql 3.x hasn't got UNION clause
 //Using 3 tables to be sure that all used tax rates are retrived
 
-$DB->Execute("CREATE TABLE temp_union ENGINE=HEAP SELECT taxvalue FROM cash GROUP BY taxvalue"); 
-$DB->Execute("INSERT INTO temp_union SELECT taxvalue FROM tariffs GROUP BY taxvalue");
-$DB->Execute("INSERT INTO temp_union SELECT taxvalue FROM invoicecontents GROUP BY taxvalue");
+$this->Execute("CREATE TABLE temp_union ENGINE=HEAP SELECT taxvalue FROM cash GROUP BY taxvalue"); 
+$this->Execute("INSERT INTO temp_union SELECT taxvalue FROM tariffs GROUP BY taxvalue");
+$this->Execute("INSERT INTO temp_union SELECT taxvalue FROM invoicecontents GROUP BY taxvalue");
 
 $i=0;
-if($taxes = $DB->GetCol("SELECT taxvalue FROM temp_union GROUP BY taxvalue"))
+if($taxes = $this->GetCol("SELECT taxvalue FROM temp_union GROUP BY taxvalue"))
 	foreach($taxes as $tax)
 	{    
 		$i++;
 		if( $tax=='' ) //tax-free
 		{
-			$DB->Execute("INSERT INTO taxes (value, taxed, label) VALUES(0,0,'tax-free')");
-			$DB->Execute("UPDATE cash SET taxid=? WHERE taxvalue IS NULL", array($i));
-			$DB->Execute("UPDATE tariffs SET taxid=? WHERE taxvalue IS NULL", array($i));
-			$DB->Execute("UPDATE invoicecontents SET taxid=? WHERE taxvalue IS NULL", array($i));
+			$this->Execute("INSERT INTO taxes (value, taxed, label) VALUES(0,0,'tax-free')");
+			$this->Execute("UPDATE cash SET taxid=? WHERE taxvalue IS NULL", array($i));
+			$this->Execute("UPDATE tariffs SET taxid=? WHERE taxvalue IS NULL", array($i));
+			$this->Execute("UPDATE invoicecontents SET taxid=? WHERE taxvalue IS NULL", array($i));
 		}
 		else
 		{
-			$DB->Execute("INSERT INTO taxes (value, taxed, label) VALUES(?,1,?)", array($tax, $tax.' %'));
-			$DB->Execute("UPDATE cash SET taxid=? WHERE taxvalue=?", array($i, $tax));
-			$DB->Execute("UPDATE tariffs SET taxid=? WHERE taxvalue=?", array($i, $tax));
-			$DB->Execute("UPDATE invoicecontents SET taxid=? WHERE taxvalue=?", array($i, $tax));
+			$this->Execute("INSERT INTO taxes (value, taxed, label) VALUES(?,1,?)", array($tax, $tax.' %'));
+			$this->Execute("UPDATE cash SET taxid=? WHERE taxvalue=?", array($i, $tax));
+			$this->Execute("UPDATE tariffs SET taxid=? WHERE taxvalue=?", array($i, $tax));
+			$this->Execute("UPDATE invoicecontents SET taxid=? WHERE taxvalue=?", array($i, $tax));
 		}
 	}
 
-$DB->Execute("DROP TABLE temp_union");	
-$DB->Execute("ALTER TABLE cash DROP taxvalue");
-$DB->Execute("ALTER TABLE tariffs DROP taxvalue");
-$DB->Execute("ALTER TABLE invoicecontents DROP taxvalue");
+$this->Execute("DROP TABLE temp_union");	
+$this->Execute("ALTER TABLE cash DROP taxvalue");
+$this->Execute("ALTER TABLE tariffs DROP taxvalue");
+$this->Execute("ALTER TABLE invoicecontents DROP taxvalue");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005061200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005061200', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

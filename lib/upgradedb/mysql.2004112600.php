@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
     CREATE TABLE uiconfig (
 	id int(11) NOT NULL auto_increment,
 	section varchar(255) NOT NULL default '',
@@ -36,6 +36,6 @@ $DB->Execute("
     ) ENGINE=MyISAM
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004112600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004112600', 'dbversion'));
 
 ?>

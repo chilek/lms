@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 
     ALTER TABLE assignments ADD COLUMN att smallint;
     UPDATE assignments SET att = at;
@@ -53,8 +53,8 @@ $DB->Execute("
     );
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005110600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005110600', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

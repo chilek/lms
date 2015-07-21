@@ -1,0 +1,77 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<FORM name="tmove" method="POST" action="">
+<p style="display: none;">
+<INPUT type="submit" class="hiddenbtn">
+</p>
+<TABLE class="lmsbox">
+	<THEAD>
+	<TR>
+		<TD style="width: 97%;">
+			<IMG src="img/nodegroup.gif" alt="">&nbsp;<span class="bold">{trans("Name:")}</span><BR>
+			<IMG src="img/info1.gif" alt="">&nbsp;{trans("Description:")}
+		</TD>
+		<TD style="width: 1%;" class="text-right">
+			{trans("ID:")}
+		</TD>
+		<TD style="width: 1%;" class="text-right">
+			{trans("Members:")}
+		</TD>
+		<TD style="width: 1%;" class="text-right bold nobr">
+			{t a=$listdata.total|default:"0"}Total: $a{/t}
+		</TD>
+	</TR>
+	</THEAD>
+	<TFOOT>
+	<TR>
+		<TD colspan="2" style="width: 98%;" class="text-right bold">
+			<IMG src="img/info2.gif" alt="">&nbsp;{trans("Total:")}
+		</TD>
+		<TD style="width: 1%;" class="text-right bold nobr">
+			{$listdata.nodestotal|default:"0"}
+		</TD>
+		<TD style="width: 1%;">
+			&nbsp;
+		</TD>
+	</TR>
+	</TFOOT>
+	<TBODY>
+	{cycle values="light,lucid" print=false}
+	{section name=nodegroups loop=$nodegrouplist}
+	<TR class="highlight {cycle}"  >
+		<TD style="width: 97%;" onClick="return self.location.href='?m=nodegroupinfo&amp;id={$nodegrouplist[nodegroups].id}';">
+			<IMG src="img/nodegroup.gif" alt="">&nbsp;<span class="bold">{$nodegrouplist[nodegroups].name}</span><BR>
+			{if $nodegrouplist[nodegroups].description}<IMG src="img/info1.gif" alt="">&nbsp;{$nodegrouplist[nodegroups].description}{/if}
+		</TD>
+		<TD style="width: 1%;" class="text-right" onClick="return self.location.href='?m=nodegroupinfo&amp;id={$nodegrouplist[nodegroups].id}';">
+			({$nodegrouplist[nodegroups].id|string_format:"%04d"})
+		</TD>
+		<TD style="width: 1%;" class="text-right" onClick="return self.location.href='?m=nodegroupinfo&amp;id={$nodegrouplist[nodegroups].id}';">
+			{$nodegrouplist[nodegroups].nodescount}
+		</TD>
+		<TD style="width: 1%;" class="text-right nobr">
+			{if $nodegrouplist[nodegroups].nodescount}<A href="javascript:alert('{trans("Group with members cannot be deleted!")}');">
+			{else}<A href="?m=nodegroupdel&amp;id={$nodegrouplist[nodegroups].id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to remove this group?")}');">
+			{/if}<IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A href="?m=nodegroupedit&amp;id={$nodegrouplist[nodegroups].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A href="?m=nodegroupinfo&amp;id={$nodegrouplist[nodegroups].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+			<INPUT class="radio light" type="radio" name="from" id="from{$nodegrouplist[nodegroups].id}" value="{$nodegrouplist[nodegroups].id}"{if $selectednodegroupid==$nodegrouplist[nodegroups].id} checked{/if}>
+			<INPUT class="radio light" type="radio" name="to" id="to{$nodegrouplist[nodegroups].id}" value="{$nodegrouplist[nodegroups].id}" onClick="javascript:document.tmove.submit();">
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD colspan="4" class="text-center bold">
+			<p>&nbsp;</p>
+			<p>{trans("There are no such groups in database.")}</p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	</TBODY>
+</TABLE>
+</FORM>
+{/block}

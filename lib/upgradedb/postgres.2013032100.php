@@ -21,22 +21,22 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE networks
+$this->Execute("ALTER TABLE networks
 				ADD COLUMN hostid integer NULL
 				REFERENCES hosts (id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-$DB->Execute("CREATE INDEX networks_hostid_idx ON networks (hostid)");
+$this->Execute("CREATE INDEX networks_hostid_idx ON networks (hostid)");
 
-$DB->Execute("ALTER TABLE networks
+$this->Execute("ALTER TABLE networks
 				DROP CONSTRAINT networks_address_key");
 
-$DB->Execute("ALTER TABLE networks
+$this->Execute("ALTER TABLE networks
 				ADD CONSTRAINT networks_address_key UNIQUE (address, hostid)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013032100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013032100', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

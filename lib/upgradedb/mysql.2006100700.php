@@ -24,12 +24,12 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE nodes ADD chkmac tinyint(1) NOT NULL DEFAULT '1'");
+$this->Execute("ALTER TABLE nodes ADD chkmac tinyint(1) NOT NULL DEFAULT '1'");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006100700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006100700', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

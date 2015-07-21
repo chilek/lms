@@ -1,0 +1,63 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ -->
+<H1>{$layout.pagetitle}</H1>
+<TABLE class="lmsbox">
+<FORM METHOD="POST" NAME="tedit" ACTION="?m=customergroupedit&id={$customergroup.id}">
+<INPUT type="submit" class="hiddenbtn">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/group.gif" alt="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Name:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT TYPE="TEXT" VALUE="{$customergroup.name}" NAME="customergroup[name]" SIZE="40" {tip trigger="name" bold=1}>
+			<B>&nbsp;({$customergroup.id|string_format:"%04d"})</B>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/info1.gif" alt="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{trans("Description:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<TEXTAREA ROWS="5" COLS="50" NAME="customergroup[description]" {tip text="Enter additional information (optional)"}>{$customergroup.description}</TEXTAREA>
+		</TD>
+	</TR>
+</FORM>
+	<TR>
+		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT">
+		        {if sizeof($customergroups) > 1 && $customergroup.count}
+			<FORM name="tmove" method="get" action="">
+			    <input type="hidden" name="is_sure" value="1">
+			    <input type="hidden" name="m" value="customergroupmove">
+			    <input type="hidden" name="from" value="{$customergroup.id}">
+			    <A HREF="javascript:document.tmove.submit();" onclick="return confirm('{trans("Are you sure, you want to move members to selected group?")}')">{trans("Move members to group:")}</A>
+			    <SELECT SIZE="1" NAME="to" {tip text="Select group to which you want to move members"}>
+				{foreach from=$customergroups item=item}{if $item.id != $customergroup.id}
+				<OPTION VALUE="{$item.id}">{$item.name}</OPTION>
+	            		{/if}{/foreach}
+		    	    </SELECT>
+			</FORM>
+			{/if}
+			<A HREF="javascript:document.tedit.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
+			<A HREF="?m=customergroupinfo&id={$customergroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A> 
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+<SCRIPT type="text/javascript">
+<!--
+document.forms['tedit'].elements['customergroup[name]'].focus();
+//-->
+</SCRIPT>
+{include file="customer/customergroupassignments.html"}
+{/block}

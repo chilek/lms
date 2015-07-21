@@ -334,9 +334,13 @@ if ($type == 'openlayers')
 			$SMARTY->assign('lon', $nodes[$nodeid]['lon']);
 			$SMARTY->assign('lat', $nodes[$nodeid]['lat']);
 		}
+		else {
+			$SMARTY->assign('lon', $_GET['lon']);
+			$SMARTY->assign('lat', $_GET['lat']);
+		}
 
 	$SMARTY->assign('type', $type);
-	$SMARTY->display('netdevmap.html');
+	$SMARTY->display('netdev/netdevmap.html');
 }
 elseif($graph == '')
 {
@@ -413,7 +417,7 @@ elseif($graph == '')
 	$SMARTY->assign('emptydb', sizeof($deviceslist) ? FALSE : TRUE);
 	$SMARTY->assign('gd', function_exists('imagepng'));
 	$SMARTY->assign('ming', function_exists('ming_useswfversion'));
-	$SMARTY->display('netdevmap.html');
+	$SMARTY->display('netdev/netdevmap.html');
 } 
 elseif ($graph == 'flash')
 {	

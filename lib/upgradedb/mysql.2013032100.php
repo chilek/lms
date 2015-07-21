@@ -21,17 +21,17 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE networks
+$this->Execute("ALTER TABLE networks
 				ADD COLUMN hostid int(11) NULL,
 				ADD FOREIGN KEY (hostid) REFERENCES hosts (id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-$DB->Execute("ALTER TABLE networks DROP INDEX address,
+$this->Execute("ALTER TABLE networks DROP INDEX address,
 				ADD UNIQUE address(address, hostid)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013032100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013032100', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

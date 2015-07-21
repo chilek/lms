@@ -21,14 +21,14 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
 // name2 support for teryt location_street
-$DB->Execute("DROP VIEW teryt_ulic");
+$this->Execute("DROP VIEW teryt_ulic");
 
-$DB->Execute("ALTER TABLE location_streets ADD name2 varchar(128) DEFAULT NULL");
+$this->Execute("ALTER TABLE location_streets ADD name2 varchar(128) DEFAULT NULL");
 
-$DB->Execute("
+$this->Execute("
 	CREATE VIEW teryt_ulic AS
 		SELECT st.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
 			c.ident AS sym, s.ident AS sym_ul, s.name AS nazwa_1, s.name2 AS nazwa_2, t.name AS cecha, s.id
@@ -41,24 +41,24 @@ $DB->Execute("
 ");
 
 // netlink and node link speed support
-$DB->Execute("DROP VIEW vnodes");
-$DB->Execute("DROP VIEW vmacs");
+$this->Execute("DROP VIEW vnodes");
+$this->Execute("DROP VIEW vmacs");
 
-$DB->Execute("ALTER TABLE netlinks ADD speed int(11) DEFAULT '100000' NOT NULL");
-$DB->Execute("ALTER TABLE nodes ADD linkspeed int(11) DEFAULT '100000' NOT NULL");
+$this->Execute("ALTER TABLE netlinks ADD speed int(11) DEFAULT '100000' NOT NULL");
+$this->Execute("ALTER TABLE nodes ADD linkspeed int(11) DEFAULT '100000' NOT NULL");
 
-$DB->Execute("CREATE VIEW vnodes AS
+$this->Execute("CREATE VIEW vnodes AS
 		SELECT n.*, m.mac
 		FROM nodes n
 		LEFT JOIN vnodes_mac m ON (n.id = m.nodeid)");
-$DB->Execute("CREATE VIEW vmacs AS
+$this->Execute("CREATE VIEW vmacs AS
 		SELECT n.*, m.mac, m.id AS macid
 		FROM nodes n
 		JOIN macs m ON (n.id = m.nodeid)");
 
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012030801', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012030801', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

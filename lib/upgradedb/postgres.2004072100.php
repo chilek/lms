@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
     BEGIN;
     ALTER TABLE users ADD serviceaddr text;
     ALTER TABLE users ALTER serviceaddr SET DEFAULT '';

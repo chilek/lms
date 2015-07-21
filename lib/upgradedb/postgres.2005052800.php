@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 
 	CREATE TEMP TABLE users_t AS SELECT * FROM users;
 	DROP TABLE users;
@@ -111,8 +111,8 @@ $DB->Execute("
 	
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005052800', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005052800', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

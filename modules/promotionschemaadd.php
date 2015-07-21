@@ -120,6 +120,6 @@ $layout['pagetitle'] = trans('New Schema');
 $SMARTY->assign('error', $error);
 $SMARTY->assign('schema', $schema);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
-$SMARTY->display('promotionschemaadd.html');
+$SMARTY->display('promotion/promotionschemaadd.html');
 
 ?>

@@ -24,12 +24,12 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE documents ADD reason varchar(255) NOT NULL DEFAULT ''");
+$this->Execute("ALTER TABLE documents ADD reason varchar(255) NOT NULL DEFAULT ''");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007053100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007053100', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
-$DB->Execute("
+$this->BeginTrans();
+$this->Execute("
     ALTER TABLE users ADD COLUMN pin integer;
     UPDATE users SET pin=random()*10 + random()*100 + random()*1000 + random()*10000 + random()*100000-1;
     ALTER TABLE users ALTER pin SET DEFAULT 0;
@@ -33,6 +33,6 @@ $DB->Execute("
     
     UPDATE dbinfo SET keyvalue = '2004090800' WHERE keytype = 'dbversion';
 ");
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

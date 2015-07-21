@@ -26,20 +26,20 @@
 
 // Some stuff by maniac.
 
-$DB->Execute("
+$this->Execute("
     ALTER TABLE users ADD message text;
     ALTER TABLE users ALTER message SET DEFAULT '';
     UPDATE users SET message='';
     ALTER TABLE users ALTER message SET NOT NULL
 ");
 
-$DB->Execute("
+$this->Execute("
     ALTER TABLE nodes ADD warning smallint;
     ALTER TABLE nodes ALTER warning SET DEFAULT 0;
     UPDATE nodes SET warning=0;
     ALTER TABLE nodes ALTER warning SET NOT NULL
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004031000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004031000', 'dbversion'));
 
 ?>

@@ -21,12 +21,12 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("CREATE INDEX documents_reference_idx ON documents (reference)");
+$this->Execute("CREATE INDEX documents_reference_idx ON documents (reference)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014012700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014012700', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

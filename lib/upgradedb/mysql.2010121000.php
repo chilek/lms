@@ -21,45 +21,45 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->EXECUTE("DROP VIEW customersview");
+$this->EXECUTE("DROP VIEW customersview");
 
-$DB->EXECUTE("ALTER TABLE customers ADD einvoice tinyint(1) DEFAULT NULL");
-$DB->EXECUTE("ALTER TABLE customers ADD invoicenotice tinyint(1) DEFAULT NULL");
-$DB->EXECUTE("ALTER TABLE customers ADD mailingnotice tinyint(1) DEFAULT NULL");
+$this->EXECUTE("ALTER TABLE customers ADD einvoice tinyint(1) DEFAULT NULL");
+$this->EXECUTE("ALTER TABLE customers ADD invoicenotice tinyint(1) DEFAULT NULL");
+$this->EXECUTE("ALTER TABLE customers ADD mailingnotice tinyint(1) DEFAULT NULL");
 
-$DB->EXECUTE("CREATE VIEW customersview AS
+$this->EXECUTE("CREATE VIEW customersview AS
 	SELECT c.* FROM customers c
 	WHERE NOT EXISTS (
 		SELECT 1 FROM customerassignments a
 		JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 		WHERE e.userid = lms_current_user() AND a.customerid = c.id)");
 
-$DB->EXECUTE("DELETE FROM assignments WHERE customerid NOT IN (SELECT id FROM customers)");
-$DB->EXECUTE("ALTER TABLE assignments ADD FOREIGN KEY (customerid)
+$this->EXECUTE("DELETE FROM assignments WHERE customerid NOT IN (SELECT id FROM customers)");
+$this->EXECUTE("ALTER TABLE assignments ADD FOREIGN KEY (customerid)
 	REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE");
-$DB->EXECUTE("ALTER TABLE assignments MODIFY customerid int(11) NOT NULL");
+$this->EXECUTE("ALTER TABLE assignments MODIFY customerid int(11) NOT NULL");
 
-$DB->EXECUTE("DELETE FROM customerassignments WHERE customerid NOT IN (SELECT id FROM customers)");
-$DB->EXECUTE("ALTER TABLE customerassignments MODIFY customerid int(11) NOT NULL");
-$DB->EXECUTE("ALTER TABLE customerassignments ADD INDEX customerid (customerid)");
-$DB->EXECUTE("ALTER TABLE customerassignments ADD FOREIGN KEY (customerid)
+$this->EXECUTE("DELETE FROM customerassignments WHERE customerid NOT IN (SELECT id FROM customers)");
+$this->EXECUTE("ALTER TABLE customerassignments MODIFY customerid int(11) NOT NULL");
+$this->EXECUTE("ALTER TABLE customerassignments ADD INDEX customerid (customerid)");
+$this->EXECUTE("ALTER TABLE customerassignments ADD FOREIGN KEY (customerid)
 	REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE");
 
-$DB->EXECUTE("DELETE FROM customerassignments WHERE customergroupid NOT IN (SELECT id FROM customergroups)");
-$DB->EXECUTE("ALTER TABLE customerassignments ADD FOREIGN KEY (customergroupid)
+$this->EXECUTE("DELETE FROM customerassignments WHERE customergroupid NOT IN (SELECT id FROM customergroups)");
+$this->EXECUTE("ALTER TABLE customerassignments ADD FOREIGN KEY (customergroupid)
 	REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE");
-$DB->EXECUTE("ALTER TABLE customerassignments MODIFY customergroupid int(11) NOT NULL");
+$this->EXECUTE("ALTER TABLE customerassignments MODIFY customergroupid int(11) NOT NULL");
 
-$DB->EXECUTE("DELETE FROM excludedgroups WHERE customergroupid NOT IN (SELECT id FROM customergroups)");
-$DB->EXECUTE("ALTER TABLE excludedgroups MODIFY customergroupid int(11) NOT NULL");
-$DB->EXECUTE("ALTER TABLE excludedgroups ADD INDEX customergroupid (customergroupid)");
-$DB->EXECUTE("ALTER TABLE excludedgroups ADD FOREIGN KEY (customergroupid)
+$this->EXECUTE("DELETE FROM excludedgroups WHERE customergroupid NOT IN (SELECT id FROM customergroups)");
+$this->EXECUTE("ALTER TABLE excludedgroups MODIFY customergroupid int(11) NOT NULL");
+$this->EXECUTE("ALTER TABLE excludedgroups ADD INDEX customergroupid (customergroupid)");
+$this->EXECUTE("ALTER TABLE excludedgroups ADD FOREIGN KEY (customergroupid)
 	REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010121000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010121000', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

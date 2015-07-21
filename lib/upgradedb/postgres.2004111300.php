@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
-$DB->Execute("
+$this->BeginTrans();
+$this->Execute("
     CREATE SEQUENCE passwd_id_seq;
     CREATE TABLE passwd (
 	id integer DEFAULT nextval('passwd_id_seq'::text) NOT NULL,
@@ -39,6 +39,6 @@ $DB->Execute("
     );
     UPDATE dbinfo SET keyvalue = '2004111300' WHERE keytype = 'dbversion';
 ");
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

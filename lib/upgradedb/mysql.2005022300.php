@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
     CREATE TABLE cashimport (
 	id int(11) NOT NULL auto_increment,
 	date int(11) NOT NULL default '0',
@@ -37,6 +37,6 @@ $DB->Execute("
 	PRIMARY KEY (id)) ENGINE=MyISAM
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005022300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005022300', 'dbversion'));
 
 ?>

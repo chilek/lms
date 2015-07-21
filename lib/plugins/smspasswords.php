@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
  *  USA.
  *
- *  $Id: example.php,v 1.4 2012/01/02 11:01:30 alec Exp $
+ *  $Id$
  */
 
 class lms_smspasswords_plugin

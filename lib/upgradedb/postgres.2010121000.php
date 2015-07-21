@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     DROP VIEW customersview;
 
     ALTER TABLE customers ADD einvoice smallint DEFAULT NULL;
@@ -62,8 +62,8 @@ $DB->Execute("
     CREATE INDEX excludedgroups_customergroupid_idx ON excludedgroups (customergroupid);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010121000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010121000', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

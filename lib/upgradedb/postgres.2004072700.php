@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
     BEGIN;
     ALTER TABLE rttickets ADD resolvetime integer;
     ALTER TABLE rttickets ALTER resolvetime SET DEFAULT 0;

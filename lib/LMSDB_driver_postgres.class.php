@@ -381,11 +381,16 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
      * 
      * @param string $field
      * @param string $separator
+     * @param boolean $distinct
      * @return string
      */
-    public function _driver_groupconcat($field, $separator = ',')
+    public function _driver_groupconcat($field, $separator = ',', $distinct = false)
     {
-        return 'array_to_string(array_agg(' . $field . '), \'' . $separator . '\')';
+        if ($distinct === false) {
+            return 'array_to_string(array_agg(' . $field . '), \'' . $separator . '\')';
+        } else {
+            return 'array_to_string(array_agg(DISTINCT ' . $field . '), \'' . $separator . '\')';
+        }
 
     }
 
@@ -399,5 +404,35 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
         $this->Execute('SET NAMES ?', array($name));
 
     }
+
+	/**
+	* Gets year for date.
+	* 
+	* @param string $date
+	* @return year string
+	*/
+	public function _driver_year($date) {
+		return 'DATE_PART(\'year\', ' . $date . '::timestamp)';
+	}
+
+	/**
+	* Gets month for date.
+	* 
+	* @param string $date
+	* @return month string
+	*/
+	public function _driver_month($date) {
+		return 'DATE_PART(\'month\', ' . $date . '::timestamp)';
+	}
+
+	/**
+	* Gets day for date.
+	* 
+	* @param string $date
+	* @return day string
+	*/
+	public function _driver_day($date) {
+		return 'DATE_PART(\'day\', ' . $date . '::timestamp)';
+	}
 
 }

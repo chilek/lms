@@ -109,6 +109,6 @@ $SMARTY->assign('selectednodegroupid', $from);
 $SMARTY->assign('nodegrouplist', $nodegrouplist);
 $SMARTY->assign('listdata', $listdata);
 
-$SMARTY->display('nodegrouplist.html');
+$SMARTY->display('node/nodegrouplist.html');
 
 ?>

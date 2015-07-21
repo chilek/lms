@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE TABLE logtransactions (
 		id int(11)		NOT NULL auto_increment,
 		userid int(11)		DEFAULT '0' NOT NULL,
@@ -34,7 +34,7 @@ $DB->Execute("
 		INDEX time (time)
 	) ENGINE=InnoDB
 ");
-$DB->Execute("
+$this->Execute("
 	CREATE TABLE logmessages (
 		id int(11)		NOT NULL auto_increment,
 		transactionid int(11)	NOT NULL,
@@ -47,7 +47,7 @@ $DB->Execute("
 		FOREIGN KEY (transactionid) REFERENCES logtransactions (id) ON DELETE CASCADE ON UPDATE CASCADE
 	) ENGINE=InnoDB
 ");
-$DB->Execute("
+$this->Execute("
 	CREATE TABLE logmessagekeys (
 		logmessageid int(11)	NOT NULL,
 		name varchar(32)	NOT NULL,
@@ -58,7 +58,7 @@ $DB->Execute("
 		FOREIGN KEY (logmessageid) REFERENCES logmessages (id) ON DELETE CASCADE ON UPDATE CASCADE
 	) ENGINE=InnoDB
 ");
-$DB->Execute("
+$this->Execute("
 	CREATE TABLE logmessagedata (
 		logmessageid int(11)	NOT NULL,
 		name varchar(32)	NOT NULL,
@@ -69,8 +69,8 @@ $DB->Execute("
 	) ENGINE=InnoDB
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013042600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013042600', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

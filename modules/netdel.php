@@ -57,7 +57,7 @@ else
 	$SMARTY->assign('network',$network);
 	$SMARTY->assign('networks', $LMS->GetNetworks());
 	$SMARTY->assign('error',$error);
-	$SMARTY->display('netinfo.html');
+	$SMARTY->display('net/netinfo.html');
 }
 
 ?>

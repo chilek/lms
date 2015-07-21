@@ -168,7 +168,7 @@ function Swekey_Plugin() {
 			return g_SwekeyPlugin;
 
 		// Added check for MSIE because MantisBt emulates ActiveXObject for Mozilla browsers
-		if (window.ActiveXObject && navigator.userAgent.indexOf("MSIE") > -1) {
+		if ((window.ActiveXObject && navigator.userAgent.indexOf("MSIE") > -1) || navigator.userAgent.indexOf(".NET CLR") > -1) {
 			g_SwekeyPlugin = document.getElementById("swekey_activex");
 			if (g_SwekeyPlugin == null) {
 				// we must create the activex that way instead of new ActiveXObject("FbAuthAx.FbAuthCtl");

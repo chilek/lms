@@ -24,11 +24,11 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE invoicecontents ADD COLUMN discount decimal(4,2) NOT NULL default '0.00'");
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006020500', 'dbversion'));
+$this->Execute("ALTER TABLE invoicecontents ADD COLUMN discount decimal(4,2) NOT NULL default '0.00'");
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006020500', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

@@ -1,0 +1,120 @@
+<!-- $Id$ -->
+<br>
+<TABLE class="lmsbox">
+	<THEAD>
+	<TR>
+		<TD style="width: 1%;" class="bold nobr">
+			<IMG src="img/open.gif" alt=""> <B>{trans("Ticket History")}</B>
+		</TD>
+		<TD style="width: 99%;" class="text-right nobr" colspan="2">
+			{if $ticket.state != 2}
+			<A href="?m=rtnoteadd&amp;ticketid={$ticket.ticketid}">{trans("New Note")} <IMG src="img/note.gif" alt=""></A>
+			<A href="?m=rtmessageadd&amp;ticketid={$ticket.ticketid}">{trans("New Message")} <IMG src="img/mail.gif" alt=""></A>
+			{/if}
+		</TD>
+	</TR>
+	</THEAD>
+	<TFOOT>
+	<TR>
+		<TD style="width: 100%;" class="navigation" colspan="3">
+			{if $ticket.prev_ticketid != NULL}
+				<A href="?m=rtticketview&amp;id={$ticket.prev_ticketid}">&laquo;&laquo;&laquo;&nbsp;{trans("Previous ticket")}</A>
+			{else}
+				&laquo;&laquo;&laquo;&nbsp;{trans("Previous ticket")}
+			{/if}
+			&nbsp;&nbsp;&nbsp;
+			{if $ticket.next_ticketid != NULL}
+				<A href="?m=rtticketview&amp;id={$ticket.next_ticketid}">{trans("Next ticket")}&nbsp;&raquo;&raquo;&raquo;</A>
+			{else}
+				{trans("Next ticket")}&nbsp;&raquo;&raquo;&raquo;
+			{/if}
+		</TD>
+	</TR>
+	</TFOOT>
+	<TBODY>
+	<TR>
+		<TD style="width: 100%;" colspan="3">
+			<TABLE class="lmsbox-inner">
+				{counter start=0 skip=1 print=false assign=msgidx}
+				{foreach from=$ticket.messages item=message}
+				{if isset($message.customerid) && isset($message.subject)}
+				<THEAD>
+				<TR>
+					<TD style="width: 1%;" class="valign-top text-right bold nobr">
+						{$message.createtime|date_format:"%Y/%m/%d %H:%M"}
+					</TD>
+					<TD style="width: 1%;" class="text-right bold">
+						{trans("From:")}<BR>{trans("Subject:")}
+					</TD>
+					<TD style="width: 1%;" class="nobr">
+						{if $message.customerid}
+						<A href="?m=customerinfo&amp;id={$message.customerid}">{$message.customername}</A>
+						{elseif $message.userid}
+						<A href="?m=userinfo&amp;id={$message.userid}">{$message.username}</A>
+						{elseif $message.mailfrom}
+						<A href="mailto:{$message.mailfrom|escape}">{$message.mailfrom|escape}</A>
+						{else}
+						{$ticket.requestor|escape}
+						{if $ticket.requestoremail}
+						&lt;<A href="mailto:{$ticket.requestoremail|escape}">{$ticket.requestoremail|escape}</A>&gt;
+						{/if}
+						{/if}
+						<BR>
+						{$message.subject|escape}
+					</TD>
+					<TD style="width: 97%;" class="text-right">
+						{if $message.attachments}
+						{foreach $message.attachments as $attachment}
+						<A href="?m=rtmessageview&amp;tid={$ticket.ticketid}&amp;mid={$message.id}&amp;file={$attachment.filename}"{if $attachment.contenttype == "image/jpeg" || $attachment.contenttype == "image/png" || $attachment.contenttype == "image/gif"} onmouseover="popup('?m=rtattachmentview&amp;tid={$ticket.ticketid}&amp;mid={$message.id}&amp;file={$attachment.filename}',1,0,30,15);" onmouseout="pophide();"{/if}>{$attachment.filename} <IMG src="img/attach.gif" alt=""></A>
+						{/foreach}
+						{/if}
+						<A href="?m=rtmessageview&amp;id={$message.id}">{trans("Details")} <IMG src="img/view.gif" alt=""></A>
+						{if $msgidx > 0}
+						<A href="?m=rtmessagedel&amp;id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
+						{/if}
+						{if $ticket.state != 2}
+						<A href="?m=rtmessageadd&amp;id={$message.id}&amp;ticketid={$ticket.ticketid}">{trans("Answer")} <IMG src="img/forward.gif" alt=""></A>
+						{/if}
+					</TD>
+				</TR>
+				</THEAD>
+				<TBODY>
+				<TR>
+					<TD colspan="4" class="fbt superlight">
+						{$message.body|escape|replace:"\n":"<BR>"}
+					</TD>
+				</TR>
+				</TBODY>
+				{counter print=false}
+				{else}
+				<THEAD>
+				<TR>
+					<TD style="width: 1%;" class="text-right bold nobr">
+						{$message.createtime|date_format:"%Y/%m/%d %H:%M"}
+					</TD>
+					<TD style="width: 1%;" class="text-right bold">
+						{trans("From:")}
+					</TD>
+					<TD style="width: 1%;" class="nobr">
+						<A href="?m=userinfo&amp;id={$message.userid}">{$message.username}</A>
+					</TD>
+					<TD style="width: 97%;" class="text-right nobr">
+						<A href="?m=rtnotedel&amp;id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that note?")}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
+					</TD>
+				</TR>
+				</THEAD>
+				<TBODY>
+					<TR>
+						<TD colspan="4" class="fbt superlight blend">
+							{$message.body|escape|replace:"\n":"<BR>"}
+						</TD>
+					</TR>
+				</TBODY>
+				{counter print=false}
+				{/if}
+				{/foreach}
+			</TABLE>
+		</TD>
+	</TR>
+	</TBODY>
+</TABLE>

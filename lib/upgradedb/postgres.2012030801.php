@@ -22,10 +22,10 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
 // name2 support for teryt location_street
-$DB->Execute("
+$this->Execute("
 	DROP VIEW teryt_ulic;
 	ALTER TABLE location_streets ADD name2 varchar(128) DEFAULT NULL;
 	CREATE VIEW teryt_ulic AS
@@ -40,7 +40,7 @@ $DB->Execute("
 ");
 
 // netlink and node link speed support
-$DB->Execute("
+$this->Execute("
 	DROP VIEW vnodes;
 	DROP VIEW vmacs;
 	ALTER TABLE netlinks ADD speed integer DEFAULT 100000 NOT NULL;
@@ -56,8 +56,8 @@ $DB->Execute("
 		JOIN macs m ON (n.id = m.nodeid);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012030801', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012030801', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

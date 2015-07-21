@@ -22,15 +22,15 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE domains ADD master varchar(128) DEFAULT NULL");
-$DB->Execute("ALTER TABLE domains ADD last_check integer DEFAULT NULL");
-$DB->Execute("ALTER TABLE domains ADD type varchar(6) DEFAULT '' NOT NULL");
-$DB->Execute("ALTER TABLE domains ADD notified_serial integer DEFAULT NULL");
-$DB->Execute("ALTER TABLE domains ADD account varchar(40) DEFAULT NULL");
+$this->Execute("ALTER TABLE domains ADD master varchar(128) DEFAULT NULL");
+$this->Execute("ALTER TABLE domains ADD last_check integer DEFAULT NULL");
+$this->Execute("ALTER TABLE domains ADD type varchar(6) DEFAULT '' NOT NULL");
+$this->Execute("ALTER TABLE domains ADD notified_serial integer DEFAULT NULL");
+$this->Execute("ALTER TABLE domains ADD account varchar(40) DEFAULT NULL");
 
-$DB->Execute("
+$this->Execute("
 	CREATE SEQUENCE records_id_seq;
 	CREATE TABLE records (
 		id integer		DEFAULT nextval('records_id_seq'::text) NOT NULL,
@@ -46,10 +46,10 @@ $DB->Execute("
 	);
 ");
 
-$DB->Execute("CREATE INDEX records_name_type_idx ON records (name, type, domain_id)");
-$DB->Execute("CREATE INDEX records_domain_id_idx ON records (domain_id)");
+$this->Execute("CREATE INDEX records_name_type_idx ON records (name, type, domain_id)");
+$this->Execute("CREATE INDEX records_domain_id_idx ON records (domain_id)");
 
-$DB->Execute("
+$this->Execute("
 	CREATE SEQUENCE supermasters_id_seq;
 	CREATE TABLE supermasters (
 		id integer		DEFAULT nextval('supermasters_id_seq'::text) NOT NULL,		
@@ -60,8 +60,8 @@ $DB->Execute("
 	)
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009103000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009103000', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

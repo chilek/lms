@@ -24,10 +24,10 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE rtmessages ADD INDEX ticketid (ticketid)");
-$DB->Execute("
+$this->Execute("ALTER TABLE rtmessages ADD INDEX ticketid (ticketid)");
+$this->Execute("
     CREATE TABLE rtnotes (
 	id int(11) 	     NOT NULL auto_increment,
 	ticketid int(11)     NOT NULL DEFAULT '0',
@@ -39,8 +39,8 @@ $DB->Execute("
     ) ENGINE=MyISAM;
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007022200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007022200', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
@@ -27,10 +29,14 @@
 						<B>{trans("Period:")}&nbsp;</B>
 					</TD>
 					<TD width="1%" nowrap>
-						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal8.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						<div class="calendar">
+						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						</div>
 					</TD>
 					<TD width="97%" nowrap>
-						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal9.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						<div class="calendar">
+						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						</div>
 					</TD>
 				</TR>
 			</TABLE>
@@ -44,14 +50,6 @@
     </TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-var cal8 = new calendar(document.forms['invoicereport'].elements['from']);
-cal8.time_comp = false;
-var cal9 = new calendar(document.forms['invoicereport'].elements['to']);
-cal9.time_comp = false;
-//-->
-</SCRIPT>
 <P><FORM method="post" name="receiptlist" id="receiptlist" action="?m=export&type=cash">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
@@ -89,8 +87,10 @@ cal9.time_comp = false;
 					</TD>
 					<TD width="1%" nowrap>
 						<B>{trans("Period:")}</B>&nbsp;
-						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal13.popup();" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						<div class="calendar">
+						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						</div>
 					</TD>
 					<TD width="1%">
 						<IMG src="img/users.gif" alt="">
@@ -118,12 +118,4 @@ cal9.time_comp = false;
     </TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-var cal12 = new calendar(document.receiptlist.elements['from']);
-cal12.time_comp = false;
-var cal13 = new calendar(document.receiptlist.elements['to']);
-cal13.time_comp = false;
-//-->
-</SCRIPT>
-{include file="footer.html"}
+{/block}

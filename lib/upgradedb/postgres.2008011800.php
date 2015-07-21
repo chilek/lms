@@ -24,16 +24,16 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	ALTER TABLE nodes ADD port smallint NOT NULL DEFAULT 0;
 	ALTER TABLE netlinks ADD srcport smallint NOT NULL DEFAULT 0;
 	ALTER TABLE netlinks ADD dstport smallint NOT NULL DEFAULT 0;
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2008011800', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2008011800', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

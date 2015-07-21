@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE SEQUENCE logtransactions_id_seq;
 	CREATE TABLE logtransactions (
 		id integer		DEFAULT nextval('logtransactions_id_seq'::text) NOT NULL,
@@ -68,8 +68,8 @@ $DB->Execute("
 	CREATE INDEX logmessagedata_name_idx ON logmessagedata (name);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013042600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013042600', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

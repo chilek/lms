@@ -270,6 +270,6 @@ $SMARTY->assign('docrights', $rights);
 $SMARTY->assign('allnumberplans', $allnumberplans);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('document', $document);
-$SMARTY->display('documentedit.html');
+$SMARTY->display('document/documentedit.html');
 
 ?>

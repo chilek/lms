@@ -22,9 +22,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	ALTER TABLE divisions ADD inv_paytime smallint DEFAULT NULL;
 	ALTER TABLE divisions ADD inv_paytype varchar(255) DEFAULT NULL;
 	ALTER TABLE invoicecontents ALTER description TYPE text;
@@ -32,8 +32,8 @@ $DB->Execute("
 	ALTER TABLE cash ALTER comment TYPE text;
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009111700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009111700', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
 CREATE TABLE docrights (
     id          int(11)         NOT NULL auto_increment,
     userid      int(11)         DEFAULT '0' NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE docrights (
 ");
 
 foreach(array(-1,-2,-3,-4,-5,-6,-7,-8, -9,-10) as $doctype)
-	$DB->Execute("INSERT INTO docrights (userid, doctype, rights)
+	$this->Execute("INSERT INTO docrights (userid, doctype, rights)
 		SELECT id, ?, ? FROM users WHERE deleted = 0",
 		array($doctype, 31)); 
 /*
@@ -47,6 +47,6 @@ foreach(array(-1,-2,-3,-4,-5,-6,-7,-8, -9,-10) as $doctype)
 16 - delete
 */
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009051200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009051200', 'dbversion'));
 
 ?>

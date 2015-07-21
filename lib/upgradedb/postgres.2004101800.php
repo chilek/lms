@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
-$DB->Execute("
+$this->BeginTrans();
+$this->Execute("
     ALTER TABLE nodes ADD COLUMN linktype smallint;
     UPDATE nodes SET linktype=0;
     ALTER TABLE nodes ALTER linktype SET DEFAULT 0;
@@ -38,6 +38,6 @@ $DB->Execute("
     
     UPDATE dbinfo SET keyvalue = '2004101800' WHERE keytype = 'dbversion';
 ");
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

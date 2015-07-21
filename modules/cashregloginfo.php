@@ -47,6 +47,6 @@ $reglog['time'] = strftime('%Y/%m/%d %H:%M', $reglog['time']);
 $layout['pagetitle'] = trans('Cash History Entry Info');
 
 $SMARTY->assign('reglog', $reglog);
-$SMARTY->display('cashregloginfo.html');
+$SMARTY->display('cash/cashregloginfo.html');
 
 ?>

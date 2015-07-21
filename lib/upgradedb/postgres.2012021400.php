@@ -22,12 +22,12 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE domains ADD mxbackup smallint DEFAULT 0 NOT NULL");
+$this->Execute("ALTER TABLE domains ADD mxbackup smallint DEFAULT 0 NOT NULL");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012021400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012021400', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

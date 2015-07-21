@@ -25,7 +25,7 @@
  */
 
 $a = $DB->GetRow('SELECT a.invoice, a.settlement,
-        a.numberplanid, a.paytype, n.template, n.period
+        a.numberplanid, a.paytype, n.template, n.period, a.attribute
 		FROM assignments a
 		LEFT JOIN numberplans n ON (n.id = a.numberplanid)
 		WHERE a.id = ?',array(intval($_GET['id'])));
@@ -37,6 +37,6 @@ if ($a['template']) {
 $a['paytypename'] = $PAYTYPES[$a['paytype']];
 
 $SMARTY->assign('assignment', $a);
-$SMARTY->display('customerassignmentinfoshort.html');
+$SMARTY->display('customer/customerassignmentinfoshort.html');
 
 ?>

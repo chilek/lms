@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     CREATE TABLE numberplans (
 	id int(11) NOT NULL auto_increment,
 	template varchar(255) NOT NULL DEFAULT '',
@@ -36,19 +36,19 @@ $DB->Execute("
 	PRIMARY KEY (id))
 ");
 
-$DB->Execute("INSERT INTO numberplans (template, period, doctype, isdefault) VALUES(?,?,1,1)", 
+$this->Execute("INSERT INTO numberplans (template, period, doctype, isdefault) VALUES(?,?,1,1)", 
 		array(str_replace('%M','%m',ConfigHelper::getConfig('invoices.number_template')), ConfigHelper::getConfig('invoices.monthly_numbering') ? 3 : 5));
-$DB->Execute("INSERT INTO numberplans (template, period, doctype, isdefault) VALUES(?,?,2,1)", 
+$this->Execute("INSERT INTO numberplans (template, period, doctype, isdefault) VALUES(?,?,2,1)", 
 		array(str_replace('%M','%m',ConfigHelper::getConfig('receipts.number_template')), ConfigHelper::getConfig('receipts.monthly_numbering') ? 3 : 5));
 
-$DB->Execute("ALTER TABLE documents ADD numberplanid int(11) NOT NULL DEFAULT '0'");
-$DB->Execute("UPDATE documents SET numberplanid = 0");
-$DB->Execute("UPDATE documents SET numberplanid = 1 WHERE type = 1");
-$DB->Execute("UPDATE documents SET numberplanid = 2 WHERE type = 2");
-$DB->Execute("ALTER TABLE documents ADD INDEX numberplanid (numberplanid)");
+$this->Execute("ALTER TABLE documents ADD numberplanid int(11) NOT NULL DEFAULT '0'");
+$this->Execute("UPDATE documents SET numberplanid = 0");
+$this->Execute("UPDATE documents SET numberplanid = 1 WHERE type = 1");
+$this->Execute("UPDATE documents SET numberplanid = 2 WHERE type = 2");
+$this->Execute("ALTER TABLE documents ADD INDEX numberplanid (numberplanid)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005080300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005080300', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

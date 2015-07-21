@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE TABLE nodesessions (
 		id int(11)		NOT NULL auto_increment,
 		customerid int(11)	NOT NULL DEFAULT '0',
@@ -41,11 +41,11 @@ $DB->Execute("
 		INDEX tag (tag)
 	) ENGINE=InnoDB
 ");
-$DB->Execute("ALTER TABLE stats ADD nodesessionid int(11) NOT NULL DEFAULT '0'");
-$DB->Execute("CREATE INDEX nodesessionid ON stats(nodesessionid)");
+$this->Execute("ALTER TABLE stats ADD nodesessionid int(11) NOT NULL DEFAULT '0'");
+$this->Execute("CREATE INDEX nodesessionid ON stats(nodesessionid)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012042300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012042300', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

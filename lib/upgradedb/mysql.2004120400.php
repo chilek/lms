@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
-$DB->Execute("
+$this->BeginTrans();
+$this->Execute("
     CREATE TABLE aliases (
 	id int(11) NOT NULL auto_increment,
 	login varchar(255) NOT NULL DEFAULT '',
@@ -34,7 +34,7 @@ $DB->Execute("
 	UNIQUE KEY (login)
     ) ENGINE=MyISAM
 ");
-$DB->Execute("UPDATE dbinfo SET keyvalue = '2004120400' WHERE keytype = 'dbversion'");
-$DB->CommitTrans();
+$this->Execute("UPDATE dbinfo SET keyvalue = '2004120400' WHERE keytype = 'dbversion'");
+$this->CommitTrans();
 
 ?>

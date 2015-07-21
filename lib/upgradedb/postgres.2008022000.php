@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	ALTER TABLE tariffs ADD sh_limit integer DEFAULT NULL;
 	ALTER TABLE tariffs ADD mail_limit integer DEFAULT NULL;
 	ALTER TABLE tariffs ADD www_limit integer DEFAULT NULL;
@@ -49,8 +49,8 @@ $DB->Execute("
 		quota_ftp_limit=0, quota_mail_limit=0, quota_sql_limit=0;
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008022000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008022000', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

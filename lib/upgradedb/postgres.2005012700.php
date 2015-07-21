@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
-$DB->Execute("
+$this->BeginTrans();
+$this->Execute("
 	ALTER TABLE users ADD zip1 VARCHAR(10);
 	UPDATE users SET zip1=zip;
 	ALTER TABLE users DROP zip;
@@ -35,7 +35,7 @@ $DB->Execute("
 	ALTER TABLE users ALTER zip SET NOT NULL;
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005012700', 'dbversion'));
-$DB->CommitTrans();
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005012700', 'dbversion'));
+$this->CommitTrans();
 
 ?>

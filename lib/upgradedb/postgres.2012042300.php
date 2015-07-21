@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE SEQUENCE nodesessions_id_seq;
 	CREATE TABLE nodesessions (
 		id integer		DEFAULT nextval('nodesessions_id_seq'::text) NOT NULL,
@@ -45,8 +45,8 @@ $DB->Execute("
 	CREATE INDEX stats_nodesessionid_idx ON stats(nodesessionid);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012042300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012042300', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

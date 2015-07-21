@@ -21,13 +21,13 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE users ADD passwdexpiration int(11) NOT NULL DEFAULT '0'");
-$DB->Execute("ALTER TABLE users ADD passwdlastchange int(11) NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE users ADD passwdexpiration int(11) NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE users ADD passwdlastchange int(11) NOT NULL DEFAULT '0'");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012042500', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012042500', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

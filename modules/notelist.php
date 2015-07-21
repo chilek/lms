@@ -237,6 +237,6 @@ $SMARTY->assign('page', $page);
 $SMARTY->assign('marks', $marks);
 $SMARTY->assign('grouplist', $LMS->CustomergroupGetAll());
 $SMARTY->assign('notelist', $notelist);
-$SMARTY->display('notelist.html');
+$SMARTY->display('note/notelist.html');
 
 ?>

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -44,8 +44,8 @@ if(!is_dir(DOC_DIR))
 if(!is_writable(DOC_DIR))
 	$startup_errors[] = 'chown '.posix_geteuid().':'.posix_getegid().' '.DOC_DIR."\nchmod 755 ".DOC_DIR;
 
-if(!is_readable(LIB_DIR.'/Smarty/Smarty.class.php'))
-	$startup_errors[] = SYS_DIR.'/devel/smarty_install.sh';
+if(!is_readable(LIB_DIR . DIRECTORY_SEPARATOR . 'Smarty' . DIRECTORY_SEPARATOR . 'Smarty.class.php'))
+	$startup_errors[] = SYS_DIR . DIRECTORY_SEPARATOR . 'devel' . DIRECTORY_SEPARATOR . 'smarty_install.sh';
 
 if(!is_dir(CACHE_DIR))
 	$startup_errors[] = 'mkdir '.CACHE_DIR;

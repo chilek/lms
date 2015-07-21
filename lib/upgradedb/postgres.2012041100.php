@@ -21,24 +21,24 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
 // Najpierw kasujemy widok bo korzysta on z kolumny PIN, której chcemy zmienić typ
-$DB->Execute("DROP VIEW customersview");
+$this->Execute("DROP VIEW customersview");
 
-$DB->Execute("ALTER TABLE customers ALTER COLUMN pin TYPE varchar(6)");
+$this->Execute("ALTER TABLE customers ALTER COLUMN pin TYPE varchar(6)");
 
-$DB->Execute("CREATE VIEW customersview AS
+$this->Execute("CREATE VIEW customersview AS
 		SELECT c.* FROM customers c
     		WHERE NOT EXISTS (
 			SELECT 1 FROM customerassignments a
 			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			WHERE e.userid = lms_current_user() AND a.customerid = c.id)");
 
-$DB->Execute("UPDATE customers SET pin = '0' || pin WHERE LENGTH(pin) < 4");
+$this->Execute("UPDATE customers SET pin = '0' || pin WHERE LENGTH(pin) < 4");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012041100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012041100', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

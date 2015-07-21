@@ -21,10 +21,10 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
 $s_arr = array();
-$schemas = $DB->GetAll("SELECT * FROM promotionschemas");
+$schemas = $this->GetAll("SELECT * FROM promotionschemas");
 if ($schemas) foreach ($schemas as $schema) {
     $data = explode(';', $schema['data']);
     $cnt  = count($data);
@@ -33,13 +33,13 @@ if ($schemas) foreach ($schemas as $schema) {
         $s_arr[] = $schema['id'];
         array_pop($data);
         $data = implode(';', $data);
-        $DB->Execute("UPDATE promotionschemas SET data = ? WHERE id = ?",
+        $this->Execute("UPDATE promotionschemas SET data = ? WHERE id = ?",
             array($data, $schema['id']));
     }
 }
 
 if (!empty($s_arr)) {
-    $schemas = $DB->GetAll("SELECT * FROM promotionassignments
+    $schemas = $this->GetAll("SELECT * FROM promotionassignments
         WHERE promotionschemaid IN (".implode(',', $s_arr).")");
     if ($schemas) foreach ($schemas as $schema) {
         $data = explode(';', $schema['data']);
@@ -47,19 +47,19 @@ if (!empty($s_arr)) {
 
         array_pop($data);
         $data = implode(';', $data);
-        $DB->Execute("UPDATE promotionassignments SET data = ? WHERE id = ?",
+        $this->Execute("UPDATE promotionassignments SET data = ? WHERE id = ?",
             array($data, $schema['id']));
     }
 }
 
-$DB->Execute("ALTER TABLE promotionschemas ADD ctariffid integer DEFAULT NULL
+$this->Execute("ALTER TABLE promotionschemas ADD ctariffid integer DEFAULT NULL
     REFERENCES tariffs (id) ON DELETE RESTRICT ON UPDATE CASCADE");
-$DB->Execute("CREATE INDEX promotionschemas_ctariffid_idx ON promotionschemas (ctariffid)");
-$DB->Execute("ALTER TABLE promotionschemas ADD continuation smallint DEFAULT NULL");
-$DB->Execute("UPDATE promotionschemas SET continuation = 1");
+$this->Execute("CREATE INDEX promotionschemas_ctariffid_idx ON promotionschemas (ctariffid)");
+$this->Execute("ALTER TABLE promotionschemas ADD continuation smallint DEFAULT NULL");
+$this->Execute("UPDATE promotionschemas SET continuation = 1");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011030700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011030700', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

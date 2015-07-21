@@ -26,19 +26,28 @@
 
 $layout['pagetitle'] = trans('IP Networks');
 
-$netlist = $LMS->GetNetworkList();
+if (isset($_GET['o']))
+    $netlist = $LMS->GetNetworkList($_GET['o']);
+else
+    $netlist = $LMS->GetNetworkList();
 
 $listdata['size'] = $netlist['size'];
 $listdata['assigned'] = $netlist['assigned'];
 $listdata['online'] = $netlist['online'];
+$listdata['order'] = $netlist['order'];
+$listdata['direction'] = $netlist['direction'];
+
 
 unset($netlist['assigned']);
 unset($netlist['size']);
 unset($netlist['online']);
+unset($netlist['order']);
+unset($netlist['direction']);
+
 $listdata['total'] = sizeof($netlist);
 
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('netlist',$netlist);
-$SMARTY->display('netlist.html');
+$SMARTY->display('net/netlist.html');
 
 ?>

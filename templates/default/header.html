@@ -2,7 +2,7 @@
 <!--// $Id$ //-->
 <html>
 <head>
-    <title>::: LMS :{if $layout.pagetitle neq ""} {$layout.pagetitle|striphtml} :{/if}::</title>
+    <title>::: LMS :{if $layout.pagetitle != ""} {$layout.pagetitle|striphtml} :{/if}::</title>
     <meta name="GENERATOR" content="LMS {$layout.lmsv}">
     <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
     <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
@@ -40,7 +40,7 @@
 				{if $menuitem.submenu}
 				{foreach from=$menuitem.submenu item=submenuitem}
 					<div class="tip"{if $submenuitem.tip} {tip text="<B>\$a</B>" a=$submenuitem.tip}{/if}>
-						<div class="box2" onClick="return self.location.href='{$submenuitem.link|replace:"&":"&amp;"}';">&raquo;&nbsp;<a href="{$submenuitem.link|replace:"&":"&amp;"}">{$submenuitem.name}</a></div>
+						<div class="box2"><a href="{$submenuitem.link|replace:"&":"&amp;"}">{$submenuitem.name}</a></div>
 					</div>
 				{/foreach}
 				{/if}

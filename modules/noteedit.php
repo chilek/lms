@@ -286,6 +286,6 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('note', $note);
-$SMARTY->display('noteedit.html');
+$SMARTY->display('note/noteedit.html');
 
 ?>

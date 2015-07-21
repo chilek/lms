@@ -26,7 +26,7 @@
 
 // Add rtqueues - table that contains information about RT (Request Tracker) queues.
 
-$DB->Execute("
+$this->Execute("
     CREATE SEQUENCE \"rtqueues_id_seq\";
     CREATE TABLE rtqueues (
 	id integer default nextval('rtqueues_id_seq'::text) NOT NULL,
@@ -37,7 +37,7 @@ $DB->Execute("
 
 // rttickets - Tickets in RT
 
-$DB->Execute("
+$this->Execute("
     CREATE SEQUENCE \"rttickets_id_seq\";
     CREATE TABLE rttickets (
 	id integer default nextval('rttickets_id_seq'::text) NOT NULL,  
@@ -52,7 +52,7 @@ $DB->Execute("
 
 // rtmessages - content of mails in RT
 
-$DB->Execute("
+$this->Execute("
     CREATE SEQUENCE \"rtmessages_id_seq\";
     CREATE TABLE rtmessages (
 	id integer default nextval('rtmessages_id_seq'::text) NOT NULL,
@@ -68,6 +68,6 @@ $DB->Execute("
 	PRIMARY KEY (id))
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004030800', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004030800', 'dbversion'));
 
 ?>

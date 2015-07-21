@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE SEQUENCE macs_id_seq;
 	CREATE TABLE macs (
 		id		integer		DEFAULT nextval('macs_id_seq'::text) NOT NULL,
@@ -43,9 +43,9 @@ $DB->Execute("
 	ALTER TABLE nodes DROP mac;
 ");
 
-if(!$DB->GetOne("SELECT COUNT(*) FROM pg_aggregate a JOIN pg_proc p ON (p.oid = a.aggfnoid)
+if(!$this->GetOne("SELECT COUNT(*) FROM pg_aggregate a JOIN pg_proc p ON (p.oid = a.aggfnoid)
     WHERE p.proname='array_agg'"))
-	$DB->Execute("
+	$this->Execute("
 		CREATE AGGREGATE array_agg (
 		    BASETYPE=anyelement,
 			SFUNC=array_append,
@@ -54,8 +54,8 @@ if(!$DB->GetOne("SELECT COUNT(*) FROM pg_aggregate a JOIN pg_proc p ON (p.oid = 
 		);
 	");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010050600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010050600', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

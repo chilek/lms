@@ -22,10 +22,10 @@
  *
  */
 
-$DB->Execute("ALTER TABLE ewx_stm_channels CHANGE customerid cid int(11) DEFAULT '0' NOT NULL");
-$DB->Execute("ALTER TABLE ewx_stm_channels DROP KEY customerid");
-$DB->Execute("ALTER TABLE ewx_stm_channels ADD UNIQUE KEY cid (cid)");
+$this->Execute("ALTER TABLE ewx_stm_channels CHANGE customerid cid int(11) DEFAULT '0' NOT NULL");
+$this->Execute("ALTER TABLE ewx_stm_channels DROP KEY customerid");
+$this->Execute("ALTER TABLE ewx_stm_channels ADD UNIQUE KEY cid (cid)");
     
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010031100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010031100', 'dbversion'));
 
 ?>

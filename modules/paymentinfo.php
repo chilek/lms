@@ -36,6 +36,6 @@ $layout['pagetitle'] = trans('Payment Info: $a',$payment['name']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('payment',$payment);
-$SMARTY->display('paymentinfo.html');
+$SMARTY->display('payment/paymentinfo.html');
 
 ?>

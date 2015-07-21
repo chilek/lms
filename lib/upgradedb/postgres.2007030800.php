@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 
     CREATE SEQUENCE \"ewx_pt_config_id_seq\";
     CREATE TABLE ewx_pt_config (
@@ -67,8 +67,8 @@ $DB->Execute("
     );
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007030800', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007030800', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

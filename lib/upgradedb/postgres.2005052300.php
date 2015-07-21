@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	ALTER TABLE assignments ADD customerid integer;
 	UPDATE assignments SET customerid = userid;
 	ALTER TABLE assignments DROP userid;
@@ -68,8 +68,8 @@ $DB->Execute("
 	ALTER TABLE userassignments ADD UNIQUE (usergroupid, customerid);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005052300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005052300', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

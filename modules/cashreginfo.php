@@ -51,6 +51,6 @@ $layout['pagetitle'] = trans('Cash Registry Info: $a', $registry['name']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('registry', $registry);
-$SMARTY->display('cashreginfo.html');
+$SMARTY->display('cash/cashreginfo.html');
 
 ?>

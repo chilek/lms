@@ -44,6 +44,6 @@ elseif($p == 'main')
 
 $SMARTY->assign('part', $p);
 $SMARTY->assign('js', $js);
-$SMARTY->display('choosegpscoords.html');
+$SMARTY->display('choose/choosegpscoords.html');
 
 ?>

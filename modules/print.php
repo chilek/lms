@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if (!ConfigHelper::checkConfig('privileges.reports'))
+if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.reports'))
 	access_denied();
 
 $type = isset($_GET['type']) ? $_GET['type'] : '';
@@ -33,7 +33,7 @@ switch($type)
 {
 	case 'customerbalance': /********************************************/
 
-		if (!ConfigHelper::checkConfig('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		$from = $_POST['from'];
@@ -125,16 +125,16 @@ switch($type)
 		
 		$SMARTY->assign('balancelist', $list);
 		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
-			$output = $SMARTY->fetch('printcustomerbalance.html');
+			$output = $SMARTY->fetch('print/printcustomerbalance.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
-			$SMARTY->display('printcustomerbalance.html');
+			$SMARTY->display('print/printcustomerbalance.html');
 		}
 	break;
 	
 	case 'balancelist': /********************************************/
 
-		if (!ConfigHelper::checkConfig('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		$from = $_POST['balancefrom'];
@@ -219,7 +219,7 @@ switch($type)
 					.($group ? 'LEFT JOIN customerassignments a ON (c.customerid = a.customerid)  ' : '')
 					.'WHERE time <= ? '
 					.($docs ? ($docs == 'documented' ? ' AND c.docid > 0' : ' AND c.docid = 0') : '')
-					.($source ? ' AND c.sourceid = '.intval($source) : '')
+					.($source ? ($source == -1 ? ' AND c.sourceid IS NULL' : ' AND c.sourceid = '.intval($source)) : '')
 					.(isset($date['from']) ? ' AND time >= '.$date['from'] : '')
 					.($group ? ' AND a.customergroupid = '.$group : '')
 					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
@@ -296,16 +296,16 @@ switch($type)
 			$SMARTY->assign('source', $DB->GetOne('SELECT name FROM cashsources WHERE id = ?', array($source)));
 
 		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
-			$output = $SMARTY->fetch('printbalancelist.html');
+			$output = $SMARTY->fetch('print/printbalancelist.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
-			$SMARTY->display('printbalancelist.html');
+			$SMARTY->display('print/printbalancelist.html');
 		}
 	break;
 
 	case 'incomereport': /********************************************/
 
-		if (!ConfigHelper::checkConfig('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		$from = $_POST['from'];
@@ -337,16 +337,16 @@ switch($type)
 
 		$SMARTY->assign('incomelist', $incomelist);
 		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
-			$output = $SMARTY->fetch('printincomereport.html');
+			$output = $SMARTY->fetch('print/printincomereport.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
-			$SMARTY->display('printincomereport.html');
+			$SMARTY->display('print/printincomereport.html');
 		}
 	break;
 
 	case 'importlist': /********************************************/
 
-		if (!ConfigHelper::checkConfig('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		$from = $_POST['importfrom'];
@@ -384,16 +384,16 @@ switch($type)
 			$SMARTY->assign('source', $DB->GetOne('SELECT name FROM cashsources WHERE id = ?', array($source)));
 		$SMARTY->assign('importlist', $importlist);
 		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
-			$output = $SMARTY->fetch('printimportlist.html');
+			$output = $SMARTY->fetch('print/printimportlist.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
-			$SMARTY->display('printimportlist.html');
+			$SMARTY->display('print/printimportlist.html');
 		}
 	break;
 
 	case 'invoices': /********************************************/
 
-		if (!ConfigHelper::checkConfig('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		$from = $_POST['invoicefrom'];
@@ -438,7 +438,7 @@ switch($type)
 
 	case 'transferforms': /********************************************/
 
-		if (!ConfigHelper::checkConfig('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		$from = $_POST['invoicefrom'];
@@ -474,7 +474,7 @@ switch($type)
 
 	case 'transferforms2': /********************************************/
 
-		if (!ConfigHelper::checkConfig('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		require_once(MODULES_DIR.'/transferforms2.php');
@@ -482,7 +482,7 @@ switch($type)
 
 	case 'liabilityreport': /********************************************/
 
-		if (!ConfigHelper::checkConfig('privileges.finances_management'))
+		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
 		if (isset($_POST['day']) && $_POST['day']) 
@@ -653,16 +653,16 @@ switch($type)
 		}
 
 		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
-			$output = $SMARTY->fetch('printliabilityreport.html');
+			$output = $SMARTY->fetch('print/printliabilityreport.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
-			$SMARTY->display('printliabilityreport.html');
+			$SMARTY->display('print/printliabilityreport.html');
 		}
 	break;
 	
 	case 'receiptlist':
 
-		if (!ConfigHelper::checkConfig('privileges.cash_operations'))
+		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.cash_operations'))
 			access_denied();
 
 		if($_POST['from'])
@@ -843,19 +843,19 @@ switch($type)
 			$SMARTY->assign('pagescount', sizeof($pages));
 			$SMARTY->assign('reccount', sizeof($list));
 			if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
-				$output = $SMARTY->fetch('printreceiptlist-ext.html');
+				$output = $SMARTY->fetch('print/printreceiptlist-ext.html');
 				html2pdf($output, trans('Reports'), $layout['pagetitle']);
 			} else {
-				$SMARTY->display('printreceiptlist-ext.html');
+				$SMARTY->display('print/printreceiptlist-ext.html');
 			}
 		}
 		else
 		{
 			if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
-				$output = $SMARTY->fetch('printreceiptlist.html');
+				$output = $SMARTY->fetch('print/printreceiptlist.html');
 				html2pdf($output, trans('Reports'), $layout['pagetitle']);
 			} else {
-				$SMARTY->display('printreceiptlist.html');
+				$SMARTY->display('print/printreceiptlist.html');
 			}
 		}
 	break;
@@ -876,7 +876,7 @@ switch($type)
 		$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
 		$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));
 		$SMARTY->assign('printmenu', 'finances');
-		$SMARTY->display('printindex.html');
+		$SMARTY->display('print/printindex.html');
 	break;
 }
 

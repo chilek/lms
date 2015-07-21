@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,16 +24,17 @@
  *  $Id$
  */
 
-$devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, '.$DB->GroupConcat('INET_NTOA(CASE WHEN nodes.ownerid = 0 THEN nodes.ipaddr ELSE NULL END)')
-				.' AS ipaddr, '.$DB->GroupConcat('CASE WHEN nodes.ownerid = 0 THEN nodes.id ELSE NULL END').' AS nodeid, 
-				MAX(lastonline) AS lastonline, n.latitude AS lat, n.longitude AS lon 
+$devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, '.$DB->GroupConcat('INET_NTOA(CASE WHEN nodes.ownerid = 0 THEN nodes.ipaddr ELSE NULL END)', ',', true)
+				.' AS ipaddr, '.$DB->GroupConcat('CASE WHEN nodes.ownerid = 0 THEN nodes.id ELSE NULL END', ',', true).' AS nodeid, 
+				MAX(lastonline) AS lastonline, n.latitude AS lat, n.longitude AS lon,
+				' . $DB->GroupConcat('rs.id') . ' AS radiosectors
 				FROM netdevices n 
-				LEFT JOIN nodes ON (n.id = netdev) 
+				LEFT JOIN nodes ON n.id = nodes.netdev 
+				LEFT JOIN netradiosectors rs ON rs.netdev = n.id
 				WHERE n.latitude IS NOT NULL AND n.longitude IS NOT NULL 
 				GROUP BY n.id, n.name, n.location, n.latitude, n.longitude', 'id');
 
-if ($devices)
-{
+if ($devices) {
 	foreach ($devices as $devidx => $device) {
 		if ($device['lastonline'])
 			if (time() - $device['lastonline'] > ConfigHelper::getConfig('phpui.lastonline_limit'))
@@ -49,14 +50,19 @@ if ($devices)
 			$devices[$devidx]['url'] = $urls['url'];
 			$devices[$devidx]['comment'] = $urls['comment'];
 		}
+		if ($device['radiosectors'])
+			$devices[$devidx]['radiosectors'] = $DB->GetAll('SELECT name, azimuth, width, rsrange,
+				frequency, frequency2, bandwidth FROM netradiosectors WHERE id IN
+				(' . $device['radiosectors'] . ')');
+		else
+			unset($devices[$devidx]['radiosectors']);
 	}
 
 	$devids = implode(',', array_keys($devices));
 
 	$devlinks = $DB->GetAll('SELECT src, dst, type, technology, speed FROM netlinks WHERE src IN ('.$devids.') AND dst IN ('.$devids.')');
 	if ($devlinks)
-		foreach ($devlinks as $devlinkidx => $devlink)
-		{
+		foreach ($devlinks as $devlinkidx => $devlink) {
 			$devlinks[$devlinkidx]['srclat'] = $devices[$devlink['src']]['lat'];
 			$devlinks[$devlinkidx]['srclon'] = $devices[$devlink['src']]['lon'];
 			$devlinks[$devlinkidx]['dstlat'] = $devices[$devlink['dst']]['lat'];
@@ -71,9 +77,8 @@ $nodes = $DB->GetAllByKey('SELECT n.id, n.name, INET_NTOA(n.ipaddr) AS ipaddr, n
 				FROM nodes n 
 				WHERE n.latitude IS NOT NULL AND n.longitude IS NOT NULL', 'id');
 
-if ($nodes)
-{
-	foreach ($nodes as $nodeidx => $node)
+if ($nodes) {
+	foreach ($nodes as $nodeidx => $node) {
 		if ($node['lastonline'])
 			if (time() - $node['lastonline'] > ConfigHelper::getConfig('phpui.lastonline_limit'))
 				$nodes[$nodeidx]['state'] = 2;
@@ -81,17 +86,23 @@ if ($nodes)
 				$nodes[$nodeidx]['state'] = 1;
 		else
 			$nodes[$nodeidx]['state'] = 0;
+		$urls = $DB->GetRow('SELECT '.$DB->GroupConcat('url').' AS url,
+			'.$DB->GroupConcat('comment').' AS comment FROM managementurls WHERE nodeid = ?',
+			array($node['id']));
+		if ($urls) {
+			$nodes[$nodeidx]['url'] = $urls['url'];
+			$nodes[$nodeidx]['comment'] = $urls['comment'];
+		}
+	}
 
 	$nodeids = implode(',', array_keys($nodes));
 
-	if ($devices)
-	{
+	if ($devices) {
 		$nodelinks = $DB->GetAll('SELECT n.id AS nodeid, netdev, linktype AS type, linktechnology AS technology,
 			linkspeed AS speed FROM nodes n WHERE netdev > 0 AND ownerid > 0 
 			AND n.id IN ('.$nodeids.') AND netdev IN ('.$devids.')');
 		if ($nodelinks)
-			foreach ($nodelinks as $nodelinkidx => $nodelink)
-			{
+			foreach ($nodelinks as $nodelinkidx => $nodelink) {
 				$nodelinks[$nodelinkidx]['nodelat'] = $nodes[$nodelink['nodeid']]['lat'];
 				$nodelinks[$nodelinkidx]['nodelon'] = $nodes[$nodelink['nodeid']]['lon'];
 				$nodelinks[$nodelinkidx]['netdevlat'] = $devices[$nodelink['netdev']]['lat'];

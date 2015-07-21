@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 CREATE VIEW vnodes AS 
 SELECT n.*, m.mac 
 	FROM nodes n 
@@ -34,8 +34,8 @@ SELECT n.*, m.mac
 		FROM (SELECT * FROM macs ORDER BY id) macs GROUP BY nodeid) m ON (n.id = m.nodeid);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010051400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010051400', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

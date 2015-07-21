@@ -21,7 +21,7 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
 $DEFAULTS = array(
 /*
@@ -147,13 +147,13 @@ $DEFAULTS = array(
 
 foreach ($DEFAULTS as $section => $values) {
     foreach ($values as $variable => $value) {
-        $DB->Execute(
+        $this->Execute(
             "INSERT INTO uiconfig (section, var, value) (SELECT ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM uiconfig WHERE section = ? AND var = ?))",
             array($section, $variable, strval($value), $section, $variable)
         );
     }
 }
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014063000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014063000', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();

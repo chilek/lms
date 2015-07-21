@@ -36,31 +36,46 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 	$enddate = mktime(0,0,0, $month, $day+$forward, $year);
 
 	$list = $DB->GetAll(
-	        'SELECT events.id AS id, title, description, date, begintime, endtime, customerid, closed, '
+		'SELECT events.id AS id, title, description, date, begintime, enddate, endtime, customerid, closed, '
 		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername,
 		userid, users.name AS username 
 		FROM events 
 		LEFT JOIN customers ON (customerid = customers.id)
 		LEFT JOIN users ON (userid = users.id)
-		WHERE date >= ? AND date < ? AND (private = 0 OR (private = 1 AND userid = ?)) '
+		WHERE ((date >= ? AND date < ?) OR (enddate <> 0 AND date < ? AND enddate >= ?))
+			AND (private = 0 OR (private = 1 AND userid = ?)) '
 		.($customerid ? ' AND customerid = '.intval($customerid) : '')
 		.($userid ? ' AND EXISTS (
 			SELECT 1 FROM eventassignments 
 			WHERE eventid = events.id AND userid = '.intval($userid).'
 			)' : '')
 		.' ORDER BY date, begintime',
-		 array($startdate, $enddate, $AUTH->id));
+		 array($startdate, $enddate, $enddate, $startdate, $AUTH->id));
 
-	if($list)
-		foreach($list as $idx => $row)
-		{
-			$list[$idx]['userlist'] = $DB->GetAll('SELECT userid AS id, users.name
+	$list2 = array();
+	if ($list)
+		foreach ($list as $idx => $row) {
+			$row['userlist'] = $DB->GetAll('SELECT userid AS id, users.name
 					FROM eventassignments, users
 					WHERE userid = users.id AND eventid = ? ',
 					array($row['id']));
+			$endtime = $row['endtime'];
+			if ($row['enddate']) {
+				$days = round(($row['enddate'] - $row['date']) / 86400);
+				$row['endtime'] = 0;
+				$list2[] = $row;
+				while ($days) {
+					if ($days == 1)
+						$row['endtime'] = $endtime;
+					$row['date'] += 86400;
+					$list2[] = $row;
+					$days--;
+				}
+			} else
+				$list2[] = $row;
 		}
 
-	return $list;
+	return $list2;
 }
 
 if(!isset($_GET['a']))
@@ -135,6 +150,6 @@ $SMARTY->assign('year',$year);
 $SMARTY->assign('date',$date);
 $SMARTY->assign('userlist',$LMS->GetUserNames());
 $SMARTY->assign('customerlist',$LMS->GetCustomerNames());
-$SMARTY->display('eventlist.html');
+$SMARTY->display('event/eventlist.html');
 
 ?>

@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     CREATE OR REPLACE FUNCTION mask2prefix(bigint) RETURNS smallint AS $$
     SELECT
 	    length(replace(ltrim(textin(bit_out($1::bit(32))), '0'), '0', ''))::smallint;
@@ -58,8 +58,8 @@ $DB->Execute("
     $$ LANGUAGE SQL IMMUTABLE;			       
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008012200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008012200', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

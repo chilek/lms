@@ -24,14 +24,14 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("UPDATE uiconfig SET section = 'mail'
+$this->Execute("UPDATE uiconfig SET section = 'mail'
 	WHERE section = 'phpui' AND var IN ('debug_email', 'smtp_port', 'smtp_host', 'smtp_username', 'smtp_password', 'smtp_auth_type')
 ");
 
-$DB->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?', array('2009031700', 'dbversion'));
+$this->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?', array('2009031700', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

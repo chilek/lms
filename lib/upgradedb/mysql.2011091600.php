@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE TABLE rtcategories (
 		id int(11)		NOT NULL auto_increment,
 		name varchar(255)	DEFAULT '' NOT NULL,
@@ -31,7 +31,7 @@ $DB->Execute("
 		PRIMARY KEY (id),
 		UNIQUE KEY (name)
 	) ENGINE=INNODB");
-$DB->Execute("
+$this->Execute("
 	CREATE TABLE rtcategoryusers (
 		id int(11)		NOT NULL auto_increment,
 		userid int(11)		NOT NULL
@@ -41,7 +41,7 @@ $DB->Execute("
 		PRIMARY KEY (id),
 		UNIQUE KEY userid (userid, categoryid)
 	) ENGINE=INNODB");
-$DB->Execute("CREATE TABLE rtticketcategories (
+$this->Execute("CREATE TABLE rtticketcategories (
 		id int(11)		NOT NULL auto_increment,
 		ticketid int(11)	NOT NULL
 			REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -51,19 +51,19 @@ $DB->Execute("CREATE TABLE rtticketcategories (
 		UNIQUE KEY ticketid (ticketid, categoryid)
 	) ENGINE=INNODB");
 
-$DB->Execute("INSERT INTO rtcategories (name, description) VALUES(?, ?)", array('default', 'default category'));
-$default_catid = $DB->GetLastInsertID('rtcategories');
-$DB->Execute("INSERT INTO rtcategoryusers (userid, categoryid) 
+$this->Execute("INSERT INTO rtcategories (name, description) VALUES(?, ?)", array('default', 'default category'));
+$default_catid = $this->GetLastInsertID('rtcategories');
+$this->Execute("INSERT INTO rtcategoryusers (userid, categoryid) 
 		SELECT id, ? FROM users WHERE deleted = 0",
 		array($default_catid));
-$DB->Execute("INSERT INTO rtticketcategories (ticketid, categoryid) 
+$this->Execute("INSERT INTO rtticketcategories (ticketid, categoryid) 
 		SELECT id, ? FROM rttickets",
 		array($default_catid));
 
-$DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES ('userpanel', 'default_categories', ?)", array($default_catid));
+$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES ('userpanel', 'default_categories', ?)", array($default_catid));
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011091600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011091600', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

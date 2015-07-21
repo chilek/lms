@@ -2,6 +2,7 @@
 #define _UTIL_H_
 
 #define ASCIILINESZ	1024
+#include <stdarg.h>
 
 /* Replaces all instances of string in some string with new string 
    Returns number of replaces */

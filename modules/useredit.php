@@ -200,6 +200,6 @@ $SMARTY->assign('available', $DB->GetAllByKey('SELECT id, name FROM customergrou
 $SMARTY->assign('userinfo', $userinfo);
 $SMARTY->assign('error', $error);
 
-$SMARTY->display('useredit.html');
+$SMARTY->display('user/useredit.html');
 
 ?>

@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 CREATE SEQUENCE states_id_seq;
 CREATE TABLE states (
     	id 	integer DEFAULT nextval('states_id_seq'::text) NOT NULL,
@@ -53,9 +53,9 @@ INSERT INTO zipcodes (zip) SELECT DISTINCT zip FROM customers;
 ");
 
 if(ConfigHelper::getConfig('phpui.lang') == 'pl'
-	|| $DB->GetOne("SELECT 1 FROM uiconfig WHERE var='lang' AND section='phpui' AND disabled=0 AND value='pl'"))
+	|| $this->GetOne("SELECT 1 FROM uiconfig WHERE var='lang' AND section='phpui' AND disabled=0 AND value='pl'"))
 {
-	$DB->Execute("
+	$this->Execute("
 	INSERT INTO states (name) VALUES ('dolnośląskie');
 	INSERT INTO states (name) VALUES ('kujawsko-pomorskie');
 	INSERT INTO states (name) VALUES ('lubelskie');
@@ -75,8 +75,8 @@ if(ConfigHelper::getConfig('phpui.lang') == 'pl'
 	");
 }
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008080800', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008080800', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

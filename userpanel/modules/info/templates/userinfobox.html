@@ -47,7 +47,7 @@
 		</td>
 	</tr>
 {/if}
-{if $userinfo.im neq "" && $userinfo.im neq 0}
+{if $userinfo.im != "" && $userinfo.im != 0}
 	<tr>
 		<td width="1%">
 			{img src="gg.gif" alt=""}
@@ -73,7 +73,7 @@
 		</td>
 	</tr>
 {/foreach}
-{if $userinfo.ten neq ""}
+{if $userinfo.ten != ""}
 	<tr>
 		<td width="1%" align="center">
 			<b>{trans("TEN")}</b>
@@ -83,7 +83,7 @@
 		</td>
 	</tr>
 {/if}
-{if $userinfo.ssn neq ""}
+{if $userinfo.ssn != ""}
 	<tr>
 		<td width="1%" align="center">
 			<b>{trans("SSN")}</b>

@@ -8,7 +8,7 @@
 <tr><td>
 <table style="text-align: left; width: 100%; background-image: url(style/old/fill.gif); background-repeat: repeat-x;" cellspacing="0" cellpadding="0">
     <tr>
-	{foreach from=$modules item=menuitem}
+	{foreach $modules as $menuitem}
 	<td style="vertical-align: top;" width="1px">
     	    <img src="style/old/{if $menuitem.selected}button_a_l.gif{else}button_b_l.gif{/if}" alt=""/>
 	</td>

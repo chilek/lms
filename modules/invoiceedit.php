@@ -330,6 +330,21 @@ switch($action)
 					'itemid' => $itemid
 					));
 			}
+		} else {
+			if ($SYSLOG) {
+				$cashids = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($iid));
+				foreach ($cashids as $cashid) {
+					$args = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+					);
+					$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_UPDATE, $args,
+						array_keys($args));
+				}
+			}
+			$DB->Execute('UPDATE cash SET customerid = ? WHERE docid = ?',
+				array($customer['id'], $iid));
 		}
 
 		$DB->CommitTrans();
@@ -366,6 +381,6 @@ $SMARTY->assign('customer', $customer);
 $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('taxeslist', $taxeslist);
-$SMARTY->display('invoiceedit.html');
+$SMARTY->display('invoice/invoiceedit.html');
 
 ?>

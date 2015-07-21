@@ -1,5 +1,6 @@
 <!-- $Id$ -->
 {include file="header.html"}
+{$xajax}
 {if $warning}
 <table width="100%" cellpadding="10">
     <tr>
@@ -23,28 +24,42 @@
     </tr>
 </table>
 {/if}
-
 <table width="100%" cellpadding="10">
     <tr>
        <td>
 						{box title="Notice to you"}
 						{if $notice}
 						<table style="width: 100%;" cellpadding="3" class="light">
-							 <tr class="darkest">
-							   <td width="2%">{trans("Date:")}</td>
-							   <td width="30%">{trans("Subject:")}</td>
-							   <td width="56%">{trans("Body:")}</td>
-							   <td width="2%">{trans("Status:")}</td>
-							   <td width="10%">&nbsp;</td>
-							 </tr>
-							 {cycle values="light,lucid" print=false name=messages}
-							 {foreach $notice as $items}
-							 <tr class="dark {cycle name=messages}{if $items.status==$smarty.const.MSG_ERROR} alert{elseif $items.status==$smarty.const.MSG_SENT} blend{/if}">
+								<tr class="darkest bold">
+									<td width="2%">{trans("Date:")}</td>
+									<td width="8%">{trans("Status:")}</td>
+									<td width="80%">{trans("Subject:")}</td>
+									<td width="10%">{trans("Read status:")}</td>
+								</tr>
+								{cycle values="light,lucid" print=false name=messages}
+								{foreach $notice as $items}
+								<tr class="dark hand {cycle name=messages}{if $items.status==$smarty.const.MSG_ERROR} alert{elseif $items.status==$smarty.const.MSG_SENT} blend{/if}" onCLick="ReadNotice('{$items.id}');">
 									<td width="2%" class="nobr">{$items.cdate|date_format:"%Y/%m/%d %H:%M"}</td>
-							   <td width="30%" style="word-break:break-all;">{$items.subject}</td>
-							   <td width="56%" style="word-break:break-all;">{$items.body}</td>
-							   <td width="2%" >{if $items.type==6 }<b>{trans("Urgent")}</b>{else}{trans("Casual")}{/if}</td>
-							   <td width="10%" align="center">{if $items.status !=2}<a href="?m=notices&amp;confirm={$items.id}">{trans("I confirm reading")} {img src="save.gif" alt=""}</a>{else}&nbsp;{/if}</td>
+									<td width="8%" >{if $items.type==6 }<b>{trans("Urgent")}</b>{else}{trans("Casual")}{/if}</td>
+									<td width="80%" style="word-break:break-all;">{$items.subject}</td>
+									<td width="10%" style="border: 0px solid;">{if $items.type==6 && $items.status==1}{trans("Unread")}{elseif $items.type==6 && $items.status==2}{trans("Was read on:")}<br />{$items.lastdate|date_format:"%Y/%m/%d %H:%M"}{elseif $items.type==5 && $items.status==1}{trans("Unread")}{elseif $items.type==5 && $items.status==2}{trans("Was read on:")}<br />{$items.lastdate|date_format:"%Y/%m/%d %H:%M"}{else}&nbsp;{/if}</td>
+								</tr>
+								<tr id="{$items.id}"  style="display:none;">
+										<td width="10%" align="center" colspan="4" >
+										<b>{trans("Body:")}</b><br />
+										{$items.body}<br /><br />
+										{if $items.status !=2}<a href="?m=notices&amp;confirm={$items.id}">{trans("I confirm reading")} {img src="save.gif" alt=""}</a>{else}&nbsp;{/if}</td>
+								</tr>
+								<SCRIPT type="text/javascript">
+								<!--
+								function ReadNotice(elem){
+								xajax_setNoticeRead(elem);
+								showOrHide(elem);
+								}
+								if (getCookie('{$items.id}') == '1')
+								document.getElementById('{$items.id}').style.display = '';
+								//-->
+								</SCRIPT>
 							 {/foreach}
 						</table>
 						{else}

@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     DELETE FROM customercontacts WHERE customerid NOT IN (SELECT id FROM customers);
     ALTER TABLE customercontacts ADD FOREIGN KEY (customerid)
         REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -41,12 +41,12 @@ $DB->Execute("
 $lang = ConfigHelper::getConfig('phpui.lang');
 
 if ($lang == 'pl') {
-    $DB->Execute("UPDATE customercontacts SET type = COALESCE(type, 0) + 1
+    $this->Execute("UPDATE customercontacts SET type = COALESCE(type, 0) + 1
         WHERE regexp_replace(phone, '[^0-9]', '', 'g') ~ '^(\\\\+?[0-9]{2}|0|)(88[0-9]|5[01][0-9]|6[069][0-9]|7[2789][0-9])[0-9]{6}$'");
 }
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010121400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010121400', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

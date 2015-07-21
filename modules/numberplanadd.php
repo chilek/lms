@@ -123,6 +123,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('numberplanadd', $numberplanadd);
 $SMARTY->assign('available', $DB->GetAllByKey('SELECT id, shortname AS name FROM divisions WHERE status = 0 ORDER BY shortname', 'id'));
 $SMARTY->assign('error', $error);
-$SMARTY->display('numberplanadd.html');
+$SMARTY->display('numberplan/numberplanadd.html');
 
 ?>

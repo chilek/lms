@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if (!ConfigHelper::checkConfig('privileges.reports'))
+if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.reports'))
 	access_denied();
 
 $type = isset($_GET['type']) ? $_GET['type'] : '';
@@ -124,10 +124,10 @@ switch($type)
 						FROM customercontacts WHERE phone != \'\' GROUP BY customerid', 'customerid'));
 
 		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
-			$output = $SMARTY->fetch('printcustomerlist.html');
+			$output = $SMARTY->fetch('print/printcustomerlist.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
-			$SMARTY->display('printcustomerlist.html');
+			$SMARTY->display('print/printcustomerlist.html');
 		}
 	break;
 
@@ -195,10 +195,10 @@ switch($type)
 
 		$SMARTY->assign('balancelist', $list);
 		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
-			$output = $SMARTY->fetch('printcustomerbalance.html');
+			$output = $SMARTY->fetch('print/printcustomerbalance.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
-			$SMARTY->display('printcustomerbalance.html');
+			$SMARTY->display('print/printcustomerbalance.html');
 		}
 	break;
 
@@ -227,7 +227,7 @@ switch($type)
 		$SMARTY->assign('cstateslist', $LMS->GetCountryStates());
 		$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
 		$SMARTY->assign('printmenu', 'customer');
-		$SMARTY->display('printindex.html');
+		$SMARTY->display('print/printindex.html');
 	break;
 }
 

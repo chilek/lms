@@ -81,4 +81,11 @@ interface LMSDBDriverInterface extends LMSDBInterface
     public function _driver_groupconcat($field, $separator = ',');
 
     public function _driver_setencoding($name);
+
+	public function _driver_year($date);
+
+	public function _driver_month($date);
+
+	public function _driver_day($date);
+
 }

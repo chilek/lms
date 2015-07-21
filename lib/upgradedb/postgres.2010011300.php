@@ -22,9 +22,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	DELETE FROM nodeassignments WHERE assignmentid NOT IN (SELECT id FROM assignments);
 	DELETE FROM nodeassignments WHERE nodeid NOT IN (SELECT id FROM nodes);
 
@@ -39,8 +39,8 @@ $DB->Execute("
 	CREATE INDEX nodeassignments_assignmentid_idx ON nodeassignments (assignmentid);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010011300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010011300', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

@@ -21,13 +21,13 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)",
+$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)",
 	array('userpanel', 'tickets_from_selected_queues', '0'));
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014021400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014021400', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

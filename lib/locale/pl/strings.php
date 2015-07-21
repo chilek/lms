@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -1289,7 +1289,7 @@ $_LANG['There are no devices in your database.'] = 'Nie ma żadnych urządzeń w
 $_LANG['The rest of group:'] = 'Reszta grupy:';
 $_LANG['This field must be greater than 8 and greater than download rate'] = 'To pole musi mieć wartość większą niż 8 i większą niż download';
 $_LANG['This field must be greater than 8 and greater than upload rate'] = 'To pole musi mieć wartość większą niż 8 i większą niż upload';
-$_LANG['This field must be within range 8 - 100000'] = 'To pole musi zawierać się w przedziale 8 - 100000';
+$_LANG['This field must be within range 8 - 500000'] = 'To pole musi zawierać się w przedziale 8 - 500000';
 $_LANG['This field must contain number greater than 8 and greater than download rate'] = 'To pole musi mieć wartość większą niż 8 i większą niż download';
 $_LANG['This field must contain number greater than 8 and greater than upload rate'] = 'To pole musi mieć wartość większą niż 8 i większą niż upload';
 $_LANG['This group hasn\'t got any members.'] = 'Ta grupa nie posiada żadnych członków.';
@@ -2093,7 +2093,7 @@ $_LANG['Selected numbering plan doesn\'t match customer\'s division!'] = 'Wybran
 $_LANG['with document'] = 'z dokumentem';
 $_LANG['without document'] = 'bez dokumentu';
 $_LANG['comment'] = 'komentarz';
-$_LANG['$a records for deleted nodes has been removed.<BR>'] = '$a rekordów nieistniejących komputerów zostało usuniętych.<BR>';
+$_LANG['$a records for deleted nodes have been removed.<BR>'] = '$a rekordów nieistniejących komputerów zostało usuniętych.<BR>';
 $_LANG['- select category -'] = '- wybierz kategorię -';
 $_LANG['Available<!plural>:'] = 'Dostępne:';
 $_LANG['Selected<!plural>:'] = 'Wybrane:';
@@ -2130,6 +2130,7 @@ $_LANG['sent<!plural>'] = 'wysłane';
 $_LANG['sms'] = 'sms';
 $_LANG['subject'] = 'temat';
 $_LANG['traffic stats'] = 'statystyki ruchu sieciowego';
+$_LANG['traffic stats compacting'] = 'kompaktowanie statystyk ruchu sieciowego';
 $_LANG['Unable to send message. No recipients selected!'] = 'Nie można wysłać wiadomości. Nie wybrano odbiorców!';
 $_LANG['user ID'] = 'ID użytkownika';
 $_LANG['user name'] = 'nazwisko użytkownika';
@@ -2568,7 +2569,7 @@ $_LANG['Remove lock'] = 'Usuń blokadę';
 $_LANG['Days:'] = 'Dni:';
 
 $_LANG['UKE report'] = 'Raport do UKE';
-$_LANG['Allows you to prepare SIIS v3 report for UKE'] = 'Wygenerowanie raportu SIIS w wersji 3 do UKE';
+$_LANG['Allows you to prepare SIIS v4 report for UKE'] = 'Wygenerowanie raportu SIIS w wersji 4 do UKE';
 
 $_LANG['Link speed:'] = 'Szybkość łącza:';
 $_LANG['Select link speed'] = 'Wybierz szybkość łącza';
@@ -2599,11 +2600,14 @@ $_LANG['You haven\\\'t selected any nodes!'] = 'Nie wybrałeś żadnego komputer
 $_LANG['Your balance on date of invoice issue:'] = 'Saldo w dniu wystawienia faktury:';
 
 $_LANG['Remove management URL'] = 'Usuń adres URL do zarządzania';
+$_LANG['Edit management URL'] = 'Edytuj adres URL do zarządzania';
 $_LANG['Enter management URL'] = 'Podaj adres URL do zarządzania';
 $_LANG['No management URL\'s.'] = 'Brak adresów URL do zarządzania.';
 $_LANG['Management URL\'s:'] = 'Adresy URL do zarządzania';
 $_LANG['Enter URL comment'] = 'Podaj komentarz adresu URL do zarządzania';
 $_LANG['Add new management URL'] = 'Dodaj nowy adres URL do zarządzania';
+$_LANG['Management URL cannot be empty!'] = 'Adres URL do zarządzania nie może być pusty!';
+$_LANG['Management URL is too short!'] = 'Adres URL do zarządzania jest zbyt krótki!';
 
 $_LANG['only automatically issued'] = 'tylko wystawione automatycznie';
 
@@ -2727,7 +2731,7 @@ $_LANG['network device<!syslog>'] = 'urządzenie sieciowe';
 $_LANG['network link<!syslog>'] = 'połączenie sieciowe';
 $_LANG['management url<!syslog>'] = 'adres url do zarządzania';
 $_LANG['template<!syslog>'] = 'szablon';
-
+$_LANG['radio sector<!syslog>'] = 'sektor radiowy';
 $_LANG['addition<!syslog>'] = 'dodanie';
 $_LANG['deletion<!syslog>'] = 'usunięcie';
 $_LANG['update<!syslog>'] = 'aktualizacja';
@@ -2762,6 +2766,12 @@ $_LANG['userpanel urgent'] = 'panel abonencki (pilne)';
 $_LANG['I confirm reading'] = 'Zapoznałem się';
 $_LANG['Urgent'] = 'Pilna';
 $_LANG['Casual'] = 'Zwykła';
+$_LANG['Unread'] = 'Nieprzeczytana';
+$_LANG['Read status:'] = 'Status przeczytania:';
+$_LANG['Was read on:'] = 'Przeczytana dnia:';
+$_LANG['Last read on:'] = 'Ostatnio czytana dnia:';
+$_LANG['Was confirm on:'] = 'Potwierdzona dnia:';
+$_LANG['only userpanel message'] = 'tylko wiadomości userpanel';
 
 
 $_LANG['New ticket customer notification subject:'] = 'Temat listu z powiadomieniem klienta o nowym zgłoszeniu:';
@@ -2806,5 +2816,174 @@ $_LANG['Are you sure, you want to delete all liabilities?'] = 'Jesteś pewien, �
 
 $_LANG['Enter document number and press Enter'] = 'Wprowadź numer dokumentu i naciśnij Enter';
 $_LANG['Document id:'] = 'Id dokumentu:';
+
+$_LANG['prefix'] = 'prefiks';
+$_LANG['interface'] = 'interfejs';
+$_LANG['network'] = 'sieć';
+$_LANG['Addresses'] = 'Adresy';
+$_LANG['total'] = 'wszystkie';
+$_LANG['busy'] = 'zajęte';
+$_LANG['on-line'] = 'włączone';
+
+$_LANG['End time:'] = 'Czas zakończenia:';
+$_LANG['hide VoIP passwords'] = 'ukrywanie haseł VoIP';
+
+$_LANG['Nodes list'] = 'Lista węzłów';
+$_LANG['Network device nodes list'] = 'Lista węzłów sieciowych';
+$_LANG['Network Device Nodes'] = 'Węzły sieciowe';
+$_LANG['New node'] = 'Nowy węzeł';
+$_LANG['Add new network device node'] = 'Dodaj nowy węzeł sieciowy';
+$_LANG['There are no device nodes in your database.'] = 'Brak węzłów sieciowych w bazie.';
+$_LANG['Are you sure, you want to remove net device node \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć węzeł \\\'$a\\\' z bazy ?';
+$_LANG['existing'] = 'zakończone';
+$_LANG['under construction'] = 'w realizacji';
+$_LANG['planned'] = 'planowane';
+$_LANG['Project:'] = 'Projekt:';
+$_LANG['without project'] = 'bez projektu';
+$_LANG['Network node:'] = 'Węzeł sieciowy:';
+$_LANG['Ownership:'] = 'Własność:';
+$_LANG['None'] = 'Brak';
+$_LANG['New project'] = 'Nowy projekt';
+$_LANG['Inherited from root device'] = 'Dzedziczenie z jednostki nadrzędnej';
+$_LANG['Enter node type'] = 'Podaj typ węzła';
+$_LANG['Enter node status'] = 'Podaj status węzła';
+$_LANG['Enter node name'] = 'Podaj nazwę węzła';
+$_LANG['Select project for this node'] = 'Wybierz projekt, w ramach którego powstał węzeł';
+$_LANG['Select ownership for this node'] = 'Wybierz rodzaj własności węzła';
+$_LANG['Enter new project name'] = 'Wprowadź nazwę nowego projektu';
+$_LANG['Enter co-owner identifier'] = 'Podaj identyfikator współwłaściciela';
+$_LANG['Yes'] = 'Tak';
+$_LANG['No'] = 'Nie';
+$_LANG['New Net Device Node'] = 'Nowy węzeł sieciowy';
+$_LANG['Net node name is required!'] = 'Nazwa węzła sieciowego jest wymagana!';
+$_LANG['Project name is required'] = 'Nazwa nowego projektu jest wymagana';
+$_LANG['Co-owner identifier is required'] = 'Identyfikator współwłaściciela jest wymagany';
+$_LANG['Net Device Node Info: $a'] = 'Informacje o węźle sieciowym: $a';
+$_LANG['Assigned net devices ($a):'] = 'Przypisane urządzenia sieciowe ($a):';
+$_LANG['No assigned devices.'] = 'Brak przypisanych urządzeń.';
+$_LANG['Net Device Node Edit: $a'] = 'Edycja węzła sieciowego: $a';
+$_LANG['Select net devices to add'] = 'Wybierz urządzenia sieciowe do dodania';
+$_LANG['Add devices to node'] = 'Dodaj urządzenia do węzła';
+$_LANG['Net devices are missing.'] = 'Brak urządzeń sieciowych';
+$_LANG['Filter devices by name'] = 'Filtruj urządzenia po nazwie';
+$_LANG['Are you sure, you want to remove net device  \\\'$a\\\' from node?'] = 'Na pewno usunąć urządzenie \\\'$a\\\' z węzła?';
+$_LANG['Investment project:'] = 'Projekt inwestycyjny:';
+$_LANG['From root device'] = 'Z jednostki nadrzędnej';
+$_LANG['Net node:'] = 'Węzeł sieciowy:';
+$_LANG['Select project'] = 'Wybierz projekt';
+$_LANG['Enter node latitude (optional)'] = 'Podaj szerokość geograficzną dla węzła sieciowego (opcjonalne)';
+$_LANG['Enter node longitude (optional)'] = 'Podaj długość geograficzną dla węzła sieciowego (opcjonalne)';
+
+$_LANG['Select investment projects'] = 'Wybierz projekty inwestycyjne';
+$_LANG['Investment project:'] = 'Projekt inwestycyjny:';
+
+$_LANG['Select device status'] = 'Wybierz status urządzenia';
+$_LANG['$a (from network node $b)'] = '$a (z węzła sieciowego $b)';
+$_LANG['$a (from network device $b)'] = '$a (z urządzenia sieciowego $b)';
+
+$_LANG['Network device models database is empty.'] = 'Baza danych urządzeń sieciowych jest pusta.';
+$_LANG['Select producer'] = 'Wybierz producenta';
+$_LANG['Select model'] = 'Wybierz model';
+$_LANG['Enter producer name'] = 'Wpisz nazwę producenta';
+$_LANG['Click to select model'] = 'Kliknij w celu wybrania modelu';
+$_LANG['Attribute:'] = 'Atrybut:';
+$_LANG['Enter tariff attribute'] = 'Wprowadź atrybut dla taryfy';
+
+$_LANG['Terminate Cause:'] = 'Powód rozłączenia:';
+
+$_LANG['Network device producers and models'] = 'Producenci i modele osprzętu sieciowego';
+$_LANG['New producer'] = 'Nowy producent';
+$_LANG['Producer edit: $a'] = 'Edycja producenta: $a';
+$_LANG['Producer name is required!'] = 'Wymagana nazwa producenta!';
+$_LANG['Producer already exists!'] = 'Producent już istnieje!';
+$_LANG['New model'] = 'Nowy model';
+$_LANG['Model edit: $a'] = 'Edycja modelu: $a';
+$_LANG['Model name is required!'] = 'Wymagana nazwa modelu!';
+$_LANG['Model already exists!'] = 'Model już istnieje!';
+$_LANG['Producer name'] = 'Nazwa producenta';
+$_LANG['Alternative name (optional)'] = 'Alternatywna nazwa (opcjonalnie)';
+$_LANG['Producer removal will cause removal of all assigned models! Are you sure you want to continue?'] = 'Usunięcie producenta spowoduje usunięcie wszystkich powiązanych modeli! Jesteś pewien, że chcesz kontynuować?';
+$_LANG['Producers'] = 'Producenci';
+$_LANG['Add producer'] = 'Dodaj producenta';
+$_LANG['Model name'] = 'Nazwa modelu';
+$_LANG['Model list'] = 'Lista modeli';
+$_LANG['Alternative name'] = 'Alternatywna nazwa';
+$_LANG['Network devices'] = 'Urządzenia sieciowe';
+$_LANG['Add model'] = 'Dodaj model';
+$_LANG['There are no models matching to defined filter or model list is empty'] = 'Brak modeli pasujących do zdefiniowanego filtra lub lista modeli jest pusta!';
+$_LANG['Add new model'] = 'Dodaj nowy model';
+$_LANG['Producers and models'] = 'Producenci i modele';
+$_LANG['Network device producers and models management'] = 'Zarządzanie producentami i modelami osprzętu sieciowego';
+
+$_LANG['Format type:'] = 'Typ formatu:';
+$_LANG['multi file zip archive (lms legacy format)'] = 'archiwum zip z wieloma plikami (dotychczasowy format)';
+$_LANG['single csv file (uke siis format)'] = 'pojedynczy plik csv (format zgodny ze specyfikacją uke siis)';
+$_LANG['Exported sheets:'] = 'Eksportowane arkusze:';
+
+$_LANG['Azimuth:'] = 'Azymut:';
+$_LANG['Width:'] = 'Szerokość:';
+$_LANG['Altitude:'] = 'Wysokość:';
+$_LANG['Range:'] = 'Zasięg:';
+$_LANG['Frequency:'] = 'Częstotliwość:';
+$_LANG['Bandwidth:'] = 'Szerokość kanału:';
+$_LANG['$a deg.'] = '$a st.';
+$_LANG['$a m'] = '$a m';
+$_LANG['$a GHz'] = '$a GHz';
+$_LANG['$a MHz'] = '$a MHz';
+$_LANG['Remove radio sector'] = 'Usuń sektor radiowy';
+$_LANG['Edit radio sector'] = 'Edytuj sektor radiowy';
+$_LANG['No radio sectors.'] = 'Brak sektorów radiowych.';
+$_LANG['Enter azimuth in degrees'] = 'Podaj azymut w stopniach';
+$_LANG['Enter angular width in degrees'] = 'Podaj szerokość kątową w stopniach';
+$_LANG['Enter altitude in meters'] = 'Podaj wysokość w metrach';
+$_LANG['Enter range in meters'] = 'Podaj zasięg w metrach';
+$_LANG['Enter radio license number'] = 'Podaj numer pozwolenia radiowego';
+$_LANG['Enter frequency in GHz'] = 'Podaj częstotliwość w GHz';
+$_LANG['Enter bandwidth in MHz'] = 'Podaj szerokość pasma w MHz';
+$_LANG['License number:'] = 'Numer pozwolenia:';
+$_LANG['Add new radio sector'] = 'Dodaj nowy sektor radiowy';
+$_LANG['Radio sectors:'] = 'Sektory radiowe:';
+$_LANG['Radio sector name cannot be empty!'] = 'Nazwa sektora radiowego nie może być pusta!';
+$_LANG['Radio sector name is too long!'] = 'Nazwa sektora radiowego  jest zbyt długa!';
+$_LANG['Radio sector name contains invalid characters!'] = 'Nazwa sektora radiowego zawiera niepoprawne znaki!';
+$_LANG['Radio sector with entered name already exists for this network device!'] = 'Sektor radiowy o podanej nazwie już istnieje dla tego urządzenia sieciowego!';
+$_LANG['Radio sector azimuth cannot be empty!'] = 'Azymut sektora radiowego nie może być pusty!';
+$_LANG['Radio sector azimuth has invalid format!'] = 'Azymut sektora radiowego zawiera niepoprawne znaki!';
+$_LANG['Radio sector azimuth should be less than 360 degrees!'] = 'Azymut sektora radiowego powinien być mniejszy niż 360 stopni!';
+$_LANG['Radio sector angular width cannot be empty!'] = 'Szerokość kątowa sektora radiowego nie może być pusta!';
+$_LANG['Radio sector angular width has invalid format!'] = 'Szerokość kątowa sektora radiowego zawiera niepoprawne znaki!';
+$_LANG['Radio sector angular width should be less than 360 degrees!'] = 'Szerokość kątowa sektora radiowego powinna być mniejsza niż 360 stopni!';
+$_LANG['Radio sector altitude cannot be empty!'] = 'Wysokość sektora radiowego nie może być pusta!';
+$_LANG['Radio sector altitude has invalid format!'] = 'Wysokość sektora radiowego zawiera niepoprawne znaki!';
+$_LANG['Radio sector range cannot be empty!'] = 'Zasięg sektora radiowego nie może być pusty!';
+$_LANG['Radio sector range has invalid format!'] = 'Zasięg sektora radiowego zawiera niepoprawne znaki!';
+$_LANG['Radio sector frequency has invalid format!'] = 'Częstotliwość sektora radiowego zawiera niepoprawne znaki!';
+$_LANG['Radio sector second frequency should be also empty if first frequency is empty!'] = 'Druga częstotliwość sektora radiowego powinna również pozostać pusta, w przypadku gdy pierwsza częstotliwość jest pusta!';
+$_LANG['Radio sector bandwidth has invalid format!'] = 'Szerokość pasma sektora radiowego zawiera niepoprawne znaki!';
+$_LANG['Radio sector:'] = 'Sektor radiowy:';
+$_LANG['Select radio sector'] = 'Wybierz sektor radiowy';
+$_LANG['Destination radio sector:'] = 'Docelowy sektor radiowy:';
+$_LANG['(default for link technology)'] = '(domyślna dla technologii łącza)';
+$_LANG['PPPoE Client'] = 'Klient PPPoE';
+$_LANG['DHCP Client'] = 'Klient DHCP';
+$_LANG['EAP Client'] = 'Klient EAP';
+$_LANG['Enable/disable PPPoE Server Client'] = 'Włącza/Wyłącza komputer jako klient PPPoE';
+$_LANG['Enable/disable DHCP Server Client'] = 'Włącza/Wyłącza komputer jako klient DHCP';
+$_LANG['Enable/disable EAP Server Client'] = 'Włącza/Wyłącza komputer jako klient EAP';
+
+$_LANG['Select network device:'] = 'Wybierz urządzenie sieciowe:';
+$_LANG['Click to select network device from map'] = 'Kliknij w celu wybrania urządzenia sieciowego z mapy';
+$_LANG['Replace'] = 'Wymień';
+
+$_LANG['Plugin Name:'] = 'Nazwa wtyczki:';
+$_LANG['Plugin List'] = 'Lista wtyczek';
+$_LANG['Enabled:'] = 'Włączone:';
+$_LANG['Plugin Management'] = 'Zarządzanie wtyczkami';
+$_LANG['Plugins'] = 'Wtyczki';
+$_LANG['Modern:'] = 'Nowoczesna:';
+$_LANG['Current DB Schema Version:'] = 'Bieżąca wersja schematu bazy danych:';
+$_LANG['DB Schema Version:'] = 'Wersja schematu bazy danych:';
+$_LANG['minimal'] = 'minimalny';
+$_LANG['Author:'] = 'Autor:';
 
 ?>

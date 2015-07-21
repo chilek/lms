@@ -24,12 +24,12 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE passwd ADD mail_forward varchar(255) NOT NULL DEFAULT ''");
+$this->Execute("ALTER TABLE passwd ADD mail_forward varchar(255) NOT NULL DEFAULT ''");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008021900', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008021900', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

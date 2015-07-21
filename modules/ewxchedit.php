@@ -105,6 +105,6 @@ if(isset($_POST['channel']))
 }
 
 $SMARTY->assign('channel', $channel);
-$SMARTY->display('ewxchedit.html');
+$SMARTY->display('ewxch/ewxchedit.html');
 
 ?>

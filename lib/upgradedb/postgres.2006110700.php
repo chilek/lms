@@ -24,15 +24,15 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE rttickets ADD COLUMN cause smallint");
-$DB->Execute("UPDATE rttickets SET cause = 0");
-$DB->Execute("ALTER TABLE rttickets ALTER COLUMN cause SET NOT NULL");
-$DB->Execute("ALTER TABLE rttickets ALTER COLUMN cause SET DEFAULT 0");
+$this->Execute("ALTER TABLE rttickets ADD COLUMN cause smallint");
+$this->Execute("UPDATE rttickets SET cause = 0");
+$this->Execute("ALTER TABLE rttickets ALTER COLUMN cause SET NOT NULL");
+$this->Execute("ALTER TABLE rttickets ALTER COLUMN cause SET DEFAULT 0");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006110700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2006110700', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

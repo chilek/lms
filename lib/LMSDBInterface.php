@@ -60,6 +60,12 @@ interface LMSDBInterface
 
     public function Now();
 
+	public function Year($date);
+
+	public function Month($date);
+
+	public function Day($date);
+
     public function ListTables();
 
     public function BeginTrans();
@@ -99,4 +105,7 @@ interface LMSDBInterface
     public function SetErrors(array $errors = array());
 
     public function SetDebug($debug = true);
+
+	public function UpgradeDb($dbver = DBVERSION, $pluginclass = null, $libdir = null, $docdir = null);
+
 }

@@ -35,6 +35,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $layout['pagetitle'] = trans('Customer Info: $a',$customerinfo['customername']);
 
-$SMARTY->display('customerinfo.html');
+$SMARTY->display('customer/customerinfo.html');
 
 ?>

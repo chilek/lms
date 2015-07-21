@@ -23,7 +23,7 @@
  *
  *  $Id$
  */
-$DB->Execute("
+$this->Execute("
     BEGIN;
     ALTER TABLE admins ADD deleted smallint;
     ALTER TABLE admins ALTER deleted SET DEFAULT 0;

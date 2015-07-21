@@ -59,6 +59,6 @@ elseif($p == 'main')
 
 $SMARTY->assign('part', $p);
 $SMARTY->assign('js', $js);
-$SMARTY->display('choosemac.html');
+$SMARTY->display('choose/choosemac.html');
 
 ?>

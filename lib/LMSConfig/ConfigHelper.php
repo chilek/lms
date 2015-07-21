@@ -38,7 +38,7 @@ class ConfigHelper
      * @param string $default Default value
      * @return string
      */
-    public static function getConfig($name, $default = null)
+    public static function getConfig($name, $default = null, $allow_empty_value = false)
     {
         list($section_name, $variable_name) = explode('.', $name, 2);
 
@@ -56,7 +56,7 @@ class ConfigHelper
 
         $value = LMSConfig::getConfig()->getSection($section_name)->getVariable($variable_name)->getValue();
 
-        return $value == '' ? $default : $value;
+        return $value == '' && !$allow_empty_value ? $default : $value;
     }
     
     /**
@@ -73,8 +73,9 @@ class ConfigHelper
             return false;
         }
         
-        if ($section_name === 'privileges' && !self::getConfig($name)) {
-            return preg_match('/^hide/', $variable_name) ? false : true;
+        if ($section_name === 'privileges') {
+            $value = self::getConfig($name);
+	    return $value;
         }
 
         if (!LMSConfig::getConfig()->hasSection($section_name)) {
@@ -115,5 +116,17 @@ class ConfigHelper
 
         trigger_error('Incorrect option value: '.$value);
     }
-    
+
+	/**
+	 * Determines if user has got access privilege
+	 * 
+	 * @param string $privilege privilege to check
+	 * @param boolean $checkIfSuperUser check if full access privilege should be taken into account
+	 * @return boolean
+	*/
+	public static function checkPrivilege($privilege, $checkIfSuperUser = true) {
+		if ($checkIfSuperUser && self::checkConfig('privileges.superuser'))
+			return preg_match('/^hide_/', $privilege) ? false : true;
+		return self::checkConfig("privileges.$privilege");
+	}
 }

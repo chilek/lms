@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute('ALTER TABLE nodes DROP INDEX mac');
-$DB->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?',array('2004042000', 'dbversion'));
+$this->Execute('ALTER TABLE nodes DROP INDEX mac');
+$this->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?',array('2004042000', 'dbversion'));
 
 ?>

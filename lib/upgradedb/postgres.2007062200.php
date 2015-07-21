@@ -24,14 +24,14 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("SELECT setval('events_id_seq', MAX(id)) FROM events");
-$DB->Execute("ALTER TABLE events ALTER id DROP DEFAULT");
-$DB->Execute("ALTER TABLE events ALTER id SET DEFAULT nextval('events_id_seq')");
+$this->Execute("SELECT setval('events_id_seq', MAX(id)) FROM events");
+$this->Execute("ALTER TABLE events ALTER id DROP DEFAULT");
+$this->Execute("ALTER TABLE events ALTER id SET DEFAULT nextval('events_id_seq')");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007062200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007062200', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

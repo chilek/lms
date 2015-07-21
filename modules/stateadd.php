@@ -65,6 +65,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('stateadd', $stateadd);
 $SMARTY->assign('error', $error);
-$SMARTY->display('stateadd.html');
+$SMARTY->display('state/stateadd.html');
 
 ?>

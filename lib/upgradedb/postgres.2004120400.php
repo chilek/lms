@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
-$DB->Execute("
+$this->BeginTrans();
+$this->Execute("
     CREATE SEQUENCE aliases_id_seq;
     CREATE TABLE aliases (
 	id integer DEFAULT nextval('aliases_id_seq'::text) NOT NULL,
@@ -37,6 +37,6 @@ $DB->Execute("
     
     UPDATE dbinfo SET keyvalue = '2004120400' WHERE keytype = 'dbversion'
 ");
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

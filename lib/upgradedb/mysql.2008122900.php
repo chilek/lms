@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
 CREATE TABLE numberplanassignments (
         id int(11) NOT NULL auto_increment,
 	planid int(11) NOT NULL DEFAULT 0,
@@ -35,11 +35,11 @@ CREATE TABLE numberplanassignments (
 ) ENGINE=MyISAM;
 ");
 
-if($divs = $DB->GetAll('SELECT id FROM divisions'))
+if($divs = $this->GetAll('SELECT id FROM divisions'))
 	foreach($divs as $div)
-		$DB->Execute('INSERT INTO numberplanassignments (planid, divisionid)
+		$this->Execute('INSERT INTO numberplanassignments (planid, divisionid)
 			SELECT id, ? FROM numberplans', array($div['id']));
 
-$DB->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?', array('2008122900', 'dbversion'));
+$this->Execute('UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?', array('2008122900', 'dbversion'));
 
 ?>

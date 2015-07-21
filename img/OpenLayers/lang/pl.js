@@ -23,5 +23,7 @@ OpenLayers.Lang.pl = {
 	'Devices': "Urządzenia",
 	'Device Links': "Połączenia urządzeń",
 	'Nodes': "Komputery",
-	'Node Links': "Połączenia komputerów"
+	'Node Links': "Połączenia komputerów",
+	'Radio sectors - areas': "Sektory radiowe - obszary",
+	'Radio sectors - directions': "Sektory radiowe - kierunki"
 };

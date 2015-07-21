@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id: nodelocks.php,v 1.1 2012/04/07 23:12:01 chilek Exp $
+ *  $Id$
  */
 
 function NodeStats($id, $dt) {
@@ -55,7 +55,7 @@ function getNodeLocks($nodeid) {
 					'thour' => intval($tosec / 3600), 'tminute' => intval(($tosec % 3600) / 60));
 		}
 	$SMARTY->assign('nodelocks', $nodelocks);
-	$nodelocklist = $SMARTY->fetch('nodelocklist.html');
+	$nodelocklist = $SMARTY->fetch('node/nodelocklist.html');
 
 	$result->assign('nodelocktable', 'innerHTML', $nodelocklist);
 
@@ -119,7 +119,7 @@ function getThroughput($ip) {
 			$stats[$idx] = (round(floatval($stats[$idx]) / 1000.0, 2)) . ' Kbit/s';
 		else
 			$stats[$idx] = $stats[$idx] . ' bit/s';
-	$result->assign('livetraffic', 'innerHTML', $stats[0] . ' / ' . $stats[2]);
+	$result->assign('livetraffic', 'innerHTML', $stats[0] . ' / ' . $stats[2] . ' (' . $stats[1] . ' pps / ' . $stats[3] . ' pps)');
 	$result->call('live_traffic_finished');
 
 	return $result;
@@ -139,7 +139,7 @@ function getNodeStats($nodeid) {
 	$nodeip = $DB->GetOne('SELECT INET_NTOA(ipaddr) FROM nodes WHERE id = ?', array($nodeid));
 	$SMARTY->assign('nodeip', $nodeip);
 	$SMARTY->assign('nodestats', $nodestats);
-	$contents = $SMARTY->fetch('nodestats.html');
+	$contents = $SMARTY->fetch('node/nodestats.html');
 	$result->append('nodeinfo', 'innerHTML', $contents);
 
 	if (ConfigHelper::getConfig('phpui.live_traffic_helper')) {
@@ -162,7 +162,152 @@ function getNodeStats($nodeid) {
 	return $result;
 }
 
+function validateManagementUrl($params, $update = false) {
+	global $DB;
+
+	$error = NULL;
+
+	if (!strlen($params['url']))
+		$error['url'] = trans('Management URL cannot be empty!');
+	elseif (strlen($params['url']) < 10)
+		$error['url'] = trans('Management URL is too short!');
+
+	return $error;
+}
+
+function getManagementUrls($formdata = NULL) {
+	global $SMARTY, $DB;
+
+	$result = new xajaxResponse();
+
+	$nodeid = intval($_GET['id']);
+
+	$mgmurls = NULL;
+	$mgmurls = $DB->GetAll('SELECT id, url, comment FROM managementurls WHERE nodeid = ? ORDER BY id', array($nodeid));
+	$SMARTY->assign('mgmurls', $mgmurls);
+	if (isset($formdata['error']))
+		$SMARTY->assign('error', $formdata['error']);
+	$SMARTY->assign('formdata', $formdata);
+	$mgmurllist = $SMARTY->fetch('managementurl/managementurllist.html');
+
+	$result->assign('managementurltable', 'innerHTML', $mgmurllist);
+
+	return $result;
+}
+
+function addManagementUrl($params) {
+	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
+
+	$result = new xajaxResponse();
+
+	$error = validateManagementUrl($params);
+
+	$params['error'] = $error;
+
+	$nodeid = intval($_GET['id']);
+
+	if (!$error) {
+		if (!preg_match('/^[[:alnum:]]+:\/\/.+/i', $params['url']))
+			$params['url'] = 'http://' . $params['url'];
+
+		$args = array(
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeid,
+			'url' => $params['url'],
+			'comment' => $params['comment'],
+		);
+		$DB->Execute('INSERT INTO managementurls (nodeid, url, comment) VALUES (?, ?, ?)', array_values($args));
+		if ($SYSLOG) {
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL]] = $DB->GetLastInsertID('managementurls');
+			$SYSLOG->AddMessage(SYSLOG_RES_MGMTURL, SYSLOG_OPER_ADD, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE]));
+		}
+		$params = NULL;
+	}
+
+	$result->call('xajax_getManagementUrls', $params);
+	$result->assign('managementurladdlink', 'disabled', false);
+
+	return $result;
+}
+
+function delManagementUrl($id) {
+	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
+
+	$result = new xajaxResponse();
+
+	$nodeid = intval($_GET['id']);
+	$id = intval($id);
+
+	$res = $DB->Execute('DELETE FROM managementurls WHERE id = ?', array($id));
+	if ($res && $SYSLOG) {
+		$args = array(
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL] => $id,
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $nodeid,
+		);
+		$SYSLOG->AddMessage(SYSLOG_RES_MGMTURL, SYSLOG_OPER_DELETE, $args, array_keys($args));
+	}
+	$result->call('xajax_getManagementUrls', $nodeid);
+	$result->assign('managementurltable', 'disabled', false);
+
+	return $result;
+}
+
+function updateManagementUrl($urlid, $params) {
+	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
+
+	$result = new xajaxResponse();
+
+	$urlid = intval($urlid);
+	$nodeid = intval($_GET['id']);
+
+	$res = validateManagementUrl($params, true);
+
+	$error = array();
+	foreach ($res as $key => $val)
+		$error[$key . '_edit_' . $urlid] = $val;
+	$params['error'] = $error;
+
+	if (!$error) {
+		if (!preg_match('/^[[:alnum:]]+:\/\/.+/i', $params['url']))
+			$params['url'] = 'http://' . $params['url'];
+
+		$args = array(
+			'url' => $params['url'],
+			'comment' => $params['comment'],
+			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL] => $urlid,
+		);
+		$DB->Execute('UPDATE managementurls SET url = ?, comment = ? WHERE id = ?', array_values($args));
+		if ($SYSLOG) {
+			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE]] = $nodeid;
+			$SYSLOG->AddMessage(SYSLOG_RES_MGMTURL, SYSLOG_OPER_UPDATE, $args,
+				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE]));
+		}
+		$params = NULL;
+	}
+
+	$result->call('xajax_getManagementUrls', $params);
+	$result->assign('managementurltable', 'disabled', false);
+
+	return $result;
+}
+
+function getRadioSectors($netdev, $technology = 0) {
+	global $DB;
+
+	$result = new xajaxResponse();
+
+	$radiosectors = $DB->GetAll('SELECT * FROM netradiosectors WHERE netdev = ?'
+		. ($technology ? ' AND (technology = ' . intval($technology) . ' OR technology = 0)' : '')
+		. ' ORDER BY name', array($netdev));
+
+	$result->call('radio_sectors_received', $radiosectors);
+
+	return $result;
+}
+
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'getThroughput', 'getNodeStats'));
+$LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'getThroughput', 'getNodeStats',
+	'getManagementUrls', 'addManagementUrl', 'delManagementUrl', 'updateManagementUrl', 'getRadioSectors'));
+$SMARTY->assign('xajax', $LMS->RunXajax());
 
 ?>

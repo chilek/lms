@@ -1,7 +1,9 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <H1 ALIGN="CENTER"><FONT class="red">{trans("Error!")}</FONT></H1>
 <P ALIGN="CENTER"><IMG SRC="img/error.gif" ALT=""></P>
 <P ALIGN="CENTER"><FONT class="alert">{trans("No such module. Requested URL:")}</FONT></P>
 <P ALIGN="CENTER"><FONT class="alert">{$server.QUERY_STRING}</FONT></P>
-{include file="footer.html"}
+{/block}

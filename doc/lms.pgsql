@@ -121,6 +121,7 @@ CREATE TABLE assignments (
 	paytype smallint    DEFAULT NULL,
 	numberplanid integer DEFAULT NULL
 	    REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
+        attribute varchar(255) DEFAULT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
@@ -271,6 +272,62 @@ CREATE TABLE pna (
 );
 
 /* ---------------------------------------------------
+ Structure of table "ewx_stm_nodes" (EtherWerX(R))
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS ewx_stm_nodes_id_seq;
+CREATE SEQUENCE ewx_stm_nodes_id_seq;
+DROP TABLE IF EXISTS ewx_stm_nodes CASCADE;
+CREATE TABLE ewx_stm_nodes (
+        id 		integer		DEFAULT nextval('ewx_stm_nodes_id_seq'::text) NOT NULL,
+	nodeid 		integer         DEFAULT 0 NOT NULL,
+	mac 		varchar(20)     DEFAULT '' NOT NULL,
+	ipaddr 		bigint          DEFAULT 0 NOT NULL,
+	channelid 	integer       	DEFAULT 0 NOT NULL,
+	uprate 		integer         DEFAULT 0 NOT NULL,
+	upceil 		integer         DEFAULT 0 NOT NULL,
+	downrate 	integer        	DEFAULT 0 NOT NULL,
+	downceil 	integer        	DEFAULT 0 NOT NULL,
+	halfduplex 	smallint     	DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (nodeid)
+);
+
+/* ---------------------------------------------------
+ Structure of table "ewx_stm_channels" (EtherWerX(R))
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS ewx_stm_channels_id_seq;
+CREATE SEQUENCE ewx_stm_channels_id_seq;
+DROP TABLE IF EXISTS ewx_stm_channels CASCADE;
+CREATE TABLE ewx_stm_channels (
+    id 		integer 	DEFAULT nextval('ewx_stm_channels_id_seq'::text) NOT NULL,
+    cid 	integer      	DEFAULT 0 NOT NULL,
+    upceil 	integer         DEFAULT 0 NOT NULL,
+    downceil 	integer        	DEFAULT 0 NOT NULL,
+    halfduplex  smallint    DEFAULT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (cid)
+);
+
+/* ---------------------------------------------------
+ Structure of table "ewx_channels" (EtherWerX(R))
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS ewx_channels_id_seq;
+CREATE SEQUENCE ewx_channels_id_seq;
+DROP TABLE IF EXISTS ewx_channels CASCADE;
+CREATE TABLE ewx_channels (
+    id 		integer 	DEFAULT nextval('ewx_channels_id_seq'::text) NOT NULL,
+    name 	varchar(32)     DEFAULT '' NOT NULL,
+    upceil 	integer         DEFAULT 0 NOT NULL,
+    downceil 	integer        	DEFAULT 0 NOT NULL,
+    upceil_n 	integer         DEFAULT NULL,
+    downceil_n 	integer        	DEFAULT NULL,
+    halfduplex  smallint    DEFAULT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (name)
+);
+
+
+/* ---------------------------------------------------
  Structure of table "hosts"
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS hosts_id_seq;
@@ -315,6 +372,148 @@ CREATE TABLE networks (
 );
 CREATE INDEX networks_hostid_idx ON networks (hostid);
 
+/* ---------------------------------------------------
+ Structure of table "invprojects" 
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS invprojects_id_seq;
+CREATE SEQUENCE invprojects_id_seq;
+DROP TABLE IF EXISTS invprojects CASCADE;
+CREATE TABLE invprojects (
+	id integer DEFAULT nextval('invprojects_id_seq'::text) NOT NULL,
+	name varchar(255) NOT NULL,
+	type smallint DEFAULT 0,
+	PRIMARY KEY(id)
+);
+
+/* ---------------------------------------------------
+ Structure of table "netnodes" 
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS netnodes_id_seq;
+CREATE SEQUENCE netnodes_id_seq;
+DROP TABLE IF EXISTS netnodes CASCADE;
+CREATE TABLE netnodes (
+	id integer DEFAULT nextval('netnodes_id_seq'::text) NOT NULL,
+	name varchar(255) NOT NULL,
+	type smallint DEFAULT 0,
+	invprojectid integer
+		REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	status smallint DEFAULT 0,
+	location varchar(255) DEFAULT '',
+	location_city integer DEFAULT NULL
+		REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	location_street integer DEFAULT NULL
+		REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	location_house varchar(32) DEFAULT NULL,
+	location_flat varchar(32) DEFAULT NULL,
+	longitude numeric(10,6) DEFAULT NULL,
+	latitude numeric(10,6) DEFAULT NULL,
+	ownership smallint DEFAULT 0,
+	coowner varchar(255) DEFAULT '',
+	uip smallint DEFAULT 0,
+	miar smallint DEFAULT 0,
+	PRIMARY KEY(id)
+);
+
+/* ---------------------------------------------------
+ Structure of table "netdeviceproducers" 
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS netdeviceproducers_id_seq;
+CREATE SEQUENCE netdeviceproducers_id_seq;
+DROP TABLE IF EXISTS netdeviceproducers CASCADE;
+CREATE TABLE netdeviceproducers (
+	id integer DEFAULT nextval('netdeviceproducers_id_seq'::text) NOT NULL,
+	name varchar(255) NOT NULL,
+	alternative_name VARCHAR(255),
+	PRIMARY KEY (id),
+	UNIQUE (name)
+);
+
+/* ---------------------------------------------------
+ Structure of table "netdevicemodels" 
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS netdevicemodels_id_seq;
+CREATE SEQUENCE netdevicemodels_id_seq;
+DROP TABLE IF EXISTS netdevicemodels CASCADE;
+CREATE TABLE netdevicemodels (
+	id integer DEFAULT nextval('netdevicemodels_id_seq'::text) NOT NULL,
+	netdeviceproducerid integer NOT NULL,
+	name varchar(255) NOT NULL,
+	alternative_name VARCHAR(255),
+	PRIMARY KEY (id),
+	FOREIGN KEY (netdeviceproducerid)
+		REFERENCES netdeviceproducers(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	UNIQUE (name, netdeviceproducerid)
+);
+
+/* ---------------------------------------------------
+ Structure of table "netdevices"
+----------------------------------------------------*/
+DROP SEQUENCE IF EXISTS netdevices_id_seq;
+CREATE SEQUENCE netdevices_id_seq;
+DROP TABLE IF EXISTS netdevices CASCADE;
+CREATE TABLE netdevices (
+	id integer default nextval('netdevices_id_seq'::text) NOT NULL,
+	name varchar(32) 	DEFAULT '' NOT NULL,
+	location varchar(255) 	DEFAULT '' NOT NULL,
+    location_city integer DEFAULT NULL
+        REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    location_street integer DEFAULT NULL
+        REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    location_house varchar(32) DEFAULT NULL,
+    location_flat varchar(32) DEFAULT NULL,
+	description text 	DEFAULT '' NOT NULL,
+	producer varchar(64) 	DEFAULT '' NOT NULL,
+	model varchar(32) 	DEFAULT '' NOT NULL,
+	serialnumber varchar(32) DEFAULT '' NOT NULL,
+	ports integer 		DEFAULT 0 NOT NULL,
+	purchasetime integer	DEFAULT 0 NOT NULL,
+	guaranteeperiod smallint DEFAULT 0,
+	shortname varchar(32) 	DEFAULT '' NOT NULL,
+	nastype integer 	DEFAULT 0 NOT NULL,
+	clients integer 	DEFAULT 0 NOT NULL,
+	secret varchar(60) 	DEFAULT '' NOT NULL,
+	community varchar(50) 	DEFAULT '' NOT NULL,
+	channelid integer 	DEFAULT NULL
+	    REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	longitude numeric(10, 6) DEFAULT NULL,
+	latitude numeric(10, 6) DEFAULT NULL,
+	netnodeid integer	DEFAULT NULL
+	    REFERENCES netnodes(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	invprojectid integer	DEFAULT NULL
+	    REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	status smallint		DEFAULT 0,
+	netdevicemodelid integer DEFAULT NULL
+		REFERENCES netdevicemodels (id) ON UPDATE CASCADE ON DELETE SET NULL,
+	PRIMARY KEY (id)
+);
+CREATE INDEX netdevices_channelid_idx ON netdevices (channelid);
+CREATE INDEX netdevices_location_street_idx ON netdevices (location_street);
+CREATE INDEX netdevices_location_city_idx ON netdevices (location_city, location_street, location_house, location_flat);
+
+/* ---------------------------------------------------
+ Structure of table "netradiosectors"
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS netradiosectors_id_seq;
+CREATE SEQUENCE netradiosectors_id_seq;
+DROP TABLE IF EXISTS netradiosectors CASCADE;
+CREATE TABLE netradiosectors (
+	id integer DEFAULT nextval('netradiosectors_id_seq'::text) NOT NULL,
+	name varchar(64) NOT NULL,
+	azimuth numeric(9,2) DEFAULT 0 NOT NULL,
+	width numeric(9,2) DEFAULT 0 NOT NULL,
+	altitude smallint DEFAULT 0 NOT NULL,
+	rsrange integer DEFAULT 0 NOT NULL,
+	license varchar(64) DEFAULT NULL,
+	technology integer DEFAULT 0 NOT NULL,
+	frequency numeric(9,5) DEFAULT NULL,
+	frequency2 numeric(9,5) DEFAULT NULL,
+	bandwidth numeric(9,5) DEFAULT NULL,
+	netdev integer NOT NULL
+		REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id),
+	UNIQUE (name, netdev)
+);
+
 /* -------------------------------------------------------- 
   Structure of table "nodes"
 -------------------------------------------------------- */
@@ -330,6 +529,8 @@ CREATE TABLE nodes (
 	ownerid integer 	DEFAULT 0 NOT NULL,
 	netdev integer 		DEFAULT 0 NOT NULL,
 	linktype smallint	DEFAULT 0 NOT NULL,
+	linkradiosector integer DEFAULT NULL
+		REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	linkspeed integer	DEFAULT 100000 NOT NULL,
 	linktechnology integer	DEFAULT 0 NOT NULL,
 	port smallint		DEFAULT 0 NOT NULL,
@@ -339,6 +540,7 @@ CREATE TABLE nodes (
 	modid integer 		DEFAULT 0 NOT NULL,
 	access smallint 	DEFAULT 1 NOT NULL,
 	warning smallint 	DEFAULT 0 NOT NULL,
+	authtype smallint 	DEFAULT 0 NOT NULL,
 	chkmac smallint 	DEFAULT 1 NOT NULL,
 	halfduplex smallint	DEFAULT 0 NOT NULL,
 	lastonline integer	DEFAULT 0 NOT NULL,
@@ -348,13 +550,15 @@ CREATE TABLE nodes (
 		REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	location_street integer DEFAULT NULL
 		REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	location_house varchar(8) DEFAULT NULL,
-	location_flat varchar(8) DEFAULT NULL,
+	location_house varchar(32) DEFAULT NULL,
+	location_flat varchar(32) DEFAULT NULL,
 	nas smallint 		DEFAULT 0 NOT NULL,
 	longitude numeric(10, 6) DEFAULT NULL,
 	latitude numeric(10, 6) DEFAULT NULL,
 	netid integer		DEFAULT 0 NOT NULL
 		REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	invprojectid integer DEFAULT NULL
+		REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	UNIQUE (name),
 	UNIQUE (ipaddr, netid)
@@ -364,6 +568,8 @@ CREATE INDEX nodes_ownerid_idx ON nodes (ownerid);
 CREATE INDEX nodes_ipaddr_pub_idx ON nodes (ipaddr_pub);
 CREATE INDEX nodes_location_street_idx ON nodes (location_street);
 CREATE INDEX nodes_location_city_idx ON nodes (location_city, location_street, location_house, location_flat);
+CREATE INDEX nodes_linkradiosector_idx ON nodes (linkradiosector);
+CREATE INDEX nodes_authtype_idx ON nodes (authtype);
 
 /* ----------------------------------------------------
  Structure of table "nodelocks"
@@ -790,6 +996,7 @@ CREATE TABLE nodesessions (
 	download bigint		DEFAULT 0,
 	upload bigint		DEFAULT 0,
 	tag varchar(32)		DEFAULT '' NOT NULL,
+	terminatecause varchar(32) DEFAULT '' NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX nodesessions_customerid_idx ON nodesessions(customerid);
@@ -811,9 +1018,15 @@ CREATE TABLE netlinks (
 	technology integer	DEFAULT 0 NOT NULL,
 	srcport smallint	DEFAULT 0 NOT NULL,
 	dstport smallint	DEFAULT 0 NOT NULL,
+	srcradiosector integer	DEFAULT NULL
+		REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	dstradiosector integer	DEFAULT NULL
+		REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY  (id),
 	CONSTRAINT netlinks_src_key UNIQUE (src, dst)
 );
+CREATE INDEX netlinks_srcradiosector_idx ON netlinks (srcradiosector);
+CREATE INDEX netlinks_dstradiosector_idx ON netlinks (dstradiosector);
 
 /* ---------------------------------------------------
  Functions for network address translations
@@ -1142,6 +1355,7 @@ CREATE TABLE events (
 	note 		text 		DEFAULT '' NOT NULL,
 	date 		integer 	DEFAULT 0 NOT NULL,
 	begintime 	smallint 	DEFAULT 0 NOT NULL,
+	enddate 	integer 	DEFAULT 0 NOT NULL,
 	endtime 	smallint 	DEFAULT 0 NOT NULL,
 	userid 		integer 	DEFAULT 0 NOT NULL,
 	customerid 	integer 	DEFAULT 0 NOT NULL,
@@ -1355,99 +1569,6 @@ CREATE TABLE ewx_pt_config (
 );
 
 /* ---------------------------------------------------
- Structure of table "ewx_stm_nodes" (EtherWerX(R))
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS ewx_stm_nodes_id_seq;
-CREATE SEQUENCE ewx_stm_nodes_id_seq;
-DROP TABLE IF EXISTS ewx_stm_nodes CASCADE;
-CREATE TABLE ewx_stm_nodes (
-        id 		integer		DEFAULT nextval('ewx_stm_nodes_id_seq'::text) NOT NULL,
-	nodeid 		integer         DEFAULT 0 NOT NULL,
-	mac 		varchar(20)     DEFAULT '' NOT NULL,
-	ipaddr 		bigint          DEFAULT 0 NOT NULL,
-	channelid 	integer       	DEFAULT 0 NOT NULL,
-	uprate 		integer         DEFAULT 0 NOT NULL,
-	upceil 		integer         DEFAULT 0 NOT NULL,
-	downrate 	integer        	DEFAULT 0 NOT NULL,
-	downceil 	integer        	DEFAULT 0 NOT NULL,
-	halfduplex 	smallint     	DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id),
-	UNIQUE (nodeid)
-);
-
-/* ---------------------------------------------------
- Structure of table "ewx_stm_channels" (EtherWerX(R))
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS ewx_stm_channels_id_seq;
-CREATE SEQUENCE ewx_stm_channels_id_seq;
-DROP TABLE IF EXISTS ewx_stm_channels CASCADE;
-CREATE TABLE ewx_stm_channels (
-    id 		integer 	DEFAULT nextval('ewx_stm_channels_id_seq'::text) NOT NULL,
-    cid 	integer      	DEFAULT 0 NOT NULL,
-    upceil 	integer         DEFAULT 0 NOT NULL,
-    downceil 	integer        	DEFAULT 0 NOT NULL,
-    halfduplex  smallint    DEFAULT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (cid)
-);
-
-/* ---------------------------------------------------
- Structure of table "ewx_channels" (EtherWerX(R))
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS ewx_channels_id_seq;
-CREATE SEQUENCE ewx_channels_id_seq;
-DROP TABLE IF EXISTS ewx_channels CASCADE;
-CREATE TABLE ewx_channels (
-    id 		integer 	DEFAULT nextval('ewx_channels_id_seq'::text) NOT NULL,
-    name 	varchar(32)     DEFAULT '' NOT NULL,
-    upceil 	integer         DEFAULT 0 NOT NULL,
-    downceil 	integer        	DEFAULT 0 NOT NULL,
-    upceil_n 	integer         DEFAULT NULL,
-    downceil_n 	integer        	DEFAULT NULL,
-    halfduplex  smallint    DEFAULT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (name)
-);
-
-/* ---------------------------------------------------
- Structure of table "netdevices"
-----------------------------------------------------*/
-DROP SEQUENCE IF EXISTS netdevices_id_seq;
-CREATE SEQUENCE netdevices_id_seq;
-DROP TABLE IF EXISTS netdevices CASCADE;
-CREATE TABLE netdevices (
-	id integer default nextval('netdevices_id_seq'::text) NOT NULL,
-	name varchar(32) 	DEFAULT '' NOT NULL,
-	location varchar(255) 	DEFAULT '' NOT NULL,
-    location_city integer DEFAULT NULL
-        REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    location_street integer DEFAULT NULL
-        REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    location_house varchar(8) DEFAULT NULL,
-    location_flat varchar(8) DEFAULT NULL,
-	description text 	DEFAULT '' NOT NULL,
-	producer varchar(64) 	DEFAULT '' NOT NULL,
-	model varchar(32) 	DEFAULT '' NOT NULL,
-	serialnumber varchar(32) DEFAULT '' NOT NULL,
-	ports integer 		DEFAULT 0 NOT NULL,
-	purchasetime integer	DEFAULT 0 NOT NULL,
-	guaranteeperiod smallint DEFAULT 0,
-	shortname varchar(32) 	DEFAULT '' NOT NULL,
-	nastype integer 	DEFAULT 0 NOT NULL,
-	clients integer 	DEFAULT 0 NOT NULL,
-	secret varchar(60) 	DEFAULT '' NOT NULL,
-	community varchar(50) 	DEFAULT '' NOT NULL,
-	channelid integer 	DEFAULT NULL
-	    REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	longitude numeric(10, 6) DEFAULT NULL,
-	latitude numeric(10, 6) DEFAULT NULL,
-	PRIMARY KEY (id)
-);
-CREATE INDEX netdevices_channelid_idx ON netdevices (channelid);
-CREATE INDEX netdevices_location_street_idx ON netdevices (location_street);
-CREATE INDEX netdevices_location_city_idx ON netdevices (location_city, location_street, location_house, location_flat);
-
-/* ---------------------------------------------------
  Structure of table "dbinfo"
 ------------------------------------------------------*/
 DROP TABLE IF EXISTS dbinfo CASCADE;
@@ -1631,7 +1752,8 @@ CREATE TABLE messageitems (
 	destination 	varchar(255) 	DEFAULT '' NOT NULL,
 	lastdate 	integer		DEFAULT 0 NOT NULL,
 	status 		smallint	DEFAULT 0 NOT NULL,
-	error 		text		DEFAULT NULL, 
+	error 		text		DEFAULT NULL,
+	lastreaddate 	integer		DEFAULT 0 NOT NULL,
         PRIMARY KEY (id)
 ); 
 
@@ -1659,8 +1781,10 @@ CREATE SEQUENCE managementurls_id_seq;
 DROP TABLE IF EXISTS managementurls;
 CREATE TABLE managementurls (
 	id integer		DEFAULT nextval('managementurls_id_seq'::text) NOT NULL,
-	netdevid integer	NOT NULL
+	netdevid integer	DEFAULT NULL
 		REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	nodeid integer		DEFAULT NULL
+		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	url text		DEFAULT '' NOT NULL,
 	comment varchar(100)	DEFAULT NULL,
 	PRIMARY KEY (id)
@@ -2048,6 +2172,334 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('userpanel', 'hide_nodesbox', '0', '', 0),
 ('userpanel', 'logout_url', '', '', 0),
 ('userpanel', 'owner_stats', '0', '', 0),
-('userpanel', 'default_categories', '1', '', 0);
+('userpanel', 'default_categories', '1', '', 0),
+('directories', 'userpanel_dir', 'userpanel', '', 0);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2014072500');
+INSERT INTO netdeviceproducers (id, name) VALUES
+(1, 'Mikrotik'),
+(2, 'Ubiquiti');
+
+INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
+('RB750', NULL, 1),
+('RB750UP', NULL, 1),
+('RB750GL', NULL, 1),
+('PowerBox', NULL, 1),
+('RB2011iL-IN', NULL, 1),
+('RB2011iL-RM', NULL, 1),
+('RB2011iLS-IN', NULL, 1),
+('RB2011UiAS-IN', NULL, 1),
+('RB2011UiAS-RM', NULL, 1),
+('RB1100AHx2', NULL, 1),
+('CCR1009-8G-1S', NULL, 1),
+('CCR1009-8G-1S-1S+', NULL, 1),
+('CCR1009-8G-1S-1S+PC', NULL, 1),
+('CCR1016-12S-1S+', NULL, 1),
+('CCR1016-12G', NULL, 1),
+('CCR1036-12G-4S', NULL, 1),
+('CCR1036-8G-2S+', NULL, 1),
+('CCR1036-12G-4S-EM', NULL, 1),
+('CCR1036-8G-2S+EM', NULL, 1),
+('RB1100AHx2-LM', NULL, 1),
+('RB750G', NULL, 1),
+('RB1000', NULL, 1),
+('RB1000U', NULL, 1),
+('RB1100', NULL, 1),
+('RB1100Hx2', NULL, 1),
+('RB1100AH', NULL, 1),
+('RB1200', NULL, 1),
+('RB260GS', NULL, 1),
+('RB260GSP', NULL, 1),
+('CRS109-8G-1S-2HnD-IN', NULL, 1),
+('CRS210-8G-2S+IN', NULL, 1),
+('CRS212-1G-10S-1S+IN', NULL, 1),
+('CRS125-24G-1S-IN', NULL, 1),
+('CRS125-24G-1S-RM', NULL, 1),
+('CRS125-24G-1S-2HnD-IN', NULL, 1),
+('CRS226-24G-2S+IN', NULL, 1),
+('CRS226-24G-2S+RM', NULL, 1),
+('RB250GS', NULL, 1),
+('NetMetal 5', NULL, 1),
+('SXT 5 ac', NULL, 1),
+('SXT SA5 ac', NULL, 1),
+('NetBox 5', NULL, 1),
+('SXT Lite2', NULL, 1),
+('SXT Lite5', NULL, 1),
+('Groove 52HPn', NULL, 1),
+('GrooveA 52HPn', NULL, 1),
+('SXT 2', NULL, 1),
+('SXT 5', NULL, 1),
+('BaseBox 2', NULL, 1),
+('BaseBox 5', NULL, 1),
+('OmniTIK U-5HnD', NULL, 1),
+('SXT HG5', NULL, 1),
+('SXT SA5', NULL, 1),
+('OmniTIK UPA-5HnD', NULL, 1),
+('Metal 9HPn', NULL, 1),
+('Metal 2SHPn', NULL, 1),
+('Metal 5SHPn', NULL, 1),
+('SEXTANT G 5HPnD', NULL, 1),
+('QRT 2', NULL, 1),
+('QRT 5', NULL, 1),
+('SXT Sixpack', NULL, 1),
+('SXT 5HnD', NULL, 1),
+('SXT G-5HnD', NULL, 1),
+('RB951-2n', NULL, 1),
+('mAP 2n', NULL, 1),
+('cAP 2n', NULL, 1),
+('RB951Ui-2HnD', NULL, 1),
+('RB951G-2HnD', NULL, 1),
+('RB2011UiAS-2HnD-IN', NULL, 1),
+('RB751U-2HnD', NULL, 1),
+('RB751G-2HnD', NULL, 1),
+('911 Lite2', NULL, 1),
+('911 Lite5', NULL, 1),
+('RB411L', NULL, 1),
+('911 Lite5 dual', NULL, 1),
+('RB411', NULL, 1),
+('RB911G-2HPnD', NULL, 1),
+('RB450', NULL, 1),
+('RB411GL', NULL, 1),
+('RB911G-5HPnD', NULL, 1),
+('RB411U', NULL, 1),
+('RB911G-5HPacD', NULL, 1),
+('RB912UAG-2HPnD', NULL, 1),
+('RB912UAG-5HPnD', NULL, 1),
+('RB411AR', NULL, 1),
+('RB433UL', NULL, 1),
+('RB433', NULL, 1),
+('RB450G', NULL, 1),
+('RB411AH', NULL, 1),
+('RB922UAGS-5HPacD', NULL, 1),
+('RB850Gx2', NULL, 1),
+('RB433GL', NULL, 1),
+('RB433AH', NULL, 1),
+('RB953GS-5HnT-RP', NULL, 1),
+('RB493AH', NULL, 1),
+('RB435G', NULL, 1),
+('RB493G', NULL, 1),
+('RB800', NULL, 1),
+('RB433UAH', NULL, 1),
+('RB411UAHL', NULL, 1),
+('RB493', NULL, 1),
+('RB711-5Hn', NULL, 1),
+('RB711-2Hn', NULL, 1),
+('RB2011L', NULL, 1),
+('RB2011LS', NULL, 1),
+('RB433L', NULL, 1),
+('RB2011UiAS-2HnD', NULL, 1),
+('RB711-5Hn-U', NULL, 1),
+('RB411UAHR', NULL, 1),
+('RB433UAHL', NULL, 1),
+('RB711GA-5HnD', NULL, 1),
+('RB711A-5Hn-M', NULL, 1),
+('CCR1016-12G-BU', NULL, 1),
+('RB411R', NULL, 1),
+('RB711-5Hn-M', NULL, 1),
+('RB600A', NULL, 1),
+('Crossroads', NULL, 1),
+('RB411A', NULL, 1),
+('CA411-711', NULL, 1),
+('CA150', NULL, 1),
+('CA433U', NULL, 1),
+('CA493', NULL, 1),
+('CA800', NULL, 1),
+('CAOTS', NULL, 1),
+('CAOTU', NULL, 1),
+('S-RJ01', NULL, 1),
+('S-85DLC05D', NULL, 1),
+('S-31DLC20D', NULL, 1),
+('S-3553LC20D', NULL, 1),
+('S+85DLC03D', NULL, 1),
+('S+31DLC10D', NULL, 1),
+('S+2332LC10D', NULL, 1),
+('SFP+ 1m direct attach cable', NULL, 1),
+('SFP+ 3m direct attach cable', NULL, 1),
+('R11e-2HnD', NULL, 1),
+('R11e-2HPnD', NULL, 1),
+('R11e-5HnD', NULL, 1),
+('R11e-5HacD', NULL, 1),
+('R2SHPn', NULL, 1),
+('R5SHPn', NULL, 1),
+('R52nM', NULL, 1),
+('R52H', NULL, 1),
+('R52Hn', NULL, 1),
+('RB14e', NULL, 1),
+('RB14eU', NULL, 1),
+('RB44Ge', NULL, 1),
+('RB502', NULL, 1),
+('RB604', NULL, 1),
+('IAMP1E', NULL, 1),
+('R5H', NULL, 1),
+('R5nH', NULL, 1),
+('R2N', NULL, 1),
+('R52N', NULL, 1),
+('RB44GV', NULL, 1),
+('R52', NULL, 1),
+('IAMP1', NULL, 1),
+('FTC', NULL, 1),
+('Flex-guide', NULL, 1),
+('MMCX-RPSMA pigtail', NULL, 1),
+('2.4Ghz Dipole', NULL, 1),
+('RB2011 mount', NULL, 1),
+('48 to 24V PoE Converter', NULL, 1),
+('18POW', NULL, 1),
+('24HPOW', NULL, 1),
+('48POW', NULL, 1),
+('5VUSB', NULL, 1),
+('RBPOE', NULL, 1),
+('RBGPOE', NULL, 1),
+('ACUFL', NULL, 1),
+('ACMMCX', NULL, 1),
+('ACSWI', NULL, 1),
+('ACSWIM', NULL, 1),
+('Radome Cover Kit', NULL, 1),
+('mANT30 PA', NULL, 1),
+('mANT30', NULL, 1);
+
+INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
+('3391-A', 'SR71A', 2),
+('AF-24', 'AIRFIBER 1.4GBPS+ BACKHAUL 24GHZ (SHIPPED AS SINGLES)', 2),
+('AF-5', 'AIRFIBER 1GBPS+ BACKHAUL 5.4-5.8GHZ', 2),
+('AG-HP-2G16', '2.4GHZ AIRGRID AIRMAX 16DBI', 2),
+('AG-HP-2G20', '5PK 2.4GHZ AIRGRID AIRMAX 20DBI', 2),
+('AG-HP-5G23', '5PK 5GHZ AIRGRID AIRMAX 23DBI', 2),
+('AG-HP-5G27', '5PK 5GHZ AIRGRID AIRMAX 27DBI', 2),
+('AIRCAM', 'AIRCAM', 2),
+('AIRCAM-3', 'AIRCAM 3-PACK', 2),
+('AIRCAM-DOME', 'AIRCAM DOME', 2),
+('AIRCAM-DOME-3', 'AIRCAM-DOME 3PK SOLUTION 3 PACK', 2),
+('AIRCAM-MINI', 'AIRCAM-MINI VIDEO SOLUTION', 2),
+('AIRGATEWAY', 'AIRGATEWAY INDOOR AP', 2),
+('AIRGATEWAY-LR', 'AIRGATEWAY INDOOR AP LONG RANGE ANTENNA', 2),
+('AIRROUTER', 'AIRROUTER INDOOR AP', 2),
+('AIRROUTER-HP', 'AIRROUTER INDOOR AP HP EXT ANT', 2),
+('AIRVISION-C', 'AIRVISION NVR CONTROLLER', 2),
+('AM-2G15-120', '2.3-2.7GHZ AIRMAX BASE STATION 15DBI 120 DEG W/ ROCKET KIT', 2),
+('AM-2G16-90', '2.3-2.7GHZ AIRMAX BASE STATION 16DBI 90DEG W/ ROCKET KIT', 2),
+('AM-3G18-120', '3.3-3.8GHZ AIRMAX BASE STATION 18DBI 120 DEG W/ROCKET KIT', 2),
+('AM-5AC21-60', '5G AIRMAX AC 60 DEGREES SECTOR ANTENNA 21DBI', 2),
+('AM-5AC22-45', '5G AIRMAX AC 45 DEGREES SECTOR ANTENNA 22DBI', 2),
+('AM-5G16-120', '4.9-5.9GHZ AIRMAX BASE STATION 16DBI 120 DEG W/ ROCKET KIT', 2),
+('AM-5G17-90', '4.9-5.9GHZ AIRMAX BASE STATION 17DBI 90 DEG W/ROCKET KIT', 2),
+('AM-5G19-120', '4.9-5.9GHZ AIRMAX BASE STATION 19DBI 120 DEG W/ ROCKET KIT', 2),
+('AM-5G20-90', '4.9-5.9GHZ AIRMAX BASE STATION 20DBI 90 DEG W/ ROCKET KIT', 2),
+('AM-9M13-120', '900MHZ AIRMAX BASE STATION 13DBI', 2),
+('AM-M-V5G-TI', '5GHZ VARIABLE BEAM BASE STATION MID-GAIN 60-120DEG TI W/ ROCKET KIT', 2),
+('AMO-2G10', '2GHZ AIRMAX DUAL OMNI 10DBI W/ ROCKET KIT', 2),
+('AMO-2G13', '2GHZ AIRMAX DUAL OMNI 13DBI W/ ROCKET KIT', 2),
+('AMO-3G12', '3GHZ AIRMAX DUAL OMNI 12DBI W/ ROCKET KIT', 2),
+('AMO-5G10', '5GHZ AIRMAX DUAL OMNI 10DBI W/ ROCKET KIT', 2),
+('AMO-5G13', '5GHZ AIRMAX DUAL OMNI 13DBI W/ ROCKET KIT', 2),
+('AM-V2G-TI', '2GHZ VARIABLE BEAM BASE STATION 60-120DEG TITANIUM W/ROCKET KIT', 2),
+('AM-V5G-TI', '5GHZ VARIABLE BEAM BASE STATION 60-120DEG TITANIUM W/ROCKET KIT', 2),
+('AMY-9M16-2', '900MHZ AIRMAX YAGI ANTENNA 16DBI W/ ROCKET KIT 2-PACK', 2),
+('BM2-TI', '2.4GHZ BULLET AIRMAX TITANIUM POE/ADAPTER INCL', 2),
+('BULLET5', 'BULLET5 CPE', 2),
+('BULLETM2-HP', '2.4GHZ BULLET AIRMAX HP', 2),
+('BULLETM5-HP', '5GHZ BULLET AIRMAX HP', 2),
+('BULLETM5-TI', '5GHZ BULLET AIRMAX TITANIUM POE/ADAPTER INCL', 2),
+('ER-8', 'EDGEROUTER 8 5PORT ROUTER', 2),
+('ERLITE-3', 'EDGEROUTER LITE 3PORT', 2),
+('ERPOE-5', 'EDGEROUTER POE 5PORT ROUTER WITH POE', 2),
+('ERPRO-8', 'EDGEROUTER PRO 8 8PORT ROUTER 2 SFP', 2),
+('ES-24-250W', 'EDGE SWITCH 24 250W', 2),
+('ES-24-500W', 'EDGE SWITCH 24PORT 500W', 2),
+('ES-48-500W', 'EDGE SWITCH 48PORT 500W', 2),
+('ES-48-750W', 'EDGE SWITCH 48PORT 750W', 2),
+('ETH-SP', 'ETHERNET SURGE PROTECTOR', 2),
+('INS-8023AF-I', 'INSTANT 8023AF ADAPTER INDOOR', 2),
+('INS-8023AF-O', 'INSTANT 8023AF ADAPTER OUTDOOR', 2),
+('LOCOM2', '2.4GHZ LOCO MIMO AIRMAX', 2),
+('LOCOM5', '5GHZ LOCO MIMO AIRMAX', 2),
+('LOCOM900', '900MHZ LOCO MIMO AIRMAX', 2),
+('MFI-CS', 'MFI CURRENT SENSOR', 2),
+('MFI-DS', 'MFI DOOR SENSOR', 2),
+('MFI-LD', 'IN-WALL MANAGEABLE SWITCH/ DIMMER', 2),
+('MFI-MPW', 'IN-WALL MANAGEABLE OUTLET', 2),
+('MFI-MSC', 'MFI CEILING MOUNT MOTION SENSOR', 2),
+('MFI-MSW', 'MFI WALL MOUNT MOTION SENSOR', 2),
+('MFI-THS', 'MFI TEMPERATURE SENSOR', 2),
+('MPORT', 'MFI MPORT', 2),
+('MPORT-S', 'MFI MPORT SERIAL', 2),
+('MPOWER', 'MFI 3PORT POWER EU & US WIFI', 2),
+('MPOWER-MINI', 'MFI 1PORT POWER EU & US WIFI', 2),
+('MPOWER-PRO', 'MFI 8PORT US 6PORT EU POWER WIFI/ETH', 2),
+('NANOMOUNT', 'NANOMOUNT', 2),
+('NBE-M5-19', '5GHZ NANOBEAM AIRMAX 19DB', 2),
+('NBE-M5-400', '5PK 5GHZ NANOBEAM AIRMAX 400MM', 2),
+('NBE-RAD-400', 'NANOBEAM RADOME 400MM', 2),
+('NBE-WMK', 'NANOBEAM WALL MOUNT KIT', 2),
+('NBM3', '3.5GHZ NANOBRIDGE AIRMAX 22DBI 2 PARTS NBM3+NB-OD3', 2),
+('NBM365', '3.65GHZ NANOBRIDGE AIRMAX 22DBI 2 PARTS NBM365+NB-OD3', 2),
+('NBM9', '900MHZ NANOBRIDGE AIRMAX 13DBI 2 PARTS NBM9+NB-OD9', 2),
+('NSM2', '2.4GHZ NANO MIMO AIRMAX', 2),
+('NSM3', '3.5GHZ NANO MIMO AIRMAX', 2),
+('NSM365', '3.65GHZ NANOBRIDGE AIRMAX 22DBI 2 PARTS NBM365+NB-OD3', 2),
+('NSM5', '5GHZ NANO MIMO AIRMAX', 2),
+('PBM10', '10GHZ POWERBRIDGE MIMO AIRMAX 2 PARTS - PBM10 $275 + PBM10-DISH 75', 2),
+('PBM3', '3.5GHZ POWERBRIDGE MIMO AIRMAX', 2),
+('PBM365', '3.65GHZ POWERBRIDGE MIMO AIRMAX', 2),
+('PBM5', '5GHZ POWERBRIDGE MIMO AIRMAX', 2),
+('PICOM2-HP', '2.4GHZ PICO AIRMAX HP', 2),
+('POE-24-12W', 'POE INJECTOR 24VDC 12W', 2),
+('POE-24-24W', 'POE INJECTOR 24VDC 24W', 2),
+('POE-48-24W', 'POE INJECTOR 48VDC 24W', 2),
+('POE-48-24W-G', 'POE INJECTOR 48VDC 24W ROCKETTI UAP-PRO', 2),
+('POE-50-60W', 'POE INJECTOR 50V 60W AIRFIBER POE', 2),
+('PS2-17D', 'POWERSTATION2-17D CPE', 2),
+('PS5-22V', 'POWERSTATION5-22V CPE', 2),
+('RAD-2RD', 'RADOME 2 ROCKETDISH EAR99 RADOME FOR ROCKETDISH', 2),
+('RAD-3RD', 'RADOME 3 ROCKETDISH EAR99 RADOME FOR ROCKETDISH', 2),
+('RD-2G24', '2GHZ ROCKET DISH 24DBI W/ ROCKET KIT', 2),
+('RD-3G26', '3GHZ ROCKET DISH 26DBI W/ ROCKET KIT', 2),
+('RD-5G30', '5GHZ ROCKET DISH 30DBI W/ ROCKET KIT', 2),
+('RD-5G34', '5GHZ ROCKET DISH 34DBI W/ROCKET KIT', 2),
+('RM2-TI', '2.4GHZ ROCKET MIMO AIRMAX TITANIUM', 2),
+('RM5-TI', '5GHZ ROCKET MIMO AIRMAX TITANIUM', 2),
+('ROCKETM2', '2.4GHZ ROCKET MIMO AIRMAX', 2),
+('ROCKETM3', '3.5GHZ ROCKET MIMO AIRMAX', 2),
+('ROCKETM365', '3.65GHZ ROCKET MIMO AIRMAX', 2),
+('ROCKETM5', '5GHZ ROCKET MIMO AIRMAX', 2),
+('ROCKETM9', '900MHZ ROCKET MIMO AIRMAX', 2),
+('SR2', 'SR2 MINI PCI PCBA', 2),
+('SR5', 'SR5 MINI PCI PCBA', 2),
+('SR71-15', '11A/N 5GHZ 27DBM 2X2 OUTDOOR', 2),
+('SR71E', '11A/B/G/N 200MW 2X2 EXT. ANTENNA', 2),
+('SRC', 'SRC CARDBUS', 2),
+('TC-CARRIER', 'TOUGH CABLE LEVEL 2 1000 BOX', 2),
+('TC-CON', 'TOUGH CABLE CONNEXTRS X 2400 100PCS/BOX', 2),
+('TC-GND', 'TOUGH CABLE CONNECTOR GROUND X 1000', 2),
+('TC-PRO', 'TOUGH CABLE LEVEL 1 1000 BOX', 2),
+('TS-16-CARRIER', 'TOUGHSWITCH 16PORT POE PRO RACKMOUNT', 2),
+('TS-5-POE', 'TOUGHSWITCH 5PORT POE', 2),
+('TS-8-PRO', 'TOUGHSWITCH 8PORT POE PRO', 2),
+('UAP', 'UNIFI AP', 2),
+('UAP-3', 'UNIFI AP 3-PACK', 2),
+('UAP-AC', 'UNIFI AP 802.11AC', 2),
+('UAP-AC-3', 'UNIFI AP AC 3PK', 2),
+('UAP-AC-OUTDOOR', 'UNIFI AP AC OUTDOOR', 2),
+('UAP-LR', 'UNIFI AP LONG RANGE', 2),
+('UAP-LR-3', 'UNIFI AP LONG RANGE 3-PACK', 2),
+('UAP-OUTDOOR+', 'UNIFI AP OUTDOOR+ XRF', 2),
+('UAP-OUTDOOR-5', 'UNIFI AP OUTDOOR 5GHZ', 2),
+('UAP-PRO', 'UNIFI AP PRO GIGE 802.3AF DUAL RADIO', 2),
+('UAP-PRO-3', 'UNIFI AP PRO GIGE 802.3AF DUAL RADIO 3PK', 2),
+('UB-AM', '10PK UBIQUITI ANTENNA MOUNT', 2),
+('USG', 'UNIFI SECURITY GATEWAY', 2),
+('UVC', 'UNIFI VIDEO CAMERA IR', 2),
+('UVC-3', 'UNIFI VIDEO CAMERA IR 3PK', 2),
+('UVC-DOME', 'UNIFI VIDEO CAMERA DOME IR', 2),
+('UVC-DOME-3', 'UNIFI VIDEO CAMERA DOME IR 3-PACK', 2),
+('UVC-NVR', 'AIRVISION NVR CONTROLLER', 2),
+('UVC-PRO', 'UNIFI VIDEO CAMERA PRO', 2),
+('UVC-PRO-C', 'UNIFI CAMERA PRO CABLE ACCESSORY', 2),
+('UVC-PRO-M', 'UNIFI CAMERA PRO MOUNT ACCESSORY', 2),
+('UVP', 'UNIFI VOIP PHONE', 2),
+('WS5', 'WS5 SUBSCRIBER', 2),
+('WSM5', 'WISPSTATION M SERIES 5GHZ AIRMAX', 2),
+('XR2', 'MINI PCI 600MW 2.4GHZ', 2),
+('XR5', 'MINI PCI 600MW 5GHZ', 2),
+('XR7', 'XR7 MINI PCI PCBA', 2),
+('XR9', 'MINI PCI 600MW 900MHZ', 2);
+
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015042700');

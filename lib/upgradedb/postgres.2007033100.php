@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 CREATE SEQUENCE imessengers_id_seq;
 CREATE TABLE imessengers (
   id integer 		DEFAULT nextval('imessengers_id_seq'::text) NOT NULL, 
@@ -37,15 +37,15 @@ CREATE TABLE imessengers (
   );
 ");
 
-$DB->Execute("INSERT INTO imessengers (customerid, uid) 
+$this->Execute("INSERT INTO imessengers (customerid, uid) 
 	SELECT id, im::text FROM customers WHERE im > 0");
 
-$DB->Execute("CREATE INDEX imessengers_customerid_idx ON imessengers (customerid)");
+$this->Execute("CREATE INDEX imessengers_customerid_idx ON imessengers (customerid)");
 
-$DB->Execute("ALTER TABLE customers DROP COLUMN im");
+$this->Execute("ALTER TABLE customers DROP COLUMN im");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2007033100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2007033100', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

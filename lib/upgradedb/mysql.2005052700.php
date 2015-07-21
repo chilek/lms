@@ -24,20 +24,20 @@
  *  $Id$
  */
 
-$DB->Execute("ALTER TABLE cash CHANGE adminid userid INT(11) DEFAULT '0' NOT NULL");
-$DB->Execute("ALTER TABLE rtmessages CHANGE adminid userid INT(11) DEFAULT '0' NOT NULL");
-$DB->Execute("ALTER TABLE events CHANGE adminid userid INT(11) DEFAULT '0' NOT NULL");
+$this->Execute("ALTER TABLE cash CHANGE adminid userid INT(11) DEFAULT '0' NOT NULL");
+$this->Execute("ALTER TABLE rtmessages CHANGE adminid userid INT(11) DEFAULT '0' NOT NULL");
+$this->Execute("ALTER TABLE events CHANGE adminid userid INT(11) DEFAULT '0' NOT NULL");
 
-$DB->Execute("ALTER TABLE rtrights DROP INDEX adminid");
-$DB->Execute("ALTER TABLE rtrights CHANGE adminid userid INT(11) DEFAULT '0' NOT NULL");
-$DB->Execute("ALTER TABLE rtrights ADD UNIQUE (userid, queueid)");
+$this->Execute("ALTER TABLE rtrights DROP INDEX adminid");
+$this->Execute("ALTER TABLE rtrights CHANGE adminid userid INT(11) DEFAULT '0' NOT NULL");
+$this->Execute("ALTER TABLE rtrights ADD UNIQUE (userid, queueid)");
 
-$DB->Execute("ALTER TABLE eventassignments DROP INDEX eventid");
-$DB->Execute("ALTER TABLE eventassignments CHANGE adminid userid INT(11) DEFAULT '0' NOT NULL");
-$DB->Execute("ALTER TABLE eventassignments ADD UNIQUE (eventid, userid)");
+$this->Execute("ALTER TABLE eventassignments DROP INDEX eventid");
+$this->Execute("ALTER TABLE eventassignments CHANGE adminid userid INT(11) DEFAULT '0' NOT NULL");
+$this->Execute("ALTER TABLE eventassignments ADD UNIQUE (eventid, userid)");
 
-$DB->Execute("RENAME TABLE admins TO users");
+$this->Execute("RENAME TABLE admins TO users");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005052700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005052700', 'dbversion'));
 
 ?>

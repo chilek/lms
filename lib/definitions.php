@@ -245,6 +245,9 @@ $LINKTECHNOLOGIES = array(
 		3 => 'ADSL2+',
 		4 => 'VDSL',
 		5 => 'VDSL2',
+		10 => 'HDSL',
+		11 => 'PDH',
+		12 => 'POTS/ISDN',
 		6 => '10 Mb/s Ethernet',
 		7 => '100 Mb/s Fast Ethernet',
 		8 => '1 Gigabit Ethernet',
@@ -267,6 +270,8 @@ $LINKTECHNOLOGIES = array(
 		110 => 'DC-HSPA+',
 		111 => 'MC-HSPA+',
 		112 => 'LTE',
+		113 => 'UMTS',
+		114 => 'DMS',
 	),
 	2 => array(
 		200 => 'CWDM',
@@ -276,9 +281,15 @@ $LINKTECHNOLOGIES = array(
 		204 => '100 Mb/s Fast Ethernet',
 		205 => '1 Gigabit Ethernet',
 		206 => '10 Gigabit Ethernet',
+		210 => '40 Gigabit Ethernet',
 		207 => '100 Gigabit Ethernet',
 		208 => 'EPON',
 		209 => 'GPON',
+		211 => 'ATM',
+		212 => 'PDH',
+		250 => '(EURO)DOCSIS 1.x',
+		251 => '(EURO)DOCSIS 2.x',
+		252 => '(EURO)DOCSIS 3.x',
 	),
 );
 
@@ -315,6 +326,36 @@ $PASSWDEXPIRATIONS = array(
 	365	=> trans('year'),
 );
 
+$NETELEMENTSTATUSES = array(
+	0	=> trans('existing'),
+	1	=> trans('under construction'),
+	2	=> trans('planned'),
+);
+
+$NETELEMENTTYPES = array(
+	0	=> 'budynek biurowy',
+	2	=> 'budynek mieszkalny',
+	1	=> 'budynek przemysłowy',
+	11	=> 'budynek usługowy',
+	12	=> 'budynek użyteczności publicznej',
+	3	=> 'obiekt sakralny',
+	13	=> 'obiekt sieci elektroenergetycznej',
+	5	=> 'wieża',
+	4	=> 'maszt',
+	10	=> 'komin',
+	6	=> 'kontener',
+	7	=> 'szafa uliczna',
+	14	=> 'słup',
+	8	=> 'skrzynka',
+	9	=> 'studnia kablowa',
+);
+
+$NETELEMENTOWNERSHIPS = array(
+	0	=> 'węzeł własny',
+	1	=> 'węzeł współdzielony z innym podmiotem',
+	2	=> 'węzeł obcy',
+);
+
 if(isset($SMARTY))
 {
 	$SMARTY->assign('_CTYPES',$CTYPES);
@@ -334,8 +375,15 @@ if(isset($SMARTY))
 	$SMARTY->assign('_LINKSPEEDS', $LINKSPEEDS);
 	$SMARTY->assign('_BOROUGHTYPES', $BOROUGHTYPES);
 	$SMARTY->assign('_PASSWDEXPIRATIONS', $PASSWDEXPIRATIONS);
+	$SMARTY->assign('_NETELEMENTSTATUSES', $NETELEMENTSTATUSES);
+	$SMARTY->assign('_NETELEMENTTYPES', $NETELEMENTTYPES);
+	$SMARTY->assign('_NETELEMENTOWNERSHIPS', $NETELEMENTOWNERSHIPS);
 }
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');
+
+// Investment project types
+define('INV_PROJECT_REGULAR', 0);
+define('INV_PROJECT_SYSTEM', 1)
 
 ?>

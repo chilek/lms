@@ -129,6 +129,6 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('instance', $instance);
 $SMARTY->assign('hosts', $DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
 
-$SMARTY->display('daemoninstanceadd.html');
+$SMARTY->display('daemon/daemoninstanceadd.html');
 
 ?>

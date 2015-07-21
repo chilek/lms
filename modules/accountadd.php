@@ -225,6 +225,6 @@ $SMARTY->assign('account', $account);
 $SMARTY->assign('customers', $LMS->GetCustomerNames());
 $SMARTY->assign('domainlist', $DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
 
-$SMARTY->display('accountadd.html');
+$SMARTY->display('account/accountadd.html');
 
 ?>

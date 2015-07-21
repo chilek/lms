@@ -66,7 +66,7 @@ if(isset($_POST['nodegroupadd']))
 			unset($nodegroupadd);
 			$nodegroupadd['reuse'] = 1;
 			$SMARTY->assign('nodegroupadd',$nodegroupadd);
-			$SMARTY->display('nodegroupadd.html');
+			$SMARTY->display('node/nodegroupadd.html');
 		}
 
 		$SESSION->redirect('?m=nodegrouplist&id='.$id);
@@ -78,6 +78,6 @@ if(isset($_POST['nodegroupadd']))
 
 $layout['pagetitle'] = trans('New Group');
 
-$SMARTY->display('nodegroupadd.html');
+$SMARTY->display('node/nodegroupadd.html');
 
 ?>

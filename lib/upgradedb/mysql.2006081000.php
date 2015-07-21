@@ -24,24 +24,24 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
 // REGON (Business Registration Number)
-$DB->Execute("ALTER TABLE customers ADD COLUMN regon varchar(255) NOT NULL DEFAULT ''");
+$this->Execute("ALTER TABLE customers ADD COLUMN regon varchar(255) NOT NULL DEFAULT ''");
 // KRS/EDG (Register of Business Entities)
-$DB->Execute("ALTER TABLE customers ADD COLUMN rbe varchar(255) NOT NULL DEFAULT ''");
+$this->Execute("ALTER TABLE customers ADD COLUMN rbe varchar(255) NOT NULL DEFAULT ''");
 // Dowod osobisty (Identity Card Number)
-$DB->Execute("ALTER TABLE customers ADD COLUMN icn varchar(255) NOT NULL DEFAULT ''");
+$this->Execute("ALTER TABLE customers ADD COLUMN icn varchar(255) NOT NULL DEFAULT ''");
 
 // Node location
-$DB->Execute("ALTER TABLE nodes ADD COLUMN location text NOT NULL DEFAULT ''");
+$this->Execute("ALTER TABLE nodes ADD COLUMN location text NOT NULL DEFAULT ''");
 
 // Account names (logins) will be unique only in one domain context
-$DB->Execute("ALTER TABLE passwd DROP KEY login");
-$DB->Execute("ALTER TABLE passwd ADD UNIQUE KEY (login, domainid)");
+$this->Execute("ALTER TABLE passwd DROP KEY login");
+$this->Execute("ALTER TABLE passwd ADD UNIQUE KEY (login, domainid)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006081000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006081000', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

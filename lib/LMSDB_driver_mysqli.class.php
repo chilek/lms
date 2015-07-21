@@ -383,12 +383,17 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
      * 
      * @param string $field
      * @param string $separator
+     * @param boolean $distinct
      * @return string
      */
-    public function _driver_groupconcat($field, $separator = ',')
+    public function _driver_groupconcat($field, $separator = ',', $distinct = false)
     {
-        return 'GROUP_CONCAT(' . $field . ' SEPARATOR \'' . $separator . '\')';
-
+        if ($distinct === false) {
+            return 'GROUP_CONCAT(' . $field . ' SEPARATOR \'' . $separator . '\')';
+        } else {
+            return 'GROUP_CONCAT(DISTINCT ' . $field . ' SEPARATOR \'' . $separator . '\')';
+        }
+        
     }
 
     /**
@@ -401,5 +406,35 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
         $this->Execute('SET NAMES ?', array($name));
 
     }
+
+	/**
+	* Gets year for date.
+	* 
+	* @param string $date
+	* @return year string
+	*/
+	public function _driver_year($date) {
+		return 'YEAR(' . $date . ')';
+	}
+
+	/**
+	* Gets month for date.
+	* 
+	* @param string $date
+	* @return month string
+	*/
+	public function _driver_month($date) {
+		return 'MONTH(' . $date . ')';
+	}
+
+	/**
+	* Gets day for date.
+	* 
+	* @param string $date
+	* @return day string
+	*/
+	public function _driver_day($date) {
+		return 'DAY(' . $date . ')';
+	}
 
 }

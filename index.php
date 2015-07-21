@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,7 +25,7 @@
  */
 
 // REPLACE THIS WITH PATH TO YOUR CONFIG FILE
-$CONFIG_FILE = '/etc/lms/lms.ini';
+$CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
 
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
@@ -35,12 +35,13 @@ define('START_TIME', microtime(true));
 define('LMS-UI', true);
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
-if(is_readable('/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini'))
-        $CONFIG_FILE = '/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini';
-elseif(is_readable('/etc/lms/lms.ini'))
-        $CONFIG_FILE = '/etc/lms/lms.ini';
-else
-        die('Unable to read configuration file [/etc/lms/lms.ini]!');
+// find alternative config files:
+if (is_readable('lms.ini'))
+	$CONFIG_FILE = 'lms.ini';
+elseif (is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini'))
+	$CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini';
+elseif (!is_readable($CONFIG_FILE))
+	die('Unable to read configuration file ['.$CONFIG_FILE.']!'); 
 
 define('CONFIG_FILE', $CONFIG_FILE);
 
@@ -48,13 +49,16 @@ $CONFIG = (array) parse_ini_file(CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
 $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
-$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'].'/lib' : $CONFIG['directories']['lib_dir']);
-$CONFIG['directories']['doc_dir'] = (!isset($CONFIG['directories']['doc_dir']) ? $CONFIG['directories']['sys_dir'].'/documents' : $CONFIG['directories']['doc_dir']);
-$CONFIG['directories']['modules_dir'] = (!isset($CONFIG['directories']['modules_dir']) ? $CONFIG['directories']['sys_dir'].'/modules' : $CONFIG['directories']['modules_dir']);
-$CONFIG['directories']['backup_dir'] = (!isset($CONFIG['directories']['backup_dir']) ? $CONFIG['directories']['sys_dir'].'/backups' : $CONFIG['directories']['backup_dir']);
-$CONFIG['directories']['config_templates_dir'] = (!isset($CONFIG['directories']['config_templates_dir']) ? $CONFIG['directories']['sys_dir'].'/config_templates' : $CONFIG['directories']['config_templates_dir']);
-$CONFIG['directories']['smarty_compile_dir'] = (!isset($CONFIG['directories']['smarty_compile_dir']) ? $CONFIG['directories']['sys_dir'].'/templates_c' : $CONFIG['directories']['smarty_compile_dir']);
-$CONFIG['directories']['smarty_templates_dir'] = (!isset($CONFIG['directories']['smarty_templates_dir']) ? $CONFIG['directories']['sys_dir'].'/templates' : $CONFIG['directories']['smarty_templates_dir']);
+$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
+$CONFIG['directories']['doc_dir'] = (!isset($CONFIG['directories']['doc_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'documents' : $CONFIG['directories']['doc_dir']);
+$CONFIG['directories']['modules_dir'] = (!isset($CONFIG['directories']['modules_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'modules' : $CONFIG['directories']['modules_dir']);
+$CONFIG['directories']['backup_dir'] = (!isset($CONFIG['directories']['backup_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'backups' : $CONFIG['directories']['backup_dir']);
+$CONFIG['directories']['config_templates_dir'] = (!isset($CONFIG['directories']['config_templates_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'config_templates' : $CONFIG['directories']['config_templates_dir']);
+$CONFIG['directories']['smarty_compile_dir'] = (!isset($CONFIG['directories']['smarty_compile_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates_c' : $CONFIG['directories']['smarty_compile_dir']);
+$CONFIG['directories']['smarty_templates_dir'] = (!isset($CONFIG['directories']['smarty_templates_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates' : $CONFIG['directories']['smarty_templates_dir']);
+$CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
+$CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
+$CONFIG['directories']['vendor_dir'] = (!isset($CONFIG['directories']['vendor_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'vendor' : $CONFIG['directories']['vendor_dir']);
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
@@ -63,51 +67,51 @@ define('BACKUP_DIR', $CONFIG['directories']['backup_dir']);
 define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
 define('SMARTY_TEMPLATES_DIR', $CONFIG['directories']['smarty_templates_dir']);
+define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
+define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
+define('VENDOR_DIR', $CONFIG['directories']['vendor_dir']);
 
-// Load autloader
-require_once(LIB_DIR.'/autoloader.php');
+// Load autoloader
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'autoloader.php');
 
 // Do some checks and load config defaults
-require_once(LIB_DIR.'/checkdirs.php');
-require_once(LIB_DIR.'/config.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'checkdirs.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'config.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 
 // Init database
 
 $DB = null;
 
 try {
-
-    $DB = LMSDB::getInstance();
-
+	$DB = LMSDB::getInstance();
 } catch (Exception $ex) {
-    
-    trigger_error($ex->getMessage(), E_USER_WARNING);
-    
-    // can't working without database
-    die("Fatal error: cannot connect to database!\n");
-    
+	trigger_error($ex->getMessage(), E_USER_WARNING);
+	// can't working without database
+	die("Fatal error: cannot connect to database!<BR>");
 }
 
 // Call any of upgrade process before anything else
 
-require_once(LIB_DIR.'/upgradedb.php');
+$layout['dbschversion'] = array('DB' => $DB->UpgradeDb());
 
 // Initialize templates engine (must be before locale settings)
-$SMARTY = new Smarty;
+$SMARTY = new LMSSmarty;
 
 // test for proper version of Smarty
 
 if (defined('Smarty::SMARTY_VERSION'))
-	$ver_chunks = preg_split('/[- ]/', Smarty::SMARTY_VERSION);
+	$ver_chunks = preg_split('/[- ]/', preg_replace('/^smarty-/i', '', Smarty::SMARTY_VERSION), -1, PREG_SPLIT_NO_EMPTY);
 else
 	$ver_chunks = NULL;
-if (count($ver_chunks) < 2 || version_compare('3.1', $ver_chunks[1]) > 0)
+if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0)
 	die('<B>Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.1.</B>');
 
-define('SMARTY_VERSION', $ver_chunks[1]);
+define('SMARTY_VERSION', $ver_chunks[0]);
 
 // add LMS's custom plugins directory
-$SMARTY->addPluginsDir(LIB_DIR.'/SmartyPlugins');
+$SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
+$SMARTY->registerFilter('pre', array('Smarty_Prefilter_Extendsall_Include', 'prefilter_extendsall_include'));
 
 // uncomment this line if you're not gonna change template files no more
 //$SMARTY->compile_check = false;
@@ -115,21 +119,19 @@ $SMARTY->addPluginsDir(LIB_DIR.'/SmartyPlugins');
 // Redirect to SSL
 
 $_FORCE_SSL = ConfigHelper::checkConfig('phpui.force_ssl');
-if($_FORCE_SSL && (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on'))
-{
+if($_FORCE_SSL && (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on')) {
 	header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 	exit(0);
 }
 
 // Include required files (including sequence is important)
 
-require_once(LIB_DIR.'/language.php');
-require_once(LIB_DIR.'/unstrip.php');
-require_once(LIB_DIR.'/definitions.php');
-require_once(LIB_DIR.'/common.php');
-require_once(LIB_DIR.'/checkip.php');
-require_once(LIB_DIR.'/accesstable.php');
-require_once(LIB_DIR . '/SYSLOG.class.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'checkip.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'accesstable.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
 
 if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG')) {
 	$SYSLOG = new SYSLOG($DB);
@@ -147,10 +149,13 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
+$plugin_manager = new LMSPluginManager();
+$LMS->setPluginManager($plugin_manager);
+
 // Initialize Swekey class
 
 if (ConfigHelper::checkConfig('phpui.use_swekey')) {
-	require_once(LIB_DIR . '/swekey/lms_integration.php');
+	require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'swekey' . DIRECTORY_SEPARATOR . 'lms_integration.php');
 	$LMS_SWEKEY = new LmsSwekeyIntegration($DB, $AUTH, $LMS);
 	$SMARTY->assign('lms_swekey', $LMS_SWEKEY->GetIntegrationScript($AUTH->id));
 }
@@ -159,12 +164,12 @@ if (ConfigHelper::checkConfig('phpui.use_swekey')) {
 
 $SMARTY->setTemplateDir(null);
 $custom_templates_dir = ConfigHelper::getConfig('phpui.custom_templates_dir');
-if (!empty($custom_templates_dir) && file_exists(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir)
-	&& !is_file(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir))
-	$SMARTY->AddTemplateDir(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir);
+if (!empty($custom_templates_dir) && file_exists(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir)
+	&& !is_file(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir))
+	$SMARTY->AddTemplateDir(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir);
 $SMARTY->AddTemplateDir(
 	array(
-		SMARTY_TEMPLATES_DIR . '/default',
+		SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . 'default',
 		SMARTY_TEMPLATES_DIR,
 	)
 );
@@ -194,25 +199,37 @@ $error = NULL; // initialize error variable needed for (almost) all modules
 
 if(!$layout['popup'])
 {
-	require_once(LIB_DIR.'/menu.php');
+	require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'menu.php');
+        
+        $menu = $plugin_manager->executeHook('menu_initialized', $menu);
+        
 	$SMARTY->assign('newmenu', $menu);
 }
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
 
+$modules_dirs = array(MODULES_DIR);
+$modules_dirs = $plugin_manager->executeHook('modules_dir_initialized', $modules_dirs);
+
+$plugin_manager->executeHook('lms_initialized', $LMS);
+
+$plugin_manager->executeHook('smarty_initialized', $SMARTY);
+
 // Check privileges and execute modules
 if ($AUTH->islogged) {
 	// Load plugin files and register hook callbacks
-	$plugins = preg_split('/[;,\s\t\n]+/', ConfigHelper::getConfig('phpui.plugins'), -1, PREG_SPLIT_NO_EMPTY);
+	$plugins = $plugin_manager->getAllPluginInfo(LMSPluginManager::OLD_STYLE);
 	if (!empty($plugins))
-		foreach ($plugins as $plugin_name)
-			if(is_readable(LIB_DIR . '/plugins/' . $plugin_name . '.php'))
-				require LIB_DIR . '/plugins/' . $plugin_name . '.php';
+		foreach ($plugins as $plugin_name => $plugin)
+			if ($plugin['enabled'])
+				require(LIB_DIR . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $plugin_name . '.php');
 
 	$res = $LMS->ExecHook('access_table_init', array('accesstable' => $access['table']));
 	if (isset($res['accesstable']))
 		$access['table'] = $res['accesstable'];
-        
+
+	$access['table'] = $LMS->executeHook('access_table_initialized', $access['table']);
+
         LMSConfig::getConfig(array(
             'force' => true,
             'force_user_rights_only' => true,
@@ -239,7 +256,15 @@ if ($AUTH->islogged) {
 		$module = ConfigHelper::getConfig('phpui.default_module');
 	}
 
-	if (file_exists(MODULES_DIR.'/'.$module.'.php'))
+        $module_dir = null;
+        foreach ($modules_dirs as $suspected_module_dir) {
+            if (file_exists($suspected_module_dir . DIRECTORY_SEPARATOR . $module . '.php')) {
+                $module_dir = $suspected_module_dir;
+                break;
+            }
+        }
+        
+	if ($module_dir !== null)
 	{
 		$global_allow = !$AUTH->id || (!empty($access['allow']) && preg_match('/'.$access['allow'].'/i', $module));
 
@@ -261,7 +286,8 @@ if ($AUTH->islogged) {
 		{
 			$layout['module'] = $module;
 			$LMS->InitUI();
-			include(MODULES_DIR.'/'.$module.'.php');
+                        $LMS->executeHook($module.'_on_load');
+			include($module_dir . DIRECTORY_SEPARATOR . $module . '.php');
 		} else {
 			if ($SYSLOG)
 				$SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_USERNOACCESS,

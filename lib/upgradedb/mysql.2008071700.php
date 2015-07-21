@@ -24,12 +24,12 @@
  *  $Id$
  */
 
-$DB->Execute("ALTER TABLE customers CHANGE status status smallint NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE customers CHANGE status status smallint NOT NULL DEFAULT '0'");
 
-$DB->Execute("ALTER TABLE customers ADD type smallint NOT NULL DEFAULT '0'");
-$DB->Execute("UPDATE customers SET type = 1 WHERE regon != '' OR ten != ''");
-$DB->Execute("DROP VIEW customersview");
-$DB->Execute("CREATE VIEW customersview AS
+$this->Execute("ALTER TABLE customers ADD type smallint NOT NULL DEFAULT '0'");
+$this->Execute("UPDATE customers SET type = 1 WHERE regon != '' OR ten != ''");
+$this->Execute("DROP VIEW customersview");
+$this->Execute("CREATE VIEW customersview AS
         SELECT c.* FROM customers c
 	        WHERE NOT EXISTS (
 	        SELECT 1 FROM customerassignments a
@@ -37,6 +37,6 @@ $DB->Execute("CREATE VIEW customersview AS
 	                WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008071700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008071700', 'dbversion'));
 
 ?>

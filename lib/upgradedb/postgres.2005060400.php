@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	ALTER TABLE cash ADD reference integer;
 	UPDATE cash SET reference = 0;
 	ALTER TABLE cash ALTER reference SET NOT NULL;
@@ -34,8 +34,8 @@ $DB->Execute("
 	CREATE INDEX cash_reference_idx ON cash(reference); 
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005060400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005060400', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("CREATE TABLE hosts (
+$this->Execute("CREATE TABLE hosts (
     id int(11) NOT NULL auto_increment,
     name varchar(255) default '' NOT NULL,
     description text default '' NOT NULL,
@@ -33,9 +33,9 @@ $DB->Execute("CREATE TABLE hosts (
     PRIMARY KEY (id),
     UNIQUE KEY name (name)
 ) ENGINE=MyISAM");
-$DB->Execute("INSERT INTO hosts (id, name, description, lastreload, reload) SELECT id, name, description, lastreload, reload FROM daemonhosts");
-$DB->Execute("DROP TABLE daemonhosts");
+$this->Execute("INSERT INTO hosts (id, name, description, lastreload, reload) SELECT id, name, description, lastreload, reload FROM daemonhosts");
+$this->Execute("DROP TABLE daemonhosts");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005082900', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005082900', 'dbversion'));
 
 ?>

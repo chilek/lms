@@ -55,6 +55,6 @@ $ticket['uptime'] = uptimef($ticket['resolvetime'] ? $ticket['resolvetime'] - $t
 
 $SMARTY->assign('ticket', $ticket);
 
-$SMARTY->display('rtticketinfoshort.html');
+$SMARTY->display('rt/rtticketinfoshort.html');
 
 ?>

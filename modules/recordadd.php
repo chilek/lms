@@ -89,6 +89,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('record', $record);
 $SMARTY->assign('error', $error);
-$SMARTY->display('recordedit.html');
+$SMARTY->display('record/recordedit.html');
 
 ?>

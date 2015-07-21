@@ -186,7 +186,7 @@ if(sizeof($search) || isset($_GET['s']))
 		$SMARTY->assign('start',$start);
 		$SMARTY->assign('search', $search);
 		$SMARTY->assign('accountlist',$accountlist);
-		$SMARTY->display('accountlist.html');
+		$SMARTY->display('account/accountlist.html');
 		$SESSION->close();
 		die;
 	}
@@ -196,6 +196,6 @@ $layout['pagetitle'] = trans('Account, Alias, Domain Search');
 
 $SMARTY->assign('customerlist',$LMS->GetAllCustomerNames());
 $SMARTY->assign('search', isset($search) ? $search : $SESSION->get('accountsearch'));
-$SMARTY->display('accountsearch.html');
+$SMARTY->display('account/accountsearch.html');
 
 ?>

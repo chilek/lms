@@ -24,20 +24,20 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
     CREATE FUNCTION mask2prefix(mask bigint) RETURNS smallint DETERMINISTIC
     RETURN bit_count(mask);
 ");
 
-$DB->Execute("
+$this->Execute("
     CREATE FUNCTION broadcast(address bigint, mask bigint) RETURNS bigint DETERMINISTIC
     RETURN address + (pow(2, (32-mask2prefix(mask)))-1);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008012200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008012200', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

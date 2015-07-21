@@ -24,11 +24,11 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE voipaccounts ADD COLUMN access tinyint(1) NOT NULL DEFAULT '1'");
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2011091100', 'dbversion'));
+$this->Execute("ALTER TABLE voipaccounts ADD COLUMN access tinyint(1) NOT NULL DEFAULT '1'");
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2011091100', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

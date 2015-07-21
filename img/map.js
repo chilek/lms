@@ -1,3 +1,137 @@
+OpenLayers.Renderer.LmsSVG = OpenLayers.Class(OpenLayers.Renderer.SVG, {
+	/**
+	* Method: drawText
+	* This method is only called by the renderer itself.
+	*
+	* Parameters:
+	* featureId - {String}
+	* style -
+	* location - {<OpenLayers.Geometry.Point>}
+	*/
+	drawText: function(featureId, style, location) {
+		var drawOutline = (!!style.labelOutlineWidth);
+		// First draw text in halo color and size and overlay the
+		// normal text afterwards
+		if (drawOutline) {
+			var outlineStyle = OpenLayers.Util.extend({}, style);
+			outlineStyle.fontColor = outlineStyle.labelOutlineColor;
+			outlineStyle.fontStrokeColor = outlineStyle.labelOutlineColor;
+			outlineStyle.fontStrokeWidth = style.labelOutlineWidth;
+			if (style.labelOutlineOpacity) {
+				outlineStyle.fontOpacity = style.labelOutlineOpacity;
+			}
+			delete outlineStyle.labelOutlineWidth;
+			this.drawText(featureId, outlineStyle, location);
+		}
+
+		 var resolution = this.getResolution();
+
+		//add this for rotation----------------------------------------
+		var layer = this.map.getLayer(this.container.id);
+		var feature = layer.getFeatureById(featureId);
+		location = (feature.attributes.centroid ? feature.attributes.centroid : location);
+		/////////////////////////--------------------------------------
+
+		var x = ((location.x - this.featureDx) / resolution + this.left);
+		var y = (location.y / resolution - this.top);
+
+		var suffix = (drawOutline)?this.LABEL_OUTLINE_SUFFIX:this.LABEL_ID_SUFFIX;
+		var label = this.nodeFactory(featureId + suffix, "text");
+
+		label.setAttributeNS(null, "x", x);
+		label.setAttributeNS(null, "y", -y);
+
+		//add this for rotation----------------------------------------
+		if (style.angle || style.angle == 0) {
+			if (style.angle <= 90 || style.angle >= 270) {
+				var transform = 'rotate(' + style.angle + ',' + x + "," + -y + ') translate(0,-10)';
+				label.setAttributeNS(null, "transform", transform);
+			} else {
+				var transform = 'rotate(-' + (540 - style.angle) + ',' + x + "," + -y + ') translate(0,-10)';
+				label.setAttributeNS(null, "transform", transform);
+			}
+		}
+		/////////////////////////--------------------------------------
+
+		if (style.fontColor) {
+			label.setAttributeNS(null, "fill", style.fontColor);
+		}
+		if (style.fontStrokeColor) {
+			label.setAttributeNS(null, "stroke", style.fontStrokeColor);
+		}
+		if (style.fontStrokeWidth) {
+			label.setAttributeNS(null, "stroke-width", style.fontStrokeWidth);
+		}
+		if (style.fontOpacity) {
+			label.setAttributeNS(null, "opacity", style.fontOpacity);
+		}
+		if (style.fontFamily) {
+			label.setAttributeNS(null, "font-family", style.fontFamily);
+		}
+		if (style.fontSize) {
+			label.setAttributeNS(null, "font-size", style.fontSize);
+		}
+		if (style.fontWeight) {
+			label.setAttributeNS(null, "font-weight", style.fontWeight);
+		}
+		if (style.fontStyle) {
+			label.setAttributeNS(null, "font-style", style.fontStyle);
+		}
+		if (style.labelSelect === true) {
+			label.setAttributeNS(null, "pointer-events", "visible");
+			label._featureId = featureId;
+		} else {
+			label.setAttributeNS(null, "pointer-events", "none");
+		}
+		var align = style.labelAlign || OpenLayers.Renderer.defaultSymbolizer.labelAlign;
+		label.setAttributeNS(null, "text-anchor",
+		OpenLayers.Renderer.SVG.LABEL_ALIGN[align[0]] || "middle");
+
+		if (OpenLayers.IS_GECKO === true) {
+			label.setAttributeNS(null, "dominant-baseline",
+			OpenLayers.Renderer.SVG.LABEL_ALIGN[align[1]] || "central");
+		}
+
+		var labelRows = style.label.split('\n');
+		var numRows = labelRows.length;
+		while (label.childNodes.length > numRows) {
+			label.removeChild(label.lastChild);
+		}
+		for (var i = 0; i < numRows; i++) {
+			var tspan = this.nodeFactory(featureId + suffix + "_tspan_" + i, "tspan");
+			if (style.labelSelect === true) {
+				tspan._featureId = featureId;
+				tspan._geometry = location;
+				tspan._geometryClass = location.CLASS_NAME;
+			}
+			if (OpenLayers.IS_GECKO === false) {
+				tspan.setAttributeNS(null, "baseline-shift",
+				OpenLayers.Renderer.SVG.LABEL_VSHIFT[align[1]] || "-35%");
+			}
+			tspan.setAttribute("x", x);
+			if (i == 0) {
+				var vfactor = OpenLayers.Renderer.SVG.LABEL_VFACTOR[align[1]];
+				if (vfactor == null) {
+					vfactor = -.5;
+				}
+				tspan.setAttribute("dy", (vfactor*(numRows-1)) + "em");
+			} else {
+				tspan.setAttribute("dy", "1em");
+			}
+			tspan.textContent = (labelRows[i] === '') ? ' ' : labelRows[i];
+			if (!tspan.parentNode) {
+				label.appendChild(tspan);
+			}
+		}
+
+		if (!label.parentNode) {
+			this.textRoot.appendChild(label);
+		}
+	},
+
+	CLASS_NAME: "OpenLayers.Renderer.LmsSVG"
+});
+
 var map = null;
 //var layerSwitcher = null;
 var maprequest = null;
@@ -157,6 +291,59 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	linkweights[1000000] = 4;
 	linkweights[10000000] = 6;
 
+	var rsareastyle = {
+		fillOpacity: 0.2,
+		graphicOpacity: 1,
+		fillColor: '#0000aa',
+		strokeColor: '#0000bb'
+	}
+
+	var rsdirectionstyle = new OpenLayers.Style(
+		{
+			graphicOpacity: 1,
+			strokeColor: '#0000bb',
+			strokeDashstyle: "dashdot",
+			fontFamily: 'arial, monospace',
+			//fontWeight: 'bold',
+			fontColor: '#0000bb',
+			labelAlign: 'middle',
+			angle: "${angle}",
+			label: "${label}"
+		}, {
+			context: {
+				angle: function(feature) {
+					var attr = feature.attributes;
+					if (attr === undefined || feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString'
+						|| (map.getZoom() / map.getNumZoomLevels()) < 0.70)
+						return '';
+					else
+						return attr.azimuth + attr.width / 2 - 90;
+				},
+				label: function(feature) {
+					var attr = feature.attributes;
+					if (attr === undefined || feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString'
+						|| (map.getZoom() / map.getNumZoomLevels()) < 0.70)
+						return '';
+					else
+						return attr.name + (attr.frequency != ''
+							? ' / ' + attr.frequency + (attr.frequency2 != '' ? ' / ' + attr.frequency2 : '')
+								+ (attr.bandwidth != ''
+									? ' (' + attr.bandwidth + ')' : '')
+							: '');
+				}
+			}
+		}
+	);
+
+	var rsarealayer = new OpenLayers.Layer.Vector(OpenLayers.Lang.translate("Radio sectors - areas"), {
+		style: rsareastyle,
+	});
+
+	var rsdirectionlayer = new OpenLayers.Layer.Vector(OpenLayers.Lang.translate("Radio sectors - directions"), {
+		styleMap: new OpenLayers.StyleMap(rsdirectionstyle),
+		renderers: ['LmsSVG', 'VML', 'Canvas']
+	});
+
 	var map = new OpenLayers.Map("map", {
 		controls: [new OpenLayers.Control.KeyboardDefaults(),
 			(selection ? new OpenLayers.Control.PanZoomBar() : new OpenLayers.Control.ZoomPanel()),
@@ -219,18 +406,63 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 
 	var area = new OpenLayers.Bounds();
 	var devices = [];
+	var areas = [];
+	var directions = [];
 	if (deviceArray)
 		for (i in deviceArray)
 		{
-			var lonLat = new OpenLayers.LonLat(deviceArray[i].lon, deviceArray[i].lat)
-				.transform(lmsProjection, map.getProjectionObject());
+			var normalLonLat = new OpenLayers.LonLat(deviceArray[i].lon, deviceArray[i].lat);
+			var lonLat = normalLonLat.clone().transform(lmsProjection, map.getProjectionObject());
 			area.extend(lonLat);
 			devices.push(new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.Point(
 					lonLat.lon,
 					lonLat.lat
 				), deviceArray[i]));
+			if (!deviceArray[i].radiosectors.length)
+				continue;
+			for (j in deviceArray[i].radiosectors) {
+				var radiosector = deviceArray[i].radiosectors[j];
+				var rsPointList = [];
+				var rsPoint, rsLonLat;
+				//if (radiosector.width < 360) {
+					rsPoint = new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat);
+					rsPointList.push(rsPoint);
+				//}
+
+				var steps = radiosector.width / 10;
+				var step = radiosector.width / steps;
+				for (var k = 0, width = 0.0; k <= steps; k++, width += step) {
+					rsLonLat = OpenLayers.Util.destinationVincenty(normalLonLat, radiosector.azimuth + width, radiosector.rsrange)
+						.transform(lmsProjection, map.getProjectionObject());
+					rsPoint = new OpenLayers.Geometry.Point(rsLonLat.lon, rsLonLat.lat);
+					rsPointList.push(rsPoint);
+				}
+
+				rsPointList.push(rsPointList[0]);
+				var rsRing = new OpenLayers.Geometry.LinearRing(rsPointList);
+				var rsFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon([rsRing]));
+				areas.push(rsFeature);
+
+				rsPointList = [];
+				rsPoint = new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat);
+				rsPointList.push(rsPoint);
+				rsLonLat = OpenLayers.Util.destinationVincenty(normalLonLat, radiosector.azimuth + radiosector.width / 2, radiosector.rsrange)
+						.transform(lmsProjection, map.getProjectionObject());
+				rsPoint = new OpenLayers.Geometry.Point(rsLonLat.lon, rsLonLat.lat);
+				rsPointList.push(rsPoint);
+				var rsCurve = new OpenLayers.Geometry.LineString(rsPointList);
+				rsFeature = new OpenLayers.Feature.Vector(rsCurve, radiosector);
+				directions.push(rsFeature);
+
+				var rsFeature = new OpenLayers.Feature.Vector(
+					rsCurve.getCentroid(true), radiosector);
+				directions.push(rsFeature);
+				directions.push(rsFeature);
+			}
 		}
+	rsarealayer.addFeatures(areas);
+	rsdirectionlayer.addFeatures(directions);
 
 	devicesLbl = OpenLayers.Lang.translate("Devices");
 	var devicelayer = new OpenLayers.Layer.Vector(devicesLbl, {
@@ -302,6 +534,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	map.addLayer(devlinklayer);
 	map.addLayer(nodelayer);
 	map.addLayer(nodelinklayer);
+	map.addLayer(rsarealayer);
+	map.addLayer(rsdirectionlayer);
 
 	var highlightlayer = new OpenLayers.Control.SelectFeature([devicelayer, devlinklayer, nodelayer, nodelinklayer], {
 		hover: true,
@@ -420,11 +654,12 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 								+ features[i].data.ipaddr + '</a></div>';
 						content += '<div class="lmsInfoPopupDetails"><a href="?m=' + features[i].data.type + '&id=' + features[i].data.id + '">'
 							+ '<img src="img/info1.gif" alt="">&nbsp;Info</a></div>';
-						if (features[i].data.type == 'netdevinfo' && features[i].data.url) {
+						if (features[i].data.url) {
 							var urls = features[i].data.url.split(',');
 							var comments = features[i].data.comment.split(',');
 							for (var j in urls) {
-								content += '<div class="lmsInfoPopupDetails"><a href="' + urls[j] + '" target="_blank">'
+								content += '<div class="lmsInfoPopupDetails"><a href="' + urls[j] + '"'
+									+ (urls[j].match(/^(https?|ftp):/) ? ' target="_blank"' : '') + '>'
 									+ '<img src="img/network.gif" alt=""> '
 									+ (comments[j].length ? comments[j] : urls[j]) + '</a></div>';
 							}
@@ -580,9 +815,14 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		if (zoom)
 			map.setCenter(new OpenLayers.LonLat(startLon, startLat)
 					.transform(lmsProjection, map.getProjectionObject()), zoom);
-		else
+		else {
 			map.setCenter(new OpenLayers.LonLat(startLon, startLat)
 					.transform(lmsProjection, map.getProjectionObject()));
+			if (deviceArray || nodeArray)
+				map.zoomToExtent(area);
+			else
+				map.zoomToMaxExtent();
+		}
 	else
 		if (loadedSettings)
 			map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);

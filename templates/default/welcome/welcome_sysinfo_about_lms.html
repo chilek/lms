@@ -1,0 +1,73 @@
+{if !ConfigHelper::checkPrivilege('hide_sysinfo')}
+<table class="lmsbox">
+    <colgroup>
+        <col style="width: 50%;"/>
+        <col style="width: 50%;"/>
+    </colgroup>
+    <thead>
+        <tr>
+            <td class="text-center bold nobr" colspan="2">
+                <img src="img/logo-ico.gif" alt=""> {trans("About LMS:")}
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="text-right bold">
+                <a href="http://www.lms.org.pl" rel="external">{trans("LMS version:")}</a>
+            </td>
+            <td>
+                {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right bold">
+                <a href="http://www.lms.org.pl" rel="external">{trans("LMSDB version:")}</a>
+            </td>
+            <td>
+                {$layout.lmsdbv}
+            </td>
+	</tr>
+        <tr>
+            <td class="text-right bold">
+                {if $layout.dbtype == "mysql" || $layout.dbtype == "mysqli"}
+                <a href="http://www.mysql.com" rel="external">{trans("MySQL version:")}</a>
+                {elseif $layout.dbtype == "postgres"}
+                <a href="http://www.postgresql.org" rel="external">{trans("PostgreSQL version:")}</a>
+                {/if}
+            </td>
+            <td>
+                {$layout.dbversion}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right bold">
+                <a href="http://www.php.net/" rel="external">{trans("PHP version:")}</a>
+            </td>
+            <td>
+                {$sysinfo.phpversion}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right bold">
+                <a href="http://www.smarty.net" rel="external">{trans("Smarty version:")}</a>
+            </td>
+            <td>
+                {$layout.smarty_version}
+            </td>
+        </tr>
+	{foreach $layout.plugins as $plugin_name => $plugin}
+	{if $plugin.enabled}
+	<tr>
+		<td class="text-right bold">
+			{$plugin_name}DB:
+		</td>
+		<td>
+			{if $plugin.dbschversion}{$plugin.dbschversion}{else}-{/if}
+		</td>
+	</tr>
+	{/if}
+	{/foreach}
+    </tbody>
+</table>
+{/if}

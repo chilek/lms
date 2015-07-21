@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 
 DROP VIEW customersview;
 
@@ -43,8 +43,8 @@ SELECT c.* FROM customers c
 
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009082500', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009082500', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

@@ -21,20 +21,20 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE documents ADD div_shortname TEXT NOT NULL DEFAULT ''");
+$this->Execute("ALTER TABLE documents ADD div_shortname TEXT NOT NULL DEFAULT ''");
 
-$dl = $DB->GetAll("SELECT id, shortname FROM divisions");
+$dl = $this->GetAll("SELECT id, shortname FROM divisions");
 
 if (!empty($dl))
 	foreach ($dl as $division)
-		$DB->Execute("UPDATE documents SET div_shortname = ?
+		$this->Execute("UPDATE documents SET div_shortname = ?
 				WHERE divisionid = ?", array(
 				($division['shortname'] ? $division['shortname'] : ''),
 				$division['id']));
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014040100', 'dbversion'));
-$DB->CommitTrans();
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014040100', 'dbversion'));
+$this->CommitTrans();
 
 ?>

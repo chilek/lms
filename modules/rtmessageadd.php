@@ -279,16 +279,34 @@ if(isset($_POST['message']))
 			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)))
 				if ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid'])))
 				{
-					$info = $DB->GetRow('SELECT pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-							email, address, zip, city, (SELECT phone FROM customercontacts 
-								WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
-							FROM customers WHERE id = ?', array($cid));
+					$info = $DB->GetRow('SELECT pin, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,
+							email, address, zip, city, (' . $DB->GroupConcat('phone', ',') . ') AS phones,
+							(' . $DB->GroupConcat('cc.name', ',') . ') AS contactnames
+							FROM customers c
+							LEFT JOIN customercontacts cc ON cc.customerid = c.id
+							WHERE c.id = ? GROUP BY c.id',
+							array($cid));
+
+					$phones = explode(',', $info['phones']);
+					$contactnames = explode(',', $info['contactnames']);
+					$mailphones = '';
+					$smsphones = '';
+					foreach ($phones as $phoneidx => $phone) {
+						if (!empty($mailphones)) {
+							$mailphones .= ', ';
+							$smsphones .= ',';
+						}
+						$mailphones .= $phone . (strlen($contactnames[$phoneidx]) ? ' (' . $contactnames[$phoneidx] . ')' : '');
+						$smsphones .= $phone . (strlen($contactnames[$phoneidx]) ? '(' . $contactnames[$phoneidx] . ')' : '');
+					}
+					$smsphones = preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', $smsphones);
 
 					$body .= "\n\n-- \n";
 					$body .= trans('Customer:').' '.$info['customername']."\n";
 					$body .= trans('ID:').' '.sprintf('%04d', $cid)."\n";
 					$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
-					$body .= trans('Phone:').' '.$info['phone']."\n";
+					if (strlen($mailphones))
+						$body .= trans('Phone:').' ' . $mailphones . "\n";
 					$body .= trans('E-mail:').' '.$info['email'];
 
 					$queuedata = $LMS->GetQueueByTicketId($message['ticketid']);
@@ -318,8 +336,8 @@ if(isset($_POST['message']))
 					$sms_body .= trans('Customer:').' '.$info['customername'];
 					$sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
 					$sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'];
-					if ($info['phone'])
-						$sms_body .= '. '.trans('Phone:').' '.$info['phone'];
+					if (strlen($smsphones))
+						$sms_body .= '. '.trans('Phone:').' '. $smsphones;
 				}
 				elseif ($requestor = $DB->GetOne('SELECT requestor FROM rttickets WHERE id = ?', array($message['ticketid'])))
 				{
@@ -410,6 +428,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('message', $message);
 $SMARTY->assign('error', $error);
-$SMARTY->display('rtmessageadd.html');
+$SMARTY->display('rt/rtmessageadd.html');
 
 ?>

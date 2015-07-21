@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if (!ConfigHelper::checkConfig('privileges.reports'))
+if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.reports'))
 	access_denied();
 
 $type = isset($_GET['type']) ? $_GET['type'] : '';
@@ -83,10 +83,10 @@ switch($type)
 		}
 
 		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
-			$output = $SMARTY->fetch('printcustomertraffic.html');
+			$output = $SMARTY->fetch('print/printcustomertraffic.html');
 			html2pdf($output, trans('Reports'), $layout['pagetitle']);
 		} else {
-			$SMARTY->display('printcustomertraffic.html');
+			$SMARTY->display('print/printcustomertraffic.html');
 		}
 	break;
 
@@ -109,7 +109,7 @@ switch($type)
 		$SMARTY->assign('statyears', $statyears);
 		$SMARTY->assign('months', $months);
 		$SMARTY->assign('printmenu', 'traffic');
-		$SMARTY->display('printindex.html');
+		$SMARTY->display('print/printindex.html');
 	break;
 }
 

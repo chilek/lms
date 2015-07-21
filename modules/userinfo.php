@@ -61,6 +61,6 @@ $SMARTY->assign('excludedgroups', $DB->GetAll('SELECT g.id, g.name FROM customer
 					    WHERE customergroupid = g.id AND userid = ?
 					    ORDER BY name', array($userinfo['id'])));
 
-$SMARTY->display('userinfo.html');
+$SMARTY->display('user/userinfo.html');
 
 ?>

@@ -113,9 +113,19 @@ function locationchoosewin(varname, formname, city, street)
 	return openSelectWindow('?m=chooselocation&name='+varname+'&form='+formname+'&city='+city+'&street='+street,'chooselocation',350,200,'true');
 }
 
+function netdevmodelchoosewin(varname, formname, netdevmodelid, producer, model)
+{
+	return openSelectWindow('?m=choosenetdevmodel&name='+varname+'&form='+formname+'&netdevmodelid='+netdevmodelid+'&producer='+producer+'&model='+model,'chooselocation',350,200,'true');
+}
+
 function gpscoordschoosewin(formfield1, formfield2)
 {
 	return openSelectWindow2('?m=choosegpscoords', 'choosegpscoords', 450, 300, 'true', formfield1, formfield2);
+}
+
+function netdevfrommapchoosewin(netdevid)
+{
+	return openSelectWindow('?m=choosenetdevfrommap', 'choosenetdevfrommap', 450, 300, 'true', netdevid);
 }
 
 function netlinkpropertieschoosewin(id, devid, isnetlink)
@@ -229,12 +239,13 @@ function CheckAll(form, elem, excl)
 {
     var i, len, n, e, f,
         form = document.forms[form] ? document.forms[form] : document.getElementById(form),
-        inputs = form.getElementsByTagName('INPUT');
+        //inputs = form.getElementsByTagName('INPUT');
+        inputs = form.elements;
 
     for (i=0, len=inputs.length; i<len; i++) {
         e = inputs[i];
 
-        if (e.type != 'checkbox' || e == elem)
+        if (e.tagName.toUpperCase() != 'INPUT' || e.type != 'checkbox' || e == elem)
             continue;
 
         if (excl && excl.length) {

@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	DELETE FROM rtattachments WHERE messageid NOT IN (SELECT id FROM rtmessages);
 	ALTER TABLE rtattachments ADD FOREIGN KEY (messageid)
 	        REFERENCES rtmessages (id) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -62,8 +62,8 @@ $DB->Execute("
     ALTER TABLE rtrights ALTER userid DROP DEFAULT;
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010062800', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010062800', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

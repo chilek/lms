@@ -26,9 +26,9 @@
 
 // Smarty extensions
 
-function _smarty_block_box($params, $content, &$template, &$repeat)
+function _smarty_block_box($params, $content, $template, &$repeat)
 {
-	if (!empty($content))
+	if (!$repeat && isset($content))
 	{
 		$title = trans(array_merge(array($params['title']), $params));
 
@@ -42,7 +42,8 @@ function _smarty_block_box($params, $content, &$template, &$repeat)
 		$template->assignGlobal('boxtitle', $title);
 		$template->assignGlobal('boxcontent', $content);
 
-		return $template->fetch(ConfigHelper::getConfig('directories.userpanel_dir').'/'.$file);
+		//return $template->fetch(ConfigHelper::getConfig('directories.userpanel_dir').'/'.$file);
+		return $template->smarty->fetch(ConfigHelper::getConfig('directories.userpanel_dir').'/'.$file);
 	}
 }
 
@@ -66,7 +67,8 @@ function _smarty_function_body($params, $template)
         elseif(file_exists('style/default/body.html'))
 	        $file = 'style/default/body.html';
 
-	return $template->fetch(ConfigHelper::getConfig('directories.userpanel_dir').'/'.$file);
+	//return $template->fetch(ConfigHelper::getConfig('directories.userpanel_dir').'/'.$file);
+	return $template->smarty->fetch(ConfigHelper::getConfig('directories.userpanel_dir').'/'.$file);
 }
 
 function _smarty_function_userpaneltip($params, $template)
@@ -175,60 +177,8 @@ function _smarty_function_img($params, $template)
     return $result;
 }
 
-function module_get_template($tpl_name, &$tpl_source, $template)
-{
-	$module = $_GET['m'];
-	$style = ConfigHelper::getConfig('userpanel.style', 'default');
-	$template_path = ConfigHelper::getConfig('directories.userpanel_dir') . '/modules/' . $module . '/style/' . $style . '/templates/' . $tpl_name;
-	if (file_exists($template_path))
-	{
-		$tpl_source = file_get_contents($template_path);
-		return true;
-	} else {
-		$template_path = ConfigHelper::getConfig('directories.userpanel_dir').'/modules/'.$module.'/templates/'.$tpl_name;
-		if (file_exists($template_path)) {
-			$tpl_source = file_get_contents($template_path);
-			return true;
-		} else
-			return false;
-	}
-}
-
-function module_get_timestamp($tpl_name, &$tpl_timestamp, $template)
-{
-	$module = $_GET['m'];
-	$style = ConfigHelper::getConfig('userpanel.style', 'default');
-	$template_path = ConfigHelper::getConfig('directories.userpanel_dir') . '/modules/' . $module . '/style/' . $style . '/templates/' . $tpl_name;
-	if (file_exists($template_path))
-	{
-		$tpl_timestamp = filectime($template_path);
-		return true;
-	} else {
-		$template_path = ConfigHelper::getConfig('directories.userpanel_dir').'/modules/'.$module.'/templates/'.$tpl_name;
-		if (file_exists($template_path)) {
-			$tpl_timestamp = filectime($template_path);
-			return true;
-		} else
-			return false;
-	}
-}
-
-function module_get_secure($tpl_name, $template)
-{
-	// assume all templates are secure
-	return true;
-}
-
-function module_get_trusted($tpl_name, $template)
-{
-	// not used for templates
-}
-
 // register the resource name "module"
-$SMARTY->registerResource("module", array("module_get_template",
-					"module_get_timestamp",
-					"module_get_secure",
-					"module_get_trusted"));
+$SMARTY->registerResource('module', new Smarty_Resource_Userpanel_Module());
 
 $SMARTY->registerPlugin('block', 'box', '_smarty_block_box');
 $SMARTY->registerPlugin('function', 'userpaneltip','_smarty_function_userpaneltip');

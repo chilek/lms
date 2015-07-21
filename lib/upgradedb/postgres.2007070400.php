@@ -24,13 +24,13 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("CREATE INDEX documentcontents_todate_idx ON documentcontents (todate)");
-$DB->Execute("CREATE INDEX documentcontents_fromdate_idx ON documentcontents (fromdate)");
+$this->Execute("CREATE INDEX documentcontents_todate_idx ON documentcontents (todate)");
+$this->Execute("CREATE INDEX documentcontents_fromdate_idx ON documentcontents (fromdate)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2007070400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2007070400', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

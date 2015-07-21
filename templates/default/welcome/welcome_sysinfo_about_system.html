@@ -1,0 +1,57 @@
+{if !ConfigHelper::checkPrivilege('hide_sysinfo')}
+<table class="lmsbox">
+    <colgroup>
+        <col style="width: 50%;"/>
+        <col style="width: 50%;"/>
+    </colgroup>
+    <thead>
+        <tr>
+            <td class="text-center bold nobr" colspan="2">
+                <img src="img/info1.gif" alt=""> {trans("About system:")}
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="text-right bold">
+                {trans("Hostname:")}
+            </td>
+            <td>
+                {$sysinfo.hostname}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right bold">
+                {trans("System version:")}
+            </td>
+            <td>
+                {$sysinfo.kernel}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right bold">
+                {trans("Uptime:")}
+            </td>
+            <td>
+                {$sysinfo.uptime}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right bold">
+                {trans("Users logged in:")}
+            </td>
+            <td>
+                {$sysinfo.users}
+            </td>
+        </tr>
+        <tr>
+            <td class="text-right bold">
+                {trans("Load:")}
+            </td>
+            <td>
+                {$sysinfo.loadavg.0} {$sysinfo.loadavg.1} {$sysinfo.loadavg.2}
+            </td>
+        </tr>
+    </tbody>
+</table>
+{/if}

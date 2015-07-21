@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
-$DB->Execute("
+$this->BeginTrans();
+$this->Execute("
 	CREATE INDEX nodes_netdev_idx ON nodes (netdev);
 	CREATE INDEX rttickets_queueid_idx ON rttickets (queueid);
 	CREATE INDEX cash_time_idx ON cash (time);
@@ -34,6 +34,6 @@ $DB->Execute("
 	CREATE INDEX invoicecontents_invoiceid_idx ON invoicecontents (invoiceid);
 	UPDATE dbinfo SET keyvalue = '2005030200' WHERE keytype = 'dbversion'
 ");
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

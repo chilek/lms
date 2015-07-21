@@ -76,7 +76,7 @@ am_lmsd_OBJECTS = lmsd-util.$(OBJEXT) lmsd-cronparse.$(OBJEXT) \
 lmsd_OBJECTS = $(am_lmsd_OBJECTS)
 lmsd_LDADD = $(LDADD)
 lmsd_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(lmsd_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	--mode=link $(CCLD) $(lmsd_CFLAGS) $(CFLAGS) $(lmsd_LDFLAGS) \
 	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -291,6 +291,7 @@ ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = modules dbdrivers
 lmsd_SOURCES = util.c cron/cronparse.c cron/cron.c config/dictionary.c config/config.c lmsd.c
 lmsd_CFLAGS = @LMSD_LIB_DIR@ @LMSD_DEFAULT_DRIVER@ @LMS_CONF_DIR@
+lmsd_LDFLAGS = -rdynamic
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 

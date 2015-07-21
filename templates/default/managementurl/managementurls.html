@@ -1,0 +1,98 @@
+<!--// $Id$ //-->
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR class="hand" onclick="showOrHideManagementUrlsPanel();">
+		<TD>
+			<IMG src="img/network.gif" alt="">
+			<span class="bold"><A name="managementurls">{trans("Management URL's:")}</A></span>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR id="managementurlspanel" style="display: none;">
+		<TD style="width: 100%;">
+			<FORM id="managementurladd" name="managementurladd">
+			<DIV id="managementurltable">
+			</DIV>
+			</FORM>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+<SCRIPT type="text/javascript">
+<!--
+if (getCookie('managementurlspanel') == '1') {
+	document.getElementById('managementurlspanel').style.display = '';
+	xajax_getManagementUrls();
+}
+
+function showOrHideManagementUrlsPanel() {
+	showOrHide('managementurlspanel');
+	if (xjx.$('managementurlspanel').style.display == '')
+		xajax_getManagementUrls();
+}
+
+
+function addManagementUrl() {
+	xjx.$('managementurladdlink').disabled = true;
+	xajax_addManagementUrl(xjx.getFormValues('managementurladd'));
+}
+
+function delManagementUrl(id) {
+	xjx.$('managementurltable').disabled = true;
+	xajax_delManagementUrl(id);
+}
+
+function toggleEditManagementUrl(id) {
+	var elems = ['url', 'comment'];
+	var edit = (xjx.$('edit_button_' + id).style.display != 'none');
+
+	for (i = 0; i < elems.length; i++) {
+		xjx.$(elems[i] + '_' + id).style.display = (edit ? 'none' : '');
+		xjx.$(elems[i] + '_edit_' + id).style.display = (edit ? '' : 'none');
+	}
+	xjx.$('cancel_button_' + id).style.display = (edit ? '' : 'none');
+	xjx.$('save_button_' + id).style.display = (edit ? '' : 'none');
+	xjx.$('edit_button_' + id).style.display = (edit ? 'none' : '');
+}
+
+function showAddManagementUrl() {
+	var elems = ['url', 'comment'];
+
+	for (i = 0; i < elems.length; i++) {
+		xjx.$(elems[i]).value = '';
+		xjx.$(elems[i]).onmouseover = '';
+	}
+
+	
+	xjx.$('managementurladdlink').style.display = ('none');
+	xjx.$('add_management_url').style.display = ('');
+	xjx.$('url').focus();
+}
+
+function hideAddManagementUrl() {
+	xjx.$('add_management_url').style.display = ('none');
+	if (xjx.$('managementurls') != null) {
+		xjx.$('no_management_urls').style.display = ('');
+	}
+	xjx.$('managementurladdlink').style.display = ('');
+	xajax_getManagementUrls();
+}
+
+function updateManagementUrl(id) {
+	var elems = ['url', 'comment'];
+	var params = {};
+
+	xjx.$('managementurltable').disabled = true;
+	for (i = 0; i < elems.length; i++) {
+		params[elems[i]] = xjx.$(elems[i] + '_edit_' + id).value;
+//		xjx.$(elems[i] + '_edit_' + id).disabled = true;
+	}
+	params['urlid'] = id;
+//	xjx.$('save_button_' + id).disabled = true;
+//	xjx.$('cancel_button_' + id).disabled = true;
+//	xjx.$('delete_button_' + id).disabled = true;
+	xajax_updateManagementUrl(id, params);
+}
+//-->
+</SCRIPT>

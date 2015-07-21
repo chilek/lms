@@ -32,10 +32,64 @@ else
 	$o = $_GET['o'];
 $SESSION->save('ndlo', $o);
 
-$netdevlist = $LMS->GetNetDevList($o);
+if(!isset($_GET['s']))
+	$SESSION->restore('ndfs', $s);
+else
+	$s = $_GET['s'];
+$SESSION->save('ndfs', $s);
+
+if(!isset($_GET['p']))
+	$SESSION->restore('ndfp', $p);
+else
+	$p = $_GET['p'];
+$SESSION->save('ndfp', $p);
+
+if(!isset($_GET['n']))
+	$SESSION->restore('ndfn', $n);
+else
+	$n = $_GET['n'];
+$SESSION->save('ndfn', $n);
+
+if(!isset($_GET['producer']))
+	$SESSION->restore('ndfproducer', $producer);
+else
+	$producer = $_GET['producer'];
+$SESSION->save('ndfproducer', $producer);
+
+if(!isset($_GET['model']))
+	$SESSION->restore('ndfmodel', $model);
+else
+	$model = $_GET['model'];
+$SESSION->save('ndfmodel', $model);
+
+$producers = $DB->GetCol("SELECT DISTINCT UPPER(TRIM(producer)) AS producer FROM netdevices WHERE producer <> '' ORDER BY producer");
+$models = $DB->GetCol("SELECT DISTINCT UPPER(TRIM(model)) AS model FROM netdevices WHERE model <> ''"
+	. ($producer != '-1' ? " AND UPPER(TRIM(producer)) = " . $DB->Escape($producer == '-2' ? '' : $producer) : '') . " ORDER BY model");
+if (!preg_match('/^-[0-9]+$/', $model) && !in_array($model, $models)) {
+	$SESSION->save('ndfmodel', '-1');
+	$SESSION->redirect('?' . preg_replace('/&model=[^&]+/', '', $_SERVER['QUERY_STRING']));
+}
+if (!preg_match('/^-[0-9]+$/', $producer) && !in_array($producer, $producers)) {
+	$SESSION->save('ndfproducer', '-1');
+	$SESSION->redirect('?' . preg_replace('/&producer=[^&]+/', '', $_SERVER['QUERY_STRING']));
+}
+
+$search = array(
+	'status' => $s,
+	'project' => $p,
+	'netnode' => $n,
+	'producer' => $producer,
+	'model' => $model,
+);
+$netdevlist = $LMS->GetNetDevList($o, $search);
 $listdata['total'] = $netdevlist['total'];
 $listdata['order'] = $netdevlist['order'];
 $listdata['direction'] = $netdevlist['direction'];
+$listdata['status'] = $s;
+$listdata['invprojectid'] = $p;
+$listdata['netnode'] = $n;
+$listdata['producer'] = $producer;
+$listdata['model'] = $model;
 unset($netdevlist['total']);
 unset($netdevlist['order']);
 unset($netdevlist['direction']);
@@ -56,6 +110,11 @@ $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);
 $SMARTY->assign('netdevlist',$netdevlist);
 $SMARTY->assign('listdata',$listdata);
-$SMARTY->display('netdevlist.html');
+$SMARTY->assign('netnodes', $DB->GetAll("SELECT id, name FROM netnodes ORDER BY name"));
+$SMARTY->assign('NNprojects', $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
+	array(INV_PROJECT_SYSTEM)));
+$SMARTY->assign('producers', $producers);
+$SMARTY->assign('models', $models);
+$SMARTY->display('netdev/netdevlist.html');
 
 ?>

@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,7 +28,7 @@ function module_setup()
 {
     global $SMARTY, $DB, $USERPANEL, $layout, $LMS;
     $layout['pagetitle'] = trans('Userpanel Configuration');
-    $SMARTY->assign('stylelist', getdir(USERPANEL_DIR.'/style', '^[a-z0-9]*$'));
+    $SMARTY->assign('stylelist', getdir(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'style', '^[a-z0-9]*$'));
     $SMARTY->assign('style', ConfigHelper::getConfig('userpanel.style', 'default'));
     $SMARTY->assign('hint', ConfigHelper::getConfig('userpanel.hint', 'modern'));
     $SMARTY->assign('hide_nodes_modules', ConfigHelper::getConfig('userpanel.hide_nodes_modules', 0));
@@ -36,8 +36,19 @@ function module_setup()
     $SMARTY->assign('reminder_mail_subject', ConfigHelper::getConfig('userpanel.reminder_mail_subject', trans('credential reminder')));
     $SMARTY->assign('reminder_mail_body', ConfigHelper::getConfig('userpanel.reminder_mail_body', "ID: %id\nPIN: %pin"));
     $SMARTY->assign('reminder_sms_body', ConfigHelper::getConfig('userpanel.reminder_sms_body', "ID: %id, PIN: %pin"));
+	$enabled_modules = ConfigHelper::getConfig('userpanel.enabled_modules', '');
+	if (empty($enabled_modules)) {
+		$enabled_modules = array();
+		if (!empty($USERPANEL->MODULES))
+			foreach ($USERPANEL->MODULES as $module)
+				$enabled_modules[] = $module['module'];
+		$DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)",
+			array('userpanel', 'enabled_modules', implode(',', $enabled_modules)));
+	} else
+		$enabled_modules = explode(',', $enabled_modules);
+    $SMARTY->assign('enabled_modules', $enabled_modules);
     $SMARTY->assign('total', sizeof($USERPANEL->MODULES));
-    $SMARTY->display(USERPANEL_DIR.'/templates/setup.html');
+    $SMARTY->display(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'setup.html');
 }
 
 function module_submit_setup()
@@ -79,6 +90,15 @@ function module_submit_setup()
     else
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'reminder_sms_body', ?)", array($_POST['reminder_sms_body']));
 
+	if (isset($_POST['enabled_modules']))
+		$enabled_modules = implode(',', array_keys($_POST['enabled_modules']));
+	else
+		$enabled_modules = '';
+	if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'enabled_modules'"))
+		$DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'enabled_modules'", array($enabled_modules));
+	else
+		$DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'enabled_modules', ?)", array($enabled_modules));
+
     LMSConfig::getConfig(array(
         'force' => true,
         'force_ui_only' => true,
@@ -98,7 +118,7 @@ function module_rights()
 
     $SMARTY->assign('customerlist',$customerlist);
     $SMARTY->assign('userpanelrights', $userpanelrights);
-    $SMARTY->display(USERPANEL_DIR.'/templates/setup_rights.html');
+    $SMARTY->display(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'setup_rights.html');
 }
 
 function module_submit_rights()

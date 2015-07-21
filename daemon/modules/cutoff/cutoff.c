@@ -376,6 +376,19 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 
 		free(query);
 	}
+	//Connect devices where no debt
+	if(c->connect)
+	            {
+		    n = g->db->pexec(g->db->conn, "UPDATE nodes n1,"
+			"(SELECT n.id FROM nodes n LEFT JOIN nodeassignments ON n.id = nodeassignments.nodeid "
+			"LEFT JOIN assignments ON nodeassignments.assignmentid=assignments.id "
+			"WHERE (assignments.dateto > %NOW% or assignments.dateto='0') "
+			"AND assignments.datefrom < %NOW% "
+			"AND assignments.suspended = 0 "
+			"AND access = 0 AND (SELECT SUM(value) FROM cash WHERE customerid = n.ownerid) >= 0) "
+			"AS n2 SET n1.access=1, n1.warning=0 WHERE n1.id = n2.id");
+		    execn = 1;
+	            }
 
         if(c->cuton)
         {
@@ -538,7 +551,8 @@ struct cutoff_module * init(GLOBAL *g, MODULE *m)
 	c->excluded_customergroups = strdup(g->config_getstring(c->base.ini, c->base.instance, "excluded_customergroups", ""));
 	c->networks = strdup(g->config_getstring(c->base.ini, c->base.instance, "networks", ""));
 	c->excluded_networks = strdup(g->config_getstring(c->base.ini, c->base.instance, "excluded_networks", ""));
-	
+	c->connect = g->config_getbool(c->base.ini, c->base.instance, "connect", 0);
+
 	c->nodegroup_only = 0;
 	nodegroup = g->config_getstring(c->base.ini, c->base.instance, "setnodegroup_only", "");
 	if(strlen(nodegroup))

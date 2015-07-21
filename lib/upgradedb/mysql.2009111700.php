@@ -22,12 +22,12 @@
  *
  */
 
-$DB->Execute("ALTER TABLE divisions ADD inv_paytime tinyint DEFAULT NULL");
-$DB->Execute("ALTER TABLE divisions ADD inv_paytype varchar(255) DEFAULT NULL");
-$DB->Execute("ALTER TABLE invoicecontents CHANGE description description text DEFAULT '' NOT NULL");
-$DB->Execute("ALTER TABLE receiptcontents CHANGE description description text DEFAULT '' NOT NULL");
-$DB->Execute("ALTER TABLE cash CHANGE comment comment text DEFAULT '' NOT NULL");
+$this->Execute("ALTER TABLE divisions ADD inv_paytime tinyint DEFAULT NULL");
+$this->Execute("ALTER TABLE divisions ADD inv_paytype varchar(255) DEFAULT NULL");
+$this->Execute("ALTER TABLE invoicecontents CHANGE description description text DEFAULT '' NOT NULL");
+$this->Execute("ALTER TABLE receiptcontents CHANGE description description text DEFAULT '' NOT NULL");
+$this->Execute("ALTER TABLE cash CHANGE comment comment text DEFAULT '' NOT NULL");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009111700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009111700', 'dbversion'));
 
 ?>

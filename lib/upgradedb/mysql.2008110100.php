@@ -24,13 +24,13 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE customers ADD paytime tinyint NOT NULL DEFAULT -1");
-$DB->Execute("UPDATE customers SET paytime = -1");
+$this->Execute("ALTER TABLE customers ADD paytime tinyint NOT NULL DEFAULT -1");
+$this->Execute("UPDATE customers SET paytime = -1");
 
-$DB->Execute("DROP VIEW customersview");
-$DB->Execute("CREATE VIEW customersview AS
+$this->Execute("DROP VIEW customersview");
+$this->Execute("CREATE VIEW customersview AS
         SELECT c.* FROM customers c
 	        WHERE NOT EXISTS (
 	        SELECT 1 FROM customerassignments a
@@ -38,8 +38,8 @@ $DB->Execute("CREATE VIEW customersview AS
 	        WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008110100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008110100', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

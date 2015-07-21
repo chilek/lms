@@ -47,6 +47,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('reglist', $reglist);
 $SMARTY->assign('listdata', $listdata);
-$SMARTY->display('cashreglist.html');
+$SMARTY->display('cash/cashreglist.html');
 
 ?>

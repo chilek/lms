@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
-$DB->Execute("
+$this->BeginTrans();
+$this->Execute("
 	ALTER TABLE invoices ADD zip1 VARCHAR(10);
 	UPDATE invoices SET zip1=zip;
 	ALTER TABLE invoices DROP zip;
@@ -35,7 +35,7 @@ $DB->Execute("
 	ALTER TABLE invoices ALTER zip SET NOT NULL;
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005021500', 'dbversion'));
-$DB->CommitTrans();
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005021500', 'dbversion'));
+$this->CommitTrans();
 
 ?>

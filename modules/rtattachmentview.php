@@ -54,6 +54,6 @@ if (isset($ticketid) && isset($msgid) && isset($_GET['file'])) {
 		));
 }
 
-$SMARTY->display('rtattachmentview.html');
+$SMARTY->display('rt/rtattachmentview.html');
 
 ?>

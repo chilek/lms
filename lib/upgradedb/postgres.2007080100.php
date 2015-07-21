@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE OR REPLACE FUNCTION lms_current_user() RETURNS integer AS '
 	SELECT
 	CASE
@@ -44,8 +44,8 @@ $DB->Execute("
                 WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007080100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2007080100', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

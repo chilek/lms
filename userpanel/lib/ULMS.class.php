@@ -62,7 +62,7 @@ class ULMS extends LMS
 	
 	function GetCustomerTickets($id)
 	{
-		$queues = [];
+		$queues = array();
 		if (ConfigHelper::getConfig('userpanel.tickets_from_selected_queues'))
 			$queues = $this->DB->GetCol('SELECT id FROM rtqueues
 				WHERE id IN (' . str_replace(';', ',', ConfigHelper::getConfig('userpanel.queues')) . ')');

@@ -24,32 +24,32 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$lastupgrade = $DB->GetOne("SELECT keyvalue FROM dbinfo where keytype='dbversion'");
+$lastupgrade = $this->GetOne("SELECT keyvalue FROM dbinfo where keytype='dbversion'");
 
 // we have 2005092900 (1.7.3) database - it was wrong upgrade
 // so we need something do in other way
 if($lastupgrade == '2005092900')
 {
-	$DB->Execute("ALTER TABLE cash ADD type smallint DEFAULT '0' NOT NULL");
+	$this->Execute("ALTER TABLE cash ADD type smallint DEFAULT '0' NOT NULL");
 	// set type for network operations
-	$DB->Execute("UPDATE cash SET type = 1 WHERE customerid = 0");
+	$this->Execute("UPDATE cash SET type = 1 WHERE customerid = 0");
 }
 else
 {
-	$DB->Execute("UPDATE cash SET value = -value WHERE type = 2 OR type = 4");
-	$DB->Execute("UPDATE cash SET customerid = 0 WHERE type = 1 OR type = 2");
-	$DB->Execute("UPDATE cash SET type = 1 WHERE type < 4");
-	$DB->Execute("UPDATE cash SET type = 0 WHERE type != 1"); // "type!=1" <-> "type=4"
+	$this->Execute("UPDATE cash SET value = -value WHERE type = 2 OR type = 4");
+	$this->Execute("UPDATE cash SET customerid = 0 WHERE type = 1 OR type = 2");
+	$this->Execute("UPDATE cash SET type = 1 WHERE type < 4");
+	$this->Execute("UPDATE cash SET type = 0 WHERE type != 1"); // "type!=1" <-> "type=4"
 }
 
 // "type" values after change: 
 // 1 - cash operations
 // 0 - non-cash operations
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005101700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005101700', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

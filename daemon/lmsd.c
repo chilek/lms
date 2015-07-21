@@ -128,8 +128,9 @@ int main(int argc, char *argv[], char **envp)
 
         if( !dbdrv )
         {
-                syslog(LOG_CRIT, "Unable to load database driver '%s': %s", dbdrv_path, dlerror());
-                fprintf(stderr, "Unable to load database driver '%s': %s.\n", dbdrv_path, dlerror());
+                char * errMsg = dlerror();
+                syslog(LOG_CRIT, "Unable to load database driver '%s': %s", dbdrv_path, errMsg);
+                fprintf(stderr, "Unable to load database driver '%s': %s.\n", dbdrv_path, errMsg);
                 exit(1);
         }
         else

@@ -24,16 +24,16 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 ALTER TABLE aliasassignments ADD mail_forward Varchar(255) DEFAULT '' NOT NULL;
 ALTER TABLE aliasassignments DROP CONSTRAINT aliasassignments_aliasid_key;
 ALTER TABLE aliasassignments ADD CONSTRAINT aliasassignments_aliasid_key UNIQUE (aliasid, accountid, mail_forward);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009091600', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009091600', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

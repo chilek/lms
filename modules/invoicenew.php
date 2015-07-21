@@ -405,6 +405,6 @@ $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE, date('Y/m', $invoice['cdate'])));
 $SMARTY->assign('taxeslist', $taxeslist);
-$SMARTY->display('invoicenew.html');
+$SMARTY->display('invoice/invoicenew.html');
 
 ?>

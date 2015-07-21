@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 CREATE SEQUENCE nastypes_id_seq;
 CREATE TABLE nastypes (
     	id integer 	DEFAULT nextval('nastypes_id_seq'::text) NOT NULL,
@@ -65,8 +65,8 @@ INSERT INTO nastypes (name) VALUES ('other');
 
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009040200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009040200', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

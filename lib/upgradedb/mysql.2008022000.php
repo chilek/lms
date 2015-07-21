@@ -24,31 +24,31 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE tariffs ADD sh_limit int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE tariffs ADD mail_limit int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE tariffs ADD www_limit int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE tariffs ADD sql_limit int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE tariffs ADD ftp_limit int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE tariffs ADD sh_limit int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE tariffs ADD mail_limit int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE tariffs ADD www_limit int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE tariffs ADD sql_limit int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE tariffs ADD ftp_limit int(11) DEFAULT NULL");
 
-$DB->Execute("ALTER TABLE tariffs ADD quota_sh_limit int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE tariffs ADD quota_mail_limit int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE tariffs ADD quota_www_limit int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE tariffs ADD quota_sql_limit int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE tariffs ADD quota_ftp_limit int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE tariffs ADD quota_sh_limit int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE tariffs ADD quota_mail_limit int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE tariffs ADD quota_www_limit int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE tariffs ADD quota_sql_limit int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE tariffs ADD quota_ftp_limit int(11) DEFAULT NULL");
 
-$DB->Execute("ALTER TABLE tariffs ADD domain_limit int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE tariffs ADD alias_limit int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE tariffs ADD domain_limit int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE tariffs ADD alias_limit int(11) DEFAULT NULL");
 
-$DB->Execute("UPDATE tariffs SET domain_limit=0, alias_limit=0, sh_limit=0, www_limit=0, 
+$this->Execute("UPDATE tariffs SET domain_limit=0, alias_limit=0, sh_limit=0, www_limit=0, 
 		ftp_limit=0, mail_limit=0, sql_limit=0, quota_sh_limit=0, quota_www_limit=0,
 		quota_ftp_limit=0, quota_mail_limit=0, quota_sql_limit=0");
 
-$DB->Execute("ALTER TABLE passwd ADD description text NOT NULL DEFAULT ''");
+$this->Execute("ALTER TABLE passwd ADD description text NOT NULL DEFAULT ''");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008022000', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008022000', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

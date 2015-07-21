@@ -21,12 +21,12 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("ALTER TABLE tariffs ADD COLUMN disabled smallint DEFAULT 0 NOT NULL;");
+$this->Execute("ALTER TABLE tariffs ADD COLUMN disabled smallint DEFAULT 0 NOT NULL;");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013031400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013031400', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

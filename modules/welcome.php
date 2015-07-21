@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -47,16 +47,18 @@ if (ConfigHelper::checkConfig('privileges.superuser')) {
 $SMARTY->assign('_dochref', is_dir('doc/html/'.$LMS->ui_lang) ? 'doc/html/'.$LMS->ui_lang.'/' : 'doc/html/en/');
 $SMARTY->assign('rtstats', $LMS->RTStats());
 
-if (!ConfigHelper::checkConfig('privileges.hide_sysinfo')) {
+if (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_sysinfo')) {
 	$SI = new Sysinfo;
 	$SMARTY->assign('sysinfo', $SI->get_sysinfo());
 }
 
-if (!ConfigHelper::checkConfig('privileges.hide_summaries')) {
+if (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')) {
 	$SMARTY->assign('customerstats', $LMS->CustomerStats());
 	$SMARTY->assign('nodestats', $LMS->NodeStats());
 }
 
-$SMARTY->display('welcome.html');
+$layout['plugins'] = $plugin_manager->getAllPluginInfo();
+
+$SMARTY->display('welcome/welcome.html');
 
 ?>

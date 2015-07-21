@@ -36,6 +36,6 @@ if ($nodes) foreach($nodes as $idx => $row)
     $nodes[$idx]['lastonlinedate'] = lastonline_date($row['lastonline']);
 
 $SMARTY->assign('customernodes', $nodes);
-$SMARTY->display('nodelistshort.html');
+$SMARTY->display('node/nodelistshort.html');
 
 ?>

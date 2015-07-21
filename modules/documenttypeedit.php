@@ -90,6 +90,6 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('documenttype', $type);
 $SMARTY->assign('error', $error);
-$SMARTY->display('documenttypeedit.html');
+$SMARTY->display('document/documenttypeedit.html');
 
 ?>

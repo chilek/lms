@@ -24,22 +24,22 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 CREATE VIEW vnodes_mac AS
 SELECT nodeid, GROUP_CONCAT(mac ORDER BY id SEPARATOR ',') AS mac
 	FROM macs GROUP BY nodeid
 ");
-$DB->Execute("
+$this->Execute("
 CREATE VIEW vnodes AS
 SELECT n.*, m.mac
 	FROM nodes n
 	LEFT JOIN vnodes_mac m ON (n.id = m.nodeid)
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010051400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010051400', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

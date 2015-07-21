@@ -23,12 +23,12 @@
 
 // TERYT
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("DROP VIEW vnodes");
+$this->Execute("DROP VIEW vnodes");
 
 // wojewodztwa
-$DB->Execute("
+$this->Execute("
     CREATE TABLE location_states (
         id int(11)          NOT NULL auto_increment,
         ident varchar(8)    NOT NULL, -- TERYT: WOJ
@@ -37,7 +37,7 @@ $DB->Execute("
         UNIQUE KEY name (name)
     ) ENGINE=INNODB");
 // powiaty
-$DB->Execute("
+$this->Execute("
     CREATE TABLE location_districts (
         id int(11)          NOT NULL auto_increment,
         name varchar(64)    NOT NULL, -- TERYT: NAZWA
@@ -48,7 +48,7 @@ $DB->Execute("
         UNIQUE KEY stateid (stateid, name)
     ) ENGINE=INNODB");
 // gminy
-$DB->Execute("
+$this->Execute("
     CREATE TABLE location_boroughs (
         id int(11)          NOT NULL auto_increment,
         name varchar(64)    NOT NULL, -- TERYT: NAZWA
@@ -60,7 +60,7 @@ $DB->Execute("
         UNIQUE KEY districtid (districtid, name, type)
     ) ENGINE=INNODB");
 // miasta
-$DB->Execute("
+$this->Execute("
     CREATE TABLE location_cities (
         id int(11)          NOT NULL auto_increment,
         ident varchar(8)    NOT NULL, -- TERYT: SYM / SYMPOD
@@ -73,14 +73,14 @@ $DB->Execute("
         INDEX boroughid (boroughid, name)
     ) ENGINE=INNODB");
 // cechy ulic
-$DB->Execute("
+$this->Execute("
     CREATE TABLE location_street_types (
         id int(11)          NOT NULL auto_increment,
         name varchar(8)     NOT NULL, -- TERYT: CECHA
         PRIMARY KEY (id)
     ) ENGINE=INNODB");
 // ulice
-$DB->Execute("
+$this->Execute("
     CREATE TABLE location_streets (
         id int(11)          NOT NULL auto_increment,
         name varchar(128)   NOT NULL, -- TERYT: NAZWA_1
@@ -94,44 +94,44 @@ $DB->Execute("
     ) ENGINE=INNODB");
 
 // netdevices
-$DB->Execute("ALTER TABLE netdevices ADD location_city int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE netdevices ADD location_street int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE netdevices ADD INDEX location_street (location_street)");
-$DB->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE");
-$DB->Execute("ALTER TABLE netdevices ADD location_house varchar(8) DEFAULT NULL");
-$DB->Execute("ALTER TABLE netdevices ADD location_flat varchar(8) DEFAULT NULL");
-$DB->Execute("ALTER TABLE netdevices ADD INDEX location_city (location_city, location_street, location_house, location_flat)");
-$DB->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE");
+$this->Execute("ALTER TABLE netdevices ADD location_city int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE netdevices ADD location_street int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE netdevices ADD INDEX location_street (location_street)");
+$this->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE");
+$this->Execute("ALTER TABLE netdevices ADD location_house varchar(8) DEFAULT NULL");
+$this->Execute("ALTER TABLE netdevices ADD location_flat varchar(8) DEFAULT NULL");
+$this->Execute("ALTER TABLE netdevices ADD INDEX location_city (location_city, location_street, location_house, location_flat)");
+$this->Execute("ALTER TABLE netdevices ADD FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-$DB->Execute("ALTER TABLE nodes ADD location varchar(255) DEFAULT NULL");
+$this->Execute("ALTER TABLE nodes ADD location varchar(255) DEFAULT NULL");
 
-$nodes = $DB->GetAll("SELECT id, location_city AS city, location_address AS addr
+$nodes = $this->GetAll("SELECT id, location_city AS city, location_address AS addr
     FROM nodes WHERE location_city <> '' OR location_address <> ''");
 if ($nodes) foreach ($nodes as $n) {
     $loc = $n['addr'];
     if ($n['city'] && strpos($loc, $n['city']) === false)
         $loc = $n['city'] . ($loc ? ', ' . $loc : '');
 
-    $DB->Execute("UPDATE nodes SET location = ? WHERE id = ?", array($loc, $n['id']));
+    $this->Execute("UPDATE nodes SET location = ? WHERE id = ?", array($loc, $n['id']));
 }
 
 // do we need zip code for node address? No.
-$DB->Execute("ALTER TABLE nodes DROP location_zip CASCADE");
-$DB->Execute("ALTER TABLE nodes DROP location_city CASCADE");
-$DB->Execute("ALTER TABLE nodes DROP location_address CASCADE");
+$this->Execute("ALTER TABLE nodes DROP location_zip CASCADE");
+$this->Execute("ALTER TABLE nodes DROP location_city CASCADE");
+$this->Execute("ALTER TABLE nodes DROP location_address CASCADE");
 
 // nodes
-$DB->Execute("ALTER TABLE nodes ADD location_house varchar(8) DEFAULT NULL");
-$DB->Execute("ALTER TABLE nodes ADD location_flat varchar(8) DEFAULT NULL");
-$DB->Execute("ALTER TABLE nodes ADD location_city int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE nodes ADD location_street int(11) DEFAULT NULL");
-$DB->Execute("ALTER TABLE nodes ADD INDEX location_city (location_city, location_street, location_house, location_flat)");
-$DB->Execute("ALTER TABLE nodes ADD FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE");
-$DB->Execute("ALTER TABLE nodes ADD INDEX location_street (location_street)");
-$DB->Execute("ALTER TABLE nodes ADD FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE");
+$this->Execute("ALTER TABLE nodes ADD location_house varchar(8) DEFAULT NULL");
+$this->Execute("ALTER TABLE nodes ADD location_flat varchar(8) DEFAULT NULL");
+$this->Execute("ALTER TABLE nodes ADD location_city int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE nodes ADD location_street int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE nodes ADD INDEX location_city (location_city, location_street, location_house, location_flat)");
+$this->Execute("ALTER TABLE nodes ADD FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE");
+$this->Execute("ALTER TABLE nodes ADD INDEX location_street (location_street)");
+$this->Execute("ALTER TABLE nodes ADD FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE");
 
 // TERYT database views (irrelevant fields are skipped)
-$DB->Execute("
+$this->Execute("
     CREATE VIEW teryt_terc AS
     SELECT ident AS woj, '0' AS pow, '0' AS gmi, 0 AS rodz,
         UPPER(name) AS nazwa
@@ -148,7 +148,7 @@ $DB->Execute("
     JOIN location_districts d ON (b.districtid = d.id)
     JOIN location_states s ON (d.stateid = s.id)
 ");
-$DB->Execute("
+$this->Execute("
     CREATE VIEW teryt_simc AS
     SELECT s.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
         c.ident AS sym, c.name AS nazwa,
@@ -159,7 +159,7 @@ $DB->Execute("
     JOIN location_states s ON (d.stateid = s.id)
     LEFT JOIN location_cities cc ON (c.cityid = cc.id)
 ");
-$DB->Execute("
+$this->Execute("
     CREATE VIEW teryt_ulic AS
     SELECT st.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
         c.ident AS sym, s.ident AS sym_ul, s.name AS nazwa_1, t.name AS cecha, s.id
@@ -170,15 +170,15 @@ $DB->Execute("
     JOIN location_districts d ON (b.districtid = d.id)
     JOIN location_states st ON (d.stateid = st.id)
 ");
-$DB->Execute("
+$this->Execute("
     CREATE VIEW vnodes AS
     SELECT n.*, m.mac
     FROM nodes n
     LEFT JOIN vnodes_mac m ON (n.id = m.nodeid);
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011082800', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2011082800', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

@@ -32,50 +32,63 @@ if(isset($_POST['event']))
 	{
 		$SESSION->redirect('?m=eventlist');
 	}
-	
-	if($event['title'] == '')
-    		$error['title'] = trans('Event title is required!');
-	
-	if($event['date'] == '')
+
+	if ($event['title'] == '')
+		$error['title'] = trans('Event title is required!');
+
+	if ($event['date'] == '')
 		$error['date'] = trans('You have to specify event day!');
-	else
-	{
-		list($year,$month, $day) = explode('/',$event['date']);
-		if(!checkdate($month,$day,$year))
+	else {
+		list ($year, $month, $day) = explode('/',$event['date']);
+		if (checkdate($month, $day, $year))
+			$date = mktime(0, 0, 0, $month, $day, $year);
+		else
 			$error['date'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
 	}
 
-	if(!$error)
-	{
-		$date = mktime(0, 0, 0, $month, $day, $year);
+	$enddate = 0;
+	if ($event['enddate'] != '') {
+		list ($year, $month, $day) = explode('/', $event['enddate']);
+		if (checkdate($month, $day, $year))
+			$enddate = mktime(0, 0, 0, $month, $day, $year);
+		else
+			$error['enddate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+	}
+
+	if ($enddate && $date > $enddate)
+		$error['enddate'] = trans('End time must not precede start time!');
+
+	if (!$error) {
 		$event['status'] = isset($event['status']) ? 1 : 0;
 		if (isset($event['customerid']))
 			$event['custid'] = $event['customerid'];
 		if ($event['custid'] == '')
 			$event['custid'] = 0;
 
-		$DB->Execute('INSERT INTO events (title, description, date, begintime, endtime, userid, private, customerid) 
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+		$DB->BeginTrans();
+
+		$DB->Execute('INSERT INTO events (title, description, date, begintime, enddate, endtime, userid, private, customerid) 
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array($event['title'], 
 					$event['description'], 
 					$date, 
 					$event['begintime'], 
+					$enddate,
 					$event['endtime'], 
 					$AUTH->id, 
 					$event['status'], 
 					$event['custid']
 					));
-		
-		if(!empty($event['userlist']))
-		{
-			$id = $DB->GetOne('SELECT id FROM events WHERE title=? AND date=? AND begintime=? AND endtime=? AND userid=?',
-				array($event['title'], $date, $event['begintime'], $event['endtime'], $AUTH->id));
 
+		if (!empty($event['userlist'])) {
+			$id = $DB->GetLastInsertID('events');
 			foreach($event['userlist'] as $userid)
 				$DB->Execute('INSERT INTO eventassignments (eventid, userid) 
 					VALUES (?, ?)', array($id, $userid));
 		}
-		
+
+		$DB->CommitTrans();
+
 		if(!isset($event['reuse']))
 		{
 			$SESSION->redirect('?m=eventlist');
@@ -116,6 +129,6 @@ $SMARTY->assign('hours',
 		1200,1230,1300,1330,1400,1430,1500,1530,1600,1630,1700,1730,
 		1800,1830,1900,1930,2000,2030,2100,2130,2200,2230,2300,2330
 		));
-$SMARTY->display('eventadd.html');
+$SMARTY->display('event/eventadd.html');
 
 ?>

@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE TABLE aliasassignments (
 		id		int(11)		NOT NULL auto_increment,
 		aliasid		int(11)		DEFAULT '0' NOT NULL,
@@ -35,18 +35,18 @@ $DB->Execute("
 		UNIQUE KEY aliasid (aliasid, accountid)
 	)
 ");
-$DB->Execute("ALTER TABLE aliases ADD domainid integer NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE aliases ADD domainid integer NOT NULL DEFAULT '0'");
 	
-$DB->Execute("UPDATE aliases SET domainid = (SELECT domainid FROM passwd WHERE id = accountid)");
+$this->Execute("UPDATE aliases SET domainid = (SELECT domainid FROM passwd WHERE id = accountid)");
 
-$DB->Execute("INSERT INTO aliasassignments (aliasid, accountid) 
+$this->Execute("INSERT INTO aliasassignments (aliasid, accountid) 
 		SELECT id, accountid FROM aliases");
 	
-$DB->Execute("ALTER TABLE aliases DROP accountid");
-$DB->Execute("ALTER TABLE aliases ADD UNIQUE KEY (login, domainid)");
+$this->Execute("ALTER TABLE aliases DROP accountid");
+$this->Execute("ALTER TABLE aliases ADD UNIQUE KEY (login, domainid)");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008021500', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008021500', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

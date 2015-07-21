@@ -26,12 +26,21 @@
 
 // REPLACE THIS WITH PATH TO YOU CONFIG FILE
 
-$CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
+$CONFIG_FILE = '';
 
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 ini_set('error_reporting', E_ALL&~E_NOTICE);
+
+if(is_readable('/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini'))
+        $CONFIG_FILE = '/etc/lms/lms-'.$_SERVER['HTTP_HOST'].'.ini';
+elseif(is_readable('/etc/lms/lms.ini'))
+        $CONFIG_FILE = '/etc/lms/lms.ini';
+elseif (!is_readable($CONFIG_FILE))
+        die('Unable to read configuration file ['.$CONFIG_FILE.']!');
+
+define('CONFIG_FILE', $CONFIG_FILE);
 
 // Parse configuration file
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
@@ -77,6 +86,9 @@ try {
 
 // Initialize templates engine
 $SMARTY = new Smarty;
+
+// add LMS's custom plugins directory
+$SMARTY->addPluginsDir(LIB_DIR.'/SmartyPlugins');
 
 // Include required files (including sequence is important)
 

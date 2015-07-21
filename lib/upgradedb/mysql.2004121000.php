@@ -24,11 +24,11 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
-$DB->Execute("ALTER TABLE uiconfig CHANGE section section VARCHAR(64) NOT NULL DEFAULT ''");
-$DB->Execute("ALTER TABLE uiconfig CHANGE var var VARCHAR(64) NOT NULL DEFAULT ''");
-$DB->Execute("ALTER TABLE uiconfig ADD UNIQUE (section, var)");
-$DB->Execute("UPDATE dbinfo SET keyvalue = '2004121000' WHERE keytype = 'dbversion'");
-$DB->CommitTrans();
+$this->BeginTrans();
+$this->Execute("ALTER TABLE uiconfig CHANGE section section VARCHAR(64) NOT NULL DEFAULT ''");
+$this->Execute("ALTER TABLE uiconfig CHANGE var var VARCHAR(64) NOT NULL DEFAULT ''");
+$this->Execute("ALTER TABLE uiconfig ADD UNIQUE (section, var)");
+$this->Execute("UPDATE dbinfo SET keyvalue = '2004121000' WHERE keytype = 'dbversion'");
+$this->CommitTrans();
 
 ?>

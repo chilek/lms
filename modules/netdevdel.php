@@ -40,6 +40,7 @@ else
 		header('Location: ?m=netdevlist');
 		$body = '<P>' . trans('Device has been deleted.') . '</P>';
 		$LMS->DeleteNetDev($_GET['id']);
+		$LMS->CleanupInvprojects();
 	}
 
 $SMARTY->assign('body',$body);

@@ -151,8 +151,16 @@ div.multiselectlayer ul li input { border: none; }
 .click-menu .section    { background-color: #EBE4D6; line-height: 15px; padding: 0px 0px 0px 0px; display: none; }
 .click-menu .section a  { color: #800000; text-decoration: none; white-space: nowrap; }
 .click-menu .section a:hover    { color: #336600; text-decoration: none; white-space: nowrap; }
-.click-menu .box2       { padding: 0px 0px 0px 21px; }
-.click-menu .box2-hover { background-color: #CCFFCC; padding: 0px 0px 0px 21px; }
+.click-menu .box2-hover { background-color: #CCFFCC; }
+.click-menu .box2 a,
+.click-menu .box2-hover a {
+    display: block;
+    padding-left: 21px;
+}
+.click-menu .box2 a:before,
+.click-menu .box2-hover a:before {
+    content: "\00bb\00a0";
+}
 .click-menu .section .active,
 .click-menu .section .active:hover { color: yellow; }
 .tip		{ width: 162px; }
@@ -186,7 +194,7 @@ div.multiselectlayer ul li input { border: none; }
 .acl		{ list-style-type: square; }
 
 .overlib {
-    width: 150px;
+    min-width: 10px;
     font-family: Tahoma, Verdana, Arial, Helvetica;
     background-color: #F4F0EC;
     padding: 2px 4px;
@@ -274,3 +282,28 @@ td.empty-table { text-align: center; font-weight: bold; padding: 2em; background
 .lighter { font-weight: lighter; }
 .valign-top { vertical-align: top; }
 .valign-bottom { vertical-align: bottom; }
+
+/**
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    contenteditable attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that are clearfixed.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+.cf:before, .cf:after { content: " ";  display: table; }
+.cf:after { clear: both; }
+
+/**
+ * For IE 6/7 only
+ * Include this rule to trigger hasLayout and contain floats.
+ */
+.cf { *zoom: 1; }
+
+.lf { float: left; }
+.rf { float: right; }
+
+.wf { width: 100%; }
+.wh { width: 50%; }
+.wq { width: 25%; }

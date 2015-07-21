@@ -21,10 +21,10 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013111900', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2013111900', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

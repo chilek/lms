@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$DB->Execute("ALTER TABLE rttickets ADD resolvetime INT(11) NOT NULL DEFAULT '0'");
-$DB->Execute("UPDATE rttickets SET resolvetime=createtime WHERE state=2");
+$this->Execute("ALTER TABLE rttickets ADD resolvetime INT(11) NOT NULL DEFAULT '0'");
+$this->Execute("UPDATE rttickets SET resolvetime=createtime WHERE state=2");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004072700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004072700', 'dbversion'));
 
 ?>

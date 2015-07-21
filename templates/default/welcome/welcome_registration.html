@@ -1,0 +1,26 @@
+{if ConfigHelper::checkConfig('privileges.superuser')}
+<table class="lmsbox">
+    <thead>
+        <tr>
+            <td class="text-center bold">
+                <img src="img/logo-ico.gif" alt=""> {trans("Registration info:")}
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="text-center">
+                {if $regdata}
+                {trans("Registration ID:")} {$regdata.id|string_format:"%04d"}<br>
+                {trans("Registered for:")} {$regdata.name}<br>
+                {trans("URL:")} {$regdata.url}<br>
+                <a href="?m=register">{trans("Change registration info")}</a>
+                {else}
+                {trans("Your installation is unregistered!")}<br>
+                <a href="?m=register">{trans("Click here, to register your installation and learn more why you should - IT'S FREE!")}</a>
+                {/if}
+            </td>
+        </tr>
+    </tbody>
+</table>
+{/if}

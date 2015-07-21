@@ -76,11 +76,11 @@ if(isset($_GET['search']))
 	$SMARTY->assign('listdata',$listdata);
 	
 	if(isset($_GET['print']))
-		$SMARTY->display('printvoipaccountlist.html');
+		$SMARTY->display('print/printvoipaccountlist.html');
 	elseif($listdata['total']==1)
 		$SESSION->redirect('?m=voipaccountinfo&id='.$voipaccountlist[0]['id']);
 	else
-		$SMARTY->display('voipaccountsearchresults.html');
+		$SMARTY->display('voipaccount/voipaccountsearchresults.html');
 }
 else
 {
@@ -89,7 +89,7 @@ else
 	$SESSION->remove('vaslp');
 
 	$SMARTY->assign('k',$k);
-	$SMARTY->display('voipaccountsearch.html');
+	$SMARTY->display('voipaccount/voipaccountsearch.html');
 }
 
 ?>

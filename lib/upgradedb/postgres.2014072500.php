@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2014 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -21,25 +21,41 @@
  *
  */
 
-$DB->BeginTrans();
+include(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 
-$DB->Execute("ALTER TABLE documents ADD fullnumber varchar(50) DEFAULT NULL");
-$DB->Execute("CREATE INDEX documents_fullnumber_idx ON documents (fullnumber)");
+$numberplans = $this->GetAllByKey("SELECT * FROM numberplans ORDER BY id", 'id');
 
-$docs = $DB->GetAll('SELECT d.id, cdate, number, template FROM documents d
-	JOIN numberplans n ON n.id = d.numberplanid
-	WHERE numberplanid <> 0 ORDER BY id');
-if (!empty($docs)) {
-	include(LIB_DIR . '/common.php');
-	foreach ($docs as $doc) {
-		$fullnumber = docnumber($doc['number'], $doc['template'], $doc['cdate']);
-		$DB->Execute('UPDATE documents SET fullnumber = ? WHERE id = ?',
-			array($fullnumber, $doc['id']));
+$this->BeginTrans();
+
+$this->Execute("ALTER TABLE documents ADD fullnumber varchar(50) DEFAULT NULL");
+$this->Execute("CREATE INDEX documents_fullnumber_idx ON documents (fullnumber)");
+
+$this->LockTables("documents");
+
+$offset = 0;
+do {
+	$docs = $this->GetAll("SELECT id, cdate, number, numberplanid FROM documents
+		ORDER BY id LIMIT 30000 OFFSET $offset");
+	$stop = empty($docs);
+	if (!$stop) {
+		foreach ($docs as $doc) {
+			if ($doc['numberplanid'])
+				$template = $numberplans[$doc['numberplanid']]['template'];
+			else
+				$template = DEFAULT_NUMBER_TEMPLATE;
+			$fullnumber = docnumber($doc['number'], $template, $doc['cdate']);
+			$this->Execute("UPDATE documents SET fullnumber = ? WHERE id = ?",
+				array($fullnumber, $doc['id']));
+		}
+		$offset += count($docs);
+		unset($docs);
 	}
-}
+} while (!$stop);
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014072500', 'dbversion'));
+$this->UnLockTables("documents");
 
-$DB->CommitTrans();
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014072500', 'dbversion'));
+
+$this->CommitTrans();
 
 ?>

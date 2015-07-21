@@ -26,6 +26,7 @@
 
 $nodedata['access'] = 1;
 $nodedata['ownerid'] = 0;
+$nodedata['authtype'] = 0;
 
 if(isset($_GET['ownerid']))
 {
@@ -172,7 +173,27 @@ if (isset($_POST['nodedata']))
 
 	if(!isset($nodedata['chkmac']))	$nodedata['chkmac'] = 0;
 	if(!isset($nodedata['halfduplex'])) $nodedata['halfduplex'] = 0;
+	
 
+	if ($nodedata['invprojectid'] == '-1') { // nowy projekt
+		if (!strlen(trim($nodedata['projectname']))) {
+		 $error['projectname'] = trans('Project name is required');
+		}
+		if ($DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>?",
+			array($nodedata['projectname'], INV_PROJECT_SYSTEM)))
+			$error['projectname'] = trans('Project with that name already exists');
+	}
+
+	if(isset($_POST['nodeauthtype'])) {
+		$authtype = $_POST['nodeauthtype'];
+		if (!empty($authtype)) {
+			foreach ($authtype as $op) {
+			$op = (int)$op;
+			$nodedata['authtype'] |= $op;
+			}
+		}
+	}
+	if(!isset($nodedata['authtype'])) $nodedata['authtype'] = 0;
 	if(!$error)
 	{
         if (empty($nodedata['teryt'])) {
@@ -183,6 +204,19 @@ if (isset($_POST['nodedata']))
         }
 
         $nodedata = $LMS->ExecHook('node_add_before', $nodedata);
+
+	$ipi = $nodedata['invprojectid'];
+	if ($ipi == '-1') {
+		$DB->BeginTrans();
+		$DB->Execute("INSERT INTO invprojects (name, type) VALUES (?, ?)",
+			array($nodedata['projectname'], INV_PROJECT_REGULAR));
+		$ipi = $DB->GetLastInsertID('invprojects');
+		$DB->CommitTrans();
+	} 
+	if ($nodedata['invprojectid'] == '-1' || intval($ipi)>0)
+		$nodedata['invprojectid'] = intval($ipi);
+	else
+		$nodedata['invprojectid'] = NULL;
 
 		$nodeid = $LMS->NodeAdd($nodedata);
 
@@ -229,12 +263,21 @@ if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', fals
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 
+include(MODULES_DIR . '/nodexajax.inc.php');
+
+$SMARTY->assign('xajax', $LMS->RunXajax());
+
+$nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
+	array(INV_PROJECT_SYSTEM));
+$SMARTY->assign('NNprojects',$nprojects);
+
+
 $nodedata = $LMS->ExecHook('node_add_init', $nodedata);
 
 $SMARTY->assign('networks', $LMS->GetNetworks(true));
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
 $SMARTY->assign('error', $error);
 $SMARTY->assign('nodedata', $nodedata);
-$SMARTY->display('nodeadd.html');
+$SMARTY->display('node/nodeadd.html');
 
 ?>

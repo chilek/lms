@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
-$DB->Execute("
+$this->BeginTrans();
+$this->Execute("
     CREATE SEQUENCE uiconfig_id_seq;
     CREATE TABLE uiconfig (
 	id integer DEFAULT nextval('uiconfig_id_seq'::text) NOT NULL,
@@ -38,6 +38,6 @@ $DB->Execute("
     );
     UPDATE dbinfo SET keyvalue = '2004112600' WHERE keytype = 'dbversion';
 ");
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

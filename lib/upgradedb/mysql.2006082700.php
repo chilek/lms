@@ -24,11 +24,11 @@
  *  $Id$
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
 /* tariffs with nodes many-to-many assignments */
 
-$DB->Execute("CREATE TABLE nodeassignments (
+$this->Execute("CREATE TABLE nodeassignments (
 	id int(11) NOT NULL auto_increment,
 	nodeid int(11) NOT NULL DEFAULT '0',
 	assignmentid int(11) NOT NULL DEFAULT '0',
@@ -37,17 +37,17 @@ $DB->Execute("CREATE TABLE nodeassignments (
 ) ENGINE=MyISAM;
 ");
 
-if($assign = $DB->GetAll('SELECT id, nodeid FROM assignments WHERE nodeid!=0'))
+if($assign = $this->GetAll('SELECT id, nodeid FROM assignments WHERE nodeid!=0'))
 {
 	foreach($assign as $item)
-		$DB->Execute('INSERT INTO nodeassignments (nodeid, assignmentid) VALUES (?,?)',
+		$this->Execute('INSERT INTO nodeassignments (nodeid, assignmentid) VALUES (?,?)',
 			array($item['nodeid,'], $item['id']));
 }
 
-$DB->Execute("ALTER TABLE assignments DROP COLUMN nodeid");
+$this->Execute("ALTER TABLE assignments DROP COLUMN nodeid");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006082700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2006082700', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

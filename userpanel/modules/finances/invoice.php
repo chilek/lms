@@ -58,7 +58,7 @@ $SMARTY->AddTemplateDir(
 if(!empty($_POST['inv']))
 {
 	$layout['pagetitle'] = trans('Invoices');
-        $SMARTY->display('invoiceheader.html');
+        $SMARTY->display('invoice/invoiceheader.html');
 
 	$count = count($_POST['inv']);
 	$i = 0;
@@ -79,9 +79,9 @@ if(!empty($_POST['inv']))
 		$SMARTY->assign('type', $type);
 
 		if(isset($invoice['invoice']))
-			$SMARTY->display(ConfigHelper::getConfig('invoices.cnote_template_file'));
+			$SMARTY->display('invoice/'.ConfigHelper::getConfig('invoices.cnote_template_file'));
 		else
-			$SMARTY->display(ConfigHelper::getConfig('invoices.template_file'));
+			$SMARTY->display('invoice/'.ConfigHelper::getConfig('invoices.template_file'));
 	}
 
 	$SMARTY->display('clearfooter.html');
@@ -105,15 +105,15 @@ if(!isset($invoice['invoice']))
 else
 	$layout['pagetitle'] = trans('Credit Note No. $a', $number);
 
-$SMARTY->display('invoiceheader.html');
+$SMARTY->display('invoice/invoiceheader.html');
 
 $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('type', $type);
 
 if(isset($invoice['invoice']))
-	$SMARTY->display(ConfigHelper::getConfig('invoices.cnote_template_file'));
+	$SMARTY->display('invoice/'.ConfigHelper::getConfig('invoices.cnote_template_file'));
 else
-	$SMARTY->display(ConfigHelper::getConfig('invoices.template_file'));
+	$SMARTY->display('invoice/'.ConfigHelper::getConfig('invoices.template_file'));
 
 $SMARTY->display('clearfooter.html');
 

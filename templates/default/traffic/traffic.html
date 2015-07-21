@@ -1,0 +1,204 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+{if $bars}
+{if ($download || $upload) && function_exists('imagecreate')}
+<P align="center">
+	<IMG src="?m=trafficgraph&bar={$bar}{if $customer}&customer={$customer}{/if}{if $net}&net={$net}{/if}{if $datefrom}&from={$datefrom}{/if}{if $dateto}&to={$dateto}{/if}" alt="{trans("Network Statistics")}">
+</P>
+{/if}
+<TABLE WIDTH="100%" ALIGN="center" CELLPADDING="3">
+	<TR>
+		<TD style="vertical-align:top" WIDTH="50%">
+			<TABLE class="lmsbox">
+                            <THEAD>
+				<TR>
+					<TD align="center" COLSPAN="2">
+						<P><B>{trans("Download")}</B></P>
+					</TD>
+				</TR>
+                            </THEAD>
+                            <TBODY>
+				{section name=download loop=$download.name}
+				<TR>
+					<TD WIDTH="1%" NOWRAP>
+						<B><A HREF="?m=nodeinfo&id={$download.nodeid[download]}">{if $showips}{$download.ipaddr[download]}{else}{$download.name[download]|truncate:25:"...":true}{/if}</A></B>
+					</TD>
+					<TD CLASS="fright hand" WIDTH="99%" NOWRAP>
+						<IMG SRC="img/redpx.gif" HEIGHT="12" WIDTH="{$download.bar[download]}" BORDER="1" ALT="" {tip a=$download.nodeid[download] b=$bar c=$datefrom d=$dateto sticky=1 popup='?m=trafficgraph&nodeid=$a&bar=$b&from=$c&to=$d'}>
+						{$download.data[download]|string_format:"%.2f"}&nbsp;{$download.unit[download]} ({$download.avg[download]|string_format:"%d"}&nbsp;kbit/s) 
+					</TD>
+				</TR>
+				{/section}
+                            </TBODY>
+                            <TFOOT>
+				<TR>
+					<TD ALIGN="center" COLSPAN="2">
+						<P><B>{trans("Total:")} {$download.sum.data|string_format:"%.2f "}{$download.sum.unit} ({$download.avgsum|string_format:"%d"}&nbsp;kbit/s)</B></P>
+					</TD>
+				</TR>
+                            </TFOOT>
+			</TABLE>
+		</TD>
+		<TD style="vertical-align:top" WIDTH="50%">
+			<TABLE class="lmsbox">
+                            <THEAD>
+				<TR>
+					<TD align="center" COLSPAN="2">
+						<P><B>{trans("Upload")}</B></P>
+					</TD>
+				</TR>
+                            </THEAD>
+                            <TBODY>
+				{section name=upload loop=$upload.name}
+				<TR>
+					<TD WIDTH="1%" NOWRAP>
+						<B><A HREF="?m=nodeinfo&id={$upload.nodeid[upload]}">{if $showips}{$upload.ipaddr[upload]}{else}{$upload.name[upload]|truncate:25:"...":true}{/if}</A></B>
+					</TD>
+					<TD CLASS="fright hand" WIDTH="99%" NOWRAP>
+						<IMG SRC="img/bluepx.gif" HEIGHT="12" WIDTH="{$upload.bar[upload]}" BORDER="1" ALT="" {tip a=$upload.nodeid[upload] b=$bar c=$datefrom d=$dateto sticky=1 popup='?m=trafficgraph&nodeid=$a&bar=$b&from=$c&to=$d'}>
+						{$upload.data[upload]|string_format:"%.2f"}&nbsp;{$upload.unit[upload]} ({$upload.avg[upload]|string_format:"%d"}&nbsp;kbit/s) 
+					</TD>
+				</TR>
+				{/section}
+                            </TBODY>
+                            <TFOOT>
+				<TR>
+					<TD ALIGN="center" COLSPAN="2">
+						<P><B>{trans("Total:")} {$upload.sum.data|string_format:"%.2f "}{$upload.sum.unit} ({$upload.avgsum|string_format:"%d"}&nbsp;kbit/s)</B></P>
+					</TD>
+				</TR>
+                            </TFOOT>
+			</TABLE>
+		</TD>
+	</TR>
+	{if $smarty.section.download.index_next}
+	<TR><TD WIDTH="100%" COLSPAN="2" ALIGN="center">{t a=$smarty.section.download.index_next}Rows: $a{/t}</TD></TR>
+	{/if}
+</TABLE>
+{else}
+<FORM NAME="traffic" METHOD="POST" ACTION="?m=traffic&bar=user">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD COLSPAN="3">
+			<B>{trans("Enter search criteria:")}</B>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR {tip text="Limit results to selected period"}>
+		<TD WIDTH="1%">
+			<IMG src="img/calendar.gif">
+		</TD>
+		<TD WIDTH="1%" nowrap>
+			<B>{trans("From (day/month/year hh:mm):")}</B>
+		</TD>
+		<TD WIDTH="98%" nowrap>
+			{html_select_date field_array="from" prefix="" time=$starttime field_order="DMY" field_separator=" / " start_year=$startyear end_year=$endyear}
+			&nbsp;
+			{html_select_time field_array="from" prefix="" time=$starttime display_seconds=0}
+		</TD>
+	</TR>
+	<TR {tip text="Limit results to selected period"}>
+		<TD WIDTH="1%">
+			<IMG src="img/calendar.gif">
+		</TD>
+		<TD nowrap>
+			<B>{trans("To (day/month/year hh:mm):")}</B>
+		</TD>
+		<TD nowrap>
+			{html_select_date field_array="to" prefix="" time=$endtime field_order="DMY" field_separator=" / " start_year=$startyear end_year=$endyear}
+			&nbsp;
+			{html_select_time field_array="to" prefix="" time=$endtime display_seconds=0}
+		</TD>
+	</TR>
+	<TR {tip text="Limit results to selected network"}>
+		<TD WIDTH="1%">
+			<IMG src="img/network.gif">
+		</TD>
+		<TD nowrap>
+			<B>{trans("Network:")}</B>
+		</TD>
+		<TD>
+			<SELECT SIZE="1" NAME="net">
+				<OPTION VALUE="0">{trans("- all -")}</OPTION>
+				{section name="netlist" loop=$netlist}
+				<OPTION VALUE="{$netlist[netlist].id}" {if $netlist[netlist].id == $trafficnet}SELECTED{/if}>{$netlist[netlist].name|truncate:30:"...":true}</OPTION>
+				{/section}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG src="img/customer.gif" alt="">
+		</TD>
+		<TD nowrap>
+			<B>{trans("Customer:")}</B>
+		</TD>
+		<TD>
+			{if $customers}
+			<SELECT size="1" name="customerid" {tip text="Select customer"}>
+				<OPTION VALUE="0">{trans("- all customers -")}</OPTION>
+				{foreach from=$customers item=customer}
+				<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+				{/foreach}
+			</SELECT>
+			{else}
+			<INPUT type="text" name="customerid" value="" size="5" {tip text="Enter customer ID"}>
+			<a href="javascript: void(0);" onClick="return customerchoosewin(document.traffic.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+			{/if}
+		</TD>
+	</TR>
+	<TR {tip text="Select results sorting order"}>
+		<TD WIDTH="1%">
+			<IMG src="img/view.gif">
+		</TD>
+		<TD nowrap>
+			<B>{trans("Sorting:")}</B>
+		</TD>
+		<TD>
+			<SELECT SIZE="1" NAME="order">
+				<OPTION VALUE="name"{if $trafficorder == "name"} SELECTED{/if}>{trans("Node name")}</OPTION>
+				<OPTION VALUE="ip"{if $trafficorder == "ip"} SELECTED{/if}>{trans("Node IP address")}</OPTION>
+				<OPTION VALUE="nodeid"{if $trafficorder == "nodeid"} SELECTED{/if}>{trans("Node number")}</OPTION>
+				<OPTION VALUE="download"{if $trafficorder == "download"} SELECTED{/if}>{trans("Download")}</OPTION>
+				<OPTION VALUE="upload"{if $trafficorder == "upload"} SELECTED{/if}>{trans("Upload")}</OPTION>
+			</SELECT>
+		</TD>
+	</TR>
+	<TR {tip text="Limit results to n computers"}>
+		<TD WIDTH="1%">
+			<IMG src="img/node.gif">
+		</TD>
+		<TD nowrap>
+			<B>{trans("Nodes limit:")}</B>
+		</TD>
+		<TD>
+			<INPUT TYPE="text" NAME="limit" SIZE="3"></INPUT>
+		</TD>
+	</TR>
+	<TR {tip text="Nodes depiction way on charts"}>
+		<TD WIDTH="1%">
+			<IMG src="img/ip.gif">
+		</TD>
+		<TD nowrap>
+			<B>{trans("IP addresses instead of nodes names")}</B>
+		</TD>
+		<TD>
+			<INPUT TYPE="checkbox" NAME="showips" VALUE="1"></INPUT>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN="3" ALIGN="right">
+			<A HREF="javascript:document.traffic.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+</FORM>
+{/if}
+{/block}

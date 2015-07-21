@@ -1,0 +1,69 @@
+{extends file="layout.html"}
+{block name="module_content"}
+<!--// $Id$ //-->
+<script type="text/javascript">
+<!--
+	function togglePlugin(name, enable) {
+		document.forms['plugins'].elements['plugins[name]'].value = name;
+		document.forms['plugins'].elements['plugins[toggle]'].value = (enable ? 1 : 0);
+		document.plugins.submit();
+	}
+//-->
+</script>
+<H1><span class="bold">{$layout.pagetitle}</span></H1>
+<P><FORM name="plugins" method="post" action="?m=pluginlist">
+<INPUT type="submit" class="hiddenbtn">
+<INPUT type="hidden" name="plugins[name]" value="">
+<INPUT type="hidden" name="plugins[toggle]" value="">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD style="width: 30%;" class="bold nobr">
+			{trans("Plugin Name:")}<br>
+			{trans("Description:")}
+		</TD>
+		<TD style="width: 20%;" class="bold nobr">{trans("Author:")}</TD>
+		<TD style="width: 7%;" class="bold text-center nobr">{trans("Modern:")}</TD>
+		<TD style="width: 12%;" class="bold text-center nobr">
+			{trans("Current DB Schema Version:")}<br>
+			{trans("DB Schema Version:")}
+		</TD>
+		<TD style="width: 30%;" class="bold text-center nobr">{trans("Priority:")}</TD>
+		<TD style="width: 1%;" class="bold text-right nobr">{trans("Enabled:")}</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	{cycle values="light,lucid" print=false}
+	{foreach $plugins as $name => $plugin}
+	<TR class="highlight {cycle}{if !$plugin.enabled} blend{/if}">
+		<TD onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
+			<span class="bold nobr">{if $plugin.fullname}{$plugin.fullname}{else}{$name}{/if}</span><br>
+			{$plugin.description}
+		</TD>
+		<TD onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
+			{$plugin.author}
+		</TD>
+		<TD class="text-center" onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
+			{if $plugin.new_style}{trans("yes")}{else}{trans("no")}{/if}
+		</TD>
+		<TD class="text-center" onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
+			{if $plugin.dbcurrschversion}{$plugin.dbcurrschversion}{else}{if $plugin.new_style}-{/if}{/if}<br>
+			{if $plugin.dbschversion}{$plugin.dbschversion}{else}{if $plugin.new_style}-{/if}{/if}
+		</TD>
+		<TD class="text-center" onClick="javascript:togglePlugin('{$name}', {if $plugin.enabled}false{else}true{/if});">
+			{if $plugin.priority == LMSPluginManager::LAST_PRIORITY}{trans("minimal")}{else}{$plugin.priority}{/if}
+		</TD>
+		<TD class="text-right">
+			{if $plugin.enabled}
+			<a onclick="javascript:togglePlugin('{$name}', false);"><img src="img/access.gif" alt="[ {trans("Disable")} ]" title="[ {trans("Disable")} ]"></a>
+			{else}
+			<a onclick="javascript:togglePlugin('{$name}', true);"><img src="img/noaccess.gif" alt="[ {trans("Enable")} ]" title="[ {trans("Enable")} ]"></a>
+			{/if}
+		</TD>
+	</TR>
+	{/foreach}
+    </TBODY>
+</TABLE>
+</FORM>
+</P>
+{/block}

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
 CREATE TABLE countries (
     	id int(11) NOT NULL auto_increment,
 	name varchar(255) NOT NULL DEFAULT '',
@@ -32,9 +32,9 @@ CREATE TABLE countries (
 	UNIQUE KEY name (name)
 ) ENGINE=MyISAM");
 
-$DB->Execute("ALTER TABLE customers ADD countryid int(11) NOT NULL DEFAULT '0'");
-$DB->Execute("DROP VIEW customersview");
-$DB->Execute("CREATE VIEW customersview AS
+$this->Execute("ALTER TABLE customers ADD countryid int(11) NOT NULL DEFAULT '0'");
+$this->Execute("DROP VIEW customersview");
+$this->Execute("CREATE VIEW customersview AS
         SELECT c.* FROM customers c
 	        WHERE NOT EXISTS (
 	        SELECT 1 FROM customerassignments a
@@ -42,15 +42,15 @@ $DB->Execute("CREATE VIEW customersview AS
 	                WHERE e.userid = lms_current_user() AND a.customerid = c.id);
 ");
 
-$DB->Execute("ALTER TABLE documents ADD countryid int(11) NOT NULL DEFAULT '0'");
-$DB->Execute("ALTER TABLE divisions ADD countryid int(11) NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE documents ADD countryid int(11) NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE divisions ADD countryid int(11) NOT NULL DEFAULT '0'");
 
-$DB->Execute("INSERT INTO countries (name) VALUES ('Lithuania')");
-$DB->Execute("INSERT INTO countries (name) VALUES ('Poland')");
-$DB->Execute("INSERT INTO countries (name) VALUES ('Romania')");
-$DB->Execute("INSERT INTO countries (name) VALUES ('Slovakia')");
-$DB->Execute("INSERT INTO countries (name) VALUES ('USA')");
+$this->Execute("INSERT INTO countries (name) VALUES ('Lithuania')");
+$this->Execute("INSERT INTO countries (name) VALUES ('Poland')");
+$this->Execute("INSERT INTO countries (name) VALUES ('Romania')");
+$this->Execute("INSERT INTO countries (name) VALUES ('Slovakia')");
+$this->Execute("INSERT INTO countries (name) VALUES ('USA')");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008112400', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2008112400', 'dbversion'));
 
 ?>

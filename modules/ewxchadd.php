@@ -96,6 +96,6 @@ if(isset($_POST['channel']))
 
 $layout['pagetitle'] = trans('New Channel');
 
-$SMARTY->display('ewxchadd.html');
+$SMARTY->display('ewxch/ewxchadd.html');
 
 ?>

@@ -21,9 +21,9 @@
  *
  */
 
-$DB->BeginTrans();
+$this->BeginTrans();
 
-$DB->Execute("
+$this->Execute("
 	CREATE TABLE nodelocks (
 		id int(11)		NOT NULL auto_increment,
 		nodeid int(11)		NOT NULL
@@ -33,15 +33,15 @@ $DB->Execute("
 		tosec int(11)		DEFAULT 0 NOT NULL,
 		PRIMARY KEY (id)
 	) ENGINE=INNODB");
-$DB->Execute("
+$this->Execute("
 	INSERT INTO nodelocks (nodeid, days, fromsec, tosec) 
 		(SELECT na.nodeid, days, fromsec, tosec FROM assignmentlocks al 
 			LEFT JOIN assignments a ON a.id = al.assignmentid 
 			LEFT JOIN nodeassignments na ON na.assignmentid = a.id)");
-$DB->Execute("DROP TABLE assignmentlocks");
+$this->Execute("DROP TABLE assignmentlocks");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012040700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2012040700', 'dbversion'));
 
-$DB->CommitTrans();
+$this->CommitTrans();
 
 ?>

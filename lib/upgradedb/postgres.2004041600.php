@@ -23,7 +23,7 @@
  *
  *  $Id$
  */
-$DB->Execute("
+$this->Execute("
     BEGIN;
     CREATE SEQUENCE usergroups_id_seq;
     CREATE TABLE usergroups (

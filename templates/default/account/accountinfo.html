@@ -1,0 +1,246 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
+			<img src="img/account.gif" alt="">		
+		</TD>
+		<TD width="1%">
+			<B>{trans("Login:")}</B>
+		</TD>
+		<TD width="98%">
+			<B>{$account.login}</B>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR>
+	    <TD width="100%" colspan="3" class="container">
+		<TABLE width="100%" cellpadding="0">
+		    <TR>
+			<TD width="50%" style="vertical-align: top">
+			    <TABLE width="100%" cellpadding="3">
+				<TR>
+				    <TD width="1%">
+					<img src="img/domain.gif" alt="">
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>{trans("Domain:")}</B>
+				    </TD>
+				    <TD width="98%">
+					<a href="?m=domaininfo&id={$account.domainid}">{$account.domain}</a>
+				    </TD>
+				</TR>
+			    	<TR>
+				    <TD width="1%">
+					<img src="img/customer.gif" alt="">
+				    </TD>
+				    <TD width="1%">
+					<B>{trans("Owner:")}</B>
+		    		    </TD>
+				    <TD width="98%">
+    					    {if !$account.ownerid}{trans("SYSTEM ACCOUNT")}
+					    {else}<A href="?m=customerinfo&id={$account.ownerid}">{$account.customername}</A>{/if}
+				    </TD>
+				</TR>
+				{if $account.realname}
+				<TR>
+				    <TD width="1%">
+					<img src="img/name.gif" alt="">
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>{trans("First/last or Company name:")}</B>
+				    </TD>
+				    <TD width="98%">
+					{$account.realname}
+				    </TD>
+				</TR>
+				{/if}
+				<TR>
+				    <TD width="1%">
+					<img src="img/home.gif" alt="">
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>{trans("Homedir:")}</B>
+				    </TD>
+				    <TD width="98%">
+					{$account.home}
+				    </TD>
+				</TR>
+				<TR>
+				    <TD width="1%">
+					<img src="img/calendar.gif" alt="">
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>{trans("Expiration date:")}</B>
+				    </TD>
+				    <TD width="98%">
+					{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{else}{trans("not expire")}{/if}
+				    </TD>
+			    	</TR>
+				{if $account.mail_forward}
+				<TR>
+				    <TD width="1%">
+					<img src="img/forward.gif" alt="">
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>{trans("Forward e-mail:")}</B>
+				    </TD>
+				    <TD width="98%">
+					<a href="mailto:{$account.mail_forward}">{$account.mail_forward}</a>
+				    </TD>
+			    	</TR>
+				{/if}
+				{if $account.mail_bcc}
+				<TR>
+				    <TD width="1%">
+					<img src="img/forward.gif" alt="">
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>{trans("BCC e-mail:")}</B>
+				    </TD>
+				    <TD width="98%">
+					<a href="mailto:{$account.mail_bcc}">{$account.mail_bcc}</a>
+				    </TD>
+			    	</TR>
+				{/if}
+			    </TABLE>
+			</TD>
+			<TD width="50%" style="vertical-align: top">
+			    <TABLE width="100%" cellpadding="3">
+				<TR>
+				    <TD width="1%">
+					<img src="img/account.gif" alt="">
+				    </TD>
+				    <TD width="1%">
+					<B>{trans("Type/Quota:")}</B>
+				    </TD>
+				    <TD width="98%">
+					    <table width="100%">
+						    {if ($account.type & 1) == 1}	    
+						    <tr>
+							    <td width="1%" nowrap>{trans("shell")}</td>
+							    <td width="1%">[</td><td size="1%" align="right" nowrap>{$account.quota_sh} MB</td><td width="97%">]</td>
+						    </tr>
+						    {/if}
+						    {if ($account.type & 2) == 2}
+						    <tr>
+							    <td width="1%" nowrap>{trans("mail")}</td>
+							    <td width="1%">[</td><td size="1%" align="right" nowrap>{$account.quota_mail} MB</td><td width="97%">]</td>
+						    </tr>
+						    {/if}
+						    {if ($account.type & 4) == 4}
+						    <tr>
+							    <td width="1%" nowrap>{trans("www")}</td>
+							    <td width="1%">[</td><td size="1%" align="right" nowrap>{$account.quota_www} MB</td><td width="97%">]</td>
+						    </tr>
+						    {/if}
+						    {if ($account.type & 8) == 8}
+						    <tr>
+							    <td width="1%" nowrap>{trans("ftp")}</td>
+							    <td width="1%">[</td><td size="1%" align="right" nowrap>{$account.quota_ftp} MB</td><td width="97%">]</td>
+						    </tr>
+						    {/if}
+						    {if ($account.type & 16) == 16}
+						    <tr>
+							    <td width="1%" nowrap>{trans("sql")}</td>
+							    <td width="1%">[</td><td size="1%" align="right" nowrap>{$account.quota_sql} MB</td><td width="97%">]</td>
+						    </tr>
+						    {/if}
+					    </table>
+				    </TD>
+				</TR>
+				{if $account.description}
+				<TR>
+				    <TD width="1%">
+					<img src="img/info.gif" alt="">
+				    </TD>
+				    <TD width="99%" colspan="2">
+					<TABLE WIDTH="100%" CELLPADDING="5">
+					    <TR>
+					        <TD CLASS="fall superlight">
+					            {$account.description|replace:"\n":"<BR>"}
+					        </TD>
+					    </TR>
+					</TABLE>
+				    </TD>
+			    	</TR>
+				{/if}
+			    </TABLE>
+			</TD>
+		    </TR>
+		</TABLE>
+	    </TD>
+	</TR>
+	<TR>
+		<TD align="right" colspan="3">
+			<A href="?m=accountedit&id={$account.id}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt=""></A>
+			<A href="?m=accountpasswd&id={$account.id}">{trans("Change password")} <img src="img/pass.gif" alt=""></A>
+			<A href="?m=aliasadd&accountid={$account.id}">{trans("Create alias")} <img src="img/alias.gif" alt=""></A>
+			<A href="?m=accountdel&id={$account.id}" onclick="return confirmLink(this,'{trans("Are you sure, you want to delete that account?")}');">{trans("Delete")} <img src="img/delete.gif" alt=""></A>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+<BR>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="99%" align="left" nowrap="nowrap">
+			<IMG src="img/alias.gif" alt="">
+			<B>{t a=$account.aliases|@count}Account aliases ($a):{/t}</B>
+		</TD>
+		<TD width="1%" align="right" nowrap>
+		        <A href="?m=aliasadd&accountid={$account.id}">{trans("New alias")} &raquo;</A>&nbsp;
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="100%" colspan="2">
+			<TABLE class="lmsbox-inner">
+                            <THEAD>
+				<TR>
+					<TD WIDTH="80%" NOWRAP><B>{trans("Login<!account>")}@{trans("Domain:")}</B></TD>
+					<TD WIDTH="19%" NOWRAP>{trans("ID:")}</TD>
+					<TD WIDTH="1%">&nbsp;</TD>
+				</TR>
+                            </THEAD>
+                            <TBODY>
+				{cycle name=assign values="light,lucid" print=false}
+				{foreach from=$account.aliases item=alias}
+				<TR class="highlight {cycle name=assign}"  >
+					<TD WIDTH="80%" NOWRAP OnClick="return self.location.href='?m=aliasinfo&id={$alias.id}'">
+					    <B>{$alias.login}@{$alias.domain}</B>
+					</TD>
+					<TD WIDTH="19%" NOWRAP OnClick="return self.location.href='?m=aliasinfo&id={$alias.id}'">
+					    ({$alias.id|string_format:"%04d"})
+					</TD>
+					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
+					    {assign var=name value="`$alias.login`@`$alias.domain`"}
+					    <A href="?m=aliasedit&id={$alias.id}&delaccount={$account.id}" OnClick="return confirmLink(this, '{t a=$name}Are you sure, you want to delete assignment with alias: \'$a\'?{/t}')"><IMG src="img/eraser.gif" alt="[ {trans("Delete assignment")} ]" title="[ {trans("Delete assignment")} ]"></A>
+					    <A href="?m=aliasdel&id={$alias.id}" OnClick="return confirmLink(this, '{t a=$name}Are you sure, you want to delete alias: \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+					    <A href="?m=aliasedit&id={$alias.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+					    <A href="?m=aliasinfo&id={$alias.id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+					</TD>
+				</TR>
+				{foreachelse}
+				<TR>
+					<TD align="center" WIDTH="100%" colspan="3">
+						<P>&nbsp;</P>
+						<P><B>{trans("There are no aliases for that account.")}</B></P>
+						<P>&nbsp;</P>
+					</TD>
+				</TR>
+				{/foreach}
+                            </TBODY>
+			</TABLE>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+{/block}

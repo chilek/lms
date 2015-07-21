@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
     CREATE TABLE debitnotecontents (
 	id int(11) NOT NULL auto_increment,
 	docid int(11) NOT NULL DEFAULT '0',
@@ -36,6 +36,6 @@ $DB->Execute("
     ) ENGINE=MyISAM;
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009062300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2009062300', 'dbversion'));
 
 ?>

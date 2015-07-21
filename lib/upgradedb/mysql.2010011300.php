@@ -22,19 +22,19 @@
  *
  */
 
-$DB->Execute("DELETE FROM nodeassignments WHERE assignmentid NOT IN (SELECT id FROM assignments)");
-$DB->Execute("DELETE FROM nodeassignments WHERE nodeid NOT IN (SELECT id FROM nodes)");
+$this->Execute("DELETE FROM nodeassignments WHERE assignmentid NOT IN (SELECT id FROM assignments)");
+$this->Execute("DELETE FROM nodeassignments WHERE nodeid NOT IN (SELECT id FROM nodes)");
 
-$DB->Execute("ALTER TABLE nodeassignments ALTER nodeid DROP DEFAULT");
-$DB->Execute("ALTER TABLE nodeassignments ALTER assignmentid DROP DEFAULT");
+$this->Execute("ALTER TABLE nodeassignments ALTER nodeid DROP DEFAULT");
+$this->Execute("ALTER TABLE nodeassignments ALTER assignmentid DROP DEFAULT");
 
-$DB->Execute("ALTER TABLE nodeassignments ADD INDEX assignmentid (assignmentid)");
+$this->Execute("ALTER TABLE nodeassignments ADD INDEX assignmentid (assignmentid)");
 
-$DB->Execute("ALTER TABLE nodeassignments ADD FOREIGN KEY (nodeid)
+$this->Execute("ALTER TABLE nodeassignments ADD FOREIGN KEY (nodeid)
 		REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE");
-$DB->Execute("ALTER TABLE nodeassignments ADD FOREIGN KEY (assignmentid)
+$this->Execute("ALTER TABLE nodeassignments ADD FOREIGN KEY (assignmentid)
 		REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010011300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2010011300', 'dbversion'));
 
 ?>

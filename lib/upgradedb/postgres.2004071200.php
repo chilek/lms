@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
     BEGIN;
     ALTER TABLE rtmessages ADD userid integer;
     ALTER TABLE rtmessages ALTER userid SET DEFAULT 0;

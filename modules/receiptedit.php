@@ -642,6 +642,6 @@ $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('receipt', $receipt);
 $SMARTY->assign('error', $error);
-$SMARTY->display('receiptedit.html');
+$SMARTY->display('receipt/receiptedit.html');
 
 ?>

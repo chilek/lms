@@ -179,11 +179,11 @@ if (isset($_GET['search'])) {
 	$SMARTY->assign('netdevlist', $netdevlist);
 
 	if (isset($_GET['print']))
-		$SMARTY->display('printnodelist.html');
+		$SMARTY->display('print/printnodelist.html');
 	elseif ($listdata['total'] == 1)
 		$SESSION->redirect('?m=nodeinfo&id=' . $nodelist[0]['id']);
 	else
-		$SMARTY->display('nodesearchresults.html');
+		$SMARTY->display('node/nodesearchresults.html');
 }
 else {
 	$LMS->RegisterXajaxFunction('select_location');
@@ -196,6 +196,6 @@ else {
 	$SMARTY->assign('states', $DB->GetAll('SELECT id, name, ident FROM location_states ORDER BY name'));
 	$SMARTY->assign('k', $k);
 
-	$SMARTY->display('nodesearch.html');
+	$SMARTY->display('node/nodesearch.html');
 }
 ?>

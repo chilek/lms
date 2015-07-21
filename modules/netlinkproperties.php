@@ -24,17 +24,39 @@
  *  $Id$
  */
 
-function update_netlink_properties($id, $devid, $linktype, $linktechnology, $linkspeed) {
-	global $LMS, $LINKTYPES, $LINKTECHNOLOGIES, $LINKSPEEDS;
+function GetNetLinkRadioSectors($link) {
+	global $DB;
+
+	$result = $DB->GetRow('SELECT (CASE src WHEN ? THEN dstradiosector ELSE srcradiosector END) AS srcradiosector,
+		(CASE src WHEN ? THEN srcradiosector ELSE dstradiosector END) AS dstradiosector
+		FROM netlinks
+		WHERE (src = ? AND dst = ?) OR (dst = ? AND src = ?)',
+		array($link['id'], $link['id'], $link['id'], $link['devid'], $link['id'], $link['devid']));
+	if (empty($result))
+		$result = array();
+
+	$result['dst'] = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ? '
+		. ($link['type'] == 1 && $link['technology'] ? ' AND (technology = 0 OR technology = ' . intval($link['technology']) . ')' : '')
+		. ' ORDER BY name', array($link['id']));
+	$result['src'] = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ? '
+		. ($link['type'] == 1 && $link['technology'] ? ' AND (technology = 0 OR technology = ' . intval($link['technology']) . ')' : '')
+		. ' ORDER BY name', array($link['devid']));
+
+	return $result;
+}
+
+function update_netlink_properties($id, $devid, $link) {
+	global $LMS, $DB, $LINKTYPES, $LINKTECHNOLOGIES, $LINKSPEEDS;
 
 	$result = new xajaxResponse();
 
-	if ($_GET['isnetlink'])
-		$LMS->SetNetDevLinkType($id, $devid, $linktype, $linktechnology, $linkspeed);
+	$isnetlink = intval($_GET['isnetlink']);
+	if ($isnetlink)
+		$LMS->SetNetDevLinkType($id, $devid, $link);
 	else
-		$LMS->SetNodeLinkType($devid, $linktype, $linktechnology, $linkspeed);
+		$LMS->SetNodeLinkType($devid, $link);
 
-	switch ($linktype) {
+	switch ($link['type']) {
 		case 0: case 2:
 			$bitmap = 'netdev_takenports.gif';
 			break;
@@ -42,19 +64,62 @@ function update_netlink_properties($id, $devid, $linktype, $linktechnology, $lin
 			$bitmap = 'wireless.gif';
 	}
 
-	$contents = "<IMG src=\"img/" . $bitmap
+	if ($isnetlink) {
+		$srcradiosectorname = $DB->GetOne('SELECT name FROM netradiosectors WHERE id = ?', array($link['srcradiosector']));
+		$dstradiosectorname = $DB->GetOne('SELECT name FROM netradiosectors WHERE id = ?', array($link['dstradiosector']));
+	} else
+		$radiosectorname = $DB->GetOne('SELECT name FROM netradiosectors WHERE id = ?', array($link['radiosector']));
+
+	$content1 = ($link['technology'] ? $LINKTECHNOLOGIES[$link['type']][$link['technology']]
+			. (!$isnetlink ? ($radiosectorname ? " ($radiosectorname)" : '')
+				: ($srcradiosectorname || $dstradiosectorname ? ' ('
+					. ($srcradiosectorname ? $srcradiosectorname : '-')
+					. '/' . ($dstradiosectorname ? $dstradiosectorname : '-') . ')' : ''))
+			: '')
+		. '<br>' . $LINKSPEEDS[$link['speed']];
+
+	$content2 = "<IMG src=\"img/" . $bitmap
 			. "\" alt=\"[ " . trans("Change connection properties") . " ]\" title=\"[ " . trans("Change connection properties") . " ]\""
-			. " onmouseover=\"popup('<span style=&quot;white-space: nowrap;&quot;>" . trans("Link type:") . " " . $LINKTYPES[$linktype] . "<br>"
-			. ($linktechnology ? trans("Link technology:") . " " . $LINKTECHNOLOGIES[$linktype][$linktechnology] . "<br>" : '')
-			. trans("Link speed:") . " " . $LINKSPEEDS[$linkspeed]
+			. " onmouseover=\"popup('<span class=&quot;nobr;&quot;>" . trans("Link type:") . " " . $LINKTYPES[$link['type']] . "<br>"
+			. (!$isnetlink ? ($radiosectorname ? trans("Radio sector:") . " " . $radiosectorname . "<br>" : '')
+				: ($srcradiosectorname ? trans("Radio sector:") . " " . $srcradiosectorname . "<br>" : '')
+					. ($dstradiosectorname ? trans("Destination radio sector:") . " " . $dstradiosectorname . "<br>" : ''))
+			. ($link['technology'] ? trans("Link technology:") . " " . $LINKTECHNOLOGIES[$link['type']][$link['technology']] . "<br>" : '')
+			. trans("Link speed:") . " " . $LINKSPEEDS[$link['speed']]
 			. "</span>');\" onmouseout=\"pophide();\">";
-	$result->call('update_netlink_info', $contents);
+
+	$result->call('update_netlink_info', $content1, $content2);
+
+	return $result;
+}
+
+function get_radio_sectors_for_technology($technology) {
+	global $DB;
+
+	$result = new xajaxResponse();
+
+	$isnetlink = intval($_GET['isnetlink']);
+	$technology = intval($technology);
+	$id = intval($_GET['id']);
+	$devid = intval($_GET['devid']);
+
+	$radiosectors = array();
+	if ($isnetlink)
+		$radiosectors['srcradiosector'] = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ?'
+			. ($technology ? ' AND (technology = 0 OR technology = ' . $technology . ')' : '')
+			. ' ORDER BY name',
+			array($devid));
+	$radiosectors[$isnetlink ? 'dstradiosector' : 'radiosector'] = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ?'
+		. ($technology ? ' AND (technology = 0 OR technology = ' . $technology . ')' : '')
+		. ' ORDER BY name',
+		array($id));
+	$result->call('update_radio_sector_list', $radiosectors);
 
 	return $result;
 }
 
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction('update_netlink_properties');
+$LMS->RegisterXajaxFunction(array('update_netlink_properties', 'get_radio_sectors_for_technology'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 $layout['pagetitle'] = trans('Select link properties');
@@ -67,12 +132,21 @@ if ($isnetlink)
 	$link = $LMS->GetNetDevLinkType($id, $devid);
 else
 	$link = $DB->GetRow("SELECT linktype AS type, linktechnology AS technology,
-		linkspeed AS speed FROM nodes WHERE netdev = ? AND id = ?", array($id, $devid));
+		linkspeed AS speed, linkradiosector AS radiosector FROM nodes
+		WHERE netdev = ? AND id = ?", array($id, $devid));
 
 $link['id'] = $id;
 $link['devid'] = $devid;
 $link['isnetlink'] = $isnetlink;
 
 $SMARTY->assign('link', $link);
-$SMARTY->display('netlinkproperties.html');
+if ($isnetlink)
+	$radiosectors = GetNetLinkRadioSectors($link);
+else
+	$radiosectors = $DB->GetAll('SELECT id, name FROM netradiosectors WHERE netdev = ?'
+		. ($link['technology'] ? ' AND (technology = ' . $link['technology'] . ' OR technology = 0)' : '')
+		. ' ORDER BY name', array($id));
+$SMARTY->assign('radiosectors', $radiosectors);
+$SMARTY->display('netdev/netlinkproperties.html');
+
 ?>

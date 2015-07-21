@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("
+$this->Execute("
     BEGIN;
     ALTER TABLE cash ADD taxvalue decimal(9,2);
     ALTER TABLE cash ALTER taxvalue SET DEFAULT 0;
