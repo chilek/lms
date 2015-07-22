@@ -1716,11 +1716,8 @@ CREATE TABLE voipaccounts (
 	moddate		integer		NOT NULL DEFAULT 0,
 	creatorid	integer		NOT NULL DEFAULT 0,
 	modid		integer		NOT NULL DEFAULT 0,
-	nodeid		integer		DEFAULT NULL
-		REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
-CREATE INDEX voipaccounts_nodeid_idx ON voipaccounts (nodeid);
 
 /* ---------------------------------------------------
  Structure of table "messages"
@@ -2505,4 +2502,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015072200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015042700');

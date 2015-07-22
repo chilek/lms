@@ -38,19 +38,6 @@
                 {$voipaccountinfo.phone}
             </td>
         </tr>
-	{if $voipaccountinfo.node}
-	<tr>
-		<td>
-			<img src="img/node.gif" alt="{trans("Node:")}">
-		</td>
-		<td class="bold nobr">
-			{trans("Node:")}
-		</td>
-		<td class="nobr">
-			<a href="?m=nodeinfo&id={$voipaccountinfo.nodeid}">{$voipaccountinfo.node.name}{if $voipaccountinfo.node.location} ({$voipaccountinfo.node.location}){/if}</a>
-		</td>
-	</tr>
-	{/if}
         <tr>
             <td>
                 <a href="?m=voipaccountset&id={$voipaccountinfo.id}"><img src="img/{if ! $voipaccountinfo.access}no{/if}access.gif" alt=""></a>
