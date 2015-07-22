@@ -109,6 +109,13 @@ if(isset($_POST['voipaccountdata']))
         
 	if(!$error)
 	{
+		if (empty($voipaccountdata['teryt'])) {
+			$voipaccountdata['location_city'] = null;
+			$voipaccountdata['location_street'] = null;
+			$voipaccountdata['location_house'] = null;
+			$voipaccountdata['location_flat'] = null;
+		}
+
 		$voipaccountid = $LMS->VoipAccountAdd($voipaccountdata);
 
 		if(!isset($voipaccountdata['reuse']))

@@ -38,6 +38,30 @@
                 {$voipaccountinfo.phone}
             </td>
         </tr>
+	<tr>
+		<td>
+			<img src="img/customer.gif" alt="{trans("Customer:")}">
+		</td>
+		<td class="bold nobr">
+			{trans("Customer:")}
+		</td>
+		<td class="nobr">
+			<a href="?m=customerinfo&id={$voipaccountinfo.ownerid}">{$voipaccountinfo.owner}</a>
+		</td>
+	</tr>
+	{if $voipaccountinfo.location}
+	<TR>
+		<TD>
+			<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
+		</TD>
+		 <td class="bold nobr">
+			{trans("Location:")}
+		</td>
+		<TD class="nobr">
+			{$voipaccountinfo.location}{if $voipaccountinfo.borough_name} ({$voipaccountinfo.state_name} / {$voipaccountinfo.district_name} / {$_BOROUGHTYPES[$voipaccountinfo.borough_type]} {$voipaccountinfo.borough_name}){/if}
+		</TD>
+	</TR>
+	{/if}
         <tr>
             <td>
                 <a href="?m=voipaccountset&id={$voipaccountinfo.id}"><img src="img/{if ! $voipaccountinfo.access}no{/if}access.gif" alt=""></a>

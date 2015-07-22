@@ -113,6 +113,11 @@ if(isset($_POST['voipaccountedit']))
 	$voipaccountinfo['passwd'] = $voipaccountedit['passwd'];
 	$voipaccountinfo['phone'] = $voipaccountedit['phone'];
 	$voipaccountinfo['ownerid'] = $voipaccountedit['ownerid'];
+	$voipaccountinfo['location'] = $voipaccountedit['location'];
+	$voipaccountinfo['location_city'] = $voipaccountedit['location_city'];
+	$voipaccountinfo['location_street'] = $voipaccountedit['location_street'];
+	$voipaccountinfo['location_house'] = $voipaccountedit['location_house'];
+	$voipaccountinfo['location_flat'] = $voipaccountedit['location_flat'];
 
         $hook_data = $plugin_manager->executeHook(
             'voipaccountedit_before_submit',
@@ -126,11 +131,20 @@ if(isset($_POST['voipaccountedit']))
         
 	if(!$error)
 	{
+		if (empty($voipaccountedit['teryt'])) {
+			$voipaccountedit['location_city'] = null;
+			$voipaccountedit['location_street'] = null;
+			$voipaccountedit['location_house'] = null;
+			$voipaccountedit['location_flat'] = null;
+		}
+
 		$LMS->VoipAccountUpdate($voipaccountedit);
 		$SESSION->redirect('?m=voipaccountinfo&id='.$voipaccountedit['id']);
 		die;
 	}
-}
+} else
+	if ($voipaccountinfo['location_city'] && $voipaccountinfo['location_street'])
+		$voipaccountinfo['teryt'] = 1;
 
 $customers = $LMS->GetCustomerNames();
 

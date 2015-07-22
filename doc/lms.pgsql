@@ -1716,8 +1716,17 @@ CREATE TABLE voipaccounts (
 	moddate		integer		NOT NULL DEFAULT 0,
 	creatorid	integer		NOT NULL DEFAULT 0,
 	modid		integer		NOT NULL DEFAULT 0,
+	location varchar(255) DEFAULT NULL,
+	location_city integer
+		REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	location_street integer
+		REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	location_house varchar(32) DEFAULT NULL,
+	location_flat varchar(32) DEFAULT NULL,
 	PRIMARY KEY (id)
 );
+CREATE INDEX voipaccounts_location_street_idx ON voipaccounts (location_street);
+CREATE INDEX voipaccounts_location_city_idx ON voipaccounts (location_city, location_street, location_house, location_flat);
 
 /* ---------------------------------------------------
  Structure of table "messages"
@@ -2502,4 +2511,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015042700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015072300');

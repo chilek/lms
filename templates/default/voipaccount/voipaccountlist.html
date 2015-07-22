@@ -5,11 +5,11 @@
 <h1>{$layout.pagetitle}</h1>
 <table class="lmsbox">
     <colgroup>
-        <col style="width: 96%;"/>
-        <col style="width: 1%;"/>
-        <col style="width: 1%;"/>
-        <col style="width: 1%;"/>
-        <col style="width: 1%;"/>
+        <col style="width: 96%;">
+        <col style="width: 1%;">
+        <col style="width: 1%;">
+        <col style="width: 1%;">
+        <col style="width: 1%;">
     </colgroup>
     <thead>
         <tr {tip text="Click on column name to change sorting order"}>
@@ -19,6 +19,7 @@
                 {if $listdata.order == "login"}
                 <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
                 {/if}
+		/ {trans("Location:")}
                 <br>
                 <img src="img/customer.gif" alt=""> 
                 <a href="?m=voipaccountlist&o=owner{if $listdata.direction == "asc" && $listdata.order == "owner"},desc{/if}">{trans("Customer:")}</a> 
@@ -84,7 +85,9 @@
         <tr class="highlight {cycle}">
             <td onClick="return self.location.href = '?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}';" nowrap>
                 <img src="img/voip.gif" alt="">
-                <strong>{$voipaccountlist[voipaccountlist].login}</strong><br>
+                <strong>{$voipaccountlist[voipaccountlist].login}</strong>
+		{if $voipaccountlist[voipaccountlist].location} / {$voipaccountlist[voipaccountlist].location}{if $voipaccountlist[voipaccountlist].borough_name} ({$voipaccountlist[voipaccountlist].state_name} / {$voipaccountlist[voipaccountlist].district_name} / {$_BOROUGHTYPES[$voipaccountlist[voipaccountlist].borough_type]} {$voipaccountlist[voipaccountlist].borough_name}){/if}{/if}
+		<br>
                 <img src="img/customer.gif" alt="">&nbsp;
                 <a href="?m=customerinfo&id={$voipaccountlist[voipaccountlist].ownerid}" {tip a=$voipaccountlist[voipaccountlist].ownerid dynpopup='?m=customerinfoshort&id=$a'}>
                     {$voipaccountlist[voipaccountlist].owner|truncate:40:"...":true|replace:" ":"&nbsp;"} ({$voipaccountlist[voipaccountlist].ownerid|string_format:"%04d"})
