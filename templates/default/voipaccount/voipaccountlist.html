@@ -18,7 +18,7 @@
                 <a href="?m=voipaccountlist&o=login{if $listdata.direction == "asc" && $listdata.order == "login"},desc{/if}">{trans("Login:")}</a> 
                 {if $listdata.order == "login"}
                 <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
-                {/if}
+		{/if} / {trans("Node:")}
                 <br>
                 <img src="img/customer.gif" alt=""> 
                 <a href="?m=voipaccountlist&o=owner{if $listdata.direction == "asc" && $listdata.order == "owner"},desc{/if}">{trans("Customer:")}</a> 
@@ -84,7 +84,9 @@
         <tr class="highlight {cycle}">
             <td onClick="return self.location.href = '?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}';" nowrap>
                 <img src="img/voip.gif" alt="">
-                <strong>{$voipaccountlist[voipaccountlist].login}</strong><br>
+		<strong>{$voipaccountlist[voipaccountlist].login}</strong>
+		{if $voipaccountlist[voipaccountlist].nodename} / <a href="?m=nodeinfo&id={$voipaccountlist[voipaccountlist].nodeid}">{$voipaccountlist[voipaccountlist].nodename}{if $voipaccountlist[voipaccountlist].location} ({$voipaccountlist[voipaccountlist].location}){/if}{/if}</a>
+		<br>
                 <img src="img/customer.gif" alt="">&nbsp;
                 <a href="?m=customerinfo&id={$voipaccountlist[voipaccountlist].ownerid}" {tip a=$voipaccountlist[voipaccountlist].ownerid dynpopup='?m=customerinfoshort&id=$a'}>
                     {$voipaccountlist[voipaccountlist].owner|truncate:40:"...":true|replace:" ":"&nbsp;"} ({$voipaccountlist[voipaccountlist].ownerid|string_format:"%04d"})

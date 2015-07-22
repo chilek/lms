@@ -1,4 +1,30 @@
 <!--// $Id$ //-->
+{$xajax}
+<script type="text/javascript">
+<!--
+	function get_nodes_for_customer(cid) {
+		xjx.$('ownerid').disabled = true;
+		xjx.$('nodeid').disabled = true;
+		xajax_GetNodesForCustomer(cid);
+	}
+
+	function nodes_received(nodes) {
+		var options = xjx.$('nodeid').options;
+		var oldvalue = options[options.selectedIndex].value;
+		while (options.length)
+			options.remove(0);
+		options.add(new Option('- {trans("none")} -', 0));
+		nodes.forEach(function(elem) {
+			var option = new Option(elem.name + (elem.location.length ? ' (' + elem.location + ')' : ''), elem.id);
+			if (elem.id == oldvalue)
+				option.selected = true;
+			options.add(option);
+		});
+		xjx.$('ownerid').disabled = false;
+		xjx.$('nodeid').disabled = false;
+	}
+//-->
+</script>
 <form name="voipaccountadd" method="post" action="?m=voipaccountadd{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">
     <input type="submit" class="hiddenbtn">
     <table class="lmsbox">
@@ -65,13 +91,26 @@
                     {trans("Customer:")}
                 </td>
                 <td>
-                    <select size="1" name="voipaccountdata[ownerid]" {tip text="Assign voip account to customer" trigger="customer"} style="max-width:250px;">
+                    <select size="1" name="voipaccountdata[ownerid]" id="ownerid" {tip text="Assign voip account to customer" trigger="customer"} style="max-width:250px;" onchange="javascript:get_nodes_for_customer(this.options[this.options.selectedIndex].value);">
                         {foreach from=$customers item=c}
                         <option value="{$c.id}"{if $voipaccountdata.ownerid == $c.id} selected{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</option>
                         {/foreach}
                     </select>
                 </td>
             </tr>
+		<tr>
+			<td>
+				<img src="img/node.gif" alt="{trans("Node:")}">
+			</td>
+			<td class="bold">
+				{trans("Node:")}
+			</td>
+			<td>
+				<select size="1" name="voipaccountdata[nodeid]" id="nodeid" {tip text="Assign voip account to node"} style="max-width:250px;">
+					<option value="0">{trans("- none -")}</option>
+				</select>
+			</td>
+		</tr>
             <tr>
                 <td class="text-right" colspan="3">
                     <a href="javascript:document.voipaccountadd.submit();" accesskey="s">
@@ -90,6 +129,8 @@
 </form>
 <SCRIPT type="text/javascript">
 <!--
-    document.forms['voipaccountadd'].elements['voipaccountdata[login]'].focus();
+	document.forms['voipaccountadd'].elements['voipaccountdata[login]'].focus();
+
+	get_nodes_for_customer({$voipaccountdata.ownerid});
 //-->
 </SCRIPT>

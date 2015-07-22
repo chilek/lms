@@ -99,9 +99,11 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         }
 
         $voipaccountlist = $this->db->GetAll(
-            'SELECT v.id, v.login, v.passwd, v.phone, v.ownerid, '
-            . $this->db->Concat('c.lastname', "' '", 'c.name') 
-            . ' AS owner, v.access FROM voipaccounts v JOIN customersview c ON (v.ownerid = c.id) '
+            'SELECT v.id, v.login, v.passwd, v.phone, v.ownerid, v.nodeid, '
+            . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS owner, 
+		n.id AS nodeid, n.name AS nodename, n.location, v.access FROM voipaccounts v
+		JOIN customersview c ON (v.ownerid = c.id)
+            	LEFT JOIN nodes n ON n.ownerid = c.id '
             . (isset($searchargs) ? $searchargs : '')
             . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
         );
@@ -210,15 +212,16 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
     public function voipAccountAdd($voipaccountdata)
     {
         $voip_account_inserted = $this->db->Execute(
-            'INSERT INTO voipaccounts (ownerid, login, passwd, phone, creatorid, creationdate, access)
-            VALUES (?, ?, ?, ?, ?, ?NOW?, ?)',
+            'INSERT INTO voipaccounts (ownerid, login, passwd, phone, creatorid, creationdate, access, nodeid)
+            VALUES (?, ?, ?, ?, ?, ?NOW?, ?, ?)',
             array(
                 $voipaccountdata['ownerid'],
                 $voipaccountdata['login'],
                 $voipaccountdata['passwd'],
                 $voipaccountdata['phone'],
                 $this->auth->id,
-                $voipaccountdata['access']
+                $voipaccountdata['access'],
+                empty($voipaccountdata['nodeid']) ? null : $voipaccountdata['nodeid'],
             )
         );
         if ($voip_account_inserted) {
@@ -271,7 +274,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
     public function getVoipAccount($id)
     {
         $result = $this->db->GetRow('
-            SELECT id, ownerid, login, passwd, phone, creationdate, moddate, creatorid, modid, access
+            SELECT id, ownerid, login, passwd, phone, creationdate, moddate, creatorid, modid, access, nodeid
             FROM voipaccounts 
             WHERE id = ?',
             array($id)
@@ -284,6 +287,11 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             $result['creationdateh'] = date('Y/m/d, H:i', $result['creationdate']);
             $result['moddateh'] = date('Y/m/d, H:i', $result['moddate']);
             $result['owner'] = $customer_manager->getCustomerName($result['ownerid']);
+		if (!empty($result['nodeid'])) {
+			$node_manager = new LMSNodeManager($this->db, $this->auth, $this->cache, $this->syslog);
+			$result['node'] = $node_manager->getNode($result['nodeid']);
+		} else
+			$result['node'] = null;
             return $result;
         } else {
             return FALSE;
@@ -343,7 +351,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
     public function voipAccountUpdate($voipaccountdata)
     {
         $this->db->Execute(
-            'UPDATE voipaccounts SET login=?, passwd=?, phone=?, moddate=?NOW?, access=?, modid=?, ownerid=? WHERE id=?', 
+            'UPDATE voipaccounts SET login=?, passwd=?, phone=?, moddate=?NOW?, access=?, modid=?, ownerid=?, nodeid=? WHERE id=?', 
             array(
                 $voipaccountdata['login'],
                 $voipaccountdata['passwd'],
@@ -351,7 +359,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 $voipaccountdata['access'],
                 $this->auth->id,
                 $voipaccountdata['ownerid'],
-                $voipaccountdata['id']
+                empty($voipaccountdata['nodeid']) ? null : $voipaccountdata['nodeid'],
+                $voipaccountdata['id'],
             )
         );
     }

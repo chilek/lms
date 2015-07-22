@@ -124,6 +124,8 @@ if(isset($_POST['voipaccountdata']))
 	}
 }
 
+include(MODULES_DIR . '/voipaccountxajax.inc.php');
+
 $layout['pagetitle'] = trans('New Voip Account');
 
 $customers = $LMS->GetCustomerNames();

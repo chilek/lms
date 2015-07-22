@@ -132,6 +132,8 @@ if(isset($_POST['voipaccountedit']))
 	}
 }
 
+include(MODULES_DIR . '/voipaccountxajax.inc.php');
+
 $customers = $LMS->GetCustomerNames();
 
 include(MODULES_DIR.'/customer.inc.php');

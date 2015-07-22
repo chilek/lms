@@ -2047,6 +2047,7 @@ $_LANG['Enter password or it\'s fragment'] = 'Wprowadź hasło lub jego fragment
 $_LANG['Enter voip account login'] = 'Wprowadź login';
 $_LANG['Enter phone number'] = 'Wprowadź numer telefonu';
 $_LANG['Assign voip account to customer'] = 'Przypisz konto VoIP do klienta';
+$_LANG['Assign voip account to node'] = 'Przypisz konto VoIP do komputera';
 $_LANG['Display this form again, when this voip account is saved'] = 'Po dodaniu konta VoIP wyświetl ten formularz ponownie';
 $_LANG['List of Accounts'] = 'Lista kont VoIP';
 $_LANG['New Voip Account'] = 'Nowe konto VoIP';

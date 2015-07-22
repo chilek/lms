@@ -1614,7 +1614,10 @@ CREATE TABLE voipaccounts (
 	moddate		int(11)		NOT NULL DEFAULT 0,
 	creatorid	int(11)		NOT NULL DEFAULT 0,
 	modid		int(11)		NOT NULL DEFAULT 0,
-	PRIMARY KEY (id)
+	nodeid		int(11)		DEFAULT NULL,
+	PRIMARY KEY (id),
+	KEY nodeid (nodeid),
+	FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2406,4 +2409,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015042700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015072200');
