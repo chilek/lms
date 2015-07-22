@@ -33,7 +33,10 @@ $parameters = array(
 	'h' => 'help',
 	'v' => 'version',
 	'd' => 'debug',
+	'f:' => 'fakedate:',
 	't:' => 'type:',
+	's:' => 'section:',
+	'c:' => 'channel:',
 );
 
 foreach ($parameters as $key => $val) {
@@ -67,8 +70,13 @@ lms-notify.php
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors
 -d, --debug                     do debugging, dont send anything.
+-f, --fakedate=YYYY/MM/DD       override system date;
 -t, --type=<notification-types> take only selected notification types into account
                                 (separated by colons)
+-c, --channels=<channel-types>  use selected channels for notifications
+                                (separated by colons)
+-s, --section=<section-name>    section name from lms configuration where settings
+                                are stored
 
 EOF;
 	exit(0);
@@ -84,9 +92,30 @@ EOF;
 }
 
 $debug = array_key_exists('debug', $options);
+$fakedate = (array_key_exists('fakedate', $options) ? $options['fakedate'] : null);
+
 $types = array();
 if (array_key_exists('type', $options))
 	$types = explode(',', $options['type']);
+
+$channels = array();
+if (array_key_exists('channel', $options))
+	$channels = explode(',', $options['channel']);
+if (empty($channels))
+	$channels[] = 'mail';
+
+$config_section = (array_key_exists('section', $options) && preg_match('/^[a-z0-9-_]+$/i', $options['section']) ? $options['section'] : 'notify');
+
+$timeoffset = date('Z');
+
+function localtime2() {
+	global $fakedate, $timeoffset;
+	if (!empty($fakedate)) {
+		$date = explode("/", $fakedate);
+		return mktime(0, 0, 0, intval($date[1]), intval($date[2]), intval($date[0])) + $timeoffset;
+	} else
+		return time();
+}
 
 if (array_key_exists('config-file', $options))
 	$CONFIG_FILE = $options['config-file'];
@@ -98,8 +127,6 @@ if (!$quiet)
 
 if (!is_readable($CONFIG_FILE))
 	die("Unable to read configuration file [".$CONFIG_FILE."]!" . PHP_EOL);
-
-define('CONFIG_FILE', $CONFIG_FILE);
 
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
@@ -128,37 +155,55 @@ try {
 	die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
-$host = ConfigHelper::getConfig('notify.smtp_host');
-$port = ConfigHelper::getConfig('notify.smtp_port');
-$user = ConfigHelper::getConfig('notify.smtp_user');
-$pass = ConfigHelper::getConfig('notify.smtp_pass');
-$auth = ConfigHelper::getConfig('notify.smtp_auth');
+$host = ConfigHelper::getConfig($config_section . '.smtp_host');
+$port = ConfigHelper::getConfig($config_section . '.smtp_port');
+$user = ConfigHelper::getConfig($config_section . '.smtp_user');
+$pass = ConfigHelper::getConfig($config_section . '.smtp_pass');
+$auth = ConfigHelper::getConfig($config_section . '.smtp_auth');
 
-$debug_email = ConfigHelper::getConfig('notify.debug_email', '');
-$mail_from = ConfigHelper::getConfig('notify.mailfrom', '');
-$mail_fname = ConfigHelper::getConfig('notify.mailfname', '');
+$debug_email = ConfigHelper::getConfig($config_section . '.debug_email', '');
+$mail_from = ConfigHelper::getConfig($config_section . '.mailfrom', '');
+$mail_fname = ConfigHelper::getConfig($config_section . '.mailfname', '');
+$notify_email = ConfigHelper::getConfig($config_section . '.notify_email', '');
 
-// debtors notify
-$limit = intval(ConfigHelper::getConfig('notify.limit', 0));
-$debtors_message = ConfigHelper::getConfig('notify.debtors_message', '');
-$debtors_subject = ConfigHelper::getConfig('notify.debtors_subject', 'Debtors notification');
-// new debit note notify
-$notes_message = ConfigHelper::getConfig('notify.notes_message', '');
-$notes_subject = ConfigHelper::getConfig('notify.notes_subject', 'New debit note notification');
-// new invoice notify
-$invoices_message = ConfigHelper::getConfig('notify.invoices_message', '');
-$invoices_subject = ConfigHelper::getConfig('notify.invoices_subject', 'New invoice notification');
-// before deadline notify
-$deadline_message = ConfigHelper::getConfig('notify.deadline_message', '');
-$deadline_subject = ConfigHelper::getConfig('notify.deadline_subject', 'Invoice deadline notification');
-$deadline_days = intval(ConfigHelper::getConfig('notify.deadline_days', 0));
+$debug_phone = ConfigHelper::getConfig($config_section . '.debug_phone', '');
+$script_service = ConfigHelper::getConfig($config_section . '.service', '');
+if ($script_service)
+	LMSConfig::getConfig()->getSection('sms')->addVariable(new ConfigVariable('service', $script_service));
 
-if (empty($mail_from))
+// contracts - contracts being finished some day before notify
+// debtors - debtors notify
+// reminder - reminder notify
+// invoices - new invoice notify
+// notes - new debit note notify
+// warnings - send message to customers with warning flag set for node
+// messages - send message to customers which have awaiting www messages
+$notifications = array();
+foreach (array('contracts', 'debtors', 'reminder', 'invoices', 'notes', 'warnings', 'messages') as $type) {
+	$notifications[$type] = array();
+	$notifications[$type]['limit'] = intval(ConfigHelper::getConfig($config_section . '.' . $type . '_limit', 0));
+	$notifications[$type]['message'] = ConfigHelper::getConfig($config_section . '.' . $type . '_message', $type . ' notification');
+	$notifications[$type]['subject'] = ConfigHelper::getConfig($config_section . '.' . $type . '_subject', $type . ' notification');
+	$notifications[$type]['days'] = intval(ConfigHelper::getConfig($config_section . '.' . $type . '_days', 0));
+	$notifications[$type]['file'] = ConfigHelper::getConfig($config_section . '.' . $type . '_file', '/etc/rc.d/' . $type . '.sh');
+	$notifications[$type]['header'] = ConfigHelper::getConfig($config_section . '.' . $type . '_header', "#!/bin/bash\n\nipset flush $type\n");
+	$notifications[$type]['rule'] = ConfigHelper::getConfig($config_section . '.' . $type . '_rule', "ipset add $type %i\n");
+	$notifications[$type]['footer'] = ConfigHelper::getConfig($config_section . '.' . $type . '_footer', '');
+}
+
+if (in_array('mail', $channels) && empty($mail_from))
 	die("Fatal error: mailfrom unset! Can't continue, exiting." . PHP_EOL);
 
-$smtp_auth = ConfigHelper::getConfig('notify.smtp_auth');
-if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', ConfigHelper::getConfig('notify.smtp_auth')))
+if (!empty($auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $auth))
 	die("Fatal error: smtp_auth setting not supported! Can't continue, exiting." . PHP_EOL);
+
+//$currtime = localtime2() + $timeoffset;
+$currtime = localtime2();
+//$daystart = intval($currtime / 86400) * 86400 - $timeoffset;
+$daystart = intval($currtime / 86400) * 86400;
+$dayend = $daystart + 86399;
+
+$deadline = ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0));
 
 // Include required files (including sequence is important)
 
@@ -166,7 +211,6 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
 
 if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG'))
 	$SYSLOG = new SYSLOG($DB);
@@ -183,29 +227,32 @@ $LMS->lang = $_language;
 if (!empty($mail_fname))
 	$mail_from = qp_encode($mail_fname) . ' <' . $mail_from . '>';
 
-function parse_data($data, $row) {
+//include(LIB_DIR . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'mtsms.php');
+
+function parse_customer_data($data, $row) {
 	global $DB;
 
 	$amount = -$row['balance'];
+	$data = preg_replace("/\%bankaccount/",
+		format_bankaccount(bankaccount($row['id'], $row['account'])), $data);
 	$data = preg_replace("/\%b/", $amount, $data);
 	$data = preg_replace("/\%date-y/", strftime("%Y"), $data);
 	$data = preg_replace("/\%date-m/", strftime("%m"), $data);
-	$data = preg_replace("/\%date-d/", strftime("%d"), $data);
 	$data = preg_replace("/\%date_month_name/", strftime("%B"), $data);
 	$deadline = $row['cdate'] + $row['paytime'] * 86400;
 	$data = preg_replace("/\%deadline-y/", strftime("%Y", $deadline), $data);
 	$data = preg_replace("/\%deadline-m/", strftime("%m", $deadline), $data);
 	$data = preg_replace("/\%deadline-d/", strftime("%d", $deadline), $data);
 	$data = preg_replace("/\%B/", $row['balance'], $data);
-	$data = preg_replace("/\%saldo/", round($row['balance'], 2), $data);
+	$data = preg_replace("/\%saldo/", moneyf($row['balance']), $data);
 	$data = preg_replace("/\%pin/", $row['pin'], $data);
 	$data = preg_replace("/\%cid/", $row['id'], $data);
 	if (preg_match("/\%abonament/", $data)) {
 		$saldo = $DB->GetOne("SELECT SUM(value)
 			FROM assignments, tariffs
 			WHERE tariffid = tariffs.id AND customerid = ?
-				AND (datefrom <= ?NOW? OR datefrom = 0)
-				AND (dateto > ?NOW? OR dateto = 0)
+				AND (datefrom <= $currtime OR datefrom = 0)
+				AND (dateto > $currtime OR dateto = 0)
 				AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0))",
 			array($row['id']));
 		$data = preg_replace("/\%abonament/", $saldo, $data);
@@ -214,12 +261,34 @@ function parse_data($data, $row) {
 	$data = preg_replace("/\%invoice/", $row['doc_number'], $data);
 	$data = preg_replace("/\%number/", $row['doc_number'], $data);
 	$data = preg_replace("/\%value/", $row['value'], $data);
+	$data = preg_replace("/\%cdate-y/", strftime("%Y", $row['cdate']), $data);
+	$data = preg_replace("/\%cdate-m/", strftime("%m", $row['cdate']), $data);
+	$data = preg_replace("/\%cdate-d/", strftime("%d", $row['cdate']), $data);
+
+	list ($now_y, $now_m) = explode('/', strftime("%Y/%m", time()));
+	$data = preg_replace("/\%lastday/", strftime("%d", mktime(12, 0, 0, $now_m + 1, 0, $now_y)), $data);
 
 	return $data;
 }
 
-function send_message($msgid, $cid, $rmail, $rname, $subject, $body, $host = null, $port = null, $user = null, $pass = null, $auth = null) {
-	global $LMS, $DB, $mail_from;
+function parse_node_data($data, $row) {
+	$data = preg_replace("/\%i/", $row['ip'], $data);
+	//$data = preg_replace("/\%nas/", $row['nasip'], $data);
+
+	return $data;
+}
+
+function create_message($type, $subject, $template) {
+	global $DB;
+
+	$DB->Execute("INSERT INTO messages (type, cdate, subject, body)
+		VALUES (?, ?NOW?, ?, ?)",
+		array($type, $subject, $template));
+	return $DB->GetLastInsertID('messages');
+}
+
+function send_mail($msgid, $cid, $rmail, $rname, $subject, $body) {
+	global $LMS, $DB, $mail_from, $notify_email;
 	$DB->Execute("INSERT INTO messageitems
 		(messageid, customerid, destination, status)
 		VALUES (?, ?, ?, ?)",
@@ -227,7 +296,9 @@ function send_message($msgid, $cid, $rmail, $rname, $subject, $body, $host = nul
 
 	$headers = array('From' => $mail_from, 'To' => qp_encode($rname) . ' <' . $rmail . '>',
 		'Subject' => $subject);
-	$result = $LMS->SendMail($rmail, $headers, $body, null, $host, $port, $user, $pass, $auth);
+	if (!empty($notify_email))
+		$headers['Cc'] = $notify_email;
+	$result = $LMS->SendMail($rmail, $headers, $body);
 
 	$query = "UPDATE messageitems
 		SET status = ?, lastdate = ?NOW?, error = ?
@@ -239,98 +310,161 @@ function send_message($msgid, $cid, $rmail, $rname, $subject, $body, $host = nul
 		$DB->Execute($query, array($result, null, $msgid, $cid));
 }
 
-function create_message($subject, $template) {
-	global $DB;
+function send_sms($msgid, $cid, $phone, $data) {
+	global $LMS, $DB;
+	$DB->Execute("INSERT INTO messageitems
+		(messageid, customerid, destination, status)
+		VALUES (?, ?, ?, ?)",
+		array($msgid, $cid, $phone, 1));
 
-	$DB->Execute("INSERT INTO messages (type, cdate, subject, body)
-		VALUES (1, ?NOW?, ?, ?)",
-		array($subject, $template));
-	return $DB->GetLastInsertID('messages');
+	$result = $LMS->SendSMS(str_replace(' ', '', $phone), $data, $msgid);
+	$query = "UPDATE messageitems
+		SET status = ?, lastdate = ?NOW?, error = ?
+		WHERE messageid = ? AND customerid = ?";
+
+	if (preg_match("/[^0-9]/", $result))
+		$DB->Execute($query, array(3, $result, $msgid, $cid));
+	elseif ($result == 2) // MSG_SENT
+		$DB->Execute($query, array($result, null, $msgid, $cid));
 }
 
 // ------------------------------------------------------------------------
 // ACTIONS
 // ------------------------------------------------------------------------
-// Debtors
-if ($debtors_message && (empty($types) || in_array('debtors', $types))) {
-	// @TODO: check 'messages' table and don't send notifies to often
+
+// contracts
+if (empty($types) || in_array('contracts', $types)) {
+	$days = $notifications['contracts']['days'];
 	$customers = $DB->GetAll("SELECT c.id, c.pin, c.lastname, c.name,
-			SUM(value) AS balance, c.email
+			SUM(value) AS balance, MAX(a.dateto) AS cdate,
+			c.email, x.phone
 		FROM customers c
 		JOIN cash ON (c.id = cash.customerid)
-		LEFT JOIN documents d ON d.id = cash.docid
-		WHERE c.email <> '' AND (cash.docid = 0 OR (cash.docid <> 0
-			AND (d.type = 2 OR (d.type IN (1,3)
-				AND d.cdate + d.paytime * 86400 < ?NOW?))))
-		GROUP BY c.id, c.pin, c.lastname, c.name, c.email
-		HAVING SUM(value) < ?", array($limit));
+		JOIN assignments a ON (c.id = a.customerid)
+		LEFT JOIN (SELECT " . $DB->GroupConcat('phone') . " AS phone, customerid
+			FROM customercontacts
+			WHERE (type & 1) = 1
+			GROUP BY customerid
+		) x ON (x.customerid = c.id)
+		GROUP BY c.id, c.pin, c.lastname, c.name, c.email, x.phone
+		HAVING MAX(a.dateto) >= $daystart + ? * 86400 AND MAX(a.dateto) < $daystart + (? + 1) * 86400",
+		array($days, $days));
 
 	if (!empty($customers)) {
-		if (!$debug)
-			$msgid = create_message($debtors_subject, $debtors_message);
-
+		$notifications['contracts']['customers'] = array();
 		foreach ($customers as $row) {
+			$notifications['contracts']['customers'][] = $row['id'];
+			$message = parse_customer_data($notifications['contracts']['message'], $row);
+			$subject = parse_customer_data($notifications['contracts']['subject'], $row);
+
 			$recipient_name = $row['lastname'] . ' ' . $row['name'];
 			$recipient_mail = ($debug_email ? $debug_email : $row['email']);
+			$recipient_phones = ($debug_phone ? explode(',', $debug_phone) :
+				(!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
 
-			if (!$quiet)
-				printf("[debt] %s (%04d): %s" . PHP_EOL,
-					$recipient_name, $row['id'], $recipient_mail);
+			if (!$quiet) {
+				if (in_array('mail', $channels) && !empty($recipient_mail))
+					printf("[mail/contracts] %s (%04d): %s" . PHP_EOL,
+						$recipient_name, $row['id'], $recipient_mail);
+				if (in_array('sms', $channels) && !empty($recipient_phones))
+					foreach ($recipient_phones as $phone)
+						printf("[sms/contracts] %s (%04d): %s" . PHP_EOL,
+							$recipient_name, $row['id'], $phone);
+			}
 
-			if (!$debug)
-				send_message($msgid, $row['id'], $recipient_mail, $recipient_name,
-					$debtors_subject, parse_data($debtors_message, $row), $host, $port, $user, $pass, $auth);
+			if (!$debug) {
+				if (in_array('mail', $channels) && !empty($recipient_mail)) {
+					$msgid = create_message(MSG_MAIL, $subject, $message);
+					send_mail($msgid, $row['id'], $recipient_mail, $recipient_name,
+						$subject, $message);
+				}
+				if (in_array('sms', $channels) && !empty($recipient_phones)) {
+					$msgid = create_message(MSG_SMS, $subject, $message);
+					foreach ($recipient_phones as $phone)
+						send_sms($msgid, $row['id'], $phone, $message);
+				}
+			}
 		}
 	}
 }
 
-// Invoices created up to 24 hours ago
-if ($invoices_message && (empty($types) || in_array('invoices', $types))) {
-	$documents = $DB->GetAll("SELECT d.id AS docid, c.id, c.pin, d.name,
-		d.number, n.template, d.cdate, d.paytime, c.email,
-		COALESCE(ca.balance, 0) AS balance, v.value
-		FROM documents d
-		JOIN customers c ON (c.id = d.customerid)
-		JOIN (SELECT SUM(value) * -1 AS value, docid
-			FROM cash
-			GROUP BY docid
-		) v ON (v.docid = d.id)
-		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-		LEFT JOIN (SELECT SUM(value) AS balance, customerid
-			FROM cash
+// Debtors
+if (empty($types) || in_array('debtors', $types)) {
+	$days = $notifications['debtors']['days'];
+	$limit = $notifications['debtors']['limit'];
+	// @TODO: check 'messages' table and don't send notifies to often
+	$customers = $DB->GetAll("SELECT c.id, c.pin, c.lastname, c.name,
+			SUM(value) AS balance, c.email, x.phone, div.account
+		FROM customers c
+		LEFT JOIN divisions div ON div.id = c.divisionid
+		JOIN cash ON (c.id = cash.customerid)
+		LEFT JOIN (SELECT " . $DB->GroupConcat('phone') . " AS phone, customerid
+			FROM customercontacts
+			WHERE (type & 1) = 1
 			GROUP BY customerid
-		) ca ON (ca.customerid = d.customerid)
-		WHERE c.email <> '' AND d.type = 1
-			AND d.cdate > ?NOW? - 86400
-		");
+		) x ON (x.customerid = c.id)
+		LEFT JOIN documents d ON d.id = cash.docid
+		WHERE c.cutoffstop < $currtime AND ((cash.docid = 0 AND ((cash.type <> 0 AND cash.time < $currtime)
+			OR (cash.type = 0 AND cash.time + ((CASE c.paytime WHEN -1 THEN
+				(CASE WHEN div.inv_paytime IS NULL THEN $deadline ELSE div.inv_paytime END) ELSE c.paytime END) + ?) * 86400 < $currtime)))
+			OR (cash.docid <> 0 AND ((d.type IN (2,3) AND cash.time < $currtime
+				OR (d.type IN (1,5) AND d.cdate + (d.paytime + ?) * 86400 < $currtime)))))
+		GROUP BY c.id, c.pin, c.lastname, c.name, c.email, div.account, x.phone
+		HAVING SUM(value) < ?", array($days, $days, $limit));
 
-	if (!empty($documents)) {
-		if (!$debug)
-			$msgid = create_message($invoices_subject, $invoices_message);
+	if (!empty($customers)) {
+		$notifications['debtors']['customers'] = array();
+		foreach ($customers as $row) {
+			$notifications['debtors']['customers'][] = $row['id'];
+			$message = parse_customer_data($notifications['debtors']['message'], $row);
+			$subject = parse_customer_data($notifications['debtors']['subject'], $row);
 
-		foreach ($documents as $row) {
-			$row['doc_number'] = docnumber($row['number'], ($row['template'] ? $row['template'] : '%N/LMS/%Y'), $row['cdate']);
-
+			$recipient_name = $row['lastname'] . ' ' . $row['name'];
 			$recipient_mail = ($debug_email ? $debug_email : $row['email']);
+			$recipient_phones = ($debug_phone ? explode(',', $debug_phone) :
+				(!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
 
-			if (!$quiet)
-				printf("[new invoice] %s (%04d) %s: %s" . PHP_EOL,
-					$row['name'], $row['id'], $row['doc_number'], $recipient_mail);
+			if (!$quiet) {
+				if (in_array('mail', $channels) && !empty($recipient_mail))
+					printf("[mail/debtors] %s (%04d): %s" . PHP_EOL,
+						$recipient_name, $row['id'], $recipient_mail);
+				if (in_array('sms', $channels) && !empty($recipient_phones))
+					foreach ($recipient_phones as $phone)
+						printf("[sms/debtors] %s (%04d): %s" . PHP_EOL,
+							$recipient_name, $row['id'], $phone);
+			}
 
-			if (!$debug)
-				send_message($msgid, $row['id'], $recipient_mail, $row['name'],
-					$invoices_subject, parse_data($invoices_message, $row), $host, $port, $user, $pass, $auth);
+			if (!$debug) {
+				if (in_array('mail', $channels) && !empty($recipient_mail)) {
+					$msgid = create_message(MSG_MAIL, $subject, $message);
+					send_mail($msgid, $row['id'], $recipient_mail, $recipient_name,
+						$subject, $message);
+				}
+				if (in_array('sms', $channels) && !empty($recipient_phones)) {
+					$msgid = create_message(MSG_SMS, $subject, $message);
+					foreach ($recipient_phones as $phone)
+						send_sms($msgid, $row['id'], $phone, $message);
+				}
+			}
 		}
 	}
 }
 
-// Invoices (not payed) up to $deadline_days days after deadline (cdate + paytime)
-if ($deadline_message && (empty($types) || in_array('deadline', $types))) {
+// Invoices (not payed) up to $reminder_days days before deadline (cdate + paytime)
+if (empty($types) || in_array('reminder', $types)) {
+	$days = $notifications['reminder']['days'];
 	$documents = $DB->GetAll("SELECT d.id AS docid, c.id, c.pin, d.name,
-		d.number, n.template, d.cdate, d.paytime, c.email,
+		d.number, n.template, d.cdate, d.paytime, c.email, x.phone, div.account,
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
+		LEFT JOIN divisions div ON div.id = c.divisionid
+		LEFT JOIN (
+			SELECT " . $DB->GroupConcat('phone') . " AS phone, customerid
+			FROM customercontacts
+			WHERE (type & 1) = 1
+			GROUP BY customerid
+		) x ON (x.customerid = d.customerid)
 		JOIN (
 			SELECT SUM(value) * -1 AS value, docid
 			FROM cash
@@ -341,43 +475,71 @@ if ($deadline_message && (empty($types) || in_array('deadline', $types))) {
 			SELECT SUM(value) AS balance, cash.customerid
 			FROM cash
 			LEFT JOIN documents ON documents.id = cash.docid
-			WHERE cash.docid = 0 OR (cash.docid <> 0 
-				AND (documents.type = 2 OR (documents.type IN (1,3)
-					AND documents.cdate + documents.paytime * 86400 < ?NOW?)))
+			JOIN customers c ON c.id = cash.customerid
+			LEFT JOIN divisions div ON div.id = c.divisionid
+			WHERE (cash.docid = 0 AND ((cash.type <> 0 AND cash.time < $currtime)
+				OR (cash.type = 0 AND cash.time + ((CASE c.paytime WHEN -1 THEN
+				(CASE WHEN div.inv_paytime IS NULL THEN $deadline ELSE div.inv_paytime END) ELSE c.paytime END) + ?) * 86400 < $currtime)))
+				OR (cash.docid <> 0 AND ((documents.type IN (2,3) AND cash.time < $currtime)
+					OR (documents.type IN (1,5) AND ((documents.cdate / 86400) + documents.paytime - ?) * 86400 < $currtime)))
 			GROUP BY cash.customerid
 		) ca ON (ca.customerid = d.customerid)
-		WHERE c.email <> '' AND d.type = 1 AND d.closed = 0 AND ca.balance < 0
-			AND d.cdate + (d.paytime + 1 + ?) * 86400 > ?NOW?
-			AND d.cdate + (d.paytime + ?) * 86400 < ?NOW?",
-		array($deadline_days, $deadline_days));
-
+		WHERE d.type = 1 AND d.closed = 0 AND ca.balance < 0
+			AND ((d.cdate / 86400) + d.paytime + 1 - ?) * 86400 >= $daystart
+			AND ((d.cdate / 86400) + d.paytime - ?) * 86400 < $daystart",
+		array($days, $days, $days, $days));
 	if (!empty($documents)) {
-		if (!$debug)
-			$msgid = create_message($deadline_subject, $deadline_message);
-
+		$notifications['reminder']['customers'] = array();
 		foreach ($documents as $row) {
+			$notifications['reminder']['customers'][] = $row['id'];
 			$row['doc_number'] = docnumber($row['number'], ($row['template'] ? $row['template'] : '%N/LMS/%Y'), $row['cdate']);
 
+			$message = parse_customer_data($notifications['reminder']['message'], $row);
+			$subject = parse_customer_data($notifications['reminder']['subject'], $row);
+
 			$recipient_mail = ($debug_email ? $debug_email : $row['email']);
+			$recipient_phones = ($debug_phone ? explode(',', $debug_phone) :
+				(!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
 
-			if (!$quiet)
-				printf("[deadline] %s (%04d) %s: %s" . PHP_EOL,
-					$row['name'], $row['id'], $row['doc_number'], $recipient_mail);
+			if (!$quiet) {
+				if (in_array('mail', $channels) && !empty($recipient_mail))
+					printf("[mail/reminder] %s (%04d) %s: %s" . PHP_EOL,
+						$row['name'], $row['id'], $row['doc_number'], $recipient_mail);
+				if (in_array('sms', $channels) && !empty($recipient_phones))
+					foreach ($recipient_phones as $phone)
+						printf("[sms/reminder] %s (%04d) %s: %s" . PHP_EOL,
+							$row['name'], $row['id'], $row['doc_number'], $phone);
+			}
 
-			if (!$debug)
-				send_message($msgid, $row['id'], $recipient_mail, $row['name'],
-					$deadline_subject, parse_data($deadline_message, $row), $host, $port, $user, $pass, $auth);
+			if (!$debug) {
+				if (in_array('mail', $channels) && !empty($recipient_mail)) {
+					$msgid = create_message(MSG_MAIL, $subject, $message);
+					send_mail($msgid, $row['id'], $recipient_mail, $row['name'],
+						$subject, $message);
+				}
+				if (in_array('sms', $channels) && !empty($recipient_phones)) {
+					$msgid = create_message(MSG_SMS, $subject, $message);
+					foreach ($recipient_phones as $phone)
+						send_sms($msgid, $row['id'], $phone, $message);
+				}
+			}
 		}
 	}
 }
 
-// Debit notes created up to 24 hours ago
-if ($notes_message && (empty($types) || in_array('notes', $types))) {
+// Invoices created at current day
+if (empty($types) || in_array('invoices', $types)) {
 	$documents = $DB->GetAll("SELECT d.id AS docid, c.id, c.pin, d.name,
-		d.number, n.template, d.cdate, c.email,
+		d.number, n.template, d.cdate, d.paytime, c.email, x.phone, div.account,
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
+		LEFT JOIN divisions div ON div.id = c.divisionid
+		LEFT JOIN (SELECT " . $DB->GroupConcat('phone') . " AS phone, customerid
+			FROM customercontacts
+			WHERE (type & 1) = 1
+			GROUP BY customerid
+		) x ON (x.customerid = d.customerid)
 		JOIN (SELECT SUM(value) * -1 AS value, docid
 			FROM cash
 			GROUP BY docid
@@ -387,27 +549,243 @@ if ($notes_message && (empty($types) || in_array('notes', $types))) {
 			FROM cash
 			GROUP BY customerid
 		) ca ON (ca.customerid = d.customerid)
-		WHERE c.email <> '' AND d.type = 5
-			AND d.cdate > ?NOW? - 86400");
+		WHERE (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type IN (1,3)
+			AND d.cdate >= ? AND d.cdate <= ?",
+		array($daystart, $dayend));
 
 	if (!empty($documents)) {
-		if (!$debug)
-			$msgid = create_message($notes_subject, $notes_message);
-
+		$notifications['invoices']['customers'] = array();
 		foreach ($documents as $row) {
+			$notifications['invoices']['customers'][] = $row['id'];
 			$row['doc_number'] = docnumber($row['number'], ($row['template'] ? $row['template'] : '%N/LMS/%Y'), $row['cdate']);
 
+			$message = parse_customer_data($notifications['invoices']['message'], $row);
+			$subject = parse_customer_data($notifications['invoices']['subject'], $row);
+
 			$recipient_mail = ($debug_email ? $debug_email : $row['email']);
+			$recipient_phones = ($debug_phone ? explode(',', $debug_phone) :
+				(!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
 
-			if (!$quiet)
-				printf("[new debit note] %s (%04d) %s: %s" . PHP_EOL,
-					$row['name'], $row['id'], $row['doc_number'], $recipient_mail);
+			if (!$quiet) {
+				if (in_array('mail', $channels) && !empty($recipient_mail))
+					printf("[mail/invoices] %s (%04d) %s: %s" . PHP_EOL,
+						$row['name'], $row['id'], $row['doc_number'], $recipient_mail);
+				if (in_array('sms', $channels) && !empty($recipient_phones))
+					foreach ($recipient_phones as $phone)
+						printf("[sms/invoices] %s (%04d): %s: %s" . PHP_EOL,
+							$row['name'], $row['id'], $row['doc_number'], $phone);
+			}
 
-			if (!$debug)
-				send_message($msgid, $row['id'], $recipient_mail, $row['name'],
-					$notes_subject, parse_data($notes_message, $row), $host, $port, $user, $pass, $auth);
+			if (!$debug) {
+				if (in_array('mail', $channels) && !empty($recipient_mail)) {
+					$msgid = create_message(MSG_MAIL, $subject, $message);
+					send_mail($msgid, $row['id'], $recipient_mail, $row['name'],
+						$subject, $message);
+				}
+				if (in_array('sms', $channels) && !empty($recipient_phones)) {
+					$msgid = create_message(MSG_SMS, $subject, $message);
+					foreach ($recipient_phones as $phone)
+						send_sms($msgid, $row['id'], $phone, $message);
+				}
+			}
 		}
 	}
+}
+
+// Debit notes created at current day
+if (empty($types) || in_array('notes', $types)) {
+	$documents = $DB->GetAll("SELECT d.id AS docid, c.id, c.pin, d.name,
+		d.number, n.template, d.cdate, c.email, x.phone, div.account,
+		COALESCE(ca.balance, 0) AS balance, v.value
+		FROM documents d
+		JOIN customers c ON (c.id = d.customerid)
+		LEFT JOIN divisions div ON div.id = c.divisionid
+		LEFT JOIN (SELECT " . $DB->GroupConcat('phone') . " AS phone, customerid
+			FROM customercontacts
+			WHERE (type & 1) = 1
+			GROUP BY customerid
+		) x ON (x.customerid = d.customerid)
+		JOIN (SELECT SUM(value) * -1 AS value, docid
+			FROM cash
+			GROUP BY docid
+		) v ON (v.docid = d.id)
+		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+		LEFT JOIN (SELECT SUM(value) AS balance, customerid
+			FROM cash
+			GROUP BY customerid
+		) ca ON (ca.customerid = d.customerid)
+		WHERE (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type = 5
+			AND d.cdate >= ? AND d.cdate <= ?",
+		array($daystart, $dayend));
+
+	if (!empty($documents)) {
+		$notifications['notes']['customers'] = array();
+		foreach ($documents as $row) {
+			$notifications['notes']['customers'][] = $row['id'];
+			$row['doc_number'] = docnumber($row['number'], ($row['template'] ? $row['template'] : '%N/LMS/%Y'), $row['cdate']);
+
+			$message = parse_customer_data($notifications['notes']['message'], $row);
+			$subject = parse_customer_data($notifications['notes']['subject'], $row);
+
+			$recipient_mail = ($debug_email ? $debug_email : $row['email']);
+			$recipient_phones = ($debug_phone ? explode(',', $debug_phone) :
+				(!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
+
+			if (!$quiet) {
+				if (in_array('mail', $channels) && !empty($recipient_mail))
+					printf("[mail/notes] %s (%04d) %s: %s" . PHP_EOL,
+						$row['name'], $row['id'], $row['doc_number'], $recipient_mail);
+				if (in_array('sms', $channels) && !empty($recipient_phones))
+					foreach ($recipient_phones as $phone)
+						printf("[sms/notes] %s (%04d) %s: %s" . PHP_EOL,
+							$row['name'], $row['id'], $row['doc_number'], $recipient_phone);
+			}
+
+			if (!$debug) {
+				if (in_array('mail', $channels) && !empty($recipient_mail)) {
+					$msgid = create_message(MSG_MAIL, $subject, $message);
+					send_mail($msgid, $row['id'], $recipient_mail, $row['name'],
+						$subject, $message);
+				}
+				if (in_array('sms', $channels) && !empty($recipient_phones)) {
+					$msgid = create_message(MSG_SMS, $subject, $message);
+					foreach ($recipient_phones as $phone)
+						send_sms($msgid, $row['id'], $phone, $message);
+				}
+			}
+		}
+	}
+}
+
+// Node which warning flag has set
+if (empty($types) || in_array('warnings', $types)) {
+	$customers = $DB->GetAll("SELECT c.id, (" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS name,
+		c.pin, c.message, c.email, x.phone, div.account, COALESCE(ca.balance, 0) AS balance
+		FROM customers c
+		LEFT JOIN divisions div ON div.id = c.divisionid
+		LEFT JOIN (SELECT " . $DB->GroupConcat('phone') . " AS phone, customerid
+			FROM customercontacts
+			WHERE (type & 1) = 1
+			GROUP BY customerid
+		) x ON (x.customerid = c.id)
+		LEFT JOIN (SELECT SUM(value) AS balance, customerid
+			FROM cash
+			GROUP BY customerid
+		) ca ON (ca.customerid = c.id)
+		WHERE c.id IN (SELECT DISTINCT ownerid FROM nodes WHERE warning = 1)");
+
+	if (!empty($customers)) {
+		$notifications['warnings']['customers'] = array();
+		foreach ($customers as $row) {
+			$notifications['warnings']['customers'][] = $row['id'];
+			$message = parse_customer_data($row['message'], $row);
+			$subject = parse_customer_data($notifications['warnings']['subject'], $row);
+
+			$recipient_mail = ($debug_email ? $debug_email : $row['email']);
+			$recipient_phones = ($debug_phone ? explode(',', $debug_phone) :
+				(!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
+
+			if (!$quiet) {
+				if (in_array('mail', $channels) && !empty($recipient_mail))
+					printf("[mail/warnings] %s (%04d): %s" . PHP_EOL,
+						$row['name'], $row['id'], $recipient_mail);
+				if (in_array('sms', $channels) && !empty($recipient_phones))
+					foreach ($recipient_phones as $phone)
+						printf("[sms/warnings] %s (%04d): %s" . PHP_EOL,
+							$row['name'], $row['id'], $recipient_phone);
+			}
+
+			if (!$debug) {
+				if (in_array('mail', $channels) && !empty($recipient_mail)) {
+					$msgid = create_message(MSG_MAIL, $subject, $message);
+					send_mail($msgid, $row['id'], $recipient_mail, $row['name'],
+						$subject, $message);
+				}
+				if (in_array('sms', $channels) && !empty($recipient_phones)) {
+					$msgid = create_message(MSG_SMS, $subject, $message);
+					foreach ($recipient_phones as $phone)
+						send_sms($msgid, $row['id'], $phone, $message);
+				}
+			}
+		}
+	}
+}
+
+// send message to customers which have awaiting www messages
+if (in_array('www', $channels) && (empty($types) || in_array('messages', $types))) {
+	$nodes = $DB->GetAll("SELECT INET_NTOA(ipaddr) AS ip
+			FROM nodes n
+		JOIN (SELECT DISTINCT customerid FROM messageitems
+			JOIN messages m ON m.id = messageid
+			WHERE type = ? AND status = ?
+		) m ON m.customerid = n.ownerid
+		ORDER BY ipaddr", array(MSG_WWW, MSG_NEW));
+
+	if (!empty($nodes)) {
+		if (!$debug) {
+			if (!($fh = fopen($notifications['messages']['file'], 'w')))
+				continue;
+			fwrite($fh, str_replace("\\n", PHP_EOL, $notifications['messages']['header']));
+		}
+
+		foreach ($nodes as $node) {
+			if (!$quiet)
+				printf("[www/messages] %s" . PHP_EOL, $node['ip']);
+			if (!$debug)
+				fwrite($fh, str_replace("\\n", PHP_EOL,
+					parse_node_data($notifications['messages']['rule'], $node)));
+		}
+
+		if (!$debug) {
+			fwrite($fh, str_replace("\\n", PHP_EOL, $notifications['messages']['footer']));
+			fclose($fh);
+		}
+	}
+}
+
+if (in_array('www', $channels))
+	foreach ($notifications as $type => $notification) {
+		if (!$debug) {
+			if (!($fh = fopen($notification['file'], 'w')))
+				continue;
+			fwrite($fh, str_replace("\\n", PHP_EOL, $notification['header']));
+		}
+		if (!empty($notification['customers'])) {
+			if ($type == 'warnings')
+				$nodes = $DB->GetAll("SELECT INET_NTOA(ipaddr) AS ip
+						FROM nodes
+					WHERE warning = 1 ORDER BY ipaddr");
+			else
+				$nodes = $DB->GetAll("SELECT INET_NTOA(ipaddr) AS ip
+						FROM nodes
+					WHERE ownerid IN (" . implode(',', $notification['customers']) . ")"
+					. " ORDER BY id");
+			if (!empty($nodes))
+				foreach ($nodes as $node) {
+					if (!$quiet)
+						printf("[www/%s] %s" . PHP_EOL, $type, $node['ip']);
+					if (!$debug)
+						fwrite($fh, str_replace("\\n", PHP_EOL,
+							parse_node_data($notification['rule'], $node)));
+				}
+		}
+		if (!$debug) {
+			fwrite($fh, str_replace("\\n", PHP_EOL, $notification['footer']));
+			fclose($fh);
+		}
+	}
+
+if (in_array('blocking', $channels)) {
+	foreach ($notifications as $type => $notification)
+		if (!empty($notification['customers'])) {
+			$DB->Execute("UPDATE nodes SET access=0 WHERE ownerid IN ("
+				. implode(',', $notification['customers']) . ")");
+			$DB->Execute("UPDATE assignments SET suspended=1
+				WHERE (tariffid <> 0 OR liabilityid <> 0)
+				AND (datefrom = 0 OR datefrom <= ?NOW?)
+				AND (dateto = 0 OR dateto >= ?NOW?)
+				AND customerid IN (" . implode(',', $notification['customers']) . ")");
+		}
 }
 
 $DB->Destroy();
