@@ -1487,7 +1487,7 @@ if ($netlinks)
 				}
 				$linkfrequency = $netlink['frequency'];
 				if (empty($linkfrequency))
-					$linkfrequency = 5.5;
+					$linkfrequency = '5.5';
 				else
 					$linkfrequency = str_replace(',', '.', (float) $linkfrequency);
 				$data = array(
