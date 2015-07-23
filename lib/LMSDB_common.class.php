@@ -677,7 +677,7 @@ abstract class LMSDB_common implements LMSDBInterface
 
 	public function UpgradeDb($dbver = DBVERSION, $pluginclass = null, $libdir = null, $docdir = null) {
 		$lastupgrade = null;
-		if ($this->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',
+		if ($dbversion = $this->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',
 				array('dbversion' . (is_null($pluginclass) ? '' : '_' . $pluginclass)))) {
 			if ($dbver > $dbversion) {
 				set_time_limit(0);
