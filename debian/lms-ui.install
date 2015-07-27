@@ -35,11 +35,7 @@ lib/ExecStack.class.php         /usr/share/lms/lib/
 lib/ezpdf.php                   /usr/share/lms/lib/
 lib/language.php                /usr/share/lms/lib/
 lib/LMS.class.php               /usr/share/lms/lib/
-lib/LMSDB_common.class.php      /usr/share/lms/lib/
-lib/LMSDB.php                   /usr/share/lms/lib/
-lib/LMSDBDriverInterface.php    /usr/share/lms/lib/
-lib/LMSDBInterface.php          /usr/share/lms/lib/
-lib/LMSCache.php                /usr/share/lms/lib/
+lib/LMS*.php                    /usr/share/lms/lib/
 
 lib/menu.php                    /usr/share/lms/lib/
 lib/Session.class.php           /usr/share/lms/lib/
