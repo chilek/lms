@@ -47,7 +47,6 @@ lib/Sysinfo.class.php           /usr/share/lms/lib/
 lib/SYSLOG.class.php            /usr/share/lms/lib/
 lib/tcpdf.php                   /usr/share/lms/lib/
 lib/unstrip.php                 /usr/share/lms/lib/
-lib/upgradedb.php               /usr/share/lms/lib/
 lib/ethercodes.txt              /usr/share/lms/lib/
 
 doc/html                        /usr/share/lms/doc/
