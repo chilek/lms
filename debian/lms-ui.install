@@ -41,7 +41,6 @@ lib/LMSDBDriverInterface.php    /usr/share/lms/lib/
 lib/LMSDBInterface.php          /usr/share/lms/lib/
 lib/LMSCache.php                /usr/share/lms/lib/
 lib/LMSSmarty.php               /usr/share/lms/lib/
-lib/Userpanel.class.php         /usr/share/lms/lib/
 
 lib/menu.php                    /usr/share/lms/lib/
 lib/Session.class.php           /usr/share/lms/lib/
