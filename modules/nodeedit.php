@@ -258,11 +258,11 @@ if (isset($_POST['nodeedit'])) {
 
 	$hook_data = $LMS->executeHook('nodeedit_validation_before_submit',
 		array(
-			'nodeinfo' => $nodeedit,
+			'nodeedit' => $nodeedit,
 			'error' => $error,
 		)
 	);
-	$nodeedit = $hook_data['nodeinfo'];
+	$nodeedit = $hook_data['nodeedit'];
 	$error = $hook_data['error'];
 
 	if (!$error) {
@@ -295,10 +295,10 @@ if (isset($_POST['nodeedit'])) {
 
 		$hook_data = $LMS->executeHook('nodeedit_after_submit',
 			array(
-				'nodeinfo' => $nodeedit,
+				'nodeedit' => $nodeedit,
 			)
 		);
-		$nodeedit = $hook_data['nodeinfo'];
+		$nodeedit = $hook_data['nodeedit'];
 
 		$SESSION->redirect('?m=nodeinfo&id=' . $nodeedit['id']);
 	}
@@ -349,11 +349,11 @@ $nodeinfo = $LMS->ExecHook('node_edit_init', $nodeinfo);
 
 $hook_data = $LMS->executeHook('nodeedit_before_display',
 	array(
-		'nodeinfo' => $nodeinfo,
+		'nodeedit' => $nodeinfo,
 		'smarty' => $SMARTY,
 	)
 );
-$nodeinfo = $hook_data['nodeinfo'];
+$nodeinfo = $hook_data['nodeedit'];
 
 include(MODULES_DIR . '/nodexajax.inc.php');
 

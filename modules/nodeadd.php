@@ -197,11 +197,11 @@ if (isset($_POST['nodedata']))
 
 	$hook_data = $LMS->executeHook('nodeadd_validation_before_submit',
 		array(
-			'nodeinfo' => $nodedata,
+			'nodeadd' => $nodedata,
 			'error' => $error,
 		)
 	);
-	$nodedata = $hook_data['nodeinfo'];
+	$nodedata = $hook_data['nodeadd'];
 	$error = $hook_data['error'];
 
 	if(!$error)
@@ -241,10 +241,10 @@ if (isset($_POST['nodedata']))
 
 		$hook_data = $LMS->executeHook('nodeadd_after_submit',
 			array(
-				'nodeinfo' => $nodedata,
+				'nodeadd' => $nodedata,
 			)
 		);
-		$nodedata = $hook_data['nodeinfo'];
+		$nodedata = $hook_data['nodeadd'];
 
 		if(!isset($nodedata['reuse']))
 		{
@@ -293,11 +293,11 @@ $nodedata = $LMS->ExecHook('node_add_init', $nodedata);
 
 $hook_data = $LMS->executeHook('nodeadd_before_display',
 	array(
-		'nodeinfo' => $nodedata,
+		'nodeadd' => $nodedata,
 		'smarty' => $SMARTY,
 	)
 );
-$nodedata = $hook_data['nodeinfo'];
+$nodedata = $hook_data['nodeadd'];
 
 $SMARTY->assign('networks', $LMS->GetNetworks(true));
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());
