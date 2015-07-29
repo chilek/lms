@@ -39,6 +39,7 @@ $hook_data = $LMS->executeHook(
 	'customerinfo_before_display',
 	array(
 		'customerinfo' => $customerinfo,
+		'smarty' => $SMARTY,
 	)
 );
 $customerinfo = $hook_data['customerinfo'];
