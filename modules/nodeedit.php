@@ -255,6 +255,16 @@ if (isset($_POST['nodeedit'])) {
 			}
 		}
 	}
+
+	$hook_data = $LMS->executeHook('nodeedit_validation_before_submit',
+		array(
+			'nodeinfo' => $nodeedit,
+			'error' => $error,
+		)
+	);
+	$nodeedit = $hook_data['nodeinfo'];
+	$error = $hook_data['error'];
+
 	if (!$error) {
 		if (empty($nodeedit['teryt'])) {
 			$nodeedit['location_city'] = null;
@@ -282,6 +292,13 @@ if (isset($_POST['nodeedit'])) {
 		$LMS->CleanupInvprojects();
 
 		$nodeedit = $LMS->ExecHook('node_edit_after', $nodeedit);
+
+		$hook_data = $LMS->executeHook('nodeedit_after_submit',
+			array(
+				'nodeinfo' => $nodeedit,
+			)
+		);
+		$nodeedit = $hook_data['nodeinfo'];
 
 		$SESSION->redirect('?m=nodeinfo&id=' . $nodeedit['id']);
 	}
@@ -329,6 +346,14 @@ if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', fals
 }
 
 $nodeinfo = $LMS->ExecHook('node_edit_init', $nodeinfo);
+
+$hook_data = $LMS->executeHook('nodeedit_before_display',
+	array(
+		'nodeinfo' => $nodeinfo,
+		'smarty' => $SMARTY,
+	)
+);
+$nodeinfo = $hook_data['nodeinfo'];
 
 include(MODULES_DIR . '/nodexajax.inc.php');
 
