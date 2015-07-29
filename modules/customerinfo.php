@@ -35,6 +35,14 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $layout['pagetitle'] = trans('Customer Info: $a',$customerinfo['customername']);
 
+$hook_data = $LMS->executeHook(
+	'customerinfo_before_display',
+	array(
+		'customerinfo' => $customerinfo,
+	)
+);
+$customerinfo = $hook_data['customerinfo'];
+
 $SMARTY->display('customer/customerinfo.html');
 
 ?>
