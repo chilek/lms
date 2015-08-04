@@ -279,6 +279,8 @@ if (!isset($customeradd['zip']) && $default_zip) {
 
 $layout['pagetitle'] = trans('New Customer');
 
+$LMS->InitXajax();
+
 $hook_data = $LMS->executeHook(
     'customeradd_before_display',
     array(
@@ -288,6 +290,7 @@ $hook_data = $LMS->executeHook(
 );
 $customeradd = $hook_data['customeradd'];
 
+$SMARTY->assign('xajax', $LMS->RunXajax());
 $SMARTY->assign('cstateslist', $LMS->GetCountryStates());
 $SMARTY->assign('countrieslist', $LMS->GetCountries());
 $SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname, status FROM divisions ORDER BY shortname'));

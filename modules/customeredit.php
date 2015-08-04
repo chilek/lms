@@ -278,6 +278,9 @@ $layout['pagetitle'] = trans('Customer Edit: $a',$customerinfo['customername']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $customerid = $customerinfo['id'];
+
+$LMS->InitXajax();
+
 include(MODULES_DIR.'/customer.inc.php');
 
 $hook_data = $LMS->executeHook(
@@ -289,6 +292,7 @@ $hook_data = $LMS->executeHook(
 );
 $customerinfo = $hook_data['customerinfo'];
 
+$SMARTY->assign('xajax', $LMS->RunXajax());
 $SMARTY->assign('customerinfo',$customerinfo);
 $SMARTY->assign('cstateslist',$LMS->GetCountryStates());
 $SMARTY->assign('countrieslist',$LMS->GetCountries());

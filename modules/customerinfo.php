@@ -26,6 +26,8 @@
 
 $customerid = intval($_GET['id']);
 
+$LMS->InitXajax();
+
 include(MODULES_DIR.'/customer.inc.php');
 
 //if($customerinfo['cutoffstop'] > mktime(0,0,0))
@@ -44,6 +46,7 @@ $hook_data = $LMS->executeHook(
 );
 $customerinfo = $hook_data['customerinfo'];
 
+$SMARTY->assign('xajax', $LMS->RunXajax());
 $SMARTY->display('customer/customerinfo.html');
 
 ?>
