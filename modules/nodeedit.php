@@ -345,6 +345,8 @@ if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', fals
 	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 
+include(MODULES_DIR . '/nodexajax.inc.php');
+
 $nodeinfo = $LMS->ExecHook('node_edit_init', $nodeinfo);
 
 $hook_data = $LMS->executeHook('nodeedit_before_display',
@@ -354,8 +356,6 @@ $hook_data = $LMS->executeHook('nodeedit_before_display',
 	)
 );
 $nodeinfo = $hook_data['nodeedit'];
-
-include(MODULES_DIR . '/nodexajax.inc.php');
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
 

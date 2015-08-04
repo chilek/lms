@@ -308,6 +308,5 @@ function getRadioSectors($netdev, $technology = 0) {
 $LMS->InitXajax();
 $LMS->RegisterXajaxFunction(array('getNodeLocks', 'addNodeLock', 'delNodeLock', 'getThroughput', 'getNodeStats',
 	'getManagementUrls', 'addManagementUrl', 'delManagementUrl', 'updateManagementUrl', 'getRadioSectors'));
-$SMARTY->assign('xajax', $LMS->RunXajax());
 
 ?>

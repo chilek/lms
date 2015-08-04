@@ -280,14 +280,11 @@ if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', fals
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 }
 
-include(MODULES_DIR . '/nodexajax.inc.php');
-
-$SMARTY->assign('xajax', $LMS->RunXajax());
-
 $nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
 	array(INV_PROJECT_SYSTEM));
 $SMARTY->assign('NNprojects',$nprojects);
 
+include(MODULES_DIR . '/nodexajax.inc.php');
 
 $nodedata = $LMS->ExecHook('node_add_init', $nodedata);
 
@@ -298,6 +295,8 @@ $hook_data = $LMS->executeHook('nodeadd_before_display',
 	)
 );
 $nodedata = $hook_data['nodeadd'];
+
+$SMARTY->assign('xajax', $LMS->RunXajax());
 
 $SMARTY->assign('networks', $LMS->GetNetworks(true));
 $SMARTY->assign('netdevices', $LMS->GetNetDevNames());

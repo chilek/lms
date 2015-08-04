@@ -73,10 +73,6 @@ else
 
 $layout['pagetitle'] = trans('Node Info: $a', $nodeinfo['name']);
 
-include(MODULES_DIR . '/nodexajax.inc.php');
-
-$SMARTY->assign('xajax', $LMS->RunXajax());
-
 $nodeinfo['projectname'] = trans('none');
 if ($nodeinfo['invprojectid']) {
 	$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id=?", array($nodeinfo['invprojectid']));
@@ -113,6 +109,8 @@ if ($authtype != 0) {
 	$nodeauthtype['eap'] = ($authtype & 4);
 }
 
+include(MODULES_DIR . '/nodexajax.inc.php');
+
 $nodeinfo = $LMS->ExecHook('node_info_init', $nodeinfo);
 
 $hook_data = $LMS->executeHook('nodeinfo_before_display',
@@ -122,6 +120,8 @@ $hook_data = $LMS->executeHook('nodeinfo_before_display',
 	)
 );
 $nodeinfo = $hook_data['nodeinfo'];
+
+$SMARTY->assign('xajax', $LMS->RunXajax());
 
 $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));
 $SMARTY->assign('netdevices', $netdevices);
