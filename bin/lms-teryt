@@ -785,19 +785,24 @@ if ($merge)
 	}
 
 	# voipaccounts
-	$dbq = $dbase->prepare("SELECT va.id, l.location_city, l.location_street, l.location_house, l.location_flat, l.location,
+	$dbq = $dbase->prepare("SELECT va.id, va.phone, l.location_city, l.location_street, l.location_house, l.location_flat, l.location,
 			COUNT(l.*) AS nodecount FROM voipaccounts va
 		JOIN nodes n ON n.ownerid = va.ownerid
-		JOIN (SELECT DISTINCT ownerid, location_city, location_street, location_house, location_flat, location FROM nodes) l
+		LEFT JOIN (SELECT DISTINCT ownerid, location_city, location_street, location_house, location_flat, location FROM nodes) l
 			ON l.ownerid = va.ownerid
 		WHERE va.location_city IS NULL and va.location_street IS NULL
 			AND n.location_city IS NOT NULL AND n.location_street IS NOT NULL
-		GROUP BY va.id, l.location_city, l.location_street, l.location_house, l.location_flat, l.location
-		HAVING COUNT(l.*) = 1");
+		GROUP BY va.id, va.phone, l.location_city, l.location_street, l.location_house, l.location_flat, l.location");
 	$dbq->execute();
 	while ($row = $dbq->fetchrow_hashref()) {
-		$voipaccount_update->execute($row->{'location_city'}, $row->{'location_street'},
-			$row->{'location_house'}, $row->{'location_flat'}, $row->{'location'}, $row->{'id'});
+		printf("%s (%04d): ", $row->{'phone'}, $row->{'id'}) if not $quiet;
+		if ($row->{'nodecount'}) {
+			print "found\n" if not $quiet;
+			$voipaccount_update->execute($row->{'location_city'}, $row->{'location_street'},
+				$row->{'location_house'}, $row->{'location_flat'}, $row->{'location'}, $row->{'id'});
+		} else {
+			print "not found\n" if not $quiet;
+		}
 	}
 
 	$node_update->finish();
