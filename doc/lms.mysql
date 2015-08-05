@@ -1628,6 +1628,19 @@ CREATE TABLE voipaccounts (
 
 # --------------------------------------------------------
 #
+# Structure of table plicbdlocalisation
+#
+CREATE TABLE plicbdlocalisation (
+	phone varchar(255) NOT NULL,
+	owner varchar(256) NOT NULL,
+	location varchar(255) NOT NULL,
+	location_city int(11) NOT NULL,
+	KEY location_city (location_city),
+	FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table messages
 #
 CREATE TABLE messages (
@@ -2415,4 +2428,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015072300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015080500');

@@ -1729,6 +1729,18 @@ CREATE INDEX voipaccounts_location_street_idx ON voipaccounts (location_street);
 CREATE INDEX voipaccounts_location_city_idx ON voipaccounts (location_city, location_street, location_house, location_flat);
 
 /* ---------------------------------------------------
+ Structure of table "plicbdlocalisation"
+------------------------------------------------------*/
+CREATE TABLE plicbdlocalisation (
+	phone varchar(255) NOT NULL,
+	owner varchar(256) NOT NULL,
+	location varchar(255) NOT NULL,
+	location_city integer NOT NULL
+		REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE INDEX plicbdlocalisation_location_city_idx ON plicbdlocalisation (location_city);
+
+/* ---------------------------------------------------
  Structure of table "messages"
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS messages_id_seq;
@@ -2511,4 +2523,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015072300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015080500');
