@@ -62,6 +62,11 @@ else
 	$model = $_GET['model'];
 $SESSION->save('ndfmodel', $model);
 
+if (empty($model))
+	$model = -1;
+if (empty($producer))
+	$producer = -1;
+
 $producers = $DB->GetCol("SELECT DISTINCT UPPER(TRIM(producer)) AS producer FROM netdevices WHERE producer <> '' ORDER BY producer");
 $models = $DB->GetCol("SELECT DISTINCT UPPER(TRIM(model)) AS model FROM netdevices WHERE model <> ''"
 	. ($producer != '-1' ? " AND UPPER(TRIM(producer)) = " . $DB->Escape($producer == '-2' ? '' : $producer) : '') . " ORDER BY model");
