@@ -63,7 +63,7 @@ $LANGDEFS = array(
 			'locale' => 'lt_LT.UTF-8',
 			'charset' => 'UTF-8',
 			'html' => 'lt',
-			'money_format' => '%01.2f LT',
+			'money_format' => '%01.2f EUR',
 //			'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
 			),
 		'en' => array(
