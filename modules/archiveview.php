@@ -77,7 +77,7 @@ $LMS->InitXajax();
 $LMS->RegisterXajaxFunction(array('GetPropertyNames', 'GetPropertyValues'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
-$limit = get_conf('phpui.archiveview_limit', 100);
+$limit = ConfigHelper::getConfig('phpui.archiveview_limit', 100);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if (isset($_POST['search'])) {
