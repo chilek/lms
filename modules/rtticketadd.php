@@ -141,12 +141,13 @@ if(isset($_POST['ticket']))
 				if ($ticket['customerid'])
 				{
 					$info = $DB->GetRow('SELECT pin, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,
-							email, address, zip, city, (' . $DB->GroupConcat('phone', ',') . ') AS phones,
+							cc2.contact AS email, address, zip, city, (' . $DB->GroupConcat('contact', ',') . ') AS phones,
 							(' . $DB->GroupConcat('cc.name', ',') . ') AS contactnames
 							FROM customers c
-							LEFT JOIN customercontacts cc ON cc.customerid = c.id
+							LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type < ?
+							LEFT JOIN customercontacts cc2 ON cc2.customerid = c.id AND cc2.type = ?
 							WHERE c.id = ? GROUP BY c.id',
-							array($ticket['customerid']));
+							array(CONTACT_EMAIL, CONTACT_EMAIL, $ticket['customerid']));
 
 					$phones = explode(',', $info['phones']);
 					$contactnames = explode(',', $info['contactnames']);

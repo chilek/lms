@@ -121,9 +121,9 @@ switch($type)
     		$list = $DB->GetAllByKey('SELECT rttickets.id, createtime, customerid, subject, requestor, '
 			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername '
 			.(!empty($_POST['contacts']) || !empty($_GET['contacts'])
-				? ', address, (SELECT phone
+				? ', address, (SELECT contact
 				FROM customercontacts
-				WHERE customerid = customers.id LIMIT 1) AS phone ' : '')
+				WHERE customerid = customers.id AND customercontacts.type < ' . CONTACT_EMAIL . ' LIMIT 1) AS phone ' : '')
 		        .'FROM rttickets
 			LEFT JOIN rtticketcategories tc ON tc.ticketid = rttickets.id
 			LEFT JOIN customers ON (customerid = customers.id)

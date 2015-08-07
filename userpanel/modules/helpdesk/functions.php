@@ -161,10 +161,12 @@ function module_main()
 			$sms_body = $headers['Subject']."\n".$ticket['body'];
 			$body = $ticket['body']."\n\n".ConfigHelper::getConfig('userpanel.lms_url').'/?m=rtticketview&id='.$id;
 
-			$info = $DB->GetRow('SELECT id AS customerid, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-					email, address, zip, city, (SELECT phone FROM customercontacts
-					WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
-				FROM customers WHERE id = ?', array($SESSION->id));
+			$info = $DB->GetRow('SELECT c.id AS customerid, pin, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,
+					cc.contact AS email, address, zip, city, (SELECT contact AS phone FROM customercontacts
+					WHERE customerid = customers.id AND customercontacts.type < ? ORDER BY id LIMIT 1) AS phone
+				FROM customers c
+				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = ?
+				WHERE c.id = ?', array(CONTACT_EMAIL, CONTACT_EMAIL, $SESSION->id));
 
 			if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
 				$body .= "\n\n-- \n";
@@ -311,11 +313,13 @@ function module_main()
 		$body = $ticket['body']."\n\n".ConfigHelper::getConfig('userpanel.lms_url') . '/?m=rtticketview&id=' . $ticket['id'];
 
 		if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
-			$info = $DB->GetRow('SELECT id AS customerid, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-				email, address, zip, city,
-				(SELECT phone FROM customercontacts
-					WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
-				FROM customers WHERE id = ?', array($SESSION->id));
+			$info = $DB->GetRow('SELECT c.id AS customerid, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,
+				cc.contact AS email, address, zip, city,
+				(SELECT contact AS phone FROM customercontacts
+					WHERE customerid = customers.id AND customercontacts.type < ? ORDER BY id LIMIT 1) AS phone
+				FROM customers c
+				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = ?
+				WHERE c.id = ?', array(CONTACT_EMAIL, CONTACT_EMAIL, $SESSION->id));
 
 			$body .= "\n\n-- \n";
 			$body .= trans('Customer:').' '.$info['customername']."\n";

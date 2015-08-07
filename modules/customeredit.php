@@ -214,10 +214,29 @@ elseif (isset($_POST['customerdata']))
 				}
 		}
 		$DB->Execute('DELETE FROM customercontacts WHERE customerid = ?', array($customerdata['id']));
-		if(isset($contacts))
+
+		if (!empty($customerdata['email'])) {
+			$DB->Execute('INSERT INTO customercontacts (customerid, contact, type)
+				VALUES(?, ?, ?)', array($customerdata['id'], $customerdata['email'], CONTACT_EMAIL));
+			if ($SYSLOG) {
+				$contactid = $DB->GetLastInsertID('customercontacts');
+				$args = array(
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT] => $contactid,
+					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerdata['id'],
+					'contact' => $customerdata['email'],
+					'type' => CONTACT_EMAIL,
+				);
+				$SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_ADD, $args,
+					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+			}
+		}
+
+		if (isset($contacts))
 			foreach($contacts as $contact) {
-				$DB->Execute('INSERT INTO customercontacts (customerid, phone, name, type)
-					VALUES(?, ?, ?, ?)', array($customerdata['id'], $contact['phone'], $contact['name'], $contact['type']));
+				$DB->Execute('INSERT INTO customercontacts (customerid, contact, name, type)
+					VALUES(?, ?, ?, ?)', array($customerdata['id'], $contact['phone'], $contact['name'],
+						empty($contact['type']) ? CONTACT_LANDLINE : $contact['type']));
 				if ($SYSLOG) {
 					$contactid = $DB->GetLastInsertID('customercontacts');
 					$args = array(
@@ -225,7 +244,7 @@ elseif (isset($_POST['customerdata']))
 						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerdata['id'],
 						'phone' => $contact['phone'],
 						'name' => $contact['name'],
-						'type' => $contact['type']
+						'type' => empty($contact['type']) ? CONTACT_LANDLINE : $contact['type'],
 					);
 					$SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_ADD, $args,
 						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT],

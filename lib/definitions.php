@@ -200,6 +200,8 @@ $PAYTYPES = array(
 // Contact types
 define('CONTACT_MOBILE', 1);
 define('CONTACT_FAX', 2);
+define('CONTACT_LANDLINE', 4);
+define('CONTACT_EMAIL', 8);
 
 $CONTACTTYPES = array(
     CONTACT_MOBILE 	=>	trans('mobile'),

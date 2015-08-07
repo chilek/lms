@@ -238,7 +238,7 @@ if ($debtors_message && (empty($types) || in_array('debtors', $types))) {
 			SUM(value) AS balance, x.phone
 		FROM customers c
 		JOIN cash ON (c.id = cash.customerid)
-		JOIN (SELECT " . $DB->GroupConcat('phone') . " AS phone, customerid
+		JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
 			WHERE (type & 1) = 1
 			GROUP BY customerid
@@ -278,7 +278,7 @@ if ($invoices_message && (empty($types) || in_array('invoices', $types))) {
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
-		JOIN (SELECT " . $DB->GroupConcat('phone') . " AS phone, customerid
+		JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
 			WHERE (type & 1) = 1
 			GROUP BY customerid
@@ -327,7 +327,7 @@ if ($deadline_message && (empty($types) || in_array('deadline', $types))) {
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
 		JOIN (
-			SELECT " . $DB->GroupConcat('phone') . " AS phone, customerid
+			SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
 			WHERE (type & 1) = 1
 			GROUP BY customerid
@@ -382,7 +382,7 @@ if ($notes_message && (empty($types) || in_array('notes', $types))) {
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
-		JOIN (SELECT " . $DB->GroupConcat('phone') . " AS phone, customerid
+		JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
 			WHERE (type & 1) = 1
 			GROUP BY customerid

@@ -54,7 +54,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      */
     public function getCustomerEmail($id)
     {
-        return $this->db->GetOne('SELECT email FROM customers WHERE id=?', array($id));
+        return $this->db->GetOne('SELECT contact FROM customercontacts
+		WHERE customerid = ? AND type = ?', array($id, CONTACT_EMAIL));
     }
     
     /**
@@ -307,7 +308,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'zip' => $customeradd['zip'],
             'city' => $customeradd['city'],
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $customeradd['countryid'],
-            'email' => $customeradd['email'],
             'ten' => $customeradd['ten'],
             'ssn' => $customeradd['ssn'],
             'status' => $customeradd['status'],
@@ -334,12 +334,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'mailingnotice' => $customeradd['mailingnotice'],
         );
         if ($this->db->Execute('INSERT INTO customers (name, lastname, type,
-				    address, zip, city, countryid, email, ten, ssn, status, creationdate,
+				    address, zip, city, countryid, ten, ssn, status, creationdate,
 				    post_name, post_address, post_zip, post_city, post_countryid,
 				    creatorid, info, notes, message, pin, regon, rbe,
 				    icn, cutoffstop, consentdate, einvoice, divisionid, paytime, paytype,
 				    invoicenotice, mailingnotice)
-				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?,
+				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?,
 				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
         ) {
             $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
@@ -446,7 +446,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     switch ($key) {
                         case 'phone':
                             $searchargs[] = 'EXISTS (SELECT 1 FROM customercontacts
-								WHERE customerid = c.id AND REPLACE(phone, \'-\', \'\') ?LIKE? ' . $this->db->Escape("%$value%") . ')';
+					WHERE customerid = c.id AND customercontacts.type < ' . CONTACT_EMAIL
+					. ' AND REPLACE(contact, \'-\', \'\') ?LIKE? ' . $this->db->Escape("%$value%") . ')';
                             break;
                         case 'zip':
                         case 'city':
@@ -528,6 +529,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 							AND (dateto >= ?NOW? OR dateto = 0)
 							AND (t.type = ' . intval($value) . '))';
                             break;
+			case 'email':
+				$searchargs[] = "cc.contact ?LIKE? " . $this->db->Escape("%$value%");
+				break;
                         default:
                             $searchargs[] = "$key ?LIKE? " . $this->db->Escape("%$value%");
                     }
@@ -541,7 +545,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if ($customerlist = $this->db->GetAll(
                 'SELECT c.id AS id, ' . $this->db->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername, 
-				status, address, zip, city, countryid, countries.name AS country, email, ten, ssn, c.info AS info, 
+				status, address, zip, city, countryid, countries.name AS country, cc.contact AS email, ten, ssn, c.info AS info, 
 				message, c.divisionid, c.paytime AS paytime, COALESCE(b.value, 0) AS balance,
 				COALESCE(t.value, 0) AS tariffvalue, s.account, s.warncount, s.online,
 				(CASE WHEN s.account = s.acsum THEN 1
@@ -549,6 +553,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 				(CASE WHEN s.warncount = s.warnsum THEN 1
 					WHEN s.warnsum > 0 THEN 2 ELSE 0 END) AS nodewarn
 				FROM customersview c
+				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = ' . CONTACT_EMAIL . '
 				LEFT JOIN countries ON (c.countryid = countries.id) '
                 . ($customergroup ? 'LEFT JOIN customerassignments ON (c.id = customerassignments.customerid) ' : '')
                 . 'LEFT JOIN (SELECT
@@ -767,8 +772,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
             $result['messengers'] = $this->db->GetAllByKey('SELECT uid, type 
 					FROM imessengers WHERE customerid = ? ORDER BY type', 'type', array($result['id']));
-            $result['contacts'] = $this->db->GetAll('SELECT phone, name, type
-					FROM customercontacts WHERE customerid = ? ORDER BY id', array($result['id']));
+            $result['contacts'] = $this->db->GetAll('SELECT contact AS phone, name, type
+					FROM customercontacts
+					WHERE customerid = ? AND type < ? ORDER BY id',
+					array($result['id'], CONTACT_EMAIL));
+		$result['email'] = $this->db->GetOne('SELECT contact FROM customercontacts WHERE customerid = ? AND type = ?',
+			array($result['id'], CONTACT_EMAIL));
 
             if (is_array($result['contacts']))
                 foreach ($result['contacts'] as $idx => $row) {
@@ -803,7 +812,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'zip' => $customerdata['zip'],
             'city' => $customerdata['city'],
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $customerdata['countryid'],
-            'email' => $customerdata['email'],
             'ten' => $customerdata['ten'],
             'ssn' => $customerdata['ssn'],
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => isset($this->auth->id) ? $this->auth->id : 0,
@@ -832,7 +840,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerdata['id']
         );
         $res = $this->db->Execute('UPDATE customers SET status=?, type=?, address=?,
-                               zip=?, city=?, countryid=?, email=?, ten=?, ssn=?, moddate=?NOW?, modid=?,
+                               zip=?, city=?, countryid=?, ten=?, ssn=?, moddate=?NOW?, modid=?,
                                post_name=?, post_address=?, post_zip=?, post_city=?, post_countryid=?,
                                info=?, notes=?, lastname=UPPER(?), name=?,
                                deleted=0, message=?, pin=?, regon=?, icn=?, rbe=?,

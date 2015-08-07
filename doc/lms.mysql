@@ -153,7 +153,6 @@ CREATE TABLE customers (
   name varchar(128) 	NOT NULL DEFAULT '',
   status smallint 	NOT NULL DEFAULT '0',
   type smallint		NOT NULL DEFAULT '0',
-  email varchar(255) 	NOT NULL DEFAULT '',
   address varchar(255) 	NOT NULL DEFAULT '',
   zip varchar(10) 	NOT NULL DEFAULT '',
   city varchar(32) 	NOT NULL DEFAULT '',
@@ -1514,11 +1513,11 @@ CREATE TABLE customercontacts (
 	id 		int(11) 	NOT NULL auto_increment,
 	customerid 	int(11) 	NOT NULL,
 	name 		varchar(255) 	NOT NULL DEFAULT '',
-	phone 		varchar(255) 	NOT NULL DEFAULT '',
+	contact		varchar(255) 	NOT NULL DEFAULT '',
 	type        smallint        DEFAULT NULL,
 	PRIMARY KEY (id),
 	INDEX customerid (customerid),
-	INDEX phone (phone),
+	INDEX contact (contact),
 	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -2428,4 +2427,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015080500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015080700');

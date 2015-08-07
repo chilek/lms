@@ -41,7 +41,7 @@ if(isset($_POST['searchcustomer']) && $_POST['searchcustomer'])
 			.' OR icn LIKE '.$DB->Escape('%'.$search.'%')
 			.' OR rbe LIKE '.$DB->Escape('%'.$search.'%')
 			.' OR regon LIKE '.$DB->Escape('%'.$search.'%')
-			.' OR UPPER(email) LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
+			.' OR UPPER(cc.contact) LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
 			.' OR UPPER('.$DB->Concat('lastname',"' '",'c.name').') LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
 			.' OR UPPER(address) LIKE UPPER('.$DB->Escape('%'.$search.'%').')) ';
 
@@ -65,9 +65,10 @@ if(isset($_POST['searchnode']) && $_POST['searchnode'])
 if(isset($where_node) || isset($where_cust))
 {
 	if($customerlist = $DB->GetAll('SELECT c.*, (SELECT SUM(value) FROM cash WHERE customerid = c.id) AS balance 
-				FROM (SELECT DISTINCT c.id AS id, address, zip, city, email, ssn, 
+				FROM (SELECT DISTINCT c.id AS id, address, zip, city, cc.contact AS email, ssn, 
 				'.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername
-				FROM customersview c ' 
+				FROM customersview c
+				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = ' . CONTACT_EMAIL . ' '
 				.(isset($where_node) ? 'LEFT JOIN vnodes ON (c.id = ownerid) ' : '')
 				.'WHERE deleted = 0 '
 				.(isset($where_cust) ? $where_cust : '')

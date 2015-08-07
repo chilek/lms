@@ -1985,6 +1985,8 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$customeradd['paytime'] = -1;
 
 		$id = $LMS->CustomerAdd($customeradd);
+		$DB->Execute('INSERT INTO customercontacts (customerid, contact, type)
+			VALUES (?, ?, ?)', array($id, $customeradd['email'], CONTACT_EMAIL));
 		$LMS->AddAssignment(array(
 			'tariffid' => $customeradd['tariff'],
 			'customerid' => $id,
@@ -1998,8 +2000,8 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			'settlement' => 0, 
 			'nodes' => NULL
 		));
-		$DB->Execute('INSERT INTO customercontacts (customerid, phone)
-		    VALUES (?, ?)', array($id, $customeradd['phone']));
+		$DB->Execute('INSERT INTO customercontacts (customerid, contact, type)
+		    VALUES (?, ?, ?)', array($id, $customeradd['phone'], CONTACT_LANDLINE));
 
 		$nodes = mt_rand(1,2);
 		for($j = 0; $j < $nodes; $j++)

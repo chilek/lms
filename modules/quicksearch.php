@@ -74,16 +74,17 @@ switch ($mode) {
 	case 'customer':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll("SELECT id, email, address, post_name, post_address, deleted,
-			    ".$DB->Concat('UPPER(lastname)',"' '",'name')." AS username
-				FROM customersview
-				WHERE ".(preg_match('/^[0-9]+$/', $search) ? 'id = '.intval($search).' OR ' : '')."
-					LOWER(".$DB->Concat('lastname',"' '",'name').") ?LIKE? LOWER($sql_search)
+			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, address, post_name, post_address, deleted,
+			    ".$DB->Concat('UPPER(lastname)',"' '",'c.name')." AS username
+				FROM customersview c
+				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = " . CONTACT_EMAIL . "
+				WHERE ".(preg_match('/^[0-9]+$/', $search) ? 'c.id = '.intval($search).' OR ' : '')."
+					LOWER(".$DB->Concat('lastname',"' '",'c.name').") ?LIKE? LOWER($sql_search)
 					OR LOWER(address) ?LIKE? LOWER($sql_search)
 					OR LOWER(post_name) ?LIKE? LOWER($sql_search)
 					OR LOWER(post_address) ?LIKE? LOWER($sql_search)
-					OR LOWER(email) ?LIKE? LOWER($sql_search)
-				ORDER by deleted, username, email, address
+					OR LOWER(cc.contact) ?LIKE? LOWER($sql_search)
+				ORDER by deleted, username, cc.contact, address
 				LIMIT 15");
 
 			$eglible=array(); $actions=array(); $descriptions=array();

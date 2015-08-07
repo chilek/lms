@@ -115,12 +115,13 @@ function module_updateusersave()
 			    if(isset($userinfo['contacts'][$i]) && $userinfo['contacts'][$i]['phone'] != $v)
 			    {
 				    if($v)
-					    $LMS->DB->Execute('UPDATE customercontacts SET phone = ? WHERE id = ? AND customerid = ?', array($v, $i, $id));
+					    $LMS->DB->Execute('UPDATE customercontacts SET contact = ? WHERE id = ? AND customerid = ?', array($v, $i, $id));
 				    else
 					    $LMS->DB->Execute('DELETE FROM customercontacts WHERE id = ? AND customerid = ?', array($i, $id));
 			    }
 			    elseif(!isset($userinfo['contacts'][$i])  && $v)
-			    	    $LMS->DB->Execute('INSERT INTO customercontacts (customerid, phone) VALUES (?,?)', array($id, $v));
+			    	    $LMS->DB->Execute('INSERT INTO customercontacts (customerid, contact, type) VALUES (?, ?, ?)',
+					array($id, $v, CONTACT_LANDLINE));
 			    
 			    $userinfo['contacts'][$i]['phone'] = $v;
 			}
@@ -267,7 +268,8 @@ if(defined('USERPANEL_SETUPMODE'))
 			{
 				if(preg_match('/phone([0-9]+)/', $change['fieldname'], $matches))
 				{
-					$old = $DB->GetOne('SELECT phone FROM customercontacts WHERE id = ?', array($matches[1]));
+					$old = $DB->GetOne('SELECT contact AS phone FROM customercontacts WHERE id = ? AND type < ?',
+						array($matches[1], CONTACT_EMAIL));
 				}
 				else
 					switch($change['fieldname'])
@@ -311,12 +313,13 @@ if(defined('USERPANEL_SETUPMODE'))
 					if($matches[1])
 					{
 						if($changes['fieldvalue'])
-							$DB->Execute('UPDATE customercontacts SET phone = ? WHERE id = ?', array($changes['fieldvalue'], $matches[1]));
+							$DB->Execute('UPDATE customercontacts SET contact = ? WHERE id = ?', array($changes['fieldvalue'], $matches[1]));
 						else
 							$DB->Execute('DELETE FROM customercontacts WHERE id = ?', array($matches[1]));
 					}
 					else // new phone
-						$DB->Execute('INSERT INTO customercontacts (phone, customerid) VALUES(?,?)', array($changes['fieldvalue'], $changes['customerid']));
+						$DB->Execute('INSERT INTO customercontacts (contact, customerid, type) VALUES(?, ?, ?)',
+							array($changes['fieldvalue'], $changes['customerid'], CONTACT_LANDLINE));
 				}
 				else
 				switch($changes['fieldname'])
@@ -344,12 +347,18 @@ if(defined('USERPANEL_SETUPMODE'))
 					case 'address':
 					case 'zip':
 					case 'city':
-					case 'email':
 					case 'ssn':
 					case 'ten':
 						$DB->Execute('UPDATE customers SET '.$changes['fieldname'].' = ? WHERE id = ?',
 							array($changes['fieldvalue'], $changes['customerid']));
-					break;
+						break;
+					case 'email':
+						$DB->Execute('DELETE FROM customercontacts WHERE customerid = ? AND type = ?',
+							array($changes['customerid'], CONTACT_EMAIL));
+						if (!empty($changes['fieldvalue']))
+							$DB->Execute('INSERT INTO customercontacts (customerid, contact, type) VALUES (?, ?, ?)',
+								array($changes['customerid'], $changes['fieldvalue'], CONTACT_EMAIL));
+						break;
 				}
 			
 				$DB->Execute('DELETE FROM up_info_changes WHERE id = ?', array($changeid));

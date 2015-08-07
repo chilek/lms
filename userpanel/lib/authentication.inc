@@ -33,16 +33,16 @@ function GetCustomerIDByPhoneAndPIN($phone, $pin)
 		return NULL;
 
 	$authinfo['id'] = $DB->GetOne('SELECT id FROM customers, customercontacts
-	                WHERE customerid = customers.id AND phone = ?
+	                WHERE customerid = customers.id AND contact = ? AND customercontacts.type < ?
 			AND deleted = 0 LIMIT 1', 
-			array($phone));
+			array($phone, CONTACT_EMAIL));
 
 	if ($authinfo['id'] == NULL)
 		return NULL;
 
 	$authinfo['passwd'] = $DB->GetOne('SELECT pin FROM customers, customercontacts
-	                WHERE customerid = customers.id AND pin=? AND phone=? LIMIT 1',
-			array($pin, $phone));
+	                WHERE customerid = customers.id AND pin=? AND contact=? AND customercontacts.type < ? LIMIT 1',
+			array($pin, $phone, CONTACT_EMAIL));
 
 	return $authinfo;
 }

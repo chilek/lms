@@ -59,15 +59,15 @@ class Session {
 				case 1:
 					if (!check_email($remindform['email']))
 						return;
-					$join = '';
-					$where = ' AND email = ?';
-					$params[] = $remindform['email'];
+					$join = 'JOIN customercontacts cc ON cc.customerid = c.id';
+					$where = ' AND contact = ? AND cc.type = ?';
+					$params = array_merge($params, array($remindform['email'], CONTACT_EMAIL));
 					break;
 				case 2:
 					if (!preg_match('/^[0-9]+$/', $remindform['phone']))
 						return;
 					$join = 'JOIN customercontacts cc ON cc.customerid = c.id';
-					$where = ' AND phone = ? AND cc.type & ? = ?';
+					$where = ' AND contact = ? AND cc.type & ? = ?';
 					$params = array_merge($params,
 						array(preg_replace('/ -/', '', $remindform['phone']),
 							CONTACT_MOBILE, CONTACT_MOBILE));

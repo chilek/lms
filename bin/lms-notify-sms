@@ -354,7 +354,7 @@ if ($debtors_file)
 			SUM(value) AS balance, x.phone
 		FROM customers c
 		JOIN cash ON (c.id = cash.customerid)
-		JOIN (SELECT MIN(phone) AS phone, customerid
+		JOIN (SELECT MIN(contact) AS phone, customerid
 		        FROM customercontacts
 			WHERE (type & 1) = 1
 			GROUP BY customerid
@@ -400,7 +400,7 @@ if ($invoices_file)
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
-		JOIN (SELECT MIN(phone) AS phone, customerid
+		JOIN (SELECT MIN(contact) AS phone, customerid
 		        FROM customercontacts
 			WHERE (type & 1) = 1
 			GROUP BY customerid
@@ -460,7 +460,7 @@ if ($deadline_file)
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
-		JOIN (SELECT MIN(phone) AS phone, customerid
+		JOIN (SELECT MIN(contact) AS phone, customerid
 		        FROM customercontacts
 			WHERE (type & 1) = 1
 			GROUP BY customerid
@@ -521,7 +521,7 @@ if ($notes_file)
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
-		JOIN (SELECT MIN(phone) AS phone, customerid
+		JOIN (SELECT MIN(contact) AS phone, customerid
 		        FROM customercontacts
 			WHERE (type & 1) = 1
 			GROUP BY customerid

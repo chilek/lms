@@ -339,16 +339,17 @@ if (empty($types) || in_array('contracts', $types)) {
 	$days = $notifications['contracts']['days'];
 	$customers = $DB->GetAll("SELECT c.id, c.pin, c.lastname, c.name,
 			SUM(value) AS balance, MAX(a.dateto) AS cdate,
-			c.email, x.phone
+			cc.contact AS email, x.phone
 		FROM customers c
+		LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = 8
 		JOIN cash ON (c.id = cash.customerid)
 		JOIN assignments a ON (c.id = a.customerid)
-		LEFT JOIN (SELECT " . $DB->GroupConcat('phone') . " AS phone, customerid
+		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
 			WHERE (type & 1) = 1
 			GROUP BY customerid
 		) x ON (x.customerid = c.id)
-		GROUP BY c.id, c.pin, c.lastname, c.name, c.email, x.phone
+		GROUP BY c.id, c.pin, c.lastname, c.name, cc.contact, x.phone
 		HAVING MAX(a.dateto) >= $daystart + ? * 86400 AND MAX(a.dateto) < $daystart + (? + 1) * 86400",
 		array($days, $days));
 
@@ -396,11 +397,12 @@ if (empty($types) || in_array('debtors', $types)) {
 	$limit = $notifications['debtors']['limit'];
 	// @TODO: check 'messages' table and don't send notifies to often
 	$customers = $DB->GetAll("SELECT c.id, c.pin, c.lastname, c.name,
-			SUM(value) AS balance, c.email, x.phone, div.account
+			SUM(value) AS balance, cc.contact AS email, x.phone, div.account
 		FROM customers c
+		LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = 8
 		LEFT JOIN divisions div ON div.id = c.divisionid
 		JOIN cash ON (c.id = cash.customerid)
-		LEFT JOIN (SELECT " . $DB->GroupConcat('phone') . " AS phone, customerid
+		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
 			WHERE (type & 1) = 1
 			GROUP BY customerid
@@ -411,7 +413,7 @@ if (empty($types) || in_array('debtors', $types)) {
 				(CASE WHEN div.inv_paytime IS NULL THEN $deadline ELSE div.inv_paytime END) ELSE c.paytime END) + ?) * 86400 < $currtime)))
 			OR (cash.docid <> 0 AND ((d.type IN (2,3) AND cash.time < $currtime
 				OR (d.type IN (1,5) AND d.cdate + (d.paytime + ?) * 86400 < $currtime)))))
-		GROUP BY c.id, c.pin, c.lastname, c.name, c.email, div.account, x.phone
+		GROUP BY c.id, c.pin, c.lastname, c.name, cc.contact, div.account, x.phone
 		HAVING SUM(value) < ?", array($days, $days, $limit));
 
 	if (!empty($customers)) {
@@ -456,13 +458,14 @@ if (empty($types) || in_array('debtors', $types)) {
 if (empty($types) || in_array('reminder', $types)) {
 	$days = $notifications['reminder']['days'];
 	$documents = $DB->GetAll("SELECT d.id AS docid, c.id, c.pin, d.name,
-		d.number, n.template, d.cdate, d.paytime, c.email, x.phone, div.account,
+		d.number, n.template, d.cdate, d.paytime, cc.contact AS email, x.phone, div.account,
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
+		LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = 8
 		LEFT JOIN divisions div ON div.id = c.divisionid
 		LEFT JOIN (
-			SELECT " . $DB->GroupConcat('phone') . " AS phone, customerid
+			SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
 			WHERE (type & 1) = 1
 			GROUP BY customerid
@@ -532,12 +535,13 @@ if (empty($types) || in_array('reminder', $types)) {
 // Invoices created at current day
 if (empty($types) || in_array('invoices', $types)) {
 	$documents = $DB->GetAll("SELECT d.id AS docid, c.id, c.pin, d.name,
-		d.number, n.template, d.cdate, d.paytime, c.email, x.phone, div.account,
+		d.number, n.template, d.cdate, d.paytime, cc.contact AS email, x.phone, div.account,
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
+		LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = 8
 		LEFT JOIN divisions div ON div.id = c.divisionid
-		LEFT JOIN (SELECT " . $DB->GroupConcat('phone') . " AS phone, customerid
+		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
 			WHERE (type & 1) = 1
 			GROUP BY customerid
@@ -597,12 +601,13 @@ if (empty($types) || in_array('invoices', $types)) {
 // Debit notes created at current day
 if (empty($types) || in_array('notes', $types)) {
 	$documents = $DB->GetAll("SELECT d.id AS docid, c.id, c.pin, d.name,
-		d.number, n.template, d.cdate, c.email, x.phone, div.account,
+		d.number, n.template, d.cdate, cc.contact AS email, x.phone, div.account,
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
+		LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = 8
 		LEFT JOIN divisions div ON div.id = c.divisionid
-		LEFT JOIN (SELECT " . $DB->GroupConcat('phone') . " AS phone, customerid
+		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
 			WHERE (type & 1) = 1
 			GROUP BY customerid
@@ -662,10 +667,11 @@ if (empty($types) || in_array('notes', $types)) {
 // Node which warning flag has set
 if (empty($types) || in_array('warnings', $types)) {
 	$customers = $DB->GetAll("SELECT c.id, (" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS name,
-		c.pin, c.message, c.email, x.phone, div.account, COALESCE(ca.balance, 0) AS balance
+		c.pin, c.message, cc.contact AS email, x.phone, div.account, COALESCE(ca.balance, 0) AS balance
 		FROM customers c
+		LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = 8
 		LEFT JOIN divisions div ON div.id = c.divisionid
-		LEFT JOIN (SELECT " . $DB->GroupConcat('phone') . " AS phone, customerid
+		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
 			WHERE (type & 1) = 1
 			GROUP BY customerid

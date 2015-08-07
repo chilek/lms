@@ -229,18 +229,17 @@ if (isset($_POST['customeradd']))
 				}
 			}
 
-		if(isset($contacts) && $id)
-			foreach($contacts as $contact) {
-				$DB->Execute('INSERT INTO customercontacts (customerid, phone, name, type)
-					VALUES(?, ?, ?, ?)', array($id, $contact['phone'], $contact['name'], $contact['type']));
+		if ($id) {
+			if (!empty($customeradd['email'])) {
+				$DB->Execute('INSERT INTO customercontacts (customerid, contact, type)
+					VALUES (?, ?, ?)', array($id, $customeradd['email'], CONTACT_EMAIL));
 				if ($SYSLOG) {
 					$contactid = $DB->GetLastInsertID('customercontacts');
 					$args = array(
 						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT] => $contactid,
 						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
-						'phone' => $contact['phone'],
-						'name' => $contact['name'],
-						'type' => $contact['type']
+						'contact' => $customeradd['email'],
+						'type' => CONTACT_EMAIL,
 					);
 					$SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_ADD, $args,
 						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT],
@@ -248,6 +247,26 @@ if (isset($_POST['customeradd']))
 				}
 			}
 
+			if (isset($contacts))
+				foreach ($contacts as $contact) {
+					$DB->Execute('INSERT INTO customercontacts (customerid, contact, name, type)
+						VALUES(?, ?, ?, ?)', array($id, $contact['phone'], $contact['name'],
+							empty($contact['type']) ? CONTACT_LANDLINE : $contact['type']));
+					if ($SYSLOG) {
+						$contactid = $DB->GetLastInsertID('customercontacts');
+						$args = array(
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT] => $contactid,
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
+							'contact' => $contact['phone'],
+							'name' => $contact['name'],
+							'type' => empty($contact['type']) ? CONTACT_LANDLINE : $contact['type'],
+						);
+						$SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_ADD, $args,
+							array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT],
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					}
+				}
+		}
 		if(!isset($customeradd['reuse']))
 		{
 			$SESSION->redirect('?m=customerinfo&id='.$id);

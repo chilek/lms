@@ -280,12 +280,13 @@ if(isset($_POST['message']))
 				if ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid'])))
 				{
 					$info = $DB->GetRow('SELECT pin, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,
-							email, address, zip, city, (' . $DB->GroupConcat('phone', ',') . ') AS phones,
+							cc2.contact AS email, address, zip, city, (' . $DB->GroupConcat('cc.contact', ',') . ') AS phones,
 							(' . $DB->GroupConcat('cc.name', ',') . ') AS contactnames
 							FROM customers c
-							LEFT JOIN customercontacts cc ON cc.customerid = c.id
+							LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type < ?
+							LEFT JOIN customercontacts cc2 ON cc2.customerid = c.id AND cc2.type = ?
 							WHERE c.id = ? GROUP BY c.id',
-							array($cid));
+							array(CONTACT_EMAIL, CONTACT_EMAIL, $cid));
 
 					$phones = explode(',', $info['phones']);
 					$contactnames = explode(',', $info['contactnames']);

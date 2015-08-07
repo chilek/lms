@@ -44,7 +44,6 @@ CREATE TABLE customers (
 	name varchar(128)	DEFAULT '' NOT NULL,
 	status smallint 	DEFAULT 0 NOT NULL,
 	type smallint		DEFAULT 0 NOT NULL,
-	email varchar(255) 	DEFAULT '' NOT NULL,
 	address varchar(255) 	DEFAULT '' NOT NULL,
 	zip varchar(10)		DEFAULT '' NOT NULL,
 	city varchar(32) 	DEFAULT '' NOT NULL,
@@ -1605,7 +1604,7 @@ CREATE TABLE customercontacts (
     customerid 	integer 	NOT NULL
 	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
     name 	varchar(255) 	NOT NULL DEFAULT '',
-    phone 	varchar(255) 	NOT NULL DEFAULT '',
+    contact	varchar(255) 	NOT NULL DEFAULT '',
     type    smallint        DEFAULT NULL,
     PRIMARY KEY (id)
 );
@@ -2523,4 +2522,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015080500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015080700');

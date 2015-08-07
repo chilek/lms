@@ -85,7 +85,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 
 	if($type == MSG_SMS)
 	{
-		$smstable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('phone') . ' AS phone, customerid
+		$smstable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('contact') . ' AS phone, customerid
 				FROM customercontacts
 				WHERE (type & '.CONTACT_MOBILE.') = '.CONTACT_MOBILE.'
 				GROUP BY customerid
@@ -105,11 +105,12 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 
 	$suspension_percentage = f_round(ConfigHelper::getConfig('finances.suspension_percentage'));
 
-	$recipients = $LMS->DB->GetAll('SELECT c.id, email, pin, '
+	$recipients = $LMS->DB->GetAll('SELECT c.id, cc.contact AS email, pin, '
 		.($type==MSG_SMS ? 'x.phone, ': '')
 		.$LMS->DB->Concat('c.lastname', "' '", 'c.name').' AS customername,
 		COALESCE(b.value, 0) AS balance
 		FROM customersview c 
+		LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = ' . CONTACT_EMAIL . '
 		LEFT JOIN (
 			SELECT SUM(value) AS value, customerid
 			FROM cash GROUP BY customerid
@@ -141,7 +142,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 		. ($tarifftype ? $tarifftable : '')
 		.'WHERE deleted = ' . $deleted
 		. ($consent ? ' AND c.mailingnotice = 1' : '')
-		.($type == MSG_MAIL ? ' AND email != \'\'' : '')
+		.($type == MSG_MAIL ? ' AND cc.contact IS NOT NULL' : '')
 		.($group!=0 ? ' AND status = '.$group : '')
 		.($network ? ' AND c.id IN (SELECT ownerid FROM nodes WHERE 
 			(netid = ' . $net['id'] . ' AND ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ')
@@ -174,7 +175,7 @@ function GetRecipient($customerid, $type=MSG_MAIL)
 
 	if($type == MSG_SMS)
 	{
-		$smstable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('phone') . ' AS phone, customerid
+		$smstable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('contact') . ' AS phone, customerid
 				FROM customercontacts 
 				WHERE customerid = '.$customerid.'
 					AND (type & '.CONTACT_MOBILE.') = '.CONTACT_MOBILE.'
@@ -182,14 +183,15 @@ function GetRecipient($customerid, $type=MSG_MAIL)
 			) x ON (x.customerid = c.id) ';
 	}
 
-	return $LMS->DB->GetAll('SELECT c.id, email, pin, '
+	return $LMS->DB->GetAll('SELECT c.id, cc.contact AS email, pin, '
 		.($type==MSG_SMS ? 'x.phone, ': '')
 		.$LMS->DB->Concat('c.lastname', "' '", 'c.name').' AS customername,
 		COALESCE((SELECT SUM(value) FROM cash WHERE customerid = c.id), 0) AS balance
-		FROM customersview c '
+		FROM customersview c 
+		LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = ' . CONTACT_EMAIL . ' '
 		.(!empty($smstable) ? $smstable : '')
 		.'WHERE c.id = '.$customerid
-		.($type == MSG_MAIL ? ' AND email != \'\'' : ''));
+		.($type == MSG_MAIL ? ' AND cc.contact IS NOT NULL' : ''));
 }
 
 function BodyVars(&$body, $data)

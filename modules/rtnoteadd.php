@@ -94,10 +94,12 @@ elseif(isset($_POST['note']))
 			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)) 
 				&& ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($note['ticketid']))))
 			{
-				$info = $DB->GetRow('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-						email, address, zip, city, (SELECT phone FROM customercontacts 
-							WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
-						FROM customers WHERE id = ?', array($cid));
+				$info = $DB->GetRow('SELECT c.id, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,
+						cc.contact AS email, address, zip, city, (SELECT contact FROM customercontacts 
+							WHERE customerid = customers.id AND customercontacts.type < ? ORDER BY id LIMIT 1) AS phone
+						FROM customers c
+						LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = ?
+						WHERE c.id = ?', array(CONTACT_EMAIL, CONTACT_EMAIL, $cid));
 
 				$body .= "\n\n-- \n";
 				$body .= trans('Customer:').' '.$info['customername']."\n";

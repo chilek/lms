@@ -47,7 +47,8 @@ class ULMS extends LMS
                         $result['balance'] = $this->GetCustomerBalance($result['id']); 
 			$result['bankaccount'] = bankaccount($result['id']); 
 			$result['messengers'] = $this->DB->GetAllByKey('SELECT uid, type FROM imessengers WHERE customerid = ? ORDER BY type', 'type', array($id));
-		        $result['contacts'] = $this->DB->GetAllByKey('SELECT id, phone, name FROM customercontacts WHERE customerid = ? ORDER BY id', 'id', array($id));
+		        $result['contacts'] = $this->DB->GetAllByKey('SELECT id, contact AS phone, name
+				FROM customercontacts WHERE customerid = ? AND type < ? ORDER BY id', 'id', array($id, CONTACT_MAIL));
 			
 			return $result;
 		}
