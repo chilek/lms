@@ -454,6 +454,7 @@ switch ($mode) {
 $LMS->executeHook('quicksearch_after_submit',
 	array(
 		'mode' => $mode,
+		'search' => $search,
 		'sql_search' => $sql_search,
 		'session' => $SESSION,
 	)
