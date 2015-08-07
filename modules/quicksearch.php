@@ -451,14 +451,16 @@ switch ($mode) {
 	break;
 }
 
-$LMS->executeHook('quicksearch_after_submit',
+$quicksearch = $LMS->executeHook('quicksearch_after_submit',
 	array(
 		'mode' => $mode,
 		'search' => $search,
 		'sql_search' => $sql_search,
 		'session' => $SESSION,
+		'target' => '',
 	)
 );
+$target = $quicksearch['target'];
 
 $SESSION->redirect(!empty($target) ? $target : '?'.$SESSION->get('backto'));
 
