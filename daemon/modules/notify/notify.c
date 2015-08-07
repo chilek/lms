@@ -111,7 +111,7 @@ void reload(GLOBAL *g, struct notify_module *n)
 	int i, j; 
 	double balance;
 
-	res = g->db->query(g->db->conn, "SELECT customers.id AS id, email, pin, name, lastname, SUM(cash.value) AS balance FROM customers LEFT JOIN cash ON customers.id = cash.customerid WHERE deleted = 0 AND email!='' GROUP BY customers.id, name, lastname, email, pin");
+	res = g->db->query(g->db->conn, "SELECT customers.id AS id, customercontacts.contact AS email, pin, name, lastname, SUM(cash.value) AS balance FROM customers JOIN customercontacts ON customercontacts.customerid = customers.id AND customercontacts.type = 8 LEFT JOIN cash ON customers.id = cash.customerid WHERE deleted = 0 GROUP BY customers.id, customer.name, lastname, customercontacts.contact, pin");
 	
 	if( g->db->nrows(res) )
 	{

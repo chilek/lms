@@ -18,11 +18,12 @@ void tscript_ext_sql_close(tscript_context *);
 			ELSE COUNT(DISTINCT nodes.id) END \
 		    ),2) AS balance \
 		FROM customers \
-		LEFT JOIN cash ON (customers.id = customerid) \
+		LEFT JOIN customercontacts ON (customercontacts.customerid = customers.id AND customercontacts.type = 8) \
+		LEFT JOIN cash ON (customers.id = cash.customerid) \
 		LEFT JOIN nodes ON (customers.id = ownerid) \
 		WHERE deleted = 0 \
 		GROUP BY customers.id, lastname, customers.name, \
-		    customers.status, address, zip, city, email, \
+		    customers.status, address, zip, city, customercontacts.contact, \
 		    ten, ssn, customers.info, message, regon, \
 		    rbe, icn"
 
