@@ -77,6 +77,7 @@
                         <tr>
                             <td style="width: 1%" class="nobr">
                                 {trans("Search:")}
+				{block name="quicksearchcontents"}
                                 <img src="img/customer.gif" alt="">
                                 <input class="blend" type="text" id="customerinput" name="qscustomer" value="" size="15" {tip text="Enter customer ID, first/lastname, email or address and press Enter"}>
                                 &nbsp;<img src="img/node.gif" alt="">
@@ -88,11 +89,15 @@
                                 &nbsp;<img src="img/docum.gif" alt="">
                                 <input class="blend" type="text" id="documentinput" name="qsdocument" value="" size="15" {tip text="Enter document number and press Enter"}>
                                 <script type="text/javascript">
+                                <!--
                                     new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('customerinput'), '?m=quicksearch&ajax=1&mode=customer&what=', 1);
                                     new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('nodeinput'), '?m=quicksearch&ajax=1&mode=node&what=', 1);
                                     new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('rtinput'), '?m=quicksearch&ajax=1&mode=ticket&what=', 1);
                                     new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('accountinput'), '?m=quicksearch&ajax=1&mode=account&what=', 1);
-                                    new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('documentinput'), '?m=quicksearch&ajax=1&mode=document&what=', 1);			</script>
+                                    new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('documentinput'), '?m=quicksearch&ajax=1&mode=document&what=', 1);
+                                //-->
+                                </script>
+				{/block}
                                 {* Enter key submit hack for IE *}
                                 <input type="image" src="img/empty.gif" width="0" height="0" style="border: none;">
                             </td>
@@ -102,16 +107,16 @@
                         </tr>
                     </table>
                 </form>
-                {/block}
-                {if ! ConfigHelper::checkConfig('phpui.hide_toolbar')}
-                    {include file="toolbar.html"}
-                {/if}
-                <hr>
                 <SCRIPT type="text/javascript">
                 <!--//
                     document.forms['quicksearch'].elements['customerinput'].focus();
                 //-->
                 </SCRIPT>
+                {/block}
+                {if ! ConfigHelper::checkConfig('phpui.hide_toolbar')}
+                    {include file="toolbar.html"}
+                {/if}
+                <hr>
                 {block name=module_content}{/block}
                 <!--// $Id$ //-->
                 {if $layout.dberrors}
