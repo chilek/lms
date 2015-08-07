@@ -59,21 +59,10 @@ function macformat($mac, $escape=false)
 
 $mode = '';
 
-if(!empty($_POST['qscustomer'])) {
-	$mode = 'customer'; 
-	$search = urldecode(trim($_POST['qscustomer']));
-} elseif(!empty($_POST['qsnode'])) {
-	$mode = 'node'; 
-	$search = urldecode(trim($_POST['qsnode']));
-} elseif(!empty($_POST['qsticket'])) {
-	$mode = 'ticket'; 
-	$search = urldecode(trim($_POST['qsticket']));
-} elseif(!empty($_POST['qsaccount'])) {
-	$mode = 'account'; 
-	$search = urldecode(trim($_POST['qsaccount']));
-} elseif(!empty($_POST['qsdocument'])) {
-	$mode = 'document'; 
-	$search = urldecode(trim($_POST['qsdocument']));
+if (!empty($_POST['qs'])) {
+	reset($_POST['qs']);
+	list ($mode, $search) = each($_POST['qs']);
+	$search = urldecode(trim($search));
 } elseif(!empty($_GET['what'])) {
 	$search = urldecode(trim($_GET['what']));
 	$mode = $_GET['mode'];
@@ -81,8 +70,7 @@ if(!empty($_POST['qscustomer'])) {
 
 $sql_search = $DB->Escape("%$search%");
 
-switch($mode)
-{
+switch ($mode) {
 	case 'customer':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
@@ -462,6 +450,14 @@ switch($mode)
 		}
 	break;
 }
+
+$LMS->executeHook('quicksearch_after_submit',
+	array(
+		'mode' => $mode,
+		'sql_search' => $sql_search,
+		'session' => $SESSION,
+	)
+);
 
 $SESSION->redirect(!empty($target) ? $target : '?'.$SESSION->get('backto'));
 
