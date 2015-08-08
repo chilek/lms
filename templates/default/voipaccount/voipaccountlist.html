@@ -5,13 +5,16 @@
 <h1>{$layout.pagetitle}</h1>
 <table class="lmsbox">
     <colgroup>
+        {block name=voip_account_list_columns}
         <col style="width: 96%;">
         <col style="width: 1%;">
         <col style="width: 1%;">
         <col style="width: 1%;">
         <col style="width: 1%;">
+        {/block}
     </colgroup>
     <thead>
+        {block name=voip_account_list_header}
         <tr {tip text="Click on column name to change sorting order"}>
             <th nowrap>
                 <img src="img/voip.gif" alt=""> 
@@ -71,6 +74,8 @@
             </th>
         </tr>
         *}
+        {/block}
+        {block name=voip_account_list_header_pagination}
         {if $listdata.total != 0}
         <tr>
             <th class="pagination" colspan="5">
@@ -78,10 +83,12 @@
             </th>
         </tr>
         {/if}
+        {/block}
     </thead>
     <tbody>
         {cycle values="light,lucid" print=false}
         {section name=voipaccountlist loop=$voipaccountlist start=$start max=$pagelimit}
+        {block name=voip_account_list_row}
         <tr class="highlight {cycle}">
             <td onClick="return self.location.href = '?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}';" nowrap>
                 <img src="img/voip.gif" alt="">
@@ -120,16 +127,20 @@
                 </nobr>
             </td>
         </tr>
+        {/block}
         {if $voipaccountlist[voipaccountlist.index_next].ownerid == $voipaccountlist[voipaccountlist].ownerid && $listdata.order == "owner"}{cycle print=false}{/if}
         {sectionelse}
+        {block name=voip_account_list_empty_row}
         <tr>
             <td class="empty-table" colspan="5">
                 {trans("No such voip accounts in database.")}
             </td>
         </tr>
+        {/block}
         {/section}
     </tbody>
     <tfoot>
+        {block name=voip_account_list_footer_pagination}
         {if $listdata.total != 0}
         <tr>
             <td class="pagination" colspan="5">
@@ -137,14 +148,17 @@
             </td>
         </tr>
         {/if}
+        {/block}
+        {block name=voip_account_list_footer}
         <tr>
             <td class="bold text-right" colspan="2">
                 {trans("Total:")}
             </td>
             <td colspan="3">
                 {if $listdata.total}{$listdata.total}{else}0{/if}
-            </td>				
+            </td>
         </tr>
+        {/block}
     </tfoot>
 </table>
 {/block}
