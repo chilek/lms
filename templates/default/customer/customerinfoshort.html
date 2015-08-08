@@ -55,25 +55,29 @@
 		</TD>
 	</TR>
 {/if}
-{foreach from=$customerinfo.contacts item=item}
+{foreach $customerinfo.contacts as $item}
 	<TR>
-		<TD WIDTH="1%">
+		<TD style="width: 1%;">
 			<IMG SRC="img/phone.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<TD style="width: 99%;" class="nobr">
 		    {$item.phone}
 		    {if $item.typestr}[{$item.typestr}]{/if}
 		    {if $item.name} ({$item.name|truncate:"40":"...":true}){/if}
 		</TD>
 	</TR>
 {/foreach}
-{if $customerinfo.email != ""}
+{if !empty($customerinfo.emails)}
 	<TR>
-		<TD WIDTH="1%" >
+		<TD style="width: 1%;">
 			<IMG SRC="img/mail.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%">
-			<A HREF="mailto:{$customerinfo.email}">{$customerinfo.email}</A>
+		<TD style="width: 99%;" class="nobr">
+			{foreach $customerinfo.emails as $email}
+			<A HREF="mailto:{$email.email}">{$email.email}</A>
+			{if $email.name} ({$email.name|truncate:"40":"...":true}){/if}
+			{if !$email@last}<br>{/if}
+			{/foreach}
 		</TD>
 	</TR>
 {/if}

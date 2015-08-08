@@ -50,11 +50,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      * Returns customer email
      * 
      * @param int $id Customer id
-     * @return string Customer email
+     * @return array Customer email
      */
     public function getCustomerEmail($id)
     {
-        return $this->db->GetOne('SELECT contact FROM customercontacts
+        return $this->db->GetCol('SELECT contact FROM customercontacts
 		WHERE customerid = ? AND type = ?', array($id, CONTACT_EMAIL));
     }
     
@@ -444,11 +444,16 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             foreach ($search as $key => $value) {
                 if ($value != '') {
                     switch ($key) {
-                        case 'phone':
-                            $searchargs[] = 'EXISTS (SELECT 1 FROM customercontacts
+			case 'phone':
+				$searchargs[] = 'EXISTS (SELECT 1 FROM customercontacts
 					WHERE customerid = c.id AND customercontacts.type < ' . CONTACT_EMAIL
 					. ' AND REPLACE(contact, \'-\', \'\') ?LIKE? ' . $this->db->Escape("%$value%") . ')';
-                            break;
+				break;
+			case 'email':
+				$searchargs[] = 'EXISTS (SELECT 1 FROM customercontacts
+					WHERE customerid = c.id AND customercontacts.type = ' . CONTACT_EMAIL
+					. ' AND contact ?LIKE? ' . $this->db->Escape("%$value%") . ')';
+				break;
                         case 'zip':
                         case 'city':
                         case 'address':
@@ -529,9 +534,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 							AND (dateto >= ?NOW? OR dateto = 0)
 							AND (t.type = ' . intval($value) . '))';
                             break;
-			case 'email':
-				$searchargs[] = "cc.contact ?LIKE? " . $this->db->Escape("%$value%");
-				break;
                         default:
                             $searchargs[] = "$key ?LIKE? " . $this->db->Escape("%$value%");
                     }
@@ -545,7 +547,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if ($customerlist = $this->db->GetAll(
                 'SELECT c.id AS id, ' . $this->db->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername, 
-				status, address, zip, city, countryid, countries.name AS country, cc.contact AS email, ten, ssn, c.info AS info, 
+				status, address, zip, city, countryid, countries.name AS country, cc.email, ten, ssn, c.info AS info, 
 				message, c.divisionid, c.paytime AS paytime, COALESCE(b.value, 0) AS balance,
 				COALESCE(t.value, 0) AS tariffvalue, s.account, s.warncount, s.online,
 				(CASE WHEN s.account = s.acsum THEN 1
@@ -553,7 +555,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 				(CASE WHEN s.warncount = s.warnsum THEN 1
 					WHEN s.warnsum > 0 THEN 2 ELSE 0 END) AS nodewarn
 				FROM customersview c
-				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = ' . CONTACT_EMAIL . '
+				LEFT JOIN (SELECT customerid, (' . $this->db->GroupConcat('contact') . ') AS email
+					FROM customercontacts WHERE type = ' . CONTACT_EMAIL . ' GROUP BY customerid) cc ON cc.customerid = c.id
 				LEFT JOIN countries ON (c.countryid = countries.id) '
                 . ($customergroup ? 'LEFT JOIN customerassignments ON (c.id = customerassignments.customerid) ' : '')
                 . 'LEFT JOIN (SELECT
@@ -776,8 +779,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 					FROM customercontacts
 					WHERE customerid = ? AND type < ? ORDER BY id',
 					array($result['id'], CONTACT_EMAIL));
-		$result['email'] = $this->db->GetOne('SELECT contact FROM customercontacts WHERE customerid = ? AND type = ?',
-			array($result['id'], CONTACT_EMAIL));
+		$result['emails'] = $this->db->GetAll('SELECT contact AS email, name
+					FROM customercontacts
+					WHERE customerid = ? AND type = ? ORDER BY id',
+					array($result['id'], CONTACT_EMAIL));
 
             if (is_array($result['contacts']))
                 foreach ($result['contacts'] as $idx => $row) {

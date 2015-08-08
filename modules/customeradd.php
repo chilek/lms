@@ -79,10 +79,10 @@ if (isset($_POST['customeradd']))
 
 	if(sizeof($customeradd))
 		foreach($customeradd as $key => $value)
-			if($key != 'uid' && $key != 'contacts')
+			if($key != 'uid' && $key != 'contacts' && $key != 'emails')
 				$customeradd[$key] = trim($value);
 
-	if($customeradd['name'] == '' && $customeradd['lastname'] == '' && $customeradd['address'] == '' && $customeradd['email'] == '')
+	if($customeradd['name'] == '' && $customeradd['lastname'] == '' && $customeradd['address'] == '')
 	{
 		$SESSION->redirect('?m=customeradd');
 	}
@@ -155,18 +155,31 @@ if (isset($_POST['customeradd']))
 		if($val) $im[$idx] = $val;
 	}
 
-	foreach($customeradd['contacts'] as $idx => $val)
-	{
+	$contacts = array();
+
+	foreach ($customeradd['emails'] as $idx => $val) {
+		$email = trim($val['email']);
+		$name = trim($val['name']);
+
+		if ($email != '' && !check_emails($email))
+			$error['email' . $idx] = trans('Incorrect email!');
+		elseif ($name && !$email)
+			$error['email' . $idx] = trans('Email address is required!');
+		else
+			$contacts[] = array('name' => $name, 'contact' => $email, 'type' => CONTACT_EMAIL);
+	}
+
+	foreach ($customeradd['contacts'] as $idx => $val) {
 		$phone = trim($val['phone']);
 		$name = trim($val['name']);
 		$type = !empty($val['type']) ? array_sum($val['type']) : NULL;
 
 		$customeradd['contacts'][$idx]['type'] = $type;
 
-		if($name && !$phone)
+		if ($name && !$phone)
 			$error['contact'.$idx] = trans('Phone number is required!');
 		elseif ($phone)
-			$contacts[] = array('name' => $name, 'phone' => $phone, 'type' => $type);
+			$contacts[] = array('name' => $name, 'contact' => $phone, 'type' => empty($type) ? CONTACT_LANDLINE : $type);
 	}
 
 	if ($customeradd['cutoffstop'] == '')
@@ -229,17 +242,18 @@ if (isset($_POST['customeradd']))
 				}
 			}
 
-		if ($id) {
-			if (!empty($customeradd['email'])) {
-				$DB->Execute('INSERT INTO customercontacts (customerid, contact, type)
-					VALUES (?, ?, ?)', array($id, $customeradd['email'], CONTACT_EMAIL));
+		if ($id && !empty($contacts))
+			foreach ($contacts as $contact) {
+				$DB->Execute('INSERT INTO customercontacts (customerid, contact, name, type)
+					VALUES(?, ?, ?, ?)', array($id, $contact['contact'], $contact['name'], $contact['type']));
 				if ($SYSLOG) {
 					$contactid = $DB->GetLastInsertID('customercontacts');
 					$args = array(
 						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT] => $contactid,
 						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
-						'contact' => $customeradd['email'],
-						'type' => CONTACT_EMAIL,
+						'contact' => $contact['contact'],
+						'name' => $contact['name'],
+						'type' => $contact['type'],
 					);
 					$SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_ADD, $args,
 						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT],
@@ -247,26 +261,6 @@ if (isset($_POST['customeradd']))
 				}
 			}
 
-			if (isset($contacts))
-				foreach ($contacts as $contact) {
-					$DB->Execute('INSERT INTO customercontacts (customerid, contact, name, type)
-						VALUES(?, ?, ?, ?)', array($id, $contact['phone'], $contact['name'],
-							empty($contact['type']) ? CONTACT_LANDLINE : $contact['type']));
-					if ($SYSLOG) {
-						$contactid = $DB->GetLastInsertID('customercontacts');
-						$args = array(
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT] => $contactid,
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
-							'contact' => $contact['phone'],
-							'name' => $contact['name'],
-							'type' => empty($contact['type']) ? CONTACT_LANDLINE : $contact['type'],
-						);
-						$SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_ADD, $args,
-							array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT],
-								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
-					}
-				}
-		}
 		if(!isset($customeradd['reuse']))
 		{
 			$SESSION->redirect('?m=customerinfo&id='.$id);
@@ -282,6 +276,7 @@ if (isset($_POST['customeradd']))
 else
 {
 	$customeradd['contacts'][] = array();
+	$customeradd['emails'][] = array();
 }
 
 $default_zip = ConfigHelper::getConfig('phpui.default_zip');

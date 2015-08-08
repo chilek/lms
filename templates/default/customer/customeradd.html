@@ -23,14 +23,9 @@
 		var lastcontactelem = document.getElementById('contact' + (nr - 1));
 		var newrow = lastcontactelem.parentNode.insertRow(lastcontactelem.rowIndex + 1);
 		newrow.id = 'contact' + nr;
-		var newcell1 = newrow.insertCell(0);
-		var newcell2 = newrow.insertCell(1);
-		newcell1.style.verticalAlign = 'top';
-		newcell1.style.width = '1%';
-		newcell1.innerHTML = '<IMG src="img/phone.gif" alt="">';
-		newcell2.style.width = '99%';
-		newcell2.style.whiteSpace = 'nowrap';
-		newcell2.innerHTML = '<INPUT type="text" size="15" value="" name="customeradd[contacts][' + nr + '][phone]"'
+		var newcell = newrow.insertCell(0);
+		newcell.style.whiteSpace = 'nowrap';
+		newcell.innerHTML = '<HR><INPUT type="text" size="15" value="" name="customeradd[contacts][' + nr + '][phone]"'
 				+ ' onmouseover="popup(\'{trans("Enter contact phone")}\')" onmouseout="pophide()">'
 			+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_MOBILE}" ID="chkmobile' + nr + '"'
 				+ ' name="customeradd[contacts][' + nr + '][type][]"><label for="chkmobile' + nr + '">{trans("mobile")}</label>'
@@ -39,6 +34,22 @@
 			+ '<BR><INPUT type="text" size="38" value="" name="customeradd[contacts][' + nr + '][name]"'
 				+ ' onmouseover="popup(\'{trans("Enter contact name/description (optional)")}\')" onmouseout="pophide()">';
 		contactscountelem.value = parseInt(nr) + 1;
+	}
+
+	function newemail() {
+		var emailscountelem = document.getElementById('emailscount');
+		var nr = emailscountelem.value;
+		var lastemailelem = document.getElementById('email' + (nr - 1));
+		var newrow = lastemailelem.parentNode.insertRow(lastemailelem.rowIndex + 1);
+		newrow.className = 'light';
+		newrow.id = 'email' + nr;
+		var newcell = newrow.insertCell(0);
+		newcell.style.whiteSpace = 'nowrap';
+		newcell.innerHTML = '<HR><INPUT TYPE="text" size="38" value="" name="customerdata[emails][' + nr + '][email]"'
+				+ ' onmouseover="popup(\'{trans("Enter e-mail address (optional)")}\')" onmouseout="pophide()">'
+			+ '<BR><INPUT TYPE="text" size="38" value="" name="customerdata[emails][' + nr + '][name]"'
+				+ ' onmouseover="popup(\'{trans("Enter contact name/description (optional)")}\')" onmouseout="pophide()">';
+		emailscountelem.value = parseInt(nr) + 1;
 	}
 //-->
 </SCRIPT>
@@ -232,25 +243,56 @@
 						</script>
 					</TD>
 				</TR>
-				{foreach from=$customeradd.contacts item=item key=key}
-				<TR id="contact{$key}">
-					<TD style="width: 1%;" class="valign-top">
-						<IMG src="img/phone.gif" alt="">
-					</TD>
-					<TD style="width: 99%;" class="nobr">
-						<INPUT type="text" size="15" value="{$item.phone}" name="customeradd[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
-						<INPUT type="checkbox" value="{$smarty.const.CONTACT_MOBILE}" id="chkmobile{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_MOBILE)} checked{/if}><label for="chkmobile{$key}">{trans("mobile")}</label>
-						<INPUT type="checkbox" value="{$smarty.const.CONTACT_FAX}" id="chkfax{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_FAX)} checked{/if}><label for="chkfax{$key}">{trans("fax")}</label>
-						<BR>
-						<INPUT type="text" size="38" value="{$item.name}" name="customeradd[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
-					</TD>
-				</TR>
-				{/foreach}
 				<TR>
 					<TD style="width: 1%;"></TD>
 					<TD style="width: 99%;" class="nobr">
-						<INPUT type="hidden" id="contactscount" value="{$item@total}">
-						<A href="javascript: newcontact()">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
+						<fieldset style="width: 1%;" class="nobr">
+							<legend class="bold"><IMG src="img/phone.gif" alt=""> {trans("Contact phones")}</legend>
+							<table>
+								{foreach from=$customeradd.contacts item=item key=key}
+								<TR id="contact{$key}">
+									<TD>
+										<INPUT type="text" size="15" value="{$item.phone}" name="customeradd[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
+										<INPUT type="checkbox" value="{$smarty.const.CONTACT_MOBILE}" id="chkmobile{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_MOBILE)} checked{/if}><label for="chkmobile{$key}">{trans("mobile")}</label>
+										<INPUT type="checkbox" value="{$smarty.const.CONTACT_FAX}" id="chkfax{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_FAX)} checked{/if}><label for="chkfax{$key}">{trans("fax")}</label>
+										<BR>
+										<INPUT type="text" size="38" value="{$item.name}" name="customeradd[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
+									</TD>
+								</TR>
+								{/foreach}
+								<TR>
+									<TD>
+										<INPUT type="hidden" id="contactscount" value="{$item@total}">
+										<A href="javascript: newcontact()">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
+									</TD>
+								</TR>
+							</table>
+						</fieldset>
+					</TD>
+				</TR>
+				<TR>
+					<TD style="width: 1%;"></TD>
+					<TD style="width: 99%;" class="nobr">
+						<fieldset style="width: 1%;" class="nobr">
+							<legend class="bold"><IMG src="img/mail.gif" alt=""> {trans("Email addresses")}</legend>
+							<table>
+								{foreach from=$customeradd.emails item=item key=key}
+								<TR id="email{$key}">
+									<TD>
+										<INPUT type="text" size="38" value="{$item.email}" name="customeradd[emails][{$key}][email]" {tip text="Enter e-mail address (optional)" trigger="email`$key`"}>
+										<BR>
+										<INPUT type="text" size="38" value="{$item.name}" name="customeradd[emails][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
+									</TD>
+								</TR>
+								{/foreach}
+								<TR>
+									<TD>
+										<INPUT type="hidden" id="emailscount" value="{$item@total}">
+										<A href="javascript: newemail()">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
+									</TD>
+								</TR>
+							</table>
+						</fieldset>
 					</TD>
 				</TR>
 				<TR>
@@ -278,14 +320,6 @@
 					<TD style="width: 99%;">
 					{assign var=skype value=$smarty.const.IM_SKYPE}
 						<INPUT type="text" name="customeradd[uid][{$skype}]" value="{if $customeradd.uid.$skype}{$customeradd.uid.$skype}{/if}" SIZE="20" {tip text="Enter Skype ID (optional)" trigger="skype"}>
-					</TD>
-				</TR>
-				<TR>
-					<TD style="width: 1%;">
-						<IMG src="img/mail.gif" alt="">
-					</TD>
-					<TD style="width: 99%;">
-						<INPUT type="text" size="38" value="{$customeradd.email}" name="customeradd[email]" {tip text="Enter customer e-mail address (optional)" trigger="email"}>
 					</TD>
 				</TR>
 				<TR>

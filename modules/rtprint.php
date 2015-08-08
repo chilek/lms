@@ -118,13 +118,16 @@ switch($type)
     				$where[] = 'rttickets.state = '.intval($status);
 		}
 
-    		$list = $DB->GetAllByKey('SELECT rttickets.id, createtime, customerid, subject, requestor, '
+		$list = $DB->GetAllByKey('SELECT rttickets.id, createtime, customerid, subject, requestor, '
 			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername '
 			.(!empty($_POST['contacts']) || !empty($_GET['contacts'])
-				? ', address, (SELECT contact
-				FROM customercontacts
-				WHERE customerid = customers.id AND customercontacts.type < ' . CONTACT_EMAIL . ' LIMIT 1) AS phone ' : '')
-		        .'FROM rttickets
+				? ', address, (SELECT ' . $DB->GroupConcat('contact', ',', true) . '
+					FROM customercontacts WHERE customerid = customers.id AND customercontacts.type < ' . CONTACT_EMAIL
+					. ' GROUP BY customerid) AS phones,
+					(SELECT ' . $DB->GroupConcat('contact', ',', true) . '
+					FROM customercontacts WHERE customerid = customers.id AND customercontacts.type = ' . CONTACT_EMAIL
+					. ' GROUP BY customerid) AS emails ' : '')
+			.'FROM rttickets
 			LEFT JOIN rtticketcategories tc ON tc.ticketid = rttickets.id
 			LEFT JOIN customers ON (customerid = customers.id)
 			WHERE state != '.RT_RESOLVED

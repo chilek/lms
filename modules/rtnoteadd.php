@@ -80,11 +80,11 @@ elseif(isset($_POST['note']))
 
 			$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
 
-	        $headers['From'] = $mailfname.' <'.$mailfrom.'>';
+			$headers['From'] = $mailfname.' <'.$mailfrom.'>';
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $note['ticketid'], $DB->GetOne('SELECT subject FROM rttickets WHERE id = ?', array($note['ticketid'])));
 			$headers['Reply-To'] = $headers['From'];
 
-            $sms_body = $headers['Subject']."\n".$note['body'];
+			$sms_body = $headers['Subject']."\n".$note['body'];
 			$body = $note['body']."\n\nhttp"
 				.(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
 				.$_SERVER['HTTP_HOST']
@@ -92,57 +92,62 @@ elseif(isset($_POST['note']))
 				.'?m=rtticketview&id='.$note['ticketid'];
 
 			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)) 
-				&& ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($note['ticketid']))))
-			{
-				$info = $DB->GetRow('SELECT c.id, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,
-						cc.contact AS email, address, zip, city, (SELECT contact FROM customercontacts 
-							WHERE customerid = customers.id AND customercontacts.type < ? ORDER BY id LIMIT 1) AS phone
-						FROM customers c
-						LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = ?
-						WHERE c.id = ?', array(CONTACT_EMAIL, CONTACT_EMAIL, $cid));
+				&& ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($note['ticketid'])))) {
+				$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
+						address, zip, city FROM customers WHERE id = ?', array($cid));
+				$info['contacts'] = $DB->GetAll('SELECT contact, name FROM customercontacts
+					WHERE customerid = ?', array($cid));
+
+				$emails = array();
+				$phones = array();
+				if (!empty($info['contacts']))
+					foreach ($info['contacts'] as $contact) {
+						$contact = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+						if ($contact['type'] == CONTACT_EMAIL)
+							$emails[] = $contact;
+						else
+							$phones[] = $contact;
+					}
 
 				$body .= "\n\n-- \n";
 				$body .= trans('Customer:').' '.$info['customername']."\n";
 				$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
-				$body .= trans('Phone:').' '.$info['phone']."\n";
-				$body .= trans('E-mail:').' '.$info['email'];
+				if (!empty($phones))
+					$body .= trans('Phone:').' ' . implode(', ', $phones) . "\n";
+				if (!empty($emails))
+					$body .= trans('E-mail:') . ' ' . implode(', ', $emails);
 
 				$sms_body .= "\n";
-                $sms_body .= trans('Customer:').' '.$info['customername'];
-                $sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
-                $sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'];
-                if ($info['phone'])
-                    $sms_body .= '. '.trans('Phone:').' '.$info['phone'];
+				$sms_body .= trans('Customer:').' '.$info['customername'];
+				$sms_body .= ' '.sprintf('(%04d)', $cid).'. ';
+				$sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'];
+				if (!empty($phones))
+					$sms_body .= '. ' . trans('Phone:') . ' ' . preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones));
 			}
 
-            // send email
-			if($recipients = $DB->GetCol('SELECT DISTINCT email
-			        FROM users, rtrights
+			// send email
+			if ($recipients = $DB->GetCol('SELECT DISTINCT email
+				FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND email != \'\'
 						AND (rtrights.rights & 8) = 8 AND users.id != ?
 						AND deleted = 0 AND (ntype & ?) = ?',
-					array($queue['id'], $AUTH->id, MSG_MAIL, MSG_MAIL))
-			) {
+					array($queue['id'], $AUTH->id, MSG_MAIL, MSG_MAIL)))
 				foreach ($recipients as $email) {
 					$headers['To'] = '<'.$email.'>';
 
 					$LMS->SendMail($email, $headers, $body);
 				}
-			}
 
-            // send sms
+			// send sms
 			$service = ConfigHelper::getConfig('sms.service');
 			if (!empty($service) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
-			        FROM users, rtrights
+				FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND phone != \'\'
 						AND (rtrights.rights & 8) = 8 AND users.id != ?
 						AND deleted = 0 AND (ntype & ?) = ?',
-					array($queue['id'], $AUTH->id, MSG_SMS, MSG_SMS)))
-			) {
-				foreach ($recipients as $phone) {
+					array($queue['id'], $AUTH->id, MSG_SMS, MSG_SMS))))
+				foreach ($recipients as $phone)
 					$LMS->SendSMS($phone, $sms_body);
-				}
-			}
 		}
 
 		$SESSION->redirect('?m=rtticketview&id='.$note['ticketid']);

@@ -42,9 +42,17 @@
 		</td>
 		<td width="99%">
 {if $rights.info.edit_contact || $rights.info.edit_contact_ack}
-			<INPUT TYPE="TEXT" NAME="userdata[email]" VALUE="{$userinfo.email}" SIZE=50 {userpaneltip text="Enter e-mail address"}>
+			<TABLE cellpadding="0" cellspacing="2">
+			{foreach $userinfo.emails as $email}
+				<TR><TD><INPUT TYPE="TEXT" NAME="userdata[email][{$email.id}]" VALUE="{$email.email}" SIZE="50" {userpaneltip text="Enter email address"}></TD></TR>
+			{foreachelse}
+				<TR><TD><INPUT TYPE="TEXT" NAME="userdata[email][0]" VALUE="{$userinfo.email}" SIZE="50" {userpaneltip text="Enter email address"}></TD></TR>
+			{/foreach}
+			</TABLE>
 {else}
-			{$userinfo.email}
+			{foreach $userinfo.emails as $email}
+				{$email.email}{if !$email@last}<BR />{/if}
+			{/foreach}
 {/if}
 		</td>
 	</tr>

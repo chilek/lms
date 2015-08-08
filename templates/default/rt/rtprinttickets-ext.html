@@ -52,7 +52,8 @@
 				<TD WIDTH="1%">{trans("Address:")}</TD>
 				<TD WIDTH="99%">
 				    {$ticket.address}
-				    {if $ticket.phone}({trans("phone:")} {$ticket.phone}){/if}
+				    {if $ticket.phones}({trans("phone:")} {$ticket.phones}){/if}
+				    {if $ticket.emails}({trans("email:")} {$ticket.emails}){/if}
 				</TD>
 			    </TR>
 			    {/if}

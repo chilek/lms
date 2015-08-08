@@ -230,16 +230,17 @@ $ch = curl_init();
 if (!$ch)
 	die("Fatal error: Can't init curl library!" . PHP_EOL);
 
-$query = "SELECT d.id, d.number, d.cdate, cc.contact AS email, d.name, d.customerid, n.template 
+$query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, n.template,
+			(SELECT " . $DB->GroupConcat('contact') . " FROM customercontacts
+			WHERE customerid = customers.id AND type = ?) AS email
 		FROM documents d 
 		LEFT JOIN customers c ON c.id = d.customerid 
-		JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = 8
 		LEFT JOIN numberplans n ON n.id = d.numberplanid 
-		WHERE c.deleted = 0 AND d.type IN (1,3) AND c.invoicenotice = 1 "
+		WHERE c.deleted = 0 AND d.type IN (1,3) AND c.invoicenotice = 1 AND email IS NOT NULL"
 			. (!empty($invoiceid) ? "AND d.id = " . $invoiceid : "AND d.cdate >= $daystart AND d.cdate <= $dayend")
 			. (!empty($groupnames) ? $customergroups : "")
 		. " ORDER BY d.number";
-$docs = $DB->GetAll($query);
+$docs = $DB->GetAll($query, array(CONTACT_EMAIL));
 
 if (!empty($docs)) {
 	foreach ($docs as $doc) {
@@ -275,11 +276,20 @@ if (!empty($docs)) {
 			$filename = preg_replace('/%docid/', $doc['id'], $invoice_filename);
 			$doc['name'] = '"' . $doc['name'] . '"';
 
+			$mailto = array();
+			$mailto_qp_encoded = array();
+			foreach (explode(',', $custemail) as $email) {
+				$mailto[] = $doc['name'] . " <$email>";
+				$mailto_qp_encoded[] = qp_encode($doc['name']) . " <$email>";
+			}
+			$mailto = implode(', ', $mailto);
+			$mailto_qp_encoded = implode(', ', $mailto_qp_encoded);
+
 			if (!$quiet || $test)
-				printf("Invoice No. $invoice_number for " . $doc['name'] . " <$custemail>" . PHP_EOL);
+				printf("Invoice No. $invoice_number for $mailto" . PHP_EOL);
 
 			if (!$test) {
-				$headers = array('From' => $from, 'To' => qp_encode($doc['name']) . ' <' . $custemail . '>',
+				$headers = array('From' => $from, 'To' => $mailto_qp_encoded,
 					'Subject' => $subject);
 				if (!empty($notify_email))
 					$headers['Cc'] = $notify_email;

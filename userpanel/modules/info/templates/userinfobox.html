@@ -16,13 +16,15 @@
 			<b>{$userinfo.customername} ({$userinfo.id|string_format:"%04d"})</b>
 		</td>
 	</tr>
-{if $userinfo.email}
+{if $userinfo.emails}
 	<tr>
 		<td width="1%">
 			{img src="mail.gif" alt=""}
 		</td>
 		<td width="99%" colspan="2">
-			{$userinfo.email}
+			{foreach $userinfo.emails as $email}
+				{$email.email}{if !$email@last}<BR />{/if}
+			{/foreach}
 		</td>
 	</tr>
 {/if}

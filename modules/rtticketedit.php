@@ -58,12 +58,14 @@ if ($id && !isset($_POST['ticket'])) {
 					$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
 					$from = $mailfname . ' <' . $mailfrom . '>';
 
-					$info = $DB->GetRow('SELECT c.id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,
-							cc.contact AS email, address, zip, city, (SELECT contact FROM customercontacts 
-								WHERE customerid = customers.id AND customercontacts.type < ? ORDER BY id LIMIT 1) AS phone
-							FROM customers c
-							LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = ?
-							WHERE c.id = ?', array(CONTACT_EMAIL, CONTACT_EMAIL, $ticket['customerid']));
+					$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
+							address, zip, city,
+								(SELECT ' . $DB->GroupConcat('contact', ',', true) . ' FROM customercontacts 
+								WHERE customerid = customers.id AND type = ?) AS emails,
+								(SELECT ' . $DB->GroupConcat('contact', ',', true) . ' FROM customercontacts 
+								WHERE customerid = customers.id AND type < ?) AS phones
+							FROM customers
+							WHERE id = ?', array(CONTACT_EMAIL, CONTACT_EMAIL, $ticket['customerid']));
 					$custmail_subject = $queue['resolveticketsubject'];
 					$custmail_subject = str_replace('%tid', $id, $custmail_subject);
 					$custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
@@ -79,7 +81,7 @@ if ($id && !isset($_POST['ticket'])) {
 						'Reply-To' => $from,
 						'Subject' => $custmail_subject,
 					);
-					$LMS->SendMail($info['email'], $custmail_headers, $custmail_body);
+					$LMS->SendMail($info['emails'], $custmail_headers, $custmail_body);
 				}
 			}
 		}
@@ -215,28 +217,39 @@ if(isset($_POST['ticket']))
 
 			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)) && $ticketedit['customerid'])
 			{
-				$info = $DB->GetRow('SELECT c.id, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,
-						cc.contact AS email, address, zip, city, (SELECT contact FROM customercontacts 
-							WHERE customerid = customers.id AND customercontacts.type < ? ORDER BY id LIMIT 1) AS phone
-						FROM customers c
-						LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = ?
-						WHERE c.id = ?', array(CONTACT_EMAIL, CONTACT_EMAIL, $ticketedit['customerid']));
+				$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
+							address, zip, city FROM customers WHERE id = ?', array($cid));
+				$info['contacts'] = $DB->GetAll('SELECT contact, name FROM customercontacts
+					WHERE customerid = ?', array($cid));
+
+				$emails = array();
+				$phones = array();
+				if (!empty($info['contacts']))
+					foreach ($info['contacts'] as $contact) {
+						$contact = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+						if ($contact['type'] == CONTACT_EMAIL)
+							$emails[] = $contact;
+						else
+							$phones[] = $contact;
+					}
 
 				$body .= "\n\n-- \n";
 				$body .= trans('Customer:').' '.$info['customername']."\n";
 				$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
-				$body .= trans('Phone:').' '.$info['phone']."\n";
-				$body .= trans('E-mail:').' '.$info['email'];
+				if (!empty($phones))
+					$body .= trans('Phone:').' ' . implode(', ', $phones) . "\n";
+				if (!empty($emails))
+					$body .= trans('E-mail:') . ' ' . implode(', ', $emails);
 
 				$sms_body .= "\n";
-                $sms_body .= trans('Customer:').' '.$info['customername'];
-                $sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
-                $sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'];
-                if ($info['phone'])
-                    $sms_body .= '. '.trans('Phone:').' '.$info['phone'];
+				$sms_body .= trans('Customer:').' '.$info['customername'];
+				$sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
+				$sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'];
+				if (!empty($phones))
+					$sms_body .= '. ' . trans('Phone:') . ' ' . preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones));
 			}
 
-            // send email
+			// send email
 			if($recipients = $DB->GetCol('SELECT DISTINCT email
 			        FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND email != \'\'
@@ -259,7 +272,7 @@ if(isset($_POST['ticket']))
 				}
 			}
 
-            // send sms
+			// send sms
 			$service = ConfigHelper::getConfig('sms.service');
 			if (!empty($service) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
 			        FROM users, rtrights

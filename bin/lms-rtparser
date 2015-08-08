@@ -548,13 +548,15 @@ if($notify)
 
 	if($dbq->rows() && $reqcustid && $customerinfo)
 	{
-		my $dbqc = $dbase->prepare("SELECT c.id, $custname, cc.contact AS email, address, zip, city,
-				    (SELECT contact FROM customercontacts
+		my $dbqc = $dbase->prepare("SELECT id, $custname, address, zip, city,
+					(SELECT contact FROM customercontacts
 						WHERE customerid = customers.id AND customercontacts.type < 8
-						ORDER BY id LIMIT 1) AS phone
+						ORDER BY id LIMIT 1) AS phone,
+					(SELECT contact FROM customercontacts
+						WHERE customerid = customers.id AND customercontacts.type = 8
+						ORDER BY id LIMIT 1) AS email
 					FROM customers c
-					LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = 8
-					WHERE c.id = $reqcustid");
+					WHERE id = $reqcustid");
 		$dbqc->execute();
 		if(my $customer = $dbqc->fetchrow_hashref())
 		{

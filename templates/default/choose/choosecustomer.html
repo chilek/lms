@@ -52,7 +52,7 @@ document.search.searchcustomer.focus();
 			({$customerlist[customerlist].id|string_format:"%04d"})<br>
 			{$customerlist[customerlist].address}{if $customerlist[customerlist].city != ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}
 		</td>
-		<td width="1%" align="right" style="vertical-align: top;" onClick="sendvalue(targetfield,'{$customerlist[customerlist].id}');">
+		<td style="width: 1%;" class="text-right valign-top nobr" onClick="sendvalue(targetfield,'{$customerlist[customerlist].id}');">
 			{foreach from=$customerlist[customerlist].nodes item=node}
 			{$node.name}
 			{/foreach}

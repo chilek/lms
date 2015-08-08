@@ -83,14 +83,18 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	if($network)
 		$net = $LMS->GetNetworkParams($network);
 
-	if($type == MSG_SMS)
-	{
+	if ($type == MSG_SMS)
 		$smstable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('contact') . ' AS phone, customerid
 				FROM customercontacts
-				WHERE (type & '.CONTACT_MOBILE.') = '.CONTACT_MOBILE.'
+				WHERE (type & ' . CONTACT_MOBILE . ') = ' . CONTACT_MOBILE . '
 				GROUP BY customerid
 			) x ON (x.customerid = c.id) ';
-	}
+	else
+		$mailtable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('contact') . ' AS email, customerid
+				FROM customercontacts
+				WHERE customerid = ' . $customerid . ' AND type = ' . CONTACT_EMAIL . '
+				GROUP BY customerid
+			) cc ON (cc.customerid = c.id) ';
 
 	if ($tarifftype) {
 		$tarifftable = 'JOIN (
@@ -105,12 +109,12 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 
 	$suspension_percentage = f_round(ConfigHelper::getConfig('finances.suspension_percentage'));
 
-	$recipients = $LMS->DB->GetAll('SELECT c.id, cc.contact AS email, pin, '
-		.($type==MSG_SMS ? 'x.phone, ': '')
-		.$LMS->DB->Concat('c.lastname', "' '", 'c.name').' AS customername,
+	$recipients = $LMS->DB->GetAll('SELECT c.id, pin, '
+		. ($type == MSG_MAIL ? 'cc.email, ' : '')
+		. ($type == MSG_SMS ? 'x.phone, ' : '')
+		. $LMS->DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
 		COALESCE(b.value, 0) AS balance
 		FROM customersview c 
-		LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = ' . CONTACT_EMAIL . '
 		LEFT JOIN (
 			SELECT SUM(value) AS value, customerid
 			FROM cash GROUP BY customerid
@@ -138,11 +142,11 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 			WHERE (a.datefrom <= ?NOW? OR a.datefrom = 0) AND (a.dateto > ?NOW? OR a.dateto = 0) 
 			GROUP BY a.customerid
 		) t ON (t.customerid = c.id) '
-		.(!empty($smstable) ? $smstable : '')
+		. (isset($mailtable) ? $mailtable : '')
+		. (isset($smstable) ? $smstable : '')
 		. ($tarifftype ? $tarifftable : '')
 		.'WHERE deleted = ' . $deleted
 		. ($consent ? ' AND c.mailingnotice = 1' : '')
-		.($type == MSG_MAIL ? ' AND cc.contact IS NOT NULL' : '')
 		.($group!=0 ? ' AND status = '.$group : '')
 		.($network ? ' AND c.id IN (SELECT ownerid FROM nodes WHERE 
 			(netid = ' . $net['id'] . ' AND ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ')
@@ -169,29 +173,32 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	return $recipients;
 }
 
-function GetRecipient($customerid, $type=MSG_MAIL)
-{
+function GetRecipient($customerid, $type=MSG_MAIL) {
 	global $LMS;
 
-	if($type == MSG_SMS)
-	{
+	if ($type == MSG_SMS)
 		$smstable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('contact') . ' AS phone, customerid
 				FROM customercontacts 
 				WHERE customerid = '.$customerid.'
-					AND (type & '.CONTACT_MOBILE.') = '.CONTACT_MOBILE.'
+					AND (type & ' . CONTACT_MOBILE . ') = ' . CONTACT_MOBILE . '
 				GROUP BY customerid
 			) x ON (x.customerid = c.id) ';
-	}
+	else
+		$mailtable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('contact') . ' AS email, customerid
+				FROM customercontacts
+				WHERE customerid = ' . $customerid . ' AND type = ' . CONTACT_EMAIL . '
+				GROUP BY customerid
+			) cc ON (cc.customerid = c.id) ';
 
-	return $LMS->DB->GetAll('SELECT c.id, cc.contact AS email, pin, '
-		.($type==MSG_SMS ? 'x.phone, ': '')
-		.$LMS->DB->Concat('c.lastname', "' '", 'c.name').' AS customername,
+	return $LMS->DB->GetAll('SELECT c.id, pin, '
+		. ($type == MSG_MAIL ? 'cc.email, ' : '')
+		. ($type == MSG_SMS ? 'x.phone, ': '')
+		. $LMS->DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
 		COALESCE((SELECT SUM(value) FROM cash WHERE customerid = c.id), 0) AS balance
-		FROM customersview c 
-		LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = ' . CONTACT_EMAIL . ' '
-		.(!empty($smstable) ? $smstable : '')
-		.'WHERE c.id = '.$customerid
-		.($type == MSG_MAIL ? ' AND cc.contact IS NOT NULL' : ''));
+		FROM customersview c '
+		. (isset($mailtable) ? $mailtable : '')
+		. (isset($smstable) ? $smstable : '')
+		. 'WHERE c.id = ' . $customerid);
 }
 
 function BodyVars(&$body, $data)

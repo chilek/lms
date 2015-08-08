@@ -2986,4 +2986,8 @@ $_LANG['DB Schema Version:'] = 'Wersja schematu bazy danych:';
 $_LANG['minimal'] = 'minimalny';
 $_LANG['Author:'] = 'Autor:';
 
+$_LANG['Contact phones'] = 'Telefony kontaktowe';
+$_LANG['Email addresses'] = 'Adresy email';
+$_LANG['Email address is required!'] = 'Adres email jest wymagany!';
+
 ?>

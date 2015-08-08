@@ -71,25 +71,43 @@
 		</TD>
 	</TR>
 {/if}
-{foreach from=$customerinfo.contacts item=item}
+{if !empty($customerinfo.contacts)}
 	<TR>
-		<TD WIDTH="1%" style="vertical-align: top">
-			<IMG SRC="img/phone.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%">
-			{$item.phone}
-			{if $item.typestr}[{$item.typestr}]{/if}
-			{if $item.name} ({$item.name|truncate:"40":"...":true}){/if}
+		<TD style="width: 1%;"></TD>
+		<TD style="width: 99%;" class="nobr">
+			<fieldset style="width: 1%;" class="nobr">
+				<legend class="bold"><IMG SRC="img/phone.gif" ALT=""> {trans("Contact phones")}</legend>
+				<TABLE>
+					{foreach $customerinfo.contacts as $contact}
+					<TR>
+						<TD>
+							{$contact.phone}
+							{if $contact.typestr}[{$contact.typestr}]{/if}
+							{if $contact.name} ({$contact.name|truncate:"40":"...":true}){/if}
+						</TD>
+					</TR>
+					{/foreach}
+				</TABLE>
+			</fieldset>
 		</TD>
 	</TR>
-{/foreach}
-{if $customerinfo.email != ""}
+{/if}
+{if !empty($customerinfo.emails)}
 	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/mail.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%">
-			<A HREF="mailto:{$customerinfo.email}">{$customerinfo.email}</A>
+		<TD style="width: 1%;"></TD>
+		<TD style="width: 99%;" class="nobr">
+			<fieldset style="width: 1%;" class="nobr">
+				<legend class="bold"><IMG SRC="img/mail.gif" ALT=""> {trans("Email addresses")}</legend>
+				<TABLE>
+					{foreach $customerinfo.emails as $email}
+					<TR>
+						<TD>
+							<A HREF="mailto:{$email.email}">{$email.email}</A>{if $email.name} ({$email.name|truncate:"40":"...":true}){/if}
+						</TD>
+					</TR>
+					{/foreach}
+				</TABLE>
+			</fieldset>
 		</TD>
 	</TR>
 {/if}
