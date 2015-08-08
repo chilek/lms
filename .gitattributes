@@ -6,3 +6,5 @@
 *.css text eol=lf
 *.sh text eol=lf
 *.txt text eol=lf
+
+lib/LMS.class.php export-subst

@@ -37,7 +37,7 @@ class LMS
     public $hooks = array(); // registered plugin hooks
     public $xajax;  // xajax object
     public $_version = '1.11-git'; // class version
-    public $_revision = '$Revision$';
+    public $_revision = '$Format:%cI$'; // %H for last commit checksum
     private $mail_object = NULL;
     protected $plugin_manager;
     protected $user_manager;
@@ -65,9 +65,8 @@ class LMS
 
         $this->cache = new LMSCache();
 
-        //$this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/', '\1', $this->_revision);
-        $this->_revision = '';
-        //$this->_version = $this->_version.' ('.$this->_revision.')';
+	if (preg_match('/^\$Format:/', $this->_revision))
+		$this->_revision = '';
     }
 
     public function _postinit()
