@@ -1,4 +1,3 @@
-{if !ConfigHelper::checkPrivilege('hide_sysinfo')}
 {if $rtstats}
 <table width="100%">
     {if $rtstats|@count >= 3}
@@ -87,5 +86,4 @@
     {counter}
     {/foreach}
 </table>
-{/if}
 {/if}
