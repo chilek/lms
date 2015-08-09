@@ -11,12 +11,15 @@
 </p>
 <TABLE class="lmsbox">
 	<COLGROUP>
+                {block name=customer_list_columns}
 		<COL style="width: 97%;">
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
+                {/block}
 	</COLGROUP>
 	<THEAD>
+            {block name=customer_list_header}
 	<TR {tip text="Click on column name to change sorting order"}>
 		<td scope="col" class="nobr">
 			<img src="img/customer.gif" alt=""> <a href="?m={$layout.module}&amp;s={$listdata.state}&amp;o=customername{if $listdata.direction == "asc" && $listdata.order == "customername"},desc{/if}">{trans("First/last or Company name")}</A> {if $listdata.order == "customername"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
@@ -36,6 +39,8 @@
 			{t a=$listdata.total}Total: $a{/t}
 		</td>
 	</TR>
+            {/block}
+            {block name=customer_list_header_filters}
 	<TR>
 		<TD colspan="4" class="nobr">
 			<span class="bold">{trans("Filter:")}</span> {trans("Customers:")}
@@ -86,6 +91,8 @@
 			</SELECT>
 		</TD>
 	</TR>
+        {/block}
+        {block name=customer_list_header_pagination}
 	{if $listdata.total != 0}
 	<TR>
 		<TD class="pagination" colspan="4">
@@ -93,9 +100,11 @@
 		</TD>
 	</TR>
 	{/if}
+        {/block}
 
 	</THEAD>
 	<TFOOT>
+        {block name=customer_list_footer_pagination}
 	{if $listdata.total != 0}
 	<TR>
 		<TD class="pagination" colspan="4">
@@ -103,6 +112,8 @@
 		</TD>
 	</TR>
 	{/if}
+        {/block}
+        {block name=customer_list_footer}
 	<TR class="summary">
 		<TD>
 			&nbsp;
@@ -123,11 +134,13 @@
 			{trans("Total:")} {$listdata.total}
 		</TD>
 	</TR>
+        {/block}
 	</TFOOT>
 	<TBODY>
 
 	{cycle values="light,lucid" print=false}
 	{section name=customerlist loop=$customerlist start=$start max=$pagelimit}
+        {block name=customer_list_row}
 	<TR class="highlight {cycle}{if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}"  >
 		<TD onClick="return self.location.href='?m=customerinfo&amp;id={$customerlist[customerlist].id}';">
 			<IMG src="img/{if $customerlist[customerlist].status == 1}unk{/if}{if $customerlist[customerlist].status == 2}wait{/if}{if $customerlist[customerlist].status == 3}customer{/if}.gif" alt="">{if $customerlist[customerlist].info}&nbsp;<img src="img/info1.gif" alt="" {tip text=$customerlist[customerlist].info}>{/if}<A name="{$customerlist[customerlist].id}" {tip a=$customerlist[customerlist].id dynpopup='?m=customerinfoshort&amp;id=$a'}>&nbsp;<span class="bold">{$customerlist[customerlist].customername|escape}</span></A><BR>
@@ -186,12 +199,15 @@
 			<A href="?m=customerinfo&amp;id={$customerlist[customerlist].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 		</TD>
 	</TR>
+        {/block}
 	{sectionelse}
+        {block name=customer_list_empty_row}
 	<TR>
 		<TD colspan="4" class="empty-table">
 			{trans("No such customers matching search criteria or list is empty.")}
 		</TD>
 	</TR>
+        {/block}
 	{/section}
 	</TBODY>
 </TABLE>

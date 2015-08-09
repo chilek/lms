@@ -9,6 +9,7 @@
             <col style="width: 98%;"/>
         </colgroup>
         <thead>
+            {block name=voip_account_login}
             <tr>
                 <td>
                     <img src="img/voip.gif" alt="{trans("Login:")}">
@@ -21,8 +22,10 @@
                     ({$voipaccountinfo.id|string_format:"%04d"})
                 </td>
             </tr>
+            {/block}
         </thead>
         <tbody>
+            {block name=voip_account_password}
             <tr>
                 <td>
                     <img src="img/passwd.gif" alt="{trans("Password:")}">
@@ -34,6 +37,8 @@
                     <input type="text" name="voipaccountedit[passwd]" value="{if !ConfigHelper::checkConfig('privileges.hide_voip_passwords')}{$voipaccountinfo.passwd}{else}{'*'|str_repeat:8}{/if}" {tip text="Enter password" trigger="passwd"}>
                 </td>
             </tr>
+            {/block}
+            {block name=voip_account_phone}
             <tr>
                 <td>
                     <img src="img/phone.gif" alt="{trans("Phone number:")}">
@@ -45,6 +50,8 @@
                     <input type="text" name="voipaccountedit[phone]" value="{$voipaccountinfo.phone}" {tip text="Enter phone number" trigger="phone"}>
                 </td>
             </tr>
+            {/block}
+            {block name=voip_account_status}
             <tr>
                 <td>
                     <img src="img/{if ! $voipaccountinfo.access}no{/if}access.gif" alt="">
@@ -59,6 +66,8 @@
                     </select>
                 </td>
             </tr>
+            {/block}
+            {block name=voip_account_customer}
             <tr>
                 <td>
                     <img src="img/customer.gif" alt="{trans("Customer:")}">
@@ -74,24 +83,28 @@
                     </select>
                 </td>
             </tr>
-		<TR>
-			<TD>
-				<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
-			</TD>
-			<TD class="bold">
-				{trans("Location:")}
-			</TD>
-			<TD>
-				<INPUT TYPE="TEXT" SIZE="40" VALUE="{$voipaccountinfo.location}" id="location" NAME="voipaccountedit[location]"  {tip text="Enter location (optional)" trigger="location"}>
-				<A href="javascript: void(0);" onclick="if (check_teryt()) return locationchoosewin('voipaccountedit', 'editvoipaccount', document.forms['editvoipaccount'].elements['voipaccountedit[location_city]'].value,  document.forms['editvoipaccount'].elements['voipaccountedit[location_street]'].value)" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</A>
-				<BR>
-				<INPUT type="hidden" name="voipaccountedit[location_city]" value="{$voipaccountinfo.location_city}">
-				<INPUT type="hidden" name="voipaccountedit[location_street]" value="{$voipaccountinfo.location_street}">
-				<INPUT type="hidden" name="voipaccountedit[location_house]" value="{$voipaccountinfo.location_house}">
-				<INPUT type="hidden" name="voipaccountedit[location_flat]" value="{$voipaccountinfo.location_flat}">
-				<INPUT TYPE="checkbox" name="voipaccountedit[teryt]" id="teryt" onchange="check_teryt('location')"{if $voipaccountinfo.teryt} checked{/if}><label for="teryt">{trans("TERRIT-DB")}</label>
-			</TD>
-		</TR>
+            {/block}
+            {block name=voip_account_location}
+            <tr>
+                <td>
+                    <img src="img/home.gif" alt="{trans("Location:")}">
+                </td>
+                <td class="bold">
+                    {trans("Location:")}
+                </td>
+                <td>
+                    <input type="text" size="40" value="{$voipaccountinfo.location}" id="location" NAME="voipaccountedit[location]"  {tip text="Enter location (optional)" trigger="location"}>
+                    <a href="javascript: void(0);" onclick="if (check_teryt()) return locationchoosewin('voipaccountedit', 'editvoipaccount', document.forms['editvoipaccount'].elements['voipaccountedit[location_city]'].value,  document.forms['editvoipaccount'].elements['voipaccountedit[location_street]'].value)" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</a>
+                    <br>
+                    <input type="hidden" name="voipaccountedit[location_city]" value="{$voipaccountinfo.location_city}">
+                    <input type="hidden" name="voipaccountedit[location_street]" value="{$voipaccountinfo.location_street}">
+                    <input type="hidden" name="voipaccountedit[location_house]" value="{$voipaccountinfo.location_house}">
+                    <input type="hidden" name="voipaccountedit[location_flat]" value="{$voipaccountinfo.location_flat}">
+                    <input type="checkbox" name="voipaccountedit[teryt]" id="teryt" onchange="check_teryt('location')"{if $voipaccountinfo.teryt} checked{/if}><label for="teryt">{trans("TERRIT-DB")}</label>
+                </td>
+            </tr>
+            {/block}
+            {block name=voip_account_events}
             <tr>
                 <td>
                     <img src="img/users.gif" alt="">
@@ -107,12 +120,16 @@
                     {else}-{/if}
                 </td>
             </tr>
+            {/block}
+            {block name=voip_account_extra}{/block}
+            {block name=voip_account_buttons}
             <tr>
                 <td class="text-right" colspan="3">
                     <a href="javascript:document.editvoipaccount.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
                     <a href="?m=voipaccountinfo&id={$voipaccountinfo.id}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
                 </td>
-            </tr>	
+            </tr>
+            {/block}
         </tbody>
     </table>
 </form>

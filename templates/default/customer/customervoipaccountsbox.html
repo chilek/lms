@@ -1,69 +1,80 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox">
-	<THEAD>
-	<TR class="hand">
-		<TD style="width: 99%;" class="hand bold" onclick="showOrHide('voipaccountspanel');">
-			<IMG src="img/voip.gif" alt="">
-			{t a=$customervoipaccounts.total|default:"0"}Voip Accounts ($a):{/t}
-		</TD>
-		<TD style="width: 1%;" class="text-right nobr">
-			{if $customerinfo.status != "1" and ! $customerinfo.deleted}<A href="?m=voipaccountadd&amp;ownerid={$customerinfo.id}">{trans("New Voip Account")} &raquo;</A>&nbsp;{/if}
-		</TD>
-	</TR>
-	</THEAD>
-	<TBODY>
-	<TR id="voipaccountspanel" style="display: none;">
-		<TD style="width: 100%; " colspan="2">
-			<TABLE class="lmsbox-inner">
-				<THEAD>
-				<TR>
-					<TD style="width: 96%;" class="bold nobr">{trans("Login:")}</TD>
-					<TD style="width: 1%;" class="nobr">{trans("ID:")}</TD>
-					<TD style="width: 1%;" class="nobr" colspan="2">{trans("Password:")}</TD>
-					<TD style="width: 1%;" class="nobr">{trans("Phone number:")}</TD>
-					<TD style="width: 1%;">&nbsp;</TD>
-				</TR>
-				</THEAD>
-				<TBODY>
-				{cycle name=voips values="light,lucid" print=false}
-				{foreach from=$customervoipaccounts.accounts item=voipaccount}
-				<TR class="highlight {cycle name=voips}"  >
-					<TD style="width: 96%;" class="bold nobr" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
-						{$voipaccount.login}
-					</TD>
-					<TD style="width: 1%;" class="nobr" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
-						({$voipaccount.id|string_format:"%04d"})
-					</TD>
-					<TD style="width: 1%;" class="nobr" colspan="2" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
-						{if !ConfigHelper::checkConfig('privileges.hide_voip_passwords')}{$voipaccount.passwd}{else}{'*'|str_repeat:8}{/if}
-					</TD>
-					<TD style="width: 1%;" class="nobr" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
-						{$voipaccount.phone}
-					</TD>
-					<TD style="width: 1%;" class="text-right nobr">
-						<A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer voip account?")}')" href="?m=voipaccountdel&amp;id={$voipaccount.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-						<A href="?m=voipaccountedit&amp;id={$voipaccount.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-						<A href="?m=voipaccountinfo&amp;id={$voipaccount.id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
-					</TD>
-				</TR>
-				{foreachelse}
-				<TR>
-					<TD class="empty-table" colspan="6">
-						<p>&nbsp;</p>
-						<p>{trans("That customer does not own any voip account.")}</p>
-						<p>&nbsp;</p>
-					</TD>
-				</TR>
-				{/foreach}
-				</TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-	</TBODY>
-</TABLE>
-<SCRIPT type="text/javascript">
+<table class="lmsbox">
+    <thead>
+        <tr class="hand">
+            <td style="width: 99%;" class="hand bold" onclick="showOrHide('voipaccountspanel');">
+                <img src="img/voip.gif" alt="">
+                {t a=$customervoipaccounts.total|default:"0"}Voip Accounts ($a):{/t}
+            </td>
+            <td style="width: 1%;" class="text-right nobr">
+                {if $customerinfo.status != "1" and ! $customerinfo.deleted}<A href="?m=voipaccountadd&amp;ownerid={$customerinfo.id}">{trans("New Voip Account")} &raquo;</A>&nbsp;{/if}
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr id="voipaccountspanel" style="display: none;">
+            <td style="width: 100%; " colspan="2">
+                <table class="lmsbox-inner">
+                    <colgroup>
+                        {block name=customer_voip_account_list_columns}
+                        <col style="width: 96%;">
+                        <col style="width: 1%;" span="4">
+                        {/block}
+                    </colgroup>
+                    <thead>
+                        {block name=customer_voip_account_list_header}
+                        <tr>
+                            <td class="bold nobr">{trans("Login:")}</td>
+                            <td class="nobr">{trans("ID:")}</td>
+                            <td class="nobr" colspan="2">{trans("Password:")}</td>
+                            <td class="nobr">{trans("Phone number:")}</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        {/block}
+                    </thead>
+                    <tbody>
+                        {cycle name=voips values="light,lucid" print=false}
+                        {foreach from=$customervoipaccounts.accounts item=voipaccount}
+                        {block name=customer_voip_account_list_row}
+                        <tr class="highlight {cycle name=voips}"  >
+                            <td class="bold nobr" onclick="return self.location.href = '?m=voipaccountinfo&amp;id={$voipaccount.id}'">
+                                {$voipaccount.login}
+                            </td>
+                            <td class="nobr" onclick="return self.location.href = '?m=voipaccountinfo&amp;id={$voipaccount.id}'">
+                                ({$voipaccount.id|string_format:"%04d"})
+                            </td>
+                            <td class="nobr" colspan="2" onclick="return self.location.href = '?m=voipaccountinfo&amp;id={$voipaccount.id}'">
+                                {if !ConfigHelper::checkConfig('privileges.hide_voip_passwords')}{$voipaccount.passwd}{else}{'*'|str_repeat:8}{/if}
+                            </td>
+                            <td class="nobr" onclick="return self.location.href = '?m=voipaccountinfo&amp;id={$voipaccount.id}'">
+                                {$voipaccount.phone}
+                            </td>
+                            <td class="text-right nobr">
+                                <A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer voip account?")}')" href="?m=voipaccountdel&amp;id={$voipaccount.id}"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+                                <A href="?m=voipaccountedit&amp;id={$voipaccount.id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+                                <A href="?m=voipaccountinfo&amp;id={$voipaccount.id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+                            </td>
+                        </tr>
+                        {/block}
+                        {foreachelse}
+                        <tr>
+                            {block name=customer_voip_account_list_empty_row}
+                            <td class="empty-table" colspan="6">
+                                {trans("That customer does not own any voip account.")}
+                            </td>
+                            {/block}
+                        </tr>
+                        {/foreach}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<script type="text/javascript">
 <!--
-	if (getCookie('voipaccountspanel') == '1')
-		document.getElementById('voipaccountspanel').style.display = '';
+    if (getCookie('voipaccountspanel') == '1') {
+        document.getElementById('voipaccountspanel').style.display = '';
+    }
 //-->
-</SCRIPT>
+</script>
