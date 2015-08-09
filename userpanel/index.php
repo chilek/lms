@@ -195,7 +195,6 @@ $SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
 $SMARTY->debugging = ConfigHelper::checkConfig('phpui.smarty_debug');
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'smarty_addons.php');
 
-$layout['upv'] = $USERPANEL->_version.' ('.$USERPANEL->_revision.'/'.$SESSION->_revision.')';
 $layout['lmsdbv'] = $DB->GetVersion();
 $layout['lmsv'] = $LMS->_version;
 $layout['lmsvr'] = $LMS->_revision;

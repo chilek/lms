@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,13 +23,11 @@
  *
  *  $Id$
  *
-*/		     
+*/
 
 // Extending LMS class for Userpanel-specific functions
-class ULMS extends LMS
-{
-	function docnumber($id)
-	{
+class ULMS extends LMS {
+	public function docnumber($id) {
 		if($doc = $this->DB->GetRow('SELECT number, cdate, template 
 					FROM documents 
 					LEFT JOIN numberplans ON (numberplanid = numberplans.id)
@@ -38,13 +36,11 @@ class ULMS extends LMS
 		else
 			return NULL;
 	}
-	
-	function GetCustomer($id, $short = false)
-	{
+
+	public function GetCustomer($id, $short = false) {
 		if($result = $this->DB->GetRow('SELECT c.*, '.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername
-	                                FROM customers c WHERE c.id = ?', array($id)))
-		{
-                        $result['balance'] = $this->GetCustomerBalance($result['id']); 
+			FROM customers c WHERE c.id = ?', array($id))) {
+			$result['balance'] = $this->GetCustomerBalance($result['id']); 
 			$result['bankaccount'] = bankaccount($result['id']); 
 			$result['messengers'] = $this->DB->GetAllByKey('SELECT uid, type FROM imessengers WHERE customerid = ? ORDER BY type', 'type', array($id));
 			$result['contacts'] = $this->DB->GetAllByKey('SELECT id, contact AS phone, name
@@ -53,18 +49,15 @@ class ULMS extends LMS
 				FROM customercontacts WHERE customerid = ? AND type = ? ORDER BY id', 'id', array($id, CONTACT_EMAIL));
 
 			return $result;
-		}
-		else
+		} else
 			return NULL;
 	}
 
-	function GetCustomerMessage($id)
-	{
+	public function GetCustomerMessage($id) {
 		return $this->DB->GetOne('SELECT message FROM customers WHERE id=?', array($id));
 	}
-	
-	function GetCustomerTickets($id)
-	{
+
+	public function GetCustomerTickets($id) {
 		$queues = array();
 		if (ConfigHelper::getConfig('userpanel.tickets_from_selected_queues'))
 			$queues = $this->DB->GetCol('SELECT id FROM rtqueues
@@ -78,10 +71,9 @@ class ULMS extends LMS
 		return $tickets;
 	}
 
-	function GetTicketContents($id)
-	{
+	public function GetTicketContents($id) {
 		global $RT_STATES;
-		
+
 		$ticket = $this->DB->GetRow('SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, 
 				    requestor, state, owner, customerid, cause, '
 				    .$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, 
@@ -91,7 +83,7 @@ class ULMS extends LMS
 				LEFT JOIN users ON (owner = users.id)
 				LEFT JOIN customers ON (customers.id = customerid)
 				WHERE rttickets.id = ?', array($id));
-		
+
 		$ticket['messages'] = $this->DB->GetAll('SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, '
 				    .$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, 
 				    userid, users.name AS username, customerid
@@ -105,6 +97,6 @@ class ULMS extends LMS
 
 		return $ticket;
 	}
-}		
+}
 
 ?>

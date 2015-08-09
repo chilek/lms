@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,22 +27,18 @@
 require_once('authentication.inc'); 
 
 class Session {
+	public $id;
+	private $login;
+	private $passwd;
+	private $ip;
+	public $islogged = false;
+	public $error;
 
-	var $id;
-	var $login;
-	var $passwd;
-	var $ip;
-	var $islogged = FALSE;
-	var $error;
-	var $_version = '1.11-git';
-	var $_revision = '$Revision$';
-
-	function Session(&$DB, $timeout = 600) {
+	public function __construct(&$DB, $timeout = 600) {
 		global $LMS;
 
 		session_start();
 		$this->DB = &$DB;
-		$this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/i', '\1', $this->_revision);
 		$this->ip = str_replace('::ffff:', '', $_SERVER['REMOTE_ADDR']);
 
 		if (isset($_GET['override']))
@@ -178,55 +174,45 @@ class Session {
 		}
 	}
 
-	function _postinit()
-	{
+	public function _postinit() {
 		return TRUE;
 	}
 
-	function LogOut()
-	{
+	public function LogOut() {
 		if ($this->islogged)
 			session_destroy();
 		unset($this->login);
 		unset($this->password);
 		unset($this->id);
 		unset($_SESSION);
-	}		
-	
-	function TimeOut($timeout = 600)
-	{
-		if( (time()-$_SESSION['session_timestamp']) > $timeout )
-		{
+	}
+
+	public function TimeOut($timeout = 600) {
+		if ((time()-$_SESSION['session_timestamp']) > $timeout) {
 			$this->error = trans('Idle time limit exceeded ($a sec.)', $timeout);
 			return FALSE;
-		}
-		else
-		{
+		} else {
 			$_SESSION['session_timestamp'] = time();
 			return TRUE;
 		}
 	}
-	
-	function VerifyPassword()
-	{
-		if(empty($this->login))
-		{
+
+	public function VerifyPassword() {
+		if (empty($this->login)) {
 			$this->error = trans('Please login.');
 			return NULL;
 		}
-		
+
 		// customer authorization ways
 		// $authinfo = GetCustomerIDByPhoneAndPIN($this->login, $this->passwd);
 		// $authinfo = GetCustomerIDByContractAndPIN($this->login, $this->passwd);
 
 		$authinfo = GetCustomerIDByIDAndPIN($this->login, $this->passwd);
-		
-		if($authinfo != NULL && $authinfo['id'] != NULL)
+
+		if ($authinfo != NULL && $authinfo['id'] != NULL)
 			return $authinfo;
-		else 
-		{
+		else
 			return NULL;
-		}
 	}
 }
 
