@@ -16,6 +16,7 @@
 		<TD style="width: 100%; " colspan="2">
 			<TABLE class="lmsbox-inner">
 				<THEAD>
+                                {block name="customervoipaccountsbox-list-header"}
 				<TR>
 					<TD style="width: 96%;" class="bold nobr">{trans("Login:")}</TD>
 					<TD style="width: 1%;" class="nobr">{trans("ID:")}</TD>
@@ -23,10 +24,12 @@
 					<TD style="width: 1%;" class="nobr">{trans("Phone number:")}</TD>
 					<TD style="width: 1%;">&nbsp;</TD>
 				</TR>
+                                {/block}
 				</THEAD>
 				<TBODY>
 				{cycle name=voips values="light,lucid" print=false}
 				{foreach from=$customervoipaccounts.accounts item=voipaccount}
+                                {block name="customervoipaccountsbox-list-row"}
 				<TR class="highlight {cycle name=voips}"  >
 					<TD style="width: 96%;" class="bold nobr" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
 						{$voipaccount.login}
@@ -46,7 +49,9 @@
 						<A href="?m=voipaccountinfo&amp;id={$voipaccount.id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 					</TD>
 				</TR>
+                                {/block}
 				{foreachelse}
+                                {block name="customervoipaccountsbox-list-empty-row"}
 				<TR>
 					<TD class="empty-table" colspan="6">
 						<p>&nbsp;</p>
@@ -54,6 +59,7 @@
 						<p>&nbsp;</p>
 					</TD>
 				</TR>
+                                {/block}
 				{/foreach}
 				</TBODY>
 			</TABLE>

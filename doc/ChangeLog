@@ -15,6 +15,7 @@ version ?.??.?? (????-??-??):
     but values set so far are stored in customercontacts table from now) [chilan]
   - added smarty blocks for customer assignments template [maciejlew]
   - added smarty blocks for customer list template [maciejlew]
+  - added smarty blocks for customer voip accounts list template [maciejlew]
 
 version 1.11.17 (2015-06-29):
 
