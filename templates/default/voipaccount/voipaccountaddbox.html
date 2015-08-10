@@ -8,7 +8,7 @@
             <col style="width: 98%;"/>
         </colgroup>
         <thead>
-            {block name=voipaccountaddbox-login}
+            {block name="voipaccountaddbox-login"}
             <tr>
                 <td>
                     <img src="img/voip.gif" alt="{trans("Login:")}">
@@ -23,7 +23,7 @@
             {/block}
         </thead>
         <tbody>
-            {block name=voipaccountaddbox-password}
+            {block name="voipaccountaddbox-password"}
             <tr>
                 <td>
                     <img src="img/passwd.gif" alt="{trans("Password:")}">
@@ -36,7 +36,7 @@
                 </td>
             </tr>
             {/block}
-            {block name=voipaccountaddbox-phone}
+            {block name="voipaccountaddbox-phone"}
             <tr>
                 <td>
                     <img src="img/phone.gif" alt="{trans("Phone number:")}">
@@ -49,7 +49,7 @@
                 </td>
             </tr>
             {/block}
-            {block name=voipaccountaddbox-status}
+            {block name="voipaccountaddbox-status"}
             <tr>
                 <td>
                     <img src="img/{if ! $voipaccountdata.access}no{/if}access.gif" alt="">
@@ -65,7 +65,7 @@
                 </td>
             </tr>
             {/block}
-            {block name=voipaccountaddbox-customer}
+            {block name="voipaccountaddbox-customer"}
             <tr>
                 <td>
                     <img src="img/customer.gif" alt="{trans("Customer:")}">
@@ -82,7 +82,7 @@
                 </td>
             </tr>
             {/block}
-            {block name=voipaccountaddbox-location}
+            {block name="voipaccountaddbox-location"}
 		<TR>
 			<TD>
 				<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
@@ -102,7 +102,8 @@
 			</TD>
 		</TR>
             {/block}
-            {block name=voipaccountaddbox-buttons}
+            {block name="voipaccountaddbox-extra"}{/block}
+            {block name="voipaccountaddbox-buttons"}
             <tr>
                 <td class="text-right" colspan="3">
                     <a href="javascript:document.voipaccountadd.submit();" accesskey="s">
@@ -117,7 +118,6 @@
                 </td>
             </tr>
             {/block}
-            {block name=voipaccountaddbox-extra}{/block}
         </tbody>
     </table>
 </form>
