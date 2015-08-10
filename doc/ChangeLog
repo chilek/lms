@@ -16,6 +16,7 @@ version ?.??.?? (????-??-??):
   - added smarty blocks for customer assignments template [maciejlew]
   - added smarty blocks for customer list template [maciejlew]
   - added smarty blocks for customer voip accounts list template [maciejlew]
+  - added smarty blocks for voip account add template [maciejlew]
 
 version 1.11.17 (2015-06-29):
 
