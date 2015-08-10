@@ -9,6 +9,7 @@
             <col style="width: 98%;"/>
         </colgroup>
         <thead>
+            {block name="voipaccounteditbox-login"}
             <tr>
                 <td>
                     <img src="img/voip.gif" alt="{trans("Login:")}">
@@ -21,8 +22,10 @@
                     ({$voipaccountinfo.id|string_format:"%04d"})
                 </td>
             </tr>
+            {/block}
         </thead>
         <tbody>
+            {block name="voipaccounteditbox-password"}
             <tr>
                 <td>
                     <img src="img/passwd.gif" alt="{trans("Password:")}">
@@ -34,6 +37,8 @@
                     <input type="text" name="voipaccountedit[passwd]" value="{if !ConfigHelper::checkConfig('privileges.hide_voip_passwords')}{$voipaccountinfo.passwd}{else}{'*'|str_repeat:8}{/if}" {tip text="Enter password" trigger="passwd"}>
                 </td>
             </tr>
+            {/block}
+            {block name="voipaccounteditbox-phone"}
             <tr>
                 <td>
                     <img src="img/phone.gif" alt="{trans("Phone number:")}">
@@ -45,6 +50,8 @@
                     <input type="text" name="voipaccountedit[phone]" value="{$voipaccountinfo.phone}" {tip text="Enter phone number" trigger="phone"}>
                 </td>
             </tr>
+            {/block}
+            {block name="voipaccounteditbox-status"}
             <tr>
                 <td>
                     <img src="img/{if ! $voipaccountinfo.access}no{/if}access.gif" alt="">
@@ -59,6 +66,8 @@
                     </select>
                 </td>
             </tr>
+            {/block}
+            {block name="voipaccounteditbox-customer"}
             <tr>
                 <td>
                     <img src="img/customer.gif" alt="{trans("Customer:")}">
@@ -74,6 +83,8 @@
                     </select>
                 </td>
             </tr>
+            {/block}
+            {block name="voipaccounteditbox-location"}
 		<TR>
 			<TD>
 				<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
@@ -92,6 +103,8 @@
 				<INPUT TYPE="checkbox" name="voipaccountedit[teryt]" id="teryt" onchange="check_teryt('location')"{if $voipaccountinfo.teryt} checked{/if}><label for="teryt">{trans("TERRIT-DB")}</label>
 			</TD>
 		</TR>
+            {/block}
+            {block name="voipaccounteditbox-events"}
             <tr>
                 <td>
                     <img src="img/users.gif" alt="">
@@ -107,12 +120,16 @@
                     {else}-{/if}
                 </td>
             </tr>
+            {/block}
+            {block name="voipaccounteditbox-extra"}{/block}
+            {block name="voipaccounteditbox-buttons"}
             <tr>
                 <td class="text-right" colspan="3">
                     <a href="javascript:document.editvoipaccount.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
                     <a href="?m=voipaccountinfo&id={$voipaccountinfo.id}">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
                 </td>
-            </tr>	
+            </tr>
+            {/block}
         </tbody>
     </table>
 </form>
