@@ -13,6 +13,13 @@ version ?.??.?? (????-??-??):
   - added location to voip accounts as we're preparing for plicbd2 localisation service [chilan]
   - we can add many mail accounts in customer properties (customers.mail field in db was removed,
     but values set so far are stored in customercontacts table from now) [chilan]
+  - added smarty blocks for customer assignments template [maciejlew]
+  - added smarty blocks for customer list template [maciejlew]
+  - added smarty blocks for customer voip accounts list template [maciejlew]
+  - added smarty blocks for voip account add template [maciejlew]
+  - added smarty blocks for voip account edit template [maciejlew]
+  - added smarty blocks for voip account info template [maciejlew]
+  - added smarty blocks for voip account list template [maciejlew]
 
 version 1.11.17 (2015-06-29):
 

@@ -5,13 +5,16 @@
 <h1>{$layout.pagetitle}</h1>
 <table class="lmsbox">
     <colgroup>
+        {block name="voipaccountlist-list-columns"}
         <col style="width: 96%;">
         <col style="width: 1%;">
         <col style="width: 1%;">
         <col style="width: 1%;">
         <col style="width: 1%;">
+        {/block}
     </colgroup>
     <thead>
+        {block name="voipaccountlist-list-header"}
         <tr {tip text="Click on column name to change sorting order"}>
             <th nowrap>
                 <img src="img/voip.gif" alt=""> 
@@ -49,6 +52,8 @@
                 <nobr>{t a=$listdata.total}Total: $a{/t}</nobr>
             </th>
         </tr>
+        {/block}
+        {block name="voipaccountlist-list-filters"}
         {*
         <tr>
             <th colspan="5">
@@ -71,6 +76,8 @@
             </th>
         </tr>
         *}
+        {/block}
+        {block name="voipaccountlist-list-header-pagination"}
         {if $listdata.total != 0}
         <tr>
             <th class="pagination" colspan="5">
@@ -78,10 +85,12 @@
             </th>
         </tr>
         {/if}
+        {/block}
     </thead>
     <tbody>
         {cycle values="light,lucid" print=false}
         {section name=voipaccountlist loop=$voipaccountlist start=$start max=$pagelimit}
+        {block name="voipaccountlist-list-row"}
         <tr class="highlight {cycle}">
             <td onClick="return self.location.href = '?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}';" nowrap>
                 <img src="img/voip.gif" alt="">
@@ -121,15 +130,19 @@
             </td>
         </tr>
         {if $voipaccountlist[voipaccountlist.index_next].ownerid == $voipaccountlist[voipaccountlist].ownerid && $listdata.order == "owner"}{cycle print=false}{/if}
+        {/block}
         {sectionelse}
+        {block name="voipaccountlist-list-empty-row"}
         <tr>
             <td class="empty-table" colspan="5">
                 {trans("No such voip accounts in database.")}
             </td>
         </tr>
+        {/block}
         {/section}
     </tbody>
     <tfoot>
+        {block name="voipaccountlist-list-footer-pagination"}
         {if $listdata.total != 0}
         <tr>
             <td class="pagination" colspan="5">
@@ -137,6 +150,8 @@
             </td>
         </tr>
         {/if}
+        {/block}
+        {block name="voipaccountlist-list-footer"}
         <tr>
             <td class="bold text-right" colspan="2">
                 {trans("Total:")}
@@ -145,6 +160,7 @@
                 {if $listdata.total}{$listdata.total}{else}0{/if}
             </td>				
         </tr>
+        {/block}
     </tfoot>
 </table>
 {/block}

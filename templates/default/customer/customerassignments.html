@@ -25,6 +25,7 @@
 		<TD style="width: 100%;" colspan="2">
 			<TABLE class="lmsbox-inner">
 				<THEAD>
+                                {block name="customerassignments-list-header"}
 				<TR>
 					<TD style="width: 92%;" class="bold nobr">{trans("Liability:")}</TD>
 					<TD style="width: 1%;" class="text-right nobr">
@@ -40,10 +41,12 @@
 					<TD style="width: 1%;" class="nobr">{trans("Period:")}</TD>
 					<TD style="width: 1%;">&nbsp;</TD>
 				</TR>
+                                {/block}
 				</THEAD>
 				<TBODY>
 				{cycle name=assign values="light,lucid" print=false}
 				{foreach from=$assignments item=a}
+                                {block name="customerassignments-list-row"}
 				<TR class="highlight {cycle name=assign}
 					{if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today && $a.at > 365)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) && !($a.suspended)} alertblend{elseif ($a.suspended)}suspended{/if}">
 					{if !$a.tariffid && !$a.liabilityid}
@@ -88,7 +91,9 @@
 						<A href="?m=customerassignmentedit&amp;id={$a.id}"><IMG SRC="img/edit.gif" ALT="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 					</TD>
 				</TR>
+                                {/block}
 				{foreachelse}
+                                {block name="customerassignments-list-empty-row"}
 				<TR>
 					<TD class="empty-table" colspan="9">
 						<P>&nbsp;</P>
@@ -96,7 +101,9 @@
 						<P>&nbsp;</P>
 					</TD>
 				</TR>
+                                {/block}
 				{/foreach}
+                                {block name="customerassignments-list-footer"}
 				<TR>
 					<TD class="ftop text-right bold">{trans("Total:")}</TD>
 					<TD class="ftop text-right nobr">
@@ -114,6 +121,7 @@
 					<TD class="ftop text-right nobr">{sum array=$assignments column="real_upceil" assign=upceilsum}{if $upceilsum}{$upceilsum} kbit/s{/if}</TD>
 					<TD class="ftop" colspan="3">&nbsp;</TD>
 				</TR>
+                                {/block}
 				</TBODY>
 			</TABLE>
 		</TD>

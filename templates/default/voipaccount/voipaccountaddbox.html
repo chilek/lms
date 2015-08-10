@@ -8,6 +8,7 @@
             <col style="width: 98%;"/>
         </colgroup>
         <thead>
+            {block name="voipaccountaddbox-login"}
             <tr>
                 <td>
                     <img src="img/voip.gif" alt="{trans("Login:")}">
@@ -19,8 +20,10 @@
                     <input type="text" name="voipaccountdata[login]" value="{$voipaccountdata.login}" maxlength="32" size="30" {tip text="Enter voip account login" trigger="login" bold=1}>
                 </td>
             </tr>
+            {/block}
         </thead>
         <tbody>
+            {block name="voipaccountaddbox-password"}
             <tr>
                 <td>
                     <img src="img/passwd.gif" alt="{trans("Password:")}">
@@ -32,6 +35,8 @@
                     <input type="text" name="voipaccountdata[passwd]" value="{$voipaccountdata.passwd}" {tip text="Enter password" trigger="passwd"}>
                 </td>
             </tr>
+            {/block}
+            {block name="voipaccountaddbox-phone"}
             <tr>
                 <td>
                     <img src="img/phone.gif" alt="{trans("Phone number:")}">
@@ -43,6 +48,8 @@
                     <input type="text" name="voipaccountdata[phone]" value="{$voipaccountdata.phone}" {tip text="Enter phone number" trigger="phone"}>
                 </td>
             </tr>
+            {/block}
+            {block name="voipaccountaddbox-status"}
             <tr>
                 <td>
                     <img src="img/{if ! $voipaccountdata.access}no{/if}access.gif" alt="">
@@ -57,6 +64,8 @@
                     </select>
                 </td>
             </tr>
+            {/block}
+            {block name="voipaccountaddbox-customer"}
             <tr>
                 <td>
                     <img src="img/customer.gif" alt="{trans("Customer:")}">
@@ -72,6 +81,8 @@
                     </select>
                 </td>
             </tr>
+            {/block}
+            {block name="voipaccountaddbox-location"}
 		<TR>
 			<TD>
 				<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
@@ -90,6 +101,9 @@
 				<INPUT TYPE="checkbox" name="voipaccountdata[teryt]" id="teryt" onchange="check_teryt('location')"{if $voipaccountdata.teryt} checked{/if}><label for="teryt">{trans("TERRIT-DB")}</label>
 			</TD>
 		</TR>
+            {/block}
+            {block name="voipaccountaddbox-extra"}{/block}
+            {block name="voipaccountaddbox-buttons"}
             <tr>
                 <td class="text-right" colspan="3">
                     <a href="javascript:document.voipaccountadd.submit();" accesskey="s">
@@ -103,6 +117,7 @@
                     <label for="reuse">{trans("Display this form again, when this voip account is saved")}</label>
                 </td>
             </tr>
+            {/block}
         </tbody>
     </table>
 </form>
