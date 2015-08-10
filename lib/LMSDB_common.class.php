@@ -682,15 +682,16 @@ abstract class LMSDB_common implements LMSDBInterface
 			if ($dbver > $dbversion) {
 				set_time_limit(0);
 				$lastupgrade = $dbversion;
+				$_dbtype = ConfigHelper::getConfig('database.type') == 'mysqli' ? 'mysql' : ConfigHelper::getConfig('database.type');
 
 				if (is_null($libdir))
 					$libdir = LIB_DIR;
 
 				$pendingupgrades = array();
-				$upgradelist = getdir($libdir . DIRECTORY_SEPARATOR . 'upgradedb', '^' . $this->_dbtype . '\.[0-9]{10}\.php$');
+				$upgradelist = getdir($libdir . DIRECTORY_SEPARATOR . 'upgradedb', '^' . $_dbtype . '\.[0-9]{10}\.php$');
 				if (!empty($upgradelist))
 					foreach ($upgradelist as $upgrade) {
-						$upgradeversion = preg_replace('/^' . $this->_dbtype . '\.([0-9]{10})\.php$/', '\1', $upgrade);
+						$upgradeversion = preg_replace('/^' . $_dbtype . '\.([0-9]{10})\.php$/', '\1', $upgrade);
 
 						if ($upgradeversion > $dbversion && $upgradeversion <= $dbver)
 							$pendingupgrades[] = $upgradeversion;
@@ -699,7 +700,7 @@ abstract class LMSDB_common implements LMSDBInterface
 				if (!empty($pendingupgrades)) {
 					sort($pendingupgrades);
 					foreach ($pendingupgrades as $upgrade) {
-						include($libdir . DIRECTORY_SEPARATOR . 'upgradedb' . DIRECTORY_SEPARATOR . $this->_dbtype . '.' . $upgrade . '.php');
+						include($libdir . DIRECTORY_SEPARATOR . 'upgradedb' . DIRECTORY_SEPARATOR . $_dbtype . '.' . $upgrade . '.php');
 						if (!empty($this->errors))
 							$lastupgrade = $upgrade;
 						else
