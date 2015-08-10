@@ -6,6 +6,7 @@
         <col style="width: 98%;"/>
     </colgroup>
     <thead>
+        {block name=voip_account_login}
         <tr>
             <td>
                 <img src="img/voip.gif" alt="">
@@ -14,8 +15,10 @@
                 {$voipaccountinfo.login} ({$voipaccountinfo.id|string_format:"%04d"})
             </td>
         </tr>
+        {/block}
     </thead>
     <tbody>
+        {block name=voip_account_password}
         <tr>
             <td>
                 <img src="img/passwd.gif" alt="{trans("Password:")}">
@@ -27,6 +30,8 @@
                 {if !ConfigHelper::checkConfig('privileges.hide_voip_passwords')}{$voipaccountinfo.passwd}{else}{'*'|str_repeat:8}{/if}
             </td>
         </tr>
+        {/block}
+        {block name=voip_account_phone}
         <tr>
             <td>
                 <img src="img/phone.gif" alt="{trans("Phone number:")}">
@@ -38,6 +43,8 @@
                 {$voipaccountinfo.phone}
             </td>
         </tr>
+        {/block}
+        {block name=voip_account_customer}
 	<tr>
 		<td>
 			<img src="img/customer.gif" alt="{trans("Customer:")}">
@@ -49,19 +56,23 @@
 			<a href="?m=customerinfo&id={$voipaccountinfo.ownerid}">{$voipaccountinfo.owner}</a>
 		</td>
 	</tr>
+        {/block}
+        {block name=voip_account_location}
 	{if $voipaccountinfo.location}
-	<TR>
-		<TD>
-			<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
-		</TD>
-		 <td class="bold nobr">
-			{trans("Location:")}
-		</td>
-		<TD class="nobr">
-			{$voipaccountinfo.location}{if $voipaccountinfo.borough_name} ({$voipaccountinfo.state_name} / {$voipaccountinfo.district_name} / {$_BOROUGHTYPES[$voipaccountinfo.borough_type]} {$voipaccountinfo.borough_name}){/if}
-		</TD>
-	</TR>
+	<tr>
+            <td>
+                <img src="img/home.gif" alt="{trans("Location:")}">
+            </td>
+             <td class="bold nobr">
+                {trans("Location:")}
+            </td>
+            <td class="nobr">
+                {$voipaccountinfo.location}{if $voipaccountinfo.borough_name} ({$voipaccountinfo.state_name} / {$voipaccountinfo.district_name} / {$_BOROUGHTYPES[$voipaccountinfo.borough_type]} {$voipaccountinfo.borough_name}){/if}
+            </td>
+	</tr>
 	{/if}
+        {/block}
+        {block name=voip_account_status}
         <tr>
             <td>
                 <a href="?m=voipaccountset&id={$voipaccountinfo.id}"><img src="img/{if ! $voipaccountinfo.access}no{/if}access.gif" alt=""></a>
@@ -73,6 +84,8 @@
                 {if $voipaccountinfo.access}{trans("connected<!singular>")}{else}{trans("disconnected<!singular>")}{/if}
             </td>
         </tr>
+        {/block}
+        {block name=voip_account_events}
         <tr>
             <td>
                 <img src="img/users.gif" alt="">
@@ -86,6 +99,9 @@
                 {if $voipaccountinfo.moddate}{$voipaccountinfo.modifiedby}, {$voipaccountinfo.moddateh}{else}-{/if}
             </td>
         </tr>
+        {/block}
+        {block name=voip_account_extra}{/block}
+        {block name=voip_account_buttons}
         <tr>
             <td class="text-right" colspan="3">
                 <a href="?m=voipaccountedit&id={$voipaccountinfo.id}" accesskey="E">
@@ -96,5 +112,6 @@
                 </a>
             </td>
         </tr>
+        {/block}
     </tbody>
 </table>
