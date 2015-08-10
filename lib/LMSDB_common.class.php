@@ -692,7 +692,7 @@ abstract class LMSDB_common implements LMSDBInterface
 				$upgradelist = getdir($libdir . DIRECTORY_SEPARATOR . 'upgradedb', '^' . $filename_prefix . '\.[0-9]{10}\.php$');
 				if (!empty($upgradelist))
 					foreach ($upgradelist as $upgrade) {
-						$upgradeversion = preg_replace('/^' . $this->_dbtype . '\.([0-9]{10})\.php$/', '\1', $upgrade);
+						$upgradeversion = preg_replace('/^' . $filename_prefix . '\.([0-9]{10})\.php$/', '\1', $upgrade);
 
 						if ($upgradeversion > $dbversion && $upgradeversion <= $dbver)
 							$pendingupgrades[] = $upgradeversion;
