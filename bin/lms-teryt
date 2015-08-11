@@ -787,12 +787,12 @@ if ($merge)
 	}
 
 	# voipaccounts
-	$dbq = $dbase->prepare("SELECT va.id, va.phone,
+	$dbq = $dbase->prepare("SELECT va.id, va.phone, va.ownerid,
 			COUNT(*) AS locationcount FROM voipaccounts va
 		LEFT JOIN (SELECT DISTINCT ownerid, location_city, location_street, location_house, location_flat, location FROM nodes) l
 			ON l.ownerid = va.ownerid
 		WHERE va.location_city IS NULL and va.location_street IS NULL
-		GROUP BY va.id, va.phone");
+		GROUP BY va.id, va.phone, va.ownerid");
 	$dbq->execute();
 	while ($row = $dbq->fetchrow_hashref()) {
 		printf("%s (%04d): ", $row->{'phone'}, $row->{'id'}) if not $quiet;
@@ -800,8 +800,9 @@ if ($merge)
 			print "found " if not $quiet;
 			if ($row->{'locationcount'} == 1) {
 				$dbqn = $dbase->prepare("SELECT location_city, location_street, location_house, location_flat, location
-					FROM nodes WHERE location_city IS NOT NULL AND location_street IS NOT NULL");
-				$dbqn->execute();
+					FROM nodes WHERE location_city IS NOT NULL AND location_street IS NOT NULL
+						AND ownerid = ? LIMIT 1");
+				$dbqn->execute($row->{'ownerid'});
 				$nrow = $dbqn->fetchrow_hashref();
 				if ($nrow) {
 					print "single non-empty location\n" if not $quiet;
