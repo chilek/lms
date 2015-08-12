@@ -799,7 +799,7 @@ if ($merge)
 		if ($row->{'locationcount'}) {
 			print "found " if not $quiet;
 			if ($row->{'locationcount'} == 1) {
-				$dbqn = $dbase->prepare("SELECT location_city, location_street, location_house, location_flat, location
+				my $dbqn = $dbase->prepare("SELECT location_city, location_street, location_house, location_flat, location
 					FROM nodes WHERE location_city IS NOT NULL AND location_street IS NOT NULL
 						AND ownerid = ? LIMIT 1");
 				$dbqn->execute($row->{'ownerid'});
@@ -811,6 +811,7 @@ if ($merge)
 				} else {
 					print "single empty location\n" if not $quiet;
 				}
+				$dbqn->finish();
 			} else {
 				print "many locations\n" if not $quiet;
 			}
@@ -828,5 +829,4 @@ if ($merge)
 }
 
 $dbq->finish();
-$dbqn->finish();
 $dbase->disconnect();
