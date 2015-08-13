@@ -7,10 +7,8 @@
     <colgroup>
         {block name="voipaccountlist-list-columns"}
         <col style="width: 96%;">
-        <col style="width: 1%;">
-        <col style="width: 1%;">
-        <col style="width: 1%;">
-        <col style="width: 1%;">
+        <col style="width: 1%;" span="4">
+        {assign var='number_of_table_columns' value='5'}
         {/block}
     </colgroup>
     <thead>
@@ -56,7 +54,7 @@
         {block name="voipaccountlist-list-filters"}
         {*
         <tr>
-            <th colspan="5">
+            <th colspan="{$number_of_table_columns}">
                 <form method="get" action="?m={$layout.module}" name="choosefilter">
                     <input type="submit" class="hiddenbtn">
                     <input type="hidden" name="m" value="voipaccountlist">
@@ -80,7 +78,7 @@
         {block name="voipaccountlist-list-header-pagination"}
         {if $listdata.total != 0}
         <tr>
-            <th class="pagination" colspan="5">
+            <th class="pagination" colspan="{$number_of_table_columns}">
                 {include file="scroller.html" loop=$voipaccountlist}
             </th>
         </tr>
@@ -134,7 +132,7 @@
         {sectionelse}
         {block name="voipaccountlist-list-empty-row"}
         <tr>
-            <td class="empty-table" colspan="5">
+            <td class="empty-table" colspan="{$number_of_table_columns}">
                 {trans("No such voip accounts in database.")}
             </td>
         </tr>
@@ -145,7 +143,7 @@
         {block name="voipaccountlist-list-footer-pagination"}
         {if $listdata.total != 0}
         <tr>
-            <td class="pagination" colspan="5">
+            <td class="pagination" colspan="{$number_of_table_columns}">
                 {include file="scroller.html" loop=$voipaccountlist}
             </td>
         </tr>
@@ -153,10 +151,10 @@
         {/block}
         {block name="voipaccountlist-list-footer"}
         <tr>
-            <td class="bold text-right" colspan="2">
+            <td class="bold text-right" colspan="{$number_of_table_columns - 1}">
                 {trans("Total:")}
             </td>
-            <td colspan="3">
+            <td>
                 {if $listdata.total}{$listdata.total}{else}0{/if}
             </td>				
         </tr>
