@@ -21,6 +21,7 @@ version ?.??.?? (????-??-??):
   - added smarty blocks for voip account info template [maciejlew]
   - added smarty blocks for voip account list template [maciejlew]
   - added number_of_table_columns variables at voip account list template that can be used by plugins [maciejlew]
+  - added customerlist-list-columns smarty block at customer list template [maciejlew]
 
 version 1.11.17 (2015-06-29):
 
