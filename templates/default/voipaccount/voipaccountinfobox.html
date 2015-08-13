@@ -59,17 +59,17 @@
         {/block}
         {block name="voipaccountinfobox-location"}
 	{if $voipaccountinfo.location}
-	<TR>
-		<TD>
-			<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
-		</TD>
-		 <td class="bold nobr">
-			{trans("Location:")}
-		</td>
-		<TD class="nobr">
-			{$voipaccountinfo.location}{if $voipaccountinfo.borough_name} ({$voipaccountinfo.state_name} / {$voipaccountinfo.district_name} / {$_BOROUGHTYPES[$voipaccountinfo.borough_type]} {$voipaccountinfo.borough_name}){/if}
-		</TD>
-	</TR>
+	<tr>
+            <td>
+                <img src="img/home.gif" alt="{trans('Location:')}">
+            </td>
+             <td class="bold nobr">
+                {trans("Location:")}
+            </td>
+            <td class="nobr">
+                {$voipaccountinfo.location}{if $voipaccountinfo.borough_name} ({$voipaccountinfo.state_name} / {$voipaccountinfo.district_name} / {$_BOROUGHTYPES[$voipaccountinfo.borough_type]} {$voipaccountinfo.borough_name}){/if}
+            </td>
+	</tr>
 	{/if}
         {/block}
         {block name="voipaccountinfobox-status"}
