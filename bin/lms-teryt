@@ -789,7 +789,7 @@ if ($merge)
 	# voipaccounts
 	$dbq = $dbase->prepare("SELECT va.id, va.phone, va.ownerid,
 			COUNT(*) AS locationcount FROM voipaccounts va
-		LEFT JOIN (SELECT DISTINCT ownerid, location_city, location_street, location_house, location_flat, location FROM nodes) l
+		LEFT JOIN (SELECT DISTINCT ownerid, location_city, location_street, location_house, location_flat FROM nodes) l
 			ON l.ownerid = va.ownerid
 		WHERE va.location_city IS NULL and va.location_street IS NULL
 		GROUP BY va.id, va.phone, va.ownerid");
