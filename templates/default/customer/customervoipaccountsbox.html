@@ -19,6 +19,7 @@
                                 <COLGROUP>
                                         <COL style="width: 96%;">
                                         <COL style="width: 1%;" span="5">
+                                        {assign var='number_of_table_columns' value='6'}
                                 </COLGROUP>
                                 {/block}
 				<THEAD>
@@ -59,7 +60,7 @@
 				{foreachelse}
                                 {block name="customervoipaccountsbox-list-empty-row"}
 				<TR>
-					<TD class="empty-table" colspan="6">
+					<TD class="empty-table" colspan="{$number_of_table_columns}">
 						<p>&nbsp;</p>
 						<p>{trans("That customer does not own any voip account.")}</p>
 						<p>&nbsp;</p>

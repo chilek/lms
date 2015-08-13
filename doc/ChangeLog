@@ -25,6 +25,7 @@ version ?.??.?? (????-??-??):
   - added number_of_table_columns variables at customer list template [maciejlew]
   - added colgroup at customer voip account list template [maciejlew]
   - added customervoipaccountsbox-list-columns smarty block at customer voip account list template [maciejlew]
+  - added number_of_table_columns variables at customer voip account list template [maciejlew]
 
 version 1.11.17 (2015-06-29):
 
