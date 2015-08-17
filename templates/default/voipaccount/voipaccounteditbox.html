@@ -34,7 +34,7 @@
                     {trans("Password:")}
                 </td>
                 <td>
-                    <input type="text" name="voipaccountedit[passwd]" value="{if !ConfigHelper::checkConfig('privileges.hide_voip_passwords')}{$voipaccountinfo.passwd}{else}{'*'|str_repeat:8}{/if}" {tip text="Enter password" trigger="passwd"}>
+                    <input type="{if ConfigHelper::checkPrivilege('hide_voip_passwords')}password{else}text{/if}" name="voipaccountedit[passwd]" value="{$voipaccountinfo.passwd}" {tip text="Enter password" trigger="passwd"}>
                 </td>
             </tr>
             {/block}

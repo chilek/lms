@@ -73,7 +73,7 @@
                 {$voipaccountlist[voipaccountlist].phone}
             </td>
             <td onClick="return self.location.href = '?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}';">
-                {if !ConfigHelper::checkConfig('privileges.hide_voip_passwords')}{$voipaccountlist[voipaccountlist].passwd}{else}{'*'|str_repeat:8}{/if}
+                {if ConfigHelper::checkPrivilege('hide_voip_passwords')}{'*'|str_repeat:8}{else}{$voipaccountlist[voipaccountlist].passwd}{/if}
             </td>
             <td class="text-right nobr" align="right">
                 <a href="?m=voipaccountdel&id={$voipaccountlist[voipaccountlist].id}" onClick="return confirmLink(this, '{t a=$voipaccountlist[voipaccountlist].login}Are you sure, you want to remove voip account \'$a\' from database?{/t}')">

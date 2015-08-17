@@ -107,8 +107,7 @@
                 <B>{$voipaccountlist[voipaccountlist].phone}</B>
             </td>
             <td onClick="return self.location.href = '?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}';" valign="top" nowrap>
-                {if !ConfigHelper::checkConfig('privileges.hide_voip_passwords')}{$voipaccountlist[voipaccountlist].passwd}{else}{'*'|str_repeat:8}{/if}
-                
+                {if ConfigHelper::checkPrivilege('hide_voip_passwords')}{'*'|str_repeat:8}{else}{$voipaccountlist[voipaccountlist].passwd}{/if}
             </td>
             <td align="right">
                 <nobr>

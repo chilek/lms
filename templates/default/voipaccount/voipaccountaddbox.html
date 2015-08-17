@@ -32,7 +32,7 @@
                     {trans("Password:")}
                 </td>
                 <td>
-                    <input type="text" name="voipaccountdata[passwd]" value="{$voipaccountdata.passwd}" {tip text="Enter password" trigger="passwd"}>
+                    <input type="{if ConfigHelper::checkPrivilege('hide_voip_passwords')}password{else}text{/if}" name="voipaccountdata[passwd]" value="{$voipaccountdata.passwd}" {tip text="Enter password" trigger="passwd"}>
                 </td>
             </tr>
             {/block}
