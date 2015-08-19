@@ -92,7 +92,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	else
 		$mailtable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('contact') . ' AS email, customerid
 				FROM customercontacts
-				WHERE customerid = ' . $customerid . ' AND type = ' . CONTACT_EMAIL . '
+				WHERE type = ' . CONTACT_EMAIL . '
 				GROUP BY customerid
 			) cc ON (cc.customerid = c.id) ';
 
