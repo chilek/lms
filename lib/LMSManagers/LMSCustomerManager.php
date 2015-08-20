@@ -301,7 +301,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         global $SYSLOG_RESOURCE_KEYS;
         $args = array(
-            'name' => lms_ucwords($customeradd['name']),
+            'name' => $customeradd['name'],
             'lastname' => $customeradd['lastname'],
             'type' => empty($customeradd['type']) ? 0 : 1,
             'address' => $customeradd['address'],
@@ -828,7 +828,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'info' => $customerdata['info'],
             'notes' => $customerdata['notes'],
             'lastname' => $customerdata['lastname'],
-            'name' => lms_ucwords($customerdata['name']),
+            'name' => $customerdata['name'],
             'message' => $customerdata['message'],
             'pin' => $customerdata['pin'],
             'regon' => $customerdata['regon'],
