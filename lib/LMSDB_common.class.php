@@ -702,7 +702,7 @@ abstract class LMSDB_common implements LMSDBInterface
 					sort($pendingupgrades);
 					foreach ($pendingupgrades as $upgrade) {
 						include($libdir . DIRECTORY_SEPARATOR . 'upgradedb' . DIRECTORY_SEPARATOR . $filename_prefix . '.' . $upgrade . '.php');
-						if (!empty($this->errors))
+						if (empty($this->errors))
 							$lastupgrade = $upgrade;
 						else
 							break;
