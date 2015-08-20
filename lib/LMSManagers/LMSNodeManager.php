@@ -549,7 +549,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     {
         global $SYSLOG_RESOURCE_KEYS;
         $args = array(
-            'name' => strtoupper($nodedata['name']),
+            'name' => $nodedata['name'],
             'ipaddr' => $nodedata['ipaddr'],
             'ipaddr_pub' => $nodedata['ipaddr_pub'],
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $nodedata['ownerid'],
