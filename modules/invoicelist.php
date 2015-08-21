@@ -249,6 +249,13 @@ if($invoice = $SESSION->get('invoiceprint'))
         $SESSION->remove('invoiceprint');
 }
 
+$hook_data = $LMS->ExecuteHook('invoicelist_before_display',
+	array(
+		'invoicelist' => $invoicelist,
+	)
+);
+$invoicelist = $hook_data['invoicelist'];
+
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',($page - 1) * $pagelimit);
