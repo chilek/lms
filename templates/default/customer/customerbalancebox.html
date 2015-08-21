@@ -140,13 +140,21 @@
 					<TD style="width: 1%;" class="text-right nobr">
 						{if $balancelist.docid[balancelist]}
 							{if $balancelist.doctype[balancelist] == $smarty.const.DOC_INVOICE}
+								{block name="customerbalancebox-element-print"}
 								<A href="?m=invoice&amp;id={$balancelist.docid[balancelist]}" rel="external"><IMG src="img/print.gif" alt="[ {trans("Invoice")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&amp;id=$a'}></A>
+								{/block}
 							{elseif $balancelist.doctype[balancelist] == $smarty.const.DOC_CNOTE}
+								{block name="customerbalancebox-element-printn"}
 								<A href="?m=invoice&amp;id={$balancelist.docid[balancelist]}" rel="external"><IMG src="img/printn.gif" alt="[ {trans("Credit note")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&amp;id=$a'}></A>
+								{/block}
 							{elseif $balancelist.doctype[balancelist] == $smarty.const.DOC_RECEIPT}
+								{block name="customerbalancebox-element-printr"}
 								<A href="?m=receipt&amp;id={$balancelist.docid[balancelist]}" rel="external"><IMG src="img/printr.gif" alt="[ {trans("Cash receipt")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&amp;id=$a'}></A>
+								{/block}
 							{elseif $balancelist.doctype[balancelist] == $smarty.const.DOC_DNOTE}
+								{block name="customerbalancebox-element-printd"}
 								<A href="?m=note&amp;id={$balancelist.docid[balancelist]}" rel="external"><IMG src="img/printd.gif" alt="[ {trans("Debit note")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&amp;id=$a'}></A>
+								{/block}
 							{/if}
 						{/if}
 						<INPUT type="checkbox" NAME="marks[{$balancelist.id[balancelist]}]" value="{$balancelist.id[balancelist]}">
