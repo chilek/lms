@@ -461,7 +461,8 @@ $quicksearch = $LMS->executeHook('quicksearch_after_submit',
 		'target' => '',
 	)
 );
-$target = $quicksearch['target'];
+if (!empty($quicksearch['target']))
+	$target = $quicksearch['target'];
 
 $SESSION->redirect(!empty($target) ? $target : '?'.$SESSION->get('backto'));
 
