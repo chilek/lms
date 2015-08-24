@@ -28,14 +28,16 @@ $customerid = intval($_GET['id']);
 
 $LMS->InitXajax();
 
-include(MODULES_DIR.'/customer.inc.php');
+if (!isset($_POST['xjxfun'])) {
+	include(MODULES_DIR.'/customer.inc.php');
 
-//if($customerinfo['cutoffstop'] > mktime(0,0,0))
-//        $customerinfo['cutoffstopnum'] = floor(($customerinfo['cutoffstop'] - mktime(23,59,59))/86400);
+	//if($customerinfo['cutoffstop'] > mktime(0,0,0))
+	//        $customerinfo['cutoffstopnum'] = floor(($customerinfo['cutoffstop'] - mktime(23,59,59))/86400);
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+	$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$layout['pagetitle'] = trans('Customer Info: $a',$customerinfo['customername']);
+	$layout['pagetitle'] = trans('Customer Info: $a',$customerinfo['customername']);
+}
 
 $hook_data = $LMS->executeHook(
 	'customerinfo_before_display',

@@ -23,6 +23,9 @@
  *
  *  $Id$
  */
+
+if (!isset($_POST['xjxfun'])) {
+
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 $exists = $LMS->CustomerExists($_GET['id']);
 
@@ -296,6 +299,8 @@ $customerid = $customerinfo['id'];
 $LMS->InitXajax();
 
 include(MODULES_DIR.'/customer.inc.php');
+
+}
 
 $hook_data = $LMS->executeHook(
     'customeredit_before_display', 
