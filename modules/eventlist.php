@@ -60,7 +60,7 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 					WHERE userid = users.id AND eventid = ? ',
 					array($row['id']));
 			$endtime = $row['endtime'];
-			if ($row['enddate']) {
+			if ($row['enddate'] && $row['enddate'] - $row['date']) {
 				$days = round(($row['enddate'] - $row['date']) / 86400);
 				$row['endtime'] = 0;
 				$list2[] = $row;
