@@ -24,8 +24,14 @@
  *  $Id$
  */
 
-function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL, $numberplan = NULL, $from=0, $to=0)
-{
+function GetDocumentList($order='cdate,asc', $search) {
+	$type = array_key_exists('type', $search) ? $search['type'] : NULL;
+	$customer = array_key_exists('customer', $search) ? $search['customer'] : NULL;
+	$numberplan = array_key_exists('numberplan', $search) ? $search['numberplan'] : NULL;
+	$from = array_key_exists('from', $search) ? $search['from'] : 0;
+	$to = array_key_exists('to', $search) ? $search['to'] : 0;
+	$status = array_key_exists('status', $search) ? $search['status'] : -1;
+
 	global $DB, $AUTH;
 
 	if($order=='')
@@ -67,6 +73,7 @@ function GetDocumentList($order='cdate,asc', $type=NULL, $customer=NULL, $number
 			. ($numberplan ? ' AND d.numberplanid = ' . intval($numberplan) : '')
 			.($from ? ' AND d.cdate >= '.intval($from) : '')
 			.($to ? ' AND d.cdate <= '.intval($to) : '')
+			.($status == -1 ? '' : ' AND d.closed = ' . intval($status))
 			.$sqlord, array($AUTH->id));
 
 	$list['total'] = sizeof($list);
@@ -133,9 +140,22 @@ if (empty($_GET['init']))
     else
         $to = 0;
     $SESSION->save('doclto', $to);
+
+	if(!isset($_GET['s']))
+		$SESSION->restore('docls', $s);
+	else
+		$s = $_GET['s'];
+	$SESSION->save('docls', $s);
 }
 
-$documentlist = GetDocumentList($o, $t, $c, $p, $from, $to);
+$documentlist = GetDocumentList($o, array(
+	'type' => $t,
+	'customer' => $c,
+	'numberplan' => $p,
+	'from' => $from,
+	'to' => $to,
+	'status' => $s,
+));
 
 $listdata['total'] = $documentlist['total'];
 $listdata['order'] = $documentlist['order'];
@@ -145,6 +165,7 @@ $listdata['customer'] = $c;
 $listdata['numberplan'] = $p;
 $listdata['from'] = $from;
 $listdata['to'] = $to;
+$listdata['status'] = $s;
 
 unset($documentlist['total']);
 unset($documentlist['order']);

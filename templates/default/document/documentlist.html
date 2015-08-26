@@ -97,6 +97,11 @@
 					<OPTION value="{$plan.id}"{if $listdata.numberplan == $plan.id} selected{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
 					{/foreach}
 				</SELECT>&nbsp;
+				<span class="bold">{trans("Status:")}</span>&nbsp;<SELECT name="s" onChange="filter()" {tip text="Select document status"}>
+					<OPTION value="-1">- {trans("all")} - </OPTION>
+					<OPTION value="0"{if $listdata.status == 0} selected{/if}>{trans("unconfirmed")}</OPTION>
+					<OPTION value="1"{if $listdata.status == 1} selected{/if}>{trans("confirmed")}</OPTION>
+				</SELECT>&nbsp;
 				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>&nbsp;
 				</div>
 		</TD>

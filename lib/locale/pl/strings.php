@@ -2990,4 +2990,8 @@ $_LANG['Contact phones'] = 'Telefony kontaktowe';
 $_LANG['Email addresses'] = 'Adresy email';
 $_LANG['Email address is required!'] = 'Adres email jest wymagany!';
 
+$_LANG['Select document status'] = 'Wybierz status dokumentu';
+$_LANG['confirmed'] = 'zatwierdzony';
+$_LANG['unconfirmed'] = 'niezatwierdzony';
+
 ?>
