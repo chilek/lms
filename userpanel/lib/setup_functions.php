@@ -37,8 +37,8 @@ function module_setup()
     $SMARTY->assign('reminder_mail_body', ConfigHelper::getConfig('userpanel.reminder_mail_body', "ID: %id\nPIN: %pin"));
     $SMARTY->assign('reminder_sms_body', ConfigHelper::getConfig('userpanel.reminder_sms_body', "ID: %id, PIN: %pin"));
     $SMARTY->assign('auth_type', ConfigHelper::getConfig('userpanel.auth_type', 1));
-	$enabled_modules = ConfigHelper::getConfig('userpanel.enabled_modules', '');
-	if (empty($enabled_modules)) {
+	$enabled_modules = ConfigHelper::getConfig('userpanel.enabled_modules', null, true);
+	if (is_null($enabled_modules)) {
 		$enabled_modules = array();
 		if (!empty($USERPANEL->MODULES))
 			foreach ($USERPANEL->MODULES as $module)
