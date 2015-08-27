@@ -49,7 +49,7 @@
 			<table id="logindata" style="height: 100%; width: 100%;">
 				<tr>
 					<td class="text-right bold nobr">
-						{trans("Customer ID:")}
+						{$_USERPANEL_ID_TYPES[ConfigHelper::getConfig('userpanel.auth_type', 1)].label}
 					</td>
 					<td class="text-left">
 						<input type="text" name="loginform[login]" style="width: 50pt;" />

@@ -304,7 +304,7 @@ class Session {
 				$authinfo = $this->GetCustomerIDByPhoneAndPIN();
 				break;
 			case 3:
-				$authinfo = $this->GetCustomerIDByContractAndPIN();
+				$authinfo = $this->GetCustomerIDByDocumentAndPIN();
 				break;
 			case 4:
 				$authinfo = $this->GetCustomerIDByEmailAndPIN();

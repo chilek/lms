@@ -358,6 +358,25 @@ $NETELEMENTOWNERSHIPS = array(
 	2	=> 'węzeł obcy',
 );
 
+$USERPANEL_ID_TYPES = array(
+	1	=> array(
+		'label' => trans('Customer ID:'),
+		'selection' => trans('Customer ID and PIN'),
+	),
+	2	=> array(
+		'label' => trans('Phone number:'),
+		'selection' => trans('Phone number and PIN'),
+	),
+	3	=> array(
+		'label' => trans('Document number:'),
+		'selection' => trans('Document number and PIN'),
+	),
+	4	=> array(
+		'label' => trans('Customer e-mail:'),
+		'selection' => trans('Customer e-mail and PIN'),
+	),
+);
+
 if(isset($SMARTY))
 {
 	$SMARTY->assign('_CTYPES',$CTYPES);
@@ -380,6 +399,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_NETELEMENTSTATUSES', $NETELEMENTSTATUSES);
 	$SMARTY->assign('_NETELEMENTTYPES', $NETELEMENTTYPES);
 	$SMARTY->assign('_NETELEMENTOWNERSHIPS', $NETELEMENTOWNERSHIPS);
+	$SMARTY->assign('_USERPANEL_ID_TYPES', $USERPANEL_ID_TYPES);
 }
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');
