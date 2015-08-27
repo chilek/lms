@@ -55,6 +55,10 @@ function module_setup()
 function module_submit_setup()
 {
     global $DB, $LMS;
+	if (empty($_POST)) {
+		module_setup();
+		return;
+	}
     // write main configuration
     if($test = $DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'hint'"))
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'hint'", array($_POST['hint']));
