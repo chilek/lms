@@ -30,19 +30,18 @@ function GetCustomerIDByPhoneAndPIN($phone, $pin)
 {
 	global $DB;
 	if(!preg_match('/^[0-9]+$/', $pin))
-		return NULL;
+		return null;
 
-	$authinfo['id'] = $DB->GetOne('SELECT id FROM customers, customercontacts
-	                WHERE customerid = customers.id AND contact = ? AND customercontacts.type < ?
+	$authinfo['id'] = $DB->GetOne('SELECT c.id FROM customers c, customercontacts cc
+		WHERE customerid = c.id AND contact = ? AND cc.type < ?
 			AND deleted = 0 LIMIT 1', 
-			array($phone, CONTACT_EMAIL));
+		array($phone, CONTACT_EMAIL));
 
-	if ($authinfo['id'] == NULL)
-		return NULL;
+	if (empty($authinfo['id']))
+		return null;
 
-	$authinfo['passwd'] = $DB->GetOne('SELECT pin FROM customers, customercontacts
-	                WHERE customerid = customers.id AND pin=? AND contact=? AND customercontacts.type < ? LIMIT 1',
-			array($pin, $phone, CONTACT_EMAIL));
+	$authinfo['passwd'] = $DB->GetOne('SELECT pin FROM customers
+		WHERE pin = ? AND id = ?', array($pin, $authinfo['id']));
 
 	return $authinfo;
 }
@@ -51,15 +50,16 @@ function GetCustomerIDByIDAndPIN($id, $pin)
 {
 	global $DB;
 	if(!preg_match('/^[0-9]+$/', $pin) || !preg_match('/^[0-9]+$/', $id))
-		return NULL;
+		return null;
 
-	$authinfo['id'] = $DB->GetOne('SELECT id from customers
+	$authinfo['id'] = $DB->GetOne('SELECT id FROM customers
 		WHERE id = ? AND deleted = 0', array($id));
 
-	if ($authinfo['id'] == NULL)
-		return NULL;
+	if (empty($authinfo['id']))
+		return null;
 
-	$authinfo['passwd'] = $DB->GetOne('SELECT pin from customers WHERE pin=? AND id=?', array($pin, $id));
+	$authinfo['passwd'] = $DB->GetOne('SELECT pin FROM customers
+		WHERE pin = ? AND id = ?', array($pin, $id));
 
 	return $authinfo;
 }
@@ -69,15 +69,36 @@ function GetCustomerIDByContractAndPIN($contract, $pin)
 {
 	global $DB;
 	if(!preg_match('/^[0-9]+$/', $pin))
-		return NULL;
-	
+		return null;
+
 	$authinfo['id'] = $DB->GetOne('SELECT id FROM customers
 		WHERE contract = ? AND deleted = 0', array($contract));
 
-	if ($authinfo['id'] == NULL)
-		return NULL;
+	if (empty($authinfo['id']))
+		return null;
 
-	$authinfo['passwd'] = $DB->GetOne('SELECT pin FROM customers WHERE pin=? AND contract=?', array($pin, $contract));
+	$authinfo['passwd'] = $DB->GetOne('SELECT pin FROM customers
+		WHERE pin = ? AND id = ?', array($pin, $authinfo['id']));
+
+	return $authinfo;
+}
+
+function GetCustomerIDByEmailAndPIN($email, $pin)
+{
+	global $DB;
+	if (!preg_match('/^[0-9]+$/', $pin))
+		return null;
+
+	$authinfo['id'] = $DB->GetOne('SELECT c.id FROM customers c, customercontacts cc
+		WHERE cc.customerid = c.id AND contact = ? AND cc.type = ?
+			AND deleted = 0 LIMIT 1',
+		array($email, CONTACT_EMAIL));
+
+	if (empty($authinfo['id']))
+		return null;
+
+	$authinfo['passwd'] = $DB->GetOne('SELECT pin FROM customers
+		WHERE pin = ? AND id = ?', array($pin, $authinfo['id']));
 
 	return $authinfo;
 }

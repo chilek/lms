@@ -204,12 +204,14 @@ class Session {
 		}
 
 		// customer authorization ways
+		// $authinfo = GetCustomerIDByIDAndPIN($this->login, $this->passwd);
 		// $authinfo = GetCustomerIDByPhoneAndPIN($this->login, $this->passwd);
 		// $authinfo = GetCustomerIDByContractAndPIN($this->login, $this->passwd);
+		// $authinfo = GetCustomerIDByEmailAndPIN($this->login, $this->passwd);
 
 		$authinfo = GetCustomerIDByIDAndPIN($this->login, $this->passwd);
 
-		if ($authinfo != NULL && $authinfo['id'] != NULL)
+		if (!empty($authinfo) && isset($authinfo['id']))
 			return $authinfo;
 		else
 			return NULL;

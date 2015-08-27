@@ -27,6 +27,7 @@ version ?.??.?? (????-??-??):
   - added customervoipaccountsbox-list-columns smarty block at customer voip account list template [maciejlew]
   - added number_of_table_columns variables at customer voip account list template [maciejlew]
   - added posibility to filter document list by document status [chilan]
+  - userpanel: new authentication type - by email and pin [chilan]
 
 version 1.11.17 (2015-06-29):
 
