@@ -29,6 +29,8 @@ version ?.??.?? (????-??-??):
   - added posibility to filter document list by document status [chilan]
   - userpanel: new authentication type - by email and pin [chilan]
   - userpanel: selection of authentication type is possible from lms user interface [chilan]
+  - userpanel urgent notices are working independently from userpanel style and are completely separated
+    from userpanel code core [chilan]
 
 version 1.11.17 (2015-06-29):
 

@@ -80,4 +80,5 @@ function setNoticeRead($noticeid)
 $LMS->InitXajax();
 $LMS->RegisterXajaxFunction('setNoticeRead');
 $SMARTY->assign('xajax', $LMS->RunXajax());
+
 ?>
