@@ -60,8 +60,11 @@ function macformat($mac, $escape=false)
 $mode = '';
 
 if (!empty($_POST['qs'])) {
-	reset($_POST['qs']);
-	list ($mode, $search) = each($_POST['qs']);
+        foreach($_POST['qs'] as $key => $value)
+                if(!empty($value)){
+                        $mode = $key;
+                        $search = $value;
+                }
 	$search = urldecode(trim($search));
 } elseif(!empty($_GET['what'])) {
 	$search = urldecode(trim($_GET['what']));
