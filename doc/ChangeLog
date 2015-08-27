@@ -28,6 +28,7 @@ version ?.??.?? (????-??-??):
   - added number_of_table_columns variables at customer voip account list template [maciejlew]
   - added posibility to filter document list by document status [chilan]
   - userpanel: new authentication type - by email and pin [chilan]
+  - userpanel: selection of authentication type is possible from lms user interface [chilan]
 
 version 1.11.17 (2015-06-29):
 

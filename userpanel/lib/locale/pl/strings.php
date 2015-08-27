@@ -95,4 +95,11 @@ $_LANG['Reminder sms body:'] = 'Treść sms-a z danymi do logowania:';
 $_LANG['Enter reminder sms body'] = 'Wprowadź treść sms-a z danymi do logowania';
 $_LANG['Credential reminder couldn\'t be sent!'] = 'Przypomnienie danych do logowania nie mogło zostać wysłane!';
 
+$_LANG['Authentication type:'] = 'Rodzaj uwierzytelniania:';
+$_LANG['Userpanel authentication type'] = 'Rodzaj uwierzytelniania używany przez Userpanel';
+$_LANG['ID and PIN'] = 'ID i PIN';
+$_LANG['Phone and PIN'] = 'Telefon i PIN';
+$_LANG['Document and PIN'] = 'Dokument i PIN';
+$_LANG['Email and PIN'] = 'Email i PIN';
+
 ?>

@@ -76,6 +76,19 @@
 		</TD>
 	</TR>
 	<TR>
+		<TD style="width: 1%;" class="nobr">
+			<label for="auth_type">{trans("Authentication type:")}</label>
+		</TD>
+		<TD style="width: 99%;">
+			<SELECT name="auth_type" {tip text="Userpanel authentication type"}>
+				<OPTION value="1"{if $auth_type == 1} selected{/if}>{trans("ID and PIN")}</OPTION>
+				<OPTION value="2"{if $auth_type == 2} selected{/if}>{trans("Phone and PIN")}</OPTION>
+				<OPTION value="3"{if $auth_type == 3} selected{/if}>{trans("Document and PIN")}</OPTION>
+				<OPTION value="4"{if $auth_type == 4} selected{/if}>{trans("Email and PIN")}</OPTION>
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
 		<TD class="buttons" colspan="2">
 			 <A HREF="javascript:document.config.submit();" accesskey="S">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
