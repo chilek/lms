@@ -237,7 +237,7 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, n.template, m.em
 			FROM customercontacts WHERE type = ? GROUP BY customerid) m ON m.customerid = c.id
 		LEFT JOIN numberplans n ON n.id = d.numberplanid 
 		WHERE c.deleted = 0 AND d.type IN (1,3) AND c.invoicenotice = 1"
-			. (!empty($invoiceid) ? "AND d.id = " . $invoiceid : "AND d.cdate >= $daystart AND d.cdate <= $dayend")
+			. (!empty($invoiceid) ? " AND d.id = " . $invoiceid : " AND d.cdate >= $daystart AND d.cdate <= $dayend")
 			. (!empty($groupnames) ? $customergroups : "")
 		. " ORDER BY d.number";
 $docs = $DB->GetAll($query, array(CONTACT_EMAIL));
