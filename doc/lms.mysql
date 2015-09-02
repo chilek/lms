@@ -1634,7 +1634,7 @@ CREATE TABLE plicbdlocalisation (
 	owner varchar(256) NOT NULL,
 	location varchar(255) NOT NULL,
 	location_city int(11) NOT NULL,
-	KEY location_city (location_city),
+	INDEX location_city (location_city),
 	FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -1647,8 +1647,8 @@ CREATE TABLE plicbdoperators (
 	id int(11) NOT NULL,
 	rpt int(11) NOT NULL,
 	ten varchar(16) NOT NULL DEFAULT ''
-	KEY id (id),
-	KEY rpt (rpt),
+	INDEX id (id),
+	INDEX rpt (rpt),
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------

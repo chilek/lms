@@ -31,9 +31,9 @@ $this->Execute("
 		name varchar(255) NOT NULL,
 		id int(11) NOT NULL,
 		rpt int(11) NOT NULL,
-		ten varchar(16) NOT NULL DEFAULT ''
-		KEY id (id),
-		KEY rpt (rpt),
+		ten varchar(16) NOT NULL DEFAULT '',
+		INDEX id (id),
+		INDEX rpt (rpt),
 	) ENGINE=InnoDB;
 ");
 

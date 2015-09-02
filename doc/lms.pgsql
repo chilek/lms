@@ -1748,8 +1748,8 @@ CREATE TABLE plicbdoperators (
 	rpt integer NOT NULL,
 	ten varchar(16) NOT NULL DEFAULT ''
 );
-CREATE INDEX plicbdoperators_id_idx ON plicboperators (id);
-CREATE INDEX plicbdoperators_rpt_idx ON plicboperators (rpt);
+CREATE INDEX plicbdoperators_id_idx ON plicbdoperators (id);
+CREATE INDEX plicbdoperators_rpt_idx ON plicbdoperators (rpt);
 
 /* ---------------------------------------------------
  Structure of table "messages"

@@ -33,8 +33,8 @@ $this->Execute("
 		rpt integer NOT NULL,
 		ten varchar(16) NOT NULL DEFAULT ''
 	);
-	CREATE INDEX plicbdoperators_id_idx ON plicboperators (id);
-	CREATE INDEX plicbdoperators_rpt_idx ON plicboperators (rpt);
+	CREATE INDEX plicbdoperators_id_idx ON plicbdoperators (id);
+	CREATE INDEX plicbdoperators_rpt_idx ON plicbdoperators (rpt);
 ");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015090200', 'dbversion'));
