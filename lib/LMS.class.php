@@ -65,7 +65,7 @@ class LMS
 
         $this->cache = new LMSCache();
 
-	if (preg_match('/^Format:/', $this->_revision))
+	if (preg_match('/.+Format:.+/', $this->_revision))
 		$this->_revision = '';
     }
 
