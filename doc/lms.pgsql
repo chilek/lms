@@ -1740,6 +1740,18 @@ CREATE TABLE plicbdlocalisation (
 CREATE INDEX plicbdlocalisation_location_city_idx ON plicbdlocalisation (location_city);
 
 /* ---------------------------------------------------
+ Structure of table "plicbdoperators"
+------------------------------------------------------*/
+CREATE TABLE plicbdoperators (
+	name varchar(255) NOT NULL,
+	id integer NOT NULL,
+	rpt integer NOT NULL,
+	ten varchar(16) NOT NULL DEFAULT ''
+);
+CREATE INDEX plicbdoperators_id_idx ON plicboperators (id);
+CREATE INDEX plicbdoperators_rpt_idx ON plicboperators (rpt);
+
+/* ---------------------------------------------------
  Structure of table "messages"
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS messages_id_seq;
@@ -2523,4 +2535,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015082700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015090200');

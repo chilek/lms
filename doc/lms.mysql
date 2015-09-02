@@ -1640,6 +1640,19 @@ CREATE TABLE plicbdlocalisation (
 
 # --------------------------------------------------------
 #
+# Structure of table plicbdoperators
+#
+CREATE TABLE plicbdoperators (
+	name varchar(255) NOT NULL,
+	id int(11) NOT NULL,
+	rpt int(11) NOT NULL,
+	ten varchar(16) NOT NULL DEFAULT ''
+	KEY id (id),
+	KEY rpt (rpt),
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table messages
 #
 CREATE TABLE messages (
@@ -2428,4 +2441,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015082700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015090200');
