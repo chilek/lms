@@ -68,8 +68,7 @@ if(isset($where_node) || isset($where_cust))
 				FROM (SELECT DISTINCT c.id AS id, address, zip, city, cc.email, ssn, 
 				'.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername
 				FROM customersview c
-				LEFT JOIN (SELECT customerid, (' . $DB->GroupConcat('contact') . ') AS email FROM customercontacts
-					WHERE type = ' . CONTACT_EMAIL . ' GROUP BY customerid) cc ON cc.customerid = c.id '
+				LEFT JOIN customermailsview cc ON cc.customerid = c.id '
 				.(isset($where_node) ? 'LEFT JOIN vnodes ON (c.id = ownerid) ' : '')
 				.'WHERE deleted = 0 '
 				.(isset($where_cust) ? $where_cust : '')

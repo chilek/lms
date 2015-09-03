@@ -2054,6 +2054,11 @@ SELECT st.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
     JOIN location_districts d ON (b.districtid = d.id)
     JOIN location_states st ON (d.stateid = st.id);
 
+CREATE VIEW customermailsview AS
+		SELECT customerid, array_to_string(array_agg(contact), ',') AS email
+			FROM customercontacts
+			WHERE type = 8
+			GROUP BY customerid;
 
 /* ---------------------------------------------------
  Data records
@@ -2535,4 +2540,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015090200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015090300');
