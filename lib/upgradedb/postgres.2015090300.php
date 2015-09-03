@@ -32,7 +32,7 @@ $this->Execute("
 	CREATE VIEW customermailsview AS
 		SELECT customerid, array_to_string(array_agg(contact), ',') AS email
 			FROM customercontacts
-			WHERE type = ?
+			WHERE type = ? AND contact <> ''
 			GROUP BY customerid", array($CONTACT_EMAIL));
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015090300', 'dbversion'));
