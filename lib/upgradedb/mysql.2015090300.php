@@ -29,7 +29,7 @@ $CONTACT_EMAIL = 8;
 $this->BeginTrans();
 
 $this->Execute("
-	CREATE VIEW customermailcontactsview AS
+	CREATE VIEW customermailsview AS
 		SELECT customerid, GROUP_CONCAT(contact SEPARATOR ',') AS email
 			FROM customercontacts
 			WHERE type = ?
