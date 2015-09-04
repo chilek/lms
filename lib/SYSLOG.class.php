@@ -187,7 +187,7 @@ class SYSLOG {
 	private $transid = 0;
 	private $module = '';
 
-	function SYSLOG(&$DB) {
+	function __construct(&$DB) {
 		$this->DB = $DB;
 	}
 
