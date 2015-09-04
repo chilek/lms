@@ -1746,9 +1746,9 @@ CREATE TABLE plicbdoperators (
 	name varchar(255) NOT NULL,
 	id integer NOT NULL,
 	rpt integer NOT NULL,
-	ten varchar(16) NOT NULL DEFAULT ''
+	ten varchar(16) NOT NULL DEFAULT '',
+	PRIMARY KEY (id)
 );
-CREATE INDEX plicbdoperators_id_idx ON plicbdoperators (id);
 CREATE INDEX plicbdoperators_rpt_idx ON plicbdoperators (rpt);
 
 /* ---------------------------------------------------
@@ -2540,4 +2540,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015090300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015090400');

@@ -1647,7 +1647,7 @@ CREATE TABLE plicbdoperators (
 	id int(11) NOT NULL,
 	rpt int(11) NOT NULL,
 	ten varchar(16) NOT NULL DEFAULT '',
-	INDEX id (id),
+	PRIMARY KEY (id),
 	INDEX rpt (rpt),
 ) ENGINE=InnoDB;
 
@@ -2447,4 +2447,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015090300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015090400');
