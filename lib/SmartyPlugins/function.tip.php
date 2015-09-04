@@ -31,7 +31,7 @@ function smarty_function_tip($params, $template)
 			foreach($params as $paramid => $paramval)
 				$popup = str_replace('$'.$paramid, $paramval, $popup);
 
-		$text = " onmouseover=\"popup('$popup',1,".((int)$params['sticky']).",30,15)\" onmouseout=\"pophide()\"";
+		$text = " onmouseover=\"popup('$popup',1," . (array_key_exists('sticky', $params) && $params['sticky'] ? 1 : 0) . ",30,15)\" onmouseout=\"pophide()\"";
 		return $text;
 	} else if (array_key_exists('popup', $params) && $popup = $params['popup']) {
 		if(is_array($params))
