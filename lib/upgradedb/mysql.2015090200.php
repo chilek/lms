@@ -33,7 +33,7 @@ $this->Execute("
 		rpt int(11) NOT NULL,
 		ten varchar(16) NOT NULL DEFAULT '',
 		INDEX id (id),
-		INDEX rpt (rpt),
+		INDEX rpt (rpt)
 	) ENGINE=InnoDB;
 ");
 
