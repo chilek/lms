@@ -296,11 +296,11 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $customerid = $customerinfo['id'];
 
-$LMS->InitXajax();
-
 include(MODULES_DIR.'/customer.inc.php');
 
 }
+
+$LMS->InitXajax();
 
 $hook_data = $LMS->executeHook(
     'customeredit_before_display', 
