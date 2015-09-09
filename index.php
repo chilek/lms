@@ -184,7 +184,7 @@ $layout['hostname'] = hostname();
 $layout['lmsv'] = $LMS->_version;
 $layout['lmsvr'] = $LMS->_revision;
 $layout['dberrors'] = $DB->GetErrors();
-$layout['dbdebug'] = $_DBDEBUG;
+$layout['dbdebug'] = isset($_DBDEBUG) ? $_DBDEBUG : false;
 $layout['popup'] = isset($_GET['popup']) ? true : false;
 
 $SMARTY->assignByRef('layout', $layout);
@@ -240,7 +240,7 @@ if ($AUTH->islogged) {
 	$deny = $allow = FALSE;
 
 	$res = $LMS->ExecHook('module_load_before', array('module' => $module));
-	if ($res['abort']) {
+	if (array_key_exists('abort', $res) && $res['abort']) {
 		$SESSION->close();
 		$DB->Destroy();
 		die;
