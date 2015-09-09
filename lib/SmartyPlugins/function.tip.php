@@ -26,6 +26,8 @@
 
 function smarty_function_tip($params, $template)
 {
+	$result = '';
+
 	if (array_key_exists('dynpopup', $params) && $popup = $params['dynpopup']) {
 		if(is_array($params))
 			foreach($params as $paramid => $paramval)
@@ -42,7 +44,7 @@ function smarty_function_tip($params, $template)
 		return $text;
 	} else {
 		$tmpl = $template->getTemplateVars('error');
-		if ($tmpl[$params['trigger']]) {
+		if (array_key_exists('trigger', $params) && $tmpl[$params['trigger']]) {
 			$error = str_replace("'", '\\\'', $tmpl[$params['trigger']]);
 			$error = str_replace('"', '&quot;', $error);
 			$error = str_replace("\r", '', $error);
