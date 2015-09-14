@@ -317,7 +317,25 @@ switch($action)
 		}
 
 		$invoice['type'] = DOC_INVOICE;
+
+		$hook_data = $LMS->ExecuteHook('invoicenew_save_before_submit', array(
+			'customer' => $customer,
+			'contents' => $contents,
+			'invoice' => $invoice,
+		));
+		$contents = $hook_data['contents'];
+		$invoice = $hook_data['invoice'];
+
 		$iid = $LMS->AddInvoice(array('customer' => $customer, 'contents' => $contents, 'invoice' => $invoice));
+
+		$invoice['id'] = $iid;
+		$hook_data = $LMS->ExecuteHook('invoicenew_save_after_submit', array(
+			'customer' => $customer,
+			'contents' => $contents,
+			'invoice' => $invoice,
+		));
+		$contents = $hook_data['contents'];
+		$invoice = $hook_data['invoice'];
 
 		// usuwamy wczesniejsze zobowiazania bez faktury
 		foreach ($contents as $item)

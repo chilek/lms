@@ -31,6 +31,7 @@ version ?.??.?? (????-??-??):
   - userpanel: selection of authentication type is possible from lms user interface [chilan]
   - userpanel urgent notices are working independently from userpanel style and are completely separated
     from userpanel code core [chilan]
+  - added support for invoicenew_save_{before,after}_submit plugin hooks [chilan]
 
 version 1.11.17 (2015-06-29):
 
