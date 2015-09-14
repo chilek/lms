@@ -318,22 +318,18 @@ switch($action)
 
 		$invoice['type'] = DOC_INVOICE;
 
-		$hook_data = $LMS->ExecuteHook('invoicenew_save_before_submit', array(
+		$hook_data = array(
 			'customer' => $customer,
 			'contents' => $contents,
 			'invoice' => $invoice,
-		));
-		$contents = $hook_data['contents'];
-		$invoice = $hook_data['invoice'];
+		);
+		$hook_data = $LMS->ExecuteHook('invoicenew_save_before_submit', $hook_data);
 
-		$iid = $LMS->AddInvoice(array('customer' => $customer, 'contents' => $contents, 'invoice' => $invoice));
+		$iid = $LMS->AddInvoice($hook_data);
 
-		$invoice['id'] = $iid;
-		$hook_data = $LMS->ExecuteHook('invoicenew_save_after_submit', array(
-			'customer' => $customer,
-			'contents' => $contents,
-			'invoice' => $invoice,
-		));
+		$hook_data['invoice']['id'] = $iid;
+		$hook_data = $LMS->ExecuteHook('invoicenew_save_after_submit', $hook_data);
+
 		$contents = $hook_data['contents'];
 		$invoice = $hook_data['invoice'];
 
