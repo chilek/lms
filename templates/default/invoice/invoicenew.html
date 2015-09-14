@@ -323,13 +323,15 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			{count($contents) + 1}.
 		</TD>
 		<TD style="width: 92%;" class="nobr">
-			<INPUT type="text" name="name" size="40" style="width:300px" {tip text="Enter description or select tariff from the list"}><BR>
+			{block name="invoicenew-tariff-selection"}
+			<INPUT type="text" name="name" size="40" style="width:300px" id="name" {tip text="Enter description or select tariff from the list"}><BR>
 			<SELECT size="1" name="ttariffid" style="width: 300px" onchange="setItem(document.additem.ttariffid.value)" {tip text="Enter description or select tariff from the list"}>
 				<OPTION value="0">-</OPTION>
 				{foreach from=$tariffs item=tariff}
 				<OPTION value="{$tariff.id}">{$tariff.name} ({$tariff.value|money_format})</OPTION>
 				{/foreach}
 			</SELECT>{*&nbsp;<A href="javascript:setItem(document.additem.ttariffid.value)">{trans("Select")}</A>*}
+			{/block}
 		</TD>
 		<TD>
 			<INPUT type="text" name="prodid" size="6">
