@@ -489,9 +489,9 @@ foreach ($assigns as $assign) {
 				$paytypes[$cid] = $inv_paytype;
 				$numberplans[$cid] = $plan;
 			}
-			if ($tmp_itemid = $DB->GetOne("SELECT itemid FROM invoicecontents 
+			if (($tmp_itemid = $DB->GetOne("SELECT itemid FROM invoicecontents 
 				WHERE tariffid=? AND value=$val AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
-				array($assign['tariffid'], $invoices[$cid], $desc, $assign['pdiscount'], $assign['vdiscount'])) != 0)
+				array($assign['tariffid'], $invoices[$cid], $desc, $assign['pdiscount'], $assign['vdiscount']))) != 0)
 			{
 				$DB->Execute("UPDATE invoicecontents SET count=count+1 
 					WHERE tariffid=? AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
