@@ -32,6 +32,8 @@ version ?.??.?? (????-??-??):
   - userpanel urgent notices are working independently from userpanel style and are completely separated
     from userpanel code core [chilan]
   - added support for invoicenew_save_{before,after}_submit plugin hooks [chilan]
+  - daemon: fixed parser module compilation on centos 7 (and probably on other newer linux
+    distributions) [chilan]
 
 version 1.11.17 (2015-06-29):
 
