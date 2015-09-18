@@ -52,6 +52,10 @@ $eventuserlist = $DB->GetCol('SELECT userid AS id
 				WHERE users.id = userid
 				AND eventid = ?', array($event['id']));
 
+if ($eventuserlist === null) {
+    $eventuserlist = array();
+}
+
 if(isset($_POST['event']))
 {
 	$event = $_POST['event'];

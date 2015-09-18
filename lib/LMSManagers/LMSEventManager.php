@@ -85,7 +85,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                             $userfilter = true;
 
                 if ($row['enddate']) {
-                    $days = ($row['enddate'] - $row['date']) / 86400;
+                    $days = intval(($row['enddate'] - $row['date']) / 86400);
                     $row['endtime'] = 0;
                     if ((!$datefrom || $row['date'] >= $datefrom) &&
                             (!$dateto || $row['date'] <= $dateto)) {
