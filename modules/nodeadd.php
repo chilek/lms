@@ -212,6 +212,12 @@ if (isset($_POST['nodedata']))
             $nodedata['location_house'] = null;
             $nodedata['location_flat'] = null;
         }
+        if(empty($nodedata['location'])and !empty($nodedata['ownerid'])){
+            $location=$LMS->GetCustomer($nodedata['ownerid']);
+            $nodedata['location']=$location['address'].'; '.$location['zip'].' '.$location['city'];
+        }
+
+
 
         $nodedata = $LMS->ExecHook('node_add_before', $nodedata);
 
