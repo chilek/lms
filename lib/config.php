@@ -141,6 +141,7 @@ $DEFAULTS = array(
 		'check_for_updates_period' => 86400,
 		'homedir_prefix' => '/home/',
 		'default_taxrate' => 23.00,
+		'default_prodid' => '',
 		'default_zip' => '',
 		'default_city' => '',
 		'default_address' => '',
