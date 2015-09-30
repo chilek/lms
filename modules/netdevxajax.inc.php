@@ -178,7 +178,7 @@ function validateRadioSector($params, $update = false) {
 		$error['width'] = trans('Radio sector angular width cannot be empty!');
 	elseif (!preg_match('/^[0-9]+(\.[0-9]+)?$/', $params['width']))
 		$error['width'] = trans('Radio sector angular width has invalid format!');
-	elseif ($params['width'] >= 360)
+	elseif ($params['width'] > 360)
 		$error['width'] = trans('Radio sector angular width should be less than 360 degrees!');
 
 	if (!strlen($params['altitude']))
