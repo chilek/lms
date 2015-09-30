@@ -225,6 +225,10 @@ function GetConfigList($order='var,asc', $section='', $search='')
 					$config[$idx]['description'] = trans('Value of tax rate which will be selected by default on tax rates lists. Default: 22.0');
 				break;
 
+				case 'default_prodid':
+					$config[$idx]['description'] = trans ('Value of product ID. Default: empty');
+				break;
+
 				case 'helpdesk_reply_body':
 					$config[$idx]['description'] = trans('Adds body of message in ticket reply. Default: false');
 				break;
