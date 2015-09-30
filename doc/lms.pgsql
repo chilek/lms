@@ -1609,7 +1609,7 @@ CREATE TABLE customercontacts (
     PRIMARY KEY (id)
 );
 CREATE INDEX customercontacts_customerid_idx ON customercontacts (customerid);
-CREATE INDEX customercontacts_phone_idx ON customercontacts (phone);
+CREATE INDEX customercontacts_contact_idx ON customercontacts (contact);
 
 /* ---------------------------------------------------
  Structure of table "excludedgroups"
