@@ -282,13 +282,27 @@ else
 $default_zip = ConfigHelper::getConfig('phpui.default_zip');
 $default_city = ConfigHelper::getConfig('phpui.default_city');
 $default_address = ConfigHelper::getConfig('phpui.default_address');
+$default_stateid = ConfigHelper::getConfig('phpui.default_stateid');
+$default_countryid = ConfigHelper::getConfig('phpui.default_countryid');
+$default_status = ConfigHelper::getConfig('phpui.default_status');
 
 if (!isset($customeradd['zip']) && $default_zip) {
 	$customeradd['zip'] = $default_zip;
-} if (!isset($customeradd['city']) && $default_city) {
+}
+if (!isset($customeradd['city']) && $default_city) {
 	$customeradd['city'] = $default_city;
-} if (!isset($customeradd['address']) && $default_address) {
+}
+if (!isset($customeradd['address']) && $default_address) {
 	$customeradd['address'] = $default_address;
+}
+if (!isset($customeradd['default_stateid']) && $default_stateid) {
+	$customeradd['stateid'] = $default_stateid;
+}
+if (!isset($customeradd['default_countryid']) && $default_countryid) {
+	$customeradd['countryid'] = $default_countryid;
+}
+if (!isset($customeradd['default_status']) && $default_status) {
+        $customeradd['status'] = $default_status;
 }
 
 $layout['pagetitle'] = trans('New Customer');
