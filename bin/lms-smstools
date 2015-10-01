@@ -132,7 +132,7 @@ else
 
 my @files;
 my $dbq = $dbase->prepare("UPDATE messageitems
-	SET status = ?, lastdate = $utsfmt, error = ?, smstools_number = ?
+	SET status = ?, lastdate = $utsfmt, error = ?, externalmsgid = ?
 	WHERE messageid = ? AND destination = ? AND status = 1");
 
 # sent
@@ -169,7 +169,7 @@ foreach my $file (@files)
 #  delivered/undelivered
 $dbq = $dbase->prepare("UPDATE messageitems
 	SET status = ?, lastdate = $utsfmt, error = ?
-	WHERE smstools_number = ?");
+	WHERE externalmsgid = ?");
 
 opendir(DIR, $incoming_dir);
 @files = grep(/^[^\.]/,readdir(DIR));
