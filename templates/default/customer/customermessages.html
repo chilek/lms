@@ -42,7 +42,7 @@
 				<TBODY>
 				{cycle values="light,lucid" print=false name=messages}
 				{foreach from=$messagelist item=item}
-				<TR class="highlight {cycle name=messages}{if $item.status==$smarty.const.MSG_ERROR} alert{elseif $item.status==$smarty.const.MSG_SENT} blend{/if}">
+				<TR class="highlight {cycle name=messages}{if $item.status==$smarty.const.MSG_ERROR} alert{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}">
 					<TD style="width: 1%;" class="nobr" onClick="return self.location.href='?m=messageinfo&amp;id={$item.id}'">
 						{$item.cdate|date_format:"%Y/%m/%d"}
 					</TD>
