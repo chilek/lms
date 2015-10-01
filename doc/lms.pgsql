@@ -1762,6 +1762,7 @@ CREATE TABLE messageitems (
 	status 		smallint	DEFAULT 0 NOT NULL,
 	error 		text		DEFAULT NULL,
 	lastreaddate 	integer		DEFAULT 0 NOT NULL,
+	externalmsgid	integer		DEFAULT 0 NOT NULL,
         PRIMARY KEY (id)
 ); 
 
