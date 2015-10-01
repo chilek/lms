@@ -80,22 +80,9 @@ if($userinfo)
 
 	if($accessto < $accessfrom && $accessto != 0 && $accessfrom != 0)
 		$error['accessto'] = trans('Incorrect date range!');
-	
-	// let's make an ACL mask...
-	$mask = '';
-	$outmask = '';
 
-	for($i=0;$i<256;$i++)
-		$mask .= '0';
-
-	foreach($access['table'] as $idx => $row)
-		if(isset($acl[$idx]))
-			$mask[255-$idx] = '1';
-
-	for($i=0;$i<256;$i += 4)
-		$outmask = $outmask . dechex(bindec(substr($mask,$i,4)));
-
-	$userinfo['rights'] = preg_replace('/^[0]*(.*)$/','\1',$outmask);
+	$rights = isset($acl) ? array_keys($acl) : array();
+	$userinfo['rights'] = implode(',', $rights);
 
 	if (!empty($userinfo['ntype']))
 		$userinfo['ntype'] = array_sum(array_map('intval', $userinfo['ntype']));
@@ -148,28 +135,16 @@ if($userinfo)
 			}
 		}
 
-		foreach($access['table'] as $idx => $row)
-		{
-			$row['id'] = $idx;
-			if(isset($acl[$idx]))
-				$row['enabled'] = TRUE;
-
-			$accesslist[] = $row;
-		}
+		$access = AccessRights::getInstance();
+		$accesslist = $access->getArray(array_keys($acl));
 	}
 }
 else
 {
 	$rights = $LMS->GetUserRights($id);
 
-	foreach($access['table'] as $idx => $row)
-	{
-		$row['id'] = $idx;
-		foreach($rights as $right)
-			if($right == $idx)
-				$row['enabled'] = TRUE;
-		$accesslist[] = $row;
-	}
+	$access = AccessRights::getInstance();
+	$accesslist = $access->getArray($rights);
 }
 
 foreach($LMS->GetUserInfo($id) as $key => $value)
