@@ -1369,6 +1369,7 @@ $_LANG['Value'] = 'Wartość';
 $_LANG['Value:'] = 'Wartość:';
 $_LANG['Value and description:'] = 'Wartość i opis:';
 $_LANG['Value of tax rate which will be selected by default on tax rates lists. Default: 22.0'] = 'Wartość stawki procentowej, która ma być domyślnie zaznaczona na listach wyboru stawki. Domyślnie: 22.0';
+$_LANG['Value of product ID. Default: empty'] = 'Domyślna wartość PKWiU. Domyślnie: brak';
 $_LANG['Value of option "$a" must be a number grater than zero!'] = 'Wartość opcji "$a" musi być większa od zera!';
 $_LANG['View'] = 'Podgląd';
 $_LANG['waiting'] = 'oczekujący';
