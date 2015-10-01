@@ -1,0 +1,192 @@
+<!-- $Id$ -->
+<SCRIPT type="text/javascript">
+<!--
+        function chkmac_change()
+	{
+		if (document.getElementById('chkmac').checked)
+			location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=chkmac&chkmac=1';
+		else
+			location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=chkmac&chkmac=0';
+	}
+
+	function duplex_change()
+	{
+		if (document.getElementById('chkduplex').checked)
+			location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=duplex&duplex=1';
+		else
+			location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=duplex&duplex=0';
+	}
+	function change_authtype() {
+		var authtype = 0;
+		authtype |= (document.getElementById('authtype_dhcp').checked == true) * 2;
+		authtype |= (document.getElementById('authtype_eap').checked == true) * 4;
+		location.href = '?m=netdevedit&ip={$nodeipdata.id}&id={$netdevinfo.id}&action=authtype&authtype=' + authtype;
+
+	}
+	function nas_change()
+	{
+		if(document.getElementById('chknas').checked)
+			location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=nas&nas=1';
+		else
+			location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=nas&nas=0';
+	}
+//-->
+</SCRIPT>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/ip.gif" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			<B>{$nodeipdata.name} ({$nodeipdata.id|string_format:"%04d"})</B>
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD WIDTH="100%" COLSPAN="3" CLASS="flr container">
+			<TABLE WIDTH="100%" CELLPADDING="0">
+				<TR>
+					<TD WIDTH="50%" style="vertical-align:top;">
+						<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/network.gif" ALT="{trans("Network:")}">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			<a href="?m=netinfo&id={$nodeipdata.netid}">{$nodeipdata.netname}</a>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/ip.gif" ALT="{trans("IP address:")}">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			<a href="javascript:ping_popup('{$nodeipdata.ip}')">{$nodeipdata.ip}</a>
+			{if {$netdevinfo.producer} == 'Mikrotik'} <a href="winbox:{$nodeipdata.ip}"><img src="plugins/MikrotikPlugin/img/winbox.png" alt=" winbox " width="15"></a>{/if}
+		</TD>
+	</TR>
+	{if $nodeipdata.ip_pub != "0.0.0.0"}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			<a href="javascript:ping_popup('{$nodeipdata.ip_pub}')">{$nodeipdata.ip_pub}</a>
+		</TD>
+	</TR>
+	{/if}
+	{assign var="counter" value=0}
+	{foreach from=$nodeipdata.macs item=item}
+	<TR>
+		<TD WIDTH="1%">
+			<a href="javascript:changeMacFormat('mac{$counter}');"><IMG SRC="img/mac.gif" ALT="{trans("MAC address:")}"></a>
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			<span id="mac{$counter}">{$item.mac}</span> {if $item.producer}({$item.producer}){/if}<BR>
+		</TD>
+	</TR>
+	{math equation="x+1" x=$counter assign="counter"}
+	{/foreach}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/passwd.gif" ALT="{trans("Password:")}">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			{$nodeipdata.passwd}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/options.gif" ALT="{trans("Options:")}">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			<label for="chkmac">{trans("MAC checking")}:</label><INPUT TYPE="checkbox" NAME="chkmac" VALUE="1" ID="chkmac" {if $nodeipdata.chkmac} checked{/if} onchange="chkmac_change();">&nbsp;
+			<label for="chkduplex">{trans("Half duplex")}:</label><INPUT TYPE="checkbox" NAME="duplex" VALUE="1" ID="chkduplex" {if $nodeipdata.halfduplex} checked{/if} onchange="duplex_change();">
+			{if ConfigHelper::checkConfig('phpui.radius')}
+			&nbsp;
+			<label for="chknas">{trans("NAS")}:</label><INPUT TYPE="checkbox" NAME="nas" ID="chknas" VALUE="1" {if $nodeipdata.nas} checked{/if} onchange="nas_change();">
+			{/if}
+		</TD>
+	</TR>
+	<TR>
+	<TD style="width: 1%;">
+		<IMG SRC="img/netdev.gif" ALT="">
+        </TD>
+        <TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
+	<label for="authtype_dhcp">{trans("DHCP Client")}</label><INPUT TYPE="checkbox" NAME="netdevauthtype[dhcp]" value="2" id="authtype_dhcp" {if $netdevauthtype.dhcp} checked{/if} {tip text="Enable/disable DHCP Server Client" trigger="dhcp"} onchange="change_authtype()">&nbsp;
+	<label for="authtype_eap">{trans("EAP Client")}</label><INPUT TYPE="checkbox" NAME="netdevonntype[eap]" value="4" id="authtype_eap" {if $netdevauthtype.eap} checked {/if} {tip text="Enable/disable EAP Server Client" trigger="eap"} onchange="change_authtype()">
+	</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/network.gif" ALT="{trans("Network:")}">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			<B><A HREF="?m=netinfo&id={$nodeipdata.netid}">{$nodeipdata.netname}</A></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<A HREF="?m=netdevedit&id={$netdevinfo.id}&action=ipset&ip={$nodeipdata.id}"><IMG SRC="img/{if ! $nodeipdata.access}no{/if}access.gif" ALT=""></A>
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			<B>{if $nodeipdata.access}{trans("connected<!singular>")}{else}{trans("disconnected<!singular>")}{/if}</B>
+		</TD>
+	</TR>
+	                                        </TABLE>
+					</TD>
+					<TD WIDTH="50%" style="vertical-align:top;">
+						<TABLE WIDTH="100%" CELLPADDING="3">
+	{if $nodeipdata.info}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/info.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{trans("Description:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			{$nodeipdata.info}
+		</TD>
+	</TR>
+	{/if}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/time.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{trans("Last online:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			{if $nodeipdata.lastonline}{$nodeipdata.lastonlinedate}{else}-{/if}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/users.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{trans("Created:")}<BR>
+			{trans("Modified:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			{$nodeipdata.createdby}, {$nodeipdata.creationdateh}<BR>
+			{if $nodeipdata.moddate}{$nodeipdata.modifiedby}, {$nodeipdata.moddateh}{else}-{/if}
+		</TD>
+	</TR>
+                                                </TABLE>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT">
+			<A HREF="?m=netdevedit&id={$netdevinfo.id}&action=editip&ip={$nodeipdata.id}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
+			<A HREF="?m=netdevedit&id={$netdevinfo.id}&action=ipdel&ip={$nodeipdata.id}" onClick="return confirmLink(this, '{t a=$nodeipdata.name}Are you sure, you want to delete address \'$a\' from database?{/t}')">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
+		</TD>
+	</TR>	
+    </TBODY>
+</TABLE>

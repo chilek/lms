@@ -1,0 +1,39 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+{$xajax}
+<H1>{$layout.pagetitle}</H1>
+<TABLE style="width: 100%;">
+	<TR>
+		<TD style="width: 100%;">
+			{include file="netdev/netdevinfobox.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD style="width: 100%;">
+			{include file="netdev/netdevipbox.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD style="width: 100%;">
+			{include file="managementurl/managementurls.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD style="width: 100%;">
+			{include file="netdev/netdevconnbox1.html"}
+		</TD>
+	<TR>
+	<TR>
+		<TD style="width: 100%;">
+			{include file="netdev/netdevnodes1.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD style="width: 100%;">
+			{include file="netdev/radiosectors.html"}
+		</TD>
+	</TR>
+</TABLE>
+{/block}
