@@ -196,7 +196,7 @@ foreach my $file (@files)
 	if ($message_id)
 	{
 		my $status=5;
-		if ($error_code) { $status=6; }
+		if ($error_code) { $status=3; }
 		$dbq->execute($status, $error, $message_id);
 		if ($dbq->rows)
 		{

@@ -56,7 +56,6 @@
 				<OPTION value="{$smarty.const.MSG_SENT}"{if $listdata.status == $smarty.const.MSG_SENT} SELECTED{/if}>{trans("sent<!plural>")}</OPTION>
 				<OPTION value="{$smarty.const.MSG_ERROR}"{if $listdata.status == $smarty.const.MSG_ERROR} SELECTED{/if}>{trans("errornous<!plural>")}</OPTION>
 				<OPTION value="{$smarty.const.MSG_DELIVERED}"{if $listdata.status == $smarty.const.MSG_DELIVERED} SELECTED{/if}>{trans("delivered<!plural>")}</OPTION>
-				<OPTION value="{$smarty.const.MSG_UNDELIVERED}"{if $listdata.status == $smarty.const.MSG_UNDELIVERED} SELECTED{/if}>{trans("undelivered<!plural>")}</OPTION>
 			</SELECT>
 			&nbsp;<A href="javascript: document.page.submit();">&raquo;&raquo;&raquo;</A>
 			</FORM>
@@ -74,7 +73,7 @@
 	{cycle values="light,lucid" print=false}
 	{section name=messagelist loop=$messagelist start=$start max=$pagelimit}
 	{assign var=message value=$messagelist[messagelist]}
-	<TR class="{cycle}{if $message.undelivered>0||$message.error == $message.cnt} alert{elseif $message.error} blendalert{elseif $message.sent == $message.cnt} blend{elseif $message.delivered == $message.cnt} green{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+	<TR class="{cycle}{if $message.error == $message.cnt} alert{elseif $message.error} blendalert{elseif $message.sent == $message.cnt} blend{elseif $message.delivered == $message.cnt} green{/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 		<TD WIDTH="1%" NOWRAP onclick="return self.location.href='?m=messageinfo&id={$message.id}';">
 			{$message.cdate|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
