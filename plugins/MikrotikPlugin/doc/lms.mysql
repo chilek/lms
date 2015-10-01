@@ -1,0 +1,24 @@
+
+CREATE TABLE `signals` (
+  `date` datetime DEFAULT NULL,
+  `nodeid` int(11) NOT NULL DEFAULT '0',
+  `netdev` int(11) NOT NULL DEFAULT '0',
+  `channel` tinyint(4) unsigned NOT NULL DEFAULT '0',
+  `software` char(10) COLLATE utf8_polish_ci NOT NULL DEFAULT '0',
+  `rxsignal` tinyint(3) NOT NULL DEFAULT '0',
+  `txsignal` tinyint(3) NOT NULL DEFAULT '0',
+  `rxrate` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `txrate` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `rxccq` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `txccq` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `rxbytes` bigint DEFAULT NULL,
+  `txbytes` bigint DEFAULT NULL,
+  UNIQUE KEY `calosc` (`date`,`nodeid`,`netdev`),
+  KEY `nodeid` (`nodeid`),
+  KEY `netdev` (`netdev`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+
+INSERT INTO uiconfig VALUES (null,'mikrotik','user','admin','Użytkownik przy podłączaniu do Mikrotika',0);
+INSERT INTO uiconfig VALUES (null,'mikrotik','password','admin','Hasło przy podłączaniu do Mikrotika',0);
+
+INSERT INTO dbinfo VALUES ('dbversion_MikrotikPlugin','2015092800');

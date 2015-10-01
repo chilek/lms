@@ -1,0 +1,62 @@
+<!--// $Id$ //-->
+<TABLE class="lmsbox">
+	<THEAD>
+	<TR>
+		<TD onclick="showOrHide('nodesignalpanel');">
+			<IMG src="img/traffic.gif" alt="">
+			<B><A name="nodesignals">{trans("Signal history:")}</A></B> {trans("(last 10 measurements)")}
+		</TD>
+                <TD style="width: 1%;" class="text-right nobr">
+                        <A href="?m=nodesignals&amp;id={$nodeinfo.id}">{trans("Full list")} &raquo;</A>&nbsp;
+                </TD>		
+	</TR>
+	</THEAD>
+	<TBODY>
+	<TR id="nodesignalpanel" style="display:none;">
+		<TD WIDTH="100%" class="fall" COLSPAN="2">
+			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
+				<TR class="dark">
+					<TD class="fleftu text-left bold nobr">{trans("Date:")}</TD>
+					<TD class="fbt text-left bold nobr">{trans("Accesspoint:")}</TD>
+					<TD class="fbt text-center bold nobr">{trans("Channel:")}</TD>
+					<TD class="fbt text-center bold nobr" COLSPAN="2">{trans("Connection signal:")}</TD>
+					<TD class="fbt text-center bold nobr" COLSPAN="2">{trans("Connection speed:")}</TD>
+					<TD class="fbt text-center bold nobr" COLSPAN="2">{trans("Link quality:")}</TD>
+					<TD class="frightu text-center bold nobr" COLSPAN="2">{trans("Transmitted:")}</TD>
+				</TR>
+				{$nodesignals=$nodeinfo.nodesignals}
+				{cycle values="light,lucid" print=false}
+				{section name=signal loop=$nodesignals }
+				<TR CLASS="highlight {cycle}">
+					<TD>{$nodesignals[signal].date}</TD>
+					<TD>{$nodesignals[signal].ap}</TD>
+					<TD CLASS="text-center">{$nodesignals[signal].channel}</TD>
+					<TD CLASS="text-right"><FONT COLOR="{if $nodesignals[signal].rxsignal lt -85}red{elseif $nodesignals[signal].rxsignal lt -78}blue{else}green{/if}">{$nodesignals[signal].rxsignal}dB</FONT></TD>
+					<TD>{if $nodesignals[signal].txsignal}<FONT COLOR="{if $nodesignals[signal].txsignal lt -85}red{elseif $nodesignals[signal].txsignal lt -78}blue{else}green{/if}">{$nodesignals[signal].txsignal}dB{/if}</FONT></TD>
+					<TD CLASS="text-right">{$nodesignals[signal].rxrate}Mbps</TD>
+					<TD>{if $nodesignals[signal].txrate}{$nodesignals[signal].txrate}Mbps{/if}</TD>
+					<TD CLASS="text-right">{if $nodesignals[signal].rxccq}<FONT COLOR="{if $nodesignals[signal].rxccq lt 70}red{elseif $nodesignals[signal].rxccq lt 85}blue{else}green{/if}">{$nodesignals[signal].rxccq}%</FONT>{/if}</TD>
+					<TD>{if $nodesignals[signal].txccq}<FONT COLOR="{if $nodesignals[signal].txccq lt 70}red{elseif $nodesignals[signal].txccq lt 85}blue{else}green{/if}">{$nodesignals[signal].txccq}%</FONT>{else}&nbsp;{/if}</TD>
+					<TD CLASS="text-right">{$nodesignals[signal].rxbytes}</TD>
+					<TD CLASS="text-left">{$nodesignals[signal].txbytes}</TD>
+				</TR>
+                                {sectionelse}
+                                <TR>
+                                        <TD class="text-center" style="width: 100%;" colspan="8">
+                                                <P>&nbsp;</P>
+                                                <P><span class="bold">{trans("That are no signals for this node.")}</span></P>
+                                                <P>&nbsp;</P>
+                                        </TD>
+                                </TR>
+                                {/section}
+			</TABLE>
+		</TD>
+	</TR>
+	</TBODY>
+</TABLE>
+{literal}<SCRIPT type="text/javascript">
+<!--
+	if (getCookie('nodesignalpanel')=='1')
+		document.getElementById('nodesignalpanel').style.display = '';
+//-->
+</SCRIPT>{/literal}

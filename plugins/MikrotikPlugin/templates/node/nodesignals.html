@@ -1,0 +1,41 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+{$xajax}
+<H1>{$layout.pagetitle}</H1>
+<TABLE class="lmsbox">
+	<THEAD>
+        <TR class="dark">
+                <TD class="fleftu text-left bold nobr">{trans("Date:")}</TD>
+                <TD class="fbt text-left bold nobr">{trans("Accesspoint:")}</TD>
+                <TD class="fbt text-center bold nobr">{trans("Channel:")}</TD>
+                <TD class="fbt text-center bold nobr" COLSPAN="2">{trans("Connection signal:")}</TD>
+                <TD class="fbt text-center bold nobr" COLSPAN="2">{trans("Connection speed:")}</TD>
+                <TD class="fbt text-center bold nobr" COLSPAN="2">{trans("Link quality:")}</TD>
+                <TD class="frightu text-center bold nobr" COLSPAN="2">{trans("Transmitted:")}</TD>
+        </TR>
+	</THEAD>
+	<TBODY>
+	{cycle values="light,lucid" print=false}
+	{section name=signal loop=$signallist}
+	<TR CLASS="highlight {cycle}">
+                <TD>{$signallist[signal].date}</TD>
+                <TD>{$signallist[signal].ap}</TD>
+                <TD CLASS="text-center">{$signallist[signal].channel}</TD>
+                <TD CLASS="text-right"><FONT COLOR="{if $signallist[signal].rxsignal lt -85}red{elseif $signallist[signal].rxsignal lt -78}blue{else}green{/if}">{$signallist[signal].rxsignal}dB</FONT></TD>
+                <TD>{if $signallist[signal].txsignal}<FONT COLOR="{if $signallist[signal].txsignal lt -85}red{elseif $signallist[signal].txsignal lt -78}blue{else}green{/if}">{$signallist[signal].txsignal}dB{/if}</FONT></TD>
+                <TD CLASS="text-right">{$signallist[signal].rxrate}Mbps</TD>
+                <TD>{if $signallist[signal].txrate}{$signallist[signal].txrate}Mbps{/if}</TD>
+                <TD CLASS="text-right">{if $signallist[signal].rxccq}<FONT COLOR="{if $signallist[signal].rxccq lt 70}red{elseif $signallist[signal].rxccq lt 85}blue{else}green{/if}">{$signallist[signal].rxccq}%</FONT>{/if}</TD>
+                <TD>{if $signallist[signal].txccq}<FONT COLOR="{if $signallist[signal].txccq lt 70}red{elseif $signallist[signal].txccq lt 85}blue{else}green{/if}">{$signallist[signal].txccq}%</FONT>{else}&nbsp;{/if}</TD>
+                <TD CLASS="text-right">{$signallist[signal].rxbytes}</TD>
+                <TD CLASS="text-right">{$signallist[signal].txbytes}</TD>
+
+	</TR>
+	{/section}
+	</TBODY>
+</TABLE>
+{/block}
+
+
