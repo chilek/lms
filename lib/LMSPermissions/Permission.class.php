@@ -25,8 +25,8 @@
  */
 
 class Permission {
-	const PERMISSION_REGEXP_ALLOW = 1;
-	const PERMISSION_REGEXP_DENY = 2;
+	const REGEXP_ALLOW = 1;
+	const REGEXP_DENY = 2;
 
 	private $name;
 	private $label;
@@ -49,18 +49,18 @@ class Permission {
 	}
 
 	public function addRegExp($regexp, $mode) {
-		if (!in_array($mode, array(self::PERMISSION_REGEXP_DENY, self::PERMISSION_REGEXP_ALLOW)))
+		if (!in_array($mode, array(self::REGEXP_DENY, self::REGEXP_ALLOW)))
 			throw new Exception(__METHOD__ . ': illegal mode');
-		if ($mode == self::PERMISSION_REGEXP_DENY)
+		if ($mode == self::REGEXP_DENY)
 			$this->deny_regexps[] = $regexp;
 		else
 			$this->allow_regexps[] = $regexp;
 	}
 
 	public function checkPermission($module, $mode) {
-		if (!in_array($mode, array(self::PERMISSION_REGEXP_DENY, self::PERMISSION_REGEXP_ALLOW)))
+		if (!in_array($mode, array(self::REGEXP_DENY, self::REGEXP_ALLOW)))
 			throw new Exception(__METHOD__ . ': illegal mode');
-		$regexps = $mode == self::PERMISSION_REGEXP_DENY ? $this->deny_regexps : $this->allow_regexps;
+		$regexps = $mode == self::REGEXP_DENY ? $this->deny_regexps : $this->allow_regexps;
 		$result = false;
 		foreach ($regexps as $regexp)
 			$result |= ((bool) preg_match("/$regexp/i", $module));
