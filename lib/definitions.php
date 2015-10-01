@@ -55,6 +55,8 @@ define('MSG_NEW', 1);
 define('MSG_SENT', 2);
 define('MSG_ERROR', 3);
 define('MSG_DRAFT', 4);
+define('MSG_DELIVERED', 5);
+define('MSG_UNDELIVERED', 6);
 
 define('MSG_MAIL', 1);
 define('MSG_SMS', 2);
