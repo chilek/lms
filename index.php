@@ -223,18 +223,15 @@ if ($AUTH->islogged) {
 			if ($plugin['enabled'])
 				require(LIB_DIR . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $plugin_name . '.php');
 
-	$res = $LMS->ExecHook('access_table_init', array('accesstable' => $access['table']));
-	if (isset($res['accesstable']))
-		$access['table'] = $res['accesstable'];
+	$LMS->ExecHook('access_table_init');
 
-	$access['table'] = $LMS->executeHook('access_table_initialized', $access['table']);
+	$LMS->executeHook('access_table_initialized');
 
-        LMSConfig::getConfig(array(
-            'force' => true,
-            'force_user_rights_only' => true,
-            'access_table' => $access['table'],
-            'user_id' => $AUTH->id,
-        ));
+	LMSConfig::getConfig(array(
+		'force' => true,
+		'force_user_rights_only' => true,
+		'user_id' => $AUTH->id,
+	));
 
 	$module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';
 	$deny = $allow = FALSE;
@@ -251,41 +248,29 @@ if ($AUTH->islogged) {
 		$module = 'chpasswd';
 
 	if ($module == '')
-	{
 		$module = ConfigHelper::getConfig('phpui.default_module');
-	}
 
-        $module_dir = null;
-        foreach ($modules_dirs as $suspected_module_dir) {
-            if (file_exists($suspected_module_dir . DIRECTORY_SEPARATOR . $module . '.php')) {
-                $module_dir = $suspected_module_dir;
-                break;
-            }
-        }
-        
+	$module_dir = null;
+	foreach ($modules_dirs as $suspected_module_dir)
+		if (file_exists($suspected_module_dir . DIRECTORY_SEPARATOR . $module . '.php')) {
+			$module_dir = $suspected_module_dir;
+			break;
+		}
+
 	if ($module_dir !== null)
 	{
-		$global_allow = !$AUTH->id || (!empty($access['allow']) && preg_match('/'.$access['allow'].'/i', $module));
+		$global_allow = !$AUTH->id || (!empty($global_access_regexp) && preg_match('/' . $global_access_regexp . '/i', $module));
 
 		if ($AUTH->id && ($rights = $LMS->GetUserRights($AUTH->id)))
-			foreach ($rights as $level)
-			{
-
-				if (!$global_allow && !$deny && isset($access['table'][$level]['deny_reg']))
-					$deny = (bool) preg_match('/'.$access['table'][$level]['deny_reg'].'/i', $module);
-				elseif (!$allow && isset($access['table'][$level]['allow_reg']))
-					$allow = (bool) preg_match('/'.$access['table'][$level]['allow_reg'].'/i', $module);
-
-			}
+			$allow = $access->checkRights($module, $rights, $global_allow);
 
 		if ($SYSLOG)
 			$SYSLOG->NewTransaction($module);
 
-		if ($global_allow || ($allow && !$deny))
-		{
+		if ($allow) {
 			$layout['module'] = $module;
 			$LMS->InitUI();
-                        $LMS->executeHook($module.'_on_load');
+			$LMS->executeHook($module.'_on_load');
 			include($module_dir . DIRECTORY_SEPARATOR . $module . '.php');
 		} else {
 			if ($SYSLOG)

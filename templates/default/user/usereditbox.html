@@ -144,18 +144,18 @@
 			<table style="width: 100%;">
 				<tr>
 					<td style="width: 50%;" class="valign-top nobr">
-						{section name=acl loop=$accesslist}
-						{if $smarty.section.acl.index <= floor(sizeof($accesslist)/2) - 1}
-						<input type="checkbox" id="acl_{$accesslist[acl].id}" name="acl[{$accesslist[acl].id}]" value="1"{if $accesslist[acl].enabled} checked{/if}> <label for="acl_{$accesslist[acl].id}">{$accesslist[acl].name}</label><BR>
+						{foreach $accesslist as $name => $access}
+						{if $access@index <= floor($access@total / 2) - 1}
+						<input type="checkbox" id="acl_{$access@index}" name="acl[{$name}]" value="1"{if $access.enabled} checked{/if}> <label for="acl_{$access@index}">{$access.name}</label><BR>
 						{/if}
-						{/section}
+						{/foreach}
 					</td>
 					<td style="width: 50%;" class="valign-top nobr">
-						{section name=acl loop=$accesslist}
-						{if $smarty.section.acl.index > floor(sizeof($accesslist)/2) - 1}
-						<input type="checkbox" id="acl_{$accesslist[acl].id}" name="acl[{$accesslist[acl].id}]" value="1"{if $accesslist[acl].enabled} checked{/if}> <label for="acl_{$accesslist[acl].id}">{$accesslist[acl].name}</label><BR>
+						{foreach $accesslist as $name => $access}
+						{if $access@index > floor($access@total / 2) - 1}
+						<input type="checkbox" id="acl_{$access@index}" name="acl[{$name}]" value="1"{if $access.enabled} checked{/if}> <label for="acl_{$access@index}">{$access.name}</label><BR>
 						{/if}
-						{/section}
+						{/foreach}
 					</td>
 				</tr>
 			</table>

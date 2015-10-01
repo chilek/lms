@@ -257,7 +257,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
      */
     public function userAccess($id, $access)
     {
-        $this->db->Execute('UPDATE users SET access = ? WHERE id = ? ;', array($access, $id));
+        $this->db->Execute('UPDATE users SET access = ? WHERE id = ?', array($access, $id));
     }
 
     /**
@@ -365,26 +365,13 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
      */
     public function getUserRights($id)
     {
-        if (!($mask = $this->cache->getCache('users', $id, 'rights'))) {
-            $mask = $this->db->GetOne('SELECT rights FROM users WHERE id = ?', array($id));
+        if (!($rights = $this->cache->getCache('users', $id, 'rights'))) {
+            $rights = $this->db->GetOne('SELECT rights FROM users WHERE id = ?', array($id));
         }
 
-        $len = strlen($mask);
-        $bin = '';
-        $result = array();
+		$rights = explode(',', $rights);
 
-        for ($cnt = $len; $cnt > 0; $cnt--) {
-            $bin = sprintf('%04b', hexdec($mask[$cnt - 1])) . $bin;
-        }
-
-        $len = strlen($bin);
-        for ($cnt = $len - 1; $cnt >= 0; $cnt--) {
-            if ($bin[$cnt] == '1') {
-                $result[] = $len - $cnt - 1;
-            }
-        }
-
-        return $result;
+        return $rights;
     }
 
 }

@@ -1,6 +1,10 @@
 $Id$
 
 version ?.??.?? (????-??-??):
+  - rewrite of user access rights code completely - it can require
+    related adjustments in 3rd party plugins and patches [chilan]
+
+version 1.11.18 (2015-10-01):
 
   - added support of new style plugins in userpanel - hooks executed before
     module load have 'userpanel_*_on_load' name pattern [chilan]

@@ -28,6 +28,7 @@
  * LMSConfig
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
+ * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 class LMSConfig
 {
@@ -107,7 +108,6 @@ class LMSConfig
      * Avaliable options are:
      * force - forces to reload whole ini config
      * user_id - user id
-     * access_table - access table
      * 
      * @param array $options Associative array of options
      * @return ConfigContainer User rights configuration
@@ -118,8 +118,8 @@ class LMSConfig
         if (!LMSDB::checkIfInstanceExists()) {
             throw new Exception('Cannot load uiconfig while database connection does not exist!');
         }
-        if (!isset($options['user_id']) || !isset($options['access_table'])) {
-            throw new Exception('Cannot load user rights config without user id and access table!');
+        if (!isset($options['user_id'])) {
+            throw new Exception('Cannot load user rights config without user id!');
         }
         $force = (isset($options['force'])) ? $options['force'] : false;
         if ($force || self::$user_rights_config === null) {
