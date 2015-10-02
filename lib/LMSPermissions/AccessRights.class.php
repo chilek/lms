@@ -68,9 +68,9 @@ class AccessRights {
 		foreach ($rights as $permname) {
 			if (!array_key_exists($permname, $this->permissions))
 				continue;
-			if (!$global_allow && !$deny && $this->permissions[$permname]->checkPermission($module, $mode = Permission::PERMISSION_REGEXP_DENY))
+			if (!$global_allow && !$deny && $this->permissions[$permname]->checkPermission($module, $mode = Permission::REGEXP_DENY))
 				$deny = true;
-			elseif (!$allow && $this->permissions[$permname]->checkPermission($module, $mode = Permission::PERMISSION_REGEXP_ALLOW))
+			elseif (!$allow && $this->permissions[$permname]->checkPermission($module, $mode = Permission::REGEXP_ALLOW))
 				$allow = true;
 		}
 		return $global_allow || ($allow && !$deny);
