@@ -1,6 +1,9 @@
 $Id$
 
 version ?.??.?? (????-??-??):
+
+  - updated lms swekey code to be conformed with PHP 7 [prezes_kk]
+  - added support for message delivery status [Jarosław Dziubek]
   - rewrite of user access rights code completely - it can require
     related adjustments in 3rd party plugins and patches [chilan]
 
