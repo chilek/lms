@@ -165,10 +165,10 @@ $access_table = array(
 );
 
 $access = AccessRights::getInstance();
-foreach ($access_table as $name => $access)
-	$access->appendPermission(new Permission($name, $access['label'],
-		array_key_exists('allow_regexp', $access) ? $access['allow_regexp'] : null,
-		array_key_exists('deny_regexp', $access) ? $access['deny_regexp'] : null)
+foreach ($access_table as $name => $permission)
+	$access->appendPermission(new Permission($name, $permission['label'],
+		array_key_exists('allow_regexp', $permission) ? $permission['allow_regexp'] : null,
+		array_key_exists('deny_regexp', $permission) ? $permission['deny_regexp'] : null)
 	);
 
 // read user-defined access rights table
