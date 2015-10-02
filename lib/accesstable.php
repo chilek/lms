@@ -27,64 +27,149 @@
 // modules with access for everyone
 $global_access_regexp = '^(welcome|copyrights|logout|chpasswd|quicksearch|calendar)$';
 
+$access_table = array(
+	'full_access' => array(
+		'label' => trans('full access'),
+		'allow_regexp' => '^.*$'
+	),
+	'read_only' => array(
+		'label' => trans('read only (excluding helpdesk)'),
+		'allow_regexp' => '^(([a-z]+(list|info|view|search|balance|infoshort))|netdevmap|eventprint|nodelistshort|number|choose[a-z]+)$',
+	),
+	'node_connections' => array(
+		'label' => trans('nodes connection/disconnection'),
+		'allow_regexp' => '^nodeset$',
+	),
+	'finances_management' => array(
+		'label' => trans('finances management'),
+		'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note|report|paid))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel)$',
+	),
+	'reload' => array(
+		'label' => trans('configuration reload'),
+		'allow_regexp' => '^reload$',
+	),
+	'customer_management' => array(
+		'label' => trans('customers management'),
+		'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|del|print|search|warn|cutoffstop|group)|documentgen|documentview|nodewarn|choosenode)$',
+	),
+	'node_management' => array(
+		'label' => trans('nodes management'),
+		'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn)|choose(mac|ip|location|gpscoords)|ping)$',
+	),
+	'traffic_stats' => array(
+		'label' => trans('traffic stats'),
+		'allow_regexp' => '^(traffic|traffic(print|graph))$',
+	),
+	'messaging' => array(
+		'label' => trans('messaging (email, sms)'),
+		'allow_regexp' => '^message(add|del|list|info)$',
+	),
+	'helpdesk_administration' => array(
+		'label' => trans('Helpdesk (RT) administration'),
+		'allow_regexp' => '^(rtsearch|rtprint|(rtqueue|rtticket|rtmessage|rtnote|rtcategory)(add|del|edit|info|view|list|print))$',
+	),
+	'helpdesk_operation' => array(
+		'label' => trans('Helpdesk (RT) operation'),
+		'allow_regexp' => '^(rtsearch|rtattachmentview|rtqueue(list|info|view)|(rtticket|rtmessage|rtnote)(add|edit|info|view|del|print))$',
+	),
+	'hosting_management' => array(
+		'label' => trans('hosting management'),
+		'allow_regexp' => '^(accountpasswd|(account|domain|alias|record)(list|edit|add|del|info|search))$',
+	),
+	'configuration' => array(
+		'label' => trans('configuration'),
+		'allow_regexp' => '^(((host|config|numberplan|taxrate|state|division|cashsource)(list|edit|add|del|load))|((promotion|promotionschema)(list|edit|add|del|set|info)))$',
+	),
+	'network_management' => array(
+		'label' => trans('networks and devices management'),
+		'allow_regexp' => '^((net|netdev|ewxch)(info|list|edit|add|del|print|cmp|map(refresh|)|remap|search)|choose(mac|ip|gpscoords|netdevfrommap|netdev)|ewxnodelist|ewxdevlist|chooselocation|ping|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties)$',
+	),
+	'timetable_management' => array(
+		'label' => trans('timetable management'),
+		'allow_regexp' => '^(event(list|edit|add|del|info|print|search)|choosecustomer)$',
+	),
+	'daemon_management' => array(
+		'label' => trans('daemon management and configuration'),
+		'allow_regexp' => '^((daemoninstance|daemonconfig)(list|edit|add|del|view))$',
+	),
+	'cash_operations' => array(
+		'label' => trans('cash operations'),
+		'allow_regexp' => '^(cashreglist|receipt|receipt(list|edit|add|del|adv)|cashreglog(info|view|add|edit|del)|choosecustomer)$',
+	),
+	'customer_group_management' => array(
+		'label' => trans('customers groups management'),
+		'allow_regexp' => '^(customergroup|customergroup(add|edit|del|info|list|move))$',
+	),
+	'node_group_management' => array(
+		'label' => trans('nodes groups management'),
+		'allow_regexp' => '^(nodegroup|nodegroup(add|edit|del|info|list|move))$',
+	),
+	'customer_group_assignments' => array(
+		'label' => trans('customers to groups assignment'),
+		'allow_regexp' => '^customergroup$',
+	),
+	'node_group_assignments' => array(
+		'label' => trans('nodes to groups assignment'),
+		'allow_regexp' => '^nodegroup$',
+	),
+	'hide_summaries' => array(
+		'label' => trans('summaries hiding'),
+	),
+	'voip_account_management' => array(
+		'label' => trans('voip accounts management'),
+		'allow_regexp' => '^(voipimport|voipaccount(list|search|info|add|del|edit))$',
+	),
+	'userpanel_management' => array(
+		'label' => trans('Userpanel management'),
+		'allow_regexp' => '^userpanel$',
+	),
+	'hide_sysinfo' => array(
+		'label' => trans('system information hiding'),
+	),
+	'hide_links' => array(
+		'label' => trans('links hiding'),
+	),
+	'hide_finances' => array(
+		'label' => trans('finances hiding'),
+	),
+	'reports' => array(
+		'label' => trans('reports'),
+	),
+	'cash_registry_administration' => array(
+		'label' => trans('cash registry administration'),
+		'allow_regexp' => '^cashreg(add|edit|del)$',
+	),
+	'transaction_logs' => array(
+		'label' => trans('transaction logs'),
+		'allow_regexp' => '^archive(info|view)$',
+	),
+	'hide_voip_passwords' => array(
+		'label' => trans('hide VoIP passwords'),
+	),
+	'traffic_stats_compacting' => array('
+		label' => trans('traffic stats compacting'),
+		'allow_regexp' => '^trafficdbcompact$',
+	),
+	'backup_management_forbidden' => array(
+		'label' => trans('backup access forbidden'),
+		'deny_regexp' => '^db(del|list|new|recover|view)$',
+	),
+	'user_management_forbidden' => array(
+		'label' => trans('users edition and addition forbidden'),
+		'deny_regexp' => '^(user(add|del|edit|passwd))$',
+	),
+	'no_access' => array(
+		'label' => trans('no access'),
+		'deny_regexp' => '^.*$',
+	),
+);
+
 $access = AccessRights::getInstance();
-$access->appendPermission(new Permission('full_access', trans('full access'), '^.*$'));
-$access->appendPermission(new Permission('read_only', trans('read only (excluding helpdesk)'),
-	'^(([a-z]+(list|info|view|search|balance|infoshort))|netdevmap|eventprint|nodelistshort|number|choose[a-z]+)$'));
-$access->appendPermission(new Permission('node_connections', trans('nodes connection/disconnection'), '^nodeset$'));
-$access->appendPermission(new Permission('finances_management', trans('finances management'),
-	'^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note|report|paid))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel)$'));
-$access->appendPermission(new Permission('reload', trans('configuration reload'), '^reload$'));
-$access->appendPermission(new Permission('customer_management', trans('customers management'),
-	'^((customer|document)(add|edit|info|infoshort|list|del|print|search|warn|cutoffstop|group)|documentgen|documentview|nodewarn|choosenode)$'));
-$access->appendPermission(new Permission('node_management', trans('nodes management'),
-	'^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn)|choose(mac|ip|location|gpscoords)|ping)$'));
-$access->appendPermission(new Permission('traffic_stats', trans('traffic stats'),
-	'^(traffic|traffic(print|graph))$'));
-$access->appendPermission(new Permission('messaging', trans('messaging (email, sms)'), '^message(add|del|list|info)$'));
-$access->appendPermission(new Permission('helpdesk_administration', trans('Helpdesk (RT) administration'),
-	'^(rtsearch|rtprint|(rtqueue|rtticket|rtmessage|rtnote|rtcategory)(add|del|edit|info|view|list|print))$'));
-$access->appendPermission(new Permission('helpdesk_operation', trans('Helpdesk (RT) operation'),
-	'^(rtsearch|rtattachmentview|rtqueue(list|info|view)|(rtticket|rtmessage|rtnote)(add|edit|info|view|del|print))$'));
-$access->appendPermission(new Permission('hosting_management', trans('hosting management'),
-	'^(accountpasswd|(account|domain|alias|record)(list|edit|add|del|info|search))$'));
-$access->appendPermission(new Permission('configuration', trans('configuration'),
-	'^(((host|config|numberplan|taxrate|state|division|cashsource)(list|edit|add|del|load))|((promotion|promotionschema)(list|edit|add|del|set|info)))$'));
-$access->appendPermission(new Permission('network_management', trans('networks and devices management'),
-	'^((net|netdev|ewxch)(info|list|edit|add|del|print|cmp|map(refresh|)|remap|search)|choose(mac|ip|gpscoords|netdevfrommap|netdev)|ewxnodelist|ewxdevlist|chooselocation|ping|netnode(add|adddev|del|deldev|edit|info|list)|netdevmodels|netlinkproperties)$'));
-$access->appendPermission(new Permission('timetable_management', trans('timetable management'),
-	'^(event(list|edit|add|del|info|print|search)|choosecustomer)$'));
-$access->appendPermission(new Permission('daemon_management', trans('daemon management and configuration'),
-	'^((daemoninstance|daemonconfig)(list|edit|add|del|view))$'));
-$access->appendPermission(new Permission('cash_operations', trans('cash operations'),
-	'^(cashreglist|receipt|receipt(list|edit|add|del|adv)|cashreglog(info|view|add|edit|del)|choosecustomer)$'));
-$access->appendPermission(new Permission('customer_group_management', trans('customers groups management'),
-	'^(customergroup|customergroup(add|edit|del|info|list|move))$'));
-$access->appendPermission(new Permission('node_group_management', trans('nodes groups management'),
-	'^(nodegroup|nodegroup(add|edit|del|info|list|move))$'));
-$access->appendPermission(new Permission('customer_group_assignments', trans('customers to groups assignment'), '^customergroup$'));
-$access->appendPermission(new Permission('node_group_assignments', trans('nodes to groups assignment'), '^nodegroup$'));
-$access->appendPermission(new Permission('hide_summaries', trans('summaries hiding')));
-$access->appendPermission(new Permission('voip_account_management', trans('voip accounts management'),
-	'^(voipimport|voipaccount(list|search|info|add|del|edit))$'));
-$access->appendPermission(new Permission('userpanel_management', trans('Userpanel management'), '^userpanel$'));
-$access->appendPermission(new Permission('hide_sysinfo', trans('system information hiding')));
-$access->appendPermission(new Permission('hide_links', trans('links hiding')));
-$access->appendPermission(new Permission('hide_finances', trans('finances hiding')));
-$access->appendPermission(new Permission('reports', trans('reports')));
-$access->appendPermission(new Permission('cash_registry_administration', trans('cash registry administration'),
-	'^cashreg(add|edit|del)$'));
-$access->appendPermission(new Permission('transaction_logs', trans('transaction logs'),
-	'^archive(info|view)$'));
-$access->appendPermission(new Permission('hide_voip_passwords', trans('hide VoIP passwords')));
-$access->appendPermission(new Permission('traffic_stats_compacting', trans('traffic stats compacting'),
-	'^trafficdbcompact$'));
-$access->appendPermission(new Permission('backup_management_forbidden', trans('backup access forbidden'),
-	null, '^db(del|list|new|recover|view)$'));
-$access->appendPermission(new Permission('user_management_forbidden', trans('users edition and addition forbidden'),
-	null, '^(user(add|del|edit|passwd))$'));
-$access->appendPermission(new Permission('no_access', trans('no access'),
-	null, '^.*$'));
+foreach ($access_table as $name => $access)
+	$access->appendPermission(new Permission($name, $access['label'],
+		array_key_exists('allow_regexp', $access) ? $access['allow_regexp'] : null,
+		array_key_exists('deny_regexp', $access) ? $access['deny_regexp'] : null)
+	);
 
 // read user-defined access rights table
 $custom_access_table = ConfigHelper::getConfig('phpui.custom_accesstable');
