@@ -146,8 +146,8 @@ $access_table = array(
 	'hide_voip_passwords' => array(
 		'label' => trans('hide VoIP passwords'),
 	),
-	'traffic_stats_compacting' => array('
-		label' => trans('traffic stats compacting'),
+	'traffic_stats_compacting' => array(
+		'label' => trans('traffic stats compacting'),
 		'allow_regexp' => '^trafficdbcompact$',
 	),
 	'backup_management_forbidden' => array(
