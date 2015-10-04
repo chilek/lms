@@ -28,46 +28,56 @@ if (empty($_POST)) {
 	exit;
 }
 
-$CONFIG_FILE = '/etc/lms/lms.ini';
+$CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
+
+define('CONFIG_FILE', $CONFIG_FILE);
 
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
 $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
-$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . '/lib' : $CONFIG['directories']['lib_dir']);
-$CONFIG['directories']['modules_dir'] = (!isset($CONFIG['directories']['modules_dir']) ? $CONFIG['directories']['sys_dir'] . '/modules' : $CONFIG['directories']['modules_dir']);
+$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
-define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 
 // Load autloader
-require_once(LIB_DIR . '/autoloader.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'autoloader.php');
+
+// Do some checks and load config defaults
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'config.php');
 
 // Init database
 $DB = null;
 
 try {
 	$DB = LMSDB::getInstance();
-
 } catch (Exception $ex) {
 	trigger_error($ex->getMessage(), E_USER_WARNING);
 
 	// can't working without database
-	die("Fatal error: cannot connect to database!\n");
+	die("Fatal error: cannot connect to database!");
 }
 
 // Include required files
-require_once(LIB_DIR . '/language.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
+
+if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG'))
+	$SYSLOG = new SYSLOG($DB);
+else
+	$SYSLOG = null;
 
 // Initialize Session, Auth and LMS classes
 $SESSION = new Session($DB, ConfigHelper::getConfig('phpui.timeout'));
-$AUTH = new Auth($DB, $SESSION);
-$LMS = new LMS($DB, $AUTH);
+$AUTH = new Auth($DB, $SESSION, $SYSLOG);
+if ($SYSLOG)
+	$SYSLOG->SetAuth($AUTH);
+$LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->lang = $_language;
 
 // Initialize Swekey class
-require_once(LIB_DIR . '/swekey/lms_integration.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'swekey'  . DIRECTORY_SEPARATOR . 'lms_integration.php');
 
 if (session_id() == '')
 	session_start();

@@ -131,7 +131,7 @@ class Auth {
 						writesyslog('Bad password for ' . $this->login, LOG_WARNING);
 
 					$this->DB->Execute('UPDATE users SET failedlogindate=?, failedloginip=? WHERE id = ?',
-						array(time(), ip2long($this->ip), $this->id));
+						array(time(), $this->ip, $this->id));
 					if ($this->SYSLOG) {
 						$this->SYSLOG->NewTransaction('auth', $this->id);
 						$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_USERLOGFAIL,
