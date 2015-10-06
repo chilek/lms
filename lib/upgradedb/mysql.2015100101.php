@@ -23,6 +23,6 @@
 
 $this->Execute("ALTER TABLE messageitems ADD externalmsgid int(6) DEFAULT '0' NOT NULL");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005100101', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2015100101', 'dbversion'));
 
 ?>
