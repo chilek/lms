@@ -461,17 +461,6 @@ function check_email( $email )
 	return TRUE;
 }
 
-function check_emails( $emails )
-{
-	$emails_arr = preg_split("/,\s*/", $emails);
-
-	foreach( $emails_arr as $email )
-		if( !check_email($email) )
-			return FALSE;
-
-	return TRUE;
-}
-
 function get_producer($mac) {
 	$mac = strtoupper(str_replace(':', '-', substr($mac, 0, 8)));
 

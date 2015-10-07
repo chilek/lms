@@ -73,7 +73,7 @@ if(isset($_POST['message']))
 	if($message['body'] == '')
 		$error['body'] = trans('Message body not specified!');
 
-	if($message['destination']!='' && !check_emails($message['destination']))
+	if($message['destination']!='' && !check_email($message['destination']))
 		$error['destination'] = trans('Incorrect email!');
 
 	if($message['destination']!='' && $message['sender']=='customer')
