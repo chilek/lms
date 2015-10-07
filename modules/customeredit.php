@@ -118,7 +118,7 @@ elseif (isset($_POST['customerdata']))
 		$email = trim($val['email']);
 		$name = trim($val['name']);
 
-		if ($email != '' && !check_emails($email))
+		if ($email != '' && !check_email($email))
 			$error['email' . $idx] = trans('Incorrect email!');
 		elseif ($name && !$email)
 			$error['email' . $idx] = trans('Email address is required!');
