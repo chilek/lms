@@ -6,6 +6,8 @@ version ?.??.?? (????-??-??):
   - added support for message delivery status [Jarosław Dziubek]
   - rewrite of user access rights code completely - it can require
     related adjustments in 3rd party plugins and patches [chilan]
+  - introduced new hook which allows to attach handlers for all LMS modules
+    before smarty template displaying (*_before_display) [chilan]
 
 version 1.11.18 (2015-10-01):
 

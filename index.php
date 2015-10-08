@@ -151,6 +151,7 @@ $LMS->lang = $_language;
 
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
+$SMARTY->setPluginManager($plugin_manager);
 
 // Initialize Swekey class
 
