@@ -40,7 +40,8 @@ class LMSSmarty extends Smarty {
 	public function display($template = null, $cache_id = null, $compile_id = null, $parent = null) {
 		$layout = $this->getTemplateVars('layout');
 		if (!empty($layout) && array_key_exists('module', $layout))
-			$this->plugin_manager->ExecuteHook($layout['module'] . '_before_display', $this);
+			$this->plugin_manager->ExecuteHook($layout['module'] . '_before_module_display',
+				array('smarty' => $this));
 		$this->fetch($template, $cache_id, $compile_id, $parent, true);
 	}
 }
