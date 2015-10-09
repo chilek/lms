@@ -8,6 +8,7 @@ version ?.??.?? (????-??-??):
     related adjustments in 3rd party plugins and patches [chilan]
   - introduced new hook which allows to attach handlers for all LMS modules
     before smarty template displaying (*_before_module_display) [chilan]
+  - don't use smarty prefilter for document directory [chilan]
 
 version 1.11.18 (2015-10-01):
 
