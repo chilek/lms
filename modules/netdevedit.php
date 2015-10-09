@@ -736,7 +736,10 @@ if (isset($_POST['netdev'])) {
 
 		$LMS->NetDevUpdate($netdevdata);
 		$LMS->CleanupInvprojects();
-		$hook_data=$LMS->executeHook('netdevedit_after_update',array('smarty'=>$SMARTY);
+		$hook_data = $LMS->executeHook('netdevedit_after_update',
+			array(
+				'smarty' => $SMARTY,
+			));
 		$SESSION->redirect('?m=netdevinfo&id=' . $_GET['id']);
 	}
 } else {
