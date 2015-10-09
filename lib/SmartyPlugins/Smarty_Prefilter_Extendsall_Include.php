@@ -31,7 +31,7 @@
 
 class Smarty_Prefilter_Extendsall_Include {
 	static public function prefilter_extendsall_include($tpl_source, Smarty_Internal_Template $template) {
-		if (is_array($template->smarty->template_dir) === false)
+		if (is_array($template->smarty->template_dir) === false || preg_match('/^' . DOC_DIR . '/', $tpl_source))
 			return $tpl_source;
 		// prepend all files in {include} blocks with resource type 'extendsall:'
 		return preg_replace('#(\{include\s*file=[\'"])(?:(?![a-z]+:|/))(.+)([\'"][^}]*\})#i', '$1extendsall:$2$3', $tpl_source);
