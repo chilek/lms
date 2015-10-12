@@ -322,7 +322,7 @@ if(isset($_POST['message']))
 		$error['body'] = trans('Message body is required!');
 
 	$files = array();
-	if ($_FILES['file']['name']) {
+	if (!empty($_FILES['file']['name'][0])) {
 		foreach ($_FILES['file']['name'] as $fileidx => $filename)
 			if (is_uploaded_file($_FILES['file']['tmp_name'][$fileidx]) && $_FILES['file']['size'][$fileidx]) {
 				$data = '';
