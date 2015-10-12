@@ -321,28 +321,30 @@ if(isset($_POST['message']))
 	if($message['body']=='')
 		$error['body'] = trans('Message body is required!');
 
-	if($filename = $_FILES['file']['name'])
-	{
-		if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
-		{
-			$file = '';
-			$fd = fopen($_FILES['file']['tmp_name'], 'r');
-			if($fd)
-			{
-				while(!feof($fd))
-					$file .= fread($fd,256);
-				fclose($fd);
-			}
-		} 
-		else // upload errors
-			switch($_FILES['file']['error'])
-			{
-				case 1:
-				case 2: $error['file'] = trans('File is too large.'); break;
-				case 3: $error['file'] = trans('File upload has finished prematurely.'); break;
-				case 4: $error['file'] = trans('Path to file was not specified.'); break;
-				default: $error['file'] = trans('Problem during file upload.'); break;
-			}
+	$files = array();
+	if ($_FILES['file']['name']) {
+		foreach ($_FILES['file']['name'] as $fileidx => $filename)
+			if (is_uploaded_file($_FILES['file']['tmp_name'][$fileidx]) && $_FILES['file']['size'][$fileidx]) {
+				$data = '';
+				$fd = fopen($_FILES['file']['tmp_name'][$fileidx], 'r');
+				if ($fd) {
+					while (!feof($fd))
+						$data .= fread($fd,256);
+					fclose($fd);
+					$files[] = array(
+						'content_type' => $_FILES['file']['type'][$fileidx],
+						'filename' => $_FILES['file']['name'][$fileidx],
+						'data' => $data,
+					);
+				}
+			} else // upload errors
+				switch($_FILES['file']['error'][$fileidx]) {
+					case 1:
+					case 2: $error['file'] = trans('File is too large.'); break;
+					case 3: $error['file'] = trans('File upload has finished prematurely.'); break;
+					case 4: $error['file'] = trans('Path to file was not specified.'); break;
+					default: $error['file'] = trans('Problem during file upload.'); break;
+				}
 	}
 
 	if(!$error)
@@ -414,13 +416,8 @@ if(isset($_POST['message']))
 
 		if($message['type'] == MSG_MAIL)
 		{
-			$files = NULL;
-			if (isset($file))
-			{
-				$files[0]['content_type'] = $_FILES['file']['type'];
-				$files[0]['filename'] = $filename;
-				$files[0]['data'] = $file;
-			}
+			if (empty($files))
+				$files = null;
 
 			$debug_email = ConfigHelper::getConfig('mail.debug_email');
 			if(!empty($debug_email))
