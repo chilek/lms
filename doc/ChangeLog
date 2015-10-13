@@ -10,6 +10,7 @@ version ?.??.?? (????-??-??):
     before smarty template displaying (*_before_module_display) [chilan]
   - don't use smarty prefilter for document directory [chilan]
   - multiple files can be send by email when we create mail message [chilan]
+  - selection of phones and emails is possible when we send message to customer [chilan]
 
 version 1.11.18 (2015-10-01):
 

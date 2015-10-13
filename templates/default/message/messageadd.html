@@ -22,52 +22,61 @@
 			return 0;
 	}
 
-	function typesel(elem)
-	{
+	function typesel(elem) {
 		if(elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww' || elem == 'typeuserpanel' || elem == 'typeuserpanelurgent') {
-			document.getElementById('mailfrom').style.display = 'none';
-			document.getElementById('mailsender').style.display = 'none';
-			document.getElementById('attachment').style.display = 'none';
+			xjx.$('mailfrom').style.display = 'none';
+			xjx.$('mailsender').style.display = 'none';
+			xjx.$('attachment').style.display = 'none';
+			xjx.$('customermails').style.display = 'none';
 			{if !$message.customerid}
-			var users = document.getElementById('users');
+			var users = xjx.$('users');
 			if (elem == 'typeanysms') {
-				document.getElementById('phonenumber').style.display = '';
+				xjx.$('phonenumber').style.display = '';
 				if (users) users.style.display = '';
 			} else {
-				document.getElementById('phonenumber').style.display = 'none';
+				xjx.$('phonenumber').style.display = 'none';
 				if (users) users.style.display = 'none';
 			}
 			{/if}
 			if (elem == 'typewww') {
-				document.getElementById('mailbody').style.display = '';
-				document.getElementById('smsbody').style.display = 'none';
-				document.getElementById('charscount').style.display = 'none';
+				xjx.$('mailbody').style.display = '';
+				xjx.$('smsbody').style.display = 'none';
+				xjx.$('charscount').style.display = 'none';
+				xjx.$('customerphones').style.display = 'none';
 				xajax_getMessageTemplates({$smarty.const.TMPL_WWW});
-			}	else if (elem == 'typeuserpanel') {
-				document.getElementById('mailbody').style.display = '';
-				document.getElementById('smsbody').style.display = 'none';
-				document.getElementById('charscount').style.display = 'none';
+			} else if (elem == 'typeuserpanel') {
+				xjx.$('mailbody').style.display = '';
+				xjx.$('smsbody').style.display = 'none';
+				xjx.$('charscount').style.display = 'none';
+				xjx.$('customerphones').style.display = 'none';
 				xajax_getMessageTemplates({$smarty.const.TMPL_USERPANEL});
-			}	else if (elem == 'typeuserpanelurgent') {
-				document.getElementById('mailbody').style.display = '';
-				document.getElementById('smsbody').style.display = 'none';
-				document.getElementById('charscount').style.display = 'none';
+			} else if (elem == 'typeuserpanelurgent') {
+				xjx.$('mailbody').style.display = '';
+				xjx.$('smsbody').style.display = 'none';
+				xjx.$('charscount').style.display = 'none';
+				xjx.$('customerphones').style.display = 'none';
 				xajax_getMessageTemplates({$smarty.const.TMPL_USERPANEL_URGENT});
-			}	else {
-				document.getElementById('mailbody').style.display = 'none';
-				document.getElementById('smsbody').style.display = '';
-				document.getElementById('charscount').style.display = '';
+			} else {
+				xjx.$('mailbody').style.display = 'none';
+				xjx.$('smsbody').style.display = '';
+				xjx.$('charscount').style.display = '';
+				if (elem == 'typeanysms')
+					xjx.$('customerphones').style.display = 'none';
+				else
+					xjx.$('customerphones').style.display = '';
 				xajax_getMessageTemplates({$smarty.const.TMPL_SMS});
 			}
 		} else {
-			document.getElementById('mailbody').style.display = '';
-			document.getElementById('mailfrom').style.display = '';
-			document.getElementById('mailsender').style.display = '';
-			document.getElementById('attachment').style.display = '';
-			if (document.getElementById('phonenumber') != undefined)
-				document.getElementById('phonenumber').style.display = 'none';
-			document.getElementById('smsbody').style.display = 'none';
-			document.getElementById('charscount').style.display = 'none';
+			xjx.$('mailbody').style.display = '';
+			xjx.$('mailfrom').style.display = '';
+			xjx.$('mailsender').style.display = '';
+			xjx.$('attachment').style.display = '';
+			xjx.$('customermails').style.display = '';
+			xjx.$('customerphones').style.display = 'none';
+			if (xjx.$('phonenumber') != undefined)
+				xjx.$('phonenumber').style.display = 'none';
+			xjx.$('smsbody').style.display = 'none';
+			xjx.$('charscount').style.display = 'none';
 			xajax_getMessageTemplates({$smarty.const.TMPL_MAIL});
 		}
 		xjx.$('msgtmplid').disabled = true;
@@ -224,6 +233,40 @@
 			<INPUT type="radio" name="message[type]" id="typeuserpanelurgent" value="{$smarty.const.MSG_USERPANEL_URGENT}"{if $message.type == $smarty.const.MSG_USERPANEL_URGENT} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeuserpanelurgent"><span class="bold">{trans("userpanel urgent")}</span></label>
 		</TD>
 	</TR>
+	{if $message.emails}
+	<TR id="customermails"{if $message.type != $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+		<TD>
+			<IMG src="img/email.gif" alt=""> 
+		</TD>
+		<TD class="bold nobr">
+			{trans("E-mail:")}
+		</TD>
+		<TD>
+			{foreach $message.emails as $email}
+			<label><INPUT type="checkbox" name="message[customermails][{$email@index}]" value="{$email.contact}"{if $message.customermails[$email@index]} checked{/if}>
+			{$email.contact}{if $email.name} ({$email.name}){/if}</label>
+			{if !$email@last}<br>{/if}
+			{/foreach}
+		</TD>
+	</TR>
+	{/if}
+	{if $message.phones}
+	<TR id="customerphones"{if $message.type != $smarty.const.MSG_SMS} style="display: none;"{/if}>
+		<TD>
+			<IMG src="img/phone.gif" alt=""> 
+		</TD>
+		<TD class="bold nobr">
+			{trans("Phone:")}
+		</TD>
+		<TD>
+			{foreach $message.phones as $phone}
+			<label><INPUT type="checkbox" name="message[customerphones][{$phone@index}]" value="{$phone.contact}"{if $message.customerphones[$phone@index]} checked{/if}>
+			{$phone.contact}{if $phone.name} ({$phone.name}){/if}</label>
+			{if !$phone@last}<br>{/if}
+			{/foreach}
+		</TD>
+	</TR>
+	{/if}
 	<TR ID="mailsender"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
 		<TD style="width: 1%;">
 			<IMG src="img/email.gif" alt=""> 

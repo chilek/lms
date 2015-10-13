@@ -173,32 +173,13 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	return $recipients;
 }
 
-function GetRecipient($customerid, $type=MSG_MAIL) {
-	global $LMS;
+function GetRecipient($customerid) {
+	global $DB;
 
-	if ($type == MSG_SMS)
-		$smstable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('contact') . ' AS phone, customerid
-				FROM customercontacts 
-				WHERE customerid = '.$customerid.'
-					AND (type & ' . CONTACT_MOBILE . ') = ' . CONTACT_MOBILE . '
-				GROUP BY customerid
-			) x ON (x.customerid = c.id) ';
-	else
-		$mailtable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('contact') . ' AS email, customerid
-				FROM customercontacts
-				WHERE customerid = ' . $customerid . ' AND type = ' . CONTACT_EMAIL . '
-				GROUP BY customerid
-			) cc ON (cc.customerid = c.id) ';
-
-	return $LMS->DB->GetAll('SELECT c.id, pin, '
-		. ($type == MSG_MAIL ? 'cc.email, ' : '')
-		. ($type == MSG_SMS ? 'x.phone, ': '')
-		. $LMS->DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
+	return $DB->GetRow('SELECT c.id, pin, '
+		. $DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
 		COALESCE((SELECT SUM(value) FROM cash WHERE customerid = c.id), 0) AS balance
-		FROM customersview c '
-		. (isset($mailtable) ? $mailtable : '')
-		. (isset($smstable) ? $smstable : '')
-		. 'WHERE c.id = ' . $customerid);
+		FROM customersview c WHERE c.id = ?', array($customerid));
 }
 
 function BodyVars(&$body, $data)
@@ -356,8 +337,26 @@ if(isset($_POST['message']))
 			else
 				foreach ($phonenumbers as $phone)
 					$recipients[]['phone'] = $phone;
-		else
-			$recipients = GetRecipient($message['customerid'], $message['type']);
+		else {
+			$recipient = GetRecipient($message['customerid']);
+			if (!empty($recipient))
+				switch ($message['type']) {
+					case MSG_MAIL:
+						if (empty($message['customermails']))
+							break;
+						$recipient['email'] = implode(',', $message['customermails']);
+						$recipients = array($recipient);
+						break;
+					case MSG_SMS:
+						if (empty($message['customerphones']))
+							break;
+						$recipient['phone'] = implode(',', $message['customerphones']);
+						$recipients = array($recipient);
+						break;
+					default:
+						$recipients = array($recipient);
+				}
+		}
 
 		if(!$recipients)
 			$error['subject'] = trans('Unable to send message. No recipients selected!');
@@ -498,6 +497,16 @@ if(isset($_POST['message']))
 			.$DB->Concat('UPPER(lastname)',"' '",'name').'
 			FROM customersview
 			WHERE id = ?', array($message['customerid']));
+
+		$message['phones'] = $DB->GetAll('SELECT contact, name FROM customercontacts
+			WHERE customerid = ? AND type = ?', array($message['customerid'], CONTACT_MOBILE));
+		if (is_null($message['phones']))
+			$message['phones'] = array();
+
+		$message['emails'] = $DB->GetAll('SELECT contact, name FROM customercontacts
+			WHERE customerid = ? AND type = ?', array($message['customerid'], CONTACT_EMAIL));
+		if (is_null($message['emails']))
+			$message['emails'] = array();
 	}
 
 	$SMARTY->assign('error', $error);
@@ -509,6 +518,24 @@ else if (!empty($_GET['customerid']))
 		.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customer
 		FROM customersview
 		WHERE id = ?', array($_GET['customerid']));
+
+	$message['phones'] = $DB->GetAll('SELECT contact, name FROM customercontacts
+		WHERE customerid = ? AND type = ?', array($_GET['customerid'], CONTACT_MOBILE));
+	if (is_null($message['phones']))
+		$message['phones'] = array();
+	$message['customerphones'] = array();
+	foreach ($message['phones'] as $idx => $phone)
+		$message['customerphones'][$idx] = $phone['contact'];
+
+	$message['emails'] = $DB->GetAll('SELECT contact, name FROM customercontacts
+		WHERE customerid = ? AND type = ?', array($_GET['customerid'], CONTACT_EMAIL));
+	if (is_null($message['emails']))
+		$message['emails'] = array();
+	$message['customermails'] = array();
+	foreach ($message['emails'] as $idx => $email)
+		$message['customermails'][$idx] = $email['contact'];
+
+	$message['type'] = MSG_MAIL;
 
 	$SMARTY->assign('message', $message);
 }
