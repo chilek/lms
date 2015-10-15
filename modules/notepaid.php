@@ -42,7 +42,7 @@ if(sizeof($ids))
 		list ($cid, $value, $closed) = array_values($DB->GetRow('SELECT customerid, 
 			(SELECT SUM(value) FROM debitnotecontents
 				WHERE docid = d.id) AS value, closed
-			FROM documents
+			FROM documents d
 			WHERE id = ?', array($noteid)));
 		// add payment
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.note_check_payment', false)) && !$closed) {
