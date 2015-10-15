@@ -610,44 +610,38 @@ switch($type)
 						$total['netto'][$tax['id']] += $reportlist[$idx][$tax['id']]['netto'];
 						$total['tax'][$tax['id']] += $reportlist[$idx][$tax['id']]['tax'];
 					}
-
-					switch($order)
-					{
-						case 'customername':
-							foreach($reportlist as $idx => $row)
-							{
-								$table['idx'][] = $idx;
-								$table['customername'][] = $row['customername'];
-							}
-							if (is_array($table))
-							{
-								array_multisort($table['customername'],($direction == 'desc' ? SORT_DESC : SORT_ASC), $table['idx']);
-								foreach($table['idx'] as $idx)
-									$tmplist[] = $reportlist[$idx];
-							}
-							$reportlist = $tmplist;
-						break;
-						default:
-							foreach($reportlist as $idx => $row)
-							{
-								$table['idx'][] = $idx;
-								$table['value'][] = $row['value'];
-							}
-							if (is_array($table))
-							{
-								array_multisort($table['value'],($direction == 'desc' ? SORT_DESC : SORT_ASC), $table['idx']);
-								foreach($table['idx'] as $idx)
-									$tmplist[] = $reportlist[$idx];
-							}
-							$reportlist = $tmplist;
-						break;
-					}
-
 				}
 			}
 
+			switch ($order) {
+				case 'customername':
+					foreach ($reportlist as $idx => $row) {
+						$table['idx'][] = $idx;
+						$table['customername'][] = $row['customername'];
+					}
+					if (is_array($table)) {
+						array_multisort($table['customername'], ($direction == 'desc' ? SORT_DESC : SORT_ASC), $table['idx']);
+						foreach ($table['idx'] as $idx)
+							$tmplist[] = $reportlist[$idx];
+					}
+					$reportlist = $tmplist;
+					break;
+				default:
+					foreach ($reportlist as $idx => $row) {
+						$table['idx'][] = $idx;
+						$table['value'][] = $row['value'];
+					}
+					if (is_array($table)) {
+						array_multisort($table['value'], ($direction == 'desc' ? SORT_DESC : SORT_ASC), $table['idx']);
+						foreach ($table['idx'] as $idx)
+							$tmplist[] = $reportlist[$idx];
+					}
+					$reportlist = $tmplist;
+					break;
+			}
+
 			$SMARTY->assign('reportlist', $reportlist);
-			$SMARTY->assign('total',$total);
+			$SMARTY->assign('total', $total);
 			$SMARTY->assign('taxes', $taxes);
 			$SMARTY->assign('taxescount', sizeof($taxes));
 		}
