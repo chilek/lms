@@ -1657,7 +1657,7 @@ class LMS
         $message = preg_replace("/\r/", "", $message);
 
 		if (ConfigHelper::checkConfig('sms.transliterate_message'))
-			$message = iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $messages);
+			$message = iconv('UTF-8', 'ASCII//TRANSLIT', $message);
 
         $max_length = ConfigHelper::getConfig('sms.max_length');
         if (!empty($max_length) && intval($max_length) > 6 && $msg_len > intval($max_length))
