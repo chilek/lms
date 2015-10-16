@@ -83,7 +83,7 @@ int main(int argc, char *argv[], char **envp)
         configfile = ( getenv("LMSINI") ? getenv("LMSINI") : "/etc/lms/lms.ini" );
 
     	// read environment and command line
-	driver = ( getenv("LMSDBTYPE") ? getenv("DBTYPE") : "mysql" );
+	driver = ( getenv("LMSDBTYPE") ? getenv("DBTYPE") : strdup("mysql") );
 	passwd = ( getenv("LMSDBPASS") ? getenv("LMSDBPASS") : "" );
 	dbname = ( getenv("LMSDBNAME") ? getenv("LMSDBNAME") : "lms" );
 	user = ( getenv("LMSDBUSER") ? getenv("LMSDBUSER") : "lms" );
