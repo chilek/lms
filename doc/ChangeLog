@@ -13,6 +13,8 @@ version ?.??.?? (????-??-??):
   - selection of phones and emails is possible when we send message to customer [chilan]
   - fixed liability reports when assignments with many tax rates for customer was
     assigned [chilan]
+  - sms.transliterate_message config variable introduced - allows to
+    getting rid of national characters in sms messages [chilan]
 
 version 1.11.18 (2015-10-01):
 
