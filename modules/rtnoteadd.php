@@ -95,7 +95,7 @@ elseif(isset($_POST['note']))
 				&& ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($note['ticketid'])))) {
 				$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
 						address, zip, city FROM customers WHERE id = ?', array($cid));
-				$info['contacts'] = $DB->GetAll('SELECT contact, name FROM customercontacts
+				$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
 					WHERE customerid = ?', array($cid));
 
 				$emails = array();
