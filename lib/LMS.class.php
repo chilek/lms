@@ -1823,7 +1823,7 @@ class LMS
                 }
 
                 $filename = $dir . DIRECTORY_SEPARATOR . 'lms-' . $messageid . '-' . $number;
-                $latin1 = iconv('UTF-8', 'ISO-8859-15', $message);
+                $latin1 = iconv('UTF-8', 'ASCII', $message);
                 $alphabet = '';
                 if (strlen($latin1) != mb_strlen($message, 'UTF-8')) {
                     $alphabet = "Alphabet: UCS2\n";
