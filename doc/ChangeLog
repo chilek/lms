@@ -15,6 +15,7 @@ version ?.??.?? (????-??-??):
     assigned [chilan]
   - sms.transliterate_message config variable introduced - allows to
     getting rid of national characters in sms messages [chilan]
+  - added contract filter for customer list and report [chilan]
 
 version 1.11.18 (2015-10-01):
 
