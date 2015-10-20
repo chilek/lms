@@ -101,6 +101,18 @@ switch($type)
 				$layout['pagetitle'] = trans('Indebted Customers List $a$b',($_POST['network'] ? trans(' (Net: $a)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $a)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
 				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup'], $division));
 			break;
+			case 13:
+				$layout['pagetitle'] = trans('Customers Without Contracts List $a$b',($_POST['network'] ? trans(' (Net: $a)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $a)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup'], $division));
+			break;
+			case 14:
+				$layout['pagetitle'] = trans('Customers With Expired Contracts List $a$b',($_POST['network'] ? trans(' (Net: $a)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $a)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup'], $division));
+			break;
+			case 15:
+				$layout['pagetitle'] = trans('Customers With Expiring Contracts List $a$b',($_POST['network'] ? trans(' (Net: $a)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $a)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup'], $division));
+			break;
 			case -1:
 				$layout['pagetitle'] = trans('Customers Without Nodes List $a$b',($_POST['network'] ? trans(' (Net: $a)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $a)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
 				if($customerlist = $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], NULL, NULL, $_POST['customergroup'], $search, $date, 'AND', NULL, $division))

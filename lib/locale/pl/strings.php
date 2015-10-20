@@ -3004,4 +3004,11 @@ $_LANG['Customer e-mail and PIN'] = 'E-mail klienta i PIN';
 $_LANG['Document number:'] = 'Numer dokumentu:';
 $_LANG['Customer e-mail:'] = 'E-mail klienta:';
 
+$_LANG['without contracts'] = 'bez umów';
+$_LANG['with expired contracts'] = 'z przeterminowanymi umowami';
+$_LANG['with expiring contracts'] = 'z umowami bliskimi przeterminowania';
+$_LANG['Customers Without Contracts List $a$b'] = 'Lista klientów bez umów $a$b';
+$_LANG['Customers With Expired Contracts List $a$b'] = 'Lista klientów z przeterminowanymi umowami $a$b';
+$_LANG['Customers With Expiring Contracts List $a$b'] = 'Lista klientów z umowami bliskimi przeterminowania $a$b';
+
 ?>

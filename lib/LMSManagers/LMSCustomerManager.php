@@ -430,6 +430,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 break;
             case 12: $indebted3 = 1;
                 break;
+            case 13: case 14: case 15:
+                     $contracts = $state - 12;
+                     $contracts_days = intval(ConfigHelper::getConfig('contracts.contracts_days'));
+                     break;
         }
 
         if ($network) {
@@ -596,14 +600,40 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 					FROM nodes
 					WHERE ownerid > 0
 					GROUP BY ownerid
-				) s ON (s.ownerid = c.id)
-				WHERE c.deleted = ' . intval($deleted)
+				) s ON (s.ownerid = c.id) '
+				. ($contracts == 1 ? '
+					LEFT JOIN (
+						SELECT COUNT(*), d.customerid FROM documents d
+						JOIN documentcontents dc ON dc.docid = d.id
+						WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
+						GROUP BY d.customerid
+					) d ON d.customerid = c.id' : '')
+				. ($contracts == 2 ? '
+					JOIN (
+						SELECT SUM(CASE WHEN dc.todate < ?NOW? THEN 1 ELSE 0 END),
+							SUM(CASE WHEN dc.todate > ?NOW? THEN 1 ELSE 0 END),
+							d.customerid FROM documents d
+						JOIN documentcontents dc ON dc.docid = d.id
+						WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
+						GROUP BY d.customerid
+						HAVING SUM(CASE WHEN dc.todate < ?NOW? THEN 1 ELSE 0 END) > 0
+							AND SUM(CASE WHEN dc.todate >= ?NOW? THEN 1 ELSE 0 END) = 0
+					) d ON d.customerid = c.id' : '')
+				. ($contracts == 3 ? '
+					JOIN (
+						SELECT DISTINCT d.customerid FROM documents d
+						JOIN documentcontents dc ON dc.docid = d.id
+						WHERE dc.todate >= ?NOW? AND dc.todate <= ?NOW? + 86400 * ' . $contracts_days . '
+							AND type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
+					) d ON d.customerid = c.id' : '')
+				. ' WHERE c.deleted = ' . intval($deleted)
                 . ($state <= 3 && $state > 0 ? ' AND c.status = ' . intval($state) : '')
                 . ($division ? ' AND c.divisionid = ' . intval($division) : '')
                 . ($online ? ' AND s.online = 1' : '')
                 . ($indebted ? ' AND b.value < 0' : '')
                 . ($indebted2 ? ' AND b.value < -t.value' : '')
                 . ($indebted3 ? ' AND b.value < -t.value * 2' : '')
+				. ($contracts == 1 ? ' AND d.customerid IS NULL' : '')
                 . ($disabled ? ' AND s.ownerid IS NOT null AND s.account > s.acsum' : '')
                 . ($network ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id 
 					AND (netid = ' . $network . '
