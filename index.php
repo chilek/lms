@@ -268,7 +268,7 @@ if ($AUTH->islogged) {
 		if ($SYSLOG)
 			$SYSLOG->NewTransaction($module);
 
-		if ($allow) {
+		if ($global_allow || $allow) {
 			$layout['module'] = $module;
 			$LMS->InitUI();
 			$LMS->executeHook($module.'_on_load');

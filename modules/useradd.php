@@ -137,7 +137,7 @@ $access = AccessRights::getInstance();
 $accesslist = $access->getArray($rights);
 
 if($AUTH->nousers == TRUE)           // if there is no users
-	$accesslist[0]['enabled']=1;       // then new users should have "full privileges" checked to make new installation more human error proof.
+	$accesslist['full_access']['enabled']=1;       // then new users should have "full privileges" checked to make new installation more human error proof.
 
 $layout['pagetitle'] = trans('New User');
 
