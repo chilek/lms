@@ -16,6 +16,8 @@ version ?.??.?? (????-??-??):
   - sms.transliterate_message config variable introduced - allows to
     getting rid of national characters in sms messages [chilan]
   - added contract filter for customer list and report [chilan]
+  - invoices.customer_credentials and invoices.customer_balance_in_form configuration
+    settings were introduced [chilan]
 
 version 1.11.18 (2015-10-01):
 

@@ -26,7 +26,7 @@
 // Faktury w PDF, do użycia z formularzami FT-0100 (c) Polarnet
 // w razie pytań mailto:lexx@polarnet.org
 
-function invoice_simple_form_fill($x,$y,$scale)  
+function invoice_simple_form_fill($x,$y,$scale)
 {
     global $pdf,$invoice;
     $pdf->setlinestyle(1);
@@ -39,13 +39,13 @@ function invoice_simple_form_fill($x,$y,$scale)
     $pdf->line(7*$scale+$x,197*$scale+$y,37*$scale+$x,197*$scale+$y);
     $pdf->line(370*$scale+$x,197*$scale+$y,370*$scale+$x,227*$scale+$y);
     $pdf->line(370*$scale+$x,197*$scale+$y,340*$scale+$x,197*$scale+$y);
-    
+
     $shortname = $invoice['division_shortname'];
     $address = $invoice['division_address'];
     $zip = $invoice['division_zip'];
     $city = $invoice['division_city'];
     $account = bankaccount($invoice['customerid'], $invoice['account']);
-    
+
     text_autosize(15*$scale+$x,568*$scale+$y,30*$scale, $shortname,350*$scale);
     text_autosize(15*$scale+$x,534*$scale+$y,30*$scale, $address,350*$scale);
     text_autosize(15*$scale+$x,500*$scale+$y,30*$scale, $zip.' '.$city,350*$scale);
@@ -53,17 +53,25 @@ function invoice_simple_form_fill($x,$y,$scale)
     //text_autosize(15*$scale+$x,683*$scale+$y,30*$scale, substr($tmp,0,17),350*$scale);
     //text_autosize(15*$scale+$x,626*$scale+$y,30*$scale, substr($tmp,18,200),350*$scale);
     text_autosize(15*$scale+$x,683*$scale+$y,30*$scale, format_bankaccount($account), 350*$scale);
-    text_autosize(15*$scale+$x,445*$scale+$y,30*$scale,"*".number_format($invoice['total'],2,',','')."*",350*$scale);
+    if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false)))
+        $value = $invoice['customerbalance'];
+    else
+        $value = $invoice['total'];
+    text_autosize(15*$scale+$x,445*$scale+$y,30*$scale,"*".number_format($value,2,',','')."*",350*$scale);
 
     text_autosize(15*$scale+$x,390*$scale+$y,30*$scale, $invoice['name'],350*$scale);
     text_autosize(15*$scale+$x,356*$scale+$y,30*$scale, $invoice['address'],350*$scale);
     text_autosize(15*$scale+$x,322*$scale+$y,30*$scale, $invoice['zip'].' '.$invoice['city'],350*$scale);
 
-    $tmp = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-    text_autosize(15*$scale+$x,215*$scale+$y,30*$scale,trans('Payment for invoice No. $a', $tmp),350*$scale);
+    if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false)))
+        text_autosize(15*$scale+$x,215*$scale+$y,30*$scale,trans('Payment for liabilities'),350*$scale);
+    else {
+        $tmp = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+        text_autosize(15*$scale+$x,215*$scale+$y,30*$scale,trans('Payment for invoice No. $a', $tmp),350*$scale);
+    }
 }
 
-function invoice_main_form_fill($x,$y,$scale)	
+function invoice_main_form_fill($x,$y,$scale)
 {
     global $pdf,$invoice;
     $pdf->setlinestyle(1);
@@ -86,11 +94,19 @@ function invoice_main_form_fill($x,$y,$scale)
     text_autosize(15*$scale+$x,555*$scale+$y,30*$scale, format_bankaccount($account), 950*$scale);
     $pdf->addtext(330*$scale+$x,495*$scale+$y,30*$scale,'X');
     text_autosize(550*$scale+$x,495*$scale+$y,30*$scale,"*".number_format($invoice['total'],2,',','')."*",400*$scale);
-    text_autosize(15*$scale+$x,434*$scale+$y,30*$scale, trans('$a dollars $b cents',to_words(floor($invoice['total'])),to_words(round(($invoice['total']-floor($invoice['total']))*100))),950*$scale);
+    if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false)))
+        $value = $invoice['customerbalance'];
+    else
+        $value = $invoice['total'];
+    text_autosize(15*$scale+$x,434*$scale+$y,30*$scale, trans('$a dollars $b cents',to_words(floor($value)),to_words(round(($value-floor($value))*100))),950*$scale);
     text_autosize(15*$scale+$x,372*$scale+$y,30*$scale, $invoice['name'],950*$scale);
     text_autosize(15*$scale+$x,312*$scale+$y,30*$scale, $invoice['address']." ".$invoice['zip']." ".$invoice['city'],950*$scale);
-    $tmp = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-    text_autosize(15*$scale+$x,250*$scale+$y,30*$scale, trans('Payment for invoice No. $a',$tmp),950*$scale);
+    if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false)))
+        text_autosize(15*$scale+$x,250*$scale+$y,30*$scale, trans('Payment for liabilities'),950*$scale);
+    else {
+        $tmp = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+        text_autosize(15*$scale+$x,250*$scale+$y,30*$scale, trans('Payment for invoice No. $a',$tmp),950*$scale);
+    }
 }
 
 function invoice_dates($x,$y)

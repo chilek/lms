@@ -231,14 +231,22 @@ function invoice_simple_form_fill() {
 	$pdf->Text(7, 234, $invoice['address']);
 	$pdf->Text(7, 240, $invoice['zip'] . ' ' . $invoice['city']);
 
-	/* title */
-	$pdf->Text(7, 249, 'Zapłata za fakturę numer:');
-	$pdf->SetFont('courier', 'B', 10);
-	$pdf->Text(7, 253, docnumber($invoice['number'], $invoice['template'], $invoice['cdate']));
+	if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
+		/* title */
+		$pdf->Text(7, 249, 'Wpłata na poczet należności');
 
+		$value = $invoice['customerbalance'];
+	} else {
+		/* title */
+		$pdf->Text(7, 249, 'Zapłata za fakturę numer:');
+		$pdf->SetFont('courier', 'B', 10);
+		$pdf->Text(7, 253, docnumber($invoice['number'], $invoice['template'], $invoice['cdate']));
+
+		$value = $invoice['value'];
+	}
 	/* amount */
 	$pdf->SetFont('courier', 'B', 10);
-	$pdf->Text(7, 263, moneyf($invoice['value']));
+	$pdf->Text(7, 263, moneyf($value));
 }
 
 function invoice_main_form_fill() {
@@ -263,8 +271,12 @@ function invoice_main_form_fill() {
 	$pdf->setFontSpacing(0);
 
 	/* amount */
-	$pdf->Text(142, 224, moneyf($invoice['value']));
-	$pdf->Text(67, 233, trans('$a dollars $b cents', to_words(floor($invoice['value'])), to_words(round(($invoice['value'] - floor($invoice['value'])) * 100))));
+	if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false)))
+		$value = $invoice['customerbalance'];
+	else
+		$value = $invoice['value'];
+	$pdf->Text(142, 224, moneyf($value));
+	$pdf->Text(67, 233, trans('$a dollars $b cents', to_words(floor($value)), to_words(round(($value - floor($value)) * 100))));
 
 	/* customer name */
 	$pdf->SetFont('courier', '', 9);
@@ -296,10 +308,15 @@ function invoice_main_form_fill() {
 		$pdf->StopTransform();
 	}
 
-	/* title */
-	$pdf->Text(127, 262, 'Zapłata za fakturę numer:');
-	$pdf->SetFont('courier', 'B', 10);
-	$pdf->Text(127, 266, docnumber($invoice['number'], $invoice['template'], $invoice['cdate']));
+	if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false)))
+		/* title */
+		$pdf->Text(127, 262, 'Wpłata na poczet należności');
+	else {
+		/* title */
+		$pdf->Text(127, 262, 'Zapłata za fakturę numer:');
+		$pdf->SetFont('courier', 'B', 10);
+		$pdf->Text(127, 266, docnumber($invoice['number'], $invoice['template'], $invoice['cdate']));
+	}
 
 	/* deadline */
 	$paytype = $invoice['paytype'];
@@ -406,11 +423,13 @@ function invoice_buyer() {
 	$pdf->SetFont('arial', 'B', 10);
 	$pdf->writeHTMLCell(80, '', 125, 50, $postbox, 0, 1, 0, true, 'L');
 
-	$pin = '<b>' . trans('Customer ID: $a', sprintf('%04d', $invoice['customerid'])) . '</b><br>';
-	$pin .= '<b>PIN: ' . sprintf('%04d', $invoice['customerpin']) . '</b><br>';
+	if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_credentials', true))) {
+		$pin = '<b>' . trans('Customer ID: $a', sprintf('%04d', $invoice['customerid'])) . '</b><br>';
+		$pin .= '<b>PIN: ' . sprintf('%04d', $invoice['customerpin']) . '</b><br>';
 
-	$pdf->SetFont('arial', 'B', 8);
-	$pdf->writeHTMLCell('', '', 125, $oldy + round(($y - $oldy) / 2), $pin, 0, 1, 0, true, 'L');
+		$pdf->SetFont('arial', 'B', 8);
+		$pdf->writeHTMLCell('', '', 125, $oldy + round(($y - $oldy) / 2), $pin, 0, 1, 0, true, 'L');
+	}
 
 	$pdf->SetY($y);
 }
