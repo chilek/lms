@@ -3011,4 +3011,6 @@ $_LANG['Customers Without Contracts List $a$b'] = 'Lista klientów bez umów $a$
 $_LANG['Customers With Expired Contracts List $a$b'] = 'Lista klientów z przeterminowanymi umowami $a$b';
 $_LANG['Customers With Expiring Contracts List $a$b'] = 'Lista klientów z umowami bliskimi przeterminowania $a$b';
 
+$_LANG['Payment for liabilities'] = 'Wpłata na poczet należności';
+
 ?>
