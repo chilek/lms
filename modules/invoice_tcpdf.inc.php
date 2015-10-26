@@ -235,7 +235,7 @@ function invoice_simple_form_fill() {
 		/* title */
 		$pdf->Text(7, 249, 'Wpłata na poczet należności');
 
-		$value = $invoice['customerbalance'];
+		$value = $invoice['customerbalance'] * -1;
 	} else {
 		/* title */
 		$pdf->Text(7, 249, 'Zapłata za fakturę numer:');
@@ -272,7 +272,7 @@ function invoice_main_form_fill() {
 
 	/* amount */
 	if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false)))
-		$value = $invoice['customerbalance'];
+		$value = $invoice['customerbalance'] * -1;
 	else
 		$value = $invoice['value'];
 	$pdf->Text(142, 224, moneyf($value));
@@ -555,12 +555,14 @@ function invoice_body_ft0100() {
 	invoice_dates();
 	invoice_expositor();
 	invoice_footnote();
-	/* draw FT-0100 form */
-	invoice_simple_form_draw();
-	invoice_main_form_draw();
-	/* fill FT-0100 form */
-	invoice_simple_form_fill();
-	invoice_main_form_fill();
+	if ($invoice['customerbalance'] < 0) {
+		/* draw FT-0100 form */
+		invoice_simple_form_draw();
+		invoice_main_form_draw();
+		/* fill FT-0100 form */
+		invoice_simple_form_fill();
+		invoice_main_form_fill();
+	}
 
 	$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 	$pdf->SetTitle(trans('Invoice No. $a', $docnumber));

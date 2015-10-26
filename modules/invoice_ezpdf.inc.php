@@ -54,7 +54,7 @@ function invoice_simple_form_fill($x,$y,$scale)
     //text_autosize(15*$scale+$x,626*$scale+$y,30*$scale, substr($tmp,18,200),350*$scale);
     text_autosize(15*$scale+$x,683*$scale+$y,30*$scale, format_bankaccount($account), 350*$scale);
     if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false)))
-        $value = $invoice['customerbalance'];
+        $value = $invoice['customerbalance'] * -1;
     else
         $value = $invoice['total'];
     text_autosize(15*$scale+$x,445*$scale+$y,30*$scale,"*".number_format($value,2,',','')."*",350*$scale);
@@ -95,7 +95,7 @@ function invoice_main_form_fill($x,$y,$scale)
     $pdf->addtext(330*$scale+$x,495*$scale+$y,30*$scale,'X');
     text_autosize(550*$scale+$x,495*$scale+$y,30*$scale,"*".number_format($invoice['total'],2,',','')."*",400*$scale);
     if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false)))
-        $value = $invoice['customerbalance'];
+        $value = $invoice['customerbalance'] * -1;
     else
         $value = $invoice['total'];
     text_autosize(15*$scale+$x,434*$scale+$y,30*$scale, trans('$a dollars $b cents',to_words(floor($value)),to_words(round(($value-floor($value))*100))),950*$scale);
@@ -893,7 +893,7 @@ function invoice_body_standard()
 
 function invoice_body_ft0100()
 {
-	global $pdf;
+	global $pdf, $invoice;
 	
 	$page = $pdf->ezStartPageNumbers($pdf->ez['pageWidth']/2+10,$pdf->ez['pageHeight']-30,8,'',trans('Page $a of $b', '{PAGENUM}','{TOTALPAGENUM}'),1);
 	$top=$pdf->ez['pageHeight']-50;
@@ -912,8 +912,10 @@ function invoice_body_ft0100()
 	invoice_expositor(30,$return[1]);
 	invoice_to_pay(30,$top);
 	check_page_length($top, 200);
-	invoice_main_form_fill(187,3,0.4);
-	invoice_simple_form_fill(14,3,0.4);
+	if ($invoice['customerbalance'] < 0) {
+		invoice_main_form_fill(187,3,0.4);
+		invoice_simple_form_fill(14,3,0.4);
+	}
 	$page = $pdf->ezStopPageNumbers(1,1,$page);
 }
 
