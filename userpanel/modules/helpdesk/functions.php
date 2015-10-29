@@ -78,6 +78,41 @@ function module_main()
     $error = NULL;
 
 	$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+	if (isset($_FILES['files'])) {
+		$files = array();
+		foreach ($_FILES['files']['name'] as $fileidx => $filename)
+			if (!empty($filename)) {
+				if (is_uploaded_file($_FILES['files']['tmp_name'][$fileidx]) && $_FILES['files']['size'][$fileidx]) {
+					$filecontents = '';
+					$fd = fopen($_FILES['files']['tmp_name'][$fileidx], 'r');
+					if ($fd) {
+						while (!feof($fd))
+							$filecontents .= fread($fd,256);
+						fclose($fd);
+					}
+					$files[] = array(
+						'name' => $filename,
+						'tmp_name' => $_FILES['files']['tmp_name'][$fileidx],
+						'type' => $_FILES['files']['type'][$fileidx],
+						'contents' => $filecontents,
+					);
+				} else { // upload errors
+					if (isset($error['files']))
+						$error['files'] .= "\n";
+					else
+						$error['files'] = '';
+					switch ($_FILES['files']['error'][$fileidx]) {
+						case 1:
+						case 2: $error['files'] .= trans('File is too large: $a', $filename); break;
+						case 3: $error['files'] .= trans('File upload has finished prematurely: $a', $filename); break;
+						case 4: $error['files'] .= trans('Path to file was not specified: $a', $filename); break;
+						default: $error['files'] .= trans('Problem during file upload: $a', $filename); break;
+					}
+				}
+			}
+	}
+
     if (!$id && isset($_POST['helpdesk']))
     {
         $ticket = $_POST['helpdesk'];
@@ -136,6 +171,19 @@ function module_main()
 		foreach(explode(',', $ticket['categories']) as $catid)
 			$DB->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)',
 				array($id, $catid));
+
+		if (!empty($files) && ConfigHelper::getConfig('rt.mail_dir')) {
+			$msgid = $DB->GetLastInsertID('rtmessages');
+			$dir = ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d/%06d', $id, $msgid);
+			@mkdir(ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d', $id), 0700);
+			@mkdir($dir, 0700);
+			foreach ($files as $file) {
+				$newfile = $dir . '/' . $file['name'];
+				if (@rename($file['tmp_name'], $newfile))
+					$DB->Execute('INSERT INTO rtattachments (messageid, filename, contenttype)
+						VALUES (?,?,?)', array($msgid, $file['name'], $file['type']));
+			}
+		}
 
 		if(ConfigHelper::checkConfig('phpui.newticket_notify'))
 		{
@@ -288,7 +336,20 @@ function module_main()
 		                $ticket['customerid'],
 		            	$ticket['inreplyto'],
 		        ));
-	
+
+		if (!empty($files) && ConfigHelper::getConfig('rt.mail_dir')) {
+			$msgid = $DB->GetLastInsertID('rtmessages');
+			$dir = ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d/%06d', $id, $msgid);
+			@mkdir(ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d', $id), 0700);
+			@mkdir($dir, 0700);
+			foreach ($files as $file) {
+				$newfile = $dir . '/' . $file['name'];
+				if (@rename($file['tmp_name'], $newfile))
+					$DB->Execute('INSERT INTO rtattachments (messageid, filename, contenttype)
+						VALUES (?,?,?)', array($msgid, $file['name'], $file['type']));
+			}
+		}
+
 		// re-open ticket
 		$DB->Execute('UPDATE rttickets SET state = CASE state
 				WHEN 0 THEN 0

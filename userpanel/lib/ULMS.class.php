@@ -91,6 +91,11 @@ class ULMS extends LMS {
 				LEFT JOIN customers ON (customers.id = customerid)
 				LEFT JOIN users ON (users.id = userid)
 				WHERE ticketid = ? ORDER BY createtime ASC', array($id));
+
+		foreach ($ticket['messages'] as &$message)
+			$message['attachments'] = $this->DB->GetAll('SELECT filename, contenttype FROM rtattachments WHERE messageid = ?',
+				array($message['id']));
+
 		$ticket['queuename'] = $this->DB->GetOne('SELECT name FROM rtqueues WHERE id = ?', array($ticket['queueid']));
 
 		list($ticket['requestoremail']) = sscanf($ticket['requestor'], "<%[^>]");

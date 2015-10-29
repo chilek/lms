@@ -1,5 +1,5 @@
 <!--// $Id$ //-->
-<form method="post" action="?m=helpdesk" name="helpdesk">
+<form method="post" action="?m=helpdesk" name="helpdesk" enctype="multipart/form-data">
 {box title="New Request"}
 <table width="100%" cellpadding="3" class="light">
 	<tr class="light">
@@ -37,6 +37,17 @@
 		</td>
 		<td width="98%">
 			<textarea style="width:99%;" name="helpdesk[body]" rows="5" {userpaneltip text="Enter request contents" trigger="body"}>{$helpdesk.body}</textarea>
+		</td>
+	</tr>
+	<tr class="light">
+		<td>
+			{img src="attach.gif" alt=""}
+		</td>
+		<td>
+			<b>{trans("Attachments:")}</b>
+		</td>
+		<td>
+			<input type="file" name="files[]" size="55" {userpaneltip text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
 		</td>
 	</tr>
 	<tr class="light">
