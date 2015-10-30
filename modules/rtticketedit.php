@@ -218,9 +218,9 @@ if(isset($_POST['ticket']))
 			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)) && $ticketedit['customerid'])
 			{
 				$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-							address, zip, city FROM customers WHERE id = ?', array($cid));
+							address, zip, city FROM customers WHERE id = ?', array($ticketedit['customerid']));
 				$info['contacts'] = $DB->GetAll('SELECT contact, name FROM customercontacts
-					WHERE customerid = ?', array($cid));
+					WHERE customerid = ?', array($ticketedit['customerid']));
 
 				$emails = array();
 				$phones = array();
