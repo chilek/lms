@@ -162,7 +162,7 @@ if (isset($_POST['customeradd']))
 			$error['email' . $idx] = trans('Incorrect email!');
 		elseif ($name && !$email)
 			$error['email' . $idx] = trans('Email address is required!');
-		else
+		elseif ($email != '')
 			$contacts[] = array('name' => $name, 'contact' => $email, 'type' => CONTACT_EMAIL);
 	}
 
