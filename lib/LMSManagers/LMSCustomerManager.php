@@ -55,7 +55,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function getCustomerEmail($id)
     {
         return $this->db->GetCol('SELECT contact FROM customercontacts
-		WHERE customerid = ? AND type = ?', array($id, CONTACT_EMAIL));
+               WHERE customerid = ? AND type = ?', array($id, CONTACT_EMAIL));
     }
     
     /**
@@ -809,9 +809,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 					FROM customercontacts
 					WHERE customerid = ? AND type < ? ORDER BY id',
 					array($result['id'], CONTACT_EMAIL));
-		$result['emails'] = $this->db->GetAll('SELECT contact AS email, name
+            $result['emails'] = $this->db->GetAll('SELECT contact AS email, name, type
 					FROM customercontacts
-					WHERE customerid = ? AND type = ? ORDER BY id',
+					WHERE customerid = ? AND type >= ? ORDER BY id',
 					array($result['id'], CONTACT_EMAIL));
 
             if (is_array($result['contacts']))
@@ -823,6 +823,16 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
                     if ($types)
                         $result['contacts'][$idx]['typestr'] = implode('/', $types);
+                }
+            if (is_array($result['emails']))
+                foreach ($result['emails'] as $idx => $row) {
+                    $types = array();
+                    foreach ($CONTACTTYPES as $tidx => $tname)
+                        if ($row['type'] & $tidx)
+                            $types[] = $tname;
+
+                    if ($types)
+                        $result['emails'][$idx]['typestr'] = implode('/', $types);
                 }
 
             return $result;

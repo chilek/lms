@@ -203,10 +203,14 @@ define('CONTACT_MOBILE', 1);
 define('CONTACT_FAX', 2);
 define('CONTACT_LANDLINE', 4);
 define('CONTACT_EMAIL', 8);
+define('CONTACT_EMAIL_EINVOICE', 16);
+define('CONTACT_EMAIL_DISABLE', 32);
 
 $CONTACTTYPES = array(
-    CONTACT_MOBILE 	=>	trans('mobile'),
-    CONTACT_FAX 	=>	trans('fax'),
+    CONTACT_MOBILE          =>	trans('mobile'),
+    CONTACT_FAX             =>	trans('fax'),
+    CONTACT_EMAIL_EINVOICE  =>	trans('e-invoice'),
+    CONTACT_EMAIL_DISABLE   =>	trans('disabled'),
 );
 
 define('DISCOUNT_PERCENTAGE', 1);

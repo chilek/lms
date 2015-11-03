@@ -154,17 +154,27 @@ if (isset($_POST['customeradd']))
 
 	$contacts = array();
 
+       $emaileinvoice = FALSE;
 	foreach ($customeradd['emails'] as $idx => $val) {
 		$email = trim($val['email']);
 		$name = trim($val['name']);
+                $type = !empty($val['type']) ? array_sum($val['type']) : NULL;
+
+                if($type & CONTACT_EMAIL_EINVOICE && !($type & CONTACT_EMAIL_DISABLE))
+                        $emaileinvoice = TRUE;
+
+                $customeradd['emails'][$idx]['type'] = $type;
 
 		if ($email != '' && !check_email($email))
 			$error['email' . $idx] = trans('Incorrect email!');
 		elseif ($name && !$email)
 			$error['email' . $idx] = trans('Email address is required!');
 		elseif ($email != '')
-			$contacts[] = array('name' => $name, 'contact' => $email, 'type' => CONTACT_EMAIL);
+			$contacts[] = array('name' => $name, 'contact' => $email, 'type' => empty($type) ? CONTACT_EMAIL : $type);
 	}
+
+        if(isset($customeradd['invoicenotice']) && !$emaileinvoice)
+                $error['invoicenotice'] = trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');
 
 	foreach ($customeradd['contacts'] as $idx => $val) {
 		$phone = trim($val['phone']);
