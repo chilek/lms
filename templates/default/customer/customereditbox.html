@@ -30,7 +30,11 @@
 				+ ' name="customerdata[contacts][' + nr + '][type][]" id="chkmobile' + nr + '"><label for="chkmobile' + nr + '">{trans("mobile")}</label>'
 			+ '<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_FAX}"'
 				+ ' name="customerdata[contacts][' + nr + '][type][]" id="chkfax' + nr + '"><label for="chkfax' + nr + '">{trans("fax")}</label>'
-			+ '<BR><INPUT TYPE="text" size="38" value="" name="customerdata[contacts][' + nr + '][name]"'
+                       + '<INPUT type="checkbox" value="{$smarty.const.CONTACT_DISABLED}" ID="chkedisable' + nr + '"'
+				+ ' name="customerdata[contacts][' + nr + '][type][]"><label for="chkedisable' + nr + '"'
+                               + ' onmouseover="popup(\'{trans("Not visible by the customer in electronic Customer Service Representative")}\')"'
+                               + ' onmouseout="pophide()">{trans("disabled")}</label>'
+			+ '<BR><INPUT TYPE="text" size="46" value="" name="customerdata[contacts][' + nr + '][name]"'
 				+ ' onmouseover="popup(\'{trans("Enter contact name/description (optional)")}\')" onmouseout="pophide()">';
 		contactscountelem.value = parseInt(nr) + 1;
 	}
@@ -46,11 +50,11 @@
 		newcell.style.whiteSpace = 'nowrap';
 		newcell.innerHTML = '<HR><INPUT TYPE="text" size="20" value="" name="customerdata[emails][' + nr + '][email]"'  
 				+ ' onmouseover="popup(\'{trans("Enter e-mail address (optional)")}\')" onmouseout="pophide()">'
-                       + '<INPUT type="checkbox" value="{$smarty.const.CONTACT_EMAIL_EINVOICE}" ID="chkeinvoice' + nr + '"'
+                       + '<INPUT type="checkbox" value="{$smarty.const.CONTACT_EMAIL_INVOICE}" ID="chkeinvoice' + nr + '"'
 				+ ' name="customerdata[emails][' + nr + '][type][]"><label for="chkmobile' + nr + '"'
                                + ' onmouseover="popup(\'{trans("Check if sent electronic invoices on this email")}\')"'
-                               + ' onmouseout="pophide()">{trans("e-invoice")}</label>'
-			+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_EMAIL_DISABLE}" ID="chkfax' + nr + '"'
+                               + ' onmouseout="pophide()">{trans("Invoice")}</label>'
+			+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_DISABLED}" ID="chkedisable' + nr + '"'
 				+ ' name="customerdata[emails][' + nr + '][type][]"><label for="chkedisable' + nr + '"'
                                + ' onmouseover="popup(\'{trans("Not visible by the customer in electronic Customer Service Representative")}\')"'
                                + ' onmouseout="pophide()">{trans("disabled")}</label>'
@@ -264,8 +268,9 @@
 							<INPUT type="text" size="15" value="{$item.phone}" name="customerdata[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
 							<INPUT type="checkbox" value="{$smarty.const.CONTACT_MOBILE}" name="customerdata[contacts][{$key}][type][]" id="chkmobile{$key}" {if ($item.type & $smarty.const.CONTACT_MOBILE)} checked{/if}><label for="chkmobile{$key}">{trans("mobile")}</label>
 							<INPUT type="checkbox" value="{$smarty.const.CONTACT_FAX}" name="customerdata[contacts][{$key}][type][]" id="chkfax{$key}" {if ($item.type & $smarty.const.CONTACT_FAX)} checked{/if}><label for="chkfax{$key}">{trans("fax")}</label>
+                                                        <INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customerdata[contacts][{$key}][type][]" ID="chkedisable{$key}" {if ($item.type & $smarty.const.CONTACT_DISABLED)} checked{/if}><label {tip text="Not visible by the customer in electronic Customer Service Representative" trigger="edisabled" } for="chkedisable{$key}">{trans("disabled")}</label>
 							<BR>
-							<INPUT type="text" size="38" value="{$item.name}" name="customerdata[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
+							<INPUT type="text" size="46" value="{$item.name}" name="customerdata[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
 						</TD>
 					</TR>
 					{/foreach}
@@ -289,8 +294,8 @@
 					<TR id="email{$key}">
 						<TD>
                                                         <INPUT type="text" size="20" value="{$item.email}" name="customerdata[emails][{$key}][email]" {tip text="Enter e-mail address (optional)" trigger="email`$key`"}>
-                                                        <INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_EMAIL_EINVOICE}" name="customerdata[emails][{$key}][type][]" ID="chkeinvoice{$key}" {if ($item.type & $smarty.const.CONTACT_EMAIL_EINVOICE)} checked{/if}><label {tip text="Check if sent electronic invoices on this email"} for="chkeinvoice{$key}">{trans("e-invoice")}</label>
-                                                        <INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_EMAIL_DISABLE}" name="customerdata[emails][{$key}][type][]" ID="chkedisable{$key}" {if ($item.type & $smarty.const.CONTACT_EMAIL_DISABLE)} checked{/if}><label {tip text="Not visible by the customer in electronic Customer Service Representative" trigger="edisabled" } for="chkedisable{$key}">{trans("disabled")}</label>
+                                                        <INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_EMAIL_INVOICE}" name="customerdata[emails][{$key}][type][]" ID="chkeinvoice{$key}" {if ($item.type & $smarty.const.CONTACT_EMAIL_INVOICE)} checked{/if}><label {tip text="Check if sent electronic invoices on this email"} for="chkeinvoice{$key}">{trans("Invoice")}</label>
+                                                        <INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customerdata[emails][{$key}][type][]" ID="chkedisable{$key}" {if ($item.type & $smarty.const.CONTACT_DISABLED)} checked{/if}><label {tip text="Not visible by the customer in electronic Customer Service Representative" trigger="edisabled" } for="chkedisable{$key}">{trans("disabled")}</label>
                                                         <BR>
                                                         <INPUT type="text" size="46" value="{$item.name}" name="customerdata[emails][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
                                                 </TD>

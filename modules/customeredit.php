@@ -120,10 +120,14 @@ elseif (isset($_POST['customerdata']))
 		$name = trim($val['name']);
                 $type = !empty($val['type']) ? array_sum($val['type']) : NULL;
 
-                if($type & CONTACT_EMAIL_EINVOICE && !($type & CONTACT_EMAIL_DISABLE))
+                if($type & CONTACT_EMAIL_INVOICE && !($type & CONTACT_DISABLED))
                         $emaileinvoice = TRUE;
 
-                $customeradd['emails'][$idx]['type'] = $type;
+                if($type == CONTACT_DISABLED){
+                    $type += CONTACT_EMAIL;
+                }
+
+                $customerdata['emails'][$idx]['type'] = $type;
 
 		if ($email != '' && !check_email($email))
 			$error['email' . $idx] = trans('Incorrect email!');
@@ -133,13 +137,17 @@ elseif (isset($_POST['customerdata']))
 			$contacts[] = array('name' => $name, 'contact' => $email, 'type' => empty($type) ? CONTACT_EMAIL : $type);
 	}
 
-        if(isset($customeradd['invoicenotice']) && !$emaileinvoice)
+        if(isset($customerdata['invoicenotice']) && !$emaileinvoice)
                 $error['invoicenotice'] = trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');
 
 	foreach ($customerdata['contacts'] as $idx => $val) {
 		$phone = trim($val['phone']);
 		$name = trim($val['name']);
 		$type = !empty($val['type']) ? array_sum($val['type']) : NULL;
+
+                if($type == CONTACT_DISABLED){
+                    $type += CONTACT_LANDLINE;
+                }
 
 		$customerdata['contacts'][$idx]['type'] = $type;
 

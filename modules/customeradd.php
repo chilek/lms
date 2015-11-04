@@ -160,8 +160,11 @@ if (isset($_POST['customeradd']))
 		$name = trim($val['name']);
                 $type = !empty($val['type']) ? array_sum($val['type']) : NULL;
 
-                if($type & CONTACT_EMAIL_EINVOICE && !($type & CONTACT_EMAIL_DISABLE))
+                if($type & CONTACT_EMAIL_INVOICE && !($type & CONTACT_DISABLED))
                         $emaileinvoice = TRUE;
+                if($type == CONTACT_DISABLED){
+                    $type += CONTACT_EMAIL;
+                }
 
                 $customeradd['emails'][$idx]['type'] = $type;
 
@@ -180,6 +183,10 @@ if (isset($_POST['customeradd']))
 		$phone = trim($val['phone']);
 		$name = trim($val['name']);
 		$type = !empty($val['type']) ? array_sum($val['type']) : NULL;
+
+                if($type == CONTACT_DISABLED){
+                    $type += CONTACT_LANDLINE;
+                }
 
 		$customeradd['contacts'][$idx]['type'] = $type;
 

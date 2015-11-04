@@ -807,12 +807,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 					FROM imessengers WHERE customerid = ? ORDER BY type', 'type', array($result['id']));
             $result['contacts'] = $this->db->GetAll('SELECT contact AS phone, name, type
 					FROM customercontacts
-					WHERE customerid = ? AND type < ? ORDER BY id',
-					array($result['id'], CONTACT_EMAIL));
+					WHERE customerid = ? AND (type & ? = ? OR type & ? = ? OR type & ? =?) ORDER BY id',
+					array($result['id'], CONTACT_MOBILE, CONTACT_MOBILE, CONTACT_FAX, CONTACT_FAX, CONTACT_LANDLINE, CONTACT_LANDLINE));
             $result['emails'] = $this->db->GetAll('SELECT contact AS email, name, type
 					FROM customercontacts
-					WHERE customerid = ? AND type >= ? ORDER BY id',
-					array($result['id'], CONTACT_EMAIL));
+					WHERE customerid = ? AND (type & ? = ? OR type & ? = ?) ORDER BY id',
+					array($result['id'], CONTACT_EMAIL, CONTACT_EMAIL, CONTACT_EMAIL_INVOICE, CONTACT_EMAIL_INVOICE));
 
             if (is_array($result['contacts']))
                 foreach ($result['contacts'] as $idx => $row) {
