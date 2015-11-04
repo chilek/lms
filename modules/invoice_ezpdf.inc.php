@@ -912,7 +912,7 @@ function invoice_body_ft0100()
 	invoice_expositor(30,$return[1]);
 	invoice_to_pay(30,$top);
 	check_page_length($top, 200);
-	if ($invoice['customerbalance'] < 0) {
+	if ($invoice['customerbalance'] < 0 || ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.always_show_form', false))) {
 		invoice_main_form_fill(187,3,0.4);
 		invoice_simple_form_fill(14,3,0.4);
 	}
