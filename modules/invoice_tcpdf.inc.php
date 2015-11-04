@@ -555,7 +555,7 @@ function invoice_body_ft0100() {
 	invoice_dates();
 	invoice_expositor();
 	invoice_footnote();
-	if ($invoice['customerbalance'] < 0 || ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.always_show_form', false))) {
+	if ($invoice['customerbalance'] < 0 || ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.always_show_form', true))) {
 		/* draw FT-0100 form */
 		invoice_simple_form_draw();
 		invoice_main_form_draw();
