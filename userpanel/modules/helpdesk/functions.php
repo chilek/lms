@@ -294,7 +294,7 @@ function module_main()
             }
 		}
 
-		header('Location: ?m=helpdesk');
+		header('Location: ?m=helpdesk&op=view&id=' . $id);
 		die;
 	}
 	else
@@ -498,6 +498,26 @@ function module_main()
 	$SMARTY->assign('queues', $queues);
 	$SMARTY->assign('helpdesklist', $helpdesklist);
 	$SMARTY->display('module:helpdesk.html');
+}
+
+function module_attachment() {
+	global $DB;
+	$attach = $DB->GetRow('SELECT ticketid, filename, contenttype FROM rtattachments a
+		JOIN rtmessages m ON m.id = a.messageid
+		WHERE a.messageid = ? AND filename = ?',
+		array($_GET['msgid'], $_GET['file']));
+	if (empty($attach))
+		die;
+	$file = ConfigHelper::getConfig('rt.mail_dir') . sprintf("/%06d/%06d/%s", $attach['ticketid'], $_GET['msgid'], $_GET['file']);
+	if (file_exists($file)) {
+		$size = @filesize($file);
+		header('Content-Length: ' . $size . ' bytes');
+		header('Content-Type: '. $attach['contenttype']);
+		header('Cache-Control: private');
+		header('Content-Disposition: attachment; filename=' . $attach['filename']);
+		@readfile($file);
+	}
+	die;
 }
 
 ?>

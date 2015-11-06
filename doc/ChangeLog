@@ -19,6 +19,7 @@ version ?.??.?? (????-??-??):
   - invoices.customer_credentials and invoices.customer_balance_in_form configuration
     settings were introduced [chilan]
   - userpanel helpdesk module: ticket/message attachment support added [chilan]
+  - userpanel helpdesk module: allow customer to download message attachments [chilan]
 
 version 1.11.18 (2015-10-01):
 
