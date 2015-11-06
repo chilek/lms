@@ -61,11 +61,12 @@ if ($id && !isset($_POST['ticket'])) {
 					$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
 							address, zip, city,
 								(SELECT ' . $DB->GroupConcat('contact', ',', true) . ' FROM customercontacts 
-								WHERE customerid = customers.id AND type = ?) AS emails,
+								WHERE customerid = customers.id AND (type & ? = ? OR type & ? = ?)) AS emails,
 								(SELECT ' . $DB->GroupConcat('contact', ',', true) . ' FROM customercontacts 
-								WHERE customerid = customers.id AND type < ?) AS phones
+								WHERE customerid = customers.id AND (type & ? = ? OR type & ? = ? OR type & ? = ?)) AS phones
 							FROM customers
-							WHERE id = ?', array(CONTACT_EMAIL, CONTACT_EMAIL, $ticket['customerid']));
+							WHERE id = ?', array(CONTACT_EMAIL, CONTACT_EMAIL, CONTACT_EMAIL_INVOICE, CONTACT_EMAIL_INVOICE,
+                                                            CONTACT_MOBILE, CONTACT_MOBILE, CONTACT_FAX, CONTACT_FAX, CONTACT_LANDLINE, CONTACT_LANDLINE, $ticket['customerid']));
 					$custmail_subject = $queue['resolveticketsubject'];
 					$custmail_subject = str_replace('%tid', $id, $custmail_subject);
 					$custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
@@ -227,7 +228,7 @@ if(isset($_POST['ticket']))
 				if (!empty($info['contacts']))
 					foreach ($info['contacts'] as $contact) {
 						$contact = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
-						if ($contact['type'] == CONTACT_EMAIL)
+						if ($contact['type'] & CONTACT_EMAIL || $contact['type'] & CONTACT_EMAIL_INVOICE)
 							$emails[] = $contact;
 						else
 							$phones[] = $contact;

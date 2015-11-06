@@ -86,13 +86,15 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	if ($type == MSG_SMS)
 		$smstable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('contact') . ' AS phone, customerid
 				FROM customercontacts
-				WHERE (type & ' . CONTACT_MOBILE . ') = ' . CONTACT_MOBILE . '
+				WHERE ((type & ' . CONTACT_MOBILE . ') = ' . CONTACT_MOBILE . ' AND (type & ' . CONTACT_DISABLED . ') <> ' . CONTACT_DISABLED . ')
 				GROUP BY customerid
 			) x ON (x.customerid = c.id) ';
 	else
 		$mailtable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('contact') . ' AS email, customerid
 				FROM customercontacts
-				WHERE type = ' . CONTACT_EMAIL . '
+				WHERE (((type & ' . CONTACT_EMAIL . ') = ' . CONTACT_EMAIL . ' 
+                                OR (type & ' . CONTACT_EMAIL_INVOICE . ') = ' . CONTACT_EMAIL_INVOICE . ')
+                                AND (type & ' . CONTACT_DISABLED . ') <> ' . CONTACT_DISABLED . ')
 				GROUP BY customerid
 			) cc ON (cc.customerid = c.id) ';
 
@@ -499,12 +501,14 @@ if(isset($_POST['message']))
 			WHERE id = ?', array($message['customerid']));
 
 		$message['phones'] = $DB->GetAll('SELECT contact, name FROM customercontacts
-			WHERE customerid = ? AND type = ?', array($message['customerid'], CONTACT_MOBILE));
+			WHERE customerid = ? AND (type & ? = ? AND type & ? <> ?)', 
+                        array($message['customerid'], CONTACT_MOBILE, CONTACT_MOBILE, CONTACT_DISABLED, CONTACT_DISABLED));
 		if (is_null($message['phones']))
 			$message['phones'] = array();
 
 		$message['emails'] = $DB->GetAll('SELECT contact, name FROM customercontacts
-			WHERE customerid = ? AND type = ?', array($message['customerid'], CONTACT_EMAIL));
+			WHERE customerid = ? AND ((type & ? = ? OR type & ? = ?) AND type & ? <> ?)', 
+                        array($message['customerid'], CONTACT_EMAIL, CONTACT_EMAIL, CONTACT_EMAIL_INVOICE, CONTACT_EMAIL_INVOICE, CONTACT_DISABLED, CONTACT_DISABLED));
 		if (is_null($message['emails']))
 			$message['emails'] = array();
 	}
@@ -520,7 +524,8 @@ else if (!empty($_GET['customerid']))
 		WHERE id = ?', array($_GET['customerid']));
 
 	$message['phones'] = $DB->GetAll('SELECT contact, name FROM customercontacts
-		WHERE customerid = ? AND type = ?', array($_GET['customerid'], CONTACT_MOBILE));
+		WHERE customerid = ? AND (type & ? = ? AND type & ? <> ?)', 
+                array($_GET['customerid'], CONTACT_MOBILE, CONTACT_MOBILE, CONTACT_DISABLED, CONTACT_DISABLED));
 	if (is_null($message['phones']))
 		$message['phones'] = array();
 	$message['customerphones'] = array();
@@ -528,7 +533,8 @@ else if (!empty($_GET['customerid']))
 		$message['customerphones'][$idx] = $phone['contact'];
 
 	$message['emails'] = $DB->GetAll('SELECT contact, name FROM customercontacts
-		WHERE customerid = ? AND type = ?', array($_GET['customerid'], CONTACT_EMAIL));
+		WHERE customerid = ? AND ((type & ? = ? OR type & ? = ?) AND type & ? <> ?)', 
+                array($_GET['customerid'], CONTACT_EMAIL, CONTACT_EMAIL, CONTACT_EMAIL_INVOICE, CONTACT_EMAIL_INVOICE,CONTACT_DISABLED, CONTACT_DISABLED));
 	if (is_null($message['emails']))
 		$message['emails'] = array();
 	$message['customermails'] = array();

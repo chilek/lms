@@ -55,7 +55,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function getCustomerEmail($id)
     {
         return $this->db->GetCol('SELECT contact FROM customercontacts
-               WHERE customerid = ? AND type = ?', array($id, CONTACT_EMAIL));
+               WHERE customerid = ? AND (type & ? = ? OR type & ? = ?)', array($id, CONTACT_EMAIL, CONTACT_EMAIL, CONTACT_EMAIL_INVOICE, CONTACT_EMAIL_INVOICE));
     }
     
     /**
@@ -450,12 +450,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     switch ($key) {
 			case 'phone':
 				$searchargs[] = 'EXISTS (SELECT 1 FROM customercontacts
-					WHERE customerid = c.id AND customercontacts.type < ' . CONTACT_EMAIL
-					. ' AND REPLACE(contact, \'-\', \'\') ?LIKE? ' . $this->db->Escape("%$value%") . ')';
+					WHERE customerid = c.id AND (customercontacts.type & ' . CONTACT_MOBILE .' = '. CONTACT_MOBILE.
+                                        ' OR customercontacts.type & ' . CONTACT_FAX .' = '. CONTACT_FAX.
+                                        ' OR customercontacts.type & ' . CONTACT_LANDLINE .' = '. CONTACT_LANDLINE
+					. ') AND REPLACE(contact, \'-\', \'\') ?LIKE? ' . $this->db->Escape("%$value%") . ')';
 				break;
 			case 'email':
 				$searchargs[] = 'EXISTS (SELECT 1 FROM customercontacts
-					WHERE customerid = c.id AND customercontacts.type = ' . CONTACT_EMAIL
+					WHERE customerid = c.id AND customercontacts.type & ' . CONTACT_EMAIL .' = '. CONTACT_EMAIL.
+                                        ' OR customercontacts.type & ' . CONTACT_EMAIL_INVOICE .' = '. CONTACT_EMAIL_INVOICE
 					. ' AND contact ?LIKE? ' . $this->db->Escape("%$value%") . ')';
 				break;
                         case 'zip':
@@ -560,7 +563,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 					WHEN s.warnsum > 0 THEN 2 ELSE 0 END) AS nodewarn
 				FROM customersview c
 				LEFT JOIN (SELECT customerid, (' . $this->db->GroupConcat('contact') . ') AS email
-					FROM customercontacts WHERE type = ' . CONTACT_EMAIL . ' GROUP BY customerid) cc ON cc.customerid = c.id
+					FROM customercontacts WHERE (type & ' . CONTACT_EMAIL .' = '. CONTACT_EMAIL .
+                                        ' OR type & ' . CONTACT_EMAIL_INVOICE .' = '. CONTACT_EMAIL_INVOICE .
+                                        ') GROUP BY customerid) cc ON cc.customerid = c.id
 				LEFT JOIN countries ON (c.countryid = countries.id) '
                 . ($customergroup ? 'LEFT JOIN customerassignments ON (c.id = customerassignments.customerid) ' : '')
                 . 'LEFT JOIN (SELECT
