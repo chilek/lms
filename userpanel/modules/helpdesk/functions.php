@@ -501,11 +501,12 @@ function module_main()
 }
 
 function module_attachment() {
-	global $DB;
+	global $DB, $SESSION;
 	$attach = $DB->GetRow('SELECT ticketid, filename, contenttype FROM rtattachments a
 		JOIN rtmessages m ON m.id = a.messageid
-		WHERE a.messageid = ? AND filename = ?',
-		array($_GET['msgid'], $_GET['file']));
+		JOIN rttickets t ON t.id = m.ticketid
+		WHERE t.customerid = ? AND a.messageid = ? AND filename = ?',
+		array($SESSION->id, $_GET['msgid'], $_GET['file']));
 	if (empty($attach))
 		die;
 	$file = ConfigHelper::getConfig('rt.mail_dir') . sprintf("/%06d/%06d/%s", $attach['ticketid'], $_GET['msgid'], $_GET['file']);
