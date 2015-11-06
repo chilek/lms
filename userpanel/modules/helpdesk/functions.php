@@ -221,7 +221,7 @@ function module_main()
 			if (!empty($info['contacts']))
 				foreach ($info['contacts'] as $contact) {
 					$contact = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
-					if ($contact['type'] == CONTACT_EMAIL)
+					if ($contact['type'] & CONTACT_EMAIL || $contact['type'] & CONTACT_EMAIL_INVOICE)
 						$emails[] = $contact;
 					else
 						$phones[] = $contact;
@@ -391,10 +391,12 @@ function module_main()
 			$info = $DB->GetRow('SELECT c.id AS customerid, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,
 				cc.contact AS email, address, zip, city,
 				(SELECT contact AS phone FROM customercontacts
-					WHERE customerid = customers.id AND customercontacts.type < ? ORDER BY id LIMIT 1) AS phone
+					WHERE customerid = customers.id AND (customercontacts.type & ? = ? OR customercontacts.type & ? = ? 
+                                        OR customercontacts.type & ? = ?) ORDER BY id LIMIT 1) AS phone
 				FROM customers c
-				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = ?
-				WHERE c.id = ?', array(CONTACT_EMAIL, CONTACT_EMAIL, $SESSION->id));
+				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ? = ? OR cc.type & ? = ?)
+				WHERE c.id = ?', array(CONTACT_MOBILE, CONTACT_MOBILE, CONTACT_FAX, CONTACT_FAX, CONTACT_LANDLINE, CONTACT_LANDLINE, 
+                                        CONTACT_EMAIL, CONTACT_EMAIL, CONTACT_EMAIL_INVOICE, CONTACT_EMAIL_INVOICE, $SESSION->id));
 
 			$body .= "\n\n-- \n";
 			$body .= trans('Customer:').' '.$info['customername']."\n";
