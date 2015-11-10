@@ -119,13 +119,11 @@ elseif (isset($_POST['customerdata']))
 		$email = trim($val['email']);
 		$name = trim($val['name']);
                 $type = !empty($val['type']) ? array_sum($val['type']) : NULL;
+                $type += CONTACT_EMAIL;
 
-                if($type & CONTACT_EMAIL_INVOICE && !($type & CONTACT_DISABLED))
+                if($type & CONTACT_INVOICES && !($type & CONTACT_DISABLED))
                         $emaileinvoice = TRUE;
 
-                if($type == CONTACT_DISABLED){
-                    $type += CONTACT_EMAIL;
-                }
 
                 $customerdata['emails'][$idx]['type'] = $type;
 
@@ -134,7 +132,7 @@ elseif (isset($_POST['customerdata']))
 		elseif ($name && !$email)
 			$error['email' . $idx] = trans('Email address is required!');
 		elseif ($email)
-			$contacts[] = array('name' => $name, 'contact' => $email, 'type' => empty($type) ? CONTACT_EMAIL : $type);
+			$contacts[] = array('name' => $name, 'contact' => $email, 'type' => $type);
 	}
 
         if(isset($customerdata['invoicenotice']) && !$emaileinvoice)
