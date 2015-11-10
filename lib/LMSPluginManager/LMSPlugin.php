@@ -67,6 +67,17 @@ abstract class LMSPlugin implements ObserverInterface {
 	}
 
 	/**
+	 * Inserts plugin templates dir at beginning of smarty template dir list
+	 */
+	static public function insertDefaultTemplateDir(Smarty $smarty) {
+		$template_dirs = $smarty->getTemplateDir();
+		$reflector = new ReflectionClass(get_called_class());
+		$plugin_templates = dirname($reflector->getFileName()) . DIRECTORY_SEPARATOR . 'templates';
+		array_unshift($template_dirs, $plugin_templates);
+		$smarty->setTemplateDir($template_dirs);
+	}
+
+	/**
 	 * Loads plugin database schema updates
 	 */
 	protected function upgradeDb() {
