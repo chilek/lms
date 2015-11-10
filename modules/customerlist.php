@@ -67,7 +67,14 @@ $SESSION->save('cld', $d);
 if (! isset($_GET['page']))
 	$SESSION->restore('clp', $_GET['page']);
 	    
-$customerlist = $LMS->GetCustomerList($o, $s, $n, $g, NULL, NULL, 'AND', $ng, $d);
+$page = !$_GET['page'] ? 1 : intval($_GET['page']);
+$per_page = intval(ConfigHelper::getConfig('phpui.customerlist_pagelimit', 100));
+$offset = ($page - 1) * $per_page;
+$total = intval($LMS->GetCustomerList($o, $s, $n, $g, NULL, NULL, 'AND', $ng, $d, null, null, true));
+
+$customerlist = $LMS->GetCustomerList($o, $s, $n, $g, NULL, NULL, 'AND', $ng, $d, $per_page, $offset);
+
+$pagination = new LMSPagination($page, $total, $per_page);
 
 $listdata['total'] = $customerlist['total'];
 $listdata['order'] = $customerlist['order'];
@@ -79,10 +86,6 @@ $listdata['nodegroup'] = $ng;
 $listdata['customergroup'] = $g;
 $listdata['division'] = $d;
 $listdata['state'] = $s;
-
-$page = (! $_GET['page'] ? 1 : $_GET['page']); 
-$pagelimit = ConfigHelper::getConfig('phpui.customerlist_pagelimit', $listdata['total']);
-$start = ($page - 1) * $pagelimit;
 
 $SESSION->save('clp', $page);
 
@@ -99,10 +102,6 @@ $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
-$SMARTY->assign('pagelimit',$pagelimit);
-$SMARTY->assign('page',$page);
-$SMARTY->assign('start',$start);
+$SMARTY->assign('pagination', $pagination);
 
 $SMARTY->display('customer/customerlist.html');
-
-?>

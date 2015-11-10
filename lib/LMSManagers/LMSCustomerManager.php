@@ -376,9 +376,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      * @param string $sqlskey Logical conjunction
      * @param int $nodegroup Node group
      * @param int $division Division id
+     * @param int $limit Limit
+     * @param int $offset Offset
+     * @param boolean $count Count flag
      * @return array Customer list
      */
-    public function getCustomerList($order = 'customername,asc', $state = null, $network = null, $customergroup = null, $search = null, $time = null, $sqlskey = 'AND', $nodegroup = null, $division = null) {
+    public function getCustomerList($order = 'customername,asc', $state = null, $network = null, $customergroup = null, $search = null, $time = null, $sqlskey = 'AND', $nodegroup = null, $division = null, $limit = null, $offset = null, $count = false)
+    {
         list($order, $direction) = sscanf($order, '%[^,],%s');
 
         ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
@@ -549,135 +553,148 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         $suspension_percentage = f_round(ConfigHelper::getConfig('finances.suspension_percentage'));
 
-        if ($customerlist = $this->db->GetAll(
-                'SELECT c.id AS id, ' . $this->db->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername, 
-				status, address, zip, city, countryid, countries.name AS country, cc.email, ten, ssn, c.info AS info, 
-				message, c.divisionid, c.paytime AS paytime, COALESCE(b.value, 0) AS balance,
-				COALESCE(t.value, 0) AS tariffvalue, s.account, s.warncount, s.online,
-				(CASE WHEN s.account = s.acsum THEN 1
-					WHEN s.acsum > 0 THEN 2	ELSE 0 END) AS nodeac,
-				(CASE WHEN s.warncount = s.warnsum THEN 1
-					WHEN s.warnsum > 0 THEN 2 ELSE 0 END) AS nodewarn
-				FROM customersview c
-				LEFT JOIN (SELECT customerid, (' . $this->db->GroupConcat('contact') . ') AS email
-					FROM customercontacts WHERE type = ' . CONTACT_EMAIL . ' GROUP BY customerid) cc ON cc.customerid = c.id
-				LEFT JOIN countries ON (c.countryid = countries.id) '
-                . ($customergroup ? 'LEFT JOIN customerassignments ON (c.id = customerassignments.customerid) ' : '')
-                . 'LEFT JOIN (SELECT
-					SUM(value) AS value, customerid
-					FROM cash'
+        $sql = '';
+        
+        if ($count) {
+            $sql .= 'SELECT COUNT(*) ';
+        } else {
+            $sql .= 'SELECT c.id AS id, ' . $this->db->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername, 
+                status, address, zip, city, countryid, countries.name AS country, cc.email, ten, ssn, c.info AS info, 
+                message, c.divisionid, c.paytime AS paytime, COALESCE(b.value, 0) AS balance,
+                COALESCE(t.value, 0) AS tariffvalue, s.account, s.warncount, s.online,
+                (CASE WHEN s.account = s.acsum THEN 1
+                    WHEN s.acsum > 0 THEN 2 ELSE 0 END) AS nodeac,
+                (CASE WHEN s.warncount = s.warnsum THEN 1
+                    WHEN s.warnsum > 0 THEN 2 ELSE 0 END) AS nodewarn ';
+        }
+        
+        $sql .= 'FROM customersview c
+            LEFT JOIN (SELECT customerid, (' . $this->db->GroupConcat('contact') . ') AS email
+            FROM customercontacts WHERE type = ' . CONTACT_EMAIL . ' GROUP BY customerid) cc ON cc.customerid = c.id
+            LEFT JOIN countries ON (c.countryid = countries.id) '
+            . ($customergroup ? 'LEFT JOIN customerassignments ON (c.id = customerassignments.customerid) ' : '')
+            . 'LEFT JOIN (SELECT SUM(value) AS value, customerid FROM cash'
                 . ($time ? ' WHERE time < ' . $time : '') . '
-					GROUP BY customerid
-				) b ON (b.customerid = c.id)
-				LEFT JOIN (SELECT a.customerid,
-					SUM((CASE a.suspended
-						WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
-						ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount) * ' . $suspension_percentage . ' / 100) END)
-					* (CASE t.period
-						WHEN ' . MONTHLY . ' THEN 1
-						WHEN ' . YEARLY . ' THEN 1/12.0
-						WHEN ' . HALFYEARLY . ' THEN 1/6.0
-						WHEN ' . QUARTERLY . ' THEN 1/3.0
-						ELSE (CASE a.period
-						    WHEN ' . MONTHLY . ' THEN 1
-						    WHEN ' . YEARLY . ' THEN 1/12.0
-						    WHEN ' . HALFYEARLY . ' THEN 1/6.0
-						    WHEN ' . QUARTERLY . ' THEN 1/3.0
-						    ELSE 0 END)
-						END)
-					) AS value 
-					FROM assignments a
-					LEFT JOIN tariffs t ON (t.id = a.tariffid)
-					LEFT JOIN liabilities l ON (l.id = a.liabilityid AND a.period != ' . DISPOSABLE . ')
-					WHERE (a.datefrom <= ?NOW? OR a.datefrom = 0) AND (a.dateto > ?NOW? OR a.dateto = 0) 
-					GROUP BY a.customerid
-				) t ON (t.customerid = c.id)
-				LEFT JOIN (SELECT ownerid,
-					SUM(access) AS acsum, COUNT(access) AS account,
-					SUM(warning) AS warnsum, COUNT(warning) AS warncount, 
-					(CASE WHEN MAX(lastonline) > ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) . '
-						THEN 1 ELSE 0 END) AS online
-					FROM nodes
-					WHERE ownerid > 0
-					GROUP BY ownerid
-				) s ON (s.ownerid = c.id) '
-				. ($contracts == 1 ? '
-					LEFT JOIN (
-						SELECT COUNT(*), d.customerid FROM documents d
-						JOIN documentcontents dc ON dc.docid = d.id
-						WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
-						GROUP BY d.customerid
-					) d ON d.customerid = c.id' : '')
-				. ($contracts == 2 ? '
-					JOIN (
-						SELECT SUM(CASE WHEN dc.todate < ?NOW? THEN 1 ELSE 0 END),
-							SUM(CASE WHEN dc.todate > ?NOW? THEN 1 ELSE 0 END),
-							d.customerid FROM documents d
-						JOIN documentcontents dc ON dc.docid = d.id
-						WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
-						GROUP BY d.customerid
-						HAVING SUM(CASE WHEN dc.todate < ?NOW? THEN 1 ELSE 0 END) > 0
-							AND SUM(CASE WHEN dc.todate >= ?NOW? THEN 1 ELSE 0 END) = 0
-					) d ON d.customerid = c.id' : '')
-				. ($contracts == 3 ? '
-					JOIN (
-						SELECT DISTINCT d.customerid FROM documents d
-						JOIN documentcontents dc ON dc.docid = d.id
-						WHERE dc.todate >= ?NOW? AND dc.todate <= ?NOW? + 86400 * ' . $contracts_days . '
-							AND type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
-					) d ON d.customerid = c.id' : '')
-				. ' WHERE c.deleted = ' . intval($deleted)
+                GROUP BY customerid
+            ) b ON (b.customerid = c.id)
+            LEFT JOIN (SELECT a.customerid,
+                SUM((CASE a.suspended
+                WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
+                ELSE ((((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount) * ' . $suspension_percentage . ' / 100) END)
+                * (CASE t.period
+                WHEN ' . MONTHLY . ' THEN 1
+                WHEN ' . YEARLY . ' THEN 1/12.0
+                WHEN ' . HALFYEARLY . ' THEN 1/6.0
+                WHEN ' . QUARTERLY . ' THEN 1/3.0
+                ELSE (CASE a.period
+                    WHEN ' . MONTHLY . ' THEN 1
+                    WHEN ' . YEARLY . ' THEN 1/12.0
+                    WHEN ' . HALFYEARLY . ' THEN 1/6.0
+                    WHEN ' . QUARTERLY . ' THEN 1/3.0
+                    ELSE 0 END)
+                END)
+                ) AS value 
+                    FROM assignments a
+                    LEFT JOIN tariffs t ON (t.id = a.tariffid)
+                    LEFT JOIN liabilities l ON (l.id = a.liabilityid AND a.period != ' . DISPOSABLE . ')
+                    WHERE (a.datefrom <= ?NOW? OR a.datefrom = 0) AND (a.dateto > ?NOW? OR a.dateto = 0) 
+                    GROUP BY a.customerid
+                ) t ON (t.customerid = c.id)
+                LEFT JOIN (SELECT ownerid,
+                    SUM(access) AS acsum, COUNT(access) AS account,
+                    SUM(warning) AS warnsum, COUNT(warning) AS warncount, 
+                    (CASE WHEN MAX(lastonline) > ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) . '
+                        THEN 1 ELSE 0 END) AS online
+                    FROM nodes
+                    WHERE ownerid > 0
+                    GROUP BY ownerid
+                ) s ON (s.ownerid = c.id) '
+                . ($contracts == 1 ? '
+                    LEFT JOIN (
+                        SELECT COUNT(*), d.customerid FROM documents d
+                        JOIN documentcontents dc ON dc.docid = d.id
+                                WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
+                                GROUP BY d.customerid
+                        ) d ON d.customerid = c.id' : '')
+                    . ($contracts == 2 ? '
+                        JOIN (
+                            SELECT SUM(CASE WHEN dc.todate < ?NOW? THEN 1 ELSE 0 END),
+                                SUM(CASE WHEN dc.todate > ?NOW? THEN 1 ELSE 0 END),
+                                d.customerid FROM documents d
+                            JOIN documentcontents dc ON dc.docid = d.id
+                            WHERE d.type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
+                            GROUP BY d.customerid
+                            HAVING SUM(CASE WHEN dc.todate < ?NOW? THEN 1 ELSE 0 END) > 0
+                                AND SUM(CASE WHEN dc.todate >= ?NOW? THEN 1 ELSE 0 END) = 0
+                        ) d ON d.customerid = c.id' : '')
+                . ($contracts == 3 ? '
+                    JOIN (
+                        SELECT DISTINCT d.customerid FROM documents d
+                        JOIN documentcontents dc ON dc.docid = d.id
+                        WHERE dc.todate >= ?NOW? AND dc.todate <= ?NOW? + 86400 * ' . $contracts_days . '
+                            AND type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
+                    ) d ON d.customerid = c.id' : '')
+                . ' WHERE c.deleted = ' . intval($deleted)
                 . ($state <= 3 && $state > 0 ? ' AND c.status = ' . intval($state) : '')
                 . ($division ? ' AND c.divisionid = ' . intval($division) : '')
                 . ($online ? ' AND s.online = 1' : '')
                 . ($indebted ? ' AND b.value < 0' : '')
                 . ($indebted2 ? ' AND b.value < -t.value' : '')
                 . ($indebted3 ? ' AND b.value < -t.value * 2' : '')
-				. ($contracts == 1 ? ' AND d.customerid IS NULL' : '')
+                . ($contracts == 1 ? ' AND d.customerid IS NULL' : '')
                 . ($disabled ? ' AND s.ownerid IS NOT null AND s.account > s.acsum' : '')
                 . ($network ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id 
-					AND (netid = ' . $network . '
-					OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')))' : '')
+                AND (netid = ' . $network . '
+                OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')))' : '')
                 . ($customergroup ? ' AND customergroupid=' . intval($customergroup) : '')
                 . ($nodegroup ? ' AND EXISTS (SELECT 1 FROM nodegroupassignments na
-							JOIN nodes n ON (n.id = na.nodeid) 
-							WHERE n.ownerid = c.id AND na.nodegroupid = ' . intval($nodegroup) . ')' : '')
+                    JOIN nodes n ON (n.id = na.nodeid) 
+                    WHERE n.ownerid = c.id AND na.nodegroupid = ' . intval($nodegroup) . ')' : '')
                 . ($groupless ? ' AND NOT EXISTS (SELECT 1 FROM customerassignments a 
-							WHERE c.id = a.customerid)' : '')
+                    WHERE c.id = a.customerid)' : '')
                 . ($tariffless ? ' AND NOT EXISTS (SELECT 1 FROM assignments a 
-							WHERE a.customerid = c.id
-								AND (datefrom <= ?NOW? OR datefrom = 0) 
-								AND (dateto >= ?NOW? OR dateto = 0)
-								AND (tariffid != 0 OR liabilityid != 0))' : '')
+                    WHERE a.customerid = c.id
+                        AND (datefrom <= ?NOW? OR datefrom = 0) 
+                        AND (dateto >= ?NOW? OR dateto = 0)
+                        AND (tariffid != 0 OR liabilityid != 0))' : '')
                 . ($suspended ? ' AND EXISTS (SELECT 1 FROM assignments a
-							WHERE a.customerid = c.id AND (
-								(tariffid = 0 AND liabilityid = 0
-								    AND (datefrom <= ?NOW? OR datefrom = 0)
-								    AND (dateto >= ?NOW? OR dateto = 0)) 
-								OR ((datefrom <= ?NOW? OR datefrom = 0)
-								    AND (dateto >= ?NOW? OR dateto = 0)
-								    AND suspended = 1)
-								))' : '')
+                    WHERE a.customerid = c.id AND (
+                        (tariffid = 0 AND liabilityid = 0
+                            AND (datefrom <= ?NOW? OR datefrom = 0)
+                            AND (dateto >= ?NOW? OR dateto = 0)) 
+                        OR ((datefrom <= ?NOW? OR datefrom = 0)
+                            AND (dateto >= ?NOW? OR dateto = 0)
+                            AND suspended = 1)
+                        ))' : '')
                 . (isset($sqlsarg) ? ' AND (' . $sqlsarg . ')' : '')
-                . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
-                )) {
-            foreach ($customerlist as $idx => $row) {
-                // summary
-                if ($row['balance'] > 0)
-                    $over += $row['balance'];
-                elseif ($row['balance'] < 0)
-                    $below += $row['balance'];
+                . ($sqlord != ''  && !$count ? $sqlord . ' ' . $direction : '')
+                . ($limit !== null && !$count ? ' LIMIT ' . $limit : '')
+                . ($offset !== null && !$count ? ' OFFSET ' . $offset : '');
+        
+        if (!$count) {
+            $customerlist = $this->db->GetAll($sql);
+
+            if (!empty($customerlist)) {
+                foreach ($customerlist as $idx => $row) {
+                    // summary
+                    if ($row['balance'] > 0)
+                        $over += $row['balance'];
+                    elseif ($row['balance'] < 0)
+                        $below += $row['balance'];
+                }
             }
+
+            $customerlist['total'] = sizeof($customerlist);
+            $customerlist['state'] = $state;
+            $customerlist['order'] = $order;
+            $customerlist['direction'] = $direction;
+            $customerlist['below'] = $below;
+            $customerlist['over'] = $over;
+
+            return $customerlist;
+        } else {
+            return $this->db->getOne($sql);
         }
-
-        $customerlist['total'] = sizeof($customerlist);
-        $customerlist['state'] = $state;
-        $customerlist['order'] = $order;
-        $customerlist['direction'] = $direction;
-        $customerlist['below'] = $below;
-        $customerlist['over'] = $over;
-
-        return $customerlist;
     }
 
     /**
