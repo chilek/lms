@@ -28,6 +28,7 @@
  * LMSPagination
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
+ * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 class LMSPagination
 {
@@ -96,6 +97,29 @@ class LMSPagination
     public function getPages()
     {
         return $this->pages;
+    }
+
+    /**
+     * Returns first record number on current page
+     * 
+     * @return int first record number
+     */
+    public function getFirstOnPage()
+    {
+        return ($this->page - 1) * $this->per_page + 1;
+    }
+
+    /**
+     * Returns last record number on current page
+     * 
+     * @return int last record number
+     */
+    public function getLastOnPage()
+    {
+        $recordnr = $this->page * $this->per_page - 1;
+        if ($recordnr > $this->total)
+            $recordnr = $this->total;
+        return $recordnr;
     }
 
     /**
