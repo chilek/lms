@@ -33,7 +33,7 @@
 {/if}
 </span>
     ({t a=$pagination->getFirstOnPage() b=$pagination->getLastOnPage() c=$pagination->getTotal()}records $a - $b of $c{/t})
-{if $pagination->getPages() > 9}
+{if $short_pagination && $pagination->getPages() > 9}
     {counter name=scroller print=false assign=scrollerno}
     <script type="text/javascript">
     <!--
