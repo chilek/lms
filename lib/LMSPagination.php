@@ -116,7 +116,7 @@ class LMSPagination
      */
     public function getLastOnPage()
     {
-        $recordnr = $this->page * $this->per_page - 1;
+        $recordnr = $this->page * $this->per_page;
         if ($recordnr > $this->total)
             $recordnr = $this->total;
         return $recordnr;
