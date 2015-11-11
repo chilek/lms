@@ -20,6 +20,8 @@ version ?.??.?? (????-??-??):
     settings were introduced [chilan]
   - userpanel helpdesk module: ticket/message attachment support added [chilan]
   - userpanel helpdesk module: allow customer to download message attachments [chilan]
+  - new pagination engine [maciejlew]
+  - added limit and offset support for customer list [maciejlew]
 
 version 1.11.18 (2015-10-01):
 
