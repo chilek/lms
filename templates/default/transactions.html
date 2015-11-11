@@ -37,7 +37,7 @@
 				{foreach $transactions as $tr}
 				<TR class="{cycle name=trans}">
 					<TD style="width: 1%;" class="valign-bottom nobr">
-						{$tr.time|date_format:"Y.m.d H.i.s"}
+						{$tr.time|date_format:"Y.m.d H:i:s"}
 					</TD>
 					<TD style="width: 1%;" class="text-center valign-bottom nobr">
 						<a href="?m=userinfo&amp;id={$tr.userid}">{$tr.login}</a>
