@@ -35,7 +35,7 @@
 		{/if}
 		</td>
 		<td scope="col" class="text-right nobr">
-			{trans('Total')}: {$pagination->getTotal()}
+                        {t a=$pagination->getTotal()}Total: $a{/t}
 		</td>
 	</TR>
         {/block}
@@ -132,7 +132,7 @@
 			{/if}
 		</TD>
 		<TD class="bold">
-			{trans('Total')}: {$pagination->getTotal()}
+			{t a=$pagination->getTotal()}Total: $a{/t}
 		</TD>
 	</TR>
         {/block}
