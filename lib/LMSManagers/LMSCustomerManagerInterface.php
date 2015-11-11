@@ -57,7 +57,7 @@ interface LMSCustomerManagerInterface
 
     public function customerAdd($customeradd);
 
-    public function getCustomerList($order = 'customername,asc', $state = null, $network = null, $customergroup = null, $search = null, $time = null, $sqlskey = 'AND', $nodegroup = null, $division = null);
+    public function getCustomerList($order = 'customername,asc', $state = null, $network = null, $customergroup = null, $search = null, $time = null, $sqlskey = 'AND', $nodegroup = null, $division = null, $limit = null, $offset = null, $count = false);
 
     public function getCustomerNodes($id, $count = null);
 
