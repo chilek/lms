@@ -55,7 +55,7 @@
 		newcell.style.whiteSpace = 'nowrap';
 		newcell.innerHTML = '<HR><INPUT TYPE="text" size="23" value="" name="customeradd[emails][' + nr + '][email]"'  
 				+ ' onmouseover="popup(\'{trans("Enter e-mail address (optional)")}\')" onmouseout="pophide()">'
-                       + '<INPUT type="checkbox" value="{$smarty.const.CONTACT_EMAIL_INVOICE}" ID="chkeinvoice' + nr + '"'
+                       + '<INPUT type="checkbox" value="{$smarty.const.CONTACT_INVOICES}" ID="chkeinvoice' + nr + '"'
 				+ ' name="customeradd[emails][' + nr + '][type][]"><label for="chkmobile' + nr + '"'
                                + ' onmouseover="popup(\'{trans("Check if sent electronic invoices on this email")}\')"'
                                + ' onmouseout="pophide()">{trans("Invoice")}</label>'
@@ -302,7 +302,7 @@
 								<TR id="email{$key}">
 									<TD>
 										<INPUT type="text" size="23" value="{$item.email}" name="customeradd[emails][{$key}][email]" {tip text="Enter e-mail address (optional)" trigger="email`$key`"}>
-                                                                                <INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_EMAIL_INVOICE}" name="customeradd[emails][{$key}][type][]" ID="chkeinvoice{$key}" {if ($email.type & $smarty.const.CONTACT_EMAIL_INVOICE)} checked{/if}><label {tip text="Check if sent electronic invoices on this email"} for="chkeinvoice{$key}">{trans("Invoice")}</label>
+                                                                                <INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_INVOICES}" name="customeradd[emails][{$key}][type][]" ID="chkeinvoice{$key}" {if ($email.type & $smarty.const.CONTACT_INVOICES)} checked{/if}><label {tip text="Check if sent electronic invoices on this email"} for="chkeinvoice{$key}">{trans("Invoice")}</label>
                                                                                 <INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_NOTIFICATIONS}" name="customeradd[emails][{$key}][type][]" ID="chknotification{$key}" {if ($email.type & $smarty.const.CONTACT_NOTIFICATIONS)} checked{/if}><label {tip text="Check if send notification" trigger="chknotification" } for="chknotification{$key}">{trans("Notification")}</label>
                                                                                 <INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customeradd[emails][{$key}][type][]" ID="chkedisable{$key}" {if ($email.type & $smarty.const.CONTACT_DISABLED)} checked{/if}><label {tip text="Not visible by the customer in electronic Customer Service Representative" trigger="edisabled" } for="chkedisable{$key}">{trans("disabled")}</label>
 										<BR>

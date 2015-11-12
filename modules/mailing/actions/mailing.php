@@ -48,8 +48,7 @@ function GetEmails($group, $network=NULL, $customergroup=NULL)
 	if($emails = $DB->GetAll('SELECT customers.id AS id, cc.contact AS email, '.$DB->Concat('lastname', "' '", 'customers.name').' AS customername, pin, '
 		.'COALESCE(SUM(value), 0.00) AS balance '
 		.'FROM customers
-		LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (((cc.type & '.CONTACT_EMAIL.') = ' .CONTACT_EMAIL. ' 
-                OR (cc.type & '.CONTACT_EMAIL_INVOICE.') = ' .CONTACT_EMAIL_INVOICE. ') AND (cc.type & '.CONTACT_DISABLED.') <> ' .CONTACT_DISABLED. ') 
+		LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (((cc.type & '.CONTACT_EMAIL.') = ' .CONTACT_EMAIL. ' AND (cc.type & '.CONTACT_DISABLED.') <> ' .CONTACT_DISABLED. ') 
 		LEFT JOIN cash ON (customers.id=cash.customerid) '
 		.($network ? 'LEFT JOIN nodes ON (customers.id=ownerid) ' : '')
 		.($customergroup ? 'LEFT JOIN customerassignments ON (customers.id=customerassignments.customerid) ' : '')
