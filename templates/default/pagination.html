@@ -24,11 +24,11 @@
         {/if}
     {/if}
 {/section}
-{if $pagination->getPage() <= $pagination->getPages()}
+{if $pagination->getPage() < $pagination->getPages()}
     <a href="?m={$layout.module}&page={math equation="x + 1" x=$pagination->getPage()}">
 {/if}
     {'&raquo;'|str_repeat:3}
-{if $pagination->getPage() <= $pagination->getPages()}
+{if $pagination->getPage() < $pagination->getPages()}
     </a>
 {/if}
 </span>
