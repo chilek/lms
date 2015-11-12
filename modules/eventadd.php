@@ -35,6 +35,8 @@ if(isset($_POST['event']))
 
 	if ($event['title'] == '')
 		$error['title'] = trans('Event title is required!');
+	elseif(strlen($event['title']) > 255)
+		$error['title'] = trans('Event title is too long!');
 
 	if ($event['date'] == '')
 		$error['date'] = trans('You have to specify event day!');
