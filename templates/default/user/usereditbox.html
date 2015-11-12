@@ -156,6 +156,7 @@
 						<input type="checkbox" id="acl_{$access@index}" name="acl[{$name}]" value="1"{if $access.enabled} checked{/if}> <label for="acl_{$access@index}">{$access.name}</label><BR>
 						{/if}
 						{/foreach}
+						{assign var="name" value=""}
 					</td>
 				</tr>
 			</table>
