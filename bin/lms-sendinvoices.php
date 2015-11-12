@@ -240,7 +240,7 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, n.template, m.em
 			. (!empty($invoiceid) ? " AND d.id = " . $invoiceid : " AND d.cdate >= $daystart AND d.cdate <= $dayend")
 			. (!empty($groupnames) ? $customergroups : "")
 		. " ORDER BY d.number";
-$docs = $DB->GetAll($query, array(CONTACT_EMAIL_INVOICE, CONTACT_EMAIL_INVOICE, CONTACT_DISABLED, CONTACT_DISABLED));
+$docs = $DB->GetAll($query, array(CONTACT_INVOICES, CONTACT_INVOICES, CONTACT_DISABLED, CONTACT_DISABLED));
 
 if (!empty($docs)) {
 	foreach ($docs as $doc) {

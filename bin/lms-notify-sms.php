@@ -240,7 +240,7 @@ if ($debtors_message && (empty($types) || in_array('debtors', $types))) {
 		JOIN cash ON (c.id = cash.customerid)
 		JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
-			WHERE (type & 1) = 1
+			WHERE ((type & 1) = 1 AND (type & 64) <> 64)
 			GROUP BY customerid
 		) x ON (x.customerid = c.id)
 		LEFT JOIN documents d ON d.id = cash.docid
@@ -280,7 +280,7 @@ if ($invoices_message && (empty($types) || in_array('invoices', $types))) {
 		JOIN customers c ON (c.id = d.customerid)
 		JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
-			WHERE (type & 1) = 1
+			WHERE ((type & 1) = 1 AND (type & 64) <> 64)
 			GROUP BY customerid
 		) x ON (x.customerid = d.customerid)
 		JOIN (SELECT SUM(value) * -1 AS value, docid
@@ -329,7 +329,7 @@ if ($deadline_message && (empty($types) || in_array('deadline', $types))) {
 		JOIN (
 			SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
-			WHERE (type & 1) = 1
+			WHERE ((type & 1) = 1 AND (type & 64) <> 64)
 			GROUP BY customerid
 		) x ON (x.customerid = d.customerid)
 		JOIN (
@@ -384,7 +384,7 @@ if ($notes_message && (empty($types) || in_array('notes', $types))) {
 		JOIN customers c ON (c.id = d.customerid)
 		JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
-			WHERE (type & 1) = 1
+			WHERE ((type & 1) = 1 AND (type & 64) <> 64)
 			GROUP BY customerid
 		) x ON (x.customerid = d.customerid)
 		JOIN (SELECT SUM(value) * -1 AS value, docid
