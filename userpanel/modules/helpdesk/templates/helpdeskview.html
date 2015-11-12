@@ -32,7 +32,7 @@
 		<td width="1%" nowrap>
 			{if $message.attachments}
 			{foreach $message.attachments as $attachment}
-			{if !$attachment@first}<br>{/if}{$attachment.filename} {img src="attach.gif" alt=""}
+			{if !$attachment@first}<br>{/if}<a href="?m=helpdesk&f=attachment&msgid={$message.id}&file={$attachment.filename}">{$attachment.filename} {img src="attach.gif" alt=""}</a>
 			{/foreach}
 			{/if}
 		</td>

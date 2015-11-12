@@ -7,7 +7,7 @@
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" NAME="m" VALUE="customerlist">
-<INPUT type="hidden" NAME="page" VALUE="1">
+<INPUT type="hidden" NAME="page" id="page" VALUE="1">
 </p>
 <TABLE class="lmsbox">
 	<COLGROUP>
@@ -35,7 +35,7 @@
 		{/if}
 		</td>
 		<td scope="col" class="text-right nobr">
-			{t a=$listdata.total}Total: $a{/t}
+                        {t a=$pagination->getTotal()}Total: $a{/t}
 		</td>
 	</TR>
         {/block}
@@ -95,10 +95,10 @@
 	</TR>
         {/block}
         {block name="customerlist-list-header-pagination"}
-	{if $listdata.total != 0}
+	{if $pagination->getTotal() != 0}
 	<TR>
 		<TD class="pagination" colspan="{$number_of_table_columns}">
-			{include file="scroller.html" loop=$customerlist}
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
@@ -106,10 +106,10 @@
 	</THEAD>
 	<TFOOT>
         {block name="customerlist-list-footer-pagination"}
-	{if $listdata.total != 0}
+	{if $pagination->getTotal() != 0}
 	<TR>
 		<TD class="pagination" colspan="{$number_of_table_columns}">
-			{include file="scroller.html" loop=$customerlist}
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
@@ -132,7 +132,7 @@
 			{/if}
 		</TD>
 		<TD class="bold">
-			{trans("Total:")} {$listdata.total}
+			{t a=$pagination->getTotal()}Total: $a{/t}
 		</TD>
 	</TR>
         {/block}
@@ -140,7 +140,7 @@
 	<TBODY>
 
 	{cycle values="light,lucid" print=false}
-	{section name=customerlist loop=$customerlist start=$start max=$pagelimit}
+	{section name=customerlist loop=$customerlist}
         {block name="customerlist-list-row"}
 	<TR class="highlight {cycle}{if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}"  >
 		<TD onClick="return self.location.href='?m=customerinfo&amp;id={$customerlist[customerlist].id}';">
