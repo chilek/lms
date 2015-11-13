@@ -121,7 +121,7 @@ elseif (isset($_POST['customerdata']))
                 $type = !empty($val['type']) ? array_sum($val['type']) : NULL;
                 $type += CONTACT_EMAIL;
 
-                if($type & CONTACT_INVOICES && !($type & CONTACT_DISABLED))
+                if($type & (CONTACT_INVOICES | CONTACT_DISABLED))
                         $emaileinvoice = TRUE;
 
 
