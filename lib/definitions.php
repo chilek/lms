@@ -203,10 +203,16 @@ define('CONTACT_MOBILE', 1);
 define('CONTACT_FAX', 2);
 define('CONTACT_LANDLINE', 4);
 define('CONTACT_EMAIL', 8);
+define('CONTACT_INVOICES', 16);
+define('CONTACT_NOTIFICATIONS', 32);
+define('CONTACT_DISABLED', 64);
 
 $CONTACTTYPES = array(
-    CONTACT_MOBILE 	=>	trans('mobile'),
-    CONTACT_FAX 	=>	trans('fax'),
+    CONTACT_MOBILE          =>	trans('mobile'),
+    CONTACT_FAX             =>	trans('fax'),
+    CONTACT_INVOICES        =>	trans('Invoice'),
+    CONTACT_DISABLED        =>	trans('disabled'),
+    CONTACT_NOTIFICATIONS   =>	trans('Notification'),
 );
 
 define('DISCOUNT_PERCENTAGE', 1);

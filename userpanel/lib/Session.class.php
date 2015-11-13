@@ -55,8 +55,8 @@ class Session {
 					if (!check_email($remindform['email']))
 						return;
 					$join = 'JOIN customercontacts cc ON cc.customerid = c.id';
-					$where = ' AND contact = ? AND cc.type = ?';
-					$params = array_merge($params, array($remindform['email'], CONTACT_EMAIL));
+					$where = ' AND contact = ? AND cc.type & ? > 0';
+					$params = array_merge($params, array($remindform['email'],(CONTACT_EMAIL|CONTACT_INVOICES|CONTACT_NOTIFICATIONS)));
 					break;
 				case 2:
 					if (!preg_match('/^[0-9]+$/', $remindform['phone']))
@@ -202,8 +202,7 @@ class Session {
 			return null;
 
 		$authinfo['id'] = $this->db->GetOne('SELECT c.id FROM customers c, customercontacts cc
-			WHERE customerid = c.id AND contact = ? AND cc.type < ?
-				AND deleted = 0 LIMIT 1', 
+			WHERE customerid = c.id AND contact = ? AND cc.type < ? AND deleted = 0 LIMIT 1', 
 			array($this->login, CONTACT_EMAIL));
 
 		if (empty($authinfo['id']))
@@ -257,9 +256,8 @@ class Session {
 			return null;
 
 		$authinfo['id'] = $this->db->GetOne('SELECT c.id FROM customers c, customercontacts cc
-			WHERE cc.customerid = c.id AND contact = ? AND cc.type = ?
-				AND deleted = 0 LIMIT 1',
-			array($this->login, CONTACT_EMAIL));
+			WHERE cc.customerid = c.id AND contact = ? AND cc.type & ? > 0 AND deleted = 0 LIMIT 1',
+			array($this->login, (CONTACT_EMAIL|CONTACT_INVOICES|CONTACT_NOTIFICATIONS)));
 
 		if (empty($authinfo['id']))
 			return null;

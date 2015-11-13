@@ -133,8 +133,8 @@ switch($type)
 		}
 
 		$SMARTY->assign('contactlist', $DB->GetAllByKey('SELECT customerid, MIN(contact) AS phone
-				FROM customercontacts WHERE contact <> \'\' AND type < ? GROUP BY customerid',
-				'customerid', array(CONTACT_EMAIL)));
+				FROM customercontacts WHERE contact <> \'\' AND type & 7 > 0 GROUP BY customerid',
+				'customerid', array()));
 
 		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
 			$output = $SMARTY->fetch('print/printcustomerlist.html');

@@ -357,7 +357,7 @@ if ($debtors_file)
 	# @TODO: check 'messages' table and don't send notifies to often
 	my $dbq = $dbase->prepare("SELECT c.id, c.pin, c.lastname, c.name,
 			SUM(value) AS balance,
-			(SELECT contact FROM customercontacts WHERE customerid = c.id AND type = 8
+			(SELECT contact FROM customercontacts WHERE customerid = c.id AND (type & 56 > 0)
 				ORDER BY id LIMIT 1) AS email
 		FROM customers c
 		JOIN cash ON (c.id = cash.customerid)
@@ -401,7 +401,7 @@ if ($invoices_file)
 	my $dbq = $dbase->prepare("SELECT d.id AS docid, c.id, c.pin, d.name,
 			d.number, n.template, d.cdate, d.paytime,
 			COALESCE(ca.balance, 0) AS balance, v.value,
-			(SELECT contact FROM customercontacts WHERE customerid = c.id AND type = 8
+			(SELECT contact FROM customercontacts WHERE customerid = c.id AND (type & 24 > 0)
 				ORDER BY id LIMIT 1) AS email
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
@@ -458,7 +458,7 @@ if ($deadline_file)
 	my $dbq = $dbase->prepare("SELECT d.id AS docid, c.id, c.pin, d.name,
 			d.number, n.template, d.cdate, d.paytime,
 			COALESCE(ca.balance, 0) AS balance, v.value,
-			(SELECT contact FROM customercontacts WHERE customerid = c.id AND type = 8
+			(SELECT contact FROM customercontacts WHERE customerid = c.id AND (type & 24 > 0)
 				ORDER BY id LIMIT 1) AS email
 		FROM documents d
 		JOIN (SELECT SUM(value) AS balance, customerid
@@ -517,7 +517,7 @@ if ($notes_file)
 	my $dbq = $dbase->prepare("SELECT d.id AS docid, c.id, c.pin, d.name,
 			d.number, n.template, d.cdate,
 			COALESCE(ca.balance, 0) AS balance, v.value,
-			(SELECT contact FROM customercontacts WHERE customerid = c.id AND type = 8
+			(SELECT contact FROM customercontacts WHERE customerid = c.id AND (type & 56 > 0)
 				ORDER BY id LIMIT 1) AS email
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)

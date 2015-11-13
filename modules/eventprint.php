@@ -33,12 +33,12 @@ function GetEvents($date=NULL, $userid=0, $customerid=0)
 		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name'). ' AS customername, 
 		 customers.address AS customeraddr, customers.city AS customercity,
 		 (SELECT contact FROM customercontacts WHERE customerid = customers.id
-			AND customercontacts.type < ' . CONTACT_EMAIL . ' ORDER BY id LIMIT 1) AS customerphone 
+			AND (customercontacts.type & ?) = ? ORDER BY id LIMIT 1) AS customerphone 
 		 FROM events LEFT JOIN customers ON (customerid = customers.id)
 		 WHERE date = ? AND (private = 0 OR (private = 1 AND userid = ?)) '
 		 .($customerid ? 'AND customerid = '.intval($customerid) : '')
 		 .' ORDER BY begintime',
-		 array($date, $AUTH->id));
+		 array((CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE|CONTACT_DISABLED), (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE), $date, $AUTH->id));
 
 	if($list)
 		foreach($list as $idx => $row)

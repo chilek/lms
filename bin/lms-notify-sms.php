@@ -240,7 +240,7 @@ if ($debtors_message && (empty($types) || in_array('debtors', $types))) {
 		JOIN cash ON (c.id = cash.customerid)
 		JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
-			WHERE (type & 1) = 1
+			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) x ON (x.customerid = c.id)
 		LEFT JOIN documents d ON d.id = cash.docid
@@ -249,7 +249,7 @@ if ($debtors_message && (empty($types) || in_array('debtors', $types))) {
 				AND d.cdate + d.paytime * 86400 < ?NOW?)))
 				AND c. mailingnotice = 1
 		GROUP BY c.id, c.pin, c.lastname, c.name, x.phone
-		HAVING SUM(value) < ?", array($limit));
+		HAVING SUM(value) < ?", array(CONTACT_MOBILE | CONTACT_DISABLED, CONTACT_MOBILE, $limit));
 
 	if (!empty($customers)) {
 		if (!$debug)
@@ -280,7 +280,7 @@ if ($invoices_message && (empty($types) || in_array('invoices', $types))) {
 		JOIN customers c ON (c.id = d.customerid)
 		JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
-			WHERE (type & 1) = 1
+			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) x ON (x.customerid = d.customerid)
 		JOIN (SELECT SUM(value) * -1 AS value, docid
@@ -295,7 +295,7 @@ if ($invoices_message && (empty($types) || in_array('invoices', $types))) {
 		WHERE d.type = 1
 			AND d.cdate > ?NOW? - 86400
 		 	AND c.mailingnotice = 1
-		");
+		",array(CONTACT_MOBILE | CONTACT_DISABLED, CONTACT_MOBILE));
 
 	if (!empty($documents)) {
 		if (!$debug)
@@ -329,7 +329,7 @@ if ($deadline_message && (empty($types) || in_array('deadline', $types))) {
 		JOIN (
 			SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
-			WHERE (type & 1) = 1
+			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) x ON (x.customerid = d.customerid)
 		JOIN (
@@ -351,7 +351,7 @@ if ($deadline_message && (empty($types) || in_array('deadline', $types))) {
 			AND d.cdate + (d.paytime + 1 + ?) * 86400 > ?NOW?
 			AND d.cdate + (d.paytime + ?) * 86400 < ?NOW?
 			AND c.mailingnotice = 1",
-		array($deadline_days, $deadline_days));
+		array(CONTACT_MOBILE | CONTACT_DISABLED, CONTACT_MOBILE, $deadline_days, $deadline_days));
 
 	if (!empty($documents)) {
 		if (!$debug)
@@ -384,7 +384,7 @@ if ($notes_message && (empty($types) || in_array('notes', $types))) {
 		JOIN customers c ON (c.id = d.customerid)
 		JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
-			WHERE (type & 1) = 1
+			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) x ON (x.customerid = d.customerid)
 		JOIN (SELECT SUM(value) * -1 AS value, docid
@@ -398,7 +398,7 @@ if ($notes_message && (empty($types) || in_array('notes', $types))) {
 		) ca ON (ca.customerid = d.customerid)
 		WHERE d.type = 5
 			AND d.cdate > ?NOW? - 86400
-			AND c.mailingnotice = 1");
+			AND c.mailingnotice = 1",array(CONTACT_MOBILE | CONTACT_DISABLED, CONTACT_MOBILE));
 
 	if (!empty($documents)) {
 		if (!$debug)

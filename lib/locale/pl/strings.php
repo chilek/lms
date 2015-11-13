@@ -3014,4 +3014,11 @@ $_LANG['Customers With Expiring Contracts List $a$b'] = 'Lista klientów z umowa
 
 $_LANG['Payment for liabilities'] = 'Wpłata na poczet należności';
 
+$_LANG['Check if sent electronic invoices on this email'] = 'Zaznacz jeśli na ten adres e-mail mają być wysyłane elektroniczne faktury';
+$_LANG['Not visible by the customer in electronic Customer Service Representative'] = 'Niewidoczny dla klienta w elektronicznym biurze obsługi klienta';
+$_LANG['If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices'] = 'Jeśli klient chce otrzymywać fakturę elektroniczną musi zostać zaznaczony adres e-mail na który mają być wysyłane e-faktury';
+$_LANG['Cancellation of a traditional invoice (agreement on an electronic invoice):'] = 'Rezygnazja z faktury tradycyjnej (zgoda na fakturę elektroniczną):';
+$_LANG['Check if send notification'] = 'Zaznacz, jeżeli wysyłać powiadomienia';
+$_LANG['Notification'] = 'Powiadomienia';
+
 ?>

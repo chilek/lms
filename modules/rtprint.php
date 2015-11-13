@@ -122,11 +122,10 @@ switch($type)
 			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername '
 			.(!empty($_POST['contacts']) || !empty($_GET['contacts'])
 				? ', address, (SELECT ' . $DB->GroupConcat('contact', ',', true) . '
-					FROM customercontacts WHERE customerid = customers.id AND customercontacts.type < ' . CONTACT_EMAIL
-					. ' GROUP BY customerid) AS phones,
+					FROM customercontacts WHERE customerid = customers.id AND (customercontacts.type & '. (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE) .' > 0 ) GROUP BY customerid) AS phones,
 					(SELECT ' . $DB->GroupConcat('contact', ',', true) . '
-					FROM customercontacts WHERE customerid = customers.id AND customercontacts.type = ' . CONTACT_EMAIL
-					. ' GROUP BY customerid) AS emails ' : '')
+					FROM customercontacts WHERE customerid = customers.id AND (customercontacts.type & ' . CONTACT_EMAIL .' = '. CONTACT_EMAIL .
+                                        ') GROUP BY customerid) AS emails ' : '')
 			.'FROM rttickets
 			LEFT JOIN rtticketcategories tc ON tc.ticketid = rttickets.id
 			LEFT JOIN customers ON (customerid = customers.id)

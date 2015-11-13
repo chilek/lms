@@ -22,6 +22,7 @@ version ?.??.?? (????-??-??):
   - userpanel helpdesk module: allow customer to download message attachments [chilan]
   - new pagination engine [maciejlew]
   - added limit and offset support for customer list [maciejlew]
+  - added flag CONTACT_DISABLED, CONTACT_INVOICES and CONTACT_NOTIFICATIONS to customer contact data [wawryk]
 
 version 1.11.18 (2015-10-01):
 
