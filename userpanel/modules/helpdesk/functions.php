@@ -221,7 +221,7 @@ function module_main()
 			if (!empty($info['contacts']))
 				foreach ($info['contacts'] as $contact) {
 					$contact = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
-					if ($contact['type'] & 56 > 0)
+					if ($contact['type'] & (CONTACT_EMAIL|CONTACT_INVOICES|CONTACT_NOTIFICATIONS) > 0)
 						$emails[] = $contact;
 					else
 						$phones[] = $contact;
@@ -393,8 +393,8 @@ function module_main()
 				(SELECT contact AS phone FROM customercontacts
 					WHERE customerid = customers.id AND (customercontacts.type < ?) ORDER BY id LIMIT 1) AS phone
 				FROM customers c
-				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type & 56 > 0
-				WHERE c.id = ?', array(CONTACT_MOBILE, $SESSION->id));
+				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type & ? > 0
+				WHERE c.id = ?', array(CONTACT_MOBILE, (CONTACT_EMAIL|CONTACT_INVOICES|CONTACT_NOTIFICATIONS), $SESSION->id));
 
 			$body .= "\n\n-- \n";
 			$body .= trans('Customer:').' '.$info['customername']."\n";

@@ -47,8 +47,8 @@ class ULMS extends LMS {
 				FROM customercontacts WHERE customerid = ? AND type < ? ORDER BY id', 'id', 
                                     array($id, CONTACT_MOBILE));
 			$result['emails'] = $this->DB->GetAllByKey('SELECT id, contact AS email, name
-				FROM customercontacts WHERE customerid = ? AND (type & 56 > 0) ORDER BY id', 'id', 
-                                    array($id));
+				FROM customercontacts WHERE customerid = ? AND (type & ? > 0) ORDER BY id', 'id', 
+                                    array($id, (CONTACT_EMAIL|CONTACT_INVOICES|CONTACT_NOTIFICATIONS)));
 
 			return $result;
 		} else

@@ -500,14 +500,14 @@ if(isset($_POST['message']))
 			WHERE id = ?', array($message['customerid']));
 
 		$message['phones'] = $DB->GetAll('SELECT contact, name FROM customercontacts
-			WHERE customerid = ? AND (type & 7 > 0 AND type & ? <> ?)', 
+			WHERE customerid = ? AND (type & ? > 0 AND type & ? <> ?)', 
                         array($message['customerid'], CONTACT_DISABLED, CONTACT_DISABLED));
 		if (is_null($message['phones']))
 			$message['phones'] = array();
 
 		$message['emails'] = $DB->GetAll('SELECT contact, name FROM customercontacts
 			WHERE customerid = ? AND (type & ? = ? AND type & ? <> ?)', 
-                        array($message['customerid'], CONTACT_EMAIL, CONTACT_EMAIL, CONTACT_DISABLED, CONTACT_DISABLED));
+                        array($message['customerid'], (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE), CONTACT_EMAIL, CONTACT_EMAIL, CONTACT_DISABLED, CONTACT_DISABLED));
 		if (is_null($message['emails']))
 			$message['emails'] = array();
 	}
@@ -523,8 +523,8 @@ else if (!empty($_GET['customerid']))
 		WHERE id = ?', array($_GET['customerid']));
 
 	$message['phones'] = $DB->GetAll('SELECT contact, name FROM customercontacts
-		WHERE customerid = ? AND (type & 7 > 0 AND type & ? <> ?)', 
-                array($_GET['customerid'], CONTACT_DISABLED, CONTACT_DISABLED));
+		WHERE customerid = ? AND (type & ? > 0 AND type & ? <> ?)', 
+                array($_GET['customerid'], (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE), CONTACT_DISABLED, CONTACT_DISABLED));
 	if (is_null($message['phones']))
 		$message['phones'] = array();
 	$message['customerphones'] = array();
