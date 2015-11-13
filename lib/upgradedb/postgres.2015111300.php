@@ -24,8 +24,8 @@
 $this->BeginTrans();
 
 $this->Execute("
-	ALTER TABLE records ADD COLUMN disabled boolean DEFAULT 'f';
-	ALTER TABLE records ADD COLUMN auth boolean DEFAULT 't';
+	ALTER TABLE records ADD COLUMN disabled boolean DEFAULT '0';
+	ALTER TABLE records ADD COLUMN auth boolean DEFAULT '1';
 	CREATE TABLE domainmetadata (
 		id SERIAL PRIMARY KEY,
 		domain_id integer
