@@ -21,15 +21,22 @@
  *
  */
 
-define('EMAIL', 8);
-define('EMAIL_INVOICE', 16);
-
 $this->BeginTrans();
-    
-$this->Execute("UPDATE customercontacts SET type = ? WHERE customerid IN (SELECT id FROM customers WHERE einvoice = 1 AND invoicenotice = 1) AND type & ? = ?",
-            array((EMAIL + EMAIL_INVOICE), EMAIL, EMAIL));
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015110600', 'dbversion'));
+$this->Execute("
+	ALTER TABLE records ADD COLUMN disabled boolean DEFAULT 'f';
+	ALTER TABLE records ADD COLUMN auth boolean DEFAULT 't';
+	CREATE TABLE domainmetadata (
+		id SERIAL PRIMARY KEY,
+		domain_id integer
+			REFERENCES domains(id) ON DELETE CASCADE ON UPDATE CASCADE,
+		kind varchar(32),
+		content text
+	);
+	CREATE INDEX domainidmetaindex ON domainmetadata (domain_id);
+");
+
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015111300', 'dbversion'));
 
 $this->CommitTrans();
 

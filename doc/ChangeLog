@@ -23,6 +23,7 @@ version ?.??.?? (????-??-??):
   - new pagination engine [maciejlew]
   - added limit and offset support for customer list [maciejlew]
   - added flag CONTACT_DISABLED, CONTACT_INVOICES and CONTACT_NOTIFICATIONS to customer contact data [wawryk]
+  - adjusted database schema for powerdns 3.4.x [chilan]
 
 version 1.11.18 (2015-10-01):
 

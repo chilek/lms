@@ -65,6 +65,7 @@ DROP TABLE IF EXISTS liabilities;
 DROP TABLE IF EXISTS customergroups;
 DROP TABLE IF EXISTS customerassignments;
 DROP TABLE IF EXISTS records;
+DROP TABLE IF EXISTS domainmetadata;
 DROP TABLE IF EXISTS passwd;
 DROP TABLE IF EXISTS domains;
 DROP TABLE IF EXISTS aliases;
@@ -1771,11 +1772,28 @@ CREATE TABLE records (
   ttl             INT(11) DEFAULT NULL,
   prio            INT(11) DEFAULT NULL,
   change_date     INT(11) DEFAULT NULL,
+  disabled        tinyint(1) DEFAULT '0',
+  auth            tinyint(1) DEFAULT '1',
   PRIMARY KEY(id),
   INDEX domain_id (domain_id),
   INDEX name_type (name, type, domain_id),
   FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+
+
+# --------------------------------------------------------
+#
+# Structure of table domainmetadata
+#
+CREATE TABLE domainmetadata (
+	id int(11) NOT NULL auto_increment,
+	domain_id int(11) NOT NULL,
+	kind varchar(32),
+	content text,
+	PRIMARY KEY (id),
+	INDEX domainmetadata (domain_id, kind),
+	FOREIGN KEY domain_id REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE
+) Engine=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -2422,4 +2440,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015100101');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015111300');

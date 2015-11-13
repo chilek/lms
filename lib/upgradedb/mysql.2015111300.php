@@ -21,15 +21,22 @@
  *
  */
 
-define('EMAIL', 8);
-define('EMAIL_INVOICE', 16);
-
 $this->BeginTrans();
-    
-$this->Execute("UPDATE customercontacts SET type = ? WHERE customerid IN (SELECT id FROM customers WHERE einvoice = 1 AND invoicenotice = 1) AND type & ? = ?",
-            array((EMAIL + EMAIL_INVOICE), EMAIL, EMAIL));
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015110600', 'dbversion'));
+$this->Execute("ALTER TABLE records ADD COLUMN disabled tinyint(1) DEFAULT '0'");
+$this->Execute("ALTER TABLE records ADD COLUMN auth tinyint(1) DEFAULT '1'");
+$this->Execute("
+	CREATE TABLE domainmetadata (
+		id int(11) NOT NULL auto_increment,
+		domain_id int(11) NOT NULL,
+		kind varchar(32),
+		content text,
+		PRIMARY KEY (id),
+		INDEX domainmetadata (domain_id, kind),
+		FOREIGN KEY domain_id REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE
+	) Engine=InnoDB");
+
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015111300', 'dbversion'));
 
 $this->CommitTrans();
 

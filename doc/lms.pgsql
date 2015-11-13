@@ -1275,11 +1275,24 @@ CREATE TABLE records (
 	ttl integer		DEFAULT NULL,
 	prio integer		DEFAULT NULL,
 	change_date integer	DEFAULT NULL,
+	disabled boolean	DEFAULT '0',
+	auth boolean		DEFAULT '1',
 	PRIMARY KEY (id)
 );
-
 CREATE INDEX records_name_type_idx ON records (name, type, domain_id);
 CREATE INDEX records_domain_id_idx ON records (domain_id);
+
+/* ---------------------------------------------------
+ Structure of table "domainmetadata" (DNS)
+------------------------------------------------------*/
+CREATE TABLE domainmetadata (
+	id SERIAL PRIMARY KEY,
+	domain_id integer
+		REFERENCES domains(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	kind varchar(32),
+	content text
+);
+CREATE INDEX domainidmetaindex ON domainmetadata (domain_id);
 
 /* ---------------------------------------------------
  Structure of table "supermasters" (DNS)
@@ -2517,4 +2530,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015100101');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015111300');
