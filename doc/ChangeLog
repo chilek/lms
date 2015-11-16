@@ -24,6 +24,7 @@ version ?.??.?? (????-??-??):
   - added limit and offset support for customer list [maciejlew]
   - added flag CONTACT_DISABLED, CONTACT_INVOICES and CONTACT_NOTIFICATIONS to customer contact data [wawryk]
   - adjusted database schema for powerdns 3.4.x [chilan]
+  - added extra_css_styles Smarty block - plugins can use it to inject their own CSS styles [maciejlew]
 
 version 1.11.18 (2015-10-01):
 
