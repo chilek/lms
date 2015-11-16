@@ -33,7 +33,7 @@ $this->Execute("
 		content text,
 		PRIMARY KEY (id),
 		INDEX domainmetadata (domain_id, kind),
-		FOREIGN KEY domain_id REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE
 	) Engine=InnoDB");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015111300', 'dbversion'));
