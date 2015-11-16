@@ -1792,7 +1792,7 @@ CREATE TABLE domainmetadata (
 	content text,
 	PRIMARY KEY (id),
 	INDEX domainmetadata (domain_id, kind),
-	FOREIGN KEY domain_id REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE
+	FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) Engine=InnoDB;
 
 # --------------------------------------------------------
