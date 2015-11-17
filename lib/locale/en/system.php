@@ -92,7 +92,7 @@ function format_bankaccount($account)
 	return $account;
 }
 
-function non_working_days($year = null) {
+function getHolidays($year = null) {
 	return array();
 }
 

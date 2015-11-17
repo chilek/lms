@@ -172,7 +172,7 @@ function format_bankaccount($account)
 	return preg_replace('/(..)(....)(....)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5} ${6} ${7}', $account);
 }
 
-function non_working_days($year = null) {
+function getHolidays($year = null) {
 	if(!$year) $year = date("Y");
 	$easterDay = easter_date($year);
 

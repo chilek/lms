@@ -150,7 +150,7 @@ $SMARTY->assign('year',$year);
 $SMARTY->assign('date',$date);
 $SMARTY->assign('userlist',$LMS->GetUserNames());
 $SMARTY->assign('customerlist',$LMS->GetCustomerNames());
-$SMARTY->assign('non_working_days', non_working_days($year));
+$SMARTY->assign('getHolidays', getHolidays($year));
 $SMARTY->display('event/eventlist.html');
 
 ?>

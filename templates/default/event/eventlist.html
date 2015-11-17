@@ -83,8 +83,8 @@
                                 </TD>
                                 <TD width="96%">
                                     <B>({$daylist[daylist]|date_format:"%x"})</B>
-                                    {if $non_working_days[$daylist[daylist]]}
-                                        <span style="color: red;">{trans("Day off work:")} {$non_working_days[$daylist[daylist]]}</span>
+                                    {if $getHolidays[$daylist[daylist]]}
+                                        <span style="color: red;">{trans("Holiday:")} {$getHolidays[$daylist[daylist]]}</span>
                                     {/if}
                                 </TD>
                                 <TD width="3%" colspan="3" align="right" nowrap>
