@@ -159,7 +159,7 @@ function format_bankaccount($account)
 }
 
 function non_working_days($year = null) {
-	return [];
+	return array();
 }
 
 ?>
