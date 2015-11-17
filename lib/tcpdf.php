@@ -208,9 +208,9 @@ class TCPDFpl extends TCPDF {
 			$i = 1;
 			if ($invoice['invoice']['content'])
 				foreach ($invoice['invoice']['content'] as $item) {
-					$h = $this->getStringHeight($h_width['name'], $item['description'], true, false, '', 1);
+					$h = $this->getStringHeight($h_width['name'], $item['description'], true, false, '', 1) + 1;
 					$this->Cell($h_width['no'], $h, $i . '.', 1, 0, 'C', 0, '', 1);
-					$this->MultiCell($h_width['name'], $h, $item['description'], 1, 'L', false, 0, '', '', true, 0, false, false, 0, 'M');
+					$this->MultiCell($h_width['name'], $h, $item['description'], 1, 'L', false, 0, '', '', true, 1, false, false, 0, 'M');
 					$this->Cell($h_width['prodid'], $h, $item['prodid'], 1, 0, 'C', 0, '', 1);
 					$this->Cell($h_width['content'], $h, $item['content'], 1, 0, 'C', 0, '', 1);
 					$this->Cell($h_width['count'], $h, sprintf('%.2f', $item['count']), 1, 0, 'C', 0, '', 1);
@@ -270,9 +270,9 @@ class TCPDFpl extends TCPDF {
 		/* invoice data */
 		$i = 1;
 		foreach ($invoice['content'] as $item) {
-			$h = $this->getStringHeight($h_width['name'], $item['description'], true, false, '', 1);
+			$h = $this->getStringHeight($h_width['name'], $item['description'], true, false, '', 1) + 1;
 			$this->Cell($h_width['no'], $h, $i . '.', 1, 0, 'C', 0, '', 1);
-			$this->MultiCell($h_width['name'], $h, $item['description'], 1, 'L', false, 0, '', '', true, 0, false, false, 0, 'M');
+			$this->MultiCell($h_width['name'], $h, $item['description'], 1, 'L', false, 0, '', '', true, 1, false, false, 0, 'M');
 			$this->Cell($h_width['prodid'], $h, $item['prodid'], 1, 0, 'C', 0, '', 1);
 			$this->Cell($h_width['content'], $h, $item['content'], 1, 0, 'C', 0, '', 1);
 			$this->Cell($h_width['count'], $h, sprintf('%.2f', $item['count']), 1, 0, 'C', 0, '', 1);
