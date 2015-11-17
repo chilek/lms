@@ -77,17 +77,20 @@
                     <TABLE class="lmsbox">
                         <THEAD>
                             <TR>
-                                    <TD width="1%" nowrap>
-                                            <IMG src="img/calendar.gif" alt="">
-                                            <B>{$daylist[daylist]|date_format:"%A"}</B>
-                                    </TD>
-                                    <TD width="96%">
-                                            <B>({$daylist[daylist]|date_format:"%x"})</B>
-                                    </TD>
-                                    <TD width="3%" colspan="3" align="right" nowrap>
-                                            <A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.userid}" target="_BLANK">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
-                                            <A href="?m=eventadd&day={$daylist[daylist]|date_format:"%d"}&month={$daylist[daylist]|date_format:"%m"}&year={$daylist[daylist]|date_format:"%Y"}">{trans("Add Event")} <IMG src="img/save.gif" alt=""></A>&nbsp;
-                                    </TD>
+                                <TD width="1%" nowrap>
+                                    <IMG src="img/calendar.gif" alt="">
+                                    <B>{$daylist[daylist]|date_format:"%A"}</B>
+                                </TD>
+                                <TD width="96%">
+                                    <B>({$daylist[daylist]|date_format:"%x"})</B>
+                                    {if $getHolidays[$daylist[daylist]]}
+                                        <span style="color: red;">{trans("Holiday:")} {$getHolidays[$daylist[daylist]]}</span>
+                                    {/if}
+                                </TD>
+                                <TD width="3%" colspan="3" align="right" nowrap>
+                                    <A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.userid}" target="_BLANK">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
+                                    <A href="?m=eventadd&day={$daylist[daylist]|date_format:"%d"}&month={$daylist[daylist]|date_format:"%m"}&year={$daylist[daylist]|date_format:"%Y"}">{trans("Add Event")} <IMG src="img/save.gif" alt=""></A>&nbsp;
+                                </TD>
                             </TR>
                         </THEAD>
                         <TBODY>

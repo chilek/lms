@@ -118,4 +118,8 @@ function format_bankaccount($account)
 	return $account;
 }
 
+function getHolidays($year = null) {
+	return array();
+}
+
 ?>

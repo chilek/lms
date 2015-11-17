@@ -558,6 +558,7 @@ $_LANG['Event Search'] = 'Wyszukiwanie zdarzeń';
 $_LANG['Events Tracking'] = 'Śledzenie zdarzeń';
 $_LANG['Event title is required!'] = 'Tytuł zdarzenia jest wymagany!';
 $_LANG['Event title is too long!'] = 'Tytuł zdarzenia jest za długi!';
+$_LANG['Holiday:'] = 'Dzień wolny od pracy:';
 $_LANG['exclude group'] = 'wyłącz grupę';
 $_LANG['Expiration date:'] = 'Data ważności:';
 $_LANG['expired'] = 'wygasł';

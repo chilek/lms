@@ -90,4 +90,8 @@ function format_bankaccount($account)
 	return preg_replace('/(..)(....)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5} ${6}', $account);
 }
 
+function getHolidays($year = null) {
+	return array();
+}
+
 ?>
