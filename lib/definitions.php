@@ -384,6 +384,20 @@ $USERPANEL_ID_TYPES = array(
 	),
 );
 
+define('EVENT_OTHER', 1);
+define('EVENT_NETWORK', 2);
+define('EVENT_SERVICE', 3);
+define('EVENT_INSTALLATION', 4);
+define('EVENT_MEETING', 5);
+
+$EVENTTYPES = array(
+	EVENT_SERVICE      => trans('service<!event>'),
+	EVENT_INSTALLATION => trans('installation'),
+	EVENT_NETWORK      => trans('network'),
+	EVENT_MEETING      => trans('meeting'),
+	EVENT_OTHER        => trans('other')
+);
+
 if(isset($SMARTY))
 {
 	$SMARTY->assign('_CTYPES',$CTYPES);
@@ -407,6 +421,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_NETELEMENTTYPES', $NETELEMENTTYPES);
 	$SMARTY->assign('_NETELEMENTOWNERSHIPS', $NETELEMENTOWNERSHIPS);
 	$SMARTY->assign('_USERPANEL_ID_TYPES', $USERPANEL_ID_TYPES);
+	$SMARTY->assign('_EVENTTYPES', $EVENTTYPES);
 }
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');

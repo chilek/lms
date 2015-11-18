@@ -25,6 +25,8 @@ version ?.??.?? (????-??-??):
   - added flag CONTACT_DISABLED, CONTACT_INVOICES and CONTACT_NOTIFICATIONS to customer contact data [wawryk]
   - adjusted database schema for powerdns 3.4.x [chilan]
   - resolved tcpdf invoice problem where position names were not wrapped [chilan]
+  - added holiday information in timetable [pjona]
+  - added event type in timetable [pjona]
 
 version 1.11.18 (2015-10-01):
 
@@ -142,7 +144,7 @@ version 1.11.16 (2015-03-31):
 
 version 1.11.15 (2014-05-15):
 
-  - host owner selection for networks [red/chilan]
+  - host owner selection for networks [pjona/chilan]
   - separation of privileges: finance management and cash registry administration [chilan]
   - show last 10 node sessions in nodeinfo and nodedit [chilan]
   - transaction logging engine introduced [chilan]
@@ -329,10 +331,10 @@ version 1.11.14 (2013-03-25):
   - assignmentlocks -> nodelocks [chilan]
   - we can choose format of reports beetween html and pdf - phpui->report_type [prezes_kk]
   - script for automatic filling of gps coordinates based on Sebastian Wielgosz work [prezes_kk]
-  - changed pin field type from int to varchar(6) [red]
+  - changed pin field type from int to varchar(6) [pjona]
   - liability reports are consistent with invoice/cash issues [chilan]
-  - small fix for new PHP version [red]
-  - fix validation data in domains for DKIM [red]
+  - small fix for new PHP version [pjona]
+  - fix validation data in domains for DKIM [pjona]
   - added management urls for netdevices [chilan]
   - customersearch: we can search customers by tariff [ceho]
   - cashimportparser.php: fixed problem with long customername and description [ceho]
@@ -370,7 +372,7 @@ version 1.11.14 (2013-03-25):
   - don't update time counter for session when we get access to xajax funcions [chilan]
   - netdevmap: openlayers map works again in google chrome [chilan]
   - uke siis reports adjusted to version 3 [chilan]
-  - added possibility to disable the tariffs [red]
+  - added possibility to disable the tariffs [pjona]
   - mysql schema fixes [LoLe/chilan]
   - it's possible to add new config sections from ui [chilan]
 
