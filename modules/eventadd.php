@@ -80,7 +80,7 @@ if(isset($_POST['event']))
 					$AUTH->id, 
 					$event['status'], 
 					$event['custid'],
-					intval($event['type'])
+					$event['type']
 					));
 
 		if (!empty($event['userlist'])) {
