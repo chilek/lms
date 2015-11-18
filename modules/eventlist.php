@@ -38,7 +38,7 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 	$list = $DB->GetAll(
 		'SELECT events.id AS id, title, description, date, begintime, enddate, endtime, customerid, closed, events.type, '
 		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername,
-		userid, users.name AS username 
+		userid, users.name AS username, customers.address
 		FROM events 
 		LEFT JOIN customers ON (customerid = customers.id)
 		LEFT JOIN users ON (userid = users.id)
