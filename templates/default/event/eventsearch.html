@@ -62,6 +62,22 @@
 			<INPUT type="text" name="event[note]" size="50" {tip text="Enter note"}>
 		</TD>
 	</TR>
+	<TR>
+		<TD width="1%">
+			<IMG src="img/desc.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Type:")}</B>
+		</TD>
+		<TD width="98%">
+			<SELECT name="event[type]" size="1">
+				<OPTION value="0" SELECTED>{trans("- all -")}</OPTION>
+				{foreach from=$_EVENTTYPES key=key item=type}
+					<OPTION value="{$key}">{$type}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
 {*	<TR>
 		<TD width="1%">
 			<IMG src="img/access.gif" alt="">
