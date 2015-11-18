@@ -79,7 +79,7 @@ if(isset($_POST['event']))
 					$event['endtime'], 
 					$AUTH->id, 
 					$event['status'], 
-					$event['custid'],
+					intval($event['custid']),
 					$event['type']
 					));
 
