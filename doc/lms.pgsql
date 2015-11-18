@@ -1375,6 +1375,7 @@ CREATE TABLE events (
 	closed 		smallint 	DEFAULT 0 NOT NULL,
 	moddate		integer		DEFAULT 0 NOT NULL,
 	moduserid	integer		DEFAULT 0 NOT NULL,
+	type		smallint	DEFAULT 1 NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX events_date_idx ON events(date);

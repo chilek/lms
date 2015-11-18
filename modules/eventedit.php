@@ -35,7 +35,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == 'close')
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-$event = $DB->GetRow('SELECT events.id AS id, title, description, note, 
+$event = $DB->GetRow('SELECT events.id AS id, title, description, note, events.type,
 			date, begintime, enddate, endtime, customerid, private, closed, ' 
 			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername
 			FROM events LEFT JOIN customers ON (customers.id = customerid)
@@ -93,8 +93,8 @@ if(isset($_POST['event']))
 
 		$DB->BeginTrans();
 
-		$DB->Execute('UPDATE events SET title=?, description=?, date=?, begintime=?, enddate=?, endtime=?, private=?, note=?, customerid=? WHERE id=?',
-				array($event['title'], $event['description'], $date, $event['begintime'], $enddate, $event['endtime'], $event['private'], $event['note'], $event['customerid'], $event['id']));
+		$DB->Execute('UPDATE events SET title=?, description=?, date=?, begintime=?, enddate=?, endtime=?, private=?, note=?, customerid=?, type=? WHERE id=?',
+				array($event['title'], $event['description'], $date, $event['begintime'], $enddate, $event['endtime'], $event['private'], $event['note'], $event['customerid'], $event['type'], $event['id']));
 				
 		if (!empty($event['userlist']) && is_array($event['userlist'])) {
 			$DB->Execute('DELETE FROM eventassignments WHERE eventid = ?', array($event['id']));

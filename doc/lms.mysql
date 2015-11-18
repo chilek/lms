@@ -1324,6 +1324,7 @@ CREATE TABLE events (
     closed tinyint(1) NOT NULL DEFAULT '0',
     moddate int(11) NOT NULL DEFAULT '0',
     moduserid int(11) NOT NULL DEFAULT '0',
+    type smallint NOT NULL DEFAULT 1,
     PRIMARY KEY (id),
     INDEX date (date)
 ) ENGINE=InnoDB;
