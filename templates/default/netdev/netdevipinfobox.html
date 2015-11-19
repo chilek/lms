@@ -116,7 +116,7 @@
 			<IMG SRC="img/netdev.gif" ALT="">
 		</TD>
 		<TD style="width: 99%;" class="nobr" COLSPAN="2">
-			{foreach $_SESSIONTYPES as idx => $sessiontype}
+			{foreach $_SESSIONTYPES as $idx => $sessiontype}
 			<label>{$sessiontype.label} <INPUT TYPE="checkbox" NAME="authtype[{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"} onchange="change_authtype()"{if $nodeipdata.authtype & $idx == $idx} checked{/if}></label>&nbsp;
 			{/foreach}
 		</TD>
