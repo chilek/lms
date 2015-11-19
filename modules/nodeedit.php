@@ -106,13 +106,6 @@ else
 
 $layout['pagetitle'] = trans('Node Edit: $a', $nodeinfo['name']);
 
-$nodeauthtype = array();
-$authtype = $nodeinfo['authtype'];
-if ($authtype != 0) {
-	$nodeauthtype['pppoe'] = ($authtype & 1);
-	$nodeauthtype['dhcp'] = ($authtype & 2);
-	$nodeauthtype['eap'] = ($authtype & 4);
-}
 if (isset($_POST['nodeedit'])) {
 	$nodeedit = $_POST['nodeedit'];
 
@@ -245,16 +238,11 @@ if (isset($_POST['nodeedit'])) {
 			array($nodeedit['projectname'], INV_PROJECT_SYSTEM)))
 			$error['projectname'] = trans('Project with that name already exists');
 	}
-	$nodeedit['authtype'] = 0;
-	if(isset($_POST['nodeauthtype'])) {
-		$authtype = $_POST['nodeauthtype'];
-		if (!empty($authtype)) {
-			foreach ($authtype as $op) {
-				$op = (int)$op;
-				$nodeedit['authtype'] |= $op;
-			}
-		}
-	}
+	$authtype = 0;
+	if (isset($nodeedit['authtype']))
+		foreach ($nodeedit['authtype'] as $idx)
+			$authtype |= intval($idx);
+	$nodeedit['authtype'] = $authtype;
 
 	$hook_data = $LMS->executeHook('nodeedit_validation_before_submit',
 		array(
@@ -332,8 +320,7 @@ if (isset($_POST['nodeedit'])) {
 
 	if ($nodeedit['ipaddr_pub'] == '0.0.0.0')
 		$nodeinfo['ipaddr_pub'] = '';
-}
-else {
+} else {
 	if ($nodeinfo['city_name'] || $nodeinfo['street_name']) {
 		$nodeinfo['teryt'] = true;
 		$nodeinfo['location'] = location_str($nodeinfo);

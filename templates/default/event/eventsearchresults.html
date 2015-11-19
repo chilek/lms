@@ -9,7 +9,10 @@
 		<TD width="1%" valign="top" NOWRAP>
 			<IMG src="img/time.gif" alt=""> <B>{trans("Time:")}</B>
 		</TD>
-		<TD width="96%" valign="top" NOWRAP>
+		<TD width="1%" valign="top" NOWRAP>
+			<IMG src="img/desc.gif" alt=""> {trans("Type:")}
+		</TD>
+		<TD width="95%" valign="top" NOWRAP>
 			<IMG src="img/calendar.gif" alt=""> <B>{trans("Title:")}</B><BR>
 			<IMG src="img/info1.gif" alt=""> {trans("Description:")}
 		</TD>
@@ -27,18 +30,18 @@
 	{cycle values="light,lucid" print=false}
 	{section name=daylist loop=$daylist}
 	<TR>
-		<TD width="100%" colspan="5">
+		<TD width="100%" colspan="6">
                     <TABLE class="lmsbox">
                         <THEAD>
                             <TR>
-                                    <TD width="1%" nowrap>
+                                    <TD width="1%" nowrap colspan="2">
                                             <IMG src="img/calendar.gif" alt="">
                                             <B>{$daylist[daylist]|date_format:"%A"}</B>
                                     </TD>
                                     <TD width="96%">
                                             <B>({$daylist[daylist]|date_format:"%x"})</B>
                                     </TD>
-                                    <TD width="3%" colspan="3" align="right">
+                                    <TD width="3%" colspan="3" align="right" nowrap>
                                             <A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.userid}" target="_BLANK">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
                                             <A href="?m=eventadd&day={$daylist[daylist]|date_format:"%d"}&month={$daylist[daylist]|date_format:"%m"}&year={$daylist[daylist]|date_format:"%Y"}">{trans("Add Event")} <IMG src="img/save.gif" alt=""></A>
                                     </TD>
@@ -58,6 +61,9 @@
                                         {if $eventlist[eventlist].begintime != $eventlist[eventlist].endtime}
                                         - {math equation="floor(x/100)" x=$eventlist[eventlist].endtime format="%02d"}:{math equation="x % 100" x=$eventlist[eventlist].endtime format="%02d"}
                                         {/if}
+                                </TD>
+                                <TD width="1%" valign="top" align="center" onClick="return self.location.href='?m=eventinfo&id={$eventlist[eventlist].id}'">
+                                        {$_EVENTTYPES[$eventlist[eventlist].type]}
                                 </TD>
                                 <TD width="96%" valign="top" onClick="return self.location.href='?m=eventinfo&id={$eventlist[eventlist].id}'">
                                         <IMG src="img/calendar.gif" alt=""> <B>{$eventlist[eventlist].title}</B><BR>
@@ -91,7 +97,7 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD colspan="5" align="center">
+		<TD colspan="6" align="center">
 			<P>&nbsp;</P>
 			<P><B>{trans("No such events matching search criteria.")}</B></P>
 			<P>&nbsp;</P>

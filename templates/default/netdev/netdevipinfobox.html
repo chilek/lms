@@ -16,10 +16,12 @@
 		else
 			location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=duplex&duplex=0';
 	}
+
 	function change_authtype() {
 		var authtype = 0;
-		authtype |= (document.getElementById('authtype_dhcp').checked == true) * 2;
-		authtype |= (document.getElementById('authtype_eap').checked == true) * 4;
+		{foreach $_SESSIONTYPES as $idx => $sessiontype}
+		authtype |= (document.getElementById('authtype{$idx}').checked == true) * {$idx};
+		{/foreach}
 		location.href = '?m=netdevedit&ip={$nodeipdata.id}&id={$netdevinfo.id}&action=authtype&authtype=' + authtype;
 
 	}
@@ -110,13 +112,14 @@
 		</TD>
 	</TR>
 	<TR>
-	<TD style="width: 1%;">
-		<IMG SRC="img/netdev.gif" ALT="">
-        </TD>
-        <TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
-	<label for="authtype_dhcp">{trans("DHCP Client")}</label><INPUT TYPE="checkbox" NAME="netdevauthtype[dhcp]" value="2" id="authtype_dhcp" {if $netdevauthtype.dhcp} checked{/if} {tip text="Enable/disable DHCP Server Client" trigger="dhcp"} onchange="change_authtype()">&nbsp;
-	<label for="authtype_eap">{trans("EAP Client")}</label><INPUT TYPE="checkbox" NAME="netdevonntype[eap]" value="4" id="authtype_eap" {if $netdevauthtype.eap} checked {/if} {tip text="Enable/disable EAP Server Client" trigger="eap"} onchange="change_authtype()">
-	</TD>
+		<TD style="width: 1%;">
+			<IMG SRC="img/netdev.gif" ALT="">
+		</TD>
+		<TD style="width: 99%;" class="nobr" COLSPAN="2">
+			{foreach $_SESSIONTYPES as $idx => $sessiontype}
+			<label>{$sessiontype.label} <INPUT TYPE="checkbox" NAME="authtype[{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"} onchange="change_authtype()"{if ($nodeipdata.authtype & $idx) == $idx} checked{/if}></label>&nbsp;
+			{/foreach}
+		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="1%">

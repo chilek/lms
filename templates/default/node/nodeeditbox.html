@@ -176,10 +176,10 @@
 		<TD style="width: 1%;">
 			<IMG SRC="img/netdev.gif" ALT="">
 		</TD>
-		<TD style="width: 98%; white-space: nowrap;" COLSPAN="2">
-			<label for="pppoe">{trans("PPPoE Client")}</label><INPUT TYPE="checkbox" NAME="nodeauthtype[pppoe]" value="1" id="pppoe" {if $nodeauthtype.pppoe}checked="checked"{/if}{tip text="Enable/disable PPPoE Server Client" trigger="pppoe"}>&nbsp;
-			<label for="dhcp">{trans("DHCP Client")}</label><INPUT TYPE="checkbox" NAME="nodeauthtype[dhcp]" value="2" id="dhcp" {if $nodeauthtype.dhcp}checked="checked"{/if}{tip text="Enable/disable DHCP Server Client" trigger="dhcp"}>&nbsp;
-			<label for="eap">{trans("EAP Client")}</label><INPUT TYPE="checkbox" NAME="nodeauthtype[eap]" value="4" id="eap" {if $nodeauthtype.eap}checked="checked"{/if}{tip text="Enable/disable EAP Server Client" trigger="eap"}>
+		<TD style="width: 98%;" class="nobr" COLSPAN="2">
+			{foreach $_SESSIONTYPES as $idx => $sessiontype}
+			<label>{$sessiontype.label} <INPUT TYPE="checkbox" NAME="nodeedit[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}"{tip text="`$sessiontype.tip`" trigger="authtype`$idx`"}{if ($nodeinfo.authtype & $idx) == $idx} checked{/if}></label>&nbsp;
+			{/foreach}
 		</TD>
 		</TR>
 	</TR>

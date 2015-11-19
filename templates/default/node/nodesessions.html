@@ -4,7 +4,7 @@
 	<TR onclick="showOrHide('nodesessionpanel');">
 		<TD class="fall">
 			<IMG src="img/calendar.gif" alt="">
-			<B><A name="nodesessions">{trans("Node Sessions:")}</A></B> {trans("(last 10 sessions)")}
+			<B><A name="nodesessions">{trans("Node Sessions:")}</A></B> {t a=ConfigHelper::getConfig('phpui.nodesession_limit', 10)}(last $a sessions){/t}
 		</TD>
 	</TR>
 	</THEAD>
@@ -13,20 +13,22 @@
 		<TD WIDTH="100%" class="fall">
 			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 				<TR class="dark">
-					<TD class="fleftu bold nobr" style="width: 12%;">{trans("IP Address:")}</TD>
-					<TD class="fbt nobr" style="width: 12%;">{trans("MAC:")}</TD>
-					<TD class="fbt bold nobr" style="width: 12%;">{trans("Started:")}</TD>
-					<TD class="fbt bold nobr" style="width: 12%;">{trans("Finished:")}</TD>
-					<TD class="fbt bold nobr" style="width: 12%;">{trans("Time Duration:")}</TD>
-					<TD class="fbt bold nobr" style="width: 12%;">{trans("Terminate Cause:")}</TD>
-					<TD class="fbt nobr" style="width: 12%;">{trans("Downloaded:")}</TD>
-					<TD class="frightu nobr" style="width: 16%;">{trans("Uploaded:")}</TD>
+					<TD class="fleftu bold nobr" style="width: 11%;">{trans("IP Address:")}</TD>
+					<TD class="fbt nobr" style="width: 11%;">{trans("MAC:")}</TD>
+					<TD class="fbt nobr" style="width: 11%;">{trans("Type:")}</TD>
+					<TD class="fbt bold nobr" style="width: 11%;">{trans("Started:")}</TD>
+					<TD class="fbt bold nobr" style="width: 11%;">{trans("Finished:")}</TD>
+					<TD class="fbt bold nobr" style="width: 11%;">{trans("Time Duration:")}</TD>
+					<TD class="fbt bold nobr" style="width: 11%;">{trans("Terminate Cause:")}</TD>
+					<TD class="fbt nobr" style="width: 11%;">{trans("Downloaded:")}</TD>
+					<TD class="frightu nobr" style="width: 12%;">{trans("Uploaded:")}</TD>
 				</TR>
 				{section loop=$nodesessions name=session}
 				{cycle name=sessionclass values="light,lucid" print=false}
 				<TR class="{cycle name=sessionclass}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 					<TD class="bold nobr">{$nodesessions[session].ipaddr}</TD>
 					<TD class="nobr">{$nodesessions[session].mac}</TD>
+					<TD class="nobr">{if array_key_exists($nodesessions[session].type, $_SESSIONTYPES)}{$_SESSIONTYPES[$nodesessions[session].type].label}{else}-{/if}</TD>
 					<TD class="nobr"><span class="bold">{$nodesessions[session].start|date_format:"%Y.%m.%d"}</span> {$nodesessions[session].start|date_format:"%H:%M:%S"}</TD>
 					<TD class="nobr"><span class="bold">{$nodesessions[session].stop|date_format:"%Y.%m.%d"}</span> {$nodesessions[session].stop|date_format:"%H:%M:%S"}</TD>
 					<TD class="bold nobr">{$nodesessions[session].duration}</TD>
@@ -36,7 +38,7 @@
 				</TR>
 				{sectionelse}
 				<TR>
-					<TD class="text-center" style="width: 100%;" colspan="8">
+					<TD class="text-center" style="width: 100%;" colspan="9">
 						<P>&nbsp;</P>
 						<P><span class="bold">{trans("That are no sessions for this node.")}</span></P>
 						<P>&nbsp;</P>

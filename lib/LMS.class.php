@@ -2117,8 +2117,9 @@ class LMS
     public function GetNodeSessions($nodeid)
     {
         $nodesessions = $this->DB->GetAll('SELECT INET_NTOA(ipaddr) AS ipaddr, mac, start, stop,
-		download, upload, terminatecause
-		FROM nodesessions WHERE nodeid = ? ORDER BY stop DESC LIMIT 10', array($nodeid));
+		download, upload, terminatecause, type
+		FROM nodesessions WHERE nodeid = ? ORDER BY stop DESC LIMIT ?',
+			array($nodeid, ConfigHelper::getConfig('phpui.nodesession_limit', 10)));
         if (!empty($nodesessions))
             foreach ($nodesessions as $idx => $session) {
                 list ($number, $unit) = setunits($session['download']);

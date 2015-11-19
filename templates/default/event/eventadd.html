@@ -97,6 +97,21 @@
 	</TR>
 	<TR>
 		<TD width="1%">
+			<IMG src="img/desc.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Type:")}</B>
+		</TD>
+		<TD width="98%" nowrap>
+			<SELECT name="event[type]" size="1">
+				{foreach from=$_EVENTTYPES key=key item=type}
+					<OPTION value="{$key}" {if $key == $event.type || (!$event.type && $key == $smarty.const.EVENT_OTHER)}SELECTED{/if}>{$type}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="1%">
 			<IMG src="img/customer.gif" alt="">
 		</TD>
 		<TD width="1%">

@@ -29,7 +29,7 @@ function GetEvents($date=NULL, $userid=0, $customerid=0)
 	global $DB, $AUTH;
 
 	$list = $DB->GetAll(
-	        'SELECT events.id AS id, title, description, begintime, endtime, closed, note, '
+	        'SELECT events.id AS id, title, description, begintime, endtime, closed, note, events.type,'
 		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name'). ' AS customername, 
 		 customers.address AS customeraddr, customers.city AS customercity,
 		 (SELECT contact FROM customercontacts WHERE customerid = customers.id

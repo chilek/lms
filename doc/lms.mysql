@@ -1074,6 +1074,7 @@ CREATE TABLE nodesessions (
 	upload bigint		DEFAULT '0',
 	tag varchar(32)		NOT NULL DEFAULT '',
 	terminatecause varchar(32) NOT NULL DEFAULT '',
+	type smallint		NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
 	INDEX customerid (customerid),
 	INDEX nodeid (nodeid),
@@ -1324,6 +1325,7 @@ CREATE TABLE events (
     closed tinyint(1) NOT NULL DEFAULT '0',
     moddate int(11) NOT NULL DEFAULT '0',
     moduserid int(11) NOT NULL DEFAULT '0',
+    type smallint NOT NULL DEFAULT 1,
     PRIMARY KEY (id),
     INDEX date (date)
 ) ENGINE=InnoDB;
@@ -2440,4 +2442,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015111300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015111900');

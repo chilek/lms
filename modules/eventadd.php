@@ -69,8 +69,8 @@ if(isset($_POST['event']))
 
 		$DB->BeginTrans();
 
-		$DB->Execute('INSERT INTO events (title, description, date, begintime, enddate, endtime, userid, private, customerid) 
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		$DB->Execute('INSERT INTO events (title, description, date, begintime, enddate, endtime, userid, private, customerid, type)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array($event['title'], 
 					$event['description'], 
 					$date, 
@@ -79,7 +79,8 @@ if(isset($_POST['event']))
 					$event['endtime'], 
 					$AUTH->id, 
 					$event['status'], 
-					$event['custid']
+					intval($event['custid']),
+					$event['type']
 					));
 
 		if (!empty($event['userlist'])) {
