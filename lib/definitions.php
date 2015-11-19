@@ -398,6 +398,25 @@ $EVENTTYPES = array(
 	EVENT_OTHER        => trans('other')
 );
 
+define('SESSIONTYPE_PPPOE', 1);
+define('SESSIONTYPE_DHCP', 2);
+define('SESSIONTYPE_EAP', 4);
+
+$SESSIONTYPES = array(
+	SESSIONTYPE_PPPOE => array(
+		'label' => trans('PPPoE Client'),
+		'tip' => 'Enable/disable PPPoE Server Client'
+	),
+	SESSIONTYPE_DHCP => array(
+		'label' => trans('DHCP Client'),
+		'tip' => 'Enable/disable DHCP Server Client'
+	),
+	SESSIONTYPE_EAP => array(
+		'label' => trans('EAP Client'),
+		'tip' => 'Enable/disable EAP Server Client'
+	),
+);
+
 if(isset($SMARTY))
 {
 	$SMARTY->assign('_CTYPES',$CTYPES);
@@ -422,6 +441,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_NETELEMENTOWNERSHIPS', $NETELEMENTOWNERSHIPS);
 	$SMARTY->assign('_USERPANEL_ID_TYPES', $USERPANEL_ID_TYPES);
 	$SMARTY->assign('_EVENTTYPES', $EVENTTYPES);
+	$SMARTY->assign('_SESSIONTYPES', $SESSIONTYPES);
 }
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');

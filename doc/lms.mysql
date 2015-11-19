@@ -1074,6 +1074,7 @@ CREATE TABLE nodesessions (
 	upload bigint		DEFAULT '0',
 	tag varchar(32)		NOT NULL DEFAULT '',
 	terminatecause varchar(32) NOT NULL DEFAULT '',
+	type smallint		NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
 	INDEX customerid (customerid),
 	INDEX nodeid (nodeid),
@@ -2441,4 +2442,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015111800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015111900');
