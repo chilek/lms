@@ -125,7 +125,8 @@
                                 </TD>
                                 <TD width="1%" nowrap>
                                         {if $eventlist[eventlist].customername}
-                                                <A href="?m=customerinfo&id={$eventlist[eventlist].customerid}">{$eventlist[eventlist].customername|truncate:"30":"...":true}</A>
+                                                <A href="?m=customerinfo&id={$eventlist[eventlist].customerid}">{$eventlist[eventlist].customername|truncate:"30":"...":true}</A><br/>
+						{$eventlist[eventlist].address}
                                         {/if}
                                 </TD>
                                 <TD width="1%" align="right" nowrap>
