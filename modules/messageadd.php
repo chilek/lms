@@ -499,14 +499,14 @@ if(isset($_POST['message']))
 			WHERE id = ?', array($message['customerid']));
 
 		$message['phones'] = $DB->GetAll('SELECT contact, name FROM customercontacts
-			WHERE customerid = ? AND (type & ? = ?)', 
-                        array($message['customerid'], (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE|CONTACT_DISABLED), (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE)));
+			WHERE customerid = ? AND (type & ?) = 0 AND (type & ?) > 0',
+			array($message['customerid'], CONTACT_DISABLED, CONTACT_MOBILE | CONTACT_FAX | CONTACT_LANDLINE));
 		if (is_null($message['phones']))
 			$message['phones'] = array();
 
 		$message['emails'] = $DB->GetAll('SELECT contact, name FROM customercontacts
-			WHERE customerid = ? AND (type & ?) = ?', 
-                        array($message['customerid'], CONTACT_EMAIL|CONTACT_DISABLED, CONTACT_EMAIL));
+			WHERE customerid = ? AND (type & ?) = ?',
+			array($message['customerid'], CONTACT_EMAIL | CONTACT_DISABLED, CONTACT_EMAIL));
 		if (is_null($message['emails']))
 			$message['emails'] = array();
 	}
@@ -522,8 +522,8 @@ else if (!empty($_GET['customerid']))
 		WHERE id = ?', array($_GET['customerid']));
 
 	$message['phones'] = $DB->GetAll('SELECT contact, name FROM customercontacts
-		WHERE customerid = ? AND (type & ? ) = ?', 
-                array($_GET['customerid'], (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE|CONTACT_DISABLED), (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE)));
+		WHERE customerid = ? AND (type & ?) = 0 AND (type & ?) > 0',
+		array($_GET['customerid'], CONTACT_DISABLED, CONTACT_MOBILE | CONTACT_FAX | CONTACT_LANDLINE));
 	if (is_null($message['phones']))
 		$message['phones'] = array();
 	$message['customerphones'] = array();
@@ -531,8 +531,8 @@ else if (!empty($_GET['customerid']))
 		$message['customerphones'][$idx] = $phone['contact'];
 
 	$message['emails'] = $DB->GetAll('SELECT contact, name FROM customercontacts
-		WHERE customerid = ? AND (type & ?) = ?', 
-                array($_GET['customerid'], CONTACT_EMAIL|CONTACT_DISABLED, CONTACT_EMAIL));
+		WHERE customerid = ? AND (type & ?) = ?',
+		array($_GET['customerid'], CONTACT_EMAIL | CONTACT_DISABLED, CONTACT_EMAIL));
 	if (is_null($message['emails']))
 		$message['emails'] = array();
 	$message['customermails'] = array();
