@@ -27,6 +27,7 @@ version ?.??.?? (????-??-??):
   - resolved tcpdf invoice problem where position names were not wrapped [chilan]
   - added holiday information in timetable [pjona]
   - added event type in timetable [pjona]
+  - added session type for node sessions [chilan]
 
 version 1.11.18 (2015-10-01):
 
