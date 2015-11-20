@@ -29,6 +29,7 @@ version ?.??.?? (????-??-??):
   - added event type in timetable [pjona]
   - added session type for node sessions [chilan]
   - added extra_css_styles Smarty block - plugins can use it to inject their own CSS styles [maciejlew]
+  - added history of the ticket when you add notes in helpdesk [pjona]
 
 version 1.11.18 (2015-10-01):
 

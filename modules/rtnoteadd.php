@@ -164,6 +164,7 @@ $layout['pagetitle'] = trans('New Note');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('note', $note);
+$SMARTY->assign('ticket', $LMS->GetTicketContents($note['ticketid']));
 $SMARTY->assign('error', $error);
 $SMARTY->display('rt/rtnoteadd.html');
 
