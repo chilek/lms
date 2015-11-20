@@ -24,6 +24,18 @@
  *  $Id$
  */
 
+function select_customer($id)
+{
+    $JSResponse = new xajaxResponse();
+    $nodes_location = LMSDB::getInstance()->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY n.name ASC', array($id));
+    $JSResponse->call('update_nodes_location', (array)$nodes_location);
+    return $JSResponse;
+}
+
+$LMS->InitXajax();
+$LMS->RegisterXajaxFunction('select_customer');
+$SMARTY->assign('xajax', $LMS->RunXajax());
+
 if(isset($_GET['action']) && $_GET['action'] == 'open')
 {
 	$DB->Execute('UPDATE events SET closed = 0 WHERE id = ?',array($_GET['id']));
@@ -37,7 +49,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == 'close')
 
 $event = $DB->GetRow('SELECT events.id AS id, title, description, note, events.type,
 			date, begintime, enddate, endtime, customerid, private, closed, ' 
-			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername
+			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, nodeid
 			FROM events LEFT JOIN customers ON (customers.id = customerid)
 			WHERE events.id = ?', array($_GET['id']));
 
@@ -90,11 +102,12 @@ if(isset($_POST['event']))
 
 	if (!$error) {
 		$event['private'] = isset($event['private']) ? 1 : 0;
+		$event['nodeid'] = isset($event['customer_location']) ? NULL : $event['nodeid'];
 
 		$DB->BeginTrans();
 
-		$DB->Execute('UPDATE events SET title=?, description=?, date=?, begintime=?, enddate=?, endtime=?, private=?, note=?, customerid=?, type=? WHERE id=?',
-				array($event['title'], $event['description'], $date, $event['begintime'], $enddate, $event['endtime'], $event['private'], $event['note'], $event['customerid'], $event['type'], $event['id']));
+		$DB->Execute('UPDATE events SET title=?, description=?, date=?, begintime=?, enddate=?, endtime=?, private=?, note=?, customerid=?, type=?, nodeid=? WHERE id=?',
+				array($event['title'], $event['description'], $date, $event['begintime'], $enddate, $event['endtime'], $event['private'], $event['note'], $event['customerid'], $event['type'], $event['nodeid'], $event['id']));
 				
 		if (!empty($event['userlist']) && is_array($event['userlist'])) {
 			$DB->Execute('DELETE FROM eventassignments WHERE eventid = ?', array($event['id']));
@@ -119,6 +132,13 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $userlist = $LMS->GetUserNames();
 
+
+if(empty($nodes_location)) {
+    $nodes_location = $DB->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY name ASC', array($event['customerid']));
+}
+
+
+$SMARTY->assign('nodes_location', $nodes_location);
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('userlist', $userlist);
 $SMARTY->assign('userlistsize', sizeof($userlist));

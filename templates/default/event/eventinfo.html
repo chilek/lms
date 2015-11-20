@@ -138,6 +138,19 @@
 			<A href="?m=customerinfo&id={$event.customerid}">{$event.customername}</A>
 		</TD>
 	</TR>
+	<TR>
+		<TD width="1%">
+			<IMG src="img/node.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Location:")}</B>
+		</TD>
+		<TD width="98%" nowrap>
+			{if isset($event.location)}{$event.location}{else}{$event.customerlocation}{/if}
+		</TD>
+	</TR>
+
+
 {if $event.note}
 	<TR>
 		<TD width="1%">
