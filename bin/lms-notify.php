@@ -407,7 +407,7 @@ if (empty($types) || in_array('debtors', $types)) {
 	$customers = $DB->GetAll("SELECT c.id, c.pin, c.lastname, c.name,
 			SUM(value) AS balance, m.email, x.phone, divisions.account
 		FROM customers c
-		LEFT JOIN disivions ON divisions.id = c.divisionid
+		LEFT JOIN divisions ON divisions.id = c.divisionid
 		JOIN cash ON (c.id = cash.customerid)
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
 			FROM customercontacts
@@ -476,7 +476,7 @@ if (empty($types) || in_array('reminder', $types)) {
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
-		LEFT JOIN disivions ON divisions.id = c.divisionid
+		LEFT JOIN divisions ON divisions.id = c.divisionid
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
 			FROM customercontacts
 			WHERE (type & ?) = ?
@@ -498,7 +498,7 @@ if (empty($types) || in_array('reminder', $types)) {
 			FROM cash
 			LEFT JOIN documents ON documents.id = cash.docid
 			JOIN customers c ON c.id = cash.customerid
-			LEFT JOIN disivions ON divisions.id = c.divisionid
+			LEFT JOIN divisions ON divisions.id = c.divisionid
 			WHERE (cash.docid = 0 AND ((cash.type <> 0 AND cash.time < $currtime)
 				OR (cash.type = 0 AND cash.time + ((CASE c.paytime WHEN -1 THEN
 				(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE c.paytime END) + ?) * 86400 < $currtime)))
@@ -558,7 +558,7 @@ if (empty($types) || in_array('invoices', $types)) {
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
-		LEFT JOIN disivions ON divisions.id = c.divisionid
+		LEFT JOIN divisions ON divisions.id = c.divisionid
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
 			FROM customercontacts
 			WHERE (type & ?) = ?
@@ -630,7 +630,7 @@ if (empty($types) || in_array('notes', $types)) {
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
-		LEFT JOIN disivions ON divisions.id = c.divisionid
+		LEFT JOIN divisions ON divisions.id = c.divisionid
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
 			FROM customercontacts
 			WHERE (type & ?) = ?
@@ -700,7 +700,7 @@ if (empty($types) || in_array('warnings', $types)) {
 	$customers = $DB->GetAll("SELECT c.id, (" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS name,
 		c.pin, c.message, m.email, x.phone, divisions.account, COALESCE(ca.balance, 0) AS balance
 		FROM customers c
-		LEFT JOIN disivions ON divisions.id = c.divisionid
+		LEFT JOIN divisions ON divisions.id = c.divisionid
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
 			FROM customercontacts
 			WHERE (type & ?) = ?
