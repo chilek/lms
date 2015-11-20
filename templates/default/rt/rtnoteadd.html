@@ -88,12 +88,12 @@
 	<TR class="light">
 		<TD WIDTH="1%" CLASS="fbl" NOWRAP>
 			<IMG src="img/users.gif" alt="">
-			<B>{t}Owner:{/t}</B>
+			<B>{trans("Owner:")}</B>
 		</TD>
 			<TD WIDTH="99%" CLASS="fbr">
 			<SELECT size="1" name="note[owner]" {tip text="Select user" trigger="owner"}>
 				{if $note.owner == 0}
-					<OPTION value="0" SELECTED>- {t}select user{/t} -</OPTION>
+					<OPTION value="0" SELECTED>- {trans("select user")} -</OPTION>
 				{/if}
 				{foreach from=$userlist item=user}
 					<OPTION value="{$user.id}" {if $user.id == $note.owner}SELECTED{/if}>{$user.name}</OPTION>
