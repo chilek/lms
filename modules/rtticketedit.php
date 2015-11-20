@@ -219,7 +219,7 @@ if(isset($_POST['ticket']))
 			{
 				$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
 							address, zip, city FROM customers WHERE id = ?', array($ticketedit['customerid']));
-				$info['contacts'] = $DB->GetAll('SELECT contact, name FROM customercontacts
+				$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
 					WHERE customerid = ?', array($ticketedit['customerid']));
 
 				$emails = array();
