@@ -90,11 +90,7 @@ if ($id && !isset($_POST['ticket'])) {
 	}
 
 	if (isset($_GET['assign'])) {
-		$DB->Execute('UPDATE rttickets SET owner = ? WHERE id = ?',
-			array($AUTH->id, $id));
-		$DB->Execute('INSERT INTO rtnotes (userid, ticketid, body, createtime)
-			VALUES(?, ?, ?, ?NOW?)',
-			array($AUTH->id, $id, trans('Ticket has been assigned to user $a.', $AUTH->logname)));
+		$LMS->SetTicketOwner($id, $AUTH->id);
 		$SESSION->redirect('?m=rtticketview&id=' . $id);
 	}
 }
@@ -128,11 +124,10 @@ if(isset($_POST['ticket']))
 	{
 		if($ticketedit['state'] == RT_RESOLVED)
 		{
-			$DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, customerid=?, cause=?, resolvetime=?NOW? 
-					WHERE id=?', array($ticketedit['queueid'], 
+			$DB->Execute('UPDATE rttickets SET subject=?, state=?, customerid=?, cause=?, resolvetime=?NOW? 
+					WHERE id=?', array(
 						$ticketedit['subject'], 
 						$ticketedit['state'], 
-						$ticketedit['owner'], 
 						$ticketedit['customerid'], 
 						$ticketedit['cause'], 
 						$ticketedit['ticketid']
@@ -143,11 +138,10 @@ if(isset($_POST['ticket']))
 			// if ticket was resolved, set resolvetime=0
 			if($DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($ticket['ticketid'])) == 2)
 			{
-				$DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, customerid=?, cause=?, resolvetime=0 
-					WHERE id=?', array($ticketedit['queueid'], 
+				$DB->Execute('UPDATE rttickets SET subject=?, state=?, customerid=?, cause=?, resolvetime=0 
+					WHERE id=?', array(
 						$ticketedit['subject'], 
 						$ticketedit['state'], 
-						$ticketedit['owner'], 
 						$ticketedit['customerid'], 
 						$ticketedit['cause'], 
 						$ticketedit['ticketid']
@@ -155,11 +149,10 @@ if(isset($_POST['ticket']))
 			}
 			else
 			{
-				$DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, customerid=?, cause=? 
-					WHERE id=?', array($ticketedit['queueid'], 
+				$DB->Execute('UPDATE rttickets SET subject=?, state=?, customerid=?, cause=? 
+					WHERE id=?', array(
 						$ticketedit['subject'], 
 						$ticketedit['state'], 
-						$ticketedit['owner'], 
 						$ticketedit['customerid'], 
 						$ticketedit['cause'], 
 						$ticketedit['ticketid']
@@ -167,17 +160,8 @@ if(isset($_POST['ticket']))
 			}
 		}
 
-		if ($ticketedit['queueid'] != $ticket['queueid'])
-			$DB->Execute('INSERT INTO rtnotes (userid, ticketid, body, createtime)
-				VALUES(?, ?, ?, ?NOW?)',
-				array($AUTH->id, $id,
-					trans('Ticket has been moved from queue $a to queue $b.',
-						$LMS->GetQueueName($ticket['queueid']), $LMS->GetQueueName($ticketedit['queueid']))));
-
-		if ($ticketedit['owner'] != $ticket['owner'])
-			$DB->Execute('INSERT INTO rtnotes (userid, ticketid, body, createtime)
-				VALUES(?, ?, ?, ?NOW?)',
-				array($AUTH->id, $id, trans('Ticket has been assigned to user $a.', $LMS->GetUserName($ticketedit['owner']))));
+		$LMS->SetTicketOwner($id, $ticketedit['owner']);
+		$LMS->SetTicketQueue($id, $ticketedit['queueid']);
 
 		$DB->Execute('DELETE FROM rtticketcategories WHERE ticketid = ?', array($id));
 		foreach($ticketedit['categories'] as $categoryid => $val)

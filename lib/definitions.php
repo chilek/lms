@@ -50,6 +50,11 @@ $RT_STATES = array(
     RT_DEAD     => trans('dead')
 );
 
+// Helpdesk note type
+define('RT_NOTE', 1);
+define('RT_NOTE_OWNER', 2);
+define('RT_NOTE_QUEUE', 3);
+
 // Messages status and type
 define('MSG_NEW', 1);
 define('MSG_SENT', 2);
