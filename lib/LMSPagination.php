@@ -30,19 +30,19 @@
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
-class LMSPagination
+abstract class LMSPagination
 {
-    /** @ var int Current page */
-    private $page;
+    /** @var int Current page */
+    protected $page;
     
-    /** @ var int Total records */
-    private $total;
+    /** @var int Total records */
+    protected $total;
     
-    /** @ var int Records per page */
-    private $per_page;
+    /** @var int Records per page */
+    protected $per_page;
     
-    /** @ var int Total pages */
-    private $pages;
+    /** @var int Total pages */
+    protected $pages;
     
     /**
      * Constructs pagination
@@ -117,9 +117,38 @@ class LMSPagination
     public function getLastOnPage()
     {
         $recordnr = $this->page * $this->per_page;
-        if ($recordnr > $this->total)
+        if ($recordnr > $this->total) {
             $recordnr = $this->total;
+        }
         return $recordnr;
+    }
+    
+    /**
+     * Returns previous page number
+     * 
+     * @return int Previous page
+     */
+    public function getPreviousPage()
+    {
+        if ($this->page > 1) {
+            return $this->page - 1;
+        } else {
+            return 1;
+        }
+    }
+    
+    /**
+     * Returns next page number
+     * 
+     * @return int Next page
+     */
+    public function getNextPage()
+    {
+        if ($this->page < $this->getPages()) {
+            return $this->page + 1;
+        } else {
+            return $this->page;
+        }
     }
 
     /**
@@ -181,9 +210,24 @@ class LMSPagination
     /**
      * Calculates total pages
      */
-    private function calculatePages()
+    protected function calculatePages()
     {
         $this->pages = intval(ceil($this->total / $this->per_page));
     }
+    
+    /**
+     * Determines if "go to" should be displayed
+     * 
+     * @return boolean True if "go to" should be displated, false otherwise
+     */
+    abstract function displayGoTo();
+    
+    /**
+     * Determines if link to given page should be displayed
+     * 
+     * @return boolean True if link should be displated, false otherwise
+     */
+    abstract function displayLink($link_page);
+    
     
 }

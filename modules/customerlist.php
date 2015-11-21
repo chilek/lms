@@ -74,7 +74,7 @@ $total = intval($LMS->GetCustomerList($o, $s, $n, $g, NULL, NULL, 'AND', $ng, $d
 
 $customerlist = $LMS->GetCustomerList($o, $s, $n, $g, NULL, NULL, 'AND', $ng, $d, $per_page, $offset);
 
-$pagination = new LMSPagination($page, $total, $per_page);
+$pagination = LMSPaginationFactory::getPagnation($page, $total, $per_page, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
 $listdata['total'] = $customerlist['total'];
 $listdata['order'] = $customerlist['order'];
