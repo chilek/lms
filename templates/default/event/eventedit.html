@@ -148,7 +148,7 @@
 		    <option value="{$item.id}"{if $item.id == $event.nodeid} selected{/if}>{$item.name}: {$item.location}</option>
 		{/foreach}
 	    </select>
-	    {trans("Use customer location:")} <input id="cl" type="checkbox" name="event[customer_location]" {if $event.nodeid==0}CHECKED{/if}>
+	    <label>{trans("Use customer location:")} <input id="cl" type="checkbox" name="event[customer_location]" {if $event.nodeid==0}CHECKED{/if}></label>
 	</TD>
 	</TR>
 	<TR>
