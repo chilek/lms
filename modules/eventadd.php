@@ -24,6 +24,18 @@
  *  $Id$
  */
 
+function select_customer($id)
+{
+    $JSResponse = new xajaxResponse();
+    $nodes_location = LMSDB::getInstance()->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY n.name ASC', array($id));
+    $JSResponse->call('update_nodes_location', (array)$nodes_location);
+    return $JSResponse;
+}
+
+$LMS->InitXajax();
+$LMS->RegisterXajaxFunction('select_customer');
+$SMARTY->assign('xajax', $LMS->RunXajax());
+
 if(isset($_POST['event']))
 {
 	$event = $_POST['event'];
@@ -66,11 +78,12 @@ if(isset($_POST['event']))
 			$event['custid'] = $event['customerid'];
 		if ($event['custid'] == '')
 			$event['custid'] = 0;
+		$event['nodeid'] = (isset($event['customer_location'])||is_null($event['nodeid'])) ? NULL : $event['nodeid'];
 
 		$DB->BeginTrans();
 
-		$DB->Execute('INSERT INTO events (title, description, date, begintime, enddate, endtime, userid, private, customerid, type)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		$DB->Execute('INSERT INTO events (title, description, date, begintime, enddate, endtime, userid, private, customerid, type, nodeid)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array($event['title'], 
 					$event['description'], 
 					$date, 
@@ -80,7 +93,8 @@ if(isset($_POST['event']))
 					$AUTH->id, 
 					$event['status'], 
 					intval($event['custid']),
-					$event['type']
+					$event['type'],
+					$event['nodeid']
 					));
 
 		if (!empty($event['userlist'])) {

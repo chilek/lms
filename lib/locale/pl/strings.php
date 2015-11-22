@@ -3025,4 +3025,5 @@ $_LANG['Cancellation of a traditional invoice (agreement on an electronic invoic
 $_LANG['Check if send notification'] = 'Zaznacz, jeżeli chcesz wysyłać powiadomienia';
 $_LANG['Notification'] = 'Powiadomienia';
 
+$_LANG['Use customer location:'] = 'Użyj lokalizacji klienta:';
 ?>

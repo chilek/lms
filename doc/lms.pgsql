@@ -1377,9 +1377,12 @@ CREATE TABLE events (
 	moddate		integer		DEFAULT 0 NOT NULL,
 	moduserid	integer		DEFAULT 0 NOT NULL,
 	type		smallint	DEFAULT 1 NOT NULL,
+	nodeid		integer		DEFAULT NULL
+	    REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
 CREATE INDEX events_date_idx ON events(date);
+CREATE INDEX events_nodeid_idx ON events(nodeid);
 
 /* ---------------------------------------------------
  Structure of table "events" (Timetable)
@@ -2532,4 +2535,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015111900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015112000');

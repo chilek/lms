@@ -126,7 +126,11 @@
                                 <TD width="1%" nowrap>
                                         {if $eventlist[eventlist].customername}
                                                 <A href="?m=customerinfo&id={$eventlist[eventlist].customerid}">{$eventlist[eventlist].customername|truncate:"30":"...":true}</A><br/>
-						{$eventlist[eventlist].address}
+						{if isset($eventlist[eventlist].location)}
+						    <a href="?m=nodeinfo&id={$eventlist[eventlist].nodeid}">{$eventlist[eventlist].location}</a>
+						{else}
+						    {$eventlist[eventlist].customerlocation}
+						{/if}
                                         {/if}
                                 </TD>
                                 <TD width="1%" align="right" nowrap>
