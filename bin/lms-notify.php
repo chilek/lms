@@ -73,7 +73,7 @@ lms-notify.php
 -f, --fakedate=YYYY/MM/DD       override system date;
 -t, --type=<notification-types> take only selected notification types into account
                                 (separated by colons)
--c, --channels=<channel-types>  use selected channels for notifications
+-c, --channel=<channel-types>  use selected channels for notifications
                                 (separated by colons)
 -s, --section=<section-name>    section name from lms configuration where settings
                                 are stored
@@ -373,9 +373,10 @@ if (empty($types) || in_array('contracts', $types)) {
 				(!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
 
 			if (!$quiet) {
-				if (in_array('mail', $channels) && !empty($recipient_mail))
-					printf("[mail/contracts] %s (%04d): %s" . PHP_EOL,
-						$recipient_name, $row['id'], $recipient_mail);
+				if (in_array('mail', $channels) && !empty($recipient_mails))
+					foreach ($recipient_mails as $recipient_mail)
+						printf("[mail/contracts] %s (%04d): %s" . PHP_EOL,
+							$recipient_name, $row['id'], $recipient_mail);
 				if (in_array('sms', $channels) && !empty($recipient_phones))
 					foreach ($recipient_phones as $phone)
 						printf("[sms/contracts] %s (%04d): %s" . PHP_EOL,
@@ -383,7 +384,7 @@ if (empty($types) || in_array('contracts', $types)) {
 			}
 
 			if (!$debug) {
-				if (in_array('mail', $channels) && !empty($recipient_mail)) {
+				if (in_array('mail', $channels) && !empty($recipient_mails)) {
 					$msgid = create_message(MSG_MAIL, $subject, $message);
 					foreach ($recipient_mails as $recipient_mail)
 						send_mail($msgid, $row['id'], $recipient_mail, $recipient_name,
@@ -442,9 +443,10 @@ if (empty($types) || in_array('debtors', $types)) {
 				(!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
 
 			if (!$quiet) {
-				if (in_array('mail', $channels) && !empty($recipient_mail))
-					printf("[mail/debtors] %s (%04d): %s" . PHP_EOL,
-						$recipient_name, $row['id'], $recipient_mail);
+				if (in_array('mail', $channels) && !empty($recipient_mails))
+					foreach ($recipient_mails as $recipient_mail)
+						printf("[mail/debtors] %s (%04d): %s" . PHP_EOL,
+							$recipient_name, $row['id'], $recipient_mail);
 				if (in_array('sms', $channels) && !empty($recipient_phones))
 					foreach ($recipient_phones as $phone)
 						printf("[sms/debtors] %s (%04d): %s" . PHP_EOL,
@@ -452,7 +454,7 @@ if (empty($types) || in_array('debtors', $types)) {
 			}
 
 			if (!$debug) {
-				if (in_array('mail', $channels) && !empty($recipient_mail)) {
+				if (in_array('mail', $channels) && !empty($recipient_mails)) {
 					$msgid = create_message(MSG_MAIL, $subject, $message);
 					foreach ($recipient_mails as $recipient_mail)
 						send_mail($msgid, $row['id'], $recipient_mail, $recipient_name,
@@ -525,9 +527,10 @@ if (empty($types) || in_array('reminder', $types)) {
 				(!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
 
 			if (!$quiet) {
-				if (in_array('mail', $channels) && !empty($recipient_mail))
-					printf("[mail/reminder] %s (%04d) %s: %s" . PHP_EOL,
-						$row['name'], $row['id'], $row['doc_number'], $recipient_mail);
+				if (in_array('mail', $channels) && !empty($recipient_mails))
+					foreach ($recipient_mails as $recipient_mail)
+						printf("[mail/reminder] %s (%04d) %s: %s" . PHP_EOL,
+							$row['name'], $row['id'], $row['doc_number'], $recipient_mail);
 				if (in_array('sms', $channels) && !empty($recipient_phones))
 					foreach ($recipient_phones as $phone)
 						printf("[sms/reminder] %s (%04d) %s: %s" . PHP_EOL,
@@ -535,7 +538,7 @@ if (empty($types) || in_array('reminder', $types)) {
 			}
 
 			if (!$debug) {
-				if (in_array('mail', $channels) && !empty($recipient_mail)) {
+				if (in_array('mail', $channels) && !empty($recipient_mails)) {
 					$msgid = create_message(MSG_MAIL, $subject, $message);
 					foreach ($recipient_mails as $recipient_mail)
 						send_mail($msgid, $row['id'], $recipient_mail, $row['name'],
@@ -597,9 +600,10 @@ if (empty($types) || in_array('invoices', $types)) {
 				(!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
 
 			if (!$quiet) {
-				if (in_array('mail', $channels) && !empty($recipient_mail))
-					printf("[mail/invoices] %s (%04d) %s: %s" . PHP_EOL,
-						$row['name'], $row['id'], $row['doc_number'], $recipient_mail);
+				if (in_array('mail', $channels) && !empty($recipient_mails))
+					foreach ($recipient_mails as $recipient_mail)
+						printf("[mail/invoices] %s (%04d) %s: %s" . PHP_EOL,
+							$row['name'], $row['id'], $row['doc_number'], $recipient_mail);
 				if (in_array('sms', $channels) && !empty($recipient_phones))
 					foreach ($recipient_phones as $phone)
 						printf("[sms/invoices] %s (%04d): %s: %s" . PHP_EOL,
@@ -607,7 +611,7 @@ if (empty($types) || in_array('invoices', $types)) {
 			}
 
 			if (!$debug) {
-				if (in_array('mail', $channels) && !empty($recipient_mail)) {
+				if (in_array('mail', $channels) && !empty($recipient_mails)) {
 					$msgid = create_message(MSG_MAIL, $subject, $message);
 					foreach ($recipient_mails as $recipient_mail)
 						send_mail($msgid, $row['id'], $recipient_mail, $row['name'],
@@ -669,9 +673,10 @@ if (empty($types) || in_array('notes', $types)) {
 				(!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
 
 			if (!$quiet) {
-				if (in_array('mail', $channels) && !empty($recipient_mail))
-					printf("[mail/notes] %s (%04d) %s: %s" . PHP_EOL,
-						$row['name'], $row['id'], $row['doc_number'], $recipient_mail);
+				if (in_array('mail', $channels) && !empty($recipient_mails))
+					foreach ($recipient_mails as $recipient_mail)
+						printf("[mail/notes] %s (%04d) %s: %s" . PHP_EOL,
+							$row['name'], $row['id'], $row['doc_number'], $recipient_mail);
 				if (in_array('sms', $channels) && !empty($recipient_phones))
 					foreach ($recipient_phones as $phone)
 						printf("[sms/notes] %s (%04d) %s: %s" . PHP_EOL,
@@ -679,7 +684,7 @@ if (empty($types) || in_array('notes', $types)) {
 			}
 
 			if (!$debug) {
-				if (in_array('mail', $channels) && !empty($recipient_mail)) {
+				if (in_array('mail', $channels) && !empty($recipient_mails)) {
 					$msgid = create_message(MSG_MAIL, $subject, $message);
 					foreach ($recipient_mails as $recipient_mail)
 						send_mail($msgid, $row['id'], $recipient_mail, $row['name'],
@@ -731,9 +736,10 @@ if (empty($types) || in_array('warnings', $types)) {
 				(!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
 
 			if (!$quiet) {
-				if (in_array('mail', $channels) && !empty($recipient_mail))
-					printf("[mail/warnings] %s (%04d): %s" . PHP_EOL,
-						$row['name'], $row['id'], $recipient_mail);
+				if (in_array('mail', $channels) && !empty($recipient_mails))
+					foreach ($recipient_mails as $recipient_mail)
+						printf("[mail/warnings] %s (%04d): %s" . PHP_EOL,
+							$row['name'], $row['id'], $recipient_mail);
 				if (in_array('sms', $channels) && !empty($recipient_phones))
 					foreach ($recipient_phones as $phone)
 						printf("[sms/warnings] %s (%04d): %s" . PHP_EOL,
@@ -741,7 +747,7 @@ if (empty($types) || in_array('warnings', $types)) {
 			}
 
 			if (!$debug) {
-				if (in_array('mail', $channels) && !empty($recipient_mail)) {
+				if (in_array('mail', $channels) && !empty($recipient_mails)) {
 					$msgid = create_message(MSG_MAIL, $subject, $message);
 					foreach ($recipient_mails as $recipient_mail)
 						send_mail($msgid, $row['id'], $recipient_mail, $row['name'],
