@@ -401,7 +401,7 @@ else
 	if($_GET['ticketid'])
 	{
 		$queue = $LMS->GetQueueByTicketId($_GET['ticketid']);
-		$message = $DB->GetRow('SELECT id AS ticketid, state, cause FROM rttickets WHERE id = ?', array($_GET['ticketid']));
+		$message = $DB->GetRow('SELECT id AS ticketid, state, cause, queueid, owner FROM rttickets WHERE id = ?', array($_GET['ticketid']));
 	}
 
 	$user = $LMS->GetUserInfo($AUTH->id);
