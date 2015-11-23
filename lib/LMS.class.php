@@ -1382,6 +1382,12 @@ class LMS
         return $manager->SetTicketQueue($ticket, $queue);
     }
 
+    public function SetTicket($ticketid, $queueid, $owner, $state)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->SetTicket($ticketid, $queueid, $owner, $state);
+    }
+
     public function GetMessage($id)
     {
         $manager = $this->getHelpdeskManager();

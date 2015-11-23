@@ -83,4 +83,6 @@ interface LMSHelpdeskManagerInterface
     public function SetTicketOwner($ticket, $owner);
 
     public function GetMessage($id);
+    
+    public function SetTicket($ticketid, $queueid, $owner, $state); 
 }

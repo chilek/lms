@@ -460,4 +460,32 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return $message;
     }
 
+    public function SetTicket($ticketid, $queueid, $owner, $state)
+    {
+        global $LMS, $RT_STATES;
+
+        $ticket = $this->db->GetRow('SELECT owner, queueid, state FROM rttickets WHERE id=?', array($ticketid));
+        $note = "";
+        $type = 0;
+
+        if($ticket['owner'] != $owner){
+            $note .= trans('Ticket has been assigned to user $a.', $LMS->GetUserName($owner)) .'<br>';
+            $type = $type | RTNOTE_OWNER_CHANGE;
+        }
+        if($ticket['queueid'] != $queueid){
+            $note .= trans('Ticket has been moved from queue $a to queue $b.', $LMS->GetQueueName($ticket['queueid']), $LMS->GetQueueName($queueid)) .'<br>'
+            $type = $type | RTNOTE_QUEUE_CHANGE;
+        }
+        if($ticket['state'] != $state && $state){
+            $note .= trans('Ticket\'s state has been change from $a to $b.', $RT_STATES[$ticket['state']], $RT_STATES[$state]) .'<br>';
+            $type = $type | RTNOTE_STATE_CHANGE;
+        }else
+            $state = $ticket['state'];
+
+        if($type!=0){
+            $this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, state = ? WHERE id = ?', array($queueid, $owner, $state, $ticketid));
+            $this->db->Execute('INSERT INTO rtnotes (userid, ticketid, type, body, createtime)
+                VALUES(?, ?, ?, ?, ?NOW?)', array($this->auth->id, $ticketid, $type, $note));
+        }
+    }
 }

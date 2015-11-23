@@ -54,6 +54,8 @@ $RT_STATES = array(
 define('RTNOTE', 1);
 define('RTNOTE_OWNER_CHANGE', 2);
 define('RTNOTE_QUEUE_CHANGE', 4);
+define('RTNOTE_STATE_CHANGE', 8);
+define('RTNOTE_CAUSE_CHANGE', 16);
 
 // Messages status and type
 define('MSG_NEW', 1);

@@ -3026,4 +3026,5 @@ $_LANG['Check if send notification'] = 'Zaznacz, jeżeli chcesz wysyłać powiad
 $_LANG['Notification'] = 'Powiadomienia';
 
 $_LANG['Use customer location:'] = 'Użyj lokalizacji klienta:';
+$_LANG['Ticket\'s state has been change from $a to $b.'] = 'Status zgłoszenia został zmieniony z $a na $b.';
 ?>
