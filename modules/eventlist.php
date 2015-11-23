@@ -38,8 +38,9 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 	$list = $DB->GetAll(
 		'SELECT events.id AS id, title, description, date, begintime, enddate, endtime, customerid, closed, events.type, '
 		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername,
-		userid, users.name AS username, customers.address
+		userid, users.name AS username, '.$DB->Concat('customers.city',"', '",'customers.address').' AS customerlocation, nodeid, nodes.location AS location 
 		FROM events 
+		LEFT JOIN nodes ON (nodeid = nodes.id)
 		LEFT JOIN customers ON (customerid = customers.id)
 		LEFT JOIN users ON (userid = users.id)
 		WHERE ((date >= ? AND date < ?) OR (enddate <> 0 AND date < ? AND enddate >= ?))
