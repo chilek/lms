@@ -243,10 +243,27 @@ if(isset($_POST['message']))
 		else if (!$DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($message['ticketid'])))
 			$LMS->SetTicketState($message['ticketid'], RT_OPEN);
 
-		$DB->Execute('UPDATE rttickets SET cause = ? WHERE id = ?', array($message['cause'], $message['ticketid']));
+                if ($message['queueid'] != $ticket['queueid'])
+                        $DB->Execute('INSERT INTO rtnotes (userid, ticketid, body, createtime)
+                                VALUES(?, ?, ?, ?NOW?)',
+                                array($AUTH->id, $message['ticketid'],
+                                        trans('Ticket has been moved from queue $a to queue $b.',
+                                                $LMS->GetQueueName($ticket['queueid']), $LMS->GetQueueName($message['queueid']))));
 
-		if (!$DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($message['ticketid'])))
-			$DB->Execute('UPDATE rttickets SET owner = ? WHERE id = ?', array($AUTH->id, $message['ticketid']));
+                if ($message['owner'] != $ticket['owner'] && $message['owner'])
+                        $DB->Execute('INSERT INTO rtnotes (userid, ticketid, body, createtime)
+                                VALUES(?, ?, ?, ?NOW?)',
+                                array($AUTH->id, $message['ticketid'], trans('Ticket has been assigned to user $a.', $LMS->GetUserName($message['owner']))));
+                
+                $DB->Execute('UPDATE rttickets SET cause = ?, queueid = ?, owner = ? WHERE id = ?', array($message['cause'], $message['queueid'], $message['owner'], $message['ticketid']));
+
+                if (!$DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($message['ticketid']))){
+                        $DB->Execute('UPDATE rttickets SET owner = ? WHERE id = ?', array($AUTH->id, $message['ticketid']));
+                        $DB->Execute('INSERT INTO rtnotes (userid, ticketid, body, createtime)
+                                VALUES(?, ?, ?, ?NOW?)',
+                                array($AUTH->id, $message['ticketid'], trans('Ticket has been assigned to user $a.', $LMS->GetUserName($message['owner']))));
+                                
+                }
 
 		// Users notification
 		if (isset($message['notify']) && ($user['email'] || $queue['email']))
@@ -429,6 +446,8 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('message', $message);
 $SMARTY->assign('error', $error);
+$SMARTY->assign('userlist', $LMS->GetUserNames());
+$SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->display('rt/rtmessageadd.html');
 
 ?>
