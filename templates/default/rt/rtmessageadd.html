@@ -101,6 +101,35 @@
 			</SELECT>
 		</TD>
         </TR>
+        <TR CLASS="light">
+                <TD WIDTH="1%" CLASS="fleft" NOWRAP>
+                        <IMG src="img/queue.gif" alt="">   
+                        <B>{trans("Queue:")}</B>
+                </TD>
+                <TD WIDTH="99%" CLASS="fright">
+                        <SELECT size="1" name="message[queueid]" {tip text="Select queue" trigger="queue"}>
+                        {foreach from=$queuelist item=item}
+                                <OPTION value="{$item.id}" {if $item.id == $message.queueid}SELECTED{/if}>{$item.name}</OPTION>
+                        {/foreach}
+                        </SELECT>
+                </TD>
+        </TR>
+        <TR class="light">
+                <TD WIDTH="1%" CLASS="fbl" NOWRAP>
+                        <IMG src="img/users.gif" alt="">
+                        <B>{trans("Owner:")}</B>
+                </TD>
+                        <TD WIDTH="99%" CLASS="fbr">
+                        <SELECT size="1" name="message[owner]" {tip text="Select user" trigger="owner"}>
+                                {if $note.owner == 0}
+                                        <OPTION value="0" SELECTED>- {trans("select user")} -</OPTION>
+                                {/if}
+                                {foreach from=$userlist item=user}
+                                        <OPTION value="{$user.id}" {if $user.id == $message.owner}SELECTED{/if}>{$user.name}</OPTION>
+                                {/foreach}
+                        </SELECT>
+                </TD>
+        </TR>
     </TBODY>
 </TABLE>
 </FORM></P>
