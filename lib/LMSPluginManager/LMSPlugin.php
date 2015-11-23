@@ -62,7 +62,7 @@ abstract class LMSPlugin implements ObserverInterface {
 		$reflector = new ReflectionClass(get_called_class());
 		$filename = dirname($reflector->getFileName()) . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR
 			. 'locale' . DIRECTORY_SEPARATOR . $_ui_language . DIRECTORY_SEPARATOR . 'strings.php';
-		if (is_readable($filename))
+		if (@is_readable($filename))
 			require_once($filename);
 	}
 

@@ -57,21 +57,10 @@ elseif(isset($_POST['note']))
 			    array($AUTH->id, $note['ticketid'], $note['body']));
 
 		$LMS->SetTicketState($note['ticketid'], $note['state']);
+		$LMS->SetTicketOwner($note['ticketid'], $note['owner']);
+		$LMS->SetTicketQueue($note['ticketid'], $note['queueid']);
 
-		$DB->Execute('UPDATE rttickets SET cause = ?, queueid = ?, owner = ? WHERE id = ?',
-			array($note['cause'], $note['queueid'], $note['owner'], $note['ticketid']));
-
-                if ($ticket['queueid'] != $note['queueid'])
-                        $DB->Execute('INSERT INTO rtnotes (userid, ticketid, body, createtime)
-                                VALUES(?, ?, ?, ?NOW?)',
-                                array($AUTH->id, $note['ticketid'],
-                                        trans('Ticket has been moved from queue $a to queue $b.',
-                                                $LMS->GetQueueName($ticket['queueid']), $LMS->GetQueueName($note['queueid']))));
-
-                if ($ticket['owner'] != $note['owner'])
-                        $DB->Execute('INSERT INTO rtnotes (userid, ticketid, body, createtime)
-                                VALUES(?, ?, ?, ?NOW?)',
-                                array($AUTH->id, $note['ticketid'], trans('Ticket has been assigned to user $a.', $LMS->GetUserName($note['owner']))));
+		$DB->Execute('UPDATE rttickets SET cause = ? WHERE id = ?', array($note['cause'], $note['ticketid']));
 
 		if(isset($note['notify']))
 		{

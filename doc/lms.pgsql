@@ -1139,6 +1139,7 @@ CREATE TABLE rtnotes (
         REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	body text             DEFAULT '' NOT NULL,
 	createtime integer    DEFAULT 0 NOT NULL,
+	type smallint         DEFAULT 1 NOT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -2535,4 +2536,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015112000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015112001');

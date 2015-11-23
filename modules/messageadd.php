@@ -86,13 +86,13 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	if ($type == MSG_SMS)
 		$smstable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('contact') . ' AS phone, customerid
 				FROM customercontacts
-				WHERE ((type & ' . CONTACT_MOBILE | CONTACT_DISABLED . ') = ' . CONTACT_MOBILE . ' )
+				WHERE ((type & ' . (CONTACT_MOBILE | CONTACT_DISABLED) . ') = ' . CONTACT_MOBILE . ' )
 				GROUP BY customerid
 			) x ON (x.customerid = c.id) ';
 	else
 		$mailtable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('contact') . ' AS email, customerid
 				FROM customercontacts
-				WHERE ((type & ' . CONTACT_EMAIL | CONTACT_DISABLED . ') = ' . CONTACT_EMAIL . ')
+				WHERE ((type & ' . (CONTACT_EMAIL | CONTACT_DISABLED) . ') = ' . CONTACT_EMAIL . ')
 				GROUP BY customerid
 			) cc ON (cc.customerid = c.id) ';
 

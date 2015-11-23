@@ -550,10 +550,10 @@ if($notify)
 	{
 		my $dbqc = $dbase->prepare("SELECT id, $custname, address, zip, city,
 					(SELECT contact FROM customercontacts
-						WHERE customerid = customers.id AND (customercontacts.type & 7 > 0)
+						WHERE customerid = c.id AND (customercontacts.type & 7 > 0)
 						ORDER BY id LIMIT 1) AS phone,
 					(SELECT contact FROM customercontacts
-						WHERE customerid = customers.id AND (customercontacts.type & 40 > 0)
+						WHERE customerid = c.id AND (customercontacts.type & 40 > 0)
 						ORDER BY id LIMIT 1) AS email
 					FROM customers c
 					WHERE id = $reqcustid");
