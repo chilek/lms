@@ -432,7 +432,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $this->db->Execute('UPDATE rttickets SET owner = ? WHERE id = ?', array($owner, $ticket));
             $this->db->Execute('INSERT INTO rtnotes (userid, ticketid, type, body, createtime)
                 VALUES(?, ?, ?, ?, ?NOW?)',
-                array($AUTH->id, $ticket, RT_NOTE_OWNER,
+                array($AUTH->id, $ticket, RTNOTE_OWNER_CHANGE,
                     trans('Ticket has been assigned to user $a.', $LMS->GetUserName($owner))));
         }
     }
@@ -447,7 +447,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $this->db->Execute('UPDATE rttickets SET queueid = ? WHERE id = ?', array($queue, $ticket));
             $this->db->Execute('INSERT INTO rtnotes (userid, ticketid, type, body, createtime)
                 VALUES(?, ?, ?, ?, ?NOW?)',
-                array($AUTH->id, $ticket, RT_NOTE_QUEUE,
+                array($AUTH->id, $ticket, RTNOTE_QUEUE_CHANGE,
                     trans('Ticket has been moved from queue $a to queue $b.',
                         $LMS->GetQueueName($oldqueue), $LMS->GetQueueName($queue))));
         }

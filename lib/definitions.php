@@ -51,9 +51,9 @@ $RT_STATES = array(
 );
 
 // Helpdesk note type
-define('RT_NOTE', 1);
-define('RT_NOTE_OWNER', 2);
-define('RT_NOTE_QUEUE', 3);
+define('RTNOTE', 1);
+define('RTNOTE_OWNER_CHANGE', 2);
+define('RTNOTE_QUEUE_CHANGE', 3);
 
 // Messages status and type
 define('MSG_NEW', 1);

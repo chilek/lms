@@ -243,27 +243,10 @@ if(isset($_POST['message']))
 		else if (!$DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($message['ticketid'])))
 			$LMS->SetTicketState($message['ticketid'], RT_OPEN);
 
-                if ($message['queueid'] != $ticket['queueid'])
-                        $DB->Execute('INSERT INTO rtnotes (userid, ticketid, body, createtime)
-                                VALUES(?, ?, ?, ?NOW?)',
-                                array($AUTH->id, $message['ticketid'],
-                                        trans('Ticket has been moved from queue $a to queue $b.',
-                                                $LMS->GetQueueName($ticket['queueid']), $LMS->GetQueueName($message['queueid']))));
+		$LMS->SetTicketOwner($message['ticketid'], $message['owner']);
+		$LMS->SetTicketQueue($message['ticketid'], $message['queueid']);
 
-                if ($message['owner'] != $ticket['owner'] && $message['owner'])
-                        $DB->Execute('INSERT INTO rtnotes (userid, ticketid, body, createtime)
-                                VALUES(?, ?, ?, ?NOW?)',
-                                array($AUTH->id, $message['ticketid'], trans('Ticket has been assigned to user $a.', $LMS->GetUserName($message['owner']))));
-                
-                $DB->Execute('UPDATE rttickets SET cause = ?, queueid = ?, owner = ? WHERE id = ?', array($message['cause'], $message['queueid'], $message['owner'], $message['ticketid']));
-
-                if (!$DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($message['ticketid']))){
-                        $DB->Execute('UPDATE rttickets SET owner = ? WHERE id = ?', array($AUTH->id, $message['ticketid']));
-                        $DB->Execute('INSERT INTO rtnotes (userid, ticketid, body, createtime)
-                                VALUES(?, ?, ?, ?NOW?)',
-                                array($AUTH->id, $message['ticketid'], trans('Ticket has been assigned to user $a.', $LMS->GetUserName($message['owner']))));
-                                
-                }
+		$DB->Execute('UPDATE rttickets SET cause = ? WHERE id = ?', array($message['cause'], $message['ticketid']));
 
 		// Users notification
 		if (isset($message['notify']) && ($user['email'] || $queue['email']))
@@ -401,7 +384,7 @@ else
 	if($_GET['ticketid'])
 	{
 		$queue = $LMS->GetQueueByTicketId($_GET['ticketid']);
-		$message = $DB->GetRow('SELECT id AS ticketid, state, cause FROM rttickets WHERE id = ?', array($_GET['ticketid']));
+		$message = $DB->GetRow('SELECT id AS ticketid, state, cause, owner, queueid FROM rttickets WHERE id = ?', array($_GET['ticketid']));
 	}
 
 	$user = $LMS->GetUserInfo($AUTH->id);

@@ -86,7 +86,7 @@
 				</TR>
 				</TBODY>
 				{counter print=false}
-				{elseif $message.type != $smarty.const.RT_NOTE}
+				{elseif $message.type != $smarty.const.RTNOTE}
 					<tr class="blend">
 						<td width="1%" class="fbt" ALIGN="RIGHT" nowrap>
 							<B>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</B>
