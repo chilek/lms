@@ -79,7 +79,7 @@
 				<legend class="bold"><IMG SRC="img/phone.gif" ALT=""> {trans("Contact phones")}</legend>
 				<TABLE>
 					{foreach $customerinfo.contacts as $contact}
-					<TR>
+					<TR CLASS="LIGHT{if ($contact.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} blend{/if}">
 						<TD>
 							{$contact.phone}
 							{if $contact.typestr}[{$contact.typestr}]{/if}
@@ -100,9 +100,11 @@
 				<legend class="bold"><IMG SRC="img/mail.gif" ALT=""> {trans("Email addresses")}</legend>
 				<TABLE>
 					{foreach $customerinfo.emails as $email}
-					<TR>
+					<TR CLASS="LIGHT{if ($email.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} blend{/if}">
 						<TD>
-							<A HREF="mailto:{$email.email}">{$email.email}</A>{if $email.name} ({$email.name|truncate:"40":"...":true}){/if}
+							<A HREF="mailto:{$email.email}">{$email.email}</A>
+                                                        {if $email.typestr}[{$email.typestr}]{/if}
+                                                        {if $email.name} ({$email.name|truncate:"40":"...":true}){/if}
 						</TD>
 					</TR>
 					{/foreach}
@@ -258,7 +260,7 @@
 	            </TR>
 	            <TR>
 	                <TD>
-			            {trans("Consent to electronic invoices:")}
+			            {trans("Cancellation of a traditional invoice (agreement on an electronic invoice):")}
             		</TD>
             		<TD>
             		    {if $customerinfo.einvoice}{trans("yes")}{else}{trans("no")}{/if}

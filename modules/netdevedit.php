@@ -476,16 +476,13 @@ switch ($action) {
 			$nodeipdata['halfduplex'] = 0;
 		if (!isset($nodeipdata['nas']))
 			$nodeipdata['nas'] = 0;
-		$nodeipdata['authtype'] = 0;
-		if(isset($_POST['netdevauthtype'])) {
-			$authtype = $_POST['netdevauthtype'];
-			if (!empty($authtype)) {
-				foreach ($authtype as $op) {
-					$op = (int)$op;
-					$nodeipdata['authtype'] |= $op;
-				}
-			}
-		}
+
+		$authtype = 0;
+		if (isset($nodeipdata['authtype']))
+			foreach ($nodeipdata['authtype'] as $value)
+				$authtype |= intval($value);
+		$nodeipdata['authtype'] = $authtype;
+
 		if (!$error) {
 			$nodeipdata['warning'] = 0;
 			$nodeipdata['location'] = '';
@@ -579,16 +576,13 @@ switch ($action) {
 			$nodeipdata['halfduplex'] = 0;
 		if (!isset($nodeipdata['nas']))
 			$nodeipdata['nas'] = 0;
-		$nodeipdata['authtype'] = 0;
-		if(isset($_POST['netdevauthtype'])) {
-			$authtype = $_POST['netdevauthtype'];
-			if (!empty($authtype)) {
-				foreach ($authtype as $op) {
-					$op = (int)$op;
-					$nodeipdata['authtype'] |= $op;
-				}
-			}
-		}
+
+		$authtype = 0;
+		if (isset($nodeipdata['authtype']))
+			foreach ($nodeipdata['authtype'] as $value)
+				$authtype |= intval($value);
+		$nodeipdata['authtype'] = $authtype;
+
 		if (!$error) {
 			$nodeipdata['warning'] = 0;
 			$nodeipdata['location'] = '';
@@ -755,12 +749,6 @@ if (isset($_POST['netdev'])) {
 }
 
 $netdevdata['id'] = $_GET['id'];
-
-$netdevauthtype = array();
-if ($authtype != 0) {
-        $netdevauthtype['dhcp'] = ($authtype & 2);
-        $netdevauthtype['eap'] = ($authtype & 4);
-}
 
 $netdevips = $LMS->GetNetDevIPs($_GET['id']);
 $nodelist = $LMS->GetUnlinkedNodes();

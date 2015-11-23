@@ -172,7 +172,7 @@ while (my $row = $dbq->fetchrow_hashref())
 	my $dbqi = $dbase->prepare("SELECT DISTINCT title, description, begintime, endtime,
 			customerid, UPPER(lastname) AS lastname, customers.name AS name, address, city, zip,
 			(SELECT contact FROM customercontacts 
-				WHERE customerid = events.customerid AND customercontacts.type < 8
+				WHERE customerid = events.customerid AND (customercontacts.type & 7 > 0)
 				ORDER BY contact LIMIT 1) AS phone 
 			FROM events 
 			LEFT JOIN customers ON (customers.id = customerid)

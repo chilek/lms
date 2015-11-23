@@ -234,13 +234,13 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, n.template, m.em
 		FROM documents d 
 		LEFT JOIN customers c ON c.id = d.customerid 
 		JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
-			FROM customercontacts WHERE type = ? GROUP BY customerid) m ON m.customerid = c.id
+			FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id
 		LEFT JOIN numberplans n ON n.id = d.numberplanid 
 		WHERE c.deleted = 0 AND d.type IN (1,3) AND c.invoicenotice = 1"
 			. (!empty($invoiceid) ? " AND d.id = " . $invoiceid : " AND d.cdate >= $daystart AND d.cdate <= $dayend")
 			. (!empty($groupnames) ? $customergroups : "")
 		. " ORDER BY d.number";
-$docs = $DB->GetAll($query, array(CONTACT_EMAIL));
+$docs = $DB->GetAll($query, array(CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_INVOICES));
 
 if (!empty($docs)) {
 	foreach ($docs as $doc) {

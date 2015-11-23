@@ -80,7 +80,7 @@ switch ($mode) {
 			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, address, post_name, post_address, deleted,
 			    ".$DB->Concat('UPPER(lastname)',"' '",'c.name')." AS username
 				FROM customersview c
-				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = " . CONTACT_EMAIL . "
+				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & " . CONTACT_EMAIL . " = " . CONTACT_EMAIL . ")    
 				WHERE ".(preg_match('/^[0-9]+$/', $search) ? 'c.id = '.intval($search).' OR ' : '')."
 					LOWER(".$DB->Concat('lastname',"' '",'c.name').") ?LIKE? LOWER($sql_search)
 					OR LOWER(address) ?LIKE? LOWER($sql_search)

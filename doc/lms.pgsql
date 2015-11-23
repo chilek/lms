@@ -996,6 +996,7 @@ CREATE TABLE nodesessions (
 	upload bigint		DEFAULT 0,
 	tag varchar(32)		DEFAULT '' NOT NULL,
 	terminatecause varchar(32) DEFAULT '' NOT NULL,
+	type smallint		DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX nodesessions_customerid_idx ON nodesessions(customerid);
@@ -1275,11 +1276,24 @@ CREATE TABLE records (
 	ttl integer		DEFAULT NULL,
 	prio integer		DEFAULT NULL,
 	change_date integer	DEFAULT NULL,
+	disabled boolean	DEFAULT '0',
+	auth boolean		DEFAULT '1',
 	PRIMARY KEY (id)
 );
-
 CREATE INDEX records_name_type_idx ON records (name, type, domain_id);
 CREATE INDEX records_domain_id_idx ON records (domain_id);
+
+/* ---------------------------------------------------
+ Structure of table "domainmetadata" (DNS)
+------------------------------------------------------*/
+CREATE TABLE domainmetadata (
+	id SERIAL PRIMARY KEY,
+	domain_id integer
+		REFERENCES domains(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	kind varchar(32),
+	content text
+);
+CREATE INDEX domainidmetaindex ON domainmetadata (domain_id);
 
 /* ---------------------------------------------------
  Structure of table "supermasters" (DNS)
@@ -1362,9 +1376,13 @@ CREATE TABLE events (
 	closed 		smallint 	DEFAULT 0 NOT NULL,
 	moddate		integer		DEFAULT 0 NOT NULL,
 	moduserid	integer		DEFAULT 0 NOT NULL,
+	type		smallint	DEFAULT 1 NOT NULL,
+	nodeid		integer		DEFAULT NULL
+	    REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
 CREATE INDEX events_date_idx ON events(date);
+CREATE INDEX events_nodeid_idx ON events(nodeid);
 
 /* ---------------------------------------------------
  Structure of table "events" (Timetable)
@@ -2517,4 +2535,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015100101');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015112000');

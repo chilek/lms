@@ -44,9 +44,11 @@ class ULMS extends LMS {
 			$result['bankaccount'] = bankaccount($result['id']); 
 			$result['messengers'] = $this->DB->GetAllByKey('SELECT uid, type FROM imessengers WHERE customerid = ? ORDER BY type', 'type', array($id));
 			$result['contacts'] = $this->DB->GetAllByKey('SELECT id, contact AS phone, name
-				FROM customercontacts WHERE customerid = ? AND type < ? ORDER BY id', 'id', array($id, CONTACT_EMAIL));
+				FROM customercontacts WHERE customerid = ? AND type < ? ORDER BY id', 'id', 
+                                    array($id, CONTACT_MOBILE));
 			$result['emails'] = $this->DB->GetAllByKey('SELECT id, contact AS email, name
-				FROM customercontacts WHERE customerid = ? AND type = ? ORDER BY id', 'id', array($id, CONTACT_EMAIL));
+				FROM customercontacts WHERE customerid = ? AND (type & ? > 0) ORDER BY id', 'id', 
+                                    array($id, (CONTACT_EMAIL|CONTACT_INVOICES|CONTACT_NOTIFICATIONS)));
 
 			return $result;
 		} else

@@ -65,6 +65,7 @@ DROP TABLE IF EXISTS liabilities;
 DROP TABLE IF EXISTS customergroups;
 DROP TABLE IF EXISTS customerassignments;
 DROP TABLE IF EXISTS records;
+DROP TABLE IF EXISTS domainmetadata;
 DROP TABLE IF EXISTS passwd;
 DROP TABLE IF EXISTS domains;
 DROP TABLE IF EXISTS aliases;
@@ -1073,6 +1074,7 @@ CREATE TABLE nodesessions (
 	upload bigint		DEFAULT '0',
 	tag varchar(32)		NOT NULL DEFAULT '',
 	terminatecause varchar(32) NOT NULL DEFAULT '',
+	type smallint		NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
 	INDEX customerid (customerid),
 	INDEX nodeid (nodeid),
@@ -1323,8 +1325,12 @@ CREATE TABLE events (
     closed tinyint(1) NOT NULL DEFAULT '0',
     moddate int(11) NOT NULL DEFAULT '0',
     moduserid int(11) NOT NULL DEFAULT '0',
+    type smallint NOT NULL DEFAULT 1,
+    nodeid int(11) DEFAULT NULL,
     PRIMARY KEY (id),
-    INDEX date (date)
+    INDEX date (date),
+    KEY nodeid (nodeid),
+    FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1771,11 +1777,28 @@ CREATE TABLE records (
   ttl             INT(11) DEFAULT NULL,
   prio            INT(11) DEFAULT NULL,
   change_date     INT(11) DEFAULT NULL,
+  disabled        tinyint(1) DEFAULT '0',
+  auth            tinyint(1) DEFAULT '1',
   PRIMARY KEY(id),
   INDEX domain_id (domain_id),
   INDEX name_type (name, type, domain_id),
   FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+
+
+# --------------------------------------------------------
+#
+# Structure of table domainmetadata
+#
+CREATE TABLE domainmetadata (
+	id int(11) NOT NULL auto_increment,
+	domain_id int(11) NOT NULL,
+	kind varchar(32),
+	content text,
+	PRIMARY KEY (id),
+	INDEX domainmetadata (domain_id, kind),
+	FOREIGN KEY (domain_id) REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE
+) Engine=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -2422,4 +2445,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015100101');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015112000');

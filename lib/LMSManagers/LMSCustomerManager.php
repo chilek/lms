@@ -55,7 +55,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function getCustomerEmail($id)
     {
         return $this->db->GetCol('SELECT contact FROM customercontacts
-		WHERE customerid = ? AND type = ?', array($id, CONTACT_EMAIL));
+               WHERE customerid = ? AND (type & ? = ?)', array($id, CONTACT_EMAIL, CONTACT_EMAIL));
     }
     
     /**
@@ -454,12 +454,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     switch ($key) {
 			case 'phone':
 				$searchargs[] = 'EXISTS (SELECT 1 FROM customercontacts
-					WHERE customerid = c.id AND customercontacts.type < ' . CONTACT_EMAIL
-					. ' AND REPLACE(contact, \'-\', \'\') ?LIKE? ' . $this->db->Escape("%$value%") . ')';
+					WHERE customerid = c.id AND (customercontacts.type < ' . CONTACT_EMAIL
+					. ') AND REPLACE(contact, \'-\', \'\') ?LIKE? ' . $this->db->Escape("%$value%") . ')';
 				break;
 			case 'email':
 				$searchargs[] = 'EXISTS (SELECT 1 FROM customercontacts
-					WHERE customerid = c.id AND customercontacts.type = ' . CONTACT_EMAIL
+					WHERE customerid = c.id AND customercontacts.type & ' . CONTACT_EMAIL .' = '. CONTACT_EMAIL
 					. ' AND contact ?LIKE? ' . $this->db->Escape("%$value%") . ')';
 				break;
                         case 'zip':
@@ -570,11 +570,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         
         $sql .= 'FROM customersview c
             LEFT JOIN (SELECT customerid, (' . $this->db->GroupConcat('contact') . ') AS email
-            FROM customercontacts WHERE type = ' . CONTACT_EMAIL . ' GROUP BY customerid) cc ON cc.customerid = c.id
+            FROM customercontacts WHERE (type & ' . CONTACT_EMAIL .' = '. CONTACT_EMAIL .') GROUP BY customerid) cc ON cc.customerid = c.id
             LEFT JOIN countries ON (c.countryid = countries.id) '
             . ($customergroup ? 'LEFT JOIN customerassignments ON (c.id = customerassignments.customerid) ' : '')
             . 'LEFT JOIN (SELECT SUM(value) AS value, customerid FROM cash'
-                . ($time ? ' WHERE time < ' . $time : '') . '
+            . ($time ? ' WHERE time < ' . $time : '') . '
                 GROUP BY customerid
             ) b ON (b.customerid = c.id)
             LEFT JOIN (SELECT a.customerid,
@@ -824,12 +824,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 					FROM imessengers WHERE customerid = ? ORDER BY type', 'type', array($result['id']));
             $result['contacts'] = $this->db->GetAll('SELECT contact AS phone, name, type
 					FROM customercontacts
-					WHERE customerid = ? AND type < ? ORDER BY id',
-					array($result['id'], CONTACT_EMAIL));
-		$result['emails'] = $this->db->GetAll('SELECT contact AS email, name
+					WHERE customerid = ? AND type & 7 > 0 ORDER BY id',
+					array($result['id']));
+            $result['emails'] = $this->db->GetAll('SELECT contact AS email, name, type
 					FROM customercontacts
-					WHERE customerid = ? AND type = ? ORDER BY id',
-					array($result['id'], CONTACT_EMAIL));
+					WHERE customerid = ? AND type & ? = ? ORDER BY id',
+					array($result['id'], CONTACT_EMAIL, CONTACT_EMAIL));
 
             if (is_array($result['contacts']))
                 foreach ($result['contacts'] as $idx => $row) {
@@ -840,6 +840,16 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
                     if ($types)
                         $result['contacts'][$idx]['typestr'] = implode('/', $types);
+                }
+            if (is_array($result['emails']))
+                foreach ($result['emails'] as $idx => $row) {
+                    $types = array();
+                    foreach ($CONTACTTYPES as $tidx => $tname)
+                        if ($row['type'] & $tidx)
+                            $types[] = $tname;
+
+                    if ($types)
+                        $result['emails'][$idx]['typestr'] = implode('/', $types);
                 }
 
             return $result;

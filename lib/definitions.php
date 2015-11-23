@@ -203,10 +203,16 @@ define('CONTACT_MOBILE', 1);
 define('CONTACT_FAX', 2);
 define('CONTACT_LANDLINE', 4);
 define('CONTACT_EMAIL', 8);
+define('CONTACT_INVOICES', 16);
+define('CONTACT_NOTIFICATIONS', 32);
+define('CONTACT_DISABLED', 64);
 
 $CONTACTTYPES = array(
-    CONTACT_MOBILE 	=>	trans('mobile'),
-    CONTACT_FAX 	=>	trans('fax'),
+    CONTACT_MOBILE          =>	trans('mobile'),
+    CONTACT_FAX             =>	trans('fax'),
+    CONTACT_INVOICES        =>	trans('Invoice'),
+    CONTACT_DISABLED        =>	trans('disabled'),
+    CONTACT_NOTIFICATIONS   =>	trans('Notification'),
 );
 
 define('DISCOUNT_PERCENTAGE', 1);
@@ -378,6 +384,39 @@ $USERPANEL_ID_TYPES = array(
 	),
 );
 
+define('EVENT_OTHER', 1);
+define('EVENT_NETWORK', 2);
+define('EVENT_SERVICE', 3);
+define('EVENT_INSTALLATION', 4);
+define('EVENT_MEETING', 5);
+
+$EVENTTYPES = array(
+	EVENT_SERVICE      => trans('service<!event>'),
+	EVENT_INSTALLATION => trans('installation'),
+	EVENT_NETWORK      => trans('network'),
+	EVENT_MEETING      => trans('meeting'),
+	EVENT_OTHER        => trans('other')
+);
+
+define('SESSIONTYPE_PPPOE', 1);
+define('SESSIONTYPE_DHCP', 2);
+define('SESSIONTYPE_EAP', 4);
+
+$SESSIONTYPES = array(
+	SESSIONTYPE_PPPOE => array(
+		'label' => trans('PPPoE Client'),
+		'tip' => 'Enable/disable PPPoE Server Client'
+	),
+	SESSIONTYPE_DHCP => array(
+		'label' => trans('DHCP Client'),
+		'tip' => 'Enable/disable DHCP Server Client'
+	),
+	SESSIONTYPE_EAP => array(
+		'label' => trans('EAP Client'),
+		'tip' => 'Enable/disable EAP Server Client'
+	),
+);
+
 if(isset($SMARTY))
 {
 	$SMARTY->assign('_CTYPES',$CTYPES);
@@ -401,6 +440,8 @@ if(isset($SMARTY))
 	$SMARTY->assign('_NETELEMENTTYPES', $NETELEMENTTYPES);
 	$SMARTY->assign('_NETELEMENTOWNERSHIPS', $NETELEMENTOWNERSHIPS);
 	$SMARTY->assign('_USERPANEL_ID_TYPES', $USERPANEL_ID_TYPES);
+	$SMARTY->assign('_EVENTTYPES', $EVENTTYPES);
+	$SMARTY->assign('_SESSIONTYPES', $SESSIONTYPES);
 }
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');

@@ -73,7 +73,7 @@ lms-notify.php
 -f, --fakedate=YYYY/MM/DD       override system date;
 -t, --type=<notification-types> take only selected notification types into account
                                 (separated by colons)
--c, --channels=<channel-types>  use selected channels for notifications
+-c, --channel=<channel-types>  use selected channels for notifications
                                 (separated by colons)
 -s, --section=<section-name>    section name from lms configuration where settings
                                 are stored
@@ -347,17 +347,17 @@ if (empty($types) || in_array('contracts', $types)) {
 		JOIN assignments a ON (c.id = a.customerid)
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
 			FROM customercontacts
-			WHERE type = ?
+			WHERE (type & ?) = ? 
 			GROUP BY customerid
 		) m ON (m.customerid = c.id)
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
-			WHERE (type & ?) = ?
+			WHERE type < ?
 			GROUP BY customerid
 		) x ON (x.customerid = c.id)
 		GROUP BY c.id, c.pin, c.lastname, c.name, m.email, x.phone
 		HAVING MAX(a.dateto) >= $daystart + ? * 86400 AND MAX(a.dateto) < $daystart + (? + 1) * 86400",
-		array(CONTACT_EMAIL, CONTACT_MOBILE, CONTACT_MOBILE, $days, $days));
+		array(CONTACT_EMAIL | CONTACT_DISABLED, CONTACT_EMAIL, CONTACT_EMAIL, $days, $days));
 
 	if (!empty($customers)) {
 		$notifications['contracts']['customers'] = array();
@@ -373,9 +373,10 @@ if (empty($types) || in_array('contracts', $types)) {
 				(!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
 
 			if (!$quiet) {
-				if (in_array('mail', $channels) && !empty($recipient_mail))
-					printf("[mail/contracts] %s (%04d): %s" . PHP_EOL,
-						$recipient_name, $row['id'], $recipient_mail);
+				if (in_array('mail', $channels) && !empty($recipient_mails))
+					foreach ($recipient_mails as $recipient_mail)
+						printf("[mail/contracts] %s (%04d): %s" . PHP_EOL,
+							$recipient_name, $row['id'], $recipient_mail);
 				if (in_array('sms', $channels) && !empty($recipient_phones))
 					foreach ($recipient_phones as $phone)
 						printf("[sms/contracts] %s (%04d): %s" . PHP_EOL,
@@ -383,7 +384,7 @@ if (empty($types) || in_array('contracts', $types)) {
 			}
 
 			if (!$debug) {
-				if (in_array('mail', $channels) && !empty($recipient_mail)) {
+				if (in_array('mail', $channels) && !empty($recipient_mails)) {
 					$msgid = create_message(MSG_MAIL, $subject, $message);
 					foreach ($recipient_mails as $recipient_mail)
 						send_mail($msgid, $row['id'], $recipient_mail, $recipient_name,
@@ -405,29 +406,28 @@ if (empty($types) || in_array('debtors', $types)) {
 	$limit = $notifications['debtors']['limit'];
 	// @TODO: check 'messages' table and don't send notifies to often
 	$customers = $DB->GetAll("SELECT c.id, c.pin, c.lastname, c.name,
-			SUM(value) AS balance, m.email, x.phone, div.account
+			SUM(value) AS balance, m.email, x.phone, divisions.account
 		FROM customers c
-		LEFT JOIN divisions div ON div.id = c.divisionid
+		LEFT JOIN divisions ON divisions.id = c.divisionid
 		JOIN cash ON (c.id = cash.customerid)
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
 			FROM customercontacts
-			WHERE type = ?
+			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) m ON (m.customerid = c.id)
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
-			WHERE (type & ?) = ?
+			WHERE type < ?
 			GROUP BY customerid
 		) x ON (x.customerid = c.id)
 		LEFT JOIN documents d ON d.id = cash.docid
 		WHERE c.cutoffstop < $currtime AND ((cash.docid = 0 AND ((cash.type <> 0 AND cash.time < $currtime)
 			OR (cash.type = 0 AND cash.time + ((CASE c.paytime WHEN -1 THEN
-				(CASE WHEN div.inv_paytime IS NULL THEN $deadline ELSE div.inv_paytime END) ELSE c.paytime END) + ?) * 86400 < $currtime)))
+				(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE c.paytime END) + ?) * 86400 < $currtime)))
 			OR (cash.docid <> 0 AND ((d.type IN (?, ?) AND cash.time < $currtime
 				OR (d.type IN (?, ?) AND d.cdate + (d.paytime + ?) * 86400 < $currtime)))))
-		GROUP BY c.id, c.pin, c.lastname, c.name, m.email, x.phone, div.account
-		HAVING SUM(value) < ?", array(CONTACT_EMAIL, CONTACT_MOBILE, CONTACT_MOBILE, $days,
-			DOC_RECEIPT, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE, $days, $limit));
+		GROUP BY c.id, c.pin, c.lastname, c.name, m.email, x.phone, divisions.account
+		HAVING SUM(value) < ?", array(CONTACT_EMAIL | CONTACT_DISABLED, CONTACT_EMAIL, CONTACT_EMAIL, $days, DOC_RECEIPT, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE, $days, $limit));
 
 	if (!empty($customers)) {
 		$notifications['debtors']['customers'] = array();
@@ -443,9 +443,10 @@ if (empty($types) || in_array('debtors', $types)) {
 				(!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
 
 			if (!$quiet) {
-				if (in_array('mail', $channels) && !empty($recipient_mail))
-					printf("[mail/debtors] %s (%04d): %s" . PHP_EOL,
-						$recipient_name, $row['id'], $recipient_mail);
+				if (in_array('mail', $channels) && !empty($recipient_mails))
+					foreach ($recipient_mails as $recipient_mail)
+						printf("[mail/debtors] %s (%04d): %s" . PHP_EOL,
+							$recipient_name, $row['id'], $recipient_mail);
 				if (in_array('sms', $channels) && !empty($recipient_phones))
 					foreach ($recipient_phones as $phone)
 						printf("[sms/debtors] %s (%04d): %s" . PHP_EOL,
@@ -453,7 +454,7 @@ if (empty($types) || in_array('debtors', $types)) {
 			}
 
 			if (!$debug) {
-				if (in_array('mail', $channels) && !empty($recipient_mail)) {
+				if (in_array('mail', $channels) && !empty($recipient_mails)) {
 					$msgid = create_message(MSG_MAIL, $subject, $message);
 					foreach ($recipient_mails as $recipient_mail)
 						send_mail($msgid, $row['id'], $recipient_mail, $recipient_name,
@@ -473,14 +474,14 @@ if (empty($types) || in_array('debtors', $types)) {
 if (empty($types) || in_array('reminder', $types)) {
 	$days = $notifications['reminder']['days'];
 	$documents = $DB->GetAll("SELECT d.id AS docid, c.id, c.pin, d.name,
-		d.number, n.template, d.cdate, d.paytime, m.email, x.phone, div.account,
+		d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
-		LEFT JOIN divisions div ON div.id = c.divisionid
+		LEFT JOIN divisions ON divisions.id = c.divisionid
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
 			FROM customercontacts
-			WHERE type = ?
+			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) m ON (m.customerid = c.id)
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
@@ -499,10 +500,10 @@ if (empty($types) || in_array('reminder', $types)) {
 			FROM cash
 			LEFT JOIN documents ON documents.id = cash.docid
 			JOIN customers c ON c.id = cash.customerid
-			LEFT JOIN divisions div ON div.id = c.divisionid
+			LEFT JOIN divisions ON divisions.id = c.divisionid
 			WHERE (cash.docid = 0 AND ((cash.type <> 0 AND cash.time < $currtime)
 				OR (cash.type = 0 AND cash.time + ((CASE c.paytime WHEN -1 THEN
-				(CASE WHEN div.inv_paytime IS NULL THEN $deadline ELSE div.inv_paytime END) ELSE c.paytime END) + ?) * 86400 < $currtime)))
+				(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE c.paytime END) + ?) * 86400 < $currtime)))
 				OR (cash.docid <> 0 AND ((documents.type IN (?, ?) AND cash.time < $currtime)
 					OR (documents.type IN (?, ?) AND ((documents.cdate / 86400) + documents.paytime - ?) * 86400 < $currtime)))
 			GROUP BY cash.customerid
@@ -510,8 +511,7 @@ if (empty($types) || in_array('reminder', $types)) {
 		WHERE d.type = 1 AND d.closed = 0 AND ca.balance < 0
 			AND ((d.cdate / 86400) + d.paytime + 1 - ?) * 86400 >= $daystart
 			AND ((d.cdate / 86400) + d.paytime - ?) * 86400 < $daystart",
-		array(CONTACT_EMAIL, CONTACT_MOBILE, CONTACT_MOBILE, $days,
-			DOC_RECEIPT, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE, $days, $days, $days));
+		array(CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_INVOICES, CONTACT_MOBILE | CONTACT_DISABLED, CONTACT_MOBILE, $days, DOC_RECEIPT, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE, $days, $days, $days));
 	if (!empty($documents)) {
 		$notifications['reminder']['customers'] = array();
 		foreach ($documents as $row) {
@@ -527,9 +527,10 @@ if (empty($types) || in_array('reminder', $types)) {
 				(!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
 
 			if (!$quiet) {
-				if (in_array('mail', $channels) && !empty($recipient_mail))
-					printf("[mail/reminder] %s (%04d) %s: %s" . PHP_EOL,
-						$row['name'], $row['id'], $row['doc_number'], $recipient_mail);
+				if (in_array('mail', $channels) && !empty($recipient_mails))
+					foreach ($recipient_mails as $recipient_mail)
+						printf("[mail/reminder] %s (%04d) %s: %s" . PHP_EOL,
+							$row['name'], $row['id'], $row['doc_number'], $recipient_mail);
 				if (in_array('sms', $channels) && !empty($recipient_phones))
 					foreach ($recipient_phones as $phone)
 						printf("[sms/reminder] %s (%04d) %s: %s" . PHP_EOL,
@@ -537,7 +538,7 @@ if (empty($types) || in_array('reminder', $types)) {
 			}
 
 			if (!$debug) {
-				if (in_array('mail', $channels) && !empty($recipient_mail)) {
+				if (in_array('mail', $channels) && !empty($recipient_mails)) {
 					$msgid = create_message(MSG_MAIL, $subject, $message);
 					foreach ($recipient_mails as $recipient_mail)
 						send_mail($msgid, $row['id'], $recipient_mail, $row['name'],
@@ -556,14 +557,14 @@ if (empty($types) || in_array('reminder', $types)) {
 // Invoices created at current day
 if (empty($types) || in_array('invoices', $types)) {
 	$documents = $DB->GetAll("SELECT d.id AS docid, c.id, c.pin, d.name,
-		d.number, n.template, d.cdate, d.paytime, m.email, x.phone, div.account,
+		d.number, n.template, d.cdate, d.paytime, m.email, x.phone, divisions.account,
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
-		LEFT JOIN divisions div ON div.id = c.divisionid
+		LEFT JOIN divisions ON divisions.id = c.divisionid
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
 			FROM customercontacts
-			WHERE type = ?
+			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) m ON (m.customerid = c.id)
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
@@ -582,7 +583,7 @@ if (empty($types) || in_array('invoices', $types)) {
 		) ca ON (ca.customerid = d.customerid)
 		WHERE (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type IN (?, ?)
 			AND d.cdate >= ? AND d.cdate <= ?",
-		array(CONTACT_EMAIL, CONTACT_MOBILE, CONTACT_MOBILE, DOC_INVOICE, DOC_CNOTE, $daystart, $dayend));
+		array(CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_INVOICES, CONTACT_MOBILE | CONTACT_DISABLED, CONTACT_MOBILE, DOC_INVOICE, DOC_CNOTE, $daystart, $dayend));
 
 	if (!empty($documents)) {
 		$notifications['invoices']['customers'] = array();
@@ -599,9 +600,10 @@ if (empty($types) || in_array('invoices', $types)) {
 				(!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
 
 			if (!$quiet) {
-				if (in_array('mail', $channels) && !empty($recipient_mail))
-					printf("[mail/invoices] %s (%04d) %s: %s" . PHP_EOL,
-						$row['name'], $row['id'], $row['doc_number'], $recipient_mail);
+				if (in_array('mail', $channels) && !empty($recipient_mails))
+					foreach ($recipient_mails as $recipient_mail)
+						printf("[mail/invoices] %s (%04d) %s: %s" . PHP_EOL,
+							$row['name'], $row['id'], $row['doc_number'], $recipient_mail);
 				if (in_array('sms', $channels) && !empty($recipient_phones))
 					foreach ($recipient_phones as $phone)
 						printf("[sms/invoices] %s (%04d): %s: %s" . PHP_EOL,
@@ -609,7 +611,7 @@ if (empty($types) || in_array('invoices', $types)) {
 			}
 
 			if (!$debug) {
-				if (in_array('mail', $channels) && !empty($recipient_mail)) {
+				if (in_array('mail', $channels) && !empty($recipient_mails)) {
 					$msgid = create_message(MSG_MAIL, $subject, $message);
 					foreach ($recipient_mails as $recipient_mail)
 						send_mail($msgid, $row['id'], $recipient_mail, $row['name'],
@@ -628,19 +630,19 @@ if (empty($types) || in_array('invoices', $types)) {
 // Debit notes created at current day
 if (empty($types) || in_array('notes', $types)) {
 	$documents = $DB->GetAll("SELECT d.id AS docid, c.id, c.pin, d.name,
-		d.number, n.template, d.cdate, m.email, x.phone, div.account,
+		d.number, n.template, d.cdate, m.email, x.phone, divisions.account,
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
-		LEFT JOIN divisions div ON div.id = c.divisionid
+		LEFT JOIN divisions ON divisions.id = c.divisionid
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
 			FROM customercontacts
-			WHERE type = ?
+			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) m ON (m.customerid = c.id)
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
-			WHERE (type & ?) = ?
+			WHERE (type & ?) = ? 
 			GROUP BY customerid
 		) x ON (x.customerid = c.id)
 		JOIN (SELECT SUM(value) * -1 AS value, docid
@@ -654,7 +656,7 @@ if (empty($types) || in_array('notes', $types)) {
 		) ca ON (ca.customerid = d.customerid)
 		WHERE (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type = ?
 			AND d.cdate >= ? AND d.cdate <= ?",
-		array(CONTACT_EMAIL, CONTACT_MOBILE, CONTACT_MOBILE, DOC_DNOTE, $daystart, $dayend));
+		array(CONTACT_EMAIL | CONTACT_DISABLED, CONTACT_EMAIL, CONTACT_MOBILE | CONTACT_DISABLED, CONTACT_MOBILE, DOC_DNOTE, $daystart, $dayend));
 
 	if (!empty($documents)) {
 		$notifications['notes']['customers'] = array();
@@ -671,9 +673,10 @@ if (empty($types) || in_array('notes', $types)) {
 				(!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
 
 			if (!$quiet) {
-				if (in_array('mail', $channels) && !empty($recipient_mail))
-					printf("[mail/notes] %s (%04d) %s: %s" . PHP_EOL,
-						$row['name'], $row['id'], $row['doc_number'], $recipient_mail);
+				if (in_array('mail', $channels) && !empty($recipient_mails))
+					foreach ($recipient_mails as $recipient_mail)
+						printf("[mail/notes] %s (%04d) %s: %s" . PHP_EOL,
+							$row['name'], $row['id'], $row['doc_number'], $recipient_mail);
 				if (in_array('sms', $channels) && !empty($recipient_phones))
 					foreach ($recipient_phones as $phone)
 						printf("[sms/notes] %s (%04d) %s: %s" . PHP_EOL,
@@ -681,7 +684,7 @@ if (empty($types) || in_array('notes', $types)) {
 			}
 
 			if (!$debug) {
-				if (in_array('mail', $channels) && !empty($recipient_mail)) {
+				if (in_array('mail', $channels) && !empty($recipient_mails)) {
 					$msgid = create_message(MSG_MAIL, $subject, $message);
 					foreach ($recipient_mails as $recipient_mail)
 						send_mail($msgid, $row['id'], $recipient_mail, $row['name'],
@@ -700,17 +703,17 @@ if (empty($types) || in_array('notes', $types)) {
 // Node which warning flag has set
 if (empty($types) || in_array('warnings', $types)) {
 	$customers = $DB->GetAll("SELECT c.id, (" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS name,
-		c.pin, c.message, m.email, x.phone, div.account, COALESCE(ca.balance, 0) AS balance
+		c.pin, c.message, m.email, x.phone, divisions.account, COALESCE(ca.balance, 0) AS balance
 		FROM customers c
-		LEFT JOIN divisions div ON div.id = c.divisionid
+		LEFT JOIN divisions ON divisions.id = c.divisionid
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
 			FROM customercontacts
-			WHERE type = ?
+			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) m ON (m.customerid = c.id)
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
-			WHERE (type & ?) = ?
+			WHERE (type & ?) = ? 
 			GROUP BY customerid
 		) x ON (x.customerid = c.id)
 		LEFT JOIN (SELECT SUM(value) AS balance, customerid
@@ -718,7 +721,7 @@ if (empty($types) || in_array('warnings', $types)) {
 			GROUP BY customerid
 		) ca ON (ca.customerid = c.id)
 		WHERE c.id IN (SELECT DISTINCT ownerid FROM nodes WHERE warning = 1)",
-		array(CONTACT_EMAIL, CONTACT_MOBILE, CONTACT_MOBILE));
+		array(CONTACT_EMAIL | CONTACT_DISABLED, CONTACT_EMAIL, CONTACT_MOBILE | CONTACT_DISABLED, CONTACT_MOBILE));
 
 	if (!empty($customers)) {
 		$notifications['warnings']['customers'] = array();
@@ -733,9 +736,10 @@ if (empty($types) || in_array('warnings', $types)) {
 				(!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
 
 			if (!$quiet) {
-				if (in_array('mail', $channels) && !empty($recipient_mail))
-					printf("[mail/warnings] %s (%04d): %s" . PHP_EOL,
-						$row['name'], $row['id'], $recipient_mail);
+				if (in_array('mail', $channels) && !empty($recipient_mails))
+					foreach ($recipient_mails as $recipient_mail)
+						printf("[mail/warnings] %s (%04d): %s" . PHP_EOL,
+							$row['name'], $row['id'], $recipient_mail);
 				if (in_array('sms', $channels) && !empty($recipient_phones))
 					foreach ($recipient_phones as $phone)
 						printf("[sms/warnings] %s (%04d): %s" . PHP_EOL,
@@ -743,7 +747,7 @@ if (empty($types) || in_array('warnings', $types)) {
 			}
 
 			if (!$debug) {
-				if (in_array('mail', $channels) && !empty($recipient_mail)) {
+				if (in_array('mail', $channels) && !empty($recipient_mails)) {
 					$msgid = create_message(MSG_MAIL, $subject, $message);
 					foreach ($recipient_mails as $recipient_mail)
 						send_mail($msgid, $row['id'], $recipient_mail, $row['name'],

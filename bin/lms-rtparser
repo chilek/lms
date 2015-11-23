@@ -388,7 +388,7 @@ if(!$queue)
 
 # find customerid
 $dbq = $dbase->prepare("SELECT c.id FROM customers c
-	JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = 8
+	JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & 56 > 0)
 	WHERE cc.contact = ?");
 $dbq->execute($fromemail);
 if(my $row = $dbq->fetchrow_hashref())
@@ -500,7 +500,7 @@ else
 
 	# find customerid
 	$dbq = $dbase->prepare("SELECT c.id FROM customers c
-		JOIN customercontacts cc ON cc.customerid = c.id AND cc.type = 8
+		JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & 56 > 0)
 		WHERE cc.contact = ?");
 	$dbq->execute($fromemail);
 	if(my $row = $dbq->fetchrow_hashref())
@@ -550,10 +550,10 @@ if($notify)
 	{
 		my $dbqc = $dbase->prepare("SELECT id, $custname, address, zip, city,
 					(SELECT contact FROM customercontacts
-						WHERE customerid = customers.id AND customercontacts.type < 8
+						WHERE customerid = customers.id AND (customercontacts.type & 7 > 0)
 						ORDER BY id LIMIT 1) AS phone,
 					(SELECT contact FROM customercontacts
-						WHERE customerid = customers.id AND customercontacts.type = 8
+						WHERE customerid = customers.id AND (customercontacts.type & 40 > 0)
 						ORDER BY id LIMIT 1) AS email
 					FROM customers c
 					WHERE id = $reqcustid");

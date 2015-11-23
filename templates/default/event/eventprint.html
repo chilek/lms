@@ -17,7 +17,10 @@
 		<TD WIDTH="1%" CLASS="HEAD">
 			{trans("Time")}
 		</TD>
-		<TD WIDTH="97%" CLASS="HEAD" ALIGN="LEFT">
+		<TD WIDTH="1%" CLASS="HEAD" align="center">
+			{trans("Type")}
+		</TD>
+		<TD WIDTH="96%" CLASS="HEAD" ALIGN="LEFT">
 			{trans("Title")}<BR>
 			{trans("Description")}/{trans("Note")}
 		</TD>
@@ -39,7 +42,10 @@
 			{/if}
 			</NOBR>
 		</TD>
-		<TD WIDTH="97%" ALIGN="LEFT" VALIGN="TOP">
+		<TD WIDTH="1%" VALIGN="TOP" ALIGN="CENTER">
+			{$_EVENTTYPES[$event.type]}
+		</TD>
+		<TD WIDTH="96%" ALIGN="LEFT" VALIGN="TOP">
 			<B>{$event.title}</B><BR>
 			{$event.description}<BR>
 			{$event.note}

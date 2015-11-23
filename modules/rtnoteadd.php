@@ -35,7 +35,7 @@ if(isset($_GET['ticketid']))
 	        die;
 	}
 
-	$note = $DB->GetRow('SELECT id AS ticketid, state, cause FROM rttickets WHERE id = ?', array($note['ticketid']));
+	$note = $DB->GetRow('SELECT id AS ticketid, state, cause, queueid, owner FROM rttickets WHERE id = ?', array($note['ticketid']));
 }
 elseif(isset($_POST['note']))
 {
@@ -57,7 +57,8 @@ elseif(isset($_POST['note']))
 
 		$LMS->SetTicketState($note['ticketid'], $note['state']);
 
-		$DB->Execute('UPDATE rttickets SET cause = ? WHERE id = ?', array($note['cause'], $note['ticketid']));
+		$DB->Execute('UPDATE rttickets SET cause = ?, queueid = ?, owner = ? WHERE id = ?',
+			array($note['cause'], $note['queueid'], $note['owner'], $note['ticketid']));
 
 		if(isset($note['notify']))
 		{
@@ -103,7 +104,7 @@ elseif(isset($_POST['note']))
 				if (!empty($info['contacts']))
 					foreach ($info['contacts'] as $contact) {
 						$target = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
-						if ($contact['type'] == CONTACT_EMAIL)
+						if ($contact['type'] & CONTACT_EMAIL)
 							$emails[] = $target;
 						else
 							$phones[] = $target;
@@ -164,6 +165,9 @@ $layout['pagetitle'] = trans('New Note');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('note', $note);
+$SMARTY->assign('ticket', $LMS->GetTicketContents($note['ticketid']));
+$SMARTY->assign('userlist', $LMS->GetUserNames());
+$SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->assign('error', $error);
 $SMARTY->display('rt/rtnoteadd.html');
 
