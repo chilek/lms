@@ -40,6 +40,7 @@ if(isset($_GET['ticketid']))
 elseif(isset($_POST['note']))
 {
 	$note = $_POST['note'];
+	$ticket = $DB->GetRow('SELECT id AS ticketid, state, cause, queueid, owner FROM rttickets WHERE id = ?', array($note['ticketid']));
 
 	if($note['body'] == '')
 		$error['body'] = trans('Note body not specified!');
@@ -56,9 +57,10 @@ elseif(isset($_POST['note']))
 			    array($AUTH->id, $note['ticketid'], $note['body']));
 
 		$LMS->SetTicketState($note['ticketid'], $note['state']);
+		$LMS->SetTicketOwner($note['ticketid'], $note['owner']);
+		$LMS->SetTicketQueue($note['ticketid'], $note['queueid']);
 
-		$DB->Execute('UPDATE rttickets SET cause = ?, queueid = ?, owner = ? WHERE id = ?',
-			array($note['cause'], $note['queueid'], $note['owner'], $note['ticketid']));
+		$DB->Execute('UPDATE rttickets SET cause = ? WHERE id = ?', array($note['cause'], $note['ticketid']));
 
 		if(isset($note['notify']))
 		{

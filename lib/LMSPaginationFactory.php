@@ -41,7 +41,7 @@ class LMSPaginationFactory
      * @param boolean $short Short
      * @return \LMSPagination Pagination
      */
-    public static function getPagnation($page, $total, $per_page, $short = false)
+    public static function getPagination($page, $total, $per_page, $short = false)
     {
         $pagination = null;
         if ($short) {

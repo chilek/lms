@@ -384,14 +384,14 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $ticket['messages'] = $this->db->GetAll(
                 '(SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, '
                 . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername, 
-				    userid, users.name AS username, customerid
+				    userid, users.name AS username, customerid, NULL AS type
 				FROM rtmessages
 				LEFT JOIN customers ON (customers.id = customerid)
 				LEFT JOIN users ON (users.id = userid)
 				WHERE ticketid = ?)
 				UNION
 				(SELECT rtnotes.id AS id, NULL, NULL, body, createtime, NULL,
-				    userid, users.name AS username, NULL
+				    userid, users.name AS username, NULL, rtnotes.type
 				FROM rtnotes
 				LEFT JOIN users ON (users.id = userid)
 				WHERE ticketid = ?)
@@ -420,6 +420,37 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $this->db->Execute('UPDATE rttickets SET state=?, resolvetime=? WHERE id=?', array($state, $resolvetime, $ticket));
         else
             $this->db->Execute('UPDATE rttickets SET state=?, owner=?, resolvetime=? WHERE id=?', array($state, $this->auth->id, $resolvetime, $ticket));
+    }
+
+    public function SetTicketOwner($ticket, $owner)
+    {
+        global $LMS, $AUTH;
+
+        $oldowner = $this->db->GetOne('SELECT owner FROM rttickets WHERE id=?', array($ticket));
+
+        if ($oldowner != $owner) {
+            $this->db->Execute('UPDATE rttickets SET owner = ? WHERE id = ?', array($owner, $ticket));
+            $this->db->Execute('INSERT INTO rtnotes (userid, ticketid, type, body, createtime)
+                VALUES(?, ?, ?, ?, ?NOW?)',
+                array($AUTH->id, $ticket, RTNOTE_OWNER_CHANGE,
+                    trans('Ticket has been assigned to user $a.', $LMS->GetUserName($owner))));
+        }
+    }
+
+    public function SetTicketQueue($ticket, $queue)
+    {
+        global $LMS, $AUTH;
+
+        $oldqueue = $this->db->GetOne('SELECT queueid FROM rttickets WHERE id=?', array($ticket));
+
+        if ($oldqueue != $queue) {
+            $this->db->Execute('UPDATE rttickets SET queueid = ? WHERE id = ?', array($queue, $ticket));
+            $this->db->Execute('INSERT INTO rtnotes (userid, ticketid, type, body, createtime)
+                VALUES(?, ?, ?, ?, ?NOW?)',
+                array($AUTH->id, $ticket, RTNOTE_QUEUE_CHANGE,
+                    trans('Ticket has been moved from queue $a to queue $b.',
+                        $LMS->GetQueueName($oldqueue), $LMS->GetQueueName($queue))));
+        }
     }
 
     public function GetMessage($id)
