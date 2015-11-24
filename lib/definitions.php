@@ -50,10 +50,25 @@ $RT_STATES = array(
     RT_DEAD     => trans('dead')
 );
 
+// Helpdesk cause type
+define('RT_CAUSE_OTHER', 0);
+define('RT_CAUSE_CUSTOMER', 1);
+define('RT_CAUSE_COMPANY', 2);
+
+$RT_CAUSE = array(
+    RT_CAUSE_OTHER => trans("unknown/other"),
+    RT_CAUSE_CUSTOMER => trans("customer's side"),
+    RT_CAUSE_COMPANY => trans("company's side")
+);
+
 // Helpdesk note type
 define('RTNOTE', 1);
 define('RTNOTE_OWNER_CHANGE', 2);
 define('RTNOTE_QUEUE_CHANGE', 4);
+define('RTNOTE_STATE_CHANGE', 8);
+define('RTNOTE_CAUSE_CHANGE', 16);
+define('RTNOTE_CUSTOMER_CHANGE', 32);
+define('RTNOTE_SUBJECT_CHANGE', 64);
 
 // Messages status and type
 define('MSG_NEW', 1);

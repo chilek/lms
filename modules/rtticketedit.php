@@ -35,7 +35,7 @@ if ($id && !isset($_POST['ticket'])) {
 
 	if (isset($_GET['state']) && $_GET['state']) {
 		$state = intval($_GET['state']);
-		$LMS->SetTicketState($id, $state);
+		$LMS->TicketChange($id, array('state' => $state));
 
 		if ($state == RT_RESOLVED) {
 			$queue = $LMS->GetQueueByTicketId($id);
@@ -90,7 +90,7 @@ if ($id && !isset($_POST['ticket'])) {
 	}
 
 	if (isset($_GET['assign'])) {
-		$LMS->SetTicketOwner($id, $AUTH->id);
+		$LMS->TicketChange($id, array('owner' => $AUTH->id));
 		$SESSION->redirect('?m=rtticketview&id=' . $id);
 	}
 }
@@ -122,7 +122,7 @@ if(isset($_POST['ticket']))
 
 	if(!$error)
 	{
-		if($ticketedit['state'] == RT_RESOLVED)
+/*		if($ticketedit['state'] == RT_RESOLVED)
 		{
 			$DB->Execute('UPDATE rttickets SET subject=?, state=?, customerid=?, cause=?, resolvetime=?NOW? 
 					WHERE id=?', array(
@@ -159,10 +159,18 @@ if(isset($_POST['ticket']))
 						));
 			}
 		}
-
-		$LMS->SetTicketOwner($id, $ticketedit['owner']);
-		$LMS->SetTicketQueue($id, $ticketedit['queueid']);
-
+*/
+		// setting status and the ticket owner
+		$props = array(
+			'queueid' => $ticketedit['queueid'], 
+			'owner' => $ticketedit['owner'], 
+			'cause' => $ticketedit['cause'],
+			'state' => $ticketedit['state'],
+			'subject' => $ticketedit['subject'],
+			'customerid' => $ticketedit['customerid'],			
+		);
+		$LMS->TicketChange($ticketedit['ticketid'], $props);
+		
 		$DB->Execute('DELETE FROM rtticketcategories WHERE ticketid = ?', array($id));
 		foreach($ticketedit['categories'] as $categoryid => $val)
 			$DB->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) VALUES(?, ?)',

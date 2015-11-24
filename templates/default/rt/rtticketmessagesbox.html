@@ -88,14 +88,14 @@
 				{counter print=false}
 				{elseif $message.type != $smarty.const.RTNOTE}
 					<tr class="blend">
-						<td width="1%" class="fbt" ALIGN="RIGHT" nowrap>
+						<td width="1%" class="fbt text-right nobr valign-top">
 							<B>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</B>
 						</td>
-						<td width="1%" class="fbt" align="right" NOWRAP>
+						<td width="1%" class="fbt text-right nobr valign-top">
 							<B>{trans("From:")}</B>
 						</td>
-						<td width="98%" colspan="2" class="fbt" NOWRAP>
-							<A href="?m=userinfo&id={$message.userid}">{$message.username}</A> - 
+						<td width="98%" colspan="2" class="fbt nobr">
+							<A href="?m=userinfo&id={$message.userid}">{$message.username}</A><BR>
 							{$message.body}
 						</td>
 					</tr>
