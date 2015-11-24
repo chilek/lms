@@ -50,6 +50,7 @@
                 {/if}
             </td>
         </tr>
+	{if $customerschanges}
         <tr>
             <td class="text-right bold">
                 <a href="?m=userpanel&module=info&f=changes">{trans("Changes of customers waiting for approval:")}</a>
@@ -58,7 +59,7 @@
                 {$customerschanges}
             </td>
         </tr>
-
+	{/if}
     </tbody>
 </table>
 {/if}
