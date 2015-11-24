@@ -1364,28 +1364,10 @@ class LMS
         return $manager->GetTicketContents($id);
     }
 
-    public function SetTicketState($ticket, $state)
+    public function TicketChange($ticketid, array $props)
     {
         $manager = $this->getHelpdeskManager();
-        return $manager->SetTicketState($ticket, $state);
-    }
-
-    public function SetTicketOwner($ticket, $owner)
-    {
-        $manager = $this->getHelpdeskManager();
-        return $manager->SetTicketOwner($ticket, $owner);
-    }
-
-    public function SetTicketQueue($ticket, $queue)
-    {
-        $manager = $this->getHelpdeskManager();
-        return $manager->SetTicketQueue($ticket, $queue);
-    }
-
-    public function SetTicket($ticketid, $queueid, $owner, $state)
-    {
-        $manager = $this->getHelpdeskManager();
-        return $manager->SetTicket($ticketid, $queueid, $owner, $state);
+        return $manager->TicketChange($ticketid, $props);
     }
 
     public function GetMessage($id)

@@ -56,11 +56,14 @@ elseif(isset($_POST['note']))
 			    VALUES(?, ?, ?, ?NOW?)',
 			    array($AUTH->id, $note['ticketid'], $note['body']));
 
-		$LMS->SetTicketState($note['ticketid'], $note['state']);
-		$LMS->SetTicketOwner($note['ticketid'], $note['owner']);
-		$LMS->SetTicketQueue($note['ticketid'], $note['queueid']);
-
-		$DB->Execute('UPDATE rttickets SET cause = ? WHERE id = ?', array($note['cause'], $note['ticketid']));
+		// setting status and the ticket owner
+		$props = array(
+			'queueid' => $note['queueid'], 
+			'owner' => $note['owner'], 
+			'cause' => $note['cause'],
+			'state' => $note['state']
+		);
+		$LMS->TicketChange($note['ticketid'], $props);
 
 		if(isset($note['notify']))
 		{
