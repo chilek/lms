@@ -8,7 +8,7 @@
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" NAME="m" VALUE="nodelist">
-<INPUT type="hidden" NAME="page" VALUE="1">
+<INPUT type="hidden" NAME="page" id="page" VALUE="1">
 </p>
 <TABLE class="lmsbox">
 	<COLGROUP>
@@ -18,6 +18,7 @@
 		<COL style="width: 1%;">
 	</COLGROUP>
 	<THEAD>
+	{block name="nodelist-list-header"}
 	<TR {tip text="Click on column name to change sorting order"}>
 		<td scope="col">
 			<SPAN class="nobr"><img src="img/node.gif" alt=""> <A href="?m=nodelist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}">{trans("Name:")}</A>{if $listdata.order == "name"} <IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN><BR>
@@ -35,7 +36,7 @@
 			<img src="img/mac.gif" alt=""> <A href="?m=nodelist&amp;o=mac{if $listdata.direction == "asc" && $listdata.order == "mac"},desc{/if}">{trans("MAC address:")}</A>{if $listdata.order == "mac"} <IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</td>
 		<td scope="col" class="text-right nobr">
-			{t a=$listdata.total}Total: $a{/t}
+			{t a=$pagination->getTotal()}Total: $a{/t}
 		</td>
 	</TR>
 	<TR>
@@ -71,19 +72,21 @@
 				</SELECT></SPAN>
 		</TD>
 	</TR>
-	{if $listdata.total != 0}
+	{if $pagination->getTotal() != 0}
 	<TR>
 		<TD class="pagination" colspan="5">
-			{include file="scroller.html" loop=$nodelist}
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
+	{/block}
 	</THEAD>
 	<TFOOT>
-	{if $listdata.total != 0}
+	{block name="nodelist-list-footer"}
+	{if $pagination->getTotal() != 0}
 	<TR>
 		<TD class="pagination" colspan="5">
-			{include file="scroller.html" loop=$nodelist}
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
@@ -99,10 +102,12 @@
 			{if $listdata.totaloff}{$listdata.totaloff}{else}0{/if}
 		</TD>
 	</TR>
+	{/block}
 	</TFOOT>
 	<TBODY>
+	{block name="nodelist-list-body"}
 	{cycle values="light,lucid" print=false}
-	{section name=nodelist loop=$nodelist start=$start max=$pagelimit}
+	{section name=nodelist loop=$nodelist}
 	<TR class="highlight {cycle}{if ! $nodelist[nodelist].access} blend{/if}"  >
 		<TD class="nobr" onClick="return self.location.href='?m=nodeinfo&amp;id={$nodelist[nodelist].id}';">
 			<span class="bold">
@@ -151,6 +156,7 @@
 		</TD>
 	</TR>
 	{/section}
+	{/block}
 	</TBODY>
 </TABLE>
 </FORM>
