@@ -143,7 +143,7 @@
 			</SELECT>
 			{trans("or Customer ID:")}
 			{else}{trans("ID:")}{/if}
-            		<INPUT TYPE="TEXT" NAME="event[custid]" VALUE="{if $event.customerid}{$event.customerid}{/if}" SIZE="5"{if $customerlist} onChange="change_customer(this);reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID" trigger="custid"}>
+            		<INPUT TYPE="TEXT" NAME="event[custid]" VALUE="{if $event.customerid}{$event.customerid}{/if}" SIZE="5"{if $customerlist} onChange="change_customer(this);reset_customer()" onfocus="reset_customer()" {else} onblur="change_customer(this);" oninput="change_customer(this);" {/if} {tip text="Enter customer ID" trigger="custid"}>
 			<a href="javascript: void(0);" onClick="return customerchoosewin(document.forms['event'].elements['event[custid]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
