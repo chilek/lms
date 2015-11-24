@@ -55,6 +55,9 @@ if (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkCon
 if (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')) {
 	$SMARTY->assign('customerstats', $LMS->CustomerStats());
 	$SMARTY->assign('nodestats', $LMS->NodeStats());
+
+	$customerschanges=$DB->GetOne('SELECT COUNT(id) FROM up_info_changes');
+	$SMARTY->assign('customerschanges', ( $customerschanges ? $customerschanges : 0));
 }
 
 $layout['plugins'] = $plugin_manager->getAllPluginInfo();
