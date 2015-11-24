@@ -58,7 +58,14 @@ else
 	$ng = $_GET['ng'];
 $SESSION->save('nlng', $ng);
 
-$nodelist = $LMS->GetNodeList($o, NULL, NULL, $n, $s, $g, $ng);
+$page = (!isset($_GET['page']) ? 1 : intval($_GET['page']));
+$per_page = intval(ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']));
+$offset = ($page - 1) * $per_page;
+$total = intval($LMS->GetNodeList($o, NULL, NULL, $n, $s, $g, $ng, null, null, true));
+
+$nodelist = $LMS->GetNodeList($o, NULL, NULL, $n, $s, $g, $ng, $per_page, $offset);
+$pagination = LMSPaginationFactory::getPagination($page, $total, $per_page, ConfigHelper::checkConfig('phpui.short_pagescroller'));
+
 $listdata['total'] = $nodelist['total'];
 $listdata['order'] = $nodelist['order'];
 $listdata['direction'] = $nodelist['direction'];
@@ -78,17 +85,12 @@ unset($nodelist['totaloff']);
 if ($SESSION->is_set('nlp') && !isset($_GET['page']))
 	$SESSION->restore('nlp', $_GET['page']);
 	
-$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
-$pagelimit = ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']);
-$start = ($page - 1) * $pagelimit;
 
 $SESSION->save('nlp', $page);
 
-$SMARTY->assign('page',$page);
-$SMARTY->assign('pagelimit',$pagelimit);
-$SMARTY->assign('start',$start);
 $SMARTY->assign('nodelist',$nodelist);
 $SMARTY->assign('listdata',$listdata);
+$SMARTY->assign('pagination',$pagination);
 $SMARTY->assign('networks',$LMS->GetNetworks());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());

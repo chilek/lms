@@ -261,7 +261,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             return FALSE;
     }
 
-    public function GetNodeList($order = 'name,asc', $search = NULL, $sqlskey = 'AND', $network = NULL, $status = NULL, $customergroup = NULL, $nodegroup = NULL)
+    public function GetNodeList($order = 'name,asc', $search = NULL, $sqlskey = 'AND', $network = NULL, $status = NULL, $customergroup = NULL, $nodegroup = NULL, $limit = null, $offset = null, $count = false)
     {
         if ($order == '')
             $order = 'name,asc';
@@ -340,43 +340,57 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             $net = $network_manager->GetNetworkParams($network);
         }
 
-        if ($nodelist = $this->db->GetAll('SELECT n.id AS id, n.ipaddr, inet_ntoa(n.ipaddr) AS ip, ipaddr_pub,
+        $sql = '';
+
+		if ($count) {
+			$sql .= 'SELECT COUNT(n.id) ';
+		} else {
+			$sql .= 'SELECT n.id AS id, n.ipaddr, inet_ntoa(n.ipaddr) AS ip, ipaddr_pub,
 				inet_ntoa(n.ipaddr_pub) AS ip_pub, n.mac, n.name, n.ownerid, n.access, n.warning,
 				n.netdev, n.lastonline, n.info, '
 				. $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS owner, net.name AS netname, n.location,
 				lb.name AS borough_name, lb.type AS borough_type,
-				ld.name AS district_name, ls.name AS state_name
-				FROM vnodes n
+				ld.name AS district_name, ls.name AS state_name ';
+		}
+		$sql .= 'FROM vnodes n 
 				JOIN customersview c ON (n.ownerid = c.id)
 				JOIN networks net ON net.id = n.netid 
 				LEFT JOIN location_cities lc ON lc.id = n.location_city
 				LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
 				LEFT JOIN location_states ls ON ls.id = ld.stateid '
-                . ($customergroup ? 'JOIN customerassignments ON (customerid = c.id) ' : '')
-                . ($nodegroup ? 'JOIN nodegroupassignments ON (nodeid = n.id) ' : '')
-                . ' WHERE 1=1 '
-                . ($network ? ' AND (n.netid = ' . $network . '
-					OR (n.ipaddr_pub > ' . $net['address'] . ' AND n.ipaddr_pub < ' . $net['broadcast'] . '))' : '')
-                . ($status == 1 ? ' AND n.access = 1' : '') //connected
-                . ($status == 2 ? ' AND n.access = 0' : '') //disconnected
-                . ($status == 3 ? ' AND n.lastonline > ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) : '') //online
-                . ($customergroup ? ' AND customergroupid = ' . intval($customergroup) : '')
-                . ($nodegroup ? ' AND nodegroupid = ' . intval($nodegroup) : '')
-                . (isset($searchargs) ? $searchargs : '')
-                . ($sqlord != '' ? $sqlord . ' ' . $direction : ''))) {
-            foreach ($nodelist as $idx => $row) {
-                ($row['access']) ? $totalon++ : $totaloff++;
-            }
-        }
+				. ($customergroup ? 'JOIN customerassignments ON (customerid = c.id) ' : '')
+				. ($nodegroup ? 'JOIN nodegroupassignments ON (nodeid = n.id) ' : '')
+				. ' WHERE 1=1 '
+				. ($network ? ' AND (n.netid = ' . $network . ' OR (n.ipaddr_pub > ' . $net['address'] . ' AND n.ipaddr_pub < ' . $net['broadcast'] . '))' : '')
+				. ($status == 1 ? ' AND n.access = 1' : '') //connected
+				. ($status == 2 ? ' AND n.access = 0' : '') //disconnected
+				. ($status == 3 ? ' AND n.lastonline > ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) : '') //online
+				. ($customergroup ? ' AND customergroupid = ' . intval($customergroup) : '')
+				. ($nodegroup ? ' AND nodegroupid = ' . intval($nodegroup) : '')
+				. (isset($searchargs) ? $searchargs : '')
+				. ($sqlord != '' && !$count ? $sqlord . ' ' . $direction : '')
+				. ($limit !== null && !$count ? ' LIMIT ' . $limit : '')
+				. ($offset !== null && !$count ? ' OFFSET ' . $offset : '');
 
-        $nodelist['total'] = sizeof($nodelist);
-        $nodelist['order'] = $order;
-        $nodelist['direction'] = $direction;
-        $nodelist['totalon'] = $totalon;
-        $nodelist['totaloff'] = $totaloff;
+		if (!$count) {
+			$nodelist = $this->db->GetAll($sql);
+			if (!empty($nodelist)) {
+				foreach ($nodelist as $idx => $row) {
+					($row['access']) ? $totalon++ : $totaloff++;
+				}
 
-        return $nodelist;
+				$nodelist['total'] = sizeof($nodelist);
+				$nodelist['order'] = $order;
+				$nodelist['direction'] = $direction;
+				$nodelist['totalon'] = $totalon;
+				$nodelist['totaloff'] = $totaloff;
+
+				return $nodelist;
+			}
+		} else {
+			return $this->db->getOne($sql);
+		}
     }
 
     public function NodeSet($id, $access = -1)
