@@ -144,7 +144,7 @@ if(isset($_GET['search']))
 		$SMARTY->display('print/printcustomerlist.html');
 	elseif (isset($_GET['export'])) {
 		$filename = 'customers-' . date('YmdHis') . '.csv';
-		header('Content-Type: text/plain');
+		header('Content-Type: text/plain; charset=utf-8');
 		header('Content-Disposition: attachment; filename=' . $filename);
 		header('Pragma: public');
 		$SMARTY->display('print/printcustomerlist-csv.html');
