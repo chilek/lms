@@ -74,7 +74,7 @@ function application_autoloader($class) {
         'ExecStack' => 'ExecStack.class.php',
         'Session' => 'Session.class.php',
         'Sysinfo' => 'Sysinfo.class.php',
-        'TCPDFpl' => 'tcpdf.php',
+        'LMSTCPDF' => 'tcpdf.php',
         'Smarty' => 'Smarty' . DIRECTORY_SEPARATOR . 'Smarty.class.php',
         'SmartyBC' => 'Smarty' . DIRECTORY_SEPARATOR . 'SmartyBC.class.php',
         'Cezpdf' => 'ezpdf' . DIRECTORY_SEPARATOR . 'Cezpdf.php',

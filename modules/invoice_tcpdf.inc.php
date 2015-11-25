@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -233,12 +233,12 @@ function invoice_simple_form_fill() {
 
 	if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
 		/* title */
-		$pdf->Text(7, 249, 'Wpłata na poczet należności');
+		$pdf->Text(7, 249, trans('Payment for liabilities'));
 
 		$value = $invoice['customerbalance'] * -1;
 	} else {
 		/* title */
-		$pdf->Text(7, 249, 'Zapłata za fakturę numer:');
+		$pdf->Text(7, 249, trans('Payment for invoice No. $a', NULL));
 		$pdf->SetFont('courier', 'B', 10);
 		$pdf->Text(7, 253, docnumber($invoice['number'], $invoice['template'], $invoice['cdate']));
 
@@ -308,14 +308,15 @@ function invoice_main_form_fill() {
 		$pdf->StopTransform();
 	}
 
-	if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false)))
+	if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
 		/* title */
-		$pdf->Text(127, 262, 'Wpłata na poczet należności');
-	else {
+		$pdf->SetFont('courier', '', 10);
+		$pdf->Text(120, 264, trans('Payment for liabilities'));
+	} else {
 		/* title */
-		$pdf->Text(127, 262, 'Zapłata za fakturę numer:');
 		$pdf->SetFont('courier', 'B', 10);
-		$pdf->Text(127, 266, docnumber($invoice['number'], $invoice['template'], $invoice['cdate']));
+		$tmp = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+		$pdf->Text(120, 264, trans('Payment for invoice No. $a', $tmp));
 	}
 
 	/* deadline */
