@@ -33,23 +33,9 @@
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . 'pol.php');
 
 class LMSTCPDF extends TCPDF {
-
 	public $invoice_type;
 
-	/* convert UTF-8 to ISO-8859-2 */
-
-	protected function UTF8ToLatin1($str) {
-		if (!$this->isunicode) {
-			return $str;
-		}
-		if (function_exists('mb_convert_encoding'))
-			return mb_convert_encoding($str, "ISO-8859-2", "UTF-8");
-		else
-			return iconv("UTF-8", "ISO-8859-2", $str);
-	}
-
 	/* set own Header function */
-
 	public function Header() {
 		/* insert your own logo in lib/tcpdf/images/logo.png */
 		$image_file = K_PATH_IMAGES . 'logo.png';
@@ -58,7 +44,6 @@ class LMSTCPDF extends TCPDF {
 	}
 
 	/* set own Footer function */
-
 	public function Footer() {
 		$cur_y = $this->y;
 		$this->SetTextColor(0, 0, 0);
@@ -102,6 +87,10 @@ class LMSTCPDF extends TCPDF {
 		}
 
 		return $this->getStringWidth($long, '', $font_style) + 2.5;
+	}
+
+	public function SetProducer($producer) {
+		$this->producer = $producer;
 	}
 
 	public function Table($header, $invoice) {
@@ -367,6 +356,7 @@ function init_pdf($pagesize, $orientation, $title) {
 
 	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 	$pdf->setLanguageArray($l);
+
 	/* disable font subsetting to improve performance */
 	$pdf->setFontSubsetting(false);
 
