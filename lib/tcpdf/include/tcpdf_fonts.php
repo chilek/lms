@@ -2017,8 +2017,15 @@ class TCPDF_FONTS {
 	 * @public static
 	 */
 	public static function UTF8ToLatin1($str, $isunicode=true, &$currentfont) {
-		$unicode = self::UTF8StringToArray($str, $isunicode, $currentfont); // array containing UTF-8 unicode values
-		return self::UTF8ArrToLatin1($unicode);
+		/* convert UTF-8 to ISO-8859-2 */
+		if (!$isunicode) {
+			return $str;
+		}
+
+		if (function_exists('mb_convert_encoding'))
+			return mb_convert_encoding($str, "ISO-8859-2", "UTF-8");
+		else
+			return iconv("UTF-8", "ISO-8859-2", $str);
 	}
 
 	/**
