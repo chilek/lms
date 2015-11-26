@@ -9,7 +9,7 @@
  * @version   4.03
  */
 
-class HTML2PDF_myPdf extends TCPDF
+class HTML2PDF_myPdf extends LMSTCPDF
 {
     protected $_footerParam = array();
     protected $_transf      = array();
@@ -21,16 +21,6 @@ class HTML2PDF_myPdf extends TCPDF
 
     // nb of segment to build a arc with bezier curv
     const ARC_NB_SEGMENT = 8;
-
-    protected function UTF8ToLatin1($str) {
-        if (!$this->isunicode) {
-            return $str;
-        }
-        if (function_exists('mb_convert_encoding'))
-            return mb_convert_encoding($str, "ISO-8859-2", "UTF-8");
-        else
-            return iconv("UTF-8", "ISO-8859-2", $str);
-    }
 
     /**
      * class constructor
