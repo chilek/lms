@@ -13,11 +13,11 @@ if (!defined('__CLASS_HTML2PDF__')) {
 
     define('__CLASS_HTML2PDF__', '4.03');
 
-    require_once(LIB_DIR.'/html2pdf/class/exception.class.php');
-    require_once(LIB_DIR.'/html2pdf/class/locale.class.php');
-    require_once(LIB_DIR.'/html2pdf/class/myPdf.class.php');
-    require_once(LIB_DIR.'/html2pdf/class/parsingHtml.class.php');
-    require_once(LIB_DIR.'/html2pdf/class/parsingCss.class.php');
+    require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'html2pdf' . DIRECTORY_SEPARATOR . 'class' . DIRECTORY_SEPARATOR . 'exception.class.php');
+    require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'html2pdf' . DIRECTORY_SEPARATOR . 'class' . DIRECTORY_SEPARATOR . 'locale.class.php');
+    require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'html2pdf' . DIRECTORY_SEPARATOR . 'class' . DIRECTORY_SEPARATOR . 'myPdf.class.php');
+    require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'html2pdf' . DIRECTORY_SEPARATOR . 'class' . DIRECTORY_SEPARATOR . 'parsingHtml.class.php');
+    require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'html2pdf' . DIRECTORY_SEPARATOR . 'class' . DIRECTORY_SEPARATOR . 'parsingCss.class.php');
 
     class HTML2PDF
     {
