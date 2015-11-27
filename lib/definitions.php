@@ -421,6 +421,7 @@ $EVENTTYPES = array(
 define('SESSIONTYPE_PPPOE', 1);
 define('SESSIONTYPE_DHCP', 2);
 define('SESSIONTYPE_EAP', 4);
+define('SESSIONTYPE_WIFI', 8);
 
 $SESSIONTYPES = array(
 	SESSIONTYPE_PPPOE => array(
@@ -434,6 +435,10 @@ $SESSIONTYPES = array(
 	SESSIONTYPE_EAP => array(
 		'label' => trans('EAP Client'),
 		'tip' => 'Enable/disable EAP Server Client'
+	),
+	SESSIONTYPE_WIFI => array(
+		'label' => trans('WiFi AP Client'),
+		'tip' => 'Enable/disable WiFi AP Client access'
 	),
 );
 

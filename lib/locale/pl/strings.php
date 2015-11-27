@@ -2975,9 +2975,11 @@ $_LANG['(default for link technology)'] = '(domyślna dla technologii łącza)';
 $_LANG['PPPoE Client'] = 'Klient PPPoE';
 $_LANG['DHCP Client'] = 'Klient DHCP';
 $_LANG['EAP Client'] = 'Klient EAP';
+$_LANG['WiFi AP Client'] = 'Klient WiFi AP';
 $_LANG['Enable/disable PPPoE Server Client'] = 'Włącza/Wyłącza komputer jako klient PPPoE';
 $_LANG['Enable/disable DHCP Server Client'] = 'Włącza/Wyłącza komputer jako klient DHCP';
 $_LANG['Enable/disable EAP Server Client'] = 'Włącza/Wyłącza komputer jako klient EAP';
+$_LANG['Enable/disable WiFi AP Client access'] = 'włącza/Wyłącza komputer jako klient WiFi AP';
 
 $_LANG['Select network device:'] = 'Wybierz urządzenie sieciowe:';
 $_LANG['Click to select network device from map'] = 'Kliknij w celu wybrania urządzenia sieciowego z mapy';

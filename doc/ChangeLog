@@ -32,6 +32,7 @@ version ?.??.?? (????-??-??):
   - helpdesk: added history of the ticket when you add notes [pjona]
   - helpdesk: added ability to change queue and owner when you add notes [pjona]
   - helpdesk: added type to notes [pjona]
+  - added new access type/session type - WiFi AP Client [chilan]
 
 version 1.11.18 (2015-10-01):
 
