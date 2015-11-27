@@ -27,7 +27,9 @@
 			xjx.$('mailfrom').style.display = 'none';
 			xjx.$('mailsender').style.display = 'none';
 			xjx.$('attachment').style.display = 'none';
+			{if $message.emails}
 			xjx.$('customermails').style.display = 'none';
+			{/if}
 			{if !$message.customerid}
 			var users = xjx.$('users');
 			if (elem == 'typeanysms') {
@@ -42,28 +44,36 @@
 				xjx.$('mailbody').style.display = '';
 				xjx.$('smsbody').style.display = 'none';
 				xjx.$('charscount').style.display = 'none';
+				{if $message.phones}
 				xjx.$('customerphones').style.display = 'none';
+				{/if}
 				xajax_getMessageTemplates({$smarty.const.TMPL_WWW});
 			} else if (elem == 'typeuserpanel') {
 				xjx.$('mailbody').style.display = '';
 				xjx.$('smsbody').style.display = 'none';
 				xjx.$('charscount').style.display = 'none';
+				{if $message.phones}
 				xjx.$('customerphones').style.display = 'none';
+				{/if}
 				xajax_getMessageTemplates({$smarty.const.TMPL_USERPANEL});
 			} else if (elem == 'typeuserpanelurgent') {
 				xjx.$('mailbody').style.display = '';
 				xjx.$('smsbody').style.display = 'none';
 				xjx.$('charscount').style.display = 'none';
+				{if $message.phones}
 				xjx.$('customerphones').style.display = 'none';
+				{/if}
 				xajax_getMessageTemplates({$smarty.const.TMPL_USERPANEL_URGENT});
 			} else {
 				xjx.$('mailbody').style.display = 'none';
 				xjx.$('smsbody').style.display = '';
 				xjx.$('charscount').style.display = '';
+				{if $message.phones}
 				if (elem == 'typeanysms')
 					xjx.$('customerphones').style.display = 'none';
 				else
 					xjx.$('customerphones').style.display = '';
+				{/if}
 				xajax_getMessageTemplates({$smarty.const.TMPL_SMS});
 			}
 		} else {
@@ -71,8 +81,12 @@
 			xjx.$('mailfrom').style.display = '';
 			xjx.$('mailsender').style.display = '';
 			xjx.$('attachment').style.display = '';
+			{if $message.emails}
 			xjx.$('customermails').style.display = '';
+			{/if}
+			{if $message.phones}
 			xjx.$('customerphones').style.display = 'none';
+			{/if}
 			if (xjx.$('phonenumber') != undefined)
 				xjx.$('phonenumber').style.display = 'none';
 			xjx.$('smsbody').style.display = 'none';
@@ -223,8 +237,12 @@
 			{trans("Type:")}
 		</TD>
 		<TD style="width: 98%;">
+			{if $message.emails || !isset($message.customerid)}
 			<INPUT type="radio" name="message[type]" id="typemail" value="{$smarty.const.MSG_MAIL}"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typemail"><span class="bold">{trans("email")}</span></label>
+			{/if}
+			{if $message.phones || !isset($message.customerid)}
 			<INPUT type="radio" name="message[type]" id="typesms" value="{$smarty.const.MSG_SMS}"{if $message.type == $smarty.const.MSG_SMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typesms"><span class="bold">{trans("sms")}</span></label>
+			{/if}
 			{if !$message.customerid}
 			<INPUT type="radio" name="message[type]" id="typeanysms" value="{$smarty.const.MSG_ANYSMS}"{if $message.type == $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeanysms"><span class="bold">{trans("any sms")}</span></label>
 			{/if}
