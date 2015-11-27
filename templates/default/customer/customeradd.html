@@ -129,6 +129,21 @@
 					</TD>
 				</TR>
 				{/if}
+				{if $groups}
+				<TR>
+					<TD style="width: 1%;">
+						<IMG SRC="img/group.gif" alt="">
+					</TD>
+					<TD style="width: 99%;" class="nobr" colspan="2">
+						<SELECT SIZE="1" NAME="customeradd[group]" {tip text="Select group to assign to customer" trigger="group"}>
+							<OPTION VALUE="0">{trans("... select group ...")}</OPTION>
+							{foreach $groups as $group}
+							<OPTION VALUE="{$group.id}" {if $customeradd.group == $group.id}SELECTED{/if}>{$group.name} ({$group.id|string_format:"%04d"})</OPTION>
+							{/foreach}
+						</SELECT>
+					</TD>
+				</TR>
+				{/if}
 				<TR>
 					<TD style="width: 1%;">
 						<IMG SRC="img/folder.gif" alt="">
