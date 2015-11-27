@@ -28,7 +28,17 @@
 				<TR class="{cycle name=sessionclass}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 					<TD class="bold nobr">{$nodesessions[session].ipaddr}</TD>
 					<TD class="nobr">{$nodesessions[session].mac}</TD>
-					<TD class="nobr">{if array_key_exists($nodesessions[session].type, $_SESSIONTYPES)}{$_SESSIONTYPES[$nodesessions[session].type].label}{else}-{/if}</TD>
+					<TD class="nobr">
+						{$unknowntype=1}{$firsttype=1}
+						{foreach $_SESSIONTYPES as $sessiontypeid => $sessiontype}
+						{if ($nodesessions[session].type & $sessiontypeid) == $sessiontypeid}
+						{if !$firsttype}, {/if}{$sessiontype.label}
+						{$firsttype=0}
+						{$unknowntype=0}
+						{/if}
+						{/foreach}
+						{if $unknowntype}-{/if}
+					</TD>
 					<TD class="nobr"><span class="bold">{$nodesessions[session].start|date_format:"%Y.%m.%d"}</span> {$nodesessions[session].start|date_format:"%H:%M:%S"}</TD>
 					<TD class="nobr"><span class="bold">{$nodesessions[session].stop|date_format:"%Y.%m.%d"}</span> {$nodesessions[session].stop|date_format:"%H:%M:%S"}</TD>
 					<TD class="bold nobr">{$nodesessions[session].duration}</TD>
