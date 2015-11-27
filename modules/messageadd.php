@@ -299,8 +299,11 @@ if(isset($_POST['message']))
 	if($message['subject']=='')
 		$error['subject'] = trans('Message subject is required!');
 
-	if($message['body']=='')
-		$error['body'] = trans('Message body is required!');
+	if ($message['body'] == '')
+		if (in_array($message['type'], array(MSG_SMS, MSG_ANYSMS)))
+			$error['smsbody'] = trans('Message body is required!');
+		else
+			$error['mailbody'] = trans('Message body is required!');
 
 	$files = array();
 	if (!empty($_FILES['file']['name'][0])) {
@@ -539,7 +542,7 @@ else if (!empty($_GET['customerid']))
 	foreach ($message['emails'] as $idx => $email)
 		$message['customermails'][$idx] = $email['contact'];
 
-	$message['type'] = MSG_MAIL;
+	$message['type'] = empty($message['emails']) ? (empty($message['phones']) ? MSG_WWW : MSG_SMS) : MSG_MAIL;
 
 	$SMARTY->assign('message', $message);
 }
