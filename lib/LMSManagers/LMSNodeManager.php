@@ -244,9 +244,12 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 $result['macs'][] = array('mac' => $mac, 'producer' => get_producer($mac));
             unset($result['mac']);
 
-            if ($netname = $this->db->GetOne('SELECT name FROM networks
+            if ($net = $this->db->GetRow('SELECT name, ' . $this->db->Concat('inet_ntoa(address)', "'/'", 'mask2prefix(inet_aton(mask))') . ' AS address FROM networks
 				WHERE id = ?', array($result['netid']))) {
-                $result['netname'] = $netname;
+                $result['netname'] = $net['name'];
+
+                if($result['ip'] == 0)
+                    $result['ip'] = $net['address'];
             }
 
             if ($result['ip_pub'] != '0.0.0.0') {

@@ -707,8 +707,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function getCustomerNodes($id, $count = null)
     {
         if ($result = $this->db->GetAll('SELECT n.id, n.name, mac, ipaddr,
-				inet_ntoa(ipaddr) AS ip, ipaddr_pub,
-				inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access,
+				CASE WHEN ipaddr != 0 AND ipaddr_pub != 0 THEN inet_ntoa(ipaddr) ELSE ' . $this->db->Concat('inet_ntoa(net.address)', "'/'", 'mask2prefix(inet_aton(net.mask))') . ' END AS ip,
+				ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access,
 				warning, info, ownerid, lastonline, location,
 				(SELECT COUNT(*) FROM nodegroupassignments
 					WHERE nodeid = n.id) AS gcount,
