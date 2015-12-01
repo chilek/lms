@@ -105,15 +105,13 @@
 			<TABLE cellpadding="3" width="100%">
 				<TR>
 					<TD style="width: 1%;">
-						{if $customeradd.status == "3" || !$customeradd.status}<img src="img/customer.gif" alt="">{/if}
-						{if $customeradd.status == "2"}<img src="img/wait.gif" alt="">{/if}
-						{if $customeradd.status == "1"}<img src="img/unk.gif" alt="">{/if}
+						<img src="img/{if $customeradd.status}{$CSTATUSES[$customeradd.status].img}{else}{$CSTATUSES[$smarty.const.CSTATUS_CONNECTED].img}{/if}" alt="">
 					</TD>
 					<TD style="width: 99%;">
 						<SELECT size="1" name="customeradd[status]" {tip text="Select customer state" trigger="status"}>
-							<OPTION value="3"{if $customeradd.status == "3"} SELECTED{/if}>{trans("connected<!singular>")}</OPTION>
-							<OPTION value="2"{if $customeradd.status == "2"} SELECTED{/if}>{trans("waiting")}</option>
-							<OPTION value="1"{if $customeradd.status == "1"} SELECTED{/if}>{trans("interested<!singular>")}</OPTION>
+							{foreach $_CSTATUSES as $statusidx => $status}
+							<OPTION value="{$statusidx}"{if $customeradd.status == $statusidx} selected{/if}>{$status.label}</OPTION>
+							{/foreach}
 						</SELECT>
 					</TD>
 				</TR>

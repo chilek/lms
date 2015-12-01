@@ -161,9 +161,9 @@
 					<TD style="width: 1%;" rowspan="2">
 						<SELECT name="message[group]" {tip trigger="group" text="Select recipients group"}>
 							<option value="0"{if !$message.group} selected{/if}>{trans("- all customers -")}</option>
-							<option value="3"{if $message.group == "3"} selected{/if}>{trans("connected<!plural>")}</option>
-							<option value="2"{if $message.group == "2"} selected{/if}>{trans("awaiting")}</option>
-							<option value="1"{if $message.group == "1"} selected{/if}>{trans("interested<!plural>")}</option>
+							<option value="{$smarty.const.CSTATUS_CONNECTED}"{if $message.group == $smarty.const.CSTATUS_CONNECTED} selected{/if}>{$_CSTATUSES[$smarty.const.CSTATUS_CONNECTED].label}</option>
+							<option value="{$smarty.const.CSTATUS_WAITING}"{if $message.group == $smarty.const.CSTATUS_WAITING} selected{/if}>{$_CSTATUSES[$smarty.const.CSTATUS_WAITING].label}</option>
+							<option value="{$smarty.const.CSTATUS_INTERESTED}"{if $message.group == $smarty.const.CSTATUS_INTERESTED} selected{/if}>{$_CSTATUSES[$smarty.const.CSTATUS_INTERESTED].label}</option>
 							<option value="4"{if $message.group == "4"} selected{/if}>{trans("deleted<!plural>")}</option>
 							<option value="5"{if $message.group == "5"} selected{/if}>{trans("disconnected<!plural>")}</option>
 							<option value="6"{if $message.group == "6"} selected{/if}>{trans("in debt")}</option>

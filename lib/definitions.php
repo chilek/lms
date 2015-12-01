@@ -37,6 +37,35 @@ $CTYPES = array(
     CTYPES_CONTRACTOR	=> trans('contractor'),
 );
 
+// customer statuses
+define('CSTATUS_INTERESTED', 1);
+define('CSTATUS_WAITING', 2);
+define('CSTATUS_CONNECTED', 3);
+define('CSTATUS_DISCONNECTED', 50);
+
+$CSTATUSES = array(
+	CSTATUS_CONNECTED => array(
+		'label' => trans('connected<!singular>'),
+		'img' => 'customer.gif',
+		'alias' => 'connected'
+	),
+	CSTATUS_WAITING => array(
+		'label' => trans('waiting'),
+		'img' => 'wait.gif',
+		'alias' => 'awaiting'
+	),
+	CSTATUS_INTERESTED => array(
+		'label' => trans('interested<!singular>'),
+		'img' => 'unk.gif',
+		'alias' => 'interested'
+	),
+	CSTATUS_DISCONNECTED => array(
+		'label' => trans('disconnected<!singular>'),
+		'img' => 'node_off.gif',
+		'alias' => 'disconnected'
+	),
+);
+
 // Helpdesk ticket status
 define('RT_NEW', 0);
 define('RT_OPEN', 1);
@@ -450,6 +479,7 @@ $SESSIONTYPES = array(
 if(isset($SMARTY))
 {
 	$SMARTY->assign('_CTYPES',$CTYPES);
+	$SMARTY->assign('_CSTATUSES', $CSTATUSES);
 	$SMARTY->assign('_DOCTYPES', $DOCTYPES);
 	$SMARTY->assign('_PERIODS', $PERIODS);
 	$SMARTY->assign('_GUARANTEEPERIODS', $GUARANTEEPERIODS);

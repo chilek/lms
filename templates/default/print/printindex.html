@@ -34,7 +34,7 @@
 								<TD style="width: 98%;">
 									<SELECT size="1" name="filter" {tip text="Select customer's group"}>
 										<OPTION value="0">- {trans("all<!customers>")} -</OPTION>
-										<OPTION value="3" selected>{trans("connected<!plural>")}</OPTION>
+										<OPTION value="{$smarty.const.CSTATUS_CONNECTED}" selected>{$_CSTATUSES[$smarty.const.CSTATUS_CONNECTED].label}</OPTION>
 										<OPTION value="5">{trans("disconnected<!plural>")}</OPTION>
 										<OPTION value="6">{trans("in debt")}</OPTION>
 										<OPTION value="11">{trans("in debt above 100%")}</OPTION>
@@ -42,8 +42,8 @@
 										<OPTION value="13">{trans("without contracts")}</OPTION>
 										<OPTION value="14">{trans("with expired contracts")}</OPTION>
 										<OPTION value="15">{trans("with expiring contracts")}</OPTION>
-										<OPTION value="2">{trans("waiting")}</OPTION>
-										<OPTION value="1">{trans("interested<!plural>")}</OPTION>
+										<OPTION value="{$smarty.const.CSTATUS_WAITING}">{$_CSTATUSES[$smarty.const.CSTATUS_WAITING].label}</OPTION>
+										<OPTION value="{$smarty.const.CSTATUS_INTERESTED}">{$_CSTATUSES[$smarty.const.CSTATUS_INTERESTED].label}</OPTION>
 										<OPTION value="-1">{trans("without nodes")}</OPTION>
 									</SELECT>
 								</TD>

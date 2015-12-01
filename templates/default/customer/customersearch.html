@@ -315,9 +315,9 @@
 		<TD style="width: 99%;">
 			<SELECT SIZE="1" name="s">
 				<OPTION VALUE="0">{trans("- all -")}</OPTION>
-				<OPTION VALUE="3">{trans("connected<!plural>")}</OPTION>
-				<OPTION VALUE="2">{trans("waiting")}</OPTION>
-				<OPTION VALUE="1">{trans("interested<!plural>")}</OPTION>
+				<OPTION VALUE="{$smarty.const.CSTATUS_CONNECTED}">{$_CSTATUSES[$smarty.const.CSTATUS_CONNECTED].label}</OPTION>
+				<OPTION VALUE="{$smarty.const.CSTATUS_WAITING}">{$_CSTATUSES[$smarty.const.CSTATUS_WAITING].label}</OPTION>
+				<OPTION VALUE="{$smarty.const.CSTATUS_INTERESTED}">{$_CSTATUSES[$smarty.const.CSTATUS_INTERESTED].label}</OPTION>
 				<OPTION VALUE="4">{trans("deleted<!plural>")}</OPTION>
 				<OPTION VALUE="5">{trans("disconnected<!plural>")}</OPTION>
 				<OPTION VALUE="6">{trans("in debt")}</OPTION>

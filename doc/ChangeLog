@@ -33,6 +33,8 @@ version ?.??.?? (????-??-??):
   - helpdesk: added ability to change queue and owner when you add notes [pjona]
   - helpdesk: added type to notes [pjona]
   - added new access type/session type - WiFi AP Client [chilan]
+  - added preliminary support for customer disconnected status and refactoring customer status
+    support code to make adding new customer statuses easier [chilan]
 
 version 1.11.18 (2015-10-01):
 

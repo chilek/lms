@@ -130,9 +130,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         return $this->db->GetAllByKey(
             'SELECT id, ' . $this->db->Concat('lastname', "' '", 'name')  . ' AS customername 
             FROM customersview 
-            WHERE status > 1 AND deleted = 0 
+            WHERE status <> ? AND deleted = 0 
             ORDER BY lastname, name', 
-            'id'
+            'id', array(CSTATUS_INTERESTED)
         );
     }
     
@@ -262,11 +262,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      */
     public function customerStats()
     {
+		global $CSTATUSES;
+		$sql = '';
+		foreach ($CSTATUSES as $statusidx => $status)
+			$sql .= ' COUNT(CASE WHEN status = ' . $statusidx . ' THEN 1 END) AS ' . $status['alias'] . ',';
         $result = $this->db->GetRow(
-            'SELECT COUNT(id) AS total,
-                COUNT(CASE WHEN status = 3 THEN 1 END) AS connected,
-                COUNT(CASE WHEN status = 2 THEN 1 END) AS awaiting,
-                COUNT(CASE WHEN status = 1 THEN 1 END) AS interested
+            'SELECT ' . $sql . ' COUNT(id) AS total
             FROM customersview 
             WHERE deleted=0'
         );
@@ -635,7 +636,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             AND type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
                     ) d ON d.customerid = c.id' : '')
                 . ' WHERE c.deleted = ' . intval($deleted)
-                . ($state <= 3 && $state > 0 ? ' AND c.status = ' . intval($state) : '')
+                . ($state <= CSTATUS_INTERESTED && $state > 0 ? ' AND c.status = ' . intval($state) : '')
                 . ($division ? ' AND c.divisionid = ' . intval($division) : '')
                 . ($online ? ' AND s.online = 1' : '')
                 . ($indebted ? ' AND b.value < 0' : '')
