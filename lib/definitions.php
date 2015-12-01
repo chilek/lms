@@ -422,6 +422,7 @@ define('SESSIONTYPE_PPPOE', 1);
 define('SESSIONTYPE_DHCP', 2);
 define('SESSIONTYPE_EAP', 4);
 define('SESSIONTYPE_WIFI', 8);
+define('SESSIONTYPE_VOIP', 16);
 
 $SESSIONTYPES = array(
 	SESSIONTYPE_PPPOE => array(
@@ -439,6 +440,10 @@ $SESSIONTYPES = array(
 	SESSIONTYPE_WIFI => array(
 		'label' => trans('WiFi AP Client'),
 		'tip' => 'Enable/disable WiFi AP Client access'
+	),
+	SESSIONTYPE_VOIP => array(
+		'label' => trans('VoIP Gateway'),
+		'tip' => 'Enable/disable VoIP Gateway access'
 	),
 );
 
