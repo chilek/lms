@@ -153,7 +153,7 @@
 				<TR>
 					<TD width="1%" {tip text="Select customer's group"}>
 						{foreach $_CSTATUSES as $statusidx => $status}
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="{$statusidx}"{if $statusidx == $smarty.const.CSTATUS_CONNECTED} checked{if}>{$status.label}</NOBR><BR>
+						<NOBR><INPUT class="radio light" type="radio" name="filter" value="{$statusidx}"{if $statusidx == $smarty.const.CSTATUS_CONNECTED} checked{/if}>{$status.label}</NOBR><BR>
 						{/foreach}
 						<NOBR><INPUT class="radio light" type="radio" name="filter" value="51">{trans("disconnected<!plural>")}</NOBR><BR>
 						<NOBR><INPUT class="radio light" type="radio" name="filter" value="52">{trans("in debt")}</NOBR><BR>
