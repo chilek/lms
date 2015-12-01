@@ -63,7 +63,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	$tarifftype = intval($filter['tarifftype']);
 	$consent = isset($filter['consent']);
 
-	if($group == 4)
+	if($group == 50)
 	{
 		$deleted = 1;
 		$network = NULL;
@@ -72,13 +72,13 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	else
 		$deleted = 0;
 
-	$disabled = ($group == 5) ? 1 : 0;
-	$indebted = ($group == 6) ? 1 : 0;
-	$notindebted = ($group == 7) ? 1 : 0;
-	$indebted2 = ($group == 11) ? 1 : 0;
-	$indebted3 = ($group == 12) ? 1 : 0;
+	$disabled = ($group == 51) ? 1 : 0;
+	$indebted = ($group == 52) ? 1 : 0;
+	$notindebted = ($group == 53) ? 1 : 0;
+	$indebted2 = ($group == 57) ? 1 : 0;
+	$indebted3 = ($group == 58) ? 1 : 0;
 
-	if($group>3) $group = 0;
+	if ($group >= 50) $group = 0;
 
 	if($network)
 		$net = $LMS->GetNetworkParams($network);

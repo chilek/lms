@@ -161,15 +161,15 @@
 					<TD style="width: 1%;" rowspan="2">
 						<SELECT name="message[group]" {tip trigger="group" text="Select recipients group"}>
 							<option value="0"{if !$message.group} selected{/if}>{trans("- all customers -")}</option>
-							<option value="{$smarty.const.CSTATUS_CONNECTED}"{if $message.group == $smarty.const.CSTATUS_CONNECTED} selected{/if}>{$_CSTATUSES[$smarty.const.CSTATUS_CONNECTED].label}</option>
-							<option value="{$smarty.const.CSTATUS_WAITING}"{if $message.group == $smarty.const.CSTATUS_WAITING} selected{/if}>{$_CSTATUSES[$smarty.const.CSTATUS_WAITING].label}</option>
-							<option value="{$smarty.const.CSTATUS_INTERESTED}"{if $message.group == $smarty.const.CSTATUS_INTERESTED} selected{/if}>{$_CSTATUSES[$smarty.const.CSTATUS_INTERESTED].label}</option>
-							<option value="4"{if $message.group == "4"} selected{/if}>{trans("deleted<!plural>")}</option>
-							<option value="5"{if $message.group == "5"} selected{/if}>{trans("disconnected<!plural>")}</option>
-							<option value="6"{if $message.group == "6"} selected{/if}>{trans("in debt")}</option>
-							<option value="11"{if $message.group == "11"} selected{/if}>{trans("in debt above 100%")}</option>
-							<option value="12"{if $message.group == "12"} selected{/if}>{trans("in debt above 200%")}</option>
-							<option value="7"{if $message.group == "7"} selected{/if}>{trans("not in debt")}</option>
+							{foreach $_CSTATUSES as $statusidx => $status}
+							<option value="{$statusidx}"{if $message.group == $statusidx} selected{/if}>{$status.label}</option>
+							{/if}
+							<option value="50"{if $message.group == "50"} selected{/if}>{trans("deleted<!plural>")}</option>
+							<option value="51"{if $message.group == "51"} selected{/if}>{trans("disconnected<!plural>")}</option>
+							<option value="52"{if $message.group == "52"} selected{/if}>{trans("in debt")}</option>
+							<option value="57"{if $message.group == "57"} selected{/if}>{trans("in debt above 100%")}</option>
+							<option value="58"{if $message.group == "58"} selected{/if}>{trans("in debt above 200%")}</option>
+							<option value="53"{if $message.group == "53"} selected{/if}>{trans("not in debt")}</option>
 						</SELECT>
 					</TD>
 					<TD style="width: 1%;" class="nobr">{trans("Group:")}</TD>

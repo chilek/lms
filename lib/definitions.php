@@ -41,7 +41,7 @@ $CTYPES = array(
 define('CSTATUS_INTERESTED', 1);
 define('CSTATUS_WAITING', 2);
 define('CSTATUS_CONNECTED', 3);
-define('CSTATUS_DISCONNECTED', 50);
+define('CSTATUS_DISCONNECTED', 4);
 
 $CSTATUSES = array(
 	CSTATUS_CONNECTED => array(

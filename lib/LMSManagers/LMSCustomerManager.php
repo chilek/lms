@@ -407,7 +407,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         switch ($state) {
-            case 4:
+            case 50:
                 // When customer is deleted we have no assigned groups or nodes, see DeleteCustomer().
                 // Return empty list in this case
                 if (!empty($network) || !empty($customergroup) || !empty($nodegroup)) {
@@ -419,24 +419,24 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 }
                 $deleted = 1;
                 break;
-            case 5: $disabled = 1;
+            case 51: $disabled = 1;
                 break;
-            case 6: $indebted = 1;
+            case 52: $indebted = 1;
                 break;
-            case 7: $online = 1;
+            case 53: $online = 1;
                 break;
-            case 8: $groupless = 1;
+            case 54: $groupless = 1;
                 break;
-            case 9: $tariffless = 1;
+            case 55: $tariffless = 1;
                 break;
-            case 10: $suspended = 1;
+            case 56: $suspended = 1;
                 break;
-            case 11: $indebted2 = 1;
+            case 57: $indebted2 = 1;
                 break;
-            case 12: $indebted3 = 1;
+            case 58: $indebted3 = 1;
                 break;
-            case 13: case 14: case 15:
-                     $contracts = $state - 12;
+            case 59: case 60: case 61:
+                     $contracts = $state - 58;
                      $contracts_days = intval(ConfigHelper::getConfig('contracts.contracts_days'));
                      break;
         }
@@ -636,7 +636,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             AND type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
                     ) d ON d.customerid = c.id' : '')
                 . ' WHERE c.deleted = ' . intval($deleted)
-                . ((($state <= CSTATUS_CONNECTED && $state > 0) || $state == CSTATUS_DISCONNECTED) ? ' AND c.status = ' . intval($state) : '')
+                . (($state <= 50 && $state > 0) ? ' AND c.status = ' . intval($state) : '')
                 . ($division ? ' AND c.divisionid = ' . intval($division) : '')
                 . ($online ? ' AND s.online = 1' : '')
                 . ($indebted ? ' AND b.value < 0' : '')

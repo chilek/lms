@@ -116,7 +116,7 @@
 					{/if}
 				{/if}
 			{/if}
-			{if $listdata.state == 4}
+			{if $listdata.state == 50}
 			<A href="?m=customeredit&id={$customerlist[customerlist].id}&action=recover"><IMG src="img/recover.gif" alt="[ {trans("Recover")} ]" title="[ {trans("Recover")} ]"></A>
 			{else}
 			<A href="?m=customerdel&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$a\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
