@@ -46,21 +46,25 @@ define('CSTATUS_DISCONNECTED', 50);
 $CSTATUSES = array(
 	CSTATUS_CONNECTED => array(
 		'label' => trans('connected<!singular>'),
+		'summarylabel' => trans('Connected:'),
 		'img' => 'customer.gif',
 		'alias' => 'connected'
 	),
 	CSTATUS_WAITING => array(
 		'label' => trans('waiting'),
+		'summarylabel' => trans('Waiting:'),
 		'img' => 'wait.gif',
 		'alias' => 'awaiting'
 	),
 	CSTATUS_INTERESTED => array(
 		'label' => trans('interested<!singular>'),
+		'summarylabel' => trans('Interested:'),
 		'img' => 'unk.gif',
 		'alias' => 'interested'
 	),
 	CSTATUS_DISCONNECTED => array(
 		'label' => trans('disconnected<!singular>'),
+		'summarylabel' => trans('Disconnected:<!summary>'),
 		'img' => 'node_off.gif',
 		'alias' => 'disconnected'
 	),

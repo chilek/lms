@@ -15,7 +15,7 @@
 		{foreach $_CSTATUSES as $statusidx => $status}
         <tr>
             <td class="text-right bold">
-                <a href="?m=customerlist&amp;s={$statusidx}">{$status.label}:</a>
+                <a href="?m=customerlist&amp;s={$statusidx}">{$status.summarylabel}</a>
             </td>
             <td>
 				{$alias=$status.alias}
