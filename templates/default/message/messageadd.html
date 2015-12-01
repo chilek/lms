@@ -162,7 +162,7 @@
 						<SELECT name="message[group]" {tip trigger="group" text="Select recipients group"}>
 							<option value="0"{if !$message.group} selected{/if}>{trans("- all customers -")}</option>
 							{foreach $_CSTATUSES as $statusidx => $status}
-							<option value="{$statusidx}"{if $message.group == $statusidx} selected{/if}>{$status.label}</option>
+							<option value="{$statusidx}"{if $message.group == $statusidx} selected{/if}>{$status.plurallabel}</option>
 							{/foreach}
 							<option value="50"{if $message.group == "50"} selected{/if}>{trans("deleted<!plural>")}</option>
 							<option value="51"{if $message.group == "51"} selected{/if}>{trans("disconnected<!plural>")}</option>

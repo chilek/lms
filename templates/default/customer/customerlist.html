@@ -46,7 +46,7 @@
 			<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
 				<OPTION VALUE="0"{if $listdata.state == 0} SELECTED{/if}>{trans("- all customers -")}</OPTION>
 				{foreach $_CSTATUSES as $statusidx => $status}
-				<OPTION VALUE="{$statusidx}"{if $listdata.state == $statusidx} selected{/if}>{$status.label}</OPTION>
+				<OPTION VALUE="{$statusidx}"{if $listdata.state == $statusidx} selected{/if}>{$status.plurallabel}</OPTION>
 				{/foreach}
 				<OPTION VALUE="50"{if $listdata.state == 50} SELECTED{/if}>{trans("deleted<!plural>")}</OPTION>
 				<OPTION VALUE="51"{if $listdata.state == 51} SELECTED{/if}>{trans("disconnected<!plural>")}</OPTION>

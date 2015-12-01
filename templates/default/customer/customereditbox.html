@@ -107,7 +107,7 @@
 		<TD style="width: 99%;">
 			<SELECT size="1" name="customerdata[status]" {tip text="Select customer state" trigger="status"}>
 				{foreach $_CSTATUSES as $statusidx => $status}
-				<OPTION value="{$statusidx}"{if $customerinfo.status == $statusidx} selected{/if}>{$status.label}</OPTION>
+				<OPTION value="{$statusidx}"{if $customerinfo.status == $statusidx} selected{/if}>{$status.singularlabel}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>

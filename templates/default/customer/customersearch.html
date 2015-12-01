@@ -316,7 +316,7 @@
 			<SELECT SIZE="1" name="s">
 				<OPTION VALUE="0">{trans("- all -")}</OPTION>
 				{foreach $_CSTATUSES as $statusidx => $status}
-				<OPTION VALUE="{$statusidx}">{$status.label}</OPTION>
+				<OPTION VALUE="{$statusidx}">{$status.plurallabel}</OPTION>
 				{/foreach}
 				<OPTION VALUE="50">{trans("deleted<!plural>")}</OPTION>
 				<OPTION VALUE="51">{trans("disconnected<!plural>")}</OPTION>
