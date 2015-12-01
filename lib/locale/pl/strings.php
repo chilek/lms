@@ -3038,5 +3038,6 @@ $_LANG['Ticket has been moved from $a to customer $b ($c).'] = 'Zgłoszenie zost
 $_LANG['Changes of customers waiting for approval:'] = 'Zmiany klientów oczekujące na zatwierdzenie:';
 
 $_LANG['Disconnected:<!summary>'] = 'Odłączeni:';
+$_LANG['with disconnected nodes'] = 'z odłączonymi komputerami';
 
 ?>

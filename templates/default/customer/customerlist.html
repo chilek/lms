@@ -49,7 +49,7 @@
 				<OPTION VALUE="{$statusidx}"{if $listdata.state == $statusidx} selected{/if}>{$status.plurallabel}</OPTION>
 				{/foreach}
 				<OPTION VALUE="50"{if $listdata.state == 50} SELECTED{/if}>{trans("deleted<!plural>")}</OPTION>
-				<OPTION VALUE="51"{if $listdata.state == 51} SELECTED{/if}>{trans("disconnected<!plural>")}</OPTION>
+				<OPTION VALUE="51"{if $listdata.state == 51} SELECTED{/if}>{trans("with disconnected nodes")}</OPTION>
 				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 				<OPTION VALUE="52"{if $listdata.state == 52} SELECTED{/if}>{trans("in debt")}</OPTION>
 				<OPTION VALUE="57"{if $listdata.state == 57} SELECTED{/if}>{trans("in debt above 100%")}</OPTION>
