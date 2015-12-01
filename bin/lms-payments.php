@@ -128,9 +128,9 @@ try {
 
 // Include required files (including sequence is important)
 
-//require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
 $deadline = ConfigHelper::getConfig('payments.deadline', 14);
 $sdate_next = ConfigHelper::getConfig('payments.saledate_next_month', 0);
@@ -342,7 +342,7 @@ $query = "SELECT a.tariffid, a.liabilityid, a.customerid,
 	LEFT JOIN tariffs t ON (a.tariffid = t.id) 
 	LEFT JOIN liabilities l ON (a.liabilityid = l.id) 
 	LEFT JOIN divisions d ON (d.id = c.divisionid) 
-	WHERE c.status = 3 
+	WHERE c.status = ?
 		AND ((a.period = ".DISPOSABLE." AND at = $today) 
 			OR ((a.period = ".DAY." 
 			OR (a.period = ".WEEK." AND at = $weekday) 
@@ -354,7 +354,7 @@ $query = "SELECT a.tariffid, a.liabilityid, a.customerid,
 			AND (a.dateto > $currtime OR a.dateto = 0)))"
 		.(!empty($groupnames) ? $customergroups : "")
 	." ORDER BY a.customerid, a.invoice, a.paytype, a.numberplanid, value DESC";
-$assigns = $DB->GetAll($query);
+$assigns = $DB->GetAll($query, array(CSTATUS_CONNECTED));
 
 if (empty($assigns))
 	die;
