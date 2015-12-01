@@ -34,7 +34,7 @@
 								<TD style="width: 98%;">
 									<SELECT size="1" name="filter" {tip text="Select customer's group"}>
 										<OPTION value="0">- {trans("all<!customers>")} -</OPTION>
-										{foreach $_CSTATUES as $statusidx => $status}
+										{foreach $_CSTATUSES as $statusidx => $status}
 										<OPTION value="{$statusidx}"{if $statusidx == $smarty.const.CSTATUS_CONNECTED} selected{/if}>{$status.label}</OPTION>
 										{/foreach}
 										<OPTION value="51">{trans("disconnected<!plural>")}</OPTION>
