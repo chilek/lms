@@ -361,8 +361,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 									'customerid' => $id,
 									'customergroupid' => $customeradd['group'] 
 							);
-							$this->db->Execute('INSERT INTO customerassignments (customerid, customergroupid) VALUES (?,?)', array_values($gargs));
-						}
+							$res = $this->db->Execute('INSERT INTO customerassignments (customerid, customergroupid) VALUES (?,?)', array_values($gargs));
+							if ($this->syslog && $res) {
+							}
+								$args = array(
+										$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
+										$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $customeradd['group']
+								);
+								$this->syslog->AddMessage(SYSLOG_RES_CUSTASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
+							}
             return $id;
         } else {
             return false;
