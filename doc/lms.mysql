@@ -2065,6 +2065,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui','default_editor','html','',0),
 ('phpui','logging','false','',0),
 ('phpui','hide_toolbar','false','',0),
+('phpui','add_customer_group_required','false','',0),
 ('invoices','template_file','invoice.html','',0),
 ('invoices','content_type','text/html','',0),
 ('invoices','cnote_template_file','invoice.html','',0),

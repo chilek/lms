@@ -356,6 +356,20 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV],
                     $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY]));
             }
+						if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required',false))) {
+							$gargs = array(
+									'customerid' => $id,
+									'customergroupid' => $customeradd['group'] 
+							);
+							$res = $this->db->Execute('INSERT INTO customerassignments (customerid, customergroupid) VALUES (?,?)', array_values($gargs));
+							if ($this->syslog && $res) {
+							}
+								$args = array(
+										$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
+										$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $customeradd['group']
+								);
+								$this->syslog->AddMessage(SYSLOG_RES_CUSTASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
+							}
             return $id;
         } else {
             return false;

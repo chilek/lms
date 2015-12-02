@@ -93,6 +93,11 @@ if (isset($_POST['customeradd']))
 	if($customeradd['name'] == '' && !$customeradd['type'])
 		$error['name'] = trans('First name cannot be empty!');
 	
+	if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required',false))) {
+		if($customeradd['group'] == 0)
+			$error['group'] = trans('Group name required!');
+	}
+	
 	if($customeradd['address'] == '')
 		$error['address'] = trans('Address required!');
 	
@@ -330,6 +335,9 @@ $SMARTY->assign('cstateslist', $LMS->GetCountryStates());
 $SMARTY->assign('countrieslist', $LMS->GetCountries());
 $SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname, status FROM divisions ORDER BY shortname'));
 $SMARTY->assign('customeradd', $customeradd);
+if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required',false))) {
+		$SMARTY->assign('groups',$DB->GetAll('SELECT id,name FROM customergroups ORDER BY id'));
+	}
 $SMARTY->assign('error', $error);
 
 

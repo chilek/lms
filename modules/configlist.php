@@ -288,6 +288,10 @@ function GetConfigList($order='var,asc', $section='', $search='')
 				case 'logging':
 					$config[$idx]['description'] = trans('Does this LMS have transaction log support (not opensource). Default: false.');
 				break;
+			
+				case 'add_customer_group_required':
+					$config[$idx]['description'] = trans('If isset "true" when adding new customer select group is required. Default "false"');
+				break;
 
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');
