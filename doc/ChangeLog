@@ -36,6 +36,8 @@ version ?.??.?? (????-??-??):
   - added preliminary support for customer disconnected status and refactoring customer status
     support code to make adding new customer statuses easier [chilan]
   - permanent customer removal for customers which are already removed [chilan]
+  - allow to optionally send mail copy to message sender (checkbox is checked by default if
+    phpui.send_message_to_sender_checkbox is set to true) [chilan]
 
 version 1.11.18 (2015-10-01):
 

@@ -425,9 +425,11 @@ if(isset($_POST['message']))
 			if(!empty($debug_email))
 				echo '<B>'.trans('Warning! Debug mode (using address $a).',ConfigHelper::getConfig('mail.debug_email')).'</B><BR>';
 
-			$headers['From'] = '"'.$message['from'].'" <'.$message['sender'].'>';
+			$headers['From'] = qp_encode($message['from']) . ' <' . $message['sender'] . '>';
 			$headers['Subject'] = $message['subject'];
 			$headers['Reply-To'] = $headers['From'];
+			if (isset($message['copytosender']))
+				$headers['Cc'] = $headers['From'];
 			if (!empty($message['wysiwyg']))
 				$headers['X-LMS-Format'] = 'html';
 		} elseif ($message['type'] != MSG_WWW) {
@@ -460,9 +462,11 @@ if(isset($_POST['message']))
 					$row['customername'] . ' &lt;' . $destination . '&gt;');
 				flush();
 
-				if ($message['type'] == MSG_MAIL)
+				if ($message['type'] == MSG_MAIL) {
+					if (isset($message['copytosender']))
+						$destination .= ',' . $message['sender'];
 					$result = $LMS->SendMail($destination, $headers, $body, $files);
-				elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT)
+				} elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT)
 					$result = MSG_NEW;
 				else
 					$result = $LMS->SendSMS($destination, $body, $msgid);

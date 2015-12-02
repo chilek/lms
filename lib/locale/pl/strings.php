@@ -3049,4 +3049,7 @@ $_LANG['Do you want to permanently remove $a customer?'] = 'Czy chcesz trwale us
 $_LANG['This operation will be irreversible!'] = 'Ta operacja będzie nieodwracalna!';
 $_LANG['Customer $a has been permanently removed.'] = 'Klient $a został trwale usunięty.';
 
+$_LANG['Check if you want do send message copy to sender'] = 'Zaznacz, jeśli ma być wysyłana kopia wiadomości do nadawcy';
+$_LANG['send copy to sender'] = 'wyślij kopię do nadawcy';
+
 ?>
