@@ -650,7 +650,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             AND type IN (' . DOC_CONTRACT . ',' . DOC_ANNEX . ')
                     ) d ON d.customerid = c.id' : '')
                 . ' WHERE c.deleted = ' . intval($deleted)
-                . (($state <= 50 && $state > 0) ? ' AND c.status = ' . intval($state) : '')
+                . (($state < 50 && $state > 0) ? ' AND c.status = ' . intval($state) : '')
                 . ($division ? ' AND c.divisionid = ' . intval($division) : '')
                 . ($online ? ' AND s.online = 1' : '')
                 . ($indebted ? ' AND b.value < 0' : '')
