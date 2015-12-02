@@ -395,10 +395,10 @@ class LMS
         return $manager->CustomerAdd($customeradd);
     }
 
-    public function DeleteCustomer($id)
+    public function DeleteCustomer($id, $permanent = false)
     {
         $manager = $this->getCustomerManager();
-        return $manager->DeleteCustomer($id);
+        return $manager->DeleteCustomer($id, $permanent);
     }
 
     public function CustomerUpdate($customerdata)
