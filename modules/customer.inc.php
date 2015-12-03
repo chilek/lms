@@ -49,7 +49,7 @@ $allnodegroups = $LMS->GetNodeGroupNames();
 $messagelist = $LMS->GetMessages($customerid, 10);
 $eventlist = $LMS->EventSearch(array('customerid' => $customerid), 'date,desc', true);
 $customernodes = $LMS->GetCustomerNodes($customerid);
-$customernetworks = $LMS->GetCustomerNetworks($customerid);
+$customernetworks = $LMS->GetCustomerNetworks($customerid, 10);
 
 if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
 	$trans = $SYSLOG->GetTransactions(array('key' => $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], 'value' => $customerid));
