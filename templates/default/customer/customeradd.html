@@ -483,6 +483,7 @@
 					</TD>
 					<TD style="width: 99%">
 						<TABLE cellpadding="0">
+							{block name="customeradd-options"}
 							<TR>
 								<TD>
 									<label for="chkconsent">{trans("Consent to personal data processing:")}</label>
@@ -515,6 +516,7 @@
 									<INPUT type="checkbox" name="customeradd[mailingnotice]" value="1" id="chkmailingnotice"{if $customeradd.mailingnotice} checked{/if}>
 								</TD>
 							</TR>
+							{/block}
 						</TABLE>
 					</TD>
 				</TR>
