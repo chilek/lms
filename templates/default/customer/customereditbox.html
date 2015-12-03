@@ -102,15 +102,13 @@
 						<TABLE width="100%" cellpadding="3">
 	<TR>
 		<TD style="width: 1%;">
-			{if $customerinfo.status == "3"}<IMG src="img/customer.gif" alt="">{/if}
-			{if $customerinfo.status == "2"}<IMG src="img/wait.gif" alt="">{/if}
-			{if $customerinfo.status == "1"}<IMG src="img/unk.gif" alt="">{/if}
+			<IMG src="img/{$_CSTATUSES[$customerinfo.status].img}" alt="">
 		</TD>
 		<TD style="width: 99%;">
 			<SELECT size="1" name="customerdata[status]" {tip text="Select customer state" trigger="status"}>
-				<OPTION value="3"{if $customerinfo.status == "3"} SELECTED{/if}>{trans("connected<!singular>")}</OPTION>
-				<OPTION value="2"{if $customerinfo.status == "2"} SELECTED{/if}>{trans("waiting")}</OPTION>
-				<OPTION value="1"{if $customerinfo.status == "1"} SELECTED{/if}>{trans("interested<!singular>")}</OPTION>
+				{foreach $_CSTATUSES as $statusidx => $status}
+				<OPTION value="{$statusidx}"{if $customerinfo.status == $statusidx} selected{/if}>{$status.singularlabel}</OPTION>
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>

@@ -45,23 +45,23 @@
 			<span class="bold">{trans("Filter:")}</span> {trans("Customers:")}
 			<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
 				<OPTION VALUE="0"{if $listdata.state == 0} SELECTED{/if}>{trans("- all customers -")}</OPTION>
-				<OPTION VALUE="3"{if $listdata.state == 3} SELECTED{/if}>{trans("connected<!plural>")}</OPTION>
-				<OPTION VALUE="2"{if $listdata.state == 2} SELECTED{/if}>{trans("awaiting")}</OPTION>
-				<OPTION VALUE="1"{if $listdata.state == 1} SELECTED{/if}>{trans("interested<!plural>")}</OPTION>
-				<OPTION VALUE="4"{if $listdata.state == 4} SELECTED{/if}>{trans("deleted<!plural>")}</OPTION>
-				<OPTION VALUE="5"{if $listdata.state == 5} SELECTED{/if}>{trans("disconnected<!plural>")}</OPTION>
+				{foreach $_CSTATUSES as $statusidx => $status}
+				<OPTION VALUE="{$statusidx}"{if $listdata.state == $statusidx} selected{/if}>{$status.plurallabel}</OPTION>
+				{/foreach}
+				<OPTION VALUE="50"{if $listdata.state == 50} SELECTED{/if}>{trans("deleted<!plural>")}</OPTION>
+				<OPTION VALUE="51"{if $listdata.state == 51} SELECTED{/if}>{trans("with disconnected nodes")}</OPTION>
 				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-				<OPTION VALUE="6"{if $listdata.state == 6} SELECTED{/if}>{trans("in debt")}</OPTION>
-				<OPTION VALUE="11"{if $listdata.state == 11} SELECTED{/if}>{trans("in debt above 100%")}</OPTION>
-				<OPTION VALUE="12"{if $listdata.state == 12} SELECTED{/if}>{trans("in debt above 200%")}</OPTION>
+				<OPTION VALUE="52"{if $listdata.state == 52} SELECTED{/if}>{trans("in debt")}</OPTION>
+				<OPTION VALUE="57"{if $listdata.state == 57} SELECTED{/if}>{trans("in debt above 100%")}</OPTION>
+				<OPTION VALUE="58"{if $listdata.state == 58} SELECTED{/if}>{trans("in debt above 200%")}</OPTION>
 				{/if}
-				<OPTION value="13"{if $listdata.state == 13} SELECTED{/if}>{trans("without contracts")}</OPTION>
-				<OPTION value="14"{if $listdata.state == 14} SELECTED{/if}>{trans("with expired contracts")}</OPTION>
-				<OPTION value="15"{if $listdata.state == 15} SELECTED{/if}>{trans("with expiring contracts")}</OPTION>
-				<OPTION VALUE="7"{if $listdata.state == 7} SELECTED{/if}>{trans("online")}</OPTION>
-				<OPTION VALUE="8"{if $listdata.state == 8} SELECTED{/if}>{trans("without group")}</OPTION>
-				<OPTION VALUE="9"{if $listdata.state == 9} SELECTED{/if}>{trans("without tariff")}</OPTION>
-				<OPTION VALUE="10"{if $listdata.state == 10} SELECTED{/if}>{trans("suspended<!plural>")}</OPTION>
+				<OPTION value="59"{if $listdata.state == 59} SELECTED{/if}>{trans("without contracts")}</OPTION>
+				<OPTION value="60"{if $listdata.state == 60} SELECTED{/if}>{trans("with expired contracts")}</OPTION>
+				<OPTION value="61"{if $listdata.state == 61} SELECTED{/if}>{trans("with expiring contracts")}</OPTION>
+				<OPTION VALUE="53"{if $listdata.state == 53} SELECTED{/if}>{trans("online")}</OPTION>
+				<OPTION VALUE="54"{if $listdata.state == 54} SELECTED{/if}>{trans("without group")}</OPTION>
+				<OPTION VALUE="55"{if $listdata.state == 55} SELECTED{/if}>{trans("without tariff")}</OPTION>
+				<OPTION VALUE="56"{if $listdata.state == 56} SELECTED{/if}>{trans("suspended<!plural>")}</OPTION>
 			</SELECT>
 			{trans("Division")}:
 			<SELECT SIZE="1" NAME="d" ONCHANGE="document.choosefilter.submit();">
@@ -144,7 +144,7 @@
         {block name="customerlist-list-row"}
 	<TR class="highlight {cycle}{if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}"  >
 		<TD onClick="return self.location.href='?m=customerinfo&amp;id={$customerlist[customerlist].id}';">
-			<IMG src="img/{if $customerlist[customerlist].status == 1}unk{/if}{if $customerlist[customerlist].status == 2}wait{/if}{if $customerlist[customerlist].status == 3}customer{/if}.gif" alt="">{if $customerlist[customerlist].info}&nbsp;<img src="img/info1.gif" alt="" {tip text=$customerlist[customerlist].info}>{/if}<A name="{$customerlist[customerlist].id}" {tip a=$customerlist[customerlist].id dynpopup='?m=customerinfoshort&amp;id=$a'}>&nbsp;<span class="bold">{$customerlist[customerlist].customername|escape}</span></A><BR>
+			<IMG src="img/{$_CSTATUSES[$customerlist[customerlist].status].img}" alt="">{if $customerlist[customerlist].info}&nbsp;<img src="img/info1.gif" alt="" {tip text=$customerlist[customerlist].info}>{/if}<A name="{$customerlist[customerlist].id}" {tip a=$customerlist[customerlist].id dynpopup='?m=customerinfoshort&amp;id=$a'}>&nbsp;<span class="bold">{$customerlist[customerlist].customername|escape}</span></A><BR>
 			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].address}{if $customerlist[customerlist].city != ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].country != ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
 		</TD>
 		<TD class="text-right">
@@ -168,7 +168,7 @@
 				{/if}
 			{/if}
 			{if $customerlist[customerlist].account}
-				{if $customerlist[customerlist].status == 3}
+				{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
 					{if $customerlist[customerlist].nodeac == 1}
 						<A href="?m=nodeset&amp;ownerid={$customerlist[customerlist].id}"><IMG src="img/access.gif" alt="[ {trans("Disconnect All")} ]" title="[ {trans("Disconnect All")} ]"></A>
 					{else}
@@ -180,7 +180,7 @@
 				{/if}
 			{/if}
 			{if $customerlist[customerlist].warncount}
-				{if $customerlist[customerlist].status == 3}
+				{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
 					{if $customerlist[customerlist].nodewarn == 1}
 						<A href="?m=nodewarn&amp;ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG src="img/warningon.gif" alt="[ {trans("Disable notices for all")} ]" title="[ {trans("Disable notices for all")} ]"></A>
 					{else}
@@ -191,7 +191,7 @@
 					{/if}
 				{/if}
 			{/if}
-			{if $listdata.state == 4}
+			{if $listdata.state == 50}
 			<A href="?m=customeredit&amp;id={$customerlist[customerlist].id}&amp;action=recover"><IMG src="img/recover.gif" alt="[ {trans("Recover")} ]" title="[ {trans("Recover")} ]"></A> 
 			{else}
 			<A href="?m=customerdel&amp;id={$customerlist[customerlist].id}" OnCLick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$a\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A> 

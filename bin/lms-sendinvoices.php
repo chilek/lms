@@ -236,11 +236,11 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, n.template, m.em
 		JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
 			FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id
 		LEFT JOIN numberplans n ON n.id = d.numberplanid 
-		WHERE c.deleted = 0 AND d.type IN (1,3) AND c.invoicenotice = 1"
+		WHERE c.deleted = 0 AND d.type IN (?, ?) AND c.invoicenotice = 1"
 			. (!empty($invoiceid) ? " AND d.id = " . $invoiceid : " AND d.cdate >= $daystart AND d.cdate <= $dayend")
 			. (!empty($groupnames) ? $customergroups : "")
 		. " ORDER BY d.number";
-$docs = $DB->GetAll($query, array(CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_INVOICES));
+$docs = $DB->GetAll($query, array(CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_INVOICES, DOC_INVOICE, DOC_CNOTE));
 
 if (!empty($docs)) {
 	foreach ($docs as $doc) {

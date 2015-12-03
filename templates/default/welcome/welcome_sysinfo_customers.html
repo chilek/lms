@@ -12,30 +12,17 @@
         </tr>
     </thead>
     <tbody>
+		{foreach $_CSTATUSES as $statusidx => $status}
         <tr>
             <td class="text-right bold">
-                <a href="?m=customerlist&amp;s=3">{trans("Connected:")}</a>
+                <a href="?m=customerlist&amp;s={$statusidx}">{$status.summarylabel}</a>
             </td>
             <td>
-                {$customerstats.connected}
+				{$alias=$status.alias}
+                {$customerstats.$alias}
             </td>
         </tr>
-        <tr>
-            <td class="text-right bold">
-                <a href="?m=customerlist&amp;s=2">{trans("Waiting:")}</a>
-            </td>
-            <td>
-                {$customerstats.awaiting}
-            </td>
-        </tr>
-        <tr>
-            <td class="text-right bold">
-                <a href="?m=customerlist&amp;s=1">{trans("Interested:")}</a>
-            </td>
-            <td>
-                {$customerstats.interested}
-            </td>
-        </tr>
+        {/foreach}
         <tr>
             <td class="text-right bold">
                 <a href="?m=customerlist&amp;s=0">{trans("Total:")}</a><br>

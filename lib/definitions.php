@@ -37,6 +37,43 @@ $CTYPES = array(
     CTYPES_CONTRACTOR	=> trans('contractor'),
 );
 
+// customer statuses
+define('CSTATUS_INTERESTED', 1);
+define('CSTATUS_WAITING', 2);
+define('CSTATUS_CONNECTED', 3);
+define('CSTATUS_DISCONNECTED', 4);
+
+$CSTATUSES = array(
+	CSTATUS_CONNECTED => array(
+		'singularlabel' => trans('connected<!singular>'),
+		'plurallabel' => trans('connected<!plural>'),
+		'summarylabel' => trans('Connected:'),
+		'img' => 'customer.gif',
+		'alias' => 'connected'
+	),
+	CSTATUS_WAITING => array(
+		'singularlabel' => trans('waiting'),
+		'plurallabel' => trans('waiting'),
+		'summarylabel' => trans('Waiting:'),
+		'img' => 'wait.gif',
+		'alias' => 'awaiting'
+	),
+	CSTATUS_INTERESTED => array(
+		'singularlabel' => trans('interested<!singular>'),
+		'plurallabel' => trans('interested<!plural>'),
+		'summarylabel' => trans('Interested:'),
+		'img' => 'unk.gif',
+		'alias' => 'interested'
+	),
+	CSTATUS_DISCONNECTED => array(
+		'singularlabel' => trans('disconnected<!singular>'),
+		'plurallabel' => trans('disconnected<!plural>'),
+		'summarylabel' => trans('Disconnected:<!summary>'),
+		'img' => 'node_off.gif',
+		'alias' => 'disconnected'
+	),
+);
+
 // Helpdesk ticket status
 define('RT_NEW', 0);
 define('RT_OPEN', 1);
@@ -421,6 +458,8 @@ $EVENTTYPES = array(
 define('SESSIONTYPE_PPPOE', 1);
 define('SESSIONTYPE_DHCP', 2);
 define('SESSIONTYPE_EAP', 4);
+define('SESSIONTYPE_WIFI', 8);
+define('SESSIONTYPE_VOIP', 16);
 
 $SESSIONTYPES = array(
 	SESSIONTYPE_PPPOE => array(
@@ -435,11 +474,20 @@ $SESSIONTYPES = array(
 		'label' => trans('EAP Client'),
 		'tip' => 'Enable/disable EAP Server Client'
 	),
+	SESSIONTYPE_WIFI => array(
+		'label' => trans('WiFi AP Client'),
+		'tip' => 'Enable/disable WiFi AP Client access'
+	),
+	SESSIONTYPE_VOIP => array(
+		'label' => trans('VoIP Gateway'),
+		'tip' => 'Enable/disable VoIP Gateway access'
+	),
 );
 
 if(isset($SMARTY))
 {
 	$SMARTY->assign('_CTYPES',$CTYPES);
+	$SMARTY->assign('_CSTATUSES', $CSTATUSES);
 	$SMARTY->assign('_DOCTYPES', $DOCTYPES);
 	$SMARTY->assign('_PERIODS', $PERIODS);
 	$SMARTY->assign('_GUARANTEEPERIODS', $GUARANTEEPERIODS);

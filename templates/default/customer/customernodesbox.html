@@ -38,7 +38,7 @@ function setgroup(act)
 			{t a=$customernodes|@count|default:"0"}Customer Nodes ($a):{/t}
 		</TD>
 		<TD style="width: 1%;" class="text-right nobr">
-			{if $customerinfo.status != "1" and ! $customerinfo.deleted}<A href="?m=nodeadd&amp;ownerid={$customerinfo.id}">{trans("New Node")} &raquo;</A>&nbsp;{/if}
+			{if $customerinfo.status != $smarty.const.CSTATUS_INTERESTED && ! $customerinfo.deleted}<A href="?m=nodeadd&amp;ownerid={$customerinfo.id}">{trans("New Node")} &raquo;</A>&nbsp;{/if}
 		</TD>
 	</TR>
 	</THEAD>
@@ -125,7 +125,7 @@ function setgroup(act)
 					</TR>
 					{sectionelse}
 					<TR>
-						<TD class="empty-table" colspan="{math equation="x+y" x=6 y=$ewx}">
+						<TD class="empty-table" colspan="{math equation="x+y" x=7 y=$ewx}">
 							<P>&nbsp;</P>
 							<P>{if $customerinfo.deleted}<span class="red">{trans("That customer has been deleted.")}</span>{else}{trans("That customer hasn't got any node.")}{/if}</P>
 							<P>&nbsp;</P>

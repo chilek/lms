@@ -105,15 +105,13 @@
 			<TABLE cellpadding="3" width="100%">
 				<TR>
 					<TD style="width: 1%;">
-						{if $customeradd.status == "3" || !$customeradd.status}<img src="img/customer.gif" alt="">{/if}
-						{if $customeradd.status == "2"}<img src="img/wait.gif" alt="">{/if}
-						{if $customeradd.status == "1"}<img src="img/unk.gif" alt="">{/if}
+						<img src="img/{if $customeradd.status}{$CSTATUSES[$customeradd.status].img}{else}{$CSTATUSES[$smarty.const.CSTATUS_CONNECTED].img}{/if}" alt="">
 					</TD>
 					<TD style="width: 99%;">
 						<SELECT size="1" name="customeradd[status]" {tip text="Select customer state" trigger="status"}>
-							<OPTION value="3"{if $customeradd.status == "3"} SELECTED{/if}>{trans("connected<!singular>")}</OPTION>
-							<OPTION value="2"{if $customeradd.status == "2"} SELECTED{/if}>{trans("waiting")}</option>
-							<OPTION value="1"{if $customeradd.status == "1"} SELECTED{/if}>{trans("interested<!singular>")}</OPTION>
+							{foreach $_CSTATUSES as $statusidx => $status}
+							<OPTION value="{$statusidx}"{if $customeradd.status == $statusidx} selected{/if}>{$status.singularlabel}</OPTION>
+							{/foreach}
 						</SELECT>
 					</TD>
 				</TR>
@@ -127,6 +125,21 @@
 							{foreach from=$divisions item=item}{if !$item.status}
 							<OPTION value="{$item.id}"{if $customeradd.divisionid == $item.id} SELECTED{/if}>{$item.shortname}</OPTION>
 							{/if}{/foreach}
+						</SELECT>
+					</TD>
+				</TR>
+				{/if}
+				{if $groups}
+				<TR>
+					<TD style="width: 1%;">
+						<IMG SRC="img/group.gif" alt="">
+					</TD>
+					<TD style="width: 99%;" class="nobr" colspan="2">
+						<SELECT SIZE="1" NAME="customeradd[group]" {tip text="Select group to assign to customer" trigger="group"}>
+							<OPTION VALUE="0">{trans("... select group ...")}</OPTION>
+							{foreach $groups as $group}
+							<OPTION VALUE="{$group.id}" {if $customeradd.group == $group.id}SELECTED{/if}>{$group.name} ({$group.id|string_format:"%04d"})</OPTION>
+							{/foreach}
 						</SELECT>
 					</TD>
 				</TR>
@@ -470,6 +483,7 @@
 					</TD>
 					<TD style="width: 99%">
 						<TABLE cellpadding="0">
+							{block name="customeradd-options"}
 							<TR>
 								<TD>
 									<label for="chkconsent">{trans("Consent to personal data processing:")}</label>
@@ -502,6 +516,7 @@
 									<INPUT type="checkbox" name="customeradd[mailingnotice]" value="1" id="chkmailingnotice"{if $customeradd.mailingnotice} checked{/if}>
 								</TD>
 							</TR>
+							{/block}
 						</TABLE>
 					</TD>
 				</TR>

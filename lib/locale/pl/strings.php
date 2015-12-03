@@ -2978,9 +2978,13 @@ $_LANG['(default for link technology)'] = '(domyślna dla technologii łącza)';
 $_LANG['PPPoE Client'] = 'Klient PPPoE';
 $_LANG['DHCP Client'] = 'Klient DHCP';
 $_LANG['EAP Client'] = 'Klient EAP';
-$_LANG['Enable/disable PPPoE Server Client'] = 'Włącza/Wyłącza komputer jako klient PPPoE';
-$_LANG['Enable/disable DHCP Server Client'] = 'Włącza/Wyłącza komputer jako klient DHCP';
-$_LANG['Enable/disable EAP Server Client'] = 'Włącza/Wyłącza komputer jako klient EAP';
+$_LANG['WiFi AP Client'] = 'Klient WiFi AP';
+$_LANG['VoIP Gateway'] = 'Bramka VoIP';
+$_LANG['Enable/disable PPPoE Server Client'] = 'Włącza/wyłącza komputer jako klient PPPoE';
+$_LANG['Enable/disable DHCP Server Client'] = 'Włącza/wyłącza komputer jako klient DHCP';
+$_LANG['Enable/disable EAP Server Client'] = 'Włącza/wyłącza komputer jako klient EAP';
+$_LANG['Enable/disable WiFi AP Client access'] = 'Włącza/wyłącza komputer jako klient WiFi AP';
+$_LANG['Enable/disable VoIP Gateway access'] = 'Włącza/wyłącza komputer jako bramkę VoIP';
 
 $_LANG['Select network device:'] = 'Wybierz urządzenie sieciowe:';
 $_LANG['Click to select network device from map'] = 'Kliknij w celu wybrania urządzenia sieciowego z mapy';
@@ -3036,4 +3040,20 @@ $_LANG['Ticket has been moved from customer $a ($b) to customer $c ($d).'] = 'Zg
 $_LANG['Ticket has been moved from $a to customer $b ($c).'] = 'Zgłoszenie zostało przeniesione od $a do klienta $b ($c).';
 $_LANG['Changes of customers waiting for approval:'] = 'Zmiany klientów oczekujące na zatwierdzenie:';
 $_LANG['the whole network'] = 'cała sieć';
+$_LANG['Disconnected:<!summary>'] = 'Odłączeni:';
+$_LANG['with disconnected nodes'] = 'z odłączonymi komputerami';
+
+$_LANG['Select group to assign to customer'] = 'Wybierz grupę by przypisać do niej klienta';
+$_LANG['If isset "true" when adding new customer select group is required. Default "false"'] = 'Ustawienie opcji na "true" wymusza wybór grupy przypisanej do klienta. Domyślnie wyłączone';
+
+$_LANG['permanent customer removal'] = 'trwałe usunięcie klienta';
+$_LANG['Remove permanently'] = 'Usuń trwale';
+$_LANG['Permanent Customer Remove: $a'] = 'Trwałe usunięcie klienta: $a';
+$_LANG['Do you want to permanently remove $a customer?'] = 'Czy chcesz trwale usunąć klienta $a?';
+$_LANG['This operation will be irreversible!'] = 'Ta operacja będzie nieodwracalna!';
+$_LANG['Customer $a has been permanently removed.'] = 'Klient $a został trwale usunięty.';
+
+$_LANG['Check if you want do send message copy to sender'] = 'Zaznacz, jeśli ma być wysyłana kopia wiadomości do nadawcy';
+$_LANG['send copy to sender'] = 'wyślij kopię do nadawcy';
+
 ?>

@@ -18,14 +18,10 @@
 						<TABLE WIDTH="100%" CELLPADDING="3">
 	<TR>
 		<TD WIDTH="1%">
-			{if $customerinfo.status == "3"}<IMG src="img/customer.gif" alt="">{/if}
-			{if $customerinfo.status == "2"}<IMG src="img/wait.gif" alt="">{/if}
-			{if $customerinfo.status == "1"}<IMG src="img/unk.gif" alt="">{/if}
+			<IMG src="img/{$_CSTATUSES[$customerinfo.status].img}" alt="">
 		</TD>
-		<TD WIDTH="99%">
-			{if $customerinfo.status == "3"}<B>{trans("connected<!singular>")}</B>{/if}
-			{if $customerinfo.status == "2"}<B>{trans("waiting")}</B>{/if}
-			{if $customerinfo.status == "1"}<B>{trans("interested<!singular>")}</B>{/if}
+		<TD WIDTH="99%" class="bold">
+			{$_CSTATUSES[$customerinfo.status].singularlabel}
 		</TD>
 	</TR>
 {if $customerinfo.division}
@@ -390,6 +386,9 @@
 {/if}
 			{block name="customerinfobox-buttons"}
 			{if $customerinfo.deleted}
+				{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
+				<A href="?m=customerdel&id={$customerinfo.id}&type=permanent">{trans("Remove permanently")} <img src="img/delete.gif" alt="[ {trans("Remove permanently")} ]"></A>
+				{/if}
 				<A HREF="?m=customeredit&id={$customerinfo.id}&action=recover">{trans("Restore")} <IMG SRC="img/recover.gif" ALT="[ {trans("Restore")} ]"></A>
 			{else}
 				<NOBR>
@@ -400,7 +399,7 @@
 				</NOBR>
 				<NOBR>
 				<A href="?m=customeredit&id={$customerinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" alt="[ {trans("Edit")} ]"></A>
-				<A href="?m=customerdel&id={$customerinfo.id}" onClick="return confirmLink(this, '{trans("Are you sure, you want to remove that customer from database?\n\nIf that customer have any computers, they will be automatically removed from database too, and information about them irreversible losed!")}')">{trans("Delete")} <img src="img/delete.gif" alt="[ {trans("Delete")} ]"></A>
+				<A href="?m=customerdel&id={$customerinfo.id}">{trans("Delete")} <img src="img/delete.gif" alt="[ {trans("Delete")} ]"></A>
 				</NOBR>
 			{/if}
 			{if $info_link}

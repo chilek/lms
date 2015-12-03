@@ -67,5 +67,5 @@ interface LMSCustomerManagerInterface
 
     public function customerUpdate($customerdata);
 
-    public function deleteCustomer($id);
+    public function deleteCustomer($id, $permanent = false);
 }

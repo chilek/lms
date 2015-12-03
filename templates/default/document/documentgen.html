@@ -152,13 +152,13 @@
 			<TABLE width="100%">
 				<TR>
 					<TD width="1%" {tip text="Select customer's group"}>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="3" CHECKED>{trans("connected<!plural>")}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="5">{trans("disconnected<!plural>")}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="6">{trans("in debt")}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="2">{trans("waiting")}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="1">{trans("interested<!plural>")}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="-1">{trans("without nodes")}</NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" name="filter" value="0">{trans("all<!customers>")}</NOBR>
+						{foreach $_CSTATUSES as $statusidx => $status}
+						<NOBR><label><INPUT class="radio light" type="radio" name="filter" value="{$statusidx}"{if $statusidx == $smarty.const.CSTATUS_CONNECTED} checked{/if}>{$status.plurallabel}</label></NOBR><BR>
+						{/foreach}
+						<NOBR><label><INPUT class="radio light" type="radio" name="filter" value="51">{trans("with disconnected nodes")}</label></NOBR><BR>
+						<NOBR><label><INPUT class="radio light" type="radio" name="filter" value="52">{trans("in debt")}</label></NOBR><BR>
+						<NOBR><label><INPUT class="radio light" type="radio" name="filter" value="-1">{trans("without nodes")}</label></NOBR><BR>
+						<NOBR><label><INPUT class="radio light" type="radio" name="filter" value="0">{trans("all<!customers>")}</label></NOBR>
 					</TD>
 					<TD width="5%">&nbsp;</TD>
 					<TD width="1%">
