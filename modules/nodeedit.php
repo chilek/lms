@@ -119,11 +119,14 @@ if (isset($_POST['nodeedit'])) {
 		if ($key != 'macs')
 			$nodeedit[$key] = trim($value);
 
-	if ($nodeedit['ipaddr'] == '' && $nodeedit['ipaddr_pub'] == '' && empty($nodeedit['macs']) && $nodeedit['name'] == '' && $nodeedit['info'] == '' && $nodeedit['passwd'] == '') {
+	if ($nodeedit['ipaddr'] == '' && $nodeedit['ipaddr_pub'] == '' && empty($nodeedit['macs']) && $nodeedit['name'] == '' && $nodeedit['info'] == '' && $nodeedit['passwd'] == '' && !isset($nodeedit['wholenetwork'])) {
 		$SESSION->redirect('?m=nodeinfo&id=' . $nodeedit['id']);
 	}
 
-	if (check_ip($nodeedit['ipaddr'])) {
+	if(isset($nodeedit['wholenetwork'])) {
+		$nodeedit['ipaddr'] = '0.0.0.0';
+		$nodeedit['ipaddr_pub'] = '0.0.0.0';
+	} elseif (check_ip($nodeedit['ipaddr'])) {
 		if ($LMS->IsIPValid($nodeedit['ipaddr'])) {
 			if (empty($nodeedit['netid']))
 				$nodeedit['netid'] = $DB->GetOne('SELECT id FROM networks WHERE INET_ATON(?) & INET_ATON(mask) = address ORDER BY id LIMIT 1',
@@ -299,6 +302,7 @@ if (isset($_POST['nodeedit'])) {
 	$nodeinfo['macs'] = $nodeedit['macs'];
 	$nodeinfo['ip'] = $nodeedit['ipaddr'];
 	$nodeinfo['netid'] = $nodeedit['netid'];
+	$nodeinfo['wholenetwork'] = $nodeedit['wholenetwork'];
 	$nodeinfo['ip_pub'] = $nodeedit['ipaddr_pub'];
 	$nodeinfo['passwd'] = $nodeedit['passwd'];
 	$nodeinfo['access'] = $nodeedit['access'];

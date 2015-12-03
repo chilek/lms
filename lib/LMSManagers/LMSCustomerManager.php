@@ -778,6 +778,24 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     }
 
     /**
+     * Returns customer networks
+     * 
+     * @param int $id Customer id
+     * @param int $count Limit
+     * @return array Networks
+     */
+    public function GetCustomerNetworks($id, $count = null)
+    {
+        return $this->db->GetAll('
+            SELECT *
+            FROM vnetworks
+            WHERE ownerid = ?
+            ORDER BY name ASC
+            ' . ($count ? ' LIMIT ' . $count : ''), array($id)
+        );
+    }
+
+    /**
      * Returns customer data
      * 
      * @global array $CONTACTTYPES

@@ -245,7 +245,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             unset($result['mac']);
 
             if ($netname = $this->db->GetOne('SELECT name FROM networks
-				WHERE id = ?', array($result['netid']))) {
+                    WHERE id = ?', array($result['netid']))) {
                 $result['netname'] = $netname;
             }
 

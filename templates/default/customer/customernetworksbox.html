@@ -1,0 +1,72 @@
+<TABLE class="lmsbox">
+	<THEAD>
+	<TR>
+		<TD style="width: 99%;" class="hand bold" onclick="showOrHide('networkspanel-{$layout.module}');">
+			<IMG src="img/network.gif" alt="">
+			{t a=$customernetworks|@count|default:"0"}Customer Networks ($a):{/t}
+		</TD>
+		<TD style="width: 1%;" class="text-right nobr"></TD>
+	</TR>
+	</THEAD>
+	<TBODY>
+	<TR id="networkspanel-{$layout.module}" style="display:none;">
+		<TD style="width: 100%;" colspan="2">
+			<TABLE class="lmsbox-inner">
+				<THEAD>
+					<TR>
+						<TD style="width: 96%;" class="bold">{trans("Name:")}</TD>
+						<TD style="width: 1%;" class="text-right">{trans("ID:")}</TD>
+						<TD style="width: 1%;" class="text-right">{trans("Address:")}</TD>
+						<TD style="width: 1%;" class="text-right">{trans("Host:")}</TD>
+						<TD style="width: 1%;">&nbsp;</TD>
+					</TR>
+				</THEAD>
+				<TBODY>
+					{cycle values="light,lucid" print=false name=networks}
+					{foreach from=$customernetworks item=network}
+					<TR class="highlight {cycle name=networks}{if $network.disabled} blend{/if}"  >
+						<TD onClick="return self.location.href='?m=netinfo&amp;id={$network.id}';">
+							<span class="bold">{$network.name}</span>
+							{if $network.location}<BR>
+							<span class="nobr">{$network.location|truncate:60:"...":true}</span>
+							{/if}
+						</TD>
+						<TD onClick="return self.location.href='?m=netinfo&amp;id={$network.id}';" class="text-right">
+							({$network.id|string_format:"%04d"})
+						</TD>
+						<TD onClick="return self.location.href='?m=netinfo&amp;id={$network.id}';" class="text-right nobr">
+							{$network.ip}
+						</TD>
+						<TD onClick="return self.location.href='?m=netinfo&amp;id={$network.id}';" class="text-right nobr">
+							{$network.hostname}
+						</TD>
+						<TD class="nobr">
+							<A href="?m=netedit&networkset&id={$network.id}"><IMG src="img/{if $network.disabled}no{/if}access.gif" alt="[ {if $network.disabled}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]" title="[ {if $network.disabled}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]"></A>
+
+							<A href="?m=netdel&amp;id={$network.id}" onClick="return confirmLink(this, '{t a=$network.name}Are you sure, you want to remove network \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+							<A href="?m=netedit&amp;id={$network.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+							<A href="?m=netinfo&amp;id={$network.id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>&nbsp;
+						</TD>
+					</TR>
+					{foreachelse}
+					<TR>
+						<TD class="empty-table" colspan="5">
+							<P>&nbsp;</P>
+							<P>{if $customerinfo.deleted}<span class="red">{trans("That customer has been deleted.")}</span>{else}{trans("That customer hasn't got any network.")}{/if}</P>
+							<P>&nbsp;</P>
+						</TD>
+					</TR>
+					{/foreach}
+				</TBODY>
+			</TABLE>
+		</TD>
+	</TR>
+</TABLE>
+<SCRIPT type="text/javascript">
+<!--
+if (getCookie('networkspanel-{$layout.module}') == '1')
+{
+	document.getElementById('networkspanel-{$layout.module}').style.display = '';
+}
+//-->
+</SCRIPT>

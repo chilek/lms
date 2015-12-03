@@ -2003,16 +2003,25 @@ SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
 	WHERE n.nas = 1;
 
 CREATE VIEW vnodes AS
-SELECT n.*, m.mac
+	SELECT n.*, m.mac
 	FROM nodes n
 	LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac
-		FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid);
+		FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid)
+	WHERE n.ipaddr <> 0 AND n.ipaddr_pub <> 0;
 
 CREATE VIEW vmacs AS
-SELECT n.*, m.mac, m.id AS macid
-    FROM nodes n
-    JOIN macs m ON (n.id = m.nodeid);
+	SELECT n.*, m.mac, m.id AS macid
+	FROM nodes n
+	JOIN macs m ON (n.id = m.nodeid)
+	WHERE n.ipaddr <> 0 AND n.ipaddr_pub <> 0;
 
+CREATE VIEW vnetworks AS
+	SELECT h.name AS hostname, ne.*, no.ownerid, no.location, no.location_city, no.location_street, no.location_house, no.location_flat, no.chkmac,
+		inet_ntoa(ne.address) || '/' || mask2prefix(inet_aton(ne.mask)) AS ip
+	FROM nodes no
+	LEFT JOIN networks ne ON (ne.id = no.netid)
+	LEFT JOIN hosts h ON (h.id = ne.hostid)
+	WHERE no.ipaddr = 0 AND no.ipaddr_pub = 0;
 
 CREATE VIEW teryt_terc AS
 SELECT ident AS woj, 0::text AS pow, 0::text AS gmi, 0 AS rodz,
@@ -2537,4 +2546,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015112001');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015120200');

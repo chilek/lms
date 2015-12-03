@@ -33,6 +33,7 @@
 				<OPTION VALUE="{$net.id}" {if $net.id == $nodeinfo.netid} selected{/if}{if $net.disabled == 1} class="alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</OPTION>
 				{/foreach}
 			</SELECT>
+			<label><input type="checkbox" name="nodeedit[wholenetwork]" VALUE="1" onchange="change_wholenetwork()"{if $nodeinfo.wholenetwork} checked{/if}>&nbsp;{trans("the whole network")}</label>
 		</TD>
 	</TR>
 	<TR>
@@ -328,6 +329,15 @@
 			xajax_getRadioSectors(id, xjx.$('linktechnology').value);
 		}
 	}
+
+	function change_wholenetwork() {
+		var wholenetwork = document.forms['editnode'].elements['nodeedit[wholenetwork]'];
+		var display = wholenetwork.checked ? 'none' : 'table-row';
+
+		document.getElementsByName("nodeeditipaddr")[0].parentNode.parentNode.style.display = display;
+		document.getElementsByName("nodeeditipaddrpub")[0].parentNode.parentNode.style.display = display;
+	}
+	change_wholenetwork();
 
 	function change_linktype(linktype) {
 		linktype = parseInt(linktype);
