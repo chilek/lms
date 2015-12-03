@@ -2007,13 +2007,13 @@ CREATE VIEW vnodes AS
 	FROM nodes n
 	LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac
 		FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid)
-	WHERE n.ipaddr <> 0 AND n.ipaddr_pub <> 0;
+	WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
 
 CREATE VIEW vmacs AS
 	SELECT n.*, m.mac, m.id AS macid
 	FROM nodes n
 	JOIN macs m ON (n.id = m.nodeid)
-	WHERE n.ipaddr <> 0 AND n.ipaddr_pub <> 0;
+	WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
 
 CREATE VIEW vnetworks AS
 	SELECT h.name AS hostname, ne.*, no.ownerid, no.location, no.location_city, no.location_street, no.location_house, no.location_flat, no.chkmac,
@@ -2546,4 +2546,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015120200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015120201');
