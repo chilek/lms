@@ -93,8 +93,6 @@ switch ($action) {
 }
 
 $nodeinfo = $LMS->GetNode($nodeid);
-if(!$nodeinfo['ipaddr'] && !$nodeinfo['ipaddr_pub'])
-	$nodeinfo['wholenetwork'] = true;
 
 $macs = array();
 foreach ($nodeinfo['macs'] as $key => $value)
