@@ -38,6 +38,8 @@ version ?.??.?? (????-??-??):
   - permanent customer removal for customers which are already removed [chilan]
   - allow to optionally send mail copy to message sender (checkbox is checked by default if
     phpui.send_message_to_sender_checkbox is set to true) [chilan]
+  - added phpui.capitalize_node_names setting which is true by default and decides
+    if node names are automatically capitalized during node add or update [chilan]
 
 version 1.11.18 (2015-10-01):
 

@@ -41,7 +41,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     {
         global $SYSLOG_RESOURCE_KEYS;
         $args = array(
-            'name' => $nodedata['name'],
+            'name' => ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_node_names', true))
+            	? strtoupper($nodedata['name']) : $nodedata['name'],
             'ipaddr_pub' => $nodedata['ipaddr_pub'],
             'ipaddr' => $nodedata['ipaddr'],
             'passwd' => $nodedata['passwd'],
@@ -72,7 +73,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 	    'authtype' => $nodedata['authtype'] ? $nodedata['authtype'] : 0,
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodedata['id']
         );
-        $this->db->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?),
+        $this->db->Execute('UPDATE nodes SET name=?, ipaddr_pub=inet_aton(?),
 				ipaddr=inet_aton(?), passwd=?, netdev=?, moddate=?NOW?,
 				modid=?, access=?, warning=?, ownerid=?, info=?, location=?,
 				location_city=?, location_street=?, location_house=?, location_flat=?,
@@ -563,7 +564,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     {
         global $SYSLOG_RESOURCE_KEYS;
         $args = array(
-            'name' => $nodedata['name'],
+            'name' => ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_node_names', true))
+            	? strtoupper($nodedata['name']) : $nodedata['name'],
             'ipaddr' => $nodedata['ipaddr'],
             'ipaddr_pub' => $nodedata['ipaddr_pub'],
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $nodedata['ownerid'],
