@@ -2017,7 +2017,7 @@ CREATE VIEW vmacs AS
 
 CREATE VIEW vnetworks AS
 	SELECT h.name AS hostname, ne.*, no.ownerid, no.location, no.location_city, no.location_street, no.location_house, no.location_flat, no.chkmac,
-		inet_ntoa(ne.address) || '/' || mask2prefix(inet_aton(ne.mask)) AS ip
+		inet_ntoa(ne.address) || '/' || mask2prefix(inet_aton(ne.mask)) AS ip, no.id AS nodeid
 	FROM nodes no
 	LEFT JOIN networks ne ON (ne.id = no.netid)
 	LEFT JOIN hosts h ON (h.id = ne.hostid)
@@ -2546,4 +2546,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015120201');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015120202');

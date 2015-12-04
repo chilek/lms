@@ -366,14 +366,21 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             'dhcpend' => $networkdata['dhcpend'],
             'notes' => $networkdata['notes'],
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST] => $networkdata['hostid'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $networkdata['id'],
+            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK] => $networkdata['id']
         );
+        $keys = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]);
+
         $res = $this->db->Execute('UPDATE networks SET name=?, address=inet_aton(?), 
-			mask=?, interface=?, gateway=?, dns=?, dns2=?, domain=?, wins=?, 
-			dhcpstart=?, dhcpend=?, notes=?, hostid=? WHERE id=?', array_values($args));
+            mask=?, interface=?, gateway=?, dns=?, dns2=?, domain=?, wins=?, 
+            dhcpstart=?, dhcpend=?, notes=?, hostid=? WHERE id=?', array_values($args));
+
+        if($networkdata['ownerid']) {
+            $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $networkdata['ownerid'];
+            $keys[] = $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST];
+        }
+
         if ($this->syslog && $res)
-            $this->syslog->AddMessage(SYSLOG_RES_NETWORK, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]));
+            $this->syslog->AddMessage(SYSLOG_RES_NETWORK, SYSLOG_OPER_UPDATE, $args, $keys);
     }
 
     public function NetworkCompress($id, $shift = 0)
@@ -512,13 +519,19 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function GetNetworkRecord($id, $page = 0, $plimit = 4294967296, $firstfree = false)
     {
-        $network = $this->db->GetRow('SELECT id, name, inet_ntoa(address) AS address, 
-				address AS addresslong, mask, interface, gateway, dns, dns2, 
-				domain, wins, dhcpstart, dhcpend, hostid,
-				mask2prefix(inet_aton(mask)) AS prefix,
-				inet_ntoa(broadcast(address, inet_aton(mask))) AS broadcast, 
-				notes 
-				FROM networks WHERE id = ?', array($id));
+        $network = $this->db->GetRow('SELECT no.ownerid, ne.id, ne.name, inet_ntoa(ne.address) AS address,
+                ne.address AS addresslong, ne.mask, ne.interface, ne.gateway, ne.dns, ne.dns2,
+                ne.domain, ne.wins, ne.dhcpstart, ne.dhcpend, ne.hostid,
+                mask2prefix(inet_aton(ne.mask)) AS prefix, ne.notes,
+                inet_ntoa(broadcast(ne.address, inet_aton(ne.mask))) AS broadcast
+            FROM networks ne
+            LEFT JOIN nodes no ON (no.netid = ne.id AND no.ipaddr = 0 AND no.ipaddr_pub = 0)
+            WHERE ne.id = ?', array($id));
+
+        if($network['ownerid']) {
+            $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $network['customername'] = $customer_manager->GetCustomerName($network['ownerid']);
+        }
 
         $nodes = $this->db->GetAllByKey('
 				SELECT id, name, ipaddr, ownerid, netdev 

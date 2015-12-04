@@ -122,6 +122,21 @@
 			{/if}
 		</TD>
 	</TR>
+	{if $network.ownerid || $unlockedit}
+	<tr>
+		<TD style="width: 2%;" class="fleft bold nobr">
+			<img src="img/customer.gif" alt=""> {trans("Customer:")}
+		</td>
+		<TD style="width: 98%;" colspan="3">
+			{if $unlockedit}
+				<input TYPE="TEXT" NAME="networkdata[ownerid]" value="{$network.ownerid}" SIZE="5" {tip text="Enter customer ID (optional)" trigger="ownerid"}>
+				<A href="javascript: void(0);" onClick="return customerchoosewin(document.netedit.elements['networkdata[ownerid]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+			{else}
+				<a href="?m=customerinfo&id={$network.ownerid}">{$network.customername}</a>
+			{/if}
+		</td>
+	</tr>
+	{/if}
 	{if $network.hostid || $unlockedit}
 	<tr> 
 		<TD style="width: 2%;" class="fleft bold nobr">
