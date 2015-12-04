@@ -156,9 +156,24 @@ if(isset($_POST['networkdata']))
 			$error['dhcpend'] = trans('End of DHCP range has to be equal or greater than start!');
 	}
 
+	if($networkdata['ownerid'] != '' && !$LMS->CustomerExists($networkdata['ownerid'])) {
+		$error['ownerid'] = trans('Customer with the specified ID does not exist');
+	}
+
 	if (!$error) {
 		if (isset($networkdata['needshft']) && $networkdata['needshft'])
 			$LMS->NetworkShift($network['hostid'], $network['address'], $network['mask'], $networkdata['addresslong'] - $network['addresslong']);
+
+		if($networkdata['ownerid'] != $network['ownerid']) {
+			$vnetwork = $DB->GetRow('SELECT nodeid, ownerid FROM vnetworks WHERE id = ?', array($networkdata['id']));
+			if($networkdata['ownerid'] == '' && $vnetwork) {
+				$DB->Execute('DELETE FROM nodes WHERE id = ?', array($vnetwork['nodeid']));
+			} elseif($vnetwork) {
+				$DB->Execute('UPDATE nodes SET ownerid = ? WHERE id = ?', array($networkdata['ownerid'], $vnetwork['nodeid']));
+			} else {
+				$DB->Execute('INSERT INTO nodes (ownerid, netid) VALUES(?, ?)', array($networkdata['ownerid'], $networkdata['id']));
+			}
+		}
 
 		$LMS->NetworkUpdate($networkdata);
 		$SESSION->redirect('?m=netinfo&id=' . $networkdata['id']);
@@ -178,6 +193,7 @@ if(isset($_POST['networkdata']))
 	$network['dns2'] = $networkdata['dns2'];
 	$network['notes'] = $networkdata['notes'];
 	$network['hostid'] = $networkdata['hostid'];
+	$network['ownerid'] = $networkdata['ownerid'];
 }
 
 $networks = $LMS->GetNetworks();
