@@ -141,7 +141,7 @@
 					<TD style="width: 1%;" class="text-right nobr">
 						{if isset($item.customlinks)}
 						{foreach $item.customlinks as $link}
-						<A href="{$link.url}" rel="external"><IMG src="{$link.icon}" alt="[ {$link.label} ]" {$link.tip}></A>
+						<A href="{$link.url}" rel="external"{if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="[ {$link.label} ]" {$link.tip}>{else}{$link.label}{/if}</A>
 						{/foreach}
 						{/if}
 						{if $item.docid}
