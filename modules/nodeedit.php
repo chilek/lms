@@ -116,7 +116,7 @@ if (isset($_POST['nodeedit'])) {
 		$nodeedit['macs'][$key] = str_replace('-', ':', $value);
 
 	foreach ($nodeedit as $key => $value)
-		if ($key != 'macs')
+		if ($key != 'macs' && $key != 'authtype')
 			$nodeedit[$key] = trim($value);
 
 	if ($nodeedit['ipaddr'] == '' && $nodeedit['ipaddr_pub'] == '' && empty($nodeedit['macs']) && $nodeedit['name'] == '' && $nodeedit['info'] == '' && $nodeedit['passwd'] == '' && !isset($nodeedit['wholenetwork'])) {
