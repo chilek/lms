@@ -139,11 +139,9 @@
 					<TD style="width: 1%;" class="text-right nobr{if $item.after < 0} red{/if}">{$item.after|money_format}</TD>
 					<TD style="width: 92%;">{$item.comment}</TD>
 					<TD style="width: 1%;" class="text-right nobr">
-						{if isset($item.customlinks)}
 						{foreach $item.customlinks as $link}
 						<A href="{$link.url}" rel="external"{if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="[ {$link.label} ]" {$link.tip}>{else}{$link.label}{/if}</A>
 						{/foreach}
-						{/if}
 						{if $item.docid}
 							{if $item.doctype == $smarty.const.DOC_INVOICE}
 								<A href="?m=invoice&amp;id={$item.docid}" rel="external"><IMG src="img/print.gif" alt="[ {trans("Invoice")} ]" {tip a=$item.docid dynpopup='?m=number&amp;id=$a'}></A>
