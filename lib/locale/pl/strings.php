@@ -3058,4 +3058,6 @@ $_LANG['Customer $a has been permanently removed.'] = 'Klient $a został trwale 
 $_LANG['Check if you want do send message copy to sender'] = 'Zaznacz, jeśli ma być wysyłana kopia wiadomości do nadawcy';
 $_LANG['send copy to sender'] = 'wyślij kopię do nadawcy';
 
+$_LANG['Assign network to customer'] = 'Przypisz sieć do klienta';
+
 ?>

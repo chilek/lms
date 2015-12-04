@@ -156,9 +156,8 @@ if(isset($_POST['networkdata']))
 			$error['dhcpend'] = trans('End of DHCP range has to be equal or greater than start!');
 	}
 
-	if($networkdata['ownerid'] != '' && !$LMS->CustomerExists($networkdata['ownerid'])) {
+	if (!empty($networkdata['ownerid']) && !$LMS->CustomerExists($networkdata['ownerid']))
 		$error['ownerid'] = trans('Customer with the specified ID does not exist');
-	}
 
 	if (!$error) {
 		if (isset($networkdata['needshft']) && $networkdata['needshft'])
@@ -197,6 +196,9 @@ if(isset($_POST['networkdata']))
 }
 
 $networks = $LMS->GetNetworks();
+
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
+	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 
 $layout['pagetitle'] = trans('Network Edit: $a',$network['name']);
 
