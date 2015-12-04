@@ -127,29 +127,30 @@
 				</THEAD>
 				<TBODY>
 				{cycle name=bal values="light,lucid" print=false}
-				{section name=balancelist loop=$balancelist.id start=$limit}
+				{section name=balancelist loop=$balancelist.list start=$limit}
+				{$item=$balancelist.list[balancelist]}
 				<TR class="highlight {cycle name=bal}">
-					<TD style="width: 1%;" class="nobr">{$balancelist.date[balancelist]}</TD>
-					<TD style="width: 1%;" class="nobr">{$balancelist.username[balancelist]|truncate:16:"...":true}</TD>
-					<TD style="width: 1%;" class="text-right nobr">{if !$balancelist.type[balancelist]}{($balancelist.value[balancelist]*-1)|money_format}{else}-{/if}</TD>
-					<TD style="width: 1%;" class="text-right nobr{if $balancelist.type[balancelist] && $balancelist.value[balancelist] > 0} green{/if}">{if $balancelist.type[balancelist] && $balancelist.value[balancelist] > 0}+{$balancelist.value[balancelist]|money_format}{else}-{/if}</TD>
-					<TD style="width: 1%;" class="text-right nobr">{if $balancelist.type[balancelist] && $balancelist.value[balancelist] < 0}{($balancelist.value[balancelist]*-1)|money_format}{else}-{/if}</TD>
+					<TD style="width: 1%;" class="nobr">{$item.date}</TD>
+					<TD style="width: 1%;" class="nobr">{$item.username|truncate:16:"...":true}</TD>
+					<TD style="width: 1%;" class="text-right nobr">{if !$item.type}{($item.value*-1)|money_format}{else}-{/if}</TD>
+					<TD style="width: 1%;" class="text-right nobr{if $item.type && $item.value > 0} green{/if}">{if $item.type && $item.value > 0}+{$item.value|money_format}{else}-{/if}</TD>
+					<TD style="width: 1%;" class="text-right nobr">{if $item.type && $item.value < 0}{($item.value*-1)|money_format}{else}-{/if}</TD>
 					<TD style="width: 1%;" class="text-center">&raquo;</TD>
-					<TD style="width: 1%;" class="text-right nobr{if $balancelist.after[balancelist] < 0} red{/if}">{$balancelist.after[balancelist]|money_format}</TD>
-					<TD style="width: 92%;">{$balancelist.comment[balancelist]}</TD>
+					<TD style="width: 1%;" class="text-right nobr{if $item.after < 0} red{/if}">{$item.after|money_format}</TD>
+					<TD style="width: 92%;">{$item.comment}</TD>
 					<TD style="width: 1%;" class="text-right nobr">
-						{if $balancelist.docid[balancelist]}
-							{if $balancelist.doctype[balancelist] == $smarty.const.DOC_INVOICE}
-								<A href="?m=invoice&amp;id={$balancelist.docid[balancelist]}" rel="external"><IMG src="img/print.gif" alt="[ {trans("Invoice")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&amp;id=$a'}></A>
-							{elseif $balancelist.doctype[balancelist] == $smarty.const.DOC_CNOTE}
-								<A href="?m=invoice&amp;id={$balancelist.docid[balancelist]}" rel="external"><IMG src="img/printn.gif" alt="[ {trans("Credit note")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&amp;id=$a'}></A>
-							{elseif $balancelist.doctype[balancelist] == $smarty.const.DOC_RECEIPT}
-								<A href="?m=receipt&amp;id={$balancelist.docid[balancelist]}" rel="external"><IMG src="img/printr.gif" alt="[ {trans("Cash receipt")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&amp;id=$a'}></A>
-							{elseif $balancelist.doctype[balancelist] == $smarty.const.DOC_DNOTE}
-								<A href="?m=note&amp;id={$balancelist.docid[balancelist]}" rel="external"><IMG src="img/printd.gif" alt="[ {trans("Debit note")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&amp;id=$a'}></A>
+						{if $item.docid}
+							{if $item.doctype == $smarty.const.DOC_INVOICE}
+								<A href="?m=invoice&amp;id={$item.docid}" rel="external"><IMG src="img/print.gif" alt="[ {trans("Invoice")} ]" {tip a=$item.docid dynpopup='?m=number&amp;id=$a'}></A>
+							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
+								<A href="?m=invoice&amp;id={$item.docid}" rel="external"><IMG src="img/printn.gif" alt="[ {trans("Credit note")} ]" {tip a=$item.docid dynpopup='?m=number&amp;id=$a'}></A>
+							{elseif $item.doctype == $smarty.const.DOC_RECEIPT}
+								<A href="?m=receipt&amp;id={$item.docid}" rel="external"><IMG src="img/printr.gif" alt="[ {trans("Cash receipt")} ]" {tip a=$item.docid dynpopup='?m=number&amp;id=$a'}></A>
+							{elseif $item.doctype == $smarty.const.DOC_DNOTE}
+								<A href="?m=note&amp;id={$item.docid}" rel="external"><IMG src="img/printd.gif" alt="[ {trans("Debit note")} ]" {tip a=$item.docid dynpopup='?m=number&amp;id=$a'}></A>
 							{/if}
 						{/if}
-						<INPUT type="checkbox" NAME="marks[{$balancelist.id[balancelist]}]" value="{$balancelist.id[balancelist]}">
+						<INPUT type="checkbox" NAME="marks[{$item.id}]" value="{$item.id}">
 					</TD>
 				</TR>
 				{sectionelse}

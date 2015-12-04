@@ -213,9 +213,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         ($direction == 'ASC' || $direction == 'asc') ? $direction == 'ASC' : $direction == 'DESC';
 
-        $saldolist = array();
+        $result = array();
 
-        $tslist = $this->db->GetAll(
+        $result['list'] = $this->db->GetAll(
             'SELECT cash.id AS id, time, cash.type AS type, 
                 cash.value AS value, taxes.label AS tax, cash.customerid AS customerid, 
                 comment, docid, users.name AS username,
@@ -229,29 +229,22 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             . ' ORDER BY time ' . $direction . ', cash.id',
             array($id)
         );
-        
-        if ($tslist) {
-            $saldolist['balance'] = 0;
-            $saldolist['total'] = 0;
-            $i = 0;
 
-            foreach ($tslist as $row) {
-                // old format wrapper
-                foreach ($row as $column => $value)
-                    $saldolist[$column][$i] = $value;
+        if (!empty($result['list'])) {
+            $result['balance'] = 0;
+            $result['total'] = 0;
 
-                $saldolist['after'][$i] = round($saldolist['balance'] + $row['value'], 2);
-                $saldolist['balance'] += $row['value'];
-                $saldolist['date'][$i] = date('Y/m/d H:i', $row['time']);
-
-                $i++;
+            foreach ($result['list'] as &$row) {
+                $row['after'] = round($result['balance'] + $row['value'], 2);
+                $result['balance'] += $row['value'];
+                $row['date'] = date('Y/m/d H:i', $row['time']);
             }
 
-            $saldolist['total'] = sizeof($tslist);
+            $result['total'] = sizeof($result['list']);
         }
 
-        $saldolist['customerid'] = $id;
-        return $saldolist;
+        $result['customerid'] = $id;
+        return $result;
     }
     
     
