@@ -235,6 +235,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $result['total'] = 0;
 
             foreach ($result['list'] as &$row) {
+                $row['customlinks'] = array();
                 $row['after'] = round($result['balance'] + $row['value'], 2);
                 $result['balance'] += $row['value'];
                 $row['date'] = date('Y/m/d H:i', $row['time']);
