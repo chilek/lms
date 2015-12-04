@@ -135,6 +135,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 
 		while($row = $DB->FetchRow($res))
 		{
+			$row['customlinks'] = array();
 			$result[$id] = $row;
 			// free memory for rows which will not be displayed
 	                if($page > 0)
