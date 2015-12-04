@@ -40,7 +40,7 @@ version ?.??.?? (????-??-??):
     phpui.send_message_to_sender_checkbox is set to true) [chilan]
   - added phpui.capitalize_node_names setting which is true by default and decides
     if node names are automatically capitalized during node add or update [chilan]
-  - allow plugins to add their own buttons in customer balance box [chilan]
+  - allow plugins to add their own buttons in customer balance box and invoice list [chilan]
 
 version 1.11.18 (2015-10-01):
 
