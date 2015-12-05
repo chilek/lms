@@ -25,11 +25,11 @@ $this->BeginTrans();
 
 $this->Execute("
 	ALTER TABLE records ALTER COLUMN disabled DROP DEFAULT;
-	ALTER TABLE records ALTER COLUMN disabled TYPE smallint USING CASE WHEN disabled THEN 1 ELSE 0 END;
+	ALTER TABLE records ALTER COLUMN disabled TYPE boolean USING CASE WHEN disabled THEN 1 ELSE 0 END;
 	ALTER TABLE records ALTER COLUMN disabled SET DEFAULT 0;
-	ALTER TABLE records ALTER COLUMN auth DROP DEFAULT;
-	ALTER TABLE records ALTER COLUMN auth TYPE smallint USING CASE WHEN auth THEN 1 ELSE 0 END;
-	ALTER TABLE records ALTER COLUMN auth SET DEFAULT 1
+	ALTER TABLE records ALTER COLUMN authtype DROP DEFAULT;
+	ALTER TABLE records ALTER COLUMN authtype TYPE boolean USING CASE WHEN authtype THEN 1 ELSE 0 END;
+	ALTER TABLE records ALTER COLUMN authtype SET DEFAULT 1
 ");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015120500', 'dbversion'));
