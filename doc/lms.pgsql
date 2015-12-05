@@ -1277,8 +1277,8 @@ CREATE TABLE records (
 	ttl integer		DEFAULT NULL,
 	prio integer		DEFAULT NULL,
 	change_date integer	DEFAULT NULL,
-	disabled smallint	DEFAULT 0,
-	auth smallint		DEFAULT 1,
+	disabled boolean	DEFAULT '0',
+	auth boolean		DEFAULT '1',
 	PRIMARY KEY (id)
 );
 CREATE INDEX records_name_type_idx ON records (name, type, domain_id);
@@ -2546,4 +2546,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015120500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015120202');
