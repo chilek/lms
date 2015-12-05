@@ -13,17 +13,18 @@
 		<td width="1%" align="right"></td>
 		{/if}
 	</tr>
-	{section name=balancelist loop=$balancelist.id step=-1}
+	{section name=balancelist loop=$balancelist.list step=-1}
+	{$item=$balancelist.list[balancelist]}
 	<tr class="dark">
-		<td width="1%" class="nobr">{$balancelist.date[balancelist]}</td>
-		<td width="1%" align="right" class="nobr">{if $balancelist.value[balancelist] > 0 && $balancelist.type[balancelist] != 4}+{/if}{if $balancelist.type[balancelist] == 4}-{/if}{$balancelist.value[balancelist]|money_format}</td>
+		<td width="1%" class="nobr">{$item.date}</td>
+		<td width="1%" align="right" class="nobr">{if $item.value > 0 && $item.type != 4}+{/if}{if $item.type == 4}-{/if}{$item.value|money_format}</td>
 		<td width="1%" align="center">&raquo;</td>
-		<td width="1%" align="right" class="nobr">{if $balancelist.after[balancelist] < 0}<font color="red">{/if}{$balancelist.after[balancelist]|money_format}{if $balancelist.after[balancelist] < 0}</font>{/if}</td>
-		<td width="95%">{$balancelist.comment[balancelist]}</td>
+		<td width="1%" align="right" class="nobr">{if $item.after < 0}<font color="red">{/if}{$item.after|money_format}{if $item.after < 0}</font>{/if}</td>
+		<td width="95%">{$item.comment}</td>
 		{if !$disable_invoices}
 		<td width="1%" class="nobr">
-			{if $balancelist.doctype[balancelist]==1 || $balancelist.doctype[balancelist]==3}
-			<a href="?m=finances&amp;f=invoice&amp;id={$balancelist.docid[balancelist]}" target="_blank">{img src="print.gif" alt="[ Print ]" text=$balancelist.number[balancelist]}</a><input style="vertical-align: middle" type="checkbox" name="inv[{$balancelist.docid[balancelist]}]" value="1" />
+			{if $item.doctype == 1 || $item.doctype == 3}
+			<a href="?m=finances&amp;f=invoice&amp;id={$item.docid}" target="_blank">{img src="print.gif" alt="[ Print ]" text=$item.number}</a><input style="vertical-align: middle" type="checkbox" name="inv[{$item.docid}]" value="1" />
 			{else}
 			&nbsp;
 			{/if}

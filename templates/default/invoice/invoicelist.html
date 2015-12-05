@@ -157,6 +157,9 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			<A HREF="?m=customerinfo&id={$invoice.customerid}"{if $invoice.closed} class="blend"{/if}>{$invoice.name}, {$invoice.address}, {$invoice.zip} {$invoice.city}{if $invoice.country != ""}, {t}{$invoice.country}{/t}{/if}</A>
 		</TD>
 		<TD class="text-right nobr">
+			{foreach $invoice.customlinks as $link}
+			<A href="{$link.url}" rel="external"{if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="[ {$link.label} ]" {$link.tip}>{else}{$link.label}{/if}</A>
+			{/foreach}
 			{if $invoice.type == $smarty.const.DOC_INVOICE}
 			    <A HREF="?m=invoicenote&id={$invoice.id}&action=init"><IMG src="img/eraser.gif" alt="[ {trans("Revise")} ]" title="[ {trans("Revise")} ]"></A>
 			    {if ! $invoice.closed}

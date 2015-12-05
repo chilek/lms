@@ -80,7 +80,7 @@
 					</TD>
 				</TR>
 				{/if}
-				{if $balance}
+				{if $balance.list}
 				<TR>
 					<TD COLSPAN="3" ALIGN="CENTER">
 						<B>{trans("Balance Sheet:")}</B>
@@ -106,22 +106,23 @@
 									<FONT COLOR="#FFFFFF"><B>{trans("Comment:")}</B></FONT>
 								</TD>
 							</TR>
-							{section name=b loop=$balance.id}
+							{section name=b loop=$balance.list}
+							{$item=$balance.list[b]}
 							<TR>
 								<TD>
-									{$balance.id[b]|string_format:"%08d"}
+									{$item.id|string_format:"%08d"}
 								</TD>
 								<TD>
-									{$balance.date[b]}
+									{$item.date}
 								</TD>
 								<TD ALIGN="RIGHT">
-									{$balance.value[b]|money_format}
+									{$item.value|money_format}
 								</TD>
 								<TD ALIGN="RIGHT">
-									{$balance.after[b]|money_format}
+									{$item.after|money_format}
 								</TD>
 								<TD>
-									{$balance.comment[b]}
+									{$item.comment}
 								</TD>
 							</TR>
 							{sectionelse}

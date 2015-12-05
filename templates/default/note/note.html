@@ -119,7 +119,7 @@ Niniejszym, zgodnie z zawartą Umową, obciążamy Państwa należnościami wg p
 customer's balance: {$note.customerbalancelist.balance} 
 *}
 
-{if $note.customerbalancelist}
+{if $note.customerbalancelist.list}
 <TABLE cellpadding="5" cellspacing="0" width="100%">
 	<TR>
     		<TD width="1%" class="fleftu">{trans("Date:")}</TD>
@@ -134,22 +134,23 @@ customer's balance: {$note.customerbalancelist.balance}
 	{else}
 		{math assign="startloop" equation="x-y" x=$note.customerbalancelist.total y=$note.customerbalancelistlimit}
 	{/if}
-	{section name=balancelist loop=$note.customerbalancelist.id start=$startloop max=$note.customerbalancelistlimit}
-	{* section name=balancelist loop=$note.customerbalancelist.id start=$note.customerbalancelistlimit step=-1 *}
+	{section name=balancelist loop=$note.customerbalancelist.list start=$startloop max=$note.customerbalancelistlimit}
+	{* section name=balancelist loop=$note.customerbalancelist.list start=$note.customerbalancelistlimit step=-1 *}
+	{$item=$note.customerbalancelist.list[balancelist]}
 	<TR>
-		<TD width="1%"><nobr>{$note.customerbalancelist.date[balancelist]}</nobr></TD>
-		<TD width="1%" align="right"><nobr>{if $note.customerbalancelist.value[balancelist] > 0}+{/if}{$note.customerbalancelist.value[balancelist]|money_format}</nobr>
+		<TD width="1%"><nobr>{$item.date}</nobr></TD>
+		<TD width="1%" align="right"><nobr>{if $item.value > 0}+{/if}{$item.value|money_format}</nobr>
 		</TD>
 		<TD width="1%" align="right">
-                        <nobr>{$note.customerbalancelist.tax[balancelist]}</nobr>
+                        <nobr>{$item.tax}</nobr>
 		</TD>
 		<TD width="1%" align="center">&raquo;</TD>
 		<TD width="1%" align="right"><nobr>
-			{if $note.customerbalancelist.after[balancelist] < 0}<STRONG>{/if}
-			    {$note.customerbalancelist.after[balancelist]|money_format}
-			{if $note.customerbalancelist.after[balancelist] < 0}</STRONG>{/if}</nobr>
+			{if $item.after < 0}<STRONG>{/if}
+			    {$item.after|money_format}
+			{if $item.after < 0}</STRONG>{/if}</nobr>
 		</TD>
-		<TD width="93%">{$note.customerbalancelist.comment[balancelist]}</TD>
+		<TD width="93%">{$item.comment}</TD>
         </TR>
 	{/section}
 </TABLE>	

@@ -145,9 +145,11 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
+/*
 $_APIKEY = ConfigHelper::getConfig('google.apikey');
 if (!$_APIKEY)
 	die("Unable to read apikey from configuration file." . PHP_EOL);
+*/
 
 if ($update) {
         $loc = $DB->GetAll("SELECT id, location FROM nodes WHERE longitude IS NULL AND latitude IS NULL AND location IS NOT NULL AND location_house IS NOT NULL AND location !='' AND location_house !=''");

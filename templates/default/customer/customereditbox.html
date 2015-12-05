@@ -100,6 +100,7 @@
 				<TR>
 					<TD style="width: 50%;" class="valign-top">
 						<TABLE width="100%" cellpadding="3">
+						{block name="customereditbox-leftcolumn"}
 	<TR>
 		<TD style="width: 1%;">
 			<IMG src="img/{$_CSTATUSES[$customerinfo.status].img}" alt="">
@@ -507,10 +508,12 @@
 			</TABLE>
 		</TD>
 	</TR>
+						{/block}
 						</TABLE>
 					</TD>
 					<TD style="width: 50%;" class="valign-top">
 						<TABLE width="100%" cellpadding="3">
+						{block name="customereditbox-rightcolumn"}
 	<TR>
 		<TD style="width: 1%;">
 			<IMG src="img/info1.gif" alt="">
@@ -559,6 +562,7 @@
 			<span class="bold">{trans("Modified:")}</span> {if $customerinfo.moddate}{$customerinfo.modifiedby}, {$customerinfo.moddateh}{else}-{/if}
 		</TD>
 	</TR>
+						{/block}
 						</TABLE>
 					</TD>
 				</TR>

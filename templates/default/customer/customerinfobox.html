@@ -16,6 +16,7 @@
 				<TR>
 					<TD WIDTH="50%" style="vertical-align:top;">
 						<TABLE WIDTH="100%" CELLPADDING="3">
+						{block name="customerinfobox-leftcolumn"}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG src="img/{$_CSTATUSES[$customerinfo.status].img}" alt="">
@@ -283,10 +284,12 @@
         </TD>
     </TR>
 
-                                        </TABLE>
+						{/block}
+						</TABLE>
 				</TD>
 				<TD WIDTH="50%" style="vertical-align:top;">
 					<TABLE WIDTH="100%" CELLPADDING="3">
+					{block name="customerinfobox-rightcolumn"}
 	{if $customerinfo.info}
 	<TR>
 		<TD WIDTH="1%">
@@ -374,7 +377,8 @@
 			{if $customerinfo.moddate}{$customerinfo.modifiedby}, {$customerinfo.moddateh}{else}-{/if}
 		</TD>
 	</TR>
-                                        	</TABLE>
+					{/block}
+					</TABLE>
 					</TD>
 				</TR>
 			</TABLE>

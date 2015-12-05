@@ -34,7 +34,7 @@ function module_main()
 
     $userinfo = $LMS->GetCustomer($SESSION->id);
     $usernodes = $LMS->GetCustomerNodes($SESSION->id);
-    $balancelist = $LMS->GetCustomerBalanceList($SESSION->id);
+    //$balancelist = $LMS->GetCustomerBalanceList($SESSION->id);
     $documents = $LMS->DB->GetAll('SELECT c.docid, d.number, d.type, c.title, c.fromdate, c.todate, 
 	c.description, c.filename, c.md5sum, c.contenttype, n.template, d.closed, d.cdate
 	FROM documentcontents c
@@ -48,7 +48,7 @@ function module_main()
 
     $SMARTY->assign('userinfo',$userinfo);
     $SMARTY->assign('usernodes',$usernodes);
-    $SMARTY->assign('balancelist',$balancelist);
+    //$SMARTY->assign('balancelist',$balancelist);
     $SMARTY->assign('documents',$documents);
     $SMARTY->assign('fields_changed', $fields_changed);
     $SMARTY->display('module:info.html');
