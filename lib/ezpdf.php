@@ -159,11 +159,13 @@ function init_pdf($pagesize, $orientation, $title)
 	return $pdf;
 }
 
-function close_pdf(&$pdf)
+function close_pdf(&$pdf, $name = null)
 {
 	header('Pragma: private');
 	header('Cache-control: private, must-revalidate');
-	$pdf->ezStream();
+	if (!is_null($name))
+		$options = array('Content-Disposition' => $name);
+	$pdf->ezStream($options);
 }
 
 ?>

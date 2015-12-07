@@ -92,6 +92,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
 	foreach ($ids as $idx => $invoiceid) {
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
+		if (count($ids) == 1)
+			$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 
 		foreach ($which as $type) {
 			$i++;
@@ -133,6 +135,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
 	foreach ($ids as $idx => $invoiceid) {
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
+		if (count($ids) == 1)
+			$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 
 		foreach ($which as $type) {
 			$i++;
@@ -141,6 +145,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		}
 	}
 } elseif ($invoice = $LMS->GetInvoiceContent($_GET['id'])) {
+	$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+
 	$which = array();
 
 	if (!empty($_GET['original'])) $which[] = trans('ORIGINAL');
@@ -168,6 +174,13 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 } else
 	$SESSION->redirect('?m=invoicelist');
 
-close_pdf($pdf);
+if (isset($docnumber)) {
+	$filename = ConfigHelper::getConfig('invoices.file_name', 'file.pdf');
+	$filename = str_replace('%number', $docnumber, $filename);
+	$filename = preg_replace('/[\/\\ ]/', '_', $filename);
+} else
+	$filename = null;
+
+close_pdf($pdf, $filename);
 
 ?>
