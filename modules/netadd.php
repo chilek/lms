@@ -42,7 +42,8 @@ if(isset($_POST['netadd']))
 			$netadd['gateway'] == '' &&
 			$netadd['wins'] == '' &&
 			$netadd['dhcpstart'] == '' &&
-			$netadd['dhcpend'] == ''
+			$netadd['dhcpend'] == '' &&
+			$netadd['ownerid'] == ''
 	)
 		header('Location: ?m=netadd');
 
@@ -112,6 +113,9 @@ if(isset($_POST['netadd']))
 			$error['dhcpend'] = trans('End of DHCP range has to be equal or greater than start!');
 	}
 
+	if (!empty($netadd['ownerid']) && !$LMS->CustomerExists($netadd['ownerid']))
+		$error['ownerid'] = trans('Customer with the specified ID does not exist');
+
 	if(!$error)
 	{
 		$SESSION->redirect('?m=netinfo&id='.$LMS->NetworkAdd($netadd));
@@ -119,9 +123,17 @@ if(isset($_POST['netadd']))
 
 	$SMARTY->assign('error', $error);
 	$SMARTY->assign('netadd', $netadd);
+} elseif(isset($_GET['ownerid'])) {
+	if($LMS->CustomerExists($_GET['ownerid']) == true) {
+		$netadd['ownerid'] = $_GET['ownerid'];
+		$SMARTY->assign('netadd', $netadd);
+	}
 }
 
 $layout['pagetitle'] = trans('New Network');
+
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
+	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 
 $SMARTY->assign('prefixlist', $LMS->GetPrefixList());
 $SMARTY->assign('hostlist', $LMS->DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));
