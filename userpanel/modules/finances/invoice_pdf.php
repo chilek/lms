@@ -87,7 +87,7 @@ if(!empty($_POST['inv']))
 	if (isset($docnumber)) {
 		$filename = ConfigHelper::getConfig('invoices.file_name', 'file.pdf');
 		$filename = str_replace('%number', $docnumber, $filename);
-		$filename = preg_replace('/[\/\\ ]/', '_', $filename);
+		$filename = preg_replace('/[^[:alnum:]_]/i', '_', $filename);
 	} else
 		$filename = null;
 
@@ -119,7 +119,7 @@ invoice_body();
 if (isset($number)) {
 	$filename = ConfigHelper::getConfig('invoices.file_name', 'file.pdf');
 	$filename = str_replace('%number', $number, $filename);
-	$filename = preg_replace('/[\/\\ ]/', '_', $filename);
+	$filename = preg_replace('/[^[:alnum:]_]/i', '_', $filename);
 } else
 	$filename = null;
 
