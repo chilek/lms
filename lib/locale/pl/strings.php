@@ -1721,6 +1721,7 @@ $_LANG['company\'s side'] = 'po stronie firmy';
 $_LANG['customer\'s side'] = 'po stronie klienta';
 $_LANG['Enter customer ID'] = 'Wprowadź ID klienta';
 $_LANG['Enter customer ID (optional)'] = 'Wprowadź ID klienta (opcjonalnie)';
+$_LANG['Navigate to the customer'] = 'Przejdź na kartę klienta';
 $_LANG['Customer with the specified ID does not exist'] = 'Klient o podanym ID nie istnieje!';
 $_LANG['Select request cause'] = 'Wybierz przyczynę zgłoszenia';
 $_LANG['unknown/other'] = 'nieznana/inna';
