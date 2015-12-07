@@ -170,7 +170,7 @@ if(isset($_POST['networkdata']))
 			} elseif($vnetwork) {
 				$DB->Execute('UPDATE nodes SET ownerid = ? WHERE id = ?', array($networkdata['ownerid'], $vnetwork['nodeid']));
 			} else {
-				$DB->Execute('INSERT INTO nodes (ownerid, netid) VALUES(?, ?)', array($networkdata['ownerid'], $networkdata['id']));
+				$DB->Execute('INSERT INTO nodes (name, ownerid, netid) VALUES(?, ?, ?)', array($networkdata['name'], $networkdata['ownerid'], $networkdata['id']));
 			}
 		}
 

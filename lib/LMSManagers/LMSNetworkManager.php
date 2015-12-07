@@ -107,8 +107,10 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         if ($netadd['prefix'] != '')
             $netadd['mask'] = prefix2mask($netadd['prefix']);
 
+        $netadd['name'] = strtoupper($netadd['name']);
+
         $args = array(
-            'name' => strtoupper($netadd['name']),
+            'name' => $netadd['name'],
             'address' => $netadd['address'],
             'mask' => $netadd['mask'],
             'interface' => strtolower($netadd['interface']),
@@ -128,8 +130,15 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $netid = $this->db->GetOne('SELECT id FROM networks WHERE address = inet_aton(?) AND hostid = ?', array($netadd['address'], $netadd['hostid']));
             if ($this->syslog && $netid) {
                 $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK]] = $netid;
-                $this->syslog->AddMessage(SYSLOG_RES_NETWORK, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]));
+                $keys = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]);
+
+                if($netadd['ownerid']) {
+                    $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $netadd['ownerid'];
+                    $keys[] = $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST];
+                    $this->db->Execute('INSERT INTO nodes (name, ownerid, netid) VALUES(?, ?, ?)', array($netadd['name'], $netadd['ownerid'], $netid));
+                }
+
+                $this->syslog->AddMessage(SYSLOG_RES_NETWORK, SYSLOG_OPER_ADD, $args, $keys);
             }
             return $netid;
         } else

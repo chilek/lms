@@ -5,7 +5,9 @@
 			<IMG src="img/network.gif" alt="">
 			{t a=$customernetworks|@count|default:"0"}Customer Networks ($a):{/t}
 		</TD>
-		<TD style="width: 1%;" class="text-right nobr"></TD>
+		<TD style="width: 1%;" class="text-right nobr">
+			{if $customerinfo.status != $smarty.const.CSTATUS_INTERESTED && !$customerinfo.deleted}<A href="?m=netadd&amp;ownerid={$customerinfo.id}">{trans("New Network")} &raquo;</A>&nbsp;{/if}
+		</TD>
 	</TR>
 	</THEAD>
 	<TBODY>
