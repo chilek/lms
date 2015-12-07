@@ -50,11 +50,11 @@ $messagelist = $LMS->GetMessages($customerid, 10);
 $eventlist = $LMS->EventSearch(array('customerid' => $customerid), 'date,desc', true);
 $customernodes = $LMS->GetCustomerNodes($customerid);
 $customernetworks = $LMS->GetCustomerNetworks($customerid, 10);
-$customerstats = $DB->GetRow('SELECT
-	(SELECT COUNT(1) FROM rttickets WHERE customerid = ?) AS tickets,
-	(SELECT COUNT(1) FROM domains WHERE ownerid = ?) AS domains,
-	(SELECT COUNT(1) FROM passwd WHERE ownerid = ?) AS accounts
-', array($customerid, $customerid, $customerid));
+$customerstats = array(
+	'tickets' => $DB->GetOne('SELECT COUNT(1) FROM rttickets WHERE customerid = ?', array($customerid)),
+	'domains' => $DB->GetOne('SELECT COUNT(1) FROM domains WHERE ownerid = ?', array($customerid)),
+	'accounts' => $DB->GetOne('SELECT COUNT(1) FROM passwd WHERE ownerid = ?', array($customerid))
+);
 
 if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
 	$trans = $SYSLOG->GetTransactions(array('key' => $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], 'value' => $customerid));
