@@ -1,17 +1,20 @@
 <!--// $Id$ //-->
 <TABLE class="lmsbox">
     <THEAD>
-	<TR{if $customerpanel} class="hand" onClick="showOrHide('customerpanel');"{/if}>
-		<TD WIDTH="1%">
+	<TR class="dark">
+		<TD width="99%"{if $customerpanel} class="fleftu hand" onClick="showOrHide('customerpanel');"{else} class="fleftu"{/if}>
 			<IMG SRC="img/customer.gif" ALT="">
 			<b>{if $customerpanel}{trans("Owner:")}{/if}
 			{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <span class="red">({trans("deleted customer")})</span>{/if}</b>
+		</TD>
+		<TD width="1%" class="frightu" align="right" nowrap>
+			{if $customerpanel}<a href="?m=customerinfo&id={$customerinfo.id}">{trans('Navigate to the customer')} &raquo;</a>{/if}&nbsp;
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
     <TR {if $customerpanel} id="customerpanel" style="display:none;"{/if}>
-	    <TD WIDTH="100%" {if $customerpanel} CLASS="container" ALIGN="RIGHT"{else}CLASS="container"{/if}>
+	    <TD colspan="2" WIDTH="100%" {if $customerpanel} CLASS="container" ALIGN="RIGHT"{else}CLASS="container"{/if}>
 			<TABLE WIDTH="100%" CELLPADDING="0">
 				<TR>
 					<TD WIDTH="50%" style="vertical-align:top;">
@@ -386,7 +389,7 @@
 		</TD>
         </TR>
 	<TR>
-		<TD WIDTH="100%" ALIGN="RIGHT">
+		<TD WIDTH="100%" ALIGN="RIGHT" colspan="2">
 {/if}
 			{block name="customerinfobox-buttons"}
 			{if $customerinfo.deleted}
