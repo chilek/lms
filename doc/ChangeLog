@@ -45,6 +45,7 @@ version ?.??.?? (????-??-??):
   - allow assign a whole network to the customer [pjona]
   - invoices.attachment_name setting allows to define pdf invoice file name pattern (%number symbol
     is only supported symbol for now) [chilan]
+  - complete rewrite of invoice generation code - common path code for pdf and html invoices [chilan]
 
 version 1.11.18 (2015-10-01):
 

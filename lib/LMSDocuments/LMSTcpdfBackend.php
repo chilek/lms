@@ -32,48 +32,44 @@
 
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . 'pol.php');
 
-class LMSTCPDF extends TCPDF {
-	public $invoice_type;
+class LMSTcpdfBackend extends TCPDF {
+	public function __construct($pagesize, $orientation, $title) {
+		global $layout;
 
-	/* set own Header function */
-	public function Header() {
-		/* insert your own logo in lib/tcpdf/images/logo.png */
-		$image_file = K_PATH_IMAGES . 'logo.png';
-		if (file_exists($image_file))
-			$this->Image($image_file, 13, 10, 50, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+		parent::__construct($orientation, PDF_UNIT, $pagesize, true, 'UTF-8', false, false);
+		//$this->invoice_type = ConfigHelper::getConfig('invoices.template_file');
+
+		$this->SetProducer('LMS Developers');
+		$this->SetSubject($title);
+		$this->SetCreator('LMS ' . $layout['lmsv']);
+		$this->SetDisplayMode('fullwidth', 'SinglePage', 'UseNone');
+
+		$this->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+		$this->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
+		$this->SetHeaderMargin(PDF_MARGIN_HEADER);
+		$this->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+		$this->setImageScale(PDF_IMAGE_SCALE_RATIO);
+		$this->setLanguageArray($l);
+
+		/* disable font subsetting to improve performance */
+		$this->setFontSubsetting(false);
+
+		$this->NewPage();
 	}
 
-	/* set own Footer function */
-	public function Footer() {
-		$cur_y = $this->y;
-		$this->SetTextColor(0, 0, 0);
-		$line_width = 0.85 / $this->k;
-		$this->SetLineStyle(array('width' => $line_width, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
-		/* print barcode with invoice number in footer */
-		$barcode = $this->getBarcode();
-		if (!empty($barcode) && ($this->invoice_type == 'standard')) {
-			$this->Ln($line_width);
-			$style = array(
-					'position' => 'L',
-					'align' => 'L',
-					'stretch' => false,
-					'fitwidth' => true,
-					'cellfitalign' => '',
-					'border' => false,
-					'padding' => 0,
-					'fgcolor' => array(0, 0, 0),
-					'bgcolor' => false,
-					'text' => true,
-					'font' => 'times',
-					'fontsize' => 6,
-					'stretchtext' => 0
-			);
-			$this->write1DBarcode($barcode, 'C128', '', $cur_y + $line_width - 0.25, '', ($this->footer_margin - 2), 0.3, $style, '');
-			/* draw line */
-			$this->SetY($cur_y);
-			$this->SetX($this->original_rMargin);
-			$this->Cell(0, 0, '', array('T' => array('width' => 0.1)), 0, 'L');
-		}
+	public function AppendPage() {
+		$this->AddPage();
+	}
+
+	public function WriteToBrowser($filename = null) {
+		ob_clean();
+		header('Pragma: private');
+		header('Cache-control: private, must-revalidate');
+		if (!is_null($filename))
+			$this->Output($filename, 'D');
+		else
+			$this->Output();
 	}
 
 	public function getWrapStringWidth($txt, $font_style) {
@@ -89,50 +85,50 @@ class LMSTCPDF extends TCPDF {
 		return $this->getStringWidth($long, '', $font_style) + 2.5;
 	}
 
-	public function SetProducer($producer) {
+	/* set own Header function */
+	private function Header() {
+		/* insert your own logo in lib/tcpdf/images/logo.png */
+		$image_file = K_PATH_IMAGES . 'logo.png';
+		if (file_exists($image_file))
+			$this->Image($image_file, 13, 10, 50, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+	}
+
+	/* set own Footer function */
+	private function Footer() {
+		$cur_y = $this->y;
+		$this->SetTextColor(0, 0, 0);
+		$line_width = 0.85 / $this->k;
+		$this->SetLineStyle(array('width' => $line_width, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
+		/* print barcode with invoice number in footer */
+		$barcode = $this->getBarcode();
+		if (!empty($barcode) && ($this->invoice_type == 'standard')) {
+			$this->Ln($line_width);
+			$style = array(
+				'position' => 'L',
+				'align' => 'L',
+				'stretch' => false,
+				'fitwidth' => true,
+				'cellfitalign' => '',
+				'border' => false,
+				'padding' => 0,
+				'fgcolor' => array(0, 0, 0),
+				'bgcolor' => false,
+				'text' => true,
+				'font' => 'times',
+				'fontsize' => 6,
+				'stretchtext' => 0
+			);
+			$this->write1DBarcode($barcode, 'C128', '', $cur_y + $line_width - 0.25, '', ($this->footer_margin - 2), 0.3, $style, '');
+			/* draw line */
+			$this->SetY($cur_y);
+			$this->SetX($this->original_rMargin);
+			$this->Cell(0, 0, '', array('T' => array('width' => 0.1)), 0, 'L');
+		}
+	}
+
+	private function SetProducer($producer) {
 		$this->producer = $producer;
 	}
-}
-
-function new_page() {
-	global $pdf;
-	$pdf->AddPage();
-}
-
-function init_pdf($pagesize, $orientation, $title) {
-	global $layout;
-
-	$pdf = new LMSTCPDF($orientation, PDF_UNIT, $pagesize, true, 'UTF-8', false, false);
-	$pdf->invoice_type = ConfigHelper::getConfig('invoices.template_file');
-
-	$pdf->SetProducer('LMS Developers');
-	$pdf->SetSubject($title);
-	$pdf->SetCreator('LMS ' . $layout['lmsv']);
-	$pdf->SetDisplayMode('fullwidth', 'SinglePage', 'UseNone');
-
-	$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-	$pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
-	$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-	$pdf->setLanguageArray($l);
-
-	/* disable font subsetting to improve performance */
-	$pdf->setFontSubsetting(false);
-
-	$pdf->AddPage();
-	return $pdf;
-}
-
-function close_pdf(&$pdf, $name = false) {
-	ob_clean();
-	header('Pragma: private');
-	header('Cache-control: private, must-revalidate');
-	if (!empty($name))
-		$pdf->Output($name, 'D');
-	else
-		$pdf->Output();
 }
 
 ?>
