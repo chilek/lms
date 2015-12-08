@@ -109,16 +109,10 @@ class LMSEzpdfInvoice extends LMSInvoice {
 	}
 
 	protected function invoice_dates($x, $y) {
-		if ($this->invoice['cdate'] < mktime(0, 0, 0, 1, 1, 2014))
-			$font_size = 12;
-		else
-			$font_size = 9;
+		$font_size = 12;
 		$this->backend->text_align_right($x, $y, $font_size, trans('Settlement date:').' ');
 		$y = $y - $this->backend->text_align_left($x, $y, $font_size, date("Y/m/d", $this->invoice['cdate']));
-		if ($this->invoice['cdate'] < mktime(0, 0, 0, 1, 1, 2014))
-			$this->backend->text_align_right($x, $y, $font_size, trans('Sale date:').' ');
-		else
-			$this->backend->text_align_right($x, $y, $font_size, 'Data dostarczenia towaru / data wykonania usługi: ');
+		$this->backend->text_align_right($x, $y, $font_size, trans('Sale date:').' ');
 		$y = $y - $this->backend->text_align_left($x, $y, $font_size, date("Y/m/d", $this->invoice['sdate']));
 		$this->backend->text_align_right($x, $y, $font_size, trans('Deadline:').' ');
 		$y = $y - $this->backend->text_align_left($x, $y, $font_size, date("Y/m/d", $this->invoice['pdate']));
@@ -137,8 +131,8 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			$y=$y-$this->backend->text_align_left($x,$y,$font_size, trans($this->invoice['country']));
 		if ($this->invoice['ten']) 
 			$y=$y-$this->backend->text_align_left($x,$y,$font_size, trans('TEN').' '.$this->invoice['ten']);
-//		else if ($this->invoice['ssn']) 
-//			$y=$y-$this->backend->text_align_left($x,$y,$font_size, trans('SSN').' '.$this->invoice['ssn']);
+		else if ($this->invoice['ssn']) 
+			$y=$y-$this->backend->text_align_left($x,$y,$font_size, trans('SSN').' '.$this->invoice['ssn']);
 		$y=$y-$this->backend->text_align_left($x,$y,$font_size,'<b>' . trans('Customer No.: $a',sprintf('%04d',$this->invoice['customerid'])) . '</b>');
 		return $y;
 	}
@@ -173,10 +167,6 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			$y -= 5;
 		}
 
-		if ($this->invoice['cdate'] < mktime(0, 0, 0, 1, 1, 2013)) {
-			$font_size = 16;
-			$y = $y - $this->backend->text_align_left($x, $y, $font_size, $type);
-		}
 		//$font_size = 16;
 		//$y = $y - $this->backend->text_align_left($x, $y, $font_size, $type);
 
@@ -800,24 +790,6 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		return $y;
 	}
 
-	protected function invoice_balance($x, $y) {
-		global $LMS;
-
-		$balance = $LMS->GetCustomerBalance($this->invoice['customerid'], $this->invoice['cdate'] + 1);
-		if ($balance > 0)
-			$comment = trans('(excess payment)');
-		elseif ($balance < 0)
-			$comment = trans('(underpayment)');
-		else
-			$comment = '';
-		$y = $y - $this->backend->text_align_left($x, $y, 7, 
-			trans('Your balance on date of invoice issue:') . ' ' . moneyf($balance) . ' ' . $comment);
-		$y = $y - $this->backend->text_align_left($x, $y, 7,
-			trans('Balance includes current invoice'));
-
-		return $y;
-	}
-
 	protected function invoice_expositor($x, $y) {
 		$expositor = $this->invoice['division_author'];
 
@@ -840,14 +812,13 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			foreach ($tmp as $line)
 				$y = $this->backend->text_wrap($x, $y, $width, $font_size, $line, "full");
 		}
-		$this->backend->AddJpegFromFile(SYS_DIR.'/img/krd.jpg', $x + ($width / 2) - 100, $y - 80, 201, 72);
 	}
 
 	public function invoice_body_standard() {
 		$page = $this->backend->ezStartPageNumbers($this->backend->ez['pageWidth']-50,20,8,'right',trans('Page $a of $b', '{PAGENUM}','{TOTALPAGENUM}'),1);
 		$top = 800;
 		$this->invoice_dates(500, 800);
-//		$this->invoice_address_box(400, 700);
+		$this->invoice_address_box(400, 700);
 		$top = $this->invoice_title(30, $top);
 		$top = $top - 20;
 		$top = $this->invoice_seller(30, $top);
@@ -859,8 +830,6 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$this->invoice_expositor(30, $return[1] - 20);
 		$top = $return[2] - 20;
 		$top = $this->invoice_to_pay(30, $top);
-		if ($this->invoice['cdate'] >= mktime(0, 0, 0, 1, 1, 2014))
-			$top = $this->invoice_balance(30, $top);
 		$top = $top - 20;
 		$this->invoice_footnote(30, $top, 530, 10);
 		$page = $this->backend->ezStopPageNumbers(1, 1, $page);
@@ -870,7 +839,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$page = $this->backend->ezStartPageNumbers($this->backend->ez['pageWidth']/2+10,$this->backend->ez['pageHeight']-30,8,'',trans('Page $a of $b', '{PAGENUM}','{TOTALPAGENUM}'),1);
 		$top = $this->backend->ez['pageHeight']-50;
 		$this->invoice_dates(500, $top);
-//		$this->invoice_address_box(400, 700);
+		$this->invoice_address_box(400, 700);
 		$top = $this->invoice_title(30, $top);
 		$top = $top - 10;
 		$top = $this->invoice_seller(30, $top);
