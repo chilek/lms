@@ -137,7 +137,7 @@ if(empty($nodes_location)) {
     $nodes_location = $DB->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY name ASC', array($event['customerid']));
 }
 
-
+$SMARTY->assign('self_adjust_userlistsize', ConfigHelper::getConfig('phpui.events_self_adjust_userlistsize'));
 $SMARTY->assign('nodes_location', $nodes_location);
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('userlist', $userlist);

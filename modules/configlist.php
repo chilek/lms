@@ -293,6 +293,10 @@ function GetConfigList($order='var,asc', $section='', $search='')
 					$config[$idx]['description'] = trans('If isset "true" when adding new customer select group is required. Default "false"');
 				break;
 
+				case 'events_self_adjust_userlistsize':
+					$config[$idx]['description'] = trans('Automatically adjusts the size of the selection list to the number of users.');
+				break;
+
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');
 				break;
