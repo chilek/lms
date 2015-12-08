@@ -171,7 +171,7 @@
 			<B>{trans("Users:")}</B>
 		</TD>
 		<TD width="98%" nowrap>
-			<SELECT size="{if $userlistsize > 5}5{else}{size of=$userlist}{/if}" name="event[userlist][]" {tip text="Select user(s) (optional)"} multiple>
+			<SELECT size="{if $max_userlist_size > 0}{$max_userlist_size}{else}{size of=$userlist}{/if}" name="event[userlist][]" {tip text="Select user(s) (optional)"} multiple>
 				{section name=userlist loop=$userlist}	
 				<OPTION value="{$userlist[userlist].id}">{$userlist[userlist].name}</OPTION>
 				{/section}
