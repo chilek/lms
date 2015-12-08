@@ -43,7 +43,7 @@ version ?.??.?? (????-??-??):
   - allow plugins to add their own buttons in customer balance box and invoice list [chilan]
   - allow plugins to add their own content in left and right column of customer info and edit boxes [chilan]
   - allow assign a whole network to the customer [pjona]
-  - invoices.file_name setting allows to define pdf invoice file name pattern (%number symbol
+  - invoices.attachment_name setting allows to define pdf invoice file name pattern (%number symbol
     is only supported symbol for now) [chilan]
 
 version 1.11.18 (2015-10-01):

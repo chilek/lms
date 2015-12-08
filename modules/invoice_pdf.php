@@ -174,13 +174,11 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 } else
 	$SESSION->redirect('?m=invoicelist');
 
-if (isset($docnumber)) {
-	$filename = ConfigHelper::getConfig('invoices.file_name', 'file.pdf');
-	$filename = str_replace('%number', $docnumber, $filename);
-	$filename = preg_replace('/[^[:alnum:]_]/i', '_', $filename);
-} else
-	$filename = null;
+if (!empty($attachment_name) && isset($docnumber)) {
+	$attachment_name = str_replace('%number', $docnumber, $attachment_name);
+	$attachment_name = preg_replace('/[^[:alnum:]_]/i', '_', $attachment_name);
+}
 
-close_pdf($pdf, $filename);
+close_pdf($pdf, $attachment_name);
 
 ?>
