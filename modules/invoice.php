@@ -24,9 +24,8 @@
  *  $Id$
  */
 
-function invoice_body($document, $invoice, $type) {
+function invoice_body($document, $invoice) {
 	$document->SetInvoice($invoice);
-	$document->SetType($type);
 	$document->invoice_body();
 
 	if (!isset($invoice['last']))
@@ -38,8 +37,6 @@ $invoice_type = strtolower(ConfigHelper::getConfig('invoices.type'));
 
 if ($invoice_type == 'pdf') {
 	$pdf_type = ConfigHelper::getConfig('invoices.pdf_type', 'tcpdf');
-	if (!in_array($pdf_type, array('ezpdf', 'tcpdf')))
-		$pdf_type = 'tcpdf';
 	$pdf_type = ucwords($pdf_type);
 	$classname = 'LMS' . $pdf_type . 'Invoice';
 	$document = new $classname('A4', 'portrait', trans('Invoices'));
@@ -91,7 +88,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		foreach ($which as $type) {
 			$i++;
 			if ($i == $count) $invoice['last'] = TRUE;
-			invoice_body($document, $invoice, $type);
+			$invoice['type'] = $type;
+			invoice_body($document, $invoice);
 		}
 	}
 } elseif (isset($_GET['fetchallinvoices'])) {
@@ -136,7 +134,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		foreach ($which as $type) {
 			$i++;
 			if ($i == $count) $invoice['last'] = TRUE;
-			invoice_body($document, $invoice, $type);
+			$invoice['type'] = $type;
+			invoice_body($document, $invoice);
 		}
 	}
 } elseif ($invoice = $LMS->GetInvoiceContent($_GET['id'])) {
@@ -168,7 +167,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	foreach ($which as $type) {
 		$i++;
 		if ($i == $count) $invoice['last'] = TRUE;
-		invoice_body($document, $invoice, $type);
+		$invoice['type'] = $type;
+		invoice_body($document, $invoice);
 	}
 } else
 	$SESSION->redirect('?m=invoicelist');

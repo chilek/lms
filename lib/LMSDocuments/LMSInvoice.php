@@ -27,7 +27,6 @@
 abstract class LMSInvoice {
 	protected $invoice;
 	protected $backend;
-	protected $type;
 
 	public function __construct($pagesize, $orientation, $title, $backendclass) {
 		$this->invoice = null;
@@ -36,10 +35,6 @@ abstract class LMSInvoice {
 
 	public function SetInvoice($invoice) {
 		$this->invoice = $invoice;
-	}
-
-	public function SetType($type) {
-		$this->type = $type;
 	}
 
 	abstract function invoice_body_standard();
@@ -58,8 +53,6 @@ abstract class LMSInvoice {
 			case "FT-0100":
 				$this->invoice_body_ft0100();
 				break;
-			default:
-				require($template);
 		}
 	}
 

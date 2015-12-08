@@ -284,8 +284,6 @@ $docs = $DB->GetAll($query, array(CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_I
 if (!empty($docs)) {
 	if ($filetype == 'pdf') {
 		$pdf_type = ConfigHelper::getConfig('invoices.pdf_type', 'tcpdf');
-		if (!in_array($pdf_type, array('ezpdf', 'tcpdf')))
-			$pdf_type = 'tcpdf';
 		$pdf_type = ucwords($pdf_type);
 		$classname = 'LMS' . $pdf_type . 'Invoice';
 	}
@@ -296,8 +294,8 @@ if (!empty($docs)) {
 			$document = new LMSHtmlInvoice($SMARTY);
 
 		$invoice = $LMS->GetInvoiceContent($doc['id']);
+		$invoice['type'] = trans('ORIGINAL');
 		$document->SetInvoice($invoice);
-		$document->SetType(trans('ORIGINAL'));
 		$document->invoice_body();
 		$res = $document->WriteToString();
 

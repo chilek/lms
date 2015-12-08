@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-global $LMS,$SESSION,$SMARTY,$invoice, $layout, $type;
+global $LMS, $SESSION, $SMARTY, $layout;
 
 $type = ConfigHelper::checkConfig('userpanel.invoice_duplicate') ? trans('DUPLICATE') : trans('ORIGINAL');
 
@@ -33,8 +33,6 @@ $invoice_type = strtolower(ConfigHelper::getConfig('invoices.type'));
 
 if ($invoice_type == 'pdf') {
 	$pdf_type = ConfigHelper::getConfig('invoices.pdf_type', 'tcpdf');
-	if (!in_array($pdf_type, array('ezpdf', 'tcpdf')))
-		$pdf_type = 'tcpdf';
 	$pdf_type = ucwords($pdf_type);
 	$classname = 'LMS' . $pdf_type . 'Invoice';
 	$document = new $classname('A4', 'portrait', trans('Invoices'));
@@ -76,7 +74,6 @@ if(!empty($_POST['inv']))
 		$invoice['type'] = $type;
 
 		$document->SetInvoice($invoice);
-		$document->SetType($type);
 		$document->invoice_body();
 
 		if (!isset($invoice['last']))
@@ -99,7 +96,6 @@ if(!empty($_POST['inv']))
 		$layout['pagetitle'] = trans('Credit Note No. $a', $docnumber);
 
 	$document->SetInvoice($invoice);
-	$document->SetType($type);
 	$document->invoice_body();
 }
 

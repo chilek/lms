@@ -41,8 +41,8 @@ class LMSHtmlInvoice extends LMSInvoice {
 			$template_file = ConfigHelper::getConfig('invoices.template_file');
 		if (!$this->smarty->templateExists($template_file))
 			$template_file = 'invoice' . DIRECTORY_SEPARATOR . $template_file;
-		$this->smarty->assign('type', $this->type);
-		$this->smarty->assign('duplicate', $this->type == trans('DUPLICATE'));
+		$this->smarty->assign('type', $this->invoice['type']);
+		$this->smarty->assign('duplicate', $this->invoice['type'] == trans('DUPLICATE'));
 		$this->smarty->assign('invoice', $this->invoice);
 		$this->contents .= $this->smarty->fetch($template_file);
 	}
