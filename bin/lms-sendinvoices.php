@@ -285,7 +285,7 @@ if (!empty($docs)) {
 		$classname = 'LMS' . $pdf_type . 'Invoice';
 	}
 	foreach ($docs as $doc) {
-		if ($invoice_type == 'pdf')
+		if ($filetype == 'pdf')
 			$document = new $classname('A4', 'portrait', trans('Invoices'));
 		else
 			$document = new LMSHtmlInvoice($SMARTY);
