@@ -261,9 +261,6 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
-define('USER_AGENT', "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
-define('COOKIE_FILE', tempnam(DIRECTORY_SEPARATOR . 'tmp', 'lms-sendinvoices-cookies-'));
-
 if (array_key_exists('test', $options)) {
 	$test = TRUE;
 	printf("WARNING! You are using test mode." . PHP_EOL);
@@ -344,7 +341,5 @@ if (!empty($docs)) {
 		}
 	}
 }
-
-unlink(COOKIE_FILE);
 
 ?>
