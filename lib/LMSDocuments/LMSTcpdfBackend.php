@@ -72,6 +72,10 @@ class LMSTcpdfBackend extends TCPDF {
 			$this->Output();
 	}
 
+	public function WriteToString() {
+		return $this->Output(null, 'S');
+	}
+
 	public function getWrapStringWidth($txt, $font_style) {
 		$long = '';
 		if ($words = explode(' ', $txt)) {

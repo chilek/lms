@@ -65,6 +65,10 @@ class LMSHtmlInvoice extends LMSInvoice {
 			header('Content-Disposition: attachment; filename=' . $filename);
 		echo $this->contents;
 	}
+
+	public function WriteToString() {
+		return $this->contents;
+	}
 }
 
 ?>

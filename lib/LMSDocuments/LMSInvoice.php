@@ -70,6 +70,10 @@ abstract class LMSInvoice {
 	public function WriteToBrowser($filename = null) {
 		$this->backend->WriteToBrowser($filename);
 	}
+
+	public function WriteToString() {
+		return $this->backend->WriteToString();
+	}
 }
 
 ?>

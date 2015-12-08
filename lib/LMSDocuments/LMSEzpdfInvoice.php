@@ -24,6 +24,9 @@
  *  $Id$
  */
 
+// brzydkie hacki dla ezpdf
+@setlocale(LC_NUMERIC, 'C');
+
 class LMSEzpdfInvoice extends LMSInvoice {
 	public function __construct($pagesize, $orientation, $title) {
 		parent::__construct($pagesize, $orientation, $title, 'LMSEzpdfBackend');

@@ -30,7 +30,7 @@ define('PDF_MARGIN_LEFT', 30);
 define('PDF_MARGIN_RIGHT', 30);
 
 // brzydkie hacki dla ezpdf
-//@setlocale(LC_NUMERIC, 'C');
+@setlocale(LC_NUMERIC, 'C');
 
 class LMSEzpdfBackend extends Cezpdf {
 	private $margin;
@@ -95,6 +95,10 @@ class LMSEzpdfBackend extends Cezpdf {
 		if (!is_null($filename))
 			$options = array('Content-Disposition' => $filename);
 		$this->ezStream($options);
+	}
+
+	public function WriteToString() {
+		return $this->ezOutput();
 	}
 
 	public function text_autosize($x, $y, $size, $text, $width) {
