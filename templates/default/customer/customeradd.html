@@ -105,7 +105,7 @@
 			<TABLE cellpadding="3" width="100%">
 				<TR>
 					<TD style="width: 1%;">
-						<img src="img/{if $customeradd.status}{$CSTATUSES[$customeradd.status].img}{else}{$CSTATUSES[$smarty.const.CSTATUS_CONNECTED].img}{/if}" alt="">
+						<img src="img/{if $customeradd.status}{$_CSTATUSES[$customeradd.status].img}{else}{$_CSTATUSES[$smarty.const.CSTATUS_CONNECTED].img}{/if}" alt="">
 					</TD>
 					<TD style="width: 99%;">
 						<SELECT size="1" name="customeradd[status]" {tip text="Select customer state" trigger="status"}>
