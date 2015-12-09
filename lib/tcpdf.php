@@ -51,7 +51,7 @@ class LMSTCPDF extends TCPDF {
 		$this->SetLineStyle(array('width' => $line_width, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
 		/* print barcode with invoice number in footer */
 		$barcode = $this->getBarcode();
-		if (!empty($barcode) && ($this->invoice_type == 'standard')) {
+		if (!empty($barcode) && ConfigHelper::getConfig('invoices.template_file') == 'standard') {
 			$this->Ln($line_width);
 			$style = array(
 					'position' => 'L',
