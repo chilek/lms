@@ -54,7 +54,7 @@ class LMSTcpdfBackend extends TCPDF {
 		/* disable font subsetting to improve performance */
 		$this->setFontSubsetting(false);
 
-		$this->NewPage();
+		$this->AppendPage();
 	}
 
 	public function AppendPage() {
