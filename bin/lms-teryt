@@ -29,6 +29,9 @@ use Getopt::Long;
 use vars qw($configfile $quiet $help $version $update $fetch $list $merge $unique_city_matches);
 use Cwd;
 use LWP::UserAgent;
+# uncomment lines below if you have problems with teryt data encoding in database
+#use utf8;
+#use open qw( :encoding(utf-8) :std );
 
 my $_version = '1.11-git';
 
