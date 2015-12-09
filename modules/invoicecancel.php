@@ -8,8 +8,8 @@ $id = intval($_GET['id']);
 if($id && $_GET['is_sure'] == '1') {
     if(isset($_GET['recover'])) {
 	$DB->Execute('UPDATE documents SET cancelled = 0 WHERE id = ?', array($id));
-	$document = $LMS->DB->GetRow('SELECT customerid, cdate FROM documents WHERE id = ?', array($id));
-	$invoices = $LMS->DB->GetAll('SELECT * FROM invoicecontents WHERE docid = ?', array($id));
+	$document = $DB->GetRow('SELECT customerid, cdate FROM documents WHERE id = ?', array($id));
+	$invoices = $DB->GetAll('SELECT * FROM invoicecontents WHERE docid = ?', array($id));
 	$itemid = 1;
 	foreach ($invoices as $invoice) {
 	    $LMS->AddBalance(array(
@@ -34,7 +34,7 @@ if($id && $_GET['is_sure'] == '1') {
     else {
 	$DB->Execute('UPDATE documents SET cancelled = 1 WHERE id = ?', array($id));
 	$DB->Execute('DELETE FROM cash WHERE docid = ?', array($id));
-	$document = $LMS->DB->GetRow('SELECT * FROM documents WHERE id = ?', array($id));
+	$document = $DB->GetRow('SELECT * FROM documents WHERE id = ?', array($id));
 	$args = array(
 	    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $document['id'],
 	    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $document['customerid']

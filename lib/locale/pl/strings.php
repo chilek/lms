@@ -2698,7 +2698,7 @@ $_LANG['Property Value:'] = 'Wartość właściwości:';
 $_LANG['More'] = 'Więcej';
 $_LANG['transaction logs'] = 'dzienniki transakcji';
 
-$_LANG['user<!update<!syslog>>'] = 'użytkownik';
+$_LANG['user<!syslog>>'] = 'użytkownik';
 $_LANG['assignment<!syslog>'] = 'zobowiązanie';
 $_LANG['liability<!syslog>'] = 'zobowiązanie beztaryfowe';
 $_LANG['node assignment<!syslog>'] = 'powiązanie zobowiązania z komputerem';
