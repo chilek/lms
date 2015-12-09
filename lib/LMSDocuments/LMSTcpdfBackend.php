@@ -89,7 +89,7 @@ class LMSTcpdfBackend extends TCPDF {
 	}
 
 	/* set own Header function */
-	private function Header() {
+	public function Header() {
 		/* insert your own logo in lib/tcpdf/images/logo.png */
 		$image_file = K_PATH_IMAGES . 'logo.png';
 		if (file_exists($image_file))
@@ -97,7 +97,7 @@ class LMSTcpdfBackend extends TCPDF {
 	}
 
 	/* set own Footer function */
-	private function Footer() {
+	public function Footer() {
 		$cur_y = $this->y;
 		$this->SetTextColor(0, 0, 0);
 		$line_width = 0.85 / $this->k;
