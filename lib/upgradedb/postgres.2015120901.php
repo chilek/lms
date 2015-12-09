@@ -20,7 +20,6 @@
  *  USA.
  *
  */
-<<<<<<< HEAD
 /**
  * @author Maciej_Wawryk
  */
@@ -31,15 +30,3 @@ $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('201512
 $this->CommitTrans();
 
 ?>
-=======
-
-$this->BeginTrans();
-
-$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('invoices', 'customer_bankaccount', '0'));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015120900', 'dbversion'));
-
-$this->CommitTrans();
-
-?>
->>>>>>> b95ea037f20c88b777f89f63d2af5df0431861cb
