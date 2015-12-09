@@ -7,7 +7,7 @@ $id = intval($_GET['id']);
 
 if($id && $_GET['is_sure'] == '1') {
     if(isset($_GET['recover'])) {
-	$LMS->DB->Execute('UPDATE documents SET cancelled = FALSE WHERE id = ?', array($id));
+	$LMS->DB->Execute('UPDATE documents SET cancelled = 0 WHERE id = ?', array($id));
 	$document = $LMS->DB->GetRow('SELECT customerid, cdate FROM documents WHERE id = ?', array($id));
 	$invoices = $LMS->DB->GetAll('SELECT * FROM invoicecontents WHERE docid = ?', array($id));
 	$itemid = 1;
@@ -25,7 +25,7 @@ if($id && $_GET['is_sure'] == '1') {
 	}
     } 
     else {
-	$LMS->DB->Execute('UPDATE documents SET cancelled = TRUE WHERE id = ?', array($id));
+	$LMS->DB->Execute('UPDATE documents SET cancelled = 1 WHERE id = ?', array($id));
 	$LMS->DB->Execute('DELETE FROM cash WHERE docid = ?', array($id));
     }
 }

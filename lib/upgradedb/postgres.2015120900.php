@@ -25,7 +25,7 @@
  */
 
 $this->BeginTrans();
-$this->Execute("ALTER TABLE documents ADD COLUMN cancelled boolean NOT NULL DEFAULT false");
+$this->Execute("ALTER TABLE documents ADD COLUMN cancelled smallint NOT NULL DEFAULT 0");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015120900', 'dbversion'));
 $this->CommitTrans();
 
