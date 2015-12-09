@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,23 +26,25 @@
 
 // REPLACE THIS WITH PATH TO YOU CONFIG FILE
 
-$CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
+$CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
 
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
+define('CONFIG_FILE', $CONFIG_FILE);
+
 // Parse configuration file
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
 $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
-$CONFIG['directories']['backup_dir'] = (!isset($CONFIG['directories']['backup_dir']) ? $CONFIG['directories']['sys_dir'].'/backups' : $CONFIG['directories']['backup_dir']);
-$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'].'/lib' : $CONFIG['directories']['lib_dir']);
-$CONFIG['directories']['modules_dir'] = (!isset($CONFIG['directories']['modules_dir']) ? $CONFIG['directories']['sys_dir'].'/modules' : $CONFIG['directories']['modules_dir']);
-$CONFIG['directories']['smarty_compile_dir'] = (!isset($CONFIG['directories']['smarty_compile_dir']) ? $CONFIG['directories']['sys_dir'].'/templates_c' : $CONFIG['directories']['smarty_compile_dir']);
-$CONFIG['directories']['smarty_templates_dir'] = (!isset($CONFIG['directories']['smarty_templates_dir']) ? $CONFIG['directories']['sys_dir'].'/templates' : $CONFIG['directories']['smarty_templates_dir']);
+$CONFIG['directories']['backup_dir'] = (!isset($CONFIG['directories']['backup_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'backups' : $CONFIG['directories']['backup_dir']);
+$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
+$CONFIG['directories']['modules_dir'] = (!isset($CONFIG['directories']['modules_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'modules' : $CONFIG['directories']['modules_dir']);
+$CONFIG['directories']['smarty_compile_dir'] = (!isset($CONFIG['directories']['smarty_compile_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates_c' : $CONFIG['directories']['smarty_compile_dir']);
+$CONFIG['directories']['smarty_templates_dir'] = (!isset($CONFIG['directories']['smarty_templates_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates' : $CONFIG['directories']['smarty_templates_dir']);
 $CONFIG['finances']['account'] = (!isset($CONFIG['finances']['account']) ? '98700000000000000000000123' : $CONFIG['finances']['account']);
 $CONFIG['finances']['bank'] = (!isset($CONFIG['finances']['bank']) ? 'Suzuki Bank GMBH inc.' : $CONFIG['finances']['bank']);
 
@@ -54,27 +56,21 @@ define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
 define('SMARTY_TEMPLATES_DIR', $CONFIG['directories']['smarty_templates_dir']);
 
 // Load autloader
-require_once(LIB_DIR.'/autoloader.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'autoloader.php');
 
 // Load config defaults
-
-require_once(LIB_DIR.'/config.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'config.php');
 
 // Init database
 
 $DB = null;
 
 try {
-
-    $DB = LMSDB::getInstance();
-
+	$DB = LMSDB::getInstance();
 } catch (Exception $ex) {
-    
-    trigger_error($ex->getMessage(), E_USER_WARNING);
-    
-    // can't working without database
-    die("Fatal error: cannot connect to database!\n");
-    
+	trigger_error($ex->getMessage(), E_USER_WARNING);
+	// can't working without database
+	die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
 // Initialize templates engine
@@ -82,9 +78,9 @@ $SMARTY = new Smarty;
 
 // Include required files (including sequence is important)
 
-require_once(LIB_DIR.'/language.php');
-require_once(LIB_DIR.'/definitions.php');
-require_once(LIB_DIR.'/common.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 
 // Initialize LMS class
 
@@ -101,7 +97,7 @@ $SMARTY->assignByRef('_language', $LMS->lang);
 $SMARTY->template_dir = getcwd();
 $SMARTY->compile_dir = SMARTY_COMPILE_DIR;
 
-@include('locale/'.$LMS->ui_lang.'/strings.php');
+@include('locale' . DIRECTORY_SEPARATOR . $LMS->ui_lang . DIRECTORY_SEPARATOR . 'strings.php');
 
 $layout['lmsv'] = '1.11-git';
 
