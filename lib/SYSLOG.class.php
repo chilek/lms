@@ -154,6 +154,8 @@ $SYSLOG_RESOURCE_KEYS = array(
 define('SYSLOG_OPER_ADD', 1);
 define('SYSLOG_OPER_DELETE', 2);
 define('SYSLOG_OPER_UPDATE', 3);
+define('SYSLOG_OPER_CANCEL', 4);
+define('SYSLOG_OPER_RECOVER', 5);
 define('SYSLOG_OPER_DBBACKUPRECOVER', 240);
 define('SYSLOG_OPER_USERPASSWDCHANGE', 251);
 define('SYSLOG_OPER_USERNOACCESS', 252);
@@ -171,6 +173,8 @@ $SYSLOG_OPERATIONS = array(
 	SYSLOG_OPER_USERLOGFAIL => trans('log in failed<!syslog>'),
 	SYSLOG_OPER_USERLOGIN => trans('log in<!syslog>'),
 	SYSLOG_OPER_USERLOGOUT => trans('log out<!syslog>'),
+	SYSLOG_OPER_CANCEL => trans('cancel<!syslog>'),
+	SYSLOG_OPER_RECOVER => trans('recover<!syslog>'),
 );
 
 if (isset($SMARTY)) {
