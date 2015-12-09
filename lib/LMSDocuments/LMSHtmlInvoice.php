@@ -30,8 +30,7 @@ class LMSHtmlInvoice extends LMSInvoice {
 
 	public function __construct($smarty) {
 		$this->smarty = $smarty;
-		$this->smarty->assign('css', file(ConfigHelper::getConfig('directories.sys_dir', '', true) . '/img/style_print.css')); 
-		$this->contents = $this->smarty->fetch('invoice/invoiceheader.html');
+		$this->contents = '';
 	}
 
 	public function invoice_body_standard() {
@@ -58,8 +57,15 @@ class LMSHtmlInvoice extends LMSInvoice {
 	public function NewPage() {
 	}
 
+	private function PrepareFullContents() {
+		$this->smarty->assign('css', file(ConfigHelper::getConfig('directories.sys_dir', '', true)
+			. DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'style_print.css')); 
+		$this->contents = $this->smarty->fetch('invoice/invoiceheader.html') . $this->contents
+			. $this->smarty->fetch('clearfooter.html');
+	}
+
 	public function WriteToBrowser($filename = null) {
-		$this->contents .= $this->smarty->fetch('clearfooter.html');
+		$this->PrepareFullContents();
 		header('Content-Type: ' . ConfigHelper::getConfig('invoices.content_type'));
 		if (!is_null($filename))
 			header('Content-Disposition: attachment; filename=' . $filename);
@@ -67,6 +73,7 @@ class LMSHtmlInvoice extends LMSInvoice {
 	}
 
 	public function WriteToString() {
+		$this->PrepareFullContents();
 		return $this->contents;
 	}
 }
