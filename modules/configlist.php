@@ -387,6 +387,10 @@ function GetConfigList($order='var,asc', $section='', $search='')
 						$config[$idx]['description'] = trans('Default invoices paytype. Default: "1" (cash)');
 					break;
 
+					case 'customer_bankaccount':
+						$config[$idx]['description'] = trans('Show bankaccount on invoice. Default: 0');
+					break;
+
 					default:
 						$config[$idx]['description'] = trans('Unknown option. No description.');
 					break;

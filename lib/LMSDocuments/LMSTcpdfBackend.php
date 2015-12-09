@@ -32,7 +32,7 @@
 
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . 'pol.php');
 
-class LMSTcpdfBackend extends TCPDF {
+class LMSTcpdfBackend extends LMSTCPDF {
 	public function __construct($pagesize, $orientation, $title) {
 		global $layout;
 
@@ -73,64 +73,6 @@ class LMSTcpdfBackend extends TCPDF {
 
 	public function WriteToString() {
 		return $this->Output(null, 'S');
-	}
-
-	public function getWrapStringWidth($txt, $font_style) {
-		$long = '';
-		if ($words = explode(' ', $txt)) {
-			foreach ($words as $word)
-				if (strlen($word) > strlen($long))
-					$long = $word;
-		} else {
-			$long = $txt;
-		}
-
-		return $this->getStringWidth($long, '', $font_style) + 2.5;
-	}
-
-	/* set own Header function */
-	public function Header() {
-		/* insert your own logo in lib/tcpdf/images/logo.png */
-		$image_file = K_PATH_IMAGES . 'logo.png';
-		if (file_exists($image_file))
-			$this->Image($image_file, 13, 10, 50, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
-	}
-
-	/* set own Footer function */
-	public function Footer() {
-		$cur_y = $this->y;
-		$this->SetTextColor(0, 0, 0);
-		$line_width = 0.85 / $this->k;
-		$this->SetLineStyle(array('width' => $line_width, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
-		/* print barcode with invoice number in footer */
-		$barcode = $this->getBarcode();
-		if (!empty($barcode) && ConfigHelper::getConfig('invoices.template_file') == 'standard') {
-			$this->Ln($line_width);
-			$style = array(
-				'position' => 'L',
-				'align' => 'L',
-				'stretch' => false,
-				'fitwidth' => true,
-				'cellfitalign' => '',
-				'border' => false,
-				'padding' => 0,
-				'fgcolor' => array(0, 0, 0),
-				'bgcolor' => false,
-				'text' => true,
-				'font' => 'times',
-				'fontsize' => 6,
-				'stretchtext' => 0
-			);
-			$this->write1DBarcode($barcode, 'C128', '', $cur_y + $line_width - 0.25, '', ($this->footer_margin - 2), 0.3, $style, '');
-			/* draw line */
-			$this->SetY($cur_y);
-			$this->SetX($this->original_rMargin);
-			$this->Cell(0, 0, '', array('T' => array('width' => 0.1)), 0, 'L');
-		}
-	}
-
-	private function SetProducer($producer) {
-		$this->producer = $producer;
 	}
 }
 
