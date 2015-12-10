@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-class LMSHtmlInvoice extends LMSInvoice {
+class LMSHtmlReceipt extends LMSDocument {
 	private $smarty;
 	private $contents;
 
@@ -33,26 +33,15 @@ class LMSHtmlInvoice extends LMSInvoice {
 		$this->contents = '';
 	}
 
-	public function invoice_body_standard() {
-		if(isset($this->data['invoice']))
-			$template_file = ConfigHelper::getConfig('invoices.cnote_template_file');
-		else
-			$template_file = ConfigHelper::getConfig('invoices.template_file');
-		if (!$this->smarty->templateExists($template_file))
-			$template_file = 'invoice' . DIRECTORY_SEPARATOR . $template_file;
-		$this->smarty->assign('type', $this->data['type']);
-		$this->smarty->assign('duplicate', $this->data['type'] == trans('DUPLICATE'));
-		$this->smarty->assign('invoice', $this->data);
-		$this->contents .= $this->smarty->fetch($template_file);
-	}
-
-	public function invoice_body_ft0100() {
-		$this->invoice_body_standard();
-	}
-
 	public function Draw($data) {
 		parent::Draw($data);
-		$this->invoice_body_standard();
+
+		$template_file = ConfigHelper::getConfig('receipts.template_file');
+		if (!$this->smarty->templateExists($template_file))
+			$template_file = 'receipt' . DIRECTORY_SEPARATOR . $template_file;
+		$this->smarty->assign('type', $this->data['type']);
+		$this->smarty->assign('receipt', $this->data);
+		$this->contents .= $this->smarty->fetch($template_file);
 	}
 
 	public function NewPage() {
@@ -60,14 +49,14 @@ class LMSHtmlInvoice extends LMSInvoice {
 
 	private function PrepareFullContents() {
 		$this->smarty->assign('css', file(ConfigHelper::getConfig('directories.sys_dir', '', true)
-			. DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'style_print.css')); 
-		$this->contents = $this->smarty->fetch('invoice/invoiceheader.html') . $this->contents
+			. DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'style_print.css'));
+		$this->contents = $this->smarty->fetch('receipt/receiptheader.html') . $this->contents
 			. $this->smarty->fetch('clearfooter.html');
 	}
 
 	public function WriteToBrowser($filename = null) {
 		$this->PrepareFullContents();
-		header('Content-Type: ' . ConfigHelper::getConfig('invoices.content_type'));
+		header('Content-Type: ' . ConfigHelper::getConfig('receipts.content_type'));
 		if (!is_null($filename))
 			header('Content-Disposition: attachment; filename=' . $filename);
 		echo $this->contents;

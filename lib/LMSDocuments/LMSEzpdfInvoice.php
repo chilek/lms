@@ -28,8 +28,8 @@
 @setlocale(LC_NUMERIC, 'C');
 
 class LMSEzpdfInvoice extends LMSInvoice {
-	public function __construct($pagesize, $orientation, $title) {
-		parent::__construct($pagesize, $orientation, $title, 'LMSEzpdfBackend');
+	public function __construct($title, $pagesize = 'A4', $orientation = 'portrait') {
+		parent::__construct('LMSEzpdfBackend', $title, $pagesize, $orientation);
 	}
 
 	protected function invoice_simple_form_fill($x, $y, $scale) {
@@ -44,11 +44,11 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$this->backend->line(370*$scale+$x,197*$scale+$y,370*$scale+$x,227*$scale+$y);
 		$this->backend->line(370*$scale+$x,197*$scale+$y,340*$scale+$x,197*$scale+$y);
 
-		$shortname = $this->invoice['division_shortname'];
-		$address = $this->invoice['division_address'];
-		$zip = $this->invoice['division_zip'];
-		$city = $this->invoice['division_city'];
-		$account = bankaccount($this->invoice['customerid'], $this->invoice['account']);
+		$shortname = $this->data['division_shortname'];
+		$address = $this->data['division_address'];
+		$zip = $this->data['division_zip'];
+		$city = $this->data['division_city'];
+		$account = bankaccount($this->data['customerid'], $this->data['account']);
 
 		$this->backend->text_autosize(15*$scale+$x,568*$scale+$y,30*$scale, $shortname,350*$scale);
 		$this->backend->text_autosize(15*$scale+$x,534*$scale+$y,30*$scale, $address,350*$scale);
@@ -58,19 +58,19 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		//$this->backend->text_autosize(15*$scale+$x,626*$scale+$y,30*$scale, substr($tmp,18,200),350*$scale);
 		$this->backend->text_autosize(15*$scale+$x,683*$scale+$y,30*$scale, format_bankaccount($account), 350*$scale);
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false)))
-			$value = $this->invoice['customerbalance'] * -1;
+			$value = $this->data['customerbalance'] * -1;
 		else
-			$value = $this->invoice['total'];
+			$value = $this->data['total'];
 		$this->backend->text_autosize(15*$scale+$x,445*$scale+$y,30*$scale,"*".number_format($value,2,',','')."*",350*$scale);
 
-		$this->backend->text_autosize(15*$scale+$x,390*$scale+$y,30*$scale, $this->invoice['name'],350*$scale);
-		$this->backend->text_autosize(15*$scale+$x,356*$scale+$y,30*$scale, $this->invoice['address'],350*$scale);
-		$this->backend->text_autosize(15*$scale+$x,322*$scale+$y,30*$scale, $this->invoice['zip'].' '.$this->invoice['city'],350*$scale);
+		$this->backend->text_autosize(15*$scale+$x,390*$scale+$y,30*$scale, $this->data['name'],350*$scale);
+		$this->backend->text_autosize(15*$scale+$x,356*$scale+$y,30*$scale, $this->data['address'],350*$scale);
+		$this->backend->text_autosize(15*$scale+$x,322*$scale+$y,30*$scale, $this->data['zip'].' '.$this->data['city'],350*$scale);
 
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false)))
 			$this->backend->text_autosize(15*$scale+$x,215*$scale+$y,30*$scale,trans('Payment for liabilities'),350*$scale);
 		else {
-			$tmp = docnumber($this->invoice['number'], $this->invoice['template'], $this->invoice['cdate']);
+			$tmp = docnumber($this->data['number'], $this->data['template'], $this->data['cdate']);
 			$this->backend->text_autosize(15*$scale+$x,215*$scale+$y,30*$scale,trans('Payment for invoice No. $a', $tmp),350*$scale);
 		}
 	}
@@ -85,28 +85,28 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$this->backend->line(7*$scale+$x,172*$scale+$y,7*$scale+$x,202*$scale+$y);
 		$this->backend->line(7*$scale+$x,172*$scale+$y,37*$scale+$x,172*$scale+$y);
 
-		$name = $this->invoice['division_name'];
-		$address = $this->invoice['division_address'];
-		$zip = $this->invoice['division_zip'];
-		$city = $this->invoice['division_city'];
-		$account = bankaccount($this->invoice['customerid'], $this->invoice['account']);
+		$name = $this->data['division_name'];
+		$address = $this->data['division_address'];
+		$zip = $this->data['division_zip'];
+		$city = $this->data['division_city'];
+		$account = bankaccount($this->data['customerid'], $this->data['account']);
 
 		$this->backend->text_autosize(15*$scale+$x,680*$scale+$y,30*$scale,$name,950*$scale);
 		$this->backend->text_autosize(15*$scale+$x,617*$scale+$y,30*$scale,$address." ".$zip." ".$city,950*$scale);
 		$this->backend->text_autosize(15*$scale+$x,555*$scale+$y,30*$scale, format_bankaccount($account), 950*$scale);
 		$this->backend->addtext(330*$scale+$x,495*$scale+$y,30*$scale,'X');
-		$this->backend->text_autosize(550*$scale+$x,495*$scale+$y,30*$scale,"*".number_format($this->invoice['total'],2,',','')."*",400*$scale);
+		$this->backend->text_autosize(550*$scale+$x,495*$scale+$y,30*$scale,"*".number_format($this->data['total'],2,',','')."*",400*$scale);
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false)))
-			$value = $this->invoice['customerbalance'] * -1;
+			$value = $this->data['customerbalance'] * -1;
 		else
-			$value = $this->invoice['total'];
+			$value = $this->data['total'];
 		$this->backend->text_autosize(15*$scale+$x,434*$scale+$y,30*$scale, trans('$a dollars $b cents',to_words(floor($value)),to_words(round(($value-floor($value))*100))),950*$scale);
-		$this->backend->text_autosize(15*$scale+$x,372*$scale+$y,30*$scale, $this->invoice['name'],950*$scale);
-		$this->backend->text_autosize(15*$scale+$x,312*$scale+$y,30*$scale, $this->invoice['address']." ".$this->invoice['zip']." ".$this->invoice['city'],950*$scale);
+		$this->backend->text_autosize(15*$scale+$x,372*$scale+$y,30*$scale, $this->data['name'],950*$scale);
+		$this->backend->text_autosize(15*$scale+$x,312*$scale+$y,30*$scale, $this->data['address']." ".$this->data['zip']." ".$this->data['city'],950*$scale);
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false)))
 			$this->backend->text_autosize(15*$scale+$x,250*$scale+$y,30*$scale, trans('Payment for liabilities'),950*$scale);
 		else {
-			$tmp = docnumber($this->invoice['number'], $this->invoice['template'], $this->invoice['cdate']);
+			$tmp = docnumber($this->data['number'], $this->data['template'], $this->data['cdate']);
 			$this->backend->text_autosize(15*$scale+$x,250*$scale+$y,30*$scale, trans('Payment for invoice No. $a',$tmp),950*$scale);
 		}
 	}
@@ -114,38 +114,38 @@ class LMSEzpdfInvoice extends LMSInvoice {
 	protected function invoice_dates($x, $y) {
 		$font_size = 12;
 		$this->backend->text_align_right($x, $y, $font_size, trans('Settlement date:').' ');
-		$y = $y - $this->backend->text_align_left($x, $y, $font_size, date("Y/m/d", $this->invoice['cdate']));
+		$y = $y - $this->backend->text_align_left($x, $y, $font_size, date("Y/m/d", $this->data['cdate']));
 		$this->backend->text_align_right($x, $y, $font_size, trans('Sale date:').' ');
-		$y = $y - $this->backend->text_align_left($x, $y, $font_size, date("Y/m/d", $this->invoice['sdate']));
+		$y = $y - $this->backend->text_align_left($x, $y, $font_size, date("Y/m/d", $this->data['sdate']));
 		$this->backend->text_align_right($x, $y, $font_size, trans('Deadline:').' ');
-		$y = $y - $this->backend->text_align_left($x, $y, $font_size, date("Y/m/d", $this->invoice['pdate']));
+		$y = $y - $this->backend->text_align_left($x, $y, $font_size, date("Y/m/d", $this->data['pdate']));
 		$this->backend->text_align_right($x, $y, $font_size, trans('Payment type:').' ');
-		$y = $y - $this->backend->text_align_left($x, $y, $font_size, $this->invoice['paytypename']);
+		$y = $y - $this->backend->text_align_left($x, $y, $font_size, $this->data['paytypename']);
 		return $y;
 	}
 
 	protected function invoice_buyer($x, $y) {
 		$font_size=10;
 		$y=$y-$this->backend->text_align_left($x,$y,$font_size,'<b>' . trans('Purchaser:') . '</b>');
-		$y=$this->backend->text_wrap($x,$y,350,$font_size, $this->invoice['name'],'left');
-		$y=$y-$this->backend->text_align_left($x,$y,$font_size, $this->invoice['address']);
-		$y=$y-$this->backend->text_align_left($x,$y,$font_size, $this->invoice['zip']." ".$this->invoice['city']);
-		if ($this->invoice['division_countryid'] && $this->invoice['countryid'] && $this->invoice['division_countryid'] != $this->invoice['countryid'])
-			$y=$y-$this->backend->text_align_left($x,$y,$font_size, trans($this->invoice['country']));
-		if ($this->invoice['ten']) 
-			$y=$y-$this->backend->text_align_left($x,$y,$font_size, trans('TEN').' '.$this->invoice['ten']);
-		else if ($this->invoice['ssn']) 
-			$y=$y-$this->backend->text_align_left($x,$y,$font_size, trans('SSN').' '.$this->invoice['ssn']);
-		$y=$y-$this->backend->text_align_left($x,$y,$font_size,'<b>' . trans('Customer No.: $a',sprintf('%04d',$this->invoice['customerid'])) . '</b>');
+		$y=$this->backend->text_wrap($x,$y,350,$font_size, $this->data['name'],'left');
+		$y=$y-$this->backend->text_align_left($x,$y,$font_size, $this->data['address']);
+		$y=$y-$this->backend->text_align_left($x,$y,$font_size, $this->data['zip']." ".$this->data['city']);
+		if ($this->data['division_countryid'] && $this->data['countryid'] && $this->data['division_countryid'] != $this->data['countryid'])
+			$y=$y-$this->backend->text_align_left($x,$y,$font_size, trans($this->data['country']));
+		if ($this->data['ten']) 
+			$y=$y-$this->backend->text_align_left($x,$y,$font_size, trans('TEN').' '.$this->data['ten']);
+		else if ($this->data['ssn']) 
+			$y=$y-$this->backend->text_align_left($x,$y,$font_size, trans('SSN').' '.$this->data['ssn']);
+		$y=$y-$this->backend->text_align_left($x,$y,$font_size,'<b>' . trans('Customer No.: $a',sprintf('%04d',$this->data['customerid'])) . '</b>');
 		return $y;
 	}
 
 	protected function invoice_seller($x, $y) {
 		$font_size = 10;
 		$y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . trans('Seller:') . '</b>');
-		$tmp = $this->invoice['division_header'];
+		$tmp = $this->data['division_header'];
 
-		$account = format_bankaccount(bankaccount($this->invoice['customerid'], $this->invoice['account']));
+		$account = format_bankaccount(bankaccount($this->data['customerid'], $this->data['account']));
 		$tmp = str_replace('%bankaccount', $account, $tmp);
 
 		$tmp = preg_split('/\r?\n/', $tmp);
@@ -157,28 +157,28 @@ class LMSEzpdfInvoice extends LMSInvoice {
 
 	protected function invoice_title($x, $y) {
 		$font_size = 16;
-		$tmp = docnumber($this->invoice['number'], $this->invoice['template'], $this->invoice['cdate']);
-		if (isset($this->invoice['invoice']))
+		$tmp = docnumber($this->data['number'], $this->data['template'], $this->data['cdate']);
+		if (isset($this->data['invoice']))
 			$y=$y - $this->backend->text_align_left($x,$y,$font_size,'<b>' . trans('Credit Note No. $a',$tmp) . '</b>');
 		else
 			$y=$y - $this->backend->text_align_left($x,$y,$font_size,'<b>' . trans('Invoice No. $a',$tmp) . '</b>');
 
-		if(isset($this->invoice['invoice'])) {
+		if(isset($this->data['invoice'])) {
 			$font_size = 12; $y += 8;
-			$tmp = docnumber($this->invoice['invoice']['number'], $this->invoice['invoice']['template'], $this->invoice['invoice']['cdate']);
+			$tmp = docnumber($this->data['invoice']['number'], $this->data['invoice']['template'], $this->data['invoice']['cdate']);
 			$y = $y - $this->backend->text_align_left($x,$y,$font_size,'<b>' . trans('for Invoice No. $a',$tmp) . '</b>');
 			$y -= 5;
 		}
 
 		//$font_size = 16;
-		//$y = $y - $this->backend->text_align_left($x, $y, $font_size, $this->invoice['type']);
+		//$y = $y - $this->backend->text_align_left($x, $y, $font_size, $this->data['type']);
 
-		if ($this->invoice['type'] == trans('DUPLICATE')) {
+		if ($this->data['type'] == trans('DUPLICATE')) {
 			$font_size = 12;
 			$y = $y - $this->backend->text_align_left($x,$y+4,$font_size, trans('Duplicate draw-up date:') . ' ' . date('Y/m/d'));
 		}
 
-		if (isset($this->invoice['invoice']))
+		if (isset($this->data['invoice']))
 			$y += 10;
 		return $y;
 	}
@@ -186,24 +186,24 @@ class LMSEzpdfInvoice extends LMSInvoice {
 	protected function invoice_address_box($x, $y) {
 		$font_size = 12;
 /*
-		$this->invoice_name = $this->invoice['name'];
+		$this->invoice_name = $this->data['name'];
 		if (strlen($this->invoice_name)>25) 
 			$this->invoice_name = preg_replace('/(.{25})/',"$b<i>&gt;</i>\n",$this->invoice_name);
 		$tmp = preg_split('/\r?\n/', $this->invoice_name);
 		foreach ($tmp as $line)
 			$y = $y - $this->backend->text_align_left($x,$y,$font_size,"<b>".$line."</b>");
 */
-		if ($this->invoice['post_name'] || $this->invoice['post_address']) {
-			if ($this->invoice['post_name'])
-				$y = $this->backend->text_wrap($x, $y, 160, $font_size, '<b>' . $this->invoice['post_name'] . '</b>', 'left');
+		if ($this->data['post_name'] || $this->data['post_address']) {
+			if ($this->data['post_name'])
+				$y = $this->backend->text_wrap($x, $y, 160, $font_size, '<b>' . $this->data['post_name'] . '</b>', 'left');
 			else
-				$y = $this->backend->text_wrap($x, $y, 160, $font_size, '<b>' . $this->invoice['name'] . '</b>', 'left');
-			$y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . $this->invoice['post_address'] . '</b>');
-			$y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . $this->invoice['post_zip'] . " " . $this->invoice['post_city'] . '</b>');
+				$y = $this->backend->text_wrap($x, $y, 160, $font_size, '<b>' . $this->data['name'] . '</b>', 'left');
+			$y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . $this->data['post_address'] . '</b>');
+			$y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . $this->data['post_zip'] . " " . $this->data['post_city'] . '</b>');
 		} else {
-			$y = $this->backend->text_wrap($x, $y, 160, $font_size, '<b>' . $this->invoice['name'] . '</b>', 'left');
-			$y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . $this->invoice['address'] . '</b>');
-			$y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . $this->invoice['zip'] . " " . $this->invoice['city'] . '</b>');
+			$y = $this->backend->text_wrap($x, $y, 160, $font_size, '<b>' . $this->data['name'] . '</b>', 'left');
+			$y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . $this->data['address'] . '</b>');
+			$y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . $this->data['zip'] . " " . $this->data['city'] . '</b>');
 		}
 		return $y;
 	}
@@ -264,7 +264,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$t_data[$v++] = '<b>' . trans('Product ID:') . '</b>';
 		$t_data[$v++] = '<b>' . trans('Unit:') . '</b>';
 		$t_data[$v++] = '<b>' . trans('Amount:') . '</b>';
-		if (!empty($this->invoice['pdiscount']) || !empty($this->invoice['vdiscount']))
+		if (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))
 			$t_data[$v++] = '<b>' . trans('Discount:') . '</b>';
 		$t_data[$v++] = '<b>' . trans('Unitary Net Value:') . '</b>';
 		$t_data[$v++] = '<b>' . trans('Net Value:') . '</b>';
@@ -276,21 +276,21 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		for ($i = 1; $i < $v; $i++) $t_width[$i] = $this->backend->getWrapTextWidth($font_size, $t_data[$i]) + 2 * $margin + 2;
 
 		// tutaj jeszcze trzeba będzie sprawdzić jaką szerokość mają pola w tabelce później
-		if ($this->invoice['content'])
-			foreach ($this->invoice['content'] as $item) {
+		if ($this->data['content'])
+			foreach ($this->data['content'] as $item) {
 				$v = 2;
 				$tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['description']);
 				$tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['prodid']);
 				$tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['content']);
 				$tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%.2f', $item['count']));
-				if (!empty($this->invoice['pdiscount']))
+				if (!empty($this->data['pdiscount']))
 					$tt_width[$v] = $this->backend->getTextWidth($font_size, sprintf('%.2f %%', $item['pdiscount']));
-				if (!empty($this->invoice['vdiscount'])) {
+				if (!empty($this->data['vdiscount'])) {
 					$tmp_width = $this->backend->getTextWidth($font_size, moneyf($item['vdiscount']));
 					if ($tmp_width > $tt_width[$v])
 						$tt_width[$v] = $tmp_width;
 				}
-				if (!empty($this->invoice['pdiscount']) || !empty($this->invoice['vdiscount']))
+				if (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))
 					$v++;
 				$tt_width[$v++] = $this->backend->getTextWidth($font_size, moneyf($item['basevalue'])) + 6;
 				$tt_width[$v++] = $this->backend->getTextWidth($font_size, moneyf($item['totalbase'])) + 6;
@@ -302,21 +302,21 @@ class LMSEzpdfInvoice extends LMSInvoice {
 						$t_width[$i] = $tt_width[$i] + 2 * $margin + 2;
 			}
 
-		if (isset($this->invoice['invoice']['content']))
-			foreach ($this->invoice['invoice']['content'] as $item) {
+		if (isset($this->data['invoice']['content']))
+			foreach ($this->data['invoice']['content'] as $item) {
 				$v = 2;
 				$tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['description']);
 				$tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['prodid']);
 				$tt_width[$v++] = $this->backend->getTextWidth($font_size, $item['content']);
 				$tt_width[$v++] = $this->backend->getTextWidth($font_size, sprintf('%.2f', $item['count']));
-				if (!empty($this->invoice['pdiscount']))
+				if (!empty($this->data['pdiscount']))
 					$tt_width[$v] = $this->backend->getTextWidth($font_size, sprintf('%.2f %%', $item['pdiscount']));
-				if (!empty($this->invoice['vdiscount'])) {
+				if (!empty($this->data['vdiscount'])) {
 					$tmp_width = $this->backend->getTextWidth($font_size, moneyf($item['vdiscount']));
 					if ($tmp_width > $tt_width[$v])
 						$tt_width[$v] = $tmp_width;
 				}
-				if (!empty($this->invoice['pdiscount']) || !empty($this->invoice['vdiscount']))
+				if (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))
 					$v++;
 				$tt_width[$v++] = $this->backend->getTextWidth($font_size, moneyf($item['basevalue'])) + 6;
 				$tt_width[$v++] = $this->backend->getTextWidth($font_size, moneyf($item['totalbase'])) + 6;
@@ -329,21 +329,21 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			}
 		// Kolumna 2 będzie miała rozmiar ustalany dynamicznie
 		$t_width[2] = $width - ($t_width[1] + $t_width[3] + $t_width[4] + $t_width[5] + $t_width[6] + $t_width[7]
-			+ $t_width[8] + $t_width[9] + $t_width[10] + (!empty($this->invoice['pdiscount']) || !empty($this->invoice['vdiscount']) ? $t_width[11] : 0)
-			+ 2 * $margin * (!empty($this->invoice['pdiscount']) || !empty($this->invoice['vdiscount']) ? 11 : 10));
+			+ $t_width[8] + $t_width[9] + $t_width[10] + (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']) ? $t_width[11] : 0)
+			+ 2 * $margin * (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']) ? 11 : 10));
 		$y = $this->invoice_data_row($x, $y, $width, $font_size, $margin, $t_data, $t_width, $t_justify);
 		$t_justify[11] = $t_justify[10] = $t_justify[9] = $t_justify[8] = $t_justify[7] = $t_justify[6] = $t_justify[5] = "right";
 		$t_justify[2] = 'left';
 
-		if (isset($this->invoice['invoice'])) {
+		if (isset($this->data['invoice'])) {
 			// we have credit note, so first print corrected invoice data
 			$xx = $x;
 			$y = $y - $this->backend->text_align_left($x, $y - 10, $font_size, '<b>' . trans('Was:') . '</b>');
 			$y -= 6;
 			$this->backend->line($x, $y, $x + $width, $y);
 			$lp = 1;
-			if ($this->invoice['invoice']['content']) 
-				foreach ($this->invoice['invoice']['content'] as $item) {
+			if ($this->data['invoice']['content']) 
+				foreach ($this->data['invoice']['content'] as $item) {
 					$v = 1;
 					$t_data[$v++] = $lp;
 					$t_data[$v++] = $item['description'];
@@ -356,7 +356,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 						$t_data[$v++] = sprintf('%.2f %%', $item['pdiscount']);
 					elseif (!empty($item['vdiscount']))
 						$t_data[$v++] = moneyf($item['vdiscount']);
-					elseif (!empty($this->invoice['pdiscount']) || !empty($this->invoice['vdiscount']))
+					elseif (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))
 						$t_data[$v++] = '';
 					$t_data[$v++] = moneyf($item['basevalue']);
 					$t_data[$v++] = moneyf($item['totalbase']);
@@ -368,29 +368,29 @@ class LMSEzpdfInvoice extends LMSInvoice {
 					$y = $this->invoice_data_row($x, $y, $width, $font_size, $margin, $t_data, $t_width, $t_justify);
 				}
 
-			$x = $x + (!empty($this->invoice['pdiscount']) || !empty($this->invoice['vdiscount']) ? 7 : 6) * 2 * $margin + $t_width[1] + $t_width[2] + $t_width[3]
-				+ $t_width[4] + $t_width[5] + $t_width[6] + (!empty($this->invoice['pdiscount']) || !empty($this->invoice['vdiscount']) ? $t_width[7] : 0);
+			$x = $x + (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']) ? 7 : 6) * 2 * $margin + $t_width[1] + $t_width[2] + $t_width[3]
+				+ $t_width[4] + $t_width[5] + $t_width[6] + (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']) ? $t_width[7] : 0);
 
 			$fy = $y - $margin - $this->backend->GetFontHeight($font_size);
 			$this->backend->text_align_right($x - $margin, $fy, $font_size, '<b>' . trans('Total:') . '</b>');
 
-			$v = (!empty($this->invoice['pdiscount']) || !empty($this->invoice['vdiscount'])) ? 8 : 7;
-			$t_data[$v++] = moneyf($this->invoice['invoice']['totalbase']);
+			$v = (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 8 : 7;
+			$t_data[$v++] = moneyf($this->data['invoice']['totalbase']);
 			$t_data[$v++] = "<b>x</b>";
-			$t_data[$v++] = moneyf($this->invoice['invoice']['totaltax']);
-			$t_data[$v++] = moneyf($this->invoice['invoice']['total']);
+			$t_data[$v++] = moneyf($this->data['invoice']['totaltax']);
+			$t_data[$v++] = moneyf($this->data['invoice']['total']);
 
 			$y = $this->invoice_short_data_row($x, $y, $width, $font_size, $margin, $t_data, $t_width, $t_justify);
 			$y -= 5;
 
 			$fy = $y - $margin - $this->backend->GetFontHeight($font_size);
 			$this->backend->text_align_right($x - $margin, $fy, $font_size, '<b>' . trans('in it:') . '</b>');
-			$v = (!empty($this->invoice['pdiscount']) || !empty($this->invoice['vdiscount'])) ? 8 : 7;
+			$v = (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 8 : 7;
 			$this->backend->line($x, $y, $x + $t_width[$v++] + $t_width[$v++] + $t_width[$v++] + $t_width[$v++] + 8 * $margin, $y);
 
-			if ($this->invoice['invoice']['taxest'])
-				foreach ($this->invoice['invoice']['taxest'] as $item) {
-					$v = (!empty($this->invoice['pdiscount']) || !empty($this->invoice['vdiscount'])) ? 8 : 7;
+			if ($this->data['invoice']['taxest'])
+				foreach ($this->data['invoice']['taxest'] as $item) {
+					$v = (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 8 : 7;
 					$t_data[$v++] = moneyf($item['base']);
 					$t_data[$v++] = $item['taxlabel'];
 					$t_data[$v++] = moneyf($item['tax']);
@@ -399,8 +399,8 @@ class LMSEzpdfInvoice extends LMSInvoice {
 				}
 
 			$x = $xx;
-			if ($this->invoice['reason'] != '') {
-				$y = $y - $this->backend->text_align_left($x, $y - 10, $font_size, '<b>' . trans('Reason:') . ' ' . $this->invoice['reason'] . '</b>');
+			if ($this->data['reason'] != '') {
+				$y = $y - $this->backend->text_align_left($x, $y - 10, $font_size, '<b>' . trans('Reason:') . ' ' . $this->data['reason'] . '</b>');
 				$y -= 10;
 			}
 			$y = $y - $this->backend->text_align_left($x, $y - 10, $font_size, '<b>' . trans('Corrected to:') . '</b>');
@@ -409,8 +409,8 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		}
 
 		$lp = 1;
-		if ($this->invoice['content'])
-			foreach ($this->invoice['content'] as $item) {
+		if ($this->data['content'])
+			foreach ($this->data['content'] as $item) {
 				$v = 1;
 				$t_data[$v++] = $lp;
 				$t_data[$v++] = $item['description'];
@@ -423,7 +423,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 					$t_data[$v++] = sprintf('%.2f %%',$item['pdiscount']);
 				elseif (!empty($item['vdiscount']))
 					$t_data[$v++] = moneyf($item['vdiscount']);
-				elseif (!empty($this->invoice['pdiscount']) || !empty($this->invoice['vdiscount']))
+				elseif (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))
 					$t_data[$v++] = '';
 				$t_data[$v++] = moneyf($item['basevalue']);
 				$t_data[$v++] = moneyf($item['totalbase']);
@@ -437,17 +437,17 @@ class LMSEzpdfInvoice extends LMSInvoice {
 
 		$return[1] = $y;
 
-		$x = $x + (!empty($this->invoice['pdiscount']) || !empty($this->invoice['vdiscount']) ? 7 : 6) * 2 * $margin + $t_width[1] + $t_width[2] + $t_width[3]
-			+ $t_width[4] + $t_width[5] + $t_width[6] + (!empty($this->invoice['pdiscount']) || !empty($this->invoice['vdiscount']) ? $t_width[7] : 0);
+		$x = $x + (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']) ? 7 : 6) * 2 * $margin + $t_width[1] + $t_width[2] + $t_width[3]
+			+ $t_width[4] + $t_width[5] + $t_width[6] + (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']) ? $t_width[7] : 0);
 
 		$fy = $y - $margin - $this->backend->GetFontHeight($font_size);
 		$this->backend->text_align_right($x - $margin, $fy, $font_size, '<b>' . trans('Total:') . '</b>');
 
-		$v = (!empty($this->invoice['pdiscount']) || !empty($this->invoice['vdiscount'])) ? 8 : 7;
-		$t_data[$v++] = moneyf($this->invoice['totalbase']);
+		$v = (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 8 : 7;
+		$t_data[$v++] = moneyf($this->data['totalbase']);
 		$t_data[$v++] = "<b>x</b>";
-		$t_data[$v++] = moneyf($this->invoice['totaltax']);
-		$t_data[$v++] = moneyf($this->invoice['total']);
+		$t_data[$v++] = moneyf($this->data['totaltax']);
+		$t_data[$v++] = moneyf($this->data['total']);
 
 		$y = $this->invoice_short_data_row($x, $y, $width, $font_size, $margin, $t_data, $t_width, $t_justify);
 
@@ -455,12 +455,12 @@ class LMSEzpdfInvoice extends LMSInvoice {
 
 		$fy = $y - $margin - $this->backend->GetFontHeight($font_size);
 		$this->backend->text_align_right($x - $margin, $fy, $font_size, '<b>' . trans('in it:') . '</b>');
-		$v = (!empty($this->invoice['pdiscount']) || !empty($this->invoice['vdiscount'])) ? 8 : 7;
+		$v = (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 8 : 7;
 		$this->backend->line($x, $y, $x + $t_width[$v++] + $t_width[$v++] + $t_width[$v++] + $t_width[$v++] + 8 * $margin, $y);
 
-		if ($this->invoice['taxest'])
-			foreach ($this->invoice['taxest'] as $item) {
-				$v = (!empty($this->invoice['pdiscount']) || !empty($this->invoice['vdiscount'])) ? 8 : 7;
+		if ($this->data['taxest'])
+			foreach ($this->data['taxest'] as $item) {
+				$v = (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 8 : 7;
 				$t_data[$v++] = moneyf($item['base']);
 				$t_data[$v++] = $item['taxlabel'];
 				$t_data[$v++] = moneyf($item['tax']);
@@ -468,18 +468,18 @@ class LMSEzpdfInvoice extends LMSInvoice {
 				$y = $this->invoice_short_data_row($x, $y, $width, $font_size, $margin, $t_data, $t_width, $t_justify);
 			}
 
-		if (isset($this->invoice['invoice'])) {
-			$total = $this->invoice['total'] - $this->invoice['invoice']['total'];
-			$totalbase = $this->invoice['totalbase'] - $this->invoice['invoice']['totalbase'];
-			$totaltax = $this->invoice['totaltax'] - $this->invoice['invoice']['totaltax'];
+		if (isset($this->data['invoice'])) {
+			$total = $this->data['total'] - $this->data['invoice']['total'];
+			$totalbase = $this->data['totalbase'] - $this->data['invoice']['totalbase'];
+			$totaltax = $this->data['totaltax'] - $this->data['invoice']['totaltax'];
 
 			$y = $y - 5;
 			$fy = $y - $margin - $this->backend->GetFontHeight($font_size);
-			$v = (!empty($this->invoice['pdiscount']) || !empty($this->invoice['vdiscount'])) ? 8 : 7;
+			$v = (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 8 : 7;
 			$this->backend->line($x, $y, $x + $t_width[$v++] + $t_width[$v++] + $t_width[$v++] + $t_width[$v++] + 8 * $margin, $y);
 			$this->backend->text_align_right($x - $margin, $fy, $font_size, '<b>' . trans('Difference value:') . '</b>');
 
-			$v = (!empty($this->invoice['pdiscount']) || !empty($this->invoice['vdiscount'])) ? 8 : 7;
+			$v = (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount'])) ? 8 : 7;
 			$t_data[$v++] = ($totalbase > 0 ? '+' : '') . moneyf($totalbase);
 			$t_data[$v++] = "<b>x</b>";
 			$t_data[$v++] = ($totaltax > 0 ? '+' : '') . moneyf($totaltax);
@@ -513,7 +513,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$cols['prodid'] = '<b>' . trans('Product ID:') . '</b>';
 		$cols['content'] = '<b>' . trans('Unit:') . '</b>';
 		$cols['count'] = '<b>' . trans('Amount:') . '</b>';
-		if (!empty($this->invoice['pdiscount']) || !empty($this->invoice['vdiscount']))
+		if (!empty($this->data['pdiscount']) || !empty($this->data['vdiscount']))
 			$cols['discount'] = '<b>' . trans('Discount:') . '</b>';
 		$cols['basevalue'] = '<b>' . trans('Unitary Net Value:') . '</b>';
 		$cols['totalbase'] = '<b>' . trans('Net Value:') . '</b>';
@@ -529,15 +529,15 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		}
 
 		// tutaj jeszcze trzeba będzie sprawdzić jaką szerokość mają pola w tabelce później
-		if ($this->invoice['content'])
-			foreach ($this->invoice['content'] as $item) {
+		if ($this->data['content'])
+			foreach ($this->data['content'] as $item) {
 				$tt_width['name'] = $this->backend->getTextWidth($font_size, $item['description']);
 				$tt_width['prodid'] = $this->backend->getTextWidth($font_size, $item['prodid']);
 				$tt_width['content'] = $this->backend->getTextWidth($font_size, $item['content']);
 				$tt_width['count'] = $this->backend->getTextWidth($font_size, sprintf('%.2f',$item['count']));
-				if (!empty($this->invoice['pdiscount']))
+				if (!empty($this->data['pdiscount']))
 					$tt_width['discount'] = $this->backend->getTextWidth($font_size, sprintf('%.2f %%', $item['pdiscount']));
-				if (!empty($this->invoice['vdiscount'])) {
+				if (!empty($this->data['vdiscount'])) {
 					$tmp_width = $this->backend->getTextWidth($font_size, moneyf($item['vdiscount']));
 					if ($tmp_width > $tt_width['discount'])
 						$tt_width['discount'] = $tmp_width;
@@ -553,15 +553,15 @@ class LMSEzpdfInvoice extends LMSInvoice {
 						$params['cols'][$name]['width'] = $w + 2 * $margin + 2;
 			}
 
-		if (isset($this->invoice['invoice']['content']))
-			foreach ($this->invoice['invoice']['content'] as $item) {
+		if (isset($this->data['invoice']['content']))
+			foreach ($this->data['invoice']['content'] as $item) {
 				$tt_width['name'] = $this->backend->getTextWidth($font_size, $item['description']);
 				$tt_width['prodid'] = $this->backend->getTextWidth($font_size, $item['prodid']);
 				$tt_width['content'] = $this->backend->getTextWidth($font_size, $item['content']);
 				$tt_width['count'] = $this->backend->getTextWidth($font_size, sprintf('%.2f', $item['count']));
-				if (!empty($this->invoice['pdiscount']))
+				if (!empty($this->data['pdiscount']))
 					$tt_width['discount'] = $this->backend->getTextWidth($font_size, sprintf('%.2f %%', $item['pdiscount']));
-				if (!empty($this->invoice['vdiscount'])) {
+				if (!empty($this->data['vdiscount'])) {
 					$tmp_width = $this->backend->getTextWidth($font_size, moneyf($item['vdiscount']));
 					if ($tmp_width > $tt_width['discount'])
 					$tt_width['discount'] = $tmp_width;
@@ -617,7 +617,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			'cols' => $cols2,
 		);
 
-		if (isset($this->invoice['invoice'])) {
+		if (isset($this->data['invoice'])) {
 			// we have credit note, so first print corrected invoice data
 
 			$y -= 20;
@@ -625,8 +625,8 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			$y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . trans('Was:') . '</b>');
 
 			$i = 0;
-			if ($this->invoice['invoice']['content']) 
-				foreach ($this->invoice['invoice']['content'] as $item) {
+			if ($this->data['invoice']['content']) 
+				foreach ($this->data['invoice']['content'] as $item) {
 				$data[$i]['no'] = $i + 1;
 				$data[$i]['name'] = $item['description'];
 				$data[$i]['prodid'] = $item['prodid'];
@@ -654,10 +654,10 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			$y -= 10;
 			$this->backend->check_page_length($y);
 
-			$data2[0]['totalbase'] = moneyf($this->invoice['invoice']['totalbase']);
+			$data2[0]['totalbase'] = moneyf($this->data['invoice']['totalbase']);
 			$data2[0]['taxlabel'] = "<b>x</b>";
-			$data2[0]['totaltax'] = moneyf($this->invoice['invoice']['totaltax']);
-			$data2[0]['total'] = moneyf($this->invoice['invoice']['total']);
+			$data2[0]['totaltax'] = moneyf($this->data['invoice']['totaltax']);
+			$data2[0]['total'] = moneyf($this->data['invoice']['total']);
 
 			$this->backend->ezSetY($y);
 			$y = $this->backend->ezTable($data2, NULL, '', $params2);
@@ -670,9 +670,9 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			$fy = $y - $margin - $this->backend->GetFontHeight($font_size);
 			$this->backend->text_align_right($xx - 5,$fy, $font_size,'<b>' . trans('in it:') . '</b>');
 
-			if ($this->invoice['invoice']['taxest']) {
+			if ($this->data['invoice']['taxest']) {
 				$i = 0;
-				foreach ($this->invoice['invoice']['taxest'] as $item) {
+				foreach ($this->data['invoice']['taxest'] as $item) {
 					$data2[$i]['totalbase'] = moneyf($item['base']);
 					$data2[$i]['taxlabel'] = $item['taxlabel'];
 					$data2[$i]['totaltax'] = moneyf($item['tax']);
@@ -686,9 +686,9 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			}
 
 			$y -= 20;
-			if ($this->invoice['reason'] != '') {
+			if ($this->data['reason'] != '') {
 				$this->backend->check_page_length($y);
-				$y = $this->backend->text_wrap($x, $y, $width, $font_size, '<b>' . trans('Reason:') . ' ' . $this->invoice['reason'] . '</b>', 'left');
+				$y = $this->backend->text_wrap($x, $y, $width, $font_size, '<b>' . trans('Reason:') . ' ' . $this->data['reason'] . '</b>', 'left');
 				$y -= 10;
 			}
 			$this->backend->check_page_length($y);
@@ -697,8 +697,8 @@ class LMSEzpdfInvoice extends LMSInvoice {
 
 		// pozycje faktury
 		$i = 0;
-		if (isset($this->invoice['content']))
-			foreach ($this->invoice['content'] as $item) {
+		if (isset($this->data['content']))
+			foreach ($this->data['content'] as $item) {
 				$data[$i]['no'] = $i + 1;
 				$data[$i]['name'] = $item['description'];
 				$data[$i]['prodid'] = $item['prodid'];
@@ -727,10 +727,10 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$this->backend->check_page_length($y);
 
 		// podsumowanie podatku
-		$data2[0]['totalbase'] = moneyf($this->invoice['totalbase']);
+		$data2[0]['totalbase'] = moneyf($this->data['totalbase']);
 		$data2[0]['taxlabel'] = "<b>x</b>";
-		$data2[0]['totaltax'] = moneyf($this->invoice['totaltax']);
-		$data2[0]['total'] = moneyf($this->invoice['total']);
+		$data2[0]['totaltax'] = moneyf($this->data['totaltax']);
+		$data2[0]['total'] = moneyf($this->data['total']);
 
 		$this->backend->ezSetY($y);
 		$y = $this->backend->ezTable($data2, NULL, '', $params2);
@@ -745,9 +745,9 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$fy = $y - $margin - $this->backend->GetFontHeight($font_size);
 		$this->backend->text_align_right($xx - 5, $fy, $font_size, '<b>' . trans('in it:') . '</b>');
 
-		if (isset($this->invoice['taxest'])) {
+		if (isset($this->data['taxest'])) {
 			$i = 0;
-			foreach ($this->invoice['taxest'] as $item) {
+			foreach ($this->data['taxest'] as $item) {
 				$data2[$i]['totalbase'] = moneyf($item['base']);
 				$data2[$i]['taxlabel'] = $item['taxlabel'];
 				$data2[$i]['totaltax'] = moneyf($item['tax']);
@@ -760,10 +760,10 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			$data2 = array();
 		}
 
-		if (isset($this->invoice['invoice'])) {
-			$total = $this->invoice['total'] - $this->invoice['invoice']['total'];
-			$totalbase = $this->invoice['totalbase'] - $this->invoice['invoice']['totalbase'];
-			$totaltax = $this->invoice['totaltax'] - $this->invoice['invoice']['totaltax'];
+		if (isset($this->data['invoice'])) {
+			$total = $this->data['total'] - $this->data['invoice']['total'];
+			$totalbase = $this->data['totalbase'] - $this->data['invoice']['totalbase'];
+			$totaltax = $this->data['totaltax'] - $this->data['invoice']['totaltax'];
 
 			$y -= 10;
 			$fy = $y - $margin - $this->backend->GetFontHeight($font_size);
@@ -785,16 +785,16 @@ class LMSEzpdfInvoice extends LMSInvoice {
 	}
 
 	protected function invoice_to_pay($x, $y) {
-		if (isset($this->invoice['rebate']))
-			$y = $y - $this->backend->text_align_left($x,$y,14, trans('To repay:') . ' ' . moneyf($this->invoice['value']));
+		if (isset($this->data['rebate']))
+			$y = $y - $this->backend->text_align_left($x,$y,14, trans('To repay:') . ' ' . moneyf($this->data['value']));
 		else
-			$y = $y - $this->backend->text_align_left($x,$y,14, trans('To pay:') . ' ' . moneyf($this->invoice['value']));
-		$y = $y - $this->backend->text_align_left($x,$y,10, trans('In words:') . ' ' . trans('$a dollars $b cents', to_words(floor($this->invoice['value'])), to_words(round(($this->invoice['value']-floor($this->invoice['value']))*100))));
+			$y = $y - $this->backend->text_align_left($x,$y,14, trans('To pay:') . ' ' . moneyf($this->data['value']));
+		$y = $y - $this->backend->text_align_left($x,$y,10, trans('In words:') . ' ' . trans('$a dollars $b cents', to_words(floor($this->data['value'])), to_words(round(($this->data['value']-floor($this->data['value']))*100))));
 		return $y;
 	}
 
 	protected function invoice_expositor($x, $y) {
-		$expositor = $this->invoice['division_author'];
+		$expositor = $this->data['division_author'];
 
 		if ($expositor)
 			$y = $y - $this->backend->text_align_left($x,$y,10, trans('Expositor:') . ' ' . $expositor);
@@ -803,12 +803,12 @@ class LMSEzpdfInvoice extends LMSInvoice {
 	}
 
 	protected function invoice_footnote($x, $y, $width, $font_size) {
-		if (!empty($this->invoice['division_footer'])) {
+		if (!empty($this->data['division_footer'])) {
 			$y = $y - $this->backend->getFontHeight($font_size);
 			//$y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . trans('Notes:') . '</b>');
-			$tmp = $this->invoice['division_footer'];
+			$tmp = $this->data['division_footer'];
 
-			$account = format_bankaccount(bankaccount($this->invoice['customerid'], $this->invoice['account']));
+			$account = format_bankaccount(bankaccount($this->data['customerid'], $this->data['account']));
 			$tmp = str_replace('%bankaccount', $account, $tmp);
 
 			$tmp = preg_split('/\r?\n/', $tmp);
@@ -856,7 +856,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$this->invoice_expositor(30, $return[1]);
 		$this->invoice_to_pay(30, $top);
 		$this->backend->check_page_length($top, 200);
-		if ($this->invoice['customerbalance'] < 0 || ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.always_show_form', true))) {
+		if ($this->data['customerbalance'] < 0 || ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.always_show_form', true))) {
 			$this->invoice_main_form_fill(187, 3, 0.4);
 			$this->invoice_simple_form_fill(14, 3, 0.4);
 		}

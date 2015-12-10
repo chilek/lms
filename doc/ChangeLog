@@ -47,6 +47,7 @@ version ?.??.?? (????-??-??):
     is only supported symbol for now) [chilan]
   - complete rewrite of invoice generation code - common path code for pdf and html invoices [chilan]
   - lms-sendinvoices.php stopped pretending www browser - it uses new pdf generation code path [chilan]
+  - complete rewrite of receipt generation code - common path code for pdf and html receipts [chilan]
 
 version 1.11.18 (2015-10-01):
 
