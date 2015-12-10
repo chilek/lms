@@ -9468,8 +9468,13 @@ class TCPDF {
 		}
 		// restore previous isunicode value
 		$this->isunicode = $prev_isunicode;
-		// default producer
-		$out .= ' /Producer '.$this->_textstring(TCPDF_STATIC::getTCPDFProducer(), $oid);
+		if (!TCPDF_STATIC::empty_string($this->producer)) {
+			// The producer of the document
+			$out .= ' /Producer '.$this->_textstring($this->producer.' - '.TCPDF_STATIC::getTCPDFProducer(), $oid);
+		} else {
+			// default producer
+			$out .= ' /Producer '.$this->_textstring(TCPDF_STATIC::getTCPDFProducer(), $oid);
+		}
 		// The date and time the document was created, in human-readable form
 		$out .= ' /CreationDate '.$this->_datestring(0, $this->doc_creation_timestamp);
 		// The date and time the document was most recently modified, in human-readable form
