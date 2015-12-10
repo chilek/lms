@@ -2698,7 +2698,7 @@ $_LANG['Property Value:'] = 'Wartość właściwości:';
 $_LANG['More'] = 'Więcej';
 $_LANG['transaction logs'] = 'dzienniki transakcji';
 
-$_LANG['user<!syslog>'] = 'użytkownik';
+$_LANG['user<!syslog>>'] = 'użytkownik';
 $_LANG['assignment<!syslog>'] = 'zobowiązanie';
 $_LANG['liability<!syslog>'] = 'zobowiązanie beztaryfowe';
 $_LANG['node assignment<!syslog>'] = 'powiązanie zobowiązania z komputerem';
@@ -3062,5 +3062,8 @@ $_LANG['send copy to sender'] = 'wyślij kopię do nadawcy';
 $_LANG['Assign network to customer'] = 'Przypisz sieć do klienta';
 
 $_LANG['Automatically adjusts the size of the selection list to the number of users when set to 0.'] = 'Automatyczne dopasowanie wielokości listy wyboru do ilości użytkowników jeśli ustawione na 0.';
+
+$_LANG['Are you sure, you want to cancel invoice \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz anulować fakturę \\\'$a\\\' z bazy danych?';
+$_LANG['Are you sure, you want to recover cancelled invoice \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz przywrócić anulowaną fakturę \\\'$a\\\' z bazy danych?';
 
 ?>
