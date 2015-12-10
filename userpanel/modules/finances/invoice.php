@@ -73,7 +73,7 @@ if(!empty($_POST['inv']))
 			$invoice['last'] = TRUE;
 		$invoice['type'] = $type;
 
-		$document->DrawInvoice($invoice);
+		$document->Draw($invoice);
 		if (!isset($invoice['last']))
 			$document->NewPage();
 	}
@@ -93,7 +93,7 @@ if(!empty($_POST['inv']))
 	else
 		$layout['pagetitle'] = trans('Credit Note No. $a', $docnumber);
 
-	$document->DrawInvoice($invoice);
+	$document->Draw($invoice);
 }
 
 if (!is_null($attachment_name) && isset($docnumber)) {
