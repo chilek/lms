@@ -49,6 +49,7 @@ version ?.??.?? (????-??-??):
   - lms-sendinvoices.php stopped pretending www browser - it uses new pdf generation code path [chilan]
   - complete rewrite of receipt generation code - common path code for pdf and html receipts [chilan]
   - complete rewrite of note generation code [chilan]
+  - complete rewrite of two transfer form types - killed old pdf backend code [chilan]
 
 version 1.11.18 (2015-10-01):
 
