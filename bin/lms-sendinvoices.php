@@ -286,14 +286,13 @@ if (!empty($docs)) {
 	}
 	foreach ($docs as $doc) {
 		if ($filetype == 'pdf')
-			$document = new $classname('A4', 'portrait', trans('Invoices'));
+			$document = new $classname(trans('Invoices'));
 		else
 			$document = new LMSHtmlInvoice($SMARTY);
 
 		$invoice = $LMS->GetInvoiceContent($doc['id']);
 		$invoice['type'] = trans('ORIGINAL');
-		$document->SetInvoice($invoice);
-		$document->invoice_body();
+		$document->Draw($invoice);
 		$res = $document->WriteToString();
 
 		$custemail = (!empty($debug_email) ? $debug_email : $doc['email']);
