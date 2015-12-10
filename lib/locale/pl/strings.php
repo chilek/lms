@@ -3066,6 +3066,4 @@ $_LANG['Automatically adjusts the size of the selection list to the number of us
 $_LANG['Are you sure, you want to cancel invoice \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz anulować fakturę \\\'$a\\\' z bazy danych?';
 $_LANG['Are you sure, you want to recover cancelled invoice \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz przywrócić anulowaną fakturę \\\'$a\\\' z bazy danych?';
 
-$_LANG['cancel<!syslog>'] = 'anulowanie';
-
 ?>
