@@ -25,9 +25,7 @@
  */
 
 function invoice_body($document, $invoice) {
-	$document->SetInvoice($invoice);
-	$document->invoice_body();
-
+	$document->DrawInvoice($invoice);
 	if (!isset($invoice['last']))
 		$document->NewPage();
 }

@@ -50,7 +50,8 @@ class LMSHtmlInvoice extends LMSInvoice {
 		$this->invoice_body_standard();
 	}
 
-	public function invoice_body() {
+	public function DrawInvoice($invoice) {
+		$this->invoice = $invoice;
 		$this->invoice_body_standard();
 	}
 

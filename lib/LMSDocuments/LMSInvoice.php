@@ -33,15 +33,12 @@ abstract class LMSInvoice {
 		$this->backend = new $backendclass($pagesize, $orientation, $title);
 	}
 
-	public function SetInvoice($invoice) {
-		$this->invoice = $invoice;
-	}
-
 	abstract function invoice_body_standard();
 
 	abstract function invoice_body_ft0100();
 
-	public function invoice_body() {
+	public function DrawInvoice($invoice) {
+		$this->invoice = $invoice;
 		if (isset($this->invoice['invoice']))
 			$template = ConfigHelper::getConfig('invoices.cnote_template_file');
 		else
