@@ -66,7 +66,7 @@ class LMSTcpdfBackend extends LMSTCPDF {
 		header('Pragma: private');
 		header('Cache-control: private, must-revalidate');
 		if (!is_null($filename))
-			$this->Output($filename, 'D');
+			$this->Output($filename);
 		else
 			$this->Output();
 	}
