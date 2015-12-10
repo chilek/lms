@@ -35,7 +35,7 @@ class LMSEzpdfReceipt extends LMSDocument {
 		$font_size = 12;
 		$yy = $y;
 		$xmax = $x + 420;
-		$pdf->line($x, $y, $xmax, $y);
+		$this->backend->line($x, $y, $xmax, $y);
 		$y -= $font_size;
 
 //		$this->backend->text_align_left($x + 2,$y + 2,$font_size - 4, trans('Stamp:'));
@@ -71,7 +71,7 @@ class LMSEzpdfReceipt extends LMSDocument {
 		$font_size=12;
 		$yy = $y;
 		$xmax = $x + 420;
-		$pdf->line($x, $y, $xmax, $y);
+		$this->backend->line($x, $y, $xmax, $y);
 		$y -= $font_size;
 
 		if ($this->data['type'] == 'out') {
