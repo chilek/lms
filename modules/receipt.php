@@ -135,7 +135,7 @@ if (!is_null($attachment_name) && isset($docnumber)) {
 	$attachment_name = str_replace('%number', $docnumber, $attachment_name);
 	$attachment_name = preg_replace('/[^[:alnum:]_\.]/i', '_', $attachment_name);
 } else
-	$attachment_name = 'receipts.pdf';
+	$attachment_name = 'receipts.' . ($receipt_type == 'pdf' ? 'pdf' : 'html');
 
 $document->WriteToBrowser($attachment_name);
 
