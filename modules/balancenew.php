@@ -49,7 +49,7 @@ $SMARTY->assign('time', $SESSION->get('addbt'));
 $SMARTY->assign('value', $SESSION->get('addbv'));
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
 $SMARTY->assign('customers',$LMS->GetCustomerNames());
-$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));
+$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources WHERE deleted = 0 ORDER BY name'));
 $SMARTY->display('balance/balancenew.html');
 
 ?>
