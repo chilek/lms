@@ -1,0 +1,39 @@
+{box title="Request history"}
+<table class="table table-bordered">
+    <tr class="bg-primary">
+        <th>{trans("Number:")}</th>
+        <th>{trans("Date:")}</th>
+        <th>{trans("Subject:")}</th>
+        <th>{trans("Last modified:")}</th>
+        <th>{trans("Status:")}</th>
+    </tr>
+    {section name=helpdesklist loop=$helpdesklist start=$limit}
+    <tr {userpaneltip text="Click icon on the left to see request details"}>
+        <td>
+            {if $helpdesklist[helpdesklist].state == $smarty.const.RT_RESOLVED}
+            <a class="btn btn-secondary" href="?m=helpdesk&amp;op=view&amp;id={$helpdesklist[helpdesklist].id}">{$helpdesklist[helpdesklist].id|string_format:"%06d"}</a>
+            {elseif $helpdesklist[helpdesklist].state == $smarty.const.RT_NEW}
+            <a class="btn btn-primary" href="?m=helpdesk&amp;op=view&amp;id={$helpdesklist[helpdesklist].id}">{$helpdesklist[helpdesklist].id|string_format:"%06d"}</a>
+            {/if}
+        </td>
+        <td>{$helpdesklist[helpdesklist].createtime|date_format:"%Y/%m/%d %H:%M"}</td>
+        <td><b>{$helpdesklist[helpdesklist].subject|escape}</b></td>
+        <td>{$helpdesklist[helpdesklist].lastmod|date_format:"%Y/%m/%d %H:%M"}</td>
+        <td><b>
+                {if $helpdesklist[helpdesklist].state == 0}{trans("new")}
+                {elseif $helpdesklist[helpdesklist].state == 1}{trans("open")}
+                {elseif $helpdesklist[helpdesklist].state == 2}{trans("resolved")}
+                {else}{trans("dead")}
+                {/if}</b>
+        </td>
+        {sectionelse}
+    <tr>
+        <td colspan="5">
+            <p>&nbsp;</p>
+            <p><b>{trans("No such requests in database.")}</b></p>
+            <p>&nbsp;</p>
+        </td>
+    </tr>
+    {/section}
+</table>
+{/box}

@@ -1,0 +1,156 @@
+{box title="Informations about you"}
+{if $error.ssn}<div class="alert alert-error">{trans("Incorrect Social Security Number!")}{/if}
+{if $error.ten}<div class="alert alert-error">{trans("Incorrect Tax Exempt Number!")}{/if}
+{if $error}{/if}
+
+<form class="form-inline" name="useredit" method="post" action="?m=info&f=updateusersave">
+    <table class="table table-bordered table-hover table-responsive">
+        {if $rights.info.edit_addr || $rights.info.edit_addr_ack}
+        <tr>
+            <td>Nazwisko:</td>
+            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[lastname]" VALUE="{$userinfo.lastname}" {userpaneltip text="Enter lastname"}></td>
+        </tr>
+        <tr>
+            <td>Imię:</td>        
+            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[name]" VALUE="{$userinfo.name}" {userpaneltip text="Enter first name"}></td>
+        </tr>            
+        {else}
+        <tr>
+            <td>Nazwisko:</td>
+            <td>{$userinfo.customername} ({$userinfo.id|string_format:"%04d"})</td>
+        </tr>    
+        {/if}
+        {if $rights.info.edit_contact || $rights.info.edit_contact_ack}
+        {foreach $userinfo.emails as $email}
+        <tr>
+            <td>E-mail:</td>
+            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[email][{$email.id}]" VALUE="{$email.email}" {userpaneltip text="Enter e-mail address"}></td>
+        </tr>    
+        {foreachelse}
+        <tr>
+            <td>E-mail:</td>
+            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[email][0]" VALUE="{$userinfo.email}" {userpaneltip text="Enter e-mail address"}></td>
+        </tr>    
+        {/foreach}
+        {else}
+        <tr>
+            <td>E-mail:</td>
+            <td>
+                {foreach $userinfo.emails as $email}
+                {$email.email}{if !$email@last}<BR />{/if}
+                {/foreach}
+            </td>
+        </tr>      
+        {/if}
+        {if $rights.info.edit_addr || $rights.info.edit_addr_ack}
+        <tr>
+            <td>Ulica:</td>
+            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[address]" VALUE="{$userinfo.address}" {userpaneltip text="Enter address"}></td>
+        </tr> 
+        <tr>
+            <td>Kod pocztowy:</td>
+            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" {userpaneltip text="Enter zip code"}></td>
+        </tr> 
+        <tr>
+            <td>Miejscowość:</td>
+            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[city]" VALUE="{$userinfo.city}" {userpaneltip text="Enter city name"}></td>
+        </tr> 
+        {else}
+        <tr>
+            <td colspan="2">{$userinfo.address}, {$userinfo.zip} {$userinfo.city}</td>
+        </tr>
+        {/if}
+
+        {if $rights.info.edit_contact || $rights.info.edit_contact_ack}
+        {foreach from=$userinfo.contacts item=item}
+        <tr>
+            <td>Telefon:</td>
+            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[phone][{$item.id}]" VALUE="{$item.phone}" {userpaneltip text="Enter phone number"}></td>
+        </tr>     
+        {foreachelse}
+        <tr>
+            <td>Telefon:</td>
+            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[phone][0]" VALUE="{$userinfo.phone}" {userpaneltip text="Enter phone number"}></td>
+        </tr>     
+        {/foreach}
+        {else}
+        {foreach from=$userinfo.contacts item=item}
+        {if $item.phone}{$item.phone}<br />{/if}
+        {/foreach}
+        {/if}
+        {if $rights.info.edit_contact || $rights.info.edit_contact_ack || $userinfo.im}
+        {if $rights.info.edit_contact || $rights.info.edit_contact_ack}
+        <tr>
+            <td>GG:</td>
+            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[im]" VALUE="{if $userinfo.im}{$userinfo.im}{/if}" {userpaneltip text="Enter IM number"}></td>
+        </tr>    
+        {else}
+        <tr>
+            <td colspan="2">
+                {$userinfo.im}
+            </td>
+        </tr>
+        {/if}
+        {/if}
+        {if ($rights.info.edit_contact || $rights.info.edit_contact_ack) && isset($userinfo.yahoo)}
+        {if $rights.info.edit_contact || $rights.info.edit_contact_ack}
+        <tr>
+            <td>Yahoo:</td>
+            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[yahoo]" VALUE="{$userinfo.yahoo}"  {userpaneltip text="Enter Yahoo identifier"}></td>
+        </tr>           
+        {else}
+        <tr>
+            <td colspan="2">
+                {$userinfo.yahoo}
+            </td>
+        </tr>
+        {/if}
+        {/if}
+        {if ($rights.info.edit_contact || $rights.info.edit_contact_ack) && isset($userinfo.skype)}
+        {if $rights.info.edit_contact || $rights.info.edit_contact_ack}
+        <tr>
+            <td>Skype:</td>
+            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[skype]" VALUE="{$userinfo.skype}"  {userpaneltip text="Enter Skype identifier"}></td>
+        </tr>          
+        {else}
+        <tr>
+            <td colspan="2">
+                {$userinfo.skype}
+            </td>
+        </tr>        
+        {/if}
+        {/if}
+        {if $rights.info.edit_addr || $rights.info.edit_addr_ack}
+        <tr>
+            <td>{trans("TEN")}:</td>
+            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[ten]" VALUE="{$userinfo.ten}" {userpaneltip text="Enter tax exempt number"}></td>
+        </tr> 
+        {else}
+        <tr>
+            <td colspan="2">
+                {$userinfo.ten}
+            </td>
+        </tr>      
+        {/if}
+        {if $rights.info.edit_addr || $rights.info.edit_addr_ack}
+        <tr>
+            <td>{trans("SSN")}:</td>
+            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[ssn]" VALUE="{$userinfo.ssn}"  {userpaneltip text="Enter social security number"}></td>
+        </tr> 
+        {else}
+        <tr>
+            <td colspan="2">
+                {$userinfo.ssn}
+            </td>
+        </tr>      
+        {/if}
+        {if $rights.info.edit_addr || $rights.info.edit_addr_ack || $rights.info.edit_contact || $rights.info.edit_contact_ack}
+        <tr>
+            <td colspan="2">
+                <a class="btn btn-primary" href="javascript:document.useredit.submit()" accesskey="A">{trans("Save")}</a>
+            </td>
+        </tr>
+        {/if}
+    </table>
+</form>
+{/box}

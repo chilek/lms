@@ -1,0 +1,17 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<h1>{$layout.pagetitle}</h1>
+<TABLE WIDTH="100%" CELLPADDING="3">
+    <TR CLASS="dark"><TD CLASS="fall"><B>{trans("Module Configuration:")}</B></TD></TR>
+    <TR CLASS="light"><TD CLASS="fall">
+	<FORM NAME="moduleconfig" METHOD="POST" ACTION="?m=userpanel&module=stats&f=submit_setup">
+	    <INPUT CLASS="box light" TYPE="checkbox" NAME="owner_stats" ID="owner_stats" VALUE="1" {if $owner_stats == 1}CHECKED{/if}>
+		<label for="owner_stats">{trans("Display stats for customer nodes only")}</label><br>
+	<p align="right">
+	    <A HREF="?m=userpanel">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
+	    <A HREF="javascript:document.moduleconfig.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
+	</p>
+	</FORM>
+    </TD></TR>
+</TABLE>
+{include file="footer.html"}

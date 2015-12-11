@@ -1,0 +1,20 @@
+<div class="row">
+    <div class="col-md-12">
+	<br/><h1>Alfa-System <small class="text-muted">Wirtualne Biuro Obsługi Klienta</small></h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+
+<nav class="navbar navbar-dark bg-inverse">
+  <div class="nav navbar-nav">
+        {foreach from=$modules item=menuitem}
+		<a class="nav-item nav-link {if strpos($smarty.get.m, $menuitem.module) !== false && strlen($smarty.get.m)==strlen($menuitem.module) }active{/if}" href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip}>
+		    {$smarty.get.page} {$menuitem.name|replace:" ":"&nbsp;"}
+		</a>
+        {/foreach}
+</div>
+        </nav>       
+</div>
+</div>
+<hr/>
