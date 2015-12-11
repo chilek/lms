@@ -1,0 +1,49 @@
+{include file="header.html"}
+{box title=$title}
+<table class="table table-bordered">
+    {foreach from=$ticket.messages item=message}
+    <tr>
+        <td>
+            <b>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</b>
+        </td>
+        <td>
+            <b>{trans("From:")}<br/>{trans("Subject:")}</b>
+        </td>
+        <td>
+            {if $message.customerid}
+            {$message.customername}
+            {elseif $message.userid}
+            {$message.username}
+            {elseif $message.mailfrom}
+            {$message.mailfrom|escape}
+            {else}
+            {$ticket.requestor|escape}
+            {if $ticket.requestoremail}
+            &lt;{$ticket.requestoremail|escape}&gt;
+            {/if}
+            {/if}
+            <br />
+            {$message.subject|escape}
+        </td>
+        <td>
+            {if $message.attachments}
+            {foreach $message.attachments as $attachment}
+            {if !$attachment@first}<br>{/if}{$attachment.filename} {img src="attach.gif" alt=""}
+            {/foreach}
+            {/if}
+        </td>
+        <td>
+            {if $ticket.state != $smarty.const.RT_RESOLVED || ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets')}
+            <a class="btn btn-primary" href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}">{trans("Reply")}</a>
+            {else}&nbsp;{/if}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="5">
+            {$message.body|escape|replace:"\n":"<br/>"}
+        </td>
+    </tr>
+    {/foreach}
+</table>
+{/box}
+{include file="footer.html"}

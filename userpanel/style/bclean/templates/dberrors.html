@@ -1,0 +1,10 @@
+{box title="Database errors occurred!"}
+<div class="alert alert-error">
+    <ul>
+        {foreach from=$layout.dberrors item=dberror}
+        <li><b>{trans("Query:")}</b> {$dberror.query}</li>
+        <li><b>{trans("Error:")}</b> {$dberror.error}</li>
+        {/foreach}
+    </ul>
+</div>
+{/box}

@@ -1,0 +1,24 @@
+{include file="header.html"}
+{box title="Loaded modules"}
+<table class="table table-bordered">
+    <tr>
+        <th>{trans("Module")}</th>
+        <th>{trans("Display name")}</th>
+        <th>{trans("Prio")}</th>
+        <th>{trans("Tip")}</th>
+        <th>{trans("Description")}</th>
+    </tr>
+    {foreach from=$modules item=module}
+    <tr>
+        <td>{$module.module}</td>
+        <td>{$module.name}</td>
+        <td>{$module.prio}</td>
+        <td>{t}{$module.tip}{/t}</td>
+        <td>{t}{$module.description}{/t}</td>
+    </tr>
+    {/foreach}
+</table>
+{/box}
+{include file="footer.html"}
+
+

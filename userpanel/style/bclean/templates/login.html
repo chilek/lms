@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>{trans('Virtual Customer Service')}</title>
+        <link rel="stylesheet" href="style/bclean/vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
+	<!-- <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css" integrity="sha384-XXXXXXXX" crossorigin="anonymous"> -->
+        <style>
+            .form-signin {
+                max-width: 400px;
+                padding: 15px;
+                margin: 0 auto;
+            }
+            .form-signin .form-signin-heading,
+            .form-signin .checkbox {
+                margin-bottom: 10px;
+            }
+            .form-signin .checkbox {
+                font-weight: normal;
+            }
+            .form-signin .form-control {
+                position: relative;
+                height: auto;
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+                padding: 10px;
+                font-size: 16px;
+            }
+            .form-signin .form-control:focus {
+                z-index: 2;
+            }
+            .form-signin input[type="email"] {
+                margin-bottom: -1px;
+                border-bottom-right-radius: 0;
+                border-bottom-left-radius: 0;
+            }
+            .form-signin input[type="password"] {
+                margin-bottom: 10px;
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+            }
+            .center-block {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="form-signin text-center">
+                        Alfa-System<br/>
+                        <small class="text-muted">{trans('Virtual Customer Service')}</small>
+                    </h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <form id="login" class="form-signin" method="post" action="{$target}">
+                        {if $error}<div class="alert alert-danger">{$error}</div>{/if}
+                        <fieldset class="form-group">
+                            <label for="inputLogin">{$_USERPANEL_ID_TYPES[ConfigHelper::getConfig('userpanel.auth_type', 1)].label}</label>
+                            <input type="text" name="loginform[login]" id="inputLogin" class="form-control" required autofocus>
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <label for="inputPassword">{trans('PIN:')}</label>
+                            <input type="password" name="loginform[pwd]" id="inputPassword" class="form-control" required>
+                        </fieldset>
+                        <button class="btn btn-lg btn-primary btn-block" name="loginform[submit]" type="submit">{trans('Login')}</button>
+                        <a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
+                    </form>
+                    <form id="remind" class="form-signin" method="post" action="{$target}" style="display:none;">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a id="remindMail" class="nav-link active" onclick="javascript:show_email_phone('email');">{trans('E-mail')}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="remindPhone" class="nav-link"  onclick="javascript:show_email_phone('phone');">{trans('SMS')}</a>
+                            </li>
+                        </ul>
+                        <hr/>
+                        <fieldset id="email" class="form-group">
+                            <label for="remindEmail">{trans('E-Mail:')}</label>
+                            <input type="text" name="remindEmail" class="form-control">
+                        </fieldset>
+                        <fieldset id="phone" class="form-group" style="display:none;">
+                            <label for="remindPhone">{trans('Phone:')}</label>
+                            <input type="text" name="remindPhone"  class="form-control">
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <label for="remindTen">{trans('SSN or TEN:')}</label>
+                            <input type="text" name="remindTen" id="inputSsnOrTen" class="form-control">
+                        </fieldset>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit" name="remindSubmit" value="{trans('Remind')}">{trans('Remind')}</button>
+                        <p><a href="javascript:switch_form('login');">{trans('Login form')}</a></p>
+                    </form>
+                </div>
+            </div>                    
+        </div> <!-- /container -->
+        <script>
+            function switch_form(type) {
+                if (type == 'login') {
+                    document.getElementById('login').style.display = '';
+                    document.getElementById('remind').style.display = 'none';
+                } else {
+                    document.getElementById('login').style.display = 'none';
+                    document.getElementById('remind').style.display = '';
+                }
+            }
+
+            function show_email_phone(type) {
+                if (type == 'email') {
+                    var remindMail = document.getElementById("remindMail");
+                    remindMail.classList.add("active");
+                    var remindPhone = document.getElementById("remindPhone");
+                    remindPhone.classList.remove("active");
+                    document.getElementById('email').style.display = '';
+                    document.getElementById('phone').style.display = 'none';
+                } else {
+                    var remindPhone = document.getElementById("remindPhone");
+                    remindPhone.classList.add("active");
+                    var remindMail = document.getElementById("remindMail");
+                    remindMail.classList.remove("active");
+                    document.getElementById('email').style.display = 'none';
+                    document.getElementById('phone').style.display = '';
+                }
+            }
+            document.forms['login'].elements['loginform[login]'].focus();
+        </script>
+    </body>
+</html>
