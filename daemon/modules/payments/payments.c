@@ -326,7 +326,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	char monthday[3], month[3], year[5], quarterday[4], weekday[2], yearday[4], halfday[4];
 	char monthname[20], nextmon[8];
 
-	char *nets = strdup(" AND EXISTS (SELECT 1 FROM nodes, networks n "
+	char *nets = strdup(" AND EXISTS (SELECT 1 FROM vnodes, networks n "
 				"WHERE ownerid = a.customerid "
 				    "AND (%nets) "
 	                "AND ((ipaddr > address AND ipaddr < broadcast(address, inet_aton(mask))) "
@@ -336,7 +336,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	char *netname = strdup(netnames);
 	char *netsql = strdup("");
 
-	char *enets = strdup(" AND NOT EXISTS (SELECT 1 FROM nodes, networks n "
+	char *enets = strdup(" AND NOT EXISTS (SELECT 1 FROM vnodes, networks n "
 				"WHERE ownerid = a.customerid "
 				    "AND (%enets) "
 	                "AND ((ipaddr > address AND ipaddr < broadcast(address, inet_aton(mask))) "

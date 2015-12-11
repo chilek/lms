@@ -230,7 +230,7 @@ while (my $row = $dbq->fetchrow_hashref())
 }
 $dbq->finish();
 
-$dbq = $dbase->prepare("SELECT ipaddr, name, ownerid FROM nodes WHERE warning=1");
+$dbq = $dbase->prepare("SELECT ipaddr, name, ownerid FROM vnodes WHERE warning=1");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {

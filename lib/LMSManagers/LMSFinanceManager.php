@@ -96,8 +96,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $assignments[$idx] = $row;
 
                 // assigned nodes
-                $assignments[$idx]['nodes'] = $this->db->GetAll('SELECT nodes.name, nodes.id FROM nodeassignments, nodes
-						    WHERE nodeid = nodes.id AND assignmentid = ?', array($row['id']));
+                $assignments[$idx]['nodes'] = $this->db->GetAll('SELECT vnodes.name, vnodes.id FROM nodeassignments, vnodes
+						    WHERE nodeid = vnodes.id AND assignmentid = ?', array($row['id']));
 
                 $assignments[$idx]['discounted_value'] = (((100 - $row['pdiscount']) * $row['value']) / 100) - $row['vdiscount'];
 
@@ -1018,9 +1018,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $result['customers'] = $this->db->GetAll('SELECT c.id AS id, COUNT(c.id) AS cnt, '
                 . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername '
-                . ($network ? ', COUNT(nodes.id) AS nodescount ' : '')
+                . ($network ? ', COUNT(vnodes.id) AS nodescount ' : '')
                 . 'FROM assignments, customersview c '
-                . ($network ? 'LEFT JOIN nodes ON (c.id = nodes.ownerid) ' : '')
+                . ($network ? 'LEFT JOIN vnodes ON (c.id = vnodes.ownerid) ' : '')
                 . 'WHERE c.id = customerid AND deleted = 0 AND tariffid = ? '
                 . ($network ? 'AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') OR (ipaddr_pub > '
                         . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')) ' : '')
