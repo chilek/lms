@@ -50,7 +50,7 @@ function GetEmails($group, $network=NULL, $customergroup=NULL)
 		.'FROM customers
 		LEFT JOIN customercontacts cc ON cc.customerid = c.id AND ((cc.type & '.CONTACT_EMAIL | CONTACT_DISABLED.') = ' .CONTACT_EMAIL. ' ) 
 		LEFT JOIN cash ON (customers.id=cash.customerid) '
-		.($network ? 'LEFT JOIN nodes ON (customers.id=ownerid) ' : '')
+		.($network ? 'LEFT JOIN vnodes ON (customers.id=ownerid) ' : '')
 		.($customergroup ? 'LEFT JOIN customerassignments ON (customers.id=customerassignments.customerid) ' : '')
 		.' WHERE deleted = '.$deleted
 		.' AND email IS NOT NULL'
@@ -60,7 +60,7 @@ function GetEmails($group, $network=NULL, $customergroup=NULL)
 		.' GROUP BY cc.contact, lastname, customers.name, customers.id, pin ORDER BY customername'))
 	{
 		if($disabled)
-			$access = $DB->GetAllByKey('SELECT ownerid AS id FROM nodes GROUP BY ownerid HAVING (SUM(access) != COUNT(access))','id'); 
+			$access = $DB->GetAllByKey('SELECT ownerid AS id FROM vnodes GROUP BY ownerid HAVING (SUM(access) != COUNT(access))','id'); 
 			
 		foreach($emails as $idx => $row)
 		{

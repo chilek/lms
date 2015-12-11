@@ -34,7 +34,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
     public function GetNodeOwner($id)
     {
-        return $this->db->GetOne('SELECT ownerid FROM nodes WHERE id=?', array($id));
+        return $this->db->GetOne('SELECT ownerid FROM vnodes WHERE id=?', array($id));
     }
 
     public function NodeUpdate($nodedata, $deleteassignments = FALSE)
@@ -139,7 +139,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         $this->db->BeginTrans();
 
         if ($this->syslog) {
-            $customerid = $this->db->GetOne('SELECT ownerid FROM nodes WHERE id = ?', array($id));
+            $customerid = $this->db->GetOne('SELECT ownerid FROM vnodes WHERE id = ?', array($id));
             $macs = $this->db->GetCol('SELECT macid FROM vmacs WHERE id = ?', array($id));
             if (!empty($macs))
                 foreach ($macs as $mac) {
@@ -169,7 +169,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
     public function GetNodeIDByIP($ipaddr)
     {
-        return $this->db->GetOne('SELECT id FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ipaddr, $ipaddr));
+        return $this->db->GetOne('SELECT id FROM vnodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ipaddr, $ipaddr));
     }
 
     public function GetNodeIDByMAC($mac)
@@ -179,17 +179,17 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
     public function GetNodeIDByName($name)
     {
-        return $this->db->GetOne('SELECT id FROM nodes WHERE name=UPPER(?)', array($name));
+        return $this->db->GetOne('SELECT id FROM vnodes WHERE name=UPPER(?)', array($name));
     }
 
     public function GetNodeIPByID($id)
     {
-        return $this->db->GetOne('SELECT inet_ntoa(ipaddr) FROM nodes WHERE id=?', array($id));
+        return $this->db->GetOne('SELECT inet_ntoa(ipaddr) FROM vnodes WHERE id=?', array($id));
     }
 
     public function GetNodePubIPByID($id)
     {
-        return $this->db->GetOne('SELECT inet_ntoa(ipaddr_pub) FROM nodes WHERE id=?', array($id));
+        return $this->db->GetOne('SELECT inet_ntoa(ipaddr_pub) FROM vnodes WHERE id=?', array($id));
     }
 
     public function GetNodeMACByID($id)
@@ -199,16 +199,16 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
     public function GetNodeName($id)
     {
-        return $this->db->GetOne('SELECT name FROM nodes WHERE id=?', array($id));
+        return $this->db->GetOne('SELECT name FROM vnodes WHERE id=?', array($id));
     }
 
     public function GetNodeNameByIP($ipaddr)
     {
-        return $this->db->GetOne('SELECT name FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ipaddr, $ipaddr));
+        return $this->db->GetOne('SELECT name FROM vnodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ipaddr, $ipaddr));
     }
     public function GetNodeConnType($id)
     {
-        return $this->db->GetOne('SELECT authtype FROM nodes WHERE id=?', array($id));
+        return $this->db->GetOne('SELECT authtype FROM vnodes WHERE id=?', array($id));
     }
 
     public function GetNode($id)
@@ -398,7 +398,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     {
         global $SYSLOG_RESOURCE_KEYS;
         $keys = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]);
-        $customerid = $this->db->GetOne('SELECT ownerid FROM nodes WHERE id = ?', array($id));
+        $customerid = $this->db->GetOne('SELECT ownerid FROM vnodes WHERE id = ?', array($id));
         $args = array(
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $id,
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid
@@ -407,7 +407,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         if ($access != -1) {
             $args['access'] = $access;
             if ($access) {
-                if ($this->db->GetOne('SELECT 1 FROM nodes WHERE id = ? AND EXISTS
+                if ($this->db->GetOne('SELECT 1 FROM vnodes WHERE id = ? AND EXISTS
 					(SELECT 1 FROM customers WHERE id = ownerid AND status = 3)', array($id))) {
                     if ($this->syslog)
                         $this->syslog->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args, $keys);
@@ -422,14 +422,14 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 return $this->db->Execute('UPDATE nodes SET access = 0 WHERE id = ?', array($id));
             }
         }
-        elseif ($this->db->GetOne('SELECT access FROM nodes WHERE id = ?', array($id)) == 1) {
+        elseif ($this->db->GetOne('SELECT access FROM vnodes WHERE id = ?', array($id)) == 1) {
             if ($this->syslog) {
                 $args['access'] = 0;
                 $this->syslog->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args, $keys);
             }
             return $this->db->Execute('UPDATE nodes SET access=0 WHERE id = ?', array($id));
         } else {
-            if ($this->db->GetOne('SELECT 1 FROM nodes WHERE id = ? AND EXISTS
+            if ($this->db->GetOne('SELECT 1 FROM vnodes WHERE id = ? AND EXISTS
 				(SELECT 1 FROM customers WHERE id = ownerid AND status = 3)', array($id))) {
                 if ($this->syslog) {
                     $args['access'] = 1;
@@ -451,7 +451,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         if ($access) {
             if ($this->db->GetOne('SELECT status FROM customers WHERE id = ?', array($id)) == 3) {
                 if ($this->syslog) {
-                    $nodes = $this->db->GetCol('SELECT id FROM nodes WHERE ownerid = ?', array($id));
+                    $nodes = $this->db->GetCol('SELECT id FROM vnodes WHERE ownerid = ?', array($id));
                     $args = array(
                         $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
                         'access' => $access
@@ -466,7 +466,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             }
         } else {
             if ($this->syslog) {
-                $nodes = $this->db->GetCol('SELECT id FROM nodes WHERE ownerid = ?', array($id));
+                $nodes = $this->db->GetCol('SELECT id FROM vnodes WHERE ownerid = ?', array($id));
                 $args = array(
                     $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
                     'access' => $access
@@ -485,7 +485,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     {
         global $SYSLOG_RESOURCE_KEYS;
         if ($this->syslog) {
-            $cids = $this->db->GetAll('SELECT id, ownerid FROM nodes WHERE id IN ('
+            $cids = $this->db->GetAll('SELECT id, ownerid FROM vnodes WHERE id IN ('
                     . (is_array($id) ? implode(',', $id) : $id) . ')');
             if (!empty($cids))
                 foreach ($cids as $cid) {
@@ -505,7 +505,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     {
         global $SYSLOG_RESOURCE_KEYS;
         if ($this->syslog) {
-            $node = $this->db->GetRow('SELECT ownerid, warning FROM nodes WHERE id = ?', array($id));
+            $node = $this->db->GetRow('SELECT ownerid, warning FROM vnodes WHERE id = ?', array($id));
             $args = array(
                 $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $id,
                 $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $node['ownerid'],
@@ -522,7 +522,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     {
         global $SYSLOG_RESOURCE_KEYS;
         if ($this->syslog) {
-            $nodes = $this->db->GetAll('SELECT id, ownerid FROM nodes WHERE ownerid IN ('
+            $nodes = $this->db->GetAll('SELECT id, ownerid FROM vnodes WHERE ownerid IN ('
                     . (is_array($id) ? implode(',', $id) : $id) . ')');
             if (!empty($nodes))
                 foreach ($nodes as $node) {
@@ -546,7 +546,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         else
             $res = $this->db->Execute('UPDATE nodes SET access=0 WHERE netdev=? AND ownerid=0', array($netdev));
         if ($this->syslog && $res) {
-            $nodes = $this->db->GetCol('SELECT id FROM nodes WHERE netdev=? AND ownerid=0', array($netdev));
+            $nodes = $this->db->GetCol('SELECT id FROM vnodes WHERE netdev=? AND ownerid=0', array($netdev));
             foreach ($nodes as $node) {
                 $args = array(
                     $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node,
@@ -611,8 +611,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 $this->db->BeginTrans();
                 $this->db->LockTables('nodes');
 
-                if ($newid = $this->db->GetOne('SELECT n.id + 1 FROM nodes n 
-						LEFT OUTER JOIN nodes n2 ON n.id + 1 = n2.id
+                if ($newid = $this->db->GetOne('SELECT n.id + 1 FROM vnodes n 
+						LEFT OUTER JOIN vnodes n2 ON n.id + 1 = n2.id
 						WHERE n2.id IS NULL AND n.id <= 99999
 						ORDER BY n.id ASC LIMIT 1')) {
                     $this->db->Execute('UPDATE nodes SET id = ? WHERE id = ?', array($newid, $id));
@@ -655,7 +655,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
     public function NodeExists($id)
     {
-        return ($this->db->GetOne('SELECT n.id FROM nodes n
+        return ($this->db->GetOne('SELECT n.id FROM vnodes n
 			WHERE n.id = ? AND n.ownerid > 0 AND NOT EXISTS (
 		        	SELECT 1 FROM customerassignments a
 			        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
@@ -668,7 +668,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         $result = $this->db->GetRow('SELECT COUNT(CASE WHEN access=1 THEN 1 END) AS connected, 
 				COUNT(CASE WHEN access=0 THEN 1 END) AS disconnected,
 				COUNT(CASE WHEN ?NOW?-lastonline < ? THEN 1 END) AS online
-				FROM nodes WHERE ownerid > 0', array(ConfigHelper::getConfig('phpui.lastonline_limit')));
+				FROM vnodes WHERE ownerid > 0', array(ConfigHelper::getConfig('phpui.lastonline_limit')));
 
         $result['total'] = $result['connected'] + $result['disconnected'];
         return $result;
@@ -695,7 +695,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         $res = $this->db->Execute('UPDATE nodes SET linktype=?, linkradiosector = ?, linktechnology=?, linkspeed=? WHERE id=?',
         	array($type, $radiosector, $technology, $speed, $node));
         if ($this->syslog && $res) {
-            $nodedata = $this->db->GetRow('SELECT ownerid, netdev FROM nodes WHERE id=?', array($node));
+            $nodedata = $this->db->GetRow('SELECT ownerid, netdev FROM vnodes WHERE id=?', array($node));
             $args = array(
                 $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node,
                 $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $nodedata['ownerid'],

@@ -276,7 +276,7 @@ foreach my $key (@networks)
 		my $prefix = mask2prefix($row->{'mask'});
 		my $netsize = 2**(32 - $prefix);
 		my $netend = $netstart + $netsize - 1;
-		my $sdbq = $dbase->prepare("SELECT ipaddr, ownerid FROM nodes WHERE ipaddr >= $netstart AND ipaddr <= $netend");
+		my $sdbq = $dbase->prepare("SELECT ipaddr, ownerid FROM vnodes WHERE ipaddr >= $netstart AND ipaddr <= $netend");
 		$sdbq->execute();
 		while (my $srow = $sdbq->fetchrow_hashref())
 		{

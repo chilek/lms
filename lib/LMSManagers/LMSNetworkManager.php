@@ -75,9 +75,9 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     public function IsIPFree($ip, $netid = 0)
     {
         if ($netid)
-            return !($this->db->GetOne('SELECT id FROM nodes WHERE (ipaddr=inet_aton(?) AND netid=?) OR ipaddr_pub=inet_aton(?)', array($ip, $netid, $ip)) ? TRUE : FALSE);
+            return !($this->db->GetOne('SELECT id FROM vnodes WHERE (ipaddr=inet_aton(?) AND netid=?) OR ipaddr_pub=inet_aton(?)', array($ip, $netid, $ip)) ? TRUE : FALSE);
         else
-            return !($this->db->GetOne('SELECT id FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ip, $ip)) ? TRUE : FALSE);
+            return !($this->db->GetOne('SELECT id FROM vnodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ip, $ip)) ? TRUE : FALSE);
     }
 
     public function IsIPInNetwork($ip, $netid)
@@ -207,7 +207,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     public function GetUnlinkedNodes()
     {
         return $this->db->GetAll('SELECT n.*, inet_ntoa(n.ipaddr) AS ip, net.name AS netname
-			FROM nodes n
+			FROM vnodes n
 			JOIN networks net ON net.id = n.netid
 			WHERE netdev=0 ORDER BY name ASC');
     }
@@ -268,12 +268,12 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 				inet_ntoa(broadcast(address, inet_aton(mask))) AS broadcast,
 				pow(2,(32 - mask2prefix(inet_aton(mask)))) AS size, disabled,
 				(SELECT COUNT(*) 
-					FROM nodes 
+					FROM vnodes 
 					WHERE netid = n.id AND (ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
 						OR (ipaddr_pub >= address AND ipaddr_pub <= broadcast(address, inet_aton(mask)))
 				) AS assigned,
 				(SELECT COUNT(*) 
-					FROM nodes 
+					FROM vnodes 
 					WHERE netid = n.id AND ((ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
 						OR (ipaddr_pub >= address AND ipaddr_pub <= broadcast(address, inet_aton(mask))))
 						AND (?NOW? - lastonline < ?)
@@ -332,8 +332,8 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
         if ($this->syslog) {
             $nodes = array_merge(
-                    (array) $this->db->GetAll('SELECT id, ownerid, ipaddr FROM nodes
-					WHERE netid = ? AND ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($netid, $network, getbraddr($network, $mask))), (array) $this->db->GetAll('SELECT id, ownerid, ipaddr_pub FROM nodes
+                    (array) $this->db->GetAll('SELECT id, ownerid, ipaddr FROM vnodes
+					WHERE netid = ? AND ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($netid, $network, getbraddr($network, $mask))), (array) $this->db->GetAll('SELECT id, ownerid, ipaddr_pub FROM vnodes
 					WHERE netid = ? AND ipaddr_pub >= inet_aton(?) AND ipaddr_pub <= inet_aton(?)', array($netid, $network, getbraddr($network, $mask)))
             );
             if (!empty($nodes))
@@ -443,7 +443,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
             if ($this->db->Execute('UPDATE nodes SET ipaddr=? WHERE netid=? AND ipaddr=?', array($i, $id, $ip))) {
                 if ($this->syslog) {
-                    $node = $this->db->GetRow('SELECT id, ownerid FROM nodes WHERE netid = ? AND ipaddr = ?', array($id, $ip));
+                    $node = $this->db->GetRow('SELECT id, ownerid FROM vnodes WHERE netid = ? AND ipaddr = ?', array($id, $ip));
                     $args = array(
                         $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node['id'],
                         $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $node['ownerid'],
@@ -456,7 +456,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 }
             } elseif ($this->db->Execute('UPDATE nodes SET ipaddr_pub=? WHERE netid=? AND ipaddr_pub=?', array($i, $id, $ip))) {
                 if ($this->syslog) {
-                    $node = $this->db->GetRow('SELECT id, ownerid FROM nodes WHERE netid = ? AND ipaddr_pub = ?', array($id, $ip));
+                    $node = $this->db->GetRow('SELECT id, ownerid FROM vnodes WHERE netid = ? AND ipaddr_pub = ?', array($id, $ip));
                     $args = array(
                         $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node['id'],
                         $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $node['ownerid'],
@@ -496,7 +496,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
             if ($this->db->Execute('UPDATE nodes SET ipaddr=?, netid=? WHERE netid=? AND ipaddr=?', array($i, $dst, $src, $ip))) {
                 if ($this->syslog) {
-                    $node = $this->db->GetRow('SELECT id, ownerid FROM nodes WHERE netid = ? AND ipaddr = ?', array($dst, $ip));
+                    $node = $this->db->GetRow('SELECT id, ownerid FROM vnodes WHERE netid = ? AND ipaddr = ?', array($dst, $ip));
                     $args = array(
                         $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node['id'],
                         $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $node['ownerid'],
@@ -509,7 +509,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 }
             } elseif ($this->db->Execute('UPDATE nodes SET ipaddr_pub=? WHERE ipaddr_pub=?', array($i, $ip))) {
                 if ($this->syslog) {
-                    $node = $this->db->GetRow('SELECT id, ownerid FROM nodes WHERE netid = ? AND ipaddr_pub = ?', array($dst, $ip));
+                    $node = $this->db->GetRow('SELECT id, ownerid FROM vnodes WHERE netid = ? AND ipaddr_pub = ?', array($dst, $ip));
                     $args = array(
                         $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node['id'],
                         $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $node['ownerid'],
@@ -544,10 +544,10 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
         $nodes = $this->db->GetAllByKey('
 				SELECT id, name, ipaddr, ownerid, netdev 
-				FROM nodes WHERE netid = ? AND ipaddr > ? AND ipaddr < ?
+				FROM vnodes WHERE netid = ? AND ipaddr > ? AND ipaddr < ?
 				UNION ALL
 				SELECT id, name, ipaddr_pub AS ipaddr, ownerid, netdev 
-				FROM nodes WHERE ipaddr_pub > ? AND ipaddr_pub < ?', 'ipaddr', array($id, $network['addresslong'], ip_long($network['broadcast']),
+				FROM vnodes WHERE ipaddr_pub > ? AND ipaddr_pub < ?', 'ipaddr', array($id, $network['addresslong'], ip_long($network['broadcast']),
             $network['addresslong'], ip_long($network['broadcast'])));
 
         if ($network['hostid'])

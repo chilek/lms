@@ -188,7 +188,7 @@ else
 
 			my $iface = $row->{'interface'} ? "-I $row->{'interface'}" : "";
 
-			my $ndbq = $dbase->prepare("SELECT INET_NTOA(ipaddr) AS ipaddr, id FROM nodes WHERE ipaddr>INET_ATON('$row->{'address'}') AND ipaddr<INET_ATON('$row->{'address'}')+$netsize");
+			my $ndbq = $dbase->prepare("SELECT INET_NTOA(ipaddr) AS ipaddr, id FROM vnodes WHERE ipaddr>INET_ATON('$row->{'address'}') AND ipaddr<INET_ATON('$row->{'address'}')+$netsize");
 		        $ndbq->execute();
 
 			while(my $nodrow = $ndbq->fetchrow_hashref())

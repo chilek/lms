@@ -148,17 +148,17 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 		.'WHERE deleted = ' . $deleted
 		. ($consent ? ' AND c.mailingnotice = 1' : '')
 		.($group!=0 ? ' AND status = '.$group : '')
-		.($network ? ' AND c.id IN (SELECT ownerid FROM nodes WHERE 
+		.($network ? ' AND c.id IN (SELECT ownerid FROM vnodes WHERE 
 			(netid = ' . $net['id'] . ' AND ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ')
 			OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 		.($customergroup ? ' AND c.id IN (SELECT customerid FROM customerassignments
 			WHERE customergroupid IN (' . $customergroup . '))' : '')
-		.($nodegroup ? ' AND c.id IN (SELECT ownerid FROM nodes
-			JOIN nodegroupassignments ON (nodeid = nodes.id)
+		.($nodegroup ? ' AND c.id IN (SELECT ownerid FROM vnodes
+			JOIN nodegroupassignments ON (nodeid = vnodes.id)
 			WHERE nodegroupid = ' . $nodegroup . ')' : '')
-		.($linktype != '' ? ' AND c.id IN (SELECT ownerid FROM nodes
+		.($linktype != '' ? ' AND c.id IN (SELECT ownerid FROM vnodes
 			WHERE linktype = ' . $linktype . ')' : '')
-		.($disabled ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id
+		.($disabled ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id
 			GROUP BY ownerid HAVING (SUM(access) != COUNT(access)))' : '')
 		.($indebted ? ' AND COALESCE(b.value, 0) < 0' : '')
 		. ($indebted2 ? ' AND COALESCE(b.value, 0) < -t.value' : '')

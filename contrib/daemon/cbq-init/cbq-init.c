@@ -115,7 +115,7 @@ void reload(GLOBAL *g, struct cbq_module *cbq)
 	{
 		// get data for any customer with connected nodes and active assignments
 		// we need customer ID and average data values for nodes
-		ures = g->db_query(g->conn, "SELECT customerid AS id, SUM(uprate)/COUNT(DISTINCT nodes.id) AS uprate, SUM(downrate)/COUNT(DISTINCT nodes.id) AS downrate, SUM(upceil)/COUNT(DISTINCT nodes.id) AS upceil, SUM(downceil)/COUNT(DISTINCT nodes.id) AS downceil, SUM(climit)/COUNT(DISTINCT nodes.id) AS climit, SUM(plimit)/COUNT(DISTINCT nodes.id) AS plimit FROM assignments LEFT JOIN tariffs ON (tariffid = tariffs.id) LEFT JOIN nodes ON (customerid = ownerid) WHERE access = 1 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) GROUP BY customerid ORDER BY customerid");
+		ures = g->db_query(g->conn, "SELECT customerid AS id, SUM(uprate)/COUNT(DISTINCT vnodes.id) AS uprate, SUM(downrate)/COUNT(DISTINCT vnodes.id) AS downrate, SUM(upceil)/COUNT(DISTINCT vnodes.id) AS upceil, SUM(downceil)/COUNT(DISTINCT vnodes.id) AS downceil, SUM(climit)/COUNT(DISTINCT vnodes.id) AS climit, SUM(plimit)/COUNT(DISTINCT vnodes.id) AS plimit FROM assignments LEFT JOIN tariffs ON (tariffid = tariffs.id) LEFT JOIN vnodes ON (customerid = ownerid) WHERE access = 1 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) GROUP BY customerid ORDER BY customerid");
 		if( g->db_nrows(ures) )
 		{
 			// delete old configuration files
@@ -159,7 +159,7 @@ void reload(GLOBAL *g, struct cbq_module *cbq)
     					int n_climit = atoi(climit);
 					int n_plimit = atoi(plimit);
 					
-					nres = g->db_pquery(g->conn, "SELECT INET_NTOA(ipaddr) AS ip, ipaddr, mac, name FROM nodes WHERE ownerid = ? AND access = 1 ORDER BY ipaddr", g->db_get_data(ures,i,"id")); 
+					nres = g->db_pquery(g->conn, "SELECT INET_NTOA(ipaddr) AS ip, ipaddr, mac, name FROM vnodes WHERE ownerid = ? AND access = 1 ORDER BY ipaddr", g->db_get_data(ures,i,"id")); 
 					
 					for(j=0; j<g->db_nrows(nres); j++) 
 					{	

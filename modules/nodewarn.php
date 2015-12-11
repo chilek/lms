@@ -68,7 +68,7 @@ if(isset($setwarnings['mnodeid']))
 	if (!empty($nodes)) {
 		$LMS->NodeSetWarn($nodes, $warnon ? 1 : 0);
 		if ($message) {
-			$cids = $DB->GetCol('SELECT DISTINCT n.ownerid FROM nodes n WHERE n.id IN (' . implode(',', $nodes) . ')');
+			$cids = $DB->GetCol('SELECT DISTINCT n.ownerid FROM vnodes n WHERE n.id IN (' . implode(',', $nodes) . ')');
 			$DB->Execute('UPDATE customers SET message = ? WHERE id IN 
 				(' . implode(',', $cids) . ')', array($message));
 			if ($SYSLOG) {

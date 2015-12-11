@@ -89,7 +89,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      */
     public function getCustomerNodesNo($id)
     {
-        return $this->db->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid=?', array($id));
+        return $this->db->GetOne('SELECT COUNT(*) FROM vnodes WHERE ownerid=?', array($id));
     }
 
     /**
@@ -101,7 +101,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function getCustomerIDByIP($ipaddr)
     {
         return $this->db->GetOne(
-            'SELECT ownerid FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)',
+            'SELECT ownerid FROM vnodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)',
             array($ipaddr, $ipaddr)
         );
     }
@@ -160,7 +160,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      */
     public function getCustomerNodesAC($id)
     {
-        $acl = $this->db->GetAll('SELECT access FROM nodes WHERE ownerid=?', array($id));
+        $acl = $this->db->GetAll('SELECT access FROM vnodes WHERE ownerid=?', array($id));
         if ($acl) {
             foreach ($acl as $value) {
                 if ($value['access']) {
@@ -177,7 +177,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 }
             }
         }
-        if ($this->db->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid=?', array($id))) {
+        if ($this->db->GetOne('SELECT COUNT(*) FROM vnodes WHERE ownerid=?', array($id))) {
             return 2;
         } else {
             return false;
@@ -512,15 +512,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             $searchargs[] = 'type = ' . intval($value);
                             break;
                         case 'linktype':
-                            $searchargs[] = 'EXISTS (SELECT 1 FROM nodes
+                            $searchargs[] = 'EXISTS (SELECT 1 FROM vnodes
 								WHERE ownerid = c.id AND linktype = ' . intval($value) . ')';
                             break;
                         case 'linktechnology':
-                            $searchargs[] = 'EXISTS (SELECT 1 FROM nodes
+                            $searchargs[] = 'EXISTS (SELECT 1 FROM vnodes
 								WHERE ownerid = c.id AND linktechnology = ' . intval($value) . ')';
                             break;
                         case 'linkspeed':
-                            $searchargs[] = 'EXISTS (SELECT 1 FROM nodes
+                            $searchargs[] = 'EXISTS (SELECT 1 FROM vnodes
 								WHERE ownerid = c.id AND linkspeed = ' . intval($value) . ')';
                             break;
                         case 'doctype':
@@ -652,12 +652,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 . ($indebted3 ? ' AND b.value < -t.value * 2' : '')
                 . ($contracts == 1 ? ' AND d.customerid IS NULL' : '')
                 . ($disabled ? ' AND s.ownerid IS NOT null AND s.account > s.acsum' : '')
-                . ($network ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id 
+                . ($network ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id 
                 AND (netid = ' . $network . '
                 OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')))' : '')
                 . ($customergroup ? ' AND customergroupid=' . intval($customergroup) : '')
                 . ($nodegroup ? ' AND EXISTS (SELECT 1 FROM nodegroupassignments na
-                    JOIN nodes n ON (n.id = na.nodeid) 
+                    JOIN vnodes n ON (n.id = na.nodeid) 
                     WHERE n.ownerid = c.id AND na.nodegroupid = ' . intval($nodegroup) . ')' : '')
                 . ($groupless ? ' AND NOT EXISTS (SELECT 1 FROM customerassignments a 
                     WHERE c.id = a.customerid)' : '')
@@ -1028,7 +1028,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         $this->db->Execute('DELETE FROM assignments WHERE customerid=?', array($id));
         // nodes
-        $nodes = $this->db->GetCol('SELECT id FROM nodes WHERE ownerid=?', array($id));
+        $nodes = $this->db->GetCol('SELECT id FROM vnodes WHERE ownerid=?', array($id));
         if ($nodes) {
             if ($this->syslog) {
                 $macs = $this->db->GetAll('SELECT id, nodeid FROM macs WHERE nodeid IN (' . implode(',', $nodes) . ')');
