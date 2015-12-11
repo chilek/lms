@@ -24,13 +24,9 @@
  *  $Id$
  */
 
-class LMSHtmlReceipt extends LMSDocument {
-	private $smarty;
-	private $contents;
-
+class LMSHtmlReceipt extends LMSHtmlDocument {
 	public function __construct($smarty) {
-		$this->smarty = $smarty;
-		$this->contents = '';
+		parent::__construct($smarty, 'receipts', 'receipt' . DIRECTORY_SEPARATOR . 'receiptheader.html');
 	}
 
 	public function Draw($data) {
@@ -42,29 +38,6 @@ class LMSHtmlReceipt extends LMSDocument {
 		$this->smarty->assign('type', $this->data['type']);
 		$this->smarty->assign('receipt', $this->data);
 		$this->contents .= $this->smarty->fetch($template_file);
-	}
-
-	public function NewPage() {
-	}
-
-	private function PrepareFullContents() {
-		$this->smarty->assign('css', file(ConfigHelper::getConfig('directories.sys_dir', '', true)
-			. DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'style_print.css'));
-		$this->contents = $this->smarty->fetch('receipt/receiptheader.html') . $this->contents
-			. $this->smarty->fetch('clearfooter.html');
-	}
-
-	public function WriteToBrowser($filename = null) {
-		$this->PrepareFullContents();
-		header('Content-Type: ' . ConfigHelper::getConfig('receipts.content_type'));
-		if (!is_null($filename))
-			header('Content-Disposition: attachment; filename=' . $filename);
-		echo $this->contents;
-	}
-
-	public function WriteToString() {
-		$this->PrepareFullContents();
-		return $this->contents;
 	}
 }
 

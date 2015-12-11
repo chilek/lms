@@ -24,13 +24,9 @@
  *  $Id$
  */
 
-class LMSHtmlDebitNote extends LMSDocument {
-	private $smarty;
-	private $contents;
-
+class LMSHtmlDebitNote extends LMSHtmlDocument {
 	public function __construct($smarty) {
-		$this->smarty = $smarty;
-		$this->contents = '';
+		parent::__construct($smarty, 'notes', 'note' . DIRECTORY_SEPARATOR . 'noteheader.html');
 	}
 
 	public function Draw($data) {
@@ -41,29 +37,6 @@ class LMSHtmlDebitNote extends LMSDocument {
 			$template_file = 'note' . DIRECTORY_SEPARATOR . $template_file;
 		$this->smarty->assign('note', $this->data);
 		$this->contents .= $this->smarty->fetch($template_file);
-	}
-
-	public function NewPage() {
-	}
-
-	private function PrepareFullContents() {
-		$this->smarty->assign('css', file(ConfigHelper::getConfig('directories.sys_dir', '', true)
-			. DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'style_print.css'));
-		$this->contents = $this->smarty->fetch('note/noteheader.html') . $this->contents
-			. $this->smarty->fetch('clearfooter.html');
-	}
-
-	public function WriteToBrowser($filename = null) {
-		$this->PrepareFullContents();
-		header('Content-Type: '.ConfigHelper::getConfig('notes.content_type'));
-		if (!is_null($filename))
-			header('Content-Disposition: attachment; filename=' . $filename);
-		echo $this->contents;
-	}
-
-	public function WriteToString() {
-		$this->PrepareFullContents();
-		return $this->contents;
 	}
 }
 
