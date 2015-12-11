@@ -23,27 +23,31 @@ if($id && $_GET['is_sure'] == '1') {
 	    ));
 	    $itemid += 1;
 	}
-	$args = array(
-	    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $document['id'],
-	    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $document['customerid'],
-	    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id
-	);
-	$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_UPDATE, $args, 
-		array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] , $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER])
-	);
+	if ($SYSLOG) {
+		$args = array(
+		    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $document['id'],
+		    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $document['customerid'],
+		    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id
+		);
+		$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_UPDATE, $args, 
+			array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] , $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER])
+		);
+	}
     } 
     else {
 	$DB->Execute('UPDATE documents SET cancelled = 1 WHERE id = ?', array($id));
 	$DB->Execute('DELETE FROM cash WHERE docid = ?', array($id));
 	$document = $DB->GetRow('SELECT * FROM documents WHERE id = ?', array($id));
-	$args = array(
-	    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $document['id'],
-	    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $document['customerid'],
-	    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id
-	);
-	$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_UPDATE, $args, 
-		array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] , $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER])
-	);
+	if ($SYSLOG) {
+		$args = array(
+		    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $document['id'],
+		    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $document['customerid'],
+		    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id
+		);
+		$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_UPDATE, $args, 
+			array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] , $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER])
+		);
+	}
     }
 }
 
