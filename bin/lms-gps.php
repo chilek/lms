@@ -152,7 +152,7 @@ if (!$_APIKEY)
 */
 
 if ($update) {
-        $loc = $DB->GetAll("SELECT id, location FROM nodes WHERE longitude IS NULL AND latitude IS NULL AND location IS NOT NULL AND location_house IS NOT NULL AND location !='' AND location_house !=''");
+        $loc = $DB->GetAll("SELECT id, location FROM vnodes WHERE longitude IS NULL AND latitude IS NULL AND location IS NOT NULL AND location_house IS NOT NULL AND location !='' AND location_house !=''");
         if ($loc) {
                 foreach($loc as $row) {
                         $address = urlencode($row['location']." Poland");

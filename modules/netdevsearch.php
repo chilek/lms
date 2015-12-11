@@ -97,7 +97,7 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND')
 
 	$netdevlist = $DB->GetAll('SELECT DISTINCT d.id, d.name, d.location, d.description, d.producer, 
 				d.model, d.serialnumber, d.ports,
-                		(SELECT COUNT(*) FROM nodes WHERE netdev = d.id AND ownerid > 0)
+                		(SELECT COUNT(*) FROM vnodes WHERE netdev = d.id AND ownerid > 0)
 	            		+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id) AS takenports
 	        		FROM netdevices d'
 				.(isset($nodes) ? ' LEFT JOIN vnodes n ON (netdev = d.id AND ownerid = 0)' : '')

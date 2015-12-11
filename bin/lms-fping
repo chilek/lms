@@ -164,7 +164,7 @@ foreach my $network (@networks)
 	{
     		my $netsize = 2**(32 - mask2prefix($row->{'mask'}));
 
-		my $ndbq = $dbase->prepare("SELECT INET_NTOA(ipaddr) AS ipaddr FROM nodes WHERE ipaddr>INET_ATON('$row->{'address'}') AND ipaddr<INET_ATON('$row->{'address'}')+$netsize");
+		my $ndbq = $dbase->prepare("SELECT INET_NTOA(ipaddr) AS ipaddr FROM vnodes WHERE ipaddr>INET_ATON('$row->{'address'}') AND ipaddr<INET_ATON('$row->{'address'}')+$netsize");
 		$ndbq->execute();
 		
 		while(my $nodrow = $ndbq->fetchrow_hashref())

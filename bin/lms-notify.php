@@ -720,7 +720,7 @@ if (empty($types) || in_array('warnings', $types)) {
 			FROM cash
 			GROUP BY customerid
 		) ca ON (ca.customerid = c.id)
-		WHERE c.id IN (SELECT DISTINCT ownerid FROM nodes WHERE warning = 1)",
+		WHERE c.id IN (SELECT DISTINCT ownerid FROM vnodes WHERE warning = 1)",
 		array(CONTACT_EMAIL | CONTACT_DISABLED, CONTACT_EMAIL, CONTACT_MOBILE | CONTACT_DISABLED, CONTACT_MOBILE));
 
 	if (!empty($customers)) {
@@ -766,7 +766,7 @@ if (empty($types) || in_array('warnings', $types)) {
 // send message to customers which have awaiting www messages
 if (in_array('www', $channels) && (empty($types) || in_array('messages', $types))) {
 	$nodes = $DB->GetAll("SELECT INET_NTOA(ipaddr) AS ip
-			FROM nodes n
+			FROM vnodes n
 		JOIN (SELECT DISTINCT customerid FROM messageitems
 			JOIN messages m ON m.id = messageid
 			WHERE type = ? AND status = ?
@@ -805,11 +805,11 @@ if (in_array('www', $channels))
 		if (!empty($notification['customers'])) {
 			if ($type == 'warnings')
 				$nodes = $DB->GetAll("SELECT INET_NTOA(ipaddr) AS ip
-						FROM nodes
+						FROM vnodes
 					WHERE warning = 1 ORDER BY ipaddr");
 			else
 				$nodes = $DB->GetAll("SELECT INET_NTOA(ipaddr) AS ip
-						FROM nodes
+						FROM vnodes
 					WHERE ownerid IN (" . implode(',', $notification['customers']) . ")"
 					. " ORDER BY id");
 			if (!empty($nodes))

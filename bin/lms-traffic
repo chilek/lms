@@ -127,7 +127,7 @@ else
 
 
 # get nodes IDs table
-my $dbq = $dbase->prepare("SELECT id, inet_ntoa(ipaddr) AS ipaddr FROM nodes");
+my $dbq = $dbase->prepare("SELECT id, inet_ntoa(ipaddr) AS ipaddr FROM vnodes");
 $dbq->execute();
 my %table;      
 while (my $row = $dbq->fetchrow_hashref())

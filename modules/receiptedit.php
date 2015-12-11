@@ -95,7 +95,7 @@ if(isset($_GET['id']))
 		// jesli klient posiada zablokowane komputery poinformujmy
 		// o tym kasjera, moze po wplacie trzeba bedzie zmienic ich status      
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_nodes_warning', false)))
-		        if($DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid = ? AND access = 0', array($receipt['customerid'])))
+		        if($DB->GetOne('SELECT COUNT(*) FROM vnodes WHERE ownerid = ? AND access = 0', array($receipt['customerid'])))
 			{
 				$nodes_warning = ConfigHelper::getConfig('receipts.nodes_warning');
 			        if(!empty($nodes_warning))
@@ -109,7 +109,7 @@ if(isset($_GET['id']))
 		if(!empty($show_nodegroups_warning))
 		{
 		        $list = preg_split("/\s+/", ConfigHelper::getConfig('receipts.show_nodegroups_warning'));
-		        if($DB->GetOne('SELECT COUNT(*) FROM nodes n
+		        if($DB->GetOne('SELECT COUNT(*) FROM vnodes n
 			                JOIN nodegroupassignments a ON (n.id = a.nodeid)
 					JOIN nodegroups g ON (g.id = a.nodegroupid)
 					WHERE n.ownerid = ? AND UPPER(g.name) IN (UPPER(\''
@@ -320,7 +320,7 @@ switch($action)
 				// jesli klient posiada zablokowane komputery poinformujmy
 				// o tym kasjera, moze po wplacie trzeba bedzie zmienic ich status
 				if (ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_nodes_warning', false)))
-				        if($DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid = ? AND access = 0', array($customer['id'])))
+				        if($DB->GetOne('SELECT COUNT(*) FROM vnodes WHERE ownerid = ? AND access = 0', array($customer['id'])))
 					{
 						$nodes_warning = ConfigHelper::getConfig('receipts.nodes_warning');
 					        if(!empty($nodes_warning))
@@ -335,7 +335,7 @@ switch($action)
 			        if(!empty($show_nodegroups_warning))
 				{
 				        $list = preg_split("/\s+/", ConfigHelper::getConfig('receipts.show_nodegroups_warning'));
-				        if($DB->GetOne('SELECT COUNT(*) FROM nodes n
+				        if($DB->GetOne('SELECT COUNT(*) FROM vnodes n
 				                JOIN nodegroupassignments a ON (n.id = a.nodeid)
 						JOIN nodegroups g ON (g.id = a.nodegroupid)
 						WHERE n.ownerid = ? AND UPPER(g.name) IN (UPPER(\''

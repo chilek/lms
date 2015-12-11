@@ -249,7 +249,7 @@ switch ($mode) {
 
 		if(is_numeric($search) && !strstr($search, '.')) // maybe it's node ID
 		{
-			if($nodeid = $DB->GetOne('SELECT id FROM nodes WHERE id = '.$search))
+			if($nodeid = $DB->GetOne('SELECT id FROM vnodes WHERE id = '.$search))
 			{
 				$target = '?m=nodeinfo&id='.$nodeid;
 				break;

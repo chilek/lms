@@ -2030,7 +2030,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	
 	echo ' [OK]<BR>';
 	echo '<B>'.trans('Generating network hardware and connections...').'</B>'; flush();
-	$nodes = $DB->GetOne('SELECT count(id) FROM nodes');
+	$nodes = $DB->GetOne('SELECT count(id) FROM vnodes');
 	$sprod = sizeof($producer);
 	$i = 0;
 	while($nodes)

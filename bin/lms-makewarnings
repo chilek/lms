@@ -308,7 +308,7 @@ while (my $row = $dbq->fetchrow_hashref())
 				print STDERR "CID:$row->{'id'}\thas expired invoices.\n" if not $quiet;
 			}
 
-			$sdbq = $dbase->prepare("SELECT ipaddr, name FROM nodes WHERE ownerid='$row->{'id'}'");
+			$sdbq = $dbase->prepare("SELECT ipaddr, name FROM vnodes WHERE ownerid='$row->{'id'}'");
 			$sdbq->execute();
 			while ($srow = $sdbq->fetchrow_hashref())
 			{

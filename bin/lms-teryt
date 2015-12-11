@@ -768,7 +768,7 @@ if ($merge)
 
 	# nodes
 	$dbq = $dbase->prepare("SELECT n.id, n.name, n.location, c.address, c.city
-		FROM nodes n
+		FROM vnodes n
 		JOIN customers c ON (c.id = n.ownerid)
 		WHERE n.location_city IS NULL AND n.location_street IS NULL
 			AND (n.location <> '' OR c.address <> '')");
@@ -789,7 +789,7 @@ if ($merge)
 	# voipaccounts
 	$dbq = $dbase->prepare("SELECT va.id, va.phone, va.ownerid,
 			COUNT(*) AS locationcount FROM voipaccounts va
-		LEFT JOIN (SELECT DISTINCT ownerid, location_city, location_street, location_house, location_flat FROM nodes) l
+		LEFT JOIN (SELECT DISTINCT ownerid, location_city, location_street, location_house, location_flat FROM vnodes) l
 			ON l.ownerid = va.ownerid
 		WHERE va.location_city IS NULL
 		GROUP BY va.id, va.phone, va.ownerid");
@@ -800,7 +800,7 @@ if ($merge)
 			print "found " if not $quiet;
 			if ($row->{'locationcount'} == 1) {
 				my $dbqn = $dbase->prepare("SELECT location_city, location_street, location_house, location_flat, location
-					FROM nodes WHERE location_city IS NOT NULL AND (location_street IS NOT NULL OR location_house IS NOT NULL)
+					FROM vnodes WHERE location_city IS NOT NULL AND (location_street IS NOT NULL OR location_house IS NOT NULL)
 						AND ownerid = ? LIMIT 1");
 				$dbqn->execute($row->{'ownerid'});
 				$nrow = $dbqn->fetchrow_hashref();
