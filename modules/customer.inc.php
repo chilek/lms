@@ -81,7 +81,7 @@ $SMARTY->assign(array(
 	'sourceid' => $SESSION->get('addsource'),
 ));
 
-$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));
+$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources WHERE deleted = 0 ORDER BY name'));
 $SMARTY->assignByRef('customernodes', $customernodes);
 $SMARTY->assignByRef('customernetworks', $customernetworks);
 $SMARTY->assignByRef('customerstats', $customerstats);
