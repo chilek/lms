@@ -43,8 +43,13 @@ version ?.??.?? (????-??-??):
   - allow plugins to add their own buttons in customer balance box and invoice list [chilan]
   - allow plugins to add their own content in left and right column of customer info and edit boxes [chilan]
   - allow assign a whole network to the customer [pjona]
-  - invoices.file_name setting allows to define pdf invoice file name pattern (%number symbol
+  - invoices.attachment_name setting allows to define pdf invoice file name pattern (%number symbol
     is only supported symbol for now) [chilan]
+  - complete rewrite of invoice generation code - common path code for pdf and html invoices [chilan]
+  - lms-sendinvoices.php stopped pretending www browser - it uses new pdf generation code path [chilan]
+  - complete rewrite of receipt generation code - common path code for pdf and html receipts [chilan]
+  - complete rewrite of note generation code [chilan]
+  - complete rewrite of two transfer form types - killed old pdf backend code [chilan]
 
 version 1.11.18 (2015-10-01):
 

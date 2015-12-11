@@ -145,7 +145,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
     }
     free(groupname); free(groupnames);
 
-    res = g->db->query(g->db->conn, "SELECT LOWER(name) AS name, ipaddr, ipaddr_pub, ownerid FROM nodes ORDER BY ipaddr");
+    res = g->db->query(g->db->conn, "SELECT LOWER(name) AS name, ipaddr, ipaddr_pub, ownerid FROM vnodes ORDER BY ipaddr");
 
     for (i=0; i<g->db->nrows(res); i++) {
         int ownerid      = atoi(g->db->get_data(res,i,"ownerid"));

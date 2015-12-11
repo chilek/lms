@@ -685,7 +685,7 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 
 	function print_forms()
 	{
-		document.printinvoices.action="?m=print&type=transferforms";
+		document.printinvoices.action="?m=print&type=transferforms&kind=1";
 		document.printinvoices.target='_blank';
 		document.printinvoices.submit();
 	}
@@ -813,7 +813,7 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 </P>
 {/if}
 {if $printmenu=="finances"}
-<P><FORM method="post" name="printforms" id="printforms" action="?m=print&type=transferforms2">
+<P><FORM method="post" name="printforms" id="printforms" action="?m=print&type=transferforms&kind=2">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>

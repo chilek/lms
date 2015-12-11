@@ -60,7 +60,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 				"OR (ipaddr_pub > net.address AND ipaddr_pub < broadcast(net.address, inet_aton(net.mask)))) "
 				")");
 
-	char *nets_cust = strdup(" AND EXISTS (SELECT 1 FROM nodes n, networks net "
+	char *nets_cust = strdup(" AND EXISTS (SELECT 1 FROM vnodes n, networks net "
 				"WHERE n.ownerid = c.id "
 				"AND (%nets) "
 	                        "AND ((ipaddr > net.address AND ipaddr < broadcast(net.address, inet_aton(net.mask))) "
@@ -77,7 +77,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 				"OR (ipaddr_pub > net.address AND ipaddr_pub < broadcast(net.address, inet_aton(net.mask)))) "
 				")");
 
-	char *enets_cust = strdup(" AND NOT EXISTS (SELECT 1 FROM nodes n, networks net "
+	char *enets_cust = strdup(" AND NOT EXISTS (SELECT 1 FROM vnodes n, networks net "
 				"WHERE n.ownerid = c.id "
 				"AND (%enets) "
 	                        "AND ((ipaddr > net.address AND ipaddr < broadcast(net.address, inet_aton(net.mask))) "
@@ -235,7 +235,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	if(c->nodeassignments)
 	{
 		query = strdup(
-			"SELECT n.id, n.ownerid FROM nodes n "
+			"SELECT n.id, n.ownerid FROM vnodes n "
         		"WHERE n.ownerid > 0 AND n.access = 1 "
 	                    	"AND NOT EXISTS "
 				"(SELECT 1 FROM nodeassignments, assignments a "
@@ -280,7 +280,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	{
 		// customers without tariffs (or with expired assignments)
 		query = strdup(
-			"SELECT DISTINCT c.id FROM customers c, nodes n "
+			"SELECT DISTINCT c.id FROM customers c, vnodes n "
 			"WHERE c.id = n.ownerid "
 				"AND deleted = 0 "
 				"AND access = 1 "
@@ -354,7 +354,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 			else if(c->nodegroup_only)
 				n = g->db->pexec(g->db->conn, "INSERT INTO nodegroupassignments (nodegroupid, nodeid) "
 			                "SELECT ?, n.id "
-					"FROM nodes n "
+					"FROM vnodes n "
 					"WHERE n.ownerid = ? "
 					"AND NOT EXISTS ( "
 						"SELECT 1 FROM nodegroupassignments na "
@@ -380,7 +380,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	if(c->connect)
 	            {
 		    n = g->db->pexec(g->db->conn, "UPDATE nodes n1,"
-			"(SELECT n.id FROM nodes n LEFT JOIN nodeassignments ON n.id = nodeassignments.nodeid "
+			"(SELECT n.id FROM vnodes n LEFT JOIN nodeassignments ON n.id = nodeassignments.nodeid "
 			"LEFT JOIN assignments ON nodeassignments.assignmentid=assignments.id "
 			"WHERE (assignments.dateto > %NOW% or assignments.dateto='0') "
 			"AND assignments.datefrom < %NOW% "
@@ -453,7 +453,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 		else if(c->nodegroup_only)
 			n = g->db->pexec(g->db->conn, "INSERT INTO nodegroupassignments (nodegroupid, nodeid) "
 			                "SELECT ?, n.id "
-					"FROM nodes n "
+					"FROM vnodes n "
 					"WHERE n.ownerid = ? "
 					"AND NOT EXISTS ( "
 						"SELECT 1 FROM nodegroupassignments na "

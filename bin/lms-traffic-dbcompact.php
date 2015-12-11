@@ -148,7 +148,7 @@ printf('%d records before compacting ' . PHP_EOL, $DB->GetOne('SELECT COUNT(*) F
 if ($remove_old && ($deleted = $DB->Execute('DELETE FROM stats where dt < ?NOW? - 365*24*60*60')) > 0)
 	printf('%d at least one year old records have been removed' . PHP_EOL, $deleted);
 
-if ($remove_deleted && ($deleted = $DB->Execute('DELETE FROM stats WHERE nodeid NOT IN (SELECT id FROM nodes)')) > 0)
+if ($remove_deleted && ($deleted = $DB->Execute('DELETE FROM stats WHERE nodeid NOT IN (SELECT id FROM vnodes)')) > 0)
 	printf('%d records for deleted nodes have been removed' . PHP_EOL, $deleted);
 
 $time = time();
@@ -165,7 +165,7 @@ switch ($level) {
 }
 
 if ($mintime = $DB->GetOne('SELECT MIN(dt) FROM stats')) {
-	$nodes = $DB->GetAll('SELECT id, name FROM nodes ORDER BY name');
+	$nodes = $DB->GetAll('SELECT id, name FROM vnodes ORDER BY name');
 
 	foreach ($nodes as $node) {
 		$deleted = 0;

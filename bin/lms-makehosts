@@ -226,7 +226,7 @@ $dbq->finish();
 
 my @customergroups = split ' ',$customergroups_list;
 
-$dbq = $dbase->prepare("SELECT name, ipaddr, ownerid FROM nodes");
+$dbq = $dbase->prepare("SELECT name, ipaddr, ownerid FROM vnodes");
 $dbq->execute();
 my %namelist;
 my %ownerlist;

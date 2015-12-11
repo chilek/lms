@@ -307,3 +307,5 @@ td.empty-table { text-align: center; font-weight: bold; padding: 2em; background
 .wf { width: 100%; }
 .wh { width: 50%; }
 .wq { width: 25%; }
+
+.cancel { background: #ff6c6c; }

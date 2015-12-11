@@ -127,7 +127,7 @@ $items = $DB->GetAll('SELECT c.docid, c.itemid, c.taxid, c.value, c.count,
 	    FROM documents d
 	    LEFT JOIN invoicecontents c ON c.docid = d.id
 	    LEFT JOIN numberplans n ON d.numberplanid = n.id
-	    WHERE (d.type = ? OR d.type = ?) AND ('.$sortcol.' BETWEEN ? AND ?) '
+	    WHERE cancelled = 0 AND (d.type = ? OR d.type = ?) AND ('.$sortcol.' BETWEEN ? AND ?) '
 	    .(isset($numberplans) ? 'AND d.numberplanid IN (' . $numberplans . ')' : '')
 	    .(isset($divwhere) ? $divwhere : '')
 	    .(isset($groupwhere) ? $groupwhere : '')

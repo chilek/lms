@@ -201,7 +201,7 @@ switch($type)
 					.($docs ? ($docs == 'documented' ? ' AND c.docid > 0' : ' AND c.docid = 0') : '')
 					.($source ? ' AND c.sourceid = '.intval($source) : '')
 					.($group ? ' AND a.customergroupid = '.$group : '')
-					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
+					.($net ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
 					.($division ? ' AND EXISTS (SELECT 1 FROM customers WHERE id = c.customerid AND divisionid = '.$division.')' : '')
 					.($types ? $typewhere : '')
 					.' AND NOT EXISTS (
@@ -222,7 +222,7 @@ switch($type)
 					.($source ? ($source == -1 ? ' AND c.sourceid IS NULL' : ' AND c.sourceid = '.intval($source)) : '')
 					.(isset($date['from']) ? ' AND time >= '.$date['from'] : '')
 					.($group ? ' AND a.customergroupid = '.$group : '')
-					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
+					.($net ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
 					.($division ? ' AND EXISTS (SELECT 1 FROM customers WHERE id = c.customerid AND divisionid = '.$division.')' : '')
 					.($types ? $typewhere : '')
 					.' AND NOT EXISTS (
@@ -441,44 +441,48 @@ switch($type)
 		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
-		$from = $_POST['invoicefrom'];
-		$to = $_POST['invoiceto'];
+		$kind = isset($_GET['kind']) ? intval($_GET['kind']) : 2;
 
-		if($to) {
-			list($year, $month, $day) = explode('/',$to);
-			$date['to'] = mktime(23,59,59,$month,$day,$year);
-		} else { 
-			$to = date('Y/m/d',time());
-			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
+		switch ($kind) {
+			case 1:
+				$from = $_POST['invoicefrom'];
+				$to = $_POST['invoiceto'];
+
+				if ($to) {
+					list($year, $month, $day) = explode('/',$to);
+					$date['to'] = mktime(23,59,59,$month,$day,$year);
+				} else {
+					$to = date('Y/m/d',time());
+					$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
+				}
+
+				if ($from) {
+					list($year, $month, $day) = explode('/',$from);
+					$date['from'] = mktime(0,0,0,$month,$day,$year);
+				} else {
+					$from = date('Y/m/d',time());
+					$date['from'] = mktime(0,0,0); //pocz�tek dnia dzisiejszego
+				}
+
+				$_GET['from'] = $date['from'];
+				$_GET['to'] = $date['to'];
+				$_GET['customerid'] = $_POST['customer'];
+				$_GET['groupid'] = $_POST['group'];
+				$_GET['numberplan'] = $_POST['numberplan'];
+				$_GET['groupexclude'] = !empty($_POST['groupexclude']) ? 1 : 0;
+				$which = '';
+
+				break;
+			case 2:
+				$balance = $_POST['balance'] ? $_POST['balance'] : 0;
+				$customer = isset($_POST['customer']) ? intval($_POST['customer']) : 0;
+				$group = isset($_POST['customergroup']) ? intval($_POST['customergroup']) : 0;
+				$exclgroup = isset($_POST['groupexclude']) ? 1 : 0;
+
+				break;
 		}
-
-		if($from) {
-			list($year, $month, $day) = explode('/',$from);
-			$date['from'] = mktime(0,0,0,$month,$day,$year);
-		} else { 
-			$from = date('Y/m/d',time());
-			$date['from'] = mktime(0,0,0); //pocz�tek dnia dzisiejszego
-		}
-		
-		$_GET['from'] = $date['from'];
-		$_GET['to'] = $date['to'];
-		$_GET['customerid'] = $_POST['customer'];
-		$_GET['groupid'] = $_POST['group'];
-		$_GET['numberplan'] = $_POST['numberplan'];
-		$_GET['groupexclude'] = !empty($_POST['groupexclude']) ? 1 : 0;
-		$which = '';
-		
-		require_once(MODULES_DIR.'/transferforms.php');
-		
-	break;	
-
-	case 'transferforms2': /********************************************/
-
-		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
-			access_denied();
-
-		require_once(MODULES_DIR.'/transferforms2.php');
-	break;
+		require_once(MODULES_DIR . DIRECTORY_SEPARATOR . 'transferforms.php');
+		break;
 
 	case 'liabilityreport': /********************************************/
 

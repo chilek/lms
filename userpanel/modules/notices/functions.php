@@ -32,7 +32,7 @@ function module_main()
     {
        $DB->Execute('UPDATE nodes SET warning=0 WHERE ownerid = ?', array($SESSION->id));
     }
-    elseif($DB->GetOne('SELECT MAX(warning) FROM nodes WHERE ownerid = ?', array($SESSION->id)))
+    elseif($DB->GetOne('SELECT MAX(warning) FROM vnodes WHERE ownerid = ?', array($SESSION->id)))
     {
        $warning = $LMS->GetCustomerMessage($SESSION->id);
        $SMARTY->assign('warning', $warning);
