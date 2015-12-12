@@ -1,25 +1,13 @@
 {include file="header.html"}
-{box title="Filter"}
-<div class="row">
-    <div class="col-md-12">
-        <ol class="breadcrumb" style="margin-bottom: 5px;">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Library</a></li>
-            <li class="active">Data</li>
-        </ol>        
-
-        <nav class="nav nav-inline">
-            <a class="nav-link {if $bar=='hour'}active{/if}" href="?m=stats&amp;bar=hour">{trans("Last hour")}</a> /
-            <a class="nav-link {if $bar=='day'}active{/if}" href="?m=stats&amp;bar=day">{trans("Last day")}</a> /
-            <a class="nav-link {if $bar=='month'}active{/if}" href="?m=stats&amp;bar=month">{trans("Last 30 days")}</a> /
-            <a class="nav-link {if $bar=='year'}active{/if}" href="?m=stats&amp;bar=year">{trans("Last year")}</a> /
-            <a class="nav-link {if $bar=='all'}active{/if}" href="?m=stats&amp;bar=all">{trans("All")}</a>
-        </nav>
-    </div>
-</div>
-{/box}
-
-{if !$download || !$upload}
+{if $download || $upload}
+<ol class="breadcrumb" style="margin-bottom: 5px;">
+    <li>{trans("Filter")}</li>
+    <li {if $bar=='hour'}class="active"{/if}><a href="?m=stats&amp;bar=hour">{trans("Last hour")}</a></li>
+    <li {if $bar=='day'}class="active"{/if}><a href="?m=stats&amp;bar=day">{trans("Last day")}</a></li>
+    <li {if $bar=='month'}class="active"{/if}><a href="?m=stats&amp;bar=month">{trans("Last 30 days")}</a></li>
+    <li {if $bar=='year'}class="active"{/if}><a href="?m=stats&amp;bar=year">{trans("Last year")}</a></li>
+    <li {if $bar=='all'}class="active"{/if}><a href="?m=stats&amp;bar=all">{trans("All")}</a></li>
+</ol>
 <div class="row">
     <div class="col-md-6">
         {box title="Download"}
@@ -58,7 +46,7 @@
     {else}
     <div class="col-md-12">
         {box title="Network Statistics"}
-        <div class="alert alert-danger">{trans("No such data for selected period.")}</div
+        <div class="alert alert-danger">{trans("No such data for selected period.")}</div>
         {/box}
     </div>
     {/if}
