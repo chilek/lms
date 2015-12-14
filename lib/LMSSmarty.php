@@ -42,7 +42,7 @@ class LMSSmarty extends Smarty {
 		if (!empty($layout) && array_key_exists('module', $layout))
 			$this->plugin_manager->ExecuteHook($layout['module'] . '_before_module_display',
 				array('smarty' => $this));
-		$this->fetch($template, $cache_id, $compile_id, $parent, true);
+		parent::display($template, $cache_id, $compile_id, $parent);
 	}
 }
 
