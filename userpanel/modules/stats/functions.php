@@ -30,6 +30,7 @@ if (defined('USERPANEL_SETUPMODE'))
     {
 	global $SMARTY,$LMS;
         $SMARTY->assign('owner_stats', ConfigHelper::getConfig('userpanel.owner_stats'));
+
 	$SMARTY->display('module:stats:setup.html');
     }
 
@@ -203,6 +204,7 @@ function module_main()
 
     $layout['pagetitle'] = trans('Network Statistics');
 
+    $SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header'));
     $SMARTY->assign('bar', $bar ? $bar : 'month');
     $SMARTY->display('module:stats.html');
 }

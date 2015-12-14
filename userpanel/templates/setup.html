@@ -11,6 +11,19 @@
 	</TR>
 	</THEAD>
 	<TBODY>
+        <!-- remove condition if $page_header will be implemented in all themes -->
+        {if $style=='bclean'}
+        <tr>
+            <td style="width: 1%;" class="nobr">
+                <label for="page_header">{trans("Page header")}:</label>
+            </td>
+            <td style="width: 99%;">
+                <input type="text" size="50" name="page_header" id="page_header" value="{$page_header}">
+            </td>
+        </td>
+        {else}
+                <input type="hidden" name="page_header" id="page_header" value="{$page_header}">
+        {/if}
 	<TR>
 		<TD style="width: 1%;" class="text-left nobr">
 			{trans("Userpanel style:")}

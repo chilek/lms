@@ -46,6 +46,7 @@ function module_main()
     $fields_changed = $LMS->DB->GetRow('SELECT id FROM up_info_changes WHERE customerid = ?', 
     	array($SESSION->id));
 
+    $SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header'));
     $SMARTY->assign('userinfo',$userinfo);
     $SMARTY->assign('usernodes',$usernodes);
     //$SMARTY->assign('balancelist',$balancelist);
