@@ -124,6 +124,7 @@
 				<TR>
 					<TD style="width: 50%; vertical-align: top;">
 						<TABLE style="width: 100%" CELLPADDING="3">
+						{block name="nodeinfobox-leftcolumn"}
 	<TR>
 		<TD style="width: 1%;">
 			<IMG SRC="img/network.gif" ALT="{trans("Network:")}">
@@ -260,7 +261,7 @@
 			<label for="duplex">{trans("Half duplex")}:</label><INPUT TYPE="checkbox" NAME="duplex" ID="duplex" VALUE="1" {if $nodeinfo.halfduplex} checked{/if} onchange="duplex_change();">
 		</TD>
 	</TR>
-		<TR>
+	<TR>
 		<TD style="width: 1%;">
 			<IMG SRC="img/netdev.gif" ALT="">
 		</TD>
@@ -269,11 +270,13 @@
 			<label>{$sessiontype.label} <INPUT TYPE="checkbox" NAME="authtype[{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"} onchange="change_authtype()"{if ($nodeinfo.authtype & $idx) == $idx} checked{/if}></label>&nbsp;
 			{/foreach}
 		</TD>
-		</TR>
+	</TR>
+					{/block}
 					</TABLE>
 				</TD>
 				<TD style="width: 50%; vertical-align: top;">
 					<TABLE style="width: 100%;" CELLPADDING="3" id="nodeinfo">
+					{block name="nodeinfobox-rightcolumn"}
 {if $nodeinfo.info}
 	<TR>
 		<TD style="width: 1%;">
@@ -363,7 +366,7 @@
 			{if $nodeinfo.moddate}{$nodeinfo.modifiedby}, {$nodeinfo.moddateh}{else}-{/if}
 		</TD>
 	</TR>
-	
+						{/block}
 						</TABLE>
 					</TD>
 				</TR>
