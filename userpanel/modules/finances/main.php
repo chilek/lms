@@ -39,6 +39,7 @@ if(isset($balance['docid']))
 		}
 	}
 
+$SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header'));
 $SMARTY->assign('userinfo', $userinfo);
 $SMARTY->assign('balancelist', $balance);
 $SMARTY->assign('assignments', $assignments);

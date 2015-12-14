@@ -97,6 +97,8 @@ function module_main()
     }
     $solution = get_solution($problem);
     $questions = get_questions($problem);
+
+    $SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header'));
     $SMARTY->assign('solution', $solution);
     $SMARTY->assign('questions', $questions);    
     $SMARTY->display('module:help.html');
