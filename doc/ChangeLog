@@ -50,6 +50,7 @@ version ?.??.?? (????-??-??):
   - complete rewrite of receipt generation code - common path code for pdf and html receipts [chilan]
   - complete rewrite of note generation code [chilan]
   - complete rewrite of two transfer form types - killed old pdf backend code [chilan]
+  - new bootstrap based userpanel style integrated - bclean [kyob]
 
 version 1.11.18 (2015-10-01):
 
