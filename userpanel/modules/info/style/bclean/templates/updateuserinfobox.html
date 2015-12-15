@@ -4,6 +4,7 @@
 {if $error}{/if}
 
 <form class="form-inline" name="useredit" method="post" action="?m=info&f=updateusersave">
+<div class="table-responsive">
     <table class="table table-bordered table-hover table-responsive">
         {if $rights.info.edit_addr || $rights.info.edit_addr_ack}
         <tr>
@@ -152,5 +153,6 @@
         </tr>
         {/if}
     </table>
+</div>
 </form>
 {/box}

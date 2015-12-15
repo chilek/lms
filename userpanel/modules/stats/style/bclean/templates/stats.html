@@ -11,6 +11,7 @@
 <div class="row">
     <div class="col-md-6">
         {box title="Download"}
+	<div class="table-responsive">
         <table class="table">
             {section name=download loop=$download.name}
             <tr>
@@ -23,11 +24,13 @@
             </tr>
             {/section}
         </table>
+	</div>
         {trans("Total:")} {$download.sum.data|string_format:"%.2f "}{$download.sum.unit} ({$download.avgsum|string_format:"%.2f"}&nbsp;kbit/s)
         {/box}
     </div>
     <div class="col-md-6">
         {box title="Upload"}
+	<div class="table-responsive">
         <table class="table">
             {section name=upload loop=$upload.name}
             <tr>
@@ -40,6 +43,7 @@
             </tr>
             {/section}
         </table>
+	</div>
         {trans("Total:")} {$upload.sum.data|string_format:"%.2f "}{$upload.sum.unit} ({$upload.avgsum|string_format:"%.2f"}&nbsp;kbit/s)
         {/box}
     </div>

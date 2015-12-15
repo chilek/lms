@@ -1,6 +1,6 @@
 {box title="Informations about you"}
 {if $fields_changed}<div class="alert alert-danger">{trans("WARNING! Some fields have been changed and changes must become accepted by admin")}.</div>{/if}
-
+<div class="table-responsive">
 <table class="table table-bordered table-hover">
     <tr class="bg-primary">
         <th colspan="2">Dane osobowe:</th>
@@ -85,4 +85,5 @@
     </tr>
     {/if}
 </table>
+</div>
 {/box}
