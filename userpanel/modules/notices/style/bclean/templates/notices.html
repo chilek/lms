@@ -43,6 +43,7 @@
 {/if}
 {box title="Notice to you"}
 {if $notice}
+<div class="table-responsive">
 <table class="table table-bordered">
     <tr class="bg-primary">
         <th>{trans("Date:")}</th>
@@ -75,6 +76,7 @@
     </SCRIPT>
     {/foreach}
 </table>
+</div>
 {else}
 <div class="alert alert-info" role="alert">{trans("We don't have any notices to you.")}</div>
 {/if}

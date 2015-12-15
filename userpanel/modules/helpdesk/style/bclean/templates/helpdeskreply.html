@@ -2,6 +2,7 @@
 <form method="post" action="?m=helpdesk&id={$ticket.id}" name="helpdesk" enctype="multipart/form-data">
     {box title="Message"}
     <input type="hidden" name="helpdesk[inreplyto]" value="{$helpdesk.inreplyto}" />
+    <div class="table-responsive">
     <table class="table table-bordered">
         <tr>
             <th>
@@ -33,9 +34,11 @@
             </td>
         </tr>
     </table>
+    </div>
     {/box}
     <br />
     {box title=$title}
+    <div class="table-responsive">
     <table class="table table-bordered table-danger table-striped">
         {foreach from=$ticket.messages item=message}
         <tr>
@@ -81,6 +84,7 @@
         </tr>
         {/foreach}
     </table>
+    </div>
     {/box}
 </form>
 {include file="footer.html"}

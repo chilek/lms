@@ -1,5 +1,6 @@
 {include file="header.html"}
 {box title=$title}
+<div class="table-responsive">
 <table class="table table-bordered">
     {foreach from=$ticket.messages item=message}
     <tr>
@@ -45,5 +46,6 @@
     </tr>
     {/foreach}
 </table>
+</div>
 {/box}
 {include file="footer.html"}
