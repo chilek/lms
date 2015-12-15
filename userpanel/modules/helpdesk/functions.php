@@ -494,7 +494,6 @@ function module_main()
 			$helpdesklist[$idx]['lastmod'] = $LMS->DB->GetOne('SELECT MAX(createtime) FROM rtmessages WHERE ticketid = ?',
 				array($key['id']));
 
-	$SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header'));
 	$queues = $LMS->DB->GetAll('SELECT id, name FROM rtqueues WHERE id IN (' . str_replace(';', ',', ConfigHelper::getConfig('userpanel.queues')) . ')');
 	$SMARTY->assign('queues', $queues);
 	$SMARTY->assign('helpdesklist', $helpdesklist);

@@ -27,7 +27,6 @@
 function module_main()
 {
     global $SMARTY;
-    $SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header'));
     $SMARTY->display('module:modules.html');
 }
 

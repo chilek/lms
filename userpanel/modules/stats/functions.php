@@ -204,7 +204,6 @@ function module_main()
 
     $layout['pagetitle'] = trans('Network Statistics');
 
-    $SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header'));
     $SMARTY->assign('bar', $bar ? $bar : 'month');
     $SMARTY->display('module:stats.html');
 }

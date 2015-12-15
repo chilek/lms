@@ -65,7 +65,6 @@ function module_main()
 					$DB->Execute('UPDATE messageitems SET status = 2, lastdate = ?NOW? WHERE id = ?', array($confirm_urgent));
         header('Location: ?m=notices');
   }
-       $SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header'));
        $SMARTY->display('module:notices.html');
  }
 

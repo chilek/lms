@@ -245,6 +245,7 @@ if($SESSION->islogged)
 			break;
 		}
 
+	$SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header'));
 	if ($module_dir !== null) {
     		include($module_dir . $module . DIRECTORY_SEPARATOR . 'functions.php');
 
