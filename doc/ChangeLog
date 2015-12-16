@@ -51,6 +51,8 @@ version ?.??.?? (????-??-??):
   - complete rewrite of note generation code [chilan]
   - complete rewrite of two transfer form types - killed old pdf backend code [chilan]
   - new bootstrap based userpanel style integrated - bclean [kyob]
+  - customer info box: show customer all and not resolved ticket stats (as bold when there
+    are some unresolved tickets) [chilan]
 
 version 1.11.18 (2015-10-01):
 
