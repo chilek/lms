@@ -399,7 +399,7 @@
 				<A HREF="?m=customeredit&id={$customerinfo.id}&action=recover">{trans("Restore")} <IMG SRC="img/recover.gif" ALT="[ {trans("Restore")} ]"></A>
 			{else}
 				<NOBR>
-				<A HREF="?m=rtsearch&id={$customerinfo.id}"{if $customerstats['tickets']['notresolved']} class="bold"{/if}>{trans("Tickets")} ({$customerstats['tickets']['all']} / {$customerstats['tickets']['notresolved']})</A> <IMG src="img/ticket.gif" alt="[ {trans("Tickets")} ]"></A>
+				<A HREF="?m=rtsearch&id={$customerinfo.id}"{if $customerstats['tickets']['notresolved']} class="bold"{/if}>{trans("Tickets")} ({$customerstats['tickets']['all']}{if $customerstats['tickets']['notresolved']} / {$customerstats['tickets']['notresolved']}{/if})</A> <IMG src="img/ticket.gif" alt="[ {trans("Tickets")} ]"></A>
 				<A href="?m=accountlist&u={$customerinfo.id}">{trans("Accounts")} ({$customerstats['accounts']})</A> <IMG src="img/account.gif" alt="[ {trans("Accounts")} ]">
 				<A href="?m=domainlist&c={$customerinfo.id}">{trans("Domains")} ({$customerstats['domains']})</A> <IMG src="img/network.gif" alt="[ {trans("Domains")} ]">
 				<A href="?m=trafficprint&type=customertraffic&customer={$customerinfo.id}" target="_blank">{trans("Stats")} <IMG src="img/traffic.gif" alt="[ {trans("Stats")} ]"></A>
