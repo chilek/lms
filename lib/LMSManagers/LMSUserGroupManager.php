@@ -107,7 +107,7 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
     
     public function UsergroupDelete($id){
         global $SYSLOG_RESOURCE_KEYS;
-        if (!$this->UsergroupWithCustomerGet($id)) {
+        if (!$this->UsergroupWithUserGet($id)) {
             if ($this->syslog) {
                 $userassigns = $this->db->Execute('SELECT id, userid, usergroupid FROM userassignments WHERE usergroupid = ?', array($id));
                 if (!empty($userassigns))
@@ -128,7 +128,7 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
 	    return FALSE;
     }
     
-    public function UsergroupWithCustomerGet($id){
+    public function UsergroupWithUserGet($id){
         return $this->db->GetOne('SELECT COUNT(*) FROM userassignments WHERE usergroupid = ?', array($id));
     }
     

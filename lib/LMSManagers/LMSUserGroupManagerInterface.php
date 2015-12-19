@@ -25,7 +25,7 @@ interface LMSUserGroupManagerInterface{
     
     public function UsergroupDelete($id);
     
-    public function UsergroupWithCustomerGet($id);
+    public function UsergroupWithUserGet($id);
     
     public function UsergroupUpdate($usergroupdata);
     
