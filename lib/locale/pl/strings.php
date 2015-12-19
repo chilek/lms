@@ -3066,4 +3066,10 @@ $_LANG['Automatically adjusts the size of the selection list to the number of us
 $_LANG['Are you sure, you want to cancel invoice \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz anulować fakturę \\\'$a\\\' z bazy danych?';
 $_LANG['Are you sure, you want to recover cancelled invoice \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz przywrócić anulowaną fakturę \\\'$a\\\' z bazy danych?';
 
+$_LANG['User groups'] = 'Grupy użytkowników';
+$_LANG['user group<!syslog>'] = 'grupa użytkowników';
+$_LANG['User Groups List'] = 'Lista grup użytkowników';
+$_LANG['All users are members of this group.'] = 'Wszyscy użytkownicy są członkami tej grupy.';
+$_LANG['user assignment<!syslog>'] = 'powiązanie użytkownika z grupą';
+
 ?>

@@ -63,6 +63,18 @@ $menu = array(
 					'tip' => trans('Copyrights, authors, etc.'),
 					'prio' => 50,
 				),
+				array(
+					'name' => trans('User groups'),
+					'link' =>'?m=usergrouplist',
+					'tip' => trans('User groups'),
+					'prio' => 60,
+				),
+				array(
+					'name' => trans('New Group'),
+					'link' =>'?m=usergroupadd',
+					'tip' => trans('Allows you to add new group'),
+					'prio' => 70,
+				),
 			),
 		),
 
