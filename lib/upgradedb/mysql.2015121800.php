@@ -25,25 +25,21 @@
  */
 
 $this->BeginTrans();
-$this->Execute("CREATE SEQUENCE usergroups_id_seq;");
 $this->Execute("CREATE TABLE usergroups (
-	id integer DEFAULT nextval('usergroups_id_seq'::text) NOT NULL, 
-	name varchar(255) DEFAULT '' NOT NULL, 
+	id int(11) NOT NULL auto_increment,
+	name varchar(255) DEFAULT '' NOT NULL UNIQUE, 
 	description text DEFAULT '' NOT NULL, 
-	PRIMARY KEY (id), 
-	UNIQUE (name)
-    );");
-$this->Execute("CREATE SEQUENCE userassignments_id_seq;");
+	PRIMARY KEY (id));");
 $this->Execute("CREATE TABLE userassignments (
-	id integer DEFAULT nextval('userassignments_id_seq'::text) NOT NULL,
-	usergroupid integer NOT NULL
-	    REFERENCES usergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	userid integer NOT NULL
-	    REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	id int(11) NOT NULL auto_increment,
+	usergroupid int(11) NOT NULL,
+	userid int(11) NOT NULL,
 	PRIMARY KEY (id),
+	INDEX userassignments_userid_idx (userid),
+	FOREIGN KEY (usergroupid) REFERENCES usergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT userassignments_usergroupid_key UNIQUE (usergroupid, userid)
     );");
-$this->Execute("CREATE INDEX userassignments_userid_idx ON userassignments (userid);");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015121800', 'dbversion'));
 $this->CommitTrans();
 
