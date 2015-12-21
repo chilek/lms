@@ -53,6 +53,7 @@ version ?.??.?? (????-??-??):
   - new bootstrap based userpanel style integrated - bclean [kyob]
   - customer info box: show customer all and not resolved ticket stats (as bold when there
     are some unresolved tickets) [chilan]
+  - bclean: added responsive menu [kyob]
 
 version 1.11.18 (2015-10-01):
 
