@@ -3,6 +3,7 @@ $Id$
 version ?.??.?? (????-??-??):
   - www, userpanel messages are always sent initially and userpanel messages are
     marked as delivered after message read confirmation [chilan]
+  - added support for user groups [wawryk]
 
 version 1.11.19 (2015-12-21):
 
