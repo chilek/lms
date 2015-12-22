@@ -50,7 +50,7 @@ if(isset($_GET['ajax']))
 	if (!isset($mode)) { print 'false;'; exit; }
 
 	$candidates = $DB->GetAll('SELECT '.$mode.' as item, count(id) as entries
-	    FROM customers
+	    FROM customeraddressview
 	    WHERE '.$mode.' != \'\' AND lower('.$mode.') ?LIKE? lower(' . $DB->Escape('%'.$search.'%') . ')
 	    GROUP BY item
 	    ORDER BY entries desc, item asc
