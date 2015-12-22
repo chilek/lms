@@ -4,6 +4,8 @@ version ?.??.?? (????-??-??):
   - www, userpanel messages are always sent initially and userpanel messages are
     marked as delivered after message read confirmation [chilan]
   - added support for user groups [wawryk]
+  - customer address and postal address were separated to street, building and
+    apartment fields [chilan]
 
 version 1.11.19 (2015-12-21):
 

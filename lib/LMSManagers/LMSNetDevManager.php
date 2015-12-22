@@ -41,7 +41,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			' . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS owner,
 			net.name AS netname
 			FROM vnodes n
-			JOIN customersview c ON c.id = ownerid
+			JOIN customerview c ON c.id = ownerid
 			JOIN networks net ON net.id = n.netid
 			LEFT JOIN netradiosectors rs ON rs.id = n.linkradiosector
 			WHERE n.netdev = ? AND ownerid > 0 

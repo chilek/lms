@@ -156,12 +156,16 @@ CREATE TABLE customers (
   name varchar(128) 	NOT NULL DEFAULT '',
   status smallint 	NOT NULL DEFAULT '0',
   type smallint		NOT NULL DEFAULT '0',
-  address varchar(255) 	NOT NULL DEFAULT '',
+  street varchar(255) DEFAULT '' NOT NULL,
+  building varchar(20) DEFAULT NULL,
+  apartment varchar(20) DEFAULT NULL,
   zip varchar(10) 	NOT NULL DEFAULT '',
   city varchar(32) 	NOT NULL DEFAULT '',
   countryid int(11)	DEFAULT NULL,
   post_name varchar(255) DEFAULT NULL,
-  post_address varchar(255) DEFAULT NULL,
+  post_street varchar(255) DEFAULT NULL,
+  post_building varchar(20) DEFAULT NULL,
+  post_apartment varchar(20) DEFAULT NULL,
   post_zip varchar(10) 	    DEFAULT NULL,
   post_city varchar(32) 	DEFAULT NULL,
   post_countryid int(11)	DEFAULT NULL,
@@ -1870,17 +1874,36 @@ DROP FUNCTION IF EXISTS lms_current_user;
 CREATE FUNCTION lms_current_user() RETURNS int(11) NO SQL
 RETURN @lms_current_user;
 
-CREATE VIEW customersview AS
-	SELECT c.* FROM customers c
+CREATE VIEW customerview AS
+	SELECT c.*,
+		(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN CONCAT(street, ' ', building)
+			ELSE CONCAT(street, ' ', building, '/', apartment) END) END) AS address,
+		(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN CONCAT(post_street, ' ', post_building)
+			ELSE CONCAT(post_street, ' ', post_building, '/', post_apartment) END) END) AS post_address
+	FROM customers c
 	WHERE NOT EXISTS (
-	    	SELECT 1 FROM customerassignments a
-		JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-		WHERE e.userid = lms_current_user() AND a.customerid = c.id) 
+			SELECT 1 FROM customerassignments a
+			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+			WHERE e.userid = lms_current_user() AND a.customerid = c.id) 
 		AND c.type < 2;
 
 CREATE VIEW contractorview AS
-	SELECT c.* FROM customers c
-	WHERE c.type = '2';
+	SELECT c.*,
+		(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN CONCAT(street, ' ', building)
+			ELSE CONCAT(street, ' ', building, '/', apartment) END) END) AS address,
+		(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN CONCAT(post_street, ' ', post_building)
+			ELSE CONCAT(post_street, ' ', post_building, '/', post_apartment) END) END) AS post_address
+	FROM customers c
+	WHERE c.type = 2;
+
+CREATE VIEW customeraddressview AS
+	SELECT c.*,
+		(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN CONCAT(street, ' ', building)
+			ELSE CONCAT(street, ' ', building, '/', apartment) END) END) AS address,
+		(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN CONCAT(post_street, ' ', post_building)
+			ELSE CONCAT(post_street, ' ', post_building, '/', post_apartment) END) END) AS post_address
+	FROM customers c
+	WHERE c.type < 2;
 
 CREATE VIEW teryt_terc AS
 SELECT ident AS woj, '0' AS pow, '0' AS gmi, 0 AS rodz,
@@ -2487,4 +2510,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015121800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015122200');

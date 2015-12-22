@@ -20,7 +20,7 @@ void tscript_ext_sql_close(tscript_context *);
 			WHEN 0 THEN 1 \
 			ELSE COUNT(DISTINCT nodes.id) END \
 		    ),2) AS balance \
-		FROM customers \
+		FROM customeraddressview \
 		LEFT JOIN cash ON (customers.id = cash.customerid) \
 		LEFT JOIN nodes ON (customers.id = ownerid) \
 		WHERE deleted = 0 \

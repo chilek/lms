@@ -624,7 +624,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 				$numbers{$plan}++;
 
 				my $udbq = $dbase->prepare("SELECT lastname, name, address, city, zip, ssn, ten, countryid, divisionid, paytime
-						FROM customers WHERE id = ?");
+						FROM customeraddressview WHERE id = ?");
 				$udbq->execute($uid);
 				my $urow = $udbq->fetchrow_hashref();
 				

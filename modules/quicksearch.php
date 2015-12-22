@@ -79,7 +79,7 @@ switch ($mode) {
 		{
 			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, address, post_name, post_address, deleted,
 			    ".$DB->Concat('UPPER(lastname)',"' '",'c.name')." AS username
-				FROM customersview c
+				FROM customerview c
 				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & " . CONTACT_EMAIL . " = " . CONTACT_EMAIL . ")    
 				WHERE ".(preg_match('/^[0-9]+$/', $search) ? 'c.id = '.intval($search).' OR ' : '')."
 					LOWER(".$DB->Concat('lastname',"' '",'c.name').") ?LIKE? LOWER($sql_search)
@@ -138,7 +138,7 @@ switch ($mode) {
 
 		if(is_numeric($search)) // maybe it's customer ID
 		{
-			if($customerid = $DB->GetOne('SELECT id FROM customersview WHERE id = '.$search))
+			if($customerid = $DB->GetOne('SELECT id FROM customerview WHERE id = '.$search))
 			{
 				$target = '?m=customerinfo&id='.$customerid;
 				break;
@@ -278,7 +278,7 @@ switch ($mode) {
 			$candidates = $DB->GetAll("SELECT t.id, t.subject, t.requestor, c.name, c.lastname 
 				FROM rttickets t
 				LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
-				LEFT JOIN customersview c on (t.customerid = c.id)
+				LEFT JOIN customerview c on (t.customerid = c.id)
 				WHERE ".(is_array($catids) ? "tc.categoryid IN (".implode(',', $catids).")" : "tc.categoryid IS NULL")
 					." AND (".(preg_match('/^[0-9]+$/',$search) ? 't.id = '.intval($search).' OR ' : '')."
 					LOWER(t.subject) ?LIKE? LOWER($sql_search)
@@ -385,7 +385,7 @@ switch ($mode) {
 			$candidates = $DB->GetAll("SELECT d.id, d.type, d.fullnumber,
 					d.customerid AS cid, d.name AS customername
 				FROM documents d
-				JOIN customersview c on d.customerid = c.id
+				JOIN customerview c on d.customerid = c.id
 				WHERE (LOWER(d.fullnumber) ?LIKE? LOWER($sql_search)
 					OR 1 = 0)
 					ORDER BY d.fullnumber
@@ -429,7 +429,7 @@ switch ($mode) {
 
 		$docs = $DB->GetAll("SELECT d.id, d.type, d.customerid AS cid, d.name AS customername
 			FROM documents d
-			JOIN customersview c ON c.id = d.customerid
+			JOIN customerview c ON c.id = d.customerid
 			WHERE LOWER(fullnumber) ?LIKE? LOWER($sql_search)");
 		if (count($docs) == 1) {
 			$cid = $docs[0]['cid'];

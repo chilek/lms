@@ -120,7 +120,7 @@ $layout['pagetitle'] = trans('Notices');
 
 $customerlist = $DB->GetAllByKey('SELECT c.id AS id, MAX(warning) AS warning, '.
 		    $DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername 
-		    FROM customersview c 
+		    FROM customerview c 
 		    LEFT JOIN nodes ON c.id = ownerid 
 		    WHERE deleted = 0 
 		    GROUP BY c.id, lastname, c.name 

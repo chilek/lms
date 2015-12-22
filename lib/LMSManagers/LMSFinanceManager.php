@@ -700,7 +700,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
 				c.post_name, c.post_address, c.post_zip, c.post_city, c.post_countryid
 				FROM documents d
-				JOIN customers c ON (c.id = d.customerid)
+				JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				WHERE d.id = ? AND (d.type = ? OR d.type = ?)', array($invoiceid, DOC_INVOICE, DOC_CNOTE))) {
@@ -823,7 +823,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
 				c.post_name, c.post_address, c.post_zip, c.post_city, c.post_countryid
 				FROM documents d
-				JOIN customers c ON (c.id = d.customerid)
+				JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				WHERE d.id = ? AND d.type = ?', array($id, DOC_DNOTE))) {
@@ -1019,7 +1019,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $result['customers'] = $this->db->GetAll('SELECT c.id AS id, COUNT(c.id) AS cnt, '
                 . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername '
                 . ($network ? ', COUNT(vnodes.id) AS nodescount ' : '')
-                . 'FROM assignments, customersview c '
+                . 'FROM assignments, customerview c '
                 . ($network ? 'LEFT JOIN vnodes ON (c.id = vnodes.ownerid) ' : '')
                 . 'WHERE c.id = customerid AND deleted = 0 AND tariffid = ? '
                 . ($network ? 'AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') OR (ipaddr_pub > '

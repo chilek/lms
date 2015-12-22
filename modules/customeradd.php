@@ -98,9 +98,15 @@ if (isset($_POST['customeradd']))
 			$error['group'] = trans('Group name required!');
 	}
 	
-	if($customeradd['address'] == '')
-		$error['address'] = trans('Address required!');
-	
+	if ($customeradd['street'] == '')
+		$error['street'] = trans('Street name required!');
+
+	if ($customeradd['building'] != '' && $customeradd['street'] == '')
+		$error['street'] = trans('Street name required!');
+
+	if ($customeradd['apartment'] != '' && $customeradd['building'] == '')
+		$error['building'] = trans('Building number required!');
+
 	if($customeradd['ten'] !='' && !check_ten($customeradd['ten']) && !isset($customeradd['tenwarning']))
 	{
 		$error['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');

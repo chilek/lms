@@ -451,7 +451,7 @@ foreach ($assigns as $assign) {
 				$numbers[$plan]++;
 
 				$customer = $DB->GetRow("SELECT lastname, name, address, city, zip, ssn, ten, countryid, divisionid, paytime 
-						FROM customers WHERE id = $cid");
+						FROM customeraddressview WHERE id = $cid");
 
 				$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 						account, inv_header, inv_footer, inv_author, inv_cplace 

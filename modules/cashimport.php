@@ -258,7 +258,7 @@ $divisions[0] = array('id' => 0, 'name' => '');
 
 if($importlist = $DB->GetAll('SELECT i.*, c.divisionid
 	FROM cashimport i
-	LEFT JOIN customersview c ON (i.customerid = c.id)
+	LEFT JOIN customerview c ON (i.customerid = c.id)
 	WHERE i.closed = 0 AND i.value > 0
 	ORDER BY i.id'))
 {

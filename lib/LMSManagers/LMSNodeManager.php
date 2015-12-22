@@ -354,7 +354,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				ld.name AS district_name, ls.name AS state_name ';
 		}
 		$sql .= 'FROM vnodes n 
-				JOIN customersview c ON (n.ownerid = c.id)
+				JOIN customerview c ON (n.ownerid = c.id)
 				JOIN networks net ON net.id = n.netid 
 				LEFT JOIN location_cities lc ON lc.id = n.location_city
 				LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid

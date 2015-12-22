@@ -103,7 +103,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		    FROM rttickets t 
 		    LEFT JOIN rtticketcategories tc ON (t.id = tc.ticketid)
 		    LEFT JOIN users ON (owner = users.id)
-		    LEFT JOIN customers c ON (t.customerid = c.id)
+		    LEFT JOIN customeraddressview c ON (t.customerid = c.id)
 		    LEFT JOIN users u ON (t.creatorid = u.id)
 		    WHERE 1=1 '
                 . (is_array($ids) ? ' AND t.queueid IN (' . implode(',', $ids) . ')' : ($ids != 0 ? ' AND t.queueid = ' . $ids : ''))

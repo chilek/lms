@@ -24,10 +24,10 @@
  *  $Id$
  */
 
-// get customer name and check privileges using customersview
+// get customer name and check privileges using customerview
 $customer = $DB->GetRow('SELECT id, divisionid, '
     .$DB->Concat('lastname',"' '",'name').' AS name
-    FROM customersview WHERE id = ?', array($_GET['id']));
+    FROM customerview WHERE id = ?', array($_GET['id']));
 
 if(!$customer)
 {

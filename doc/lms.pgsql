@@ -45,11 +45,17 @@ CREATE TABLE customers (
 	status smallint 	DEFAULT 0 NOT NULL,
 	type smallint		DEFAULT 0 NOT NULL,
 	address varchar(255) 	DEFAULT '' NOT NULL,
+	street varchar(255) DEFAULT '' NOT NULL,
+	building varchar(20) DEFAULT NULL,
+	apartment varchar(20) DEFAULT NULL,
 	zip varchar(10)		DEFAULT '' NOT NULL,
 	city varchar(32) 	DEFAULT '' NOT NULL,
 	countryid integer	DEFAULT NULL,
 	post_name varchar(255) DEFAULT NULL,
 	post_address varchar(255) DEFAULT NULL,
+	post_street varchar(255) DEFAULT NULL,
+	post_building varchar(20) DEFAULT NULL,
+	post_apartment varchar(20) DEFAULT NULL,
 	post_zip varchar(10)	DEFAULT NULL,
 	post_city varchar(32) 	DEFAULT NULL,
 	post_countryid integer	DEFAULT NULL,
@@ -2019,17 +2025,36 @@ CASE
 END
 ' LANGUAGE SQL;
 
-CREATE VIEW customersview AS
-SELECT c.* FROM customers c
-        WHERE NOT EXISTS (
-	        SELECT 1 FROM customerassignments a 
-	        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid) 
-	        WHERE e.userid = lms_current_user() AND a.customerid = c.id) 
-	        AND c.type < 2;
+CREATE VIEW customerview AS
+	SELECT c.*,
+		(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN street || ' ' || building
+			ELSE street || ' ' || building || '/' || apartment END) END) AS address,
+		(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN post_street || ' ' || post_building
+			ELSE post_street || ' ' || post_building || '/' || 'post_apartment' END) END) AS post_address
+	FROM customers c
+	WHERE NOT EXISTS (
+			SELECT 1 FROM customerassignments a 
+			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid) 
+			WHERE e.userid = lms_current_user() AND a.customerid = c.id) 
+		AND c.type < 2;
 
 CREATE VIEW contractorview AS
-SELECT c.* FROM customers c
-        WHERE c.type = '2' ;
+	SELECT c.*,
+		(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN street || ' ' || building
+			ELSE street || ' ' || building || '/' || apartment END) END) AS address,
+		(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN post_street || ' ' || post_building
+			ELSE post_street || ' ' || post_building || '/' || 'post_apartment' END) END) AS post_address
+	FROM customers c
+	WHERE c.type = 2;
+
+CREATE VIEW customeraddressview AS
+	SELECT c.*,
+		(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN street || ' ' || building
+			ELSE street || ' ' || building || '/' || apartment END) END) AS address,
+		(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN post_street || ' ' || post_building
+			ELSE post_street || ' ' || post_building || '/' || 'post_apartment' END) END) AS post_address
+	FROM customers c
+	WHERE c.type < 2;
 
 CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
 SELECT $1::text;
@@ -2578,4 +2603,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015121800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015122200');
