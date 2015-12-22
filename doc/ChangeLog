@@ -1,6 +1,10 @@
 $Id$
 
 version ?.??.?? (????-??-??):
+  - www, userpanel messages are always sent initially and userpanel messages are
+    marked as delivered after message read confirmation [chilan]
+
+version 1.11.19 (2015-12-21):
 
   - updated lms swekey code to be conformed with PHP 7 [prezes_kk]
   - added support for message delivery status [Jarosław Dziubek]

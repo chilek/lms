@@ -409,8 +409,7 @@ if(isset($_POST['message']))
 					VALUES (?, ?, ?, ?)', array(
 						$msgid,
 						isset($row['id']) ? $row['id'] : 0,
-						$destination,
-						MSG_NEW,
+						$destination, MSG_NEW,
 					));
 		}
 
@@ -467,7 +466,7 @@ if(isset($_POST['message']))
 						$destination .= ',' . $message['sender'];
 					$result = $LMS->SendMail($destination, $headers, $body, $files);
 				} elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT)
-					$result = MSG_NEW;
+					$result = MSG_SENT;
 				else
 					$result = $LMS->SendSMS($destination, $body, $msgid);
 
