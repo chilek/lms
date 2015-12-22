@@ -59,6 +59,12 @@ elseif (isset($_POST['customerdata']))
 	if ($customerdata['apartment'] != '' && $customerdata['building'] == '')
 		$error['building'] = trans('Building number required!');
 
+	if ($customerdata['post_building'] != '' && $customerdata['post_street'] == '')
+		$error['post_street'] = trans('Street name required!');
+
+	if ($customerdata['post_apartment'] != '' && $customerdata['post_building'] == '')
+		$error['post_building'] = trans('Building number required!');
+
 	if($customerdata['ten'] !='' && !check_ten($customerdata['ten']) && !isset($customerdata['tenwarning']))
 	{
 		$error['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
