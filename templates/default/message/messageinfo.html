@@ -163,7 +163,7 @@
 			{/if}
 		</TD>
 		<TD WIDTH="1%" align="right">
-			{if ($message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT || $message.type = $smarty.const.MSG_WWW)
+			{if ($message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT || $message.type == $smarty.const.MSG_WWW)
 				&& $item.lastreaddate}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 		</TD>
 		<TD WIDTH="1%" align="right">
