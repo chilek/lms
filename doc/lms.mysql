@@ -1838,14 +1838,6 @@ SELECT n.*, m.mac, m.id AS macid
 	JOIN macs m ON (n.id = m.nodeid)
 	WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
 
-CREATE VIEW vnetworks AS
-	SELECT h.name AS hostname, ne.*, no.ownerid, no.location, no.location_city, no.location_street, no.location_house, no.location_flat, no.chkmac,
-		CONCAT(inet_ntoa(ne.address), '/', mask2prefix(inet_aton(ne.mask))) AS ip, no.id AS nodeid
-	FROM nodes no
-	LEFT JOIN networks ne ON (ne.id = no.netid)
-	LEFT JOIN hosts h ON (h.id = ne.hostid)
-	WHERE no.ipaddr = 0 AND no.ipaddr_pub = 0;
-
 DROP FUNCTION IF EXISTS lms_current_user;
 CREATE FUNCTION lms_current_user() RETURNS int(11) NO SQL
 RETURN @lms_current_user;
@@ -1907,6 +1899,14 @@ CREATE VIEW customermailsview AS
 DROP FUNCTION IF EXISTS mask2prefix;
 CREATE FUNCTION mask2prefix(mask bigint) RETURNS smallint DETERMINISTIC
 RETURN bit_count(mask);
+
+CREATE VIEW vnetworks AS
+  SELECT h.name AS hostname, ne.*, no.ownerid, no.location, no.location_city, no.location_street, no.location_house, no.location_flat, no.chkmac,
+    CONCAT(inet_ntoa(ne.address), '/', mask2prefix(inet_aton(ne.mask))) AS ip, no.id AS nodeid
+  FROM nodes no
+  LEFT JOIN networks ne ON (ne.id = no.netid)
+  LEFT JOIN hosts h ON (h.id = ne.hostid)
+  WHERE no.ipaddr = 0 AND no.ipaddr_pub = 0;
 
 DROP FUNCTION IF EXISTS broadcast;
 CREATE FUNCTION broadcast(address bigint, mask bigint) RETURNS bigint DETERMINISTIC

@@ -1056,6 +1056,14 @@ SELECT
 	length(replace(ltrim(textin(bit_out($1::bit(32))), '0'), '0', ''))::smallint;
 $$ LANGUAGE SQL IMMUTABLE;
 
+CREATE VIEW vnetworks AS
+	SELECT h.name AS hostname, ne.*, no.ownerid, no.location, no.location_city, no.location_street, no.location_house, no.location_flat, no.chkmac,
+		inet_ntoa(ne.address) || '/' || mask2prefix(inet_aton(ne.mask)) AS ip, no.id AS nodeid
+	FROM nodes no
+	LEFT JOIN networks ne ON (ne.id = no.netid)
+	LEFT JOIN hosts h ON (h.id = ne.hostid)
+	WHERE no.ipaddr = 0 AND no.ipaddr_pub = 0;
+
 CREATE OR REPLACE FUNCTION broadcast(bigint, bigint) RETURNS bigint AS $$
 SELECT
 	($1::bit(32) |  ~($2::bit(32)))::bigint;
@@ -2016,14 +2024,6 @@ CREATE VIEW vmacs AS
 	FROM nodes n
 	JOIN macs m ON (n.id = m.nodeid)
 	WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
-
-CREATE VIEW vnetworks AS
-	SELECT h.name AS hostname, ne.*, no.ownerid, no.location, no.location_city, no.location_street, no.location_house, no.location_flat, no.chkmac,
-		inet_ntoa(ne.address) || '/' || mask2prefix(inet_aton(ne.mask)) AS ip, no.id AS nodeid
-	FROM nodes no
-	LEFT JOIN networks ne ON (ne.id = no.netid)
-	LEFT JOIN hosts h ON (h.id = ne.hostid)
-	WHERE no.ipaddr = 0 AND no.ipaddr_pub = 0;
 
 CREATE VIEW teryt_terc AS
 SELECT ident AS woj, 0::text AS pow, 0::text AS gmi, 0 AS rodz,
