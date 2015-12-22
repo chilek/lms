@@ -47,30 +47,36 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" style="vertical-align: top">
-			<IMG SRC="img/home.gif" ALT="">
+		<TD style="width: 1%;" class="valign-top">
 		</TD>
-		<TD WIDTH="99%">
-			{$customerinfo.address}<BR>
-			{$customerinfo.zip} {$customerinfo.city}
-			{if $customerinfo.cstate}<BR>{$customerinfo.cstate}{/if}
-			{if $customerinfo.country}<BR>{t}{$customerinfo.country}{/t}{/if}
+		<TD style="width: 99%;">
+			<table>
+				<tr>
+					<td style="width: 1%;">
+						<fieldset style="width: 1%;" class="nobr">
+							<legend class="bold"><IMG SRC="img/home.gif" ALT=""> {trans("Address")}</legend>
+							{$customerinfo.address}<BR>
+							{$customerinfo.zip} {$customerinfo.city}
+							{if $customerinfo.cstate}<BR>{$customerinfo.cstate}{/if}
+							{if $customerinfo.country}<BR>{t}{$customerinfo.country}{/t}{/if}
+						</fieldset>
+					</td>
+					{if $customerinfo.post_name != "" || $customerinfo.post_address != ""}
+					<td style="width: 99%;">
+						<fieldset style="width: 1%;" class="nobr">
+							<legend class="bold"><IMG SRC="img/post.gif" ALT=""> {trans("Postal address")}</legend>
+							{if $customerinfo.post_name != ""}{$customerinfo.post_name}<br>{/if}
+							{if $customerinfo.post_address != ""}{$customerinfo.post_address}<br>{/if}
+							{$customerinfo.post_zip} {$customerinfo.post_city}
+							{if $customerinfo.post_cstate}<br>{$customerinfo.post_cstate}{/if}
+							{if $customerinfo.post_country}<br>{t}{$customerinfo.post_country}{/t}{/if}
+						</fieldset>
+					</td>
+					{/if}
+				</tr>
+			</table>
 		</TD>
 	</TR>
-{if $customerinfo.post_name != "" || $customerinfo.post_address != ""}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/post.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%">
-			{if $customerinfo.post_name != ""}{$customerinfo.post_name}{/if}
-			{if $customerinfo.post_address != ""}<BR>{$customerinfo.post_address}{/if}
-			{$customerinfo.post_zip} {$customerinfo.post_city}
-			{if $customerinfo.post_cstate}<BR>{$customerinfo.post_cstate}{/if}
-			{if $customerinfo.post_country}<BR>{t}{$customerinfo.post_country}{/t}{/if}
-		</TD>
-	</TR>
-{/if}
 {if !empty($customerinfo.contacts)}
 	<TR>
 		<TD style="width: 1%;"></TD>
