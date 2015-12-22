@@ -1895,6 +1895,37 @@ CREATE TABLE templates (
 );
 
 /* ---------------------------------------------------
+ Structure of table usergroups
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS usergroups_id_seq;
+CREATE SEQUENCE usergroups_id_seq;
+DROP TABLE IF EXISTS usergroups CASCADE;
+CREATE TABLE usergroups (
+	id integer DEFAULT nextval('usergroups_id_seq'::text) NOT NULL,
+	name varchar(255) DEFAULT '' NOT NULL,
+	description text DEFAULT '' NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (name)
+);
+
+/* ---------------------------------------------------
+ Structure of table userassignments
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS userassignments_id_seq;
+CREATE SEQUENCE userassignments_id_seq;
+DROP TABLE IF EXISTS userassignments CASCADE;
+CREATE TABLE userassignments (
+	id integer DEFAULT nextval('userassignments_id_seq'::text) NOT NULL,
+	usergroupid integer NOT NULL
+		REFERENCES usergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	userid integer NOT NULL
+		REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id),
+	UNIQUE (usergroupid, userid)
+);
+CREATE INDEX userassignments_userid_idx ON userassignments (userid);
+
+/* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS up_rights_id_seq;
@@ -2546,37 +2577,5 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR5', 'MINI PCI 600MW 5GHZ', 2),
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
-
-# --------------------------------------------------------
-#
-# Structure of table usergroups
-#
-DROP SEQUENCE IF EXISTS usergroups_id_seq;
-CREATE SEQUENCE usergroups_id_seq;
-DROP TABLE IF EXISTS usergroups CASCADE;
-CREATE TABLE usergroups (
-	id integer DEFAULT nextval('usergroups_id_seq'::text) NOT NULL, 
-	name varchar(255) DEFAULT '' NOT NULL, 
-	description text DEFAULT '' NOT NULL, 
-	PRIMARY KEY (id), 
-	UNIQUE (name)
-    );
-# --------------------------------------------------------
-#
-# Structure of table userassignments
-#
-DROP SEQUENCE IF EXISTS userassignments_id_seq;
-CREATE SEQUENCE userassignments_id_seq;
-DROP TABLE IF EXISTS userassignments CASCADE;
-CCREATE TABLE userassignments (
-	id integer DEFAULT nextval('userassignments_id_seq'::text) NOT NULL,
-	usergroupid integer NOT NULL
-	    REFERENCES usergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	userid integer NOT NULL
-	    REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id),
-	CONSTRAINT userassignments_usergroupid_key UNIQUE (usergroupid, userid)
-    );
-CREATE INDEX userassignments_userid_idx ON userassignments (userid);
 
 INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015121800');

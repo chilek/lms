@@ -1816,6 +1816,33 @@ CREATE TABLE supermasters (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
+# --------------------------------------------------------
+#
+# Structure of table usergroups
+#
+CREATE TABLE usergroups (
+	id int(11) NOT NULL auto_increment,
+	name varchar(255) DEFAULT '' NOT NULL,
+	description text DEFAULT '' NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE KEY name (name)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table userassignments
+#
+CREATE TABLE userassignments (
+	id int(11) NOT NULL auto_increment,
+	usergroupid int(11) NOT NULL,
+	userid int(11) NOT NULL,
+	PRIMARY KEY (id),
+	INDEX userassignments_userid_idx (userid),
+	FOREIGN KEY (usergroupid) REFERENCES usergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	UNIQUE KEY userassignments_usergroupid_key (usergroupid, userid)
+) ENGINE=InnoDB;
+
 CREATE VIEW nas AS
     SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
 	d.clients AS ports, d.secret, d.community, d.description 
@@ -2459,30 +2486,5 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR5', 'MINI PCI 600MW 5GHZ', 2),
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
-
-# --------------------------------------------------------
-#
-# Structure of table usergroups
-#
-CREATE TABLE usergroups (
-	id int(11) NOT NULL auto_increment,
-	name varchar(255) DEFAULT '' NOT NULL UNIQUE, 
-	description text DEFAULT '' NOT NULL, 
-	PRIMARY KEY (id)
-)ENGINE=InnoDB;
-# --------------------------------------------------------
-#
-# Structure of table userassignments
-#
-CREATE TABLE userassignments (
-	id int(11) NOT NULL auto_increment,
-	usergroupid int(11) NOT NULL,
-	userid int(11) NOT NULL,
-	PRIMARY KEY (id),
-	INDEX userassignments_userid_idx (userid),
-	FOREIGN KEY (usergroupid) REFERENCES usergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT userassignments_usergroupid_key UNIQUE (usergroupid, userid)
-)ENGINE=InnoDB;
 
 INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015121800');

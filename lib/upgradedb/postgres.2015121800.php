@@ -25,26 +25,31 @@
  */
 
 $this->BeginTrans();
-$this->Execute("CREATE SEQUENCE usergroups_id_seq;");
-$this->Execute("CREATE TABLE usergroups (
-	id integer DEFAULT nextval('usergroups_id_seq'::text) NOT NULL, 
-	name varchar(255) DEFAULT '' NOT NULL, 
-	description text DEFAULT '' NOT NULL, 
-	PRIMARY KEY (id), 
-	UNIQUE (name)
-    );");
-$this->Execute("CREATE SEQUENCE userassignments_id_seq;");
-$this->Execute("CREATE TABLE userassignments (
-	id integer DEFAULT nextval('userassignments_id_seq'::text) NOT NULL,
-	usergroupid integer NOT NULL
-	    REFERENCES usergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	userid integer NOT NULL
-	    REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id),
-	CONSTRAINT userassignments_usergroupid_key UNIQUE (usergroupid, userid)
-    );");
-$this->Execute("CREATE INDEX userassignments_userid_idx ON userassignments (userid);");
+
+$this->Execute("
+	CREATE SEQUENCE usergroups_id_seq;
+	CREATE TABLE usergroups (
+		id integer DEFAULT nextval('usergroups_id_seq'::text) NOT NULL,
+		name varchar(255) DEFAULT '' NOT NULL,
+		description text DEFAULT '' NOT NULL,
+		PRIMARY KEY (id),
+		UNIQUE (name)
+	);
+	CREATE SEQUENCE userassignments_id_seq;
+	CREATE TABLE userassignments (
+		id integer DEFAULT nextval('userassignments_id_seq'::text) NOT NULL,
+		usergroupid integer NOT NULL
+			REFERENCES usergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		userid integer NOT NULL
+			REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		PRIMARY KEY (id),
+		UNIQUE (usergroupid, userid)
+	);
+	CREATE INDEX userassignments_userid_idx ON userassignments (userid)
+");
+
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015121800', 'dbversion'));
+
 $this->CommitTrans();
 
 ?>
