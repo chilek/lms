@@ -901,7 +901,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $args = array(
             'status' => $customerdata['status'],
             'type' => empty($customerdata['type']) ? 0 : 1,
-            'street' => $customerdata['address'],
+            'street' => $customerdata['street'],
             'building' => strlen($customerdata['building']) ? $customerdata['building'] : null,
             'apartment' => strlen($customerdata['apartment']) ? $customerdata['apartment'] : null,
             'zip' => $customerdata['zip'],

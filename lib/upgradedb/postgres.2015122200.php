@@ -26,8 +26,8 @@
 
 function parse_address_2015122200($address) {
 	$address = trim($address);
-	if (!($res = preg_match('/^(?<street>.+)\s+(?<building>[0-9][0-9a-z]*(?:\/[0-9][0-9a-z]*)?)(?:\s+|\s*(?:\/|m\.?|lok\.?)\s*)(?<apartment>[0-9a-z]+)$/i', $address, $m)))
-		if (!($res = preg_match('/^(?<street>.+)\s+(?<building>[0-9][0-9a-z]*)$/i', $address, $m))) {
+	if (!($res = preg_match('/^(?<street>.+)\s+(?<building>[0-9][0-9a-z-]*(?:\/[0-9][0-9a-z]*)?)(?:\s+|\s*(?:\/|m\.?|lok\.?)\s*)(?<apartment>[0-9a-z]+)$/i', $address, $m)))
+		if (!($res = preg_match('/^(?<street>.+)\s+(?<building>[0-9][0-9a-z-]*)$/i', $address, $m))) {
 			$res = preg_match('/^(?<street>.+)$/i', $address, $m);
 			if (!$res)
 				return null;
