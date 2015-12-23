@@ -166,16 +166,16 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			    <A onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to remove invoice \'$a\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			    {/if}
 			{/if}
-			{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE}
+			{if $invoice.type == $smarty.const.DOC_CNOTE && !$invoice.closed}
+			    <A onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to remove credit note \'$a\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			{/if}
+			{if ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE) && !$invoice.closed}
 			 <A HREF="?m=invoiceedit&id={$invoice.id}&action=edit"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 			{/if}
 			{if !$invoice.cancelled}
 				<a onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to cancel invoice \'$a\' from database?{/t}')" href="?m=invoicecancel&id={$invoice.id}"><img src="img/cancel.gif" alt="[ {trans("Cancel")} ]" title="[{trans("Cancel")}]"></a>
 			{elseif $invoice.cancelled}
 				<a onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to recover cancelled invoice \'$a\' from database?{/t}')" href="?m=invoicecancel&id={$invoice.id}&recover=1"><img src="img/recover.gif" alt="[ {trans("Recover")} ]" title="[{trans("Recover")}]"></a>
-			{/if}
-			{if $invoice.type == $smarty.const.DOC_CNOTE && !$invoice.closed}
-			    <A onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to remove credit note \'$a\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			{/if}
 			{if $invoice.type == $smarty.const.DOC_INVOICE}
 			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/print.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
