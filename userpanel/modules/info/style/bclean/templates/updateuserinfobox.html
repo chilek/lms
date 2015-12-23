@@ -45,8 +45,16 @@
         {/if}
         {if $rights.info.edit_addr || $rights.info.edit_addr_ack}
         <tr>
-            <td>Ulica:</td>
-            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[address]" VALUE="{$userinfo.address}" {userpaneltip text="Enter address"}></td>
+            <td>{trans("Street:")}</td>
+            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[street]" VALUE="{$userinfo.street}" {userpaneltip text="Enter street name"}></td>
+        </tr> 
+        <tr>
+            <td>{trans("Building:")}</td>
+            <td>
+            	<INPUT class="form-control" TYPE="TEXT" NAME="userdata[building]" VALUE="{$userinfo.building}" {userpaneltip text="Enter building number"}>
+            	{trans("Apartment:")}
+            	<INPUT class="form-control" TYPE="TEXT" NAME="userdata[apartment]" VALUE="{$userinfo.apartment}" {userpaneltip text="Enter apartment number"}>
+            </td>
         </tr> 
         <tr>
             <td>Kod pocztowy:</td>

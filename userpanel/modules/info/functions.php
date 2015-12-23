@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -139,7 +139,9 @@ function module_updateusersave()
 	    switch($field) {
 		case 'name':
 		case 'lastname':
-		case 'address':
+		case 'street':
+		case 'building':
+		case 'apartment':
 		case 'zip':
 		case 'city':
 			if(isset($right['edit_addr'])) {
@@ -342,7 +344,9 @@ if(defined('USERPANEL_SETUPMODE'))
 					break;
 					case 'name':
 					case 'lastname':
-					case 'address':
+					case 'street':
+					case 'building':
+					case 'apartment':
 					case 'zip':
 					case 'city':
 					case 'ssn':
