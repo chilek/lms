@@ -3083,4 +3083,7 @@ $_LANG['Postal address'] = 'Adres korespondencyjny';
 $_LANG['Street name required!'] = 'Wymagana nazwa ulicy!';
 $_LANG['Building number required!'] = 'Wymagany numer budynku!';
 
+$_LANG['External system identifier:'] = 'Identyfikator w systemie zewnętrznym:';
+$_LANG['Enter customer identifier in external system (optional)'] = 'Wprowadź identyfikator klienta w systemie zewnętrznym (opcjonalnie)';
+
 ?>

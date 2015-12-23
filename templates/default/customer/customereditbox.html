@@ -78,15 +78,33 @@
 		<TD style="width: 100%;" class="nobr">
 			<TABLE width="100%" cellpadding="1">
 				<TR>
-					<TD style="width: 1%;" class="bold">{trans("Name/Surname:")}</TD>
-					<TD style="width: 99%;">
-						<INPUT type="text" size="50" name="customerdata[lastname]" value="{$customerinfo.lastname|escape}" {tip text="Enter first/lastname of customer" trigger="lastname" bold=1}>
+					<TD style="width: 1%;">
+						<TABLE width="100%" cellpadding="1">
+							<TR>
+								<TD style="width: 1%;" class="bold">{trans("Name/Surname:")}</TD>
+								<TD style="width: 99%;">
+									<INPUT type="text" size="50" name="customerdata[lastname]" value="{$customerinfo.lastname|escape}" {tip text="Enter first/lastname of customer" trigger="lastname" bold=1}>
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%;" class="bold">{trans("First name:")}</TD>
+								<TD style="width: 99%;">
+									<INPUT type="text" size="50" name="customerdata[name]" value="{$customerinfo.name|escape}" {tip text="Enter first name of customer (optional)" trigger="name" bold=1}>
+								</TD>
+							</TR>
+						</TABLE>
 					</TD>
-				</TR>
-				<TR>
-					<TD style="width: 1%;" class="bold">{trans("First name:")}</TD>
 					<TD style="width: 99%;">
-						<INPUT type="text" size="50" name="customerdata[name]" value="{$customerinfo.name|escape}" {tip text="Enter first name of customer (optional)" trigger="name" bold=1}>
+						<TABLE width="100%" cellpadding="1">
+							<TR>
+								<TD style="width: 1%;" class="bold nobr">
+									{trans("External system identifier:")}
+								</TD>
+								<TD style="width: 99%;">
+									<input type="text" size="20" maxlength="20" name="customerdata[extid]" value="{$customerinfo.extid}" {tip text="Enter customer identifier in external system (optional)" trigger="extid"}>
+								</TD>
+							</TR>
+						</TABLE>
 					</TD>
 				</TR>
 			</TABLE>

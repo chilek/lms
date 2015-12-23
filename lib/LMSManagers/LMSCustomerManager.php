@@ -296,6 +296,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         global $SYSLOG_RESOURCE_KEYS;
         $args = array(
+			'extid' => $customeradd['extid'],
             'name' => $customeradd['name'],
             'lastname' => $customeradd['lastname'],
             'type' => empty($customeradd['type']) ? 0 : 1,
@@ -332,13 +333,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'invoicenotice' => $customeradd['invoicenotice'],
             'mailingnotice' => $customeradd['mailingnotice'],
         );
-        if ($this->db->Execute('INSERT INTO customers (name, lastname, type,
+        if ($this->db->Execute('INSERT INTO customers (extid, name, lastname, type,
 				    street, building, apartment, zip, city, countryid, ten, ssn, status, creationdate,
 				    post_name, post_street, post_building, post_apartment, post_zip, post_city, post_countryid,
 				    creatorid, info, notes, message, pin, regon, rbe,
 				    icn, cutoffstop, consentdate, einvoice, divisionid, paytime, paytype,
 				    invoicenotice, mailingnotice)
-				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?,
+				    VALUES (?, ?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?,
 				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
         ) {
             $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
@@ -899,6 +900,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         global $SYSLOG_RESOURCE_KEYS;
         $args = array(
+			'extid' => $customerdata['extid'],
             'status' => $customerdata['status'],
             'type' => empty($customerdata['type']) ? 0 : 1,
             'street' => $customerdata['street'],
@@ -936,7 +938,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'paytype' => $customerdata['paytype'] ? $customerdata['paytype'] : null,
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerdata['id']
         );
-        $res = $this->db->Execute('UPDATE customers SET status=?, type=?, street=?, building=?, apartment=?,
+        $res = $this->db->Execute('UPDATE customers SET extid=?, status=?, type=?, street=?, building=?, apartment=?,
                                zip=?, city=?, countryid=?, ten=?, ssn=?, moddate=?NOW?, modid=?,
                                post_name=?, post_street=?, post_building=?, post_apartment=?,
                                post_zip=?, post_city=?, post_countryid=?,
