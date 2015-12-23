@@ -154,6 +154,7 @@ CREATE TABLE users (
 #
 CREATE TABLE customers (
   id int(11) 		NOT NULL auto_increment,
+  extid varchar(32)	NOT NULL DEFAULT '',
   lastname varchar(128) NOT NULL DEFAULT '',
   name varchar(128) 	NOT NULL DEFAULT '',
   status smallint 	NOT NULL DEFAULT '0',

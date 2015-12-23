@@ -40,6 +40,7 @@ CREATE SEQUENCE customers_id_seq;
 DROP TABLE IF EXISTS customers CASCADE;
 CREATE TABLE customers (
 	id integer DEFAULT nextval('customers_id_seq'::text) NOT NULL,
+	extid varchar(32) DEFAULT '' NOT NULL,
 	lastname varchar(128)	DEFAULT '' NOT NULL,
 	name varchar(128)	DEFAULT '' NOT NULL,
 	status smallint 	DEFAULT 0 NOT NULL,
