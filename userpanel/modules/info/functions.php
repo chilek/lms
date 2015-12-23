@@ -262,7 +262,7 @@ if(defined('USERPANEL_SETUPMODE'))
 		$userchanges = $DB->GetAll('SELECT up_info_changes.id AS changeid, customerid, fieldname, fieldvalue AS newvalue, '.
 					$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername, c.* 
 					FROM up_info_changes
-					JOIN customersview c ON (c.id = up_info_changes.customerid)');
+					JOIN customerview c ON (c.id = up_info_changes.customerid)');
 
 		if(isset($userchanges))
 			foreach($userchanges as $key => $change)
