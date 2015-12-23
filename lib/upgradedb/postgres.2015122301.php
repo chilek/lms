@@ -23,33 +23,19 @@
 /**
  * @author Maciej_Wawryk
  */
-
 $this->BeginTrans();
-
 $this->Execute("
-	CREATE SEQUENCE usergroups_id_seq;
-	CREATE TABLE usergroups (
-		id integer DEFAULT nextval('usergroups_id_seq'::text) NOT NULL,
-		name varchar(255) DEFAULT '' NOT NULL,
-		description text DEFAULT '' NOT NULL,
-		PRIMARY KEY (id),
-		UNIQUE (name)
+	CREATE SEQUENCE passwdhistory_id_seq;
+	CREATE TABLE passwdhistory (
+	    id integer DEFAULT nextval('passwdhistory_id_seq'::text) NOT NULL,
+	    userid integer NOT NULL
+		REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	    hash varchar(255) DEFAULT '' NOT NULL,
+	    PRIMARY KEY (id)
 	);
-	CREATE SEQUENCE userassignments_id_seq;
-	CREATE TABLE userassignments (
-		id integer DEFAULT nextval('userassignments_id_seq'::text) NOT NULL,
-		usergroupid integer NOT NULL
-			REFERENCES usergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
-		userid integer NOT NULL
-			REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
-		PRIMARY KEY (id),
-		UNIQUE (usergroupid, userid)
-	);
-	CREATE INDEX userassignments_userid_idx ON userassignments (userid)
 ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015121800', 'dbversion'));
-
+$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'passwordhistory', 6));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015122301', 'dbversion'));
 $this->CommitTrans();
 
 ?>

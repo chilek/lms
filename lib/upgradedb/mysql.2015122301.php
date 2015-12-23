@@ -25,22 +25,16 @@
  */
 
 $this->BeginTrans();
-$this->Execute("CREATE TABLE usergroups (
+$this->Execute("
+    CREATE TABLE passwdhistory (
 	id int(11) NOT NULL auto_increment,
-	name varchar(255) DEFAULT '' NOT NULL UNIQUE, 
-	description text DEFAULT '' NOT NULL, 
-	PRIMARY KEY (id));");
-$this->Execute("CREATE TABLE userassignments (
-	id int(11) NOT NULL auto_increment,
-	usergroupid int(11) NOT NULL,
 	userid int(11) NOT NULL,
-	PRIMARY KEY (id),
-	INDEX userassignments_userid_idx (userid),
-	FOREIGN KEY (usergroupid) REFERENCES usergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	hash varchar(255) DEFAULT '' NOT NULL,
 	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT userassignments_usergroupid_key UNIQUE (usergroupid, userid)
-    );");
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015121800', 'dbversion'));
+	PRIMARY KEY (id),
+");
+$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'passwordhistory', 6));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015122301', 'dbversion'));
 $this->CommitTrans();
 
 ?>
