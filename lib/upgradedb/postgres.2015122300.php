@@ -30,6 +30,7 @@ $this->Execute("
 	DROP VIEW customerview;
 	DROP VIEW contractorview;
 	DROP VIEW customeraddressview;
+	ALTER TABLE customers ADD COLUMN extid varchar(32) DEFAULT '' NOT NULL;
 	CREATE VIEW customerview AS
 		SELECT c.*,
 			(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN " . $this->Concat('street', "' '", 'building') . "

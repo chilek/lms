@@ -26,11 +26,11 @@
 
 $this->BeginTrans();
 
-$this->Execute("
-	DROP VIEW customerview;
-	DROP VIEW contractorview;
-	DROP VIEW customeraddressview;
-	CREATE VIEW customerview AS
+$this->Execute("DROP VIEW customerview");
+$this->Execute("DROP VIEW contractorview");
+$this->Execute("DROP VIEW customeraddressview");
+$this->Execute("ALTER TABLE customers ADD COLUMN extid varchar(32) DEFAULT '' NOT NULL");
+$this->Execute("CREATE VIEW customerview AS
 		SELECT c.*,
 			(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN " . $this->Concat('street', "' '", 'building') . "
 				ELSE " . $this->Concat('street', "' '", 'building', "'/'", 'apartment') . " END) END) AS address,
@@ -44,8 +44,8 @@ $this->Execute("
 				SELECT 1 FROM customerassignments a
 				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 				WHERE e.userid = lms_current_user() AND a.customerid = c.id)
-			AND c.type < 2;
-	CREATE VIEW contractorview AS
+			AND c.type < 2");
+$this->Execute("CREATE VIEW contractorview AS
 		SELECT c.*,
 			(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN " . $this->Concat('street', "' '", 'building') . "
 				ELSE " . $this->Concat('street', "' '", 'building', "'/'", 'apartment') . " END) END) AS address,
@@ -55,8 +55,8 @@ $this->Execute("
 				END)
 			END) AS post_address
 		FROM customers c
-		WHERE c.type = 2;
-	CREATE VIEW customeraddressview AS
+		WHERE c.type = 2");
+$this->Execute("CREATE VIEW customeraddressview AS
 		SELECT c.*,
 			(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN " . $this->Concat('street', "' '", 'building') . "
 				ELSE " . $this->Concat('street', "' '", 'building', "'/'", 'apartment') . " END) END) AS address,
@@ -66,8 +66,7 @@ $this->Execute("
 				END)
 			END) AS post_address
 		FROM customers c
-		WHERE c.type < 2;
-");
+		WHERE c.type < 2");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015122300', 'dbversion'));
 
