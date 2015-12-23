@@ -1961,7 +1961,9 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		for($j = 0; $j < 6; $j++)
 			$customeradd['phone'] .= mt_rand(0,9);
 		$street = mt_rand(0,$ssize-1);
-		$customeradd['address'] = $streets[$street].' '.mt_rand(1,50).'/'.mt_rand(1,300);
+		$customeradd['street'] = $streets[$street];
+		$customeradd['building'] = mt_rand(1,50);
+		$customeradd['apartment'] = mt_rand(1,300);
 		$customeradd['zip'] = '03-7'.sprintf('%02d',$street);
 		$customeradd['city'] = 'Mahagonny';
 		$customeradd['email'] = preg_replace('/[^0-9a-z@.]/i', '', strtolower($customeradd['name']).'.'.strtolower($customeradd['lastname']).'@'.$emaildomains[mt_rand(0,$esize-1)]);
@@ -2097,7 +2099,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$contents['name'] = trans('Subscription');
 		
 		$customers = $DB->GetAll('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername,
-				id, ssn, address, zip, city, ten, divisionid, countryid FROM customers');
+				id, ssn, address, zip, city, ten, divisionid, countryid FROM customeraddressview');
 					    
 		if($customers)
 			for($n=0; $n<$_GET['i']; $n++)
