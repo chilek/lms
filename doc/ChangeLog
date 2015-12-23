@@ -8,6 +8,8 @@ version ?.??.?? (????-??-??):
   - added support for user groups [wawryk]
   - customer address and postal address were separated to street, building and
     apartment fields [chilan]
+  - added support for external system customer identifiers need to bind
+    lms customers with external system customers [chilan]
 
 version 1.11.19 (2015-12-21):
 
