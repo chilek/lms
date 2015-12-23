@@ -2029,8 +2029,11 @@ CREATE VIEW customerview AS
 	SELECT c.*,
 		(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN street || ' ' || building
 			ELSE street || ' ' || building || '/' || apartment END) END) AS address,
-		(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN post_street || ' ' || post_building
-			ELSE post_street || ' ' || post_building || '/' || 'post_apartment' END) END) AS post_address
+		(CASE WHEN post_street IS NULL THEN '' ELSE
+			(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN post_street || ' ' || post_building
+				ELSE post_street || ' ' || post_building || '/' || 'post_apartment' END)
+			END)
+		END) AS post_address
 	FROM customers c
 	WHERE NOT EXISTS (
 			SELECT 1 FROM customerassignments a 
@@ -2042,8 +2045,11 @@ CREATE VIEW contractorview AS
 	SELECT c.*,
 		(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN street || ' ' || building
 			ELSE street || ' ' || building || '/' || apartment END) END) AS address,
-		(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN post_street || ' ' || post_building
-			ELSE post_street || ' ' || post_building || '/' || 'post_apartment' END) END) AS post_address
+		(CASE WHEN post_street IS NULL THEN '' ELSE
+			(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN post_street || ' ' || post_building
+				ELSE post_street || ' ' || post_building || '/' || 'post_apartment' END)
+			END)
+		END) AS post_address
 	FROM customers c
 	WHERE c.type = 2;
 
@@ -2051,8 +2057,11 @@ CREATE VIEW customeraddressview AS
 	SELECT c.*,
 		(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN street || ' ' || building
 			ELSE street || ' ' || building || '/' || apartment END) END) AS address,
-		(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN post_street || ' ' || post_building
-			ELSE post_street || ' ' || post_building || '/' || 'post_apartment' END) END) AS post_address
+		(CASE WHEN post_street IS NULL THEN '' ELSE
+			(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN post_street || ' ' || post_building
+				ELSE post_street || ' ' || post_building || '/' || 'post_apartment' END)
+			END)
+		END) AS post_address
 	FROM customers c
 	WHERE c.type < 2;
 
@@ -2603,4 +2612,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015122200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015122300');
