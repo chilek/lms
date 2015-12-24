@@ -3086,4 +3086,6 @@ $_LANG['Building number required!'] = 'Wymagany numer budynku!';
 $_LANG['External system identifier:'] = 'Identyfikator w systemie zewnętrznym:';
 $_LANG['Enter customer identifier in external system (optional)'] = 'Wprowadź identyfikator klienta w systemie zewnętrznym (opcjonalnie)';
 
+$_LANG['Credit Note for Invoice Edit: $a'] = 'Edycja faktury korygującej: $a';
+
 ?>
