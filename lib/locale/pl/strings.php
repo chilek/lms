@@ -3088,4 +3088,6 @@ $_LANG['Enter customer identifier in external system (optional)'] = 'Wprowadź i
 
 $_LANG['You already used this password!'] = 'Takie hasło było już używane!';
 
+$_LANG['Credit Note for Invoice Edit: $a'] = 'Edycja faktury korygującej: $a';
+
 ?>
