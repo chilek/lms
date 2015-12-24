@@ -92,7 +92,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	{if $invoice.divisionid != $invoice.current_divisionid}
+	{if $cnote.divisionid != $cnote.current_divisionid}
         <TR>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Use current division data:")}</B>
@@ -156,50 +156,50 @@
     </THEAD>
     <TBODY>
 	{cycle values="light,lucid" print=false}
-	{foreach from=$contents item=item}
+	{foreach $contents as $itemid => $item}
 	<TR class="highlight {cycle}{if $item.deleted} blend{/if}"  >
 		<TD WIDTH="1%">
-			<B>{$item.posuid}.</B>
+			<B>{$itemid}.</B>
 		</TD>
 		<TD WIDTH="92%">
-		    {if $invoice.closed}
+		    {if $cnote.closed}
 		    {$item.name}
 			{elseif $item.deleted}
-			<INPUT TYPE="hidden" VALUE="{$item.name|escape}" NAME="name[{$item.posuid}]">{$item.name}
+			<INPUT TYPE="hidden" VALUE="{$item.name|escape}" NAME="name[{$itemid}]">{$item.name}
 			{else}
-			<INPUT TYPE="text" VALUE="{$item.name|escape}" NAME="name[{$item.posuid}]" SIZE="48" style="width: 100%">
+			<INPUT TYPE="text" VALUE="{$item.name|escape}" NAME="name[{$itemid}]" SIZE="48" style="width: 100%">
 			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-		    {if $invoice.closed}
+		    {if $cnote.closed}
 		    {$item.prodid}
 			{elseif $item.deleted}
-			<INPUT TYPE="hidden" VALUE="{$item.prodid}" NAME="prodid[{$item.posuid}]">{$item.prodid}
+			<INPUT TYPE="hidden" VALUE="{$item.prodid}" NAME="prodid[{$itemid}]">{$item.prodid}
 			{else}
-			<INPUT TYPE="text" VALUE="{$item.prodid}" NAME="prodid[{$item.posuid}]" SIZE="6">
+			<INPUT TYPE="text" VALUE="{$item.prodid}" NAME="prodid[{$itemid}]" SIZE="6">
 			{/if}
 		</TD>
 		<TD WIDTH="1%">
-		    {if $invoice.closed}
-		    {$item.count|string_format:"%.2f"}<BR>{$item.jm}
+		    {if $cnote.closed}
+		    {$item.count|string_format:"%.2f"}<BR>{$item.content}
 			{elseif $item.deleted}
-			<INPUT TYPE="hidden" VALUE="{$item.count}" NAME="count[{$item.posuid}]">{$item.count|string_format:"%.2f"}
-			<INPUT TYPE="hidden" VALUE="{$item.jm}" NAME="jm[{$item.posuid}]">{$item.jm}
+			<INPUT TYPE="hidden" VALUE="{$item.count}" NAME="count[{$itemid}]">{$item.count|string_format:"%.2f"}
+			<INPUT TYPE="hidden" VALUE="{$item.content}" NAME="content[{$itemid}]">{$item.content}
 			{else}
-			<INPUT TYPE="text" VALUE="{$item.count}" NAME="count[{$item.posuid}]" SIZE="3">
-			<INPUT TYPE="text" VALUE="{$item.jm}" NAME="jm[{$item.posuid}]" SIZE="3">
+			<INPUT TYPE="text" VALUE="{$item.count}" NAME="count[{$itemid}]" SIZE="3">
+			<INPUT TYPE="text" VALUE="{$item.content}" NAME="content[{$itemid}]" SIZE="3">
 			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-		    {if $invoice.closed}
+		    {if $cnote.closed}
 		    {if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f%%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%.2f"}{/if}{/if}
 			{elseif $item.deleted}
-			<INPUT TYPE="hidden" VALUE="{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%.2f"}{/if}{/if}" NAME="discount[{$item.posuid}]">
-			<INPUT TYPE="hidden" VALUE="{if $item.pdiscount != 0}{$smarty.const.DISCOUNT_PERCENTAGE}{else}{if $item.vdiscount != 0}{$smarty.const.DISCOUNT_AMOUNT}{/if}{/if}" NAME="discount_type[{$item.posuid}]">
+			<INPUT TYPE="hidden" VALUE="{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%.2f"}{/if}{/if}" NAME="discount[{$itemid}]">
+			<INPUT TYPE="hidden" VALUE="{if $item.pdiscount != 0}{$smarty.const.DISCOUNT_PERCENTAGE}{else}{if $item.vdiscount != 0}{$smarty.const.DISCOUNT_AMOUNT}{/if}{/if}" NAME="discount_type[{$itemid}]">
 				{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f%%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|money_format}{/if}{/if}
 			{else}
-			<INPUT TYPE="text" VALUE="{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%.2f"}{/if}{/if}" NAME="discount[{$item.posuid}]" SIZE="6" {tip text="Enter discount percentage or value"}><BR>
-			<SELECT name="discount_type[{$item.posuid}]">
+			<INPUT TYPE="text" VALUE="{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f"}{else}{if $item.vdiscount != 0}{$item.vdiscount|string_format:"%.2f"}{/if}{/if}" NAME="discount[{$itemid}]" SIZE="6" {tip text="Enter discount percentage or value"}><BR>
+			<SELECT name="discount_type[{$itemid}]">
 				{foreach from=$_DISCOUNTTYPES item=item2 key=key}
 					<OPTION value="{$key}"{if ($item.pdiscount != 0 && $key == $smarty.const.DISCOUNT_PERCENTAGE) || ($item.vdiscount != 0 && $key == $smarty.const.DISCOUNT_AMOUNT)} selected{/if}>{$item2}</OPTION>
 				{/foreach}
@@ -207,21 +207,21 @@
 			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-		    {if $invoice.closed}
+		    {if $cnote.closed}
 		    {$item.valuenetto|money_format}
 			{elseif $item.deleted}
-			<INPUT TYPE="hidden" VALUE="{$item.valuenetto}" NAME="valuenetto[{$item.posuid}]">{$item.valuenetto|money_format}
+			<INPUT TYPE="hidden" VALUE="{$item.valuenetto}" NAME="valuenetto[{$itemid}]">{$item.valuenetto|money_format}
 			{else}
-			<INPUT TYPE="text" VALUE="{$item.valuenetto|string_format:"%.2f"}" NAME="valuenetto[{$item.posuid}]" SIZE="6">
+			<INPUT TYPE="text" VALUE="{$item.valuenetto|string_format:"%.2f"}" NAME="valuenetto[{$itemid}]" SIZE="6">
 			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-		    {if $invoice.closed}
+		    {if $cnote.closed}
 		    {$item.tax}
 			{elseif $item.deleted}
-			<INPUT TYPE="hidden" VALUE="{$item.taxid}" NAME="taxid[{$item.posuid}]">{$item.tax}
+			<INPUT TYPE="hidden" VALUE="{$item.taxid}" NAME="taxid[{$itemid}]">{$item.tax}
 			{else}
-			<SELECT size="1" name="taxid[{$item.posuid}]" {tip text="Select Tax rate"}>
+			<SELECT size="1" name="taxid[{$itemid}]" {tip text="Select Tax rate"}>
 			{foreach item=tax from=$taxeslist}
 				<OPTION value="{$tax.id}"{if $tax.id == $item.taxid} selected{/if}>{$tax.label}</OPTION>
 			{/foreach}
@@ -229,20 +229,20 @@
 			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-		    {if $invoice.closed}
+		    {if $cnote.closed}
 		    {$item.valuebrutto|money_format}
 			{elseif $item.deleted}
-			<INPUT TYPE="hidden" VALUE="{$item.valuebrutto}" NAME="valuebrutto[{$item.posuid}]">{$item.valuebrutto|money_format}
+			<INPUT TYPE="hidden" VALUE="{$item.valuebrutto}" NAME="valuebrutto[{$itemid}]">{$item.valuebrutto|money_format}
 			{else}
-			<INPUT TYPE="text" VALUE="{$item.valuebrutto|string_format:"%.2f"}" NAME="valuebrutto[{$item.posuid}]" SIZE="6"><BR>
+			<INPUT TYPE="text" VALUE="{$item.valuebrutto|string_format:"%.2f"}" NAME="valuebrutto[{$itemid}]" SIZE="6"><BR>
 			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-		    {if $invoice.closed}
+		    {if $cnote.closed}
 			{elseif $item.deleted}
-			<A HREF="?m=invoicenoteedit&action=recoverpos&posuid={$item.posuid}"><IMG SRC="img/recover.gif" {tip text="Recover this item"}></A>
+			<A HREF="?m=invoicenoteedit&action=recoverpos&itemid={$itemid}"><IMG SRC="img/recover.gif" {tip text="Recover this item"}></A>
 			{else}
-			<A HREF="?m=invoicenoteedit&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item"}></A>
+			<A HREF="?m=invoicenoteedit&action=deletepos&itemid={$itemid}"><IMG SRC="img/delete.gif" {tip text="Remove this item"}></A>
 			{/if}
 		</TD>
 	</TR>

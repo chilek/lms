@@ -32,8 +32,11 @@ if (isset($_GET['id']) && $action == 'edit') {
 	$invoice = array();
 	foreach ($cnote['invoice']['content'] as $item)
 		$invoice[$item['itemid']] = $item;
+	$cnote['invoice']['content'] = $invoice;
 
 	$SESSION->remove('cnotecontents');
+	$SESSION->remove('cnote');
+	$SESSION->remove('cnoteediterror');
 
 	$cnotecontents = array();
 	foreach ($cnote['content'] as $item) {
@@ -48,7 +51,7 @@ if (isset($_GET['id']) && $action == 'edit') {
 			$nitem['discount']	= $iitem['discount'];
 			$nitem['pdiscount']	= $iitem['pdiscount'];
 			$nitem['vdiscount']	= $iitem['vdiscount'];
-			$nitem['jm']		= $iitem['jm'];
+			$nitem['content']		= $iitem['content'];
 			$nitem['valuenetto']	= $iitem['basevalue'];
 			$nitem['valuebrutto']	= $iitem['value'];
 			$nitem['s_valuenetto']	= $iitem['totalbase'];
@@ -58,7 +61,7 @@ if (isset($_GET['id']) && $action == 'edit') {
 			$nitem['discount']	= str_replace(',' ,'.', $item['pdiscount']);
 			$nitem['pdiscount']	= str_replace(',' ,'.', $item['pdiscount']);
 			$nitem['vdiscount']	= str_replace(',' ,'.', $item['vdiscount']);
-			$nitem['jm']		= str_replace(',' ,'.', $item['content']);
+			$nitem['content']		= str_replace(',' ,'.', $item['content']);
 			$nitem['valuenetto']	= str_replace(',' ,'.', $item['basevalue']);
 			$nitem['valuebrutto']	= str_replace(',' ,'.', $item['value']);
 			$nitem['s_valuenetto']	= str_replace(',' ,'.', $item['totalbase']);
@@ -66,8 +69,7 @@ if (isset($_GET['id']) && $action == 'edit') {
 		}
 		$nitem['tax']		= isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['label'] : '';
 		$nitem['taxid']		= $item['taxid'];
-		$nitem['posuid']	= $item['itemid'];
-		$cnotecontents[$nitem['posuid']] = $nitem;
+		$cnotecontents[$item['itemid']] = $nitem;
 	}
 	$SESSION->save('cnotecontents', $cnotecontents);
 
@@ -89,13 +91,13 @@ switch ($action) {
 	case 'deletepos':
 		if ($cnote['closed'])
 			break;
-		$contents[$_GET['posuid']]['deleted'] = true;
+		$contents[$_GET['itemid']]['deleted'] = true;
 		break;
 
 	case 'recoverpos':
 		if ($cnote['closed'])
 			break;
-		$contents[$_GET['posuid']]['deleted'] = false;
+		$contents[$_GET['itemid']]['deleted'] = false;
 		break;
 
 	case 'save':
@@ -106,21 +108,71 @@ switch ($action) {
 		$cnote['type'] = DOC_CNOTE;
 
 		$currtime = time();
-		$cdate = $invoice['cdate'] ? $invoice['cdate'] : $currtime;
-		$sdate = $invoice['sdate'] ? $invoice['sdate'] : $currtime;
-		$iid   = $invoice['id'];
+		$cdate = $cnote['cdate'] ? $cnote['cdate'] : $currtime;
+		$sdate = $cnote['sdate'] ? $cnote['sdate'] : $currtime;
+		$iid   = $cnote['id'];
+
+		$newcontents = r_trim($_POST);
+		$invoicecontents = $cnote['invoice']['content'];
+
+		foreach ($contents as $idx => $item) {
+			$contents[$idx]['taxid'] = isset($newcontents['taxid'][$idx]) ? $newcontents['taxid'][$idx] : $item['taxid'];
+			$contents[$idx]['prodid'] = isset($newcontents['prodid'][$idx]) ? $newcontents['prodid'][$idx] : $item['prodid'];
+			$contents[$idx]['content'] = isset($newcontents['content'][$idx]) ? $newcontents['content'][$idx] : $item['content'];
+			$contents[$idx]['count'] = isset($newcontents['count'][$idx]) ? $newcontents['count'][$idx] : $item['count'];
+
+			$contents[$idx]['discount'] = str_replace(',', '.', isset($newcontents['discount'][$idx]) ? $newcontents['discount'][$idx] : $item['discount']);
+			$contents[$idx]['pdiscount'] = 0;
+			$contents[$idx]['vdiscount'] = 0;
+			$contents[$idx]['discount_type'] = isset($newcontents['discount_type'][$idx]) ? $newcontents['discount_type'][$idx] : $item['discount_type'];
+			if (preg_match('/^[0-9]+(\.[0-9]+)*$/', $contents[$idx]['discount'])) {
+				$contents[$idx]['pdiscount'] = ($contents[$idx]['discount_type'] == DISCOUNT_PERCENTAGE ? floatval($contents[$idx]['discount']) : 0);
+				$contents[$idx]['vdiscount'] = ($contents[$idx]['discount_type'] == DISCOUNT_AMOUNT ? floatval($contents[$idx]['discount']) : 0);
+			}
+			if ($contents[$idx]['pdiscount'] < 0 || $contents[$idx]['pdiscount'] > 99.9 || $contents[$idx]['vdiscount'] < 0)
+				$error['discount'] = trans('Wrong discount value!');
+
+			$contents[$idx]['name'] = isset($newcontents['name'][$idx]) ? $newcontents['name'][$idx] : $item['name'];
+			$contents[$idx]['tariffid'] = isset($newcontents['tariffid'][$idx]) ? $newcontents['tariffid'][$idx] : $item['tariffid'];
+			$contents[$idx]['valuebrutto'] = $newcontents['valuebrutto'][$idx] != '' ? $newcontents['valuebrutto'][$idx] : $item['valuebrutto'];
+			$contents[$idx]['valuenetto'] = $newcontents['valuenetto'][$idx] != '' ? $newcontents['valuenetto'][$idx] : $item['valuenetto'];
+			$contents[$idx]['valuebrutto'] = f_round($contents[$idx]['valuebrutto']);
+			$contents[$idx]['valuenetto'] = f_round($contents[$idx]['valuenetto']);
+			$contents[$idx]['count'] = f_round($contents[$idx]['count']);
+			$contents[$idx]['pdiscount'] = f_round($contents[$idx]['pdiscount']);
+			$contents[$idx]['vdiscount'] = f_round($contents[$idx]['vdiscount']);
+			$taxvalue = $taxeslist[$contents[$idx]['taxid']]['value'];
+
+			if ($contents[$idx]['valuenetto'] != $item['valuenetto'])
+				$contents[$idx]['valuebrutto'] = round($contents[$idx]['valuenetto'] * ($taxvalue / 100 + 1), 2);
+
+			if (isset($item['deleted']) && $item['deleted']) {
+				$contents[$idx]['valuebrutto'] = 0;
+				$contents[$idx]['cash'] = round($invoicecontents[$idx]['total'] * $item['count'], 2);
+				$contents[$idx]['count'] = 0;
+			}
+			elseif ($contents[$idx]['count'] != $invoicecontents[$idx]['count']
+				|| $contents[$idx]['valuebrutto'] != $invoicecontents[$idx]['value'])
+				$contents[$idx]['cash'] = round($invoicecontents[$idx]['value'] * $invoicecontents[$idx]['count'], 2)
+					- round($contents[$idx]['valuebrutto'] * $contents[$idx]['count'], 2);
+
+			$contents[$idx]['valuebrutto'] = $contents[$idx]['valuebrutto'] - $invoicecontents[$idx]['value'];
+			$contents[$idx]['count'] = $contents[$idx]['count'] - $invoicecontents[$idx]['count'];
+		}
 
 		$DB->BeginTrans();
 
 		$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 			account, inv_header, inv_footer, inv_author, inv_cplace 
-			FROM divisions WHERE id = ? ;',array($customer['divisionid']));
+			FROM divisions WHERE id = ?', array($customer['divisionid']));
+
+		$customer = $LMS->GetCustomer($cnote['customerid']);
 
 		$args = array(
 			'cdate' => $cdate,
 			'sdate' => $sdate,
-			'paytime' => $invoice['paytime'],
-			'paytype' => $invoice['paytype'],
+			'paytime' => $cnote['paytime'],
+			'paytype' => $cnote['paytype'],
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
 			'name' => $customer['customername'],
 			'address' => $customer['address'],
@@ -155,7 +207,7 @@ switch ($action) {
 				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
 					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV], 'div_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY]));
 
-		if (!$invoice['closed']) {
+		if (!$cnote['closed']) {
 			if ($SYSLOG) {
 				$cashids = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($iid));
 				foreach ($cashids as $cashid) {
@@ -191,7 +243,7 @@ switch ($action) {
 					'value' => $item['valuebrutto'],
 					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $item['taxid'],
 					'prodid' => $item['prodid'],
-					'content' => $item['jm'],
+					'content' => $item['content'],
 					'count' => $item['count'],
 					'pdiscount' => $item['pdiscount'],
 					'vdiscount' => $item['vdiscount'],
@@ -238,10 +290,9 @@ switch ($action) {
 		$DB->CommitTrans();
 
 		if (isset($_GET['print']))
-			$SESSION->save('invoiceprint', array('invoice' => $invoice['id'],
+			$SESSION->save('invoiceprint', array('invoice' => $id,
 				'original' => !empty($_GET['original']) ? 1 : 0,
-			'copy' => !empty($_GET['copy']) ? 1 : 0,
-				'duplicate' => !empty($_GET['duplicate']) ? 1 : 0));
+				'copy' => !empty($_GET['copy']) ? 1 : 0));
 
 		$SESSION->redirect('?m=invoicelist');
 		break;
