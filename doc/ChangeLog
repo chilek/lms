@@ -10,7 +10,7 @@ version ?.??.?? (????-??-??):
     apartment fields [chilan]
   - added support for external system customer identifiers need to bind
     lms customers with external system customers [chilan]
-  - invoice notes can be edited from now, but it's experimental feature [chilan]
+  - invoice notes can be edited from now [chilan]
 
 version 1.11.19 (2015-12-21):
 
