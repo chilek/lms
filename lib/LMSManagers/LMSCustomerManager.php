@@ -972,23 +972,20 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      * @global array $SYSLOG_RESOURCE_KEYS
      * @global type $LMS
      * @param int $id Customer id
-     * @param bool $permanent permanent customer removal?
      */
-    public function deleteCustomer($id, $permanent = false)
+    public function deleteCustomer($id)
     {
         
         global $SYSLOG_RESOURCE_KEYS, $LMS;
         $this->db->BeginTrans();
 
-		if (!$permanent)
-			$this->db->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=?
-				WHERE id=?', array($this->auth->id, $id));
+        $this->db->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=?
+                WHERE id=?', array($this->auth->id, $id));
 
         if ($this->syslog) {
-            if (!$permanent)
-                $this->syslog->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_UPDATE,
-                    array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id, 'deleted' => 1),
-                    array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+            $this->syslog->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_UPDATE,
+                array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id, 'deleted' => 1),
+                array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
             $assigns = $this->db->GetAll('SELECT id, customergroupid FROM customerassignments WHERE customerid = ?', array($id));
             if (!empty($assigns))
                 foreach ($assigns as $assign) {
@@ -1074,14 +1071,28 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         if (!empty($userpanel_dir))
             $this->db->Execute('DELETE FROM up_rights_assignments WHERE customerid=?', array($id));
 
-		if ($permanent) {
-			$this->db->Execute('DELETE FROM customers WHERE id = ?', array($id));
+        $this->db->CommitTrans();
+    }
+    
+    /**
+     * Deletes customer permanently
+     * 
+     * @global array $SYSLOG_RESOURCE_KEYS
+     * @param int $id Customer id
+     */
+    public function deleteCustomerPermanent($id)
+    {
+        global $SYSLOG_RESOURCE_KEYS;
+        
+        $this->db->BeginTrans();
 
-			if ($this->syslog)
-				$this->syslog->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_DELETE, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id),
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
-		}
+        $this->deleteCustomer($id);
+        
+        $this->db->Execute('DELETE FROM customers WHERE id = ?', array($id));
 
+        if ($this->syslog) {
+            $this->syslog->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_DELETE, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id), array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+        }
 
         $this->db->CommitTrans();
     }
