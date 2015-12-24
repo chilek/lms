@@ -29,28 +29,44 @@ $action = isset($_GET['action']) ? $_GET['action'] : '';
 
 if (isset($_GET['id']) && $action == 'edit') {
 	$cnote = $LMS->GetInvoiceContent($_GET['id']);
+	$invoice = array();
+	foreach ($cnote['invoice']['content'] as $item)
+		$invoice[$item['itemid']] = $item;
 
 	$SESSION->remove('cnotecontents');
 
 	$cnotecontents = array();
-	$i = 0;
 	foreach ($cnote['content'] as $item) {
-		$i++;
+		$deleted = $item['value'] == 0;
+		$nitem['deleted'] = $deleted;
 		$nitem['tariffid']	= $item['tariffid'];
 		$nitem['name']		= $item['description'];
 		$nitem['prodid']	= $item['prodid'];
-		$nitem['count']		= str_replace(',' ,'.', $item['count']);
-		$nitem['discount']	= str_replace(',' ,'.', $item['pdiscount']);
-		$nitem['pdiscount']	= str_replace(',' ,'.', $item['pdiscount']);
-		$nitem['vdiscount']	= str_replace(',' ,'.', $item['vdiscount']);
-		$nitem['jm']		= str_replace(',' ,'.', $item['content']);
-		$nitem['valuenetto']	= str_replace(',' ,'.', $item['basevalue']);
-		$nitem['valuebrutto']	= str_replace(',' ,'.', $item['value']);
-		$nitem['s_valuenetto']	= str_replace(',' ,'.', $item['totalbase']);
-		$nitem['s_valuebrutto']	= str_replace(',' ,'.', $item['total']);
+		if ($deleted) {
+			$iitem = $invoice[$item['itemid']];
+			$nitem['count'] = $iitem['count'];
+			$nitem['discount']	= $iitem['discount'];
+			$nitem['pdiscount']	= $iitem['pdiscount'];
+			$nitem['vdiscount']	= $iitem['vdiscount'];
+			$nitem['jm']		= $iitem['jm'];
+			$nitem['valuenetto']	= $iitem['basevalue'];
+			$nitem['valuebrutto']	= $iitem['value'];
+			$nitem['s_valuenetto']	= $iitem['totalbase'];
+			$nitem['s_valuebrutto']	= $iitem['total'];
+		} else {
+			$nitem['count']		= str_replace(',' ,'.', $item['count']);
+			$nitem['discount']	= str_replace(',' ,'.', $item['pdiscount']);
+			$nitem['pdiscount']	= str_replace(',' ,'.', $item['pdiscount']);
+			$nitem['vdiscount']	= str_replace(',' ,'.', $item['vdiscount']);
+			$nitem['jm']		= str_replace(',' ,'.', $item['content']);
+			$nitem['valuenetto']	= str_replace(',' ,'.', $item['basevalue']);
+			$nitem['valuebrutto']	= str_replace(',' ,'.', $item['value']);
+			$nitem['s_valuenetto']	= str_replace(',' ,'.', $item['totalbase']);
+			$nitem['s_valuebrutto']	= str_replace(',' ,'.', $item['total']);
+		}
 		$nitem['tax']		= isset($taxeslist[$item['taxid']]) ? $taxeslist[$item['taxid']]['label'] : '';
 		$nitem['taxid']		= $item['taxid'];
-		$nitem['posuid']	= $i;
+		$nitem['posuid']	= $item['itemid'];
 		$cnotecontents[$nitem['posuid']] = $nitem;
 	}
 	$SESSION->save('cnotecontents', $cnotecontents);

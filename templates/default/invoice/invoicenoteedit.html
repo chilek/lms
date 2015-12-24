@@ -159,7 +159,7 @@
 	{foreach from=$contents item=item}
 	<TR class="highlight {cycle}{if $item.deleted} blend{/if}"  >
 		<TD WIDTH="1%">
-			<B>{counter}.</B>
+			<B>{$item.posuid}.</B>
 		</TD>
 		<TD WIDTH="92%">
 		    {if $invoice.closed}
