@@ -368,6 +368,12 @@ class LMS
         return $manager->getUserRights($id);
     }
 
+    public function PasswdExistsInHistory($id, $passwd) 
+    {
+        $manager = $this->getUserManager();
+        return $manager->PasswdExistsInHistory($id, $passwd);
+    }
+
     /*
      *  Customers functions
      */
