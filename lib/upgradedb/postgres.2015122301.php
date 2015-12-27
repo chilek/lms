@@ -23,19 +23,24 @@
 /**
  * @author Maciej_Wawryk
  */
+
 $this->BeginTrans();
+
 $this->Execute("
 	CREATE SEQUENCE passwdhistory_id_seq;
 	CREATE TABLE passwdhistory (
-	    id integer DEFAULT nextval('passwdhistory_id_seq'::text) NOT NULL,
-	    userid integer NOT NULL
+		id integer DEFAULT nextval('passwdhistory_id_seq'::text) NOT NULL,
+		userid integer NOT NULL
 		REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	    hash varchar(255) DEFAULT '' NOT NULL,
-	    PRIMARY KEY (id)
-	);
+		hash varchar(255) DEFAULT '' NOT NULL,
+		PRIMARY KEY (id)
+	)
 ");
+
 $this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'passwordhistory', 6));
+
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015122301', 'dbversion'));
+
 $this->CommitTrans();
 
 ?>

@@ -25,16 +25,21 @@
  */
 
 $this->BeginTrans();
+
 $this->Execute("
-    CREATE TABLE passwdhistory (
-	id int(11) NOT NULL auto_increment,
-	userid int(11) NOT NULL,
-	hash varchar(255) DEFAULT '' NOT NULL,
-	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id),
+	CREATE TABLE passwdhistory (
+		id int(11) NOT NULL auto_increment,
+		userid int(11) NOT NULL,
+		hash varchar(255) DEFAULT '' NOT NULL,
+		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		PRIMARY KEY (id)
+	) ENGINE=InnoDB
 ");
+
 $this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'passwordhistory', 6));
+
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015122301', 'dbversion'));
+
 $this->CommitTrans();
 
 ?>
