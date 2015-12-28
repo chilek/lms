@@ -140,6 +140,11 @@ if(isset($_POST['netdev']))
 
 	$SMARTY->assign('error', $error);
 	$SMARTY->assign('netdev', $netdevdata);
+} elseif (isset($_GET['id'])) {
+	$netdevdata = $LMS->GetNetDev($_GET['id']);
+	$netdevdata['name'] = trans('$a (clone)', $netdevdata['name']);
+	$netdevdata['teryt'] = !empty($netdevdata['location_city']) && !empty($netdevdata['location_street']);
+	$SMARTY->assign('netdev', $netdevdata);
 }
 
 $layout['pagetitle'] = trans('New Device');

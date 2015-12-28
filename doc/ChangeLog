@@ -11,6 +11,7 @@ version ?.??.?? (????-??-??):
   - added support for external system customer identifiers need to bind
     lms customers with external system customers [chilan]
   - invoice notes can be edited from now [chilan]
+  - allow to clone network devices from user interface [chilan]
 
 version 1.11.19 (2015-12-21):
 
