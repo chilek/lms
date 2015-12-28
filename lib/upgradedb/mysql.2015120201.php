@@ -23,19 +23,23 @@
 
 $this->BeginTrans();
 
-$this->Execute("DROP VIEW vnodes; DROP VIEW vmacs;");
+$this->Execute("DROP VIEW vnodes");
+$this->Execute("DROP VIEW vmacs");
+
 $this->Execute("
 	CREATE VIEW vnodes AS
 		SELECT n.*, m.mac
 		FROM nodes n
 		LEFT JOIN vnodes_mac m ON (n.id = m.nodeid)
-		WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
+		WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0
+");
 
+$this->Execute("
 	CREATE VIEW vmacs AS
 		SELECT n.*, m.mac, m.id AS macid
 		FROM nodes n
 		JOIN macs m ON (n.id = m.nodeid)
-		WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
+		WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0
 ");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015120201', 'dbversion'));
