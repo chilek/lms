@@ -20,16 +20,25 @@
  *  USA.
  *
  */
-
-define('EMAIL', 8);
-define('EMAIL_INVOICE', 16);
+/**
+ * @author Maciej_Wawryk
+ */
 
 $this->BeginTrans();
 
-$this->Execute("UPDATE customercontacts SET type = ? WHERE customerid IN (SELECT id FROM customers WHERE einvoice = 1 AND invoicenotice = 1) AND (type & ?) > 0",
-            array(EMAIL | EMAIL_INVOICE, EMAIL));
+$this->Execute("
+	CREATE TABLE passwdhistory (
+		id int(11) NOT NULL auto_increment,
+		userid int(11) NOT NULL,
+		hash varchar(255) DEFAULT '' NOT NULL,
+		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		PRIMARY KEY (id)
+	) ENGINE=InnoDB
+");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015110600', 'dbversion'));
+$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'passwordhistory', 6));
+
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2015122301', 'dbversion'));
 
 $this->CommitTrans();
 

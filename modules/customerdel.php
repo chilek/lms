@@ -44,7 +44,7 @@ else {
 		header("Location: ?" . $SESSION->get('backto'));
 		$body = '<P>' . trans($permanent ? 'Customer $a has been permanently removed.' : 'Customer $a has been removed.', $LMS->GetCustomerName($_GET['id'])) . '</P>';
 		if ($permanent)
-			$LMS->DeleteCustomer($_GET['id'], true);
+			$LMS->DeleteCustomerPermanent($_GET['id']);
 		else
 			$LMS->DeleteCustomer($_GET['id']);
 		$LMS->executeHook(
