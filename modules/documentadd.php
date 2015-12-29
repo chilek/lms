@@ -108,20 +108,26 @@ if (isset($_POST['document'])) {
 					break;
 			}
 	} elseif ($document['templ']) {
+		foreach ($documents_dirs as $doc){
+		    if(file_exists($doc. '/templates/' . $document['templ'] )){
+			$doc_dir = $doc;
+			continue;
+		    }
+		}
 		$result = '';
 		// read template information
-		include(DOC_DIR . '/templates/' . $document['templ'] . '/info.php');
+		include($doc_dir . '/templates/' . $document['templ'] . '/info.php');
 		// set some variables (needed in e.g. plugin)
 		$SMARTY->assignByRef('document', $document);
 		// call plugin
-		if (!empty($engine['plugin']) && file_exists(DOC_DIR . '/templates/' . $engine['name'] . '/' . $engine['plugin'] . '.php'))
-			include(DOC_DIR . '/templates/' . $engine['name'] . '/' . $engine['plugin'] . '.php');
+		if (!empty($engine['plugin']) && file_exists($doc_dir . '/templates/' . $engine['name'] . '/' . $engine['plugin'] . '.php'))
+			include($doc_dir . '/templates/' . $engine['name'] . '/' . $engine['plugin'] . '.php');
 		// get plugin content
 		$SMARTY->assign('plugin_result', $result);
 
 		// run template engine
-		if (file_exists(DOC_DIR . '/templates/' . $engine['engine'] . '/engine.php'))
-			require_once(DOC_DIR . '/templates/' . $engine['engine'] . '/engine.php');
+		if (file_exists($doc_dir . '/templates/' . $engine['engine'] . '/engine.php'))
+			require_once($doc_dir . '/templates/' . $engine['engine'] . '/engine.php');
 		else
 			require_once(DOC_DIR . '/templates/default/engine.php');
 
@@ -221,8 +227,8 @@ if (isset($_POST['document'])) {
 		));
 
 		// template post-action
-		if (!empty($engine['post-action']) && file_exists(DOC_DIR . '/templates/' . $engine['name'] . '/' . $engine['post-action'] . '.php'))
-			include(DOC_DIR . '/templates/' . $engine['name'] . '/' . $engine['post-action'] . '.php');
+		if (!empty($engine['post-action']) && file_exists($doc_dir . '/templates/' . $engine['name'] . '/' . $engine['post-action'] . '.php'))
+			include($doc_dir . '/templates/' . $engine['name'] . '/' . $engine['post-action'] . '.php');
 
 		$DB->CommitTrans();
 
