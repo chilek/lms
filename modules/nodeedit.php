@@ -263,9 +263,9 @@ if (isset($_POST['nodeedit'])) {
 			$nodeedit['location_house'] = null;
 			$nodeedit['location_flat'] = null;
 		}
-		if(empty($nodeedit['location'])and !empty($nodeedit['ownerid'])){
-                    $location=$LMS->GetCustomer($nodeedit['ownerid']);
-                    $nodeedit['location']=$location['address'].'; '.$location['zip'].' '.$location['city'];
+		if (empty($nodeedit['location']) && !empty($nodeedit['ownerid'])) {
+                    $location = $LMS->GetCustomer($nodeedit['ownerid']);
+                    $nodeedit['location'] = $location['address'] . ', ' . $location['zip'] . ' ' . $location['city'];
                 }
 
 		$nodeedit = $LMS->ExecHook('node_edit_before', $nodeedit);
