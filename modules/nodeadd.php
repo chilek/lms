@@ -207,9 +207,9 @@ if (isset($_POST['nodedata']))
             $nodedata['location_house'] = null;
             $nodedata['location_flat'] = null;
         }
-        if(empty($nodedata['location'])and !empty($nodedata['ownerid'])){
-            $location=$LMS->GetCustomer($nodedata['ownerid']);
-            $nodedata['location']=$location['address'].'; '.$location['zip'].' '.$location['city'];
+        if (empty($nodedata['location']) && !empty($nodedata['ownerid'])) {
+            $location = $LMS->GetCustomer($nodedata['ownerid']);
+            $nodedata['location'] = $location['address'] . ', ' . $location['zip'] . ' ' . $location['city'];
         }
 
 
