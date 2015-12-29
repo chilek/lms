@@ -100,6 +100,52 @@ switch ($action) {
 		$contents[$_GET['itemid']]['deleted'] = false;
 		break;
 
+	case 'setheader':
+		$oldcnote = $cnote;
+		$cnote = null;
+		$error = NULL;
+
+		if ($cnote = $_POST['cnote'])
+			foreach ($cnote as $key => $val)
+				$cnote[$key] = $val;
+
+		$cnote['paytime'] = sprintf('%d', $cnote['paytime']);
+
+		if ($cnote['paytime'] < 0)
+			$cnote['paytime'] = 14;
+
+		$currtime = time();
+
+		if ($cnote['sdate']) {
+			list ($syear, $smonth, $sday) = explode('/', $cnote['sdate']);
+			if (checkdate($smonth, $sday, $syear)) {
+				$sdate = mktime(23, 59, 59, $smonth, $sday, $syear);
+				$cnote['sdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $smonth, $sday, $syear);
+				if ($sdate < $invoice['sdate'])
+					$error['sdate'] = trans('Credit note sale date cannot be earlier than invoice sale date!');
+			} else {
+				$error['sdate'] = trans('Incorrect date format! Using current date.');
+				$cnote['sdate'] = $currtime;
+			}
+		} else
+			$cnote['sdate'] = $currtime;
+
+		if ($cnote['cdate']) {
+			list ($year, $month, $day) = explode('/', $cnote['cdate']);
+			if (checkdate($month, $day, $year)) {
+				$cnote['cdate'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $month, $day, $year);
+				if($cnote['cdate'] < $invoice['cdate'])
+					$error['cdate'] = trans('Credit note date cannot be earlier than invoice date!');
+			} else {
+				$error['cdate'] = trans('Incorrect date format! Using current date.');
+				$cnote['cdate'] = $currtime;
+			}
+		} else
+			$cnote['cdate'] = $currtime;
+
+		$cnote = array_merge($oldcnote, $cnote);
+		break;
+
 	case 'save':
 		if (empty($contents))
 			break;
@@ -162,11 +208,11 @@ switch ($action) {
 
 		$DB->BeginTrans();
 
+		$customer = $LMS->GetCustomer($cnote['customerid']);
+
 		$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 			account, inv_header, inv_footer, inv_author, inv_cplace 
 			FROM divisions WHERE id = ?', array($customer['divisionid']));
-
-		$customer = $LMS->GetCustomer($cnote['customerid']);
 
 		$args = array(
 			'cdate' => $cdate,
@@ -180,6 +226,7 @@ switch ($action) {
 			'ssn' => $customer['ssn'],
 			'zip' => $customer['zip'],
 			'city' => $customer['city'],
+			'reason' => $cnote['reason'],
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customer['divisionid'],
 			'div_name' => ($division['name'] ? $division['name'] : ''),
 			'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
@@ -197,7 +244,7 @@ switch ($action) {
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
 		);
 		$DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, customerid = ?,
-				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, divisionid = ?,
+				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, reason = ?, divisionid = ?,
 				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
 				div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
 				div_inv_author = ?, div_inv_cplace = ?
