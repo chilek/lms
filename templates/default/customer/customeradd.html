@@ -277,9 +277,9 @@
 						<fieldset style="width: 1%;" class="nobr">
 							<legend class="bold"><IMG src="img/phone.gif" alt=""> {trans("Contact phones")}</legend>
 							<table>
-								{foreach from=$customeradd.contacts item=item key=key}
+								{foreach $customeradd.contacts as $key => $item}
 								<TR id="contact{$key}">
-									<TD>
+									<TD class="nobr">
 										<INPUT type="text" size="16" value="{$item.phone}" name="customeradd[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
 										<label>
 											<INPUT type="checkbox" value="{$smarty.const.CONTACT_MOBILE}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_MOBILE)} checked{/if}>
@@ -318,20 +318,20 @@
 						<fieldset style="width: 1%;" class="nobr">
 							<legend class="bold"><IMG src="img/mail.gif" alt=""> {trans("Email addresses")}</legend>
 							<table>
-								{foreach from=$customeradd.emails item=item key=key}
+								{foreach $customeradd.emails as $key => $item}
 								<TR id="email{$key}">
-									<TD>
+									<TD class="nobr">
 										<INPUT type="text" size="23" value="{$item.email}" name="customeradd[emails][{$key}][email]" {tip text="Enter e-mail address (optional)" trigger="email`$key`"}>
 										<label {tip text="Check if sent electronic invoices on this email"}>
-											<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_INVOICES}" name="customeradd[emails][{$key}][type][]"{if ($email.type & $smarty.const.CONTACT_INVOICES)} checked{/if}>
+											<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_INVOICES}" name="customeradd[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_INVOICES)} checked{/if}>
 											{trans("Invoice")}
 										</label>
 										<label {tip text="Check if send notification" trigger="chknotification"}>
-											<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_NOTIFICATIONS}" name="customeradd[emails][{$key}][type][]"{if ($email.type & $smarty.const.CONTACT_NOTIFICATIONS)} checked{/if}>
+											<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_NOTIFICATIONS}" name="customeradd[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_NOTIFICATIONS)} checked{/if}>
 											{trans("Notification")}
 										</label>
 										<label {tip text="Not visible by the customer in electronic Customer Service Representative" trigger="edisabled"}>
-											<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customeradd[emails][{$key}][type][]"{if ($email.type & $smarty.const.CONTACT_DISABLED)} checked{/if}>
+											<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customeradd[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_DISABLED)} checked{/if}>
 											{trans("disabled")}
 										</label>
 										<BR>
