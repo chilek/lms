@@ -13,6 +13,8 @@ version ?.??.?? (????-??-??):
   - invoice notes can be edited from now [chilan]
   - allow to clone network devices from user interface [chilan]
   - add hook for documents in plugins [wawryk]
+  - don't allow to issue invoice credit note for invoice which already has issued
+    credit note [chilan]
 
 version 1.11.19 (2015-12-21):
 

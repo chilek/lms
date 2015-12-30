@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -421,7 +421,7 @@ switch ($action) {
 		if ($nodeipdata['name'] == '')
 			$error['ipname'] = trans('Address field is required!');
 		elseif (strlen($nodeipdata['name']) > 32)
-			$error['ipname'] = trans('Specified name is too long (max.$a characters)!', '32');
+			$error['ipname'] = trans('Specified name is too long (max. $a characters)!', '32');
 		elseif ($LMS->GetNodeIDByName($nodeipdata['name']))
 			$error['ipname'] = trans('Specified name is in use!');
 		elseif (!preg_match('/^[_a-z0-9-]+$/i', $nodeipdata['name']))
@@ -514,7 +514,7 @@ switch ($action) {
 		if ($nodeipdata['name'] == '')
 			$error['ipname'] = trans('Address field is required!');
 		elseif (strlen($nodeipdata['name']) > 32)
-			$error['ipname'] = trans('Specified name is too long (max.$a characters)!', '32');
+			$error['ipname'] = trans('Specified name is too long (max. $a characters)!', '32');
 		elseif ($LMS->GetNodeIDByName($nodeipdata['name']) &&
 				$LMS->GetNodeName($_GET['ip']) != $nodeipdata['name'])
 			$error['ipname'] = trans('Specified name is in use!');
@@ -620,8 +620,8 @@ if (isset($_POST['netdev'])) {
 
 	if ($netdevdata['name'] == '')
 		$error['name'] = trans('Device name is required!');
-	elseif (strlen($netdevdata['name']) > 32)
-		$error['name'] = trans('Specified name is too long (max.$a characters)!', '32');
+	elseif (strlen($netdevdata['name']) > 60)
+		$error['name'] = trans('Specified name is too long (max. $a characters)!', '60');
 
 	$netdevdata['ports'] = intval($netdevdata['ports']);
 

@@ -355,7 +355,6 @@ $_LANG['No free ports on device!'] = 'Urządzenie nie posiada wolnych portów!';
 $_LANG['No IP addresses on device.'] = 'Urządzenie nie posiada adresu IP.';
 $_LANG['Device Info: $a $b $c'] = 'Informacje o urządzeniu: $a $b $c';
 $_LANG['Device name is required!'] = 'Nazwa urządzenia jest wymagana!';
-$_LANG['Device name is too long (max.32 characters)!'] = 'Nazwa urządzenia jest za długa (maksymalnie 32 znaki)!';
 $_LANG['IP addresses ($a):'] = 'Adresy IP ($a):';
 $_LANG['Device has been deleted.'] = 'Urządzenie zostało usunięte.';
 $_LANG['DHCP range:'] = 'Zakres DHCP:';
@@ -1243,7 +1242,7 @@ $_LANG['Specified IP address overlaps with other network!'] = 'Wybrany adres IP 
 $_LANG['Specified MAC address is in use!'] = 'Wybrany adres MAC jest już w użyciu!';
 $_LANG['Specified name contains forbidden characters!'] = 'Wybrana nazwa zawiera zabronione znaki!';
 $_LANG['Specified name is in use!'] = 'Wybrana nazwa jest już w użyciu!';
-$_LANG['Specified name is too long (max.$a characters)!'] = 'Wybrana nazwa jest za długa (maksymalnie $a znaków)!';
+$_LANG['Specified name is too long (max. $a characters)!'] = 'Podana nazwa jest za długa (maksymalnie $a znaków)!';
 $_LANG['Specify format of verbal amounts representation (on invoices). e.g. for value "1" verbal expand of 123,15 will be "one two thr 15/100". Default: 0.'] = 'Określ typ reprezentacji słownej liczb (na fakturach). np dla wartości "1" słowne określenie sumy 123,15 wędzie wyglądało "jed dwa trz 15/100". Domyślnie: 0.';
 $_LANG['Specify time (in seconds), after which node will be marked offline. It should match with frequency of running nodes activity script (i.e. lms-fping). Default: 600.'] = 'Określ czas (w sekundach) po jakim komputer będzie uważany za wyłączony. Powinno się to pokrywać z częstotliwością uruchamiania skryptu dokonującego sprawdzenia aktywności komputerów (np lms-fping). Domyślnie: 600.';
 $_LANG['SQL query executed while reload, if reload_type = sql. Default: empty. You can use \'%TIME%\' as replacement to current unix timestamp. WARNING! Semicolon is handled as query separator, which means that you can enter couple of SQL queries separated by semicolon sign.'] = 'Zapytanie SQL wykonywane pod czas przeładownia jeżeli reload_type = sql. Domyślnie: pusta. W zapytaniu może być użyta zmienna \'%TIME%\' jako zastępstwo właściwego czasu zapisanego w formacie UNIX_TIMESTAMP. UWAGA! Średnik jest interpretowany jako znak rozdzielający zapytania. Oznacza to, że możesz wpisać kilka zapytań SQL oddzielonych średnikami.';

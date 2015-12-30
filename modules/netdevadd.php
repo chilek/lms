@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -40,8 +40,8 @@ if(isset($_POST['netdev']))
 
 	if($netdevdata['name'] == '')
 		$error['name'] = trans('Device name is required!');
-	elseif(strlen($netdevdata['name'])>32)
-		$error['name'] = trans('Device name is too long (max.32 characters)!');
+	elseif (strlen($netdevdata['name']) > 60)
+		$error['name'] = trans('Specified name is too long (max. $a characters)!', '60');
 
 	$netdevdata['purchasetime'] = 0;
 	if($netdevdata['purchasedate'] != '') 
