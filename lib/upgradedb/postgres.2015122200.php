@@ -32,7 +32,11 @@ function parse_address_2015122200($address) {
 			if (!$res)
 				return null;
 	}
-	return array_filter($m, 'is_string', ARRAY_FILTER_USE_KEY);
+	$res = array();
+	foreach ($m as $key => $value)
+		if (is_string($key))
+			$res[$key] = $value;
+	return $res;
 }
 
 $this->BeginTrans();
