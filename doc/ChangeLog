@@ -15,6 +15,7 @@ version ?.??.?? (????-??-??):
   - add hook for documents in plugins [wawryk]
   - don't allow to issue invoice credit note for invoice which already has issued
     credit note [chilan]
+  - bumped html2pdf library version to 4.5.0 [prezes_kk]
 
 version 1.11.19 (2015-12-21):
 
