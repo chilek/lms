@@ -1,14 +1,14 @@
 <?php
 /**
- * HTML2PDF Librairy - HTML2PDF Locale
+ * HTML2PDF Library - HTML2PDF Locale
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
  *
+ * @package   Html2pdf
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
- * @version   4.03
+ * @copyright 2016 Laurent MINGUET
  */
-
 class HTML2PDF_locale
 {
     /**
