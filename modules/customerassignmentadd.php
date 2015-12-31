@@ -289,6 +289,13 @@ if(isset($_POST['assignment']))
 		$LMS->AddAssignment($a);
 		$DB->CommitTrans();
 
+		$LMS->executeHook(
+			'customerassignmentedit_after_submit',
+			array(
+				'a' => $a,
+			)
+		);
+
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 
