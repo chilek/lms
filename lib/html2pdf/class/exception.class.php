@@ -1,14 +1,14 @@
 <?php
 /**
- * HTML2PDF Librairy - HTML2PDF Exception
+ * HTML2PDF Library - HTML2PDF Exception
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
  *
+ * @package   Html2pdf
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
- * @version   4.03
+ * @copyright 2016 Laurent MINGUET
  */
-
 class HTML2PDF_exception extends exception
 {
     protected $_tag = null;
@@ -20,9 +20,11 @@ class HTML2PDF_exception extends exception
     /**
      * generate a HTML2PDF exception
      *
-     * @param    int     $err error number
-     * @param    mixed   $other additionnal informations
-     * @return   string  $html optionnal code HTML associated to the error
+     * @param int    $err   error number
+     * @param mixed  $other additionnal informations
+     * @param string $html  additionnal informations
+     *
+     * @return HTML2PDF_exception
      */
     final public function __construct($err = 0, $other = null, $html = '')
     {
@@ -88,11 +90,12 @@ class HTML2PDF_exception extends exception
         }
 
         // create the HTML message
-        $this->_messageHtml = '<span style="color: #AA0000; font-weight: bold;">'.HTML2PDF_locale::get('txt01', 'error: ').$err.'</span><br>';
-        $this->_messageHtml.= HTML2PDF_locale::get('txt02', 'file:').' '.$this->file.'<br>';
-        $this->_messageHtml.= HTML2PDF_locale::get('txt03', 'line:').' '.$this->line.'<br>';
-        $this->_messageHtml.= '<br>';
-        $this->_messageHtml.= $msg;
+        $this->_messageHtml = '<span style="color: #AA0000; font-weight: bold;">'."\n";
+        $this->_messageHtml.= HTML2PDF_locale::get('txt01', 'error: ').$err.'</span><br>'."\n";
+        $this->_messageHtml.= HTML2PDF_locale::get('txt02', 'file:').' '.$this->file.'<br>'."\n";
+        $this->_messageHtml.= HTML2PDF_locale::get('txt03', 'line:').' '.$this->line.'<br>'."\n";
+        $this->_messageHtml.= '<br>'."\n";
+        $this->_messageHtml.= $msg."\n";
 
         // create the text message
         $msg = HTML2PDF_locale::get('txt01', 'error: ').$err.' : '.strip_tags($msg);
