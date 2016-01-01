@@ -16,6 +16,8 @@ version ?.??.?? (????-??-??):
   - don't allow to issue invoice credit note for invoice which already has issued
     credit note [chilan]
   - bumped html2pdf library version to 4.5.0 [prezes_kk]
+  - allow lms-payments.php script to set aligned periods for invoice items
+    (added special symbol %aligned_period) [chilan]
 
 version 1.11.19 (2015-12-21):
 
