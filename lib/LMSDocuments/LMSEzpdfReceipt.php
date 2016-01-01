@@ -212,7 +212,7 @@ class LMSEzpdfReceipt extends LMSDocument {
 		$y = $this->receipt_buyer(80, $y);
 		$y = $this->receipt_data(80, $y);
 		$y = $this->receipt_footer(80, $y);
-		if (!$this->data['type']) {
+		if (!$this->data['which']) {
 			$y -= 20;
 			$y = $this->receipt_header(80, $y);
 			$y = $this->receipt_buyer(80, $y);

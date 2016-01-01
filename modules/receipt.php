@@ -108,7 +108,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks'
 			if ($i == $count)
 				$receipt['last'] = true;
 			$receipt['first'] = $i <= 1;
-			$receipt['type'] = $type;
+			$receipt['which'] = $type;
 			$document->Draw($receipt);
 		}
 	}
@@ -127,7 +127,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks'
 
 	$receipt['last'] = true;
 	$receipt['first'] = true;
-	$receipt['type'] = isset($_GET['which']) ? $_GET['which'] : NULL;
+	$receipt['which'] = isset($_GET['which']) ? $_GET['which'] : NULL;
 	$document->Draw($receipt);
 }
 
