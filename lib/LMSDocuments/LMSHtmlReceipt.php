@@ -35,7 +35,7 @@ class LMSHtmlReceipt extends LMSHtmlDocument {
 		$template_file = ConfigHelper::getConfig('receipts.template_file');
 		if (!$this->smarty->templateExists($template_file))
 			$template_file = 'receipt' . DIRECTORY_SEPARATOR . $template_file;
-		$this->smarty->assign('type', $this->data['type']);
+		$this->smarty->assign('type', $this->data['which']);
 		$this->smarty->assign('receipt', $this->data);
 		$this->contents .= $this->smarty->fetch($template_file);
 	}
