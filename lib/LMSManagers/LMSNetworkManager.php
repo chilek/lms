@@ -620,7 +620,8 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     {
         $result = array();
         $networks = $this->GetNetworks();
-        if ($networks)
+        if ($networks) {
+            $node_manager = new LMSNodeManager($this->db, $this->auth, $this->cache, $this->syslog);
             foreach ($networks as $idx => $network) {
                 if ($res = execute_program('nbtscan', '-q -s: ' . $network['address'] . '/' . $network['prefix'])) {
                     $out = explode("\n", $res);
@@ -630,12 +631,13 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                         if ($row['ipaddr']) {
                             $row['name'] = trim($name);
                             $row['mac'] = strtoupper(str_replace('-', ':', trim($mac)));
-                            if ($row['mac'] != "00:00:00:00:00:00" && !$this->GetNodeIDByIP($row['ipaddr']))
+                            if ($row['mac'] != "00:00:00:00:00:00" && !$node_manager->GetNodeIDByIP($row['ipaddr']))
                                 $result[] = $row;
                         }
                     }
                 }
             }
+        }
         return $result;
     }
 
