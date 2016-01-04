@@ -2024,6 +2024,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			$nodedata['location'] = '';
 			$nodedata['chkmac'] = 1;
 			$nodedata['halfduplex'] = 0;
+			$nodedata['authtype'] = 0;
 			if($nodeid = $LMS->NodeAdd($nodedata))
 				$DB->Execute('UPDATE nodes SET lastonline=? WHERE id=? ', array(mt_rand(time()-2592000,time()+2592000),$nodeid));
 		}
