@@ -463,8 +463,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     switch ($key) {
 			case 'phone':
 				$searchargs[] = 'EXISTS (SELECT 1 FROM customercontacts
-					WHERE customerid = c.id AND (customercontacts.type < ' . CONTACT_EMAIL
-					. ') AND REPLACE(contact, \'-\', \'\') ?LIKE? ' . $this->db->Escape("%$value%") . ')';
+					WHERE customerid = c.id AND (customercontacts.type & ' . (CONTACT_MOBILE | CONTACT_LANDLINE)
+					. ') > 0 AND REPLACE(contact, \'-\', \'\') ?LIKE? ' . $this->db->Escape("%$value%") . ')';
 				break;
 			case 'email':
 				$searchargs[] = 'EXISTS (SELECT 1 FROM customercontacts
