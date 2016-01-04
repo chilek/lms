@@ -292,7 +292,7 @@ if(isset($_POST['assignment']))
 		$LMS->executeHook(
 			'customerassignmentedit_after_submit',
 			array(
-				'a' => $a,
+				'assignment' => $a,
 			)
 		);
 
