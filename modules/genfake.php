@@ -2055,6 +2055,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			'secret' => '',
 			'community' => '',
 			'clients' => 0,
+			'status' => 0,
 		));
 		$ports = mt_rand(4,14);
 		for($j = 0; $j < $ports; $j++)
