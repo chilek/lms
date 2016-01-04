@@ -698,6 +698,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
 				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
+				c.street, c.building, c.apartment,
+				c.post_street, c.post_building, c.post_apartment,
 				c.post_name, c.post_address, c.post_zip, c.post_city, c.post_countryid
 				FROM documents d
 				JOIN customeraddressview c ON (c.id = d.customerid)
@@ -821,6 +823,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
 				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
+				c.street, c.building, c.apartment,
+				c.post_street, c.post_building, c.post_apartment,
 				c.post_name, c.post_address, c.post_zip, c.post_city, c.post_countryid
 				FROM documents d
 				JOIN customeraddressview c ON (c.id = d.customerid)
