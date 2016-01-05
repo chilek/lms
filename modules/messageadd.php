@@ -230,7 +230,8 @@ if(isset($_POST['message']))
 	else
 		$message['type'] == MSG_USERPANEL_URGENT;
 
-	if(empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 12))
+	if (empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 58
+		|| ($message['group'] > CSTATUS_LAST && $message['group'] < 50)))
 		$error['group'] = trans('Incorrect customers group!');
 
 	if ($message['type'] == MSG_MAIL) {
