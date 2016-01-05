@@ -125,6 +125,14 @@
 								</TD>
 							</TR>
 						{/foreach}
+							<TR>
+								<TD width="1%" align="center" class="ftop">
+									<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('ticketslist', this, ['extended', 'contacts'])" VALUE="1" CHECKED>
+								</TD>
+								<TD width="1%" class="ftop">
+									<label for="allbox">{trans("Check All")}</label>
+								</TD>
+							</TR>
 						</TABLE>
 					</TD>
 				</TR>
@@ -214,6 +222,14 @@
 								</TD>
 							</TR>
 						{/foreach}
+							<TR>
+								<TD width="1%" align="center" class="ftop">
+									<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('stats', this)" VALUE="1" CHECKED>
+								</TD>
+								<TD width="1%"  class="ftop">
+									<label for="allbox">{trans("Check All")}</label>
+								</TD>
+							</TR>
 						</TABLE>
 					</TD>
 				</TR>
