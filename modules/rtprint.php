@@ -52,7 +52,7 @@ switch($type)
 	
 		if($datefrom)
 		{
-        		if (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $datefrom)) {
+        		if (check_date($datefrom)) {
                 		list ($year, $month, $day) = explode('/', $datefrom);
                 		$datefrom = mktime(0, 0, 0, $month, $day, $year);  
         		} else
@@ -62,7 +62,7 @@ switch($type)
 
 		if($dateto)
 		{
-        		if (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $dateto)) {
+        		if (check_date($dateto)) {
                 		list ($year, $month, $day) = explode('/', $dateto);
                 		$dateto = mktime(0, 0, 0, $month, $day, $year);  
         		} else
@@ -144,7 +144,7 @@ switch($type)
 
 		if($datefrom)
 		{
-        		if (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $datefrom)) {
+        		if (check_date($datefrom)) {
                 		list ($year, $month, $day) = explode('/', $datefrom);
                 		$datefrom = mktime(0, 0, 0, $month, $day, $year);  
         		} else
@@ -154,7 +154,7 @@ switch($type)
 
 		if($dateto)
 		{
-        		if (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $dateto)) {
+        		if (check_date($dateto)) {
                 		list ($year, $month, $day) = explode('/', $dateto);
                 		$dateto = mktime(0, 0, 0, $month, $day, $year);  
         		} else
