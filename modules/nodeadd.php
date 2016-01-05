@@ -60,7 +60,7 @@ if (isset($_POST['nodedata']))
 		$nodedata['macs'][$key] = str_replace('-',':',$value);
 
 	foreach($nodedata as $key => $value)
-		if($key != 'macs')
+		if($key != 'macs' && $key != 'authtype')
 			$nodedata[$key] = trim($value);
 
 	if($nodedata['ipaddr']=='' && $nodedata['ipaddr_pub'] && $nodedata['mac']=='' && $nodedata['name']=='')
@@ -158,7 +158,7 @@ if (isset($_POST['nodedata']))
 		        {
 		                $error['port'] = trans('Incorrect port number!');
 		        }
-		        elseif($DB->GetOne('SELECT id FROM nodes WHERE netdev=? AND port=? AND ownerid>0',
+		        elseif($DB->GetOne('SELECT id FROM vnodes WHERE netdev=? AND port=? AND ownerid>0',
 		        		array($nodedata['netdev'], $nodedata['port']))
 			        || $DB->GetOne('SELECT 1 FROM netlinks WHERE (src = ? OR dst = ?)
 			                AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?',
@@ -207,9 +207,9 @@ if (isset($_POST['nodedata']))
             $nodedata['location_house'] = null;
             $nodedata['location_flat'] = null;
         }
-        if(empty($nodedata['location'])and !empty($nodedata['ownerid'])){
-            $location=$LMS->GetCustomer($nodedata['ownerid']);
-            $nodedata['location']=$location['address'].'; '.$location['zip'].' '.$location['city'];
+        if (empty($nodedata['location']) && !empty($nodedata['ownerid'])) {
+            $location = $LMS->GetCustomer($nodedata['ownerid']);
+            $nodedata['location'] = $location['address'] . ', ' . $location['zip'] . ' ' . $location['city'];
         }
 
 

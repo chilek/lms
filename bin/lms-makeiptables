@@ -230,7 +230,7 @@ foreach my $key (@networks)
 	$dbq->execute();
 	while (my $row = $dbq->fetchrow_hashref())
 	{
-		my $sdbq = $dbase->prepare("SELECT inet_ntoa(ipaddr) AS ip, inet_ntoa(ipaddr_pub) AS pubip FROM nodes WHERE access = 1 ORDER BY ipaddr");
+		my $sdbq = $dbase->prepare("SELECT inet_ntoa(ipaddr) AS ip, inet_ntoa(ipaddr_pub) AS pubip FROM vnodes WHERE access = 1 ORDER BY ipaddr");
 		$sdbq->execute();
 		while(my $srow = $sdbq->fetchrow_hashref())
 		{

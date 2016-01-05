@@ -347,17 +347,21 @@ if (empty($types) || in_array('contracts', $types)) {
 		JOIN assignments a ON (c.id = a.customerid)
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
 			FROM customercontacts
-			WHERE (type & ?) = ? 
+			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) m ON (m.customerid = c.id)
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
-			WHERE type < ?
+			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) x ON (x.customerid = c.id)
 		GROUP BY c.id, c.pin, c.lastname, c.name, m.email, x.phone
 		HAVING MAX(a.dateto) >= $daystart + ? * 86400 AND MAX(a.dateto) < $daystart + (? + 1) * 86400",
-		array(CONTACT_EMAIL | CONTACT_DISABLED, CONTACT_EMAIL, CONTACT_EMAIL, $days, $days));
+		array(CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+			CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
+			CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+			CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
+			$days, $days));
 
 	if (!empty($customers)) {
 		$notifications['contracts']['customers'] = array();
@@ -417,7 +421,7 @@ if (empty($types) || in_array('debtors', $types)) {
 		) m ON (m.customerid = c.id)
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
-			WHERE type < ?
+			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) x ON (x.customerid = c.id)
 		LEFT JOIN documents d ON d.id = cash.docid
@@ -427,7 +431,12 @@ if (empty($types) || in_array('debtors', $types)) {
 			OR (cash.docid <> 0 AND ((d.type IN (?, ?) AND cash.time < $currtime
 				OR (d.type IN (?, ?) AND d.cdate + (d.paytime + ?) * 86400 < $currtime)))))
 		GROUP BY c.id, c.pin, c.lastname, c.name, m.email, x.phone, divisions.account
-		HAVING SUM(value) < ?", array(CONTACT_EMAIL | CONTACT_DISABLED, CONTACT_EMAIL, CONTACT_EMAIL, $days, DOC_RECEIPT, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE, $days, $limit));
+		HAVING SUM(value) < ?", array(
+			CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+			CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
+			CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+			CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
+			$days, DOC_RECEIPT, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE, $days, $limit));
 
 	if (!empty($customers)) {
 		$notifications['debtors']['customers'] = array();
@@ -511,7 +520,12 @@ if (empty($types) || in_array('reminder', $types)) {
 		WHERE d.type = 1 AND d.closed = 0 AND ca.balance < 0
 			AND ((d.cdate / 86400) + d.paytime + 1 - ?) * 86400 >= $daystart
 			AND ((d.cdate / 86400) + d.paytime - ?) * 86400 < $daystart",
-		array(CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_INVOICES, CONTACT_MOBILE | CONTACT_DISABLED, CONTACT_MOBILE, $days, DOC_RECEIPT, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE, $days, $days, $days));
+		array(
+			CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+			CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
+			CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+			CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
+			$days, DOC_RECEIPT, DOC_CNOTE, DOC_INVOICE, DOC_DNOTE, $days, $days, $days));
 	if (!empty($documents)) {
 		$notifications['reminder']['customers'] = array();
 		foreach ($documents as $row) {
@@ -583,7 +597,12 @@ if (empty($types) || in_array('invoices', $types)) {
 		) ca ON (ca.customerid = d.customerid)
 		WHERE (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type IN (?, ?)
 			AND d.cdate >= ? AND d.cdate <= ?",
-		array(CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_INVOICES, CONTACT_MOBILE | CONTACT_DISABLED, CONTACT_MOBILE, DOC_INVOICE, DOC_CNOTE, $daystart, $dayend));
+		array(
+			CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+			CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_NOTIFICATIONS,
+			CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+			CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
+			DOC_INVOICE, DOC_CNOTE, $daystart, $dayend));
 
 	if (!empty($documents)) {
 		$notifications['invoices']['customers'] = array();
@@ -642,7 +661,7 @@ if (empty($types) || in_array('notes', $types)) {
 		) m ON (m.customerid = c.id)
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
-			WHERE (type & ?) = ? 
+			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) x ON (x.customerid = c.id)
 		JOIN (SELECT SUM(value) * -1 AS value, docid
@@ -656,8 +675,12 @@ if (empty($types) || in_array('notes', $types)) {
 		) ca ON (ca.customerid = d.customerid)
 		WHERE (c.invoicenotice IS NULL OR c.invoicenotice = 0) AND d.type = ?
 			AND d.cdate >= ? AND d.cdate <= ?",
-		array(CONTACT_EMAIL | CONTACT_DISABLED, CONTACT_EMAIL, CONTACT_MOBILE | CONTACT_DISABLED, CONTACT_MOBILE, DOC_DNOTE, $daystart, $dayend));
-
+		array(
+			CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+			CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
+			CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+			CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
+			DOC_DNOTE, $daystart, $dayend));
 	if (!empty($documents)) {
 		$notifications['notes']['customers'] = array();
 		foreach ($documents as $row) {
@@ -713,15 +736,19 @@ if (empty($types) || in_array('warnings', $types)) {
 		) m ON (m.customerid = c.id)
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
-			WHERE (type & ?) = ? 
+			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) x ON (x.customerid = c.id)
 		LEFT JOIN (SELECT SUM(value) AS balance, customerid
 			FROM cash
 			GROUP BY customerid
 		) ca ON (ca.customerid = c.id)
-		WHERE c.id IN (SELECT DISTINCT ownerid FROM nodes WHERE warning = 1)",
-		array(CONTACT_EMAIL | CONTACT_DISABLED, CONTACT_EMAIL, CONTACT_MOBILE | CONTACT_DISABLED, CONTACT_MOBILE));
+		WHERE c.id IN (SELECT DISTINCT ownerid FROM vnodes WHERE warning = 1)",
+		array(
+			CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+			CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
+			CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+			CONTACT_MOBILE | CONTACT_NOTIFICATIONS));
 
 	if (!empty($customers)) {
 		$notifications['warnings']['customers'] = array();
@@ -766,7 +793,7 @@ if (empty($types) || in_array('warnings', $types)) {
 // send message to customers which have awaiting www messages
 if (in_array('www', $channels) && (empty($types) || in_array('messages', $types))) {
 	$nodes = $DB->GetAll("SELECT INET_NTOA(ipaddr) AS ip
-			FROM nodes n
+			FROM vnodes n
 		JOIN (SELECT DISTINCT customerid FROM messageitems
 			JOIN messages m ON m.id = messageid
 			WHERE type = ? AND status = ?
@@ -805,11 +832,11 @@ if (in_array('www', $channels))
 		if (!empty($notification['customers'])) {
 			if ($type == 'warnings')
 				$nodes = $DB->GetAll("SELECT INET_NTOA(ipaddr) AS ip
-						FROM nodes
+						FROM vnodes
 					WHERE warning = 1 ORDER BY ipaddr");
 			else
 				$nodes = $DB->GetAll("SELECT INET_NTOA(ipaddr) AS ip
-						FROM nodes
+						FROM vnodes
 					WHERE ownerid IN (" . implode(',', $notification['customers']) . ")"
 					. " ORDER BY id");
 			if (!empty($nodes))

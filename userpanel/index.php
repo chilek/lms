@@ -40,6 +40,8 @@ if (is_readable('lms.ini'))
 	$CONFIG_FILE = 'lms.ini';
 elseif (is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini'))
 	$CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini';
+elseif (is_readable('..' . DIRECTORY_SEPARATOR .'lms.ini'))
+	$CONFIG_FILE = '..' . DIRECTORY_SEPARATOR .'lms.ini';
 elseif (!is_readable($CONFIG_FILE))
 	die('Unable to read configuration file ['.$CONFIG_FILE.']!');
 
@@ -204,6 +206,7 @@ $layout['dberrors'] =& $DB->GetErrors();
 
 $SMARTY->assignByRef('modules', $USERPANEL->MODULES);
 $SMARTY->assignByRef('layout', $layout);
+$SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header'));
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
 
@@ -223,7 +226,7 @@ if($SESSION->islogged)
 
 	if(ConfigHelper::checkConfig('userpanel.hide_nodes_modules'))
 	{
-		if(!$DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid = ? LIMIT 1', array($SESSION->id)))
+		if(!$DB->GetOne('SELECT COUNT(*) FROM vnodes WHERE ownerid = ? LIMIT 1', array($SESSION->id)))
 		{
 			unset($USERPANEL->MODULES['notices']);
 			unset($USERPANEL->MODULES['stats']);

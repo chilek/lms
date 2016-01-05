@@ -11,6 +11,7 @@ TMP=`mktemp -d`
 # checking out latest smarty version
 wget -q -O $TMP/tags https://api.github.com/repos/smarty-php/smarty/tags
 LATEST_VERSION=$(grep "name" $TMP/tags |head -1 |awk '{print $2;}' |sed -e 's/[",]//g')
+LATEST_VERSION="v3.1.27"
 URL="https://github.com/smarty-php/smarty/archive/${LATEST_VERSION}.tar.gz"
 
 # download

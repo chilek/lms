@@ -1,3 +1,21 @@
+4.5.0 (2015-12-18)
+    add tag 'end_last_page' with property 'end_height'. Update example 5 to use it
+    better composer.json file
+    update TCPDF from 5.0.002 to v6.2.12 => important changes. See the TCPDF changelogs
+
+4.4.0 (2015-12-11)
+    includes a new attribute to page tag 'hideheader' which accepts a list of pages that gonna skip header.
+    some doc fixes, rephrasing and removing french words
+    add composer management
+    Update autoload type
+    README more readable
+    add automatic generation of pdf test files
+      script ./test/generate.sh
+      You must have the html2pdf folder in http:/localhost/html2pdf/
+    fix: Set default font from PDF_FONT_NAME_MAIN constant from TCPDF, if available
+    fix: Make space-collapsing regexp Unicode-aware
+    fix: some pbs on examples to generate them automatically
+
 4.03 (2011-05-27)
     correction de l'exemple "form.php" : vulnérabilité cross-site scripting corrigée
     correction sur la gestion des retours à la ligne automatique

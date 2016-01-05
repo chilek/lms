@@ -1,0 +1,88 @@
+<script type="text/javascript">
+    function removeUsers(){
+	document.userassignments.oper.value="0";
+	document.userassignments.submit();
+    }
+</script>
+<br>
+<form name="userassignments" method="POST" action="?m=usergroup&amp;id={$usergroup.id}">
+    <p style="display: none;">
+	<input type="submit" class="hiddenbtn">
+	<input type="hidden" name="oper" value="1">
+    </p>
+    <table width="100%" cellpadding="0">
+	<tr>
+	    <td style="width: 49%;" class="valign-top">
+		<table class="lmsbox">
+		    <thead>
+			<tr>
+			    <td style="width: 100;" class="bold nobr"><img src="img/users.gif" alt="">&nbsp;{trans("Group members:")}</td>
+			</tr>
+		    </thead>
+		    <tbody>
+			<tr>
+			    <td style="width: 100%;" class="text-center">
+				{if $usergroup.userscount}
+				    <select user size="20" name="userassignments[gmuserid][]" multiple>
+					{section name=user loop=$usergroup.users}
+					<option value="{$usergroup.users[user].id}">
+					    {$usergroup.users[user].username|truncate:40:"...":true} ({$usergroup.users[user].id|string_format:"%04d"})
+					</option>
+					{/section}
+				    </select>
+				{else}
+				    <br>
+				    <br>
+				    <span class="bold">{trans("This group hasn't got any members.")}</span><br>
+				    <br>
+				    <br>
+				{/if}
+			    </td>
+			</tr>
+			<tr>
+			    <td style="width: 100%;" class="text-right nobr">
+				<a href="javascript:removeUsers();">{trans("Delete")} <img src="img/cancel.gif" alt=""></a>
+			    </td>
+			</tr>
+		    </tbody>
+		</table>
+	    </td>
+	    <td style="width: 2%;"></td>
+	    <td style="width: 49%;" class="valign-top">
+		<table class="lmsbox">
+		    <thead>
+			<tr>
+			    <td style="width: 100%;" class="bold nobr"><img src="img/users.gif" alt="">&nbsp;{trans("Add new member(s):")}</td>
+			</tr>
+		    </thead>
+		    <tbody>
+			<tr>
+			    <td style="width: 100%;" class="text-center">
+				{if $userscount}
+				    <select size="20" name="userassignments[muserid][]" multiple>
+					{section name=user loop=$users}
+					<option value="{$users[user].id}">
+					    {$users[user].username|truncate:40:"...":true} ({$users[user].id|string_format:"%04d"})
+					</option>
+					{/section}
+				    </select>
+				{else}
+				    <br>
+				    <br>
+				    <span class="bold">{trans("All users are members of this group.")}</span><br>
+				    <br>
+				    <br>
+				{/if}
+			    </td>
+			</tr>
+			<tr>
+			    <td style="width: 100%;" class="text-right nobr">
+				<a href="javascript:document.userassignments.submit();">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			    </td>
+			</tr>
+		    </tbody>
+		</table>
+	    </td>
+	</tr>
+    </table>
+</form>

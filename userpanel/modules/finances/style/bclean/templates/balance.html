@@ -1,0 +1,15 @@
+{box title="Balance"}
+<div class="row">
+    <div class="col-md-12">
+        {if $userinfo.balance < 0}
+        <h1>Aktualne saldo: <strong class="text-danger">{$userinfo.balance|money_format}</strong></h1>
+        {if !check_conf('userpanel.disable_transferform')}
+        <br/><a class="btn btn-primary" href="?m=finances&amp;f=transferform" target="_blank">Wydrukuj formularz zapłaty.</a>
+        {/if}        
+        {else}
+        <h1>Aktualne saldo: <strong class="text-success">{$userinfo.balance|money_format}</strong></h1>
+        <button type="button" class="btn btn-primary" disabled>{trans("All your covenants are settled")}.</button>
+        {/if}
+    </div>
+</div>
+{/box}

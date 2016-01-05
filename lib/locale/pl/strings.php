@@ -84,7 +84,6 @@ $_LANG['Network/Address:'] = 'Sieć/Adres:';
 $_LANG['Addresses (total/busy/online):'] = 'Adresy (wszystkie/zajęte/włączone):';
 $_LANG['Address field is required!'] = 'Nazwa adresu jest wymagana!';
 $_LANG['Address/prefix:'] = 'Adres/prefiks:';
-$_LANG['Address required!'] = 'Wymagany adres!';
 $_LANG['Administration'] = 'Administracja';
 $_LANG['After'] = 'Po';
 $_LANG['After:'] = 'Po:';
@@ -158,6 +157,7 @@ $_LANG['Are you sure, you want to remove instance \\\'$a\\\' and all assigned co
 $_LANG['Are you sure, you want to remove invoice \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć fakturę \\\'$a\\\' z bazy danych?';
 $_LANG['Are you sure, you want to remove network \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz usunąć sieć \\\'$a\\\'?';
 $_LANG['Are you sure, you want to remove node \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć komputer \\\'$a\\\' z bazy danych?';
+$_LANG['Are you sure, you want to remove network \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć sieć \\\'$a\\\' z bazy danych?';
 $_LANG['Are you sure, you want to remove option \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć opcję \\\'$a\\\' z bazy danych?';
 $_LANG['Are you sure, you want to remove queue \\\'$a\\\' and all assigned tickets and messages?'] = 'Jesteś pewien, że chcesz usunąć kolejkę \\\'$a\\\' oraz wszelkie zgłoszenia i wiadomości z nią skojarzone?';
 $_LANG['Are you sure, you want to remove receipt \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć dowód wpłaty nr \\\'$a\\\' z bazy danych?';
@@ -296,6 +296,7 @@ $_LANG['customer name'] = 'nazwisko klienta';
 $_LANG['Customer name'] = 'Nazwisko klienta';
 $_LANG['Customer No.: $a'] = 'Numer klienta: $a';
 $_LANG['Customer Nodes ($a):'] = 'Komputery klienta ($a):';
+$_LANG['Customer Networks ($a):'] = 'Sieci klienta ($a):';
 $_LANG['Customer not selected!'] = 'Nie wybrano klienta!';
 $_LANG['Customer Remove: $a'] = 'Usunięcie klienta: $a';
 $_LANG['Customers'] = 'Klienci';
@@ -354,7 +355,6 @@ $_LANG['No free ports on device!'] = 'Urządzenie nie posiada wolnych portów!';
 $_LANG['No IP addresses on device.'] = 'Urządzenie nie posiada adresu IP.';
 $_LANG['Device Info: $a $b $c'] = 'Informacje o urządzeniu: $a $b $c';
 $_LANG['Device name is required!'] = 'Nazwa urządzenia jest wymagana!';
-$_LANG['Device name is too long (max.32 characters)!'] = 'Nazwa urządzenia jest za długa (maksymalnie 32 znaki)!';
 $_LANG['IP addresses ($a):'] = 'Adresy IP ($a):';
 $_LANG['Device has been deleted.'] = 'Urządzenie zostało usunięte.';
 $_LANG['DHCP range:'] = 'Zakres DHCP:';
@@ -429,8 +429,6 @@ $_LANG['Enter account quota in MB'] = 'Wprowadź quotę dla konta w MB';
 $_LANG['Enter account name'] = 'Wprowadź nazwę konta';
 $_LANG['Enter additional information'] = 'Wprowadź dodatkowe informacje';
 $_LANG['Enter additional information (optional)'] = 'Wprowadź dodatkowe informacje (opcjonalnie)';
-$_LANG['Enter address'] = 'Wprowadź adres';
-$_LANG['Enter address name'] = 'Wprowadź adres';
 $_LANG['Enter alias name'] = 'Wprowadź alias';
 $_LANG['Enter beginning of DHCP range (optional)'] = 'Wprowadź początek zakresu DHCP (opcjonalnie)';
 $_LANG['Enter/change your registration info'] = 'Wprowadź/zmień swoje dane rejestracyjne';
@@ -440,8 +438,13 @@ $_LANG['Enter comment'] = 'Wprowadź komentarz';
 $_LANG['Enter contact phone'] = 'Wprowadź telefon kontaktowy';
 $_LANG['Enter country'] = 'Wprowadź kraj';
 $_LANG['Enter creditor name'] = 'Wprowadź nazwę wierzyciela';
-$_LANG['Enter customer address'] = 'Wprowadź adres klienta';
-$_LANG['Enter customer city'] = 'Wprowadź miasto klienta';
+$_LANG['Enter street name'] = 'Wprowadź nazwę ulicy';
+$_LANG['Enter building number'] = 'Wprowadź numer budynku';
+$_LANG['Enter apartment number'] = 'Wprowadź numer lokalu';
+$_LANG['Enter city'] = 'Wprowadź miasto';
+$_LANG['Enter street name (optional)'] = 'Wprowadź nazwę ulicy (opcjonalnie)';
+$_LANG['Enter building number (optional)'] = 'Wprowadź numer budynku (opcjonalnie)';
+$_LANG['Enter apartment number (optional)'] = 'Wprowadź numer lokalu (opcjonalnie)';
 $_LANG['Enter customer e-mail address (optional)'] = 'Wprowadź adres e-mail klienta (opcjonalnie)';
 $_LANG['Enter customer name'] = 'Wprowadź imię klienta';
 $_LANG['Enter customer Social Security Number (optional)'] = 'Wprowadź numer PESEL klienta (opcjonalnie)';
@@ -499,6 +502,7 @@ $_LANG['Enter minimal warranted upload value (optional)'] = 'Wprowadź minimaln�
 $_LANG['Enter model name (optional)'] = 'Wprowadź nazwę modelu (opcjonalnie)';
 $_LANG['Enter module name and location'] = 'Wprowadź lokalizację i nazwę (ścieżkę do) modułu';
 $_LANG['Enter name'] = 'Wprowadź nazwę';
+$_LANG['Enter name (optional)'] = 'Wprowadź nazwę (opcjonalnie)';
 $_LANG['Enter first/lastname of customer'] = 'Wprowadź nazwę/nazwisko klienta';
 $_LANG['Enter network domain (optional)'] = 'Wprowadź domenę sieci (opcjonalnie)';
 $_LANG['Enter network interface (optional)'] = 'Wprowadź interfejs sieci (opcjonalnie)';
@@ -530,8 +534,8 @@ $_LANG['Enter secondary DNS address (optional)'] = 'Wprowadź zapasowy adres DNS
 $_LANG['Enter sender e-mail address'] = 'Wprowadź adres e-mail nadawcy';
 $_LANG['Enter sender name'] = 'Wprowadź nazwę nadawcy';
 $_LANG['Enter serial number (optional)'] = 'Wprowadź numer seryjny (opcjonalnie)';
-$_LANG['Enter service name (optional)'] = 'Wprowadź nazwę odbiorcy (opcjonalnie)';
-$_LANG['Enter service address (optional)'] = 'Wprowadź adres do doręczeń (opcjonalnie)';
+$_LANG['Enter postall address name (optional)'] = 'Wprowadź nazwę dla adresu korespondencyjnego (opcjonalnie)';
+$_LANG['Enter postall address street name (optional)'] = 'Wprowadź nazwę ulicy dla adresu korespondencyjnego (opcjonalnie)';
 $_LANG['Enter short description of transaction'] = 'Wprowadź krótki opis operacji';
 $_LANG['Enter Social Security Number (optional)'] = 'Wprowadź PESEL (opcjonalnie)';
 $_LANG['Enter standing payment name'] = 'Wprowadź nazwę opłaty stałej';
@@ -1238,7 +1242,7 @@ $_LANG['Specified IP address overlaps with other network!'] = 'Wybrany adres IP 
 $_LANG['Specified MAC address is in use!'] = 'Wybrany adres MAC jest już w użyciu!';
 $_LANG['Specified name contains forbidden characters!'] = 'Wybrana nazwa zawiera zabronione znaki!';
 $_LANG['Specified name is in use!'] = 'Wybrana nazwa jest już w użyciu!';
-$_LANG['Specified name is too long (max.$a characters)!'] = 'Wybrana nazwa jest za długa (maksymalnie $a znaków)!';
+$_LANG['Specified name is too long (max. $a characters)!'] = 'Podana nazwa jest za długa (maksymalnie $a znaków)!';
 $_LANG['Specify format of verbal amounts representation (on invoices). e.g. for value "1" verbal expand of 123,15 will be "one two thr 15/100". Default: 0.'] = 'Określ typ reprezentacji słownej liczb (na fakturach). np dla wartości "1" słowne określenie sumy 123,15 wędzie wyglądało "jed dwa trz 15/100". Domyślnie: 0.';
 $_LANG['Specify time (in seconds), after which node will be marked offline. It should match with frequency of running nodes activity script (i.e. lms-fping). Default: 600.'] = 'Określ czas (w sekundach) po jakim komputer będzie uważany za wyłączony. Powinno się to pokrywać z częstotliwością uruchamiania skryptu dokonującego sprawdzenia aktywności komputerów (np lms-fping). Domyślnie: 600.';
 $_LANG['SQL query executed while reload, if reload_type = sql. Default: empty. You can use \'%TIME%\' as replacement to current unix timestamp. WARNING! Semicolon is handled as query separator, which means that you can enter couple of SQL queries separated by semicolon sign.'] = 'Zapytanie SQL wykonywane pod czas przeładownia jeżeli reload_type = sql. Domyślnie: pusta. W zapytaniu może być użyta zmienna \'%TIME%\' jako zastępstwo właściwego czasu zapisanego w formacie UNIX_TIMESTAMP. UWAGA! Średnik jest interpretowany jako znak rozdzielający zapytania. Oznacza to, że możesz wpisać kilka zapytań SQL oddzielonych średnikami.';
@@ -1281,6 +1285,7 @@ $_LANG['TEN/SSN'] = 'NIP/PESEL';
 $_LANG['Thanks for using our services!'] = 'Dziękujemy za korzystanie z naszych usług!';
 $_LANG['That customer hasn\'t got any assigned subscriptions.'] = 'Ten klient nie ma przypisanych żadnych taryf.';
 $_LANG['That customer hasn\'t got any node.'] = 'Ten klient nie posiada żadnych komputerów.';
+$_LANG['That customer hasn\'t got any network.'] = 'Ten klient nie posiada żadnych sieci.';
 $_LANG['That customer hasn\'t got any transactions.'] = 'Ten klient nie posiada żadnych transakcji.';
 $_LANG['That customer is not a member of any group.'] = 'Ten klient nie jest członkiem żadnej z grup.';
 $_LANG['That customer has been deleted.'] = 'Ten klient został usunięty.';
@@ -1717,6 +1722,9 @@ $_LANG['Cause:'] = 'Przyczyna:';
 $_LANG['company\'s side'] = 'po stronie firmy';
 $_LANG['customer\'s side'] = 'po stronie klienta';
 $_LANG['Enter customer ID'] = 'Wprowadź ID klienta';
+$_LANG['Enter customer ID (optional)'] = 'Wprowadź ID klienta (opcjonalnie)';
+$_LANG['Navigate to the customer'] = 'Przejdź na kartę klienta';
+$_LANG['Customer with the specified ID does not exist'] = 'Klient o podanym ID nie istnieje!';
 $_LANG['Select request cause'] = 'Wybierz przyczynę zgłoszenia';
 $_LANG['unknown/other'] = 'nieznana/inna';
 $_LANG['unknown/other<!plural>'] = 'nieznane/inne';
@@ -2402,8 +2410,8 @@ $_LANG['mobile'] = 'tel.kom.';
 $_LANG['phone<!plural>'] = 'telefon';
 $_LANG['fax'] = 'fax';
 $_LANG['Select domain type'] = 'Wybierz typ domeny';
-$_LANG['Enter city of service address (optional)'] = 'Wprowadź nazwę miasta dla adresu dodoręczeń (opcjonalnie)';
-$_LANG['Enter zip code of service address (optional)'] = 'Wprowadź kod pocztowy dla adresu do doręczeń (opcjonalnie)';
+$_LANG['Enter city (optional)'] = 'Wprowadź nazwę miasta (opcjonalnie)';
+$_LANG['Enter zip code (optional)'] = 'Wprowadź kod pocztowy (opcjonalnie)';
 $_LANG['All cash operations from that package will be lost.'] = 'Wszystkie operacje kasowe z tego pakietu zostaną usunięte.';
 $_LANG['Are you sure, you want to delete this package and related operations?'] = 'Czy na pewno chcesz usunąć tą paczkę i powiązane operacje?';
 $_LANG['Do you want to remove package "$a"?'] = 'Czy chesz usunąć paczkę "$a"?';
@@ -2975,9 +2983,13 @@ $_LANG['(default for link technology)'] = '(domyślna dla technologii łącza)';
 $_LANG['PPPoE Client'] = 'Klient PPPoE';
 $_LANG['DHCP Client'] = 'Klient DHCP';
 $_LANG['EAP Client'] = 'Klient EAP';
-$_LANG['Enable/disable PPPoE Server Client'] = 'Włącza/Wyłącza komputer jako klient PPPoE';
-$_LANG['Enable/disable DHCP Server Client'] = 'Włącza/Wyłącza komputer jako klient DHCP';
-$_LANG['Enable/disable EAP Server Client'] = 'Włącza/Wyłącza komputer jako klient EAP';
+$_LANG['WiFi AP Client'] = 'Klient WiFi AP';
+$_LANG['VoIP Gateway'] = 'Bramka VoIP';
+$_LANG['Enable/disable PPPoE Server Client'] = 'Włącza/wyłącza komputer jako klient PPPoE';
+$_LANG['Enable/disable DHCP Server Client'] = 'Włącza/wyłącza komputer jako klient DHCP';
+$_LANG['Enable/disable EAP Server Client'] = 'Włącza/wyłącza komputer jako klient EAP';
+$_LANG['Enable/disable WiFi AP Client access'] = 'Włącza/wyłącza komputer jako klient WiFi AP';
+$_LANG['Enable/disable VoIP Gateway access'] = 'Włącza/wyłącza komputer jako bramkę VoIP';
 
 $_LANG['Select network device:'] = 'Wybierz urządzenie sieciowe:';
 $_LANG['Click to select network device from map'] = 'Kliknij w celu wybrania urządzenia sieciowego z mapy';
@@ -3021,7 +3033,7 @@ $_LANG['Payment for liabilities'] = 'Wpłata na poczet należności';
 $_LANG['Check if sent electronic invoices on this email'] = 'Zaznacz jeśli na ten adres e-mail mają być wysyłane elektroniczne faktury';
 $_LANG['Not visible by the customer in electronic Customer Service Representative'] = 'Niewidoczny dla klienta w elektronicznym biurze obsługi klienta';
 $_LANG['If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices'] = 'Jeśli klient chce otrzymywać fakturę elektroniczną musi zostać zaznaczony adres e-mail na który mają być wysyłane e-faktury';
-$_LANG['Cancellation of a traditional invoice (agreement on an electronic invoice):'] = 'Rezygnazja z faktury tradycyjnej (zgoda na fakturę elektroniczną):';
+$_LANG['Cancellation of a traditional invoice (agreement on an electronic invoice):'] = 'Rezygnacja z faktury tradycyjnej (zgoda na fakturę elektroniczną):';
 $_LANG['Check if send notification'] = 'Zaznacz, jeżeli chcesz wysyłać powiadomienia';
 $_LANG['Notification'] = 'Powiadomienia';
 
@@ -3032,4 +3044,51 @@ $_LANG['Ticket\'s subject has been changed from $a to $b.'] = 'Temat zgłoszenia
 $_LANG['Ticket has been moved from customer $a ($b) to customer $c ($d).'] = 'Zgłoszenie zostało przeniesione od klienta $a ($b) do klienta $c ($d).';
 $_LANG['Ticket has been moved from $a to customer $b ($c).'] = 'Zgłoszenie zostało przeniesione od $a do klienta $b ($c).';
 $_LANG['Changes of customers waiting for approval:'] = 'Zmiany klientów oczekujące na zatwierdzenie:';
+$_LANG['the whole network'] = 'cała sieć';
+$_LANG['Disconnected:<!summary>'] = 'Odłączeni:';
+$_LANG['with disconnected nodes'] = 'z odłączonymi komputerami';
+
+$_LANG['Select group to assign to customer'] = 'Wybierz grupę by przypisać do niej klienta';
+$_LANG['If isset "true" when adding new customer select group is required. Default "false"'] = 'Ustawienie opcji na "true" wymusza wybór grupy przypisanej do klienta. Domyślnie wyłączone';
+
+$_LANG['permanent customer removal'] = 'trwałe usunięcie klienta';
+$_LANG['Remove permanently'] = 'Usuń trwale';
+$_LANG['Permanent Customer Remove: $a'] = 'Trwałe usunięcie klienta: $a';
+$_LANG['Do you want to permanently remove $a customer?'] = 'Czy chcesz trwale usunąć klienta $a?';
+$_LANG['This operation will be irreversible!'] = 'Ta operacja będzie nieodwracalna!';
+$_LANG['Customer $a has been permanently removed.'] = 'Klient $a został trwale usunięty.';
+
+$_LANG['Check if you want do send message copy to sender'] = 'Zaznacz, jeśli ma być wysyłana kopia wiadomości do nadawcy';
+$_LANG['send copy to sender'] = 'wyślij kopię do nadawcy';
+
+$_LANG['Assign network to customer'] = 'Przypisz sieć do klienta';
+
+$_LANG['Automatically adjusts the size of the selection list to the number of users when set to 0.'] = 'Automatyczne dopasowanie wielkości listy wyboru do ilości użytkowników jeśli ustawione na 0.';
+
+$_LANG['Are you sure, you want to cancel invoice \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz anulować fakturę \\\'$a\\\' z bazy danych?';
+$_LANG['Are you sure, you want to recover cancelled invoice \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz przywrócić anulowaną fakturę \\\'$a\\\' z bazy danych?';
+
+$_LANG['User groups'] = 'Grupy użytkowników';
+$_LANG['user group<!syslog>'] = 'grupa użytkowników';
+$_LANG['User Groups List'] = 'Lista grup użytkowników';
+$_LANG['All users are members of this group.'] = 'Wszyscy użytkownicy są członkami tej grupy.';
+$_LANG['user assignment<!syslog>'] = 'powiązanie użytkownika z grupą';
+
+$_LANG['Street:'] = 'Ulica:';
+$_LANG['Building:'] = 'Budynek:';
+$_LANG['Apartment:'] = 'Lokal:';
+$_LANG['Postal address'] = 'Adres korespondencyjny';
+
+$_LANG['Street name required!'] = 'Wymagana nazwa ulicy!';
+$_LANG['Building number required!'] = 'Wymagany numer budynku!';
+
+$_LANG['External system identifier:'] = 'Identyfikator w systemie zewnętrznym:';
+$_LANG['Enter customer identifier in external system (optional)'] = 'Wprowadź identyfikator klienta w systemie zewnętrznym (opcjonalnie)';
+
+$_LANG['You already used this password!'] = 'Takie hasło było już używane!';
+
+$_LANG['Credit Note for Invoice Edit: $a'] = 'Edycja faktury korygującej: $a';
+
+$_LANG['$a (clone)'] = '$a (klon)';
+
 ?>

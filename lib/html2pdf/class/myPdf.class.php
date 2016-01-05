@@ -1,15 +1,15 @@
 <?php
 /**
- * HTML2PDF Librairy - myPdf class
+ * HTML2PDF Library - myPdf class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
  *
+ * @package   Html2pdf
  * @author    Laurent MINGUET <webmaster@html2pdf.fr>
- * @version   4.03
+ * @copyright 2016 Laurent MINGUET
  */
-
-class HTML2PDF_myPdf extends TCPDF
+class HTML2PDF_myPdf extends LMSTCPDF
 {
     protected $_footerParam = array();
     protected $_transf      = array();
@@ -21,16 +21,6 @@ class HTML2PDF_myPdf extends TCPDF
 
     // nb of segment to build a arc with bezier curv
     const ARC_NB_SEGMENT = 8;
-
-    protected function UTF8ToLatin1($str) {
-        if (!$this->isunicode) {
-            return $str;
-        }
-        if (function_exists('mb_convert_encoding'))
-            return mb_convert_encoding($str, "ISO-8859-2", "UTF-8");
-        else
-            return iconv("UTF-8", "ISO-8859-2", $str);
-    }
 
     /**
      * class constructor
@@ -64,7 +54,8 @@ class HTML2PDF_myPdf extends TCPDF
         // prepare the automatic footer
         $this->SetMyFooter();
 
-        $this->cMargin = 0;
+        $this->setCellPaddings(0, 0, 0, 0);
+        $this->setCellMargins(0,0,0,0);
     }
 
     /**
@@ -133,7 +124,7 @@ class HTML2PDF_myPdf extends TCPDF
         }
     }
 
-     /**
+    /**
      * after cloning a object, we does not want to clone all the front informations
      * because it take a lot a time and a lot of memory => we use reference
      *
@@ -142,6 +133,7 @@ class HTML2PDF_myPdf extends TCPDF
      */
     public function cloneFontFrom(&$pdf)
     {
+        $this->n                = &$pdf->getN();
         $this->fonts            = &$pdf->getFonts();
         $this->FontFiles        = &$pdf->getFontFiles();
         $this->diffs            = &$pdf->getDiffs();
@@ -190,6 +182,10 @@ class HTML2PDF_myPdf extends TCPDF
     public function &getAnnotFonts()
     {
         return $this->annotation_fonts;
+    }
+    public function &getN()
+    {
+        return $this->n;
     }
 
     /**
@@ -1231,6 +1227,7 @@ class HTML2PDF_myPdf extends TCPDF
             'bgcolor' => false,
             'font' => 'times',
             'stretchtext' => 0,
+            'fontsize' => $labelFontsize
         );
 
         // build the barcode

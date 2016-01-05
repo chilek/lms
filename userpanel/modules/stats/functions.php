@@ -30,6 +30,7 @@ if (defined('USERPANEL_SETUPMODE'))
     {
 	global $SMARTY,$LMS;
         $SMARTY->assign('owner_stats', ConfigHelper::getConfig('userpanel.owner_stats'));
+
 	$SMARTY->display('module:stats:setup.html');
     }
 

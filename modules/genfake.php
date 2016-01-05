@@ -1961,7 +1961,9 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		for($j = 0; $j < 6; $j++)
 			$customeradd['phone'] .= mt_rand(0,9);
 		$street = mt_rand(0,$ssize-1);
-		$customeradd['address'] = $streets[$street].' '.mt_rand(1,50).'/'.mt_rand(1,300);
+		$customeradd['street'] = $streets[$street];
+		$customeradd['building'] = mt_rand(1,50);
+		$customeradd['apartment'] = mt_rand(1,300);
 		$customeradd['zip'] = '03-7'.sprintf('%02d',$street);
 		$customeradd['city'] = 'Mahagonny';
 		$customeradd['email'] = preg_replace('/[^0-9a-z@.]/i', '', strtolower($customeradd['name']).'.'.strtolower($customeradd['lastname']).'@'.$emaildomains[mt_rand(0,$esize-1)]);
@@ -1983,6 +1985,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$customeradd['countryid'] = 0;
 		$customeradd['consentdate'] = 0;
 		$customeradd['paytime'] = -1;
+		$customeradd['extid'] = 0;
 
 		$id = $LMS->CustomerAdd($customeradd);
 		$LMS->AddAssignment(array(
@@ -2022,6 +2025,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			$nodedata['location'] = '';
 			$nodedata['chkmac'] = 1;
 			$nodedata['halfduplex'] = 0;
+			$nodedata['authtype'] = 0;
 			if($nodeid = $LMS->NodeAdd($nodedata))
 				$DB->Execute('UPDATE nodes SET lastonline=? WHERE id=? ', array(mt_rand(time()-2592000,time()+2592000),$nodeid));
 		}
@@ -2030,7 +2034,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	
 	echo ' [OK]<BR>';
 	echo '<B>'.trans('Generating network hardware and connections...').'</B>'; flush();
-	$nodes = $DB->GetOne('SELECT count(id) FROM nodes');
+	$nodes = $DB->GetOne('SELECT count(id) FROM vnodes');
 	$sprod = sizeof($producer);
 	$i = 0;
 	while($nodes)
@@ -2053,6 +2057,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			'secret' => '',
 			'community' => '',
 			'clients' => 0,
+			'status' => 0,
 		));
 		$ports = mt_rand(4,14);
 		for($j = 0; $j < $ports; $j++)
@@ -2097,7 +2102,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$contents['name'] = trans('Subscription');
 		
 		$customers = $DB->GetAll('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername,
-				id, ssn, address, zip, city, ten, divisionid, countryid FROM customers');
+				id, ssn, address, zip, city, ten, divisionid, countryid FROM customeraddressview');
 					    
 		if($customers)
 			for($n=0; $n<$_GET['i']; $n++)

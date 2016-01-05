@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,124 +24,104 @@
  *  $Id$
  */
 
-/*
-if(strtolower(ConfigHelper::getConfig('notes.type')) == 'pdf')
-{
-    include('notee_pdf.php');
-    $SESSION->close();
-    die;
-}
-*/
-
-header('Content-Type: '.ConfigHelper::getConfig('notes.content_type'));
 $attachment_name = ConfigHelper::getConfig('notes.attachment_name');
-if(!empty($attachment_name))
-	header('Content-Disposition: attachment; filename='.$attachment_name);
+$note_type = ConfigHelper::getConfig('notes.type');
 
-$SMARTY->assign('css', file('img/style_print.css')); 
+$document = new LMSHtmlDebitNote($SMARTY);
 
-$template_file = ConfigHelper::getConfig('notes.template_file');
-if (!$SMARTY->templateExists($template_file))
-	$template_file = 'note' . DIRECTORY_SEPARATOR . $template_file;
-
-if(isset($_GET['print']) && $_GET['print'] == 'cached')
-{
+if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	$SESSION->restore('ilm', $ilm);
 	$SESSION->remove('ilm');
 
-	if(!empty($_POST['marks']))
+	if (!empty($_POST['marks']))
 		foreach($_POST['marks'] as $id => $mark)
 			$ilm[$id] = $mark;
-	if(sizeof($ilm))
+	if (sizeof($ilm))
 		foreach($ilm as $mark)
 			$ids[] = intval($mark);
 
-	if(isset($_GET['cash']) && !empty($ids))
-	{
+	if (isset($_GET['cash']) && !empty($ids))
 		// we need to check if that document is a debit note
 		$ids = $DB->GetCol('SELECT DISTINCT docid FROM cash, documents
-			WHERE docid = documents.id AND documents.type='.DOC_DNOTE.'
-			AND cash.id IN ('.implode(',', $ids).')');
-	}
+			WHERE docid = documents.id AND documents.type = ?
+			AND cash.id IN (' . implode(',', $ids) . ')', array(DOC_DNOTE));
 
-	if(empty($ids))
-	{
+	if (empty($ids)) {
 		$SESSION->close();
 		die;
 	}
 
 	$layout['pagetitle'] = trans('Debit Notes');
-	$SMARTY->display('note/noteheader.html');
 
 	sort($ids);
 
 	$count = sizeof($ids);
-	$i=0;
-	foreach($ids as $idx => $noteid)
-	{
+	$i = 0;
+	foreach($ids as $idx => $noteid) {
 		$note = $LMS->GetNoteContent($noteid);
+		if ($count == 1)
+			$docnumber = docnumber($note['number'], $note['template'], $note['cdate']);
 
 		$i++;
-		if($i == $count) $note['last'] = TRUE;
-		$SMARTY->assign('note', $note);
-		$SMARTY->display($template_file);
+		if ($i == $count)
+			$note['last'] = true;
+		$note['division_header'] = str_replace('%bankaccount',
+			format_bankaccount(bankaccount($note['customerid'], $note['account'])), $note['division_header']);
+		$document->Draw($note);
 	}
-	$SMARTY->display('clearfooter.html');
-}
-elseif(isset($_GET['fetchallnotes']))
-{
+} elseif (isset($_GET['fetchallnotes'])) {
 	$layout['pagetitle'] = trans('Debit Notes');
 
 	$ids = $DB->GetCol('SELECT d.id FROM documents d
 		WHERE d.cdate >= ? AND d.cdate <= ? AND d.type = ?'
-		.(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
-		.(!empty($_GET['numberplanid']) ? ' AND d.numberplanid = '.intval($_GET['numberplanid']) : '')
-		.(!empty($_GET['groupid']) ? 
+		. (!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
+		. (!empty($_GET['numberplanid']) ? ' AND d.numberplanid = '.intval($_GET['numberplanid']) : '')
+		. (!empty($_GET['groupid']) ? 
 		' AND '.(!empty($_GET['groupexclude']) ? 'NOT' : '').'
-		        EXISTS (SELECT 1 FROM customerassignments a
-			        WHERE a.customergroupid = '.intval($_GET['groupid']).'
-				AND a.customerid = d.customerid)' : '')
-		.' AND NOT EXISTS (
+			EXISTS (SELECT 1 FROM customerassignments a
+				WHERE a.customergroupid = ' . intval($_GET['groupid']) . '
+					AND a.customerid = d.customerid)' : '')
+		. ' AND NOT EXISTS (
 			SELECT 1 FROM customerassignments a
-		        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-			WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)' 
-		.' ORDER BY CEIL(d.cdate/86400), d.id',
+			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+			WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
+		. ' ORDER BY CEIL(d.cdate/86400), d.id',
 		array($_GET['from'], $_GET['to'], DOC_DNOTE));
 
-	if(!$ids)
-	{
+	if (!$ids) {
 		$SESSION->close();
 		die;
 	}
 
 	$count = sizeof($ids);
-	$i=0;
+	$i = 0;
 
-	$SMARTY->display('note/noteheader.html');
-	foreach($ids as $idx => $noteid)
-	{
+	foreach ($ids as $idx => $noteid) {
 		$note = $LMS->GetNoteContent($noteid);
+		if ($count == 1)
+			$docnumber = docnumber($note['number'], $note['template'], $note['cdate']);
 
-		$SMARTY->assign('note',$note);
-		$SMARTY->display($template_file);
+		$note['division_header'] = str_replace('%bankaccount',
+			format_bankaccount(bankaccount($note['customerid'], $note['account'])), $note['division_header']);
+		$document->Draw($note);
 	}
-	$SMARTY->display('clearfooter.html');
-}
-elseif($note = $LMS->GetNoteContent($_GET['id']))
-{
-	$number = docnumber($note['number'], $note['template'], $note['cdate']);
+} elseif ($note = $LMS->GetNoteContent($_GET['id'])) {
+	$docnumber = $number = docnumber($note['number'], $note['template'], $note['cdate']);
 	$layout['pagetitle'] = trans('Debit Note No. $a', $number);
 
-	$SMARTY->display('note/noteheader.html');
-
 	$note['last'] = TRUE;
-	$SMARTY->assign('note',$note);
-	$SMARTY->display($template_file);
-	$SMARTY->display('clearfooter.html');
-}
-else
-{
+	$note['division_header'] = str_replace('%bankaccount',
+		format_bankaccount(bankaccount($note['customerid'], $note['account'])), $note['division_header']);
+	$document->Draw($note);
+} else
 	$SESSION->redirect('?m=notelist');
-}
+
+if (!is_null($attachment_name) && isset($docnumber)) {
+	$attachment_name = str_replace('%number', $docnumber, $attachment_name);
+	$attachment_name = preg_replace('/[^[:alnum:]_\.]/i', '_', $attachment_name);
+} else
+	$attachment_name = 'invoices.' . ($note_type == 'pdf' ? 'pdf' : 'html');
+
+$document->WriteToBrowser($attachment_name);
 
 ?>

@@ -63,17 +63,32 @@ xajax_setNoticeRead({$notice_urgent.id});
 								</tr>
 								{cycle values="light,lucid" print=false name=messages}
 								{foreach $notice as $items}
-								<tr class="dark hand {cycle name=messages}{if $items.status==$smarty.const.MSG_ERROR} alert{elseif $items.status==$smarty.const.MSG_SENT} blend{/if}" onCLick="ReadNotice('{$items.id}');">
+								<tr class="dark hand {cycle name=messages}{if $items.status == $smarty.const.MSG_ERROR} alert{elseif $items.status == $smarty.const.MSG_SENT} blend{elseif $items.status == $smarty.const.MSG_DELIVERED} green{/if}" onCLick="ReadNotice('{$items.id}');">
 									<td width="2%" class="nobr">{$items.cdate|date_format:"%Y/%m/%d %H:%M"}</td>
 									<td width="8%" >{if $items.type==6 }<b>{trans("Urgent")}</b>{else}{trans("Casual")}{/if}</td>
 									<td width="80%" style="word-break:break-all;">{$items.subject}</td>
-									<td width="10%" style="border: 0px solid;">{if $items.type==6 && $items.status==1}{trans("Unread")}{elseif $items.type==6 && $items.status==2}{trans("Was read on:")}<br />{$items.lastdate|date_format:"%Y/%m/%d %H:%M"}{elseif $items.type==5 && $items.status==1}{trans("Unread")}{elseif $items.type==5 && $items.status==2}{trans("Was read on:")}<br />{$items.lastdate|date_format:"%Y/%m/%d %H:%M"}{else}&nbsp;{/if}</td>
+									<td width="10%" style="border: 0px solid;">
+										{if $items.type == $smarty.const.MSG_USERPANEL || $items.type == $smarty.const.MSG_USERPANEL_URGENT}
+											{if $items.status == $smarty.const.MSG_SENT}
+											{trans("Unread")}
+											{elseif $items.status == $smarty.const.MSG_DELIVERED}
+											{trans("Was read on:")}<br />
+											{$items.lastdate|date_format:"%Y/%m/%d %H:%M"}
+											{/if}
+										{else}
+										&nbsp;
+										{/if}
+									</td>
 								</tr>
 								<tr id="{$items.id}"  style="display:none;">
-										<td width="10%" align="center" colspan="4" >
+									<td width="10%" align="center" colspan="4" >
 										<b>{trans("Body:")}</b><br />
 										{$items.body}<br /><br />
-										{if $items.status !=2}<a href="?m=notices&amp;confirm={$items.id}">{trans("I confirm reading")} {img src="save.gif" alt=""}</a>{else}&nbsp;{/if}</td>
+										{if $items.status != $smarty.const.MSG_DELIVERED}
+										<a href="?m=notices&amp;confirm={$items.id}">{trans("I confirm reading")} {img src="save.gif" alt=""}</a>
+										{else}&nbsp;
+										{/if}
+									</td>
 								</tr>
 								<SCRIPT type="text/javascript">
 								<!--

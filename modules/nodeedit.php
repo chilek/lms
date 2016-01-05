@@ -116,14 +116,17 @@ if (isset($_POST['nodeedit'])) {
 		$nodeedit['macs'][$key] = str_replace('-', ':', $value);
 
 	foreach ($nodeedit as $key => $value)
-		if ($key != 'macs')
+		if ($key != 'macs' && $key != 'authtype')
 			$nodeedit[$key] = trim($value);
 
-	if ($nodeedit['ipaddr'] == '' && $nodeedit['ipaddr_pub'] == '' && empty($nodeedit['macs']) && $nodeedit['name'] == '' && $nodeedit['info'] == '' && $nodeedit['passwd'] == '') {
+	if ($nodeedit['ipaddr'] == '' && $nodeedit['ipaddr_pub'] == '' && empty($nodeedit['macs']) && $nodeedit['name'] == '' && $nodeedit['info'] == '' && $nodeedit['passwd'] == '' && !isset($nodeedit['wholenetwork'])) {
 		$SESSION->redirect('?m=nodeinfo&id=' . $nodeedit['id']);
 	}
 
-	if (check_ip($nodeedit['ipaddr'])) {
+	if(isset($nodeedit['wholenetwork'])) {
+		$nodeedit['ipaddr'] = '0.0.0.0';
+		$nodeedit['ipaddr_pub'] = '0.0.0.0';
+	} elseif (check_ip($nodeedit['ipaddr'])) {
 		if ($LMS->IsIPValid($nodeedit['ipaddr'])) {
 			if (empty($nodeedit['netid']))
 				$nodeedit['netid'] = $DB->GetOne('SELECT id FROM networks WHERE INET_ATON(?) & INET_ATON(mask) = address ORDER BY id LIMIT 1',
@@ -217,7 +220,7 @@ if (isset($_POST['nodeedit'])) {
 
 			if (!preg_match('/^[0-9]+$/', $nodeedit['port']) || $nodeedit['port'] > $ports) {
 				$error['port'] = trans('Incorrect port number!');
-			} elseif ($DB->GetOne('SELECT id FROM nodes WHERE netdev=? AND port=? AND ownerid>0', array($nodeedit['netdev'], $nodeedit['port']))
+			} elseif ($DB->GetOne('SELECT id FROM vnodes WHERE netdev=? AND port=? AND ownerid>0', array($nodeedit['netdev'], $nodeedit['port']))
 					|| $DB->GetOne('SELECT 1 FROM netlinks WHERE (src = ? OR dst = ?)
 			                AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?', array($nodeedit['netdev'], $nodeedit['netdev'], $nodeedit['netdev'], $nodeedit['port']))) {
 				$error['port'] = trans('Selected port number is taken by other device or node!');
@@ -260,9 +263,9 @@ if (isset($_POST['nodeedit'])) {
 			$nodeedit['location_house'] = null;
 			$nodeedit['location_flat'] = null;
 		}
-		if(empty($nodeedit['location'])and !empty($nodeedit['ownerid'])){
-                    $location=$LMS->GetCustomer($nodeedit['ownerid']);
-                    $nodeedit['location']=$location['address'].'; '.$location['zip'].' '.$location['city'];
+		if (empty($nodeedit['location']) && !empty($nodeedit['ownerid'])) {
+                    $location = $LMS->GetCustomer($nodeedit['ownerid']);
+                    $nodeedit['location'] = $location['address'] . ', ' . $location['zip'] . ' ' . $location['city'];
                 }
 
 		$nodeedit = $LMS->ExecHook('node_edit_before', $nodeedit);
@@ -299,6 +302,7 @@ if (isset($_POST['nodeedit'])) {
 	$nodeinfo['macs'] = $nodeedit['macs'];
 	$nodeinfo['ip'] = $nodeedit['ipaddr'];
 	$nodeinfo['netid'] = $nodeedit['netid'];
+	$nodeinfo['wholenetwork'] = $nodeedit['wholenetwork'];
 	$nodeinfo['ip_pub'] = $nodeedit['ipaddr_pub'];
 	$nodeinfo['passwd'] = $nodeedit['passwd'];
 	$nodeinfo['access'] = $nodeedit['access'];

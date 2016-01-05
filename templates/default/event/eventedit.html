@@ -170,7 +170,7 @@
 			<B>{trans("Users:")}</B>
 		</TD>
 		<TD width="98%" class="nobr">
-			<SELECT size="{if $userlistsize > 5}5{else}{size of=$userlist}{/if}" name="event[userlist][]" {tip text="Select user(s) (optional)"} multiple>
+			<SELECT size="{if $max_userlist_size > 0}{$max_userlist_size}{else}{size of=$userlist}{/if}" name="event[userlist][]" {tip text="Select user(s) (optional)"} multiple>
 				{foreach $userlist as $user}
 				<OPTION value="{$user.id}"{if in_array($user.id, $event.userlist)} selected{/if}>{$user.name}</OPTION>
 				{/foreach}

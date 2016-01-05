@@ -24,10 +24,10 @@
  *  $Id$
  */
 
-// get customer name and check privileges using customersview
+// get customer name and check privileges using customerview
 $customer = $DB->GetRow('SELECT id, divisionid, '
     .$DB->Concat('lastname',"' '",'name').' AS name
-    FROM customersview WHERE id = ?', array($_GET['id']));
+    FROM customerview WHERE id = ?', array($_GET['id']));
 
 if(!$customer)
 {
@@ -288,6 +288,13 @@ if(isset($_POST['assignment']))
 		$DB->BeginTrans();
 		$LMS->AddAssignment($a);
 		$DB->CommitTrans();
+
+		$LMS->executeHook(
+			'customerassignmentedit_after_submit',
+			array(
+				'assignment' => $a,
+			)
+		);
 
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}

@@ -1,0 +1,39 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<h1>{$layout.pagetitle}</h1>
+<TABLE width="100%">
+    <TR class="dark">
+        <TD width="100%" class="fall">
+            <b>{trans("Add new item")}</b>
+        </TD>
+    </TR>
+    <TR class="light">
+        <TD width="100%" class="fall">
+            <form name="helpcenter" action="?m=userpanel&module=help&f=postadd" method="post">
+                <input name="refid" value="{$solution.refid}" type="hidden">
+                <TABLE WIDTH="100%">
+                    <TR>
+                        <TD WIDTH="1%" NOWRAP>
+                            {trans("Title:")}
+                        </TD>
+                        <TD WIDTH="99%" NOWRAP>
+                            <input type="text" name="title" value="{$solution.title}" style="width:99%" {tip text="Enter title" trigger="title" bold=1}><br/>
+                        </TD>
+                    </TR>
+                    <TR>
+                        <TD WIDTH="1%" NOWRAP>
+                            {trans("Body:")}
+                        </TD>
+                        <TD WIDTH="99%" NOWRAP>
+                            <textarea name="body" style="width:99%" {tip text="Enter body" trigger="body"}>{$solution.body}</textarea>
+                    </TR>
+                </TABLE>
+            </form>
+            <p align="right">
+                <A HREF="?m=userpanel&module=help">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
+                <A HREF="javascript:document.helpcenter.submit();" ACCESSKEY="S">{trans("Add")} <IMG SRC="img/save.gif" ALT=""></A>
+            </p>
+        </TD>
+    </TR>
+</TABLE>
+{include file="footer.html"}

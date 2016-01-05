@@ -50,7 +50,7 @@ if(isset($_GET['ajax']))
 	if (!isset($mode)) { print 'false;'; exit; }
 
 	$candidates = $DB->GetAll('SELECT '.$mode.' as item, count(id) as entries
-	    FROM customers
+	    FROM customeraddressview
 	    WHERE '.$mode.' != \'\' AND lower('.$mode.') ?LIKE? lower(' . $DB->Escape('%'.$search.'%') . ')
 	    GROUP BY item
 	    ORDER BY entries desc, item asc
@@ -93,9 +93,26 @@ if (isset($_POST['customeradd']))
 	if($customeradd['name'] == '' && !$customeradd['type'])
 		$error['name'] = trans('First name cannot be empty!');
 	
-	if($customeradd['address'] == '')
-		$error['address'] = trans('Address required!');
+	if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required',false))) {
+		if($customeradd['group'] == 0)
+			$error['group'] = trans('Group name required!');
+	}
 	
+	if ($customeradd['street'] == '')
+		$error['street'] = trans('Street name required!');
+
+	if ($customeradd['building'] != '' && $customeradd['street'] == '')
+		$error['street'] = trans('Street name required!');
+
+	if ($customeradd['apartment'] != '' && $customeradd['building'] == '')
+		$error['building'] = trans('Building number required!');
+
+	if ($customeradd['post_building'] != '' && $customeradd['post_street'] == '')
+		$error['post_street'] = trans('Street name required!');
+
+	if ($customeradd['post_apartment'] != '' && $customeradd['post_building'] == '')
+		$error['post_building'] = trans('Building number required!');
+
 	if($customeradd['ten'] !='' && !check_ten($customeradd['ten']) && !isset($customeradd['tenwarning']))
 	{
 		$error['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
@@ -330,6 +347,9 @@ $SMARTY->assign('cstateslist', $LMS->GetCountryStates());
 $SMARTY->assign('countrieslist', $LMS->GetCountries());
 $SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname, status FROM divisions ORDER BY shortname'));
 $SMARTY->assign('customeradd', $customeradd);
+if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required',false))) {
+		$SMARTY->assign('groups',$DB->GetAll('SELECT id,name FROM customergroups ORDER BY id'));
+	}
 $SMARTY->assign('error', $error);
 
 

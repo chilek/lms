@@ -28,6 +28,7 @@ function module_setup()
 {
     global $SMARTY, $DB, $USERPANEL, $layout, $LMS;
     $layout['pagetitle'] = trans('Userpanel Configuration');
+    $SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header', ''));
     $SMARTY->assign('stylelist', getdir(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'style', '^[a-z0-9]*$'));
     $SMARTY->assign('style', ConfigHelper::getConfig('userpanel.style', 'default'));
     $SMARTY->assign('hint', ConfigHelper::getConfig('userpanel.hint', 'modern'));
@@ -89,6 +90,11 @@ function module_submit_setup()
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'reminder_mail_body'", array($_POST['reminder_mail_body']));
     else
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'reminder_mail_body', ?)", array($_POST['reminder_mail_body']));
+
+    if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'page_header'"))
+        $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'page_header'", array($_POST['page_header']));
+    else
+        $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'page_header', ?)", array($_POST['page_header']));
 
     if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'reminder_sms_body'"))
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'reminder_sms_body'", array($_POST['reminder_sms_body']));

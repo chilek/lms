@@ -75,19 +75,16 @@ if (isset($_POST['document'])) {
 		case 0:
 			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter'], $_POST['network'], $_POST['customergroup']);
 			break;
-		case 1:
+		case CSTATUS_INTERESTED: case CSTATUS_WAITING:
 			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter']);
 			break;
-		case 2:
-			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter']);
-			break;
-		case 3:
+		case CSTATUS_CONNECTED: case CSTATUS_DISCONNECTED:
 			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter'], $_POST['network'], $_POST['customergroup']);
 			break;
-		case 5:
+		case 51:
 			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter'], $_POST['network'], $_POST['customergroup']);
 			break;
-		case 6:
+		case 52:
 			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter'], $_POST['network'], $_POST['customergroup']);
 			break;
 		case -1:

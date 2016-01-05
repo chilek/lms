@@ -326,7 +326,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	char monthday[3], month[3], year[5], quarterday[4], weekday[2], yearday[4], halfday[4];
 	char monthname[20], nextmon[8];
 
-	char *nets = strdup(" AND EXISTS (SELECT 1 FROM nodes, networks n "
+	char *nets = strdup(" AND EXISTS (SELECT 1 FROM vnodes, networks n "
 				"WHERE ownerid = a.customerid "
 				    "AND (%nets) "
 	                "AND ((ipaddr > address AND ipaddr < broadcast(address, inet_aton(mask))) "
@@ -336,7 +336,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	char *netname = strdup(netnames);
 	char *netsql = strdup("");
 
-	char *enets = strdup(" AND NOT EXISTS (SELECT 1 FROM nodes, networks n "
+	char *enets = strdup(" AND NOT EXISTS (SELECT 1 FROM vnodes, networks n "
 				"WHERE ownerid = a.customerid "
 				    "AND (%enets) "
 	                "AND ((ipaddr > address AND ipaddr < broadcast(address, inet_aton(mask))) "
@@ -558,7 +558,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 			"ELSE ROUND((li.value - li.value * a.pdiscount / 100) - a.vdiscount, 2) "
 			"END) AS value "
 		"FROM assignments a "
-		"JOIN customers c ON (a.customerid = c.id) "
+		"JOIN customeraddressview c ON (a.customerid = c.id) "
 		"LEFT JOIN tariffs t ON (a.tariffid = t.id) "
 		"LEFT JOIN liabilities li ON (a.liabilityid = li.id) "
 		"LEFT JOIN divisions d ON (d.id = c.divisionid) "

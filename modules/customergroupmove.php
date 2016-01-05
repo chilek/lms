@@ -31,7 +31,7 @@ if ($LMS->CustomergroupExists($from) && $LMS->CustomergroupExists($to) && $_GET[
 	$DB->BeginTrans();
 
 	if ($SYSLOG)
-		$cids = $DB->GetCol('SELECT customerid FROM customerassignments a, customersview c
+		$cids = $DB->GetCol('SELECT customerid FROM customerassignments a, customerview c
 				WHERE a.customerid = c.id AND a.customergroupid = ?
 				AND NOT EXISTS (SELECT 1 FROM customerassignments ca
 					WHERE ca.customerid = a.customerid AND ca.customergroupid = ?)',
@@ -39,7 +39,7 @@ if ($LMS->CustomergroupExists($from) && $LMS->CustomergroupExists($to) && $_GET[
 
 	$DB->Execute('INSERT INTO customerassignments (customergroupid, customerid)
 			SELECT ?, customerid 
-			FROM customerassignments a, customersview c
+			FROM customerassignments a, customerview c
 			WHERE a.customerid = c.id AND a.customergroupid = ?
 			AND NOT EXISTS (SELECT 1 FROM customerassignments ca
 				WHERE ca.customerid = a.customerid AND ca.customergroupid = ?)',
@@ -47,7 +47,7 @@ if ($LMS->CustomergroupExists($from) && $LMS->CustomergroupExists($to) && $_GET[
 
 	if ($SYSLOG && $cids) {
 		foreach ($cids as $cid) {
-			$aid = $DB->GetOne('SELECT a.id FROM customerassignments a, customersview c
+			$aid = $DB->GetOne('SELECT a.id FROM customerassignments a, customerview c
 				WHERE a.customerid = c.id AND a.customerid = ? AND a.customergroupid = ?', array($cid, $to));
 			$args = array(
 				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTASSIGN] => $aid,

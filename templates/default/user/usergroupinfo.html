@@ -1,0 +1,42 @@
+<!--
+ @author Maciej_Wawryk
+ -->
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+    <h1>{$layout.pagetitle}</h1>
+    <table class="lmsbox">
+	<thead>
+	    <tr>
+		<td style="width: 1%;"><img src="img/group.gif" alt=""></td>
+		<td style="width: 99%;" class="bold nobr" colspan="2">{$usergroup.name} ({$usergroup.id|string_format:"%04d"})</td>
+	    </tr>
+	</thead>
+	<tbody>
+	    <tr>
+		<td style="width: 1%;"><img src="img/users.gif" alt=""></td>
+		<td style="width: 1%;" class="bold nobr">{trans("Members Count:")}</td>
+		<td style="width: 98%;">{$usergroup.count}</td>
+	    </tr>
+	    {if $usergroup.description}
+	    <tr>
+		<td style="width: 1%;"><img src="img/info1.gif" alt=""></td>
+		<td style="width: 98%;" colspan="2">
+		    <table width="100%" cellpadding="3"> 
+			<tr>
+			    <td class="fall superlight">{$usergroup.description|replace:"\n":"<br>"}</td>
+			</tr>
+		    </table>
+		</td>
+	    </tr>
+	    {/if}
+	    <tr>
+		<td class="text-right" colspan="3">
+		    <a href="?m=usergroupedit&amp;id={$usergroup.id}{if $membersnetid}&amp;membersnetid={$membersnetid}{/if}{if $othersnetid}&amp;othersnetid={$othersnetid}{/if}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt=""></a>
+		    {if $usergroup.count == 0} <a href="?m=usergroupdel&amp;id={$usergroup.id}" onclick="return confirmLink(this,'{trans("Are you sure, you want to delete that group?")}');">{trans("Delete")} <img src="img/delete.gif" alt=""></a>{/if}
+		</td>
+	    </tr>
+	</tbody>
+    </table>
+{include file="user/usergroupassignments.html"}
+{/block}

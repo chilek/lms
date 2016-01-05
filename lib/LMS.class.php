@@ -56,6 +56,7 @@ class LMS
     protected $document_manager;
     protected $massage_manager;
     protected $config_manager;
+    protected $user_group_manager;
 
     public function __construct(&$DB, &$AUTH, &$SYSLOG)
     { // class variables setting
@@ -286,7 +287,7 @@ class LMS
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.auto_remove_investment_project', true)))
 			$this->DB->Execute("DELETE FROM invprojects WHERE type <> ? AND id NOT IN
 				(SELECT DISTINCT invprojectid FROM netdevices WHERE invprojectid IS NOT NULL
-					UNION SELECT DISTINCT invprojectid FROM nodes WHERE invprojectid IS NOT NULL
+					UNION SELECT DISTINCT invprojectid FROM vnodes WHERE invprojectid IS NOT NULL
 					UNION SELECT DISTINCT invprojectid FROM netnodes WHERE invprojectid IS NOT NULL)",
 				array(INV_PROJECT_SYSTEM));
 	}
@@ -367,6 +368,12 @@ class LMS
         return $manager->getUserRights($id);
     }
 
+    public function PasswdExistsInHistory($id, $passwd) 
+    {
+        $manager = $this->getUserManager();
+        return $manager->PasswdExistsInHistory($id, $passwd);
+    }
+
     /*
      *  Customers functions
      */
@@ -399,6 +406,12 @@ class LMS
     {
         $manager = $this->getCustomerManager();
         return $manager->DeleteCustomer($id);
+    }
+    
+    public function DeleteCustomerPermanent($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->deleteCustomerPermanent($id);
     }
 
     public function CustomerUpdate($customerdata)
@@ -465,6 +478,12 @@ class LMS
     {
         $manager = $this->getCustomerManager();
         return $manager->getCustomerNodes($id, $count);
+    }
+
+    public function GetCustomerNetworks($id, $count = null)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->GetCustomerNetworks($id, $count);
     }
 
     public function GetCustomerBalance($id, $totime = null)
@@ -678,10 +697,10 @@ class LMS
         return $manager->GetNode($id);
     }
 
-    public function GetNodeList($order = 'name,asc', $search = NULL, $sqlskey = 'AND', $network = NULL, $status = NULL, $customergroup = NULL, $nodegroup = NULL)
+    public function GetNodeList($order = 'name,asc', $search = NULL, $sqlskey = 'AND', $network = NULL, $status = NULL, $customergroup = NULL, $nodegroup = NULL, $limit = null, $offset = null, $count = false)
     {
         $manager = $this->getNodeManager();
-        return $manager->GetNodeList($order, $search, $sqlskey, $network, $status, $customergroup, $nodegroup);
+        return $manager->GetNodeList($order, $search, $sqlskey, $network, $status, $customergroup, $nodegroup, $limit, $offset, $count);
     }
 
     public function NodeSet($id, $access = -1)
@@ -2118,8 +2137,8 @@ class LMS
     {
         $nodesessions = $this->DB->GetAll('SELECT INET_NTOA(ipaddr) AS ipaddr, mac, start, stop,
 		download, upload, terminatecause, type
-		FROM nodesessions WHERE nodeid = ? ORDER BY stop DESC LIMIT ?',
-			array($nodeid, ConfigHelper::getConfig('phpui.nodesession_limit', 10)));
+		FROM nodesessions WHERE nodeid = ? ORDER BY stop DESC LIMIT ' . intval(ConfigHelper::getConfig('phpui.nodesession_limit', 10)),
+			array($nodeid));
         if (!empty($nodesessions))
             foreach ($nodesessions as $idx => $session) {
                 list ($number, $unit) = setunits($session['download']);
@@ -2596,5 +2615,91 @@ class LMS
     {
         $this->SYSLOG = $syslog;
     }
+    
+    
+    /**
+     * Returns user group manager
+     * 
+     * @return LMSUserGroupManagerInterface User group manager
+     */
+    protected function getUserGroupManager()
+    {
+        if (!isset($this->user_group_manager)) {
+            $this->user_group_manager = new LMSUserGroupManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+        }
+        return $this->user_group_manager;
+    }
+    
+    public function UsergroupGetId($name)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UsergroupGetId($name);
+    }
+    
+    public function UsergroupAdd($usergroupdata)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UsergroupAdd($usergroupdata);
+    }
+    
+    public function UsergroupGetList()
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UsergroupGetList();
+    }
 
+    public function UsergroupGet($id)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UsergroupGet($id);
+    }
+    
+    public function UsergroupExists($id)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UsergroupExists($id);
+    }
+    
+    public function GetUserWithoutGroupNames($groupid)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->GetUserWithoutGroupNames($groupid);
+    }
+    
+    public function UserassignmentDelete($userassignmentdata)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UserassignmentDelete($userassignmentdata);
+    }
+    
+    public function UserassignmentExist($groupid, $userid)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UserassignmentExist($groupid, $userid);
+    }
+    
+    public function UserassignmentAdd($userassignmentdata)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UserassignmentAdd($userassignmentdata);
+    }
+    
+    public function UsergroupDelete($id)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UsergroupDelete($id);
+    }
+    
+    public function UsergroupUpdate($usergroupdata)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UsergroupUpdate($usergroupdata);
+    }
+    
+    public function UsergroupGetAll()
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UsergroupGetAll();
+    }
+    
 }

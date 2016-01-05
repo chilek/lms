@@ -164,8 +164,6 @@ function validateRadioSector($params, $update = false) {
 		$error['name'] = trans('Radio sector name is too long!');
 	elseif (!preg_match('/^[a-z0-9_\-]+$/i', $params['name']))
 		$error['name'] = trans('Radio sector name contains invalid characters!');
-	elseif (!$update && $DB->GetOne('SELECT 1 FROM netradiosectors WHERE UPPER(name) = UPPER(?)', array($params['name'])))
-		$error['name'] = trans('Radio sector with entered name already exists for this network device!');
 
 	if (!strlen($params['azimuth']))
 		$error['azimuth'] = trans('Radio sector azimuth cannot be empty!');

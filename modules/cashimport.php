@@ -258,7 +258,7 @@ $divisions[0] = array('id' => 0, 'name' => '');
 
 if($importlist = $DB->GetAll('SELECT i.*, c.divisionid
 	FROM cashimport i
-	LEFT JOIN customersview c ON (i.customerid = c.id)
+	LEFT JOIN customerview c ON (i.customerid = c.id)
 	WHERE i.closed = 0 AND i.value > 0
 	ORDER BY i.id'))
 {
@@ -288,7 +288,7 @@ $SMARTY->assign('listdata', isset($listdata) ? $listdata : NULL);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('sourcefiles', $sourcefiles);
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
-$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));
+$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources WHERE deleted = 0 ORDER BY name'));
 $SMARTY->display('cash/cashimport.html');
 
 ?>

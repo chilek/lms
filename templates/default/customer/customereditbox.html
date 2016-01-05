@@ -78,15 +78,33 @@
 		<TD style="width: 100%;" class="nobr">
 			<TABLE width="100%" cellpadding="1">
 				<TR>
-					<TD style="width: 1%;" class="bold">{trans("Name/Surname:")}</TD>
-					<TD style="width: 99%;">
-						<INPUT type="text" size="50" name="customerdata[lastname]" value="{$customerinfo.lastname|escape}" {tip text="Enter first/lastname of customer" trigger="lastname" bold=1}>
+					<TD style="width: 1%;">
+						<TABLE width="100%" cellpadding="1">
+							<TR>
+								<TD style="width: 1%;" class="bold">{trans("Name/Surname:")}</TD>
+								<TD style="width: 99%;">
+									<INPUT type="text" size="50" name="customerdata[lastname]" value="{$customerinfo.lastname|escape}" {tip text="Enter first/lastname of customer" trigger="lastname" bold=1}>
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%;" class="bold">{trans("First name:")}</TD>
+								<TD style="width: 99%;">
+									<INPUT type="text" size="50" name="customerdata[name]" value="{$customerinfo.name|escape}" {tip text="Enter first name of customer (optional)" trigger="name" bold=1}>
+								</TD>
+							</TR>
+						</TABLE>
 					</TD>
-				</TR>
-				<TR>
-					<TD style="width: 1%;" class="bold">{trans("First name:")}</TD>
 					<TD style="width: 99%;">
-						<INPUT type="text" size="50" name="customerdata[name]" value="{$customerinfo.name|escape}" {tip text="Enter first name of customer (optional)" trigger="name" bold=1}>
+						<TABLE width="100%" cellpadding="1">
+							<TR>
+								<TD style="width: 1%;" class="bold nobr">
+									{trans("External system identifier:")}
+								</TD>
+								<TD style="width: 99%;">
+									<input type="text" size="20" maxlength="20" name="customerdata[extid]" value="{$customerinfo.extid}" {tip text="Enter customer identifier in external system (optional)" trigger="extid"}>
+								</TD>
+							</TR>
+						</TABLE>
 					</TD>
 				</TR>
 			</TABLE>
@@ -100,17 +118,16 @@
 				<TR>
 					<TD style="width: 50%;" class="valign-top">
 						<TABLE width="100%" cellpadding="3">
+						{block name="customereditbox-leftcolumn"}
 	<TR>
 		<TD style="width: 1%;">
-			{if $customerinfo.status == "3"}<IMG src="img/customer.gif" alt="">{/if}
-			{if $customerinfo.status == "2"}<IMG src="img/wait.gif" alt="">{/if}
-			{if $customerinfo.status == "1"}<IMG src="img/unk.gif" alt="">{/if}
+			<IMG src="img/{$_CSTATUSES[$customerinfo.status].img}" alt="">
 		</TD>
 		<TD style="width: 99%;">
 			<SELECT size="1" name="customerdata[status]" {tip text="Select customer state" trigger="status"}>
-				<OPTION value="3"{if $customerinfo.status == "3"} SELECTED{/if}>{trans("connected<!singular>")}</OPTION>
-				<OPTION value="2"{if $customerinfo.status == "2"} SELECTED{/if}>{trans("waiting")}</OPTION>
-				<OPTION value="1"{if $customerinfo.status == "1"} SELECTED{/if}>{trans("interested<!singular>")}</OPTION>
+				{foreach $_CSTATUSES as $statusidx => $status}
+				<OPTION value="{$statusidx}"{if $customerinfo.status == $statusidx} selected{/if}>{$status.singularlabel}</OPTION>
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
@@ -140,14 +157,25 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="valign-top">
-			<IMG src="img/home.gif" alt="">
-		</TD>
+		<TD style="width: 1%;" class="valign-top"></TD>
 		<TD style="width: 99%;">
+			<table width="100%" cellpadding="1">
+				<tr>
+					<td style="width: 1%;">
+						<fieldset style="width: 1%;" class="nobr">
+							<legend class="bold"><IMG src="img/home.gif" alt=""> {trans("Address")}</legend>
 			<TABLE width="100%" cellpadding="1">
 				<TR>
-					<TD style="width: 1%;" class="nobr">{trans("Address:")}</TD>
-					<TD style="width: 99%;"><INPUT type="text" name="customerdata[address]" id="address" value="{$customerinfo.address}" size="30" {tip text="Enter address" trigger="address"}></TD>
+					<TD style="width: 1%;" class="nobr">{trans("Street:")}</TD>
+					<TD style="width: 99%;"><INPUT type="text" name="customerdata[street]" id="street" value="{$customerinfo.street}" size="30" {tip text="Enter street name" trigger="street"}></TD>
+				</TR>
+				<TR>
+					<TD style="width: 1%;" class="nobr">{trans("Building:")}</TD>
+					<TD style="width: 99%;">
+						<INPUT type="text" name="customerdata[building]" id="building" value="{$customerinfo.building}" size="8" {tip text="Enter building number" trigger="building"}>
+						{trans("Apartment:")}
+						<INPUT type="text" name="customerdata[apartment]" id="flat" value="{$customerinfo.apartment}" size="8" {tip text="Enter apartment number" trigger="apartment"}>
+					</TD>
 				</TR>
 				<TR>
 					<TD style="width: 1%;" class="nobr">{trans("City:")}</TD>
@@ -189,36 +217,43 @@
 				</TR>
 				{/if}
 			</TABLE>
-		<script type="text/javascript">
-		<!--
-			new AutoSuggest(document.getElementById('customeredit'),document.getElementById('address'),'?m=customeradd&ajax=1&mode=address&what=',0);
-			new AutoSuggest(document.getElementById('customeredit'),document.getElementById('zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
-			new AutoSuggest(document.getElementById('customeredit'),document.getElementById('city'),'?m=customeradd&ajax=1&mode=city&what=',0);
-		//-->
-		</script>
-	</TR>
-	<TR>
-		<TD style="width: 1%;" class="valign-top">
-			<IMG src="img/post.gif" alt="">
-		</TD>
-		<TD style="width: 99%;">
+			<script type="text/javascript">
+			<!--
+				new AutoSuggest(document.getElementById('customeredit'),document.getElementById('street'),'?m=customeradd&ajax=1&mode=address&what=',0);
+				new AutoSuggest(document.getElementById('customeredit'),document.getElementById('zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
+				new AutoSuggest(document.getElementById('customeredit'),document.getElementById('city'),'?m=customeradd&ajax=1&mode=city&what=',0);
+			//-->
+			</script>
+						</fieldset>
+					</td>
+					<td style="width: 99%;">
+						<fieldset style="width: 1%;" class="nobr">
+							<legend class="bold"><IMG src="img/post.gif" alt=""> {trans("Postal address")}</legend>
 			<TABLE width="100%" cellpadding="1">
 				<TR>
 					<TD style="width: 1%;" class="nobr">{trans("Name:")}</TD>
-					<TD style="width: 99%;"><INPUT type="text" name="customerdata[post_name]" id="post_name" value="{$customerinfo.post_name}" size="30" {tip text="Enter service name (optional)" trigger="post_name"}></TD>
+					<TD style="width: 99%;"><INPUT type="text" name="customerdata[post_name]" id="post_name" value="{$customerinfo.post_name}" size="30" {tip text="Enter name (optional)" trigger="post_name"}></TD>
 				</TR>
 				<TR>
-					<TD style="width: 1%;" class="nobr">{trans("Address:")}</TD>
-					<TD style="width: 99%;"><INPUT type="text" name="customerdata[post_address]" id="post_address" value="{$customerinfo.post_address}" size="30" {tip text="Enter service address (optional)" trigger="post_address"}></TD>
+					<TD style="width: 1%;" class="nobr">{trans("Street:")}</TD>
+					<TD style="width: 99%;"><INPUT type="text" name="customerdata[post_street]" id="post_street" value="{$customerinfo.post_street}" size="30" {tip text="Enter street name (optional)" trigger="post_street"}></TD>
+				</TR>
+				<TR>
+					<TD style="width: 1%;" class="nobr">{trans("Building:")}</TD>
+					<TD style="width: 99%;">
+						<INPUT type="text" name="customerdata[post_building]" id="post_building" value="{$customerinfo.post_building}" size="8" {tip text="Enter building number (optional)" trigger="post_building"}>
+						{trans("Apartment:")}
+						<INPUT type="text" name="customerdata[post_apartment]" id="post_apartment" value="{$customerinfo.post_apartment}" size="8" {tip text="Enter apartment number (optional)" trigger="post_apartment"}>
+					</TD>
 				</TR>
 				<TR>
 					<TD style="width: 1%;" class="nobr">{trans("City:")}</TD>
-					<TD style="width: 99%;"><INPUT type="text" name="customerdata[post_city]" id="post_city" value="{$customerinfo.post_city}" size="30" {tip text="Enter city of service address (optional)" trigger="post_city"}></TD>
+					<TD style="width: 99%;"><INPUT type="text" name="customerdata[post_city]" id="post_city" value="{$customerinfo.post_city}" size="30" {tip text="Enter city (optional)" trigger="post_city"}></TD>
 				</TR>
 				<TR>
 					<TD style="width: 1%;" class="nobr">{trans("Zip:")}</TD>
 					<TD style="width: 99%;">
-						<INPUT type="text" name="customerdata[post_zip]" id="post_zip" value="{$customerinfo.post_zip}" size="10" {tip text="Enter zip code of service address (optional)" trigger="post_zip"}>
+						<INPUT type="text" name="customerdata[post_zip]" id="post_zip" value="{$customerinfo.post_zip}" size="10" {tip text="Enter zip code (optional)" trigger="post_zip"}>
 						{if $customerinfo.post_zipwarning}
 						<INPUT type="HIDDEN" name="customerdata[post_zipwarning]" value="1">
 						{/if}
@@ -251,13 +286,18 @@
 				</TR>
 				{/if}
 			</TABLE>
-		<script type="text/javascript">
-		<!--
-			new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_address'),'?m=customeradd&ajax=1&mode=address&what=',0);
-			new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
-			new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_city'),'?m=customeradd&ajax=1&mode=city&what=',0);
-		//-->
-		</script>
+			<script type="text/javascript">
+			<!--
+				new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_street'),'?m=customeradd&ajax=1&mode=address&what=',0);
+				new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
+				new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_city'),'?m=customeradd&ajax=1&mode=city&what=',0);
+			//-->
+			</script>
+						</fieldset>
+					</td>
+				<tr>
+			</table>
+		</td>
 	</TR>
 	<TR>
 		<TD style="width: 1%;"></TD>
@@ -509,10 +549,12 @@
 			</TABLE>
 		</TD>
 	</TR>
+						{/block}
 						</TABLE>
 					</TD>
 					<TD style="width: 50%;" class="valign-top">
 						<TABLE width="100%" cellpadding="3">
+						{block name="customereditbox-rightcolumn"}
 	<TR>
 		<TD style="width: 1%;">
 			<IMG src="img/info1.gif" alt="">
@@ -561,6 +603,7 @@
 			<span class="bold">{trans("Modified:")}</span> {if $customerinfo.moddate}{$customerinfo.modifiedby}, {$customerinfo.moddateh}{else}-{/if}
 		</TD>
 	</TR>
+						{/block}
 						</TABLE>
 					</TD>
 				</TR>

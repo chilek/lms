@@ -63,7 +63,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	$tarifftype = intval($filter['tarifftype']);
 	$consent = isset($filter['consent']);
 
-	if($group == 4)
+	if($group == 50)
 	{
 		$deleted = 1;
 		$network = NULL;
@@ -72,13 +72,13 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	else
 		$deleted = 0;
 
-	$disabled = ($group == 5) ? 1 : 0;
-	$indebted = ($group == 6) ? 1 : 0;
-	$notindebted = ($group == 7) ? 1 : 0;
-	$indebted2 = ($group == 11) ? 1 : 0;
-	$indebted3 = ($group == 12) ? 1 : 0;
+	$disabled = ($group == 51) ? 1 : 0;
+	$indebted = ($group == 52) ? 1 : 0;
+	$notindebted = ($group == 53) ? 1 : 0;
+	$indebted2 = ($group == 57) ? 1 : 0;
+	$indebted3 = ($group == 58) ? 1 : 0;
 
-	if($group>3) $group = 0;
+	if ($group >= 50) $group = 0;
 
 	if($network)
 		$net = $LMS->GetNetworkParams($network);
@@ -114,7 +114,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 		. ($type == MSG_SMS ? 'x.phone, ' : '')
 		. $LMS->DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
 		COALESCE(b.value, 0) AS balance
-		FROM customersview c 
+		FROM customerview c 
 		LEFT JOIN (
 			SELECT SUM(value) AS value, customerid
 			FROM cash GROUP BY customerid
@@ -148,17 +148,17 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 		.'WHERE deleted = ' . $deleted
 		. ($consent ? ' AND c.mailingnotice = 1' : '')
 		.($group!=0 ? ' AND status = '.$group : '')
-		.($network ? ' AND c.id IN (SELECT ownerid FROM nodes WHERE 
+		.($network ? ' AND c.id IN (SELECT ownerid FROM vnodes WHERE 
 			(netid = ' . $net['id'] . ' AND ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ')
 			OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 		.($customergroup ? ' AND c.id IN (SELECT customerid FROM customerassignments
 			WHERE customergroupid IN (' . $customergroup . '))' : '')
-		.($nodegroup ? ' AND c.id IN (SELECT ownerid FROM nodes
-			JOIN nodegroupassignments ON (nodeid = nodes.id)
+		.($nodegroup ? ' AND c.id IN (SELECT ownerid FROM vnodes
+			JOIN nodegroupassignments ON (nodeid = vnodes.id)
 			WHERE nodegroupid = ' . $nodegroup . ')' : '')
-		.($linktype != '' ? ' AND c.id IN (SELECT ownerid FROM nodes
+		.($linktype != '' ? ' AND c.id IN (SELECT ownerid FROM vnodes
 			WHERE linktype = ' . $linktype . ')' : '')
-		.($disabled ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id
+		.($disabled ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id
 			GROUP BY ownerid HAVING (SUM(access) != COUNT(access)))' : '')
 		.($indebted ? ' AND COALESCE(b.value, 0) < 0' : '')
 		. ($indebted2 ? ' AND COALESCE(b.value, 0) < -t.value' : '')
@@ -179,7 +179,7 @@ function GetRecipient($customerid) {
 	return $DB->GetRow('SELECT c.id, pin, '
 		. $DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
 		COALESCE((SELECT SUM(value) FROM cash WHERE customerid = c.id), 0) AS balance
-		FROM customersview c WHERE c.id = ?', array($customerid));
+		FROM customerview c WHERE c.id = ?', array($customerid));
 }
 
 function BodyVars(&$body, $data)
@@ -299,8 +299,11 @@ if(isset($_POST['message']))
 	if($message['subject']=='')
 		$error['subject'] = trans('Message subject is required!');
 
-	if($message['body']=='')
-		$error['body'] = trans('Message body is required!');
+	if ($message['body'] == '')
+		if (in_array($message['type'], array(MSG_SMS, MSG_ANYSMS)))
+			$error['smsbody'] = trans('Message body is required!');
+		else
+			$error['mailbody'] = trans('Message body is required!');
 
 	$files = array();
 	if (!empty($_FILES['file']['name'][0])) {
@@ -406,8 +409,7 @@ if(isset($_POST['message']))
 					VALUES (?, ?, ?, ?)', array(
 						$msgid,
 						isset($row['id']) ? $row['id'] : 0,
-						$destination,
-						MSG_NEW,
+						$destination, MSG_NEW,
 					));
 		}
 
@@ -422,9 +424,11 @@ if(isset($_POST['message']))
 			if(!empty($debug_email))
 				echo '<B>'.trans('Warning! Debug mode (using address $a).',ConfigHelper::getConfig('mail.debug_email')).'</B><BR>';
 
-			$headers['From'] = '"'.$message['from'].'" <'.$message['sender'].'>';
+			$headers['From'] = qp_encode($message['from']) . ' <' . $message['sender'] . '>';
 			$headers['Subject'] = $message['subject'];
 			$headers['Reply-To'] = $headers['From'];
+			if (isset($message['copytosender']))
+				$headers['Cc'] = $headers['From'];
 			if (!empty($message['wysiwyg']))
 				$headers['X-LMS-Format'] = 'html';
 		} elseif ($message['type'] != MSG_WWW) {
@@ -457,10 +461,12 @@ if(isset($_POST['message']))
 					$row['customername'] . ' &lt;' . $destination . '&gt;');
 				flush();
 
-				if ($message['type'] == MSG_MAIL)
+				if ($message['type'] == MSG_MAIL) {
+					if (isset($message['copytosender']))
+						$destination .= ',' . $message['sender'];
 					$result = $LMS->SendMail($destination, $headers, $body, $files);
-				elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT)
-					$result = MSG_NEW;
+				} elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT)
+					$result = MSG_SENT;
 				else
 					$result = $LMS->SendSMS($destination, $body, $msgid);
 
@@ -495,7 +501,7 @@ if(isset($_POST['message']))
 	{
 		$message['customer'] = $DB->GetOne('SELECT '
 			.$DB->Concat('UPPER(lastname)',"' '",'name').'
-			FROM customersview
+			FROM customerview
 			WHERE id = ?', array($message['customerid']));
 
 		$message['phones'] = $DB->GetAll('SELECT contact, name FROM customercontacts
@@ -518,7 +524,7 @@ else if (!empty($_GET['customerid']))
 {
 	$message = $DB->GetRow('SELECT id AS customerid, '
 		.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customer
-		FROM customersview
+		FROM customerview
 		WHERE id = ?', array($_GET['customerid']));
 
 	$message['phones'] = $DB->GetAll('SELECT contact, name FROM customercontacts
@@ -539,7 +545,7 @@ else if (!empty($_GET['customerid']))
 	foreach ($message['emails'] as $idx => $email)
 		$message['customermails'][$idx] = $email['contact'];
 
-	$message['type'] = MSG_MAIL;
+	$message['type'] = empty($message['emails']) ? (empty($message['phones']) ? MSG_WWW : MSG_SMS) : MSG_MAIL;
 
 	$SMARTY->assign('message', $message);
 }

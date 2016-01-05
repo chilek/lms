@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -50,8 +50,20 @@ elseif (isset($_POST['customerdata']))
     if($customerdata['name'] == '' && !$customerdata['type'])
         $error['name'] = trans('First name cannot be empty!');
 
-	if($customerdata['address']=='')
-		$error['address'] = trans('Address required!');
+	if ($customerdata['street'] == '')
+		$error['street'] = trans('Street name required!');
+
+	if ($customerdata['building'] != '' && $customerdata['street'] == '')
+		$error['street'] = trans('Street name required!');
+
+	if ($customerdata['apartment'] != '' && $customerdata['building'] == '')
+		$error['building'] = trans('Building number required!');
+
+	if ($customerdata['post_building'] != '' && $customerdata['post_street'] == '')
+		$error['post_street'] = trans('Street name required!');
+
+	if ($customerdata['post_apartment'] != '' && $customerdata['post_building'] == '')
+		$error['post_building'] = trans('Building number required!');
 
 	if($customerdata['ten'] !='' && !check_ten($customerdata['ten']) && !isset($customerdata['tenwarning']))
 	{

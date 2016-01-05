@@ -24,12 +24,12 @@
  *  $Id$
  */
 
-$devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, '.$DB->GroupConcat('INET_NTOA(CASE WHEN nodes.ownerid = 0 THEN nodes.ipaddr ELSE NULL END)', ',', true)
-				.' AS ipaddr, '.$DB->GroupConcat('CASE WHEN nodes.ownerid = 0 THEN nodes.id ELSE NULL END', ',', true).' AS nodeid, 
+$devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, '.$DB->GroupConcat('INET_NTOA(CASE WHEN vnodes.ownerid = 0 THEN vnodes.ipaddr ELSE NULL END)', ',', true)
+				.' AS ipaddr, '.$DB->GroupConcat('CASE WHEN vnodes.ownerid = 0 THEN vnodes.id ELSE NULL END', ',', true).' AS nodeid, 
 				MAX(lastonline) AS lastonline, n.latitude AS lat, n.longitude AS lon,
 				' . $DB->GroupConcat('rs.id') . ' AS radiosectors
 				FROM netdevices n 
-				LEFT JOIN nodes ON n.id = nodes.netdev 
+				LEFT JOIN vnodes ON n.id = vnodes.netdev 
 				LEFT JOIN netradiosectors rs ON rs.netdev = n.id
 				WHERE n.latitude IS NOT NULL AND n.longitude IS NOT NULL 
 				GROUP BY n.id, n.name, n.location, n.latitude, n.longitude', 'id');
@@ -74,7 +74,7 @@ if ($devices) {
 }
 
 $nodes = $DB->GetAllByKey('SELECT n.id, n.name, INET_NTOA(n.ipaddr) AS ipaddr, n.location, n.lastonline, n.latitude AS lat, n.longitude AS lon 
-				FROM nodes n 
+				FROM vnodes n 
 				WHERE n.latitude IS NOT NULL AND n.longitude IS NOT NULL', 'id');
 
 if ($nodes) {
@@ -99,7 +99,7 @@ if ($nodes) {
 
 	if ($devices) {
 		$nodelinks = $DB->GetAll('SELECT n.id AS nodeid, netdev, linktype AS type, linktechnology AS technology,
-			linkspeed AS speed FROM nodes n WHERE netdev > 0 AND ownerid > 0 
+			linkspeed AS speed FROM vnodes n WHERE netdev > 0 AND ownerid > 0 
 			AND n.id IN ('.$nodeids.') AND netdev IN ('.$devids.')');
 		if ($nodelinks)
 			foreach ($nodelinks as $nodelinkidx => $nodelink) {

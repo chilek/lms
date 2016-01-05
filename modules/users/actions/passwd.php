@@ -40,6 +40,9 @@ if($LMS->UserExists($id))
 		if($passwd['passwd'] != $passwd['confirm'])
 			$error['password'] = trans('Passwords does not match!');
 		
+		if ($LMS->PasswdExistsInHistory($id, $passwd['passwd']))
+			$error['password'] = trans('You already used this password!');
+		
 		if(!$error)
 		{
 			$LMS->SetUserPassword($id, $passwd['passwd']);

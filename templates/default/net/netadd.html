@@ -47,6 +47,24 @@
 		<TD style="width: 1%;" class="bold nobr"><IMG src="img/wins.gif" alt=""> {trans("WINS server:")}</TD>
 		<TD><INPUT type="text" size="23" name="netadd[wins]" value="{$netadd.wins}" {tip text="Enter WINS address (optional)" trigger="wins"}></TD>
 	</TR>
+	<tr>
+		<TD style="width: 1%;" class="fleft bold nobr">
+			<img src="img/customer.gif" alt=""> {trans("Customer:")}
+		</td>
+		<TD style="width: 98%;" colspan="3">
+			{if $customers}
+			<SELECT SIZE="1" NAME="netadd[customerid]" {tip text="Assign network to customer"} style="max-width:160px;" onChange="document.netadd.elements['netadd[ownerid]'].value=this.value">
+				<OPTION VALUE="">{trans("... select customer ...")}</OPTION>
+				{foreach $customers as $c}
+				<OPTION VALUE="{$c.id}"{if $netadd.ownerid == $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
+				{/foreach}
+			</SELECT>
+			{trans("or Customer ID:")}
+			{/if}
+			<input TYPE="TEXT" NAME="netadd[ownerid]" value="{$netadd.ownerid}" SIZE="5"{if $customers} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID (optional)" trigger="ownerid"}>
+			<A href="javascript: void(0);" onClick="return customerchoosewin(document.netadd.elements['netadd[ownerid]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+		</td>
+	</tr>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr"><IMG src="img/dhcpstart.gif" alt=""> {trans("Begin of DHCP range:")}</TD>
 		<TD><INPUT type="text" size="23" name="netadd[dhcpstart]" value="{$netadd.dhcpstart}" {tip text="Enter beginning of DHCP range (optional)" trigger="dhcpstart"}></TD>
@@ -84,6 +102,13 @@
 <SCRIPT type="text/javascript">
 <!--
 document.forms['netadd'].elements['netadd[name]'].focus();
+
+function reset_customer() {
+	var val;
+	if (val = document.forms['netadd'].elements['netadd[ownerid]'].value)
+		document.forms['netadd'].elements['netadd[customerid]'].value = val;
+}
+
 //-->
 </SCRIPT>
 {/block}

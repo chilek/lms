@@ -288,6 +288,14 @@ function GetConfigList($order='var,asc', $section='', $search='')
 				case 'logging':
 					$config[$idx]['description'] = trans('Does this LMS have transaction log support (not opensource). Default: false.');
 				break;
+			
+				case 'add_customer_group_required':
+					$config[$idx]['description'] = trans('If isset "true" when adding new customer select group is required. Default "false"');
+				break;
+
+				case 'event_max_userlist_size':
+					$config[$idx]['description'] = trans('Automatically adjusts the size of the selection list to the number of users when set to 0.');
+				break;
 
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');
@@ -377,6 +385,10 @@ function GetConfigList($order='var,asc', $section='', $search='')
 
 					case 'paytype':
 						$config[$idx]['description'] = trans('Default invoices paytype. Default: "1" (cash)');
+					break;
+
+					case 'customer_bankaccount':
+						$config[$idx]['description'] = trans('Show bankaccount on invoice. Default: 0');
 					break;
 
 					default:

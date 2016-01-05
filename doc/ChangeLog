@@ -2,6 +2,25 @@ $Id$
 
 version ?.??.?? (????-??-??):
 
+  - bclean: added responsive menu [kyob]
+  - www, userpanel messages are always sent initially and userpanel messages are
+    marked as delivered after message read confirmation [chilan]
+  - added support for user groups [wawryk]
+  - customer address and postal address were separated to street, building and
+    apartment fields [chilan]
+  - added support for external system customer identifiers need to bind
+    lms customers with external system customers [chilan]
+  - invoice notes can be edited from now [chilan]
+  - allow to clone network devices from user interface [chilan]
+  - add hook for documents in plugins [wawryk]
+  - don't allow to issue invoice credit note for invoice which already has issued
+    credit note [chilan]
+  - bumped html2pdf library version to 4.5.0 [prezes_kk]
+  - allow lms-payments.php script to set aligned periods for invoice items
+    (added special symbol %aligned_period) [chilan]
+
+version 1.11.19 (2015-12-21):
+
   - updated lms swekey code to be conformed with PHP 7 [prezes_kk]
   - added support for message delivery status [Jarosław Dziubek]
   - rewrite of user access rights code completely - it can require
@@ -32,6 +51,27 @@ version ?.??.?? (????-??-??):
   - helpdesk: added history of the ticket when you add notes [pjona]
   - helpdesk: added ability to change queue and owner when you add notes [pjona]
   - helpdesk: added type to notes [pjona]
+  - added new access type/session types - WiFi AP Client, VoIP Gateway [chilan]
+  - added preliminary support for customer disconnected status and refactoring customer status
+    support code to make adding new customer statuses easier [chilan]
+  - permanent customer removal for customers which are already removed [chilan]
+  - allow to optionally send mail copy to message sender (checkbox is checked by default if
+    phpui.send_message_to_sender_checkbox is set to true) [chilan]
+  - added phpui.capitalize_node_names setting which is true by default and decides
+    if node names are automatically capitalized during node add or update [chilan]
+  - allow plugins to add their own buttons in customer balance box and invoice list [chilan]
+  - allow plugins to add their own content in left and right column of customer info and edit boxes [chilan]
+  - allow assign a whole network to the customer [pjona]
+  - invoices.attachment_name setting allows to define pdf invoice file name pattern (%number symbol
+    is only supported symbol for now) [chilan]
+  - complete rewrite of invoice generation code - common path code for pdf and html invoices [chilan]
+  - lms-sendinvoices.php stopped pretending www browser - it uses new pdf generation code path [chilan]
+  - complete rewrite of receipt generation code - common path code for pdf and html receipts [chilan]
+  - complete rewrite of note generation code [chilan]
+  - complete rewrite of two transfer form types - killed old pdf backend code [chilan]
+  - new bootstrap based userpanel style integrated - bclean [kyob]
+  - customer info box: show customer all and not resolved ticket stats (as bold when there
+    are some unresolved tickets) [chilan]
 
 version 1.11.18 (2015-10-01):
 

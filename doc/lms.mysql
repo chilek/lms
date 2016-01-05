@@ -8,7 +8,9 @@ DROP VIEW IF EXISTS nas;
 DROP VIEW IF EXISTS vnodes_mac;
 DROP VIEW IF EXISTS vnodes;
 DROP VIEW IF EXISTS vmacs;
-DROP VIEW IF EXISTS customersview;
+DROP VIEW IF EXISTS customerview;
+DROP VIEW IF EXISTS contractorview;
+DROP VIEW IF EXISTS customeraddressview;
 DROP VIEW IF EXISTS teryt_terc;
 DROP VIEW IF EXISTS teryt_ulic;
 DROP VIEW IF EXISTS teryt_simc;
@@ -110,6 +112,8 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS customers;
 DROP TABLE IF EXISTS invprojects;
 DROP TABLE IF EXISTS netnodes;
+DROP TABLE IF EXISTS usergroups;
+DROP TABLE IF EXISTS userassignments;
 
 
 
@@ -150,16 +154,21 @@ CREATE TABLE users (
 #
 CREATE TABLE customers (
   id int(11) 		NOT NULL auto_increment,
+  extid varchar(32)	NOT NULL DEFAULT '',
   lastname varchar(128) NOT NULL DEFAULT '',
   name varchar(128) 	NOT NULL DEFAULT '',
   status smallint 	NOT NULL DEFAULT '0',
   type smallint		NOT NULL DEFAULT '0',
-  address varchar(255) 	NOT NULL DEFAULT '',
+  street varchar(255) DEFAULT '' NOT NULL,
+  building varchar(20) DEFAULT NULL,
+  apartment varchar(20) DEFAULT NULL,
   zip varchar(10) 	NOT NULL DEFAULT '',
   city varchar(32) 	NOT NULL DEFAULT '',
   countryid int(11)	DEFAULT NULL,
   post_name varchar(255) DEFAULT NULL,
-  post_address varchar(255) DEFAULT NULL,
+  post_street varchar(255) DEFAULT NULL,
+  post_building varchar(20) DEFAULT NULL,
+  post_apartment varchar(20) DEFAULT NULL,
   post_zip varchar(10) 	    DEFAULT NULL,
   post_city varchar(32) 	DEFAULT NULL,
   post_countryid int(11)	DEFAULT NULL,
@@ -368,6 +377,7 @@ CREATE TABLE documents (
 	div_inv_author text NOT NULL DEFAULT '',
 	div_inv_cplace text NOT NULL DEFAULT '',
 	fullnumber varchar(50) DEFAULT NULL,
+	cancelled smallint DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	INDEX cdate (cdate),
 	INDEX numberplanid (numberplanid),
@@ -1813,6 +1823,33 @@ CREATE TABLE supermasters (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
+# --------------------------------------------------------
+#
+# Structure of table usergroups
+#
+CREATE TABLE usergroups (
+	id int(11) NOT NULL auto_increment,
+	name varchar(255) DEFAULT '' NOT NULL,
+	description text DEFAULT '' NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE KEY name (name)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table userassignments
+#
+CREATE TABLE userassignments (
+	id int(11) NOT NULL auto_increment,
+	usergroupid int(11) NOT NULL,
+	userid int(11) NOT NULL,
+	PRIMARY KEY (id),
+	INDEX userassignments_userid_idx (userid),
+	FOREIGN KEY (usergroupid) REFERENCES usergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	UNIQUE KEY userassignments_usergroupid_key (usergroupid, userid)
+) ENGINE=InnoDB;
+
 CREATE VIEW nas AS
     SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
 	d.clients AS ports, d.secret, d.community, d.description 
@@ -1827,28 +1864,58 @@ CREATE VIEW vnodes_mac AS
 CREATE VIEW vnodes AS
 	SELECT n.*, m.mac
 	FROM nodes n
-    LEFT JOIN vnodes_mac m ON (n.id = m.nodeid);
+	LEFT JOIN vnodes_mac m ON (n.id = m.nodeid)
+	WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
 
 CREATE VIEW vmacs AS
 SELECT n.*, m.mac, m.id AS macid
-    FROM nodes n
-    JOIN macs m ON (n.id = m.nodeid);
+	FROM nodes n
+	JOIN macs m ON (n.id = m.nodeid)
+	WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
 
 DROP FUNCTION IF EXISTS lms_current_user;
 CREATE FUNCTION lms_current_user() RETURNS int(11) NO SQL
 RETURN @lms_current_user;
 
-CREATE VIEW customersview AS
-	SELECT c.* FROM customers c
+CREATE VIEW customerview AS
+	SELECT c.*,
+		(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN CONCAT(street, ' ', building)
+			ELSE CONCAT(street, ' ', building, '/', apartment) END) END) AS address,
+		(CASE WHEN post_street IS NULL THEN '' ELSE
+			(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN CONCAT(post_street, ' ', post_building)
+				ELSE CONCAT(post_street, ' ', post_building, '/', post_apartment) END)
+			END)
+		END) AS post_address
+	FROM customers c
 	WHERE NOT EXISTS (
-	    	SELECT 1 FROM customerassignments a
-		JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-		WHERE e.userid = lms_current_user() AND a.customerid = c.id) 
+			SELECT 1 FROM customerassignments a
+			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+			WHERE e.userid = lms_current_user() AND a.customerid = c.id) 
 		AND c.type < 2;
 
 CREATE VIEW contractorview AS
-	SELECT c.* FROM customers c
-	WHERE c.type = '2';
+	SELECT c.*,
+		(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN CONCAT(street, ' ', building)
+			ELSE CONCAT(street, ' ', building, '/', apartment) END) END) AS address,
+		(CASE WHEN post_street IS NULL THEN '' ELSE
+			(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN CONCAT(post_street, ' ', post_building)
+				ELSE CONCAT(post_street, ' ', post_building, '/', post_apartment) END)
+			END)
+		END) AS post_address
+	FROM customers c
+	WHERE c.type = 2;
+
+CREATE VIEW customeraddressview AS
+	SELECT c.*,
+		(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN CONCAT(street, ' ', building)
+			ELSE CONCAT(street, ' ', building, '/', apartment) END) END) AS address,
+		(CASE WHEN post_street IS NULL THEN '' ELSE
+			(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN CONCAT(post_street, ' ', post_building)
+				ELSE CONCAT(post_street, ' ', post_building, '/', post_apartment) END)
+			END)
+		END) AS post_address
+	FROM customers c
+	WHERE c.type < 2;
 
 CREATE VIEW teryt_terc AS
 SELECT ident AS woj, '0' AS pow, '0' AS gmi, 0 AS rodz,
@@ -1895,6 +1962,14 @@ CREATE VIEW customermailsview AS
 DROP FUNCTION IF EXISTS mask2prefix;
 CREATE FUNCTION mask2prefix(mask bigint) RETURNS smallint DETERMINISTIC
 RETURN bit_count(mask);
+
+CREATE VIEW vnetworks AS
+  SELECT h.name AS hostname, ne.*, no.ownerid, no.location, no.location_city, no.location_street, no.location_house, no.location_flat, no.chkmac,
+    CONCAT(inet_ntoa(ne.address), '/', mask2prefix(inet_aton(ne.mask))) AS ip, no.id AS nodeid
+  FROM nodes no
+  LEFT JOIN networks ne ON (ne.id = no.netid)
+  LEFT JOIN hosts h ON (h.id = ne.hostid)
+  WHERE no.ipaddr = 0 AND no.ipaddr_pub = 0;
 
 DROP FUNCTION IF EXISTS broadcast;
 CREATE FUNCTION broadcast(address bigint, mask bigint) RETURNS bigint DETERMINISTIC
@@ -2065,6 +2140,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui','default_editor','html','',0),
 ('phpui','logging','false','',0),
 ('phpui','hide_toolbar','false','',0),
+('phpui','add_customer_group_required','false','',0),
 ('invoices','template_file','invoice.html','',0),
 ('invoices','content_type','text/html','',0),
 ('invoices','cnote_template_file','invoice.html','',0),
@@ -2446,4 +2522,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015112001');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015122300');

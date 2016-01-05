@@ -128,9 +128,9 @@ try {
 
 // Include required files (including sequence is important)
 
-//require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
 $deadline = ConfigHelper::getConfig('payments.deadline', 14);
 $sdate_next = ConfigHelper::getConfig('payments.saledate_next_month', 0);
@@ -217,13 +217,25 @@ if ($y_month > 12) {
 	$y_year += 1;
 }
 
-$txts[DAY] = strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year));
-$txts[WEEK] = strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom + 6, $year));
-$txts[MONTH] = strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $month + 1, $dom - 1, $year));
-$txts[QUARTER] = strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $q_month + 1, $dom - 1, $q_year));
-$txts[HALFYEAR] = strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $y_month + 1, $dom - 1, $y_year));
-$txts[YEAR] = strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom - 1, $year + 1));
-$txts[DISPOSABLE] = strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year));
+$txts = array(
+	DAY => strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year)),
+	WEEK => strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom + 6, $year)),
+	MONTH => strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $month + 1, $dom - 1, $year)),
+	QUARTER => strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $q_month + 1, $dom - 1, $q_year)),
+	HALFYEAR => strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $y_month + 1, $dom - 1, $y_year)),
+	YEAR => strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom - 1, $year + 1)),
+	DISPOSABLE => strftime("%Y/%m/%d", mktime(12, 0, 0, $month, $dom, $year)),
+);
+
+$txts_aligned = array(
+	DAY => $txts[DAY],
+	WEEK => $txts[WEEK],
+	MONTH => strftime("%Y/%m/%d", mktime(12, 0, 0, $month, 1, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $month + 1, 0, $year)),
+	QUARTER => strftime("%Y/%m/%d", mktime(12, 0, 0, $month, 1, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $q_month + 1, 0, $q_year)),
+	HALFYEAR => strftime("%Y/%m/%d", mktime(12, 0, 0, $month, 1, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $y_month + 1, 0, $y_year)),
+	YEAR => strftime("%Y/%m/%d", mktime(12, 0, 0, $month, 1, $year))." - ".strftime("%Y/%m/%d", mktime(12, 0, 0, $month, 0, $year + 1)),
+	DISPOSABLE => $txts[DISPOSABLE],
+);
 
 // Special case, ie. you have 01.01.2005-01.31.2005 on invoice, but invoice/
 // assignment is made not January, the 1st:
@@ -342,7 +354,7 @@ $query = "SELECT a.tariffid, a.liabilityid, a.customerid,
 	LEFT JOIN tariffs t ON (a.tariffid = t.id) 
 	LEFT JOIN liabilities l ON (a.liabilityid = l.id) 
 	LEFT JOIN divisions d ON (d.id = c.divisionid) 
-	WHERE c.status = 3 
+	WHERE c.status = ?
 		AND ((a.period = ".DISPOSABLE." AND at = $today) 
 			OR ((a.period = ".DAY." 
 			OR (a.period = ".WEEK." AND at = $weekday) 
@@ -354,7 +366,7 @@ $query = "SELECT a.tariffid, a.liabilityid, a.customerid,
 			AND (a.dateto > $currtime OR a.dateto = 0)))"
 		.(!empty($groupnames) ? $customergroups : "")
 	." ORDER BY a.customerid, a.invoice, a.paytype, a.numberplanid, value DESC";
-$assigns = $DB->GetAll($query);
+$assigns = $DB->GetAll($query, array(CSTATUS_CONNECTED));
 
 if (empty($assigns))
 	die;
@@ -379,9 +391,10 @@ foreach ($assigns as $assign) {
 		$desc = $comment;
 	$desc = preg_replace("/\%type/", $assign['tarifftype'] != TARIFF_OTHER ? $TARIFFTYPES[$assign['tarifftype']] : '', $desc);
 	$desc = preg_replace("/\%tariff/", $assign['name'], $desc);
-        $desc = preg_replace("/\%attribute/", $assign['attribute'], $desc);
+	$desc = preg_replace("/\%attribute/", $assign['attribute'], $desc);
 	$desc = preg_replace("/\%desc/", $assign['description'], $desc);
 	$desc = preg_replace("/\%period/", $txts[$assign['period']], $desc);
+	$desc = preg_replace("/\%aligned_period/", $txts_aligned[$assign['period']], $desc);
 	$desc = preg_replace("/\%current_month/", $current_month, $desc);
 	$desc = preg_replace("/\%current_period/", $current_period, $desc);
 	$desc = preg_replace("/\%next_period/", $next_period, $desc);
@@ -451,7 +464,7 @@ foreach ($assigns as $assign) {
 				$numbers[$plan]++;
 
 				$customer = $DB->GetRow("SELECT lastname, name, address, city, zip, ssn, ten, countryid, divisionid, paytime 
-						FROM customers WHERE id = $cid");
+						FROM customeraddressview WHERE id = $cid");
 
 				$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 						account, inv_header, inv_footer, inv_author, inv_cplace 

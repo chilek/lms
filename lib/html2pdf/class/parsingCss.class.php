@@ -1,14 +1,14 @@
 <?php
 /**
- * HTML2PDF Librairy - parsingCss class
+ * HTML2PDF Library - parsingCss class
  *
  * HTML => PDF convertor
  * distributed under the LGPL License
  *
- * @author      Laurent MINGUET <webmaster@html2pdf.fr>
- * @version     4.03
+ * @package   Html2pdf
+ * @author    Laurent MINGUET <webmaster@html2pdf.fr>
+ * @copyright 2016 Laurent MINGUET
  */
-
 class HTML2PDF_parsingCss
 {
     /**
@@ -94,8 +94,7 @@ class HTML2PDF_parsingCss
     protected function _init()
     {
         // get the Web Colors from TCPDF
-        require(K_PATH_MAIN.'htmlcolors.php');
-        $this->_htmlColor = $webcolor;
+        $this->_htmlColor = TCPDF_COLORS::$webcolor;
 
         // init the Style
         $this->table = array();
@@ -113,14 +112,14 @@ class HTML2PDF_parsingCss
      */
     public function initStyle()
     {
-        $this->value['id_tag']       = 'body';        // tag name
+        $this->value['id_tag']           = 'body';       // tag name
         $this->value['id_name']          = null;         // tag - attribute name
         $this->value['id_id']            = null;         // tag - attribute id
         $this->value['id_class']         = null;         // tag - attribute class
         $this->value['id_lst']           = array('*');   // tag - list of legacy
         $this->value['mini-size']        = 1.;           // specific size report for sup, sub
         $this->value['mini-decal']       = 0;            // specific position report for sup, sub
-        $this->value['font-family']      = 'Arial';
+        $this->value['font-family']      = defined('PDF_FONT_NAME_MAIN') ? PDF_FONT_NAME_MAIN : 'Arial';
         $this->value['font-bold']        = false;
         $this->value['font-italic']      = false;
         $this->value['font-underline']   = false;
@@ -304,7 +303,6 @@ class HTML2PDF_parsingCss
     public function fontSet()
     {
         $family = strtolower($this->value['font-family']);
-        $family = str_replace(array('"', "'"), "", $family);
 
         $b = ($this->value['font-bold']        ? 'B' : '');
         $i = ($this->value['font-italic']      ? 'I' : '');

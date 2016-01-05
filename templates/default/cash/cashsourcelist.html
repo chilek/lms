@@ -29,7 +29,7 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$sourcelist item=source}
-	<TR class="highlight {cycle}">
+	<TR class="highlight {cycle} {if $source.deleted == 1} blend{/if}">
 		<TD onClick="return self.location.href='?m=cashsourceedit&id={$source.id}'">
                         <SPAN class="nobr bold"><IMG src="img/isource.gif" alt=""> {$source.name}</SPAN>
 		</TD>
@@ -41,6 +41,11 @@
 		</TD>
 		<TD class="text-right">
                         <SPAN class="nobr">
+			{if $source.deleted == 1}
+			    <a href="?m=cashsourcelist&action=enable&id={$source.id}"><img src="img/noaccess.gif" alt="[ {t}Enable{/t} ]" title="[ {t}Enable{/t} ]" /></a>
+			{else}
+			    <a href="?m=cashsourcelist&action=disable&id={$source.id}"><img src="img/access.gif" alt="[ {t}Disable{/t} ]" title="[ {t}Disable{/t} ]" /></a>
+				{/if}
 			<A HREF="?m=cashsourcedel&id={$source.id}" OnClick="return confirmLink(this, '{t a=$source.name}Are you sure, you want to remove source \'$a\'?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<A HREF="?m=cashsourceedit&id={$source.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
                         </SPAN>

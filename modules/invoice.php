@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2014 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,177 +24,159 @@
  *  $Id$
  */
 
-if(strtolower(ConfigHelper::getConfig('invoices.type')) == 'pdf')
-{
-    include('invoice_pdf.php');
-    $SESSION->close();
-    die;
+function invoice_body($document, $invoice) {
+	$document->Draw($invoice);
+	if (!isset($invoice['last']))
+		$document->NewPage();
 }
 
-header('Content-Type: '.ConfigHelper::getConfig('invoices.content_type'));
 $attachment_name = ConfigHelper::getConfig('invoices.attachment_name');
-if(!empty($attachment_name))
-	header('Content-Disposition: attachment; filename='.$attachment_name);
+$invoice_type = strtolower(ConfigHelper::getConfig('invoices.type'));
 
-$SMARTY->assign('css', file('img/style_print.css')); 
+if ($invoice_type == 'pdf') {
+	$pdf_type = ConfigHelper::getConfig('invoices.pdf_type', 'tcpdf');
+	$pdf_type = ucwords($pdf_type);
+	$classname = 'LMS' . $pdf_type . 'Invoice';
+	$document = new $classname(trans('Invoices'));
+} else
+	$document = new LMSHtmlInvoice($SMARTY);
 
-if(isset($invoice['invoice']))
-	$template_file = ConfigHelper::getConfig('invoices.cnote_template_file');
-else
-	$template_file = ConfigHelper::getConfig('invoices.template_file');
-if (!$SMARTY->templateExists($template_file))
-	$template_file = 'invoice' . DIRECTORY_SEPARATOR . $template_file;
-
-if(isset($_GET['print']) && $_GET['print'] == 'cached')
-{
+if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	$SESSION->restore('ilm', $ilm);
 	$SESSION->remove('ilm');
 
-	if(!empty($_POST['marks']))
-		foreach($_POST['marks'] as $id => $mark)
-			$ilm[$id] = $mark;
-	if(sizeof($ilm))
-		foreach($ilm as $mark)
-			$ids[] = intval($mark);
+	if (isset($_POST['marks']))
+		foreach ($_POST['marks'] as $idx => $mark)
+			$ilm[$idx] = intval($mark);
 
-	if(empty($ids))
-	{
+	if (sizeof($ilm))
+		foreach ($ilm as $mark)
+			$ids[] = $mark;
+
+	if (!isset($ids)) {
 		$SESSION->close();
 		die;
 	}
 
 	$layout['pagetitle'] = trans('Invoices');
-	$SMARTY->display('invoice/invoiceheader.html');
-	
-	if(isset($_GET['cash']))
-	{
-		$ids = $DB->GetCol('SELECT DISTINCT docid
-                        FROM cash, documents
-		        WHERE docid = documents.id AND (documents.type = ? OR documents.type = ?)
-                                AND cash.id IN ('.implode(',', $ids).')
-                        ORDER BY docid',
-                        array(DOC_INVOICE, DOC_CNOTE));
-	}
-	
-	if(!empty($_GET['original'])) $which[] = trans('ORIGINAL');
-	if(!empty($_GET['copy'])) $which[] = trans('COPY');
-	if(!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 
-	if(!sizeof($which)) $which[] = trans('ORIGINAL');
+	if (isset($_GET['cash'])) {
+		$ids = $DB->GetCol('SELECT DISTINCT docid
+			FROM cash, documents
+			WHERE docid = documents.id AND (documents.type = ? OR documents.type = ?)
+				AND cash.id IN ('.implode(',', $ids).')
+			ORDER BY docid',
+			array(DOC_INVOICE, DOC_CNOTE));
+	}
+
+	if (!empty($_GET['original'])) $which[] = trans('ORIGINAL');
+	if (!empty($_GET['copy'])) $which[] = trans('COPY');
+	if (!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
+
+	if (!sizeof($which)) $which[] = trans('ORIGINAL');
 
 	$count = sizeof($ids) * sizeof($which);
-	$i=0;
-	foreach($ids as $idx => $invoiceid)
-	{
-		$invoice = $LMS->GetInvoiceContent($invoiceid);
+	$i = 0;
 
-		foreach($which as $type)
-		{
+	foreach ($ids as $idx => $invoiceid) {
+		$invoice = $LMS->GetInvoiceContent($invoiceid);
+		if (count($ids) == 1)
+			$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+
+		foreach ($which as $type) {
 			$i++;
-			if($i == $count) $invoice['last'] = TRUE;
-			$SMARTY->assign('type',$type);
-			$SMARTY->assign('duplicate',$type==trans('DUPLICATE') ? TRUE : FALSE);
-			$SMARTY->assign('invoice',$invoice);
-			$SMARTY->display($template_file);
+			if ($i == $count) $invoice['last'] = TRUE;
+			$invoice['type'] = $type;
+			invoice_body($document, $invoice);
 		}
 	}
-	$SMARTY->display('clearfooter.html');
-}
-elseif(isset($_GET['fetchallinvoices']))
-{
+} elseif (isset($_GET['fetchallinvoices'])) {
 	$layout['pagetitle'] = trans('Invoices');
 
 	$offset = intval(date('Z'));
-	$ids = $DB->GetCol('SELECT d.id FROM documents d
-		WHERE d.cdate >= ? AND d.cdate <= ? AND (d.type = ? OR d.type = ?)'
-		.(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
-		.(!empty($_GET['numberplanid']) ? ' AND d.numberplanid = '.intval($_GET['numberplanid']) : '')
-		.(!empty($_GET['autoissued']) ? ' AND d.userid = 0' : '')
-		.(!empty($_GET['groupid']) ? 
-		' AND '.(!empty($_GET['groupexclude']) ? 'NOT' : '').'
-		        EXISTS (SELECT 1 FROM customerassignments a
-			        WHERE a.customergroupid = '.intval($_GET['groupid']).'
-				AND a.customerid = d.customerid)' : '')
-		.' AND NOT EXISTS (
-			SELECT 1 FROM customerassignments a
-		        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-			WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)' 
-		.' ORDER BY CEIL(d.cdate/86400), d.id',
-		array(intval($_GET['from']) - $offset, intval($_GET['to']) - $offset, DOC_INVOICE, DOC_CNOTE));
-
-	if(!$ids)
-	{
+	$ids = $DB->GetCol('SELECT id FROM documents d
+				WHERE cdate >= ? AND cdate <= ? AND (type = ? OR type = ?)'
+				.(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
+				.(!empty($_GET['numberplanid']) ? ' AND d.numberplanid = '.intval($_GET['numberplanid']) : '')
+				.(!empty($_GET['autoissued']) ? ' AND d.userid = 0' : '')
+				.(!empty($_GET['groupid']) ?
+				' AND '.(!empty($_GET['groupexclude']) ? 'NOT' : '').'
+					EXISTS (SELECT 1 FROM customerassignments a
+					WHERE a.customergroupid = '.intval($_GET['groupid']).'
+						AND a.customerid = d.customerid)' : '')
+				.' AND NOT EXISTS (
+					SELECT 1 FROM customerassignments a
+					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+					WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
+				.' ORDER BY CEIL(cdate/86400), id',
+				array(intval($_GET['from']) - $offset, intval($_GET['to']) - $offset, DOC_INVOICE, DOC_CNOTE));
+	if (!$ids) {
 		$SESSION->close();
 		die;
 	}
 
-	if(!empty($_GET['original'])) $which[] = trans('ORIGINAL');
-	if(!empty($_GET['copy'])) $which[] = trans('COPY');
-	if(!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
+	if (!empty($_GET['original'])) $which[] = trans('ORIGINAL');
+	if (!empty($_GET['copy'])) $which[] = trans('COPY');
+	if (!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 
-    if(!sizeof($which)) $which[] = trans('ORIGINAL');
+	if (!sizeof($which)) $which[] = trans('ORIGINAL');
 
 	$count = sizeof($ids) * sizeof($which);
-	$i=0;
+	$i = 0;
 
-	$SMARTY->display('invoice/invoiceheader.html');
-
-	foreach($ids as $idx => $invoiceid)
-	{
+	foreach ($ids as $idx => $invoiceid) {
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
+		if (count($ids) == 1)
+			$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 
-		foreach($which as $type)
-		{
-			$SMARTY->assign('type',$type);
-			$SMARTY->assign('invoice',$invoice);
-			$SMARTY->display($template_file);
+		foreach ($which as $type) {
+			$i++;
+			if ($i == $count) $invoice['last'] = TRUE;
+			$invoice['type'] = $type;
+			invoice_body($document, $invoice);
 		}
 	}
-	$SMARTY->display('clearfooter.html');
-}
-elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
-{
-	$number = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+} elseif ($invoice = $LMS->GetInvoiceContent($_GET['id'])) {
+	$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 	if(!isset($invoice['invoice']))
-		$layout['pagetitle'] = trans('Invoice No. $a', $number);
+		$layout['pagetitle'] = trans('Invoice No. $a', $docnumber);
 	else
-		$layout['pagetitle'] = trans('Credit Note No. $a', $number);
+		$layout['pagetitle'] = trans('Credit Note No. $a', $docnumber);
 
 	$which = array();
 
-	if(!empty($_GET['original'])) $which[] = trans('ORIGINAL');
-	if(!empty($_GET['copy'])) $which[] = trans('COPY');
-	if(!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
+	if (!empty($_GET['original'])) $which[] = trans('ORIGINAL');
+	if (!empty($_GET['copy'])) $which[] = trans('COPY');
+	if (!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
 
-	if(!sizeof($which))
-        {
-	        $tmp = explode(',', ConfigHelper::getConfig('invoices.default_printpage'));
-	        foreach($tmp as $t)
-			if(trim($t) == 'original') $which[] = trans('ORIGINAL');
-			elseif(trim($t) == 'copy') $which[] = trans('COPY');
-			elseif(trim($t) == 'duplicate') $which[] = trans('DUPLICATE');
-		
-		if(!sizeof($which)) $which[] = trans('ORIGINAL');
+	if (!sizeof($which)) {
+		$tmp = explode(',', ConfigHelper::getConfig('invoices.default_printpage'));
+		foreach ($tmp as $t)
+			if (trim($t) == 'original') $which[] = trans('ORIGINAL');
+			elseif (trim($t) == 'copy') $which[] = trans('COPY');
+			elseif (trim($t) == 'duplicate') $which[] = trans('DUPLICATE');
+
+		if (!sizeof($which)) $which[] = trans('ORIGINAL');
 	}
-	
+
 	$count = sizeof($which);
 	$i = 0;
 
-	$SMARTY->display('invoice/invoiceheader.html');
-	foreach($which as $type)
-	{
+	foreach ($which as $type) {
 		$i++;
-		if($i == $count) $invoice['last'] = TRUE;
-		$SMARTY->assign('invoice',$invoice);
-		$SMARTY->assign('duplicate',$type==trans('DUPLICATE') ? TRUE : FALSE);
-		$SMARTY->assign('type',$type);
-		$SMARTY->display($template_file);
+		if ($i == $count) $invoice['last'] = TRUE;
+		$invoice['type'] = $type;
+		invoice_body($document, $invoice);
 	}
-	$SMARTY->display('clearfooter.html');
-}
-else
-{
+} else
 	$SESSION->redirect('?m=invoicelist');
-}
+
+if (!is_null($attachment_name) && isset($docnumber)) {
+	$attachment_name = str_replace('%number', $docnumber, $attachment_name);
+	$attachment_name = preg_replace('/[^[:alnum:]_\.]/i', '_', $attachment_name);
+} else
+	$attachment_name = 'invoices.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
+
+$document->WriteToBrowser($attachment_name);
 
 ?>

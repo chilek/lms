@@ -400,7 +400,7 @@
 customer's balance: {$invoice.customerbalancelist.balance} 
 *}
 
-{if $invoice.customerbalancelist}
+{if $invoice.customerbalancelist.list}
 <TABLE cellpadding="5" cellspacing="0" width="100%">
 	<TR>
     		<TD width="1%" class="fleftu">{trans("Date:")}</TD>
@@ -415,22 +415,23 @@ customer's balance: {$invoice.customerbalancelist.balance}
 	{else}
 		{math assign="startloop" equation="x-y" x=$invoice.customerbalancelist.total y=$invoice.customerbalancelistlimit}
 	{/if}
-	{section name=balancelist loop=$invoice.customerbalancelist.id start=$startloop max=$invoice.customerbalancelistlimit}
-	{* section name=balancelist loop=$invoice.customerbalancelist.id start=$invoice.customerbalancelistlimit step=-1 *}
+	{section name=balancelist loop=$invoice.customerbalancelist.list start=$startloop max=$invoice.customerbalancelistlimit}
+	{* section name=balancelist loop=$invoice.customerbalancelist.list start=$invoice.customerbalancelistlimit step=-1 *}
+	{$item=$invoice.customerbalancelist.list[balancelist]}
 	<TR>
-		<TD width="1%"><nobr>{$invoice.customerbalancelist.date[balancelist]}</nobr></TD>
-		<TD width="1%" align="right"><nobr>{if $invoice.customerbalancelist.value[balancelist] > 0}+{/if}{$invoice.customerbalancelist.value[balancelist]|money_format}</nobr>
+		<TD width="1%"><nobr>{$item.date}</nobr></TD>
+		<TD width="1%" align="right"><nobr>{if $item.value > 0}+{/if}{$item.value|money_format}</nobr>
 		</TD>
 		<TD width="1%" align="right">
-                        <nobr>{$invoice.customerbalancelist.tax[balancelist]}</nobr>
+                        <nobr>{$item.tax}</nobr>
 		</TD>
 		<TD width="1%" align="center">&raquo;</TD>
 		<TD width="1%" align="right"><nobr>
-			{if $invoice.customerbalancelist.after[balancelist] < 0}<STRONG>{/if}
-			    {$invoice.customerbalancelist.after[balancelist]|money_format}
-			{if $invoice.customerbalancelist.after[balancelist] < 0}</STRONG>{/if}</nobr>
+			{if $item.after < 0}<STRONG>{/if}
+			    {$item.after|money_format}
+			{if $item.after < 0}</STRONG>{/if}</nobr>
 		</TD>
-		<TD width="93%">{$invoice.customerbalancelist.comment[balancelist]}</TD>
+		<TD width="93%">{$item.comment}</TD>
         </TR>
 	{/section}
 </TABLE>	

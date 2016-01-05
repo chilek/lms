@@ -252,7 +252,7 @@ $sourcefiles = $DB->GetAll('SELECT s.*, u.name AS username,
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
-$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));
+$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources WHERE deleted = 0 ORDER BY name'));
 $SMARTY->assign('sourcefiles', $sourcefiles);
 $SMARTY->display('cash/cashimport.html');
 

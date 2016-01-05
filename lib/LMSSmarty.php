@@ -32,7 +32,7 @@ class LMSSmarty extends Smarty {
 	}
 
 	public function fetch($template = null, $cache_id = null, $compile_id = null, $parent = null, $display = false, $merge_tpl_vars = true, $no_output_filter = false) {
-		if (!is_null($template) && is_string($template) && !preg_match('/^(\/|[a-z]{2,}:)/i', $template))
+		if (!is_null($template) && is_string($template) && !preg_match('/^([a-z]{1}:|\/|[a-z]{2,}:)/i', $template))
 			$template = 'extendsall:' . $template;
 		return parent::fetch($template, $cache_id, $compile_id, $parent, $display, $merge_tpl_vars, $no_output_filter);
 	}
@@ -42,7 +42,7 @@ class LMSSmarty extends Smarty {
 		if (!empty($layout) && array_key_exists('module', $layout))
 			$this->plugin_manager->ExecuteHook($layout['module'] . '_before_module_display',
 				array('smarty' => $this));
-		$this->fetch($template, $cache_id, $compile_id, $parent, true);
+		parent::display($template, $cache_id, $compile_id, $parent);
 	}
 }
 
