@@ -84,6 +84,39 @@
 												</TD>
 											</TR>
 											{/foreach}
+                                                                                        <TR class="highlight {cycle}">
+                                                                                                <TD style="width: 96%;" class="nobr text-right">
+                                                                                                        <label for="allbox">{trans("Check All")}</label>
+                                                                                                </TD>
+                                                                                                <TD style="width: 1%;" class="text-center">
+                                                                                                        <INPUT TYPE="checkbox" NAME="allbox[1]" id="allbox[1]" onchange="CheckAll('queue', this, ['allbox[2]', 'allbox[4]', 'allbox[8]',
+                                                                                                        {foreach from=$queue.rights item=right}
+                                                                                                                'queue[users][{$right.id}][2]', 'queue[users][{$right.id}][4]', 'queue[users][{$right.id}][8]',
+                                                                                                        {/foreach}
+                                                                                                        ])">
+                                                                                                </TD>
+                                                                                                <TD style="width: 1%;" class="text-center">
+                                                                                                        <INPUT TYPE="checkbox" NAME="allbox[2]" id="allbox[2]" onchange="CheckAll('queue', this, ['allbox[1]', 'allbox[4]', 'allbox[8]',
+                                                                                                        {foreach from=$queue.rights item=right}
+                                                                                                                'queue[users][{$right.id}][1]', 'queue[users][{$right.id}][4]', 'queue[users][{$right.id}][8]',
+                                                                                                        {/foreach}
+                                                                                                        ])">
+                                                                                                </TD>
+                                                                                                <TD style="width: 1%;" class="text-center">
+                                                                                                        <INPUT TYPE="checkbox" NAME="allbox[4]" id="allbox[4]" onchange="CheckAll('queue', this, ['allbox[1]', 'allbox[2]', 'allbox[8]',
+                                                                                                        {foreach from=$queue.rights item=right}
+                                                                                                                'queue[users][{$right.id}][1]', 'queue[users][{$right.id}][2]', 'queue[users][{$right.id}][8]',
+                                                                                                        {/foreach}
+                                                                                                        ])">
+                                                                                                </TD>
+                                                                                                <TD style="width: 1%;" class="text-center">
+                                                                                                        <INPUT TYPE="checkbox" NAME="allbox[8]" id="allbox[8]" onchange="CheckAll('queue', this, ['allbox[1]', 'allbox[2]', 'allbox[4]',
+                                                                                                        {foreach from=$queue.rights item=right}
+                                                                                                                'queue[users][{$right.id}][1]', 'queue[users][{$right.id}][2]', 'queue[users][{$right.id}][4]',
+                                                                                                        {/foreach}
+                                                                                                        ])">
+                                                                                                </TD>
+                                                                                        </TR>
 										</TBODY>
 									</TABLE>
 								</TD>

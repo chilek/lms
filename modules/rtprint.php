@@ -37,6 +37,8 @@ switch($type)
 		$times = !empty($_GET['times']) ? intval($_GET['times']) : intval($_POST['times']);
 		$queue = !empty($_GET['queue']) ? intval($_GET['queue']) : intval($_POST['queue']);
 		$categories = !empty($_GET['categories']) ? $_GET['categories'] : $_POST['categories'];
+		$datefrom  = !empty($_GET['datefrom']) ? $_GET['datefrom'] : $_POST['datefrom'];
+		$dateto  = !empty($_GET['dateto']) ? $_GET['dateto'] : $_POST['dateto'];
 		
 		if($queue)
 			$where[] = 'queueid = '.$queue;
@@ -48,6 +50,26 @@ switch($type)
 		else
 			$where[] = 'tc.categoryid IS NULL';
 	
+		if($datefrom)
+		{
+        		if (check_date($datefrom)) {
+                		list ($year, $month, $day) = explode('/', $datefrom);
+                		$datefrom = mktime(0, 0, 0, $month, $day, $year);  
+        		} else
+                		$datefrom = 0;
+			$where[] = 'rttickets.createtime >= '.$datefrom;	                                                                
+		}
+
+		if($dateto)
+		{
+        		if (check_date($dateto)) {
+                		list ($year, $month, $day) = explode('/', $dateto);
+                		$dateto = mktime(0, 0, 0, $month, $day, $year);  
+        		} else
+                		$dateto = 0;	                                                                
+			$where[] = 'rttickets.createtime <= '.$dateto;	                                                                
+		}
+
     		if($list = $DB->GetAll('SELECT COUNT(*) AS total, customerid, '
 				    .$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername
 		               	    FROM rttickets
@@ -95,6 +117,8 @@ switch($type)
 		$subject  = !empty($_GET['subject']) ? $_GET['subject'] : $_POST['subject'];
 		$extended = !empty($_GET['extended']) ? true : !empty($_POST['extended']) ? true : false;
 		$categories = !empty($_GET['categories']) ? $_GET['categories'] : $_POST['categories'];
+		$datefrom  = !empty($_GET['datefrom']) ? $_GET['datefrom'] : $_POST['datefrom'];
+		$dateto  = !empty($_GET['dateto']) ? $_GET['dateto'] : $_POST['dateto'];
 
 		if($queue)
 			$where[] = 'queueid = '.$queue;
@@ -118,6 +142,26 @@ switch($type)
     				$where[] = 'rttickets.state = '.intval($status);
 		}
 
+		if($datefrom)
+		{
+        		if (check_date($datefrom)) {
+                		list ($year, $month, $day) = explode('/', $datefrom);
+                		$datefrom = mktime(0, 0, 0, $month, $day, $year);  
+        		} else
+                		$datefrom = 0;
+			$where[] = 'rttickets.createtime >= '.$datefrom;	                                                                
+		}
+
+		if($dateto)
+		{
+        		if (check_date($dateto)) {
+                		list ($year, $month, $day) = explode('/', $dateto);
+                		$dateto = mktime(0, 0, 0, $month, $day, $year);  
+        		} else
+                		$dateto = 0;	                                                                
+			$where[] = 'rttickets.createtime <= '.$dateto;	                                                                
+		}
+
 		$list = $DB->GetAllByKey('SELECT rttickets.id, createtime, customerid, subject, requestor, '
 			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername '
 			.(!empty($_POST['contacts']) || !empty($_GET['contacts'])
@@ -129,7 +173,7 @@ switch($type)
 			.'FROM rttickets
 			LEFT JOIN rtticketcategories tc ON tc.ticketid = rttickets.id
 			LEFT JOIN customers ON (customerid = customers.id)
-			WHERE state != '.RT_RESOLVED
+			WHERE 1 = 1 '
 			.(isset($where) ? ' AND '.implode(' AND ', $where) : '')
 			.' ORDER BY createtime', 'id');
 
