@@ -141,7 +141,7 @@ if(isset($_POST['ticket']))
 				if ($ticket['customerid'])
 				{
 					$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-							address, zip, city FROM customers
+							address, zip, city FROM customeraddressview
 							WHERE id = ?', array($ticket['customerid']));
 
 					$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts

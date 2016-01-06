@@ -64,7 +64,7 @@ if ($id && !isset($_POST['ticket'])) {
 								WHERE customerid = customers.id AND (type & ? = ?)) AS emails,
 								(SELECT ' . $DB->GroupConcat('contact', ',', true) . ' FROM customercontacts 
 								WHERE customerid = customers.id AND (type & ? > 0)) AS phones
-							FROM customers
+							FROM customeraddressview
 							WHERE id = ?', array(CONTACT_EMAIL, CONTACT_EMAIL, (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE), $ticket['customerid']));
 					$custmail_subject = $queue['resolveticketsubject'];
 					$custmail_subject = str_replace('%tid', $id, $custmail_subject);
