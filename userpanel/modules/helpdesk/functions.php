@@ -212,7 +212,7 @@ function module_main()
 			$body = $ticket['body']."\n\n".ConfigHelper::getConfig('userpanel.lms_url').'/?m=rtticketview&id='.$id;
 
 			$info = $DB->GetRow('SELECT id AS customerid, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-				address, zip, city FROM customers WHERE id = ?', array($SESSION->id));
+				address, zip, city FROM customeraddressview WHERE id = ?', array($SESSION->id));
 			$info['contacts'] = $DB->GetAll('SELECT contact, name FROM customercontacts
 					WHERE customerid = ?', array($SESSION->id));
 
@@ -392,7 +392,7 @@ function module_main()
 				cc.contact AS email, address, zip, city,
 				(SELECT contact AS phone FROM customercontacts
 					WHERE customerid = customers.id AND (customercontacts.type < ?) ORDER BY id LIMIT 1) AS phone
-				FROM customers c
+				FROM customeraddressview c
 				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type & ? > 0
 				WHERE c.id = ?', array(CONTACT_MOBILE, (CONTACT_EMAIL|CONTACT_INVOICES|CONTACT_NOTIFICATIONS), $SESSION->id));
 
