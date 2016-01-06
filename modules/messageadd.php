@@ -89,7 +89,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 				WHERE ((type & ' . (CONTACT_MOBILE | CONTACT_DISABLED) . ') = ' . CONTACT_MOBILE . ' )
 				GROUP BY customerid
 			) x ON (x.customerid = c.id) ';
-	else
+	elseif ($type == MSG_MAIL)
 		$mailtable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('contact') . ' AS email, customerid
 				FROM customercontacts
 				WHERE ((type & ' . (CONTACT_EMAIL | CONTACT_DISABLED) . ') = ' . CONTACT_EMAIL . ')
@@ -213,22 +213,11 @@ function BodyVars(&$body, $data)
 
 $layout['pagetitle'] = trans('Message Add');
 
-if(isset($_POST['message']))
-{
+if (isset($_POST['message'])) {
 	$message = $_POST['message'];
 
-	if ($message['type'] == MSG_MAIL)
-		$message['type'] == MSG_MAIL;
-	elseif ($message['type'] == MSG_SMS)
-		$message['type'] == MSG_SMS;
-	elseif ($message['type'] == MSG_ANYSMS)
-		$message['type'] == MSG_ANYSMS;
-	elseif ($message['type'] == MSG_WWW)
-		$message['type'] == MSG_WWW;
-	elseif ($message['type'] == MSG_USERPANEL)
-		$message['type'] == MSG_USERPANEL;
-	else
-		$message['type'] == MSG_USERPANEL_URGENT;
+	if (!in_array($message['type'], array(MSG_MAIL, MSG_SMS, MSG_ANYSMS, MSG_WWW, MSG_USERPANEL)))
+		$message['type'] = MSG_USERPANEL_URGENT;
 
 	if (empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 58
 		|| ($message['group'] > CSTATUS_LAST && $message['group'] < 50)))
