@@ -761,7 +761,8 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			$this->backend->setSignature($cert, $key, 'lms-invoices', '', 1, $info);
 			$this->backend->setSignatureAppearance(13, 10, 50, 20);
 		}
-		$this->backend->SetProtection(array('modify', 'copy', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', 'PASSWORD_CHANGEME', '1');
+		if (!isset($this->data['disable_protection']))
+			$this->backend->SetProtection(array('modify', 'copy', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', 'PASSWORD_CHANGEME', '1');
 	}
 
 	public function invoice_body_ft0100() {
@@ -805,7 +806,8 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			$this->backend->setSignature($cert, $key, 'lms-invoices', '', 1, $info);
 			$this->backend->setSignatureAppearance(13, 10, 50, 20);
 		}
-		$this->backend->SetProtection(array('modify', 'copy', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', 'PASSWORD_CHANGEME', '1');
+		if (!isset($this->data['disable_protection']))
+			$this->backend->SetProtection(array('modify', 'copy', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', 'PASSWORD_CHANGEME', '1');
 	}
 }
 
