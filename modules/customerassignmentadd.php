@@ -290,7 +290,7 @@ if(isset($_POST['assignment']))
 		$DB->CommitTrans();
 
 		$LMS->executeHook(
-			'customerassignmentedit_after_submit',
+			'customerassignmentadd_after_submit',
 			array(
 				'assignment' => $a,
 			)
