@@ -389,25 +389,36 @@ function module_main()
 
 		if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
 			$info = $DB->GetRow('SELECT c.id AS customerid, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,
-				cc.contact AS email, address, zip, city,
-				(SELECT contact AS phone FROM customercontacts
-					WHERE customerid = customers.id AND (customercontacts.type < ?) ORDER BY id LIMIT 1) AS phone
-				FROM customeraddressview c
-				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND cc.type & ? > 0
-				WHERE c.id = ?', array(CONTACT_MOBILE, (CONTACT_EMAIL|CONTACT_INVOICES|CONTACT_NOTIFICATIONS), $SESSION->id));
+				cc.contact AS email, address, zip, city FROM customeraddressview c WHERE c.id = ?', array($SESSION->id));
+				$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
+					WHERE customerid = ?', array($SESSION->id));
+
+			$emails = array();
+			$phones = array();
+			if (!empty($info['contacts']))
+				foreach ($info['contacts'] as $contact) {
+					$target = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+					if ($contact['type'] & CONTACT_EMAIL)
+						$emails[] = $target;
+					else
+						$phones[] = $target;
+				}
 
 			$body .= "\n\n-- \n";
 			$body .= trans('Customer:').' '.$info['customername']."\n";
 			$body .= trans('ID:').' '.sprintf('%04d', $info['customerid'])."\n";
 			$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
-			$body .= trans('Phone:').' '.$info['phone']."\n";
-			$body .= trans('E-mail:').' '.$info['email'];
+			if (!empty($phones))
+				$body .= trans('Phone:').' ' . implode(', ', $phones) . "\n";
+			if (!empty($emails))
+				$body .= trans('E-mail:') . ' ' . implode(', ', $emails);
 
 			$sms_body .= "\n";
 			$sms_body .= trans('Customer:').' '.$info['customername'];
 			$sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
 			$sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'].'. ';
-			$sms_body .= $info['phone'];
+			if (!empty($phones))
+				$sms_body .= '. ' . trans('Phone:') . ' ' . preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones));
 		}
 
 		//print_r($headers);die;

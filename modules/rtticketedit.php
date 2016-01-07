@@ -61,11 +61,11 @@ if ($id && !isset($_POST['ticket'])) {
 					$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
 							address, zip, city,
 								(SELECT ' . $DB->GroupConcat('contact', ',', true) . ' FROM customercontacts 
-								WHERE customerid = customers.id AND (type & ? = ?)) AS emails,
+								WHERE customerid = c.id AND (type & ?) > 0) AS emails,
 								(SELECT ' . $DB->GroupConcat('contact', ',', true) . ' FROM customercontacts 
-								WHERE customerid = customers.id AND (type & ? > 0)) AS phones
-							FROM customeraddressview
-							WHERE id = ?', array(CONTACT_EMAIL, CONTACT_EMAIL, (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE), $ticket['customerid']));
+								WHERE customerid = c.id AND (type & ?) > 0) AS phones
+							FROM customeraddressview c
+							WHERE id = ?', array(CONTACT_EMAIL, (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE), $ticket['customerid']));
 					$custmail_subject = $queue['resolveticketsubject'];
 					$custmail_subject = str_replace('%tid', $id, $custmail_subject);
 					$custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
