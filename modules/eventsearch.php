@@ -60,7 +60,8 @@ if(isset($_POST['event']))
 }
 
 $SMARTY->assign('userlist',$LMS->GetUserNames());
-$SMARTY->assign('customerlist',$LMS->GetCustomerNames());
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
+	$SMARTY->assign('customerlist',$LMS->GetCustomerNames());
 $SMARTY->display('event/eventsearch.html');
 
 ?>

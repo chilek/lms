@@ -150,7 +150,8 @@ $SMARTY->assign('month',$month);
 $SMARTY->assign('year',$year);
 $SMARTY->assign('date',$date);
 $SMARTY->assign('userlist',$LMS->GetUserNames());
-$SMARTY->assign('customerlist',$LMS->GetCustomerNames());
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
+	$SMARTY->assign('customerlist',$LMS->GetCustomerNames());
 $SMARTY->assign('getHolidays', getHolidays($year));
 $SMARTY->display('event/eventlist.html');
 
