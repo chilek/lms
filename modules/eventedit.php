@@ -139,7 +139,8 @@ if(empty($nodes_location)) {
 
 $SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
 $SMARTY->assign('nodes_location', $nodes_location);
-$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
+        $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('userlist', $userlist);
 $SMARTY->assign('userlistsize', sizeof($userlist));
 $SMARTY->assign('error', $error);

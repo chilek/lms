@@ -119,22 +119,27 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR>
-		<TD width="1%">
-			<IMG src="img/customer.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Customer:")}</B>
-		</TD>
-		<TD width="98%" nowrap>
-			<SELECT name="event[customerid]" {tip text="Select customer (optional)"} onChange="change_customer(this);">
-				<OPTION value="0"{if !$event.customerid} SELECTED{/if}>{trans("- select customer -")}</OPTION>
-				{foreach from=$customerlist item=customer}	
-				<OPTION value="{$customer.id}"{if $customer.id == $event.customerid} SELECTED{/if}>{$customer.customername}</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
+        <TR>
+                <TD width="1%">
+                        <IMG src="img/customer.gif" alt="">
+                </TD>
+                <TD width="1%">
+                        <B>{trans("Customer:")}</B>
+                </TD>
+                <TD width="98%" nowrap>
+                        {if $customerlist}
+                        <SELECT name="event[customerid]" value="{$event.customerid}" {tip text="Select customer (optional)"} onChange="change_customer(this);document.forms['event'].elements['event[custid]'].value=document.forms['event'].elements['event[customerid]'].value">
+                                <OPTION value="0"{if !$event.customerid} SELECTED{/if}>{trans("- select customer -")}</OPTION>
+                                {foreach from=$customerlist item=customer}      
+                                <OPTION value="{$customer.id}"{if $customer.id == $event.customerid} SELECTED{/if}>{$customer.customername|truncate:"40":"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+                                {/foreach}
+                        </SELECT>
+                        {trans("or Customer ID:")}
+                        {else}{trans("ID:")}{/if}
+                        <INPUT TYPE="TEXT" NAME="event[customerid]" VALUE="{if $event.customerid}{$event.customerid}{/if}" SIZE="5"{if $customerlist} onChange="change_customer(this);reset_customer()" onfocus="reset_customer()" {else} onblur="change_customer(this);" oninput="change_customer(this);" {/if} {tip text="Enter customer ID" trigger="customerid"}>
+                        <a href="javascript: void(0);" onClick="return customerchoosewin(document.forms['event'].elements['event[customerid]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+                </TD>
+        </TR>
 	<TR>
 	<TD width="1%">
 	    <IMG src="img/node.gif" alt="">
