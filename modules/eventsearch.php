@@ -43,7 +43,10 @@ if(isset($_POST['event']))
 		list($year, $month, $day) = explode('/', $event['dateto']);
 		$event['dateto'] = mktime(0,0,0, $month, $day, $year);
 	}
-	
+
+	if($event['custid'])
+		$event['customerid'] = $event['custid'];
+		
 	$eventlist = $LMS->EventSearch($event);
 	$daylist = array();
 

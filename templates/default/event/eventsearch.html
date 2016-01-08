@@ -97,17 +97,7 @@
 			<B>{trans("Customer:")}</B>
 		</TD>
 		<TD width="98%" nowrap>
-			{if $customerlist}
-			<SELECT name="event[customerid]">
-				<OPTION value="0" SELECTED>{trans("- select customer -")}</OPTION>
-				{foreach from=$customerlist item=customer}	
-				<OPTION value="{$customer.id}">{$customer.customername|truncate:"40":"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
-				{/foreach}
-			</SELECT>
-			{else}
-			<INPUT type="text" id="customerid" name="event[customerid]" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
-			<a href="javascript: void(0);" onclick="return customerchoosewin(document.event.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</a>
-			{/if}
+			{customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer(this);"}
 		</TD>
 	</TR>
 	<TR>
