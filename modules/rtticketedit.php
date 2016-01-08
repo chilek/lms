@@ -316,7 +316,8 @@ if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', fals
 }
 
 $queuelist = $LMS->GetQueueNames();
-if (ConfigHelper::getConfig('userpanel.limit_ticket_movements_to_selected_queues')) {
+if (strpos('helpdesk', ConfigHelper::getConfig('userpanel.enabled_modules')) === false
+	&& ConfigHelper::getConfig('userpanel.limit_ticket_movements_to_selected_queues')) {
 	$selectedqueues = explode(';', ConfigHelper::getConfig('userpanel.queues'));
 	if (in_array($ticket['queueid'], $selectedqueues))
 		foreach ($queuelist as $idx => $queue)
