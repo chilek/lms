@@ -18,6 +18,7 @@ version ?.??.?? (????-??-??):
   - bumped html2pdf library version to 4.5.0 [prezes_kk]
   - allow lms-payments.php script to set aligned periods for invoice items
     (added special symbol %aligned_period) [chilan]
+  - added type, private and opened filters in event list [chilan]
 
 version 1.11.19 (2015-12-21):
 
