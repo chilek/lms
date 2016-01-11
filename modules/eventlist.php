@@ -113,6 +113,19 @@ if (!empty($_POST)) {
 	else
 		$opened = 0;
 } else {
+	if (isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year'])) {
+		if (isset($_GET['day']))
+			$day = $_GET['day'];
+		elseif ($edate) {
+			if ($month != $_GET['month'] || $year != $_GET['year'])
+				$day = 1;
+		} else
+			$day = 1;
+
+		$month = $_GET['month'];
+		$year = $_GET['year'];
+	}
+
 	$SESSION->restore('elu', $u);
 	$SESSION->restore('ela', $a);
 	$SESSION->restore('elt', $type);
