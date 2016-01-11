@@ -102,13 +102,17 @@ if(isset($_POST['event']))
 
 	if (!$error) {
 		$event['private'] = isset($event['private']) ? 1 : 0;
+		if (isset($event['customerid']))
+			$event['custid'] = $event['customerid'];
+		if ($event['custid'] == '')
+			$event['custid'] = 0;
 		$event['nodeid'] = isset($event['customer_location']) ? NULL : $event['nodeid'];
 
 		$DB->BeginTrans();
 
 		$DB->Execute('UPDATE events SET title=?, description=?, date=?, begintime=?, enddate=?, endtime=?, private=?, note=?, customerid=?, type=?, nodeid=? WHERE id=?',
-				array($event['title'], $event['description'], $date, $event['begintime'], $enddate, $event['endtime'], $event['private'], $event['note'], $event['customerid'], $event['type'], $event['nodeid'], $event['id']));
-				
+				array($event['title'], $event['description'], $date, $event['begintime'], $enddate, $event['endtime'], $event['private'], $event['note'], $event['custid'], $event['type'], $event['nodeid'], $event['id']));
+
 		if (!empty($event['userlist']) && is_array($event['userlist'])) {
 			$DB->Execute('DELETE FROM eventassignments WHERE eventid = ?', array($event['id']));
 			foreach ($event['userlist'] as $userid)
