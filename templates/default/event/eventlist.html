@@ -26,15 +26,6 @@
 		<TD width="1%" NOWRAP></TD>
 	</TR>
 	<TR>
-		<TD colspan="6" align="center" NOWRAP>
-			<A href="?m=eventlist&day=1&month={if $month==1}12{else}{math equation="x-1" x=$month}{/if}&year={if $month==1}{math equation="x-1" x=$year}{else}{$year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A>
-			{section name=days loop=$days.day}
-				{if !$days.dow[days]}<FONT>{/if}<A href="?m=eventlist&day={$days.day[days]}&month={$month}&year={$year}">&nbsp;{if $days.sel[days]}<B>*{/if}{$days.day[days]|string_format:"%d"}{if $days.sel[days]}*</B>{/if} </A>{if !$days.dow[days]}</FONT>{/if}
-			{/section}
-			<A href="?m=eventlist&day=1&month={if $month==12}1{else}{math equation="x+1" x=$month}{/if}&year={if $month==12}{math equation="x+1" x=$year}{else}{$year}{/if}">&raquo;&raquo;&raquo;&nbsp;</A>
-		</TD>
-	</TR>
-	<TR>
 		<TD colspan="6" NOWRAP>
 			<FORM method="POST" action="?m=eventlist" name="filter">
 				<INPUT type="submit" class="hiddenbtn">
@@ -58,6 +49,12 @@
                                 <INPUT type="text" name="u" value="{$listdata.customerid}" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
                                 <a href="javascript: void(0);" onclick="return customerchoosewin(document.filter.u);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</a>
                                 {/if}
+				{trans("Day:")}
+				<SELECT name="day" onchange="document.filter.submit();">
+					{section name=days loop=$days.day}
+					<OPTION value="{$smarty.section.days.index}"{if $smarty.section.days.index==$day} selected{/if}>{$days.day[days]|string_format:"%d"}</OPTION>
+					{/section}
+				</SELECT>
 				{trans("Month:")}
 				<SELECT name="month" onchange="document.filter.submit();">{assign var=temp_date value="2000-m-01"}
 					{section name=month loop=13 start=1}
