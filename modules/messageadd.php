@@ -525,7 +525,8 @@ else if (!empty($_GET['customerid']))
 		$message['phones'] = array();
 	$message['customerphones'] = array();
 	foreach ($message['phones'] as $idx => $phone)
-		$message['customerphones'][$idx] = $phone['contact'];
+		if ($phone['type'] & CONTACT_MOBILE)
+			$message['customerphones'][$idx] = $phone['contact'];
 
 	$message['emails'] = $DB->GetAll('SELECT contact, name FROM customercontacts
 		WHERE customerid = ? AND (type & ?) = ?',
