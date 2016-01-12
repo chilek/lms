@@ -245,6 +245,14 @@ class SYSLOG {
 		$datefrom = (isset($params['datefrom']) && !empty($params['datefrom']) ? intval($params['datefrom']) : 0);
 		$dateto = (isset($params['dateto']) && !empty($params['dateto']) ? intval($params['dateto']) : 0);
 		$resource = (isset($params['resource']) && !empty($params['resource']) ? $params['resource'] : 0);
+
+		switch ($propname) {
+			case 'ipaddr':
+			case 'ipaddr_pub':
+				if (check_ip($propvalue))
+					$propvalue = ip_long($propvalue);
+				break;
+		}
 		$args = array();
 		$where = array();
 		$joins = array();
@@ -324,8 +332,11 @@ class SYSLOG {
 				else
 					$data['value'] = $data['value'];
 				break;
+			case 'ipaddr':
+				$data['value'] = long2ip($data['value']);
+				break;
 			case 'ipaddr_pub':
-				$data['value'] = $data['value'] == '0.0.0.0' ? trans('none') : $data['value'];
+				$data['value'] = empty($data['value']) ? trans('none') : long2ip($data['value']);
 				break;
 			case 'linktype':
 				$data['value'] = $LINKTYPES[$data['value']];
