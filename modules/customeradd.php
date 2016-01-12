@@ -79,7 +79,7 @@ if (isset($_POST['customeradd']))
 
 	if(sizeof($customeradd))
 		foreach($customeradd as $key => $value)
-			if($key != 'uid' && $key != 'contacts' && $key != 'emails')
+			if($key != 'uid' && $key != 'contacts' && $key != 'emails' && $key != 'accounts')
 				$customeradd[$key] = trim($value);
 
 	if($customeradd['name'] == '' && $customeradd['lastname'] == '' && $customeradd['address'] == '')
@@ -211,6 +211,22 @@ if (isset($_POST['customeradd']))
 			$contacts[] = array('name' => $name, 'contact' => $phone, 'type' => empty($type) ? CONTACT_LANDLINE : $type);
 	}
 
+	foreach ($customeradd['accounts'] as $idx => $val) {
+		$account = trim($val['account']);
+		$name = trim($val['name']);
+		$type = !empty($val['type']) ? array_sum($val['type']) : NULL;
+		$type += CONTACT_BANKACCOUNT;
+
+		$customeradd['accounts'][$idx]['type'] = $type;
+
+		if ($account != '' && !check_bankaccount($account))
+			$error['account' . $idx] = trans('Incorrect bank account!');
+		elseif ($name && !$account)
+			$error['account' . $idx] = trans('Bank account is required!');
+		elseif ($account)
+			$contacts[] = array('name' => $name, 'contact' => $account, 'type' => $type);
+	}
+
 	if ($customeradd['cutoffstop'] == '')
 		$cutoffstop = 0;
 	elseif (check_date($customeradd['cutoffstop'])) {
@@ -273,6 +289,8 @@ if (isset($_POST['customeradd']))
 
 		if ($id && !empty($contacts))
 			foreach ($contacts as $contact) {
+				if ($contact['type'] & CONTACT_BANKACCOUNT)
+					$contact['contact'] = preg_replace('/[^a-zA-Z0-9]/', '', $contact['contact']);
 				$DB->Execute('INSERT INTO customercontacts (customerid, contact, name, type)
 					VALUES(?, ?, ?, ?)', array($id, $contact['contact'], $contact['name'], $contact['type']));
 				if ($SYSLOG) {
@@ -301,11 +319,10 @@ if (isset($_POST['customeradd']))
 		$customeradd = $reuse;
 		$customeradd['reuse'] = '1';
 	}
-}
-else
-{
+} else {
 	$customeradd['contacts'][] = array();
 	$customeradd['emails'][] = array();
+	$customeradd['accounts'][] = array();
 }
 
 $default_zip = ConfigHelper::getConfig('phpui.default_zip');

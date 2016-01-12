@@ -20,6 +20,8 @@ version ?.??.?? (????-??-??):
     (added special symbol %aligned_period) [chilan]
   - added type, private and opened filters in event list [chilan]
   - localised bank account functions use common iban account functions [chilan]
+  - we can add many bank accounts to single customer (both source and destination
+    accounts) [chilan]
 
 version 1.11.19 (2015-12-21):
 

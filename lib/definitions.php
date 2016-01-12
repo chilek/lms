@@ -263,7 +263,8 @@ define('CONTACT_LANDLINE', 4);
 define('CONTACT_EMAIL', 8);
 define('CONTACT_INVOICES', 16);
 define('CONTACT_NOTIFICATIONS', 32);
-define('CONTACT_DISABLED', 64);
+define('CONTACT_BANKACCOUNT', 64);
+define('CONTACT_DISABLED', 16384);
 
 $CONTACTTYPES = array(
     CONTACT_MOBILE          =>	trans('mobile'),
