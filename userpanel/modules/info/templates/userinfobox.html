@@ -106,17 +106,22 @@
 			{if $userinfo.balance < 0}<font color="red"><b>{$userinfo.balance|money_format}</b></font>{else}{$userinfo.balance|money_format}{/if}
 		</td>
 	</tr>
-{$bankaccount = bankaccount($userinfo.id, $userinfo.account)}
-{if $bankaccount}
+{if $userinfo.bankaccount || $userinfo.accounts}
 	<tr>
 		<td width="1%">
 			{img src="cash.gif" alt=""}
 		</td>
-	    <td width="1%">
-			<b>{trans("Bank account:")}</b>
+		<td width="1%">
+			<b>{trans("Bank accounts:")}</b>
 		</td>
 		<td width="98%">
-			{format_bankaccount($bankaccount)}
+			{if $userinfo.bankaccount}
+			{format_bankaccount($userinfo.bankaccount)|replace:" ":"&nbsp;"}
+			{/if}
+			{if $userinfo.accounts}<BR />{/if}
+			{foreach $userinfo.accounts as $account}
+			{format_bankaccount($account.account)|replace:" ":"&nbsp;"}{if !$account@last}<BR />{/if}
+			{/foreach}
 		</td>
 	</tr>
 {/if}
