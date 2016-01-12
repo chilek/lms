@@ -76,6 +76,7 @@ version 1.11.19 (2015-12-21):
   - new bootstrap based userpanel style integrated - bclean [kyob]
   - customer info box: show customer all and not resolved ticket stats (as bold when there
     are some unresolved tickets) [chilan]
+  - added support for customer source and destination bank accounts in cash import parser [chilan]
 
 version 1.11.18 (2015-10-01):
 
