@@ -922,4 +922,43 @@ function getdir($pwd = './', $pattern = '^.*$') {
 	return $files;
 }
 
+function iban_account($country, $length, $id, $account = NULL) {
+	if ($account === NULL) {
+		$DB = LMSDB::getInstance();
+		$account = $DB->GetOne('SELECT account FROM divisions WHERE id IN (SELECT divisionid
+			FROM customers WHERE id = ?)', array($id));
+	}
+
+	if (!empty($account)) {
+		$acclen = strlen($account);
+
+		if ($acclen <= $length - 6) {
+			$format = '%0' . ($length - 2 - $acclen) . 'd';
+			$account .= sprintf($format, $id);
+			$checkaccount = $account . $country . '00';
+			$numericaccount = '';
+			for ($i = 0; $i < strlen($checkaccount); $i++) {
+				$ch = strtoupper($checkaccount[$i]);
+				$numericaccount .= ctype_alpha($ch) ? ord($ch) - 55 : $ch;
+			}
+			$account = sprintf('%02d', 98 - bcmod($numericaccount, 97)) . $account;
+		}
+	}
+
+	return $account;
+}
+
+function iban_check_account($country, $length, $account) {
+	$account = preg_replace('/[^a-zA-Z0-9]/', '', $account);
+	if (strlen($account) != $length)
+		return false;
+	$checkaccount = substr($account, 2, $length - 2) . $country. '00';
+	$numericaccount = '';
+	for ($i = 0; $i < strlen($checkaccount); $i++) {
+		$ch = strtoupper($checkaccount[$i]);
+		$numericaccount .= ctype_alpha($ch) ? ord($ch) - 55 : $ch;
+	}
+	return sprintf('%02d', 98 - bcmod($numericaccount, 97)) == substr($account, 0, 2);
+}
+
 ?>

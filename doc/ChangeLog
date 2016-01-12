@@ -19,6 +19,7 @@ version ?.??.?? (????-??-??):
   - allow lms-payments.php script to set aligned periods for invoice items
     (added special symbol %aligned_period) [chilan]
   - added type, private and opened filters in event list [chilan]
+  - localised bank account functions use common iban account functions [chilan]
 
 version 1.11.19 (2015-12-21):
 
