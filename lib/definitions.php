@@ -268,9 +268,9 @@ define('CONTACT_DISABLED', 64);
 $CONTACTTYPES = array(
     CONTACT_MOBILE          =>	trans('mobile'),
     CONTACT_FAX             =>	trans('fax'),
-    CONTACT_INVOICES        =>	trans('invoice'),
+    CONTACT_INVOICES        =>	trans('invoices'),
     CONTACT_DISABLED        =>	trans('disabled'),
-    CONTACT_NOTIFICATIONS   =>	trans('notification'),
+    CONTACT_NOTIFICATIONS   =>	trans('notifications'),
 );
 
 define('DISCOUNT_PERCENTAGE', 1);
