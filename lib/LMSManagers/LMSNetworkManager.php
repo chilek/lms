@@ -268,12 +268,12 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 				inet_ntoa(broadcast(address, inet_aton(mask))) AS broadcast,
 				pow(2,(32 - mask2prefix(inet_aton(mask)))) AS size, disabled,
 				(SELECT COUNT(*) 
-					FROM vnodes 
+					FROM nodes 
 					WHERE netid = n.id AND (ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
 						OR (ipaddr_pub >= address AND ipaddr_pub <= broadcast(address, inet_aton(mask)))
 				) AS assigned,
 				(SELECT COUNT(*) 
-					FROM vnodes 
+					FROM nodes 
 					WHERE netid = n.id AND ((ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
 						OR (ipaddr_pub >= address AND ipaddr_pub <= broadcast(address, inet_aton(mask))))
 						AND (?NOW? - lastonline < ?)
