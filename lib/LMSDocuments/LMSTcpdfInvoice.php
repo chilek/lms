@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -604,8 +604,12 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$seller = '<b>' . trans('Seller:') . '</b><br>';
 		$tmp = $this->data['division_header'];
 
-		$account = format_bankaccount(bankaccount($this->data['customerid'], $this->data['account']));
-		$tmp = str_replace('%bankaccount', $account, $tmp);
+		$accounts = array(bankaccount($this->data['customerid'], $this->data['account']));
+		if (ConfigHelper::checkConfig('invoices.show_all_accounts'))
+			$accounts = array_merge($accounts, $this->data['bankaccounts']);
+		foreach ($accounts as &$account)
+			$account = format_bankaccount($account);
+		$tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
 
 		$tmp = preg_split('/\r?\n/', $tmp);
 		foreach ($tmp as $line)
@@ -718,8 +722,12 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			//$this->backend->Write(0, trans('Notes:'), '', 0, 'L', true, 0, false, false, 0);
 			$tmp = $this->data['division_footer'];
 
-			$account = format_bankaccount(bankaccount($this->data['customerid'], $this->data['account']));
-			$tmp = str_replace('%bankaccount', $account, $tmp);
+			$accounts = array(bankaccount($this->data['customerid'], $this->data['account']));
+			if (ConfigHelper::checkConfig('invoices.show_all_accounts'))
+				$accounts = array_merge($accounts, $this->data['bankaccounts']);
+			foreach ($accounts as &$account)
+				$account = format_bankaccount($account);
+			$tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
 
 			$this->backend->SetFont('arial', '', 8);
 			$h = $this->backend->getStringHeight(0, $tmp);

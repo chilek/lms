@@ -22,6 +22,8 @@ version ?.??.?? (????-??-??):
   - localised bank account functions use common iban account functions [chilan]
   - we can add many bank accounts to single customer (both source and destination
     accounts) [chilan]
+  - invoices.show_all_accounts allows to display all customer bank accounts
+    on invoices [chilan]
 
 version 1.11.19 (2015-12-21):
 
