@@ -2,7 +2,6 @@
 {block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-{$xajax}
 <H1>{$layout.pagetitle}</H1>
 <SCRIPT type="text/javascript">
 <!--
@@ -22,10 +21,6 @@
 		if (document.forms['cashimport'].elements['custid[' + cid + ']'].value)
 			document.forms['cashimport'].elements['customer[' + cid + ']'].value = document.forms['cashimport'].elements['custid[' + cid + ']'].value;
 	}
-	function change_customer(elem)
-        {
-            xajax_select_customer(elem.value);
-        }
 //-->
 </SCRIPT>
 <P><FORM NAME="cashimport" ACTION="?m=cashimport" METHOD="post">
