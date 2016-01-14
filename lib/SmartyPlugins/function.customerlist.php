@@ -69,7 +69,8 @@ function smarty_function_customerlist($params, $template)
 				. '" onfocus="'
 				. (!empty($params['customOnChange']) ? $params['customOnChange'] : '')
 				. '" oninput="'
-				. (!empty($params['customOnChange']) ? $params['customOnChange'] : '');
+				. (!empty($params['customOnChange']) ? $params['customOnChange'] : '')
+				. '" ';
 		}
 	        $result .= smarty_function_tip(array('text'=>'Enter customer ID', 'trigger'=>'customerid'), $template)
 	                . '><a href="javascript: void(0);" onClick="return customerchoosewin(document.forms[\''.$params['form'].'\'].elements[\''.$params['inputname'].'\']);" '
