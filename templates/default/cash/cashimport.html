@@ -53,7 +53,7 @@
     </THEAD>
     <TBODY>
 	{foreach from=$divisions item=division}{if $division.list}
-	<TR>
+	<TR class="dark">
 		<TD colspan="4">
 		    <IMG src="img/division.gif" alt=""> <B>{$division.name}</B>
 		</TD>
@@ -85,16 +85,22 @@
 		    </TD>
 		    <TD ALIGN="RIGHT" COLSPAN="2" NOWRAP>
 			{if !$item.customerid}
-			<SELECT NAME="customer[{$item.id}]" {tip text="Select customer" trigger=$item.id} onChange="document.forms['cashimport'].elements['custid[{$item.id}]'].value=document.forms['cashimport'].elements['customer[{$item.id}]'].value">
-				<OPTION VALUE="0">{trans("- select customer -")}</OPTION>
-				{foreach from=$customerlist item=customer}
-				<OPTION VALUE="{$customer.id}" {if $customer.id == $item.customerid}SELECTED{/if}>{$customer.customername|truncate:60:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
-				{/foreach}
-			</SELECT>&nbsp;
-			<INPUT type="text" name="custid[{$item.id}]" value="{if $custid[{$item.id}]}{$custid[{$item.id}]}{/if}" size="5"{if $customerlist} onChange="reset_customer({$item.id})" onfocus="reset_customer({$item.id})"{/if} {tip text="Enter customer ID" trigger="custid"}>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.cashimport.elements['custid[{$item.id}]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+			    {if $customerlist}
+				<SELECT NAME="customer[{$item.id}]" {tip text="Select customer" trigger=$item.id} onChange="document.forms['cashimport'].elements['custid[{$item.id}]'].value=document.forms['cashimport'].elements['customer[{$item.id}]'].value">
+					<OPTION VALUE="0">{trans("- select customer -")}</OPTION>
+					{foreach from=$customerlist item=customer}
+					<OPTION VALUE="{$customer.id}" {if $customer.id == $item.customerid}SELECTED{/if}>{$customer.customername|truncate:60:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
+					{/foreach}
+				</SELECT>&nbsp;
+				<INPUT type="text" name="custid[{$item.id}]" value="{if $custid[{$item.id}]}{$custid[{$item.id}]}{/if}" size="5"{if $customerlist} onChange="reset_customer({$item.id})" onfocus="reset_customer({$item.id})"{/if} {tip text="Enter customer ID" trigger="custid"}>
+				<a href="javascript: void(0);" onClick="return customerchoosewin(document.cashimport.elements['custid[{$item.id}]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+			    {else}
+				<INPUT type="text" name="customer[{$item.id}]" value="{if $custid[{$item.id}]}{$custid[{$item.id}]}{/if}" size="5"{if $customerlist} onChange="reset_customer({$item.id})" onfocus="reset_customer({$item.id})"{/if} {tip text="Enter customer ID" trigger="custid"}>
+				<a href="javascript: void(0);" onClick="return customerchoosewin(document.cashimport.elements['customer[{$item.id}]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+			    {/if}
 			{else}
-			<INPUT TYPE="hidden" NAME="customer[{$item.id}]" VALUE="{$item.customerid}">
+			<INPUT type="text" name="customer[{$item.id}]" value="{$item.customerid}" size="5"{if $customerlist} onChange="reset_customer({$item.id})" onfocus="reset_customer({$item.id})"{/if} {tip text="Enter customer ID" trigger="custid"}>
+			<a href="javascript: void(0);" onClick="return customerchoosewin(document.cashimport.elements['customer[{$item.id}]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
 			{/if}
 			<INPUT TYPE="checkbox" NAME="marks[{$item.id}]" VALUE="{$item.id}">
 		</TD>
