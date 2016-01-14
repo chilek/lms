@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -370,10 +370,8 @@ if($action != '')
 	$SESSION->redirect('?m=invoiceedit');
 }
 
-if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
-{
-        $SMARTY->assign('customers', $LMS->GetCustomerNames());
-}
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2014 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -136,15 +136,13 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $userlist = $LMS->GetUserNames();
 
-
-if(empty($nodes_location)) {
-    $nodes_location = $DB->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY name ASC', array($event['customerid']));
-}
+if (empty($nodes_location))
+	$nodes_location = $DB->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY name ASC', array($event['customerid']));
 
 $SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
 $SMARTY->assign('nodes_location', $nodes_location);
-if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
-        $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+	$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('userlist', $userlist);
 $SMARTY->assign('userlistsize', sizeof($userlist));
 $SMARTY->assign('error', $error);
