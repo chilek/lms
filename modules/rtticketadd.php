@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -262,10 +262,8 @@ $layout['pagetitle'] = trans('New Ticket');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
-{
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
-}
 
 if(isset($ticket['customerid']) && $ticket['customerid'])
 {
