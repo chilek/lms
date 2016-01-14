@@ -41,7 +41,7 @@ elseif (isset($_POST['customerdata']))
 {
 	$customerdata = $_POST['customerdata'];
 	foreach($customerdata as $key=>$value)
-		if($key != 'uid' && $key != 'contacts' && $key != 'emails')
+		if($key != 'uid' && $key != 'contacts' && $key != 'emails' && $key != 'accounts')
 			$customerdata[$key] = trim($value);
 
 	if($customerdata['lastname'] == '')
@@ -167,6 +167,22 @@ elseif (isset($_POST['customerdata']))
 			$contacts[] = array('name' => $name, 'contact' => $phone, 'type' => empty($type) ? CONTACT_LANDLINE : $type);
 	}
 
+	foreach ($customerdata['accounts'] as $idx => $val) {
+		$account = trim($val['account']);
+		$name = trim($val['name']);
+		$type = !empty($val['type']) ? array_sum($val['type']) : NULL;
+		$type += CONTACT_BANKACCOUNT;
+
+		$customerdata['accounts'][$idx]['type'] = $type;
+
+		if ($account != '' && !check_bankaccount($account))
+			$error['account' . $idx] = trans('Incorrect bank account!');
+		elseif ($name && !$account)
+			$error['account' . $idx] = trans('Bank account is required!');
+		elseif ($account)
+			$contacts[] = array('name' => $name, 'contact' => $account, 'type' => $type);
+	}
+
 	if ($customerdata['cutoffstop'] == '')
 		$cutoffstop = 0;
 	elseif (check_date($customerdata['cutoffstop'])) {
@@ -258,6 +274,8 @@ elseif (isset($_POST['customerdata']))
 		$DB->Execute('DELETE FROM customercontacts WHERE customerid = ?', array($customerdata['id']));
 		if (!empty($contacts))
 			foreach ($contacts as $contact) {
+				if ($contact['type'] & CONTACT_BANKACCOUNT)
+					$contact['contact'] = preg_replace('/[^a-zA-Z0-9]/', '', $contact['contact']);
 				$DB->Execute('INSERT INTO customercontacts (customerid, contact, name, type) VALUES (?, ?, ?, ?)',
 					array($customerdata['id'], $contact['contact'], $contact['name'], $contact['type']));
 				if ($SYSLOG) {
@@ -297,9 +315,7 @@ elseif (isset($_POST['customerdata']))
 
 		$SMARTY->assign('error',$error);
 	}
-}
-else
-{
+} else {
 	$customerinfo = $LMS->GetCustomer($_GET['id']);
 
 	if ($customerinfo['cutoffstop'])
@@ -316,6 +332,12 @@ else
 
 	if (empty($customerinfo['emails']))
 		$customerinfo['emails'][] = array();
+
+	if (empty($customerinfo['accounts']))
+		$customerinfo['accounts'][] = array();
+	else
+		foreach ($customerinfo['accounts'] as &$account)
+			$account['account'] = format_bankaccount($account['account']);
 }
 
 $layout['pagetitle'] = trans('Customer Edit: $a',$customerinfo['customername']);

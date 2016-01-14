@@ -289,7 +289,7 @@ if(isset($_POST['message']))
 				if ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid'])))
 				{
 					$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-							address, zip, city FROM customers WHERE id = ?', array($cid));
+							address, zip, city FROM customeraddressview WHERE id = ?', array($cid));
 					$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
 						WHERE customerid = ?', array($cid));
 

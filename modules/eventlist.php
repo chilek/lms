@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,9 +24,10 @@
  *  $Id$
  */
 
-function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $userid=0)
-{
-	global $DB, $AUTH;
+function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $userid=0, $type = 0, $private = 0, $opened = 0) {
+	global $AUTH;
+
+	$DB = LMSDB::getInstance();
 
 	if(!$year) $year = date('Y',time());
 	if(!$month) $month = date('n',time());
@@ -50,6 +51,9 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 			SELECT 1 FROM eventassignments 
 			WHERE eventid = events.id AND userid = '.intval($userid).'
 			)' : '')
+		. ($type ? ' AND events.type = ' . intval($type) : '')
+		. ($private ? ' AND private = 1' : '')
+		. ($opened ? ' AND closed = 0' : ' AND closed = 1')
 		.' ORDER BY date, begintime',
 		 array($startdate, $enddate, $enddate, $startdate, $AUTH->id));
 
@@ -79,36 +83,63 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 	return $list2;
 }
 
-if(!isset($_GET['a']))
-	$SESSION->restore('ela', $a);
-else
-	$a = $_GET['a'];
-$SESSION->save('ela', $a);
+if ($edate = $SESSION->get('edate'))
+	list ($year, $month, $day) = explode('/', $SESSION->get('edate'));
 
-if(!isset($_GET['u']))
-	$SESSION->restore('elu', $u);
-else 
-	$u = $_GET['u'];
-$SESSION->save('elu', $u);
+if (!empty($_POST)) {
+	$a = $_POST['a'];
+	$u = $_POST['u'];
 
-if($edate = $SESSION->get('edate'))
-	list($year, $month, $day) = explode('/', $SESSION->get('edate'));
-
-if(isset($_GET['month']) && isset($_GET['year']))
-{
-	if(isset($_GET['day']))
-		$day = $_GET['day'];
-	elseif($edate)
-	{
-		if($month != $_GET['month'] || $year != $_GET['year'])
+	if (isset($_POST['day']))
+		$day = $_POST['day'];
+	elseif ($edate) {
+		if ($month != $_POST['month'] || $year != $_POST['year'])
 			$day = 1;
-	}
-	else
+	} else
 		$day = 1;
-		
-	$month = $_GET['month'];
-	$year = $_GET['year'];
+
+	$month = $_POST['month'];
+	$year = $_POST['year'];
+
+	$type = $_POST['type'];
+
+	if (isset($_POST['private']))
+		$private = 1;
+	else
+		$private = 0;
+
+	if (isset($_POST['opened']))
+		$opened = 1;
+	else
+		$opened = 0;
+} else {
+	if (isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year'])) {
+		if (isset($_GET['day']))
+			$day = $_GET['day'];
+		elseif ($edate) {
+			if ($month != $_GET['month'] || $year != $_GET['year'])
+				$day = 1;
+		} else
+			$day = 1;
+
+		$month = $_GET['month'];
+		$year = $_GET['year'];
+	}
+
+	$SESSION->restore('elu', $u);
+	$SESSION->restore('ela', $a);
+	$SESSION->restore('elt', $type);
+	$SESSION->restore('elp', $private);
+	$SESSION->restore('elo', $opened);
+	if (!strlen($opened))
+		$opened = 1;
 }
+
+$SESSION->save('elu', $u);
+$SESSION->save('ela', $a);
+$SESSION->save('elt', $type);
+$SESSION->save('elp', $private);
+$SESSION->save('elo', $opened);
 
 $day = (isset($day) ? $day : date('j',time()));
 $month = (isset($month) ? sprintf('%d',$month) : date('n',time()));
@@ -116,21 +147,22 @@ $year = (isset($year) ? $year : date('Y',time()));
 
 $layout['pagetitle'] = trans('Timetable');
 
-$eventlist = GetEventList($year, $month, $day, ConfigHelper::getConfig('phpui.timetable_days_forward'), $u, $a);
+$eventlist = GetEventList($year, $month, $day, ConfigHelper::getConfig('phpui.timetable_days_forward'), $u, $a, $type, $private, $opened);
 $SESSION->restore('elu', $listdata['customerid']);
 $SESSION->restore('ela', $listdata['userid']);
+$SESSION->restore('elt', $listdata['type']);
+$SESSION->restore('elp', $listdata['private']);
+$SESSION->restore('elo', $listdata['opened']);
 
 // create calendars
-for($i=0; $i<ConfigHelper::getConfig('phpui.timetable_days_forward'); $i++)
-{
+for ($i = 0; $i < ConfigHelper::getConfig('phpui.timetable_days_forward'); $i++) {
 	$dt = mktime(0, 0, 0, $month, $day+$i, $year);
 	$daylist[$i] = $dt;
 }
 
 $date = mktime(0, 0, 0, $month, $day, $year);
 $daysnum = date('t', $date);
-for($i=1; $i<$daysnum+1; $i++)
-{
+for ($i = 1; $i < $daysnum + 1; $i++) {
 	$date = mktime(0, 0, 0, $month, $i, $year);
 	$days['day'][] = date('j',$date);
 	$days['dow'][] = date('w',$date);
@@ -150,7 +182,7 @@ $SMARTY->assign('month',$month);
 $SMARTY->assign('year',$year);
 $SMARTY->assign('date',$date);
 $SMARTY->assign('userlist',$LMS->GetUserNames());
-if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customerlist',$LMS->GetCustomerNames());
 $SMARTY->assign('getHolidays', getHolidays($year));
 $SMARTY->display('event/eventlist.html');

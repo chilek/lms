@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,6 +28,7 @@
  * LMSCustomerManager
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
+ * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterface
 {
@@ -854,35 +855,30 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
             $result['messengers'] = $this->db->GetAllByKey('SELECT uid, type 
 					FROM imessengers WHERE customerid = ? ORDER BY type', 'type', array($result['id']));
-            $result['contacts'] = $this->db->GetAll('SELECT contact AS phone, name, type
+			$result['contacts'] = $this->db->GetAll('SELECT contact AS phone, name, type
 					FROM customercontacts
-					WHERE customerid = ? AND type & 7 > 0 ORDER BY id',
-					array($result['id']));
-            $result['emails'] = $this->db->GetAll('SELECT contact AS email, name, type
+					WHERE customerid = ? AND type & ? > 0 ORDER BY id',
+					array($result['id'], CONTACT_MOBILE | CONTACT_FAX | CONTACT_LANDLINE));
+			$result['emails'] = $this->db->GetAll('SELECT contact AS email, name, type
 					FROM customercontacts
-					WHERE customerid = ? AND type & ? = ? ORDER BY id',
-					array($result['id'], CONTACT_EMAIL, CONTACT_EMAIL));
+					WHERE customerid = ? AND type & ? > 0 ORDER BY id',
+					array($result['id'], CONTACT_EMAIL));
+			$result['accounts'] = $this->db->GetAll('SELECT contact AS account, name, type
+					FROM customercontacts
+					WHERE customerid = ? AND type & ? > 0 ORDER BY id',
+					array($result['id'], CONTACT_BANKACCOUNT));
 
-            if (is_array($result['contacts']))
-                foreach ($result['contacts'] as $idx => $row) {
-                    $types = array();
-                    foreach ($CONTACTTYPES as $tidx => $tname)
-                        if ($row['type'] & $tidx)
-                            $types[] = $tname;
+			foreach (array('contacts', 'emails', 'accounts') as $ctype)
+				if (is_array($result[$ctype]))
+					foreach ($result[$ctype] as $idx => $row) {
+						$types = array();
+						foreach ($CONTACTTYPES as $tidx => $tname)
+							if ($row['type'] & $tidx)
+								$types[] = $tname;
 
-                    if ($types)
-                        $result['contacts'][$idx]['typestr'] = implode('/', $types);
-                }
-            if (is_array($result['emails']))
-                foreach ($result['emails'] as $idx => $row) {
-                    $types = array();
-                    foreach ($CONTACTTYPES as $tidx => $tname)
-                        if ($row['type'] & $tidx)
-                            $types[] = $tname;
-
-                    if ($types)
-                        $result['emails'][$idx]['typestr'] = implode('/', $types);
-                }
+						if ($types)
+							$result[$ctype][$idx]['typestr'] = implode('/', $types);
+					}
 
             return $result;
         } else
@@ -1096,5 +1092,4 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         $this->db->CommitTrans();
     }
-
 }

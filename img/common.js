@@ -508,6 +508,13 @@ function changeMacFormat(id)
 
 function tinymce_init(ui_language) {
 	tinyMCE.init({
+		setup : function(ed) {
+			ed.onBeforeSetContent.add(function(ed, o) {
+				if (o.initial) {
+					o.content = o.content.replace(/\r?\n/g, '<br />');
+				}
+			});
+		},
 		mode: "none",
 		language: ui_language,
 		theme: "advanced",

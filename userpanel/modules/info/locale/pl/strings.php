@@ -77,5 +77,8 @@ $_LANG['Your documents'] = 'Twoje dokumenty';
 $_LANG['No such documents on your account.'] = 'Nie ma żadnych dokumentów na Twoim koncie.';
 $_LANG['not approved'] = 'niezatwierdzony';
 $_LANG['indefinitely'] = 'bezterminowo';
+$_LANG['Bank accounts:'] = 'Konta bankowe:';
+$_LANG['Phones:'] = 'Telefony:';
+$_LANG['Postal address:'] = 'Adres korespondencyjny:';
 
 ?>

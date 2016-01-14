@@ -18,6 +18,12 @@ version ?.??.?? (????-??-??):
   - bumped html2pdf library version to 4.5.0 [prezes_kk]
   - allow lms-payments.php script to set aligned periods for invoice items
     (added special symbol %aligned_period) [chilan]
+  - added type, private and opened filters in event list [chilan]
+  - localised bank account functions use common iban account functions [chilan]
+  - we can add many bank accounts to single customer (both source and destination
+    accounts) [chilan]
+  - invoices.show_all_accounts allows to display all customer bank accounts
+    on invoices [chilan]
 
 version 1.11.19 (2015-12-21):
 
@@ -72,6 +78,7 @@ version 1.11.19 (2015-12-21):
   - new bootstrap based userpanel style integrated - bclean [kyob]
   - customer info box: show customer all and not resolved ticket stats (as bold when there
     are some unresolved tickets) [chilan]
+  - added support for customer source and destination bank accounts in cash import parser [chilan]
 
 version 1.11.18 (2015-10-01):
 

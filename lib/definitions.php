@@ -42,6 +42,7 @@ define('CSTATUS_INTERESTED', 1);
 define('CSTATUS_WAITING', 2);
 define('CSTATUS_CONNECTED', 3);
 define('CSTATUS_DISCONNECTED', 4);
+define('CSTATUS_LAST', CSTATUS_DISCONNECTED);
 
 $CSTATUSES = array(
 	CSTATUS_CONNECTED => array(
@@ -262,14 +263,15 @@ define('CONTACT_LANDLINE', 4);
 define('CONTACT_EMAIL', 8);
 define('CONTACT_INVOICES', 16);
 define('CONTACT_NOTIFICATIONS', 32);
-define('CONTACT_DISABLED', 64);
+define('CONTACT_BANKACCOUNT', 64);
+define('CONTACT_DISABLED', 16384);
 
 $CONTACTTYPES = array(
     CONTACT_MOBILE          =>	trans('mobile'),
     CONTACT_FAX             =>	trans('fax'),
-    CONTACT_INVOICES        =>	trans('Invoice'),
+    CONTACT_INVOICES        =>	trans('invoices'),
     CONTACT_DISABLED        =>	trans('disabled'),
-    CONTACT_NOTIFICATIONS   =>	trans('Notification'),
+    CONTACT_NOTIFICATIONS   =>	trans('notifications'),
 );
 
 define('DISCOUNT_PERCENTAGE', 1);

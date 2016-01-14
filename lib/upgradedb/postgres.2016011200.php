@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2014 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -23,13 +23,10 @@
 
 $this->BeginTrans();
 
-if ($id = $this->GetOne("SELECT id FROM uiconfig WHERE section = ? AND var = ?", array('userpanel', 'default_queue')))
-	$this->Execute("UPDATE uiconfig SET var = ? WHERE id = ?", array('queues', $id));
-else
-	$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES (?, ?, ?)",
-		array('userpanel', 'queues', '1'));
+$this->Execute("UPDATE customercontacts SET type = ((type & ?) | ?) WHERE (type & ?) > 0",
+	array(~64, 16384, 64));
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2014013100', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016011200', 'dbversion'));
 
 $this->CommitTrans();
 

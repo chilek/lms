@@ -100,7 +100,7 @@ elseif(isset($_POST['note']))
 			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)) 
 				&& ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($note['ticketid'])))) {
 				$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-						address, zip, city FROM customers WHERE id = ?', array($cid));
+						address, zip, city FROM customeraddressview WHERE id = ?', array($cid));
 				$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
 					WHERE customerid = ?', array($cid));
 

@@ -89,7 +89,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 				WHERE ((type & ' . (CONTACT_MOBILE | CONTACT_DISABLED) . ') = ' . CONTACT_MOBILE . ' )
 				GROUP BY customerid
 			) x ON (x.customerid = c.id) ';
-	else
+	elseif ($type == MSG_MAIL)
 		$mailtable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('contact') . ' AS email, customerid
 				FROM customercontacts
 				WHERE ((type & ' . (CONTACT_EMAIL | CONTACT_DISABLED) . ') = ' . CONTACT_EMAIL . ')
@@ -147,6 +147,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 		. ($tarifftype ? $tarifftable : '')
 		.'WHERE deleted = ' . $deleted
 		. ($consent ? ' AND c.mailingnotice = 1' : '')
+		. ($type == MSG_WWW ? ' AND c.id IN (SELECT DISTINCT ownerid FROM nodes)' : '')
 		.($group!=0 ? ' AND status = '.$group : '')
 		.($network ? ' AND c.id IN (SELECT ownerid FROM vnodes WHERE 
 			(netid = ' . $net['id'] . ' AND ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ')
@@ -213,24 +214,14 @@ function BodyVars(&$body, $data)
 
 $layout['pagetitle'] = trans('Message Add');
 
-if(isset($_POST['message']))
-{
+if (isset($_POST['message'])) {
 	$message = $_POST['message'];
 
-	if ($message['type'] == MSG_MAIL)
-		$message['type'] == MSG_MAIL;
-	elseif ($message['type'] == MSG_SMS)
-		$message['type'] == MSG_SMS;
-	elseif ($message['type'] == MSG_ANYSMS)
-		$message['type'] == MSG_ANYSMS;
-	elseif ($message['type'] == MSG_WWW)
-		$message['type'] == MSG_WWW;
-	elseif ($message['type'] == MSG_USERPANEL)
-		$message['type'] == MSG_USERPANEL;
-	else
-		$message['type'] == MSG_USERPANEL_URGENT;
+	if (!in_array($message['type'], array(MSG_MAIL, MSG_SMS, MSG_ANYSMS, MSG_WWW, MSG_USERPANEL)))
+		$message['type'] = MSG_USERPANEL_URGENT;
 
-	if(empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 12))
+	if (empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 58
+		|| ($message['group'] > CSTATUS_LAST && $message['group'] < 50)))
 		$error['group'] = trans('Incorrect customers group!');
 
 	if ($message['type'] == MSG_MAIL) {
@@ -527,14 +518,15 @@ else if (!empty($_GET['customerid']))
 		FROM customerview
 		WHERE id = ?', array($_GET['customerid']));
 
-	$message['phones'] = $DB->GetAll('SELECT contact, name FROM customercontacts
+	$message['phones'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
 		WHERE customerid = ? AND (type & ?) = 0 AND (type & ?) > 0',
 		array($_GET['customerid'], CONTACT_DISABLED, CONTACT_MOBILE | CONTACT_FAX | CONTACT_LANDLINE));
 	if (is_null($message['phones']))
 		$message['phones'] = array();
 	$message['customerphones'] = array();
 	foreach ($message['phones'] as $idx => $phone)
-		$message['customerphones'][$idx] = $phone['contact'];
+		if ($phone['type'] & CONTACT_MOBILE)
+			$message['customerphones'][$idx] = $phone['contact'];
 
 	$message['emails'] = $DB->GetAll('SELECT contact, name FROM customercontacts
 		WHERE customerid = ? AND (type & ?) = ?',

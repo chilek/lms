@@ -723,6 +723,7 @@ $_LANG['Invalid month value: $a.\\nAllowed range is 01-12.'] = 'Błędny numer m
 $_LANG['Invalid month value: $a.\\nAllowed values are unsigned integers.'] = 'Błędny numer miesiąca: $a.\\nDozwolone są liczby całkowite bez znaku.';
 $_LANG['Invalid year value: $a.\\nAllowed values are unsigned integers.'] = 'Błędny rok: $a.\\nDozwolone są liczby całkowite bez znaku.';
 $_LANG['Invoice'] = 'Faktura';
+$_LANG['invoices'] = 'faktury';
 $_LANG['Invoice:'] = 'Faktura:';
 $_LANG['Invoice draw-up place.'] = 'Miejsce wystawienia.';
 $_LANG['Invoice Edit: $a'] = 'Edycja Faktury: $a';
@@ -3035,7 +3036,7 @@ $_LANG['Not visible by the customer in electronic Customer Service Representativ
 $_LANG['If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices'] = 'Jeśli klient chce otrzymywać fakturę elektroniczną musi zostać zaznaczony adres e-mail na który mają być wysyłane e-faktury';
 $_LANG['Cancellation of a traditional invoice (agreement on an electronic invoice):'] = 'Rezygnacja z faktury tradycyjnej (zgoda na fakturę elektroniczną):';
 $_LANG['Check if send notification'] = 'Zaznacz, jeżeli chcesz wysyłać powiadomienia';
-$_LANG['Notification'] = 'Powiadomienia';
+$_LANG['notifications'] = 'powiadomienia';
 
 $_LANG['Use customer location:'] = 'Użyj lokalizacji klienta:';
 $_LANG['Ticket\'s state has been changed from $a to $b.'] = 'Status zgłoszenia został zmieniony z $a na $b.';
@@ -3090,5 +3091,12 @@ $_LANG['You already used this password!'] = 'Takie hasło było już używane!';
 $_LANG['Credit Note for Invoice Edit: $a'] = 'Edycja faktury korygującej: $a';
 
 $_LANG['$a (clone)'] = '$a (klon)';
+
+$_LANG['Bank accounts'] = 'Rachunki bankowe';
+$_LANG['Enter bank account (optional)'] = 'Wprowadź rachunek bankowy (opcjonalnie)';
+$_LANG['Check if bank account should be visible on invoice'] = 'Zaznacz, jeśli rachunek bankowy powinien być widoczny na fakturze';
+$_LANG['Check if bank account should be disabled'] = 'Zaznacz, jeśli rachunek bankowy ma być wyłączony';
+$_LANG['Incorrect bank account!'] = 'Niepoprawny numer rachunku bankowego!';
+$_LANG['Bank account is required!'] = 'Rachunek bankowy jest wymagany!';
 
 ?>

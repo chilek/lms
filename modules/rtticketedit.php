@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -61,11 +61,11 @@ if ($id && !isset($_POST['ticket'])) {
 					$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
 							address, zip, city,
 								(SELECT ' . $DB->GroupConcat('contact', ',', true) . ' FROM customercontacts 
-								WHERE customerid = customers.id AND (type & ? = ?)) AS emails,
+								WHERE customerid = c.id AND (type & ?) > 0) AS emails,
 								(SELECT ' . $DB->GroupConcat('contact', ',', true) . ' FROM customercontacts 
-								WHERE customerid = customers.id AND (type & ? > 0)) AS phones
-							FROM customers
-							WHERE id = ?', array(CONTACT_EMAIL, CONTACT_EMAIL, (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE), $ticket['customerid']));
+								WHERE customerid = c.id AND (type & ?) > 0) AS phones
+							FROM customeraddressview c
+							WHERE id = ?', array(CONTACT_EMAIL, (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE), $ticket['customerid']));
 					$custmail_subject = $queue['resolveticketsubject'];
 					$custmail_subject = str_replace('%tid', $id, $custmail_subject);
 					$custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
@@ -310,13 +310,12 @@ $layout['pagetitle'] = trans('Ticket Edit: $a',sprintf("%06d",$ticket['ticketid'
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
-{
-        $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
-}
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+	$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 
 $queuelist = $LMS->GetQueueNames();
-if (ConfigHelper::getConfig('userpanel.limit_ticket_movements_to_selected_queues')) {
+if (strpos('helpdesk', ConfigHelper::getConfig('userpanel.enabled_modules')) !== false
+	&& ConfigHelper::getConfig('userpanel.limit_ticket_movements_to_selected_queues')) {
 	$selectedqueues = explode(';', ConfigHelper::getConfig('userpanel.queues'));
 	if (in_array($ticket['queueid'], $selectedqueues))
 		foreach ($queuelist as $idx => $queue)

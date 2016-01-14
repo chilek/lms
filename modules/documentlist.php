@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -191,10 +191,8 @@ if($listdata['total'])
 			FROM docrights WHERE userid = ? AND rights > 1', 'doctype', array($AUTH->id)));
 }
 
-if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
-{
-    $SMARTY->assign('customers', $LMS->GetCustomerNames());
-}
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 
 $SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(DOC_CONTRACT, DOC_ANNEX, DOC_PROTOCOL, DOC_ORDER, DOC_SHEET, -6, -7, -8, -9, -99, DOC_OTHER)));
 $SMARTY->assign('documentlist', $documentlist);

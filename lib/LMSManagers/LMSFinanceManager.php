@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,6 +28,7 @@
  * LMSFinanceManager
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
+ * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 {
@@ -706,6 +707,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				WHERE d.id = ? AND (d.type = ? OR d.type = ?)', array($invoiceid, DOC_INVOICE, DOC_CNOTE))) {
+
+			$result['bankaccounts'] = $this->db->GetCol('SELECT contact FROM customercontacts
+				WHERE customerid = ? AND (type & ?) = ?',
+				array($result['customerid'], CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+					CONTACT_BANKACCOUNT | CONTACT_INVOICES));
+			if (empty($result['bankaccounts']))
+				$result['bankaccounts'] = array();
+
             $result['pdiscount'] = 0;
             $result['vdiscount'] = 0;
             $result['totalbase'] = 0;
@@ -831,6 +840,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				WHERE d.id = ? AND d.type = ?', array($id, DOC_DNOTE))) {
+
+			$result['bankaccounts'] = $this->db->GetCol('SELECT contact FROM customercontacts
+				WHERE customerid = ? AND (type & ?) = ?',
+				array($result['customerid'], CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+					CONTACT_BANKACCOUNT | CONTACT_INVOICES));
+			if (empty($result['bankaccounts']))
+				$result['bankaccounts'] = array();
+
             $result['value'] = 0;
 
             if (!$result['division_header']) {

@@ -39,16 +39,22 @@ class ULMS extends LMS {
 
 	public function GetCustomer($id, $short = false) {
 		if($result = $this->DB->GetRow('SELECT c.*, '.$this->DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername
-			FROM customers c WHERE c.id = ?', array($id))) {
-			$result['balance'] = $this->GetCustomerBalance($result['id']); 
-			$result['bankaccount'] = bankaccount($result['id']); 
+			FROM customeraddressview c WHERE c.id = ?', array($id))) {
+			$result['balance'] = $this->GetCustomerBalance($result['id']);
+			$result['bankaccount'] = bankaccount($result['id']);
 			$result['messengers'] = $this->DB->GetAllByKey('SELECT uid, type FROM imessengers WHERE customerid = ? ORDER BY type', 'type', array($id));
+
 			$result['contacts'] = $this->DB->GetAllByKey('SELECT id, contact AS phone, name
-				FROM customercontacts WHERE customerid = ? AND type < ? ORDER BY id', 'id', 
-                                    array($id, CONTACT_MOBILE));
+				FROM customercontacts WHERE customerid = ? AND (type & ?) > 0 AND (type & ?) = 0
+				ORDER BY id', 'id',
+				array($id, CONTACT_MOBILE | CONTACT_FAX | CONTACT_LANDLINE, CONTACT_DISABLED));
 			$result['emails'] = $this->DB->GetAllByKey('SELECT id, contact AS email, name
-				FROM customercontacts WHERE customerid = ? AND (type & ? > 0) ORDER BY id', 'id', 
-                                    array($id, (CONTACT_EMAIL|CONTACT_INVOICES|CONTACT_NOTIFICATIONS)));
+				FROM customercontacts WHERE customerid = ? AND (type & ?) > 0 AND (type & ?) = 0
+				ORDER BY id', 'id',
+				array($id, CONTACT_EMAIL | CONTACT_DISABLED, CONTACT_DISABLED));
+			$result['accounts'] = $this->DB->GetAllByKey('SELECT id, contact AS account, name
+				FROM customercontacts WHERE customerid = ? AND (type & ?) = ? ORDER BY id', 'id',
+				array($id, CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_BANKACCOUNT | CONTACT_INVOICES));
 
 			return $result;
 		} else

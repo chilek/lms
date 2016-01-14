@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -71,18 +71,18 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 		$comment = isset($matches[$pattern['pcomment']]) ? trim($matches[$pattern['pcomment']]) : '';
 		$time = isset($matches[$pattern['pdate']]) ? trim($matches[$pattern['pdate']]) : '';
 		$value = str_replace(',','.', isset($matches[$pattern['pvalue']]) ? trim($matches[$pattern['pvalue']]) : '');
+		$srcaccount = isset($matches[$pattern['srcaccount']]) ? trim($matches[$pattern['srcaccount']]) : '';
+		$dstaccount = isset($matches[$pattern['dstaccount']]) ? trim($matches[$pattern['dstaccount']]) : '';
 
-		if(!$pattern['pid'])
-		{
-			if(!empty($pattern['pid_regexp'])) 
+		if (!$pattern['pid']) {
+			if (!empty($pattern['pid_regexp']))
 				$regexp = $pattern['pid_regexp'];
 			else
 				$regexp = '/.*ID[:\-\/]([0-9]{0,4}).*/i';
 
-			if(preg_match($regexp, $theline, $matches))
+			if (preg_match($regexp, $theline, $matches))
 				$id = $matches[1];
-		}
-		else
+		} else
 			$id = isset($matches[$pattern['pid']]) ? intval($matches[$pattern['pid']]) : NULL;
 
 		// seek invoice number
@@ -105,22 +105,30 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 			}
 		}
 
-		if(!$id && $name && $lastname)
-		{
-			$uids = $DB->GetCol('SELECT id FROM customers WHERE UPPER(lastname)=UPPER(?) and UPPER(name)=UPPER(?)', array($lastname, $name));
-			if(sizeof($uids)==1)
+		// seek by explicitly given source or destination customer account numbers
+		if (!$id)
+			if (!empty($dstaccount))
+				$id = $DB->GetOne('SELECT customerid FROM customercontacts
+					WHERE contact = ? AND (type & ?) = ?',
+					array($dstaccount, CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+						CONTACT_BANKACCOUNT | CONTACT_INVOICES));
+			elseif (!empty($srcaccount))
+				$id = $DB->GetOne('SELECT customerid FROM customercontacts
+					WHERE contact = ? AND (type & ?) = ?',
+					array($srcaccount, CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+						CONTACT_BANKACCOUNT));
+
+		if (!$id && $name && $lastname) {
+			$uids = $DB->GetCol('SELECT id FROM customers WHERE UPPER(lastname)=UPPER(?) and UPPER(name)=UPPER(?)',
+				array($lastname, $name));
+			if (count($uids) == 1)
 				$id = $uids[0];
-		}
-		elseif($id && (!$name || !$lastname))
-		{
-			if($tmp = $DB->GetRow('SELECT lastname, name FROM customers WHERE id = ?', array($id)))
-			{
+		} elseif ($id && (!$name || !$lastname))
+			if ($tmp = $DB->GetRow('SELECT lastname, name FROM customers WHERE id = ?', array($id))) {
 				$lastname = $tmp['lastname'];
 				$name = $tmp['name'];
-			}
-			else
-				$id = NULL;
-		}
+			} else
+				$id = null;
 
 		if($time)
 		{

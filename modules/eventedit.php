@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2014 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -102,13 +102,17 @@ if(isset($_POST['event']))
 
 	if (!$error) {
 		$event['private'] = isset($event['private']) ? 1 : 0;
+		if (isset($event['customerid']))
+			$event['custid'] = $event['customerid'];
+		if ($event['custid'] == '')
+			$event['custid'] = 0;
 		$event['nodeid'] = isset($event['customer_location']) ? NULL : $event['nodeid'];
 
 		$DB->BeginTrans();
 
 		$DB->Execute('UPDATE events SET title=?, description=?, date=?, begintime=?, enddate=?, endtime=?, private=?, note=?, customerid=?, type=?, nodeid=? WHERE id=?',
-				array($event['title'], $event['description'], $date, $event['begintime'], $enddate, $event['endtime'], $event['private'], $event['note'], $event['customerid'], $event['type'], $event['nodeid'], $event['id']));
-				
+				array($event['title'], $event['description'], $date, $event['begintime'], $enddate, $event['endtime'], $event['private'], $event['note'], $event['custid'], $event['type'], $event['nodeid'], $event['id']));
+
 		if (!empty($event['userlist']) && is_array($event['userlist'])) {
 			$DB->Execute('DELETE FROM eventassignments WHERE eventid = ?', array($event['id']));
 			foreach ($event['userlist'] as $userid)
@@ -132,15 +136,13 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $userlist = $LMS->GetUserNames();
 
-
-if(empty($nodes_location)) {
-    $nodes_location = $DB->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY name ASC', array($event['customerid']));
-}
+if (empty($nodes_location))
+	$nodes_location = $DB->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY name ASC', array($event['customerid']));
 
 $SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
 $SMARTY->assign('nodes_location', $nodes_location);
-if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
-        $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+	$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('userlist', $userlist);
 $SMARTY->assign('userlistsize', sizeof($userlist));
 $SMARTY->assign('error', $error);
