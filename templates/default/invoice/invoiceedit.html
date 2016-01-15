@@ -161,10 +161,10 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Customer:")}</B>
+		<TD style="width: 1%;" class="bold nobr">
+			{trans("Customer:")}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<TD style="width: 99%;" class="nobr">
 			{if $customers}
 			<SELECT SIZE="1" NAME="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
 				<OPTION VALUE="0">{trans("... select customer ...")}</OPTION>

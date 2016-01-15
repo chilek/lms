@@ -24,6 +24,7 @@ version ?.??.?? (????-??-??):
     accounts) [chilan]
   - invoices.show_all_accounts allows to display all customer bank accounts
     on invoices [chilan]
+  - allow to select customer for all imported transactions [wawryk/chilan]
 
 version 1.11.19 (2015-12-21):
 

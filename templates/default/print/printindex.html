@@ -409,16 +409,7 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 						{trans("Customer:")}
 					</TD>
 					<TD style="width: 1%;" class="nobr">
-						{if $customers}
-						<SELECT size="1" name="customer" {tip text="Select customer"}>
-							{foreach from=$customers item=customer}
-							<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
-							{/foreach}
-						</SELECT>
-						{else}
-						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID"}>
-						<a href="javascript: void(0);" onClick="return customerchoosewin(document.printcustomerbalance.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-						{/if}
+						{customerlist form="printcustomerbalance" customers=$customers selectname="cust" inputname="customer" firstoption=""}
 					</TD>
 					<TD style="width: 1%;">
 						<IMG src="img/calendar.gif" alt="">
@@ -710,25 +701,15 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 					<TD style="width: 1%;">
 					    <TABLE width="100%">
 						<TR>
-						    <TD style="width: 1%;">
-							<IMG src="img/customer.gif" alt="">
-						    </TD>
-						    <TD style="width: 1%;" nowrap>
-							<B>{trans("Customer:")}</B>
-						    </TD>
-						    <TD style="width: 98%;" nowrap>
-							{if $customers}
-							<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
-							    <OPTION value="0">{trans("- all customers -")}</OPTION>
-							    {foreach from=$customers item=customer}
-							    <OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
-							    {/foreach}
-							</SELECT>
-							{else}
-							<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
-							<a href="javascript: void(0);" onClick="return customerchoosewin(document.printinvoices.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-							{/if}
-						    </TD>
+							<TD style="width: 1%;">
+								<IMG src="img/customer.gif" alt="">
+							</TD>
+							<TD style="width: 1%;" class="bold nobr">
+								{trans("Customer:")}
+							</TD>
+							<TD style="width: 98%;" class="nobr">
+								{customerlist form="printinvoices" customers=$customers selectname="cust" inputname="customer" firstoption="- all customers -" selecttip="You can select customer to limit results" inputtip="Enter customer ID or leave empty for all customers"}
+							</TD>
 						</TR>
 						<TR>
 						    <TD style="width: 1%;">
@@ -834,25 +815,15 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 					<TD style="width: 1%;">
 					    <TABLE width="100%">
 						<TR>
-						    <TD style="width: 1%;">
-							<IMG src="img/customer.gif" alt="">
-						    </TD>
-						    <TD style="width: 1%;" nowrap>
-							<B>{trans("Customer:")}</B>
-						    </TD>
-						    <TD style="width: 98%;" nowrap>
-							{if $customers}
-							<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
-							    <OPTION value="0">{trans("- all customers -")}</OPTION>
-							    {foreach from=$customers item=customer}
-							    <OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
-							    {/foreach}
-							</SELECT>
-							{else}
-							<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
-							<a href="javascript: void(0);" onClick="return customerchoosewin(document.printforms.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-							{/if}
-						    </TD>
+							<TD style="width: 1%;">
+								<IMG src="img/customer.gif" alt="">
+							</TD>
+							<TD style="width: 1%;" class="bold nobr">
+								{trans("Customer:")}
+							</TD>
+							<TD style="width: 98%;" nowrap>
+								{customerlist form="printforms" customers=$customers selectname="cust" inputname="customer" firstoption="- all customers -" selecttip="You can select customer to limit results" inputtip="Enter customer ID or leave empty for all customers"}
+							</TD>
 						</TR>
 						<TR>
 						    <TD style="width: 1%;">
@@ -965,17 +936,7 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 						{trans("Customer:")}
 					</TD>
 					<TD style="width: 1%;" class="nobr">
-						{if $customers}
-						<SELECT size="1" name="customer" {tip text="Select customer"}>
-							<OPTION value="0" selected>{trans("- all customers -")}</OPTION>
-							{foreach from=$customers item=customer}
-							<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
-							{/foreach}
-						</SELECT>
-						{else}
-						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
-						<a href="javascript: void(0);" onClick="return customerchoosewin(document.liabilityreport.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-						{/if}
+						{customerlist form="liabilityreport" customers=$customers selectname="cust" inputname="customer" firstoption="- all customers -" inputtip="Enter customer ID or leave empty for all customers"}
 					</TD>
 					<TD style="width: 1%;">
 						<IMG src="img/calendar.gif" alt="">
@@ -1214,16 +1175,7 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 						{trans("Customer:")}
 					</TD>
 					<TD style="width: 1%;" class="nobr">
-						{if $customers}
-						<SELECT size="1" name="customer" {tip text="Select customer"}>
-							{foreach from=$customers item=customer}
-							<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
-							{/foreach}
-						</SELECT>
-						{else}
-						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID"}>
-						<a href="javascript: void(0);" onClick="return customerchoosewin(document.printcustomertraffic.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-						{/if}
+						{customerlist form="printcustomertraffic" customers=$customers selectname="cust" inputname="customer" firstoption=""}
 					</TD>
 					<TD style="width: 1%;">
 						<IMG src="img/calendar.gif" alt="">

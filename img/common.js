@@ -552,5 +552,10 @@ function init_links() {
 	}
 }
 
+function reset_customer(form, elemname1, elemname2) {
+	if (document.forms[form].elements[elemname1].value)
+		document.forms[form].elements[elemname2].value = document.forms[form].elements[elemname1].value;
+}
+
 if (window.addEventListener) window.addEventListener("load", init_links, false);
 else if (window.attachEvent) window.attachEvent("onload", init_links);

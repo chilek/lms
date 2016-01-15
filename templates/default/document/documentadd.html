@@ -94,13 +94,13 @@
     </THEAD>
     <TBODY>
 	<TR>
-		<TD width="1%">
-	        	<IMG src="img/customer.gif" ALT="">
+		<TD style="width: 1%;">
+			<IMG src="img/customer.gif" ALT="">
 		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Customer:")}</B>
+		<TD style="width: 1%;" class="bold nobr">
+			{trans("Customer:")}
 		</TD>
-		<TD WIDTH="98%" nowrap>
+		<TD style="width: 98%;" class="nobr">
 			{if $customers}
 			<SELECT SIZE="1" NAME="customer" onChange="document.documentadd.customerid.value=document.documentadd.customer.value" {tip trigger="customer"}>
 				<OPTION VALUE="0">{trans("... select customer ...")}</OPTION>
