@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -159,9 +159,9 @@ elseif(isset($_GET['action']) && $_GET['action'] == 'txt')
 	}
 
 	if (!empty($imports)) {
-            
-		$idate = ConfigHelper::checkValue(ConfigHelper::getConfig('finances.cashimport_use_idate', false));
-		$icheck = ConfigHelper::checkValue(ConfigHelper::getConfig('finances.cashimport_checkinvoices', false));
+
+		$idate = ConfigHelper::checkConfig('finances.cashimport_use_idate');
+		$icheck = ConfigHelper::checkConfig('finances.cashimport_checkinvoices');
 
 		foreach ($imports as $import) {
 			// do not insert if the record is already closed (prevent multiple inserts of the same record)

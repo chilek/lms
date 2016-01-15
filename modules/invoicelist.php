@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -195,11 +195,10 @@ $c="month";
 }
 $SESSION->save('ilc', $c);
 
-if (isset($_POST['search'])) {
-	$h = isset($_POST['hideclosed']) ? true : false;
-} elseif (($h = $SESSION->get('ilh')) === NULL) {
-	$h = ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.hide_closed', false));
-}
+if (isset($_POST['search']))
+	$h = isset($_POST['hideclosed']);
+elseif (($h = $SESSION->get('ilh')) === NULL)
+	$h = ConfigHelper::checkConfig('invoices.hide_closed');
 $SESSION->save('ilh', $h);
 
 if(isset($_POST['group'])) {

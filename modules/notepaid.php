@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -45,7 +45,7 @@ if(sizeof($ids))
 			FROM documents d
 			WHERE id = ?', array($noteid)));
 		// add payment
-		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.note_check_payment', false)) && !$closed) {
+		if (ConfigHelper::checkConfig('phpui.note_check_payment') && !$closed) {
 			if ($value != 0)
 				$LMS->AddBalance(array(
 					'type' => 1,
