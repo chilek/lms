@@ -3093,6 +3093,7 @@ $_LANG['Credit Note for Invoice Edit: $a'] = 'Edycja faktury korygującej: $a';
 
 $_LANG['$a (clone)'] = '$a (klon)';
 
+$_LANG['Alternative bank accounts'] = 'Alternatywne rachunki bankowe';
 $_LANG['Bank accounts'] = 'Rachunki bankowe';
 $_LANG['Enter bank account (optional)'] = 'Wprowadź rachunek bankowy (opcjonalnie)';
 $_LANG['Check if bank account should be visible on invoice'] = 'Zaznacz, jeśli rachunek bankowy powinien być widoczny na fakturze';
