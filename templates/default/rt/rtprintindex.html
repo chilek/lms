@@ -52,24 +52,14 @@
 							{/section}
 						</SELECT>
 					</TD>
-					<TD width="1%">
+					<TD style="width: 1%;">
 						<IMG src="img/customer.gif" alt="">
 					</TD>
-					<TD width="1%" nowrap>
-						<B>{trans("Customer:")}</B>
+					<TD style="width: 1%;" class="bold nobr">
+						{trans("Customer:")}
 					</TD>
-					<TD width="1%" colspan="2" nowrap>
-						{if $customers}
-						<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
-							<OPTION value="0">{trans("- all customers -")}</OPTION>
-							{foreach from=$customers item=c}
-							<OPTION value="{$c.id}">{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
-							{/foreach}
-						</SELECT>
-						{else}
-						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
-						<a href="javascript: void(0);" onclick="return customerchoosewin(document.ticketslist.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-						{/if}
+					<TD style="width: 1%;" class="nobr" colspan="2">
+						{customerlist form="ticketslist" customers=$customers selectname="cust" inputname="customer" firstoption="- all customers -" selecttip="You can select customer to limit results" inputtip="Enter customer ID or leave empty for all customers"}
 					</TD>
 					<TD width="1%" nowrap>
 						<IMG src="img/ticket.gif" alt="">

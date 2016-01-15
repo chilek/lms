@@ -40,12 +40,6 @@
 		document.setcustomer.submit();
 	}
 
-	function reset_customer()
-	{
-		if (document.setcustomer.customerid.value)
-			document.setcustomer.customer.value = document.setcustomer.customerid.value;
-	}
-
 	function setType(type)
 	{
 		document.additem.elements[type].checked = !document.additem.elements[type].checked;
@@ -165,17 +159,11 @@
 			{trans("Customer:")}
 		</TD>
 		<TD style="width: 99%;" class="nobr">
-			{if $customers}
-			<SELECT SIZE="1" NAME="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
-				<OPTION VALUE="0">{trans("... select customer ...")}</OPTION>
-				{foreach from=$customers item=c}
-				<OPTION VALUE="{$c.id}"{if $c.id == $customer.id || $invoice.customerid == $c.id} SELECTED{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</OPTION>
-				{/foreach}
-			</SELECT>
-			{trans("or Customer ID:")}
+			{if isset($customer.id)}
+			{customerlist form="setcustomer" customers=$customers selected=$customer.id selectname="customer" inputname="customerid"}
+			{else}
+			{customerlist form="setcustomer" customers=$customers selected=$invoice.customerid selectname="customer" inputname="customerid"}
 			{/if}
-			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$invoice.customerid}{/if}" SIZE="5"{if $customers} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID"}>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR>

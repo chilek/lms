@@ -133,24 +133,14 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%">
+		<TD style="width: 1%;">
 			<IMG src="img/customer.gif" alt="">
 		</TD>
-		<TD nowrap>
-			<B>{trans("Customer:")}</B>
+		<TD class="bold nobr">
+			{trans("Customer:")}
 		</TD>
 		<TD>
-			{if $customers}
-			<SELECT size="1" name="customerid" {tip text="Select customer"}>
-				<OPTION VALUE="0">{trans("- all customers -")}</OPTION>
-				{foreach from=$customers item=customer}
-				<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
-				{/foreach}
-			</SELECT>
-			{else}
-			<INPUT type="text" name="customerid" value="" size="5" {tip text="Enter customer ID"}>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.traffic.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-			{/if}
+			{customerlist form="traffic" customers=$customers selectname="custid" inputname="customerid" firstoption="- all customers -"}
 		</TD>
 	</TR>
 	<TR {tip text="Select results sorting order"}>
