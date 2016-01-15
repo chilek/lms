@@ -16,11 +16,6 @@
 		document.cashimport.action += '&action=save';
 		document.cashimport.submit();
 	}
-
-	function reset_customer(cid) {
-		if (document.forms['cashimport'].elements['custid[' + cid + ']'].value)
-			document.forms['cashimport'].elements['customer[' + cid + ']'].value = document.forms['cashimport'].elements['custid[' + cid + ']'].value;
-	}
 //-->
 </SCRIPT>
 <P><FORM NAME="cashimport" ACTION="?m=cashimport" METHOD="post">
