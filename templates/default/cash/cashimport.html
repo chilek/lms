@@ -79,7 +79,7 @@
 				{$item.description}
 			</TD>
 			<TD class="text-right nobr" colspan="2">
-				{customerlist form="cashimport" customers=$customerlist selected=$item.customerid selectname="customer[{$item.id}]" inputname="custid[{$item.id}]"}
+				{customerlist form="cashimport" customers=$customerlist selected=$item.customerid selectname="custid[{$item.id}]" inputname="customer[{$item.id}]"}
 				<INPUT TYPE="checkbox" NAME="marks[{$item.id}]" VALUE="{$item.id}">
 			</TD>
 	    </TR>
