@@ -25,21 +25,12 @@
  */
 
 function smarty_function_customerlist($params, $template) {
-	$result = '<SCRIPT type="text/javascript">'
-		. 'function reset_customer_select() {'
-		. 'if (document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\'].value)'
-		. ' document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['selectname'] . '\'].value ='
-			. ' document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\'].value;}'
-		. 'function reset_customer_input() {'
-		. 'if (document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['selectname'] . '\'].value)'
-		. ' document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\'].value ='
-			. ' document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['selectname'] . '\'].value;}'
-		. '</SCRIPT>';
+	$result = '';
 
 	if (!empty($params['customers'])) {
 		$result .= '<SELECT name="' . $params['selectname'] . '" value="' . $params['selected'] . '"'
 			. smarty_function_tip(array('text' => 'Select customer (optional)'), $template)
-			. 'onChange="reset_customer_input(); '
+			. 'onChange="reset_customer_input(\'' . $params['form'] . '\', \''. $params['inputname'] . '\', \'' . $params['selectname'] . '\'); '
 			. (!empty($params['customOnChange']) ? $params['customOnChange'] : '')
 			. '"><OPTION value="0"';
 		if (empty($params['selected']))
@@ -57,9 +48,9 @@ function smarty_function_customerlist($params, $template) {
 	$result .= '&nbsp;<INPUT type="text" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" size="5" ';
 
 	if (!empty($params['customers']))
-		$result .= 'onChange="reset_customer_select(); '
+		$result .= 'onChange="reset_customer_select(\'' . $params['form'] . '\', \''. $params['inputname'] . '\', \'' . $params['selectname'] . '\'); '
 			. (!empty($params['customOnChange']) ? $params['customOnChange'] : '')
-			. '" onfocus="reset_customer_select(); '
+			. '" onfocus="reset_customer_select(\'' . $params['form'] . '\', \''. $params['inputname'] . '\', \'' . $params['selectname'] . '\'); '
 			. (!empty($params['customOnChange']) ? $params['customOnChange'] : '')
 			. '" ';
 	else

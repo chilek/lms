@@ -552,5 +552,15 @@ function init_links() {
 	}
 }
 
+function reset_customer_select(form, inputname, selectname) {
+	if (document.forms[form].elements[inputname].value)
+		document.forms[form].elements[selectname].value = document.forms[form].elements[inputname].value;
+}
+
+function reset_customer_input(form, inputname, selectname) {
+	if (document.forms[form].elements[selectname].value)
+		document.forms[form].elements[inputname].value = document.forms[form].elements[selectname].value;
+}
+
 if (window.addEventListener) window.addEventListener("load", init_links, false);
 else if (window.attachEvent) window.attachEvent("onload", init_links);
