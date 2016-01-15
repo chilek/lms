@@ -438,7 +438,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
 	$netdevlist = $this->db->GetAll('SELECT d.id, d.name, d.location,
 			d.description, d.producer, d.model, d.serialnumber, d.ports,
-			(SELECT COUNT(*) FROM vnodes WHERE netdev=d.id AND ownerid > 0)
+			(SELECT COUNT(*) FROM nodes WHERE ipaddr <> 0 AND netdev=d.id AND ownerid > 0)
 			+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id)
 			AS takenports, d.netnodeid, n.name AS netnode,
 			lb.name AS borough_name, lb.type AS borough_type,
