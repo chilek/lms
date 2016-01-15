@@ -70,16 +70,17 @@ if (! isset($_GET['page']))
 $page = !$_GET['page'] ? 1 : intval($_GET['page']);
 $per_page = intval(ConfigHelper::getConfig('phpui.customerlist_pagelimit', 100));
 $offset = ($page - 1) * $per_page;
-$total = intval($LMS->GetCustomerList($o, $s, $n, $g, NULL, NULL, 'AND', $ng, $d, null, null, true));
+$summary = $LMS->GetCustomerList($o, $s, $n, $g, NULL, NULL, 'AND', $ng, $d, null, null, true);
+$total = intval($summary['total']);
 
 $customerlist = $LMS->GetCustomerList($o, $s, $n, $g, NULL, NULL, 'AND', $ng, $d, $per_page, $offset);
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $per_page, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
+$listdata['below'] = $summary['below'];
+$listdata['over'] = $summary['over'];
 $listdata['total'] = $customerlist['total'];
 $listdata['order'] = $customerlist['order'];
-$listdata['below'] = $customerlist['below'];
-$listdata['over'] = $customerlist['over'];
 $listdata['direction'] = $customerlist['direction'];
 $listdata['network'] = $n;
 $listdata['nodegroup'] = $ng;

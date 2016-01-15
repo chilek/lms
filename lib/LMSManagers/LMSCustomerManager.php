@@ -571,7 +571,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $sql = '';
         
         if ($count) {
-            $sql .= 'SELECT COUNT(*) ';
+            $sql .= 'SELECT COUNT(*) AS total,
+            	SUM(CASE WHEN b.value > 0 THEN b.value ELSE 0 END) AS over,
+            	SUM(CASE WHEN b.value < 0 THEN b.value ELSE 0 END) AS below ';
         } else {
             $sql .= 'SELECT c.id AS id, ' . $this->db->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername, 
                 status, address, zip, city, countryid, countries.name AS country, cc.email, ten, ssn, c.info AS info, 
@@ -708,7 +710,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
             return $customerlist;
         } else {
-            return $this->db->getOne($sql);
+            return $this->db->getRow($sql);
         }
     }
 
