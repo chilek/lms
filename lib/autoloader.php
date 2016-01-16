@@ -84,6 +84,7 @@ function application_autoloader($class) {
         'HTML2PDF_myPdf'  => 'html2pdf' . DIRECTORY_SEPARATOR . 'class' . DIRECTORY_SEPARATOR . 'myPdf.class.php',
         'HTML2PDF_parsingCss'  => 'html2pdf' . DIRECTORY_SEPARATOR . 'class' . DIRECTORY_SEPARATOR . 'parsingCss.class.php',
         'HTML2PDF_parsingHtml'  => 'html2pdf' . DIRECTORY_SEPARATOR . 'class' . DIRECTORY_SEPARATOR . 'parsingHtml.class.php',
+        'HTML2PDF_exception'  => 'html2pdf' . DIRECTORY_SEPARATOR . 'class' . DIRECTORY_SEPARATOR . 'exception.class.php',
         'TCPDF' => 'tcpdf' . DIRECTORY_SEPARATOR . 'tcpdf.php'
     );
 
