@@ -26,6 +26,7 @@ version ?.??.?? (????-??-??):
     on invoices [chilan]
   - allow to select customer for all imported transactions [wawryk/chilan]
   - replaced all customer selectiors by smarty customerlist function [chilan]
+  - removed deprecated chkconfig, check_conf and get_conf public functions [chilan]
 
 version 1.11.19 (2015-12-21):
 
