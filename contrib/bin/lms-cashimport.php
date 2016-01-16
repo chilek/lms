@@ -102,9 +102,6 @@ define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 // Load autoloader
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'autoloader.php');
 
-// Do some checks and load config defaults
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'config.php');
-
 // Init database
 
 $DB = null;

@@ -27,6 +27,7 @@ version ?.??.?? (????-??-??):
   - allow to select customer for all imported transactions [wawryk/chilan]
   - replaced all customer selectiors by smarty customerlist function [chilan]
   - removed deprecated chkconfig, check_conf and get_conf public functions [chilan]
+  - lib/config.php is needed only for config load module [chilan]
 
 version 1.11.19 (2015-12-21):
 

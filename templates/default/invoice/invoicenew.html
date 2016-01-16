@@ -241,7 +241,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 							<TR class="highlight {cycle}"  >
 								<TD class="nobr">{$covenantlist[covenantlist].time|date_format:"%Y/%m/%d"}</TD>
 								<TD>{$covenantlist[covenantlist].comment}</TD>
-								<TD class="text-right"><INPUT type="text" name="l_prodid[{$covenantlist[covenantlist].cashid}]" value="{if $_config.phpui.default_prodid}{$_config.phpui.default_prodid}{/if}" size="6"></TD>
+								<TD class="text-right"><INPUT type="text" name="l_prodid[{$covenantlist[covenantlist].cashid}]" value="{ConfigHelper::getConfig('phpui.default_prodid', '', true)}" size="6"></TD>
 								<TD class="text-right"><INPUT type="text" name="l_count[{$covenantlist[covenantlist].cashid}]" value="1" size="3"></TD>
 								<TD class="text-right"><INPUT type="text" name="l_jm[{$covenantlist[covenantlist].cashid}]" value="{trans("pcs.")}" size="3"></TD>
 								<TD class="text-right nobr">{$covenantlist[covenantlist].net|money_format}</TD>
