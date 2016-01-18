@@ -73,11 +73,12 @@ if(isset($_POST['config']))
 		$error['var'] = trans('Option exists!');
 
 	if(!preg_match('/^[a-z0-9_-]+$/', $cfg['section']) && $cfg['section']!='')
-    		$error['section'] = trans('Section name contains forbidden characters!');
-	    
+		$error['section'] = trans('Section name contains forbidden characters!');
+
+	$cfg['type'] = ($cfg['type'] != 0) ? $cfg['type'] : $LMS->GetConfigDefaultType($cfg['section'], $cfg['var']);
 	if($cfg['value']=='')
 		$error['value'] = trans('Empty option value is not allowed!');
-	elseif($msg = $LMS->CheckOption($cfg['var'], $cfg['value']))
+	elseif($msg = $LMS->CheckOption($cfg['type'], $cfg['value']))
 		$error['value'] = $msg;
 	
 	if(!isset($cfg['disabled'])) $cfg['disabled'] = 0;
@@ -89,9 +90,10 @@ if(isset($_POST['config']))
 			'value' => $cfg['value'],
 			'description' => $cfg['description'],
 			'disabled' => $cfg['disabled'],
+			'type' => $cfg['type'],
 			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF] => $cfg['id']
 		);
-		$DB->Execute('UPDATE uiconfig SET section = ?, var = ?, value = ?, description = ?, disabled = ? WHERE id = ?', 
+		$DB->Execute('UPDATE uiconfig SET section = ?, var = ?, value = ?, description = ?, disabled = ?, type = ? WHERE id = ?',
 			array_values($args));
 
 		if ($SYSLOG)

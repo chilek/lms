@@ -75,6 +75,12 @@ $CSTATUSES = array(
 	),
 );
 
+// Config types
+define('CONFIG_TYPE_NONE', 0);
+define('CONFIG_TYPE_BOOLEAN', 1);
+define('CONFIG_TYPE_POSITIVE_INTEGER', 2);
+define('CONFIG_TYPE_EMAIL', 3);
+
 // Helpdesk ticket status
 define('RT_NEW', 0);
 define('RT_OPEN', 1);

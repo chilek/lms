@@ -45,47 +45,71 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         return $this->db->GetOne('SELECT id FROM uiconfig WHERE section = ? AND var = ?', array($section, $var));
     }
 
-    public function CheckOption($var, $value)
+    public function GetConfigDefaultType($section, $var)
     {
-        switch ($var) {
-            case 'accountlist_pagelimit':
-            case 'ticketlist_pagelimit':
-            case 'balancelist_pagelimit':
-            case 'invoicelist_pagelimit':
-            case 'aliaslist_pagelimit':
-            case 'domainlist_pagelimit':
-            case 'documentlist_pagelimit':
-            case 'timeout':
-            case 'timetable_days_forward':
-            case 'nodepassword_length':
-            case 'check_for_updates_period':
-            case 'print_balance_list_limit':
-            case 'networkhosts_pagelimit':
+        switch ($section . '.' . $var) {
+            case 'phpui.force_ssl':
+            case 'phpui.allow_mac_sharing':
+            case 'phpui.smarty_debug':
+            case 'phpui.use_current_payday':
+            case 'phpui.helpdesk_backend_mode':
+            case 'phpui.helpdesk_reply_body':
+            case 'phpui.to_words_short_version':
+            case 'phpui.newticket_notify':
+            case 'phpui.short_pagescroller':
+            case 'phpui.big_networks':
+            case 'phpui.ewx_support':
+            case 'phpui.helpdesk_stats':
+            case 'phpui.helpdesk_customerinfo':
+                $type = CONFIG_TYPE_BOOLEAN;
+                break;
+
+            case 'phpui.accountlist_pagelimit':
+            case 'phpui.ticketlist_pagelimit':
+            case 'phpui.balancelist_pagelimit':
+            case 'phpui.invoicelist_pagelimit':
+            case 'phpui.aliaslist_pagelimit':
+            case 'phpui.domainlist_pagelimit':
+            case 'phpui.documentlist_pagelimit':
+            case 'phpui.networkhosts_pagelimit':
+            case 'phpui.timeout':
+            case 'phpui.timetable_days_forward':
+            case 'phpui.nodepassword_length':
+            case 'phpui.check_for_updates_period':
+                $type = CONFIG_TYPE_POSITIVE_INTEGER;
+                break;
+
+            case 'mail.debug_email':
+                $type = CONFIG_TYPE_EMAIL;
+                break;
+
+            default:
+                $type = CONFIG_TYPE_NONE;
+                break;
+        }
+
+        return $type;
+    }
+
+    public function CheckOption($type, $value)
+    {
+        switch ($type) {
+            case CONFIG_TYPE_POSITIVE_INTEGER:
                 if ($value <= 0)
                     return trans('Value of option "$a" must be a number grater than zero!', $var);
                 break;
+
+            case CONFIG_TYPE_BOOLEAN:
+                if (!isboolean($value))
+                    return trans('Incorrect value! Valid values are: 1|t|true|y|yes|on and 0|n|no|off|false');
+                break;
+
             case 'reload_type':
                 if ($value != 'sql' && $value != 'exec')
                     return trans('Incorrect reload type. Valid types are: sql, exec!');
                 break;
-            case 'force_ssl':
-            case 'allow_mac_sharing':
-            case 'smarty_debug':
-            case 'use_current_payday':
-            case 'helpdesk_backend_mode':
-            case 'helpdesk_reply_body':
-            case 'to_words_short_version':
-            case 'newticket_notify':
-            case 'print_balance_list':
-            case 'short_pagescroller':
-            case 'big_networks':
-            case 'ewx_support':
-            case 'helpdesk_stats':
-            case 'helpdesk_customerinfo':
-                if (!isboolean($value))
-                    return trans('Incorrect value! Valid values are: 1|t|true|y|yes|on and 0|n|no|off|false');
-                break;
-            case 'debug_email':
+
+            case CONFIG_TYPE_EMAIL:
                 if (!check_email($value))
                     return trans('Incorrect email address!');
                 break;
