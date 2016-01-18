@@ -1405,10 +1405,16 @@ class LMS
         return $manager->GetConfigOptionId($var, $section);
     }
 
-    public function CheckOption($var, $value)
+    public function GetConfigDefaultType($section, $var)
     {
         $manager = $this->getConfigManager();
-        return $manager->CheckOption($var, $value);
+        return $manager->GetConfigDefaultType($section, $var);
+    }
+
+    public function CheckOption($type, $value)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->CheckOption($type, $value);
     }
 
     /*
