@@ -1366,6 +1366,7 @@ CREATE TABLE uiconfig (
     value 	text 		NOT NULL DEFAULT '',
     description text 		NOT NULL DEFAULT '',
     disabled 	smallint 	NOT NULL DEFAULT 0,
+    type 	smallint 	NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     CONSTRAINT uiconfig_section_key UNIQUE (section, var)
 );
