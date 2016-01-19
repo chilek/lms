@@ -3104,6 +3104,8 @@ $_LANG['Bank account is required!'] = 'Rachunek bankowy jest wymagany!';
 
 $_LANG['boolean'] = 'wartość logiczna';
 $_LANG['integer greater than 0'] = 'liczba całkowita większa od 0';
+$_LANG['document type'] = 'typ dokumentu';
+$_LANG['reload type'] = 'typ przeładowania';
 $_LANG['margins'] = 'marginesy';
 $_LANG['Margins should consist of 4 numbers separated by commas!'] = 'Marginesy powinny się składać z 4 liczb oddzielonymi przecinkami!';
 
