@@ -53,9 +53,10 @@ if(sizeof($config))
 	elseif (!preg_match('/^[a-z0-9_-]+$/', $section))
 		$error[empty($config['section']) ? 'newsection' : 'section'] = trans('Section name contains forbidden characters!');
 
+	$config['type'] = $LMS->GetConfigDefaultType($config['section'], $config['name']);
 	if($config['value']=='')
 		$error['value'] = trans('Option with empty value not allowed!');
-	elseif($msg = $LMS->CheckOption($config['name'], $config['value']))
+	elseif($msg = $LMS->CheckOption($config['type'], $config['value']))
 	        $error['value'] = $msg;
 	
 	if(!isset($config['disabled'])) $config['disabled'] = 0;
@@ -66,9 +67,10 @@ if(sizeof($config))
 			'name' => $config['name'],
 			'value' => $config['value'],
 			'description' => $config['description'],
-			'disabled' => $config['disabled']
+			'disabled' => $config['disabled'],
+			'type' => $config['type']
 		);
-		$DB->Execute('INSERT INTO uiconfig (section, var, value, description, disabled) VALUES (?, ?, ?, ?, ?)',
+		$DB->Execute('INSERT INTO uiconfig (section, var, value, description, disabled, type) VALUES (?, ?, ?, ?, ?, ?)',
 			array_values($args));
 
 		if ($SYSLOG) {

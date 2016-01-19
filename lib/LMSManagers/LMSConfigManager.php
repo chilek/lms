@@ -61,17 +61,44 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
             case 'phpui.ewx_support':
             case 'phpui.helpdesk_stats':
             case 'phpui.helpdesk_customerinfo':
+            case 'phpui.logging':
+            case 'phpui.note_check_payment':
+            case 'phpui.public_ip':
+            case 'phpui.radius':
+            case 'phpui.hide_summaries':
+            case 'phpui.use_invoices':
+            case 'phpui.hide_toolbar':
+            case 'phpui.default_assignment_invoice':
+            case 'phpui.invoice_check_payment':
+            case 'finances.cashimport_checkinvoices':
+            case 'receipts.show_nodes_warning':
+            case 'invoices.customer_bankaccount':
+            case 'invoices.customer_credentials':
+            case 'invoices.print_balance_history':
                 $type = CONFIG_TYPE_BOOLEAN;
                 break;
 
-            case 'phpui.accountlist_pagelimit':
-            case 'phpui.ticketlist_pagelimit':
+            case 'phpui.customerlist_pagelimit':
+            case 'phpui.nodelist_pagelimit':
             case 'phpui.balancelist_pagelimit':
+            case 'phpui.configlist_pagelimit':
             case 'phpui.invoicelist_pagelimit':
-            case 'phpui.aliaslist_pagelimit':
+            case 'phpui.ticketlist_pagelimit':
+            case 'phpui.accountlist_pagelimit':
             case 'phpui.domainlist_pagelimit':
+            case 'phpui.aliaslist_pagelimit':
+            case 'phpui.receiptlist_pagelimit':
+            case 'phpui.taxratelist_pagelimit':
+            case 'phpui.numberplanlist_pagelimit':
+            case 'phpui.divisionlist_pagelimit':
             case 'phpui.documentlist_pagelimit':
+            case 'phpui.recordlist_pagelimit':
+            case 'phpui.voipaccountlist_pagelimit':
             case 'phpui.networkhosts_pagelimit':
+            case 'phpui.messagelist_pagelimit':
+            case 'phpui.cashreglog_pagelimit':
+            case 'phpui.debitnotelist_pagelimit':
+            case 'phpui.printout_pagelimit':
             case 'phpui.timeout':
             case 'phpui.timetable_days_forward':
             case 'phpui.nodepassword_length':
@@ -80,7 +107,23 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                 break;
 
             case 'mail.debug_email':
+            case 'sendinvoices.debug_email':
+            case 'sendinvoices.sender_email':
+            case 'userpanel.debug_email':
+            case 'zones.hostmaster_mail':
                 $type = CONFIG_TYPE_EMAIL;
+                break;
+
+            case 'phpui.reload_type':
+                $type = CONFIG_TYPE_RELOADTYPE;
+                break;
+
+            case 'notes.type':
+            case 'receipts.type':
+            case 'phpui.report_type':
+            case 'phpui.document_type':
+            case 'invoices.type':
+                $type = CONFIG_TYPE_DOCTYPE;
                 break;
 
             default:
@@ -104,9 +147,14 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                     return trans('Incorrect value! Valid values are: 1|t|true|y|yes|on and 0|n|no|off|false');
                 break;
 
-            case 'reload_type':
+            case CONFIG_TYPE_RELOADTYPE:
                 if ($value != 'sql' && $value != 'exec')
                     return trans('Incorrect reload type. Valid types are: sql, exec!');
+                break;
+
+            case CONFIG_TYPE_DOCTYPE:
+                if ($value != 'html' && $value != 'pdf')
+                    return trans('Incorrect value! Valid values are: html, pdf!');
                 break;
 
             case CONFIG_TYPE_EMAIL:

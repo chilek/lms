@@ -686,6 +686,7 @@ $_LANG['Incorrect Tax Exempt Number! If you are sure you want to accept it, then
 $_LANG['Incorrect tax rate percentage value (non-zero value and taxing not checked)!'] = 'Nieprawidłowa wartość procentowa podatku (wartość niezerowa i nie zaznaczono opodatkowania)!';
 $_LANG['Incorrect value!'] = 'Błędna wartość!';
 $_LANG['Incorrect value! Valid values are: 1|t|true|y|yes|on and 0|n|no|off|false'] = 'Niepoprawna wartość! Poprawne wartości to: 1|t|true|y|yes|on i 0|n|no|off|false';
+$_LANG['Incorrect value! Valid values are: html, pdf!'] = 'Niepoprawna wartość! Poprawne wartości to: html, pdf!';
 $_LANG['Incorrect WINS server IP address!'] = 'Niepoprawny adres IP serwera WINS!';
 $_LANG['Incorrect ZIP code! If you are sure you want to accept it, then click "Submit" again.'] = 'Niepoprawny kod pocztowy! Jeśli chcesz zaakceptować, to ponownie kliknij "Zapisz".';
 $_LANG['in debt'] = 'zadłużeni';
@@ -3100,5 +3101,8 @@ $_LANG['Check if bank account should be visible on invoice'] = 'Zaznacz, jeśli 
 $_LANG['Check if bank account should be disabled'] = 'Zaznacz, jeśli rachunek bankowy ma być wyłączony';
 $_LANG['Incorrect bank account!'] = 'Niepoprawny numer rachunku bankowego!';
 $_LANG['Bank account is required!'] = 'Rachunek bankowy jest wymagany!';
+
+$_LANG['boolean'] = 'wartość logiczna';
+$_LANG['integer greater than 0'] = 'liczba całkowita większa od 0';
 
 ?>

@@ -80,6 +80,17 @@ define('CONFIG_TYPE_NONE', 0);
 define('CONFIG_TYPE_BOOLEAN', 1);
 define('CONFIG_TYPE_POSITIVE_INTEGER', 2);
 define('CONFIG_TYPE_EMAIL', 3);
+define('CONFIG_TYPE_RELOADTYPE', 4);
+define('CONFIG_TYPE_DOCTYPE', 5);
+
+$CONFIG_TYPES = array(
+	CONFIG_TYPE_NONE => trans('none'),
+	CONFIG_TYPE_BOOLEAN => trans('boolean'),
+	CONFIG_TYPE_POSITIVE_INTEGER => trans('integer greater than 0'),
+	CONFIG_TYPE_EMAIL => trans('email'),
+	CONFIG_TYPE_RELOADTYPE => trans('reload type'),
+	CONFIG_TYPE_DOCTYPE => trans('document type'),
+);
 
 // Helpdesk ticket status
 define('RT_NEW', 0);
@@ -501,6 +512,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_GUARANTEEPERIODS', $GUARANTEEPERIODS);
 	$SMARTY->assign('_NUM_PERIODS', $NUM_PERIODS);
 	$SMARTY->assign('_RT_STATES', $RT_STATES);
+	$SMARTY->assign('_CONFIG_TYPES', $CONFIG_TYPES);
 	$SMARTY->assign('_MESSENGERS', $MESSENGERS);
 	$SMARTY->assign('_TARIFFTYPES', $TARIFFTYPES);
 	$SMARTY->assign('_PAYTYPES', $PAYTYPES);
