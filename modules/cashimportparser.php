@@ -58,10 +58,14 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 				break;
 		}
 
+		$hook_data = $LMS->executeHook('cashimport_error_before_submit', 
+			compact("pattern", "count", "patterns_cnt", "error", "line", "theline", "ln"));
+		extract($hook_data);
+		
 		// line isn't matching to any pattern
 		if($count == $patterns_cnt)
 		{
-			if(trim($line) != '') 
+			if(trim($line) != '' && !$hook_data['ignore_error'])
 				$error['lines'][$ln] = $patterns_cnt == 1 ? $theline : $line;
 			continue; // go to next line
 		}
@@ -130,6 +134,10 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 			} else
 				$id = null;
 
+		$hook_data = $LMS->executeHook('cashimport_extra_filter_before_submit', 
+			compact("id", "pattern", "comment", "theline", "ln", "patterns_cnt", "error", "line"));
+		extract($hook_data);	
+			
 		if($time)
 		{
 			if(preg_match($pattern['date_regexp'], $time, $date))
