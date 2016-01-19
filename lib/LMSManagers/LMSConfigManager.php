@@ -134,12 +134,12 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         return $type;
     }
 
-    public function CheckOption($type, $value)
+    public function CheckOption($var, $value, $section, $type)
     {
         switch ($type) {
             case CONFIG_TYPE_POSITIVE_INTEGER:
                 if ($value <= 0)
-                    return trans('Value of option "$a" must be a number grater than zero!', $var);
+                    return trans('Value of option "$a" must be a number grater than zero!', $section.'.'.$var);
                 break;
 
             case CONFIG_TYPE_BOOLEAN:

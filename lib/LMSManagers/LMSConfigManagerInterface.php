@@ -37,5 +37,5 @@ interface LMSConfigManagerInterface
 
     public function GetConfigDefaultType($section, $var);
     
-    public function CheckOption($type, $value);
+    public function CheckOption($var, $value, $section, $type);
 }

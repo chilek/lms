@@ -1411,10 +1411,10 @@ class LMS
         return $manager->GetConfigDefaultType($section, $var);
     }
 
-    public function CheckOption($type, $value)
+    public function CheckOption($var, $value, $section, $type)
     {
         $manager = $this->getConfigManager();
-        return $manager->CheckOption($type, $value);
+        return $manager->CheckOption($var, $value, $section, $type);
     }
 
     /*

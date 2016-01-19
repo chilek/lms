@@ -43,7 +43,7 @@ if(sizeof($config))
 	elseif(strlen($config['name'])>64)
 		$error['name'] = trans('Option name is too long (max.64 characters)!');
 	elseif(!preg_match('/^[a-z0-9_-]+$/', $config['name']))
-    		$error['name'] = trans('Option name contains forbidden characters!');
+		$error['name'] = trans('Option name contains forbidden characters!');
 	elseif($LMS->GetConfigOptionId($config['name'], $config['section']))
 		$error['name'] = trans('Option exists!'); 
 
@@ -56,8 +56,8 @@ if(sizeof($config))
 	$config['type'] = $LMS->GetConfigDefaultType($config['section'], $config['name']);
 	if($config['value']=='')
 		$error['value'] = trans('Option with empty value not allowed!');
-	elseif($msg = $LMS->CheckOption($config['type'], $config['value']))
-	        $error['value'] = $msg;
+	elseif($msg = $LMS->CheckOption($config['var'], $config['value'], $config['section'], $config['type']))
+		$error['value'] = $msg;
 	
 	if(!isset($config['disabled'])) $config['disabled'] = 0;
 
