@@ -133,10 +133,6 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 				$name = $tmp['name'];
 			} else
 				$id = null;
-
-		$hook_data = $LMS->executeHook('cashimport_extra_filter_before_submit', 
-			compact("id", "pattern", "comment", "theline", "ln", "patterns_cnt", "error", "line"));
-		extract($hook_data);	
 			
 		if($time)
 		{
@@ -153,6 +149,10 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 		else
 			$time = time();
 
+		$hook_data = $LMS->executeHook('cashimport_extra_filter_before_submit', 
+			compact("id", "pattern", "comment", "theline", "ln", "patterns_cnt", "error", "line", "time"));
+		extract($hook_data);	
+		
 		if(!empty($pattern['comment_replace']))
 			$comment = preg_replace($pattern['comment_replace']['from'], $pattern['comment_replace']['to'], $comment);
 
