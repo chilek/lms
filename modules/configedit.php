@@ -50,6 +50,7 @@ if (isset($_GET['statuschange'])) {
 }
 
 $config = $DB->GetRow('SELECT * FROM uiconfig WHERE id = ?', array($id));
+$config['type'] = $config['type'] != 0 ? $config['type'] : $LMS->GetConfigDefaultType($config['section'], $config['var']);
 $option = $config['var'];
 
 if(isset($_POST['config']))
@@ -75,7 +76,6 @@ if(isset($_POST['config']))
 	if(!preg_match('/^[a-z0-9_-]+$/', $cfg['section']) && $cfg['section']!='')
 		$error['section'] = trans('Section name contains forbidden characters!');
 
-	$cfg['type'] = ($cfg['type'] != 0) ? $cfg['type'] : $LMS->GetConfigDefaultType($cfg['section'], $cfg['var']);
 	if($cfg['value']=='')
 		$error['value'] = trans('Empty option value is not allowed!');
 	elseif($msg = $LMS->CheckOption($cfg['type'], $cfg['value']))

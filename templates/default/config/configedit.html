@@ -63,6 +63,21 @@
 		</TD>
 	</TR>
 	<TR>
+		<TD width="1%">
+			<img src="img/desc.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Type:")}</B>
+		</TD>
+		<TD width="98%">
+			<SELECT size="1" name="config[type]" {tip text="Select config type" trigger="type"}>
+				{foreach $_CONFIG_TYPES as $key => $type}
+					<OPTION value="{$key}"{if $config.type == $key} selected{/if}>{$type}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
 		<TD align="right" colspan="3">
 			<A href="javascript:document.config.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
 			<A href="?m=configdel&id={$config.id}" OnClick="return confirmLink(this, '{t a=$config.var}Are you sure, you want to delete option \'$a\' from database?{/t}')">{trans("Delete")} <img src="img/delete.gif" alt=""></A>

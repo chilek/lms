@@ -28,6 +28,8 @@ version ?.??.?? (????-??-??):
   - replaced all customer selectiors by smarty customerlist function [chilan]
   - removed deprecated chkconfig, check_conf and get_conf public functions [chilan]
   - lib/config.php is needed only for config load module [chilan]
+  - added column with type in uiconfig, and configuration is validated by this type [pjona]
+  - function $LMS->CheckOption() takes a '$type' as the first parameter [pjona]
 
 version 1.11.19 (2015-12-21):
 
