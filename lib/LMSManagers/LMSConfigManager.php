@@ -126,6 +126,10 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                 $type = CONFIG_TYPE_DOCTYPE;
                 break;
 
+            case 'phpui.document_margins':
+                $type = CONFIG_TYPE_MARGINS;
+                break;
+
             default:
                 $type = CONFIG_TYPE_NONE;
                 break;
@@ -160,6 +164,11 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
             case CONFIG_TYPE_EMAIL:
                 if (!check_email($value))
                     return trans('Incorrect email address!');
+                break;
+
+            case CONFIG_TYPE_MARGINS:
+                if (!preg_match('/^\d,\d,\d,\d$/', $value))
+                    return trans('Margins should consist of 4 numbers separated by commas!');
                 break;
         }
         return NULL;
