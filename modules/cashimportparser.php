@@ -58,7 +58,7 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 				break;
 		}
 
-		$hook_data = $LMS->executeHook('cashimport_clean_before_submit', 
+		$hook_data = $LMS->executeHook('cashimport_error_before_submit', 
 			compact("pattern", "count", "patterns_cnt", "error", "line", "theline", "ln"));
 		extract($hook_data);
 		
@@ -134,7 +134,7 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 			} else
 				$id = null;
 
-		$hook_data = $LMS->executeHook('cashimport_filter_before_submit', 
+		$hook_data = $LMS->executeHook('cashimport_extra_filter_before_submit', 
 			compact("id", "pattern", "comment", "theline", "ln", "patterns_cnt", "error", "line"));
 		extract($hook_data);	
 			
