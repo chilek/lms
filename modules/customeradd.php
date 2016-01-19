@@ -31,11 +31,6 @@ if (isset($_GET['ajax'])) {
 	switch ($_GET['mode']) {
 		case 'street':
 			$mode = 'street';
-			$database_type = ConfigHelper::getConfig('database.type');
-			if ($database_type == 'mysql' || $database_type == 'mysqli')
-				$mode = 'substring(street FROM 1 FOR length(street) - locate(\' \', reverse(street)) + 1)';
-			elseif ($database_type == 'postgres') 
-				$mode = 'substring(street FROM \'^.* \')';
 			break;
 
 		case 'zip':
