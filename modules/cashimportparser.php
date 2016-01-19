@@ -65,7 +65,7 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 		// line isn't matching to any pattern
 		if($count == $patterns_cnt)
 		{
-			if(trim($line) != '' && !$hook_data['continue'])
+			if(trim($line) != '' && !$hook_data['ignore_error'])
 				$error['lines'][$ln] = $patterns_cnt == 1 ? $theline : $line;
 			continue; // go to next line
 		}
