@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -145,7 +145,7 @@ if(isset($_POST['message']))
 			$mailfname = '"'.$mailfname.'"';
 		}
 
-		if(!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_backend_mode', false)) || $message['destination'] == '') {
+		if (!ConfigHelper::checkConfig('phpui.helpdesk_backend_mode') || $message['destination'] == '') {
 			$headers = array();
 
 			if($message['destination'] && $message['userid']
@@ -285,7 +285,7 @@ if(isset($_POST['message']))
 				.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$message['ticketid'];
 
-			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)))
+			if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo'))
 				if ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid'])))
 				{
 					$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
@@ -416,9 +416,8 @@ else
 		$message['subject'] = 'Re: '.$reply['subject'];
 		$message['inreplyto'] = $reply['id'];
 		$message['references'] = $reply['messageid'];
-		
-		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_reply_body', false)))
-		{
+
+		if (ConfigHelper::checkConfig('phpui.helpdesk_reply_body')) {
 			$body = explode("\n",textwrap(strip_tags($reply['body']),74));
 			foreach($body as $line)
 				$message['body'] .= '> '.$line."\n";

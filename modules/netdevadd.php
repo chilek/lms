@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -156,9 +156,8 @@ $SMARTY->assign('NNprojects',$nprojects);
 $netnodes = $DB->GetAll("SELECT * FROM netnodes ORDER BY name");
 $SMARTY->assign('NNnodes',$netnodes);
 
-if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
+if (ConfigHelper::checkConfig('phpui.ewx_support'))
 	$SMARTY->assign('channels', $DB->GetAll('SELECT id, name FROM ewx_channels ORDER BY name'));
-}
 
 $SMARTY->display('netdev/netdevadd.html');
 

@@ -174,11 +174,11 @@ switch($action)
 		{
 			$customer = $LMS->GetCustomer($receipt['customerid'], true);
 			$customer['groups'] = $LMS->CustomergroupGetForCustomer($receipt['customerid']);
-			if (!ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_notes', false)))
+			if (!ConfigHelper::checkConfig('receipts.show_notes'))
 				unset($customer['notes']);
-			
+
 			// niezatwierdzone dokumenty klienta
-			if(ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_documents_warning', false)))
+			if (ConfigHelper::checkConfig('receipts.show_documents_warning'))
 				if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($receipt['customerid'])))
 				{
 					$documents_warning = ConfigHelper::getConfig('receipts.documents_warning');
@@ -190,7 +190,7 @@ switch($action)
 
 			// jesli klient posiada zablokowane komputery poinformujmy
 			// o tym kasjera, moze po wplacie trzeba bedzie zmienic ich status
-			if (ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_nodes_warning', false)))
+			if (ConfigHelper::checkConfig('receipts.show_nodes_warning'))
 				if($DB->GetOne('SELECT COUNT(*) FROM vnodes WHERE ownerid = ? AND access = 0', array($receipt['customerid'])))
 				{
 					$nodes_warning = ConfigHelper::getConfig('receipts.nodes_warning');
@@ -489,11 +489,11 @@ switch($action)
 				{
 					$customer = $LMS->GetCustomer($cid, true);
 					$customer['groups'] = $LMS->CustomergroupGetForCustomer($cid);
-					if(!ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_notes', false)))
+					if (!ConfigHelper::checkConfig('receipts.show_notes'))
 						unset($customer['notes']);
 
 					// niezatwierdzone dokumenty klienta
-					if (ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_documents_warning', false)))
+					if (ConfigHelper::checkConfig('receipts.show_documents_warning'))
 						if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($cid)))
 						{
 							$documents_warning = ConfigHelper::getConfig('receipts.documents_warning');
@@ -504,9 +504,9 @@ switch($action)
 						}
 
 					// jesli klient posiada zablokowane komputery poinformujmy
-	    				// o tym kasjera, moze po wplacie trzeba bedzie zmienic ich status
-                                                
-					if (ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_nodes_warning', false)))
+					// o tym kasjera, moze po wplacie trzeba bedzie zmienic ich status
+
+					if (ConfigHelper::checkConfig('receipts.show_nodes_warning'))
 						if($DB->GetOne('SELECT COUNT(*) FROM vnodes WHERE ownerid = ? AND access = 0', array($cid)))
 						{
 							$nodes_warning = ConfigHelper::getConfig('receipts.nodes_warning');

@@ -207,8 +207,7 @@ if(isset($_POST['ticket']))
 				.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$ticket['ticketid'];
 
-			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)) && $ticketedit['customerid'])
-			{
+			if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo') && $ticketedit['customerid']) {
 				$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
 							address, zip, city FROM customers WHERE id = ?', array($ticketedit['customerid']));
 				$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts

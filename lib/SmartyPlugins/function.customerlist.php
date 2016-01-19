@@ -25,31 +25,33 @@
  */
 
 function smarty_function_customerlist($params, $template) {
-	$result = '<SCRIPT type="text/javascript">'
-		. 'function reset_customer_select() {'
-		. 'if (document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\'].value)'
-		. ' document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['selectname'] . '\'].value ='
-			. ' document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\'].value;}'
-		. 'function reset_customer_input() {'
-		. 'if (document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['selectname'] . '\'].value)'
-		. ' document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\'].value ='
-			. ' document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['selectname'] . '\'].value;}'
-		. '</SCRIPT>';
+	$result = '';
 
 	if (!empty($params['customers'])) {
-		$result .= '<SELECT name="' . $params['selectname'] . '" value="' . $params['selected'] . '"'
-			. smarty_function_tip(array('text' => 'Select customer (optional)'), $template)
-			. 'onChange="reset_customer_input(); '
+		$result .= '<SELECT name="' . $params['selectname'] . '" value="' . $params['selected'] . '" '
+			. (!empty($params['selecttip']) ? smarty_function_tip(array('text' => $params['selecttip']), $template)
+				: smarty_function_tip(array('text' => 'Select customer (optional)'), $template))
+			. 'onChange="reset_customer(\'' . $params['form'] . '\', \''. $params['selectname'] . '\', \'' . $params['inputname'] . '\'); '
 			. (!empty($params['customOnChange']) ? $params['customOnChange'] : '')
-			. '"><OPTION value="0"';
-		if (empty($params['selected']))
-			$result .= 'selected';
-		$result .= '>' . trans("- select customer -") . '</OPTION>';
+			. '">';
+		if (array_key_exists('firstoption', $params)) {
+			if (!empty($params['firstoption'])) {
+				$result .= '<OPTION value="0"';
+				if (empty($params['selected']))
+					$result .= 'selected';
+				$result .= '>' . trans($params['firstoption']) . '</OPTION>';
+			}
+		} else {
+			$result .= '<OPTION value="0"';
+			if (empty($params['selected']))
+				$result .= 'selected';
+			$result .= '>' . trans("- select customer -") . '</OPTION>';
+		}
 		foreach ($params['customers'] as $customer) {
 			$result .= '<OPTION value="' . $customer['id'] . '"';
 			if ($customer['id'] == $params['selected'])
 				$result .= 'selected';
-			$result .= '>' . substr($customer['customername'], 0 , 40) . ' (' . sprintf("%04d", $customer['id']) . ')</OPTION>';
+			$result .= '>' . mb_substr($customer['customername'], 0 , 40) . ' (' . sprintf("%04d", $customer['id']) . ')</OPTION>';
 		}
 		$result .= '</SELECT>&nbsp;' . trans("or Customer ID:");
 	} else
@@ -57,9 +59,9 @@ function smarty_function_customerlist($params, $template) {
 	$result .= '&nbsp;<INPUT type="text" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" size="5" ';
 
 	if (!empty($params['customers']))
-		$result .= 'onChange="reset_customer_select(); '
+		$result .= 'onChange="reset_customer(\'' . $params['form'] . '\', \''. $params['inputname'] . '\', \'' . $params['selectname'] . '\'); '
 			. (!empty($params['customOnChange']) ? $params['customOnChange'] : '')
-			. '" onfocus="reset_customer_select(); '
+			. '" onfocus="reset_customer(\'' . $params['form'] . '\', \''. $params['inputname'] . '\', \'' . $params['selectname'] . '\'); '
 			. (!empty($params['customOnChange']) ? $params['customOnChange'] : '')
 			. '" ';
 	else
@@ -71,7 +73,8 @@ function smarty_function_customerlist($params, $template) {
 			. (!empty($params['customOnChange']) ? $params['customOnChange'] : '')
 			. '" ';
 
-	$result .= smarty_function_tip(array('text' => 'Enter customer ID', 'trigger' => 'customerid'), $template)
+	$result .= (!empty($params['inputtip']) ? smarty_function_tip(array('text' => $params['inputtip']), $template)
+		: smarty_function_tip(array('text' => 'Enter customer ID', 'trigger' => 'customerid'), $template))
 		. '><a href="javascript: void(0);" onClick="return customerchoosewin(document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\']);" '
 		. smarty_function_tip(array('text' => 'Click to search customer'), $template) . '>&nbsp;'
 		. trans("Search") . '&nbsp;&raquo;&raquo;&raquo;</A>';

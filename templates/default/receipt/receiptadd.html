@@ -39,12 +39,6 @@
 		document.additem.target = "";
 		document.additem.submit();
 	}
-
-	function reset_customer()
-	{
-		if (document.setcustomer.customerid.value)
-			document.setcustomer.customer.value = document.setcustomer.customerid.value;
-	}
 //-->
 </SCRIPT>
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptadd{if $receipt.type}&type={$receipt.type}{/if}&action={if $receipt.regid && !$error.regid}setcustomer{else}setreg{/if}">
@@ -122,22 +116,19 @@
 		    <TABLE>
 		    {if ($rights & 2)==2}
 			<TR>
-			    <TD width="1%" nowrap>
-				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" id="radio_customer" checked> <label for="radio_customer">{trans("customer")}:</label>
-			    </TD>
-			    <TD width="99%" nowrap>
-			    {if $customerlist}
-				<SELECT SIZE="1" NAME="customer"  onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value; document.getElementById('radio_customer').checked=true;" {tip trigger="customerid"}>
-				    <OPTION VALUE="0">{trans("... select customer ...")}</OPTION>
-				    {foreach from=$customerlist item=c}
-				    <OPTION VALUE="{$c.id}"{if $c.id == $customer.id || $receipt.customerid == $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
-				    {/foreach}
-				</SELECT>
-				{trans("or Customer ID:")}
-			    {/if}
-			    <INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{elseif $receipt.customerid}{$receipt.customerid}{/if}" SIZE="5"{if $customerlist} onchange="reset_customer()" onfocus="reset_customer()"{/if} onclick="document.getElementById('radio_customer').checked=true;" {tip text="Enter customer ID" trigger="customerid"}>
-			    <A href="javascript: void(0);" onclick="document.getElementById('radio_customer').checked=true;return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-			    </TD>
+				<TD style="width: 1%;" class="nobr">
+					<label>
+						<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" id="radio_customer" checked>
+						{trans("customer")}:
+					</label>
+				</TD>
+				<TD style="width: 99%;" class="nobr">
+					{if isset($customer.id)}
+					{customerlist form="setcustomer" customers=$customerlist selected=$customer.id selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;"}
+					{else}
+					{customerlist form="setcustomer" customers=$customerlist selected=$receipt.customerid selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;"}
+					{/if}
+				</TD>
 			</TR>
 		    {/if}
 		    {if ($rights & 4)==4}

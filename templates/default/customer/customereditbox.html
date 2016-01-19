@@ -241,7 +241,7 @@
 			</TABLE>
 			<script type="text/javascript">
 			<!--
-				new AutoSuggest(document.getElementById('customeredit'),document.getElementById('street'),'?m=customeradd&ajax=1&mode=address&what=',0);
+				new AutoSuggest(document.getElementById('customeredit'),document.getElementById('street'),'?m=customeradd&ajax=1&mode=street&what=',0);
 				new AutoSuggest(document.getElementById('customeredit'),document.getElementById('zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
 				new AutoSuggest(document.getElementById('customeredit'),document.getElementById('city'),'?m=customeradd&ajax=1&mode=city&what=',0);
 			//-->
@@ -310,7 +310,7 @@
 			</TABLE>
 			<script type="text/javascript">
 			<!--
-				new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_street'),'?m=customeradd&ajax=1&mode=address&what=',0);
+				new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_street'),'?m=customeradd&ajax=1&mode=street&what=',0);
 				new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
 				new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_city'),'?m=customeradd&ajax=1&mode=city&what=',0);
 			//-->
@@ -403,7 +403,7 @@
 		<TD style="width: 1%;"></TD>
 		<TD style="width: 99%;" class="nobr">
 			<fieldset style="width: 1%;" class="nobr">
-				<legend class="bold"><IMG src="img/card.gif" alt=""> {trans("Bank accounts")}</legend>
+				<legend class="bold"><IMG src="img/card.gif" alt=""> {trans("Alternative bank accounts")}</legend>
 				<table>
 					{foreach $customerinfo.accounts as $key => $item}
 					<TR id="account{$key}">

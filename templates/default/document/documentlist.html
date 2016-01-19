@@ -64,19 +64,9 @@
 	<TR>
 		<TD colspan="5">
 				<div style="float: left;">
-				<B>{trans("Filter:")} </B> {trans("Customer:")}
-				{if $customerlist}
-				    <SELECT size="1" name="c" OnChange="filter()">
-					<OPTION value="0"{if $listdata.customer == ""} SELECTED{/if}>{trans("- all customers -")}</OPTION>
-					{foreach from=$customerlist item=customer}
-					<OPTION value="{$customer.id}"{if $customer.id == $listdata.customer} SELECTED{/if}>{$customer.customername|truncate:40:"...":true}</OPTION>
-					{/foreach}
-				    </SELECT>
-				{else}
-				    <INPUT TYPE="TEXT" NAME="c" VALUE="{if $listdata.customer}{$listdata.customer}{/if}" SIZE="5">
-				    <A href="javascript: void(0);" onClick="return customerchoosewin(document.page.elements['c']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-				{/if}&nbsp;
-				{trans("Type:")}
+					<span class="bold">{trans("Filter:")}</span> {trans("Customer:")}
+					{customerlist form="page" customers=$customers selected=$listdata.customer selectname="customer" inputname="c" firstoption="- all customers -" customOnChange="filter();"}
+				&nbsp;{trans("Type:")}
 				<SELECT size="1" name="t" ONCHANGE="filter()">
 					<OPTION value="0"{if !$listdata.type} SELECTED {/if}>{trans("- all -")}</OPTION>
 					{foreach from=$_DOCTYPES key=key item=item}{if $key < 0}

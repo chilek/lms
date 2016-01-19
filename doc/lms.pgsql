@@ -1366,6 +1366,7 @@ CREATE TABLE uiconfig (
     value 	text 		NOT NULL DEFAULT '',
     description text 		NOT NULL DEFAULT '',
     disabled 	smallint 	NOT NULL DEFAULT 0,
+    type 	smallint 	NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     CONSTRAINT uiconfig_section_key UNIQUE (section, var)
 );
@@ -2611,4 +2612,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016011200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016011800');

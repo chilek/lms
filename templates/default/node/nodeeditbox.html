@@ -152,17 +152,8 @@
 		<TD style="width: 1%;">
 			<IMG SRC="img/customer.gif" ALT="{trans("Customer:")}">
 		</TD>
-		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
-			{if $customers}
-			<SELECT SIZE="1" NAME="nodeedit[customerid]" {tip text="Assign node to customer"} style="max-width:160px;" onChange="document.editnode.elements['nodeedit[ownerid]'].value=this.value">
-				{foreach from=$customers item=c}
-				<OPTION VALUE="{$c.id}"{if $nodeinfo.ownerid == $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
-				{/foreach}
-			</SELECT>
-			{trans("or Customer ID:")}
-			{/if}
-			<INPUT TYPE="TEXT" NAME="nodeedit[ownerid]" VALUE="{$nodeinfo.ownerid}" SIZE="5"{if $customers} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID" trigger="ownerid"}>
-			<A href="javascript: void(0);" onClick="return customerchoosewin(document.editnode.elements['nodeedit[ownerid]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+		<TD style="width: 99%;" class="nobr" colspan="2">
+			{customerlist form="editnode" customers=$customers selected=$nodeinfo.ownerid selectname="nodeedit[customerid]" inputname="nodeedit[ownerid]" firstoption="" selecttip="Assign node to customer"}
 		</TD>
 	</TR>
 	<TR>

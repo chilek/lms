@@ -143,6 +143,7 @@
 	<TR>
 		<TD style="width: 50%;" class="container valign-top">
 			<TABLE cellpadding="3" width="100%">
+				{block name="customeradd-leftcolumn"}
 				<TR>
 					<TD style="width: 1%;">
 						<img src="img/{if $customeradd.status}{$_CSTATUSES[$customeradd.status].img}{else}{$_CSTATUSES[$smarty.const.CSTATUS_CONNECTED].img}{/if}" alt="">
@@ -256,7 +257,7 @@
 						</TABLE>
 						<script type="text/javascript">
 						<!--
-							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('street'),'?m=customeradd&ajax=1&mode=address&what=',0);
+							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('street'),'?m=customeradd&ajax=1&mode=street&what=',0);
 							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
 							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('city'),'?m=customeradd&ajax=1&mode=city&what=',0);
 						//-->
@@ -325,7 +326,7 @@
 						</TABLE>
 						<script type="text/javascript">
 						<!--
-							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('post_street'),'?m=customeradd&ajax=1&mode=address&what=',0);
+							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('post_street'),'?m=customeradd&ajax=1&mode=street&what=',0);
 							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('post_zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
 							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('post_city'),'?m=customeradd&ajax=1&mode=city&what=',0);
 						//-->
@@ -418,7 +419,7 @@
 					<TD style="width: 1%;"></TD>
 					<TD style="width: 99%;" class="nobr">
 						<fieldset style="width: 1%;" class="nobr">
-							<legend class="bold"><IMG src="img/card.gif" alt=""> {trans("Bank accounts")}</legend>
+							<legend class="bold"><IMG src="img/card.gif" alt=""> {trans("Alternative bank accounts")}</legend>
 							<table>
 								{foreach $customeradd.accounts as $key => $item}
 								<TR id="account{$key}">
@@ -618,10 +619,12 @@
 						</TABLE>
 					</TD>
 				</TR>
+				{/block}
 			</TABLE>
 		</TD>
 		<TD style="width: 50%;" class="container valign-top">
 			<TABLE width="100%" cellpadding="3">
+				{block name="customeradd-rightcolumn"}
 				<TR>
 					<TD style="width: 1%;"><IMG src="img/info1.gif" alt=""></TD>
 					<TD style="width: 99%;">
@@ -646,6 +649,7 @@
 						<TEXTAREA rows="10" cols="60" name="customeradd[notes]" id="notes" {tip text="Enter notes (optional)"}>{$customeradd.notes|escape}</TEXTAREA>
 					</TD>
 				</TR>
+				{/block}
 			</TABLE>
 		</TD>
 	</TR>

@@ -25,7 +25,7 @@
  * ALTER TABLE `sourcefiles` ADD COLUMN `file` BLOB NULL  AFTER `idate` , ADD COLUMN `fileid` INT(11) NULL  AFTER `file` , ADD COLUMN `state` INT NULL  AFTER `fileid` ;
  *
 */
-echo date("Y-m-d H:i:s")." lms-cashimport-bgz.php START \n";
+echo date("Y-m-d H:i:s")." lms-cashimport-bgz.php START " . PHP_EOL;
 
 // Wpisz tutaj login, hasło i identyfikator do systemu bankowego     
 $pLogin = "login";
@@ -40,6 +40,8 @@ $CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
+
+define('CONFIG_FILE', $CONFIG_FILE);
 
 // Parse configuration file
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
@@ -56,27 +58,18 @@ define('BACKUP_DIR', $CONFIG['directories']['backup_dir']);
 define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 
 // Load autloader
-require_once(LIB_DIR.'/autoloader.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'autoloader.php');
 
-// Load config defaults
-
-require_once(LIB_DIR.'/config.php');
-
-// Init database 
+// Init database
 
 $DB = null;
 
 try {
-
-    $DB = LMSDB::getInstance();
-
+	$DB = LMSDB::getInstance();
 } catch (Exception $ex) {
-    
-    trigger_error($ex->getMessage(), E_USER_WARNING);
-    
-    // can't working without database
-    die("Fatal error: cannot connect to database!\n");
-    
+	trigger_error($ex->getMessage(), E_USER_WARNING);
+	// can't working without database
+	die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
 //funkcje

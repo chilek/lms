@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -78,7 +78,6 @@ define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'autoloader.php');
 
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'checkdirs.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'config.php');
 
 // Initialize database
 

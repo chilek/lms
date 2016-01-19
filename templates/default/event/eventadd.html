@@ -22,16 +22,9 @@
 			end.value = start.options[start.selectedIndex].value;
 		}
 	}
-	
-	function reset_customer()
-	{
-		if (document.forms['event'].elements['event[custid]'].value)
-			document.forms['event'].elements['event[customerid]'].value = document.forms['event'].elements['event[custid]'].value;
-	}
 
-	function change_customer(elem)
-	{
-	    xajax_select_customer(elem.value);
+	function change_customer(elem) {
+		xajax_select_customer(elem.value);
 	}
 
 	function update_nodes_location(data)

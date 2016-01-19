@@ -47,12 +47,6 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 		document.setcustomer.submit();
 	}
 
-	function reset_customer()
-        {
-	        if (document.setcustomer.customerid.value)
-	                document.setcustomer.customer.value = document.setcustomer.customerid.value;
-	}
-
 	function setPayTime(type)
 	{
 		var list = document.setcustomer.elements['invoice[paytime_default]'];
@@ -179,17 +173,11 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			{trans("Customer:")}
 		</TD>
 		<TD style="width: 99%;" class="nobr">
-			{if $customers}
-			<SELECT size="1" name="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
-				<OPTION value="0">{trans("... select customer ...")}</OPTION>
-				{foreach from=$customers item=c}
-				<OPTION value="{$c.id}"{if $c.id == $customer.id || $invoice.customerid == $c.id} selected{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</OPTION>
-				{/foreach}
-			</SELECT>
-			{trans("or Customer ID:")}
+			{if isset($customer.id)}
+			{customerlist form="setcustomer" customers=$customers selected=$customer.id selectname="customer" inputname="customerid"}
+			{else}
+			{customerlist form="setcustomer" customers=$customers selected=$invoice.customerid selectname="customer" inputname="customerid"}
 			{/if}
-			<INPUT type="text" name="customerid" value="{if $customer.id}{$customer.id}{else}{$invoice.customerid}{/if}" size="5"{if $customers} onfocus="reset_customer()" onchange="reset_customer()"{/if} {tip text="Enter customer ID"}>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR>
@@ -253,7 +241,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 							<TR class="highlight {cycle}"  >
 								<TD class="nobr">{$covenantlist[covenantlist].time|date_format:"%Y/%m/%d"}</TD>
 								<TD>{$covenantlist[covenantlist].comment}</TD>
-								<TD class="text-right"><INPUT type="text" name="l_prodid[{$covenantlist[covenantlist].cashid}]" value="{if $_config.phpui.default_prodid}{$_config.phpui.default_prodid}{/if}" size="6"></TD>
+								<TD class="text-right"><INPUT type="text" name="l_prodid[{$covenantlist[covenantlist].cashid}]" value="{ConfigHelper::getConfig('phpui.default_prodid', '', true)}" size="6"></TD>
 								<TD class="text-right"><INPUT type="text" name="l_count[{$covenantlist[covenantlist].cashid}]" value="1" size="3"></TD>
 								<TD class="text-right"><INPUT type="text" name="l_jm[{$covenantlist[covenantlist].cashid}]" value="{trans("pcs.")}" size="3"></TD>
 								<TD class="text-right nobr">{$covenantlist[covenantlist].net|money_format}</TD>
