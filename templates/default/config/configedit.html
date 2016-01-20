@@ -35,8 +35,10 @@
 			<B>{trans("Value:")}</B>
 		</TD>
 		<TD width="98%">
-			<input type="checkbox" name="richtext" id="value_label" onclick="javascript:toggle_visual_editor('value');"{if $config.type == $smarty.const.CONFIG_TYPE_RICHTEXT} checked="checked"{/if}>
-			<label for="value_label">{trans("visual editor")}</label><br>
+			<label>
+				<input type="checkbox" name="richtext" onclick="javascript:toggle_visual_editor('value');"{if $config.type == $smarty.const.CONFIG_TYPE_RICHTEXT} checked{/if}>
+				{trans("visual editor")}
+			</label><br>
 			<TEXTAREA rows="5" cols="50" name="config[value]" id="value" {tip text="Enter option value" trigger="value"}>{$config.value}</TEXTAREA>
 		</TD>
 	</TR>
