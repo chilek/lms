@@ -58,12 +58,12 @@ if(isset($_POST['config']))
 	$cfg = $_POST['config'];
 	$cfg['id'] = $id;
 
+	foreach($cfg as $key => $val)
+		$cfg[$key] = trim($val);
+
 	if(!ConfigHelper::checkPrivilege('superuser'))
 		$cfg['type'] = $config['type'];
 
-	foreach($cfg as $key => $val) 
-		$cfg[$key] = trim($val);
-	
 	if($cfg['var']=='')
 		$error['var'] = trans('Option name is required!');
 	elseif(strlen($cfg['var'])>64)
@@ -79,9 +79,11 @@ if(isset($_POST['config']))
 	if(!preg_match('/^[a-z0-9_-]+$/', $cfg['section']) && $cfg['section']!='')
 		$error['section'] = trans('Section name contains forbidden characters!');
 
-	if($cfg['value']=='')
-		$error['value'] = trans('Empty option value is not allowed!');
-	elseif($msg = $LMS->CheckOption($cfg['section'] . '.' . $cfg['var'], $cfg['value'], $cfg['type']))
+	$option = $cfg['section'] . '.' . $cfg['var'];
+	if($cfg['type'] == CONFIG_TYPE_AUTO)
+		$cfg['type'] = $LMS->GetConfigDefaultType($option);
+
+	if($msg = $LMS->CheckOption($option, $cfg['value'], $cfg['type']))
 		$error['value'] = $msg;
 
 	if(!isset($cfg['disabled'])) $cfg['disabled'] = 0;

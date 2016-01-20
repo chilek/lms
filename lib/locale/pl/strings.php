@@ -1004,7 +1004,6 @@ $_LANG['Option exists!'] = 'Opcja juz istnieje!';
 $_LANG['Option name contains forbidden characters!'] = 'Nazwa opcji zawiera niedozwolone znaki.';
 $_LANG['Option name is required!'] = 'Nazwa opcji jest wymagana!';
 $_LANG['Option name is too long (max.64 characters)!'] = 'Nazwa opcji jest wymagana (maks 64 znaki)!';
-$_LANG['Option with empty value not allowed!'] = 'Opcja z pustą wartością nie jest dozwolona!';
 $_LANG['Option with specified name exists in that instance!'] = 'Opcja o podanej nazwie istnieje w tej instancji!';
 $_LANG['OR'] = 'LUB';
 $_LANG['or Customer ID:'] = 'lub ID klienta:';
