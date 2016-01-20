@@ -145,7 +145,7 @@
 						{/foreach}
 						{if $item.docid}
 							{if $item.doctype == $smarty.const.DOC_INVOICE}
-								<A href="?m=invoice&amp;id={$item.docid}" rel="external"><IMG src="img/print.gif" alt="[ {trans("Invoice")} ]" {tip a=$item.docid dynpopup='?m=number&amp;id=$a'}></A>
+								<A href="?m=invoice&id={$item.docid}" rel="external"><img src="img/print.gif" alt="[ {trans("Invoice")} ]" onmouseover="popup('?m=invoiceinfo&id={$item.docid}',1,0,30,15)" onmouseout="pophide()"></A>
 							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
 								<A href="?m=invoice&amp;id={$item.docid}" rel="external"><IMG src="img/printn.gif" alt="[ {trans("Credit note")} ]" {tip a=$item.docid dynpopup='?m=number&amp;id=$a'}></A>
 							{elseif $item.doctype == $smarty.const.DOC_RECEIPT}
