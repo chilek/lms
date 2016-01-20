@@ -53,10 +53,11 @@ if(sizeof($config))
 	elseif (!preg_match('/^[a-z0-9_-]+$/', $section))
 		$error[empty($config['section']) ? 'newsection' : 'section'] = trans('Section name contains forbidden characters!');
 
-	$config['type'] = $LMS->GetConfigDefaultType($config['section'], $config['name']);
+	$option = $config['section'] . '.' . $config['name'];
+	$config['type'] = $LMS->GetConfigDefaultType($option);
 	if($config['value']=='')
 		$error['value'] = trans('Option with empty value not allowed!');
-	elseif($msg = $LMS->CheckOption($config['var'], $config['value'], $config['section'], $config['type']))
+	elseif($msg = $LMS->CheckOption($option, $config['value'], $config['type']))
 		$error['value'] = $msg;
 	
 	if(!isset($config['disabled'])) $config['disabled'] = 0;

@@ -50,9 +50,8 @@ if (isset($_GET['statuschange'])) {
 }
 
 $config = $DB->GetRow('SELECT * FROM uiconfig WHERE id = ?', array($id));
-$config['type'] = ($config['type'] != 0) ? $config['type'] : $LMS->GetConfigDefaultType($config['section'], $config['var']);
-
-$option = $config['var'];
+$option = $config['section'] . '.' . $config['var'];
+$config['type'] = ($config['type'] != 0) ? $config['type'] : $LMS->GetConfigDefaultType($option);
 
 if(isset($_POST['config']))
 {
@@ -82,7 +81,7 @@ if(isset($_POST['config']))
 
 	if($cfg['value']=='')
 		$error['value'] = trans('Empty option value is not allowed!');
-	elseif($msg = $LMS->CheckOption($cfg['var'], $cfg['value'], $cfg['section'], $cfg['type']))
+	elseif($msg = $LMS->CheckOption($cfg['section'] . '.' . $cfg['var'], $cfg['value'], $cfg['type']))
 		$error['value'] = $msg;
 	
 	if(!isset($cfg['disabled'])) $cfg['disabled'] = 0;

@@ -45,9 +45,9 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         return $this->db->GetOne('SELECT id FROM uiconfig WHERE section = ? AND var = ?', array($section, $var));
     }
 
-    public function GetConfigDefaultType($section, $var)
+    public function GetConfigDefaultType($option)
     {
-        switch ($section . '.' . $var) {
+        switch ($option) {
             case 'phpui.force_ssl':
             case 'phpui.allow_mac_sharing':
             case 'phpui.smarty_debug':
@@ -138,12 +138,12 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         return $type;
     }
 
-    public function CheckOption($var, $value, $section, $type)
+    public function CheckOption($option, $value, $type)
     {
         switch ($type) {
             case CONFIG_TYPE_POSITIVE_INTEGER:
                 if ($value <= 0)
-                    return trans('Value of option "$a" must be a number grater than zero!', $section.'.'.$var);
+                    return trans('Value of option "$a" must be a number grater than zero!', $option);
                 break;
 
             case CONFIG_TYPE_BOOLEAN:
