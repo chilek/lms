@@ -62,6 +62,7 @@
 			<INPUT type="checkbox" value="1" id="disabled" name="config[disabled]" {if $config.disabled}CHECKED{/if} {tip text="You can turn it off"}><label for="disabled"> {trans("Off")}</label>
 		</TD>
 	</TR>
+	{if ConfigHelper::checkPrivilege('superuser')}
 	<TR>
 		<TD width="1%">
 			<img src="img/desc.gif" alt="">
@@ -77,6 +78,7 @@
 			</SELECT>
 		</TD>
 	</TR>
+	{/if}
 	<TR>
 		<TD align="right" colspan="3">
 			<A href="javascript:document.config.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>

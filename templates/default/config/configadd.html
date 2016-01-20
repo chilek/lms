@@ -23,7 +23,7 @@
 			<B>{trans("Name:")}</B>
 		</TD>
 		<TD width="98%">
-			<INPUT type="text" name="config[name]" value="{$config.name}" {tip text="Enter option name" trigger="name" bold=1}>&nbsp;
+			<INPUT type="text" name="config[var]" value="{$config.var}" {tip text="Enter option name" trigger="var" bold=1}>&nbsp;
 			<B>{trans("Section:")}</B>
 			<SELECT size="1" name="config[section]" {tip text="Select section" trigger="section"} onchange="javascript:change_section(this.options[this.selectedIndex].value);">
 				{foreach $sections as $section}
@@ -81,7 +81,7 @@
 </P>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['config'].elements['config[name]'].focus();
+document.forms['config'].elements['config[var]'].focus();
 //-->
 </SCRIPT>
 {/block}

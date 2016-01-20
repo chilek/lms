@@ -45,9 +45,9 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         return $this->db->GetOne('SELECT id FROM uiconfig WHERE section = ? AND var = ?', array($section, $var));
     }
 
-    public function GetConfigDefaultType($section, $var)
+    public function GetConfigDefaultType($option)
     {
-        switch ($section . '.' . $var) {
+        switch ($option) {
             case 'phpui.force_ssl':
             case 'phpui.allow_mac_sharing':
             case 'phpui.smarty_debug':
@@ -126,6 +126,10 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                 $type = CONFIG_TYPE_DOCTYPE;
                 break;
 
+            case 'phpui.document_margins':
+                $type = CONFIG_TYPE_MARGINS;
+                break;
+
             default:
                 $type = CONFIG_TYPE_NONE;
                 break;
@@ -134,12 +138,12 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         return $type;
     }
 
-    public function CheckOption($type, $value)
+    public function CheckOption($option, $value, $type)
     {
         switch ($type) {
             case CONFIG_TYPE_POSITIVE_INTEGER:
                 if ($value <= 0)
-                    return trans('Value of option "$a" must be a number grater than zero!', $var);
+                    return trans('Value of option "$a" must be a number grater than zero!', $option);
                 break;
 
             case CONFIG_TYPE_BOOLEAN:
@@ -160,6 +164,11 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
             case CONFIG_TYPE_EMAIL:
                 if (!check_email($value))
                     return trans('Incorrect email address!');
+                break;
+
+            case CONFIG_TYPE_MARGINS:
+                if (!preg_match('/^\d,\d,\d,\d$/', $value))
+                    return trans('Margins should consist of 4 numbers separated by commas!');
                 break;
         }
         return NULL;

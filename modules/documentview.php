@@ -81,7 +81,8 @@ if(!empty($_POST['marks']))
 			$i++;
 		}
 		if (strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
-			html2pdf($htmlbuffer, trans('Document'), NULL, NULL, NULL, 'P', array(10, 5, 15, 5));
+			$margins = explode(",", ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5'));
+			html2pdf($htmlbuffer, trans('Document'), NULL, NULL, NULL, 'P', $margins);
 		}
 		die;
 	}
@@ -112,7 +113,8 @@ if(!empty($_POST['marks']))
 			readfile($filename);
 			$htmlbuffer = ob_get_contents();
 			ob_end_clean();
-			html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', array(10, 5, 15, 5), ($_GET['save'] == 1) ? true : false);
+			$margins = explode(",", ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5'));
+			html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', $margins, ($_GET['save'] == 1) ? true : false);
 		} else {
 			header('Content-Type: '.$doc['contenttype']);
 

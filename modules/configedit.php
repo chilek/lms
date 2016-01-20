@@ -50,13 +50,16 @@ if (isset($_GET['statuschange'])) {
 }
 
 $config = $DB->GetRow('SELECT * FROM uiconfig WHERE id = ?', array($id));
-$config['type'] = $config['type'] != 0 ? $config['type'] : $LMS->GetConfigDefaultType($config['section'], $config['var']);
-$option = $config['var'];
+$option = $config['section'] . '.' . $config['var'];
+$config['type'] = ($config['type'] != 0) ? $config['type'] : $LMS->GetConfigDefaultType($option);
 
 if(isset($_POST['config']))
 {
 	$cfg = $_POST['config'];
 	$cfg['id'] = $id;
+
+	if(!ConfigHelper::checkPrivilege('superuser'))
+		$cfg['type'] = $config['type'];
 	
 	foreach($cfg as $key => $val) 
 		$cfg[$key] = trim($val);
@@ -66,7 +69,7 @@ if(isset($_POST['config']))
 	elseif(strlen($cfg['var'])>64)
 		$error['var'] = trans('Option name is too long (max.64 characters)!');
 	elseif(!preg_match('/^[a-z0-9_-]+$/', $cfg['var']))
-    		$error['var'] = trans('Option name contains forbidden characters!');
+		$error['var'] = trans('Option name contains forbidden characters!');
 
 	if(($cfg['var']!=$config['var'] || $cfg['section']!=$config['section'])
 		&& $LMS->GetConfigOptionId($cfg['var'], $cfg['section'])
@@ -78,7 +81,7 @@ if(isset($_POST['config']))
 
 	if($cfg['value']=='')
 		$error['value'] = trans('Empty option value is not allowed!');
-	elseif($msg = $LMS->CheckOption($cfg['type'], $cfg['value']))
+	elseif($msg = $LMS->CheckOption($cfg['section'] . '.' . $cfg['var'], $cfg['value'], $cfg['type']))
 		$error['value'] = $msg;
 	
 	if(!isset($cfg['disabled'])) $cfg['disabled'] = 0;

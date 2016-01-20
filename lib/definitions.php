@@ -82,6 +82,7 @@ define('CONFIG_TYPE_POSITIVE_INTEGER', 2);
 define('CONFIG_TYPE_EMAIL', 3);
 define('CONFIG_TYPE_RELOADTYPE', 4);
 define('CONFIG_TYPE_DOCTYPE', 5);
+define('CONFIG_TYPE_MARGINS', 6);
 
 $CONFIG_TYPES = array(
 	CONFIG_TYPE_NONE => trans('none'),
@@ -90,6 +91,7 @@ $CONFIG_TYPES = array(
 	CONFIG_TYPE_EMAIL => trans('email'),
 	CONFIG_TYPE_RELOADTYPE => trans('reload type'),
 	CONFIG_TYPE_DOCTYPE => trans('document type'),
+	CONFIG_TYPE_MARGINS => trans('margins'),
 );
 
 // Helpdesk ticket status
