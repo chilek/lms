@@ -140,6 +140,9 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
 
     public function CheckOption($option, $value, $type)
     {
+        if($value == '')
+            return trans('Empty option value is not allowed!');
+
         switch ($type) {
             case CONFIG_TYPE_POSITIVE_INTEGER:
                 if ($value <= 0)

@@ -69,6 +69,23 @@
 			<INPUT type="checkbox" value="1" name="config[disabled]" id="config_disabled"{if $config.disabled} CHECKED{/if} {tip text="You can turn it off"}><label for="config_disabled">{trans("Off")}</label>
 		</TD>
 	</TR>
+	{if ConfigHelper::checkPrivilege('superuser')}
+	<TR>
+		<TD width="1%">
+			<img src="img/desc.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Type:")}</B>
+		</TD>
+		<TD width="98%">
+			<SELECT size="1" name="config[type]" {tip text="Select config type" trigger="type"}>
+				{foreach $_CONFIG_TYPES as $key => $type}
+					<OPTION value="{$key}"{if $config.type == $key} selected{/if}>{$type}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	{/if}
 	<TR>
 		<TD align="right" colspan="3">
 			<A href="javascript:document.config.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
