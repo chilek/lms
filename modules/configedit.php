@@ -51,7 +51,7 @@ if (isset($_GET['statuschange'])) {
 
 $config = $DB->GetRow('SELECT * FROM uiconfig WHERE id = ?', array($id));
 $option = $config['section'] . '.' . $config['var'];
-$config['type'] = ($config['type'] != 0) ? $config['type'] : $LMS->GetConfigDefaultType($option);
+$config['type'] = ($config['type'] == CONFIG_TYPE_AUTO) ? $LMS->GetConfigDefaultType($option) : $config['type'];
 
 if(isset($_POST['config']))
 {
@@ -60,7 +60,7 @@ if(isset($_POST['config']))
 
 	if(!ConfigHelper::checkPrivilege('superuser'))
 		$cfg['type'] = $config['type'];
-	
+
 	foreach($cfg as $key => $val) 
 		$cfg[$key] = trim($val);
 	

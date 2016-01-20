@@ -54,7 +54,10 @@ if(sizeof($config))
 		$error[empty($config['section']) ? 'newsection' : 'section'] = trans('Section name contains forbidden characters!');
 
 	$option = $config['section'] . '.' . $config['var'];
-	$config['type'] = $LMS->GetConfigDefaultType($option);
+
+	if(!ConfigHelper::checkPrivilege('superuser') || $config['type'] == CONFIG_TYPE_AUTO)
+		$config['type'] = $LMS->GetConfigDefaultType($option);
+
 	if($config['value']=='')
 		$error['value'] = trans('Option with empty value not allowed!');
 	elseif($msg = $LMS->CheckOption($option, $config['value'], $config['type']))

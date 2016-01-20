@@ -76,15 +76,17 @@ $CSTATUSES = array(
 );
 
 // Config types
-define('CONFIG_TYPE_NONE', 0);
+define('CONFIG_TYPE_AUTO', 0);
 define('CONFIG_TYPE_BOOLEAN', 1);
 define('CONFIG_TYPE_POSITIVE_INTEGER', 2);
 define('CONFIG_TYPE_EMAIL', 3);
 define('CONFIG_TYPE_RELOADTYPE', 4);
 define('CONFIG_TYPE_DOCTYPE', 5);
 define('CONFIG_TYPE_MARGINS', 6);
+define('CONFIG_TYPE_NONE', 7);
 
 $CONFIG_TYPES = array(
+	CONFIG_TYPE_AUTO => trans('- auto -'),
 	CONFIG_TYPE_NONE => trans('none'),
 	CONFIG_TYPE_BOOLEAN => trans('boolean'),
 	CONFIG_TYPE_POSITIVE_INTEGER => trans('integer greater than 0'),
