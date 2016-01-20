@@ -33,19 +33,19 @@ if(sizeof($config))
 	foreach($config as $key => $val)
 	    $config[$key] = trim($val);
 	
-	if(!($config['name'] || $config['value'] || $config['description']))
+	if(!($config['var'] || $config['value'] || $config['description']))
 	{
 		$SESSION->redirect('?m=configlist');
 	}
 	
-	if($config['name']=='')
-		$error['name'] = trans('Option name is required!');
-	elseif(strlen($config['name'])>64)
-		$error['name'] = trans('Option name is too long (max.64 characters)!');
-	elseif(!preg_match('/^[a-z0-9_-]+$/', $config['name']))
-		$error['name'] = trans('Option name contains forbidden characters!');
-	elseif($LMS->GetConfigOptionId($config['name'], $config['section']))
-		$error['name'] = trans('Option exists!'); 
+	if($config['var']=='')
+		$error['var'] = trans('Option name is required!');
+	elseif(strlen($config['var'])>64)
+		$error['var'] = trans('Option name is too long (max.64 characters)!');
+	elseif(!preg_match('/^[a-z0-9_-]+$/', $config['var']))
+		$error['var'] = trans('Option name contains forbidden characters!');
+	elseif($LMS->GetConfigOptionId($config['var'], $config['section']))
+		$error['var'] = trans('Option exists!');
 
 	$section = empty($config['section']) ? $config['newsection'] : $config['section'];
 	if (empty($section))
@@ -53,7 +53,7 @@ if(sizeof($config))
 	elseif (!preg_match('/^[a-z0-9_-]+$/', $section))
 		$error[empty($config['section']) ? 'newsection' : 'section'] = trans('Section name contains forbidden characters!');
 
-	$option = $config['section'] . '.' . $config['name'];
+	$option = $config['section'] . '.' . $config['var'];
 	$config['type'] = $LMS->GetConfigDefaultType($option);
 	if($config['value']=='')
 		$error['value'] = trans('Option with empty value not allowed!');
@@ -65,7 +65,7 @@ if(sizeof($config))
 	if (!$error) {
 		$args = array(
 			'section' => $section,
-			'name' => $config['name'],
+			'var' => $config['var'],
 			'value' => $config['value'],
 			'description' => $config['description'],
 			'disabled' => $config['disabled'],
@@ -83,7 +83,7 @@ if(sizeof($config))
 		if (!isset($config['reuse']))
 			$SESSION->redirect('?m=configlist');
 
-		unset($config['name']);
+		unset($config['var']);
 		unset($config['value']);
 		unset($config['description']);
 		unset($config['disabled']);
