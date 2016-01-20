@@ -83,10 +83,13 @@ if(isset($_POST['config']))
 		$error['value'] = trans('Empty option value is not allowed!');
 	elseif($msg = $LMS->CheckOption($cfg['section'] . '.' . $cfg['var'], $cfg['value'], $cfg['type']))
 		$error['value'] = $msg;
-	
+
 	if(!isset($cfg['disabled'])) $cfg['disabled'] = 0;
 
 	if (!$error) {
+		if(isset($_POST['richtext']))
+			$cfg['type'] = CONFIG_TYPE_RICHTEXT;
+
 		$args = array(
 			'section' => $cfg['section'],
 			'var' => $cfg['var'],
