@@ -29,7 +29,8 @@ version ?.??.?? (????-??-??):
   - removed deprecated chkconfig, check_conf and get_conf public functions [chilan]
   - lib/config.php is needed only for config load module [chilan]
   - added column with type in uiconfig, and configuration is validated by this type [pjona]
-  - change the definition of the function CheckOption() in LMSConfigManager [pjona]
+  - function $LMS->CheckOption() takes a '$type' as the first parameter [pjona]
+  - lms-sendinvoices.php can send additional file as a separate attachment [pjona]
 
 version 1.11.19 (2015-12-21):
 
