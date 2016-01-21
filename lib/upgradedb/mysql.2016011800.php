@@ -1,11 +1,9 @@
 <?php
 
 /*
- *  LMS version 1.11-git
+ * LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
- *
- *  Please, see the doc/AUTHORS for more information about authors!
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -21,21 +19,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
  */
 
-/**
- * LMSConfigManagerInterface
- * 
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
- */
-interface LMSConfigManagerInterface
-{
-    public function GetConfigSections();
-    
-    public function GetConfigOptionId($var, $section);
+$this->BeginTrans();
 
-    public function GetConfigDefaultType($option);
-    
-    public function CheckOption($option, $value, $type);
-}
+$this->Execute("ALTER TABLE uiconfig ADD COLUMN type smallint NOT NULL DEFAULT 0");
+
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016011800', 'dbversion'));
+
+$this->CommitTrans();
+
+?>

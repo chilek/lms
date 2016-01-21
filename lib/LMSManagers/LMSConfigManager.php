@@ -45,49 +45,133 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         return $this->db->GetOne('SELECT id FROM uiconfig WHERE section = ? AND var = ?', array($section, $var));
     }
 
-    public function CheckOption($var, $value)
+    public function GetConfigDefaultType($option)
     {
-        switch ($var) {
-            case 'accountlist_pagelimit':
-            case 'ticketlist_pagelimit':
-            case 'balancelist_pagelimit':
-            case 'invoicelist_pagelimit':
-            case 'aliaslist_pagelimit':
-            case 'domainlist_pagelimit':
-            case 'documentlist_pagelimit':
-            case 'timeout':
-            case 'timetable_days_forward':
-            case 'nodepassword_length':
-            case 'check_for_updates_period':
-            case 'print_balance_list_limit':
-            case 'networkhosts_pagelimit':
+        switch ($option) {
+            case 'phpui.force_ssl':
+            case 'phpui.allow_mac_sharing':
+            case 'phpui.smarty_debug':
+            case 'phpui.use_current_payday':
+            case 'phpui.helpdesk_backend_mode':
+            case 'phpui.helpdesk_reply_body':
+            case 'phpui.to_words_short_version':
+            case 'phpui.newticket_notify':
+            case 'phpui.short_pagescroller':
+            case 'phpui.big_networks':
+            case 'phpui.ewx_support':
+            case 'phpui.helpdesk_stats':
+            case 'phpui.helpdesk_customerinfo':
+            case 'phpui.logging':
+            case 'phpui.note_check_payment':
+            case 'phpui.public_ip':
+            case 'phpui.radius':
+            case 'phpui.hide_summaries':
+            case 'phpui.use_invoices':
+            case 'phpui.hide_toolbar':
+            case 'phpui.default_assignment_invoice':
+            case 'phpui.invoice_check_payment':
+            case 'finances.cashimport_checkinvoices':
+            case 'receipts.show_nodes_warning':
+            case 'invoices.customer_bankaccount':
+            case 'invoices.customer_credentials':
+            case 'invoices.print_balance_history':
+                $type = CONFIG_TYPE_BOOLEAN;
+                break;
+
+            case 'phpui.customerlist_pagelimit':
+            case 'phpui.nodelist_pagelimit':
+            case 'phpui.balancelist_pagelimit':
+            case 'phpui.configlist_pagelimit':
+            case 'phpui.invoicelist_pagelimit':
+            case 'phpui.ticketlist_pagelimit':
+            case 'phpui.accountlist_pagelimit':
+            case 'phpui.domainlist_pagelimit':
+            case 'phpui.aliaslist_pagelimit':
+            case 'phpui.receiptlist_pagelimit':
+            case 'phpui.taxratelist_pagelimit':
+            case 'phpui.numberplanlist_pagelimit':
+            case 'phpui.divisionlist_pagelimit':
+            case 'phpui.documentlist_pagelimit':
+            case 'phpui.recordlist_pagelimit':
+            case 'phpui.voipaccountlist_pagelimit':
+            case 'phpui.networkhosts_pagelimit':
+            case 'phpui.messagelist_pagelimit':
+            case 'phpui.cashreglog_pagelimit':
+            case 'phpui.debitnotelist_pagelimit':
+            case 'phpui.printout_pagelimit':
+            case 'phpui.timeout':
+            case 'phpui.timetable_days_forward':
+            case 'phpui.nodepassword_length':
+            case 'phpui.check_for_updates_period':
+                $type = CONFIG_TYPE_POSITIVE_INTEGER;
+                break;
+
+            case 'mail.debug_email':
+            case 'sendinvoices.debug_email':
+            case 'sendinvoices.sender_email':
+            case 'userpanel.debug_email':
+            case 'zones.hostmaster_mail':
+                $type = CONFIG_TYPE_EMAIL;
+                break;
+
+            case 'phpui.reload_type':
+                $type = CONFIG_TYPE_RELOADTYPE;
+                break;
+
+            case 'notes.type':
+            case 'receipts.type':
+            case 'phpui.report_type':
+            case 'phpui.document_type':
+            case 'invoices.type':
+                $type = CONFIG_TYPE_DOCTYPE;
+                break;
+
+            case 'phpui.document_margins':
+                $type = CONFIG_TYPE_MARGINS;
+                break;
+
+            default:
+                $type = CONFIG_TYPE_NONE;
+                break;
+        }
+
+        return $type;
+    }
+
+    public function CheckOption($option, $value, $type)
+    {
+        if($value == '')
+            return trans('Empty option value is not allowed!');
+
+        switch ($type) {
+            case CONFIG_TYPE_POSITIVE_INTEGER:
                 if ($value <= 0)
-                    return trans('Value of option "$a" must be a number grater than zero!', $var);
+                    return trans('Value of option "$a" must be a number grater than zero!', $option);
                 break;
-            case 'reload_type':
-                if ($value != 'sql' && $value != 'exec')
-                    return trans('Incorrect reload type. Valid types are: sql, exec!');
-                break;
-            case 'force_ssl':
-            case 'allow_mac_sharing':
-            case 'smarty_debug':
-            case 'use_current_payday':
-            case 'helpdesk_backend_mode':
-            case 'helpdesk_reply_body':
-            case 'to_words_short_version':
-            case 'newticket_notify':
-            case 'print_balance_list':
-            case 'short_pagescroller':
-            case 'big_networks':
-            case 'ewx_support':
-            case 'helpdesk_stats':
-            case 'helpdesk_customerinfo':
+
+            case CONFIG_TYPE_BOOLEAN:
                 if (!isboolean($value))
                     return trans('Incorrect value! Valid values are: 1|t|true|y|yes|on and 0|n|no|off|false');
                 break;
-            case 'debug_email':
+
+            case CONFIG_TYPE_RELOADTYPE:
+                if ($value != 'sql' && $value != 'exec')
+                    return trans('Incorrect reload type. Valid types are: sql, exec!');
+                break;
+
+            case CONFIG_TYPE_DOCTYPE:
+                if ($value != 'html' && $value != 'pdf')
+                    return trans('Incorrect value! Valid values are: html, pdf!');
+                break;
+
+            case CONFIG_TYPE_EMAIL:
                 if (!check_email($value))
                     return trans('Incorrect email address!');
+                break;
+
+            case CONFIG_TYPE_MARGINS:
+                if (!preg_match('/^\d,\d,\d,\d$/', $value))
+                    return trans('Margins should consist of 4 numbers separated by commas!');
                 break;
         }
         return NULL;

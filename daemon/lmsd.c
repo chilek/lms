@@ -517,7 +517,7 @@ static void parse_command_line(int argc, char **argv)
         default:
 		printf("LMS Daemon version %s (%s). Command line options:\n", PACKAGE_VERSION, LMSD_REVISION);
         	printf(" --config-file -C file\t\tpath to ini file (default: /etc/lms/lms.ini)\n");
-        	printf(" --type -t [dbtype]\tdatabase type (default: mysql)\n");
+        	printf(" --dbtype -t [dbtype]\tdatabase type (default: mysql)\n");
         	printf(" --dbhost -h host[:port]\tdatabase host (default: 'localhost')\n");
         	printf(" --dbname -d db_name\t\tdatabase name (default: 'lms')\n");
         	printf(" --dbuser -u db_user\t\tdatabase user (default: 'lms')\n");

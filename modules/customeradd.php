@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,50 +24,44 @@
  *  $Id$
  */
 
-if(isset($_GET['ajax'])) 
-{
+if (isset($_GET['ajax'])) {
 	header('Content-type: text/plain');
 	$search = urldecode(trim($_GET['what']));
 
-	switch($_GET['mode'])
-	{
-	        case 'address':
-			$mode='address';
-                        $database_type = ConfigHelper::getConfig('database.type');
-			if ($database_type == 'mysql' || $database_type == 'mysqli') 
-				$mode = 'substring(address from 1 for length(address)-locate(\' \',reverse(address))+1)';
-			elseif($database_type == 'postgres') 
-				$mode = 'substring(address from \'^.* \')';
-		break;
-	        case 'zip':
-			$mode='zip';
-		break;
-	        case 'city':
-			$mode='city';
-		break;
+	switch ($_GET['mode']) {
+		case 'street':
+			$mode = 'street';
+			break;
+
+		case 'zip':
+			$mode = 'zip';
+			break;
+
+		case 'city':
+			$mode = 'city';
+			break;
 	}
 
 	if (!isset($mode)) { print 'false;'; exit; }
 
-	$candidates = $DB->GetAll('SELECT '.$mode.' as item, count(id) as entries
-	    FROM customeraddressview
-	    WHERE '.$mode.' != \'\' AND lower('.$mode.') ?LIKE? lower(' . $DB->Escape('%'.$search.'%') . ')
-	    GROUP BY item
-	    ORDER BY entries desc, item asc
-	    LIMIT 15');
+	$candidates = $DB->GetAll('SELECT ' . $mode . ' as item, count(id) AS entries
+		FROM customers
+		WHERE ' . $mode . ' != \'\' AND lower(' . $mode . ') ?LIKE? lower(' . $DB->Escape('%' . $search . '%') . ')
+		GROUP BY item
+		ORDER BY entries DESC, item ASC
+		LIMIT 15');
 
-	$eglible=array(); $descriptions=array();
+	$eglible = array(); $descriptions = array();
 	if ($candidates)
-	foreach($candidates as $idx => $row) {
-		$eglible[$row['item']] = escape_js($row['item']);
-		$descriptions[$row['item']] = escape_js($row['entries'].' '.trans('entries'));
-	}
+		foreach ($candidates as $idx => $row) {
+			$eglible[$row['item']] = escape_js($row['item']);
+			$descriptions[$row['item']] = escape_js($row['entries'] . ' ' . trans('entries'));
+		}
 	if ($eglible) {
-		print "this.eligible = [\"".implode('","',$eglible)."\"];\n";
-		print "this.descriptions = [\"".implode('","',$descriptions)."\"];\n";
-	} else {
+		print "this.eligible = [\"" . implode('","', $eglible) . "\"];\n";
+		print "this.descriptions = [\"" . implode('","', $descriptions) . "\"];\n";
+	} else
 		print "false;\n";
-	}
 	exit;
 }
 
