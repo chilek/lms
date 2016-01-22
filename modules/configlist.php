@@ -465,6 +465,10 @@ function GetConfigList($order='var,asc', $section='', $search='')
 						$config[$idx]['description'] = trans('SMTP settings.');
 					break;
 
+					case 'backend':
+						$config[$idx]['description'] = trans('Mail backend settings. Available options: pear or phpmailer.');
+					break;
+
 					default:
 						$config[$idx]['description'] = trans('Unknown option. No description.');
 					break;

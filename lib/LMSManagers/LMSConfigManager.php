@@ -130,6 +130,10 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                 $type = CONFIG_TYPE_MARGINS;
                 break;
 
+	    case 'mail.backend':
+		$type = CONFIG_TYPE_MAIL_BACKEND;
+		break;
+
             default:
                 $type = CONFIG_TYPE_NONE;
                 break;
@@ -172,6 +176,11 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
             case CONFIG_TYPE_MARGINS:
                 if (!preg_match('/^\d,\d,\d,\d$/', $value))
                     return trans('Margins should consist of 4 numbers separated by commas!');
+                break;
+
+	    case CONFIG_TYPE_MAIL_BACKEND:
+                if ($value != 'pear' && $value != 'phpmailer')
+                    return trans('Incorrect mail backend. Valid types are: pear, phpmailer!');
                 break;
         }
         return NULL;
