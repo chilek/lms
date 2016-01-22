@@ -2075,7 +2075,11 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$startip++;
 */
 		if($i>1)
-			$LMS->NetDevLink($i,$i-1);
+			$LMS->NetDevLink($i, $i-1, array(
+				'link' => 0,
+				'technology' => 8,
+				'speed' => 1000000,
+			));
 	}
 	echo ' [OK]<BR>';
 	
