@@ -8,7 +8,12 @@
         "phine/exception": "1.0"
     },
     "require_dev": {
-        "phpunit/phpunit": "4.1.*",
-        "phpunit/phpunit-skeleton-generator": "*"
+        "phpunit/phpunit": "5.1.*"
+    },
+    "autoload": {
+        "classmap": ["lib/"]
+    },
+    "autoload-dev": {
+        "psr-4": { "LMS\\Tests\\": "tests/" }
     }
 }
