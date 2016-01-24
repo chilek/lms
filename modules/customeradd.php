@@ -310,6 +310,7 @@ if (isset($_POST['customeradd']))
 		$reuse['status'] = $customeradd['status'];
 		$reuse['contacts'][] = array();
 		$reuse['emails'][] = array();
+		$reuse['accounts'][] = array();
 		unset($customeradd);
 		$customeradd = $reuse;
 		$customeradd['reuse'] = '1';
