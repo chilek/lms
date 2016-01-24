@@ -24,23 +24,25 @@
  *  $Id$
  */
 
+namespace LMS\Tests;
+
 /**
  * LMSPaginationFactoryTest
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
-class LMSPaginationFactoryTest extends PHPUnit_Framework_TestCase
+class LMSPaginationFactoryTest extends \PHPUnit_Framework_TestCase
 {
     
     public function testIfShortFactoryFlagWorks()
     {
-        $pagination = LMSPaginationFactory::getPagination(1, 1, 1, true);
+        $pagination = \LMSPaginationFactory::getPagination(1, 1, 1, true);
         $this->assertInstanceOf('LMSPaginationShort', $pagination);
     }
     
     public function testIfLongFactoryFlagWorks()
     {
-        $pagination = LMSPaginationFactory::getPagination(1, 1, 1, false);
+        $pagination = \LMSPaginationFactory::getPagination(1, 1, 1, false);
         $this->assertInstanceOf('LMSPaginationLong', $pagination);
     }
     
