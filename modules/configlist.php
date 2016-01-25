@@ -470,11 +470,11 @@ function GetConfigList($order='var,asc', $section='', $search='')
 					break;
 
 					case 'phpmailer_from':
-						$config[$idx]['description'] = trans('E-mail address from witch we send mail.');
+						$config[$idx]['description'] = trans('E-mail address from which we send mail.');
 					break;
 
 					case 'phpmailer_from_name':
-						$config[$idx]['description'] = trans('E-mail address name from witch we send mail.');
+						$config[$idx]['description'] = trans('E-mail address name from which we send mail.');
 					break;
 
 					case 'phpmailer_is_html':

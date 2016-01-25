@@ -3114,8 +3114,8 @@ $_LANG['Mail backend settings. Available options: pear or phpmailer.'] = 'Wybór
 $_LANG['Incorrect mail backend. Valid types are: pear, phpmailer!'] = 'Niepoprawny silnik pocztowy. Poprawne typy to: pear, phpmailer!';
 $_LANG['Can\'t send message. PHPMailer not found!'] = 'Nie można wysłać wiadomości. Nie znaleziono PHPMailer!';
 
-$_LANG['E-mail address from witch we send mail.'] = 'Adres email z którego wysyłamy maile.';
-$_LANG['E-mail address name from witch we send mail.'] = 'Nazwa adresu email z którego wysyłamy maile.';
+$_LANG['E-mail address from which we send mail.'] = 'Adres email z którego wysyłamy maile.';
+$_LANG['E-mail address name from which we send mail.'] = 'Nazwa adresu email z którego wysyłamy maile.';
 $_LANG['Email message in html format.'] = 'Wiadomość email w formacie html.';
 $_LANG['mail security protocol'] = 'protokół bezpieczeństwa';
 $_LANG['Security protocol. Available options: ssl or tls.'] = 'Protokół bezpieczeństwa. Dostępne opcje: ssl lub tls.';
