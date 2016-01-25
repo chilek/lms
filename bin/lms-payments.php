@@ -303,13 +303,14 @@ function get_period($period) {
 $query = "SELECT n.id, n.period, COALESCE(a.divisionid, 0) AS divid, isdefault 
 		FROM numberplans n 
 		LEFT JOIN numberplanassignments a ON (a.planid = n.id) 
-		WHERE doctype = 1";
-$results = $DB->GetAll($query);
-foreach ($results as $row) {
-	if ($row['isdefault'])
-		$plans[$row['divid']] = $row['id'];
-	$periods[$row['id']] = ($row['period'] ? $row['period'] : YEAR);
-}
+		WHERE doctype = ?";
+$results = $DB->GetAll($query, array(DOC_INVOICE));
+if (empty($results))
+	foreach ($results as $row) {
+		if ($row['isdefault'])
+			$plans[$row['divid']] = $row['id'];
+		$periods[$row['id']] = ($row['period'] ? $row['period'] : YEARLY);
+	}
 
 // prepare customergroups in sql query
 $customergroups = " AND EXISTS (SELECT 1 FROM customergroups g, customerassignments ca 
