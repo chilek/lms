@@ -305,7 +305,7 @@ $query = "SELECT n.id, n.period, COALESCE(a.divisionid, 0) AS divid, isdefault
 		LEFT JOIN numberplanassignments a ON (a.planid = n.id) 
 		WHERE doctype = ?";
 $results = $DB->GetAll($query, array(DOC_INVOICE));
-if (empty($results))
+if (!empty($results))
 	foreach ($results as $row) {
 		if ($row['isdefault'])
 			$plans[$row['divid']] = $row['id'];
