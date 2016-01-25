@@ -2233,6 +2233,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui', 'hide_toolbar', 'false', '', 0),
 ('phpui', 'add_customer_group_required', 'false', '', 0),
 ('phpui', 'document_margins', '10,5,15,5', '', 0),
+('payments', 'date_format', '%Y/%m/%d', '', 0),
 ('invoices', 'template_file', 'invoice.html', '', 0),
 ('invoices', 'content_type', 'text/html', '', 0),
 ('invoices', 'cnote_template_file', 'invoice.html', '', 0),
@@ -2616,4 +2617,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016011900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016012501');
