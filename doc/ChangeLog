@@ -31,6 +31,8 @@ version ?.??.?? (????-??-??):
   - added column with type in uiconfig, and configuration is validated by this type [pjona]
   - function $LMS->CheckOption() takes a '$type' as the first parameter [pjona]
   - lms-sendinvoices.php can send additional file as a separate attachment [pjona]
+  - added support for second mail library (PHPMailer), see mail.backend option [wawryk]
+  - lms-payments.php: added option which allows to define date format [pjona]
 
 version 1.11.19 (2015-12-21):
 
