@@ -2082,17 +2082,20 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			));
 	}
 	echo ' [OK]<BR>';
-	
-	if($_GET['i'])
-	{
+
+	if ($_GET['i']) {
+		$DB->Execute('INSERT INTO numberplans (template, period, doctype, isdefault) VALUES (?, ?, ?, ?)',
+			array(DEFAULT_NUMBER_TEMPLATE, YEARLY, DOC_INVOICE, 1));
+		$numberplanid = $DB->GetLastInsertID('numberplans');
+
 		echo '<B>'.trans('Generating invoices...').'</B>'; flush();
-		
+
 		if($_GET['i'] > 100) $_GET['i'] = 100;
-		
+
 		$inv['number'] = 0;
 		$inv['paytime'] = 14;
 		$inv['paytype'] = 1; // cash
-		$inv['numberplanid'] = 0;
+		$inv['numberplanid'] = $numberplanid;
 		$inv['type'] = DOC_INVOICE;
 		$inv['cdate'] = time() - ($_GET['i']+1) * 86400;
 		$contents['prodid'] = '';
