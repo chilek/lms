@@ -2080,7 +2080,11 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$startip++;
 */
 		if($i>1)
-			$LMS->NetDevLink($i,$i-1);
+			$LMS->NetDevLink($i, $i-1, array(
+				'link' => 0,
+				'technology' => 8,
+				'speed' => 1000000,
+			));
 	}
 	echo ' [OK]<BR>';
 	
@@ -2101,7 +2105,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$contents['jm'] = trans('pcs.');
 		$contents['name'] = trans('Subscription');
 		
-		$customers = $DB->GetAll('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername,
+		$customers = $DB->GetAll('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'customeraddressview.name').' AS customername,
 				id, ssn, address, zip, city, ten, divisionid, countryid FROM customeraddressview');
 					    
 		if($customers)

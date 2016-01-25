@@ -1434,6 +1434,7 @@ CREATE TABLE cashsources (
     id integer      	DEFAULT nextval('cashsources_id_seq'::text) NOT NULL,
     name varchar(32)    DEFAULT '' NOT NULL,
     description text	DEFAULT NULL,
+    deleted smallint	NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     UNIQUE (name)
 );
