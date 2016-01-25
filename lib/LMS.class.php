@@ -1688,7 +1688,7 @@ class LMS
 	    if (empty($headers['Date']))
 		$headers['Date'] = date('r');
 
-	    if ($files || $headers['X-LMS-Format'] == 'html' || ConfigHelper::getConfig('mail.phpmailer_is_html')) {
+	    if ($files || $headers['X-LMS-Format'] == 'html') {
 		$boundary = '-LMS-' . str_replace(' ', '.', microtime());
 		$this->mail_object->set('Content-Type', "multipart/mixed;\n  boundary=\"" . $boundary . '"');
 

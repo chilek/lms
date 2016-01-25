@@ -76,6 +76,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
             case 'invoices.customer_credentials':
             case 'invoices.print_balance_history':
             case 'mail.phpmailer_is_html':
+            case 'mail.smtp_persist':
                 $type = CONFIG_TYPE_BOOLEAN;
                 break;
 

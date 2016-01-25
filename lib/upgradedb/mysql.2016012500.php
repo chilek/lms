@@ -28,15 +28,9 @@
 $this->BeginTrans();
 
 define('CONFIG_TYPE_MAIL_BACKEND', 9);
-define('CONFIG_TYPE_EMAIL', 3);
-define('CONFIG_TYPE_NONE', 7);
-define('CONFIG_TYPE_BOOLEAN', 1);
 define('CONFIG_TYPE_MAIL_SECURE', 10);
 
 $this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('mail', 'backend', 'pear', ?)", array(CONFIG_TYPE_MAIL_BACKEND));
-$this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('mail', 'phpmailer_from', 'example@mail.com', ?)", array(CONFIG_TYPE_EMAIL));
-$this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('mail', 'phpmailer_from_name', 'example', ?)", array(CONFIG_TYPE_NONE));
-$this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('mail', 'phpmailer_is_html', 'false', ?)", array(CONFIG_TYPE_BOOLEAN));
 $this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('mail', 'smtp_secure', 'ssl', ?)", array(CONFIG_TYPE_MAIL_SECURE));
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016012500', 'dbversion'));
