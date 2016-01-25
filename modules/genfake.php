@@ -1881,6 +1881,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	}
 
 	$DB->Execute('INSERT INTO divisions (name, shortname) VALUES(?,?)', array('default', 'default'));
+	$divisionid = $DB->GetLastInsertID('divisions');
 
 	$DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)',array('tax-free', 0, 0));
 	$DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)',array('7%', 7, 1));
@@ -2092,6 +2093,8 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$DB->Execute('INSERT INTO numberplans (template, period, doctype, isdefault) VALUES (?, ?, ?, ?)',
 			array(DEFAULT_NUMBER_TEMPLATE, YEARLY, DOC_INVOICE, 1));
 		$numberplanid = $DB->GetLastInsertID('numberplans');
+		$DB->Execute('INSERT INTO numberplanassignments (planid, divisionid) VALUES (?, ?)',
+			array($numberplanid, $divisionid));
 
 		echo '<B>'.trans('Generating invoices...').'</B>'; flush();
 
