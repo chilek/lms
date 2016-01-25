@@ -469,6 +469,22 @@ function GetConfigList($order='var,asc', $section='', $search='')
 						$config[$idx]['description'] = trans('Mail backend settings. Available options: pear or phpmailer.');
 					break;
 
+					case 'phpmailer_from':
+						$config[$idx]['description'] = trans('E-mail address from witch we send mail.');
+					break;
+
+					case 'phpmailer_from_name':
+						$config[$idx]['description'] = trans('E-mail address name from witch we send mail.');
+					break;
+
+					case 'phpmailer_is_html':
+						$config[$idx]['description'] = trans('Email message in html format.');
+					break;
+
+					case 'smtp_secure':
+						$config[$idx]['description'] = trans('Security protocol. Available options: ssl or tls.');
+					break;
+
 					default:
 						$config[$idx]['description'] = trans('Unknown option. No description.');
 					break;

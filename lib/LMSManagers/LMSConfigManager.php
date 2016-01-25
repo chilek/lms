@@ -75,6 +75,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
             case 'invoices.customer_bankaccount':
             case 'invoices.customer_credentials':
             case 'invoices.print_balance_history':
+            case 'mail.phpmailer_is_html':
                 $type = CONFIG_TYPE_BOOLEAN;
                 break;
 
@@ -107,6 +108,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                 break;
 
             case 'mail.debug_email':
+            case 'mail.phpmailer_from':
             case 'sendinvoices.debug_email':
             case 'sendinvoices.sender_email':
             case 'userpanel.debug_email':
@@ -132,6 +134,10 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
 
 	    case 'mail.backend':
 		$type = CONFIG_TYPE_MAIL_BACKEND;
+		break;
+
+	    case 'mail.smtp_secure':
+		$type = CONFIG_TYPE_MAIL_SECURE;
 		break;
 
             default:
@@ -181,6 +187,11 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
 	    case CONFIG_TYPE_MAIL_BACKEND:
                 if ($value != 'pear' && $value != 'phpmailer')
                     return trans('Incorrect mail backend. Valid types are: pear, phpmailer!');
+                break;
+
+	    case CONFIG_TYPE_MAIL_SECURE:
+                if ($value != 'ssl' && $value != 'tls')
+                    return trans('Incorrect mail security protocol. Valid types are: ssl, tls!');
                 break;
         }
         return NULL;
