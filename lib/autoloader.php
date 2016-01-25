@@ -86,8 +86,8 @@ function application_autoloader($class) {
         'HTML2PDF_parsingHtml'  => 'html2pdf' . DIRECTORY_SEPARATOR . 'class' . DIRECTORY_SEPARATOR . 'parsingHtml.class.php',
         'HTML2PDF_exception'  => 'html2pdf' . DIRECTORY_SEPARATOR . 'class' . DIRECTORY_SEPARATOR . 'exception.class.php',
         'TCPDF' => 'tcpdf' . DIRECTORY_SEPARATOR . 'tcpdf.php',
-        'PHPMailer' => 'PHPMailer' . DIRECTORY_SEPARATOR . 'class.phpmailer.php',
-        'SMTP' => 'PHPMailer' . DIRECTORY_SEPARATOR . 'class.smtp.php'
+        'PHPMailer' => '..' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'phpmailer' . DIRECTORY_SEPARATOR . 'phpmailer' . DIRECTORY_SEPARATOR . 'class.phpmailer.php',
+        'SMTP' => '..' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'phpmailer' . DIRECTORY_SEPARATOR . 'phpmailer' . DIRECTORY_SEPARATOR . 'class.smtp.php'
     );
 
     if (array_key_exists($class, $base_classes))
