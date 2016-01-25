@@ -3109,4 +3109,17 @@ $_LANG['margins'] = 'marginesy';
 $_LANG['Margins should consist of 4 numbers separated by commas!'] = 'Marginesy powinny się składać z 4 liczb oddzielonymi przecinkami!';
 $_LANG['Select config type'] = 'Wybierz typ opcji';
 
+$_LANG['mail backend'] = 'silnik poczty';
+$_LANG['Mail backend settings. Available options: pear or phpmailer.'] = 'Wybór silnika pocztwego. Dostępne opcje: pear lub phpmailer.';
+$_LANG['Incorrect mail backend. Valid types are: pear, phpmailer!'] = 'Niepoprawny silnik pocztowy. Poprawne typy to: pear, phpmailer!';
+$_LANG['Can\'t send message. PHPMailer not found!'] = 'Nie można wysłać wiadomości. Nie znaleziono PHPMailer!';
+
+$_LANG['E-mail address from which we send mail.'] = 'Adres email z którego wysyłamy maile.';
+$_LANG['E-mail address name from which we send mail.'] = 'Nazwa adresu email z którego wysyłamy maile.';
+$_LANG['Email message in html format.'] = 'Wiadomość email w formacie html.';
+$_LANG['mail security protocol'] = 'protokół bezpieczeństwa';
+$_LANG['Security protocol. Available options: ssl or tls.'] = 'Protokół bezpieczeństwa. Dostępne opcje: ssl lub tls.';
+$_LANG['Incorrect mail security protocol. Valid types are: ssl, tls!'] = 'Niepoprawny protokół bezpieczeństwa. Dostępne opcje: ssl, tls!';
+$_LANG['To view the message, please use an HTML compatible email viewer'] = 'Aby zobaczyć tą wiadomość użyj kompatybilnego z HTML programu pocztowego.';
+
 ?>
