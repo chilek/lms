@@ -2167,6 +2167,8 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('mail','debug_email','','',0),
 ('mail','smtp_host','127.0.0.1','',0),
 ('mail','smtp_port','25','',0),
+('mail', 'backend', 'pear', 9),
+('mail', 'smtp_secure', 'ssl', 10),
 ('zones','hostmaster_mail','hostmaster.localhost','',0),
 ('zones','master_dns','localhost','',0),
 ('zones','slave_dns','localhost','',0),
