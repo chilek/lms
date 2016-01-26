@@ -8,6 +8,7 @@ Makefile
 .libs/*
 autom4te.cache/*
 *.Plo
+*.Po
 *.a
 *.la
 *.lai
