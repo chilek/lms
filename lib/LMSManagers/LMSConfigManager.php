@@ -105,6 +105,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
             case 'phpui.timetable_days_forward':
             case 'phpui.nodepassword_length':
             case 'phpui.check_for_updates_period':
+            case 'phpui.quicksearch_limit':
                 $type = CONFIG_TYPE_POSITIVE_INTEGER;
                 break;
 
