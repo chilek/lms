@@ -48,6 +48,7 @@
 					<OPTION VALUE="1"{if $listdata.state == 1} SELECTED{/if}>{trans("connected<!plural:item>")}</OPTION>
 					<OPTION VALUE="2"{if $listdata.state == 2} SELECTED{/if}>{trans("disconnected<!plural:item>")}</OPTION>
 					<OPTION VALUE="3"{if $listdata.state == 3} SELECTED{/if}>{trans("online")}</OPTION>
+					<OPTION VALUE="4"{if $listdata.state == 4} SELECTED{/if}>{trans("without tariff")}</OPTION>
 				</SELECT></SPAN>
 				<SPAN class="nobr">{trans("Network:")}
 				<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">

@@ -34,6 +34,7 @@ version ?.??.?? (????-??-??):
   - added support for second mail library (PHPMailer), see mail.backend option [wawryk]
   - lms-payments.php: added option which allows to define date format [pjona]
   - node list: added support for investment project selection [chilan]
+  - node list: added support for 'without tariff' status [chilan]
 
 version 1.11.19 (2015-12-21):
 

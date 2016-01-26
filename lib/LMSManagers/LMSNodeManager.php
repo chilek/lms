@@ -380,6 +380,12 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				. ($status == 1 ? ' AND n.access = 1' : '') //connected
 				. ($status == 2 ? ' AND n.access = 0' : '') //disconnected
 				. ($status == 3 ? ' AND n.lastonline > ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) : '') //online
+				. ($status == 4 ? ' AND n.id NOT IN (
+					SELECT DISTINCT nodeid FROM nodeassignments na
+					JOIN assignments a ON a.id = na.assignmentid
+					WHERE a.suspended = 0 AND a.period IN (' . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ')
+						AND a.datefrom <= ?NOW? AND (a.dateto = 0 OR a.dateto >= ?NOW?)
+					)' : '')
 				. ($customergroup ? ' AND customergroupid = ' . intval($customergroup) : '')
 				. ($nodegroup ? ' AND nodegroupid = ' . intval($nodegroup) : '')
 				. (isset($searchargs) ? $searchargs : '')
