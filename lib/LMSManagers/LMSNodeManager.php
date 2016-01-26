@@ -324,6 +324,19 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                                 $searchargs[] = 'n.location_city IN (SELECT lc.id FROM location_cities lc WHERE lc.boroughid = '
                                         . $this->db->Escape($value) . ')';
                             break;
+						case 'project':
+							$projectid = intval($value);
+							if ($projectid)
+								switch ($projectid) {
+									case -2:
+										$searchargs[] = 'n.invprojectid IS NULL';
+									case -1:
+										break;
+									default:
+										$searchargs[] = 'n.invprojectid = ' . $projectid;
+										break;
+								}
+							break;
                         default:
                             $searchargs[] = 'n.' . $idx . ' ?LIKE? ' . $this->db->Escape("%$value%");
                     }

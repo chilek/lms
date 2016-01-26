@@ -70,6 +70,14 @@
 					<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 					{/section}
 				</SELECT></SPAN>
+				<SPAN class="nobr">{trans("Project:")}
+				<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
+					<OPTION VALUE="-1"{if $listdata.invprojectid == -1} selected{/if}>- {trans("all")} -</OPTION>
+					<OPTION VALUE="-2"{if $listdata.invprojectid == -2} selected{/if}>- {trans("without project")} -</OPTION>
+					{foreach $NNprojects as $project}
+					<OPTION VALUE="{$project.id}"{if $listdata.invprojectid == $project.id} selected{/if}>{$project.name}</OPTION>
+					{/foreach}
+				</SELECT></SPAN>
 		</TD>
 	</TR>
 	{if $pagination->getTotal() != 0}
