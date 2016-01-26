@@ -161,7 +161,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
 
         switch ($type) {
             case CONFIG_TYPE_POSITIVE_INTEGER:
-                if ($value <= 0)
+                if (!preg_match('/^[1-9][0-9]*$/', $value))
                     return trans('Value of option "$a" must be a number grater than zero!', $option);
                 break;
 
