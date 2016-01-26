@@ -16,12 +16,4 @@ lib/teryt/*
 *.swp
 *.swo
 
-# Object files
-*.o
-
-# Shared objects
-*.so
-
-# Executables
-daemon/lmsd
 /vendor/

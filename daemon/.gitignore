@@ -13,3 +13,12 @@ autom4te.cache/*
 *.la
 *.lai
 *.lo
+
+# Object files
+*.o
+
+# Shared objects
+*.so
+
+# Executables
+lmsd
