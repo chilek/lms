@@ -85,6 +85,9 @@ define('CONFIG_TYPE_DOCTYPE', 5);
 define('CONFIG_TYPE_MARGINS', 6);
 define('CONFIG_TYPE_NONE', 7);
 define('CONFIG_TYPE_RICHTEXT', 8);
+define('CONFIG_TYPE_MAIL_BACKEND', 9);
+define('CONFIG_TYPE_MAIL_SECURE', 10);
+define('CONFIG_TYPE_DATE_FORMAT', 11);
 
 $CONFIG_TYPES = array(
 	CONFIG_TYPE_AUTO => trans('- auto -'),
@@ -96,6 +99,9 @@ $CONFIG_TYPES = array(
 	CONFIG_TYPE_DOCTYPE => trans('document type'),
 	CONFIG_TYPE_MARGINS => trans('margins'),
 	CONFIG_TYPE_RICHTEXT => trans('visual editor'),
+	CONFIG_TYPE_MAIL_BACKEND => trans('mail backend'),
+	CONFIG_TYPE_MAIL_SECURE => trans('mail security protocol'),
+	CONFIG_TYPE_DATE_FORMAT => trans('date format'),
 );
 
 // Helpdesk ticket status

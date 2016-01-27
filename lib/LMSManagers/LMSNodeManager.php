@@ -324,6 +324,19 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                                 $searchargs[] = 'n.location_city IN (SELECT lc.id FROM location_cities lc WHERE lc.boroughid = '
                                         . $this->db->Escape($value) . ')';
                             break;
+						case 'project':
+							$projectid = intval($value);
+							if ($projectid)
+								switch ($projectid) {
+									case -2:
+										$searchargs[] = 'n.invprojectid IS NULL';
+									case -1:
+										break;
+									default:
+										$searchargs[] = 'n.invprojectid = ' . $projectid;
+										break;
+								}
+							break;
                         default:
                             $searchargs[] = 'n.' . $idx . ' ?LIKE? ' . $this->db->Escape("%$value%");
                     }
@@ -367,6 +380,12 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				. ($status == 1 ? ' AND n.access = 1' : '') //connected
 				. ($status == 2 ? ' AND n.access = 0' : '') //disconnected
 				. ($status == 3 ? ' AND n.lastonline > ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) : '') //online
+				. ($status == 4 ? ' AND n.id NOT IN (
+					SELECT DISTINCT nodeid FROM nodeassignments na
+					JOIN assignments a ON a.id = na.assignmentid
+					WHERE a.suspended = 0 AND a.period IN (' . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ')
+						AND a.datefrom <= ?NOW? AND (a.dateto = 0 OR a.dateto >= ?NOW?)
+					)' : '')
 				. ($customergroup ? ' AND customergroupid = ' . intval($customergroup) : '')
 				. ($nodegroup ? ' AND nodegroupid = ' . intval($nodegroup) : '')
 				. (isset($searchargs) ? $searchargs : '')

@@ -88,7 +88,7 @@ switch ($mode) {
 					OR LOWER(post_address) ?LIKE? LOWER($sql_search)
 					OR LOWER(cc.contact) ?LIKE? LOWER($sql_search)
 				ORDER by deleted, username, cc.contact, address
-				LIMIT 15");
+				LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
@@ -173,7 +173,7 @@ switch ($mode) {
 			        INET_NTOA(ipaddr_pub) AS ip_pub, mac
 				    FROM vnodes n
 				    WHERE %where
-    				ORDER BY n.name LIMIT 15';
+    				ORDER BY n.name LIMIT ?';
             else
 			    $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
 			        INET_NTOA(ipaddr_pub) AS ip_pub, mac
@@ -184,7 +184,7 @@ switch ($mode) {
                         GROUP BY nodeid
                     ) m ON (n.id = m.nodeid)
 				    WHERE %where
-    				ORDER BY n.name LIMIT 15';
+    				ORDER BY n.name LIMIT ?';
 
             $sql_where = '('.(preg_match('/^[0-9]+$/',$search) ? "n.id = $search OR " : '')."
 				LOWER(n.name) ?LIKE? LOWER($sql_search)
@@ -196,7 +196,8 @@ switch ($mode) {
                     JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			        WHERE e.userid = lms_current_user() AND a.customerid = n.ownerid)";
 
-			$candidates = $DB->GetAll(str_replace('%where', $sql_where,	$sql_query));
+			$candidates = $DB->GetAll(str_replace('%where', $sql_where,	$sql_query),
+				array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
@@ -286,7 +287,7 @@ switch ($mode) {
 					OR LOWER(c.name) ?LIKE? LOWER($sql_search)
 					OR LOWER(c.lastname) ?LIKE? LOWER($sql_search))
 					ORDER BY t.subject, t.id, c.lastname, c.name, t.requestor
-					LIMIT 15");
+					LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
@@ -345,7 +346,7 @@ switch ($mode) {
 					WHERE a.login ?LIKE? LOWER($username)
 					".($domain ? "AND d.name ?LIKE? LOWER($domain)" : '').")
 					ORDER BY login, domain
-					LIMIT 15");
+					LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
 			$eglible=array(); $actions=array(); $descriptions=array();
 
@@ -389,7 +390,7 @@ switch ($mode) {
 				WHERE (LOWER(d.fullnumber) ?LIKE? LOWER($sql_search)
 					OR 1 = 0)
 					ORDER BY d.fullnumber
-					LIMIT 15");
+					LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
 			$eglible = array(); $actions = array(); $descriptions = array();
 			if ($candidates)

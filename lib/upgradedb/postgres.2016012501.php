@@ -3,9 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
- *
- *  Please, see the doc/AUTHORS for more information about authors!
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -18,15 +16,19 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
  */
 
-/**
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
- */
+$this->BeginTrans();
 
-// Load autloader
-require_once(__DIR__.'/../vendor/autoload.php');
+define('CONFIG_TYPE_DATE_FORMAT', 11);
+
+$this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('payments', 'date_format', '%Y/%m/%d', ?)", array(CONFIG_TYPE_DATE_FORMAT));
+
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016012501', 'dbversion'));
+
+$this->CommitTrans();
+
+?>
