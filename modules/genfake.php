@@ -1852,6 +1852,8 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	$DB->Execute('DELETE FROM taxes');
 	$DB->Execute('DELETE FROM invoicecontents');
 	$DB->Execute('DELETE FROM receiptcontents');
+	$DB->Execute('DELETE FROM numberplanassignments');
+	$DB->Execute('DELETE FROM numberplans');
 
 	if(ConfigHelper::getConfig('database.type')=='postgres')
 	{
@@ -1868,6 +1870,8 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$DB->Execute('DROP SEQUENCE "netlinks_id_seq";   CREATE SEQUENCE "netlinks_id_seq"');
 		$DB->Execute('DROP SEQUENCE "documents_id_seq";  CREATE SEQUENCE "documents_id_seq"');
 		$DB->Execute('DROP SEQUENCE "taxes_id_seq";  CREATE SEQUENCE "taxes_id_seq"');
+		$DB->Execute('DROP SEQUENCE "numberplanassignments_id_seq";  CREATE SEQUENCE "numberplanassignments_id_seq"');
+		$DB->Execute('DROP SEQUENCE "numberplans_id_seq";  CREATE SEQUENCE "numberplans_id_seq"');
 	}
 	elseif(ConfigHelper::getConfig('database.type') == 'mysql' || ConfigHelper::getConfig('database.type') == 'mysqli')
 	{
@@ -1878,6 +1882,8 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$DB->Execute('ALTER TABLE netdevices auto_increment=0');
 		$DB->Execute('ALTER TABLE tariffs auto_increment=0');
 		$DB->Execute('ALTER TABLE taxes auto_increment=0');
+		$DB->Execute('ALTER TABLE numberplanassignments auto_increment=0');
+		$DB->Execute('ALTER TABLE numberplans auto_increment=0');
 	}
 
 	$DB->Execute('INSERT INTO divisions (name, shortname) VALUES(?,?)', array('default', 'default'));
