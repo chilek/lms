@@ -1705,13 +1705,13 @@ class LMS
 		}
 		else{
 		    $this->mail_object->isHTML(false);
-		    $this->mail_object->Body($body);
+		    $this->mail_object->Body = $body;
 		}
 	    }
 	    else {
 		$this->mail_object->set('Content-Type', 'text/plain; charset=UTF-8');
 		$this->mail_object->isHTML(false);
-		$this->mail_object->Body($body);
+		$this->mail_object->Body = $body;
 	    }
 
 	    $this->mail_object->addAddress($recipients);
