@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -54,7 +54,7 @@ foreach ($short_to_longs as $short => $long)
 if (array_key_exists('version', $options)) {
 	print <<<EOF
 lms-notify.php
-(C) 2001-2015 LMS Developers
+(C) 2001-2016 LMS Developers
 
 EOF;
 	exit(0);
@@ -63,7 +63,7 @@ EOF;
 if (array_key_exists('help', $options)) {
 	print <<<EOF
 lms-notify.php
-(C) 2001-2015 LMS Developers
+(C) 2001-2016 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -86,7 +86,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
 	print <<<EOF
 lms-notify.php
-(C) 2001-2015 LMS Developers
+(C) 2001-2016 LMS Developers
 
 EOF;
 }
@@ -291,6 +291,8 @@ function create_message($type, $subject, $template) {
 
 function send_mail($msgid, $cid, $rmail, $rname, $subject, $body) {
 	global $LMS, $DB, $mail_from, $notify_email;
+	global $host, $port, $user, $pass, $auth;
+
 	$DB->Execute("INSERT INTO messageitems
 		(messageid, customerid, destination, status)
 		VALUES (?, ?, ?, ?)",
@@ -301,7 +303,7 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body) {
 		'Subject' => $subject);
 	if (!empty($notify_email))
 		$headers['Cc'] = $notify_email;
-	$result = $LMS->SendMail($rmail, $headers, $body);
+	$result = $LMS->SendMail($rmail, $headers, $body, $host, $port, $user, $pass, $auth);
 
 	$query = "UPDATE messageitems
 		SET status = ?, lastdate = ?NOW?, error = ?
