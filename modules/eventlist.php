@@ -96,7 +96,7 @@ if (!empty($_POST)) {
 		if ($month != $_POST['month'] || $year != $_POST['year'])
 			$day = 1;
 	} else
-		$day = 1;
+		$day = date('j',time());
 
 	$month = $_POST['month'];
 	$year = $_POST['year'];
