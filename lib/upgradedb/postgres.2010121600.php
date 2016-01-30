@@ -54,14 +54,16 @@ function parse_address_tmp($addr)
         $zip = $matches[1];
         $city = $matches[2];
         $street = trim(preg_replace($regexp, '', $addr));
-        $street = trim(array_shift(explode("\n", $street)));
+        $tmp = explode("\n", $street);
+        $street = trim(reset($tmp));
 
         if ($street)
             return array($zip, $city, $street);
     }
     else {
         // first line only
-        $addr = trim(array_shift(explode("\n", $addr)));
+        $tmp = explode("\n", $addr);
+        $addr = trim(reset($tmp));
         return array(NULL, NULL, $addr);
     }
     return NULL;
