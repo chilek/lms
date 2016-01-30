@@ -219,13 +219,14 @@ function module_main()
 			$emails = array();
 			$phones = array();
 			if (!empty($info['contacts']))
-				foreach ($info['contacts'] as $contact) {
-					$contact = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
-					if ($contact['type'] & (CONTACT_EMAIL|CONTACT_INVOICES|CONTACT_NOTIFICATIONS) > 0)
-						$emails[] = $contact;
-					else
-						$phones[] = $contact;
-				}
+				foreach ($info['contacts'] as $contact)
+					if ($contact['type'] & CONTACT_NOTIFICATIONS) {
+						$contact = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+						if ($contact['type'] & CONTACT_EMAIL)
+							$emails[] = $contact;
+						else
+							$phones[] = $contact;
+					}
 
 			if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
 				$body .= "\n\n-- \n";
@@ -390,19 +391,20 @@ function module_main()
 		if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
 			$info = $DB->GetRow('SELECT c.id AS customerid, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,
 				cc.contact AS email, address, zip, city FROM customeraddressview c WHERE c.id = ?', array($SESSION->id));
-				$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
+			$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
 					WHERE customerid = ?', array($SESSION->id));
 
 			$emails = array();
 			$phones = array();
 			if (!empty($info['contacts']))
-				foreach ($info['contacts'] as $contact) {
-					$target = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
-					if ($contact['type'] & CONTACT_EMAIL)
-						$emails[] = $target;
-					else
-						$phones[] = $target;
-				}
+				foreach ($info['contacts'] as $contact)
+					if ($contact['type'] & CONTACT_NOTIFICATIONS) {
+						$target = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+						if ($contact['type'] & CONTACT_EMAIL)
+							$emails[] = $target;
+						else
+							$phones[] = $target;
+					}
 
 			$body .= "\n\n-- \n";
 			$body .= trans('Customer:').' '.$info['customername']."\n";

@@ -288,6 +288,8 @@ function create_message($type, $subject, $template) {
 
 function send_mail($msgid, $cid, $rmail, $rname, $subject, $body) {
 	global $LMS, $DB, $mail_from, $notify_email;
+	global $host, $port, $user, $pass, $auth;
+
 	$DB->Execute("INSERT INTO messageitems
 		(messageid, customerid, destination, status)
 		VALUES (?, ?, ?, ?)",
@@ -298,7 +300,7 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body) {
 		'Subject' => $subject);
 	if (!empty($notify_email))
 		$headers['Cc'] = $notify_email;
-	$result = $LMS->SendMail($rmail, $headers, $body);
+	$result = $LMS->SendMail($rmail, $headers, $body, $host, $port, $user, $pass, $auth);
 
 	$query = "UPDATE messageitems
 		SET status = ?, lastdate = ?NOW?, error = ?

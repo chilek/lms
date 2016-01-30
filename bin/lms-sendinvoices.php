@@ -330,6 +330,7 @@ if (!empty($docs)) {
 			printf("Invoice No. $invoice_number for $mailto" . PHP_EOL);
 
 		if (!$test) {
+			$files = array();
 			$files[] = array(
 				'content_type' => $ftype,
 				'filename' => $filename . '.' . $fext,
