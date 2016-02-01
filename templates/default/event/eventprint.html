@@ -33,7 +33,7 @@
 	</TR>
 	{cycle values="white,grey" print=false}
 	{foreach item=event from=$eventlist}
-	<TR class="{cycle}">
+	<TR class="{cycle}"{if $event.closed==1} style="color: lightgray;"{/if}>
 		<TD WIDTH="1%" VALIGN="TOP" ALIGN="LEFT">
 			<NOBR>
 			{math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
@@ -57,9 +57,12 @@
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" VALIGN="TOP">
 			<NOBR>{$event.customername|truncate:"40":"...":true}</NOBR><BR>
-			<NOBR>{$event.customeraddr}</NOBR><BR>
-			<NOBR>{$event.customercity}</NOBR><BR>
-			<NOBR>{$event.customerphone}</NOBR>
+			{if isset($event.nodelocation)}
+			    {$event.nodelocation}
+			{else}
+			<NOBR>{$event.customerlocation}</NOBR>
+			{/if}
+			<br/><NOBR>{$event.customerphone}</NOBR>
 		</TD>
 	</TR>
 	{/foreach}
