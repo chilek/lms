@@ -33,7 +33,7 @@
 	</TR>
 	{cycle values="white,grey" print=false}
 	{foreach item=event from=$eventlist}
-	<TR class="{cycle}">
+	<TR class="{cycle}"{if $event.closed==1} style="color: lightgray;"{/if}>
 		<TD WIDTH="1%" VALIGN="TOP" ALIGN="LEFT">
 			<NOBR>
 			{math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
