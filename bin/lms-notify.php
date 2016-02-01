@@ -303,7 +303,7 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body) {
 		'Subject' => $subject);
 	if (!empty($notify_email))
 		$headers['Cc'] = $notify_email;
-	$result = $LMS->SendMail($rmail, $headers, $body, $host, $port, $user, $pass, $auth);
+	$result = $LMS->SendMail($rmail, $headers, $body, null, $host, $port, $user, $pass, $auth);
 
 	$query = "UPDATE messageitems
 		SET status = ?, lastdate = ?NOW?, error = ?
