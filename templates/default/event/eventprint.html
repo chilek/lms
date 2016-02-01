@@ -57,9 +57,12 @@
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" VALIGN="TOP">
 			<NOBR>{$event.customername|truncate:"40":"...":true}</NOBR><BR>
-			<NOBR>{$event.customeraddr}</NOBR><BR>
-			<NOBR>{$event.customercity}</NOBR><BR>
+			{if isset($event.nodelocation)}
+			    {$event.nodelocation}
+			{else}
+			<NOBR>{$event.customerlocation}</NOBR><BR>
 			<NOBR>{$event.customerphone}</NOBR>
+			{/if}
 		</TD>
 	</TR>
 	{/foreach}

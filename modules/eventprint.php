@@ -30,11 +30,12 @@ function GetEvents($date=NULL, $userid=0, $customerid=0)
 
 	$list = $DB->GetAll(
 	        'SELECT events.id AS id, title, description, begintime, endtime, closed, note, events.type,'
-		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name'). ' AS customername, 
-		 customers.address AS customeraddr, customers.city AS customercity,
+		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name'). ' AS customername, '
+	        .$DB->Concat('c.city',"', '",'c.address').' AS customerlocation,
+		 nodes.location AS nodelocation,
 		 (SELECT contact FROM customercontacts WHERE customerid = customers.id
 			AND (customercontacts.type & ?) = ? ORDER BY id LIMIT 1) AS customerphone 
-		 FROM events LEFT JOIN customers ON (customerid = customers.id)
+		 FROM events LEFT JOIN customersview ON (customerid = customers.id) LEFT JOIN nodes ON (nodeid = nodes.id)
 		 WHERE date = ? AND (private = 0 OR (private = 1 AND userid = ?)) '
 		 .($customerid ? 'AND customerid = '.intval($customerid) : '')
 		 .' ORDER BY begintime',
