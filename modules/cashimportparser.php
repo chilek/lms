@@ -70,7 +70,9 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 		$lastname = isset($matches[$pattern['plastname']]) ? trim($matches[$pattern['plastname']]) : '';
 		$comment = isset($matches[$pattern['pcomment']]) ? trim($matches[$pattern['pcomment']]) : '';
 		$time = isset($matches[$pattern['pdate']]) ? trim($matches[$pattern['pdate']]) : '';
-		$value = str_replace(',','.', isset($matches[$pattern['pvalue']]) ? trim($matches[$pattern['pvalue']]) : '');
+		$value = str_replace(array(',', ' '), array('.', ''), isset($matches[$pattern['pvalue']]) ? trim($matches[$pattern['pvalue']]) : '');
+		$srcaccount = isset($matches[$pattern['srcaccount']]) ? trim($matches[$pattern['srcaccount']]) : '';
+		$dstaccount = isset($matches[$pattern['dstaccount']]) ? trim($matches[$pattern['dstaccount']]) : '';
 
 		if(!$pattern['pid'])
 		{
