@@ -789,6 +789,77 @@ if (empty($types) || in_array('warnings', $types)) {
 	}
 }
 
+// Events about customers should be notified if they are still opened
+if (empty($types) || in_array('events', $types)) {
+	$time = intval(strftime('%H%M'));
+	$events = $DB->GetAll("SELECT id, title, description, customerid FROM events
+		WHERE customerid <> 0 AND closed = 0 AND date <= ?NOW? AND enddate >= ?NOW?
+			AND begintime <= ? AND (endtime = 0 OR endtime >= ?)", array($time, $time));
+
+	if (!empty($events)) {
+		$customers = array();
+		foreach ($events as $event) {
+			$cid = intval($event['customerid']);
+			if (!array_key_exists($cid, $customers))
+				$customers[$cid] = $DB->GetRow("SELECT (" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS name,
+						m.email, x.phone
+					FROM customers c
+					LEFT JOIN divisions ON divisions.id = c.divisionid
+					LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
+						FROM customercontacts
+						WHERE (type & ?) = ?
+						GROUP BY customerid
+					) m ON (m.customerid = c.id)
+					LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
+						FROM customercontacts
+						WHERE (type & ?) = ?
+						GROUP BY customerid
+					) x ON (x.customerid = c.id)
+					WHERE c.id = ?",
+					array(
+						CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+						CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
+						CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+						CONTACT_MOBILE | CONTACT_NOTIFICATIONS, $cid));
+
+			$customer = $customers[$cid];
+
+			$message = $event['description'];
+			$subject = $event['title'];
+
+			$recipient_mails = ($debug_email ? explode(',', $debug_email) :
+				(!empty($customer['email']) ? explode(',', trim($customer['email'])) : null));
+			$recipient_phones = ($debug_phone ? explode(',', $debug_phone) :
+				(!empty($customer['phone']) ? explode(',', trim($customer['phone'])) : null));
+
+			if (!$quiet) {
+				if (in_array('mail', $channels) && !empty($recipient_mails))
+					foreach ($recipient_mails as $recipient_mail)
+						printf("[mail/events] %s (%04d): %s" . PHP_EOL,
+							$customer['name'], $cid, $recipient_mail);
+				if (in_array('sms', $channels) && !empty($recipient_phones))
+					foreach ($recipient_phones as $recipient_phone)
+						printf("[sms/events] %s (%04d): %s" . PHP_EOL,
+							$customer['name'], $cid, $recipient_phone);
+			}
+
+			if (!$debug) {
+				if (in_array('mail', $channels) && !empty($recipient_mails)) {
+					$msgid = create_message(MSG_MAIL, $subject, $message);
+					foreach ($recipient_mails as $recipient_mail)
+						send_mail($msgid, $cid, $recipient_mail, $customer['name'],
+							$subject, $message);
+				}
+				if (in_array('sms', $channels) && !empty($recipient_phones)) {
+					$msgid = create_message(MSG_SMS, $subject, $message);
+					foreach ($recipient_phones as $recipient_phone)
+						send_sms($msgid, $cid, $recipient_phone, $message);
+				}
+			}
+		}
+	}
+}
+
 // send message to customers which have awaiting www messages
 if (in_array('www', $channels) && (empty($types) || in_array('messages', $types))) {
 	$nodes = $DB->GetAll("SELECT INET_NTOA(ipaddr) AS ip
