@@ -309,6 +309,14 @@ function GetConfigList($order='var,asc', $section='', $search='')
 					case 'date_format':
 						$config[$idx]['description'] = trans('Define date format for variable: %period, %aligned_period, %current_month used in payments.comment and payments.settlement_comment');
 					break;
+
+					case 'default_unit_name':
+						$config[$idx]['description'] = trans('Unit name on invoice, default: "pcs."');
+					break;
+
+					default:
+						$config[$idx]['description'] = trans('Unknown option. No description.');
+					break;
 				} //end: var
 			break;
 

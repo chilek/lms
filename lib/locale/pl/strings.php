@@ -3124,4 +3124,6 @@ $_LANG['Incorrect mail security protocol. Valid types are: ssl, tls!'] = 'Niepop
 $_LANG['To view the message, please use an HTML compatible email viewer'] = 'Aby zobaczyć tą wiadomość użyj kompatybilnego z HTML programu pocztowego.';
 $_LANG['date format'] = 'format daty';
 $_LANG['Define date format for variable: %period, %aligned_period, %current_month used in payments.comment and payments.settlement_comment'] = 'Zdefiniuj format daty dla zmiennych: %period, %aligned_period, %current_month używanych przez opcje payments.comment i payments.settlement_comment';
+$_LANG['Unit name on invoice, default: "pcs."'] = 'Jednostka na fakturze, domyślnie: "szt."';
+
 ?>

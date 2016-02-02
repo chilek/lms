@@ -316,7 +316,7 @@
 		</TD>
 		<TD ALIGN="RIGHT">
 			<INPUT TYPE="text" NAME="count" SIZE="3" VALUE="1">
-			<INPUT TYPE="text" NAME="jm" SIZE="3" VALUE="{trans("pcs.")}">
+			<INPUT TYPE="text" NAME="jm" SIZE="3" VALUE="{trans(ConfigHelper::getConfig('payments.default_unit_name'))}">
 		</TD>
 		<TD ALIGN="RIGHT">
 			<INPUT TYPE="text" NAME="discount" SIZE="6" {tip text="Enter discount percentage or amount"}>
