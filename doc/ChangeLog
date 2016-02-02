@@ -36,7 +36,7 @@ version ?.??.?? (????-??-??):
   - node list: added support for investment project selection [chilan]
   - node list: added support for 'without tariff' status [chilan]
   - added phpui.quicksearch_limit config variable with 15 as default [chilan]
-  - added payments.unit_name config variable with "pcs." as default [pjona]
+  - added payments.default_unit_name config variable with "pcs." as default [pjona]
 
 version 1.11.19 (2015-12-21):
 

@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES('payments', 'unit_name', ?)", array('pcs.'));
+$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES('payments', 'default_unit_name', ?)", array('pcs.'));
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016020200', 'dbversion'));
 

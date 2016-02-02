@@ -136,7 +136,7 @@ $comment = ConfigHelper::getConfig('payments.comment', "Tariff %tariff - %attrib
 $s_comment = ConfigHelper::getConfig('payments.settlement_comment', ConfigHelper::getConfig('payments.comment'));
 $suspension_description = ConfigHelper::getConfig('payments.suspension_description', '');
 $suspension_percentage = ConfigHelper::getConfig('finances.suspension_percentage', 0);
-$unit_name = trans(ConfigHelper::getConfig('payments.unit_name'));
+$unit_name = trans(ConfigHelper::getConfig('payments.default_unit_name'));
 
 function localtime2() {
 	global $fakedate;

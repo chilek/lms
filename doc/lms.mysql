@@ -2146,7 +2146,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui','document_margins','10,5,15,5','',0),
 ('phpui', 'quicksearch_limit', '15', 0),
 ('payments', 'date_format', '%Y/%m/%d', '', 0),
-('payments', 'unit_name', 'pcs.', '', 0),
+('payments', 'default_unit_name', 'pcs.', '', 0),
 ('invoices','template_file','invoice.html','',0),
 ('invoices','content_type','text/html','',0),
 ('invoices','cnote_template_file','invoice.html','',0),
