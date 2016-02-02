@@ -36,6 +36,8 @@ version ?.??.?? (????-??-??):
   - node list: added support for investment project selection [chilan]
   - node list: added support for 'without tariff' status [chilan]
   - added phpui.quicksearch_limit config variable with 15 as default [chilan]
+  - fixed calculation of brutto value basing on netto value
+    (fixes https://github.com/lmsgit/lms/issues/559) [chilan]
 
 version 1.11.19 (2015-12-21):
 
