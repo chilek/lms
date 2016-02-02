@@ -242,6 +242,7 @@ $txts_aligned = array(
 $current_month = strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year));
 $current_period = strftime("%m/%Y", mktime(12, 0, 0, $month, 1, $year));
 $next_period = strftime("%m/%Y", mktime(12, 0, 0, $month + 1, 1, $year));
+$prev_period = strftime("%m/%Y", mktime(12, 0, 0, $month - 1, 1, $year));
 
 // sale date setting
 $saledate = $currtime;
@@ -398,6 +399,7 @@ foreach ($assigns as $assign) {
 	$desc = preg_replace("/\%current_month/", $current_month, $desc);
 	$desc = preg_replace("/\%current_period/", $current_period, $desc);
 	$desc = preg_replace("/\%next_period/", $next_period, $desc);
+	$desc = preg_replace("/\%prev_period/", $prev_period, $desc);
 
 	if ($suspension_percentage && ($assign['suspended'] || $assign['allsuspended']))
 		$desc .= " ".$suspension_description;
@@ -588,6 +590,7 @@ foreach ($assigns as $assign) {
 			$sdesc = preg_replace("/\%current_month/", $current_month, $sdesc);
 			$sdesc = preg_replace("/\%current_period/", $current_period, $sdesc);
 			$sdesc = preg_replace("/\%next_period/", $next_period, $sdesc);
+			$sdesc = preg_replace("/\%prev_period/", $prev_period, $sdesc);
 
 			if ($assign['invoice'])
 			{
