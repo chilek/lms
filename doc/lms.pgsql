@@ -897,7 +897,7 @@ DROP TABLE IF EXISTS invoicecontents CASCADE;
 CREATE TABLE invoicecontents (
 	docid integer 		DEFAULT 0 NOT NULL,
 	itemid smallint		DEFAULT 0 NOT NULL,
-	value numeric(9,2) 	DEFAULT 0 NOT NULL,
+	value numeric(12,5) 	DEFAULT 0 NOT NULL,
 	taxid integer 		DEFAULT 0 NOT NULL,
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
 	content varchar(16) 	DEFAULT '' NOT NULL,

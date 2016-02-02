@@ -310,7 +310,7 @@ CREATE TABLE numberplanassignments (
 CREATE TABLE invoicecontents (
   docid int(11) NOT NULL DEFAULT '0',
   itemid smallint NOT NULL DEFAULT '0',
-  value decimal(9,2) NOT NULL DEFAULT '0',
+  value decimal(12,5) NOT NULL DEFAULT '0',
   pdiscount decimal(4,2) NOT NULL DEFAULT '0',
   vdiscount decimal(9,2) NOT NULL DEFAULT '0',
   taxid int(11) NOT NULL DEFAULT '0',
