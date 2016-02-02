@@ -303,6 +303,15 @@ function GetConfigList($order='var,asc', $section='', $search='')
 			} //end: var
 			break;
 
+			case 'payments':
+				switch($item['var'])
+				{
+					case 'date_format':
+						$config[$idx]['description'] = trans('Define date format for variable: %period, %aligned_period, %current_month used in payments.comment and payments.settlement_comment');
+					break;
+				} //end: var
+			break;
+
 			case 'finances':
 				switch($item['var'])
 				{
