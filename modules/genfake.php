@@ -2114,7 +2114,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$inv['cdate'] = time() - ($_GET['i']+1) * 86400;
 		$contents['prodid'] = '';
 		$contents['tariffid'] = 0;
-		$contents['jm'] = trans('pcs.');
+		$contents['jm'] = trans(ConfigHelper::getConfig('payments.unit_name'));
 		$contents['name'] = trans('Subscription');
 		
 		$customers = $DB->GetAll('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'customeraddressview.name').' AS customername,

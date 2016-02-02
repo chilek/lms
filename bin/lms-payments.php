@@ -136,6 +136,7 @@ $comment = ConfigHelper::getConfig('payments.comment', "Tariff %tariff - %attrib
 $s_comment = ConfigHelper::getConfig('payments.settlement_comment', ConfigHelper::getConfig('payments.comment'));
 $suspension_description = ConfigHelper::getConfig('payments.suspension_description', '');
 $suspension_percentage = ConfigHelper::getConfig('finances.suspension_percentage', 0);
+$unit_name = trans(ConfigHelper::getConfig('payments.unit_name'));
 
 function localtime2() {
 	global $fakedate;
@@ -517,8 +518,8 @@ foreach ($assigns as $assign) {
 
 				$DB->Execute("INSERT INTO invoicecontents (docid, value, taxid, prodid, 
 					content, count, description, tariffid, itemid, pdiscount, vdiscount) 
-					VALUES (?, $val, ?, ?, 'szt.', 1, ?, ?, $itemid, ?, ?)",
-					array($invoices[$cid], $assign['taxid'], $assign['prodid'],
+					VALUES (?, $val, ?, ?, ?, 1, ?, ?, $itemid, ?, ?)",
+					array($invoices[$cid], $assign['taxid'], $assign['prodid'], $unit_name,
 					$desc, $assign['tariffid'], $assign['pdiscount'], $assign['vdiscount']));
 				$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) 
 					VALUES ($currtime, $val * -1, ?, $cid, ?, ?, $itemid)",
@@ -608,8 +609,8 @@ foreach ($assigns as $assign) {
 
 					$DB->Execute("INSERT INTO invoicecontents (docid, value, taxid, prodid, 
 						content, count, description, tariffid, itemid, pdiscount, vdiscount) 
-						VALUES (?, $value, ?, ?, 'szt.', 1, ?, ?, $itemid, ?, ?)",
-						array($invoices[$cid], $assign['taxid'], $assign['prodid'],
+						VALUES (?, $value, ?, ?, ?, 1, ?, ?, $itemid, ?, ?)",
+						array($invoices[$cid], $assign['taxid'], $assign['prodid'], $unit_name,
 						$sdesc, $assign['tariffid'], $assign['pdiscount'], $assign['vdiscount']));
 					$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) 
 						VALUES($currtime, $value * -1, ?, $cid, ?, ?, $itemid)",
