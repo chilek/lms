@@ -69,7 +69,8 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 					if ($days == 1)
 						$row['endtime'] = $endtime;
 					$row['date'] += 86400;
-					$list2[] = $row;
+					if ($days > 1 || $endtime)
+						$list2[] = $row;
 					$days--;
 				}
 			} else
