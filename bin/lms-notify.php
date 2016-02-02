@@ -331,6 +331,23 @@ function send_sms($msgid, $cid, $phone, $data) {
 		$DB->Execute($query, array($result, null, $msgid, $cid, $msgitemid));
 }
 
+function send_mail_to_user($rmail, $rname, $subject, $body) {
+	global $LMS, $mail_from, $notify_email;
+	global $host, $port, $user, $pass, $auth;
+
+	$headers = array('From' => $mail_from, 'To' => qp_encode($rname) . " <$rmail>",
+		'Subject' => $subject);
+	if (!empty($notify_email))
+		$headers['Cc'] = $notify_email;
+	$result = $LMS->SendMail($rmail, $headers, $body, null, $host, $port, $user, $pass, $auth);
+}
+
+function send_sms_to_user($phone, $data) {
+	global $LMS;
+
+	$result = $LMS->SendSMS(str_replace(' ', '', $phone), $data);
+}
+
 // ------------------------------------------------------------------------
 // ACTIONS
 // ------------------------------------------------------------------------
@@ -792,70 +809,130 @@ if (empty($types) || in_array('warnings', $types)) {
 // Events about customers should be notified if they are still opened
 if (empty($types) || in_array('events', $types)) {
 	$time = intval(strftime('%H%M'));
-	$events = $DB->GetAll("SELECT id, title, description, customerid FROM events
-		WHERE customerid <> 0 AND closed = 0 AND date <= ?NOW? AND enddate >= ?NOW?
+	$events = $DB->GetAll("SELECT id, title, description, customerid, userid FROM events
+		WHERE (customerid <> 0 OR userid <> 0) AND closed = 0 AND date <= ?NOW? AND enddate >= ?NOW?
 			AND begintime <= ? AND (endtime = 0 OR endtime >= ?)", array($time, $time));
 
 	if (!empty($events)) {
 		$customers = array();
-		foreach ($events as $event) {
-			$cid = intval($event['customerid']);
-			if (!array_key_exists($cid, $customers))
-				$customers[$cid] = $DB->GetRow("SELECT (" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS name,
-						m.email, x.phone
-					FROM customers c
-					LEFT JOIN divisions ON divisions.id = c.divisionid
-					LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
-						FROM customercontacts
-						WHERE (type & ?) = ?
-						GROUP BY customerid
-					) m ON (m.customerid = c.id)
-					LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
-						FROM customercontacts
-						WHERE (type & ?) = ?
-						GROUP BY customerid
-					) x ON (x.customerid = c.id)
-					WHERE c.id = ?",
-					array(
-						CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
-						CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
-						CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
-						CONTACT_MOBILE | CONTACT_NOTIFICATIONS, $cid));
+		$users = $DB->GetAllByKey("SELECT id, name, (CASE WHEN (ntype & ?) > 0 THEN email ELSE '' END) AS email,
+				(CASE WHEN (ntype & ?) > 0 THEN phone ELSE '' END) AS phone FROM users
+			WHERE deleted = 0 AND accessfrom <= ?NOW? AND (accessto = 0 OR accessto >= ?NOW?)
+			ORDER BY id",
+			'id', array(MSG_MAIL, MSG_SMS));
 
-			$customer = $customers[$cid];
+		foreach ($events as $event) {
+			$contacts = array();
 
 			$message = $event['description'];
 			$subject = $event['title'];
 
-			$recipient_mails = ($debug_email ? explode(',', $debug_email) :
-				(!empty($customer['email']) ? explode(',', trim($customer['email'])) : null));
-			$recipient_phones = ($debug_phone ? explode(',', $debug_phone) :
-				(!empty($customer['phone']) ? explode(',', trim($customer['phone'])) : null));
+			$cid = intval($event['customerid']);
+			$uid = intval($event['userid']);
 
-			if (!$quiet) {
-				if (in_array('mail', $channels) && !empty($recipient_mails))
-					foreach ($recipient_mails as $recipient_mail)
-						printf("[mail/events] %s (%04d): %s" . PHP_EOL,
-							$customer['name'], $cid, $recipient_mail);
-				if (in_array('sms', $channels) && !empty($recipient_phones))
-					foreach ($recipient_phones as $recipient_phone)
-						printf("[sms/events] %s (%04d): %s" . PHP_EOL,
-							$customer['name'], $cid, $recipient_phone);
+			if ($cid) {
+				if (!array_key_exists($cid, $customers))
+					$customers[$cid] = $DB->GetRow("SELECT (" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS name,
+							m.email, x.phone
+						FROM customers c
+						LEFT JOIN divisions ON divisions.id = c.divisionid
+						LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
+							FROM customercontacts
+							WHERE (type & ?) = ?
+							GROUP BY customerid
+						) m ON (m.customerid = c.id)
+						LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
+							FROM customercontacts
+							WHERE (type & ?) = ?
+							GROUP BY customerid
+						) x ON (x.customerid = c.id)
+						WHERE c.id = ?",
+						array(
+							CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+							CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
+							CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+							CONTACT_MOBILE | CONTACT_NOTIFICATIONS, $cid
+						)
+					);
+				if (!empty($customers[$cid]['email'])) {
+					$emails = explode(',', $debug_email ? $debug_email : $customers[$cid]['email']);
+					foreach ($emails as $contact)
+						if (!array_key_exists($contact, $emails))
+							$contacts[$contact] = array(
+								'cid' => $cid,
+								'email' => $contact,
+							);
+				}
+				if (!empty($customers[$cid]['phone'])) {
+					$phones = explode(',', $debug_phone ? $debug_phone : $customers[$cid]['phone']);
+					foreach ($phones as $contact)
+						if (!array_key_exists($contact, $phones))
+							$contacts[$contact] = array(
+								'cid' => $cid,
+								'phone' => $contact,
+							);
+				}
 			}
 
-			if (!$debug) {
-				if (in_array('mail', $channels) && !empty($recipient_mails)) {
-					$msgid = create_message(MSG_MAIL, $subject, $message);
-					foreach ($recipient_mails as $recipient_mail)
-						send_mail($msgid, $cid, $recipient_mail, $customer['name'],
-							$subject, $message);
+			if ($uid && array_key_exists($uid, $users)) {
+				if (!empty($users[$uid]['email'])) {
+					$emails = explode(',', $debug_email ? $debug_email : $users[$uid]['email']);
+					foreach ($emails as $contact)
+						if (!array_key_exists($contact, $contacts))
+							$contacts[$contact] = array(
+								'uid' => $uid,
+								'phone' => $contact,
+							);
 				}
-				if (in_array('sms', $channels) && !empty($recipient_phones)) {
-					$msgid = create_message(MSG_SMS, $subject, $message);
-					foreach ($recipient_phones as $recipient_phone)
-						send_sms($msgid, $cid, $recipient_phone, $message);
+				if (!empty($users[$uid]['phone'])) {
+					$phones = explode(',', $debug_phone ? $debug_phone : $users[$uid]['phone']);
+					foreach ($phones as $contact)
+						if (!array_key_exists($contact, $contacts))
+							$contacts[$contact] = array(
+								'uid' => $uid,
+								'phone' => $contact,
+							);
 				}
 			}
+
+			if (!$quiet)
+				foreach ($contacts as $contact) {
+					if (array_key_exists('uid', $contact)) {
+						$uid = $contact['uid'];
+						if (in_array('mail', $channels) && array_key_exists('email', $contact)) {
+							printf("[mail/events] %s (UID: %04d): %s" . PHP_EOL, $users[$uid]['name'],
+								$uid, $contact['email']);
+							if (!$debug)
+								send_mail_to_user($contact['email'], $users[$uid]['name'], $subject, $message);
+						}
+						if (in_array('sms', $channels) && array_key_exists('phone', $contact)) {
+							printf("[sms/events] %s (UID: %04d): %s" . PHP_EOL, $users[$uid]['name'],
+								$uid, $contact['phone']);
+							if (!$debug)
+								send_sms_to_user($contact['phone'], $message);
+						}
+					}
+					if (array_key_exists('cid', $contact)) {
+						$cid = $contact['cid'];
+						if (in_array('mail', $channels) && array_key_exists('email', $contact)) {
+							printf("[mail/events] %s (CID: %04d): %s" . PHP_EOL, $customers[$cid]['name'],
+								$cid, $contact['email']);
+							if (!$debug) {
+								$msgid = create_message(MSG_MAIL, $subject, $message);
+								send_mail($msgid, $cid, $contact['email'], $customers[$cid]['name'],
+									$subject, $message);
+							}
+						}
+						if (in_array('sms', $channels) && array_key_exists('phone', $contact)) {
+							printf("[sms/events] %s (CID: %04d): %s" . PHP_EOL, $customers[$cid]['name'],
+								$cid, $contact['phone']);
+							if (!$debug) {
+								$msgid = create_message(MSG_SMS, $subject, $message);
+								send_sms($msgid, $cid, $contact['phone'], $message);
+							}
+						}
+					}
+				}
 		}
 	}
 }

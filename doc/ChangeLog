@@ -39,7 +39,7 @@ version ?.??.?? (????-??-??):
   - fixed calculation of brutto value basing on netto value
     (fixes https://github.com/lmsgit/lms/issues/559) [chilan]
   - added payments.default_unit_name config variable with "pcs." as default [pjona]
-  - customer notifications about still opened events [chilan]
+  - customer and user notifications about still opened events [chilan]
 
 version 1.11.19 (2015-12-21):
 
