@@ -202,26 +202,13 @@ if ($month > 6)
 else
 	$halfyear = $dom + ($month - 1) * 100;
 
-$q_month = $month + 2;
-$q_year = $year;
-$y_month  = $month + 5;
-$y_year = $year;
-if ($q_month > 12) {
-	$q_month -= 12;
-	$q_year += 1;
-}
-if ($y_month > 12) {
-	$y_month -= 12;
-	$y_year += 1;
-}
-
 $date_format = ConfigHelper::getConfig('payments.date_format');
 $txts = array(
 	DAY => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
 	WEEK => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month, $dom + 6, $year)),
 	MONTH => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 1, $dom - 1, $year)),
-	QUARTER => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $q_month + 1, $dom - 1, $q_year)),
-	HALFYEAR => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $y_month + 1, $dom - 1, $y_year)),
+	QUARTER => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 3, $dom - 1, $year)),
+	HALFYEAR => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 6, $dom - 1, $year)),
 	YEAR => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month, $dom - 1, $year + 1)),
 	DISPOSABLE => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
 );
@@ -230,8 +217,8 @@ $txts_aligned = array(
 	DAY => $txts[DAY],
 	WEEK => $txts[WEEK],
 	MONTH => strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year)),
-	QUARTER => strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $q_month + 1, 0, $q_year)),
-	HALFYEAR => strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $y_month + 1, 0, $y_year)),
+	QUARTER => strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 3, 0, $year)),
+	HALFYEAR => strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 6, 0, $year)),
 	YEAR => strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month, 0, $year + 1)),
 	DISPOSABLE => $txts[DISPOSABLE],
 );
