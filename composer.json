@@ -12,7 +12,7 @@
         "phpunit/phpunit": "5.1.*"
     },
     "autoload": {
-        "classmap": ["lib/"]
+        "classmap": ["lib/", "plugins/"]
     },
     "autoload-dev": {
         "psr-4": { "LMS\\Tests\\": "tests/" }
