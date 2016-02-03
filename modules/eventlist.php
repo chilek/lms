@@ -53,7 +53,7 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 			)' : '')
 		. ($type ? ' AND events.type = ' . intval($type) : '')
 		. ($private ? ' AND private = 1' : '')
-		. ($opened ? ' AND closed = 0' : ' AND closed = 1')
+		. ($opened ? ' AND closed = 0' : '')
 		.' ORDER BY date, begintime',
 		 array($startdate, $enddate, $enddate, $startdate, $AUTH->id));
 
@@ -132,8 +132,6 @@ if (!empty($_POST)) {
 	$SESSION->restore('elt', $type);
 	$SESSION->restore('elp', $private);
 	$SESSION->restore('elo', $opened);
-	if (!strlen($opened))
-		$opened = 1;
 }
 
 $SESSION->save('elu', $u);
