@@ -144,6 +144,7 @@ CREATE TABLE users (
   accessfrom int(11) NOT NULL DEFAULT '0',
   accessto int(11) NOT NULL DEFAULT '0',
   swekey_id varchar(32) NULL DEFAULT NULL,
+  settings mediumtext NOT NULL DEFAULT '',
   PRIMARY KEY  (id),
   UNIQUE KEY login (login, swekey_id)
 ) ENGINE=InnoDB;
@@ -2530,4 +2531,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016020200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016020300');

@@ -28,6 +28,7 @@ CREATE TABLE users (
 	accessfrom integer DEFAULT 0 NOT NULL,
 	accessto integer DEFAULT 0 NOT NULL,
 	swekey_id varchar(32) DEFAULT NULL,
+	settings text NOT NULL DEFAULT '',
 	PRIMARY KEY (id),
 	UNIQUE (login, swekey_id)
 );
@@ -2619,4 +2620,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016020200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016020300');
