@@ -3126,4 +3126,7 @@ $_LANG['date format'] = 'format daty';
 $_LANG['Define date format for variable: %period, %aligned_period, %current_month used in payments.comment and payments.settlement_comment'] = 'Zdefiniuj format daty dla zmiennych: %period, %aligned_period, %current_month używanych przez opcje payments.comment i payments.settlement_comment';
 $_LANG['Unit name on invoice, default: "pcs."'] = 'Jednostka na fakturze, domyślnie: "szt."';
 
+$_LANG['opened<!plural:event>'] = 'otwarte';
+$_LANG['closed<!plural:event>'] = 'zamknięte';
+
 ?>
