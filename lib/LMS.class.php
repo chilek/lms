@@ -1668,16 +1668,15 @@ class LMS
 		$this->mail_object->SMTPAuth  = (!$auth ? ConfigHelper::getConfig('mail.smtp_auth_type', true) : $auth);
 		$this->mail_object->SMTPSecure  = (!$auth ? ConfigHelper::getConfig('mail.smtp_secure', true) : $auth);
 	    }
-
-	    $this->mail_object->set('X-Mailer', 'LMS-' . $this->_version);
+	    $this->mail_object->XMailer = 'X-Mailer: LMS-' . $this->_version;
 	    if (!empty($_SERVER['REMOTE_ADDR']))
-		$this->mail_object->set('X-Remote-IP', $_SERVER['REMOTE_ADDR']);
+		$this->mail_object->addCustomHeader('X-Remote-IP: '.$_SERVER['REMOTE_ADDR']);
 	    if (isset($_SERVER['HTTP_USER_AGENT']))
-		$this->mail_object->set('X-HTTP-User-Agent', $_SERVER['HTTP_USER_AGENT']);
-	    $this->mail_object->set('Mime-Version', '1.0');
+		$this->mail_object->addCustomHeader('X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']);
 
 	    preg_match('/^(.+) <([a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>$/A', $headers['From'], $from);
 	    $this->mail_object->setFrom($from[2], trim($from[1], "\""));
+	    $this->mail_object->CharSet = 'UTF-8';
 	    $this->mail_object->Subject = $headers['Subject'];
 
 	    $debug_email = ConfigHelper::getConfig('mail.debug_email');
@@ -1690,9 +1689,7 @@ class LMS
 
 	    if ($files || $headers['X-LMS-Format'] == 'html') {
 		$boundary = '-LMS-' . str_replace(' ', '.', microtime());
-		$this->mail_object->set('Content-Type', "multipart/mixed;\n  boundary=\"" . $boundary . '"');
-
-		$this->mail_object->CharSet = 'UTF-8';
+		$this->mail_object->addCustomHeader('Content-Type: multipart/mixed;\n  boundary=\"' . $boundary . '"');
 
 		if ($files)
 		    while (list(, $chunk) = each($files))
@@ -1709,7 +1706,6 @@ class LMS
 		}
 	    }
 	    else {
-		$this->mail_object->set('Content-Type', 'text/plain; charset=UTF-8');
 		$this->mail_object->isHTML(false);
 		$this->mail_object->Body = $body;
 	    }
