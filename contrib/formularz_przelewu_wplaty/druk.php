@@ -32,7 +32,7 @@ $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ?
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 
 // Load autoloader
-$composer_autoload_path = SYS_DIR . '/vendor/autoload.php';
+$composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {

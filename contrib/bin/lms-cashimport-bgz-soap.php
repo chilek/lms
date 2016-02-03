@@ -58,7 +58,7 @@ define('BACKUP_DIR', $CONFIG['directories']['backup_dir']);
 define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 
 // Load autloader
-$composer_autoload_path = SYS_DIR . '/vendor/autoload.php';
+$composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {

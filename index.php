@@ -72,7 +72,7 @@ define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
 define('VENDOR_DIR', $CONFIG['directories']['vendor_dir']);
 
 // Load autoloader
-$composer_autoload_path = SYS_DIR . '/vendor/autoload.php';
+$composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {
