@@ -41,6 +41,7 @@ version ?.??.?? (????-??-??):
   - added payments.default_unit_name config variable with "pcs." as default [pjona]
   - customer and user notifications about still opened events [chilan]
   - fixed multidays event presentation in event list when end time is 00:00 [chilan]
+  - remember all form settings between user sessions [chilan]
 
 version 1.11.19 (2015-12-21):
 
