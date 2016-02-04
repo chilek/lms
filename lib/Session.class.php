@@ -26,9 +26,6 @@
 
 class Session {
 
-	const session_variables = array('session_id' => true, 'session_login' => true, 'session_logname' => true, 'session_last' => true,
-		'session_lastip' => true, 'session_smsauthenticated' => true, 'backto' => true, 'lastmodule' => true);
-
 	public $SID = NULL;			// session unique ID
 	public $_version = '1.11-git';		// library version
 	public $_revision = '$Revision$';	// library revision
@@ -76,14 +73,17 @@ class Session {
 		return md5(uniqid(rand(), true)).sprintf('%09x', $sec).sprintf('%07x', ($usec * 10000000));
 	}
 
+	public function restore_user_settings() {
+		$settings = $this->DB->GetOne('SELECT settings FROM users WHERE login = ?', array($this->_content['session_login']));
+		if (!empty($settings))
+			$this->_content = array_merge($this->_content, unserialize($settings));
+	}
+
 	public function save($variable, $content) {
 		$this->_content[$variable] = $content;
 
-		if ($variable == 'session_login') {
-			$settings = $this->DB->GetOne('SELECT settings FROM users WHERE login = ?', array($content));
-			if (!empty($settings))
-				$this->_content = array_merge($this->_content, unserialize($settings));
-		}
+		if ($variable == 'session_login')
+			$this->restore_user_settings();
 
 		if ($this->autoupdate)
 			$this->_saveSession();
@@ -158,9 +158,7 @@ class Session {
 				if (!isset($_POST['xjxfun']))
 					$this->DB->Execute('UPDATE sessions SET atime = ?NOW? WHERE id = ?', array($this->SID));
 				$this->_content = unserialize($row['content']);
-				$settings = $this->DB->GetOne('SELECT settings FROM users WHERE login = ?', array($this->_content['session_login']));
-				if (!empty($settings))
-					$this->_content = array_merge($this->_content, unserialize($settings));
+				$this->restore_user_settings();
 				return;
 			}
 		} elseif ($row)
@@ -170,9 +168,13 @@ class Session {
 	}
 
 	public function _saveSession() {
+		static $session_variables = array('session_id' => true, 'session_login' => true,
+			'session_logname' => true, 'session_last' => true, 'session_lastip' => true,
+			'session_smsauthenticated' => true, 'backto' => true, 'lastmodule' => true);
+
 		if ($this->autoupdate || $this->_updated) {
-			$session_content = array_intersect_key($this->_content, self::session_variables);
-			$settings_content = array_diff_key($this->_content, self::session_variables);
+			$session_content = array_intersect_key($this->_content, $session_variables);
+			$settings_content = array_diff_key($this->_content, $session_variables);
 			$this->DB->Execute('UPDATE sessions SET content = ?, mtime = ?NOW? WHERE id = ?',
 				array(serialize($session_content), $this->SID));
 			$this->DB->Execute('UPDATE users SET settings = ? WHERE login = ?',
