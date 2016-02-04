@@ -1001,17 +1001,49 @@ if (in_array('www', $channels))
 		}
 	}
 
-if (in_array('blocking', $channels)) {
+$intersect = array_intersect(array('blocking', 'unblocking'), $channels);
+if (!empty($intersect)) {
+	$customers = array();
 	foreach ($notifications as $type => $notification)
-		if (!empty($notification['customers'])) {
-			$DB->Execute("UPDATE nodes SET access=0 WHERE ownerid IN ("
-				. implode(',', $notification['customers']) . ")");
-			$DB->Execute("UPDATE assignments SET suspended=1
-				WHERE (tariffid <> 0 OR liabilityid <> 0)
-				AND (datefrom = 0 OR datefrom <= ?NOW?)
-				AND (dateto = 0 OR dateto >= ?NOW?)
-				AND customerid IN (" . implode(',', $notification['customers']) . ")");
-		}
+		$customers = array_merge($customers, $notification['customers']);
+	$customers = array_unique($customers);
+	if (!empty($customers)) {
+		$customers = $DB->GetCol("SELECT id FROM customers
+			WHERE status = ? AND id IN (" . implode(',', $customers) . ")",
+			array(CSTATUS_CONNECTED));
+		if (empty($customers))
+			$customers = array();
+	}
+	$customers = implode(',', $customers);
+
+	foreach (array('blocking', 'unblocking') as $channel)
+		if (in_array($channel, $channels))
+			switch ($channel) {
+				case 'blocking':
+					if (empty($customers))
+						break;
+					$DB->Execute("UPDATE nodes SET access = ?
+						WHERE access = ? AND ownerid IN (" . $customers . ")",
+						array(0, 1));
+					$DB->Execute("UPDATE assignments SET suspended = ?
+						WHERE suspended = ? AND (tariffid <> 0 OR liabilityid <> 0)
+							AND (datefrom = 0 OR datefrom <= ?NOW?)
+							AND (dateto = 0 OR dateto >= ?NOW?)
+							AND customerid IN (" . $customers . ")",
+						array(1, 0));
+					break;
+				case 'unblocking':
+					$DB->Execute("UPDATE nodes SET access = ?
+						WHERE access = ?" . (empty($customers) ? '' : " AND ownerid NOT IN (" . $customers . ")"),
+						array(1, 0));
+					$DB->Execute("UPDATE assignments SET suspended = ?
+						WHERE suspended = ? AND (tariffid <> 0 OR liabilityid <> 0)
+							AND (datefrom = 0 OR datefrom <= ?NOW?)
+							AND (dateto = 0 OR dateto >= ?NOW?)"
+							. (empty($customers) ? '' : " AND customerid NOT IN (" . $customers . ")"),
+						array(0, 1));
+					break;
+			}
 }
 
 $DB->Destroy();
