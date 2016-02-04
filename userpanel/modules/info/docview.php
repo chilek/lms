@@ -62,7 +62,8 @@ if(!empty($_GET['id'])) {
 			readfile($filename);
 			$htmlbuffer = ob_get_contents();
 			ob_end_clean();
-			html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', array(10, 5, 15, 5), ($_GET['save'] == 1) ? true : false, $copy);
+			$margins = explode(",", ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5'));
+			html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', $margins, ($_GET['save'] == 1) ? true : false, $copy);
 		} else {
 			header('Content-Type: '.$doc['contenttype']);
 

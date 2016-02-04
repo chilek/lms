@@ -45,9 +45,9 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         return $this->db->GetOne('SELECT id FROM uiconfig WHERE section = ? AND var = ?', array($section, $var));
     }
 
-    public function GetConfigDefaultType($section, $var)
+    public function GetConfigDefaultType($option)
     {
-        switch ($section . '.' . $var) {
+        switch ($option) {
             case 'phpui.force_ssl':
             case 'phpui.allow_mac_sharing':
             case 'phpui.smarty_debug':
@@ -75,6 +75,8 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
             case 'invoices.customer_bankaccount':
             case 'invoices.customer_credentials':
             case 'invoices.print_balance_history':
+            case 'mail.phpmailer_is_html':
+            case 'mail.smtp_persist':
                 $type = CONFIG_TYPE_BOOLEAN;
                 break;
 
@@ -103,10 +105,12 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
             case 'phpui.timetable_days_forward':
             case 'phpui.nodepassword_length':
             case 'phpui.check_for_updates_period':
+            case 'phpui.quicksearch_limit':
                 $type = CONFIG_TYPE_POSITIVE_INTEGER;
                 break;
 
             case 'mail.debug_email':
+            case 'mail.phpmailer_from':
             case 'sendinvoices.debug_email':
             case 'sendinvoices.sender_email':
             case 'userpanel.debug_email':
@@ -126,6 +130,22 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                 $type = CONFIG_TYPE_DOCTYPE;
                 break;
 
+            case 'phpui.document_margins':
+                $type = CONFIG_TYPE_MARGINS;
+                break;
+
+            case 'mail.backend':
+                $type = CONFIG_TYPE_MAIL_BACKEND;
+                break;
+
+            case 'mail.smtp_secure':
+                $type = CONFIG_TYPE_MAIL_SECURE;
+                break;
+
+            case 'payments.date_format':
+                $type = CONFIG_TYPE_DATE_FORMAT;
+                break;
+
             default:
                 $type = CONFIG_TYPE_NONE;
                 break;
@@ -134,12 +154,15 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
         return $type;
     }
 
-    public function CheckOption($type, $value)
+    public function CheckOption($option, $value, $type)
     {
+        if($value == '')
+            return trans('Empty option value is not allowed!');
+
         switch ($type) {
             case CONFIG_TYPE_POSITIVE_INTEGER:
-                if ($value <= 0)
-                    return trans('Value of option "$a" must be a number grater than zero!', $var);
+                if (!preg_match('/^[1-9][0-9]*$/', $value))
+                    return trans('Value of option "$a" must be a number grater than zero!', $option);
                 break;
 
             case CONFIG_TYPE_BOOLEAN:
@@ -161,6 +184,27 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                 if (!check_email($value))
                     return trans('Incorrect email address!');
                 break;
+
+            case CONFIG_TYPE_MARGINS:
+                if (!preg_match('/^\d,\d,\d,\d$/', $value))
+                    return trans('Margins should consist of 4 numbers separated by commas!');
+                break;
+
+            case CONFIG_TYPE_MAIL_BACKEND:
+                if ($value != 'pear' && $value != 'phpmailer')
+                    return trans('Incorrect mail backend. Valid types are: pear, phpmailer!');
+                break;
+
+            case CONFIG_TYPE_MAIL_SECURE:
+                if ($value != 'ssl' && $value != 'tls')
+                    return trans('Incorrect mail security protocol. Valid types are: ssl, tls!');
+                break;
+
+            case CONFIG_TYPE_DATE_FORMAT:
+                if (!preg_match('/%[aAdejuw]+/', $value) || !preg_match('/%[bBhm]+/', $value) || !preg_match('/%[CgGyY]+/', $value))
+                    return trans('Incorrect date format! Enter format for day (%a, %A, %d, %e, %j, %u, %w), month (%b, %B, %h, %m) and year (%C, %g, %G, %y, %Y)');
+                break;
+
         }
         return NULL;
     }

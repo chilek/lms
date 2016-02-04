@@ -144,6 +144,7 @@ CREATE TABLE users (
   accessfrom int(11) NOT NULL DEFAULT '0',
   accessto int(11) NOT NULL DEFAULT '0',
   swekey_id varchar(32) NULL DEFAULT NULL,
+  settings mediumtext NOT NULL DEFAULT '',
   PRIMARY KEY  (id),
   UNIQUE KEY login (login, swekey_id)
 ) ENGINE=InnoDB;
@@ -310,7 +311,7 @@ CREATE TABLE numberplanassignments (
 CREATE TABLE invoicecontents (
   docid int(11) NOT NULL DEFAULT '0',
   itemid smallint NOT NULL DEFAULT '0',
-  value decimal(9,2) NOT NULL DEFAULT '0',
+  value decimal(12,5) NOT NULL DEFAULT '0',
   pdiscount decimal(4,2) NOT NULL DEFAULT '0',
   vdiscount decimal(9,2) NOT NULL DEFAULT '0',
   taxid int(11) NOT NULL DEFAULT '0',
@@ -1377,6 +1378,7 @@ CREATE TABLE cashsources (
     id      int(11)         NOT NULL auto_increment,
     name	varchar(32)     DEFAULT '' NOT NULL,
     description text		DEFAULT NULL,
+    deleted smallint		NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     UNIQUE KEY name (name)
 ) ENGINE=InnoDB;
@@ -2142,6 +2144,10 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui','logging','false','',0),
 ('phpui','hide_toolbar','false','',0),
 ('phpui','add_customer_group_required','false','',0),
+('phpui','document_margins','10,5,15,5','',0),
+('phpui', 'quicksearch_limit', '15', 0),
+('payments', 'date_format', '%Y/%m/%d', '', 0),
+('payments', 'default_unit_name', 'pcs.', '', 0),
 ('invoices','template_file','invoice.html','',0),
 ('invoices','content_type','text/html','',0),
 ('invoices','cnote_template_file','invoice.html','',0),
@@ -2165,6 +2171,8 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('mail','debug_email','','',0),
 ('mail','smtp_host','127.0.0.1','',0),
 ('mail','smtp_port','25','',0),
+('mail', 'backend', 'pear', '', 0),
+('mail', 'smtp_secure', 'ssl', '', 0),
 ('zones','hostmaster_mail','hostmaster.localhost','',0),
 ('zones','master_dns','localhost','',0),
 ('zones','slave_dns','localhost','',0),
@@ -2523,4 +2531,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016011800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016020300');

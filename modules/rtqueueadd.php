@@ -50,7 +50,7 @@ if(isset($_POST['queue']))
 		$DB->Execute('INSERT INTO rtqueues (name, email, description, newticketsubject, newticketbody,
 				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-				array($queue['name'], $queue['email'], $queue['description'],
+				array(trim($queue['name']), $queue['email'], $queue['description'],
 					$queue['newticketsubject'], $queue['newticketbody'],
 					$queue['newmessagesubject'], $queue['newmessagebody'],
 					$queue['resolveticketsubject'], $queue['resolveticketbody']));

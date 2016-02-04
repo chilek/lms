@@ -58,12 +58,18 @@ else
 	$ng = $_GET['ng'];
 $SESSION->save('nlng', $ng);
 
+if(!isset($_GET['p']))
+	$SESSION->restore('nlfp', $p);
+else
+	$p = $_GET['p'];
+$SESSION->save('nlfp', $p);
+
 $page = (!isset($_GET['page']) ? 1 : intval($_GET['page']));
 $per_page = intval(ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']));
 $offset = ($page - 1) * $per_page;
-$total = intval($LMS->GetNodeList($o, NULL, NULL, $n, $s, $g, $ng, null, null, true));
+$total = intval($LMS->GetNodeList($o, array('project' => $p), NULL, $n, $s, $g, $ng, null, null, true));
 
-$nodelist = $LMS->GetNodeList($o, NULL, NULL, $n, $s, $g, $ng, $per_page, $offset);
+$nodelist = $LMS->GetNodeList($o, array('project' => $p), NULL, $n, $s, $g, $ng, $per_page, $offset);
 $pagination = LMSPaginationFactory::getPagination($page, $total, $per_page, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
 $listdata['total'] = $nodelist['total'];
@@ -74,6 +80,7 @@ $listdata['totaloff'] = $nodelist['totaloff'];
 $listdata['network'] = $n;
 $listdata['customergroup'] = $g;
 $listdata['nodegroup'] = $ng;
+$listdata['invprojectid'] = $p;
 $listdata['state'] = $s;
 
 unset($nodelist['total']);
@@ -84,7 +91,6 @@ unset($nodelist['totaloff']);
 
 if ($SESSION->is_set('nlp') && !isset($_GET['page']))
 	$SESSION->restore('nlp', $_GET['page']);
-	
 
 $SESSION->save('nlp', $page);
 
@@ -94,6 +100,9 @@ $SMARTY->assign('pagination',$pagination);
 $SMARTY->assign('networks',$LMS->GetNetworks());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
+$SMARTY->assign('NNprojects', $DB->GetAll("SELECT * FROM invprojects
+	WHERE type<>? ORDER BY name", array(INV_PROJECT_SYSTEM)));
+
 $SMARTY->display('node/nodelist.html');
 
 ?>

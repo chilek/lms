@@ -5,10 +5,16 @@
     "license": "GPL-2.0",
     "require": {
         "phine/observer": "2.0",
-        "phine/exception": "1.0"
+        "phine/exception": "1.0",
+	"phpmailer/phpmailer": "^5.2"
     },
     "require_dev": {
-        "phpunit/phpunit": "4.1.*",
-        "phpunit/phpunit-skeleton-generator": "*"
+        "phpunit/phpunit": "5.1.*"
+    },
+    "autoload": {
+        "classmap": ["lib/"]
+    },
+    "autoload-dev": {
+        "psr-4": { "LMS\\Tests\\": "tests/" }
     }
 }

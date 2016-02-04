@@ -76,20 +76,32 @@ $CSTATUSES = array(
 );
 
 // Config types
-define('CONFIG_TYPE_NONE', 0);
+define('CONFIG_TYPE_AUTO', 0);
 define('CONFIG_TYPE_BOOLEAN', 1);
 define('CONFIG_TYPE_POSITIVE_INTEGER', 2);
 define('CONFIG_TYPE_EMAIL', 3);
 define('CONFIG_TYPE_RELOADTYPE', 4);
 define('CONFIG_TYPE_DOCTYPE', 5);
+define('CONFIG_TYPE_MARGINS', 6);
+define('CONFIG_TYPE_NONE', 7);
+define('CONFIG_TYPE_RICHTEXT', 8);
+define('CONFIG_TYPE_MAIL_BACKEND', 9);
+define('CONFIG_TYPE_MAIL_SECURE', 10);
+define('CONFIG_TYPE_DATE_FORMAT', 11);
 
 $CONFIG_TYPES = array(
+	CONFIG_TYPE_AUTO => trans('- auto -'),
 	CONFIG_TYPE_NONE => trans('none'),
 	CONFIG_TYPE_BOOLEAN => trans('boolean'),
 	CONFIG_TYPE_POSITIVE_INTEGER => trans('integer greater than 0'),
 	CONFIG_TYPE_EMAIL => trans('email'),
 	CONFIG_TYPE_RELOADTYPE => trans('reload type'),
 	CONFIG_TYPE_DOCTYPE => trans('document type'),
+	CONFIG_TYPE_MARGINS => trans('margins'),
+	CONFIG_TYPE_RICHTEXT => trans('visual editor'),
+	CONFIG_TYPE_MAIL_BACKEND => trans('mail backend'),
+	CONFIG_TYPE_MAIL_SECURE => trans('mail security protocol'),
+	CONFIG_TYPE_DATE_FORMAT => trans('date format'),
 );
 
 // Helpdesk ticket status

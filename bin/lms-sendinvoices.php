@@ -35,6 +35,7 @@ $parameters = array(
 	't' => 'test',
 	'f:' => 'fakedate:',
 	'i:' => 'invoiceid:',
+	'e:' => 'extra-file:',
 );
 
 foreach ($parameters as $key => $val) {
@@ -70,6 +71,7 @@ lms-sendinvoices.php
 -q, --quiet                     suppress any output, except errors;
 -f, --fakedate=YYYY/MM/DD       override system date;
 -i, --invoiceid=N               send only selected invoice
+-e, --extra-file=/tmp/file.pdf  send additional file as an attachment
 
 EOF;
 	exit(0);
@@ -206,6 +208,10 @@ if (($auth || !empty($smtp_auth_type)) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NT
 $fakedate = (array_key_exists('fakedate', $options) ? $options['fakedate'] : NULL);
 $invoiceid = (array_key_exists('invoiceid', $options) ? $options['invoiceid'] : NULL);
 
+$extrafile = (array_key_exists('extra-file', $options) ? $options['extra-file'] : NULL);
+if($extrafile && !is_readable($extrafile))
+	die("Unable to read additional file [".$extrafile."]!" . PHP_EOL);
+
 function localtime2() {
 	global $fakedate;
 	if (!empty($fakedate)) {
@@ -324,13 +330,27 @@ if (!empty($docs)) {
 			printf("Invoice No. $invoice_number for $mailto" . PHP_EOL);
 
 		if (!$test) {
+			$files = array();
+			$files[] = array(
+				'content_type' => $ftype,
+				'filename' => $filename . '.' . $fext,
+				'data' => $res
+			);
+
+			if($extrafile) {
+				$files[] = array(
+					'content_type' => mime_content_type($extrafile),
+					'filename' => basename($extrafile),
+					'data' => file_get_contents($extrafile)
+				);
+			}
+
 			$headers = array('From' => $from, 'To' => $mailto_qp_encoded,
 				'Subject' => $subject);
 			if (!empty($notify_email))
 				$headers['Cc'] = $notify_email;
 			$res = $LMS->SendMail($custemail . ',' . $notify_email, $headers, $body,
-				array(0 => array('content_type' => $ftype, 'filename' => $filename . '.' . $fext,
-					'data' => $res)), $host, $port, $user, $pass, $auth);
+				$files, $host, $port, $user, $pass, $auth);
 
 			if (is_string($res))
 				fprintf(STDERR, "Error sending mail: $res" . PHP_EOL);

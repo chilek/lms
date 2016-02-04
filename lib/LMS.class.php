@@ -1405,16 +1405,16 @@ class LMS
         return $manager->GetConfigOptionId($var, $section);
     }
 
-    public function GetConfigDefaultType($section, $var)
+    public function GetConfigDefaultType($option)
     {
         $manager = $this->getConfigManager();
-        return $manager->GetConfigDefaultType($section, $var);
+        return $manager->GetConfigDefaultType($option);
     }
 
-    public function CheckOption($type, $value)
+    public function CheckOption($option, $value, $type)
     {
         $manager = $this->getConfigManager();
-        return $manager->CheckOption($type, $value);
+        return $manager->CheckOption($option, $value, $type);
     }
 
     /*
@@ -1582,75 +1582,142 @@ class LMS
 
     public function SendMail($recipients, $headers, $body, $files = NULL, $host = null, $port = null, $user = null, $pass = null, $auth = null, $persist = null)
     {
-        @include_once('Mail.php');
-        if (!class_exists('Mail'))
-            return trans('Can\'t send message. PEAR::Mail not found!');
+	$persist = is_null($persist) ? ConfigHelper::getConfig('mail.smtp_persist', true) : $persist;
 
-        $persist = is_null($persist) ? ConfigHelper::getConfig('mail.smtp_persist', true) : $persist;
-        if (!is_object($this->mail_object) || !$persist) {
-            $params['host'] = (!$host ? ConfigHelper::getConfig('mail.smtp_host') : $host);
-            $params['port'] = (!$port ? ConfigHelper::getConfig('mail.smtp_port') : $port);
-            $smtp_username = ConfigHelper::getConfig('mail.smtp_username');
-            if (!empty($smtp_username) || $user) {
-                $params['auth'] = (!$auth ? ConfigHelper::getConfig('mail.smtp_auth_type', true) : $auth);
-                $params['username'] = (!$user ? $smtp_username : $user);
-                $params['password'] = (!$pass ? ConfigHelper::getConfig('mail.smtp_password') : $pass);
-            } else
-                $params['auth'] = false;
-            $params['persist'] = $persist;
+	if(ConfigHelper::getConfig('mail.backend') == 'pear'){
+	    @include_once('Mail.php');
+	    if (!class_exists('Mail'))
+		return trans('Can\'t send message. PEAR::Mail not found!');
 
-            $error = $this->mail_object = & Mail::factory('smtp', $params);
-            //if (PEAR::isError($error))
-            if (is_a($error, 'PEAR_Error'))
-                return $error->getMessage();
-        }
+	    if (!is_object($this->mail_object) || !$persist) {
+		$params['host'] = (!$host ? ConfigHelper::getConfig('mail.smtp_host') : $host);
+		$params['port'] = (!$port ? ConfigHelper::getConfig('mail.smtp_port') : $port);
+		$smtp_username = ConfigHelper::getConfig('mail.smtp_username');
+		if (!empty($smtp_username) || $user) {
+		    $params['auth'] = (!$auth ? ConfigHelper::getConfig('mail.smtp_auth_type', true) : $auth);
+		    $params['username'] = (!$user ? $smtp_username : $user);
+		    $params['password'] = (!$pass ? ConfigHelper::getConfig('mail.smtp_password') : $pass);
+		} else
+		    $params['auth'] = false;
+		$params['persist'] = $persist;
 
-        $headers['X-Mailer'] = 'LMS-' . $this->_version;
-        if (!empty($_SERVER['REMOTE_ADDR']))
-            $headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
-        if (isset($_SERVER['HTTP_USER_AGENT']))
-            $headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
-        $headers['Mime-Version'] = '1.0';
-        $headers['Subject'] = qp_encode($headers['Subject']);
+		$error = $this->mail_object = & Mail::factory('smtp', $params);
+		//if (PEAR::isError($error))
+		if (is_a($error, 'PEAR_Error'))
+		    return $error->getMessage();
+	    }
 
-        $debug_email = ConfigHelper::getConfig('mail.debug_email');
-        if (!empty($debug_email)) {
-            $recipients = ConfigHelper::getConfig('mail.debug_email');
-            $headers['To'] = '<' . $recipients . '>';
-        }
+	    $headers['X-Mailer'] = 'LMS-' . $this->_version;
+	    if (!empty($_SERVER['REMOTE_ADDR']))
+		$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
+	    if (isset($_SERVER['HTTP_USER_AGENT']))
+		$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
+	    $headers['Mime-Version'] = '1.0';
+	    $headers['Subject'] = qp_encode($headers['Subject']);
 
-        if (empty($headers['Date']))
-            $headers['Date'] = date('r');
+	    $debug_email = ConfigHelper::getConfig('mail.debug_email');
+	    if (!empty($debug_email)) {
+		$recipients = ConfigHelper::getConfig('mail.debug_email');
+		$headers['To'] = '<' . $recipients . '>';
+	    }
 
-        if ($files || $headers['X-LMS-Format'] == 'html') {
-            $boundary = '-LMS-' . str_replace(' ', '.', microtime());
-            $headers['Content-Type'] = "multipart/mixed;\n  boundary=\"" . $boundary . '"';
-            $buf = "\nThis is a multi-part message in MIME format.\n\n";
-            $buf .= '--' . $boundary . "\n";
-            $buf .= "Content-Type: text/" . ($headers['X-LMS-Format'] == 'html' ? "html" : "plain") . "; charset=UTF-8\n\n";
-            $buf .= $body . "\n";
-            if ($files)
-                while (list(, $chunk) = each($files)) {
-                    $buf .= '--' . $boundary . "\n";
-                    $buf .= "Content-Transfer-Encoding: base64\n";
-                    $buf .= "Content-Type: " . $chunk['content_type'] . "; name=\"" . $chunk['filename'] . "\"\n";
-                    $buf .= "Content-Description:\n";
-                    $buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
-                    $buf .= chunk_split(base64_encode($chunk['data']), 60, "\n");
-                }
-            $buf .= '--' . $boundary . '--';
-        } else {
-            $headers['Content-Type'] = 'text/plain; charset=UTF-8';
-            $buf = $body;
-        }
+	    if (empty($headers['Date']))
+		$headers['Date'] = date('r');
 
+	    if ($files || $headers['X-LMS-Format'] == 'html') {
+		$boundary = '-LMS-' . str_replace(' ', '.', microtime());
+		$headers['Content-Type'] = "multipart/mixed;\n  boundary=\"" . $boundary . '"';
+		$buf = "\nThis is a multi-part message in MIME format.\n\n";
+		$buf .= '--' . $boundary . "\n";
+		$buf .= "Content-Type: text/" . ($headers['X-LMS-Format'] == 'html' ? "html" : "plain") . "; charset=UTF-8\n\n";
+		$buf .= $body . "\n";
+		if ($files)
+		    while (list(, $chunk) = each($files)) {
+			$buf .= '--' . $boundary . "\n";
+			$buf .= "Content-Transfer-Encoding: base64\n";
+			$buf .= "Content-Type: " . $chunk['content_type'] . "; name=\"" . $chunk['filename'] . "\"\n";
+			$buf .= "Content-Description:\n";
+			$buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
+			$buf .= chunk_split(base64_encode($chunk['data']), 60, "\n");
+		    }
+		$buf .= '--' . $boundary . '--';
+	    } else {
+		$headers['Content-Type'] = 'text/plain; charset=UTF-8';
+		$buf = $body;
+	    }
 
-        $error = $this->mail_object->send($recipients, $headers, $buf);
-        //if (PEAR::isError($error))
-        if (is_a($error, 'PEAR_Error'))
-            return $error->getMessage();
-        else
-            return MSG_SENT;
+	    $error = $this->mail_object->send($recipients, $headers, $buf);
+	    //if (PEAR::isError($error))
+	    if (is_a($error, 'PEAR_Error'))
+		return $error->getMessage();
+	    else
+		return MSG_SENT;
+	}
+	elseif(ConfigHelper::getConfig('mail.backend') == 'phpmailer'){
+	    $this->mail_object = new PHPMailer();
+	    $this->mail_object->isSMTP();
+
+	    $this->mail_object->SMTPKeepAlive = $persist;
+
+	    $this->mail_object->Host = (!$host ? ConfigHelper::getConfig('mail.smtp_host') : $host);
+	    $this->mail_object->Port = (!$port ? ConfigHelper::getConfig('mail.smtp_port') : $port);
+	    $smtp_username = ConfigHelper::getConfig('mail.smtp_username');
+	    if (!empty($smtp_username) || $user) {
+		$this->mail_object->Username = (!$user ? $smtp_username : $user);
+		$this->mail_object->Password = (!$pass ? ConfigHelper::getConfig('mail.smtp_password') : $pass);
+		$this->mail_object->SMTPAuth  = (!$auth ? ConfigHelper::getConfig('mail.smtp_auth_type', true) : $auth);
+		$this->mail_object->SMTPSecure  = (!$auth ? ConfigHelper::getConfig('mail.smtp_secure', true) : $auth);
+	    }
+	    $this->mail_object->XMailer = 'X-Mailer: LMS-' . $this->_version;
+	    if (!empty($_SERVER['REMOTE_ADDR']))
+		$this->mail_object->addCustomHeader('X-Remote-IP: '.$_SERVER['REMOTE_ADDR']);
+	    if (isset($_SERVER['HTTP_USER_AGENT']))
+		$this->mail_object->addCustomHeader('X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']);
+
+	    preg_match('/^(.+) <([a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>$/A', $headers['From'], $from);
+	    $this->mail_object->setFrom($from[2], trim($from[1], "\""));
+	    $this->mail_object->CharSet = 'UTF-8';
+	    $this->mail_object->Subject = $headers['Subject'];
+
+	    $debug_email = ConfigHelper::getConfig('mail.debug_email');
+	    if (!empty($debug_email)) {
+		$recipients = ConfigHelper::getConfig('mail.debug_email');
+	    }
+
+	    if (empty($headers['Date']))
+		$headers['Date'] = date('r');
+
+	    if ($files || $headers['X-LMS-Format'] == 'html') {
+		$boundary = '-LMS-' . str_replace(' ', '.', microtime());
+		$this->mail_object->addCustomHeader('Content-Type: multipart/mixed;\n  boundary=\"' . $boundary . '"');
+
+		if ($files)
+		    while (list(, $chunk) = each($files))
+			$this->mail_object->AddAttachment($chunk['data'], $chunk['filename'],'base64', $chunk['content_type'], 'attachment');
+
+		if($headers['X-LMS-Format'] == 'html'){
+		    $this->mail_object->isHTML(true);
+		    $this->mail_object->AltBody = trans("To view the message, please use an HTML compatible email viewer");
+		    $this->mail_object->msgHTML($body);
+		}
+		else{
+		    $this->mail_object->isHTML(false);
+		    $this->mail_object->Body = $body;
+		}
+	    }
+	    else {
+		$this->mail_object->isHTML(false);
+		$this->mail_object->Body = $body;
+	    }
+
+	    $this->mail_object->addAddress($recipients);
+
+	    if(!$this->mail_object->Send()) {
+		return "Mailer Error: " . $this->mail_object->ErrorInfo;
+	    } else {
+		return MSG_SENT;
+	    }
+	}
     }
 
     public function SendSMS($number, $message, $messageid = 0, $script_service = null)
