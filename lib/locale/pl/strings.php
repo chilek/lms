@@ -2049,6 +2049,7 @@ $_LANG['Long name:'] = 'Pełna nazwa:';
 $_LANG['New Division'] = 'Nowa firma';
 $_LANG['No such divisions in database.'] = 'Brak firm w bazie danych.';
 $_LANG['Select division'] = 'Wybierz firmę';
+$_LANG['Division:Division'] = 'Firma:';
 $_LANG['Unlock'] = 'Odblokuj';
 $_LANG['Wrong account number!'] = 'Niepoprawny format konta!';
 $_LANG['Zip code is required!'] = 'Kod pocztowy jest wymagany!';
@@ -2895,6 +2896,14 @@ $_LANG['Enter node longitude (optional)'] = 'Podaj długość geograficzną dla 
 
 $_LANG['Select investment projects'] = 'Wybierz projekty inwestycyjne';
 $_LANG['Investment project:'] = 'Projekt inwestycyjny:';
+$_LANG['Investment projects'] = 'Projekty inwestycyjne';
+$_LANG['Investment projects Management'] = 'Zarządzenie projektami inwestycyjnymi';
+$_LANG['Investment projects list'] = 'Lista projektów inwestycyjnych';
+$_LANG['There are no investment project.'] = 'Nie ma żadnych projektów inwestycyjnych';
+$_LANG['Add investment project'] = 'Dodaj projekt inwestycyjny';
+$_LANG['New investment project'] = 'Nowy projekt inwestycyjny';
+$_LANG['Enter investment project name'] = 'Wpisz nazwę projektu inwestycyjnego';
+$_LANG['Display this form again, when this invproject is saved'] = 'Wyświetl formularz ponownie po dodaniu projektu inwestycyjnego';
 
 $_LANG['Select device status'] = 'Wybierz status urządzenia';
 $_LANG['$a (from network node $b)'] = '$a (z węzła sieciowego $b)';

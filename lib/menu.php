@@ -734,6 +734,12 @@ $menu = array(
 					'tip' => trans('Plugin Management'),
 					'prio' => 100,
 				),
+				array(
+					'name' => trans('Investment projects'),
+					'link' => '?m=invprojectlist',
+					'tip' => trans('Investment projects Management'),
+					'prio' => 110,
+				),
 			),
 		),
 
