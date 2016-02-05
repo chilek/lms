@@ -21,18 +21,13 @@
  *
  */
 
-/**
- * @author Maciej_Wawryk
- */
-
 
 $this->BeginTrans();
 
-define('CONFIG_TYPE_BOOLEAN', 1);
+$this->Execute("ALTER TABLE netnodes ADD COLUMN divisionid int(11) NULL DEFAULT NULL");
+$this->Execute("ALTER TABLE netnodes ADD FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE");
 
-$this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'helpdesk_notify', 'false', ?)", array(CONFIG_TYPE_BOOLEAN));
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016020500', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016020501', 'dbversion'));
 
 $this->CommitTrans();
 
