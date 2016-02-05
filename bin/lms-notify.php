@@ -1001,7 +1001,7 @@ if (in_array('www', $channels))
 		}
 	}
 
-$intersect = array_intersect(array('blocking', 'unblocking'), $channels);
+$intersect = array_intersect(array('block', 'unblock'), $channels);
 if (!empty($intersect)) {
 	$customers = array();
 	foreach ($notifications as $type => $notification)
@@ -1016,10 +1016,10 @@ if (!empty($intersect)) {
 	}
 	$customers = implode(',', $customers);
 
-	foreach (array('blocking', 'unblocking') as $channel)
+	foreach (array('block', 'unblock') as $channel)
 		if (in_array($channel, $channels))
 			switch ($channel) {
-				case 'blocking':
+				case 'block':
 					if (empty($customers))
 						break;
 					$DB->Execute("UPDATE nodes SET access = ?
@@ -1032,7 +1032,7 @@ if (!empty($intersect)) {
 							AND customerid IN (" . $customers . ")",
 						array(1, 0));
 					break;
-				case 'unblocking':
+				case 'unblock':
 					$DB->Execute("UPDATE nodes SET access = ?
 						WHERE access = ?" . (empty($customers) ? '' : " AND ownerid NOT IN (" . $customers . ")"),
 						array(1, 0));

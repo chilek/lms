@@ -42,7 +42,7 @@ version ?.??.?? (????-??-??):
   - customer and user notifications about still opened events [chilan]
   - fixed multidays event presentation in event list when end time is 00:00 [chilan]
   - remember all form settings between user sessions [chilan]
-  - 'unblocking' type support added to lms-notify.php backend script [chilan]
+  - 'unblock' channel support added to lms-notify.php backend script [chilan]
 
 version 1.11.19 (2015-12-21):
 
