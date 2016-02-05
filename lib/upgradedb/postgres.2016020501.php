@@ -23,6 +23,9 @@
 
 $this->BeginTrans();
 
+$this->Execute("ALTER TABLE invprojects ADD COLUMN divisionid integer NULL DEFAULT NULL");
+$this->Execute("ALTER TABLE invprojects ADD CONSTRAINT invprojects_divisions_fkey
+                FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE");
 $this->Execute("ALTER TABLE netnodes ADD COLUMN divisionid integer NULL DEFAULT NULL");
 $this->Execute("ALTER TABLE netnodes ADD CONSTRAINT netnodes_divisions_fkey
                 FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE");
