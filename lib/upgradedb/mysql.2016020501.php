@@ -21,7 +21,6 @@
  *
  */
 
-
 $this->BeginTrans();
 
 $this->Execute("ALTER TABLE netnodes ADD COLUMN divisionid int(11) NULL DEFAULT NULL");
