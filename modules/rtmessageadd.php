@@ -141,7 +141,7 @@ if(isset($_POST['message']))
 		if (!empty($helpdesk_sender_name) && ($mailfname = $helpdesk_sender_name))
 		{
 			if($mailfname == 'queue') $mailfname = $queue['name'];
-			if($mailfname == 'customer') $mailfname = $user['name'];
+			if($mailfname == 'user') $mailfname = $user['name'];
 			$mailfname = '"'.$mailfname.'"';
 		}
 
