@@ -582,7 +582,9 @@ CREATE TABLE invprojects (
         id int(11) NOT NULL auto_increment,
 	name varchar(255) NOT NULL, 
 	type tinyint DEFAULT 0, 
-	PRIMARY KEY (id)
+        divisionid int(11) DEFAULT NULL,
+	PRIMARY KEY (id),
+        FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -2531,4 +2533,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016020300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016020400');
