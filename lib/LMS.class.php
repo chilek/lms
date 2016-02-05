@@ -1668,7 +1668,7 @@ class LMS
 		$this->mail_object->SMTPAuth  = (!$auth ? ConfigHelper::getConfig('mail.smtp_auth_type', true) : $auth);
 		$this->mail_object->SMTPSecure  = (!$auth ? ConfigHelper::getConfig('mail.smtp_secure', true) : $auth);
 	    }
-	    $this->mail_object->XMailer = 'X-Mailer: LMS-' . $this->_version;
+	    $this->mail_object->XMailer = 'LMS-' . $this->_version;
 	    if (!empty($_SERVER['REMOTE_ADDR']))
 		$this->mail_object->addCustomHeader('X-Remote-IP: '.$_SERVER['REMOTE_ADDR']);
 	    if (isset($_SERVER['HTTP_USER_AGENT']))
@@ -1681,6 +1681,7 @@ class LMS
 
 	    $debug_email = ConfigHelper::getConfig('mail.debug_email');
 	    if (!empty($debug_email)) {
+                $this->mail_object->SMTPDebug = 2;
 		$recipients = ConfigHelper::getConfig('mail.debug_email');
 	    }
 
