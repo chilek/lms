@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,7 +27,8 @@
 $id = intval($_GET['id']);
 $result = $DB->GetRow('SELECT n.*, p.name AS projectname,
 	lb.name AS borough_name, lb.type AS borough_type,
-	ld.name AS district_name, ls.name AS state_name
+	ld.name AS district_name, ls.name AS state_name,
+        (SELECT d.shortname FROM divisions d WHERE d.id = n.divisionid) AS division
 	FROM netnodes n
 	LEFT JOIN invprojects p ON n.invprojectid = p.id
 	LEFT JOIN location_cities lc ON lc.id = n.location_city

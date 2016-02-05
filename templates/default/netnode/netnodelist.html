@@ -32,7 +32,17 @@
 	</TR>
 	<TR>
 		<TD colspan="6" class="nobr">
-			<span class="bold">{trans("Filter:")}</span> {trans("Type:")}
+			<span class="bold">{trans("Filter:")}</span> 
+                        {if $divisions}
+                        {trans("Division:")}
+			<SELECT SIZE="1" NAME="d" ONCHANGE="document.choosefilter.submit();">
+				<OPTION VALUE="-1" {if $listdata.divisionid==-1} SELECTED {/if} >- {trans("all")} -</OPTION>
+				{foreach $divisions as $division}
+					<OPTION VALUE="{$division.id}"{if $listdata.divisionid == $division.id} SELECTED{/if} >{$division.shortname}</OPTION>
+				{/foreach}
+			</SELECT>
+                        {/if}
+                        {trans("Type:")}
 			<SELECT SIZE="1" NAME="t" ONCHANGE="document.choosefilter.submit();">
 				<OPTION VALUE="-1" {if $listdata.type==-1} SELECTED {/if} >- {trans("all")} -</OPTION>
 				{foreach $_NETELEMENTTYPES as $idx => $type}
