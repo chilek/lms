@@ -42,7 +42,7 @@ if(!empty($_POST['invprojectedit']))
 		$args = array(
 			'name' => $invproject['name'],
 			'divisionid' => $invproject['divisionid'],
-			'type' => 0,
+			'type' => INV_PROJECT_REGULAR,
 			'id' => $invproject['id'],
 		);
                 $DB->Execute('UPDATE invprojects SET name=?, divisionid=?, type=?

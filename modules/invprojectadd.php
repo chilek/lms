@@ -40,7 +40,7 @@ if(!empty($_POST['invprojectadd']))
 		$args = array(
 			'name' => $invproject['name'],
 			'divisionid' => $invproject['divisionid'],
-			'type' => 0,
+			'type' => INV_PROJECT_REGULAR,
 		);
 		$DB->Execute('INSERT INTO invprojects (name, divisionid, type)
 			VALUES (?, ?, ?)', array_values($args));
