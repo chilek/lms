@@ -24,6 +24,24 @@
 				<TR>
 					<TD WIDTH="100%" style="vertical-align:top;">
 					        <TABLE WIDTH="100%" CELLPADDING="3">
+        {if $divisions}
+        <TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/division.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Division:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<SELECT NAME="netnode[divisionid]"  {tip trigger="divisionid" text="Select division"} VALUE="{$netnode.divisionid}">
+				<OPTION value="-1" {if ($netnode.divisionid == '-1' ) } selected="selected" {/if} >- {trans("select")} -</OPTION>
+                                {foreach $divisions as $division}
+				<OPTION VALUE="{$division.id}"{if $netnode.divisionid == $division.id} selected{/if} >{$division.shortname}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+        {/if}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/producer.gif" ALT="">
