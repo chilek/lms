@@ -391,7 +391,7 @@ else
 	{
 		$queue = $LMS->GetQueueByTicketId($_GET['ticketid']);
 		$message = $DB->GetRow('SELECT id AS ticketid, state, cause, queueid, owner FROM rttickets WHERE id = ?', array($_GET['ticketid']));
-                if(ConfigHelper::getConfig('phpui.helpdesk_notify')){
+                if(ConfigHelper::checkConfig('phpui.helpdesk_notify')){
                     $message['notify'] = TRUE;
                 }
 	}

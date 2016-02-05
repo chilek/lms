@@ -37,7 +37,7 @@ if(isset($_GET['ticketid']))
 
 	$note = $DB->GetRow('SELECT id AS ticketid, state, cause, queueid, owner FROM rttickets WHERE id = ?', array($note['ticketid']));
 
-        if(ConfigHelper::getConfig('phpui.helpdesk_notify')){
+        if(ConfigHelper::checkConfig('phpui.helpdesk_notify')){
             $note['notify'] = TRUE;
         }
 }
