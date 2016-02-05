@@ -77,6 +77,6 @@ class urgent_notice_popup_plugin
 $popup_plugin = new urgent_notice_popup_plugin($LMS);
 
 // Register plugin actions:
-$LMS->RegisterHook('userpanel_notices_call_before', array($popup_plugin, 'notice_check'));
+$LMS->RegisterHook('userpanel_module_call_before', array($popup_plugin, 'notice_check'));
 
 ?>
