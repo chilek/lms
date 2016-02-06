@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="LMS" default="full-build">
-    <property name="pdepend" value="pdepend"/>
-    <property name="phpcpd"  value="phpcpd"/>
-    <property name="phpcs"   value="phpcs"/>
-    <property name="phpmd"   value="phpmd"/>
-    <property name="phpunit" value="phpunit"/>
+    <property name="pdepend" value="${basedir}/vendor/bin/pdepend"/>
+    <property name="phpcpd" value="${basedir}/vendor/bin/phpcpd"/>
+    <property name="phpcs" value="${basedir}/vendor/bin/phpcs"/>
+    <property name="phpmd" value="${basedir}/vendor/bin/phpmd"/>
+    <property name="phpunit" value="${basedir}/vendor/bin/phpunit"/>
 
     <target name="full-build"
             depends="prepare,static-analysis,phpunit,-check-failure"
@@ -39,7 +39,6 @@
     <target name="clean"
             unless="clean.done"
             description="Cleanup build artifacts">
-        <delete dir="${basedir}/build/api"/>
         <delete dir="${basedir}/build/coverage"/>
         <delete dir="${basedir}/build/logs"/>
         <delete dir="${basedir}/build/pdepend"/>
@@ -50,7 +49,6 @@
             unless="prepare.done"
             depends="clean"
             description="Prepare for build">
-        <mkdir dir="${basedir}/build/api"/>
         <mkdir dir="${basedir}/build/coverage"/>
         <mkdir dir="${basedir}/build/logs"/>
         <mkdir dir="${basedir}/build/pdepend"/>
