@@ -24,10 +24,18 @@
  *  $Id$
  */
 
-define('PDF_MARGIN_BOTTOM', 40);
-define('PDF_MARGIN_TOP', 40);
-define('PDF_MARGIN_LEFT', 30);
-define('PDF_MARGIN_RIGHT', 30);
+if (!defined('PDF_MARGIN_BOTTOM')) {
+    define('PDF_MARGIN_BOTTOM', 40);
+}
+if (!defined('PDF_MARGIN_TOP')) {
+    define('PDF_MARGIN_TOP', 40);
+}
+if (!defined('PDF_MARGIN_LEFT')) {
+    define('PDF_MARGIN_LEFT', 30);
+}
+if (!defined('PDF_MARGIN_RIGHT')) {
+    define('PDF_MARGIN_RIGHT', 30);
+}
 
 // brzydkie hacki dla ezpdf
 @setlocale(LC_NUMERIC, 'C');
