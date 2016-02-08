@@ -317,7 +317,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 						|| (map.getZoom() / map.getNumZoomLevels()) < 0.70)
 						return '';
 					else
-						return attr.azimuth + attr.width / 2 - 90;
+						return attr.azimuth - 90;
 				},
 				label: function(feature) {
 					var attr = feature.attributes;
@@ -432,7 +432,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 
 				var steps = radiosector.width / 10;
 				var step = radiosector.width / steps;
-				for (var k = 0, width = 0.0; k <= steps; k++, width += step) {
+				for (var k = 0, width = - radiosector.width / 2; k <= steps; k++, width += step) {
 					rsLonLat = OpenLayers.Util.destinationVincenty(normalLonLat, radiosector.azimuth + width, radiosector.rsrange)
 						.transform(lmsProjection, map.getProjectionObject());
 					rsPoint = new OpenLayers.Geometry.Point(rsLonLat.lon, rsLonLat.lat);
@@ -447,7 +447,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				rsPointList = [];
 				rsPoint = new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat);
 				rsPointList.push(rsPoint);
-				rsLonLat = OpenLayers.Util.destinationVincenty(normalLonLat, radiosector.azimuth + radiosector.width / 2, radiosector.rsrange)
+				rsLonLat = OpenLayers.Util.destinationVincenty(normalLonLat, radiosector.azimuth, radiosector.rsrange)
 						.transform(lmsProjection, map.getProjectionObject());
 				rsPoint = new OpenLayers.Geometry.Point(rsLonLat.lon, rsLonLat.lat);
 				rsPointList.push(rsPoint);
