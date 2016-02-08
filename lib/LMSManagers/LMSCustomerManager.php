@@ -461,16 +461,16 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 		    .'a.suspended = 0 AND a.dateto > '.time(). ' AND a.dateto <= '. (time() + ($as*86400))
 		    .' AND NOT EXISTS (SELECT 1 FROM assignments aa WHERE aa.customerid = a.customerid AND aa.datefrom > a.dateto LIMIT 1)';
                 break;
-            case -2: 
+            case -1: 
                 $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.dateto = 0';
                 break;
-            case -3: 
+            case -2: 
                 $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND (a.dateto = 0 OR a.dateto > ' . time() . ')';
                 break;
-            case -4: 
+            case -3: 
                 $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.invoice = 1 AND a.suspended = 0 AND (a.dateto = 0 OR a.dateto > ' . time() . ')';
                 break;
-            case -5: 
+            case -4: 
                 $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended != 0';
                 break;
             default: 
