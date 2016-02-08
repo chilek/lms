@@ -396,8 +396,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      * @param boolean $count Count flag
      * @return array Customer list
      */
-    public function getCustomerList($order = 'customername,asc', $state = null, $network = null, $customergroup = null, $search = null, $time = null, $sqlskey = 'AND', $nodegroup = null, $division = null, $limit = null, $offset = null, $count = false, $as = null)
+    public function getCustomerList($params = array())
     {
+        extract($params);
         list($order, $direction) = sscanf($order, '%[^,],%s');
 
         ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
@@ -456,7 +457,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         switch($as){
-            case ($as > 0): 
+            case 7: case 14: case 30:
                 $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
 		    .'a.suspended = 0 AND a.dateto > '.time(). ' AND a.dateto <= '. (time() + ($as*86400))
 		    .' AND NOT EXISTS (SELECT 1 FROM assignments aa WHERE aa.customerid = a.customerid AND aa.datefrom > a.dateto LIMIT 1)';

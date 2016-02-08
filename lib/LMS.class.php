@@ -468,10 +468,10 @@ class LMS
         return $manager->GetCustomerNodesAC($id);
     }
 
-    public function GetCustomerList($order = 'customername,asc', $state = null, $network = null, $customergroup = null, $search = null, $time = null, $sqlskey = 'AND', $nodegroup = null, $division = null, $limit = null, $offset = null, $count = false, $as = null)
+    public function getCustomerList($params)
     {
         $manager = $this->getCustomerManager();
-        return $manager->getCustomerList($order, $state, $network, $customergroup, $search, $time, $sqlskey, $nodegroup, $division, $limit, $offset, $count, $as);
+        return $manager->getCustomerList($params);
     }
 
     public function GetCustomerNodes($id, $count = null)
