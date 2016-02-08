@@ -456,30 +456,25 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         }
 
         switch($as){
-            case 7: $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
-		    .'a.suspended = 0 AND a.dateto > '.time(). ' AND a.dateto <= '. (time() + (7*86400))
+            case ($as > 0): 
+                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
+		    .'a.suspended = 0 AND a.dateto > '.time(). ' AND a.dateto <= '. (time() + ($as*86400))
 		    .' AND NOT EXISTS (SELECT 1 FROM assignments aa WHERE aa.customerid = a.customerid AND aa.datefrom > a.dateto LIMIT 1)';
                 break;
-            case 14: $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
-		    .'a.suspended = 0 AND a.dateto > '.time(). ' AND a.dateto <= '. (time() + (14*86400))
-		    .' AND NOT EXISTS (SELECT 1 FROM assignments aa WHERE aa.customerid = a.customerid AND aa.datefrom > a.dateto LIMIT 1)';
+            case -2: 
+                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.dateto = 0';
                 break;
-            case 30: $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
-		    .'a.suspended = 0 AND a.dateto > '.time(). ' AND a.dateto <= '. (time() + (30*86400))
-		    .' AND NOT EXISTS (SELECT 1 FROM assignments aa WHERE aa.customerid = a.customerid AND aa.datefrom > a.dateto LIMIT 1)';
+            case -3: 
+                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND (a.dateto = 0 OR a.dateto > ' . time() . ')';
                 break;
-            case -2: $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
-		    .'a.suspended = 0 AND a.dateto = 0';
+            case -4: 
+                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.invoice = 1 AND a.suspended = 0 AND (a.dateto = 0 OR a.dateto > ' . time() . ')';
                 break;
-            case -3: $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
-		    .'a.suspended = 0 AND (a.dateto = 0 OR a.dateto > ' . time() . ')';
+            case -5: 
+                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended != 0';
                 break;
-            case -4: $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
-		    .'a.invoice = 1 AND a.suspended = 0 AND (a.dateto = 0 OR a.dateto > ' . time() . ')';
-                break;
-            case -5: $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended != 0';
-                break;
-            default: $assigment = NULL;
+            default: 
+                $assigment = NULL;
                 break;
         }
 
