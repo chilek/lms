@@ -43,6 +43,8 @@ version ?.??.?? (????-??-??):
   - fixed multidays event presentation in event list when end time is 00:00 [chilan]
   - remember all form settings between user sessions [chilan]
   - 'unblock' channel support added to lms-notify.php backend script [chilan]
+  - fixed radio sectors visualisation on network map - azimuth points angle related
+    to north direction [chilan]
 
 version 1.11.19 (2015-12-21):
 
