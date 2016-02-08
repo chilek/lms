@@ -17,6 +17,19 @@
 				<TR>
 					<TD WIDTH="100%" style="vertical-align:top;">
 						<TABLE WIDTH="100%" CELLPADDING="3">
+       	{if $nodeinfo.division}
+        <TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/division.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+		        <B>{trans("Division:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+		        {$nodeinfo.division}
+		</TD>
+	</TR>
+        {/if}
        	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/producer.gif" ALT="">

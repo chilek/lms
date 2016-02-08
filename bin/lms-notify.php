@@ -1005,7 +1005,8 @@ $intersect = array_intersect(array('block', 'unblock'), $channels);
 if (!empty($intersect)) {
 	$customers = array();
 	foreach ($notifications as $type => $notification)
-		$customers = array_merge($customers, $notification['customers']);
+		if (array_key_exists('customers', $notification))
+			$customers = array_merge($customers, $notification['customers']);
 	$customers = array_unique($customers);
 	if (!empty($customers)) {
 		$customers = $DB->GetCol("SELECT id FROM customers
