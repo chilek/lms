@@ -396,7 +396,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      * @param boolean $count Count flag
      * @return array Customer list
      */
-    public function getCustomerList($order = 'customername,asc', $state = null, $network = null, $customergroup = null, $search = null, $time = null, $sqlskey = 'AND', $nodegroup = null, $division = null, $limit = null, $offset = null, $count = false)
+    public function getCustomerList($order = 'customername,asc', $state = null, $network = null, $customergroup = null, $search = null, $time = null, $sqlskey = 'AND', $nodegroup = null, $division = null, $limit = null, $offset = null, $count = false, $as = null)
     {
         list($order, $direction) = sscanf($order, '%[^,],%s');
 
@@ -453,6 +453,34 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                      $contracts = $state - 58;
                      $contracts_days = intval(ConfigHelper::getConfig('contracts.contracts_days'));
                      break;
+        }
+
+        switch($as){
+            case 7: $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
+		    .'a.suspended = 0 AND a.dateto > '.time(). ' AND a.dateto <= '. (time() + (7*86400))
+		    .' AND NOT EXISTS (SELECT 1 FROM assignments aa WHERE aa.customerid = a.customerid AND aa.datefrom > a.dateto LIMIT 1)';
+                break;
+            case 14: $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
+		    .'a.suspended = 0 AND a.dateto > '.time(). ' AND a.dateto <= '. (time() + (14*86400))
+		    .' AND NOT EXISTS (SELECT 1 FROM assignments aa WHERE aa.customerid = a.customerid AND aa.datefrom > a.dateto LIMIT 1)';
+                break;
+            case 30: $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
+		    .'a.suspended = 0 AND a.dateto > '.time(). ' AND a.dateto <= '. (time() + (30*86400))
+		    .' AND NOT EXISTS (SELECT 1 FROM assignments aa WHERE aa.customerid = a.customerid AND aa.datefrom > a.dateto LIMIT 1)';
+                break;
+            case -2: $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
+		    .'a.suspended = 0 AND a.dateto = 0';
+                break;
+            case -3: $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
+		    .'a.suspended = 0 AND (a.dateto = 0 OR a.dateto > ' . time() . ')';
+                break;
+            case -4: $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
+		    .'a.invoice = 1 AND a.suspended = 0 AND (a.dateto = 0 OR a.dateto > ' . time() . ')';
+                break;
+            case -5: $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended != 0';
+                break;
+            default: $assigment = NULL;
+                break;
         }
 
         if ($network) {
@@ -659,6 +687,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 . ($indebted2 ? ' AND b.value < -t.value' : '')
                 . ($indebted3 ? ' AND b.value < -t.value * 2' : '')
                 . ($contracts == 1 ? ' AND d.customerid IS NULL' : '')
+                . ($assigment ? ' AND c.id IN ('.$assigment.')' : '')
                 . ($disabled ? ' AND s.ownerid IS NOT null AND s.account > s.acsum' : '')
                 . ($network ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id 
                 AND (netid = ' . $network . '

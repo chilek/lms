@@ -66,14 +66,20 @@ $SESSION->save('cld', $d);
 		
 if (! isset($_GET['page']))
 	$SESSION->restore('clp', $_GET['page']);
+
+if(!isset($_GET['assigments']))
+        $SESSION->restore('clas', $as);
+else
+        $as = $_GET['assigments'];
+$SESSION->save('clas', $as);
 	    
 $page = !$_GET['page'] ? 1 : intval($_GET['page']);
 $per_page = intval(ConfigHelper::getConfig('phpui.customerlist_pagelimit', 100));
 $offset = ($page - 1) * $per_page;
-$summary = $LMS->GetCustomerList($o, $s, $n, $g, NULL, NULL, 'AND', $ng, $d, null, null, true);
+$summary = $LMS->GetCustomerList($o, $s, $n, $g, NULL, NULL, 'AND', $ng, $d, null, null, true, $as);
 $total = intval($summary['total']);
 
-$customerlist = $LMS->GetCustomerList($o, $s, $n, $g, NULL, NULL, 'AND', $ng, $d, $per_page, $offset);
+$customerlist = $LMS->GetCustomerList($o, $s, $n, $g, NULL, NULL, 'AND', $ng, $d, $per_page, $offset, false, $as);
 
 $pagination = LMSPaginationFactory::getPagination($page, $total, $per_page, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
@@ -87,6 +93,7 @@ $listdata['nodegroup'] = $ng;
 $listdata['customergroup'] = $g;
 $listdata['division'] = $d;
 $listdata['state'] = $s;
+$listdata['assigments'] = $as;
 
 $SESSION->save('clp', $page);
 

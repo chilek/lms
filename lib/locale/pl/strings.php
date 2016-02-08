@@ -3129,4 +3129,10 @@ $_LANG['Unit name on invoice, default: "pcs."'] = 'Jednostka na fakturze, domyś
 $_LANG['opened<!plural:event>'] = 'otwarte';
 $_LANG['closed<!plural:event>'] = 'zamknięte';
 
+$_LANG['Assigments:'] = 'Zobowiązania:';
+$_LANG['suspended'] = 'zawieszone';
+$_LANG['active, with invoice'] = 'aktywne, z fakturą';
+$_LANG['without end date'] = 'bez daty zakończenia';
+$_LANG['expire in $a days'] = 'wygasną w ciągu $a dni';
+
 ?>
