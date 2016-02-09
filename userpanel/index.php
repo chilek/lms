@@ -72,6 +72,8 @@ define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
 define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
 define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
 
+define('K_TCPDF_EXTERNAL_CONFIG', true);
+
 // include required files
 
 // Load autoloader
