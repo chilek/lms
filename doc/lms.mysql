@@ -576,6 +576,33 @@ CREATE TABLE ewx_channels (
 
 # --------------------------------------------------------
 #
+# Structure of table divisions
+#
+CREATE TABLE divisions (
+    	id 		int(11) 	NOT NULL auto_increment,
+	shortname       varchar(255) 	NOT NULL DEFAULT '',
+        name        	text    	NOT NULL DEFAULT '',
+	address         varchar(255) 	NOT NULL DEFAULT '',
+	city            varchar(255) 	NOT NULL DEFAULT '',
+	zip             varchar(255) 	NOT NULL DEFAULT '',
+	countryid	int(11)		NOT NULL DEFAULT '0',
+	ten		varchar(16)	NOT NULL DEFAULT '',
+	regon		varchar(255)	NOT NULL DEFAULT '',
+	account         varchar(48) 	NOT NULL DEFAULT '',
+	inv_header      text    	NOT NULL DEFAULT '',
+	inv_footer      text    	NOT NULL DEFAULT '',
+	inv_author      text    	NOT NULL DEFAULT '',
+	inv_cplace      text    	NOT NULL DEFAULT '',
+	inv_paytime 	smallint         DEFAULT NULL,
+	inv_paytype 	smallint    DEFAULT NULL,
+	description     text    	NOT NULL DEFAULT '',
+	status 		tinyint(1) 	NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE KEY shortname (shortname)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table invprojects
 #
 CREATE TABLE invprojects (
@@ -1583,33 +1610,6 @@ CREATE TABLE zipcodes (
 
 # --------------------------------------------------------
 #
-# Structure of table divisions
-#
-CREATE TABLE divisions (
-    	id 		int(11) 	NOT NULL auto_increment,
-	shortname       varchar(255) 	NOT NULL DEFAULT '',
-        name        	text    	NOT NULL DEFAULT '',
-	address         varchar(255) 	NOT NULL DEFAULT '',
-	city            varchar(255) 	NOT NULL DEFAULT '',
-	zip             varchar(255) 	NOT NULL DEFAULT '',
-	countryid	int(11)		NOT NULL DEFAULT '0',
-	ten		varchar(16)	NOT NULL DEFAULT '',
-	regon		varchar(255)	NOT NULL DEFAULT '',
-	account         varchar(48) 	NOT NULL DEFAULT '',
-	inv_header      text    	NOT NULL DEFAULT '',
-	inv_footer      text    	NOT NULL DEFAULT '',
-	inv_author      text    	NOT NULL DEFAULT '',
-	inv_cplace      text    	NOT NULL DEFAULT '',
-	inv_paytime 	smallint         DEFAULT NULL,
-	inv_paytype 	smallint    DEFAULT NULL,
-	description     text    	NOT NULL DEFAULT '',
-	status 		tinyint(1) 	NOT NULL DEFAULT 0,
-	PRIMARY KEY (id),
-	UNIQUE KEY shortname (shortname)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
 # Structure of table excludedgroups
 #
 CREATE TABLE excludedgroups (
@@ -2535,4 +2535,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016020502');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016020503');
