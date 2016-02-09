@@ -300,13 +300,13 @@ switch($action)
 				$args = array(
 					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
 					'itemid' => $itemid,
-					'value' => $item['valuebrutto'],
+					'value' => str_replace(',', '.', $item['valuebrutto']),
 					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $item['taxid'],
 					'prodid' => $item['prodid'],
 					'content' => $item['jm'],
-					'count' => $item['count'],
-					'pdiscount' => $item['pdiscount'],
-					'vdiscount' => $item['vdiscount'],
+					'count' => str_replace(',', '.', $item['count']),
+					'pdiscount' => str_replace(',', '.', $item['pdiscount']),
+					'vdiscount' => str_replace(',', '.', $item['vdiscount']),
 					'name' => $item['name'],
 					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $item['tariffid'],
 				);
