@@ -77,8 +77,6 @@ $page = !$_GET['page'] ? 1 : intval($_GET['page']);
 $sqlskey = 'AND';
 $offset = NULL;
 $count = TRUE;
-if(is_null($order))
-    $order = 'customername,asc';
 $summary = $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division", "limit", "offset", "count", "as"));
 $total = intval($summary['total']);
 $limit = intval(ConfigHelper::getConfig('phpui.customerlist_pagelimit', 100));

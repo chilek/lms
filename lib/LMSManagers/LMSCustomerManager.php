@@ -399,6 +399,14 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function getCustomerList($params = array())
     {
         extract($params);
+
+        if(is_null($order))
+            $order = 'customername,asc';
+        if(is_null($sqlskey))
+            $sqlskey = 'AND';
+        if(is_null($count))
+            $count = FALSE;
+
         list($order, $direction) = sscanf($order, '%[^,],%s');
 
         ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
