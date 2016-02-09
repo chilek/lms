@@ -791,7 +791,7 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 			WHERE d.id = ?', array($id));
 	}
 
-	$html2pdf->pdf->SetProducer('LMS Developers');
+	$html2pdf->pdf->SetAuthor('LMS Developers');
 	$html2pdf->pdf->SetCreator('LMS '.$layout['lmsv']);
 	if ($info)
 		$html2pdf->pdf->SetAuthor($info['name']);
