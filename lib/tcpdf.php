@@ -30,6 +30,8 @@
  *  This reduces execution time by ~30-50%
  */
 
+define('K_TCPDF_EXTERNAL_CONFIG', true);
+
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . 'pol.php');
 
 class LMSTCPDF extends TCPDF {
