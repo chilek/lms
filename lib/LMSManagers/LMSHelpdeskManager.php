@@ -344,12 +344,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             preg_replace("/\r/", "", $ticket['body']),
             $ticket['mailfrom']));
 
+		$msgid = $this->db->GetLastInsertID('rtmessages');
+
         foreach (array_keys($ticket['categories']) as $catid)
             $this->db->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) 
 				VALUES (?, ?)', array($id, $catid));
 
         if (!empty($files) && ConfigHelper::getConfig('rt.mail_dir')) {
-            $msgid = $this->db->GetLastInsertID('rtmessages');
             $dir = ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d/%06d', $id, $msgid);
             @mkdir(ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d', $id), 0700);
             @mkdir($dir, 0700);

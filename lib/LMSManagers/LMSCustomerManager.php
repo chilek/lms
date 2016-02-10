@@ -337,12 +337,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 				    VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?,
 				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
         ) {
+            $id = $this->db->GetLastInsertID('customers');
             $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
             $location_manager->UpdateCountryState($customeradd['zip'], $customeradd['stateid']);
             if ($customeradd['post_zip'] != $customeradd['zip']) {
                 $location_manager->UpdateCountryState($customeradd['post_zip'], $customeradd['post_stateid']);
             }
-            $id = $this->db->GetLastInsertID('customers');
             if ($this->syslog) {
                 $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $id;
                 unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
