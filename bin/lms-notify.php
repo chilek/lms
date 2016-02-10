@@ -112,7 +112,7 @@ function localtime2() {
 	global $fakedate, $timeoffset;
 	if (!empty($fakedate)) {
 		$date = explode("/", $fakedate);
-		return mktime(0, 0, 0, intval($date[1]), intval($date[2]), intval($date[0]));
+		return mktime(0, 0, 0, intval($date[1]), intval($date[2]), intval($date[0])) + $timeoffset;
 	} else
 		return time();
 }
@@ -203,8 +203,8 @@ if (!empty($auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $auth))
 
 //$currtime = localtime2() + $timeoffset;
 $currtime = localtime2();
-//$daystart = intval($currtime / 86400) * 86400 - $timeoffset;
-$daystart = intval($currtime / 86400) * 86400;
+$daystart = intval($currtime / 86400) * 86400 - $timeoffset;
+//$daystart = intval($currtime / 86400) * 86400;
 $dayend = $daystart + 86399;
 
 $deadline = ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0));
