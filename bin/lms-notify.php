@@ -112,7 +112,7 @@ function localtime2() {
 	global $fakedate, $timeoffset;
 	if (!empty($fakedate)) {
 		$date = explode("/", $fakedate);
-		return mktime(0, 0, 0, intval($date[1]), intval($date[2]), intval($date[0])) + $timeoffset;
+		return mktime(0, 0, 0, intval($date[1]), intval($date[2]), intval($date[0]));
 	} else
 		return time();
 }
