@@ -168,10 +168,6 @@ function module_main()
 					$ticket['mailfrom']
 				));
 
-		foreach(explode(',', $ticket['categories']) as $catid)
-			$DB->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)',
-				array($id, $catid));
-
 		if (!empty($files) && ConfigHelper::getConfig('rt.mail_dir')) {
 			$msgid = $DB->GetLastInsertID('rtmessages');
 			$dir = ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d/%06d', $id, $msgid);
@@ -184,6 +180,10 @@ function module_main()
 						VALUES (?,?,?)', array($msgid, $file['name'], $file['type']));
 			}
 		}
+
+		foreach(explode(',', $ticket['categories']) as $catid)
+			$DB->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)',
+				array($id, $catid));
 
 		if(ConfigHelper::checkConfig('phpui.newticket_notify'))
 		{
