@@ -815,8 +815,9 @@ if (empty($types) || in_array('warnings', $types)) {
 if (empty($types) || in_array('events', $types)) {
 	$time = intval(strftime('%H%M'));
 	$events = $DB->GetAll("SELECT id, title, description, customerid, userid FROM events
-		WHERE (customerid <> 0 OR userid <> 0) AND closed = 0 AND date <= ?NOW? AND enddate >= ?NOW?
-			AND begintime <= ? AND (endtime = 0 OR endtime >= ?)", array($time, $time));
+		WHERE (customerid <> 0 OR userid <> 0) AND closed = 0 AND date <= ? AND enddate >= ?
+			AND begintime <= ? AND (endtime = 0 OR endtime >= ?)",
+		array($daystart, $dayend, $time, $time));
 
 	if (!empty($events)) {
 		$customers = array();
