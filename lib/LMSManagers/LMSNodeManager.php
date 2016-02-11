@@ -386,8 +386,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 					WHERE a.suspended = 0 AND a.period IN (' . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ')
 						AND a.datefrom <= ?NOW? AND (a.dateto = 0 OR a.dateto >= ?NOW?)
 					)' : '')
-				. ($status == 5 ? ' AND n.location_city IS NULL OR n.location_street IS NULL' : '') //disconnected
-				. ($status == 6 ? ' AND n.netdev = 0' : '') //disconnected
+				. ($status == 5 ? ' AND n.location_city IS NULL OR n.location_street IS NULL' : '')
+				. ($status == 6 ? ' AND n.netdev = 0' : '')
 				. ($customergroup ? ' AND customergroupid = ' . intval($customergroup) : '')
 				. ($nodegroup ? ' AND nodegroupid = ' . intval($nodegroup) : '')
 				. (isset($searchargs) ? $searchargs : '')
