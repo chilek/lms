@@ -276,11 +276,18 @@ function findFeaturesIntersection(selectFeature, feature, featureLonLat)
 
 function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selection, startLon, startLat)
 {
-	var linkstyles = [
-		{ strokeColor: '#00ff00', strokeOpacity: 0.5 },
-		{ strokeColor: '#0000ff', strokeOpacity: 0.5 },
-		{ strokeColor: '#ff0000', strokeOpacity: 0.5 }
-	];
+	var linkstyles = [];
+	// wire
+	linkstyles[6] = { strokeColor: '#80ff00', strokeOpacity: 0.5 }; // 10 Mb/s Ethernet
+	linkstyles[7] = { strokeColor: '#00ff00', strokeOpacity: 0.5 }; // 100 Mb/s Fast Ethernet
+	linkstyles[8] = { strokeColor: '#008000', strokeOpacity: 0.5 }; // 1 Gigabit Ethernet
+	// wireless
+	linkstyles[100] = { strokeColor: '#0000ff', strokeOpacity: 0.5 }; // WiFi - 2,4 GHz
+	linkstyles[101] = { strokeColor: '#0080ff', strokeOpacity: 0.5 }; // WiFi - 5 GHz
+	// fiber
+	linkstyles[204] = { strokeColor: '#ff0000', strokeOpacity: 0.5 }; // 100 Mb/s Fast Ethernet
+	linkstyles[205] = { strokeColor: '#ff8000', strokeOpacity: 0.5 }; // 1 Gigabit Ethernet
+
 	var linkweights = [];
 	linkweights[10000] = 1;
 	linkweights[25000] = 1;
@@ -480,10 +487,10 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				new OpenLayers.Geometry.Point(devlinkArray[i].dstlon, devlinkArray[i].dstlat)
 					.transform(lmsProjection, map.getProjectionObject())
 			);
-			linkstyles[devlinkArray[i].type].strokeWidth = linkweights[devlinkArray[i].speed];
+			linkstyles[devlinkArray[i].technology].strokeWidth = linkweights[devlinkArray[i].speed];
 			devlinks.push(new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.LineString(points),
-				devlinkArray[i], linkstyles[devlinkArray[i].type]));
+				devlinkArray[i], linkstyles[devlinkArray[i].technology]));
 		}
 
 	var devlinkLbl = OpenLayers.Lang.translate("Device Links");
@@ -520,10 +527,10 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				new OpenLayers.Geometry.Point(nodelinkArray[i].netdevlon, nodelinkArray[i].netdevlat)
 					.transform(lmsProjection, map.getProjectionObject())
 				);
-			linkstyles[nodelinkArray[i].type].strokeWidth = linkweights[nodelinkArray[i].speed];
+			linkstyles[nodelinkArray[i].technology].strokeWidth = linkweights[nodelinkArray[i].speed];
 			nodelinks.push(new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.LineString(points),
-				nodelinkArray[i], linkstyles[nodelinkArray[i].type]));
+				nodelinkArray[i], linkstyles[nodelinkArray[i].technology]));
 		}
 
 	var nodelinkLbl = OpenLayers.Lang.translate("Node Links");
