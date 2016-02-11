@@ -565,7 +565,6 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 			else
 				linkstyle = linkstyles[devlinkArray[i].type];
 			linkstyle.strokeWidth = linkweights[devlinkArray[i].speed];
-			console.log(linkstyle);
 			devlinks.push(new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.LineString(points),
 				devlinkArray[i], linkstyle));
@@ -610,7 +609,6 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 			else
 				linkstyle = linkstyles[nodelinkArray[i].type];
 			linkstyle.strokeWidth = linkweights[nodelinkArray[i].speed];
-			console.log(linkstyle);
 			nodelinks.push(new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.LineString(points),
 				nodelinkArray[i], linkstyle));
