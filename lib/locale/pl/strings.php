@@ -3148,4 +3148,7 @@ $_LANG['active, with invoice'] = 'aktywne, z fakturą';
 $_LANG['without end date'] = 'bez daty zakończenia';
 $_LANG['expire in $a days'] = 'wygasną w ciągu $a dni';
 
+$_LANG['TERRIT not specified'] = 'Bez TERYT-u';
+$_LANG['Net Device not specified'] = 'Bez urządzenia sieciowego';
+
 ?>
