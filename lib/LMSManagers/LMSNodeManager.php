@@ -386,6 +386,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 					WHERE a.suspended = 0 AND a.period IN (' . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ')
 						AND a.datefrom <= ?NOW? AND (a.dateto = 0 OR a.dateto >= ?NOW?)
 					)' : '')
+				. ($status == 5 ? ' AND n.location_city IS NULL OR n.location_street IS NULL' : '') //disconnected
+				. ($status == 6 ? ' AND n.netdev = 0' : '') //disconnected
 				. ($customergroup ? ' AND customergroupid = ' . intval($customergroup) : '')
 				. ($nodegroup ? ' AND nodegroupid = ' . intval($nodegroup) : '')
 				. (isset($searchargs) ? $searchargs : '')
@@ -686,7 +688,9 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     {
         $result = $this->db->GetRow('SELECT COUNT(CASE WHEN access=1 THEN 1 END) AS connected, 
 				COUNT(CASE WHEN access=0 THEN 1 END) AS disconnected,
-				COUNT(CASE WHEN ?NOW?-lastonline < ? THEN 1 END) AS online
+				COUNT(CASE WHEN ?NOW?-lastonline < ? THEN 1 END) AS online,
+				COUNT(CASE WHEN location_city IS NULL THEN 1 END) AS withoutTerryt,
+				COUNT(CASE WHEN netdev = 0 THEN 1 END) AS withoutNetDev
 				FROM vnodes WHERE ownerid > 0', array(ConfigHelper::getConfig('phpui.lastonline_limit')));
 
         $result['total'] = $result['connected'] + $result['disconnected'];
