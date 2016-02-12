@@ -4,7 +4,7 @@
 <!--// $Id$ //-->
  {if $layout.module=="aliassearch"}{assign var=suffix value="&s=1"}{/if}
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE class="lmsbox">
+<TABLE class="lmsbox">
     <COLGROUP>
         <COL style="width: 41%;">
         <COL style="width: 1%;">
@@ -31,8 +31,7 @@
 		</TH>
 	</TR>
 	<TR>
-		<TD colspan="3">
-                        <SPAN class="nobr">
+		<TD colspan="3" class="nobr">
                                 <FORM method="GET" action="?m={$layout.module}" name="filter">
                                         <INPUT type="submit" class="hiddenbtn">
                                         <INPUT type="HIDDEN" name="m" value="{$layout.module}">
@@ -54,10 +53,9 @@
                                         {/foreach}
                                         </SELECT>
                                 </FORM>
-                        </SPAN>
                 </TD>
-                <TD class="text-right">
-                        <SPAN class="nobr"><A href="?m=aliasadd{if $listdata.domain}&domainid={$listdata.domain}{/if}">{trans("New Alias")} <IMG src="img/save.gif" alt=""></A></SPAN>
+                <TD class="text-right nobr">
+                        <A href="?m=aliasadd{if $listdata.domain}&domainid={$listdata.domain}{/if}">{trans("New Alias")} <IMG src="img/save.gif" alt=""></A>
                 </TD>
 	</TR>		
 	{if $listdata.total != 0}
@@ -117,5 +115,4 @@
 	</TR>
     </TFOOT>
 </TABLE>
-</P>
 {/block}

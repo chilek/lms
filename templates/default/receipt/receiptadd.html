@@ -16,7 +16,7 @@
 		else if (!document.additem.original.checked && document.additem.copy.checked)
 			add = "&which=copy";
 
-		document.additem.action = "?m=receiptadd&action=save" + add;
+		document.additem.action = "?m=receiptadd&amp;action=save" + add;
 
 		if (print == 1) {
 			document.additem.action += "&print=1";
@@ -35,13 +35,13 @@
 
 	function additem()
 	{
-		document.additem.action = "?m=receiptadd&action=additem";
+		document.additem.action = "?m=receiptadd&amp;action=additem";
 		document.additem.target = "";
 		document.additem.submit();
 	}
 //-->
 </SCRIPT>
-<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptadd{if $receipt.type}&type={$receipt.type}{/if}&action={if $receipt.regid && !$error.regid}setcustomer{else}setreg{/if}">
+<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptadd{if $receipt.type}&type={$receipt.type}{/if}&amp;action={if $receipt.regid && !$error.regid}setcustomer{else}setreg{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="receipt[type]" value="{$receipt.type}">
 <INPUT type="hidden" name="receipt[numberplanid]" value="{$receipt.numberplanid}">
@@ -262,7 +262,7 @@
 {/if}
 {if $receipt.type=="out" && $receipt.o_type=="move" && $receipt.selected && $cashregcount > 1}
 <BR>
-<FORM name="movecash" method="POST" action="?m=receiptadd&action=movecash">
+<FORM name="movecash" method="POST" action="?m=receiptadd&amp;action=movecash">
 <TABLE class="lmsbox">
     <THEAD>
 	<TR>
@@ -303,7 +303,7 @@
 	{if $receipt.o_type == "customer"}
 	<TR>
 		<TD colspan="4">
-			<FORM name="additemlist" method="POST" action="?m=receiptadd&action=additemlist">
+			<FORM name="additemlist" method="POST" action="?m=receiptadd&amp;action=additemlist">
 			<TABLE class="lmsbox">
                             <THEAD>
 				<TR>
@@ -391,7 +391,7 @@
 			{$item.value|money_format}<BR>
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<A HREF="?m=receiptadd&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
+			<A HREF="?m=receiptadd&amp;action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
 		</TD>			
 	</TR>
 	{foreachelse}
@@ -416,7 +416,7 @@
 	{/if}
     </TBODY>
     <TFOOT>
-	<FORM METHOD="POST" {*ACTION="?m=receiptadd&action=additem"*} NAME="additem">
+	<FORM METHOD="POST" {*ACTION="?m=receiptadd&amp;action=additem"*} NAME="additem">
 	<INPUT type="submit" class="hiddenbtn">
 	<TR>
 		<TD WIDTH="1%" NOWRAP>
@@ -437,7 +437,7 @@
 			<INPUT type="checkbox" id="original" name="original" checked> <label for="original">{trans("original")}</label>&nbsp;
 			<INPUT type="checkbox" id="copy" name="copy" checked> <label for="copy">{trans("copy")}</label>&nbsp;
 			<A HREF="?m=receiptlist&regid={$receipt.regid}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>&nbsp;
-			<A HREF="?m=receiptadd&action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A>&nbsp;
+			<A HREF="?m=receiptadd&amp;action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A>&nbsp;
 			{if !$customer && $receipt.o_type != "other" && $receipt.o_type != "advance"}
 			<A HREF="javascript:alert('{trans("Customer not selected!")}');">
 			{elseif !$contents}

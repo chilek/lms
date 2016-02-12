@@ -41,30 +41,30 @@
 	{cycle values="light,lucid" print=false}
 	{foreach from=$reglist item=reg}
 	<TR class="highlight {cycle}{if $reg.disabled} blend{/if}">
-		<TD onClick="return self.location.href='?m=receiptlist&regid={$reg.id}';">
+		<TD onClick="return self.location.href='?m=receiptlist&amp;regid={$reg.id}';">
                         <SPAN class="nobr bold"><IMG src="img/queue.gif" ALT=""> {$reg.name}</SPAN>
 		</TD>
 		<TD class="text-right">
 			({$reg.id|string_format:"%04d"})
 		</TD>
-		<TD  class="text-right{if $reg.balance < 0} alert{/if}" onClick="return self.location.href='?m=receiptlist&regid={$reg.id}';">
+		<TD  class="text-right{if $reg.balance < 0} alert{/if}" onClick="return self.location.href='?m=receiptlist&amp;regid={$reg.id}';">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
 			<SPAN class="nobr">{$reg.balance|money_format}</SPAN>
 			{/if}
 		</TD>
-		<TD class="text-right" onClick="return self.location.href='?m=receiptlist&regid={$reg.id}';">
+		<TD class="text-right" onClick="return self.location.href='?m=receiptlist&amp;regid={$reg.id}';">
 			{$reg.in_template|default:"%N/LMS/%Y"}<BR>
 			{$reg.out_template|default:"%N/LMS/%Y"}
 		</TD>
-		<TD onClick="return self.location.href='?m=receiptlist&regid={$reg.id}';">
+		<TD onClick="return self.location.href='?m=receiptlist&amp;regid={$reg.id}';">
 			{$reg.description}
 		</TD>
 		<TD class="text-right">
 			<SPAN class="nobr">
-			<A HREF="?m=receiptlist&regid={$reg.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse")} ]" title="[ {trans("Browse")} ]"></A>
-			<A HREF="?m=cashregdel&id={$reg.id}" OnClick="return confirmLink(this, '{t a=$reg.name}Are you sure, you want to remove registry \'$a\' and all assigned receipts?{/t}');"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A HREF="?m=cashregedit&id={$reg.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A HREF="?m=cashreginfo&id={$reg.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+			<A HREF="?m=receiptlist&amp;regid={$reg.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse")} ]" title="[ {trans("Browse")} ]"></A>
+			<A HREF="?m=cashregdel&amp;id={$reg.id}" OnClick="return confirmLink(this, '{t a=$reg.name}Are you sure, you want to remove registry \'$a\' and all assigned receipts?{/t}');"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A HREF="?m=cashregedit&amp;id={$reg.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A HREF="?m=cashreginfo&amp;id={$reg.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 			</SPAN>
 		</TD>
 	</TR>

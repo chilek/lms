@@ -4,7 +4,7 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
-<P><FORM method="post" name="ticketslist" id="ticketslist" action="?m=rtprint&type=ticketslist" target="_blank">
+<FORM method="post" name="ticketslist" id="ticketslist" action="?m=rtprint&amp;type=ticketslist" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -140,8 +140,7 @@
     </TBODY>
 </TABLE>
 </FORM>
-</P>
-<P><FORM method="post" name="stats" id="stats" action="?m=rtprint&type=stats" target="_blank">
+<FORM method="post" name="stats" id="stats" action="?m=rtprint&amp;type=stats" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -234,5 +233,4 @@
     </TBODY>
 </TABLE>
 </FORM>
-</P>
 {/block}
