@@ -45,6 +45,8 @@ version ?.??.?? (????-??-??):
   - 'unblock' channel support added to lms-notify.php backend script [chilan]
   - fixed radio sectors visualisation on network map - azimuth points angle related
     to north direction [chilan]
+  - add filters (with nodes, without nodes, active nodes, e-invoice) in customerlist [wawryk]
+  - add filters (online, without terryt) in nodelist and show info on welcome [wawryk]
 
 version 1.11.19 (2015-12-21):
 
