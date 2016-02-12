@@ -64,6 +64,8 @@
 				<OPTION VALUE="56"{if $listdata.state == 56} SELECTED{/if}>{trans("suspended<!plural>")}</OPTION>
 				<OPTION VALUE="62"{if $listdata.state == 62} SELECTED{/if}>{trans("with e-invoice")}</OPTION>
 				<OPTION VALUE="63"{if $listdata.state == 63} SELECTED{/if}>{trans("with connected nodes")}</OPTION>
+				<OPTION VALUE="64"{if $listdata.state == 64} SELECTED{/if}>{trans("with nodes")}</OPTION>
+				<OPTION VALUE="65"{if $listdata.state == 65} SELECTED{/if}>{trans("without nodes")}</OPTION>
 			</SELECT>
 			{trans("Division")}:
 			<SELECT SIZE="1" NAME="d" ONCHANGE="document.choosefilter.submit();">
