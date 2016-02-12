@@ -465,6 +465,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             case 62:
                     $einvoice =1;
                     break;
+            case 63:
+                    $withactivenodes = 1;
+                    break;
         }
 
         switch($as){
@@ -694,6 +697,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 . ($indebted2 ? ' AND b.value < -t.value' : '')
                 . ($indebted3 ? ' AND b.value < -t.value * 2' : '')
                 . ($einvoice ? ' AND c.einvoice = 1' : '')
+                . ($withactivenodes ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id AND access = 1)' : '')
                 . ($contracts == 1 ? ' AND d.customerid IS NULL' : '')
                 . ($assigment ? ' AND c.id IN ('.$assigment.')' : '')
                 . ($disabled ? ' AND s.ownerid IS NOT null AND s.account > s.acsum' : '')
