@@ -30,11 +30,15 @@ $patterns[] = array(
     'pid' => 0,		// customer ID position in expression
 			// if zero - we try to search ID by regexp,
 			// invoice number or customer name and forename in entire line
+    'extpid' => false, // if true then we treat pid as customer id from external system
+
     'pname' => 2,	// name position 
     'plastname' => 3,	// forename position 
     'pvalue' => 4,	// value position
     'pcomment' => 5,	// operation comment position
     'pdate' => 1,  	// date position
+	'srcaccount' => null, // sender bank account position
+	'dstaccount' => null, // receiver bank account position
 
     'date_regexp' => '/([0-9]{2})\.([0-9]{2})\.([0-9]{4})/', // date format (dd.mm.yyyy)
     'pday' => 1,

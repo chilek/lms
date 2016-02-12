@@ -259,30 +259,27 @@ function parse_file($filename, $contents) {
 			if (count($uids) == 1)
 				$id = $uids[0];
 		} elseif ($id && (!$name || !$lastname))
-			if ($tmp = $DB->GetRow('SELECT lastname, name FROM customers WHERE id = ?', array($id))) {
+			if ($tmp = $DB->GetRow('SELECT lastname, name FROM customers WHERE '
+				. (isset($pattern['extid']) && $pattern['extid'] ? 'ext' : '') . 'id = ?', array($id))) {
 				$lastname = $tmp['lastname'];
 				$name = $tmp['name'];
 			} else
 				$id = NULL;
 
-		if($time)
-		{
-			if(preg_match($pattern['date_regexp'], $time, $date))
-			{
+		if ($time) {
+			if (preg_match($pattern['date_regexp'], $time, $date)) {
 				$time = mktime(0,0,0, 
 					$date[$pattern['pmonth']], 
 					$date[$pattern['pday']], 
 					$date[$pattern['pyear']]);
-			}
-			elseif(!is_numeric($time))
+			} elseif(!is_numeric($time))
 				$time = time();
 			if (isset($pattern['date_hook']))
 				$time = $pattern['date_hook']($time, $_FILES['file']['name']);
-		}
-		else
+		} else
 			$time = time();
 
-		if(!empty($pattern['comment_replace']))
+		if (!empty($pattern['comment_replace']))
 			$comment = preg_replace($pattern['comment_replace']['from'], $pattern['comment_replace']['to'], $comment);
 
 		$customer = trim($lastname.' '.$name);
