@@ -2,7 +2,7 @@
 {block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
 {block name=module_content}
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE class="lmsbox">
+<TABLE class="lmsbox">
     <THEAD>
 	<TR>
 		<TD width="46%" NOWRAP>{trans("Host:")}</TD>
@@ -65,9 +65,7 @@
 	{sectionelse}
 	<TR>
 		<TD colspan="6" align="center">
-			<p>&nbsp;</p>
-			<p><B>{trans("No such records in database.")}</B></p>
-			<p>&nbsp;</p>
+			<B>{trans("No such records in database.")}</B>
 		</TD>
 	</TR>
 	{/section}
@@ -89,5 +87,5 @@
 		</TD>
 	</TR>
     </TFOOT>
-</TABLE></P>
+</TABLE>
 {/block}
