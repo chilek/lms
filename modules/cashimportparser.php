@@ -128,8 +128,10 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 			if (count($uids) == 1)
 				$id = $uids[0];
 		} elseif ($id && (!$name || !$lastname))
-			if ($tmp = $DB->GetRow('SELECT lastname, name FROM customers WHERE '
+			if ($tmp = $DB->GetRow('SELECT id, lastname, name FROM customers WHERE '
 				. (isset($pattern['extid']) && $pattern['extid'] ? 'ext' : '') . 'id = ?', array($id))) {
+				if (isset($pattern['extid']) && $pattern['extid'])
+					$id = $tmp['id'];
 				$lastname = $tmp['lastname'];
 				$name = $tmp['name'];
 			} else
