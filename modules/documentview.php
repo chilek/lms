@@ -62,7 +62,7 @@ if(!empty($_POST['marks']))
 			$filename = DOC_DIR.'/'.substr($doc['md5sum'],0,2).'/'.$doc['md5sum'];
 			if(file_exists($filename))
 			{
-				if (strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
+				if ($ctype != 'pdf' && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
 					if($i > 0)
 						$htmlbuffer .= "\n<page>\n";
 					ob_start();
@@ -80,7 +80,7 @@ if(!empty($_POST['marks']))
 			}
 			$i++;
 		}
-		if (strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
+		if ($ctype != 'pdf' && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
 			html2pdf($htmlbuffer, trans('Document'), NULL, NULL, NULL, 'P', array(10, 5, 15, 5));
 		}
 		die;
@@ -96,7 +96,7 @@ if(!empty($_POST['marks']))
 	$filename = DOC_DIR.'/'.substr($doc['md5sum'],0,2).'/'.$doc['md5sum'];
 	if(file_exists($filename))
 	{
-		if (strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
+		if ($doc['contenttype'] != 'pdf' && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
 			if($doc['type'] == DOC_CONTRACT) {
 				$subject = trans('Contract');
 				$title = trans('Contract No. $a', $docnumber);
