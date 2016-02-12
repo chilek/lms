@@ -261,9 +261,9 @@
                 {if $customerinfo.cutoffstop > $smarty.now}
 			    <TR>
 			        <TD colspan="2">
-			            <FONT class="alert">
+			            <span class="alert">
 			            {t a=$customerinfo.cutoffstop|date_format:"%Y/%m/%d"}Cutoff suspended to $a{/t}
-			            </FONT>
+			            </span>
 			        </TD>
 			    </TR>
                 {/if}
@@ -377,7 +377,7 @@
 			<B>{trans("Balance:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			{if $customerinfo.balance < 0}<FONT class="alert">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
+			{if $customerinfo.balance < 0}<span class="alert">{$customerinfo.balance|money_format}</span>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
 		</TD>
 	</TR>
 	{/if}
