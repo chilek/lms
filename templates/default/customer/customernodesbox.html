@@ -108,11 +108,11 @@ function setgroup(act)
 						</TD>
 						<TD class="text-right nobr">
 							{if $customernodes[customernodes].gcount}
-							<img src="img/nodegroup.gif" alt="" {tip a=$customernodes[customernodes].id dynpopup='?m=nodeinfo&id=$a&nodegroups=1' sticky=1}>
+							<img src="img/nodegroup.gif" alt="" {tip a=$customernodes[customernodes].id dynpopup='?m=nodeinfo&amp;id=$a&amp;nodegroups=1' sticky=1}>
 							{/if}
 						</TD>
 						<TD class="text-right bold nobr">
-							<A href="?m=netinfo&amp;id={$customernodes[customernodes].netid}">{$customernodes[customernodes].netname|truncate:"20":"...":true}</A> {if $customernodes[customernodes].network_pub} (<A href="?m=netinfo&id={$customernodes[customernodes].network_pub.id}">{$customernodes[customernodes].network_pub.name|truncate:"20":"...":true}</A>){/if}
+							<A href="?m=netinfo&amp;id={$customernodes[customernodes].netid}">{$customernodes[customernodes].netname|truncate:"20":"...":true}</A> {if $customernodes[customernodes].network_pub} (<A href="?m=netinfo&amp;id={$customernodes[customernodes].network_pub.id}">{$customernodes[customernodes].network_pub.name|truncate:"20":"...":true}</A>){/if}
 						</TD>
 						<TD class="nobr">
 							<A href="?m=nodeset&amp;id={$customernodes[customernodes].id}"><IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" alt="[ {if ! $customernodes[customernodes].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]" title="[ {if ! $customernodes[customernodes].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]"></A>
@@ -126,21 +126,19 @@ function setgroup(act)
 					{sectionelse}
 					<TR>
 						<TD class="empty-table" colspan="{math equation="x+y" x=7 y=$ewx}">
-							<P>&nbsp;</P>
 							<P>{if $customerinfo.deleted}<span class="red">{trans("That customer has been deleted.")}</span>{else}{trans("That customer hasn't got any node.")}{/if}</P>
-							<P>&nbsp;</P>
 						</TD>
 					</TR>
 					{/section}
 					<TR>
 						<TD colspan="{math equation="x+y" x=4 y=$ewx}" class="ftop">
 							<IMG src="img/access.gif" alt="">
-							<A href="javascript: setstatus(1)"> {trans("Connect")}</A>/<A href="javascript: setstatus(0)">{trans("Disconnect")}</A>
+							<A href="javascript:setstatus(1)"> {trans("Connect")}</A>/<A href="javascript:setstatus(0)">{trans("Disconnect")}</A>
 							<IMG src="img/warningon.gif" alt="">
-							<A href="javascript: setwarning(1)"> {trans("Enable")}</A>/<A href="javascript: setwarning(0)">{trans("Disable")}</A>
+							<A href="javascript:setwarning(1)"> {trans("Enable")}</A>/<A href="javascript:setwarning(0)">{trans("Disable")}</A>
 							{if $allnodegroups}
 							<IMG src="img/nodegroup.gif" alt="">
-							<A href="javascript: setgroup('setgroup')"> {trans("Add")}</A>/<A href="javascript: setgroup('unsetgroup')">{trans("Remove Group")}</A>:
+							<A href="javascript:setgroup('setgroup')"> {trans("Add")}</A>/<A href="javascript:setgroup('unsetgroup')">{trans("Remove Group")}</A>:
 							<SELECT SIZE="1" id="groupselect">
 								{foreach from=$allnodegroups item=nodegroup}
 								<OPTION value="{$nodegroup.id}" {if $listdata.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>

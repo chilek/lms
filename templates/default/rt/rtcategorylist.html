@@ -22,7 +22,7 @@
 		<TD align="right" WIDTH="1%">
 			{trans("Opened:")}
 		</TD>
-		<TD align="right" WIDTH="1%" ALIGN="CENTER">
+		<TD align="right" WIDTH="1%">
 			{trans("Last:")}
 		</TD>
 		<TD WIDTH="1%">
@@ -34,7 +34,7 @@
 	{cycle values="light,lucid" print=false}
 	{foreach from=$categories item=category}
 	<TR class="highlight {cycle}"  >
-		<TD onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';" COLSPAN="2">
+		<TD onClick="return self.location.href='?m=rtqueueview&amp;catid={$category.id}';" COLSPAN="2">
 			<IMG src="img/queue.gif" ALT="">
 			<B>{$category.name}</B><BR>
 			{if $category.description}
@@ -43,31 +43,29 @@
 		</TD>
 		<TD>
 			{foreach from=$category.owners item=owner key=key}
-				<A HREF="?m=userinfo&id={$owner.id}">{$owner.name}</A>{if $key+1<sizeof($category.owners)}, {/if}
+				<A HREF="?m=userinfo&amp;id={$owner.id}">{$owner.name}</A>{if $key+1<sizeof($category.owners)}, {/if}
 			{/foreach}
 		</TD>
-		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';">
+		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&amp;catid={$category.id}';">
 			{$category.new|default:0}
 		</TD>
-		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';">
+		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&amp;catid={$category.id}';">
 			{$category.open|default:0}
 		</TD>
-		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&catid={$category.id}';" NOWRAP>
+		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&amp;catid={$category.id}';" NOWRAP>
 			{if $category.lastticket}{$category.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
 		<TD NOWRAP>
-			<A HREF="?m=rtqueueview&catid={$category.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse")} ]" title="[ {trans("Browse")} ]"></A>
-			<A HREF="?m=rtcategorydel&id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A HREF="?m=rtcategoryedit&id={$category.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A HREF="?m=rtcategoryinfo&id={$category.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+			<A HREF="?m=rtqueueview&amp;catid={$category.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse")} ]" title="[ {trans("Browse")} ]"></A>
+			<A HREF="?m=rtcategorydel&amp;id={$category.id}" OnClick="return confirmLink(this, '{t a=$category.name}Are you sure, you want to remove category \'$a\'?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A HREF="?m=rtcategoryedit&amp;id={$category.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A HREF="?m=rtcategoryinfo&amp;id={$category.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD colspan="7" align="center">
-			<p>&nbsp;</p>
-			<p><B>{trans("There are no categories.")}<B></p>
-			<p>&nbsp;</p>
+		<TD colspan="7" class="empty-table">
+			<p>{trans("There are no categories.")}</p>
 		</TD>
 	</TR>
 	{/foreach}

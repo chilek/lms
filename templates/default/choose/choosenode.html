@@ -59,12 +59,12 @@
 			    </tr>
 			    <tr>
 				<td width="1%"><img src="img/ip.gif" alt=""></td>
-				<td width="99%"><nobr>{$nodelist[nodelist].ip} {if $nodelist[nodelist].ip_pub!="0.0.0.0"} ({$nodelist[nodelist].ip_pub}) {/if} / {$nodelist[nodelist].mac}</nobr></td>
+				<td width="99%" class="nobr">{$nodelist[nodelist].ip} {if $nodelist[nodelist].ip_pub!="0.0.0.0"} ({$nodelist[nodelist].ip_pub}) {/if} / {$nodelist[nodelist].mac}</td>
 			    </tr>
 			    {if $nodelist[nodelist].location}
 			    <tr>
 				<td width="1%"><img src="img/home.gif" alt=""></td>
-				<td width="99%"><nobr>{$nodelist[nodelist].location|truncate:60:"...":true}</nobr></td>
+				<td width="99%" class="nobr">{$nodelist[nodelist].location|truncate:60:"...":true}</td>
 			    </tr>
 			    {/if}
 			</table>
@@ -74,10 +74,8 @@
 	{/section}
 	{else}
 	<tr>
-		<td width="100%" colspan="3" align="center">
-			<p>&nbsp;</p>
-			<p><b>{trans("That customer hasn't got any node.")}</b></p>
-			<p>&nbsp;</p>
+		<td colspan="3" class="empty-table">
+			<p>{trans("That customer hasn't got any node.")}</p>
 		</td>
 	</tr>
 	{/if}
@@ -85,13 +83,13 @@
 		<td width="100%" colspan="3" align="center">
 		    <table width="100%" cellpadding="3" id="table">
 			<tr>
-			    <td align="left">
+			    <td align="left" class="nobr">
 			        {if sizeof($nodelist) > 1}
-				<nobr><input class="box" type="checkbox" name="allbox" id="allbox" onchange="CheckAll('nodelist', this)" value="1"><label for="allbox">{trans("Check All")}</label></nobr>
+				<input class="box" type="checkbox" name="allbox" id="allbox" onchange="CheckAll('nodelist', this)" value="1"><label for="allbox">{trans("Check All")}</label>
 				{/if}
 			    </td>
-			    <td align="right">
-				<nobr><a href="javascript:SaveForm();">{trans("Close")} <img src="img/save.gif" alt=""></a></nobr>
+			    <td align="right" class="nobr">
+				<a href="javascript:SaveForm();">{trans("Close")} <img src="img/save.gif" alt=""></a>
 			    </td>
 			</tr>
 		    </table>

@@ -7,18 +7,18 @@
 <!--
 	function Delete()
 	{
-		document.cashimport.action += '&action=delete';
+		document.cashimport.action += '&amp;action=delete';
 		document.cashimport.submit();
 	}
 
 	function Save()
 	{
-		document.cashimport.action += '&action=save';
+		document.cashimport.action += '&amp;action=save';
 		document.cashimport.submit();
 	}
 //-->
 </SCRIPT>
-<P><FORM NAME="cashimport" ACTION="?m=cashimport" METHOD="post">
+<FORM NAME="cashimport" ACTION="?m=cashimport" METHOD="post">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -53,7 +53,7 @@
 		    <IMG src="img/division.gif" alt=""> <B>{$division.name}</B>
 		</TD>
 		<TD colspan="3" align="right">
-		    <A href="?m=cashimport&action=csv&division={$division.id}">{trans("Download (CSV)")} <IMG src="img/save.gif" alt="">
+		    <A href="?m=cashimport&amp;action=csv&division={$division.id}">{trans("Download (CSV)")}</a> <IMG src="img/save.gif" alt="">
 		</TD>
 	</TR>
 		{cycle values="light,lucid" print=false}
@@ -87,10 +87,8 @@
 	{/if}{/foreach}
 	{if !$listdata.total}
 	<TR>
-		<TD ALIGN="center"  COLSPAN="7">
-			<P>&nbsp;</P>
-			<P><B>{trans("No cash operations to import.")}</B></P>
-			<P>&nbsp;</P>
+		<TD class="empty-table" COLSPAN="7">
+			<p>{trans("No cash operations to import.")}</p>
 		</TD>
 	</TR>
 	{/if}
@@ -104,7 +102,7 @@
 			</label>
 		</TD>
 		<TD class="text-center nobr" colspan="2">
-			<A href="?m=cashimport&action=txt">{trans("Download all (TXT)")} <IMG src="img/save.gif" alt="">
+			<A href="?m=cashimport&amp;action=txt">{trans("Download all (TXT)")}</a> <IMG src="img/save.gif" alt="">
 		</TD>
 		<TD class="text-right nobr" colspan="2">
 			<A HREF="javascript:Delete();">{trans("Delete")} <IMG src="img/delete.gif" ALT=""></A>
@@ -114,9 +112,9 @@
 	</TR>
     </TFOOT>
 </TABLE>
-</FORM></P>
+</FORM>
 {if $error.lines}
-<P><TABLE class="lmsbox">
+<TABLE class="lmsbox">
     <THEAD>
 	<TR>
 		<TD width="100%" colspan="2">
@@ -158,9 +156,9 @@
 			</TABLE>
 		</TD>
 	</TR>
-</TABLE></P>
+</TABLE>
 {/if}
-<P><FORM name="parser" enctype="multipart/form-data" method="post" action="?m=cashimportparser">
+<FORM name="parser" enctype="multipart/form-data" method="post" action="?m=cashimportparser">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -196,13 +194,12 @@
 	</TR>
 	<TR>
 		<TD colspan="2" width="100%" align="right" nowrap>
-			<A href="javascript: document.parser.submit();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+			<A href="javascript:document.parser.submit();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
     </TBODY>
 </TABLE>
-</FORM></P>
-<P>
+</FORM>
 <TABLE class="lmsbox">
     <THEAD>
 	<TR>
@@ -236,10 +233,8 @@
 				</TR>
 				{foreachelse}
 				<TR>
-					<TD align="center" WIDTH="100%" colspan="4">
-						<P>&nbsp;</P>
-						<P><B>{trans("There are no packages in database.")}</B></P>
-						<P>&nbsp;</P>
+					<TD class="empty-table" colspan="4">
+						<p>{trans("There are no packages in database.")}</p>
 					</TD>
 				</TR>
 				{/foreach}
@@ -248,6 +243,5 @@
 	</TR>
     </TBODY>
 </TABLE>
-</P>
 {/block}
 

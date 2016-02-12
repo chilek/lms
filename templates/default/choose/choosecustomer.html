@@ -63,16 +63,14 @@ document.search.searchcustomer.focus();
 	</tr>
 	{sectionelse}
 	<tr>
-		<td colspan="3" align="center">
-			<p>&nbsp;</p>
-			<p><b>
+		<td colspan="3" class="empty-table">
+			<p>
 			{if $searchcustomer || $searchnode}
 				{trans("No such customers matching search criteria.")}
 			{else}
 				{trans("Enter customer and/or node data and press Enter.")}
 			{/if}
-			</b></p>
-			<p>&nbsp;</p>
+			</p>
 		</td>
 	</tr>
 	{/section}

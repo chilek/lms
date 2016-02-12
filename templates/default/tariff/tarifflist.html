@@ -7,36 +7,34 @@
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD WIDTH="93%" NOWRAP>
-			<IMG SRC="img/money.gif" ALT=""> <A href="?m=tarifflist&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<IMG SRC="img/info1.gif" ALT=""> <A href="?m=tarifflist&o=description{if $listdata.direction == "asc" && $listdata.order == "description"},desc{/if}">{trans("Description:")}</A> {if $listdata.order == "description"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<IMG SRC="img/money.gif" ALT=""> <A href="?m=tarifflist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<IMG SRC="img/info1.gif" ALT=""> <A href="?m=tarifflist&amp;o=description{if $listdata.direction == "asc" && $listdata.order == "description"},desc{/if}">{trans("Description:")}</A> {if $listdata.order == "description"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
-			<A href="?m=tarifflist&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=tarifflist&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
-			<A href="?m=tarifflist&o=downrate{if $listdata.direction == "asc" && $listdata.order == "downrate"},desc{/if}">{trans("Downrate:")}</A> {if $listdata.order == "downrate"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<A href="?m=tarifflist&o=uprate{if $listdata.direction == "asc" && $listdata.order == "uprate"},desc{/if}">{trans("Uprate")}:</A> {if $listdata.order == "uprate"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=tarifflist&amp;o=downrate{if $listdata.direction == "asc" && $listdata.order == "downrate"},desc{/if}">{trans("Downrate:")}</A> {if $listdata.order == "downrate"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<A href="?m=tarifflist&amp;o=uprate{if $listdata.direction == "asc" && $listdata.order == "uprate"},desc{/if}">{trans("Uprate")}:</A> {if $listdata.order == "uprate"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
-			<A href="?m=tarifflist&o=uprate{if $listdata.direction == "asc" && $listdata.order == "downceil"},desc{/if}">{trans("Downceil:")}</A> {if $listdata.order == "downceil"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
-			<A href="?m=tarifflist&o=upceil{if $listdata.direction == "asc" && $listdata.order == "upceil"},desc{/if}">{trans("Upceil:")}</A> {if $listdata.order == "upceil"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=tarifflist&amp;o=uprate{if $listdata.direction == "asc" && $listdata.order == "downceil"},desc{/if}">{trans("Downceil:")}</A> {if $listdata.order == "downceil"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<A href="?m=tarifflist&amp;o=upceil{if $listdata.direction == "asc" && $listdata.order == "upceil"},desc{/if}">{trans("Upceil:")}</A> {if $listdata.order == "upceil"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD NOWRAP WIDTH="1%" align="right" NOWRAP>
-			<A href="?m=tarifflist&o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}"><B>{trans("Value:")}</B></A> {if $listdata.order == "value"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+		<TD WIDTH="1%" align="right" NOWRAP>
+			<A href="?m=tarifflist&amp;o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}"><B>{trans("Value:")}</B></A> {if $listdata.order == "value"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			{trans("Tax:")}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
-			<A href="?m=tarifflist&o=count{if $listdata.direction == "asc" && $listdata.order == "count"},desc{/if}">{trans("Assigned:")}</A> {if $listdata.order == "count"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=tarifflist&amp;o=count{if $listdata.direction == "asc" && $listdata.order == "count"},desc{/if}">{trans("Assigned:")}</A> {if $listdata.order == "count"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
-			<A href="?m=tarifflist&o=income{if $listdata.direction == "asc" && $listdata.order == "income"},desc{/if}">{trans("Avg. monthly income:")}</A> {if $listdata.order == "income"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=tarifflist&amp;o=income{if $listdata.direction == "asc" && $listdata.order == "income"},desc{/if}">{trans("Avg. monthly income:")}</A> {if $listdata.order == "income"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			{/if}
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT">
-			<NOBR>
+		<TD WIDTH="1%" ALIGN="RIGHT" class="nobr">
 			<B>{t a=$listdata.total}Total: $a{/t}</B>
-			</NOBR>
 		</TD>
 	</TR>
 	<TR>
@@ -81,66 +79,56 @@
 	{cycle values="light,lucid" print=false}
 	{section name=tariffs loop=$tarifflist}
 	<TR class="highlight {cycle}{if $tarifflist[tariffs].disabled == 1 && !$listdata.state} blend{/if}"  >
-		<TD WIDTH="93%" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
+		<TD WIDTH="93%" onClick="return self.location.href='?m=tariffinfo&amp;id={$tarifflist[tariffs].id}';">
 			<IMG SRC="img/money.gif" ALT="">&nbsp;<B>{$tarifflist[tariffs].name}</B><BR>
 			{if $tarifflist[tariffs].description}<IMG SRC="img/info1.gif" ALT="">&nbsp;{$tarifflist[tariffs].description}{/if}
 		</TD>
-		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
+		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&amp;id={$tarifflist[tariffs].id}';">
 			({$tarifflist[tariffs].id|string_format:"%04d"})
 		</TD>
-		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
-			<NOBR>
+		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&amp;id={$tarifflist[tariffs].id}';" class="nobr">
 			{if $tarifflist[tariffs].downrate}{$tarifflist[tariffs].downrate}{else}-{/if}
 			{if $tarifflist[tariffs].downrate_n}({$tarifflist[tariffs].downrate_n}){/if}<BR>
 			{if $tarifflist[tariffs].uprate}{$tarifflist[tariffs].uprate}{else}-{/if}
 			{if $tarifflist[tariffs].uprate_n}({$tarifflist[tariffs].uprate_n}){/if}
-			</NOBR>
 		</TD>
-		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
-			<NOBR>
+		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&amp;id={$tarifflist[tariffs].id}';" class="nobr">
 			{if $tarifflist[tariffs].downceil}{$tarifflist[tariffs].downceil}{else}-{/if}
 			{if $tarifflist[tariffs].downceil_n}({$tarifflist[tariffs].downceil_n}){/if}<BR>
 			{if $tarifflist[tariffs].upceil}{$tarifflist[tariffs].upceil}{else}-{/if}
 			{if $tarifflist[tariffs].upceil_n}({$tarifflist[tariffs].upceil_n}){/if}
-			</NOBR>
 		</TD>
-		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
-			<NOBR>
+		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&amp;id={$tarifflist[tariffs].id}';" class="nobr">
 			<B>{$tarifflist[tariffs].value|money_format}</B><BR>
 			{$tarifflist[tariffs].tax}
-			</NOBR>
 		</TD>
-		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';" NOWRAP>
+		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&amp;id={$tarifflist[tariffs].id}';" NOWRAP>
 			{$tarifflist[tariffs].customerscount|default:0}
 			({$tarifflist[tariffs].count|default:0},{$tarifflist[tariffs].activecount|default:0})
 		</TD>
-		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
+		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&amp;id={$tarifflist[tariffs].id}';">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
 			{$tarifflist[tariffs].income|money_format}
 			{/if}
 		</TD>
-		<TD WIDTH="1%" ALIGN="right">
-			<NOBR>
-				<a href="?m=tariffedit&set&id={$tarifflist[tariffs].id}">
+		<TD WIDTH="1%" ALIGN="right" class="nobr">
+				<a href="?m=tariffedit&amp;set&amp;id={$tarifflist[tariffs].id}">
 					{if $tarifflist[tariffs].disabled == 0}
 						<img src="img/access.gif" alt="[ {t}Disable{/t} ]" title="[ {t}Disable{/t} ]" />
 					{else}
 						<img src="img/noaccess.gif" alt="[ {t}Enable{/t} ]" title="[ {t}Enable{/t} ]" />
 					{/if}
 				</a>
-				{if $tarifflist[tariffs].customers}<A HREF="javascript:alert('{trans("Subscription with assigned customers cannot be deleted!")}');">{else}<A HREF="?m=tariffdel&id={$tarifflist[tariffs].id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that tariff?")}');">{/if}<IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-				<A HREF="?m=tariffedit&id={$tarifflist[tariffs].id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-				<A HREF="?m=tariffadd&id={$tarifflist[tariffs].id}"><IMG SRC="img/clone.gif" alt="[ {trans("Clone")} ]" title="[ {trans("Clone")} ]"></A>
-				<A HREF="?m=tariffinfo&id={$tarifflist[tariffs].id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
-			</NOBR>
+				{if $tarifflist[tariffs].customers}<A HREF="javascript:alert('{trans("Subscription with assigned customers cannot be deleted!")}');">{else}<A HREF="?m=tariffdel&amp;id={$tarifflist[tariffs].id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that tariff?")}');">{/if}<IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+				<A HREF="?m=tariffedit&amp;id={$tarifflist[tariffs].id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+				<A HREF="?m=tariffadd&amp;id={$tarifflist[tariffs].id}"><IMG SRC="img/clone.gif" alt="[ {trans("Clone")} ]" title="[ {trans("Clone")} ]"></A>
+				<A HREF="?m=tariffinfo&amp;id={$tarifflist[tariffs].id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD COLSPAN="8" ALIGN="center">
-			<p>&nbsp;</p>
-			<p><B>{trans("No such subscriptions in database.")}</B></p>
-			<p>&nbsp;</p>
+		<TD COLSPAN="8" class="empty-table">
+			<p>{trans("No such subscriptions in database.")}</p>
 		</TD>
 	</TR>
 	{/section}

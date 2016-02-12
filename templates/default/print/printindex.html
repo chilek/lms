@@ -1068,11 +1068,11 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 					<TD style="width: 1%;" nowrap>
 						<B>{trans("Status:")}</B>
 					</TD>
-					<TD style="width: 1%;" {tip text="Select nodes group"}>
-						<NOBR><INPUT class="radio light" type="radio" id="nodelist-all" name="filter" value="0" CHECKED><label for="nodelist-all">{trans("all")}</label></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="nodelist-connected" name="filter" value="1"><label for="nodelist-connected">{trans("connected<!plural:item>")}</label></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="nodelist-disconnected" name="filter" value="2"><label for="nodelist-disconnected">{trans("disconnected<!plural:item>")}</label></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="nodelist-indebt" name="filter" value="3"><label for="nodelist-indebt">{trans("indebted owner")}</label></NOBR>
+					<TD style="width: 1%;" {tip text="Select nodes group"} class="nobr">
+						<INPUT class="radio light" type="radio" id="nodelist-all" name="filter" value="0" CHECKED><label for="nodelist-all">{trans("all")}</label><BR>
+						<INPUT class="radio light" type="radio" id="nodelist-connected" name="filter" value="1"><label for="nodelist-connected">{trans("connected<!plural:item>")}</label><BR>
+						<INPUT class="radio light" type="radio" id="nodelist-disconnected" name="filter" value="2"><label for="nodelist-disconnected">{trans("disconnected<!plural:item>")}</label><BR>
+						<INPUT class="radio light" type="radio" id="nodelist-indebt" name="filter" value="3"><label for="nodelist-indebt">{trans("indebted owner")}</label>
 					</TD>
 					<TD style="width: 1%;" nowrap>
 					    <TABLE width="100%">

@@ -35,11 +35,11 @@
 		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT"> 
 			<A HREF="javascript:document.nodegroupadd.submit();" accesskey="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m=nodegrouplist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
-			<INPUT type="checkbox" name="nodegroupadd[reuse]" id="reuse" value="ON" id="reuse" {if $nodegroupadd.reuse}checked{/if}><label for="reuse">{trans("Display this form again, when this group is saved")}</label>
+			<INPUT type="checkbox" name="nodegroupadd[reuse]" id="reuse" value="ON" {if $nodegroupadd.reuse}checked{/if}><label for="reuse">{trans("Display this form again, when this group is saved")}</label>
 		</TD>
 	</TR>
     </TBODY>
-</TABLE></FORM></P>
+</TABLE></FORM>
 <SCRIPT type="text/javascript">
 <!--
 document.forms['nodegroupadd'].elements['nodegroupadd[name]'].focus();

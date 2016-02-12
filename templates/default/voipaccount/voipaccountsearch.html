@@ -2,7 +2,7 @@
 {block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<script language="javaScript">
+<script type="text/javascript">
 <!-- 
     function PrintList()
     {
@@ -20,7 +20,7 @@
 //-->
 </script>
 <h1>{$layout.pagetitle}</h1>
-<form method="post" action="?m=voipaccountsearch&search" name="voipaccountsearch">
+<form method="post" action="?m=voipaccountsearch&amp;search" name="voipaccountsearch">
     <input type="submit" class="hiddenbtn">
     <input type="hidden" name="m" value="voipaccountsearch">
     <table class="lmsbox">
@@ -84,7 +84,7 @@
         </tbody>
     </table>
 </form>
-<script language="javaScript">
+<script type="text/javascript">
 <!--
     document.forms['voipaccountsearch'].elements['search[login]'].focus();
 //-->

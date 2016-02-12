@@ -182,16 +182,15 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	</TR>
 	<TR>
 		<TD style="width: 100%;" class="text-right" colspan="2">
-			<A href="javascript: saveheader();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+			<A href="javascript:saveheader();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
-	</TBODY>
+    </TBODY>
 </TABLE>
 </FORM>
 {if $customer}
 <BR>
 <TABLE class="lmsbox">
-	<THEAD>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
 			<IMG src="img/customer.gif" alt=""> {trans("Customer:")}
@@ -202,14 +201,12 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			&nbsp;&raquo;&nbsp; {if $customer.balance < 0}<span class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</span>{/if}
 		</TD>
 	</TR>
-	</THEAD>
 </TABLE>
 {/if}
 <BR>
-<TABLE class="lmsbox">
-	<THEAD>
 {if $covenantlist}
 	<FORM name="additemlist" method="POST" action="?m=invoicenew&amp;action=additemlist">
+<table class="lmsbox">
 	<TR>
 		<TD colspan="9">
 			<TABLE class="lmsbox">
@@ -267,8 +264,13 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			</TABLE>
 		</TD>
 	</TR>
-	</FORM>
+</table>
+</FORM>
 {/if}
+
+<FORM method="post" action="?m=invoicenew&amp;action=additem" name="additem" id="additem">
+<table class="lmsbox">
+    <thead>
 	<TR>
 		<TD style="width: 1%;" class="bold">
 			{trans("No.")}
@@ -303,7 +305,6 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	</TR>
 	</THEAD>
 	<TFOOT>
-	<FORM method="post" action="?m=invoicenew&amp;action=additem" name="additem" id="additem">
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
 			<INPUT type="submit" class="hiddenbtn">
@@ -371,9 +372,11 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			{/if}
 		</TD>
 	</TR>
-	</FORM>
-	</TFOOT>
-	<TBODY>
+</tfoot>
+</table>
+</FORM>
+
+<table class="lmsbox">
 	{cycle values="light,lucid" print=false}
 	{foreach from=$contents item=item}
 	<TR class="highlight {cycle}">
@@ -411,9 +414,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	{foreachelse}
 	<TR>
 		<TD colspan="9" class="empty-table">
-			<P>&nbsp;</P>
 			<P>{trans("Invoice have no items. Use form below for items addition.")}</P>
-			<P>&nbsp;</P>
 		</TD>
 	</TR>
 	{/foreach}
@@ -436,7 +437,6 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 		</TD>
 	</TR>
 	{/if}
-	</TBODY>
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--

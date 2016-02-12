@@ -151,12 +151,12 @@
 		<TD WIDTH="1%" nowrap>
 		        <B>{$customer.customername}</B>
 		        &nbsp;&raquo;&nbsp; {$customer.address} &nbsp; {$customer.zip} {$customer.city}
-		        &nbsp;&raquo;&nbsp; {if $customer.balance < 0}<FONT class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</FONT>{/if}
+		        &nbsp;&raquo;&nbsp; {if $customer.balance < 0}<span class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</span>{/if}
                 </TD>
 		<TD WIDTH="98%" align="right">
-                        {if $customer.groups}<FONT class="red bold">
+                        {if $customer.groups}<span class="red bold">
 			({foreach from=$customer.groups item=item name=groups}{$item.name}{if $smarty.foreach.groups.iteration < sizeof($customer.groups)}, {/if}{/foreach})
-			</FONT>{/if}
+			</span>{/if}
 		</TD>
         </TR>
     </THEAD>
@@ -170,7 +170,7 @@
 			<IMG SRC="img/note.gif" ALT=""> <B>{trans("Notes:")}</B>
 		</TD>
 		<TD>
-		        <FONT class="red">{$customer.notes|replace:"\n":"<BR>"}</FONT>
+		        <span class="red">{$customer.notes|replace:"\n":"<BR>"}</span>
 		</TD>
 	</TR>
     </THEAD>
@@ -185,7 +185,7 @@
 			<IMG SRC="img/docum.gif" ALT=""> <B>{trans("Documents:")}</B>
 		</TD>
 		<TD>
-		        <FONT class="red">{$customer.docwarning}</FONT>
+		        <span class="red">{$customer.docwarning}</span>
 		</TD>
 	</TR>
     </THEAD>
@@ -200,7 +200,7 @@
 			<IMG SRC="img/node.gif" ALT=""> <B>{trans("Nodes:")}</B>
 		</TD>
 		<TD>
-		        <FONT class="red">{$customer.nodeswarning}</FONT>
+		        <span class="red">{$customer.nodeswarning}</span>
 		</TD>
 	</TR>
     </THEAD>
@@ -215,7 +215,7 @@
 			<IMG SRC="img/nodegroup.gif" ALT=""> <B>{trans("Groups:")}</B>
 		</TD>
 		<TD>
-		        <FONT class="red">{$customer.nodegroupswarning}</FONT>
+		        <span class="red">{$customer.nodegroupswarning}</span>
 		</TD>
 	</TR>
     </THEAD>
@@ -258,10 +258,8 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD COLSPAN="4" ALIGN="CENTER">
-			<P>&nbsp;</P>
-			<P><B>{trans("Receipt have no items. Use form below for items addition.")}</B></P>
-			<P>&nbsp;</P>
+		<TD COLSPAN="4" class="empty-table">
+			<p>{trans("Receipt have no items. Use form below for items addition.")}</p>
 		</TD>
 	</TR>
 	{/foreach}
