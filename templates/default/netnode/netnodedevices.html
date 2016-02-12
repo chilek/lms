@@ -37,10 +37,9 @@
 				{cycle values="light,lucid" print=false}
 				{section name=netdevlist loop=$netdevlist start=$start}
 				<tr class="highlight {cycle}"  id="ndsp{$netdevlist[netdevlist].id}" onclick="window.location='?m=netdevinfo&id={$netdevlist[netdevlist].id}'" >
-					<td width="95%" style="vertical-align: top;">
+					<td width="95%" style="vertical-align: top;" class="nobr">
 						<img src="img/netdev.gif" alt=""><b>{$netdevlist[netdevlist].name}</b><br/>
-							<img src="img/producer.gif" alt=""><nobr>{$netdevlist[netdevlist].producer} / {$netdevlist[netdevlist].model} /	{if $netdevlist[netdevlist].location} {$netdevlist[netdevlist].location|truncate:60:"...":true}	{/if}
-							</nobr>
+							<img src="img/producer.gif" alt="">{$netdevlist[netdevlist].producer} / {$netdevlist[netdevlist].model} /	{if $netdevlist[netdevlist].location} {$netdevlist[netdevlist].location|truncate:60:"...":true}	{/if}
 			 		</td>
 					<td>
 					 	{$netdevlist[netdevlist].id|string_format:"%04d"}
@@ -48,17 +47,15 @@
 					<td>
 						{$netdevlist[netdevlist].serialnumber}
 					</td>
-					<td>
-						<nobr><A href="?m=netnodedeldev&id={$objectid}&did={$netdevlist[netdevlist].id}" OnClick="return confirmLink(this, '{t a=$netdevlist[netdevlist].name}Are you sure, you want to remove net device  \'$a\' from node?{/t}');"><img src="img/delete.gif"  alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-						<a href="?m=netdevinfo&id={$netdevlist[netdevlist].id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A></nobr>
+					<td class="nobr">
+						<A href="?m=netnodedeldev&id={$objectid}&did={$netdevlist[netdevlist].id}" OnClick="return confirmLink(this, '{t a=$netdevlist[netdevlist].name}Are you sure, you want to remove net device  \'$a\' from node?{/t}');"><img src="img/delete.gif"  alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+						<a href="?m=netdevinfo&id={$netdevlist[netdevlist].id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 					</td>
 				</tr>
 				{sectionelse}
 				<TR>
 					<TD colspan="4" style="text-align: center;">
-						<p>&nbsp;</p>
-						<p><span class="bold">{trans("No assigned devices.")}</span></p>
-						<p>&nbsp;</p>
+						<b>{trans("No assigned devices.")}</b>
 					</TD>
 				</TR>
 				{/section}

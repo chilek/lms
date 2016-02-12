@@ -102,21 +102,17 @@
 		</TD>
 		<TD onClick="return self.location.href='?m=netnodeinfo&id={$nlist[nlist].id}';" NOWRAP>
 		</TD>
-		<TD align="right">
-			<nobr>
+		<TD align="right" class="nobr">
 			<a href="?m=netnodedel&id={$nlist[nlist].id}" onClick="return confirmLink(this, '{t a=$nlist[nlist].name}Are you sure, you want to remove net device node \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<a href="?m=netnodeedit&id={$nlist[nlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 			<a href="?m=netnodeinfo&id={$nlist[nlist].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
-			</nobr>
 		</TD>
 	</TR>
 	{if $nlist[nlist.index_next].ownerid == $nlist[nlist].ownerid && $listdata.order == "owner"}{cycle print=false}{/if}
 	{sectionelse}
 	<TR>
 		<TD colspan="6" align="center">
-			<p>&nbsp;</p>
-			<p><B>{trans("There are no device nodes in your database.")}</b></p>
-			<p>&nbsp;</p>
+			<B>{trans("There are no device nodes in your database.")}</b>
 		</TD>
 	</TR>
 	{/section}
