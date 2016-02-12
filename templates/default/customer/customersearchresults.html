@@ -81,13 +81,12 @@
 				<IMG SRC="img/node{if !$customerlist[customerlist].online}_off{/if}.gif" alt="" {tip a=$customerlist[customerlist].id dynpopup='?m=nodelistshort&id=$a'}></A>
 			{/if}
 		</TD>
-		<TD align="right" valign="top" NOWRAP>
+		<TD class="text-right valign-top nobr">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALT="">{if $customerlist[customerlist].balance < 0}<font class="alert">{/if}{$customerlist[customerlist].balance|money_format}{if $customerlist[customerlist].balance < 0}</FONT>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALT=""><FONT CLASS="blend">{$customerlist[customerlist].tariffvalue|money_format}</FONT></NOBR>
+			<IMG src="img/empty.gif" width="1" height="16" ALT="">{if $customerlist[customerlist].balance < 0}<font class="alert">{/if}{$customerlist[customerlist].balance|money_format}{if $customerlist[customerlist].balance < 0}</FONT>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALT=""><span CLASS="blend">{$customerlist[customerlist].tariffvalue|money_format}</span>
 			{/if}
 		</TD>
-		<TD align="right">
-			<NOBR>
+		<TD class="text-right nobr">
 			{if $customerlist[customerlist].balance < 0}
 				<A href="?m=customerbalanceok&id={$customerlist[customerlist].id}" OnClick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$a\'?{/t}');"><IMG src="img/pay.gif" alt="[ {trans("Account")} ]" title="[ {trans("Account")} ]"></A>
 			{/if}
@@ -122,7 +121,6 @@
 			<A href="?m=customeredit&id={$customerlist[customerlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 			{/if} 
 			<A href="?m=customerinfo&id={$customerlist[customerlist].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
-			</NOBR>
 		</TD>
 	</TR>
 	{sectionelse}
