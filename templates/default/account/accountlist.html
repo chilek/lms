@@ -139,11 +139,11 @@
 	</TR>
 	{/if}
 	<TR>
-		<TD colspan="3" class="text-right bold">
-                        <SPAN class="nobr">{trans("Total:")} {sum array=$accountlist column=quota_sh}/{sum array=$accountlist column=quota_mail}/{sum array=$accountlist column=quota_www}/{sum array=$accountlist column=quota_ftp}/{sum array=$accountlist column=quota_sql}</SPAN>
+		<TD colspan="3" class="text-right bold nobr">
+                        {trans("Total:")} {sum array=$accountlist column=quota_sh}/{sum array=$accountlist column=quota_mail}/{sum array=$accountlist column=quota_www}/{sum array=$accountlist column=quota_ftp}/{sum array=$accountlist column=quota_sql}
 		</TD>
-		<TD colspan="2" class="text-right">
-                        <SPAN class="nobr"><A href="?m=accountadd{if $listdata.customer}&cid={$listdata.customer}{/if}{if $listdata.domain}&did={$listdata.domain}{/if}">{trans("New Account")} <IMG src="img/save.gif" alt=""></A></SPAN>
+		<TD colspan="2" class="text-right nobr">
+                        <A href="?m=accountadd{if $listdata.customer}&cid={$listdata.customer}{/if}{if $listdata.domain}&did={$listdata.domain}{/if}">{trans("New Account")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
     </TFOOT>
