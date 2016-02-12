@@ -24,21 +24,19 @@
 				{cycle name=groups values="light,lucid" print=false}
 				{foreach from=$nodegroups item=nodegroup}
 				<TR class="highlight {cycle name=groups}"  >
-					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=nodegroupinfo&id={$nodegroup.id}">{$nodegroup.name}</A></B></TD>
+					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=nodegroupinfo&amp;id={$nodegroup.id}">{$nodegroup.name}</A></B></TD>
 					<TD WIDTH="1%" NOWRAP COLSPAN="2">{$nodegroup.description}</TD>
 					<TD WIDTH="97%" NOWRAP>({$nodegroup.id|string_format:"%04d"})</TD>
-					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP><A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove node from group?")}')" HREF="?m=nodegroup&action=delete&nodegroupid={$nodegroup.id}&id={$nodeinfo.id}"><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]" {tip text="Remove assignment"}></A></TD>
+					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP><A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove node from group?")}')" HREF="?m=nodegroup&amp;action=delete&nodegroupid={$nodegroup.id}&amp;id={$nodeinfo.id}"><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]" {tip text="Remove assignment"}></A></TD>
 				</TR>
 				{foreachelse}
 				<TR>
-					<TD align="center" WIDTH="100%" colspan="5">
-						<p>&nbsp;</p>
-						<p><B>{trans("That node is not a member of any group.")}</B></p>
-						<p>&nbsp;</p>
+					<TD WIDTH="100%" colspan="5" class="empty-table">
+						<p>{trans("That node is not a member of any group.")}</p>
 					</TD>
 				</TR>
 				{/foreach}
-				<FORM METHOD="POST" NAME="nodegroupassignment" ACTION="?m=nodegroup&action=add&id={$nodeinfo.id}">
+				<FORM METHOD="POST" NAME="nodegroupassignment" ACTION="?m=nodegroup&amp;action=add&amp;id={$nodeinfo.id}">
 				<INPUT type="submit" class="hiddenbtn">
 				<TR class="ftop">
 					<TD COLSPAN="4">
@@ -49,7 +47,6 @@
 							<OPTION VALUE="{$item.id}">{$item.name} ({$item.id|string_format:"%04d"})</OPTION>
 							{/foreach}
 						</SELECT>
-						<NOBR>
 					</TD>
 					<TD ALIGN="RIGHT" ROWSPAN="2" NOWRAP>
 						<A HREF="javascript:document.nodegroupassignment.submit()" {tip text="Add node to group"}>{trans("Add")} <IMG SRC="img/save.gif" alt=""></A>

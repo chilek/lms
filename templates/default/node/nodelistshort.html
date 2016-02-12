@@ -31,10 +31,10 @@
 	{section name=customernodes loop=$customernodes}
 	<tr class="highlight {cycle}{if ! $customernodes[customernodes].access} blend{/if}"  >
 		<TD WIDTH="1%">
-			<a href="?m=nodeset&id={$customernodes[customernodes].id}&shortlist=1&popup=1"><IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" ALT="[ {if ! $customernodes[customernodes].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]"></a>
-			<a href="?m=nodewarn&id={$customernodes[customernodes].id}&shortlist=1&popup=1"><IMG src="img/warning{if ! $customernodes[customernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $customernodes[customernodes].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if} ]"></a>
+			<a href="?m=nodeset&amp;id={$customernodes[customernodes].id}&shortlist=1&popup=1"><IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" ALT="[ {if ! $customernodes[customernodes].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]"></a>
+			<a href="?m=nodewarn&amp;id={$customernodes[customernodes].id}&shortlist=1&popup=1"><IMG src="img/warning{if ! $customernodes[customernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $customernodes[customernodes].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if} ]"></a>
 		</TD>
-		<TD WIDTH="99%" onClick="parent.location.href='?m=nodeinfo&id={$customernodes[customernodes].id}';">
+		<TD WIDTH="99%" onClick="parent.location.href='?m=nodeinfo&amp;id={$customernodes[customernodes].id}';">
 			{if $customernodes[customernodes].lastonline}
                                 {if ($smarty.now-$customernodes[customernodes].lastonline) > $lastonline_limit}
 				<img src="img/node_off.gif" ALT="" title="{t a=$customernodes[customernodes].lastonlinedate}Last online: $a{/t}">
@@ -51,10 +51,8 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD WIDTH="100%" COLSPAN="2" align="center">
-			<P>&nbsp;</P>
-			<P><B>{trans("No nodes found in database.")}</B></P>
-			<P>&nbsp;</P>
+		<TD COLSPAN="2" class="empty-table">
+			<p>{trans("No nodes found in database.")}</p>
 		</TD>
 	</TR>
 	{/section}

@@ -79,11 +79,13 @@
 	{sectionelse}
 	<TR>
 		<TD colspan="4" class="empty-table">
+		    <p>
 			    {if $listdata.search}
 			        {trans("No configuration options in database.")}
 			    {else}
 			        {trans("No configuration options in database.")} {t}Click <A href="?m=configload">here</A> to import them from lms.ini.{/t}
 			    {/if}
+		    </p>
 		</TD>
 	</TR>
 	{/section}

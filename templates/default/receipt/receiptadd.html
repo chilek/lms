@@ -338,10 +338,8 @@
 							</TR>
 							{foreachelse}
 							<TR>
-								<TD align="center" colspan="4">
-							    		<p>&nbsp;</p>
-									<p><B>{trans("That customer hasn't got not accounted invoices.")}</B></p>
-									<p>&nbsp;</p>
+								<TD colspan="4" class="empty-table">
+									<p>{trans("That customer hasn't got not accounted invoices.")}</p>
 								</TD>
 							</TR>
 							{/foreach}
@@ -396,10 +394,8 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD COLSPAN="4" ALIGN="CENTER">
-			<P>&nbsp;</P>
-			<P><B>{trans("Receipt have no items. Use form below for items addition.")}</B></P>
-			<P>&nbsp;</P>
+		<TD COLSPAN="4" class="empty-table">
+			<p>{trans("Receipt have no items. Use form below for items addition.")}</p>
 		</TD>
 	</TR>
 	{/foreach}

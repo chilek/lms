@@ -251,7 +251,7 @@
 		<TD style="width: 100%; text-align: right;" COLSPAN="2">
 			<A HREF="?m=nodescan{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">{trans("Scan")} <IMG SRC="img/search.gif" alt=""></A>
 			<A HREF="javascript:document.nodeadd.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m={if $customerinfo.id}customerinfo&id={$customerinfo.id}{else}nodelist{/if}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
+			<A HREF="?m={if $customerinfo.id}customerinfo&amp;id={$customerinfo.id}{else}nodelist{/if}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>
 			<INPUT type="checkbox" name="nodedata[reuse]" id="reuse" value="ON" {if $nodedata.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when this node is saved")}</label>
 		</TD>
 	</TR>

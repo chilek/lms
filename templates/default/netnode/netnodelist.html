@@ -111,8 +111,8 @@
 	{if $nlist[nlist.index_next].ownerid == $nlist[nlist].ownerid && $listdata.order == "owner"}{cycle print=false}{/if}
 	{sectionelse}
 	<TR>
-		<TD colspan="6" align="center">
-			<B>{trans("There are no device nodes in your database.")}</b>
+		<TD colspan="6" class="empty-table">
+			<p>{trans("There are no device nodes in your database.")}</p>
 		</TD>
 	</TR>
 	{/section}

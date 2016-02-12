@@ -65,10 +65,8 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD ALIGN="center" COLSPAN="{math equation="4+x*2" x=$taxescount}">
-			<P>&nbsp;</P>
-			<P><B>{trans("No such liabilities in selected date.")}</B></P>
-			<P>&nbsp;</P>
+		<TD COLSPAN="{math equation="4+x*2" x=$taxescount}" class="empty-table">
+			<p>{trans("No such liabilities in selected date.")}</p>
 		</TD>
 	</TR>
 	{/foreach}

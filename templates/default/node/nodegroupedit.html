@@ -4,7 +4,7 @@
 <!--// $Id$ -->
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
-<FORM METHOD="POST" NAME="tedit" ACTION="?m=nodegroupedit&id={$nodegroup.id}">
+<FORM METHOD="POST" NAME="tedit" ACTION="?m=nodegroupedit&amp;id={$nodegroup.id}">
 <INPUT type="submit" class="hiddenbtn">
     <THEAD>
 	<TR>
@@ -49,7 +49,7 @@
 			</FORM>
 			{/if}
 			<A HREF="javascript:document.tedit.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
-			<A HREF="?m=nodegroupinfo&id={$nodegroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A> 
+			<A HREF="?m=nodegroupinfo&amp;id={$nodegroup.id}{if $membersnetid}&membersnetid={$membersnetid}{/if}{if $othersnetid}&othersnetid={$othersnetid}{/if}">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A> 
 		</TD>
 	</TR>
     </TBODY>

@@ -3,7 +3,7 @@
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE class="lmsbox">
+<TABLE class="lmsbox">
     <THEAD>
 	<TR>
 		<TD WIDTH="1%" nowrap>{trans("ID:")}</TD>
@@ -55,8 +55,8 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD {if $divisions}colspan="7"{else}colspan="5"{/if} align="center">
-			<b>{trans("There are no investment project.")}</b>
+		<TD {if $divisions}colspan="7"{else}colspan="5"{/if} class="empty-table">
+			<p>{trans("There are no investment project.")}</p>
 		</TD>
 	</TR>
 	{/foreach}

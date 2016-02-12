@@ -43,7 +43,7 @@
 							{$network.hostname}
 						</TD>
 						<TD class="nobr">
-							<A href="?m=netedit&networkset&id={$network.id}"><IMG src="img/{if $network.disabled}no{/if}access.gif" alt="[ {if $network.disabled}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]" title="[ {if $network.disabled}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]"></A>
+							<A href="?m=netedit&networkset&amp;id={$network.id}"><IMG src="img/{if $network.disabled}no{/if}access.gif" alt="[ {if $network.disabled}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]" title="[ {if $network.disabled}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]"></A>
 
 							<A href="?m=netdel&amp;id={$network.id}" onClick="return confirmLink(this, '{t a=$network.name}Are you sure, you want to remove network \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 							<A href="?m=netedit&amp;id={$network.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
@@ -53,9 +53,7 @@
 					{foreachelse}
 					<TR>
 						<TD class="empty-table" colspan="5">
-							<P>&nbsp;</P>
 							<P>{if $customerinfo.deleted}<span class="red">{trans("That customer has been deleted.")}</span>{else}{trans("That customer hasn't got any network.")}{/if}</P>
-							<P>&nbsp;</P>
 						</TD>
 					</TR>
 					{/foreach}

@@ -87,10 +87,8 @@
 	{/if}{/foreach}
 	{if !$listdata.total}
 	<TR>
-		<TD ALIGN="center"  COLSPAN="7">
-			<P>&nbsp;</P>
-			<P><B>{trans("No cash operations to import.")}</B></P>
-			<P>&nbsp;</P>
+		<TD class="empty-table" COLSPAN="7">
+			<p>{trans("No cash operations to import.")}</p>
 		</TD>
 	</TR>
 	{/if}
@@ -235,8 +233,8 @@
 				</TR>
 				{foreachelse}
 				<TR>
-					<TD align="center" WIDTH="100%" colspan="4">
-						<P><B>{trans("There are no packages in database.")}</B></P>
+					<TD class="empty-table" colspan="4">
+						<p>{trans("There are no packages in database.")}</p>
 					</TD>
 				</TR>
 				{/foreach}

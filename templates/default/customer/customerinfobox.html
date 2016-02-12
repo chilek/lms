@@ -8,7 +8,7 @@
 			{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}{if $customerinfo.extid} / {$customerinfo.extid}{/if}){if $customerinfo.deleted} <span class="red">({trans("deleted customer")})</span>{/if}</b>
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
-			{if $customerpanel}<a href="?m=customerinfo&id={$customerinfo.id}">{trans('Navigate to the customer')} &raquo;</a>{/if}&nbsp;
+			{if $customerpanel}<a href="?m=customerinfo&amp;id={$customerinfo.id}">{trans('Navigate to the customer')} &raquo;</a>{/if}&nbsp;
 		</TD>
 	</TR>
     </THEAD>
@@ -416,28 +416,24 @@
 		</TD>
         </TR>
 	<TR>
-		<TD WIDTH="100%" ALIGN="RIGHT" colspan="2">
+		<TD WIDTH="100%" colspan="2" class="text-right nobr">
 {/if}
 			{block name="customerinfobox-buttons"}
 			{if $customerinfo.deleted}
 				{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
-				<A href="?m=customerdel&id={$customerinfo.id}&type=permanent">{trans("Remove permanently")} <img src="img/delete.gif" alt="[ {trans("Remove permanently")} ]"></A>
+				<A href="?m=customerdel&amp;id={$customerinfo.id}&amp;type=permanent">{trans("Remove permanently")} <img src="img/delete.gif" alt="[ {trans("Remove permanently")} ]"></A>
 				{/if}
-				<A HREF="?m=customeredit&id={$customerinfo.id}&action=recover">{trans("Restore")} <IMG SRC="img/recover.gif" ALT="[ {trans("Restore")} ]"></A>
+				<A HREF="?m=customeredit&amp;id={$customerinfo.id}&action=recover">{trans("Restore")} <IMG SRC="img/recover.gif" ALT="[ {trans("Restore")} ]"></A>
 			{else}
-				<NOBR>
-				<A HREF="?m=rtsearch&id={$customerinfo.id}"{if $customerstats['tickets']['notresolved']} class="bold"{/if}>{trans("Tickets")}{if $customerstats['tickets']} ({$customerstats['tickets']['all']}{if $customerstats['tickets']['notresolved']} / {$customerstats['tickets']['notresolved']}{/if}){/if}</A> <IMG src="img/ticket.gif" alt="[ {trans("Tickets")} ]"></A>
-				<A href="?m=accountlist&u={$customerinfo.id}">{trans("Accounts")} ({$customerstats['accounts']})</A> <IMG src="img/account.gif" alt="[ {trans("Accounts")} ]">
-				<A href="?m=domainlist&c={$customerinfo.id}">{trans("Domains")} ({$customerstats['domains']})</A> <IMG src="img/network.gif" alt="[ {trans("Domains")} ]">
-				<A href="?m=trafficprint&type=customertraffic&customer={$customerinfo.id}" target="_blank">{trans("Stats")} <IMG src="img/traffic.gif" alt="[ {trans("Stats")} ]"></A>
-				</NOBR>
-				<NOBR>
-				<A href="?m=customeredit&id={$customerinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" alt="[ {trans("Edit")} ]"></A>
-				<A href="?m=customerdel&id={$customerinfo.id}">{trans("Delete")} <img src="img/delete.gif" alt="[ {trans("Delete")} ]"></A>
-				</NOBR>
+				<A HREF="?m=rtsearch&amp;id={$customerinfo.id}"{if $customerstats['tickets']['notresolved']} class="bold"{/if}>{trans("Tickets")}{if $customerstats['tickets']} ({$customerstats['tickets']['all']}{if $customerstats['tickets']['notresolved']} / {$customerstats['tickets']['notresolved']}{/if}){/if}</A> <IMG src="img/ticket.gif" alt="[ {trans("Tickets")} ]">
+				<A href="?m=accountlist&amp;u={$customerinfo.id}">{trans("Accounts")} ({$customerstats['accounts']})</A> <IMG src="img/account.gif" alt="[ {trans("Accounts")} ]">
+				<A href="?m=domainlist&amp;c={$customerinfo.id}">{trans("Domains")} ({$customerstats['domains']})</A> <IMG src="img/network.gif" alt="[ {trans("Domains")} ]">
+				<A href="?m=trafficprint&amp;type=customertraffic&amp;customer={$customerinfo.id}" target="_blank">{trans("Stats")} <IMG src="img/traffic.gif" alt="[ {trans("Stats")} ]"></A>
+				<A href="?m=customeredit&amp;id={$customerinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" alt="[ {trans("Edit")} ]"></A>
+				<A href="?m=customerdel&amp;id={$customerinfo.id}">{trans("Delete")} <img src="img/delete.gif" alt="[ {trans("Delete")} ]"></A>
 			{/if}
 			{if $info_link}
-				<A href="?m=customerinfo&id={$customerinfo.id}">{trans("Info")} <img src="img/info.gif" alt="[ {trans("Info")} ]"></A>
+				<A href="?m=customerinfo&amp;id={$customerinfo.id}">{trans("Info")} <img src="img/info.gif" alt="[ {trans("Info")} ]"></A>
 			{/if}
 			{/block}
 		</TD>

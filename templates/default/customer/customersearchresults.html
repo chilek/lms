@@ -34,7 +34,6 @@
 	}
 -->
 </SCRIPT>
-<P>
 <FORM NAME="setwarnings" ID="customersearchresults" METHOD="POST" ACTION="?m=customerwarn&search=0">
 <TABLE class="lmsbox">
     <THEAD>
@@ -128,10 +127,8 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD colspan="4" align="center">
-			<p>&nbsp;</p>
-			<p><B>{trans("No such customers matching search criteria.")}</B></p>
-			<p>&nbsp;</p>
+		<TD colspan="4" class="empty-table">
+			<p>{trans("No such customers matching search criteria.")}</p>
 		</TD>
 	</TR>
 	{/section}
@@ -183,5 +180,4 @@
     </TFOOT>
 </TABLE>
 </FORM>
-</P>
 {/block}

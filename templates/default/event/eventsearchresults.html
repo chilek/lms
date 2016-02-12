@@ -3,7 +3,7 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE class="lmsbox">
+<TABLE class="lmsbox">
     <THEAD>
 	<TR>
 		<TD width="1%" valign="top" NOWRAP>
@@ -97,13 +97,11 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD colspan="6" align="center">
-			<P>&nbsp;</P>
-			<P><B>{trans("No such events matching search criteria.")}</B></P>
-			<P>&nbsp;</P>
+		<TD colspan="6" class="empty-table">
+			<p>{trans("No such events matching search criteria.")}</p>
 		</TD>
 	</TR>
 	{/section}
     </TBODY>
-</TABLE></P>
+</TABLE>
 {/block}
