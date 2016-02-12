@@ -273,7 +273,8 @@ table.lmsbox > tfoot > tr {
 
 table.lmsbox > thead { text-align: left; }
 
-td.empty-table { text-align: center; font-weight: bold; padding: 2em; background-color: #EBE4D6; }
+td.empty-table { background-color: #EBE4D6; }
+td.empty-table p { text-align: center; font-weight: bold; padding: 2em; }
 
 .nobr { white-space: nowrap; }
 .text-right { text-align: right; }
