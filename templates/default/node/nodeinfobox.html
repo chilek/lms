@@ -5,17 +5,17 @@
 	function chkmac_change()
 	{
 		if (xjx.$('chkmac').checked)
-			location.href = '?m=nodeedit&amp;id={$nodeinfo.id}&amp;action=chkmac&chkmac=1';
+			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=chkmac&chkmac=1';
 		else
-			location.href = '?m=nodeedit&amp;id={$nodeinfo.id}&amp;action=chkmac&chkmac=0';
+			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=chkmac&chkmac=0';
 	}
 
 	function duplex_change()
 	{
 		if (xjx.$('duplex').checked)
-			location.href = '?m=nodeedit&amp;id={$nodeinfo.id}&amp;action=duplex&duplex=1';
+			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=duplex&duplex=1';
 		else
-			location.href = '?m=nodeedit&amp;id={$nodeinfo.id}&amp;action=duplex&duplex=0';
+			location.href = '?m=nodeedit&id={$nodeinfo.id}&action=duplex&duplex=0';
 	}
 
 	function change_authtype() {
@@ -23,7 +23,7 @@
 		{foreach $_SESSIONTYPES as $idx => $sessiontype}
 		authtype |= (xjx.$('authtype{$idx}').checked == true) * {$idx};
 		{/foreach}
-		location.href = '?m=nodeedit&amp;id={$nodeinfo.id}&amp;action=authtype&authtype=' + authtype;
+		location.href = '?m=nodeedit&id={$nodeinfo.id}&action=authtype&authtype=' + authtype;
 	}
 
 	function change_netdevice(id) {
