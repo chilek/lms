@@ -3153,5 +3153,6 @@ $_LANG['Net Device not specified'] = 'Bez urządzenia sieciowego';
 
 $_LANG['with e-invoice'] = 'z e-fakturą';
 $_LANG['with connected nodes'] = 'z aktywnymi komputerami';
+$_LANG['with nodes'] = 'z komputerami';
 
 ?>
