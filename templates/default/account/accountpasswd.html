@@ -4,44 +4,44 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <DIV align="CENTER">
-<FORM method="POST" action="?m=accountpasswd&id={$account.id}" name="password">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
-    <THEAD>
-	<TR>
-		<TD colspan="2" nowrap>
-			<img src="img/pass.gif" alt=""> <B>{trans("Enter new password:")}</B>
-		</TD>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
-		<TD align="right" nowrap>
-			<B>{trans("New password:")}</B>
-		</TD>
-		<TD nowrap>
-			<input type="password" name="passwd[passwd]" value="{$account.passwd1}" {tip text="Enter password" trigger="passwd"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD align="right" nowrap>
-			<B>{trans("Repeat password:")}</B>
-		</TD>
-		<TD nowrap>
-			<input type="password" name="passwd[confirm]" value="{$account.passwd2}" {tip text="Confirm password" trigger="passwd"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD align="right" colspan="2">
-			<A href="javascript:document.password.submit();" accesskey="s">{trans("Submit")} <img src="img/pass.gif" alt=""></A>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
+    <FORM method="POST" action="?m=accountpasswd&id={$account.id}" name="password">
+        <INPUT type="submit" class="hiddenbtn">
+        <TABLE class="lmsbox">
+            <THEAD>
+                <TR>
+                    <TD colspan="2" nowrap>
+                        <img src="img/pass.gif" alt=""> <B>{trans("Enter new password:")}</B>
+                    </TD>
+                </TR>
+            </THEAD>
+            <TBODY>
+                <TR>
+                    <TD align="right" nowrap>
+                        <B>{trans("New password:")}</B>
+                    </TD>
+                    <TD nowrap>
+                        <input type="password" name="passwd[passwd]" value="{$account.passwd1}" {tip text="Enter password" trigger="passwd"}>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD align="right" nowrap>
+                        <B>{trans("Repeat password:")}</B>
+                    </TD>
+                    <TD nowrap>
+                        <input type="password" name="passwd[confirm]" value="{$account.passwd2}" {tip text="Confirm password" trigger="passwd"}>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD align="right" colspan="2">
+                        <A href="javascript:document.password.submit();" accesskey="s">{trans("Submit")} <img src="img/pass.gif" alt=""></A>
+                    </TD>
+                </TR>
+            </TBODY>
+        </TABLE>
 </DIV>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['password'].elements['passwd[passwd]'].focus();
+    document.forms['password'].elements['passwd[passwd]'].focus();
 //-->
 </SCRIPT>
 {/block}
