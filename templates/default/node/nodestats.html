@@ -3,16 +3,16 @@
 		<TD style="width: 1%;">
 			<IMG SRC="img/traffic.gif" ALT="">
 		</TD>
-		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
-			<span class="bold">{trans("Traffic stats from last (download/upload):")}</span>
+		<TD style="width: 99%;" class="nobr bold" COLSPAN="2">
+			{trans("Traffic stats from last (download/upload):")}
 		</TD>
 	</TR>
 	<TR>
 		<TD style="width: 1%;"></TD>
-		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
+		<TD style="width: 99%;" class="nobr" COLSPAN="2">
 			<TABLE style="width: 100%;" cellpadding="3">
 				<TR>
-					<TD style="width: 1%; white-space: nowrap;">
+					<TD style="width: 1%;" class="nobr">
 						<A HREF="javascript:popup('?m=trafficgraph&nodeid={$nodeid}&bar=hour',1,1,10,10)"><span class="bold">{trans("hour:")}</span></A>
 					</TD>
 					<TD style="width: 99%; white-space: nowrap;">
@@ -20,27 +20,27 @@
 					</TD>
 				</TR>
 				<TR>
-					<TD style="width:1%; white-space: nowrap;">
+					<TD style="width:1%;" class="nobr">
 						<A HREF="javascript:popup('?m=trafficgraph&nodeid={$nodeid}&bar=day',1,1,10,10)"><span class="bold">{trans("24 hour:")}</span></A>
 					</TD>
-					<TD style="width: 99%; white-space: nowrap;">
+					<TD style="width: 99%;" class="nobr">
 						{$nodestats.day.download.data|string_format:"%.2f"} {$nodestats.day.download.units} ({$nodestats.day.downavg|string_format:"%d"} kbit/s) / {$nodestats.day.upload.data|string_format:"%.2f"} {$nodestats.day.upload.units} ({$nodestats.day.upavg|string_format:"%d"} kbit/s)
 					</TD>
 				</TR>
 				<TR>
-					<TD style="width: 1%; white-space: nowrap;">
+					<TD style="width: 1%;" class="nobr">
 						<A HREF="javascript:popup('?m=trafficgraph&nodeid={$nodeid}&bar=month',1,1,10,10)"><span class="bold">{trans("30 days:")}</span></A>
 					</TD>
-					<TD style="width: 99%; white-space: nowrap;">
+					<TD style="width: 99%;" class="nobr">
 						{$nodestats.month.download.data|string_format:"%.2f"} {$nodestats.month.download.units} ({$nodestats.month.downavg|string_format:"%d"} kbit/s) / {$nodestats.month.upload.data|string_format:"%.2f"} {$nodestats.month.upload.units} ({$nodestats.month.upavg|string_format:"%d"} kbit/s)
 					</TD>
 				</TR>
 				{if ConfigHelper::getConfig('phpui.live_traffic_helper')}
 				<TR>
-					<TD style="width: 1%; white-space: nowrap;">
+					<TD style="width: 1%;" class="nobr">
 						<span class="bold">{trans("current:")}</span>
 					</TD>
-					<TD style="width: 99%; white-space: nowrap;" id="livetraffic">
+					<TD style="width: 99%;" class="nobr" id="livetraffic">
 					</TD>
 				</TR>
 				{/if}
@@ -61,8 +61,8 @@
 		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
 			<TABLE style="width: 100%;" cellpadding="3">
 				<TR>
-					<TD style="width: 1%; white-space: nowrap;">
-						<span class="bold">{trans("current:")}</span>
+					<TD style="width: 1%;" class="nobr bold">
+						{trans("current:")}
 					</TD>
 					<TD style="width: 99%; white-space: nowrap;" id="livetraffic">
 					</TD>

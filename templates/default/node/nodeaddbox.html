@@ -18,7 +18,7 @@
 		<TD style="width: 100%;" COLSPAN="2" CLASS="container">
 			<TABLE style="width: 100%;" CELLPADDING="0">
 				<TR>
-					<TD style="width: 50%; vertical-align: top;">
+					<TD style="width: 50%;" class="valign-top">
 						<TABLE style="width: 100%;" CELLPADDING="3">
 	<TR>
 		<TD style="width: 1%;">
@@ -55,7 +55,7 @@
 		<TD style="width: 1%;">
 			<IMG SRC="img/mac.gif" ALT="{trans("MAC address:")}">
 		</TD>
-		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
+		<TD style="width: 99%;" class="nobr" COLSPAN="2">
 			<TABLE style="width: 100%;" cellpadding="1" cellspacing="0">
 				{foreach from=$nodedata.macs item=item key=key}
 				<TR ID="mac{$key}">
@@ -76,10 +76,10 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%; vertical-align: top;">
+		<TD style="width: 1%;" class="valign-top">
 			<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
 		</TD>
-		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
+		<TD style="width: 99%;" class="nobr" COLSPAN="2">
 			<INPUT TYPE="TEXT" SIZE="40" VALUE="{$nodedata.location}" id="location" NAME="nodedata[location]"  {tip text="Enter location (optional)" trigger="location"}>
 			<A href="javascript:void(0);" onclick="if (check_teryt()) return locationchoosewin('nodedata', 'nodeadd', document.forms['nodeadd'].elements['nodedata[location_city]'].value,  document.forms['nodeadd'].elements['nodedata[location_street]'].value)" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</A>
 			<BR>
@@ -94,7 +94,7 @@
 		<TD style="width: 1%;">
 			<IMG SRC="img/nodegroup.gif" ALT="{trans("Node group:")}">
 		</TD>
-		<TD style="width: 99%; white-space: nowrap;">
+		<TD style="width: 99%;" class="nobr">
 			<SELECT SIZE="1" NAME="nodedata[nodegroup]" {tip text="Select group to attribute to node" trigger="nodegroup"} style="max-width:250px;">
 				<OPTION VALUE="0">{trans("... select group ...")}</OPTION>
 				{foreach from=$allnodegroups item=group}
@@ -169,7 +169,7 @@
 		<TD style="width: 1%;">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
-		<TD style="width: 99%; white-space: nowrap;">
+		<TD style="width: 99%;" class="nobr">
 			<label for="chkmac">{trans("MAC checking")}:</label><INPUT TYPE="checkbox" NAME="nodedata[chkmac]" VALUE="1" id="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if $nodedata.chkmac} checked{/if}>&nbsp;
 			<label for="halfduplex">{trans("Half duplex")}:</label><INPUT TYPE="checkbox" NAME="nodedata[halfduplex]" VALUE="1" id="halfduplex" {if $nodedata.halfduplex} checked{/if} {tip text="Select transmission mode"}> 
 		</TD>
@@ -185,16 +185,16 @@
 	</TR>
 					</TABLE>
 				</TD>
-				<TD class="container" style="width: 50%; vertical-align: top;">
+				<TD class="container valign-top" style="width: 50%;">
 					<TABLE style="width: 100%;" CELLPADDING="3">
 	<TR>
 		<TD style="width: 1%;">
 			<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
 		</TD>
-		<TD style="width: 1%; white-space: nowrap;">
-			<span class="bold">{trans("GPS longitude:")}</span>
+		<TD style="width: 1%;" class="nobr bold">
+			{trans("GPS longitude:")}
 		</TD>
-		<TD style="width: 98%; white-space: nowrap;">
+		<TD style="width: 98%;" class="nobr">
 			<INPUT ID="longitude" TYPE="text" NAME="nodedata[longitude]" VALUE="{if $nodeinfo.longitude}{$nodeinfo.longitude}{else}{/if}" {tip text="Enter device longitude (optional)"} trigger="longitude">
 			<a href="javascript:void(0);" onClick="return gpscoordschoosewin(document.nodeadd.elements['nodedata[longitude]'], document.nodeadd.elements['nodedata[latitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
 		</TD>
@@ -203,10 +203,10 @@
 		<TD style="width: 1%;">
 			<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
 		</TD>
-		<TD style="width: 1%; white-space: nowrap;">
-			<span class="bold">{trans("GPS latitude:")}</span>
+		<TD style="width: 1%;" class="nobr bold">
+			{trans("GPS latitude:")}
 		</TD>
-		<TD style="width: 98%; white-space: nowrap;">
+		<TD style="width: 98%;" class="nobr">
 			<INPUT ID="latitude" TYPE="text" NAME="nodedata[latitude]" VALUE="{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}" {tip text="Enter device latitude (optional)"} trigger="latitude">
 			<a href="javascript:void(0);" onClick="return gpscoordschoosewin(document.nodeadd.elements['nodedata[longitude]'], document.nodeadd.elements['nodedata[latitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
 		</TD>
@@ -248,7 +248,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 100%; text-align: right;" COLSPAN="2">
+		<TD style="width: 100%;" class="text-right" COLSPAN="2">
 			<A HREF="?m=nodescan{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">{trans("Scan")} <IMG SRC="img/search.gif" alt=""></A>
 			<A HREF="javascript:document.nodeadd.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m={if $customerinfo.id}customerinfo&amp;id={$customerinfo.id}{else}nodelist{/if}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A><BR>

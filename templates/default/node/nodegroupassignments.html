@@ -17,12 +17,11 @@
 	}
 //-->
 </script>
-<P>
 <FORM NAME="nodeassignments" METHOD="POST" ACTION="?m=nodegroup&amp;id={$nodegroup.id}">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT TYPE="hidden" NAME="oper" VALUE="1">
 <TABLE WIDTH="100%" CELLPADDING="0">
-    <TR><TD WIDTH="49%" style="valign-top">
+    <TR><TD WIDTH="49%" class="valign-top">
 	    <TABLE class="lmsbox">
                 <THEAD>
 		<TR>
@@ -63,7 +62,7 @@
 		    </TD>
 		</TR>
 		<TR>
-		    <TD WIDTH="100%" ALIGN="RIGHT" NOWRAP>
+		    <TD WIDTH="100%" class="text-right nobr">
 			<A HREF="javascript:removeNodes();">{trans("Delete")} <IMG SRC="img/cancel.gif" ALT=""></A>
 		    </TD>
 		</TR>
@@ -72,7 +71,7 @@
     </TD>
     <TD WIDTH="2%">
     </TD>
-    <TD WIDTH="49%" STYLE="vertical-align: top;">
+    <TD WIDTH="49%" class="valign-top">
 	    <TABLE class="lmsbox">
                 <THEAD>
 		<TR>
@@ -88,7 +87,7 @@
 				{section name=networks loop=$networks}
 				<OPTION value="{$networks[networks].id}" {if $networks[networks].id == $othersnetid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
 				{/section}
-			    </SELECT>&nbsp;
+			    </SELECT>
 		    </TD>
 		</TR>
                 </THEAD>
@@ -113,7 +112,7 @@
 		    </TD>
 		</TR>
 		<TR>
-		    <TD WIDTH="100%" ALIGN="RIGHT" NOWRAP>
+		    <TD WIDTH="100%" class="text-right nobr">
 			<A HREF="javascript:document.nodeassignments.submit();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 		    </TD>
 		</TR>
@@ -122,4 +121,3 @@
     </TD></TR>
 </TABLE>
 </FORM>
-</P>
