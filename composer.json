@@ -11,8 +11,13 @@
         "spipu/html2pdf": "^4.5",
         "components/normalize.css": "^3.0"
     },
-    "require_dev": {
-        "phpunit/phpunit": "5.1.*"
+    "require-dev": {
+        "phpunit/phpunit": "^5.2",
+        "squizlabs/php_codesniffer": "^2.5",
+        "pdepend/pdepend": "^2.2",
+        "phpmd/phpmd": "^2.3",
+        "sebastian/phpcpd": "^2.0",
+        "smarty/smarty": "3.1.27"
     },
     "autoload": {
         "classmap": ["lib/", "plugins/"]

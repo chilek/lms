@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="../tests/bootstrap.php"
+         backupGlobals="false"
+         backupStaticAttributes="false"
+         strict="true"
+         verbose="true">
+       
+    <testsuites>
+        <testsuite name="LMS">
+            <directory suffix="Test.php">../tests/</directory>
+        </testsuite>
+    </testsuites>
+
+    <logging>
+        <log type="coverage-html" target="./coverage"/>
+        <log type="coverage-clover" target="./logs/clover.xml"/>
+        <log type="coverage-crap4j" target="./logs/crap4j.xml"/>
+        <log type="junit" target="./logs/junit.xml" logIncompleteSkipped="false"/>
+    </logging>
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">../lib/</directory>
+            <exclude>
+                <directory suffix=".php">../lib/xajax/</directory>
+                <directory suffix=".php">../lib/Smarty/</directory>
+                <directory suffix=".php">../lib/ezpdf/</directory>
+                <directory suffix=".php">../lib/locale/</directory>
+                <directory suffix=".php">../lib/plugins/</directory>
+                <directory suffix=".php">../lib/upgradedb/</directory>
+                <file>../lib/language.php</file>
+                <file>../lib/accesstable.php</file>
+                <file>../lib/checkdirs.php</file>
+                <file>../lib/checkip.php</file>
+                <file>../lib/definitions.php</file>
+                <file>../lib/menu.php</file>
+                <file>../lib/unstrip.php</file>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>

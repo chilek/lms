@@ -23,7 +23,7 @@ class LmsSwekeyIntegration extends SwekeyIntegration {
 		}
 	}
 
-	public public function _postinit() {
+	public function _postinit() {
 		return TRUE;
 	}
 
