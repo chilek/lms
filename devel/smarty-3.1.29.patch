@@ -1,5 +1,5 @@
---- a/libs/sysplugins/smarty_internal_runtime_inheritance.php
-+++ b/libs/sysplugins/smarty_internal_runtime_inheritance.php
+--- sysplugins/smarty_internal_runtime_inheritance.php
++++ sysplugins/smarty_internal_runtime_inheritance.php
 @@ -70,7 +70,7 @@ class Smarty_Internal_Runtime_Inheritance
      public function init(Smarty_Internal_Template $tpl, $initChild, $blockNames = array())
      {
