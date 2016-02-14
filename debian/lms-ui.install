@@ -23,7 +23,6 @@ lib/LMSManagers                 /usr/share/lms/lib/
 lib/LMSPluginManager            /usr/share/lms/lib/
 
 lib/accesstable.php             /usr/share/lms/lib/
-lib/autoloader.php              /usr/share/lms/lib/
 lib/Auth.class.php              /usr/share/lms/lib/
 lib/checkdirs.php               /usr/share/lms/lib/
 lib/checkip.php                 /usr/share/lms/lib/

@@ -90,14 +90,14 @@
 			{/if}
 		</TD>
 		<TD class="text-right nobr">
-			<A href="javascript: new_doc()">{trans("New document:")}</A>
+			<A href="javascript:new_doc()">{trans("New document:")}</A>
 			<SELECT name="newdocument" id="newdocselect">
 				<OPTION value="?m=invoicenew&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("invoice")}</OPTION>
 				<OPTION value="?m=receiptadd&amp;type=in&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("cash-in receipt")}</OPTION>
 				<OPTION value="?m=receiptadd&amp;type=out&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("cash-out receipt")}</OPTION>
 				<OPTION value="?m=noteadd&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("debit note")}</OPTION>
 			</SELECT>&nbsp;
-			<A href="javascript: show_list()">{trans("Show All:")}</A>
+			<A href="javascript:show_list()">{trans("Show All:")}</A>
 			<INPUT type="hidden" name="cat" value="customerid">
 			<INPUT type="hidden" name="search" value="{$balancelist.customerid}">
 			<SELECT name="showlist" id="showlistselect">
@@ -145,7 +145,7 @@
 						{/foreach}
 						{if $item.docid}
 							{if $item.doctype == $smarty.const.DOC_INVOICE}
-								<A href="?m=invoice&id={$item.docid}" rel="external"><img src="img/print.gif" alt="[ {trans("Invoice")} ]" onmouseover="popup('?m=invoiceinfo&id={$item.docid}',1,0,30,15)" onmouseout="pophide()"></A>
+								<A href="?m=invoice&amp;id={$item.docid}" rel="external"><img src="img/print.gif" alt="[ {trans("Invoice")} ]" onmouseover="popup('?m=invoiceinfo&amp;id={$item.docid}',1,0,30,15)" onmouseout="pophide()"></A>
 							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
 								<A href="?m=invoice&amp;id={$item.docid}" rel="external"><IMG src="img/printn.gif" alt="[ {trans("Credit note")} ]" {tip a=$item.docid dynpopup='?m=number&amp;id=$a'}></A>
 							{elseif $item.doctype == $smarty.const.DOC_RECEIPT}
@@ -160,9 +160,7 @@
 				{sectionelse}
 				<TR>
 					<TD class="empty-table" colspan="9">
-						<p>&nbsp;</p>
 						<p>{trans("That customer hasn't got any transactions.")}</p>
-						<p>&nbsp;</p>
 					</TD>
 				</TR>
 				{/section}

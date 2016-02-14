@@ -3,7 +3,7 @@
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE class="lmsbox">
+<TABLE class="lmsbox">
     <COLGROUP>
         <COL style="width: 1%;">
         <COL style="width: 1%;">
@@ -12,17 +12,17 @@
     </COLGROUP>
     <THEAD>
 	<TR>
-		<TH scope="col">
-                        <SPAN class="nobr"><img src="img/isource.gif" alt=""> {trans("Name:")}</SPAN>
+		<TH scope="col" class="nobr">
+                        <img src="img/isource.gif" alt=""> {trans("Name:")}
 		</TH>
-		<TH scope="col">
-                        <SPAN class="nobr lighter">{trans("ID:")}</SPAN>
+		<TH scope="col" class="nobr lighter">
+                        {trans("ID:")}
 		</TH>
 		<TH scope="col" class="lighter">
 			{trans("Description:")}
 		</TH>
-		<TH scope="col">
-                        <SPAN class="nobr lighter"><A href="?m=cashsourceadd">{trans("Add source")} <img src="img/save.gif" alt=""></A></SPAN>
+		<TH scope="col" class="nobr lighter">
+                        <A href="?m=cashsourceadd">{trans("Add source")} <img src="img/save.gif" alt=""></A>
 		</TH>
 	</TR>
     </THEAD>
@@ -30,8 +30,8 @@
 	{cycle values="light,lucid" print=false}
 	{foreach from=$sourcelist item=source}
 	<TR class="highlight {cycle} {if $source.deleted == 1} blend{/if}">
-		<TD onClick="return self.location.href='?m=cashsourceedit&id={$source.id}'">
-                        <SPAN class="nobr bold"><IMG src="img/isource.gif" alt=""> {$source.name}</SPAN>
+		<TD onClick="return self.location.href='?m=cashsourceedit&id={$source.id}'" class="nobr bold">
+                        <IMG src="img/isource.gif" alt=""> {$source.name}
 		</TD>
 		<TD onClick="return self.location.href='?m=cashsourceedit&id={$source.id}'">
 			({$source.id|string_format:"%04d"})
@@ -39,8 +39,7 @@
 		<TD onClick="return self.location.href='?m=cashsourceedit&id={$source.id}'">
 			{$source.description}
 		</TD>
-		<TD class="text-right">
-                        <SPAN class="nobr">
+		<TD class="text-right nobr">
 			{if $source.deleted == 1}
 			    <a href="?m=cashsourcelist&action=enable&id={$source.id}"><img src="img/noaccess.gif" alt="[ {t}Enable{/t} ]" title="[ {t}Enable{/t} ]" /></a>
 			{else}
@@ -48,23 +47,22 @@
 				{/if}
 			<A HREF="?m=cashsourcedel&id={$source.id}" OnClick="return confirmLink(this, '{t a=$source.name}Are you sure, you want to remove source \'$a\'?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<A HREF="?m=cashsourceedit&id={$source.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-                        </SPAN>
 		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
 		<TD colspan="4" class="empty-table">
-			{trans("There are no sources in database.")}
+			<p>{trans("There are no sources in database.")}</p>
 		</TD>
 	</TR>
 	{/foreach}
     </TBODY>
     <TFOOT>
 	<TR>
-		<TD colspan="4" class="text-right">
-                        <SPAN class="nobr"><A href="?m=cashsourceadd">{trans("Add source")} <IMG src="img/save.gif" alt=""></A></SPAN>
+		<TD colspan="4" class="text-right nobr">
+                        <A href="?m=cashsourceadd">{trans("Add source")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
     </TFOOT>
-</TABLE></P>
+</TABLE>
 {/block}

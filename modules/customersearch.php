@@ -28,95 +28,95 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if(isset($_POST['search']))
 {
-	$customersearch = $_POST['search'];
+	$search = $_POST['search'];
 
-	if(!empty($customersearch['tariffs']))
-		$customersearch['tariffs'] = implode(",", $customersearch['tariffs']);
+	if(!empty($search['tariffs']))
+		$search['tariffs'] = implode(",", $search['tariffs']);
 	
-	if($customersearch['createdfrom'])
+	if($search['createdfrom'])
 	{
-		list($year, $month, $day) = explode('/', $customersearch['createdfrom']);
-		$customersearch['createdfrom'] = mktime(0, 0, 0, $month, $day, $year);
+		list($year, $month, $day) = explode('/', $search['createdfrom']);
+		$search['createdfrom'] = mktime(0, 0, 0, $month, $day, $year);
 	}
-	if($customersearch['createdto'])
+	if($search['createdto'])
 	{
-		list($year, $month, $day) = explode('/', $customersearch['createdto']);
-		$customersearch['createdto'] = mktime(23, 59, 59, $month, $day, $year);
+		list($year, $month, $day) = explode('/', $search['createdto']);
+		$search['createdto'] = mktime(23, 59, 59, $month, $day, $year);
 	}
-	if($customersearch['deletedfrom'])
+	if($search['deletedfrom'])
 	{
-		list($year, $month, $day) = explode('/', $customersearch['deletedfrom']);
-		$customersearch['deletedfrom'] = mktime(0, 0, 0, $month, $day, $year);
+		list($year, $month, $day) = explode('/', $search['deletedfrom']);
+		$search['deletedfrom'] = mktime(0, 0, 0, $month, $day, $year);
 	}
-	if($customersearch['deletedto'])
+	if($search['deletedto'])
 	{
-		list($year, $month, $day) = explode('/', $customersearch['deletedto']);
-		$customersearch['deletedto'] = mktime(23, 59, 59, $month, $day, $year);
+		list($year, $month, $day) = explode('/', $search['deletedto']);
+		$search['deletedto'] = mktime(23, 59, 59, $month, $day, $year);
 	}
 }
 
-if(!isset($customersearch))
-	$SESSION->restore('customersearch', $customersearch);
+if(!isset($search))
+	$SESSION->restore('customersearch', $search);
 else
-	$SESSION->save('customersearch', $customersearch);
+	$SESSION->save('customersearch', $search);
 
 if(!isset($_GET['o']))
-	$SESSION->restore('cslo', $o);
+	$SESSION->restore('cslo', $order);
 else
-	$o = $_GET['o'];
-$SESSION->save('cslo', $o);
+	$order = $_GET['o'];
+$SESSION->save('cslo', $order);
 
 if(!isset($_POST['s']))
-	$SESSION->restore('csls', $s);
+	$SESSION->restore('csls', $state);
 else
-	$s = $_POST['s'];
-$SESSION->save('csls', $s);
+	$state = $_POST['s'];
+$SESSION->save('csls', $state);
 
 if(!isset($_POST['n']))
-	$SESSION->restore('csln', $n);
+	$SESSION->restore('csln', $network);
 else
-	$n = $_POST['n'];
-$SESSION->save('csln', $n);
+	$network = $_POST['n'];
+$SESSION->save('csln', $network);
 
 if(!isset($_POST['g']))
-	$SESSION->restore('cslg', $g);
+	$SESSION->restore('cslg', $customergroup);
 else
-	$g = $_POST['g'];
-$SESSION->save('cslg', $g);
+	$customergroup = $_POST['g'];
+$SESSION->save('cslg', $customergroup);
 
 if(!isset($_POST['k']))
-	$SESSION->restore('cslk', $k);
+	$SESSION->restore('cslk', $sqlskey);
 else
-	$k = $_POST['k'];
-$SESSION->save('cslk', $k);
+	$sqlskey = $_POST['k'];
+$SESSION->save('cslk', $sqlskey);
 
 if(!isset($_POST['ng']))
-	$SESSION->restore('cslng', $ng);
+	$SESSION->restore('cslng', $nodegroup);
 else
-	$ng = $_POST['ng'];
-$SESSION->save('cslng', $ng);
+	$nodegroup = $_POST['ng'];
+$SESSION->save('cslng', $nodegroup);
 
 if(!isset($_POST['d']))
-	$SESSION->restore('csld', $d);
+	$SESSION->restore('csld', $division);
 else
-	$d = $_POST['d'];
-$SESSION->save('csld', $d);
+	$division = $_POST['d'];
+$SESSION->save('csld', $division);
 
 if(isset($_GET['search']))
 {
 	$layout['pagetitle'] = trans('Customer Search Results');
-	$customerlist = $LMS->GetCustomerList($o, $s, $n, $g, $customersearch, NULL, $k, $ng, $d);
+	$customerlist = $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division"));
 	
 	$listdata['total'] = $customerlist['total'];
 	$listdata['direction'] = $customerlist['direction'];
 	$listdata['order'] = $customerlist['order'];
 	$listdata['below'] = $customerlist['below'];
 	$listdata['over'] = $customerlist['over'];
-	$listdata['state'] = $s;
-	$listdata['network'] = $n;
-	$listdata['customergroup'] = $g;
-	$listdata['nodegroup'] = $ng;
-	$listdata['division'] = $d;
+	$listdata['state'] = $state;
+	$listdata['network'] = $network;
+	$listdata['customergroup'] = $customergroup;
+	$listdata['nodegroup'] = $nodegroup;
+	$listdata['division'] = $division;
 
 	unset($customerlist['total']);
 	unset($customerlist['state']);
@@ -167,7 +167,7 @@ else
 	$SMARTY->assign('cstateslist', $LMS->GetCountryStates());
 	$SMARTY->assign('tariffs', $LMS->GetTariffs());
 	$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
-	$SMARTY->assign('k', $k);
+	$SMARTY->assign('k', $sqlskey);
 	$SMARTY->display('customer/customersearch.html');
 }
 

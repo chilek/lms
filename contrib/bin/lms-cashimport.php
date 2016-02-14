@@ -100,7 +100,12 @@ define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 
 // Load autoloader
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'autoloader.php');
+$composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+if (file_exists($composer_autoload_path)) {
+    require_once $composer_autoload_path;
+} else {
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
+}
 
 // Init database
 
@@ -254,30 +259,29 @@ function parse_file($filename, $contents) {
 			if (count($uids) == 1)
 				$id = $uids[0];
 		} elseif ($id && (!$name || !$lastname))
-			if ($tmp = $DB->GetRow('SELECT lastname, name FROM customers WHERE id = ?', array($id))) {
+			if ($tmp = $DB->GetRow('SELECT id, lastname, name FROM customers WHERE '
+				. (isset($pattern['extid']) && $pattern['extid'] ? 'ext' : '') . 'id = ?', array($id))) {
+				if (isset($pattern['extid']) && $pattern['extid'])
+					$id = $tmp['id'];
 				$lastname = $tmp['lastname'];
 				$name = $tmp['name'];
 			} else
 				$id = NULL;
 
-		if($time)
-		{
-			if(preg_match($pattern['date_regexp'], $time, $date))
-			{
+		if ($time) {
+			if (preg_match($pattern['date_regexp'], $time, $date)) {
 				$time = mktime(0,0,0, 
 					$date[$pattern['pmonth']], 
 					$date[$pattern['pday']], 
 					$date[$pattern['pyear']]);
-			}
-			elseif(!is_numeric($time))
+			} elseif(!is_numeric($time))
 				$time = time();
 			if (isset($pattern['date_hook']))
 				$time = $pattern['date_hook']($time, $_FILES['file']['name']);
-		}
-		else
+		} else
 			$time = time();
 
-		if(!empty($pattern['comment_replace']))
+		if (!empty($pattern['comment_replace']))
 			$comment = preg_replace($pattern['comment_replace']['from'], $pattern['comment_replace']['to'], $comment);
 
 		$customer = trim($lastname.' '.$name);

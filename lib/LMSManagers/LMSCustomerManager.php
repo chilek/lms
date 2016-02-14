@@ -343,12 +343,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 				    VALUES (?, ?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?,
 				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
         ) {
+            $id = $this->db->GetLastInsertID('customers');
             $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
             $location_manager->UpdateCountryState($customeradd['zip'], $customeradd['stateid']);
             if ($customeradd['post_zip'] != $customeradd['zip']) {
                 $location_manager->UpdateCountryState($customeradd['post_zip'], $customeradd['post_stateid']);
             }
-            $id = $this->db->GetLastInsertID('customers');
             if ($this->syslog) {
                 $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $id;
                 unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
@@ -396,8 +396,17 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      * @param boolean $count Count flag
      * @return array Customer list
      */
-    public function getCustomerList($order = 'customername,asc', $state = null, $network = null, $customergroup = null, $search = null, $time = null, $sqlskey = 'AND', $nodegroup = null, $division = null, $limit = null, $offset = null, $count = false)
+    public function getCustomerList($params = array())
     {
+        extract($params);
+
+        if(is_null($order))
+            $order = 'customername,asc';
+        if(is_null($sqlskey))
+            $sqlskey = 'AND';
+        if(is_null($count))
+            $count = FALSE;
+
         list($order, $direction) = sscanf($order, '%[^,],%s');
 
         ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
@@ -453,6 +462,41 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                      $contracts = $state - 58;
                      $contracts_days = intval(ConfigHelper::getConfig('contracts.contracts_days'));
                      break;
+            case 62:
+                    $einvoice =1;
+                    break;
+            case 63:
+                    $withactivenodes = 1;
+                    break;
+            case 64: 
+                    $withnodes = 1;
+                    break;
+            case 65: 
+                    $withoutnodes = 1;
+                    break;    
+        }
+
+        switch($as){
+            case 7: case 14: case 30:
+                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
+		    .'a.suspended = 0 AND a.dateto > '.time(). ' AND a.dateto <= '. (time() + ($as*86400))
+		    .' AND NOT EXISTS (SELECT 1 FROM assignments aa WHERE aa.customerid = a.customerid AND aa.datefrom > a.dateto LIMIT 1)';
+                break;
+            case -1: 
+                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.dateto = 0';
+                break;
+            case -2: 
+                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND (a.dateto = 0 OR a.dateto > ' . time() . ')';
+                break;
+            case -3: 
+                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.invoice = 1 AND a.suspended = 0 AND (a.dateto = 0 OR a.dateto > ' . time() . ')';
+                break;
+            case -4: 
+                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended != 0';
+                break;
+            default: 
+                $assigment = NULL;
+                break;
         }
 
         if ($network) {
@@ -658,7 +702,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 . ($indebted ? ' AND b.value < 0' : '')
                 . ($indebted2 ? ' AND b.value < -t.value' : '')
                 . ($indebted3 ? ' AND b.value < -t.value * 2' : '')
+                . ($einvoice ? ' AND c.einvoice = 1' : '')
+                . ($withactivenodes ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id AND access = 1)' : '')
+                . ($withnodes ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id)' : '')
+                . ($withoutnodes ? ' AND NOT EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id)' : '')
                 . ($contracts == 1 ? ' AND d.customerid IS NULL' : '')
+                . ($assigment ? ' AND c.id IN ('.$assigment.')' : '')
                 . ($disabled ? ' AND s.ownerid IS NOT null AND s.account > s.acsum' : '')
                 . ($network ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id 
                 AND (netid = ' . $network . '

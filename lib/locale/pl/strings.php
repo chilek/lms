@@ -1138,6 +1138,7 @@ $_LANG['Searching of Events in Timetable'] = 'Szukanie wpisów w kalendarzu';
 $_LANG['Section:'] = 'Sekcja:';
 $_LANG['Section name contains forbidden characters!'] = 'Nazwa sekcji zawiera zabronione znaki!';
 $_LANG['Select'] = 'Wybierz';
+$_LANG['select'] = 'wybierz';
 $_LANG['- select account -'] = '- wybierz konto -';
 $_LANG['Select account'] = 'Wybierz konto';
 $_LANG['Select accounting frequency'] = 'Wybierz częstotliwość naliczania';
@@ -2032,6 +2033,7 @@ $_LANG['Division long name is required!'] = 'Pełna nazwa firmy jest wymagana!';
 $_LANG['Division short name is required!'] = 'Skrócona nazwa firmy jest wymagana!';
 $_LANG['Division with specified name already exists!'] = 'Firma o podanej nazwie już istnieje!';
 $_LANG['Edit Division: $a'] = 'Edycja firmy: $a';
+$_LANG['Division is required!'] = 'Firma jest wymagana!';
 $_LANG['Enter bank account or mass payments account prefix (optional)'] = 'Wprowadź konto bankowe lub prefiks konta płatności masowych (opcjonalnie)';
 $_LANG['Enter division long name'] = 'Wprowadź pełną nazwę firmy';
 $_LANG['Enter division short name'] = 'Wprowadź skróconą nazwę firmy';
@@ -2049,6 +2051,7 @@ $_LANG['Long name:'] = 'Pełna nazwa:';
 $_LANG['New Division'] = 'Nowa firma';
 $_LANG['No such divisions in database.'] = 'Brak firm w bazie danych.';
 $_LANG['Select division'] = 'Wybierz firmę';
+$_LANG['Division:'] = 'Firma:';
 $_LANG['Unlock'] = 'Odblokuj';
 $_LANG['Wrong account number!'] = 'Niepoprawny format konta!';
 $_LANG['Zip code is required!'] = 'Kod pocztowy jest wymagany!';
@@ -2895,6 +2898,16 @@ $_LANG['Enter node longitude (optional)'] = 'Podaj długość geograficzną dla 
 
 $_LANG['Select investment projects'] = 'Wybierz projekty inwestycyjne';
 $_LANG['Investment project:'] = 'Projekt inwestycyjny:';
+$_LANG['Investment projects'] = 'Projekty inwestycyjne';
+$_LANG['Investment projects Management'] = 'Zarządzenie projektami inwestycyjnymi';
+$_LANG['Investment projects list'] = 'Lista projektów inwestycyjnych';
+$_LANG['There are no investment project.'] = 'Nie ma żadnych projektów inwestycyjnych';
+$_LANG['Add investment project'] = 'Dodaj projekt inwestycyjny';
+$_LANG['New investment project'] = 'Nowy projekt inwestycyjny';
+$_LANG['Enter investment project name'] = 'Wpisz nazwę projektu inwestycyjnego';
+$_LANG['Display this form again, when this invproject is saved'] = 'Wyświetl formularz ponownie po dodaniu projektu inwestycyjnego';
+$_LANG['Investment project with specified name already exists!'] = 'Projekt inwestycyjny o podanej nazwie już istnieje!';
+$_LANG['Investment project name is required!'] = 'Nazwa projektu inwestycyjnego jest wymagana!';
 
 $_LANG['Select device status'] = 'Wybierz status urządzenia';
 $_LANG['$a (from network node $b)'] = '$a (z węzła sieciowego $b)';
@@ -3123,5 +3136,23 @@ $_LANG['Security protocol. Available options: ssl or tls.'] = 'Protokół bezpie
 $_LANG['Incorrect mail security protocol. Valid types are: ssl, tls!'] = 'Niepoprawny protokół bezpieczeństwa. Dostępne opcje: ssl, tls!';
 $_LANG['To view the message, please use an HTML compatible email viewer'] = 'Aby zobaczyć tą wiadomość użyj kompatybilnego z HTML programu pocztowego.';
 $_LANG['date format'] = 'format daty';
+$_LANG['Define date format for variable: %period, %aligned_period, %current_month used in payments.comment and payments.settlement_comment'] = 'Zdefiniuj format daty dla zmiennych: %period, %aligned_period, %current_month używanych przez opcje payments.comment i payments.settlement_comment';
+$_LANG['Unit name on invoice, default: "pcs."'] = 'Jednostka na fakturze, domyślnie: "szt."';
+
+$_LANG['opened<!plural:event>'] = 'otwarte';
+$_LANG['closed<!plural:event>'] = 'zamknięte';
+
+$_LANG['Assigments:'] = 'Zobowiązania:';
+$_LANG['suspended'] = 'zawieszone';
+$_LANG['active, with invoice'] = 'aktywne, z fakturą';
+$_LANG['without end date'] = 'bez daty zakończenia';
+$_LANG['expire in $a days'] = 'wygasną w ciągu $a dni';
+
+$_LANG['TERRIT not specified'] = 'Bez TERYT-u';
+$_LANG['Net Device not specified'] = 'Bez urządzenia sieciowego';
+
+$_LANG['with e-invoice'] = 'z e-fakturą';
+$_LANG['with connected nodes'] = 'z aktywnymi komputerami';
+$_LANG['with nodes'] = 'z komputerami';
 
 ?>

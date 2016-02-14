@@ -32,12 +32,12 @@ window.open('?m=note&id={$newnoteid}');
 
 	function printnote()
 	{
-		document.additem.action="?m=noteadd&action=save&print=1";
+		document.additem.action="?m=noteadd&amp;action=save&print=1";
 		document.additem.submit();
 	}
 //-->
 </script>
-<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=noteadd&action=setcustomer">
+<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=noteadd&amp;action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -114,7 +114,6 @@ window.open('?m=note&id={$newnoteid}');
 </TABLE>
 </FORM>
 {if $customer}
-<P>
 <TABLE class="lmsbox">
     <THEAD>
         <TR>
@@ -124,14 +123,12 @@ window.open('?m=note&id={$newnoteid}');
                 <TD WIDTH="99%">
                         <B>{$customer.customername}</B>
                         &nbsp;&raquo;&nbsp; {$customer.address} &nbsp; {$customer.zip} {$customer.city}
-                        &nbsp;&raquo;&nbsp; {if $customer.balance < 0}<FONT class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</FONT>{/if}
+                        &nbsp;&raquo;&nbsp; {if $customer.balance < 0}<span class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</span>{/if}
                 </TD>
         </TR>
     </THEAD>
 </TABLE>
-</P>
 {/if}
-<P>	
 <TABLE class="lmsbox">
     <THEAD>
 	<TR>
@@ -163,15 +160,13 @@ window.open('?m=note&id={$newnoteid}');
 			{$item.value|money_format}
 		</TD>
 		<TD NOWRAP>
-			<A HREF="?m=noteadd&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
+			<A HREF="?m=noteadd&amp;action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
 		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD COLSPAN="4" ALIGN="CENTER">
-			<P>&nbsp;</P>
-			<P><B>{trans("Debit note have no items. Use form below for items addition.")}</B></P>
-			<P>&nbsp;</P>
+		<TD COLSPAN="4" class="empty-table">
+			<p>{trans("Debit note have no items. Use form below for items addition.")}</p>
 		</TD>
 	</TR>
 	{/foreach}
@@ -189,9 +184,11 @@ window.open('?m=note&id={$newnoteid}');
 	</TR>
 	{/if}
     </TBODY>
-    <TFOOT>
-	<FORM METHOD="POST" ACTION="?m=noteadd&action=additem" NAME="additem">
-	<INPUT type="submit" class="hiddenbtn">
+</table>
+
+<FORM METHOD="POST" ACTION="?m=noteadd&amp;action=additem" NAME="additem">
+<INPUT type="submit" class="hiddenbtn">
+<table class="lmsbox">
 	<TR>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{counter}.</B>
@@ -209,7 +206,7 @@ window.open('?m=note&id={$newnoteid}');
 	<TR>
 		<TD COLSPAN="4" ALIGN="RIGHT">
 			<A HREF="?m=notelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
-			<A HREF="?m=noteadd&action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A> 
+			<A HREF="?m=noteadd&amp;action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A> 
 			{if !$customer}
 			<A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
 			<A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save & Print")} <IMG src="img/printd.gif" alt=""></A>
@@ -217,14 +214,13 @@ window.open('?m=note&id={$newnoteid}');
 			<A HREF="javascript:alert('{trans("Document has no items!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
 			<A HREF="javascript:alert('{trans("Document has no items!")}');">{trans("Save & Print")} <IMG src="img/printd.gif" alt=""></A>
 			{else}
-			<A HREF="?m=noteadd&action=save">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+			<A HREF="?m=noteadd&amp;action=save">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
 			<A HREF="javascript:printnote()">{trans("Save & Print")} <IMG src="img/printd.gif" alt=""></A>
 			{/if}
 		</TD>
 	</TR>
-	</FORM>
-    </TFOOT>
 </TABLE>
+</FORM>
 <SCRIPT type="text/javascript">
 <!--
 document.forms['setcustomer'].elements['note[number]'].focus();

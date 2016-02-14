@@ -6,7 +6,7 @@
 <H1>{$layout.pagetitle}</H1>
 {$lastonline_limit = ConfigHelper::getConfig('phpui.lastonline_limit')}
 <form name="nodesearchresults">
-<P><table class="lmsbox">
+<table class="lmsbox">
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD style="width: 96%;">
@@ -37,7 +37,7 @@
 	{cycle values="light,lucid" print=false}
 	{section name=nodelist loop=$nodelist start=$start max=$pagelimit}
 	<TR class="highlight {cycle}{if ! $nodelist[nodelist].access} blend{/if}"  >
-		<TD style="width: 95%;" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';">
+		<TD style="width: 95%;" onClick="return self.location.href='?m=nodeinfo&amp;id={$nodelist[nodelist].id}';">
 			<a name="{$nodelist[nodelist].id}">
 			{if $nodelist[nodelist].lastonline}
 			    {if ($smarty.now-$nodelist[nodelist].lastonline) > $lastonline_limit}
@@ -52,22 +52,22 @@
 			    <IMG src="img/info1.gif" alt="" {tip text=$nodelist[nodelist].info}>
 			{/if}
 			<span class="bold">{$nodelist[nodelist].name}</span></A><BR>
-			<img src="img/customer.gif" ALT="">&nbsp;<A href="?m=customerinfo&id={$nodelist[nodelist].ownerid}" {tip a=$nodelist[nodelist].ownerid dynpopup='?m=customerinfoshort&id=$a'}>{if ! $nodelist[nodelist].access}<font class="blend">{/if}{$nodelist[nodelist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</FONT>{/if}</A>
+			<img src="img/customer.gif" ALT="">&nbsp;<A href="?m=customerinfo&amp;id={$nodelist[nodelist].ownerid}" {tip a=$nodelist[nodelist].ownerid dynpopup='?m=customerinfoshort&amp;id=$a'}>{if ! $nodelist[nodelist].access}<font class="blend">{/if}{$nodelist[nodelist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</span>{/if}</A>
 		</TD>
-		<TD style="width: 1%; text-align: right; vertical-align: top;" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';">
+		<TD style="width: 1%; text-align: right; vertical-align: top;" onClick="return self.location.href='?m=nodeinfo&amp;id={$nodelist[nodelist].id}';">
 			<img src="img/empty.gif" ALT="" width="1" height="16">({$nodelist[nodelist].id|string_format:"%04d"})<BR>
 			<img src="img/empty.gif" ALT="" width="1" height="16"><span class="blend">({$nodelist[nodelist].ownerid|string_format:"%04d"})</span>
 		</TD>
-		<TD style="width: 1%; vertical-align: top; white-space: nowrap;" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';">
+		<TD style="width: 1%; vertical-align: top; white-space: nowrap;" onClick="return self.location.href='?m=nodeinfo&amp;id={$nodelist[nodelist].id}';">
 			<img src="img/ip.gif" ALT="">&nbsp;{$nodelist[nodelist].ip}{if $nodelist[nodelist].ip_pub != "0.0.0.0"} ({$nodelist[nodelist].ip_pub}){/if}<BR>
 			<img src="img/mac.gif" ALT="">&nbsp;{$nodelist[nodelist].mac|replace:",":"<BR><img src=\"img/mac.gif\" ALT=\"\">&nbsp;"}
 		</TD>
 		<TD style="width: 1%; white-space: nowrap;">
-			<a href="?m=nodeset&id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" ALT="{if ! $nodelist[nodelist].access}[ {trans("Disconnect")} ]{else}[ {trans("Connect")} ]{/if}"></A>
-			<a href="?m=nodewarn&id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" ALT="{if ! $nodelist[nodelist].warning}[ {trans("Enable notices")} ]{else}[ {trans("Disable notices")} ]{/if}"></A>
-			<a href="?m=nodedel&id={$nodelist[nodelist].id}" onClick="return confirmLink(this, '{t a=$nodelist[nodelist].name}Are you sure, you want to delete node \'$a\' from database?{/t}')"><img src="img/delete.gif" ALT="[ {trans("Delete")} ]"></A>
-			<a href="?m=nodeedit&id={$nodelist[nodelist].id}"><img src="img/edit.gif" ALT="[ {trans("Edit")} ]"></A>
-			<a href="?m=nodeinfo&id={$nodelist[nodelist].id}"><img src="img/info.gif" ALT="[ {trans("Info")} ]"></A>
+			<a href="?m=nodeset&amp;id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" ALT="{if ! $nodelist[nodelist].access}[ {trans("Disconnect")} ]{else}[ {trans("Connect")} ]{/if}"></A>
+			<a href="?m=nodewarn&amp;id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" ALT="{if ! $nodelist[nodelist].warning}[ {trans("Enable notices")} ]{else}[ {trans("Disable notices")} ]{/if}"></A>
+			<a href="?m=nodedel&amp;id={$nodelist[nodelist].id}" onClick="return confirmLink(this, '{t a=$nodelist[nodelist].name}Are you sure, you want to delete node \'$a\' from database?{/t}')"><img src="img/delete.gif" ALT="[ {trans("Delete")} ]"></A>
+			<a href="?m=nodeedit&amp;id={$nodelist[nodelist].id}"><img src="img/edit.gif" ALT="[ {trans("Edit")} ]"></A>
+			<a href="?m=nodeinfo&amp;id={$nodelist[nodelist].id}"><img src="img/info.gif" ALT="[ {trans("Info")} ]"></A>
 		</TD>
 		<TD style="width: 1%;">
 			<INPUT TYPE="checkbox" NAME="marks[{$nodelist[nodelist].id}]" VALUE="{$nodelist[nodelist].id}"{if $marks.$nodeid}CHECKED{/if}>
@@ -75,10 +75,8 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD colspan="5" style="text-align: center;">
-			<P>&nbsp;</P>
-			<P><span class="bold">{trans("No such nodes matching search criteria.")}</span></P>
-			<P>&nbsp;</P>
+		<TD colspan="5" class="empty-table">
+			<p>{trans("No such nodes matching search criteria.")}</p>
 		</TD>
 	</TR>
 	{/section}
@@ -151,7 +149,7 @@
 		</TD>
 	</TR>
     </TBODY>
-</TABLE></P>
+</TABLE>
 </form>
 <SCRIPT type="text/javascript">
 <!--

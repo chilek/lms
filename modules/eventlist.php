@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $userid=0, $type = 0, $private = 0, $opened = 0) {
+function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $userid=0, $type = 0, $private = 0, $closed = '') {
 	global $AUTH;
 
 	$DB = LMSDB::getInstance();
@@ -53,7 +53,7 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 			)' : '')
 		. ($type ? ' AND events.type = ' . intval($type) : '')
 		. ($private ? ' AND private = 1' : '')
-		. ($opened ? ' AND closed = 0' : ' AND closed = 1')
+		. ($closed != '' ? ' AND closed = ' . intval($closed) : '')
 		.' ORDER BY date, begintime',
 		 array($startdate, $enddate, $enddate, $startdate, $AUTH->id));
 
@@ -73,7 +73,8 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 					if ($days == 1)
 						$row['endtime'] = $endtime;
 					$row['date'] += 86400;
-					$list2[] = $row;
+					if ($days > 1 || $endtime)
+						$list2[] = $row;
 					$days--;
 				}
 			} else
@@ -108,10 +109,10 @@ if (!empty($_POST)) {
 	else
 		$private = 0;
 
-	if (isset($_POST['opened']))
-		$opened = 1;
+	if (isset($_POST['closed']))
+		$closed = $_POST['closed'];
 	else
-		$opened = 0;
+		$closed = '';
 } else {
 	if (isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year'])) {
 		if (isset($_GET['day']))
@@ -130,16 +131,14 @@ if (!empty($_POST)) {
 	$SESSION->restore('ela', $a);
 	$SESSION->restore('elt', $type);
 	$SESSION->restore('elp', $private);
-	$SESSION->restore('elo', $opened);
-	if (!strlen($opened))
-		$opened = 1;
+	$SESSION->restore('elc', $closed);
 }
 
 $SESSION->save('elu', $u);
 $SESSION->save('ela', $a);
 $SESSION->save('elt', $type);
 $SESSION->save('elp', $private);
-$SESSION->save('elo', $opened);
+$SESSION->save('elc', $closed);
 
 $day = (isset($day) ? $day : date('j',time()));
 $month = (isset($month) ? sprintf('%d',$month) : date('n',time()));
@@ -147,12 +146,12 @@ $year = (isset($year) ? $year : date('Y',time()));
 
 $layout['pagetitle'] = trans('Timetable');
 
-$eventlist = GetEventList($year, $month, $day, ConfigHelper::getConfig('phpui.timetable_days_forward'), $u, $a, $type, $private, $opened);
+$eventlist = GetEventList($year, $month, $day, ConfigHelper::getConfig('phpui.timetable_days_forward'), $u, $a, $type, $private, $closed);
 $SESSION->restore('elu', $listdata['customerid']);
 $SESSION->restore('ela', $listdata['userid']);
 $SESSION->restore('elt', $listdata['type']);
 $SESSION->restore('elp', $listdata['private']);
-$SESSION->restore('elo', $listdata['opened']);
+$SESSION->restore('elc', $listdata['closed']);
 
 // create calendars
 for ($i = 0; $i < ConfigHelper::getConfig('phpui.timetable_days_forward'); $i++) {

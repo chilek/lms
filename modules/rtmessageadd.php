@@ -141,7 +141,7 @@ if(isset($_POST['message']))
 		if (!empty($helpdesk_sender_name) && ($mailfname = $helpdesk_sender_name))
 		{
 			if($mailfname == 'queue') $mailfname = $queue['name'];
-			if($mailfname == 'customer') $mailfname = $user['name'];
+			if($mailfname == 'user') $mailfname = $user['name'];
 			$mailfname = '"'.$mailfname.'"';
 		}
 
@@ -391,6 +391,9 @@ else
 	{
 		$queue = $LMS->GetQueueByTicketId($_GET['ticketid']);
 		$message = $DB->GetRow('SELECT id AS ticketid, state, cause, queueid, owner FROM rttickets WHERE id = ?', array($_GET['ticketid']));
+                if(ConfigHelper::checkConfig('phpui.helpdesk_notify')){
+                    $message['notify'] = TRUE;
+                }
 	}
 
 	$user = $LMS->GetUserInfo($AUTH->id);

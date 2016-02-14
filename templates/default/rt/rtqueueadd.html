@@ -69,7 +69,7 @@
 											{foreach from=$queue.rights item=right}
 											<TR class="highlight {cycle}">
 												<TD style="width: 96%;" class="nobr">
-													<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
+													<A href="?m=userinfo&amp;id={$right.id}">{$right.name}</A>
 													<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">
 												</TD>
 												<TD style="width: 1%;" class="text-center">
@@ -133,7 +133,7 @@
 									{trans("New ticket customer notification subject:")}
 								</TD>
 							</TR>
-							</TR>
+							<TR>
 								<TD style="width: 100%;" class="valign-top">
 									<INPUT type="text" name="queue[newticketsubject]" value="{$queue.newticketsubject}" size="60" {tip text="Subject of mail which is sent to customer when new ticket is created" trigger="newticketsubject"}>
 								</TD>
@@ -200,7 +200,7 @@
 		</TD>
 	</TR>
     </TBODY>
-</TABLE></FORM></P>
+</TABLE></FORM>
 <SCRIPT type="text/javascript">
 <!--
 document.forms['queue'].elements['queue[name]'].focus();

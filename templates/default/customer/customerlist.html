@@ -62,6 +62,10 @@
 				<OPTION VALUE="54"{if $listdata.state == 54} SELECTED{/if}>{trans("without group")}</OPTION>
 				<OPTION VALUE="55"{if $listdata.state == 55} SELECTED{/if}>{trans("without tariff")}</OPTION>
 				<OPTION VALUE="56"{if $listdata.state == 56} SELECTED{/if}>{trans("suspended<!plural>")}</OPTION>
+				<OPTION VALUE="62"{if $listdata.state == 62} SELECTED{/if}>{trans("with e-invoice")}</OPTION>
+				<OPTION VALUE="63"{if $listdata.state == 63} SELECTED{/if}>{trans("with connected nodes")}</OPTION>
+				<OPTION VALUE="64"{if $listdata.state == 64} SELECTED{/if}>{trans("with nodes")}</OPTION>
+				<OPTION VALUE="65"{if $listdata.state == 65} SELECTED{/if}>{trans("without nodes")}</OPTION>
 			</SELECT>
 			{trans("Division")}:
 			<SELECT SIZE="1" NAME="d" ONCHANGE="document.choosefilter.submit();">
@@ -91,6 +95,17 @@
 				<OPTION value="{$nodegroup.id}" {if $listdata.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
 				{/foreach}
 			</SELECT>
+                        {trans("Assigments:")}
+                        <select size="1" name="assigments" onchange="document.choosefilter.submit();" {if $listdata.assigments}class="active"{/if}>
+                            <option value="0" {if $listdata.assigments eq '0'} selected {/if}>{trans('- all -')}</option>
+                            <option value="7" {if $listdata.assigments eq '7'} selected {/if}>{trans('expire in $a days', 7)}</option>
+                            <option value="14" {if $listdata.assigments eq '14'} selected {/if}>{trans('expire in $a days', 14)}</option>
+                            <option value="30" {if $listdata.assigments eq '30'} selected {/if}>{trans('expire in $a days', 30)}</option>
+                            <option value="-1" {if $listdata.assigments eq '-1'} selected {/if}>{trans('without end date')}</option>
+                            <option value="-2" {if $listdata.assigments eq '-2'} selected {/if}>{trans('active')}</option>
+                            <option value="-3" {if $listdata.assigments eq '-3'} selected {/if}>{trans('active, with invoice')}</option>
+                            <option value="-4" {if $listdata.assigments eq '-4'} selected {/if}>{trans('suspended')}</option>
+                        </select>
 		</TD>
 	</TR>
         {/block}
@@ -205,7 +220,7 @@
         {block name="customerlist-list-empty-row"}
 	<TR>
 		<TD colspan="{$number_of_table_columns}" class="empty-table">
-			{trans("No such customers matching search criteria or list is empty.")}
+			<p>{trans("No such customers matching search criteria or list is empty.")}</p>
 		</TD>
 	</TR>
         {/block}

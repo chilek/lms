@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -115,6 +115,7 @@ class Auth {
 
 			$this->SESSION->save('session_id', $this->id);
 			$this->SESSION->save('session_login', $this->login);
+			$this->SESSION->restore_user_settings();
 			$this->SESSION->save('session_logname', $this->logname);
 			$this->SESSION->save('session_last', $this->last);
 			$this->SESSION->save('session_lastip', $this->lastip);

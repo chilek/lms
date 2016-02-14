@@ -71,24 +71,27 @@ if (isset($_POST['document'])) {
 	if ($document['fromdate'] > $document['todate'] && $document['todate'] != 0)
 		$error['todate'] = trans('Start date can\'t be greater than end date!');
 
-	switch ($_POST['filter']) {
+        $state = $_POST['filter'];
+        $network = $_POST['network'];
+        $customergroup = $_POST['customergroup'];
+	switch ($state) {
 		case 0:
-			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter'], $_POST['network'], $_POST['customergroup']);
+			$customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
 			break;
 		case CSTATUS_INTERESTED: case CSTATUS_WAITING:
-			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter']);
+			$customerlist = $LMS->GetCustomerList(compact("state"));
 			break;
 		case CSTATUS_CONNECTED: case CSTATUS_DISCONNECTED:
-			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter'], $_POST['network'], $_POST['customergroup']);
+			$customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
 			break;
 		case 51:
-			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter'], $_POST['network'], $_POST['customergroup']);
+			$customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
 			break;
 		case 52:
-			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter'], $_POST['network'], $_POST['customergroup']);
+			$customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
 			break;
 		case -1:
-			if ($customerlist = $LMS->GetCustomerList(NULL, NULL, NULL, $_POST['customergroup'])) {
+			if ($customerlist = $LMS->GetCustomerList(compact("customergroup"))) {
 				foreach ($customerlist as $idx => $row)
 					if (!$row['account'])
 						$ncustomerlist[] = $customerlist[$idx];

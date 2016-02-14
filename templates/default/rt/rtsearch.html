@@ -3,7 +3,7 @@
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<P><FORM method="POST" name="search" action="?m=rtsearch">
+<FORM method="POST" name="search" action="?m=rtsearch">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -20,7 +20,7 @@
 			<B>{trans("Subject:")}</B>
 		</TD>
 		<TD WIDTH="99%">
-			<INPUT type="text" size="50" name="search[subject]" value="{$search.subject}" {tip text="Enter subject"}></INPUT>
+			<INPUT type="text" size="50" name="search[subject]" value="{$search.subject}" {tip text="Enter subject"}>
 		</TD>
 	</TR>
 	<TR>
@@ -31,16 +31,15 @@
 		<TD WIDTH="99%">
 			<TABLE width="100%" cellpadding="1">
 			    <TR>
-			    	<TD width="100%" colspan="2">
+			    	<TD width="100%" colspan="2" class="nobr">
 				    <SELECT size="1" name="search[customerid]" {tip text="select customer from list or enter his data if is not a customer"} onChange="document.forms['search'].elements['search[custid]'].value=document.forms['search'].elements['search[customerid]'].value">
 					<OPTION value="0">{trans("- all customers -")}</OPTION>
 					{foreach from=$customerlist item=item}
 					    <OPTION value="{$item.id}" {if $item.id == $search.customerid}SELECTED{/if}>{$item.customername} ({$item.id|string_format:"%04d"})</OPTION>
 					{/foreach}
 				    </SELECT>
-				    <NOBR>{trans("or Customer ID:")}
+				    {trans("or Customer ID:")}
 				    <INPUT TYPE="TEXT" NAME="search[custid]" VALUE="{$search.custid}" SIZE="5" onChange="document.forms['search'].elements['search[customerid]'].value=document.forms['search'].elements['search[custid]'].value" {tip trigger="custid"}>
-				    </NOBR>
 				</TD>
 			    </TR>
 			    <TR>
@@ -126,12 +125,12 @@
 	</TR>
 	<TR>
 		<TD WIDTH="100%" colspan="2" align="right">
-			<A href="javascript: document.search.submit();" accesskey="s">{trans("Search")}<IMG src="img/search.gif" alt=""></A>
+			<A href="javascript:document.search.submit();" accesskey="s">{trans("Search")}</a><IMG src="img/search.gif" alt="">
 		</TD>
 	</TR>
     </TBODY>
 </TABLE>
-</FORM></P>
+</FORM>
 <SCRIPT type="text/javascript">
 <!--
 document.forms['search'].elements['search[subject]'].focus();

@@ -275,9 +275,9 @@
 		<TD style="width: 1%;">
 			<B>{trans("Options:")}</B>
 		</TD>
-		<TD style="width: 98%;">
-			<NOBR><INPUT type="checkbox" name="assignment[invoice]" value="1" id="invoice"{if $assignment.invoice} CHECKED{/if}><label for="invoice">{trans("with invoice")}</label></NOBR>
-			<NOBR><INPUT type="checkbox" name="assignment[settlement]" value="1" id="settlement"{if $assignment.settlement} CHECKED{/if}><label for="settlement">{trans("with settlement of first deficient period")}</label></NOBR>
+		<TD style="width: 98%;" class="nobr">
+			<INPUT type="checkbox" name="assignment[invoice]" value="1" id="invoice"{if $assignment.invoice} CHECKED{/if}><label for="invoice">{trans("with invoice")}</label>
+			<INPUT type="checkbox" name="assignment[settlement]" value="1" id="settlement"{if $assignment.settlement} CHECKED{/if}><label for="settlement">{trans("with settlement of first deficient period")}</label>
 		</TD>
 	</TR>
 {if $customernodes}

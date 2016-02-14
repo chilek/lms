@@ -74,7 +74,7 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 		$lastname = isset($matches[$pattern['plastname']]) ? trim($matches[$pattern['plastname']]) : '';
 		$comment = isset($matches[$pattern['pcomment']]) ? trim($matches[$pattern['pcomment']]) : '';
 		$time = isset($matches[$pattern['pdate']]) ? trim($matches[$pattern['pdate']]) : '';
-		$value = str_replace(',','.', isset($matches[$pattern['pvalue']]) ? trim($matches[$pattern['pvalue']]) : '');
+		$value = str_replace(array(',', ' '), array('.', ''), isset($matches[$pattern['pvalue']]) ? trim($matches[$pattern['pvalue']]) : '');
 		$srcaccount = isset($matches[$pattern['srcaccount']]) ? trim($matches[$pattern['srcaccount']]) : '';
 		$dstaccount = isset($matches[$pattern['dstaccount']]) ? trim($matches[$pattern['dstaccount']]) : '';
 
@@ -128,31 +128,30 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 			if (count($uids) == 1)
 				$id = $uids[0];
 		} elseif ($id && (!$name || !$lastname))
-			if ($tmp = $DB->GetRow('SELECT lastname, name FROM customers WHERE id = ?', array($id))) {
+			if ($tmp = $DB->GetRow('SELECT id, lastname, name FROM customers WHERE '
+				. (isset($pattern['extid']) && $pattern['extid'] ? 'ext' : '') . 'id = ?', array($id))) {
+				if (isset($pattern['extid']) && $pattern['extid'])
+					$id = $tmp['id'];
 				$lastname = $tmp['lastname'];
 				$name = $tmp['name'];
 			} else
 				$id = null;
-			
-		if($time)
-		{
-			if(preg_match($pattern['date_regexp'], $time, $date))
-			{
+
+		if ($time) {
+			if (preg_match($pattern['date_regexp'], $time, $date)) {
 				$time = mktime(0,0,0, 
 					$date[$pattern['pmonth']], 
 					$date[$pattern['pday']], 
 					$date[$pattern['pyear']]);
-			}
-			elseif(!is_numeric($time))
+			} elseif(!is_numeric($time))
 				$time = time();
-		}
-		else
+		} else
 			$time = time();
 
 		$hook_data = $LMS->executeHook('cashimport_extra_filter_before_submit', 
 			compact("id", "pattern", "comment", "theline", "ln", "patterns_cnt", "error", "line", "time"));
-		extract($hook_data);	
-		
+		extract($hook_data);
+
 		if(!empty($pattern['comment_replace']))
 			$comment = preg_replace($pattern['comment_replace']['from'], $pattern['comment_replace']['to'], $comment);
 

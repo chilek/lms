@@ -190,17 +190,16 @@ switch ($action) {
 			$taxvalue = $taxeslist[$contents[$idx]['taxid']]['value'];
 
 			if ($contents[$idx]['valuenetto'] != $item['valuenetto'])
-				$contents[$idx]['valuebrutto'] = round($contents[$idx]['valuenetto'] * ($taxvalue / 100 + 1), 2);
+				$contents[$idx]['valuebrutto'] = $contents[$idx]['valuenetto'] * ($taxvalue / 100 + 1);
 
 			if (isset($item['deleted']) && $item['deleted']) {
 				$contents[$idx]['valuebrutto'] = 0;
 				$contents[$idx]['cash'] = round($invoicecontents[$idx]['total'] * $item['count'], 2);
 				$contents[$idx]['count'] = 0;
-			}
-			elseif ($contents[$idx]['count'] != $invoicecontents[$idx]['count']
+			} elseif ($contents[$idx]['count'] != $invoicecontents[$idx]['count']
 				|| $contents[$idx]['valuebrutto'] != $invoicecontents[$idx]['value'])
-				$contents[$idx]['cash'] = round($invoicecontents[$idx]['value'] * $invoicecontents[$idx]['count'], 2)
-					- round($contents[$idx]['valuebrutto'] * $contents[$idx]['count'], 2);
+				$contents[$idx]['cash'] = round($invoicecontents[$idx]['value'] * $invoicecontents[$idx]['count']
+					- $contents[$idx]['valuebrutto'] * $contents[$idx]['count'], 2);
 
 			$contents[$idx]['valuebrutto'] = $contents[$idx]['valuebrutto'] - $invoicecontents[$idx]['value'];
 			$contents[$idx]['count'] = $contents[$idx]['count'] - $invoicecontents[$idx]['count'];

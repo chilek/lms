@@ -52,7 +52,7 @@ if ($devices) {
 		}
 		if ($device['radiosectors'])
 			$devices[$devidx]['radiosectors'] = $DB->GetAll('SELECT name, azimuth, width, rsrange,
-				frequency, frequency2, bandwidth FROM netradiosectors WHERE id IN
+				frequency, frequency2, bandwidth, technology FROM netradiosectors WHERE id IN
 				(' . $device['radiosectors'] . ')');
 		else
 			unset($devices[$devidx]['radiosectors']);

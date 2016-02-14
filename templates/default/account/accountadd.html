@@ -162,7 +162,7 @@
 					    <table width="100%">
 						    <tr>
 							    <td width="1%" nowrap><INPUT type="checkbox" id="type_shell" name="account[type][shell]" value="1" {if ($account.type & 1) == 1} CHECKED{/if}> <label for="type_shell">{trans("shell")}</label></td>
-							    <td>&nbsp;<input type="text" size="5" maxlendth="10" name="quota[sh]" value="{$quota.sh}" {tip text="Enter account quota in MB" trigger="quota_sh"}></td>
+							    <td>&nbsp;<input type="text" size="5" maxlength="10" name="quota[sh]" value="{$quota.sh}" {tip text="Enter account quota in MB" trigger="quota_sh"}></td>
 						    </tr>
 						    <tr>
 							    <td width="1%" nowrap><INPUT type="checkbox" id="type_mail" name="account[type][mail]" value="2" {if ($account.type & 2) == 2} CHECKED{/if}> <label for="type_mail">{trans("mail")}</label></td>

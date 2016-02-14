@@ -144,6 +144,7 @@ CREATE TABLE users (
   accessfrom int(11) NOT NULL DEFAULT '0',
   accessto int(11) NOT NULL DEFAULT '0',
   swekey_id varchar(32) NULL DEFAULT NULL,
+  settings mediumtext NOT NULL DEFAULT '',
   PRIMARY KEY  (id),
   UNIQUE KEY login (login, swekey_id)
 ) ENGINE=InnoDB;
@@ -310,7 +311,7 @@ CREATE TABLE numberplanassignments (
 CREATE TABLE invoicecontents (
   docid int(11) NOT NULL DEFAULT '0',
   itemid smallint NOT NULL DEFAULT '0',
-  value decimal(9,2) NOT NULL DEFAULT '0',
+  value decimal(12,5) NOT NULL DEFAULT '0',
   pdiscount decimal(4,2) NOT NULL DEFAULT '0',
   vdiscount decimal(9,2) NOT NULL DEFAULT '0',
   taxid int(11) NOT NULL DEFAULT '0',
@@ -575,13 +576,42 @@ CREATE TABLE ewx_channels (
 
 # --------------------------------------------------------
 #
+# Structure of table divisions
+#
+CREATE TABLE divisions (
+    	id 		int(11) 	NOT NULL auto_increment,
+	shortname       varchar(255) 	NOT NULL DEFAULT '',
+        name        	text    	NOT NULL DEFAULT '',
+	address         varchar(255) 	NOT NULL DEFAULT '',
+	city            varchar(255) 	NOT NULL DEFAULT '',
+	zip             varchar(255) 	NOT NULL DEFAULT '',
+	countryid	int(11)		NOT NULL DEFAULT '0',
+	ten		varchar(16)	NOT NULL DEFAULT '',
+	regon		varchar(255)	NOT NULL DEFAULT '',
+	account         varchar(48) 	NOT NULL DEFAULT '',
+	inv_header      text    	NOT NULL DEFAULT '',
+	inv_footer      text    	NOT NULL DEFAULT '',
+	inv_author      text    	NOT NULL DEFAULT '',
+	inv_cplace      text    	NOT NULL DEFAULT '',
+	inv_paytime 	smallint         DEFAULT NULL,
+	inv_paytype 	smallint    DEFAULT NULL,
+	description     text    	NOT NULL DEFAULT '',
+	status 		tinyint(1) 	NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE KEY shortname (shortname)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table invprojects
 #
 CREATE TABLE invprojects (
         id int(11) NOT NULL auto_increment,
 	name varchar(255) NOT NULL, 
 	type tinyint DEFAULT 0, 
-	PRIMARY KEY (id)
+        divisionid int(11) DEFAULT NULL,
+	PRIMARY KEY (id),
+        FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -605,10 +635,12 @@ CREATE TABLE netnodes (
 	coowner varchar(255) DEFAULT '',
 	uip tinyint(1) DEFAULT 0,
 	miar tinyint(1) DEFAULT 0,
+	divisionid int(11) DEFAULT NULL,
 	PRIMARY KEY (id),
 	FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE
+	FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -1578,33 +1610,6 @@ CREATE TABLE zipcodes (
 
 # --------------------------------------------------------
 #
-# Structure of table divisions
-#
-CREATE TABLE divisions (
-    	id 		int(11) 	NOT NULL auto_increment,
-	shortname       varchar(255) 	NOT NULL DEFAULT '',
-        name        	text    	NOT NULL DEFAULT '',
-	address         varchar(255) 	NOT NULL DEFAULT '',
-	city            varchar(255) 	NOT NULL DEFAULT '',
-	zip             varchar(255) 	NOT NULL DEFAULT '',
-	countryid	int(11)		NOT NULL DEFAULT '0',
-	ten		varchar(16)	NOT NULL DEFAULT '',
-	regon		varchar(255)	NOT NULL DEFAULT '',
-	account         varchar(48) 	NOT NULL DEFAULT '',
-	inv_header      text    	NOT NULL DEFAULT '',
-	inv_footer      text    	NOT NULL DEFAULT '',
-	inv_author      text    	NOT NULL DEFAULT '',
-	inv_cplace      text    	NOT NULL DEFAULT '',
-	inv_paytime 	smallint         DEFAULT NULL,
-	inv_paytype 	smallint    DEFAULT NULL,
-	description     text    	NOT NULL DEFAULT '',
-	status 		tinyint(1) 	NOT NULL DEFAULT 0,
-	PRIMARY KEY (id),
-	UNIQUE KEY shortname (shortname)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
 # Structure of table excludedgroups
 #
 CREATE TABLE excludedgroups (
@@ -2144,8 +2149,9 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui','hide_toolbar','false','',0),
 ('phpui','add_customer_group_required','false','',0),
 ('phpui','document_margins','10,5,15,5','',0),
-('phpui', 'quicksearch_limit', '15', 0),
+('phpui', 'quicksearch_limit', '15','', 0),
 ('payments', 'date_format', '%Y/%m/%d', '', 0),
+('payments', 'default_unit_name', 'pcs.', '', 0),
 ('invoices','template_file','invoice.html','',0),
 ('invoices','content_type','text/html','',0),
 ('invoices','cnote_template_file','invoice.html','',0),
@@ -2529,4 +2535,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016012600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016020503');
