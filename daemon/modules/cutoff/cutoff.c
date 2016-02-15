@@ -153,7 +153,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	if(strlen(enetsql))
 	{
 		g->str_replace(&enets, "%enets", enetsql);
-		g->str_replace(&enets_cust, "%enets", netsql);
+		g->str_replace(&enets_cust, "%enets", enetsql);
 	}
 
 	while( k>1 )
