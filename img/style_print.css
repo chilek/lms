@@ -38,5 +38,3 @@ H1		{ font-size: 14pt; font-family: Arial, Helvetica; }
 .grey		{ background-color: #EEEEEE; }
 .alert          { color: #FF0000; }
 .bold           { font-weight: bold; }
-
-@page { size: auto; margin: 0; }
