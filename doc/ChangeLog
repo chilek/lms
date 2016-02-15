@@ -47,6 +47,8 @@ version ?.??.?? (????-??-??):
     to north direction [chilan]
   - add filters (with nodes, without nodes, active nodes, e-invoice) in customerlist [wawryk]
   - add filters (online, without terryt) in nodelist and show info on welcome [wawryk]
+  - bumped used smarty version to 3.1.29 (LMS Plus users should not use the newest
+    lms master version for the moment) [chilan]
 
 version 1.11.19 (2015-12-21):
 
