@@ -79,7 +79,7 @@ $CSTATUSES = array(
 		'plurallabel' => trans('debt collection'),
 		'summarylabel' => trans('Debt Collection:<!summary>'),
 		'img' => 'money.gif',
-		'alias' => 'debt collection'
+		'alias' => 'debtcollection'
 	),
 );
 
