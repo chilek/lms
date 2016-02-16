@@ -50,7 +50,7 @@ function module_setup()
 		$enabled_modules = explode(',', $enabled_modules);
     $SMARTY->assign('enabled_modules', $enabled_modules);
     $SMARTY->assign('total', sizeof($USERPANEL->MODULES));
-    $SMARTY->display(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'setup.html');
+    $SMARTY->display('file:' . USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'setup.html');
 }
 
 function module_submit_setup()
@@ -134,7 +134,7 @@ function module_rights()
 
     $SMARTY->assign('customerlist',$customerlist);
     $SMARTY->assign('userpanelrights', $userpanelrights);
-    $SMARTY->display(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'setup_rights.html');
+    $SMARTY->display('file:' . USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'setup_rights.html');
 }
 
 function module_submit_rights()
