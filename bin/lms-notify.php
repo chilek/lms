@@ -1014,14 +1014,16 @@ if (!empty($intersect)) {
 		if (array_key_exists('customers', $notification))
 			$customers = array_merge($customers, $notification['customers']);
 	$customers = array_unique($customers);
+/*
 	if (!empty($customers)) {
 		$customers = $DB->GetCol("SELECT id FROM customers
-			WHERE status = ? AND id IN (" . implode(',', $customers) . ")",
-			array(CSTATUS_CONNECTED));
+			WHERE (status = ? OR status = ?) AND id IN (" . implode(',', $customers) . ")",
+			array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION));
 		if (empty($customers))
 			$customers = array();
 	}
 	$customers = implode(',', $customers);
+*/
 
 	foreach (array('block', 'unblock') as $channel)
 		if (in_array($channel, $channels))
@@ -1029,26 +1031,40 @@ if (!empty($intersect)) {
 				case 'block':
 					if (empty($customers))
 						break;
+					$customers = $DB->GetCol("SELECT id FROM customers
+						WHERE status = ? AND id IN (" . implode(',', $customers) . ")",
+						array(CSTATUS_CONNECTED));
+					if (empty($customers))
+						break;
 					$DB->Execute("UPDATE nodes SET access = ?
-						WHERE access = ? AND ownerid IN (" . $customers . ")",
+						WHERE access = ? AND ownerid IN (" . implode(',', $customers) . ")",
 						array(0, 1));
-					$DB->Execute("UPDATE assignments SET suspended = ?
-						WHERE suspended = ? AND (tariffid <> 0 OR liabilityid <> 0)
+					$DB->Execute("UPDATE assignments SET invoice = ?
+						WHERE invoice = ? AND (tariffid <> 0 OR liabilityid <> 0)
 							AND (datefrom = 0 OR datefrom <= ?NOW?)
 							AND (dateto = 0 OR dateto >= ?NOW?)
-							AND customerid IN (" . $customers . ")",
-						array(1, 0));
+							AND customerid IN (" . implode(',', $customers) . ")",
+						array(0, 1));
+					$DB->Execute("UPDATE customers SET status = ? WHERE id IN (" . implode(',', $customers) . ")",
+						array(CSTATUS_CONNECTED));
 					break;
 				case 'unblock':
+					$customers = $DB->GetCol("SELECT id FROM customers
+						WHERE status = ?" . (empty($customers) ? '' : " AND id NOT IN (" . implode(',', $customers) . ")"),
+						array(CSTATUS_DEBT_COLLECTION));
+					if (empty($customers))
+						break;
 					$DB->Execute("UPDATE nodes SET access = ?
-						WHERE access = ?" . (empty($customers) ? '' : " AND ownerid NOT IN (" . $customers . ")"),
+						WHERE access = ? AND ownerid IN (" . implode(',', $customers) . ")",
 						array(1, 0));
-					$DB->Execute("UPDATE assignments SET suspended = ?
-						WHERE suspended = ? AND (tariffid <> 0 OR liabilityid <> 0)
+					$DB->Execute("UPDATE assignments SET invoice = ?
+						WHERE invoice = ? AND (tariffid <> 0 OR liabilityid <> 0)
 							AND (datefrom = 0 OR datefrom <= ?NOW?)
-							AND (dateto = 0 OR dateto >= ?NOW?)"
-							. (empty($customers) ? '' : " AND customerid NOT IN (" . $customers . ")"),
-						array(0, 1));
+							AND (dateto = 0 OR dateto >= ?NOW?)
+							AND customerid IN (" . implode(',', $customers) . ")",
+						array(1, 0));
+					$DB->Execute("UPDATE customers SET status = ? WHERE id IN (" . implode(',', $customers) . ")",
+						array(CSTATUS_DEBT_COLLECTION));
 					break;
 			}
 }

@@ -152,32 +152,6 @@ function localtime2() {
 		return time();
 }
 
-define('HALFYEAR', 7);
-define('CONTINUOUS', 6);
-define('YEAR', 5);
-define('QUARTER', 4);
-define('MONTH', 3);
-define('WEEK', 2);
-define('DAY', 1);
-define('DISPOSABLE', 0);
-
-// Tariff types
-define('TARIFF_INTERNET', 1);
-define('TARIFF_HOSTING', 2);
-define('TARIFF_SERVICE', 3);
-define('TARIFF_PHONE', 4);
-define('TARIFF_TV', 5);
-define('TARIFF_OTHER', -1);
-
-$TARIFFTYPES = array(
-	TARIFF_INTERNET	=> ConfigHelper::getConfig('tarifftypes.internet', trans('internet')),
-	TARIFF_HOSTING	=> ConfigHelper::getConfig('tarifftypes.hosting', trans('hosting')),
-	TARIFF_SERVICE	=> ConfigHelper::getConfig('tarifftypes.service', trans('service')),
-	TARIFF_PHONE	=> ConfigHelper::getConfig('tarifftypes.phone', trans('phone')),
-	TARIFF_TV	=> ConfigHelper::getConfig('tarifftypes.tv', trans('tv')),
-	TARIFF_OTHER	=> ConfigHelper::getConfig('tarifftypes.other', trans('other')),
-);
-
 $fakedate = (array_key_exists('fakedate', $options) ? $options['fakedate'] : NULL);
 
 $currtime = strftime("%s", localtime2());
@@ -347,19 +321,21 @@ $query = "SELECT a.tariffid, a.liabilityid, a.customerid,
 	LEFT JOIN tariffs t ON (a.tariffid = t.id) 
 	LEFT JOIN liabilities l ON (a.liabilityid = l.id) 
 	LEFT JOIN divisions d ON (d.id = c.divisionid) 
-	WHERE c.status = ?
-		AND ((a.period = ".DISPOSABLE." AND at = $today) 
-			OR ((a.period = ".DAY." 
-			OR (a.period = ".WEEK." AND at = $weekday) 
-			OR (a.period = ".MONTH." AND at = $dom) 
-			OR (a.period = ".QUARTER." AND at = $quarter) 
-			OR (a.period = ".HALFYEAR." AND at = $halfyear) 
-			OR (a.period = ".YEAR." AND at = $yearday)) 
-			AND (a.datefrom <= $currtime OR a.datefrom = 0) 
-			AND (a.dateto > $currtime OR a.dateto = 0)))"
+	WHERE (c.status = ? OR c.status = ?)
+		AND ((a.period = ? AND at = ?)
+			OR ((a.period = ?
+			OR (a.period = ? AND at = ?)
+			OR (a.period = ? AND at = ?)
+			OR (a.period = ? AND at = ?)
+			OR (a.period = ? AND at = ?)
+			OR (a.period = ? AND at = ?))
+			AND (a.datefrom <= ? OR a.datefrom = 0)
+			AND (a.dateto > ? OR a.dateto = 0)))"
 		.(!empty($groupnames) ? $customergroups : "")
 	." ORDER BY a.customerid, a.invoice, a.paytype, a.numberplanid, value DESC";
-$assigns = $DB->GetAll($query, array(CSTATUS_CONNECTED));
+$assigns = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
+	DISPOSABLE, $today, DAY, WEEK, $weekday, MONTH, $dom, QUARTER, $quarter, HALFYEAR, $halfyear, YEAR, $yearday,
+	$currtime, $currtime));
 
 if (empty($assigns))
 	die;

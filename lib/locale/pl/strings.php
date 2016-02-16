@@ -3155,4 +3155,7 @@ $_LANG['with e-invoice'] = 'z e-fakturą';
 $_LANG['with connected nodes'] = 'z aktywnymi komputerami';
 $_LANG['with nodes'] = 'z komputerami';
 
+$_LANG['debt collection'] = 'windykacja należności';
+$_LANG['Debt collection:'] = 'Windykacja należności:';
+
 ?>

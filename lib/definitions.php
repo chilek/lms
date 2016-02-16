@@ -42,7 +42,8 @@ define('CSTATUS_INTERESTED', 1);
 define('CSTATUS_WAITING', 2);
 define('CSTATUS_CONNECTED', 3);
 define('CSTATUS_DISCONNECTED', 4);
-define('CSTATUS_LAST', CSTATUS_DISCONNECTED);
+define('CSTATUS_DEBT_COLLECTION', 5);
+define('CSTATUS_LAST', CSTATUS_DEBT_COLLECTION);
 
 $CSTATUSES = array(
 	CSTATUS_CONNECTED => array(
@@ -72,6 +73,13 @@ $CSTATUSES = array(
 		'summarylabel' => trans('Disconnected:<!summary>'),
 		'img' => 'node_off.gif',
 		'alias' => 'disconnected'
+	),
+	CSTATUS_DEBT_COLLECTION => array(
+		'singularlabel' => trans('debt collection'),
+		'plurallabel' => trans('debt collection'),
+		'summarylabel' => trans('Debt Collection:<!summary>'),
+		'img' => 'money.gif',
+		'alias' => 'debt collection'
 	),
 );
 
