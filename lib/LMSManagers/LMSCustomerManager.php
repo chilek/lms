@@ -260,7 +260,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 		global $CSTATUSES;
 		$sql = '';
 		foreach ($CSTATUSES as $statusidx => $status)
-			$sql .= ' COUNT(CASE WHEN status = ' . $statusidx . ' THEN 1 END) AS ' . $status['alias'] . ',';
+			$sql .= ' COUNT(CASE WHEN status = ' . $statusidx . ' THEN 1 END) AS "' . $status['alias'] . '",';
         $result = $this->db->GetRow(
             'SELECT ' . $sql . ' COUNT(id) AS total
             FROM customerview 
