@@ -415,7 +415,7 @@ if (isset($_POST['message'])) {
 			if(!empty($debug_email))
 				echo '<B>'.trans('Warning! Debug mode (using address $a).',ConfigHelper::getConfig('mail.debug_email')).'</B><BR>';
 
-			$headers['From'] = qp_encode($message['from']) . ' <' . $message['sender'] . '>';
+			$headers['From'] = '"' . qp_encode($message['from']) . '"' . ' <' . $message['sender'] . '>';
 			$headers['Subject'] = $message['subject'];
 			$headers['Reply-To'] = $headers['From'];
 			if (isset($message['copytosender']))
