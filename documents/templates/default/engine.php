@@ -69,6 +69,6 @@ $SMARTY->assign(
 		     )
 		);
 
-$output = $SMARTY->fetch('file:' . DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['template']);
+$output = $SMARTY->fetch(DOC_DIR.'/templates/'.$engine['name'].'/'.$engine['template']);
 
 ?>

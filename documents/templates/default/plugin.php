@@ -42,6 +42,6 @@ else // AJAX request
     // $JSResponse  - xajaxResponse object
 }
 
-$result = $SMARTY->fetch('file:' . DOC_DIR.'/templates/'.$engine['name'].'/plugin.html');
+$result = $SMARTY->fetch(DOC_DIR.'/templates/'.$engine['name'].'/plugin.html');
 
 ?>
