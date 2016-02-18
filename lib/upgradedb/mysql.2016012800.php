@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE invoicecontents CHANGE value value TYPE decimal(12, 5) NOT NULL DEFAULT '0'");
+$this->Execute("ALTER TABLE invoicecontents CHANGE value value decimal(12, 5) NOT NULL DEFAULT '0'");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016012800', 'dbversion'));
 
