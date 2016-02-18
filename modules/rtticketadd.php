@@ -38,7 +38,7 @@ if(isset($_POST['ticket']))
 	}
 
 	if(empty($ticket['categories']))
-		$error = true;
+		$error['categories'] = trans('You have to select category!');
 
 	if(($LMS->GetUserRightsRT($AUTH->id, $queue) & 2) != 2)
 		$error['queue'] = trans('You have no privileges to this queue!');
