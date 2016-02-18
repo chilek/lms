@@ -2543,6 +2543,7 @@ $_LANG['Category Info: $a'] = 'Informacje o kategorii: $a';
 $_LANG['Categories List'] = 'Lista kategorii';
 $_LANG['List of categories'] = 'Lista kategorii';
 $_LANG['Add new category'] = 'Utworzenie nowej kategorii';
+$_LANG['You have to select category!'] = 'Musisz wybrać kategorię!';
 
 $_LANG['Enter device latitude (optional)'] = 'Podaj szerokość geograficzną dla urządzenia (opcjonalne)';
 $_LANG['Enter device longitude (optional)'] = 'Podaj długość geograficzną dla urządzenia (opcjonalne)';
