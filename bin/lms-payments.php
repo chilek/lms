@@ -605,8 +605,9 @@ $assigns = $DB->GetAll("SELECT * FROM payments WHERE value <> 0
 				OR (period = ? AND at = ?)
 				OR (period = ? AND at = ?)
 				OR (period = ? AND at = ?)
-				OR (period = ? AND at = ?))");
-if (!empty($assigns, DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday))
+				OR (period = ? AND at = ?))",
+	array(DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday));
+if (!empty($assigns))
 	foreach($assigns as $assign)
 	{
 		$DB->Execute("INSERT INTO cash (time, type, value, customerid, comment) 
