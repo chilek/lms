@@ -183,22 +183,22 @@ else
 
 $date_format = ConfigHelper::getConfig('payments.date_format');
 $txts = array(
-	DAY => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
-	WEEK => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month, $dom + 6, $year)),
-	MONTH => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 1, $dom - 1, $year)),
-	QUARTER => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 3, $dom - 1, $year)),
-	HALFYEAR => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 6, $dom - 1, $year)),
-	YEAR => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month, $dom - 1, $year + 1)),
+	DAILY => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
+	WEEKLY => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month, $dom + 6, $year)),
+	MONTHLY => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 1, $dom - 1, $year)),
+	QUARTERLY => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 3, $dom - 1, $year)),
+	HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 6, $dom - 1, $year)),
+	YEARLY => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month, $dom - 1, $year + 1)),
 	DISPOSABLE => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
 );
 
 $txts_aligned = array(
-	DAY => $txts[DAY],
-	WEEK => $txts[WEEK],
-	MONTH => strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year)),
-	QUARTER => strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 3, 0, $year)),
-	HALFYEAR => strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 6, 0, $year)),
-	YEAR => strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month, 0, $year + 1)),
+	DAILY => $txts[DAILY],
+	WEEKLY => $txts[WEEKLY],
+	MONTHLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year)),
+	QUARTERLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 3, 0, $year)),
+	HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 6, 0, $year)),
+	YEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month, 0, $year + 1)),
 	DISPOSABLE => $txts[DISPOSABLE],
 );
 
@@ -334,7 +334,7 @@ $query = "SELECT a.tariffid, a.liabilityid, a.customerid,
 		.(!empty($groupnames) ? $customergroups : "")
 	." ORDER BY a.customerid, a.invoice, a.paytype, a.numberplanid, value DESC";
 $assigns = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
-	DISPOSABLE, $today, DAY, WEEK, $weekday, MONTH, $dom, QUARTER, $quarter, HALFYEAR, $halfyear, YEAR, $yearday,
+	DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
 	$currtime, $currtime));
 
 if (empty($assigns))
@@ -382,22 +382,22 @@ foreach ($assigns as $assign) {
 		if ($assign['t_period'] && $assign['period'] != DISPOSABLE
 			&& $assign['t_period'] != $assign['period'])
 		{
-			if ($assign['t_period'] == YEAR)
+			if ($assign['t_period'] == YEARLY)
 				$val = $val / 12.0;
-			elseif ($assign['t_period'] == HALFYEAR)
+			elseif ($assign['t_period'] == HALFYEARLY)
 				$val = $val / 6.0;
-			elseif ($assign['t_period'] == QUARTER)
+			elseif ($assign['t_period'] == QUARTERLY)
 				$val = $val / 3.0;
 
-			if ($assign['period'] == YEAR)
+			if ($assign['period'] == YEARLY)
 				$val = $val * 12.0;
-			elseif ($assign['period'] == HALFYEAR)
+			elseif ($assign['period'] == HALFYEARLY)
 				$val = $val * 6.0;
-			elseif ($assign['period'] == QUARTER)
+			elseif ($assign['period'] == QUARTERLY)
 				$val = $val * 3.0;
-			elseif ($assign['period'] == WEEK)
+			elseif ($assign['period'] == WEEKLY)
 				$val = $val / 4.0;
-			elseif ($assign['period'] == DAY)
+			elseif ($assign['period'] == DAILY)
 				$val = $val / 30.0;
 		}
 
@@ -601,14 +601,13 @@ foreach ($assigns as $assign) {
 }
 
 // solid payments
-$assigns = $DB->GetAll("SELECT * FROM payments WHERE value <> 0 
-			AND (period = ".DAY." 
-				OR (period = ".WEEK." AND at=$weekday) 
-				OR (period = ".MONTH." AND at=$dom) 
-				OR (period = ".QUARTER." AND at = $quarter) 
-				OR (period = ".HALFYEAR." AND at = $halfyear) 
-				OR (period = ".YEAR." AND at = $yearday))");
-if (!empty($assigns))
+$assigns = $DB->GetAll("SELECT * FROM payments WHERE value <> 0
+			AND (period = ? OR (period = ? AND at = ?)
+				OR (period = ? AND at = ?)
+				OR (period = ? AND at = ?)
+				OR (period = ? AND at = ?)
+				OR (period = ? AND at = ?))");
+if (!empty($assigns, DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday))
 	foreach($assigns as $assign)
 	{
 		$DB->Execute("INSERT INTO cash (time, type, value, customerid, comment) 
