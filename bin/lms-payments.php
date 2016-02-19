@@ -329,8 +329,7 @@ $query = "SELECT a.tariffid, a.liabilityid, a.customerid,
 			OR (a.period = ? AND at = ?)
 			OR (a.period = ? AND at = ?)
 			OR (a.period = ? AND at = ?))
-			AND (a.datefrom <= ? OR a.datefrom = 0)
-			AND (a.dateto > ? OR a.dateto = 0)))"
+			AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
 		.(!empty($groupnames) ? $customergroups : "")
 	." ORDER BY a.customerid, a.invoice, a.paytype, a.numberplanid, value DESC";
 $assigns = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
