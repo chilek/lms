@@ -346,6 +346,7 @@
 								{foreach $customeradd.contacts as $key => $item}
 								<TR id="contact{$key}">
 									<TD class="nobr">
+										{if !$item@first}<HR>{/if}
 										<INPUT type="text" size="16" value="{$item.phone}" name="customeradd[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
 										<label>
 											<INPUT type="checkbox" value="{$smarty.const.CONTACT_MOBILE}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_MOBILE)} checked{/if}>
@@ -370,7 +371,7 @@
 								{/foreach}
 								<TR>
 									<TD>
-										<INPUT type="hidden" id="contactscount" value="{$item@total}">
+										<INPUT type="hidden" id="contactscount" value="{count($customeradd.contacts)}">
 										<A href="javascript:newcontact()">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
 									</TD>
 								</TR>
@@ -387,6 +388,7 @@
 								{foreach $customeradd.emails as $key => $item}
 								<TR id="email{$key}">
 									<TD class="nobr">
+										{if !$item@first}<HR>{/if}
 										<INPUT type="text" size="23" value="{$item.email}" name="customeradd[emails][{$key}][email]" {tip text="Enter e-mail address (optional)" trigger="email`$key`"}>
 										<label {tip text="Check if sent electronic invoices on this email"}>
 											<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_INVOICES}" name="customeradd[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_INVOICES)} checked{/if}>
@@ -407,7 +409,7 @@
 								{/foreach}
 								<TR>
 									<TD>
-										<INPUT type="hidden" id="emailscount" value="{$item@total}">
+										<INPUT type="hidden" id="emailscount" value="{count($customeradd.emails)}">
 										<A href="javascript:newemail()">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
 									</TD>
 								</TR>
@@ -424,6 +426,7 @@
 								{foreach $customeradd.accounts as $key => $item}
 								<TR id="account{$key}">
 									<TD>
+										{if !$item@first}<HR>{/if}
 										<INPUT type="text" size="50" value="{$item.account}" name="customeradd[accounts][{$key}][account]" {tip text="Enter bank account (optional)" trigger="account`$key`"}>
 										<label {tip text="Check if bank account should be visible on invoice"}>
 											<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_INVOICES}" name="customeradd[accounts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_INVOICES)} checked{/if}>
@@ -440,7 +443,7 @@
 								{/foreach}
 								<TR>
 									<TD>
-										<INPUT type="hidden" id="accountscount" value="{$item@total}">
+										<INPUT type="hidden" id="accountscount" value="{count($customeradd.accounts)}">
 										<A href="javascript:newaccount()">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
 									</TD>
 								</TR>
