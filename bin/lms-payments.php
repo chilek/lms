@@ -219,26 +219,26 @@ if ($sdate_next)
 function get_period($period) {
 	global $dom, $month, $year;
 	if (empty($period))
-		$period = YEAR;
+		$period = YEARLY;
 	$start = 0;
 	$end = 0;
 
 	switch ($period)
 	{
-		case DAY:
+		case DAILY:
 			$start = strftime("%s", mktime(0, 0, 0, $month, $dom, $year));
 			$end = strftime("%s", mktime(0, 0, 0, $month, $dom + 1, $year));
 			break;
-		case WEEK:
+		case WEEKLY:
 			$startweek = $dom - $weekday + 1;
 			$start = strftime("%s", mktime(0, 0, 0, $month, $startweek, $year));
 			$end = strftime("%s", mktime(0, 0, 0, $month, $startweek + 7, $year));
 			break;
-		case MONTH:
+		case MONTHLY:
 			$start = strftime("%s", mktime(0, 0, 0, $month, 1, $year));
 			$end = strftime("%s", mktime(0, 0, 0, $month + 1, 1, $year));
 			break;
-		case QUARTER:
+		case QUARTERLY:
 			if ($month <= 3)
 				$startmonth = 1;
 			elseif ($month <= 6)
@@ -250,7 +250,7 @@ function get_period($period) {
 			$start = strftime("%s", mktime(0, 0, 0, $startmonth, 1, $year));
 			$end = strftime("%s", mktime(0, 0, 0, $startmonth + 3, 1, $year));
 			break;
-		case HALFYEAR:
+		case HALFYEARLY:
 			if ($month <= 6)
 				$startmonth = 1;
 			else
@@ -513,9 +513,9 @@ foreach ($assigns as $assign) {
 			$period = strftime($date_format, $period_start) . " - " . strftime($date_format, $period_end);
 
 			switch ($assign['period']) {
-				case WEEK:
+				case WEEKLY:
 					$alldays = 7; break;
-				case MONTH:
+				case MONTHLY:
 					$alldays = 30;
 					$d = $dom;
 					$m = $month;
@@ -537,11 +537,11 @@ foreach ($assigns as $assign) {
 						$y = strftime("%Y", $date);
 					}
 					break;
-				case QUARTER:
+				case QUARTERLY:
 					$alldays = 90; break;
-				case HALFYEAR:
+				case HALFYEARLY:
 					$alldays = 182; break;
-				case YEAR:
+				case YEARLY:
 					$alldays = 365; break;
 			}
 
