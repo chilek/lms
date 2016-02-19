@@ -141,8 +141,7 @@ function GetTariffList($order = 'name,asc', $type = NULL, $customergroupid = NUL
 						SELECT 1 FROM assignments b
 						WHERE b.customerid = a.customerid
 							AND liabilityid = 0 AND tariffid = 0
-							AND (b.datefrom <= ?NOW? OR b.datefrom = 0)
-							AND (b.dateto > ?NOW? OR b.dateto = 0)
+							AND b.datefrom <= ?NOW? AND (b.dateto > ?NOW? OR b.dateto = 0)
 					)
 				)'
 				.($type ? ' AND t.type = '.intval($type) : '')

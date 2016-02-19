@@ -139,7 +139,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 			FROM assignments a
 			LEFT JOIN tariffs t ON (t.id = a.tariffid)
 			LEFT JOIN liabilities l ON (l.id = a.liabilityid AND a.period != ' . DISPOSABLE . ')
-			WHERE (a.datefrom <= ?NOW? OR a.datefrom = 0) AND (a.dateto > ?NOW? OR a.dateto = 0) 
+			WHERE a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0) 
 			GROUP BY a.customerid
 		) t ON (t.customerid = c.id) '
 		. (isset($mailtable) ? $mailtable : '')

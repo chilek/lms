@@ -189,8 +189,7 @@ function parse_data($data, $row) {
 		$saldo = $DB->GetOne("SELECT SUM(value)
 			FROM assignments, tariffs
 			WHERE tariffid = tariffs.id AND customerid = ?
-				AND (datefrom <= ?NOW? OR datefrom = 0)
-				AND (dateto > ?NOW? OR dateto = 0)
+				AND datefrom <= ?NOW? AND (dateto > ?NOW? OR dateto = 0)
 				AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0))",
 			array($row['id']));
 		$data = preg_replace("/\%abonament/", $saldo, $data);

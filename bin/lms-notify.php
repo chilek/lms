@@ -210,7 +210,7 @@ $dayend = $daystart + 86399;
 $deadline = ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0));
 
 // Include required files (including sequence is important)
-
+g
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
@@ -255,8 +255,7 @@ function parse_customer_data($data, $row) {
 		$saldo = $DB->GetOne("SELECT SUM(value)
 			FROM assignments, tariffs
 			WHERE tariffid = tariffs.id AND customerid = ?
-				AND (datefrom <= $currtime OR datefrom = 0)
-				AND (dateto > $currtime OR dateto = 0)
+				AND datefrom <= $currtime AND (dateto > $currtime OR dateto = 0)
 				AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0))",
 			array($row['id']));
 		$data = preg_replace("/\%abonament/", $saldo, $data);
@@ -1041,8 +1040,7 @@ if (!empty($intersect)) {
 						array(0, 1));
 					$DB->Execute("UPDATE assignments SET invoice = ?
 						WHERE invoice = ? AND (tariffid <> 0 OR liabilityid <> 0)
-							AND (datefrom = 0 OR datefrom <= ?NOW?)
-							AND (dateto = 0 OR dateto >= ?NOW?)
+							AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
 							AND customerid IN (" . implode(',', $customers) . ")",
 						array(0, 1));
 					$DB->Execute("UPDATE customers SET status = ? WHERE id IN (" . implode(',', $customers) . ")",
@@ -1059,8 +1057,7 @@ if (!empty($intersect)) {
 						array(1, 0));
 					$DB->Execute("UPDATE assignments SET invoice = ?
 						WHERE invoice = ? AND (tariffid <> 0 OR liabilityid <> 0)
-							AND (datefrom = 0 OR datefrom <= ?NOW?)
-							AND (dateto = 0 OR dateto >= ?NOW?)
+							AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
 							AND customerid IN (" . implode(',', $customers) . ")",
 						array(1, 0));
 					$DB->Execute("UPDATE customers SET status = ? WHERE id IN (" . implode(',', $customers) . ")",

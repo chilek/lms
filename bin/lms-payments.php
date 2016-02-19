@@ -314,7 +314,7 @@ $query = "SELECT a.tariffid, a.liabilityid, a.customerid,
 			END), 2) AS value,
 		(SELECT COUNT(id) FROM assignments 
 			WHERE customerid = c.id AND tariffid = 0 AND liabilityid = 0 
-			AND (datefrom <= $currtime OR datefrom = 0) 
+			AND datefrom <= $currtime
 			AND (dateto > $currtime OR dateto = 0)) AS allsuspended 
 	FROM assignments a 
 	JOIN customers c ON (a.customerid = c.id) 
