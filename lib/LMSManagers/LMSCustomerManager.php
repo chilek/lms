@@ -589,7 +589,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         case 'tariffs':
                             $searchargs[] = 'EXISTS (SELECT 1 FROM assignments a 
 							WHERE a.customerid = c.id
-							AND (datefrom <= ?NOW? OR datefrom = 0) 
+							AND datefrom <= ?NOW?
 							AND (dateto >= ?NOW? OR dateto = 0)
 							AND (tariffid IN (' . $value . ')))';
                             break;
@@ -597,7 +597,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             $searchargs[] = 'EXISTS (SELECT 1 FROM assignments a 
 							JOIN tariffs t ON t.id = a.tariffid
 							WHERE a.customerid = c.id
-							AND (datefrom <= ?NOW? OR datefrom = 0) 
+							AND datefrom <= ?NOW?
 							AND (dateto >= ?NOW? OR dateto = 0)
 							AND (t.type = ' . intval($value) . '))';
                             break;
@@ -658,7 +658,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     FROM assignments a
                     LEFT JOIN tariffs t ON (t.id = a.tariffid)
                     LEFT JOIN liabilities l ON (l.id = a.liabilityid AND a.period != ' . DISPOSABLE . ')
-                    WHERE (a.datefrom <= ?NOW? OR a.datefrom = 0) AND (a.dateto > ?NOW? OR a.dateto = 0) 
+                    WHERE a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)
                     GROUP BY a.customerid
                 ) t ON (t.customerid = c.id)
                 LEFT JOIN (SELECT ownerid,
@@ -720,15 +720,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     WHERE c.id = a.customerid)' : '')
                 . ($tariffless ? ' AND NOT EXISTS (SELECT 1 FROM assignments a 
                     WHERE a.customerid = c.id
-                        AND (datefrom <= ?NOW? OR datefrom = 0) 
+                        AND datefrom <= ?NOW?
                         AND (dateto >= ?NOW? OR dateto = 0)
                         AND (tariffid != 0 OR liabilityid != 0))' : '')
                 . ($suspended ? ' AND EXISTS (SELECT 1 FROM assignments a
                     WHERE a.customerid = c.id AND (
                         (tariffid = 0 AND liabilityid = 0
-                            AND (datefrom <= ?NOW? OR datefrom = 0)
+                            AND datefrom <= ?NOW?
                             AND (dateto >= ?NOW? OR dateto = 0)) 
-                        OR ((datefrom <= ?NOW? OR datefrom = 0)
+                        OR (datefrom <= ?NOW?
                             AND (dateto >= ?NOW? OR dateto = 0)
                             AND suspended = 1)
                         ))' : '')
