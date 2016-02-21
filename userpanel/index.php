@@ -77,7 +77,7 @@ define('K_TCPDF_EXTERNAL_CONFIG', true);
 // include required files
 
 // Load autoloader
-$composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+$composer_autoload_path = VENDOR_DIR . DIRECTORY_SEPARATOR . 'autoload.php';
 if (file_exists($composer_autoload_path)) {
     require_once $composer_autoload_path;
 } else {
