@@ -59,6 +59,7 @@ $CONFIG['directories']['smarty_compile_dir'] = $CONFIG['directories']['userpanel
 $CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
 $CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
 $CONFIG['directories']['doc_dir'] = (!isset($CONFIG['directories']['doc_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'documents' : $CONFIG['directories']['doc_dir']);
+$CONFIG['directories']['vendor_dir'] = (!isset($CONFIG['directories']['vendor_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'vendor' : $CONFIG['directories']['vendor_dir']);
 
 define('USERPANEL_DIR', $CONFIG['directories']['userpanel_dir']);
 define('USERPANEL_LIB_DIR', USERPANEL_DIR . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR);
@@ -71,6 +72,7 @@ define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
 define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
 define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
+define('VENDOR_DIR', $CONFIG['directories']['vendor_dir']);
 
 define('K_TCPDF_EXTERNAL_CONFIG', true);
 
