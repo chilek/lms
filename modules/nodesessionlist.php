@@ -115,7 +115,7 @@ if (!empty($filtertype))
 			break;
 	}
 
-$nodesessions = $DB->GetAll('SELECT s.*, c.* FROM nodesessions s
+$nodesessions = $DB->GetAll('SELECT s.*, c.name, c.lastname FROM nodesessions s
 	LEFT JOIN nodes n ON n.id = s.nodeid
 	LEFT JOIN customers c ON c.id = s.customerid
 	WHERE ' . implode(' AND ', $where) . '
