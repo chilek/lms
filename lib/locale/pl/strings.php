@@ -3159,4 +3159,9 @@ $_LANG['with nodes'] = 'z komputerami';
 $_LANG['debt collection'] = 'windykacja należności';
 $_LANG['Debt collection:'] = 'Windykacja należności:';
 
+$_LANG['All sessions'] = 'Wszystkie sesje';
+$_LANG['Node Sessions'] = 'Sesje komputerów';
+$_LANG['There are no sessions matching defined filter.'] = 'Brak sesji pasujących do zdefiniowanego filtra.';
+$_LANG['Allows you to view node sessions'] = 'Przeglądanie sesji komputerów';
+
 ?>

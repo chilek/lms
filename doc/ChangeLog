@@ -49,6 +49,7 @@ version ?.??.?? (????-??-??):
   - add filters (online, without terryt) in nodelist and show info on welcome [wawryk]
   - bumped used smarty version to 3.1.29 (LMS Plus users should not use the newest
     lms master version for the moment) [chilan]
+  - allow to view and search node sessions [chilan]
 
 version 1.11.19 (2015-12-21):
 
