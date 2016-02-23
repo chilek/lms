@@ -63,7 +63,7 @@ $SESSION->save('nsldatefrom', $datefrom);
 $SESSION->save('nsldateto', $dateto);
 
 if (isset($_POST['filtertype']))
-	if (in_array($_POST['filtertype'], array('ip', 'customer', 'nodeid')))
+	if (in_array($_POST['filtertype'], array('ip', 'mac', 'customer', 'nodeid')))
 		$filtertype = $_POST['filtertype'];
 	else
 		$filtertype = '';
@@ -100,6 +100,12 @@ if (!empty($filtertype))
 		case 'ip':
 			if (check_ip($filtervalue))
 				$where[] = 's.ipaddr = ' . ip_long($filtervalue);
+			else
+				$filtervalue = '';
+			break;
+		case 'mac':
+			if (check_mac($filtervalue))
+				$where[] = 's.mac = \'' . $filtervalue . '\'';
 			else
 				$filtervalue = '';
 			break;

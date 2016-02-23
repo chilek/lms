@@ -41,6 +41,7 @@
 								<SELECT name="filtertype">
 									<OPTION value="">{trans("- none -")}</OPTION>
 									<OPTION value="ip"{if $filtertype == 'ip'} selected{/if}>{trans("IP Address:")}</OPTION>
+									<OPTION value="mac"{if $filtertype == 'mac'} selected{/if}>{trans("MAC:")}</OPTION>
 									<OPTION value="customer"{if $filtertype == 'customer'} selected{/if}>{trans("Customer:")}</OPTION>
 									<OPTION value="nodeid"{if $filtertype == 'nodeid'} selected{/if}>{trans("Node ID:")}</OPTION>
 								</SELECT>&nbsp;
