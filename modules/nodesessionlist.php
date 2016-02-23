@@ -141,7 +141,7 @@ $page = !isset($_GET['page']) ? 1 : intval($_GET['page']);
 
 $listdata['total'] = count($nodesessions);
 
-if ($page * $pagelimit > $listdata['total'])
+if (($page - 1) * $pagelimit > $listdata['total'])
 	$page = 1;
 
 $SMARTY->assign('listdata', $listdata);
