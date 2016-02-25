@@ -54,9 +54,8 @@
 		document.addbalance.submit();
 	}
 
-	function new_doc()
-	{
-		location.href = document.getElementById('newdocselect').value;
+	function new_doc_type_changed(url) {
+		document.getElementById('newdocanchor').href = url;
 	}
 
 {if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
@@ -90,8 +89,8 @@
 			{/if}
 		</TD>
 		<TD class="text-right nobr">
-			<A href="javascript:new_doc()">{trans("New document:")}</A>
-			<SELECT name="newdocument" id="newdocselect">
+			<A id="newdocanchor" href="?m=invoicenew&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("New document:")}</A>
+			<SELECT name="newdocument" onchange="javascript:new_doc_type_changed(this.options[this.selectedIndex].value)">
 				<OPTION value="?m=invoicenew&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("invoice")}</OPTION>
 				<OPTION value="?m=receiptadd&amp;type=in&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("cash-in receipt")}</OPTION>
 				<OPTION value="?m=receiptadd&amp;type=out&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("cash-out receipt")}</OPTION>
