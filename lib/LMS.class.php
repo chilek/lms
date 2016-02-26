@@ -1688,30 +1688,21 @@ class LMS
 	    if (empty($headers['Date']))
 		$headers['Date'] = date('r');
 
-	    if ($files || $headers['X-LMS-Format'] == 'html') {
-		$boundary = '-LMS-' . str_replace(' ', '.', microtime());
-		$this->mail_object->addCustomHeader('Content-Type: multipart/mixed;\n  boundary=\"' . $boundary . '"');
+	    if ($files) {
+	        while (list(, $chunk) = each($files))
+		    $this->mail_object->AddStringAttachment($chunk['data'],$chunk['filename'],'base64',$chunk['content_type']);
 
-		if ($files)
-		    while (list(, $chunk) = each($files))
-			$this->mail_object->AddAttachment($chunk['data'], $chunk['filename'],'base64', $chunk['content_type'], 'attachment');
-
-		if($headers['X-LMS-Format'] == 'html'){
-		    $this->mail_object->isHTML(true);
-		    $this->mail_object->AltBody = trans("To view the message, please use an HTML compatible email viewer");
-		    $this->mail_object->msgHTML($body);
-		}
-		else{
-		    $this->mail_object->isHTML(false);
-		    $this->mail_object->Body = $body;
-		}
-	    }
-	    else {
+	    if($headers['X-LMS-Format'] == 'html') {
+	        $this->mail_object->isHTML(true);
+	        $this->mail_object->AltBody = trans("To view the message, please use an HTML compatible email viewer");
+	        $this->mail_object->msgHTML($body);
+	    } else {
 		$this->mail_object->isHTML(false);
 		$this->mail_object->Body = $body;
 	    }
 
-	    $this->mail_object->addAddress($recipients);
+	    foreach(explode(",", $recipients) as $recipient)
+	    	$this->mail_object->addAddress($recipient);
 
 	    if(!$this->mail_object->Send()) {
 		return "Mailer Error: " . $this->mail_object->ErrorInfo;
