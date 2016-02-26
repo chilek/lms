@@ -1688,7 +1688,7 @@ class LMS
 	    if (empty($headers['Date']))
 		$headers['Date'] = date('r');
 
-	    if ($files) {
+	    if ($files)
 	        while (list(, $chunk) = each($files))
 		    $this->mail_object->AddStringAttachment($chunk['data'],$chunk['filename'],'base64',$chunk['content_type']);
 
