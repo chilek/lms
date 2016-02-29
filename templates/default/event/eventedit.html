@@ -58,6 +58,7 @@
 	</TR>
     </THEAD>
     <TBODY>
+        {block name="event_edit_tbody"}
 	<TR>
 		<TD width="1%">
 			<IMG src="img/time.gif" alt="">
@@ -175,14 +176,17 @@
 	<TR>
 		<TD align="right" colspan="3">
 			<A href="javascript:document.event.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			{if !$event.closed}
-			<A href="?m=eventedit&id={$event.id}&action=close">{trans("Close")} <IMG src="img/dead.gif" alt=""></A>
-			{else}
-			<A href="?m=eventedit&id={$event.id}&action=open">{trans("Open")} <IMG src="img/open.gif" alt=""></A>
-			{/if}
+                        {if ConfigHelper::getConfig('privileges.timetable_management')}
+                            {if !$event.closed}
+                            <A href="?m=eventedit&id={$event.id}&action=close">{trans("Close")} <IMG src="img/dead.gif" alt=""></A>
+                            {else}
+                            <A href="?m=eventedit&id={$event.id}&action=open">{trans("Open")} <IMG src="img/open.gif" alt=""></A>
+                            {/if}
+                        {/if}
 			<A href="?m=eventlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
+        {/block}
     </TBODY>
 </TABLE>
 </P>

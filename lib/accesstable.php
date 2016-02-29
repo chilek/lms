@@ -34,7 +34,7 @@ $access_table = array(
 	),
 	'read_only' => array(
 		'label' => trans('read only (excluding helpdesk)'),
-		'allow_regexp' => '^(([a-z]+(list|info|view|search|balance|infoshort))|netdevmap|eventprint|nodelistshort|number|choose[a-z]+)$',
+		'allow_regexp' => '^(([a-z]+(list|info|view|search|balance|infoshort))|netdevmap|eventprint|eventnote|nodelistshort|number|choose[a-z]+)$',
 	),
 	'node_connections' => array(
 		'label' => trans('nodes connection/disconnection'),
@@ -86,7 +86,7 @@ $access_table = array(
 	),
 	'timetable_management' => array(
 		'label' => trans('timetable management'),
-		'allow_regexp' => '^(event(list|edit|add|del|info|print|search)|choosecustomer)$',
+		'allow_regexp' => '^(event(list|edit|add|del|info|print|search|note)|choosecustomer)$',
 	),
 	'daemon_management' => array(
 		'label' => trans('daemon management and configuration'),

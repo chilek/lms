@@ -37,7 +37,7 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 	$enddate = mktime(0,0,0, $month, $day+$forward, $year);
 
 	$list = $DB->GetAll(
-		'SELECT events.id AS id, title, description, date, begintime, enddate, endtime, customerid, closed, events.type, '
+		'SELECT events.id AS id, title, note, description, date, begintime, enddate, endtime, customerid, closed, events.type, '
 		.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
 		userid, users.name AS username, '.$DB->Concat('c.city',"', '",'c.address').' AS customerlocation, nodeid, nodes.location AS location 
 		FROM events 
