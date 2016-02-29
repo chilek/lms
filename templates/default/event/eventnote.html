@@ -1,0 +1,112 @@
+{include file="header.html"}
+<H1>{$layout.pagetitle}</H1>
+<P align="CENTER">
+<FORM method="POST" action="?m=eventnote&id={$event.id}" name="event">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE width="100%" cellpadding="3">
+    {block name="event_note_table"}
+	<TR class="dark">
+		<TD width="1%" class="fleftu">
+			<IMG src="img/calendar.gif" alt="">
+		</TD>
+		<TD width="1%" class="fbt">
+			<B>{trans("Title:")}</B>
+		</TD>
+		<TD width="98%" class="frightu" style="font-weight: bold;">
+			{$event.title}
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/time.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Time:")}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			{$event.date|date_format:"%x (%A)"}
+			{math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
+			{if $event.begintime != $event.endtime}
+			- {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
+			{/if}
+		</TD>
+	</TR>
+        {if $event.description}
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/info.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Description:")}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<TABLE WIDTH="95%" CELLPADDING="5">
+				<TR>
+					<TD CLASS="fall superlight">
+						{$event.description|replace:"\n":"<BR>"}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+        {/if}
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/access.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Status:")}</B>
+		</TD>
+		<TD width="98%" class="fright" nowrap>
+			{if $event.private}{trans("private")}{else}{trans("public")}{/if}
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/customer.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Customer:")}</B>
+		</TD>
+		<TD width="98%" class="fright" nowrap>
+			{if $event.customername}
+				<A href="?m=customerinfo&id={$event.customerid}">{$event.customername}</A>
+			{else}
+				- brak -
+			{/if}
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/info.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Note:")}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<TEXTAREA name="event[note]" cols="50" rows="5" {tip text="Enter note (optional)"}>{$event.note}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/users.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Users:")}</B>
+		</TD>
+		<TD width="98%" class="fright" nowrap>
+			{foreach item=user from=$event.userlist}	
+				<NOBR><A href="?m=userinfo&id={$user.id}">{$user.name}</A></NOBR><BR>
+			{/foreach}
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fbottomu" align="right" colspan="3">
+			<A href="javascript:document.event.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=eventlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
+		</TD>
+	</TR>
+        {/block}
+</TABLE>
+</P>
+{include file="footer.html"}
