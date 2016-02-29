@@ -20,7 +20,7 @@ if(isset($_POST['event'])) {
 }
 
 $event['userlist'] = ($eventuserlist) ? $eventuserlist : array();
-$layout['pagetitle'] = 'Dodaj notatkę do zdarzenia';
+$layout['pagetitle'] = trans('Add Note');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('event', $event);

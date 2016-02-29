@@ -3164,4 +3164,6 @@ $_LANG['Node Sessions'] = 'Sesje komputerów';
 $_LANG['There are no sessions matching defined filter.'] = 'Brak sesji pasujących do zdefiniowanego filtra.';
 $_LANG['Allows you to view node sessions'] = 'Przeglądanie sesji komputerów';
 
+$_LANG['Add Note'] = 'Dodaj notatkę';
+
 ?>
