@@ -1062,7 +1062,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 					'zas_state' => $teryt['area_woj'],
 					'zas_district' => $teryt['area_pow'],
 					'zas_borough' => $teryt['area_gmi'],
-					'zas_terc' => sprintf("%02d%02d%02d%s", $teryt['area_terc']),
+					'zas_terc' => $teryt['area_terc'],
 					'zas_city' => $teryt['area_city'],
 					'zas_simc' => sprintf("%07d", $teryt['area_simc']),
 					'zas_street' => (!empty($teryt['address_cecha']) && $teryt['address_cecha'] != 'inne'
@@ -1239,7 +1239,7 @@ foreach ($netnodes as $netnodename => $netnode) {
 			'zas_state' => $netnode['area_woj'],
 			'zas_district' => $netnode['area_pow'],
 			'zas_borough' => $netnode['area_gmi'],
-			'zas_terc' => sprintf("%02d%02d%02d%s", $netnode['area_terc']),
+			'zas_terc' => $netnode['area_terc'],
 			'zas_city' => $netnode['area_city'],
 			'zas_simc' => sprintf("%07d", $netnode['area_simc']),
 			'zas_street' => (!empty($netnode['address_cecha']) && $netnode['address_cecha'] != 'inne'
