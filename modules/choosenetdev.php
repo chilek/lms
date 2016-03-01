@@ -25,7 +25,7 @@
  */
 
 $layout['pagetitle'] = trans('Select net devices');
-$list = $DB->GetAll("SELECT n.name,n.id,n.producer,n.model,n.location FROM netdevices n WHERE (n.netnodeid IS NULL) OR (n.netnodeid<>".$_GET['id'].") ORDER BY NAME");
+$list = $DB->GetAll("SELECT n.name,n.id,n.producer,n.model,n.location FROM netdevices n WHERE (n.netnodeid IS NULL) OR (n.netnodeid<>".$_GET['id'].") AND n.netnodeid IS NULL ORDER BY NAME");
 $list['total'] = count($list);
 $SMARTY->assign('netdevlist',$list);
 $SMARTY->assign('objectid',$_GET['id']);
