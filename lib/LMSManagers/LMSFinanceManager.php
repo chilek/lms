@@ -814,6 +814,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $result['serviceaddr'] .= "\n" . $result['post_zip'] . ' ' . $result['post_city'];
             }
 
+            $result['disable_protection'] = ConfigHelper::checkConfig('invoices.disable_protection');
+
             return $result;
         } else
             return FALSE;

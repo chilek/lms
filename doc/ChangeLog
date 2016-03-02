@@ -52,6 +52,8 @@ version ?.??.?? (????-??-??):
   - allow to view and search node sessions [chilan]
   - allow to use web browser mechanism to open new invoice/receipt/note form in customer
     balance box [chilan]
+  - invoices.disable_protection allows to disable modify and copy protection in
+    tcpdf invoice [chilan]
 
 version 1.11.19 (2015-12-21):
 
