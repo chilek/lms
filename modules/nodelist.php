@@ -64,10 +64,11 @@ else
 	$p = $_GET['p'];
 $SESSION->save('nlfp', $p);
 
-$page = (!isset($_GET['page']) ? 1 : intval($_GET['page']));
-$per_page = intval(ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']));
-$offset = ($page - 1) * $per_page;
 $total = intval($LMS->GetNodeList($o, array('project' => $p), NULL, $n, $s, $g, $ng, null, null, true));
+
+$page = (!isset($_GET['page']) ? 1 : intval($_GET['page']));
+$per_page = intval(ConfigHelper::getConfig('phpui.nodelist_pagelimit', $total));
+$offset = ($page - 1) * $per_page;
 
 $nodelist = $LMS->GetNodeList($o, array('project' => $p), NULL, $n, $s, $g, $ng, $per_page, $offset);
 $pagination = LMSPaginationFactory::getPagination($page, $total, $per_page, ConfigHelper::checkConfig('phpui.short_pagescroller'));
