@@ -186,7 +186,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
                 break;
 
             case CONFIG_TYPE_MARGINS:
-                if (!preg_match('/^\d,\d,\d,\d$/', $value))
+                if (!preg_match('/^\d+,\d+,\d+,\d+$/', $value))
                     return trans('Margins should consist of 4 numbers separated by commas!');
                 break;
 
