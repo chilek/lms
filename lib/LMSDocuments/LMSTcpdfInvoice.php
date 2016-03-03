@@ -444,9 +444,9 @@ class LMSTcpdfInvoice extends LMSInvoice {
 	protected function invoice_simple_form_fill() {
 		/* set font style & color */
 		if (mb_strlen($this->data['division_shortname']) > 25)
-			$this->backend->SetFont('courier', '', floor(235 / mb_strlen($this->data['division_shortname'])));
+			$this->backend->SetFont('arial', '', floor(235 / mb_strlen($this->data['division_shortname'])));
 		else
-			$this->backend->SetFont('courier', '', 9);
+			$this->backend->SetFont('arial', '', 9);
 		$this->backend->setColor('text', 0, 0, 0);
 
 		/* division name */
@@ -455,11 +455,11 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->backend->Text(7, 209, $this->data['division_zip'] . ' ' . $this->data['division_city']);
 
 		/* account */
-		$this->backend->SetFont('courier', 'B', 9);
+		$this->backend->SetFont('arial', 'B', 9);
 		$this->backend->Text(7, 219, bankaccount($this->data['customerid'], $this->data['account']));
 
 		/* customer name */
-		$this->backend->SetFont('courier', '', 9);
+		$this->backend->SetFont('arial', '', 9);
 		/* if customer name lenght > 26 chars then cut string */
 		if (mb_strlen($this->data['name']) > 26)
 			$this->backend->Text(7, 228, mb_substr($this->data['name'], 0, 26));
@@ -476,19 +476,19 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		} else {
 			/* title */
 			$this->backend->Text(7, 249, trans('Payment for invoice No. $a', NULL));
-			$this->backend->SetFont('courier', 'B', 10);
+			$this->backend->SetFont('arial', 'B', 10);
 			$this->backend->Text(7, 253, docnumber($this->data['number'], $this->data['template'], $this->data['cdate']));
 
 			$value = $this->data['value'];
 		}
 		/* amount */
-		$this->backend->SetFont('courier', 'B', 10);
+		$this->backend->SetFont('arial', 'B', 10);
 		$this->backend->Text(7, 263, moneyf($value));
 	}
 
 	function invoice_main_form_fill() {
 		/* set font style & color */
-		$this->backend->SetFont('courier', '', 9);
+		$this->backend->SetFont('arial', '', 9);
 		$this->backend->setColor('text', 0, 0, 0);
 
 		/* division name */
@@ -496,11 +496,11 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->backend->Text(67, 206, $this->data['division_address'] . ', ' . $this->data['division_zip'] . ' ' . $this->data['division_city']);
 
 		/* account */
-		$this->backend->SetFont('courier', 'B', 9);
+		$this->backend->SetFont('arial', 'B', 9);
 		$this->backend->Text(67, 215, format_bankaccount(bankaccount($this->data['customerid'], $this->data['account'])));
 
 		/* currency */
-		$this->backend->SetFont('courier', 'B', 10);
+		$this->backend->SetFont('arial', 'B', 10);
 		$this->backend->setFontSpacing(2.5);
 		$this->backend->Text(120, 224, 'PLN');
 		$this->backend->setFontSpacing(0);
@@ -514,7 +514,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->backend->Text(67, 233, trans('$a dollars $b cents', to_words(floor($value)), to_words(round(($value - floor($value)) * 100))));
 
 		/* customer name */
-		$this->backend->SetFont('courier', '', 9);
+		$this->backend->SetFont('arial', '', 9);
 		/* if customer name lenght > 70 chars then stretch font */
 		if (mb_strlen($this->data['name']) > 70)
 			$this->backend->setFontStretching(85);
@@ -545,11 +545,11 @@ class LMSTcpdfInvoice extends LMSInvoice {
 
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
 			/* title */
-			$this->backend->SetFont('courier', '', 10);
+			$this->backend->SetFont('arial', '', 10);
 			$this->backend->Text(120, 264, trans('Payment for liabilities'));
 		} else {
 			/* title */
-			$this->backend->SetFont('courier', 'B', 10);
+			$this->backend->SetFont('arial', 'B', 10);
 			$tmp = docnumber($this->data['number'], $this->data['template'], $this->data['cdate']);
 			$this->backend->Text(120, 264, trans('Payment for invoice No. $a', $tmp));
 		}
