@@ -197,13 +197,14 @@ $user = ConfigHelper::getConfig('sendinvoices.smtp_user');
 $pass = ConfigHelper::getConfig('sendinvoices.smtp_pass');
 $auth = ConfigHelper::getConfig('sendinvoices.smtp_auth');
 
-$debug_email = ConfigHelper::getConfig('sendinvoices.debug_email', '');
-$sender_name = ConfigHelper::getConfig('sendinvoices.sender_name', '');
-$sender_email = ConfigHelper::getConfig('sendinvoices.sender_email', '');
+$debug_email = ConfigHelper::getConfig('sendinvoices.debug_email', '', true);
+$sender_name = ConfigHelper::getConfig('sendinvoices.sender_name', '', true);
+$sender_email = ConfigHelper::getConfig('sendinvoices.sender_email', '', true);
 $mail_subject = ConfigHelper::getConfig('sendinvoices.mail_subject', 'Invoice No. %invoice');
 $mail_body = ConfigHelper::getConfig('sendinvoices.mail_body', ConfigHelper::getConfig('mail.sendinvoice_mail_body'));
 $invoice_filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'invoice_%docid');
-$notify_email = ConfigHelper::getConfig('sendinvoices.notify_email', '');
+$notify_email = ConfigHelper::getConfig('sendinvoices.notify_email', '', true);
+$reply_email = ConfigHelper::getConfig('sendinvoices.reply_email', '', true);
 
 if (empty($sender_email))
 	die("Fatal error: sender_email unset! Can't continue, exiting." . PHP_EOL);
@@ -354,6 +355,8 @@ if (!empty($docs)) {
 
 			$headers = array('From' => $from, 'To' => $mailto_qp_encoded,
 				'Subject' => $subject);
+			if (!empty($reply_email))
+				$headers['Reply-To'] = $reply_email;
 			if (!empty($notify_email))
 				$headers['Cc'] = $notify_email;
 			$res = $LMS->SendMail($custemail . ',' . $notify_email, $headers, $body,
