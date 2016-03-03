@@ -57,12 +57,8 @@
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" VALIGN="TOP">
 			<NOBR>{$event.customername|truncate:"40":"...":true}</NOBR><BR>
-			{if isset($event.location)}
-			<NOBR>{$event.location|replace:", ":"<BR>"}</NOBR>
-			{else}
 			<NOBR>{$event.customeraddr}</NOBR><BR>
 			<NOBR>{$event.customercity}</NOBR><BR>
-			{/if}
 			<NOBR>{$event.customerphone}</NOBR>
 		</TD>
 	</TR>
