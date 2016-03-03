@@ -187,7 +187,8 @@ switch ($mode) {
     				ORDER BY n.name LIMIT ?';
 
             $sql_where = '('.(preg_match('/^[0-9]+$/',$search) ? "n.id = $search OR " : '')."
-				LOWER(n.name) ?LIKE? LOWER($sql_search)
+				LOWER(n.location) ?LIKE? LOWER($sql_search) 
+                                OR LOWER(n.name) ?LIKE? LOWER($sql_search)
 				OR INET_NTOA(ipaddr) ?LIKE? $sql_search
 				OR INET_NTOA(ipaddr_pub) ?LIKE? $sql_search
 				OR LOWER(mac) ?LIKE? LOWER(".macformat($search, true)."))
@@ -213,7 +214,11 @@ switch ($mode) {
 				    $descriptions[$row['id']] = escape_js(trans('Name').': '.$row['name']);
 				    continue;
 				}
-				if (preg_match("~$search~i", $row['ip'])) {
+				if (preg_match("~$search~i", $row['location'])) {
+                                    $descriptions[$row['id']] = escape_js(trans('Location').': '.$row['location']);
+                                    continue;
+                                }
+                                if (preg_match("~$search~i", $row['ip'])) {
 				    $descriptions[$row['id']] = trans('IP').': '.$row['ip'];
 				    continue;
 				}
