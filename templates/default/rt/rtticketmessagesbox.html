@@ -34,7 +34,7 @@
 	<TBODY>
 	<TR>
 		<TD style="width: 100%;" colspan="3">
-			<TABLE class="lmsbox-inner">
+			<TABLE class="lmsbox-inner" id="messages">
 				{counter start=0 skip=1 print=false assign=msgidx}
 				{foreach from=$ticket.messages item=message}
 				{if isset($message.customerid) && isset($message.subject)}
@@ -131,3 +131,8 @@
 	</TR>
 	</TBODY>
 </TABLE>
+<script type="text/javascript" src="/img/Autolinker.min.js"></script>
+<script type="text/javascript">
+    var myTextEl = document.getElementById( 'messages' );
+    myTextEl.innerHTML = Autolinker.link( myTextEl.innerHTML );
+</script>
