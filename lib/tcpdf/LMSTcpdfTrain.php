@@ -27,8 +27,8 @@
 trait LMSTcpdfTrain {
 	public function SetFont($family, $style = '', $size = null, $fontfile = '', $subset = 'default', $out = true)
 	{
-		if (in_array($family, array('arial', 'tahoma', 'verdana'))) {
-			$fontfile = LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'fonts' . DIRECTORY_SEPARATOR . $family . $style . '.php';
+		if ($family === 'arial') {
+			$fontfile = LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'fonts' . DIRECTORY_SEPARATOR . 'arial' . $style . '.php';
 		}
 		parent::SetFont($family, $style, $size, $fontfile, $subset, $out);
 	}
