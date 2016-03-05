@@ -67,7 +67,7 @@ class LMSHTML2PDF extends HTML2PDF {
         $this->setTestIsDeprecated(true);
 
         // init the default font
-        $this->setDefaultFont('arial');
+        $this->setDefaultFont(null);
 
         // init the HTML parsing object
         $this->parsingHtml = new HTML2PDF_parsingHtml($this->_encoding);
