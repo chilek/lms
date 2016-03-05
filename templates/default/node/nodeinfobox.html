@@ -1,7 +1,10 @@
 <!--// $Id$ //-->
 {$xajax}
+<script src="img/clipboard.min.js"></script>
 <SCRIPT type="text/javascript">
 <!--
+       new Clipboard('.CopyIp');
+
 	function chkmac_change()
 	{
 		if (xjx.$('chkmac').checked)
@@ -135,7 +138,7 @@
 	</TR>
 	<TR>
 		<TD style="width: 1%;">
-			<IMG SRC="img/ip.gif" ALT="{trans("IP address:")}">
+                       <IMG SRC="img/ip.gif" class="CopyIp" data-clipboard-text="{$nodeinfo.ip}" ALT="{trans("IP address:")}">
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
 			<a href="javascript:ping_popup('{$nodeinfo.ip}')">{$nodeinfo.ip}</a>
@@ -144,7 +147,7 @@
 	{if $nodeinfo.ip_pub != "0.0.0.0"}
 	<TR>
 		<TD style="width: 1%;">
-			<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
+			<IMG SRC="img/ip_pub.gif" class="CopyIp" data-clipboard-text="{$nodeinfo.ip_pub}"s ALT="{trans("Pub. IP address:")}">
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
 			<a href="javascript:ping_popup('{$nodeinfo.ip_pub}')">{$nodeinfo.ip_pub}</a>
