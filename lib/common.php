@@ -781,7 +781,7 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 		if (!is_array($margins))
 			$margins = array(5, 10, 5, 10); /* default */
 
-	$html2pdf = new LMSHTML2PDF($orientation, 'A4', 'en', true, 'UTF-8', $margins);
+	$html2pdf = new HTML2PDF($orientation, 'A4', 'en', true, 'UTF-8', $margins);
 	/* disable font subsetting to improve performance */
 	$html2pdf->pdf->setFontSubsetting(false);
 
@@ -801,6 +801,11 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 		$html2pdf->pdf->SetTitle($title);
 
 	$html2pdf->pdf->SetDisplayMode('fullpage', 'SinglePage', 'UseNone');
+	$html2pdf->AddFont('arial', '', 'arial.php');
+	$html2pdf->AddFont('arial', 'B', 'arialb.php');
+	$html2pdf->AddFont('arial', 'I', 'ariali.php');
+	$html2pdf->AddFont('arial', 'BI', 'arialbi.php');
+	$html2pdf->AddFont('times', '', 'times.php');
 
 	/* if tidy extension is loaded we repair html content */
 	if (extension_loaded('tidy')) {

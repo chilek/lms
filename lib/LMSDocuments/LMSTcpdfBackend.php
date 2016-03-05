@@ -33,8 +33,6 @@
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . 'pol.php');
 
 class LMSTcpdfBackend extends LMSTCPDF {
-	use LMSTcpdfTrain;
-
 	public function __construct($pagesize, $orientation, $title) {
 		global $layout;
 
@@ -76,6 +74,15 @@ class LMSTcpdfBackend extends LMSTCPDF {
 	public function WriteToString() {
 		return $this->Output(null, 'S');
 	}
+        
+        public function SetFont($family, $style = '', $size = null, $fontfile = '', $subset = 'default', $out = true)
+        {
+            if ($family === 'arial') {
+                $fontfile = LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'fonts' . DIRECTORY_SEPARATOR . 'arial' . $style . '.php';
+            }
+            parent::SetFont($family, $style, $size, $fontfile, $subset, $out);
+        }
+        
 }
 
 ?>
