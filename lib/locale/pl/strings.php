@@ -3157,7 +3157,7 @@ $_LANG['with connected nodes'] = 'z aktywnymi komputerami';
 $_LANG['with nodes'] = 'z komputerami';
 
 $_LANG['debt collection'] = 'windykacja należności';
-$_LANG['Debt collection:<!summary>'] = 'Windykacja należności:';
+$_LANG['Debt Collection:<!summary>'] = 'Windykacja należności:';
 
 $_LANG['All sessions'] = 'Wszystkie sesje';
 $_LANG['Node Sessions'] = 'Sesje komputerów';
