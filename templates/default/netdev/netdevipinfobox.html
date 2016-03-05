@@ -1,6 +1,8 @@
 <!-- $Id$ -->
+<script src="img/clipboard.min.js"></script>
 <SCRIPT type="text/javascript">
 <!--
+       new Clipboard('.CopyIp');
         function chkmac_change()
 	{
 		if (document.getElementById('chkmac').checked)
@@ -38,7 +40,7 @@
     <THEAD>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/ip.gif" ALT="">
+			<IMG SRC="img/ip.gif" class="CopyIp" data-clipboard-text="{$nodeipdata.id|string_format:"%04d"}" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			<B>{$nodeipdata.name} ({$nodeipdata.id|string_format:"%04d"})</B>
@@ -62,7 +64,7 @@
 	</TR>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/ip.gif" ALT="{trans("IP address:")}">
+			<IMG SRC="img/ip.gif" class="CopyIp" data-clipboard-text="{$nodeipdata.ip}" ALT="{trans("IP address:")}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			<a href="javascript:ping_popup('{$nodeipdata.ip}')">{$nodeipdata.ip}</a>
@@ -71,7 +73,7 @@
 	{if $nodeipdata.ip_pub != "0.0.0.0"}
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
+			<IMG SRC="img/ip_pub.gif" class="CopyIp" data-clipboard-text="{$nodeinfo.ip_pub}" ALT="{trans("Pub. IP address:")}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			<a href="javascript:ping_popup('{$nodeipdata.ip_pub}')">{$nodeipdata.ip_pub}</a>
