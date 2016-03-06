@@ -59,6 +59,7 @@ version ?.??.?? (????-??-??):
   - added autolinker in rttickets [wawryk]
   - copy ip address to clipboard after click on ip.gif image [wawryk]
   - added clone option to promotions and promotion schemas [wawryk]
+  - added tcpdf support for debit note [pjona]
 
 version 1.11.19 (2015-12-21):
 
