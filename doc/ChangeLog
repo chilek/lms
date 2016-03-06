@@ -54,6 +54,11 @@ version ?.??.?? (????-??-??):
     balance box [chilan]
   - invoices.disable_protection allows to disable modify and copy protection in
     tcpdf invoice [chilan]
+  - Add possibility to adding note to event by technician without timetable_access [wawryk]
+  - Add showOrHide function to boxes on welcome page [wawryk]
+  - Add autolinker in rttickets [wawryk]
+  - Copy ip address onClick on ip.gif image [wawryk]
+  - Add clone option to promotions and promotion schemas [wawryk]
 
 version 1.11.19 (2015-12-21):
 
