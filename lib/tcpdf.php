@@ -525,21 +525,28 @@ class LMSTCPDF extends TCPDF {
 		$this->cell_margin = $prev_cell_margin;
 		return $rs;
 	}
-        
-        private function UTF8ToLatin2($str, $isunicode = true)
-        {
+
+	private function UTF8ToLatin2($str, $isunicode = true)
+	{
 		/* convert UTF-8 to ISO-8859-2 */
 		if (!$isunicode) {
 			return $str;
 		}
 
 		if (function_exists('mb_convert_encoding')) {
-                        return mb_convert_encoding($str, "ISO-8859-2", "UTF-8");
-                } else {
-                        return iconv("UTF-8", "ISO-8859-2", $str);
-                }
-        }
-        
+			return mb_convert_encoding($str, "ISO-8859-2", "UTF-8");
+		} else {
+			return iconv("UTF-8", "ISO-8859-2", $str);
+		}
+	}
+
+	public function SetFont($family, $style = '', $size = null, $fontfile = '', $subset = 'default', $out = true)
+	{
+		if ($family === 'arial') {
+			$fontfile = LIB_DIR . DIRECTORY_SEPARATOR . 'tcpdf' . DIRECTORY_SEPARATOR . 'fonts' . DIRECTORY_SEPARATOR . 'arial' . $style . '.php';
+		}
+		parent::SetFont($family, $style, $size, $fontfile, $subset, $out);
+	}
 }
 
 ?>
