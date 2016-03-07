@@ -1,0 +1,80 @@
+<!--
+ @author Maciej_Wawryk
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <meta name="GENERATOR" content="LMS {$layout.lmsv}">
+        <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
+        <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
+        <title>::: LMS :{if $layout.pagetitle neq ""} {$layout.pagetitle} :{/if}::</title>
+        <link href="img/style.css" rel="stylesheet" type="text/css">
+        <script type="text/javascript" src="img/common.js"></script>
+        {if $js}
+        <script type="text/javascript">
+            {$js}
+        </script>
+        {/if}
+    </head>
+    {if ! $part}
+        <frameset name="all" frameborder="0" framespacing="0" ROWS="36,*">
+            <frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="top" noresize src="?m=choosenetdevice&p=top">
+            <frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="main" noresize src="?m=choosenetdevice&p=main">
+        </frameset>
+    {/if}
+    {if $part eq "top"}
+    <body>
+        <form name="search" method="post" action="?m=choosenetdevice&p=main" target="main">
+            <input type="submit" class="hiddenbtn">
+            <table cellpadding="5" width="100%">
+                <tr>
+                    <td class="fall dark" align="center" nowrap>
+                        <img src="img/netdev.gif" alt="">
+                        <input type="text" name="searchnetdev" value="{$searchnetdev}" size="20" onkeyup="document.search.submit();">
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <script type="text/javascript">
+            document.search.searchnetdev.focus();
+        </script>
+    </body>
+    {/if}
+    {if $part eq "main"}
+    <body>
+        <table cellpadding="3" width="100%">
+            {if $netdevices}
+                <tr class="dark">
+                    <td nowrap="" class="fleftu"><b>Nazwa</b></td>
+                    <td nowrap="" class="fbt">Lokalizacja</td>
+                    <td nowrap="" class="fbt">Producent</td>
+                    <td nowrap="" class="fbt">Wolne porty</td>
+                </tr>
+            {/if}
+            {cycle values="light,lucid" print=false}
+            {foreach from=$netdevices item=netdevice}
+                <tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+                    <td onClick="sendvalue(targetfield,'{$netdevice.id}');" style="font-weight: bold;">{$netdevice.name}</td>
+                    <td onClick="sendvalue(targetfield,'{$netdevice.id}');">{$netdevice.location|replace:'Gdynia, ':''}</td>
+                    <td onClick="sendvalue(targetfield,'{$netdevice.id}');">{$netdevice.producer}</td>
+                    <td onClick="sendvalue(targetfield,'{$netdevice.id}');" style="text-align: center;">{$netdevice.ports}</td>
+                </tr>
+            {foreachelse}
+                <tr>
+                    <td colspan="5" align="center">
+                        <p>&nbsp;</p>
+                        <p><b>
+                        {if $searchnetdev}
+                                Brak urządzeń spełniających zadane kryteria.
+                        {else}
+                                Wprowadź dane szukanego urządzenia.
+                        {/if}
+                        </b></p>
+                        <p>&nbsp;</p>
+                    </td>
+                </tr>
+            {/foreach}
+        </table>
+    </body>
+    {/if}
+</html>
