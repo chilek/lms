@@ -61,6 +61,7 @@ version ?.??.?? (????-??-??):
   - added clone option to promotions and promotion schemas [wawryk]
   - added tcpdf support for debit note [pjona]
   - added documents cacheing [wawryk]
+  - added support for sending debit notes by mail [chilan]
 
 version 1.11.19 (2015-12-21):
 
