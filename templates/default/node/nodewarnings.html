@@ -92,7 +92,7 @@
 									<input type="checkbox" id="message_label" onClick="javascript:toggle_visual_editor('message');"{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'} checked{/if}>
 									<label for="message_label">{trans("visual editor")}</label>
 								</td>
-								<td style="text-align: right;">
+								<td class="text-right">
 									<label for="">{trans("Message template:")}</label>
 									<select name="setwarnings[tmplid]" id="msgtmplid" {tip trigger="msgtmplid" text="Select message template"} onChange="javascript:change_message_template(this.options[this.selectedIndex].value);">
 										<option value="0">{trans("- none -")}</option>

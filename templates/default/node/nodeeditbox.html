@@ -9,9 +9,9 @@
 		<TD style="width: 1%;">
 			<IMG SRC="img/node.gif" ALT="">
 		</TD>
-		<TD style="width: 99%;" COLSPAN="2">
+		<TD style="width: 99%;" COLSPAN="2" class="bold">
 			<INPUT TYPE="TEXT" NAME="nodeedit[name]" VALUE="{$nodeinfo.name}" MAXLENGTH="32" size="30" {tip text="Enter node name" trigger="name" bold=1}>
-			<span class="bold">({$nodeinfo.id|string_format:"%04d"})</span>
+			({$nodeinfo.id|string_format:"%04d"})
 		</TD>
 	</TR>
     </THEAD>
@@ -20,7 +20,7 @@
 		<TD style="width: 100%;" COLSPAN="3" class="container">
 			<TABLE style="width: 100%;" CELLPADDING="0">
 				<TR>
-					<TD style="width: 50%; vertical-align: top;">
+					<TD style="width: 50%;" class="valign-top">
 						<TABLE style="width: 100%;" CELLPADDING="3">
 	<TR>
 		<TD style="width: 1%;">
@@ -58,7 +58,7 @@
 		<TD style="width: 1%;">
 			<IMG SRC="img/mac.gif" ALT="{trans("MAC address:")}">
 		</TD>
-		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
+		<TD style="width: 99%;" class="nobr" COLSPAN="2">
 			<TABLE style="width: 100%;" cellpadding="1" cellspacing="0">
 				{foreach from=$nodeinfo.macs item=item key=key}
 				<TR ID="mac{$key}">
@@ -79,10 +79,10 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%; vertical-align: top;">
+		<TD style="width: 1%;">
 			<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
 		</TD>
-		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
+		<TD style="width: 99%;" class="nobr" COLSPAN="2">
 			<INPUT TYPE="TEXT" SIZE="40" VALUE="{$nodeinfo.location}" id="location" NAME="nodeedit[location]"  {tip text="Enter location (optional)" trigger="location"}>
 			<A href="javascript: void(0);" onclick="if (check_teryt()) return locationchoosewin('nodeedit', 'editnode', document.forms['editnode'].elements['nodeedit[location_city]'].value,  document.forms['editnode'].elements['nodeedit[location_street]'].value)" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</A>
 			<BR>
@@ -98,7 +98,7 @@
 		<TD style="width: 1%;">
 			<IMG SRC="img/netdev.gif" ALT="{trans("Net devices:")}">
 		</TD>
-		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
+		<TD style="width: 99%;" class="nobr" COLSPAN="2">
 			<SELECT SIZE="1" NAME="nodeedit[netdev]" id="netdev" {tip text="Select net device from list" trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value);" style="max-width:250px;">
 				<OPTION VALUE="0" {if ! $nodeinfo.netdev}SELECTED{/if}>- {trans("no device")} -</OPTION>
 				{section name="netdev" loop=$netdevices}
@@ -162,7 +162,7 @@
 		<TD style="width: 1%;">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
-		<TD style="width: 98%; white-space: nowrap;" COLSPAN="2">
+		<TD style="width: 98%;" class="nobr" COLSPAN="2">
 			<label for="chkmac">{trans("MAC checking")}:</label><INPUT TYPE="checkbox" NAME="nodeedit[chkmac]" VALUE="1" ID="chkmac" {tip text="Enable/disable MAC address checking" trigger="chkmac"}{if !isset($nodeinfo.chkmac) || $nodeinfo.chkmac} checked{/if}>&nbsp;
 			<label for="duplex">{trans("Half duplex")}:</label><INPUT TYPE="checkbox" NAME="nodeedit[halfduplex]" VALUE="1" ID="duplex" {if $nodeinfo.halfduplex} checked{/if} {tip text="Select transmission mode"}> 
 		</TD>
@@ -175,20 +175,19 @@
 			<label>{$sessiontype.label} <INPUT TYPE="checkbox" NAME="nodeedit[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}"{tip text="`$sessiontype.tip`" trigger="authtype`$idx`"}{if ($nodeinfo.authtype & $idx) == $idx} checked{/if}></label>&nbsp;
 			{/foreach}
 		</TD>
-		</TR>
 	</TR>
 					</TABLE>
 				</TD>
-				<TD style="width: 50%; vertical-align: top;">
+				<TD style="width: 50%;" class="valign-top">
 					<TABLE style="width: 100%;" CELLPADDING="3">
 	<TR>
 		<TD style="width: 1%;">
 			<IMG SRC="img/home.gif" ALT="{trans("GPS coordinates:")}">
 		</TD>
-		<TD style="width: 1%; white-space: nowrap;">
-			<span class="bold">{trans("GPS longitude:")}</span>
+		<TD style="width: 1%;" class="nobr bold">
+			{trans("GPS longitude:")}
 		</TD>
-		<TD style="width: 98%; white-space: nowrap;">
+		<TD style="width: 98%;" class="nobr">
 			<INPUT ID="longitude" TYPE="text" NAME="nodeedit[longitude]" VALUE="{if $nodeinfo.longitude}{$nodeinfo.longitude}{else}{/if}" {tip text="Enter device longitude (optional)" trigger="longitude"}>
 			<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.editnode.elements['nodeedit[longitude]'], document.editnode.elements['nodeedit[latitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
 		</TD>
@@ -197,10 +196,10 @@
 		<TD style="width: 1%;">
 			<IMG SRC="img/home.gif" ALT="{trans("GPS coordinates:")}">
 		</TD>
-		<TD style="width: 1%; white-space: nowrap;">
-			<span class="bold">{trans("GPS latitude:")}</span>
+		<TD style="width: 1%;" class="nobr bold">
+			{trans("GPS latitude:")}
 		</TD>
-		<TD style="width; 98%; white-space: nowrap;">
+		<TD style="width; 98%;" class="nobr">
 			<INPUT ID="latitude" TYPE="text" NAME="nodeedit[latitude]" VALUE="{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}" {tip text="Enter device latitude (optional)" trigger="latitude"}>
 			<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.editnode.elements['nodeedit[longitude]'], document.editnode.elements['nodeedit[latitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
 		</TD>
@@ -241,9 +240,8 @@
 		<TD style="width: 1%;">
 			<IMG SRC="img/users.gif" ALT="">
 		</TD>
-		<TD style="width: 1%;">
-			<span class="bold">{trans("Created:")}<BR>
-			{trans("Modified:")}</span>
+		<TD style="width: 1%;" class="bold">
+			{trans("Created:")}<BR>{trans("Modified:")}
 		</TD>
 		<TD style="width: 98%;">
 			{$nodeinfo.createdby}, {$nodeinfo.creationdateh}<BR>
@@ -259,7 +257,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 100%; text-align: right;" COLSPAN="3">
+		<TD style="width: 100%;" class="text-right" COLSPAN="3">
 			<A HREF="javascript:document.editnode.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A HREF="?m=nodeinfo&amp;id={$nodeinfo.id}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 		</TD>

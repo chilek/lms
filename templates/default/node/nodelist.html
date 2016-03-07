@@ -5,11 +5,9 @@
 <H1>{$layout.pagetitle}</H1>
 {$lastonline_limit = ConfigHelper::getConfig('phpui.lastonline_limit')}
 <FORM method="get" action="?m={$layout.module}" name="choosefilter">
-<p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" NAME="m" VALUE="nodelist">
 <INPUT type="hidden" NAME="page" id="page" VALUE="1">
-</p>
 <TABLE class="lmsbox">
 	<COLGROUP>
 		<COL style="width: 97%;">
@@ -20,12 +18,12 @@
 	<THEAD>
 	{block name="nodelist-list-header"}
 	<TR {tip text="Click on column name to change sorting order"}>
-		<td scope="col">
-			<SPAN class="nobr"><img src="img/node.gif" alt=""> <A href="?m=nodelist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}">{trans("Name:")}</A>{if $listdata.order == "name"} <IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN><BR>
-			<SPAN class="nobr lighter"><img src="img/customer.gif" alt=""> <A href="?m=nodelist&amp;o=owner{if $listdata.direction == "asc" && $listdata.order == "owner"},desc{/if}">{trans("Customer:")}</A>{if $listdata.order == "owner"} <IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
+		<td scope="col" class="nobr">
+			<img src="img/node.gif" alt=""> <A href="?m=nodelist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}">{trans("Name:")}</A>{if $listdata.order == "name"} <IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<img src="img/customer.gif" alt=""> <A href="?m=nodelist&amp;o=owner{if $listdata.direction == "asc" && $listdata.order == "owner"},desc{/if}">{trans("Customer:")}</A>{if $listdata.order == "owner"} <IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</td>
-		<td scope="col">
-		<SPAN class="nobr"><A href="?m=nodelist&amp;o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">{trans("Location:")}</A>{if $listdata.order == "location"} <IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
+		<td scope="col" class="nobr">
+			<A href="?m=nodelist&amp;o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">{trans("Location:")}</A>{if $listdata.order == "location"} <IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</td>
 		<td scope="col" class="text-right lighter nobr">
 			<img src="img/empty.gif" alt="" width="1" height="16"><A href="?m=nodelist&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("Node ID:")}</A>{if $listdata.order == "id"} <IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
@@ -40,9 +38,9 @@
 		</td>
 	</TR>
 	<TR>
-		<TD colspan="5">
-				<SPAN class="bold">{trans("Filter:")}</SPAN> 
-				<SPAN class="nobr">{trans("Status:")}
+		<TD colspan="5" class="nobr">
+				<b>{trans("Filter:")}</b>
+				{trans("Status:")}
 				<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
 					<OPTION VALUE="0"{if $listdata.state == 0} SELECTED{/if}>{trans("- all -")}</OPTION>
 					<OPTION VALUE="1"{if $listdata.state == 1} SELECTED{/if}>{trans("connected<!plural:item>")}</OPTION>
@@ -51,36 +49,36 @@
 					<OPTION VALUE="4"{if $listdata.state == 4} SELECTED{/if}>{trans("without tariff")}</OPTION>
 					<OPTION VALUE="5"{if $listdata.state == 5} SELECTED{/if}>{trans("TERRIT not specified")}</OPTION>
 					<OPTION VALUE="6"{if $listdata.state == 6} SELECTED{/if}>{trans("Net Device not specified")}</OPTION>
-				</SELECT></SPAN>
-				<SPAN class="nobr">{trans("Network:")}
+				</SELECT>
+				{trans("Network:")}
 				<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="0" {if !$listdata.network} SELECTED {/if}>{trans("- all networks -")}</OPTION>
 					{section name=networks loop=$networks}
 					<OPTION value="{$networks[networks].id}" {if $listdata.network == $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
 					{/section}
-				</SELECT></SPAN>
-				<SPAN class="nobr">{trans("Group:")}
+				</SELECT>
+				{trans("Group:")}
 				<SELECT SIZE="1" NAME="ng" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="" {if !$listdata.nodegroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
 					{foreach from=$nodegroups item=nodegroup}
 					<OPTION value="{$nodegroup.id}" {if $listdata.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
 					{/foreach}
-				</SELECT></SPAN>
-				<SPAN class="nobr">{trans("Customers Group:")}
+				</SELECT>
+				{trans("Customers Group:")}
 				<SELECT SIZE="1" NAME="g" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="" {if !$listdata.customergroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
 					{section name=customergroups loop=$customergroups}
 					<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 					{/section}
-				</SELECT></SPAN>
-				<SPAN class="nobr">{trans("Project:")}
+				</SELECT>
+				{trans("Project:")}
 				<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
 					<OPTION VALUE="-1"{if $listdata.invprojectid == -1} selected{/if}>- {trans("all")} -</OPTION>
 					<OPTION VALUE="-2"{if $listdata.invprojectid == -2} selected{/if}>- {trans("without project")} -</OPTION>
 					{foreach $NNprojects as $project}
 					<OPTION VALUE="{$project.id}"{if $listdata.invprojectid == $project.id} selected{/if}>{$project.name}</OPTION>
 					{/foreach}
-				</SELECT></SPAN>
+				</SELECT>
 		</TD>
 	</TR>
 	{if $pagination->getTotal() != 0}
@@ -121,7 +119,6 @@
 	{section name=nodelist loop=$nodelist}
 	<TR class="highlight {cycle}{if ! $nodelist[nodelist].access} blend{/if}"  >
 		<TD class="nobr" onClick="return self.location.href='?m=nodeinfo&amp;id={$nodelist[nodelist].id}';">
-			<span class="bold">
 			<A name="{$nodelist[nodelist].id}">
 			{if $nodelist[nodelist].lastonline}
 			    {if ($smarty.now-$nodelist[nodelist].lastonline) > $lastonline_limit}
@@ -135,8 +132,8 @@
 			{if $nodelist[nodelist].info}
 			    <IMG src="img/info1.gif" alt="" {tip text=$nodelist[nodelist].info}>
 			{/if}
-			{$nodelist[nodelist].name}</A></span><BR>
-			<span class="nobr{if ! $nodelist[nodelist].access} blend{/if}"><img src="img/customer.gif" alt=""> <A href="?m=customerinfo&amp;id={$nodelist[nodelist].ownerid}" {tip a=$nodelist[nodelist].ownerid dynpopup='?m=customerinfoshort&amp;id=$a'}>{$nodelist[nodelist].owner|truncate:40:"...":true|replace:" ":"&nbsp;"}</A></span>
+			<b>{$nodelist[nodelist].name}</b></A><BR>
+			<span class="{if ! $nodelist[nodelist].access} blend{/if}"><img src="img/customer.gif" alt=""> <A href="?m=customerinfo&amp;id={$nodelist[nodelist].ownerid}" {tip a=$nodelist[nodelist].ownerid dynpopup='?m=customerinfoshort&amp;id=$a'}>{$nodelist[nodelist].owner|truncate:40:"...":true|replace:" ":"&nbsp;"}</A></span>
 		</TD>
 		<TD class="nobr" onClick="return self.location.href='?m=nodeinfo&amp;id={$nodelist[nodelist].id}';">
 		{$nodelist[nodelist].location}{if $nodelist[nodelist].borough_name} ({$nodelist[nodelist].state_name} / {$nodelist[nodelist].district_name} / {$_BOROUGHTYPES[$nodelist[nodelist].borough_type]} {$nodelist[nodelist].borough_name}){/if}

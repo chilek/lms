@@ -116,7 +116,7 @@
 			<IMG SRC="img/node.gif" ALT="">
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
-			<span class="bold">{$nodeinfo.name} ({$nodeinfo.id|string_format:"%04d"})</span>
+			<b>{$nodeinfo.name} ({$nodeinfo.id|string_format:"%04d"})</b>
 		</TD>
 	</TR>
     </THEAD>
@@ -125,7 +125,7 @@
 		<TD style="width: 100%;" COLSPAN="3" CLASS="container">
 			<TABLE style="width: 100%;" CELLPADDING="0">
 				<TR>
-					<TD style="width: 50%; vertical-align: top;">
+					<TD style="width: 50%;" class="valign-top">
 						<TABLE style="width: 100%" CELLPADDING="3">
 						{block name="nodeinfobox-leftcolumn"}
 	<TR>
@@ -198,11 +198,9 @@
 		<TD style="width: 1%;">
 			<IMG SRC="img/netdev.gif" ALT="{trans("Net device:")}">
 		</TD>
-		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
+		<TD style="width: 99%;" class="nobr" COLSPAN="2">
 			{if $nodeinfo.netdev}
-				<span class="bold">
-				<A HREF="?m=netdevinfo&amp;id={$netdevices.id}">{$netdevices.name} {$netdevices.producer}{if $netdevices.location} / {$netdevices.location}{/if}</A>
-				</span>
+				<b><A HREF="?m=netdevinfo&amp;id={$netdevices.id}">{$netdevices.name} {$netdevices.producer}{if $netdevices.location} / {$netdevices.location}{/if}</A></b>
 				{if $nodeinfo.port}[{$nodeinfo.port}]{/if}
 				<IMG src="img/{if $nodeinfo.linktype == 1}wireless.gif{elseif $nodeinfo.linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="{$_LINKTYPES[$nodeinfo.linktype]}" {tip text="{if $nodeinfo.linktechnology}{$_LINKTECHNOLOGIES[$nodeinfo.linktype][$nodeinfo.linktechnology]} / {/if}{if $nodeinfo.linkradiosector}{$nodeinfo.linkradiosectorname} / {/if}{$_LINKSPEEDS[$nodeinfo.linkspeed]}"}>
 			{else}
@@ -259,7 +257,7 @@
 		<TD style="width: 1%;">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
-		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
+		<TD style="width: 99%;" class="nobr" COLSPAN="2">
 			<label for="chkmac">{trans("MAC checking")}:</label><INPUT TYPE="checkbox" NAME="chkmac" ID="chkmac" VALUE="1" {if $nodeinfo.chkmac} checked{/if} onchange="chkmac_change();">&nbsp;
 			<label for="duplex">{trans("Half duplex")}:</label><INPUT TYPE="checkbox" NAME="duplex" ID="duplex" VALUE="1" {if $nodeinfo.halfduplex} checked{/if} onchange="duplex_change();">
 		</TD>
@@ -277,7 +275,7 @@
 					{/block}
 					</TABLE>
 				</TD>
-				<TD style="width: 50%; vertical-align: top;">
+				<TD style="width: 50%;" class="valign-top">
 					<TABLE style="width: 100%;" CELLPADDING="3" id="nodeinfo">
 					{block name="nodeinfobox-rightcolumn"}
 {if $nodeinfo.info}
@@ -301,10 +299,10 @@
 		<TD style="width: 1%;">
 			<IMG SRC="img/home.gif" ALT="{trans("GPS coordinates:")}">
 		</TD>
-		<TD style="width: 1%; white-space: nowrap;">
-			<span class="bold">{trans("GPS longitude:")}</span>
+		<TD style="width: 1%;" class="nobr bold">
+			{trans("GPS longitude:")}
 		</TD>
-		<TD style="width: 98%; white-space: nowrap;">
+		<TD style="width: 98%;" class="nobr">
 			{if $nodeinfo.longitude}{$nodeinfo.longitude}{else}{/if}
 			<INPUT TYPE="hidden" ID="longitude" NAME="longitude" VALUE="{$nodeinfo.longitude}">
 		</TD>
@@ -313,10 +311,10 @@
 		<TD style="width: 1%;">
 			<IMG SRC="img/home.gif" ALT="{trans("GPS coordinates:")}">
 		</TD>
-		<TD style="width: 1%; white-space: nowrap;">
-			<span class="bold">{trans("GPS latitude:")}</span>
+		<TD style="width: 1%;" class="nobr bold">
+			{trans("GPS latitude:")}
 		</TD>
-		<TD style="width: 98%; white-space: nowrap;">
+		<TD style="width: 98%;" class="nobr">
 			{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}
 			<INPUT TYPE="hidden" ID="latitude" NAME="latitude" VALUE="{$nodeinfo.latitude}"> 
 		</TD>
@@ -334,7 +332,7 @@
 			<A HREF="?m=nodeset&amp;id={$nodeinfo.id}"><IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" ALT=""></A>
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
-			<span class="bold">{if $nodeinfo.access}{trans("connected<!singular>")}{else}{trans("disconnected<!singular>")}{/if}</span>
+			<b>{if $nodeinfo.access}{trans("connected<!singular>")}{else}{trans("disconnected<!singular>")}{/if}</b>
 		</TD>
 	</TR>
 	<TR>
@@ -342,15 +340,15 @@
 			<A HREF="?m=nodewarn&amp;id={$nodeinfo.id}"><IMG SRC="img/warning{if ! $nodeinfo.warning}off{else}on{/if}.gif" ALT=""></A>
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
-			<span class="bold">{if $nodeinfo.warning}{trans("notice enabled")}{else}{trans("notice disabled")}{/if}</span>
+			<b>{if $nodeinfo.warning}{trans("notice enabled")}{else}{trans("notice disabled")}{/if}</b>
 		</TD>
 	</TR>
 	<TR>
 		<TD style="width: 1%;">
 			<IMG SRC="img/time.gif" ALT="">
 		</TD>
-		<TD style="width: 1%; white-space: nowrap;">
-			<span class="bold">{trans("last online:")}</span>
+		<TD style="width: 1%;" class="nobr bold">
+			{trans("last online:")}
 		</TD>
 		<TD style="width: 98%;">
 			{if $nodeinfo.lastonline}{$nodeinfo.lastonlinedate}{else}-{/if}
@@ -360,9 +358,8 @@
 		<TD style="width: 1%;">
 			<IMG SRC="img/users.gif" ALT="">
 		</TD>
-		<TD style="width: 1%;">
-			<span class="bold">{trans("Created:")}<BR>
-			{trans("Modified:")}</span>
+		<TD style="width: 1%;" class="bold">
+			{trans("Created:")}<BR>{trans("Modified:")}
 		</TD>
 		<TD style="width: 98%;">
 			{$nodeinfo.createdby}, {$nodeinfo.creationdateh}<BR>
@@ -377,7 +374,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 100%; text-align: right;" COLSPAN="3">
+		<TD style="width: 100%;" class="tet-right" COLSPAN="3">
 			<A HREF="?m=nodeedit&amp;id={$nodeinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
 			<A HREF="?m=nodedel&amp;id={$nodeinfo.id}" onClick="return confirmLink(this, '{t a=$nodeinfo.name}Are you sure, you want to remove node \'$a\' from database?{/t}')">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
 		</TD>
