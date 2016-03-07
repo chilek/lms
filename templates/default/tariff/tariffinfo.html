@@ -61,6 +61,17 @@
 				<TD WIDTH="1%"><B>{trans("Type:")}</B></TD>
 				<TD WIDTH="98%">{assign var=typeid value=$tariff.type}{$_TARIFFTYPES.$typeid}</TD>
 			    </TR>
+				{if isset($tariff.numberplan)}
+				<TR>
+					<TD style="width: 1%;" class="nobr">
+						<IMG SRC="img/money.gif" ALT="">
+					</TD>
+					<TD style="width: 1%;" class="bold">{trans("Numbering Plan:")}</TD>
+					<TD style="width: 98%;">
+						{$tariff.numberplan.template} ({$_NUM_PERIODS[$tariff.numberplan.period]})
+					</TD>
+				</TR>
+				{/if}
 			    <TR>
 				<TD WIDTH="1%" NOWRAP>
 				    <IMG SRC="img/class.gif" ALT="">

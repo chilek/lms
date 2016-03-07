@@ -62,6 +62,7 @@ version ?.??.?? (????-??-??):
   - added tcpdf support for debit note [pjona]
   - added documents cacheing [wawryk]
   - added support for sending debit notes by mail [chilan]
+  - allow to assign numberplans to tariffs [chilan]
 
 version 1.11.19 (2015-12-21):
 

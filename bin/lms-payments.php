@@ -302,7 +302,7 @@ $query = "SELECT a.tariffid, a.liabilityid, a.customerid,
 		a.period, a.at, a.suspended, a.settlement, a.datefrom, a.pdiscount, a.vdiscount, 
 		a.invoice, t.description AS description, a.id AS assignmentid, 
 		c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
-		d.inv_paytype AS d_paytype, t.period AS t_period, 
+		d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 		(CASE a.liabilityid WHEN 0 THEN t.type ELSE -1 END) AS tarifftype, 
 		(CASE a.liabilityid WHEN 0 THEN t.name ELSE l.name END) AS name, 
 		(CASE a.liabilityid WHEN 0 THEN t.taxid ELSE l.taxid END) AS taxid, 
@@ -415,6 +415,8 @@ foreach ($assigns as $assign) {
 
 			if ($assign['numberplanid'])
 				$plan = $assign['numberplanid'];
+			elseif ($assign['tariffnumberplanid'])
+				$plan = $assign['tariffnumberplanid'];
 			else
 				$plan = (array_key_exists($divid, $plans) ? $plans[$divid] : 0);
 
