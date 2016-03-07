@@ -35,10 +35,10 @@ if(!$p || $p == 'main')
     $SMARTY->assign('js', 'var targetfield = window.parent.targetfield;');
 
 if(isset($_POST['searchnetdev']) && $_POST['searchnetdev']){
-    $search = $_POST['searchnetdev'];
+    $search = strtolower($_POST['searchnetdev']);
     if($netdevices = $DB->GetAll('SELECT id, name, location, producer, ports
         FROM netdevices
-        WHERE name ILIKE '.$DB->Escape('%'.$search.'%').' OR location ILIKE '.$DB->Escape('%'.$search.'%').' OR producer ILIKE '.$DB->Escape('%'.$search.'%').'
+        WHERE LOWER(name) LIKE '.$DB->Escape('%'.$search.'%').' OR LOWER(location) LIKE '.$DB->Escape('%'.$search.'%').' OR LOWER(producer) LIKE '.$DB->Escape('%'.$search.'%').'
         ORDER BY name')){
             foreach ($netdevices as $k => $netdevice) {
                 $netdevices[$k]['ports'] = $netdevice['ports'] - $LMS->CountNetDevLinks($netdevice['id']);
