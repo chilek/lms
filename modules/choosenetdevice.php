@@ -24,8 +24,8 @@
  *  $Id$
  */
 /**
-+ * @author Maciej_Wawryk
-+ */
+* @author Maciej_Wawryk
+*/
 
 $layout['pagetitle'] = trans('Select netdevice');
 
