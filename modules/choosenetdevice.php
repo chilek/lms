@@ -1,4 +1,5 @@
 <?php
+
 /*
  *  LMS version 1.11-git
  *
@@ -22,10 +23,9 @@
  *
  *  $Id$
  */
-
 /**
- * @author Maciej_Wawryk
- */
++ * @author Maciej_Wawryk
++ */
 
 $layout['pagetitle'] = trans('Select netdevice');
 
@@ -35,10 +35,10 @@ if(!$p || $p == 'main')
     $SMARTY->assign('js', 'var targetfield = window.parent.targetfield;');
 
 if(isset($_POST['searchnetdev']) && $_POST['searchnetdev']){
-    $search = strtolower($_POST['searchnetdev']);
+    $search = $_POST['searchnetdev'];
     if($netdevices = $DB->GetAll('SELECT id, name, location, producer, ports
         FROM netdevices
-        WHERE LOWER(name) LIKE '.$DB->Escape('%'.$search.'%').' OR LOWER(location) LIKE '.$DB->Escape('%'.$search.'%').' OR LOWER(producer) LIKE '.$DB->Escape('%'.$search.'%').'
+        WHERE name ?LIKE? '.$DB->Escape('%'.$search.'%').' OR location ?LIKE? '.$DB->Escape('%'.$search.'%').' OR producer ?LIKE? '.$DB->Escape('%'.$search.'%').'
         ORDER BY name')){
             foreach ($netdevices as $k => $netdevice) {
                 $netdevices[$k]['ports'] = $netdevice['ports'] - $LMS->CountNetDevLinks($netdevice['id']);
