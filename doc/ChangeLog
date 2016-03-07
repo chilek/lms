@@ -60,6 +60,7 @@ version ?.??.?? (????-??-??):
   - copy ip address to clipboard after click on ip.gif image [wawryk]
   - added clone option to promotions and promotion schemas [wawryk]
   - added tcpdf support for debit note [pjona]
+  - added documents cacheing [wawryk]
 
 version 1.11.19 (2015-12-21):
 

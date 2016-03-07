@@ -41,7 +41,10 @@ if($_GET['is_sure']=='1')
 
 			if($DB->GetOne('SELECT COUNT(*) FROM documentcontents WHERE md5sum = ?',array((string)$md5sum))==1)
 			{
-				@unlink(DOC_DIR.'/'.substr($md5sum,0,2).'/'.$md5sum);
+				$filename_pdf = DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum,0,2) . DIRECTORY_SEPARATOR . $md5sum.'.pdf';
+				if(file_exists($filename_pdf))
+					@unlink($filename_pdf);
+				@unlink(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum,0,2) . DIRECTORY_SEPARATOR . $md5sum);
 			}
 	
 			$DB->BeginTrans();
