@@ -109,6 +109,7 @@
 			<IMG SRC="img/netdev.gif" ALT="{trans("Net device:")}">
 		</TD>
 		<TD style="width: 99%; white-space: nowrap;">
+                        <a href="javascript: void(0);" onclick="return choosenetdevice(document.nodeadd.elements['nodedata[netdev]']);" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
 			<SELECT SIZE="1" NAME="nodedata[netdev]" {tip text="Select network device (optional)" trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value)" style="max-width:250px;">
 				<OPTION VALUE="0"{if !$nodedata.netdev} SELECTED{/if}>{trans("- select device -")}</OPTION>
 				{section name=netdevices loop=$netdevices}
