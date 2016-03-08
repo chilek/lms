@@ -3166,4 +3166,6 @@ $_LANG['Allows you to view node sessions'] = 'Przeglądanie sesji komputerów';
 
 $_LANG['Add Note'] = 'Dodaj notatkę';
 
+$_LANG['Search device'] = 'Szukaj urządzenia';
+
 ?>

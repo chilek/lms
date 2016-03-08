@@ -559,3 +559,7 @@ function reset_customer(form, elemname1, elemname2) {
 
 if (window.addEventListener) window.addEventListener("load", init_links, false);
 else if (window.attachEvent) window.attachEvent("onload", init_links);
+
+function choosenetdevice(formfield){
+    return openSelectWindow('?m=choosenetdevice','choosenetdevice',600,250,'true',formfield);
+}
