@@ -95,8 +95,12 @@ function RTSearch($search, $order='createtime,desc')
 			users.name AS ownername, CASE WHEN customerid = 0 THEN t.requestor ELSE '
 			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').'
 			END AS requestor, t.requestor AS req, 
-			t.createtime, (SELECT MAX(createtime) FROM rtmessages 
-				WHERE t.id = ticketid) AS lastmodified 
+			t.createtime, (
+				SELECT MAX(maks) FROM (
+					(SELECT MAX(createtime) AS maks, ticketid FROM rtnotes GROUP BY ticketid) UNION ALL
+					(SELECT MAX(createtime) AS maks, ticketid FROM rtmessages GROUP BY ticketid)
+				) COMBINED WHERE ticketid = t.id
+			) AS lastmodified 
 			FROM rttickets t
 			LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid 
 			LEFT JOIN users ON (t.owner = users.id) 
