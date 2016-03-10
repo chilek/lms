@@ -689,8 +689,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         $result = $this->db->GetRow('SELECT COUNT(CASE WHEN access=1 THEN 1 END) AS connected, 
 				COUNT(CASE WHEN access=0 THEN 1 END) AS disconnected,
 				COUNT(CASE WHEN ?NOW?-lastonline < ? THEN 1 END) AS online,
-				COUNT(CASE WHEN location_city IS NULL THEN 1 END) AS withoutTerryt,
-				COUNT(CASE WHEN netdev = 0 THEN 1 END) AS withoutNetDev
+				COUNT(CASE WHEN location_city IS NULL THEN 1 END) AS withoutterryt,
+				COUNT(CASE WHEN netdev = 0 THEN 1 END) AS withoutnetdev
 				FROM vnodes WHERE ownerid > 0', array(ConfigHelper::getConfig('phpui.lastonline_limit')));
 
         $result['total'] = $result['connected'] + $result['disconnected'];
