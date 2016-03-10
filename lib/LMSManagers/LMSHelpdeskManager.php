@@ -99,7 +99,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			    CASE WHEN customerid = 0 THEN t.requestor ELSE '
                 . $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor, 
 			    t.createtime AS createtime, u.name AS creatorname,
-			    (SELECT MAX(createtime) FROM rtmessages WHERE ticketid = t.id) AS lastmodified
+			    (
+			    	SELECT MAX(maks) FROM (
+			    		(SELECT MAX(createtime) AS maks, ticketid FROM rtnotes GROUP BY ticketid) UNION ALL
+			    		(SELECT MAX(createtime) AS maks, ticketid FROM rtmessages GROUP BY ticketid)
+			    	) COMBINED WHERE ticketid = t.id
+			    ) AS lastmodified
 		    FROM rttickets t 
 		    LEFT JOIN rtticketcategories tc ON (t.id = tc.ticketid)
 		    LEFT JOIN users ON (owner = users.id)
