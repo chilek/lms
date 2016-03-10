@@ -89,7 +89,7 @@
 				<OPTION VALUE="{$idx}"{if $netnode.ownership == $idx} selected{/if}>{$ownership}</OPTION>
 				{/foreach}
 			</SELECT>
-			<INPUT TYPE="TEXT" NAME="netnode[coowner]" VALUE={$netnode.coowner}"" {tip trigger="coowner" text="Enter co-owner identifier"} ID="NNcoowner" SIZE="25"/>
+			<INPUT TYPE="TEXT" NAME="netnode[coowner]" VALUE="{$netnode.coowner}" {tip trigger="coowner" text="Enter co-owner identifier"} ID="NNcoowner" SIZE="25"/>
 		</TD>
 	</TR>
 	<TR>
