@@ -468,7 +468,8 @@ function module_main()
 	$SMARTY->assign('title', trans('Request No. $a / Queue: $b',
 		sprintf('%06d',$ticket['ticketid']), $ticket['queuename']));
 	
-	if($ticket['customerid'] == $SESSION->id)
+	$queues = explode(';',ConfigHelper::getConfig('userpanel.queues'));
+	if($ticket['customerid'] == $SESSION->id && in_array($ticket['queueid'], $queues))
 	{
 	        $SMARTY->assign('ticket', $ticket);
 	        $SMARTY->display('module:helpdeskview.html');
