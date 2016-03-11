@@ -74,9 +74,27 @@ function GetCustomerCovenants($id)
 				}
 			}
 		}
-
-		return $invoicelist;
+	} else {
+		$invoicelist = [];
 	}
+
+	if($notelist = $DB->GetAllByKey('
+		SELECT d.id, d.cdate, number, template, SUM(value) AS value
+		FROM documents d
+		LEFT JOIN debitnotecontents n ON (n.docid = d.id)
+		LEFT JOIN numberplans np ON (numberplanid = np.id)
+		WHERE d.customerid = ? AND d.type = ? AND d.closed = 0
+		GROUP BY d.id, d.cdate, np.template
+		ORDER BY d.cdate DESC', 'id', array($id, DOC_DNOTE)))
+	{
+		foreach($notelist as $idx => $row)
+		{
+			$notelist[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate']);
+		}
+		$invoicelist = array_merge($invoicelist, $notelist);
+	}
+
+	return $invoicelist;
 }
 
 function GetCustomerNotes($id)
@@ -310,8 +328,10 @@ switch($action)
 
 				if($row['type']==DOC_INVOICE)
 					$itemdata['description'] = trans('Invoice No. $a', docnumber($row['number'], $row['template'], $row['cdate']));
-				else
+				elseif($row['type']==DOC_CNOTE)
 					$itemdata['description'] = trans('Credit Note No. $a', docnumber($row['number'], $row['template'], $row['cdate']));
+				else
+					$itemdata['description'] = trans('Debit Note No. $a', docnumber($row['number'], $row['template'], $row['cdate']));
 
 				if($row['reference'] && $receipt['type']=='in')
 				{
@@ -686,11 +706,11 @@ switch($action)
 
 			$DB->CommitTrans();
 			$hook_data = $LMS->executeHook(
-                            'receiptadd_after_submit', 
-                            array(
-                                'customer' => $customer,
-                            )
-                        );
+				'receiptadd_after_submit',
+				array(
+					'customer' => $customer,
+				)
+			);
 			$print = TRUE;
 		}
 		elseif($contents && ($receipt['o_type'] == 'other' || $receipt['o_type'] == 'advance'))
