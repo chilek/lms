@@ -685,7 +685,12 @@ switch($action)
 			}
 
 			$DB->CommitTrans();
-
+			$hook_data = $LMS->executeHook(
+                            'receiptadd_after_submit', 
+                            array(
+                                'customer' => $customer,
+                            )
+                        );
 			$print = TRUE;
 		}
 		elseif($contents && ($receipt['o_type'] == 'other' || $receipt['o_type'] == 'advance'))
