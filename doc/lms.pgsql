@@ -671,6 +671,8 @@ CREATE TABLE tariffs (
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
 	period smallint 	DEFAULT NULL,
 	taxid integer 		DEFAULT 0 NOT NULL,
+	numberplanid integer DEFAULT NULL
+		REFERENCES numberplans (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
 	uprate integer		DEFAULT 0 NOT NULL,
 	upceil integer		DEFAULT 0 NOT NULL,
@@ -2624,4 +2626,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016020501');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016031400');
