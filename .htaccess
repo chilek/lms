@@ -1,4 +1,9 @@
 <Files lms.ini>
-Order Deny,Allow
-Deny From All
+  <IfModule !mod_authz_host.c>
+    Order Deny,Allow
+    Deny From All
+  </IfModule>
+  <IfModule mod_authz_host.c>
+    Require all denied
+  </IfModule>
 </Files>
