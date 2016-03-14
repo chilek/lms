@@ -3168,4 +3168,9 @@ $_LANG['Add Note'] = 'Dodaj notatkę';
 
 $_LANG['Search device'] = 'Szukaj urządzenia';
 
+$_LANG['Timetable for today: '] = 'Terminarz na dziś: ';
+$_LANG['LMS timetable for today'] = 'LMS terminarz na dziś';
+$_LANG['have $a events'] = 'ma $a zdarzeń';
+$_LANG['customer contacts: '] = 'numery telefonów klienta:';
+
 ?>
