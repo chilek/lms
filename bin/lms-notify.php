@@ -368,8 +368,7 @@ if (empty($types) || in_array('timetable', $types)) {
         $contents = '';
         $recipient = $usr['email'];
         $events = $DB->GetAll("SELECT DISTINCT title, description, begintime, endtime,
-            customerid, UPPER(lastname) AS lastname, customers.name AS name, street, city, zip,
-            (SELECT contact FROM customercontacts WHERE customerid = events.customerid ORDER BY contact LIMIT 1) AS phone 
+            customerid, UPPER(lastname) AS lastname, customers.name AS name, street, city, zip
             FROM events
             LEFT JOIN customers ON (customers.id = customerid)
             LEFT JOIN eventassignments ON (events.id = eventassignments.eventid)
@@ -392,9 +391,15 @@ if (empty($types) || in_array('timetable', $types)) {
             $contents .= trans('Title:')."\t".$event['title'].PHP_EOL;
             $contents .= trans('Description:')."\t".$event['description'].PHP_EOL;
             if($event['customerid']){
-                $contents .= trans('Customer:')."\t".$event['lastname']." ".$event['name'].", ".$event['zip']." ".$event['city']." ".$event['street'].", ".$event['phone'].PHP_EOL;
+                $contents .= trans('Customer:')."\t".$event['lastname']." ".$event['name'].", ".$event['zip']." ".$event['city']." ".$event['street'].PHP_EOL;
+                $contents .= trans('customer contacts: ').PHP_EOL;
+                $contacts = $DB->GetAll("SELECT contact FROM customercontacts WHERE customerid = ? AND (type & ?) = ? ",array($event['customerid'], (CONTACT_MOBILE or CONTACT_FAX or CONTACT_LANDLINE or CONTACT_DISABLED), (CONTACT_MOBILE or CONTACT_FAX or CONTACT_LANDLINE)));
+                foreach ($contacts as $phone){
+                    $contents .= $phone['contact'].PHP_EOL;
+                }
             }
             $contents .= "----------------------------------------------------------------------------".PHP_EOL;
+
             $counter++;
         }
 
