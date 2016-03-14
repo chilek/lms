@@ -937,12 +937,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'alias_limit' => $tariff['alias_limit'],
         );
         $result = $this->db->Execute('INSERT INTO tariffs (name, description, value,
-				period, taxid, prodid, uprate, downrate, upceil, downceil, climit,
+				period, taxid, numberplanid, prodid, uprate, downrate, upceil, downceil, climit,
 				plimit, uprate_n, downrate_n, upceil_n, downceil_n, climit_n,
 				plimit_n, dlimit, type, sh_limit, www_limit, mail_limit, sql_limit,
 				ftp_limit, quota_sh_limit, quota_www_limit, quota_mail_limit,
 				quota_sql_limit, quota_ftp_limit, domain_limit, alias_limit)
-				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', array_values($args));
+				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', array_values($args));
         if ($result) {
             $id = $this->db->GetLastInsertID('tariffs');
             if ($this->syslog) {
@@ -995,7 +995,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $tariff['id']
         );
         $res = $this->db->Execute('UPDATE tariffs SET name=?, description=?, value=?,
-				period=?, taxid=?, prodid=?, uprate=?, downrate=?, upceil=?, downceil=?,
+				period=?, taxid=?, numberplanid=?, prodid=?, uprate=?, downrate=?, upceil=?, downceil=?,
 				climit=?, plimit=?, uprate_n=?, downrate_n=?, upceil_n=?, downceil_n=?,
 				climit_n=?, plimit_n=?, dlimit=?, sh_limit=?, www_limit=?, mail_limit=?,
 				sql_limit=?, ftp_limit=?, quota_sh_limit=?, quota_www_limit=?,
