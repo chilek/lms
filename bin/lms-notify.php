@@ -407,7 +407,7 @@ if (empty($types) || in_array('timetable', $types)) {
             $recipient_name = $row['lastname'] . ' ' . $row['name'];
             $recipient_mails = ($debug_email ? explode(',', $debug_email) : (!empty($usr['email']) ? explode(',', trim($usr['email'])) : null));
             if(!$quiet){
-                printf(trans('User').": ".$usr['name']." id: ".$usr['id']." ".trans('have $a events',$counter)).PHP_EOL;
+            	echo trans('User').": ".$usr['name']." id: ".$usr['id']." ".trans('have $a events',$counter).PHP_EOL;
             }
             if(!$debug){
                 send_mail_to_user($usr['email'], $usr['name'], $subject, $contents);
