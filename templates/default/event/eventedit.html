@@ -166,11 +166,21 @@
 			<B>{trans("Users:")}</B>
 		</TD>
 		<TD width="98%" class="nobr">
-			<SELECT size="{if $max_userlist_size > 0}{$max_userlist_size}{else}{size of=$userlist}{/if}" name="event[userlist][]" {tip text="Select user(s) (optional)"} multiple>
-				{foreach $userlist as $user}
-				<OPTION value="{$user.id}"{if in_array($user.id, $event.userlist)} selected{/if}>{$user.name}</OPTION>
-				{/foreach}
-			</SELECT>
+                    <div style="float: left;">
+                        <select style="width: 201px;" size="10" name="event[userlist][]" {tip text="Select user(s) (optional)"} multiple>
+                            {foreach from=$userlist item=user}
+                                <option group="{$user.usergroupid}"{if $smarty.cookies.usergroup && $smarty.cookies.usergroup neq $user.usergroupid} style="display: none;"{/if} value="{$user.id}" {if in_array($user.id, $event.userlist)} selected{/if} {if $event.userlist && in_array($user.usergroupid, $event.userlist)} SELECTED{/if}>{$user.name}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                    <div style="float: left; padding-top: 30px;">
+                        <input type="radio" name="event[usergroup]" id="usergroup_0" onChange="changeUserGroup(0)"{if !$smarty.cookies.usergroup} checked="checked"{/if}>&nbsp;
+                        <label for="usergroup_0">{trans("All users")}</label><br />
+                        {foreach from=$usergroup item=group}
+                            <input type="radio" name="event[usergroup]" id="usergroup_{$group.id}" onClick="changeUserGroup({$group.id})"{if $smarty.cookies.usergroup eq $group.id} checked="checked"{/if}>&nbsp;
+                            <label for="usergroup_{$group.id}">{$group.name}</label><br />
+                        {/foreach}
+                    </div>
 		</TD>
 	</TR>
 	{/block}
@@ -191,8 +201,20 @@
 </TABLE>
 </P>
 <SCRIPT type="text/javascript">
-<!--
 document.forms['event'].elements['event[title]'].focus();
-//-->
+
+function changeUserGroup(group) {
+    var d = new Date();
+    d.setTime(d.getTime() + (365*24*60*60*1000));
+    document.cookie = 'usergroup=' + group + '; expires=' + d.toUTCString(); + '; path=/';
+    var userlist = document.forms['event'].elements['event[userlist][]'];
+    for (var i = 0; i < userlist.options.length; i++) {
+        if(group == 0 || group == userlist.options[i].getAttribute("group")) {
+            userlist.options[i].style.display = 'block';
+        } else {
+            userlist.options[i].style.display = 'none';
+        }
+    }
+}
 </SCRIPT>
 {/block}
