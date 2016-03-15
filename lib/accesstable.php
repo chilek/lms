@@ -54,7 +54,7 @@ $access_table = array(
 	),
 	'node_management' => array(
 		'label' => trans('nodes management'),
-		'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn)|choose(mac|ip|location|gpscoords)|ping|sessionlist)$',
+		'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn)|choose(mac|ip|location|gpscoords|netdevice)|ping|sessionlist)$',
 	),
 	'traffic_stats' => array(
 		'label' => trans('traffic stats'),
