@@ -118,12 +118,8 @@ define('SMARTY_VERSION', $ver_chunks[0]);
 // add LMS's custom plugins directory
 $SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
 
-
-
 // Redirect to SSL
-
-$_FORCE_SSL = ConfigHelper::checkConfig('phpui.force_ssl');
-
+$_FORCE_SSL = ConfigHelper::checkConfig('userpanel.force_ssl', ConfigHelper::getConfig('phpui.force_ssl'));
 if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 {
      header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
@@ -133,7 +129,6 @@ if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 $_TIMEOUT = ConfigHelper::getConfig('phpui.timeout');
 
 // Include required files (including sequence is important)
-
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');

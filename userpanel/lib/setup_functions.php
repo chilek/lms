@@ -38,6 +38,7 @@ function module_setup()
     $SMARTY->assign('reminder_mail_body', ConfigHelper::getConfig('userpanel.reminder_mail_body', "ID: %id\nPIN: %pin"));
     $SMARTY->assign('reminder_sms_body', ConfigHelper::getConfig('userpanel.reminder_sms_body', "ID: %id, PIN: %pin"));
     $SMARTY->assign('auth_type', ConfigHelper::getConfig('userpanel.auth_type', 1));
+    $SMARTY->assign('force_ssl', ConfigHelper::getConfig('userpanel.force_ssl', ConfigHelper::getConfig('phpui.force_ssl', 1)));
 	$enabled_modules = ConfigHelper::getConfig('userpanel.enabled_modules', null, true);
 	if (is_null($enabled_modules)) {
 		$enabled_modules = array();
@@ -105,6 +106,11 @@ function module_submit_setup()
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'auth_type'", array($_POST['auth_type']));
     else
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'auth_type', ?)", array($_POST['auth_type']));
+
+    if($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'force_ssl'"))
+        $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'force_ssl'", array(isset($_POST['force_ssl']) ? 1 : 0));
+    else
+        $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'force_ssl', ?)", array(isset($_POST['force_ssl']) ? 1 : 0));
 
 	if (isset($_POST['enabled_modules']))
 		$enabled_modules = implode(',', array_keys($_POST['enabled_modules']));

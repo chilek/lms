@@ -64,6 +64,7 @@ version ?.??.?? (????-??-??):
   - added support for sending debit notes by mail [chilan]
   - allow to assign numberplans to tariffs [chilan]
   - receiptadd: we show also not accounted debit notes [pjona]
+  - separation force_ssl for UI and Userpanel [pjona]
 
 version 1.11.19 (2015-12-21):
 
