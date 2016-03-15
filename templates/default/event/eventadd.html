@@ -164,15 +164,13 @@
                     <div style="float: left; padding-top: 30px;">
                         <label for="usergroup_0">
                             <input type="radio" name="event[usergroup]" id="usergroup_0" onChange="changeUserGroup(0)"{if !$smarty.cookies.usergroup} checked="checked"{/if}>&nbsp;
-                            {trans("All users")}
+                            {trans("All users")}<br>
                         </label>
-                        <br />
                         {foreach from=$usergroup item=group}
                             <label for="usergroup_{$group.id}">
                                 <input type="radio" name="event[usergroup]" id="usergroup_{$group.id}" onClick="changeUserGroup({$group.id})"{if $smarty.cookies.usergroup eq $group.id} checked="checked"{/if}>&nbsp;
-                                {$group.name}
+                                {$group.name}<br>
                             </label>
-                            <br />
                         {/foreach}
                     </div>
 		</TD>
