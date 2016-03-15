@@ -3174,4 +3174,6 @@ $_LANG['LMS timetable for today'] = 'LMS terminarz na dziś';
 $_LANG['have $a events'] = 'ma $a zdarzeń';
 $_LANG['customer contacts: '] = 'numery telefonów klienta:';
 
+$_LANG['All users'] = 'Wszyscy użytkownicy';
+
 ?>
