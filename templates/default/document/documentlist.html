@@ -71,7 +71,7 @@
 		<TD colspan="5">
 				<div style="float: left;">
 					<span class="bold">{trans("Filter:")}</span> {trans("Customer:")}
-					{customerlist form="page" customers=$customers selected=$listdata.customer selectname="customer" inputname="c" firstoption="- all customers -" customOnChange="filter();"}
+					{customerlist form="page" customers=$customers selected=$listdata.customer selectname="customer" inputname="c" firstoption="- all customers -"}
 				&nbsp;{trans("Type:")}
 				<SELECT size="1" name="t" ONCHANGE="filter()">
 					<OPTION value="0"{if !$listdata.type} SELECTED {/if}>{trans("- all -")}</OPTION>
