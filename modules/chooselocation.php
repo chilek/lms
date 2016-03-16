@@ -27,22 +27,11 @@
 function get_loc_streets($cityid) {
 	global $DB;
 
-	$list = $DB->GetAll("SELECT s.id, (CASE WHEN s.name2 IS NOT NULL THEN " . $DB->Concat('s.name', "' '", 's.name2') . " ELSE s.name END) AS name, t.name AS typename
+	$list = $DB->GetAll("SELECT s.id, s.name AS name, s.name2 AS name2, t.name AS typename
 		FROM location_streets s
 		LEFT JOIN location_street_types t ON (s.typeid = t.id)
 		WHERE s.cityid = ?
 		ORDER BY s.name", array($cityid));
-
-	if ($list)
-		foreach ($list as $idx => $row) {
-			if ($row['typename']) {
-				$row['name'] .= ', ' . $row['typename'];
-				unset($row['typename']);
-				$list[$idx] = $row;
-			}
-		}
-	else
-		$list = array();
 
 	array_unshift($list, array('id' => 0, 'name' => ''));
 
