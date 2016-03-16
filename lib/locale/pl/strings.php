@@ -3175,5 +3175,6 @@ $_LANG['have $a events'] = 'ma $a zdarzeń';
 $_LANG['customer contacts: '] = 'numery telefonów klienta:';
 
 $_LANG['All users'] = 'Wszyscy użytkownicy';
+$_LANG['Set GPS coordinates'] = 'Ustaw współrzędne GPS';
 
 ?>
