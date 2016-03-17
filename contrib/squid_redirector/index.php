@@ -74,6 +74,7 @@ try {
 
 // Initialize templates engine
 $SMARTY = new Smarty;
+$SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
 
 // Include required files (including sequence is important)
 
