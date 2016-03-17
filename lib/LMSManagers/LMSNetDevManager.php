@@ -39,11 +39,17 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, 
 			n.netdev, port, ownerid,
 			' . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS owner,
-			net.name AS netname
+			net.name AS netname, n.location,
+			lc.name AS city_name, lb.name AS borough_name, lb.type AS borough_type,
+			ld.name AS district_name, ls.name AS state_name
 			FROM vnodes n
 			JOIN customerview c ON c.id = ownerid
 			JOIN networks net ON net.id = n.netid
 			LEFT JOIN netradiosectors rs ON rs.id = n.linkradiosector
+			LEFT JOIN location_cities lc ON lc.id = n.location_city
+			LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
+			LEFT JOIN location_districts ld ON ld.id = lb.districtid
+			LEFT JOIN location_states ls ON ls.id = ld.stateid
 			WHERE n.netdev = ? AND ownerid > 0 
 			ORDER BY n.name ASC', array($id));
     }

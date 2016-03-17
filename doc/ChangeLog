@@ -65,6 +65,7 @@ version ?.??.?? (????-??-??):
   - allow to assign numberplans to tariffs [chilan]
   - receiptadd: we show also not accounted debit notes [pjona]
   - separation force_ssl for UI and Userpanel [pjona]
+  - added node location info in network devices connected nodes list [chilan]
 
 version 1.11.19 (2015-12-21):
 
