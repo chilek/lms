@@ -9,6 +9,7 @@
     <link href="img/style.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="img/common.js"></script>
     <script type="text/javascript" src="img/autosuggest.js"></script>
+    <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>
     {$xajax}
 </head>
 <body class="light">
@@ -96,7 +97,10 @@
 		    </td>
 	    </tr>
         <tr class="light">
-            <td colspan="2" align="right" nowrap>
+            <td class="text-right nobr">
+                <a href="javascript:set_lat_lon()" accesskey="s">{trans("Determine GPS coordinates automatically")} <img src="img/network.gif" alt=""></a>
+            </td>
+            <td class="text-right nobr">
                 <a href="javascript:submit_location()" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
             </td>
         </tr>
@@ -172,6 +176,22 @@ function search_update(cityid, districtid, stateid)
 	xajax_select_location('', cityid+':'+districtid+':'+stateid);
 }
 
+function set_lat_lon(){
+    var city = document.getElementById('city_sel'),
+        street = document.getElementById('street_sel'),
+        house = document.getElementById('house_input'),
+        flat = document.getElementById('flat_input');
+
+    var loc = build_location_str(city.value ? city.options[city.selectedIndex].text : '', street.value ? street.options[street.selectedIndex].text : '', house.value, flat.value);
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode( { 'address': loc}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            locform.elements[varname+'[latitude]'].value = results[0].geometry.location.lat();
+            locform.elements[varname+'[longitude]'].value = results[0].geometry.location.lng();
+        }
+    });
+}
+
 function submit_location()
 {
 	var city = document.getElementById('city_sel'),
@@ -209,7 +229,7 @@ function submit_location()
 			street.value ? street.options[street.selectedIndex].text : '',
 			house.value, flat.value);
 	}
-
+        
 	window.parent.popclick();
 }
 
