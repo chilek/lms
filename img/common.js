@@ -108,8 +108,9 @@ function nodechoosewin(formfield, customerid)
 	return openSelectWindow('?m=choosenode&id='+customerid,'choosenode',350,200,'true',formfield);
 }
 
-function locationchoosewin(varname, formname, city, street)
+function locationchoosewin(varname, formname, city, street, default_city)
 {
+        if(city == '' && default_city) city = default_city;
 	return openSelectWindow('?m=chooselocation&name='+varname+'&form='+formname+'&city='+city+'&street='+street,'chooselocation',350,200,'true');
 }
 

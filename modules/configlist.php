@@ -300,6 +300,10 @@ function GetConfigList($order='var,asc', $section='', $search='')
 				case 'ping_type':
 					$config[$idx]['description'] = trans('Default ping type. You can use "1" for ping or "2" for arping. Default: 1.');
 				break;
+				
+                                case 'default_teryt_city':
+					$config[$idx]['description'] = trans('Default City in TERYT. Set city id in TERYT.');
+				break;
 
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');
