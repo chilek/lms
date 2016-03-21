@@ -3176,5 +3176,6 @@ $_LANG['customer contacts: '] = 'numery telefonów klienta:';
 
 $_LANG['All users'] = 'Wszyscy użytkownicy';
 $_LANG['Determine GPS coordinates automatically'] = 'Wyznacz automatycznie współrzędne GPS';
+$_LANG['Default ping type. You can use "1" for ping or "2" for arping. Default: 1.'] = 'Domyślny rodzaj pinga. Możesz użyć "1" dla pinga lub "2" dla arpinga. Domyślnie: 1.';
 
 ?>
