@@ -331,7 +331,7 @@ if (!empty($docs)) {
 				'Subject' => $subject);
 			if (!empty($notify_email))
 				$headers['Cc'] = $notify_email;
-			$res = $LMS->SendMail($custemail . ',' . $notify_email, $headers, $body,
+			$res = $LMS->SendMail($custemail . (!empty($notify_email) ? ',' . $notify_email : ''), $headers, $body,
 				array(0 => array('content_type' => $ftype, 'filename' => $filename . '.' . $fext,
 					'data' => $res)), $host, $port, $user, $pass, $auth);
 
