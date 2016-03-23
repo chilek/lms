@@ -394,7 +394,7 @@ if (!empty($docs)) {
 				$headers['Reply-To'] = $reply_email;
 			if (!empty($notify_email))
 				$headers['Cc'] = $notify_email;
-			$res = $LMS->SendMail($custemail . ',' . $notify_email, $headers, $body,
+			$res = $LMS->SendMail($custemail . (!empty($notify_email) ? ',' . $notify_email : ''), $headers, $body,
 				$files, $host, $port, $user, $pass, $auth);
 
 			if (is_string($res))
