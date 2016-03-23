@@ -339,7 +339,8 @@ class SYSLOG {
 					$data['value'] = $data['value'];
 				break;
 			case 'ipaddr':
-				$data['value'] = long2ip($data['value']);
+				if (!check_ip($data['value']))
+					$data['value'] = long2ip($data['value']);
 				break;
 			case 'ipaddr_pub':
 				$data['value'] = empty($data['value']) ? trans('none') : long2ip($data['value']);
