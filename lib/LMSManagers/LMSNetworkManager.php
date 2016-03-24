@@ -221,15 +221,19 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 			WHERE ownerid = 0 AND netdev = ?', array($id));
     }
 
-    public function GetNetworkList($order = 'id,asc')
+    public function GetNetworkList( $search = 'id,asc' )
     {
-        if ($order == '')
-            $order = 'id,asc';
-
+		if( is_array($search) )
+			$order = array_key_exists($search['order']) ? $search['order'] : 'id,asc';
+		else if( $search == '' )
+			$order = 'id,asc';
+		else
+			$order = $search;
+		
         list($order, $direction) = sscanf($order, '%[^,],%s');
 
         ($direction == 'desc') ? $direction = 'desc' : $direction = 'asc';
-
+		
         switch ($order) {
             case 'name':
                 $sqlord = ' ORDER BY n.name';
@@ -260,26 +264,87 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 break;
         }
 
-        if ($networks = $this->db->GetAll('SELECT n.id, h.name AS hostname, n.name, inet_ntoa(address) AS address, 
-				address AS addresslong, mask, interface, gateway, dns, dns2, 
-				domain, wins, dhcpstart, dhcpend,
-				mask2prefix(inet_aton(mask)) AS prefix,
-				broadcast(address, inet_aton(mask)) AS broadcastlong,
-				inet_ntoa(broadcast(address, inet_aton(mask))) AS broadcast,
-				pow(2,(32 - mask2prefix(inet_aton(mask)))) AS size, disabled,
-				(SELECT COUNT(*) 
-					FROM nodes 
-					WHERE netid = n.id AND ipaddr <> 0 AND (ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
-						OR (ipaddr_pub >= address AND ipaddr_pub <= broadcast(address, inet_aton(mask)))
-				) AS assigned,
-				(SELECT COUNT(*) 
-					FROM nodes 
-					WHERE netid = n.id AND ipaddr <> 0 AND ((ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
-						OR (ipaddr_pub >= address AND ipaddr_pub <= broadcast(address, inet_aton(mask))))
-						AND (?NOW? - lastonline < ?)
-				) AS online
-				FROM networks n
-				LEFT JOIN hosts h ON h.id = n.hostid' . ($sqlord != '' ? $sqlord . ' ' . $direction : ''), array(intval(ConfigHelper::getConfig('phpui.lastonline_limit'))))) {
+		$search = array_filter($search);
+		$sqlwhere = ' WHERE';
+
+		if( isset($search['compareType']) ) {
+			$p = '%';
+			$search['compareType'] = 'LIKE';
+		} else {
+			$p = '';
+			$search['compareType'] = '=';
+		}
+		
+		foreach($search as $k=>$v) {
+			if($v != '')
+				switch($k) {
+					case 'network_name':
+						$sqlwhere .= " lower(n.name) " . $search['compareType'] . " lower('" . $p.$v.$p . "') " . $search['operatorType'];
+					break;
+					
+					case 'dhcp':
+						$sqlwhere .= " '$v' BETWEEN n.dhcpstart AND n.dhcpend " . $search['operatorType'];
+					break;
+					
+					case 'size':
+						$sqlwhere .= " $v ". $search['size_compare_char'] . " pow(2, 32 - mask2prefix(inet_aton(n.mask))) " . $search['operatorType'];
+					break;
+					
+					case 'interface':
+						$sqlwhere .= " lower(n.interface) " . $search['compareType'] . " lower('" . $p.$v.$p . "') " . $search['operatorType'];
+					break;
+					
+					case 'gateway':
+						$sqlwhere .= " n.gateway " . $search['compareType'] . " '" . $p.$v.$p . "' " . $search['operatorType'];
+					break;
+					
+					case 'dns':
+						$sqlwhere .= " (n.dns " . $search['compareType'] . " '" . $p.$v.$p . "' OR n.dns2 " . $search['compareType'] . " '" . $p.$v.$p . "') " . $search['operatorType'];
+					break;
+					
+					case 'wins':
+						$sqlwhere .= " n.wins " . $search['compareType'] . " '" . $p.$v.$p . "' " . $search['operatorType'];
+					break;
+					
+					case 'domain':
+						$sqlwhere .= " lower(n.domain) " . $search['compareType'] . " lower('" . $p.$v.$p . "') " . $search['operatorType'];
+					break;
+					
+					case 'hostid':
+						$sqlwhere .= " n.hostid = $v " . $search['operatorType'];
+					break;
+					
+					case 'description':
+						$sqlwhere .= " lower(n.notes) " . $search['compareType'] . " lower('" . $p.$v.$p . "') " . $search['operatorType'];
+					break;
+				}
+		}
+		$sqlwhere = rtrim($sqlwhere, $search['operatorType']);
+
+		$networks = $this->db->GetAll( 'SELECT 
+														n.id, h.name AS hostname, n.name, inet_ntoa(address) AS address, 
+														address AS addresslong, mask, interface, gateway, dns, dns2, 
+														domain, wins, dhcpstart, dhcpend,
+														mask2prefix(inet_aton(mask)) AS prefix,
+														broadcast(address, inet_aton(mask)) AS broadcastlong,
+														inet_ntoa(broadcast(address, inet_aton(mask))) AS broadcast,
+														pow(2,(32 - mask2prefix(inet_aton(mask)))) AS size, disabled,
+														(SELECT COUNT(*) 
+															FROM nodes 
+															WHERE netid = n.id AND ipaddr <> 0 AND (ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
+																OR (ipaddr_pub >= address AND ipaddr_pub <= broadcast(address, inet_aton(mask)))
+														) AS assigned,
+														(SELECT COUNT(*) 
+															FROM nodes 
+															WHERE netid = n.id AND ipaddr <> 0 AND ((ipaddr >= address AND ipaddr <= broadcast(address, inet_aton(mask))) 
+																OR (ipaddr_pub >= address AND ipaddr_pub <= broadcast(address, inet_aton(mask))))
+																AND (?NOW? - lastonline < ?)
+														) AS online
+													FROM 
+														networks n LEFT JOIN hosts h ON h.id = n.hostid' . ($sqlwhere != ' WHERE' ? $sqlwhere : '') . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
+													, array(intval(ConfigHelper::getConfig('phpui.lastonline_limit'))));
+		
+        if($networks) {											
             $size = 0;
             $assigned = 0;
             $online = 0;
@@ -296,6 +361,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             $networks['order'] = $order;
             $networks['direction'] = $direction;
         }
+		
         return $networks;
     }
 

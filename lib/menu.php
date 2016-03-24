@@ -298,6 +298,12 @@ $menu = array(
 					'tip' => trans('Add new address pool'),
 					'prio' => 20,
 				),
+				array(
+					'name' => trans('Search'),
+					'link' => '?m=netsearch',
+					'tip' => trans('Allows you to search for IP address pools'),
+					'prio' => 30,
+				),
 			),
 		),
 

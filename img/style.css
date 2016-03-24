@@ -253,6 +253,10 @@ table.lmsbox > tfoot > tr {
     border-top: 1px solid black;
 }
 
+tr.space_row > td {
+	padding-top: 20px;
+}
+
 .summary {
 	text-align: right;
 	font-weight: bold;
