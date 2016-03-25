@@ -47,7 +47,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface
 
     public function GetConfigDefaultType($option)
     {
-        switch ($option) {		
+        switch ($option) {
             case 'phpui.force_ssl':
             case 'phpui.allow_mac_sharing':
             case 'phpui.smarty_debug':
