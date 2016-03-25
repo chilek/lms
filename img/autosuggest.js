@@ -93,17 +93,21 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 			break;
 
 			case KEYUP:
-				if (me.highlighted > 0) 
-					me.highlighted--;
+				if ((suggest == 'top' || suggest == 'bottom') && me.highlighted == -1)
+					me.highlighted = me.eligible.length - 1;
+				else if (me.highlighted > 0)
+					--me.highlighted;
 				else if (me.highlighted == 0)
 					me.highlighted = (me.eligible.length - 1);
-				
+
 				me.changeHighlight(key);
 			break;
 
 			case KEYDN:
-				if (me.highlighted != -1 && me.highlighted < (me.eligible.length - 1))
-					me.highlighted++;
+				if ((suggest == 'top' || suggest == 'bottom') && me.highlighted < (me.eligible.length - 1))
+					++me.highlighted;
+				else if (me.highlighted != -1 && me.highlighted < (me.eligible.length - 1))
+					++me.highlighted;
 				else if(me.highlighted == (me.eligible.length - 1))
 					me.highlighted = 0;
 
