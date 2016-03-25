@@ -128,7 +128,7 @@ function cal_prs_date1 (str_date) {
 	dt_date.setDate(arr_date[2]);
 	if (dt_date.getMonth() != (arr_date[1]-1)) return cal_error ("{t a="'\" + arr_date[2] + \"'" b="\"+dt_numdays.getDate()+\""}Invalid day of month value: $a.\nAllowed range is 01-$b.{/t}");
 
-	return (dt_date)
+	return (dt_date);
 }
 
 // time parsing function
