@@ -55,7 +55,7 @@ function GetConfigList($order='var,asc', $section='', $search='')
 			case 'phpui':
 				switch($item['var'])
 				{	
-				case 'default_autosuggest_maxlength':
+				case 'autosuggest_max_length':
 					$config[$idx]['description'] = trans('Max length of auto suggest proposal, further characters will be dotted.');
 				break;
 

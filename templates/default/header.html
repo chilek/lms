@@ -67,6 +67,11 @@
 	</script>
     </div>
     <div id="pagecontent">
+	<script type="text/javascript">
+		<!--//
+		var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length')};
+		//-->
+	</script>
 	{block name="quicksearch"}
     	<div id="autosuggest"><ul><li></li></ul></div>
     	<form method="post" name="quicksearch" action="?m=quicksearch" id="quicksearch">

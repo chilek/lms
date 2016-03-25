@@ -292,7 +292,13 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 				li.onclick = function() { me.useSuggestion(); }
 				li.appendChild(a);
 			} else {
-				li.innerHTML = word;
+				word_len = word.length;
+
+				if (word_len > AUTOSUGGEST_MAX_LENGTH)
+					li.innerHTML = word.substring(0, AUTOSUGGEST_MAX_LENGTH) + " ...";
+				else
+					li.innerHTML = word;
+
 				li.onclick = function() { me.useSuggestion(); }
 			}
 			ds.innerHTML = desc;
