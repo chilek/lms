@@ -16,6 +16,12 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 
 	//A reference to the element we're binding the list to.
 	this.elem = elem;
+
+	if (/autosuggest-(left|top|right|bottom)/i.exec(elem.className) !== null)
+		this.placement = RegExp.$1;
+	else
+		this.placement = 'bottom';
+
 	this.form = form;
 	this.uri = uri;
 	this.autosubmit = autosubmit;
@@ -37,7 +43,9 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 	var RET = 13;
 	var TAB = 9;
 	var ESC = 27;
+	var KEYLEFT = 37;
 	var KEYUP = 38;
+	var KEYRIGHT = 39;
 	var KEYDN = 40;
 
 	//The browsers' own autocomplete feature can be problematic, since it will 
@@ -61,33 +69,67 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 	********************************************************/
 	elem.onkeydown = function(ev) {
 		var key = me.getKeyCode(ev);
+		
+		if (/autosuggest-(left|top|right|bottom)/i.exec(elem.className) !== null)
+			var suggest = RegExp.$1;
+		else
+			var suggest = 'bottom';
 
 		switch(key) {
 			case ENT:
 			case RET:
-			me.useSuggestion();
+				me.useSuggestion();
 			break;
 
 			case TAB:
-			me.useSuggestion();
+				if (me.highlighted == -1)
+					me.hideDiv();
+				else
+					me.useSuggestion();
 			break;
 
 			case ESC:
-			me.hideDiv();
+				me.hideDiv();
 			break;
 
 			case KEYUP:
-			if (me.highlighted > 0) {
-				me.highlighted--;
-			}
-			me.changeHighlight(key);
+				if (me.highlighted > 0) 
+					me.highlighted--;
+				else if (me.highlighted == 0)
+					me.highlighted = (me.eligible.length - 1);
+				
+				me.changeHighlight(key);
 			break;
 
 			case KEYDN:
-			if (me.highlighted < (me.eligible.length - 1)) {
-				me.highlighted++;
-			}
-			me.changeHighlight(key);
+				if (me.highlighted != -1 && me.highlighted < (me.eligible.length - 1))
+					me.highlighted++;
+				else if(me.highlighted == (me.eligible.length - 1))
+					me.highlighted = 0;
+
+				me.changeHighlight(key);
+			break;
+			
+			case KEYLEFT:
+				if (suggest == 'left' && me.highlighted == -1 && me.highlighted < (me.eligible.length - 1)) {
+					me.highlighted++;
+					me.changeHighlight(key);
+				}
+				else if (suggest == 'right') {
+					me.highlighted = -1;
+					me.changeHighlight(key);
+				}
+			break;
+			
+			case KEYRIGHT:
+				if (suggest == 'right' && me.highlighted == -1 && me.highlighted < (me.eligible.length - 1)) {
+					me.highlighted++;
+					me.changeHighlight(key);
+				}
+				else if (suggest == 'left') {
+					me.highlighted = -1;
+					me.changeHighlight(key);
+				}
 			break;
 		}
 	};
@@ -137,7 +179,7 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 	remove the suggestion dropdown.
 	********************************************************/
 	this.useSuggestion = function() {
-		if (this.highlighted > -1) {
+		if (this.highlighted > -1 && this.div.style.display != 'none') {
 			this.elem.value = this.eligible[this.highlighted];
 			var gotothisuri = this.actions[this.highlighted];
 			this.hideDiv();
@@ -156,8 +198,31 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 	/********************************************************
 	Display the dropdown. Pretty straightforward.
 	********************************************************/
-	this.showDiv = function() {
+	this.showDiv = function() {	
+		this.div.style.visibility = 'hidden';
 		this.div.style.display = 'block';
+
+		var x = parseInt( this.div.style.left );
+		var y = parseInt( this.div.style.top );
+
+		switch (this.placement) {
+			case 'left':
+				x -= this.div.offsetWidth;
+				break;
+			case 'right':
+				x += this.elem.offsetWidth;
+				break;
+			case 'top':
+				y -= this.div.offsetHeight;
+				break;
+			default: // bottom
+				y += this.elem.offsetHeight;
+				break;
+		}
+
+		this.div.style.left = x + "px";
+		this.div.style.top = y + "px";
+		this.div.style.visibility = 'visible';
 	};
 
 	/********************************************************
@@ -190,7 +255,7 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 	this.positionDiv = function() {
 		var el = this.elem;
 		var x = 0;
-		var y = el.offsetHeight;
+		var y = 0;
 
 		//Walk up the DOM and add up all of the offset positions.
 		while (el.offsetParent && el.tagName.toUpperCase() != 'BODY') {

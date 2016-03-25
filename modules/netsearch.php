@@ -78,7 +78,7 @@ if (isset($_GET['ajax'])) {
 										ORDER BY
 											entries DESC, item ASC
 										LIMIT 15');
-										
+		
 	if ($mode == 'dns') {		
 		$candidates2 = $DB->GetAll('SELECT
 												dns2 as item,
@@ -92,7 +92,7 @@ if (isset($_GET['ajax'])) {
 											ORDER BY
 												entries DESC, item ASC
 											LIMIT 15');
-										
+
 		$candidates = array_merge($candidates, $candidates2);							
 	}
 	elseif ($mode == 'host') {
@@ -159,6 +159,7 @@ if (isset($_GET['search'])) {
 	$layout['pagetitle'] = trans('IP Network Search');
 
 	$SESSION->remove('ndlsp');
+	$SMARTY->assign('autosuggest_placement', ConfigHelper::getConfig('phpui.default_autosuggest_placement'));
 	$SMARTY->assign('k',$k);
 	$SMARTY->display('net/netsearch.html');
 }

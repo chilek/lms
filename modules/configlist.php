@@ -54,7 +54,19 @@ function GetConfigList($order='var,asc', $section='', $search='')
 		{
 			case 'phpui':
 				switch($item['var'])
-				{
+				{	
+				case 'default_autosuggest_maxlength':
+					$config[$idx]['description'] = trans('Max length of auto suggest proposal, further characters will be dotted.');
+				break;
+
+				case 'default_autosuggest_placement':
+					$config[$idx]['description'] = trans('Default placement of suggestion window (left/right/top/bottom)');
+				break;
+
+				case 'allow_from2':
+					$config[$idx]['description'] = trans('List of networks and IP addresses, with access to LMS. If empty, every IP address has access to LMS. When you write list of addresses or address pools here, LMS will dismiss every unwanted user with HTTP 403 error.');
+				break;
+
 				case 'allow_from':
 					$config[$idx]['description'] = trans('List of networks and IP addresses, with access to LMS. If empty, every IP address has access to LMS. When you write list of addresses or address pools here, LMS will dismiss every unwanted user with HTTP 403 error.');
 				break;
