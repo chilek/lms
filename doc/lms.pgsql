@@ -2175,6 +2175,8 @@ INSERT INTO nastypes (name) VALUES
 ('other');
 
 INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
+('phpui', 'default_autosuggest_placement','bottom','',0),
+('phpui', 'autosuggest_max_length','40','',0),
 ('phpui', 'lang', '', '', 0),
 ('phpui', 'allow_from', '', '', 0),
 ('phpui', 'default_module', 'welcome', '', 0),
@@ -2628,4 +2630,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016032100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016032500');
