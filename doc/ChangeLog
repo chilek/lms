@@ -67,6 +67,10 @@ version ?.??.?? (????-??-??):
   - separation force_ssl for UI and Userpanel [pjona]
   - added node location info in network devices connected nodes list [chilan]
   - added support for network searching [kosa/chilan]
+  - added support for different placements of suggestion window
+    (phpui.default_autosuggest_placement) [kosa/chilan]
+  - suggestion window adjust its width to displayed data
+    (phpui.autosuggest_max_length) [kosa/chilan]
 
 version 1.11.19 (2015-12-21):
 
