@@ -71,6 +71,7 @@ version ?.??.?? (????-??-??):
     (phpui.default_autosuggest_placement) [kosa/chilan]
   - suggestion window adjust its width to displayed data
     (phpui.autosuggest_max_length) [kosa/chilan]
+  - improved performance of default type detection for config variables [chilan]
 
 version 1.11.19 (2015-12-21):
 
