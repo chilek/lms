@@ -122,7 +122,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface {
 
 	public function GetConfigDefaultType($option) {
 		return array_key_exists($option, $this->default_config_types)
-			? $default_config_types[$option] : CONFIG_TYPE_NONE;
+			? $this->default_config_types[$option] : CONFIG_TYPE_NONE;
 	}
 
     public function CheckOption($option, $value, $type)
