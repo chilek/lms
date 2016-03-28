@@ -114,7 +114,7 @@ DROP TABLE IF EXISTS invprojects;
 DROP TABLE IF EXISTS netnodes;
 DROP TABLE IF EXISTS usergroups;
 DROP TABLE IF EXISTS userassignments;
-
+DROP TABLE IF EXISTS passwdhistory;
 
 
 # --------------------------------------------------------
@@ -1859,6 +1859,18 @@ CREATE TABLE userassignments (
 	UNIQUE KEY userassignments_usergroupid_key (usergroupid, userid)
 ) ENGINE=InnoDB;
 
+# --------------------------------------------------------
+#
+# Structure of table passwdhistory
+#
+CREATE TABLE passwdhistory (
+	id int(11) NOT NULL auto_increment,
+	userid int(11) NOT NULL,
+	hash varchar(255) DEFAULT '' NOT NULL,
+	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
 CREATE VIEW nas AS
     SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
 	d.clients AS ports, d.secret, d.community, d.description 
@@ -2156,6 +2168,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui', 'quicksearch_limit', '15','', 0),
 ('phpui', 'ping_type', '1','', 0),
 ('phpui', 'default_teryt_city', 'false', '', 0),
+('phpui', 'passwordhistory', 6, '', 0),
 ('payments', 'date_format', '%Y/%m/%d', '', 0),
 ('payments', 'default_unit_name', 'pcs.', '', 0),
 ('invoices','template_file','invoice.html','',0),
