@@ -458,7 +458,7 @@ $NETELEMENTTYPES = array(
 $NETELEMENTOWNERSHIPS = array(
 	0	=> 'Węzeł własny',
 	1	=> 'Węzeł współdzielony z innym podmiotem',
-	2	=> 'węzeł obcy',
+	2	=> 'Węzeł obcy',
 );
 
 $USERPANEL_ID_TYPES = array(
