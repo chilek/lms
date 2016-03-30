@@ -16,12 +16,22 @@
     <TBODY>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/search.gif" ALT="">
+			<IMG SRC="img/network.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("Network name:")}</B>
 		<TD WIDTH="98%">
-			<INPUT ID="networkname" CLASS="autosuggest-{ConfigHelper::getConfig('phpui.default_autosuggest_placement')}" DATA-AUTOSUGGEST-MAXLENGTH="40" TYPE="TEXT" NAME="search[network_name]" VALUE="" {tip text="Enter network name or it's fragment"}>		
+			<INPUT ID="networkname" CLASS="autosuggest-{ConfigHelper::getConfig('phpui.default_autosuggest_placement')}" TYPE="TEXT" NAME="search[network_name]" VALUE="" {tip text="Enter network name or it's fragment"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/ip.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>{trans("Network address:")}</B>
+		<TD WIDTH="98%">
+			<INPUT ID="networkaddress" CLASS="autosuggest-{ConfigHelper::getConfig('phpui.default_autosuggest_placement')}" TYPE="TEXT" NAME="search[network_address]" VALUE="" {tip text="Enter IP address or it's fragment"}>
 		</TD>
 	</TR>
 	<TR>
@@ -116,7 +126,7 @@
 			<B>{trans("Host:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-		<INPUT ID="nethost" CLASS="autosuggest-{ConfigHelper::getConfig('phpui.default_autosuggest_placement')}" TYPE="TEXT" NAME="search[hostid]" VALUE="" {tip text="Enter host name (optional)"}>
+		<INPUT ID="nethost" CLASS="autosuggest-{ConfigHelper::getConfig('phpui.default_autosuggest_placement')}" TYPE="TEXT" NAME="search[host]" VALUE="" {tip text="Enter host name (optional)"}>
 		</TD>
 	</TR>
 	<TR>
@@ -172,14 +182,15 @@
 </FORM>
 <SCRIPT TYPE="text/javascript">
 <!--
-	new AutoSuggest(document.getElementById('netsearch'),document.getElementById('networkname'),'?m=netsearch&ajax=1&mode=netname&what=',0);
+	new AutoSuggest(document.getElementById('netsearch'),document.getElementById('networkname'),'?m=netsearch&ajax=1&mode=name&what=',0);
+	new AutoSuggest(document.getElementById('netsearch'),document.getElementById('networkaddress'),'?m=netsearch&ajax=1&mode=inet_ntoa(address)&what=',0);
 	new AutoSuggest(document.getElementById('netsearch'),document.getElementById('netinterface'),'?m=netsearch&ajax=1&mode=interface&what=',0);
 	new AutoSuggest(document.getElementById('netsearch'),document.getElementById('netgateway'),'?m=netsearch&ajax=1&mode=gateway&what=',0);
 	new AutoSuggest(document.getElementById('netsearch'),document.getElementById('netdns'),'?m=netsearch&ajax=1&mode=dns&what=',0);
 	new AutoSuggest(document.getElementById('netsearch'),document.getElementById('netwins'),'?m=netsearch&ajax=1&mode=wins&what=',0);
 	new AutoSuggest(document.getElementById('netsearch'),document.getElementById('netdomain'),'?m=netsearch&ajax=1&mode=domain&what=',0);
 	new AutoSuggest(document.getElementById('netsearch'),document.getElementById('nethost'),'?m=netsearch&ajax=1&mode=host&what=',0);
-	new AutoSuggest(document.getElementById('netsearch'),document.getElementById('netdesc'),'?m=netsearch&ajax=1&mode=description&what=',0);
+	new AutoSuggest(document.getElementById('netsearch'),document.getElementById('netdesc'),'?m=netsearch&ajax=1&mode=notes&what=',0);
 //-->
 </SCRIPT>
 {/block}
