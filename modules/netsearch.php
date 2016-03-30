@@ -29,91 +29,82 @@ if (isset($_GET['ajax'])) {
 	$search = urldecode(trim($_GET['what']));
 
 	switch ($_GET['mode']) {
-		case 'netname':
-			$mode = 'name';
-			break;
-
+		
+		case 'name':
+		case 'inet_ntoa(address)':
 		case 'interface':
-			$mode = 'interface';
-			break;
-
-		case 'gateway':
-			$mode = 'gateway';
-			break;
-			
-		case 'dns':
-			$mode = 'dns';
-			break;	
-			
-		case 'wins':
-			$mode = 'wins';
-			break;	
-			
+		case 'notes':
 		case 'domain':
-			$mode = 'domain';
-			break;		
-			
+		case 'wins':
+		case 'gateway':
+			$candidates = $DB->GetAll('SELECT
+													' . $_GET['mode'] . ' as item,
+													count(id) AS entries
+												FROM
+													networks
+												WHERE
+													' . $_GET['mode'] . ' != \'\' AND lower(' .$_GET['mode'] . ') ?LIKE? lower(' . $DB->Escape('%' . $search . '%') . ')
+												GROUP BY
+													item
+												ORDER BY
+													entries DESC, item ASC
+												LIMIT 15');
+		break;
+
 		case 'host':
-			$mode = 'host';
-			break;		
+			$candidates = $DB->GetAll('SELECT
+													h.name as item,
+													count(*) AS entries
+												FROM
+													networks n left join hosts h on n.hostid = h.id
+												WHERE
+													h.name != \'\' AND lower(h.name) ?LIKE? lower(' . $DB->Escape('%' . $search . '%') . ')
+												GROUP BY
+													item
+												ORDER BY
+													entries DESC, item ASC
+												LIMIT 15');
+		break;
+
+		case 'dns':
+			$candidates = $DB->GetAll('SELECT
+													dns as item,
+													count(id) AS entries
+												FROM
+													networks
+												WHERE
+													dns != \'\' AND lower(dns) ?LIKE? lower(' . $DB->Escape('%' . $search . '%') . ')
+												GROUP BY
+													item
+												ORDER BY
+													entries DESC, item ASC
+												LIMIT 15');
+	
+			$candidates2 = $DB->GetAll('SELECT
+													dns2 as item,
+													count(id) AS entries
+												FROM
+													networks
+												WHERE
+													dns2 != \'\' AND lower(dns2) ?LIKE? lower(' . $DB->Escape('%' . $search . '%') . ')
+												GROUP BY
+													item
+												ORDER BY
+													entries DESC, item ASC
+												LIMIT 15');
+
+			if (empty($candidates))
+				$candidates = array();
 			
-		case 'description':
-			$mode = 'notes';
-			break;			
-			
+			if (empty($candidates2))
+				$candidates2 = array();
+
+			$candidates = array_merge($candidates, $candidates2);				
+		break;
+
 		default:
 			print 'false;';
 			exit;
-	}
-
-	$candidates = $DB->GetAll('SELECT
-											' . $mode . ' as item,
-											count(id) AS entries
-										FROM
-											networks
-										WHERE
-											' . $mode . ' != \'\' AND lower(' . $mode . ') ?LIKE? lower(' . $DB->Escape('%' . $search . '%') . ')
-										GROUP BY
-											item
-										ORDER BY
-											entries DESC, item ASC
-										LIMIT 15');
-
-	if ($mode == 'dns') {		
-		$candidates2 = $DB->GetAll('SELECT
-												dns2 as item,
-												count(id) AS entries
-											FROM
-												networks
-											WHERE
-												dns2 != \'\' AND lower(dns2) ?LIKE? lower(' . $DB->Escape('%' . $search . '%') . ')
-											GROUP BY
-												item
-											ORDER BY
-												entries DESC, item ASC
-											LIMIT 15');
-
-		if (empty($candidates2))
-			$candidates2 = array();
-
-		if (empty($candidates))
-			$candidates = array();
-
-		$candidates = array_merge($candidates, $candidates2);							
-	}
-	elseif ($mode == 'host') {
-		$candidates = $DB->GetAll('SELECT
-												h.name as item,
-												count(*) AS entries
-											FROM
-												networks n left join hosts h on n.hostid = h.id
-											WHERE
-												h.name != \'\' AND lower(h.name) ?LIKE? lower(' . $DB->Escape('%' . $search . '%') . ')
-											GROUP BY
-												item
-											ORDER BY
-												entries DESC, item ASC
-											LIMIT 15');
 	}
 										
 	$eglible = $descriptions = array();

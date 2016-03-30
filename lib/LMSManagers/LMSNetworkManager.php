@@ -279,43 +279,47 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 			if($v != '')
 				switch($k) {
 					case 'network_name':
-						$sqlwhere .= " lower(n.name) " . $search['compareType'] . " lower('" . $p.$v.$p . "') " . $search['operatorType'];
+						$sqlwhere .= " lower(n.name) LIKE lower('" . $p.$v.$p . "') " . $search['operatorType'];
 					break;
-					
+
+					case 'network_address':
+						$sqlwhere .= " inet_ntoa(address) " . $search['compareType'] . " lower('" . $p.$v.$p . "') " . $search['operatorType'];
+					break;
+
 					case 'dhcp':
 						$sqlwhere .= " '$v' BETWEEN n.dhcpstart AND n.dhcpend " . $search['operatorType'];
 					break;
-					
+
 					case 'size':
 						$sqlwhere .= " $v ". $search['size_compare_char'] . " pow(2, 32 - mask2prefix(inet_aton(n.mask))) " . $search['operatorType'];
 					break;
-					
+
 					case 'interface':
-						$sqlwhere .= " lower(n.interface) " . $search['compareType'] . " lower('" . $p.$v.$p . "') " . $search['operatorType'];
+						$sqlwhere .= " lower(n.interface) LIKE lower('" . $p.$v.$p . "') " . $search['operatorType'];
 					break;
-					
+
 					case 'gateway':
 						$sqlwhere .= " n.gateway " . $search['compareType'] . " '" . $p.$v.$p . "' " . $search['operatorType'];
 					break;
-					
+
 					case 'dns':
 						$sqlwhere .= " (n.dns " . $search['compareType'] . " '" . $p.$v.$p . "' OR n.dns2 " . $search['compareType'] . " '" . $p.$v.$p . "') " . $search['operatorType'];
 					break;
-					
+
 					case 'wins':
 						$sqlwhere .= " n.wins " . $search['compareType'] . " '" . $p.$v.$p . "' " . $search['operatorType'];
 					break;
-					
+
 					case 'domain':
 						$sqlwhere .= " lower(n.domain) " . $search['compareType'] . " lower('" . $p.$v.$p . "') " . $search['operatorType'];
 					break;
-					
-					case 'hostid':
-						$sqlwhere .= " n.hostid = $v " . $search['operatorType'];
+
+					case 'host':
+						$sqlwhere .= " 1 IN (SELECT 1 FROM hosts WHERE name LIKE '" . $p.$v.$p . "') " . $search['operatorType'];
 					break;
-					
+
 					case 'description':
-						$sqlwhere .= " lower(n.notes) " . $search['compareType'] . " lower('" . $p.$v.$p . "') " . $search['operatorType'];
+						$sqlwhere .= " lower(n.notes) LIKE lower('" . $p.$v.$p . "') " . $search['operatorType'];
 					break;
 				}
 		}
