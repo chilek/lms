@@ -279,7 +279,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 			if($v != '')
 				switch($k) {
 					case 'network_name':
-						$sqlwhere .= " lower(n.name) LIKE lower('" . $p.$v.$p . "') " . $search['operatorType'];
+						$sqlwhere .= " lower(n.name) ?LIKE? lower('" . $p.$v.$p . "') " . $search['operatorType'];
 					break;
 
 					case 'network_address':
@@ -295,7 +295,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 					break;
 
 					case 'interface':
-						$sqlwhere .= " lower(n.interface) LIKE lower('" . $p.$v.$p . "') " . $search['operatorType'];
+						$sqlwhere .= " lower(n.interface) ?LIKE? lower('" . $p.$v.$p . "') " . $search['operatorType'];
 					break;
 
 					case 'gateway':
@@ -315,11 +315,11 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 					break;
 
 					case 'host':
-						$sqlwhere .= " 1 IN (SELECT 1 FROM hosts WHERE name LIKE '" . $p.$v.$p . "') " . $search['operatorType'];
+						$sqlwhere .= " 1 IN (SELECT 1 FROM hosts WHERE name ?LIKE? '" . $p.$v.$p . "') " . $search['operatorType'];
 					break;
 
 					case 'description':
-						$sqlwhere .= " lower(n.notes) LIKE lower('" . $p.$v.$p . "') " . $search['operatorType'];
+						$sqlwhere .= " lower(n.notes) ?LIKE? lower('" . $p.$v.$p . "') " . $search['operatorType'];
 					break;
 				}
 		}
