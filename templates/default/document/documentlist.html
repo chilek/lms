@@ -69,8 +69,7 @@
 	</TR>
 	<TR>
 		<TD colspan="5">
-				<div style="float: left;">
-					<span class="bold">{trans("Filter:")}</span> {trans("Customer:")}
+				<span class="bold">{trans("Filter:")}</span> {trans("Customer:")}
 					{customerlist form="page" customers=$customers selected=$listdata.customer selectname="customer" inputname="c" firstoption="- all customers -"}
 				&nbsp;{trans("Type:")}
 				<SELECT size="1" name="t" ONCHANGE="filter()">
@@ -80,12 +79,8 @@
 					{/if}{/foreach}
 				</SELECT>&nbsp;
 				<B>{trans("Period:")}</B>&nbsp;
-				</div>
-				<div class="calendar" style="float: left;">
-				{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-				{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
-				</div>
-				<div style="float: left;">
+				{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+				{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
 				<SELECT name="p" onChange="filter()" {tip text="Select numbering plan"}>
 					<OPTION value="0">- {trans("all")} -</OPTION>
 					{foreach $numberplans as $plan}
@@ -99,7 +94,6 @@
 					<OPTION value="1"{if $listdata.status == 1} selected{/if}>{trans("confirmed")}</OPTION>
 				</SELECT>&nbsp;
 				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>&nbsp;
-				</div>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}

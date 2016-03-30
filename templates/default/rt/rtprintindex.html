@@ -29,12 +29,14 @@
 						<span class="bold">{trans("Period:")} </span>
 					</TD>
 					<TD class="nobr" colspan="8">
-                                                <div class="calendar nobr">
-                                                <label for="datefrom">{trans("From:")}</label>
-                                                <input type="text" size="10" name="datefrom" id="datefrom" value="" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
-                                                <label for="dateto">{trans("To:")}</label>
-                                                <input type="text" size="10" name="dateto" id="dateto" value="" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="dateto"}>&nbsp;
-                                                </div>
+                                                <label>
+                                                	{trans("From:")}
+                                                	<input type="text" size="10" name="datefrom" value="" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
+                                                </label>
+                                                <label>
+                                                	{trans("To:")}
+                                                	<input type="text" size="10" name="dateto" value="" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="dateto"}>&nbsp;
+                                                </label>
                                         </TD>
 				</TR>
 				<TR>
@@ -165,12 +167,14 @@
 						<span class="bold">{trans("Period:")} </span>
 					</TD>
 					<TD class="nobr" colspan="8">
-                                                <div class="calendar nobr">
-                                                <label for="datefrom">{trans("From:")}</label>
-                                                <input type="text" size="10" name="datefrom" id="datefrom" value="" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
-                                                <label for="dateto">{trans("To:")}</label>
-                                                <input type="text" size="10" name="dateto" id="dateto" value="" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="dateto"}>&nbsp;
-                                                </div>
+                                                <label>
+                                                	{trans("From:")}
+                                                	<input type="text" size="10" name="datefrom" value="" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
+                                                </label>
+                                                <label
+                                                	>{trans("To:")}
+                                                	<input type="text" size="10" name="dateto" value="" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="dateto"}>&nbsp;
+                                                </label>
                                         </TD>
 				</TR>
 				<TR>
