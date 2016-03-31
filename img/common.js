@@ -38,7 +38,7 @@ function autoiframe_setsize(id, width, height)
 		frame = doc.getElementById(id);
 
     if (!frame)
-        return;
+        return 0;
 
 	if (width) {
 		frame.style.width = width + 'px';
@@ -285,18 +285,21 @@ function multiselect(formid, elemid, def, selected)
 	var form = document.getElementById(formid);
 
 	if (!old_element || !form) {
-		return;
+		return 0;
 	}
 
 	var selected_elements = null;
 	if (selected)
 		selected_elements = '|' + selected.join('|') + '|';
-
+	
 	// create new multiselect div
 	var new_element = document.createElement('DIV');
 	new_element.className = 'multiselect';
 	new_element.id = elemid;
 	new_element.innerHTML = def && !selected ? def : '';
+
+	if (old_element.style.cssText)
+		new_element.style.cssText = old_element.style.cssText;
 
 	// save (overlib) popups
 	new_element.onmouseover = old_element.onmouseover;
@@ -307,14 +310,17 @@ function multiselect(formid, elemid, def, selected)
 
 	// create multiselect list div (hidden)
 	var div = document.createElement('DIV');
-	var iframe = document.createElement('IFRAME');
 	var ul = document.createElement('UL');
 
 	div.className = 'multiselectlayer';
 	div.id = elemid + '-layer';
 	div.style.display = 'none';
+	
+	var elem = [];
+	for(var i=0, len=old_element.options.length; i<len; ++i)
+		elem[old_element.options[i].text.replace(' ', '&nbsp;')] = 0;
 
-	for(var i=0, len=old_element.options.length; i<len; i++)
+	for (var i=0, len=old_element.options.length; i<len; ++i)
 	{
 		var li = document.createElement('LI');
 		var box = document.createElement('INPUT');
@@ -328,31 +334,49 @@ function multiselect(formid, elemid, def, selected)
 			addClass(li, 'selected');
 		}
 
-		span.innerHTML = old_element.options[i].text;
+		span.innerHTML = old_element.options[i].text.replace(' ', '&nbsp;');
 
 		// add some mouse/key events handlers
 		li.onclick = function() {
+
+			function generateSelectedUserString( userArray ) {
+				var userString = '';
+
+				for (var k in userArray)
+					if (userArray.hasOwnProperty(k) && userArray[k] == 1 )
+						userString += k + ", ";
+
+				if (userString.length == 0)
+					return def;
+
+				return userString.substring( 0, userString.length-2 ); //cut last ", "
+			}
+
+			var userName = '';
 			var box = this.childNodes[0];
 			var selected = this.className.match(/selected/);
 			box.checked = selected ? false : true;
 
-			if(selected) {
+			if (/<span>(.*?)<\/span>/i.exec(this.innerHTML) !== null)
+				userName = RegExp.$1;
+
+			if (selected) {
+				elem[userName] = 0; //mark user as unselected
+
 				removeClass(this, 'selected');
-				if(def) {
+				if (def) {
 					var xlen = this.parentNode.childNodes.length;
-					for(var x=0; x<xlen; x++) {
-						if(this.parentNode.childNodes[x].className.match(/selected/)) {
+
+					for (var x=0; x<xlen; ++x)
+						if (this.parentNode.childNodes[x].className.match(/selected/))
 							break;
-						}
-					}
-					if(x==xlen) {
-						new_element.innerHTML = def;
-					}
 				}
 			} else {
+				elem[userName] = 1; //mark user as selected
 				addClass(this, 'selected');
-				new_element.innerHTML = '';
 			}
+
+			new_element.innerHTML = generateSelectedUserString(elem);
 		};
 		// TODO: keyboard events
 
@@ -363,7 +387,6 @@ function multiselect(formid, elemid, def, selected)
 	}
 
 	// add list
-	div.appendChild(iframe);
 	div.appendChild(ul);
 	form.appendChild(div);
 
@@ -374,8 +397,8 @@ function multiselect(formid, elemid, def, selected)
 		if(list.style.display == 'none') {
 			var pos = get_object_pos(this);
 
-			list.style.left = pos.x + 'px';
-			list.style.top = this.offsetHeight + pos.y + 'px';
+			list.style.left = (pos.x + this.offsetWidth) + 'px';
+			list.style.top = pos.y + 'px';
 			list.style.display = 'block';
 			// IE max-height hack
 			if(document.all && list.childNodes[1].offsetHeight > 200) {
@@ -385,6 +408,17 @@ function multiselect(formid, elemid, def, selected)
 			list.style.display = 'none';
 		}
 	};
+
+	// hide combobox after click out of the window
+	document.onclick = function(e) {
+		if (div.style.display == 'none' || e.target.id == old_element.id)
+			return 0;
+
+		if (e.target.innerHTML.indexOf("<head>") > -1 || e.target.parentNode.innerHTML.indexOf(old_element.name) == -1)
+			div.style.display = 'none';
+		else if (e.target.parentNode.innerHTML.indexOf(old_element.name) > -1 && e.target.nodeName != 'INPUT' && e.target.nodeName != 'LI' && e.target.nodeName != 'SPAN')
+			div.style.display = 'none';
+	}
 	// TODO: keyboard events
 }
 
@@ -409,7 +443,7 @@ function reset_login_timeout()
 function popup(content, frame, sticky, offset_x, offset_y)
 {
 	if (lms_sticky_popup)
-		return;
+		return 0;
 
 	if (frame)
 		content = '<iframe id="autoiframe" width=100 height=10 frameborder=0 scrolling=no '
@@ -435,7 +469,7 @@ function popup(content, frame, sticky, offset_x, offset_y)
 function pophide()
 {
     if (lms_sticky_popup) {
-        return;
+        return 0;
     }
 
     return nd();
@@ -476,9 +510,9 @@ function ping_popup(ip, type)
 
 function changeMacFormat(id)
 {
-	if (!id) return;
+	if (!id) return 0;
 	var elem = document.getElementById(id);
-	if (!elem) return;
+	if (!elem) return 0;
 	var curmac = elem.innerHTML;
 	var macpatterns = [ /^([0-9a-f]{2}:){5}[0-9a-f]{2}$/gi, /^([0-9a-f]{2}-){5}[0-9a-f]{2}$/gi,
 		/^([0-9a-f]{4}\.){2}[0-9a-f]{4}$/gi, /^[0-9a-f]{12}$/gi ];
@@ -486,7 +520,7 @@ function changeMacFormat(id)
 		if (macpatterns[i].test(curmac))
 			break;
 	if (i >= macpatterns.length)
-		return;
+		return 0;
 	i = parseInt(i);
 	switch (i) {
 		case 0:
@@ -536,7 +570,7 @@ function tinymce_init(ui_language) {
 
 function toggle_visual_editor(id) {
 	if (document.getElementById(id) == undefined)
-		return;
+		return 0;
 	if (tinymce.get(id))
 		tinyMCE.execCommand('mceToggleEditor', false, id);
 	else
