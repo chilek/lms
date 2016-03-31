@@ -27,8 +27,6 @@ $this->Execute("DROP VIEW vnetworks");
 
 $this->Execute("ALTER TABLE networks ADD COLUMN vlanid smallint");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016033100', 'dbversion'));
-
 $this->Execute("CREATE VIEW vnetworks AS
 					SELECT h.name AS hostname, ne.*, no.ownerid, no.location, no.location_city, no.location_street, no.location_house, no.location_flat, no.chkmac,
 						CONCAT(inet_ntoa(ne.address), '/', mask2prefix(inet_aton(ne.mask))) AS ip, no.id AS nodeid
@@ -36,6 +34,8 @@ $this->Execute("CREATE VIEW vnetworks AS
 					LEFT JOIN networks ne ON (ne.id = no.netid)
 					LEFT JOIN hosts h ON (h.id = ne.hostid)
 					WHERE no.ipaddr = 0 AND no.ipaddr_pub = 0;");
+	
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016033100', 'dbversion'));
 
 $this->CommitTrans();
 
