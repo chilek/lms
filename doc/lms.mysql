@@ -791,6 +791,7 @@ CREATE TABLE networks (
   dhcpend varchar(16) NOT NULL DEFAULT '',
   disabled tinyint(1) NOT NULL DEFAULT '0',
   notes text NOT NULL DEFAULT '',
+  vlanid smallint DEFAULT NULL,
   hostid int(11) DEFAULT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
