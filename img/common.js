@@ -414,9 +414,7 @@ function multiselect(formid, elemid, def, selected)
 		if (div.style.display == 'none' || e.target.id == old_element.id)
 			return 0;
 
-		if (e.target.innerHTML.indexOf("<head>") > -1 || e.target.parentNode.innerHTML.indexOf(old_element.name) == -1)
-			div.style.display = 'none';
-		else if (e.target.parentNode.innerHTML.indexOf(old_element.name) > -1 && e.target.nodeName != 'INPUT' && e.target.nodeName != 'LI' && e.target.nodeName != 'SPAN')
+		if (e.target.innerHTML.indexOf("<head>") > -1 || (e.target.parentNode.innerHTML.indexOf(old_element.name) > -1 && e.target.nodeName != 'INPUT' && e.target.nodeName != 'LI' && e.target.nodeName != 'SPAN'))
 			div.style.display = 'none';
 	}
 	// TODO: keyboard events

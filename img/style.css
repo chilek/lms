@@ -1,4 +1,5 @@
-BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; background-color: #EBE4D6; margin: 0; padding: 0; vertical-align: middle; }
+HTML { height: 100%; }
+BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; background-color: #EBE4D6; margin: 0; padding: 0; vertical-align: middle; min-height: 100%;}
 TABLE		{ border-collapse: collapse; border-color: #000000 }
 
 #pagecontainer  { height: 100%; }
