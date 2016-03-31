@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE networks ADD COLUMN vlanid varchar(4)");
+$this->Execute("ALTER TABLE networks ADD COLUMN vlanid smallint");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016033100', 'dbversion'));
 

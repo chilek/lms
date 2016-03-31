@@ -303,7 +303,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 					break;
 
 					case 'vlanid':
-						$sqlwhere .= " vlanid ?LIKE? '" . $p.$v.$p . "' " . $search['operatorType'];
+						$sqlwhere .= " vlanid = " . $v . " " . $search['operatorType'];
 					break;
 
 					case 'gateway':
