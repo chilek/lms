@@ -99,9 +99,10 @@ div.multiselect {
 	vertical-align: middle;
 	padding: 0px 20px 0px 4px;
 	cursor: default;
-	background: url('dropdown.gif') no-repeat right #EBE4D6;
-	height: 16px;
-	width: 90px;
+	background: url('dropdown.gif') no-repeat right bottom #EBE4D6;
+	min-height: 16px;
+	max-width: 130px;
+	white-space: pre-wrap;
 	overflow: hidden;
 }
 div.multiselectlayer {
