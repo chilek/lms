@@ -73,7 +73,7 @@
 			<INPUT TYPE="text" NAME="networkdata[interface]" VALUE="{$network.interface}" {tip text="Enter interface where network is connected to (optional)" trigger="interface"}>
 			<INPUT TYPE="text" NAME="networkdata[vlanid]" VALUE="{$network.vlanid}" SIZE="5" MAXLENGTH="4" {tip text="Enter vLan ID (optional)" trigger="vlanid"}>
 			{else}
-			{if !empty($network.interface)}{$network.interface},{/if} {trans("vlan:")} {$network.vlanid}
+			{if !empty($network.interface)}{$network.interface}{/if}{if !empty($network.vlanid)}, {trans("vlan:")} {$network.vlanid}{/if}
 			{/if}
 		</TD>
 	</TR>
