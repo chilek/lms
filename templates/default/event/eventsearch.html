@@ -108,7 +108,7 @@
 			<B>{trans("User:")}</B>
 		</TD>
 		<TD width="98%" nowrap>
-			<SELECT name="event[userid][]" id="userid" multiple>
+			<SELECT name="event[userid][]" id="userid" STYLE="min-width: 150px;" multiple>
 				{*<OPTION value="">{trans("- select user -")}</OPTION>*}
 				{section name=userlist loop=$userlist}
 				<OPTION value="{$userlist[userlist].id}">{$userlist[userlist].name}</OPTION>
