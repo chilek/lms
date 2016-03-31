@@ -126,9 +126,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			{trans("Settlement date:")}
 		</TD>
 		<TD style="width: 99%;" class="nobr">
-			<div class="calendar">
-			<INPUT type="text" name="invoice[cdate]" value="{$invoice.cdate|date_format:"%Y/%m/%d"}" size="12" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
-			</div>
+			<INPUT type="text" name="invoice[cdate]" value="{$invoice.cdate|date_format:"%Y/%m/%d"}" size="12" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 			{if $invoice.cdatewarning}
 			<INPUT type="hidden" name="invoice[cdatewarning]" value="1">
 			{/if}
@@ -139,9 +137,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			{trans("Sale date:")}
 		</TD>
 		<TD style="width: 99%;" class="nobr">
-			<div class="calendar">
-			<INPUT type="text" name="invoice[sdate]" value="{$invoice.sdate|date_format:"%Y/%m/%d"}" size="12" {tip text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}>
-			</div>
+			<INPUT type="text" name="invoice[sdate]" value="{$invoice.sdate|date_format:"%Y/%m/%d"}" size="12" {tip class="calendar" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}>
 		</TD>
 	</TR>
 	<TR>

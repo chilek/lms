@@ -316,13 +316,6 @@
 		macscountelem.value = parseInt(nr) + 1;
 	}
 
-	function reset_customer()
-	{
-		var val;
-		if (val = document.forms['editnode'].elements['nodeedit[ownerid]'].value)
-			document.forms['editnode'].elements['nodeedit[customerid]'].value = val;
-	}
-
 	function change_netdevice(id) {
 		if (xjx.$('linktype').value == 1) {
 			xjx.$('linktype').disabled = true;

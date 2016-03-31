@@ -1948,6 +1948,21 @@ CREATE TABLE userassignments (
 CREATE INDEX userassignments_userid_idx ON userassignments (userid);
 
 /* ---------------------------------------------------
+ Structure of table passwdhistory
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS passwdhistory_id_seq;
+CREATE SEQUENCE passwdhistory_id_seq;
+DROP TABLE IF EXISTS passwdhistory CASCADE;
+CREATE TABLE passwdhistory (
+	id integer DEFAULT nextval('passwdhistory_id_seq'::text) NOT NULL,
+	userid integer NOT NULL
+		REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	hash varchar(255) DEFAULT '' NOT NULL,
+	PRIMARY KEY (id)
+);
+CREATE INDEX passwdhistory_userid_idx ON passwdhistory (userid);
+
+/* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS up_rights_id_seq;
@@ -2245,6 +2260,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui', 'quicksearch_limit', '15', '', 0),
 ('phpui', 'ping_type', '1', '', 0),
 ('phpui', 'default_teryt_city', 'false', '', 0),
+('phpui', 'passwordhistory', 6, '', 0),
 ('payments', 'date_format', '%Y/%m/%d', '', 0),
 ('payments', 'default_unit_name', 'pcs.', '', 0),
 ('invoices', 'template_file', 'invoice.html', '', 0),

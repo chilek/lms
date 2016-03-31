@@ -34,10 +34,8 @@
 			<B>{trans("Date:")}</B>
 		</TD>
 		<TD width="98%">
-			<div class="calendar">
-			{trans("From:")} <INPUT type="text" name="event[datefrom]" size="10" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
-			{trans("To:")} <INPUT type="text" name="event[dateto]" size="10" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
-			</div>
+			{trans("From:")} <INPUT type="text" name="event[datefrom]" size="10" {tip class="calendar" text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
+			{trans("To:")} <INPUT type="text" name="event[dateto]" size="10" {tip class="calendar" text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
 		</TD>
 	</TR>
 	<TR>
@@ -78,7 +76,8 @@
 			</SELECT>
 		</TD>
 	</TR>
-{*	<TR>
+{*
+	<TR>
 		<TD width="1%">
 			<IMG src="img/access.gif" alt="">
 		</TD>
@@ -89,7 +88,8 @@
 			<INPUT type="checkbox" name="event[private]" value="1" {tip text="Select event's status"}{if $event.private}CHECKED{/if}> {trans("private")}
 		</TD>
 	</TR>
-*}	<TR>
+*}
+	<TR>
 		<TD width="1%">
 			<IMG src="img/customer.gif" alt="">
 		</TD>
@@ -108,7 +108,7 @@
 			<B>{trans("User:")}</B>
 		</TD>
 		<TD width="98%" nowrap>
-			<SELECT name="event[userid][]" id="userid" STYLE="max-width: 130px;" multiple>
+			<SELECT name="event[userid][]" id="userid" STYLE="max-width: 250px;" multiple>
 				{*<OPTION value="">{trans("- select user -")}</OPTION>*}
 				{section name=userlist loop=$userlist}
 				<OPTION value="{$userlist[userlist].id}">{$userlist[userlist].name}</OPTION>

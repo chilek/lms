@@ -89,6 +89,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface {
 		'phpui.quicksearch_limit'			=> CONFIG_TYPE_POSITIVE_INTEGER,
 		'phpui.ping_type'					=> CONFIG_TYPE_POSITIVE_INTEGER,
 		'phpui.autosuggest_max_length'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.passwordhistory'				=> CONFIG_TYPE_POSITIVE_INTEGER,
 		'mail.debug_email'					=> CONFIG_TYPE_EMAIL,
 		'mail.phpmailer_from'				=> CONFIG_TYPE_EMAIL,
 		'sendinvoices.debug_email'			=> CONFIG_TYPE_EMAIL,
@@ -122,7 +123,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface {
 
 	public function GetConfigDefaultType($option) {
 		return array_key_exists($option, $this->default_config_types)
-			? $default_config_types[$option] : CONFIG_TYPE_NONE;
+			? $this->default_config_types[$option] : CONFIG_TYPE_NONE;
 	}
 
     public function CheckOption($option, $value, $type)
