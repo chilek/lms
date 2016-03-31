@@ -291,12 +291,20 @@ function multiselect(formid, elemid, def, selected)
 	var selected_elements = null;
 	if (selected)
 		selected_elements = '|' + selected.join('|') + '|';
-	
+
 	// create new multiselect div
 	var new_element = document.createElement('DIV');
 	new_element.className = 'multiselect';
 	new_element.id = elemid;
-	new_element.innerHTML = def && !selected ? def : '';
+
+	var elem = [];
+	for(var i=0, len=old_element.options.length; i<len; ++i)
+		if (old_element.options[i].selected)
+			elem[old_element.options[i].text.replace(' ', '&nbsp;')] = 1;
+		else
+			elem[old_element.options[i].text.replace(' ', '&nbsp;')] = 0;
+
+	new_element.innerHTML =  generateSelectedUserString(elem);
 
 	if (old_element.style.cssText)
 		new_element.style.cssText = old_element.style.cssText;
@@ -315,43 +323,26 @@ function multiselect(formid, elemid, def, selected)
 	div.className = 'multiselectlayer';
 	div.id = elemid + '-layer';
 	div.style.display = 'none';
-	
-	var elem = [];
-	for(var i=0, len=old_element.options.length; i<len; ++i)
-		elem[old_element.options[i].text.replace(' ', '&nbsp;')] = 0;
 
 	for (var i=0, len=old_element.options.length; i<len; ++i)
 	{
 		var li = document.createElement('LI');
-		var box = document.createElement('INPUT');
-		var span = document.createElement('SPAN');
 
+		var box = document.createElement('INPUT');
 		box.type = 'checkbox';
 		box.name = old_element.name;
 		box.value = old_element.options[i].value;
-		if (selected_elements && selected_elements.indexOf('|' + old_element.options[i].value + '|') != -1) {
+
+		var span = document.createElement('SPAN');
+		span.innerHTML = old_element.options[i].text.replace(' ', '&nbsp;');
+
+		if (elem[span.innerHTML]) {
 			box.checked = true;
 			addClass(li, 'selected');
 		}
 
-		span.innerHTML = old_element.options[i].text.replace(' ', '&nbsp;');
-
 		// add some mouse/key events handlers
 		li.onclick = function() {
-
-			function generateSelectedUserString( userArray ) {
-				var userString = '';
-
-				for (var k in userArray)
-					if (userArray.hasOwnProperty(k) && userArray[k] == 1 )
-						userString += k + ", ";
-
-				if (userString.length == 0)
-					return def;
-
-				return userString.substring( 0, userString.length-2 ); //cut last ", "
-			}
-
 			var userName = '';
 			var box = this.childNodes[0];
 			var selected = this.className.match(/selected/);
@@ -413,11 +404,27 @@ function multiselect(formid, elemid, def, selected)
 	document.onclick = function(e) {
 		if (div.style.display == 'none' || e.target.id == old_element.id)
 			return 0;
+		
+		var parent = e.target.parentNode.innerHTML.indexOf(old_element.name);
 
-		if (e.target.innerHTML.indexOf("<head>") > -1 || (e.target.parentNode.innerHTML.indexOf(old_element.name) > -1 && e.target.nodeName != 'INPUT' && e.target.nodeName != 'LI' && e.target.nodeName != 'SPAN'))
+		if (e.target.innerHTML.indexOf("<head>") > -1 || parent == -1 || (parent > -1 && e.target.nodeName != 'INPUT' && e.target.nodeName != 'LI' && e.target.nodeName != 'SPAN'))
 			div.style.display = 'none';
 	}
+
 	// TODO: keyboard events
+
+	function generateSelectedUserString( userArray ) {
+		var userString = '';
+
+		for (var k in userArray)
+			if (userArray.hasOwnProperty(k) && userArray[k] == 1 )
+				userString += k + ", ";
+
+		if (userString.length == 0)
+			return def;
+
+		return userString.substring( 0, userString.length-2 ); //cut last ", "
+	}
 }
 
 var lms_login_timeout_value,
