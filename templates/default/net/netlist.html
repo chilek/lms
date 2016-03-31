@@ -14,7 +14,8 @@
 				<A href="?m=netlist&amp;o=host{if $listdata.direction == "asc" && $listdata.order == "host"},desc{/if}">{trans("host")}</A>{if $listdata.order == "host"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
 				<A href="?m=netlist&amp;o=address{if $listdata.direction == "asc" && $listdata.order == "address"},desc{/if}">{trans("network")}</A>{if $listdata.order == "address"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} /
 				<A href="?m=netlist&amp;o=mask{if $listdata.direction == "asc" && $listdata.order == "mask"},desc{/if}">{trans("prefix")}</A>{if $listdata.order == "mask"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-				(<A href="?m=netlist&amp;o=interface{if $listdata.direction == "asc" && $listdata.order == "interface"},desc{/if}">{trans("interface")}</A>{if $listdata.order == "interface"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if})
+				(<A href="?m=netlist&amp;o=interface{if $listdata.direction == "asc" && $listdata.order == "interface"},desc{/if}">{trans("interface")}</A>{if $listdata.order == "interface"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}) /
+				<A href="?m=netlist&amp;o=vlanid{if $listdata.direction == "asc" && $listdata.order == "vlanid"},desc{/if}">{trans("vlan id")}</A>{if $listdata.order == "vlanid"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD style="width: 1%;" class="valign-top right nobr">
 			<IMG src="img/empty.gif" width="1" height="16" alt="">
@@ -54,7 +55,7 @@
 	<TR class="highlight {cycle}{if $netlist[netlist].disabled == 1} blend{/if}"  >
 		<TD style="width: 96%;" onClick="return self.location.href='?m=netinfo&amp;id={$netlist[netlist].id}';">
 			<A name="{$netlist[netlist].id}" class="nobr">
-			<IMG src="img/network.gif" alt=""> <span class="bold">{$netlist[netlist].name|truncate:40:"...":true}</span><BR><IMG src="img/ip.gif" alt=""> {if $netlist[netlist].hostname}{$netlist[netlist].hostname}{else}{trans("none")}{/if} / {$netlist[netlist].address} / {$netlist[netlist].prefix} {if $netlist[netlist].interface}({$netlist[netlist].interface}){/if}
+			<IMG src="img/network.gif" alt=""> <span class="bold">{$netlist[netlist].name|truncate:40:"...":true}</span><BR><IMG src="img/ip.gif" alt=""> {if $netlist[netlist].hostname}{$netlist[netlist].hostname}{else}{trans("none")}{/if} / {$netlist[netlist].address} / {$netlist[netlist].prefix} {if $netlist[netlist].interface}({$netlist[netlist].interface}){/if} {if $netlist[netlist].vlanid}/ {$netlist[netlist].vlanid}{/if}
 			</A>
 		</TD>
 		<TD style="width: 1%;" class="valign-top text-right nobr" onClick="return self.location.href='?m=netinfo&amp;id={$netlist[netlist].id}';">
