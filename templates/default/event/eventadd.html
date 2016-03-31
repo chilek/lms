@@ -151,26 +151,30 @@
 		<TD width="1%">
 			<B>{trans("Users:")}</B>
 		</TD>
+
 		<TD width="98%" nowrap>
-                    <div style="float: left;">
-                        <select style="width: 201px;" size="10" name="event[userlist][]" {tip text="Select user(s) (optional)"} multiple>
-                            {foreach from=$userlist item=user}
-                                <option group="{$user.usergroupid}"{if $smarty.cookies.usergroup && $smarty.cookies.usergroup neq $user.usergroupid} style="display: none;"{/if} value="{$user.id}"{if $event.userlist && in_array($user.usergroupid, $event.userlist)} SELECTED{/if}>{$user.name}</option>
-                            {/foreach}
-                        </select>
-                    </div>
-                    <div style="float: left; padding-top: 30px;">
-                        <label for="usergroup_0">
-                            <input type="radio" name="event[usergroup]" id="usergroup_0" onChange="changeUserGroup(0)"{if !$smarty.cookies.usergroup} checked="checked"{/if}>&nbsp;
-                            {trans("All users")}<br>
-                        </label>
-                        {foreach from=$usergroup item=group}
-                            <label for="usergroup_{$group.id}">
-                                <input type="radio" name="event[usergroup]" id="usergroup_{$group.id}" onClick="changeUserGroup({$group.id})"{if $smarty.cookies.usergroup eq $group.id} checked="checked"{/if}>&nbsp;
-                                {$group.name}<br>
-                            </label>
-                        {/foreach}
-                    </div>
+            <SELECT name="event[userlist][]" id="userid" STYLE="min-width: 130px;" multiple>
+				{*<OPTION value="">{trans("- select user -")}</OPTION>*}
+				{section name=userlist loop=$userlist}
+				<OPTION value="{$userlist[userlist].id}">{$userlist[userlist].name}</OPTION>
+				{/section}
+			</SELECT>
+
+			<INPUT TYPE="hidden" NAME="event[usergroup]" VALUE="on">
+			<!--
+			<div style="float: left; padding-top: 30px;">
+				<label for="usergroup_0">
+					<input type="radio" name="event[usergroup]" id="usergroup_0" onChange="changeUserGroup(0)"{if !$smarty.cookies.usergroup} checked="checked"{/if}>&nbsp;
+					{trans("All users")}<br>
+				</label>
+				{foreach from=$usergroup item=group}
+					<label for="usergroup_{$group.id}">
+						<input type="radio" name="event[usergroup]" id="usergroup_{$group.id}" onClick="changeUserGroup({$group.id})"{if $smarty.cookies.usergroup eq $group.id} checked="checked"{/if}>&nbsp;
+						{$group.name}<br>
+					</label>
+				{/foreach}
+			</div>
+			-->
 		</TD>
 	</TR>
 	<TR>
@@ -186,6 +190,7 @@
 <SCRIPT type="text/javascript">
 <!--
 document.forms['event'].elements['event[title]'].focus();
+multiselect('event', 'userid', '{trans("- select user -")}');
 
 function changeUserGroup(group) {
     var d = new Date();

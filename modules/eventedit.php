@@ -137,7 +137,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $usergroup = $DB->GetAll("SELECT id, name FROM usergroups");
 $userlist = $DB->GetAll('SELECT users.id, users.name, userassignments.usergroupid FROM users 
         LEFT JOIN userassignments ON (userassignments.userid = users.id)
-        WHERE users.deleted = 0 AND users.access = 1 ORDER BY login ASC');
+        WHERE users.deleted = 0 AND users.access = 1 ORDER BY login ASC');	
 
 if (empty($nodes_location))
 	$nodes_location = $DB->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY name ASC', array($event['customerid']));
