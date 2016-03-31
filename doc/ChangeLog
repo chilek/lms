@@ -73,6 +73,7 @@ version ?.??.?? (????-??-??):
     (phpui.autosuggest_max_length) [kosa/chilan]
   - improved performance of default type detection for config variables [chilan]
   - redesigned multiselect window to be more useable [kosa/chilan]
+  - networks: added support for vlan ids [kosa/chilan]
 
 version 1.11.19 (2015-12-21):
 
