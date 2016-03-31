@@ -122,11 +122,12 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             'dhcpstart' => $netadd['dhcpstart'],
             'dhcpend' => $netadd['dhcpend'],
             'notes' => $netadd['notes'],
+			'vlanid' => $netadd['vlanid'],
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST] => $netadd['hostid'],
         );
-        if ($this->db->Execute('INSERT INTO networks (name, address, mask, interface, gateway, 
-				dns, dns2, domain, wins, dhcpstart, dhcpend, notes, hostid) 
-				VALUES (?, inet_aton(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+        if ($this->db->Execute('INSERT INTO networks (name, address, mask, interface, gateway,
+				dns, dns2, domain, wins, dhcpstart, dhcpend, notes, vlanid, hostid)
+				VALUES (?, inet_aton(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
             $netid = $this->db->GetOne('SELECT id FROM networks WHERE address = inet_aton(?) AND hostid = ?', array($netadd['address'], $netadd['hostid']));
             if ($this->syslog && $netid) {
                 $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK]] = $netid;
@@ -262,6 +263,9 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             case 'online':
                 $sqlord = ' ORDER BY online';
                 break;
+			case 'vlanid':
+                $sqlord = ' ORDER BY vlanid';
+                break;
         }
 
 		$search = array_filter($search);
@@ -298,6 +302,10 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 						$sqlwhere .= " lower(n.interface) ?LIKE? lower('" . $p.$v.$p . "') " . $search['operatorType'];
 					break;
 
+					case 'vlanid':
+						$sqlwhere .= " vlanid = " . $v . " " . $search['operatorType'];
+					break;
+
 					case 'gateway':
 						$sqlwhere .= " n.gateway " . $search['compareType'] . " '" . $p.$v.$p . "' " . $search['operatorType'];
 					break;
@@ -330,7 +338,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 														address AS addresslong, mask, interface, gateway, dns, dns2, 
 														domain, wins, dhcpstart, dhcpend,
 														mask2prefix(inet_aton(mask)) AS prefix,
-														broadcast(address, inet_aton(mask)) AS broadcastlong,
+														broadcast(address, inet_aton(mask)) AS broadcastlong, vlanid,
 														inet_ntoa(broadcast(address, inet_aton(mask))) AS broadcast,
 														pow(2,(32 - mask2prefix(inet_aton(mask)))) AS size, disabled,
 														(SELECT COUNT(*) 
@@ -436,6 +444,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             'address' => $networkdata['address'],
             'mask' => $networkdata['mask'],
             'interface' => strtolower($networkdata['interface']),
+            'vlanid' => (int) $networkdata['vlanid'],
             'gateway' => $networkdata['gateway'],
             'dns' => $networkdata['dns'],
             'dns2' => $networkdata['dns2'],
@@ -450,7 +459,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         $keys = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETWORK], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]);
 
         $res = $this->db->Execute('UPDATE networks SET name=?, address=inet_aton(?), 
-            mask=?, interface=?, gateway=?, dns=?, dns2=?, domain=?, wins=?, 
+            mask=?, interface=?, vlanid=?, gateway=?, dns=?, dns2=?, domain=?, wins=?,
             dhcpstart=?, dhcpend=?, notes=?, hostid=? WHERE id=?', array_values($args));
 
         if($networkdata['ownerid']) {
@@ -598,7 +607,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 
     public function GetNetworkRecord($id, $page = 0, $plimit = 4294967296, $firstfree = false)
     {
-        $network = $this->db->GetRow('SELECT no.ownerid, ne.id, ne.name, inet_ntoa(ne.address) AS address,
+        $network = $this->db->GetRow('SELECT no.ownerid, ne.id, ne.name, ne.vlanid, inet_ntoa(ne.address) AS address,
                 ne.address AS addresslong, ne.mask, ne.interface, ne.gateway, ne.dns, ne.dns2,
                 ne.domain, ne.wins, ne.dhcpstart, ne.dhcpend, ne.hostid,
                 mask2prefix(inet_aton(ne.mask)) AS prefix, ne.notes,

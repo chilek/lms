@@ -791,6 +791,7 @@ CREATE TABLE networks (
   dhcpend varchar(16) NOT NULL DEFAULT '',
   disabled tinyint(1) NOT NULL DEFAULT '0',
   notes text NOT NULL DEFAULT '',
+  vlanid smallint DEFAULT NULL,
   hostid int(11) DEFAULT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
@@ -2554,4 +2555,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016032500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016033100');

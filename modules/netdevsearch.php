@@ -35,7 +35,7 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND')
         switch($order)
         {
 		case 'id':
-                        $sqlord = ' ORDER BY id';
+		        $sqlord = ' ORDER BY id';
 		break;
 		case 'producer':
 		        $sqlord = ' ORDER BY producer';
