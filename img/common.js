@@ -298,6 +298,9 @@ function multiselect(formid, elemid, def, selected)
 	new_element.id = elemid;
 	new_element.innerHTML = def && !selected ? def : '';
 
+	if (old_element.style.cssText)
+		new_element.style.cssText = old_element.style.cssText;
+
 	// save (overlib) popups
 	new_element.onmouseover = old_element.onmouseover;
 	new_element.onmouseout = old_element.onmouseout;
