@@ -102,9 +102,10 @@ div.multiselect {
 	cursor: default;
 	background: url('dropdown.gif') no-repeat right bottom #EBE4D6;
 	min-height: 16px;
-	max-width: 130px;
+	max-width: 200px;
 	white-space: pre-wrap;
 	overflow: hidden;
+	min-width: 200px;
 }
 div.multiselectlayer {
 	position: absolute;
@@ -283,6 +284,8 @@ table.lmsbox > thead { text-align: left; }
 
 td.empty-table { background-color: #EBE4D6; }
 td.empty-table p { text-align: center; font-weight: bold; padding: 2em; }
+td.multiselect { min-width: 230px; }
+td.multiselect select { min-width: 200px; }
 
 .nobr { white-space: nowrap; }
 .text-right { text-align: right; }

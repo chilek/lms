@@ -300,19 +300,19 @@
 					<TD style="width: 1%;" nowrap>
 					    <TABLE>
 						<TR>
-						    <TD style="width: 1%;">
+						    <TD style="1%;">
 							<IMG src="img/money.gif" alt="">
 						    </TD>
-						    <TD style="width: 1%;" nowrap>
+						    <TD style="1%;" class="nobr">
 							<B>{trans("Transaction type:")}</B>
 						    </TD>
-						    <TD style="width: 98%;">
-							<SELECT name="types[]" id="balancelisttype" {tip text="Select transaction type"} multiple>
-							    <OPTION value="1">{trans("Liability")}</OPTION>
-							    <OPTION value="2">{trans("Income")}</OPTION>
-							    <OPTION value="3">{trans("Expense")}</OPTION>
-							</SELECT>
-						    </TD>
+							<TD style="98%;" class="multiselect">
+								<SELECT name="types[]" id="balancelisttype" {tip text="Select transaction type"} multiple>
+									<OPTION value="1">{trans("Liability")}</OPTION>
+									<OPTION value="2">{trans("Income")}</OPTION>
+									<OPTION value="3">{trans("Expense")}</OPTION>
+								</SELECT>
+							</TD>
 						</TR>
 						<TR>
 						    <TD style="width: 1%;">
@@ -471,13 +471,13 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 						    <TD style="width: 1%;" nowrap>
 							<B>{trans("Group:")}</B>
 						    </TD>
-						    <TD style="width: 97%;" nowrap>
-							<SELECT size="4" name="group[]" MULTIPLE id="invoicereportgroup" {tip text="Select group"}>
-			    				    {section name="customergroups" loop=$customergroups}
-							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
-							    {/section}
-							</SELECT>
-						    </TD>
+							<TD style="width: 97%;" class="multiselect nobr">
+								<SELECT size="4" name="group[]" multiple id="invoicereportgroup" {tip text="Select group"}>
+									{section name="customergroups" loop=$customergroups}
+									<OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
+									{/section}
+								</SELECT>
+							</TD>
 						    <TD style="width: 1%;" nowrap>
     							<INPUT type="checkbox" name="groupexclude" id="invoicereport-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><label for="invoicereport-groupexclude">{trans("exclude group")}</label>
 						    </TD>
@@ -489,15 +489,15 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 						    <TD style="width: 1%;" nowrap>
 							<B>{trans("Plan:")}</B>
 						    </TD>
-						    <TD style="width: 98%;" colspan="2" nowrap>
-							<SELECT name="numberplanid[]" id="numberplanid" {tip text="Select numbering plan"} multiple>
-							    <OPTION value="0">- {trans("all")} -</OPTION>
-    							    {foreach item=plan from=$numberplans}
-					    		    {assign var=period value=$plan.period}
-							    <OPTION value="{$plan.id}">{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
-							    {/foreach}
-							</SELECT>
-						    </TD>
+							<TD style="width: 98%;" colspan="2" class="multiselect nobr">
+								<SELECT name="numberplanid[]" id="numberplanid" style="min-width: 200px;" {tip text="Select numbering plan"} multiple>
+									<OPTION value="0">- {trans("all")} -</OPTION>
+									{foreach item=plan from=$numberplans}
+									{assign var=period value=$plan.period}
+									<OPTION value="{$plan.id}">{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+									{/foreach}
+								</SELECT>
+							</TD>
 						</TR>
 					    </TABLE>
 					</TD>
