@@ -230,7 +230,9 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 			$order = 'id,asc';
 		else
 			$order = $search;
-		
+		if (!is_array($search))
+			$search = array();
+
         list($order, $direction) = sscanf($order, '%[^,],%s');
 
         ($direction == 'desc') ? $direction = 'desc' : $direction = 'asc';
