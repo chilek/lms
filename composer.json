@@ -23,6 +23,6 @@
     "scripts": {
         "pre-autoload-dump": [ "@repairHTML2PDF", "@repairTCPDF" ],
         "repairHTML2PDF": "sed -i -e 's/class HTML2PDF_myPdf extends TCPDF/class HTML2PDF_myPdf extends LMSTCPDF/' vendor/spipu/html2pdf/_class/myPdf.class.php",
-        "repairTCPDF": "sed -i -e 's/register_shutdown_function/\\\/\\\/register_shutdown_function/' vendor/tecnickcom/tcpdf/tcpdf.php"
+        "repairTCPDF": "sed -i -e 's/\\(\\s\\+\\)register_shutdown_function/\\1\\\/\\\/register_shutdown_function/' vendor/tecnickcom/tcpdf/tcpdf.php"
     }
 }
