@@ -101,7 +101,7 @@ try {
 }
 
 // Initialize templates engine (must be before locale settings)
-$SMARTY = new Smarty;
+$SMARTY = new LMSSmarty;
 
 // test for proper version of Smarty
 
@@ -159,6 +159,7 @@ $LMS = new ULMS($DB, $AUTH, $SYSLOG);
 
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
+$SMARTY->setPluginManager($plugin_manager);
 
 // Load plugin files and register hook callbacks
 $plugins = $plugin_manager->getAllPluginInfo(LMSPluginManager::OLD_STYLE);
@@ -268,6 +269,8 @@ if($SESSION->islogged)
 		if (function_exists('module_'.$function)) 
 		{
 		    $to_execute = 'module_'.$function;
+			$layout['userpanel_module'] = $module;
+			$layout['userpanel_function'] = $function;
 		    $to_execute();
 		} else {
     		    $layout['error'] = trans('Function <b>$a</b> in module <b>$b</b> not found!', $function, $module);

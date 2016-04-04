@@ -74,6 +74,8 @@ version ?.??.?? (????-??-??):
   - improved performance of default type detection for config variables [chilan]
   - redesigned multiselect window to be more useable [kosa/chilan]
   - networks: added support for vlan ids [kosa/chilan]
+  - added support for userpanel_<module_name>_<function_name>_before_module_display
+    hooks [chilan]
 
 version 1.11.19 (2015-12-21):
 
