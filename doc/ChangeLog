@@ -76,6 +76,7 @@ version ?.??.?? (????-??-??):
   - networks: added support for vlan ids [kosa/chilan]
   - added support for userpanel_<module_name>_<function_name>_before_module_display
     hooks [chilan]
+  - allow to add custom links in userpanel customer balance list [chilan]
 
 version 1.11.19 (2015-12-21):
 
