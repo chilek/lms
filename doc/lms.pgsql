@@ -2152,7 +2152,7 @@ SELECT st.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
 CREATE VIEW customermailsview AS
 		SELECT customerid, array_to_string(array_agg(contact), ',') AS email
 			FROM customercontacts
-			WHERE type = 8 AND contact <> ''
+			WHERE (type & 8) > 0 AND contact <> ''
 			GROUP BY customerid;
 
 /* ---------------------------------------------------
@@ -2647,4 +2647,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016033100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016040700');
