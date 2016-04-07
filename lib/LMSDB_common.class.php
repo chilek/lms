@@ -681,6 +681,11 @@ abstract class LMSDB_common implements LMSDBInterface
 				array('dbversion' . (is_null($pluginclass) ? '' : '_' . $pluginclass)))) {
 			if ($dbver > $dbversion) {
 				set_time_limit(0);
+
+				if ($this->_dbtype == LMSDB::POSTGRESQL && $this->GetOne('SELECT COUNT(*) FROM information_schema.routines
+					WHERE routine_name = ? AND specific_schema = ?', array('array_agg', 'pg_catalog')))
+					$this->Execute('DROP AGGREGATE IF EXISTS array_agg(anyelement)');
+
 				$lastupgrade = $dbversion;
 
 				if (is_null($libdir))
