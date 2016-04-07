@@ -77,6 +77,7 @@ version ?.??.?? (????-??-??):
   - added support for userpanel_<module_name>_<function_name>_before_module_display
     hooks [chilan]
   - allow to add custom links in userpanel customer balance list [chilan]
+  - workaround postgresql array_agg multi function existence during db schema updates [chilan]
 
 version 1.11.19 (2015-12-21):
 
