@@ -63,12 +63,16 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 			$endtime = $row['endtime'];
 			if ($row['enddate'] && $row['enddate'] - $row['date']) {
 				$days = round(($row['enddate'] - $row['date']) / 86400);
+				$row['enddate'] = $row['date'] + 86400;
 				$row['endtime'] = 0;
 				$list2[] = $row;
 				while ($days) {
 					if ($days == 1)
 						$row['endtime'] = $endtime;
 					$row['date'] += 86400;
+					list ($year, $month, $day) = explode('/', date('Y/n/j', $row['date']));
+					$row['date'] = mktime(0, 0, 0, $month, $day, $year);
+					$row['enddate'] = $row['date'] + 86400;
 					if ($days > 1 || $endtime)
 						$list2[] = $row;
 					$days--;
