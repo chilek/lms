@@ -2,6 +2,7 @@
 
 /* R&A [ETANETAS] Vertinimas v1.0
  * LMS version 1.11-git
+ * LG [IĮ "ŽAIBAS"] pataisymas
  *
  *  (C) Copyright 2001-2013 LMS Developers
  *
@@ -26,13 +27,13 @@
 $_LANG['billing'] = 'atsiskaitymo';
 $_LANG['$a ($b addresses)'] = '$a ($b adresas)';
 $_LANG['$a addresses'] = '$a adresu';
-$_LANG['$a ago ($b)'] = '$a šitam ($b)';
+$_LANG['$a ago ($b)'] = '$a šiam ($b)';
 $_LANG['$a at least one year old records have been removed.<BR>'] = '$a įrašai senesni nei metai buvo pašalinti.<BR>';
 $_LANG['$a dollars $b cents'] = '$a litų $b centų';
 $_LANG['$a months'] = '$a mėnesių';
 $_LANG['$a of $b ($c): $d &lt;$4&gt;'] = '$a  $b ($c): $d &lt;$4&gt;';
-$_LANG['$a records after compacting.'] = '$a įrašų po archivavimo.';
-$_LANG['$a records before compacting.<BR>'] = '$a įrašų prieš archivavimą.<BR>';
+$_LANG['$a records after compacting.'] = '$a įrašų po archyvavimo.';
+$_LANG['$a records before compacting.<BR>'] = '$a įrašų prieš archyvavimą.<BR>';
 $_LANG['$a - removed, $b - inserted<BR>'] = '$a - pašalintų, $b - pridėtų<BR>';
 $_LANG['30 days'] = '30 dienų';
 $_LANG['365 days'] = '365 dienų';
@@ -40,7 +41,7 @@ $_LANG['7 days'] = '7 dienos';
 $_LANG['About LMS:'] = 'Informacija apie LMS:';
 $_LANG['About system:'] = 'Informacija apie sistemą:';
 $_LANG['Access denied!'] = 'Neturite teisių!';
-$_LANG['Access rights:'] = 'Prijeimo teisės:';
+$_LANG['Access rights:'] = 'Priėjimo teisės:';
 $_LANG['Account'] = 'Įrašas';
 $_LANG['Accounts:'] = 'Įrašai:';
 $_LANG['Accounted'] = 'Įrašyta';
@@ -55,11 +56,11 @@ $_LANG['Accounts List'] = 'Sąskaitų sąrašas';
 $_LANG['hosting management'] = 'Hostingo valdymas';
 $_LANG['Account with that login name already exists in that domain!'] = 'Įrašas su tokiu pavadinimu jau yra šiame domene!';
 $_LANG['Account with that login name exists!'] = 'Įrašas su tokiu pavadinimu jau yra!';
-$_LANG['active'] = 'Aktivus';
+$_LANG['active'] = 'Aktyvus';
 $_LANG['Add'] = 'Pridėti';
 $_LANG['Add:'] = 'Pridėk:';
-$_LANG['Add customer to group'] = 'Pridėk klijentą prie grupės';
-$_LANG['Add customers to group'] = 'Pridėk klijentus prie grupės';
+$_LANG['Add customer to group'] = 'Pridėk klientą prie grupės';
+$_LANG['Add customers to group'] = 'Pridėk klientus prie grupės';
 $_LANG['Add Event'] = 'Pridėti įvykį';
 $_LANG['Add host'] = 'Pridėti hostą';
 $_LANG['Add instance'] = 'Pridėti atvėjį';
@@ -844,7 +845,7 @@ $_LANG['Message body is required!'] = 'Reikia žinutės turinio!';
 $_LANG['Message body not specified!'] = 'Trūksta žinutės turinio!';
 $_LANG['message disabled'] = 'žinutė išjungta';
 $_LANG['message enabled'] = 'žinutė įjungta';
-$_LANG['Messages'] = 'Žinutės Wiadomości';
+$_LANG['Messages'] = 'Žinutės';
 $_LANG['Message subject is required!'] = 'Reikalinga žinutės tema!';
 $_LANG['Messages were sent.'] = 'Žinutės išsiųstos.';
 $_LANG['Message subject not specified!'] ='Trūksta žinutės pavadinimo!';
@@ -1849,7 +1850,7 @@ $_LANG['Reason:'] = 'Priežastis:';
 $_LANG['Enter reason (optional)'] = 'Nurodykite priežastį (pasirinktinai)';
 $_LANG['PIN code is required!'] = 'Reikia PIN kodo!';
 $_LANG['Registry not selected!'] = 'Nepasirinktas registras!';
-$_LANG['You have no write rights to selected registry!'] = 'Neturi teisės įrašyti į šį registrą!';
+$_LANG['You have no write rights to selected registry!'] = 'Neturite teisės įrašyti į šį registrą!';
 $_LANG['payments book'] = 'mokėjimo knygelė';
 $_LANG['Add contact field'] = 'Pridėk kontakto lauką';
 $_LANG['Enter contact name/description (optional)'] = 'Įveskite kontakto pavadinimą/aprašą (pasirinktinai)';
@@ -2035,7 +2036,7 @@ $_LANG['Company Divisions Definitions'] = 'Įmonių apibrėžimai';
 $_LANG['Display this form again, when this division is saved'] = 'Parodyk šį blanką pridėjus įmonę';
 $_LANG['Divisions'] = 'Įmonės (padaliniai)';
 $_LANG['Divisions List'] = 'Įmonių sąrašas';
-$_LANG['Division long name is required!'] = 'Reikia viso įmonės pavadinimo!';
+$_LANG['Division long name is required!'] = 'Reikia pilno įmonės pavadinimo!';
 $_LANG['Division short name is required!'] = 'Reikia sutrumpinto įmonės pavadinimo!';
 $_LANG['Division with specified name already exists!'] = 'Įmonė su tokiu pavadinimu jau yra!';
 $_LANG['Edit Division: $a'] = 'Įmonės redagavimas: $a';
