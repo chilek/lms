@@ -110,8 +110,8 @@ function mt940Parser($file){
                                     case '61':
                                         //kwota wplaty
                                         $wplaty_parser[$i]['value']=str_replace(",", ".", trim(substr($pole[2],11,strpos($pole[2],'NOTREF')-11)));
-                                        //data zlecenia wplaty. Wy#owane poniewaz bierzemy date zaksiegowania (pola 62M i 62F)
-#                                       $wplaty_parser[$i]['date']=trim('20'.substr($pole[2],0,2).'-'.substr($pole[2],2,2).'-'.substr($pole[2],4,2));
+                                        //data zlecenia wplaty. Wyhaszowane poniewaz bierzemy date zaksiegowania (pola 62M i 62F)
+					//$wplaty_parser[$i]['date']=trim('20'.substr($pole[2],0,2).'-'.substr($pole[2],2,2).'-'.substr($pole[2],4,2));
                                     break;
                                     case '62M':
                                     case '62F':
