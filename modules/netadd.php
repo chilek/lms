@@ -72,10 +72,11 @@ if (isset($_POST['netadd']))
 	if ($netadd['interface'] != '' && !preg_match('/^[a-z0-9:.]+$/i', $netadd['interface']))
 		$error['interface'] = trans('Incorrect interface name!');
 
-	if ($netadd['vlanid'] != '' && !is_numeric($netadd['vlanid']))
-		$error['vlanid'] = trans('Vlan ID must be integer!');
-	elseif ($netadd['vlanid'] < 1 || $netadd['vlanid'] > 4094)
-		$error['vlanid'] = trans('Vlan ID must be between 1 and 4094!');
+	if ($netadd['vlanid'] != '')
+		if (!is_numeric($netadd['vlanid']))
+			$error['vlanid'] = trans('Vlan ID must be integer!');
+		elseif ($netadd['vlanid'] < 1 || $netadd['vlanid'] > 4094)
+			$error['vlanid'] = trans('Vlan ID must be between 1 and 4094!');
 
 	if ($netadd['dns'] != '' && !check_ip($netadd['dns']))
 		$error['dns'] = trans('Incorrect DNS server IP address!');
