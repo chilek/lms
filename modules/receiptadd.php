@@ -84,7 +84,7 @@ function GetCustomerCovenants($id)
 		LEFT JOIN debitnotecontents n ON (n.docid = d.id)
 		LEFT JOIN numberplans np ON (numberplanid = np.id)
 		WHERE d.customerid = ? AND d.type = ? AND d.closed = 0
-		GROUP BY d.id, d.cdate, np.template
+		GROUP BY d.id, d.cdate, number, np.template
 		ORDER BY d.cdate DESC', 'id', array($id, DOC_DNOTE)))
 	{
 		foreach($notelist as $idx => $row)
