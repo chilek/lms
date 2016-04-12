@@ -802,13 +802,13 @@ if (in_array('www', $channels) && (empty($types) || in_array('messages', $types)
 		) m ON m.customerid = n.ownerid
 		ORDER BY ipaddr", array(MSG_WWW, MSG_NEW));
 
-	if (!empty($nodes)) {
-		if (!$debug) {
-			if (!($fh = fopen($notifications['messages']['file'], 'w')))
-				continue;
-			fwrite($fh, str_replace("\\n", PHP_EOL, $notifications['messages']['header']));
-		}
+	if (!$debug) {
+		if (!($fh = fopen($notifications['messages']['file'], 'w')))
+			continue;
+		fwrite($fh, str_replace("\\n", PHP_EOL, $notifications['messages']['header']));
+	}
 
+	if (!empty($nodes))
 		foreach ($nodes as $node) {
 			if (!$quiet)
 				printf("[www/messages] %s" . PHP_EOL, $node['ip']);
@@ -817,10 +817,9 @@ if (in_array('www', $channels) && (empty($types) || in_array('messages', $types)
 					parse_node_data($notifications['messages']['rule'], $node)));
 		}
 
-		if (!$debug) {
-			fwrite($fh, str_replace("\\n", PHP_EOL, $notifications['messages']['footer']));
-			fclose($fh);
-		}
+	if (!$debug) {
+		fwrite($fh, str_replace("\\n", PHP_EOL, $notifications['messages']['footer']));
+		fclose($fh);
 	}
 }
 
