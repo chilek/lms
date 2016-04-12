@@ -1036,6 +1036,8 @@ if (in_array('www', $channels) && (empty($types) || in_array('messages', $types)
 
 if (in_array('www', $channels))
 	foreach ($notifications as $type => $notification) {
+		if ($type == 'messages')
+			continue;
 		if (!$debug) {
 			if (!($fh = fopen($notification['file'], 'w')))
 				continue;
