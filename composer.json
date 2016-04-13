@@ -9,7 +9,8 @@
         "phpmailer/phpmailer": "^5.2",
         "tecnickcom/tcpdf": "^6.2",
         "spipu/html2pdf": "^4.5",
-        "components/normalize.css": "^3.0"
+        "components/normalize.css": "^3.0",
+        "components/font-awesome": "^4.5"
     },
     "require_dev": {
         "phpunit/phpunit": "5.1.*"
