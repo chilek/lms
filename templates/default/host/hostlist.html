@@ -3,7 +3,7 @@
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE class="lmsbox">
+<TABLE class="lmsbox">
     <THEAD>
 	<TR>
 		<TD WIDTH="1%" nowrap>
@@ -27,30 +27,28 @@
 	{cycle values="light,lucid" print=false}
 	{foreach from=$hostlist item=host}
 	<TR class="highlight {cycle}"  >
-		<TD onClick="return self.location.href='?m=hostedit&id={$host.id}';" nowrap>
+		<TD onClick="return self.location.href='?m=hostedit&amp;id={$host.id}';" nowrap>
 			<IMG src="img/host.gif" alt="">
 			<B>{$host.name}</B>
 		</TD>
-		<TD onClick="return self.location.href='?m=hostedit&id={$host.id}';">
+		<TD onClick="return self.location.href='?m=hostedit&amp;id={$host.id}';">
 			({$host.id|string_format:"%04d"})
 		</TD>
-		<TD onClick="return self.location.href='?m=hostedit&id={$host.id}';" nowrap>
+		<TD onClick="return self.location.href='?m=hostedit&amp;id={$host.id}';" nowrap>
 			{if $host.lastreload}{$host.lastreload|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
-		<TD onClick="return self.location.href='?m=hostedit&id={$host.id}';">
+		<TD onClick="return self.location.href='?m=hostedit&amp;id={$host.id}';">
 			{$host.description}
 		</TD>
 		<TD align="right" NOWRAP>
-			<A HREF="?m=hostedit&id={$host.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A HREF="?m=hostdel&id={$host.id}" OnClick="return confirmLink(this, '{t a=$host.name}Are you sure, you want to remove host \'$a\' and all assigned configuration?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A HREF="?m=hostedit&amp;id={$host.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A HREF="?m=hostdel&amp;id={$host.id}" OnClick="return confirmLink(this, '{t a=$host.name}Are you sure, you want to remove host \'$a\' and all assigned configuration?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD colspan="5" align="center">
-			<p>&nbsp;</p>
-			<p><B>{trans("There are no hosts configured.")}<B></p>
-			<p>&nbsp;</p>
+		<TD colspan="5" class="empty-table">
+			<p>{trans("There are no hosts configured.")}</p>
 		</TD>
 	</TR>
 	{/foreach}
@@ -62,5 +60,5 @@
 		</TD>
 	</TR>
         </TFOOT>
-</TABLE></P>
+</TABLE>
 {/block}

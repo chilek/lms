@@ -1,13 +1,13 @@
 <!--// $Id$ //-->
 <H1><span class="bold">{$layout.pagetitle}</span></H1>
-<P><FORM name="reload" method="POST" action="?m=reload&setreloads">
+<FORM name="reload" method="POST" action="?m=reload&amp;setreloads">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
 	<TR>
 		<TD>
 		<div style="float:left">
-			<span class="bold">{trans("Select hosts for configuration reload:")} </div> </span> <div id="reloadtxt" style="display:none; float:right"><span class="bold">{trans("Reload configuration in:")} </span> <span id="reloadtimer" class="bold"></span> </div>
+			<span class="bold">{trans("Select hosts for configuration reload:")}</span></div> <div id="reloadtxt" style="display:none; float:right"><span class="bold">{trans("Reload configuration in:")} </span> <span id="reloadtimer" class="bold"></span> </div>
 		</TD>
 	</TR>
     </THEAD>
@@ -40,10 +40,8 @@
 				</TR>
 				{sectionelse}
 				<TR>
-					<TD colspan="4" align="center">
-						<P>&nbsp;</P>
-						<P><span class="bold">{trans("No such hosts in database.")}</span></P>
-						<P>&nbsp;</P>
+					<TD colspan="4" class="empty-table">
+						{trans("No such hosts in database.")}
 					</TD>
 				</TR>
 				{/section}
@@ -62,7 +60,6 @@
     </TBODY>
 </TABLE>
 </FORM>
-</P>
 {if $serverTime}
 <SCRIPT type="text/javascript">
         <!--

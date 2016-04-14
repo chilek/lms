@@ -30,34 +30,33 @@
 	{cycle values="light,lucid" print=false}
 	{foreach from=$promotionlist item=promo}
 	<TR class="highlight {cycle}{if $promo.disabled} blend{/if}"  >
-		<TD nowrap onClick="return self.location.href='?m=promotioninfo&id={$promo.id}';">
+		<TD nowrap onClick="return self.location.href='?m=promotioninfo&amp;id={$promo.id}';">
 			<IMG src="img/promo.gif" ALT=""> <B>{$promo.name}</B>
 		</TD>
 		<TD ALIGN="right">
 			({$promo.id|string_format:"%04d"})
 		</TD>
-		<TD onClick="return self.location.href='?m=promotioninfo&id={$promo.id}';">
+		<TD onClick="return self.location.href='?m=promotioninfo&amp;id={$promo.id}';">
 			{$promo.description}
 		</TD>
-		<TD ALIGN="right" onClick="return self.location.href='?m=promotioninfo&id={$promo.id}';">
+		<TD ALIGN="right" onClick="return self.location.href='?m=promotioninfo&amp;id={$promo.id}';">
 			{$promo.scs|default:"-"}
 		</TD>
-		<TD ALIGN="right" onClick="return self.location.href='?m=promotioninfo&id={$promo.id}';">
+		<TD ALIGN="right" onClick="return self.location.href='?m=promotioninfo&amp;id={$promo.id}';">
 			{$promo.tariffs|default:"-"}
 		</TD>
 		<TD align="right" NOWRAP>
-			<A HREF="?m=promotionset&id={$promo.id}&access={$promo.disabled}">{if $promo.disabled}<IMG src="img/noaccess.gif" alt="[ {trans("Enable")} ]" title="[ {trans("Enable")} ]">{else}<IMG src="img/access.gif" alt="[ {trans("Disable")} ]" title="[ {trans("Disable")} ]">{/if}</A>
-			<A HREF="?m=promotiondel&id={$promo.id}" OnClick="return confirmLink(this, '{t a=$promo.name}Are you sure, you want to remove promotion \'$a\'?{/t}');"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A HREF="?m=promotionedit&id={$promo.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A HREF="?m=promotioninfo&id={$promo.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+			<A HREF="?m=promotionset&amp;id={$promo.id}&amp;access={$promo.disabled}">{if $promo.disabled}<IMG src="img/noaccess.gif" alt="[ {trans("Enable")} ]" title="[ {trans("Enable")} ]">{else}<IMG src="img/access.gif" alt="[ {trans("Disable")} ]" title="[ {trans("Disable")} ]">{/if}</A>
+			<A HREF="?m=promotiondel&amp;id={$promo.id}" OnClick="return confirmLink(this, '{t a=$promo.name}Are you sure, you want to remove promotion \'$a\'?{/t}');"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A HREF="?m=promotionclone&id={$promo.id}"><IMG SRC="img/clone.gif" alt="[ {trans("Clone")} ]" title="[ {trans("Clone")} ]"></A>
+                       <A HREF="?m=promotionedit&amp;id={$promo.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A HREF="?m=promotioninfo&amp;id={$promo.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD colspan="6" align="center">
-			<p>&nbsp;</p>
-			<p><B>{trans("There are no promotions in database.")}<B></p>
-			<p>&nbsp;</p>
+		<TD colspan="6" class="empty-table">
+			<p>{trans("There are no promotions in database.")}</p>
 		</TD>
 	</TR>
 	{/foreach}

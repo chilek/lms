@@ -51,9 +51,7 @@
 			<B>{trans("Binds from date:")}</B>
 		</TD>
 		<TD width="98%">
-			<div class="calendar">
-			<INPUT type="text" name="taxrateedit[validfrom]" value="{$taxrateedit.validfrom}" size="10" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validfrom"}>
-			</div>
+			<INPUT type="text" name="taxrateedit[validfrom]" value="{$taxrateedit.validfrom}" size="10" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validfrom"}>
 		</TD>
 	</TR>
 	<TR>
@@ -64,9 +62,7 @@
 			<B>{trans("Binds to date:")}</B>
 		</TD>
 		<TD width="98%">
-			<div class="calendar">
-			<INPUT type="text" name="taxrateedit[validto]" value="{$taxrateedit.validto}" size="10" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validto"}>
-			</div>
+			<INPUT type="text" name="taxrateedit[validto]" value="{$taxrateedit.validto}" size="10" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validto"}>
 		</TD>
 	</TR>
 	<TR>

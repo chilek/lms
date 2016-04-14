@@ -90,14 +90,14 @@ if (isset($setwarnings['mcustomerid']))
 
 if(isset($_GET['search']))
 {
-	$SESSION->restore('customersearch', $customersearch);
-	$SESSION->restore('cslo', $o);
-	$SESSION->restore('csls', $s);
-	$SESSION->restore('csln', $n);
-	$SESSION->restore('cslg', $g);
-	$SESSION->restore('cslk', $k);
+	$SESSION->restore('customersearch', $search);
+	$SESSION->restore('cslo', $order);
+	$SESSION->restore('csls', $state);
+	$SESSION->restore('csln', $network);
+	$SESSION->restore('cslg', $customergroup);
+	$SESSION->restore('cslk', $sqlskey);
 
-	$customerlist = $LMS->GetCustomerList($o, $s, $n, $g, $customersearch, NULL, $k);
+        $customerlist = $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey"));
 	
 	unset($customerlist['total']);
 	unset($customerlist['state']);
@@ -120,7 +120,7 @@ $layout['pagetitle'] = trans('Notices');
 
 $customerlist = $DB->GetAllByKey('SELECT c.id AS id, MAX(warning) AS warning, '.
 		    $DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername 
-		    FROM customersview c 
+		    FROM customerview c 
 		    LEFT JOIN nodes ON c.id = ownerid 
 		    WHERE deleted = 0 
 		    GROUP BY c.id, lastname, c.name 

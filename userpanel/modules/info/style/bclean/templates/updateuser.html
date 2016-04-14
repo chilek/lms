@@ -1,0 +1,26 @@
+{include file="header.html"}
+{if !$usernodes.total && ConfigHelper::checkConfig('userpanel.hide_nodesbox')}
+<div class="row">
+    <div class="col-md-6">
+        {include file="module:updateuserinfobox.html"}
+    </div>
+    <div class="col-md-6">
+        {include file="module:userdocsbox.html"}
+    </div>
+</div>
+{else}
+<div class="row">
+    <div class="col-md-6">
+        {include file="module:updateuserinfobox.html"}
+    </div>
+    <div class="col-md-6">
+        {include file="module:usernodesbox.html"}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        {include file="module:userdocsbox.html"}
+    </div>
+</div>
+{/if}
+{include file="footer.html"}

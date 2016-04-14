@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -69,52 +69,15 @@ function check_icn($icn) // identity card number
 	return true;
 }
 
-?>
-<?php
-
-/*
- * LMS version 1.11-git
- *
- *  (C) Copyright 2001-2013 LMS Developers
- *
- *  Please, see the doc/AUTHORS for more information about authors!
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License Version 2 as
- *  published by the Free Software Foundation.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
- *  USA.
- *
- *  $Id$
- */
-
-function bankaccount($id, $account=NULL)
-{
-	global $DB;
-	
-	if($account === NULL)
-		$account = $DB->GetOne('SELECT account FROM divisions WHERE id IN (SELECT divisionid
-                        FROM customers WHERE id = ?)', array($id));
-	
-	if(!empty($account) && strlen($account) < 21 && strlen($account) >= 8)
-	{
-	        $cc = '3028';	// Country code - RO ?
-		$account = 'RO'.sprintf('%02d',98-bcmod($account.sprintf('%08d',$id).$cc.'00',97)).$account.sprintf('%012d', $id);
-	} 
-
-	return $account;
+function bankaccount($id, $account = NULL) {
+	return iban_account('RO', 22, $id, $account);
 }
 
-function format_bankaccount($account)
-{
+function check_bankaccount($account) {
+	return iban_check_account('RO', 22, $account);
+}
+
+function format_bankaccount($account) {
 	return $account;
 }
 

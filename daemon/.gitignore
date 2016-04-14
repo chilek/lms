@@ -1,0 +1,24 @@
+# daemon compilation process files
+config.log
+config.h
+config.status
+libtool
+Makefile
+.deps/*
+.libs/*
+autom4te.cache/*
+*.Plo
+*.Po
+*.a
+*.la
+*.lai
+*.lo
+
+# Object files
+*.o
+
+# Shared objects
+*.so
+
+# Executables
+lmsd

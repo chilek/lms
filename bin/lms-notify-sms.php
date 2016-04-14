@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -51,7 +51,7 @@ foreach ($short_to_longs as $short => $long)
 if (array_key_exists('version', $options)) {
 	print <<<EOF
 lms-notify-sms.php
-(C) 2001-2015 LMS Developers
+(C) 2001-2016 LMS Developers
 
 EOF;
 	exit(0);
@@ -60,7 +60,7 @@ EOF;
 if (array_key_exists('help', $options)) {
 	print <<<EOF
 lms-notify-sms.php
-(C) 2001-2015 LMS Developers
+(C) 2001-2016 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -78,7 +78,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
 	print <<<EOF
 lms-notify-sms.php
-(C) 2001-2015 LMS Developers
+(C) 2001-2016 LMS Developers
 
 EOF;
 }
@@ -111,10 +111,12 @@ define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 
 // Load autoloader
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'autoloader.php');
-
-// Do some checks and load config defaults
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'config.php');
+$composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+if (file_exists($composer_autoload_path)) {
+    require_once $composer_autoload_path;
+} else {
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
+}
 
 // Init database
 
@@ -187,8 +189,7 @@ function parse_data($data, $row) {
 		$saldo = $DB->GetOne("SELECT SUM(value)
 			FROM assignments, tariffs
 			WHERE tariffid = tariffs.id AND customerid = ?
-				AND (datefrom <= ?NOW? OR datefrom = 0)
-				AND (dateto > ?NOW? OR dateto = 0)
+				AND datefrom <= ?NOW? AND (dateto > ?NOW? OR dateto = 0)
 				AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0))",
 			array($row['id']));
 		$data = preg_replace("/\%abonament/", $saldo, $data);

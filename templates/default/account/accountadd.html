@@ -98,9 +98,7 @@
 					<B>{trans("Expiration date:")}</B>
 				    </TD>
 				    <TD width="98%">
-					<div class="calendar">
-					<input type="text" size="10" name="account[expdate]" value="{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter or click to choose expiration date for account in YYYY/MM/DD format (Empty field means account never expires)" trigger="expdate"}>
-					</div>
+					<input type="text" size="10" name="account[expdate]" value="{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter or click to choose expiration date for account in YYYY/MM/DD format (Empty field means account never expires)" trigger="expdate"}>
 				    </TD>
 				</TR>
 				<TR>
@@ -162,7 +160,7 @@
 					    <table width="100%">
 						    <tr>
 							    <td width="1%" nowrap><INPUT type="checkbox" id="type_shell" name="account[type][shell]" value="1" {if ($account.type & 1) == 1} CHECKED{/if}> <label for="type_shell">{trans("shell")}</label></td>
-							    <td>&nbsp;<input type="text" size="5" maxlendth="10" name="quota[sh]" value="{$quota.sh}" {tip text="Enter account quota in MB" trigger="quota_sh"}></td>
+							    <td>&nbsp;<input type="text" size="5" maxlength="10" name="quota[sh]" value="{$quota.sh}" {tip text="Enter account quota in MB" trigger="quota_sh"}></td>
 						    </tr>
 						    <tr>
 							    <td width="1%" nowrap><INPUT type="checkbox" id="type_mail" name="account[type][mail]" value="2" {if ($account.type & 2) == 2} CHECKED{/if}> <label for="type_mail">{trans("mail")}</label></td>

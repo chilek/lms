@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -36,6 +36,10 @@ if(isset($_GET['ticketid']))
 	}
 
 	$note = $DB->GetRow('SELECT id AS ticketid, state, cause, queueid, owner FROM rttickets WHERE id = ?', array($note['ticketid']));
+
+        if(ConfigHelper::checkConfig('phpui.helpdesk_notify')){
+            $note['notify'] = TRUE;
+        }
 }
 elseif(isset($_POST['note']))
 {
@@ -56,11 +60,14 @@ elseif(isset($_POST['note']))
 			    VALUES(?, ?, ?, ?NOW?)',
 			    array($AUTH->id, $note['ticketid'], $note['body']));
 
-		$LMS->SetTicketState($note['ticketid'], $note['state']);
-		$LMS->SetTicketOwner($note['ticketid'], $note['owner']);
-		$LMS->SetTicketQueue($note['ticketid'], $note['queueid']);
-
-		$DB->Execute('UPDATE rttickets SET cause = ? WHERE id = ?', array($note['cause'], $note['ticketid']));
+		// setting status and the ticket owner
+		$props = array(
+			'queueid' => $note['queueid'], 
+			'owner' => $note['owner'], 
+			'cause' => $note['cause'],
+			'state' => $note['state']
+		);
+		$LMS->TicketChange($note['ticketid'], $props);
 
 		if(isset($note['notify']))
 		{
@@ -94,10 +101,10 @@ elseif(isset($_POST['note']))
 				.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$note['ticketid'];
 
-			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)) 
+			if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
 				&& ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($note['ticketid'])))) {
 				$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-						address, zip, city FROM customers WHERE id = ?', array($cid));
+						address, zip, city FROM customeraddressview WHERE id = ?', array($cid));
 				$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
 					WHERE customerid = ?', array($cid));
 

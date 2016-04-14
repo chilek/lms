@@ -276,11 +276,21 @@ function findFeaturesIntersection(selectFeature, feature, featureLonLat)
 
 function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selection, startLon, startLat)
 {
-	var linkstyles = [
-		{ strokeColor: '#00ff00', strokeOpacity: 0.5 },
-		{ strokeColor: '#0000ff', strokeOpacity: 0.5 },
-		{ strokeColor: '#ff0000', strokeOpacity: 0.5 }
-	];
+	var linkstyles = [];
+	linkstyles[0] = { strokeColor: '#00ff00', strokeOpacity: 0.5 }; // wired link type
+	linkstyles[1] = { strokeColor: '#0000ff', strokeOpacity: 0.5 }; // wireless link type
+	linkstyles[2] = { strokeColor: '#ff0000', strokeOpacity: 0.5 }; // fiber link type
+	// wire
+	linkstyles[6] = { strokeColor: '#80ff00', strokeOpacity: 0.5 }; // 10 Mb/s Ethernet
+	linkstyles[7] = { strokeColor: '#00ff00', strokeOpacity: 0.5 }; // 100 Mb/s Fast Ethernet
+	linkstyles[8] = { strokeColor: '#008000', strokeOpacity: 0.5 }; // 1 Gigabit Ethernet
+	// wireless
+	linkstyles[100] = { strokeColor: '#0000ff', strokeOpacity: 0.5 }; // WiFi - 2,4 GHz
+	linkstyles[101] = { strokeColor: '#0080ff', strokeOpacity: 0.5 }; // WiFi - 5 GHz
+	// fiber
+	linkstyles[204] = { strokeColor: '#ff0000', strokeOpacity: 0.5 }; // 100 Mb/s Fast Ethernet
+	linkstyles[205] = { strokeColor: '#ff8000', strokeOpacity: 0.5 }; // 1 Gigabit Ethernet
+
 	var linkweights = [];
 	linkweights[10000] = 1;
 	linkweights[25000] = 1;
@@ -291,14 +301,21 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	linkweights[1000000] = 4;
 	linkweights[10000000] = 6;
 
-	var rsareastyle = {
+	var rsareastyle2 = {
 		fillOpacity: 0.2,
 		graphicOpacity: 1,
 		fillColor: '#0000aa',
 		strokeColor: '#0000bb'
 	}
 
-	var rsdirectionstyle = new OpenLayers.Style(
+	var rsareastyle5 = {
+		fillOpacity: 0.2,
+		graphicOpacity: 1,
+		fillColor: '#0080aa',
+		strokeColor: '#0080bb'
+	}
+
+	var rsdirectionstyle2 = new OpenLayers.Style(
 		{
 			graphicOpacity: 1,
 			strokeColor: '#0000bb',
@@ -306,6 +323,43 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 			fontFamily: 'arial, monospace',
 			//fontWeight: 'bold',
 			fontColor: '#0000bb',
+			labelAlign: 'middle',
+			angle: "${angle}",
+			label: "${label}"
+		}, {
+			context: {
+				angle: function(feature) {
+					var attr = feature.attributes;
+					if (attr === undefined || feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString'
+						|| (map.getZoom() / map.getNumZoomLevels()) < 0.70)
+						return '';
+					else
+						return attr.azimuth - 90;
+				},
+				label: function(feature) {
+					var attr = feature.attributes;
+					if (attr === undefined || feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString'
+						|| (map.getZoom() / map.getNumZoomLevels()) < 0.70)
+						return '';
+					else
+						return attr.name + (attr.frequency != ''
+							? ' / ' + attr.frequency + (attr.frequency2 != '' ? ' / ' + attr.frequency2 : '')
+								+ (attr.bandwidth != ''
+									? ' (' + attr.bandwidth + ')' : '')
+							: '');
+				}
+			}
+		}
+	);
+
+	var rsdirectionstyle5 = new OpenLayers.Style(
+		{
+			graphicOpacity: 1,
+			strokeColor: '#0080bb',
+			strokeDashstyle: "dashdot",
+			fontFamily: 'arial, monospace',
+			//fontWeight: 'bold',
+			fontColor: '#0080bb',
 			labelAlign: 'middle',
 			angle: "${angle}",
 			label: "${label}"
@@ -335,12 +389,21 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		}
 	);
 
-	var rsarealayer = new OpenLayers.Layer.Vector(OpenLayers.Lang.translate("Radio sectors - areas"), {
-		style: rsareastyle,
+	var rsarealayer2 = new OpenLayers.Layer.Vector(OpenLayers.Lang.translate("Radio sectors 2.4GHz - areas"), {
+		style: rsareastyle2,
 	});
 
-	var rsdirectionlayer = new OpenLayers.Layer.Vector(OpenLayers.Lang.translate("Radio sectors - directions"), {
-		styleMap: new OpenLayers.StyleMap(rsdirectionstyle),
+	var rsarealayer5 = new OpenLayers.Layer.Vector(OpenLayers.Lang.translate("Radio sectors 5GHz - areas"), {
+		style: rsareastyle5,
+	});
+
+	var rsdirectionlayer2 = new OpenLayers.Layer.Vector(OpenLayers.Lang.translate("Radio sectors 2.4GHz - directions"), {
+		styleMap: new OpenLayers.StyleMap(rsdirectionstyle2),
+		renderers: ['LmsSVG', 'VML', 'Canvas']
+	});
+
+	var rsdirectionlayer5 = new OpenLayers.Layer.Vector(OpenLayers.Lang.translate("Radio sectors 5GHz - directions"), {
+		styleMap: new OpenLayers.StyleMap(rsdirectionstyle5),
 		renderers: ['LmsSVG', 'VML', 'Canvas']
 	});
 
@@ -406,8 +469,10 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 
 	var area = new OpenLayers.Bounds();
 	var devices = [];
-	var areas = [];
-	var directions = [];
+	var areas2 = [];
+	var areas5 = [];
+	var directions2 = [];
+	var directions5 = [];
 	if (deviceArray)
 		for (i in deviceArray)
 		{
@@ -432,7 +497,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 
 				var steps = radiosector.width / 10;
 				var step = radiosector.width / steps;
-				for (var k = 0, width = 0.0; k <= steps; k++, width += step) {
+				for (var k = 0, width = - radiosector.width / 2; k <= steps; k++, width += step) {
 					rsLonLat = OpenLayers.Util.destinationVincenty(normalLonLat, radiosector.azimuth + width, radiosector.rsrange)
 						.transform(lmsProjection, map.getProjectionObject());
 					rsPoint = new OpenLayers.Geometry.Point(rsLonLat.lon, rsLonLat.lat);
@@ -442,27 +507,42 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				rsPointList.push(rsPointList[0]);
 				var rsRing = new OpenLayers.Geometry.LinearRing(rsPointList);
 				var rsFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon([rsRing]));
-				areas.push(rsFeature);
+				if (radiosector.technology == 100) {
+					areas2.push(rsFeature);
+				} else {
+					areas5.push(rsFeature);
+				}
 
 				rsPointList = [];
 				rsPoint = new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat);
 				rsPointList.push(rsPoint);
-				rsLonLat = OpenLayers.Util.destinationVincenty(normalLonLat, radiosector.azimuth + radiosector.width / 2, radiosector.rsrange)
+				rsLonLat = OpenLayers.Util.destinationVincenty(normalLonLat, radiosector.azimuth, radiosector.rsrange)
 						.transform(lmsProjection, map.getProjectionObject());
 				rsPoint = new OpenLayers.Geometry.Point(rsLonLat.lon, rsLonLat.lat);
 				rsPointList.push(rsPoint);
 				var rsCurve = new OpenLayers.Geometry.LineString(rsPointList);
 				rsFeature = new OpenLayers.Feature.Vector(rsCurve, radiosector);
-				directions.push(rsFeature);
+				if (radiosector.technology == 100) {
+					directions2.push(rsFeature);
+				} else {
+					directions5.push(rsFeature);
+				}
 
 				var rsFeature = new OpenLayers.Feature.Vector(
 					rsCurve.getCentroid(true), radiosector);
-				directions.push(rsFeature);
-				directions.push(rsFeature);
+				if (radiosector.technology == 100) {
+					directions2.push(rsFeature);
+					directions2.push(rsFeature);
+				} else {
+					directions5.push(rsFeature);
+					directions5.push(rsFeature);
+				}
 			}
 		}
-	rsarealayer.addFeatures(areas);
-	rsdirectionlayer.addFeatures(directions);
+	rsarealayer2.addFeatures(areas2);
+	rsarealayer5.addFeatures(areas5);
+	rsdirectionlayer2.addFeatures(directions2);
+	rsdirectionlayer5.addFeatures(directions5);
 
 	devicesLbl = OpenLayers.Lang.translate("Devices");
 	var devicelayer = new OpenLayers.Layer.Vector(devicesLbl, {
@@ -480,10 +560,14 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				new OpenLayers.Geometry.Point(devlinkArray[i].dstlon, devlinkArray[i].dstlat)
 					.transform(lmsProjection, map.getProjectionObject())
 			);
-			linkstyles[devlinkArray[i].type].strokeWidth = linkweights[devlinkArray[i].speed];
+			if (devlinkArray[i].technology in linkstyles)
+				linkstyle = linkstyles[devlinkArray[i].technology];
+			else
+				linkstyle = linkstyles[devlinkArray[i].type];
+			linkstyle.strokeWidth = linkweights[devlinkArray[i].speed];
 			devlinks.push(new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.LineString(points),
-				devlinkArray[i], linkstyles[devlinkArray[i].type]));
+				devlinkArray[i], linkstyle));
 		}
 
 	var devlinkLbl = OpenLayers.Lang.translate("Device Links");
@@ -520,10 +604,14 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				new OpenLayers.Geometry.Point(nodelinkArray[i].netdevlon, nodelinkArray[i].netdevlat)
 					.transform(lmsProjection, map.getProjectionObject())
 				);
-			linkstyles[nodelinkArray[i].type].strokeWidth = linkweights[nodelinkArray[i].speed];
+			if (nodelinkArray[i].technology in linkstyles)
+				linkstyle = linkstyles[nodelinkArray[i].technology];
+			else
+				linkstyle = linkstyles[nodelinkArray[i].type];
+			linkstyle.strokeWidth = linkweights[nodelinkArray[i].speed];
 			nodelinks.push(new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.LineString(points),
-				nodelinkArray[i], linkstyles[nodelinkArray[i].type]));
+				nodelinkArray[i], linkstyle));
 		}
 
 	var nodelinkLbl = OpenLayers.Lang.translate("Node Links");
@@ -534,8 +622,16 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	map.addLayer(devlinklayer);
 	map.addLayer(nodelayer);
 	map.addLayer(nodelinklayer);
-	map.addLayer(rsarealayer);
-	map.addLayer(rsdirectionlayer);
+	// add layer if exist any 2.4GHz radiosector
+	if (areas2.length) {
+		map.addLayer(rsarealayer2);
+		map.addLayer(rsdirectionlayer2);
+	}
+	// add layer if exist any 5GHz radiosector
+	if (areas5.length) {
+		map.addLayer(rsarealayer5);
+		map.addLayer(rsdirectionlayer5);
+	}
 
 	var highlightlayer = new OpenLayers.Control.SelectFeature([devicelayer, devlinklayer, nodelayer, nodelinklayer], {
 		hover: true,

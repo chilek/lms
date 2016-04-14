@@ -85,7 +85,7 @@
 			<IMG src="img/docum.gif" alt="">
 		</TD>
 		<TD width="1%" NOWRAP>
-			<B>{trans("Title:")}
+			<b>{trans("Title:")}</b>
 		</TD>
 		<TD width="98%" NOWRAP>
 			<INPUT type="text" name="document[title]" value="{$document.title}" {tip text="Enter document title" trigger="title"} size="40">
@@ -94,13 +94,13 @@
     </THEAD>
     <TBODY>
 	<TR>
-		<TD width="1%">
-	        	<IMG src="img/customer.gif" ALT="">
+		<TD style="width: 1%;">
+			<IMG src="img/customer.gif" ALT="">
 		</TD>
-		<TD width="1%" nowrap>
-			<B>{trans("Customer:")}</B>
+		<TD style="width: 1%;" class="bold nobr">
+			{trans("Customer:")}
 		</TD>
-		<TD WIDTH="98%" nowrap>
+		<TD style="width: 98%;" class="nobr">
 			{if $customers}
 			<SELECT SIZE="1" NAME="customer" onChange="document.documentadd.customerid.value=document.documentadd.customer.value" {tip trigger="customer"}>
 				<OPTION VALUE="0">{trans("... select customer ...")}</OPTION>
@@ -119,13 +119,11 @@
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{trans("Period:")}
+			<b>{trans("Period:")}</b>
 		</TD>
 		<TD width="98%">
-			<div class="calendar">
-			{trans("from:")} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" {tip text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
-			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" {tip text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
-			</div>
+			{trans("from:")} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" {tip class="calendar" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
+			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" {tip class="calendar" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
 		</TD>
 	</TR>
 	<TR>
@@ -133,7 +131,7 @@
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{trans("Description:")}
+			<b>{trans("Description:")}</b>
 		</TD>
 		<TD width="98%">
 			<TEXTAREA name="document[description]" rows="5" cols="50" {tip text="Enter additional information (optional)"}>{$document.description}</TEXTAREA>
@@ -144,7 +142,7 @@
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{trans("Type:")}
+			<b>{trans("Type:")}</b>
 		</TD>
 		<TD width="98%">
 			<SELECT SIZE="1" NAME="document[type]" onchange="setnumberplans();" {tip text="Select document type" trigger="type"}>
@@ -160,7 +158,7 @@
 			<IMG src="img/class.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{trans("Template:")}
+			<b>{trans("Template:")}</b>
 		</TD>
 		<TD width="98%">
 			<SELECT SIZE="1" NAME="document[templ]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="templ"} id="templ" onchange="getplugin();">
@@ -176,7 +174,7 @@
 			<IMG src="img/save.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{trans("File:")}
+			<b>{trans("File:")}</b>
 		</TD>
 		<TD width="98%">
 			<INPUT size="50" type="file" name="file" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
@@ -187,7 +185,7 @@
 			<IMG src="img/docum.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{trans("Number:")}
+			<b>{trans("Number:")}</b>
 		</TD>
 		<TD width="98%">
 			<INPUT type="text" name="document[number]" value="{if $document.number}{$document.number}{/if}" size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>&nbsp;

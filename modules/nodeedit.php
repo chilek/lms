@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -116,14 +116,17 @@ if (isset($_POST['nodeedit'])) {
 		$nodeedit['macs'][$key] = str_replace('-', ':', $value);
 
 	foreach ($nodeedit as $key => $value)
-		if ($key != 'macs')
+		if ($key != 'macs' && $key != 'authtype')
 			$nodeedit[$key] = trim($value);
 
-	if ($nodeedit['ipaddr'] == '' && $nodeedit['ipaddr_pub'] == '' && empty($nodeedit['macs']) && $nodeedit['name'] == '' && $nodeedit['info'] == '' && $nodeedit['passwd'] == '') {
+	if ($nodeedit['ipaddr'] == '' && $nodeedit['ipaddr_pub'] == '' && empty($nodeedit['macs']) && $nodeedit['name'] == '' && $nodeedit['info'] == '' && $nodeedit['passwd'] == '' && !isset($nodeedit['wholenetwork'])) {
 		$SESSION->redirect('?m=nodeinfo&id=' . $nodeedit['id']);
 	}
 
-	if (check_ip($nodeedit['ipaddr'])) {
+	if(isset($nodeedit['wholenetwork'])) {
+		$nodeedit['ipaddr'] = '0.0.0.0';
+		$nodeedit['ipaddr_pub'] = '0.0.0.0';
+	} elseif (check_ip($nodeedit['ipaddr'])) {
 		if ($LMS->IsIPValid($nodeedit['ipaddr'])) {
 			if (empty($nodeedit['netid']))
 				$nodeedit['netid'] = $DB->GetOne('SELECT id FROM networks WHERE INET_ATON(?) & INET_ATON(mask) = address ORDER BY id LIMIT 1',
@@ -166,13 +169,12 @@ if (isset($_POST['nodeedit'])) {
 	$macs = array();
 	foreach ($nodeedit['macs'] as $key => $value)
 		if (check_mac($value)) {
-			if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.allow_mac_sharing', false))) {
+			if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing')) {
 				if (($nodeid = $LMS->GetNodeIDByMAC($value)) != NULL && $nodeid != $nodeinfo['id'])
 					$error['mac' . $key] = trans('Specified MAC address is in use!');
 			}
 			$macs[] = $value;
-		}
-		elseif ($value != '')
+		} elseif ($value != '')
 			$error['mac' . $key] = trans('Incorrect MAC address!');
 	if (empty($macs))
 		$error['mac0'] = trans('MAC address is required!');
@@ -217,7 +219,7 @@ if (isset($_POST['nodeedit'])) {
 
 			if (!preg_match('/^[0-9]+$/', $nodeedit['port']) || $nodeedit['port'] > $ports) {
 				$error['port'] = trans('Incorrect port number!');
-			} elseif ($DB->GetOne('SELECT id FROM nodes WHERE netdev=? AND port=? AND ownerid>0', array($nodeedit['netdev'], $nodeedit['port']))
+			} elseif ($DB->GetOne('SELECT id FROM vnodes WHERE netdev=? AND port=? AND ownerid>0', array($nodeedit['netdev'], $nodeedit['port']))
 					|| $DB->GetOne('SELECT 1 FROM netlinks WHERE (src = ? OR dst = ?)
 			                AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?', array($nodeedit['netdev'], $nodeedit['netdev'], $nodeedit['netdev'], $nodeedit['port']))) {
 				$error['port'] = trans('Selected port number is taken by other device or node!');
@@ -260,9 +262,9 @@ if (isset($_POST['nodeedit'])) {
 			$nodeedit['location_house'] = null;
 			$nodeedit['location_flat'] = null;
 		}
-		if(empty($nodeedit['location'])and !empty($nodeedit['ownerid'])){
-                    $location=$LMS->GetCustomer($nodeedit['ownerid']);
-                    $nodeedit['location']=$location['address'].'; '.$location['zip'].' '.$location['city'];
+		if (empty($nodeedit['location']) && !empty($nodeedit['ownerid'])) {
+                    $location = $LMS->GetCustomer($nodeedit['ownerid']);
+                    $nodeedit['location'] = $location['address'] . ', ' . $location['zip'] . ' ' . $location['city'];
                 }
 
 		$nodeedit = $LMS->ExecHook('node_edit_before', $nodeedit);
@@ -299,6 +301,7 @@ if (isset($_POST['nodeedit'])) {
 	$nodeinfo['macs'] = $nodeedit['macs'];
 	$nodeinfo['ip'] = $nodeedit['ipaddr'];
 	$nodeinfo['netid'] = $nodeedit['netid'];
+	$nodeinfo['wholenetwork'] = $nodeedit['wholenetwork'];
 	$nodeinfo['ip_pub'] = $nodeedit['ipaddr_pub'];
 	$nodeinfo['passwd'] = $nodeedit['passwd'];
 	$nodeinfo['access'] = $nodeedit['access'];
@@ -332,9 +335,8 @@ if (empty($nodeinfo['macs']))
 
 include(MODULES_DIR . '/customer.inc.php');
 
-if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false))) {
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customers', $LMS->GetCustomerNames());
-}
 
 include(MODULES_DIR . '/nodexajax.inc.php');
 

@@ -53,36 +53,36 @@
 		</TD>
 		<TD NOWRAP onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
 			{if $queue[ticket].state == 0}
-				<FONT class="red">
+				<span class="red">
 			{elseif $queue[ticket].state == 3}
-				<FONT class="brown">
+				<span class="brown">
 			{/if}
 			<B>{$queue[ticket].id|string_format:"%06d"}</B><BR>
 			{$queue[ticket].createtime|date_format:"%Y/%m/%d %H:%M:%S"}
-			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</FONT>{/if}
+			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</span>{/if}
 		</TD>
 		<TD onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
 			{if $queue[ticket].state == 3}
-				<FONT class="brown">
+				<span class="brown">
 			{elseif $queue[ticket].state == 0}
-				<FONT class="red">
+				<span class="red">
 			{/if}
 			<B>{$queue[ticket].subject|escape|truncate:"60":"..."|default:"&nbsp;"}</B><BR>
 			{$queue[ticket].requestor|escape|truncate:"60":"..."}
 			{if $queue[ticket].requestoremail && !$queue[ticket].customerid}
 				&lt;{$queue[ticket].requestoremail}&gt;
 			{/if}
-			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</FONT>{/if}
+			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</span>{/if}
 		</TD>
 		<TD NOWRAP onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
 			{if $queue[ticket].state == 3}
-				<FONT class="brown">
+				<span class="brown">
 			{elseif $queue[ticket].state == 0}
-				<FONT class="red">
+				<span class="red">
 			{/if}
 			{if $queue[ticket].ownername}{$queue[ticket].ownername}{else}-{/if}<BR>
 			{$queue[ticket].lastmodified|date_format:"%Y/%m/%d %H:%M:%S"|default:"-"}
-			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</FONT>{/if}
+			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</span>{/if}
 		</TD>
 		<TD align="right" NOWRAP>
 			<A href="?m=rtticketprint&id={$queue[ticket].id}" target="_BLANK"><IMG src="img/print.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]" title="[ {trans("Edit")} ]"> </A>
@@ -93,10 +93,8 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD COLSPAN="5" ALIGN="center">
-			<P>&nbsp;</P>
-			<P><B>{trans("No such tickets matching search criteria.")}</B></P>
-			<P>&nbsp;</P>
+		<TD COLSPAN="5" class="empty-table">
+			<p>{trans("No such tickets matching search criteria.")}</p>
 		</TD>
 	</TR>
 	{/section}

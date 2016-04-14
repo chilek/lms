@@ -56,6 +56,7 @@ class LMS
     protected $document_manager;
     protected $massage_manager;
     protected $config_manager;
+    protected $user_group_manager;
 
     public function __construct(&$DB, &$AUTH, &$SYSLOG)
     { // class variables setting
@@ -286,7 +287,7 @@ class LMS
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.auto_remove_investment_project', true)))
 			$this->DB->Execute("DELETE FROM invprojects WHERE type <> ? AND id NOT IN
 				(SELECT DISTINCT invprojectid FROM netdevices WHERE invprojectid IS NOT NULL
-					UNION SELECT DISTINCT invprojectid FROM nodes WHERE invprojectid IS NOT NULL
+					UNION SELECT DISTINCT invprojectid FROM vnodes WHERE invprojectid IS NOT NULL
 					UNION SELECT DISTINCT invprojectid FROM netnodes WHERE invprojectid IS NOT NULL)",
 				array(INV_PROJECT_SYSTEM));
 	}
@@ -367,6 +368,12 @@ class LMS
         return $manager->getUserRights($id);
     }
 
+    public function PasswdExistsInHistory($id, $passwd) 
+    {
+        $manager = $this->getUserManager();
+        return $manager->PasswdExistsInHistory($id, $passwd);
+    }
+
     /*
      *  Customers functions
      */
@@ -399,6 +406,12 @@ class LMS
     {
         $manager = $this->getCustomerManager();
         return $manager->DeleteCustomer($id);
+    }
+    
+    public function DeleteCustomerPermanent($id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->deleteCustomerPermanent($id);
     }
 
     public function CustomerUpdate($customerdata)
@@ -455,16 +468,22 @@ class LMS
         return $manager->GetCustomerNodesAC($id);
     }
 
-    public function GetCustomerList($order = 'customername,asc', $state = null, $network = null, $customergroup = null, $search = null, $time = null, $sqlskey = 'AND', $nodegroup = null, $division = null, $limit = null, $offset = null, $count = false)
+    public function getCustomerList($params)
     {
         $manager = $this->getCustomerManager();
-        return $manager->getCustomerList($order, $state, $network, $customergroup, $search, $time, $sqlskey, $nodegroup, $division, $limit, $offset, $count);
+        return $manager->getCustomerList($params);
     }
 
     public function GetCustomerNodes($id, $count = null)
     {
         $manager = $this->getCustomerManager();
         return $manager->getCustomerNodes($id, $count);
+    }
+
+    public function GetCustomerNetworks($id, $count = null)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->GetCustomerNetworks($id, $count);
     }
 
     public function GetCustomerBalance($id, $totime = null)
@@ -678,10 +697,10 @@ class LMS
         return $manager->GetNode($id);
     }
 
-    public function GetNodeList($order = 'name,asc', $search = NULL, $sqlskey = 'AND', $network = NULL, $status = NULL, $customergroup = NULL, $nodegroup = NULL)
+    public function GetNodeList($order = 'name,asc', $search = NULL, $sqlskey = 'AND', $network = NULL, $status = NULL, $customergroup = NULL, $nodegroup = NULL, $limit = null, $offset = null, $count = false)
     {
         $manager = $this->getNodeManager();
-        return $manager->GetNodeList($order, $search, $sqlskey, $network, $status, $customergroup, $nodegroup);
+        return $manager->GetNodeList($order, $search, $sqlskey, $network, $status, $customergroup, $nodegroup, $limit, $offset, $count);
     }
 
     public function NodeSet($id, $access = -1)
@@ -1364,22 +1383,10 @@ class LMS
         return $manager->GetTicketContents($id);
     }
 
-    public function SetTicketState($ticket, $state)
+    public function TicketChange($ticketid, array $props)
     {
         $manager = $this->getHelpdeskManager();
-        return $manager->SetTicketState($ticket, $state);
-    }
-
-    public function SetTicketOwner($ticket, $owner)
-    {
-        $manager = $this->getHelpdeskManager();
-        return $manager->SetTicketOwner($ticket, $owner);
-    }
-
-    public function SetTicketQueue($ticket, $queue)
-    {
-        $manager = $this->getHelpdeskManager();
-        return $manager->SetTicketQueue($ticket, $queue);
+        return $manager->TicketChange($ticketid, $props);
     }
 
     public function GetMessage($id)
@@ -1398,10 +1405,16 @@ class LMS
         return $manager->GetConfigOptionId($var, $section);
     }
 
-    public function CheckOption($var, $value)
+    public function GetConfigDefaultType($option)
     {
         $manager = $this->getConfigManager();
-        return $manager->CheckOption($var, $value);
+        return $manager->GetConfigDefaultType($option);
+    }
+
+    public function CheckOption($option, $value, $type)
+    {
+        $manager = $this->getConfigManager();
+        return $manager->CheckOption($option, $value, $type);
     }
 
     /*
@@ -1569,75 +1582,134 @@ class LMS
 
     public function SendMail($recipients, $headers, $body, $files = NULL, $host = null, $port = null, $user = null, $pass = null, $auth = null, $persist = null)
     {
-        @include_once('Mail.php');
-        if (!class_exists('Mail'))
-            return trans('Can\'t send message. PEAR::Mail not found!');
+	$persist = is_null($persist) ? ConfigHelper::getConfig('mail.smtp_persist', true) : $persist;
 
-        $persist = is_null($persist) ? ConfigHelper::getConfig('mail.smtp_persist', true) : $persist;
-        if (!is_object($this->mail_object) || !$persist) {
-            $params['host'] = (!$host ? ConfigHelper::getConfig('mail.smtp_host') : $host);
-            $params['port'] = (!$port ? ConfigHelper::getConfig('mail.smtp_port') : $port);
-            $smtp_username = ConfigHelper::getConfig('mail.smtp_username');
-            if (!empty($smtp_username) || $user) {
-                $params['auth'] = (!$auth ? ConfigHelper::getConfig('mail.smtp_auth_type', true) : $auth);
-                $params['username'] = (!$user ? $smtp_username : $user);
-                $params['password'] = (!$pass ? ConfigHelper::getConfig('mail.smtp_password') : $pass);
-            } else
-                $params['auth'] = false;
-            $params['persist'] = $persist;
+	if(ConfigHelper::getConfig('mail.backend') == 'pear'){
+	    @include_once('Mail.php');
+	    if (!class_exists('Mail'))
+		return trans('Can\'t send message. PEAR::Mail not found!');
 
-            $error = $this->mail_object = & Mail::factory('smtp', $params);
-            //if (PEAR::isError($error))
-            if (is_a($error, 'PEAR_Error'))
-                return $error->getMessage();
-        }
+	    if (!is_object($this->mail_object) || !$persist) {
+		$params['host'] = (!$host ? ConfigHelper::getConfig('mail.smtp_host') : $host);
+		$params['port'] = (!$port ? ConfigHelper::getConfig('mail.smtp_port') : $port);
+		$smtp_username = ConfigHelper::getConfig('mail.smtp_username');
+		if (!empty($smtp_username) || $user) {
+		    $params['auth'] = (!$auth ? ConfigHelper::getConfig('mail.smtp_auth_type', true) : $auth);
+		    $params['username'] = (!$user ? $smtp_username : $user);
+		    $params['password'] = (!$pass ? ConfigHelper::getConfig('mail.smtp_password') : $pass);
+		} else
+		    $params['auth'] = false;
+		$params['persist'] = $persist;
 
-        $headers['X-Mailer'] = 'LMS-' . $this->_version;
-        if (!empty($_SERVER['REMOTE_ADDR']))
-            $headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
-        if (isset($_SERVER['HTTP_USER_AGENT']))
-            $headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
-        $headers['Mime-Version'] = '1.0';
-        $headers['Subject'] = qp_encode($headers['Subject']);
+		$error = $this->mail_object = & Mail::factory('smtp', $params);
+		//if (PEAR::isError($error))
+		if (is_a($error, 'PEAR_Error'))
+		    return $error->getMessage();
+	    }
 
-        $debug_email = ConfigHelper::getConfig('mail.debug_email');
-        if (!empty($debug_email)) {
-            $recipients = ConfigHelper::getConfig('mail.debug_email');
-            $headers['To'] = '<' . $recipients . '>';
-        }
+	    $headers['X-Mailer'] = 'LMS-' . $this->_version;
+	    if (!empty($_SERVER['REMOTE_ADDR']))
+		$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
+	    if (isset($_SERVER['HTTP_USER_AGENT']))
+		$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
+	    $headers['Mime-Version'] = '1.0';
+	    $headers['Subject'] = qp_encode($headers['Subject']);
 
-        if (empty($headers['Date']))
-            $headers['Date'] = date('r');
+	    $debug_email = ConfigHelper::getConfig('mail.debug_email');
+	    if (!empty($debug_email)) {
+		$recipients = ConfigHelper::getConfig('mail.debug_email');
+		$headers['To'] = '<' . $recipients . '>';
+	    }
 
-        if ($files || $headers['X-LMS-Format'] == 'html') {
-            $boundary = '-LMS-' . str_replace(' ', '.', microtime());
-            $headers['Content-Type'] = "multipart/mixed;\n  boundary=\"" . $boundary . '"';
-            $buf = "\nThis is a multi-part message in MIME format.\n\n";
-            $buf .= '--' . $boundary . "\n";
-            $buf .= "Content-Type: text/" . ($headers['X-LMS-Format'] == 'html' ? "html" : "plain") . "; charset=UTF-8\n\n";
-            $buf .= $body . "\n";
-            if ($files)
-                while (list(, $chunk) = each($files)) {
-                    $buf .= '--' . $boundary . "\n";
-                    $buf .= "Content-Transfer-Encoding: base64\n";
-                    $buf .= "Content-Type: " . $chunk['content_type'] . "; name=\"" . $chunk['filename'] . "\"\n";
-                    $buf .= "Content-Description:\n";
-                    $buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
-                    $buf .= chunk_split(base64_encode($chunk['data']), 60, "\n");
-                }
-            $buf .= '--' . $boundary . '--';
-        } else {
-            $headers['Content-Type'] = 'text/plain; charset=UTF-8';
-            $buf = $body;
-        }
+	    if (empty($headers['Date']))
+		$headers['Date'] = date('r');
 
+	    if ($files || $headers['X-LMS-Format'] == 'html') {
+		$boundary = '-LMS-' . str_replace(' ', '.', microtime());
+		$headers['Content-Type'] = "multipart/mixed;\n  boundary=\"" . $boundary . '"';
+		$buf = "\nThis is a multi-part message in MIME format.\n\n";
+		$buf .= '--' . $boundary . "\n";
+		$buf .= "Content-Type: text/" . ($headers['X-LMS-Format'] == 'html' ? "html" : "plain") . "; charset=UTF-8\n\n";
+		$buf .= $body . "\n";
+		if ($files)
+		    while (list(, $chunk) = each($files)) {
+			$buf .= '--' . $boundary . "\n";
+			$buf .= "Content-Transfer-Encoding: base64\n";
+			$buf .= "Content-Type: " . $chunk['content_type'] . "; name=\"" . $chunk['filename'] . "\"\n";
+			$buf .= "Content-Description:\n";
+			$buf .= "Content-Disposition: attachment; filename=\"" . $chunk['filename'] . "\"\n\n";
+			$buf .= chunk_split(base64_encode($chunk['data']), 60, "\n");
+		    }
+		$buf .= '--' . $boundary . '--';
+	    } else {
+		$headers['Content-Type'] = 'text/plain; charset=UTF-8';
+		$buf = $body;
+	    }
 
-        $error = $this->mail_object->send($recipients, $headers, $buf);
-        //if (PEAR::isError($error))
-        if (is_a($error, 'PEAR_Error'))
-            return $error->getMessage();
-        else
-            return MSG_SENT;
+	    $error = $this->mail_object->send($recipients, $headers, $buf);
+	    //if (PEAR::isError($error))
+	    if (is_a($error, 'PEAR_Error'))
+		return $error->getMessage();
+	    else
+		return MSG_SENT;
+	}
+	elseif(ConfigHelper::getConfig('mail.backend') == 'phpmailer'){
+	    $this->mail_object = new PHPMailer();
+	    $this->mail_object->isSMTP();
+
+	    $this->mail_object->SMTPKeepAlive = $persist;
+
+	    $this->mail_object->Host = (!$host ? ConfigHelper::getConfig('mail.smtp_host') : $host);
+	    $this->mail_object->Port = (!$port ? ConfigHelper::getConfig('mail.smtp_port') : $port);
+	    $smtp_username = ConfigHelper::getConfig('mail.smtp_username');
+	    if (!empty($smtp_username) || $user) {
+		$this->mail_object->Username = (!$user ? $smtp_username : $user);
+		$this->mail_object->Password = (!$pass ? ConfigHelper::getConfig('mail.smtp_password') : $pass);
+		$this->mail_object->SMTPAuth  = (!$auth ? ConfigHelper::getConfig('mail.smtp_auth_type', true) : $auth);
+		$this->mail_object->SMTPSecure  = (!$auth ? ConfigHelper::getConfig('mail.smtp_secure', true) : $auth);
+	    }
+	    $this->mail_object->XMailer = 'LMS-' . $this->_version;
+	    if (!empty($_SERVER['REMOTE_ADDR']))
+		$this->mail_object->addCustomHeader('X-Remote-IP: '.$_SERVER['REMOTE_ADDR']);
+	    if (isset($_SERVER['HTTP_USER_AGENT']))
+		$this->mail_object->addCustomHeader('X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']);
+
+	    preg_match('/^(.+) <([a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>$/A', $headers['From'], $from);
+	    $this->mail_object->setFrom($from[2], trim($from[1], "\""));
+	    $this->mail_object->CharSet = 'UTF-8';
+	    $this->mail_object->Subject = $headers['Subject'];
+
+	    $debug_email = ConfigHelper::getConfig('mail.debug_email');
+	    if (!empty($debug_email)) {
+                $this->mail_object->SMTPDebug = 2;
+		$recipients = ConfigHelper::getConfig('mail.debug_email');
+	    }
+
+	    if (empty($headers['Date']))
+		$headers['Date'] = date('r');
+
+	    if ($files)
+	        while (list(, $chunk) = each($files))
+		    $this->mail_object->AddStringAttachment($chunk['data'],$chunk['filename'],'base64',$chunk['content_type']);
+
+	    if($headers['X-LMS-Format'] == 'html') {
+	        $this->mail_object->isHTML(true);
+	        $this->mail_object->AltBody = trans("To view the message, please use an HTML compatible email viewer");
+	        $this->mail_object->msgHTML($body);
+	    } else {
+		$this->mail_object->isHTML(false);
+		$this->mail_object->Body = $body;
+	    }
+
+	    foreach(explode(",", $recipients) as $recipient)
+	    	$this->mail_object->addAddress($recipient);
+
+	    if(!$this->mail_object->Send()) {
+		return "Mailer Error: " . $this->mail_object->ErrorInfo;
+	    } else {
+		return MSG_SENT;
+	    }
+	}
     }
 
     public function SendSMS($number, $message, $messageid = 0, $script_service = null)
@@ -2130,8 +2202,8 @@ class LMS
     {
         $nodesessions = $this->DB->GetAll('SELECT INET_NTOA(ipaddr) AS ipaddr, mac, start, stop,
 		download, upload, terminatecause, type
-		FROM nodesessions WHERE nodeid = ? ORDER BY stop DESC LIMIT ?',
-			array($nodeid, ConfigHelper::getConfig('phpui.nodesession_limit', 10)));
+		FROM nodesessions WHERE nodeid = ? ORDER BY stop DESC LIMIT ' . intval(ConfigHelper::getConfig('phpui.nodesession_limit', 10)),
+			array($nodeid));
         if (!empty($nodesessions))
             foreach ($nodesessions as $idx => $session) {
                 list ($number, $unit) = setunits($session['download']);
@@ -2608,5 +2680,91 @@ class LMS
     {
         $this->SYSLOG = $syslog;
     }
+    
+    
+    /**
+     * Returns user group manager
+     * 
+     * @return LMSUserGroupManagerInterface User group manager
+     */
+    protected function getUserGroupManager()
+    {
+        if (!isset($this->user_group_manager)) {
+            $this->user_group_manager = new LMSUserGroupManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+        }
+        return $this->user_group_manager;
+    }
+    
+    public function UsergroupGetId($name)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UsergroupGetId($name);
+    }
+    
+    public function UsergroupAdd($usergroupdata)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UsergroupAdd($usergroupdata);
+    }
+    
+    public function UsergroupGetList()
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UsergroupGetList();
+    }
 
+    public function UsergroupGet($id)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UsergroupGet($id);
+    }
+    
+    public function UsergroupExists($id)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UsergroupExists($id);
+    }
+    
+    public function GetUserWithoutGroupNames($groupid)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->GetUserWithoutGroupNames($groupid);
+    }
+    
+    public function UserassignmentDelete($userassignmentdata)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UserassignmentDelete($userassignmentdata);
+    }
+    
+    public function UserassignmentExist($groupid, $userid)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UserassignmentExist($groupid, $userid);
+    }
+    
+    public function UserassignmentAdd($userassignmentdata)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UserassignmentAdd($userassignmentdata);
+    }
+    
+    public function UsergroupDelete($id)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UsergroupDelete($id);
+    }
+    
+    public function UsergroupUpdate($usergroupdata)
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UsergroupUpdate($usergroupdata);
+    }
+    
+    public function UsergroupGetAll()
+    {
+        $manager = $this->getUserGroupManager();
+        return $manager->UsergroupGetAll();
+    }
+    
 }

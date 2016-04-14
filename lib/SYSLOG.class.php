@@ -48,6 +48,8 @@ define('SYSLOG_RES_NETLINK', 45);
 define('SYSLOG_RES_MGMTURL', 46);
 define('SYSLOG_RES_TMPL', 47);
 define('SYSLOG_RES_RADIOSECTOR', 48);
+define('SYSLOG_RES_USERGROUP', 49);
+define('SYSLOG_RES_USERASSIGN', 50);
 
 $SYSLOG_RESOURCES = array(
 	SYSLOG_RES_USER => trans('user<!syslog>'),
@@ -98,6 +100,8 @@ $SYSLOG_RESOURCES = array(
 	SYSLOG_RES_MGMTURL => trans('management url<!syslog>'),
 	SYSLOG_RES_TMPL => trans('template<!syslog>'),
 	SYSLOG_RES_RADIOSECTOR => trans('radio sector<!syslog>'),
+	SYSLOG_RES_USERGROUP => trans('user group<!syslog>'),
+	SYSLOG_RES_USERASSIGN => trans('user assignment<!syslog>'),
 );
 
 $SYSLOG_RESOURCE_KEYS = array(
@@ -149,6 +153,8 @@ $SYSLOG_RESOURCE_KEYS = array(
 	SYSLOG_RES_MGMTURL => 'managementurlid',
 	SYSLOG_RES_TMPL => 'templateid',
 	SYSLOG_RES_RADIOSECTOR => 'radiosectorid',
+	SYSLOG_RES_USERGROUP => 'usergroupid',
+	SYSLOG_RES_USERASSIGN => 'userassignmentid',
 );
 
 define('SYSLOG_OPER_ADD', 1);
@@ -245,6 +251,7 @@ class SYSLOG {
 		$datefrom = (isset($params['datefrom']) && !empty($params['datefrom']) ? intval($params['datefrom']) : 0);
 		$dateto = (isset($params['dateto']) && !empty($params['dateto']) ? intval($params['dateto']) : 0);
 		$resource = (isset($params['resource']) && !empty($params['resource']) ? $params['resource'] : 0);
+
 		$args = array();
 		$where = array();
 		$joins = array();
@@ -324,8 +331,12 @@ class SYSLOG {
 				else
 					$data['value'] = $data['value'];
 				break;
+			case 'ipaddr':
+				if (!check_ip($data['value']))
+					$data['value'] = long2ip($data['value']);
+				break;
 			case 'ipaddr_pub':
-				$data['value'] = $data['value'] == '0.0.0.0' ? trans('none') : $data['value'];
+				$data['value'] = empty($data['value']) ? trans('none') : long2ip($data['value']);
 				break;
 			case 'linktype':
 				$data['value'] = $LINKTYPES[$data['value']];

@@ -235,7 +235,7 @@ $dbq = $dbase->prepare("SELECT d.id, d.number, d.cdate, d.name, d.customerid, n.
 			LEFT JOIN customers c ON (c.id = d.customerid)
 			LEFT JOIN numberplans n ON (n.id = d.numberplanid)
 			$groupjoin
-			WHERE c.deleted = 0 AND d.type = 1 AND EXISTS (SELECT COUNT(contact) FROM customercontacts WHERE customerid = c.id AND (type & 16 > 0))
+			WHERE c.deleted = 0 AND d.type = 1 AND EXISTS (SELECT id FROM customercontacts WHERE customerid = c.id AND (type & 16 > 0))
 				AND d.cdate >= $daystart AND d.cdate <= $dayend AND c.invoicenotice = 1
 				$groupwhere");
 $dbq->execute();

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -42,7 +42,7 @@ if(sizeof($ids))
 		list ($cid, $closed) = array_values($DB->GetRow('SELECT customerid, closed FROM documents
 			WHERE id = ?', array($invoiceid)));
 		// add payment
-		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.invoice_check_payment', false)) && $cid && !$closed) {
+		if (ConfigHelper::checkConfig('phpui.invoice_check_payment') && $cid && !$closed) {
 			$value = $DB->GetOne('SELECT CASE reference WHEN 0 THEN SUM(a.value*a.count)
 				ELSE SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count) END
 				FROM documents d

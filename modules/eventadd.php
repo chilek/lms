@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -125,19 +125,22 @@ if(isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year']))
 	$event['date'] = sprintf('%04d/%02d/%02d', $_GET['year'], $_GET['month'], $_GET['day']);
 }
 
+
 $layout['pagetitle'] = trans('New Event');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$userlist = $LMS->GetUserNames();
+$usergroup = $DB->GetAll("SELECT id, name FROM usergroups");
+$userlist = $DB->GetAll('SELECT users.id, users.name, userassignments.usergroupid FROM users 
+        LEFT JOIN userassignments ON (userassignments.userid = users.id)
+        WHERE users.deleted = 0 AND users.access = 1 ORDER BY login ASC');
 
-if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
-{
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
-}
 
+$SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
 $SMARTY->assign('userlist', $userlist);
-$SMARTY->assign('userlistsize', sizeof($userlist));
+$SMARTY->assign('usergroup', $usergroup);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('event', $event);
 $SMARTY->assign('hours', 

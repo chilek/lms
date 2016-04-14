@@ -65,7 +65,7 @@ if (isset($where_node) || isset($where_cust)) {
 	if ($customerlist = $DB->GetAll('SELECT DISTINCT c.id, address, zip, city, cc.email, ssn,
 					' . $DB->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
 					(SELECT SUM(value) FROM cash WHERE customerid = c.id) AS balance
-				FROM customersview c
+				FROM customerview c
 				LEFT JOIN customermailsview cc ON cc.customerid = c.id '
 				.(isset($where_node) ? 'LEFT JOIN vnodes ON (c.id = ownerid) ' : '')
 				.'WHERE deleted = 0 '
@@ -75,7 +75,7 @@ if (isset($where_node) || isset($where_cust)) {
 					SELECT DISTINCT c.id, address, zip, city, cc.email, ssn, 
 					' . $DB->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
 					(SELECT SUM(value) FROM cash WHERE customerid = c.id) AS balance 
-					FROM customersview c
+					FROM customerview c
 					JOIN customermailsview cc ON cc.customerid = c.id 
 					WHERE deleted = 0 AND UPPER(cc.email) LIKE UPPER(' . $DB->Escape('%' . $search . '%') . ')' : '')
 				.'ORDER BY customername LIMIT 15'))

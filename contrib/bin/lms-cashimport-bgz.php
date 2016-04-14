@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
  *  USA.
  *
- *  $Id: lms-cashimport-bgz.php,v 1.1 2012/03/03 15:27:16 chilek Exp $
+ *  $Id$
  */
 
 ini_set('error_reporting', E_ALL&~E_NOTICE);
@@ -39,28 +39,25 @@ foreach ($parameters as $key => $val) {
 	$short_to_longs[$newkey] = $val;
 }
 $options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach($short_to_longs as $short => $long)
-	if (array_key_exists($short, $options))
-	{
+foreach ($short_to_longs as $short => $long)
+	if (array_key_exists($short, $options)) {
 		$options[$long] = $options[$short];
 		unset($options[$short]);
 	}
 
-if (array_key_exists('version', $options))
-{
+if (array_key_exists('version', $options)) {
 	print <<<EOF
 lms-cashimport-bgz.php
-(C) 2001-2013 LMS Developers
+(C) 2001-2016 LMS Developers
 
 EOF;
 	exit(0);
 }
 
-if (array_key_exists('help', $options))
-{
+if (array_key_exists('help', $options)) {
 	print <<<EOF
 lms-cashimport-bgz.php
-(C) 2001-2013 LMS Developers
+(C) 2001-2016 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -72,11 +69,10 @@ EOF;
 }
 
 $quiet = array_key_exists('quiet', $options);
-if (!$quiet)
-{
+if (!$quiet) {
 	print <<<EOF
 lms-cashimport-bgz.php
-(C) 2001-2013 LMS Developers
+(C) 2001-2016 LMS Developers
 
 EOF;
 }
@@ -86,12 +82,13 @@ if (array_key_exists('config-file', $options))
 else
 	$CONFIG_FILE = '/etc/lms/lms.ini';
 
-if (!$quiet) {
-	echo "Using file ".$CONFIG_FILE." as config.\n";
-}
+if (!$quiet)
+	echo "Using file ".$CONFIG_FILE." as config." . PHP_EOL;
 
 if (!is_readable($CONFIG_FILE))
-	die("Unable to read configuration file [".$CONFIG_FILE."]!\n");
+	die("Unable to read configuration file [".$CONFIG_FILE."]!" . PHP_EOL);
+
+define('CONFIG_FILE', $CONFIG_FILE);
 
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
@@ -102,37 +99,33 @@ $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ?
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 
-// Load autloader
-require_once(LIB_DIR.'/autoloader.php');
-
-// Do some checks and load config defaults
-
-require_once(LIB_DIR.'/config.php');
+// Load autoloader
+$composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+if (file_exists($composer_autoload_path)) {
+    require_once $composer_autoload_path;
+} else {
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
+}
 
 // Init database
 
 $DB = null;
 
 try {
-
-    $DB = LMSDB::getInstance();
-
+	$DB = LMSDB::getInstance();
 } catch (Exception $ex) {
-    
-    trigger_error($ex->getMessage(), E_USER_WARNING);
-    
-    // can't working without database
-    die("Fatal error: cannot connect to database!\n");
-    
+	trigger_error($ex->getMessage(), E_USER_WARNING);
+	// can't working without database
+	die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
 // Include required files (including sequence is important)
 
-require_once(LIB_DIR.'/language.php');
-include_once(LIB_DIR.'/definitions.php');
-require_once(LIB_DIR.'/unstrip.php');
-require_once(LIB_DIR.'/common.php');
-require_once(LIB_DIR . '/SYSLOG.class.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
+include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
 
 // Initialize Session, Auth and LMS classes
 
@@ -146,7 +139,7 @@ $bgz_username = ConfigHelper::getConfig('finances.bgz_username');
 $bgz_password = ConfigHelper::getConfig('finances.bgz_password');
 $bgz_firm = ConfigHelper::getConfig('finances.bgz_firm');
 if (empty($bgz_username) || empty($bgz_password) || empty($bgz_firm))
-	die("Fatal error: BGZ credentials are not set!\n");
+	die("Fatal error: BGZ credentials are not set!" . PHP_EOL);
 
 define('USER_AGENT', "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
 define('COOKIE_FILE', tempnam('/tmp', 'lms-bgz-cookies-'));
@@ -306,7 +299,7 @@ function get_file_contents($fileid) {
 
 @include(ConfigHelper::getConfig('phpui.import_config', 'cashimportcfg.php'));
 if (!isset($patterns) || !is_array($patterns))
-	die(trans("Configuration error. Patterns array not found!")."\n");
+	die(trans("Configuration error. Patterns array not found!") . PHP_EOL);
 
 function parse_file($filename, $contents) {
 	global $DB, $quiet, $patterns;
@@ -497,7 +490,7 @@ function parse_file($filename, $contents) {
 	}
 
 	if (!$quiet)
-		printf("Done.\n");
+		printf("Done." . PHP_EOL);
 }
 
 function commit_cashimport()
@@ -588,18 +581,18 @@ if (!$quiet)
 $res = log_in_to_bgz(ConfigHelper::getConfig('finances.bgz_username'), ConfigHelper::getConfig('finances.bgz_firm'), ConfigHelper::getConfig('finances.bgz_password'));
 if (!$res) {
 	unlink(COOKIE_FILE);
-	die("Cannot log in to BGZ!\n");
+	die("Cannot log in to BGZ!" . PHP_EOL);
 }
 
 if (!$quiet)
-	printf("Done.\nGetting cash import file list ... ");
+	printf("Done." . PHP_EOL . "Getting cash import file list ... ");
 $files = get_files();
 if (!$files) {
 	unlink(COOKIE_FILE);
-	die("Cannot get file list!\n");
+	die("Cannot get file list!" . PHP_EOL);
 }
 if (!$quiet)
-	printf("Done.\n");
+	printf("Done." . PHP_EOL);
 
 $xml = new SimpleXMLIterator($files);
 $xml->rewind();
@@ -656,16 +649,16 @@ if (!$lastchange || time() - $lastchange > 30 * 86400)
 	}
 	if (!$quiet)
 		if ($res)
-			printf("Done.\n");
+			printf("Done." . PHP_EOL);
 		else
-			printf("Error!\n");
+			printf("Error!" . PHP_EOL);
 }
 
 if (!$quiet)
 	printf("Logging out from BGZ ... ");
 log_out_from_bgz();
 if (!$quiet)
-	printf("Done.\n");
+	printf("Done." . PHP_EOL);
 
 unlink(COOKIE_FILE);
 

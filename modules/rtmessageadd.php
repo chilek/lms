@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -141,11 +141,11 @@ if(isset($_POST['message']))
 		if (!empty($helpdesk_sender_name) && ($mailfname = $helpdesk_sender_name))
 		{
 			if($mailfname == 'queue') $mailfname = $queue['name'];
-			if($mailfname == 'customer') $mailfname = $user['name'];
+			if($mailfname == 'user') $mailfname = $user['name'];
 			$mailfname = '"'.$mailfname.'"';
 		}
 
-		if(!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_backend_mode', false)) || $message['destination'] == '') {
+		if (!ConfigHelper::checkConfig('phpui.helpdesk_backend_mode') || $message['destination'] == '') {
 			$headers = array();
 
 			if($message['destination'] && $message['userid']
@@ -239,15 +239,21 @@ if(isset($_POST['message']))
 
 		// setting status and the ticket owner
 		if (isset($message['state']))
-			$LMS->SetTicketState($message['ticketid'], RT_RESOLVED);
+			$message['state'] = RT_RESOLVED;
 		else if (!$DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($message['ticketid'])))
-			$LMS->SetTicketState($message['ticketid'], RT_OPEN);
+			$message['state'] = RT_OPEN;
+		
+		if (!$DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($message['ticketid'])))
+			$message['owner'] = $AUTH->id;
 
-		$LMS->SetTicketOwner($message['ticketid'], $message['owner']);
-		$LMS->SetTicketQueue($message['ticketid'], $message['queueid']);
-
-		$DB->Execute('UPDATE rttickets SET cause = ? WHERE id = ?', array($message['cause'], $message['ticketid']));
-
+		$props = array(
+			'queueid' => $message['queueid'], 
+			'owner' => $message['owner'], 
+			'cause' => $message['cause'],
+			'state' => $message['state']
+		);
+		$LMS->TicketChange($message['ticketid'], $props);
+		
 		// Users notification
 		if (isset($message['notify']) && ($user['email'] || $queue['email']))
 		{
@@ -279,11 +285,11 @@ if(isset($_POST['message']))
 				.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$message['ticketid'];
 
-			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)))
+			if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo'))
 				if ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid'])))
 				{
 					$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-							address, zip, city FROM customers WHERE id = ?', array($cid));
+							address, zip, city FROM customeraddressview WHERE id = ?', array($cid));
 					$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
 						WHERE customerid = ?', array($cid));
 
@@ -385,6 +391,9 @@ else
 	{
 		$queue = $LMS->GetQueueByTicketId($_GET['ticketid']);
 		$message = $DB->GetRow('SELECT id AS ticketid, state, cause, queueid, owner FROM rttickets WHERE id = ?', array($_GET['ticketid']));
+                if(ConfigHelper::checkConfig('phpui.helpdesk_notify')){
+                    $message['notify'] = TRUE;
+                }
 	}
 
 	$user = $LMS->GetUserInfo($AUTH->id);
@@ -410,9 +419,8 @@ else
 		$message['subject'] = 'Re: '.$reply['subject'];
 		$message['inreplyto'] = $reply['id'];
 		$message['references'] = $reply['messageid'];
-		
-		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_reply_body', false)))
-		{
+
+		if (ConfigHelper::checkConfig('phpui.helpdesk_reply_body')) {
 			$body = explode("\n",textwrap(strip_tags($reply['body']),74));
 			foreach($body as $line)
 				$message['body'] .= '> '.$line."\n";

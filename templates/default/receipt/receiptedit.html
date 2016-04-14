@@ -38,12 +38,6 @@
 				document.setcustomer.customerid.value = document.setcustomer.customer.value;
 		document.setcustomer.submit();
 	}
-
-	function reset_customer()
-	{
-		if (document.setcustomer.customerid.value)
-			document.setcustomer.customer.value = document.setcustomer.customerid.value;
-	}
 //-->
 </SCRIPT>
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptedit&action=setcustomer">
@@ -88,10 +82,8 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Settlement date:")}</B>
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			<div class="calendar">
-			<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
-			</div>
+		<TD style="width: 99%;" class="nobr">
+			<INPUT TYPE="TEXT" NAME="receipt[cdate]" VALUE="{$receipt.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 			{if $receipt.cdatewarning}
 			<INPUT TYPE="HIDDEN" NAME="receipt[cdatewarning]" VALUE="1">
 			{/if}
@@ -104,22 +96,19 @@
 		<TD WIDTH="99%" NOWRAP>
 		    <TABLE>
 			<TR>
-			    <TD width="1%" nowrap>
-				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" id="radio_customer" checked> <label for="radio_customer">{trans("customer")}:</label>
-			    </TD>
-			    <TD width="99%">
-				{if $customerlist}
-				<SELECT SIZE="1" NAME="customer"  onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value; document.getElementById('radio_customer').checked=true;" {tip trigger="customerid"}>
-				    <OPTION VALUE="0">{trans("... select customer ...")}</OPTION>
-				    {foreach from=$customerlist item=c}
-				    <OPTION VALUE="{$c.id}"{if $c.id == $customer.id || $receipt.customerid == $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
-				    {/foreach}
-				</SELECT>
-				{trans("or Customer ID:")}
-				{/if}
-				<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$receipt.customerid}{/if}" SIZE="5"{if $customerlist} onchange="reset_customer()" onfocus="reset_customer()"{/if} onclick="document.getElementById('radio_customer').checked=true;" {tip text="Enter customer ID" trigger="customerid"}>
-				<A href="javascript: void(0);" onclick="document.getElementById('radio_customer').checked=true;return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-			    </TD>
+				<TD style="width: 1%;" class="nobr">
+					<label>
+						<INPUT type="radio" name="receipt[o_type]" value="customer" id="radio_customer" checked>
+						{trans("customer")}:
+					</label>
+				</TD>
+				<TD style="width: 99%;">
+					{if isset($customer.id)}
+					{customerlist form="setcustomer" customers=$customerlist selected=$customer.id selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;"}
+					{else}
+					{customerlist form="setcustomer" customers=$customerlist selected=$receipt.customerid selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;"}
+					{/if}
+				</TD>
 			</TR>
 			<TR>
 			    <TD width="1%" nowrap>
@@ -160,12 +149,12 @@
 		<TD WIDTH="1%" nowrap>
 		        <B>{$customer.customername}</B>
 		        &nbsp;&raquo;&nbsp; {$customer.address} &nbsp; {$customer.zip} {$customer.city}
-		        &nbsp;&raquo;&nbsp; {if $customer.balance < 0}<FONT class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</FONT>{/if}
+		        &nbsp;&raquo;&nbsp; {if $customer.balance < 0}<span class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</span>{/if}
                 </TD>
 		<TD WIDTH="98%" align="right">
-                        {if $customer.groups}<FONT class="red bold">
+                        {if $customer.groups}<span class="red bold">
 			({foreach from=$customer.groups item=item name=groups}{$item.name}{if $smarty.foreach.groups.iteration < sizeof($customer.groups)}, {/if}{/foreach})
-			</FONT>{/if}
+			</span>{/if}
 		</TD>
         </TR>
     </THEAD>
@@ -179,7 +168,7 @@
 			<IMG SRC="img/note.gif" ALT=""> <B>{trans("Notes:")}</B>
 		</TD>
 		<TD>
-		        <FONT class="red">{$customer.notes|replace:"\n":"<BR>"}</FONT>
+		        <span class="red">{$customer.notes|replace:"\n":"<BR>"}</span>
 		</TD>
 	</TR>
     </THEAD>
@@ -194,7 +183,7 @@
 			<IMG SRC="img/docum.gif" ALT=""> <B>{trans("Documents:")}</B>
 		</TD>
 		<TD>
-		        <FONT class="red">{$customer.docwarning}</FONT>
+		        <span class="red">{$customer.docwarning}</span>
 		</TD>
 	</TR>
     </THEAD>
@@ -209,7 +198,7 @@
 			<IMG SRC="img/node.gif" ALT=""> <B>{trans("Nodes:")}</B>
 		</TD>
 		<TD>
-		        <FONT class="red">{$customer.nodeswarning}</FONT>
+		        <span class="red">{$customer.nodeswarning}</span>
 		</TD>
 	</TR>
     </THEAD>
@@ -224,7 +213,7 @@
 			<IMG SRC="img/nodegroup.gif" ALT=""> <B>{trans("Groups:")}</B>
 		</TD>
 		<TD>
-		        <FONT class="red">{$customer.nodegroupswarning}</FONT>
+		        <span class="red">{$customer.nodegroupswarning}</span>
 		</TD>
 	</TR>
     </THEAD>
@@ -267,10 +256,8 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD COLSPAN="4" ALIGN="CENTER">
-			<P>&nbsp;</P>
-			<P><B>{trans("Receipt have no items. Use form below for items addition.")}</B></P>
-			<P>&nbsp;</P>
+		<TD COLSPAN="4" class="empty-table">
+			<p>{trans("Receipt have no items. Use form below for items addition.")}</p>
 		</TD>
 	</TR>
 	{/foreach}

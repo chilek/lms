@@ -92,7 +92,7 @@
                 </td>
                 <td>
                     <input type="text" size="40" value="{$voipaccountdata.location}" id="location" name="voipaccountdata[location]"  {tip text="Enter location (optional)" trigger="location"}>
-                    <a href="javascript: void(0);" onclick="if (check_teryt()) return locationchoosewin('voipaccountdata', 'voipaccountadd', document.forms['voipaccountadd'].elements['voipaccountdata[location_city]'].value,  document.forms['voipaccountadd'].elements['voipaccountdata[location_street]'].value)" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</a>
+                    <a href="javascript:void(0);" onclick="if (check_teryt()) return locationchoosewin('voipaccountdata', 'voipaccountadd', document.forms['voipaccountadd'].elements['voipaccountdata[location_city]'].value,  document.forms['voipaccountadd'].elements['voipaccountdata[location_street]'].value, {ConfigHelper::getConfig('phpui.default_teryt_city')})" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</a>
                     <br>
                     <input type="hidden" name="voipaccountdata[location_city]" value="{$voipaccountdata.location_city}">
                     <input type="hidden" name="voipaccountdata[location_street]" value="{$voipaccountdata.location_street}">
@@ -113,7 +113,7 @@
                         {trans("Cancel")} <img src="img/cancel.gif" alt="">
                     </a>
                     <br>
-                    <input type="checkbox" name="voipaccountdata[reuse]" id="reuse" value="ON" id="reuse" {if $voipaccountdata.reuse}checked{/if}>
+                    <input type="checkbox" name="voipaccountdata[reuse]" id="reuse" value="ON" {if $voipaccountdata.reuse}checked{/if}>
                     <label for="reuse">{trans("Display this form again, when this voip account is saved")}</label>
                 </td>
             </tr>

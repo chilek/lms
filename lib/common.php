@@ -773,7 +773,7 @@ function register_plugin($handle, $plugin)
         $PLUGINS[$handle][] = $plugin;
 }
 
-function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $orientation='P', $margins=array(5, 10, 5, 10), $save=false, $copy=false)
+function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $orientation='P', $margins=array(5, 10, 5, 10), $save=false, $copy=false, $md5sum = '')
 {
 	global $layout, $DB;
 
@@ -781,7 +781,7 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 		if (!is_array($margins))
 			$margins = array(5, 10, 5, 10); /* default */
 
-	$html2pdf = new HTML2PDF($orientation, 'A4', 'en', true, 'UTF-8', $margins);
+	$html2pdf = new LMSHTML2PDF($orientation, 'A4', 'en', true, 'UTF-8', $margins);
 	/* disable font subsetting to improve performance */
 	$html2pdf->pdf->setFontSubsetting(false);
 
@@ -791,7 +791,7 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 			WHERE d.id = ?', array($id));
 	}
 
-	$html2pdf->pdf->SetProducer('LMS Developers');
+	$html2pdf->pdf->SetAuthor('LMS Developers');
 	$html2pdf->pdf->SetCreator('LMS '.$layout['lmsv']);
 	if ($info)
 		$html2pdf->pdf->SetAuthor($info['name']);
@@ -801,11 +801,6 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 		$html2pdf->pdf->SetTitle($title);
 
 	$html2pdf->pdf->SetDisplayMode('fullpage', 'SinglePage', 'UseNone');
-	$html2pdf->AddFont('arial', '', 'arial.php');
-	$html2pdf->AddFont('arial', 'B', 'arialb.php');
-	$html2pdf->AddFont('arial', 'I', 'ariali.php');
-	$html2pdf->AddFont('arial', 'BI', 'arialbi.php');
-	$html2pdf->AddFont('times', '', 'times.php');
 
 	/* if tidy extension is loaded we repair html content */
 	if (extension_loaded('tidy')) {
@@ -879,6 +874,10 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 
 	$html2pdf->pdf->SetProtection(array('modify', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', PASSWORD_CHANGEME, '1');
 
+        // cache pdf file
+	if($md5sum)
+		$html2pdf->Output(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum,0,2) . DIRECTORY_SEPARATOR . $md5sum.'.pdf', 'F');
+
 	if ($save) {
 		if (function_exists('mb_convert_encoding'))
 			$filename = mb_convert_encoding($title, "ISO-8859-2", "UTF-8");
@@ -920,6 +919,45 @@ function getdir($pwd = './', $pattern = '^.*$') {
 		closedir($handle);
 	}
 	return $files;
+}
+
+function iban_account($country, $length, $id, $account = NULL) {
+	if ($account === NULL) {
+		$DB = LMSDB::getInstance();
+		$account = $DB->GetOne('SELECT account FROM divisions WHERE id IN (SELECT divisionid
+			FROM customers WHERE id = ?)', array($id));
+	}
+
+	if (!empty($account)) {
+		$acclen = strlen($account);
+
+		if ($acclen <= $length - 6) {
+			$format = '%0' . ($length - 2 - $acclen) . 'd';
+			$account .= sprintf($format, $id);
+			$checkaccount = $account . $country . '00';
+			$numericaccount = '';
+			for ($i = 0; $i < strlen($checkaccount); $i++) {
+				$ch = strtoupper($checkaccount[$i]);
+				$numericaccount .= ctype_alpha($ch) ? ord($ch) - 55 : $ch;
+			}
+			$account = sprintf('%02d', 98 - bcmod($numericaccount, 97)) . $account;
+		}
+	}
+
+	return $account;
+}
+
+function iban_check_account($country, $length, $account) {
+	$account = preg_replace('/[^a-zA-Z0-9]/', '', $account);
+	if (strlen($account) != $length)
+		return false;
+	$checkaccount = substr($account, 2, $length - 2) . $country. '00';
+	$numericaccount = '';
+	for ($i = 0; $i < strlen($checkaccount); $i++) {
+		$ch = strtoupper($checkaccount[$i]);
+		$numericaccount .= ctype_alpha($ch) ? ord($ch) - 55 : $ch;
+	}
+	return sprintf('%02d', 98 - bcmod($numericaccount, 97)) == substr($account, 0, 2);
 }
 
 ?>

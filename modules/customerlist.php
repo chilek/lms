@@ -29,63 +29,74 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $layout['pagetitle'] = trans('Customers List');
 
 if(!isset($_GET['o']))
-	$SESSION->restore('clo', $o);
+	$SESSION->restore('clo', $order);
 else
-	$o = $_GET['o'];
-$SESSION->save('clo', $o);
+	$order = $_GET['o'];
+$SESSION->save('clo', $order);
 
 if(!isset($_GET['s']))
-	$SESSION->restore('cls', $s);
+	$SESSION->restore('cls', $state);
 else
-	$s = $_GET['s'];
-$SESSION->save('cls', $s);
+	$state = $_GET['s'];
+$SESSION->save('cls', $state);
 
 if(!isset($_GET['n']))
-	$SESSION->restore('cln', $n);
+	$SESSION->restore('cln', $network);
 else
-	$n = $_GET['n'];
-$SESSION->save('cln', $n);
+	$network = $_GET['n'];
+$SESSION->save('cln', $network);
 
 if(!isset($_GET['g']))
-	$SESSION->restore('clg', $g);
+	$SESSION->restore('clg', $customergroup);
 else
-	$g = $_GET['g'];
-$SESSION->save('clg', $g);
+	$customergroup = $_GET['g'];
+$SESSION->save('clg', $customergroup);
 
 if(!isset($_GET['ng']))
-        $SESSION->restore('clng', $ng);
+        $SESSION->restore('clng', $nodegroup);
 else
-        $ng = $_GET['ng'];
-$SESSION->save('clng', $ng);
+        $nodegroup = $_GET['ng'];
+$SESSION->save('clng', $nodegroup);
 
 if(!isset($_GET['d']))
-        $SESSION->restore('cld', $d);
+        $SESSION->restore('cld', $division);
 else
-        $d = $_GET['d'];
-$SESSION->save('cld', $d);
+        $division = $_GET['d'];
+$SESSION->save('cld', $division);
 		
 if (! isset($_GET['page']))
 	$SESSION->restore('clp', $_GET['page']);
+
+if(!isset($_GET['assigments']))
+        $SESSION->restore('clas', $as);
+else
+        $as = $_GET['assigments'];
+$SESSION->save('clas', $as);
 	    
 $page = !$_GET['page'] ? 1 : intval($_GET['page']);
-$per_page = intval(ConfigHelper::getConfig('phpui.customerlist_pagelimit', 100));
-$offset = ($page - 1) * $per_page;
-$total = intval($LMS->GetCustomerList($o, $s, $n, $g, NULL, NULL, 'AND', $ng, $d, null, null, true));
+$sqlskey = 'AND';
+$offset = NULL;
+$count = TRUE;
+$summary = $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division", "limit", "offset", "count", "as"));
+$total = intval($summary['total']);
+$limit = intval(ConfigHelper::getConfig('phpui.customerlist_pagelimit', 100));
+$offset = ($page - 1) * $limit;
+$count = FALSE;
+$customerlist = $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division", "limit", "offset", "count", "as"));
 
-$customerlist = $LMS->GetCustomerList($o, $s, $n, $g, NULL, NULL, 'AND', $ng, $d, $per_page, $offset);
+$pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
-$pagination = LMSPaginationFactory::getPagination($page, $total, $per_page, ConfigHelper::checkConfig('phpui.short_pagescroller'));
-
+$listdata['below'] = $summary['below'];
+$listdata['over'] = $summary['over'];
 $listdata['total'] = $customerlist['total'];
 $listdata['order'] = $customerlist['order'];
-$listdata['below'] = $customerlist['below'];
-$listdata['over'] = $customerlist['over'];
 $listdata['direction'] = $customerlist['direction'];
-$listdata['network'] = $n;
-$listdata['nodegroup'] = $ng;
-$listdata['customergroup'] = $g;
-$listdata['division'] = $d;
-$listdata['state'] = $s;
+$listdata['network'] = $network;
+$listdata['nodegroup'] = $nodegroup;
+$listdata['customergroup'] = $customergroup;
+$listdata['division'] = $division;
+$listdata['state'] = $state;
+$listdata['assigments'] = $as;
 
 $SESSION->save('clp', $page);
 

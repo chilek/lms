@@ -24,6 +24,24 @@
 				<TR>
 					<TD WIDTH="100%" style="vertical-align:top;">
 					        <TABLE WIDTH="100%" CELLPADDING="3">
+        {if $divisions}
+        <TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/division.gif" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{trans("Division:")}</B>
+		</TD>
+		<TD WIDTH="98%">
+			<SELECT NAME="netnode[divisionid]"  {tip trigger="divisionid" text="Select division"} VALUE="{$netnode.divisionid}">
+				<OPTION value="-1" {if ($netnode.divisionid == '-1' ) } selected="selected" {/if} >- {trans("select")} -</OPTION>
+                                {foreach $divisions as $division}
+				<OPTION VALUE="{$division.id}"{if $netnode.divisionid == $division.id} selected{/if} >{$division.shortname}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+        {/if}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/producer.gif" ALT="">
@@ -89,7 +107,7 @@
 				<OPTION VALUE="{$idx}"{if $netnode.ownership == $idx} selected{/if}>{$ownership}</OPTION>
 				{/foreach}
 			</SELECT>
-			<INPUT TYPE="TEXT" NAME="netnode[coowner]" VALUE={$netnode.coowner}"" {tip trigger="coowner" text="Enter co-owner identifier"} ID="NNcoowner" SIZE="25"/>
+			<INPUT TYPE="TEXT" NAME="netnode[coowner]" VALUE="{$netnode.coowner}" {tip trigger="coowner" text="Enter co-owner identifier"} ID="NNcoowner" SIZE="25"/>
 		</TD>
 	</TR>
 	<TR>
@@ -101,7 +119,7 @@
 		</TD>
 		<TD WIDTH="98%" NOWRAP>
 		    <INPUT TYPE="TEXT" SIZE="30" VALUE="{$netnode.location}" id="location" NAME="netnode[location]"  {tip text="Enter location (optional)" trigger="location"}>
-			<A href="javascript: void(0);" onclick="if (check_teryt()) return locationchoosewin('netnode', 'netnodeadd', document.forms['netnodeadd'].elements['netnode[location_city]'].value,  document.forms['netnodeadd'].elements['netnode[location_street]'].value)" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</A>
+			<A href="javascript: void(0);" onclick="if (check_teryt()) return locationchoosewin('netnode', 'netnodeadd', document.forms['netnodeadd'].elements['netnode[location_city]'].value,  document.forms['netnodeadd'].elements['netnode[location_street]'].value, {ConfigHelper::getConfig('phpui.default_teryt_city')})" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</A>
 			<BR>
 		    <INPUT type="hidden" name="netnode[location_city]" value="{$netnode.location_city}">
 		    <INPUT type="hidden" name="netnode[location_street]" value="{$netnode.location_street}">

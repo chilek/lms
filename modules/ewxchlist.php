@@ -66,7 +66,7 @@ function GetChannelsList($order='name,asc')
 		(
 		SELECT 0 AS id, \''.trans('default').'\' AS name,
 		    ch.upceil, ch.downceil, 0 AS upceil_n, 0 AS downceil_n, 0, ch.id AS cid,
-		    (SELECT COUNT(DISTINCT netdev) FROM nodes WHERE netdev > 0 AND id IN (
+		    (SELECT COUNT(DISTINCT netdev) FROM vnodes WHERE netdev > 0 AND id IN (
 		        SELECT nodeid FROM ewx_stm_nodes WHERE channelid = ch.id)) AS devcnt,
 		    (SELECT COUNT(*) FROM ewx_stm_nodes WHERE channelid = ch.id) AS nodecnt
 		    FROM ewx_stm_channels ch

@@ -22,12 +22,6 @@ window.open('?m=note&id={$newnoteid}');
 		document.setcustomer.submit();
 	}
 
-	function reset_customer()
-	{
-		if (document.setcustomer.customerid.value)
-			document.setcustomer.customer.value = document.setcustomer.customerid.value;
-	}
-
 	function setPayTime(type)
 	{
 		var list = document.setcustomer.elements['note[paytime_default]'];
@@ -43,7 +37,7 @@ window.open('?m=note&id={$newnoteid}');
 	}
 //-->
 </script>
-<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=noteadd&action=setcustomer">
+<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=noteadd&amp;action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -77,9 +71,7 @@ window.open('?m=note&id={$newnoteid}');
 			<B>{trans("Settlement date:")}</B>
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			<div class="calendar">
-			<INPUT TYPE="TEXT" NAME="note[cdate]" VALUE="{$note.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
-			</div>
+			<INPUT TYPE="TEXT" NAME="note[cdate]" VALUE="{$note.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 			{if $note.cdatewarning}
 			<INPUT TYPE="HIDDEN" NAME="note[cdatewarning]" VALUE="1">
 			{/if}
@@ -100,21 +92,15 @@ window.open('?m=note&id={$newnoteid}');
 	        </TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Customer:")}</B>
+		<TD style="width: 1%;" class="bold nobr">
+			{trans("Customer:")}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			{if $customers}
-			<SELECT SIZE="1" NAME="customer" onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value">
-				<OPTION VALUE="0">{trans("... select customer ...")}</OPTION>
-				{foreach from=$customers item=c}
-				<OPTION VALUE="{$c.id}"{if $c.id == $customer.id || $note.customerid == $c.id} SELECTED{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</OPTION>
-				{/foreach}
-			</SELECT>
-			{trans("or Customer ID:")}
+		<TD style="width: 99%;" class="nobr">
+			{if isset($customer.id)}
+			{customerlist form="setcustomer" customers=$customers selected=$customer.id selectname="customer" inputname="customerid"}
+			{else}
+			{customerlist form="setcustomer" customers=$customers selected=$note.customerid selectname="customer" inputname="customerid"}
 			{/if}
-			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{else}{$note.customerid}{/if}" SIZE="5"{if $customers} onChange="document.setcustomer.customer.value=document.setcustomer.customerid.value"{/if} {tip text="Enter customer ID" trigger="customer"}>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR>
@@ -126,7 +112,6 @@ window.open('?m=note&id={$newnoteid}');
 </TABLE>
 </FORM>
 {if $customer}
-<P>
 <TABLE class="lmsbox">
     <THEAD>
         <TR>
@@ -136,14 +121,12 @@ window.open('?m=note&id={$newnoteid}');
                 <TD WIDTH="99%">
                         <B>{$customer.customername}</B>
                         &nbsp;&raquo;&nbsp; {$customer.address} &nbsp; {$customer.zip} {$customer.city}
-                        &nbsp;&raquo;&nbsp; {if $customer.balance < 0}<FONT class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</FONT>{/if}
+                        &nbsp;&raquo;&nbsp; {if $customer.balance < 0}<span class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</span>{/if}
                 </TD>
         </TR>
     </THEAD>
 </TABLE>
-</P>
 {/if}
-<P>	
 <TABLE class="lmsbox">
     <THEAD>
 	<TR>
@@ -175,15 +158,13 @@ window.open('?m=note&id={$newnoteid}');
 			{$item.value|money_format}
 		</TD>
 		<TD NOWRAP>
-			<A HREF="?m=noteadd&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
+			<A HREF="?m=noteadd&amp;action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
 		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD COLSPAN="4" ALIGN="CENTER">
-			<P>&nbsp;</P>
-			<P><B>{trans("Debit note have no items. Use form below for items addition.")}</B></P>
-			<P>&nbsp;</P>
+		<TD COLSPAN="4" class="empty-table">
+			<p>{trans("Debit note have no items. Use form below for items addition.")}</p>
 		</TD>
 	</TR>
 	{/foreach}
@@ -201,9 +182,11 @@ window.open('?m=note&id={$newnoteid}');
 	</TR>
 	{/if}
     </TBODY>
-    <TFOOT>
-	<FORM METHOD="POST" ACTION="?m=noteadd&action=additem" NAME="additem">
-	<INPUT type="submit" class="hiddenbtn">
+</table>
+
+<FORM METHOD="POST" ACTION="?m=noteadd&amp;action=additem" NAME="additem">
+<INPUT type="submit" class="hiddenbtn">
+<table class="lmsbox">
 	<TR>
 		<TD WIDTH="1%" NOWRAP>
 			<B>{counter}.</B>
@@ -221,7 +204,7 @@ window.open('?m=note&id={$newnoteid}');
 	<TR>
 		<TD COLSPAN="4" ALIGN="RIGHT">
 			<A HREF="?m=notelist">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
-			<A HREF="?m=noteadd&action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A> 
+			<A HREF="?m=noteadd&amp;action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A> 
 			{if !$customer}
 			<A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
 			<A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save & Print")} <IMG src="img/printd.gif" alt=""></A>
@@ -229,14 +212,13 @@ window.open('?m=note&id={$newnoteid}');
 			<A HREF="javascript:alert('{trans("Document has no items!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
 			<A HREF="javascript:alert('{trans("Document has no items!")}');">{trans("Save & Print")} <IMG src="img/printd.gif" alt=""></A>
 			{else}
-			<A HREF="?m=noteadd&action=save">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+			<A HREF="?m=noteadd&amp;action=save">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
 			<A HREF="javascript:printnote()">{trans("Save & Print")} <IMG src="img/printd.gif" alt=""></A>
 			{/if}
 		</TD>
 	</TR>
-	</FORM>
-    </TFOOT>
 </TABLE>
+</FORM>
 <SCRIPT type="text/javascript">
 <!--
 document.forms['setcustomer'].elements['note[number]'].focus();

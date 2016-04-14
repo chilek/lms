@@ -44,7 +44,7 @@ if($DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($from))
 			SELECT ?, nodeid 
 			FROM nodegroupassignments a
 			JOIN nodes n ON (a.nodeid = n.id)
-			JOIN customersview c (n.ownerid = c.id)
+			JOIN customerview c (n.ownerid = c.id)
 			WHERE a.nodegroupid = ?
 			AND NOT EXISTS (SELECT 1 FROM nodegroupassignments na
 				WHERE na.nodeid = a.nodeid AND na.nodegroupid = ?)',

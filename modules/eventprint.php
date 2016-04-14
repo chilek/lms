@@ -30,15 +30,16 @@ function GetEvents($date=NULL, $userid=0, $customerid=0)
 
 	$list = $DB->GetAll(
 	        'SELECT events.id AS id, title, description, begintime, endtime, closed, note, events.type,'
-		.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name'). ' AS customername, 
-		 customers.address AS customeraddr, customers.city AS customercity,
-		 (SELECT contact FROM customercontacts WHERE customerid = customers.id
-			AND (customercontacts.type & ?) = ? ORDER BY id LIMIT 1) AS customerphone 
-		 FROM events LEFT JOIN customers ON (customerid = customers.id)
+		.$DB->Concat('UPPER(c.lastname)',"' '",'c.name'). ' AS customername, '
+	        .$DB->Concat('c.city',"', '",'c.address').' AS customerlocation,
+		 nodes.location AS nodelocation,
+		 (SELECT contact FROM customercontacts WHERE customerid = c.id
+			AND (customercontacts.type & ?) > 0  ORDER BY id LIMIT 1) AS customerphone 
+		 FROM events LEFT JOIN customerview c ON (customerid = c.id) LEFT JOIN nodes ON (nodeid = nodes.id)
 		 WHERE date = ? AND (private = 0 OR (private = 1 AND userid = ?)) '
 		 .($customerid ? 'AND customerid = '.intval($customerid) : '')
 		 .' ORDER BY begintime',
-		 array((CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE|CONTACT_DISABLED), (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE), $date, $AUTH->id));
+		 array((CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE|CONTACT_DISABLED), $date, $AUTH->id));
 
 	if($list)
 		foreach($list as $idx => $row)

@@ -34,7 +34,7 @@
 	<TBODY>
 	<TR>
 		<TD style="width: 100%;" colspan="3">
-			<TABLE class="lmsbox-inner">
+			<TABLE class="lmsbox-inner" id="messages">
 				{counter start=0 skip=1 print=false assign=msgidx}
 				{foreach from=$ticket.messages item=message}
 				{if isset($message.customerid) && isset($message.subject)}
@@ -88,14 +88,14 @@
 				{counter print=false}
 				{elseif $message.type != $smarty.const.RTNOTE}
 					<tr class="blend">
-						<td width="1%" class="fbt" ALIGN="RIGHT" nowrap>
+						<td width="1%" class="fbt text-right nobr valign-top">
 							<B>{$message.createtime|date_format:"%Y/%m/%d %H:%M"}</B>
 						</td>
-						<td width="1%" class="fbt" align="right" NOWRAP>
+						<td width="1%" class="fbt text-right nobr valign-top">
 							<B>{trans("From:")}</B>
 						</td>
-						<td width="98%" colspan="2" class="fbt" NOWRAP>
-							<A href="?m=userinfo&id={$message.userid}">{$message.username}</A> - 
+						<td width="98%" colspan="2" class="fbt nobr">
+							<A href="?m=userinfo&id={$message.userid}">{$message.username}</A><BR>
 							{$message.body}
 						</td>
 					</tr>
@@ -131,3 +131,8 @@
 	</TR>
 	</TBODY>
 </TABLE>
+<script type="text/javascript" src="/img/Autolinker.min.js"></script>
+<script type="text/javascript">
+    var myTextEl = document.getElementById( 'messages' );
+    myTextEl.innerHTML = Autolinker.link( myTextEl.innerHTML );
+</script>

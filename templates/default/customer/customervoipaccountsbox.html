@@ -7,7 +7,7 @@
 			{t a=$customervoipaccounts.total|default:"0"}Voip Accounts ($a):{/t}
 		</TD>
 		<TD style="width: 1%;" class="text-right nobr">
-			{if $customerinfo.status != "1" and ! $customerinfo.deleted}<A href="?m=voipaccountadd&amp;ownerid={$customerinfo.id}">{trans("New Voip Account")} &raquo;</A>&nbsp;{/if}
+			{if $customerinfo.status != $smarty.const.CSTATUS_INTERESTED && !$customerinfo.deleted}<A href="?m=voipaccountadd&amp;ownerid={$customerinfo.id}">{trans("New Voip Account")} &raquo;</A>&nbsp;{/if}
 		</TD>
 	</TR>
 	</THEAD>
@@ -61,9 +61,7 @@
                                 {block name="customervoipaccountsbox-list-empty-row"}
 				<TR>
 					<TD class="empty-table" colspan="{$number_of_table_columns}">
-						<p>&nbsp;</p>
 						<p>{trans("That customer does not own any voip account.")}</p>
-						<p>&nbsp;</p>
 					</TD>
 				</TR>
                                 {/block}

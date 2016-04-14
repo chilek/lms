@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
  *  USA.
  *
- *  $Id: lms-cashimport.php,v 1.1 2012/03/03 15:27:16 chilek Exp $
+ *  $Id$
  */
 
 ini_set('error_reporting', E_ALL&~E_NOTICE);
@@ -39,28 +39,25 @@ foreach ($parameters as $key => $val) {
 	$short_to_longs[$newkey] = $val;
 }
 $options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach($short_to_longs as $short => $long)
-	if (array_key_exists($short, $options))
-	{
+foreach ($short_to_longs as $short => $long)
+	if (array_key_exists($short, $options)) {
 		$options[$long] = $options[$short];
 		unset($options[$short]);
 	}
 
-if (array_key_exists('version', $options))
-{
+if (array_key_exists('version', $options)) {
 	print <<<EOF
 lms-cashimport.php
-(C) 2001-2013 LMS Developers
+(C) 2001-2016 LMS Developers
 
 EOF;
 	exit(0);
 }
 
-if (array_key_exists('help', $options))
-{
+if (array_key_exists('help', $options)) {
 	print <<<EOF
 lms-cashimport.php
-(C) 2001-2013 LMS Developers
+(C) 2001-2016 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -72,11 +69,10 @@ EOF;
 }
 
 $quiet = array_key_exists('quiet', $options);
-if (!$quiet)
-{
+if (!$quiet) {
 	print <<<EOF
 lms-cashimport.php
-(C) 2001-2013 LMS Developers
+(C) 2001-2016 LMS Developers
 
 EOF;
 }
@@ -86,12 +82,11 @@ if (array_key_exists('config-file', $options))
 else
 	$CONFIG_FILE = '/etc/lms/lms.ini';
 
-if (!$quiet) {
-	echo "Using file ".$CONFIG_FILE." as config.\n";
-}
+if (!$quiet)
+	echo "Using file " . $CONFIG_FILE . " as config." . PHP_EOL;
 
 if (!is_readable($CONFIG_FILE))
-	die("Unable to read configuration file [".$CONFIG_FILE."]!\n");
+	die("Unable to read configuration file [" . $CONFIG_FILE . "]!" . PHP_EOL);
 
 define('CONFIG_FILE', $CONFIG_FILE);
 
@@ -99,42 +94,38 @@ $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
 // Check for configuration vars and set default values
 $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
-$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'].'/lib' : $CONFIG['directories']['lib_dir']);
+$CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 
-// Load autloader
-require_once(LIB_DIR.'/autoloader.php');
-
-// Do some checks and load config defaults
-
-require_once(LIB_DIR.'/config.php');
+// Load autoloader
+$composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+if (file_exists($composer_autoload_path)) {
+    require_once $composer_autoload_path;
+} else {
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
+}
 
 // Init database
 
 $DB = null;
 
 try {
-
-    $DB = LMSDB::getInstance();
-
+	$DB = LMSDB::getInstance();
 } catch (Exception $ex) {
-    
-    trigger_error($ex->getMessage(), E_USER_WARNING);
-    
-    // can't working without database
-    die("Fatal error: cannot connect to database!\n");
-    
+	trigger_error($ex->getMessage(), E_USER_WARNING);
+	// can't working without database
+	die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
 // Include required files (including sequence is important)
 
-require_once(LIB_DIR.'/language.php');
-include_once(LIB_DIR.'/definitions.php');
-require_once(LIB_DIR.'/unstrip.php');
-require_once(LIB_DIR.'/common.php');
-require_once(LIB_DIR . '/SYSLOG.class.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
+include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
 
 if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG'))
 	$SYSLOG = new SYSLOG($DB);
@@ -152,14 +143,16 @@ $server = ConfigHelper::getConfig('cashimport.server');
 $username = ConfigHelper::getConfig('cashimport.username');
 $password = ConfigHelper::getConfig('cashimport.password');
 if (empty($server) || empty($username) || empty($password))
-	die("Fatal error: mailbox credentials are not set!\n");
+	die("Fatal error: mailbox credentials are not set!" . PHP_EOL);
 
 @include(ConfigHelper::getConfig('phpui.import_config', 'cashimportcfg.php'));
 if (!isset($patterns) || !is_array($patterns))
-	die(trans("Configuration error. Patterns array not found!")."\n");
+	die(trans("Configuration error. Patterns array not found!") . PHP_EOL);
 
 function parse_file($filename, $contents) {
-	global $DB, $quiet, $patterns;
+	global $quiet, $patterns;
+
+	$DB = LMSDB::getInstance();
 
 	if (!$quiet)
 		printf("Getting cash import file ".$filename." ... ");
@@ -213,18 +206,18 @@ function parse_file($filename, $contents) {
 		$comment = isset($matches[$pattern['pcomment']]) ? trim($matches[$pattern['pcomment']]) : '';
 		$time = isset($matches[$pattern['pdate']]) ? trim($matches[$pattern['pdate']]) : '';
 		$value = str_replace(',','.', isset($matches[$pattern['pvalue']]) ? trim($matches[$pattern['pvalue']]) : '');
+		$srcaccount = isset($matches[$pattern['srcaccount']]) ? trim($matches[$pattern['srcaccount']]) : '';
+		$dstaccount = isset($matches[$pattern['dstaccount']]) ? trim($matches[$pattern['dstaccount']]) : '';
 
-		if(!$pattern['pid'])
-		{
-			if(!empty($pattern['pid_regexp'])) 
+		if (!$pattern['pid']) {
+			if (!empty($pattern['pid_regexp']))
 				$regexp = $pattern['pid_regexp'];
 			else
 				$regexp = '/.*ID[:\-\/]([0-9]{0,4}).*/i';
 
-			if(preg_match($regexp, $theline, $matches))
+			if (preg_match($regexp, $theline, $matches))
 				$id = $matches[1];
-		}
-		else
+		} else
 			$id = isset($matches[$pattern['pid']]) ? intval($matches[$pattern['pid']]) : NULL;
 
 		// seek invoice number
@@ -247,41 +240,48 @@ function parse_file($filename, $contents) {
 			}
 		}
 
-		if(!$id && $name && $lastname)
-		{
-			$uids = $DB->GetCol('SELECT id FROM customers WHERE UPPER(lastname)=UPPER(?) and UPPER(name)=UPPER(?)', array($lastname, $name));
-			if(sizeof($uids)==1)
+		// seek by explicitly given source or destination customer account numbers
+		if (!$id)
+			if (!empty($dstaccount))
+				$id = $DB->GetOne('SELECT customerid FROM customercontacts
+					WHERE contact = ? AND (type & ?) = ?',
+					array($dstaccount, CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+						CONTACT_BANKACCOUNT | CONTACT_INVOICES));
+			elseif (!empty($srcaccount))
+				$id = $DB->GetOne('SELECT customerid FROM customercontacts
+					WHERE contact = ? AND (type & ?) = ?',
+					array($srcaccount, CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+						CONTACT_BANKACCOUNT));
+
+		if (!$id && $name && $lastname) {
+			$uids = $DB->GetCol('SELECT id FROM customers WHERE UPPER(lastname)=UPPER(?) and UPPER(name)=UPPER(?)',
+				array($lastname, $name));
+			if (count($uids) == 1)
 				$id = $uids[0];
-		}
-		elseif($id && (!$name || !$lastname))
-		{
-			if($tmp = $DB->GetRow('SELECT lastname, name FROM customers WHERE id = ?', array($id)))
-			{
+		} elseif ($id && (!$name || !$lastname))
+			if ($tmp = $DB->GetRow('SELECT id, lastname, name FROM customers WHERE '
+				. (isset($pattern['extid']) && $pattern['extid'] ? 'ext' : '') . 'id = ?', array($id))) {
+				if (isset($pattern['extid']) && $pattern['extid'])
+					$id = $tmp['id'];
 				$lastname = $tmp['lastname'];
 				$name = $tmp['name'];
-			}
-			else
+			} else
 				$id = NULL;
-		}
 
-		if($time)
-		{
-			if(preg_match($pattern['date_regexp'], $time, $date))
-			{
+		if ($time) {
+			if (preg_match($pattern['date_regexp'], $time, $date)) {
 				$time = mktime(0,0,0, 
 					$date[$pattern['pmonth']], 
 					$date[$pattern['pday']], 
 					$date[$pattern['pyear']]);
-			}
-			elseif(!is_numeric($time))
+			} elseif(!is_numeric($time))
 				$time = time();
 			if (isset($pattern['date_hook']))
 				$time = $pattern['date_hook']($time, $_FILES['file']['name']);
-		}
-		else
+		} else
 			$time = time();
 
-		if(!empty($pattern['comment_replace']))
+		if (!empty($pattern['comment_replace']))
 			$comment = preg_replace($pattern['comment_replace']['from'], $pattern['comment_replace']['to'], $comment);
 
 		$customer = trim($lastname.' '.$name);
@@ -347,12 +347,13 @@ function parse_file($filename, $contents) {
 	}
 
 	if (!$quiet)
-		printf("Done.\n");
+		printf("Done." . PHP_EOL);
 }
 
-function commit_cashimport()
-{
-	global $DB, $LMS;
+function commit_cashimport() {
+	global $LMS;
+
+	$DB = LMSDB::getInstance();
 
 	$imports = $DB->GetAll('SELECT i.*, f.idate
 		FROM cashimport i
@@ -434,7 +435,7 @@ function commit_cashimport()
 
 $ih = @imap_open("{" . ConfigHelper::getConfig('cashimport.server') . "}INBOX", ConfigHelper::getConfig('cashimport.username'), ConfigHelper::getConfig('cashimport.password'));
 if (!$ih)
-	die("Cannot connect to mail server!\n");
+	die("Cannot connect to mail server!" . PHP_EOL);
 
 $posts = imap_search($ih, ConfigHelper::checkValue(ConfigHelper::getConfig('cashimport.use_seen_flag', true)) ? 'UNSEEN' : 'ALL');
 if (!empty($posts))

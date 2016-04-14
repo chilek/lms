@@ -136,7 +136,7 @@ function getNodeStats($nodeid) {
 	$nodestats['month'] = NodeStats($nodeid, 60 * 60 * 24 * 30);
 
 	$SMARTY->assign('nodeid', $nodeid);
-	$nodeip = $DB->GetOne('SELECT INET_NTOA(ipaddr) FROM nodes WHERE id = ?', array($nodeid));
+	$nodeip = $DB->GetOne('SELECT INET_NTOA(ipaddr) FROM vnodes WHERE id = ?', array($nodeid));
 	$SMARTY->assign('nodeip', $nodeip);
 	$SMARTY->assign('nodestats', $nodestats);
 	$contents = $SMARTY->fetch('node/nodestats.html');

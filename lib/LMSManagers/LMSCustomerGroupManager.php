@@ -218,9 +218,14 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
         if ($customergrouplist = $this->db->GetAll('SELECT id, name, description,
 				(SELECT COUNT(*)
 					FROM customerassignments 
-					WHERE customergroupid = customergroups.id
+					WHERE customergroupid = g.id
 				) AS customerscount
-				FROM customergroups ORDER BY name ASC')) {
+				FROM customergroups g
+				WHERE NOT EXISTS (
+					SELECT 1 FROM excludedgroups
+					WHERE userid = lms_current_user() AND customergroupid = g.id
+				)
+				ORDER BY name ASC')) {
             $totalcount = 0;
 
             foreach ($customergrouplist as $idx => $row) {
@@ -364,7 +369,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
         }
 
         return $this->db->GetAll('SELECT c.id AS id, ' . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername
-			FROM customersview c '
+			FROM customerview c '
                         . ($network ? 'LEFT JOIN nodes ON (c.id = nodes.ownerid) ' : '')
                         . 'WHERE c.deleted = 0 AND c.id NOT IN (
 				SELECT customerid FROM customerassignments WHERE customergroupid = ?) '

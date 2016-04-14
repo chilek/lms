@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,11 +24,11 @@
  *  $Id$
  */
 
-// get customer name and check privileges using customersview
+// get customer name and check privileges using customerview
 $customer = $DB->GetRow('SELECT a.customerid AS id, c.divisionid, '
     .$DB->Concat('c.lastname',"' '",'c.name').' AS name
     FROM assignments a
-    JOIN customersview c ON (c.id = a.customerid)
+    JOIN customerview c ON (c.id = a.customerid)
     WHERE a.id = ?', array($_GET['id']));
 
 if(!$customer)
@@ -64,10 +64,8 @@ if(isset($_POST['assignment']))
 		case WEEKLY:
 			$at = sprintf('%d',$a['at']);
 
-			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_current_payday', false)) && $at==0)
-			{
+			if (ConfigHelper::checkConfig('phpui.use_current_payday') && $at == 0)
 				$at = strftime('%u', time());
-			}
 
 			if($at < 1 || $at > 7)
 				$error['at'] = trans('Incorrect day of week (1-7)!');
@@ -76,15 +74,11 @@ if(isset($_POST['assignment']))
 		case MONTHLY:
 			$at = sprintf('%d',$a['at']);
 
-			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_current_payday', false)) && $at==0)
-			{
+			if (ConfigHelper::checkConfig('phpui.use_current_payday') && $at == 0)
 				$at = date('j', time());
-			}
-			elseif (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_current_payday', false))
-				 && ConfigHelper::getConfig('phpui.default_monthly_payday')>0 && $at==0)
-			{
+			elseif (!ConfigHelper::checkConfig('phpui.use_current_payday')
+				 && ConfigHelper::getConfig('phpui.default_monthly_payday') > 0 && $at == 0)
 				$at = ConfigHelper::getConfig('phpui.default_monthly_payday');
-			}
 
 			$a['at'] = $at;
 
@@ -93,8 +87,7 @@ if(isset($_POST['assignment']))
 		break;
 
 		case QUARTERLY:
-			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_current_payday', false)) && !$a['at'])
-			{
+			if (ConfigHelper::checkConfig('phpui.use_current_payday') && !$a['at']) {
 				$d = date('j', time());
 				$m = date('n', time());
 				$a['at'] = $d.'/'.$m;
@@ -120,12 +113,9 @@ if(isset($_POST['assignment']))
 		break;
 
 		case HALFYEARLY:
-			if(!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at']) && $a['at'])
-			{
+			if (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at']) && $a['at'])
 				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
-			}
-			elseif (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_current_payday', false)) && !$a['at'])
-			{
+			elseif (ConfigHelper::checkConfig('phpui.use_current_payday') && !$a['at']) {
 				$d = date('j', time());
 				$m = date('n', time());
 				$a['at'] = $d.'/'.$m;
@@ -147,8 +137,7 @@ if(isset($_POST['assignment']))
 		break;
 
 		case YEARLY:
-			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_current_payday', false)) && !$a['at'])
-			{
+			if (ConfigHelper::checkConfig('phpui.use_current_payday') && !$a['at']) {
 				$d = date('j', time());
 				$m = date('n', time());
 				$a['at'] = $d.'/'.$m;

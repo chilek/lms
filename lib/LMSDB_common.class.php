@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-define('DBVERSION', '2015112001'); // here should be always the newest version of database!
+define('DBVERSION', '2016040700'); // here should be always the newest version of database!
 				 // it placed here to avoid read disk every time when we call this file.
 
 /**
@@ -681,6 +681,11 @@ abstract class LMSDB_common implements LMSDBInterface
 				array('dbversion' . (is_null($pluginclass) ? '' : '_' . $pluginclass)))) {
 			if ($dbver > $dbversion) {
 				set_time_limit(0);
+
+				if ($this->_dbtype == LMSDB::POSTGRESQL && $this->GetOne('SELECT COUNT(*) FROM information_schema.routines
+					WHERE routine_name = ? AND specific_schema = ?', array('array_agg', 'pg_catalog')) > 1)
+					$this->Execute('DROP AGGREGATE IF EXISTS array_agg(anyelement)');
+
 				$lastupgrade = $dbversion;
 
 				if (is_null($libdir))

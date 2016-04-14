@@ -38,7 +38,9 @@ if ($LMS->UserExists($id))
 			$error['password'] = trans('Passwords does not match!');
 		elseif (!check_password_strength($passwd['passwd']))
 			$error['password'] = trans('The password should contain at least one capital letter, one lower case letter, one digit and should consist of at least 8 characters!');
-
+		elseif ($LMS->PasswdExistsInHistory($id, $passwd['passwd']))
+			$error['password'] = trans('You already used this password!');
+		
 		if (!$error)
 		{
 			$oldpasswd = $LMS->DB->GetOne('SELECT passwd FROM users WHERE id = ?', array($id));

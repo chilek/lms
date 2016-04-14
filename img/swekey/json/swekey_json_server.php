@@ -42,7 +42,12 @@ define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 
 // Load autloader
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'autoloader.php');
+$composer_autoload_path = VENDOR_DIR . DIRECTORY_SEPARATOR . 'autoload.php';
+if (file_exists($composer_autoload_path)) {
+    require_once $composer_autoload_path;
+} else {
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
+}
 
 // Do some checks and load config defaults
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'config.php');

@@ -295,6 +295,7 @@
 	<TR>
 	        <TD WIDTH="100%" COLSPAN="2" ALIGN="RIGHT">
 {/if}
+			<a href="?m=netdevadd&id={$netdevinfo.id}">{trans("Clone")} <img src="img/clone.gif" alt="[ {trans("Clone")} ]"</a>
 			<A href="javascript:void(0);" onclick="javascript:openSelectWindow('?m=choosenetdevreplace&id={$netdevinfo.id}', 'Replace netdev', 600, 290, 1, 1);">{trans("Replace")} <img src="img/alias.gif" ALT="[ {trans("Replace")} ]"></A>
 			<A href="?m=netdevedit&id={$netdevinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" ALT="[ {trans("Edit")} ]"></A>
 			<A href="?m=netdevdel&id={$netdevinfo.id}" OnClick="return confirmLink(this, '{t a=$netdevinfo.name}Are you sure, you want to remove device \'$a\' from database?{/t}');">{trans("Delete")} <img src="img/delete.gif" ALT=""></A>

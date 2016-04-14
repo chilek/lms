@@ -63,10 +63,18 @@
 		</td>
 		<td width="99%">
 			<TABLE cellpadding="0" cellspacing="2">
-			    <TR>
-				<TD width="1%">{trans("Address:")}</TD>
-				<TD width="99%"><INPUT TYPE="TEXT" NAME="userdata[address]" VALUE="{$userinfo.address}" SIZE=40 {userpaneltip text="Enter address"}></TD>
-			    </TR>
+				<TR>
+					<TD width="1%">{trans("Street:")}</TD>
+					<TD width="99%"><INPUT TYPE="TEXT" NAME="userdata[street]" VALUE="{$userinfo.street}" SIZE=40 {userpaneltip text="Enter street name"}></TD>
+				</TR>
+				<TR>
+					<TD width="1%">{trans("Building:")}</TD>
+					<TD width="99%">
+						<INPUT TYPE="TEXT" NAME="userdata[building]" VALUE="{$userinfo.building}" SIZE=8 {userpaneltip text="Enter building number"}>
+						{trans("Apartment:")}
+						<INPUT TYPE="TEXT" NAME="userdata[apartament]" VALUE="{$userinfo.apartment}" SIZE=8 {userpaneltip text="Enter apartment number"}>
+					</TD>
+				</TR>
 			    <TR>
 				<TD width="1%">{trans("Zip:")}</TD>
 				<TD width="99%"><INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" SIZE=40 {userpaneltip text="Enter zip code"}></TD>

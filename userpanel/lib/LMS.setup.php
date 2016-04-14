@@ -87,17 +87,17 @@ if (isset($modulefile_include))
 	{
 		if ($function=='setup') {
 			$layout['info'] = trans('This module does not have any configuration settings');
-			$SMARTY->display(ConfigHelper::getConfig('directories.userpanel_dir').'/templates/setup_error.html');
+			$SMARTY->display('file:' . ConfigHelper::getConfig('directories.userpanel_dir').'/templates/setup_error.html');
 		} else {
 			$layout['error'] = trans('Function <b>$a</b> in module <b>$b</b> not found!', $function, $module);
-			$SMARTY->display(ConfigHelper::getConfig('directories.userpanel_dir').'/templates/setup_error.html');
+			$SMARTY->display('file:' . ConfigHelper::getConfig('directories.userpanel_dir').'/templates/setup_error.html');
 		}
 	}
 } 
 else
 {
 	$layout['error'] = trans('Userpanel module <b>$a</b> not found!', $module);
-	$SMARTY->display(ConfigHelper::getConfig('directories.userpanel_dir').'/templates/setup_error.html');
+	$SMARTY->display('file:' . ConfigHelper::getConfig('directories.userpanel_dir').'/templates/setup_error.html');
 }
 
 ?>

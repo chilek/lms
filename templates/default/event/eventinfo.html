@@ -177,9 +177,9 @@
 		<TD width="1%">
 			<B>{trans("Users:")}</B>
 		</TD>
-		<TD width="98%" nowrap>
+		<TD width="98%" class="nobr">
 			{foreach item=user from=$event.userlist}	
-				<NOBR><A href="?m=userinfo&id={$user.id}">{$user.name}</A></NOBR><BR>
+				<A href="?m=userinfo&id={$user.id}">{$user.name}</A><BR>
 			{/foreach}
 		</TD>
 	</TR>

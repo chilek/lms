@@ -34,7 +34,7 @@ if(isset($_POST['category']))
 	$category = $_POST['category'];
 
 	$category['id'] = $_GET['id'];
-	
+
 	if($category['name'] == '')
 		$error['name'] = trans('Category name must be defined!');
 
@@ -45,8 +45,8 @@ if(isset($_POST['category']))
 	if(!$error)
 	{
 		$DB->Execute('UPDATE rtcategories SET name=?, description=? WHERE id=?', 
-				array($category['name'], 
-					$category['description'], 
+				array(trim($category['name']),
+					$category['description'],
 					$category['id']));
 
 		$DB->Execute('DELETE FROM rtcategoryusers WHERE categoryid=?', array($category['id']));

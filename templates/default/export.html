@@ -4,7 +4,7 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {include file="calendar_js.html"}
-<P><FORM method="post" name="invoicereport" id="invoicereport" action="?m=export&type=invoices">
+<FORM method="post" name="invoicereport" id="invoicereport" action="?m=export&amp;type=invoices">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -28,15 +28,11 @@
 					<TD width="1%">
 						<B>{trans("Period:")}&nbsp;</B>
 					</TD>
-					<TD width="1%" nowrap>
-						<div class="calendar">
-						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						</div>
+					<TD style="width: 1%;" class="nobr">
+						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
-					<TD width="97%" nowrap>
-						<div class="calendar">
-						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
-						</div>
+					<TD style="width: 97%;" class="nobr">
+						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 				</TR>
 			</TABLE>
@@ -50,7 +46,7 @@
     </TBODY>
 </TABLE>
 </FORM>
-<P><FORM method="post" name="receiptlist" id="receiptlist" action="?m=export&type=cash">
+<FORM method="post" name="receiptlist" id="receiptlist" action="?m=export&amp;type=cash">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -87,10 +83,8 @@
 					</TD>
 					<TD width="1%" nowrap>
 						<B>{trans("Period:")}</B>&nbsp;
-						<div class="calendar">
-						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
-						</div>
+						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 					<TD width="1%">
 						<IMG src="img/users.gif" alt="">

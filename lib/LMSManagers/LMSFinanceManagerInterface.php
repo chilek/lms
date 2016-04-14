@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C); 2001-2013 LMS Developers
+ *  Copyright (C); 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,6 +28,7 @@
  * LMSFinanceManagerInterface
  * 
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
+ * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 interface LMSFinanceManagerInterface
 {

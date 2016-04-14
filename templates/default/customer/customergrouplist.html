@@ -29,14 +29,9 @@
 	</THEAD>
 	<TFOOT>
 	<TR>
-		<TD colspan="2" class="text-right bold nobr">
+		<TD colspan="4" class="text-right bold nobr">
 			<IMG src="img/info2.gif" alt=""> {trans("Total:")}
-		</TD>
-		<TD class="text-right bold">
 			{$listdata.totalcount|default:"0"}
-		</TD>
-		<TD>
-			&nbsp;
 		</TD>
 	</TR>
 	</TFOOT>
@@ -68,9 +63,7 @@
 	{sectionelse}
 	<TR>
 		<TD colspan="4" class="empty-table">
-			<p>&nbsp;</p>
 			<p>{trans("There are no such groups in database.")}</p>
-			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/section}

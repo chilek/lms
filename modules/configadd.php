@@ -33,19 +33,19 @@ if(sizeof($config))
 	foreach($config as $key => $val)
 	    $config[$key] = trim($val);
 	
-	if(!($config['name'] || $config['value'] || $config['description']))
+	if(!($config['var'] || $config['value'] || $config['description']))
 	{
 		$SESSION->redirect('?m=configlist');
 	}
 	
-	if($config['name']=='')
-		$error['name'] = trans('Option name is required!');
-	elseif(strlen($config['name'])>64)
-		$error['name'] = trans('Option name is too long (max.64 characters)!');
-	elseif(!preg_match('/^[a-z0-9_-]+$/', $config['name']))
-    		$error['name'] = trans('Option name contains forbidden characters!');
-	elseif($LMS->GetConfigOptionId($config['name'], $config['section']))
-		$error['name'] = trans('Option exists!'); 
+	if($config['var']=='')
+		$error['var'] = trans('Option name is required!');
+	elseif(strlen($config['var'])>64)
+		$error['var'] = trans('Option name is too long (max.64 characters)!');
+	elseif(!preg_match('/^[a-z0-9_-]+$/', $config['var']))
+		$error['var'] = trans('Option name contains forbidden characters!');
+	elseif($LMS->GetConfigOptionId($config['var'], $config['section']))
+		$error['var'] = trans('Option exists!');
 
 	$section = empty($config['section']) ? $config['newsection'] : $config['section'];
 	if (empty($section))
@@ -53,22 +53,25 @@ if(sizeof($config))
 	elseif (!preg_match('/^[a-z0-9_-]+$/', $section))
 		$error[empty($config['section']) ? 'newsection' : 'section'] = trans('Section name contains forbidden characters!');
 
-	if($config['value']=='')
-		$error['value'] = trans('Option with empty value not allowed!');
-	elseif($msg = $LMS->CheckOption($config['name'], $config['value']))
-	        $error['value'] = $msg;
+	$option = $config['section'] . '.' . $config['var'];
+	if(!ConfigHelper::checkPrivilege('superuser') || $config['type'] == CONFIG_TYPE_AUTO)
+		$config['type'] = $LMS->GetConfigDefaultType($option);
+
+	if($msg = $LMS->CheckOption($option, $config['value'], $config['type']))
+		$error['value'] = $msg;
 	
 	if(!isset($config['disabled'])) $config['disabled'] = 0;
 
 	if (!$error) {
 		$args = array(
 			'section' => $section,
-			'name' => $config['name'],
+			'var' => $config['var'],
 			'value' => $config['value'],
 			'description' => $config['description'],
-			'disabled' => $config['disabled']
+			'disabled' => $config['disabled'],
+			'type' => $config['type']
 		);
-		$DB->Execute('INSERT INTO uiconfig (section, var, value, description, disabled) VALUES (?, ?, ?, ?, ?)',
+		$DB->Execute('INSERT INTO uiconfig (section, var, value, description, disabled, type) VALUES (?, ?, ?, ?, ?, ?)',
 			array_values($args));
 
 		if ($SYSLOG) {
@@ -80,7 +83,7 @@ if(sizeof($config))
 		if (!isset($config['reuse']))
 			$SESSION->redirect('?m=configlist');
 
-		unset($config['name']);
+		unset($config['var']);
 		unset($config['value']);
 		unset($config['description']);
 		unset($config['disabled']);

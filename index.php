@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,6 +33,7 @@ $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIREC
 
 define('START_TIME', microtime(true));
 define('LMS-UI', true);
+define('K_TCPDF_EXTERNAL_CONFIG', true);
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
 // find alternative config files:
@@ -72,12 +73,17 @@ define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
 define('VENDOR_DIR', $CONFIG['directories']['vendor_dir']);
 
 // Load autoloader
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'autoloader.php');
+$composer_autoload_path = VENDOR_DIR . DIRECTORY_SEPARATOR . 'autoload.php';
+if (file_exists($composer_autoload_path)) {
+    require_once $composer_autoload_path;
+} else {
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
+}
 
 // Do some checks and load config defaults
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'checkdirs.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'config.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'Smarty' . DIRECTORY_SEPARATOR . 'Smarty.class.php');
 
 // Init database
 
@@ -111,7 +117,10 @@ define('SMARTY_VERSION', $ver_chunks[0]);
 
 // add LMS's custom plugins directory
 $SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
-$SMARTY->registerFilter('pre', array('Smarty_Prefilter_Extendsall_Include', 'prefilter_extendsall_include'));
+
+$SMARTY->setMergeCompiledIncludes(true);
+
+$SMARTY->setDefaultResourceType('extendsall');
 
 // uncomment this line if you're not gonna change template files no more
 //$SMARTY->compile_check = false;
@@ -214,6 +223,9 @@ $modules_dirs = $plugin_manager->executeHook('modules_dir_initialized', $modules
 $plugin_manager->executeHook('lms_initialized', $LMS);
 
 $plugin_manager->executeHook('smarty_initialized', $SMARTY);
+
+$documents_dirs = array(DOC_DIR);
+$documents_dirs = $plugin_manager->executeHook('documents_dir_initialized', $documents_dirs);
 
 // Check privileges and execute modules
 if ($AUTH->islogged) {

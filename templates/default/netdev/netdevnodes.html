@@ -15,7 +15,9 @@
                             <THEAD>
 				<TR>
 					<TD style="width: 96%;" class="nobr">
-						<img src="img/node.gif" ALT=""> <span class="bold">{trans("Name:")}</span><BR>
+						<img src="img/node.gif" ALT=""> <span class="bold">{trans("Name:")}</span>
+						/ <IMG src="img/home.gif" ALT=""> {trans("Location:")}
+						<BR>
 						<img src="img/customer.gif" ALT=""> {trans("Owner:")}
 					</TD>
 					<TD style="width: 1%;" class="nobr">
@@ -38,7 +40,11 @@
 				{section name=netcomplist loop=$netcomplist start=$start}
 				<TR class="highlight {cycle}"  >
 					<TD onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
-						<IMG SRC="img/node.gif" ALT=""> <span class="bold">{$netcomplist[netcomplist].name}</span><BR>
+						<IMG SRC="img/node.gif" ALT=""> <span class="bold">{$netcomplist[netcomplist].name}</span>
+						{if $netcomplist[netcomplist].location}
+						/ <IMG src="img/home.gif" ALT=""> {$netcomplist[netcomplist].location}{if $netcomplist[netcomplist].borough_name} ({$netcomplist[netcomplist].state_name} / {$netcomplist[netcomplist].district_name} / {$_BOROUGHTYPES[$netcomplist[netcomplist].borough_type]} {$netcomplist[netcomplist].borough_name}){/if}
+						{/if}
+						<BR>
 						<IMG SRC="img/customer.gif" ALT=""> <A href="?m=customerinfo&id={$netcomplist[netcomplist].ownerid}" {tip a=$netcomplist[netcomplist].ownerid dynpopup='?m=customerinfoshort&id=$a'}>{$netcomplist[netcomplist].owner}</A>
 					</TD>
 					<TD class="valign-top nobr" id="node_{$netcomplist[netcomplist].id}">
@@ -65,9 +71,7 @@
 				{sectionelse}
 				<TR>
 					<TD colspan="5" class="empty-table">
-						<p>&nbsp;</p>
 						<p>{trans("No such connected nodes.")}</p>
-						<p>&nbsp;</p>
 					</TD>
 				</TR>
 				{/section}

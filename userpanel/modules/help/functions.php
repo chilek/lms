@@ -97,6 +97,7 @@ function module_main()
     }
     $solution = get_solution($problem);
     $questions = get_questions($problem);
+
     $SMARTY->assign('solution', $solution);
     $SMARTY->assign('questions', $questions);    
     $SMARTY->display('module:help.html');

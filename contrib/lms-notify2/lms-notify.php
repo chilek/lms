@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -46,28 +46,25 @@ foreach ($parameters as $key => $val) {
 	$short_to_longs[$newkey] = $val;
 }
 $options = getopt(implode('', array_keys($parameters)), $parameters);
-foreach($short_to_longs as $short => $long)
-	if (array_key_exists($short, $options))
-	{
+foreach ($short_to_longs as $short => $long)
+	if (array_key_exists($short, $options)) {
 		$options[$long] = $options[$short];
 		unset($options[$short]);
 	}
 
-if (array_key_exists('version', $options))
-{
+if (array_key_exists('version', $options)) {
 	print <<<EOF
 lms-notify.php
-(C) 2001-2013 LMS Developers
+(C) 2001-2016 LMS Developers
 
 EOF;
 	exit(0);
 }
 
-if (array_key_exists('help', $options))
-{
+if (array_key_exists('help', $options)) {
 	print <<<EOF
 lms-notify.php
-(C) 2001-2013 LMS Developers
+(C) 2001-2016 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -85,11 +82,10 @@ EOF;
 }
 
 $quiet = array_key_exists('quiet', $options);
-if (!$quiet)
-{
+if (!$quiet) {
 	print <<<EOF
 lms-notify.php
-(C) 2001-2013 LMS Developers
+(C) 2001-2016 LMS Developers
 
 EOF;
 }
@@ -99,9 +95,8 @@ if (array_key_exists('config-file', $options))
 else
 	$CONFIG_FILE = '/etc/lms/lms.ini';
 
-if (!$quiet) {
-	echo "Using file ".$CONFIG_FILE." as config.\n";
-}
+if (!$quiet)
+	echo "Using file ".$CONFIG_FILE." as config." . PHP_EOL;
 define('CONFIG_FILE', $CONFIG_FILE);
 
 $test = array_key_exists('test', $options);
@@ -112,7 +107,7 @@ $info = (array_key_exists('info', $options) ? $options['info'] : NULL);
 $group = (array_key_exists('group', $options) ? $options['group'] : NULL);
 
 if (!is_readable($CONFIG_FILE))
-	die("Unable to read configuration file [".$CONFIG_FILE."]!\n");
+	die("Unable to read configuration file [".$CONFIG_FILE."]!" . PHP_EOL);
 
 $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 
@@ -124,19 +119,21 @@ define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 
 // Load autloader
-require_once(LIB_DIR.'/autoloader.php');
-
-// Do some checks and load config defaults
-require_once(LIB_DIR.'/config.php');
+$composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+if (file_exists($composer_autoload_path)) {
+    require_once $composer_autoload_path;
+} else {
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
+}
 
 // Init database
 $DB = null;
 try {
 	$DB = LMSDB::getInstance();
 } catch (Exception $ex) {
-    trigger_error($ex->getMessage(), E_USER_WARNING);
-    // can't working without database
-    die("Fatal error: cannot connect to database!\n");
+	trigger_error($ex->getMessage(), E_USER_WARNING);
+	// can't working without database
+	die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
 $debug_email = ConfigHelper::getConfig('mail.debug_email','');
@@ -152,12 +149,12 @@ $footer      = ConfigHelper::getConfig('mail.footer','');
 
 // Include required files (including sequence is important)
 
-require_once(LIB_DIR.'/language.php');
-include_once(LIB_DIR.'/definitions.php');
-require_once(LIB_DIR.'/unstrip.php');
-require_once(LIB_DIR.'/common.php');
-#require_once(LIB_DIR.'/LMS.class.php');
-require_once(LIB_DIR.'/SYSLOG.class.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
+include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
+//require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'LMS.class.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
 
 if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG'))
 	$SYSLOG = new SYSLOG($DB);
@@ -221,7 +218,7 @@ function send_email($msgid, $cid, $rmail, $rname, $subject, $body) {
                 (messageid, customerid, destination, status)
                 VALUES (?, ?, ?, ?)",
                 array($msgid, $cid, $rmail, 1));
-	#echo "$msgid, $cid, $rmail, 1\n";
+	//echo "$msgid, $cid, $rmail, 1\n";
         $headers = array('From' => $mail_from, 'To' => qp_encode($rname) . ' <' . $rmail . '>',
 		'Subject' => $subject, 'X-msgid' => $DB->GetLastInsertID('messageitems'),
 		'X-customerid' => $cid, 'Return-receipt-to' => $mail_from);
@@ -261,12 +258,12 @@ function send_sms($msgid, $cid, $phone, $data) {
 
 
 function send_message($mode,$id,$message,$msgid,$oplata=0) {
-	#echo "send_message:\n";
+	//echo "send_message:\n";
 	global $LMS,$DB,$tmpl,$debug_email,$test,$divisor,$force;
 	$customer=$LMS->GetCustomer($id);
 	if ($mode=='e-mail') {
 		$emails=$customer['emails'];
-		#print_r($emails);
+		//print_r($emails);
 		if (is_array($emails)) {
 			foreach ($emails AS $email) {
 				$body=parse_data($id,$tmpl['message'],$customer);
@@ -283,7 +280,7 @@ function send_message($mode,$id,$message,$msgid,$oplata=0) {
 
 	} elseif ($mode=='sms') {
 		$data=parse_data($id,$tmpl['message'],$customer);
-		#echo $data."\n";
+		//echo $data."\n";
 		$sms=0;
 		if (!is_array($customer['contacts'])) {
 			if ($test)
@@ -324,17 +321,17 @@ function send_message($mode,$id,$message,$msgid,$oplata=0) {
 		$groups=$LMS->CustomergroupGetForCustomer($customer['id']);
 		if (count($groups)) foreach ($groups AS $group) 
 			if ($group['name']=='SILENT') 
-				#return(''); #opcja: 
+				//return(''); #opcja: 
 				return("S ".$message."\n");
 		if (count($nodes)) foreach ($nodes AS $node) {
 			$access*=$node['access'];
 			if ($node['warning']) $warning=1;
 		}
 		if (!$access) {
-			#return(''); #opcja: 
+			//return(''); #opcja: 
 			$message="! ".$message."\n";
 		} elseif ($warning and !$force) {
-			#return(''); #opcja: 
+			//return(''); #opcja: 
 			$message="* ".$message."\n";
 		} else {
 			if (!$test) {
@@ -368,7 +365,7 @@ if (!isset($tmpl)) {
 	echo "Błędny szablon wiadomości!\n";
 	exit(0);
 }
-#echo $tmpl['message'];
+//echo $tmpl['message'];
 /* ****************************************************************** 
 	GŁÓWNA PROCEDURA SEGREGACJI I WYSYŁKI 
    ****************************************************************** */
@@ -398,14 +395,14 @@ if (isset($group)) {
 		$covenant=0;
 		$oplata=0;
 		$assignments=$LMS->GetCustomerAssignments($id,true);
-		#if ($customer['id']==2) print_r($assignments);
+		//if ($customer['id']==2) print_r($assignments);
 		if (is_array($assignments)) foreach ($assignments as $assignment) {
 			if ($assignment['liabilityid']){
-				#print $assignment['period']."\n";
+				//print $assignment['period']."\n";
 				if (($assignment['period']=='rocznie' and $assignment['at']==$yearday) OR
 				    ($assignment['period']=='jednorazowo' and $assignment['at']==$mday))
 					$covenant+=$assignment['discounted_value'];
-				#else echo "Poza zakresem!: '".$assignment['at']."'/'".$yearday."'\n";
+				//else echo "Poza zakresem!: '".$assignment['at']."'/'".$yearday."'\n";
 			} elseif ($assignment['datefrom']==0 or $assignment['datefrom']<time()) {
 				if ($assignment['period']=='rocznie')
 					$covenant+=11*$assignment['discounted_value'];
@@ -427,7 +424,7 @@ if (isset($group)) {
 	}
 	$tresc=sprintf("Łącznie %d klientów na kwotę %2.2f:",$ilosc,-$razem)."\n".$tresc;
 	$tytul=ucfirst($mode).' o zadłużeniu: ';
-	#if ($divisor>0) 
+	//if ($divisor>0) 
 	$tytul.=sprintf('%3d%%|%4d|%9.2f',$divisor*100,$ilosc,-$razem);
 	if ($test) {
 		echo $tytul."\n".$tresc;

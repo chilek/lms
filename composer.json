@@ -5,10 +5,24 @@
     "license": "GPL-2.0",
     "require": {
         "phine/observer": "2.0",
-        "phine/exception": "1.0"
+        "phine/exception": "1.0",
+        "phpmailer/phpmailer": "^5.2",
+        "tecnickcom/tcpdf": "^6.2",
+        "spipu/html2pdf": "^4.5",
+        "components/normalize.css": "^3.0"
     },
     "require_dev": {
-        "phpunit/phpunit": "4.1.*",
-        "phpunit/phpunit-skeleton-generator": "*"
+        "phpunit/phpunit": "5.1.*"
+    },
+    "autoload": {
+        "classmap": ["lib/", "plugins/"]
+    },
+    "autoload-dev": {
+        "psr-4": { "LMS\\Tests\\": "tests/" }
+    },
+    "scripts": {
+        "pre-autoload-dump": [ "@repairHTML2PDF", "@repairTCPDF" ],
+        "repairHTML2PDF": "sed -i -e 's/class HTML2PDF_myPdf extends TCPDF/class HTML2PDF_myPdf extends LMSTCPDF/' vendor/spipu/html2pdf/_class/myPdf.class.php",
+        "repairTCPDF": "sed -i -e 's/\\(\\s\\+\\)register_shutdown_function/\\1\\\/\\\/register_shutdown_function/' vendor/tecnickcom/tcpdf/tcpdf.php"
     }
 }

@@ -39,11 +39,17 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, 
 			n.netdev, port, ownerid,
 			' . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS owner,
-			net.name AS netname
-			FROM nodes n
-			JOIN customersview c ON c.id = ownerid
+			net.name AS netname, n.location,
+			lc.name AS city_name, lb.name AS borough_name, lb.type AS borough_type,
+			ld.name AS district_name, ls.name AS state_name
+			FROM vnodes n
+			JOIN customerview c ON c.id = ownerid
 			JOIN networks net ON net.id = n.netid
 			LEFT JOIN netradiosectors rs ON rs.id = n.linkradiosector
+			LEFT JOIN location_cities lc ON lc.id = n.location_city
+			LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
+			LEFT JOIN location_districts ld ON ld.id = lb.districtid
+			LEFT JOIN location_states ls ON ls.id = ld.stateid
 			WHERE n.netdev = ? AND ownerid > 0 
 			ORDER BY n.name ASC', array($id));
     }
@@ -79,7 +85,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			linktechnology=?, linkspeed=?, port=?
 			WHERE id=?', array_values($args));
         if ($this->syslog && $res) {
-            $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $this->db->GetOne('SELECT ownerid FROM nodes WHERE id=?', array($id));
+            $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $this->db->GetOne('SELECT ownerid FROM vnodes WHERE id=?', array($id));
             $this->syslog->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
                 $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV],
                 $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
@@ -327,12 +333,12 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function GetNetDevIDByNode($id)
     {
-        return $this->db->GetOne('SELECT netdev FROM nodes WHERE id=?', array($id));
+        return $this->db->GetOne('SELECT netdev FROM vnodes WHERE id=?', array($id));
     }
 
     public function CountNetDevLinks($id)
     {
-        return $this->db->GetOne('SELECT COUNT(*) FROM netlinks WHERE src = ? OR dst = ?', array($id, $id)) + $this->db->GetOne('SELECT COUNT(*) FROM nodes WHERE netdev = ? AND ownerid > 0', array($id));
+        return $this->db->GetOne('SELECT COUNT(*) FROM netlinks WHERE src = ? OR dst = ?', array($id, $id)) + $this->db->GetOne('SELECT COUNT(*) FROM vnodes WHERE netdev = ? AND ownerid > 0', array($id));
     }
 
     public function GetNetDevLinkType($dev1, $dev2)
@@ -349,7 +355,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			l.technology AS linktechnology, l.speed AS linkspeed, l.srcport, l.dstport,
 			srcrs.name AS srcradiosector, dstrs.name AS dstradiosector,
 			(SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id) 
-			+ (SELECT COUNT(*) FROM nodes WHERE netdev = d.id AND ownerid > 0)
+			+ (SELECT COUNT(*) FROM vnodes WHERE netdev = d.id AND ownerid > 0)
 			AS takenports,
 			lc.name AS city_name, lb.name AS borough_name, lb.type AS borough_type,
 			ld.name AS district_name, ls.name AS state_name
@@ -438,7 +444,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
 	$netdevlist = $this->db->GetAll('SELECT d.id, d.name, d.location,
 			d.description, d.producer, d.model, d.serialnumber, d.ports,
-			(SELECT COUNT(*) FROM nodes WHERE netdev=d.id AND ownerid > 0)
+			(SELECT COUNT(*) FROM nodes WHERE ipaddr <> 0 AND netdev=d.id AND ownerid > 0)
 			+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id)
 			AS takenports, d.netnodeid, n.name AS netnode,
 			lb.name AS borough_name, lb.type AS borough_type,
@@ -524,7 +530,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                     );
                     $this->syslog->AddMessage(SYSLOG_RES_NETLINK, SYSLOG_OPER_DELETE, $args, array_keys($args));
                 }
-            $nodes = $this->db->GetAll('SELECT id, netdev, ownerid FROM nodes WHERE netdev=? AND ownerid>0', array($id));
+            $nodes = $this->db->GetAll('SELECT id, netdev, ownerid FROM vnodes WHERE netdev=? AND ownerid>0', array($id));
             if (!empty($nodes))
                 foreach ($nodes as $node) {
                     $args = array(
@@ -559,7 +565,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                     );
                     $this->syslog->AddMessage(SYSLOG_RES_NETLINK, SYSLOG_OPER_DELETE, $args, array_keys($args));
                 }
-            $nodes = $this->db->GetCol('SELECT id FROM nodes WHERE ownerid = 0 AND netdev = ?', array($id));
+            $nodes = $this->db->GetCol('SELECT id FROM vnodes WHERE ownerid = 0 AND netdev = ?', array($id));
             if (!empty($nodes))
                 foreach ($nodes as $node) {
                     $macs = $this->db->GetCol('SELECT id FROM macs WHERE nodeid = ?', array($node));
@@ -577,7 +583,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                     );
                     $this->syslog->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_DELETE, $args, array_keys($args));
                 }
-            $nodes = $this->db->GetAll('SELECT id, ownerid FROM nodes WHERE ownerid <> 0 AND netdev = ?', array($id));
+            $nodes = $this->db->GetAll('SELECT id, ownerid FROM vnodes WHERE ownerid <> 0 AND netdev = ?', array($id));
             if (!empty($nodes))
                 foreach ($nodes as $node) {
                     $args = array(

@@ -89,7 +89,7 @@ class LMSPluginManager extends Subject implements SubjectInterface {
 						)
 					);
 
-					$this->registerObserver($plugin, $plugin_priority);
+					$this->registerObserver($plugin, $plugin_info['priority']);
 				}
 				$this->new_style_plugins[$plugin_name] = $plugin_info;
 			} else {

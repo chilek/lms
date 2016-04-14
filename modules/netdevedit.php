@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -257,7 +257,7 @@ switch ($action) {
 			if ($dev['srcport']) {
 				if (!preg_match('/^[0-9]+$/', $dev['srcport']) || $dev['srcport'] > $ports2) {
 					$error['srcport'] = trans('Incorrect port number!');
-				} elseif ($DB->GetOne('SELECT id FROM nodes WHERE netdev=? AND port=? AND ownerid>0', array($dev['id'], $dev['srcport']))
+				} elseif ($DB->GetOne('SELECT id FROM vnodes WHERE netdev=? AND port=? AND ownerid>0', array($dev['id'], $dev['srcport']))
 						|| $DB->GetOne('SELECT 1 FROM netlinks WHERE (src = ? OR dst = ?)
 					AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?', array($dev['id'], $dev['id'], $dev['id'], $dev['srcport']))) {
 					$error['srcport'] = trans('Selected port number is taken by other device or node!');
@@ -267,7 +267,7 @@ switch ($action) {
 			if ($dev['dstport']) {
 				if (!preg_match('/^[0-9]+$/', $dev['dstport']) || $dev['dstport'] > $ports1) {
 					$error['dstport'] = trans('Incorrect port number!');
-				} elseif ($DB->GetOne('SELECT id FROM nodes WHERE netdev=? AND port=? AND ownerid>0', array($_GET['id'], $dev['dstport']))
+				} elseif ($DB->GetOne('SELECT id FROM vnodes WHERE netdev=? AND port=? AND ownerid>0', array($_GET['id'], $dev['dstport']))
 						|| $DB->GetOne('SELECT 1 FROM netlinks WHERE (src = ? OR dst = ?)
 					AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?', array($_GET['id'], $_GET['id'], $_GET['id'], $dev['dstport']))) {
 					$error['dstport'] = trans('Selected port number is taken by other device or node!');
@@ -315,7 +315,7 @@ switch ($action) {
 		elseif ($node['port']) {
 			if (!preg_match('/^[0-9]+$/', $node['port']) || $node['port'] > $ports) {
 				$error['port'] = trans('Incorrect port number!');
-			} elseif ($DB->GetOne('SELECT id FROM nodes WHERE netdev=? AND port=? AND ownerid>0', array($_GET['id'], $node['port']))
+			} elseif ($DB->GetOne('SELECT id FROM vnodes WHERE netdev=? AND port=? AND ownerid>0', array($_GET['id'], $node['port']))
 					|| $DB->GetOne('SELECT 1 FROM netlinks WHERE (src = ? OR dst = ?)
 				AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?', array($_GET['id'], $_GET['id'], $_GET['id'], $node['port']))) {
 				$error['port'] = trans('Selected port number is taken by other device or node!');
@@ -383,7 +383,7 @@ switch ($action) {
 	case 'ipset':
 		if (!empty($_GET['ip'])) {
 			if ($SYSLOG) {
-				$access = $DB->GetOne('SELECT access FROM nodes WHERE id = ? AND ownerid = 0',
+				$access = $DB->GetOne('SELECT access FROM vnodes WHERE id = ? AND ownerid = 0',
 					array($_GET['ip']));
 				$args = array(
 					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $_GET['ip'],
@@ -421,7 +421,7 @@ switch ($action) {
 		if ($nodeipdata['name'] == '')
 			$error['ipname'] = trans('Address field is required!');
 		elseif (strlen($nodeipdata['name']) > 32)
-			$error['ipname'] = trans('Specified name is too long (max.$a characters)!', '32');
+			$error['ipname'] = trans('Specified name is too long (max. $a characters)!', '32');
 		elseif ($LMS->GetNodeIDByName($nodeipdata['name']))
 			$error['ipname'] = trans('Specified name is in use!');
 		elseif (!preg_match('/^[_a-z0-9-]+$/i', $nodeipdata['name']))
@@ -455,7 +455,7 @@ switch ($action) {
 		$macs = array();
 		foreach ($nodeipdata['macs'] as $key => $value)
 			if (check_mac($value)) {
-				if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.allow_mac_sharing', false)))
+				if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing'))
 					if ($LMS->GetNodeIDByMAC($value))
 						$error['mac' . $key] = trans('MAC address is in use!');
 				$macs[] = $value;
@@ -514,7 +514,7 @@ switch ($action) {
 		if ($nodeipdata['name'] == '')
 			$error['ipname'] = trans('Address field is required!');
 		elseif (strlen($nodeipdata['name']) > 32)
-			$error['ipname'] = trans('Specified name is too long (max.$a characters)!', '32');
+			$error['ipname'] = trans('Specified name is too long (max. $a characters)!', '32');
 		elseif ($LMS->GetNodeIDByName($nodeipdata['name']) &&
 				$LMS->GetNodeName($_GET['ip']) != $nodeipdata['name'])
 			$error['ipname'] = trans('Specified name is in use!');
@@ -620,8 +620,8 @@ if (isset($_POST['netdev'])) {
 
 	if ($netdevdata['name'] == '')
 		$error['name'] = trans('Device name is required!');
-	elseif (strlen($netdevdata['name']) > 32)
-		$error['name'] = trans('Specified name is too long (max.$a characters)!', '32');
+	elseif (strlen($netdevdata['name']) > 60)
+		$error['name'] = trans('Specified name is too long (max. $a characters)!', '60');
 
 	$netdevdata['ports'] = intval($netdevdata['ports']);
 
@@ -798,7 +798,7 @@ include(MODULES_DIR . '/netdevxajax.inc.php');
 
 switch ($edit) {
 	case 'data':
-		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false)))
+		if (ConfigHelper::checkConfig('phpui.ewx_support'))
 			$SMARTY->assign('channels', $DB->GetAll('SELECT id, name FROM ewx_channels ORDER BY name'));
 
 		$SMARTY->display('netdev/netdevedit.html');

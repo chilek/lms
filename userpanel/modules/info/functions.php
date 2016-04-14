@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -34,7 +34,7 @@ function module_main()
 
     $userinfo = $LMS->GetCustomer($SESSION->id);
     $usernodes = $LMS->GetCustomerNodes($SESSION->id);
-    $balancelist = $LMS->GetCustomerBalanceList($SESSION->id);
+    //$balancelist = $LMS->GetCustomerBalanceList($SESSION->id);
     $documents = $LMS->DB->GetAll('SELECT c.docid, d.number, d.type, c.title, c.fromdate, c.todate, 
 	c.description, c.filename, c.md5sum, c.contenttype, n.template, d.closed, d.cdate
 	FROM documentcontents c
@@ -48,7 +48,7 @@ function module_main()
 
     $SMARTY->assign('userinfo',$userinfo);
     $SMARTY->assign('usernodes',$usernodes);
-    $SMARTY->assign('balancelist',$balancelist);
+    //$SMARTY->assign('balancelist',$balancelist);
     $SMARTY->assign('documents',$documents);
     $SMARTY->assign('fields_changed', $fields_changed);
     $SMARTY->display('module:info.html');
@@ -139,7 +139,9 @@ function module_updateusersave()
 	    switch($field) {
 		case 'name':
 		case 'lastname':
-		case 'address':
+		case 'street':
+		case 'building':
+		case 'apartment':
 		case 'zip':
 		case 'city':
 			if(isset($right['edit_addr'])) {
@@ -262,7 +264,7 @@ if(defined('USERPANEL_SETUPMODE'))
 		$userchanges = $DB->GetAll('SELECT up_info_changes.id AS changeid, customerid, fieldname, fieldvalue AS newvalue, '.
 					$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername, c.* 
 					FROM up_info_changes
-					JOIN customersview c ON (c.id = up_info_changes.customerid)');
+					JOIN customerview c ON (c.id = up_info_changes.customerid)');
 
 		if(isset($userchanges))
 			foreach($userchanges as $key => $change)
@@ -342,7 +344,9 @@ if(defined('USERPANEL_SETUPMODE'))
 					break;
 					case 'name':
 					case 'lastname':
-					case 'address':
+					case 'street':
+					case 'building':
+					case 'apartment':
 					case 'zip':
 					case 'city':
 					case 'ssn':

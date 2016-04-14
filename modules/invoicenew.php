@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -110,19 +110,19 @@ switch($action)
 			if($itemdata['valuenetto'] != 0)
 			{
 				$itemdata['valuenetto'] = f_round(($itemdata['valuenetto'] - $itemdata['valuenetto'] * $itemdata['pdiscount'] / 100) - $itemdata['vdiscount']);
-				$itemdata['valuebrutto'] = round($itemdata['valuenetto'] * ($taxvalue / 100 + 1),2);
+				$itemdata['valuebrutto'] = $itemdata['valuenetto'] * ($taxvalue / 100 + 1);
+				$itemdata['s_valuebrutto'] = f_round(($itemdata['valuenetto'] * $itemdata['count']) * ($taxvalue / 100 + 1));
 			}
 			elseif($itemdata['valuebrutto'] != 0)
 			{
 				$itemdata['valuebrutto'] = f_round(($itemdata['valuebrutto'] - $itemdata['valuebrutto'] * $itemdata['pdiscount'] / 100) - $itemdata['vdiscount']);
 				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($taxvalue / 100 + 1), 2);
+				$itemdata['s_valuebrutto'] = f_round($itemdata['valuebrutto'] * $itemdata['count']);
 			}
 
 			// str_replace->f_round here is needed because of bug in some PHP versions
-			$itemdata['s_valuebrutto'] = f_round($itemdata['valuebrutto'] * $itemdata['count']);
 			$itemdata['s_valuenetto'] = f_round($itemdata['s_valuebrutto'] /  ($taxvalue / 100 + 1));
 			$itemdata['valuenetto'] = f_round($itemdata['valuenetto']);
-			$itemdata['valuebrutto'] = f_round($itemdata['valuebrutto']);
 			$itemdata['count'] = f_round($itemdata['count']);
 			$itemdata['discount'] = f_round($itemdata['discount']);
 			$itemdata['pdiscount'] = f_round($itemdata['pdiscount']);
@@ -400,10 +400,8 @@ if(isset($list))
 	else
 		$covenantlist = $list;
 
-if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
-{
-        $SMARTY->assign('customers', $LMS->GetCustomerNames());
-}
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 
 if($newinvoice = $SESSION->get('invoiceprint'))
 {

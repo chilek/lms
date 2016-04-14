@@ -63,7 +63,7 @@ class LMSNodeGroupManager extends LMSManager implements LMSNodeGroupManagerInter
 
         return $this->db->GetAll('SELECT n.id AS id, n.name AS nodename, a.nodeid
 			FROM nodes n
-			JOIN customersview c ON (n.ownerid = c.id)
+			JOIN customerview c ON (n.ownerid = c.id)
 			LEFT JOIN nodegroupassignments a ON (n.id = a.nodeid AND a.nodegroupid = ?) 
 			WHERE a.nodeid IS NULL '
                         . ($network ?
@@ -81,7 +81,7 @@ class LMSNodeGroupManager extends LMSManager implements LMSNodeGroupManagerInter
 
         return $this->db->GetAll('SELECT n.id AS id, n.name AS nodename, a.nodeid
 			FROM nodes n
-			JOIN customersview c ON (n.ownerid = c.id)
+			JOIN customerview c ON (n.ownerid = c.id)
 			JOIN nodegroupassignments a ON (n.id = a.nodeid) 
 			WHERE a.nodegroupid = ?'
                         . ($network ?

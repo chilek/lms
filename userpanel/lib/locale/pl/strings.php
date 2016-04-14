@@ -98,4 +98,6 @@ $_LANG['Credential reminder couldn\'t be sent!'] = 'Przypomnienie danych do logo
 $_LANG['Authentication type:'] = 'Rodzaj uwierzytelniania:';
 $_LANG['Userpanel authentication type'] = 'Rodzaj uwierzytelniania używany przez Userpanel';
 
+$_LANG['Page header'] = 'Nagłówek strony';
+
 ?>

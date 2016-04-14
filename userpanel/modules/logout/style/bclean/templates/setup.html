@@ -1,0 +1,25 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<h1>{$layout.pagetitle}</h1>
+<TABLE WIDTH="100%" CELLPADDING="3">
+    <TR CLASS="dark"><TD CLASS="fall"><B>{trans("Module Configuration:")}</B></TD></TR>
+    <TR CLASS="light"><TD CLASS="fall">
+	<FORM NAME="moduleconfig" METHOD="POST" ACTION="?m=userpanel&module=logout&f=submit_setup">
+	<TABLE WIDTH="100%">
+	    <TR>
+		<TD WIDTH="1%" NOWRAP>
+		    {trans("Logout URL:")}
+		</TD>
+		<TD WIDTH="99%" NOWRAP>
+		    <INPUT TYPE="TEXT" NAME="logouturl" VALUE="{$logouturl}" SIZE="50" {tip text="When your customer logs out, he will be redirected to this url. If url isn't specified, then he will be redirected to Userpanel's login screen"}> 
+    		</TD>
+	    </TR>
+	</TABLE>
+	</FORM>
+	<p align="right">
+	    <A HREF="?m=userpanel">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
+	    <A HREF="javascript:document.moduleconfig.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
+	</p>
+    </TD></TR>
+</TABLE>
+{include file="footer.html"}

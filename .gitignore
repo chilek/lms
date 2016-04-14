@@ -10,18 +10,11 @@ documents/*
 cache/*
 contrib/LMS2Nagios-php/generated/*
 lib/teryt/*
+composer.lock
 
 # Temporary files
 *~
 *.swp
 *.swo
 
-# Object files
-*.o
-
-# Shared objects
-*.so
-
-# Executables
-daemon/lmsd
 /vendor/

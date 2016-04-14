@@ -25,16 +25,26 @@
  */
 
 function plugin($template, $customer) {
+	global $documents_dirs;
+	
 	$result = '';
 
 	// xajax response object, can be used in the plugin
 	$JSResponse = new xajaxResponse();
 
+	foreach ($documents_dirs as $doc){
+	    if(file_exists($doc. '/templates/' . $template)){
+		$doc_dir = $doc;
+		continue;
+	    }
+	}
+	
 	// read template information
-	if (file_exists($file = DOC_DIR . '/templates/' . $template . '/info.php'))
+	if (file_exists($file = $doc_dir . '/templates/' . $template . '/info.php'))
 		include($file);
 	// call plugin
-	if (!empty($engine['plugin']) && file_exists($file = DOC_DIR . '/templates/' . $engine['name'] . '/' . $engine['plugin'] . '.php'))
+	
+	if (!empty($engine['plugin']) && file_exists($file = $doc_dir . '/templates/' . $engine['name'] . '/' . $engine['plugin'] . '.php'))
 		include($file);
 
 	$JSResponse->assign('plugin', 'innerHTML', $result);
@@ -42,6 +52,8 @@ function plugin($template, $customer) {
 }
 
 function GetDocumentTemplates($rights, $type = NULL) {
+        global $documents_dirs;
+	
 	$docengines = array();
 
 	if (!$type)
@@ -50,23 +62,25 @@ function GetDocumentTemplates($rights, $type = NULL) {
 		$types = array($type);
 	else
 		return NULL;
-
-	if ($dirs = getdir(DOC_DIR . '/templates', '^[a-z0-9_-]+$'))
-		foreach ($dirs as $dir) {
-			$infofile = DOC_DIR . '/templates/' . $dir . '/info.php';
-			if (file_exists($infofile)) {
-				unset($engine);
-				include($infofile);
-				if (isset($engine['type'])) {
-					if (!is_array($engine['type']))
-						$engine['type'] = array($engine['type']);
-					$intersect = array_intersect($engine['type'], $types);
-					if (!empty($intersect))
+	
+	foreach ($documents_dirs as $doc_dir){
+		if ($dirs = getdir($doc_dir . '/templates', '^[a-z0-9_-]+$'))
+			foreach ($dirs as $dir) {
+				$infofile = $doc_dir . '/templates/' . $dir . '/info.php';
+				if (file_exists($infofile)) {
+					unset($engine);
+					include($infofile);
+					if (isset($engine['type'])) {
+						if (!is_array($engine['type']))
+							$engine['type'] = array($engine['type']);
+						$intersect = array_intersect($engine['type'], $types);
+						if (!empty($intersect))
+							$docengines[$dir] = $engine;
+					} else
 						$docengines[$dir] = $engine;
-				} else
-					$docengines[$dir] = $engine;
+				}
 			}
-		}
+	}
 
 	if (!empty($docengines))
 		ksort($docengines);
