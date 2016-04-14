@@ -148,6 +148,12 @@ if (!empty($posts)) {
 		if (count($post->parts) != 3)
 			continue;
 		$parts = $post->parts;
+
+		$msgitemid = 0;
+		$status = 0;
+		$diag_code = '';
+		$disposition = '';
+		$readdate = '';
 		foreach ($parts as $partid => $part)
 			switch ($part->subtype) {
 				case 'DELIVERY-STATUS':
@@ -155,35 +161,45 @@ if (!empty($posts)) {
 					if (preg_match('/Status:\s+(?<status>[0-9]+\.[0-9]+\.[0-9]+)/', $body, $m)) {
 						$code = explode('.', $m['status']);
 						$status = intval($code[0]);
-					} else
-						$status = 0;
+					}
 					if (preg_match('/Diagnostic-Code:\s+(?<code>.+)\r\n?/', $body, $m))
 						$diag_code = $m['code'];
-					else
-						$diag_code = '';
+					break;
+				case 'DISPOSITION-NOTIFICATION':
+					$body = imap_fetchbody($ih, $postid, $partid + 1);
+					if (preg_match('/Disposition:\s+(?<disposition>.+)\r\n?/', $body, $m))
+						$disposition = $m['disposition'];
+					$headers = imap_fetchheader($ih, $postid);
+					if (preg_match('/Date:\s+(?<date>.+)\r\n?/', $headers, $m))
+						$readdate = strtotime($m['date']);
 					break;
 				case 'RFC822-HEADERS':
 					$body = imap_fetchbody($ih, $postid, $partid + 1);
 					if (preg_match('/X-LMS-Message-Item-Id:\s+(?<msgitemid>[0-9]+)/', $body, $m))
 						$msgitemid = intval($m['msgitemid']);
-					else
-						$msgitemid = 0;
 					break;
 			}
-		if (empty($status) || empty($diag_code) || empty($msgitemid))
+		if (empty($msgitemid))
 			continue;
-		if ($status == 4)
-			continue;
-		switch ($status) {
-			case 2:
-				$status = MSG_DELIVERED;
-				break;
-			case 5:
-				$status = MSG_ERROR;
-				break;
+		if (!empty($status) && !empty($diag_code)) {
+			if ($status == 4)
+				continue;
+			switch ($status) {
+				case 2:
+					$status = MSG_DELIVERED;
+					break;
+				case 5:
+					$status = MSG_ERROR;
+					break;
 			}
-		$DB->Execute('UPDATE messageitems SET status = ?, error = ? WHERE id = ?',
-			array($status, $status == MSG_ERROR ? $diag_code : null, $msgitemid));
+			$DB->Execute('UPDATE messageitems SET status = ?, error = ? WHERE id = ?',
+				array($status, $status == MSG_ERROR ? $diag_code : null, $msgitemid));
+		} elseif (!empty($disposition) && !empty($readdate))
+			$DB->Execute('UPDATE messageitems SET status = ?, lastreaddate = ? WHERE id = ?',
+				array(MSG_DELIVERED, $readdate, $msgitemid));
+		else
+			continue;
+
 		$handled_posts[] = $postid;
 	}
 	foreach ($handled_posts as $postid)

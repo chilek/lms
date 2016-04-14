@@ -208,6 +208,7 @@ $notify_email = ConfigHelper::getConfig('sendinvoices.notify_email', '', true);
 $reply_email = ConfigHelper::getConfig('sendinvoices.reply_email', '', true);
 $add_message = ConfigHelper::checkConfig('sendinvoices.add_message');
 $dsn_email = ConfigHelper::getConfig('sendinvoices.dsn_email', '', true);
+$mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
 
 if (empty($sender_email))
 	die("Fatal error: sender_email unset! Can't continue, exiting." . PHP_EOL);
@@ -396,6 +397,11 @@ if (!empty($docs)) {
 				'Reply-To' => empty($reply_email) ? $sender_email : $reply_email,
 			);
 
+			if (!empty($mdn_email)) {
+				$headers['Return-Receipt-To'] = $mdn_email;
+				$headers['Disposition-Notification-To'] = $mdn_email;
+			}
+
 			if (!empty($notify_email))
 				$headers['Cc'] = $notify_email;
 
@@ -416,8 +422,9 @@ if (!empty($docs)) {
 			}
 
 			foreach (explode(',', $custemail) as $email) {
-				if ($add_message && !empty($dsn_email)) {
-					$headers['Delivery-Status-Notification-To'] = true;
+				if ($add_message && (!empty($dsn_email) || !empty($mdn_email))) {
+					if (!empty($dsn_email))
+						$headers['Delivery-Status-Notification-To'] = true;
 					$headers['X-LMS-Message-Message-Id'] = $msgitems[$doc['customerid']][$email];
 				}
 

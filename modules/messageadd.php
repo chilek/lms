@@ -365,6 +365,7 @@ if (isset($_POST['message'])) {
 		if ($message['type'] == MSG_MAIL) {
 			$message['body'] = wordwrap($message['body'], 76, "\n");
 			$dsn_email = ConfigHelper::getConfig('mail.dsn_email', '', true);
+			$mdn_email = ConfigHelper::getConfig('mail.mdn_email', '', true);
 		}
 
 		$SMARTY->assign('message', $message);
@@ -401,7 +402,7 @@ if (isset($_POST['message'])) {
 				$DB->Execute('INSERT INTO messageitems (messageid, customerid,
 					destination, status)
 					VALUES (?, ?, ?, ?)', array($msgid, $customerid, $destination, MSG_NEW));
-				if ($message['type'] == MSG_MAIL && !empty($dsn_email)) {
+				if ($message['type'] == MSG_MAIL && (!empty($dsn_email) || !empty($mdn_email))) {
 					$msgitemid = $DB->GetLastInsertID('messageitems');
 					if (!isset($msgitems[$customerid]))
 						$msgitems[$customerid] = array();
@@ -431,6 +432,10 @@ if (isset($_POST['message'])) {
 			if (!empty($dsn_email)) {
 				$headers['From'] = $dsn_email;
 				$headers['Delivery-Status-Notification-To'] = true;
+			}
+			if (!empty($mdn_email)) {
+				$headers['Return-Receipt-To'] = $mdn_email;
+				$headers['Disposition-Notification-To'] = $mdn_email;
 			}
 		} elseif ($message['type'] != MSG_WWW) {
 			$debug_phone = ConfigHelper::getConfig('sms.debug_phone');
@@ -467,7 +472,7 @@ if (isset($_POST['message'])) {
 				if ($message['type'] == MSG_MAIL) {
 					if (isset($message['copytosender']))
 						$destination .= ',' . $message['sender'];
-					if (!empty($dsn_email))
+					if (!empty($dsn_email) || !empty($mdn_email))
 						$headers['X-LMS-Message-Item-Id'] = $msgitems[$customerid][$orig_destination];
 					$result = $LMS->SendMail($destination, $headers, $body, $files);
 				} elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT)
