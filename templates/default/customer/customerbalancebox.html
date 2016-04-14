@@ -186,7 +186,7 @@
 				<TR>
 					<TD class="ftop">
 						<INPUT type="hidden" name="addbalance[customerid]" value="{$balancelist.customerid}">
-						<INPUT type="text" name="addbalance[time]" size="15" maxlength="16" {tip class="calendar-time" text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} {if $time}value="{$time|date_format:"%Y/%m/%d %H:%M"}"{/if}>
+						<INPUT type="text" name="addbalance[time]" size="15" maxlength="16" class="calendar-time" {tip text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} {if $time}value="{$time|date_format:"%Y/%m/%d %H:%M"}"{/if}>
 					</TD>
 					<TD class="ftop nobr">
 						{$layout.logname|truncate:16:"...":true}
