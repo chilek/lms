@@ -116,11 +116,10 @@ define('K_TCPDF_EXTERNAL_CONFIG', true);
 
 // Load autoloader
 $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-if (file_exists($composer_autoload_path)) {
-    require_once $composer_autoload_path;
-} else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
-}
+if (file_exists($composer_autoload_path))
+	require_once $composer_autoload_path;
+else
+	die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/" . PHP_EOL);
 
 // Init database
 
@@ -207,6 +206,8 @@ $invoice_filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'in
 $dnote_filename = ConfigHelper::getConfig('sendinvoices.debitnote_filename', 'dnote_%docid');
 $notify_email = ConfigHelper::getConfig('sendinvoices.notify_email', '', true);
 $reply_email = ConfigHelper::getConfig('sendinvoices.reply_email', '', true);
+$add_message = ConfigHelper::checkConfig('sendinvoices.add_message');
+$dsn_email = ConfigHelper::getConfig('sendinvoices.dsn_email', '', true);
 
 if (empty($sender_email))
 	die("Fatal error: sender_email unset! Can't continue, exiting." . PHP_EOL);
@@ -388,17 +389,53 @@ if (!empty($docs)) {
 				);
 			}
 
-			$headers = array('From' => $from, 'To' => $mailto_qp_encoded,
-				'Subject' => $subject);
-			if (!empty($reply_email))
-				$headers['Reply-To'] = $reply_email;
+			$headers = array(
+				'From' => empty($dsn_email) ? $from : $dsn_email,
+				'To' => $mailto_qp_encoded,
+				'Subject' => $subject,
+				'Reply-To' => empty($reply_email) ? $sender_email : $reply_email,
+			);
+
 			if (!empty($notify_email))
 				$headers['Cc'] = $notify_email;
-			$res = $LMS->SendMail($custemail . (!empty($notify_email) ? ',' . $notify_email : ''), $headers, $body,
-				$files, $host, $port, $user, $pass, $auth);
 
-			if (is_string($res))
-				fprintf(STDERR, "Error sending mail: $res" . PHP_EOL);
+			if ($add_message) {
+				$DB->Execute('INSERT INTO messages (subject, body, cdate, type)
+					VALUES (?, ?, ?NOW?, ?)',
+					array($subject, $body, MSG_MAIL));
+				$msgid = $DB->GetLastInsertID('messages');
+				foreach (explode(',', $custemail) as $email) {
+					$DB->Execute('INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
+						VALUES (?, ?, ?, ?NOW?, ?)',
+						array($msgid, $doc['customerid'], $email, MSG_NEW));
+					$msgitemid = $DB->GetLastInsertID('messageitems');
+					if (!isset($msgitems[$doc['customerid']]))
+						$msgitems[$doc['customerid']] = array();
+					$msgitems[$doc['customerid']][$email] = $msgitemid;
+				}
+			}
+
+			foreach (explode(',', $custemail) as $email) {
+				if ($add_message && !empty($dsn_email)) {
+					$headers['Delivery-Status-Notification-To'] = true;
+					$headers['X-LMS-Message-Message-Id'] = $msgitems[$doc['customerid']][$email];
+				}
+
+				$res = $LMS->SendMail($email . ',' . $notify_email, $headers, $body,
+					$files, $host, $port, $user, $pass, $auth);
+
+				if (is_string($res)) {
+					fprintf(STDERR, "Error sending mail: $res" . PHP_EOL);
+					$status = MSG_ERROR;
+				} else {
+					$status = MSG_SENT;
+					$res = NULL;
+				}
+
+				if ($add_message)
+					$DB->Execute('UPDATE messageitems SET status = ?, error = ?
+						WHERE id = ?', array($status, $res, $msgitems[$doc['customerid']][$email]));
+			}
 		}
 	}
 }

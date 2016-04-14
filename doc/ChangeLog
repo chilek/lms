@@ -78,6 +78,8 @@ version ?.??.?? (????-??-??):
     hooks [chilan]
   - allow to add custom links in userpanel customer balance list [chilan]
   - workaround postgresql array_agg multi function existence during db schema updates [chilan]
+  - added delivery status notification support for mail messages [chilan]
+  - invoice sends are optionally confirmed by new messages [chilan]
 
 version 1.11.19 (2015-12-21):
 
