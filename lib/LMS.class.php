@@ -1986,6 +1986,7 @@ class LMS
                     'to' => $number,
                     'message' => $message,
                     'from' => !empty($from) ? $from : 'ECO',
+                    'encoding' => 'utf-8',
                 );
                 $fast = ConfigHelper::getConfig('sms.fast');
                 if (!empty($fast))
