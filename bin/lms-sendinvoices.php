@@ -425,7 +425,7 @@ if (!empty($docs)) {
 				if ($add_message && (!empty($dsn_email) || !empty($mdn_email))) {
 					if (!empty($dsn_email))
 						$headers['Delivery-Status-Notification-To'] = true;
-					$headers['X-LMS-Message-Message-Id'] = $msgitems[$doc['customerid']][$email];
+					$headers['X-LMS-Message-Item-Id'] = $msgitems[$doc['customerid']][$email];
 				}
 
 				$res = $LMS->SendMail($email . ',' . $notify_email, $headers, $body,
