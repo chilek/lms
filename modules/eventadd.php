@@ -114,7 +114,8 @@ if(isset($_POST['event']))
 		unset($event['title']);
 		unset($event['description']);
 	}
-}
+} else
+	$event['userlist'] = array();
 
 $event['date'] = isset($event['date']) ? $event['date'] : $SESSION->get('edate');
 if(empty($event['customerid']) && !empty($_GET['customerid']))

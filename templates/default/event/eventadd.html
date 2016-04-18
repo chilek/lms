@@ -155,7 +155,7 @@
 		<TD style="width: 98%;" class="multiselect nobr">
 			<SELECT name="event[userlist][]" id="userid" multiple>
 				{foreach $userlist as $user}
-				<OPTION data-usergroup="{$user.usergroupid}" value="{$user.id}">{$user.name}</OPTION>
+				<OPTION data-usergroup="{$user.usergroupid}" value="{$user.id}"{if in_array($user.id, $event.userlist)} selected{/if} {if $event.userlist && in_array($user.usergroupid, $event.userlist)} selected{/if}>{$user.name}</OPTION>
 				{/foreach}
 			</SELECT>
 
