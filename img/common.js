@@ -332,6 +332,9 @@ function multiselect(formid, elemid, def, selected)
 		box.type = 'checkbox';
 		box.name = old_element.name;
 		box.value = old_element.options[i].value;
+		for (var j = 0, attribute = old_element.options[i].attributes[j]; j < old_element.options[i].attributes.length; j++)
+			if (attribute.name.match(/^data-/))
+				box.setAttribute(attribute.name, attribute.value);
 
 		var span = document.createElement('SPAN');
 		span.innerHTML = old_element.options[i].text.replace(' ', '&nbsp;');

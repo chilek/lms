@@ -134,10 +134,10 @@ $layout['pagetitle'] = trans('Event Edit');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$usergroup = $DB->GetAll("SELECT id, name FROM usergroups");
+$usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
 $userlist = $DB->GetAll('SELECT users.id, users.name, userassignments.usergroupid FROM users 
         LEFT JOIN userassignments ON (userassignments.userid = users.id)
-        WHERE users.deleted = 0 AND users.access = 1 ORDER BY login ASC');	
+        WHERE users.deleted = 0 AND users.access = 1 ORDER BY login ASC');
 
 if (empty($nodes_location))
 	$nodes_location = $DB->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY name ASC', array($event['customerid']));
@@ -147,7 +147,7 @@ $SMARTY->assign('nodes_location', $nodes_location);
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('userlist', $userlist);
-$SMARTY->assign('usergroup', $usergroup);
+$SMARTY->assign('usergroups', $usergroups);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('event', $event);
 $SMARTY->assign('hours', 

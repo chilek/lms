@@ -130,7 +130,7 @@ $layout['pagetitle'] = trans('New Event');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$usergroup = $DB->GetAll("SELECT id, name FROM usergroups");
+$usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
 $userlist = $DB->GetAll('SELECT users.id, users.name, userassignments.usergroupid FROM users 
         LEFT JOIN userassignments ON (userassignments.userid = users.id)
         WHERE users.deleted = 0 AND users.access = 1 ORDER BY login ASC');
@@ -140,7 +140,7 @@ if (!ConfigHelper::checkConfig('phpui.big_networks'))
 
 $SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
 $SMARTY->assign('userlist', $userlist);
-$SMARTY->assign('usergroup', $usergroup);
+$SMARTY->assign('usergroups', $usergroups);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('event', $event);
 $SMARTY->assign('hours', 

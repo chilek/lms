@@ -154,10 +154,9 @@
 
 		<TD style="width: 98%;" class="multiselect nobr">
 			<SELECT name="event[userlist][]" id="userid" multiple>
-				{*<OPTION value="">{trans("- select user -")}</OPTION>*}
-				{section name=userlist loop=$userlist}
-				<OPTION value="{$userlist[userlist].id}">{$userlist[userlist].name}</OPTION>
-				{/section}
+				{foreach $userlist as $user}
+				<OPTION data-usergroup="{$user.usergroupid}" value="{$user.id}">{$user.name}</OPTION>
+				{/foreach}
 			</SELECT>
 
 			<INPUT TYPE="hidden" NAME="event[usergroup]" VALUE="on">
@@ -166,7 +165,7 @@
 					<input type="radio" name="event[usergroup]" id="usergroup_0" onChange="changeUserGroup(0)"{if !$smarty.cookies.usergroup} checked{/if}>
 					{trans("All users")}<br>
 				</label>
-				{foreach from=$usergroup item=group}
+				{foreach $usergroups as $group}
 					<label>
 						<input type="radio" name="event[usergroup]" id="usergroup_{$group.id}" onClick="changeUserGroup({$group.id})"{if $smarty.cookies.usergroup == $group.id} checked{/if}>
 						{$group.name}<br>
@@ -194,14 +193,20 @@ function changeUserGroup(group) {
     var d = new Date();
     d.setTime(d.getTime() + (365*24*60*60*1000));
     document.cookie = 'usergroup=' + group + '; expires=' + d.toUTCString(); + '; path=/';
-    var userlist = document.forms['event'].elements['event[userlist][]'];
-    for (var i = 0; i < userlist.options.length; i++) {
-        if(group == 0 || group == userlist.options[i].getAttribute("group")) {
-            userlist.options[i].style.display = 'block';
-        } else {
-            userlist.options[i].style.display = 'none';
-        }
-    }
+
+	var userlist = document.getElementById('userid-layer').childNodes[0].getElementsByTagName('input');
+	var selected = new Array();
+	for (var i = 0; i < userlist.length; i++) {
+		if (group == 0 || group == userlist[i].getAttribute("data-usergroup")) {
+			userlist[i].checked = true;
+			userlist[i].parentNode.className = 'selected';
+			selected.push(userlist[i].parentNode.getElementsByTagName('span')[0].innerHTML);
+		} else {
+			userlist[i].checked = false;
+			userlist[i].parentNode.className = '';
+		}
+	}
+	document.getElementById('userid').innerHTML = selected.join(', ');
 }
 //-->
 </SCRIPT>
