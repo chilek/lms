@@ -123,7 +123,7 @@ function _smarty_function_img($params, $template)
     elseif(file_exists('style/default/'.$params['src']))
     	    $file = 'style/default/'.$params['src'];
 	else
-		$file = $params['src'];
+		$file = 'img/' . $params['src'];
 
     $result  = '<img ';
     $result .= 'src="'.$file.'" ';
