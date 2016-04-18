@@ -32,8 +32,21 @@ function select_customer($id)
     return $JSResponse;
 }
 
+function getUsersForGroup($groupid) {
+	$JSResponse = new xajaxResponse();
+
+	$users = LMSDB::getInstance()->GetAllByKey('SELECT u.id, u.name FROM users u
+		JOIN userassignments ua ON ua.userid = u.id
+		WHERE u.deleted = 0 AND u.access = 1 AND ua.usergroupid = ?',
+		'id', array($groupid));
+
+	$JSResponse->call('update_user_selection', $users);
+
+	return $JSResponse;
+}
+
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction('select_customer');
+$LMS->RegisterXajaxFunction(array('select_customer', 'getUsersForGroup'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 if(isset($_POST['event']))

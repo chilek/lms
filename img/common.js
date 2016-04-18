@@ -428,6 +428,25 @@ function multiselect(formid, elemid, def, selected)
 
 		return userString.substring( 0, userString.length-2 ); //cut last ", "
 	}
+
+	this.updateUserList = function(users) {
+
+		var userlist = div.childNodes[0].getElementsByTagName('input');
+		var selected = new Array();
+		for (var i = 0; i < userlist.length; i++) {
+			if (users != null && users[userlist[i].value] === undefined) {
+				console.log(userlist[i]);
+				userlist[i].checked = false;
+				userlist[i].parentNode.className = '';
+			} else {
+				console.log(userlist[i]);
+				userlist[i].checked = true;
+				userlist[i].parentNode.className = 'selected';
+				selected.push(userlist[i].parentNode.getElementsByTagName('span')[0].innerHTML);
+			}
+		}
+		new_element.innerHTML = selected.join(', ');
+	}
 }
 
 var lms_login_timeout_value,
