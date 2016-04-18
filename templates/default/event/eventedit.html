@@ -172,12 +172,12 @@
 
 			<div style="float: left; padding-top: 30px;">
 				<label>
-					<input type="radio" name="event[usergroup]" id="usergroup_0" onChange="xajax_getUsersForGroup(0)"{if !$smarty.cookies.usergroup} checked{/if}>
+					<input type="radio" name="event[usergroup]" id="usergroup_0" onChange="xajax_getUsersForGroup(0)">
 					{trans("All users")}<br>
 				</label>
 				{foreach $usergroups as $group}
 					<label>
-						<input type="radio" name="event[usergroup]" id="usergroup_{$group.id}" onClick="xajax_getUsersForGroup({$group.id})"{if $smarty.cookies.usergroup == $group.id} checked{/if}>
+						<input type="radio" name="event[usergroup]" id="usergroup_{$group.id}" onClick="xajax_getUsersForGroup({$group.id})"{if $event.usergroup == $group.id} checked{/if}>
 						{$group.name}<br>
 					</label>
 				{/foreach}
