@@ -332,9 +332,6 @@ function multiselect(formid, elemid, def, selected)
 		box.type = 'checkbox';
 		box.name = old_element.name;
 		box.value = old_element.options[i].value;
-		for (var j = 0, attribute = old_element.options[i].attributes[j]; j < old_element.options[i].attributes.length; j++)
-			if (attribute.name.match(/^data-/))
-				box.setAttribute(attribute.name, attribute.value);
 
 		var span = document.createElement('SPAN');
 		span.innerHTML = old_element.options[i].text.replace(' ', '&nbsp;');
@@ -429,20 +426,17 @@ function multiselect(formid, elemid, def, selected)
 		return userString.substring( 0, userString.length-2 ); //cut last ", "
 	}
 
-	this.updateUserList = function(users) {
-
-		var userlist = div.childNodes[0].getElementsByTagName('input');
+	this.updateSelection = function(idArray) {
+		var elems = div.childNodes[0].getElementsByTagName('input');
 		var selected = new Array();
-		for (var i = 0; i < userlist.length; i++) {
-			if (users != null && users[userlist[i].value] === undefined) {
-				console.log(userlist[i]);
-				userlist[i].checked = false;
-				userlist[i].parentNode.className = '';
+		for (var i = 0; i < elems.length; i++) {
+			if (idArray != null && idArray.indexOf(elems[i].value) != -1) {
+				elems[i].checked = false;
+				elems[i].parentNode.className = '';
 			} else {
-				console.log(userlist[i]);
-				userlist[i].checked = true;
-				userlist[i].parentNode.className = 'selected';
-				selected.push(userlist[i].parentNode.getElementsByTagName('span')[0].innerHTML);
+				elems[i].checked = true;
+				elems[i].parentNode.className = 'selected';
+				selected.push(elems[i].parentNode.getElementsByTagName('span')[0].innerHTML);
 			}
 		}
 		new_element.innerHTML = selected.join(', ');

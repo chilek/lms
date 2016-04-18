@@ -35,10 +35,13 @@ function select_customer($id)
 function getUsersForGroup($groupid) {
 	$JSResponse = new xajaxResponse();
 
-	$users = LMSDB::getInstance()->GetAllByKey('SELECT u.id, u.name FROM users u
-		JOIN userassignments ua ON ua.userid = u.id
-		WHERE u.deleted = 0 AND u.access = 1 AND ua.usergroupid = ?',
-		'id', array($groupid));
+	if (empty($groupid))
+		$users = null;
+	else
+		$users = LMSDB::getInstance()->GetCol('SELECT u.id FROM users u
+			JOIN userassignments ua ON ua.userid = u.id
+			WHERE u.deleted = 0 AND u.access = 1 AND ua.usergroupid = ?',
+			array($groupid));
 
 	$JSResponse->call('update_user_selection', $users);
 
