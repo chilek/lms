@@ -298,13 +298,13 @@ function multiselect(formid, elemid, def, selected)
 	new_element.id = elemid;
 
 	var elem = [];
-	for(var i=0, len=old_element.options.length; i<len; ++i)
+	for (var i = 0; i < old_element.options.length; i++)
 		if (old_element.options[i].selected)
 			elem[old_element.options[i].text.replace(' ', '&nbsp;')] = 1;
 		else
 			elem[old_element.options[i].text.replace(' ', '&nbsp;')] = 0;
 
-	new_element.innerHTML =  generateSelectedUserString(elem);
+	new_element.innerHTML =  generateSelectedString(elem);
 
 	if (old_element.style.cssText)
 		new_element.style.cssText = old_element.style.cssText;
@@ -367,7 +367,7 @@ function multiselect(formid, elemid, def, selected)
 				addClass(this, 'selected');
 			}
 
-			new_element.innerHTML = generateSelectedUserString(elem);
+			new_element.innerHTML = generateSelectedString(elem);
 		};
 		// TODO: keyboard events
 
@@ -413,30 +413,33 @@ function multiselect(formid, elemid, def, selected)
 
 	// TODO: keyboard events
 
-	function generateSelectedUserString( userArray ) {
-		var userString = '';
+	function generateSelectedString(objArray) {
+		var selected = [];
 
-		for (var k in userArray)
-			if (userArray.hasOwnProperty(k) && userArray[k] == 1 )
-				userString += k + ", ";
+		for (var k in objArray)
+			if (objArray.hasOwnProperty(k) && objArray[k] == 1)
+				selected.push(k);
 
-		if (userString.length == 0)
+		if (selected.length == 0)
 			return def;
 
-		return userString.substring( 0, userString.length-2 ); //cut last ", "
+		return selected.join(', ');
 	}
 
 	this.updateSelection = function(idArray) {
 		var elems = div.childNodes[0].getElementsByTagName('input');
-		var selected = new Array();
+		var selected = [];
 		for (var i = 0; i < elems.length; i++) {
-			if (idArray != null && idArray.indexOf(elems[i].value) != -1) {
-				elems[i].checked = false;
-				elems[i].parentNode.className = '';
-			} else {
+			var text = elems[i].parentNode.getElementsByTagName('span')[0].innerHTML;
+			if (idArray == null || idArray.indexOf(elems[i].value) != -1) {
 				elems[i].checked = true;
 				elems[i].parentNode.className = 'selected';
-				selected.push(elems[i].parentNode.getElementsByTagName('span')[0].innerHTML);
+				selected.push(text);
+				elem[text] = 1;
+			} else {
+				elems[i].checked = false;
+				elems[i].parentNode.className = '';
+				elem[text] = 0;
 			}
 		}
 		new_element.innerHTML = selected.join(', ');

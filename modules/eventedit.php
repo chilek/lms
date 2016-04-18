@@ -87,8 +87,13 @@ if ($eventuserlist === null) {
 if(isset($_POST['event']))
 {
 	$event = $_POST['event'];
+
+	if (!isset($event['usergroup']))
+		$event['usergroup'] = 0;
+	$SESSION->save('eventgid', $event['usergroup']);
+
 	$event['id'] = $_GET['id'];
-	
+
 	if($event['title'] == '')
 		$error['title'] = trans('Event title is required!');
 	elseif(strlen($event['title']) > 255)
@@ -151,12 +156,14 @@ $layout['pagetitle'] = trans('Event Edit');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
-$userlist = $DB->GetAll('SELECT users.id, users.name, userassignments.usergroupid FROM users 
-        LEFT JOIN userassignments ON (userassignments.userid = users.id)
-        WHERE users.deleted = 0 AND users.access = 1 ORDER BY login ASC');
+$userlist = $DB->GetAll('SELECT id, name FROM users
+	WHERE deleted = 0 AND users.access = 1 ORDER BY login ASC');
 
 if (empty($nodes_location))
 	$nodes_location = $DB->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY name ASC', array($event['customerid']));
+
+if (!isset($event['usergroup']))
+	$SESSION->restore('eventgid', $event['usergroup']);
 
 $SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
 $SMARTY->assign('nodes_location', $nodes_location);

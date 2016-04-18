@@ -166,18 +166,18 @@
 		<TD style="width: 98%;" class="multiselect nobr">
 			<SELECT name="event[userlist][]" id="userid" multiple>
 				{foreach $userlist as $user}
-				<OPTION {if $smarty.cookies.usergroup && $smarty.cookies.usergroup neq $user.usergroupid} style="display: none;"{/if} value="{$user.id}" {if in_array($user.id, $event.userlist)} selected{/if} {if $event.userlist && in_array($user.usergroupid, $event.userlist)} SELECTED{/if}>{$user.name}</option>
+				<OPTION value="{$user.id}"{if in_array($user.id, $event.userlist)} selected{/if}>{$user.name}</option>
 				{/foreach}
 			</SELECT>
 
 			<div style="float: left; padding-top: 30px;">
 				<label>
-					<input type="radio" name="event[usergroup]" id="usergroup_0" onChange="xajax_getUsersForGroup(0)">
+					<input type="radio" name="event[usergroup]" id="usergroup_0" value="0" onChange="xajax_getUsersForGroup(0)"{if empty($event.usergroup)} checked{/if}>
 					{trans("All users")}<br>
 				</label>
 				{foreach $usergroups as $group}
 					<label>
-						<input type="radio" name="event[usergroup]" id="usergroup_{$group.id}" onClick="xajax_getUsersForGroup({$group.id})"{if $event.usergroup == $group.id} checked{/if}>
+						<input type="radio" name="event[usergroup]" id="usergroup_{$group.id}" value="{$group.id}" onClick="xajax_getUsersForGroup({$group.id})"{if $event.usergroup == $group.id} checked{/if}>
 						{$group.name}<br>
 					</label>
 				{/foreach}

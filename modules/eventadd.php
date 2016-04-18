@@ -55,11 +55,13 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 if(isset($_POST['event']))
 {
 	$event = $_POST['event'];
-	
-	if(!($event['title'] || $event['description'] || $event['date']))
-	{
+
+	if (!isset($event['usergroup']))
+		$event['usergroup'] = 0;
+	$SESSION->save('eventgid', $event['usergroup']);
+
+	if (!($event['title'] || $event['description'] || $event['date']))
 		$SESSION->redirect('?m=eventlist');
-	}
 
 	if ($event['title'] == '')
 		$error['title'] = trans('Event title is required!');
@@ -130,8 +132,7 @@ if(isset($_POST['event']))
 		unset($event['title']);
 		unset($event['description']);
 	}
-} else
-	$event['userlist'] = array();
+}
 
 $event['date'] = isset($event['date']) ? $event['date'] : $SESSION->get('edate');
 if(empty($event['customerid']) && !empty($_GET['customerid']))
@@ -148,9 +149,11 @@ $layout['pagetitle'] = trans('New Event');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
-$userlist = $DB->GetAll('SELECT users.id, users.name, userassignments.usergroupid FROM users 
-        LEFT JOIN userassignments ON (userassignments.userid = users.id)
-        WHERE users.deleted = 0 AND users.access = 1 ORDER BY login ASC');
+$userlist = $DB->GetAll('SELECT id, name FROM users
+	WHERE deleted = 0 AND access = 1 ORDER BY login ASC');
+
+if (!isset($event['usergroup']))
+	$SESSION->restore('eventgid', $event['usergroup']);
 
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
