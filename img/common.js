@@ -434,11 +434,13 @@ function multiselect(formid, elemid, def, selected)
 			if (idArray == null || idArray.indexOf(elems[i].value) != -1) {
 				elems[i].checked = true;
 				elems[i].parentNode.className = 'selected';
+				elems[i].parentNode.style.display = 'block';
 				selected.push(text);
 				elem[text] = 1;
 			} else {
 				elems[i].checked = false;
 				elems[i].parentNode.className = '';
+				elems[i].parentNode.style.display = 'none';
 				elem[text] = 0;
 			}
 		}
