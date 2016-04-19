@@ -173,9 +173,8 @@
 						</SELECT>
 					</TD>
 					<TD style="width: 1%;" class="nobr">{trans("Group:")}</TD>
-					<TD style="width: 1%;">
+					<TD style="width: 1%;" class="multiselect">
 						<SELECT name="message[customergroup][]" multiple id="customergroups" {tip trigger="customergroup" text="Select customers group"}>
-							{*<option value="0">{trans("- all groups -")}</option>*}
 							{section name="customergroups" loop=$customergroups}
 							<option value="{$customergroups[customergroups].id}"{if $message.customergroup == $customergroups[customergroups].id} selected{/if}>{$customergroups[customergroups].name|truncate:"30":"...":true}</option>
 						{/section}
@@ -296,7 +295,7 @@
 		<TD style="width: 98%;">
 			<INPUT type="text" name="message[sender]" size="40" value="{if $message.sender}{$message.sender}{elseif $userinfo.email}{$userinfo.email}{/if}" {tip trigger="sender" text="Enter sender e-mail address"}>
 			<label {tip trigger="copytosender" text="Check if you want do send message copy to sender"}>
-			<input type="checkbox" name="message[copytosender]"{if ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.send_message_to_sender_checkbox', 'false'))} checked{/if}>
+			<input type="checkbox" name="message[copytosender]"{if ConfigHelper::checkConfig('phpui.send_message_to_sender_checkbox')} checked{/if}>
 			{trans("send copy to sender")}</label>
 		</TD>
 	</TR>
@@ -325,6 +324,7 @@
 			{section name="users" loop=$users}
 				<OPTION value="{$users[users].phone}">{$users[users].name|truncate:30:"...":true}</OPTION>
 			{/section}
+			</select>
 		</TD>
 	</TR>
 	{/if}

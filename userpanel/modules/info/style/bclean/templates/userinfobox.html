@@ -11,7 +11,7 @@
     </tr>
     {if $userinfo.emails}
     <tr>
-        <td><strong>E-mail:</strong></td>
+        <td><strong>{trans("E-mail:")}</strong></td>
         <td>
             {foreach $userinfo.emails as $email}
             {$email.email}{if !$email@last}<BR />{/if}
@@ -20,12 +20,19 @@
     </tr>
     {/if}
     <tr>
-        <td><strong>Adres instalacji:</strong></td>
+        <td><strong>{trans("Address:")}</strong></td>
         <td>{$userinfo.address}<br/>{$userinfo.zip} {$userinfo.city}</td>
     </tr>
+	{if $userinfo.serviceaddr}
+	<tr>
+		<td><strong>{trans("Postal address:")}</strong></td>
+		<td>{$userinfo.serviceaddr}</td>
+	</tr>
+	{/if}
+
     {if $userinfo.contacts}
     <tr>
-        <td><strong>Telefony kontaktowe:</strong></td>
+        <td><strong>{trans("Phones:")}</strong></td>
         <td>{foreach from=$userinfo.contacts item=item}
             {if $item.phone}{$item.phone}<BR />{/if}
             {/foreach}
@@ -68,13 +75,20 @@
         <td><strong>{trans("Balance:")}</strong></td>
         <td>{if $userinfo.balance < 0}<span class="text-danger"><strong>{$userinfo.balance|money_format}</strong></span>{else}{$userinfo.balance|money_format}{/if}</td>
     </tr>
-    {$bankaccount = bankaccount($userinfo.id, $userinfo.account)}
-    {if $bankaccount}
-    <tr>
-        <td><strong>{trans("Bank account:")}</strong></td>
-        <td>{format_bankaccount($bankaccount)|replace:" ":"&nbsp;"}	</td>
-    </tr>
-    {/if}
+	{if $userinfo.bankaccount || $userinfo.accounts}
+	<tr>
+		<td><strong>{trans("Bank accounts:")}</strong></td>
+		<td>
+			{if $userinfo.bankaccount}
+			{format_bankaccount($userinfo.bankaccount)|replace:" ":"&nbsp;"}
+			{/if}
+			{if $userinfo.accounts}<BR />{/if}
+			{foreach $userinfo.accounts as $account}
+			{format_bankaccount($account.account)|replace:" ":"&nbsp;"}{if !$account@last}<BR />{/if}
+			{/foreach}
+		</td>
+	</tr>
+	{/if}
     {if $rights.info.edit_addr ||
     $rights.info.edit_addr_ack ||
     $rights.info.edit_contact ||

@@ -6,14 +6,9 @@ templates                       /usr/share/lms/
 templates_c                     /var/spool/lms/
 .htaccess                       /usr/share/lms/
 index.php                       /usr/share/lms/
-cache/.htaccess                 /var/cache/lms/
 
-lib/ezpdf                       /usr/share/lms/lib/
-lib/html2pdf                    /usr/share/lms/lib/
 lib/locale                      /usr/share/lms/lib/
 lib/plugins                     /usr/share/lms/lib/
-lib/phine/observer/src/lib/Phine/Observer         /usr/share/lms/lib/phine/
-lib/phine/exception/src/lib/Phine/Exception       /usr/share/lms/lib/phine/
 lib/SmartyPlugins               /usr/share/lms/lib/
 lib/swekey                      /usr/share/lms/lib/
 lib/tcpdf                       /usr/share/lms/lib/
@@ -23,7 +18,6 @@ lib/LMSManagers                 /usr/share/lms/lib/
 lib/LMSPluginManager            /usr/share/lms/lib/
 
 lib/accesstable.php             /usr/share/lms/lib/
-lib/autoloader.php              /usr/share/lms/lib/
 lib/Auth.class.php              /usr/share/lms/lib/
 lib/checkdirs.php               /usr/share/lms/lib/
 lib/checkip.php                 /usr/share/lms/lib/
@@ -32,7 +26,6 @@ lib/config.php                  /usr/share/lms/lib/
 lib/definitions.php             /usr/share/lms/lib/
 lib/dns.php                     /usr/share/lms/lib/
 lib/ExecStack.class.php         /usr/share/lms/lib/
-lib/ezpdf.php                   /usr/share/lms/lib/
 lib/language.php                /usr/share/lms/lib/
 lib/LMS.class.php               /usr/share/lms/lib/
 lib/LMSDB_common.class.php      /usr/share/lms/lib/

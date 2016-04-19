@@ -39,15 +39,9 @@
 		document.additem.target = "";
 		document.additem.submit();
 	}
-
-	function reset_customer()
-	{
-		if (document.setcustomer.customerid.value)
-			document.setcustomer.customer.value = document.setcustomer.customerid.value;
-	}
 //-->
 </SCRIPT>
-<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptadd{if $receipt.type}&type={$receipt.type}{/if}&action={if $receipt.regid && !$error.regid}setcustomer{else}setreg{/if}">
+<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=receiptadd{if $receipt.type}&type={$receipt.type}{/if}&amp;action={if $receipt.regid && !$error.regid}setcustomer{else}setreg{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="receipt[type]" value="{$receipt.type}">
 <INPUT type="hidden" name="receipt[numberplanid]" value="{$receipt.numberplanid}">
@@ -122,22 +116,19 @@
 		    <TABLE>
 		    {if ($rights & 2)==2}
 			<TR>
-			    <TD width="1%" nowrap>
-				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" id="radio_customer" checked> <label for="radio_customer">{trans("customer")}:</label>
-			    </TD>
-			    <TD width="99%" nowrap>
-			    {if $customerlist}
-				<SELECT SIZE="1" NAME="customer"  onChange="document.setcustomer.customerid.value=document.setcustomer.customer.value; document.getElementById('radio_customer').checked=true;" {tip trigger="customerid"}>
-				    <OPTION VALUE="0">{trans("... select customer ...")}</OPTION>
-				    {foreach from=$customerlist item=c}
-				    <OPTION VALUE="{$c.id}"{if $c.id == $customer.id || $receipt.customerid == $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
-				    {/foreach}
-				</SELECT>
-				{trans("or Customer ID:")}
-			    {/if}
-			    <INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{elseif $receipt.customerid}{$receipt.customerid}{/if}" SIZE="5"{if $customerlist} onchange="reset_customer()" onfocus="reset_customer()"{/if} onclick="document.getElementById('radio_customer').checked=true;" {tip text="Enter customer ID" trigger="customerid"}>
-			    <A href="javascript: void(0);" onclick="document.getElementById('radio_customer').checked=true;return customerchoosewin(document.setcustomer.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-			    </TD>
+				<TD style="width: 1%;" class="nobr">
+					<label>
+						<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="customer" id="radio_customer" checked>
+						{trans("customer")}:
+					</label>
+				</TD>
+				<TD style="width: 99%;" class="nobr">
+					{if isset($customer.id)}
+					{customerlist form="setcustomer" customers=$customerlist selected=$customer.id selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;"}
+					{else}
+					{customerlist form="setcustomer" customers=$customerlist selected=$receipt.customerid selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;"}
+					{/if}
+				</TD>
 			</TR>
 		    {/if}
 		    {if ($rights & 4)==4}
@@ -197,12 +188,12 @@
 		<TD WIDTH="1%" nowrap>
 			<B>{$customer.customername}</B> 
 			&nbsp;&raquo;&nbsp; {$customer.address} &nbsp; {$customer.zip} {$customer.city}
-			&nbsp;&raquo;&nbsp; {if $customer.balance < 0}<FONT class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</FONT>{/if}
+			&nbsp;&raquo;&nbsp; {if $customer.balance < 0}<span class="red">{/if}{$customer.balance|money_format}{if $customer.balance < 0}</span>{/if}
 		</TD>
 		<TD WIDTH="98%" align="right">
-			{if $customer.groups}<FONT class="red bold">
+			{if $customer.groups}<span class="red bold">
 			({foreach from=$customer.groups item=item name=groups}{$item.name}{if $smarty.foreach.groups.iteration < sizeof($customer.groups)}, {/if}{/foreach})
-			</FONT>{/if}
+			</span>{/if}
 		</TD>
 	</TR>
     </THEAD>
@@ -216,7 +207,7 @@
 			<IMG SRC="img/note.gif" ALT=""> <B>{trans("Notes:")}</B>
 		</TD>
 		<TD>
-		        <FONT class="red">{$customer.notes|replace:"\n":"<BR>"}</FONT>
+		        <span class="red">{$customer.notes|replace:"\n":"<BR>"}</span>
 		</TD>
 	</TR>
     </THEAD>
@@ -231,7 +222,7 @@
 			<IMG SRC="img/docum.gif" ALT=""> <B>{trans("Documents:")}</B>
 		</TD>
 		<TD>
-		        <FONT class="red">{$customer.docwarning}</FONT>
+		        <span class="red">{$customer.docwarning}</span>
 		</TD>
 	</TR>
     </THEAD>
@@ -246,7 +237,7 @@
 			<IMG SRC="img/node.gif" ALT=""> <B>{trans("Nodes:")}</B>
 		</TD>
 		<TD>
-		        <FONT class="red">{$customer.nodeswarning}</FONT>
+		        <span class="red">{$customer.nodeswarning}</span>
 		</TD>
 	</TR>
     </THEAD>
@@ -261,7 +252,7 @@
 			<IMG SRC="img/nodegroup.gif" ALT=""> <B>{trans("Groups:")}</B>
 		</TD>
 		<TD>
-		        <FONT class="red">{$customer.nodegroupswarning}</FONT>
+		        <span class="red">{$customer.nodegroupswarning}</span>
 		</TD>
 	</TR>
     </THEAD>
@@ -271,7 +262,7 @@
 {/if}
 {if $receipt.type=="out" && $receipt.o_type=="move" && $receipt.selected && $cashregcount > 1}
 <BR>
-<FORM name="movecash" method="POST" action="?m=receiptadd&action=movecash">
+<FORM name="movecash" method="POST" action="?m=receiptadd&amp;action=movecash">
 <TABLE class="lmsbox">
     <THEAD>
 	<TR>
@@ -312,7 +303,7 @@
 	{if $receipt.o_type == "customer"}
 	<TR>
 		<TD colspan="4">
-			<FORM name="additemlist" method="POST" action="?m=receiptadd&action=additemlist">
+			<FORM name="additemlist" method="POST" action="?m=receiptadd&amp;action=additemlist">
 			<TABLE class="lmsbox">
                             <THEAD>
 				<TR>
@@ -338,19 +329,17 @@
 							{cycle values="light,lucid" print=false}
 							{foreach from=$invoicelist item=item}
 							<TR class="highlight {cycle}"  >
-							        <TD onclick="checkElement('mark{$item.id}')"><nobr>{$item.cdate|date_format:"%Y/%m/%d"}</nobr></TD>
+							        <TD onclick="checkElement('mark{$item.id}')" class="nobr">{$item.cdate|date_format:"%Y/%m/%d"}</TD>
 								<TD onclick="checkElement('mark{$item.id}')">{$item.number}</TD>
-							        <TD align="right" onclick="checkElement('mark{$item.id}')"><nobr>{$item.value|money_format}</nobr></TD>
+							        <TD align="right" onclick="checkElement('mark{$item.id}')" class="nobr">{$item.value|money_format}</TD>
 								<TD align="right">
 									<INPUT TYPE="checkbox" ID="mark{$item.id}" NAME="marks[]" VALUE="{$item.id}" checked>
 								</TD>
 							</TR>
 							{foreachelse}
 							<TR>
-								<TD align="center" colspan="4">
-							    		<p>&nbsp;</p>
-									<p><B>{trans("That customer hasn't got not accounted invoices.")}</B></p>
-									<p>&nbsp;</p>
+								<TD colspan="4" class="empty-table">
+									<p>{trans("That customer hasn't got not accounted invoices.")}</p>
 								</TD>
 							</TR>
 							{/foreach}
@@ -400,15 +389,13 @@
 			{$item.value|money_format}<BR>
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<A HREF="?m=receiptadd&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
+			<A HREF="?m=receiptadd&amp;action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"}></A>
 		</TD>			
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD COLSPAN="4" ALIGN="CENTER">
-			<P>&nbsp;</P>
-			<P><B>{trans("Receipt have no items. Use form below for items addition.")}</B></P>
-			<P>&nbsp;</P>
+		<TD COLSPAN="4" class="empty-table">
+			<p>{trans("Receipt have no items. Use form below for items addition.")}</p>
 		</TD>
 	</TR>
 	{/foreach}
@@ -425,7 +412,7 @@
 	{/if}
     </TBODY>
     <TFOOT>
-	<FORM METHOD="POST" {*ACTION="?m=receiptadd&action=additem"*} NAME="additem">
+	<FORM METHOD="POST" {*ACTION="?m=receiptadd&amp;action=additem"*} NAME="additem">
 	<INPUT type="submit" class="hiddenbtn">
 	<TR>
 		<TD WIDTH="1%" NOWRAP>
@@ -446,7 +433,7 @@
 			<INPUT type="checkbox" id="original" name="original" checked> <label for="original">{trans("original")}</label>&nbsp;
 			<INPUT type="checkbox" id="copy" name="copy" checked> <label for="copy">{trans("copy")}</label>&nbsp;
 			<A HREF="?m=receiptlist&regid={$receipt.regid}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>&nbsp;
-			<A HREF="?m=receiptadd&action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A>&nbsp;
+			<A HREF="?m=receiptadd&amp;action=init">{trans("Clear Contents")} <IMG SRC="img/delete.gif" alt=""></A>&nbsp;
 			{if !$customer && $receipt.o_type != "other" && $receipt.o_type != "advance"}
 			<A HREF="javascript:alert('{trans("Customer not selected!")}');">
 			{elseif !$contents}

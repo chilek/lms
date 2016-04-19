@@ -175,7 +175,7 @@ while (my $row = $dbq->fetchrow_hashref())
 				WHERE customerid = events.customerid AND (customercontacts.type & 7 > 0)
 				ORDER BY contact LIMIT 1) AS phone 
 			FROM events 
-			LEFT JOIN customers ON (customers.id = customerid)
+			LEFT JOIN customeraddressview ON (customers.id = customerid)
 			LEFT JOIN eventassignments ON (events.id = eventid)
 			WHERE date=$date AND
 			((private=1 AND events.userid=$row->{'id'}) OR

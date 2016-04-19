@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -103,8 +103,7 @@ if(isset($_POST['ticket']))
 	{
 		$id = $LMS->TicketAdd($ticket, $files);
 
-		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.newticket_notify', false)))
-		{
+		if (ConfigHelper::checkConfig('phpui.newticket_notify')) {
 			$user = $LMS->GetUserInfo($AUTH->id);
 
 			$helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
@@ -137,11 +136,10 @@ if(isset($_POST['ticket']))
 				.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$id;
 
-			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)))
-				if ($ticket['customerid'])
-				{
+			if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo'))
+				if ($ticket['customerid']) {
 					$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-							address, zip, city FROM customers
+							address, zip, city FROM customeraddressview
 							WHERE id = ?', array($ticket['customerid']));
 
 					$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
@@ -262,10 +260,8 @@ $layout['pagetitle'] = trans('New Ticket');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
-{
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
-}
 
 if(isset($ticket['customerid']) && $ticket['customerid'])
 {

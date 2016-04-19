@@ -1,0 +1,38 @@
+<!--
+ @author Maciej_Wawryk
+ -->
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+    <h1>{$layout.pagetitle}</h1>
+    <form method="post" name="usergroupadd" action="?m=usergroupadd">
+	<p style="display: none;">
+	    <input type="submit" class="hiddenbtn">
+	</p>
+	<table class="lmsbox">
+	    <thead>
+		<tr>
+		    <td style="width: 1%"><img src="img/group.gif" alt=""></td>
+		    <td style="width: 1%" class="bold">{trans("Name:")}</td>
+		    <td style="width: 98%"><input type="text" name="usergroupadd[name]" value="{$usergroupadd.name}" size="50" {tip trigger="name" bold=1}></td>
+		</tr>
+	    </thead>
+	    <tbody>
+		<tr>
+		    <td style="width: 1%"><img src="img/info1.gif" alt=""></td>
+		    <td style="width: 1%" class="bold">{trans("Description:")}</td>
+		    <td style="width: 98%"><textarea name="usergroupadd[description]" cols="50" rows="5" {tip text="Enter additional information (optional)"}>{$usergroupadd.description}</textarea></td>
+		</tr>
+		<tr>
+		    <td style="width: 100%" class="text-right" colspan="3">
+			<a href="javascript:document.usergroupadd.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+			<a href="?m=usergrouplist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></a>
+		    </td>
+		</tr>
+	    </tbody>
+	</table>
+    </form>
+    <script type="text/javascript">
+	document.forms['usergroupadd'].elements['usergroupadd[name]'].focus();
+    </script>
+{/block}

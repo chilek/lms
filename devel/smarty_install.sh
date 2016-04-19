@@ -11,7 +11,7 @@ TMP=`mktemp -d`
 # checking out latest smarty version
 wget -q -O $TMP/tags https://api.github.com/repos/smarty-php/smarty/tags
 LATEST_VERSION=$(grep "name" $TMP/tags |head -1 |awk '{print $2;}' |sed -e 's/[",]//g')
-LATEST_VERSION="v3.1.27"
+LATEST_VERSION="v3.1.29"
 URL="https://github.com/smarty-php/smarty/archive/${LATEST_VERSION}.tar.gz"
 
 # download
@@ -34,10 +34,15 @@ fi
 cp -r $TMP/${SMARTY_DIR}/libs/*		${LIB_DIR}/Smarty/
 cp -r $TMP/${SMARTY_DIR}/libs/plugins/*	${LIB_DIR}/Smarty/plugins/
 echo "done."
-if [ "$LATEST_VERSION" = "v3.1.27" ]; then
-	patch -p0 -d ${LIB_DIR}/Smarty <$(dirname $0)/smarty-3.1.27.patch
-fi
 
+case $LATEST_VERSION in
+	"v3.1.27")
+		patch -p0 -d ${LIB_DIR}/Smarty <$(dirname $0)/smarty-3.1.27.patch
+		;;
+	"v3.1.29")
+		patch -p0 -d ${LIB_DIR}/Smarty <$(dirname $0)/smarty-3.1.29.patch
+		;;
+esac
 
 # cleanup
 echo -n "Cleaning up... "

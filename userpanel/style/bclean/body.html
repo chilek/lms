@@ -1,20 +1,25 @@
 <div class="row">
     <div class="col-md-12">
-	<br/><h1>{$page_header} <small class="text-muted">{trans('Virtual Customer Service')}</small></h1>
+        <br/><h1>{$page_header} <small class="text-muted">{trans('Virtual Customer Service')}</small></h1>
     </div>
 </div>
 {if $modules}
 <div class="row">
     <div class="col-md-12">
-	<nav class="navbar navbar-dark bg-inverse">
-	    <div class="nav navbar-nav">
-	    {foreach from=$modules item=menuitem}
-		<a class="nav-item nav-link {if strpos($smarty.get.m, $menuitem.module) !== false && strlen($smarty.get.m)==strlen($menuitem.module) }active{/if}" href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip}>
-		    {$smarty.get.page} {$menuitem.name|replace:" ":"&nbsp;"}
-		</a>
-	    {/foreach}
-	    </div>
-	</nav>       
+        <nav class="navbar navbar-dark bg-inverse">
+            <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#exCollapsingNavbar2">
+                &#9776;
+            </button>
+            <div class="collapse navbar-toggleable-xs" id="exCollapsingNavbar2">
+                <ul class="nav navbar-nav">
+                    {foreach from=$modules item=menuitem}
+                    <li class="nav-item {if strpos($smarty.get.m, $menuitem.module) !== false && strlen($smarty.get.m)==strlen($menuitem.module) }active{/if}">
+                        <a class="nav-link" href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip}>{$smarty.get.page} {$menuitem.name|replace:" ":"&nbsp;"}</a>
+                    </li>
+                    {/foreach}
+                </ul>
+            </div>
+        </nav>
     </div>
 </div>
 {/if}

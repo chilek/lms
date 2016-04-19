@@ -1,0 +1,72 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!-- $Id$ -->
+<H1>{$layout.pagetitle}</H1>
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD WIDTH="1%" nowrap>{trans("ID:")}</TD>
+		{if $divisions}
+		<TD WIDTH="1%" nowrap><img src="img/division.gif" alt=""></TD>
+		<TD WIDTH="1%" nowrap><B>{trans("Division:")}</B></TD>
+		{/if}
+		<TD WIDTH="94%" nowrap><B>{trans("Name:")}</B></TD>
+		<TD WIDTH="1%" nowrap>{trans("Nodes")}</TD>
+		<TD WIDTH="1%" nowrap>{trans("Network Device Nodes")}</TD>
+		<TD WIDTH="1%" nowrap><A href="?m=invprojectadd">{trans("Add investment project")} <img src="img/save.gif" alt=""></A></TD>
+	</TR>
+        {if $listdata.total != 0}
+        <TR>
+                <TD class="pagination" {if $divisions}colspan="7"{else}colspan="5"{/if}>
+                        {include file="scroller.html" loop=$invprojectlist}
+                </TD>
+        </TR>
+        {/if}
+    </THEAD>
+    <TBODY>
+	{cycle values="light,lucid" print=false}
+	{foreach from=$invprojectlist item=invproject}
+	<TR class="highlight {cycle}"  >
+		<TD onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';">
+			({$invproject.id|string_format:"%04d"})
+		</TD>
+		{if $divisions}
+		<TD onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';" nowrap><img src="img/division.gif" alt=""></TD>
+		<TD onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';" nowrap>
+			{foreach from=$divisions item=division}
+			{if $division.id==$invproject.divisionid}<B>{$division.shortname}</B>{/if}
+			{/foreach}
+		</TD>
+		{/if}
+		<TD onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';" nowrap>
+			<B>{$invproject.name}</B>
+		</TD>
+		<TD class="text-center" onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';" nowrap>
+			{$invproject.nodes}
+		</TD>
+		<TD class="text-center" onClick="return self.location.href='?m=invprojectedit&id={$invproject.id}';" nowrap>
+			{$invproject.netnodes}
+		</TD>
+		<TD align="right" NOWRAP>
+			<A HREF="?m=invprojectedit&id={$invproject.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A HREF="?m=invprojectdel&id={$invproject.id}" OnClick="return confirmLink(this, '{t a=$invproject.name}Are you sure, you want to remove investment project \'$a\' ?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+		</TD>
+	</TR>
+	{foreachelse}
+	<TR>
+		<TD {if $divisions}colspan="7"{else}colspan="5"{/if} class="empty-table">
+			<p>{trans("There are no investment project.")}</p>
+		</TD>
+	</TR>
+	{/foreach}
+        </TBODY>
+        <TFOOT>
+	<TR>
+		<TD {if $divisions}colspan="7"{else}colspan="5"{/if} align="right">
+			<A href="?m=invprojectadd">{trans("Add investment project")} <IMG src="img/save.gif" alt=""></A>
+		</TD>
+	</TR>
+        </TFOOT>
+</TABLE>
+{/block}

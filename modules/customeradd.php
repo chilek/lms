@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,50 +24,44 @@
  *  $Id$
  */
 
-if(isset($_GET['ajax'])) 
-{
+if (isset($_GET['ajax'])) {
 	header('Content-type: text/plain');
 	$search = urldecode(trim($_GET['what']));
 
-	switch($_GET['mode'])
-	{
-	        case 'address':
-			$mode='address';
-                        $database_type = ConfigHelper::getConfig('database.type');
-			if ($database_type == 'mysql' || $database_type == 'mysqli') 
-				$mode = 'substring(address from 1 for length(address)-locate(\' \',reverse(address))+1)';
-			elseif($database_type == 'postgres') 
-				$mode = 'substring(address from \'^.* \')';
-		break;
-	        case 'zip':
-			$mode='zip';
-		break;
-	        case 'city':
-			$mode='city';
-		break;
+	switch ($_GET['mode']) {
+		case 'street':
+			$mode = 'street';
+			break;
+
+		case 'zip':
+			$mode = 'zip';
+			break;
+
+		case 'city':
+			$mode = 'city';
+			break;
 	}
 
 	if (!isset($mode)) { print 'false;'; exit; }
 
-	$candidates = $DB->GetAll('SELECT '.$mode.' as item, count(id) as entries
-	    FROM customers
-	    WHERE '.$mode.' != \'\' AND lower('.$mode.') ?LIKE? lower(' . $DB->Escape('%'.$search.'%') . ')
-	    GROUP BY item
-	    ORDER BY entries desc, item asc
-	    LIMIT 15');
+	$candidates = $DB->GetAll('SELECT ' . $mode . ' as item, count(id) AS entries
+		FROM customers
+		WHERE ' . $mode . ' != \'\' AND lower(' . $mode . ') ?LIKE? lower(' . $DB->Escape('%' . $search . '%') . ')
+		GROUP BY item
+		ORDER BY entries DESC, item ASC
+		LIMIT 15');
 
-	$eglible=array(); $descriptions=array();
+	$eglible = array(); $descriptions = array();
 	if ($candidates)
-	foreach($candidates as $idx => $row) {
-		$eglible[$row['item']] = escape_js($row['item']);
-		$descriptions[$row['item']] = escape_js($row['entries'].' '.trans('entries'));
-	}
+		foreach ($candidates as $idx => $row) {
+			$eglible[$row['item']] = escape_js($row['item']);
+			$descriptions[$row['item']] = escape_js($row['entries'] . ' ' . trans('entries'));
+		}
 	if ($eglible) {
-		print "this.eligible = [\"".implode('","',$eglible)."\"];\n";
-		print "this.descriptions = [\"".implode('","',$descriptions)."\"];\n";
-	} else {
+		print "this.eligible = [\"" . implode('","', $eglible) . "\"];\n";
+		print "this.descriptions = [\"" . implode('","', $descriptions) . "\"];\n";
+	} else
 		print "false;\n";
-	}
 	exit;
 }
 
@@ -79,7 +73,7 @@ if (isset($_POST['customeradd']))
 
 	if(sizeof($customeradd))
 		foreach($customeradd as $key => $value)
-			if($key != 'uid' && $key != 'contacts' && $key != 'emails')
+			if($key != 'uid' && $key != 'contacts' && $key != 'emails' && $key != 'accounts')
 				$customeradd[$key] = trim($value);
 
 	if($customeradd['name'] == '' && $customeradd['lastname'] == '' && $customeradd['address'] == '')
@@ -98,9 +92,21 @@ if (isset($_POST['customeradd']))
 			$error['group'] = trans('Group name required!');
 	}
 	
-	if($customeradd['address'] == '')
-		$error['address'] = trans('Address required!');
-	
+	if ($customeradd['street'] == '')
+		$error['street'] = trans('Street name required!');
+
+	if ($customeradd['building'] != '' && $customeradd['street'] == '')
+		$error['street'] = trans('Street name required!');
+
+	if ($customeradd['apartment'] != '' && $customeradd['building'] == '')
+		$error['building'] = trans('Building number required!');
+
+	if ($customeradd['post_building'] != '' && $customeradd['post_street'] == '')
+		$error['post_street'] = trans('Street name required!');
+
+	if ($customeradd['post_apartment'] != '' && $customeradd['post_building'] == '')
+		$error['post_building'] = trans('Building number required!');
+
 	if($customeradd['ten'] !='' && !check_ten($customeradd['ten']) && !isset($customeradd['tenwarning']))
 	{
 		$error['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
@@ -199,6 +205,22 @@ if (isset($_POST['customeradd']))
 			$contacts[] = array('name' => $name, 'contact' => $phone, 'type' => empty($type) ? CONTACT_LANDLINE : $type);
 	}
 
+	foreach ($customeradd['accounts'] as $idx => $val) {
+		$account = trim($val['account']);
+		$name = trim($val['name']);
+		$type = !empty($val['type']) ? array_sum($val['type']) : NULL;
+		$type += CONTACT_BANKACCOUNT;
+
+		$customeradd['accounts'][$idx]['type'] = $type;
+
+		if ($account != '' && !check_bankaccount($account))
+			$error['account' . $idx] = trans('Incorrect bank account!');
+		elseif ($name && !$account)
+			$error['account' . $idx] = trans('Bank account is required!');
+		elseif ($account)
+			$contacts[] = array('name' => $name, 'contact' => $account, 'type' => $type);
+	}
+
 	if ($customeradd['cutoffstop'] == '')
 		$cutoffstop = 0;
 	elseif (check_date($customeradd['cutoffstop'])) {
@@ -261,6 +283,8 @@ if (isset($_POST['customeradd']))
 
 		if ($id && !empty($contacts))
 			foreach ($contacts as $contact) {
+				if ($contact['type'] & CONTACT_BANKACCOUNT)
+					$contact['contact'] = preg_replace('/[^a-zA-Z0-9]/', '', $contact['contact']);
 				$DB->Execute('INSERT INTO customercontacts (customerid, contact, name, type)
 					VALUES(?, ?, ?, ?)', array($id, $contact['contact'], $contact['name'], $contact['type']));
 				if ($SYSLOG) {
@@ -286,15 +310,15 @@ if (isset($_POST['customeradd']))
 		$reuse['status'] = $customeradd['status'];
 		$reuse['contacts'][] = array();
 		$reuse['emails'][] = array();
+		$reuse['accounts'][] = array();
 		unset($customeradd);
 		$customeradd = $reuse;
 		$customeradd['reuse'] = '1';
 	}
-}
-else
-{
+} else {
 	$customeradd['contacts'][] = array();
 	$customeradd['emails'][] = array();
+	$customeradd['accounts'][] = array();
 }
 
 $default_zip = ConfigHelper::getConfig('phpui.default_zip');

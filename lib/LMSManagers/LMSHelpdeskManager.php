@@ -99,11 +99,17 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			    CASE WHEN customerid = 0 THEN t.requestor ELSE '
                 . $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor, 
 			    t.createtime AS createtime, u.name AS creatorname,
-			    (SELECT MAX(createtime) FROM rtmessages WHERE ticketid = t.id) AS lastmodified
+				(CASE WHEN m.lastmodified IS NULL THEN (CASE WHEN n.lastmodified IS NULL THEN 0 ELSE n.lastmodified END) ELSE
+					(CASE WHEN n.lastmodified IS NULL THEN m.lastmodified ELSE 
+						(CASE WHEN m.lastmodified > n.lastmodified THEN m.lastmodified ELSE n.lastmodified END)
+					END)
+				END) AS lastmodified
 		    FROM rttickets t 
+		    LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
+		    LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtnotes GROUP BY ticketid) n ON n.ticketid = t.id
 		    LEFT JOIN rtticketcategories tc ON (t.id = tc.ticketid)
 		    LEFT JOIN users ON (owner = users.id)
-		    LEFT JOIN customers c ON (t.customerid = c.id)
+		    LEFT JOIN customeraddressview c ON (t.customerid = c.id)
 		    LEFT JOIN users u ON (t.creatorid = u.id)
 		    WHERE 1=1 '
                 . (is_array($ids) ? ' AND t.queueid IN (' . implode(',', $ids) . ')' : ($ids != 0 ? ' AND t.queueid = ' . $ids : ''))

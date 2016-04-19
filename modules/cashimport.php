@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -159,9 +159,9 @@ elseif(isset($_GET['action']) && $_GET['action'] == 'txt')
 	}
 
 	if (!empty($imports)) {
-            
-		$idate = ConfigHelper::checkValue(ConfigHelper::getConfig('finances.cashimport_use_idate', false));
-		$icheck = ConfigHelper::checkValue(ConfigHelper::getConfig('finances.cashimport_checkinvoices', false));
+
+		$idate = ConfigHelper::checkConfig('finances.cashimport_use_idate');
+		$icheck = ConfigHelper::checkConfig('finances.cashimport_checkinvoices');
 
 		foreach ($imports as $import) {
 			// do not insert if the record is already closed (prevent multiple inserts of the same record)
@@ -258,7 +258,7 @@ $divisions[0] = array('id' => 0, 'name' => '');
 
 if($importlist = $DB->GetAll('SELECT i.*, c.divisionid
 	FROM cashimport i
-	LEFT JOIN customersview c ON (i.customerid = c.id)
+	LEFT JOIN customerview c ON (i.customerid = c.id)
 	WHERE i.closed = 0 AND i.value > 0
 	ORDER BY i.id'))
 {
@@ -287,7 +287,8 @@ $SMARTY->assign('divisions', $divisions);
 $SMARTY->assign('listdata', isset($listdata) ? $listdata : NULL);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('sourcefiles', $sourcefiles);
-$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+	$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources WHERE deleted = 0 ORDER BY name'));
 $SMARTY->display('cash/cashimport.html');
 

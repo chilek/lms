@@ -2,14 +2,6 @@
 {block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
 {block name=module_content}
 <!-- $Id$ -->
-<script type="text/javascript">
-<!--
-	function reset_customer() {
-		if (document.forms['ticket'].elements['ticket[custid]'].value)
-			document.forms['ticket'].elements['ticket[customerid]'].value = document.forms['ticket'].elements['ticket[custid]'].value;
-	}
-//-->
-</script>
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" name="ticket" action="?m=rtticketadd" enctype="multipart/form-data">
 <p style="display: none;">
@@ -47,21 +39,8 @@
 		<TD style="width: 99%;">
 			<TABLE width="100%" cellpadding="1">
 				<TR>
-					<TD{if $customerlist} colspan="2"{/if} class="nobr">
-						{if $customerlist}
-						<SELECT size="1" name="ticket[customerid]" {if !$ticket.customerid}{tip trigger="requestor"}{/if} {tip text="Select customer from list or enter his data if is not a customer"} onChange="document.forms['ticket'].elements['ticket[custid]'].value=document.forms['ticket'].elements['ticket[customerid]'].value">
-							<OPTION value="0">- {trans("select customer")} -</OPTION>
-							{foreach from=$customerlist item=item}
-							<OPTION value="{$item.id}" {if $item.id == $customerid}SELECTED{/if}>{$item.customername|truncate:"40":"...":true} ({$item.id|string_format:"%04d"})</OPTION>
-							{/foreach}
-						</SELECT>
-						{trans("or Customer ID:")}
-						{else}{trans("ID:")}
-					</TD>
-					<TD>
-						{/if}
-						<INPUT type="text" name="ticket[custid]" value="{if $customerid}{$customerid}{/if}" size="5"{if $customerlist} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID" trigger="custid"}>
-						<a href="javascript: void(0);" onClick="return customerchoosewin(document.ticket.elements['ticket[custid]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+					<TD colspan="2" class="nobr">
+						{customerlist form="ticket" customers=$customerlist selected=$customerid selectname="ticket[customerid]" inputname="ticket[custid]" selecttip="Select customer from list or enter his data if is not a customer"}
 					</TD>
 				</TR>
 				<TR>
@@ -167,7 +146,7 @@
 	</TR>
 	<TR>
 		<TD style="width: 100%;" class="buttons" colspan="2">
-			<A href="javascript: document.ticket.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+			<A href="javascript:document.ticket.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 			<A href="?m={if $queue}rtqueueview&amp;id={$queue}{else}rtqueuelist{/if}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>

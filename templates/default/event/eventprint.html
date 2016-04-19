@@ -33,14 +33,12 @@
 	</TR>
 	{cycle values="white,grey" print=false}
 	{foreach item=event from=$eventlist}
-	<TR class="{cycle}">
-		<TD WIDTH="1%" VALIGN="TOP" ALIGN="LEFT">
-			<NOBR>
+	<TR class="{cycle}"{if $event.closed==1} style="color: lightgray;"{/if}>
+		<TD WIDTH="1%" class="valign-top text-left nobr">
 			{math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
 			{if $event.begintime != $event.endtime}
 			- {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
 			{/if}
-			</NOBR>
 		</TD>
 		<TD WIDTH="1%" VALIGN="TOP" ALIGN="CENTER">
 			{$_EVENTTYPES[$event.type]}
@@ -50,19 +48,19 @@
 			{$event.description}<BR>
 			{$event.note}
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" VALIGN="TOP">
+		<TD WIDTH="1%" class="valign-top text-right nobr">
 			{foreach item=user from=$event.userlist}
-				<NOBR>{$user.name|truncate:"25":"...":true}</NOBR><BR>
+				{$user.name|truncate:"25":"...":true}<BR>
 			{/foreach}
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" VALIGN="TOP">
-			<NOBR>{$event.customername|truncate:"40":"...":true}</NOBR><BR>
+		<TD WIDTH="1%" class="valign-top text-right nobr">
+			{$event.customername|truncate:"40":"...":true}<BR>
 			{if isset($event.nodelocation)}
 			    {$event.nodelocation}
 			{else}
-			<NOBR>{$event.customerlocation}</NOBR>
+			    {$event.customerlocation}
 			{/if}
-			<br/><NOBR>{$event.customerphone}</NOBR>
+			<br/>{$event.customerphone}
 		</TD>
 	</TR>
 	{/foreach}

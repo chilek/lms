@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -59,6 +59,7 @@ $CONFIG['directories']['smarty_compile_dir'] = $CONFIG['directories']['userpanel
 $CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
 $CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
 $CONFIG['directories']['doc_dir'] = (!isset($CONFIG['directories']['doc_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'documents' : $CONFIG['directories']['doc_dir']);
+$CONFIG['directories']['vendor_dir'] = (!isset($CONFIG['directories']['vendor_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'vendor' : $CONFIG['directories']['vendor_dir']);
 
 define('USERPANEL_DIR', $CONFIG['directories']['userpanel_dir']);
 define('USERPANEL_LIB_DIR', USERPANEL_DIR . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR);
@@ -71,14 +72,21 @@ define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
 define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
 define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
+define('VENDOR_DIR', $CONFIG['directories']['vendor_dir']);
+
+define('K_TCPDF_EXTERNAL_CONFIG', true);
 
 // include required files
 
 // Load autoloader
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'autoloader.php');
+$composer_autoload_path = VENDOR_DIR . DIRECTORY_SEPARATOR . 'autoload.php';
+if (file_exists($composer_autoload_path)) {
+    require_once $composer_autoload_path;
+} else {
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
+}
 
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'checkdirs.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'config.php');
 
 // Initialize database
 
@@ -111,9 +119,7 @@ define('SMARTY_VERSION', $ver_chunks[0]);
 $SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
 
 // Redirect to SSL
-
-$_FORCE_SSL = ConfigHelper::checkConfig('phpui.force_ssl');
-
+$_FORCE_SSL = ConfigHelper::checkConfig('userpanel.force_ssl', ConfigHelper::getConfig('phpui.force_ssl'));
 if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 {
      header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
@@ -123,14 +129,23 @@ if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 $_TIMEOUT = ConfigHelper::getConfig('phpui.timeout');
 
 // Include required files (including sequence is important)
-
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
 
 $AUTH = NULL;
-$SYSLOG = null;
+$AUTH = NULL;
+if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG')) {
+	$SYSLOG = new SYSLOG($DB);
+} else {
+	$SYSLOG = null;
+}
+if ($SYSLOG){
+	$SYSLOG->SetAuth($AUTH);
+        $SYSLOG->NewTransaction('userpanel');
+}
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'Session.class.php');

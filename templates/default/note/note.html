@@ -138,17 +138,14 @@ customer's balance: {$note.customerbalancelist.balance}
 	{* section name=balancelist loop=$note.customerbalancelist.list start=$note.customerbalancelistlimit step=-1 *}
 	{$item=$note.customerbalancelist.list[balancelist]}
 	<TR>
-		<TD width="1%"><nobr>{$item.date}</nobr></TD>
-		<TD width="1%" align="right"><nobr>{if $item.value > 0}+{/if}{$item.value|money_format}</nobr>
-		</TD>
-		<TD width="1%" align="right">
-                        <nobr>{$item.tax}</nobr>
-		</TD>
+		<TD width="1%" class="nobr">{$item.date}</TD>
+		<TD width="1%" align="right" class="nobr">{if $item.value > 0}+{/if}{$item.value|money_format}</TD>
+		<TD width="1%" align="right" class="nobr">{$item.tax}</TD>
 		<TD width="1%" align="center">&raquo;</TD>
-		<TD width="1%" align="right"><nobr>
+		<TD width="1%" align="right" class="nobr">
 			{if $item.after < 0}<STRONG>{/if}
 			    {$item.after|money_format}
-			{if $item.after < 0}</STRONG>{/if}</nobr>
+			{if $item.after < 0}</STRONG>{/if}
 		</TD>
 		<TD width="93%">{$item.comment}</TD>
         </TR>

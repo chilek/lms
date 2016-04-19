@@ -35,8 +35,10 @@
 			<B>{trans("Value:")}</B>
 		</TD>
 		<TD width="98%">
-			<input type="checkbox" id="value_label" onclick="javascript:toggle_visual_editor('value');">
-			<label for="value_label">{trans("visual editor")}</label><br>
+			<label>
+				<input type="checkbox" name="richtext" onclick="javascript:toggle_visual_editor('value');"{if $config.type == $smarty.const.CONFIG_TYPE_RICHTEXT} checked{/if}>
+				{trans("visual editor")}
+			</label><br>
 			<TEXTAREA rows="5" cols="50" name="config[value]" id="value" {tip text="Enter option value" trigger="value"}>{$config.value}</TEXTAREA>
 		</TD>
 	</TR>
@@ -62,6 +64,23 @@
 			<INPUT type="checkbox" value="1" id="disabled" name="config[disabled]" {if $config.disabled}CHECKED{/if} {tip text="You can turn it off"}><label for="disabled"> {trans("Off")}</label>
 		</TD>
 	</TR>
+	{if ConfigHelper::checkPrivilege('superuser')}
+	<TR>
+		<TD width="1%">
+			<img src="img/desc.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Type:")}</B>
+		</TD>
+		<TD width="98%">
+			<SELECT size="1" name="config[type]" {tip text="Select config type" trigger="type"}>
+				{foreach $_CONFIG_TYPES as $key => $type}
+					<OPTION value="{$key}"{if $config.type == $key} selected{/if}>{$type}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	{/if}
 	<TR>
 		<TD align="right" colspan="3">
 			<A href="javascript:document.config.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
@@ -77,6 +96,10 @@
 	document.forms['config'].elements['config[var]'].focus();
 
 	tinymce_init('{$_ui_language}');
+
+	{if $config.type == $smarty.const.CONFIG_TYPE_RICHTEXT}
+		toggle_visual_editor('value');
+	{/if}
 //-->
 </SCRIPT>
 {/block}

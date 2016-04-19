@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -133,28 +133,15 @@ function check_icn($icn)
 	return preg_match('/^[A-Z]{2}[0-9]{7}$/i', $icn) || preg_match('/^[A-Z]{3}[0-9]{6}$/i', $icn);
 }
 
-function bankaccount($id, $account=NULL)
-{
-	global $DB;
-
-	if($account === NULL)
-		$account = $DB->GetOne('SELECT account FROM divisions WHERE id IN (SELECT divisionid
-			FROM customers WHERE id = ?)', array($id));
-
-        $acclen = strlen($account);
-				
-	if(!empty($account) && $acclen < 17 || $acclen >= 8)
-	{
-		$cc = '2820';	// Kod kraju - Slovensko
-		$format = '%0'.(20 - $acclen) .'d';
-		return sprintf('%02d',98-bcmod($account.sprintf($format,$id).$cc.'00',97)).$account.sprintf($format,$id);
-	}
-
-	return $account;
+function bankaccount($id, $account = NULL) {
+	return iban_account('SK', 22, $id, $account);
 }
 
-function format_bankaccount($account)
-{
+function check_bankaccount($account) {
+	return iban_check_account('SK', 22, $account);
+}
+
+function format_bankaccount($account) {
 	return preg_replace('/(..)(....)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5} ${6}', $account);
 }
 

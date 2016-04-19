@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,9 @@
  *  $Id$
  */
 
-include(MODULES_DIR . '/document.inc.php');
+$SMARTY->setDefaultResourceType('file');
+
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'document.inc.php');
 
 $layout['pagetitle'] = trans('Documents Generator');
 
@@ -54,8 +56,7 @@ if (isset($_POST['document'])) {
 			$document['fromdate'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
 		else
 			$error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-	}
-	else
+	} else
 		$document['fromdate'] = 0;
 
 	if ($document['todate']) {
@@ -71,24 +72,27 @@ if (isset($_POST['document'])) {
 	if ($document['fromdate'] > $document['todate'] && $document['todate'] != 0)
 		$error['todate'] = trans('Start date can\'t be greater than end date!');
 
-	switch ($_POST['filter']) {
+	$state = $_POST['filter'];
+	$network = $_POST['network'];
+	$customergroup = $_POST['customergroup'];
+	switch ($state) {
 		case 0:
-			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter'], $_POST['network'], $_POST['customergroup']);
+			$customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
 			break;
 		case CSTATUS_INTERESTED: case CSTATUS_WAITING:
-			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter']);
+			$customerlist = $LMS->GetCustomerList(compact("state"));
 			break;
 		case CSTATUS_CONNECTED: case CSTATUS_DISCONNECTED:
-			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter'], $_POST['network'], $_POST['customergroup']);
+			$customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
 			break;
 		case 51:
-			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter'], $_POST['network'], $_POST['customergroup']);
+			$customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
 			break;
 		case 52:
-			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter'], $_POST['network'], $_POST['customergroup']);
+			$customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
 			break;
 		case -1:
-			if ($customerlist = $LMS->GetCustomerList(NULL, NULL, NULL, $_POST['customergroup'])) {
+			if ($customerlist = $LMS->GetCustomerList(compact("customergroup"))) {
 				foreach ($customerlist as $idx => $row)
 					if (!$row['account'])
 						$ncustomerlist[] = $customerlist[$idx];
@@ -113,7 +117,7 @@ if (isset($_POST['document'])) {
 		$numtemplate = $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid']));
 
 		// read template information
-		include(DOC_DIR . '/templates/' . $document['templ'] . '/info.php');
+		include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] . DIRECTORY_SEPARATOR . 'info.php');
 
 		foreach ($customerlist as $gencust) {
 			if (!is_array($gencust))
@@ -125,13 +129,16 @@ if (isset($_POST['document'])) {
 			$genresult .= $gencount . '. ' . $gencust['customername'] . ': ';
 
 			// run template engine
-			if (file_exists(DOC_DIR . '/templates/' . $engine['engine'] . '/engine.php'))
-				include(DOC_DIR . '/templates/' . $engine['engine'] . '/engine.php');
+			if (file_exists(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+				. $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php'))
+				include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+					. $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php');
 			else
-				include(DOC_DIR . '/templates/default/engine.php');
+				include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'default'
+					 . DIRECTORY_SEPARATOR . 'engine.php');
 
 			if ($output) {
-				$file = DOC_DIR . '/tmp.file';
+				$file = DOC_DIR . DIRECTORY_SEPARATOR . 'tmp.file';
 				$fh = fopen($file, 'w');
 				fwrite($fh, $output);
 				fclose($fh);
@@ -140,15 +147,14 @@ if (isset($_POST['document'])) {
 				$document['contenttype'] = $engine['content_type'];
 				$document['filename'] = $engine['output'];
 
-				$path = DOC_DIR . '/' . substr($document['md5sum'], 0, 2);
+				$path = DOC_DIR . DIRECTORY_SEPARATOR . substr($document['md5sum'], 0, 2);
 				@mkdir($path, 0700);
-				$newfile = $path . '/' . $document['md5sum'];
+				$newfile = $path . DIRECTORY_SEPARATOR . $document['md5sum'];
 				if (!file_exists($newfile)) {
 					if (!@rename($file, $newfile))
 						$error = trans('Can\'t save file in "$a" directory!', $path);
 				}
-			}
-			else
+			} else
 				$error = trans('Problem during file generation!');
 
 			if ($error) {
@@ -237,16 +243,20 @@ if (isset($_POST['document'])) {
 		if ($document['templ']) {
 			$result = '';
 			// read template information
-			include(DOC_DIR . '/templates/' . $document['templ'] . '/info.php');
+			include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ']
+				 . DIRECTORY_SEPARATOR . 'info.php');
 			// set some variables
 			$SMARTY->assign('document', $document);
 			// call plugin
-			@include(DOC_DIR . '/templates/' . $engine['name'] . '/' . $engine['plugin'] . '.php');
+			@include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $engine['name']
+				 . DIRECTORY_SEPARATOR . $engine['plugin'] . '.php');
 			// get plugin content
 			$SMARTY->assign('plugin_result', $result);
 		}
 	}
 }
+
+$SMARTY->setDefaultResourceType('extendsall');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
@@ -257,9 +267,8 @@ if (!$rights) {
 	die;
 }
 
-if (!isset($document['numberplanid'])) {
+if (!isset($document['numberplanid']))
 	$document['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype<0 AND isdefault=1 LIMIT 1');
-}
 
 $numberplans = array();
 

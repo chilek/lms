@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -145,8 +145,12 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . trans('Seller:') . '</b>');
 		$tmp = $this->data['division_header'];
 
-		$account = format_bankaccount(bankaccount($this->data['customerid'], $this->data['account']));
-		$tmp = str_replace('%bankaccount', $account, $tmp);
+		$accounts = array(bankaccount($this->data['customerid'], $this->data['account']));
+		if (ConfigHelper::checkConfig('invoices.show_all_accounts'))
+			$accounts = array_merge($accounts, $this->data['bankaccounts']);
+		foreach ($accounts as &$account)
+			$account = format_bankaccount($account);
+		$tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
 
 		$tmp = preg_split('/\r?\n/', $tmp);
 		foreach ($tmp as $line)
@@ -808,8 +812,12 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			//$y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . trans('Notes:') . '</b>');
 			$tmp = $this->data['division_footer'];
 
-			$account = format_bankaccount(bankaccount($this->data['customerid'], $this->data['account']));
-			$tmp = str_replace('%bankaccount', $account, $tmp);
+			$accounts = array(bankaccount($this->data['customerid'], $this->data['account']));
+			if (ConfigHelper::checkConfig('invoices.show_all_accounts'))
+				$accounts = array_merge($accounts, $this->data['bankaccounts']);
+			foreach ($accounts as &$account)
+				$account = format_bankaccount($account);
+			$tmp = str_replace('%bankaccount', implode("\n", $accounts), $tmp);
 
 			$tmp = preg_split('/\r?\n/', $tmp);
 			foreach ($tmp as $line)

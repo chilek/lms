@@ -22,10 +22,10 @@
 			end.value = start.options[start.selectedIndex].value;
 		}
 	}
-        function change_customer(elem)
-        {
-            xajax_select_customer(elem.value);
-        }
+
+	function change_customer(elem) {
+		xajax_select_customer(elem.value);
+	}
 
         function update_nodes_location(data)
         {
@@ -41,7 +41,7 @@
 </SCRIPT>
 <H1>{$layout.pagetitle}</H1>
 <P align="CENTER">
-<FORM method="POST" action="?m=eventedit&id={$event.id}" name="event">
+<FORM METHOD="POST" ACTION="?m=eventedit&id={$event.id}" NAME="event" ID="event">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -58,6 +58,7 @@
 	</TR>
     </THEAD>
     <TBODY>
+        {block name="event_edit_tbody"}
 	<TR>
 		<TD width="1%">
 			<IMG src="img/time.gif" alt="">
@@ -66,20 +67,18 @@
 			<B>{trans("Time:")}</B>
 		</TD>
 		<TD width="98%">
-			<div class="calendar">
-			{trans("Begin:")} <INPUT type="text" name="event[date]" value="{$event.date}" size="10" {tip text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
+			{trans("Begin:")} <INPUT type="text" name="event[date]" value="{$event.date}" size="10" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
 			<SELECT name="event[begintime]" size="1" {tip text="Select time of"} OnChange="javascript:SetEndtime();">
 				{section name=time loop=$hours}
 				<OPTION value="{$hours[time]}" {if $hours[time] == $event.begintime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
 				{/section}
 			</SELECT>
-			{trans("End:")} <INPUT type="text" name="event[enddate]" value="{$event.enddate}" size="10" {tip text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="enddate"}>
+			{trans("End:")} <INPUT type="text" name="event[enddate]" value="{$event.enddate}" size="10" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="enddate"}>
 			<SELECT name="event[endtime]" size="1" {tip text="Select time of"} OnChange="javascript:CheckEndtime();">
 				{section name=time loop=$hours}
 				<OPTION value="{$hours[time]}" {if $hours[time] == $event.endtime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
 				{/section}
 			</SELECT>
-			</div>
 		</TD>
 	</TR>
 	<TR>
@@ -119,22 +118,17 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR>
-		<TD width="1%">
-			<IMG src="img/customer.gif" alt="">
-		</TD>
-		<TD width="1%">
-			<B>{trans("Customer:")}</B>
-		</TD>
-		<TD width="98%" nowrap>
-			<SELECT name="event[customerid]" {tip text="Select customer (optional)"} onChange="change_customer(this);">
-				<OPTION value="0"{if !$event.customerid} SELECTED{/if}>{trans("- select customer -")}</OPTION>
-				{foreach from=$customerlist item=customer}	
-				<OPTION value="{$customer.id}"{if $customer.id == $event.customerid} SELECTED{/if}>{$customer.customername}</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
+        <TR>
+                <TD width="1%">
+                        <IMG src="img/customer.gif" alt="">
+                </TD>
+                <TD width="1%">
+                        <B>{trans("Customer:")}</B>
+                </TD>
+                <TD width="98%" nowrap>
+			{customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer(this);"}
+                </TD>
+        </TR>
 	<TR>
 	<TD width="1%">
 	    <IMG src="img/node.gif" alt="">
@@ -169,22 +163,38 @@
 		<TD width="1%" class="valign-top">
 			<B>{trans("Users:")}</B>
 		</TD>
-		<TD width="98%" class="nobr">
-			<SELECT size="{if $max_userlist_size > 0}{$max_userlist_size}{else}{size of=$userlist}{/if}" name="event[userlist][]" {tip text="Select user(s) (optional)"} multiple>
+		<TD style="width: 98%;" class="multiselect nobr">
+			<SELECT name="event[userlist][]" id="userid" multiple>
 				{foreach $userlist as $user}
-				<OPTION value="{$user.id}"{if in_array($user.id, $event.userlist)} selected{/if}>{$user.name}</OPTION>
+				<OPTION value="{$user.id}"{if in_array($user.id, $event.userlist)} selected{/if}>{$user.name}</option>
 				{/foreach}
 			</SELECT>
+
+			<div style="float: left; padding-top: 30px;">
+				<label>
+					<input type="radio" name="event[usergroup]" id="usergroup_0" value="0" onChange="xajax_getUsersForGroup(0)"{if empty($event.usergroup)} checked{/if}>
+					{trans("All users")}<br>
+				</label>
+				{foreach $usergroups as $group}
+					<label>
+						<input type="radio" name="event[usergroup]" id="usergroup_{$group.id}" value="{$group.id}" onClick="xajax_getUsersForGroup({$group.id})"{if $event.usergroup == $group.id} checked{/if}>
+						{$group.name}<br>
+					</label>
+				{/foreach}
+			</div>
 		</TD>
 	</TR>
+	{/block}
 	<TR>
 		<TD align="right" colspan="3">
 			<A href="javascript:document.event.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			{if !$event.closed}
-			<A href="?m=eventedit&id={$event.id}&action=close">{trans("Close")} <IMG src="img/dead.gif" alt=""></A>
-			{else}
-			<A href="?m=eventedit&id={$event.id}&action=open">{trans("Open")} <IMG src="img/open.gif" alt=""></A>
-			{/if}
+                        {if ConfigHelper::getConfig('privileges.timetable_management')}
+                            {if !$event.closed}
+                            <A href="?m=eventedit&id={$event.id}&action=close">{trans("Close")} <IMG src="img/dead.gif" alt=""></A>
+                            {else}
+                            <A href="?m=eventedit&id={$event.id}&action=open">{trans("Open")} <IMG src="img/open.gif" alt=""></A>
+                            {/if}
+                        {/if}
 			<A href="?m=eventlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
@@ -194,6 +204,15 @@
 <SCRIPT type="text/javascript">
 <!--
 document.forms['event'].elements['event[title]'].focus();
+var userms = new multiselect('event', 'userid', '{trans("- select user -")}');
+
+function update_user_selection(users) {
+	{if ConfigHelper::getConfig('phpui.event_usergroup_selection_type', 'update') == 'update'}
+	userms.updateSelection(users);
+	{else}
+	userms.filterSelection(users);
+	{/if}
+}
 //-->
 </SCRIPT>
 {/block}

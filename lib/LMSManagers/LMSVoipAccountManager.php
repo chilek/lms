@@ -104,7 +104,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             . ' AS owner, v.access,
 		location, lb.name AS borough_name, ld.name AS district_name, ls.name AS state_name
 		FROM voipaccounts v
-		JOIN customersview c ON (v.ownerid = c.id)
+		JOIN customerview c ON (v.ownerid = c.id)
 		LEFT JOIN location_cities lc ON lc.id = v.location_city
 		LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
 		LEFT JOIN location_districts ld ON ld.id = lb.districtid

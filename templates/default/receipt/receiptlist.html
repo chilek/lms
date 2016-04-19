@@ -75,16 +75,13 @@
 		<TD WIDTH="50%" nowrap>
 			{trans("Title:")}
 		</TD>
-		<TD WIDTH="1%" align="right">
-			<NOBR>
+		<TD WIDTH="1%" class="text-right nobr">
 			<A href="?m=receiptadd&type=in&action=init&regid={$listdata.regid}">{trans("New Cash-in Receipt")} <img src="img/save.gif" alt=""></A><BR>
 			<A href="?m=receiptadd&type=out&action=init&regid={$listdata.regid}">{trans("New Cash-out Receipt")} <img src="img/save.gif" alt=""></A>
-			</NOBR>
 		</TD>
 	</TR>
 	<TR>
 		<TD colspan="7">
-				<div style="float: left;">
 				<B>{trans("Filter:")} </B> 
 				<INPUT name="search" type="text" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<SELECT size="1" name="cat">
@@ -96,16 +93,11 @@
 					<OPTION value="ten"{if $listdata.cat == "ten"} SELECTED{/if}>{trans("TEN")}</OPTION>
 					<OPTION value="address"{if $listdata.cat == "address"} SELECTED{/if}>{trans("address")}</OPTION>
 				</SELECT>&nbsp;
-				</div>
-				<div class="calendar" style="float: left;">
 				<B>{trans("Period:")}</B>&nbsp;
-				{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-				{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
-				</div>
-				<div style="float: left;">
+				{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+				{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
 				<INPUT type="checkbox" id="advances" name="advances" value="1"{if $listdata.advances} checked{/if}><label for="advances">{trans("not settled adv. only")}</label>&nbsp;
 				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
-				</div>
 		</TD>
 	</TR>		
 	{if $listdata.total != 0}
@@ -123,10 +115,10 @@
 	{assign var=receiptid value=$receipt.id}
 	<TR class="highlight {cycle}"  >
 		<TD WIDTH="1%" NOWRAP><A id="{$receipt.id}"></A>
-			{if !$receipt.closed}<FONT class="alert">{/if}
+			{if !$receipt.closed}<span class="alert">{/if}
 			{$receipt.cdate|date_format:"%Y/%m/%d %H:%M"}<BR>
 			{$receipt.user|truncate:"16":"...":true}
-			{if !$receipt.closed}</FONT>{/if}		
+			{if !$receipt.closed}</span>{/if}		
 		</TD>
 		<TD WIDTH="1%" NOWRAP align="right"{if !$receipt.closed} class="alert"{/if}>
 			{$receipt.number}
@@ -159,10 +151,8 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD WIDTH="100%" ALIGN="center"  COLSPAN="7">
-			<P>&nbsp;</P>
-			<P><B>{trans("No such receipts in database.")}</B></P>
-			<P>&nbsp;</P>
+		<TD COLSPAN="7" class="empty-table">
+			<p>{trans("No such receipts in database.")}</p>
 		</TD>
 	</TR>	
 	{/section}
@@ -184,8 +174,8 @@
 						<INPUT type="checkbox" id="original" name="original" checked> <label for="original">{trans("original")}</label>&nbsp;
 						<INPUT type="checkbox" id="copy" name="copy" checked> <label for="copy">{trans("copy")}</label>
 					</TD>
-					<TD ALIGN="right">	
-						<NOBR><label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'copy'])" VALUE="1"></NOBR>
+					<TD class="text-right nobr">
+						<label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'copy'])" VALUE="1">
 					</TD>
 				</TR>
 			</TABLE>
@@ -199,13 +189,11 @@
 			<B>{trans("Final balance:")}</B><BR>
 			{/if}
 		</TD>
-		<TD nowrap align="right" style="vertical-align: top;">
+		<TD class="nobr text-right valign-top">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
-			<NOBR>
 			{$listdata.totalincome|money_format}<HR>
 			{$listdata.startbalance|money_format}<BR>
 			{$listdata.endbalance|money_format}
-			</NOBR>
 			{/if}
 		</TD>
 		<TD nowrap align="right" style="vertical-align: top;">
@@ -233,8 +221,8 @@
 		<TD WIDTH="1%" nowrap>
 			{$logentry.time|date_format:"%x %H:%M"} &nbsp;
 			<B>
-			{if $logentry.value<0}<FONT class="alert">{/if}{$logentry.value|money_format}{if $logentry.value<0}</FONT>{/if}
-			<FONT class="blend">({trans("Cash state:")} {$logentry.snapshot|money_format})</FONT> &nbsp;
+			{if $logentry.value<0}<span class="alert">{/if}{$logentry.value|money_format}{if $logentry.value<0}</span>{/if}
+			<span class="blend">({trans("Cash state:")} {$logentry.snapshot|money_format})</span> &nbsp;
 			</B>
 		</TD>
 		<TD WIDTH="98%" nowrap>

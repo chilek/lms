@@ -38,6 +38,7 @@ function module_setup()
     $SMARTY->assign('reminder_mail_body', ConfigHelper::getConfig('userpanel.reminder_mail_body', "ID: %id\nPIN: %pin"));
     $SMARTY->assign('reminder_sms_body', ConfigHelper::getConfig('userpanel.reminder_sms_body', "ID: %id, PIN: %pin"));
     $SMARTY->assign('auth_type', ConfigHelper::getConfig('userpanel.auth_type', 1));
+    $SMARTY->assign('force_ssl', ConfigHelper::getConfig('userpanel.force_ssl', ConfigHelper::getConfig('phpui.force_ssl', 1)));
 	$enabled_modules = ConfigHelper::getConfig('userpanel.enabled_modules', null, true);
 	if (is_null($enabled_modules)) {
 		$enabled_modules = array();
@@ -50,7 +51,7 @@ function module_setup()
 		$enabled_modules = explode(',', $enabled_modules);
     $SMARTY->assign('enabled_modules', $enabled_modules);
     $SMARTY->assign('total', sizeof($USERPANEL->MODULES));
-    $SMARTY->display(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'setup.html');
+    $SMARTY->display('file:' . USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'setup.html');
 }
 
 function module_submit_setup()
@@ -106,6 +107,11 @@ function module_submit_setup()
     else
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'auth_type', ?)", array($_POST['auth_type']));
 
+    if($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'force_ssl'"))
+        $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'force_ssl'", array(isset($_POST['force_ssl']) ? 1 : 0));
+    else
+        $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'force_ssl', ?)", array(isset($_POST['force_ssl']) ? 1 : 0));
+
 	if (isset($_POST['enabled_modules']))
 		$enabled_modules = implode(',', array_keys($_POST['enabled_modules']));
 	else
@@ -134,7 +140,7 @@ function module_rights()
 
     $SMARTY->assign('customerlist',$customerlist);
     $SMARTY->assign('userpanelrights', $userpanelrights);
-    $SMARTY->display(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'setup_rights.html');
+    $SMARTY->display('file:' . USERPANEL_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'setup_rights.html');
 }
 
 function module_submit_rights()

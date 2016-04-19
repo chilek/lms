@@ -35,7 +35,7 @@
 			<IMG src="img/docum.gif" alt="">
 		</TD>
 		<TD width="1%" NOWRAP>
-			<B>{trans("Title:")}
+			<b>{trans("Title:")}</b>
 		</TD>
 		<TD width="98%" NOWRAP>
 			<INPUT type="text" name="document[title]" value="{$document.title}" {tip text="Enter document title" trigger="title"} size="40">
@@ -48,7 +48,7 @@
 			<IMG src="img/docum.gif" alt="">
 		</TD>
 		<TD width="1%" nowrap>
-			<B>{trans("First number:")}
+			<b>{trans("First number:")}</b>
 		</TD>
 		<TD width="98%">
 			<INPUT type="text" name="document[number]" value="{if $document.number}{$document.number}{/if}" size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
@@ -69,13 +69,11 @@
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{trans("Period:")}
+			<b>{trans("Period:")}</b>
 		</TD>
 		<TD width="98%">
-			<div class="calendar">
-			{trans("from:")} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" {tip text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
-			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" {tip text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
-			</div>
+			{trans("from:")} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" {tip class="calendar" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
+			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" {tip class="calendar" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
 		</TD>
 	</TR>
 	<TR>
@@ -83,7 +81,7 @@
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{trans("Description:")}
+			<b>{trans("Description:")}</b>
 		</TD>
 		<TD width="98%">
 			<TEXTAREA name="document[description]" rows="5" cols="50" {tip text="Enter additional information (optional)"}>{$document.description}</TEXTAREA>
@@ -95,7 +93,7 @@
 			<IMG src="img/save.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{trans("File:")}
+			<b>{trans("File:")}</b>
 		</TD>
 		<TD width="98%">
 			<INPUT size="50" type="file" name="file" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
@@ -107,7 +105,7 @@
 			<IMG src="img/info.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{trans("Type:")}
+			<b>{trans("Type:")}</b>
 		</TD>
 		<TD width="98%">
 			<SELECT SIZE="1" NAME="document[type]" {tip text="Select document type" trigger="type"} onchange="gettemplates();">
@@ -123,7 +121,7 @@
 			<IMG src="img/class.gif" alt="">
 		</TD>
 		<TD width="1%">
-			<B>{trans("Template:")}
+			<b>{trans("Template:")}</b>
 		</TD>
 		<TD width="98%">
 			<SELECT SIZE="1" NAME="document[templ]" {tip text="Select document template" trigger="templ"} id="templ" onchange="getplugin();">
@@ -151,19 +149,19 @@
 		<TD width="98%">
 			<TABLE width="100%">
 				<TR>
-					<TD width="1%" {tip text="Select customer's group"}>
+					<TD width="1%" {tip text="Select customer's group"} class="nobr">
 						{foreach $_CSTATUSES as $statusidx => $status}
-						<NOBR><label><INPUT class="radio light" type="radio" name="filter" value="{$statusidx}"{if $statusidx == $smarty.const.CSTATUS_CONNECTED} checked{/if}>{$status.plurallabel}</label></NOBR><BR>
+						<label><INPUT class="radio light" type="radio" name="filter" value="{$statusidx}"{if $statusidx == $smarty.const.CSTATUS_CONNECTED} checked{/if}>{$status.plurallabel}</label><BR>
 						{/foreach}
-						<NOBR><label><INPUT class="radio light" type="radio" name="filter" value="51">{trans("with disconnected nodes")}</label></NOBR><BR>
-						<NOBR><label><INPUT class="radio light" type="radio" name="filter" value="52">{trans("in debt")}</label></NOBR><BR>
-						<NOBR><label><INPUT class="radio light" type="radio" name="filter" value="-1">{trans("without nodes")}</label></NOBR><BR>
-						<NOBR><label><INPUT class="radio light" type="radio" name="filter" value="0">{trans("all<!customers>")}</label></NOBR>
+						<label><INPUT class="radio light" type="radio" name="filter" value="51">{trans("with disconnected nodes")}</label><BR>
+						<label><INPUT class="radio light" type="radio" name="filter" value="52">{trans("in debt")}</label><BR>
+						<label><INPUT class="radio light" type="radio" name="filter" value="-1">{trans("without nodes")}</label><BR>
+						<label><INPUT class="radio light" type="radio" name="filter" value="0">{trans("all<!customers>")}</label>
 					</TD>
 					<TD width="5%">&nbsp;</TD>
-					<TD width="1%">
-						<NOBR><IMG src="img/network.gif" alt=""> <B>{trans("Network:")}</B></NOBR><BR><BR>
-						<NOBR><IMG src="img/group.gif" alt=""> <B>{trans("Group:")}</B></NOBR>
+					<TD width="1%" class="nobr">
+						<IMG src="img/network.gif" alt=""> <B>{trans("Network:")}</B><BR><BR>
+						<IMG src="img/group.gif" alt=""> <B>{trans("Group:")}</B>
 					</TD>
 					<TD width="97%">
 						<SELECT size="1" name="network" {tip text="Select network" trigger="customer"}>
@@ -182,12 +180,12 @@
 				</TR>
 			</TABLE>
 		</TD>
-	<TR>
+	</TR>
 	<TR>
 		<TD colspan="3" align="right" NOWRAP>
-			<A href="javascript: document.documentgen.submit();">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>&nbsp;
+			<A href="javascript:document.documentgen.submit();">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>&nbsp;
 		{*	<A href="?m=">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A> *}
-			<A href="javascript: printdoc();">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
+			<A href="javascript:printdoc();">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
 		</TD>
 	</TR>
     </TBODY>

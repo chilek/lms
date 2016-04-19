@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C); 2001-2013 LMS Developers
+ *  Copyright (C); 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,6 +28,7 @@
  * LMSCustomerManagerInterface
  * 
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
+ * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 interface LMSCustomerManagerInterface
 {
@@ -57,7 +58,7 @@ interface LMSCustomerManagerInterface
 
     public function customerAdd($customeradd);
 
-    public function getCustomerList($order = 'customername,asc', $state = null, $network = null, $customergroup = null, $search = null, $time = null, $sqlskey = 'AND', $nodegroup = null, $division = null, $limit = null, $offset = null, $count = false);
+    public function getCustomerList($params);
 
     public function getCustomerNodes($id, $count = null);
 

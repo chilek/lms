@@ -79,7 +79,7 @@ switch ($mode) {
 		{
 			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, address, post_name, post_address, deleted,
 			    ".$DB->Concat('UPPER(lastname)',"' '",'c.name')." AS username
-				FROM customersview c
+				FROM customerview c
 				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & " . CONTACT_EMAIL . " = " . CONTACT_EMAIL . ")    
 				WHERE ".(preg_match('/^[0-9]+$/', $search) ? 'c.id = '.intval($search).' OR ' : '')."
 					LOWER(".$DB->Concat('lastname',"' '",'c.name').") ?LIKE? LOWER($sql_search)
@@ -88,7 +88,7 @@ switch ($mode) {
 					OR LOWER(post_address) ?LIKE? LOWER($sql_search)
 					OR LOWER(cc.contact) ?LIKE? LOWER($sql_search)
 				ORDER by deleted, username, cc.contact, address
-				LIMIT 15");
+				LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
@@ -138,7 +138,7 @@ switch ($mode) {
 
 		if(is_numeric($search)) // maybe it's customer ID
 		{
-			if($customerid = $DB->GetOne('SELECT id FROM customersview WHERE id = '.$search))
+			if($customerid = $DB->GetOne('SELECT id FROM customerview WHERE id = '.$search))
 			{
 				$target = '?m=customerinfo&id='.$customerid;
 				break;
@@ -173,7 +173,7 @@ switch ($mode) {
 			        INET_NTOA(ipaddr_pub) AS ip_pub, mac
 				    FROM vnodes n
 				    WHERE %where
-    				ORDER BY n.name LIMIT 15';
+    				ORDER BY n.name LIMIT ?';
             else
 			    $sql_query = 'SELECT n.id, n.name, INET_NTOA(ipaddr) as ip,
 			        INET_NTOA(ipaddr_pub) AS ip_pub, mac
@@ -184,7 +184,7 @@ switch ($mode) {
                         GROUP BY nodeid
                     ) m ON (n.id = m.nodeid)
 				    WHERE %where
-    				ORDER BY n.name LIMIT 15';
+    				ORDER BY n.name LIMIT ?';
 
             $sql_where = '('.(preg_match('/^[0-9]+$/',$search) ? "n.id = $search OR " : '')."
 				LOWER(n.name) ?LIKE? LOWER($sql_search)
@@ -196,7 +196,8 @@ switch ($mode) {
                     JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			        WHERE e.userid = lms_current_user() AND a.customerid = n.ownerid)";
 
-			$candidates = $DB->GetAll(str_replace('%where', $sql_where,	$sql_query));
+			$candidates = $DB->GetAll(str_replace('%where', $sql_where,	$sql_query),
+				array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
@@ -278,7 +279,7 @@ switch ($mode) {
 			$candidates = $DB->GetAll("SELECT t.id, t.subject, t.requestor, c.name, c.lastname 
 				FROM rttickets t
 				LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
-				LEFT JOIN customersview c on (t.customerid = c.id)
+				LEFT JOIN customerview c on (t.customerid = c.id)
 				WHERE ".(is_array($catids) ? "tc.categoryid IN (".implode(',', $catids).")" : "tc.categoryid IS NULL")
 					." AND (".(preg_match('/^[0-9]+$/',$search) ? 't.id = '.intval($search).' OR ' : '')."
 					LOWER(t.subject) ?LIKE? LOWER($sql_search)
@@ -286,7 +287,7 @@ switch ($mode) {
 					OR LOWER(c.name) ?LIKE? LOWER($sql_search)
 					OR LOWER(c.lastname) ?LIKE? LOWER($sql_search))
 					ORDER BY t.subject, t.id, c.lastname, c.name, t.requestor
-					LIMIT 15");
+					LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
 			$eglible=array(); $actions=array(); $descriptions=array();
 			if ($candidates)
@@ -345,7 +346,7 @@ switch ($mode) {
 					WHERE a.login ?LIKE? LOWER($username)
 					".($domain ? "AND d.name ?LIKE? LOWER($domain)" : '').")
 					ORDER BY login, domain
-					LIMIT 15");
+					LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
 			$eglible=array(); $actions=array(); $descriptions=array();
 
@@ -385,11 +386,11 @@ switch ($mode) {
 			$candidates = $DB->GetAll("SELECT d.id, d.type, d.fullnumber,
 					d.customerid AS cid, d.name AS customername
 				FROM documents d
-				JOIN customersview c on d.customerid = c.id
+				JOIN customerview c on d.customerid = c.id
 				WHERE (LOWER(d.fullnumber) ?LIKE? LOWER($sql_search)
 					OR 1 = 0)
 					ORDER BY d.fullnumber
-					LIMIT 15");
+					LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
 			$eglible = array(); $actions = array(); $descriptions = array();
 			if ($candidates)
@@ -429,7 +430,7 @@ switch ($mode) {
 
 		$docs = $DB->GetAll("SELECT d.id, d.type, d.customerid AS cid, d.name AS customername
 			FROM documents d
-			JOIN customersview c ON c.id = d.customerid
+			JOIN customerview c ON c.id = d.customerid
 			WHERE LOWER(fullnumber) ?LIKE? LOWER($sql_search)");
 		if (count($docs) == 1) {
 			$cid = $docs[0]['cid'];

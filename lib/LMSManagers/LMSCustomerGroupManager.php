@@ -369,7 +369,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
         }
 
         return $this->db->GetAll('SELECT c.id AS id, ' . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername
-			FROM customersview c '
+			FROM customerview c '
                         . ($network ? 'LEFT JOIN nodes ON (c.id = nodes.ownerid) ' : '')
                         . 'WHERE c.deleted = 0 AND c.id NOT IN (
 				SELECT customerid FROM customerassignments WHERE customergroupid = ?) '

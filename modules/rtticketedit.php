@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -61,11 +61,11 @@ if ($id && !isset($_POST['ticket'])) {
 					$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
 							address, zip, city,
 								(SELECT ' . $DB->GroupConcat('contact', ',', true) . ' FROM customercontacts 
-								WHERE customerid = customers.id AND (type & ? = ?)) AS emails,
+								WHERE customerid = c.id AND (type & ?) > 0) AS emails,
 								(SELECT ' . $DB->GroupConcat('contact', ',', true) . ' FROM customercontacts 
-								WHERE customerid = customers.id AND (type & ? > 0)) AS phones
-							FROM customers
-							WHERE id = ?', array(CONTACT_EMAIL, CONTACT_EMAIL, (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE), $ticket['customerid']));
+								WHERE customerid = c.id AND (type & ?) > 0) AS phones
+							FROM customeraddressview c
+							WHERE id = ?', array(CONTACT_EMAIL, (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE), $ticket['customerid']));
 					$custmail_subject = $queue['resolveticketsubject'];
 					$custmail_subject = str_replace('%tid', $id, $custmail_subject);
 					$custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
@@ -207,10 +207,9 @@ if(isset($_POST['ticket']))
 				.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$ticket['ticketid'];
 
-			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)) && $ticketedit['customerid'])
-			{
+			if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo') && $ticketedit['customerid']) {
 				$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-							address, zip, city FROM customers WHERE id = ?', array($ticketedit['customerid']));
+							address, zip, city FROM customeraddressview WHERE id = ?', array($ticketedit['customerid']));
 				$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
 					WHERE customerid = ?', array($ticketedit['customerid']));
 
@@ -310,10 +309,8 @@ $layout['pagetitle'] = trans('Ticket Edit: $a',sprintf("%06d",$ticket['ticketid'
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
-{
-        $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
-}
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+	$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 
 $queuelist = $LMS->GetQueueNames();
 if (strpos('helpdesk', ConfigHelper::getConfig('userpanel.enabled_modules')) !== false

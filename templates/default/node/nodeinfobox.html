@@ -1,7 +1,10 @@
 <!--// $Id$ //-->
 {$xajax}
+<script src="img/clipboard.min.js"></script>
 <SCRIPT type="text/javascript">
 <!--
+       new Clipboard('.CopyIp');
+
 	function chkmac_change()
 	{
 		if (xjx.$('chkmac').checked)
@@ -130,12 +133,12 @@
 			<IMG SRC="img/network.gif" ALT="{trans("Network:")}">
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
-			<a href="?m=netinfo&id={$nodeinfo.netid}">{$nodeinfo.netname}</a>
+			<a href="?m=netinfo&amp;id={$nodeinfo.netid}">{$nodeinfo.netname}</a>
 		</TD>
 	</TR>
 	<TR>
 		<TD style="width: 1%;">
-			<IMG SRC="img/ip.gif" ALT="{trans("IP address:")}">
+                       <IMG SRC="img/ip.gif" class="CopyIp" data-clipboard-text="{$nodeinfo.ip}" ALT="{trans("IP address:")}">
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
 			<a href="javascript:ping_popup('{$nodeinfo.ip}')">{$nodeinfo.ip}</a>
@@ -144,7 +147,7 @@
 	{if $nodeinfo.ip_pub != "0.0.0.0"}
 	<TR>
 		<TD style="width: 1%;">
-			<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
+			<IMG SRC="img/ip_pub.gif" class="CopyIp" data-clipboard-text="{$nodeinfo.ip_pub}"s ALT="{trans("Pub. IP address:")}">
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
 			<a href="javascript:ping_popup('{$nodeinfo.ip_pub}')">{$nodeinfo.ip_pub}</a>
@@ -198,14 +201,15 @@
 		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
 			{if $nodeinfo.netdev}
 				<span class="bold">
-				<A HREF="?m=netdevinfo&id={$netdevices.id}">{$netdevices.name} {$netdevices.producer}{if $netdevices.location} / {$netdevices.location}{/if}</A>
+				<A HREF="?m=netdevinfo&amp;id={$netdevices.id}">{$netdevices.name} {$netdevices.producer}{if $netdevices.location} / {$netdevices.location}{/if}</A>
 				</span>
 				{if $nodeinfo.port}[{$nodeinfo.port}]{/if}
 				<IMG src="img/{if $nodeinfo.linktype == 1}wireless.gif{elseif $nodeinfo.linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="{$_LINKTYPES[$nodeinfo.linktype]}" {tip text="{if $nodeinfo.linktechnology}{$_LINKTECHNOLOGIES[$nodeinfo.linktype][$nodeinfo.linktechnology]} / {/if}{if $nodeinfo.linkradiosector}{$nodeinfo.linkradiosectorname} / {/if}{$_LINKSPEEDS[$nodeinfo.linkspeed]}"}>
 			{else}
 				{if $netdevices}
+				<a href="javascript: void(0);" onclick="return choosenetdevice(document.nodelink.elements['devid']);" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
 				<SELECT SIZE="1" style="width: 300px;" NAME="devid" id="netdev" {tip trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value)">
-				<OPTION VALUE="0" {if !$netdevice}SELECTED{/if}>- {trans("no device")} -</OPTION>
+                                <OPTION VALUE="0" {if !$netdevice}SELECTED{/if}>- {trans("no device")} -</OPTION>
 					{section name=netdev loop=$netdevices}
 					{assign var=netdevname value=$netdevices[netdev].name}
 					{if $netdevices[netdev].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$netdevices[netdev].producer}{/if}
@@ -328,7 +332,7 @@
 {/if}
 	<TR>
 		<TD style="width: 1%;">
-			<A HREF="?m=nodeset&id={$nodeinfo.id}"><IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" ALT=""></A>
+			<A HREF="?m=nodeset&amp;id={$nodeinfo.id}"><IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" ALT=""></A>
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
 			<span class="bold">{if $nodeinfo.access}{trans("connected<!singular>")}{else}{trans("disconnected<!singular>")}{/if}</span>
@@ -336,7 +340,7 @@
 	</TR>
 	<TR>
 		<TD style="width: 1%;">
-			<A HREF="?m=nodewarn&id={$nodeinfo.id}"><IMG SRC="img/warning{if ! $nodeinfo.warning}off{else}on{/if}.gif" ALT=""></A>
+			<A HREF="?m=nodewarn&amp;id={$nodeinfo.id}"><IMG SRC="img/warning{if ! $nodeinfo.warning}off{else}on{/if}.gif" ALT=""></A>
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
 			<span class="bold">{if $nodeinfo.warning}{trans("notice enabled")}{else}{trans("notice disabled")}{/if}</span>
@@ -375,8 +379,8 @@
 	</TR>
 	<TR>
 		<TD style="width: 100%; text-align: right;" COLSPAN="3">
-			<A HREF="?m=nodeedit&id={$nodeinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
-			<A HREF="?m=nodedel&id={$nodeinfo.id}" onClick="return confirmLink(this, '{t a=$nodeinfo.name}Are you sure, you want to remove node \'$a\' from database?{/t}')">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
+			<A HREF="?m=nodeedit&amp;id={$nodeinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
+			<A HREF="?m=nodedel&amp;id={$nodeinfo.id}" onClick="return confirmLink(this, '{t a=$nodeinfo.name}Are you sure, you want to remove node \'$a\' from database?{/t}')">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
 		</TD>
 	</TR>	
     </TBODY>

@@ -47,6 +47,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $id
         );
         $this->db->Execute('UPDATE users SET passwd=?, passwdlastchange=?NOW? WHERE id=?', array_values($args));
+	$this->db->Execute('INSERT INTO passwdhistory (userid, hash) VALUES (?, ?)', array($id, crypt($passwd)));
         if ($this->syslog) {
             unset($args['passwd']);
             $this->syslog->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_USERPASSWDCHANGE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
@@ -373,6 +374,15 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 		$rights = explode(',', $rights);
 
         return $rights;
+    }
+    
+    public function PasswdExistsInHistory($id, $passwd) 
+    {
+	    $history = $this->db->GetAll('SELECT id, hash FROM passwdhistory WHERE userid = ? ORDER BY id DESC LIMIT ?', array($id, intval(ConfigHelper::getConfig('phpui.passwordhistory'))));
+	    foreach ($history as $h) {
+		    if (crypt($passwd, $h['hash']) == $h['hash']) return TRUE;
+	    }
+	    return FALSE;
     }
 
 }

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,9 @@
  *  $Id$
  */
 
-include(MODULES_DIR . '/document.inc.php');
+$SMARTY->setDefaultResourceType('file');
+
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'document.inc.php');
 
 if (isset($_POST['document'])) {
 	$document = $_POST['document'];
@@ -32,9 +34,8 @@ if (isset($_POST['document'])) {
 	$oldfromdate = $document['fromdate'];
 	$oldtodate = $document['todate'];
 
-	if (!($document['title'] || $document['description'] || $document['type'])) {
+	if (!($document['title'] || $document['description'] || $document['type']))
 		$SESSION->redirect('?' . $SESSION->get('backto'));
-	}
 
 	$document['customerid'] = isset($_POST['customerid']) ? intval($_POST['customerid']) : intval($_POST['customer']);
 
@@ -52,11 +53,10 @@ if (isset($_POST['document'])) {
 	if ($document['numberplanid'] && $document['customerid']
 			&& !$DB->GetOne('SELECT 1 FROM numberplanassignments
 	                WHERE planid = ? AND divisionid IN (SELECT divisionid
-				FROM customers WHERE id = ?)', array($document['numberplanid'], $document['customerid']))) {
+				FROM customers WHERE id = ?)', array($document['numberplanid'], $document['customerid'])))
 		$error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
-	}
-	// check number
 	elseif ($document['number'] == '') {
+	// check number
 		$tmp = $LMS->GetNewDocumentNumber($document['type'], $document['numberplanid']);
 		$document['number'] = $tmp ? $tmp : 0;
 		$autonumber = true;
@@ -71,8 +71,7 @@ if (isset($_POST['document'])) {
 			$document['fromdate'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
 		else
 			$error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-	}
-	else
+	} else
 		$document['fromdate'] = 0;
 
 	if ($document['todate']) {
@@ -81,8 +80,7 @@ if (isset($_POST['document'])) {
 			$document['todate'] = mktime(23, 59, 59, $date[1], $date[2], $date[0]);
 		else
 			$error['todate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-	}
-	else
+	} else
 		$document['todate'] = 0;
 
 	if ($document['fromdate'] > $document['todate'] && $document['todate'] != 0)
@@ -108,25 +106,35 @@ if (isset($_POST['document'])) {
 					break;
 			}
 	} elseif ($document['templ']) {
+		foreach ($documents_dirs as $doc)
+			if(file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] )) {
+				$doc_dir = $doc;
+				continue;
+			}
 		$result = '';
 		// read template information
-		include(DOC_DIR . '/templates/' . $document['templ'] . '/info.php');
+		include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] . DIRECTORY_SEPARATOR . 'info.php');
 		// set some variables (needed in e.g. plugin)
 		$SMARTY->assignByRef('document', $document);
 		// call plugin
-		if (!empty($engine['plugin']) && file_exists(DOC_DIR . '/templates/' . $engine['name'] . '/' . $engine['plugin'] . '.php'))
-			include(DOC_DIR . '/templates/' . $engine['name'] . '/' . $engine['plugin'] . '.php');
+		if (!empty($engine['plugin']) && file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+			. $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.php'))
+			include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $engine['name']
+				. DIRECTORY_SEPARATOR . $engine['plugin'] . '.php');
 		// get plugin content
 		$SMARTY->assign('plugin_result', $result);
 
 		// run template engine
-		if (file_exists(DOC_DIR . '/templates/' . $engine['engine'] . '/engine.php'))
-			require_once(DOC_DIR . '/templates/' . $engine['engine'] . '/engine.php');
+		if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+			. $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php'))
+			require_once($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+				. $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php');
 		else
-			require_once(DOC_DIR . '/templates/default/engine.php');
+			require_once(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+				. 'default' . DIRECTORY_SEPARATOR . 'engine.php');
 
 		if (!empty($output)) {
-			$file = DOC_DIR . '/tmp.file';
+			$file = DOC_DIR . DIRECTORY_SEPARATOR . 'tmp.file';
 			$fh = fopen($file, 'w');
 			fwrite($fh, $output);
 			fclose($fh);
@@ -136,18 +144,16 @@ if (isset($_POST['document'])) {
 			$document['filename'] = $engine['output'];
 		} else if (empty($error))
 			$error['templ'] = trans('Problem during file generation!');
-	}
-	else
+	} else
 		$error['file'] = trans('You must to specify file for upload or select document template!');
 
 	if (!$error) {
-		if ($DB->GetOne('SELECT docid FROM documentcontents WHERE md5sum = ?', array($document['md5sum']))
-		) {
+		if ($DB->GetOne('SELECT docid FROM documentcontents WHERE md5sum = ?', array($document['md5sum'])))
 			$error['file'] = trans('Specified file exists in database!');
-		} else {
-			$path = DOC_DIR . '/' . substr($document['md5sum'], 0, 2);
+		else {
+			$path = DOC_DIR . DIRECTORY_SEPARATOR . substr($document['md5sum'], 0, 2);
 			@mkdir($path, 0700);
-			$newfile = $path . '/' . $document['md5sum'];
+			$newfile = $path . DIRECTORY_SEPARATOR . $document['md5sum'];
 
 			// If we have a file with specified md5sum, we assume
 			// it's here because of some error. We can replace it with
@@ -221,8 +227,10 @@ if (isset($_POST['document'])) {
 		));
 
 		// template post-action
-		if (!empty($engine['post-action']) && file_exists(DOC_DIR . '/templates/' . $engine['name'] . '/' . $engine['post-action'] . '.php'))
-			include(DOC_DIR . '/templates/' . $engine['name'] . '/' . $engine['post-action'] . '.php');
+		if (!empty($engine['post-action']) && file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates'
+			. DIRECTORY_SEPARATOR . $engine['name'] . DIRECTORY_SEPARATOR . $engine['post-action'] . '.php'))
+			include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $engine['name']
+				. DIRECTORY_SEPARATOR . $engine['post-action'] . '.php');
 
 		$DB->CommitTrans();
 
@@ -238,18 +246,18 @@ if (isset($_POST['document'])) {
 		unset($document['description']);
 		unset($document['fromdate']);
 		unset($document['todate']);
-	}
-	else {
+	} else {
 		$document['fromdate'] = $oldfromdate;
 		$document['todate'] = $oldtodate;
 		if (isset($autonumber))
 			$document['number'] = '';
 	}
-}
-else {
+} else {
 	$document['customerid'] = isset($_GET['cid']) ? $_GET['cid'] : '';
 	$document['type'] = isset($_GET['type']) ? $_GET['type'] : '';
 }
+
+$SMARTY->setDefaultResourceType('extendsall');
 
 $rights = $DB->GetCol('SELECT doctype FROM docrights WHERE userid = ? AND (rights & 2) = 2', array($AUTH->id));
 
@@ -278,9 +286,8 @@ $layout['pagetitle'] = trans('New Document');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false))) {
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customers', $LMS->GetCustomerNames());
-}
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('numberplans', $numberplans);

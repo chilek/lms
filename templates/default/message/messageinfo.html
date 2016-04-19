@@ -93,7 +93,7 @@
 			<A href="?m=messageinfo&id={$message.id}&o=status{if $listdata.direction == "asc" && $listdata.order == "status"},desc{/if}">{trans("Status:")} ({trans("Error message")})</A> {if $listdata.order == "status"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" nowrap>
-			{trans("Last read on:")} ({trans("only userpanel message")})
+			{trans("Last read on:")}
 		</TD>
 		<TD WIDTH="1%" align="right" nowrap>
 			{trans("Was confirm on:")} ({trans("only userpanel message")})
@@ -163,8 +163,7 @@
 			{/if}
 		</TD>
 		<TD WIDTH="1%" align="right">
-			{if ($message.type == $smarty.const.MSG_USERPANEL || $message.type == $smarty.const.MSG_USERPANEL_URGENT || $message.type == $smarty.const.MSG_WWW)
-				&& $item.lastreaddate}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
+			{if $item.lastreaddate}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 		</TD>
 		<TD WIDTH="1%" align="right">
 			{if $item.status == $smarty.const.MSG_DELIVERED
@@ -176,10 +175,8 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD WIDTH="100%" ALIGN="center" COLSPAN="6">
-			<P>&nbsp;</P>
-			<P><B>{trans("No such recipients in database.")}</B></P>
-			<P>&nbsp;</P>
+		<TD COLSPAN="6" class="empty-table">
+			<p>{trans("No such recipients in database.")}</p>
 		</TD>
 	</TR>	
 	{/section}

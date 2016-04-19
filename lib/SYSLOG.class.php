@@ -48,6 +48,8 @@ define('SYSLOG_RES_NETLINK', 45);
 define('SYSLOG_RES_MGMTURL', 46);
 define('SYSLOG_RES_TMPL', 47);
 define('SYSLOG_RES_RADIOSECTOR', 48);
+define('SYSLOG_RES_USERGROUP', 49);
+define('SYSLOG_RES_USERASSIGN', 50);
 
 $SYSLOG_RESOURCES = array(
 	SYSLOG_RES_USER => trans('user<!syslog>'),
@@ -98,6 +100,8 @@ $SYSLOG_RESOURCES = array(
 	SYSLOG_RES_MGMTURL => trans('management url<!syslog>'),
 	SYSLOG_RES_TMPL => trans('template<!syslog>'),
 	SYSLOG_RES_RADIOSECTOR => trans('radio sector<!syslog>'),
+	SYSLOG_RES_USERGROUP => trans('user group<!syslog>'),
+	SYSLOG_RES_USERASSIGN => trans('user assignment<!syslog>'),
 );
 
 $SYSLOG_RESOURCE_KEYS = array(
@@ -149,6 +153,8 @@ $SYSLOG_RESOURCE_KEYS = array(
 	SYSLOG_RES_MGMTURL => 'managementurlid',
 	SYSLOG_RES_TMPL => 'templateid',
 	SYSLOG_RES_RADIOSECTOR => 'radiosectorid',
+	SYSLOG_RES_USERGROUP => 'usergroupid',
+	SYSLOG_RES_USERASSIGN => 'userassignmentid',
 );
 
 define('SYSLOG_OPER_ADD', 1);

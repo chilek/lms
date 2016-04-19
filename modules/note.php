@@ -27,7 +27,15 @@
 $attachment_name = ConfigHelper::getConfig('notes.attachment_name');
 $note_type = ConfigHelper::getConfig('notes.type');
 
-$document = new LMSHtmlDebitNote($SMARTY);
+if ($note_type == 'pdf') {
+	$template = ConfigHelper::getConfig('notes.template_file', 'standard');
+	if ($template == 'standard')
+		$classname = 'LMSTcpdfDebitNote';
+	else
+		$classname = 'LMS' . ucwords($template) . 'DebitNote';
+	$document = new $classname(trans('Debit Notes'));
+} else
+	$document = new LMSHtmlDebitNote($SMARTY);
 
 if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	$SESSION->restore('ilm', $ilm);

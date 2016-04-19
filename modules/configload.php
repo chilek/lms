@@ -26,13 +26,14 @@
 
 $SESSION->restore('conls', $section);
 
-function parse_cfg_val($value)
-{
+function parse_cfg_val($value) {
 	if (is_bool($value))
 		return $value ? 'true' : 'false';
 	else
 		return (string) $value;
 }
+
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'config.php');
 
 $DB->BeginTrans();
 

@@ -116,7 +116,7 @@
 	<TR>
 		<TD colspan="10" class="nobr">
 			<div style="float: left;">
-                        <SPAN class="bold">{trans("Filter:")} </SPAN>
+                        <b>{trans("Filter:")}</b>
                         <INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>
                         <SELECT size="1" name="cat" style="width: 150px">
                                 <OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select category -")}</OPTION>
@@ -140,11 +140,9 @@
                         </SELECT>
                         <INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>&nbsp;
                         </div>
-                        <div class="calendar">
-                        {trans("From:")} <INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-                        {trans("To:")} <INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-                        <A href="javascript: filter();">&raquo;&raquo;&raquo;</A><BR>
-                        </div>
+                        {trans("From:")} <INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar-time" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+                        {trans("To:")} <INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar-time" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+                        <A href="javascript:filter();">&raquo;&raquo;&raquo;</A><BR>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
@@ -159,35 +157,34 @@
 	{cycle values="light,lucid" print=false}
 	{section name=balancelist loop=$balancelist start=$start max=$pagelimit}
 	<TR class="highlight {cycle}"  >
-		<TD>
-                        <SPAN class="nobr">{$balancelist[balancelist].time|date_format:"%Y/%m/%d %H:%M"}</SPAN>
+		<TD class="nobr">
+                        {$balancelist[balancelist].time|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
-		<TD>
-			{if $balancelist[balancelist].userid}<SPAN class="nobr">{$balancelist[balancelist].user|truncate:16:"...":true}</SPAN>{else}-{/if}
+		<TD class="nobr">
+			{if $balancelist[balancelist].userid}{$balancelist[balancelist].user|truncate:16:"...":true}{else}-{/if}
 		</TD>
-		<TD class="text-right">
-			{if $balancelist[balancelist].covenant}<SPAN class="nobr">{($balancelist[balancelist].value*-1)|money_format}</SPAN>{else}-{/if}
+		<TD class="text-right nobr">
+			{if $balancelist[balancelist].covenant}{($balancelist[balancelist].value*-1)|money_format}{else}-{/if}
 		</TD>
-		<TD class="text-right">
-                        {if !$balancelist[balancelist].covenant && $balancelist[balancelist].value > 0}<SPAN class="nobr">{$balancelist[balancelist].value|money_format}</SPAN>{else}-{/if}
+		<TD class="text-right nobr">
+                        {if !$balancelist[balancelist].covenant && $balancelist[balancelist].value > 0}{$balancelist[balancelist].value|money_format}{else}-{/if}
 		</TD>
-		<TD class="text-right">
-			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value < 0}<SPAN class="nobr">{($balancelist[balancelist].value*-1)|money_format}</SPAN>{else}-{/if}
+		<TD class="text-right nobr">
+			{if !$balancelist[balancelist].covenant && $balancelist[balancelist].value < 0}{($balancelist[balancelist].value*-1)|money_format}{else}-{/if}
 		</TD>
 		<TD class="text-center">
 			&raquo;
 		</TD>
-		<TD class="text-right">
-                        {if $balancelist[balancelist].covenant}-{else}<SPAN class="nobr">{$balancelist[balancelist].after|money_format}</SPAN>{/if}
+		<TD class="text-right nobr">
+                        {if $balancelist[balancelist].covenant}-{else}{$balancelist[balancelist].after|money_format}{/if}
 		</TD>
-		<TD class="text-right">
-			{if $balancelist[balancelist].customerid}<SPAN class="nobr"><A HREF="?m=customerinfo&id={$balancelist[balancelist].customerid}">{$balancelist[balancelist].customername|truncate:20:"...":true}</A></SPAN>{else} - {/if}
+		<TD class="text-right nobr">
+			{if $balancelist[balancelist].customerid}<A HREF="?m=customerinfo&id={$balancelist[balancelist].customerid}">{$balancelist[balancelist].customername|truncate:20:"...":true}</A>{else} - {/if}
 		</TD>
 		<TD>
 			{$balancelist[balancelist].comment}
 		</TD>
-		<TD class="text-right">
-                        <SPAN class="nobr">
+		<TD class="text-right nobr">
 			{if $balancelist[balancelist].docid}
 				{if $balancelist[balancelist].doctype==$smarty.const.DOC_INVOICE}
 				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="[ {trans("Invoice")} ]" {tip a=$balancelist[balancelist].docid dynpopup='?m=number&id=$a'}></A>
@@ -200,31 +197,28 @@
 				{/if}
 			{/if}
 			<INPUT TYPE="checkbox" NAME="marks[{$balancelist[balancelist].id}]" VALUE="{$balancelist[balancelist].id}">
-                        </SPAN>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
 		<TD COLSPAN="10" class="empty-table">
-			{trans("No such transactions found in database.")}
+			<p>{trans("No such transactions found in database.")}</p>
 		</TD>
 	</TR>
 	{/section}
     </TBODY>
     <TFOOT>
 	<TR>
-		<TD COLSPAN="8">
-                        <SPAN class="nobr">
+		<TD COLSPAN="8" class="nobr">
 			<A HREF="javascript:DeleteMarked();">{trans("Delete")} <IMG SRC="img/delete.gif" ALT="{trans("Delete")}" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printi();">{trans("Print invoices")} <IMG SRC="img/print.gif" ALT="" HSPACE="2"></A>&nbsp;
 			<A HREF="javascript:printr();">{trans("Print cash receipts")} <IMG SRC="img/printr.gif" ALT="" HSPACE="2"></A>&nbsp;
 			<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', ConfigHelper::getConfig('invoices.default_printpage'))} checked{/if}><label for="original">{trans("original")}</label>
 			<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', ConfigHelper::getConfig('invoices.default_printpage'))} checked{/if}><label for="copy">{trans("copy")}</label>
 			<INPUT type="checkbox" name="duplicate" id="duplicate"{if preg_match('/duplicate/i', ConfigHelper::getConfig('invoices.default_printpage'))} checked{/if}><label for="duplicate">{trans("duplicate")}</label>
-                        </SPAN>
 		</TD>
-		<TD colspan="2" class="text-right">
-                        <SPAN class="nobr"><label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'duplicate', 'copy'])" VALUE="1"></SPAN>
+		<TD colspan="2" class="text-right nobr">
+                        <label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'duplicate', 'copy'])" VALUE="1">
 		</TD>
 	</TR>
 	{if $listdata.total != 0}

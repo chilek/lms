@@ -71,6 +71,11 @@
             {/block}
             {block name=pagecontent}
             <div id="pagecontent">
+			<script type="text/javascript">
+				<!--//
+				var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
+				//-->
+			</script>
                 {block name=quicksearch}
                 <div id="autosuggest"><ul><li></li></ul></div>
                 <form method="post" name="quicksearch" action="?m=quicksearch" id="quicksearch">
@@ -78,7 +83,7 @@
                         <tr>
                             <td style="width: 1%" class="nobr">
                                 {trans("Search:")}
-				{include file="quicksearchcontents.html"}
+								{include file="quicksearchcontents.html"}
                                 {* Enter key submit hack for IE *}
                                 <input type="image" src="img/empty.gif" width="0" height="0" style="border: none;">
                             </td>

@@ -42,7 +42,8 @@ define('CSTATUS_INTERESTED', 1);
 define('CSTATUS_WAITING', 2);
 define('CSTATUS_CONNECTED', 3);
 define('CSTATUS_DISCONNECTED', 4);
-define('CSTATUS_LAST', CSTATUS_DISCONNECTED);
+define('CSTATUS_DEBT_COLLECTION', 5);
+define('CSTATUS_LAST', CSTATUS_DEBT_COLLECTION);
 
 $CSTATUSES = array(
 	CSTATUS_CONNECTED => array(
@@ -73,6 +74,42 @@ $CSTATUSES = array(
 		'img' => 'node_off.gif',
 		'alias' => 'disconnected'
 	),
+	CSTATUS_DEBT_COLLECTION => array(
+		'singularlabel' => trans('debt collection'),
+		'plurallabel' => trans('debt collection'),
+		'summarylabel' => trans('Debt Collection:<!summary>'),
+		'img' => 'money.gif',
+		'alias' => 'debtcollection'
+	),
+);
+
+// Config types
+define('CONFIG_TYPE_AUTO', 0);
+define('CONFIG_TYPE_BOOLEAN', 1);
+define('CONFIG_TYPE_POSITIVE_INTEGER', 2);
+define('CONFIG_TYPE_EMAIL', 3);
+define('CONFIG_TYPE_RELOADTYPE', 4);
+define('CONFIG_TYPE_DOCTYPE', 5);
+define('CONFIG_TYPE_MARGINS', 6);
+define('CONFIG_TYPE_NONE', 7);
+define('CONFIG_TYPE_RICHTEXT', 8);
+define('CONFIG_TYPE_MAIL_BACKEND', 9);
+define('CONFIG_TYPE_MAIL_SECURE', 10);
+define('CONFIG_TYPE_DATE_FORMAT', 11);
+
+$CONFIG_TYPES = array(
+	CONFIG_TYPE_AUTO => trans('- auto -'),
+	CONFIG_TYPE_NONE => trans('none'),
+	CONFIG_TYPE_BOOLEAN => trans('boolean'),
+	CONFIG_TYPE_POSITIVE_INTEGER => trans('integer greater than 0'),
+	CONFIG_TYPE_EMAIL => trans('email'),
+	CONFIG_TYPE_RELOADTYPE => trans('reload type'),
+	CONFIG_TYPE_DOCTYPE => trans('document type'),
+	CONFIG_TYPE_MARGINS => trans('margins'),
+	CONFIG_TYPE_RICHTEXT => trans('visual editor'),
+	CONFIG_TYPE_MAIL_BACKEND => trans('mail backend'),
+	CONFIG_TYPE_MAIL_SECURE => trans('mail security protocol'),
+	CONFIG_TYPE_DATE_FORMAT => trans('date format'),
 );
 
 // Helpdesk ticket status
@@ -263,14 +300,15 @@ define('CONTACT_LANDLINE', 4);
 define('CONTACT_EMAIL', 8);
 define('CONTACT_INVOICES', 16);
 define('CONTACT_NOTIFICATIONS', 32);
-define('CONTACT_DISABLED', 64);
+define('CONTACT_BANKACCOUNT', 64);
+define('CONTACT_DISABLED', 16384);
 
 $CONTACTTYPES = array(
     CONTACT_MOBILE          =>	trans('mobile'),
     CONTACT_FAX             =>	trans('fax'),
-    CONTACT_INVOICES        =>	trans('Invoice'),
+    CONTACT_INVOICES        =>	trans('invoices'),
     CONTACT_DISABLED        =>	trans('disabled'),
-    CONTACT_NOTIFICATIONS   =>	trans('Notification'),
+    CONTACT_NOTIFICATIONS   =>	trans('notifications'),
 );
 
 define('DISCOUNT_PERCENTAGE', 1);
@@ -494,6 +532,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_GUARANTEEPERIODS', $GUARANTEEPERIODS);
 	$SMARTY->assign('_NUM_PERIODS', $NUM_PERIODS);
 	$SMARTY->assign('_RT_STATES', $RT_STATES);
+	$SMARTY->assign('_CONFIG_TYPES', $CONFIG_TYPES);
 	$SMARTY->assign('_MESSENGERS', $MESSENGERS);
 	$SMARTY->assign('_TARIFFTYPES', $TARIFFTYPES);
 	$SMARTY->assign('_PAYTYPES', $PAYTYPES);

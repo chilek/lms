@@ -54,9 +54,8 @@
 		document.addbalance.submit();
 	}
 
-	function new_doc()
-	{
-		location.href = document.getElementById('newdocselect').value;
+	function new_doc_type_changed(url) {
+		document.getElementById('newdocanchor').href = url;
 	}
 
 {if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
@@ -90,14 +89,14 @@
 			{/if}
 		</TD>
 		<TD class="text-right nobr">
-			<A href="javascript: new_doc()">{trans("New document:")}</A>
-			<SELECT name="newdocument" id="newdocselect">
+			<A id="newdocanchor" href="?m=invoicenew&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("New document:")}</A>
+			<SELECT name="newdocument" onchange="javascript:new_doc_type_changed(this.options[this.selectedIndex].value)">
 				<OPTION value="?m=invoicenew&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("invoice")}</OPTION>
 				<OPTION value="?m=receiptadd&amp;type=in&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("cash-in receipt")}</OPTION>
 				<OPTION value="?m=receiptadd&amp;type=out&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("cash-out receipt")}</OPTION>
 				<OPTION value="?m=noteadd&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("debit note")}</OPTION>
 			</SELECT>&nbsp;
-			<A href="javascript: show_list()">{trans("Show All:")}</A>
+			<A href="javascript:show_list()">{trans("Show All:")}</A>
 			<INPUT type="hidden" name="cat" value="customerid">
 			<INPUT type="hidden" name="search" value="{$balancelist.customerid}">
 			<SELECT name="showlist" id="showlistselect">
@@ -140,11 +139,12 @@
 					<TD style="width: 92%;">{$item.comment}</TD>
 					<TD style="width: 1%;" class="text-right nobr">
 						{foreach $item.customlinks as $link}
-						<A href="{$link.url}" rel="external"{if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="[ {$link.label} ]" {$link.tip}>{else}{$link.label}{/if}</A>
+						<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="[ {$link.label} ]" {$link.tip}>{else}{$link.label}{/if}</A>
+						{if isset($link.extra)}{$link.extra}{/if}
 						{/foreach}
 						{if $item.docid}
 							{if $item.doctype == $smarty.const.DOC_INVOICE}
-								<A href="?m=invoice&amp;id={$item.docid}" rel="external"><IMG src="img/print.gif" alt="[ {trans("Invoice")} ]" {tip a=$item.docid dynpopup='?m=number&amp;id=$a'}></A>
+								<A href="?m=invoice&amp;id={$item.docid}" rel="external"><img src="img/print.gif" alt="[ {trans("Invoice")} ]" onmouseover="popup('?m=invoiceinfo&amp;id={$item.docid}',1,0,30,15)" onmouseout="pophide()"></A>
 							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
 								<A href="?m=invoice&amp;id={$item.docid}" rel="external"><IMG src="img/printn.gif" alt="[ {trans("Credit note")} ]" {tip a=$item.docid dynpopup='?m=number&amp;id=$a'}></A>
 							{elseif $item.doctype == $smarty.const.DOC_RECEIPT}
@@ -159,9 +159,7 @@
 				{sectionelse}
 				<TR>
 					<TD class="empty-table" colspan="9">
-						<p>&nbsp;</p>
 						<p>{trans("That customer hasn't got any transactions.")}</p>
-						<p>&nbsp;</p>
 					</TD>
 				</TR>
 				{/section}
@@ -188,9 +186,7 @@
 				<TR>
 					<TD class="ftop">
 						<INPUT type="hidden" name="addbalance[customerid]" value="{$balancelist.customerid}">
-						<div class="calendar-time">
-						<INPUT type="text" name="addbalance[time]" size="15" maxlength="16" {tip text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} {if $time}value="{$time|date_format:"%Y/%m/%d %H:%M"}"{/if}>
-						</div>
+						<INPUT type="text" name="addbalance[time]" size="15" maxlength="16" {tip class="calendar-time" text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} {if $time}value="{$time|date_format:"%Y/%m/%d %H:%M"}"{/if}>
 					</TD>
 					<TD class="ftop nobr">
 						{$layout.logname|truncate:16:"...":true}

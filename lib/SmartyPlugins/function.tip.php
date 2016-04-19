@@ -43,6 +43,7 @@ function smarty_function_tip($params, $template)
 		$text = " onclick=\"popup('$popup',1," . (array_key_exists('sticky', $params) && $params['sticky'] ? 1 : 0) . ",10,10)\" onmouseout=\"pophide();\"";
 		return $text;
 	} else {
+		$class = array_key_exists('class', $params) ? $params['class'] : '';
 		$tmpl = $template->getTemplateVars('error');
 		if (array_key_exists('trigger', $params) && $tmpl[$params['trigger']]) {
 			$error = str_replace("'", '\\\'', $tmpl[$params['trigger']]);
@@ -51,7 +52,7 @@ function smarty_function_tip($params, $template)
 			$error = str_replace("\n", '<BR>', $error);
 
 			$result = ' onmouseover="popup(\'<b><font color=red>'.$error.'</font></b>\')" onmouseout="pophide()" ';
-			$result .= $params['bold'] ? 'CLASS="alert bold" ' : ' CLASS="alert" ';
+			$result .= ' class="' . (empty($class) ? '' : $class) . ($params['bold'] ? ' alert bold" ' : ' alert" ');
 		} elseif ($params['text'] != '') {
 			$text = $params['text'];
 			unset($params['text']);
@@ -63,7 +64,7 @@ function smarty_function_tip($params, $template)
 			$text = str_replace("\n", '<BR>', $text);
 
 			$result .= 'onmouseover="popup(\''.$text.'\')" onmouseout="pophide()" ';
-			$result .= array_key_exists('bold', $params) && $params['bold'] ? 'CLASS="bold" ' : '';
+			$result .= ' class="' . (empty($class) ? '' : $class) . (array_key_exists('bold', $params) && $params['bold'] ? ' bold' : '') . '" ';
 		}
 
 		return $result;

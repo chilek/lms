@@ -674,7 +674,7 @@ sub location_update
 
 	# find location_street and/or location_city IDs
 	if ($street && $city) {
-		$street_get->execute($street, $street, "$city%");
+		$street_get->execute($street, $street, $city);
 		my $srows = $street_get->fetchall_hashref('id');
 		if (scalar(keys %$srows) == 1) {
 			foreach my $srow (keys %$srows) {
@@ -772,7 +772,7 @@ if ($merge)
 	# nodes
 	$dbq = $dbase->prepare("SELECT n.id, n.name, n.location, c.address, c.city
 		FROM vnodes n
-		JOIN customers c ON (c.id = n.ownerid)
+		JOIN customeraddressview c ON (c.id = n.ownerid)
 		WHERE n.location_city IS NULL AND n.location_street IS NULL
 			AND (n.location <> '' OR c.address <> '')");
 	$dbq->execute();

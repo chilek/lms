@@ -33,11 +33,11 @@ if ($_GET['is_sure'] == '1' && (isset($id) || isset($cid))) {
 	if (isset($id)) {
 		$customer = $DB->GetOne('SELECT a.customerid
 			FROM assignments a
-			JOIN customersview c ON (c.id = a.customerid)
+			JOIN customerview c ON (c.id = a.customerid)
 			WHERE a.id = ?', array($id));
 		$ids = array($id);
 	} else {
-		$customer = $DB->GetOne('SELECT id FROM customersview
+		$customer = $DB->GetOne('SELECT id FROM customerview
 			WHERE id = ?', array($cid));
 		$ids = $DB->GetCol('SELECT id FROM assignments
 			WHERE customerid = ?', array($cid));

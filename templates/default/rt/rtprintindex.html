@@ -3,7 +3,8 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<P><FORM method="post" name="ticketslist" id="ticketslist" action="?m=rtprint&type=ticketslist" target="_blank">
+{include file="calendar_js.html"}
+<FORM method="post" name="ticketslist" id="ticketslist" action="?m=rtprint&amp;type=ticketslist" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -20,6 +21,24 @@
 	<TR>
 		<TD width="100%" colspan="2">
 			<TABLE width="100%">
+                                <TR>
+                                        <TD style="width: 1%;">
+						<IMG src="img/calendar.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<span class="bold">{trans("Period:")} </span>
+					</TD>
+					<TD class="nobr" colspan="8">
+                                                <label>
+                                                	{trans("From:")}
+                                                	<input type="text" size="10" name="datefrom" value="" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
+                                                </label>
+                                                <label>
+                                                	{trans("To:")}
+                                                	<input type="text" size="10" name="dateto" value="" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="dateto"}>&nbsp;
+                                                </label>
+                                        </TD>
+				</TR>
 				<TR>
 					<TD width="1%">
 						<IMG src="img/queue.gif" alt="">
@@ -35,24 +54,14 @@
 							{/section}
 						</SELECT>
 					</TD>
-					<TD width="1%">
+					<TD style="width: 1%;">
 						<IMG src="img/customer.gif" alt="">
 					</TD>
-					<TD width="1%" nowrap>
-						<B>{trans("Customer:")}</B>
+					<TD style="width: 1%;" class="bold nobr">
+						{trans("Customer:")}
 					</TD>
-					<TD width="1%" colspan="2" nowrap>
-						{if $customers}
-						<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
-							<OPTION value="0">{trans("- all customers -")}</OPTION>
-							{foreach from=$customers item=c}
-							<OPTION value="{$c.id}">{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
-							{/foreach}
-						</SELECT>
-						{else}
-						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
-						<a href="javascript: void(0);" onclick="return customerchoosewin(document.ticketslist.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-						{/if}
+					<TD style="width: 1%;" class="nobr" colspan="2">
+						{customerlist form="ticketslist" customers=$customers selectname="cust" inputname="customer" firstoption="- all customers -" selecttip="You can select customer to limit results" inputtip="Enter customer ID or leave empty for all customers"}
 					</TD>
 					<TD width="1%" nowrap>
 						<IMG src="img/ticket.gif" alt="">
@@ -108,6 +117,14 @@
 								</TD>
 							</TR>
 						{/foreach}
+							<TR>
+								<TD width="1%" align="center" class="ftop">
+									<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('ticketslist', this, ['extended', 'contacts'])" VALUE="1" CHECKED>
+								</TD>
+								<TD width="1%" class="ftop">
+									<label for="allbox">{trans("Check All")}</label>
+								</TD>
+							</TR>
 						</TABLE>
 					</TD>
 				</TR>
@@ -125,8 +142,7 @@
     </TBODY>
 </TABLE>
 </FORM>
-</P>
-<P><FORM method="post" name="stats" id="stats" action="?m=rtprint&type=stats" target="_blank">
+<FORM method="post" name="stats" id="stats" action="?m=rtprint&amp;type=stats" target="_blank">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -143,6 +159,24 @@
 	<TR>
 		<TD width="100%" colspan="2">
 			<TABLE width="100%">
+                                <TR>
+                                        <TD style="width: 1%;">
+						<IMG src="img/calendar.gif" alt="">
+					</TD>
+					<TD width="1%" nowrap>
+						<span class="bold">{trans("Period:")} </span>
+					</TD>
+					<TD class="nobr" colspan="8">
+                                                <label>
+                                                	{trans("From:")}
+                                                	<input type="text" size="10" name="datefrom" value="" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="datefrom"}>&nbsp;
+                                                </label>
+                                                <label
+                                                	>{trans("To:")}
+                                                	<input type="text" size="10" name="dateto" value="" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar" trigger="dateto"}>&nbsp;
+                                                </label>
+                                        </TD>
+				</TR>
 				<TR>
 					<TD width="1%">
 						<IMG src="img/queue.gif" alt="">
@@ -181,6 +215,14 @@
 								</TD>
 							</TR>
 						{/foreach}
+							<TR>
+								<TD width="1%" align="center" class="ftop">
+									<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('stats', this)" VALUE="1" CHECKED>
+								</TD>
+								<TD width="1%"  class="ftop">
+									<label for="allbox">{trans("Check All")}</label>
+								</TD>
+							</TR>
 						</TABLE>
 					</TD>
 				</TR>
@@ -195,5 +237,4 @@
     </TBODY>
 </TABLE>
 </FORM>
-</P>
 {/block}

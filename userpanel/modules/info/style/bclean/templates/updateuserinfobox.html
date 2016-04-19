@@ -8,34 +8,34 @@
     <table class="table table-bordered table-hover table-responsive">
         {if $rights.info.edit_addr || $rights.info.edit_addr_ack}
         <tr>
-            <td>Nazwisko:</td>
+            <td>{trans("Name/Surname:")}</td>
             <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[lastname]" VALUE="{$userinfo.lastname}" {userpaneltip text="Enter lastname"}></td>
         </tr>
         <tr>
-            <td>Imię:</td>        
+            <td>{trans("First Name:")}</td>
             <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[name]" VALUE="{$userinfo.name}" {userpaneltip text="Enter first name"}></td>
-        </tr>            
+        </tr>
         {else}
         <tr>
-            <td>Nazwisko:</td>
+            <td>{trans("Name:")}</td>
             <td>{$userinfo.customername} ({$userinfo.id|string_format:"%04d"})</td>
         </tr>    
         {/if}
         {if $rights.info.edit_contact || $rights.info.edit_contact_ack}
         {foreach $userinfo.emails as $email}
         <tr>
-            <td>E-mail:</td>
+            <td>{trans("E-mail:")}</td>
             <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[email][{$email.id}]" VALUE="{$email.email}" {userpaneltip text="Enter e-mail address"}></td>
         </tr>    
         {foreachelse}
         <tr>
-            <td>E-mail:</td>
+            <td>{trans("E-mail:")}</td>
             <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[email][0]" VALUE="{$userinfo.email}" {userpaneltip text="Enter e-mail address"}></td>
         </tr>    
         {/foreach}
         {else}
         <tr>
-            <td>E-mail:</td>
+            <td>{trans("E-mail:")}</td>
             <td>
                 {foreach $userinfo.emails as $email}
                 {$email.email}{if !$email@last}<BR />{/if}
@@ -45,15 +45,23 @@
         {/if}
         {if $rights.info.edit_addr || $rights.info.edit_addr_ack}
         <tr>
-            <td>Ulica:</td>
-            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[address]" VALUE="{$userinfo.address}" {userpaneltip text="Enter address"}></td>
+            <td>{trans("Street:")}</td>
+            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[street]" VALUE="{$userinfo.street}" {userpaneltip text="Enter street name"}></td>
         </tr> 
         <tr>
-            <td>Kod pocztowy:</td>
+            <td>{trans("Building:")}</td>
+            <td>
+            	<INPUT class="form-control" TYPE="TEXT" NAME="userdata[building]" VALUE="{$userinfo.building}" {userpaneltip text="Enter building number"}>
+            	{trans("Apartment:")}
+            	<INPUT class="form-control" TYPE="TEXT" NAME="userdata[apartment]" VALUE="{$userinfo.apartment}" {userpaneltip text="Enter apartment number"}>
+            </td>
+        </tr> 
+        <tr>
+            <td>{trans("Zip:")}</td>
             <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" {userpaneltip text="Enter zip code"}></td>
         </tr> 
         <tr>
-            <td>Miejscowość:</td>
+            <td>{trans("City:")}</td>
             <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[city]" VALUE="{$userinfo.city}" {userpaneltip text="Enter city name"}></td>
         </tr> 
         {else}
@@ -65,12 +73,12 @@
         {if $rights.info.edit_contact || $rights.info.edit_contact_ack}
         {foreach from=$userinfo.contacts item=item}
         <tr>
-            <td>Telefon:</td>
+            <td>{trans("Phone:")}</td>
             <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[phone][{$item.id}]" VALUE="{$item.phone}" {userpaneltip text="Enter phone number"}></td>
         </tr>     
         {foreachelse}
         <tr>
-            <td>Telefon:</td>
+            <td>{trans("Phone:")}</td>
             <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[phone][0]" VALUE="{$userinfo.phone}" {userpaneltip text="Enter phone number"}></td>
         </tr>     
         {/foreach}

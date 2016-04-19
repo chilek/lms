@@ -34,7 +34,7 @@ $access_table = array(
 	),
 	'read_only' => array(
 		'label' => trans('read only (excluding helpdesk)'),
-		'allow_regexp' => '^(([a-z]+(list|info|view|search|balance|infoshort))|netdevmap|eventprint|nodelistshort|number|choose[a-z]+)$',
+		'allow_regexp' => '^(([a-z]+(list|info|view|search|balance|infoshort))|netdevmap|eventprint|eventnote|nodelistshort|number|choose[a-z]+)$',
 	),
 	'node_connections' => array(
 		'label' => trans('nodes connection/disconnection'),
@@ -42,7 +42,7 @@ $access_table = array(
 	),
 	'finances_management' => array(
 		'label' => trans('finances management'),
-		'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note|report|paid))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel)$',
+		'allow_regexp' => '^((tariff|customerassignment)(add|info|list|move|edit|del)|(payment)(add|del|edit|info|list)|(balance|customerbalance)(new|add|ok|del|list|)|(cashreg(list|info))|(invoice|invoice(list|new|edit|del|note|report|paid|info))|(note|note(list|add|edit|del|paid))|number|export|print|cashimport|cashimportparser|cashpackagedel)$',
 	),
 	'reload' => array(
 		'label' => trans('configuration reload'),
@@ -54,7 +54,7 @@ $access_table = array(
 	),
 	'node_management' => array(
 		'label' => trans('nodes management'),
-		'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn)|choose(mac|ip|location|gpscoords)|ping)$',
+		'allow_regexp' => '^(node(add|info|infoshort|list|listshort|scan|search|del|edit|print|warn)|choose(mac|ip|location|gpscoords|netdevice)|ping|sessionlist)$',
 	),
 	'traffic_stats' => array(
 		'label' => trans('traffic stats'),
@@ -86,7 +86,7 @@ $access_table = array(
 	),
 	'timetable_management' => array(
 		'label' => trans('timetable management'),
-		'allow_regexp' => '^(event(list|edit|add|del|info|print|search)|choosecustomer)$',
+		'allow_regexp' => '^(event(list|edit|add|del|info|print|search|note)|choosecustomer)$',
 	),
 	'daemon_management' => array(
 		'label' => trans('daemon management and configuration'),

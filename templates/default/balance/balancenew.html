@@ -25,7 +25,7 @@
 //-->
 </SCRIPT>
 <H1>{$layout.pagetitle}</H1>
-<P><FORM NAME="addbalance" METHOD="POST" ACTION="?m=balanceadd">
+<FORM NAME="addbalance" METHOD="POST" ACTION="?m=balanceadd">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" cellpadding="3">
 	<TR>
@@ -47,7 +47,7 @@
 							<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
 							{/foreach}
 						</SELECT><BR>
-						{trans("Selected:")} <INPUT TYPE="edit" NAME="selectededit" VALUE="0" SIZE="5" class="light" style="border: 0" readonly></INPUT>
+						{trans("Selected:")} <INPUT TYPE="text" NAME="selectededit" VALUE="0" SIZE="5" class="light" style="border: 0" readonly>
 					</TD>
 				</TR>
                             </TBODY>
@@ -109,9 +109,7 @@
 						<B>{trans("Date:")}</B>
 					</TD>
 					<TD WIDTH="98%">
-						<div class="calendar-time">
-						<INPUT TYPE="TEXT" NAME="addbalance[time]" VALUE="{if $time}{$time|date_format:"%Y/%m/%d %H:%M"}{/if}" SIZE="15" MAXSIZE="15" {tip text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
-						</div>
+						<INPUT TYPE="TEXT" NAME="addbalance[time]" VALUE="{if $time}{$time|date_format:"%Y/%m/%d %H:%M"}{/if}" SIZE="15" maxlength="15" {tip class="calendar-time" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
 					</TD>
 				</TR>
 				{if $sourcelist}
@@ -252,5 +250,4 @@
 	</TR>
 </TABLE>
 </FORM>
-</P>
 {/block}

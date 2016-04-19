@@ -212,7 +212,7 @@ function module_main()
 			$body = $ticket['body']."\n\n".ConfigHelper::getConfig('userpanel.lms_url').'/?m=rtticketview&id='.$id;
 
 			$info = $DB->GetRow('SELECT id AS customerid, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-				address, zip, city FROM customers WHERE id = ?', array($SESSION->id));
+				address, zip, city FROM customeraddressview WHERE id = ?', array($SESSION->id));
 			$info['contacts'] = $DB->GetAll('SELECT contact, name FROM customercontacts
 					WHERE customerid = ?', array($SESSION->id));
 
@@ -390,7 +390,7 @@ function module_main()
 
 		if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
 			$info = $DB->GetRow('SELECT c.id AS customerid, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,
-				cc.contact AS email, address, zip, city FROM customers c WHERE c.id = ?', array($SESSION->id));
+				cc.contact AS email, address, zip, city FROM customeraddressview c WHERE c.id = ?', array($SESSION->id));
 			$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
 					WHERE customerid = ?', array($SESSION->id));
 

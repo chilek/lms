@@ -239,9 +239,8 @@
 		<TD style="width: 1%;" class="bold nobr">
 			<IMG src="img/money.gif" alt=""> {trans("Tariffs:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD style="width: 99%;" class="multiselect">
 			<SELECT SIZE="1" name="search[tariffs][]" multiple id="customertariffs">
-				<OPTION VALUE="" SELECTED>{trans("- all -")}</OPTION>
 				{foreach from=$tariffs item=item}
 				 	<OPTION VALUE="{$item.id}">{$item.name}</OPTION>
 				{/foreach}
@@ -266,10 +265,8 @@
 			<IMG src="img/empty.gif" width="16" alt=""> {trans("Created:")}
 		</TD>
 		<TD style="width: 99%;">
-			<div class="calendar">
-			{trans("from")} <INPUT type="text" value="" name="search[createdfrom]" size="10">
-			{trans("to")} <INPUT type="text" value="" name="search[createdto]" size="10">
-			</div>
+			{trans("from")} <INPUT type="text" class="calendar" value="" name="search[createdfrom]" size="10">
+			{trans("to")} <INPUT type="text" class="calendar" value="" name="search[createdto]" size="10">
 		</TD>
 	</TR>
 	<TR>
@@ -277,10 +274,8 @@
 			<IMG src="img/empty.gif" width="16" alt=""> {trans("Deleted:")}
 		</TD>
 		<TD style="width: 99%;">
-			<div class="calendar">
-			{trans("from")} <INPUT type="text" value="" name="search[deletedfrom]" size="10">
-			{trans("to")} <INPUT type="text" value="" name="search[deletedto]" size="10">
-			</div>
+			{trans("from")} <INPUT type="text" class="calendar" value="" name="search[deletedfrom]" size="10">
+			{trans("to")} <INPUT type="text" class="calendar" value="" name="search[deletedto]" size="10">
 		</TD>
 	</TR>
 	<TR>
@@ -288,8 +283,8 @@
 			<IMG src="img/empty.gif" width="16" alt=""> {trans("Qualification operator:")}
 		</TD>
 		<TD style="width: 99%;">
-			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><label for="operator0">{trans("AND")}</label>
-			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><label for="operator1">{trans("OR")}</label>
+			<INPUT class="radio light" type="radio" id="operator0" value="AND" name="k"{if $k!='OR'} CHECKED{/if}><label for="operator0">{trans("and")}</label>
+			<INPUT class="radio light" type="radio" id="operator1" value="OR" name="k"{if $k=='OR'} CHECKED{/if}><label for="operator1">{trans("or")}</label>
 		</TD>
 	</TR>
 	<TR>
@@ -382,7 +377,7 @@
 <SCRIPT type="text/javascript">
 <!--
 document.forms['customersearch'].elements['search[customername]'].focus();
-multiselect('customersearch', 'customertariffs', '{t}- all -{/t}', null);
+multiselect('customersearch', 'customertariffs', '{trans("- all -")}', null);
 //-->
 </SCRIPT>
 {/block}

@@ -70,9 +70,11 @@
 		</TD>
 		<TD style="width: 99%;" colspan="3">
 			{if $unlockedit}
-			<INPUT type="text" name="networkdata[interface]" value="{$network.interface}" {tip text="Enter interface where network is connected to (optional)" trigger="interface"}>
+			<INPUT TYPE="text" NAME="networkdata[interface]" VALUE="{$network.interface}" {tip text="Enter interface where network is connected to (optional)" trigger="interface"}>
+			<span class="bold">{trans("vlan:")}</span>
+			<INPUT TYPE="text" NAME="networkdata[vlanid]" VALUE="{$network.vlanid}" SIZE="5" MAXLENGTH="4" {tip text="Enter vlan ID (optional)" trigger="vlanid"}>
 			{else}
-			{$network.interface}
+			{if !empty($network.interface)}{$network.interface}{/if}{if !empty($network.vlanid)}, {trans("vlan:")} {$network.vlanid}{/if}
 			{/if}
 		</TD>
 	</TR>
@@ -129,17 +131,7 @@
 		</td>
 		<TD style="width: 98%;" colspan="3">
 			{if $unlockedit}
-				{if $customers}
-				<SELECT SIZE="1" NAME="networkdata[customerid]" {tip text="Assign network to customer"} style="max-width:160px;" onChange="document.netedit.elements['networkdata[ownerid]'].value=this.value">
-					<OPTION VALUE="">{trans("... select customer ...")}</OPTION>
-					{foreach $customers as $c}
-					<OPTION VALUE="{$c.id}"{if $network.ownerid == $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
-					{/foreach}
-				</SELECT>
-				{trans("or Customer ID:")}
-				{/if}
-				<input TYPE="TEXT" NAME="networkdata[ownerid]" value="{$network.ownerid}" SIZE="5"{if $customers} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID (optional)" trigger="ownerid"}>
-				<A href="javascript: void(0);" onClick="return customerchoosewin(document.netedit.elements['networkdata[ownerid]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+				{customerlist form="netedit" customers=$customers selected=$network.ownerid selectname="networkdata[customerid]" inputname="networkdata[ownerid]" selecttip="Assign network to customer" inputtip="Enter customer ID (optional)"}
 			{else}
 				<a href="?m=customerinfo&id={$network.ownerid}">{$network.customername}</a>
 			{/if}
@@ -282,14 +274,5 @@
 </TABLE>
 {if $unlockedit}
 </form>
-<script type="text/javascript">
-<!--
-	function reset_customer() {
-		var val;
-		if (val = document.forms['netedit'].elements['networkdata[ownerid]'].value)
-			document.forms['netedit'].elements['networkdata[customerid]'].value = val;
-	}
-//-->
-</script>
 {/if}
 {/block}

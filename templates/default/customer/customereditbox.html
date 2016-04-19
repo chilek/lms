@@ -27,15 +27,15 @@
 		newcell.innerHTML = '<HR><INPUT TYPE="text" size="16" value="" name="customerdata[contacts][' + nr + '][phone]"'
 				+ ' onmouseover="popup(\'{trans("Enter contact phone")}\')" onmouseout="pophide()">'
 			+ '<label><INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_MOBILE}"'
-				+ ' name="customerdata[contacts][' + nr + '][type][]"> {trans("mobile")}</label>'
+				+ ' name="customerdata[contacts][' + nr + '][type][]"> {$_CONTACTTYPES[$smarty.const.CONTACT_MOBILE]}</label>'
 			+ '<label><INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_FAX}"'
-				+ ' name="customerdata[contacts][' + nr + '][type][]"> {trans("fax")}</label>'
+				+ ' name="customerdata[contacts][' + nr + '][type][]"> {$_CONTACTTYPES[$smarty.const.CONTACT_FAX]}</label>'
 			+ '<label onmouseover="popup(\'{trans("Check if send notification")}\')" onmouseout="pophide()">'
 				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_NOTIFICATIONS}"'
-				+ ' name="customerdata[contacts][' + nr + '][type][]"> {trans("Notification")}</label>'
+				+ ' name="customerdata[contacts][' + nr + '][type][]"> {$_CONTACTTYPES[$smarty.const.CONTACT_NOTIFICATIONS]}</label>'
 			+ '<label onmouseover="popup(\'{trans("Not visible by the customer in electronic Customer Service Representative")}\')" onmouseout="pophide()">'
 				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_DISABLED}"'
-				+ ' name="customerdata[contacts][' + nr + '][type][]"> {trans("disabled")}</label>'
+				+ ' name="customerdata[contacts][' + nr + '][type][]"> {$_CONTACTTYPES[$smarty.const.CONTACT_DISABLED]}</label>'
 			+ '<BR><INPUT TYPE="text" size="68" value="" name="customerdata[contacts][' + nr + '][name]"'
 				+ ' onmouseover="popup(\'{trans("Enter contact name/description (optional)")}\')" onmouseout="pophide()">';
 		contactscountelem.value = parseInt(nr) + 1;
@@ -54,16 +54,38 @@
 				+ ' onmouseover="popup(\'{trans("Enter e-mail address (optional)")}\')" onmouseout="pophide()">'
 			+ '<label onmouseover="popup(\'{trans("Check if sent electronic invoices on this email")}\')" onmouseout="pophide()">'
 				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_INVOICES}" name="customerdata[emails][' + nr + '][type][]">'
-				+ ' {trans("Invoice")}</label>'
+				+ ' {$_CONTACTTYPES[$smarty.const.CONTACT_INVOICES]}</label>'
 			+ '<label onmouseover="popup(\'{trans("Check if send notification")}\')" onmouseout="pophide()">'
 				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_NOTIFICATIONS}" name="customerdata[emails][' + nr + '][type][]">'
-				+ ' {trans("Notification")}</label>'
+				+ ' {$_CONTACTTYPES[$smarty.const.CONTACT_NOTIFICATIONS]}</label>'
 			+ '<label onmouseover="popup(\'{trans("Not visible by the customer in electronic Customer Service Representative")}\')" onmouseout="pophide()">'
 				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customerdata[emails][' + nr + '][type][]">'
-				+ ' {trans("disabled")}</label>'
+				+ ' {$_CONTACTTYPES[$smarty.const.CONTACT_DISABLED]}</label>'
 			+ '<BR><INPUT TYPE="text" size="68" value="" name="customerdata[emails][' + nr + '][name]"'
 				+ ' onmouseover="popup(\'{trans("Enter contact name/description (optional)")}\')" onmouseout="pophide()">';
 		emailscountelem.value = parseInt(nr) + 1;
+	}
+
+	function newaccount() {
+		var accountscountelem = document.getElementById('accountscount');
+		var nr = accountscountelem.value;
+		var lastaccountelem = document.getElementById('account' + (nr - 1));
+		var newrow = lastaccountelem.parentNode.insertRow(lastaccountelem.rowIndex + 1);
+		newrow.className = 'light';
+		newrow.id = 'account' + nr;
+		var newcell = newrow.insertCell(0);
+		newcell.style.whiteSpace = 'nowrap';
+		newcell.innerHTML = '<HR><INPUT TYPE="text" size="50" value="" name="customerdata[accounts][' + nr + '][account]"'
+				+ ' onmouseover="popup(\'{trans("Enter bank account (optional)")}\')" onmouseout="pophide()">'
+			+ '<label onmouseover="popup(\'{trans("Check if bank account should be visible on invoice")}\')" onmouseout="pophide()">'
+				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_INVOICES}" name="customerdata[accounts][' + nr + '][type][]">'
+				+ ' {$_CONTACTTYPES[$smarty.const.CONTACT_INVOICES]}</label>'
+			+ '<label onmouseover="popup(\'{trans("Check if bank account should be disabled")}\')" onmouseout="pophide()">'
+				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customerdata[accounts][' + nr + '][type][]">'
+				+ ' {$_CONTACTTYPES[$smarty.const.CONTACT_DISABLED]}</label>'
+			+ '<BR><INPUT TYPE="text" size="68" value="" name="customerdata[accounts][' + nr + '][name]"'
+				+ ' onmouseover="popup(\'{trans("Enter contact name/description (optional)")}\')" onmouseout="pophide()">';
+		accountscountelem.value = parseInt(nr) + 1;
 	}
 //-->
 </SCRIPT>
@@ -78,15 +100,33 @@
 		<TD style="width: 100%;" class="nobr">
 			<TABLE width="100%" cellpadding="1">
 				<TR>
-					<TD style="width: 1%;" class="bold">{trans("Name/Surname:")}</TD>
-					<TD style="width: 99%;">
-						<INPUT type="text" size="50" name="customerdata[lastname]" value="{$customerinfo.lastname|escape}" {tip text="Enter first/lastname of customer" trigger="lastname" bold=1}>
+					<TD style="width: 1%;">
+						<TABLE width="100%" cellpadding="1">
+							<TR>
+								<TD style="width: 1%;" class="bold">{trans("Name/Surname:")}</TD>
+								<TD style="width: 99%;">
+									<INPUT type="text" size="50" name="customerdata[lastname]" value="{$customerinfo.lastname|escape}" {tip text="Enter first/lastname of customer" trigger="lastname" bold=1}>
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%;" class="bold">{trans("First name:")}</TD>
+								<TD style="width: 99%;">
+									<INPUT type="text" size="50" name="customerdata[name]" value="{$customerinfo.name|escape}" {tip text="Enter first name of customer (optional)" trigger="name" bold=1}>
+								</TD>
+							</TR>
+						</TABLE>
 					</TD>
-				</TR>
-				<TR>
-					<TD style="width: 1%;" class="bold">{trans("First name:")}</TD>
 					<TD style="width: 99%;">
-						<INPUT type="text" size="50" name="customerdata[name]" value="{$customerinfo.name|escape}" {tip text="Enter first name of customer (optional)" trigger="name" bold=1}>
+						<TABLE width="100%" cellpadding="1">
+							<TR>
+								<TD style="width: 1%;" class="bold nobr">
+									{trans("External system identifier:")}
+								</TD>
+								<TD style="width: 99%;">
+									<input type="text" size="20" maxlength="20" name="customerdata[extid]" value="{$customerinfo.extid}" {tip text="Enter customer identifier in external system (optional)" trigger="extid"}>
+								</TD>
+							</TR>
+						</TABLE>
 					</TD>
 				</TR>
 			</TABLE>
@@ -139,14 +179,25 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="valign-top">
-			<IMG src="img/home.gif" alt="">
-		</TD>
+		<TD style="width: 1%;" class="valign-top"></TD>
 		<TD style="width: 99%;">
+			<table width="100%" cellpadding="1">
+				<tr>
+					<td style="width: 1%;">
+						<fieldset style="width: 1%;" class="nobr">
+							<legend class="bold"><IMG src="img/home.gif" alt=""> {trans("Address")}</legend>
 			<TABLE width="100%" cellpadding="1">
 				<TR>
-					<TD style="width: 1%;" class="nobr">{trans("Address:")}</TD>
-					<TD style="width: 99%;"><INPUT type="text" name="customerdata[address]" id="address" value="{$customerinfo.address}" size="30" {tip text="Enter address" trigger="address"}></TD>
+					<TD style="width: 1%;" class="nobr">{trans("Street:")}</TD>
+					<TD style="width: 99%;"><INPUT type="text" name="customerdata[street]" id="street" value="{$customerinfo.street}" size="30" {tip text="Enter street name" trigger="street"}></TD>
+				</TR>
+				<TR>
+					<TD style="width: 1%;" class="nobr">{trans("Building:")}</TD>
+					<TD style="width: 99%;">
+						<INPUT type="text" name="customerdata[building]" id="building" value="{$customerinfo.building}" size="8" {tip text="Enter building number" trigger="building"}>
+						{trans("Apartment:")}
+						<INPUT type="text" name="customerdata[apartment]" id="flat" value="{$customerinfo.apartment}" size="8" {tip text="Enter apartment number" trigger="apartment"}>
+					</TD>
 				</TR>
 				<TR>
 					<TD style="width: 1%;" class="nobr">{trans("City:")}</TD>
@@ -188,36 +239,43 @@
 				</TR>
 				{/if}
 			</TABLE>
-		<script type="text/javascript">
-		<!--
-			new AutoSuggest(document.getElementById('customeredit'),document.getElementById('address'),'?m=customeradd&ajax=1&mode=address&what=',0);
-			new AutoSuggest(document.getElementById('customeredit'),document.getElementById('zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
-			new AutoSuggest(document.getElementById('customeredit'),document.getElementById('city'),'?m=customeradd&ajax=1&mode=city&what=',0);
-		//-->
-		</script>
-	</TR>
-	<TR>
-		<TD style="width: 1%;" class="valign-top">
-			<IMG src="img/post.gif" alt="">
-		</TD>
-		<TD style="width: 99%;">
+			<script type="text/javascript">
+			<!--
+				new AutoSuggest(document.getElementById('customeredit'),document.getElementById('street'),'?m=customeradd&ajax=1&mode=street&what=',0);
+				new AutoSuggest(document.getElementById('customeredit'),document.getElementById('zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
+				new AutoSuggest(document.getElementById('customeredit'),document.getElementById('city'),'?m=customeradd&ajax=1&mode=city&what=',0);
+			//-->
+			</script>
+						</fieldset>
+					</td>
+					<td style="width: 99%;">
+						<fieldset style="width: 1%;" class="nobr">
+							<legend class="bold"><IMG src="img/post.gif" alt=""> {trans("Postal address")}</legend>
 			<TABLE width="100%" cellpadding="1">
 				<TR>
 					<TD style="width: 1%;" class="nobr">{trans("Name:")}</TD>
-					<TD style="width: 99%;"><INPUT type="text" name="customerdata[post_name]" id="post_name" value="{$customerinfo.post_name}" size="30" {tip text="Enter service name (optional)" trigger="post_name"}></TD>
+					<TD style="width: 99%;"><INPUT type="text" name="customerdata[post_name]" id="post_name" value="{$customerinfo.post_name}" size="30" {tip text="Enter name (optional)" trigger="post_name"}></TD>
 				</TR>
 				<TR>
-					<TD style="width: 1%;" class="nobr">{trans("Address:")}</TD>
-					<TD style="width: 99%;"><INPUT type="text" name="customerdata[post_address]" id="post_address" value="{$customerinfo.post_address}" size="30" {tip text="Enter service address (optional)" trigger="post_address"}></TD>
+					<TD style="width: 1%;" class="nobr">{trans("Street:")}</TD>
+					<TD style="width: 99%;"><INPUT type="text" name="customerdata[post_street]" id="post_street" value="{$customerinfo.post_street}" size="30" {tip text="Enter street name (optional)" trigger="post_street"}></TD>
+				</TR>
+				<TR>
+					<TD style="width: 1%;" class="nobr">{trans("Building:")}</TD>
+					<TD style="width: 99%;">
+						<INPUT type="text" name="customerdata[post_building]" id="post_building" value="{$customerinfo.post_building}" size="8" {tip text="Enter building number (optional)" trigger="post_building"}>
+						{trans("Apartment:")}
+						<INPUT type="text" name="customerdata[post_apartment]" id="post_apartment" value="{$customerinfo.post_apartment}" size="8" {tip text="Enter apartment number (optional)" trigger="post_apartment"}>
+					</TD>
 				</TR>
 				<TR>
 					<TD style="width: 1%;" class="nobr">{trans("City:")}</TD>
-					<TD style="width: 99%;"><INPUT type="text" name="customerdata[post_city]" id="post_city" value="{$customerinfo.post_city}" size="30" {tip text="Enter city of service address (optional)" trigger="post_city"}></TD>
+					<TD style="width: 99%;"><INPUT type="text" name="customerdata[post_city]" id="post_city" value="{$customerinfo.post_city}" size="30" {tip text="Enter city (optional)" trigger="post_city"}></TD>
 				</TR>
 				<TR>
 					<TD style="width: 1%;" class="nobr">{trans("Zip:")}</TD>
 					<TD style="width: 99%;">
-						<INPUT type="text" name="customerdata[post_zip]" id="post_zip" value="{$customerinfo.post_zip}" size="10" {tip text="Enter zip code of service address (optional)" trigger="post_zip"}>
+						<INPUT type="text" name="customerdata[post_zip]" id="post_zip" value="{$customerinfo.post_zip}" size="10" {tip text="Enter zip code (optional)" trigger="post_zip"}>
 						{if $customerinfo.post_zipwarning}
 						<INPUT type="HIDDEN" name="customerdata[post_zipwarning]" value="1">
 						{/if}
@@ -250,13 +308,18 @@
 				</TR>
 				{/if}
 			</TABLE>
-		<script type="text/javascript">
-		<!--
-			new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_address'),'?m=customeradd&ajax=1&mode=address&what=',0);
-			new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
-			new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_city'),'?m=customeradd&ajax=1&mode=city&what=',0);
-		//-->
-		</script>
+			<script type="text/javascript">
+			<!--
+				new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_street'),'?m=customeradd&ajax=1&mode=street&what=',0);
+				new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
+				new AutoSuggest(document.getElementById('customeredit'),document.getElementById('post_city'),'?m=customeradd&ajax=1&mode=city&what=',0);
+			//-->
+			</script>
+						</fieldset>
+					</td>
+				<tr>
+			</table>
+		</td>
 	</TR>
 	<TR>
 		<TD style="width: 1%;"></TD>
@@ -264,25 +327,26 @@
 			<fieldset style="width: 1%;" class="nobr">
 				<legend class="bold"><IMG src="img/phone.gif" alt=""> {trans("Contact phones")}</legend>
 				<table>
-					{foreach from=$customerinfo.contacts item=item key=key}
+					{foreach $customerinfo.contacts as $key => $item}
 					<TR id="contact{$key}">
 						<TD>
+							{if !$item@first}<HR>{/if}
 							<INPUT type="text" size="16" value="{$item.phone}" name="customerdata[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
 							<label>
 								<INPUT type="checkbox" value="{$smarty.const.CONTACT_MOBILE}" name="customerdata[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_MOBILE)} checked{/if}>
-								{trans("mobile")}
+								{$_CONTACTTYPES[$smarty.const.CONTACT_MOBILE]}
 							</label>
 							<label>
 								<INPUT type="checkbox" value="{$smarty.const.CONTACT_FAX}" name="customerdata[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_FAX)} checked{/if}>
-								{trans("fax")}
+								{$_CONTACTTYPES[$smarty.const.CONTACT_FAX]}
 							</label>
 							<label {tip text="Check if send notification"}>
 								<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_NOTIFICATIONS}" name="customerdata[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_NOTIFICATIONS)} checked{/if}>
-								{trans("Notification")}
+								{$_CONTACTTYPES[$smarty.const.CONTACT_NOTIFICATIONS]}
 							</label>
 							<label {tip text="Not visible by the customer in electronic Customer Service Representative" trigger="edisabled"}>
 								<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customerdata[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_DISABLED)} checked{/if}>
-								{trans("disabled")}
+								{$_CONTACTTYPES[$smarty.const.CONTACT_DISABLED]}
 							</label>
 							<BR>
 							<INPUT type="text" size="68" value="{$item.name}" name="customerdata[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
@@ -291,8 +355,8 @@
 					{/foreach}
 					<TR>
 						<TD>
-							<INPUT type="hidden" id="contactscount" value="{$item@total}">
-							<A href="javascript: newcontact()">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
+							<INPUT type="hidden" id="contactscount" value="{count($customerinfo.contacts)}">
+							<A href="javascript:newcontact()">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
 						</TD>
 					</TR>
 				</table>
@@ -305,21 +369,22 @@
 			<fieldset style="width: 1%;" class="nobr">
 				<legend class="bold"><IMG src="img/mail.gif" alt=""> {trans("Email addresses")}</legend>
 				<table>
-					{foreach from=$customerinfo.emails item=item key=key}
+					{foreach $customerinfo.emails as $key => $item}
 					<TR id="email{$key}">
 						<TD>
+							{if !$item@first}<HR>{/if}
 							<INPUT type="text" size="23" value="{$item.email}" name="customerdata[emails][{$key}][email]" {tip text="Enter e-mail address (optional)" trigger="email`$key`"}>
 							<label {tip text="Check if sent electronic invoices on this email"}>
 								<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_INVOICES}" name="customerdata[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_INVOICES)} checked{/if}>
-								{trans("Invoice")}
+								{$_CONTACTTYPES[$smarty.const.CONTACT_INVOICES]}
 							</label>
 							<label {tip text="Check if send notification" trigger="chknotification"}>
 								<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_NOTIFICATIONS}" name="customerdata[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_NOTIFICATIONS)} checked{/if}>
-								{trans("Notification")}
+								{$_CONTACTTYPES[$smarty.const.CONTACT_NOTIFICATIONS]}
 							</label>
 							<label {tip text="Not visible by the customer in electronic Customer Service Representative" trigger="edisabled"}>
 								<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customerdata[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_DISABLED)} checked{/if}>
-								{trans("disabled")}
+								{$_CONTACTTYPES[$smarty.const.CONTACT_DISABLED]}
 							</label>
 							<BR>
 							<INPUT type="text" size="68" value="{$item.name}" name="customerdata[emails][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
@@ -328,8 +393,42 @@
 					{/foreach}
 					<TR>
 						<TD>
-							<INPUT type="hidden" id="emailscount" value="{$item@total}">
-							<A href="javascript: newemail()">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
+							<INPUT type="hidden" id="emailscount" value="{count($customerinfo.emails)}">
+							<A href="javascript:newemail()">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
+						</TD>
+					</TR>
+				</table>
+			</fieldset>
+		</TD>
+	</TR>
+	<TR>
+		<TD style="width: 1%;"></TD>
+		<TD style="width: 99%;" class="nobr">
+			<fieldset style="width: 1%;" class="nobr">
+				<legend class="bold"><IMG src="img/card.gif" alt=""> {trans("Alternative bank accounts")}</legend>
+				<table>
+					{foreach $customerinfo.accounts as $key => $item}
+					<TR id="account{$key}">
+						<TD>
+							{if !$item@first}<HR>{/if}
+							<INPUT type="text" size="50" value="{$item.account}" name="customerdata[accounts][{$key}][account]" {tip text="Enter bank account (optional)" trigger="account`$key`"}>
+							<label {tip text="Check if bank account should be visible on invoice"}>
+								<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_INVOICES}" name="customerdata[accounts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_INVOICES)} checked{/if}>
+								{$_CONTACTTYPES[$smarty.const.CONTACT_INVOICES]}
+							</label>
+							<label {tip text="Check if bank account should be disabled" trigger="edisabled"}>
+								<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customerdata[accounts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_DISABLED)} checked{/if}>
+								{$_CONTACTTYPES[$smarty.const.CONTACT_DISABLED]}
+							</label>
+							<BR>
+							<INPUT type="text" size="68" value="{$item.name}" name="customerdata[accounts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
+						</TD>
+					</TR>
+					{/foreach}
+					<TR>
+						<TD>
+							<INPUT type="hidden" id="accountscount" value="{count($customerinfo.accounts)}">
+							<A href="javascript:newaccount()">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
 						</TD>
 					</TR>
 				</table>
@@ -369,7 +468,7 @@
 		</TD>
 		<TD style="width: 98%;">
 			<INPUT type="text" name="customerdata[pin]" value="{if $customerinfo.pin}{$customerinfo.pin}{/if}" size="6" {tip text="Enter 4 to 6 digits PIN number (optional)" trigger="pin"}>&nbsp;
-			<A href="javascript: randomize()" {tip text="Generate PIN"}>&raquo;&raquo;&raquo;</A>
+			<A href="javascript:randomize()" {tip text="Generate PIN"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR>
@@ -457,9 +556,7 @@
 						{trans("Cutoff suspending:")}
 					</TD>
 					<TD>
-						<div class="calendar">
-						<INPUT type="text" name="customerdata[cutoffstop]" id="cutoffstop" {if $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop}"{/if} size="10" {tip text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
-						</div>
+						<INPUT type="text" name="customerdata[cutoffstop]" id="cutoffstop" {if $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop}"{/if} size="10" {tip class="calendar" text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
 					</TD>
 				</TR>
 			</TABLE>

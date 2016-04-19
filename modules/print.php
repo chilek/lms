@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -374,7 +374,7 @@ switch($type)
 		$importlist = $DB->GetAll('SELECT c.time, c.value, c.customerid, '
 			.$DB->Concat('upper(v.lastname)',"' '",'v.name').' AS customername 
 			FROM cash c
-			JOIN customersview v ON (v.id = c.customerid)
+			JOIN customerview v ON (v.id = c.customerid)
 			WHERE c.time >= ? AND c.time <= ?'
 			.($source ? ' AND c.sourceid = '.intval($source) : '')
 			.' AND c.importid IS NOT NULL
@@ -555,7 +555,7 @@ switch($type)
 						WHEN '.QUARTERLY.' THEN 1.0/3
 						ELSE 1 END)
 					) AS value
-					FROM assignments a, tariffs t, customersview c
+					FROM assignments a, tariffs t, customerview c
 					WHERE a.customerid = c.id AND status = 3 
 					AND a.tariffid = t.id AND t.taxid=?
 					AND c.deleted=0 
@@ -574,7 +574,7 @@ switch($type)
 					.$DB->Concat('city',"' '",'address').' AS address, ten,
 					SUM(((((100 - a.pdiscount) * l.value) / 100) - a.vdiscount) *
 						((CASE a.suspended WHEN 0 THEN 100.0 ELSE '.$suspension_percentage.' END) / 100)) AS value
-					FROM assignments a, liabilities l, customersview c
+					FROM assignments a, liabilities l, customerview c
 					WHERE a.customerid = c.id AND status = 3 
 					AND a.liabilityid = l.id AND l.taxid=?
 					AND c.deleted=0
@@ -862,10 +862,8 @@ switch($type)
 
 		$layout['pagetitle'] = trans('Reports');
 
-		if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
-		{
+		if (!ConfigHelper::checkConfig('phpui.big_networks'))
 			$SMARTY->assign('customers', $LMS->GetCustomerNames());
-		}
 		$SMARTY->assign('users', $LMS->GetUserNames());
 		$SMARTY->assign('networks', $LMS->GetNetworks());
 		$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());

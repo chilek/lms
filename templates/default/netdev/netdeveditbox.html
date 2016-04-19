@@ -1,6 +1,7 @@
 <!-- $Id$ -->
 {include file="calendar_js.html"}
 <script type="text/javascript" src="img/netnodehelper.js"></script>
+<script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>
 <TABLE class="lmsbox">
 	<FORM NAME="netdevedit" METHOD="POST" ACTION="?m=netdevedit&id={$netdevinfo.id}">
 	<INPUT type="submit" class="hiddenbtn">
@@ -95,7 +96,7 @@
 		</TD>
 		<TD WIDTH="98%" NOWRAP>
 		    <INPUT TYPE="TEXT" SIZE="30" VALUE="{$netdevinfo.location}" id="location" NAME="netdev[location]"  {tip text="Enter location (optional)" trigger="location"}>
-			<A href="javascript: void(0);" onclick="if (check_teryt()) return locationchoosewin('netdev', 'netdevedit', document.forms['netdevedit'].elements['netdev[location_city]'].value,  document.forms['netdevedit'].elements['netdev[location_street]'].value)" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</A>
+			<A href="javascript: void(0);" onclick="if (check_teryt()) return locationchoosewin('netdev', 'netdevedit', document.forms['netdevedit'].elements['netdev[location_city]'].value,  document.forms['netdevedit'].elements['netdev[location_street]'].value, {ConfigHelper::getConfig('phpui.default_teryt_city')})" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</A>
 			<BR>
 		    <INPUT type="hidden" name="netdev[location_city]" value="{$netdevinfo.location_city}">
 		    <INPUT type="hidden" name="netdev[location_street]" value="{$netdevinfo.location_street}">
@@ -104,6 +105,14 @@
 			<INPUT TYPE="checkbox" name="netdev[teryt]" id="teryt" onchange="check_teryt('location')"{if $netdevinfo.teryt} checked{/if}><label for="teryt">{trans("TERRIT-DB")}</label>
 		</TD>
 	</TR>
+        <tr>
+            <td width="1%">
+                <img src="img/network.gif" alt="">
+            </td>
+            <td colspan="2" width="99%">
+                <a href="javascript:set_lat_lon()" accesskey="s">{trans("Determine GPS coordinates automatically")}</a>
+            </td>
+        </tr>
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="">
@@ -220,9 +229,7 @@
 			<B>{trans("Purchase date:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<div class="calendar">
-			<INPUT TYPE="TEXT" NAME="netdev[purchasedate]" VALUE="{if $netdevinfo.purchasedate}{$netdevinfo.purchasedate}{/if}" SIZE="10" MAXSIZE="10" {tip trigger="purchasedate" text="Enter device purchase date in 'yyyy/mm/dd' format or click to choose date from calendar (optional)"}>
-			</div>
+			<INPUT TYPE="TEXT" NAME="netdev[purchasedate]" VALUE="{if $netdevinfo.purchasedate}{$netdevinfo.purchasedate}{/if}" SIZE="10" MAXSIZE="10" {tip class="calendar" trigger="purchasedate" text="Enter device purchase date in 'yyyy/mm/dd' format or click to choose date from calendar (optional)"}>
 		</TD>
 	</TR>
 	<TR>
@@ -305,5 +312,16 @@
 <!--
 check_teryt('location', true);
 setNNProject();
+function set_lat_lon(){
+    var loc = document.getElementById('location').value;
+
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode( { 'address': loc}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            document.getElementById('latitude').value = results[0].geometry.location.lat();
+            document.getElementById('longitude').value = results[0].geometry.location.lng();
+        }
+    });
+}
 //-->
 </SCRIPT>

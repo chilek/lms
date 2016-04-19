@@ -40,6 +40,9 @@ $tariff['promotions'] = $DB->GetAll('SELECT DISTINCT p.name, p.id
     WHERE a.tariffid = ? OR s.ctariffid = ?
     ORDER BY p.name', array($tariff['id'], $tariff['id']));
 
+if (!empty($tariff['numberplanid']))
+	$tariff['numberplan'] = $DB->GetRow('SELECT template, period FROM numberplans WHERE id = ?', array($tariff['numberplanid']));
+
 $layout['pagetitle'] = trans('Subscription Info: $a',$tariff['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

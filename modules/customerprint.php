@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,7 +33,7 @@ switch($type)
 {
 	case 'customerlist':
 
-		$date = 0;
+		$time = 0;
 		$search['type'] = $_POST['type'];
 		$search['linktype'] = $_POST['linktype'];
 
@@ -45,7 +45,7 @@ switch($type)
 		if($_POST['day'])
 		{
 			list($year, $month, $day) = explode('/', $_POST['day']);
-			$date = mktime(0,0,0,$month,$day+1,$year);
+			$time = mktime(0,0,0,$month,$day+1,$year);
 		}
 
 		if($_POST['docfrom'])
@@ -73,53 +73,61 @@ switch($type)
 			$search['stateid'] = intval($_POST['stateid']);
 		}
 
-		switch($_POST['filter'])
+                $order = $_POST['order'].','.$_POST['direction'];
+                $state = $_POST['filter'];
+                $network = $_POST['network'];
+                $customergroup = $_POST['customergroup'];
+                $sqlskey = 'AND';
+                $nodegroup = $_POST['nodegroup'];
+
+		switch($state)
 		{
 			case 0:
 				$layout['pagetitle'] = trans('Customers List $a$b',($_POST['network'] ? trans(' (Net: $a)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $a)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
-				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup'], $division));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division")));
 			break;
 			case CSTATUS_INTERESTED:
 				$layout['pagetitle'] = trans('Interested Customers List $a', ($_POST['customergroup'] ? trans('(Group: $a)', $LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
-				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], NULL, $_POST['customergroup'], $search, $date, 'AND', NULL, $division));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division")));
 			break;
 			case CSTATUS_WAITING:
 				$layout['pagetitle'] = trans('List of awaiting customers $a', ($_POST['customergroup'] ? trans('(Group: $a)', $LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
-				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], NULL, $_POST['customergroup'], $search, $date, 'AND', NULL, $division));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division")));
 			break;
 			case CSTATUS_DISCONNECTED:
 				$layout['pagetitle'] = trans('List of Disconnected customers $a$b', ($_POST['network'] ? trans(' (Net: $a)',$LMS->GetNetworkName($_POST['network'])) : ''), ($_POST['customergroup'] ? trans('(Group: $a)', $LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
-				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup'], $division));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division")));
 			break;
 			case CSTATUS_CONNECTED:
 				$layout['pagetitle'] = trans('List of Connected Customers $a$b',($_POST['network'] ? trans(' (Net: $a)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $a)',$LMS->CustomergroupGetName($_POST['customergroup'])) : '')); 
-				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup'], $division));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division")));
 			break;
 			case 51:
 				$layout['pagetitle'] = trans('List of Disconnected Customers $a$b',($_POST['network'] ? trans(' (Net: $a)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $a)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
-				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup'], $division));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division")));
 			break;
 			case 52:
 			case 57:
 			case 58:
 				$layout['pagetitle'] = trans('Indebted Customers List $a$b',($_POST['network'] ? trans(' (Net: $a)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $a)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
-				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup'], $division));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division")));
 			break;
 			case 59:
 				$layout['pagetitle'] = trans('Customers Without Contracts List $a$b',($_POST['network'] ? trans(' (Net: $a)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $a)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
-				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup'], $division));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division")));
 			break;
 			case 60:
 				$layout['pagetitle'] = trans('Customers With Expired Contracts List $a$b',($_POST['network'] ? trans(' (Net: $a)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $a)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
-				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup'], $division));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division")));
 			break;
 			case 61:
 				$layout['pagetitle'] = trans('Customers With Expiring Contracts List $a$b',($_POST['network'] ? trans(' (Net: $a)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $a)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
-				$SMARTY->assign('customerlist', $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['customergroup'], $search, $date, 'AND', $_POST['nodegroup'], $division));
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division")));
 			break;
 			case -1:
 				$layout['pagetitle'] = trans('Customers Without Nodes List $a$b',($_POST['network'] ? trans(' (Net: $a)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['customergroup'] ? trans('(Group: $a)',$LMS->CustomergroupGetName($_POST['customergroup'])) : ''));
-				if($customerlist = $LMS->GetCustomerList($_POST['order'].','.$_POST['direction'], NULL, NULL, $_POST['customergroup'], $search, $date, 'AND', NULL, $division))
+				$SMARTY->assign('customerlist', $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division")));
+				if($customerlist = $LMS->GetCustomerList(compact("order", "customergroup", "search", "time", "sqlskey", "division")))
 				{
 					unset($customerlist['total']);
 					unset($customerlist['state']);
@@ -230,10 +238,8 @@ switch($type)
 		for($i=1; $i<13; $i++)
 			$months[$i] = strftime('%B', mktime(0,0,0,$i,1));
 
-		if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
-		{
+		if (!ConfigHelper::checkConfig('phpui.big_networks'))
 			$SMARTY->assign('customers', $LMS->GetCustomerNames());
-		}
 		$SMARTY->assign('currmonth', date('n'));
 		$SMARTY->assign('curryear', date('Y'));
 		$SMARTY->assign('statyears', $statyears);

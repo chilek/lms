@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,6 +28,7 @@
  * LMSFinanceManager
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
+ * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 {
@@ -37,7 +38,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $this->db->GetOne('SELECT SUM(tariffs.value)
 		    FROM assignments, tariffs
 			WHERE tariffid = tariffs.id AND customerid = ? AND suspended = 0
-			    AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0)', array($id));
+			    AND datefrom <= ?NOW? AND (dateto > ?NOW? OR dateto = 0)', array($id));
     }
 
     public function GetCustomerAssignments($id, $show_expired = false)
@@ -698,12 +699,22 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
 				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
+				c.street, c.building, c.apartment,
+				c.post_street, c.post_building, c.post_apartment,
 				c.post_name, c.post_address, c.post_zip, c.post_city, c.post_countryid
 				FROM documents d
-				JOIN customers c ON (c.id = d.customerid)
+				JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				WHERE d.id = ? AND (d.type = ? OR d.type = ?)', array($invoiceid, DOC_INVOICE, DOC_CNOTE))) {
+
+			$result['bankaccounts'] = $this->db->GetCol('SELECT contact FROM customercontacts
+				WHERE customerid = ? AND (type & ?) = ?',
+				array($result['customerid'], CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+					CONTACT_BANKACCOUNT | CONTACT_INVOICES));
+			if (empty($result['bankaccounts']))
+				$result['bankaccounts'] = array();
+
             $result['pdiscount'] = 0;
             $result['vdiscount'] = 0;
             $result['totalbase'] = 0;
@@ -803,6 +814,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $result['serviceaddr'] .= "\n" . $result['post_zip'] . ' ' . $result['post_city'];
             }
 
+            $result['disable_protection'] = ConfigHelper::checkConfig('invoices.disable_protection');
+
             return $result;
         } else
             return FALSE;
@@ -821,12 +834,22 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
 				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
+				c.street, c.building, c.apartment,
+				c.post_street, c.post_building, c.post_apartment,
 				c.post_name, c.post_address, c.post_zip, c.post_city, c.post_countryid
 				FROM documents d
-				JOIN customers c ON (c.id = d.customerid)
+				JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				WHERE d.id = ? AND d.type = ?', array($id, DOC_DNOTE))) {
+
+			$result['bankaccounts'] = $this->db->GetCol('SELECT contact FROM customercontacts
+				WHERE customerid = ? AND (type & ?) = ?',
+				array($result['customerid'], CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+					CONTACT_BANKACCOUNT | CONTACT_INVOICES));
+			if (empty($result['bankaccounts']))
+				$result['bankaccounts'] = array();
+
             $result['value'] = 0;
 
             if (!$result['division_header']) {
@@ -884,6 +907,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'value' => $tariff['value'],
             'period' => $tariff['period'] ? $tariff['period'] : null,
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $tariff['taxid'],
+            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $tariff['numberplanid'] ? $tariff['numberplanid'] : null,
             'prodid' => $tariff['prodid'],
             'uprate' => $tariff['uprate'],
             'downrate' => $tariff['downrate'],
@@ -913,17 +937,18 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'alias_limit' => $tariff['alias_limit'],
         );
         $result = $this->db->Execute('INSERT INTO tariffs (name, description, value,
-				period, taxid, prodid, uprate, downrate, upceil, downceil, climit,
+				period, taxid, numberplanid, prodid, uprate, downrate, upceil, downceil, climit,
 				plimit, uprate_n, downrate_n, upceil_n, downceil_n, climit_n,
 				plimit_n, dlimit, type, sh_limit, www_limit, mail_limit, sql_limit,
 				ftp_limit, quota_sh_limit, quota_www_limit, quota_mail_limit,
 				quota_sql_limit, quota_ftp_limit, domain_limit, alias_limit)
-				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', array_values($args));
+				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', array_values($args));
         if ($result) {
             $id = $this->db->GetLastInsertID('tariffs');
             if ($this->syslog) {
                 $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF]] = $id;
-                $this->syslog->AddMessage(SYSLOG_RES_TARIFF, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+                $this->syslog->AddMessage(SYSLOG_RES_TARIFF, SYSLOG_OPER_ADD, $args,
+                	array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
             }
             return $id;
         } else
@@ -939,6 +964,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'value' => $tariff['value'],
             'period' => $tariff['period'] ? $tariff['period'] : null,
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $tariff['taxid'],
+            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $tariff['numberplanid'] ? $tariff['numberplanid'] : null,
             'prodid' => $tariff['prodid'],
             'uprate' => $tariff['uprate'],
             'downrate' => $tariff['downrate'],
@@ -969,14 +995,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $tariff['id']
         );
         $res = $this->db->Execute('UPDATE tariffs SET name=?, description=?, value=?,
-				period=?, taxid=?, prodid=?, uprate=?, downrate=?, upceil=?, downceil=?,
+				period=?, taxid=?, numberplanid=?, prodid=?, uprate=?, downrate=?, upceil=?, downceil=?,
 				climit=?, plimit=?, uprate_n=?, downrate_n=?, upceil_n=?, downceil_n=?,
 				climit_n=?, plimit_n=?, dlimit=?, sh_limit=?, www_limit=?, mail_limit=?,
 				sql_limit=?, ftp_limit=?, quota_sh_limit=?, quota_www_limit=?,
 				quota_mail_limit=?, quota_sql_limit=?, quota_ftp_limit=?,
 				domain_limit=?, alias_limit=?, type=? WHERE id=?', array_values($args));
         if ($res && $this->syslog)
-            $this->syslog->AddMessage(SYSLOG_RES_TARIFF, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+            $this->syslog->AddMessage(SYSLOG_RES_TARIFF, SYSLOG_OPER_UPDATE, $args,
+            	array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
         return $res;
     }
 
@@ -1019,7 +1046,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $result['customers'] = $this->db->GetAll('SELECT c.id AS id, COUNT(c.id) AS cnt, '
                 . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername '
                 . ($network ? ', COUNT(vnodes.id) AS nodescount ' : '')
-                . 'FROM assignments, customersview c '
+                . 'FROM assignments, customerview c '
                 . ($network ? 'LEFT JOIN vnodes ON (c.id = vnodes.ownerid) ' : '')
                 . 'WHERE c.id = customerid AND deleted = 0 AND tariffid = ? '
                 . ($network ? 'AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') OR (ipaddr_pub > '
@@ -1050,8 +1077,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			                    SELECT 1 FROM assignments b
 					    WHERE b.customerid = a.customerid
 						    AND liabilityid = 0 AND tariffid = 0
-						    AND (b.datefrom <= ?NOW? OR b.datefrom = 0)
-						    AND (b.dateto > ?NOW? OR b.dateto = 0)
+						    AND b.datefrom <= ?NOW? AND (b.dateto > ?NOW? OR b.dateto = 0)
 				    )
 			)', array($id));
 

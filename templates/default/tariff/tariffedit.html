@@ -77,6 +77,23 @@
 				    </TD>
 				</TR>
 				<TR>
+					<TD style="width: 1%;">
+						<IMG SRC="img/money.gif" alt="">
+					</TD>
+					<TD style="width: 1%;" class="bold nobr">
+						{trans("Numbering Plan:")}
+					</TD>
+					<TD style="width: 98%;">
+						<SELECT name="tariff[numberplanid]" {tip text="Select numbering plan"}>
+							<OPTION value=""{if !$tariff.numberplanid} selected{/if}>- {trans("default")} -</OPTION>
+							{foreach $numberplanlist as $plan}
+							{assign var=period value=$plan.period}
+							<OPTION value="{$plan.id}"{if $plan.id=$tariff.numberplanid} selected{/if}>{$plan.template} ({$_NUM_PERIODS.$period})</OPTION>
+							{/foreach}
+						</SELECT>
+					</TD>
+				</TR>
+				<TR>
 				    <TD WIDTH="1%">
 					<IMG SRC="img/class.gif" alt="">
 				    </TD>

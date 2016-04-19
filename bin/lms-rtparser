@@ -555,7 +555,7 @@ if($notify)
 					(SELECT contact FROM customercontacts
 						WHERE customerid = c.id AND (customercontacts.type & 40 > 0)
 						ORDER BY id LIMIT 1) AS email
-					FROM customers c
+					FROM customeraddressview c
 					WHERE id = $reqcustid");
 		$dbqc->execute();
 		if(my $customer = $dbqc->fetchrow_hashref())

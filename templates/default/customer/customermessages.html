@@ -31,7 +31,7 @@
 						{trans("Destination:")}
 					</TD>
 					<TD style="width: 1%;" class="nobr">
-						{trans("Last read on:")} ({trans("only userpanel message")})
+						{trans("Last read on:")}
 					</TD>
 					<TD style="width: 1%;" class="nobr">
 						{trans("Was confirm on:")} ({trans("only userpanel message")})
@@ -62,7 +62,7 @@
 						{$item.destination}
 					</TD>
 					<TD style="width: 1%;" class="text-right nobr" onClick="return self.location.href='?m=messageinfo&amp;id={$item.id}'">
-						{if ($item.type == $smarty.const.MSG_USERPANEL || $item.type == $smarty.const.MSG_USERPANEL_URGENT) && $item.lastreaddate}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
+						{if $item.lastreaddate}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 					</TD>
 					<TD style="width: 1%;" class="text-right nobr" onClick="return self.location.href='?m=messageinfo&amp;id={$item.id}'">
 						{if $item.status == $smarty.const.MSG_SENT  && ($item.type == $smarty.const.MSG_USERPANEL || $item.type == $smarty.const.MSG_USERPANEL_URGENT) && $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
@@ -73,9 +73,7 @@
 				{foreachelse}
 				<TR>
 					<TD class="empty-table" colspan="6">
-						<P>&nbsp;</P>
 						<P>{trans("There are no messages in database.")}</P>
-						<P>&nbsp;</P>
 					</TD>
 				</TR>
 				{/foreach}

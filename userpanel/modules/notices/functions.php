@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -39,34 +39,30 @@ function module_main()
     }
 
 
-  if(isset($_GET['confirm']))
-    {
-       $confirm = $_GET['confirm'];
-       $DB->Execute('UPDATE messageitems SET status = 2, lastdate = ?NOW? WHERE id = ?', array($confirm));
-					header('Location: ?m=notices');
-    }
+	if (isset($_GET['confirm'])) {
+		$confirm = $_GET['confirm'];
+		$DB->Execute('UPDATE messageitems SET status = ?, lastdate = ?NOW? WHERE id = ?',
+			array($confirm, MSG_DELIVERED));
+		header('Location: ?m=notices');
+	} else {
+		$notice = $DB->GetAll('SELECT m.subject, m.cdate, m.body, m.type, mi.id, mi.messageid, mi.destination, mi.status, mi.lastdate
+			FROM customers c
+			JOIN messageitems mi ON mi.customerid = c.id
+			JOIN messages m ON m.id = mi.messageid
+			WHERE m.type in (?, ?) AND c.id = ?
+			ORDER BY mi.status asc, m.cdate desc',
+			array(MSG_USERPANEL, MSG_USERPANEL_URGENT, $SESSION->id));
+		$SMARTY->assign('notice', $notice);
+	}
 
-  else
-  {
-       $notice = $DB->GetAll('SELECT m.subject, m.cdate, m.body, m.type, mi.id, mi.messageid, mi.destination, mi.status, mi.lastdate
-                              FROM customers c, messageitems mi, messages m
-                              WHERE c.id=mi.customerid
-                              AND m.id=mi.messageid
-                              AND m.type in (5,6)
-                              AND c.id=?
-                              ORDER BY mi.status asc, m.cdate desc'
-                              , array($SESSION->id));
-					$SMARTY->assign('notice', $notice);
-  }
-
-  if(isset($_GET['confirm_urgent']))
-  {
-					$confirm_urgent = $_GET['confirm_urgent'];
-					$DB->Execute('UPDATE messageitems SET status = 2, lastdate = ?NOW? WHERE id = ?', array($confirm_urgent));
-        header('Location: ?m=notices');
-  }
-       $SMARTY->display('module:notices.html');
- }
+	if (isset($_GET['confirm_urgent'])) {
+		$confirm_urgent = $_GET['confirm_urgent'];
+		$DB->Execute('UPDATE messageitems SET status = ?, lastdate = ?NOW? WHERE id = ?',
+			array(MSG_DELIVERED, $confirm_urgent));
+		header('Location: ?m=notices');
+	}
+	$SMARTY->display('module:notices.html');
+}
 
 function setNoticeRead($noticeid)
 {

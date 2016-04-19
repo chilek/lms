@@ -1,12 +1,4 @@
 <!-- $Id$ -->
-<script type="text/javascript">
-<!--
-	function reset_customer() {
-		if (document.forms['ticket'].elements['ticket[custid]'].value)
-			document.forms['ticket'].elements['ticket[customerid]'].value = document.forms['ticket'].elements['ticket[custid]'].value;
-	}
-//-->
-</script>
 <FORM method="post" name="ticket" action="?m=rtticketedit&amp;id={$ticket.ticketid}">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
@@ -50,18 +42,7 @@
 									<BR>
 									{/if}
 									<span class="nobr">
-									{if $customerlist}
-									<SELECT size="1" name="ticket[customerid]" {tip text="You can assign customer to ticket"} onChange="document.forms['ticket'].elements['ticket[custid]'].value=document.forms['ticket'].elements['ticket[customerid]'].value">
-										<OPTION value="0">{trans("- select customer -")}</OPTION>
-										{foreach from=$customerlist item=c}
-										<OPTION value="{$c.id}"{if $c.id==$ticket.customerid} SELECTED{/if}>{$c.customername|truncate:"45":"..."} ({$c.id|string_format:"%04d"})</OPTION>
-										{/foreach}
-									</SELECT>
-									{else}
-									{if $ticket.customername}<A href="?m=customerinfo&amp;id={$ticket.customerid}">{$ticket.customername|truncate:"45":"...":true}</A>{/if}
-									{/if}
-									<INPUT type="text" name="ticket[custid]" value="{if $ticket.customerid}{$ticket.customerid}{/if}" size="5"{if $customerlist} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID" trigger="custid"}>
-									<a href="javascript: void(0);" onClick="return customerchoosewin(document.ticket.elements['ticket[custid]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+									{customerlist form="ticket" customers=$customerlist selected=$ticket.customerid selectname="ticket[customerid]" inputname="ticket[custid]"}
 									</span>
 								</TD>
 							</TR>

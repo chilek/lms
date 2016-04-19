@@ -1004,7 +1004,6 @@ $_LANG['Option exists!'] = 'Pasirinktis jau egzistuoja!';
 $_LANG['Option name contains forbidden characters!'] = 'Pasirinkties pavadinime yra neleistinų ženklų.';
 $_LANG['Option name is required!'] = 'Reikia pasirinkties pavadinimo!';
 $_LANG['Option name is too long (max.64 characters)!'] = 'Reikia pasirinkties pavadinimo (maks. 64 ženklai)!';
-$_LANG['Option with empty value not allowed!'] = 'Pasirinkties vertė negali būti tuščia!';
 $_LANG['Option with specified name exists in that instance!'] = 'Tokio pavadinimo pasirinktis jau yra šiame atvejyje!';
 $_LANG['OR'] = 'ARBA';
 $_LANG['or Customer ID:'] = 'arba kliento ID:';

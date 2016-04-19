@@ -558,7 +558,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 			"ELSE ROUND((li.value - li.value * a.pdiscount / 100) - a.vdiscount, 2) "
 			"END) AS value "
 		"FROM assignments a "
-		"JOIN customers c ON (a.customerid = c.id) "
+		"JOIN customeraddressview c ON (a.customerid = c.id) "
 		"LEFT JOIN tariffs t ON (a.tariffid = t.id) "
 		"LEFT JOIN liabilities li ON (a.liabilityid = li.id) "
 		"LEFT JOIN divisions d ON (d.id = c.divisionid) "

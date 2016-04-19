@@ -2,6 +2,92 @@ $Id$
 
 version ?.??.?? (????-??-??):
 
+version 1.11.20 (2016-04-19):
+
+  - bclean: added responsive menu [kyob]
+  - www, userpanel messages are always sent initially and userpanel messages are
+    marked as delivered after message read confirmation [chilan]
+  - added support for user groups [wawryk]
+  - customer address and postal address were separated to street, building and
+    apartment fields [chilan]
+  - added support for external system customer identifiers need to bind
+    lms customers with external system customers [chilan]
+  - invoice notes can be edited from now [chilan]
+  - allow to clone network devices from user interface [chilan]
+  - add hook for documents in plugins [wawryk]
+  - don't allow to issue invoice credit note for invoice which already has issued
+    credit note [chilan]
+  - bumped html2pdf library version to 4.5.0 [prezes_kk]
+  - allow lms-payments.php script to set aligned periods for invoice items
+    (added special symbol %aligned_period) [chilan]
+  - added type, private and opened filters in event list [chilan]
+  - localised bank account functions use common iban account functions [chilan]
+  - we can add many bank accounts to single customer (both source and destination
+    accounts) [chilan]
+  - invoices.show_all_accounts allows to display all customer bank accounts
+    on invoices [chilan]
+  - allow to select customer for all imported transactions [wawryk/chilan]
+  - replaced all customer selectiors by smarty customerlist function [chilan]
+  - removed deprecated chkconfig, check_conf and get_conf public functions [chilan]
+  - lib/config.php is needed only for config load module [chilan]
+  - added column with type in uiconfig, and configuration is validated by this type [pjona]
+  - function $LMS->CheckOption() takes a '$type' as the first parameter [pjona]
+  - lms-sendinvoices.php can send additional file as a separate attachment [pjona]
+  - added support for second mail library (PHPMailer), see mail.backend option [wawryk]
+  - lms-payments.php: added option which allows to define date format [pjona]
+  - node list: added support for investment project selection [chilan]
+  - node list: added support for 'without tariff' status [chilan]
+  - added phpui.quicksearch_limit config variable with 15 as default [chilan]
+  - fixed calculation of brutto value basing on netto value
+    (fixes https://github.com/lmsgit/lms/issues/559) [chilan]
+  - added payments.default_unit_name config variable with "pcs." as default [pjona]
+  - customer and user notifications about still opened events [chilan]
+  - fixed multidays event presentation in event list when end time is 00:00 [chilan]
+  - remember all form settings between user sessions [chilan]
+  - 'unblock' channel support added to lms-notify.php backend script [chilan]
+  - fixed radio sectors visualisation on network map - azimuth points angle related
+    to north direction [chilan]
+  - add filters (with nodes, without nodes, active nodes, e-invoice) in customerlist [wawryk]
+  - add filters (online, without terryt) in nodelist and show info on welcome [wawryk]
+  - bumped used smarty version to 3.1.29 (LMS Plus users should not use the newest
+    lms master version for the moment) [chilan]
+  - allow to view and search node sessions [chilan]
+  - allow to use web browser mechanism to open new invoice/receipt/note form in customer
+    balance box [chilan]
+  - invoices.disable_protection allows to disable modify and copy protection in
+    tcpdf invoice [chilan]
+  - added possibility to add note to events by technician without timetable_access [wawryk]
+  - added showOrHide function to boxes on welcome page [wawryk]
+  - added autolinker in rttickets [wawryk]
+  - copy ip address to clipboard after click on ip.gif image [wawryk]
+  - added clone option to promotions and promotion schemas [wawryk]
+  - added tcpdf support for debit note [pjona]
+  - added documents cacheing [wawryk]
+  - added support for sending debit notes by mail [chilan]
+  - allow to assign numberplans to tariffs [chilan]
+  - receiptadd: we show also not accounted debit notes [pjona]
+  - separation force_ssl for UI and Userpanel [pjona]
+  - added node location info in network devices connected nodes list [chilan]
+  - added support for network searching [kosa/chilan]
+  - added support for different placements of suggestion window
+    (phpui.default_autosuggest_placement) [kosa/chilan]
+  - suggestion window adjust its width to displayed data
+    (phpui.autosuggest_max_length) [kosa/chilan]
+  - improved performance of default type detection for config variables [chilan]
+  - redesigned multiselect window to be more useable [kosa/chilan]
+  - networks: added support for vlan ids [kosa/chilan]
+  - added support for userpanel_<module_name>_<function_name>_before_module_display
+    hooks [chilan]
+  - allow to add custom links in userpanel customer balance list [chilan]
+  - workaround postgresql array_agg multi function existence during db schema updates [chilan]
+  - added delivery status notification support for mail messages [chilan]
+  - invoice sends are optionally confirmed by new messages [chilan]
+  - added mail disposition notification support for mail messages [chilan]
+  - added support for DSN, MDN and Reply-To header in phpmailer backend
+    (DSN required separated patch for PHPMailer code) [chilan]
+
+version 1.11.19 (2015-12-21):
+
   - updated lms swekey code to be conformed with PHP 7 [prezes_kk]
   - added support for message delivery status [Jarosław Dziubek]
   - rewrite of user access rights code completely - it can require
@@ -53,6 +139,7 @@ version ?.??.?? (????-??-??):
   - new bootstrap based userpanel style integrated - bclean [kyob]
   - customer info box: show customer all and not resolved ticket stats (as bold when there
     are some unresolved tickets) [chilan]
+  - added support for customer source and destination bank accounts in cash import parser [chilan]
 
 version 1.11.18 (2015-10-01):
 

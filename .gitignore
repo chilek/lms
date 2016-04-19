@@ -10,6 +10,7 @@ documents/*
 cache/*
 contrib/LMS2Nagios-php/generated/*
 lib/teryt/*
+composer.lock
 
 # Temporary files
 *~

@@ -1,16 +1,19 @@
 <!--// $Id$ //-->
 <TABLE class="lmsbox">
 	<THEAD>
-	<TR onclick="showOrHide('nodesessionpanel');">
-		<TD class="fall">
+	<TR>
+		<TD style="width: 99%;" class="hand" onclick="showOrHide('nodesessionpanel');">
 			<IMG src="img/calendar.gif" alt="">
-			<B><A name="nodesessions">{trans("Node Sessions:")}</A></B> {t a=ConfigHelper::getConfig('phpui.nodesession_limit', 10)}(last $a sessions){/t}
+			<span class="bold"><A name="nodesessions">{trans("Node Sessions:")}</A></span> {t a=ConfigHelper::getConfig('phpui.nodesession_limit', 10)}(last $a sessions){/t}
+		</TD>
+		<TD style="width: 1%;" class="text-right nobr">
+			<a href="?m=nodesessionlist&nodeid={$nodeinfo.id}">{trans("All sessions")} &raquo;</a>
 		</TD>
 	</TR>
 	</THEAD>
 	<TBODY>
 	<TR id="nodesessionpanel" style="display:none;">
-		<TD WIDTH="100%" class="fall">
+		<TD WIDTH="100%" class="fall" colspan="2">
 			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 				<TR class="dark">
 					<TD class="fleftu bold nobr" style="width: 11%;">{trans("IP Address:")}</TD>
@@ -48,10 +51,8 @@
 				</TR>
 				{sectionelse}
 				<TR>
-					<TD class="text-center" style="width: 100%;" colspan="9">
-						<P>&nbsp;</P>
-						<P><span class="bold">{trans("That are no sessions for this node.")}</span></P>
-						<P>&nbsp;</P>
+					<TD colspan="9" class="empty-table">
+						<p>{trans("That are no sessions for this node.")}</p>
 					</TD>
 				</TR>
 				{/section}
@@ -60,9 +61,9 @@
 	</TR>
 	</TBODY>
 </TABLE>
-{literal}<SCRIPT type="text/javascript">
+<SCRIPT type="text/javascript">
 <!--
 	if (getCookie('nodesessionpanel')=='1')
 		document.getElementById('nodesessionpanel').style.display = '';
 //-->
-</SCRIPT>{/literal}
+</SCRIPT>

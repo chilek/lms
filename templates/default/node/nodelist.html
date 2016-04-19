@@ -48,6 +48,9 @@
 					<OPTION VALUE="1"{if $listdata.state == 1} SELECTED{/if}>{trans("connected<!plural:item>")}</OPTION>
 					<OPTION VALUE="2"{if $listdata.state == 2} SELECTED{/if}>{trans("disconnected<!plural:item>")}</OPTION>
 					<OPTION VALUE="3"{if $listdata.state == 3} SELECTED{/if}>{trans("online")}</OPTION>
+					<OPTION VALUE="4"{if $listdata.state == 4} SELECTED{/if}>{trans("without tariff")}</OPTION>
+					<OPTION VALUE="5"{if $listdata.state == 5} SELECTED{/if}>{trans("TERRIT not specified")}</OPTION>
+					<OPTION VALUE="6"{if $listdata.state == 6} SELECTED{/if}>{trans("Net Device not specified")}</OPTION>
 				</SELECT></SPAN>
 				<SPAN class="nobr">{trans("Network:")}
 				<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">
@@ -69,6 +72,14 @@
 					{section name=customergroups loop=$customergroups}
 					<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
 					{/section}
+				</SELECT></SPAN>
+				<SPAN class="nobr">{trans("Project:")}
+				<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
+					<OPTION VALUE="-1"{if $listdata.invprojectid == -1} selected{/if}>- {trans("all")} -</OPTION>
+					<OPTION VALUE="-2"{if $listdata.invprojectid == -2} selected{/if}>- {trans("without project")} -</OPTION>
+					{foreach $NNprojects as $project}
+					<OPTION VALUE="{$project.id}"{if $listdata.invprojectid == $project.id} selected{/if}>{$project.name}</OPTION>
+					{/foreach}
 				</SELECT></SPAN>
 		</TD>
 	</TR>
@@ -150,9 +161,7 @@
 	{sectionelse}
 	<TR>
 		<TD colspan="5" class="empty-table">
-			<p>&nbsp;</p>
 			<p>{trans("No such nodes in database.")}</p>
-			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/section}

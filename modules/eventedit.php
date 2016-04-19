@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2014 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -32,8 +32,24 @@ function select_customer($id)
     return $JSResponse;
 }
 
+function getUsersForGroup($groupid) {
+	$JSResponse = new xajaxResponse();
+
+	if (empty($groupid))
+		$users = null;
+	else
+		$users = LMSDB::getInstance()->GetCol('SELECT u.id FROM users u
+			JOIN userassignments ua ON ua.userid = u.id
+			WHERE u.deleted = 0 AND u.access = 1 AND ua.usergroupid = ?',
+			array($groupid));
+
+	$JSResponse->call('update_user_selection', $users);
+
+	return $JSResponse;
+}
+
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction('select_customer');
+$LMS->RegisterXajaxFunction(array('select_customer', 'getUsersForGroup'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 if(isset($_GET['action']) && $_GET['action'] == 'open')
@@ -71,8 +87,13 @@ if ($eventuserlist === null) {
 if(isset($_POST['event']))
 {
 	$event = $_POST['event'];
+
+	if (!isset($event['usergroup']))
+		$event['usergroup'] = 0;
+	$SESSION->save('eventgid', $event['usergroup']);
+
 	$event['id'] = $_GET['id'];
-	
+
 	if($event['title'] == '')
 		$error['title'] = trans('Event title is required!');
 	elseif(strlen($event['title']) > 255)
@@ -102,13 +123,17 @@ if(isset($_POST['event']))
 
 	if (!$error) {
 		$event['private'] = isset($event['private']) ? 1 : 0;
+		if (isset($event['customerid']))
+			$event['custid'] = $event['customerid'];
+		if ($event['custid'] == '')
+			$event['custid'] = 0;
 		$event['nodeid'] = isset($event['customer_location']) ? NULL : $event['nodeid'];
 
 		$DB->BeginTrans();
 
 		$DB->Execute('UPDATE events SET title=?, description=?, date=?, begintime=?, enddate=?, endtime=?, private=?, note=?, customerid=?, type=?, nodeid=? WHERE id=?',
-				array($event['title'], $event['description'], $date, $event['begintime'], $enddate, $event['endtime'], $event['private'], $event['note'], $event['customerid'], $event['type'], $event['nodeid'], $event['id']));
-				
+				array($event['title'], $event['description'], $date, $event['begintime'], $enddate, $event['endtime'], $event['private'], $event['note'], $event['custid'], $event['type'], $event['nodeid'], $event['id']));
+
 		if (!empty($event['userlist']) && is_array($event['userlist'])) {
 			$DB->Execute('DELETE FROM eventassignments WHERE eventid = ?', array($event['id']));
 			foreach ($event['userlist'] as $userid)
@@ -130,18 +155,22 @@ $layout['pagetitle'] = trans('Event Edit');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$userlist = $LMS->GetUserNames();
+$usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
+$userlist = $DB->GetAll('SELECT id, name FROM users
+	WHERE deleted = 0 AND users.access = 1 ORDER BY login ASC');
 
+if (empty($nodes_location))
+	$nodes_location = $DB->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY name ASC', array($event['customerid']));
 
-if(empty($nodes_location)) {
-    $nodes_location = $DB->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY name ASC', array($event['customerid']));
-}
+if (!isset($event['usergroup']))
+	$SESSION->restore('eventgid', $event['usergroup']);
 
 $SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
 $SMARTY->assign('nodes_location', $nodes_location);
-$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+	$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('userlist', $userlist);
-$SMARTY->assign('userlistsize', sizeof($userlist));
+$SMARTY->assign('usergroups', $usergroups);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('event', $event);
 $SMARTY->assign('hours', 

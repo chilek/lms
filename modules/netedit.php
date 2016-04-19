@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -110,6 +110,12 @@ if(isset($_POST['networkdata']))
 	if($networkdata['interface'] != '' && !preg_match('/^[a-z0-9:.]+$/', $networkdata['interface']))
 		$error['interface'] = trans('Incorrect interface name!');
 
+	if ($networkdata['vlanid'] != '')
+		if (!is_numeric($networkdata['vlanid']))
+			$error['vlanid'] = trans('Vlan ID must be integer!');
+		elseif ($networkdata['vlanid'] < 1 || $networkdata['vlanid'] > 4094)
+			$error['vlanid'] = trans('Vlan ID must be between 1 and 4094!');
+
 	if($networkdata['name']=='')
 		$error['name'] = trans('Network name is required!');
 	elseif(!preg_match('/^[._a-z0-9-]+$/i', $networkdata['name']))
@@ -180,6 +186,7 @@ if(isset($_POST['networkdata']))
 
 	$network['name'] = $networkdata['name'];
 	$network['interface'] = $networkdata['interface'];
+	$network['vlanid'] = $networkdata['vlanid'];
 	$network['prefix'] = $networkdata['prefix'];
 	$network['address'] = $networkdata['address'];
 	$network['size'] = $networkdata['size'];
@@ -197,7 +204,7 @@ if(isset($_POST['networkdata']))
 
 $networks = $LMS->GetNetworks();
 
-if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 
 $layout['pagetitle'] = trans('Network Edit: $a',$network['name']);

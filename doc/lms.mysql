@@ -8,7 +8,9 @@ DROP VIEW IF EXISTS nas;
 DROP VIEW IF EXISTS vnodes_mac;
 DROP VIEW IF EXISTS vnodes;
 DROP VIEW IF EXISTS vmacs;
-DROP VIEW IF EXISTS customersview;
+DROP VIEW IF EXISTS customerview;
+DROP VIEW IF EXISTS contractorview;
+DROP VIEW IF EXISTS customeraddressview;
 DROP VIEW IF EXISTS teryt_terc;
 DROP VIEW IF EXISTS teryt_ulic;
 DROP VIEW IF EXISTS teryt_simc;
@@ -110,7 +112,9 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS customers;
 DROP TABLE IF EXISTS invprojects;
 DROP TABLE IF EXISTS netnodes;
-
+DROP TABLE IF EXISTS usergroups;
+DROP TABLE IF EXISTS userassignments;
+DROP TABLE IF EXISTS passwdhistory;
 
 
 # --------------------------------------------------------
@@ -140,6 +144,7 @@ CREATE TABLE users (
   accessfrom int(11) NOT NULL DEFAULT '0',
   accessto int(11) NOT NULL DEFAULT '0',
   swekey_id varchar(32) NULL DEFAULT NULL,
+  settings mediumtext NOT NULL DEFAULT '',
   PRIMARY KEY  (id),
   UNIQUE KEY login (login, swekey_id)
 ) ENGINE=InnoDB;
@@ -150,16 +155,21 @@ CREATE TABLE users (
 #
 CREATE TABLE customers (
   id int(11) 		NOT NULL auto_increment,
+  extid varchar(32)	NOT NULL DEFAULT '',
   lastname varchar(128) NOT NULL DEFAULT '',
   name varchar(128) 	NOT NULL DEFAULT '',
   status smallint 	NOT NULL DEFAULT '0',
   type smallint		NOT NULL DEFAULT '0',
-  address varchar(255) 	NOT NULL DEFAULT '',
+  street varchar(255) DEFAULT '' NOT NULL,
+  building varchar(20) DEFAULT NULL,
+  apartment varchar(20) DEFAULT NULL,
   zip varchar(10) 	NOT NULL DEFAULT '',
   city varchar(32) 	NOT NULL DEFAULT '',
   countryid int(11)	DEFAULT NULL,
   post_name varchar(255) DEFAULT NULL,
-  post_address varchar(255) DEFAULT NULL,
+  post_street varchar(255) DEFAULT NULL,
+  post_building varchar(20) DEFAULT NULL,
+  post_apartment varchar(20) DEFAULT NULL,
   post_zip varchar(10) 	    DEFAULT NULL,
   post_city varchar(32) 	DEFAULT NULL,
   post_countryid int(11)	DEFAULT NULL,
@@ -301,7 +311,7 @@ CREATE TABLE numberplanassignments (
 CREATE TABLE invoicecontents (
   docid int(11) NOT NULL DEFAULT '0',
   itemid smallint NOT NULL DEFAULT '0',
-  value decimal(9,2) NOT NULL DEFAULT '0',
+  value decimal(12,5) NOT NULL DEFAULT '0',
   pdiscount decimal(4,2) NOT NULL DEFAULT '0',
   vdiscount decimal(9,2) NOT NULL DEFAULT '0',
   taxid int(11) NOT NULL DEFAULT '0',
@@ -566,13 +576,42 @@ CREATE TABLE ewx_channels (
 
 # --------------------------------------------------------
 #
+# Structure of table divisions
+#
+CREATE TABLE divisions (
+    	id 		int(11) 	NOT NULL auto_increment,
+	shortname       varchar(255) 	NOT NULL DEFAULT '',
+        name        	text    	NOT NULL DEFAULT '',
+	address         varchar(255) 	NOT NULL DEFAULT '',
+	city            varchar(255) 	NOT NULL DEFAULT '',
+	zip             varchar(255) 	NOT NULL DEFAULT '',
+	countryid	int(11)		NOT NULL DEFAULT '0',
+	ten		varchar(16)	NOT NULL DEFAULT '',
+	regon		varchar(255)	NOT NULL DEFAULT '',
+	account         varchar(48) 	NOT NULL DEFAULT '',
+	inv_header      text    	NOT NULL DEFAULT '',
+	inv_footer      text    	NOT NULL DEFAULT '',
+	inv_author      text    	NOT NULL DEFAULT '',
+	inv_cplace      text    	NOT NULL DEFAULT '',
+	inv_paytime 	smallint         DEFAULT NULL,
+	inv_paytype 	smallint    DEFAULT NULL,
+	description     text    	NOT NULL DEFAULT '',
+	status 		tinyint(1) 	NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE KEY shortname (shortname)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table invprojects
 #
 CREATE TABLE invprojects (
         id int(11) NOT NULL auto_increment,
 	name varchar(255) NOT NULL, 
 	type tinyint DEFAULT 0, 
-	PRIMARY KEY (id)
+        divisionid int(11) DEFAULT NULL,
+	PRIMARY KEY (id),
+        FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -596,10 +635,12 @@ CREATE TABLE netnodes (
 	coowner varchar(255) DEFAULT '',
 	uip tinyint(1) DEFAULT 0,
 	miar tinyint(1) DEFAULT 0,
+	divisionid int(11) DEFAULT NULL,
 	PRIMARY KEY (id),
 	FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	FOREIGN KEY (location_city) REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE
+	FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -750,6 +791,7 @@ CREATE TABLE networks (
   dhcpend varchar(16) NOT NULL DEFAULT '',
   disabled tinyint(1) NOT NULL DEFAULT '0',
   notes text NOT NULL DEFAULT '',
+  vlanid smallint DEFAULT NULL,
   hostid int(11) DEFAULT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
@@ -1093,6 +1135,7 @@ CREATE TABLE tariffs (
   type tinyint 		NOT NULL DEFAULT '1',
   value decimal(9,2) 	NOT NULL DEFAULT '0',
   taxid int(11) 	NOT NULL DEFAULT '0',
+  numberplanid integer DEFAULT NULL,
   period smallint   DEFAULT NULL,
   prodid varchar(255) 	NOT NULL DEFAULT '',
   uprate int(11) 	NOT NULL DEFAULT '0',
@@ -1124,7 +1167,8 @@ CREATE TABLE tariffs (
   disabled tinyint  NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   UNIQUE KEY name (name, value, period),
-  INDEX type (type)
+  INDEX type (type),
+  FOREIGN KEY (numberplanid) REFERENCES numberplans (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1304,6 +1348,7 @@ CREATE TABLE uiconfig (
     value text NOT NULL DEFAULT '',
     description text NOT NULL DEFAULT '',
     disabled tinyint(1) NOT NULL DEFAULT '0',
+    type smallint NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     UNIQUE KEY var (section, var)
 ) ENGINE=InnoDB;
@@ -1568,33 +1613,6 @@ CREATE TABLE zipcodes (
 
 # --------------------------------------------------------
 #
-# Structure of table divisions
-#
-CREATE TABLE divisions (
-    	id 		int(11) 	NOT NULL auto_increment,
-	shortname       varchar(255) 	NOT NULL DEFAULT '',
-        name        	text    	NOT NULL DEFAULT '',
-	address         varchar(255) 	NOT NULL DEFAULT '',
-	city            varchar(255) 	NOT NULL DEFAULT '',
-	zip             varchar(255) 	NOT NULL DEFAULT '',
-	countryid	int(11)		NOT NULL DEFAULT '0',
-	ten		varchar(16)	NOT NULL DEFAULT '',
-	regon		varchar(255)	NOT NULL DEFAULT '',
-	account         varchar(48) 	NOT NULL DEFAULT '',
-	inv_header      text    	NOT NULL DEFAULT '',
-	inv_footer      text    	NOT NULL DEFAULT '',
-	inv_author      text    	NOT NULL DEFAULT '',
-	inv_cplace      text    	NOT NULL DEFAULT '',
-	inv_paytime 	smallint         DEFAULT NULL,
-	inv_paytype 	smallint    DEFAULT NULL,
-	description     text    	NOT NULL DEFAULT '',
-	status 		tinyint(1) 	NOT NULL DEFAULT 0,
-	PRIMARY KEY (id),
-	UNIQUE KEY shortname (shortname)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
 # Structure of table excludedgroups
 #
 CREATE TABLE excludedgroups (
@@ -1815,6 +1833,45 @@ CREATE TABLE supermasters (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
+# --------------------------------------------------------
+#
+# Structure of table usergroups
+#
+CREATE TABLE usergroups (
+	id int(11) NOT NULL auto_increment,
+	name varchar(255) DEFAULT '' NOT NULL,
+	description text DEFAULT '' NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE KEY name (name)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table userassignments
+#
+CREATE TABLE userassignments (
+	id int(11) NOT NULL auto_increment,
+	usergroupid int(11) NOT NULL,
+	userid int(11) NOT NULL,
+	PRIMARY KEY (id),
+	INDEX userassignments_userid_idx (userid),
+	FOREIGN KEY (usergroupid) REFERENCES usergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	UNIQUE KEY userassignments_usergroupid_key (usergroupid, userid)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table passwdhistory
+#
+CREATE TABLE passwdhistory (
+	id int(11) NOT NULL auto_increment,
+	userid int(11) NOT NULL,
+	hash varchar(255) DEFAULT '' NOT NULL,
+	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
 CREATE VIEW nas AS
     SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
 	d.clients AS ports, d.secret, d.community, d.description 
@@ -1842,17 +1899,45 @@ DROP FUNCTION IF EXISTS lms_current_user;
 CREATE FUNCTION lms_current_user() RETURNS int(11) NO SQL
 RETURN @lms_current_user;
 
-CREATE VIEW customersview AS
-	SELECT c.* FROM customers c
+CREATE VIEW customerview AS
+	SELECT c.*,
+		(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN CONCAT(street, ' ', building)
+			ELSE CONCAT(street, ' ', building, '/', apartment) END) END) AS address,
+		(CASE WHEN post_street IS NULL THEN '' ELSE
+			(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN CONCAT(post_street, ' ', post_building)
+				ELSE CONCAT(post_street, ' ', post_building, '/', post_apartment) END)
+			END)
+		END) AS post_address
+	FROM customers c
 	WHERE NOT EXISTS (
-	    	SELECT 1 FROM customerassignments a
-		JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-		WHERE e.userid = lms_current_user() AND a.customerid = c.id) 
+			SELECT 1 FROM customerassignments a
+			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+			WHERE e.userid = lms_current_user() AND a.customerid = c.id) 
 		AND c.type < 2;
 
 CREATE VIEW contractorview AS
-	SELECT c.* FROM customers c
-	WHERE c.type = '2';
+	SELECT c.*,
+		(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN CONCAT(street, ' ', building)
+			ELSE CONCAT(street, ' ', building, '/', apartment) END) END) AS address,
+		(CASE WHEN post_street IS NULL THEN '' ELSE
+			(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN CONCAT(post_street, ' ', post_building)
+				ELSE CONCAT(post_street, ' ', post_building, '/', post_apartment) END)
+			END)
+		END) AS post_address
+	FROM customers c
+	WHERE c.type = 2;
+
+CREATE VIEW customeraddressview AS
+	SELECT c.*,
+		(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN CONCAT(street, ' ', building)
+			ELSE CONCAT(street, ' ', building, '/', apartment) END) END) AS address,
+		(CASE WHEN post_street IS NULL THEN '' ELSE
+			(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN CONCAT(post_street, ' ', post_building)
+				ELSE CONCAT(post_street, ' ', post_building, '/', post_apartment) END)
+			END)
+		END) AS post_address
+	FROM customers c
+	WHERE c.type < 2;
 
 CREATE VIEW teryt_terc AS
 SELECT ident AS woj, '0' AS pow, '0' AS gmi, 0 AS rodz,
@@ -2014,6 +2099,8 @@ INSERT INTO nastypes (name) VALUES
 ('other');
 
 INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
+('phpui','default_autosuggest_placement','bottom','',0),
+('phpui','autosuggest_max_length','40','',0),
 ('phpui','lang','','',0),
 ('phpui','allow_from','','',0),
 ('phpui','default_module','welcome','',0),
@@ -2078,6 +2165,14 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui','logging','false','',0),
 ('phpui','hide_toolbar','false','',0),
 ('phpui','add_customer_group_required','false','',0),
+('phpui','document_margins','10,5,15,5','',0),
+('phpui', 'quicksearch_limit', '15','', 0),
+('phpui', 'ping_type', '1','', 0),
+('phpui', 'default_teryt_city', 'false', '', 0),
+('phpui', 'passwordhistory', 6, '', 0),
+('phpui', 'event_usergroup_selection_type', 'update', '', 0),
+('payments', 'date_format', '%Y/%m/%d', '', 0),
+('payments', 'default_unit_name', 'pcs.', '', 0),
 ('invoices','template_file','invoice.html','',0),
 ('invoices','content_type','text/html','',0),
 ('invoices','cnote_template_file','invoice.html','',0),
@@ -2101,6 +2196,8 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('mail','debug_email','','',0),
 ('mail','smtp_host','127.0.0.1','',0),
 ('mail','smtp_port','25','',0),
+('mail', 'backend', 'pear', '', 0),
+('mail', 'smtp_secure', 'ssl', '', 0),
 ('zones','hostmaster_mail','hostmaster.localhost','',0),
 ('zones','master_dns','localhost','',0),
 ('zones','slave_dns','localhost','',0),
@@ -2459,4 +2556,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015121101');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016040700');

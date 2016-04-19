@@ -3,7 +3,7 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE class="lmsbox">
+<TABLE class="lmsbox">
     <THEAD>
 	<TR>
 		<TD width="1%" valign="top" NOWRAP>
@@ -48,15 +48,14 @@
                             </TR>
                         </THEAD>
                         <TBODY>
-                            
                         {if $counter%2 && $counter!=0}{cycle print=false}{/if}
                         {assign var=counter value=0}
                             {section name=eventlist loop=$eventlist}
                             {if $eventlist[eventlist].date == $daylist[daylist]}
                             {math equation="x+1" x=$counter assign=counter}
                             <TR class="highlight {cycle}{if $eventlist[eventlist].closed} blend{/if}"  >
-                                <TD width="1%" align="left" valign="top" onClick="return self.location.href='?m=eventinfo&id={$eventlist[eventlist].id}'">
-                                        <NOBR><IMG src="img/time.gif" alt="">
+                                <TD width="1%" onClick="return self.location.href='?m=eventinfo&id={$eventlist[eventlist].id}'" class="text-right valign-top nobr">
+                                        <IMG src="img/time.gif" alt="">
                                         {math equation="floor(x/100)" x=$eventlist[eventlist].begintime format="%02d"}:{math equation="x % 100" x=$eventlist[eventlist].begintime format="%02d"}
                                         {if $eventlist[eventlist].begintime != $eventlist[eventlist].endtime}
                                         - {math equation="floor(x/100)" x=$eventlist[eventlist].endtime format="%02d"}:{math equation="x % 100" x=$eventlist[eventlist].endtime format="%02d"}
@@ -69,9 +68,9 @@
                                         <IMG src="img/calendar.gif" alt=""> <B>{$eventlist[eventlist].title}</B><BR>
                                         <IMG src="img/info1.gif" alt=""> {$eventlist[eventlist].description}
                                 </TD>
-                                <TD width="1%" valign="top">
+                                <TD width="1%" class="valign-top nobr">
                                         {foreach item=user from=$eventlist[eventlist].userlist}
-                                                <NOBR><A href="?m=userinfo&id={$user.id}">{$user.name|truncate:"25":"..."}</A></NOBR><BR>
+                                                <A href="?m=userinfo&id={$user.id}">{$user.name|truncate:"25":"..."}</A><BR>
                                         {/foreach}
                                 </TD>
                                 <TD width="1%" align="right" valign="top">
@@ -97,13 +96,11 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD colspan="6" align="center">
-			<P>&nbsp;</P>
-			<P><B>{trans("No such events matching search criteria.")}</B></P>
-			<P>&nbsp;</P>
+		<TD colspan="6" class="empty-table">
+			<p>{trans("No such events matching search criteria.")}</p>
 		</TD>
 	</TR>
 	{/section}
     </TBODY>
-</TABLE></P>
+</TABLE>
 {/block}

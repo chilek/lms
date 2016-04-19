@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -76,13 +76,13 @@ if(isset($_GET['id']))
 	if($receipt['customerid'])
 	{
 		$customer = $LMS->GetCustomer($receipt['customerid'], true);
-    		$customer['groups'] = $LMS->CustomergroupGetForCustomer($receipt['customerid']);
-                
-		if (ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_notes', false)))
-                        unset($customer['notes']);
+		$customer['groups'] = $LMS->CustomergroupGetForCustomer($receipt['customerid']);
+
+		if (ConfigHelper::checkConfig('receipts.show_notes'))
+			unset($customer['notes']);
 
 		// niezatwierdzone dokumenty klienta
-		if (ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_documents_warning', false)))
+		if (ConfigHelper::checkConfig('receipts.show_documents_warning'))
 			if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($receipt['customerid'])))
 			{
 				$documents_warning = ConfigHelper::getConfig('receipts.documents_warning');
@@ -93,10 +93,9 @@ if(isset($_GET['id']))
 			}
 		
 		// jesli klient posiada zablokowane komputery poinformujmy
-		// o tym kasjera, moze po wplacie trzeba bedzie zmienic ich status      
-		if (ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_nodes_warning', false)))
-		        if($DB->GetOne('SELECT COUNT(*) FROM vnodes WHERE ownerid = ? AND access = 0', array($receipt['customerid'])))
-			{
+		// o tym kasjera, moze po wplacie trzeba bedzie zmienic ich status
+		if (ConfigHelper::checkConfig('receipts.show_nodes_warning'))
+			if ($DB->GetOne('SELECT COUNT(*) FROM vnodes WHERE ownerid = ? AND access = 0', array($receipt['customerid']))) {
 				$nodes_warning = ConfigHelper::getConfig('receipts.nodes_warning');
 			        if(!empty($nodes_warning))
 			        	$customer['nodeswarning'] = $nodes_warning;
@@ -297,19 +296,17 @@ switch($action)
 		if(!$cid)
 			$cid = $oldcid;
 		
-		if(!isset($error))
-			if($LMS->CustomerExists(($cid)))
-			{
+		if (!isset($error))
+			if ($LMS->CustomerExists(($cid))) {
 				$customer = $LMS->GetCustomer($cid, true);
-	                        $customer['groups'] = $LMS->CustomergroupGetForCustomer($customer['id']);
-		        	
-				if (!ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_notes', false)))
-				        unset($customer['notes']);
-				
+				$customer['groups'] = $LMS->CustomergroupGetForCustomer($customer['id']);
+
+				if (!ConfigHelper::checkConfig('receipts.show_notes'))
+					unset($customer['notes']);
+
 				// niezatwierdzone dokumenty klienta
-				if (ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_nodes_warning', false)))
-					if($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($customer['id'])))
-					{
+				if (ConfigHelper::checkConfig('receipts.show_nodes_warning'))
+					if ($DB->GetOne('SELECT COUNT(*) FROM documents WHERE customerid = ? AND closed = 0 AND type < 0', array($customer['id']))) {
 						$documents_warning = ConfigHelper::getConfig('receipts.documents_warning');
 						if(!empty($documents_warning))
 							$customer['docwarning'] = $documents_warning;
@@ -319,9 +316,8 @@ switch($action)
 				
 				// jesli klient posiada zablokowane komputery poinformujmy
 				// o tym kasjera, moze po wplacie trzeba bedzie zmienic ich status
-				if (ConfigHelper::checkValue(ConfigHelper::getConfig('receipts.show_nodes_warning', false)))
-				        if($DB->GetOne('SELECT COUNT(*) FROM vnodes WHERE ownerid = ? AND access = 0', array($customer['id'])))
-					{
+				if (ConfigHelper::checkConfig('receipts.show_nodes_warning'))
+					if ($DB->GetOne('SELECT COUNT(*) FROM vnodes WHERE ownerid = ? AND access = 0', array($customer['id']))) {
 						$nodes_warning = ConfigHelper::getConfig('receipts.nodes_warning');
 					        if(!empty($nodes_warning))
 					        	$customer['nodeswarning'] = $nodes_warning;
@@ -631,10 +627,8 @@ if($action != '')
 
 $cashreglist = $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id');
 
-if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
-{
-        $SMARTY->assign('customerlist', $LMS->GetCustomerNames());
-}
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+	$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 
 $SMARTY->assign('cashreglist', $cashreglist);
 $SMARTY->assign('cashregcount', sizeof($cashreglist));

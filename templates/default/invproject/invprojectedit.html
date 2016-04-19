@@ -1,0 +1,43 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P><FORM method="POST" action="?m=invprojectedit&id={$invprojectedit.id}" name="invprojectedit">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		{if $divisions}
+		<TD width="1%"><img src="img/division.gif" alt=""></TD>
+		<TD width="1%">{trans("Division:")}</TD>
+		<TD style="width: 1%;">
+                	<SELECT size="1" name="invprojectedit[divisionid]" {tip text="Select division" trigger="divisionid"}>
+                        	{foreach from=$divisions item=item}
+                                <OPTION value="{$item.id}"{if $invprojectedit.divisionid ==$item.id} selected{/if}>{$item.shortname}</OPTION>
+                                {/foreach}
+                        </SELECT>
+                </TD>
+		{/if}
+		<TD width="1%"><img src="img/money.gif" alt=""></TD>
+		<TD width="1%"><B>{trans("Name:")}</B></TD>
+		<TD width="96%"><INPUT type="text" size="40" name="invprojectedit[name]" value="{$invprojectedit.name}" {tip text="Enter investment project name" trigger="name" bold=1}></TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD align="right" {if $divisions}colspan="6"{else}colspan="3"{/if}>
+			<A href="javascript:document.invprojectedit.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
+			<A href="?m=invprojectlist">{trans("Cancel")} <img src="img/cancel.gif" alt=""></A><BR>
+			<INPUT type="checkbox" name="invprojectedit[reuse]" id="reuse" value="ON" {if $invprojectedit.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when this invproject is saved")}</label>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+</P>
+<SCRIPT type="text/javascript">
+<!--
+document.forms['invprojectedit'].elements['invprojectedit[name]'].focus();
+//-->
+</SCRIPT>
+{/block}

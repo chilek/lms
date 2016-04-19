@@ -22,16 +22,9 @@
 			end.value = start.options[start.selectedIndex].value;
 		}
 	}
-	
-	function reset_customer()
-	{
-		if (document.forms['event'].elements['event[custid]'].value)
-			document.forms['event'].elements['event[customerid]'].value = document.forms['event'].elements['event[custid]'].value;
-	}
 
-	function change_customer(elem)
-	{
-	    xajax_select_customer(elem.value);
+	function change_customer(elem) {
+		xajax_select_customer(elem.value);
 	}
 
 	function update_nodes_location(data)
@@ -73,20 +66,18 @@
 		</TD>
 		<TD width="98%">
 {*			<INPUT type="hidden" name="event[date]" value="{$event.date}">*}
-			<div class="calendar">
-			{trans("Begin:")} <INPUT type="text" name="event[date]" value="{$event.date}" size="10" {tip text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
+			{trans("Begin:")} <INPUT type="text" name="event[date]" value="{$event.date}" size="10" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="date"}>
 			<SELECT name="event[begintime]" size="1" {tip text="Select time of"} OnChange="javascript:SetEndtime();">
 				{section name=time loop=$hours}
 				<OPTION value="{$hours[time]}" {if $hours[time] == $event.begintime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
 				{/section}
 			</SELECT>
-			{trans("End:")} <INPUT type="text" name="event[enddate]" value="{$event.enddate}" size="10" {tip text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="enddate"}>
+			{trans("End:")} <INPUT type="text" name="event[enddate]" value="{$event.enddate}" size="10" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means today) or click to choose it from calendar" trigger="enddate"}>
 			<SELECT name="event[endtime]" size="1" {tip text="Select time of"} OnChange="javascript:CheckEndtime();">
 				{section name=time loop=$hours}
 				<OPTION value="{$hours[time]}" {if $hours[time] == $event.endtime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
 				{/section}
 			</SELECT>
-			</div>
 		</TD>
 	</TR>
 	<TR>
@@ -134,17 +125,7 @@
 			<B>{trans("Customer:")}</B>
 		</TD>
 		<TD width="98%" nowrap>
-			{if $customerlist}
-			<SELECT name="event[customerid]" value="{$event.customerid}" {tip text="Select customer (optional)"} onChange="change_customer(this);document.forms['event'].elements['event[custid]'].value=document.forms['event'].elements['event[customerid]'].value">
-				<OPTION value="0"{if !$event.customerid} SELECTED{/if}>{trans("- select customer -")}</OPTION>
-				{foreach from=$customerlist item=customer}	
-				<OPTION value="{$customer.id}"{if $customer.id == $event.customerid} SELECTED{/if}>{$customer.customername|truncate:"40":"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
-				{/foreach}
-			</SELECT>
-			{trans("or Customer ID:")}
-			{else}{trans("ID:")}{/if}
-            		<INPUT TYPE="TEXT" NAME="event[custid]" VALUE="{if $event.customerid}{$event.customerid}{/if}" SIZE="5"{if $customerlist} onChange="change_customer(this);reset_customer()" onfocus="reset_customer()" {else} onblur="change_customer(this);" oninput="change_customer(this);" {/if} {tip text="Enter customer ID" trigger="custid"}>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.forms['event'].elements['event[custid]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+			{customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer(this);"}
 		</TD>
 	</TR>
 	<TR>
@@ -170,12 +151,26 @@
 		<TD width="1%">
 			<B>{trans("Users:")}</B>
 		</TD>
-		<TD width="98%" nowrap>
-			<SELECT size="{if $max_userlist_size > 0}{$max_userlist_size}{else}{size of=$userlist}{/if}" name="event[userlist][]" {tip text="Select user(s) (optional)"} multiple>
-				{section name=userlist loop=$userlist}	
-				<OPTION value="{$userlist[userlist].id}">{$userlist[userlist].name}</OPTION>
-				{/section}
+
+		<TD style="width: 98%;" class="multiselect nobr">
+			<SELECT name="event[userlist][]" id="userid" multiple>
+				{foreach $userlist as $user}
+				<OPTION value="{$user.id}"{if in_array($user.id, $event.userlist)} selected{/if}>{$user.name}</OPTION>
+				{/foreach}
 			</SELECT>
+
+			<div style="float: left; padding-top: 30px;">
+				<label>
+					<input type="radio" name="event[usergroup]" id="usergroup_0" value="0" onChange="xajax_getUsersForGroup(0)"{if empty($event.usergroup)} checked{/if}>
+					{trans("All users")}<br>
+				</label>
+				{foreach $usergroups as $group}
+					<label>
+						<input type="radio" name="event[usergroup]" id="usergroup_{$group.id}" value="{$group.id}" onClick="xajax_getUsersForGroup({$group.id})"{if $event.usergroup == $group.id} checked{/if}>
+						{$group.name}<br>
+					</label>
+				{/foreach}
+			</div>
 		</TD>
 	</TR>
 	<TR>
@@ -187,10 +182,19 @@
 	</TR>
     </TBODY>
 </TABLE>
-</P>
+</form>
 <SCRIPT type="text/javascript">
 <!--
 document.forms['event'].elements['event[title]'].focus();
+var userms = new multiselect('event', 'userid', '{trans("- select user -")}');
+
+function update_user_selection(users) {
+	{if ConfigHelper::getConfig('phpui.event_usergroup_selection_type', 'update') == 'update'}
+	userms.updateSelection(users);
+	{else}
+	userms.filterSelection(users);
+	{/if}
+}
 //-->
 </SCRIPT>
 {/block}

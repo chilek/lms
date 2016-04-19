@@ -37,7 +37,6 @@ $listdata['online'] = $netlist['online'];
 $listdata['order'] = $netlist['order'];
 $listdata['direction'] = $netlist['direction'];
 
-
 unset($netlist['assigned']);
 unset($netlist['size']);
 unset($netlist['online']);

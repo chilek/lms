@@ -1,0 +1,160 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+{include file="calendar_js.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<script type="text/javascript">
+<!--
+	function filter() {
+		document.page.action="?m=nodesessionlist";
+		document.page.target="";
+		document.page.submit();
+	}
+
+{if ConfigHelper::checkConfig('phpui.short_pagescroller')}
+	function pagechange1() {
+		document.page.action="?m=nodesessionlist&page=" + document.forms['page'].elements['page1'].value;
+		document.page.target="";
+		document.page.submit();
+	}
+
+	function pagechange2() {
+		document.page.action="?m=nodesessionlist&page=" + document.forms['page'].elements['page2'].value;
+		document.page.target="";
+		document.page.submit();
+	}
+{/if}
+//-->
+</script>
+<FORM METHOD="POST" NAME="page">
+<INPUT type="submit" class="hiddenbtn">
+<table style="width: 100%" class="lmsbox">
+	<thead>
+		<tr>
+			<td colspan="10">
+				<table style="width: 100%">
+					<tr>
+						<td style="width: 1%;" class="nobr">
+							<label>
+								<span class="bold">{trans("Filter:")}</span>
+								<SELECT name="filtertype">
+									<OPTION value="">{trans("- none -")}</OPTION>
+									<OPTION value="ip"{if $filtertype == 'ip'} selected{/if}>{trans("IP Address:")}</OPTION>
+									<OPTION value="mac"{if $filtertype == 'mac'} selected{/if}>{trans("MAC:")}</OPTION>
+									<OPTION value="customer"{if $filtertype == 'customer'} selected{/if}>{trans("Customer:")}</OPTION>
+									<OPTION value="nodeid"{if $filtertype == 'nodeid'} selected{/if}>{trans("Node ID:")}</OPTION>
+								</SELECT>&nbsp;
+								<input type="text" size="16" maxlength="32" name="filtervalue" value="{$filtervalue}">
+							</label>
+						</td>
+						<td style="width: 1%;" class="nobr">
+							<label>
+							</label>
+						</td>
+						<td style="width: 1%;" class="nobr">
+							<label>
+								{trans("Type:")}
+								<SELECT name="type">
+									<OPTION value="0">{trans("- all -")}</OPTION>
+									{foreach $_SESSIONTYPES as $typeidx => $typeval}
+									<OPTION value="{$typeidx}"{if $type == $typeidx} selected{/if}>{$typeval.label}</OPTION>
+									{/foreach}
+								</SELECT>
+							</label>
+						</td>
+						<td style="width: 1%;" class="nobr">
+							{trans("Started:")} <INPUT type="text" name="datefrom" size="20" maxlength="20" value="{$datefrom}" {tip class="calendar-time" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
+						</td>
+						<td style="width: 1%;" class="nobr">
+							{trans("Finished:")} <INPUT type="text" name="dateto" size="20" maxlength="20" value="{$dateto}" {tip class="calendar-time" text="Enter date in 'yyyy/mm/dd hh:mm' format (empty field means current date) or click to choose date from calendar"}>
+						</td>
+						<td style="width: 95%;" class="nobr">
+							<a href="javascript:filter();">&raquo;&raquo;&raquo;</a>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="fleft fbt bold">{trans("IP Address:")}</td>
+			<td class="fbt">{trans("Customer:")}</td>
+			<td class="fbt">{trans("MAC:")}</td>
+			<td class="fbt">{trans("Type:")}</td>
+			<td class="fbt bold">{trans("Started:")}</td>
+			<td class="fbt bold">{trans("Finished:")}</td>
+			<td class="fbt bold">{trans("Time Duration:")}</td>
+			<td class="fbt bold">{trans("Terminate Cause:")}</td>
+			<td class="fbt">{trans("Downloaded:")}</td>
+			<td class="fright fbt">{trans("Uploaded:")}</td>
+		</tr>
+		{if $listdata.total != 0}
+		<TR>
+			<TD class="pagination" COLSPAN="10">
+				{include file="scroller.html" loop=$nodesessions scrollerno=1}
+			</TD>
+		</TR>
+		{/if}
+	</thead>
+	<tfoot>
+		{if $listdata.total != 0}
+		<TR>
+			<TD class="pagination" COLSPAN="10">
+				{include file="scroller.html" loop=$nodesessions scrollerno=2}
+			</TD>
+		</TR>
+		{/if}
+	</tfoot>
+	<tbody>
+		{cycle values="light,lucid" print=false}
+		{section name=nodesession loop=$nodesessions start=$start max=$pagelimit}
+		{assign var=session value=$nodesessions[nodesession]}
+		<tr class="{cycle}">
+			<td class="fleft bold nobr">
+				{if $session.nodeid}<a href="?m=nodeinfo&id={$session.nodeid}">{/if}
+				{long2ip($session.ipaddr)}
+				{if $session.nodeid}</a>{/if}
+			</td>
+			<td class="nobr">
+				{if $session.customerid}
+				<a href="?m=customerinfo&id={$session.customerid}">{$session.lastname} {$session.name}</a>
+				{else}-{/if}
+			</td>
+			<td class="nobr">{$session.mac}</td>
+			<td class="nobr">
+				{$unknowntype=1}{$firsttype=1}
+				{foreach $_SESSIONTYPES as $sessiontypeid => $sessiontype}
+					{if ($session.type & $sessiontypeid) == $sessiontypeid}
+					{if !$firsttype}, {/if}{$sessiontype.label}
+					{$firsttype=0}
+					{$unknowntype=0}
+					{/if}
+				{/foreach}
+				{if $unknowntype}-{/if}
+			</td>
+			<td class="nobr">
+				<span class="bold">{$session.start|date_format:"%Y.%m.%d"}</span> {$session.start|date_format:"%H:%M:%S"}
+			</td>
+			<td class="nobr">
+				{if $session.stop}
+				<span class="bold">{$session.stop|date_format:"%Y.%m.%d"}</span> {$session.stop|date_format:"%H:%M:%S"}
+				{else}-{/if}
+			</td>
+			<TD class="bold nobr">{$session.duration}</TD>
+			<TD class="bold nobr">{$session.terminatecause}</TD>
+			<TD class="nobr">{$session.download}</TD>
+			<TD class="fright nobr">{$session.upload}</TD>
+		</tr>
+		{sectionelse}
+		<tr>
+			<td class="empty-table" colspan="10">
+				<P>&nbsp;</P>
+				<P>{trans("There are no sessions matching defined filter.")}</P>
+				<P>&nbsp;</P>
+			</td>
+		</tr>
+		{/section}
+	</tbody>
+</table>
+</form>
+{/block}

@@ -76,7 +76,6 @@ if(!empty($documents))
 $SMARTY->assign(array(
 	'expired' => $expired, 
 	'time' => $SESSION->get('addbt'),
-	'value' => $SESSION->get('addbv'),
 	'taxid' => $SESSION->get('addbtax'),
 	'comment' => $SESSION->get('addbc'),
 	'sourceid' => $SESSION->get('addsource'),

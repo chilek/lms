@@ -1,4 +1,5 @@
-BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; background-color: #EBE4D6; margin: 0; padding: 0; vertical-align: middle; }
+HTML { height: 100%; }
+BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; background-color: #EBE4D6; margin: 0; padding: 0; vertical-align: middle; min-height: 100%;}
 TABLE		{ border-collapse: collapse; border-color: #000000 }
 
 #pagecontainer  { height: 100%; }
@@ -8,6 +9,7 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 .bottomline { border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #bdac8a; }
 
 TD		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; vertical-align: middle; border-color: black; }
+td[onclick]	{ cursor: pointer; }
 .fleft           { border-left-width: 1pt; border-left-style: solid; }
 .fright          { border-right-width: 1pt; border-right-style: solid; }
 .ftop		{ border-top-width: 1pt; border-top-style: solid; }
@@ -98,10 +100,12 @@ div.multiselect {
 	vertical-align: middle;
 	padding: 0px 20px 0px 4px;
 	cursor: default;
-	background: url('dropdown.gif') no-repeat right #EBE4D6;
-	height: 16px;
-	width: 90px;
+	background: url('dropdown.gif') no-repeat right bottom #EBE4D6;
+	min-height: 16px;
+	max-width: 200px;
+	white-space: pre-wrap;
 	overflow: hidden;
+	min-width: 200px;
 }
 div.multiselectlayer {
 	position: absolute;
@@ -183,9 +187,10 @@ div.multiselectlayer ul li input { border: none; }
 
 .pre		{ font-size:  8pt; font-family: Courier, Courier New; }
 
-.suggestion_list { background-color: #EBE4D6; border: 1px solid; padding: 0px; width: 320px; }
-.suggestion_list ul { padding: 0; margin: 0; list-style-type: none; } 
-.suggestion_list span { position: absolute; right: 0; font-size: 9px; margin-right: 2px; color: brown; }
+.suggestion_list:hover { cursor: pointer; }
+.suggestion_list { background-color: #EBE4D6; border: 1px solid; padding: 0px; min-width: 320px; }
+.suggestion_list ul { padding: 0; margin: 0; list-style-type: none;} 
+.suggestion_list span { float: right; right: 0; font-size: 9px; margin-right: 2px; color: brown; padding-left: 20px; }
 .suggestion_list a { text-decoration: none; padding-left: 2px; color: black; }
 .suggestion_list .selected { background-color: #CCFFCC; }
 .suggestion_list .selected a { color: black; }
@@ -252,6 +257,10 @@ table.lmsbox > tfoot > tr {
     border-top: 1px solid black;
 }
 
+tr.space_row > td {
+	padding-top: 20px;
+}
+
 .summary {
 	text-align: right;
 	font-weight: bold;
@@ -273,7 +282,10 @@ table.lmsbox > tfoot > tr {
 
 table.lmsbox > thead { text-align: left; }
 
-td.empty-table { text-align: center; font-weight: bold; padding: 2em; background-color: #EBE4D6; }
+td.empty-table { background-color: #EBE4D6; }
+td.empty-table p { text-align: center; font-weight: bold; padding: 2em; }
+td.multiselect { min-width: 230px; }
+td.multiselect select { min-width: 200px; }
 
 .nobr { white-space: nowrap; }
 .text-right { text-align: right; }

@@ -30,6 +30,8 @@ $action = isset($_GET['action']) ? $_GET['action'] : NULL;
 
 if (isset($_GET['id']) && $action == 'init')
 {
+	if ($DB->GetOne('SELECT id FROM documents WHERE reference = ?', array($_GET['id'])))
+		$SESSION->redirect('?m=invoicelist');
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
 
 	$taxeslist = $LMS->GetTaxes($invoice['cdate'],$invoice['cdate']);
@@ -214,9 +216,8 @@ switch($action)
 			$contents[$idx]['vdiscount'] = f_round($contents[$idx]['vdiscount']);
 			$taxvalue = $taxeslist[$contents[$idx]['taxid']]['value'];
 
-			if ($contents[$idx]['valuenetto'] != $item['valuenetto']) {
-				$contents[$idx]['valuebrutto'] = round($contents[$idx]['valuenetto'] * ($taxvalue / 100 + 1),2);
-			}
+			if ($contents[$idx]['valuenetto'] != $item['valuenetto'])
+				$contents[$idx]['valuebrutto'] = $contents[$idx]['valuenetto'] * ($taxvalue / 100 + 1);
 
 			if (isset($item['deleted']) && $item['deleted']) {
 				$contents[$idx]['valuebrutto'] = 0;
@@ -225,9 +226,7 @@ switch($action)
 			}
 			elseif ($contents[$idx]['count'] != $item['count']
 				|| $contents[$idx]['valuebrutto'] != $item['valuebrutto'])
-			{
-				$contents[$idx]['cash'] = round($item['valuebrutto'] * $item['count'],2) - round($contents[$idx]['valuebrutto'] * $contents[$idx]['count'],2);
-			}
+				$contents[$idx]['cash'] = round($item['valuebrutto'] * $item['count'] - $contents[$idx]['valuebrutto'] * $contents[$idx]['count'], 2);
 
 			$contents[$idx]['valuebrutto'] = $contents[$idx]['valuebrutto'] - $item['valuebrutto'];
 			$contents[$idx]['count'] = $contents[$idx]['count'] - $item['count'];

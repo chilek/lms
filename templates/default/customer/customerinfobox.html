@@ -5,10 +5,10 @@
 		<TD width="99%"{if $customerpanel} class="fleftu hand" onClick="showOrHide('customerpanel');"{else} class="fleftu"{/if}>
 			<IMG SRC="img/customer.gif" ALT="">
 			<b>{if $customerpanel}{trans("Owner:")}{/if}
-			{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <span class="red">({trans("deleted customer")})</span>{/if}</b>
+			{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}{if $customerinfo.extid} / {$customerinfo.extid}{/if}){if $customerinfo.deleted} <span class="red">({trans("deleted customer")})</span>{/if}</b>
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
-			{if $customerpanel}<a href="?m=customerinfo&id={$customerinfo.id}">{trans('Navigate to the customer')} &raquo;</a>{/if}&nbsp;
+			{if $customerpanel}<a href="?m=customerinfo&amp;id={$customerinfo.id}">{trans('Navigate to the customer')} &raquo;</a>{/if}&nbsp;
 		</TD>
 	</TR>
     </THEAD>
@@ -47,30 +47,36 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" style="vertical-align: top">
-			<IMG SRC="img/home.gif" ALT="">
+		<TD style="width: 1%;" class="valign-top">
 		</TD>
-		<TD WIDTH="99%">
-			{$customerinfo.address}<BR>
-			{$customerinfo.zip} {$customerinfo.city}
-			{if $customerinfo.cstate}<BR>{$customerinfo.cstate}{/if}
-			{if $customerinfo.country}<BR>{t}{$customerinfo.country}{/t}{/if}
+		<TD style="width: 99%;">
+			<table>
+				<tr>
+					<td style="width: 1%;">
+						<fieldset style="width: 1%;" class="nobr">
+							<legend class="bold"><IMG SRC="img/home.gif" ALT=""> {trans("Address")}</legend>
+							{$customerinfo.address}<BR>
+							{$customerinfo.zip} {$customerinfo.city}
+							{if $customerinfo.cstate}<BR>{$customerinfo.cstate}{/if}
+							{if $customerinfo.country}<BR>{t}{$customerinfo.country}{/t}{/if}
+						</fieldset>
+					</td>
+					{if $customerinfo.post_name != "" || $customerinfo.post_address != ""}
+					<td style="width: 99%;">
+						<fieldset style="width: 1%;" class="nobr">
+							<legend class="bold"><IMG SRC="img/post.gif" ALT=""> {trans("Postal address")}</legend>
+							{if $customerinfo.post_name != ""}{$customerinfo.post_name}<br>{/if}
+							{if $customerinfo.post_address != ""}{$customerinfo.post_address}<br>{/if}
+							{$customerinfo.post_zip} {$customerinfo.post_city}
+							{if $customerinfo.post_cstate}<br>{$customerinfo.post_cstate}{/if}
+							{if $customerinfo.post_country}<br>{t}{$customerinfo.post_country}{/t}{/if}
+						</fieldset>
+					</td>
+					{/if}
+				</tr>
+			</table>
 		</TD>
 	</TR>
-{if $customerinfo.post_name != "" || $customerinfo.post_address != ""}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/post.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%">
-			{if $customerinfo.post_name != ""}{$customerinfo.post_name}{/if}
-			{if $customerinfo.post_address != ""}<BR>{$customerinfo.post_address}{/if}
-			{$customerinfo.post_zip} {$customerinfo.post_city}
-			{if $customerinfo.post_cstate}<BR>{$customerinfo.post_cstate}{/if}
-			{if $customerinfo.post_country}<BR>{t}{$customerinfo.post_country}{/t}{/if}
-		</TD>
-	</TR>
-{/if}
 {if !empty($customerinfo.contacts)}
 	<TR>
 		<TD style="width: 1%;"></TD>
@@ -79,7 +85,7 @@
 				<legend class="bold"><IMG SRC="img/phone.gif" ALT=""> {trans("Contact phones")}</legend>
 				<TABLE>
 					{foreach $customerinfo.contacts as $contact}
-					<TR CLASS="LIGHT{if ($contact.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} blend{/if}">
+					<TR{if ($contact.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>
 						<TD>
 							{$contact.phone}
 							{if $contact.typestr}[{$contact.typestr}]{/if}
@@ -100,11 +106,32 @@
 				<legend class="bold"><IMG SRC="img/mail.gif" ALT=""> {trans("Email addresses")}</legend>
 				<TABLE>
 					{foreach $customerinfo.emails as $email}
-					<TR CLASS="LIGHT{if ($email.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} blend{/if}">
+					<TR{if ($email.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>
 						<TD>
 							<A HREF="mailto:{$email.email}">{$email.email}</A>
-                                                        {if $email.typestr}[{$email.typestr}]{/if}
-                                                        {if $email.name} ({$email.name|truncate:"40":"...":true}){/if}
+							{if $email.typestr}[{$email.typestr}]{/if}
+							{if $email.name} ({$email.name|truncate:"40":"...":true}){/if}
+						</TD>
+					</TR>
+					{/foreach}
+				</TABLE>
+			</fieldset>
+		</TD>
+	</TR>
+{/if}
+{if !empty($customerinfo.accounts)}
+	<TR>
+		<TD style="width: 1%;"></TD>
+		<TD style="width: 99%;" class="nobr">
+			<fieldset style="width: 1%;" class="nobr">
+				<legend class="bold"><IMG SRC="img/card.gif" ALT=""> {trans("Bank accounts")}</legend>
+				<TABLE>
+					{foreach $customerinfo.accounts as $account}
+					<TR{if ($account.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>
+						<TD>
+							{format_bankaccount($account.account)}
+							{if $account.typestr}[{$account.typestr}]{/if}
+							{if $account.name} ({$account.name|truncate:"40":"...":true}){/if}
 						</TD>
 					</TR>
 					{/foreach}
@@ -234,9 +261,9 @@
                 {if $customerinfo.cutoffstop > $smarty.now}
 			    <TR>
 			        <TD colspan="2">
-			            <FONT class="alert">
+			            <span class="alert">
 			            {t a=$customerinfo.cutoffstop|date_format:"%Y/%m/%d"}Cutoff suspended to $a{/t}
-			            </FONT>
+			            </span>
 			        </TD>
 			    </TR>
                 {/if}
@@ -350,7 +377,7 @@
 			<B>{trans("Balance:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			{if $customerinfo.balance < 0}<FONT class="alert">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
+			{if $customerinfo.balance < 0}<span class="alert">{$customerinfo.balance|money_format}</span>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
 		</TD>
 	</TR>
 	{/if}
@@ -389,28 +416,24 @@
 		</TD>
         </TR>
 	<TR>
-		<TD WIDTH="100%" ALIGN="RIGHT" colspan="2">
+		<TD WIDTH="100%" colspan="2" class="text-right nobr">
 {/if}
 			{block name="customerinfobox-buttons"}
 			{if $customerinfo.deleted}
 				{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
-				<A href="?m=customerdel&id={$customerinfo.id}&type=permanent">{trans("Remove permanently")} <img src="img/delete.gif" alt="[ {trans("Remove permanently")} ]"></A>
+				<A href="?m=customerdel&amp;id={$customerinfo.id}&amp;type=permanent">{trans("Remove permanently")} <img src="img/delete.gif" alt="[ {trans("Remove permanently")} ]"></A>
 				{/if}
-				<A HREF="?m=customeredit&id={$customerinfo.id}&action=recover">{trans("Restore")} <IMG SRC="img/recover.gif" ALT="[ {trans("Restore")} ]"></A>
+				<A HREF="?m=customeredit&amp;id={$customerinfo.id}&action=recover">{trans("Restore")} <IMG SRC="img/recover.gif" ALT="[ {trans("Restore")} ]"></A>
 			{else}
-				<NOBR>
-				<A HREF="?m=rtsearch&id={$customerinfo.id}"{if $customerstats['tickets']['notresolved']} class="bold"{/if}>{trans("Tickets")}{if $customerstats['tickets']} ({$customerstats['tickets']['all']}{if $customerstats['tickets']['notresolved']} / {$customerstats['tickets']['notresolved']}{/if}){/if}</A> <IMG src="img/ticket.gif" alt="[ {trans("Tickets")} ]"></A>
-				<A href="?m=accountlist&u={$customerinfo.id}">{trans("Accounts")} ({$customerstats['accounts']})</A> <IMG src="img/account.gif" alt="[ {trans("Accounts")} ]">
-				<A href="?m=domainlist&c={$customerinfo.id}">{trans("Domains")} ({$customerstats['domains']})</A> <IMG src="img/network.gif" alt="[ {trans("Domains")} ]">
-				<A href="?m=trafficprint&type=customertraffic&customer={$customerinfo.id}" target="_blank">{trans("Stats")} <IMG src="img/traffic.gif" alt="[ {trans("Stats")} ]"></A>
-				</NOBR>
-				<NOBR>
-				<A href="?m=customeredit&id={$customerinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" alt="[ {trans("Edit")} ]"></A>
-				<A href="?m=customerdel&id={$customerinfo.id}">{trans("Delete")} <img src="img/delete.gif" alt="[ {trans("Delete")} ]"></A>
-				</NOBR>
+				<A HREF="?m=rtsearch&amp;id={$customerinfo.id}"{if $customerstats['tickets']['notresolved']} class="bold"{/if}>{trans("Tickets")}{if $customerstats['tickets']} ({$customerstats['tickets']['all']}{if $customerstats['tickets']['notresolved']} / {$customerstats['tickets']['notresolved']}{/if}){/if}</A> <IMG src="img/ticket.gif" alt="[ {trans("Tickets")} ]">
+				<A href="?m=accountlist&amp;u={$customerinfo.id}">{trans("Accounts")} ({$customerstats['accounts']})</A> <IMG src="img/account.gif" alt="[ {trans("Accounts")} ]">
+				<A href="?m=domainlist&amp;c={$customerinfo.id}">{trans("Domains")} ({$customerstats['domains']})</A> <IMG src="img/network.gif" alt="[ {trans("Domains")} ]">
+				<A href="?m=trafficprint&amp;type=customertraffic&amp;customer={$customerinfo.id}" target="_blank">{trans("Stats")} <IMG src="img/traffic.gif" alt="[ {trans("Stats")} ]"></A>
+				<A href="?m=customeredit&amp;id={$customerinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" alt="[ {trans("Edit")} ]"></A>
+				<A href="?m=customerdel&amp;id={$customerinfo.id}">{trans("Delete")} <img src="img/delete.gif" alt="[ {trans("Delete")} ]"></A>
 			{/if}
 			{if $info_link}
-				<A href="?m=customerinfo&id={$customerinfo.id}">{trans("Info")} <img src="img/info.gif" alt="[ {trans("Info")} ]"></A>
+				<A href="?m=customerinfo&amp;id={$customerinfo.id}">{trans("Info")} <img src="img/info.gif" alt="[ {trans("Info")} ]"></A>
 			{/if}
 			{/block}
 		</TD>

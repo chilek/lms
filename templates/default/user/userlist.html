@@ -67,7 +67,7 @@
 			    {/if}
 			{/if}
 			<a href="?m=userpasswd&amp;id={$userslist[userslist].id}"><img src="img/keys.gif" alt="[ {trans("Change password")} ]" title="[ {trans("Change password")} ]"></a>
-			{if $userslist[userslist].id != $layout.logid}<a href="?m=userdel&amp;id={$userslist[userslist].id}" onClick="return confirmLink(this, '{trans("Are you sure, you want to irreversibly delete that user account?")}');">{/if}<img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
+			{if $userslist[userslist].id != $layout.logid}<a href="?m=userdel&amp;id={$userslist[userslist].id}" onClick="return confirmLink(this, '{trans("Are you sure, you want to irreversibly delete that user account?")}');"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>{/if}
 			<a href="?m=useredit&amp;id={$userslist[userslist].id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
 			<a href="?m=userinfo&amp;id={$userslist[userslist].id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></a>
 		</TD>

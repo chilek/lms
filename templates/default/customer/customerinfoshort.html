@@ -17,7 +17,7 @@
 			<IMG SRC="img/customer.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			<B>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <FONT COLOR="RED">({trans("deleted customer")})</FONT>{/if}</B>
+			<B>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <span COLOR="RED">({trans("deleted customer")})</span>{/if}</B>
 		</TD>
 	</TR>
     </THEAD>
@@ -172,7 +172,7 @@
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 			<B>{trans("Balance:")}</B>
-			{if $customerinfo.balance < 0}<FONT class="alert">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
+			{if $customerinfo.balance < 0}<span class="alert">{$customerinfo.balance|money_format}</span>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
 		</TD>
 	</TR>
 {/if}

@@ -28,6 +28,7 @@ CREATE TABLE users (
 	accessfrom integer DEFAULT 0 NOT NULL,
 	accessto integer DEFAULT 0 NOT NULL,
 	swekey_id varchar(32) DEFAULT NULL,
+	settings text NOT NULL DEFAULT '',
 	PRIMARY KEY (id),
 	UNIQUE (login, swekey_id)
 );
@@ -40,16 +41,21 @@ CREATE SEQUENCE customers_id_seq;
 DROP TABLE IF EXISTS customers CASCADE;
 CREATE TABLE customers (
 	id integer DEFAULT nextval('customers_id_seq'::text) NOT NULL,
+	extid varchar(32) DEFAULT '' NOT NULL,
 	lastname varchar(128)	DEFAULT '' NOT NULL,
 	name varchar(128)	DEFAULT '' NOT NULL,
 	status smallint 	DEFAULT 0 NOT NULL,
 	type smallint		DEFAULT 0 NOT NULL,
-	address varchar(255) 	DEFAULT '' NOT NULL,
+	street varchar(255) DEFAULT '' NOT NULL,
+	building varchar(20) DEFAULT NULL,
+	apartment varchar(20) DEFAULT NULL,
 	zip varchar(10)		DEFAULT '' NOT NULL,
 	city varchar(32) 	DEFAULT '' NOT NULL,
 	countryid integer	DEFAULT NULL,
 	post_name varchar(255) DEFAULT NULL,
-	post_address varchar(255) DEFAULT NULL,
+	post_street varchar(255) DEFAULT NULL,
+	post_building varchar(20) DEFAULT NULL,
+	post_apartment varchar(20) DEFAULT NULL,
 	post_zip varchar(10)	DEFAULT NULL,
 	post_city varchar(32) 	DEFAULT NULL,
 	post_countryid integer	DEFAULT NULL,
@@ -363,6 +369,7 @@ CREATE TABLE networks (
 	dhcpend varchar(16) 	DEFAULT '' NOT NULL,
 	disabled smallint 	DEFAULT 0 NOT NULL,
 	notes text		DEFAULT '' NOT NULL,
+	vlanid smallint DEFAULT NULL,
 	hostid integer NULL
 		REFERENCES hosts (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id),
@@ -381,6 +388,8 @@ CREATE TABLE invprojects (
 	id integer DEFAULT nextval('invprojects_id_seq'::text) NOT NULL,
 	name varchar(255) NOT NULL,
 	type smallint DEFAULT 0,
+        divisionid integer DEFAULT NULL
+                REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY(id)
 );
 
@@ -410,6 +419,8 @@ CREATE TABLE netnodes (
 	coowner varchar(255) DEFAULT '',
 	uip smallint DEFAULT 0,
 	miar smallint DEFAULT 0,
+	divisionid integer
+		REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY(id)
 );
 
@@ -661,6 +672,8 @@ CREATE TABLE tariffs (
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
 	period smallint 	DEFAULT NULL,
 	taxid integer 		DEFAULT 0 NOT NULL,
+	numberplanid integer DEFAULT NULL
+		REFERENCES numberplans (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
 	uprate integer		DEFAULT 0 NOT NULL,
 	upceil integer		DEFAULT 0 NOT NULL,
@@ -892,7 +905,7 @@ DROP TABLE IF EXISTS invoicecontents CASCADE;
 CREATE TABLE invoicecontents (
 	docid integer 		DEFAULT 0 NOT NULL,
 	itemid smallint		DEFAULT 0 NOT NULL,
-	value numeric(9,2) 	DEFAULT 0 NOT NULL,
+	value numeric(12,5) 	DEFAULT 0 NOT NULL,
 	taxid integer 		DEFAULT 0 NOT NULL,
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
 	content varchar(16) 	DEFAULT '' NOT NULL,
@@ -1361,6 +1374,7 @@ CREATE TABLE uiconfig (
     value 	text 		NOT NULL DEFAULT '',
     description text 		NOT NULL DEFAULT '',
     disabled 	smallint 	NOT NULL DEFAULT 0,
+    type 	smallint 	NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     CONSTRAINT uiconfig_section_key UNIQUE (section, var)
 );
@@ -1904,6 +1918,52 @@ CREATE TABLE templates (
 );
 
 /* ---------------------------------------------------
+ Structure of table usergroups
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS usergroups_id_seq;
+CREATE SEQUENCE usergroups_id_seq;
+DROP TABLE IF EXISTS usergroups CASCADE;
+CREATE TABLE usergroups (
+	id integer DEFAULT nextval('usergroups_id_seq'::text) NOT NULL,
+	name varchar(255) DEFAULT '' NOT NULL,
+	description text DEFAULT '' NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (name)
+);
+
+/* ---------------------------------------------------
+ Structure of table userassignments
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS userassignments_id_seq;
+CREATE SEQUENCE userassignments_id_seq;
+DROP TABLE IF EXISTS userassignments CASCADE;
+CREATE TABLE userassignments (
+	id integer DEFAULT nextval('userassignments_id_seq'::text) NOT NULL,
+	usergroupid integer NOT NULL
+		REFERENCES usergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	userid integer NOT NULL
+		REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id),
+	UNIQUE (usergroupid, userid)
+);
+CREATE INDEX userassignments_userid_idx ON userassignments (userid);
+
+/* ---------------------------------------------------
+ Structure of table passwdhistory
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS passwdhistory_id_seq;
+CREATE SEQUENCE passwdhistory_id_seq;
+DROP TABLE IF EXISTS passwdhistory CASCADE;
+CREATE TABLE passwdhistory (
+	id integer DEFAULT nextval('passwdhistory_id_seq'::text) NOT NULL,
+	userid integer NOT NULL
+		REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	hash varchar(255) DEFAULT '' NOT NULL,
+	PRIMARY KEY (id)
+);
+CREATE INDEX passwdhistory_userid_idx ON passwdhistory (userid);
+
+/* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS up_rights_id_seq;
@@ -1989,17 +2049,45 @@ CASE
 END
 ' LANGUAGE SQL;
 
-CREATE VIEW customersview AS
-SELECT c.* FROM customers c
-        WHERE NOT EXISTS (
-	        SELECT 1 FROM customerassignments a 
-	        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid) 
-	        WHERE e.userid = lms_current_user() AND a.customerid = c.id) 
-	        AND c.type < 2;
+CREATE VIEW customerview AS
+	SELECT c.*,
+		(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN street || ' ' || building
+			ELSE street || ' ' || building || '/' || apartment END) END) AS address,
+		(CASE WHEN post_street IS NULL THEN '' ELSE
+			(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN post_street || ' ' || post_building
+				ELSE post_street || ' ' || post_building || '/' || post_apartment END)
+			END)
+		END) AS post_address
+	FROM customers c
+	WHERE NOT EXISTS (
+			SELECT 1 FROM customerassignments a 
+			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid) 
+			WHERE e.userid = lms_current_user() AND a.customerid = c.id) 
+		AND c.type < 2;
 
 CREATE VIEW contractorview AS
-SELECT c.* FROM customers c
-        WHERE c.type = '2' ;
+	SELECT c.*,
+		(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN street || ' ' || building
+			ELSE street || ' ' || building || '/' || apartment END) END) AS address,
+		(CASE WHEN post_street IS NULL THEN '' ELSE
+			(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN post_street || ' ' || post_building
+				ELSE post_street || ' ' || post_building || '/' || post_apartment END)
+			END)
+		END) AS post_address
+	FROM customers c
+	WHERE c.type = 2;
+
+CREATE VIEW customeraddressview AS
+	SELECT c.*,
+		(CASE WHEN building IS NULL THEN street ELSE (CASE WHEN apartment IS NULL THEN street || ' ' || building
+			ELSE street || ' ' || building || '/' || apartment END) END) AS address,
+		(CASE WHEN post_street IS NULL THEN '' ELSE
+			(CASE WHEN post_building IS NULL THEN post_street ELSE (CASE WHEN post_apartment IS NULL THEN post_street || ' ' || post_building
+				ELSE post_street || ' ' || post_building || '/' || post_apartment END)
+			END)
+		END) AS post_address
+	FROM customers c
+	WHERE c.type < 2;
 
 CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
 SELECT $1::text;
@@ -2103,6 +2191,8 @@ INSERT INTO nastypes (name) VALUES
 ('other');
 
 INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
+('phpui', 'default_autosuggest_placement','bottom','',0),
+('phpui', 'autosuggest_max_length','40','',0),
 ('phpui', 'lang', '', '', 0),
 ('phpui', 'allow_from', '', '', 0),
 ('phpui', 'default_module', 'welcome', '', 0),
@@ -2167,6 +2257,14 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui', 'logging', 'false', '', 0),
 ('phpui', 'hide_toolbar', 'false', '', 0),
 ('phpui', 'add_customer_group_required', 'false', '', 0),
+('phpui', 'document_margins', '10,5,15,5', '', 0),
+('phpui', 'quicksearch_limit', '15', '', 0),
+('phpui', 'ping_type', '1', '', 0),
+('phpui', 'default_teryt_city', 'false', '', 0),
+('phpui', 'passwordhistory', 6, '', 0),
+('phpui', 'event_usergroup_selection_type', 'update', '', 0),
+('payments', 'date_format', '%Y/%m/%d', '', 0),
+('payments', 'default_unit_name', 'pcs.', '', 0),
 ('invoices', 'template_file', 'invoice.html', '', 0),
 ('invoices', 'content_type', 'text/html', '', 0),
 ('invoices', 'cnote_template_file', 'invoice.html', '', 0),
@@ -2190,6 +2288,8 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('mail', 'debug_email', '', '', 0),
 ('mail', 'smtp_host', '127.0.0.1', '', 0),
 ('mail', 'smtp_port', '25', '', 0),
+('mail', 'backend', 'pear', '', 0),
+('mail', 'smtp_secure', 'ssl', '', 0),
 ('zones', 'hostmaster_mail', 'hostmaster.localhost', '', 0),
 ('zones', 'master_dns', 'localhost', '', 0),
 ('zones', 'slave_dns', 'localhost', '', 0),
@@ -2548,4 +2648,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2015121101');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016040700');

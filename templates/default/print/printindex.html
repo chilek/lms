@@ -178,15 +178,12 @@
 								<TD style="width: 1%;" class="nobr"><IMG src="img/calendar.gif" alt=""></TD>
 								<TD style="width: 1%;" class="bold nobr">{trans("Balance date:")}</TD>
 								<TD style="width: 98%;" class="nobr">
-									<div class="calendar">
-									<INPUT type="text" name="day" size="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-									</div>
+									<INPUT type="text" name="day" size="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
 								</TD>
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="nobr"><IMG src="img/docum.gif" alt=""></TD>
 								<TD style="width: 99%;" class="nobr" colspan="2">
-									<div class="calendar">
 									<span class="bold">{trans("With document of type:")}</span>
 									<SELECT SIZE="1" name="doctype" {tip text="Select document type"}>
 										<OPTION value="0">{trans("- all -")}</OPTION>
@@ -195,9 +192,8 @@
 										{/foreach}
 									</SELECT>
 									<span class="bold">{trans("in date:")}</span>
-									{trans("From")}&nbsp;<INPUT type="text" name="docfrom" size="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-									{trans("To")}&nbsp;<INPUT type="text" name="docto" size="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-									</div>
+									{trans("From")}&nbsp;<INPUT type="text" name="docfrom" size="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+									{trans("To")}&nbsp;<INPUT type="text" name="docto" size="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
 								</TD>
 							</TR>
 						</TABLE>
@@ -304,19 +300,19 @@
 					<TD style="width: 1%;" nowrap>
 					    <TABLE>
 						<TR>
-						    <TD style="width: 1%;">
+						    <TD style="1%;">
 							<IMG src="img/money.gif" alt="">
 						    </TD>
-						    <TD style="width: 1%;" nowrap>
+						    <TD style="1%;" class="nobr">
 							<B>{trans("Transaction type:")}</B>
 						    </TD>
-						    <TD style="width: 98%;">
-							<SELECT name="types[]" id="balancelisttype" {tip text="Select transaction type"} multiple>
-							    <OPTION value="1">{trans("Liability")}</OPTION>
-							    <OPTION value="2">{trans("Income")}</OPTION>
-							    <OPTION value="3">{trans("Expense")}</OPTION>
-							</SELECT>
-						    </TD>
+							<TD style="98%;" class="multiselect">
+								<SELECT name="types[]" id="balancelisttype" {tip text="Select transaction type"} multiple>
+									<OPTION value="1">{trans("Liability")}</OPTION>
+									<OPTION value="2">{trans("Income")}</OPTION>
+									<OPTION value="3">{trans("Expense")}</OPTION>
+								</SELECT>
+							</TD>
 						</TR>
 						<TR>
 						    <TD style="width: 1%;">
@@ -355,11 +351,10 @@
 					<TD style="width: 1%;">
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
-					<TD style="width: 95%;" nowrap style="vertical-align: middle">
-						<div class="calendar"><B>{trans("Period:")}</B>
-						{trans("From")}&nbsp;<INPUT type="text" name="balancefrom" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT type="text" name="balanceto" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
-						</div>
+					<TD style="width: 95%;" class="nobr">
+						<span class="bold">{trans("Period:")}</span>
+						{trans("From")}&nbsp;<INPUT type="text" name="balancefrom" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT type="text" name="balanceto" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 				</TR>
 			</TABLE>
@@ -409,26 +404,15 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 						{trans("Customer:")}
 					</TD>
 					<TD style="width: 1%;" class="nobr">
-						{if $customers}
-						<SELECT size="1" name="customer" {tip text="Select customer"}>
-							{foreach from=$customers item=customer}
-							<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
-							{/foreach}
-						</SELECT>
-						{else}
-						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID"}>
-						<a href="javascript: void(0);" onClick="return customerchoosewin(document.printcustomerbalance.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-						{/if}
+						{customerlist form="printcustomerbalance" customers=$customers selectname="cust" inputname="customer" firstoption=""}
 					</TD>
 					<TD style="width: 1%;">
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
 					<TD style="width: 96%;" class="nobr">
-						<div class="calendar">
 						<span class="bold">{trans("Period:")}</span>&nbsp;
-						{trans("From")}&nbsp;<INPUT type="text" name="from" size="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means 1970/01/01) or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT type="text" name="to" size="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
-						</div>
+						{trans("From")}&nbsp;<INPUT type="text" name="from" size="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means 1970/01/01) or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT type="text" name="to" size="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 				</TR>
 			</TABLE>
@@ -487,13 +471,13 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 						    <TD style="width: 1%;" nowrap>
 							<B>{trans("Group:")}</B>
 						    </TD>
-						    <TD style="width: 97%;" nowrap>
-							<SELECT size="4" name="group[]" MULTIPLE id="invoicereportgroup" {tip text="Select group"}>
-			    				    {section name="customergroups" loop=$customergroups}
-							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
-							    {/section}
-							</SELECT>
-						    </TD>
+							<TD style="width: 97%;" class="multiselect nobr">
+								<SELECT size="4" name="group[]" multiple id="invoicereportgroup" {tip text="Select group"}>
+									{section name="customergroups" loop=$customergroups}
+									<OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
+									{/section}
+								</SELECT>
+							</TD>
 						    <TD style="width: 1%;" nowrap>
     							<INPUT type="checkbox" name="groupexclude" id="invoicereport-groupexclude" {if $listdata.groupexclude} CHECKED{/if}><label for="invoicereport-groupexclude">{trans("exclude group")}</label>
 						    </TD>
@@ -505,15 +489,15 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 						    <TD style="width: 1%;" nowrap>
 							<B>{trans("Plan:")}</B>
 						    </TD>
-						    <TD style="width: 98%;" colspan="2" nowrap>
-							<SELECT name="numberplanid[]" id="numberplanid" {tip text="Select numbering plan"} multiple>
-							    <OPTION value="0">- {trans("all")} -</OPTION>
-    							    {foreach item=plan from=$numberplans}
-					    		    {assign var=period value=$plan.period}
-							    <OPTION value="{$plan.id}">{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
-							    {/foreach}
-							</SELECT>
-						    </TD>
+							<TD style="width: 98%;" colspan="2" class="multiselect nobr">
+								<SELECT name="numberplanid[]" id="numberplanid" style="min-width: 200px;" {tip text="Select numbering plan"} multiple>
+									<OPTION value="0">- {trans("all")} -</OPTION>
+									{foreach item=plan from=$numberplans}
+									{assign var=period value=$plan.period}
+									<OPTION value="{$plan.id}">{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+									{/foreach}
+								</SELECT>
+							</TD>
 						</TR>
 					    </TABLE>
 					</TD>
@@ -527,14 +511,10 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 						            <B>{trans("Period:")}</B>
 					            </TD>
 					            <TD style="width: 1%;" nowrap>
-							<div class="calendar">
-						            {trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-							</div>
+						            {trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					            </TD>
 					            <TD style="width: 98%;" nowrap>
-							<div class="calendar">
-						            {trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-							</div>
+						            {trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					            </TD>
 					        </TR>
 						    <TR>
@@ -647,12 +627,10 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 					<TD style="width: 1%;">
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
-					<TD style="width: 1%;" nowrap>
-						<div class="calendar">
-						<B>{trans("Period:")}</B>&nbsp;
-						{trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
-						</div>
+					<TD style="width: 1%;" class="nobr">
+						<span class="bold">{trans("Period:")}</span>&nbsp;
+						{trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 					<TD style="width: 97%;" nowrap>
 						<input type="checkbox" name="extended" value="1" id="receiptlist-extended"><label for="receiptlist-extended">{trans("extended format")}</label>
@@ -710,25 +688,15 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 					<TD style="width: 1%;">
 					    <TABLE width="100%">
 						<TR>
-						    <TD style="width: 1%;">
-							<IMG src="img/customer.gif" alt="">
-						    </TD>
-						    <TD style="width: 1%;" nowrap>
-							<B>{trans("Customer:")}</B>
-						    </TD>
-						    <TD style="width: 98%;" nowrap>
-							{if $customers}
-							<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
-							    <OPTION value="0">{trans("- all customers -")}</OPTION>
-							    {foreach from=$customers item=customer}
-							    <OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
-							    {/foreach}
-							</SELECT>
-							{else}
-							<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
-							<a href="javascript: void(0);" onClick="return customerchoosewin(document.printinvoices.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-							{/if}
-						    </TD>
+							<TD style="width: 1%;">
+								<IMG src="img/customer.gif" alt="">
+							</TD>
+							<TD style="width: 1%;" class="bold nobr">
+								{trans("Customer:")}
+							</TD>
+							<TD style="width: 98%;" class="nobr">
+								{customerlist form="printinvoices" customers=$customers selectname="cust" inputname="customer" firstoption="- all customers -" selecttip="You can select customer to limit results" inputtip="Enter customer ID or leave empty for all customers"}
+							</TD>
 						</TR>
 						<TR>
 						    <TD style="width: 1%;">
@@ -772,12 +740,10 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 								<TD style="width: 1%;">
 									<IMG src="img/calendar.gif" alt="">
 								</TD>
-								<TD style="width: 1%; white-space: nowrap;">
-									<div class="calendar">
+								<TD style="width: 1%;" class="nobr">
 									<span class="bold">{trans("Period:")}</span>&nbsp;
-									{trans("From")}&nbsp;<INPUT type="text" name="invoicefrom" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-									{trans("To")}&nbsp;<INPUT type="text" name="invoiceto" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-									</div>
+									{trans("From")}&nbsp;<INPUT type="text" name="invoicefrom" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+									{trans("To")}&nbsp;<INPUT type="text" name="invoiceto" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 								</TD>
 								<TD style="width: 1%;">
 									<IMG src="img/info.gif" alt="">
@@ -834,25 +800,15 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 					<TD style="width: 1%;">
 					    <TABLE width="100%">
 						<TR>
-						    <TD style="width: 1%;">
-							<IMG src="img/customer.gif" alt="">
-						    </TD>
-						    <TD style="width: 1%;" nowrap>
-							<B>{trans("Customer:")}</B>
-						    </TD>
-						    <TD style="width: 98%;" nowrap>
-							{if $customers}
-							<SELECT size="1" name="customer" {tip text="You can select customer to limit results"}>
-							    <OPTION value="0">{trans("- all customers -")}</OPTION>
-							    {foreach from=$customers item=customer}
-							    <OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
-							    {/foreach}
-							</SELECT>
-							{else}
-							<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
-							<a href="javascript: void(0);" onClick="return customerchoosewin(document.printforms.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-							{/if}
-						    </TD>
+							<TD style="width: 1%;">
+								<IMG src="img/customer.gif" alt="">
+							</TD>
+							<TD style="width: 1%;" class="bold nobr">
+								{trans("Customer:")}
+							</TD>
+							<TD style="width: 98%;" nowrap>
+								{customerlist form="printforms" customers=$customers selectname="cust" inputname="customer" firstoption="- all customers -" selecttip="You can select customer to limit results" inputtip="Enter customer ID or leave empty for all customers"}
+							</TD>
 						</TR>
 						<TR>
 						    <TD style="width: 1%;">
@@ -915,12 +871,10 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 					<TD style="width: 1%;">
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
-					<TD style="width: 99%;" nowrap>
-						<div class="calendar">
-						<B>{trans("Period:")}</B>&nbsp;
-						{trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						</div>
+					<TD style="width: 99%;" class="nobr">
+						<span class="bold">{trans("Period:")}</span>&nbsp;
+						{trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
 				</TR>
 			</TABLE>
@@ -965,26 +919,14 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 						{trans("Customer:")}
 					</TD>
 					<TD style="width: 1%;" class="nobr">
-						{if $customers}
-						<SELECT size="1" name="customer" {tip text="Select customer"}>
-							<OPTION value="0" selected>{trans("- all customers -")}</OPTION>
-							{foreach from=$customers item=customer}
-							<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
-							{/foreach}
-						</SELECT>
-						{else}
-						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
-						<a href="javascript: void(0);" onClick="return customerchoosewin(document.liabilityreport.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-						{/if}
+						{customerlist form="liabilityreport" customers=$customers selectname="cust" inputname="customer" firstoption="- all customers -" inputtip="Enter customer ID or leave empty for all customers"}
 					</TD>
 					<TD style="width: 1%;">
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
 					<TD style="width: 1%;" class="bold nobr">
-						<div class="calendar">
 						{trans("Day:")}&nbsp;
-						<INPUT type="text" name="day" size="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						</div>
+						<INPUT type="text" name="day" size="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
 					<TD style="width: 1%;">
 						<IMG src="img/view.gif" alt="">
@@ -1061,12 +1003,10 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 					<TD style="width: 1%;">
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
-					<TD style="width: 96%;" nowrap style="vertical-align: middle">
-						<div class="calendar">
-						<B>{trans("Period:")}</B>
-						{trans("From")}&nbsp;<INPUT type="text" name="importfrom" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT type="text" name="importto" SIZE="10" maxlength="10" {tip text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						</div>
+					<TD style="width: 96%;" class="nobr">
+						<span class="bold">{trans("Period:")}</span>
+						{trans("From")}&nbsp;<INPUT type="text" name="importfrom" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT type="text" name="importto" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
 				</TR>
 			</TABLE>
@@ -1107,11 +1047,11 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 					<TD style="width: 1%;" nowrap>
 						<B>{trans("Status:")}</B>
 					</TD>
-					<TD style="width: 1%;" {tip text="Select nodes group"}>
-						<NOBR><INPUT class="radio light" type="radio" id="nodelist-all" name="filter" value="0" CHECKED><label for="nodelist-all">{trans("all")}</label></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="nodelist-connected" name="filter" value="1"><label for="nodelist-connected">{trans("connected<!plural:item>")}</label></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="nodelist-disconnected" name="filter" value="2"><label for="nodelist-disconnected">{trans("disconnected<!plural:item>")}</label></NOBR><BR>
-						<NOBR><INPUT class="radio light" type="radio" id="nodelist-indebt" name="filter" value="3"><label for="nodelist-indebt">{trans("indebted owner")}</label></NOBR>
+					<TD style="width: 1%;" {tip text="Select nodes group"} class="nobr">
+						<INPUT class="radio light" type="radio" id="nodelist-all" name="filter" value="0" CHECKED><label for="nodelist-all">{trans("all")}</label><BR>
+						<INPUT class="radio light" type="radio" id="nodelist-connected" name="filter" value="1"><label for="nodelist-connected">{trans("connected<!plural:item>")}</label><BR>
+						<INPUT class="radio light" type="radio" id="nodelist-disconnected" name="filter" value="2"><label for="nodelist-disconnected">{trans("disconnected<!plural:item>")}</label><BR>
+						<INPUT class="radio light" type="radio" id="nodelist-indebt" name="filter" value="3"><label for="nodelist-indebt">{trans("indebted owner")}</label>
 					</TD>
 					<TD style="width: 1%;" nowrap>
 					    <TABLE width="100%">
@@ -1214,16 +1154,7 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 						{trans("Customer:")}
 					</TD>
 					<TD style="width: 1%;" class="nobr">
-						{if $customers}
-						<SELECT size="1" name="customer" {tip text="Select customer"}>
-							{foreach from=$customers item=customer}
-							<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
-							{/foreach}
-						</SELECT>
-						{else}
-						<INPUT type="text" name="customer" value="" size="5" {tip text="Enter customer ID"}>
-						<a href="javascript: void(0);" onClick="return customerchoosewin(document.printcustomertraffic.customer);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-						{/if}
+						{customerlist form="printcustomertraffic" customers=$customers selectname="cust" inputname="customer" firstoption=""}
 					</TD>
 					<TD style="width: 1%;">
 						<IMG src="img/calendar.gif" alt="">

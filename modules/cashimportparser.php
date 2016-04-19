@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -58,10 +58,14 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 				break;
 		}
 
+		$hook_data = $LMS->executeHook('cashimport_error_before_submit', 
+			compact("pattern", "count", "patterns_cnt", "error", "line", "theline", "ln"));
+		extract($hook_data);
+		
 		// line isn't matching to any pattern
 		if($count == $patterns_cnt)
 		{
-			if(trim($line) != '') 
+			if(trim($line) != '' && !$hook_data['ignore_error'])
 				$error['lines'][$ln] = $patterns_cnt == 1 ? $theline : $line;
 			continue; // go to next line
 		}
@@ -74,17 +78,15 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 		$srcaccount = isset($matches[$pattern['srcaccount']]) ? trim($matches[$pattern['srcaccount']]) : '';
 		$dstaccount = isset($matches[$pattern['dstaccount']]) ? trim($matches[$pattern['dstaccount']]) : '';
 
-		if(!$pattern['pid'])
-		{
-			if(!empty($pattern['pid_regexp'])) 
+		if (!$pattern['pid']) {
+			if (!empty($pattern['pid_regexp']))
 				$regexp = $pattern['pid_regexp'];
 			else
 				$regexp = '/.*ID[:\-\/]([0-9]{0,4}).*/i';
 
-			if(preg_match($regexp, $theline, $matches))
+			if (preg_match($regexp, $theline, $matches))
 				$id = $matches[1];
-		}
-		else
+		} else
 			$id = isset($matches[$pattern['pid']]) ? intval($matches[$pattern['pid']]) : NULL;
 
 		// seek invoice number
@@ -107,37 +109,48 @@ elseif(isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) &
 			}
 		}
 
-		if(!$id && $name && $lastname)
-		{
-			$uids = $DB->GetCol('SELECT id FROM customers WHERE UPPER(lastname)=UPPER(?) and UPPER(name)=UPPER(?)', array($lastname, $name));
-			if(sizeof($uids)==1)
+		// seek by explicitly given source or destination customer account numbers
+		if (!$id)
+			if (!empty($dstaccount))
+				$id = $DB->GetOne('SELECT customerid FROM customercontacts
+					WHERE contact = ? AND (type & ?) = ?',
+					array($dstaccount, CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+						CONTACT_BANKACCOUNT | CONTACT_INVOICES));
+			elseif (!empty($srcaccount))
+				$id = $DB->GetOne('SELECT customerid FROM customercontacts
+					WHERE contact = ? AND (type & ?) = ?',
+					array($srcaccount, CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
+						CONTACT_BANKACCOUNT));
+
+		if (!$id && $name && $lastname) {
+			$uids = $DB->GetCol('SELECT id FROM customers WHERE UPPER(lastname)=UPPER(?) and UPPER(name)=UPPER(?)',
+				array($lastname, $name));
+			if (count($uids) == 1)
 				$id = $uids[0];
-		}
-		elseif($id && (!$name || !$lastname))
-		{
-			if($tmp = $DB->GetRow('SELECT lastname, name FROM customers WHERE id = ?', array($id)))
-			{
+		} elseif ($id && (!$name || !$lastname))
+			if ($tmp = $DB->GetRow('SELECT id, lastname, name FROM customers WHERE '
+				. (isset($pattern['extid']) && $pattern['extid'] ? 'ext' : '') . 'id = ?', array($id))) {
+				if (isset($pattern['extid']) && $pattern['extid'])
+					$id = $tmp['id'];
 				$lastname = $tmp['lastname'];
 				$name = $tmp['name'];
-			}
-			else
-				$id = NULL;
-		}
+			} else
+				$id = null;
 
-		if($time)
-		{
-			if(preg_match($pattern['date_regexp'], $time, $date))
-			{
+		if ($time) {
+			if (preg_match($pattern['date_regexp'], $time, $date)) {
 				$time = mktime(0,0,0, 
 					$date[$pattern['pmonth']], 
 					$date[$pattern['pday']], 
 					$date[$pattern['pyear']]);
-			}
-			elseif(!is_numeric($time))
+			} elseif(!is_numeric($time))
 				$time = time();
-		}
-		else
+		} else
 			$time = time();
+
+		$hook_data = $LMS->executeHook('cashimport_extra_filter_before_submit', 
+			compact("id", "pattern", "comment", "theline", "ln", "patterns_cnt", "error", "line", "time"));
+		extract($hook_data);
 
 		if(!empty($pattern['comment_replace']))
 			$comment = preg_replace($pattern['comment_replace']['from'], $pattern['comment_replace']['to'], $comment);
@@ -253,7 +266,8 @@ $sourcefiles = $DB->GetAll('SELECT s.*, u.name AS username,
     ORDER BY s.idate DESC LIMIT 10');
 
 $SMARTY->assign('error', $error);
-$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+	$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources WHERE deleted = 0 ORDER BY name'));
 $SMARTY->assign('sourcefiles', $sourcefiles);
 $SMARTY->display('cash/cashimport.html');
