@@ -445,7 +445,7 @@ function multiselect(formid, elemid, def, selected)
 		new_element.innerHTML = selected.join(', ');
 	}
 
-        this.filterMultiselect = function(idArray) {
+        this.filterSelection = function(idArray) {
 		var elems = div.childNodes[0].getElementsByTagName('input');
 		var selected = [];
 		for (var i = 0; i < elems.length; i++) {
