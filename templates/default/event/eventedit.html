@@ -207,11 +207,11 @@ document.forms['event'].elements['event[title]'].focus();
 var userms = new multiselect('event', 'userid', '{trans("- select user -")}');
 
 function update_user_selection(users) {
-    {if ConfigHelper::checkConfig('phpui.event_usergroup_selection_type')}
-	userms.filterSelection(users);
-    {else}    
+	{if ConfigHelper::getConfig('phpui.event_usergroup_selection_type', 'update') == 'update'}
 	userms.updateSelection(users);
-    {/if}
+	{else}
+	userms.filterSelection(users);
+	{/if}
 }
 //-->
 </SCRIPT>

@@ -24,10 +24,14 @@
  * @author Maciej_Wawryk
  */
 
+define('CONFIG_TYPE_NONE', 7);
+
 $this->BeginTrans();
-define('CONFIG_TYPE_BOOLEAN', 1);
-$this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'event_usergroup_selection_type', '1', ?)", array(CONFIG_TYPE_BOOLEAN));
+
+$this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'event_usergroup_selection_type', 'update', ?)",
+	array(CONFIG_TYPE_NONE));
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016041900', 'dbversion'));
+
 $this->CommitTrans();
 
 ?>

@@ -2262,7 +2262,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui', 'ping_type', '1', '', 0),
 ('phpui', 'default_teryt_city', 'false', '', 0),
 ('phpui', 'passwordhistory', 6, '', 0),
-('phpui', 'event_usergroup_selection_type', 1, '', 0),
+('phpui', 'event_usergroup_selection_type', 'update', '', 0),
 ('payments', 'date_format', '%Y/%m/%d', '', 0),
 ('payments', 'default_unit_name', 'pcs.', '', 0),
 ('invoices', 'template_file', 'invoice.html', '', 0),
