@@ -2,6 +2,8 @@ $Id$
 
 version ?.??.?? (????-??-??):
 
+version 1.11.20 (2016-04-19):
+
   - bclean: added responsive menu [kyob]
   - www, userpanel messages are always sent initially and userpanel messages are
     marked as delivered after message read confirmation [chilan]
