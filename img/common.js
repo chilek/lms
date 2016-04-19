@@ -445,15 +445,20 @@ function multiselect(formid, elemid, def, selected)
 		new_element.innerHTML = selected.join(', ');
 	}
 
-        this.filterSelection = function(idArray) {
+	this.filterSelection = function(idArray) {
 		var elems = div.childNodes[0].getElementsByTagName('input');
 		var selected = [];
 		for (var i = 0; i < elems.length; i++) {
 			var text = elems[i].parentNode.getElementsByTagName('span')[0].innerHTML;
 			if (idArray == null || idArray.indexOf(elems[i].value) != -1) {
-				elems[i].parentNode.style.display = 'block';
+				elems[i].parentNode.style.display = '';
+				if (elems[i].checked) {
+					elem[text] = 1;
+					selected.push(text);
+				}
 			} else {
 				elems[i].checked = false;
+				elems[i].parentNode.className = '';
 				elems[i].parentNode.style.display = 'none';
 				elem[text] = 0;
 			}
