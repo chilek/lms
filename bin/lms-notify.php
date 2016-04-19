@@ -165,13 +165,16 @@ $user = ConfigHelper::getConfig($config_section . '.smtp_user');
 $pass = ConfigHelper::getConfig($config_section . '.smtp_pass');
 $auth = ConfigHelper::getConfig($config_section . '.smtp_auth');
 
-$debug_email = ConfigHelper::getConfig($config_section . '.debug_email', '');
-$mail_from = ConfigHelper::getConfig($config_section . '.mailfrom', '');
-$mail_fname = ConfigHelper::getConfig($config_section . '.mailfname', '');
-$notify_email = ConfigHelper::getConfig($config_section . '.notify_email', '');
+$debug_email = ConfigHelper::getConfig($config_section . '.debug_email', '', true);
+$mail_from = ConfigHelper::getConfig($config_section . '.mailfrom', '', true);
+$mail_fname = ConfigHelper::getConfig($config_section . '.mailfname', '', true);
+$notify_email = ConfigHelper::getConfig($config_section . '.notify_email', '', true);
+$reply_email = ConfigHelper::getConfig($config_section . '.reply_email', '', true);
+$dsn_email = ConfigHelper::getConfig($config_section . '.dsn_email', '', true);
+$mdn_email = ConfigHelper::getConfig($config_section . '.mdn_email', '', true);
 
-$debug_phone = ConfigHelper::getConfig($config_section . '.debug_phone', '');
-$script_service = ConfigHelper::getConfig($config_section . '.service', '');
+$debug_phone = ConfigHelper::getConfig($config_section . '.debug_phone', '', true);
+$script_service = ConfigHelper::getConfig($config_section . '.service', '', true);
 if ($script_service)
 	LMSConfig::getConfig()->getSection('sms')->addVariable(new ConfigVariable('service', $script_service));
 
@@ -291,7 +294,7 @@ function create_message($type, $subject, $template) {
 }
 
 function send_mail($msgid, $cid, $rmail, $rname, $subject, $body) {
-	global $LMS, $DB, $mail_from, $notify_email;
+	global $LMS, $DB, $mail_from, $notify_email, $reply_email, $dsn_email, $mdn_email;
 	global $host, $port, $user, $pass, $auth;
 
 	$DB->Execute("INSERT INTO messageitems
@@ -300,10 +303,27 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body) {
 		array($msgid, $cid, $rmail, 1));
 	$msgitemid = $DB->GetLastInsertID('messageitems');
 
-	$headers = array('From' => $mail_from, 'To' => qp_encode($rname) . " <$rmail>",
-		'Subject' => $subject);
+	$headers = array(
+		'From' => empty($dns_email) ? $mail_from : $dsn_email,
+		'To' => qp_encode($rname) . " <$rmail>",
+		'Subject' => $subject,
+		'Reply-To' => empty($reply_email) ? $mail_from : $reply_email,
+	);
+
+	if (!empty($mdn_email)) {
+		$headers['Return-Receipt-To'] = $mdn_email;
+		$headers['Disposition-Notification-To'] = $mdn_email;
+	}
+
 	if (!empty($notify_email))
 		$headers['Cc'] = $notify_email;
+
+	if (!empty($dsn_email) || !empty($mdn_email)) {
+		if (!empty($dsn_email))
+			$headers['Delivery-Status-Notification-To'] = true;
+		$headers['X-LMS-Message-Item-Id'] = $msgitemid;
+	}
+
 	$result = $LMS->SendMail($rmail, $headers, $body, null, $host, $port, $user, $pass, $auth);
 
 	$query = "UPDATE messageitems

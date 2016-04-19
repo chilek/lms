@@ -2,6 +2,8 @@ $Id$
 
 version ?.??.?? (????-??-??):
 
+  - added support for DSN and MDN in lms-notify.php script [chilan]
+
 version 1.11.20 (2016-04-19):
 
   - bclean: added responsive menu [kyob]
