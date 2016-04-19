@@ -293,6 +293,8 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 			if ((dest)&&(!this.autosubmit)) {
 				a.href = dest;
 				a.innerHTML = word;
+				ds.innerHTML = desc;
+				a.appendChild(ds);
 				li.onclick = function() { me.useSuggestion(); }
 				li.appendChild(a);
 			} else {
@@ -304,9 +306,9 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 					li.innerHTML = word;
 
 				li.onclick = function() { me.useSuggestion(); }
+				ds.innerHTML = desc;
+				li.appendChild(ds);
 			}
-			ds.innerHTML = desc;
-			li.appendChild(ds);
 
 			if (me.highlighted == i) {
 				li.className = "selected";
