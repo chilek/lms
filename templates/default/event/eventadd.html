@@ -189,7 +189,7 @@ document.forms['event'].elements['event[title]'].focus();
 var userms = new multiselect('event', 'userid', '{trans("- select user -")}');
 
 function update_user_selection(users) {
-	userms.updateSelection(users);
+	userms.filterMultiselect(users);
 }
 //-->
 </SCRIPT>

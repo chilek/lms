@@ -432,6 +432,25 @@ function multiselect(formid, elemid, def, selected)
 		for (var i = 0; i < elems.length; i++) {
 			var text = elems[i].parentNode.getElementsByTagName('span')[0].innerHTML;
 			if (idArray == null || idArray.indexOf(elems[i].value) != -1) {
+				elems[i].checked = true;
+				elems[i].parentNode.className = 'selected';
+				selected.push(text);
+				elem[text] = 1;
+			} else {
+				elems[i].checked = false;
+				elems[i].parentNode.className = '';
+				elem[text] = 0;
+			}
+		}
+		new_element.innerHTML = selected.join(', ');
+	}
+
+        this.filterMultiselect = function(idArray) {
+		var elems = div.childNodes[0].getElementsByTagName('input');
+		var selected = [];
+		for (var i = 0; i < elems.length; i++) {
+			var text = elems[i].parentNode.getElementsByTagName('span')[0].innerHTML;
+			if (idArray == null || idArray.indexOf(elems[i].value) != -1) {
 				elems[i].parentNode.style.display = 'block';
 			} else {
 				elems[i].checked = false;
