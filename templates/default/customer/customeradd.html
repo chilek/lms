@@ -346,10 +346,7 @@
 								{foreach $customeradd.contacts as $key => $item}
 								<TR id="contact{$key}">
 									<TD class="nobr">
-<<<<<<< HEAD
-=======
 										{if !$item@first}<HR>{/if}
->>>>>>> 158948f4e12bc19bbddc9f108b3e0a29ab501a43
 										<INPUT type="text" size="16" value="{$item.phone}" name="customeradd[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
 										<label>
 											<INPUT type="checkbox" value="{$smarty.const.CONTACT_MOBILE}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_MOBILE)} checked{/if}>
