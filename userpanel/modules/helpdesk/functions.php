@@ -390,7 +390,7 @@ function module_main()
 
 		if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
 			$info = $DB->GetRow('SELECT c.id AS customerid, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,
-				cc.contact AS email, address, zip, city FROM customeraddressview c WHERE c.id = ?', array($SESSION->id));
+				address, zip, city FROM customeraddressview c WHERE c.id = ?', array($SESSION->id));
 			$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
 					WHERE customerid = ?', array($SESSION->id));
 
