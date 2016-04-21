@@ -379,8 +379,10 @@
 	</TR>
 	<TR>
 		<TD style="width: 100%; text-align: right;" COLSPAN="3">
+			{block name="nodeinfobox-buttons"}
 			<A HREF="?m=nodeedit&amp;id={$nodeinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
 			<A HREF="?m=nodedel&amp;id={$nodeinfo.id}" onClick="return confirmLink(this, '{t a=$nodeinfo.name}Are you sure, you want to remove node \'$a\' from database?{/t}')">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
+			{/block}
 		</TD>
 	</TR>	
     </TBODY>
