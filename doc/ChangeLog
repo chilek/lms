@@ -3,6 +3,7 @@ $Id$
 version ?.??.?? (????-??-??):
 
   - added support for DSN and MDN in lms-notify.php script [chilan]
+  - smarty installation is provided by composer from now [chilan]
 
 version 1.11.20 (2016-04-19):
 

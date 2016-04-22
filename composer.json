@@ -9,7 +9,8 @@
         "phpmailer/phpmailer": "^5.2",
         "tecnickcom/tcpdf": "^6.2",
         "spipu/html2pdf": "^4.5",
-        "components/normalize.css": "^3.0"
+        "components/normalize.css": "^3.0",
+        "smarty/smarty": "3.1.29"
     },
     "require_dev": {
         "phpunit/phpunit": "5.1.*"
@@ -21,7 +22,8 @@
         "psr-4": { "LMS\\Tests\\": "tests/" }
     },
     "scripts": {
-        "pre-autoload-dump": [ "@repairHTML2PDF", "@repairTCPDF" ],
+        "pre-autoload-dump": [ "@repairSMARTY", "@repairHTML2PDF", "@repairTCPDF" ],
+        "repairSMARTY": "patch -d vendor/smarty/smarty/libs -p0 <devel/smarty-3.1.29.patch",
         "repairHTML2PDF": "sed -i -e 's/class HTML2PDF_myPdf extends TCPDF/class HTML2PDF_myPdf extends LMSTCPDF/' vendor/spipu/html2pdf/_class/myPdf.class.php",
         "repairTCPDF": "sed -i -e 's/\\(\\s\\+\\)register_shutdown_function/\\1\\\/\\\/register_shutdown_function/' vendor/tecnickcom/tcpdf/tcpdf.php"
     }
