@@ -304,7 +304,7 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body) {
 	$msgitemid = $DB->GetLastInsertID('messageitems');
 
 	$headers = array(
-		'From' => empty($dns_email) ? $mail_from : $dsn_email,
+		'From' => empty($dsn_email) ? $mail_from : $dsn_email,
 		'To' => qp_encode($rname) . " <$rmail>",
 		'Subject' => $subject,
 		'Reply-To' => empty($reply_email) ? $mail_from : $reply_email,
