@@ -94,5 +94,6 @@ $_LANG['monthly ($a)'] = 'miesięcznie ($a)';
 $_LANG['Reason:'] = 'Powód:';
 $_LANG['Check all'] = 'Zaznacz wszystkie';
 $_LANG['Print selected'] = 'Drukuj zaznaczone';
+$_LANG['Current balance:'] = 'Bieżące saldo:';
 
 ?>
