@@ -122,7 +122,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 			            ' AND '.(!empty($group['exclude']) ? 'NOT' : '').' EXISTS (
 			            SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group['group']).'
 			            AND customerid = d.customerid)' : '')
-			.' GROUP BY d.id, cdate, d.customerid,template, countries.name '
+			.' GROUP BY d.id, cdate, d.customerid, template, countries.name '
 			.(isset($having) ? $having : '')
 			.$sqlord.' '.$direction))
 	{
