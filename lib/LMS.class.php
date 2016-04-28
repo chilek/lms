@@ -1776,6 +1776,7 @@ class LMS
 
         // call external SMS handler(s)
         $data = $this->ExecHook('send_sms_before', $data);
+        $data = $this->executeHook('send_sms_before', $data);
 
 	if ($data['abort'])
 		if (is_string($data['result'])) {
