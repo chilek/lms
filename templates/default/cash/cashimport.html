@@ -7,13 +7,13 @@
 <!--
 	function Delete()
 	{
-		document.cashimport.action += '&amp;action=delete';
+		document.cashimport.action += '&action=delete';
 		document.cashimport.submit();
 	}
 
 	function Save()
 	{
-		document.cashimport.action += '&amp;action=save';
+		document.cashimport.action += '&action=save';
 		document.cashimport.submit();
 	}
 //-->
@@ -53,7 +53,7 @@
 		    <IMG src="img/division.gif" alt=""> <B>{$division.name}</B>
 		</TD>
 		<TD colspan="3" align="right">
-		    <A href="?m=cashimport&amp;action=csv&division={$division.id}">{trans("Download (CSV)")}</a> <IMG src="img/save.gif" alt="">
+		    <A href="?m=cashimport&action=csv&division={$division.id}">{trans("Download (CSV)")}</a> <IMG src="img/save.gif" alt="">
 		</TD>
 	</TR>
 		{cycle values="light,lucid" print=false}
@@ -102,7 +102,7 @@
 			</label>
 		</TD>
 		<TD class="text-center nobr" colspan="2">
-			<A href="?m=cashimport&amp;action=txt">{trans("Download all (TXT)")}</a> <IMG src="img/save.gif" alt="">
+			<A href="?m=cashimport&action=txt">{trans("Download all (TXT)")}</a> <IMG src="img/save.gif" alt="">
 		</TD>
 		<TD class="text-right nobr" colspan="2">
 			<A HREF="javascript:Delete();">{trans("Delete")} <IMG src="img/delete.gif" ALT=""></A>
