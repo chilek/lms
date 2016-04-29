@@ -74,9 +74,8 @@ function GetCustomerCovenants($id)
 				}
 			}
 		}
-	} else {
-		$invoicelist = [];
-	}
+	} else
+		$invoicelist = array();
 
 	if($notelist = $DB->GetAllByKey('
 		SELECT d.id, d.cdate, number, template, SUM(value) AS value
