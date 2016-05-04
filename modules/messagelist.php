@@ -90,7 +90,7 @@ function GetMessagesList($order='cdate,desc', $search=NULL, $cat=NULL, $type='',
 	{
 		switch($status)
 		{
-			case MSG_NEW: $where[] = 'x.sent + x.error = 0'; break;
+			case MSG_NEW: $where[] = 'x.sent + x.delivered + x.error = 0'; break;
 			case MSG_ERROR: $where[] = 'x.error > 0'; break;
 			case MSG_SENT: $where[] = 'x.sent = x.cnt'; break;
 			case MSG_DELIVERED: $where[] = 'x.delivered = x.cnt'; break;
