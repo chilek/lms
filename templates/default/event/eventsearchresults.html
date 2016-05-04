@@ -102,5 +102,15 @@
 	</TR>
 	{/section}
     </TBODY>
+	<TFOOT>
+	<TR class="dark">
+		<TD colspan="4" class="bold text-right">
+			{trans("Total events:")}
+		</TD>
+		<TD colspan="2" class="bold">
+			{count($eventlist)}
+		</TD>
+	</TR>
+	</TFOOT>
 </TABLE>
 {/block}

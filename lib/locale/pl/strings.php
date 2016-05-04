@@ -3208,4 +3208,6 @@ $_LANG['Default City in TERYT. Set city id in TERYT.'] = 'Domyślne Miasto dla T
 
 $_LANG['Allows you to search for IP address pools'] = 'Wyszukiwanie sieci';
 
+$_LANG['Total events:'] = 'Razem zdarzeń:';
+
 ?>
