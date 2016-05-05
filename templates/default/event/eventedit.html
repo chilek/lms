@@ -188,7 +188,7 @@
 	<TR>
 		<TD align="right" colspan="3">
 			<A href="javascript:document.event.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-                        {if ConfigHelper::getConfig('privileges.timetable_management')}
+                        {if ConfigHelper::checkPrivilege('timetable_management')}
                             {if !$event.closed}
                             <A href="?m=eventedit&id={$event.id}&action=close">{trans("Close")} <IMG src="img/dead.gif" alt=""></A>
                             {else}

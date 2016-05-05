@@ -154,7 +154,7 @@
                                         {/if}
                                 </TD>
                                 <TD width="1%" align="right" nowrap>
-                                    {if ConfigHelper::getConfig('privileges.timetable_management')}
+                                    {if ConfigHelper::checkPrivilege('timetable_management')}
                                         {if $eventlist[eventlist].closed}
                                         <A href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=open"><IMG src="img/resolved.gif" alt="[ {trans("Open")} ]" title="[ {trans("Open")} ]"></A> 
                                         {else}
