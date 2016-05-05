@@ -63,6 +63,8 @@
 												<TD style="width: 1%;" class="text-center bold nobr">{trans("Delete (+R)")}</TD>
 												<TD style="width: 1%;" class="text-center bold nobr">{trans("Notice (+R)")}</TD>
 											</TR>
+										</THEAD>
+										<TBODY>
 											{cycle values="light,lucid" print=false}
 											{foreach from=$queue.rights item=right}
 											<TR class="highlight {cycle}">
