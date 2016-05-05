@@ -391,6 +391,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				. ($customergroup ? ' AND customergroupid = ' . intval($customergroup) : '')
 				. ($nodegroup ? ' AND nodegroupid = ' . intval($nodegroup) : '')
 				. (isset($searchargs) ? $searchargs : '')
+                                . ' OR (n.location ?LIKE? ' . $this->db->Escape('%' . trim($value) . '%') . ')'
 				. ($sqlord != '' && !$count ? $sqlord . ' ' . $direction : '')
 				. ($limit !== null && !$count ? ' LIMIT ' . $limit : '')
 				. ($offset !== null && !$count ? ' OFFSET ' . $offset : '');
