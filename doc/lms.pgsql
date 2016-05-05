@@ -379,6 +379,35 @@ CREATE TABLE networks (
 CREATE INDEX networks_hostid_idx ON networks (hostid);
 
 /* ---------------------------------------------------
+ Structure of table "divisions"
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS divisions_id_seq;
+CREATE SEQUENCE divisions_id_seq;
+DROP TABLE IF EXISTS divisions CASCADE;
+CREATE TABLE divisions (
+    	id 		integer 	NOT NULL DEFAULT nextval('divisions_id_seq'::text),
+	shortname 	varchar(255) 	NOT NULL DEFAULT '',
+	name 		text 		NOT NULL DEFAULT '',
+	address		varchar(255) 	NOT NULL DEFAULT '',
+	city		varchar(255) 	NOT NULL DEFAULT '',
+	zip		varchar(255) 	NOT NULL DEFAULT '',
+	countryid	integer		NOT NULL DEFAULT 0,
+	ten		varchar(16)	NOT NULL DEFAULT '',
+	regon		varchar(255)	NOT NULL DEFAULT '',
+	account		varchar(48) 	NOT NULL DEFAULT '',
+	inv_header 	text		NOT NULL DEFAULT '',
+	inv_footer 	text		NOT NULL DEFAULT '',
+	inv_author	text		NOT NULL DEFAULT '',
+	inv_cplace	text		NOT NULL DEFAULT '',
+	inv_paytime	smallint	DEFAULT NULL,
+	inv_paytype	smallint	DEFAULT NULL,
+	description 	text		NOT NULL DEFAULT '',
+	status 		smallint 	NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE (shortname)
+);
+
+/* ---------------------------------------------------
  Structure of table "invprojects" 
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS invprojects_id_seq;
@@ -1711,35 +1740,6 @@ CREATE TABLE zipcodes (
 	UNIQUE (zip)
 );
 CREATE INDEX zipcodes_stateid_idx ON zipcodes (stateid);
-
-/* ---------------------------------------------------
- Structure of table "divisions"
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS divisions_id_seq;
-CREATE SEQUENCE divisions_id_seq;
-DROP TABLE IF EXISTS divisions CASCADE;
-CREATE TABLE divisions (
-    	id 		integer 	NOT NULL DEFAULT nextval('divisions_id_seq'::text),
-	shortname 	varchar(255) 	NOT NULL DEFAULT '',
-	name 		text 		NOT NULL DEFAULT '',
-	address		varchar(255) 	NOT NULL DEFAULT '',
-	city		varchar(255) 	NOT NULL DEFAULT '',
-	zip		varchar(255) 	NOT NULL DEFAULT '',
-	countryid	integer		NOT NULL DEFAULT 0,
-	ten		varchar(16)	NOT NULL DEFAULT '',
-	regon		varchar(255)	NOT NULL DEFAULT '',
-	account		varchar(48) 	NOT NULL DEFAULT '',
-	inv_header 	text		NOT NULL DEFAULT '',
-	inv_footer 	text		NOT NULL DEFAULT '',
-	inv_author	text		NOT NULL DEFAULT '',
-	inv_cplace	text		NOT NULL DEFAULT '',
-	inv_paytime	smallint	DEFAULT NULL,
-	inv_paytype	smallint	DEFAULT NULL,
-	description 	text		NOT NULL DEFAULT '',
-	status 		smallint 	NOT NULL DEFAULT 0,
-	PRIMARY KEY (id),
-	UNIQUE (shortname)
-);
 
 /* ---------------------------------------------------
  Structure of table "voipaccounts"
