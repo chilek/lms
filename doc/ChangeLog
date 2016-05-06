@@ -6,6 +6,8 @@ version ?.??.?? (????-??-??):
   - smarty installation is provided by composer from now [chilan]
   - added support for sms notifications in timetable type [chilan]
   - show event summary for all found events at bottom [chilan]
+  - unification of cash import code as preparation for cashimport backend
+    scripts' usage [chilan]
 
 version 1.11.20 (2016-04-19):
 
