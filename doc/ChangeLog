@@ -8,6 +8,8 @@ version ?.??.?? (????-??-??):
   - show event summary for all found events at bottom [chilan]
   - unification of cash import code as preparation for cashimport backend
     scripts' usage [chilan]
+  - added bin/lms-cashimport.php script as universal backend for
+    loading cash import file contents from specified files [chilan]
 
 version 1.11.20 (2016-04-19):
 
