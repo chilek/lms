@@ -46,12 +46,13 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 	/**
 	 * Parses import file
 	 *
+	 * @global LMS $LMS
 	 * @global array $SYSLOG_RESOURCE_KEYS
 	 * @param array $file Import file information
 	 * @return array Invalid import file rows
 	 */
 	public function CashImportParseFile($filename, $contents, $patterns) {
-		global $SYSLOG_RESOURCE_KEYS;
+		global $LMS, $SYSLOG_RESOURCE_KEYS;
 
 		$file = preg_split('/\r?\n/', $contents);
 		$patterns_cnt = isset($patterns) ? sizeof($patterns) : 0;
