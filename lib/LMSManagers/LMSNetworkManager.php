@@ -122,7 +122,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             'dhcpstart' => $netadd['dhcpstart'],
             'dhcpend' => $netadd['dhcpend'],
             'notes' => $netadd['notes'],
-			'vlanid' => $netadd['vlanid'],
+			'vlanid' => intval($netadd['vlanid']),
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST] => $netadd['hostid'],
         );
         if ($this->db->Execute('INSERT INTO networks (name, address, mask, interface, gateway,
@@ -446,7 +446,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             'address' => $networkdata['address'],
             'mask' => $networkdata['mask'],
             'interface' => strtolower($networkdata['interface']),
-            'vlanid' => (int) $networkdata['vlanid'],
+            'vlanid' => intval($networkdata['vlanid']),
             'gateway' => $networkdata['gateway'],
             'dns' => $networkdata['dns'],
             'dns2' => $networkdata['dns2'],
