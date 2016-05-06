@@ -438,6 +438,16 @@ class LMS
         return $manager->GetCashByID($id);
     }
 
+	public function CashImportParseFile($filename, $contents, $patterns) {
+		$manager = $this->getCashManager();
+		return $manager->CashImportParseFile($filename, $contents, $patterns);
+	}
+
+	public function CashImportCommit() {
+		$manager = $this->getCashManager();
+		return $manager->CashImportCommit();
+	}
+
     public function GetCustomerStatus($id)
     {
         $manager = $this->getCustomerManager();
