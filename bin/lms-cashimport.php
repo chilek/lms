@@ -170,4 +170,3 @@ if (ConfigHelper::checkConfig('cashimport.autocommit'))
 	$LMS->CashImportCommit();
 
 ?>
-
