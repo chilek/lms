@@ -29,11 +29,11 @@ include(ConfigHelper::getConfig('phpui.import_config', 'cashimportcfg.php'));
 if(!isset($patterns) || !is_array($patterns))
 	$error['file'] = trans('Configuration error. Patterns array not found!');
 elseif (isset($_FILES['file']) && is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size']) {
-	$file = file($_FILES['file']['tmp_name']);
+	$contents = file_get_contents($_FILES['file']['tmp_name']);
 	$filename = $_FILES['file']['name'];
 	$ln = 0;
 
-	$error = $LMS->CashImportParseFile($file, $filename, $patterns);
+	$error = $LMS->CashImportParseFile($filename, $contents, $patterns);
 
 	include(MODULES_DIR . DIRECTORY_SEPARATOR . 'cashimport.php');
 	die;
