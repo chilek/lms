@@ -179,10 +179,12 @@ class LMS
      * @param mixed $hook_data Hook data
      * @return mixed Modfied hook data
      */
-    public function executeHook($hook_name, $hook_data = null)
-    {
-        return $this->plugin_manager->executeHook($hook_name, $hook_data);
-    }
+	public function executeHook($hook_name, $hook_data = null) {
+		if (!empty($this->plugin_manager))
+			return $this->plugin_manager->executeHook($hook_name, $hook_data);
+		else
+			return $hook_data;
+	}
 
     /*
      *  Database functions (backups)
