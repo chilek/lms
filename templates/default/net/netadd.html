@@ -29,7 +29,7 @@
 		<TD>
 			<INPUT type="text" size="23" name="netadd[interface]" value="{$netadd.interface}" {tip text="Enter network interface (optional)" trigger="interface"}>
 			<span class="bold">{trans("vlan:")}</span>
-			<INPUT type="text" size="5" name="netadd[vlanid]" value="{$netadd.vlanid}" maxlength="4" {tip text="Enter vlan ID (optional)" trigger="vlanid"}>
+			<INPUT type="text" size="5" name="netadd[vlanid]" value="{if $netadd.vlanid}{$netadd.vlanid}{/if}" maxlength="4" {tip text="Enter vlan ID (optional)" trigger="vlanid"}>
 		</TD>
 	</TR>
 	<TR>
