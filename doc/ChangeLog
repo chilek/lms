@@ -11,6 +11,8 @@ version ?.??.?? (????-??-??):
   - added bin/lms-cashimport.php script as universal backend for
     loading cash import file contents from specified files [chilan]
   - added creation time for events [chilan]
+  - added selection between invoice report and debit note report and
+    generating related report according to this selection [chilan]
 
 version 1.11.20 (2016-04-19):
 

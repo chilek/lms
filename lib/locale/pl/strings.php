@@ -3212,4 +3212,7 @@ $_LANG['Total events:'] = 'Razem zdarzeń:';
 
 $_LANG['Begin time:'] = 'Czas rozpoczęcia:';
 
+$_LANG['debit notes'] = 'noty obciążeniowe';
+$_LANG['Debit Note No.'] = 'Numer noty obciążeniowej';
+
 ?>
