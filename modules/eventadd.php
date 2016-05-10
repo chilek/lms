@@ -100,8 +100,9 @@ if(isset($_POST['event']))
 
 		$DB->BeginTrans();
 
-		$DB->Execute('INSERT INTO events (title, description, date, begintime, enddate, endtime, userid, private, customerid, type, nodeid)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		$DB->Execute('INSERT INTO events (title, description, date, begintime, enddate, endtime,
+			userid, creationdate, private, customerid, type, nodeid)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?)',
 				array($event['title'], 
 					$event['description'], 
 					$date, 

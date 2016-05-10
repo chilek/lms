@@ -3210,4 +3210,6 @@ $_LANG['Allows you to search for IP address pools'] = 'Wyszukiwanie sieci';
 
 $_LANG['Total events:'] = 'Razem zdarzeń:';
 
+$_LANG['Begin time:'] = 'Czas rozpoczęcia:';
+
 ?>

@@ -29,7 +29,8 @@ if(!$_GET['id'])
 	$SESSION->redirect('?m=eventlist');
 }
 
-$event = $DB->GetRow('SELECT events.id AS id, title, description, note, userid, customerid, date, begintime, enddate, endtime, private, closed, events.type, '
+$event = $DB->GetRow('SELECT events.id AS id, title, description, note, userid, events.creationdate,
+				customerid, date, begintime, enddate, endtime, private, closed, events.type, '
 			    .$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
 			    users.name AS username, events.moddate, events.moduserid, nodes.location AS location, '
 			    .$DB->Concat('c.city',"', '",'c.address').' AS customerlocation,

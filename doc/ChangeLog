@@ -10,6 +10,7 @@ version ?.??.?? (????-??-??):
     scripts' usage [chilan]
   - added bin/lms-cashimport.php script as universal backend for
     loading cash import file contents from specified files [chilan]
+  - added creation time for events [chilan]
 
 version 1.11.20 (2016-04-19):
 
