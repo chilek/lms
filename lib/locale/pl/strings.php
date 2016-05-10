@@ -3215,4 +3215,6 @@ $_LANG['Begin time:'] = 'Czas rozpoczęcia:';
 $_LANG['debit notes'] = 'noty obciążeniowe';
 $_LANG['Debit Note No.'] = 'Numer noty obciążeniowej';
 
+$_LANG['Privacy:'] = 'Prywatność:';
+
 ?>

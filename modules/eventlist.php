@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $userid=0, $type = 0, $private = 0, $closed = '') {
+function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $userid=0, $type = 0, $privacy = 0, $closed = '') {
 	global $AUTH;
 
 	$DB = LMSDB::getInstance();
@@ -52,7 +52,7 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 			WHERE eventid = events.id AND userid = '.intval($userid).'
 			)' : '')
 		. ($type ? ' AND events.type = ' . intval($type) : '')
-		. ($private ? ' AND private = 1' : '')
+		. ($privacy == 1 ? ' AND private = 0' : ($privacy == 2 ? ' AND private = 1' : ''))
 		. ($closed != '' ? ' AND closed = ' . intval($closed) : '')
 		.' ORDER BY date, begintime',
 		 array($startdate, $enddate, $enddate, $startdate, $AUTH->id));
@@ -108,10 +108,10 @@ if (!empty($_POST)) {
 
 	$type = $_POST['type'];
 
-	if (isset($_POST['private']))
-		$private = 1;
+	if (isset($_POST['privacy']))
+		$privacy = intval($_POST['privacy']);
 	else
-		$private = 0;
+		$privacy = 0;
 
 	if (isset($_POST['closed']))
 		$closed = $_POST['closed'];
@@ -134,14 +134,14 @@ if (!empty($_POST)) {
 	$SESSION->restore('elu', $u);
 	$SESSION->restore('ela', $a);
 	$SESSION->restore('elt', $type);
-	$SESSION->restore('elp', $private);
+	$SESSION->restore('elp', $privacy);
 	$SESSION->restore('elc', $closed);
 }
 
 $SESSION->save('elu', $u);
 $SESSION->save('ela', $a);
 $SESSION->save('elt', $type);
-$SESSION->save('elp', $private);
+$SESSION->save('elp', $privacy);
 $SESSION->save('elc', $closed);
 
 $day = (isset($day) ? $day : date('j',time()));
@@ -150,11 +150,11 @@ $year = (isset($year) ? $year : date('Y',time()));
 
 $layout['pagetitle'] = trans('Timetable');
 
-$eventlist = GetEventList($year, $month, $day, ConfigHelper::getConfig('phpui.timetable_days_forward'), $u, $a, $type, $private, $closed);
+$eventlist = GetEventList($year, $month, $day, ConfigHelper::getConfig('phpui.timetable_days_forward'), $u, $a, $type, $privacy, $closed);
 $SESSION->restore('elu', $listdata['customerid']);
 $SESSION->restore('ela', $listdata['userid']);
 $SESSION->restore('elt', $listdata['type']);
-$SESSION->restore('elp', $listdata['private']);
+$SESSION->restore('elp', $listdata['privacy']);
 $SESSION->restore('elc', $listdata['closed']);
 
 // create calendars
