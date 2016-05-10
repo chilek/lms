@@ -98,7 +98,7 @@
 		<TD width="100%" colspan="6">
                     <TABLE class="lmsbox">
                         <THEAD>
-                            <TR>
+                            <TR{if $daylist[daylist] == $today} class="superdark"{/if}>
                                 <TD width="1%" nowrap colspan="2">
                                     <IMG src="img/calendar.gif" alt="">
                                     <B>{$daylist[daylist]|date_format:"%A"}</B>

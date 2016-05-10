@@ -13,6 +13,7 @@ version ?.??.?? (????-??-??):
   - added creation time for events [chilan]
   - added selection between invoice report and debit note report and
     generating related report according to this selection [chilan]
+  - current is marked by darker title bar in timetable [chilan]
 
 version 1.11.20 (2016-04-19):
 
