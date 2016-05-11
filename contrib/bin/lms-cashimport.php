@@ -441,6 +441,7 @@ $posts = imap_search($ih, ConfigHelper::checkValue(ConfigHelper::getConfig('cash
 if (!empty($posts))
 	foreach ($posts as $postid) {
 		$post = imap_fetchstructure($ih, $postid);
+		//print_r($post);
 		if ($post->type == 1) {
 			$parts = $post->parts;
 			//print_r($parts);
