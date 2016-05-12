@@ -240,9 +240,11 @@ function parse_customer_data($data, $row) {
 	global $DB;
 
 	$amount = -$row['balance'];
+	$totalamount = -$row['totalbalance'];
 	$data = preg_replace("/\%bankaccount/",
 		format_bankaccount(bankaccount($row['id'], $row['account'])), $data);
 	$data = preg_replace("/\%b/", $amount, $data);
+	$data = preg_replace("/\%totalb/", $totalamount, $data);
 	$data = preg_replace("/\%date-y/", strftime("%Y"), $data);
 	$data = preg_replace("/\%date-m/", strftime("%m"), $data);
 	$data = preg_replace("/\%date_month_name/", strftime("%B"), $data);
@@ -251,7 +253,9 @@ function parse_customer_data($data, $row) {
 	$data = preg_replace("/\%deadline-m/", strftime("%m", $deadline), $data);
 	$data = preg_replace("/\%deadline-d/", strftime("%d", $deadline), $data);
 	$data = preg_replace("/\%B/", $row['balance'], $data);
+	$data = preg_replace("/\%totalB/", $row['totalbalance'], $data);
 	$data = preg_replace("/\%saldo/", moneyf($row['balance']), $data);
+	$data = preg_replace("/\%totalsaldo/", moneyf($row['totalbalance']), $data);
 	$data = preg_replace("/\%pin/", $row['pin'], $data);
 	$data = preg_replace("/\%cid/", $row['id'], $data);
 	if (preg_match("/\%abonament/", $data)) {
@@ -532,9 +536,12 @@ if (empty($types) || in_array('debtors', $types)) {
 	$limit = $notifications['debtors']['limit'];
 	// @TODO: check 'messages' table and don't send notifies to often
 	$customers = $DB->GetAll("SELECT c.id, c.pin, c.lastname, c.name,
-			SUM(value) AS balance, m.email, x.phone, divisions.account
+			SUM(value) AS balance, b.balance AS totalbalance, m.email, x.phone, divisions.account
 		FROM customers c
 		LEFT JOIN divisions ON divisions.id = c.divisionid
+		LEFT JOIN (
+			SELECT customerid, SUM(value) AS balance FROM cash GROUP BY customerid
+		) b ON b.customerid = c.id
 		JOIN cash ON (c.id = cash.customerid)
 		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
 			FROM customercontacts

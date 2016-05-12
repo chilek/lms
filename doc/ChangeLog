@@ -15,6 +15,8 @@ version ?.??.?? (????-??-??):
     generating related report according to this selection [chilan]
   - current is marked by darker title bar in timetable [chilan]
   - allow to select between all, public and private events in event list filter [chilan]
+  - lms-notify.php: added %totalB, %totalsaldo, %totalbalance special
+    symbol support for debtors notification type which store total customer balance [chilan]
 
 version 1.11.20 (2016-04-19):
 
