@@ -935,6 +935,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 							$result[$ctype][$idx]['typestr'] = implode('/', $types);
 					}
 
+			if (empty($result['invoicenotice']))
+				$result['sendinvoices'] = false;
+
             return $result;
         } else
             return false;
