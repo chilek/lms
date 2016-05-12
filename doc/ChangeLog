@@ -17,6 +17,7 @@ version ?.??.?? (????-??-??):
   - allow to select between all, public and private events in event list filter [chilan]
   - lms-notify.php: added %totalB, %totalsaldo, %totalbalance special
     symbol support for debtors notification type which store total customer balance [chilan]
+  - added script which fetches cash import files from mailbox (pop3, imap, etc.) [chilan]
 
 version 1.11.20 (2016-04-19):
 
