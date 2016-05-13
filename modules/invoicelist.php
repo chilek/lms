@@ -104,12 +104,18 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 			ELSE
 			    SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
 			END AS value, 
-			COUNT(a.docid) AS count
+			COUNT(a.docid) AS count,
+			i.sendinvoices
 			FROM documents d
 			JOIN invoicecontents a ON (a.docid = d.id)
 			LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
 			LEFT JOIN countries ON (countries.id = d.countryid)
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
+			LEFT JOIN (
+				SELECT DISTINCT c.id AS customerid, 1 AS sendinvoices FROM customers c
+				JOIN customercontacts cc ON cc.customerid = c.id
+				WHERE invoicenotice = 1 AND cc.type & ' . (CONTACT_INVOICES | CONTACT_DISABLED) . ' = ' . CONTACT_INVOICES . '
+			) i ON i.customerid = d.customerid
 			LEFT JOIN (
 				SELECT DISTINCT a.customerid FROM customerassignments a
 				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
@@ -123,7 +129,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 			            SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group['group']).'
 			            AND customerid = d.customerid)' : '')
 			.' GROUP BY d.id, number, cdate, d.customerid, 
-			d.name, address, zip, city, template, closed, type, reference, countries.name, cancelled '
+			d.name, address, zip, city, template, closed, type, reference, countries.name, cancelled, sendinvoices '
 			.(isset($having) ? $having : '')
 			.$sqlord.' '.$direction))
 	{
