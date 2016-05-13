@@ -2836,13 +2836,13 @@ class LMS
 					$document = new $dnote_classname(trans('Notes'));
 				else
 					$document = new $dnote_classname($SMARTY);
-				$invoice = $LMS->GetNoteContent($doc['id']);
+				$invoice = $this->GetNoteContent($doc['id']);
 			} else {
 				if ($invoice_filetype == 'pdf')
 					$document = new $invoice_classname(trans('Invoices'));
 				else
 					$document = new $invoice_classname($SMARTY);
-				$invoice = $LMS->GetInvoiceContent($doc['id']);
+				$invoice = $this->GetInvoiceContent($doc['id']);
 			}
 
 			$invoice['type'] = trans('ORIGINAL');
