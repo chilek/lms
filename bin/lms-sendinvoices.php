@@ -212,7 +212,7 @@ if (empty($sender_email))
 	die("Fatal error: sender_email unset! Can't continue, exiting." . PHP_EOL);
 
 $smtp_auth = empty($smtp_auth) ? ConfigHelper::getConfig('mail.smtp_auth_type') : $smtp_auth;
-if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $smtp_auth_type))
+if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $smtp_auth))
 	die("Fatal error: smtp_auth setting not supported! Can't continue, exiting." . PHP_EOL);
 
 $fakedate = (array_key_exists('fakedate', $options) ? $options['fakedate'] : NULL);
