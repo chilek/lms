@@ -3217,4 +3217,9 @@ $_LANG['Debit Note No.'] = 'Numer noty obciążeniowej';
 
 $_LANG['Privacy:'] = 'Prywatność:';
 
+$_LANG['Debit Note No. $a for $b'] = 'Nota obciążeniowa nr $a dla $b';
+$_LANG['Credit Note No. $a for $b'] = 'Faktura korygująca nr $a dla $b';
+$_LANG['Invoice No. $a for $b'] = 'Faktura nr $a dla $b';
+$_LANG['Error sending mail: $a'] = 'Błąd wysyłki maila: $a';
+
 ?>

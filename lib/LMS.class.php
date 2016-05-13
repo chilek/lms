@@ -2882,13 +2882,13 @@ class LMS
 			if (!$quiet || $test) {
 				switch ($doc['doctype']) {
 					case DOC_DNOTE:
-						echo "Debit Note No. $invoice_number for $mailto" . $eol;
+						echo trans('Debit Note No. $a for $b', $invoice_number, $mailto) . $eol;
 						break;
 					case DOC_CNOTE:
-						echo "Credit Note No. $invoice_number for $mailto" . $eol;
+						echo trans('Credit Note No. $a for $b', $invoice_number, $mailto) . $eol;
 						break;
 					case DOC_INVOICE:
-						echo "Invoice No. $invoice_number for $mailto" . $eol;
+						echo trans('Invoice No. $a for $b', $invoice_number, $mailto) . $eol;
 						break;
 				}
 				if ($type == 'frontend')
@@ -2953,7 +2953,7 @@ class LMS
 						$files, $smtp_host, $smtp_port, $smtp_user, $smtp_pass, $smtp_auth);
 
 					if (is_string($res)) {
-						$msg = "Error sending mail: $res" . $eol;
+						$msg = trans('Error sending mail: $a', $res) . $eol;
 						if ($type == 'backend')
 							fprintf(STDERR, $msg);
 						else {
