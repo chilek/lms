@@ -2932,7 +2932,7 @@ class LMS
 				if ($add_message) {
 					$this->DB->Execute('INSERT INTO messages (subject, body, cdate, type, userid)
 						VALUES (?, ?, ?NOW?, ?, ?)',
-						array($subject, $body, MSG_MAIL, empty($this->AUTH) ? null : $this->AUTH->id));
+						array($subject, $body, MSG_MAIL, empty($this->AUTH) ? 0 : $this->AUTH->id));
 					$msgid = $this->DB->GetLastInsertID('messages');
 					foreach (explode(',', $custemail) as $email) {
 						$this->DB->Execute('INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
