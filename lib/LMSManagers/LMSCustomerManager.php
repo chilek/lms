@@ -928,7 +928,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 							if ($row['type'] & $tidx)
 								$types[] = $tname;
 
-						if ($ctype == 'emails' && ($row['type'] & (CONTACT_INVOICE | CONTACT_DISABLED) == CONTACT_INVOICE))
+						if ($ctype == 'emails' && ($row['type'] & (CONTACT_INVOICES | CONTACT_DISABLED) == CONTACT_INVOICES))
 							$result['sendinvoices'] = true;
 
 						if ($types)
