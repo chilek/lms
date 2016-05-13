@@ -34,7 +34,6 @@ $parameters = array(
 	'v' => 'version',
 	't' => 'test',
 	'f:' => 'fakedate:',
-	'i:' => 'invoiceid:',
 	'e:' => 'extra-file:',
 );
 
@@ -70,7 +69,6 @@ lms-sendinvoices.php
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
 -f, --fakedate=YYYY/MM/DD       override system date;
--i, --invoiceid=N               send only selected invoice
 -e, --extra-file=/tmp/file.pdf  send additional file as attachment
 
 EOF;
@@ -218,7 +216,6 @@ if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $smtp_au
 	die("Fatal error: smtp_auth setting not supported! Can't continue, exiting." . PHP_EOL);
 
 $fakedate = (array_key_exists('fakedate', $options) ? $options['fakedate'] : NULL);
-$invoiceid = (array_key_exists('invoiceid', $options) ? $options['invoiceid'] : NULL);
 
 $extrafile = (array_key_exists('extra-file', $options) ? $options['extra-file'] : NULL);
 if ($extrafile && !is_readable($extrafile))
@@ -272,8 +269,8 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctyp
 		JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
 			FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id
 		LEFT JOIN numberplans n ON n.id = d.numberplanid 
-		WHERE c.deleted = 0 AND d.type IN (?, ?, ?) AND c.invoicenotice = 1"
-			. (!empty($invoiceid) ? " AND d.id = " . $invoiceid : " AND d.cdate >= $daystart AND d.cdate <= $dayend")
+		WHERE c.deleted = 0 AND d.type IN (?, ?, ?) AND c.invoicenotice = 1
+			AND d.cdate >= $daystart AND d.cdate <= $dayend"
 			. (!empty($groupnames) ? $customergroups : "")
 		. " ORDER BY d.number";
 $docs = $DB->GetAll($query, array(CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_INVOICES, DOC_INVOICE, DOC_CNOTE, DOC_DNOTE));
