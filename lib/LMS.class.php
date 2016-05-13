@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -2791,5 +2791,172 @@ class LMS
         $manager = $this->getUserGroupManager();
         return $manager->UsergroupGetAll();
     }
-    
+
+	public function SendInvoices($docs, $params) {
+		extract($params);
+
+		$month = sprintf('%02d', intval(date('m', $currtime)));
+		$day = sprintf('%02d', intval(date('d', $currtime)));
+		$year = sprintf('%04d', intval(date('Y', $currtime)));
+
+		if ($invoice_filetype == 'pdf') {
+			$invoice_ftype = 'application/pdf';
+			$invoice_fext = 'pdf';
+
+			$pdf_type = ConfigHelper::getConfig('invoices.pdf_type', 'tcpdf');
+			$pdf_type = ucwords($pdf_type);
+			$invoice_classname = 'LMS' . $pdf_type . 'Invoice';
+		} else {
+			$invoice_ftype = 'text/html';
+			$invoice_fext = 'html';
+
+			$invoice_classname = 'LMSHtmlInvoice';
+		}
+
+		if ($dnote_filetype == 'pdf') {
+			$dnote_ftype = 'application/pdf';
+			$dnote_fext = 'pdf';
+
+			$dnote_classname = 'LMSTcpdfDebitNote';
+		} else {
+			$dnote_ftype = 'text/html';
+			$dnote_fext = 'html';
+
+			$dnote_classname = 'LMSHtmlDebitNote';
+		}
+
+		$from = $sender_email;
+
+		if (!empty($sender_name))
+			$from = "$sender_name <$from>";
+
+		foreach ($docs as $doc) {
+			if ($doc['doctype'] == DOC_DNOTE) {
+				if ($dnote_filetype == 'pdf')
+					$document = new $dnote_classname(trans('Notes'));
+				else
+					$document = new $dnote_classname($SMARTY);
+				$invoice = $LMS->GetNoteContent($doc['id']);
+			} else {
+				if ($invoice_filetype == 'pdf')
+					$document = new $invoice_classname(trans('Invoices'));
+				else
+					$document = new $invoice_classname($SMARTY);
+				$invoice = $LMS->GetInvoiceContent($doc['id']);
+			}
+
+			$invoice['type'] = trans('ORIGINAL');
+			$document->Draw($invoice);
+			$res = $document->WriteToString();
+
+			$custemail = (!empty($debug_email) ? $debug_email : $doc['email']);
+			$invoice_number = (!empty($doc['template']) ? $doc['template'] : '%N/LMS/%Y');
+			$body = $mail_body;
+			$subject = $mail_subject;
+
+			$invoice_number = docnumber($doc['number'], $invoice_number, $doc['cdate'] + date('Z'));
+			$body = preg_replace('/%invoice/', $invoice_number, $body);
+			$body = preg_replace('/%balance/', $this->GetCustomerBalance($doc['customerid']), $body);
+			$body = preg_replace('/%today/', $year . '-' . $month . '-' . $day, $body);
+			$body = str_replace('\n', "\n", $body);
+			$subject = preg_replace('/%invoice/', $invoice_number, $subject);
+			$filename = preg_replace('/%docid/', $doc['id'], $doc['doctype'] == DOC_DNOTE ? $dnote_filename : $invoice_filename);
+			$filename = str_replace('%number', $invoice_number, $filename);
+			$filename = preg_replace('/[^[:alnum:]_\.]/i', '_', $filename);
+			$doc['name'] = '"' . $doc['name'] . '"';
+
+			$mailto = array();
+			$mailto_qp_encoded = array();
+			foreach (explode(',', $custemail) as $email) {
+				$mailto[] = $doc['name'] . " <$email>";
+				$mailto_qp_encoded[] = qp_encode($doc['name']) . " <$email>";
+			}
+			$mailto = implode(', ', $mailto);
+			$mailto_qp_encoded = implode(', ', $mailto_qp_encoded);
+
+			if (!$quiet || $test)
+				switch ($doc['doctype']) {
+					case DOC_DNOTE:
+						echo "Debit Note No. $invoice_number for $mailto" . PHP_EOL;
+						break;
+					case DOC_CNOTE:
+						echo "Credit Note No. $invoice_number for $mailto" . PHP_EOL;
+						break;
+					case DOC_INVOICE:
+						echo "Invoice No. $invoice_number for $mailto" . PHP_EOL;
+						break;
+				}
+
+			if (!$test) {
+				$files = array();
+				$files[] = array(
+					'content_type' => $doc['doctype'] == DOC_DNOTE ? $dnote_ftype : $invoice_ftype,
+					'filename' => $filename . '.' . ($doc['doctype'] == DOC_DNOTE ? $dnote_fext : $invoice_fext),
+					'data' => $res
+				);
+
+				if ($extrafile) {
+					$files[] = array(
+						'content_type' => mime_content_type($extrafile),
+						'filename' => basename($extrafile),
+						'data' => file_get_contents($extrafile)
+					);
+				}
+
+				$headers = array(
+					'From' => empty($dsn_email) ? $from : $dsn_email,
+					'To' => $mailto_qp_encoded,
+					'Subject' => $subject,
+					'Reply-To' => empty($reply_email) ? $sender_email : $reply_email,
+				);
+
+				if (!empty($mdn_email)) {
+					$headers['Return-Receipt-To'] = $mdn_email;
+					$headers['Disposition-Notification-To'] = $mdn_email;
+				}
+
+				if (!empty($notify_email))
+					$headers['Cc'] = $notify_email;
+
+				if ($add_message) {
+					$this->DB->Execute('INSERT INTO messages (subject, body, cdate, type)
+						VALUES (?, ?, ?NOW?, ?)',
+						array($subject, $body, MSG_MAIL));
+					$msgid = $this->DB->GetLastInsertID('messages');
+					foreach (explode(',', $custemail) as $email) {
+						$this->DB->Execute('INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
+							VALUES (?, ?, ?, ?NOW?, ?)',
+							array($msgid, $doc['customerid'], $email, MSG_NEW));
+						$msgitemid = $this->DB->GetLastInsertID('messageitems');
+						if (!isset($msgitems[$doc['customerid']]))
+							$msgitems[$doc['customerid']] = array();
+						$msgitems[$doc['customerid']][$email] = $msgitemid;
+					}
+				}
+
+				foreach (explode(',', $custemail) as $email) {
+					if ($add_message && (!empty($dsn_email) || !empty($mdn_email))) {
+						if (!empty($dsn_email))
+							$headers['Delivery-Status-Notification-To'] = true;
+						$headers['X-LMS-Message-Item-Id'] = $msgitems[$doc['customerid']][$email];
+					}
+
+					$res = $this->SendMail($email . ',' . $notify_email, $headers, $body,
+						$files, $smtp_host, $smtp_port, $smtp_user, $smtp_pass, $smtp_auth);
+
+					if (is_string($res)) {
+						fprintf(STDERR, "Error sending mail: $res" . PHP_EOL);
+						$status = MSG_ERROR;
+					} else {
+						$status = MSG_SENT;
+						$res = NULL;
+					}
+
+					if ($add_message)
+						$this->DB->Execute('UPDATE messageitems SET status = ?, error = ?
+							WHERE id = ?', array($status, $res, $msgitems[$doc['customerid']][$email]));
+				}
+			}
+		}
+	}
 }

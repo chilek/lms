@@ -18,6 +18,8 @@ version ?.??.?? (????-??-??):
   - lms-notify.php: added %totalB, %totalsaldo, %totalbalance special
     symbol support for debtors notification type which store total customer balance [chilan]
   - added script which fetches cash import files from mailbox (pop3, imap, etc.) [chilan]
+  - sending invoices code moved to LMS::SendInvoices() as preparation for
+    invoice sends from LMS UI [chilan]
 
 version 1.11.20 (2016-04-19):
 
