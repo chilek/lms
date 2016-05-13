@@ -54,11 +54,11 @@ if (!preg_match('/m=invoicesend/', $_SERVER['HTTP_REFERER'])) {
 	$mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
 
 	if (empty($sender_email))
-		echo "Fatal error: sender_email unset! Can't continue, exiting.<br>";
+		echo '<span color="red">' . trans("Fatal error: sender_email unset! Can't continue, exiting.") . '</span><br>';
 
 	$smtp_auth = empty($smtp_auth) ? ConfigHelper::getConfig('mail.smtp_auth_type') : $smtp_auth;
 	if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $smtp_auth))
-		echo "Fatal error: smtp_auth setting not supported! Can't continue, exiting.<br>";
+		echo '<span color="red">' . trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.") . '</span><br>';
 
 	$docs = $DB->GetAll("SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, n.template, m.email
 		FROM documents d
