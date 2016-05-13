@@ -550,8 +550,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		} else {
 			/* title */
 			$this->backend->SetFont('arial', 'B', 10);
-			$tmp = docnumber($this->data['number'], $this->data['template'], $this->data['cdate']);
-			$this->backend->Text(120, 264, trans('Payment for invoice No. $a', $tmp));
+			$this->backend->Text(120, 264, trans('Payment for invoice No. $a', $barcode));
 		}
 
 		/* deadline */
