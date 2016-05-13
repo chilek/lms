@@ -2960,7 +2960,7 @@ class LMS
 						if ($type == 'backend')
 							fprintf(STDERR, $msg . $eol);
 						else {
-							echo htmlspecialchars($msg) . $eol;
+							echo '<span color="red">' . htmlspecialchars($msg) . '</span>' . $eol;
 							flush();
 						}
 						$status = MSG_ERROR;
