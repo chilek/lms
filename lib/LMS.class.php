@@ -2792,8 +2792,13 @@ class LMS
         return $manager->UsergroupGetAll();
     }
 
-	public function SendInvoices($docs, $params) {
+	public function SendInvoices($docs, $type, $params) {
 		extract($params);
+
+		if ($type == 'frontend')
+			$eol = '<br>';
+		else
+			$eol = PHP_EOL;
 
 		$month = sprintf('%02d', intval(date('m', $currtime)));
 		$day = sprintf('%02d', intval(date('d', $currtime)));
@@ -2874,18 +2879,21 @@ class LMS
 			$mailto = implode(', ', $mailto);
 			$mailto_qp_encoded = implode(', ', $mailto_qp_encoded);
 
-			if (!$quiet || $test)
+			if (!$quiet || $test) {
 				switch ($doc['doctype']) {
 					case DOC_DNOTE:
-						echo "Debit Note No. $invoice_number for $mailto" . PHP_EOL;
+						echo "Debit Note No. $invoice_number for $mailto" . $eol;
 						break;
 					case DOC_CNOTE:
-						echo "Credit Note No. $invoice_number for $mailto" . PHP_EOL;
+						echo "Credit Note No. $invoice_number for $mailto" . $eol;
 						break;
 					case DOC_INVOICE:
-						echo "Invoice No. $invoice_number for $mailto" . PHP_EOL;
+						echo "Invoice No. $invoice_number for $mailto" . $eol;
 						break;
 				}
+				if ($type == 'frontend')
+					flush();
+			}
 
 			if (!$test) {
 				$files = array();
@@ -2945,7 +2953,13 @@ class LMS
 						$files, $smtp_host, $smtp_port, $smtp_user, $smtp_pass, $smtp_auth);
 
 					if (is_string($res)) {
-						fprintf(STDERR, "Error sending mail: $res" . PHP_EOL);
+						$msg = "Error sending mail: $res" . $eol;
+						if ($type == 'backend')
+							fprintf(STDERR, $msg);
+						else {
+							echo $msg;
+							flush();
+						}
 						$status = MSG_ERROR;
 					} else {
 						$status = MSG_SENT;
