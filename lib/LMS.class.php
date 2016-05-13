@@ -2882,17 +2882,20 @@ class LMS
 			if (!$quiet || $test) {
 				switch ($doc['doctype']) {
 					case DOC_DNOTE:
-						echo trans('Debit Note No. $a for $b', $invoice_number, $mailto) . $eol;
+						$msg = trans('Debit Note No. $a for $b', $invoice_number, $mailto);
 						break;
 					case DOC_CNOTE:
-						echo trans('Credit Note No. $a for $b', $invoice_number, $mailto) . $eol;
+						$msg = trans('Credit Note No. $a for $b', $invoice_number, $mailto);
 						break;
 					case DOC_INVOICE:
-						echo trans('Invoice No. $a for $b', $invoice_number, $mailto) . $eol;
+						$msg = trans('Invoice No. $a for $b', $invoice_number, $mailto);
 						break;
 				}
-				if ($type == 'frontend')
+				if ($type == 'frontend') {
+					echo htmlspecialchars($msg) . $eol;
 					flush();
+				} else
+					echo $msg . $eol;
 			}
 
 			if (!$test) {
@@ -2953,11 +2956,11 @@ class LMS
 						$files, $smtp_host, $smtp_port, $smtp_user, $smtp_pass, $smtp_auth);
 
 					if (is_string($res)) {
-						$msg = trans('Error sending mail: $a', $res) . $eol;
+						$msg = trans('Error sending mail: $a', $res);
 						if ($type == 'backend')
-							fprintf(STDERR, $msg);
+							fprintf(STDERR, $msg . $eol);
 						else {
-							echo $msg;
+							echo htmlspecialchars($msg) . $eol;
 							flush();
 						}
 						$status = MSG_ERROR;
