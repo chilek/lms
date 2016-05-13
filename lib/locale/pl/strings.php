@@ -2797,6 +2797,10 @@ $_LANG['log out<!syslog>'] = 'wylogowanie';
 $_LANG['Choose network'] = 'Wybierz sieć';
 $_LANG['- automatic selection -'] = '- wybór automatyczny -';
 
+$_LANG['Invoice send'] = 'Wysyłka faktur';
+$_LANG['Send invoice'] = 'Wyślij fakturę';
+$_LANG['Are you sure, you want to send invoice to customer \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz wysłać fakturę do klienta \\\'$a\\\'?';
+
 $_LANG['visual editor'] = 'edytor wizualny';
 $_LANG['Message template:'] = 'Szablon wiadomości:';
 $_LANG['Message template operation:'] = 'Czyność na szablonie wiadomości:';
