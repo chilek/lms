@@ -29,6 +29,8 @@ $layout['pagetitle'] = trans('Invoice send');
 $SMARTY->display('header.html');
 
 if (!preg_match('/m=invoicesend/', $_SERVER['HTTP_REFERER'])) {
+	set_time_limit(0);
+
 	echo '<H1>' . $layout['pagetitle'] . '</H1>';
 
 	$invoice_filetype = ConfigHelper::getConfig('invoices.type', '', true);
@@ -54,30 +56,46 @@ if (!preg_match('/m=invoicesend/', $_SERVER['HTTP_REFERER'])) {
 	$mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
 
 	if (empty($sender_email))
-		echo '<span color="red">' . trans("Fatal error: sender_email unset! Can't continue, exiting.") . '</span><br>';
+		echo '<span class="red">' . trans("Fatal error: sender_email unset! Can't continue, exiting.") . '</span><br>';
 
 	$smtp_auth = empty($smtp_auth) ? ConfigHelper::getConfig('mail.smtp_auth_type') : $smtp_auth;
 	if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $smtp_auth))
-		echo '<span color="red">' . trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.") . '</span><br>';
+		echo '<span class="red">' . trans("Fatal error: smtp_auth value not supported! Can't continue, exiting.") . '</span><br>';
 
-	$docs = $DB->GetAll("SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, n.template, m.email
-		FROM documents d
-		LEFT JOIN customers c ON c.id = d.customerid
-		JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
-			FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id
-		LEFT JOIN numberplans n ON n.id = d.numberplanid
-		WHERE d.id = ? AND d.type IN (?, ?, ?)
-		ORDER BY d.number",
-		array(CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_INVOICES, $_GET['id'],
-			DOC_INVOICE, DOC_CNOTE, DOC_DNOTE));
+	if (isset($_POST['marks']))
+		if ($_GET['marks'] == 'invoice')
+			$docids = array_map('intval', array_values($_POST['marks']));
+		else
+			$docids = $DB->GetCol("SELECT docid FROM cash c
+				JOIN documents d ON d.id = c.docid
+				WHERE d.type IN (?, ?, ?)
+					AND c.id IN (" . implode(',', array_map('intval', array_values($_POST['marks']))) . ")",
+				array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE));
+	elseif (isset($_GET['id']) && intval($_GET['id']))
+		$docids = array(intval($_GET['id']));
 
-	if (!empty($docs)) {
-		$currtime = time();
-		$LMS->SendInvoices($docs, 'frontend', compact('SMARTY', 'invoice_filetype', 'dnote_filetype',
-			'invoice_filename', 'dnote_filename', 'debug_email',
-			'mail_body', 'mail_subject', 'currtime', 'sender_email', 'sender_name', 'extrafile',
-			'dsn_email', 'reply_email', 'mdn_email', 'notify_email', 'quiet', 'test', 'add_message',
-			'smtp_host', 'smtp_port', 'smtp_user', 'smtp_pass', 'smtp_auth'));
+	if (empty($docids))
+		echo '<span class="red">' . trans("Fatal error: No invoices nor debit notes were selected!") . '</span><br>';
+	else {
+		$docs = $DB->GetAll("SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, n.template, m.email
+			FROM documents d
+			LEFT JOIN customers c ON c.id = d.customerid
+			JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
+				FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id
+			LEFT JOIN numberplans n ON n.id = d.numberplanid
+			WHERE d.type IN (?, ?, ?) AND d.id IN (" . implode(',', $docids) . ")
+			ORDER BY d.number",
+			array(CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_INVOICES,
+				DOC_INVOICE, DOC_CNOTE, DOC_DNOTE));
+
+		if (!empty($docs)) {
+			$currtime = time();
+			$LMS->SendInvoices($docs, 'frontend', compact('SMARTY', 'invoice_filetype', 'dnote_filetype',
+				'invoice_filename', 'dnote_filename', 'debug_email',
+				'mail_body', 'mail_subject', 'currtime', 'sender_email', 'sender_name', 'extrafile',
+				'dsn_email', 'reply_email', 'mdn_email', 'notify_email', 'quiet', 'test', 'add_message',
+				'smtp_host', 'smtp_port', 'smtp_user', 'smtp_pass', 'smtp_auth'));
+		}
 	}
 }
 

@@ -36,6 +36,12 @@ window.open('?m=invoice&amp;id={$invoice.invoice}&amp;original={$invoice.origina
 		document.page.submit();
 	}
 
+	function send_invoices() {
+		document.page.action="?m=invoicesend&marks=invoice";
+		document.page.target="_blank";
+		document.page.submit();
+	}
+
 	function filter()
 	{
 		document.page.action="?m=invoicelist";
@@ -211,6 +217,7 @@ window.open('?m=invoice&amp;id={$invoice.invoice}&amp;original={$invoice.origina
 				<TR>
 					<TD class="text-left nobr">
 						<A HREF="javascript:pays();">{trans("Check/Uncheck as accounted")} <IMG SRC="img/pay.gif" ALT=""></A>&nbsp;
+						<A HREF="javascript:send_invoices();">{trans("Send invoices")} <IMG SRC="img/mail.gif" ALT=""></A>&nbsp;
 						<A HREF="javascript:prints();">{trans("Print")} <IMG SRC="img/print.gif" ALT="" ></A>&nbsp;
 						<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', $default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
 						<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>

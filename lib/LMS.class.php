@@ -2894,6 +2894,7 @@ class LMS
 				if ($type == 'frontend') {
 					echo htmlspecialchars($msg) . $eol;
 					flush();
+					ob_flush();
 				} else
 					echo $msg . $eol;
 			}
@@ -2960,7 +2961,7 @@ class LMS
 						if ($type == 'backend')
 							fprintf(STDERR, $msg . $eol);
 						else {
-							echo '<span color="red">' . htmlspecialchars($msg) . '</span>' . $eol;
+							echo '<span class="red">' . htmlspecialchars($msg) . '</span>' . $eol;
 							flush();
 						}
 						$status = MSG_ERROR;
