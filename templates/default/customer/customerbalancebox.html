@@ -180,7 +180,7 @@
 							{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
 							<A href="javascript:delpos();">{trans("Delete")} <IMG src="img/delete.gif" alt="{trans("Delete")}"></A>&nbsp;
 							{/if}
-							<A href="javascript:send_invoices();">{trans("Send invoices")} <IMG src="img/mail.gif" alt=""></A>&nbsp;
+							<A href="javascript:send_invoices();" OnClick="return confirm('{t}Are you sure, you want to send invoices to customer?{/t}')">{trans("Send invoices")} <IMG src="img/mail.gif" alt=""></A>&nbsp;
 							{trans("Print")}:
 							<A href="javascript:print_doc('invoice');">{trans("invoices")} <IMG src="img/print.gif" alt=""></A>&nbsp;
 							<A href="javascript:printr();">{trans("cash receipts")} <IMG src="img/printr.gif" alt=""></A>&nbsp;
