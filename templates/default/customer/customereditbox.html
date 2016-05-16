@@ -373,7 +373,7 @@
 					<TR id="email{$key}">
 						<TD>
 							{if !$item@first}<HR>{/if}
-							<INPUT type="text" size="23" value="{$item.email}" name="customerdata[emails][{$key}][email]" {tip text="Enter e-mail address (optional)" trigger="email`$key`"}>
+							<INPUT type="email" size="23" value="{$item.email}" name="customerdata[emails][{$key}][email]" {tip text="Enter e-mail address (optional)" trigger="email`$key`"}>
 							<label {tip text="Check if sent electronic invoices on this email"}>
 								<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_INVOICES}" name="customerdata[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_INVOICES)} checked{/if}>
 								{$_CONTACTTYPES[$smarty.const.CONTACT_INVOICES]}
