@@ -21,6 +21,7 @@ version ?.??.?? (????-??-??):
   - sending invoices code moved to LMS::SendInvoices() as preparation for
     invoice sends from LMS UI [chilan]
   - invoice sends are possible from LMS UI [chilan]
+  - print events accordingly to privacy filter selection [chilan]
 
 version 1.11.20 (2016-04-19):
 
