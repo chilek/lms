@@ -1680,6 +1680,15 @@ class LMS
 		$this->mail_object->SMTPAuth  = (!$auth ? ConfigHelper::getConfig('mail.smtp_auth_type', true) : $auth);
 		$this->mail_object->SMTPSecure  = (!$auth ? ConfigHelper::getConfig('mail.smtp_secure', true) : $auth);
 	    }
+
+	    $this->mail_object->SMTPOptions = array(
+		'ssl' => array(
+		    'verify_peer' => false,
+		    'verify_peer_name' => false,
+		    'allow_self_signed' => true
+		)
+	    );
+
 	    $this->mail_object->XMailer = 'LMS-' . $this->_version;
 	    if (!empty($_SERVER['REMOTE_ADDR']))
 		$this->mail_object->addCustomHeader('X-Remote-IP: '.$_SERVER['REMOTE_ADDR']);
@@ -1726,6 +1735,15 @@ class LMS
 
 	    foreach(explode(",", $recipients) as $recipient)
 	    	$this->mail_object->addAddress($recipient);
+
+	    // setup your cert & key file
+	    $cert = LIB_DIR . '/lms-mail.cert';
+	    $key = LIB_DIR . '/lms.key';
+
+	    // set email digital signature
+	    if (file_exists($cert) && file_exists($key)) {
+		$this->mail_object->sign($cert, $key, null);
+	    }
 
 	    if(!$this->mail_object->Send()) {
 		return "Mailer Error: " . $this->mail_object->ErrorInfo;
@@ -2856,7 +2874,11 @@ class LMS
 
 			$custemail = (!empty($debug_email) ? $debug_email : $doc['email']);
 			$invoice_number = (!empty($doc['template']) ? $doc['template'] : '%N/LMS/%Y');
-			$body = $mail_body;
+			if (!is_null($mail_body))
+				if (is_readable($mail_body) && ($mail_body[0] == DIRECTORY_SEPARATOR))
+					$body = file_get_contents($mail_body);
+				else
+					$body = $mail_body;
 			$subject = $mail_subject;
 
 			$invoice_number = docnumber($doc['number'], $invoice_number, $doc['cdate'] + date('Z'));
