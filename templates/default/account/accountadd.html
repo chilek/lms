@@ -131,7 +131,7 @@
 					<B>{trans("Forward e-mail:")}</B>
 				    </TD>
 				    <TD width="98%">
-					<input type="text" name="account[mail_forward]" size="25" value="{$account.mail_forward}" {tip text="Enter destination e-mail address for redirect (optional)" trigger="mail_forward"}>
+					<input type="email" name="account[mail_forward]" size="25" value="{$account.mail_forward}" {tip text="Enter destination e-mail address for redirect (optional)" trigger="mail_forward"}>
 				    </TD>
 				</TR>
 				<TR>
@@ -142,7 +142,7 @@
 					<B>{trans("BCC e-mail:")}</B>
 				    </TD>
 				    <TD width="98%">
-					<input type="text" name="account[mail_bcc]" size="25" value="{$account.mail_bcc}" {tip text="Enter e-mail address for blind carbon copy (optional)" trigger="mail_bcc"}>
+					<input type="email" name="account[mail_bcc]" size="25" value="{$account.mail_bcc}" {tip text="Enter e-mail address for blind carbon copy (optional)" trigger="mail_bcc"}>
 				    </TD>
 				</TR>
 			    </TABLE>
