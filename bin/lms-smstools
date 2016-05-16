@@ -141,6 +141,7 @@ opendir(DIR, $sent_dir);
 closedir(DIR);
 foreach my $file (@files)
 {
+	$file =~ /^lms-([0-9]+)-([0-9]+)$/;
 	my $id=$1;
 	my $dest=$2;
 	$dest=~s/^48//;
