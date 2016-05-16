@@ -115,7 +115,7 @@
                                     {/if}
                                 </TD>
                                 <TD width="3%" colspan="3" align="right" nowrap>
-                                    <A href="?m=eventprint&amp;day={$daylist[daylist]}&amp;u={$listdata.customerid}&amp;a={$listdata.userid}" target="_BLANK">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
+                                    <A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.userid}&privacy={$listdata.privacy}" target="_BLANK">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
                                     <A href="?m=eventadd&amp;day={$daylist[daylist]|date_format:"%d"}&amp;month={$daylist[daylist]|date_format:"%m"}&amp;year={$daylist[daylist]|date_format:"%Y"}">{trans("Add Event")} <IMG src="img/save.gif" alt=""></A>&nbsp;
                                 </TD>
                             </TR>

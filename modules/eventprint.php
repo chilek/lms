@@ -24,9 +24,21 @@
  *  $Id$
  */
 
-function GetEvents($date=NULL, $userid=0, $customerid=0)
+function GetEvents($date=NULL, $userid=0, $customerid=0, $privacy = 0)
 {
 	global $DB, $AUTH;
+
+	switch ($privacy) {
+		case 0:
+			$privacy_condition = '(private = 0 OR (private = 1 AND userid = ' . intval($AUTH->id) . '))';
+			break;
+		case 1:
+			$privacy_condition = 'private = 0';
+			break;
+		case 2:
+			$privacy_condition = 'private = 1 AND userid = ' . intval($AUTH->id);
+			break;
+	}
 
 	$list = $DB->GetAll(
 	        'SELECT events.id AS id, title, description, begintime, endtime, closed, note, events.type,'
@@ -36,10 +48,10 @@ function GetEvents($date=NULL, $userid=0, $customerid=0)
 		 (SELECT contact FROM customercontacts WHERE customerid = c.id
 			AND (customercontacts.type & ?) > 0 AND (customercontacts.type & ?) <> ?  ORDER BY id LIMIT 1) AS customerphone
 		 FROM events LEFT JOIN customerview c ON (customerid = c.id) LEFT JOIN nodes ON (nodeid = nodes.id)
-		 WHERE (date = ? OR (enddate <> 0 AND date <= ? AND enddate > ?)) AND (private = 0 OR (private = 1 AND userid = ?)) '
+		 WHERE (date = ? OR (enddate <> 0 AND date <= ? AND enddate > ?)) AND ' . $privacy_condition
 		 .($customerid ? 'AND customerid = '.intval($customerid) : '')
 		 .' ORDER BY begintime',
-		 array((CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE), CONTACT_DISABLED, CONTACT_DISABLED, $date, $date, $date, $AUTH->id));
+		 array((CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE), CONTACT_DISABLED, CONTACT_DISABLED, $date, $date, $date));
 
         if($list)
 		foreach($list as $idx => $row)
@@ -71,7 +83,7 @@ if(!$date)
 	$SESSION->redirect('?m=eventlist');
 }
 
-$eventlist = GetEvents($date, $_GET['a'], $_GET['u']);
+$eventlist = GetEvents($date, $_GET['a'], $_GET['u'], intval($_GET['privacy']));
 
 $layout['pagetitle'] = trans('Timetable');
 
