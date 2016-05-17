@@ -103,11 +103,6 @@ function customerchoosewin(formfield)
 	return openSelectWindow('?m=choosecustomer','choosecustomer',450,250,'true',formfield);
 }
 
-function nodechoosewin(formfield, customerid)
-{
-	return openSelectWindow('?m=choosenode&id='+customerid,'choosenode',350,200,'true',formfield);
-}
-
 function locationchoosewin(varname, formname, city, street, default_city)
 {
         if(city == '' && default_city) city = default_city;
@@ -136,6 +131,10 @@ function netlinkpropertieschoosewin(id, devid, isnetlink)
 
 function netDevChooseWin(formfield) {
 	return openSelectWindow('?m=choosenetdevice', 'choosenetdevice', 600, 250, 'true', formfield);
+}
+
+function nodeChooseWin(formfield) {
+	return openSelectWindow('?m=choosenodedevice', 'choosenodedevice', 600, 250, 'true', formfield);
 }
 
 function netDevForNetNodeChooseWin(netnodeid) {
@@ -411,7 +410,7 @@ function multiselect(formid, elemid, def, selected)
 	document.onclick = function(e) {
 		if (div.style.display == 'none' || e.target.id == old_element.id)
 			return 0;
-		
+
 		var parent = e.target.parentNode.innerHTML.indexOf(old_element.name);
 
 		if (e.target.innerHTML.indexOf("<head>") > -1 || parent == -1 || (parent > -1 && e.target.nodeName != 'INPUT' && e.target.nodeName != 'LI' && e.target.nodeName != 'SPAN'))
@@ -644,9 +643,7 @@ function reset_customer(form, elemname1, elemname2) {
 		document.forms[form].elements[elemname2].value = document.forms[form].elements[elemname1].value;
 }
 
-if (window.addEventListener) window.addEventListener("load", init_links, false);
-else if (window.attachEvent) window.attachEvent("onload", init_links);
-
-function choosenetdevice(formfield){
-    return openSelectWindow('?m=choosenetdevice','choosenetdevice',600,250,'true',formfield);
-}
+if (window.addEventListener)
+	window.addEventListener("load", init_links, false);
+else if (window.attachEvent)
+	window.attachEvent("onload", init_links);
