@@ -28,23 +28,24 @@ $layout['pagetitle'] = trans('Select netdevice');
 
 $p = isset($_GET['p']) ? $_GET['p'] : '';
 
-if(!$p || $p == 'main')
+if (!$p || $p == 'main')
     $SMARTY->assign('js', 'var targetfield = window.parent.targetfield;');
 
-if(isset($_POST['searchnodedev']) && $_POST['searchnodedev']){ 
+if (isset($_POST['searchnodedev']) && $_POST['searchnodedev']) {
     $search = $_POST['searchnodedev'];
-    $netdevices = $DB->GetAll('SELECT 
-											n.id, n.name, n.lastonline,
+    $netdevices = $DB->GetAll('SELECT
+											n.id, n.name, n.lastonline, inet_ntoa(n.ipaddr) as ipaddr, inet_ntoa(n.ipaddr_pub) as ipaddr_pub,
 											c.name as customername, c.lastname, c.street, c.building, c. apartment
-										FROM 
-											nodes n left join customers c on n.ownerid = c.id 
-										WHERE 
-											n.name ?LIKE? ' . $DB->Escape('%'.$search.'%') . ' AND n.netdev = 0 
-										ORDER BY 
-											name');
+										FROM
+											nodes n left join customers c on n.ownerid = c.id
+										WHERE
+											(n.name ?LIKE? ' . $DB->Escape('%'.$search.'%') . ' OR
+											inet_ntoa(n.ipaddr) ?LIKE? ' . $DB->Escape('%'.$search.'%') . ' OR
+											inet_ntoa(n.ipaddr_pub) ?LIKE? ' . $DB->Escape('%'.$search.'%') . ')
+											AND n.netdev = 0
+										ORDER BY
+											n.name');
 
-    
-	
     $SMARTY->assign('searchnodedev', $search);
     $SMARTY->assign('netdevices', $netdevices);
 }

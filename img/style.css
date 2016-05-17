@@ -173,7 +173,7 @@ div.multiselectlayer ul li input { border: none; }
 .click-menu .section .active:hover { color: yellow; }
 .tip		{ width: 162px; }
 
-.dark		{ background-color: #CEBD9B; border-right: 1px solid black; }
+.dark		{ background-color: #CEBD9B; }
 .superdark	{ background-color: #AE9D7B; }
 .light		{ background-color: #DFD5BD; }
 .lucid		{ background-color: #EBE4D6; }
