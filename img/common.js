@@ -137,10 +137,6 @@ function nodeChooseWin(formfield) {
 	return openSelectWindow('?m=choosenodedevice', 'choosenodedevice', 600, 250, 'true', formfield);
 }
 
-function netDevForNetNodeChooseWin(netnodeid) {
-	return openSelectWindow('?m=choosenetdevfornetnode', 'choosenetdevfornetnode', 600, 250, 'true', netnodeid);
-}
-
 function sendvalue(targetfield, value)
 {
 	targetfield.value = value;

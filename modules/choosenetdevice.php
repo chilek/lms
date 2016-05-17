@@ -49,4 +49,4 @@ if(isset($_POST['searchnetdev']) && $_POST['searchnetdev']){
 }
 
 $SMARTY->assign('part', $p);
-$SMARTY->display('node/choosenetdevice.html');
+$SMARTY->display('choose/choosenetdevice.html');
