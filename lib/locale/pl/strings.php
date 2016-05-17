@@ -3203,6 +3203,7 @@ $_LANG['Allows you to view node sessions'] = 'Przeglądanie sesji komputerów';
 $_LANG['Add Note'] = 'Dodaj notatkę';
 
 $_LANG['Search device'] = 'Szukaj urządzenia';
+$_LANG['Search node'] = 'Wyszukaj komputer';
 
 $_LANG['Timetable for today'] = 'Terminarz na dziś';
 $_LANG['have $a events'] = 'ma $a zdarzeń';
