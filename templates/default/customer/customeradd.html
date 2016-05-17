@@ -347,7 +347,7 @@
 								<TR id="contact{$key}">
 									<TD class="nobr">
 										{if !$item@first}<HR>{/if}
-										<INPUT type="text" size="16" value="{$item.phone}" name="customeradd[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
+										<INPUT type="tel" size="16" value="{$item.phone}" name="customeradd[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
 										<label>
 											<INPUT type="checkbox" value="{$smarty.const.CONTACT_MOBILE}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_MOBILE)} checked{/if}>
 											{$_CONTACTTYPES[$smarty.const.CONTACT_MOBILE]}

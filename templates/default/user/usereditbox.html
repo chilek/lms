@@ -52,7 +52,7 @@
 		</TD>
 		<TD class="bold">{trans("Phone:")}</TD>
 		<TD class="fright">
-			<INPUT type="text" name="userinfo[phone]" value="{$userinfo.phone}" size="40" {tip text="Enter phone number for SMS notification (optional)" trigger="phone"}>
+			<INPUT type="tel" name="userinfo[phone]" value="{$userinfo.phone}" size="40" {tip text="Enter phone number for SMS notification (optional)" trigger="phone"}>
 		</TD>
 	</TR>
 	{if $userinfo.swekey_id}
