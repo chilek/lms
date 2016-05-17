@@ -55,7 +55,7 @@
 					{/foreach}
 				</SELECT>
                                 {else}
-                                <INPUT type="text" name="u" value="{$listdata.customerid}" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
+                                <INPUT type="number" min="1" name="u" value="{$listdata.customerid}" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
                                 <a href="javascript:void(0);" onclick="return customerchoosewin(document.filter.u);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</a>
                                 {/if}
 				{trans("Month:")}
