@@ -162,10 +162,10 @@
 				    </TD>
 				</TR>
 				<TR>
-				    <TD WIDTH="1%">
-				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>{trans("Packet limit:")}</B></TD>
-				    <TD WIDTH="98%">
+					<TD WIDTH="1%">
+					</TD>
+					<TD WIDTH="1%" NOWRAP><B>{trans("Packet limit:")}</B></TD>
+					<TD WIDTH="98%">
 					<INPUT TYPE="TEXT" NAME="tariff[plimit]" SIZE="6" VALUE="{if $tariff.plimit}{$tariff.plimit}{/if}" {tip text="Enter limit of packets in time unit (optional)" trigger="plimit"}>
 					{trans("night:")} <INPUT TYPE="TEXT" NAME="tariff[plimit_n]" SIZE="6" VALUE="{if $tariff.plimit_n}{$tariff.plimit_n}{/if}" {tip text="Enter limit of packets in time unit (optional)" trigger="plimit_n"}>
 				    </TD>

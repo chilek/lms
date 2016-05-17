@@ -37,29 +37,39 @@
 		    <TD WIDTH="50%" style="vertical-align: top;">
 			<TABLE WIDTH="100%" CELLPADDING="3">
 			    <TR>
-				<TD WIDTH="1%" NOWRAP>
-				    <IMG SRC="img/value.gif" ALT="">
-				</TD>
-				<TD WIDTH="1%"><B>{trans("Value:")}</B></TD>
-				<TD WIDTH="98%" NOWRAP>
-				    {$tariff.value|money_format}
-				    {if $tariff.period}{assign var=tperiod value=$tariff.period}({$_PERIODS.$tperiod})
-				    {else}<font class="blend">({trans("period undefined")})</font>{/if}
-				</TD>
+					<TD WIDTH="1%" NOWRAP>
+						<IMG SRC="img/value.gif" ALT="">
+					</TD>
+					<TD WIDTH="1%">
+						<B>{trans("Value:")}</B>
+					</TD>
+					<TD WIDTH="98%" NOWRAP>
+						{$tariff.value|money_format}
+						{if $tariff.period}{assign var=tperiod value=$tariff.period}({$_PERIODS.$tperiod})
+						{else}<font class="blend">({trans("period undefined")})</font>{/if}
+					</TD>
 			    </TR>
 			    <TR>
-				<TD WIDTH="1%" NOWRAP>
-				    <IMG SRC="img/tax.gif" ALT="">
-				</TD>
-				<TD WIDTH="1%"><B>{trans("Tax:")}</B></TD>
-				<TD WIDTH="98%">{$tariff.tax}</TD>
+					<TD WIDTH="1%" NOWRAP>
+						<IMG SRC="img/tax.gif" ALT="">
+					</TD>
+					<TD WIDTH="1%">
+						<B>{trans("Tax:")}</B>
+					</TD>
+					<TD WIDTH="98%">
+						{$tariff.tax}
+					</TD>
 			    </TR>
 			    <TR>
-				<TD WIDTH="1%" NOWRAP>
-				    <IMG SRC="img/money.gif" ALT="">
-				</TD>
-				<TD WIDTH="1%"><B>{trans("Type:")}</B></TD>
-				<TD WIDTH="98%">{assign var=typeid value=$tariff.type}{$_TARIFFTYPES.$typeid}</TD>
+					<TD WIDTH="1%" NOWRAP>
+						<IMG SRC="img/money.gif" ALT="">
+					</TD>
+					<TD WIDTH="1%">
+						<B>{trans("Type:")}</B>
+					</TD>
+					<TD WIDTH="98%">
+						{assign var=typeid value=$tariff.type}{$_TARIFFTYPES.$typeid}
+					</TD>
 			    </TR>
 				{if isset($tariff.numberplan)}
 				<TR>
@@ -73,32 +83,36 @@
 				</TR>
 				{/if}
 			    <TR>
-				<TD WIDTH="1%" NOWRAP>
-				    <IMG SRC="img/class.gif" ALT="">
-				</TD>
-				<TD WIDTH="1%"><B>{trans("Product ID:")}</B></TD>
-				<TD WIDTH="98%">
-				    {$tariff.prodid}
-				</TD>
+					<TD WIDTH="1%" NOWRAP>
+						<IMG SRC="img/class.gif" ALT="">
+					</TD>
+					<TD WIDTH="1%">
+						<B>{trans("Product ID:")}</B>
+					</TD>
+					<TD WIDTH="98%">
+						{$tariff.prodid}
+					</TD>
 			    </TR>
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
 			    <TR>
-				<TD WIDTH="1%">
-				    <IMG SRC="img/customers.gif" ALT="">
-				</TD>
-				<TD WIDTH="1%" NOWRAP><B>{trans("Number of customers:")}</B></TD>
-				<TD WIDTH="98%">
-				    {$tariff.customerscount|default:0} ({$tariff.count|default:0},{$tariff.activecount|default:0})
-				</TD>
+					<TD WIDTH="1%">
+						<IMG SRC="img/customers.gif" ALT="">
+					</TD>
+					<TD WIDTH="1%" NOWRAP><B>{trans("Number of customers:")}</B></TD>
+					<TD WIDTH="98%">
+						{$tariff.customerscount|default:0} ({$tariff.count|default:0},{$tariff.activecount|default:0})
+					</TD>
 			    </TR>
 			    <TR>
-				<TD WIDTH="1%" NOWRAP>
-				    <IMG SRC="img/values.gif" ALT="">
-				</TD>
-				<TD WIDTH="1%" NOWRAP><B>{trans("Avg. monthly income:")}</B></TD>
-				<TD WIDTH="98%">
-				    {$tariff.totalval|money_format} 
-				</TD>
+					<TD WIDTH="1%" NOWRAP>
+						<IMG SRC="img/values.gif" ALT="">
+					</TD>
+					<TD WIDTH="1%" NOWRAP>
+						<B>{trans("Avg. monthly income:")}</B>
+					</TD>
+					<TD WIDTH="98%">
+						{$tariff.totalval|money_format}
+					</TD>
 			    </TR>
 			{/if}
 			</TABLE>
@@ -182,7 +196,7 @@
 			<IMG SRC="img/info1.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			<TABLE WIDTH="100%" CELLPADDING="5"> 
+			<TABLE WIDTH="100%" CELLPADDING="5">
 			    <TR><TD CLASS="fall superlight">
 				    {$tariff.description|replace:"\n":"<BR>"}
 			    </TD></TR>
@@ -270,70 +284,256 @@
 	<TR>
 		<TD WIDTH="100%" COLSPAN="2">
 			<TABLE class="lmsbox-inner">
-                            <THEAD>
-                                <TR>
-                                        <TD COLSPAN="2">
-                                                <B>{trans("Customers in Subscription:")}</B>
-                                        </TD>
-                                </TR>
-                                <TR>
-                                        <TD colspan="4" ALIGN="CENTER">
-                                        {trans("Network:")}
-                                        <FORM NAME="tinfo" METHOD="GET" ACTION="?m=tariffinfo">
-                                                <INPUT type="submit" class="hiddenbtn">
-                                                <INPUT TYPE="hidden" VALUE="tariffinfo" NAME="m">
-                                                <INPUT TYPE="hidden" VALUE="{$tariff.id}" NAME="id">
-                                                <SELECT SIZE="1" NAME="netid" ONCHANGE="javascript:changeNetwork();">
-                                                        <OPTION value="0" {if !$netid}SELECTED{/if}>{trans("- all networks -")}</OPTION>
-                                                        {section name=networks loop=$networks}
-                                                        <OPTION value="{$networks[networks].id}" {if $networks[networks].id == $netid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
-                                                        {/section}
-                                                </SELECT>&nbsp;
-                                        </FORM>
-                                        </TD>
-                                </TR>
-                            </THEAD>
-                            <TBODY>
-				{cycle values="light,lucid" print=false}
-				{section name=l1 loop=$tariff.customers max=$tariff.rows}
-				<TR>
-					{section name=l2 loop=$tariff.customers start=$smarty.section.l1.index step=$tariff.rows}
-					<TD WIDTH="33%" class="highlight {cycle}"   {cycle print=false} onclick="return self.location.href='?m=customerinfo&id={$tariff.customers[l2].id}'">
-					<IMG SRC="img/customer.gif" ALT=""> <A HREF="?m=customerinfo&id={$tariff.customers[l2].id}">({$tariff.customers[l2].id|string_format:"%04d"}) {$tariff.customers[l2].customername|truncate:50:" ..."} {if $tariff.customers[l2].cnt > 1}({$tariff.customers[l2].cnt}){/if}</A></TD>
-					{/section}{cycle print=false}
-				</TR>
-				{sectionelse}
-				<TR>
-					<TD class="empty-talbe">
-						<p>{trans("No such customers with that subscription.")}</p>
-					</TD>
-				</TR>
-				{/section}
-                            </TBODY>
-                            <TFOOT>
-                                <TR>
-                                        <TD WIDTH="100%" COLSPAN="2">
-                                                <P>
-                                                <FORM NAME="tmove" METHOD="GET" ACTION="?m=tariffmove">
-                                                        <INPUT type="submit" class="hiddenbtn">
-                                                        <INPUT TYPE="hidden" VALUE="tariffmove" NAME="m">
-                                                        <INPUT TYPE="hidden" VALUE="{$tariff.id}" NAME="from">
-                                                        <INPUT TYPE="hidden" VALUE="{if !$netid}0{else}{$netid}{/if}" NAME="netid">
-                                                        <input type="hidden" name="is_sure" VALUE="0">
-                                                        <B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(document.tmove.elements['is_sure'],'{trans("Are you sure, you want to move customers to selected tariff?")}','1');">{trans("Move customers to subscription:")}</A> </B>
-                                                        <SELECT SIZE="1" NAME="to">
-                                                                {section name=lt loop=$tariffs}
-                                                                {if $tariffs[lt].id != $tariff.id}<OPTION VALUE="{$tariffs[lt].id}">{$tariffs[lt].name} ({$tariffs[lt].value|money_format} )</OPTION>{/if}
-                                                                {/section}
-                                                        </SELECT>
-                                                </FORM>
-                                                </P>
-                                        </TD>
-                                </TR>
-                            </TFOOT>
+				<THEAD>
+					<TR>
+						<TD COLSPAN="2">
+							<B>{trans("Customers in Subscription:")}</B>
+						</TD>
+					</TR>
+					<TR>
+						<TD colspan="4" ALIGN="CENTER">
+						{trans("Network:")}
+						<FORM NAME="tinfo" METHOD="GET" ACTION="?m=tariffinfo">
+							<INPUT type="submit" class="hiddenbtn">
+							<INPUT TYPE="hidden" VALUE="tariffinfo" NAME="m">
+							<INPUT TYPE="hidden" VALUE="{$tariff.id}" NAME="id">
+							<SELECT SIZE="1" NAME="netid" ONCHANGE="javascript:changeNetwork();">
+								<OPTION value="0" {if !$netid}SELECTED{/if}>{trans("- all networks -")}</OPTION>
+								{section name=networks loop=$networks}
+								<OPTION value="{$networks[networks].id}" {if $networks[networks].id == $netid}SELECTED{/if}>{$networks[networks].name|truncate:30:"...":true}</OPTION>
+								{/section}
+							</SELECT>&nbsp;
+						</FORM>
+						</TD>
+					</TR>
+				</THEAD>
+				<TBODY>
+					{cycle values="light,lucid" print=false}
+					{section name=l1 loop=$tariff.customers max=$tariff.rows}
+					<TR>
+						{section name=l2 loop=$tariff.customers start=$smarty.section.l1.index step=$tariff.rows}
+						<TD WIDTH="33%" class="highlight {cycle}"   {cycle print=false} onclick="return self.location.href='?m=customerinfo&id={$tariff.customers[l2].id}'">
+						<IMG SRC="img/customer.gif" ALT=""> <A HREF="?m=customerinfo&id={$tariff.customers[l2].id}">({$tariff.customers[l2].id|string_format:"%04d"}) {$tariff.customers[l2].customername|truncate:50:" ..."} {if $tariff.customers[l2].cnt > 1}({$tariff.customers[l2].cnt}){/if}</A></TD>
+						{/section}{cycle print=false}
+					</TR>
+					{sectionelse}
+					<TR>
+						<TD class="empty-talbe">
+							<p>{trans("No such customers with that subscription.")}</p>
+						</TD>
+					</TR>
+					{/section}
+				</TBODY>
+				<TFOOT>
+					<TR>
+						<TD WIDTH="100%" COLSPAN="2">
+							<P>
+								<FORM NAME="tmove" METHOD="GET" ACTION="?m=tariffmove">
+									<INPUT type="submit" class="hiddenbtn">
+									<INPUT TYPE="hidden" VALUE="tariffmove" NAME="m">
+									<INPUT TYPE="hidden" VALUE="{$tariff.id}" NAME="from">
+									<INPUT TYPE="hidden" VALUE="{if !$netid}0{else}{$netid}{/if}" NAME="netid">
+									<input type="hidden" name="is_sure" VALUE="0">
+									<B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(document.tmove.elements['is_sure'],'{trans("Are you sure, you want to move customers to selected tariff?")}','1');">{trans("Move customers to subscription:")}</A> </B>
+									<SELECT SIZE="1" NAME="to">
+										{section name=lt loop=$tariffs}
+										{if $tariffs[lt].id != $tariff.id}<OPTION VALUE="{$tariffs[lt].id}">{$tariffs[lt].name} ({$tariffs[lt].value|money_format} )</OPTION>{/if}
+										{/section}
+									</SELECT>
+								</FORM>
+							</P>
+						</TD>
+					</TR>
+				</TFOOT>
 			</TABLE>
 		</TD>
 	</TR>
     </TBODY>
 </TABLE>
+
+{if $tariff.type == 4}
+<form METHOD="post" ACTION="?m=tariffinfo&id=4&single" NAME="voip_add_single">
+    <input type="submit" CLASS="hiddenbtn">
+    <input type="hidden" NAME="m" value="voipprefixmanager">
+    <TABLE CLASS="lmsbox">
+        <colgroup>
+            <col style="width: 1%;"/>
+            <col style="width: 99%;"/>
+        </colgroup>
+        <thead>
+            <TR>
+                <TD CLASS="bold" COLSPAN="2">
+                    {trans("Add prefix")}
+                </TD>
+            </TR>
+        </thead>
+        <TBODY>
+            <TR>
+                <TD CLASS="bold nobr">
+                    <img src="img/voip.gif" WIDTH="16" ALT=""> {trans("Prefix:")}
+                </TD>
+                <TD>
+                    <input type="text" NAME="prefix[prefix]" VALUE="{if isset($args.prefix)}{$args.prefix}{/if}" {tip text="Enter prefix" trigger="prefix"}>
+                </TD>
+            </TR>
+			<TR>
+                <TD CLASS="bold nobr">
+                    <img src="img/desc.gif" WIDTH="16" ALT=""> {trans("Groups:")}
+                </TD>
+                <TD>
+					<SELECT NAME="group_id">
+						<OPTION>{trans("Select")}</OPTION>
+					{foreach from=$tariffGroups item=singleGroup}
+						<OPTION VALUE="{$singleGroup.group_id}">{$singleGroup.group_name}</OPTION>
+					{/foreach}
+					</SELECT>
+                </TD>
+            </TR>
+			 <TR>
+                <TD CLASS="bold nobr">
+                    <img src="img/desc.gif" WIDTH="16" ALT=""> {trans("Description:")}
+                </TD>
+                <TD>
+                    <INPUT CLASS="autosuggest-{ConfigHelper::getConfig('phpui.default_autosuggest_placement')}" TYPE="TEXT" VALUE="{if isset($args.description)}{$args.description}{/if}" NAME="prefix[description]" VALUE="" {tip text="Enter additional information"}>
+                </TD>
+            </TR>
+            <TR>
+                <TD CLASS="text-right" COLSPAN="2">
+                    <A href="javascript:document.voip_add_single.submit();" accesskey="s">{trans("Add")} <IMG src="img/save.gif" ALT=""></A>
+                </TD>
+            </TR>
+        </TBODY>
+    </table>
+</form>
+
+<form METHOD="post"  ACTION="?m=tariffinfo&id={$tariff.id}&file" NAME="voip_add_file" ENCTYPE="multipart/form-data">
+    <input type="submit" CLASS="hiddenbtn">
+    <input type="hidden" NAME="m" value="voipprefixmanager">
+    <TABLE CLASS="lmsbox">
+        <colgroup>
+            <col style="width: 1%;"/>
+            <col style="width: 99%;"/>
+        </colgroup>
+        <thead>
+            <TR>
+                <TD CLASS="bold" COLSPAN="2">
+                    {trans("Import price list from file")}
+                </TD>
+            </TR>
+        </thead>
+        <TBODY>
+            <TR CLASS="space_row">
+                <TD CLASS="bold nobr">
+                    <img src="img/size.gif" WIDTH="16" ALT=""> {trans("Import Source:")}
+                </TD>
+                <TD>
+					<INPUT NAME="file" type="file" size="70" {tip text="Enter path to file or click 'Browse' button" trigger="file"}> 
+                </TD>
+            </TR>
+            <TR>
+                <TD CLASS="text-right" COLSPAN="2">
+                    <A HREF="javascript:document.voip_add_file.submit();" accesskey="s">{trans("<!do>Import")} <IMG src="img/save.gif" ALT=""></A>
+                </TD>
+            </TR>
+			{if isset($warnings)}
+			<TR CLASS="space_row">
+                <TD CLASS="bold nobr" COLSPAN="2">
+                    <img src="img/note.gif" WIDTH="16" ALT=""> {trans("Warnings:")}
+                </TD>
+            </TR>
+			<TR>
+				<TD></TD>
+                <TD>
+					{if isset($warnings.already_exists)}
+						<DIV STYLE="font-weight: bold; border-bottom: 1px solid black; width: 30%;">{trans("Prefixes already exists:")}</DIV>
+						{foreach from=$warnings.already_exists item=singleWarning}
+							{$singleWarning},
+						{/foreach}
+						<BR><BR>
+					{/if}
+
+					{if isset($warnings.duplicate_item)}
+						<DIV STYLE="font-weight: bold; border-bottom: 1px solid black; width: 30%;">{trans("Duplicates:")}</DIV>
+						<TABLE>
+							<TR>
+								<TD CLASS="bold">{trans("Prefix number")}</TD>
+								<TD CLASS="bold">{trans("Found inside")}</TD>
+							</TR>
+							{foreach from=$warnings.duplicate_item item=singleWarning}
+							<TR>
+								<TD>
+									{$singleWarning.prefix}
+								</TD>
+								<TD>
+									{foreach from=$singleWarning.group item=groupName name=groups}
+										{if $smarty.foreach.groups.last}{$groupName}{else}{$groupName}, {/if}
+									{/foreach}
+								</TD>
+							</TR>
+							{/foreach}
+						</TABLE>
+						<BR><BR>
+					{/if}
+                </TD>
+            </TR>
+			{/if}
+        </TBODY>
+    </TABLE>
+</FORM>
+
+	<TABLE CLASS="lmsbox">
+        <colgroup>
+            <col style="width: 1%;"/>
+            <col style="width: 99%;"/>
+        </colgroup>
+        <thead>
+            <TR>
+                <TD CLASS="bold" COLSPAN="2">
+                    {trans("Groups:")}
+                </TD>
+            </TR>
+        </thead>
+        <TBODY>
+            <TR>
+                <TD COLSPAN="2">
+					{if isset($tariffGroups)}
+						<ol>
+						{foreach from=$tariffGroups item=singleGroup}
+							<li>
+								<a href="javascript:changePrefixListState({$singleGroup.group_id});">{$singleGroup.group_name}</a>
+
+								<ul id="prefix_group_{$singleGroup.group_id}" style="list-style-type: none; text-align: left; padding-left: 10px; display: none;">
+									{foreach from=$singleGroup.prefix_list item=singlePrefix}
+									<li>{$singlePrefix}</li>
+									{/foreach}
+								</ul>
+							</li>
+						{/foreach}
+						</ol>
+					{else}
+						<DIV STYLE="text-align: center; padding: 10px; font-weight: bold;">
+							Nie znaleziono prefixów przypisanych do taryfy.
+						</DIV>
+					{/if}
+				</TD>
+            </TR>
+        </TBODY>
+    </TABLE>
+	
+	<SCRIPT type="text/javascript">
+	<!--
+		function changePrefixListState(ID) {
+			var ul = document.getElementById("prefix_group_"+ID);	
+			var display_state = ul.style.display;
+		
+			if (display_state == 'none') {
+				ul.style.display = 'block';
+			} else {
+				ul.style.display = 'none';
+			}
+		}
+	//-->
+	</SCRIPT>	
+	
+{/if}
 {/block}

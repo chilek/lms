@@ -211,10 +211,16 @@ $menu = array(
 					'prio' => 20,
 				),
 				array(
+					'name' => trans('Prefixes'),
+					'link' => '?m=voipprefixmanager',
+					'tip' => trans('Allows you to add the new prefixes'),
+					'prio' => 30,
+				),
+				array(
 					'name' => trans('Search'),
 					'link' => '?m=voipaccountsearch',
 					'tip' => trans('Allows you to search VoIP account'),
-					'prio' => 30,
+					'prio' => 40,
 				),
 			),
 		),
