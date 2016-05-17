@@ -42,7 +42,7 @@
 		{$lastonline_limit = ConfigHelper::getConfig('phpui.lastonline_limit')}
         <table cellpadding="3" width="100%">
             {if $netdevices}
-                <tr class="dark">
+                <tr class="dark" style="border-right: 1px solid black;">
                     <td nowrap="" class="fleftu"><b>{trans('Node:')}</b></td>
                     <td nowrap="" class="fbt">{trans('Customer:')}</td>
                     <td nowrap="" class="fbt">{trans('Address:')}</td>
@@ -60,7 +60,7 @@
 							{/if}
 						{else}
 							<img src="img/node_unk.gif" alt="">
-						{/if}	
+						{/if}
 						{$netdevice.name}
 					</td>
                     <td>{$netdevice.customername} {$smarty.now-$netdevice.lastonline}</td>
