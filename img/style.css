@@ -52,6 +52,9 @@ H3		{ font-size: 10pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 HR      { border: 0; height: 1px; color: black; background-color: black; }
 
 INPUT[type="text"],
+INPUT[type="email"],
+INPUT[type="search"],
+INPUT[type="number"],
 INPUT[type="password"],
 INPUT[type="submit"],
 INPUT[type="button"],
