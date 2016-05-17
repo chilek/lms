@@ -17,7 +17,7 @@
                     {trans("Login:")}
                 </td>
                 <td>
-                    <input type="text" name="voipaccountdata[login]" value="{$voipaccountdata.login}" maxlength="32" size="30" {tip text="Enter voip account login" trigger="login" bold=1}>
+                    <input type="text" name="voipaccountdata[login]" value="{$voipaccountdata.login}" maxlength="32" size="30" required {tip text="Enter voip account login" trigger="login" bold=1}>
                 </td>
             </tr>
             {/block}
@@ -32,7 +32,7 @@
                     {trans("Password:")}
                 </td>
                 <td>
-                    <input type="{if ConfigHelper::checkPrivilege('hide_voip_passwords')}password{else}text{/if}" name="voipaccountdata[passwd]" value="{$voipaccountdata.passwd}" {tip text="Enter password" trigger="passwd"}>
+                    <input type="{if ConfigHelper::checkPrivilege('hide_voip_passwords')}password{else}text{/if}" name="voipaccountdata[passwd]" value="{$voipaccountdata.passwd}" required {tip text="Enter password" trigger="passwd"}>
                 </td>
             </tr>
             {/block}
@@ -45,7 +45,7 @@
                     {trans("Phone number:")}
                 </td>
                 <td>
-                    <input type="text" name="voipaccountdata[phone]" value="{$voipaccountdata.phone}" {tip text="Enter phone number" trigger="phone"}>
+                    <input type="text" name="voipaccountdata[phone]" value="{$voipaccountdata.phone}" required {tip text="Enter phone number" trigger="phone"}>
                 </td>
             </tr>
             {/block}

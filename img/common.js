@@ -137,6 +137,10 @@ function nodeChooseWin(formfield) {
 	return openSelectWindow('?m=choosenodedevice', 'choosenodedevice', 600, 250, 'true', formfield);
 }
 
+function netDevForNetNodeChooseWin(netnodeid) {
+	return openSelectWindow('?m=choosenetdevfornetnode&id=' + netnodeid, 'choosenetdevfornetnode', 600, 250, 'true', netnodeid);
+}
+
 function sendvalue(targetfield, value)
 {
 	targetfield.value = value;
@@ -406,7 +410,7 @@ function multiselect(formid, elemid, def, selected)
 	document.onclick = function(e) {
 		if (div.style.display == 'none' || e.target.id == old_element.id)
 			return 0;
-		
+
 		var parent = e.target.parentNode.innerHTML.indexOf(old_element.name);
 
 		if (e.target.innerHTML.indexOf("<head>") > -1 || parent == -1 || (parent > -1 && e.target.nodeName != 'INPUT' && e.target.nodeName != 'LI' && e.target.nodeName != 'SPAN'))
@@ -639,7 +643,7 @@ function reset_customer(form, elemname1, elemname2) {
 		document.forms[form].elements[elemname2].value = document.forms[form].elements[elemname1].value;
 }
 
-if (window.addEventListener) 
+if (window.addEventListener)
 	window.addEventListener("load", init_links, false);
-else if (window.attachEvent) 
+else if (window.attachEvent)
 	window.attachEvent("onload", init_links);

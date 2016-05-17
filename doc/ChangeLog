@@ -22,6 +22,8 @@ version ?.??.?? (????-??-??):
     invoice sends from LMS UI [chilan]
   - invoice sends are possible from LMS UI [chilan]
   - print events accordingly to privacy filter selection [chilan]
+  - changed input types to email and tel where it is sane [kyob]
+  - set required attibute for some form fields [kyob]
 
 version 1.11.20 (2016-04-19):
 

@@ -3234,4 +3234,5 @@ $_LANG['Fatal error: No invoices nor debit notes were selected!'] = 'Błąd kryt
 $_LANG['Are you sure, you want to send invoices to customers?'] = 'Jesteś pewien, że chcesz wysłać faktury do klientów?';
 $_LANG['Are you sure, you want to send invoices to customer?'] = 'Jesteś pewien, że chcesz wysłać faktury do klienta?';
 
+$_LANG['yyyy/mm/dd'] = 'rrrr/mm/dd';
 ?>

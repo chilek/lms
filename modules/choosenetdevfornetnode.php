@@ -26,13 +26,18 @@
 
 $layout['pagetitle'] = trans('Select net devices');
 
-$list = $DB->GetAll("SELECT n.name, n.id, n.producer, n.model, n.location FROM netdevices n
-	WHERE (n.netnodeid IS NULL) OR (n.netnodeid <> ?) AND n.netnodeid IS NULL
-	ORDER BY NAME", array($_GET['id']));
+$p = isset($_GET['p']) ? $_GET['p'] : '';
+if ($p == 'main') {
+	$list = $DB->GetAll("SELECT n.name, n.id, n.producer, n.model, n.location FROM netdevices n
+		WHERE (n.netnodeid IS NULL) OR (n.netnodeid <> ?) AND n.netnodeid IS NULL
+		ORDER BY n.name", array($_GET['id']));
 
-$list['total'] = count($list);
-$SMARTY->assign('netdevlist', $list);
+	$list['total'] = count($list);
+	$SMARTY->assign('netdevlist', $list);
+}
+
 $SMARTY->assign('objectid', $_GET['id']);
-$SMARTY->display('choose/choosenetdev.html');
+$SMARTY->assign('part', $p);
+$SMARTY->display('choose/choosenetdevfornetnode.html');
 
 ?>
