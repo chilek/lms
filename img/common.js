@@ -131,8 +131,15 @@ function netdevfrommapchoosewin(netdevid)
 
 function netlinkpropertieschoosewin(id, devid, isnetlink)
 {
-	return openSelectWindow('?m=netlinkproperties&id=' + id + '&devid=' + devid + '&isnetlink=' + (isnetlink ? 1 : 0),
-		'netlinkproperties', 350, 100, 'true');
+	return openSelectWindow('?m=netlinkproperties&id=' + id + '&devid=' + devid + '&isnetlink=' + (isnetlink ? 1 : 0), 'netlinkproperties', 350, 100, 'true');
+}
+
+function netDevChooseWin(formfield) {
+	return openSelectWindow('?m=choosenetdevice', 'choosenetdevice', 600, 250, 'true', formfield);
+}
+
+function netDevForNetNodeChooseWin(netnodeid) {
+	return openSelectWindow('?m=choosenetdevfornetnode', 'choosenetdevfornetnode', 600, 250, 'true', netnodeid);
 }
 
 function sendvalue(targetfield, value)
