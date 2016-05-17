@@ -2392,7 +2392,6 @@ $_LANG['Enter default TTL value'] = 'Wprowadź domyślną wartość TTL';
 $_LANG['Enter operating system type'] = 'Wprowadź typ systemu operacyjnego';
 $_LANG['Enter port number'] = 'Wprowadź numer portu';
 $_LANG['Enter public key fingerprint'] = 'Wprowadź odcisk klucza publicznego';
-$_LANG['Enter computer name.'] = 'Wprowadź nazwę komputera.';
 $_LANG['Enter device name.'] = 'Wprowadź nazwę urządzenia.';
 $_LANG['Enter record contents'] = 'Wprowadź dane rekordu';
 $_LANG['Enter record priority'] = 'Wprowadź priorytet rekordu';
