@@ -23,7 +23,7 @@
 			<B>{trans("Name:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.name|escape}" NAME="tariff[name]" size="45" {tip trigger="name" text="Enter name" bold=1}>
+			<INPUT TYPE="TEXT" VALUE="{$tariff.name|escape}" NAME="tariff[name]" size="45" required {tip trigger="name" text="Enter name" bold=1}>
 			<B>&nbsp;({$tariff.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>

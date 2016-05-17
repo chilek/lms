@@ -15,7 +15,7 @@
 			<B>{trans("Name:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" VALUE="{$nodegroup.name}" NAME="nodegroup[name]" {tip trigger="name" bold=1}>
+			<INPUT TYPE="TEXT" VALUE="{$nodegroup.name}" NAME="nodegroup[name]" required {tip trigger="name" bold=1}>
 			<B>&nbsp;({$nodegroup.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>

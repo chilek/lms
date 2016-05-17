@@ -15,14 +15,14 @@
 			{trans("Network name:")}
 		</TD>
 		<TD>
-			<INPUT type="text" size="23" name="netadd[name]" value="{$netadd.name}" {tip trigger="name" bold=1}>
+			<INPUT type="text" size="23" name="netadd[name]" value="{$netadd.name}" required {tip trigger="name" bold=1}>
 		</TD>
 	</TR>
 	</THEAD>
 	<TBODY>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr"><IMG src="img/ip.gif" alt=""> {trans("Network address/mask:")}</TD>
-		<TD class="bold"><INPUT type="text" size="23" name="netadd[address]" value="{$netadd.address}" {tip text="Enter IP address and select mask" trigger="address"}> / <SELECT size="1" title="Prefixlen" name="netadd[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION value="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] == $netadd.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>
+		<TD class="bold"><INPUT type="text" size="23" name="netadd[address]" value="{$netadd.address}" required {tip text="Enter IP address and select mask" trigger="address"}> / <SELECT size="1" title="Prefixlen" name="netadd[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION value="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] == $netadd.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>
 	</TR>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr"><IMG src="img/mac.gif" alt=""> {trans("Interface:")}</TD>

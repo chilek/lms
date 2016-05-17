@@ -108,7 +108,7 @@
 								</TD>
 								<TD>&nbsp;</TD>
 								<TD>
-									<INPUT type="text" name="customeradd[lastname]" value="{$customeradd.lastname}" SIZE="50" {tip text="Enter customer last name or company name" trigger="lastname" bold=1}>
+									<INPUT type="text" name="customeradd[lastname]" value="{$customeradd.lastname}" SIZE="50" required {tip text="Enter customer last name or company name" trigger="lastname" bold=1}>
 								</TD>
 							</TR>
 							<TR>
@@ -117,7 +117,7 @@
 								</TD>
 								<TD>&nbsp;</TD>
 								<TD>
-									<INPUT type="text" name="customeradd[name]" value="{$customeradd.name}" SIZE="50" {tip text="Enter customer name" trigger="name" bold=1}>
+									<INPUT type="text" name="customeradd[name]" value="{$customeradd.name}" SIZE="50" required {tip text="Enter customer name" trigger="name" bold=1}>
 								</TD>
 							</TR>
 						</TABLE>
@@ -205,7 +205,7 @@
 						<TABLE width="100%" cellpadding="1">
 							<TR>
 								<TD style="width: 1%;" class="nobr">{trans("Street:")}</TD>
-								<TD style="width: 99%;"><INPUT type="text" size="30" value="{$customeradd.street}" name="customeradd[street]" id="street" {tip text="Enter street" trigger="street"}></TD>
+								<TD style="width: 99%;"><INPUT type="text" size="30" value="{$customeradd.street}" name="customeradd[street]" id="street" required {tip text="Enter street" trigger="street"}></TD>
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="nobr">{trans("Building:")}</TD>
