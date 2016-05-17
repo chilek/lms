@@ -514,6 +514,7 @@ $_LANG['Enter new password:'] = 'Wprowadź nowe hasło:';
 $_LANG['Enter IP address or it\'s fragment'] = 'Wprowadź adres IP lub jego fragment';
 $_LANG['Enter MAC address or it\'s fragment'] = 'Wprowadź adres MAC lub jego fragment';
 $_LANG['Enter node name'] = 'Wprowadź nazwę komputera';
+$_LANG['Enter node name.'] = 'Wprowadź nazwę komputera.';
 $_LANG['Enter node name or it\'s fragment'] = 'Wprowadź nazwę komputera lub jej fragment';
 $_LANG['Enter note'] = 'Wprowadź notatkę';
 $_LANG['Enter note (optional)'] = 'Wprowadź notatkę (opcjonalnie)';
