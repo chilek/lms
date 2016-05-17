@@ -30,7 +30,7 @@ $p = isset($_GET['p']) ? $_GET['p'] : '';
 if ($p == 'main') {
 	$list = $DB->GetAll("SELECT n.name, n.id, n.producer, n.model, n.location FROM netdevices n
 		WHERE (n.netnodeid IS NULL) OR (n.netnodeid <> ?) AND n.netnodeid IS NULL
-		ORDER BY NAME", array($_GET['id']));
+		ORDER BY n.name", array($_GET['id']));
 
 	$list['total'] = count($list);
 	$SMARTY->assign('netdevlist', $list);
