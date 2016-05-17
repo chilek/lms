@@ -61,9 +61,9 @@
 						{else}
 							<img src="img/node_unk.gif" alt="">
 						{/if}
-						{$netdevice.name}
+						{$netdevice.name} ({$netdevice.ipaddr}) {if $netdevice.ipaddr_pub != 0}({$netdevice.ipaddr_pub}){/if}
 					</td>
-                    <td>{$netdevice.customername} {$smarty.now-$netdevice.lastonline}</td>
+                    <td>{$netdevice.customername} {$netdevice.lastname}</td>
 					<td>{$netdevice.street} {$netdevice.building}{if $netdevice.apartment}/{$netdevice.apartment}{/if}</td>
                 </tr>
             {foreachelse}
