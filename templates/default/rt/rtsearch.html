@@ -20,7 +20,7 @@
 			<B>{trans("Subject:")}</B>
 		</TD>
 		<TD WIDTH="99%">
-			<INPUT type="text" size="50" name="search[subject]" value="{$search.subject}" {tip text="Enter subject"}>
+			<INPUT type="search" size="50" name="search[subject]" value="{$search.subject}" {tip text="Enter subject"}>
 		</TD>
 	</TR>
 	<TR>
@@ -39,7 +39,7 @@
 					{/foreach}
 				    </SELECT>
 				    {trans("or Customer ID:")}
-				    <INPUT TYPE="TEXT" NAME="search[custid]" VALUE="{$search.custid}" SIZE="5" onChange="document.forms['search'].elements['search[customerid]'].value=document.forms['search'].elements['search[custid]'].value" {tip trigger="custid"}>
+				    <INPUT TYPE="number" min="1" NAME="search[custid]" VALUE="{$search.custid}" SIZE="5" onChange="document.forms['search'].elements['search[customerid]'].value=document.forms['search'].elements['search[custid]'].value" {tip trigger="custid"}>
 				</TD>
 			    </TR>
 			    <TR>
