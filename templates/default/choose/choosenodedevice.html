@@ -1,6 +1,3 @@
-<!--
- @author Maciej_Wawryk
--->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
     <head>
@@ -18,56 +15,66 @@
     </head>
     {if ! $part}
         <frameset name="all" frameborder="0" framespacing="0" ROWS="36,*">
-            <frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="top" noresize src="?m=choosenetdevice&p=top">
-            <frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="main" noresize src="?m=choosenetdevice&p=main">
+            <frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="top" noresize src="?m=choosenodedevice&p=top">
+            <frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="main" noresize src="?m=choosenodedevice&p=main">
         </frameset>
     {/if}
     {if $part eq "top"}
     <body>
-        <form name="search" method="post" action="?m=choosenetdevice&p=main" target="main">
+        <form name="search" method="post" action="?m=choosenodedevice&p=main" target="main">
             <input type="submit" class="hiddenbtn">
             <table cellpadding="5" width="100%">
                 <tr>
                     <td class="fall dark" align="center" nowrap>
-                        <img src="img/netdev.gif" alt="">
-                        <input type="text" name="searchnetdev" value="{$searchnetdev}" size="20" onkeyup="document.search.submit();">
+                        <img src="img/node.gif" alt="">
+                        <input type="text" name="searchnodedev" value="{$searchnodedev}" size="20" onkeyup="document.search.submit();">
                     </td>
                 </tr>
             </table>
         </form>
         <script type="text/javascript">
-            document.search.searchnetdev.focus();
+            document.search.searchnodedev.focus();
         </script>
     </body>
     {/if}
     {if $part eq "main"}
     <body>
+		{$lastonline_limit = ConfigHelper::getConfig('phpui.lastonline_limit')}
         <table cellpadding="3" width="100%">
             {if $netdevices}
                 <tr class="dark">
-                    <td nowrap="" class="fleftu"><b>Nazwa</b></td>
-                    <td nowrap="" class="fbt">Lokalizacja</td>
-                    <td nowrap="" class="fbt">Producent</td>
-                    <td nowrap="" class="fbt">Wolne porty</td>
+                    <td nowrap="" class="fleftu"><b>{trans('Device:')}</b></td>
+                    <td nowrap="" class="fbt">{trans('Customer:')}</td>
+                    <td nowrap="" class="fbt">{trans('Address:')}</td>
                 </tr>
             {/if}
             {cycle values="light,lucid" print=false}
             {foreach from=$netdevices item=netdevice}
                 <tr class="{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
-                    <td onClick="sendvalue(targetfield,'{$netdevice.id}');" style="font-weight: bold;">{$netdevice.name}</td>
-                    <td onClick="sendvalue(targetfield,'{$netdevice.id}');">{$netdevice.location|replace:'Gdynia, ':''}</td>
-                    <td onClick="sendvalue(targetfield,'{$netdevice.id}');">{$netdevice.producer}</td>
-                    <td onClick="sendvalue(targetfield,'{$netdevice.id}');" style="text-align: center;">{$netdevice.ports}</td>
+                    <td onClick="sendvalue(targetfield,'{$netdevice.id}');" style="font-weight: bold;">
+						{if $netdevice.lastonline}
+							{if ($smarty.now-$netdevice.lastonline) > $lastonline_limit}
+							<img src="img/node_off.gif" alt="">
+							{else}
+							<img src="img/node_on.gif" alt="">
+							{/if}
+						{else}
+							<img src="img/node_unk.gif" alt="">
+						{/if}	
+						{$netdevice.name}
+					</td>
+                    <td>{$netdevice.customername} {$smarty.now-$netdevice.lastonline}</td>
+					<td>{$netdevice.street} {$netdevice.building}{if $netdevice.apartment}/{$netdevice.apartment}{/if}</td>
                 </tr>
             {foreachelse}
                 <tr>
                     <td colspan="5" align="center">
                         <p>&nbsp;</p>
                         <p><b>
-                        {if $searchnetdev}
-                                Brak urządzeń spełniających zadane kryteria.
+                        {if $searchnodedev}
+                                {trans('No such devices matching search criteria.')}
                         {else}
-                                Wprowadź dane szukanego urządzenia.
+                                {trans('Enter device name.')}
                         {/if}
                         </b></p>
                         <p>&nbsp;</p>

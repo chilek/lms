@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,9 +23,6 @@
  *
  *  $Id$
  */
-/**
-* @author Maciej_Wawryk
-*/
 
 $layout['pagetitle'] = trans('Select netdevice');
 
@@ -34,19 +31,25 @@ $p = isset($_GET['p']) ? $_GET['p'] : '';
 if(!$p || $p == 'main')
     $SMARTY->assign('js', 'var targetfield = window.parent.targetfield;');
 
-if(isset($_POST['searchnetdev']) && $_POST['searchnetdev']){
-    $search = $_POST['searchnetdev'];
-    if($netdevices = $DB->GetAll('SELECT id, name, location, producer, ports
-        FROM netdevices
-        WHERE name ?LIKE? '.$DB->Escape('%'.$search.'%').' OR location ?LIKE? '.$DB->Escape('%'.$search.'%').' OR producer ?LIKE? '.$DB->Escape('%'.$search.'%').'
-        ORDER BY name')){
-            foreach ($netdevices as $k => $netdevice) {
-                $netdevices[$k]['ports'] = $netdevice['ports'] - $LMS->CountNetDevLinks($netdevice['id']);
-        }
-    }
-    $SMARTY->assign('searchnetdev', $search);
+if(isset($_POST['searchnodedev']) && $_POST['searchnodedev']){ 
+    $search = $_POST['searchnodedev'];
+    $netdevices = $DB->GetAll('SELECT 
+											n.id, n.name, n.lastonline,
+											c.name as customername, c.lastname, c.street, c.building, c. apartment
+										FROM 
+											nodes n left join customers c on n.ownerid = c.id 
+										WHERE 
+											n.name ?LIKE? ' . $DB->Escape('%'.$search.'%') . ' AND n.netdev = 0 
+										ORDER BY 
+											name');
+
+    
+	
+    $SMARTY->assign('searchnodedev', $search);
     $SMARTY->assign('netdevices', $netdevices);
 }
 
 $SMARTY->assign('part', $p);
-$SMARTY->display('choose/choosenetdevice.html');
+$SMARTY->display('choose/choosenodedevice.html');
+
+?>
