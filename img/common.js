@@ -1,4 +1,4 @@
-// $Id: common.js,v 1.2 2003/04/12 22:31:06 lukasz Exp $
+// $Id$
 
 function confirmLink(theLink, message)
 {
@@ -129,8 +129,8 @@ function netlinkpropertieschoosewin(id, devid, isnetlink)
 	return openSelectWindow('?m=netlinkproperties&id=' + id + '&devid=' + devid + '&isnetlink=' + (isnetlink ? 1 : 0), 'netlinkproperties', 350, 100, 'true');
 }
 
-function netDevChooseWin(formfield) {
-	return openSelectWindow('?m=choosenetdevice', 'choosenetdevice', 600, 250, 'true', formfield);
+function netDevChooseWin(formfield, netdevid) {
+	return openSelectWindow('?m=choosenetdevice' + (netdevid !== undefined ? '&netdevid=' + netdevid : ''), 'choosenetdevice', 600, 250, 'true', formfield);
 }
 
 function nodeChooseWin(formfield) {
