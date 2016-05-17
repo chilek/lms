@@ -139,7 +139,7 @@ function netDevChooseWin(formfield) {
 }
 
 function netDevForNetNodeChooseWin(netnodeid) {
-	return openSelectWindow('?m=choosenetdevfornetnode', 'choosenetdevfornetnode', 600, 250, 'true', netnodeid);
+	return openSelectWindow('?m=choosenetdevfornetnode&id=' + netnodeid, 'choosenetdevfornetnode', 600, 250, 'true', netnodeid);
 }
 
 function sendvalue(targetfield, value)
