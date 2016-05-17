@@ -15,7 +15,7 @@
 			<B>{trans("Name:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" VALUE="{$customergroup.name}" NAME="customergroup[name]" SIZE="40" {tip trigger="name" bold=1}>
+			<INPUT TYPE="TEXT" VALUE="{$customergroup.name}" NAME="customergroup[name]" SIZE="40" required {tip trigger="name" bold=1}>
 			<B>&nbsp;({$customergroup.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>

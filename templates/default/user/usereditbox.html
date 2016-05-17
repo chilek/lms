@@ -12,7 +12,7 @@
 			{trans("Login:")}
 		</TD>
 		<TD style="width: 98%;" class="bold nobr">
-			<INPUT type="text" name="userinfo[login]" value="{$userinfo.login}" {tip text="Enter user login" trigger="login" bold=1}> ({$userinfo.id|string_format:"%04d"})
+			<INPUT type="text" name="userinfo[login]" value="{$userinfo.login}" required {tip text="Enter user login" trigger="login" bold=1}> ({$userinfo.id|string_format:"%04d"})
 		</TD>
 	</TR>
 	</THEAD>
@@ -25,7 +25,7 @@
 			{trans("First/last name:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="userinfo[name]" value="{$userinfo.name}" size="40" {tip text="Enter user name" trigger="name"}>
+			<INPUT type="text" name="userinfo[name]" value="{$userinfo.name}" required size="40" {tip text="Enter user name" trigger="name"}>
 		</TD>
 	</TR>
 	<TR>

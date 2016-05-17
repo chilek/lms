@@ -30,7 +30,7 @@
 			<IMG src="img/network.gif" alt=""> {trans("Name:")}
 		</TD>
 		<TD style="width: 99%;" class="bold" colspan="3">
-			 <INPUT type="text" name="networkdata[name]" value="{$network.name}" {tip trigger="name" bold=1}> ({$network.id|string_format:"%04d"})
+			 <INPUT type="text" name="networkdata[name]" value="{$network.name}" required {tip trigger="name" bold=1}> ({$network.id|string_format:"%04d"})
 		</TD>
 		{/if}
 	</TR>
@@ -41,7 +41,7 @@
 			<IMG src="img/ip.gif" alt=""> {trans("Address/prefix:")}
 		</TD>
 		<TD style="width: 48%;" class="nobr">
-			{if $unlockedit}<INPUT type="text" name="networkdata[address]" value="{$network.address}" {tip text="Write down network address and select mask" trigger="address"}> / <SELECT size="1" title="Prefixlen" name="networkdata[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION value="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] == $network.prefix} selected{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>{else}{$network.address}/{$network.prefix}{/if}
+			{if $unlockedit}<INPUT type="text" name="networkdata[address]" value="{$network.address}" required {tip text="Write down network address and select mask" trigger="address"}> / <SELECT size="1" title="Prefixlen" name="networkdata[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION value="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] == $network.prefix} selected{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>{else}{$network.address}/{$network.prefix}{/if}
 		</TD>
 		<TD style="width: 2%;" class="bold nobr" rowspan="2">
 			<IMG src="img/dhcp.gif" alt=""> {trans("DHCP range:")}

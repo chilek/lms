@@ -13,7 +13,7 @@
 		    <td width="1%"><img src="img/group.gif" alt=""></td>
 		    <td width="1%" nowrap><b>{trans("Name:")}</b></td>
 		    <td width="98%">
-			<input type="text" value="{$usergroup.name}" name="usergroup[name]" size="40" {tip trigger="name" bold=1}>
+			<input type="text" value="{$usergroup.name}" name="usergroup[name]" size="40" required {tip trigger="name" bold=1}>
 			<b>&nbsp;({$usergroup.id|string_format:"%04d"})</b>
 		    </td>
 		</tr>

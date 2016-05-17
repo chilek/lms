@@ -25,7 +25,7 @@
 			<B>{trans("Login:")}</B>
 		</TD>
 		<TD width="98%">
-			<input type="text" name="account[login]" value="{$account.login}" {tip text="Enter account name" trigger="login"} onkeyup="update_homedir();">
+			<input type="text" name="account[login]" value="{$account.login}" required {tip text="Enter account name" trigger="login"} onkeyup="update_homedir();">
 		</TD>
 	</TR>
     </THEAD>
