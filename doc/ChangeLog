@@ -24,6 +24,8 @@ version ?.??.?? (????-??-??):
   - print events accordingly to privacy filter selection [chilan]
   - changed input types to email and tel where it is sane [kyob]
   - set required attibute for some form fields [kyob]
+  - improved selection of node and network devices which should be connected
+    to given network device [kosa/chilan]
 
 version 1.11.20 (2016-04-19):
 
