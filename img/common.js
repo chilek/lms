@@ -103,11 +103,6 @@ function customerchoosewin(formfield)
 	return openSelectWindow('?m=choosecustomer','choosecustomer',450,250,'true',formfield);
 }
 
-function nodechoosewin(formfield, customerid)
-{
-	return openSelectWindow('?m=choosenode&id='+customerid,'choosenode',350,200,'true',formfield);
-}
-
 function locationchoosewin(varname, formname, city, street, default_city)
 {
         if(city == '' && default_city) city = default_city;
@@ -131,8 +126,19 @@ function netdevfrommapchoosewin(netdevid)
 
 function netlinkpropertieschoosewin(id, devid, isnetlink)
 {
-	return openSelectWindow('?m=netlinkproperties&id=' + id + '&devid=' + devid + '&isnetlink=' + (isnetlink ? 1 : 0),
-		'netlinkproperties', 350, 100, 'true');
+	return openSelectWindow('?m=netlinkproperties&id=' + id + '&devid=' + devid + '&isnetlink=' + (isnetlink ? 1 : 0), 'netlinkproperties', 350, 100, 'true');
+}
+
+function netDevChooseWin(formfield) {
+	return openSelectWindow('?m=choosenetdevice', 'choosenetdevice', 600, 250, 'true', formfield);
+}
+
+function nodeChooseWin(formfield) {
+	return openSelectWindow('?m=choosenodedevice', 'choosenodedevice', 600, 250, 'true', formfield);
+}
+
+function netDevForNetNodeChooseWin(netnodeid) {
+	return openSelectWindow('?m=choosenetdevfornetnode', 'choosenetdevfornetnode', 600, 250, 'true', netnodeid);
 }
 
 function sendvalue(targetfield, value)
@@ -637,9 +643,7 @@ function reset_customer(form, elemname1, elemname2) {
 		document.forms[form].elements[elemname2].value = document.forms[form].elements[elemname1].value;
 }
 
-if (window.addEventListener) window.addEventListener("load", init_links, false);
-else if (window.attachEvent) window.attachEvent("onload", init_links);
-
-function choosenetdevice(formfield){
-    return openSelectWindow('?m=choosenetdevice','choosenetdevice',600,250,'true',formfield);
-}
+if (window.addEventListener) 
+	window.addEventListener("load", init_links, false);
+else if (window.attachEvent) 
+	window.attachEvent("onload", init_links);

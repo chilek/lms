@@ -105,6 +105,7 @@ if (! array_key_exists('xjxfun', $_POST)) {                  // xajax was called
 		$SMARTY->assign('netdevauthtype', $netdevauthtype);
 		$SMARTY->display('netdev/netdevipinfo.html');
 	} else {
+		echo 'asd';
 		$SMARTY->display('netdev/netdevinfo.html');
 	}
 }
