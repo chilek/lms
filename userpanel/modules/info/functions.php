@@ -344,8 +344,12 @@ if(defined('USERPANEL_SETUPMODE'))
 						$DB->Execute('INSERT INTO customercontacts (contact, customerid, type) VALUES(?, ?, ?)',
 							array($changes['fieldvalue'], $changes['customerid'], $matches[1] == 'phone' ? CONTACT_LANDLINE : CONTACT_EMAIL));
 						if ($LMS->SYSLOG) {
-							$fields['contact'] = $changes['fieldvalue'];
-							$fields['type'] = $matches[1] == 'phone' ? CONTACT_LANDLINE : CONTACT_EMAIL;
+							$fields = array(
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $changes['customerid'],
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT] => $DB->GetLastInsertID('customercontacts'),
+								'contact' => $changes['fieldvalue'],
+								'type' => $matches[1] == 'phone' ? CONTACT_LANDLINE : CONTACT_EMAIL,
+							);
 							$LMS->SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_ADD, $fields,
 								array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
 									$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT]));
