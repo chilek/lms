@@ -190,6 +190,11 @@ define('DOC_ORDER', -4);
 define('DOC_SHEET', -5);
 define('DOC_OTHER', -128);
 define('DOC_BILLING',-10);
+define('DOC_PRICELIST', -11);
+define('DOC_PROMOTION', -12);
+define('DOC_WARRANTY', -13);
+define('DOC_REGULATIONS', -14);
+
 
 $DOCTYPES = array(
     DOC_BILLING         =>      trans('billing'),
@@ -209,7 +214,11 @@ $DOCTYPES = array(
     -7  =>      trans('payments book'), // ksiazeczka oplat
     -8  =>      trans('payment summons'), // wezwanie do zapłaty
     -9  =>      trans('payment pre-summons'), // przedsądowe wezw. do zapłaty
-    DOC_OTHER       =>  trans('other'),
+    DOC_PRICELIST       =>  trans('price-list'), // cennik
+    DOC_PROMOTION       =>  trans('promotion'), // promocja
+    DOC_WARRANTY       =>  trans('warranty'), // gwarancja
+    DOC_REGULATIONS       =>  trans('regulations'), // regulamin
+    DOC_OTHER       =>  trans('other')
 );
 
 // Guarantee periods

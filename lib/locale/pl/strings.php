@@ -3237,4 +3237,9 @@ $_LANG['Are you sure, you want to send invoices to customers?'] = 'Jesteś pewie
 $_LANG['Are you sure, you want to send invoices to customer?'] = 'Jesteś pewien, że chcesz wysłać faktury do klienta?';
 
 $_LANG['yyyy/mm/dd'] = 'rrrr/mm/dd';
+
+$_LANG['price-list'] = 'cennik';
+$_LANG['promotion'] = 'promocja';
+$_LANG['warranty'] = 'gwarancja';
+$_LANG['regulations'] = 'regulamin';
 ?>
