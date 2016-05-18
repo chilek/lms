@@ -125,14 +125,6 @@
 	</TR>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/network.gif" ALT="{trans("Network:")}">
-		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			<B><A HREF="?m=netinfo&id={$nodeipdata.netid}">{$nodeipdata.netname}</A></B>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="1%">
 			<A HREF="?m=netdevedit&id={$netdevinfo.id}&action=ipset&ip={$nodeipdata.id}"><IMG SRC="img/{if ! $nodeipdata.access}no{/if}access.gif" ALT=""></A>
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
