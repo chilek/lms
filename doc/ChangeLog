@@ -26,6 +26,7 @@ version ?.??.?? (????-??-??):
   - set required attibute for some form fields [kyob]
   - improved selection of node and network devices which should be connected
     to given network device [kosa/chilan]
+  - log customer properties changes after commit userpanel changes from LMS UI [chilan]
 
 version 1.11.20 (2016-04-19):
 
