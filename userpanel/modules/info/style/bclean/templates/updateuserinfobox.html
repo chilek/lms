@@ -9,11 +9,11 @@
         {if $rights.info.edit_addr || $rights.info.edit_addr_ack}
         <tr>
             <td>{trans("Name/Surname:")}</td>
-            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[lastname]" VALUE="{$userinfo.lastname}" {userpaneltip text="Enter lastname"}></td>
+            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[lastname]" VALUE="{$userinfo.lastname|escape}" {userpaneltip text="Enter lastname"}></td>
         </tr>
         <tr>
             <td>{trans("First Name:")}</td>
-            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[name]" VALUE="{$userinfo.name}" {userpaneltip text="Enter first name"}></td>
+            <td><INPUT class="form-control" TYPE="TEXT" NAME="userdata[name]" VALUE="{$userinfo.name|escape}" {userpaneltip text="Enter first name"}></td>
         </tr>
         {else}
         <tr>
