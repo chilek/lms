@@ -80,7 +80,7 @@
 	{cycle values="light,lucid" print=false}
 	{section name=messagelist loop=$messagelist start=$start max=$pagelimit}
 	{assign var=message value=$messagelist[messagelist]}
-	<TR class="highlight {cycle}{if $message.error > 0} alert{elseif $message.error} blendalert{elseif $message.delivered == $message.cnt} green{else} blend{/if}">
+	<TR class="highlight {cycle}{if $message.error > 0} alert{elseif $message.error} blendalert{elseif $message.delivered == $message.cnt} green{elseif $message.sent == $message.cnt} blend{/if}">
 		<TD class="nobr" onclick="return self.location.href='?m=messageinfo&amp;id={$message.id}';">
 			{$message.cdate|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
