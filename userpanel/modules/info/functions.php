@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -301,17 +301,23 @@ if(defined('USERPANEL_SETUPMODE'))
 		$SMARTY->assign('userchanges', $userchanges);
 		$SMARTY->display('module:info:setup_changes.html');
 	}
-	
-	function module_submit_changes_save()
-	{
-		global $DB, $LMS;
 
-		if(isset($_POST['userchanges']))
-			foreach($_POST['userchanges'] as $changeid)
-			{
+	function module_submit_changes_save() {
+		global $LMS, $SYSLOG_RESOURCE_KEYS;
+
+		$DB = LMSDB::getInstance();
+
+		if (isset($_POST['userchanges'])) {
+			$args = array();
+			foreach ($_POST['userchanges'] as $changeid) {
 				$changes = $DB->GetRow('SELECT customerid, fieldname, fieldvalue FROM up_info_changes
 					WHERE id = ?', array($changeid));
-				
+				if (!isset($args[$changes['customerid']]))
+					$args[$changes['customerid']] = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $changes['customerid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $LMS->AUTH->id,
+					);
+
 				if (preg_match('/(phone|email)([0-9]+)/', $changes['fieldname'], $matches)) {
 					if ($matches[2]) {
 						if($changes['fieldvalue'])
@@ -353,15 +359,24 @@ if(defined('USERPANEL_SETUPMODE'))
 					case 'ten':
 						$DB->Execute('UPDATE customers SET '.$changes['fieldname'].' = ? WHERE id = ?',
 							array($changes['fieldvalue'], $changes['customerid']));
+						$args[$changes['customerid']][$changes['fieldname']] = $changes['fieldvalue'];
 						break;
 				}
-			
+
+				if ($LMS->SYSLOG && !empty($args)) {
+					foreach ($args as $customerid => $fields) {
+						$LMS->SYSLOG->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_UPDATE, $fields,
+							array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
+					}
+				}
 				$DB->Execute('DELETE FROM up_info_changes WHERE id = ?', array($changeid));
 			}
+		}
 
 		module_changes();
 	}
-	
+
 	function module_submit_changes_delete()
 	{
 		global $DB;
