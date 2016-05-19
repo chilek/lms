@@ -6,15 +6,12 @@
 <TABLE class="lmsbox">
     <THEAD>
 	<TR>
-		<TD width="1%" NOWRAP>
+		<TD width="11%" NOWRAP>
 			<IMG src="img/time.gif" alt=""> <B>{trans("Time:")}</B><BR>
 			<IMG src="img/users.gif" alt=""> {trans("Created by:")}
 		</TD>
-		<TD width="1%" NOWRAP>
-			<IMG src="img/desc.gif" alt=""> {trans("Type:")}
-		</TD>
-		<TD width="95%" NOWRAP>
-			<IMG src="img/calendar.gif" alt=""> <B>{trans("Title:")}</B><BR>
+		<TD width="86%" NOWRAP>
+			<IMG src="img/calendar.gif" alt=""> [{trans("Type")}] <B>{trans("Title:")}</B><BR>
 			<IMG src="img/info1.gif" alt=""> {trans("Description:")}
 		</TD>
 		<TD width="1%" NOWRAP>
@@ -26,7 +23,7 @@
 		<TD width="1%" NOWRAP></TD>
 	</TR>
 	<TR>
-		<TD colspan="6" align="center" NOWRAP>
+		<TD colspan="5" align="center" NOWRAP>
 			<A href="?m=eventlist&amp;day=1&amp;month={if $month==1}12{else}{math equation="x-1" x=$month}{/if}&amp;year={if $month==1}{math equation="x-1" x=$year}{else}{$year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A>
 			{section name=days loop=$days.day}
 				{if !$days.dow[days]}<span class="light">{/if}<A href="?m=eventlist&amp;day={$days.day[days]}&amp;month={$month}&amp;year={$year}">&nbsp;{if $days.sel[days]}<B>*{/if}{$days.day[days]|string_format:"%d"}{if $days.sel[days]}*</B>{/if} </A>{if !$days.dow[days]}</span>{/if}
@@ -35,7 +32,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD colspan="6" NOWRAP>
+		<TD colspan="5" NOWRAP>
 			<FORM method="POST" action="?m=eventlist" name="filter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT type="HIDDEN" name="m" value="eventlist">
@@ -104,7 +101,7 @@
                     <TABLE class="lmsbox">
                         <THEAD>
                             <TR{if $daylist[daylist] == $today} class="superdark"{/if}>
-                                <TD width="1%" nowrap colspan="3">
+                                <TD width="1%" nowrap colspan="2">
                                     <IMG src="img/calendar.gif" alt="">
                                     <B>{$daylist[daylist]|date_format:"%A"}</B>
                                 </TD>
@@ -136,11 +133,8 @@
                                         {/if}</B><BR>
                                         <IMG src="img/users.gif" alt=""> <A href="?m=userinfo&amp;id={$eventlist[eventlist].userid}">{$eventlist[eventlist].username|truncate:"25":"...":true}</A>
                                 </TD>
-                                <TD width="1%" valign="middle" align="center" onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
-                                        {$_EVENTTYPES[$eventlist[eventlist].type]}
-                                </TD>
                                 <TD width="95%" valign="top" onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
-                                        <IMG src="img/calendar.gif" alt=""> <B>{$eventlist[eventlist].title}</B><BR>
+                                        <IMG src="img/calendar.gif" alt=""> [{$_EVENTTYPES[$eventlist[eventlist].type]}] <B>{$eventlist[eventlist].title}</B><BR>
                                         {if $eventlist[eventlist].description != ''}<IMG src="img/info1.gif" alt=""> {$eventlist[eventlist].description}{/if}<br/>
                                         {if $eventlist[eventlist].note != ''}<span{if !$eventlist[eventlist].closed} style="color: red;"{/if}><IMG src="img/info.gif" alt="" /> {$eventlist[eventlist].note}</span>{/if}
                                 </TD>
