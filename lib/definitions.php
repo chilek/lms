@@ -310,6 +310,7 @@ define('CONTACT_EMAIL', 8);
 define('CONTACT_INVOICES', 16);
 define('CONTACT_NOTIFICATIONS', 32);
 define('CONTACT_BANKACCOUNT', 64);
+define('CONTACT_TECHNICAL', 128);
 define('CONTACT_DISABLED', 16384);
 
 $CONTACTTYPES = array(
@@ -318,6 +319,7 @@ $CONTACTTYPES = array(
     CONTACT_INVOICES        =>	trans('invoices'),
     CONTACT_DISABLED        =>	trans('disabled'),
     CONTACT_NOTIFICATIONS   =>	trans('notifications'),
+    CONTACT_TECHNICAL       =>	trans('technical'),
 );
 
 define('DISCOUNT_PERCENTAGE', 1);

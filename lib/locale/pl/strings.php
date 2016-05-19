@@ -3088,7 +3088,9 @@ $_LANG['Not visible by the customer in electronic Customer Service Representativ
 $_LANG['If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices'] = 'Jeśli klient chce otrzymywać fakturę elektroniczną musi zostać zaznaczony adres e-mail na który mają być wysyłane e-faktury';
 $_LANG['Cancellation of a traditional invoice (agreement on an electronic invoice):'] = 'Rezygnacja z faktury tradycyjnej (zgoda na fakturę elektroniczną):';
 $_LANG['Check if send notification'] = 'Zaznacz, jeżeli chcesz wysyłać powiadomienia';
+$_LANG['Check if send technical notification'] = 'Zaznacz, jeżeli chcesz wysyłać informacje techniczne';
 $_LANG['notifications'] = 'powiadomienia';
+$_LANG['technical'] = 'informacje techniczne';
 
 $_LANG['Use customer location:'] = 'Użyj lokalizacji klienta:';
 $_LANG['Ticket\'s state has been changed from $a to $b.'] = 'Status zgłoszenia został zmieniony z $a na $b.';
