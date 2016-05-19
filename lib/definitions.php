@@ -503,6 +503,14 @@ $EVENTTYPES = array(
 	EVENT_OTHER        => trans('other')
 );
 
+$EVENTCOLORS = array(
+	1 => 'gray',
+	2 => 'blue',
+	3 => 'red',
+	4 => 'green',
+	5 => 'yellow'
+);
+
 define('SESSIONTYPE_PPPOE', 1);
 define('SESSIONTYPE_DHCP', 2);
 define('SESSIONTYPE_EAP', 4);
@@ -558,6 +566,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_NETELEMENTOWNERSHIPS', $NETELEMENTOWNERSHIPS);
 	$SMARTY->assign('_USERPANEL_ID_TYPES', $USERPANEL_ID_TYPES);
 	$SMARTY->assign('_EVENTTYPES', $EVENTTYPES);
+	$SMARTY->assign('_EVENTCOLORS', $EVENTCOLORS);
 	$SMARTY->assign('_SESSIONTYPES', $SESSIONTYPES);
 }
 

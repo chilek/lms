@@ -104,7 +104,7 @@
                     <TABLE class="lmsbox">
                         <THEAD>
                             <TR{if $daylist[daylist] == $today} class="superdark"{/if}>
-                                <TD width="1%" nowrap colspan="2">
+                                <TD width="1%" nowrap colspan="3">
                                     <IMG src="img/calendar.gif" alt="">
                                     <B>{$daylist[daylist]|date_format:"%A"}</B>
                                 </TD>
@@ -127,6 +127,7 @@
                             {if $eventlist[eventlist].date == $daylist[daylist]}
                             {math equation="x+1" x=$counter assign=counter}
                             <TR class="highlight {cycle}{if $eventlist[eventlist].closed} blend{/if}"  >
+                                <TD style="background-color:{if $_EVENTCOLORS[$eventlist[eventlist].type]}{$_EVENTCOLORS[$eventlist[eventlist].type]}{else}transparent{/if}" width="1%"></td>
                                 <TD width="1%" align="left" onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'" nowrap>
                                         <IMG src="img/time.gif" alt=""><B>
                                         {math equation="floor(x/100)" x=$eventlist[eventlist].begintime format="%02d"}:{math equation="x % 100" x=$eventlist[eventlist].begintime format="%02d"}
