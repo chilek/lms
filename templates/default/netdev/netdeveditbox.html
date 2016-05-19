@@ -229,7 +229,7 @@
 			<B>{trans("Purchase date:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" NAME="netdev[purchasedate]" VALUE="{if $netdevinfo.purchasedate}{$netdevinfo.purchasedate}{/if}" SIZE="10" MAXSIZE="10" {tip class="calendar" trigger="purchasedate" text="Enter device purchase date in 'yyyy/mm/dd' format or click to choose date from calendar (optional)"}>
+			<INPUT TYPE="TEXT" NAME="netdev[purchasedate]" VALUE="{if $netdevinfo.purchasedate}{$netdevinfo.purchasedate}{/if}" SIZE="10" MAXSIZE="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" trigger="purchasedate" text="Enter device purchase date in 'yyyy/mm/dd' format or click to choose date from calendar (optional)"}>
 		</TD>
 	</TR>
 	<TR>
