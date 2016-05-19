@@ -503,12 +503,12 @@ $EVENTTYPES = array(
 	EVENT_OTHER        => trans('other')
 );
 
-$EVENTCOLORS = array(
-	1 => 'gray',
-	2 => 'blue',
-	3 => 'red',
-	4 => 'green',
-	5 => 'yellow'
+$EVENTSTYLES = array(
+	EVENT_SERVICE		=> 'background-color: red; color: white;',
+	EVENT_INSTALLATION	=> 'background-color: green; color: white;',
+	EVENT_NETWORK		=> 'background-color: blue; color: white;',
+	EVENT_MEETING		=> 'background-color: yellow; color: black;',
+	EVENT_OTHER			=> 'background-color: gray; color: white;'
 );
 
 define('SESSIONTYPE_PPPOE', 1);
@@ -566,7 +566,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_NETELEMENTOWNERSHIPS', $NETELEMENTOWNERSHIPS);
 	$SMARTY->assign('_USERPANEL_ID_TYPES', $USERPANEL_ID_TYPES);
 	$SMARTY->assign('_EVENTTYPES', $EVENTTYPES);
-	$SMARTY->assign('_EVENTCOLORS', $EVENTCOLORS);
+	$SMARTY->assign('_EVENTSTYLES', $EVENTSTYLES);
 	$SMARTY->assign('_SESSIONTYPES', $SESSIONTYPES);
 }
 

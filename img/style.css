@@ -326,3 +326,10 @@ td.multiselect select { min-width: 200px; }
 .wq { width: 25%; }
 
 .cancel { background: #ff6c6c; }
+
+.rotate-90 {
+	-webkit-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+	-o-transform: rotate(90deg);
+	writing-mode: lr-tb;
+}
