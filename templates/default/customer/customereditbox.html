@@ -58,6 +58,9 @@
 			+ '<label onmouseover="popup(\'{trans("Check if send notification")}\')" onmouseout="pophide()">'
 				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_NOTIFICATIONS}" name="customerdata[emails][' + nr + '][type][]">'
 				+ ' {$_CONTACTTYPES[$smarty.const.CONTACT_NOTIFICATIONS]}</label>'
+			+ '<label onmouseover="popup(\'{trans("Check if send technical notification")}\')" onmouseout="pophide()">'
+				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_TECHNICAL}" name="customerdata[emails][' + nr + '][type][]">'
+				+ ' {$_CONTACTTYPES[$smarty.const.CONTACT_TECHNICAL]}</label>'
 			+ '<label onmouseover="popup(\'{trans("Not visible by the customer in electronic Customer Service Representative")}\')" onmouseout="pophide()">'
 				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customerdata[emails][' + nr + '][type][]">'
 				+ ' {$_CONTACTTYPES[$smarty.const.CONTACT_DISABLED]}</label>'
@@ -381,6 +384,10 @@
 							<label {tip text="Check if send notification" trigger="chknotification"}>
 								<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_NOTIFICATIONS}" name="customerdata[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_NOTIFICATIONS)} checked{/if}>
 								{$_CONTACTTYPES[$smarty.const.CONTACT_NOTIFICATIONS]}
+							</label>
+							<label {tip text="Check if send technical notification"}>
+								<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_TECHNICAL}" name="customerdata[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_TECHNICAL)} checked{/if}>
+								{$_CONTACTTYPES[$smarty.const.CONTACT_TECHNICAL]}
 							</label>
 							<label {tip text="Not visible by the customer in electronic Customer Service Representative" trigger="edisabled"}>
 								<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customerdata[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_DISABLED)} checked{/if}>
