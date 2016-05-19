@@ -10,7 +10,8 @@
         "tecnickcom/tcpdf": "^6.2",
         "spipu/html2pdf": "^4.5",
         "components/normalize.css": "^3.0",
-        "smarty/smarty": "3.1.29"
+        "smarty/smarty": "3.1.29",
+        "components/font-awesome": "^4.6"
     },
     "require_dev": {
         "phpunit/phpunit": "5.1.*"
