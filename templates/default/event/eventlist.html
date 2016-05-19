@@ -10,9 +10,6 @@
 			<IMG src="img/time.gif" alt=""> <B>{trans("Time:")}</B><BR>
 			<IMG src="img/users.gif" alt=""> {trans("Created by:")}
 		</TD>
-		<TD width="1%" NOWRAP>
-			<IMG src="img/desc.gif" alt=""> {trans("Type:")}
-		</TD>
 		<TD width="95%" NOWRAP>
 			<IMG src="img/calendar.gif" alt=""> <B>{trans("Title:")}</B><BR>
 			<IMG src="img/info1.gif" alt=""> {trans("Description:")}
@@ -26,7 +23,7 @@
 		<TD width="1%" NOWRAP></TD>
 	</TR>
 	<TR>
-		<TD colspan="6" align="center" NOWRAP>
+		<TD colspan="5" align="center" NOWRAP>
 			<A href="?m=eventlist&amp;day=1&amp;month={if $month==1}12{else}{math equation="x-1" x=$month}{/if}&amp;year={if $month==1}{math equation="x-1" x=$year}{else}{$year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A>
 			{section name=days loop=$days.day}
 				{if !$days.dow[days]}<span class="light">{/if}<A href="?m=eventlist&amp;day={$days.day[days]}&amp;month={$month}&amp;year={$year}">&nbsp;{if $days.sel[days]}<B>*{/if}{$days.day[days]|string_format:"%d"}{if $days.sel[days]}*</B>{/if} </A>{if !$days.dow[days]}</span>{/if}
@@ -35,7 +32,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD colspan="6" NOWRAP>
+		<TD colspan="5" NOWRAP>
 			<FORM method="POST" action="?m=eventlist" name="filter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT type="HIDDEN" name="m" value="eventlist">
