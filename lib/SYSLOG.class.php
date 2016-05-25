@@ -307,6 +307,7 @@ class SYSLOG {
 
 	function DecodeMessageData(&$data) {
 		global $SYSLOG_RESOURCES, $SYSLOG_OPERATIONS, $PERIODS, $PAYTYPES, $LINKTYPES, $LINKSPEEDS;
+
 		switch ($data['name']) {
 			case 'datefrom':
 			case 'dateto':
