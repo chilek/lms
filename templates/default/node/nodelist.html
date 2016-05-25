@@ -82,23 +82,23 @@
                 <TR {tip text="Click on column name to change sorting order"}>
                     <td scope="col" class="nobr">&nbsp;</td>   
                     <td scope="col">
-                        <SPAN class="nobr"><A href="?m=nodelist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}">{trans("Name")}</A>{if $listdata.order == "name"} <IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
+                        <A href="?m=nodelist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}">{trans("Name")}</A>{if $listdata.order == "name"}<i class="fa fa-sort-{if $listdata.direction == "desc"}asc{else}desc{/if}" aria-hidden="true"></i>{/if}
                         /
-                        <A href="?m=nodelist&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("Node ID")}</A>{if $listdata.order == "id"} <IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+                        <A href="?m=nodelist&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("Node ID")}</A>{if $listdata.order == "id"}<i class="fa fa-sort-{if $listdata.direction == "desc"}asc{else}desc{/if}" aria-hidden="true"></i>{/if}
                         /
-                        <SPAN class="nobr"><A href="?m=nodelist&amp;o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">{trans("Location")}</A>                                {if $listdata.order == "location"} <IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</SPAN>
+                        <A href="?m=nodelist&amp;o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">{trans("Location")}</A>{if $listdata.order == "location"}<i class="fa fa-sort-{if $listdata.direction == "desc"}asc{else}desc{/if}" aria-hidden="true"></i>{/if}
                     </td>
                     <td scope="col" class="nobr">
                         {trans("Network:")}
                     </td>
                     <td scope="col" class="nobr">
-                        <A href="?m=nodelist&amp;o=ip{if $listdata.direction == "asc" && $listdata.order == "ip"},desc{/if}">{trans("IP address")}</A>{if $listdata.order == "ip"} <IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+                        <A href="?m=nodelist&amp;o=ip{if $listdata.direction == "asc" && $listdata.order == "ip"},desc{/if}">{trans("IP address")}</A>{if $listdata.order == "ip"}<i class="fa fa-sort-{if $listdata.direction == "desc"}asc{else}desc{/if}" aria-hidden="true"></i>{/if}
                     </td>
                     <td scope="col" class="nobr">
-                        <A href="?m=nodelist&amp;o=ip_pub{if $listdata.direction == "asc" && $listdata.order == "ip_pub"},desc{/if}">{trans("Pub. IP address")}</A>{if $listdata.order == "ip_pub"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+                        <A href="?m=nodelist&amp;o=ip_pub{if $listdata.direction == "asc" && $listdata.order == "ip_pub"},desc{/if}">{trans("Pub. IP address")}</A>{if $listdata.order == "ip_pub"}<i class="fa fa-sort-{if $listdata.direction == "desc"}asc{else}desc{/if}" aria-hidden="true"></i>{/if}
                     </td>
                     <td scope="col" class="nobr">
-                        <A href="?m=nodelist&amp;o=mac{if $listdata.direction == "asc" && $listdata.order == "mac"},desc{/if}">{trans("MAC address")}</A>{if $listdata.order == "mac"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+                        <A href="?m=nodelist&amp;o=mac{if $listdata.direction == "asc" && $listdata.order == "mac"},desc{/if}">{trans("MAC address")}</A>{if $listdata.order == "mac"}<i class="fa fa-sort-{if $listdata.direction == "desc"}asc{else}desc{/if}" aria-hidden="true"></i>{/if}
                     </td>
                     <td scope="col" class="text-right nobr">
                         {t a=$pagination->getTotal()}Total: $a{/t}
