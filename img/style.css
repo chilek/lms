@@ -333,3 +333,11 @@ td.multiselect select { min-width: 200px; }
 	-o-transform: rotate(90deg);
 	writing-mode: lr-tb;
 }
+
+/* Font-Awesome colors */
+i.success { color: #5CB85C; }
+i.muted { color: #999999; }
+i.info {color: #5BC0DE; }
+i.primary {color: #0275D8; }
+i.warning {color: #F0AD4E; }
+i.danger {color: #D9534F; }
