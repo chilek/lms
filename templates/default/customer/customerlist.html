@@ -92,12 +92,11 @@
         <COLGROUP>
             {block name="customerlist-list-columns"}
                 <COL style="width: 1%">
-                <COL style="width: 80%">
-                <COL style="width: 1%">
-                <COL style="width: 3%">
-                <COL style="width: 4%">
+                <COL style="width: 79%">
+                <COL style="width: 5%">
+                <COL style="width: 5%">
                 <COL style="width: 10%">
-                {assign var='number_of_table_columns' value='6'}
+                {assign var='number_of_table_columns' value='5'}
             {/block}
         </COLGROUP>
         <THEAD>
@@ -117,26 +116,25 @@
                         <a href="?m={$layout.module}&amp;s={$listdata.state}&amp;o=customername{if $listdata.direction == "asc" && $listdata.order == "customername"},desc{/if}">{trans("First/last or Company name")}</A>
                         {if $listdata.order == "customername"}<i class="fa fa-sort-{if $listdata.direction == "desc"}asc{else}desc{/if}" aria-hidden="true"></i>{/if}
                         /
+                        <a href="?m={$layout.module}&amp;s={$listdata.state}&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID")}</A>
+                        {if $listdata.order == "id"}<i class="fa fa-sort-{if $listdata.direction == "desc"}asc{else}desc{/if}" aria-hidden="true"></i>{/if}
+                        /
                         <a href="?m={$layout.module}&amp;s={$listdata.state}&amp;o=address{if $listdata.direction == "asc" && $listdata.order == "address"},desc{/if}">{trans("Address")}</A>
                         {if $listdata.order == "address"}<i class="fa fa-sort-{if $listdata.direction == "desc"}asc{else}desc{/if}" aria-hidden="true"></i>{/if}
                     </td>
-                    <td scope="col">
-                        <a href="?m={$layout.module}&amp;s={$listdata.state}&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID")}</A>
-                        {if $listdata.order == "id"}<i class="fa fa-sort-{if $listdata.direction == "desc"}asc{else}desc{/if}" aria-hidden="true"></i>{/if}
-                    </td>
-                    <td scope="col">
+                    <td scope="col" class="text-center">
                         {if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
                             <a href="?m={$layout.module}&amp;s={$listdata.state}&amp;o=tariff{if $listdata.direction == "asc" && $listdata.order == "tariff"},desc{/if}">{trans("Subscription")}</A>
                             {if $listdata.order == "tariff"}<i class="fa fa-sort-{if $listdata.direction == "desc"}asc{else}desc{/if}" aria-hidden="true"></i>{/if}
                         {/if}
                     </td>
-                    <td scope="col">
+                    <td scope="col" class="text-center">
                         {if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
                             <a href="?m={$layout.module}&amp;s={$listdata.state}&amp;o=balance{if $listdata.direction == "asc" && $listdata.order == "balance"},desc{/if}">{trans("Balance")}</A>
                             {if $listdata.order == "balance"}<i class="fa fa-sort-{if $listdata.direction == "desc"}asc{else}desc{/if}" aria-hidden="true"></i>{/if}
                         {/if}
                     </td>
-                    <td scope="col">
+                    <td scope="col" class="text-right">
                         {t a=$pagination->getTotal()}Total: $a{/t}
                     </td>
                 </TR>
@@ -173,19 +171,16 @@
                         </td>
                         <TD onClick="return self.location.href = '?m=customerinfo&amp;id={$customerlist[customerlist].id}';">
                             <A name="{$customerlist[customerlist].id}" {tip a=$customerlist[customerlist].id dynpopup='?m=customerinfoshort&amp;id=$a'}>
-                                <b>{$customerlist[customerlist].customername|escape}</b><br>
+                                <b>{$customerlist[customerlist].customername|escape}</b> <span class="blend">({$customerlist[customerlist].id|string_format:"%04d"})</span><br>
                                 {$customerlist[customerlist].address}{if $customerlist[customerlist].city != ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].country != ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
                             </A>
                         </TD>
-                        <TD class="text-right" onClick="return self.location.href = '?m=customerinfo&amp;id={$customerlist[customerlist].id}';">
-                            {$customerlist[customerlist].id|string_format:"%04d"}
-                        </TD>
-                        <TD class="text-right nobr" onClick="return self.location.href = '?m=customerinfo&amp;id={$customerlist[customerlist].id}';">
+                        <TD class="text-center nobr" onClick="return self.location.href = '?m=customerinfo&amp;id={$customerlist[customerlist].id}';">
                             {if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
                                 <span class="blend">{$customerlist[customerlist].tariffvalue|money_format}</span>
                             {/if}
                         </TD>
-                        <TD class="text-right nobr" onClick="return self.location.href = '?m=customerinfo&amp;id={$customerlist[customerlist].id}';">
+                        <TD class="text-center nobr" onClick="return self.location.href = '?m=customerinfo&amp;id={$customerlist[customerlist].id}';">
                             {if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
                                 <span class="{if $customerlist[customerlist].balance < 0}alert{/if}">{$customerlist[customerlist].balance|money_format}</span>
                             {/if}
