@@ -30,3 +30,5 @@
 
 // Load autloader
 require_once(__DIR__.'/../vendor/autoload.php');
+// Load some common functions
+require_once(__DIR__.'/../lib/common.php');

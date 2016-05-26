@@ -2,3 +2,27 @@
 Order Deny,Allow
 Deny From All
 </Files>
+<Files composer.json>
+Order Deny,Allow
+Deny From All
+</Files>
+<Files composer.lock>
+Order Deny,Allow
+Deny From All
+</Files>
+<Files .gitattributes>
+Order Deny,Allow
+Deny From All
+</Files>
+<Files .gitignore>
+Order Deny,Allow
+Deny From All
+</Files>
+<Files README.md>
+Order Deny,Allow
+Deny From All
+</Files>
+<Files build.xml>
+Order Deny,Allow
+Deny From All
+</Files>
