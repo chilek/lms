@@ -285,13 +285,13 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
     {
         $result = $this->db->GetRow('
             SELECT v.id, ownerid, login, passwd, phone, creationdate, moddate, creatorid, modid, access, balance,
-				location, location_city, location_street, location_house, location_flat,
-				lb.name AS borough_name, ld.name AS district_name, ls.name AS state_name
-			FROM voipaccounts v
-				LEFT JOIN location_cities lc ON lc.id = v.location_city
-				LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
-				LEFT JOIN location_districts ld ON ld.id = lb.districtid
-				LEFT JOIN location_states ls ON ls.id = ld.stateid
+		location, location_city, location_street, location_house, location_flat,
+		lb.name AS borough_name, ld.name AS district_name, ls.name AS state_name
+		FROM voipaccounts v
+		LEFT JOIN location_cities lc ON lc.id = v.location_city
+		LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
+		LEFT JOIN location_districts ld ON ld.id = lb.districtid
+		LEFT JOIN location_states ls ON ls.id = ld.stateid
             WHERE v.id = ?',
             array($id)
         );
