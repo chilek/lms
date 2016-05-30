@@ -190,6 +190,11 @@ define('DOC_ORDER', -4);
 define('DOC_SHEET', -5);
 define('DOC_OTHER', -128);
 define('DOC_BILLING',-10);
+define('DOC_PRICELIST', -11);
+define('DOC_PROMOTION', -12);
+define('DOC_WARRANTY', -13);
+define('DOC_REGULATIONS', -14);
+
 
 $DOCTYPES = array(
     DOC_BILLING         =>      trans('billing'),
@@ -209,7 +214,11 @@ $DOCTYPES = array(
     -7  =>      trans('payments book'), // ksiazeczka oplat
     -8  =>      trans('payment summons'), // wezwanie do zapłaty
     -9  =>      trans('payment pre-summons'), // przedsądowe wezw. do zapłaty
-    DOC_OTHER       =>  trans('other'),
+    DOC_PRICELIST       =>  trans('price-list'), // cennik
+    DOC_PROMOTION       =>  trans('promotion'), // promocja
+    DOC_WARRANTY       =>  trans('warranty'), // gwarancja
+    DOC_REGULATIONS       =>  trans('regulations'), // regulamin
+    DOC_OTHER       =>  trans('other')
 );
 
 // Guarantee periods
@@ -301,6 +310,7 @@ define('CONTACT_EMAIL', 8);
 define('CONTACT_INVOICES', 16);
 define('CONTACT_NOTIFICATIONS', 32);
 define('CONTACT_BANKACCOUNT', 64);
+define('CONTACT_TECHNICAL', 128);
 define('CONTACT_DISABLED', 16384);
 
 $CONTACTTYPES = array(
@@ -309,6 +319,7 @@ $CONTACTTYPES = array(
     CONTACT_INVOICES        =>	trans('invoices'),
     CONTACT_DISABLED        =>	trans('disabled'),
     CONTACT_NOTIFICATIONS   =>	trans('notifications'),
+    CONTACT_TECHNICAL       =>	trans('technical'),
 );
 
 define('DISCOUNT_PERCENTAGE', 1);
@@ -494,6 +505,14 @@ $EVENTTYPES = array(
 	EVENT_OTHER        => trans('other')
 );
 
+$EVENTSTYLES = array(
+	EVENT_SERVICE		=> 'background-color: red; color: white;',
+	EVENT_INSTALLATION	=> 'background-color: green; color: white;',
+	EVENT_NETWORK		=> 'background-color: blue; color: white;',
+	EVENT_MEETING		=> 'background-color: yellow; color: black;',
+	EVENT_OTHER			=> 'background-color: gray; color: white;'
+);
+
 define('SESSIONTYPE_PPPOE', 1);
 define('SESSIONTYPE_DHCP', 2);
 define('SESSIONTYPE_EAP', 4);
@@ -549,6 +568,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_NETELEMENTOWNERSHIPS', $NETELEMENTOWNERSHIPS);
 	$SMARTY->assign('_USERPANEL_ID_TYPES', $USERPANEL_ID_TYPES);
 	$SMARTY->assign('_EVENTTYPES', $EVENTTYPES);
+	$SMARTY->assign('_EVENTSTYLES', $EVENTSTYLES);
 	$SMARTY->assign('_SESSIONTYPES', $SESSIONTYPES);
 }
 

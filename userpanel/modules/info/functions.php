@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -301,47 +301,93 @@ if(defined('USERPANEL_SETUPMODE'))
 		$SMARTY->assign('userchanges', $userchanges);
 		$SMARTY->display('module:info:setup_changes.html');
 	}
-	
-	function module_submit_changes_save()
-	{
-		global $DB, $LMS;
 
-		if(isset($_POST['userchanges']))
-			foreach($_POST['userchanges'] as $changeid)
-			{
+	function module_submit_changes_save() {
+		global $LMS, $SYSLOG_RESOURCE_KEYS;
+
+		$DB = LMSDB::getInstance();
+
+		if (isset($_POST['userchanges'])) {
+			$args = array();
+			foreach ($_POST['userchanges'] as $changeid) {
 				$changes = $DB->GetRow('SELECT customerid, fieldname, fieldvalue FROM up_info_changes
 					WHERE id = ?', array($changeid));
-				
+				if (!isset($args[$changes['customerid']]))
+					$args[$changes['customerid']] = array(
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $changes['customerid'],
+						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $LMS->AUTH->id,
+					);
+
 				if (preg_match('/(phone|email)([0-9]+)/', $changes['fieldname'], $matches)) {
 					if ($matches[2]) {
-						if($changes['fieldvalue'])
+						$fields = array(
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $changes['customerid'],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT] => $matches[2],
+						);
+						if($changes['fieldvalue']) {
 							$DB->Execute('UPDATE customercontacts SET contact = ? WHERE id = ?', array($changes['fieldvalue'], $matches[2]));
-						else
+							if ($LMS->SYSLOG) {
+								$fields['contact'] = $changes['fieldvalue'];
+								$LMS->SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_UPDATE, $fields,
+									array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+										$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT]));
+							}
+						} else {
 							$DB->Execute('DELETE FROM customercontacts WHERE id = ?', array($matches[2]));
-					} else // new phone or email
+							if ($LMS->SYSLOG) {
+								$LMS->SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_DELETE, $fields,
+									array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+										$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT]));
+							}
+						}
+					} else { // new phone or email
 						$DB->Execute('INSERT INTO customercontacts (contact, customerid, type) VALUES(?, ?, ?)',
 							array($changes['fieldvalue'], $changes['customerid'], $matches[1] == 'phone' ? CONTACT_LANDLINE : CONTACT_EMAIL));
+						if ($LMS->SYSLOG) {
+							$fields = array(
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $changes['customerid'],
+								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT] => $DB->GetLastInsertID('customercontacts'),
+								'contact' => $changes['fieldvalue'],
+								'type' => $matches[1] == 'phone' ? CONTACT_LANDLINE : CONTACT_EMAIL,
+							);
+							$LMS->SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_ADD, $fields,
+								array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+									$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT]));
+						}
+					}
 				} else
-				switch($changes['fieldname'])
-				{
+				switch ($changes['fieldname']) {
 					case 'im':
-						$DB->Execute('DELETE FROM imessengers WHERE customerid = ? AND type = ?', array($changes['customerid'], IM_GG));
-						if($changes['fieldvalue'])
-							$DB->Execute('INSERT INTO imessengers (customerid, uid, type) VALUES (?,?,?)',
-								array($changes['customerid'], $changes['fieldvalue'],IM_GG));
-					break;
 					case 'yahoo':
-						$DB->Execute('DELETE FROM imessengers WHERE customerid = ? AND type = ?', array($changes['customerid'], IM_YAHOO));
-						if($changes['fieldvalue'])
-							$DB->Execute('INSERT INTO imessengers (customerid, uid, type) VALUES (?,?,?)',
-								array($changes['customerid'], $changes['fieldvalue'],IM_YAHOO));
-					break;
 					case 'skype':
-						$DB->Execute('DELETE FROM imessengers WHERE customerid = ? AND type = ?', array($changes['customerid'], IM_SKYPE));
-						if($changes['fieldvalue'])
-							$DB->Execute('INSERT INTO imessengers (customerid, uid, type) VALUES (?,?,?)',
-								array($changes['customerid'], $changes['fieldvalue'],IM_SKYPE));
-					break;
+						$contact_types = array(
+							'im' => IM_GG,
+							'yahoo' => IM_YAHOO,
+							'skype' => IM_SKYPE,
+						);
+						$contact_type = $contact_types[$changes['fieldname']];
+						$fields = array(
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $changes['customerid'],
+							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $LMS->AUTH->id,
+							'type' => $contact_type,
+						);
+
+						$DB->Execute('DELETE FROM imessengers WHERE customerid = ? AND type = ?', array($changes['customerid'], $contact_type));
+						if ($LMS->SYSLOG)
+							$LMS->SYSLOG->AddMessage(SYSLOG_RES_IMCONTACT, SYSLOG_OPER_DELETE, $fields,
+								array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+									$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
+						if ($changes['fieldvalue']) {
+							$DB->Execute('INSERT INTO imessengers (customerid, uid, type) VALUES (?, ?, ?)',
+								array($changes['customerid'], $changes['fieldvalue'], $contact_type));
+							if ($LMS->SYSLOG) {
+								$fields['uid'] = $changes['fieldvalue'];
+								$LMS->SYSLOG->AddMessage(SYSLOG_RES_IMCONTACT, SYSLOG_OPER_ADD, $fields,
+									array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+										$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
+							}
+						}
+						break;
 					case 'name':
 					case 'lastname':
 					case 'street':
@@ -353,15 +399,23 @@ if(defined('USERPANEL_SETUPMODE'))
 					case 'ten':
 						$DB->Execute('UPDATE customers SET '.$changes['fieldname'].' = ? WHERE id = ?',
 							array($changes['fieldvalue'], $changes['customerid']));
+						$args[$changes['customerid']][$changes['fieldname']] = $changes['fieldvalue'];
 						break;
 				}
-			
+
+				if ($LMS->SYSLOG && !empty($args))
+					foreach ($args as $customerid => $fields)
+						if (count($fields) > 2)
+							$LMS->SYSLOG->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_UPDATE, $fields,
+								array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
+									$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
 				$DB->Execute('DELETE FROM up_info_changes WHERE id = ?', array($changeid));
 			}
+		}
 
 		module_changes();
 	}
-	
+
 	function module_submit_changes_delete()
 	{
 		global $DB;

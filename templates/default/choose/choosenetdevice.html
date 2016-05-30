@@ -18,13 +18,13 @@
     </head>
     {if ! $part}
         <frameset name="all" frameborder="0" framespacing="0" ROWS="36,*">
-            <frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="top" noresize src="?m=choosenetdevice&p=top">
-            <frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="main" noresize src="?m=choosenetdevice&p=main">
+            <frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="top" noresize src="?m=choosenetdevice{if isset($netdevid)}&netdevid={$netdevid}{/if}&p=top">
+            <frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="main" noresize src="?m=choosenetdevice{if isset($netdevid)}&netdevid={$netdevid}{/if}&p=main">
         </frameset>
     {/if}
     {if $part eq "top"}
     <body>
-        <form name="search" method="post" action="?m=choosenetdevice&p=main" target="main">
+        <form name="search" method="post" action="?m=choosenetdevice&netdevid={$netdevid}&p=main" target="main">
             <input type="submit" class="hiddenbtn">
             <table cellpadding="5" width="100%">
                 <tr>

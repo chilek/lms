@@ -95,7 +95,7 @@ if(isset($_POST['voipaccountedit']))
 		$error['phone'] = trans('Voip account phone number is too long (max.32 characters)!');
 	elseif($LMS->GetVoipAccountIDByPhone($voipaccountedit['phone']) && $LMS->GetVoipAccountIDByPhone($voipaccountedit['phone']) != $voipaccountedit['id'])
 		$error['phone'] = trans('Specified phone is in use!');
-	elseif(!preg_match('/^[0-9]+$/', $voipaccountedit['phone']))
+	elseif(!preg_match('/^C?[0-9]+$/', $voipaccountedit['phone']))
 		$error['phone'] = trans('Specified phone number contains forbidden characters or is too short!');
 
 	if(!$LMS->CustomerExists($voipaccountedit['ownerid']))

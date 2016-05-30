@@ -172,8 +172,8 @@
 			<span class="bold">{trans("Period:")}</span>
 		</TD>
 		<TD style="width: 98%; white-space: nowrap;">
-			{trans("from:")} <INPUT type="TEXT" name="assignment[datefrom]" value="{if $assignment.datefrom}{$assignment.datefrom}{/if}" {tip class="calendar" text="Enter accounting start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10">
-			{trans("to:")} <INPUT type="TEXT" name="assignment[dateto]" value="{if $assignment.dateto}{$assignment.dateto}{/if}" {tip class="calendar" text="Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
+			{trans("from:")} <INPUT type="TEXT" name="assignment[datefrom]" value="{if $assignment.datefrom}{$assignment.datefrom}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter accounting start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10">
+			{trans("to:")} <INPUT type="TEXT" name="assignment[dateto]" value="{if $assignment.dateto}{$assignment.dateto}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
 		</TD>
 	</TR>
 	<TR id="a_value">

@@ -28,7 +28,10 @@
             </table>
         </form>
         <script type="text/javascript">
-            new AutoSuggest(document.forms['search'], document.forms['search'].elements['search_producer'], '?m=choosenetdevmodel&ajax=1&what=', 1);
+		<!--
+			var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
+			new AutoSuggest(document.forms['search'], document.forms['search'].elements['search_producer'], '?m=choosenetdevmodel&ajax=1&what=', 1);
+		//-->
         </script>
         {/if}
         <table id="modeltable" width="100%" cellpadding="3">

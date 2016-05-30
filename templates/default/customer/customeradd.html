@@ -59,6 +59,9 @@
 			+ '<label onmouseover="popup(\'{trans("Check if send notification")}\')" onmouseout="pophide()">'
 				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_NOTIFICATIONS}" name="customeradd[emails][' + nr + '][type][]">'
 				+ ' {$_CONTACTTYPES[$smarty.const.CONTACT_NOTIFICATIONS]}</label>'
+			+ '<label onmouseover="popup(\'{trans("Check if send tech notification")}\')" onmouseout="pophide()">'
+				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_TECHNICAL}" name="customeradd[emails][' + nr + '][type][]">'
+				+ ' {$_CONTACTTYPES[$smarty.const.CONTACT_TECHNICAL]}</label>'
 			+ '<label onmouseover="popup(\'{trans("Not visible by the customer in electronic Customer Service Representative")}\')" onmouseout="pophide()">'
 				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customeradd[emails][' + nr + '][type][]">'
 				+ ' {$_CONTACTTYPES[$smarty.const.CONTACT_DISABLED]}</label>'
@@ -398,6 +401,10 @@
 											<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_NOTIFICATIONS}" name="customeradd[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_NOTIFICATIONS)} checked{/if}>
 											{$_CONTACTTYPES[$smarty.const.CONTACT_NOTIFICATIONS]}
 										</label>
+										<label {tip text="Check if send tech notification" trigger="chknotification"}>
+											<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_TECHNICAL}" name="customeradd[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_TECHNICAL)} checked{/if}>
+											{$_CONTACTTYPES[$smarty.const.CONTACT_TECHNICAL]}
+										</label>
 										<label {tip text="Not visible by the customer in electronic Customer Service Representative" trigger="edisabled"}>
 											<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customeradd[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_DISABLED)} checked{/if}>
 											{$_CONTACTTYPES[$smarty.const.CONTACT_DISABLED]}
@@ -483,7 +490,7 @@
 						<IMG src="img/pin.gif" alt="">
 					</TD>
 					<TD style="width: 99%;">
-						<INPUT type="text" size="6" value="{if $customeradd.pin}{$customeradd.pin}{/if}" name="customeradd[pin]" {tip text="Enter 4 to 6 digits PIN number (optional)" trigger="pin"}>&nbsp;<A href="javascript:randomize()" {tip text="Generate random PIN"}>&raquo;&raquo;&raquo;</A>
+						<INPUT type="number" pattern="{literal}.{4,6}{/literal}" required size="6" value="{if $customeradd.pin}{$customeradd.pin}{/if}" name="customeradd[pin]" title="{trans("Enter 4 to 6 digits PIN number (optional)")}" {tip text="Enter 4 to 6 digits PIN number (optional)" trigger="pin"}>&nbsp;<A href="javascript:randomize()" {tip text="Generate random PIN"}>&raquo;&raquo;&raquo;</A>
 					</TD>
 				</TR>
 				<TR>

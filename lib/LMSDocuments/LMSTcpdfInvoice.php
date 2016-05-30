@@ -783,7 +783,8 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->invoice_dates();
 		$this->invoice_expositor();
 		$this->invoice_footnote();
-		if ($this->data['customerbalance'] < 0 || ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.always_show_form', true))) {
+		if (($this->data['customerbalance'] < 0 || ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.always_show_form', true)))
+			&& !isset($this->data['rebate'])) {
 			/* draw FT-0100 form */
 			$this->invoice_simple_form_draw();
 			$this->invoice_main_form_draw();

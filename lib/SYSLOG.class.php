@@ -179,11 +179,24 @@ $SYSLOG_OPERATIONS = array(
 	SYSLOG_OPER_USERLOGOUT => trans('log out<!syslog>'),
 );
 
+$SYSLOG_OPERATIONS_STYLES = array(
+	SYSLOG_OPER_ADD => 'color: green',
+	SYSLOG_OPER_DELETE => 'color: red',
+	SYSLOG_OPER_UPDATE => 'color: blue',
+	SYSLOG_OPER_DBBACKUPRECOVER => 'color: aqua',
+	SYSLOG_OPER_USERPASSWDCHANGE => 'color: navy',
+	SYSLOG_OPER_USERNOACCESS => 'color: purple',
+	SYSLOG_OPER_USERLOGFAIL => 'color: crimson',
+	SYSLOG_OPER_USERLOGIN => 'color: gray',
+	SYSLOG_OPER_USERLOGOUT => 'color: darkgray',
+);
+
 if (isset($SMARTY)) {
 	asort($SYSLOG_RESOURCES);
 	$SMARTY->assign('_SYSLOG_RESOURCES', $SYSLOG_RESOURCES);
 	$SMARTY->assign('_SYSLOG_RESOURCE_KEYS', $SYSLOG_RESOURCE_KEYS);
 	$SMARTY->assign('_SYSLOG_OPERATIONS', $SYSLOG_OPERATIONS);
+	$SMARTY->assign('_SYSLOG_OPERATIONS_STYLES', $SYSLOG_OPERATIONS_STYLES);
 }
 
 class SYSLOG {
