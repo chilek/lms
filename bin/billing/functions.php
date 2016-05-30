@@ -192,7 +192,7 @@
 	 */
 	function include_tariff($tariff_id) {
 		global $tariffs;
-		$file = 'tariffs/tariff_' . $tariff_id . '.php';
+		$file = 'tariff_cache/tariff_' . $tariff_id . '.php';
 
 		if (!file_exists($file))
 			die('Tariff file "' . $file . '" doesnt exists.' . PHP_EOL);
