@@ -64,8 +64,20 @@ $this->Execute("CREATE TABLE voip_tariff_rules (
 						FOREIGN KEY (prefixid) REFERENCES voip_prefix(id),
 						FOREIGN KEY (groupid) REFERENCES voip_prefix_group(id),
 						FOREIGN KEY (tarifid) REFERENCES tariffs(id))");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016042000', 'dbversion'));
+						
+$this->Execute("CREATE TABLE voip_cdr (
+						ID SERIAL PRIMARY KEY,
+						caller varchar(20) NOT NULL,
+						callee varchar(20) NOT NULL,
+						call_start_time int NOT NULL,
+						time_start_to_end int NOT NULL,
+						time_answer_to_end int NOT NULL,
+						price float NOT NULL,
+						status varchar(15) NOT NULL,
+						type VARCHAR(1) NOT NULL,
+						voipaccountid int NOT NULL)");
+						
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016053000', 'dbversion'));
 
 $this->CommitTrans();
 

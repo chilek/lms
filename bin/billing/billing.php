@@ -100,7 +100,7 @@
 					// increment file line counter
 					++$i;
 
-					// change loaded file line to associative array
+					// change line to associative array
 					$cdr = parseRow($f_line);
 
 					// check values of cdr array
@@ -146,5 +146,4 @@
 			}
 		break;
 	}
-
 ?>
