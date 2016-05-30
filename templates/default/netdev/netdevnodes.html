@@ -91,11 +91,14 @@
 							<TR>
 								<TD style="width: 99%; white-space: nowrap;">
 									<span class="bold">{trans("Connect")}:</span>
-									{trans("Node:")}<SELECT NAME="nodeid" {tip trigger="linknode" text="Select node, which you want to connect to device"}>
+									{trans("Node:")}
+									<SELECT NAME="nodeid" style="width: 300px" {tip trigger="linknode" text="Select node, which you want to connect to device"}>
 									{section name=nodelist loop=$nodelist}
 										<OPTION VALUE="{$nodelist[nodelist].id}"{if $connectnode.id == $nodelist[nodelist].id} selected{/if}>{$nodelist[nodelist].name} ({$nodelist[nodelist].ip})</OPTION>
 									{/section}
 									</SELECT>
+									<a href="javascript: void(0);" onclick="return nodeChooseWin(document.connectnode.elements['nodeid']);" {tip trigger="netdev" text="Search node"}>&raquo;&raquo;&raquo;</A>&nbsp;
+
 									<label for="port">{trans("Dest. port")}:<INPUT name="port" id="port" value="{if $connectnode.port}{$connectnode.port}{/if}" size="2" {tip text="Enter port number in device (optional)" trigger="port"}>
 									<SELECT NAME="radiosector" id="devnodesradiosector" {tip trigger="devnodesradiosector" text="Select radio sector"}{if $nodelinktype != 1} style="display: none;"{/if}>
 										<OPTION value="0">- {trans("none")} -</OPTION>

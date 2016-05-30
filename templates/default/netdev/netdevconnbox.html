@@ -95,6 +95,7 @@
 							<OPTION VALUE="{$restnetdevlist[restnetdevlist].id}"{if $connect.id == $restnetdevlist[restnetdevlist].id} selected{/if}>{$netdevname|truncate:120:"...":true}</OPTION>
 						{/section}
 						</SELECT>
+						<a href="javascript: void(0);" onclick="return netDevChooseWin(document.connect.elements['netdev'], {$netdevinfo.id});" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>&nbsp;
 						<label for="srcport">{trans("Port")}:</label><INPUT name="srcport" id="srcport" value="{if $connect.srcport}{$connect.srcport}{/if}" size="2" {tip text="Enter port number in device for connection (optional)" trigger="srcport"}>
 						<SELECT NAME="srcradiosector" id="connboxsrcradiosector" {tip trigger="connboxsrcradiosector" text="Select radio sector"}{if $devlinktype != 1} style="display: none;"{/if}>
 							<OPTION value="0">- {trans("none")} -</OPTION>

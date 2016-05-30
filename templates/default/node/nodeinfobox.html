@@ -207,7 +207,7 @@
 				<IMG src="img/{if $nodeinfo.linktype == 1}wireless.gif{elseif $nodeinfo.linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="{$_LINKTYPES[$nodeinfo.linktype]}" {tip text="{if $nodeinfo.linktechnology}{$_LINKTECHNOLOGIES[$nodeinfo.linktype][$nodeinfo.linktechnology]} / {/if}{if $nodeinfo.linkradiosector}{$nodeinfo.linkradiosectorname} / {/if}{$_LINKSPEEDS[$nodeinfo.linkspeed]}"}>
 			{else}
 				{if $netdevices}
-				<a href="javascript: void(0);" onclick="return choosenetdevice(document.nodelink.elements['devid']);" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
+				<a href="javascript: void(0);" onclick="return netDevChooseWin(document.nodelink.elements['devid']);" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
 				<SELECT SIZE="1" style="width: 300px;" NAME="devid" id="netdev" {tip trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value)">
                                 <OPTION VALUE="0" {if !$netdevice}SELECTED{/if}>- {trans("no device")} -</OPTION>
 					{section name=netdev loop=$netdevices}

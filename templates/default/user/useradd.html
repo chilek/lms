@@ -15,7 +15,7 @@
 			<IMG src="img/pass.gif" alt=""> {trans("Login:")}
 		</TD>
 		<TD style="width: 99%;">
-			<INPUT type="text" name="useradd[login]" value="{$useradd.login}" {tip text="Enter user login" trigger="login" bold=1}>
+			<INPUT type="text" name="useradd[login]" value="{$useradd.login}" required {tip text="Enter user login" trigger="login" bold=1}>
 		</TD>
 	</TR>
 	</THEAD>
@@ -25,7 +25,7 @@
 			<IMG src="img/users.gif" alt=""> {trans("First/last name:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="useradd[name]" value="{$useradd.name}" size="40" {tip text="Enter user name" trigger="name"}>
+			<INPUT type="text" name="useradd[name]" value="{$useradd.name}" size="40" required {tip text="Enter user name" trigger="name"}>
 		</TD>
 	</TR>
 	<TR>
@@ -49,7 +49,7 @@
 			<IMG src="img/sms.gif" alt=""> {trans("Phone:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="useradd[phone]" value="{$useradd.phone}" size="40" {tip text="Enter phone number for SMS notification (optional)" trigger="phone"}>
+			<INPUT type="tel" name="useradd[phone]" value="{$useradd.phone}" size="40" {tip text="Enter phone number for SMS notification (optional)" trigger="phone"}>
 		</TD>
 	</TR>
 	<TR>
@@ -75,8 +75,8 @@
 			<img src="img/calendar.gif" alt=""> {trans("Account active:")}
 		</td>
 		<td class="nobr">
-			{trans('from')}:<input type="text" name="useradd[accessfrom]" value="{if $useradd.accessfrom}{$useradd.accessfrom}{/if}" size="10" {tip class="calendar" text="Enter access start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="accessfrom"}>&nbsp;
-			{trans('to')}:<input type="text" name="useradd[accessto]" value="{if $useradd.accessto}{$useradd.accessto}{/if}" size="10"  {tip class="calendar" text="Enter access end date in YYYY/MM/DD format. If you don't want to define 'To' date leave this field empty" trigger="accessto"}>
+			{trans('from')}:<input type="text" name="useradd[accessfrom]" value="{if $useradd.accessfrom}{$useradd.accessfrom}{/if}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter access start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="accessfrom"}>&nbsp;
+			{trans('to')}:<input type="text" name="useradd[accessto]" value="{if $useradd.accessto}{$useradd.accessto}{/if}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter access end date in YYYY/MM/DD format. If you don't want to define 'To' date leave this field empty" trigger="accessto"}>
 		</td>
 	</tr>
 	<TR>
@@ -84,7 +84,7 @@
 			<IMG src="img/pass.gif" alt=""> {trans("Password:")}
 		</TD>
 		<TD>
-			<INPUT type="password" name="useradd[password]" {tip text="Enter password" trigger="password"}>
+			<INPUT type="password" name="useradd[password]" required {tip text="Enter password" trigger="password"}>
 		</TD>
 	</TR>
 	<TR>
@@ -92,7 +92,7 @@
 			<IMG src="img/pass.gif" alt=""> {trans("Repeat password:")}
 		</TD>
 		<TD>
-			<INPUT type="password" name="useradd[confirm]" {tip text="Confirm password" trigger="password"}>
+			<INPUT type="password" name="useradd[confirm]" required {tip text="Confirm password" trigger="password"}>
 		</TD>
 	</TR>
 	<TR>

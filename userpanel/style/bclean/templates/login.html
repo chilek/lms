@@ -65,7 +65,7 @@
                         {if $error}<div class="alert alert-danger">{$error}</div>{/if}
                         <fieldset class="form-group">
                             <label for="inputLogin">{$_USERPANEL_ID_TYPES[ConfigHelper::getConfig('userpanel.auth_type', 1)].label}</label>
-                            <input type="text" name="loginform[login]" id="inputLogin" class="form-control" required autofocus>
+                            <input type="text"  name="loginform[login]" id="inputLogin" class="form-control" required autofocus>
                         </fieldset>
                         <fieldset class="form-group">
                             <label for="inputPassword">{trans('PIN:')}</label>

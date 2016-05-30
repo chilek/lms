@@ -196,13 +196,14 @@ switch ($action) {
 				$contents[$idx]['valuebrutto'] = 0;
 				$contents[$idx]['cash'] = round($invoicecontents[$idx]['total'] * $item['count'], 2);
 				$contents[$idx]['count'] = 0;
-			} elseif ($contents[$idx]['count'] != $invoicecontents[$idx]['count']
-				|| $contents[$idx]['valuebrutto'] != $invoicecontents[$idx]['value'])
-				$contents[$idx]['cash'] = round($invoicecontents[$idx]['value'] * $invoicecontents[$idx]['count']
-					- $contents[$idx]['valuebrutto'] * $contents[$idx]['count'], 2);
-
-			$contents[$idx]['valuebrutto'] = $contents[$idx]['valuebrutto'] - $invoicecontents[$idx]['value'];
-			$contents[$idx]['count'] = $contents[$idx]['count'] - $invoicecontents[$idx]['count'];
+			} else {
+				if ($contents[$idx]['count'] != $invoicecontents[$idx]['count']
+					|| $contents[$idx]['valuebrutto'] != $invoicecontents[$idx]['value'])
+					$contents[$idx]['cash'] = round($invoicecontents[$idx]['value'] * $invoicecontents[$idx]['count']
+						- $contents[$idx]['valuebrutto'] * $contents[$idx]['count'], 2);
+				$contents[$idx]['valuebrutto'] = $invoicecontents[$idx]['value'] - $contents[$idx]['valuebrutto'];
+				$contents[$idx]['count'] = $invoicecontents[$idx]['count'] - $contents[$idx]['count'];
+			}
 		}
 
 		$DB->BeginTrans();
@@ -286,7 +287,7 @@ switch ($action) {
 				$args = array(
 					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
 					'itemid' => $itemid,
-					'value' => $item['valuebrutto'],
+					'value' => -$item['valuebrutto'],
 					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $item['taxid'],
 					'prodid' => $item['prodid'],
 					'content' => $item['content'],
@@ -308,7 +309,7 @@ switch ($action) {
 
 				$LMS->AddBalance(array(
 					'time' => $cdate,
-					'value' => $item['valuebrutto']*$item['count']*-1,
+					'value' => $item['cash'],
 					'taxid' => $item['taxid'],
 					'customerid' => $customer['id'],
 					'comment' => $item['name'],

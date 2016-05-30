@@ -57,6 +57,7 @@ if(isset($_POST['event']))
 		
 	$SMARTY->assign('eventlist', $eventlist);
 	$SMARTY->assign('daylist', $daylist);
+	$SMARTY->assign('getHolidays', getHolidays($year));
 	$SMARTY->display('event/eventsearchresults.html');
 	$SESSION->close();
 	die;

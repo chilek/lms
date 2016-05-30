@@ -8,7 +8,7 @@
 			<td style="width:50%;text-align:left;" class="bold" onClick="showOrHide('devicenodes');">
 				<IMG SRC="img/node.gif" ALT="">{t a=$netdevlist|@count}Assigned net devices ($a):{/t}</td>
 			<td style="width:50%;text-align:right;">
-				<a href="#" onclick="popup('?m=choosenetdev&id={$objectid}',1,1,-50,-40);autoiframe_setsize('autoiframe',500,290);return false;">
+				<a href="#" onclick="javascript:netDevForNetNodeChooseWin('{$objectid}')">
 					<IMG SRC="img/netdev.gif" ALT=""> {trans("Add devices to node")}</a></td>
 		</table>
 		</TD>
@@ -40,9 +40,9 @@
 					<td width="95%" style="vertical-align: top;" class="nobr">
 						<img src="img/netdev.gif" alt=""><b>{$netdevlist[netdevlist].name}</b><br/>
 							<img src="img/producer.gif" alt="">{$netdevlist[netdevlist].producer} / {$netdevlist[netdevlist].model} /	{if $netdevlist[netdevlist].location} {$netdevlist[netdevlist].location|truncate:60:"...":true}	{/if}
-			 		</td>
+					</td>
 					<td>
-					 	{$netdevlist[netdevlist].id|string_format:"%04d"}
+						{$netdevlist[netdevlist].id|string_format:"%04d"}
 					</td>
 					<td>
 						{$netdevlist[netdevlist].serialnumber}

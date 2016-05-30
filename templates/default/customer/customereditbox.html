@@ -58,6 +58,9 @@
 			+ '<label onmouseover="popup(\'{trans("Check if send notification")}\')" onmouseout="pophide()">'
 				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_NOTIFICATIONS}" name="customerdata[emails][' + nr + '][type][]">'
 				+ ' {$_CONTACTTYPES[$smarty.const.CONTACT_NOTIFICATIONS]}</label>'
+			+ '<label onmouseover="popup(\'{trans("Check if send technical notification")}\')" onmouseout="pophide()">'
+				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_TECHNICAL}" name="customerdata[emails][' + nr + '][type][]">'
+				+ ' {$_CONTACTTYPES[$smarty.const.CONTACT_TECHNICAL]}</label>'
 			+ '<label onmouseover="popup(\'{trans("Not visible by the customer in electronic Customer Service Representative")}\')" onmouseout="pophide()">'
 				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customerdata[emails][' + nr + '][type][]">'
 				+ ' {$_CONTACTTYPES[$smarty.const.CONTACT_DISABLED]}</label>'
@@ -105,13 +108,13 @@
 							<TR>
 								<TD style="width: 1%;" class="bold">{trans("Name/Surname:")}</TD>
 								<TD style="width: 99%;">
-									<INPUT type="text" size="50" name="customerdata[lastname]" value="{$customerinfo.lastname|escape}" {tip text="Enter first/lastname of customer" trigger="lastname" bold=1}>
+									<INPUT type="text" size="50" name="customerdata[lastname]" value="{$customerinfo.lastname|escape}" required {tip text="Enter first/lastname of customer" trigger="lastname" bold=1}>
 								</TD>
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="bold">{trans("First name:")}</TD>
 								<TD style="width: 99%;">
-									<INPUT type="text" size="50" name="customerdata[name]" value="{$customerinfo.name|escape}" {tip text="Enter first name of customer (optional)" trigger="name" bold=1}>
+									<INPUT type="text" size="50" name="customerdata[name]" value="{$customerinfo.name|escape}" required {tip text="Enter first name of customer (optional)" trigger="name" bold=1}>
 								</TD>
 							</TR>
 						</TABLE>
@@ -189,7 +192,7 @@
 			<TABLE width="100%" cellpadding="1">
 				<TR>
 					<TD style="width: 1%;" class="nobr">{trans("Street:")}</TD>
-					<TD style="width: 99%;"><INPUT type="text" name="customerdata[street]" id="street" value="{$customerinfo.street}" size="30" {tip text="Enter street name" trigger="street"}></TD>
+					<TD style="width: 99%;"><INPUT type="text" name="customerdata[street]" id="street" value="{$customerinfo.street}" size="30" required {tip text="Enter street name" trigger="street"}></TD>
 				</TR>
 				<TR>
 					<TD style="width: 1%;" class="nobr">{trans("Building:")}</TD>
@@ -331,7 +334,7 @@
 					<TR id="contact{$key}">
 						<TD>
 							{if !$item@first}<HR>{/if}
-							<INPUT type="text" size="16" value="{$item.phone}" name="customerdata[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
+							<INPUT type="tel" size="16" value="{$item.phone}" name="customerdata[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
 							<label>
 								<INPUT type="checkbox" value="{$smarty.const.CONTACT_MOBILE}" name="customerdata[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_MOBILE)} checked{/if}>
 								{$_CONTACTTYPES[$smarty.const.CONTACT_MOBILE]}
@@ -381,6 +384,10 @@
 							<label {tip text="Check if send notification" trigger="chknotification"}>
 								<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_NOTIFICATIONS}" name="customerdata[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_NOTIFICATIONS)} checked{/if}>
 								{$_CONTACTTYPES[$smarty.const.CONTACT_NOTIFICATIONS]}
+							</label>
+							<label {tip text="Check if send technical notification"}>
+								<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_TECHNICAL}" name="customerdata[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_TECHNICAL)} checked{/if}>
+								{$_CONTACTTYPES[$smarty.const.CONTACT_TECHNICAL]}
 							</label>
 							<label {tip text="Not visible by the customer in electronic Customer Service Representative" trigger="edisabled"}>
 								<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customerdata[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_DISABLED)} checked{/if}>
@@ -467,7 +474,7 @@
 			<IMG src="img/pin.gif" alt="">
 		</TD>
 		<TD style="width: 98%;">
-			<INPUT type="text" name="customerdata[pin]" value="{if $customerinfo.pin}{$customerinfo.pin}{/if}" size="6" {tip text="Enter 4 to 6 digits PIN number (optional)" trigger="pin"}>&nbsp;
+			<INPUT type="number" pattern="{literal}.{4,6}{/literal}" required name="customerdata[pin]" value="{if $customerinfo.pin}{$customerinfo.pin}{/if}" size="6" title="{trans("Enter 4 to 6 digits PIN number (optional)")}" {tip text="Enter 4 to 6 digits PIN number (optional)" trigger="pin"}>&nbsp;
 			<A href="javascript:randomize()" {tip text="Generate PIN"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>

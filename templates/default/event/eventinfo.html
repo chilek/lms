@@ -185,6 +185,7 @@
 		</TD>
 	</TR>
 {/if}
+{if $event.userlist}
 	<TR>
 		<TD>
 			<IMG src="img/users.gif" alt="">
@@ -198,6 +199,7 @@
 			{/foreach}
 		</TD>
 	</TR>
+{/if}
 	<TR>
 		<TD class="text-right" colspan="3">
 			<A href="?m=eventedit&id={$event.id}">{trans("Edit")} <IMG src="img/edit.gif" alt=""></A>

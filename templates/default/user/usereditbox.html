@@ -12,7 +12,7 @@
 			{trans("Login:")}
 		</TD>
 		<TD style="width: 98%;" class="bold nobr">
-			<INPUT type="text" name="userinfo[login]" value="{$userinfo.login}" {tip text="Enter user login" trigger="login" bold=1}> ({$userinfo.id|string_format:"%04d"})
+			<INPUT type="text" name="userinfo[login]" value="{$userinfo.login}" required {tip text="Enter user login" trigger="login" bold=1}> ({$userinfo.id|string_format:"%04d"})
 		</TD>
 	</TR>
 	</THEAD>
@@ -25,7 +25,7 @@
 			{trans("First/last name:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="userinfo[name]" value="{$userinfo.name}" size="40" {tip text="Enter user name" trigger="name"}>
+			<INPUT type="text" name="userinfo[name]" value="{$userinfo.name}" required size="40" {tip text="Enter user name" trigger="name"}>
 		</TD>
 	</TR>
 	<TR>
@@ -52,7 +52,7 @@
 		</TD>
 		<TD class="bold">{trans("Phone:")}</TD>
 		<TD class="fright">
-			<INPUT type="text" name="userinfo[phone]" value="{$userinfo.phone}" size="40" {tip text="Enter phone number for SMS notification (optional)" trigger="phone"}>
+			<INPUT type="tel" name="userinfo[phone]" value="{$userinfo.phone}" size="40" {tip text="Enter phone number for SMS notification (optional)" trigger="phone"}>
 		</TD>
 	</TR>
 	{if $userinfo.swekey_id}
@@ -92,8 +92,8 @@
 		<td><img src="img/calendar.gif" alt=""></td>
 		<td class="bold">{trans("Account active:")}</td>
 		<td class="bold nobr">
-			{trans('from')}:<input type="text" name="userinfo[accessfrom]" value="{if $userinfo.accessfrom}{$userinfo.accessfrom}{/if}" size="10" {tip class="calendar" text="Enter access start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="accessfrom"}>&nbsp;
-			{trans('to')}:<input type="text" name="userinfo[accessto]" value="{if $userinfo.accessto}{$userinfo.accessto}{/if}" size="10"  {tip class="calendar" text="Enter access end date in YYYY/MM/DD format. If you don't want to define 'To' date leave this field empty" trigger="accessto"}>
+			{trans('from')}:<input type="text" name="userinfo[accessfrom]" value="{if $userinfo.accessfrom}{$userinfo.accessfrom}{/if}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter access start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="accessfrom"}>&nbsp;
+			{trans('to')}:<input type="text" name="userinfo[accessto]" value="{if $userinfo.accessto}{$userinfo.accessto}{/if}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter access end date in YYYY/MM/DD format. If you don't want to define 'To' date leave this field empty" trigger="accessto"}>
 		</td>
 	</tr>
 	{else}

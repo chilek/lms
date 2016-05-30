@@ -41,7 +41,7 @@ if (!empty($_POST['marks'])) {
 			if (sizeof($list))
 				die('Currently you can only print many documents of type text/html!');
 
-			header('Content-Disposition: attachment; filename='.$list[0]['filename']);
+			header('Content-Disposition: attachment; filename="'.$list[0]['filename'] . '"');
 			header('Pragma: public');
 		}
 		header('Content-Type: '.$ctype);
@@ -122,7 +122,7 @@ if (!empty($_POST['marks'])) {
 			header('Content-Type: '.$doc['contenttype']);
 
 			if (!preg_match('/^text/i', $doc['contenttype']) || !empty($_GET['save'])) {
-				header('Content-Disposition: attachment; filename='.$doc['filename']);
+				header('Content-Disposition: attachment; filename="'.$doc['filename'] . '"');
 				header('Pragma: public');
 			}
 

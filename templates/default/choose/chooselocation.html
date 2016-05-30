@@ -28,7 +28,10 @@
     </table>
     </form>
     <script type="text/javascript">
-        new AutoSuggest(document.forms['search'],document.forms['search'].elements['searchcity'],'?m=chooselocation&ajax=1&mode=city&what=',1);
+	<!--
+		var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
+		new AutoSuggest(document.forms['search'],document.forms['search'].elements['searchcity'],'?m=chooselocation&ajax=1&mode=city&what=',1);
+	//-->
     </script>
     {/if}
 	<table id="locationtable" width="100%" cellpadding="3">

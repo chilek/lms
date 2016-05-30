@@ -42,7 +42,7 @@
         }
     //-->
     </script>
-    {t a="<input class=\"scroller\" type=\"text\" id=\"page`$scrollerno`\" value=\"\" size=\"3\">"}Go to $a page{/t}
+    {t a="<input class=\"scroller\" type=\"number\" min=\"1\" max=\"`$pagination->getPages()`\" id=\"page`$scrollerno`\" value=\"\" size=\"3\">"}Go to $a page{/t}
     <a href="javascript: void(0);" onclick="javascript: pagechange{$scrollerno}();">{'&raquo;'|str_repeat:3}</a>
     </form>
 {/if}

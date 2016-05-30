@@ -365,7 +365,8 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     public function GetCustomerWithoutGroupNames($groupid, $network = NULL)
     {
         if ($network) {
-            $net = $this->GetNetworkParams($network);
+            $network_manager = new LMSNetworkManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $net = $network_manager->GetNetworkParams($network);
         }
 
         return $this->db->GetAll('SELECT c.id AS id, ' . $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS customername

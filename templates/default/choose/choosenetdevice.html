@@ -18,13 +18,13 @@
     </head>
     {if ! $part}
         <frameset name="all" frameborder="0" framespacing="0" ROWS="36,*">
-            <frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="top" noresize src="?m=choosenetdevice&p=top">
-            <frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="main" noresize src="?m=choosenetdevice&p=main">
+            <frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="top" noresize src="?m=choosenetdevice{if isset($netdevid)}&netdevid={$netdevid}{/if}&p=top">
+            <frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="main" noresize src="?m=choosenetdevice{if isset($netdevid)}&netdevid={$netdevid}{/if}&p=main">
         </frameset>
     {/if}
     {if $part eq "top"}
     <body>
-        <form name="search" method="post" action="?m=choosenetdevice&p=main" target="main">
+        <form name="search" method="post" action="?m=choosenetdevice&netdevid={$netdevid}&p=main" target="main">
             <input type="submit" class="hiddenbtn">
             <table cellpadding="5" width="100%">
                 <tr>
@@ -45,10 +45,10 @@
         <table cellpadding="3" width="100%">
             {if $netdevices}
                 <tr class="dark">
-                    <td nowrap="" class="fleftu"><b>Nazwa</b></td>
-                    <td nowrap="" class="fbt">Lokalizacja</td>
-                    <td nowrap="" class="fbt">Producent</td>
-                    <td nowrap="" class="fbt">Wolne porty</td>
+                    <td nowrap="" class="fleftu"><b>{trans('Name:')}</b></td>
+                    <td nowrap="" class="fbt">{trans('Location:')}</td>
+                    <td nowrap="" class="fbt">{trans('Producer:')}</td>
+                    <td nowrap="" class="fbt">{trans('Empty ports:')}</td>
                 </tr>
             {/if}
             {cycle values="light,lucid" print=false}
@@ -65,9 +65,9 @@
                         <p>&nbsp;</p>
                         <p><b>
                         {if $searchnetdev}
-                                Brak urządzeń spełniających zadane kryteria.
+                                {trans('No such devices matching search criteria.')}
                         {else}
-                                Wprowadź dane szukanego urządzenia.
+                                {trans('Enter device name.')}
                         {/if}
                         </b></p>
                         <p>&nbsp;</p>

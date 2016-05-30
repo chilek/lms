@@ -525,6 +525,7 @@ $_LANG['Enter new password:'] = 'Wprowadź nowe hasło:';
 $_LANG['Enter IP address or it\'s fragment'] = 'Wprowadź adres IP lub jego fragment';
 $_LANG['Enter MAC address or it\'s fragment'] = 'Wprowadź adres MAC lub jego fragment';
 $_LANG['Enter node name'] = 'Wprowadź nazwę komputera';
+$_LANG['Enter node name.'] = 'Wprowadź nazwę komputera.';
 $_LANG['Enter node name or it\'s fragment'] = 'Wprowadź nazwę komputera lub jej fragment';
 $_LANG['Enter note'] = 'Wprowadź notatkę';
 $_LANG['Enter note (optional)'] = 'Wprowadź notatkę (opcjonalnie)';
@@ -606,6 +607,7 @@ $_LANG['Form of Cash Transfer'] = 'Formularz przelewu/wpłaty';
 $_LANG['For what'] = 'Za co';
 $_LANG['Found inside'] = 'Znaleziono w';
 $_LANG['First name:'] = 'Imię:';
+$_LANG['Empty ports:'] = 'Wolne porty:';
 $_LANG['free:'] = 'wolne:';
 $_LANG['from:'] = 'od:';
 $_LANG['From'] = 'Od';
@@ -2413,6 +2415,7 @@ $_LANG['Enter default TTL value'] = 'Wprowadź domyślną wartość TTL';
 $_LANG['Enter operating system type'] = 'Wprowadź typ systemu operacyjnego';
 $_LANG['Enter port number'] = 'Wprowadź numer portu';
 $_LANG['Enter public key fingerprint'] = 'Wprowadź odcisk klucza publicznego';
+$_LANG['Enter device name.'] = 'Wprowadź nazwę urządzenia.';
 $_LANG['Enter record contents'] = 'Wprowadź dane rekordu';
 $_LANG['Enter record priority'] = 'Wprowadź priorytet rekordu';
 $_LANG['Enter record relative weight'] = 'Wprowadź względną ważność rekordu';
@@ -3110,7 +3113,9 @@ $_LANG['Not visible by the customer in electronic Customer Service Representativ
 $_LANG['If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices'] = 'Jeśli klient chce otrzymywać fakturę elektroniczną musi zostać zaznaczony adres e-mail na który mają być wysyłane e-faktury';
 $_LANG['Cancellation of a traditional invoice (agreement on an electronic invoice):'] = 'Rezygnacja z faktury tradycyjnej (zgoda na fakturę elektroniczną):';
 $_LANG['Check if send notification'] = 'Zaznacz, jeżeli chcesz wysyłać powiadomienia';
+$_LANG['Check if send technical notification'] = 'Zaznacz, jeżeli chcesz wysyłać informacje techniczne';
 $_LANG['notifications'] = 'powiadomienia';
+$_LANG['technical'] = 'informacje techniczne';
 
 $_LANG['Use customer location:'] = 'Użyj lokalizacji klienta:';
 $_LANG['Ticket\'s state has been changed from $a to $b.'] = 'Status zgłoszenia został zmieniony z $a na $b.';
@@ -3225,6 +3230,7 @@ $_LANG['Allows you to view node sessions'] = 'Przeglądanie sesji komputerów';
 $_LANG['Add Note'] = 'Dodaj notatkę';
 
 $_LANG['Search device'] = 'Szukaj urządzenia';
+$_LANG['Search node'] = 'Wyszukaj komputer';
 
 $_LANG['Timetable for today'] = 'Terminarz na dziś';
 $_LANG['have $a events'] = 'ma $a zdarzeń';
@@ -3257,4 +3263,10 @@ $_LANG['Fatal error: No invoices nor debit notes were selected!'] = 'Błąd kryt
 $_LANG['Are you sure, you want to send invoices to customers?'] = 'Jesteś pewien, że chcesz wysłać faktury do klientów?';
 $_LANG['Are you sure, you want to send invoices to customer?'] = 'Jesteś pewien, że chcesz wysłać faktury do klienta?';
 
+$_LANG['yyyy/mm/dd'] = 'rrrr/mm/dd';
+
+$_LANG['price-list'] = 'cennik';
+$_LANG['promotion'] = 'promocja';
+$_LANG['warranty'] = 'gwarancja';
+$_LANG['regulations'] = 'regulamin';
 ?>

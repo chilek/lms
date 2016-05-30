@@ -11,7 +11,7 @@
 			<IMG SRC="img/node.gif" ALT="">
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodeedit[name]" VALUE="{$nodeinfo.name}" MAXLENGTH="32" size="30" {tip text="Enter node name" trigger="name" bold=1}>
+			<INPUT TYPE="TEXT" NAME="nodeedit[name]" VALUE="{$nodeinfo.name}" MAXLENGTH="32" size="30" required {tip text="Enter node name" trigger="name" bold=1}>
 			<span class="bold">({$nodeinfo.id|string_format:"%04d"})</span>
 		</TD>
 	</TR>
@@ -42,7 +42,7 @@
 			<IMG SRC="img/ip.gif" ALT="{trans("IP address:")}">
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodeeditipaddr" VALUE="{$nodeinfo.ip}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddr, document.editnode.nodeeditnetid, {$nodeinfo.netid});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
+			<INPUT TYPE="TEXT" NAME="nodeeditipaddr" VALUE="{$nodeinfo.ip}" required {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddr, document.editnode.nodeeditnetid, {$nodeinfo.netid});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	{if ConfigHelper::checkValue(ConfigHelper::checkConfig('phpui.public_ip', 'true'))}
@@ -63,7 +63,7 @@
 			<TABLE style="width: 100%;" cellpadding="1" cellspacing="0">
 				{foreach from=$nodeinfo.macs item=item key=key}
 				<TR ID="mac{$key}">
-					<TD style="width: 100%;"><INPUT TYPE="TEXT" NAME="nodeedit[macs][{$key}]" VALUE="{$item}" {tip text="Enter MAC address" trigger="mac`$key`"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editnode.elements['nodeedit[macs][{$key}]']);" {tip text="Click to select MAC from the list"}>&raquo;&raquo;&raquo;</A></TD>
+					<TD style="width: 100%;"><INPUT TYPE="TEXT" NAME="nodeedit[macs][{$key}]" VALUE="{$item}" required {tip text="Enter MAC address" trigger="mac`$key`"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editnode.elements['nodeedit[macs][{$key}]']);" {tip text="Click to select MAC from the list"}>&raquo;&raquo;&raquo;</A></TD>
 				</TR>
 				{/foreach}
 			</TABLE>
@@ -100,7 +100,7 @@
 			<IMG SRC="img/netdev.gif" ALT="{trans("Net devices:")}">
 		</TD>
 		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
-                        <a href="javascript: void(0);" onclick="return choosenetdevice(document.editnode.elements['nodeedit[netdev]']);" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
+                        <a href="javascript: void(0);" onclick="return netDevChooseWin(document.editnode.elements['nodeedit[netdev]']);" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
 			<SELECT SIZE="1" NAME="nodeedit[netdev]" id="netdev" {tip text="Select net device from list" trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value);" style="max-width:250px;">
 				<OPTION VALUE="0" {if ! $nodeinfo.netdev}SELECTED{/if}>- {trans("no device")} -</OPTION>
 				{section name="netdev" loop=$netdevices}

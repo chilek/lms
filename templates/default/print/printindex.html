@@ -178,7 +178,7 @@
 								<TD style="width: 1%;" class="nobr"><IMG src="img/calendar.gif" alt=""></TD>
 								<TD style="width: 1%;" class="bold nobr">{trans("Balance date:")}</TD>
 								<TD style="width: 98%;" class="nobr">
-									<INPUT type="text" name="day" size="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+									<INPUT type="text" name="day" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
 								</TD>
 							</TR>
 							<TR>
@@ -192,8 +192,8 @@
 										{/foreach}
 									</SELECT>
 									<span class="bold">{trans("in date:")}</span>
-									{trans("From")}&nbsp;<INPUT type="text" name="docfrom" size="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-									{trans("To")}&nbsp;<INPUT type="text" name="docto" size="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+									{trans("From")}&nbsp;<INPUT type="text" name="docfrom" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+									{trans("To")}&nbsp;<INPUT type="text" name="docto" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
 								</TD>
 							</TR>
 						</TABLE>
@@ -353,8 +353,8 @@
 					</TD>
 					<TD style="width: 95%;" class="nobr">
 						<span class="bold">{trans("Period:")}</span>
-						{trans("From")}&nbsp;<INPUT type="text" name="balancefrom" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT type="text" name="balanceto" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						{trans("From")}&nbsp;<INPUT type="text" name="balancefrom" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT type="text" name="balanceto" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 				</TR>
 			</TABLE>
@@ -411,8 +411,8 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 					</TD>
 					<TD style="width: 96%;" class="nobr">
 						<span class="bold">{trans("Period:")}</span>&nbsp;
-						{trans("From")}&nbsp;<INPUT type="text" name="from" size="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means 1970/01/01) or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT type="text" name="to" size="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						{trans("From")}&nbsp;<INPUT type="text" name="from" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means 1970/01/01) or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT type="text" name="to" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 				</TR>
 			</TABLE>
@@ -511,10 +511,10 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 						            <B>{trans("Period:")}</B>
 					            </TD>
 					            <TD style="width: 1%;" nowrap>
-						            {trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						            {trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					            </TD>
 					            <TD style="width: 98%;" nowrap>
-						            {trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						            {trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					            </TD>
 					        </TR>
 						    <TR>
@@ -643,8 +643,8 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 					</TD>
 					<TD style="width: 1%;" class="nobr">
 						<span class="bold">{trans("Period:")}</span>&nbsp;
-						{trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+						{trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
 					</TD>
 					<TD style="width: 97%;" nowrap>
 						<input type="checkbox" name="extended" value="1" id="receiptlist-extended"><label for="receiptlist-extended">{trans("extended format")}</label>
@@ -756,8 +756,8 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 								</TD>
 								<TD style="width: 1%;" class="nobr">
 									<span class="bold">{trans("Period:")}</span>&nbsp;
-									{trans("From")}&nbsp;<INPUT type="text" name="invoicefrom" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-									{trans("To")}&nbsp;<INPUT type="text" name="invoiceto" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+									{trans("From")}&nbsp;<INPUT type="text" name="invoicefrom" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+									{trans("To")}&nbsp;<INPUT type="text" name="invoiceto" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 								</TD>
 								<TD style="width: 1%;">
 									<IMG src="img/info.gif" alt="">
@@ -887,8 +887,8 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 					</TD>
 					<TD style="width: 99%;" class="nobr">
 						<span class="bold">{trans("Period:")}</span>&nbsp;
-						{trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						{trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
 				</TR>
 			</TABLE>
@@ -940,7 +940,7 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 					</TD>
 					<TD style="width: 1%;" class="bold nobr">
 						{trans("Day:")}&nbsp;
-						<INPUT type="text" name="day" size="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						<INPUT type="text" name="day" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
 					<TD style="width: 1%;">
 						<IMG src="img/view.gif" alt="">
@@ -1019,8 +1019,8 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 					</TD>
 					<TD style="width: 96%;" class="nobr">
 						<span class="bold">{trans("Period:")}</span>
-						{trans("From")}&nbsp;<INPUT type="text" name="importfrom" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
-						{trans("To")}&nbsp;<INPUT type="text" name="importto" SIZE="10" maxlength="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+						{trans("From")}&nbsp;<INPUT type="text" name="importfrom" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+						{trans("To")}&nbsp;<INPUT type="text" name="importto" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
 				</TR>
 			</TABLE>
@@ -1053,58 +1053,50 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
     <TBODY>
 	<TR>
 		<TD class="container" width="100%" colspan="2">
-			<TABLE width="100%" cellpadding="3">
+			<TABLE cellpadding="3">
 				<TR>
-					<TD style="width: 1%;">
-						<IMG src="img/node.gif" alt="">
+					<TD>
+						<IMG src="img/node.gif" alt=""><B>{trans("Status:")}</B>
 					</TD>
-					<TD style="width: 1%;" nowrap>
-						<B>{trans("Status:")}</B>
-					</TD>
-					<TD style="width: 1%;" {tip text="Select nodes group"} class="nobr">
-						<INPUT class="radio light" type="radio" id="nodelist-all" name="filter" value="0" CHECKED><label for="nodelist-all">{trans("all")}</label><BR>
-						<INPUT class="radio light" type="radio" id="nodelist-connected" name="filter" value="1"><label for="nodelist-connected">{trans("connected<!plural:item>")}</label><BR>
-						<INPUT class="radio light" type="radio" id="nodelist-disconnected" name="filter" value="2"><label for="nodelist-disconnected">{trans("disconnected<!plural:item>")}</label><BR>
+					<TD {tip text="Select nodes group"}>
+						<INPUT class="radio light" type="radio" id="nodelist-all" name="filter" value="0" CHECKED><label for="nodelist-all">{trans("all")}</label> 
+						<INPUT class="radio light" type="radio" id="nodelist-connected" name="filter" value="1"><label for="nodelist-connected">{trans("connected<!plural:item>")}</label> 
+						<INPUT class="radio light" type="radio" id="nodelist-disconnected" name="filter" value="2"><label for="nodelist-disconnected">{trans("disconnected<!plural:item>")}</label> 
 						<INPUT class="radio light" type="radio" id="nodelist-indebt" name="filter" value="3"><label for="nodelist-indebt">{trans("indebted owner")}</label>
 					</TD>
-					<TD style="width: 1%;" nowrap>
-					    <TABLE width="100%">
-						<TR>
-						    <TD style="width: 1%;"><IMG src="img/network.gif" alt=""></TD>
-						    <TD style="width: 1%;" nowrap><B>{trans("Network:")}</B></TD>
-						    <TD style="width: 98%;" nowrap>
-							<SELECT size="1" name="network" {tip text="Select network"}>
-							    <OPTION value="0" SELECTED>{trans("- all networks -")}</OPTION>
-							    {section name="networks" loop=$networks}
-							    <OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</OPTION>
-							    {/section}
-							</SELECT>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD style="width: 1%;"><IMG src="img/group.gif" alt=""></TD>
-						    <TD style="width: 1%;" nowrap><B>{trans("Group:")}</B></TD>
-						    <TD style="width: 98%;">
-							<SELECT size="1" name="customergroup" {tip text="Select group"}>
-							    <OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
-							    {section name="customergroups" loop=$customergroups}
-							    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</OPTION>
-							    {/section}
-							</SELECT>
-						    </TD>
-						</TR>
-					    </TABLE>
+				</tr>
+				<tr>
+					<TD>
+						<IMG src="img/network.gif" alt="">
+						<B>{trans("Network:")}</B>
+					</td>
+					<TD>
+						<SELECT size="1" name="network" {tip text="Select network"}>
+						    <OPTION value="0" SELECTED>{trans("- all networks -")}</OPTION>
+						    {section name="networks" loop=$networks}
+						    <OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</OPTION>
+						    {/section}
+						</SELECT>
 					</TD>
-					<TD style="width: 1%;">
-						<IMG src="img/view.gif" alt="">
+				</TR>
+				<TR>
+					<TD>
+						<IMG src="img/group.gif" alt=""><B>{trans("Group:")}</B>
 					</TD>
-					<TD style="width: 1%;">	
-			    			<B>{trans("Sorting:")}</B>
+					<TD>
+					    <SELECT size="1" name="customergroup" {tip text="Select group"}>
+						    <OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
+						    {section name="customergroups" loop=$customergroups}
+						    <OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</OPTION>
+						    {/section}
+					    </SELECT>
 					</TD>
-					<TD style="width: 94%;" {tip text="Select sorting direction and criteria"}>
-					    <TABLE width="100%">
-						<TR>
-						    <TD style="width: 100%;" nowrap>
+				</TR>
+				<tr>
+					<TD>
+						<IMG src="img/view.gif" alt=""><B>{trans("Sorting:")}</B>
+					</TD>
+					<TD {tip text="Select sorting direction and criteria"}>
 							<SELECT SIZE="1" name="order">
 							    <OPTION value="name" SELECTED>{trans("Name")}</OPTION>
 							    <OPTION value="id">{trans("Id")}</OPTION> 
@@ -1113,17 +1105,11 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 							    <OPTION value="ip">{trans("IP address")}</OPTION> 
 							    <OPTION value="mac">{trans("MAC address")}</OPTION>
 							</SELECT>
-						    </TD>
-						</TR>
-						<TR>
-						    <TD style="width: 100%;" nowrap>
+
 							<SELECT SIZE="1" name="direction">
 							    <OPTION value="asc" SELECTED>{trans("ascending")}</OPTION>
 							    <OPTION value="desc">{trans("descending")}</OPTION> 
 							</SELECT>
-						    </TD>
-						</TR>
-					    </TABLE>
 					</TD>
 				</TR>
 			</TABLE>
