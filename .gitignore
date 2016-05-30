@@ -5,12 +5,14 @@ lib/Smarty/*
 nbproject/private
 lms.ini
 backups/*
+bin/billing/voip-cache/*
 documents/*
 !documents/templates
 cache/*
 contrib/LMS2Nagios-php/generated/*
 lib/teryt/*
 composer.lock
+
 
 # Temporary files
 *~

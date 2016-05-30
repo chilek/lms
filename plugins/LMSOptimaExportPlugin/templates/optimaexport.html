@@ -1,0 +1,49 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+{include file="calendar_js.html"}
+<P><FORM method="post" name="optimaexport" id="optimaexport" action="?m=optimaexport&type=all">
+<INPUT type="submit" class="hiddenbtn">
+<TABLE class="lmsbox">
+    <THEAD>
+	<TR>
+		<TD width="1%">
+			<IMG src="img/money.gif" alt="">
+		</TD>
+		<TD width="99%" class="bold">
+			{trans("Financial data export to optima format")}
+		</TD>
+	</TR>
+    </THEAD>
+    <TBODY>
+	<TR>
+		<TD width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD width="1%">
+						<IMG src="img/calendar.gif" alt="">
+					</TD>
+					<TD width="1%" class="bold">
+						{trans("Period:")}&nbsp;
+					</TD>
+					<TD width="1%" nowrap>
+						{trans("From")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+					</TD>
+					<TD width="97%" nowrap>
+						{trans("To")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>	
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="100%" colspan="2" class="text-right">
+			<A href="javascript:document.optimaexport.submit();">{trans("Save")} <IMG src="img/save.gif" alt="" hspace="2"></A>
+		</TD>
+	</TR>
+    </TBODY>
+</TABLE>
+</FORM>
+{/block}
