@@ -244,7 +244,6 @@ if ($tariff['type'] == 4) {
 	$SMARTY->assign('tariffGroups', $prefixList);
 }
 
-
 $SMARTY->assign('netid', $netid);
 $SMARTY->assign('tariff', $tariff);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());

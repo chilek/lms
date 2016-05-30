@@ -23,7 +23,15 @@
  *
  *  $Id$
  */
-$_LANG['billing'] = 'billing';
+$_LANG['billing'] = 'biling';
+$_LANG['Billings'] = 'Bilingi';
+$_LANG['Billing list'] = 'Lista bilingów';
+$_LANG['Call begin time:'] = 'Czas połączenia:';
+$_LANG['Call answer time:'] = 'Czas rozmowy:';
+$_LANG['Call time:'] = 'Czas rozmowy:';
+$_LANG['Caller:'] = 'Skąd:';
+$_LANG['Callee:'] = 'Dokąd:';
+$_LANG['Start call:'] = 'Dokąd:';
 $_LANG['purchase invoice'] = 'faktura zakupu';
 $_LANG['pro-forma invoice'] = 'faktura pro-forma';
 $_LANG['$a ($b addresses)'] = '$a ($b adresów)';
@@ -209,6 +217,9 @@ $_LANG['Cash receipt template file. Default: "receipt.html". Should be placed in
 $_LANG['Cash Report'] = 'Raport kasowy';
 $_LANG['Cautions:'] = 'Uwagi:';
 $_LANG['Change connection type'] = 'Zmień typ połączenia';
+$_LANG['Connection type:'] = 'Typ połączenia:';
+$_LANG['incoming'] = 'przychodzące';
+$_LANG['outgoing'] = 'wychodzące';
 $_LANG['ChangeLog'] = 'ChangeLog';
 $_LANG['Change password'] = 'Zmiana hasła';
 $_LANG['Change registration info'] = 'Zmień dane rejestracyjne';
