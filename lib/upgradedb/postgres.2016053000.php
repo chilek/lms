@@ -23,60 +23,78 @@
 
 $this->BeginTrans();
 
-$this->Execute("CREATE TABLE voip_prefix (
-						id SERIAL PRIMARY KEY,
-						prefix varchar(30),
-						name text,
-						description text,
-						UNIQUE (prefix))");
+$this->Execute("
+	CREATE SEQUENCE voip_prefixes_seq;
+	CREATE TABLE voip_prefixes (
+		id integer DEFAULT nextval('voip_prefix_id_seq'::text) NOT NULL,
+		prefix varchar(30) NOT NULL,
+		name text NULL,
+		description text NULL,
+		PRIMARY KEY (id),
+		UNIQUE (prefix)
+	);
 
-$this->Execute("CREATE TABLE voip_prefix_group (
-						id SERIAL PRIMARY KEY,
-						name text,
-						description text)");
+	CREATE SEQUENCE voip_prefix_groups_seq;
+	CREATE TABLE voip_prefix_groups (
+		id integer DEFAULT nextval('voip_prefix_groups_id_seq'::text) NOT NULL,
+		name text NOT NULL,
+		description text NULL,
+		PRIMARY KEY (id)
+	);
 
-$this->Execute("CREATE TABLE voip_prefix_group_assignments (
-						id SERIAL PRIMARY KEY,
-						prefixid int,
-						groupid int,
-						FOREIGN KEY (prefixid) REFERENCES voip_prefix(id),
-						FOREIGN KEY (groupid) REFERENCES voip_prefix_group(id))");
+	CREATE SEQUENCE voip_prefix_group_assignments_seq;
+	CREATE TABLE voip_prefix_group_assignments (
+		id integer DEFAULT nextval('voip_prefix_group_assignments_id_seq'::text) NOT NULL,
+		prefixid integer NOT NULL
+			REFERENCES voip_prefixes(id) ON DELETE CASCADE ON UPDATE CASCADE,
+		groupid integer NOT NULL
+			REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+		PRIMARY KEY (id)
+	);
 
-$this->Execute("CREATE TABLE voip_tariffs (
-						id SERIAL PRIMARY KEY,
-						prefixid int,
-						groupid int,
-						tariffid int,
-						price text,
-						unitsize smallint,
-						FOREIGN KEY (prefixid) REFERENCES voip_prefix(id),
-						FOREIGN KEY (groupid) REFERENCES voip_prefix_group(id),
-						FOREIGN KEY (tarifid) REFERENCES tariffs(id))");
+	CREATE SEQUENCE voip_tariffs_seq;
+	CREATE TABLE voip_tariffs (
+		id integer DEFAULT nextval('voip_tariffs_id_seq'::text) NOT NULL,
+		prefixid integer
+			REFERENCES voip_prefixes(id) ON DELETE CASCADE ON UPDATE CASCADE,
+		groupid integer
+			REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+		tariffid integer
+			REFERENCES tariffs(id),
+		PRIMARY KEY (id)
+	);
 
-$this->Execute("CREATE TABLE voip_tariff_rules (
-						id SERIAL PRIMARY KEY,
-						prefixid int,
-						groupid int,
-						tarifid int,
-						description text,
-						unitsize smallint,
-						price text,
-						FOREIGN KEY (prefixid) REFERENCES voip_prefix(id),
-						FOREIGN KEY (groupid) REFERENCES voip_prefix_group(id),
-						FOREIGN KEY (tarifid) REFERENCES tariffs(id))");
-						
-$this->Execute("CREATE TABLE voip_cdr (
-						ID SERIAL PRIMARY KEY,
-						caller varchar(20) NOT NULL,
-						callee varchar(20) NOT NULL,
-						call_start_time int NOT NULL,
-						time_start_to_end int NOT NULL,
-						time_answer_to_end int NOT NULL,
-						price float NOT NULL,
-						status varchar(15) NOT NULL,
-						type VARCHAR(1) NOT NULL,
-						voipaccountid int NOT NULL)");
-						
+	CREATE SEQUENCE voip_tariff_rules_seq;
+	CREATE TABLE voip_tariff_rules (
+		id integer DEFAULT nextval('voip_tariff_rules_id_seq'::text) NOT NULL,
+		prefixid integer
+			REFERENCES voip_prefixes(id) ON DELETE CASCADE ON UPDATE CASCADE,
+		groupid integer
+			REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+		tarifid integer
+			REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		description text,
+		unitsize smallint,
+		price text,
+		PRIMARY KEY (id)
+	);
+
+	CREATE SEQUENCE voip_cdr_seq;
+	CREATE TABLE voip_cdr (
+		id integer DEFAULT nextval('voip_cdr_id_seq'::text) NOT NULL,
+		caller varchar(20) NOT NULL,
+		callee varchar(20) NOT NULL,
+		call_start_time integer NOT NULL,
+		time_start_to_end integer NOT NULL,
+		time_answer_to_end integer NOT NULL,
+		price float NOT NULL,
+		status varchar(15) NOT NULL,
+		type varchar(1) NOT NULL,
+		voipaccountid integer NOT NULL,
+		PRIMARY KEY (id)
+	);
+");
+
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016053000', 'dbversion'));
 
 $this->CommitTrans();

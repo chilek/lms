@@ -23,59 +23,59 @@
 
 $this->BeginTrans();
 
-$this->Execute("CREATE TABLE voip_prefix (
-						id SERIAL PRIMARY KEY,
-						prefix varchar(30),
-						name text,
-						description text,
-						UNIQUE (prefix))");
+$this->Execute("CREATE TABLE voip_prefixes (
+						id int11 AUTO_INCREMENT PRIMARY KEY,
+						prefix varchar(30) NOT NULL,
+						name text NULL,
+						description text NULL,
+						UNIQUE (prefix));");
 
-$this->Execute("CREATE TABLE voip_prefix_group (
-						id SERIAL PRIMARY KEY,
+$this->Execute("CREATE TABLE voip_prefix_groups (
+						id int11 AUTO_INCREMENT PRIMARY KEY,
 						name text,
-						description text)");
+						description text);");
 
 $this->Execute("CREATE TABLE voip_prefix_group_assignments (
-						id SERIAL PRIMARY KEY,
-						prefixid int,
-						groupid int,
-						FOREIGN KEY (prefixid) REFERENCES voip_prefix(id),
-						FOREIGN KEY (groupid) REFERENCES voip_prefix_group(id))");
+						id int11 AUTO_INCREMENT PRIMARY KEY,
+						prefixid int11 NOT NULL,
+						groupid int11 NOT NULL,
+						FOREIGN KEY (prefixid) REFERENCES voip_prefixes(id) ON DELETE CASCADE ON UPDATE CASCADE,
+						FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE);");
 
 $this->Execute("CREATE TABLE voip_tariffs (
-						id SERIAL PRIMARY KEY,
-						prefixid int,
-						groupid int,
-						tariffid int,
+						id int11 AUTO_INCREMENT PRIMARY KEY,
+						prefixid int11 NULL,
+						groupid int11 NULL,
+						tariffid int11 NOT NULL,
 						price text,
 						unitsize smallint,
-						FOREIGN KEY (prefixid) REFERENCES voip_prefix(id),
-						FOREIGN KEY (groupid) REFERENCES voip_prefix_group(id),
-						FOREIGN KEY (tarifid) REFERENCES tariffs(id))");
+						FOREIGN KEY (prefixid) REFERENCES voip_prefixes(id) ON DELETE CASCADE ON UPDATE CASCADE,
+						FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+						FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE);");
 
 $this->Execute("CREATE TABLE voip_tariff_rules (
-						id SERIAL PRIMARY KEY,
-						prefixid int,
-						groupid int,
-						tarifid int,
+						id int11 AUTO_INCREMENT PRIMARY KEY,
+						prefixid int11,
+						groupid int11,
+						tariffid int11,
 						description text,
 						unitsize smallint,
 						price text,
-						FOREIGN KEY (prefixid) REFERENCES voip_prefix(id),
-						FOREIGN KEY (groupid) REFERENCES voip_prefix_group(id),
-						FOREIGN KEY (tarifid) REFERENCES tariffs(id))");						
-						
+						FOREIGN KEY (prefixid) REFERENCES voip_prefixes(id) ON DELETE CASCADE ON UPDATE CASCADE,
+						FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+						FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE);");
+
 $this->Execute("CREATE TABLE voip_cdr (
-						ID SERIAL PRIMARY KEY,
+						id int11 AUTO_INCREMENT PRIMARY KEY,
 						caller varchar(20) NOT NULL,
 						callee varchar(20) NOT NULL,
-						call_start_time int NOT NULL,
-						time_start_to_end int NOT NULL,
-						time_answer_to_end int NOT NULL,
+						call_start_time int11 NOT NULL,
+						time_start_to_end int11 NOT NULL,
+						time_answer_to_end int11 NOT NULL,
 						price float NOT NULL,
 						status varchar(15) NOT NULL,
 						type VARCHAR(1) NOT NULL,
-						voipaccountid int NOT NULL)");
+						voipaccountid int11 NOT NULL);");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016053000', 'dbversion'));
 

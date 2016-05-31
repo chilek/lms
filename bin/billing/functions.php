@@ -24,7 +24,7 @@
 	 * \return array array of customers with base kay as phone number
 	 */
 	function getCustomerList() {
-		global $DB;
+		$DB = LMSDB::getInstance();
 
 		return $DB->GetAllByKey('SELECT
 												va.id as voipaccountid, va.phone, t.id as tariffid
@@ -92,7 +92,7 @@
 	 * \return array informations about customer (voip account id, phone number, account balance, tariff id)
 	 */
 	function getCustomerByPhone($phone_number) {
-		global $DB;
+		$DB = LMSDB::getInstance();
 
 		$customer = $DB->GetRow('SELECT
 												va.id as voipaccountid, va.phone, va.balance, t.id as tariffid
