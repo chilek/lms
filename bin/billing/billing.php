@@ -215,12 +215,10 @@ switch (strtolower($options['action'])) {
 			$price = ($call_type == 'o') ? round(ceil($options['calltime']/$call_cost['unitSize']) * $call_cost['costPerUnit'], 5) : 0;
 
 			// insert cdr record to database
-			$query = sprintf("INSERT INTO
-										 voip_cdr (caller, callee, call_start_time, time_start_to_end, time_answer_to_end, price, status, type, voipaccountid)
-									 VALUES
-										 ('%s', '%s', %s, %d, %d, %f, '%s', '%s', %d);", $options['caller'], $options['callee'], $options['startcall'], $options['totaltime'], $options['calltime'], $price, strtolower($options['status']), $call_type, $customer['voipaccountid']);
-
-			$DB->Execute($query);
+			$DB->Execute("INSERT INTO
+									 voip_cdr (caller, callee, call_start_time, time_start_to_end, time_answer_to_end, price, status, type, voipaccountid)
+								 VALUES
+									 (?, ?, ?, ?, ?, ?, ?, ?, ?);", array($options['caller'], $options['callee'], $options['startcall'], $options['totaltime'], $options['calltime'], $price, strtolower($options['status']), $call_type, $customer['voipaccountid']));
 		} else {
 			$fh = (isset($options['file'])) ? fopen($options['file'], 'r') : fopen('php://stdin', 'r');
 			$customer_list = getCustomerList();
@@ -261,12 +259,10 @@ switch (strtolower($options['action'])) {
 					$price = ($call_type == 'o') ? round(ceil($cdr['time_answer_to_end']/$call_cost['unitSize']) * $call_cost['costPerUnit'], 5) : 0;
 
 					// insert cdr record to database
-					$query = sprintf("INSERT INTO
-												voip_cdr (caller, callee, call_start_time, time_start_to_end, time_answer_to_end, price, status, type, voipaccountid)
-											VALUES
-												('%s', '%s', %d, %d, %d, %f, '%s', '%s', %d);", $cdr['caller'], $cdr['callee'], $call_start, $cdr['time_start_to_end'], $cdr['time_answer_to_end'], $price, strtolower($cdr['call_status']), $call_type, $customer_list[$cdr['caller']]['voipaccountid']);
-
-					$DB->Execute($query);
+					$DB->Execute("INSERT INTO
+											 voip_cdr (caller, callee, call_start_time, time_start_to_end, time_answer_to_end, price, status, type, voipaccountid)
+										 VALUES
+											 (?, ?, ?, ?, ?, ?, ?, ?, ?);", array($cdr['caller'], $cdr['callee'], $call_start, $cdr['time_start_to_end'], $cdr['time_answer_to_end'], $price, strtolower($cdr['call_status']), $call_type, $customer_list[$cdr['caller']]['voipaccountid']));
 				} else {
 					$error['errors'][] = array('line'=>$i, 'line_content'=>$f_line, 'error'=>$cdr_error);
 					continue;

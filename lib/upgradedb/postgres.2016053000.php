@@ -24,7 +24,7 @@
 $this->BeginTrans();
 
 $this->Execute("
-	CREATE SEQUENCE voip_prefixes_seq;
+	CREATE SEQUENCE voip_prefix_id_seq;
 	CREATE TABLE voip_prefixes (
 		id integer DEFAULT nextval('voip_prefix_id_seq'::text) NOT NULL,
 		prefix varchar(30) NOT NULL,
@@ -34,7 +34,7 @@ $this->Execute("
 		UNIQUE (prefix)
 	);
 
-	CREATE SEQUENCE voip_prefix_groups_seq;
+	CREATE SEQUENCE voip_prefix_groups_id_seq;
 	CREATE TABLE voip_prefix_groups (
 		id integer DEFAULT nextval('voip_prefix_groups_id_seq'::text) NOT NULL,
 		name text NOT NULL,
@@ -42,7 +42,7 @@ $this->Execute("
 		PRIMARY KEY (id)
 	);
 
-	CREATE SEQUENCE voip_prefix_group_assignments_seq;
+	CREATE SEQUENCE voip_prefix_group_assignments_id_seq;
 	CREATE TABLE voip_prefix_group_assignments (
 		id integer DEFAULT nextval('voip_prefix_group_assignments_id_seq'::text) NOT NULL,
 		prefixid integer NOT NULL
@@ -52,7 +52,7 @@ $this->Execute("
 		PRIMARY KEY (id)
 	);
 
-	CREATE SEQUENCE voip_tariffs_seq;
+	CREATE SEQUENCE voip_tariffs_id_seq;
 	CREATE TABLE voip_tariffs (
 		id integer DEFAULT nextval('voip_tariffs_id_seq'::text) NOT NULL,
 		prefixid integer
@@ -64,7 +64,7 @@ $this->Execute("
 		PRIMARY KEY (id)
 	);
 
-	CREATE SEQUENCE voip_tariff_rules_seq;
+	CREATE SEQUENCE voip_tariff_rules_id_seq;
 	CREATE TABLE voip_tariff_rules (
 		id integer DEFAULT nextval('voip_tariff_rules_id_seq'::text) NOT NULL,
 		prefixid integer
@@ -79,7 +79,7 @@ $this->Execute("
 		PRIMARY KEY (id)
 	);
 
-	CREATE SEQUENCE voip_cdr_seq;
+	CREATE SEQUENCE voip_cdr_id_seq;
 	CREATE TABLE voip_cdr (
 		id integer DEFAULT nextval('voip_cdr_id_seq'::text) NOT NULL,
 		caller varchar(20) NOT NULL,
