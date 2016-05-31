@@ -45,32 +45,32 @@
         </tr>
         {/block}
         {block name="voipaccountinfobox-customer"}
-	<tr>
-		<td>
-			<img src="img/customer.gif" alt="{trans("Customer:")}">
-		</td>
-		<td class="bold nobr">
-			{trans("Customer:")}
-		</td>
-		<td class="nobr">
-			<a href="?m=customerinfo&id={$voipaccountinfo.ownerid}">{$voipaccountinfo.owner}</a>
-		</td>
-	</tr>
+		<tr>
+			<td>
+				<img src="img/customer.gif" alt="{trans("Customer:")}">
+			</td>
+			<td class="bold nobr">
+				{trans("Customer:")}
+			</td>
+			<td class="nobr">
+				<a href="?m=customerinfo&id={$voipaccountinfo.ownerid}">{$voipaccountinfo.owner}</a>
+			</td>
+		</tr>
         {/block}
         {block name="voipaccountinfobox-location"}
-	{if $voipaccountinfo.location}
-	<tr>
-            <td>
-                <img src="img/home.gif" alt="{trans('Location:')}">
-            </td>
-             <td class="bold nobr">
-                {trans("Location:")}
-            </td>
-            <td class="nobr">
-                {$voipaccountinfo.location}{if $voipaccountinfo.borough_name} ({$voipaccountinfo.state_name} / {$voipaccountinfo.district_name} / {$_BOROUGHTYPES[$voipaccountinfo.borough_type]} {$voipaccountinfo.borough_name}){/if}
-            </td>
-	</tr>
-	{/if}
+		{if $voipaccountinfo.location}
+		<tr>
+				<td>
+					<img src="img/home.gif" alt="{trans('Location:')}">
+				</td>
+				 <td class="bold nobr">
+					{trans("Location:")}
+				</td>
+				<td class="nobr">
+					{$voipaccountinfo.location}{if $voipaccountinfo.borough_name} ({$voipaccountinfo.state_name} / {$voipaccountinfo.district_name} / {$_BOROUGHTYPES[$voipaccountinfo.borough_type]} {$voipaccountinfo.borough_name}){/if}
+				</td>
+		</tr>
+		{/if}
         {/block}
         {block name="voipaccountinfobox-status"}
         <tr>
@@ -82,6 +82,19 @@
             </td>
             <td class="bold" colspan="1">
                 {if $voipaccountinfo.access}{trans("connected<!singular>")}{else}{trans("disconnected<!singular>")}{/if}
+            </td>
+        </tr>
+        {/block}
+		{block name="voipaccountinfobox-balance"}
+        <tr>
+            <td>
+                <img src="img/money.gif" alt="{trans("Phone number:")}">
+            </td>
+            <td class="bold nobr">
+                {trans("Balance")}
+            </td>
+            <td class="nobr">
+                {$voipaccountinfo.balance|money_format}
             </td>
         </tr>
         {/block}
@@ -104,11 +117,12 @@
         {block name="voipaccountinfobox-buttons"}
         <tr>
             <td class="text-right" colspan="3">
-                <a href="?m=voipaccountedit&id={$voipaccountinfo.id}" accesskey="E">
-                {trans("Edit")} <img src="img/edit.gif" alt="">
-                </a>
+				<a href="?m=voipaccountbillinglist&id={$voipaccountinfo.id}">{trans("Billings")} <img src="img/voip.gif" alt="show billings"></a>
+				
+                <a href="?m=voipaccountedit&id={$voipaccountinfo.id}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt="edit"></a>
+				
                 <a href="?m=voipaccountdel&id={$voipaccountinfo.id}" onClick="return confirmLink(this, '{t a=$voipaccountinfo.login}Are you sure, you want to remove voip account \'$a\' from database?{/t}')">
-                {trans("Delete")} <img src="img/delete.gif" alt="">
+					{trans("Delete")} <img src="img/delete.gif" alt="delete">
                 </a>
             </td>
         </tr>

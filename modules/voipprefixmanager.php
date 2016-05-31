@@ -27,14 +27,14 @@
 function buildGroups(&$result) {
 	$groups = array();
 
-	foreach ($result as $groupName=>$content) {
-		if (count($content) == 1)
-			$groups[$groupName] = $content;
+	foreach ($result as $groupName=>$group)
+		if (count($group) == 1)
+			$groups[$groupName] = array_values($group[key($group)]);
 		else {
-			foreach ($content as $price=>$groupContent)
-				$groups[$groupName." ($price)"][$price] = $groupContent;
+			foreach ($group as $k=>$singleGroup)
+				foreach($singleGroup as $k2=>$v)
+					$groups[$groupName . " ($k)"][] = $v;
 		}
-	}
 
 	return $groups;
 }
@@ -66,16 +66,9 @@ if(isset($_GET['single']))
 			$error['prefix'] = trans('Prefix already exists!');
 
 	// if no errors add prefix
-		if (!$error) {
-			// add prefix
+		if (!$error)
 			$DB->Execute('INSERT INTO voip_prefix (prefix, description) VALUES (?, ?)', array($prefix['prefix'], $prefix['description']));
-
-			// add prefix to group
-			$DB->Execute('INSERT INTO
-									voip_prefix_group_assignments (prefixid, groupid)
-								VALUES
-									((SELECT id FROM voip_prefix p WHERE p.prefix like ?), (SELECT id FROM voip_prefix_group WHERE id = ?))', array($prefix['prefix'], $_POST['group_id']));						
-		} else {
+		else {
 			$SMARTY->assign('error', $error);
 			$SMARTY->assign('args', $prefix);
 		}
@@ -115,6 +108,8 @@ else if(isset($_GET['file']))
 					$prefixList[$firstprefix] = $name;
 
 				while (($prefix = next($prefixes)) !== false) {
+					//echo "$prefix\n";
+
 					$prefix = substr($firstprefix, 0, -strlen($prefix)) . $prefix;
 					$result[$name][$sell_price][] = $prefix;
 
@@ -140,114 +135,42 @@ else if(isset($_GET['file']))
 		if ($warnings)
 			$SMARTY->assign('warnings', $warnings);
 		else {
-			$DB->BeginTrans();
-			$DB->execute('delete from voip_tariff where tariffid =4');
 
 			// GENERATE INSERT QUERY TO `voip_prefix` TABLE
 				$voip_prefix = 'INSERT INTO voip_prefix (prefix, name, description) VALUES ';
-				foreach ($groups as $groupName=>$v)
-					foreach ($v as $prefixArray)
-						foreach ($prefixArray as $singlePrefix)
-							$voip_prefix .= "('$singlePrefix', '$groupName', ''),";
-
+				foreach ($groups as $groupName=>$prefixArray)
+					foreach ($prefixArray as $singlePrefix)
+						$voip_prefix .= "('$singlePrefix', '$groupName', ''),";
 				$voip_prefix = rtrim($voip_prefix, ',') . ';';
-				//$DB->execute($voip_prefix);
 
 			// GENERATE INSERT QUERY TO `voip_prefix_group` TABLE
 				$voip_prefix_group = 'INSERT INTO voip_prefix_group (name, description) VALUES ';
 				foreach ($groups as $groupName=>$prefixArray)
 					$voip_prefix_group .= "('$groupName', ''),";
-
 				$voip_prefix_group = rtrim($voip_prefix_group, ',') . ';';
-				//$DB->execute($voip_prefix_group);
 
 			// GENERATE INSERT QUERY TO `voip_prefix_group_assignment` TABLE
 				$voip_prefix_group_assignment = 'INSERT INTO voip_prefix_group_assignments (prefixid, groupid) VALUES ';
 				$prefixHelperArray = $DB->GetAllByKey("SELECT id, prefix FROM voip_prefix", "prefix");
 				$groupHelperArray = $DB->GetAllByKey("SELECT id, name FROM voip_prefix_group", "name");
 
-				foreach ($groups as $groupName=>$v) {
+				foreach ($groups as $groupName=>$prefixArray) {
 					$groupID = $groupHelperArray[$groupName]['id'];
 
-					foreach ($v as $prefixArray)
-						foreach ($prefixArray as $singlePrefix) {
-							$prefixID = $prefixHelperArray[$singlePrefix]['id'];
-							$voip_prefix_group_assignment .= "($prefixID, $groupID),";
-						}
+					foreach ($prefixArray as $singlePrefix) {
+						$prefixID = $prefixHelperArray[$singlePrefix]['id'];
+						$voip_prefix_group_assignment .= "($prefixID, $groupID),";
+					}
 				}
 				$voip_prefix_group_assignment = rtrim($voip_prefix_group_assignment, ',') . ';';
-				$DB->execute($voip_prefix_group_assignment);
-
-			// CREATE TARIFFS
-				$TARIFF_ID = $_GET['id'];
-				$groups_id = $DB->GetAllByKey('SELECT name, id FROM voip_prefix_group', 'name');
-
-				$voip_tariff = 'INSERT INTO voip_tariff (groupid, tariffid, prefixid, price, unitsize) VALUES ';
-
-				foreach ($groups as $groupName=>$prefixArray) {
-					$price = key($prefixArray);
-					$voip_tariff .= '(' . $groups_id[$groupName]['id'] . ", $TARIFF_ID, NULL, $price, 60),";
-				}
-				$voip_tariff = rtrim($voip_tariff, ',') . ';';
-				$DB->execute($voip_tariff);
-				$DB->CommitTrans();
 		}
 	}
 }
-
-$netid = isset($_GET['netid']) ? intval($_GET['netid']) : NULL;
-
-if(!$LMS->TariffExists($_GET['id']) || ($netid != 0 && !$LMS->NetworkExists($netid))) {
-	$SESSION->redirect('?m=tarifflist');
+else
+{
+	$layout['pagetitle'] = trans('Voip prefix management');
 }
 
-$tariff = $LMS->GetTariff($_GET['id'], $netid);
-
-$tariff['promotions'] = $DB->GetAll('SELECT DISTINCT p.name, p.id
-    FROM promotionassignments a
-    JOIN promotionschemas s ON (s.id = a.promotionschemaid)
-    JOIN promotions p ON (p.id = s.promotionid)
-    WHERE a.tariffid = ? OR s.ctariffid = ?
-    ORDER BY p.name', array($tariff['id'], $tariff['id']));
-
-if (!empty($tariff['numberplanid']))
-	$tariff['numberplan'] = $DB->GetRow('SELECT template, period FROM numberplans WHERE id = ?', array($tariff['numberplanid']));
-
-$layout['pagetitle'] = trans('Subscription Info: $a',$tariff['name']);
-
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-// if selected tariff is phone tariff then load prefixes assigned to this tariff
-if ($tariff['type'] == 4) {
-	$tariff_rows = $DB->GetAll('SELECT DISTINCT
-											 g.id as group_id,
-											 g.name as group_name,
-											 p.prefix as prefix_number
-										FROM
-											(voip_tariff t LEFT JOIN voip_prefix_group g ON t.groupid = g.id)
-											RIGHT JOIN voip_prefix_group_assignments assignment on g.id = assignment.groupid
-											RIGHT JOIN voip_prefix p ON assignment.prefixid = p.id
-										WHERE
-											tariffid = ?
-										ORDER BY
-											g.id', array($tariff['id']));
-
-	$prefixList = array();
-	foreach ($tariff_rows as $row) {
-		$id = $row['group_id'];
-
-		$prefixList[$id]['group_id'] = $id;
-		$prefixList[$id]['group_name'] = $row['group_name'];
-		$prefixList[$id]['prefix_list'][] = $row['prefix_number'];
-	}
-
-	$SMARTY->assign('tariffGroups', $prefixList);
-}
-
-$SMARTY->assign('netid', $netid);
-$SMARTY->assign('tariff', $tariff);
-$SMARTY->assign('tariffs', $LMS->GetTariffs());
-$SMARTY->assign('networks', $LMS->GetNetworks());
-$SMARTY->display('tariff/tariffinfo.html');
+$SMARTY->display('voipaccount/voipprefixmanager.html');
 
 ?>
