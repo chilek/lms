@@ -31,7 +31,7 @@
 											 FROM
 												voipaccounts va left join assignments a on va.ownerid = a.customerid left join tariffs t on t.id = a.tariffid
 											 WHERE
-												t.type = 4', 'phone');
+												t.type = ?', 'phone', array(TARIFF_PHONE));
 	}
 
 	/*!
@@ -100,7 +100,7 @@
 												voipaccounts va left join assignments a on va.ownerid = a.customerid left join tariffs t on t.id = a.tariffid
 											 WHERE
 												va.phone ?LIKE? ? and
-												t.type = 4', array($phone_number));
+												t.type = ?', array($phone_number, TARIFF_PHONE));
 
 		if (!$customer)
 			die('Caller number phone "' . $phone_number . '" not found.' . PHP_EOL);
@@ -155,7 +155,7 @@
 		}
 
 		if (!isset($tariffs[$t_id]['prefixes'][$to]))
-			die("Cant match prefix for callee number." . PHP_EOL);
+			die("Can\'t match prefix for callee number." . PHP_EOL);
 
 		return $to;
 	}
@@ -183,6 +183,25 @@
 		}
 
 		return $cost;
+	}
+
+	/*!
+	 * \brief Change call type (string) to defined number (int).
+	 *
+	 * \param string $type call type
+	 * \return int number assigned to call type
+	 * \return boolean null when can't match string to call type
+	 */
+	function parseCallType($type) {
+		switch (strtolower($type)) {
+			case 'incoming':
+				return CALL_INCOMING;
+
+			case 'outgoing':
+				return CALL_OUTGOING;
+		}
+
+		return NULL;
 	}
 
 	/*!

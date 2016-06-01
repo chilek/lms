@@ -368,7 +368,7 @@
                 </TD>
                 <TD>
 					<SELECT NAME="group_id">
-						<OPTION>{trans("Select")}</OPTION>
+						<OPTION VALUE="none">{trans("Select")}</OPTION>
 					{foreach from=$tariffGroups item=singleGroup}
 						<OPTION VALUE="{$singleGroup.group_id}">{$singleGroup.group_name}</OPTION>
 					{/foreach}

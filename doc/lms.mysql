@@ -2141,7 +2141,7 @@ CREATE TABLE voip_cdr (
 	time_answer_to_end int(11) NOT NULL,
 	price float NOT NULL,
 	status varchar(15) NOT NULL,
-	type VARCHAR(1) NOT NULL,
+	type smallint NOT NULL,
 	voipaccountid int(11) NOT NULL,
 	PRIMARY KEY (id)
 );

@@ -24,9 +24,9 @@
 $this->BeginTrans();
 
 $this->Execute("
-	CREATE SEQUENCE voip_prefix_id_seq;
+	CREATE SEQUENCE voip_prefixes_id_seq;
 	CREATE TABLE voip_prefixes (
-		id integer DEFAULT nextval('voip_prefix_id_seq'::text) NOT NULL,
+		id integer DEFAULT nextval('voip_prefixes_id_seq'::text) NOT NULL,
 		prefix varchar(30) NOT NULL,
 		name text NULL,
 		description text NULL,
@@ -55,11 +55,11 @@ $this->Execute("
 	CREATE SEQUENCE voip_tariffs_id_seq;
 	CREATE TABLE voip_tariffs (
 		id integer DEFAULT nextval('voip_tariffs_id_seq'::text) NOT NULL,
-		prefixid integer
+		prefixid integer NULL
 			REFERENCES voip_prefixes(id) ON DELETE CASCADE ON UPDATE CASCADE,
-		groupid integer
+		groupid integer NULL
 			REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
-		tariffid integer
+		tariffid integer NOT NULL
 			REFERENCES tariffs(id),
 		PRIMARY KEY (id)
 	);
@@ -67,15 +67,15 @@ $this->Execute("
 	CREATE SEQUENCE voip_tariff_rules_id_seq;
 	CREATE TABLE voip_tariff_rules (
 		id integer DEFAULT nextval('voip_tariff_rules_id_seq'::text) NOT NULL,
-		prefixid integer
+		prefixid integer NULL
 			REFERENCES voip_prefixes(id) ON DELETE CASCADE ON UPDATE CASCADE,
-		groupid integer
+		groupid integer NULL
 			REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
-		tarifid integer
+		tarifid integer NOT NULL
 			REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
-		description text,
-		unitsize smallint,
-		price text,
+		description text NULL,
+		unitsize smallint NULL,
+		price numeric(12,5) NOT NULL,
 		PRIMARY KEY (id)
 	);
 
@@ -87,9 +87,9 @@ $this->Execute("
 		call_start_time integer NOT NULL,
 		time_start_to_end integer NOT NULL,
 		time_answer_to_end integer NOT NULL,
-		price float NOT NULL,
+		price numeric(12,5) NOT NULL,
 		status varchar(15) NOT NULL,
-		type varchar(1) NOT NULL,
+		type smallint NOT NULL,
 		voipaccountid integer NOT NULL,
 		PRIMARY KEY (id)
 	);

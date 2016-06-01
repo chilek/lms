@@ -46,12 +46,10 @@ $this->Execute("CREATE TABLE voip_prefix_group_assignments (
 						PRIMARY KEY (id));");
 
 $this->Execute("CREATE TABLE voip_tariffs (
-						id int(11) AUTO_INCREMENT PRIMARY KEY,
+						id int(11) AUTO_INCREMENT,
 						prefixid int(11) NULL,
 						groupid int(11) NULL,
 						tariffid int(11) NOT NULL,
-						price text NOT NULL,
-						unitsize smallint NOT NULL,
 						FOREIGN KEY (prefixid) REFERENCES voip_prefixes(id) ON DELETE CASCADE ON UPDATE CASCADE,
 						FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
 						FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -64,7 +62,7 @@ $this->Execute("CREATE TABLE voip_tariff_rules (
 						tariffid int(11) NOT NULL,
 						description text NULL,
 						unitsize smallint NOT NULL,
-						price text NOT NULL,
+						price decimal(12,5) NOT NULL,
 						FOREIGN KEY (prefixid) REFERENCES voip_prefixes(id) ON DELETE CASCADE ON UPDATE CASCADE,
 						FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
 						FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -77,9 +75,9 @@ $this->Execute("CREATE TABLE voip_cdr (
 						call_start_time int(11) NOT NULL,
 						time_start_to_end int(11) NOT NULL,
 						time_answer_to_end int(11) NOT NULL,
-						price float NOT NULL,
+						price decimal(12,5) NOT NULL,
 						status varchar(15) NOT NULL,
-						type VARCHAR(1) NOT NULL,
+						type smallint NOT NULL,
 						voipaccountid int(11) NOT NULL,
 						PRIMARY KEY (id));");
 

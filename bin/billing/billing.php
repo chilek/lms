@@ -207,12 +207,22 @@ switch (strtolower($options['action'])) {
 			$customer = getCustomerByPhone($options['caller']);
 			include_tariff($customer['tariffid']);
 
-			// get first letter of type
-			$call_type = strtolower($options['type'][0]);
+			// set call type
+			$call_type = parseCallType($options['type']);
+			if ($call_type === NULL)
+				die('Call type is not correct. Please use incoming or outgoing.' . PHP_EOL);
 
 			// no payments for incoming call else calculate cost for call
 			$call_cost = getCost($options['caller'], $options['callee'], $customer['tariffid']);
-			$price = ($call_type == 'o') ? round(ceil($options['calltime']/$call_cost['unitSize']) * $call_cost['costPerUnit'], 5) : 0;
+			switch ($call_type) {
+				case CALL_INCOMING:
+					$price = 0;
+				break;
+
+				case CALL_OUTGOING:
+					$price = round(ceil($options['calltime']/$call_cost['unitSize']) * $call_cost['costPerUnit'], 5);
+				break;
+			}
 
 			// insert cdr record to database
 			$DB->Execute("INSERT INTO
@@ -243,20 +253,30 @@ switch (strtolower($options['action'])) {
 						include_tariff($tariff_id);
 
 						if (!isset($tariffs[$tariff_id])) {
-							$error['errors'][] = array('line'=>$i, 'line_content'=>$f_line, 'error'=>'Cant find tariff ' . $tariff_id . ' in tariff files.');
+							$error['errors'][] = array('line'=>$i, 'line_content'=>$f_line, 'error'=>'Can\'t find tariff ' . $tariff_id . ' in tariff files.');
 							continue;
 						}
 					}
 
-					// get first letter of type
-					$call_type = strtolower($cdr['call_type'][0]);
+					// set call type
+					$call_type = parseCallType($cdr['call_type']);
+					if ($call_type === NULL)
+						die('Call type is not correct. Please use incoming or outgoing.' . PHP_EOL);
 
 					// generate unix timestamp
 					$call_start = mktime($cdr['call_start_hour'], $cdr['call_start_min'], $cdr['call_start_sec'], $cdr['call_start_month'], $cdr['call_start_day'], $cdr['call_start_year']);
 
 					// no payments for incoming call else calculate cost for call
 					$call_cost = getCost($cdr['caller'], $cdr['callee'], $tariff_id);
-					$price = ($call_type == 'o') ? round(ceil($cdr['time_answer_to_end']/$call_cost['unitSize']) * $call_cost['costPerUnit'], 5) : 0;
+					switch ($call_type) {
+						case CALL_INCOMING:
+							$price = 0;
+						break;
+
+						case CALL_OUTGOING:
+							$price = round(ceil($cdr['time_answer_to_end']/$call_cost['unitSize']) * $call_cost['costPerUnit'], 5);
+						break;
+					}
 
 					// insert cdr record to database
 					$DB->Execute("INSERT INTO

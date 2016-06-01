@@ -282,6 +282,10 @@ define('TARIFF_PHONE', 4);
 define('TARIFF_TV', 5);
 define('TARIFF_OTHER', -1);
 
+// Voip call types
+define('CALL_INCOMING', 1);
+define('CALL_OUTGOING', 2);
+
 $TARIFFTYPES = array(
 	TARIFF_INTERNET	=> ConfigHelper::getConfig('tarifftypes.internet', trans('internet')),
 	TARIFF_HOSTING	=> ConfigHelper::getConfig('tarifftypes.hosting', trans('hosting')),
