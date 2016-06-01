@@ -2081,63 +2081,69 @@ INSERT INTO up_rights(module, name, description)
  Voip tables
 ------------------------------------------------------*/
 CREATE TABLE voip_prefixes (
-	id int11 AUTO_INCREMENT PRIMARY KEY,
+	id int(11) AUTO_INCREMENT,
 	prefix varchar(30) NOT NULL,
 	name text NULL,
 	description text NULL,
-	UNIQUE (prefix)
+	UNIQUE (prefix),
+	PRIMARY KEY (id)
 );
 
 CREATE TABLE voip_prefix_groups (
-	id int11 AUTO_INCREMENT PRIMARY KEY,
-	name text,
-	description text
+	id int(11) AUTO_INCREMENT,
+	name text NULL,
+	description text NULL,
+	PRIMARY KEY (id)
 );
 
 CREATE TABLE voip_prefix_group_assignments (
-	id int11 AUTO_INCREMENT PRIMARY KEY,
-	prefixid int11 NOT NULL,
-	groupid int11 NOT NULL,
+	id int(11) AUTO_INCREMENT,
+	prefixid int(11) NOT NULL,
+	groupid int(11) NOT NULL,
 	FOREIGN KEY (prefixid) REFERENCES voip_prefixes(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE
+	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id)
 );
 
 CREATE TABLE voip_tariffs (
-	id int11 AUTO_INCREMENT PRIMARY KEY,
-	prefixid int11 NULL,
-	groupid int11 NULL,
-	tariffid int11 NOT NULL,
-	price text,
-	unitsize smallint,
+	id int(11) AUTO_INCREMENT PRIMARY KEY,
+	prefixid int(11) NULL,
+	groupid int(11) NULL,
+	tariffid int(11) NOT NULL,
+	price text NOT NULL,
+	unitsize smallint NOT NULL,
 	FOREIGN KEY (prefixid) REFERENCES voip_prefixes(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE
+	FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id)
 );
 
 CREATE TABLE voip_tariff_rules (
-	id int11 AUTO_INCREMENT PRIMARY KEY,
-	prefixid int11,
-	groupid int11,
-	tariffid int11,
-	description text,
-	unitsize smallint,
-	price text,
+	id int(11) AUTO_INCREMENT,
+	prefixid int(11) NULL,
+	groupid int(11) NULL,
+	tariffid int(11) NOT NULL,
+	description text NULL,
+	unitsize smallint NOT NULL,
+	price text NOT NULL,
 	FOREIGN KEY (prefixid) REFERENCES voip_prefixes(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE
+	FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id)
 );
 
 CREATE TABLE voip_cdr (
-	id int11 AUTO_INCREMENT PRIMARY KEY,
+	id int(11) AUTO_INCREMENT,
 	caller varchar(20) NOT NULL,
 	callee varchar(20) NOT NULL,
-	call_start_time int11 NOT NULL,
-	time_start_to_end int11 NOT NULL,
-	time_answer_to_end int11 NOT NULL,
+	call_start_time int(11) NOT NULL,
+	time_start_to_end int(11) NOT NULL,
+	time_answer_to_end int(11) NOT NULL,
 	price float NOT NULL,
 	status varchar(15) NOT NULL,
 	type VARCHAR(1) NOT NULL,
-	voipaccountid int11 NOT NULL
+	voipaccountid int(11) NOT NULL,
+	PRIMARY KEY (id)
 );
 
 INSERT INTO countries (name) VALUES

@@ -195,7 +195,7 @@
 		$file = VOIP_CACHE_DIR . DIRECTORY_SEPARATOR . 'tariff_' . $tariff_id . '.php';
 
 		if (!file_exists($file))
-			die('Tariff file "' . $file . '" doesnt exists.' . PHP_EOL);
+			die('Tariff file "' . $file . '" doesn\'t exists.' . PHP_EOL);
 
 		include_once $file;
 	}
@@ -235,7 +235,7 @@
 
 				case 'file':
 					if (!file_exists($v))
-						return 'File "' . $v . '" doesnt exists.' . PHP_EOL;
+						return 'File "' . $v . '" doesn\'t exists.' . PHP_EOL;
 				break;
 
 				case 'status':
