@@ -1,0 +1,199 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<h1>{$layout.pagetitle}</h1>
+<table class="lmsbox">
+    <colgroup>
+        {block name="voipaccountlist-list-columns"}
+        <col style="width: 96%;">
+        <col style="width: 1%;" span="4">
+        {assign var='number_of_table_columns' value='5'}
+        {/block}
+    </colgroup>
+    <thead>
+        {block name="voipaccountlist-list-header"}
+        <tr {tip text="Click on column name to change sorting order"}>
+            <th nowrap>
+				<img src="img/customer.gif" alt="">
+                <a href="?m=voipaccountlist&amp;o=owner{if $listdata.direction == "asc" && $listdata.order == "owner"},desc{/if}">{trans("Customer:")}</a>
+                {if $listdata.order == "owner"}
+                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
+                {/if}
+		/ {trans("Location:")}
+            </th>
+            <th nowrap>
+                <a href="?m=voipaccountlist&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("Caller:")}</a>
+                {if $listdata.order == "id"}
+                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
+                {/if}
+            </th>
+            <th nowrap>
+                <a href="?m=voipaccountlist&amp;o=phone{if $listdata.direction == "asc" && $listdata.order == "phone"},desc{/if}">{trans("Callee:")}</a>
+                {if $listdata.order == "phone"}
+                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
+                {/if}
+            </th>
+            <th nowrap>
+                <a href="?m=voipaccountbillinglist&amp;o=passwd{if $listdata.direction == "asc" && $listdata.order == "passwd"},desc{/if}">{trans("Begin time:")}</a>
+                {if $listdata.order == "passwd"}
+                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
+                {/if}
+            </th>
+
+			<th nowrap>
+                <a href="?m=voipaccountbillinglist&amp;o=passwd{if $listdata.direction == "asc" && $listdata.order == "passwd"},desc{/if}">{trans("Call begin time:")}</a>
+                {if $listdata.order == "passwd"}
+                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
+                {/if}
+            </th>
+
+			<th nowrap>
+                <a href="?m=voipaccountbillinglist&amp;o=passwd{if $listdata.direction == "asc" && $listdata.order == "passwd"},desc{/if}">{trans("Call answer time:")}</a>
+                {if $listdata.order == "passwd"}
+                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
+                {/if}
+            </th>
+
+			<th nowrap>
+                <a href="?m=voipaccountbillinglist&amp;o=passwd{if $listdata.direction == "asc" && $listdata.order == "passwd"},desc{/if}">{trans("Status:")}</a>
+                {if $listdata.order == "passwd"}
+                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
+                {/if}
+            </th>
+
+			<th nowrap>
+                <a href="?m=voipaccountbillinglist&amp;o=passwd{if $listdata.direction == "asc" && $listdata.order == "passwd"},desc{/if}">{trans("Connection type:")}</a>
+                {if $listdata.order == "passwd"}
+                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
+                {/if}
+            </th>
+
+            <th align="right" class="nobr">
+                {t a=$total}Total: $a{/t}
+            </th>
+        </tr>
+        {/block}
+        {block name="voipaccountlist-list-filters"}
+        {*
+        <tr>
+            <th colspan="{$number_of_table_columns}">
+                <form method="get" action="?m={$layout.module}" name="choosefilter">
+                    <input type="submit" class="hiddenbtn">
+                    <input type="hidden" name="m" value="voipaccountlist">
+                    <input type="hidden" name="page" value="1">
+                    {trans("Filter:")}
+                    {trans("Customers Group:")}
+                        <select size="1" name="g" onchange="document.choosefilter.submit();">
+                            <option value="" {if !$listdata.customergroup} selected {/if}>{trans("- all groups -")}</option>
+                            {section name=customergroups loop=$customergroups}
+                            <option value="{$customergroups[customergroups].id}" {if $listdata.customergroup == $customergroups[customergroups].id} selected {/if}>
+                                {$customergroups[customergroups].name|truncate:30:"...":true}
+                            </option>
+                            {/section}
+                        </select>
+                </form>
+            </th>
+        </tr>
+        *}
+        {/block}
+        {block name="voipaccountlist-list-header-pagination"}
+        {if $total != 0}
+        <tr>
+            <th class="pagination" colspan="9">
+                {include file="scroller.html" loop=$voipaccountlist}
+            </th>
+        </tr>
+        {/if}
+        {/block}
+    </thead>
+    <tbody>
+        {cycle values="light,lucid" print=false}
+
+        {section name=i loop=$billings start=$start max=$pagelimit}
+			{block name="voipaccountlist-list-row"}
+			<tr class="highlight {cycle}">
+				<td onClick="return self.location.href = '?m=voipaccountinfo&amp;id={$billings[i].voipaccountid}';" nowrap>
+
+					<img src="img/customer.gif" alt="">&nbsp;
+					<a href="?m=customerinfo&amp;id={$billings[i].customerid}" {tip a=$billings[i].customerid dynpopup='?m=customerinfoshort&amp;id=$a'}>
+						{$billings[i].name} {$billings[i].lastname}
+					</a>
+				</td>
+
+				<td>
+					{$billings[i].caller}
+				</td>
+
+				<td>
+					{$billings[i].callee}
+				</td>
+
+				<td nowrap>
+					{gmdate("Y-m-d H:i:s", $billings[i].call_start_time)}
+				</td>
+				<td>
+					{$billings[i].time_start_to_end}s
+				</td>
+
+				<td>
+					{$billings[i].time_answer_to_end}s
+				</td>
+
+				<td>
+					{$billings[i].status}
+				</td>
+
+				<td>
+					{if $billings[i].type == 'o'}
+						{trans("outgoing")}
+					{else}
+						{trans("incoming")}
+					{/if}
+				</td>
+
+				<td align="right" class="nobr">
+					<a href="?m=voipaccountedit&amp;id={$billings[i].customerid}">
+						<img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]">
+					</a>
+					<a href="?m=voipaccountinfo&amp;id={$billings[i].customerid}">
+						<img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]">
+					</a>
+				</td>
+			</tr>
+
+			{/block}
+        {sectionelse}
+			{block name="voipaccountlist-list-empty-row"}
+			<tr>
+				<td class="empty-table" colspan="9">
+					<p>{trans("No such voip accounts in database.")}</p>
+				</td>
+			</tr>
+			{/block}
+        {/section}
+    </tbody>
+    <tfoot>
+        {block name="voipaccountlist-list-footer-pagination"}
+        {if $total != 0}
+        <tr>
+            <td class="pagination" colspan="9">
+                {include file="scroller.html" loop=$voipaccountlist}
+            </td>
+        </tr>
+        {/if}
+        {/block}
+        {block name="voipaccountlist-list-footer"}
+        <tr>
+            <td class="bold text-right" colspan="8">
+                {trans("Total:")}
+            </td>
+            <td>
+                {if $total}{$total}{else}0{/if}
+            </td>
+        </tr>
+        {/block}
+    </tfoot>
+</table>
+{/block}
+{block name=extra_content}{/block}
