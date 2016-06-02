@@ -337,7 +337,7 @@
     </TBODY>
 </TABLE>
 
-{if $tariff.type == 4}
+{if $tariff.type == $smarty.const.TARIFF_PHONE}
 <form METHOD="post" ACTION="?m=tariffinfo&id=4&single" NAME="voip_add_single">
     <input type="submit" CLASS="hiddenbtn">
     <input type="hidden" NAME="m" value="voipprefixmanager">
