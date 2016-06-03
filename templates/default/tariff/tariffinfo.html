@@ -336,4 +336,190 @@
 	</TR>
     </TBODY>
 </TABLE>
+
+{if $tariff.type == $smarty.const.TARIFF_PHONE}
+<form METHOD="post" ACTION="?m=tariffinfo&id=4&single" NAME="voip_add_single">
+    <input type="submit" CLASS="hiddenbtn">
+    <input type="hidden" NAME="m" value="voipprefixmanager">
+    <TABLE CLASS="lmsbox">
+        <colgroup>
+            <col style="width: 1%;"/>
+            <col style="width: 99%;"/>
+        </colgroup>
+        <thead>
+            <TR>
+                <TD CLASS="bold" COLSPAN="2">
+                    {trans("Add prefix")}
+                </TD>
+            </TR>
+        </thead>
+        <TBODY>
+            <TR>
+                <TD CLASS="bold nobr">
+                    <img src="img/voip.gif" WIDTH="16" ALT=""> {trans("Prefix:")}
+                </TD>
+                <TD>
+                    <input type="text" NAME="prefix[prefix]" VALUE="{if isset($args.prefix)}{$args.prefix}{/if}" {tip text="Enter prefix" trigger="prefix"}>
+                </TD>
+            </TR>
+			<TR>
+                <TD CLASS="bold nobr">
+                    <img src="img/desc.gif" WIDTH="16" ALT=""> {trans("Groups:")}
+                </TD>
+                <TD>
+					<SELECT NAME="group_id">
+						<OPTION VALUE="none">{trans("Select")}</OPTION>
+					{foreach from=$tariffGroups item=singleGroup}
+						<OPTION VALUE="{$singleGroup.group_id}">{$singleGroup.group_name}</OPTION>
+					{/foreach}
+					</SELECT>
+                </TD>
+            </TR>
+			 <TR>
+                <TD CLASS="bold nobr">
+                    <img src="img/desc.gif" WIDTH="16" ALT=""> {trans("Description:")}
+                </TD>
+                <TD>
+                    <INPUT CLASS="autosuggest-{ConfigHelper::getConfig('phpui.default_autosuggest_placement')}" TYPE="TEXT" VALUE="{if isset($args.description)}{$args.description}{/if}" NAME="prefix[description]" VALUE="" {tip text="Enter additional information"}>
+                </TD>
+            </TR>
+            <TR>
+                <TD CLASS="text-right" COLSPAN="2">
+                    <A href="javascript:document.voip_add_single.submit();" accesskey="s">{trans("Add")} <IMG src="img/save.gif" ALT=""></A>
+                </TD>
+            </TR>
+        </TBODY>
+    </table>
+</form>
+
+<form METHOD="post"  ACTION="?m=tariffinfo&id={$tariff.id}&file" NAME="voip_add_file" ENCTYPE="multipart/form-data">
+    <input type="submit" CLASS="hiddenbtn">
+    <input type="hidden" NAME="m" value="voipprefixmanager">
+    <TABLE CLASS="lmsbox">
+        <colgroup>
+            <col style="width: 1%;"/>
+            <col style="width: 99%;"/>
+        </colgroup>
+        <thead>
+            <TR>
+                <TD CLASS="bold" COLSPAN="2">
+                    {trans("Import price list from file")}
+                </TD>
+            </TR>
+        </thead>
+        <TBODY>
+            <TR CLASS="space_row">
+                <TD CLASS="bold nobr">
+                    <img src="img/size.gif" WIDTH="16" ALT=""> {trans("Import Source:")}
+                </TD>
+                <TD>
+					<INPUT NAME="file" type="file" size="70" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
+                </TD>
+            </TR>
+            <TR>
+                <TD CLASS="text-right" COLSPAN="2">
+                    <A HREF="javascript:document.voip_add_file.submit();" accesskey="s">{trans("<!do>Import")} <IMG src="img/save.gif" ALT=""></A>
+                </TD>
+            </TR>
+			{if isset($warnings)}
+			<TR CLASS="space_row">
+                <TD CLASS="bold nobr" COLSPAN="2">
+                    <img src="img/note.gif" WIDTH="16" ALT=""> {trans("Warnings:")}
+                </TD>
+            </TR>
+			<TR>
+				<TD></TD>
+                <TD>
+					{if isset($warnings.already_exists)}
+						<DIV STYLE="font-weight: bold; border-bottom: 1px solid black; width: 30%;">{trans("Prefixes already exists:")}</DIV>
+						{foreach from=$warnings.already_exists item=singleWarning}
+							{$singleWarning},
+						{/foreach}
+						<BR><BR>
+					{/if}
+
+					{if isset($warnings.duplicate_item)}
+						<DIV STYLE="font-weight: bold; border-bottom: 1px solid black; width: 30%;">{trans("Duplicates:")}</DIV>
+						<TABLE>
+							<TR>
+								<TD CLASS="bold">{trans("Prefix number")}</TD>
+								<TD CLASS="bold">{trans("Found inside")}</TD>
+							</TR>
+							{foreach from=$warnings.duplicate_item item=singleWarning}
+							<TR>
+								<TD>
+									{$singleWarning.prefix}
+								</TD>
+								<TD>
+									{foreach from=$singleWarning.group item=groupName name=groups}
+										{if $smarty.foreach.groups.last}{$groupName}{else}{$groupName}, {/if}
+									{/foreach}
+								</TD>
+							</TR>
+							{/foreach}
+						</TABLE>
+						<BR><BR>
+					{/if}
+                </TD>
+            </TR>
+			{/if}
+        </TBODY>
+    </TABLE>
+</FORM>
+
+	<TABLE CLASS="lmsbox">
+        <colgroup>
+            <col style="width: 1%;"/>
+            <col style="width: 99%;"/>
+        </colgroup>
+        <thead>
+            <TR>
+                <TD CLASS="bold" COLSPAN="2">
+                    {trans("Groups:")}
+                </TD>
+            </TR>
+        </thead>
+        <TBODY>
+            <TR>
+                <TD COLSPAN="2">
+					{if isset($tariffGroups)}
+						<ol>
+						{foreach from=$tariffGroups item=singleGroup}
+							<li>
+								<a href="javascript:changePrefixListState({$singleGroup.group_id});">{$singleGroup.group_name}</a>
+
+								<ul id="prefix_group_{$singleGroup.group_id}" style="list-style-type: none; text-align: left; padding-left: 10px; display: none;">
+									{foreach from=$singleGroup.prefix_list item=singlePrefix}
+									<li>{$singlePrefix}</li>
+									{/foreach}
+								</ul>
+							</li>
+						{/foreach}
+						</ol>
+					{else}
+						<DIV STYLE="text-align: center; padding: 10px; font-weight: bold;">
+							Nie znaleziono prefixów przypisanych do taryfy.
+						</DIV>
+					{/if}
+				</TD>
+            </TR>
+        </TBODY>
+    </TABLE>
+
+	<SCRIPT type="text/javascript">
+	<!--
+		function changePrefixListState(ID) {
+			var ul = document.getElementById("prefix_group_"+ID);
+			var display_state = ul.style.display;
+
+			if (display_state == 'none') {
+				ul.style.display = 'block';
+			} else {
+				ul.style.display = 'none';
+			}
+		}
+	//-->
+	</SCRIPT>
+
+{/if}
 {/block}

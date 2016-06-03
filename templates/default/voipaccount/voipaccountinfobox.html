@@ -85,6 +85,19 @@
             </td>
         </tr>
         {/block}
+		{block name="voipaccountinfobox-balance"}
+        <tr>
+            <td>
+                <img src="img/money.gif" alt="{trans("Phone number:")}">
+            </td>
+            <td class="bold nobr">
+                {trans("Balance")}
+            </td>
+            <td class="nobr">
+                {$voipaccountinfo.balance|money_format}
+            </td>
+        </tr>
+        {/block}
         {block name="voipaccountinfobox-events"}
         <tr>
             <td>
@@ -104,11 +117,12 @@
         {block name="voipaccountinfobox-buttons"}
         <tr>
             <td class="text-right" colspan="3">
-                <a href="?m=voipaccountedit&id={$voipaccountinfo.id}" accesskey="E">
-                {trans("Edit")} <img src="img/edit.gif" alt="">
-                </a>
+				<a href="?m=voipaccountbillinglist&id={$voipaccountinfo.id}">{trans("Billings")} <img src="img/voip.gif" alt="show billings"></a>
+
+                <a href="?m=voipaccountedit&id={$voipaccountinfo.id}" accesskey="E">{trans("Edit")} <img src="img/edit.gif" alt="edit"></a>
+
                 <a href="?m=voipaccountdel&id={$voipaccountinfo.id}" onClick="return confirmLink(this, '{t a=$voipaccountinfo.login}Are you sure, you want to remove voip account \'$a\' from database?{/t}')">
-                {trans("Delete")} <img src="img/delete.gif" alt="">
+					{trans("Delete")} <img src="img/delete.gif" alt="delete">
                 </a>
             </td>
         </tr>

@@ -284,7 +284,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
     public function getVoipAccount($id)
     {
         $result = $this->db->GetRow('
-            SELECT v.id, ownerid, login, passwd, phone, creationdate, moddate, creatorid, modid, access,
+            SELECT v.id, ownerid, login, passwd, phone, creationdate, moddate, creatorid, modid, access, balance,
 		location, location_city, location_street, location_house, location_flat,
 		lb.name AS borough_name, ld.name AS district_name, ls.name AS state_name
 		FROM voipaccounts v

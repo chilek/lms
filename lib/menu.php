@@ -214,7 +214,7 @@ $menu = array(
 					'name' => trans('Search'),
 					'link' => '?m=voipaccountsearch',
 					'tip' => trans('Allows you to search VoIP account'),
-					'prio' => 30,
+					'prio' => 40,
 				),
 			),
 		),
