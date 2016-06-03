@@ -30,6 +30,7 @@ version ?.??.?? (????-??-??):
   - added new doc types (price-list, promotion, warranty, regulations) [kyob]
   - visual improvements of event list [kyob/chilan]
   - unified visual layout of event list and event search results [chilan]
+  - added preliminary support for voip price lists [kosa/chilan]
 
 version 1.11.20 (2016-04-19):
 
