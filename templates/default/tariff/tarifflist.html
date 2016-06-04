@@ -18,7 +18,7 @@
 			<A href="?m=tarifflist&amp;o=uprate{if $listdata.direction == "asc" && $listdata.order == "uprate"},desc{/if}">{trans("Uprate")}:</A> {if $listdata.order == "uprate"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
-			<A href="?m=tarifflist&amp;o=uprate{if $listdata.direction == "asc" && $listdata.order == "downceil"},desc{/if}">{trans("Downceil:")}</A> {if $listdata.order == "downceil"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<A href="?m=tarifflist&amp;o=downceil{if $listdata.direction == "asc" && $listdata.order == "downceil"},desc{/if}">{trans("Downceil:")}</A> {if $listdata.order == "downceil"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<A href="?m=tarifflist&amp;o=upceil{if $listdata.direction == "asc" && $listdata.order == "upceil"},desc{/if}">{trans("Upceil:")}</A> {if $listdata.order == "upceil"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
