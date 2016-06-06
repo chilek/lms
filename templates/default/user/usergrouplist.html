@@ -45,7 +45,7 @@
 			{$usergrouplist[usergroups].userscount} 
 		    </td>
 		    <td class="text-right nobr">
-			{if $usergrouplist[usergroups].userss}
+			{if $usergrouplist[usergroups].userscount}
 			<a href="javascript:alert('{trans("Group with members cannot be deleted!")}');">
 			{else}
 			<a href="?m=usergroupdel&amp;id={$usergrouplist[usergroups].id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to remove this group?")}');">
