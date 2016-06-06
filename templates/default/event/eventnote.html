@@ -1,4 +1,6 @@
-{include file="header.html"}
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <H1>{$layout.pagetitle}</H1>
 <P align="CENTER">
 <FORM method="POST" action="?m=eventnote&id={$event.id}" name="event">
@@ -109,4 +111,4 @@
         {/block}
 </TABLE>
 </P>
-{include file="footer.html"}
+{block}
