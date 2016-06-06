@@ -1766,6 +1766,7 @@ CREATE TABLE voipaccounts (
 		REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	location_house varchar(32) DEFAULT NULL,
 	location_flat varchar(32) DEFAULT NULL,
+	balance		numeric(12,5) NOT NULL DEFAULT 0,
 	PRIMARY KEY (id)
 );
 CREATE INDEX voipaccounts_location_street_idx ON voipaccounts (location_street);
@@ -2734,4 +2735,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016053000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016060600');

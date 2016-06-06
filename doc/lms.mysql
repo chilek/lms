@@ -726,9 +726,9 @@ CREATE TABLE netradiosectors (
 	rsrange int(11) DEFAULT 0 NOT NULL,
 	license varchar(64) DEFAULT NULL,
 	technology int(11) DEFAULT 0 NOT NULL,
-	frequency numeric(9,5) DEFAULT NULL,
-	frequency2 numeric(9,5) DEFAULT NULL,
-	bandwidth numeric(9,5) DEFAULT NULL,
+	frequency decimal(9,5) DEFAULT NULL,
+	frequency2 decimal(9,5) DEFAULT NULL,
+	bandwidth decimal(9,5) DEFAULT NULL,
 	netdev int(11) NOT NULL,
 	PRIMARY KEY (id),
 	INDEX netdev (netdev),
@@ -1646,6 +1646,7 @@ CREATE TABLE voipaccounts (
 	location_street	int(11)		DEFAULT NULL,
 	location_house	varchar(32)	DEFAULT NULL,
 	location_flat	varchar(32)	DEFAULT NULL,
+	balance			decimal(12,5) NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	INDEX location_city (location_city, location_street, location_house, location_flat),
 	INDEX location_street (location_street),
@@ -2139,7 +2140,7 @@ CREATE TABLE voip_cdr (
 	call_start_time int(11) NOT NULL,
 	time_start_to_end int(11) NOT NULL,
 	time_answer_to_end int(11) NOT NULL,
-	price float NOT NULL,
+	price decimal(12,5) NOT NULL,
 	status varchar(15) NOT NULL,
 	type smallint NOT NULL,
 	voipaccountid int(11) NOT NULL,
@@ -2626,4 +2627,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016053000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016060600');
