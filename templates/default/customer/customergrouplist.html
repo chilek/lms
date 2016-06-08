@@ -50,7 +50,7 @@
 			{$customergrouplist[customergroups].customerscount} 
 		</TD>
 		<TD class="text-right nobr">
-			{if $customergrouplist[customergroups].customers}
+			{if $customergrouplist[customergroups].customerscount}
 			<A href="javascript:alert('{trans("Group with members cannot be deleted!")}');">
 			{else}
 			<A href="?m=customergroupdel&amp;id={$customergrouplist[customergroups].id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to remove this group?")}');">
