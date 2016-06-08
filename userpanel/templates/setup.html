@@ -1,5 +1,7 @@
-{include file="header.html"}
-<!--// $Id$ //-->
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
 <FORM NAME="config" METHOD="POST" ACTION="?m=userpanel&f=submit_setup">
 <TABLE cellpadding="3" width="100%" class="lmsbox">
@@ -162,4 +164,4 @@
     </TR>
 </table>
 </FORM>
-{include file="footer.html"}
+{/block}
