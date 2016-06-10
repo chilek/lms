@@ -112,11 +112,20 @@ if (isset($_POST['customeradd']))
 			$error['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
 			$customeradd['tenwarning'] = 1;
 		}
-		if (ConfigHelper::checkConfig('phpui.customer_ten_existence_check') && !isset($customeradd['tenexistencewarning'])
-			&& $DB->GetOne("SELECT id FROM customers WHERE id <> ? AND REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?",
-				array($_GET['id'], preg_replace('/- /', '', $customeradd['ten'])))) {
-			$error['ten'] = trans('Customer with specified Tax Exempt Number already exists! If you are sure you want to accept it, then click "Submit" again.');
-			$customeradd['tenexistencewarning'] = 1;
+		$ten_existence_check = ConfigHelper::getConfig('phpui.customer_ten_existence_check', 'none');
+		$ten_exists = $DB->GetOne("SELECT id FROM customers WHERE id <> ? AND REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?",
+			array($_GET['id'], preg_replace('/- /', '', $customeradd['ten']))) > 0;
+		switch ($ten_existence_check) {
+			case 'warning':
+				if (!isset($customeradd['tenexistencewarning']) && $ten_exists) {
+					$error['ten'] = trans('Customer with specified Tax Exempt Number already exists! If you are sure you want to accept it, then click "Submit" again.');
+					$customeradd['tenexistencewarning'] = 1;
+				}
+				break;
+			case 'error':
+				if ($ten_exists)
+					$error['ten'] = trans('Customer with specified Tax Exempt Number already exists!');
+				break;
 		}
 	}
 
@@ -125,11 +134,20 @@ if (isset($_POST['customeradd']))
 			$error['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
 			$customeradd['ssnwarning'] = 1;
 		}
-		if (ConfigHelper::checkConfig('phpui.customer_ssn_existence_check') && !isset($customeradd['ssnexistencewarning'])
-			&& $DB->GetOne("SELECT id FROM customers WHERE id <> ? AND REPLACE(REPLACE(ssn, '-', ''), ' ', '') = ?",
-				array($_GET['id'], preg_replace('/- /', '', $customeradd['ssn'])))) {
-			$error['ssn'] = trans('Customer with specified Social Security Number already exists! If you are sure you want to accept it, then click "Submit" again.');
-			$customeradd['ssnexistencewarning'] = 1;
+		$ssn_existence_check = ConfigHelper::getConfig('phpui.customer_ssn_existence_check', 'none');
+		$ssn_exists = $DB->GetOne("SELECT id FROM customers WHERE id <> ? AND REPLACE(REPLACE(ssn, '-', ''), ' ', '') = ?",
+			array($_GET['id'], preg_replace('/- /', '', $customeradd['ssn']))) > 0;
+		switch ($ssn_existence_check) {
+			case 'warning':
+				if (!isset($customeradd['ssnexistencewarning']) && $ssn_exists) {
+					$error['ssn'] = trans('Customer with specified Social Security Number already exists! If you are sure you want to accept it, then click "Submit" again.');
+					$customeradd['ssnexistencewarning'] = 1;
+				}
+				break;
+			case 'error':
+				if ($ssn_exists)
+					$error['ssn'] = trans('Customer with specified Social Security Number already exists!');
+				break;
 		}
 	}
 

@@ -3271,6 +3271,8 @@ $_LANG['warranty'] = 'gwarancja';
 $_LANG['regulations'] = 'regulamin';
 
 $_LANG['Customer with specified Tax Exempt Number already exists! If you are sure you want to accept it, then click "Submit" again.'] = 'Klient z podanym numerem NIP już istnieje! Jeśli chcesz zaakceptować, to ponownie kliknij "Zapisz".';
+$_LANG['Customer with specified Tax Exempt Number already exists!'] = 'Klient z podanym numerem NIP już istnieje!';
 $_LANG['Customer with specified Social Security Number already exists! If you are sure you want to accept it, then click "Submit" again.'] = 'Klient z podanym numerem PESEL już istnieje! Jeśli chcesz zaakceptować, to ponownie kliknij "Zapisz".';
+$_LANG['Customer with specified Social Security Number already exists!'] = 'Klient z podanym numerem PESEL już istnieje!';
 
 ?>
