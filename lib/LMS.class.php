@@ -85,7 +85,6 @@ class LMS
             case 'mysql':
             case 'mysqli':
                 $this->DB->Execute('SET @lms_current_user=?', array($this->AUTH->id));
-                $this->DB->Execute('SET SESSION sql_mode=\'\'');
                 break;
         }
     }
