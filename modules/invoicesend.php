@@ -26,7 +26,7 @@
 
 $layout['pagetitle'] = trans('Invoice send');
 
-$SMARTY->display('header.html');
+$SMARTY->display('clearheader.html');
 
 if (!preg_match('/m=invoicesend/', $_SERVER['HTTP_REFERER'])) {
 	set_time_limit(0);
@@ -99,6 +99,6 @@ if (!preg_match('/m=invoicesend/', $_SERVER['HTTP_REFERER'])) {
 	}
 }
 
-$SMARTY->display('footer.html');
+$SMARTY->display('clearfooter.html');
 
 ?>

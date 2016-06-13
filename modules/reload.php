@@ -42,7 +42,7 @@ switch($_RELOAD_TYPE)
 
 		if(isset($_GET['setreloads']) && isset($_POST['hosts']))
 		{
-			$SMARTY->display('header.html');
+			$SMARTY->display('clearheader.html');
 
 			echo '<H1>'.$layout['pagetitle'].'</H1>';
 
@@ -77,7 +77,7 @@ switch($_RELOAD_TYPE)
 		else
 		{
 			$SMARTY->assign('hosts', $hosts);
-			$SMARTY->display('header.html');
+			$SMARTY->display('clearheader.html');
 			$SMARTY->display('reload.html');
 		}
 	break;
@@ -89,7 +89,7 @@ switch($_RELOAD_TYPE)
 		$reload_sqlquery = ConfigHelper::getConfig('phpui.reload_sqlquery');
 		if(!empty($reload_sqlquery) && $hosts)
 		{
-			$SMARTY->display('header.html');
+			$SMARTY->display('clearheader.html');
 			
 			if(isset($_GET['setreloads']) && isset($_POST['hosts']))
 			{
@@ -134,7 +134,7 @@ switch($_RELOAD_TYPE)
 			else
 			{
 				$SMARTY->assign('hosts', $hosts);
-				$SMARTY->display('header.html');
+				$SMARTY->display('clearheader.html');
 				$SMARTY->display('reload.html');
 			}
 		}
@@ -145,6 +145,6 @@ switch($_RELOAD_TYPE)
 	break;
 }
 
-$SMARTY->display('footer.html');
+$SMARTY->display('clearfooter.html');
 
 ?>

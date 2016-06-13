@@ -26,10 +26,10 @@
 
 $layout['pagetitle'] = trans('Module Title');
 
-$SMARTY->display('header.html');
+$SMARTY->display('clearheader.html');
 
 // module body
 
-$SMARTY->display('footer.html');
+$SMARTY->display('clearfooter.html');
 
 ?>

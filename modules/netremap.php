@@ -44,11 +44,11 @@ if(!$error)
 
 	}else{
 		$layout['pagetitle'] = trans('Readdressing Network $a',strtoupper($network['source']['name']));
-		$SMARTY->display('header.html');
+		$SMARTY->display('clearheader.html');
 		echo '<H1>'.$layout['pagetitle'].'</H1>';
 		echo '<P>'.trans('Are you sure, you want to readdress network $a to network $b ?',strtoupper($network['source']['name']).' ('.$network['source']['address'].'/'.$network['source']['prefix'].')', strtoupper($network['dest']['name']).' ('.$network['dest']['address'].'/'.$network['dest']['prefix'].')').'</P>';
 		echo '<A href="?m=netremap&id='.$_GET['id'].'&mapto='.$_GET['mapto'].'&is_sure=1">'.trans('Yes, I am sure.').'</A>';
-		$SMARTY->display('footer.html');
+		$SMARTY->display('clearfooter.html');
 	}
 }else{
 	$networks = $LMS->GetNetworks();
