@@ -35,7 +35,7 @@ if (!isset($_GET['level']) && !isset($_GET['removeold']) && !isset($_GET['remove
 
 set_time_limit(0);
 
-$SMARTY->display('header.html');
+$SMARTY->display('clearheader.html');
 
 echo '<H1>'.trans('Compacting Database').'</H1><PRE>';
 echo trans('$a records before compacting.<BR>',$DB->GetOne('SELECT COUNT(*) FROM stats'));
@@ -144,6 +144,6 @@ echo trans('$a records after compacting.',$DB->GetOne('SELECT COUNT(*) FROM stat
 echo '</PRE>';
 flush();
 
-$SMARTY->display('footer.html');
+$SMARTY->display('clearfooter.html');
 
 ?>

@@ -44,11 +44,11 @@ if(!$error)
 	else
 	{
 		$layout['pagetitle'] = trans('Removing network $a', strtoupper($network['name']));
-		$SMARTY->display('header.html');
+		$SMARTY->display('clearheader.html');
 		echo '<H1>'.$layout['pagetitle'].'</H1>';
 		echo '<P>'.trans('Are you sure, you want to delete that network?').'</P>';
 		echo '<A href="?m=netdel&id='.$network['id'].'&is_sure=1">'.trans('Yes, I am sure.').'</A>';
-		$SMARTY->display('footer.html');
+		$SMARTY->display('clearfooter.html');
 	}
 }
 else

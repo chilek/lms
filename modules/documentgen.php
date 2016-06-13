@@ -230,9 +230,9 @@ if (isset($_POST['document'])) {
 		}
 
 		if (!isset($_GET['print'])) {
-			$SMARTY->display('header.html');
+			$SMARTY->display('clearheader.html');
 			print $genresult;
-			$SMARTY->display('footer.html');
+			$SMARTY->display('clearfooter.html');
 		}
 
 		die;
