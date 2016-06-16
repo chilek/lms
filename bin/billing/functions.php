@@ -24,7 +24,7 @@
 					   '"(?<uniqueid>.*)".*/';
 
 		preg_match($pattern, $row, $matches);
-		
+
 		foreach ($matches as $k=>$v) {
 			if (is_numeric($k))
 				unset($matches[$k]);
@@ -34,7 +34,7 @@
 
 		return $matches;
 	}
-	
+
 	/*!
 	 * \brief Get customer list.
 	 *
@@ -44,13 +44,13 @@
 		$DB = LMSDB::getInstance();
 
 		return $DB->GetAllByKey('SELECT
-												va.id as voipaccountid, va.phone, t.id as tariffid, va.recorded
+												va.id as voipaccountid, va.phone, t.id as tariffid, va.flags
 											 FROM
 												voipaccounts va left join assignments a on va.ownerid = a.customerid left join tariffs t on t.id = a.tariffid
 											 WHERE
 												t.type = ?', 'phone', array(TARIFF_PHONE));
 	}
-	
+
 	/*!
 	 * \brief Get customer list.
 	 *
@@ -126,7 +126,7 @@
 		$DB = LMSDB::getInstance();
 
 		$customer = $DB->GetRow('SELECT
-												va.id as voipaccountid, va.phone, va.balance, t.id as tariffid, va.recorded
+												va.id as voipaccountid, va.phone, va.balance, t.id as tariffid, va.flags
 											 FROM
 												voipaccounts va
 												left join assignments a on va.ownerid = a.customerid
@@ -179,7 +179,7 @@
 	 */
 	function findLongestPrefix($number, $t_id) {
 		global $tariffs;
-		
+
 		while (strlen($number) && !isset($tariffs[$t_id]['prefixes'][$number]))
 			$number = substr($number, 0, -1);
 
@@ -224,7 +224,7 @@
 	function parseCallType($type) {
 		if (preg_match("/incoming/i", $type))
 			return CALL_INCOMING;
-		
+
 		if (preg_match("/outgoing/i", $type))
 			return CALL_OUTGOING;
 
@@ -238,13 +238,13 @@
 	 * \return int number assigned to call status
 	 * \return php_function die when can't match string to call type
 	 */
-	function parseCallStatus($type) {		
+	function parseCallStatus($type) {
 		if (preg_match("/busy/i", $type))
 			return CALL_BUSY;
-		
+
 		if (preg_match("/answered/i", $type))
 			return CALL_ANSWERED;
-		
+
 		if (preg_match("/(noanswer|no answer)/i", $type))
 			return CALL_NO_ANSWER;
 
