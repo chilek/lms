@@ -23,9 +23,9 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE `voip_cdr` CHANGE `status` `status` smallint NOT NULL;");
+$this->Execute("ALTER TABLE `voip_cdr` CHANGE `status` `status` smallint NOT NULL");
 
-$this->Execute("ALTER TABLE `voip_cdr` CHANGE `type` `type` smallint NOT NULL;");
+$this->Execute("ALTER TABLE `voip_cdr` CHANGE `type` `type` smallint NOT NULL");
 
 $this->Execute("ALTER TABLE `voip_cdr` ADD COLUMN calleevoipaccountid int(11) NULL");
 
@@ -43,10 +43,6 @@ $this->Execute("ALTER TABLE `voip_cdr` CHANGE `voipaccountid` `callervoipaccount
 
 $this->Execute("ALTER TABLE `voipaccounts` ADD COLUMN flags smallint NOT NULL DEFAULT 0");
 
-$this->Execute("ALTER TABLE `voip_tariffs` ADD COLUMN price decimal(12,5) NULL DEFAULT 0");
-
-$this->Execute("ALTER TABLE `voip_tariffs` ADD COLUMN unitsize smallint NULL DEFAULT 0");
-
 $this->Execute("ALTER TABLE `voip_prefixes` ADD groupid int(11) NOT NULL, ADD CONSTRAINT FOREIGN KEY(groupid) REFERENCES voip_prefix_groups(id)");
 
 $this->Execute("DROP TABLE `voip_prefix_group_assignments`");
@@ -55,7 +51,11 @@ $this->Execute("ALTER TABLE `voip_prefixes` DROP COLUMN name");
 
 $this->Execute("ALTER TABLE `voip_prefixes` DROP COLUMN description");
 
+$this->Execute("ALTER TABLE `voip_tariffs` DROP FOREIGN KEY `voip_tariffs_ibfk_1`");
+
 $this->Execute("ALTER TABLE `voip_tariffs` DROP COLUMN prefixid");
+
+$this->Execute("ALTER TABLE `voip_tariff_rules` DROP FOREIGN KEY `voip_tariff_rules_ibfk_1`");
 
 $this->Execute("ALTER TABLE `voip_tariff_rules` DROP COLUMN prefixid");
 
@@ -65,9 +65,21 @@ $this->Execute("ALTER TABLE `voip_tariff_rules` CHANGE `groupid` `groupid` int(1
 
 $this->Execute("ALTER TABLE `voip_tariff_rules` ADD COLUMN rule_settings text NULL");
 
-$this->Execute("ALTER TABLE `voip_tariffs` CHANGE `price` `price` int(11) NOT NULL");
+$this->Execute("ALTER TABLE `voip_tariffs` CHANGE `price` `price` decimal(12,5) NOT NULL");
 
-$this->Execute("ALTER TABLE `voip_tariffs` CHANGE `price` `price` smallint NOT NULL");
+$this->Execute("ALTER TABLE `voip_tariff_rules` DROP COLUMN unitsize");
+
+$this->Execute("ALTER TABLE `voip_tariff_rules` DROP COLUMN price");
+
+$this->Execute("ALTER TABLE voip_prefix_groups ENGINE = InnoDB;");
+
+$this->Execute("ALTER TABLE voip_prefixes ENGINE = InnoDB;");
+
+$this->Execute("ALTER TABLE voip_tariffs ENGINE = InnoDB;");
+
+$this->Execute("ALTER TABLE voip_tariff_rules ENGINE = InnoDB;");
+
+$this->Execute("ALTER TABLE voip_cdr ENGINE = InnoDB;");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016060800', 'dbversion'));
 

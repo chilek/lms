@@ -2221,8 +2221,6 @@ CREATE TABLE voip_tariff_rules (
 		REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	description text NULL,
 	rule_settings text NULL,
-	unitsize smallint NULL,
-	price numeric(12,5) NOT NULL,
 	PRIMARY KEY (id)
 );
 

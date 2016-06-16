@@ -2087,7 +2087,7 @@ CREATE TABLE voip_prefix_groups (
 	name text NOT NULL,
 	description text NULL,
 	PRIMARY KEY (id)
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE voip_prefixes (
 	id int(11) AUTO_INCREMENT,
@@ -2096,7 +2096,7 @@ CREATE TABLE voip_prefixes (
 	UNIQUE (prefix),
 	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE,
 	PRIMARY KEY (id)
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE voip_tariffs (
 	id int(11) AUTO_INCREMENT,
@@ -2107,7 +2107,7 @@ CREATE TABLE voip_tariffs (
 	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id)
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE voip_tariff_rules (
 	id int(11) AUTO_INCREMENT,
@@ -2115,12 +2115,10 @@ CREATE TABLE voip_tariff_rules (
 	tariffid int(11) NOT NULL,
 	description text NULL,
 	rule_settings text NULL,
-	unitsize smallint NOT NULL,
-	price decimal(12,5) NOT NULL,
 	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id)
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE voip_cdr (
 	id int(11) AUTO_INCREMENT,
@@ -2140,7 +2138,7 @@ CREATE TABLE voip_cdr (
 	callee_prefix_group varchar(30) NULL,
 	uniqueid varchar(20) NOT NULL,
 	PRIMARY KEY (id)
-);
+) ENGINE=InnoDB;
 
 INSERT INTO countries (name) VALUES
 ('Lithuania'),
@@ -2622,4 +2620,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016060600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016060800');

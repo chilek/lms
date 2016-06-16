@@ -75,6 +75,10 @@ $this->Execute("ALTER TABLE voip_tariffs ALTER COLUMN unitsize SET NOT NULL");
 
 $this->Execute("ALTER TABLE voip_tariffs ALTER COLUMN unitsize DROP DEFAULT");
 
+$this->Execute("ALTER TABLE voip_tariff_rules DROP COLUMN unitsize");
+
+$this->Execute("ALTER TABLE voip_tariff_rules DROP COLUMN price");
+
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016060800', 'dbversion'));
 
 $this->CommitTrans();
