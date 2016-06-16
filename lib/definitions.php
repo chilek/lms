@@ -286,6 +286,11 @@ define('TARIFF_OTHER', -1);
 define('CALL_INCOMING', 1);
 define('CALL_OUTGOING', 2);
 
+// Voip call status
+define('CALL_BUSY', 1);
+define('CALL_ANSWERED', 2);
+define('CALL_NO_ANSWER', 3);
+
 $TARIFFTYPES = array(
 	TARIFF_INTERNET	=> ConfigHelper::getConfig('tarifftypes.internet', trans('internet')),
 	TARIFF_HOSTING	=> ConfigHelper::getConfig('tarifftypes.hosting', trans('hosting')),

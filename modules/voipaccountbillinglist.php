@@ -24,9 +24,6 @@
  *  $Id$
  */
 
-
-
-
 $layout['pagetitle'] = trans('Billing list');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
@@ -35,79 +32,155 @@ if(!isset($_GET['o']))
 	$SESSION->restore('nlo', $o);
 else
 	$o = $_GET['o'];
+
 $SESSION->save('nlo', $o);
 
-if (isset($_GET['id'])) {
-	$id = (int) $_GET['id'];
-	$bill_list = $DB->GetAll('SELECT
-										cdr.caller,
-										cdr.callee,
-										cdr.call_start_time,
-										cdr.time_start_to_end,
-										cdr.time_answer_to_end,
-										cdr.voipaccountid,
-										cdr.status,
-										c.id as customerid,
-										c.name,
-										c.lastname,
-										c.city,
-										c.street,
-										c.building
-									FROM voip_cdr cdr left join customers c on cdr.voipaccountid = c.id WHERE voipaccountid = ?', array($id));
-} else
-	$bill_list = $DB->GetAll('SELECT
-										cdr.caller,
-										cdr.callee,
-										cdr.call_start_time,
-										cdr.time_start_to_end,
-										cdr.time_answer_to_end,
-										cdr.voipaccountid,
-										cdr.status,
-										c.id as customerid,
-										c.name,
-										c.lastname,
-										c.city,
-										c.street,
-										c.building
-									FROM voip_cdr cdr left join customers c on cdr.voipaccountid = c.id');
+$id = (isset($_GET['id'])) ? (int) $_GET['id'] : NULL;
 
+// ORDER 
+$order = explode(',', $o);
+if (empty($order[1]) || $order[1] != 'desc')
+	 $order[1] = 'asc';
 
-$voipaccountlist = $LMS->GetVoipAccountList($o, NULL, NULL);
-$listdata['total'] = $voipaccountlist['total'];
-$listdata['order'] = $voipaccountlist['order'];
-$listdata['direction'] = $voipaccountlist['direction'];
+ switch ($order[0]) {
+	case 'caller_name':
+	case 'callee_name':
+	case 'caller':
+	case 'callee':
+	case 'begintime':
+	case 'callbegintime':
+	case 'callanswertime':
+	case 'status':
+	case 'type':
+		$order_string = ' ORDER BY ' . $order[0] . ' ' . $order[1];
+	break;
 
-unset($voipaccountlist['total']);
-unset($voipaccountlist['order']);
-unset($voipaccountlist['direction']);
+	default:
+		$order_string = '';
+}
+
+// FILTERS
+$where = array();
+
+if ($id !== NULL)
+	$where[] = "(cdr.callervoipaccountid = $id OR cdr.calleevoipaccountid = $id)";
+
+// CALL START RANGE
+if (!empty($_GET['frange'])) {
+	switch ($_GET['frange']) {
+		case 'today':
+			$where[] = 'call_start_time > ' . mktime(0, 0, 0, date("n"), date("j"), date("Y"));
+			$listdata['frange'] = 'today';
+		break;
+		
+		case 'yesterday':
+			$where[] = 'call_start_time > ' . (mktime(0, 0, 0, date("n"), date("j"), date("Y")) - 86400) . ' AND call_start_time < ' . mktime(0, 0, 0, date("n"), date("j"), date("Y"));
+			$listdata['frange'] = 'yesterday';
+		break;
+		
+		case 'currentmonth':
+			$where[] = 'call_start_time > ' . mktime(0, 0, 0, date("n"), 1, date("Y"));
+			$listdata['frange'] = 'currentmonth';
+		break;
+		
+		case 'lastmonth':
+			$where[] = 'call_start_time > ' . mktime(0, 0, 0, date('n', strtotime('first day of last month')), 1, date("Y")) . ' AND call_start_time < ' . mktime(0, 0, 0, date("n"), 1, date("Y"));
+			$listdata['frange'] = 'lastmonth';
+		break;
+		
+		case 'currentyear':
+			$where[] = 'call_start_time > ' . mktime(0, 0, 0, 1, 1, date("Y"));
+			$listdata['frange'] = 'currentyear';
+		break;
+		
+		case 'lastyear':
+			$where[] = 'call_start_time > ' . mktime(0, 0, 0, 1, 1, date('Y', strtotime('last year'))) . ' AND call_start_time < ' . mktime(0, 0, 0, 1, 1, date("Y"));
+			$listdata['frange'] = 'lastyear';
+		break;
+	}
+}
+
+// CALL STATUS
+if (!empty($_GET['fstatus'])) {
+	switch ($_GET['fstatus']) {
+		case 'answered':
+			$where[] = "cdr.status ?LIKE? 'answered'";
+			$listdata['fstatus'] = 'answered';
+		break;
+		
+		case 'noanswer':
+			$where[] = "cdr.status ?LIKE? 'no answer'";
+			$listdata['fstatus'] = 'noanswer';
+		break;
+		
+		case 'busy':
+			$where[] = "cdr.status ?LIKE? 'busy'";
+			$listdata['fstatus'] = 'busy';
+		break;
+	}
+}
+
+// CALL TYPE
+if (!empty($_GET['ftype'])) {
+	switch ($_GET['ftype']) {
+		case CALL_OUTGOING:
+			$where[] = "cdr.type = " . CALL_OUTGOING;
+			$listdata['ftype'] = CALL_OUTGOING;
+		break;
+		
+		case CALL_INCOMING:
+			$where[] = "cdr.type = '" . CALL_INCOMING;
+			$listdata['ftype'] = CALL_INCOMING;
+		break;
+	}
+}
+
+if ($where) {
+	$where_string = ' WHERE ';
+	foreach ($where as $single_condition)
+		$where_string .= $single_condition . ' AND ';
+	$where_string = rtrim($where_string, ' AND ');
+}
+else
+	$where_string = '';
+
+$bill_list = $DB->GetAll('SELECT
+								   caller, callee, call_start_time as begintime, time_start_to_end as callbegintime, time_answer_to_end as callanswertime, 
+								   cdr.type as type, callervoipaccountid, calleevoipaccountid, cdr.status as status, vacc.ownerid as callerownerid, vacc2.ownerid as calleeownerid,
+								   c1.name as caller_name, c1.lastname as caller_lastname, c1.city as caller_city, c1.street as caller_street, c1.building as caller_building,
+								   c2.name as callee_name, c2.lastname as callee_lastname, c2.city as callee_city, c2.street as callee_street, c2.building as callee_building
+								FROM
+								   voip_cdr cdr 
+								   left join voipaccounts vacc on cdr.callervoipaccountid = vacc.id
+								   left join voipaccounts vacc2 on cdr.calleevoipaccountid = vacc2.id
+								   left join customers c1 on c1.id = vacc.ownerid
+								   left join customers c2 on c2.id = vacc2.ownerid' .
+								$where_string . $order_string);
+
+$page = !$_GET['page'] ? 1 : intval($_GET['page']);
+$total = intval(count($bill_list));
+$limit = intval(ConfigHelper::getConfig('phpui.customerlist_pagelimit', 100));
+$pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
+
+$listdata['order'] = $order[0];
+$listdata['direction'] = $order[1];
+
+if (!empty($_GET['page']))
+	$listdata['page'] = (int) $_GET['page'];
+
+if ($id != NULL)
+	$listdata['id'] = $id;
 
 if ($SESSION->is_set('valp') && !isset($_GET['page']))
 	$SESSION->restore('valp', $_GET['page']);
 
-$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
-$pagelimit = 30;
-$start = ($page - 1) * $pagelimit;
-
 $SESSION->save('valp', $page);
 
-$hook_data = $plugin_manager->executeHook(
-    'voipaccountlist_before_display',
-    array(
-        'voipaccountlist' => $voipaccountlist,
-        'listdata' => $listdata,
-        'smarty' => $SMARTY,
-    )
-);
-
-$voipaccountlist = $hook_data['voipaccountlist'];
-$listdata = $hook_data['listdata'];
-
+$SMARTY->assign('pagination', $pagination);
 $SMARTY->assign('billings', $bill_list);
-$SMARTY->assign('total',count($bill_list));
-$SMARTY->assign('page',$page);
-$SMARTY->assign('pagelimit',$pagelimit);
-$SMARTY->assign('start',$start);
-$SMARTY->assign('voipaccountlist',$voipaccountlist);
+$SMARTY->assign('total', $total);
+$SMARTY->assign('page', $page);
+$SMARTY->assign('pagelimit', $limit);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->display('voipaccount/voipaccountbillinglist.html');
 
