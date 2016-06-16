@@ -49,6 +49,26 @@ $this->Execute("ALTER TABLE `voip_tariffs` ADD COLUMN unitsize smallint NULL DEF
 
 $this->Execute("ALTER TABLE `voip_prefixes` ADD groupid int(11) NOT NULL, ADD CONSTRAINT FOREIGN KEY(groupid) REFERENCES voip_prefix_groups(id)");
 
+$this->Execute("DROP TABLE `voip_prefix_group_assignments`");
+
+$this->Execute("ALTER TABLE `voip_prefixes` DROP COLUMN name");
+
+$this->Execute("ALTER TABLE `voip_prefixes` DROP COLUMN description");
+
+$this->Execute("ALTER TABLE `voip_tariffs` DROP COLUMN prefixid");
+
+$this->Execute("ALTER TABLE `voip_tariff_rules` DROP COLUMN prefixid");
+
+$this->Execute("ALTER TABLE `voip_tariffs` CHANGE `groupid` `groupid` int(11) NOT NULL");
+
+$this->Execute("ALTER TABLE `voip_tariff_rules` CHANGE `groupid` `groupid` int(11) NOT NULL");
+
+$this->Execute("ALTER TABLE `voip_tariff_rules` ADD COLUMN rule_settings text NULL");
+
+$this->Execute("ALTER TABLE `voip_tariffs` CHANGE `price` `price` int(11) NOT NULL");
+
+$this->Execute("ALTER TABLE `voip_tariffs` CHANGE `price` `price` smallint NOT NULL");
+
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016060800', 'dbversion'));
 
 $this->CommitTrans();

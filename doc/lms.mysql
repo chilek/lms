@@ -2100,9 +2100,9 @@ CREATE TABLE voip_prefixes (
 
 CREATE TABLE voip_tariffs (
 	id int(11) AUTO_INCREMENT,
-	groupid int(11) NULL,
+	groupid int(11) NOT NULL,
 	tariffid int(11) NOT NULL,
-	price text NOT NULL,
+	price decimal(12,5) NOT NULL,
 	unitsize smallint NOT NULL,
 	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -2111,11 +2111,12 @@ CREATE TABLE voip_tariffs (
 
 CREATE TABLE voip_tariff_rules (
 	id int(11) AUTO_INCREMENT,
-	groupid int(11) NULL,
+	groupid int(11) NOT NULL,
 	tariffid int(11) NOT NULL,
 	description text NULL,
+	rule_settings text NULL,
 	unitsize smallint NOT NULL,
-	price text NOT NULL,
+	price decimal(12,5) NOT NULL,
 	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id)

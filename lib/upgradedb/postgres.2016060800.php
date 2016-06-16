@@ -51,6 +51,30 @@ $this->Execute("ALTER TABLE voip_tariffs ADD COLUMN unitsize smallint NULL DEFAU
 
 $this->Execute("ALTER TABLE voip_prefixes ADD COLUMN groupid smallint NOT NULL REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE");
 
+$this->Execute("DROP TABLE voip_prefix_group_assignments");
+
+$this->Execute("ALTER TABLE voip_prefixes DROP COLUMN name");
+
+$this->Execute("ALTER TABLE voip_prefixes DROP COLUMN description");
+
+$this->Execute("ALTER TABLE voip_tariffs DROP COLUMN prefixid");
+
+$this->Execute("ALTER TABLE voip_tariff_rules DROP COLUMN prefixid");
+
+$this->Execute("ALTER TABLE voip_tariffs ALTER COLUMN groupid SET NOT NULL");
+
+$this->Execute("ALTER TABLE voip_tariff_rules ALTER COLUMN groupid SET NOT NULL");
+
+$this->Execute("ALTER TABLE voip_tariff_rules ADD COLUMN rule_settings text NULL");
+
+$this->Execute("ALTER TABLE voip_tariffs ALTER COLUMN price SET NOT NULL");
+
+$this->Execute("ALTER TABLE voip_tariffs ALTER COLUMN price DROP DEFAULT");
+
+$this->Execute("ALTER TABLE voip_tariffs ALTER COLUMN unitsize SET NOT NULL");
+
+$this->Execute("ALTER TABLE voip_tariffs ALTER COLUMN unitsize DROP DEFAULT");
+
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016060800', 'dbversion'));
 
 $this->CommitTrans();

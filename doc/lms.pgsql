@@ -2201,10 +2201,10 @@ CREATE SEQUENCE voip_tariffs_id_seq;
 DROP TABLE IF EXISTS voip_tariffs CASCADE;
 CREATE TABLE voip_tariffs (
 	id integer DEFAULT nextval('voip_tariffs_id_seq'::text) NOT NULL,
-	groupid integer NULL
+	groupid integer NOT NULL
 		REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	tariffid integer NOT NULL
-		REFERENCES tariffs(id),
+		REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	price numeric(12,5) NOT NULL,	
 	unitsize smallint NOT NULL,
 	PRIMARY KEY (id)
@@ -2215,11 +2215,12 @@ CREATE SEQUENCE voip_tariff_rules_id_seq;
 DROP TABLE IF EXISTS voip_tariff_rules CASCADE;
 CREATE TABLE voip_tariff_rules (
 	id integer DEFAULT nextval('voip_tariff_rules_id_seq'::text) NOT NULL,
-	groupid integer NULL
+	groupid integer NOT NULL
 		REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	tarifid integer NOT NULL
 		REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	description text NULL,
+	rule_settings text NULL,
 	unitsize smallint NULL,
 	price numeric(12,5) NOT NULL,
 	PRIMARY KEY (id)
@@ -2728,4 +2729,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016060600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016060800');
