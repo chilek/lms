@@ -81,6 +81,9 @@ $this->Execute("ALTER TABLE voip_tariff_rules ENGINE = InnoDB;");
 
 $this->Execute("ALTER TABLE voip_cdr ENGINE = InnoDB;");
 
+define('CONFIG_TYPE_POSITIVE_INTEGER', 2);
+$this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'billinglist_pagelimit', '100', ?)", array(CONFIG_TYPE_POSITIVE_INTEGER));
+
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016060800', 'dbversion'));
 
 $this->CommitTrans();

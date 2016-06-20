@@ -42,7 +42,7 @@ function GetConfigList($order='var,asc', $section='', $search='')
 		break;
 	}
 
-	$config = $DB->GetAll('SELECT id, section, var, value, description as usercomment, disabled 
+	$config = $DB->GetAll('SELECT id, section, var, value, description as usercomment, disabled
 			FROM uiconfig WHERE section != \'userpanel\''
 			.($section ? ' AND section = '.$DB->Escape($section) : '')
 			.($search ? ' AND var ?LIKE? '.$DB->Escape('%'.$search.'%') : '')
@@ -54,7 +54,7 @@ function GetConfigList($order='var,asc', $section='', $search='')
 		{
 			case 'phpui':
 				switch($item['var'])
-				{	
+				{
 				case 'autosuggest_max_length':
 					$config[$idx]['description'] = trans('Max length of auto suggest proposal, further characters will be dotted.');
 				break;
@@ -122,9 +122,13 @@ function GetConfigList($order='var,asc', $section='', $search='')
 				case 'taxratelist_pagelimit':
 					$config[$idx]['description'] = trans('Limit of records displayed on one page in tax rates list. Default: 100.');
 				break;
-				
+
 				case 'numberplanlist_pagelimit':
 					$config[$idx]['description'] = trans('Limit of records displayed on one page in numbering plans list. Default: 100.');
+				break;
+
+				case 'billinglist_pagelimit':
+					$config[$idx]['description'] = trans('Limit of billings displayed on one page. Default: 100.');
 				break;
 
 				case 'divisionlist_pagelimit':
@@ -146,29 +150,29 @@ function GetConfigList($order='var,asc', $section='', $search='')
 				case 'reload_timer':
 					$config[$idx]['description'] = trans('Reload timer. If set to true it will display remaining time to configuration reload. If using more than one host, remember to sync time between them.');
 				break;
-				
+
 				case 'reload_type':
 					$config[$idx]['description'] = trans('Reload type. Allowed values: exec - call some command (most often with sudo, some script or something else, configurable below); sql - writes down to SQL (multiple queries separated with semicolon may be setup).');
 				break;
-				
+
 				case 'reload_execcmd':
 					$config[$idx]['description'] = trans('Command to run during reload, if reload_type is set to \'exec\'. By default /bin/true. That string is sent to command system(), so I propose you to think what you do and how :) Altogether, semicolons should be parsed by bash, but LMS splits that string and execute commands separately.');
 				break;
-				
+
 				case 'reload_sqlquery':
 					$config[$idx]['description'] = trans('SQL query executed while reload, if reload_type = sql. Default: empty. You can use \'%TIME%\' as replacement to current unix timestamp. WARNING! Semicolon is handled as query separator, which means that you can enter couple of SQL queries separated by semicolon sign.');
 				break;
-				
+
 				case 'allow_mac_sharing':
 					$config[$idx]['description'] = trans('Allow nodes addition with duplicated MAC address (not checking that some computer have that MAC yet). Default: 0 (off).');
 				break;
-				
+
 				case 'default_zip':
 				case 'default_city':
 				case 'default_address':
 					$config[$idx]['description'] = trans('Default zip code, city, street, used while inserting new customer. Useful if you add majority of customers with the same street.');
 				break;
-				
+
 				case 'lastonline_limit':
 					$config[$idx]['description'] = trans('Specify time (in seconds), after which node will be marked offline. It should match with frequency of running nodes activity script (i.e. lms-fping). Default: 600.');
 				break;
@@ -180,15 +184,15 @@ function GetConfigList($order='var,asc', $section='', $search='')
 				case 'default_monthly_payday':
 					$config[$idx]['description'] = trans('Qualify the day of month for payment day. Default: 0 (undefined).');
 				break;
-				
+
 				case 'smarty_debug':
 					$config[$idx]['description'] = trans('Enable Smarty\'s debug console. Useful for tracking values passed from PHP to Smarty. Default: 0 (off).');
 				break;
-				
+
 				case 'arpd_servers':
 					$config[$idx]['description'] = trans('List of arpd servers for MAC addresses retrieval from remote networks. That list should include IP[:port] items separated with spaces. Default: empty.');
 				break;
-				
+
 				case 'helpdesk_backend_mode':
 					$config[$idx]['description'] = trans('When enabled, all messages in helpdesk system (except those sent to requester) will be sent to mail server corresponding queue address. lms-rtparser script should be running on server. Messages won\'t be written directly to database, but on solely responsibility of rtparser script. Default: disabled.');
 				break;
@@ -200,11 +204,11 @@ function GetConfigList($order='var,asc', $section='', $search='')
 				case 'newticket_notify':
 					$config[$idx]['description'] = trans('When enabled, system will sent notification to all users with rights for current queue after new ticket creation. Default: disabled.');
 				break;
-				
+
 				case 'to_words_short_version':
 					$config[$idx]['description'] = trans('Specify format of verbal amounts representation (on invoices). e.g. for value "1" verbal expand of 123,15 will be "one two thr 15/100". Default: 0.');
 				break;
-				
+
 				case 'timetable_days_forward':
 					$config[$idx]['description'] = trans('Number of days (including current day) on timetable. Default: 7.');
 				break;
@@ -216,7 +220,7 @@ function GetConfigList($order='var,asc', $section='', $search='')
 				case 'nodepassword_length':
 					$config[$idx]['description'] = trans('Length of (auto-generated) node password. Max.32. Default: 16.');
 				break;
-				
+
 				case 'custom_accesstable':
 					$config[$idx]['description'] = trans('PHP file with user-defined access rules in "lib" directory. Default: empty.');
 				break;
@@ -268,7 +272,7 @@ function GetConfigList($order='var,asc', $section='', $search='')
 				case 'ticket_template_file':
 					$config[$idx]['description'] = trans('Helpdesk ticket printout template file. Default: rtticketprint.html');
 				break;
-			
+
 				case 'ticketlist_status':
 					$config[$idx]['description'] = trans('Default status filter setting on tickets list. For allowed values see html source code. Default: not set');
 				break;
@@ -300,7 +304,7 @@ function GetConfigList($order='var,asc', $section='', $search='')
 				case 'logging':
 					$config[$idx]['description'] = trans('Does this LMS have transaction log support (not opensource). Default: false.');
 				break;
-			
+
 				case 'add_customer_group_required':
 					$config[$idx]['description'] = trans('If isset "true" when adding new customer select group is required. Default "false"');
 				break;
@@ -312,7 +316,7 @@ function GetConfigList($order='var,asc', $section='', $search='')
 				case 'ping_type':
 					$config[$idx]['description'] = trans('Default ping type. You can use "1" for ping or "2" for arping. Default: 1.');
 				break;
-				
+
                                 case 'default_teryt_city':
 					$config[$idx]['description'] = trans('Default City in TERYT. Set city id in TERYT.');
 				break;
@@ -654,7 +658,7 @@ unset($configlist['order']);
 unset($configlist['direction']);
 unset($configlist['section']);
 
-$page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
+$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.configlist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 

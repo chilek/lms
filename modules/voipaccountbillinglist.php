@@ -149,7 +149,7 @@ unset($voipaccountlist['direction']);
 
 $page = !$_GET['page'] ? 1 : intval($_GET['page']);
 $total = intval(count($bill_list));
-$limit = intval(ConfigHelper::getConfig('phpui.customerlist_pagelimit', 100));
+$limit = intval(ConfigHelper::getConfig('phpui.billinglist_pagelimit', 100));
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
 $listdata['order'] = $order[0];

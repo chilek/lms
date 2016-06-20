@@ -62,6 +62,7 @@ class LMSConfigManager extends LMSManager implements LMSConfigManagerInterface {
 		'mail.phpmailer_is_html'			=> CONFIG_TYPE_BOOLEAN,
 		'mail.smtp_persist'					=> CONFIG_TYPE_BOOLEAN,
 		'phpui.customerlist_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,
+		'phpui.billinglist_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,
 		'phpui.nodelist_pagelimit'			=> CONFIG_TYPE_POSITIVE_INTEGER,
 		'phpui.balancelist_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,
 		'phpui.configlist_pagelimit'		=> CONFIG_TYPE_POSITIVE_INTEGER,

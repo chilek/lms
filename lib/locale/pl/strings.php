@@ -814,6 +814,7 @@ $_LANG['Liability Report on $a'] = 'Raport wierzytelności na $a';
 $_LANG['lifetime'] = 'wieczysta';
 $_LANG['Limit of nodes displayed on one page in Network Information. Default: 256. With 0, this information is omitted (page is displaying faster).'] = 'Limit wyświetlanych komputerów na jednej stronie w Informacjach o Sieci. Domyślnie: 256. Ustawiając na 0, informacje te zostaną pominięte (strona będzie się wyświetlać szybciej).';
 $_LANG['Limit of records displayed on one page in accounts list. Default: 100.'] = 'Limit wyświetlanych rekordów na jednej stronie listy kont. Domyślnie: 100.';
+$_LANG['Limit of billings displayed on one page. Default: 100.'] = 'Limit wyświetlanych bilingów na jednej stronie. Domyślnie: 100.';
 $_LANG['Limit of records displayed on one page in aliases list. Default: 100.'] = 'Limit wyświetlanych rekordów na jednej stronie listy aliasów. Domyślnie: 100.';
 $_LANG['Limit of records displayed on one page in numbering plans list. Default: 100.'] = 'Limit wyświetlanych rekordów na jednej stronie listy planów numeracyjnych. Domyślnie: 100.';
 $_LANG['Limit of records displayed on one page in tax rates list. Default: 100.'] = 'Limit wyświetlanych rekordów na jednej stronie listy stawek podatkowych. Domyślnie: 100.';
