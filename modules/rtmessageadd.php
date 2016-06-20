@@ -69,6 +69,8 @@ if(isset($_POST['message']))
 
 	if($message['subject'] == '')
 		$error['subject'] = trans('Message subject not specified!');
+	else if (strlen($message['subject']) > 255)
+		$error['subject'] = trans('Subject must contains less than 255 characters!');
 
 	if($message['body'] == '')
 		$error['body'] = trans('Message body not specified!');

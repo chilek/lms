@@ -2215,6 +2215,7 @@ $_LANG['sent'] = 'wysłano';
 $_LANG['sent<!plural>'] = 'wysłane';
 $_LANG['sms'] = 'sms';
 $_LANG['subject'] = 'temat';
+$_LANG['Subject must contains less than 255 characters!'] = 'Temat musi zawierać mniej niż 255 znaków!';
 $_LANG['traffic stats'] = 'statystyki ruchu sieciowego';
 $_LANG['traffic stats compacting'] = 'kompaktowanie statystyk ruchu sieciowego';
 $_LANG['Unable to send message. No recipients selected!'] = 'Nie można wysłać wiadomości. Nie wybrano odbiorców!';
