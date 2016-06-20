@@ -27,7 +27,7 @@ $this->Execute("ALTER TABLE voip_cdr ALTER COLUMN status TYPE smallint USING typ
 
 $this->Execute("ALTER TABLE voip_cdr ALTER COLUMN type TYPE smallint USING type::smallint");
 
-$this->Execute("ALTER TABLE voip_cdr ADD COLUMN calleevoipaccountid int NULL DEFAULT NULL");
+$this->Execute("ALTER TABLE voip_cdr ADD COLUMN calleevoipaccountid int NULL REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE");
 
 $this->Execute("ALTER TABLE voip_cdr ADD COLUMN caller_flags smallint NOT NULL DEFAULT 0");
 
@@ -41,7 +41,9 @@ $this->Execute("ALTER TABLE voip_cdr ADD COLUMN uniqueid varchar(20) NOT NULL");
 
 $this->Execute("ALTER TABLE voip_cdr RENAME voipaccountid TO callervoipaccountid");
 
-$this->Execute("ALTER TABLE voip_cdr ALTER COLUMN callervoipaccountid DROP NOT NULL;");
+$this->Execute("ALTER TABLE voip_cdr ALTER COLUMN callervoipaccountid DROP NOT NULL");
+
+$this->Execute("ALTER TABLE voip_cdr ADD FOREIGN KEY (callervoipaccountid) REFERENCES voipaccounts(id)");
 
 $this->Execute("ALTER TABLE voipaccounts ADD COLUMN flags smallint NOT NULL DEFAULT 0");
 

@@ -2138,7 +2138,9 @@ CREATE TABLE voip_cdr (
 	caller_prefix_group varchar(30) NULL,
 	callee_prefix_group varchar(30) NULL,
 	uniqueid varchar(20) NOT NULL,
-	PRIMARY KEY (id)
+	PRIMARY KEY (id),
+	FOREIGN KEY (callervoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	FOREIGN KEY (calleevoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 INSERT INTO countries (name) VALUES

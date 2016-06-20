@@ -2237,8 +2237,10 @@ CREATE TABLE voip_cdr (
 	price numeric(12,5) NOT NULL,
 	status smallint NOT NULL,
 	type smallint NOT NULL,
-	callervoipaccountid integer NULL,
-	calleevoipaccountid integer NULL,
+	callervoipaccountid integer NULL
+		REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	calleevoipaccountid integer NULL
+		REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	caller_flags smallint NOT NULL DEFAULT 0,
 	callee_flags smallint NOT NULL DEFAULT 0,
 	caller_prefix_group varchar(30) NULL,
