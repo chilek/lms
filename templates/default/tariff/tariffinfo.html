@@ -365,20 +365,12 @@
                     <img src="img/desc.gif" WIDTH="16" ALT=""> {trans("Groups:")}
                 </TD>
                 <TD>
-					<SELECT NAME="group_id">
+					<SELECT NAME="group_id" {tip text="Enter prefix" trigger="group_select"}>
 						<OPTION VALUE="none">{trans("Select")}</OPTION>
 					{foreach from=$tariffGroups item=singleGroup}
 						<OPTION VALUE="{$singleGroup.group_id}">{$singleGroup.group_name}</OPTION>
 					{/foreach}
 					</SELECT>
-                </TD>
-            </TR>
-			 <TR>
-                <TD CLASS="bold nobr">
-                    <img src="img/desc.gif" WIDTH="16" ALT=""> {trans("Description:")}
-                </TD>
-                <TD>
-                    <INPUT CLASS="autosuggest-{ConfigHelper::getConfig('phpui.default_autosuggest_placement')}" TYPE="TEXT" VALUE="{if isset($args.description)}{$args.description}{/if}" NAME="prefix[description]" VALUE="" {tip text="Enter additional information"}>
                 </TD>
             </TR>
             <TR>
@@ -484,7 +476,7 @@
 						<ol>
 						{foreach from=$tariffGroups item=singleGroup}
 							<li>
-								<a href="javascript:changePrefixListState({$singleGroup.group_id});">{$singleGroup.group_name}</a>
+								<a href="javascript:changePrefixListState({$singleGroup.group_id});">{$singleGroup.group_name} ({$singleGroup.price})</a>
 
 								<ul id="prefix_group_{$singleGroup.group_id}" style="list-style-type: none; text-align: left; padding-left: 10px; display: none;">
 									{foreach from=$singleGroup.prefix_list item=singlePrefix}

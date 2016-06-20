@@ -7,13 +7,30 @@
 	 * \return array associative array with paremeters
 	 */
 	function parseRow($row) {
-		$pattern = '/^"(?<caller>[0-9]*)","([0-9]*)","(?<callee>[0-9]*)","(?<call_type>(?:incoming|outgoing))","([0-9]*)","(.*)","(.*)","(.*)","(.*)","(?P<call_start>(?<call_start_year>[0-9]{4})-(?<call_start_month>[0-9]{2})-(?<call_start_day>[0-9]{2}) (?<call_start_hour>[0-9]{2}):(?<call_start_min>[0-9]{2}):(?<call_start_sec>[0-9]{2}))","(?<call_answer>(?<call_answer_year>[0-9]{4})-(?<call_answer_month>[0-9]{2})-(?<call_answer_day>[0-9]{2}) (?<call_answer_hour>[0-9]{2}):(?<call_answer_min>[0-9]{2}):(?<call_answer_sec>[0-9]{2}))","(?<call_end>(?<call_end_year>[0-9]{4})-(?<call_end_month>[0-9]{2})-(?<call_end_day>[0-9]{2}) (?<call_end_hour>[0-9]{2}):(?<call_end_min>[0-9]{2}):(?<call_end_sec>[0-9]{2}))",(?<time_start_to_end>[0-9]*),(?<time_answer_to_end>[0-9]*),"(?<call_status>.*)","(.*)",""/';
+		$pattern = '/^"(?<caller>(?:\+?[0-9]*|unavailable.*|anonymous.*))",' .
+		               '"(.*)",' .
+					   '"(?<callee>[0-9]*)",' .
+					   '"(?<call_type>(?:incoming.*|outgoing.*))",' .
+					   '"(.*)",' .
+					   '"(.*)",' .
+					   '"(.*)",' .
+					   '"(.*)",' .
+					   '"(.*)",' .
+					   '"(?P<call_start>(?<call_start_year>[0-9]{4})-(?<call_start_month>[0-9]{2})-(?<call_start_day>[0-9]{2}) (?<call_start_hour>[0-9]{2}):(?<call_start_min>[0-9]{2}):(?<call_start_sec>[0-9]{2}))",' .
+					   '(?:"(?<call_answer>(?<call_answer_year>[0-9]{4})-(?<call_answer_month>[0-9]{2})-(?<call_answer_day>[0-9]{2}) (?<call_answer_hour>[0-9]{2}):(?<call_answer_min>[0-9]{2}):(?<call_answer_sec>[0-9]{2}))")?,' .
+					   '"(?<call_end>(?<call_end_year>[0-9]{4})-(?<call_end_month>[0-9]{2})-(?<call_end_day>[0-9]{2}) (?<call_end_hour>[0-9]{2}):(?<call_end_min>[0-9]{2}):(?<call_end_sec>[0-9]{2}))",(?<time_start_to_end>[0-9]*),(?<time_answer_to_end>[0-9]*),' .
+					   '"(?<call_status>.*)",' .
+					   '"(.*)",' .
+					   '"(?<uniqueid>.*)".*/';
 
 		preg_match($pattern, $row, $matches);
 
-		foreach ($matches as $k=>$v)
+		foreach ($matches as $k=>$v) {
 			if (is_numeric($k))
 				unset($matches[$k]);
+			else if (!$matches[$k])
+				$matches[$k] = 0;
+		}
 
 		return $matches;
 	}
@@ -27,11 +44,25 @@
 		$DB = LMSDB::getInstance();
 
 		return $DB->GetAllByKey('SELECT
-												va.id as voipaccountid, va.phone, t.id as tariffid
+												va.id as voipaccountid, va.phone, t.id as tariffid, va.flags
 											 FROM
 												voipaccounts va left join assignments a on va.ownerid = a.customerid left join tariffs t on t.id = a.tariffid
 											 WHERE
 												t.type = ?', 'phone', array(TARIFF_PHONE));
+	}
+
+	/*!
+	 * \brief Get customer list.
+	 *
+	 * \return array array of customers with base kay as phone number
+	 */
+	function getPrefixList() {
+		$DB = LMSDB::getInstance();
+
+		return $DB->GetAllByKey('SELECT
+												prefix, name
+											FROM
+												voip_prefixes p left join voip_prefix_groups g on p.groupid = g.id', 'prefix');
 	}
 
 	/*!
@@ -42,13 +73,13 @@
 	 * \return string first founded error description
 	 */
 	function validCDR($cdr) {
-		if (!is_numeric($cdr['caller']))
+		if (!preg_match("/([0-9]+|anonymous|unavailable)/", $cdr['caller']))
 			return 'caller not found or isn\'t a number';
 
 		if (!is_numeric($cdr['callee']))
 			return 'callee not found or isn\'t a number';
 
-		if ($cdr['call_type'] != 'outgoing' && $cdr['call_type'] != 'incoming')
+		if (!preg_match("/(incoming|outgoing)/i", $cdr['call_type']))
 			return 'call type not found or is not correct';
 
 		if (!is_numeric($cdr['call_start_year']) || !is_numeric($cdr['call_start_month']) || !is_numeric($cdr['call_start_day']) || !is_numeric($cdr['call_start_hour']) || !is_numeric($cdr['call_start_min']) || !is_numeric($cdr['call_start_sec']))
@@ -95,17 +126,16 @@
 		$DB = LMSDB::getInstance();
 
 		$customer = $DB->GetRow('SELECT
-												va.id as voipaccountid, va.phone, va.balance, t.id as tariffid
+												va.id as voipaccountid, va.phone, va.balance, t.id as tariffid, va.flags
 											 FROM
-												voipaccounts va left join assignments a on va.ownerid = a.customerid left join tariffs t on t.id = a.tariffid
+												voipaccounts va
+												left join assignments a on va.ownerid = a.customerid
+												left join tariffs t on t.id = a.tariffid
 											 WHERE
 												va.phone ?LIKE? ? and
 												t.type = ?', array($phone_number, TARIFF_PHONE));
 
-		if (!$customer)
-			die('Caller number phone "' . $phone_number . '" not found.' . PHP_EOL);
-
-		return $customer;
+		return (!$customer) ? NULL : $customer;
 	}
 
 	/*!
@@ -142,22 +172,21 @@
 	}
 
 	/*!
-	 * \brief Find most suited prefix for current call.
+	 * \brief Find most suited prefix for phone number.
 	 *
 	 * \param string $to callee phone number
 	 * \return string longest matched prefix
 	 */
-	function findLongestPrefix($to, $t_id) {
+	function findLongestPrefix($number, $t_id) {
 		global $tariffs;
 
-		while (strlen($to) && !isset($tariffs[$t_id]['prefixes'][$to])) {
-			$to = substr($to, 0, -1);
-		}
+		while (strlen($number) && !isset($tariffs[$t_id]['prefixes'][$number]))
+			$number = substr($number, 0, -1);
 
-		if (!isset($tariffs[$t_id]['prefixes'][$to]))
-			die("Can\'t match prefix for callee number." . PHP_EOL);
+		if (!isset($tariffs[$t_id]['prefixes'][$number]))
+			return NULL;
 
-		return $to;
+		return $number;
 	}
 
 	/*!
@@ -190,18 +219,36 @@
 	 *
 	 * \param string $type call type
 	 * \return int number assigned to call type
-	 * \return boolean null when can't match string to call type
+	 * \return php_function die when can't match string to call type
 	 */
 	function parseCallType($type) {
-		switch (strtolower($type)) {
-			case 'incoming':
-				return CALL_INCOMING;
+		if (preg_match("/incoming/i", $type))
+			return CALL_INCOMING;
 
-			case 'outgoing':
-				return CALL_OUTGOING;
-		}
+		if (preg_match("/outgoing/i", $type))
+			return CALL_OUTGOING;
 
-		return NULL;
+		die('Call type is not correct. Please use incoming or outgoing.' . PHP_EOL);
+	}
+
+	/*!
+	 * \brief Change call status (string) to defined number (int).
+	 *
+	 * \param string $type call type
+	 * \return int number assigned to call status
+	 * \return php_function die when can't match string to call type
+	 */
+	function parseCallStatus($type) {
+		if (preg_match("/busy/i", $type))
+			return CALL_BUSY;
+
+		if (preg_match("/answered/i", $type))
+			return CALL_ANSWERED;
+
+		if (preg_match("/(noanswer|no answer)/i", $type))
+			return CALL_NO_ANSWER;
+
+		die('Call status is not correct. Please use busy, answered or noanswer.' . PHP_EOL);
 	}
 
 	/*!
@@ -232,6 +279,16 @@
 			$k = strtolower($k);
 
 			switch ($k) {
+				case 'record':
+					if (!preg_match("/^[0-1]*$/", $v))
+						return "Recording options contains incorrect values.";
+				break;
+
+				case 'uniqueid':
+					if (!preg_match("/^[0-9]+\.[0-9]+$/", $v))
+						return "Asterisk call unique id is not correct.";
+				break;
+
 				case 'caller':
 				case 'callee':
 				case 'calltime':
@@ -254,7 +311,7 @@
 
 				case 'file':
 					if (!file_exists($v))
-						return 'File "' . $v . '" doesn\'t exists.' . PHP_EOL;
+						return "File $v doesn't exists.". PHP_EOL;
 				break;
 
 				case 'status':
@@ -265,7 +322,7 @@
 						break;
 
 						default:
-							return 'Call status is not correct. Choose one of values: busy, answered, no answer.' . PHP_EOL;
+							return 'Call status is not correct. Choose one of values: busy, answered, noanswer.' . PHP_EOL;
 					}
 				break;
 

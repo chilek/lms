@@ -1648,6 +1648,7 @@ CREATE TABLE voipaccounts (
 	location_house	varchar(32)	DEFAULT NULL,
 	location_flat	varchar(32)	DEFAULT NULL,
 	balance			decimal(12,5) NOT NULL DEFAULT 0,
+	flags			smallint NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	INDEX location_city (location_city, location_street, location_house, location_flat),
 	INDEX location_street (location_street),
@@ -2082,57 +2083,43 @@ INSERT INTO up_rights(module, name, description)
 /* ---------------------------------------------------
  Voip tables
 ------------------------------------------------------*/
+CREATE TABLE voip_prefix_groups (
+	id int(11) AUTO_INCREMENT,
+	name text NOT NULL,
+	description text NULL,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
 CREATE TABLE voip_prefixes (
 	id int(11) AUTO_INCREMENT,
 	prefix varchar(30) NOT NULL,
-	name text NULL,
-	description text NULL,
-	UNIQUE (prefix),
-	PRIMARY KEY (id)
-);
-
-CREATE TABLE voip_prefix_groups (
-	id int(11) AUTO_INCREMENT,
-	name text NULL,
-	description text NULL,
-	PRIMARY KEY (id)
-);
-
-CREATE TABLE voip_prefix_group_assignments (
-	id int(11) AUTO_INCREMENT,
-	prefixid int(11) NOT NULL,
 	groupid int(11) NOT NULL,
-	FOREIGN KEY (prefixid) REFERENCES voip_prefixes(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	UNIQUE (prefix),
+	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE,
 	PRIMARY KEY (id)
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE voip_tariffs (
-	id int(11) AUTO_INCREMENT PRIMARY KEY,
-	prefixid int(11) NULL,
-	groupid int(11) NULL,
+	id int(11) AUTO_INCREMENT,
+	groupid int(11) NOT NULL,
 	tariffid int(11) NOT NULL,
-	price text NOT NULL,
+	price decimal(12,5) NOT NULL,
 	unitsize smallint NOT NULL,
-	FOREIGN KEY (prefixid) REFERENCES voip_prefixes(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id)
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE voip_tariff_rules (
 	id int(11) AUTO_INCREMENT,
-	prefixid int(11) NULL,
-	groupid int(11) NULL,
+	groupid int(11) NOT NULL,
 	tariffid int(11) NOT NULL,
 	description text NULL,
-	unitsize smallint NOT NULL,
-	price text NOT NULL,
-	FOREIGN KEY (prefixid) REFERENCES voip_prefixes(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	rule_settings text NULL,
 	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id)
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE voip_cdr (
 	id int(11) AUTO_INCREMENT,
@@ -2142,11 +2129,19 @@ CREATE TABLE voip_cdr (
 	time_start_to_end int(11) NOT NULL,
 	time_answer_to_end int(11) NOT NULL,
 	price decimal(12,5) NOT NULL,
-	status varchar(15) NOT NULL,
+	status smallint NOT NULL,
 	type smallint NOT NULL,
-	voipaccountid int(11) NOT NULL,
-	PRIMARY KEY (id)
-);
+	callervoipaccountid int(11) NULL,
+	calleevoipaccountid int(11) NULL,
+	caller_flags smallint NOT NULL DEFAULT 0,
+	callee_flags smallint NOT NULL DEFAULT 0,
+	caller_prefix_group varchar(30) NULL,
+	callee_prefix_group varchar(30) NULL,
+	uniqueid varchar(20) NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY (callervoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	FOREIGN KEY (calleevoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
 
 INSERT INTO countries (name) VALUES
 ('Lithuania'),
@@ -2178,6 +2173,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui','default_module','welcome','',0),
 ('phpui','timeout','600','',0),
 ('phpui','customerlist_pagelimit','100','',0),
+('phpui','billinglist_pagelimit','100','',0),
 ('phpui','nodelist_pagelimit','100','',0),
 ('phpui','balancelist_pagelimit','100','',0),
 ('phpui','invoicelist_pagelimit','100','',0),
@@ -2628,4 +2624,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016060600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016060800');
