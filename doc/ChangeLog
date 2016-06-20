@@ -35,6 +35,8 @@ version ?.??.?? (????-??-??):
     decide if customer ten and ssn duplication warnings/errors are enabled [chilan]
   - workaround new mysql version restricted sql mode forbiding default value
     for text/blob fields [chilan]
+  - improved voip scripts and updated voip tables in database [kosa]
+  - improved voip billing list search [kosa]
 
 version 1.11.20 (2016-04-19):
 
