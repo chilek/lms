@@ -130,6 +130,9 @@ if (isset($_GET['search'])) {
 	$listdata['total'] = $netlist['total'];
 	$listdata['order'] = $netlist['order'];
 	$listdata['direction'] = $netlist['direction'];
+	$listdata['online'] = $netlist['online'];
+	$listdata['assigned'] = $netlist['assigned'];
+	$listdata['size'] = $netlist['size'];
 
 	unset($netlist['order'], $netlist['direction'], $netlist['online'], $netlist['assigned'], $netlist['size']);
 

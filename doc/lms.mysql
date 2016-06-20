@@ -116,6 +116,7 @@ DROP TABLE IF EXISTS usergroups;
 DROP TABLE IF EXISTS userassignments;
 DROP TABLE IF EXISTS passwdhistory;
 
+SET SESSION sql_mode = '';
 
 # --------------------------------------------------------
 #

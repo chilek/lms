@@ -497,6 +497,9 @@
 						{if $customerinfo.ssnwarning}
 						<INPUT type="hidden" name="customerdata[ssnwarning]" value="1">
 						{/if}
+						{if $customerinfo.ssnexistencewarning}
+						<INPUT type="hidden" name="customerdata[ssnexistencewarning]" value="1">
+						{/if}
 					</TD>
 				</TR>
 				<TR>
@@ -505,6 +508,9 @@
 						<INPUT type="text" name="customerdata[ten]" value="{$customerinfo.ten}" size="30" {tip text="Enter Tax Exempt Number (optional)" trigger="ten"}>
 						{if $customerinfo.tenwarning}
 						<INPUT type="hidden" name="customerdata[tenwarning]" value="1">
+						{/if}
+						{if $customerinfo.tenexistencewarning}
+						<INPUT type="hidden" name="customerdata[tenexistencewarning]" value="1">
 						{/if}
 					</TD>
 				</TR>

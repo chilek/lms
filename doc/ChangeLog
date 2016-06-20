@@ -31,6 +31,10 @@ version ?.??.?? (????-??-??):
   - visual improvements of event list [kyob/chilan]
   - unified visual layout of event list and event search results [chilan]
   - added preliminary support for voip price lists [kosa/chilan]
+  - phpui.customer_ten_existence_check and phpui.customer_ssn_existence_check settings
+    decide if customer ten and ssn duplication warnings/errors are enabled [chilan]
+  - workaround new mysql version restricted sql mode forbiding default value
+    for text/blob fields [chilan]
 
 version 1.11.20 (2016-04-19):
 

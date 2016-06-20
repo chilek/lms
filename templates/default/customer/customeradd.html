@@ -512,6 +512,9 @@
 									{if $customeradd.ssnwarning}
 									<INPUT type="hidden" name="customeradd[ssnwarning]" value="1">
 									{/if}
+									{if $customeradd.ssnexistencewarning}
+									<INPUT type="hidden" name="customeradd[ssnexistencewarning]" value="1">
+									{/if}
 								</TD>
 							</TR>
 							<TR>
@@ -520,6 +523,9 @@
 									<INPUT type="text" size="30" value="{$customeradd.ten}" name="customeradd[ten]" {tip text="Enter customer Tax Exempt Number (optional)" trigger="ten"}>
 									{if $customeradd.tenwarning}
 									<INPUT type="hidden" name="customeradd[tenwarning]" value="1">
+									{/if}
+									{if $customeradd.tenexistencewarning}
+									<INPUT type="hidden" name="customeradd[tenexistencewarning]" value="1">
 									{/if}
 								</TD>
 							</TR>
