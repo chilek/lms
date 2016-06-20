@@ -282,14 +282,18 @@ define('TARIFF_PHONE', 4);
 define('TARIFF_TV', 5);
 define('TARIFF_OTHER', -1);
 
-// Voip call types
+// VoIP call types
 define('CALL_INCOMING', 1);
 define('CALL_OUTGOING', 2);
 
-// Voip call status
+// VoIP call status
 define('CALL_BUSY', 1);
 define('CALL_ANSWERED', 2);
 define('CALL_NO_ANSWER', 3);
+
+// bit flags for VoIP call
+define('CALL_FLAG_ADMIN_RECORDING', 1);
+define('CALL_FLAG_CUSTOMER_RECORDING', 2);
 
 $TARIFFTYPES = array(
 	TARIFF_INTERNET	=> ConfigHelper::getConfig('tarifftypes.internet', trans('internet')),

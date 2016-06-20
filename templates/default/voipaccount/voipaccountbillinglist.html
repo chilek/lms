@@ -19,10 +19,12 @@
 {* FILTERS *}
 {assign var="filter_range" value="{if isset($listdata.frange) && $listdata.frange != "all"}&frange={$listdata.frange}{/if}"}
 {assign var="filter_status" value="{if isset($listdata.fstatus) && $listdata.fstatus != "all"}&fstatus={$listdata.fstatus}{/if}"}
-
+{assign var="filter_customer" value="{if isset($listdata.fvoipaccid) && $listdata.fvoipaccid != "all"}&fvoipaccid={$listdata.fvoipaccid}{/if}"}
 
 <!--// $Id$ //-->
 <h1>{$layout.pagetitle}</h1>
+{include file="calendar_js.html"}
+
 <table class="lmsbox">
     <colgroup>
         <col style="width: 1%;">
@@ -34,60 +36,60 @@
         <tr {tip text="Click on column name to change sorting order"}>
             <th colspan="2" nowrap>
 				<img src="img/customer.gif" alt="">
-                <a href="?m=voipaccountbillinglist&amp;o=caller_name{order_check category="caller_name"}{$id_check}{$page_check}{$filter_range}{$filter_status}">{trans("Customer:")}</a>
+                <a href="?m=voipaccountbillinglist&amp;o=caller_name{order_check category="caller_name"}{$id_check}{$page_check}{$filter_range}{$filter_status}{$filter_fvoipaccid}">{trans("Customer:")}</a>
                 {if $listdata.order == "caller_name"}
 					<img src="img/{$direction_check}_order.gif" alt="">
                 {/if}
 
-				<a href="?m=voipaccountbillinglist&amp;o=callee_name{order_check category="callee_name"}{$id_check}{$page_check}{$filter_range}{$filter_status}">{trans("Customer:")}</a>
+				<a href="?m=voipaccountbillinglist&amp;o=callee_name{order_check category="callee_name"}{$id_check}{$page_check}{$filter_range}{$filter_status}{$filter_fvoipaccid}">{trans("Customer:")}</a>
                 {if $listdata.order == "callee_name"}
 					<img src="img/{$direction_check}_order.gif" alt="">
                 {/if}
             </th>
             <th nowrap>
-                <a href="?m=voipaccountbillinglist&amp;o=caller{order_check category="caller"}{$id_check}{$page_check}{$filter_range}{$filter_status}">{trans("Caller:")}</a>
+                <a href="?m=voipaccountbillinglist&amp;o=caller{order_check category="caller"}{$id_check}{$page_check}{$filter_range}{$filter_status}{$filter_fvoipaccid}">{trans("Caller:")}</a>
                 {if $listdata.order == "caller"}
-                <img src="img/{$direction_check}_order.gif" alt="">
+					<img src="img/{$direction_check}_order.gif" alt="">
                 {/if}
             </th>
             <th nowrap>
-                <a href="?m=voipaccountbillinglist&amp;o=callee{order_check category="callee"}{$id_check}{$page_check}{$filter_range}{$filter_status}">{trans("Callee:")}</a>
+                <a href="?m=voipaccountbillinglist&amp;o=callee{order_check category="callee"}{$id_check}{$page_check}{$filter_range}{$filter_status}{$filter_fvoipaccid}">{trans("Callee:")}</a>
                 {if $listdata.order == "callee"}
-                <img src="img/{$direction_check}_order.gif" alt="">
+					<img src="img/{$direction_check}_order.gif" alt="">
                 {/if}
             </th>
             <th nowrap>
-                <a href="?m=voipaccountbillinglist&amp;o=begintime{order_check category="begintime"}{$id_check}{$page_check}{$filter_range}{$filter_status}">{trans("Begin time:")}</a>
+                <a href="?m=voipaccountbillinglist&amp;o=begintime{order_check category="begintime"}{$id_check}{$page_check}{$filter_range}{$filter_status}{$filter_fvoipaccid}">{trans("Begin time:")}</a>
                 {if $listdata.order == "begintime"}
-                <img src="img/{$direction_check}_order.gif" alt="">
+					<img src="img/{$direction_check}_order.gif" alt="">
                 {/if}
             </th>
 
 			<th nowrap>
-                <a href="?m=voipaccountbillinglist&amp;o=callbegintime{order_check category="callbegintime"}{$id_check}{$page_check}{$filter_range}{$filter_status}">{trans("Call begin time:")}</a>
+                <a href="?m=voipaccountbillinglist&amp;o=callbegintime{order_check category="callbegintime"}{$id_check}{$page_check}{$filter_range}{$filter_status}{$filter_fvoipaccid}">{trans("Call begin time:")}</a>
                 {if $listdata.order == "callbegintime"}
-                <img src="img/{$direction_check}_order.gif" alt="">
+					<img src="img/{$direction_check}_order.gif" alt="">
                 {/if}
             </th>
 
 			<th nowrap>
-                <a href="?m=voipaccountbillinglist&amp;o=callanswertime{order_check category="callanswertime"}{$id_check}{$page_check}{$filter_range}{$filter_status}">{trans("Call answer time:")}</a>
+                <a href="?m=voipaccountbillinglist&amp;o=callanswertime{order_check category="callanswertime"}{$id_check}{$page_check}{$filter_range}{$filter_status}{$filter_fvoipaccid}">{trans("Call answer time:")}</a>
                 {if $listdata.order == "callanswertime"}
-                <img src="img/{$direction_check}_order.gif" alt="">
+					<img src="img/{$direction_check}_order.gif" alt="">
                 {/if}
             </th>
 
 			<th nowrap>
-                <a href="?m=voipaccountbillinglist&amp;o=type{order_check category="type"}{$id_check}{$page_check}{$filter_range}{$filter_status}">{trans("Connection type:")}</a>
+                <a href="?m=voipaccountbillinglist&amp;o=type{order_check category="type"}{$id_check}{$page_check}{$filter_range}{$filter_status}{$filter_fvoipaccid}">{trans("Connection type:")}</a>
                 {if $listdata.order == "type"}
-                <img src="img/{$direction_check}_order.gif" alt="">
+					<img src="img/{$direction_check}_order.gif" alt="">
                 {/if}
             </th>
-			
+
 			<th nowrap>
-                <a href="?m=voipaccountbillinglist&amp;o=status{order_check category="status"}{$id_check}{$page_check}{$filter_range}{$filter_status}">{trans("Status:")}</a>
+                <a href="?m=voipaccountbillinglist&amp;o=status{order_check category="status"}{$id_check}{$page_check}{$filter_range}{$filter_status}{$filter_fvoipaccid}">{trans("Status:")}</a>
                 {if $listdata.order == "status"}
-                <img src="img/{$direction_check}_order.gif" alt="">
+					<img src="img/{$direction_check}_order.gif" alt="">
                 {/if}
             </th>
 
@@ -97,7 +99,7 @@
         </tr>
 		<tr VALIGN="MIDDLE">
 			<td colspan="{$number_of_table_columns}">
-				<FORM method="get" action="?m={$layout.module}{$id_check}{$page_check}{$filter_range}{$filter_status}" name="choosefilter">
+				<FORM method="get" action="?m={$layout.module}{$id_check}{$page_check}{$filter_range}{$filter_status}{$filter_fvoipaccid}" name="choosefilter" id="choosefilter">
 					<INPUT type="hidden" NAME="m" VALUE="voipaccountbillinglist">
 
 					{if isset($listdata.order)}
@@ -114,32 +116,35 @@
 
 					<span class="bold">{trans("Filter:")}</span>
 
-					{trans("Begin time:")}
-					<SELECT SIZE="1" NAME="frange" ONCHANGE="document.choosefilter.submit();">
-						<OPTION VALUE="all">{trans("- all -")}</OPTION>
-						<OPTION VALUE="today" {if $listdata.frange == 'today'} SELECTED{/if}>{trans("today")}</OPTION>
-						<OPTION VALUE="yesterday" {if $listdata.frange == 'yesterday'} SELECTED{/if}>{trans("yesterday")}</OPTION>
-						<OPTION VALUE="currentmonth"{if $listdata.frange == 'currentmonth'} SELECTED{/if}>{trans("current month")}</OPTION>
-						<OPTION VALUE="lastmonth"{if $listdata.frange == 'lastmonth'} SELECTED{/if}>{trans("last month")}</OPTION>
-						<OPTION VALUE="currentyear"{if $listdata.frange == 'currentyear'} SELECTED{/if}>{trans("current year")}</OPTION>
-						<OPTION VALUE="lastyear"{if $listdata.frange == 'lastyear'} SELECTED{/if}>{trans("last year<!voip>")}</OPTION>
+					{trans("Customer:")}
+					<SELECT SIZE="1" NAME="fvoipaccid">
+					<OPTION VALUE="all">{trans("- all -")}</OPTION>
+					{foreach from=$voipaccounts item=vacc}
+						<OPTION VALUE="{$vacc.id}" {if $listdata.fvoipaccid == $vacc.id} SELECTED{/if}>{$vacc.owner}</OPTION>
+					{/foreach}
 					</SELECT>
 
-					{trans("Status:")}
-					<SELECT SIZE="1" NAME="fstatus" ONCHANGE="document.choosefilter.submit();">
-						<OPTION VALUE="all">{trans("- all -")}</OPTION>
-						<OPTION VALUE="answered" {if $listdata.fstatus == 'answered'} SELECTED{/if}>{trans("answered")}</OPTION>
-						<OPTION VALUE="noanswer" {if $listdata.fstatus == 'noanswer'} SELECTED{/if}>{trans("no answer")}</OPTION>
-						<OPTION VALUE="busy"{if $listdata.fstatus == 'busy'} SELECTED{/if}>{trans("busy")}</OPTION>
-					</SELECT>
+					{trans("Period")} {trans("from")}&nbsp;
+					<INPUT TYPE="text" NAME="frangefrom" SIZE="10" maxlength="10" value="{if $listdata.frangefrom > 0}{$listdata.frangefrom|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+					{trans("to")}&nbsp;
+					<INPUT TYPE="text" NAME="frangeto" SIZE="10" maxlength="10" value="{if $listdata.frangeto > 0}{$listdata.frangeto|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
 
-					{trans("Status:")}
-					<SELECT SIZE="1" NAME="ftype" ONCHANGE="document.choosefilter.submit();">
+					{trans("Connection type:")}
+					<SELECT SIZE="1" NAME="ftype">
 						<OPTION VALUE="all">{trans("- all -")}</OPTION>
 						<OPTION VALUE="{CALL_INCOMING}" {if $listdata.ftype == CALL_INCOMING} SELECTED{/if}>{trans("incoming")}</OPTION>
 						<OPTION VALUE="{CALL_OUTGOING}" {if $listdata.ftype == CALL_OUTGOING} SELECTED{/if}>{trans("outgoing")}</OPTION>
 					</SELECT>
 
+					{trans("Status:")}
+					<SELECT SIZE="1" NAME="fstatus">
+						<OPTION VALUE="all">{trans("- all -")}</OPTION>
+						<OPTION VALUE="{CALL_ANSWERED}" {if $listdata.fstatus == CALL_ANSWERED} SELECTED{/if}>{trans("answered")}</OPTION>
+						<OPTION VALUE="{CALL_NO_ANSWER}" {if $listdata.fstatus == CALL_NO_ANSWER} SELECTED{/if}>{trans("no answer")}</OPTION>
+						<OPTION VALUE="{CALL_BUSY}" {if $listdata.fstatus == CALL_BUSY} SELECTED{/if}>{trans("busy<!voip>")}</OPTION>
+					</SELECT>
+
+					<A HREF="#" onclick="document.forms['choosefilter'].submit();">&raquo;&raquo;&raquo;</A>
 				</FORM>
 			</td>
 		</tr>
@@ -206,7 +211,7 @@
 				<td>
 					{if $billings[i].callanswertime>60}{floor($billings[i].callanswertime/60)}min{/if} {$billings[i].callanswertime%60}s
 				</td>
-				
+
 				<td>
 					{if $billings[i].type == CALL_OUTGOING}
 						{trans("outgoing")}
@@ -217,7 +222,7 @@
 
 				<td nowrap>
 					{if $billings[i].status == CALL_BUSY}
-						{trans("busy")}
+						{trans("busy<!voip>")}
 					{elseif $billings[i].status == CALL_ANSWERED}
 						{trans("answered")}
 					{elseif $billings[i].status == CALL_NO_ANSWER}
@@ -225,8 +230,8 @@
 					{/if}
 				</td>
 				<td align="right" class="nobr">
-					<a href="?m=voipaccountinfo&amp;id={$billings[i].customerid}">
-						<img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]">
+					<a href="?m=voipaccountbillinginfo&amp;id={$billings[i].id}">
+						<img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Details")} ]">
 					</a>
 				</td>
 			</tr>
