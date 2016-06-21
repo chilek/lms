@@ -28,12 +28,21 @@ function smarty_function_customerlist($params, $template) {
 	$result = '';
 
 	if (!empty($params['customers'])) {
-		$result .= '<SELECT name="' . $params['selectname'] . '" value="' . $params['selected'] . '" '
-			. (!empty($params['selecttip']) ? smarty_function_tip(array('text' => $params['selecttip']), $template)
-				: smarty_function_tip(array('text' => 'Select customer (optional)'), $template))
-			. 'onChange="reset_customer(\'' . $params['form'] . '\', \''. $params['selectname'] . '\', \'' . $params['inputname'] . '\'); '
-			. (!empty($params['customOnChange']) ? $params['customOnChange'] : '')
-			. '">';
+
+		$result .= sprintf('<SELECT name="%s" value="%s" ', $params['selectname'], $params['selected']);
+
+		if (!empty($params['selecttip']))
+			$result .= smarty_function_tip(array('text' => $params['selecttip']), $template);
+		else
+			$result .= smarty_function_tip(array('text' => 'Select customer (optional)'), $template);
+
+		$result .= sprintf('onChange="reset_customer(\'%s\', \'%s\', \'%s\'); ', $params['form'], $params['selectname'], $params['inputname']);
+
+		if (!empty($params['customOnChange']))
+			$result .= $params['customOnChange'];
+
+		$result .= '">';
+
 		if (array_key_exists('firstoption', $params)) {
 			if (!empty($params['firstoption'])) {
 				$result .= '<OPTION value="0"';
@@ -58,26 +67,22 @@ function smarty_function_customerlist($params, $template) {
 		$result = trans("ID:");
 	$result .= '&nbsp;<INPUT type="text" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" size="5" ';
 
-	if (!empty($params['customers']))
-		$result .= 'onChange="reset_customer(\'' . $params['form'] . '\', \''. $params['inputname'] . '\', \'' . $params['selectname'] . '\'); '
-			. (!empty($params['customOnChange']) ? $params['customOnChange'] : '')
-			. '" onfocus="reset_customer(\'' . $params['form'] . '\', \''. $params['inputname'] . '\', \'' . $params['selectname'] . '\'); '
-			. (!empty($params['customOnChange']) ? $params['customOnChange'] : '')
-			. '" ';
-	else
-		$result .= ' onblur="'
-			. (!empty($params['customOnChange']) ? $params['customOnChange'] : '')
-			. '" onfocus="'
-			. (!empty($params['customOnChange']) ? $params['customOnChange'] : '')
-			. '" oninput="'
-			. (!empty($params['customOnChange']) ? $params['customOnChange'] : '')
-			. '" ';
+	$on_change = !empty($params['customOnChange']) ? $params['customOnChange'] : '';
 
-	$result .= (!empty($params['inputtip']) ? smarty_function_tip(array('text' => $params['inputtip']), $template)
-		: smarty_function_tip(array('text' => 'Enter customer ID', 'trigger' => 'customerid'), $template))
-		. '><a href="javascript: void(0);" onClick="return customerchoosewin(document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\']);" '
-		. smarty_function_tip(array('text' => 'Click to search customer'), $template) . '>&nbsp;'
-		. trans("Search") . '&nbsp;&raquo;&raquo;&raquo;</A>';
+	if (!empty($params['customers'])) {
+		$reset_customer = "reset_customer('${params['form']}', '${params['inputname']}', '${params['selectname']}'); ${on_change}";
+		$result .= "onChange=\"${reset_customer}\" onFocus=\"${reset_customer}\"";
+	} else
+		$result .= sprintf(' onblur="%1$s" onfocus="%1$s" oninput="%1$s" ', $on_change);
+
+	if (!empty($params['inputtip']))
+		$result .= smarty_function_tip(array('text' => $params['inputtip']), $template);
+	else {
+		$result .= smarty_function_tip(array('text' => 'Enter customer ID', 'trigger' => 'customerid'), $template);
+		$result .= '><a href="javascript: void(0);" onClick="return customerchoosewin(document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\']);" ';
+		$result .= smarty_function_tip(array('text' => 'Click to search customer'), $template) . '>&nbsp;';
+		$result .= trans("Search") . '&nbsp;&raquo;&raquo;&raquo;</A>';
+	}
 
 	return $result;
 }
