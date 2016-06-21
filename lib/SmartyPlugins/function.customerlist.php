@@ -69,9 +69,10 @@ function smarty_function_customerlist($params, $template) {
 
 	$on_change = !empty($params['customOnChange']) ? $params['customOnChange'] : '';
 
-	if (!empty($params['customers']))
-		$result .= sprintf('onChange="reset_customer(\'%1$s\', \'%2$s\', \'%3$s\');" %4$s onfocus="reset_customer(\'%1$s\', \'%2$s\', \'%3$s\');" %4$s ', $params['form'], $params['inputname'], $params['selectname'], $on_change);
-	else
+	if (!empty($params['customers'])) {
+		$reset_customer = "reset_customer('${params['form']}', '${params['inputname']}', '${params['selectname']}'); ${on_change}";
+		$result .= "onChange=\"${reset_customer}\" onFocus=\"${reset_customer}\"";
+	} else
 		$result .= sprintf(' onblur="%1$s" onfocus="%1$s" oninput="%1$s" ', $on_change);
 
 	if (!empty($params['inputtip']))
