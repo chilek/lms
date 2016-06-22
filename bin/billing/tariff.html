@@ -1,0 +1,13 @@
+<?php
+
+$tariffs['{$tariffid}'] = array(
+{if isset($prefixes)}
+	'prefixes'=>array(
+		{foreach from=$prefixes item=single_prefix}
+		'{$single_prefix.prefix}'=>array('sale_price'=>{$single_prefix.price},'unit_size'=>{$single_prefix.unitsize}),
+		{/foreach}
+	),
+{/if}
+);
+
+?>
