@@ -70,7 +70,7 @@ if ($id !== NULL)
 if (isset($_GET['frangefrom']) && $_GET['frangefrom'] != '') {
 	list($year, $month, $day) = explode('/', $_GET['frangefrom']);
 	$from = mktime(0,0,0, $month, $day, $year);
-	
+
 	$where[] = 'call_start_time >= ' . $from;
 	$listdata['frangefrom'] = $from;
 	unset($from);
@@ -79,7 +79,7 @@ if (isset($_GET['frangefrom']) && $_GET['frangefrom'] != '') {
 if (isset($_GET['frangeto']) && $_GET['frangeto'] != '') {
 	list($year, $month, $day) = explode('/', $_GET['frangeto']);
 	$to = mktime(23,59,59, $month, $day, $year);
-	
+
 	$where[] = 'call_start_time <= ' . $to;
 	$listdata['frangeto'] = $to;
 	unset($to);
@@ -89,18 +89,11 @@ if (isset($_GET['frangeto']) && $_GET['frangeto'] != '') {
 if (!empty($_GET['fstatus'])) {
 	switch ($_GET['fstatus']) {
 		case CALL_ANSWERED:
-			$where[] = "cdr.status = " . CALL_ANSWERED;
-			$listdata['fstatus'] = CALL_ANSWERED;
-		break;
-
 		case CALL_NO_ANSWER:
-			$where[] = "cdr.status = " . CALL_NO_ANSWER;
-			$listdata['fstatus'] = CALL_NO_ANSWER;
-		break;
-
 		case CALL_BUSY:
-			$where[] = "cdr.status = " . CALL_BUSY;
-			$listdata['fstatus'] = CALL_BUSY;
+		case CALL_SERVER_FAILED:
+			$where[] = "cdr.status = " . $_GET['fstatus'];
+			$listdata['fstatus'] = $_GET['fstatus'];
 		break;
 	}
 }
@@ -109,13 +102,9 @@ if (!empty($_GET['fstatus'])) {
 if (!empty($_GET['ftype'])) {
 	switch ($_GET['ftype']) {
 		case CALL_OUTGOING:
-			$where[] = "cdr.type = " . CALL_OUTGOING;
-			$listdata['ftype'] = CALL_OUTGOING;
-		break;
-
 		case CALL_INCOMING:
-			$where[] = "cdr.type = " . CALL_INCOMING;
-			$listdata['ftype'] = CALL_INCOMING;
+			$where[] = "cdr.type = " . $_GET['ftype'];
+			$listdata['ftype'] = $_GET['ftype'];
 		break;
 	}
 }
@@ -141,7 +130,7 @@ $bill_list = $DB->GetAll('SELECT
 								   left join customers c1 on c1.id = vacc.ownerid
 								   left join customers c2 on c2.id = vacc2.ownerid' .
 								$where_string . $order_string);
-								
+
 $voipaccountlist = $LMS->GetVoipAccountList($o, NULL, NULL);
 unset($voipaccountlist['total']);
 unset($voipaccountlist['order']);

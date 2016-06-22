@@ -142,6 +142,7 @@
 						<OPTION VALUE="{CALL_ANSWERED}" {if $listdata.fstatus == CALL_ANSWERED} SELECTED{/if}>{trans("answered")}</OPTION>
 						<OPTION VALUE="{CALL_NO_ANSWER}" {if $listdata.fstatus == CALL_NO_ANSWER} SELECTED{/if}>{trans("no answer")}</OPTION>
 						<OPTION VALUE="{CALL_BUSY}" {if $listdata.fstatus == CALL_BUSY} SELECTED{/if}>{trans("busy<!voip>")}</OPTION>
+						<OPTION VALUE="{CALL_SERVER_FAILED}" {if $listdata.fstatus == CALL_SERVER_FAILED} SELECTED{/if}>{trans("server error")}</OPTION>
 					</SELECT>
 
 					<A HREF="#" onclick="document.forms['choosefilter'].submit();">&raquo;&raquo;&raquo;</A>
@@ -227,6 +228,8 @@
 						{trans("answered")}
 					{elseif $billings[i].status == CALL_NO_ANSWER}
 						{trans("no answer")}
+					{elseif $billings[i].status == CALL_SERVER_FAILED}
+						{trans("server error")}
 					{/if}
 				</td>
 				<td align="right" class="nobr">
