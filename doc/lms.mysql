@@ -1876,6 +1876,70 @@ CREATE TABLE passwdhistory (
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
+# --------------------------------------------------------
+#
+# Voip tables
+#
+CREATE TABLE voip_prefix_groups (
+	id int(11) AUTO_INCREMENT,
+	name text NOT NULL,
+	description text NULL,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE voip_prefixes (
+	id int(11) AUTO_INCREMENT,
+	prefix varchar(30) NOT NULL,
+	groupid int(11) NOT NULL,
+	UNIQUE (prefix),
+	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE voip_tariffs (
+	id int(11) AUTO_INCREMENT,
+	groupid int(11) NOT NULL,
+	tariffid int(11) NOT NULL,
+	price decimal(12,5) NOT NULL,
+	unitsize smallint NOT NULL,
+	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE voip_tariff_rules (
+	id int(11) AUTO_INCREMENT,
+	groupid int(11) NOT NULL,
+	tariffid int(11) NOT NULL,
+	description text NULL,
+	rule_settings text NULL,
+	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE voip_cdr (
+	id int(11) AUTO_INCREMENT,
+	caller varchar(20) NOT NULL,
+	callee varchar(20) NOT NULL,
+	call_start_time int(11) NOT NULL,
+	time_start_to_end int(11) NOT NULL,
+	time_answer_to_end int(11) NOT NULL,
+	price decimal(12,5) NOT NULL,
+	status smallint NOT NULL,
+	type smallint NOT NULL,
+	callervoipaccountid int(11) NULL,
+	calleevoipaccountid int(11) NULL,
+	caller_flags smallint NOT NULL DEFAULT 0,
+	callee_flags smallint NOT NULL DEFAULT 0,
+	caller_prefix_group varchar(30) NULL,
+	callee_prefix_group varchar(30) NULL,
+	uniqueid varchar(20) NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY (callervoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	FOREIGN KEY (calleevoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
 CREATE VIEW nas AS
     SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
 	d.clients AS ports, d.secret, d.community, d.description 
@@ -2079,69 +2143,6 @@ INSERT INTO up_rights(module, name, description, setdefault)
         VALUES ('info', 'edit_contact_ack', 'Customer can change contact information with admin acknowlegment', 0);
 INSERT INTO up_rights(module, name, description)
         VALUES ('info', 'edit_contact', 'Customer can change contact information');
-
-/* ---------------------------------------------------
- Voip tables
-------------------------------------------------------*/
-CREATE TABLE voip_prefix_groups (
-	id int(11) AUTO_INCREMENT,
-	name text NOT NULL,
-	description text NULL,
-	PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-CREATE TABLE voip_prefixes (
-	id int(11) AUTO_INCREMENT,
-	prefix varchar(30) NOT NULL,
-	groupid int(11) NOT NULL,
-	UNIQUE (prefix),
-	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE,
-	PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-CREATE TABLE voip_tariffs (
-	id int(11) AUTO_INCREMENT,
-	groupid int(11) NOT NULL,
-	tariffid int(11) NOT NULL,
-	price decimal(12,5) NOT NULL,
-	unitsize smallint NOT NULL,
-	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-CREATE TABLE voip_tariff_rules (
-	id int(11) AUTO_INCREMENT,
-	groupid int(11) NOT NULL,
-	tariffid int(11) NOT NULL,
-	description text NULL,
-	rule_settings text NULL,
-	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-CREATE TABLE voip_cdr (
-	id int(11) AUTO_INCREMENT,
-	caller varchar(20) NOT NULL,
-	callee varchar(20) NOT NULL,
-	call_start_time int(11) NOT NULL,
-	time_start_to_end int(11) NOT NULL,
-	time_answer_to_end int(11) NOT NULL,
-	price decimal(12,5) NOT NULL,
-	status smallint NOT NULL,
-	type smallint NOT NULL,
-	callervoipaccountid int(11) NULL,
-	calleevoipaccountid int(11) NULL,
-	caller_flags smallint NOT NULL DEFAULT 0,
-	callee_flags smallint NOT NULL DEFAULT 0,
-	caller_prefix_group varchar(30) NULL,
-	callee_prefix_group varchar(30) NULL,
-	uniqueid varchar(20) NOT NULL,
-	PRIMARY KEY (id),
-	FOREIGN KEY (callervoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
-	FOREIGN KEY (calleevoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB;
 
 INSERT INTO countries (name) VALUES
 ('Lithuania'),

@@ -23,63 +23,49 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE voip_cdr ALTER COLUMN status TYPE smallint USING type::smallint");
-
-$this->Execute("ALTER TABLE voip_cdr ALTER COLUMN type TYPE smallint USING type::smallint");
-
-$this->Execute("ALTER TABLE voip_cdr ADD COLUMN calleevoipaccountid int NULL REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE");
-
-$this->Execute("ALTER TABLE voip_cdr ADD COLUMN caller_flags smallint NOT NULL DEFAULT 0");
-
-$this->Execute("ALTER TABLE voip_cdr ADD COLUMN callee_flags smallint NOT NULL DEFAULT 0");
-
-$this->Execute("ALTER TABLE voip_cdr ADD COLUMN caller_prefix_group varchar(30) NULL");
-
-$this->Execute("ALTER TABLE voip_cdr ADD COLUMN callee_prefix_group varchar(30) NULL");
-
-$this->Execute("ALTER TABLE voip_cdr ADD COLUMN uniqueid varchar(20) NOT NULL");
-
-$this->Execute("ALTER TABLE voip_cdr RENAME voipaccountid TO callervoipaccountid");
-
-$this->Execute("ALTER TABLE voip_cdr ALTER COLUMN callervoipaccountid DROP NOT NULL");
-
-$this->Execute("ALTER TABLE voip_cdr ADD FOREIGN KEY (callervoipaccountid) REFERENCES voipaccounts(id)");
-
-$this->Execute("ALTER TABLE voipaccounts ADD COLUMN flags smallint NOT NULL DEFAULT 0");
-
-$this->Execute("ALTER TABLE voip_tariffs ADD COLUMN price numeric(12,5) NULL DEFAULT 0");
-
-$this->Execute("ALTER TABLE voip_tariffs ADD COLUMN unitsize smallint NULL DEFAULT 0");
-
-$this->Execute("ALTER TABLE voip_prefixes ADD COLUMN groupid smallint NOT NULL REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE");
-
-$this->Execute("DROP TABLE voip_prefix_group_assignments");
-
-$this->Execute("ALTER TABLE voip_prefixes DROP COLUMN name");
-
-$this->Execute("ALTER TABLE voip_prefixes DROP COLUMN description");
-
-$this->Execute("ALTER TABLE voip_tariffs DROP COLUMN prefixid");
-
-$this->Execute("ALTER TABLE voip_tariff_rules DROP COLUMN prefixid");
-
-$this->Execute("ALTER TABLE voip_tariffs ALTER COLUMN groupid SET NOT NULL");
-
-$this->Execute("ALTER TABLE voip_tariff_rules ALTER COLUMN groupid SET NOT NULL");
-
-$this->Execute("ALTER TABLE voip_tariff_rules ADD COLUMN rule_settings text NULL");
-
-$this->Execute("ALTER TABLE voip_tariffs ALTER COLUMN price SET NOT NULL");
-
-$this->Execute("ALTER TABLE voip_tariffs ALTER COLUMN price DROP DEFAULT");
-
-$this->Execute("ALTER TABLE voip_tariffs ALTER COLUMN unitsize SET NOT NULL");
-
-$this->Execute("ALTER TABLE voip_tariffs ALTER COLUMN unitsize DROP DEFAULT");
-
-$this->Execute("ALTER TABLE voip_tariff_rules DROP COLUMN unitsize");
-
-$this->Execute("ALTER TABLE voip_tariff_rules DROP COLUMN price");
+$this->Execute("
+	ALTER TABLE voip_cdr ALTER COLUMN status TYPE smallint USING type::smallint;
+	ALTER TABLE voip_cdr ALTER COLUMN type TYPE smallint USING type::smallint;
+	ALTER TABLE voip_cdr ADD COLUMN calleevoipaccountid integer NULL
+		REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE;
+	ALTER TABLE voip_cdr ADD COLUMN caller_flags smallint NOT NULL DEFAULT 0;
+	ALTER TABLE voip_cdr ADD COLUMN callee_flags smallint NOT NULL DEFAULT 0;
+	ALTER TABLE voip_cdr ADD COLUMN caller_prefix_group varchar(30) NULL;
+	ALTER TABLE voip_cdr ADD COLUMN callee_prefix_group varchar(30) NULL;
+	ALTER TABLE voip_cdr ADD COLUMN uniqueid varchar(20) NOT NULL;
+	ALTER TABLE voip_cdr RENAME voipaccountid TO callervoipaccountid;
+	ALTER TABLE voip_cdr ALTER COLUMN callervoipaccountid DROP NOT NULL;
+	ALTER TABLE voip_cdr ADD FOREIGN KEY (callervoipaccountid)
+		REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE;
+	ALTER TABLE voipaccounts ADD COLUMN flags smallint NOT NULL DEFAULT 0;
+	DROP TABLE voip_prefix_group_assignments;
+	ALTER TABLE voip_prefixes ADD COLUMN groupid smallint NOT NULL
+		REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE;
+	ALTER TABLE voip_prefixes DROP COLUMN name;
+	ALTER TABLE voip_prefixes DROP COLUMN description;
+	DROP TABLE voip_tariffs;
+	DROP TABLE voip_tariff_rules;
+	CREATE TABLE voip_tariffs (
+		id integer DEFAULT nextval('voip_tariffs_id_seq'::text) NOT NULL,
+		groupid integer NOT NULL
+			REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+		tariffid integer NOT NULL
+			REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
+		price numeric(12,5) NOT NULL,
+		unitsize smallint NOT NULL,
+		PRIMARY KEY (id)
+	);
+	CREATE TABLE voip_tariff_rules (
+		id integer DEFAULT nextval('voip_tariff_rules_id_seq'::text) NOT NULL,
+		groupid integer NOT NULL
+			REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+		tarifid integer NOT NULL
+			REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		description text NULL,
+		rule_settings text NULL,
+		PRIMARY KEY (id)
+	);
+");
 
 define('CONFIG_TYPE_POSITIVE_INTEGER', 2);
 $this->Execute("INSERT INTO uiconfig (section, var, value, type) VALUES('phpui', 'billinglist_pagelimit', '100', ?)", array(CONFIG_TYPE_POSITIVE_INTEGER));

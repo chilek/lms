@@ -60,7 +60,7 @@ $this->Execute("
 		groupid integer NULL
 			REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
 		tariffid integer NOT NULL
-			REFERENCES tariffs(id),
+			REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
 		PRIMARY KEY (id)
 	);
 

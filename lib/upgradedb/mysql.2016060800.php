@@ -24,61 +24,47 @@
 $this->BeginTrans();
 
 $this->Execute("ALTER TABLE voip_cdr CHANGE status status smallint NOT NULL");
-
 $this->Execute("ALTER TABLE voip_cdr CHANGE type type smallint NOT NULL");
-
-$this->Execute("ALTER TABLE voip_cdr ADD COLUMN calleevoipaccountid int(11) NULL, ADD CONSTRAINT FOREIGN KEY(calleevoipaccountid) REFERENCES voipaccounts(id)");
-
+$this->Execute("ALTER TABLE voip_cdr ADD COLUMN calleevoipaccountid int(11) NULL,
+	ADD CONSTRAINT FOREIGN KEY(calleevoipaccountid) REFERENCES voipaccounts(id)");
 $this->Execute("ALTER TABLE voip_cdr ADD COLUMN caller_flags smallint NOT NULL DEFAULT 0");
-
 $this->Execute("ALTER TABLE voip_cdr ADD COLUMN callee_flags smallint NOT NULL DEFAULT 0");
-
 $this->Execute("ALTER TABLE voip_cdr ADD COLUMN caller_prefix_group varchar(30) NULL");
-
 $this->Execute("ALTER TABLE voip_cdr ADD COLUMN callee_prefix_group varchar(30) NULL");
-
 $this->Execute("ALTER TABLE voip_cdr ADD COLUMN uniqueid varchar(20) NOT NULL");
-
-$this->Execute("ALTER TABLE voip_cdr CHANGE voipaccountid callervoipaccountid INT(11) NULL, ADD CONSTRAINT FOREIGN KEY(callervoipaccountid) REFERENCES voipaccounts(id)");
-
+$this->Execute("ALTER TABLE voip_cdr CHANGE voipaccountid callervoipaccountid INT(11) NULL,
+	ADD CONSTRAINT FOREIGN KEY(callervoipaccountid) REFERENCES voipaccounts(id)");
 $this->Execute("ALTER TABLE voipaccounts ADD COLUMN flags smallint NOT NULL DEFAULT 0");
-
-$this->Execute("ALTER TABLE voip_prefixes ADD groupid int(11) NOT NULL, ADD CONSTRAINT FOREIGN KEY(groupid) REFERENCES voip_prefix_groups(id)");
-
 $this->Execute("DROP TABLE voip_prefix_group_assignments");
-
+$this->Execute("ALTER TABLE voip_prefixes ADD groupid int(11) NOT NULL,
+	ADD CONSTRAINT FOREIGN KEY(groupid) REFERENCES voip_prefix_groups(id)");
 $this->Execute("ALTER TABLE voip_prefixes DROP COLUMN name");
-
 $this->Execute("ALTER TABLE voip_prefixes DROP COLUMN description");
-
-$this->Execute("ALTER TABLE voip_tariffs DROP FOREIGN KEY voip_tariffs_ibfk_1");
-
-$this->Execute("ALTER TABLE voip_tariffs DROP COLUMN prefixid");
-
-$this->Execute("ALTER TABLE voip_tariff_rules DROP FOREIGN KEY voip_tariff_rules_ibfk_1");
-
-$this->Execute("ALTER TABLE voip_tariff_rules DROP COLUMN prefixid");
-
-$this->Execute("ALTER TABLE voip_tariffs CHANGE groupid groupid int(11) NOT NULL");
-
-$this->Execute("ALTER TABLE voip_tariff_rules CHANGE groupid groupid int(11) NOT NULL");
-
-$this->Execute("ALTER TABLE voip_tariff_rules ADD COLUMN rule_settings text NULL");
-
-$this->Execute("ALTER TABLE voip_tariffs CHANGE price price decimal(12,5) NOT NULL");
-
-$this->Execute("ALTER TABLE voip_tariff_rules DROP COLUMN unitsize");
-
-$this->Execute("ALTER TABLE voip_tariff_rules DROP COLUMN price");
-
+$this->Execute("DROP TABLE voip_tariffs");
+$this->Execute("DROP TABLE voip_tariff_rules");
+$this->Execute("CREATE TABLE voip_tariffs (
+	id int(11) AUTO_INCREMENT,
+	groupid int(11) NOT NULL,
+	tariffid int(11) NOT NULL,
+	price decimal(12,5) NOT NULL,
+	unitsize smallint NOT NULL,
+	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+");
+$this->Execute("CREATE TABLE voip_tariff_rules (
+	id int(11) AUTO_INCREMENT,
+	groupid int(11) NOT NULL,
+	tariffid int(11) NOT NULL,
+	description text NULL,
+	rule_settings text NULL,
+	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB");
 $this->Execute("ALTER TABLE voip_prefix_groups ENGINE = InnoDB;");
-
 $this->Execute("ALTER TABLE voip_prefixes ENGINE = InnoDB;");
-
-$this->Execute("ALTER TABLE voip_tariffs ENGINE = InnoDB;");
-
-$this->Execute("ALTER TABLE voip_tariff_rules ENGINE = InnoDB;");
-
 $this->Execute("ALTER TABLE voip_cdr ENGINE = InnoDB;");
 
 define('CONFIG_TYPE_POSITIVE_INTEGER', 2);

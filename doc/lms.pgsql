@@ -1967,6 +1967,84 @@ CREATE TABLE passwdhistory (
 CREATE INDEX passwdhistory_userid_idx ON passwdhistory (userid);
 
 /* ---------------------------------------------------
+ Voip tables
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS voip_prefix_groups_id_seq;
+CREATE SEQUENCE voip_prefix_groups_id_seq;
+DROP TABLE IF EXISTS voip_prefix_groups CASCADE;
+CREATE TABLE voip_prefix_groups (
+	id integer DEFAULT nextval('voip_prefix_groups_id_seq'::text) NOT NULL,
+	name text NOT NULL,
+	description text NULL,
+	PRIMARY KEY (id)
+);
+
+DROP SEQUENCE IF EXISTS voip_prefixes_id_seq;
+CREATE SEQUENCE voip_prefixes_id_seq;
+DROP TABLE IF EXISTS voip_prefixes CASCADE;
+CREATE TABLE voip_prefixes (
+	id integer DEFAULT nextval('voip_prefixes_id_seq'::text) NOT NULL,
+	prefix varchar(30) NOT NULL,
+	groupid integer NOT NULL
+		REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id),
+	UNIQUE (prefix)
+);
+
+DROP SEQUENCE IF EXISTS voip_tariffs_id_seq;
+CREATE SEQUENCE voip_tariffs_id_seq;
+DROP TABLE IF EXISTS voip_tariffs CASCADE;
+CREATE TABLE voip_tariffs (
+	id integer DEFAULT nextval('voip_tariffs_id_seq'::text) NOT NULL,
+	groupid integer NOT NULL
+		REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	tariffid integer NOT NULL
+		REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	price numeric(12,5) NOT NULL,
+	unitsize smallint NOT NULL,
+	PRIMARY KEY (id)
+);
+
+DROP SEQUENCE IF EXISTS voip_tariff_rules_id_seq;
+CREATE SEQUENCE voip_tariff_rules_id_seq;
+DROP TABLE IF EXISTS voip_tariff_rules CASCADE;
+CREATE TABLE voip_tariff_rules (
+	id integer DEFAULT nextval('voip_tariff_rules_id_seq'::text) NOT NULL,
+	groupid integer NOT NULL
+		REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	tarifid integer NOT NULL
+		REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	description text NULL,
+	rule_settings text NULL,
+	PRIMARY KEY (id)
+);
+
+DROP SEQUENCE IF EXISTS voip_cdr_id_seq;
+CREATE SEQUENCE voip_cdr_id_seq;
+DROP TABLE IF EXISTS voip_cdr CASCADE;
+CREATE TABLE voip_cdr (
+	id integer DEFAULT nextval('voip_cdr_id_seq'::text) NOT NULL,
+	caller varchar(20) NOT NULL,
+	callee varchar(20) NOT NULL,
+	call_start_time integer NOT NULL,
+	time_start_to_end integer NOT NULL,
+	time_answer_to_end integer NOT NULL,
+	price numeric(12,5) NOT NULL,
+	status smallint NOT NULL,
+	type smallint NOT NULL,
+	callervoipaccountid integer NULL
+		REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	calleevoipaccountid integer NULL
+		REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	caller_flags smallint NOT NULL DEFAULT 0,
+	callee_flags smallint NOT NULL DEFAULT 0,
+	caller_prefix_group varchar(30) NULL,
+	callee_prefix_group varchar(30) NULL,
+	uniqueid varchar(20) NOT NULL,
+	PRIMARY KEY (id)
+);
+
+/* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS up_rights_id_seq;
@@ -2170,84 +2248,6 @@ INSERT INTO up_rights(module, name, description, setdefault)
         VALUES ('info', 'edit_contact_ack', 'Customer can change contact information with admin acknowlegment', 0);
 INSERT INTO up_rights(module, name, description)
         VALUES ('info', 'edit_contact', 'Customer can change contact information');
-
-/* ---------------------------------------------------
- Voip tables
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS voip_prefix_groups_id_seq;
-CREATE SEQUENCE voip_prefix_groups_id_seq;
-DROP TABLE IF EXISTS voip_prefix_groups CASCADE;
-CREATE TABLE voip_prefix_groups (
-	id integer DEFAULT nextval('voip_prefix_groups_id_seq'::text) NOT NULL,
-	name text NOT NULL,
-	description text NULL,
-	PRIMARY KEY (id)
-);
-
-DROP SEQUENCE IF EXISTS voip_prefixes_id_seq;
-CREATE SEQUENCE voip_prefixes_id_seq;
-DROP TABLE IF EXISTS voip_prefixes CASCADE;
-CREATE TABLE voip_prefixes (
-	id integer DEFAULT nextval('voip_prefixes_id_seq'::text) NOT NULL,
-	prefix varchar(30) NOT NULL,
-    groupid integer NOT NULL
-		REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,	
-	PRIMARY KEY (id),
-	UNIQUE (prefix)
-);
-
-DROP SEQUENCE IF EXISTS voip_tariffs_id_seq;
-CREATE SEQUENCE voip_tariffs_id_seq;
-DROP TABLE IF EXISTS voip_tariffs CASCADE;
-CREATE TABLE voip_tariffs (
-	id integer DEFAULT nextval('voip_tariffs_id_seq'::text) NOT NULL,
-	groupid integer NOT NULL
-		REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	tariffid integer NOT NULL
-		REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	price numeric(12,5) NOT NULL,	
-	unitsize smallint NOT NULL,
-	PRIMARY KEY (id)
-);
-
-DROP SEQUENCE IF EXISTS voip_tariff_rules_id_seq;
-CREATE SEQUENCE voip_tariff_rules_id_seq;
-DROP TABLE IF EXISTS voip_tariff_rules CASCADE;
-CREATE TABLE voip_tariff_rules (
-	id integer DEFAULT nextval('voip_tariff_rules_id_seq'::text) NOT NULL,
-	groupid integer NOT NULL
-		REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	tarifid integer NOT NULL
-		REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	description text NULL,
-	rule_settings text NULL,
-	PRIMARY KEY (id)
-);
-
-DROP SEQUENCE IF EXISTS voip_cdr_id_seq;
-CREATE SEQUENCE voip_cdr_id_seq;
-DROP TABLE IF EXISTS voip_cdr CASCADE;
-CREATE TABLE voip_cdr (
-	id integer DEFAULT nextval('voip_cdr_id_seq'::text) NOT NULL,
-	caller varchar(20) NOT NULL,
-	callee varchar(20) NOT NULL,
-	call_start_time integer NOT NULL,
-	time_start_to_end integer NOT NULL,
-	time_answer_to_end integer NOT NULL,
-	price numeric(12,5) NOT NULL,
-	status smallint NOT NULL,
-	type smallint NOT NULL,
-	callervoipaccountid integer NULL
-		REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
-	calleevoipaccountid integer NULL
-		REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
-	caller_flags smallint NOT NULL DEFAULT 0,
-	callee_flags smallint NOT NULL DEFAULT 0,
-	caller_prefix_group varchar(30) NULL,
-	callee_prefix_group varchar(30) NULL,
-	uniqueid varchar(20) NOT NULL,
-	PRIMARY KEY (id)
-);
 
 INSERT INTO countries (name) VALUES
 ('Lithuania'),
