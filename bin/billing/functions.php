@@ -248,6 +248,9 @@
 		if (preg_match("/(noanswer|no answer)/i", $type))
 			return CALL_NO_ANSWER;
 
+		if (preg_match("/fail/i", $type))
+			return CALL_SERVER_FAILED;
+
 		die('Call status is not correct. Please use busy, answered or noanswer.' . PHP_EOL);
 	}
 

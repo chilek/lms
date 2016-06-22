@@ -290,6 +290,7 @@ define('CALL_OUTGOING', 2);
 define('CALL_BUSY', 1);
 define('CALL_ANSWERED', 2);
 define('CALL_NO_ANSWER', 3);
+define('CALL_SERVER_FAILED', 4);
 
 // bit flags for VoIP call
 define('CALL_FLAG_ADMIN_RECORDING', 1);
