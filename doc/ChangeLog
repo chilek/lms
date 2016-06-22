@@ -38,6 +38,7 @@ version ?.??.?? (????-??-??):
   - improved voip scripts and updated voip tables in database [kosa/chilan]
   - improved voip billing list search [kosa/chilan]
   - added check for maximum helpdesk subject length [kosa/chilan]
+  - allow plugins to modify button list in network device info [chilan]
 
 version 1.11.20 (2016-04-19):
 
