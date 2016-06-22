@@ -302,6 +302,7 @@
 					switch ($v) {
 						case 'account':
 						case 'estimate':
+						case 'gencache':
 						break;
 
 						default:

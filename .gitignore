@@ -6,6 +6,7 @@ nbproject/private
 lms.ini
 backups/*
 bin/billing/voip-cache/*
+bin/billing/templates_c/*
 documents/*
 !documents/templates
 cache/*

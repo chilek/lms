@@ -318,6 +318,42 @@ switch (strtolower($options['action'])) {
 			fclose($fh);
 		}
 	break;
+
+	case 'gencache':
+		// create cache directory tree
+		if (!file_exists(VOIP_CACHE_DIR) && !mkdir(VOIP_CACHE_DIR, 0777, true))
+			die('Failed to create cache folder.');
+
+		// clear current cache files
+		$files = glob(VOIP_CACHE_DIR . '/*');
+		foreach($files as $file)
+			if(is_file($file))
+				unlink($file);
+
+		$cache_array = $DB->GetAll('SELECT
+													p.prefix, t.price, t.unitsize, t.tariffid
+												FROM
+													voip_prefixes p
+													left join voip_prefix_groups g on p.groupid = g.id
+													left join voip_tariffs t on g.id = t.groupid');
+
+		$prefix_array = array();
+		foreach ($cache_array as $single_prefix)
+			$prefix_array[$single_prefix['tariffid']][] = $single_prefix;
+
+		unset($cache_array);
+		$SMARTY = new Smarty();
+
+		// build cache files
+		foreach ($prefix_array as $k=>$single_tariff) {
+			$fh = fopen(VOIP_CACHE_DIR . "/tariff_$k.php", "w");
+			$SMARTY->assign('tariffid', $k);
+			$SMARTY->assign('prefixes', $single_tariff);
+			fwrite($fh, $SMARTY->fetch('tariff.html'));
+			fclose($fh);
+		}
+
+	break;
 }
 
 ?>
