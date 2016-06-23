@@ -39,6 +39,8 @@ version ?.??.?? (????-??-??):
   - improved voip billing list search [kosa/chilan]
   - added check for maximum helpdesk subject length [kosa/chilan]
   - allow plugins to modify button list in network device info [chilan]
+  - automatically move transfer form to separate page if there is no
+    enough space on tcpdf invoice page [chilan]
 
 version 1.11.20 (2016-04-19):
 
