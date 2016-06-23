@@ -3277,6 +3277,7 @@ $_LANG['Allows you to search for IP address pools'] = 'Wyszukiwanie sieci';
 $_LANG['Total events:'] = 'Razem zdarzeń:';
 
 $_LANG['Begin time:'] = 'Czas rozpoczęcia:';
+$_LANG['Begin time:<!voip>'] = 'Czas rozpoczęcia:';
 
 $_LANG['debit notes'] = 'noty obciążeniowe';
 $_LANG['Debit Note No.'] = 'Numer noty obciążeniowej';
