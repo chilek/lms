@@ -44,11 +44,13 @@
 		$DB = LMSDB::getInstance();
 
 		return $DB->GetAllByKey('SELECT
-												va.id as voipaccountid, va.phone, t.id as tariffid, va.flags
-											 FROM
-												voipaccounts va left join assignments a on va.ownerid = a.customerid left join tariffs t on t.id = a.tariffid
-											 WHERE
-												t.type = ?', 'phone', array(TARIFF_PHONE));
+									va.id as voipaccountid, va.phone, t.id as tariffid, va.flags
+								FROM
+									voipaccounts va
+									left join assignments a on va.ownerid = a.customerid
+									left join tariffs t on t.id = a.tariffid
+								WHERE
+									t.type = ?', 'phone', array(TARIFF_PHONE));
 	}
 
 	/*!
@@ -60,9 +62,9 @@
 		$DB = LMSDB::getInstance();
 
 		return $DB->GetAllByKey('SELECT
-												prefix, name
-											FROM
-												voip_prefixes p left join voip_prefix_groups g on p.groupid = g.id', 'prefix');
+									prefix, name
+								FROM
+									voip_prefixes p left join voip_prefix_groups g on p.groupid = g.id', 'prefix');
 	}
 
 	/*!
@@ -74,28 +76,28 @@
 	 */
 	function validCDR($cdr) {
 		if (!preg_match("/([0-9]+|anonymous|unavailable)/", $cdr['caller']))
-			return 'caller not found or isn\'t a number';
+			throw new Exception('caller not found or isn\'t a number');
 
 		if (!is_numeric($cdr['callee']))
-			return 'callee not found or isn\'t a number';
+			throw new Exception('callee not found or isn\'t a number');
 
 		if (!preg_match("/(incoming|outgoing)/i", $cdr['call_type']))
-			return 'call type not found or is not correct';
+			throw new Exception('call type not found or is not correct');
 
 		if (!is_numeric($cdr['call_start_year']) || !is_numeric($cdr['call_start_month']) || !is_numeric($cdr['call_start_day']) || !is_numeric($cdr['call_start_hour']) || !is_numeric($cdr['call_start_min']) || !is_numeric($cdr['call_start_sec']))
-			return 'call start time is not set or isn\'t correct';
+			throw new Exception('call start time is not set or isn\'t correct');
 
 		if (!is_numeric($cdr['call_answer_year']) || !is_numeric($cdr['call_answer_month']) || !is_numeric($cdr['call_answer_day']) || !is_numeric($cdr['call_answer_hour']) || !is_numeric($cdr['call_answer_min']) || !is_numeric($cdr['call_answer_sec']))
-			return 'call answer time is not set or isn\'t correct';
+			throw new Exception('call answer time is not set or isn\'t correct');
 
 		if (!is_numeric($cdr['call_end_year']) || !is_numeric($cdr['call_end_month']) || !is_numeric($cdr['call_end_day']) || !is_numeric($cdr['call_end_hour']) || !is_numeric($cdr['call_end_min']) || !is_numeric($cdr['call_end_sec']))
-			return 'call end time is not set or isn\'t correct';
+			throw new Exception('call end time is not set or isn\'t correct');
 
 		if (!is_numeric($cdr['time_start_to_end']))
-			return 'time start to end not found or isn\'t a integer';
+			throw new Exception('time start to end not found or isn\'t a integer');
 
 		if (!is_numeric($cdr['time_answer_to_end']))
-			return 'time answer to end not found or isn\'t a integer';
+			throw new Exception('time answer to end not found or isn\'t a integer');
 
 		return true;
 	}
@@ -110,7 +112,6 @@
 	function getMaxCallTime($from, $to) {
 		$customer = getCustomerByPhone($from);
 		include_tariff($customer['tariffid']);
-
 		$call_cost = getCost($from, $to, $customer['tariffid']);
 
 		return floor($customer['balance'] / $call_cost['costPerUnit']) * $call_cost['unitSize'];
@@ -126,14 +127,14 @@
 		$DB = LMSDB::getInstance();
 
 		$customer = $DB->GetRow('SELECT
-												va.id as voipaccountid, va.phone, va.balance, t.id as tariffid, va.flags
-											 FROM
-												voipaccounts va
-												left join assignments a on va.ownerid = a.customerid
-												left join tariffs t on t.id = a.tariffid
-											 WHERE
-												va.phone ?LIKE? ? and
-												t.type = ?', array($phone_number, TARIFF_PHONE));
+									va.id as voipaccountid, va.phone, va.balance, t.id as tariffid, va.flags
+								 FROM
+									voipaccounts va
+									left join assignments a on va.ownerid = a.customerid
+									left join tariffs t on t.id = a.tariffid
+								 WHERE
+									va.phone ?LIKE? ? and
+									t.type = ?', array($phone_number, TARIFF_PHONE));
 
 		return (!$customer) ? NULL : $customer;
 	}
@@ -141,15 +142,18 @@
 	/*!
 	 * \brief Get cost per unit for call.
 	 *
-	 * \param string $from caller phone number
-	 * \param string $to callee phone number
+	 * \param string $caller caller phone number
+	 * \param string $callee callee phone number
 	 * \return array informations about price (unit size and cost per one unit)
 	 */
-	function getCost($from, $to, $t_id) {
+	function getCost($caller, $callee, $t_id) {
 		global $tariffs;
 
-		$discount = findBestPrice($from, $to, $t_id);
-		$prefix = findLongestPrefix($to, $t_id);
+		$discount = findBestPrice($caller, $callee, $t_id);
+		$prefix = findLongestPrefix($callee, $t_id);
+
+		if (!$prefix)
+			throw new Exception("Can't find prefix for $callee number");
 
 		switch($discount) {
 			case '-1': // no promotion
@@ -174,7 +178,8 @@
 	/*!
 	 * \brief Find most suited prefix for phone number.
 	 *
-	 * \param string $to callee phone number
+	 * \param string $number callee phone number
+	 * \param int $t_id tariff id
 	 * \return string longest matched prefix
 	 */
 	function findLongestPrefix($number, $t_id) {
@@ -200,6 +205,9 @@
 	function findBestPrice($from, $to, $t_id) {
 		global $tariffs;
 		$cost = -1;
+
+		if (!isset($tarifs[$t_id]['rules']))
+			return -1;
 
 		foreach($tariffs[$t_id]['rules'] as $singleRule) {
 			$to_tmp = $to;
@@ -228,7 +236,7 @@
 		if (preg_match("/outgoing/i", $type))
 			return CALL_OUTGOING;
 
-		die('Call type is not correct. Please use incoming or outgoing.' . PHP_EOL);
+		throw new Exception('Call type is not correct.');
 	}
 
 	/*!
@@ -251,20 +259,23 @@
 		if (preg_match("/fail/i", $type))
 			return CALL_SERVER_FAILED;
 
-		die('Call status is not correct. Please use busy, answered or noanswer.' . PHP_EOL);
+		throw new Exception('Call status is not correct.');
 	}
 
 	/*!
 	 * \brief Include tariff by id.
 	 *
-	 * \param int $t_id tariff id
+	 * \param int $id tariff id
 	 */
-	function include_tariff($tariff_id) {
+	function include_tariff($id) {
+		if (is_null($id))
+			throw new Exception('Tariff id can\'t be null.');
+
 		global $tariffs;
-		$file = VOIP_CACHE_DIR . DIRECTORY_SEPARATOR . 'tariff_' . $tariff_id . '.php';
+		$file = VOIP_CACHE_DIR . DIRECTORY_SEPARATOR . "tariff_$id.php";
 
 		if (!file_exists($file))
-			die('Tariff file "' . $file . '" doesn\'t exists.' . PHP_EOL);
+			throw new Exception("Can't include tariff id: $id");
 
 		include_once $file;
 	}
