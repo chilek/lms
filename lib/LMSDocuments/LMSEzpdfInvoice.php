@@ -28,6 +28,8 @@
 @setlocale(LC_NUMERIC, 'C');
 
 class LMSEzpdfInvoice extends LMSInvoice {
+	const HEADER_IMAGE_HEIGHT = 40;
+
 	public function __construct($title, $pagesize = 'A4', $orientation = 'portrait') {
 		parent::__construct('LMSEzpdfBackend', $title, $pagesize, $orientation);
 	}
@@ -825,13 +827,32 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		}
 	}
 
+	protected function invoice_header_image($x, $y) {
+		$image_path = ConfigHelper::getConfig('invoices.header_image', '', true);
+		if (!file_exists($image_path)
+			|| !preg_match('/\.(?<ext>gif|jpg|jpeg|png)$/', $image_path, $m))
+			return;
+		switch (strtolower($m['ext'])) {
+			case 'gif':
+				$this->backend->addGifFromFile($image_path, $x, $y, 0, self::HEADER_IMAGE_HEIGHT);
+				break;
+			case 'jpg':
+			case 'jpeg':
+				$this->backend->addJpegFromFile($image_path, $x, $y, 0, self::HEADER_IMAGE_HEIGHT);
+				break;
+			case 'png':
+				$this->backend->addPngFromFile($image_path, $x, $y, 0, self::HEADER_IMAGE_HEIGHT);
+				break;
+		}
+	}
+
 	public function invoice_body_standard() {
 		$page = $this->backend->ezStartPageNumbers($this->backend->ez['pageWidth']-50,20,8,'right',trans('Page $a of $b', '{PAGENUM}','{TOTALPAGENUM}'),1);
-		$top = 800;
-		$this->invoice_dates(500, 800);
-		$this->invoice_address_box(400, 700);
-		$top = $this->invoice_title(30, $top);
-		$top = $top - 20;
+		$top = $this->backend->ez['pageHeight'] - 50;
+		$this->invoice_header_image(30, $top - (self::HEADER_IMAGE_HEIGHT / 2));
+		$this->invoice_dates(500, $top);
+		$this->invoice_address_box(400, $top - 100);
+		$top = $this->invoice_title(30, $top - self::HEADER_IMAGE_HEIGHT);
 		$top = $this->invoice_seller(30, $top);
 		$top = $top - 20;
 		$top = $this->invoice_buyer(30, $top);
@@ -848,11 +869,11 @@ class LMSEzpdfInvoice extends LMSInvoice {
 
 	public function invoice_body_ft0100() {
 		$page = $this->backend->ezStartPageNumbers($this->backend->ez['pageWidth']/2+10,$this->backend->ez['pageHeight']-30,8,'',trans('Page $a of $b', '{PAGENUM}','{TOTALPAGENUM}'),1);
-		$top = $this->backend->ez['pageHeight']-50;
+		$top = $this->backend->ez['pageHeight'] - 50;
+		$this->invoice_header_image(30, $top - (self::HEADER_IMAGE_HEIGHT / 2));
 		$this->invoice_dates(500, $top);
-		$this->invoice_address_box(400, 700);
-		$top = $this->invoice_title(30, $top);
-		$top = $top - 10;
+		$this->invoice_address_box(400, $top - 100);
+		$top = $this->invoice_title(30, $top - self::HEADER_IMAGE_HEIGHT);
 		$top = $this->invoice_seller(30, $top);
 		$top = $top - 10;
 		$top = $this->invoice_buyer(30, $top);
