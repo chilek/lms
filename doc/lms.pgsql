@@ -2038,8 +2038,8 @@ CREATE TABLE voip_cdr (
 		REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	caller_flags smallint NOT NULL DEFAULT 0,
 	callee_flags smallint NOT NULL DEFAULT 0,
-	caller_prefix_group varchar(30) NULL,
-	callee_prefix_group varchar(30) NULL,
+	caller_prefix_group varchar(100) NULL,
+	callee_prefix_group varchar(100) NULL,
 	uniqueid varchar(20) NOT NULL,
 	PRIMARY KEY (id)
 );
@@ -2730,4 +2730,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016060800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016062300');
