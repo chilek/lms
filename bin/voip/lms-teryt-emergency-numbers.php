@@ -180,7 +180,19 @@ $result = array();
 foreach ($lines as $line) {
 	$line = preg_replace('/\s{2,}/', ' ', $line);
 	$values = array_slice(array_map('trim', explode('|', str_replace('–', '-', $line))), 0, count($colnames));
+	if (count($values) < count($colnames)) {
+		if (!$quiet)
+			echo "Invalid record format: " . trim($line) . PHP_EOL;
+		continue;
+	}
+
 	$record = array_combine($colnames, $values);
+	if (empty($record['wsnd']) || empty($record['hex']) || empty($record['idl'])) {
+		if (!$quiet)
+			echo "Emergency number is not supported in given area!" . PHP_EOL;
+		continue;
+	}
+
 	$state = $states[$record['woj']];
 	$district_index = $record['pow'] . '_' . $state['id'];
 	if (isset($districts[$district_index])) {
