@@ -40,6 +40,7 @@ $parameters = array(
 	'v' => 'version',
 	'f:' => 'csv-file:',
 	't' => 'test',
+	'c' => 'cleandb',
 );
 
 foreach ($parameters as $key => $val) {
@@ -74,6 +75,7 @@ lms-teryt-emergency-numbers.php.php
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
 -t, --test                      for single test pass without database modifications
+-c, --cleandb                   clean all emergency number info in database
 
 EOF;
 	exit(0);
@@ -136,6 +138,7 @@ include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 
 $test = isset($options['test']);
+$cleandb = isset($options['cleandb']);
 
 if ($test && !$quiet)
 	echo "Testing mode is enabled!" . PHP_EOL;
@@ -215,8 +218,14 @@ if (empty($result)) {
 	die;
 }
 
-if (!$test)
+if (!$test) {
 	$DB->BeginTrans();
+	if ($cleandb) {
+		$DB->Execute("DELETE FROM voip_emergency_numbers");
+		if (!$quiet)
+			echo "Emergency number database has been cleared!" . PHP_EOL;
+	}
+}
 
 foreach ($result as $record)
 	if (isset($record['borough_id'])) {
