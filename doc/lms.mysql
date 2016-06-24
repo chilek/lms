@@ -36,7 +36,7 @@ DROP TABLE IF EXISTS voip_tariff_rules;
 DROP TABLE IF EXISTS voip_tariffs;
 DROP TABLE IF EXISTS voip_prefixes;
 DROP TABLE IF EXISTS voip_prefix_groups;
-DROP TABLE IF EXISTS voip_rule;
+DROP TABLE IF EXISTS voip_rules;
 
 DROP TABLE IF EXISTS up_info_changes;
 DROP TABLE IF EXISTS up_help;
@@ -1906,7 +1906,7 @@ CREATE TABLE passwdhistory (
 #
 # Voip tables
 #
-CREATE TABLE voip_rule (
+CREATE TABLE voip_rules (
 	id integer NOT NULL AUTO_INCREMENT,
 	name text NOT NULL,
 	description text NULL,
@@ -1945,7 +1945,7 @@ CREATE TABLE voip_tariff_rules (
 	tarifid integer NOT NULL,
 	ruleid integer NULL,
 	FOREIGN KEY (tarifid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (ruleid) REFERENCES voip_rule(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (ruleid) REFERENCES voip_rules(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
@@ -1976,7 +1976,7 @@ CREATE TABLE voip_group_rule_assignments (
 	ruleid integer NOT NULL,
 	groupid integer NOT NULL,
 	rule_settings text NULL,
-	FOREIGN KEY (ruleid) REFERENCES voip_rule(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (ruleid) REFERENCES voip_rules(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;

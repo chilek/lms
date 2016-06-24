@@ -1969,11 +1969,11 @@ CREATE INDEX passwdhistory_userid_idx ON passwdhistory (userid);
 /* ---------------------------------------------------
  Voip tables
 ------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS voip_rule_id_seq;
-CREATE SEQUENCE voip_rule_id_seq;
-DROP TABLE IF EXISTS voip_rule CASCADE;
-CREATE TABLE voip_rule (
-	id integer DEFAULT nextval('voip_rule_id_seq'::text) NOT NULL,
+DROP SEQUENCE IF EXISTS voip_rules_id_seq;
+CREATE SEQUENCE voip_rules_id_seq;
+DROP TABLE IF EXISTS voip_rules CASCADE;
+CREATE TABLE voip_rules (
+	id integer DEFAULT nextval('voip_rules_id_seq'::text) NOT NULL,
 	name text NOT NULL,
 	description text NULL,
 	PRIMARY KEY (id)
@@ -1995,7 +1995,7 @@ DROP TABLE IF EXISTS voip_group_rule_assignments CASCADE;
 CREATE TABLE voip_group_rule_assignments (
 	id integer DEFAULT nextval('voip_group_rule_assignments_id_seq'::text) NOT NULL,
 	ruleid integer NOT NULL
-		REFERENCES voip_rule (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		REFERENCES voip_rules (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	groupid integer NOT NULL
 		REFERENCES voip_prefix_groups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	rule_settings text NULL,
@@ -2036,7 +2036,7 @@ CREATE TABLE voip_tariff_rules (
 	tarifid integer NOT NULL
 		REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	ruleid integer NULL
-		REFERENCES voip_rule (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		REFERENCES voip_rules (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
 

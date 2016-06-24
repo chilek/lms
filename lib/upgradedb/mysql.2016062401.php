@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-$this->Execute("CREATE TABLE voip_rule (
+$this->Execute("CREATE TABLE voip_rules (
 						id int(11) NOT NULL AUTO_INCREMENT,
 						name text NOT NULL,
 						description text NULL,
@@ -35,7 +35,7 @@ $this->Execute("CREATE TABLE voip_rule (
 						ruleid int(11) NOT NULL,
 						groupid int(11) NOT NULL,
 						rule_settings text NULL,
-						FOREIGN KEY (ruleid) REFERENCES voip_rule(id) ON DELETE CASCADE ON UPDATE CASCADE,
+						FOREIGN KEY (ruleid) REFERENCES voip_rules(id) ON DELETE CASCADE ON UPDATE CASCADE,
 						FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
 						PRIMARY KEY (id)
 					) ENGINE=InnoDB;
@@ -46,7 +46,7 @@ $this->Execute("CREATE TABLE voip_rule (
 						tarifid int(11) NOT NULL,
 						ruleid int(11) NULL,
 						FOREIGN KEY (tarifid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
-						FOREIGN KEY (ruleid) REFERENCES voip_rule(id) ON DELETE CASCADE ON UPDATE CASCADE,
+						FOREIGN KEY (ruleid) REFERENCES voip_rules(id) ON DELETE CASCADE ON UPDATE CASCADE,
 						PRIMARY KEY (id)
 					) ENGINE=InnoDB;");
 
