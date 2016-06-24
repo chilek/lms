@@ -41,7 +41,6 @@ $parameters = array(
 	's:' => 'startcall:',
 	't:' => 'type:',
 	'u:' => 'status:',
-	'F:' => 'flag:',
 	'U:' => 'uniqueid:'
 );
 
@@ -218,11 +217,8 @@ switch (strtolower($options['action'])) {
 			if (empty($options['status']))
 				die('Call status is not set. Please use --status (busy|answered|noanswer).' . PHP_EOL);
 
-			if (empty($options['record']))
-				die('Call recording options is not set. Please use --record [0-1]*.' . PHP_EOL);
-
 			if (empty($options['uniqueid']))
-				die('Call unique id is not set. Please use --uniqueid [0-9]+\.[0-9]+.' . PHP_EOL);
+				die('Call unique id is not set. Please use --uniqueid' . PHP_EOL);
 
 			$caller = $customer_list[$options['caller']];
 			if ($caller['tariffid'])
@@ -265,7 +261,7 @@ switch (strtolower($options['action'])) {
 							array(
 								$options['caller'], $options['callee'], $options['startcall'], $options['totaltime'],
 								$options['calltime'], $price, $call_status, $call_type, $caller['voipaccountid'],
-								$callee['voipaccountid'], (int) $caller['recorded'], (int) $callee['recorded'],
+								$callee['voipaccountid'], (int) $caller['flags'], (int) $callee['flags'],
 								$caller['prefix_group'], $callee['prefix_group'], $options['uniqueid']));
 			}
 			catch(Exception $e) {
@@ -334,7 +330,7 @@ switch (strtolower($options['action'])) {
 								  array(
 									$cdr['caller'], $cdr['callee'], $call_start, $cdr['time_start_to_end'],
 									$cdr['time_answer_to_end'], $price, $call_status, $call_type, $caller['voipaccountid'],
-									$callee['voipaccountid'], (int) $caller['recorded'], (int) $callee['recorded'],
+									$callee['voipaccountid'], (int) $caller['flags'], (int) $callee['flags'],
 									$caller['prefix_group'], $callee['prefix_group'], $cdr['uniqueid']));
 				}
 				catch(Exception $e) {
