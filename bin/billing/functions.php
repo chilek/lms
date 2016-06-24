@@ -293,11 +293,6 @@
 			$k = strtolower($k);
 
 			switch ($k) {
-				case 'flags':
-					if (!preg_match("/^[0-1]*$/", $v))
-						return "Flags contains incorrect values.";
-				break;
-
 				case 'uniqueid':
 					if (!preg_match("/^[0-9]+\.[0-9]+$/", $v))
 						return "Asterisk call unique id is not correct.";
