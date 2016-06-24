@@ -59,7 +59,7 @@ foreach ($short_to_longs as $short => $long)
 
 if (array_key_exists('version', $options)) {
 	print <<<EOF
-lms-stub.php
+lms-billing.php
 (C) 2001-2016 LMS Developers
 
 EOF;
@@ -68,7 +68,7 @@ EOF;
 
 if (array_key_exists('help', $options)) {
 	print <<<EOF
-lms-stub.php
+lms-billing.php
 (C) 2001-2016 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
@@ -83,7 +83,7 @@ EOF;
 $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
 	print <<<EOF
-lms-stub.php
+lms-billing.php
 (C) 2001-2016 LMS Developers
 
 EOF;
@@ -114,11 +114,10 @@ define('VOIP_CACHE_DIR', SYS_DIR . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPAR
 
 // Load autoloader
 $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-if (file_exists($composer_autoload_path)) {
-    require_once $composer_autoload_path;
-} else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
-}
+if (file_exists($composer_autoload_path))
+	require_once $composer_autoload_path;
+else
+	die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/" . PHP_EOL);
 
 // Init database
 
@@ -143,19 +142,6 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
-
-if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG'))
-	$SYSLOG = new SYSLOG($DB);
-else
-	$SYSLOG = null;
-
-// Initialize Session, Auth and LMS classes
-
-$AUTH = NULL;
-$LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
 
 setlocale(LC_NUMERIC, 'en_US');
 include 'functions.incl.php';
