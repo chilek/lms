@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 
 /*
@@ -109,7 +110,7 @@ $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ?
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
-define('VOIP_CACHE_DIR', SYS_DIR . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'billing' . DIRECTORY_SEPARATOR . 'voip-cache');
+define('VOIP_CACHE_DIR', SYS_DIR . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'voip' . DIRECTORY_SEPARATOR . 'voip-cache');
 
 // Load autoloader
 $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
@@ -157,7 +158,7 @@ $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
 setlocale(LC_NUMERIC, 'en_US');
-include 'functions.php';
+include 'lms-billing-functions.php';
 $tariffs = array();
 
 $options['action'] = (isset($options['action'])) ? $options['action'] : '';

@@ -1969,6 +1969,16 @@ CREATE INDEX passwdhistory_userid_idx ON passwdhistory (userid);
 /* ---------------------------------------------------
  Voip tables
 ------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS voip_rule_id_seq;
+CREATE SEQUENCE voip_rule_id_seq;
+DROP TABLE IF EXISTS voip_rule CASCADE;
+CREATE TABLE voip_rule (
+	id integer DEFAULT nextval('voip_rule_id_seq'::text) NOT NULL,
+	name text NOT NULL,
+	description text NULL,
+	PRIMARY KEY (id)
+);
+
 DROP SEQUENCE IF EXISTS voip_prefix_groups_id_seq;
 CREATE SEQUENCE voip_prefix_groups_id_seq;
 DROP TABLE IF EXISTS voip_prefix_groups CASCADE;
@@ -1976,6 +1986,19 @@ CREATE TABLE voip_prefix_groups (
 	id integer DEFAULT nextval('voip_prefix_groups_id_seq'::text) NOT NULL,
 	name text NOT NULL,
 	description text NULL,
+	PRIMARY KEY (id)
+);
+
+DROP SEQUENCE IF EXISTS voip_group_rule_assignments_id_seq;
+CREATE SEQUENCE voip_group_rule_assignments_id_seq;
+DROP TABLE IF EXISTS voip_group_rule_assignments CASCADE;
+CREATE TABLE voip_group_rule_assignments (
+	id integer DEFAULT nextval('voip_group_rule_assignments_id_seq'::text) NOT NULL,
+	ruleid integer NOT NULL
+		REFERENCES voip_rule (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	groupid integer NOT NULL
+		REFERENCES voip_prefix_groups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	rule_settings text NULL,
 	PRIMARY KEY (id)
 );
 
@@ -2010,12 +2033,10 @@ CREATE SEQUENCE voip_tariff_rules_id_seq;
 DROP TABLE IF EXISTS voip_tariff_rules CASCADE;
 CREATE TABLE voip_tariff_rules (
 	id integer DEFAULT nextval('voip_tariff_rules_id_seq'::text) NOT NULL,
-	groupid integer NOT NULL
-		REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	tarifid integer NOT NULL
 		REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	description text NULL,
-	rule_settings text NULL,
+	ruleid integer NULL
+		REFERENCES voip_rule (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
 
@@ -2739,4 +2760,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016062400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016062401');

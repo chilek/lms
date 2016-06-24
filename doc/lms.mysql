@@ -1887,6 +1887,13 @@ CREATE TABLE passwdhistory (
 #
 # Voip tables
 #
+CREATE TABLE voip_rule (
+	id integer NOT NULL AUTO_INCREMENT,
+	name text NOT NULL,
+	description text NULL,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
 CREATE TABLE voip_prefix_groups (
 	id int(11) AUTO_INCREMENT,
 	name text NOT NULL,
@@ -1915,13 +1922,11 @@ CREATE TABLE voip_tariffs (
 ) ENGINE=InnoDB;
 
 CREATE TABLE voip_tariff_rules (
-	id int(11) AUTO_INCREMENT,
-	groupid int(11) NOT NULL,
-	tariffid int(11) NOT NULL,
-	description text NULL,
-	rule_settings text NULL,
-	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	id integer NOT NULL AUTO_INCREMENT,
+	tarifid integer NOT NULL,
+	ruleid integer NULL,
+	FOREIGN KEY (tarifid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (ruleid) REFERENCES voip_rule(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
@@ -1945,6 +1950,16 @@ CREATE TABLE voip_cdr (
 	PRIMARY KEY (id),
 	FOREIGN KEY (callervoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	FOREIGN KEY (calleevoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE voip_group_rule_assignments (
+	id integer NOT NULL AUTO_INCREMENT,
+	ruleid integer NOT NULL,
+	groupid integer NOT NULL,
+	rule_settings text NULL,
+	FOREIGN KEY (ruleid) REFERENCES voip_rule(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE voip_emergency_numbers (
@@ -2640,4 +2655,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016062400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016062401');
