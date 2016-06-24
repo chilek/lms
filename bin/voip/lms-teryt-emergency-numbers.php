@@ -239,11 +239,17 @@ if (!$test) {
 	}
 }
 
+$inserted_records = array();
 foreach ($result as $record)
 	if (isset($record['borough_id'])) {
-		if (!$test)
+		if (!$test) {
+			$idx = $record['borough_id'] . '_' . $record['number'];
+			if (isset($inserted_records[$idx]))
+				continue;
 			$DB->Execute("INSERT INTO voip_emergency_numbers (location_borough, number, fullnumber)
 				VALUES (?, ?, ?)", array($record['borough_id'], $record['number'], $record['fullnumber']));
+			$inserted_records[$idx] = true;
+		}
 	} elseif (!$quiet)
 		echo "TERYT location not found for record: " . trim($record['line']) . PHP_EOL;
 
