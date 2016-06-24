@@ -41,7 +41,7 @@ $parameters = array(
 	's:' => 'startcall:',
 	't:' => 'type:',
 	'u:' => 'status:',
-	'R:' => 'record:',
+	'F:' => 'flag:',
 	'U:' => 'uniqueid:'
 );
 
