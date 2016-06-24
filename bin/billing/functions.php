@@ -293,9 +293,9 @@
 			$k = strtolower($k);
 
 			switch ($k) {
-				case 'record':
+				case 'flags':
 					if (!preg_match("/^[0-1]*$/", $v))
-						return "Recording options contains incorrect values.";
+						return "Flags contains incorrect values.";
 				break;
 
 				case 'uniqueid':
