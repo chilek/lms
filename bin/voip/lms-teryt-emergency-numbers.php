@@ -40,6 +40,7 @@ $parameters = array(
 	'v' => 'version',
 	'f:' => 'csv-file:',
 	't' => 'test',
+	'c' => 'cleandb',
 );
 
 foreach ($parameters as $key => $val) {
@@ -74,6 +75,7 @@ lms-teryt-emergency-numbers.php.php
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
 -t, --test                      for single test pass without database modifications
+-c, --cleandb                   clean all emergency number info in database
 
 EOF;
 	exit(0);
@@ -136,6 +138,7 @@ include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 
 $test = isset($options['test']);
+$cleandb = isset($options['cleandb']);
 
 if ($test && !$quiet)
 	echo "Testing mode is enabled!" . PHP_EOL;
@@ -177,7 +180,19 @@ $result = array();
 foreach ($lines as $line) {
 	$line = preg_replace('/\s{2,}/', ' ', $line);
 	$values = array_slice(array_map('trim', explode('|', str_replace('–', '-', $line))), 0, count($colnames));
+	if (count($values) < count($colnames)) {
+		if (!$quiet)
+			echo "Invalid record format: " . trim($line) . PHP_EOL;
+		continue;
+	}
+
 	$record = array_combine($colnames, $values);
+	if (empty($record['wsnd']) || empty($record['hex']) || empty($record['idl'])) {
+		if (!$quiet)
+			echo "Emergency number is not supported in given area!" . PHP_EOL;
+		continue;
+	}
+
 	$state = $states[$record['woj']];
 	$district_index = $record['pow'] . '_' . $state['id'];
 	if (isset($districts[$district_index])) {
@@ -215,14 +230,26 @@ if (empty($result)) {
 	die;
 }
 
-if (!$test)
+if (!$test) {
 	$DB->BeginTrans();
+	if ($cleandb) {
+		$DB->Execute("DELETE FROM voip_emergency_numbers");
+		if (!$quiet)
+			echo "Emergency number database has been cleared!" . PHP_EOL;
+	}
+}
 
+$inserted_records = array();
 foreach ($result as $record)
 	if (isset($record['borough_id'])) {
-		if (!$test)
+		if (!$test) {
+			$idx = $record['borough_id'] . '_' . $record['number'];
+			if (isset($inserted_records[$idx]))
+				continue;
 			$DB->Execute("INSERT INTO voip_emergency_numbers (location_borough, number, fullnumber)
 				VALUES (?, ?, ?)", array($record['borough_id'], $record['number'], $record['fullnumber']));
+			$inserted_records[$idx] = true;
+		}
 	} elseif (!$quiet)
 		echo "TERYT location not found for record: " . trim($record['line']) . PHP_EOL;
 

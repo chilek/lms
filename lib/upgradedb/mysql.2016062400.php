@@ -28,6 +28,7 @@ $this->Execute("CREATE TABLE voip_emergency_numbers (
 	number int(11) NOT NULL,
 	fullnumber varchar(20) NOT NULL,
 	INDEX voip_emergency_numbers_number_idx (number),
+	UNIQUE KEY number (location_borough, number),
 	FOREIGN KEY (location_borough) REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB");
 

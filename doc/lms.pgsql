@@ -2070,7 +2070,8 @@ CREATE TABLE voip_emergency_numbers (
 	location_borough integer NOT NULL
 		REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	number integer NOT NULL,
-	fullnumber varchar(20) NOT NULL
+	fullnumber varchar(20) NOT NULL,
+	UNIQUE (location_borough, number)
 );
 CREATE INDEX voip_emergency_numbers_number_idx ON voip_emergency_numbers (number);
 
