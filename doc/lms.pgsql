@@ -2051,7 +2051,7 @@ CREATE TABLE voip_emergency_numbers (
 	number integer NOT NULL,
 	fullnumber varchar(20) NOT NULL
 );
-CREATE INDEX voip_emergency_numbers_number_idx ON voip_emergence_numbers (number);
+CREATE INDEX voip_emergency_numbers_number_idx ON voip_emergency_numbers (number);
 
 /* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)

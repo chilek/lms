@@ -30,7 +30,7 @@ $this->Execute("
 		number integer NOT NULL,
 		fullnumber varchar(20) NOT NULL
 	);
-	CREATE INDEX voip_emergency_numbers_number_idx ON voip_emergence_numbers (number)
+	CREATE INDEX voip_emergency_numbers_number_idx ON voip_emergency_numbers (number)
 ");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016062400', 'dbversion'));
