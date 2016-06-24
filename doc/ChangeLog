@@ -42,6 +42,7 @@ version ?.??.?? (????-??-??):
   - automatically move transfer form to separate page if there is no
     enough space on tcpdf invoice page [chilan]
   - invoices.header_image config variable controls pdf invoice logo placement [chilan]
+  - added backend script for voip emergency numbers database creation [chilan]
 
 version 1.11.20 (2016-04-19):
 
