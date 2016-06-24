@@ -16,11 +16,13 @@ DROP VIEW IF EXISTS teryt_ulic;
 DROP VIEW IF EXISTS teryt_simc;
 
 DROP TABLE IF EXISTS voip_emergency_numbers;
+DROP TABLE IF EXISTS voip_group_rule_assignments;
 DROP TABLE IF EXISTS voip_cdr;
 DROP TABLE IF EXISTS voip_tariff_rules;
 DROP TABLE IF EXISTS voip_tariffs;
-DROP TABLE IF EXISTS voip_prefix_groups;
 DROP TABLE IF EXISTS voip_prefixes;
+DROP TABLE IF EXISTS voip_prefix_groups;
+DROP TABLE IF EXISTS voip_rule;
 
 DROP TABLE IF EXISTS ewx_stm_nodes;
 DROP TABLE IF EXISTS ewx_stm_channels;
