@@ -158,7 +158,7 @@ $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
 setlocale(LC_NUMERIC, 'en_US');
-include 'lms-billing-functions.php';
+include 'functions.incl.php';
 $tariffs = array();
 
 $options['action'] = (isset($options['action'])) ? $options['action'] : '';
