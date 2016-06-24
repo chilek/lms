@@ -15,6 +15,13 @@ DROP VIEW IF EXISTS teryt_terc;
 DROP VIEW IF EXISTS teryt_ulic;
 DROP VIEW IF EXISTS teryt_simc;
 
+DROP TABLE IF EXISTS voip_emergency_numbers;
+DROP TABLE IF EXISTS voip_cdr;
+DROP TABLE IF EXISTS voip_tariff_rules;
+DROP TABLE IF EXISTS voip_tariffs;
+DROP TABLE IF EXISTS voip_prefix_groups;
+DROP TABLE IF EXISTS voip_prefixes;
+
 DROP TABLE IF EXISTS ewx_stm_nodes;
 DROP TABLE IF EXISTS ewx_stm_channels;
 DROP TABLE IF EXISTS ewx_pt_config;
@@ -1940,6 +1947,14 @@ CREATE TABLE voip_cdr (
 	FOREIGN KEY (calleevoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
+CREATE TABLE voip_emergency_numbers (
+	location_borough int(11) NOT NULL,
+	number int(11) NOT NULL,
+	fullnumber varchar(20) NOT NULL,
+	INDEX voip_emergency_numbers_number_idx (number),
+	FOREIGN KEY (location_borough) REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
 CREATE VIEW nas AS
     SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
 	d.clients AS ports, d.secret, d.community, d.description 
@@ -2625,4 +2640,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016062300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016062400');

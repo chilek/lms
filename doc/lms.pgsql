@@ -2044,6 +2044,15 @@ CREATE TABLE voip_cdr (
 	PRIMARY KEY (id)
 );
 
+DROP TABLE IF EXISTS voip_emergency_numbers CASCADE;
+CREATE TABLE voip_emergency_numbers (
+	location_borough integer NOT NULL
+		REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	number integer NOT NULL,
+	fullnumber varchar(20) NOT NULL
+);
+CREATE INDEX voip_emergency_numbers_number_idx ON voip_emergence_numbers (number);
+
 /* ---------------------------------------------------
  Structure of table "up_rights" (Userpanel)
 ------------------------------------------------------*/
@@ -2730,4 +2739,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016062300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016062400');
