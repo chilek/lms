@@ -113,6 +113,36 @@
             </td>
         </tr>
         {/block}
+		{block name="voipaccountinfobox-flags"}
+        <tr>
+            <td>
+                <img src="img/info2.gif" alt="">
+            </td>
+            <td class="bold">
+                {trans("Flags:")}
+            </td>
+            <td>
+				<table>
+					<tr>
+						<td>{trans("administration")}</td>
+						<td>
+							: {if $voipaccountinfo.flags > 0}{trans("recording turned on")}{else}{trans("recording turned off")}{/if}<br>
+						</td>
+					</tr>
+				    <tr>
+						<td>{trans("customer")}</td>
+						<td>
+							: {if $voipaccountinfo.flags & CALL_FLAG_CUSTOMER_RECORDING}
+								{trans("recordings available")}
+							{else}
+								{trans("recordings unavailable")}
+							{/if}
+						</td>
+					</tr>
+				</table>
+            </td>
+        </tr>
+        {/block}
         {block name="voipaccountinfobox-extra"}{/block}
         {block name="voipaccountinfobox-buttons"}
         <tr>

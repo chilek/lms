@@ -95,6 +95,7 @@ $_LANG['Addresses (total/busy/online):'] = 'Adresy (wszystkie/zajęte/włączone
 $_LANG['Address field is required!'] = 'Nazwa adresu jest wymagana!';
 $_LANG['Address/prefix:'] = 'Adres/prefiks:';
 $_LANG['Administration'] = 'Administracja';
+$_LANG['administration'] = 'administracja';
 $_LANG['After'] = 'Po';
 $_LANG['After:'] = 'Po:';
 $_LANG['Aliases'] = 'Aliasy';
@@ -1130,6 +1131,8 @@ $_LANG['recorded call available for customer'] = 'nagranie dostępne dla klienta
 $_LANG['recorded call unavailable for customer'] = 'nagranie niedostępne dla klienta';
 $_LANG['recording turned on'] = 'nagrywanie włączone';
 $_LANG['recording turned off'] = 'nagrywanie wyłączone';
+$_LANG['recordings available'] = 'nagrania dostępne';
+$_LANG['recordings unavailable'] = 'nagrania niedostępne';
 $_LANG['Readdressing network $a'] = 'Przeadresowanie sieci $a';
 $_LANG['Readdressing Network $a'] = 'Przeadresowanie sieci $a';
 $_LANG['read only (excluding helpdesk)'] = 'tylko do odczytu (bez Helpdesku)';
@@ -2750,6 +2753,8 @@ $_LANG['Select host'] = 'Wybierz hosta';
 $_LANG['Host should be selected!'] = 'Powinien zostać wybrany host!';
 
 $_LANG['cash registry administration'] = 'administracja rejestrami kasowymi';
+$_LANG['admin'] = 'administrator';
+
 
 $_LANG['Node Sessions:'] = 'Sesje komputera:';
 $_LANG['(last $a sessions)'] = '(ostatnie $a sesji)';
