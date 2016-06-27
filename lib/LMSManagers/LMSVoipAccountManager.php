@@ -33,7 +33,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 {
     /**
      * Returns VoIP account list
-     * 
+     *
      * @param string $order Order
      * @param array $search Search parameters
      * @param string $sqlskey Logical conjunction
@@ -75,19 +75,19 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 if ($value != '') {
                     switch ($idx) {
                         case 'login' :
-                            $searchargs[] = 'v.login ?LIKE? ' 
+                            $searchargs[] = 'v.login ?LIKE? '
                                 . $this->db->Escape("%$value%");
                             break;
                         case 'phone' :
-                            $searchargs[] = 'v.phone ?LIKE? ' 
+                            $searchargs[] = 'v.phone ?LIKE? '
                                 . $this->db->Escape("%$value%");
                             break;
                         case 'password' :
-                            $searchargs[] = 'v.passwd ?LIKE? ' 
+                            $searchargs[] = 'v.passwd ?LIKE? '
                                 . $this->db->Escape("%$value%");
                             break;
                         default :
-                            $searchargs[] = $idx . ' ?LIKE? ' 
+                            $searchargs[] = $idx . ' ?LIKE? '
                                 . $this->db->Escape("%$value%");
                     }
                 }
@@ -100,7 +100,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
         $voipaccountlist = $this->db->GetAll(
             'SELECT v.id, v.login, v.passwd, v.phone, v.ownerid, '
-            . $this->db->Concat('c.lastname', "' '", 'c.name') 
+            . $this->db->Concat('c.lastname', "' '", 'c.name')
             . ' AS owner, v.access,
 		location, lb.name AS borough_name, ld.name AS district_name, ls.name AS state_name
 		FROM voipaccounts v
@@ -122,7 +122,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
     /**
      * Activates/deactivates VoIP account
-     * 
+     *
      * @param int $id VoIP account id
      * @param int $access Access
      * @return int|false Integer on success, false on failure
@@ -131,44 +131,44 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         if ($access != -1) {
             if ($access) {
                 $voip_account_updated = $this->db->Execute(
-                    'UPDATE voipaccounts SET access = 1 
+                    'UPDATE voipaccounts SET access = 1
                     WHERE id = ? AND EXISTS (
-                        SELECT 1 
-                        FROM customers 
+                        SELECT 1
+                        FROM customers
                         WHERE id = ownerid AND status = 3)',
                     array($id)
                 );
                 return $voip_account_updated;
-                
+
             } else {
                 $voip_account_updated = $this->db->Execute(
-                    'UPDATE voipaccounts SET access = 0 
-                    WHERE id = ?', 
+                    'UPDATE voipaccounts SET access = 0
+                    WHERE id = ?',
                     array($id)
                 );
                 return $voip_account_updated;
             }
         } else {
             $access = $this->db->GetOne(
-                'SELECT access 
-                FROM voipaccounts 
-                WHERE id = ?', 
+                'SELECT access
+                FROM voipaccounts
+                WHERE id = ?',
                 array($id)
             );
             if ($access == 1) {
                 $voip_account_updated = $this->db->Execute(
-                    'UPDATE voipaccounts SET access=0 WHERE id = ?', 
+                    'UPDATE voipaccounts SET access=0 WHERE id = ?',
                     array($id)
                 );
                 return $voip_account_updated;
             } else {
                 $voip_account_updated = $this->db->Execute(
-                    'UPDATE voipaccounts SET access = 1 
+                    'UPDATE voipaccounts SET access = 1
                     WHERE id = ? AND EXISTS (
-                        SELECT 1 
-                        FROM customers 
+                        SELECT 1
+                        FROM customers
                         WHERE id = ownerid AND status = 3
-                    )', 
+                    )',
                     array($id)
                 );
                 return $voip_account_updated;
@@ -178,7 +178,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
     /**
      * Activates/deactivates VoIP account
-     * 
+     *
      * @param int $id VoIP account id
      * @param int $access Access
      * @return int|false Integer on success, false on failure
@@ -187,21 +187,21 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
     {
         if ($access) {
             $status = $this->db->GetOne(
-                'SELECT status 
-                FROM customers 
+                'SELECT status
+                FROM customers
                 WHERE id = ?',
                 array($id)
             );
             if ($status == 3) {
                 $voip_account_updated = $this->db->Execute(
-                    'UPDATE voipaccounts SET access=1 WHERE ownerid=?', 
+                    'UPDATE voipaccounts SET access=1 WHERE ownerid=?',
                     array($id)
                 );
                 return $voip_account_updated;
             }
         } else {
             $voip_account_updated = $this->db->Execute(
-                'UPDATE voipaccounts SET access=0 WHERE ownerid=?', 
+                'UPDATE voipaccounts SET access=0 WHERE ownerid=?',
                 array($id)
             );
             return $voip_account_updated;
@@ -210,7 +210,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
     /**
      * Adds VoIP account
-     * 
+     *
      * @param array $voipaccountdata VoIP account data
      * @return int|false Id on success, flase on failure
      */
@@ -241,20 +241,20 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             return false;
         }
     }
-    
+
     /**
      * Checks if VoIP account exists
-     * 
+     *
      * @param int $id VoIP account id
      * @return boolean True if exists, false otherwise
      */
     public function voipAccountExists($id)
     {
         $voip_account = $this->db->GetOne('
-            SELECT v.id 
+            SELECT v.id
             FROM voipaccounts v
             WHERE v.id = ? AND NOT EXISTS (
-                SELECT 1 
+                SELECT 1
                 FROM customerassignments a
                 JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
                 WHERE e.userid = lms_current_user() AND a.customerid = v.ownerid
@@ -266,7 +266,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
     /**
      * Returns VoIP account owner cusomer id
-     * 
+     *
      * @param int $id VoIP account id
      * @return int Owner id
      */
@@ -277,7 +277,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
     /**
      * Returns VoIP account data
-     * 
+     *
      * @param int $id VoIP account id
      * @return array|false VoIP account data on success, false on failure
      */
@@ -286,7 +286,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         $result = $this->db->GetRow('
             SELECT v.id, ownerid, login, passwd, phone, creationdate, moddate, creatorid, modid, access, balance,
 		location, location_city, location_street, location_house, location_flat,
-		lb.name AS borough_name, ld.name AS district_name, ls.name AS state_name
+		lb.name AS borough_name, ld.name AS district_name, ls.name AS state_name, v.flags, v.balance
 		FROM voipaccounts v
 		LEFT JOIN location_cities lc ON lc.id = v.location_city
 		LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
@@ -311,7 +311,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
     /**
      * Returns VoIP account id for given login
-     * 
+     *
      * @param string $login Login
      * @return int VoIP account id
      */
@@ -322,7 +322,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
     /**
      * Returns VoIP account id for given phone number
-     * 
+     *
      * @param string $phone Phone number
      * @return int VoIP account id
      */
@@ -333,7 +333,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
     /**
      * Returns VoIP account login for given id
-     * 
+     *
      * @param int $id VoIP account id
      * @return string VoIP account login
      */
@@ -344,7 +344,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
     /**
      * Deletes VoIP account with given id
-     * 
+     *
      * @param int $id VoIP account id
      */
     public function deleteVoipAccount($id)
@@ -356,14 +356,14 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
     /**
      * Updates VoIP account data
-     * 
+     *
      * @param type $voipaccountdata New VoIP account data
      */
     public function voipAccountUpdate($voipaccountdata)
     {
         $this->db->Execute(
             'UPDATE voipaccounts SET login=?, passwd=?, phone=?, moddate=?NOW?, access=?, modid=?, ownerid=?,
-		location=?, location_city=?, location_street=?, location_house=?, location_flat=? WHERE id=?', 
+		location=?, location_city=?, location_street=?, location_house=?, location_flat=?, flags=? WHERE id=?',
             array(
                 $voipaccountdata['login'],
                 $voipaccountdata['passwd'],
@@ -376,6 +376,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 		$voipaccountdata['location_street'] ? $voipaccountdata['location_street'] : null,
 		$voipaccountdata['location_house'] ? $voipaccountdata['location_house'] : null,
 		$voipaccountdata['location_flat'] ? $voipaccountdata['location_flat'] : null,
+                $voipaccountdata['flags'],
                 $voipaccountdata['id']
             )
         );
@@ -383,7 +384,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
     /**
      * Returns all VoIP accounts for given customer id
-     * 
+     *
      * @param int $id Customer id
      * @return array VoIP accounts data
      */
@@ -398,7 +399,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 		LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
 		LEFT JOIN location_districts ld ON ld.id = lb.districtid
 		LEFT JOIN location_states ls ON ls.id = ld.stateid
-            WHERE ownerid=? 
+            WHERE ownerid=?
             ORDER BY login ASC', array($id)
         );
         if ($result['accounts']) {

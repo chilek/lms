@@ -56,7 +56,7 @@ if(isset($_POST['voipaccountedit']))
 	else
 	{
 		$loginids = $LMS->GetVoipAccountIDByLogin($voipaccountedit['login']);
-
+		
 		$foundid = 0;
 		if(isset($loginids))
 			foreach($loginids as $loginid)
@@ -108,7 +108,15 @@ if(isset($_POST['voipaccountedit']))
 		elseif($status == 2) // awaiting
 	                $error['customer'] = trans('Voip account owner is not connected!');
 	}
+	
+	$flags = 0;
+	if (!empty($voipaccountedit['admin_record_flag']))
+		$flags |= CALL_FLAG_ADMIN_RECORDING;
 
+    if (!empty($voipaccountedit['customer_record_flag']))
+		$flags |= CALL_FLAG_CUSTOMER_RECORDING;
+
+	$voipaccountinfo['flags'] = $voipaccountedit['flags'] = $flags;
 	$voipaccountinfo['login'] = $voipaccountedit['login'];
 	$voipaccountinfo['passwd'] = $voipaccountedit['passwd'];
 	$voipaccountinfo['phone'] = $voipaccountedit['phone'];
@@ -118,7 +126,7 @@ if(isset($_POST['voipaccountedit']))
 	$voipaccountinfo['location_street'] = $voipaccountedit['location_street'];
 	$voipaccountinfo['location_house'] = $voipaccountedit['location_house'];
 	$voipaccountinfo['location_flat'] = $voipaccountedit['location_flat'];
-
+	
         $hook_data = $plugin_manager->executeHook(
             'voipaccountedit_before_submit',
             array(
@@ -128,7 +136,7 @@ if(isset($_POST['voipaccountedit']))
         );
         $voipaccountedit = $hook_data['voipaccountedit'];
         $error = $hook_data['error'];
-        
+
 	if(!$error)
 	{
 		if (empty($voipaccountedit['teryt'])) {
@@ -151,7 +159,7 @@ $customers = $LMS->GetCustomerNames();
 include(MODULES_DIR.'/customer.inc.php');
 
 $hook_data = $plugin_manager->executeHook(
-    'voipaccountedit_before_display', 
+    'voipaccountedit_before_display',
     array(
         'voipaccountinfo' => $voipaccountinfo,
         'smarty' => $SMARTY,
