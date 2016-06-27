@@ -56,7 +56,7 @@ if(isset($_POST['voipaccountedit']))
 	else
 	{
 		$loginids = $LMS->GetVoipAccountIDByLogin($voipaccountedit['login']);
-		
+
 		$foundid = 0;
 		if(isset($loginids))
 			foreach($loginids as $loginid)
