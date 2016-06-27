@@ -126,7 +126,7 @@ if(isset($_POST['voipaccountedit']))
 	$voipaccountinfo['location_street'] = $voipaccountedit['location_street'];
 	$voipaccountinfo['location_house'] = $voipaccountedit['location_house'];
 	$voipaccountinfo['location_flat'] = $voipaccountedit['location_flat'];
-	
+
         $hook_data = $plugin_manager->executeHook(
             'voipaccountedit_before_submit',
             array(
