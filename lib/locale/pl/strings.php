@@ -2544,6 +2544,7 @@ $_LANG['Tariffs:'] = 'Taryfy:';
 $_LANG['There are no promotions in database.'] = 'Brak promocji w bazie danych.';
 $_LANG['This promotion hasn\'t got any schemas.'] = 'Ta promocja nie posiada żadnych schematów.';
 $_LANG['This promotion has no assigned tariffs.'] = 'Ta promocja nie posiada przypisanych taryf.';
+$_LANG['Tariff has no assigned prefixes.'] = 'Taryfa nie posiada przypisanych prefiksów.';
 $_LANG['This schema has no assigned tariffs.'] = 'Ten schemat nie posiada przypisanych taryf.';
 $_LANG['Unable to edit two rows at once!'] = 'Nie można edytować dwóch rekordów jednocześnie!';
 $_LANG['unlimited'] = 'nieokreślony';
