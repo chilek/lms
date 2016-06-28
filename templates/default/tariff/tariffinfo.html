@@ -459,40 +459,51 @@
 
 	<TABLE CLASS="lmsbox">
         <colgroup>
-            <col style="width: 1%;"/>
-            <col style="width: 99%;"/>
+            <col style="width: 80%;"/>
+            <col style="width: 5%;"/>
+            <col style="width: 5%;"/>
         </colgroup>
         <thead>
             <TR>
-                <TD CLASS="bold" COLSPAN="2">
+                <TD CLASS="bold">
                     {trans("Groups:")}
+                </TD>
+                <TD>
+                	{trans("Price:")}
+                </TD>
+                <TD>
+                	{trans("Amount:")}
                 </TD>
             </TR>
         </thead>
         <TBODY>
-            <TR>
-                <TD COLSPAN="2">
-					{if isset($tariffGroups)}
-						<ol>
-						{foreach from=$tariffGroups item=singleGroup}
-							<li>
-								<a href="javascript:changePrefixListState({$singleGroup.group_id});">{$singleGroup.group_name} ({$singleGroup.price})</a>
-
-								<ul id="prefix_group_{$singleGroup.group_id}" style="list-style-type: none; text-align: left; padding-left: 10px; display: none;">
-									{foreach from=$singleGroup.prefix_list item=singlePrefix}
-									<li>{$singlePrefix}</li>
-									{/foreach}
-								</ul>
-							</li>
-						{/foreach}
-						</ol>
-					{else}
-						<DIV STYLE="text-align: center; padding: 10px; font-weight: bold;">
-							Nie znaleziono prefixów przypisanych do taryfy.
-						</DIV>
-					{/if}
-				</TD>
-            </TR>
+			{if isset($tariffGroups)}
+				{foreach from=$tariffGroups item=singleGroup name=group}
+					<TR ID="prefix_group_head_{$singleGroup.group_id}" CLASS="highlight">
+						<TD STYLE="padding-left: 5px;">
+							{$smarty.foreach.group.iteration}.
+							<A HREF="javascript:changePrefixListState({$singleGroup.group_id});">
+								 {$singleGroup.group_name}
+							</A>
+						</TD>
+						<TD>{$singleGroup.price|money_format}</TD>
+						<TD>{count($singleGroup.prefix_list)}
+					</TR>
+					<TR>
+						<TD COLSPAN="3">
+							<UL ID="prefix_group_{$singleGroup.group_id}" style="list-style-type: none; padding-left: 10px; display: none;">
+								{foreach from=$singleGroup.prefix_list item=singlePrefix}
+								<li>{$singlePrefix}</li>
+								{/foreach}
+							</UL>
+						</TD>
+					</TR>
+				{/foreach}
+			{else}
+				<DIV STYLE="text-align: center; padding: 10px; font-weight: bold;">
+					{trans("Tariff has no assigned prefixes.")}
+				</DIV>
+			{/if}
         </TBODY>
     </TABLE>
 
@@ -500,16 +511,17 @@
 	<!--
 		function changePrefixListState(ID) {
 			var ul = document.getElementById("prefix_group_"+ID);
-			var display_state = ul.style.display;
+			var tr = document.getElementById("prefix_group_head_"+ID);
 
-			if (display_state == 'none') {
+			if (ul.style.display == 'none') {
 				ul.style.display = 'block';
+				tr.style.backgroundColor = '#CEBD9B';
 			} else {
 				ul.style.display = 'none';
+				tr.style.backgroundColor = '';
 			}
 		}
 	//-->
 	</SCRIPT>
-
 {/if}
 {/block}
