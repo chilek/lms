@@ -121,6 +121,36 @@
                 </td>
             </tr>
             {/block}
+            {block name="voipaccounteditbox-flags"}
+            <tr>
+                <td>
+                    <img src="img/users.gif" alt="">
+                </td>
+                <td class="bold">
+                    {trans("Flags:")}
+                </td>
+                <td>
+                	<label>
+						{trans("recording for operator:")}
+						<input
+							type="checkbox"
+							name="voipaccountedit[admin_record_flag]"
+							value="yes"
+						    {if $voipaccountinfo.flags & CALL_FLAG_ADMIN_RECORDING}checked{/if}>
+						<br>
+                	</label>
+                	<label>
+						{trans("recording for customer:")}
+						<input
+							type="checkbox"
+							name="voipaccountedit[customer_record_flag]"
+							value="yes"
+							{if $voipaccountinfo.flags & CALL_FLAG_CUSTOMER_RECORDING}checked{/if}>
+						<br>
+                	</label>
+                </td>
+            </tr>
+            {/block}
             {block name="voipaccounteditbox-extra"}{/block}
             {block name="voipaccounteditbox-buttons"}
             <tr>

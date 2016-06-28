@@ -109,6 +109,14 @@ if(isset($_POST['voipaccountedit']))
 	                $error['customer'] = trans('Voip account owner is not connected!');
 	}
 
+	$flags = 0;
+	if (!empty($voipaccountedit['admin_record_flag']))
+		$flags |= CALL_FLAG_ADMIN_RECORDING;
+
+    if (!empty($voipaccountedit['customer_record_flag']))
+		$flags |= CALL_FLAG_CUSTOMER_RECORDING;
+
+	$voipaccountinfo['flags'] = $voipaccountedit['flags'] = $flags;
 	$voipaccountinfo['login'] = $voipaccountedit['login'];
 	$voipaccountinfo['passwd'] = $voipaccountedit['passwd'];
 	$voipaccountinfo['phone'] = $voipaccountedit['phone'];

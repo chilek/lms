@@ -113,6 +113,40 @@
             </td>
         </tr>
         {/block}
+		{block name="voipaccountinfobox-flags"}
+        <tr>
+            <td>
+                <img src="img/info2.gif" alt="">
+            </td>
+            <td class="bold">
+                {trans("Flags:")}
+            </td>
+            <td>
+				<table>
+					<tr>
+						<td>{trans("recording for operator:")}</td>
+						<td>
+							{if $voipaccountinfo.flags & CALL_FLAG_ADMIN_RECORDING}
+								{trans("yes")}
+							{else}
+								{trans("no")}
+							{/if}<br>
+						</td>
+					</tr>
+					<tr>
+						<td>{trans("recording for customer:")}</td>
+						<td>
+							{if $voipaccountinfo.flags & CALL_FLAG_CUSTOMER_RECORDING}
+								{trans("yes")}
+							{else}
+								{trans("no")}
+							{/if}
+						</td>
+					</tr>
+				</table>
+            </td>
+        </tr>
+        {/block}
         {block name="voipaccountinfobox-extra"}{/block}
         {block name="voipaccountinfobox-buttons"}
         <tr>
