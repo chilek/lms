@@ -111,7 +111,6 @@
 	 */
 	function getMaxCallTime($from, $to) {
 		$customer = getCustomerByPhone($from);
-		include_tariff($customer['tariffid']);
 		$call_cost = getCost($from, $to, $customer['tariffid']);
 
 		return floor($customer['balance'] / $call_cost['costPerUnit']) * $call_cost['unitSize'];
@@ -147,17 +146,20 @@
 	 * \return array informations about price (unit size and cost per one unit)
 	 */
 	function getCost($caller, $callee, $t_id) {
-		global $tariffs;
-
 		$discount = findBestPrice($caller, $callee, $t_id);
 		$prefix = findLongestPrefix($callee, $t_id);
+
+		$path = VOIP_CACHE_DIR . DIRECTORY_SEPARATOR . 'tariffs' . DIRECTORY_SEPARATOR . $t_id
+			. DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, str_split($prefix));
+		$sale_price = file_get_contents($path . DIRECTORY_SEPARATOR . 'sale_price');
+		$unit_size = file_get_contents($path . DIRECTORY_SEPARATOR . 'unit_size');
 
 		if (!$prefix)
 			throw new Exception("Can't find prefix for $callee number");
 
-		switch($discount) {
+		switch ($discount) {
 			case '-1': // no promotion
-				$price = $tariffs[$t_id]['prefixes'][$prefix]['sale_price'];
+				$price = $sale_price;
 			break;
 
 			default: // new price
@@ -166,10 +168,10 @@
 		}
 
 		// change price per minute to price per second
-		$price = ($price*100) / 60;
+		$price = ($price * 100) / 60;
 
 		// get cost per one unit
-		$unitSize = $tariffs[$t_id]['prefixes'][$prefix]['unit_size'];
+		$unitSize = $unit_size;
 		$costPerUnit = ($price * $unitSize) / 100;
 
 		return array('unitSize' => $unitSize, 'costPerUnit' => $costPerUnit);
@@ -183,15 +185,16 @@
 	 * \return string longest matched prefix
 	 */
 	function findLongestPrefix($number, $t_id) {
-		global $tariffs;
+		$path = VOIP_CACHE_DIR . DIRECTORY_SEPARATOR . 'tariffs' . DIRECTORY_SEPARATOR . $t_id;
+		$digits = str_split($number);
 
-		while (strlen($number) && !isset($tariffs[$t_id]['prefixes'][$number]))
-			$number = substr($number, 0, -1);
+		while (count($digits) && !is_dir($dirname = $path . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $digits)))
+			array_pop($digits);
 
-		if (!isset($tariffs[$t_id]['prefixes'][$number]))
+		if (empty($digits))
 			return NULL;
 
-		return $number;
+		return implode('', $digits);
 	}
 
 	/*!
@@ -206,7 +209,7 @@
 		global $tariffs;
 		$cost = -1;
 
-		if (!isset($tarifs[$t_id]['rules']))
+		if (!isset($tariffs[$t_id]['rules']))
 			return -1;
 
 		foreach($tariffs[$t_id]['rules'] as $singleRule) {
@@ -214,7 +217,7 @@
 
 			while (strlen($to_tmp) && !isset($singleRule['prefixes'][$to_tmp]))
 				$to_tmp = substr($to_tmp, 0, -1);
-
+             
 			if (isset($singleRule['prefixes'][$to_tmp]) && ($cost == -1 || ($cost != -1 && $singleRule['sale_price'] < $cost)))
 				$cost = $singleRule['sale_price'];
 		}
@@ -351,5 +354,4 @@
 
 		return true;
 	}
-
 ?>
