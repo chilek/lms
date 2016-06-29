@@ -24,18 +24,28 @@
  *  $Id$
  */
 
+function sessionHandler($item, $name) {
+	global $SESSION;
+
+	if(!isset($_GET[$item]))
+		$SESSION->restore($name, $o);
+	else
+		$o = $_GET[$item];
+
+	$SESSION->save($name, $o);
+	return $o;
+}
+
 $layout['pagetitle'] = trans('Billing list');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if(!isset($_GET['o']))
-	$SESSION->restore('nlo', $o);
-else
-	$o = $_GET['o'];
-
-$SESSION->save('nlo', $o);
-
-$id = (isset($_GET['fvoipaccid']) && $_GET['fvoipaccid'] != 'all') ? (int) $_GET['fvoipaccid'] : NULL;
+$o = sessionHandler('o', 'vblo');
+$id = sessionHandler('fvoipaccid', 'vblfvoipaccid');
+$frangefrom = sessionHandler('frangefrom', 'vblfrangefrom');
+$frangeto = sessionHandler('frangeto', 'vblfrangeto');
+$ftype = sessionHandler('ftype', 'vblftype');
+$fstatus = sessionHandler('fstatus', 'vblfstatus');
 
 // ORDER
 $order = explode(',', $o);
@@ -64,12 +74,12 @@ if (empty($order[1]) || $order[1] != 'desc')
 $where = array();
 
 // CUSTOMER ID
-if ($id !== NULL)
+if ($id !== '')
 	$where[] = "(cdr.callervoipaccountid = $id OR cdr.calleevoipaccountid = $id)";
 
 // CALL BILLING RANGE
-if (isset($_GET['frangefrom']) && $_GET['frangefrom'] != '') {
-	list($year, $month, $day) = explode('/', $_GET['frangefrom']);
+if ($frangefrom != '') {
+	list($year, $month, $day) = explode('/', $frangefrom);
 	$from = mktime(0,0,0, $month, $day, $year);
 
 	$where[] = 'call_start_time >= ' . $from;
@@ -77,8 +87,8 @@ if (isset($_GET['frangefrom']) && $_GET['frangefrom'] != '') {
 	unset($from);
 }
 
-if (isset($_GET['frangeto']) && $_GET['frangeto'] != '') {
-	list($year, $month, $day) = explode('/', $_GET['frangeto']);
+if ($frangeto != '') {
+	list($year, $month, $day) = explode('/', $frangeto);
 	$to = mktime(23,59,59, $month, $day, $year);
 
 	$where[] = 'call_start_time <= ' . $to;
@@ -87,28 +97,26 @@ if (isset($_GET['frangeto']) && $_GET['frangeto'] != '') {
 }
 
 // CALL STATUS
-if (!empty($_GET['fstatus'])) {
-	switch ($_GET['fstatus']) {
+if ($fstatus != '')
+	switch ($fstatus) {
 		case CALL_ANSWERED:
 		case CALL_NO_ANSWER:
 		case CALL_BUSY:
 		case CALL_SERVER_FAILED:
-			$where[] = "cdr.status = " . $_GET['fstatus'];
-			$listdata['fstatus'] = $_GET['fstatus'];
+			$where[] = "cdr.status = " . $fstatus;
+			$listdata['fstatus'] = $fstatus;
 		break;
 	}
-}
 
 // CALL TYPE
-if (!empty($_GET['ftype'])) {
-	switch ($_GET['ftype']) {
+if ($ftype != '')
+	switch ($ftype) {
 		case CALL_OUTGOING:
 		case CALL_INCOMING:
-			$where[] = "cdr.type = " . $_GET['ftype'];
-			$listdata['ftype'] = $_GET['ftype'];
+			$where[] = "cdr.type = " . $ftype;
+			$listdata['ftype'] = $ftype;
 		break;
 	}
-}
 
 if ($where) {
 	$where_string = ' WHERE ';
