@@ -42,7 +42,8 @@ $parameters = array(
 	's:' => 'startcall:',
 	't:' => 'type:',
 	'u:' => 'status:',
-	'U:' => 'uniqueid:'
+	'U:' => 'uniqueid:',
+	'c:' => 'cache-dir:',
 );
 
 foreach ($parameters as $key => $val) {
@@ -75,6 +76,7 @@ lms-billing.php
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors
+-c, --cache-dir=<cache-directory>       explicitly sets cache directory
 
 EOF;
 	exit(0);
@@ -110,7 +112,6 @@ $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ?
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
-define('VOIP_CACHE_DIR', SYS_DIR . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'voip' . DIRECTORY_SEPARATOR . 'cache');
 
 // Load autoloader
 $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
@@ -151,6 +152,9 @@ $options['action'] = (isset($options['action'])) ? $options['action'] : '';
 $param_err = validParamters($options);
 if ($param_err !== TRUE)
 	die($param_err);
+
+define('VOIP_CACHE_DIR', isset($options['cache-dir']) ? $options['cache-dir']
+	: SYS_DIR . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'voip' . DIRECTORY_SEPARATOR . 'cache');
 
 switch (strtolower($options['action'])) {
 	case 'estimate':
