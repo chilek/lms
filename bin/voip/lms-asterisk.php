@@ -89,7 +89,7 @@ else
 if (!$quiet)
 	echo "Using file ".$CONFIG_FILE." as config." . PHP_EOL;
 
-$config_section = (array_key_exists('section', $options) && preg_match('/^[a-z0-9-]+$/i', $options['section']) ? $options['section'] : 'allowedhosts');
+$config_section = (array_key_exists('section', $options) && preg_match('/^[a-z0-9-]+$/i', $options['section']) ? $options['section'] : 'asterisk');
 
 if (!is_readable($CONFIG_FILE))
 	die("Unable to read configuration file [".$CONFIG_FILE."]!" . PHP_EOL);
