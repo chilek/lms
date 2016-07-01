@@ -54,6 +54,19 @@
 	}
 
 	/*!
+	 * \brief Update voip account balance.
+	 *
+	 * \param int $id voip account id
+	 * \param float $value
+	 * \return array array of customers with base kay as phone number
+	 */
+	function updateCustomerBalance($id, $value) {
+		$DB = LMSDB::getInstance();
+
+		$DB->Execute('UPDATE voipaccounts SET balance = balance - ? WHERE id = ?', array($value, $id));
+	}
+
+	 /*!
 	 * \brief Get customer list.
 	 *
 	 * \return array array of customers with base kay as phone number

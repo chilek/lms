@@ -84,6 +84,23 @@
                 </td>
             </tr>
             {/block}
+            {block name="voipaccounteditbox-cost_limit"}
+            <tr>
+                <td>
+                    <img src="img/money.gif" alt="">
+                </td>
+                <td class="bold">
+                    {trans("Cost limit:")}
+                </td>
+                <td>
+					{if ConfigHelper::checkPrivilege('superuser')}
+						<input type="text" name="voipaccountedit[cost_limit]" value="{$voipaccountinfo.cost_limit}" placeholder="{trans("default")}">
+					{else}
+						{$voipaccountinfo.cost_limit}
+					{/if}
+                </td>
+            </tr>
+            {/block}
             {block name="voipaccounteditbox-customer"}
             <tr>
                 <td>
