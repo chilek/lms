@@ -77,7 +77,7 @@
                 </td>
                 <td>
 					{if ConfigHelper::checkPrivilege('superuser')}
-						<input name="voipaccountedit[balance]" value="{$voipaccountinfo.balance}">
+						<input type="text" name="voipaccountedit[balance]" value="{$voipaccountinfo.balance}">
 					{else}
 						{$voipaccountinfo.balance}
 					{/if}
