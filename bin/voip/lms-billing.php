@@ -167,12 +167,12 @@ switch (strtolower($options['action'])) {
 		try {
 			// get maximum call time in seconds
 			$call_time = getMaxCallTime($options['caller'], $options['callee']);
+
+			// if debug mode is set print value else change to miliseconds before print
+			echo (array_key_exists('debug', $options)) ? $call_time.PHP_EOL : $call_time*1000;
 		} catch (Exception $e) {
 			echo $e->getMessage();
 		}
-
-		// if debug mode is set print value else change to miliseconds before print
-		echo (array_key_exists('debug', $options)) ? $call_time.PHP_EOL : $call_time*1000;
 	break;
 
 	case 'account':
@@ -199,25 +199,16 @@ switch (strtolower($options['action'])) {
 				die('Time answer to end of call is not set. Please use --calltime [number_of_seconds].' . PHP_EOL);
 
 			if (empty($options['type']))
-				die('Call type is not set. Please use --type (incoming|outgoing).' . PHP_EOL);
+				die('Call type is not set. Please use --type.' . PHP_EOL);
 
 			if (empty($options['status']))
-				die('Call status is not set. Please use --status (busy|answered|noanswer).' . PHP_EOL);
+				die('Call status is not set. Please use --status.' . PHP_EOL);
 
 			if (empty($options['uniqueid']))
 				die('Call unique id is not set. Please use --uniqueid' . PHP_EOL);
 
 			$caller = $customer_list[$options['caller']];
-/*
-			if ($caller['tariffid'])
-				include_tariff($caller['tariffid']);
-*/
-
 			$callee = $customer_list[$options['callee']];
-/*
-			if ($callee['tariffid'])
-				include_tariff($callee['tariffid']);
-*/
 
 			try {
 				$caller['prefix_group'] = $prefix_list[findLongestPrefix($caller['phone'], $caller['tariffid'])]['name'];
@@ -235,11 +226,15 @@ switch (strtolower($options['action'])) {
 					break;
 
 					case CALL_OUTGOING:
-						//include_tariff($caller['tariffid']);
 						$call_cost = getCost($options['caller'], $options['callee'], $caller['tariffid']);
 						$price = round(ceil($options['calltime']/$call_cost['unitSize']) * $call_cost['costPerUnit'], 5);
 					break;
 				}
+
+				$DB->BeginTrans();
+
+				if ($price)
+					$DB->Execute('UPDATE voipaccounts SET balance = balance - ? WHERE id = ?', array($price, $caller['voipaccountid']));
 
 				// insert cdr record to database
 				$DB->Execute("INSERT INTO voip_cdr
@@ -252,6 +247,8 @@ switch (strtolower($options['action'])) {
 								$options['calltime'], $price, $call_status, $call_type, $caller['voipaccountid'],
 								$callee['voipaccountid'], (int) $caller['flags'], (int) $callee['flags'],
 								$caller['prefix_group'], $callee['prefix_group'], $options['uniqueid']));
+
+				$DB->CommitTrans();
 			}
 			catch (Exception $e) {
 				echo $e->getMessage();
@@ -273,16 +270,7 @@ switch (strtolower($options['action'])) {
 					validCDR($cdr);
 
 					$caller = $customer_list[$cdr['caller']];
-/*
-					if ($caller['tariffid'])
-						include_tariff($caller['tariffid']);
-*/
-
 					$callee = $customer_list[$cdr['callee']];
-/*
-					if ($callee['tariffid'])
-						include_tariff($callee['tariffid']);
-*/
 
 					$caller['prefix_group'] = $prefix_list[findLongestPrefix($caller['phone'], $caller['tariffid'])]['name'];
 					$callee['prefix_group'] = $prefix_list[findLongestPrefix($callee['phone'], $callee['tariffid'])]['name'];
