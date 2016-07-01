@@ -150,11 +150,11 @@
                 	<table>
                 		<tr>
                 			<td>
-                				<label>{trans("recording for operator:")}</label>
+                				<label for="admin_record">{trans("recording for operator:")}</label>
                 			</td>
                 			<td>
 								<input
-									id=""
+									id="admin_record"
 									type="checkbox"
 									name="voipaccountedit[admin_record_flag]"
 									value="yes"
@@ -163,10 +163,11 @@
 						</tr>
                 		<tr>
                 			<td>
-                				<label>{trans("recording for customer:")}</label>
+                				<label for="customer_record">{trans("recording for customer:")}</label>
 							</td>
 							<td>
 								<input
+									id="customer_record"
 									type="checkbox"
 									name="voipaccountedit[customer_record_flag]"
 									value="yes"
