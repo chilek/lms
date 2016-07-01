@@ -234,7 +234,7 @@ switch (strtolower($options['action'])) {
 				$DB->BeginTrans();
 
 				if ($price)
-					$DB->Execute('UPDATE voipaccounts SET balance = balance - ? WHERE id = ?', array($price, $caller['voipaccountid']));
+					updateCustomerBalance($price, $caller['voipaccountid']);
 
 				// insert cdr record to database
 				$DB->Execute("INSERT INTO voip_cdr
@@ -300,6 +300,11 @@ switch (strtolower($options['action'])) {
 						break;
 					}
 
+					$DB->BeginTrans();
+
+					if ($price)
+						updateCustomerBalance($caller['voipaccountid'], $price);
+
 					// insert cdr record to database
 					$DB->Execute("INSERT INTO voip_cdr
 									(caller, callee, call_start_time, time_start_to_end, time_answer_to_end,
@@ -312,6 +317,8 @@ switch (strtolower($options['action'])) {
 									$cdr['time_answer_to_end'], $price, $call_status, $call_type, $caller['voipaccountid'],
 									$callee['voipaccountid'], (int) $caller['flags'], (int) $callee['flags'],
 									$caller['prefix_group'], $callee['prefix_group'], $cdr['uniqueid']));
+
+					$DB->CommitTrans();
 				} catch(Exception $e) {
 					echo "line $i: ", $e->getMessage(), PHP_EOL;
 				}

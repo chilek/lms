@@ -31,6 +31,7 @@ $_LANG['Call begin time:'] = 'Czas połączenia:';
 $_LANG['Call answer time:'] = 'Czas rozmowy:';
 $_LANG['Call time:'] = 'Czas rozmowy:';
 $_LANG['Caller:'] = 'Skąd:';
+$_LANG['Cost limit:'] = 'Limit kosztów:';
 $_LANG['Callee:'] = 'Dokąd:';
 $_LANG['Start call:'] = 'Dokąd:';
 $_LANG['purchase invoice'] = 'faktura zakupu';

@@ -1768,6 +1768,7 @@ CREATE TABLE voipaccounts (
 	location_flat varchar(32) DEFAULT NULL,
 	balance		numeric(12,5) NOT NULL DEFAULT 0,
 	flags		smallint NOT NULL DEFAULT 0,
+	cost_limit	numeric(12,2) NULL DEFAULT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX voipaccounts_location_street_idx ON voipaccounts (location_street);
@@ -2762,4 +2763,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016062800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016070100');
