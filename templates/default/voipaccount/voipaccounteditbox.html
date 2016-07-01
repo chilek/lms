@@ -67,6 +67,23 @@
                 </td>
             </tr>
             {/block}
+            {block name="voipaccounteditbox-balance"}
+            <tr>
+                <td>
+                    <img src="img/money.gif" alt="">
+                </td>
+                <td class="bold">
+                    {trans("Balance:<!voip>")}
+                </td>
+                <td>
+					{if ConfigHelper::checkPrivilege('superuser')}
+						<input name="voipaccountedit[balance]" value="{$voipaccountinfo.balance}">
+					{else}
+						{$voipaccountinfo.balance}
+					{/if}
+                </td>
+            </tr>
+            {/block}
             {block name="voipaccounteditbox-customer"}
             <tr>
                 <td>
@@ -130,24 +147,33 @@
                     {trans("Flags:")}
                 </td>
                 <td>
-                	<label>
-						{trans("recording for operator:")}
-						<input
-							type="checkbox"
-							name="voipaccountedit[admin_record_flag]"
-							value="yes"
-						    {if $voipaccountinfo.flags & CALL_FLAG_ADMIN_RECORDING}checked{/if}>
-						<br>
-                	</label>
-                	<label>
-						{trans("recording for customer:")}
-						<input
-							type="checkbox"
-							name="voipaccountedit[customer_record_flag]"
-							value="yes"
-							{if $voipaccountinfo.flags & CALL_FLAG_CUSTOMER_RECORDING}checked{/if}>
-						<br>
-                	</label>
+                	<table>
+                		<tr>
+                			<td>
+                				<label>{trans("recording for operator:")}</label>
+                			</td>
+                			<td>
+								<input
+									id=""
+									type="checkbox"
+									name="voipaccountedit[admin_record_flag]"
+									value="yes"
+								    {if $voipaccountinfo.flags & CALL_FLAG_ADMIN_RECORDING}checked{/if}>
+							</td>
+						</tr>
+                		<tr>
+                			<td>
+                				<label>{trans("recording for customer:")}</label>
+							</td>
+							<td>
+								<input
+									type="checkbox"
+									name="voipaccountedit[customer_record_flag]"
+									value="yes"
+									{if $voipaccountinfo.flags & CALL_FLAG_CUSTOMER_RECORDING}checked{/if}>
+							</td>
+                		</tr>
+                	</table>
                 </td>
             </tr>
             {/block}

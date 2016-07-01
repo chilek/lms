@@ -363,7 +363,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
     {
         $this->db->Execute(
             'UPDATE voipaccounts SET login=?, passwd=?, phone=?, moddate=?NOW?, access=?, modid=?, ownerid=?,
-		location=?, location_city=?, location_street=?, location_house=?, location_flat=?, flags=? WHERE id=?',
+		location=?, location_city=?, location_street=?, location_house=?, location_flat=?, flags=?, balance=? WHERE id=?',
             array(
                 $voipaccountdata['login'],
                 $voipaccountdata['passwd'],
@@ -377,6 +377,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 		$voipaccountdata['location_house'] ? $voipaccountdata['location_house'] : null,
 		$voipaccountdata['location_flat'] ? $voipaccountdata['location_flat'] : null,
                 $voipaccountdata['flags'],
+                $voipaccountdata['balance'],
                 $voipaccountdata['id']
             )
         );

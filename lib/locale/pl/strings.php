@@ -191,6 +191,7 @@ $_LANG['Back'] = 'Powrót';
 $_LANG['Backups'] = 'Kopie zapasowe';
 $_LANG['Balance'] = 'Saldo';
 $_LANG['Balance:'] = 'Saldo:';
+$_LANG['Balance:<!voip>'] = 'Saldo:';
 $_LANG['Balance date:'] = 'Data bilansu:';
 $_LANG['Balance Sheet'] = 'Historia operacji';
 $_LANG['Balance Sheet ($a to $b)'] = 'Historia operacji ($a do $b)';
