@@ -147,7 +147,8 @@ if (!empty($records))
 		$boroughs[$location_borough][$number] = $record;
 	}
 
-$accounts = $DB->GetAll("SELECT a.login, a.passwd, a.phone, lc.boroughid FROM voipaccounts a
+$accounts = $DB->GetAll("SELECT a.login, a.passwd, a.phone, a.flags, lc.boroughid
+	FROM voipaccounts a
 	LEFT JOIN location_cities lc ON lc.id = a.location_city");
 
 $fhs = fopen($sip_config_file, "w+");
@@ -175,7 +176,8 @@ if (!empty($accounts)) {
 		$prio = 1;
 		fprintf($fhei, "\nexten => _%s,%d,Set(CDR(exten)=\${EXTEN})\n", $phone, $prio++);
 		fprintf($fhei, "exten => _%s,%d,Set(CDR(accountcode)=\${CALLERID(num)})\n", $phone, $prio++);
-		fprintf($fhei, "exten => _%s,%d,Monitor(wav,\${CDR(uniqueid)},mb)\n", $phone, $prio++);
+		if ($flags & (CALL_FLAG_ADMIN_RECORDING | CALL_FLAG_CUSTOMER_RECORDING))
+			fprintf($fhei, "exten => _%s,%d,Monitor(wav,\${CDR(uniqueid)},mb)\n", $phone, $prio++);
 		fprintf($fhei, "exten => _%s,%d,Dial(SIP/%s,30)\n", $phone, $prio++, $login);
 		fprintf($fhei, "exten => _%s,%d,Hangup()\n", $phone, $prio++);
 	}
@@ -189,14 +191,16 @@ if (!empty($accounts)) {
 		$prio = 1;
 		fprintf($fheo, "exten => _+.,%d,Goto(outgoing-lms-%s,\${EXTEN:1},1)\n", $prio++, $phone);
 		$prio = 1;
-		fprintf($fheo, "exten => _X.,%d,Monitor(wav,\${CDR(uniqueid)},mb)\n", $prio++);
+		if ($flags & (CALL_FLAG_ADMIN_RECORDING | CALL_FLAG_CUSTOMER_RECORDING))
+			fprintf($fheo, "exten => _X.,%d,Monitor(wav,\${CDR(uniqueid)},mb)\n", $prio++);
 		fprintf($fheo, "exten => _X.,%d,Goto(outgoing,\${EXTEN},1)\n", $prio++);
 
 		if (isset($boroughs[$boroughid]))
 			foreach ($boroughs[$boroughid] as $number => $record) {
 				$prio = 1;
-				fprintf($fheo, "exten => _%s,%d,Monitor(wav,\${CDR(uniqueid)},mb)\n", $record['number'],
-					$prio++, $record['fullnumber']);
+				if ($flags & (CALL_FLAG_ADMIN_RECORDING | CALL_FLAG_CUSTOMER_RECORDING))
+					fprintf($fheo, "exten => _%s,%d,Monitor(wav,\${CDR(uniqueid)},mb)\n", $record['number'],
+						$prio++, $record['fullnumber']);
 				fprintf($fheo, "exten => _%s,%d,Goto(outgoing,%s,2)\n", $record['number'], $prio++, $record['fullnumber']);
 			}
 	}
