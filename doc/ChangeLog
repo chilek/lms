@@ -45,6 +45,7 @@ version ?.??.?? (????-??-??):
   - added backend script for voip emergency numbers database creation [chilan]
   - added backend script which generates sip account and extensions configuration
     files in asterisk format [chilan]
+  - asterisk configuration file generation script checks call recodings flags [chilan]
 
 version 1.11.20 (2016-04-19):
 
