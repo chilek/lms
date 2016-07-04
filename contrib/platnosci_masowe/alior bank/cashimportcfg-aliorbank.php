@@ -23,11 +23,11 @@
  *
  *  $Id$
  */
-$account = '249010289000000388';		// Prefix numeru rozliczeniowego naszej us³ugi MPT. To jest ten sam numer, który wpisujemy w konfiguracji LMS. Np. numer indywidualnego konta to:  55 2490 1028 9000 0003 8800 0001, prefix bêdzie nastêpuj¹cy: 249010289000000388
+$account = '249010289000000388';		// Prefix numeru rozliczeniowego naszej usÂ³ugi MPT. To jest ten sam numer, ktÃ³ry wpisujemy w konfiguracji LMS. Np. numer indywidualnego konta to:  55 2490 1028 9000 0003 8800 0001, prefix bÃªdzie nastÃªpujÂ¹cy: 249010289000000388
 
 $patterns[] = array(
     'id' => NULL,       // import source identifier (from 'cashsources' table)
-    'pattern' => '/[0-9]+,([0-9]{4})([0-9]{2})([0-9]{2}),[0-9]{2}'.$account.'([0-9]{6}),[0-9]{4},([0-9]+),[A-Z0-9 ]+,"([^"]*)","([^"]*)","([^"]*)"/',
+    'pattern' => '/[0-9]+,([0-9]{4})([0-9]{2})([0-9]{2}),[0-9]{2}'.$account.'([0-9]{6}),[0-9]{4},([0-9]+),([A-Z0-9 ]+|),"([^"]*)","([^"]*)","([^"]*)"/'',
     'pid' => 4,         // customer ID position in expression
                         // if zero - we try to search ID by regexp,
                         // invoice number or customer name and forename in entire line - nie rozumiem do konca: czy jesli wartosc do przypisania bedzie wynosila 0 czy jesli pozostanie na aktualnym zerowym substringu/submatchu                                                                                                                                                                                                     
