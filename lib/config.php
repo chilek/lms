@@ -151,6 +151,9 @@ $DEFAULTS = array(
 		'default_mailserver_ip' => '127.0.0.1',
 		'default_mx' => 'localhost'
 	),
+	'voip' => array(
+		'default_call_recording' = false
+	)
 );
 
 foreach ($DEFAULTS as $section => $values)

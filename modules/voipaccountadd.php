@@ -51,9 +51,8 @@ if(isset($_GET['prephone']))
 if(isset($_POST['voipaccountdata']))
 {
 	$voipaccountdata = $_POST['voipaccountdata'];
+    $error = array();
 
-        $error = array();
-        
 	foreach($voipaccountdata as $key => $value) {
 		if (!is_array($value)) {
 			$voipaccountdata[$key] = trim($value);
@@ -86,6 +85,14 @@ if(isset($_POST['voipaccountdata']))
 	elseif(!preg_match('/^C?[0-9]+$/', $voipaccountdata['phone']))
 		$error['phone'] = trans('Specified phone number contains forbidden characters or is too short!');
 
+	if (!isset($voipaccountdata['balance']))
+		$voipaccountdata['balance'] = 0;
+	elseif ($voipaccountdata['balance'] < 0)
+		$error['balance'] = trans('Account balance must be positive!');
+
+	if ($voipaccountdata['cost_limit'] < 0)
+		$error['cost_limit'] = trans('Cost limit must be positive!');
+
 	if(!$LMS->CustomerExists($voipaccountdata['ownerid']))
 		$error['customer'] = trans('You have to select owner!');
 	else
@@ -94,7 +101,7 @@ if(isset($_POST['voipaccountdata']))
 		if($status == 1) // unknown (interested)
 			$error['customer'] = trans('Selected customer is not connected!');
 		elseif($status == 2) // awaiting
-	                $error['customer'] = trans('Voip account owner is not connected!');
+			$error['customer'] = trans('Voip account owner is not connected!');
 	}
 
         $hook_data = $plugin_manager->executeHook(
@@ -106,9 +113,19 @@ if(isset($_POST['voipaccountdata']))
         );
         $voipaccountdata = $hook_data['voipaccountdata'];
         $error = $hook_data['error'];
-        
+
 	if(!$error)
 	{
+		if (isset($voipaccountdata['default_cost_limit']))
+			$voipaccountdata['cost_limit'] = NULL;
+
+		$voipaccountdata['flags'] = 0;
+		if (isset($voipaccountdata['admin_record_flag']))
+			$voipaccountdata['flags'] |= CALL_FLAG_ADMIN_RECORDING;
+
+		if (isset($voipaccountdata['customer_record_flag']))
+			$voipaccountdata['flags'] |= CALL_FLAG_CUSTOMER_RECORDING;
+
 		if (empty($voipaccountdata['teryt'])) {
 			$voipaccountdata['location_city'] = null;
 			$voipaccountdata['location_street'] = null;

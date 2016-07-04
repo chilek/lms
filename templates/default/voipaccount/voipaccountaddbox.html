@@ -65,6 +65,47 @@
                 </td>
             </tr>
             {/block}
+            {block name="voipaccountaddbox-balance"}
+            <tr>
+                <td>
+                    <img src="img/money.gif" alt="">
+                </td>
+                <td class="bold nobr">
+                    {trans("Balance:<!voip>")}
+                </td>
+                <td>
+                    <input name="voipaccountdata[balance]" type="text" value="{$voipaccountdata.balance}" {tip text="Funds on account" trigger="balance"}>
+                </td>
+            </tr>
+            {/block}
+            {block name="voipaccountaddbox-cost_limit"}
+            <tr>
+                <td>
+                    <img src="img/money.gif" alt="">
+                </td>
+                <td class="bold nobr">
+                    {trans("Cost limit:")}
+                </td>
+                <td>
+                    <input
+                        id="costlimit"
+                        name="voipaccountdata[cost_limit]"
+                        type="text"
+						value="{$voipaccountdata.cost_limit}"
+                        {tip text="Enter max cost limit for VoIP account" trigger="cost_limit"}>
+
+                    <label>
+                    <input
+                        id="costlimitcheck"
+                        name="voipaccountdata[default_cost_limit]"
+                        type="checkbox"
+                        onclick="cost_limit_handler()"
+						{if isset($voipaccountdata.default_cost_limit)}checked{/if}>
+                        {trans("default")}
+                    </label>
+                </td>
+            </tr>
+            {/block}
             {block name="voipaccountaddbox-customer"}
             <tr>
                 <td>
@@ -102,6 +143,44 @@
                 </td>
             </tr>
             {/block}
+            {block name="voipaccountaddbox-flags"}
+            <tr>
+                <td>
+                    <img src="img/customer.gif" alt="{trans("Flags:")}">
+                </td>
+                <td class="bold nobr">
+                    {trans("Flags:")}
+                </td>
+                <td>
+                	<table>
+                		<tr>
+                			<td>
+                				<label for="admin_record">{trans("recording for operator:")}</label>
+                			</td>
+                			<td>
+								<input
+									id="admin_record"
+									type="checkbox"
+									name="voipaccountdata[admin_record_flag]"
+									value="yes">
+							</td>
+						</tr>
+                		<tr>
+                			<td>
+                				<label for="customer_record">{trans("recording for customer:")}</label>
+							</td>
+							<td>
+								<input
+									id="customer_record"
+									type="checkbox"
+									name="voipaccountdata[customer_record_flag]"
+									value="yes">
+							</td>
+                		</tr>
+                	</table>
+                </td>
+            </tr>
+            {/block}
             {block name="voipaccountaddbox-extra"}{/block}
             {block name="voipaccountaddbox-buttons"}
             <tr>
@@ -125,5 +204,25 @@
 <!--
 	document.forms['voipaccountadd'].elements['voipaccountdata[login]'].focus();
 	check_teryt('location', true);
+	cost_input = document.getElementById("costlimit");
+
+	function disableCostLimitInput() {
+		cost_input.value = "{trans("default")} ({ConfigHelper::getConfig('voip.default_cost_limit')|money_format})";
+		cost_input.style = "border: 1px solid gray; background: lightgray;";
+		cost_input.disabled = true;
+	}
+
+	function enableCostLimitInput() {
+		cost_input.value = "";
+		cost_input.style = "border: 1px solid black; background: #EBE4D6;";
+		cost_input.disabled = false;
+	}
+
+	function cost_limit_handler() {
+		if (document.getElementById("costlimitcheck").checked)
+			disableCostLimitInput();
+		else
+			enableCostLimitInput();
+	}
 //-->
 </SCRIPT>
