@@ -70,14 +70,14 @@
             </td>
         </tr>
 		{/if}
-		{if $cdr.callervoipaccountid != 0}
+		{if $cdr.callervoipaccountid}
 		<tr>
             <td></td>
             <td class="bold nobr">
-                {trans("Voip account:")}
+                {trans("Customer:")}
             </td>
             <td class="nobr">
-               <a href="?m=voipaccountinfo&id={$cdr.callervoipaccountid}">{trans("Navigate to the customer")}</a>
+               <a href="?m=customerinfo&id={$cdr.callervoipaccountid}">{$cdr.callercustomername}</a>
             </td>
         </tr>
 		{/if}
@@ -129,14 +129,14 @@
             </td>
         </tr>
 		{/if}
-		{if $cdr.calleevoipaccountid != 0}
+		{if $cdr.calleevoipaccountid}
 		<tr>
             <td></td>
             <td class="bold nobr">
-                {trans("Voip account:")}
+                {trans("Customer:")}
             </td>
             <td class="nobr">
-               <a href="?m=voipaccountinfo&id={$cdr.calleevoipaccountid}">{trans("Navigate to the customer")}</a>
+               <a href="?m=customerinfo&id={$cdr.calleevoipaccountid}">{$cdr.calleecustomername}</a>
             </td>
         </tr>
 		{/if}
