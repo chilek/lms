@@ -2063,7 +2063,8 @@ CREATE TABLE voip_cdr (
 	caller_prefix_group varchar(100) NULL,
 	callee_prefix_group varchar(100) NULL,
 	uniqueid varchar(20) NOT NULL,
-	PRIMARY KEY (id)
+	PRIMARY KEY (id),
+	UNIQUE (uniqueid)
 );
 
 DROP TABLE IF EXISTS voip_emergency_numbers CASCADE;
@@ -2763,4 +2764,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016070100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016070500');
