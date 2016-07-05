@@ -65,19 +65,6 @@
                 </td>
             </tr>
             {/block}
-            {block name="voipaccountaddbox-balance"}
-            <tr>
-                <td>
-                    <img src="img/money.gif" alt="">
-                </td>
-                <td class="bold nobr">
-                    {trans("Balance:<!voip>")}
-                </td>
-                <td>
-                    <input name="voipaccountdata[balance]" type="text" value="{$voipaccountdata.balance}" {tip text="Funds on account" trigger="balance"}>
-                </td>
-            </tr>
-            {/block}
             {block name="voipaccountaddbox-cost_limit"}
             <tr>
                 <td>
@@ -94,6 +81,19 @@
                         value="{$voipaccountdata.cost_limit}"
                         placeholder="{trans("default")}: {ConfigHelper::getConfig('voip.default_cost_limit')|money_format}"
                         {tip text="Enter max cost limit for VoIP account" trigger="cost_limit"}>
+                </td>
+            </tr>
+            {/block}
+            {block name="voipaccountaddbox-balance"}
+            <tr>
+                <td>
+                    <img src="img/money.gif" alt="">
+                </td>
+                <td class="bold nobr">
+                    {trans("Balance:<!voip>")}
+                </td>
+                <td>
+                    <input name="voipaccountdata[balance]" type="text" value="{$voipaccountdata.balance}" {tip text="Funds on account" trigger="balance"}>
                 </td>
             </tr>
             {/block}
