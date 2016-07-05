@@ -65,6 +65,38 @@
                 </td>
             </tr>
             {/block}
+            {block name="voipaccountaddbox-balance"}
+            <tr>
+                <td>
+                    <img src="img/money.gif" alt="">
+                </td>
+                <td class="bold nobr">
+                    {trans("Balance:<!voip>")}
+                </td>
+                <td>
+                    <input name="voipaccountdata[balance]" type="text" value="{$voipaccountdata.balance}" {tip text="Funds on account" trigger="balance"}>
+                </td>
+            </tr>
+            {/block}
+            {block name="voipaccountaddbox-cost_limit"}
+            <tr>
+                <td>
+                    <img src="img/money.gif" alt="">
+                </td>
+                <td class="bold nobr">
+                    {trans("Cost limit:")}
+                </td>
+                <td>
+                    <input
+                        id="costlimit"
+                        name="voipaccountdata[cost_limit]"
+                        type="text"
+                        value="{$voipaccountdata.cost_limit}"
+                        placeholder="{trans("default")}: {ConfigHelper::getConfig('voip.default_cost_limit')|money_format}"
+                        {tip text="Enter max cost limit for VoIP account" trigger="cost_limit"}>
+                </td>
+            </tr>
+            {/block}
             {block name="voipaccountaddbox-customer"}
             <tr>
                 <td>
@@ -99,6 +131,44 @@
                     <input type="hidden" name="voipaccountdata[location_house]" value="{$voipaccountdata.location_house}">
                     <input type="hidden" name="voipaccountdata[location_flat]" value="{$voipaccountdata.location_flat}">
                     <input type="checkbox" name="voipaccountdata[teryt]" id="teryt" onchange="check_teryt('location')"{if $voipaccountdata.teryt} checked{/if}><label for="teryt">{trans("TERRIT-DB")}</label>
+                </td>
+            </tr>
+            {/block}
+            {block name="voipaccountaddbox-flags"}
+            <tr>
+                <td>
+                    <img src="img/customer.gif" alt="{trans("Flags:")}">
+                </td>
+                <td class="bold nobr">
+                    {trans("Flags:")}
+                </td>
+                <td>
+                	<table>
+                		<tr>
+                			<td>
+                				<label for="admin_record">{trans("recording for operator:")}</label>
+                			</td>
+                			<td>
+								<input
+									id="admin_record"
+									type="checkbox"
+									name="voipaccountdata[admin_record_flag]"
+									value="yes">
+							</td>
+						</tr>
+                		<tr>
+                			<td>
+                				<label for="customer_record">{trans("recording for customer:")}</label>
+							</td>
+							<td>
+								<input
+									id="customer_record"
+									type="checkbox"
+									name="voipaccountdata[customer_record_flag]"
+									value="yes">
+							</td>
+                		</tr>
+                	</table>
                 </td>
             </tr>
             {/block}

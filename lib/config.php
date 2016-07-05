@@ -151,6 +151,9 @@ $DEFAULTS = array(
 		'default_mailserver_ip' => '127.0.0.1',
 		'default_mx' => 'localhost'
 	),
+	'voip' => array(
+		'default_account_flags' = 0
+	)
 );
 
 foreach ($DEFAULTS as $section => $values)

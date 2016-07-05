@@ -218,8 +218,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
     {
         $voip_account_inserted = $this->db->Execute(
             'INSERT INTO voipaccounts (ownerid, login, passwd, phone, creatorid, creationdate, access,
-		location, location_city, location_street, location_house, location_flat)
-            VALUES (?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?)',
+		location, location_city, location_street, location_house, location_flat, balance, flags, cost_limit)
+            VALUES (?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array(
                 $voipaccountdata['ownerid'],
                 $voipaccountdata['login'],
@@ -232,6 +232,9 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 		$voipaccountdata['location_street'] ? $voipaccountdata['location_street'] : null,
 		$voipaccountdata['location_house'] ? $voipaccountdata['location_house'] : null,
 		$voipaccountdata['location_flat'] ? $voipaccountdata['location_flat'] : null,
+		$voipaccountdata['balance'] ? $voipaccountdata['balance'] : 0,
+		$voipaccountdata['flags'] ? $voipaccountdata['flags'] : ConfigHelper::getConfig('voip.default_account_flags', 0),
+		$voipaccountdata['cost_limit'] ? $voipaccountdata['cost_limit'] : null
             )
         );
         if ($voip_account_inserted) {
@@ -376,8 +379,8 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 		$voipaccountdata['location_street'] ? $voipaccountdata['location_street'] : null,
 		$voipaccountdata['location_house'] ? $voipaccountdata['location_house'] : null,
 		$voipaccountdata['location_flat'] ? $voipaccountdata['location_flat'] : null,
-                $voipaccountdata['flags'],
-                $voipaccountdata['balance'],
+        $voipaccountdata['flags'] ? $voipaccountdata['flags'] : ConfigHelper::getConfig('voip.default_account_flags', 0),
+        $voipaccountdata['balance'] ? $voipaccountdata['balance'] : 0,
         $voipaccountdata['cost_limit'] ? $voipaccountdata['cost_limit'] : null,
                 $voipaccountdata['id']
             )
