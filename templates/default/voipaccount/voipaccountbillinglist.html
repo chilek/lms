@@ -244,6 +244,11 @@
 				</td>
 
 				<td align="right" class="nobr">
+					{if $billings[i].caller_flags || $billings[i].callee_flags}
+					<audio src="?m=voipcallrecording&id={$billings[i].id}" controls preload="none">
+						{trans("Your browser does not support the audio element.")}
+					</audio>
+					{/if}
 					<a href="?m=voipaccountbillinginfo&amp;id={$billings[i].id}">
 						<img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Details")} ]">
 					</a>

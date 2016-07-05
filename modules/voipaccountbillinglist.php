@@ -131,7 +131,8 @@ $bill_list = $DB->GetAll('SELECT
 								   cdr.id, caller, callee, price, call_start_time as begintime, time_start_to_end as callbegintime, time_answer_to_end as callanswertime,
 								   cdr.type as type, callervoipaccountid, calleevoipaccountid, cdr.status as status, vacc.ownerid as callerownerid, vacc2.ownerid as calleeownerid,
 								   c1.name as caller_name, c1.lastname as caller_lastname, c1.city as caller_city, c1.street as caller_street, c1.building as caller_building,
-								   c2.name as callee_name, c2.lastname as callee_lastname, c2.city as callee_city, c2.street as callee_street, c2.building as callee_building
+								   c2.name as callee_name, c2.lastname as callee_lastname, c2.city as callee_city, c2.street as callee_street, c2.building as callee_building,
+								   caller_flags, callee_flags
 								FROM
 								   voip_cdr cdr
 								   left join voipaccounts vacc on cdr.callervoipaccountid = vacc.id
