@@ -116,9 +116,6 @@ if(isset($_POST['voipaccountdata']))
 
 	if(!$error)
 	{
-		if (isset($voipaccountdata['default_cost_limit']))
-			$voipaccountdata['cost_limit'] = NULL;
-
 		$voipaccountdata['flags'] = 0;
 		if (isset($voipaccountdata['admin_record_flag']))
 			$voipaccountdata['flags'] |= CALL_FLAG_ADMIN_RECORDING;

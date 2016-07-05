@@ -91,18 +91,9 @@
                         id="costlimit"
                         name="voipaccountdata[cost_limit]"
                         type="text"
-						value="{$voipaccountdata.cost_limit}"
+                        value="{$voipaccountdata.cost_limit}"
+                        placeholder="{trans("default")}: {ConfigHelper::getConfig('voip.default_cost_limit')|money_format}"
                         {tip text="Enter max cost limit for VoIP account" trigger="cost_limit"}>
-
-                    <label>
-                    <input
-                        id="costlimitcheck"
-                        name="voipaccountdata[default_cost_limit]"
-                        type="checkbox"
-                        onclick="cost_limit_handler()"
-						{if isset($voipaccountdata.default_cost_limit)}checked{/if}>
-                        {trans("default")}
-                    </label>
                 </td>
             </tr>
             {/block}
@@ -204,25 +195,5 @@
 <!--
 	document.forms['voipaccountadd'].elements['voipaccountdata[login]'].focus();
 	check_teryt('location', true);
-	cost_input = document.getElementById("costlimit");
-
-	function disableCostLimitInput() {
-		cost_input.value = "{trans("default")} ({ConfigHelper::getConfig('voip.default_cost_limit')|money_format})";
-		cost_input.style = "border: 1px solid gray; background: lightgray;";
-		cost_input.disabled = true;
-	}
-
-	function enableCostLimitInput() {
-		cost_input.value = "";
-		cost_input.style = "border: 1px solid black; background: #EBE4D6;";
-		cost_input.disabled = false;
-	}
-
-	function cost_limit_handler() {
-		if (document.getElementById("costlimitcheck").checked)
-			disableCostLimitInput();
-		else
-			enableCostLimitInput();
-	}
 //-->
 </SCRIPT>

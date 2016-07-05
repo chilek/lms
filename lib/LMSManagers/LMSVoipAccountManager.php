@@ -380,7 +380,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 		$voipaccountdata['location_house'] ? $voipaccountdata['location_house'] : null,
 		$voipaccountdata['location_flat'] ? $voipaccountdata['location_flat'] : null,
         $voipaccountdata['flags'] ? $voipaccountdata['flags'] : ConfigHelper::getConfig('voip.default_account_flags', 0),
-                $voipaccountdata['balance'],
+        $voipaccountdata['balance'] ? $voipaccountdata['balance'] : 0,
         $voipaccountdata['cost_limit'] ? $voipaccountdata['cost_limit'] : null,
                 $voipaccountdata['id']
             )

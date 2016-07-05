@@ -93,11 +93,15 @@
                     {trans("Cost limit:")}
                 </td>
                 <td>
-					{if ConfigHelper::checkPrivilege('superuser')}
-						<input type="text" name="voipaccountedit[cost_limit]" value="{$voipaccountinfo.cost_limit}" placeholder="{trans("default")}">
-					{else}
-						{$voipaccountinfo.cost_limit}
-					{/if}
+                    {if ConfigHelper::checkPrivilege('superuser')}
+                        <input
+                            type="text"
+                            name="voipaccountedit[cost_limit]"
+                            value="{$voipaccountinfo.cost_limit}"
+                            placeholder="{trans("default")}: {ConfigHelper::getConfig('voip.default_cost_limit')|money_format}">
+                    {else}
+                        {$voipaccountinfo.cost_limit|money_format}
+                    {/if}
                 </td>
             </tr>
             {/block}
