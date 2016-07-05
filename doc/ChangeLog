@@ -49,6 +49,7 @@ version ?.??.?? (????-??-??):
   - added possibility to hide customer balance by invoices.show_balance configuration
     variable on tcpdf invoice [gbn.pl]
   - automatically position of invoice footnote on tcpdf invoice [gbn.pl]
+  - listening of voip call recordings are possible from now [chilan]
 
 version 1.11.20 (2016-04-19):
 
