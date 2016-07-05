@@ -67,23 +67,6 @@
                 </td>
             </tr>
             {/block}
-            {block name="voipaccounteditbox-balance"}
-            <tr>
-                <td>
-                    <img src="img/money.gif" alt="">
-                </td>
-                <td class="bold">
-                    {trans("Balance:<!voip>")}
-                </td>
-                <td>
-					{if ConfigHelper::checkPrivilege('superuser')}
-						<input type="text" name="voipaccountedit[balance]" value="{$voipaccountinfo.balance}">
-					{else}
-						{$voipaccountinfo.balance}
-					{/if}
-                </td>
-            </tr>
-            {/block}
             {block name="voipaccounteditbox-cost_limit"}
             <tr>
                 <td>
@@ -102,6 +85,23 @@
                     {else}
                         {$voipaccountinfo.cost_limit|money_format}
                     {/if}
+                </td>
+            </tr>
+            {/block}
+            {block name="voipaccounteditbox-balance"}
+            <tr>
+                <td>
+                    <img src="img/money.gif" alt="">
+                </td>
+                <td class="bold">
+                    {trans("Balance:<!voip>")}
+                </td>
+                <td>
+					{if ConfigHelper::checkPrivilege('superuser')}
+						<input type="text" name="voipaccountedit[balance]" value="{$voipaccountinfo.balance}">
+					{else}
+						{$voipaccountinfo.balance}
+					{/if}
                 </td>
             </tr>
             {/block}

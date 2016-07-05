@@ -85,19 +85,6 @@
             </td>
         </tr>
         {/block}
-		{block name="voipaccountinfobox-balance"}
-        <tr>
-            <td>
-                <img src="img/money.gif" alt="">
-            </td>
-            <td class="bold nobr">
-                {trans("Balance:<!voip>")}
-            </td>
-            <td class="nobr">
-                {$voipaccountinfo.balance|money_format}
-            </td>
-        </tr>
-        {/block}
         {block name="voipaccountinfobox-cost_limit"}
         <tr>
             <td>
@@ -112,6 +99,19 @@
                 {else}
                 	{ConfigHelper::getConfig('voip.default_cost_limit')|money_format} ({trans("default")})
                 {/if}
+            </td>
+        </tr>
+        {/block}
+		{block name="voipaccountinfobox-balance"}
+        <tr>
+            <td>
+                <img src="img/money.gif" alt="">
+            </td>
+            <td class="bold nobr">
+                {trans("Balance:<!voip>")}
+            </td>
+            <td class="nobr">
+                {$voipaccountinfo.balance|money_format}
             </td>
         </tr>
         {/block}
