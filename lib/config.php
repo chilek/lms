@@ -152,7 +152,7 @@ $DEFAULTS = array(
 		'default_mx' => 'localhost'
 	),
 	'voip' => array(
-		'default_call_recording' = false
+		'default_account_flags' = 0
 	)
 );
 
