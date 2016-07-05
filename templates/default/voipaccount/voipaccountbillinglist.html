@@ -197,7 +197,7 @@
 
 				<td>
 					{if !empty($billings[i].callerownerid)}
-						<a href="?m=voipaccountinfo&amp;id={$billings[i].callervoipaccountid}>{$billings[i].caller}</a>
+						<a href="?m=voipaccountinfo&amp;id={$billings[i].callervoipaccountid}">{$billings[i].caller}</a>
 					{else}
 						{$billings[i].caller}
 					{/if}
@@ -205,7 +205,7 @@
 
 				<td>
 					{if !empty($billings[i].calleeownerid)}
-						<a href="?m=voipaccountinfo&amp;id={$billings[i].calleevoipaccountid}>{$billings[i].caller}</a>
+						<a href="?m=voipaccountinfo&amp;id={$billings[i].calleevoipaccountid}">{$billings[i].caller}</a>
 					{else}
 						{$billings[i].callee}
 					{/if}
