@@ -30,10 +30,10 @@ else
 	$billing_id = $_GET['id'];
 
 $cdr = $DB->GetRow('SELECT
-										c.id, caller, callee, call_start_time, time_start_to_end, time_answer_to_end, price, status, c.type, 
+										c.id, caller, callee, call_start_time, time_start_to_end, time_answer_to_end, price, c.status, c.type, 
 										callervoipaccountid, calleevoipaccountid, caller_flags, callee_flags, caller_prefix_group, callee_prefix_group,
-										' . $DB->Concact('c1.lastname', "' '", 'c1.name') . ' AS callercustomername,
-										' . $DB->Concact('c2.lastname', "' '", 'c2.name') . ' AS calleecustomername
+										a1.ownerid AS callerownerid, ' . $DB->Concat('c1.lastname', "' '", 'c1.name') . ' AS callercustomername,
+										a2.ownerid AS calleeownerid, ' . $DB->Concat('c2.lastname', "' '", 'c2.name') . ' AS calleecustomername
 									FROM
 										voip_cdr c
 									LEFT JOIN voipaccounts a1 ON a1.id = c.callervoipaccountid
@@ -41,7 +41,7 @@ $cdr = $DB->GetRow('SELECT
 									LEFT JOIN voipaccounts a2 ON a2.id = c.calleevoipaccountid
 									LEFT JOIN customers c2 ON c2.id = a2.ownerid
 									WHERE
-										id = ?', array($billing_id));
+										c.id = ?', array($billing_id));
 
 $SMARTY->assign('cdr', $cdr);
 $SMARTY->display('voipaccount/voipaccountbillinginfo.html');

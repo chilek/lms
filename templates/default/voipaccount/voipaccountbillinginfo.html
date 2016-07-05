@@ -77,7 +77,7 @@
                 {trans("Customer:")}
             </td>
             <td class="nobr">
-               <a href="?m=customerinfo&id={$cdr.callervoipaccountid}">{$cdr.callercustomername}</a>
+               <a href="?m=customerinfo&id={$cdr.callerownerid}">{$cdr.callercustomername}</a>
             </td>
         </tr>
 		{/if}
@@ -136,7 +136,7 @@
                 {trans("Customer:")}
             </td>
             <td class="nobr">
-               <a href="?m=customerinfo&id={$cdr.calleevoipaccountid}">{$cdr.calleecustomername}</a>
+               <a href="?m=customerinfo&id={$cdr.calleeownerid}">{$cdr.calleecustomername}</a>
             </td>
         </tr>
 		{/if}
