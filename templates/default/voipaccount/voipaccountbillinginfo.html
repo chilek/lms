@@ -30,8 +30,12 @@
             <td class="bold nobr">
                 {trans("Caller:")}
             </td>
-            <td class="nobr">
-               <b>{$cdr.caller}</b>
+            <td class="bold nobr">
+				{if $cdr.callervoipaccountid}
+				<a href="?m=voipaccountinfo&id={$cdr.callervoipaccountid}">{$cdr.caller}</a>
+				{else}
+				{$cdr.caller}
+				{/if}
             </td>
         </tr>
 		{if $cdr.caller_prefix_group}
@@ -85,8 +89,12 @@
             <td class="bold nobr">
                 {trans("Callee:")}
             </td>
-            <td class="nobr">
-				 <b>{$cdr.callee}</b>
+            <td class="bold nobr">
+				{if $cdr.calleevoipaccountid}
+				<a href="?m=voipaccountinfo&id={$cdr.calleevoipaccountid}">{$cdr.callee}</a>
+				{else}
+				{$cdr.callee}
+				{/if}
             </td>
         </tr>
 		{if $cdr.callee_prefix_group}
