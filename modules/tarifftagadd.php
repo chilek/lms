@@ -52,7 +52,7 @@ if (isset($_POST['tarifftagadd'])) {
     $SMARTY->assign('tarifftagadd', $tarifftagadd);
 }
 
-$layout['pagetitle'] = trans('New Tag');
+$layout['pagetitle'] = trans('New tag');
 $SMARTY->display('tariff/tarifftagadd.html');
 
 ?>
