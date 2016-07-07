@@ -40,7 +40,7 @@ $this->Execute("CREATE TABLE tariffassignments (
         tariffid integer NOT NULL
             REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
         tarifftagid integer NOT NULL
-            REFERENCES tarifftags (id) ON DELETE CASCADE ON UPDATE CASCADE
+            REFERENCES tarifftags (id) ON DELETE CASCADE ON UPDATE CASCADE,
         PRIMARY KEY (id),
         CONSTRAINT tariffassignments_tarifftagid_key UNIQUE (tariffid,tarifftagid)
 );");
