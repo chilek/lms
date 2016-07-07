@@ -728,7 +728,7 @@ function location_str($data)
     if ($h)
         $location .= ' ' . $h;
 
-    return $location;
+    return htmlentities($location, ENT_COMPAT);
 }
 
 function set_timer($label = 0)
