@@ -960,4 +960,13 @@ function iban_check_account($country, $length, $account) {
 	return sprintf('%02d', 98 - bcmod($numericaccount, 97)) == substr($account, 0, 2);
 }
 
+function generate_random_string($length = 10, $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') {
+	srand();
+	$charactersLength = strlen($characters);
+	$randomString = '';
+	for ($i = 0; $i < $length; $i++)
+		$randomString .= $characters[rand(0, $charactersLength - 1)];
+	return $randomString;
+}
+
 ?>
