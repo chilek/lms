@@ -411,6 +411,18 @@ $menu = array(
 					'tip' => trans('Lists and reports printing'),
 					'prio' => 130,
 				),
+				array(
+					'name' => trans('New tag'),
+					'link' => '?m=tarifftagadd',
+					'tip' => trans('Allows you to add new tag'),
+					'prio' => 140,
+				),
+				array(
+					'name' => trans('Tags list'),
+					'link' => '?m=tarifftaglist',
+					'tip' => trans('Tags list'),
+					'prio' => 150,
+				),
 			),
 		),
 

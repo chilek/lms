@@ -50,6 +50,7 @@ version ?.??.?? (????-??-??):
     variable on tcpdf invoice [gbn.pl]
   - automatically position of invoice footnote on tcpdf invoice [gbn.pl]
   - listening of voip call recordings are possible from now [chilan]
+  - added tags for tariffs [kyob]
 
 version 1.11.20 (2016-04-19):
 

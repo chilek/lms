@@ -3315,4 +3315,19 @@ $_LANG['Customer with specified Tax Exempt Number already exists!'] = 'Klient z 
 $_LANG['Customer with specified Social Security Number already exists! If you are sure you want to accept it, then click "Submit" again.'] = 'Klient z podanym numerem PESEL już istnieje! Jeśli chcesz zaakceptować, to ponownie kliknij "Zapisz".';
 $_LANG['Customer with specified Social Security Number already exists!'] = 'Klient z podanym numerem PESEL już istnieje!';
 
+$_LANG['Are you sure, you want to remove this tag?'] = 'Jesteś pewien, że chcesz usunąć tą etykietę?';
+$_LANG['Tariffs assigned to tag'] = 'Taryfy przypisane do etykiety';
+$_LANG['Tariffs not assigned to tag'] = 'Taryfy nieprzypisane do etykiety';
+$_LANG['This tag has not got any assigned tariffs.'] = 'Ta etykieta nie ma żadnych przypisanych taryf.';
+$_LANG['All tariffs are assigned to this tag.'] = 'Wszystkie taryfy są przypisane do tej etykiety.';
+$_LANG['Move tariffs to tag'] = 'Przenieś taryfy do tej etykiety';
+$_LANG['Select tag to which you want to move tariffs'] = 'Wybierz etykietę, do którego chcesz przenieść taryfy';
+$_LANG['Are you sure, you want to move tariffs to selected tag?'] = 'Czy jesteś pewien, że chcesz przenieść taryfy do wybranej etykiety?';
+$_LANG['Tags list'] = 'Lista etykiet';
+$_LANG['New tag'] = 'Nowa etykieta';
+$_LANG['Add tag'] = 'Dodaj etykietę';
+$_LANG['Reset tags'] = 'Resetuj etykiety';
+$_LANG['There are no tags in database.'] = 'Nie ma etykiet w bazie danych.';
+$_LANG['Tag with assigned tariffs cannont be deleted!'] = 'Etykieta z przypisanymi taryfami nie może zostać usunięta!';
+
 ?>
