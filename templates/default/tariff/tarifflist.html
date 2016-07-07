@@ -130,8 +130,8 @@ document.addEventListener('click', function (e) {
 	{cycle values="light,lucid" print=false}
 	{section name=tariffs loop=$tarifflist}
 	<TR data-tags="{foreach $tarifftaglist as $item}{if $tarifflist[tariffs].id == $item.tariff_id}{if $item.tag_name}{$item.tag_name} {/if}{/if}{/foreach}" class="highlight {cycle}{if $tarifflist[tariffs].disabled == 1 && !$listdata.state} blend{/if}"  >
-		<TD WIDTH="93%" OFFonClick="return self.location.href='?m=tariffinfo&amp;id={$tarifflist[tariffs].id}';">
-			<IMG SRC="img/money.gif" ALT="">&nbsp;<B>{$tarifflist[tariffs].name}</B><BR>
+		<TD WIDTH="93%">
+			<IMG SRC="img/money.gif" ALT="">&nbsp;<a href="?m=tariffinfo&amp;id={$tarifflist[tariffs].id}"><B>{$tarifflist[tariffs].name}</B></a><BR>
 			{if $tarifflist[tariffs].description}<IMG SRC="img/info1.gif" ALT="">&nbsp;{$tarifflist[tariffs].description}{/if}
                         <br/>
                         {foreach $tarifftaglist as $item}
