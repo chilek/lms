@@ -2810,6 +2810,91 @@ class LMS
         return $manager->UsergroupGetAll();
     }
 
+    /**
+     * Returns tariff tag manager
+     *
+     * @return LMSTariffTagManagerInterface Tariff tag manager
+     */
+    protected function getTariffTagManager()
+    {
+        if (!isset($this->tariff_tag_manager)) {
+            $this->tariff_tag_manager = new LMSTariffTagManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+        }
+        return $this->tariff_tag_manager;
+    }
+
+    public function TarifftagGetId($name)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TariffTagGetId($name);
+    }
+
+    public function TarifftagAdd($tarifftagdata)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TarifftagAdd($tarifftagdata);
+    }
+
+    public function TarifftagGetList()
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TarifftagGetList();
+    }
+
+    public function TarifftagGet($id)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TarifftagGet($id);
+    }
+
+    public function TarifftagExists($id)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TarifftagExists($id);
+    }
+
+    public function GetTariffWithoutTagNames($tagid)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->GetTariffWithoutTagNames($tagid);
+    }
+
+    public function TariffassignmentDelete($tariffassignmentdata)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TariffassignmentDelete($tariffassignmentdata);
+    }
+
+    public function TariffassignmentExist($tagid, $tariffid)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TariffassignmentExist($tagid, $tariffid);
+    }
+
+    public function TariffassignmentAdd($tariffassignmentdata)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TariffassignmentAdd($tariffassignmentdata);
+    }
+
+    public function TarifftagDelete($id)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TarifftagDelete($id);
+    }
+
+    public function TarifftagUpdate($tarifftagdata)
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TarifftagUpdate($tarifftagdata);
+    }
+
+    public function TarifftagGetAll()
+    {
+        $manager = $this->getTariffTagManager();
+        return $manager->TarifftagGetAll();
+    }
+
 	public function SendInvoices($docs, $type, $params) {
 		extract($params);
 

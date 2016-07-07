@@ -89,6 +89,8 @@ DROP TABLE IF EXISTS promotionassignments;
 DROP TABLE IF EXISTS promotionschemas;
 DROP TABLE IF EXISTS promotions;
 DROP TABLE IF EXISTS tariffs;
+DROP TABLE IF EXISTS tariffstags;
+DROP TABLE IF EXISTS tariffassignments;
 DROP TABLE IF EXISTS nodesessions;
 DROP TABLE IF EXISTS stats;
 DROP TABLE IF EXISTS rtticketcategories;
@@ -1200,6 +1202,33 @@ CREATE TABLE tariffs (
 
 # --------------------------------------------------------
 #
+# Structure of table tarifftags
+#
+CREATE TABLE tarifftags (
+	id int(11) NOT NULL AUTO_INCREMENT,
+	name varchar(255) NOT NULL,
+	description text NULL,
+	PRIMARY KEY (id),
+	UNIQUE KEY name (name)
+    )  ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table tariffassignemnts
+#
+CREATE TABLE tariffassignments (
+        id int(11) NOT NULL AUTO_INCREMENT,
+        tariffid int(11) NOT NULL,
+        tarifftagid int(11) NOT NULL,
+        PRIMARY KEY (id),
+        UNIQUE KEY tariffid_tarifftagid_idx (tariffid,tarifftagid),
+        KEY tarifftagid_idx (tarifftagid),
+        CONSTRAINT tariffassignments_tariffid_key FOREIGN KEY (tariffid) REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT tariffassignments_tarifftagid_key FOREIGN KEY (tarifftagid) REFERENCES tarifftags (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table promotions
 #
 CREATE TABLE promotions (
@@ -1675,7 +1704,6 @@ CREATE TABLE voipaccounts (
 	location_flat	varchar(32)	DEFAULT NULL,
 	balance			decimal(12,5) NOT NULL DEFAULT 0,
 	flags			smallint NOT NULL DEFAULT 0,
-	cost_limit		decimal(12,2) NULL DEFAULT NULL,
 	PRIMARY KEY (id),
 	INDEX location_city (location_city, location_street, location_house, location_flat),
 	INDEX location_street (location_street),
@@ -1968,7 +1996,6 @@ CREATE TABLE voip_cdr (
 	callee_prefix_group varchar(100) NULL,
 	uniqueid varchar(20) NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE KEY (uniqueid),
 	FOREIGN KEY (callervoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	FOREIGN KEY (calleevoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -2678,4 +2705,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016070500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016062800');

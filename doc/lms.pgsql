@@ -737,6 +737,42 @@ CREATE TABLE tariffs (
 CREATE INDEX tariffs_type_idx ON tariffs (type);
 
 /* --------------------------------------------------------
+  Structure of table "tariffstags"
+-------------------------------------------------------- */
+
+DROP SEQUENCE IF EXISTS tarifftags_id_seq;
+CREATE SEQUENCE tarifftags_id_seq;
+
+DROP TABLE IF EXISTS tarifftags CASCADE;
+CREATE TABLE tarifftags (
+	id integer DEFAULT nextval('tarifftags_id_seq'::text) NOT NULL,
+	name varchar(255) NOT NULL,
+	description text NULL,
+	PRIMARY KEY (id),
+	UNIQUE (name)
+    );
+
+/* --------------------------------------------------------
+  Structure of table "tariffassignments"
+-------------------------------------------------------- */
+
+DROP SEQUENCE IF EXISTS tariffassignments_id_seq;
+CREATE SEQUENCE tariffassignments_id_seq;
+
+DROP TABLE IF EXISTS tariffassignments CASCADE;
+CREATE TABLE tariffassignments (
+	id integer DEFAULT nextval('tariffassignments_id_seq'::text) NOT NULL,
+        tariffid integer NOT NULL
+            REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+        tarifftagid integer NOT NULL
+            REFERENCES tarifftags (id) ON DELETE CASCADE ON UPDATE CASCADE
+        PRIMARY KEY (id),
+        CONSTRAINT tariffassignments_tarifftagid_key UNIQUE (tariffid,tarifftagid)
+);
+
+CREATE INDEX tariffassignments_tarifftagid_idx ON tariffassignments (tarifftagid);
+
+/* --------------------------------------------------------
   Structure of table "promotions"
 -------------------------------------------------------- */
 DROP SEQUENCE IF EXISTS promotions_id_seq;
@@ -1768,7 +1804,6 @@ CREATE TABLE voipaccounts (
 	location_flat varchar(32) DEFAULT NULL,
 	balance		numeric(12,5) NOT NULL DEFAULT 0,
 	flags		smallint NOT NULL DEFAULT 0,
-	cost_limit	numeric(12,2) NULL DEFAULT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX voipaccounts_location_street_idx ON voipaccounts (location_street);
@@ -2063,8 +2098,7 @@ CREATE TABLE voip_cdr (
 	caller_prefix_group varchar(100) NULL,
 	callee_prefix_group varchar(100) NULL,
 	uniqueid varchar(20) NOT NULL,
-	PRIMARY KEY (id),
-	UNIQUE (uniqueid)
+	PRIMARY KEY (id)
 );
 
 DROP TABLE IF EXISTS voip_emergency_numbers CASCADE;
@@ -2764,4 +2798,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016070500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016062800');

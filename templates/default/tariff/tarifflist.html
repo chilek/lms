@@ -2,6 +2,56 @@
 {block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+<style>
+[data-toggle='on'] {
+  display:block;
+}
+
+[data-toggle='off'] {
+  display:none;
+}
+</style>
+<script>
+document.addEventListener('click', function (e) {
+  var button = e.target;
+
+  if (button.getAttribute('data-reset') === 'true') {
+    // Reset the filters
+            var filter = button.getAttribute('data-filter');
+            resetFilter(filter);
+        } else {
+            // Filter the tag
+            var filter = button.getAttribute('data-filter');
+            var tag = button.getAttribute('data-filter-tag');
+            filterTag(filter, tag);
+        }
+    });
+
+// Filter tag
+    function filterTag(filter, tag) {
+        var items = document.querySelectorAll('.' + filter + ' > tr');
+
+        for (var i = 0; i < items.length; i++) {
+            var itemTags = items[i].getAttribute('data-tags');
+
+            // Catch case with no tags
+            if (itemTags != null) {
+                if (itemTags.indexOf(tag) < 0) {
+                    items[i].setAttribute('data-toggle', 'off');
+                }
+            }
+        }
+    }
+
+// Reset filters
+    function resetFilter(filter) {
+        var items = document.querySelectorAll('.' + filter + ' > li');
+
+        for (var i = 0; i < items.length; i++) {
+            items[i].setAttribute('data-toggle', 'on');
+        }
+    }
+</script>
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
     <THEAD>
@@ -71,17 +121,26 @@
 					<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroupid == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>
 					{/section}
 				</SELECT>
+                                <button class="superlight" data-filter="ping" data-reset="true">{trans("Reset tags")}</button>
 			</FORM>
 		</TD>
 	</TR>
     </THEAD>
-    <TBODY>
+    <TBODY class="ping">
 	{cycle values="light,lucid" print=false}
 	{section name=tariffs loop=$tarifflist}
-	<TR class="highlight {cycle}{if $tarifflist[tariffs].disabled == 1 && !$listdata.state} blend{/if}"  >
-		<TD WIDTH="93%" onClick="return self.location.href='?m=tariffinfo&amp;id={$tarifflist[tariffs].id}';">
+	<TR data-tags="{foreach $tarifftaglist as $item}{if $tarifflist[tariffs].id == $item.tariff_id}{if $item.tag_name}{$item.tag_name} {/if}{/if}{/foreach}" class="highlight {cycle}{if $tarifflist[tariffs].disabled == 1 && !$listdata.state} blend{/if}"  >
+		<TD WIDTH="93%" OFFonClick="return self.location.href='?m=tariffinfo&amp;id={$tarifflist[tariffs].id}';">
 			<IMG SRC="img/money.gif" ALT="">&nbsp;<B>{$tarifflist[tariffs].name}</B><BR>
 			{if $tarifflist[tariffs].description}<IMG SRC="img/info1.gif" ALT="">&nbsp;{$tarifflist[tariffs].description}{/if}
+                        <br/>
+                        {foreach $tarifftaglist as $item}
+                            {if $tarifflist[tariffs].id == $item.tariff_id}
+                                {if $item.tag_name}
+                                    <button class="superlight blend" data-filter="ping" data-filter-tag="{$item.tag_name}">{$item.tag_name}</button>
+                                {/if}
+                            {/if}
+                        {/foreach}
 		</TD>
 		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&amp;id={$tarifflist[tariffs].id}';">
 			({$tarifflist[tariffs].id|string_format:"%04d"})
