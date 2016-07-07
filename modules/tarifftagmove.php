@@ -28,7 +28,7 @@ $from = intval($_GET['from']);
 $to = intval($_GET['to']);
 
 if ($LMS->TarifftagExists($from) && $LMS->TarifftagExists($to) && $_GET['is_sure'] == 1) {
-    if ($ids = $DB->GetCol('SELECT id, tariffid FROM tariffassignments WHERE tarifftagid = ' . $from )) {
+    if ($ids = $DB->GetCol('SELECT id, tariffid FROM tariffassignments WHERE tarifftagid = ' . $from)) {
         foreach ($ids as $id) {
             $DB->Execute('UPDATE tariffassignments SET tarifftagid=?
 					WHERE tarifftagid=?', array($to, $from));
@@ -39,11 +39,11 @@ if ($LMS->TarifftagExists($from) && $LMS->TarifftagExists($to) && $_GET['is_sure
                 );
                 $SYSLOG->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_UPDATE, $args, array_keys($args));
             }
-         
         }
     }
 
     $SESSION->redirect('?m=tarifftaginfo&id=' . $to);
-} else
+} else {
     header("Location: ?" . $SESSION->get('backto'));
+}
 ?>
