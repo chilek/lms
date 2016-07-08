@@ -3326,6 +3326,7 @@ $_LANG['Are you sure, you want to move tariffs to selected tag?'] = 'Czy jesteś
 $_LANG['Tags list'] = 'Lista etykiet';
 $_LANG['New tag'] = 'Nowa etykieta';
 $_LANG['Add tag'] = 'Dodaj etykietę';
+$_LANG['Edit tag'] = 'Edytuj etykietę';
 $_LANG['Reset tags'] = 'Resetuj etykiety';
 $_LANG['There are no tags in database.'] = 'Nie ma etykiet w bazie danych.';
 $_LANG['Tag with assigned tariffs cannont be deleted!'] = 'Etykieta z przypisanymi taryfami nie może zostać usunięta!';
