@@ -53,17 +53,19 @@ function smarty_function_tip($params, $template)
 
 			$result = ' onmouseover="popup(\'<b><font color=red>'.$error.'</font></b>\')" onmouseout="pophide()" ';
 			$result .= ' class="' . (empty($class) ? '' : $class) . ($params['bold'] ? ' alert bold" ' : ' alert" ');
-		} elseif ($params['text'] != '') {
-			$text = $params['text'];
-			unset($params['text']);
-			$text = trans(array_merge((array)$text, $params));
+		} elseif {
+			if ($params['text'] != '') {
+				$text = $params['text'];
+				unset($params['text']);
+				$text = trans(array_merge((array)$text, $params));
 
-			$text = str_replace('\'', '\\\'', $text);
-			$text = str_replace('"', '&quot;', $text);
-			$text = str_replace("\r", '', $text);
-			$text = str_replace("\n", '<BR>', $text);
+				$text = str_replace('\'', '\\\'', $text);
+				$text = str_replace('"', '&quot;', $text);
+				$text = str_replace("\r", '', $text);
+				$text = str_replace("\n", '<BR>', $text);
 
-			$result .= 'onmouseover="popup(\''.$text.'\')" onmouseout="pophide()" ';
+				$result .= 'onmouseover="popup(\''.$text.'\')" onmouseout="pophide()" ';
+			}
 			$result .= ' class="' . (empty($class) ? '' : $class) . (array_key_exists('bold', $params) && $params['bold'] ? ' bold' : '') . '" ';
 		}
 
