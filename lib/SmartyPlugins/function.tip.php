@@ -53,7 +53,7 @@ function smarty_function_tip($params, $template)
 
 			$result = ' onmouseover="popup(\'<b><font color=red>'.$error.'</font></b>\')" onmouseout="pophide()" ';
 			$result .= ' class="' . (empty($class) ? '' : $class) . ($params['bold'] ? ' alert bold" ' : ' alert" ');
-		} elseif {
+		} else {
 			if ($params['text'] != '') {
 				$text = $params['text'];
 				unset($params['text']);
