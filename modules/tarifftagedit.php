@@ -35,7 +35,7 @@ $tarifftag = $LMS->TarifftagGet($_GET['id']);
 $tariffs = $LMS->GetTariffWithoutTagNames($_GET['id']);
 $tariffscount = sizeof($tariffs);
 
-$layout['pagetitle'] = trans('Tag Edit: $a', $tarifftag['name']);
+$layout['pagetitle'] = trans('Edit tag').': '.$tarifftag['name'];
 
 if (isset($_POST['tarifftag'])) {
     $tarifftagedit = $_POST['tarifftag'];
