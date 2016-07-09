@@ -388,6 +388,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 					)' : '')
 				. ($status == 5 ? ' AND n.location_city IS NULL' : '')
 				. ($status == 6 ? ' AND n.netdev = 0' : '')
+				. ($status == 7 ? ' AND n.access = 0' : '')
 				. ($customergroup ? ' AND customergroupid = ' . intval($customergroup) : '')
 				. ($nodegroup ? ' AND nodegroupid = ' . intval($nodegroup) : '')
 				. (isset($searchargs) ? $searchargs : '')

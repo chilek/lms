@@ -1450,6 +1450,7 @@ $_LANG['WINS server:'] = 'Serwer WINS:';
 $_LANG['wireless'] = 'bezprzewodowe';
 $_LANG['with invoice'] = 'z fakturą';
 $_LANG['without nodes'] = 'bez komputerów';
+$_LANG['with notice'] = 'z powiadomieniem';
 $_LANG['Write down network address and select mask'] = 'Wpisz adres sieci i wybierz maskę';
 $_LANG['Write (+R)'] = 'Zapis (+O)';
 $_LANG['Wrong discount value!'] = 'Błędna wartość rabatu!';
