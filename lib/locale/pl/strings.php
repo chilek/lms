@@ -1451,6 +1451,7 @@ $_LANG['wireless'] = 'bezprzewodowe';
 $_LANG['with invoice'] = 'z fakturą';
 $_LANG['without nodes'] = 'bez komputerów';
 $_LANG['with warning'] = 'z ostrzeżeniem';
+$_LANG['With warning'] = 'Z ostrzeżeniem';
 $_LANG['Write down network address and select mask'] = 'Wpisz adres sieci i wybierz maskę';
 $_LANG['Write (+R)'] = 'Zapis (+O)';
 $_LANG['Wrong discount value!'] = 'Błędna wartość rabatu!';
