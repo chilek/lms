@@ -11,7 +11,7 @@
         "spipu/html2pdf": "^4.5",
         "components/normalize.css": "^3.0",
         "smarty/smarty": "3.1.29",
-        "ros/ezpdf": "^0.12.1"
+        "rospdf/pdf-php": "^0.12.1"
     },
     "require_dev": {
         "phpunit/phpunit": "5.1.*"
@@ -27,6 +27,6 @@
         "repairSMARTY": "patch -d vendor/smarty/smarty/libs -p0 -N -r - <devel/smarty-3.1.29.patch || exit 0",
         "repairHTML2PDF": "sed -i -e 's/class HTML2PDF_myPdf extends TCPDF/class HTML2PDF_myPdf extends LMSTCPDF/' vendor/spipu/html2pdf/_class/myPdf.class.php",
         "repairTCPDF": "sed -i -e 's/\\(\\s\\+\\)register_shutdown_function/\\1\\\/\\\/register_shutdown_function/' vendor/tecnickcom/tcpdf/tcpdf.php",
-        "repairEZPDF": "cp -f lib/ezpdf/fonts/arial* vendor/ros/ezpdf/src/fonts"
+        "repairEZPDF": "cp -f lib/ezpdf/fonts/arial* vendor/rospdf/pdf-php/src/fonts"
     }
 }
