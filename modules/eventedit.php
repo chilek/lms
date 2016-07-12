@@ -54,12 +54,12 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 
 if(isset($_GET['action']) && $_GET['action'] == 'open')
 {
-	$DB->Execute('UPDATE events SET closed = 0 WHERE id = ?',array($_GET['id']));
+	$DB->Execute('UPDATE events SET closeddate = 0, closeduserid = 0, closed = 0 WHERE id = ?',array($_GET['id']));
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 elseif(isset($_GET['action']) && $_GET['action'] == 'close')
 {
-	$DB->Execute('UPDATE events SET closed = 1 WHERE id = ?',array($_GET['id']));
+	$DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ? WHERE id = ?',array($AUTH->id, time(), $_GET['id']));
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
