@@ -11,11 +11,11 @@
 <input class="blend" type="text" id="documentinput" name="qs[document]" value="" size="15" {tip text="Enter document number and press Enter"}>
 <script type="text/javascript">
 <!--
-	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('customerinput'), '?m=quicksearch&ajax=1&mode=customer&what=', {ConfigHelper::getConfig('phpui.quicksearch_autosubmit')});
-	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('nodeinput'), '?m=quicksearch&ajax=1&mode=node&what=', {ConfigHelper::getConfig('phpui.quicksearch_autosubmit')});
-	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('rtinput'), '?m=quicksearch&ajax=1&mode=ticket&what=', {ConfigHelper::getConfig('phpui.quicksearch_autosubmit')});
-	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('accountinput'), '?m=quicksearch&ajax=1&mode=account&what=', {ConfigHelper::getConfig('phpui.quicksearch_autosubmit')});
-	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('documentinput'), '?m=quicksearch&ajax=1&mode=document&what=', {ConfigHelper::getConfig('phpui.quicksearch_autosubmit')});
+	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('customerinput'), '?m=quicksearch&ajax=1&mode=customer&what=', {ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')});
+	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('nodeinput'), '?m=quicksearch&ajax=1&mode=node&what=', {ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')});
+	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('rtinput'), '?m=quicksearch&ajax=1&mode=ticket&what=', {ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')});
+	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('accountinput'), '?m=quicksearch&ajax=1&mode=account&what=', {ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')});
+	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('documentinput'), '?m=quicksearch&ajax=1&mode=document&what=', {ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')});
 //-->
 </script>
 {/block}
