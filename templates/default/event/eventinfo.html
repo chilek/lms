@@ -144,6 +144,32 @@
 		</TD>
 	</TR>
 {/if}
+{if $event.closeduserid != 0}
+	<TR>
+		<TD>
+			<IMG src="img/users.gif" alt="">
+		</TD>
+		<TD class="bold nobr">
+			<B>{trans("Closed by")}:</B>
+		</TD>
+		<TD class="nobr">
+			<A href="?m=userinfo&id={$event.closeduserid}">{$event.closedusername}</A>
+		</TD>
+	</TR>
+{/if}
+{if $event.closeddate != 0}
+	<TR>
+		<TD>
+			<IMG src="img/time.gif" alt="">
+		</TD>
+		<TD class="bold nobr">
+			{trans("Closed time")}:
+		</TD>
+		<TD>
+			{$event.closeddate|date_format:"%x (%X)"}
+		</TD>
+	</TR>
+{/if}
 	<TR>
 		<TD>
 			<IMG src="img/customer.gif" alt="">
