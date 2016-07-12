@@ -59,7 +59,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'open')
 }
 elseif(isset($_GET['action']) && $_GET['action'] == 'close')
 {
-	$DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ? WHERE id = ?',array($AUTH->id, time(), $_GET['id']));
+	$DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ?NOW?  WHERE id = ?',array($AUTH->id, $_GET['id']));
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
