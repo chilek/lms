@@ -28,7 +28,7 @@ $layout['pagetitle'] = trans('Invoice send');
 
 $SMARTY->display('header.html');
 
-if (isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=invoicesend/', $_SERVER['HTTP_REFERER'])) {
+if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=invoicesend/', $_SERVER['HTTP_REFERER'])) {
 	set_time_limit(0);
 
 	echo '<H1>' . $layout['pagetitle'] . '</H1>';
@@ -97,6 +97,10 @@ if (isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=invoicesend/', $_SERVER['
 				'smtp_host', 'smtp_port', 'smtp_user', 'smtp_pass', 'smtp_auth'));
 		}
 	}
+
+	echo '<script type="text/javascript">';
+	echo "history.replaceState({}, '', location.href.replace(/&(is_sure|sent)=1/gi, '') + '&sent=1');";
+	echo '</script>';
 }
 
 $SMARTY->display('footer.html');
