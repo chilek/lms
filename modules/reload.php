@@ -42,8 +42,6 @@ switch($_RELOAD_TYPE)
 
 		if(isset($_GET['setreloads']) && isset($_POST['hosts']))
 		{
-			$SMARTY->display('header.html');
-
 			echo '<H1>'.$layout['pagetitle'].'</H1>';
 
 			$execlist = explode(';',$_EXECCMD);
@@ -77,7 +75,6 @@ switch($_RELOAD_TYPE)
 		else
 		{
 			$SMARTY->assign('hosts', $hosts);
-			$SMARTY->display('header.html');
 			$SMARTY->display('reload.html');
 		}
 	break;
@@ -89,8 +86,6 @@ switch($_RELOAD_TYPE)
 		$reload_sqlquery = ConfigHelper::getConfig('phpui.reload_sqlquery');
 		if(!empty($reload_sqlquery) && $hosts)
 		{
-			$SMARTY->display('header.html');
-			
 			if(isset($_GET['setreloads']) && isset($_POST['hosts']))
 			{
 				$sqlqueries = explode(';', $reload_sqlquery);
@@ -134,7 +129,6 @@ switch($_RELOAD_TYPE)
 			else
 			{
 				$SMARTY->assign('hosts', $hosts);
-				$SMARTY->display('header.html');
 				$SMARTY->display('reload.html');
 			}
 		}
@@ -144,7 +138,4 @@ switch($_RELOAD_TYPE)
 		echo '<P><B><FONT COLOR="RED">'.trans('Error: Unknown reload type: "$a"!', $_RELOAD_TYPE).'</FONT></B></P>';
 	break;
 }
-
-$SMARTY->display('footer.html');
-
 ?>

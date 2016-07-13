@@ -1,5 +1,8 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<h1>{$layout.pagetitle}</h1>
 <!--// $Id$ //-->
-<H1><span class="bold">{$layout.pagetitle}</span></H1>
 <FORM name="reload" method="POST" action="?m=reload&amp;setreloads">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
@@ -93,3 +96,4 @@
 	//-->
 </SCRIPT>
 {/if}
+{/block}
