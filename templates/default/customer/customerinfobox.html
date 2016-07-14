@@ -87,7 +87,7 @@
 					{foreach $customerinfo.contacts as $contact}
 					<TR{if ($contact.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>
 						<TD>
-							{$contact.phone}
+							<a class="phone_number" href="tel:{$contact.phone}">{$contact.phone}</a>
 							{if $contact.typestr}[{$contact.typestr}]{/if}
 							{if $contact.name} ({$contact.name|truncate:"40":"...":true}){/if}
 						</TD>

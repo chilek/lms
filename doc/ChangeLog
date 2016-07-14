@@ -52,6 +52,7 @@ version ?.??.?? (????-??-??):
   - listening of voip call recordings are possible from now [chilan]
   - added tags for tariffs [kyob]
   - switched to ezpdf supported by composer [chilan]
+  - adding support for dialing phone from smartfones [kosa/chilan]
 
 version 1.11.20 (2016-04-19):
 
