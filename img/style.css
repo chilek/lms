@@ -218,6 +218,14 @@ div.multiselectlayer ul li input { border: none; }
     behavior: url(img/pie.htc);
 }
 
+@media (min-device-width: 640px) {
+    .phone_number:link {
+        pointer-events: none;
+        cursor: default;
+        color: black;
+    }
+}
+
 table.lmsbox {
     width: 100%;
     margin: 0px 2px 4px 0px;
