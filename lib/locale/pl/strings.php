@@ -192,7 +192,7 @@ $_LANG['Backup Delete'] = 'Backup Delete';
 $_LANG['Back'] = 'Powrót';
 $_LANG['Backups'] = 'Kopie zapasowe';
 $_LANG['Balance'] = 'Saldo';
-$_LANG['Funds on account'] = 'Środki na kącie';
+$_LANG['Funds on account'] = 'Środki na koncie';
 $_LANG['Account balance must be positive!'] = 'Saldo konta musi być dodatnie!';
 $_LANG['Balance:'] = 'Saldo:';
 $_LANG['Balance:<!voip>'] = 'Saldo:';
@@ -1468,6 +1468,8 @@ $_LANG['WINS server:'] = 'Serwer WINS:';
 $_LANG['wireless'] = 'bezprzewodowe';
 $_LANG['with invoice'] = 'z fakturą';
 $_LANG['without nodes'] = 'bez komputerów';
+$_LANG['with warning'] = 'z ostrzeżeniem';
+$_LANG['With warning'] = 'Z ostrzeżeniem';
 $_LANG['Write down network address and select mask'] = 'Wpisz adres sieci i wybierz maskę';
 $_LANG['Write (+R)'] = 'Zapis (+O)';
 $_LANG['Wrong discount value!'] = 'Błędna wartość rabatu!';
@@ -2766,6 +2768,8 @@ $_LANG['Enter access start date in YYYY/MM/DD format. If you don\'t want to defi
 $_LANG['Enter access end date in YYYY/MM/DD format. If you don\'t want to define \'To\' date leave this field empty'] = 'Wprowadź datę do której ważność konta powinna obowiązywać lub zostaw to pole puste. Data powinna być w formacie RRRR/MM/DD';
 $_LANG['Last modification time:'] = 'Czas ostatniej modyfikacji:';
 $_LANG['Last modified by:'] = 'Ostatnio zmodyfikował:';
+$_LANG['Closed by'] = 'Zamknięte przez';
+$_LANG['Closed time'] = 'Czas zamknięcia';
 
 $_LANG['current:'] = 'aktualnie:';
 
@@ -3338,5 +3342,21 @@ $_LANG['Customer with specified Tax Exempt Number already exists! If you are sur
 $_LANG['Customer with specified Tax Exempt Number already exists!'] = 'Klient z podanym numerem NIP już istnieje!';
 $_LANG['Customer with specified Social Security Number already exists! If you are sure you want to accept it, then click "Submit" again.'] = 'Klient z podanym numerem PESEL już istnieje! Jeśli chcesz zaakceptować, to ponownie kliknij "Zapisz".';
 $_LANG['Customer with specified Social Security Number already exists!'] = 'Klient z podanym numerem PESEL już istnieje!';
+
+$_LANG['Are you sure, you want to remove this tag?'] = 'Jesteś pewien, że chcesz usunąć tą etykietę?';
+$_LANG['Tariffs assigned to tag'] = 'Taryfy przypisane do etykiety';
+$_LANG['Tariffs not assigned to tag'] = 'Taryfy nieprzypisane do etykiety';
+$_LANG['This tag has not got any assigned tariffs.'] = 'Ta etykieta nie ma żadnych przypisanych taryf.';
+$_LANG['All tariffs are assigned to this tag.'] = 'Wszystkie taryfy są przypisane do tej etykiety.';
+$_LANG['Move tariffs to tag'] = 'Przenieś taryfy do tej etykiety';
+$_LANG['Select tag to which you want to move tariffs'] = 'Wybierz etykietę, do którego chcesz przenieść taryfy';
+$_LANG['Are you sure, you want to move tariffs to selected tag?'] = 'Czy jesteś pewien, że chcesz przenieść taryfy do wybranej etykiety?';
+$_LANG['Tags list'] = 'Lista etykiet';
+$_LANG['New tag'] = 'Nowa etykieta';
+$_LANG['Add tag'] = 'Dodaj etykietę';
+$_LANG['Edit tag'] = 'Edytuj etykietę';
+$_LANG['Reset tags'] = 'Resetuj etykiety';
+$_LANG['There are no tags in database.'] = 'Nie ma etykiet w bazie danych.';
+$_LANG['Tag with assigned tariffs cannont be deleted!'] = 'Etykieta z przypisanymi taryfami nie może zostać usunięta!';
 
 ?>

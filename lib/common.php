@@ -728,7 +728,7 @@ function location_str($data)
     if ($h)
         $location .= ' ' . $h;
 
-    return $location;
+    return htmlentities($location, ENT_COMPAT, 'UTF-8');
 }
 
 function set_timer($label = 0)
@@ -958,6 +958,15 @@ function iban_check_account($country, $length, $account) {
 		$numericaccount .= ctype_alpha($ch) ? ord($ch) - 55 : $ch;
 	}
 	return sprintf('%02d', 98 - bcmod($numericaccount, 97)) == substr($account, 0, 2);
+}
+
+function generate_random_string($length = 10, $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') {
+	srand();
+	$charactersLength = strlen($characters);
+	$randomString = '';
+	for ($i = 0; $i < $length; $i++)
+		$randomString .= $characters[rand(0, $charactersLength - 1)];
+	return $randomString;
 }
 
 ?>

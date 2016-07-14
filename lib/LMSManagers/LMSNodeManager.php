@@ -388,6 +388,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 					)' : '')
 				. ($status == 5 ? ' AND n.location_city IS NULL' : '')
 				. ($status == 6 ? ' AND n.netdev = 0' : '')
+				. ($status == 7 ? ' AND n.warning = 1' : '')
 				. ($customergroup ? ' AND customergroupid = ' . intval($customergroup) : '')
 				. ($nodegroup ? ' AND nodegroupid = ' . intval($nodegroup) : '')
 				. (isset($searchargs) ? $searchargs : '')
@@ -690,7 +691,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				COUNT(CASE WHEN access=0 THEN 1 END) AS disconnected,
 				COUNT(CASE WHEN ?NOW?-lastonline < ? THEN 1 END) AS online,
 				COUNT(CASE WHEN location_city IS NULL THEN 1 END) AS withoutterryt,
-				COUNT(CASE WHEN netdev = 0 THEN 1 END) AS withoutnetdev
+				COUNT(CASE WHEN netdev = 0 THEN 1 END) AS withoutnetdev,
+				COUNT(CASE WHEN warning = 1 THEN 1 END) AS withwarning
 				FROM vnodes
 				JOIN customerview c ON c.id = ownerid
 				WHERE ownerid > 0', array(ConfigHelper::getConfig('phpui.lastonline_limit')));

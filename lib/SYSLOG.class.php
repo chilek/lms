@@ -50,6 +50,8 @@ define('SYSLOG_RES_TMPL', 47);
 define('SYSLOG_RES_RADIOSECTOR', 48);
 define('SYSLOG_RES_USERGROUP', 49);
 define('SYSLOG_RES_USERASSIGN', 50);
+define('SYSLOG_RES_TARIFFTAG', 51);
+define('SYSLOG_RES_TARIFFASSIGN', 52);
 
 $SYSLOG_RESOURCES = array(
 	SYSLOG_RES_USER => trans('user<!syslog>'),
@@ -102,6 +104,8 @@ $SYSLOG_RESOURCES = array(
 	SYSLOG_RES_RADIOSECTOR => trans('radio sector<!syslog>'),
 	SYSLOG_RES_USERGROUP => trans('user group<!syslog>'),
 	SYSLOG_RES_USERASSIGN => trans('user assignment<!syslog>'),
+	SYSLOG_RES_TARIFFTAG => trans('tariff tag<!syslog>'),
+	SYSLOG_RES_TARIFFASSIGN => trans('tariff assignment<!syslog>'),
 );
 
 $SYSLOG_RESOURCE_KEYS = array(
@@ -155,6 +159,8 @@ $SYSLOG_RESOURCE_KEYS = array(
 	SYSLOG_RES_RADIOSECTOR => 'radiosectorid',
 	SYSLOG_RES_USERGROUP => 'usergroupid',
 	SYSLOG_RES_USERASSIGN => 'userassignmentid',
+	SYSLOG_RES_TARIFFTAG => 'tarifftagid',
+	SYSLOG_RES_TARIFFASSIGN => 'tariffassignmentid',
 );
 
 define('SYSLOG_OPER_ADD', 1);

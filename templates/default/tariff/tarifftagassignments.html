@@ -1,0 +1,78 @@
+<script type="text/javascript">
+    function removeTariffs() {
+        document.tariffassignments.oper.value = "0";
+        document.tariffassignments.submit();
+    }
+</script>
+<br>
+<form name="tariffassignments" method="POST" action="?m=tarifftag&amp;id={$tarifftag.id}">
+    <input type="submit" class="hiddenbtn">
+    <input type="hidden" name="oper" value="1">
+    <table width="100%" cellpadding="0">
+        <tr>
+            <td style="width: 49%;" class="valign-top">
+                <table class="lmsbox">
+                    <thead>
+                        <tr>
+                            <td style="width: 100;" class="bold nobr">{trans("Tariffs assigned to tag")}: {$tarifftag.count}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="width: 100%;" class="text-center">
+                                {if $tarifftag.tariffscount}
+                                    <select tariff size="20" name="tariffassignments[gmtariffid][]" multiple>
+                                        {section name=tariff loop=$tarifftag.tariffs}
+                                            <option value="{$tarifftag.tariffs[tariff].id}">
+                                                {$tarifftag.tariffs[tariff].tariffname|truncate:40:"...":true} ({$tarifftag.tariffs[tariff].id|string_format:"%04d"})
+                                            </option>
+                                        {/section}
+                                    </select>
+                                {else}
+                                    <p class="bold">{trans("This tag has not got any assigned tariffs.")}</p>
+                                {/if}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 100%;" class="text-right nobr">
+                                <a href="javascript:removeTariffs();">{trans("Delete")} <img src="img/cancel.gif" alt=""></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td style="width: 2%;"></td>
+            <td style="width: 49%;" class="valign-top">
+                <table class="lmsbox">
+                    <thead>
+                        <tr>
+                            <td style="width: 100%;" class="bold nobr">{trans("Tariffs not assigned to tag")}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="width: 100%;" class="text-center">
+                                {if $tariffscount}
+                                    <select size="20" name="tariffassignments[mtariffid][]" multiple>
+                                        {section name=tariff loop=$tariffs}
+                                            <option value="{$tariffs[tariff].id}">
+                                                {$tariffs[tariff].tariffname|truncate:40:"...":true} ({$tariffs[tariff].id|string_format:"%04d"})
+                                            </option>
+                                        {/section}
+                                    </select>
+                                {else}
+                                    <p class="bold">{trans("All tariffs are assigned to this tag.")}</p>
+                                {/if}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 100%;" class="text-right nobr">
+                                <a href="javascript:document.tariffassignments.submit();">{trans("Submit")} <img src="img/save.gif" alt=""></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </table>
+</form>
