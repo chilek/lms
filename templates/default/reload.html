@@ -1,3 +1,6 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
 <!--// $Id$ //-->
 <H1><span class="bold">{$layout.pagetitle}</span></H1>
 <FORM name="reload" method="POST" action="?m=reload&amp;setreloads">
@@ -45,11 +48,14 @@
 					</TD>
 				</TR>
 				{/section}
-				<TR>
-					<TD colspan="2"nowrap>
-						<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('reload', this)" VALUE="1"><label for="allbox">{trans("Check All")}</label>
+				<TR class="dark">
+					<TD colspan="2" class="nobr">
+						<label>
+							<INPUT TYPE="checkbox" NAME="allbox" onchange="CheckAll('reload', this)" VALUE="1">
+							{trans("Check All")}
+						</label>
 					</TD>
-					<TD ALIGN="right" colspan="3" nowrap>
+					<TD colspan="3" class="text-right nobr">
 						<A href="javascript:document.reload.submit();">{trans("Submit")} <IMG src="img/save.gif" ALT=""></A>
 					</TD>
 				</TR>
@@ -62,7 +68,7 @@
 </FORM>
 {if $serverTime}
 <SCRIPT type="text/javascript">
-        <!--
+<!--
 
 	var serverTime = new Date("{$serverTime}");
 	var timerOn = false;
@@ -90,6 +96,7 @@
 	if (timerOn && typeof(serverTime) != 'undefined')
 		ShowSeconds();
 
-	//-->
+//-->
 </SCRIPT>
 {/if}
+{/block}
