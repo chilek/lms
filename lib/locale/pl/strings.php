@@ -131,7 +131,6 @@ $_LANG['AND'] = 'I';
 $_LANG['Answer'] = 'Odpowiedz';
 $_LANG['Approved By'] = 'Zatwierdził';
 $_LANG['Are you sure that you want to logout?'] = 'Czy na pewno chcesz się wylogować?';
-$_LANG['Are you sure that you want load tariff rule'] = 'Czy na pewno chcesz wczytać regułę taryfikacyjną';
 $_LANG['Are you sure, you want to account ALL debts of customer \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz rozliczyć WSZYSTKIE należności użytkownika \\\'$a\\\'?';
 $_LANG['Are you sure, you want to assign new addresses for all computers? Remember, it can make problems for your network!'] = 'Jesteś pewien, że chcesz przypisać nowe adresy do wszystkich komputerów? Pamiętaj, to może stwarzać problemy w twojej sieci!';
 $_LANG['Are you sure, you want to change network $a to network \'+getText(\'mapto\')+\'?'] = 'Jesteś pewien, że chcesz przeadresować sieć $a do sieci \'+getText(\'mapto\')+\'?';
