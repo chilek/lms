@@ -34,7 +34,7 @@
                     </tr>
                 </table>
                 <table id="click-menu1" class="click-menu" cellpadding="0" cellspacing="0">
-                    {foreach from=$newmenu item=menuitem name=menu}
+                    {foreach $newmenu as $menuitem}
                     <tr>
                         <td class="click-menu bottomline">
                             <div class="tip"{if $menuitem.tip} {tip text="<B>\$a</B>" a=$menuitem.tip}{/if}{if ! $menuitem.submenu} onClick="{if $menuitem.windowopen}window.open('{$menuitem.link}'); {else}return self.location.href = '{$menuitem.link}'; {/if}"{/if}>
