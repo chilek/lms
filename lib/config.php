@@ -42,6 +42,7 @@ $DEFAULTS = array(
 		'allow_from' => '',
 		'default_module' => 'welcome',
 		'timeout' => 600,
+		'settings_timeout' => 28800,
 		'customerlist_pagelimit' => 100,
 		'nodelist_pagelimit' => 100,
 		'balancelist_pagelimit' => 100,

@@ -53,6 +53,8 @@ version ?.??.?? (????-??-??):
   - added tags for tariffs [kyob]
   - switched to ezpdf supported by composer [chilan]
   - adding support for dialing phone from smartfones [kosa/chilan]
+  - added variable phpui.settings_timeout determine inactivity time after which
+    user session settings are cleared (0 means settings are stored only to logout) [chilan]
 
 version 1.11.20 (2016-04-19):
 

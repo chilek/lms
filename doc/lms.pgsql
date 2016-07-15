@@ -2347,6 +2347,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui', 'allow_from', '', '', 0),
 ('phpui', 'default_module', 'welcome', '', 0),
 ('phpui', 'timeout', '600', '', 0),
+('phpui', 'settings_timeout', '28800', '', 0),
 ('phpui', 'customerlist_pagelimit', '100', '', 0),
 ('phpui', 'billinglist_pagelimit', '100', '', 0),
 ('phpui', 'nodelist_pagelimit', '100', '', 0),
@@ -2800,4 +2801,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016070700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016071500');

@@ -149,7 +149,8 @@ if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG')) {
 
 // Initialize Session, Auth and LMS classes
 
-$SESSION = new Session($DB, ConfigHelper::getConfig('phpui.timeout'));
+$SESSION = new Session($DB, ConfigHelper::getConfig('phpui.timeout'),
+	ConfigHelper::getConfig('phpui.settings_timeout'));
 $AUTH = new Auth($DB, $SESSION, $SYSLOG);
 if ($SYSLOG)
 	$SYSLOG->SetAuth($AUTH);
