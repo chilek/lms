@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Voip Accounts List');
+$layout['pagetitle'] = trans('Tariff rule list');
 
 function getGroupTableRow($name, $def_price = '', $def_unitsize = '') {
 
@@ -79,7 +79,7 @@ if (isset($_GET['ajax'])) {
 
     if ($result)
         foreach ($result as $idx => $row) {
-                $eglible[$row['item']] = escape_js($row['item']);
+            $eglible[$row['item']] = escape_js($row['item']);
             $descriptions[$row['item']] = $row['id'] . ' :id';
         }
 
@@ -122,6 +122,21 @@ if ($rule) {
     if (empty($rule['group']))
         $error['group_search'] = trans('Tariff rule must contains at least one group!');
 
+    foreach ($rule['group'] as $v) {
+        $p = 'price' . $v['id'];
+        $u = 'units' . $v['id'];
+
+        if (!is_numeric($v['price']) && $v['price'] != '')
+            $error[$p] = trans("Incorrect value!");
+        else if ($v['price'] < 0)
+            $error[$p] = trans("Number must be positive!");
+
+        if (!is_numeric($v['units']) && $v['units'] != '')
+            $error[$u] = trans("Incorrect value!");
+        else if ($v['units'] < 0)
+            $error[$u] = trans("Number must be positive!");
+    }
+
     $SMARTY->assign('rule', $rule);
 
     if (!$error) {
@@ -142,8 +157,8 @@ if ($rule) {
 
         $group_values = array();
         foreach($rule['group'] as $v) {
-            $group_values[] = "($rule_id, " . $v['id'] . ",'" . serialize(array('price' => $v['price'],
-                                                                                'units' => $v['units'])) . "')";
+            $group_values[] = "($rule_id, " . $v['id'] . ",'" . serialize(array('price' => str_replace(',', '.', $v['price']),
+                                                                                'units' => str_replace(',', '.', $v['units']))) . "')";
         }
 
         $DB->Execute('INSERT INTO
