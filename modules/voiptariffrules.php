@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$layout['pagetitle'] = trans('Voip Accounts List');
+
 function getGroupTableRow($name, $def_price = '', $def_unitsize = '') {
 
     $JSResponse = new xajaxResponse();
@@ -95,10 +97,22 @@ $rule = (isset($_POST['rule'])) ? $_POST['rule'] : NULL;
 $rule_id = (isset($_GET['id'])) ? (int) $_GET['id'] : 0;
 $error = array();
 
+if (isset($_GET['action']) && $_GET['action'] == 'delete') {
+    $DB->BeginTrans();
+
+    $DB->Execute('DELETE FROM voip_rules WHERE id = ?', array($rule_id));
+    $DB->Execute('DELETE FROM voip_group_rule_assignments WHERE ruleid = ?', array($rule_id));
+
+    $rule = NULL;
+    $rule_id = 0;
+
+    $DB->CommitTrans();
+}
+
 if ($rule) {
 
     if (!$rule_id)
-        $rule_id = $DB->GetOne("SELECT id FROM voip_rule WHERE name = ?", array($rule['name']));
+        $rule_id = $DB->GetOne("SELECT id FROM voip_rules WHERE name = ?", array($rule['name']));
 
     if (!$rule['name'])
         $error['name'] = trans("Tariff rule name is required!");
@@ -108,19 +122,21 @@ if ($rule) {
     if (empty($rule['group']))
         $error['group_search'] = trans('Tariff rule must contains at least one group!');
 
+    $SMARTY->assign('rule', $rule);
+
     if (!$error) {
 
         // if rule name doesn't exists then create and get id else clear all current groups assigned to this rule
         if (!$rule_id) {
-            $DB->Execute('INSERT INTO voip_rule (name, description) VALUES (?, ?)', array($rule['name'], $rule['description']));
-            $rule_id = $DB->GetOne("SELECT id FROM voip_rule WHERE name = ?", array($rule['name']));
-            echo 'a';
+            $DB->Execute('INSERT INTO voip_rules (name, description) VALUES (?, ?)', array($rule['name'], $rule['description']));
+            $rule_id = $DB->GetOne("SELECT id FROM voip_rules WHERE name = ?", array($rule['name']));
+            $rule['id'] = $rule_id;
         } else {
             $DB->Execute('DELETE FROM voip_group_rule_assignments WHERE ruleid = ?', array($rule_id));
         }
 
         $DB->Execute('UPDATE
-                        voip_rule SET name = ?, description = ?
+                        voip_rules SET name = ?, description = ?
                      WHERE
                         id = ?', array($rule['name'], $rule['description'], $rule['id']));
 
@@ -133,8 +149,9 @@ if ($rule) {
         $DB->Execute('INSERT INTO
                         voip_group_rule_assignments (ruleid, groupid, rule_settings)
                       VALUES ' . implode(',', $group_values));
-    } else
-        $SMARTY->assign('rule', $rule);
+    }
+
+    $SMARTY->assign('rule', $rule);
 }
 
 if (isset($_GET['id']) && $rule_id) {
@@ -142,7 +159,7 @@ if (isset($_GET['id']) && $rule_id) {
                                 r.id, r.name, r.description, gr.rule_settings,
                                 gr.groupid, g.name as groupname
                              FROM
-                                voip_rule r
+                                voip_rules r
                                 left join voip_group_rule_assignments gr on r.id = gr.ruleid
                                 left join voip_prefix_groups g on gr.groupid = g.id
                              WHERE
@@ -165,7 +182,7 @@ if (isset($_GET['id']) && $rule_id) {
     $SMARTY->assign('rule', $rule);
 }
 
-$SMARTY->assign('rule_list', $DB->GetAll('SELECT id, name FROM voip_rule'));
+$SMARTY->assign('rule_list', $DB->GetAll('SELECT id, name FROM voip_rules'));
 $SMARTY->assign('error', $error);
 $SMARTY->display('voipaccount/voiptariffrules.html');
 
