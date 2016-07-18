@@ -55,6 +55,8 @@ version ?.??.?? (????-??-??):
   - adding support for dialing phone from smartfones [kosa/chilan]
   - added variable phpui.settings_timeout determine inactivity time after which
     user session settings are cleared (0 means settings are stored only to logout) [chilan]
+  - added support for %srcaccount% and %dstaccount% replace symbols in imported
+    financial operation comments [chilan]
 
 version 1.11.20 (2016-04-19):
 
