@@ -82,7 +82,7 @@ class Session {
 		$settings = $this->DB->GetOne('SELECT settings FROM users WHERE login = ?', array($this->_content['session_login']));
 		if (!empty($settings)) {
 			$settings = unserialize($settings);
-			if (time() - $settings['mtime'] < $this->settings_timeout || $force_settings_restore)
+			if (!isset($settings['mtime']) || time() - $settings['mtime'] < $this->settings_timeout || $force_settings_restore)
 				$this->_content = array_merge($this->_content, $settings);
 		}
 	}
