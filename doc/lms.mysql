@@ -2,6 +2,8 @@
 # $Id$
 # --------------------------------------------------------
 
+SET FOREIGN_KEY_CHECKS = 0;
+
 # -- Drop tables first, MySQL doesn't support CASCADE
 
 DROP VIEW IF EXISTS vnetworks;
@@ -30,6 +32,7 @@ DROP VIEW IF EXISTS vnodes_mac;
 DROP VIEW IF EXISTS nas;
 
 DROP TABLE IF EXISTS voip_emergency_numbers;
+DROP TABLE IF EXISTS voip_price_groups;
 DROP TABLE IF EXISTS voip_group_rule_assignments;
 DROP TABLE IF EXISTS voip_cdr;
 DROP TABLE IF EXISTS voip_tariff_rules;
@@ -144,7 +147,8 @@ DROP TABLE IF EXISTS numberplans;
 DROP TABLE IF EXISTS customers;
 DROP TABLE IF EXISTS users;
 
-SET SESSION sql_mode = '';
+SET FOREIGN_KEY_CHECKS = 1;
+SET SESSION sql_mode   = '';
 
 # --------------------------------------------------------
 #
@@ -1194,6 +1198,7 @@ CREATE TABLE tariffs (
   quota_sql_limit int(11) 	DEFAULT NULL,
   description text 	NOT NULL,
   disabled tinyint  NOT NULL DEFAULT '0',
+  voip_tariff_id int(11)    DEFAULT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY name (name, value, period),
   INDEX type (type),
@@ -1960,14 +1965,10 @@ CREATE TABLE voip_prefixes (
 ) ENGINE=InnoDB;
 
 CREATE TABLE voip_tariffs (
-	id int(11) AUTO_INCREMENT,
-	groupid int(11) NOT NULL,
-	tariffid int(11) NOT NULL,
-	price decimal(12,5) NOT NULL,
-	unitsize smallint NOT NULL,
-	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (tariffid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id)
+    id          int(11)      NOT NULL AUTO_INCREMENT,
+    name        varchar(100) NOT NULL,
+    description text         NULL DEFAULT NULL,
+    PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE voip_tariff_rules (
@@ -2011,6 +2012,17 @@ CREATE TABLE voip_group_rule_assignments (
 	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
+
+CREATE TABLE voip_price_groups (
+    id              int(11)       NOT NULL AUTO_INCREMENT,
+    voip_tariff_id  int(11)       NOT NULL,
+    prefix_group_id int(11)       NOT NULL,
+    price           decimal(12,5) DEFAULT 0 NOT NULL,
+    unitsize        smallint      DEFAULT 0 NOT NULL,
+    FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
 
 CREATE TABLE voip_emergency_numbers (
 	location_borough int(11) NOT NULL,
@@ -2708,4 +2720,7 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016071500');
+ALTER TABLE tariffs ADD CONSTRAINT tariffs_tariffid
+FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs (id);
+
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016071800');
