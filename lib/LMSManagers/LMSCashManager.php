@@ -100,6 +100,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 			}
 
 			$name = isset($matches[$pattern['pname']]) ? trim($matches[$pattern['pname']]) : '';
+			$customername = $name;
 			$lastname = isset($matches[$pattern['plastname']]) ? trim($matches[$pattern['plastname']]) : '';
 			$comment = isset($matches[$pattern['pcomment']]) ? trim($matches[$pattern['pcomment']]) : '';
 			$time = isset($matches[$pattern['pdate']]) ? trim($matches[$pattern['pdate']]) : '';
@@ -182,7 +183,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
 			if (!empty($pattern['comment_replace']))
 				$comment = preg_replace($pattern['comment_replace']['from'], $pattern['comment_replace']['to'], $comment);
-			foreach (array('srcaccount', 'dstaccount') as $replace_symbol) {
+			foreach (array('srcaccount', 'dstaccount', 'customername') as $replace_symbol) {
 				$variable = $$replace_symbol;
 				$variable = empty($variable) ? trans('none') : $variable;
 				$comment = str_replace('%'. $replace_symbol . '%', $variable, $comment);

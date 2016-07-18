@@ -56,7 +56,7 @@ $patterns[] = array(
 
 	'comment_replace' => array(
 		'from' => array('/^(.+)$/'),
-		'to' => array('$1 (z rachunku: %srcaccount%, na rachunek: %dstaccount%)'),
+		'to' => array('$1 (z rachunku: %srcaccount%, na rachunek: %dstaccount%, od klienta: %customername%)'),
 	),
 
     'encoding' => 'UTF-8',	// imported data encoding (for conversion)
