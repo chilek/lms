@@ -104,8 +104,8 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 			$comment = isset($matches[$pattern['pcomment']]) ? trim($matches[$pattern['pcomment']]) : '';
 			$time = isset($matches[$pattern['pdate']]) ? trim($matches[$pattern['pdate']]) : '';
 			$value = str_replace(',','.', isset($matches[$pattern['pvalue']]) ? trim($matches[$pattern['pvalue']]) : '');
-			$srcaccount = isset($matches[$pattern['srcaccount']]) ? trim($matches[$pattern['srcaccount']]) : '';
-			$dstaccount = isset($matches[$pattern['dstaccount']]) ? trim($matches[$pattern['dstaccount']]) : '';
+			$srcaccount = isset($matches[$pattern['srcaccount']]) ? preg_replace('/[\s]/', '', $matches[$pattern['srcaccount']]) : '';
+			$dstaccount = isset($matches[$pattern['dstaccount']]) ? preg_replace('/[\s]/', '', $matches[$pattern['dstaccount']]) : '';
 
 			if (!$pattern['pid']) {
 				if (!empty($pattern['pid_regexp']))
@@ -182,6 +182,11 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
 			if (!empty($pattern['comment_replace']))
 				$comment = preg_replace($pattern['comment_replace']['from'], $pattern['comment_replace']['to'], $comment);
+			foreach (array('srcaccount', 'dstaccount') as $replace_symbol) {
+				$variable = $$replace_symbol;
+				$variable = empty($variable) ? trans('none') : $variable;
+				$comment = str_replace('%'. $replace_symbol . '%', $variable, $comment);
+			}
 
 			$customer = trim($lastname.' '.$name);
 			$comment = trim($comment);
