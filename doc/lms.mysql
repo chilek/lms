@@ -1498,7 +1498,7 @@ CREATE TABLE cashimport (
     date int(11) NOT NULL DEFAULT '0',
     value decimal(9,2) NOT NULL DEFAULT '0',
     customer varchar(150) NOT NULL DEFAULT '',
-    description varchar(256) NOT NULL DEFAULT '',
+    description text NOT NULL DEFAULT '',
     customerid int(11) DEFAULT NULL,
     hash varchar(50) NOT NULL DEFAULT '',
     closed tinyint(1) NOT NULL DEFAULT '0',
@@ -2708,4 +2708,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016071900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016072000');
