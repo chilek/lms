@@ -1552,7 +1552,7 @@ CREATE TABLE cashimport (
     date integer 		DEFAULT 0 NOT NULL,
     value numeric(9,2) 		DEFAULT 0 NOT NULL,
     customer varchar(150) 	DEFAULT '' NOT NULL,
-    description varchar(150) 	DEFAULT '' NOT NULL,
+    description text	DEFAULT '' NOT NULL,
     customerid integer 		DEFAULT NULL
 	    REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
     hash varchar(50) 		DEFAULT '' NOT NULL,
@@ -2831,6 +2831,4 @@ FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs (id) ON DELETE SET NULL ON 
 ALTER TABLE tariffs ADD CONSTRAINT tariff_rule_id_fk
 FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rules (id) ON DELETE SET NULL ON UPDATE CASCADE;");
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016071800');
-
-COMMIT;
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016072000');
