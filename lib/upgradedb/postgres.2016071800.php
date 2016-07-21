@@ -24,6 +24,10 @@
 $this->BeginTrans();
 
 $this->Execute("ALTER TABLE tariffs ADD COLUMN voip_tariff_id integer DEFAULT NULL;
+                ALTER TABLE tariffs ADD COLUMN voip_tariff_rule_id integer DEFAULT NULL;
+                
+                ALTER TABLE voip_prefixes DROP CONSTRAINT voip_prefixes_prefix_key;
+                ALTER TABLE voip_prefixes ADD UNIQUE (prefix, groupid);
 
                 DROP SEQUENCE IF EXISTS voip_price_groups_id_seq;
                 CREATE SEQUENCE voip_price_groups_id_seq;
@@ -53,12 +57,18 @@ $this->Execute("ALTER TABLE tariffs ADD COLUMN voip_tariff_id integer DEFAULT NU
 
                 INSERT INTO voip_tariffs (id, name)
                 SELECT distinct voip_tariff_id, 'default_name' FROM voip_price_groups;
-                                                                         
-                ALTER TABLE voip_price_groups ADD CONSTRAINT price_tariffid
-                FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs (id);
 
-                ALTER TABLE tariffs ADD CONSTRAINT tariffs_tariffid
-                FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs (id)");
+                ALTER TABLE voip_price_groups ADD CONSTRAINT price_tariffid
+                FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+                ALTER TABLE voip_price_groups ADD CONSTRAINT group_id_fk
+                FOREIGN KEY (prefix_group_id) REFERENCES voip_prefix_groups (id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+                ALTER TABLE tariffs ADD CONSTRAINT tariff_id_fk
+                FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE;
+
+                ALTER TABLE tariffs ADD CONSTRAINT tariff_rule_id_fk
+                FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rules (id) ON DELETE SET NULL ON UPDATE CASCADE;");
 
 $this->Execute("UPDATE tariffs SET voip_tariff_id = id WHERE type = ?;", array(TARIFF_PHONE));
 

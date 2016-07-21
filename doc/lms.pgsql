@@ -2060,7 +2060,7 @@ CREATE TABLE voip_prefixes (
 	groupid integer NOT NULL
 		REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id),
-	UNIQUE (prefix)
+	UNIQUE (prefix, groupid)
 );
 
 DROP SEQUENCE IF EXISTS voip_tariffs_id_seq;
@@ -2127,7 +2127,8 @@ CREATE TABLE voip_price_groups (
     id              integer       DEFAULT nextval('voip_price_groups_id_seq'::text) NOT NULL,
     voip_tariff_id  integer       NOT NULL
         REFERENCES voip_tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    prefix_group_id integer       NOT NULL,
+    prefix_group_id integer       NOT NULL
+        REFERENCES voip_prefix_groups (id) ON DELETE CASCADE ON UPDATE CASCADE,
     price           numeric(12,5) DEFAULT 0 NOT NULL,
     unitsize        smallint      DEFAULT 0 NOT NULL,
     PRIMARY KEY (id)
@@ -2823,9 +2824,12 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
--- foreign key for tariffs due to the order of table create
-ALTER TABLE tariffs ADD CONSTRAINT tariffs_tariffid
-FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs (id);
+-- foreign keys for tariffs due to the order of table create
+ALTER TABLE tariffs ADD CONSTRAINT tariff_id_fk
+FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE tariffs ADD CONSTRAINT tariff_rule_id_fk
+FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rules (id) ON DELETE SET NULL ON UPDATE CASCADE;");
 
 INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016071800');
 

@@ -204,14 +204,14 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 // if selected tariff is phone tariff then load prefixes assigned to this tariff
 if ($tariff['type'] == TARIFF_PHONE) {
 	$tariff_rows = $DB->GetAll('SELECT DISTINCT
-											p.prefix as prefix_number, g.id as group_id, g.name as group_name, price
-										FROM
-											voip_tariffs t
-											LEFT JOIN voip_prefix_groups g ON g.id  = t.groupid
-											LEFT JOIN voip_prefixes p ON p.groupid = t.groupid
-										WHERE
-											t.tariffid = ?
-										ORDER BY g.name', array($tariff['id']));
+									p.prefix as prefix_number, g.id as group_id, g.name as group_name, price
+								FROM
+									voip_tariffs t
+									LEFT JOIN voip_prefix_groups g ON g.id  = t.groupid
+									LEFT JOIN voip_prefixes p ON p.groupid = t.groupid
+								WHERE
+									t.tariffid = ?
+								ORDER BY g.name', array($tariff['id']));
 
 	$prefixList = array();
 	foreach ($tariff_rows as $row) {

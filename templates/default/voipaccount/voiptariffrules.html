@@ -55,12 +55,13 @@
                                         {/foreach}
                                     {/if}
                                 </select>
-                            &nbsp;&nbsp;<a href="javascript:loadTariff();">{trans("load<!voip>")}</a>
-                            &nbsp;&nbsp;<a href="javascript:deleteTariff();">{trans("delete")}</a>
-                        </td>
-                    <tr class="space_row"">
-                        <td><img src="img/customer.gif" alt=""></td>
-                        <td><b>{trans("Rule name:<!voip>")}</b></td>
+                                &nbsp;&nbsp;<a href="javascript:loadTariff();">{trans("load<!voip>")}</a>
+                                &nbsp;&nbsp;<a href="javascript:deleteTariff();">{trans("delete")}</a>
+                            </td>
+                        </tr>
+                        <tr class="space_row">
+                            <td><img src="img/customer.gif" alt=""></td>
+                            <td><b>{trans("Name:")}</b></td>
                             <td>
                                 {if isset($rule.id)}
                                 <input type="hidden"
@@ -129,7 +130,7 @@
                             </tr>
                             {if isset($rule)}
                             {foreach from=$rule.group item=group}
-                                {include file="voipaccount/voiptariffrulegroupstablerow.html"}
+                                {include file="voipaccount/voiptarifftablerow.html"}
                             {/foreach}
                             {/if}
                         </table>

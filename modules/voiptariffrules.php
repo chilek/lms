@@ -42,7 +42,7 @@ function getGroupTableRow($name, $def_price = '', $def_unitsize = '') {
         $SMARTY->assign('group', $group);
         $SMARTY->assign('def_price', $def_price);
         $SMARTY->assign('def_unitsize', $def_unitsize);
-        $row = $SMARTY->fetch('voipaccount/voiptariffrulegroupstablerow.html');
+        $row = $SMARTY->fetch('voipaccount/voiptarifftablerow.html');
 
         $JSResponse->call('addGroup', array($group['id'], $row));
     }
@@ -110,7 +110,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete') {
 }
 
 if ($rule) {
-
     if (!$rule_id)
         $rule_id = $DB->GetOne("SELECT id FROM voip_rules WHERE name = ?", array($rule['name']));
 
@@ -121,26 +120,24 @@ if ($rule) {
 
     if (empty($rule['group']))
         $error['group_search'] = trans('Tariff rule must contains at least one group!');
+    else {
+        foreach ($rule['group'] as $v) {
+            $p = 'price' . $v['id'];
+            $u = 'units' . $v['id'];
 
-    foreach ($rule['group'] as $v) {
-        $p = 'price' . $v['id'];
-        $u = 'units' . $v['id'];
+            if (!is_numeric($v['price']) && $v['price'] != '')
+                $error[$p] = trans("Incorrect value!");
+            else if ($v['price'] < 0)
+                $error[$p] = trans("Number must be positive!");
 
-        if (!is_numeric($v['price']) && $v['price'] != '')
-            $error[$p] = trans("Incorrect value!");
-        else if ($v['price'] < 0)
-            $error[$p] = trans("Number must be positive!");
-
-        if (!is_numeric($v['units']) && $v['units'] != '')
-            $error[$u] = trans("Incorrect value!");
-        else if ($v['units'] < 0)
-            $error[$u] = trans("Number must be positive!");
+            if (!is_numeric($v['units']) && $v['units'] != '')
+                $error[$u] = trans("Incorrect value!");
+            else if ($v['units'] < 0)
+                $error[$u] = trans("Number must be positive!");
+        }
     }
 
-    $SMARTY->assign('rule', $rule);
-
     if (!$error) {
-
         // if rule name doesn't exists then create and get id else clear all current groups assigned to this rule
         if (!$rule_id) {
             $DB->Execute('INSERT INTO voip_rules (name, description) VALUES (?, ?)', array($rule['name'], $rule['description']));
