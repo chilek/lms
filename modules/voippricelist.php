@@ -80,19 +80,19 @@ function clearPricelist($id) {
  * \return array associative array with paremeters
  */
 function parseRow($row) {
-    $pattern = '(?<prefix>.*)\|' . 
-               '(?<name>.*)\|' . 
+    $pattern = '(?<prefix>.*)\|' .
+               '(?<name>.*)\|' .
                '(?<unitsize>.*)\|' .
                '(?<purchase>.*)\|' .
                '(?<sell>.*)';
 
     preg_match('/^'.$pattern.'$/', $row, $matches);
-    
+
     foreach ($matches as $k=>$v) {
         if (is_numeric($k))
             unset($matches[$k]);
     }
-           
+
     return $matches;
 }
 
@@ -100,20 +100,20 @@ function loadFromFile($list_id) {
     $prefixList = array();
     $error      = array();
     $lines      = file($_FILES['file']['tmp_name']);
-    
+
     if (empty($lines)) {
         return 1;
     }
-    
+
     while (($line = next($lines)) !== false) {
         if (empty($line))
             continue;
-    
-        $row    = parseRow($line); 
+
+        $row    = parseRow($line);
         $name   = $row['name'];
         $prefix = $row['prefix'];
         $sell   = $row['sell'];
-           
+
         $result[$name][$sell][] = $prefix;
 
         // CHECK FOR DUPLICATE PREFIXES
@@ -136,7 +136,7 @@ function loadFromFile($list_id) {
     $voip_prefix_group = 'INSERT INTO voip_prefix_groups (name, description) VALUES ';
     foreach ($groups as $groupName=>$prefixArray)
         $voip_prefix_group .= "('$groupName', ''),";
-    
+
     $voip_prefix_group = rtrim($voip_prefix_group, ',') . ';';
     $DB->execute($voip_prefix_group);
 
@@ -197,7 +197,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete') {
 
     if (!$error) {
         $DB->BeginTrans();
-    
+
         if ($pricelist_id == NULL) {
             $DB->Execute("INSERT INTO voip_tariffs (name, description)
                          VALUES (?, ?)", array($pricelist['name'], $pricelist['description']));
@@ -212,9 +212,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete') {
         $file_err = 0;
         if (!empty($_FILES['file']['name'])) {
             clearPricelist($pricelist_id);
-            $file_err = loadFromFile($pricelist_id);    
+            $file_err = loadFromFile($pricelist_id);
         }
-        
+
         if (!$error)
             $DB->CommitTrans();
         else {
