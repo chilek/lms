@@ -736,7 +736,8 @@ CREATE TABLE tariffs (
 
 	-- foreign key to voip_tariffs is added at the end of file due to the order of table create
 	-- FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs (id)
-	voip_tariff_id integer DEFAULT NULL,
+	voip_tariff_id integer      DEFAULT NULL,
+	voip_tariff_rule_id integer DEFAULT NULL,
 
 	PRIMARY KEY (id),
 	CONSTRAINT tariffs_name_key UNIQUE (name, value, period)
@@ -2829,6 +2830,8 @@ ALTER TABLE tariffs ADD CONSTRAINT tariff_id_fk
 FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE tariffs ADD CONSTRAINT tariff_rule_id_fk
-FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rules (id) ON DELETE SET NULL ON UPDATE CASCADE;");
+FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rules (id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016072000');
+
+COMMIT;
