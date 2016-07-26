@@ -1,5 +1,5 @@
 HTML { height: 100%; }
-BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; background-color: #EBE4D6; margin: 0; padding: 0; vertical-align: middle; min-height: 100%;}
+BODY		{ font-size: 8pt; font-family: Arial, Helvetica, Verdana; background-color: #EBE4D6; margin: 0; padding: 0; vertical-align: middle; min-height: 100%;}
 TABLE		{ border-collapse: collapse; border-color: #000000 }
 
 #pagecontainer  { height: 100%; }
@@ -8,7 +8,7 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 
 .bottomline { border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #bdac8a; }
 
-TD		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; vertical-align: middle; border-color: black; }
+TD		{ font-size: 8pt; font-family: Arial, Helvetica, Verdana; vertical-align: middle; border-color: black; }
 td[onclick]	{ cursor: pointer; }
 .fleft           { border-left-width: 1pt; border-left-style: solid; }
 .fright          { border-right-width: 1pt; border-right-style: solid; }
@@ -41,14 +41,14 @@ TR.blend A	{ color: #888888; }
 TR.alertblend A	{ color: #FA8072; }
 TR.suspended A  { color: #30B6C6; }
 
-P		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
-P.nor		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
-P.txt		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; text-align: justify; }
-P.separated	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; margin-top: 5; margin-bottom: 5 }
+P		{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; }
+P.nor		{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; }
+P.txt		{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; text-align: justify; }
+P.separated	{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; margin-top: 5; margin-bottom: 5 }
 
-H1		{ font-size: 14pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
-H2		{ font-size: 12pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
-H3		{ font-size: 10pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+H1		{ font-size: 14pt; font-family: Arial, Helvetica, Verdana; }
+H2		{ font-size: 12pt; font-family: Arial, Helvetica, Verdana; }
+H3		{ font-size: 10pt; font-family: Arial, Helvetica, Verdana; }
 HR      { border: 0; height: 1px; color: black; background-color: black; }
 
 INPUT[type="text"],
@@ -65,7 +65,7 @@ INPUT[type="file"] {
 }
 INPUT { /* IE */
 	font-size:  8pt;
-	font-family: Tahoma, Verdana, Arial, Helvetica;
+	font-family: Arial, Helvetica, Verdana;
 	vertical-align: middle;
 	border-style: expression(this.type=='checkbox' || this.type=='radio' ? 'none' : 'solid');
 	border-width: expression(this.type=='checkbox' || this.type=='radio' ? '0' : '1px');
@@ -87,19 +87,19 @@ INPUT.hiddenbtn	{ display : none; }
 INPUT.blend	{ border-style: solid; border-color: #c0c0c0; border-width: 1px; vertical-align: middle; color: black; }
 INPUT.scroller	{ border-style: solid; border-color: grey; border-width: 1px; vertical-align: middle; background-color: #DFD5BD; }
 
-TEXTAREA	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #EBE4D6; vertical-align: middle; }
-TEXTAREA.alert	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #FF9B9B; vertical-align: middle; }
+TEXTAREA	{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; border-style: solid; border-width: 1pt; background-color: #EBE4D6; vertical-align: middle; }
+TEXTAREA.alert	{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; border-style: solid; border-width: 1pt; background-color: #FF9B9B; vertical-align: middle; }
 
-SELECT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #EBE4D6; vertical-align: middle; }
-SELECT.alert	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #FF9B9B; vertical-align: middle; }
+SELECT		{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; border-style: solid; border-width: 1pt; background-color: #EBE4D6; vertical-align: middle; }
+SELECT.alert	{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; border-style: solid; border-width: 1pt; background-color: #FF9B9B; vertical-align: middle; }
 
-BUTTON		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 0pt; background-color: #DFD5BD; vertical-align: middle; }
+BUTTON		{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; border-style: solid; border-width: 0pt; background-color: #DFD5BD; vertical-align: middle; }
 
 IMG		{ vertical-align: middle; border: 0; }
 
 div.multiselect { 
 	font-size:  8pt;
-	font-family: Tahoma, Verdana, Arial, Helvetica;
+	font-family: Arial, Helvetica, Verdana;
 	border: solid 1px #888888;
 	vertical-align: middle;
 	padding: 0px 20px 0px 4px;
@@ -205,7 +205,7 @@ div.multiselectlayer ul li input { border: none; }
 
 .overlib {
     min-width: 10px;
-    font-family: Tahoma, Verdana, Arial, Helvetica;
+    font-family: Arial, Helvetica, Verdana;
     background-color: #F4F0EC;
     padding: 2px 4px;
     border: 1px solid #333;
