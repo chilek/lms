@@ -25,12 +25,13 @@
  */
 
 $netid = isset($_GET['netid']) ? intval($_GET['netid']) : NULL;
+$id = isset($_GET['id']) ? intval($_GET['id']) : NULL;
 
-if(!$LMS->TariffExists($_GET['id']) || ($netid != 0 && !$LMS->NetworkExists($netid))) {
+if (!$LMS->TariffExists($id || ($netid != 0 && !$LMS->NetworkExists($netid)))) {
 	$SESSION->redirect('?m=tarifflist');
 }
 
-$tariff = $LMS->GetTariff($_GET['id'], $netid);
+$tariff = $LMS->GetTariff($id, $netid);
 
 $tariff['promotions'] = $DB->GetAll('SELECT DISTINCT p.name, p.id
     FROM promotionassignments a
@@ -48,7 +49,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 // if selected tariff is phone tariff then load prefixes assigned to this tariff
 if ($tariff['type'] == TARIFF_PHONE) {
-	$SMARTY->assign('voip_fields', $DB->GetAll("SELECT
+	$SMARTY->assign('voip_fields', $DB->GetRow("SELECT
                                                     vt.name as pricelist,
                                                     vr.name as rule_name
                                                 FROM
@@ -56,7 +57,7 @@ if ($tariff['type'] == TARIFF_PHONE) {
                                                     left join voip_tariffs vt on t.voip_tariff_id = vt.id
                                                     left join voip_rules vr on t.voip_tariff_rule_id = vr.id
                                                 WHERE
-                                                    t.id = ?", array($netid)));
+                                                    t.id = ?", array($id)));
 }
 
 $SMARTY->assign('netid', $netid);

@@ -992,6 +992,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'domain_limit' => $tariff['domain_limit'],
             'alias_limit' => $tariff['alias_limit'],
             'type' => $tariff['type'],
+            'voip_tariff_id' => (!empty($tariff['voip_pricelist'])) ? $tariff['voip_pricelist'] : NULL,
+            'voip_tariff_rule_id' => (!empty($tariff['voip_tariffrule'])) ? $tariff['voip_tariffrule'] : NULL,
             $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $tariff['id']
         );
         $res = $this->db->Execute('UPDATE tariffs SET name=?, description=?, value=?,
@@ -1000,7 +1002,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				climit_n=?, plimit_n=?, dlimit=?, sh_limit=?, www_limit=?, mail_limit=?,
 				sql_limit=?, ftp_limit=?, quota_sh_limit=?, quota_www_limit=?,
 				quota_mail_limit=?, quota_sql_limit=?, quota_ftp_limit=?,
-				domain_limit=?, alias_limit=?, type=? WHERE id=?', array_values($args));
+				domain_limit=?, alias_limit=?, type=?, voip_tariff_id=?, voip_tariff_rule_id=?
+				WHERE id=?', array_values($args));
         if ($res && $this->syslog)
             $this->syslog->AddMessage(SYSLOG_RES_TARIFF, SYSLOG_OPER_UPDATE, $args,
             	array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));

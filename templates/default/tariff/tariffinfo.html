@@ -129,8 +129,8 @@
                                     <A href="?m=promotioninfo&id={$promo.id}">{$promo.name}</A>&nbsp;
                                 {/foreach}
                                 </TD>
-                             </TR>
-                             {/if}
+                            </TR>
+                            {/if}
 
                         </TABLE>
                     </TD>
@@ -301,7 +301,7 @@
                 </THEAD>
                 <TBODY>
                 {cycle values="light,lucid" print=false}
-                 {section name=l1 loop=$tariff.customers max=$tariff.rows}
+                {section name=l1 loop=$tariff.customers max=$tariff.rows}
                 <TR>
                     {section name=l2 loop=$tariff.customers start=$smarty.section.l1.index step=$tariff.rows}
                      <TD WIDTH="33%" class="highlight {cycle}" {cycle print=false} onclick="return self.location.href='?m=customerinfo&id={$tariff.customers[l2].id}'">
