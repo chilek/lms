@@ -59,7 +59,8 @@ if (isset($_GET['id']) && $action == 'init')
 	$cnote['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype = ? AND isdefault = 1', array(DOC_CNOTE));
 	$currtime = time();
 	$cnote['cdate'] = $currtime;
-	$cnote['sdate'] = $currtime;
+	//$cnote['sdate'] = $currtime;
+	$cnote['sdate'] = $invoice['sdate'];
 	$cnote['reason'] = '';
 	$cnote['paytype'] = $invoice['paytype'];
 
