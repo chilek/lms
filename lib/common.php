@@ -969,4 +969,25 @@ function generate_random_string($length = 10, $characters = '0123456789abcdefghi
 	return $randomString;
 }
 
-?>
+function trans()
+{
+	global $_LANG;
+
+	$args = func_get_args();
+	$content = array_shift($args);
+
+	if (is_array($content)) {
+		$args = array_values($content);
+		$content = array_shift($args);
+	}
+
+	if (isset($_LANG[$content]))
+		$content = trim($_LANG[$content]);
+
+	for ($i = 1, $len = count($args); $i <= $len; $i++) {
+		$content = str_replace('$'.chr(97+$i-1), $args[$i-1], $content);
+	}
+
+	$content = preg_replace('/<![^>]+>/', '', $content);
+	return $content;
+}
