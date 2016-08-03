@@ -323,7 +323,7 @@ elseif (isset($_POST['customerdata']))
 			$customerinfo['uid'][$idx] = $val['uid'];
 
 	foreach (array_keys($CUSTOMERCONTACTTYPES) as $contacttype)
-		if (empty($customerinfo[$contacttype]))
+		if (empty($customerinfo[$contacttype . 's']))
 			$customerinfo[$contacttype . 's'][] = array();
 
 	if (!empty($customerinfo['accounts']))
