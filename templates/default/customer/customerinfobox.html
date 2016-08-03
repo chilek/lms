@@ -77,17 +77,18 @@
 			</table>
 		</TD>
 	</TR>
-{if !empty($customerinfo.contacts)}
+{foreach $_CUSTOMERCONTACTTYPES as $type => $properties}
+{if !empty($customerinfo[$type|cat:"s"])}
 	<TR>
 		<TD style="width: 1%;"></TD>
 		<TD style="width: 99%;" class="nobr">
 			<fieldset style="width: 1%;" class="nobr">
-				<legend class="bold"><IMG SRC="img/phone.gif" ALT=""> {trans("Contact phones")}</legend>
+				<legend class="bold"><IMG SRC="{$properties.ui.legend.icon}" ALT=""> {$properties.ui.legend.text}</legend>
 				<TABLE>
-					{foreach $customerinfo.contacts as $contact}
+					{foreach $customerinfo[$type|cat:"s"] as $contact}
 					<TR{if ($contact.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>
 						<TD>
-							<a class="phone_number" href="tel:{$contact.phone}">{$contact.phone}</a>
+							{if isset($properties.formatter)}{call_user_func($properties['formatter'], $contact.contact)}{else}{$contact.contact}{/if}
 							{if $contact.typestr}[{$contact.typestr}]{/if}
 							{if $contact.name} ({$contact.name|truncate:"40":"...":true}){/if}
 						</TD>
@@ -98,48 +99,7 @@
 		</TD>
 	</TR>
 {/if}
-{if !empty($customerinfo.emails)}
-	<TR>
-		<TD style="width: 1%;"></TD>
-		<TD style="width: 99%;" class="nobr">
-			<fieldset style="width: 1%;" class="nobr">
-				<legend class="bold"><IMG SRC="img/mail.gif" ALT=""> {trans("Email addresses")}</legend>
-				<TABLE>
-					{foreach $customerinfo.emails as $email}
-					<TR{if ($email.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>
-						<TD>
-							<A HREF="mailto:{$email.email}">{$email.email}</A>
-							{if $email.typestr}[{$email.typestr}]{/if}
-							{if $email.name} ({$email.name|truncate:"40":"...":true}){/if}
-						</TD>
-					</TR>
-					{/foreach}
-				</TABLE>
-			</fieldset>
-		</TD>
-	</TR>
-{/if}
-{if !empty($customerinfo.accounts)}
-	<TR>
-		<TD style="width: 1%;"></TD>
-		<TD style="width: 99%;" class="nobr">
-			<fieldset style="width: 1%;" class="nobr">
-				<legend class="bold"><IMG SRC="img/card.gif" ALT=""> {trans("Bank accounts")}</legend>
-				<TABLE>
-					{foreach $customerinfo.accounts as $account}
-					<TR{if ($account.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>
-						<TD>
-							{format_bankaccount($account.account)}
-							{if $account.typestr}[{$account.typestr}]{/if}
-							{if $account.name} ({$account.name|truncate:"40":"...":true}){/if}
-						</TD>
-					</TR>
-					{/foreach}
-				</TABLE>
-			</fieldset>
-		</TD>
-	</TR>
-{/if}
+{/foreach}
 {foreach from=$customerinfo.messengers item=item}
 	<TR>
 		<TD>
