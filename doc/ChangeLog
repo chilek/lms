@@ -58,6 +58,7 @@ version ?.??.?? (????-??-??):
   - added support for %srcaccount%, %dstaccount% and %customername% replace symbols
     in imported financial operation comments [chilan]
   - unification customer contact management code [chilan]
+  - added new customer contact type support - url addresses [chilan]
 
 version 1.11.20 (2016-04-19):
 

@@ -26,27 +26,15 @@
 		var newcell = newrow.insertCell(0);
 		newcell.style.whiteSpace = 'nowrap';
 		switch (type) {
-			case 'phone':
-				innerHTML = '<HR><INPUT TYPE="text" size="{$_CUSTOMERCONTACTTYPES.phone.ui.size}" value="" name="customeradd[phones][' + nr + '][contact]"'
-					+ ' onmouseover="popup(\'{$_CUSTOMERCONTACTTYPES.phone.ui.tip}\')" onmouseout="pophide()">';
-				innerHTML += '{foreach $_CUSTOMERCONTACTTYPES.phone.ui.flags as $flagtype => $flagproperties}<label{if isset($flagproperties.tip)} onmouseover="popup(\'{$flagproperties.tip}\')" onmouseout="pophide()"{/if}><INPUT TYPE="checkbox" value="{$flagtype}" name="customeradd[phones][' + nr + '][type][]"> {$flagproperties.label}</label>{/foreach}';
-				innerHTML += '<BR><INPUT TYPE="text" size="68" value="" name="customeradd[phones][' + nr + '][name]"'
+			{foreach $_CUSTOMERCONTACTTYPES as $contacttype => $properties}
+			case '{$contacttype}':
+				innerHTML = '<HR><INPUT TYPE="text" size="{$properties.ui.size}" value="" name="customeradd[{$contacttype|cat:"s"}][' + nr + '][contact]"'
+					+ ' onmouseover="popup(\'{$properties.ui.tip}\')" onmouseout="pophide()">';
+				innerHTML += '{foreach $properties.ui.flags as $flagtype => $flagproperties}<label{if isset($flagproperties.tip)} onmouseover="popup(\'{$flagproperties.tip}\')" onmouseout="pophide()"{/if}><INPUT TYPE="checkbox" value="{$flagtype}" name="customeradd[{$contacttype|cat:"s"}][' + nr + '][type][]"> {$flagproperties.label}</label>{/foreach}';
+				innerHTML += '<BR><INPUT TYPE="text" size="68" value="" name="customeradd[{$contacttype|cat:"s"}][' + nr + '][name]"'
 					+ ' onmouseover="popup(\'{trans("Enter contact name/description (optional)")}\')" onmouseout="pophide()">';
 				break;
-			case 'email':
-				innerHTML = '<HR><INPUT TYPE="text" size="{$_CUSTOMERCONTACTTYPES.email.ui.size}" value="" name="customeradd[emails][' + nr + '][contact]"'
-					+ ' onmouseover="popup(\'{$_CUSTOMERCONTACTTYPES.email.ui.tip}\')" onmouseout="pophide()">';
-				innerHTML += '{foreach $_CUSTOMERCONTACTTYPES.email.ui.flags as $flagtype => $flagproperties}<label{if isset($flagproperties.tip)} onmouseover="popup(\'{$flagproperties.tip}\')" onmouseout="pophide()"{/if}><INPUT TYPE="checkbox" value="{$flagtype}" name="customeradd[emails][' + nr + '][type][]"> {$flagproperties.label}</label>{/foreach}';
-				innerHTML += '<BR><INPUT TYPE="text" size="68" value="" name="customeradd[emails][' + nr + '][name]"'
-					+ ' onmouseover="popup(\'{trans("Enter contact name/description (optional)")}\')" onmouseout="pophide()">';
-				break;
-			case 'account':
-				innerHTML = '<HR><INPUT TYPE="text" size="{$_CUSTOMERCONTACTTYPES.account.ui.size}" value="" name="customeradd[accounts][' + nr + '][contact]"'
-					+ ' onmouseover="popup(\'{$_CUSTOMERCONTACTTYPES.account.ui.tip}\')" onmouseout="pophide()">';
-				innerHTML += '{foreach $_CUSTOMERCONTACTTYPES.account.ui.flags as $flagtype => $flagproperties}<label{if isset($flagproperties.tip)} onmouseover="popup(\'{$flagproperties.tip}\')" onmouseout="pophide()"{/if}><INPUT TYPE="checkbox" value="{$flagtype}" name="customeradd[accounts][' + nr + '][type][]"> {$flagproperties.label}</label>{/foreach}';
-				innerHTML += '<BR><INPUT TYPE="text" size="68" value="" name="customeradd[accounts][' + nr + '][name]"'
-					+ ' onmouseover="popup(\'{trans("Enter contact name/description (optional)")}\')" onmouseout="pophide()">';
-				break;
+			{/foreach}
 		}
 		newcell.innerHTML = innerHTML;
 		contactcountelem.value = parseInt(nr) + 1;

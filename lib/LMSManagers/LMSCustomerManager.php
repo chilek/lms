@@ -856,8 +856,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      */
     public function GetCustomer($id, $short = false)
     {
-        global $CONTACTTYPES;
-
+        global $CONTACTTYPES, $CUSTOMERCONTACTTYPES;
+;
 		require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
         if ($result = $this->db->GetRow('SELECT c.*, '
@@ -909,21 +909,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $result['messengers'] = $this->db->GetAllByKey('SELECT uid, type 
 					FROM imessengers WHERE customerid = ? ORDER BY type', 'type', array($result['id']));
 
-			$result['contacts'] = $this->db->GetAll('SELECT contact AS phone, contact, name, type
+			foreach ($CUSTOMERCONTACTTYPES as $contacttype => $properties)
+				$result[$contacttype . 's'] = $this->db->GetAll('SELECT contact AS ' . $contacttype . ',
+						contact, name, type
 					FROM customercontacts
 					WHERE customerid = ? AND type & ? > 0 ORDER BY id',
-					array($result['id'], CONTACT_MOBILE | CONTACT_FAX | CONTACT_LANDLINE));
-			$result['phones'] = $result['contacts'];
-
-			$result['emails'] = $this->db->GetAll('SELECT contact AS email, contact, name, type
-					FROM customercontacts
-					WHERE customerid = ? AND type & ? > 0 ORDER BY id',
-					array($result['id'], CONTACT_EMAIL));
-
-			$result['accounts'] = $this->db->GetAll('SELECT contact AS account, contact, name, type
-					FROM customercontacts
-					WHERE customerid = ? AND type & ? > 0 ORDER BY id',
-					array($result['id'], CONTACT_BANKACCOUNT));
+					array($result['id'], $properties['flagmask']));
 
 			$result['sendinvoices'] = false;
 
@@ -943,6 +934,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 							$result[$ctype][$idx]['typestr'] = implode('/', $types);
 					}
 			}
+			$result['contacts'] = $result['phones'];
 
 			if (empty($result['invoicenotice']))
 				$result['sendinvoices'] = false;
