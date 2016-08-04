@@ -59,6 +59,8 @@ version ?.??.?? (????-??-??):
     in imported financial operation comments [chilan]
   - unification customer contact management code [chilan]
   - added new customer contact type support - url addresses [chilan]
+  - important fix: avoid to settle duplicated liabilities on invoices when almost their
+    all properties are identical [chilan]
 
 version 1.11.20 (2016-04-19):
 
