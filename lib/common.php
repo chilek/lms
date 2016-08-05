@@ -969,4 +969,13 @@ function generate_random_string($length = 10, $characters = '0123456789abcdefghi
 	return $randomString;
 }
 
+function check_url($url) {
+	$components = parse_url($url);
+	if ($components === false)
+		return false;
+	if (!isset($components['host']) || !isset($components['scheme']))
+		return false;
+	return true;
+}
+
 ?>

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -3383,5 +3383,11 @@ $_LANG['Edit tag'] = 'Edytuj etykietę';
 $_LANG['Reset tags'] = 'Resetuj etykiety';
 $_LANG['There are no tags in database.'] = 'Nie ma etykiet w bazie danych.';
 $_LANG['Tag with assigned tariffs cannont be deleted!'] = 'Etykieta z przypisanymi taryfami nie może zostać usunięta!';
+
+$_LANG['URL addresses'] = 'Adresy URL';
+$_LANG['Enter URL address (optional)'] = 'Podaj adres URL (opcjonalnie)';
+$_LANG['Check if URL address should be disabled'] = 'Zaznacz, jeśli adres URL powinien być wyłączony';
+$_LANG['Incorrect URL address!'] = 'Niepoprawny adres URL!';
+$_LANG['URL address is required!'] = 'Adres URL jest wymagany!';
 
 ?>

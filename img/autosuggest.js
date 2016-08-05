@@ -8,7 +8,7 @@ Licensed under GNU Lesser General Public License (LGPL).
 Modified by kondi for LMS project (mailto:lms@kondi.net).
 *******************************************************/
 
-function AutoSuggest(form,elem,uri,autosubmit) {
+function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 
 	//The 'me' variable allow you to access the AutoSuggest object
 	//from the elem's event handlers defined below.
@@ -196,6 +196,8 @@ function AutoSuggest(form,elem,uri,autosubmit) {
 			setTimeout("document.getElementById('" + this.form.id + "').onsubmit = function () { return true; }",10);
 			//Go to search results.
 			if (this.autosubmit == 1) location.href = gotothisuri;
+			if (this.onsubmit !== undefined)
+				eval(this.onsubmit);
 		}
 	};
 

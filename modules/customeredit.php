@@ -25,6 +25,7 @@
  */
 
 if (!isset($_POST['xjxfun'])) {
+	require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 $exists = $LMS->CustomerExists($_GET['id']);
@@ -40,8 +41,13 @@ elseif(!$exists)
 elseif (isset($_POST['customerdata']))
 {
 	$customerdata = $_POST['customerdata'];
-	foreach($customerdata as $key=>$value)
-		if($key != 'uid' && $key != 'contacts' && $key != 'emails' && $key != 'accounts')
+
+	$contacttypes = array_keys($CUSTOMERCONTACTTYPES);
+	foreach ($contacttypes as &$contacttype)
+		$contacttype .= 's';
+
+	foreach ($customerdata as $key => $value)
+		if ($key != 'uid' && !in_array($key, $contacttypes))
 			$customerdata[$key] = trim($value);
 
 	if($customerdata['lastname'] == '')
@@ -158,62 +164,17 @@ elseif (isset($_POST['customerdata']))
 
 	$contacts = array();
 
-        $emaileinvoice = FALSE;
-	foreach ($customerdata['emails'] as $idx => $val) {
-		$email = trim($val['email']);
-		$name = trim($val['name']);
-                $type = !empty($val['type']) ? array_sum($val['type']) : NULL;
-                $type += CONTACT_EMAIL;
+	$emaileinvoice = false;
 
-                if($type & (CONTACT_INVOICES | CONTACT_DISABLED))
-                        $emaileinvoice = TRUE;
+	foreach ($CUSTOMERCONTACTTYPES as $contacttype => $properties)
+		$properties['validator']($customerdata, $contacts, $error);
 
+	foreach ($customerdata['emails'] as $idx => $val)
+		if ($val['type'] & (CONTACT_INVOICES | CONTACT_DISABLED))
+			$emaileinvoice = true;
 
-                $customerdata['emails'][$idx]['type'] = $type;
-
-		if ($email != '' && !check_email($email))
-			$error['email' . $idx] = trans('Incorrect email!');
-		elseif ($name && !$email)
-			$error['email' . $idx] = trans('Email address is required!');
-		elseif ($email)
-			$contacts[] = array('name' => $name, 'contact' => $email, 'type' => $type);
-	}
-
-        if(isset($customerdata['invoicenotice']) && !$emaileinvoice)
-                $error['invoicenotice'] = trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');
-
-	foreach ($customerdata['contacts'] as $idx => $val) {
-		$phone = trim($val['phone']);
-		$name = trim($val['name']);
-		$type = !empty($val['type']) ? array_sum($val['type']) : NULL;
-
-                if($type == CONTACT_DISABLED){
-                    $type += CONTACT_LANDLINE;
-                }
-
-		$customerdata['contacts'][$idx]['type'] = $type;
-
-		if ($name && !$phone)
-			$error['contact' . $idx] = trans('Phone number is required!');
-		elseif ($phone)
-			$contacts[] = array('name' => $name, 'contact' => $phone, 'type' => empty($type) ? CONTACT_LANDLINE : $type);
-	}
-
-	foreach ($customerdata['accounts'] as $idx => $val) {
-		$account = trim($val['account']);
-		$name = trim($val['name']);
-		$type = !empty($val['type']) ? array_sum($val['type']) : NULL;
-		$type += CONTACT_BANKACCOUNT;
-
-		$customerdata['accounts'][$idx]['type'] = $type;
-
-		if ($account != '' && !check_bankaccount($account))
-			$error['account' . $idx] = trans('Incorrect bank account!');
-		elseif ($name && !$account)
-			$error['account' . $idx] = trans('Bank account is required!');
-		elseif ($account)
-			$contacts[] = array('name' => $name, 'contact' => $account, 'type' => $type);
-	}
+	if (isset($customerdata['invoicenotice']) && !$emaileinvoice)
+		$error['invoicenotice'] = trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');
 
 	if ($customerdata['cutoffstop'] == '')
 		$cutoffstop = 0;
@@ -361,17 +322,13 @@ elseif (isset($_POST['customerdata']))
 		foreach($customerinfo['messengers'] as $idx => $val)
 			$customerinfo['uid'][$idx] = $val['uid'];
 
-	if (empty($customerinfo['contacts']))
-		$customerinfo['contacts'][] = array();
+	foreach (array_keys($CUSTOMERCONTACTTYPES) as $contacttype)
+		if (empty($customerinfo[$contacttype . 's']))
+			$customerinfo[$contacttype . 's'][] = array();
 
-	if (empty($customerinfo['emails']))
-		$customerinfo['emails'][] = array();
-
-	if (empty($customerinfo['accounts']))
-		$customerinfo['accounts'][] = array();
-	else
+	if (!empty($customerinfo['accounts']))
 		foreach ($customerinfo['accounts'] as &$account)
-			$account['account'] = format_bankaccount($account['account']);
+			$account['contact'] = format_bankaccount($account['contact']);
 }
 
 $layout['pagetitle'] = trans('Customer Edit: $a',$customerinfo['customername']);

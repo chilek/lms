@@ -856,7 +856,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      */
     public function GetCustomer($id, $short = false)
     {
-        global $CONTACTTYPES;
+        global $CONTACTTYPES, $CUSTOMERCONTACTTYPES;
+;
+		require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
         if ($result = $this->db->GetRow('SELECT c.*, '
                 . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
@@ -906,21 +908,18 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
             $result['messengers'] = $this->db->GetAllByKey('SELECT uid, type 
 					FROM imessengers WHERE customerid = ? ORDER BY type', 'type', array($result['id']));
-			$result['contacts'] = $this->db->GetAll('SELECT contact AS phone, name, type
+
+			foreach ($CUSTOMERCONTACTTYPES as $contacttype => $properties)
+				$result[$contacttype . 's'] = $this->db->GetAll('SELECT contact AS ' . $contacttype . ',
+						contact, name, type
 					FROM customercontacts
 					WHERE customerid = ? AND type & ? > 0 ORDER BY id',
-					array($result['id'], CONTACT_MOBILE | CONTACT_FAX | CONTACT_LANDLINE));
-			$result['emails'] = $this->db->GetAll('SELECT contact AS email, name, type
-					FROM customercontacts
-					WHERE customerid = ? AND type & ? > 0 ORDER BY id',
-					array($result['id'], CONTACT_EMAIL));
-			$result['accounts'] = $this->db->GetAll('SELECT contact AS account, name, type
-					FROM customercontacts
-					WHERE customerid = ? AND type & ? > 0 ORDER BY id',
-					array($result['id'], CONTACT_BANKACCOUNT));
+					array($result['id'], $properties['flagmask']));
+
 			$result['sendinvoices'] = false;
 
-			foreach (array('contacts', 'emails', 'accounts') as $ctype)
+			foreach (array_keys($CUSTOMERCONTACTTYPES) as $ctype) {
+				$ctype .= 's';
 				if (is_array($result[$ctype]))
 					foreach ($result[$ctype] as $idx => $row) {
 						$types = array();
@@ -934,6 +933,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 						if ($types)
 							$result[$ctype][$idx]['typestr'] = implode('/', $types);
 					}
+			}
+			$result['contacts'] = $result['phones'];
 
 			if (empty($result['invoicenotice']))
 				$result['sendinvoices'] = false;

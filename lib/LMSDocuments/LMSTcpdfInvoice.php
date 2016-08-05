@@ -662,7 +662,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 				$account = format_bankaccount($account);
 			$bankaccount = trans('Bank account:') .'<br>' . implode('<br>', $accounts);
 			$this->backend->SetFont('arial', 'B', 8);
-			$this->backend->writeHTMLCell('', '', 120,  $oldy + round(($y - $oldy - 8) / 2), $bankaccount, 0, 1, 0, true, 'L');
+			$this->backend->writeHTMLCell('', '', 120,  $oldy, $bankaccount, 0, 1, 0, true, 'L');
 		}
 
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_credentials', true))) {

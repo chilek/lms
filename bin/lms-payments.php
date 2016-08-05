@@ -478,8 +478,8 @@ foreach ($assigns as $assign) {
 				array($assign['tariffid'], $invoices[$cid], $desc, $assign['pdiscount'], $assign['vdiscount']))) != 0)
 			{
 				$DB->Execute("UPDATE invoicecontents SET count=count+1 
-					WHERE tariffid=? AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
-					array($assign['tariffid'], $invoices[$cid], $desc, $assign['pdiscount'], $assign['vdiscount']));
+					WHERE tariffid=? AND docid=? AND value=? AND description=? AND pdiscount=? AND vdiscount=?",
+					array($assign['tariffid'], $invoices[$cid], $assign['value'], $desc, $assign['pdiscount'], $assign['vdiscount']));
 				$DB->Execute("UPDATE cash SET value=value+($val*-1) 
 					WHERE docid = ? AND itemid = $tmp_itemid", array($invoices[$cid]));
 			}
