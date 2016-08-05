@@ -289,13 +289,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     /**
      * Adds customer
      * 
-     * @global array $SYSLOG_RESOURCE_KEYS
      * @param array $customeradd Customer data
      * @return boolean False on failure, customer id on success
      */
     public function customerAdd($customeradd)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         $args = array(
 			'extid' => $customeradd['extid'],
             'name' => $customeradd['name'],
@@ -306,7 +304,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'apartment' => strlen($customeradd['apartment']) ? $customeradd['apartment'] : null,
             'zip' => $customeradd['zip'],
             'city' => $customeradd['city'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $customeradd['countryid'],
+            SYSLOG::RES_COUNTRY => $customeradd['countryid'],
             'ten' => $customeradd['ten'],
             'ssn' => $customeradd['ssn'],
             'status' => $customeradd['status'],
@@ -317,7 +315,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'post_zip' => $customeradd['post_zip'],
             'post_city' => $customeradd['post_city'],
             'post_countryid' => $customeradd['post_countryid'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $this->auth->id,
+            SYSLOG::RES_USER => $this->auth->id,
             'info' => $customeradd['info'],
             'notes' => $customeradd['notes'],
             'message' => $customeradd['message'],
@@ -328,7 +326,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'cutoffstop' => $customeradd['cutoffstop'],
             'consentdate' => $customeradd['consentdate'],
             'einvoice' => $customeradd['einvoice'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customeradd['divisionid'],
+            SYSLOG::RES_DIV => $customeradd['divisionid'],
             'paytime' => $customeradd['paytime'],
             'paytype' => !empty($customeradd['paytype']) ? $customeradd['paytype'] : null,
             'invoicenotice' => $customeradd['invoicenotice'],
@@ -350,11 +348,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $location_manager->UpdateCountryState($customeradd['post_zip'], $customeradd['post_stateid']);
             }
             if ($this->syslog) {
-                $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $id;
-                unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
-                $this->syslog->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY]));
+                $args[SYSLOG::RES_CUST] = $id;
+                unset($args[SYSLOG::RES_USER]);
+                $this->syslog->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_ADD, $args);
             }
 						if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required',false))) {
 							$gargs = array(
@@ -365,10 +361,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 							if ($this->syslog && $res) {
 							}
 								$args = array(
-										$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
-										$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $customeradd['group']
+									SYSLOG::RES_CUST => $id,
+									SYSLOG::RES_CUSTGROUP => $customeradd['group']
 								);
-								$this->syslog->AddMessage(SYSLOG_RES_CUSTASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
+								$this->syslog->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_ADD, $args);
 							}
             return $id;
         } else {
@@ -947,13 +943,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     /**
     * Updates customer
     * 
-    * @global array $SYSLOG_RESOURCE_KEYS
     * @param array $customerdata Customer data
     * @return int Affected rows
     */
     public function customerUpdate($customerdata)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         $args = array(
 			'extid' => $customerdata['extid'],
             'status' => $customerdata['status'],
@@ -963,10 +957,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'apartment' => strlen($customerdata['apartment']) ? $customerdata['apartment'] : null,
             'zip' => $customerdata['zip'],
             'city' => $customerdata['city'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $customerdata['countryid'],
+            SYSLOG::RES_COUNTRY => $customerdata['countryid'],
             'ten' => $customerdata['ten'],
             'ssn' => $customerdata['ssn'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => isset($this->auth->id) ? $this->auth->id : 0,
+            SYSLOG::RES_USER => isset($this->auth->id) ? $this->auth->id : 0,
             'post_name' => $customerdata['post_name'],
             'post_street' => strlen($customerdata['post_street']) ? $customerdata['post_street'] : null,
             'post_building' => strlen($customerdata['post_building']) ? $customerdata['post_building'] : null,
@@ -988,10 +982,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'einvoice' => $customerdata['einvoice'],
             'invoicenotice' => $customerdata['invoicenotice'],
             'mailingnotice' => $customerdata['mailingnotice'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customerdata['divisionid'],
+            SYSLOG::RES_DIV => $customerdata['divisionid'],
             'paytime' => $customerdata['paytime'],
             'paytype' => $customerdata['paytype'] ? $customerdata['paytype'] : null,
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerdata['id']
+            SYSLOG::RES_CUST => $customerdata['id']
         );
         $res = $this->db->Execute('UPDATE customers SET extid=?, status=?, type=?, street=?, building=?, apartment=?,
                                zip=?, city=?, countryid=?, ten=?, ssn=?, moddate=?NOW?, modid=?,
@@ -1005,11 +999,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if ($res) {
             if ($this->syslog) {
-                unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
+                unset($args[SYSLOG::RES_USER]);
                 $args['deleted'] = 0;
-                $this->syslog->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]));
+                $this->syslog->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE, $args);
             }
             $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
             $location_manager->UpdateCountryState($customerdata['zip'], $customerdata['stateid']);
@@ -1024,32 +1016,30 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     /**
      * Deletes customer
      * 
-     * @global array $SYSLOG_RESOURCE_KEYS
      * @global type $LMS
      * @param int $id Customer id
      */
     public function deleteCustomer($id)
     {
         
-        global $SYSLOG_RESOURCE_KEYS, $LMS;
+        global $LMS;
         $this->db->BeginTrans();
 
         $this->db->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=?
                 WHERE id=?', array($this->auth->id, $id));
 
         if ($this->syslog) {
-            $this->syslog->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_UPDATE,
-                array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id, 'deleted' => 1),
-                array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+            $this->syslog->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE,
+                array(SYSLOG::RES_CUST => $id, 'deleted' => 1));
             $assigns = $this->db->GetAll('SELECT id, customergroupid FROM customerassignments WHERE customerid = ?', array($id));
             if (!empty($assigns))
                 foreach ($assigns as $assign) {
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTASSIGN] => $assign['id'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $assign['customergroupid']
+                        SYSLOG::RES_CUSTASSIGN => $assign['id'],
+                        SYSLOG::RES_CUST => $id,
+                        SYSLOG::RES_CUSTGROUP => $assign['customergroupid']
                     );
-                    $this->syslog->AddMessage(SYSLOG_RES_CUSTASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                    $this->syslog->AddMessage(SYSLOG::RES_CUSTASSIGN, SYSLOG::OPER_DELETE, $args);
                 }
         }
 
@@ -1061,27 +1051,27 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 foreach ($assigns as $assign) {
                     if ($assign['liabilityid']) {
                         $args = array(
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $assign['liabilityid'],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id);
-                        $this->syslog->AddMessage(SYSLOG_RES_LIAB, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                            SYSLOG::RES_LIAB => $assign['liabilityid'],
+                            SYSLOG::RES_CUST => $id);
+                        $this->syslog->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_DELETE, $args);
                     }
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $assign['id'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $assign['tariffid'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $assign['liabilityid'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id
+                        SYSLOG::RES_ASSIGN => $assign['id'],
+                        SYSLOG::RES_TARIFF => $assign['tariffid'],
+                        SYSLOG::RES_LIAB => $assign['liabilityid'],
+                        SYSLOG::RES_CUST => $id
                     );
-                    $this->syslog->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                    $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_DELETE, $args);
                     $nodeassigns = $this->db->GetAll('SELECT id, nodeid FROM nodeassignments WHERE assignmentid = ?', array($assign['id']));
                     if (!empty($nodeassigns))
                         foreach ($nodeassigns as $nodeassign) {
                             $args = array(
-                                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEASSIGN] => $nodeassign['id'],
-                                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeassign['nodeid'],
-                                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $assign['id'],
-                                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id
+                                SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
+                                SYSLOG::RES_NODE => $nodeassign['nodeid'],
+                                SYSLOG::RES_ASSIGN => $assign['id'],
+                                SYSLOG::RES_CUST => $id
                             );
-                            $this->syslog->AddMessage(SYSLOG_RES_NODEASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                            $this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_DELETE, $args);
                         }
                 }
         }
@@ -1097,16 +1087,16 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $macs = $this->db->GetAll('SELECT id, nodeid FROM macs WHERE nodeid IN (' . implode(',', $nodes) . ')');
                 foreach ($macs as $mac) {
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MAC] => $mac['id'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $mac['nodeid']);
-                    $this->syslog->AddMessage(SYSLOG_RES_MAC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                        SYSLOG::RES_MAC => $mac['id'],
+                        SYSLOG::RES_NODE => $mac['nodeid']);
+                    $this->syslog->AddMessage(SYSLOG::RES_MAC, SYSLOG::OPER_DELETE, $args);
                 }
                 foreach ($nodes as $node) {
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $node,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id
+                        SYSLOG::RES_NODE => $node,
+                        SYSLOG::RES_CUST => $id
                     );
-                    $this->syslog->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                    $this->syslog->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_DELETE, $args);
                 }
             }
 
@@ -1132,13 +1122,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     /**
      * Deletes customer permanently
      * 
-     * @global array $SYSLOG_RESOURCE_KEYS
      * @param int $id Customer id
      */
     public function deleteCustomerPermanent($id)
     {
-        global $SYSLOG_RESOURCE_KEYS;
-        
         $this->db->BeginTrans();
 
         $this->deleteCustomer($id);
@@ -1146,7 +1133,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $this->db->Execute('DELETE FROM customers WHERE id = ?', array($id));
 
         if ($this->syslog) {
-            $this->syslog->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_DELETE, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id), array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+            $this->syslog->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_DELETE, array(SYSLOG::RES_CUST => $id));
         }
 
         $this->db->CommitTrans();

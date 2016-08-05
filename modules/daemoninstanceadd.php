@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -58,7 +58,7 @@ if($instance)
 	if(!$error) {
 		$args = array(
 			'name' => $instance['name'], 
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST] => $instance['hostid'],
+			SYSLOG::RES_HOST => $instance['hostid'],
 			'description' => $instance['description'],
 			'module' => $instance['module'],
 			'crontab' => $instance['crontab'],
@@ -69,10 +69,8 @@ if($instance)
 		$id = $DB->GetLastInsertId('daemoninstances');
 
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST]] = $id;
-			$SYSLOG->AddMessage(SYSLOG_RES_DAEMONINST, SYSLOG_OPER_ADD, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST]));
+			$args[SYSLOG::RES_DAEMONINST] = $id;
+			$SYSLOG->AddMessage(SYSLOG::RES_DAEMONINST, SYSLOG::OPER_ADD, $args);
 		}
 
 		if ($instance['id']) {
@@ -84,18 +82,15 @@ if($instance)
 						'var' => $config['var'],
 						'description' => $config['description'],
 						'value' => $config['value'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST] => $id
+						SYSLOG::RES_DAEMONINST => $id
 					);
 					$DB->Execute('INSERT INTO daemonconfig (var, description, value, instanceid)
 							VALUES (?, ?, ?, ?)', array_values($args));
 					if ($SYSLOG) {
-						$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]] = $instance['hostid'];
-						$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONCONF]] =
+						$args[SYSLOG::RES_HOST] = $instance['hostid'];
+						$args[SYSLOG::RES_DAEMONCONF] =
 							$DB->GetLastInsertID('daemonconfig');
-						$SYSLOG->AddMessage(SYSLOG_RES_DAEMONCONF, SYSLOG_OPER_ADD, $args,
-							array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST],
-								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST],
-								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONCONF]));
+						$SYSLOG->AddMessage(SYSLOG::RES_DAEMONCONF, SYSLOG::OPER_ADD, $args);
 					}
 				}
 		}

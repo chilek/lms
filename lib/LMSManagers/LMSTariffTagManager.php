@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,16 +31,15 @@ class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInter
     }
     
     public function TarifftagAdd($tarifftagdata){
-	global $SYSLOG_RESOURCE_KEYS;
         if ($this->db->Execute('INSERT INTO tarifftags (name, description) VALUES (?, ?)', array($tarifftagdata['name'], $tarifftagdata['description']))) {
             $id = $this->db->GetLastInsertID('tarifftags');
             if ($this->syslog) {
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFFTAG] => $id,
+                    SYSLOG::RES_TARIFFTAG => $id,
                     'name' => $tarifftagdata['name'],
                     'description' => $tarifftagdata['description']
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_TARIFFTAG, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFFTAG]));
+                $this->syslog->AddMessage(SYSLOG::RES_TARIFFTAG, SYSLOG::OPER_ADD, $args);
             }
             return $id;
         } else {
@@ -92,16 +91,15 @@ class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInter
     }
     
     public function TariffassignmentDelete($tariffassignmentdata){
-        global $SYSLOG_RESOURCE_KEYS;
         if ($this->syslog){
             $assign = $this->db->GetRow('SELECT tariffid FROM tariffassignments WHERE tarifftagid = ? AND tariffid = ?', array($tariffassignmentdata['tarifftagid'], $tariffassignmentdata['tariffid']));
             if ($assign) {
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFFASSIGN] => $assign['id'],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $assign['tariffid'],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFFTAG] => $tariffassignmentdata['tarifftagid']
+                    SYSLOG::RES_TARIFFASSIGN => $assign['id'],
+                    SYSLOG::RES_TARIFF => $assign['tariffid'],
+                    SYSLOG::RES_TARIFFTAG => $tariffassignmentdata['tarifftagid']
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_TARIFFASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                $this->syslog->AddMessage(SYSLOG::RES_TARIFFASSIGN, SYSLOG::OPER_DELETE, $args);
             }
         }
         return $this->db->Execute('DELETE FROM tariffassignments WHERE tarifftagid=? AND tariffid=?', array($tariffassignmentdata['tarifftagid'], $tariffassignmentdata['tariffid']));
@@ -112,35 +110,34 @@ class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInter
     }
     
     public function TariffassignmentAdd($tariffassignmentdata){
-        global $SYSLOG_RESOURCE_KEYS;
         $res = $this->db->Execute('INSERT INTO tariffassignments (tarifftagid, tariffid) VALUES (?, ?)', array($tariffassignmentdata['tarifftagid'], $tariffassignmentdata['tariffid']));
         if ($this->syslog && $res) {
             $id = $this->db->GetLastInsertID('tariffassignments');
             $args = array(
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFFASSIGN] => $id,
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $tariffassignmentdata['tariffid'],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFFTAG] => $tariffassignmentdata['tarifftagid']
+                SYSLOG::RES_TARIFFASSIGN => $id,
+                SYSLOG::RES_TARIFF => $tariffassignmentdata['tariffid'],
+                SYSLOG::RES_TARIFFTAG => $tariffassignmentdata['tarifftagid']
             );
-            $this->syslog->AddMessage(SYSLOG_RES_TARIFFASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
+            $this->syslog->AddMessage(SYSLOG::RES_TARIFFASSIGN, SYSLOG::OPER_ADD, $args);
         }
         return $res;
     }
     
     public function TarifftagDelete($id){
-        global $SYSLOG_RESOURCE_KEYS;
         if (!$this->TarifftagWithTariffGet($id)) {
             if ($this->syslog) {
                 $tariffassigns = $this->db->Execute('SELECT tariffid, tarifftagid FROM tariffassignments WHERE tarifftagid = ?', array($id));
                 if (!empty($tariffassigns))
                     foreach ($tariffassigns as $tariffassign) {
                         $args = array(
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFFASSIGN] => $tariffassign['tariffid'],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $tariffassign['tariffid'],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFFTAG] => $tariffassign['tarifftagid']
+                            SYSLOG::RES_TARIFFASSIGN => $tariffassign['tariffid'],
+                            SYSLOG::RES_TARIFF => $tariffassign['tariffid'],
+                            SYSLOG::RES_TARIFFTAG => $tariffassign['tarifftagid']
                         );
-                        $this->syslog->AddMessage(SYSLOG_RES_TARIFFASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                        $this->syslog->AddMessage(SYSLOG::RES_TARIFFASSIGN, SYSLOG::OPER_DELETE, $args);
                     }
-                $this->syslog->AddMessage(SYSLOG_RES_TARIFFTAG, SYSLOG_OPER_DELETE, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFFTAG] => $id), array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFFTAG]));
+                $this->syslog->AddMessage(SYSLOG::RES_TARIFFTAG, SYSLOG::OPER_DELETE,
+                	array(SYSLOG::RES_TARIFFTAG => $id));
             }
             $this->db->Execute('DELETE FROM tarifftags WHERE id=?', array($id));
             return TRUE;
@@ -154,14 +151,13 @@ class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInter
     }
     
     public function TarifftagUpdate($tarifftagdata){
-        global $SYSLOG_RESOURCE_KEYS;
         $args = array(
             'name' => $tarifftagdata['name'],
             'description' => $tarifftagdata['description'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFFTAG] => $tarifftagdata['id']
+            SYSLOG::RES_TARIFFTAG => $tarifftagdata['id']
         );
         if ($this->syslog)
-            $this->syslog->AddMessage(SYSLOG_RES_TARIFFTAG, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFFTAG]));
+            $this->syslog->AddMessage(SYSLOG::RES_TARIFFTAG, SYSLOG::OPER_UPDATE, $args);
         return $this->db->Execute('UPDATE tarifftags SET name=?, description=? WHERE id=?', array_values($args));
     }
     

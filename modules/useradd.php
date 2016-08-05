@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -112,13 +112,12 @@ if(sizeof($useradd))
 					VALUES(?, ?)', array($idx, $id));
 				if ($SYSLOG) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_EXCLGROUP] =>
+						SYSLOG::RES_EXCLGROUP =>
 							$DB->GetLastInsertID('excludedgroups'),
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $idx,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $id
+						SYSLOG::RES_CUSTGROUP => $idx,
+						SYSLOG::RES_USER => $id
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_EXCLGROUP, SYSLOG_OPER_ADD,
-						$args, array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_ADD, $args);
 				}
 			}
 

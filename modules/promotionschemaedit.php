@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -87,24 +87,20 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 				array($optional, $selectionid, $datastr, $assignmentid));
 			if ($SYSLOG) {
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN] => $assignmentid,
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA] => $schemaid,
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $form['tariffid'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO] => $promotionid,
+					SYSLOG::RES_PROMOASSIGN => $assignmentid,
+					SYSLOG::RES_PROMOSCHEMA => $schemaid,
+					SYSLOG::RES_TARIFF => $form['tariffid'],
+					SYSLOG::RES_PROMO => $promotionid,
 					'optional' => $optional,
 					'selectionid' => $selectionid,
 					'data' => $datastr
 				);
-				$SYSLOG->AddMessage(SYSLOG_RES_PROMOASSIGN, SYSLOG_OPER_UPDATE, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO]));
+				$SYSLOG->AddMessage(SYSLOG::RES_PROMOASSIGN, SYSLOG::OPER_UPDATE, $args);
 			}
 		} else {
 			$args =	array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA] => $schemaid,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => intval($form['tariffid']),
+				SYSLOG::RES_PROMOSCHEMA => $schemaid,
+				SYSLOG::RES_TARIFF => intval($form['tariffid']),
 				'optional' => $optional,
 				'selectionid' => $selectionid,
 				'data' => $datastr
@@ -113,14 +109,10 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 				(promotionschemaid, tariffid, optional, selectionid, data)
 				VALUES (?, ?, ?, ?, ?)', array_values($args));
 			if ($SYSLOG) {
-				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO]] = $promotionid;
-				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN]] =
+				$args[SYSLOG::RES_PROMO] = $promotionid;
+				$args[SYSLOG::RES_PROMOASSIGN] =
 					$DB->GetLastInsertID('promotionassignments');
-				$SYSLOG->AddMessage(SYSLOG_RES_PROMOASSIGN, SYSLOG_OPER_ADD, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO]));
+				$SYSLOG->AddMessage(SYSLOG::RES_PROMOASSIGN, SYSLOG::OPER_ADD, $args);
 			}
 		}
 	}
@@ -140,13 +132,12 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 				JOIN promotionschemas s ON s.id = a.promotionschemaid
 				WHERE a.id = ?', array($aid));
 		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN] => $aid,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA] => $assign['promotionschemaid'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $assign['tariffid'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO] => $assign['promotionid']
+			SYSLOG::RES_PROMOASSIGN => $aid,
+			SYSLOG::RES_PROMOSCHEMA => $assign['promotionschemaid'],
+			SYSLOG::RES_TARIFF => $assign['tariffid'],
+			SYSLOG::RES_PROMO => $assign['promotionid']
 		);
-		$SYSLOG->AddMessage(SYSLOG_RES_PROMOASSIGN, SYSLOG_OPER_DELETE, $args,
-			array_keys($args));
+		$SYSLOG->AddMessage(SYSLOG::RES_PROMOASSIGN, SYSLOG::OPER_DELETE, $args);
 	}
 
 	$DB->Execute('DELETE FROM promotionassignments WHERE id = ?', array($aid));
@@ -194,19 +185,16 @@ if (isset($_POST['schema'])) {
 			'description' => $schema['description'],
 			'data' => implode(';', $data),
 			'continuation' => !empty($schema['continuation']) ? 1 : 0,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => !empty($schema['ctariffid']) ? $schema['ctariffid'] : null,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA] => $schema['id']
+			SYSLOG::RES_TARIFF => !empty($schema['ctariffid']) ? $schema['ctariffid'] : null,
+			SYSLOG::RES_PROMOSCHEMA => $schema['id']
 		);
 		$DB->Execute('UPDATE promotionschemas SET name = ?, description = ?, data = ?,
 			continuation = ?, ctariffid = ?
 			WHERE id = ?', array_values($args));
 
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO]] = $oldschema['promotionid'];
-			$SYSLOG->AddMessage(SYSLOG_RES_PROMOSCHEMA, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA]));
+			$args[SYSLOG::RES_PROMO] = $oldschema['promotionid'];
+			$SYSLOG->AddMessage(SYSLOG_RES_PROMOSCHEMA, SYSLOG_OPER_UPDATE, $args);
 		}
 
 		// re-check promotionassignments data, check the number of periods
@@ -234,20 +222,16 @@ if (isset($_POST['schema'])) {
 
 				$args = array(
 					'data' => implode(';', $tdata),
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN] => $tariff['id']
+					SYSLOG::RES_PROMOASSIGN => $tariff['id']
 				);
 				$DB->Execute('UPDATE promotionassignments SET data = ?
 					WHERE id = ?', array_values($args));
 
 				if ($SYSLOG) {
-					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF]] = $tariff['tariffid'];
-					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO]] = $oldschema['promotionid'];
-					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA]] = $schema['id'];
-					$SYSLOG->AddMessage(SYSLOG_RES_PROMOASSIGN, SYSLOG_OPER_UPDATE, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO]));
+					$args[SYSLOG::RES_TARIFF] = $tariff['tariffid'];
+					$args[SYSLOG::RES_PROMO] = $oldschema['promotionid'];
+					$args[SYSLOG::RES_PROMOSCHEMA] = $schema['id'];
+					$SYSLOG->AddMessage(SYSLOG::RES_PROMOASSIGN, SYSLOG::OPER_UPDATE, $args);
 				}
 			}
 		}

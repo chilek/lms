@@ -128,7 +128,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function DeleteAssignment($id)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         $this->db->BeginTrans();
 
         if ($this->syslog) {
@@ -138,12 +137,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             if (!empty($nodeassigns))
                 foreach ($nodeassigns as $nodeassign) {
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEASSIGN] => $nodeassign['id'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $custid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeassign['nodeid'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $id
+                        SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
+                        SYSLOG::RES_CUST => $custid,
+                        SYSLOG::RES_NODE => $nodeassign['nodeid'],
+                        SYSLOG::RES_ASSIGN => $id
                     );
-                    $this->syslog->AddMessage(SYSLOG_RES_NODEASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                    $this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_DELETE, $args);
                 }
 
             $assign = $this->db->GetRow('SELECT tariffid, liabilityid FROM assignments WHERE id=?', array($id));
@@ -151,22 +150,22 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $tid = $assign['tariffid'];
             if ($lid) {
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $lid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $custid
+                    SYSLOG::RES_LIAB => $lid,
+                    SYSLOG::RES_CUST => $custid
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_LIAB, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                $this->syslog->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_DELETE, $args);
             }
         }
         $this->db->Execute('DELETE FROM liabilities WHERE id=(SELECT liabilityid FROM assignments WHERE id=?)', array($id));
         $this->db->Execute('DELETE FROM assignments WHERE id=?', array($id));
         if ($this->syslog) {
             $args = array(
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $tid,
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $lid,
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $id,
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $custid
+                SYSLOG::RES_TARIFF => $tid,
+                SYSLOG::RES_LIAB => $lid,
+                SYSLOG::RES_ASSIGN => $id,
+                SYSLOG::RES_CUST => $custid
             );
-            $this->syslog->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+            $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_DELETE, $args);
         }
 
         $this->db->CommitTrans();
@@ -174,7 +173,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function AddAssignment($data)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         $result = array();
 
         // Create assignments according to promotion schema
@@ -211,7 +209,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $args = array(
                             'name' => trans('Activation payment'),
                             'value' => str_replace(',', '.', $value),
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => intval($tariff['taxid']),
+                            SYSLOG::RES_TAX => intval($tariff['taxid']),
                             'prodid' => $tariff['prodid']
                         );
                         $this->db->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
@@ -219,11 +217,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $lid = $this->db->GetLastInsertID('liabilities');
 
                         if ($this->syslog) {
-                            $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB]] = $lid;
-                            $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $data['customerid'];
-                            $this->syslog->AddMessage(SYSLOG_RES_LIAB, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
-                                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-                                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+                            $args[SYSLOG::RES_LIAB] = $lid;
+                            $args[SYSLOG::RES_CUST] = $data['customerid'];
+                            $this->syslog->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_ADD, $args);
                         }
 
                         $tariffid = 0;
@@ -276,13 +272,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     // ... if not found clone tariff
                     if (!$tariffid) {
                         $args = $this->db->GetRow('SELECT name, value, period,
-							taxid AS ' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] . ', type, upceil, downceil, uprate, downrate,
+							taxid AS ' . SYSLOG::RES_TAX . ', type, upceil, downceil, uprate, downrate,
 							prodid, plimit, climit, dlimit, upceil_n, downceil_n, uprate_n, downrate_n,
 							domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
 							quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit
 							FROM tariffs WHERE id = ?', array($tariff['id']));
                         $args = array_merge($args, array(
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]],
+                            SYSLOG::RES_TAX => $args[SYSLOG::RES_TAX],
                             'name' => $tariff['name'],
                             'value' => str_replace(',', '.', $value),
                             'period' => $tariff['period']
@@ -296,29 +292,28 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 							VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
                         $tariffid = $this->db->GetLastInsertId('tariffs');
                         if ($this->syslog) {
-                            $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF]] = $tariffid;
-                            $this->syslog->AddMessage(SYSLOG_RES_TARIFF, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
-                                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+                            $args[SYSLOG::RES_TARIFF] = $tariffid;
+                            $this->syslog->AddMessage(SYSLOG::RES_TARIFF, SYSLOG::OPER_ADD, $args);
                         }
                     }
                 }
 
                 // Create assignment
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $tariffid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $data['customerid'],
+                    SYSLOG::RES_TARIFF => $tariffid,
+                    SYSLOG::RES_CUST => $data['customerid'],
                     'period' => $period,
                     'at' => $at,
                     'invoice' => !empty($data['invoice']) ? 1 : 0,
                     'settlement' => !empty($data['settlement']) ? 1 : 0,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
+                    SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
                     'paytype' => !empty($data['paytype']) ? $data['paytype'] : NULL,
                     'datefrom' => $idx ? $datefrom : 0,
                     'dateto' => $idx ? $dateto : 0,
                     'pdiscount' => 0,
                     'vdiscount' => 0,
                     'attribute' => !empty($data['attribute']) ? $data['attribute'] : NULL,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $lid,
+                    SYSLOG::RES_LIAB => $lid,
                 );
 
                 $this->db->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
@@ -328,12 +323,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $id = $this->db->GetLastInsertID('assignments');
 
                 if ($this->syslog) {
-                    $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN]] = $id;
-                    $this->syslog->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
+                    $args[SYSLOG::RES_ASSIGN] = $id;
+                    $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_ADD, $args);
                 }
 
                 $result[] = $id;
@@ -352,20 +343,20 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 // Create assignments
                 foreach ($tariffs as $t) {
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $t,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $data['customerid'],
+                        SYSLOG::RES_TARIFF => $t,
+                        SYSLOG::RES_CUST => $data['customerid'],
                         'period' => $data['period'],
                         'at' => $this->CalcAt($data['period'], $datefrom),
                         'invoice' => !empty($data['invoice']) ? 1 : 0,
                         'settlement' => !empty($data['settlement']) ? 1 : 0,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
+                        SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
                         'paytype' => !empty($data['paytype']) ? $data['paytype'] : NULL,
                         'datefrom' => $datefrom,
                         'dateto' => 0,
                         'pdiscount' => 0,
                         'vdiscount' => 0,
                          'attribute' => !empty($data['attribute']) ? $data['attribute'] : NULL,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => 0,
+                        SYSLOG::RES_LIAB => 0,
                     );
 
                     $this->db->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
@@ -375,12 +366,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $id = $this->db->GetLastInsertID('assignments');
 
                     if ($this->syslog) {
-                        $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN]] = $id;
-                        $this->syslog->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
+                        $args[SYSLOG::RES_ASSIGN] = $id;
+                        $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_ADD, $args);
                     }
 
                     $result[] = $id;
@@ -393,36 +380,34 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $args = array(
                     'name' => $data['name'],
                     'value' => str_replace(',', '.', $data['value']),
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => intval($data['taxid']),
+                    SYSLOG::RES_TAX => intval($data['taxid']),
                     'prodid' => $data['prodid']
                 );
                 $this->db->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
 					    VALUES (?, ?, ?, ?)', array_values($args));
                 $lid = $this->db->GetLastInsertID('liabilities');
                 if ($this->syslog) {
-                    $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB]] = $lid;
-                    $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $data['customerid'];
-                    $this->syslog->AddMessage(SYSLOG_RES_LIAB, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+                    $args[SYSLOG::RES_LIAB] = $lid;
+                    $args[SYSLOG::RES_CUST] = $data['customerid'];
+                    $this->syslog->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_ADD, $args);
                 }
             }
 
             $args = array(
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => intval($data['tariffid']),
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $data['customerid'],
+                SYSLOG::RES_TARIFF => intval($data['tariffid']),
+                SYSLOG::RES_CUST => $data['customerid'],
                 'period' => $data['period'],
                 'at' => $data['at'],
                 'invoice' => !empty($data['invoice']) ? 1 : 0,
                 'settlement' => !empty($data['settlement']) ? 1 : 0,
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
+                SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
                 'paytype' => !empty($data['paytype']) ? $data['paytype'] : NULL,
                 'datefrom' => $data['datefrom'],
                 'dateto' => $data['dateto'],
                 'pdiscount' => str_replace(',', '.', $data['pdiscount']),
                 'vdiscount' => str_replace(',', '.', $data['vdiscount']),
                  'attribute' => !empty($data['attribute']) ? $data['attribute'] : NULL,
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => isset($lid) ? $lid : 0,
+                SYSLOG::RES_LIAB => isset($lid) ? $lid : 0,
             );
             $this->db->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
 					    settlement, numberplanid, paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid)
@@ -431,12 +416,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $id = $this->db->GetLastInsertID('assignments');
 
             if ($this->syslog) {
-                $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN]] = $id;
-                $this->syslog->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
+                $args[SYSLOG::RES_ASSIGN] = $id;
+                $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_ADD, $args);
             }
 
             $result[] = $id;
@@ -456,12 +437,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $nodeassigns = $this->db->GetAll('SELECT id, nodeid FROM nodeassignments WHERE assignmentid = ?', array($aid));
                     foreach ($nodeassigns as $nodeassign) {
                         $args = array(
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEASSIGN] => $nodeassign['id'],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $data['customerid'],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeassign['nodeid'],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $aid
+                            SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
+                            SYSLOG::RES_CUST => $data['customerid'],
+                            SYSLOG::RES_NODE => $nodeassign['nodeid'],
+                            SYSLOG::RES_ASSIGN => $aid
                         );
-                        $this->syslog->AddMessage(SYSLOG_RES_NODEASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
+                        $this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_ADD, $args);
                     }
                 }
             }
@@ -472,28 +453,22 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function SuspendAssignment($id, $suspend = TRUE)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         if ($this->syslog) {
             $assign = $this->db->GetRow('SELECT id, tariffid, liabilityid, customerid FROM assignments WHERE id = ?', array($id));
             $args = array(
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN] => $assign['id'],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $assign['tariffid'],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB] => $assign['liabilityid'],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $assign['customerid'],
+                SYSLOG::RES_ASSIGN => $assign['id'],
+                SYSLOG::RES_TARIFF => $assign['tariffid'],
+                SYSLOG::RES_LIAB => $assign['liabilityid'],
+                SYSLOG::RES_CUST => $assign['customerid'],
                 'suspend' => ($suspend ? 1 : 0)
             );
-            $this->syslog->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ASSIGN],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_LIAB],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+            $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
         }
         return $this->db->Execute('UPDATE assignments SET suspended=? WHERE id=?', array($suspend ? 1 : 0, $id));
     }
 
     public function AddInvoice($invoice)
     {
-        global $SYSLOG_RESOURCE_KEYS;
-
         $currtime = time();
         $cdate = $invoice['invoice']['cdate'] ? $invoice['invoice']['cdate'] : $currtime;
         $sdate = $invoice['invoice']['sdate'] ? $invoice['invoice']['sdate'] : $currtime;
@@ -510,28 +485,28 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $args = array(
             'number' => $number,
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $invoice['invoice']['numberplanid'] ? $invoice['invoice']['numberplanid'] : 0,
+            SYSLOG::RES_NUMPLAN => $invoice['invoice']['numberplanid'] ? $invoice['invoice']['numberplanid'] : 0,
             'type' => $type,
             'cdate' => $cdate,
             'sdate' => $sdate,
             'paytime' => $invoice['invoice']['paytime'],
             'paytype' => $invoice['invoice']['paytype'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $this->auth->id,
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $invoice['customer']['id'],
+            SYSLOG::RES_USER => $this->auth->id,
+            SYSLOG::RES_CUST => $invoice['customer']['id'],
             'customername' => $invoice['customer']['customername'],
             'address' => $invoice['customer']['address'],
             'ten' => $invoice['customer']['ten'],
             'ssn' => $invoice['customer']['ssn'],
             'zip' => $invoice['customer']['zip'],
             'city' => $invoice['customer']['city'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $invoice['customer']['countryid'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $invoice['customer']['divisionid'],
+            SYSLOG::RES_COUNTRY => $invoice['customer']['countryid'],
+            SYSLOG::RES_DIV => $invoice['customer']['divisionid'],
             'div_name' => ($division['name'] ? $division['name'] : ''),
             'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
             'div_address' => ($division['address'] ? $division['address'] : ''),
             'div_city' => ($division['city'] ? $division['city'] : ''),
             'div_zip' => ($division['zip'] ? $division['zip'] : ''),
-            'div_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => ($division['countryid'] ? $division['countryid'] : 0),
+            'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ? $division['countryid'] : 0),
             'div_ten' => ($division['ten'] ? $division['ten'] : ''),
             'div_regon' => ($division['regon'] ? $division['regon'] : ''),
             'div_account' => ($division['account'] ? $division['account'] : ''),
@@ -550,11 +525,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
         $iid = $this->db->GetLastInsertID('documents');
         if ($this->syslog) {
-            unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
-            $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC]] = $iid;
-            $this->syslog->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV], 'div_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY]));
+            unset($args[SYSLOG::RES_USER]);
+            $args[SYSLOG::RES_DOC] = $iid;
+            $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_ADD, $args,
+            	array('div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY)));
         }
 
         $itemid = 0;
@@ -568,25 +542,24 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $item['taxid'] = isset($item['taxid']) ? $item['taxid'] : 0;
 
             $args = array(
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
+                SYSLOG::RES_DOC => $iid,
                 'itemid' => $itemid,
                 'value' => $item['valuebrutto'],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $item['taxid'],
+                SYSLOG::RES_TAX => $item['taxid'],
                 'prodid' => $item['prodid'],
                 'content' => $item['jm'],
                 'count' => $item['count'],
                 'pdiscount' => $item['pdiscount'],
                 'vdiscount' => $item['vdiscount'],
                 'description' => $item['name'],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $item['tariffid'],
+                SYSLOG::RES_TARIFF => $item['tariffid'],
             );
             $this->db->Execute('INSERT INTO invoicecontents (docid, itemid,
 				value, taxid, prodid, content, count, pdiscount, vdiscount, description, tariffid) 
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
             if ($this->syslog) {
-                $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $invoice['customer']['id'];
-                $this->syslog->AddMessage(SYSLOG_RES_INVOICECONT, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF]));
+                $args[SYSLOG::RES_CUST] = $invoice['customer']['id'];
+                $this->syslog->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);
             }
 
             $this->AddBalance(array(
@@ -605,32 +578,31 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function InvoiceDelete($invoiceid)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         $this->db->BeginTrans();
         if ($this->syslog) {
             $customerid = $this->db->GetOne('SELECT customerid FROM documents WHERE id = ?', array($invoiceid));
             $args = array(
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $invoiceid,
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                SYSLOG::RES_DOC => $invoiceid,
+                SYSLOG::RES_CUST => $customerid,
             );
-            $this->syslog->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+            $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
             $cashids = $this->db->GetCol('SELECT id FROM cash WHERE docid = ?', array($invoiceid));
             foreach ($cashids as $cashid) {
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $invoiceid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                    SYSLOG::RES_CASH => $cashid,
+                    SYSLOG::RES_DOC => $invoiceid,
+                    SYSLOG::RES_CUST => $customerid,
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
             }
             $itemids = $this->db->GetCol('SELECT itemid FROM invoicecontents WHERE docid = ?', array($invoiceid));
             foreach ($itemids as $itemid) {
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $invoiceid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                    SYSLOG::RES_DOC => $invoiceid,
+                    SYSLOG::RES_CUST => $customerid,
                     'itemid' => $itemid,
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_INVOICECONT, SYSLOG_OPER_DELETE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+                $this->syslog->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_DELETE, $args);
             }
         }
         $this->db->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
@@ -641,18 +613,17 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function InvoiceContentDelete($invoiceid, $itemid = 0)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         if ($itemid) {
             $this->db->BeginTrans();
             if ($this->syslog) {
                 $customerid = $this->db->GetOne('SELECT customerid FROM documents
 					JOIN invoicecontents ON docid = id WHERE id = ?', array($invoiceid));
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $invoiceid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                    SYSLOG::RES_DOC => $invoiceid,
+                    SYSLOG::RES_CUST => $customerid,
                     'itemid' => $itemid,
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_INVOICECONT, SYSLOG_OPER_DELETE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+                $this->syslog->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_DELETE, $args);
             }
             $this->db->Execute('DELETE FROM invoicecontents WHERE docid=? AND itemid=?', array($invoiceid, $itemid));
 
@@ -661,21 +632,21 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $this->db->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
                 if ($this->syslog) {
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $invoiceid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                        SYSLOG::RES_DOC => $invoiceid,
+                        SYSLOG::RES_CUST => $customerid,
                     );
-                    $this->syslog->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                    $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
                 }
             }
 
             if ($this->syslog) {
                 $cashid = $this->db->GetOne('SELECT id FROM cash WHERE docid = ? AND itemid = ?', array($invoiceid, $itemid));
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $invoiceid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                    SYSLOG::RES_CASH => $cashid,
+                    SYSLOG::RES_DOC => $invoiceid,
+                    SYSLOG::RES_CUST => $customerid,
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
             }
             $this->db->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ?', array($invoiceid, $itemid));
             $this->db->CommitTrans();
@@ -900,14 +871,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function TariffAdd($tariff)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         $args = array(
             'name' => $tariff['name'],
             'description' => $tariff['description'],
             'value' => $tariff['value'],
             'period' => $tariff['period'] ? $tariff['period'] : null,
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $tariff['taxid'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $tariff['numberplanid'] ? $tariff['numberplanid'] : null,
+            SYSLOG::RES_TAX => $tariff['taxid'],
+            SYSLOG::RES_NUMPLAN => $tariff['numberplanid'] ? $tariff['numberplanid'] : null,
             'prodid' => $tariff['prodid'],
             'uprate' => $tariff['uprate'],
             'downrate' => $tariff['downrate'],
@@ -946,9 +916,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         if ($result) {
             $id = $this->db->GetLastInsertID('tariffs');
             if ($this->syslog) {
-                $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF]] = $id;
-                $this->syslog->AddMessage(SYSLOG_RES_TARIFF, SYSLOG_OPER_ADD, $args,
-                	array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
+                $args[SYSLOG::RES_TARIFF] = $id;
+                $this->syslog->AddMessage(SYSLOG::RES_TARIFF, SYSLOG::OPER_ADD, $args);
             }
             return $id;
         } else
@@ -957,14 +926,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function TariffUpdate($tariff)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         $args = array(
             'name' => $tariff['name'],
             'description' => $tariff['description'],
             'value' => $tariff['value'],
             'period' => $tariff['period'] ? $tariff['period'] : null,
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $tariff['taxid'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $tariff['numberplanid'] ? $tariff['numberplanid'] : null,
+            SYSLOG::RES_TAX => $tariff['taxid'],
+            SYSLOG::RES_NUMPLAN => $tariff['numberplanid'] ? $tariff['numberplanid'] : null,
             'prodid' => $tariff['prodid'],
             'uprate' => $tariff['uprate'],
             'downrate' => $tariff['downrate'],
@@ -992,7 +960,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'domain_limit' => $tariff['domain_limit'],
             'alias_limit' => $tariff['alias_limit'],
             'type' => $tariff['type'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $tariff['id']
+            SYSLOG::RES_TARIFF => $tariff['id']
         );
         $res = $this->db->Execute('UPDATE tariffs SET name=?, description=?, value=?,
 				period=?, taxid=?, numberplanid=?, prodid=?, uprate=?, downrate=?, upceil=?, downceil=?,
@@ -1002,30 +970,28 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				quota_mail_limit=?, quota_sql_limit=?, quota_ftp_limit=?,
 				domain_limit=?, alias_limit=?, type=? WHERE id=?', array_values($args));
         if ($res && $this->syslog)
-            $this->syslog->AddMessage(SYSLOG_RES_TARIFF, SYSLOG_OPER_UPDATE, $args,
-            	array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
+            $this->syslog->AddMessage(SYSLOG::RES_TARIFF, SYSLOG::OPER_UPDATE, $args);
         return $res;
     }
 
     public function TariffDelete($id)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         if ($this->syslog)
             $assigns = $this->db->GetAll('SELECT promotionid, a.id, promotionschemaid FROM promotionassignments a
 				JOIN promotionschemas s ON s.id = a.promotionschemaid
 				WHERE a.tariffid = ?', array($id));
         $res = $this->db->Execute('DELETE FROM tariffs WHERE id=?', array($id));
         if ($res && $this->syslog) {
-            $this->syslog->AddMessage(SYSLOG_RES_TARIFF, SYSLOG_OPER_DELETE, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $id), array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF]));
+            $this->syslog->AddMessage(SYSLOG::RES_TARIFF, SYSLOG::OPER_DELETE, array(SYSLOG::RES_TARIFF => $id));
             if (!empty($assigns))
                 foreach ($assigns as $assign) {
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOASSIGN] => $assign['id'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMOSCHEMA] => $assign['promotionschemaid'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PROMO] => $assign['promotionid'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $id
+                        SYSLOG::RES_PROMOASSIGN => $assign['id'],
+                        SYSLOG::RES_PROMOSCHEMA => $assign['promotionschemaid'],
+                        SYSLOG::RES_PROMO => $assign['promotionid'],
+                        SYSLOG::RES_TARIFF => $id
                     );
-                    $this->syslog->AddMessage(SYSLOG_RES_PROMOASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                    $this->syslog->AddMessage(SYSLOG::RES_PROMOASSIGN, SYSLOG::OPER_DELETE, $args);
                 }
         }
         return $res;
@@ -1138,16 +1104,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function ReceiptContentDelete($docid, $itemid = 0)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         if ($itemid) {
             if ($this->syslog) {
                 $customerid = $this->db->GetOne('SELECT customerid FROM documents WHERE id=?', array($docid));
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                    SYSLOG::RES_DOC => $docid,
+                    SYSLOG::RES_CUST => $customerid,
                     'itemid' => $itemid,
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_RECEIPTCONT, SYSLOG_OPER_DELETE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+                $this->syslog->AddMessage(SYSLOG::RES_RECEIPTCONT, SYSLOG::OPER_DELETE, $args);
             }
             $this->db->Execute('DELETE FROM receiptcontents WHERE docid=? AND itemid=?', array($docid, $itemid));
 
@@ -1155,21 +1120,21 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 // if that was the last item of invoice contents
                 if ($this->syslog) {
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                        SYSLOG::RES_DOC => $docid,
+                        SYSLOG::RES_CUST => $customerid,
                     );
-                    $this->syslog->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                    $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
                 }
                 $this->db->Execute('DELETE FROM documents WHERE id = ?', array($docid));
             }
             if ($this->syslog) {
                 $cashid = $this->db->GetOne('SELECT id FROM cash WHERE docid = ? AND itemid = ?', array($docid, $itemid));
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                    SYSLOG::RES_CASH => $cashid,
+                    SYSLOG::RES_DOC => $docid,
+                    SYSLOG::RES_CUST => $customerid,
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
             }
             $this->db->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ?', array($docid, $itemid));
         } else {
@@ -1178,25 +1143,25 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $itemids = $this->db->GetCol('SELECT itemid FROM receiptcontents WHERE docid=?', array($docid));
                 foreach ($itemids as $itemid) {
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                        SYSLOG::RES_DOC => $docid,
+                        SYSLOG::RES_CUST => $customerid,
                         'itemid' => $itemid,
                     );
-                    $this->syslog->AddMessage(SYSLOG_RES_RECEIPTCONT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                    $this->syslog->AddMessage(SYSLOG::RES_RECEIPTCONT, SYSLOG::OPER_DELETE, $args);
                 }
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                    SYSLOG::RES_DOC => $docid,
+                    SYSLOG::RES_CUST => $customerid,
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
                 $cashids = $this->db->GetCol('SELECT id FROM cash WHERE docid=?', array($docid));
                 foreach ($cashids as $itemid) {
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $itemid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                        SYSLOG::RES_CASH => $itemid,
+                        SYSLOG::RES_DOC => $docid,
+                        SYSLOG::RES_CUST => $customerid,
                     );
-                    $this->syslog->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                    $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
                 }
             }
             $this->db->Execute('DELETE FROM receiptcontents WHERE docid=?', array($docid));
@@ -1207,17 +1172,16 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function DebitNoteContentDelete($docid, $itemid = 0)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         if ($itemid) {
             if ($this->syslog) {
                 list ($dnotecontid, $customerid) = array_values($this->db->GetRow('SELECT dn.id, customerid FROM debitnotecontents dn
 					JOIN documents d ON d.id = dn.docid WHERE docid=? AND itemid=?', array($docid, $itemid)));
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT] => $dnotecontid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                    SYSLOG::RES_DNOTECONT => $dnotecontid,
+                    SYSLOG::RES_DOC => $docid,
+                    SYSLOG::RES_CUST => $customerid,
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_DNOTECONT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                $this->syslog->AddMessage(SYSLOG::RES_DNOTECONT, SYSLOG::OPER_DELETE, $args);
             }
             $this->db->Execute('DELETE FROM debitnotecontents WHERE docid=? AND itemid=?', array($docid, $itemid));
 
@@ -1225,21 +1189,21 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 // if that was the last item of debit note contents
                 if ($this->syslog) {
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                        SYSLOG::RES_DOC => $docid,
+                        SYSLOG::RES_CUST => $customerid,
                     );
-                    $this->syslog->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                    $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
                 }
                 $this->db->Execute('DELETE FROM documents WHERE id = ?', array($docid));
             }
             if ($this->syslog) {
                 $cashid = $this->db->GetOne('SELECT id FROM cash WHERE docid = ? AND itemid = ?', array($docid, $itemid));
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                    SYSLOG::RES_CASH => $cashid,
+                    SYSLOG::RES_DOC => $docid,
+                    SYSLOG::RES_CUST => $customerid,
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
             }
             $this->db->Execute('DELETE FROM cash WHERE docid = ? AND itemid = ?', array($docid, $itemid));
         } else {
@@ -1248,25 +1212,25 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $dnotecontids = $this->db->GetCol('SELECT id FROM debitnotecontents WHERE docid=?', array($docid));
                 foreach ($dnotecontids as $itemid) {
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT] => $itemid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                        SYSLOG::RES_DNOTECONT => $itemid,
+                        SYSLOG::RES_DOC => $docid,
+                        SYSLOG::RES_CUST => $customerid,
                     );
-                    $this->syslog->AddMessage(SYSLOG_RES_DNOTECONT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                    $this->syslog->AddMessage(SYSLOG::RES_DNOTECONT, SYSLOG::OPER_DELETE, $args);
                 }
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                    SYSLOG::RES_DOC => $docid,
+                    SYSLOG::RES_CUST => $customerid,
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                $this->syslog->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
                 $cashids = $this->db->GetCol('SELECT id FROM cash WHERE docid=?', array($docid));
                 foreach ($cashids as $itemid) {
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $itemid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $docid,
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+                        SYSLOG::RES_CASH => $itemid,
+                        SYSLOG::RES_DOC => $docid,
+                        SYSLOG::RES_CUST => $customerid,
                     );
-                    $this->syslog->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                    $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
                 }
             }
             $this->db->Execute('DELETE FROM debitnotecontents WHERE docid=?', array($docid));
@@ -1277,38 +1241,32 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function AddBalance($addbalance)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         $args = array(
             'time' => isset($addbalance['time']) ? $addbalance['time'] : time(),
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => isset($addbalance['userid']) ? $addbalance['userid'] : $this->auth->id,
+            SYSLOG::RES_USER => isset($addbalance['userid']) ? $addbalance['userid'] : $this->auth->id,
             'value' => str_replace(',', '.', round($addbalance['value'], 2)),
             'type' => isset($addbalance['type']) ? $addbalance['type'] : 0,
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => isset($addbalance['taxid']) ? $addbalance['taxid'] : 0,
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $addbalance['customerid'],
+            SYSLOG::RES_TAX => isset($addbalance['taxid']) ? $addbalance['taxid'] : 0,
+            SYSLOG::RES_CUST => $addbalance['customerid'],
             'comment' => $addbalance['comment'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => isset($addbalance['docid']) ? $addbalance['docid'] : 0,
+            SYSLOG::RES_DOC => isset($addbalance['docid']) ? $addbalance['docid'] : 0,
             'itemid' => isset($addbalance['itemid']) ? $addbalance['itemid'] : 0,
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT] => !empty($addbalance['importid']) ? $addbalance['importid'] : NULL,
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE] => !empty($addbalance['sourceid']) ? $addbalance['sourceid'] : NULL,
+            SYSLOG::RES_CASHIMPORT => !empty($addbalance['importid']) ? $addbalance['importid'] : NULL,
+            SYSLOG::RES_CASHSOURCE => !empty($addbalance['sourceid']) ? $addbalance['sourceid'] : NULL,
         );
         $res = $this->db->Execute('INSERT INTO cash (time, userid, value, type, taxid,
 			customerid, comment, docid, itemid, importid, sourceid)
 			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
         if ($res && $this->syslog) {
-            unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
-            $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH]] = $this->db->GetLastInsertID('cash');
-            $this->syslog->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE]));
+            unset($args[SYSLOG::RES_USER]);
+            $args[SYSLOG::RES_CASH] = $this->db->GetLastInsertID('cash');
+            $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_ADD, $args);
         }
         return $res;
     }
 
     public function DelBalance($id)
     {
-        global $SYSLOG_RESOURCE_KEYS;
-
         $row = $this->db->GetRow('SELECT cash.customerid, docid, itemid, documents.type AS doctype, importid
 					FROM cash
 					LEFT JOIN documents ON (docid = documents.id)
@@ -1324,25 +1282,22 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $this->db->Execute('DELETE FROM cash WHERE id = ?', array($id));
             if ($this->syslog) {
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $id,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $row['customerid'],
+                    SYSLOG::RES_CASH => $id,
+                    SYSLOG::RES_CUST => $row['customerid'],
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                $this->syslog->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
             }
             if ($row['importid']) {
                 if ($this->syslog) {
                     $cashimport = $this->db->GetRow('SELECT customerid, sourceid, sourcefileid FROM cashimport WHERE id = ?', array($row['importid']));
                     $args = array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT] => $row['importid'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $cashimport['customerid'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE] => $cashimport['sourceid'],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE] => $cashimport['sourcefileid'],
+                        SYSLOG::RES_CASHIMPORT => $row['importid'],
+                        SYSLOG::RES_CUST => $cashimport['customerid'],
+                        SYSLOG::RES_CASHSOURCE => $cashimport['sourceid'],
+                        SYSLOG::RES_SOURCEFILE => $cashimport['sourcefileid'],
                         'closed' => 0,
                     );
-                    $this->syslog->AddMessage(SYSLOG_RES_CASHIMPORT, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHIMPORT],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_SOURCEFILE]));
+                    $this->syslog->AddMessage(SYSLOG::RES_CASHIMPORT, SYSLOG::OPER_UPDATE, $args);
                 }
                 $this->db->Execute('UPDATE cashimport SET closed = 0 WHERE id = ?', array($row['importid']));
             }
@@ -1426,7 +1381,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function PaymentAdd($paymentdata)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         $args = array(
             'name' => $paymentdata['name'],
             'creditor' => $paymentdata['creditor'],
@@ -1439,8 +1393,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			VALUES (?, ?, ?, ?, ?, ?)', array_values($args))) {
             $id = $this->db->GetLastInsertID('payments');
             if ($this->syslog) {
-                $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PAYMENT]] = $id;
-                $this->syslog->AddMessage(SYSLOG_RES_PAYMENT, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PAYMENT]));
+                $args[SYSLOG::RES_PAYMENT] = $id;
+                $this->syslog->AddMessage(SYSLOG::RES_PAYMENT, SYSLOG::OPER_ADD, $args);
             }
             return $id;
         } else
@@ -1449,17 +1403,15 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function PaymentDelete($id)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         if ($this->syslog) {
-            $args = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PAYMENT] => $id);
-            $this->syslog->AddMessage(SYSLOG_RES_PAYMENT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+            $args = array(SYSLOG::RES_PAYMENT => $id);
+            $this->syslog->AddMessage(SYSLOG::RES_PAYMENT, SYSLOG::OPER_DELETE, $args);
         }
         return $this->db->Execute('DELETE FROM payments WHERE id=?', array($id));
     }
 
     public function PaymentUpdate($paymentdata)
     {
-        global $SYSLOG_RESOURCE_KEYS;
         $args = array(
             'name' => $paymentdata['name'],
             'creditor' => $paymentdata['creditor'],
@@ -1467,11 +1419,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'value' => $paymentdata['value'],
             'period' => $paymentdata['period'],
             'at' => $paymentdata['at'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PAYMENT] => $paymentdata['id'],
+            SYSLOG::RES_PAYMENT => $paymentdata['id'],
         );
         $res = $this->db->Execute('UPDATE payments SET name=?, creditor=?, description=?, value=?, period=?, at=? WHERE id=?', array_values($args));
         if ($res && $this->syslog)
-            $this->syslog->AddMessage(SYSLOG_RES_PAYMENT, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_PAYMENT]));
+            $this->syslog->AddMessage(SYSLOG::RES_PAYMENT, SYSLOG::OPER_UPDATE, $args);
         return $res;
     }
 

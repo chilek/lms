@@ -237,6 +237,7 @@ if (isset($_POST['customeradd']))
         $error = $hook_data['error'];
         
         
+//	print_r($error);die;
 	if (!$error) {
 		$customeradd['cutoffstop'] = $cutoffstop;
 
@@ -264,14 +265,12 @@ if (isset($_POST['customeradd']))
 				if ($SYSLOG) {
 					$contactid = $DB->GetLastInsertID('imessengers');
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_IMCONTACT] => $contactid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
+						SYSLOG::RES_IMCONTACT => $contactid,
+						SYSLOG::RES_CUST => $id,
 						'uid' => $val,
 						'type' => $idx
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_IMCONTACT, SYSLOG_OPER_ADD, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_IMCONTACT],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					$SYSLOG->AddMessage(SYSLOG::RES_IMCONTACT, SYSLOG::OPER_ADD, $args);
 				}
 			}
 
@@ -284,15 +283,13 @@ if (isset($_POST['customeradd']))
 				if ($SYSLOG) {
 					$contactid = $DB->GetLastInsertID('customercontacts');
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT] => $contactid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
+						SYSLOG::RES_CUSTCONTACT => $contactid,
+						SYSLOG::RES_CUST => $id,
 						'contact' => $contact['contact'],
 						'name' => $contact['name'],
 						'type' => $contact['type'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_ADD, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					$SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_ADD, $args);
 				}
 			}
 

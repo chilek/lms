@@ -39,11 +39,10 @@ if (isset($_GET['statuschange'])) {
 	if ($SYSLOG) {
 		$disabled = $DB->GetOne('SELECT disabled FROM uiconfig WHERE id = ?', array($id));
 		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF] => $id,
+			SYSLOG::RES_UICONF => $id,
 			'disabled' => $disabled ? 0 : 1
 		);
-		$SYSLOG->AddMessage(SYSLOG_RES_UICONF, SYSLOG_OPER_UPDATE, $args,
-			array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF]));
+		$SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_UPDATE, $args);
 	}
 	$DB->Execute('UPDATE uiconfig SET disabled = CASE disabled WHEN 0 THEN 1 ELSE 0 END WHERE id = ?',array($id));
 	$SESSION->redirect('?m=configlist');
@@ -99,14 +98,13 @@ if(isset($_POST['config']))
 			'description' => $cfg['description'],
 			'disabled' => $cfg['disabled'],
 			'type' => $cfg['type'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF] => $cfg['id']
+			SYSLOG::RES_UICONF => $cfg['id']
 		);
 		$DB->Execute('UPDATE uiconfig SET section = ?, var = ?, value = ?, description = ?, disabled = ?, type = ? WHERE id = ?',
 			array_values($args));
 
 		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG_RES_UICONF, SYSLOG_OPER_UPDATE,
-				$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF]));
+			$SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_UPDATE, $args);
 
 		$SESSION->redirect('?m=configlist');
 	}

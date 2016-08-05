@@ -107,9 +107,8 @@ class Auth {
 				writesyslog('User '.$this->login.' logged in.', LOG_INFO);
 				if ($this->SYSLOG) {
 					$this->SYSLOG->NewTransaction('auth', $this->id);
-					$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_USERLOGIN,
-						array('userid' => $this->id, 'ip' => $this->ip, 'useragent' => $_SERVER['HTTP_USER_AGENT']),
-						array('userid'));
+					$this->SYSLOG->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_USERLOGIN,
+						array(SYSLOG::RES_USER => $this->id, 'ip' => $this->ip, 'useragent' => $_SERVER['HTTP_USER_AGENT']));
 				}
 			}
 
@@ -135,9 +134,8 @@ class Auth {
 						array(time(), $this->ip, $this->id));
 					if ($this->SYSLOG) {
 						$this->SYSLOG->NewTransaction('auth', $this->id);
-						$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_USERLOGFAIL,
-							array('userid' => $this->id, 'ip' => $this->ip, 'useragent' => $_SERVER['HTTP_USER_AGENT']),
-							array('userid'));
+						$this->SYSLOG->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_USERLOGFAIL,
+							array(SYSLOG::RES_USER => $this->id, 'ip' => $this->ip, 'useragent' => $_SERVER['HTTP_USER_AGENT']));
 					}
 				} else {
 					writesyslog('Unknown login ' . $this->login . ' from ' . $this->ip, LOG_WARNING);
@@ -160,9 +158,8 @@ class Auth {
 			writesyslog('User ' . $this->login . ' logged out.', LOG_INFO);
 			if ($this->SYSLOG) {
 				$this->SYSLOG->NewTransaction('auth', $this->id);
-				$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_USERLOGOUT,
-					array('userid' => $this->id, 'ip' => $this->ip, 'useragent' => $_SERVER['HTTP_USER_AGENT']),
-					array('userid'));
+				$this->SYSLOG->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_USERLOGOUT,
+					array(SYSLOG::RES_USER => $this->id, 'ip' => $this->ip, 'useragent' => $_SERVER['HTTP_USER_AGENT']));
 			}
 		}
 		$this->SESSION->finish();

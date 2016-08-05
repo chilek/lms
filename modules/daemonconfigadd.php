@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -48,7 +48,7 @@ if($config)
 
 		$args = array(
 			'var' => $config['var'], 
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST] => $config['instanceid'], 
+			SYSLOG::RES_DAEMONINST => $config['instanceid'], 
 			'description' => $config['description'],
 			'value' => $config['value']
 		);
@@ -56,12 +56,9 @@ if($config)
 
 		if ($SYSLOG) {
 			$hostid = $DB->GetOne('SELECT hostid FROM daemoninstances WHERE id = ?', array($config['instanceid']));
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONCONF]] = $DB->GetLastInsertID('daemonconfig');
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]] = $hostid;
-			$SYSLOG->AddMessage(SYSLOG_RES_DAEMONCONF, SYSLOG_OPER_ADD, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONCONF],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]));
+			$args[SYSLOG::RES_DAEMONCONF] = $DB->GetLastInsertID('daemonconfig');
+			$args[SYSLOG::RES_HOST] = $hostid;
+			$SYSLOG->AddMessage(SYSLOG::RES_DAEMONCONF, SYSLOG::OPER_ADD, $args);
 		}
 
 		if (!isset($config['reuse']))

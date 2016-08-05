@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -74,20 +74,20 @@ if (isset($_POST['from']) && isset($_POST['to']))
 		if ($SYSLOG && isset($nodegroups))
 			foreach ($nodegroups as $nodegroup) {
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => $nodegroup['id'],
+					SYSLOG::RES_NODEGROUP => $nodegroup['id'],
 					'prio' => $nodegroup['prio'],
 				);
-				$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUP, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP]));
+				$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUP, SYSLOG::OPER_UPDATE, $args);
 			}
 
 		$args = array(
 			'prio' => $prio['to'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => $from,
+			SYSLOG::RES_NODEGROUP => $from,
 		);
 		$DB->Execute('UPDATE nodegroups SET prio=? WHERE id=?', array_values($args));
 
 		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUP, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP]));
+			$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUP, SYSLOG::OPER_UPDATE, $args);
 
 		$LMS->CompactNodeGroups();
 	}

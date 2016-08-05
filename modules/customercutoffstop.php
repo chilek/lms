@@ -44,13 +44,11 @@ if (isset($_GET['cutoffstop'])) {
 			array($customerid))) {
 		$args = array(
 			'cutoffstop' => $cutoffstop,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+			SYSLOG::RES_CUST => $customerid,
 		);
 		$DB->Execute('UPDATE customers SET cutoffstop = ? WHERE id = ?', array_values($args));
 		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
-
+			$SYSLOG->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE, $args);
 	}
 }
 

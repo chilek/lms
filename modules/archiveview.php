@@ -160,7 +160,7 @@ if ($SYSLOG) {
 	$args = array('limit' => $limit + 1);
 	if (!empty($user)) $args['userid'] = $user;
 	if (!empty($resourcetype)) {
-		$args['key'] = $SYSLOG_RESOURCE_KEYS[$resourcetype];
+		$args['key'] = SYSLOG::getResourceKey($resourcetype);
 		$args['value'] = $resourceid;
 	}
 	if (!empty($datefrom)) $args['datefrom'] = $datefrom;

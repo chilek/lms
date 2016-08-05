@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -77,7 +77,7 @@ if(!empty($_POST['division']))
 			'address' => $division['address'],
 			'city' => $division['city'],
 			'zip' => $division['zip'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $division['countryid'],
+			SYSLOG::RES_COUNTRY => $division['countryid'],
 			'ten' => $division['ten'],
 			'regon' => $division['regon'],
 			'account' => $division['account'],
@@ -95,9 +95,8 @@ if(!empty($_POST['division']))
 			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]] = $DB->GetLastInsertID('divisions');
-			$SYSLOG->AddMessage(SYSLOG_RES_DIV, SYSLOG_OPER_ADD, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY]));
+			$args[SYSLOG::RES_DIV] = $DB->GetLastInsertID('divisions');
+			$SYSLOG->AddMessage(SYSLOG::RES_DIV, SYSLOG::OPER_ADD, $args);
 		}
 
 		if(!isset($division['reuse']))

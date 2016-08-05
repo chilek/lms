@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -52,17 +52,14 @@ if(isset($_POST['config']))
 			'description' => $configedit['description'],
 			'value' => $configedit['value'],
 			'disabled' => $configedit['disabled'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONCONF] => $_GET['id']
+			SYSLOG::RES_DAEMONCONF => $_GET['id']
 		);
 		$DB->Execute('UPDATE daemonconfig SET var=?, description=?, value=?, disabled=? WHERE id=?', array_values($args));
 
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST]] = $config['instanceid'];
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]] = $config['hostid'];
-			$SYSLOG->AddMessage(SYSLOG_RES_DAEMONCONF, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONCONF],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]));
+			$args[SYSLOG::RES_DAEMONINST] = $config['instanceid'];
+			$args[SYSLOG::RES_HOST] = $config['hostid'];
+			$SYSLOG->AddMessage(SYSLOG::RES_DAEMONCONF, SYSLOG::OPER_UPDATE, $args);
 		}
 
 		$SESSION->redirect('?m=daemoninstanceview&id='.$config['instanceid']);
@@ -72,15 +69,12 @@ elseif(isset($_GET['statuschange']))
 {
 	if ($SYSLOG) {
 		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST] => $config['hostid'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST] => $config['instanceid'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONCONF] => $config['id'],
+			SYSLOG::RES_HOST => $config['hostid'],
+			SYSLOG::RES_DAEMONINST => $config['instanceid'],
+			SYSLOG::RES_DAEMONCONF => $config['id'],
 			'disabled' => $config['disabled'] ? 0 : 1
 		);
-		$SYSLOG->AddMessage(SYSLOG_RES_DAEMONCONF, SYSLOG_OPER_UPDATE, $args,
-			array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONINST],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DAEMONCONF]));
+		$SYSLOG->AddMessage(SYSLOG::RES_DAEMONCONF, SYSLOG::OPER_UPDATE, $args);
 	}
 
 	if ($config['disabled'])

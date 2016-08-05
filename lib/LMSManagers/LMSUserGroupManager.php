@@ -1,6 +1,27 @@
 <?php
-/**
- * @author Maciej_Wawryk
+
+/*
+ *  LMS version 1.11-git
+ *
+ *  Copyright (C) 2001-2016 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
  */
 
 class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInterface{
@@ -10,16 +31,15 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
     }
     
     public function UsergroupAdd($usergroupdata){
-	global $SYSLOG_RESOURCE_KEYS;
         if ($this->db->Execute('INSERT INTO usergroups (name, description) VALUES (?, ?)', array($usergroupdata['name'], $usergroupdata['description']))) {
             $id = $this->db->GetLastInsertID('usergroups');
             if ($this->syslog) {
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USERGROUP] => $id,
+                    SYSLOG::RES_USERGROUP => $id,
                     'name' => $usergroupdata['name'],
                     'description' => $usergroupdata['description']
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_USERGROUP, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USERGROUP]));
+                $this->syslog->AddMessage(SYSLOG::RES_USERGROUP, SYSLOG::OPER_ADD, $args);
             }
             return $id;
         } else {
@@ -71,16 +91,15 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
     }
     
     public function UserassignmentDelete($userassignmentdata){
-        global $SYSLOG_RESOURCE_KEYS;
         if ($this->syslog){
             $assign = $this->db->GetRow('SELECT id, userid FROM userassignments WHERE usergroupid = ? AND userid = ?', array($userassignmentdata['usergroupid'], $userassignmentdata['userid']));
             if ($assign) {
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USERASSIGN] => $assign['id'],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $assign['userid'],
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USERGROUP] => $userassignmentdata['usergroupid']
+                    SYSLOG::RES_USERASSIGN => $assign['id'],
+                    SYSLOG::RES_USER => $assign['userid'],
+                    SYSLOG::RES_USERGROUP => $userassignmentdata['usergroupid']
                 );
-                $this->syslog->AddMessage(SYSLOG_RES_USERASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                $this->syslog->AddMessage(SYSLOG::RES_USERASSIGN, SYSLOG::OPER_DELETE, $args);
             }
         }
         return $this->db->Execute('DELETE FROM userassignments WHERE usergroupid=? AND userid=?', array($userassignmentdata['usergroupid'], $userassignmentdata['userid']));
@@ -91,35 +110,33 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
     }
     
     public function UserassignmentAdd($userassignmentdata){
-        global $SYSLOG_RESOURCE_KEYS;
         $res = $this->db->Execute('INSERT INTO userassignments (usergroupid, userid) VALUES (?, ?)', array($userassignmentdata['usergroupid'], $userassignmentdata['userid']));
         if ($this->syslog && $res) {
             $id = $this->db->GetLastInsertID('userassignments');
             $args = array(
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USERASSIGN] => $id,
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $userassignmentdata['userid'],
-                $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USERGROUP] => $userassignmentdata['usergroupid']
+                SYSLOG::RES_USERASSIGN => $id,
+                SYSLOG::RES_USER => $userassignmentdata['userid'],
+                SYSLOG::RES_USERGROUP => $userassignmentdata['usergroupid']
             );
-            $this->syslog->AddMessage(SYSLOG_RES_USERASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
+            $this->syslog->AddMessage(SYSLOG::RES_USERASSIGN, SYSLOG::OPER_ADD, $args);
         }
         return $res;
     }
     
     public function UsergroupDelete($id){
-        global $SYSLOG_RESOURCE_KEYS;
         if (!$this->UsergroupWithUserGet($id)) {
             if ($this->syslog) {
                 $userassigns = $this->db->Execute('SELECT id, userid, usergroupid FROM userassignments WHERE usergroupid = ?', array($id));
                 if (!empty($userassigns))
                     foreach ($userassigns as $userassign) {
                         $args = array(
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USERASSIGN] => $userassign['id'],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $userassign['userid'],
-                            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USERGROUP] => $userassign['usergroupid']
+                            SYSLOG::RES_USERASSIGN => $userassign['id'],
+                            SYSLOG::RES_USER => $userassign['userid'],
+                            SYSLOG::RES_USERGROUP => $userassign['usergroupid']
                         );
-                        $this->syslog->AddMessage(SYSLOG_RES_USERASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+                        $this->syslog->AddMessage(SYSLOG::RES_USERASSIGN, SYSLOG::OPER_DELETE, $args);
                     }
-                $this->syslog->AddMessage(SYSLOG_RES_USERGROUP, SYSLOG_OPER_DELETE, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USERGROUP] => $id), array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USERGROUP]));
+                $this->syslog->AddMessage(SYSLOG::RES_USERGROUP, SYSLOG::OPER_DELETE, array(SYSLOG::RES_USERGROUP => $id));
             }
             $this->db->Execute('DELETE FROM usergroups WHERE id=?', array($id));
             return TRUE;
@@ -133,14 +150,13 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
     }
     
     public function UsergroupUpdate($usergroupdata){
-        global $SYSLOG_RESOURCE_KEYS;
         $args = array(
             'name' => $usergroupdata['name'],
             'description' => $usergroupdata['description'],
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USERGROUP] => $usergroupdata['id']
+            SYSLOG::RES_USERGROUP => $usergroupdata['id']
         );
         if ($this->syslog)
-            $this->syslog->AddMessage(SYSLOG_RES_USERGROUP, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USERGROUP]));
+            $this->syslog->AddMessage(SYSLOG::RES_USERGROUP, SYSLOG::OPER_UPDATE, $args);
         return $this->db->Execute('UPDATE usergroups SET name=?, description=? WHERE id=?', array_values($args));
     }
     

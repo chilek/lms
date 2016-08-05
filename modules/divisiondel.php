@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,19 +31,19 @@ if (isset($_GET['is_sure']) && $_GET['is_sure'] == 1 && $id) {
 		if ($SYSLOG) {
 			$countryid = $DB->GetOne('SELECT countryid FROM divisions WHERE id = ?', array($id));
 			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $id,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $countryid
+				SYSLOG::RES_DIV => $id,
+				SYSLOG::RES_COUNTRY => $countryid
 			);
-			$SYSLOG->AddMessage(SYSLOG_RES_DIV, SYSLOG_OPER_DELETE, $args, array_keys($args));
+			$SYSLOG->AddMessage(SYSLOG::RES_DIV, SYSLOG::OPER_DELETE, $args);
 			$assigns = $DB->GetAll('SELECT * FROM numberplanassignments WHERE divisionid = ?', array($id));
 			if (!empty($assigns))
 				foreach ($assigns as $assign) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLANASSIGN] => $assign['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $assign['planid'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $assign['divisionid'],
+						SYSLOG::RES_NUMPLANASSIGN => $assign['id'],
+						SYSLOG::RES_NUMPLAN => $assign['planid'],
+						SYSLOG::RES_DIV => $assign['divisionid'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_NUMPLANASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_DELETE, $args);
 				}
 		}
 		$DB->Execute('DELETE FROM divisions WHERE id=?', array($id));

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -34,10 +34,10 @@ if ($LMS->TarifftagExists($from) && $LMS->TarifftagExists($to) && $_GET['is_sure
 					WHERE tarifftagid=?', array($to, $from));
             if ($SYSLOG) {
                 $args = array(
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFFASSIGN] => $id,
-                    $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFFTAG] => $to
+                    SYSLOG::RES_TARIFFASSIGN => $id,
+                    SYSLOG::RES_TARIFFTAG => $to
                 );
-                $SYSLOG->AddMessage(SYSLOG_RES_ASSIGN, SYSLOG_OPER_UPDATE, $args, array_keys($args));
+                $SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
             }
         }
     }

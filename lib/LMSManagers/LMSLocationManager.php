@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -48,7 +48,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         $cstate = $this->db->GetOne('SELECT stateid FROM zipcodes WHERE zip = ?', array($zip));
 
         $args = array(
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_STATE] => $stateid,
+            SYSLOG::RES_STATE => $stateid,
             'zip' => $zip
         );
         if ($cstate === null) {
@@ -57,16 +57,8 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                 array_values($args)
             );
             if ($this->syslog) {
-                $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ZIP]] = $this->db->GetLastInsertID('zipcodes');
-                $this->syslog->AddMessage(
-                    SYSLOG_RES_ZIP, 
-                    SYSLOG_OPER_ADD, 
-                    $args, 
-                    array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_STATE],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ZIP]
-                    )
-                );
+                $args[SYSLOG::RES_ZIP] = $this->db->GetLastInsertID('zipcodes');
+                $this->syslog->AddMessage(SYSLOG::RES_ZIP, SYSLOG::OPER_ADD, $args);
             }
         } else if ($cstate != $stateid) {
             $this->db->Execute(
@@ -74,16 +66,8 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                 array_values($args)
             );
             if ($this->syslog) {
-                $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ZIP]] = $this->db->GetOne('SELECT id FROM zipcodes WHERE zip = ?', array($zip));
-                $this->syslog->AddMessage(
-                    SYSLOG_RES_ZIP, 
-                    SYSLOG_OPER_UPDATE, 
-                    $args, 
-                    array(
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_STATE],
-                        $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_ZIP]
-                    )
-                );
+                $args[SYSLOG::RES_ZIP] = $this->db->GetOne('SELECT id FROM zipcodes WHERE zip = ?', array($zip));
+                $this->syslog->AddMessage(SYSLOG::RES_ZIP, SYSLOG::OPER_UPDATE, $args);
             }
         }
     }

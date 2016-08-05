@@ -43,12 +43,12 @@ if (!empty($date))
 	$resource['date'] = $date;
 
 $resource['properties'] = $SYSLOG->GetResourceProperties($resource);
-$resource['name'] = $SYSLOG_RESOURCES[$type];
+$resource['name'] = SYSLOG::getResourceName($type);
 
 //xdebug_var_dump($resource);
 //die;
 
-$trans = $SYSLOG->GetTransactions(array('key' => $SYSLOG_RESOURCE_KEYS[$type], 'value' => $id));
+$trans = $SYSLOG->GetTransactions(array('key' => SYSLOG::getResourceKey($type), 'value' => $id));
 if (!empty($trans))
 	foreach ($trans as $idx => $tran)
 		$SYSLOG->DecodeTransaction($trans[$idx]);

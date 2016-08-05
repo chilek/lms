@@ -141,11 +141,10 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'checkip.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'accesstable.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
 
-if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG')) {
+if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG'))
 	$SYSLOG = new SYSLOG($DB);
-} else {
+else
 	$SYSLOG = null;
-}
 
 // Initialize Session, Auth and LMS classes
 
@@ -287,8 +286,8 @@ if ($AUTH->islogged) {
 			include($module_dir . DIRECTORY_SEPARATOR . $module . '.php');
 		} else {
 			if ($SYSLOG)
-				$SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_USERNOACCESS,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id), array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
+				$SYSLOG->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_USERNOACCESS,
+					array(SYSLOG::RES_USER => $AUTH->id));
 			$SMARTY->display('noaccess.html');
 		}
 	}

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -98,12 +98,11 @@ if($userinfo)
 			if (!empty($groups))
 				foreach ($groups as $group) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_EXCLGROUP] => $group['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $group['customergroupid'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $userinfo['id']
+						SYSLOG::RES_EXCLGROUP => $group['id'],
+						SYSLOG::RES_CUSTGROUP => $group['customergroupid'],
+						SYSLOG::RES_USER => $userinfo['id']
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_EXCLGROUP, SYSLOG_OPER_DELETE, $args,
-						array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_DELETE, $args);
 				}
 		}
 		$DB->Execute('DELETE FROM excludedgroups WHERE userid = ?', array($userinfo['id']));
@@ -113,13 +112,12 @@ if($userinfo)
 						VALUES(?, ?)', array($idx, $userinfo['id']));
 				if ($SYSLOG) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_EXCLGROUP] =>
+						SYSLOG::RES_EXCLGROUP =>
 							$DB->GetLastInsertID('excludedgroups'),
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $idx,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $userinfo['id']
+						SYSLOG::RES_CUSTGROUP => $idx,
+						SYSLOG::RES_USER => $userinfo['id']
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_EXCLGROUP, SYSLOG_OPER_ADD, $args,
-						array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_ADD, $args);
 				}
 			}
 
