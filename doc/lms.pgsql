@@ -1,5 +1,7 @@
 /* $Id$ */
 
+BEGIN;
+
 /* --------------------------------------------------------
   Structure of table "users"
 -------------------------------------------------------- */
@@ -702,7 +704,7 @@ CREATE TABLE tariffs (
 	period smallint 	DEFAULT NULL,
 	taxid integer 		DEFAULT 0 NOT NULL,
 	numberplanid integer DEFAULT NULL
-		REFERENCES numberplans (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		REFERENCES numberplans (id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
 	uprate integer		DEFAULT 0 NOT NULL,
 	upceil integer		DEFAULT 0 NOT NULL,
@@ -731,6 +733,12 @@ CREATE TABLE tariffs (
 	quota_sql_limit integer	DEFAULT NULL,
 	description text	DEFAULT '' NOT NULL,
 	disabled smallint 	DEFAULT 0 NOT NULL,
+
+	-- foreign key to voip_tariffs is added at the end of file due to the order of table create
+	-- FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs (id)
+	voip_tariff_id integer      DEFAULT NULL,
+	voip_tariff_rule_id integer DEFAULT NULL,
+
 	PRIMARY KEY (id),
 	CONSTRAINT tariffs_name_key UNIQUE (name, value, period)
 );
@@ -758,14 +766,13 @@ CREATE TABLE tarifftags (
 
 DROP SEQUENCE IF EXISTS tariffassignments_id_seq;
 CREATE SEQUENCE tariffassignments_id_seq;
-
 DROP TABLE IF EXISTS tariffassignments CASCADE;
 CREATE TABLE tariffassignments (
 	id integer DEFAULT nextval('tariffassignments_id_seq'::text) NOT NULL,
         tariffid integer NOT NULL
             REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
         tarifftagid integer NOT NULL
-            REFERENCES tarifftags (id) ON DELETE CASCADE ON UPDATE CASCADE
+            REFERENCES tarifftags (id) ON DELETE CASCADE ON UPDATE CASCADE,
         PRIMARY KEY (id),
         CONSTRAINT tariffassignments_tarifftagid_key UNIQUE (tariffid,tarifftagid)
 );
@@ -1062,7 +1069,9 @@ CREATE INDEX stats_nodesessionid_idx ON stats(nodesessionid);
 /* -------------------------------------------------------- 
   Structure of table "nodesessions" 
 -------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS nodesessions_id_seq;
 CREATE SEQUENCE nodesessions_id_seq;
+DROP TABLE IF EXISTS nodesessions CASCADE;
 CREATE TABLE nodesessions (
 	id integer		DEFAULT nextval('nodesessions_id_seq'::text) NOT NULL,
 	customerid integer	DEFAULT 0 NOT NULL,
@@ -1374,6 +1383,7 @@ CREATE INDEX records_domain_id_idx ON records (domain_id);
 /* ---------------------------------------------------
  Structure of table "domainmetadata" (DNS)
 ------------------------------------------------------*/
+DROP TABLE IF EXISTS domainmetadata CASCADE;
 CREATE TABLE domainmetadata (
 	id SERIAL PRIMARY KEY,
 	domain_id integer
@@ -1887,7 +1897,7 @@ CREATE TABLE managementurls (
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS logtransactions_id_seq;
 CREATE SEQUENCE logtransactions_id_seq;
-DROP TABLE IF EXISTS logtransactions;
+DROP TABLE IF EXISTS logtransactions CASCADE;
 CREATE TABLE logtransactions (
 	id integer		DEFAULT nextval('logtransactions_id_seq'::text) NOT NULL,
 	userid integer		DEFAULT 0 NOT NULL,
@@ -1903,7 +1913,7 @@ CREATE INDEX logtransactions_time_idx ON logtransactions (time);
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS logmessages_id_seq;
 CREATE SEQUENCE logmessages_id_seq;
-DROP TABLE IF EXISTS logmessages;
+DROP TABLE IF EXISTS logmessages CASCADE;
 CREATE TABLE logmessages (
 	id integer		DEFAULT nextval('logmessages_id_seq'::text) NOT NULL,
 	transactionid integer	NOT NULL
@@ -1946,13 +1956,15 @@ CREATE INDEX logmessagedata_name_idx ON logmessagedata (name);
 /* ---------------------------------------------------
  Structure of table "templates"
 ------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS templates_id_seq;
 CREATE SEQUENCE templates_id_seq;
+DROP TABLE IF EXISTS templates;
 CREATE TABLE templates (
-	id integer		DEFAULT nextval('templates_id_seq'::text) NOT NULL,
-	type smallint		NOT NULL,
-	name varchar(50)	NOT NULL,
-	subject varchar(255)	DEFAULT '' NOT NULL,
-	message	text		DEFAULT '' NOT NULL,
+	id      integer		 DEFAULT nextval('templates_id_seq'::text) NOT NULL,
+	type    smallint	 NOT NULL,
+	name    varchar(50)	 NOT NULL,
+	subject varchar(255) DEFAULT '' NOT NULL,
+	message	text		 DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (type, name)
 );
@@ -2048,21 +2060,17 @@ CREATE TABLE voip_prefixes (
 	groupid integer NOT NULL
 		REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id),
-	UNIQUE (prefix)
+	UNIQUE (prefix, groupid)
 );
 
 DROP SEQUENCE IF EXISTS voip_tariffs_id_seq;
 CREATE SEQUENCE voip_tariffs_id_seq;
 DROP TABLE IF EXISTS voip_tariffs CASCADE;
 CREATE TABLE voip_tariffs (
-	id integer DEFAULT nextval('voip_tariffs_id_seq'::text) NOT NULL,
-	groupid integer NOT NULL
-		REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	tariffid integer NOT NULL
-		REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	price numeric(12,5) NOT NULL,
-	unitsize smallint NOT NULL,
-	PRIMARY KEY (id)
+	id          integer      DEFAULT nextval('voip_tariffs_id_seq'::text) NOT NULL,
+    name        varchar(100) NOT NULL,
+    description text         NULL DEFAULT NULL,
+    PRIMARY KEY (id)
 );
 
 DROP SEQUENCE IF EXISTS voip_tariff_rules_id_seq;
@@ -2111,6 +2119,35 @@ CREATE TABLE voip_emergency_numbers (
 	fullnumber varchar(20) NOT NULL,
 	UNIQUE (location_borough, number)
 );
+
+DROP SEQUENCE IF EXISTS voip_price_groups_id_seq;
+CREATE SEQUENCE voip_price_groups_id_seq;
+DROP TABLE IF EXISTS voip_price_groups CASCADE;
+CREATE TABLE voip_price_groups (
+    id              integer       DEFAULT nextval('voip_price_groups_id_seq'::text) NOT NULL,
+    voip_tariff_id  integer       NOT NULL
+        REFERENCES voip_tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    prefix_group_id integer       NOT NULL
+        REFERENCES voip_prefix_groups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    price           numeric(12,5) DEFAULT 0 NOT NULL,
+    unitsize        smallint      DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id)
+);
+
+DROP SEQUENCE IF EXISTS voip_rule_states_id_seq;
+CREATE SEQUENCE voip_rule_states_id_seq;
+DROP TABLE IF EXISTS voip_rule_states CASCADE;
+CREATE TABLE voip_rule_states (
+    id              integer DEFAULT nextval('voip_rule_states_id_seq'::text) NOT NULL,
+    voip_account_id integer NOT NULL DEFAULT NULL
+        REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    rule_id         integer NOT NULL DEFAULT NULL
+        REFERENCES voip_group_rule_assignments (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    units_left      integer NULL DEFAULT NULL,
+    PRIMARY KEY(id),
+    UNIQUE(voip_account_id, rule_id)
+);
+
 CREATE INDEX voip_emergency_numbers_number_idx ON voip_emergency_numbers (number);
 
 /* ---------------------------------------------------
@@ -2801,4 +2838,13 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016072000');
+-- foreign keys for tariffs due to the order of table create
+ALTER TABLE tariffs ADD CONSTRAINT tariff_id_fk
+FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE tariffs ADD CONSTRAINT tariff_rule_id_fk
+FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rules (id) ON DELETE SET NULL ON UPDATE CASCADE;
+
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016080500');
+
+COMMIT;

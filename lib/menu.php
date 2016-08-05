@@ -229,10 +229,16 @@ $menu = array(
 					'prio' => 50,
 				),
 				array(
+					'name' => trans('Price lists'),
+					'link' => '?m=voippricelist',
+					'tip' => trans('Edit price lists assigned to VoIP tariffs'),
+					'prio' => 60,
+				),
+				array(
 					'name' => trans('Search'),
 					'link' => '?m=voipaccountsearch',
 					'tip' => trans('Allows you to search VoIP account'),
-					'prio' => 60,
+					'prio' => 70,
 				),
 			),
 		),
