@@ -25,7 +25,7 @@
  */
 
 function GetPropertyNames($resource, $params) {
-	global $SYSLOG;
+	$SYSLOG = SYSLOG::getInstance();
 
 	$result = new XajaxResponse();
 	$names = $SYSLOG->GetResourcePropertyNames($resource);
@@ -50,7 +50,7 @@ function GetPropertyNames($resource, $params) {
 }
 
 function GetPropertyValues($resource, $propname, $propvalue) {
-	global $SYSLOG;
+	$SYSLOG = SYSLOG::getInstance();
 
 	$result = new XajaxResponse();
 	$values = $SYSLOG->GetResourcePropertyValues($resource, $propname);

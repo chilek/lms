@@ -219,18 +219,21 @@ class SYSLOG {
 		self::OPER_USERLOGOUT => 'color: darkgray',
 	);
 
+	private static $syslog = null;
+
 	private $DB;
-	private $AUTH = null;
 	private $userid = 0;
 	private $transid = 0;
 	private $module = '';
 
-	public function __construct(&$DB) {
-		$this->DB = $DB;
+	public static function getInstance($force = false) {
+		if (self::$syslog == null && ($force || ConfigHelper::checkConfig('phpui.logging')))
+			self::$syslog = new SYSLOG();
+		return self::$syslog;
 	}
 
-	public function SetAuth(&$AUTH) {
-		$this->AUTH = $AUTH;
+	public function __construct() {
+		$this->DB = LMSDB::getInstance();
 	}
 
 	public static function getAllResources() {
@@ -258,11 +261,12 @@ class SYSLOG {
 	}
 
 	public function NewTransaction($module, $userid = null) {
-		if (is_null($this->AUTH)) {
-			if (!is_null($userid))
-				$this->userid = intval($userid);
-		} else
-			$this->userid = $this->AUTH->id;
+		$currentuserid = AUTH::GetCurrentUser();
+		if ($currentuserid)
+			$this->userid = $currentuserid;
+		elseif (!is_null($userid))
+			$this->userid = intval($userid);
+
 		$this->module = $module;
 		$this->transid = 0;
 		//$this->DB->Execute('INSERT INTO logtransactions (time, userid, module)

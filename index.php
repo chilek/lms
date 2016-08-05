@@ -139,20 +139,14 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'checkip.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'accesstable.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
 
-if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG'))
-	$SYSLOG = new SYSLOG($DB);
-else
-	$SYSLOG = null;
+$SYSLOG = SYSLOG::getInstance();
 
 // Initialize Session, Auth and LMS classes
 
 $SESSION = new Session($DB, ConfigHelper::getConfig('phpui.timeout'),
 	ConfigHelper::getConfig('phpui.settings_timeout'));
-$AUTH = new Auth($DB, $SESSION, $SYSLOG);
-if ($SYSLOG)
-	$SYSLOG->SetAuth($AUTH);
+$AUTH = new Auth($DB, $SESSION);
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;

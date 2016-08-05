@@ -26,7 +26,7 @@
 
 class Auth {
 
-	public $id;
+	public $id = 0;
 	public $login;
 	public $logname;
 	public $passwd;
@@ -50,10 +50,19 @@ class Auth {
 	public $SESSION = NULL;
 	public $SYSLOG = NULL;
 
-	public function __construct(&$DB, &$SESSION, &$SYSLOG) {
+	private static $auth = null;
+
+	public function GetCurrentUser() {
+		if (self::$auth)
+			return self::$auth->id;
+		return 0;
+	}
+
+	public function __construct(&$DB, &$SESSION) {
+		$this->auth = $this;
 		$this->DB = &$DB;
 		$this->SESSION = &$SESSION;
-		$this->SYSLOG = &$SYSLOG;
+		$this->SYSLOG = SYSLOG::getInstance();
 		//$this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/', '\1', $this->_revision);
 		$this->_revision = '';
 

@@ -63,6 +63,7 @@ version ?.??.?? (????-??-??):
     all properties are identical [chilan]
   - added support for voip tariff rules [kosa/chilan]
   - simplicity syslog code and make it more oop [chilan]
+  - more oop improvements for SYSLOG and Auth classes [chilan]
 
 version 1.11.20 (2016-04-19):
 
