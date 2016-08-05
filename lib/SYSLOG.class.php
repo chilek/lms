@@ -261,7 +261,7 @@ class SYSLOG {
 	}
 
 	public function NewTransaction($module, $userid = null) {
-		$currentuserid = AUTH::GetCurrentUser();
+		$currentuserid = Auth::GetCurrentUser();
 		if ($currentuserid)
 			$this->userid = $currentuserid;
 		elseif (!is_null($userid))
