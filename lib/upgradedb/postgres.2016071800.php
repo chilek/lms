@@ -25,7 +25,7 @@ $this->BeginTrans();
 
 $this->Execute("ALTER TABLE tariffs ADD COLUMN voip_tariff_id integer DEFAULT NULL;
                 ALTER TABLE tariffs ADD COLUMN voip_tariff_rule_id integer DEFAULT NULL;
-                
+
                 ALTER TABLE voip_prefixes DROP CONSTRAINT voip_prefixes_prefix_key;
                 ALTER TABLE voip_prefixes ADD UNIQUE (prefix, groupid);
 
@@ -68,11 +68,27 @@ $this->Execute("ALTER TABLE tariffs ADD COLUMN voip_tariff_id integer DEFAULT NU
                 FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE;
 
                 ALTER TABLE tariffs ADD CONSTRAINT tariff_rule_id_fk
-                FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rules (id) ON DELETE SET NULL ON UPDATE CASCADE;");
+                FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rules (id) ON DELETE SET NULL ON UPDATE CASCADE;
 
-$this->Execute("UPDATE tariffs SET voip_tariff_id = id WHERE type = ?;", array(TARIFF_PHONE));
+                ALTER TABLE voipaccounts ADD COLUMN tariff_rules_state text DEFAULT NULL;
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016071800', 'dbversion'));
+                UPDATE tariffs SET voip_tariff_id = id WHERE type = ?;", array(TARIFF_PHONE));
+
+$this->Execute("DROP SEQUENCE IF EXISTS voip_rule_states_id_seq;
+                CREATE SEQUENCE voip_rule_states_id_seq;
+                DROP TABLE IF EXISTS voip_rule_states CASCADE;
+                CREATE TABLE voip_rule_states (
+                    id              integer DEFAULT nextval('voip_rule_states_id_seq'::text) NOT NULL,
+                    voip_account_id integer NOT NULL DEFAULT NULL
+                        REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+                    rule_id         integer NOT NULL DEFAULT NULL
+                        REFERENCES voip_group_rule_assignments (id) ON DELETE CASCADE ON UPDATE CASCADE,
+                    units_left      integer NULL DEFAULT NULL,
+                    PRIMARY KEY(id),
+                    UNIQUE(voip_account_id, rule_id)
+                );
+
+                UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016071800', 'dbversion');
 
 $this->CommitTrans();
 

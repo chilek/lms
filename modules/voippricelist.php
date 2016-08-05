@@ -38,7 +38,7 @@ if (isset($_GET['id']))
  * WARNING !
  * You will not see effect when group have one price within himself.
  *
- * \param array & $result handle to array
+ * \param  array &$result handle to array
  * \return array
  */
 function buildGroups(&$result) {
@@ -48,7 +48,7 @@ function buildGroups(&$result) {
         if (count($content) == 1)
             $groups[$groupName] = $content;
         else {
-            foreach ($content as $price=>$groupContent)
+            foreach ($content as $price => $groupContent)
                 $groups[$groupName." ($price)"][$price] = $groupContent;
         }
     }
@@ -86,6 +86,7 @@ function parseRow($row) {
                '(?<purchase>.*)\|' .
                '(?<sell>.*)';
 
+    $row = str_replace("\r", '', $row);
     preg_match('/^'.$pattern.'$/', $row, $matches);
 
     foreach ($matches as $k=>$v) {
@@ -140,7 +141,6 @@ function loadFromFile($list_id) {
     $voip_prefix_group = rtrim($voip_prefix_group, ',') . ';';
     $DB->execute($voip_prefix_group);
 
-
     // -----------------------------------------------------
     // GENERATE INSERT QUERY TO `voip_prefix_groups` TABLE
     // -----------------------------------------------------
@@ -155,7 +155,6 @@ function loadFromFile($list_id) {
 
     $voip_prefix = rtrim($voip_prefix, ',') . ';';
     $DB->execute($voip_prefix);
-
 
     // -----------------------------------------------------
     // CREATE TARIFFS

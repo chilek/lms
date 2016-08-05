@@ -106,30 +106,41 @@
                                 <td>
                                     <input type="text"
                                            id="default_price"
-                                           name="rule[default_price]"
-                                           value="{if isset($rule.default_price)}{$rule.default_price}{/if}"
+                                           name="rule[default][price]"
+                                           value="{if isset($rule.default.price)}{$rule.default.price}{/if}"
                                            placeholder="{trans("default")}"
                                            {tip text="Enter default price"}>
                                 </td>
                                 <td>
                                     <input type="text"
-                                           id="default_unitsize"
-                                           name="rule[default_unitsize]"
-                                           value="{if isset($rule.default_unitsize)}{$rule.default_unitsize}{/if}"
+                                           id="default_units"
+                                           name="rule[default][units]"
+                                           value="{if isset($rule.default.units)}{$rule.default.units}{/if}"
                                            placeholder="{trans("default")}"
                                            {tip text="Enter default number of units"}>
                                 </td>
-                                <td></td>
+                                <td>
+                                    <input type="text"
+                                           id="default_unit_size"
+                                           name="rule[default][unit_size]"
+                                           value="{if isset($rule.default.unit_size)}{$rule.default.unit_size}{/if}"
+                                           placeholder="{trans("default")}"
+                                           {tip text="Enter default size of units"}>
+                                </td>
+                                <td colspan="100%"></td>
                             </tr>
                             <tr>
                                 <td>{trans("Id")}</td>
                                 <td style="width: 230px;">{trans("Group name")}</td>
-                                <td {tip text="Cena za jedną jednostkę taryfikacyjną"}>{trans("Price")}</td>
-                                <td {tip text="Ilość jednostek po cenie promocyjnej"}>{trans("Number of units")}</td>
+                                <td {tip text="{trans("Price for one unit")}"}>{trans("Price")}</td>
+                                <td {tip text="{trans("Number of units at a promotion price")}"}>{trans("Number of units")}</td>
+                                <td {tip text="{trans("Unit size in seconds")}"}>{trans("Unit size<!voip>")}</td>
                                 <td></td>
                             </tr>
+
                             {if isset($rule)}
                             {foreach from=$rule.group item=group}
+                                {assign var=row_id value=$group.ruleid}
                                 {include file="voipaccount/voiptarifftablerow.html"}
                             {/foreach}
                             {/if}
@@ -168,14 +179,19 @@
         return document.getElementById("default_price").value;
     }
 
+    //get default number of units to use for new groups
+    function getDefaultUnits() {
+        return document.getElementById("default_units").value;
+    }
+
     //get default unit size for new groups
-    function getDefaultUnitsize() {
-        return document.getElementById("default_unitsize").value;
+    function getDefaultUnitSize() {
+        return document.getElementById("default_unit_size").value;
     }
 
     // get table row by id
     function getGroupRow( id ) {
-        return document.getElementById("row_" + id);
+        return document.getElementById(id);
     }
 
     // delete table row by id
@@ -194,12 +210,16 @@
     // send add request to xajax
     function add() {
         var name = group_search_input.value;
-        xajax_getGroupTableRow(name, getDefaultPrice(), getDefaultUnitsize());
+
+        xajax_getGroupTableRow(name,
+                               getDefaultPrice(),
+                               getDefaultUnits(),
+                               getDefaultUnitSize());
     }
 
     // xajax response
     function addGroup( row ) {
-        var id = row[0];
+        var id   = row[0];
         var html = row[1];
 
         if (!id || getGroupRow(id))
@@ -210,7 +230,7 @@
         var tr = document.createElement("tr")
         tr.innerHTML = html;
         tr.setAttribute("class", "highlight");
-        tr.setAttribute("id", "row_"+id);
+        tr.setAttribute("id"   , id);
         table.appendChild(tr);
 
         groupsTableInfoUpdate();
