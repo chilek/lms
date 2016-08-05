@@ -4,8 +4,6 @@
 
 SET FOREIGN_KEY_CHECKS = 0;
 
-# -- Drop tables first, MySQL doesn't support CASCADE
-
 DROP VIEW IF EXISTS vnetworks;
 DROP VIEW IF EXISTS customermailsview;
 DROP VIEW IF EXISTS teryt_ulic;
@@ -40,6 +38,7 @@ DROP TABLE IF EXISTS voip_tariffs;
 DROP TABLE IF EXISTS voip_prefixes;
 DROP TABLE IF EXISTS voip_prefix_groups;
 DROP TABLE IF EXISTS voip_rules;
+DROP TABLE IF EXISTS voip_rule_states;
 
 DROP TABLE IF EXISTS up_info_changes;
 DROP TABLE IF EXISTS up_help;
@@ -1198,7 +1197,8 @@ CREATE TABLE tariffs (
   quota_sql_limit int(11) 	DEFAULT NULL,
   description text 	NOT NULL,
   disabled tinyint  NOT NULL DEFAULT '0',
-  voip_tariff_id int(11)    DEFAULT NULL,
+  voip_tariff_id      int(11) DEFAULT NULL,
+  voip_tariff_rule_id int(11) DEFAULT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY name (name, value, period),
   INDEX type (type),
@@ -1941,6 +1941,17 @@ CREATE TABLE passwdhistory (
 #
 # Voip tables
 #
+CREATE TABLE voip_rule_states (
+    id              int(11) NOT NULL AUTO_INCREMENT,
+    voip_account_id int(11) NOT NULL
+        REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    rule_id         int(11) NOT NULL
+        REFERENCES voip_group_rule_assignments (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    units_left      int(11) NOT NULL,
+    PRIMARY KEY(id),
+    UNIQUE(voip_account_id, rule_id)
+);
+
 CREATE TABLE voip_rules (
 	id integer NOT NULL AUTO_INCREMENT,
 	name text NOT NULL,
@@ -1959,7 +1970,7 @@ CREATE TABLE voip_prefixes (
 	id int(11) AUTO_INCREMENT,
 	prefix varchar(30) NOT NULL,
 	groupid int(11) NOT NULL,
-	UNIQUE (prefix),
+	UNIQUE (prefix, groupid),
 	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE,
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
@@ -2019,10 +2030,10 @@ CREATE TABLE voip_price_groups (
     prefix_group_id int(11)       NOT NULL,
     price           decimal(12,5) DEFAULT 0 NOT NULL,
     unitsize        smallint      DEFAULT 0 NOT NULL,
-    FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (voip_tariff_id)  REFERENCES voip_tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (prefix_group_id) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (id)
 ) ENGINE=InnoDB;
-
 
 CREATE TABLE voip_emergency_numbers (
 	location_borough int(11) NOT NULL,
@@ -2723,4 +2734,7 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ALTER TABLE tariffs ADD CONSTRAINT tariffs_tariffid
 FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs (id);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016071800');
+ALTER TABLE tariffs ADD CONSTRAINT tariffrule_tariffruleid
+FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rules (id);
+
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016080500');

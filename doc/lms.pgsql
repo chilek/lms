@@ -766,7 +766,6 @@ CREATE TABLE tarifftags (
 
 DROP SEQUENCE IF EXISTS tariffassignments_id_seq;
 CREATE SEQUENCE tariffassignments_id_seq;
-
 DROP TABLE IF EXISTS tariffassignments CASCADE;
 CREATE TABLE tariffassignments (
 	id integer DEFAULT nextval('tariffassignments_id_seq'::text) NOT NULL,
@@ -2135,6 +2134,20 @@ CREATE TABLE voip_price_groups (
     PRIMARY KEY (id)
 );
 
+DROP SEQUENCE IF EXISTS voip_rule_states_id_seq;
+CREATE SEQUENCE voip_rule_states_id_seq;
+DROP TABLE IF EXISTS voip_rule_states CASCADE;
+CREATE TABLE voip_rule_states (
+    id              integer DEFAULT nextval('voip_rule_states_id_seq'::text) NOT NULL,
+    voip_account_id integer NOT NULL DEFAULT NULL
+        REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    rule_id         integer NOT NULL DEFAULT NULL
+        REFERENCES voip_group_rule_assignments (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    units_left      integer NULL DEFAULT NULL,
+    PRIMARY KEY(id),
+    UNIQUE(voip_account_id, rule_id)
+);
+
 CREATE INDEX voip_emergency_numbers_number_idx ON voip_emergency_numbers (number);
 
 /* ---------------------------------------------------
@@ -2832,6 +2845,6 @@ FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs (id) ON DELETE SET NULL ON 
 ALTER TABLE tariffs ADD CONSTRAINT tariff_rule_id_fk
 FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rules (id) ON DELETE SET NULL ON UPDATE CASCADE;
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016072000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016080500');
 
 COMMIT;

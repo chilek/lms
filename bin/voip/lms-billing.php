@@ -212,6 +212,10 @@ switch (strtolower($options['action'])) {
         $db_buffor->insert();
     break;
 
+    case 'refilltariffs':
+        $DB->Execute('DELETE FROM voip_rule_states;');
+    break;
+
     default:
         echo 'Unknow operation.' . PHP_EOL;
 }
