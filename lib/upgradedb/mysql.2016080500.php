@@ -21,6 +21,8 @@
  *
  */
 
+define('TARIFF_PHONE', 4);
+
 $this->BeginTrans();
 
 $this->Execute("ALTER TABLE tariffs ADD COLUMN voip_tariff_id int(11) DEFAULT NULL;
@@ -78,7 +80,7 @@ $this->Execute("CREATE TABLE voip_rule_states (
                     UNIQUE(voip_account_id, rule_id)
                 );
      
-                UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016080500', 'dbversion');
+                UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016080500', 'dbversion'));
                 
 $this->CommitTrans();
 
