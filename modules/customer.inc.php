@@ -58,12 +58,12 @@ $customerstats = array(
 );
 
 if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
-	$trans = $SYSLOG->GetTransactions(array('key' => $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], 'value' => $customerid));
+	$trans = $SYSLOG->GetTransactions(array('key' => SYSLOG::getResourceKey(SYSLOG::RES_CUST), 'value' => $customerid));
 	if (!empty($trans))
 		foreach ($trans as $idx => $tran)
 			$SYSLOG->DecodeTransaction($trans[$idx]);
 	$SMARTY->assign('transactions', $trans);
-	$SMARTY->assign('resourcetype', SYSLOG_RES_CUST);
+	$SMARTY->assign('resourcetype', SYSLOG::RES_CUST);
 	$SMARTY->assign('resourceid', $customerid);
 }
 

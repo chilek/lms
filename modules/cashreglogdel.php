@@ -39,11 +39,11 @@ if (isset($_GET['is_sure'])) {
 
 	if ($SYSLOG) {
 		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREGHIST] => $id,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG] => $regid,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $userid,
+			SYSLOG::RES_CASHREGHIST => $id,
+			SYSLOG::RES_CASHREG => $regid,
+			SYSLOG::RES_USER => $userid,
 		);
-		$SYSLOG->AddMessage(SYSLOG_RES_CASHREGHIST, SYSLOG_OPER_DELETE, $args, array_keys($args));
+		$SYSLOG->AddMessage(SYSLOG::RES_CASHREGHIST, SYSLOG::OPER_DELETE, $args);
 	}
 	$DB->Execute('DELETE FROM cashreglog WHERE id = ?', array($id));
 }

@@ -227,10 +227,10 @@ elseif (isset($_POST['customerdata']))
 			if (!empty($imids))
 				foreach ($imids as $imid) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_IMCONTACT] => $imid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerdata['id']
+						SYSLOG::RES_IMCONTACT => $imid,
+						SYSLOG::RES_CUST => $customerdata['id']
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_IMCONTACT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_IMCONTACT, SYSLOG::OPER_DELETE, $args);
 				}
 		}
 		$DB->Execute('DELETE FROM imessengers WHERE customerid = ?', array($customerdata['id']));
@@ -241,14 +241,12 @@ elseif (isset($_POST['customerdata']))
 				if ($SYSLOG) {
 					$imid = $DB->GetLastInsertID('imessengers');
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_IMCONTACT] => $imid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerdata['id'],
+						SYSLOG::RES_IMCONTACT => $imid,
+						SYSLOG::RES_CUST => $customerdata['id'],
 						'uid' => $val,
 						'type' => $idx
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_IMCONTACT, SYSLOG_OPER_ADD, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_IMCONTACT],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					$SYSLOG->AddMessage(SYSLOG::RES_IMCONTACT, SYSLOG::OPER_ADD, $args);
 				}
 			}
 
@@ -257,10 +255,10 @@ elseif (isset($_POST['customerdata']))
 			if (!empty($contactids))
 				foreach ($contactids as $contactid) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT] => $contactid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerdata['id']
+						SYSLOG::RES_CUSTCONTACT => $contactid,
+						SYSLOG::RES_CUST => $customerdata['id']
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_DELETE, $args);
 				}
 		}
 
@@ -274,15 +272,13 @@ elseif (isset($_POST['customerdata']))
 				if ($SYSLOG) {
 					$contactid = $DB->GetLastInsertID('customercontacts');
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT] => $contactid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerdata['id'],
+						SYSLOG::RES_CUSTCONTACT => $contactid,
+						SYSLOG::RES_CUST => $customerdata['id'],
 						'contact' => $contact['contact'],
 						'name' => $contact['name'],
 						'type' => $contact['type'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_ADD, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					$SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_ADD, $args);
 				}
 			}
 

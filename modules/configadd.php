@@ -75,9 +75,8 @@ if(sizeof($config))
 			array_values($args));
 
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF]] = $DB->GetLastInsertID('uiconfig');
-			$SYSLOG->AddMessage(SYSLOG_RES_UICONF, SYSLOG_OPER_ADD, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF]));
+			$args[SYSLOG::RES_UICONF] = $DB->GetLastInsertID('uiconfig');
+			$SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_ADD, $args);
 		}
 
 		if (!isset($config['reuse']))

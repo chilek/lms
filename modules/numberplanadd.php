@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -72,9 +72,8 @@ if(sizeof($numberplanadd))
 		$id = $DB->GetLastInsertID('numberplans');
 
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]] = $id;
-			$SYSLOG->AddMessage(SYSLOG_RES_NUMPLAN, SYSLOG_OPER_ADD,
-				$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN]));
+			$args[SYSLOG::RES_NUMPLAN] = $id;
+			$SYSLOG->AddMessage(SYSLOG::RES_NUMPLAN, SYSLOG::OPER_ADD, $args);
 		}
 
 		if (!empty($_POST['selected']))
@@ -84,11 +83,11 @@ if(sizeof($numberplanadd))
 				if ($SYSLOG) {
 					$planassignid = $DB->GetLastInsertID('numberplanassignments');
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLANASSIGN] => $planassignid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => $id,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => intval($idx)
+						SYSLOG::RES_NUMPLANASSIGN => $planassignid,
+						SYSLOG::RES_NUMPLAN => $id,
+						SYSLOG::RES_DIV => intval($idx)
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_NUMPLANASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_NUMPLANASSIGN, SYSLOG::OPER_ADD, $args);
 				}
 			}
 

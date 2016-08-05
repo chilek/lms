@@ -90,18 +90,15 @@ if(isset($_POST['reglog']))
 			'time' => $time,
 			'description' => $reglog['description'],
 			'value' => $reglog['value'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG] => $regid,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
+			SYSLOG::RES_CASHREG => $regid,
+			SYSLOG::RES_USER => $AUTH->id,
 			'snapshot' => str_replace(',','.',floatval($snapshot))
 		);
 		$DB->Execute('INSERT INTO cashreglog (time, description, value, regid, userid, snapshot)
 				VALUES(?, ?, ?, ?, ?, ?)', array_values($args));
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREGHIST]] = $DB->GetLastInsertID('cashreglog');
-			$SYSLOG->AddMessage(SYSLOG_RES_CASHREGHIST, SYSLOG_OPER_ADD, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREGHIST],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
+			$args[SYSLOG::RES_CASHREGHIST] = $DB->GetLastInsertID('cashreglog');
+			$SYSLOG->AddMessage(SYSLOG::RES_CASHREGHIST, SYSLOG::OPER_ADD, $args);
 		}
 
 		$SESSION->redirect('?m=cashreglogview&regid='.$regid);

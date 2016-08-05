@@ -303,7 +303,7 @@ if(defined('USERPANEL_SETUPMODE'))
 	}
 
 	function module_submit_changes_save() {
-		global $LMS, $SYSLOG_RESOURCE_KEYS;
+		global $LMS;
 
 		$DB = LMSDB::getInstance();
 
@@ -314,30 +314,26 @@ if(defined('USERPANEL_SETUPMODE'))
 					WHERE id = ?', array($changeid));
 				if (!isset($args[$changes['customerid']]))
 					$args[$changes['customerid']] = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $changes['customerid'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $LMS->AUTH->id,
+						SYSLOG::RES_CUST => $changes['customerid'],
+						SYSLOG::RES_USER => $LMS->AUTH->id,
 					);
 
 				if (preg_match('/(phone|email)([0-9]+)/', $changes['fieldname'], $matches)) {
 					if ($matches[2]) {
 						$fields = array(
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $changes['customerid'],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT] => $matches[2],
+							SYSLOG::RES_CUST => $changes['customerid'],
+							SYSLOG::RES_CUSTCONTACT => $matches[2],
 						);
 						if($changes['fieldvalue']) {
 							$DB->Execute('UPDATE customercontacts SET contact = ? WHERE id = ?', array($changes['fieldvalue'], $matches[2]));
 							if ($LMS->SYSLOG) {
 								$fields['contact'] = $changes['fieldvalue'];
-								$LMS->SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_UPDATE, $fields,
-									array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-										$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT]));
+								$LMS->SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_UPDATE, $fields);
 							}
 						} else {
 							$DB->Execute('DELETE FROM customercontacts WHERE id = ?', array($matches[2]));
 							if ($LMS->SYSLOG) {
-								$LMS->SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_DELETE, $fields,
-									array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-										$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT]));
+								$LMS->SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_DELETE, $fields);
 							}
 						}
 					} else { // new phone or email
@@ -345,14 +341,12 @@ if(defined('USERPANEL_SETUPMODE'))
 							array($changes['fieldvalue'], $changes['customerid'], $matches[1] == 'phone' ? CONTACT_LANDLINE : CONTACT_EMAIL));
 						if ($LMS->SYSLOG) {
 							$fields = array(
-								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $changes['customerid'],
-								$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT] => $DB->GetLastInsertID('customercontacts'),
+								SYSLOG::RES_CUST => $changes['customerid'],
+								SYSLOG::RES_CUSTCONTACT => $DB->GetLastInsertID('customercontacts'),
 								'contact' => $changes['fieldvalue'],
 								'type' => $matches[1] == 'phone' ? CONTACT_LANDLINE : CONTACT_EMAIL,
 							);
-							$LMS->SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_ADD, $fields,
-								array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-									$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT]));
+							$LMS->SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_ADD, $fields);
 						}
 					}
 				} else
@@ -367,24 +361,20 @@ if(defined('USERPANEL_SETUPMODE'))
 						);
 						$contact_type = $contact_types[$changes['fieldname']];
 						$fields = array(
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $changes['customerid'],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $LMS->AUTH->id,
+							SYSLOG::RES_CUST => $changes['customerid'],
+							SYSLOG::RES_USER => $LMS->AUTH->id,
 							'type' => $contact_type,
 						);
 
 						$DB->Execute('DELETE FROM imessengers WHERE customerid = ? AND type = ?', array($changes['customerid'], $contact_type));
 						if ($LMS->SYSLOG)
-							$LMS->SYSLOG->AddMessage(SYSLOG_RES_IMCONTACT, SYSLOG_OPER_DELETE, $fields,
-								array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-									$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
+							$LMS->SYSLOG->AddMessage(SYSLOG::RES_IMCONTACT, SYSLOG::OPER_DELETE, $fields);
 						if ($changes['fieldvalue']) {
 							$DB->Execute('INSERT INTO imessengers (customerid, uid, type) VALUES (?, ?, ?)',
 								array($changes['customerid'], $changes['fieldvalue'], $contact_type));
 							if ($LMS->SYSLOG) {
 								$fields['uid'] = $changes['fieldvalue'];
-								$LMS->SYSLOG->AddMessage(SYSLOG_RES_IMCONTACT, SYSLOG_OPER_ADD, $fields,
-									array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-										$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
+								$LMS->SYSLOG->AddMessage(SYSLOG::RES_IMCONTACT, SYSLOG::OPER_ADD, $fields);
 							}
 						}
 						break;
@@ -406,9 +396,7 @@ if(defined('USERPANEL_SETUPMODE'))
 				if ($LMS->SYSLOG && !empty($args))
 					foreach ($args as $customerid => $fields)
 						if (count($fields) > 2)
-							$LMS->SYSLOG->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_UPDATE, $fields,
-								array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-									$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
+							$LMS->SYSLOG->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE, $fields);
 				$DB->Execute('DELETE FROM up_info_changes WHERE id = ?', array($changeid));
 			}
 		}

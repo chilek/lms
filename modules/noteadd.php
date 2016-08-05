@@ -200,11 +200,11 @@ switch($action)
 
 			$args = array(
 				'number' => $note['number'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => !empty($note['numberplanid']) ? $note['numberplanid'] : 0,
+				SYSLOG::RES_NUMPLAN => !empty($note['numberplanid']) ? $note['numberplanid'] : 0,
 				'type' => DOC_DNOTE,
 				'cdate' => $cdate,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+				SYSLOG::RES_USER => $AUTH->id,
+				SYSLOG::RES_CUST => $customer['id'],
 				'name' => $customer['customername'],
 				'address' => $customer['address'],
 				'paytime' => $note['paytime'],
@@ -212,14 +212,14 @@ switch($action)
 				'ssn' => $customer['ssn'],
 				'zip' => $customer['zip'],
 				'city' => $customer['city'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $customer['countryid'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customer['divisionid'],
+				SYSLOG::RES_COUNTRY => $customer['countryid'],
+				SYSLOG::RES_DIV => $customer['divisionid'],
 				'div_name' => ($division['name'] ? $division['name'] : ''),
 				'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
 				'div_address' => ($division['address'] ? $division['address'] : ''), 
 				'div_city' => ($division['city'] ? $division['city'] : ''), 
 				'div_zip' => ($division['zip'] ? $division['zip'] : ''),
-				'div_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => ($division['countryid'] ? $division['countryid'] : 0),
+				'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ? $division['countryid'] : 0),
 				'div_ten'=> ($division['ten'] ? $division['ten'] : ''),
 				'div_regon' => ($division['regon'] ? $division['regon'] : ''),
 				'div_account' => ($division['account'] ? $division['account'] : ''),
@@ -240,12 +240,10 @@ switch($action)
 			$nid = $DB->GetLastInsertID('documents');
 
 			if ($SYSLOG) {
-				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC]] = $nid;
-				unset($args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]]);
-				$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_ADD, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]));
+				$args[SYSLOG::RES_DOC] = $nid;
+				unset($args[SYSLOG::RES_USER]);
+				$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_ADD, $args,
+					array('div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY)));
 			}
 
 			$itemid = 0;
@@ -254,7 +252,7 @@ switch($action)
 				$item['value'] = str_replace(',','.', $item['value']);
 
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $nid,
+					SYSLOG::RES_DOC => $nid,
 					'itemid' => $itemid,
 					'value' => $item['value'],
 					'description' => $item['description']
@@ -263,12 +261,9 @@ switch($action)
 					VALUES (?, ?, ?, ?)', array_values($args));
 
 				if ($SYSLOG) {
-					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT]] = $DB->GetLastInsertID('debitnotecontents');
-					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $customer['id'];
-					$SYSLOG->AddMessage(SYSLOG_RES_DNOTECONT, SYSLOG_OPER_ADD, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					$args[SYSLOG::RES_DNOTECONT] = $DB->GetLastInsertID('debitnotecontents');
+					$args[SYSLOG::RES_CUST] = $customer['id'];
+					$SYSLOG->AddMessage(SYSLOG::RES_DNOTECONT, SYSLOG::OPER_ADD, $args);
 				}
 
 				$LMS->AddBalance(array(

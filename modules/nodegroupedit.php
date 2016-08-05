@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -60,12 +60,12 @@ if(isset($_POST['nodegroup']))
 		$args = array(
 			'name' => $nodegroupedit['name'],
 			'description' => $nodegroupedit['description'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => $nodegroupedit['id']
+			SYSLOG::RES_NODEGROUP => $nodegroupedit['id']
 		);
 		$LMS->DB->Execute('UPDATE nodegroups SET name=?, description=?
 				WHERE id=?', array_values($args));
 		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUP, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP]));
+			$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUP, SYSLOG::OPER_UPDATE, $args);
 
 		$SESSION->redirect('?m=nodegroupinfo&id='.$id);
 	}

@@ -281,7 +281,7 @@ class LMS
             $res = $this->DBDump(ConfigHelper::getConfig('directories.backup_dir') . DIRECTORY_SEPARATOR . $filename, FALSE, $stats);
         }
         if ($this->SYSLOG)
-            $this->SYSLOG->AddMessage(SYSLOG_RES_DBBACKUP, SYSLOG_OPER_ADD, array('filename' => $filename), null);
+            $this->SYSLOG->AddMessage(SYSLOG::RES_DBBACKUP, SYSLOG::OPER_ADD, array('filename' => $filename));
         return $res;
     }
 

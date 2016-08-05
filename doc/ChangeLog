@@ -62,6 +62,7 @@ version ?.??.?? (????-??-??):
   - important fix: avoid to settle duplicated liabilities on invoices when almost their
     all properties are identical [chilan]
   - added support for voip tariff rules [kosa/chilan]
+  - simplicity syslog code and make it more oop [chilan]
 
 version 1.11.20 (2016-04-19):
 

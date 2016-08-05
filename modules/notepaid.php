@@ -58,12 +58,11 @@ if(sizeof($ids))
 
 		if ($SYSLOG) {
 			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $noteid,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $cid,
+				SYSLOG::RES_DOC => $noteid,
+				SYSLOG::RES_CUST => $cid,
 				'closed' => intval(!$closed),
 			);
-			$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+			$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
 		}
 		$DB->Execute('UPDATE documents SET closed = 
 			(CASE closed WHEN 0 THEN 1 ELSE 0 END)

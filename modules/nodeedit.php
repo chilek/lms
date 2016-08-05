@@ -55,12 +55,11 @@ switch ($action) {
 		$DB->Execute('UPDATE nodes SET chkmac=? WHERE id=?', array($_GET['chkmac'], $nodeid));
 		if ($SYSLOG) {
 			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeid,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+				SYSLOG::RES_NODE => $nodeid,
+				SYSLOG::RES_CUST => $customerid,
 				'chkmac' => $_GET['chkmac']
 			);
-			$SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+			$SYSLOG->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
 		}
 		$SESSION->redirect('?m=nodeinfo&id=' . $nodeid);
 		break;
@@ -68,12 +67,11 @@ switch ($action) {
 		$DB->Execute('UPDATE nodes SET halfduplex=? WHERE id=?', array($_GET['duplex'], $nodeid));
 		if ($SYSLOG) {
 			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeid,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+				SYSLOG::RES_NODE => $nodeid,
+				SYSLOG::RES_CUST => $customerid,
 				'halfduplex' => $_GET['duplex']
 			);
-			$SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+			$SYSLOG->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
 		}
 		$SESSION->redirect('?m=nodeinfo&id=' . $nodeid);
 		break;
@@ -81,12 +79,11 @@ switch ($action) {
 		$DB->Execute('UPDATE nodes SET authtype=? WHERE id=?', array(intval($_GET['authtype']), $nodeid));
 		if ($SYSLOG) {
 			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeid,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+				SYSLOG::RES_NODE => $nodeid,
+				SYSLOG::RES_CUST => $customerid,
 				'authtype' => intval($_GET['authtype']),
 			);
-			$SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+			$SYSLOG->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
 		}
 		$SESSION->redirect('?m=nodeinfo&id=' . $nodeid);
 		break;

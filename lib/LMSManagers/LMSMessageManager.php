@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -45,8 +45,6 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 
     public function AddMessageTemplate($type, $name, $subject, $message)
     {
-        global $SYSLOG_RESOURCE_KEYS;
-
         $args = array(
             'type' => $type,
             'name' => $name,
@@ -57,8 +55,8 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 			VALUES (?, ?, ?, ?)', array_values($args))) {
             $id = $this->db->GetLastInsertID('templates');
             if ($this->syslog) {
-                $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TMPL]] = $id;
-                $this->syslog->AddMessage(SYSLOG_RES_TMPL, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TMPL]));
+                $args[SYSLOG::RES_TMPL] = $id;
+                $this->syslog->AddMessage(SYSLOG::RES_TMPL, SYSLOG::OPER_ADD, $args);
             }
             return $id;
         }
@@ -67,14 +65,12 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
 
     public function UpdateMessageTemplate($id, $type, $name, $subject, $message)
     {
-        global $SYSLOG_RESOURCE_KEYS;
-
         $args = array(
             'type' => $type,
             'name' => $name,
             'subject' => $subject,
             'message' => $message,
-            $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TMPL] => intval($id),
+            SYSLOG::RES_TMPL => intval($id),
         );
         if (empty($name)) {
             unset($args['name']);
@@ -84,8 +80,8 @@ class LMSMessageManager extends LMSManager implements LMSMessageManagerInterface
             $res = $this->db->Execute('UPDATE templates SET type = ?, name = ?, subject = ?, message = ?
 				WHERE id = ?', array_values($args));
         if ($res && $this->syslog) {
-            $args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TMPL]] = $id;
-            $this->syslog->AddMessage(SYSLOG_RES_TMPL, SYSLOG_OPER_UPDATE, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TMPL]));
+            $args[SYSLOG::RES_TMPL] = $id;
+            $this->syslog->AddMessage(SYSLOG::RES_TMPL, SYSLOG::OPER_UPDATE, $args);
         }
         return $res;
     }

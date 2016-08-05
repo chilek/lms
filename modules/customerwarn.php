@@ -72,11 +72,10 @@ if (isset($setwarnings['mcustomerid']))
 			if ($SYSLOG)
 				foreach ($cids as $cid) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $cid,
+						SYSLOG::RES_CUST => $cid,
 						'message' => $message
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_CUST, SYSLOG_OPER_UPDATE, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					$SYSLOG->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE, $args);
 				}
 		}
 	}

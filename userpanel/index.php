@@ -139,13 +139,11 @@ $AUTH = NULL;
 $AUTH = NULL;
 if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG')) {
 	$SYSLOG = new SYSLOG($DB);
-} else {
-	$SYSLOG = null;
-}
-if ($SYSLOG){
 	$SYSLOG->SetAuth($AUTH);
-        $SYSLOG->NewTransaction('userpanel');
-}
+	$SYSLOG->NewTransaction('userpanel');
+} else
+	$SYSLOG = null;
+
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'Session.class.php');

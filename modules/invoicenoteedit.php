@@ -219,7 +219,7 @@ switch ($action) {
 			'sdate' => $sdate,
 			'paytime' => $cnote['paytime'],
 			'paytype' => $cnote['paytype'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+			SYSLOG::RES_CUST => $customer['id'],
 			'name' => $customer['customername'],
 			'address' => $customer['address'],
 			'ten' => $customer['ten'],
@@ -227,13 +227,13 @@ switch ($action) {
 			'zip' => $customer['zip'],
 			'city' => $customer['city'],
 			'reason' => $cnote['reason'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customer['divisionid'],
+			SYSLOG::RES_DIV => $customer['divisionid'],
 			'div_name' => ($division['name'] ? $division['name'] : ''),
 			'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
 			'div_address' => ($division['address'] ? $division['address'] : ''), 
 			'div_city' => ($division['city'] ? $division['city'] : ''), 
 			'div_zip' => ($division['zip'] ? $division['zip'] : ''),
-			'div_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => ($division['countryid'] ? $division['countryid'] : 0),
+			'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ? $division['countryid'] : 0),
 			'div_ten'=> ($division['ten'] ? $division['ten'] : ''),
 			'div_regon' => ($division['regon'] ? $division['regon'] : ''),
 			'div_account' => ($division['account'] ? $division['account'] : ''),
@@ -241,7 +241,7 @@ switch ($action) {
 			'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
 			'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
 			'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
+			SYSLOG::RES_DOC => $iid,
 		);
 		$DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, customerid = ?,
 				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, reason = ?, divisionid = ?,
@@ -250,31 +250,28 @@ switch ($action) {
 				div_inv_author = ?, div_inv_cplace = ?
 				WHERE id = ?', array_values($args));
 		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV], 'div_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY]));
+			$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args,
+				array('div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY)));
 
 		if (!$cnote['closed']) {
 			if ($SYSLOG) {
 				$cashids = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($iid));
 				foreach ($cashids as $cashid) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+						SYSLOG::RES_CASH => $cashid,
+						SYSLOG::RES_DOC => $iid,
+						SYSLOG::RES_CUST => $customer['id'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args,
-						array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
 				}
 				$itemids = $DB->GetCol('SELECT itemid FROM invoicecontents WHERE docid = ?', array($iid));
 				foreach ($itemids as $itemid) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+						SYSLOG::RES_DOC => $iid,
+						SYSLOG::RES_CUST => $customer['id'],
 						'itemid' => $itemid,
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_INVOICECONT, SYSLOG_OPER_DELETE, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					$SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_DELETE, $args);
 				}
 			}
 			$DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($iid));
@@ -285,26 +282,24 @@ switch ($action) {
 				$itemid++;
 
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
+					SYSLOG::RES_DOC => $iid,
 					'itemid' => $itemid,
 					'value' => -$item['valuebrutto'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $item['taxid'],
+					SYSLOG::RES_TAX => $item['taxid'],
 					'prodid' => $item['prodid'],
 					'content' => $item['content'],
 					'count' => $item['count'],
 					'pdiscount' => $item['pdiscount'],
 					'vdiscount' => $item['vdiscount'],
 					'name' => $item['name'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $item['tariffid'],
+					SYSLOG::RES_TARIFF => $item['tariffid'],
 				);
 				$DB->Execute('INSERT INTO invoicecontents (docid, itemid, value,
 					taxid, prodid, content, count, pdiscount, vdiscount, description, tariffid)
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 				if ($SYSLOG) {
-					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $customer['id'];
-					$SYSLOG->AddMessage(SYSLOG_RES_INVOICECONT, SYSLOG_OPER_ADD, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					$args[SYSLOG::RES_CUST] = $customer['id'];
+					$SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);
 				}
 
 				$LMS->AddBalance(array(
@@ -322,12 +317,11 @@ switch ($action) {
 				$cashids = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($iid));
 				foreach ($cashids as $cashid) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+						SYSLOG::RES_CASH => $cashid,
+						SYSLOG::RES_DOC => $iid,
+						SYSLOG::RES_CUST => $customer['id'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_UPDATE, $args,
-						array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_UPDATE, $args);
 				}
 			}
 			$DB->Execute('UPDATE cash SET customerid = ? WHERE docid = ?',

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -103,14 +103,13 @@ if(sizeof($taxrateedit))
 			'taxed' => $taxrateedit['taxed'],
 			'validfrom' => $validfrom,
 			'validto' => $validto,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $taxrateedit['id']
+			SYSLOG::RES_TAX => $taxrateedit['id']
 		);
 		$DB->Execute('UPDATE taxes SET label=?, value=?, taxed=?,validfrom=?,validto=? WHERE id=?',
 			array_values($args));
 
 		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG_RES_TAX, SYSLOG_OPER_UPDATE,
-				$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+			$SYSLOG->AddMessage(SYSLOG::RES_TAX, SYSLOG::OPER_UPDATE, $args);
 
 		$SESSION->redirect('?m=taxratelist');
 	} else
