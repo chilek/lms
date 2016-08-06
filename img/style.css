@@ -301,6 +301,7 @@ td.multiselect { min-width: 230px; }
 td.multiselect select { min-width: 200px; }
 
 .nobr { white-space: nowrap; }
+.line-break { white-space: normal !important;}
 .text-right { text-align: right; }
 .text-left { text-align: left; }
 .text-center { text-align: center; }

@@ -26,7 +26,95 @@
 
 $layout['pagetitle'] = trans('Tariff rule list');
 
-function getGroupTableRow($name, $def_price = '', $def_unitsize = '') {
+/*!
+ * \brief Function responsible for insert groups to database.
+ *
+ * \param  array   $groups array with groups
+ * \return boolean         query result
+ */
+function insertGroups(array $groups) {
+    if (!$groups)
+        return FALSE;
+
+    $DB = LMSDB::getInstance();
+    $r = $DB->Execute('INSERT INTO
+                        voip_group_rule_assignments
+                        (ruleid, groupid, rule_settings)
+                       VALUES ' . implode(',', $groups));
+
+    return $r ? TRUE : FALSE;
+}
+
+/*!
+ * \param Function serialize selected values from array.
+ *
+ * \param  array  $rule array with paramteres
+ * \return string       serialized array
+ */
+function serializeRuleParams(array $rule) {
+    $tmp = array();
+
+    if (isset($rule['price']))
+        $tmp['price'] = str_replace(',', '.', $rule['price']);
+
+    if (isset($rule['units']))
+        $tmp['units'] = str_replace(',', '.', $rule['units']);
+
+    if (isset($rule['unit_size']))
+        $tmp['unit_size'] = str_replace(',', '.', $rule['unit_size']);
+
+    return serialize($tmp);
+}
+
+/*!
+ * \brief Function load rule groups to array
+ *
+ * \param  int   rule id to load
+ * \return array
+ */
+function getRuleGroups($id) {
+    $DB = LMSDB::getInstance();
+    $tmp = $DB->GetAll('SELECT
+                            r.id, r.name, r.description, vgra.rule_settings,
+                            vgra.groupid, g.name as groupname, vgra.id as ruleid
+                         FROM
+                            voip_rules r
+                            left join voip_group_rule_assignments vgra on r.id = vgra.ruleid
+                            left join voip_prefix_groups g on vgra.groupid = g.id
+                         WHERE
+                            r.id = ?', array($id));
+
+    $rules = array();
+    $rules['id']          = $tmp[0]['id'];
+    $rules['description'] = $tmp[0]['description'];
+    $rules['name']        = $tmp[0]['name'];
+
+    foreach ($tmp as $rule) {
+        $rid = $rule['ruleid'];
+        $settings = unserialize($rule['rule_settings']);
+
+        $rules['group'][$rid] = array('groupid'   => $rule['groupid'],
+                                      'ruleid'    => $rid,
+                                      'name'      => $rule['groupname'],
+                                      'price'     => $settings['price'],
+                                      'units'     => $settings['units'],
+                                      'unit_size' => $settings['unit_size']);
+    }
+
+    return $rules;
+}
+
+/*!
+ * \brief Xajax function responsible for return table row with values to web browser.
+ *
+ * \param  string $name         group name
+ * \param  int    $def_price    default price
+ * \param  int    $def_units    default number of units to use
+ * \param  int    $def_unitsize default unit size in seconds
+ * \return NULL                 when name doesn't exists or is incorrect
+ * \return array                when all it's good
+ */
+function getGroupTableRow($name, $def_price='', $def_units='', $def_unit_size='') {
 
     $JSResponse = new xajaxResponse();
 
@@ -34,17 +122,22 @@ function getGroupTableRow($name, $def_price = '', $def_unitsize = '') {
         $group = null;
         $JSResponse->call('addGroup', '');
     } else {
-        $group = LMSDB::getInstance()->GetRow('SELECT id, name
+        $group = LMSDB::getInstance()->GetRow('SELECT id as groupid, name
                                                FROM voip_prefix_groups
                                                WHERE name = ?', array($name));
+        $id = time();
+        $default = array('price'     => $def_price,
+                         'units'     => $def_units,
+                         'unit_size' => $def_unit_size);
 
         global $SMARTY;
-        $SMARTY->assign('group', $group);
-        $SMARTY->assign('def_price', $def_price);
-        $SMARTY->assign('def_unitsize', $def_unitsize);
-        $row = $SMARTY->fetch('voipaccount/voiptariffrulegroupstablerow.html');
+        $SMARTY->assign('default', $default);
+        $SMARTY->assign('row_id' , $id);
+        $SMARTY->assign('group'  , $group);
 
-        $JSResponse->call('addGroup', array($group['id'], $row));
+        $row = $SMARTY->fetch('voipaccount/voiptarifftablerow.html');
+
+        $JSResponse->call('addGroup', array($id, $row));
     }
 
     return $JSResponse;
@@ -57,26 +150,13 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 if (isset($_GET['ajax'])) {
     header('Content-type: text/plain');
     $search = urldecode(trim($_GET['what']));
-    $mode = trim($_GET['mode']);
 
-    switch ($mode) {
-        case 'prefix':
-            $result = $DB->GetAll('SELECT prefix as item
-                                   FROM voip_prefixes
-                                   WHERE prefix ?LIKE? ?
-                                   LIMIT 20', array('%'.$search.'%'));
-        break;
-
-        case 'group':
-            $result = $DB->GetAll('SELECT id, name as item
-                                   FROM voip_prefix_groups
-                                   WHERE name ?LIKE? ?
-                                   LIMIT 20', array('%'.$search.'%'));
-        break;
-    }
+    $result = $DB->GetAll('SELECT id, name as item
+                           FROM voip_prefix_groups
+                           WHERE name ?LIKE? ?
+                           LIMIT 20', array('%'.$search.'%'));
 
     $eglible = $descriptions = array();
-
     if ($result)
         foreach ($result as $idx => $row) {
             $eglible[$row['item']] = escape_js($row['item']);
@@ -93,24 +173,25 @@ if (isset($_GET['ajax'])) {
     exit;
 }
 
-$rule = (isset($_POST['rule'])) ? $_POST['rule'] : NULL;
+$rule    = (isset($_POST['rule'])) ? $_POST['rule'] : NULL;
 $rule_id = (isset($_GET['id'])) ? (int) $_GET['id'] : 0;
-$error = array();
+$error   = array();
 
 if (isset($_GET['action']) && $_GET['action'] == 'delete') {
     $DB->BeginTrans();
 
-    $DB->Execute('DELETE FROM voip_rules WHERE id = ?', array($rule_id));
-    $DB->Execute('DELETE FROM voip_group_rule_assignments WHERE ruleid = ?', array($rule_id));
+    $DB->Execute('DELETE FROM voip_rules
+                  WHERE id = ?', array($rule_id));
 
-    $rule = NULL;
+    $DB->Execute('DELETE FROM voip_group_rule_assignments 
+                  WHERE ruleid = ?', array($rule_id));
+
+    $rule    = NULL;
     $rule_id = 0;
 
     $DB->CommitTrans();
 }
-
-if ($rule) {
-
+else if ($rule) {
     if (!$rule_id)
         $rule_id = $DB->GetOne("SELECT id FROM voip_rules WHERE name = ?", array($rule['name']));
 
@@ -121,80 +202,73 @@ if ($rule) {
 
     if (empty($rule['group']))
         $error['group_search'] = trans('Tariff rule must contains at least one group!');
+    else {
+        foreach ($rule['group'] as $v) {
+            $p  = 'price' . $v['ruleid'];
+            $u  = 'units' . $v['ruleid'];
+            $us = 'unit_size' . $v['ruleid'];
 
-    foreach ($rule['group'] as $v) {
-        $p = 'price' . $v['id'];
-        $u = 'units' . $v['id'];
+            if (!is_numeric($v['price']) && $v['price'] != '')
+                $error[$p] = trans("Incorrect value!");
+            else if ($v['price'] < 0)
+                $error[$p] = trans("Number must be positive!");
 
-        if (!is_numeric($v['price']) && $v['price'] != '')
-            $error[$p] = trans("Incorrect value!");
-        else if ($v['price'] < 0)
-            $error[$p] = trans("Number must be positive!");
+            if (!is_numeric($v['units']) && $v['units'] != '')
+                $error[$u] = trans("Incorrect value!");
+            else if ($v['units'] < 0)
+                $error[$u] = trans("Number must be positive!");
 
-        if (!is_numeric($v['units']) && $v['units'] != '')
-            $error[$u] = trans("Incorrect value!");
-        else if ($v['units'] < 0)
-            $error[$u] = trans("Number must be positive!");
+            if (!is_numeric($v['unit_size']) && $v['unit_size'] != '')
+                $error[$us] = trans("Incorrect value!");
+            else if ($v['units'] < 0)
+                $error[$us] = trans("Number must be positive!");
+        }
     }
 
     $SMARTY->assign('rule', $rule);
 
     if (!$error) {
+        $new_groups = array();
 
-        // if rule name doesn't exists then create and get id else clear all current groups assigned to this rule
         if (!$rule_id) {
-            $DB->Execute('INSERT INTO voip_rules (name, description) VALUES (?, ?)', array($rule['name'], $rule['description']));
-            $rule_id = $DB->GetOne("SELECT id FROM voip_rules WHERE name = ?", array($rule['name']));
-            $rule['id'] = $rule_id;
-        } else {
-            $DB->Execute('DELETE FROM voip_group_rule_assignments WHERE ruleid = ?', array($rule_id));
+	        $DB->Execute('INSERT INTO voip_rules (name, description) VALUES (?, ?)', array($rule['name'], $rule['description']));
+   	        $rule['id'] = $rule_id = $DB->GetOne("SELECT id FROM voip_rules WHERE name = ?", array($rule['name']));
+
+  	    	foreach($rule['group'] as $v) {
+  	            $settings = serializeRuleParams($v);
+	       	    $new_groups[] = "($rule_id, " . $v['groupid'] . ",'$settings')";
+	   		}
+	    } else {
+	        $dbrules = $DB->GetALLbyKey('SELECT id, ruleid, groupid, rule_settings
+	                                     FROM voip_group_rule_assignments
+	                                     WHERE ruleid = ?', 'id', array($rule_id));
+
+	        foreach ($rule['group'] as $v) {
+	            $settings = serializeRuleParams($v);
+
+	            if (isset($dbrules[$v['ruleid']])) {
+	                $DB->Execute('UPDATE voip_group_rule_assignments SET rule_settings = ?
+	                              WHERE id = ?', array($settings, $v['ruleid']));
+	            }
+	            else
+	                $new_groups[] = "($rule_id, " . $v['groupid'] . ",'$settings')";
+	        }
+
+            foreach ($dbrules as $v) {
+                if (!isset($rule['group'][$v['id']]))
+                    $DB->Execute('DELETE FROM voip_group_rule_assignments
+                                  WHERE id = ?', array($v['id']));
+            }
         }
 
-        $DB->Execute('UPDATE
-                        voip_rules SET name = ?, description = ?
-                     WHERE
-                        id = ?', array($rule['name'], $rule['description'], $rule['id']));
-
-        $group_values = array();
-        foreach($rule['group'] as $v) {
-            $group_values[] = "($rule_id, " . $v['id'] . ",'" . serialize(array('price' => str_replace(',', '.', $v['price']),
-                                                                                'units' => str_replace(',', '.', $v['units']))) . "')";
-        }
-
-        $DB->Execute('INSERT INTO
-                        voip_group_rule_assignments (ruleid, groupid, rule_settings)
-                      VALUES ' . implode(',', $group_values));
+        insertGroups($new_groups);
+        $SMARTY->clearAssign('rule');
+        $SMARTY->assign('rule', getRuleGroups($rule_id));
     }
-
-    $SMARTY->assign('rule', $rule);
 }
-
-if (isset($_GET['id']) && $rule_id) {
-    $tmp_rule = $DB->GetAll('SELECT
-                                r.id, r.name, r.description, gr.rule_settings,
-                                gr.groupid, g.name as groupname
-                             FROM
-                                voip_rules r
-                                left join voip_group_rule_assignments gr on r.id = gr.ruleid
-                                left join voip_prefix_groups g on gr.groupid = g.id
-                             WHERE
-                                r.id = ?', array($rule_id));
-
-    $rule['id'] = $tmp_rule[0]['id'];
-    $rule['description'] = $tmp_rule[0]['description'];
-    $rule['name'] = $tmp_rule[0]['name'];
-
-    foreach ($tmp_rule as $single_rule) {
-        $gid = $single_rule['groupid'];
-        $settings = unserialize($single_rule['rule_settings']);
-
-        $rule['group'][$gid] = array('id'    => $gid,
-                                     'name'  => $single_rule['groupname'],
-                                     'price' => $settings['price'],
-                                     'units' => $settings['units']);
-    }
-
-    $SMARTY->assign('rule', $rule);
+else if (isset($_GET['id']) && $rule_id) {
+    $SMARTY->clearAssign('rule');
+    $SMARTY->assign('rule', getRuleGroups($rule_id));
 }
 
 $SMARTY->assign('rule_list', $DB->GetAll('SELECT id, name FROM voip_rules'));

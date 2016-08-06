@@ -16,80 +16,28 @@
 		document.customeradd.elements['customeradd[pin]'].value = r;
 	}
 
-	function newcontact()
-	{
-		var contactscountelem = document.getElementById('contactscount');
-		var nr = contactscountelem.value;
-		var lastcontactelem = document.getElementById('contact' + (nr - 1));
+	function newcontact(type) {
+		var contactcountelem = document.getElementById(type + 'count');
+		var nr = contactcountelem.value;
+		var lastcontactelem = document.getElementById(type + (nr - 1));
 		var newrow = lastcontactelem.parentNode.insertRow(lastcontactelem.rowIndex + 1);
-		newrow.id = 'contact' + nr;
-		var newcell = newrow.insertCell(0);
-		newcell.style.whiteSpace = 'nowrap';
-		newcell.innerHTML = '<HR><INPUT type="text" size="16" value="" name="customeradd[contacts][' + nr + '][phone]"'
-				+ ' onmouseover="popup(\'{trans("Enter contact phone")}\')" onmouseout="pophide()">'
-			+ '<label><INPUT type="checkbox" value="{$smarty.const.CONTACT_MOBILE}"'
-				+ ' name="customeradd[contacts][' + nr + '][type][]"> {$_CONTACTTYPES[$smarty.const.CONTACT_MOBILE]}</label>'
-			+ '<label><INPUT type="checkbox" value="{$smarty.const.CONTACT_FAX}"'
-				+ ' name="customeradd[contacts][' + nr + '][type][]"> {$_CONTACTTYPES[$smarty.const.CONTACT_FAX]}</label>'
-			+ '<label onmouseover="popup(\'{trans("Check if send notification")}\')" onmouseout="pophide()">'
-				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_NOTIFICATIONS}"'
-				+ ' name="customeradd[contacts][' + nr + '][type][]"> {$_CONTACTTYPES[$smarty.const.CONTACT_NOTIFICATIONS]}</label>'
-			+ '<label onmouseover="popup(\'{trans("Not visible by the customer in electronic Customer Service Representative")}\')" onmouseout="pophide()">'
-				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_DISABLED}"'
-				+ ' name="customeradd[contacts][' + nr + '][type][]"> {$_CONTACTTYPES[$smarty.const.CONTACT_DISABLED]}</label>'
-			+ '<BR><INPUT type="text" size="68" value="" name="customeradd[contacts][' + nr + '][name]"'
-				+ ' onmouseover="popup(\'{trans("Enter contact name/description (optional)")}\')" onmouseout="pophide()">';
-		contactscountelem.value = parseInt(nr) + 1;
-	}
-
-	function newemail() {
-		var emailscountelem = document.getElementById('emailscount');
-		var nr = emailscountelem.value;
-		var lastemailelem = document.getElementById('email' + (nr - 1));
-		var newrow = lastemailelem.parentNode.insertRow(lastemailelem.rowIndex + 1);
 		newrow.className = 'light';
-		newrow.id = 'email' + nr;
+		newrow.id = type + nr;
 		var newcell = newrow.insertCell(0);
 		newcell.style.whiteSpace = 'nowrap';
-		newcell.innerHTML = '<HR><INPUT TYPE="text" size="23" value="" name="customeradd[emails][' + nr + '][email]"'
-				+ ' onmouseover="popup(\'{trans("Enter e-mail address (optional)")}\')" onmouseout="pophide()">'
-			+ '<label onmouseover="popup(\'{trans("Check if sent electronic invoices on this email")}\')" onmouseout="pophide()">'
-				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_INVOICES}" name="customeradd[emails][' + nr + '][type][]">'
-				+ ' {$_CONTACTTYPES[$smarty.const.CONTACT_INVOICES]}</label>'
-			+ '<label onmouseover="popup(\'{trans("Check if send notification")}\')" onmouseout="pophide()">'
-				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_NOTIFICATIONS}" name="customeradd[emails][' + nr + '][type][]">'
-				+ ' {$_CONTACTTYPES[$smarty.const.CONTACT_NOTIFICATIONS]}</label>'
-			+ '<label onmouseover="popup(\'{trans("Check if send tech notification")}\')" onmouseout="pophide()">'
-				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_TECHNICAL}" name="customeradd[emails][' + nr + '][type][]">'
-				+ ' {$_CONTACTTYPES[$smarty.const.CONTACT_TECHNICAL]}</label>'
-			+ '<label onmouseover="popup(\'{trans("Not visible by the customer in electronic Customer Service Representative")}\')" onmouseout="pophide()">'
-				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customeradd[emails][' + nr + '][type][]">'
-				+ ' {$_CONTACTTYPES[$smarty.const.CONTACT_DISABLED]}</label>'
-			+ '<BR><INPUT TYPE="text" size="68" value="" name="customeradd[emails][' + nr + '][name]"'
-				+ ' onmouseover="popup(\'{trans("Enter contact name/description (optional)")}\')" onmouseout="pophide()">';
-		emailscountelem.value = parseInt(nr) + 1;
-	}
-
-	function newaccount() {
-		var accountscountelem = document.getElementById('accountscount');
-		var nr = accountscountelem.value;
-		var lastaccountelem = document.getElementById('account' + (nr - 1));
-		var newrow = lastaccountelem.parentNode.insertRow(lastaccountelem.rowIndex + 1);
-		newrow.className = 'light';
-		newrow.id = 'account' + nr;
-		var newcell = newrow.insertCell(0);
-		newcell.style.whiteSpace = 'nowrap';
-		newcell.innerHTML = '<HR><INPUT TYPE="text" size="50" value="" name="customeradd[accounts][' + nr + '][account]"'
-				+ ' onmouseover="popup(\'{trans("Enter bank account (optional)")}\')" onmouseout="pophide()">'
-			+ '<label onmouseover="popup(\'{trans("Check if bank account should be visible on invoice")}\')" onmouseout="pophide()">'
-				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_INVOICES}" name="customeradd[accounts][' + nr + '][type][]">'
-				+ ' {$_CONTACTTYPES[$smarty.const.CONTACT_INVOICES]}</label>'
-			+ '<label onmouseover="popup(\'{trans("Check if bank account should be disabled")}\')" onmouseout="pophide()">'
-				+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customeradd[accounts][' + nr + '][type][]">'
-				+ ' {$_CONTACTTYPES[$smarty.const.CONTACT_DISABLED]}</label>'
-			+ '<BR><INPUT TYPE="text" size="68" value="" name="customeradd[accounts][' + nr + '][name]"'
-				+ ' onmouseover="popup(\'{trans("Enter contact name/description (optional)")}\')" onmouseout="pophide()">';
-		accountscountelem.value = parseInt(nr) + 1;
+		switch (type) {
+			{foreach $_CUSTOMERCONTACTTYPES as $contacttype => $properties}
+			case '{$contacttype}':
+				innerHTML = '<HR><INPUT TYPE="text" size="{$properties.ui.size}" value="" name="customeradd[{$contacttype|cat:"s"}][' + nr + '][contact]"'
+					+ ' onmouseover="popup(\'{$properties.ui.tip}\')" onmouseout="pophide()">';
+				innerHTML += '{foreach $properties.ui.flags as $flagtype => $flagproperties}<label{if isset($flagproperties.tip)} onmouseover="popup(\'{$flagproperties.tip}\')" onmouseout="pophide()"{/if}><INPUT TYPE="checkbox" value="{$flagtype}" name="customeradd[{$contacttype|cat:"s"}][' + nr + '][type][]"> {$flagproperties.label}</label>{/foreach}';
+				innerHTML += '<BR><INPUT TYPE="text" size="68" value="" name="customeradd[{$contacttype|cat:"s"}][' + nr + '][name]"'
+					+ ' onmouseover="popup(\'{trans("Enter contact name/description (optional)")}\')" onmouseout="pophide()">';
+				break;
+			{/foreach}
+		}
+		newcell.innerHTML = innerHTML;
+		contactcountelem.value = parseInt(nr) + 1;
 	}
 //-->
 </SCRIPT>
@@ -340,124 +288,40 @@
 						</table>
 					</TD>
 				</TR>
+				{foreach $_CUSTOMERCONTACTTYPES as $type => $properties}
 				<TR>
 					<TD style="width: 1%;"></TD>
 					<TD style="width: 99%;" class="nobr">
 						<fieldset style="width: 1%;" class="nobr">
-							<legend class="bold"><IMG src="img/phone.gif" alt=""> {trans("Contact phones")}</legend>
+							<legend class="bold"><IMG src="{$properties.ui.legend.icon}" alt=""> {$properties.ui.legend.text}</legend>
 							<table>
-								{foreach $customeradd.contacts as $key => $item}
-								<TR id="contact{$key}">
-									<TD class="nobr">
+								{foreach $customeradd[$type|cat:'s'] as $key => $item}
+								<TR id="{$type}{$key}">
+									<TD>
 										{if !$item@first}<HR>{/if}
-										<INPUT type="tel" size="16" value="{$item.phone}" name="customeradd[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
-										<label>
-											<INPUT type="checkbox" value="{$smarty.const.CONTACT_MOBILE}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_MOBILE)} checked{/if}>
-											{$_CONTACTTYPES[$smarty.const.CONTACT_MOBILE]}
+										<INPUT type="{$properties.ui.inputtype}" size="{$properties.ui.size}" value="{$item.contact}" name="customeradd[{$type}s][{$key}][contact]" {tip text=$properties.ui.tip trigger="`$type``$key`"}>
+										{foreach $properties.ui.flags as $flagtype => $flagproperties}
+										<label{if isset($flagproperties.tip)} {tip text=$flagproperties.tip}{/if}>
+											<INPUT type="checkbox" value="{$flagtype}" name="customeradd[{$type}s][{$key}][type][]"{if ($item.type & $flagtype)} checked{/if}>
+											{$flagproperties.label}
 										</label>
-										<label>
-											<INPUT type="checkbox" value="{$smarty.const.CONTACT_FAX}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_FAX)} checked{/if}>
-											{$_CONTACTTYPES[$smarty.const.CONTACT_FAX]}
-										</label>
-										<label {tip text="Check if send notification" trigger="chknotification"}>
-											<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_NOTIFICATIONS}" name="customeradd[contacts][{$key}][type][]"{if ($email.type & $smarty.const.CONTACT_NOTIFICATIONS)} checked{/if}>
-											{$_CONTACTTYPES[$smarty.const.CONTACT_NOTIFICATIONS]}
-										</label>
-										<label {tip text="Not visible by the customer in electronic Customer Service Representative" trigger="edisabled"}>
-											<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customeradd[contacts][{$key}][type][]"{if ($email.type & $smarty.const.CONTACT_DISABLED)} checked{/if}>
-											{$_CONTACTTYPES[$smarty.const.CONTACT_DISABLED]}
-										</label>
+										{/foreach}
 										<BR>
-										<INPUT type="text" size="68" value="{$item.name}" name="customeradd[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
+										<INPUT type="text" size="68" value="{$item.name}" name="customeradd[{$type}s][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
 									</TD>
 								</TR>
 								{/foreach}
 								<TR>
 									<TD>
-										<INPUT type="hidden" id="contactscount" value="{count($customeradd.contacts)}">
-										<A href="javascript:newcontact()">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
+										<INPUT type="hidden" id="{$type}count" value="{count($customeradd[$type|cat:'s'])}">
+										<A href="javascript:newcontact('{$type}')">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
 									</TD>
 								</TR>
 							</table>
 						</fieldset>
 					</TD>
 				</TR>
-				<TR>
-					<TD style="width: 1%;"></TD>
-					<TD style="width: 99%;" class="nobr">
-						<fieldset style="width: 1%;" class="nobr">
-							<legend class="bold"><IMG src="img/mail.gif" alt=""> {trans("Email addresses")}</legend>
-							<table>
-								{foreach $customeradd.emails as $key => $item}
-								<TR id="email{$key}">
-									<TD class="nobr">
-										{if !$item@first}<HR>{/if}
-										<INPUT type="email" size="23" value="{$item.email}" name="customeradd[emails][{$key}][email]" {tip text="Enter e-mail address (optional)" trigger="email`$key`"}>
-										<label {tip text="Check if sent electronic invoices on this email"}>
-											<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_INVOICES}" name="customeradd[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_INVOICES)} checked{/if}>
-											{$_CONTACTTYPES[$smarty.const.CONTACT_INVOICES]}
-										</label>
-										<label {tip text="Check if send notification" trigger="chknotification"}>
-											<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_NOTIFICATIONS}" name="customeradd[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_NOTIFICATIONS)} checked{/if}>
-											{$_CONTACTTYPES[$smarty.const.CONTACT_NOTIFICATIONS]}
-										</label>
-										<label {tip text="Check if send tech notification" trigger="chknotification"}>
-											<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_TECHNICAL}" name="customeradd[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_TECHNICAL)} checked{/if}>
-											{$_CONTACTTYPES[$smarty.const.CONTACT_TECHNICAL]}
-										</label>
-										<label {tip text="Not visible by the customer in electronic Customer Service Representative" trigger="edisabled"}>
-											<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customeradd[emails][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_DISABLED)} checked{/if}>
-											{$_CONTACTTYPES[$smarty.const.CONTACT_DISABLED]}
-										</label>
-										<BR>
-										<INPUT type="text" size="68" value="{$item.name}" name="customeradd[emails][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
-									</TD>
-								</TR>
-								{/foreach}
-								<TR>
-									<TD>
-										<INPUT type="hidden" id="emailscount" value="{count($customeradd.emails)}">
-										<A href="javascript:newemail()">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
-									</TD>
-								</TR>
-							</table>
-						</fieldset>
-					</TD>
-				</TR>
-				<TR>
-					<TD style="width: 1%;"></TD>
-					<TD style="width: 99%;" class="nobr">
-						<fieldset style="width: 1%;" class="nobr">
-							<legend class="bold"><IMG src="img/card.gif" alt=""> {trans("Alternative bank accounts")}</legend>
-							<table>
-								{foreach $customeradd.accounts as $key => $item}
-								<TR id="account{$key}">
-									<TD>
-										{if !$item@first}<HR>{/if}
-										<INPUT type="text" size="50" value="{$item.account}" name="customeradd[accounts][{$key}][account]" {tip text="Enter bank account (optional)" trigger="account`$key`"}>
-										<label {tip text="Check if bank account should be visible on invoice"}>
-											<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_INVOICES}" name="customeradd[accounts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_INVOICES)} checked{/if}>
-											{$_CONTACTTYPES[$smarty.const.CONTACT_INVOICES]}
-										</label>
-										<label {tip text="Check if bank account should be disabled" trigger="edisabled"}>
-											<INPUT TYPE="checkbox" value="{$smarty.const.CONTACT_DISABLED}" name="customeradd[accounts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_DISABLED)} checked{/if}>
-											{$_CONTACTTYPES[$smarty.const.CONTACT_DISABLED]}
-										</label>
-										<BR>
-										<INPUT type="text" size="68" value="{$item.name}" name="customeradd[accounts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
-									</TD>
-								</TR>
-								{/foreach}
-								<TR>
-									<TD>
-										<INPUT type="hidden" id="accountscount" value="{count($customeradd.accounts)}">
-										<A href="javascript:newaccount()">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
-									</TD>
-								</TR>
-							</table>
-						</fieldset>
-					</TD>
-				</TR>
+				{/foreach}
 				<TR>
 					<TD style="width: 1%;">
 						<IMG SRC="img/gg.gif" alt="Gadu-Gadu">

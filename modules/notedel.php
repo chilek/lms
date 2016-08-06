@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,27 +31,27 @@ if ($id && $_GET['is_sure'] == '1') {
 	if ($SYSLOG) {
 		$customerid = $DB->GetOne('SELECT customerid FROM documents WHERE id = ?', array($id));
 		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $id,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+			SYSLOG::RES_DOC => $id,
+			SYSLOG::RES_CUST => $customerid,
 		);
-		$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+		$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
 		$dnoteitems = $DB->GetCol('SELECT id FROM debitnotecontents WHERE docid = ?', array($id));
 		foreach ($dnoteitems as $item) {
 			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT] => $item,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $id,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+				SYSLOG::RES_DNOTECONT => $item,
+				SYSLOG::RES_DOC => $id,
+				SYSLOG::RES_CUST => $customerid,
 			);
-			$SYSLOG->AddMessage(SYSLOG_RES_DNOTECONT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+			$SYSLOG->AddMessage(SYSLOG::RES_DNOTECONT, SYSLOG::OPER_DELETE, $args);
 		}
 		$cashitems = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($id));
 		foreach ($cashitems as $item) {
 			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $item,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $id,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+				SYSLOG::RES_CASH => $item,
+				SYSLOG::RES_DOC => $id,
+				SYSLOG::RES_CUST => $customerid,
 			);
-			$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+			$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
 		}
 	}
 	$DB->Execute('DELETE FROM documents WHERE id = ?', array($id));

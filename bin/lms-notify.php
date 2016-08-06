@@ -1,4 +1,4 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
 
 /*
@@ -219,10 +219,7 @@ include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 
-if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG'))
-	$SYSLOG = new SYSLOG($DB);
-else
-	$SYSLOG = null;
+$SYSLOG = SYSLOG::getInstance();
 
 // Initialize Session, Auth and LMS classes
 

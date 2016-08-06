@@ -30,6 +30,7 @@ $LMS->InitXajax();
 
 if (!isset($_POST['xjxfun'])) {
 	include(MODULES_DIR.'/customer.inc.php');
+	require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
 	//if($customerinfo['cutoffstop'] > mktime(0,0,0))
 	//        $customerinfo['cutoffstopnum'] = floor(($customerinfo['cutoffstop'] - mktime(23,59,59))/86400);

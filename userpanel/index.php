@@ -133,19 +133,12 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
 
 $AUTH = NULL;
-$AUTH = NULL;
-if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG')) {
-	$SYSLOG = new SYSLOG($DB);
-} else {
-	$SYSLOG = null;
-}
-if ($SYSLOG){
-	$SYSLOG->SetAuth($AUTH);
-        $SYSLOG->NewTransaction('userpanel');
-}
+$SYSLOG = SYSLOG::getInstance();
+if ($SYSLOG)
+	$SYSLOG->NewTransaction('userpanel');
+
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'Session.class.php');

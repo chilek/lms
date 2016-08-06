@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -81,8 +81,8 @@ function DBLoad($filename=NULL)
 	}
 
 	if ($SYSLOG)
-		$SYSLOG->AddMessage(SYSLOG_RES_DBBACKUP, SYSLOG_OPER_DBBACKUPRECOVER,
-			array('filename' => $filename), null);
+		$SYSLOG->AddMessage(SYSLOG::RES_DBBACKUP, SYSLOG::OPER_DBBACKUPRECOVER,
+			array('filename' => $filename));
 }
 
 if(isset($_GET['is_sure']))

@@ -66,18 +66,12 @@ try {
 
 // Include required files
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
 
-if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG'))
-	$SYSLOG = new SYSLOG($DB);
-else
-	$SYSLOG = null;
+$SYSLOG = SYSLOG::getInstance();
 
 // Initialize Session, Auth and LMS classes
 $SESSION = new Session($DB, ConfigHelper::getConfig('phpui.timeout'));
 $AUTH = new Auth($DB, $SESSION, $SYSLOG);
-if ($SYSLOG)
-	$SYSLOG->SetAuth($AUTH);
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->lang = $_language;
 

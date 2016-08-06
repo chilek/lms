@@ -25,7 +25,7 @@
  */
 
 function GetPropertyNames($resource, $params) {
-	global $SYSLOG;
+	$SYSLOG = SYSLOG::getInstance();
 
 	$result = new XajaxResponse();
 	$names = $SYSLOG->GetResourcePropertyNames($resource);
@@ -50,7 +50,7 @@ function GetPropertyNames($resource, $params) {
 }
 
 function GetPropertyValues($resource, $propname, $propvalue) {
-	global $SYSLOG;
+	$SYSLOG = SYSLOG::getInstance();
 
 	$result = new XajaxResponse();
 	$values = $SYSLOG->GetResourcePropertyValues($resource, $propname);
@@ -160,7 +160,7 @@ if ($SYSLOG) {
 	$args = array('limit' => $limit + 1);
 	if (!empty($user)) $args['userid'] = $user;
 	if (!empty($resourcetype)) {
-		$args['key'] = $SYSLOG_RESOURCE_KEYS[$resourcetype];
+		$args['key'] = SYSLOG::getResourceKey($resourcetype);
 		$args['value'] = $resourceid;
 	}
 	if (!empty($datefrom)) $args['datefrom'] = $datefrom;

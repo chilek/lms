@@ -1,4 +1,4 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
 
 /*
@@ -437,9 +437,9 @@ foreach ($assigns as $assign) {
 				$customer = $DB->GetRow("SELECT lastname, name, address, city, zip, ssn, ten, countryid, divisionid, paytime 
 						FROM customeraddressview WHERE id = $cid");
 
-				$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
-						account, inv_header, inv_footer, inv_author, inv_cplace 
-						FROM divisions WHERE id = ? ;',array($customer['divisionid']));
+				$division = $DB->GetRow("SELECT name, shortname, address, city, zip, countryid, ten, regon,
+						account, inv_header, inv_footer, inv_author, inv_cplace
+						FROM divisions WHERE id = ?", array($customer['divisionid']));
 
 				$paytime = $customer['paytime'];
 				if ($paytime == -1) $paytime = $deadline;
@@ -478,8 +478,8 @@ foreach ($assigns as $assign) {
 				array($assign['tariffid'], $invoices[$cid], $desc, $assign['pdiscount'], $assign['vdiscount']))) != 0)
 			{
 				$DB->Execute("UPDATE invoicecontents SET count=count+1 
-					WHERE tariffid=? AND docid=? AND description=? AND pdiscount=? AND vdiscount=?",
-					array($assign['tariffid'], $invoices[$cid], $desc, $assign['pdiscount'], $assign['vdiscount']));
+					WHERE tariffid=? AND docid=? AND value=? AND description=? AND pdiscount=? AND vdiscount=?",
+					array($assign['tariffid'], $invoices[$cid], $assign['value'], $desc, $assign['pdiscount'], $assign['vdiscount']));
 				$DB->Execute("UPDATE cash SET value=value+($val*-1) 
 					WHERE docid = ? AND itemid = $tmp_itemid", array($invoices[$cid]));
 			}

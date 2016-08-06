@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -55,9 +55,8 @@ if($hostadd)
 		$DB->Execute('INSERT INTO hosts (name, description) VALUES (?,?)', array_values($args));
 
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]] = $DB->GetLastInsertID('hosts');
-			$SYSLOG->AddMessage(SYSLOG_RES_HOST, SYSLOG_OPER_ADD, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_HOST]));
+			$args[SYSLOG::RES_HOST] = $DB->GetLastInsertID('hosts');
+			$SYSLOG->AddMessage(SYSLOG::RES_HOST, SYSLOG::OPER_ADD, $args);
 		}
 
 		if (!isset($hostadd['reuse']))

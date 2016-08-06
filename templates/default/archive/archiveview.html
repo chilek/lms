@@ -78,7 +78,7 @@
 								<TD>
 									<SELECT size="1" name="resourcetype" id="resourcetype" onchange="javascript:GetPropertyNames(null);">
 										<OPTION value="0"{if $listdata.resourcetype == "0"} SELECTED{/if}>{trans("- all -")}</OPTION>
-										{foreach $_SYSLOG_RESOURCES as $idx => $resourcetype}
+										{foreach SYSLOG::getAllResources() as $idx => $resourcetype}
 										<OPTION value="{$idx}"{if $listdata.resourcetype == "{$idx}"} SELECTED{/if}>{$resourcetype}</OPTION>
 										{/foreach}
 									</SELECT>
@@ -181,7 +181,7 @@
 				{else}{$start=-1}{/if}
 				{section name=messages loop=$tr.messages start=$start step=-1}
 					{$message = $tr.messages[messages]}
-					<span class="bold">{$_SYSLOG_RESOURCES[$message.resource]}: <span style="{$_SYSLOG_OPERATIONS_STYLES[$message.operation]}">{$_SYSLOG_OPERATIONS[$message.operation]}</span></span>
+					<span class="bold">{SYSLOG::getResourceName($message.resource)}: <span style="{SYSLOG::getOperationStyle($message.operation)}">{SYSLOG::getOperationName($message.operation)}</span></span>
 					{foreach $message.keys as $key => $msgkey}{$key}: {if $msgkey.value}<a href="?m=archiveinfo&amp;type={$msgkey.type}&amp;id={$msgkey.value}&amp;date={$tr.time}">{/if}{$msgkey.value}{if $msgkey.value}</a>{/if}{if !$msgkey@last}, {/if}{/foreach}
 					{foreach $message.data as $key => $value}{$key}: {$value}{if !$value@last}, {/if}{/foreach}
 					{if !$messages@last}<br>{/if}

@@ -674,7 +674,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 				my $tmp_itemid = $icrow->{'itemid'};
 
 				$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1
-						WHERE tariffid=$assign->{'tariffid'} AND docid=$invoices{$uid}
+						WHERE tariffid=$assign->{'tariffid'} AND docid=$invoices{$uid} AND value=$assign->{'value'}
 						AND description=? AND pdiscount=$assign->{'pdiscount'} AND vdiscount=$assign->{'vdiscount'}");
 				$icdbq->execute($desc);
 

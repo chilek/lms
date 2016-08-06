@@ -57,6 +57,13 @@ version ?.??.?? (????-??-??):
     user session settings are cleared (0 means settings are stored only to logout) [chilan]
   - added support for %srcaccount%, %dstaccount% and %customername% replace symbols
     in imported financial operation comments [chilan]
+  - unification customer contact management code [chilan]
+  - added new customer contact type support - url addresses [chilan]
+  - important fix: avoid to settle duplicated liabilities on invoices when almost their
+    all properties are identical [chilan]
+  - added support for voip tariff rules [kosa/chilan]
+  - simplicity syslog code and make it more oop [chilan]
+  - more oop improvements for SYSLOG and Auth classes [chilan]
 
 version 1.11.20 (2016-04-19):
 

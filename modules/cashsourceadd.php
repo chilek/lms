@@ -51,9 +51,8 @@ if($sourceadd)
 		$DB->Execute('INSERT INTO cashsources (name, description) VALUES (?,?)', array_values($args));
 
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE]] = $DB->GetLastInsertID('cashsources');
-			$SYSLOG->AddMessage(SYSLOG_RES_CASHSOURCE, SYSLOG_OPER_ADD, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHSOURCE]));
+			$args[SYSLOG::RES_CASHSOURCE] = $DB->GetLastInsertID('cashsources');
+			$SYSLOG->AddMessage(SYSLOG::RES_CASHSOURCE, SYSLOG::OPER_ADD, $args);
 		}
 
 		if(!isset($sourceadd['reuse']))

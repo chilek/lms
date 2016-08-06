@@ -991,3 +991,13 @@ function trans()
 	$content = preg_replace('/<![^>]+>/', '', $content);
 	return $content;
 }
+        
+function check_url($url) {
+	$components = parse_url($url);
+	if ($components === false)
+		return false;
+	if (!isset($components['host']) || !isset($components['scheme']))
+		return false;
+	return true;
+}
+

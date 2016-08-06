@@ -65,15 +65,21 @@ if (isset($_GET['ajax'])) {
 	exit;
 }
 
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
+
 $customeradd = array();
 
 if (isset($_POST['customeradd']))
 {
 	$customeradd = $_POST['customeradd'];
 
-	if(sizeof($customeradd))
-		foreach($customeradd as $key => $value)
-			if($key != 'uid' && $key != 'contacts' && $key != 'emails' && $key != 'accounts')
+	$contacttypes = array_keys($CUSTOMERCONTACTTYPES);
+	foreach ($contacttypes as &$contacttype)
+		$contacttype .= 's';
+
+	if (sizeof($customeradd))
+		foreach ($customeradd as $key => $value)
+			if ($key != 'uid' && !in_array($key, $contacttypes))
 				$customeradd[$key] = trim($value);
 
 	if($customeradd['name'] == '' && $customeradd['lastname'] == '' && $customeradd['address'] == '')
@@ -197,61 +203,17 @@ if (isset($_POST['customeradd']))
 
 	$contacts = array();
 
-       $emaileinvoice = FALSE;
-	foreach ($customeradd['emails'] as $idx => $val) {
-		$email = trim($val['email']);
-		$name = trim($val['name']);
-                $type = !empty($val['type']) ? array_sum($val['type']) : NULL;
-                $type += CONTACT_EMAIL;
+	$emaileinvoice = false;
 
-                if($type & (CONTACT_INVOICES | CONTACT_DISABLED))
-                        $emaileinvoice = TRUE;
+	foreach ($CUSTOMERCONTACTTYPES as $contacttype => $properties)
+		$properties['validator']($customeradd, $contacts, $error);
 
-                $customeradd['emails'][$idx]['type'] = $type;
+	foreach ($customeradd['emails'] as $idx => $val)
+		if ($val['type'] & (CONTACT_INVOICES | CONTACT_DISABLED))
+			$emaileinvoice = true;
 
-		if ($email != '' && !check_email($email))
-			$error['email' . $idx] = trans('Incorrect email!');
-		elseif ($name && !$email)
-			$error['email' . $idx] = trans('Email address is required!');
-		elseif ($email != '')
-			$contacts[] = array('name' => $name, 'contact' => $email, 'type' => $type);
-	}
-
-        if(isset($customeradd['invoicenotice']) && !$emaileinvoice)
-                $error['invoicenotice'] = trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');
-
-	foreach ($customeradd['contacts'] as $idx => $val) {
-		$phone = trim($val['phone']);
-		$name = trim($val['name']);
-		$type = !empty($val['type']) ? array_sum($val['type']) : NULL;
-
-                if($type == CONTACT_DISABLED){
-                    $type += CONTACT_LANDLINE;
-                }
-
-		$customeradd['contacts'][$idx]['type'] = $type;
-
-		if ($name && !$phone)
-			$error['contact'.$idx] = trans('Phone number is required!');
-		elseif ($phone)
-			$contacts[] = array('name' => $name, 'contact' => $phone, 'type' => empty($type) ? CONTACT_LANDLINE : $type);
-	}
-
-	foreach ($customeradd['accounts'] as $idx => $val) {
-		$account = trim($val['account']);
-		$name = trim($val['name']);
-		$type = !empty($val['type']) ? array_sum($val['type']) : NULL;
-		$type += CONTACT_BANKACCOUNT;
-
-		$customeradd['accounts'][$idx]['type'] = $type;
-
-		if ($account != '' && !check_bankaccount($account))
-			$error['account' . $idx] = trans('Incorrect bank account!');
-		elseif ($name && !$account)
-			$error['account' . $idx] = trans('Bank account is required!');
-		elseif ($account)
-			$contacts[] = array('name' => $name, 'contact' => $account, 'type' => $type);
-	}
+	if (isset($customeradd['invoicenotice']) && !$emaileinvoice)
+		$error['invoicenotice'] = trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');
 
 	if ($customeradd['cutoffstop'] == '')
 		$cutoffstop = 0;
@@ -275,6 +237,7 @@ if (isset($_POST['customeradd']))
         $error = $hook_data['error'];
         
         
+//	print_r($error);die;
 	if (!$error) {
 		$customeradd['cutoffstop'] = $cutoffstop;
 
@@ -302,14 +265,12 @@ if (isset($_POST['customeradd']))
 				if ($SYSLOG) {
 					$contactid = $DB->GetLastInsertID('imessengers');
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_IMCONTACT] => $contactid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
+						SYSLOG::RES_IMCONTACT => $contactid,
+						SYSLOG::RES_CUST => $id,
 						'uid' => $val,
 						'type' => $idx
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_IMCONTACT, SYSLOG_OPER_ADD, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_IMCONTACT],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					$SYSLOG->AddMessage(SYSLOG::RES_IMCONTACT, SYSLOG::OPER_ADD, $args);
 				}
 			}
 
@@ -322,15 +283,13 @@ if (isset($_POST['customeradd']))
 				if ($SYSLOG) {
 					$contactid = $DB->GetLastInsertID('customercontacts');
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT] => $contactid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
+						SYSLOG::RES_CUSTCONTACT => $contactid,
+						SYSLOG::RES_CUST => $id,
 						'contact' => $contact['contact'],
 						'name' => $contact['name'],
 						'type' => $contact['type'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_ADD, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					$SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_ADD, $args);
 				}
 			}
 
@@ -340,18 +299,15 @@ if (isset($_POST['customeradd']))
 		}
 
 		$reuse['status'] = $customeradd['status'];
-		$reuse['contacts'][] = array();
-		$reuse['emails'][] = array();
-		$reuse['accounts'][] = array();
+		foreach (array_keys($CUSTOMERCONTACTTYPES) as $contacttype)
+			$reuse[$contacttype . 's'][] = array();
 		unset($customeradd);
 		$customeradd = $reuse;
 		$customeradd['reuse'] = '1';
 	}
-} else {
-	$customeradd['contacts'][] = array();
-	$customeradd['emails'][] = array();
-	$customeradd['accounts'][] = array();
-}
+} else
+	foreach (array_keys($CUSTOMERCONTACTTYPES) as $contacttype)
+		$customeradd[$contacttype . 's'][] = array();
 
 $default_zip = ConfigHelper::getConfig('phpui.default_zip');
 $default_city = ConfigHelper::getConfig('phpui.default_city');

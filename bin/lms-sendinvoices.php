@@ -159,12 +159,8 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
 
-if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG'))
-	$SYSLOG = new SYSLOG($DB);
-else
-	$SYSLOG = null;
+$SYSLOG = SYSLOG::getInstance();
 
 if ($invoice_filetype != 'pdf' || $dnote_filetype != 'pdf') {
 	// Set some template and layout variables
@@ -276,8 +272,7 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctyp
 $docs = $DB->GetAll($query, array(CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_INVOICES, DOC_INVOICE, DOC_CNOTE, DOC_DNOTE));
 
 if (!empty($docs))
-	$LMS->SendInvoices($docs, 'backend', compact('SMARTY', 'invoice_filetype', 'dnote_filetype',
-		'invoice_filename', 'dnote_filename', 'debug_email',
+	$LMS->SendInvoices($docs, compact('SMARTY', 'invoice_filetype', 'dnote_filetype', 'debug_email',
 		'mail_body', 'mail_subject', 'currtime', 'sender_email', 'sender_name', 'extrafile',
 		'dsn_email', 'reply_email', 'mdn_email', 'notify_email', 'quiet', 'test', 'add_message',
 		'smtp_host', 'smtp_port', 'smtp_user', 'smtp_pass', 'smtp_auth'));

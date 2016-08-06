@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -35,8 +35,8 @@ if(isset($_GET['is_sure']))
 		$DB->Execute('DELETE FROM nodegroups WHERE id = ?', array($id));
 //		$DB->Execute('DELETE FROM nodegroupassignments WHERE nodegroupid = ?', array($id));
 		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUP, SYSLOG_OPER_DELETE,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => $id), array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP]));
+			$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUP, SYSLOG::OPER_DELETE,
+				array(SYSLOG::RES_NODEGROUP => $id));
 		$DB->CommitTrans();
 		$LMS->CompactNodeGroups();
 	}

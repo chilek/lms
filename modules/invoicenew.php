@@ -342,11 +342,10 @@ switch($action)
 			if ($SYSLOG)
 				foreach ($ids as $cashid) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+						SYSLOG::RES_CASH => $cashid,
+						SYSLOG::RES_CUST => $customer['id'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args,
-						array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
 				}
 			$DB->Execute('DELETE FROM cash WHERE id IN (' . implode(',', $ids) . ')');
 		}
