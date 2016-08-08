@@ -142,7 +142,6 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
 setlocale(LC_NUMERIC, 'en_US');
-include 'functions.inc.php';
 
 $options['action'] = (isset($options['action'])) ? $options['action'] : '';
 
@@ -155,10 +154,10 @@ $db_buffor = new VoipDbBuffor(SqlProvider::getInstance());
 switch (strtolower($options['action'])) {
 
     case 'estimate':
-        if ($options['caller'])
+        if (!isset($options['caller']))
             die("Caller phone number isn't set.");
 
-        if ($options['callee'])
+        if (!isset($options['callee']))
             die("Callee phone number isn't set.");
 
         try {
