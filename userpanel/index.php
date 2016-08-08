@@ -129,10 +129,10 @@ if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 $_TIMEOUT = ConfigHelper::getConfig('phpui.timeout');
 
 // Include required files (including sequence is important)
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 
 $AUTH = NULL;
 $SYSLOG = SYSLOG::getInstance();

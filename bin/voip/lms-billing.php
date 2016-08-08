@@ -137,9 +137,9 @@ try {
 
 // Include required files (including sequence is important)
 
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 
 setlocale(LC_NUMERIC, 'en_US');
 include 'functions.inc.php';
