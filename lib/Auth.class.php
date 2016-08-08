@@ -59,7 +59,7 @@ class Auth {
 	}
 
 	public function __construct(&$DB, &$SESSION) {
-		$this->auth = $this;
+		self::$auth = $this;
 		$this->DB = &$DB;
 		$this->SESSION = &$SESSION;
 		$this->SYSLOG = SYSLOG::getInstance();
