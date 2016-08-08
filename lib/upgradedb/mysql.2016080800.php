@@ -39,7 +39,7 @@ $this->Execute("RENAME TABLE voip_rules TO voip_rule_groups;
      
                 ALTER TABLE voip_rules CHANGE rule_settings settings text NULL;
                       
-                UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016080800', 'dbversion');");
+                UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016080800', 'dbversion'));
                 
 $this->CommitTrans();
 
