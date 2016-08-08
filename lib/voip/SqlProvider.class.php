@@ -130,12 +130,12 @@ class SqlProvider extends VoipDataProvider {
     public function getRules($rulegroupid, $groupid) {
         $DB = LMSDB::getInstance();
         $tmp = $DB->GetAll('SELECT
-                              id, rule_settings
+                              id, settings
                             FROM
-                              voip_group_rule_assignments
+                              voip_rules
                             WHERE
-                              ruleid  = ? AND
-                              groupid = ?',
+                              rule_group_id   = ? AND
+                              prefix_group_id = ?',
                             array($rulegroupid, $groupid));
 
         if (!$tmp)
@@ -143,7 +143,7 @@ class SqlProvider extends VoipDataProvider {
 
         $rules = array();
         foreach($tmp as $v) {
-            $s = unserialize($v['rule_settings']);
+            $s = unserialize($v['settings']);
             $s['ruleid'] = $v['id'];
 
             $rules[$v['id']] = $s;
@@ -166,10 +166,10 @@ class SqlProvider extends VoipDataProvider {
                           FROM
                             voipaccounts va
                             LEFT JOIN voip_rule_states vrs on va.id = vrs.voip_account_id
-                            LEFT JOIN voip_group_rule_assignments vgra on vrs.rule_id = vgra.id
+                            LEFT JOIN voip_rules vr on vrs.rule_id = vr.id
                           WHERE
-                            va.id        = ? AND
-                            vgra.groupid = ?',
+                            va.id      = ? AND
+                            vr.groupid = ?',
                           array($vid, $groupid));
 
         return $s;
