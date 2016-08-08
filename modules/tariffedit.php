@@ -124,7 +124,7 @@ else
 
 if ($tariff['type'] == TARIFF_PHONE) {
     $SMARTY->assign('voip_tariffs', $DB->GetAll('SELECT id, name FROM voip_tariffs'));
-    $SMARTY->assign('voip_tariffrules', $DB->GetAll('SELECT id, name FROM voip_rules'));
+    $SMARTY->assign('voip_tariffrules', $DB->GetAll('SELECT id, name FROM voip_rule_groups'));
 }
 
 $layout['pagetitle'] = trans('Subscription Edit: $a',$tariff['name']);
