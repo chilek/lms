@@ -21,8 +21,6 @@
  *
  */
 
-define('TARIFF_PHONE', 4);
-
 $this->BeginTrans();
 
 $this->Execute("ALTER TABLE tariffs ADD COLUMN voip_tariff_id integer DEFAULT NULL;
@@ -70,9 +68,7 @@ $this->Execute("ALTER TABLE tariffs ADD COLUMN voip_tariff_id integer DEFAULT NU
                 FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE;
 
                 ALTER TABLE tariffs ADD CONSTRAINT tariff_rule_id_fk
-                FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rules (id) ON DELETE SET NULL ON UPDATE CASCADE;
-
-                UPDATE tariffs SET voip_tariff_id = id WHERE type = ?;", array(TARIFF_PHONE));
+                FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rules (id) ON DELETE SET NULL ON UPDATE CASCADE");
 
 $this->Execute("DROP SEQUENCE IF EXISTS voip_rule_states_id_seq;
                 CREATE SEQUENCE voip_rule_states_id_seq;
