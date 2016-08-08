@@ -55,7 +55,7 @@ if ($tariff['type'] == TARIFF_PHONE) {
                                                 FROM
                                                     tariffs t
                                                     left join voip_tariffs vt on t.voip_tariff_id = vt.id
-                                                    left join voip_rules vr on t.voip_tariff_rule_id = vr.id
+                                                    left join voip_rule_groups vr on t.voip_tariff_rule_id = vr.id
                                                 WHERE
                                                     t.id = ?", array($id)));
 }
