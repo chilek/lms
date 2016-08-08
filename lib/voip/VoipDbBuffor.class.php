@@ -61,7 +61,7 @@ class VoipDbBuffor {
      */
     public function appendCdr($c) {
         if (is_array($c))
-              $cdr = $c;
+            $cdr = $c;
         else if (is_string($c))
             $cdr = $this->parseRecord($c);
 
@@ -184,11 +184,11 @@ class VoipDbBuffor {
 
                 if ($exists) {
                     $DB->Execute('UPDATE voip_rule_states
-                                   SET units_left = units_left - ?
-                                   WHERE
-                                       voip_account_id = ? AND
-                                       rule_id         = ?;',
-                                   array($r['used_units'], $r['voip_acc_id'], $r['rule_id']));
+                                  SET units_left = units_left - ?
+                                  WHERE
+                                      voip_account_id = ? AND
+                                      rule_id         = ?;',
+                                  array($r['used_units'], $r['voip_acc_id'], $r['rule_id']));
                 } else {
                     $new_rules[] = '(' . $r['voip_acc_id'] . ','
                                        . $r['rule_id']     . ','
@@ -199,7 +199,7 @@ class VoipDbBuffor {
 
         if ($new_rules) {
             $DB->Execute('INSERT INTO voip_rule_states
-                                 (voip_account_id, rule_id, units_left)
+                              (voip_account_id, rule_id, units_left)
                           VALUES ' . implode(',', $new_rules));
         }
 
