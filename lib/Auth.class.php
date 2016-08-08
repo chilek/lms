@@ -52,7 +52,7 @@ class Auth {
 
 	private static $auth = null;
 
-	public function GetCurrentUser() {
+	public static function GetCurrentUser() {
 		if (self::$auth)
 			return self::$auth->id;
 		return 0;
