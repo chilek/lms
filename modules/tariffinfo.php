@@ -27,8 +27,8 @@
 $netid = isset($_GET['netid']) ? intval($_GET['netid']) : NULL;
 $id = isset($_GET['id']) ? intval($_GET['id']) : NULL;
 
-if (!$LMS->TariffExists($id || ($netid != 0 && !$LMS->NetworkExists($netid)))) {
-	$SESSION->redirect('?m=tarifflist');
+if(!$LMS->TariffExists($_GET['id']) || ($netid != 0 && !$LMS->NetworkExists($netid))) {
+       $SESSION->redirect('?m=tarifflist');
 }
 
 $tariff = $LMS->GetTariff($id, $netid);
