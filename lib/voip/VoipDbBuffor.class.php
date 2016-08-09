@@ -31,25 +31,27 @@ class VoipDbBuffor {
     /*!
      * \brief Pattern for changing cdr text to array.
      */
-    private $pattern = '/^"(?<caller>(?:\+?[0-9]*|unavailable.*|anonymous.*))",' .
-                       '"(.*)",' .
-                       '"(?<callee>[0-9]*)",' .
-                       '"(?<call_type>(?:incoming.*|outgoing.*))",' .
-                       '"(.*)",' .
-                       '"(.*)",' .
-                       '"(.*)",' .
-                       '"(.*)",' .
-                       '"(.*)",' .
-                       '"(?P<call_start>(?<call_start_year>[0-9]{4})-(?<call_start_month>[0-9]{2})-(?<call_start_day>[0-9]{2}) (?<call_start_hour>[0-9]{2}):(?<call_start_min>[0-9]{2}):(?<call_start_sec>[0-9]{2}))",' .
-                       '(?:"(?<call_answer>(?<call_answer_year>[0-9]{4})-(?<call_answer_month>[0-9]{2})-(?<call_answer_day>[0-9]{2}) (?<call_answer_hour>[0-9]{2}):(?<call_answer_min>[0-9]{2}):(?<call_answer_sec>[0-9]{2}))")?,' .
-                       '"(?<call_end>(?<call_end_year>[0-9]{4})-(?<call_end_month>[0-9]{2})-(?<call_end_day>[0-9]{2}) (?<call_end_hour>[0-9]{2}):(?<call_end_min>[0-9]{2}):(?<call_end_sec>[0-9]{2}))",(?<time_start_to_end>[0-9]*),(?<time_answer_to_end>[0-9]*),' .
-                       '"(?<call_status>.*)",' .
-                       '"(.*)",' .
-                       '"(?<uniqueid>.*)".*/';
+    private $pattern = '';
 
     public function __construct(VoipDataProvider $p) {
         $this->provider = $p;
         $this->estimate = new Estimate($p);
+        
+        $this->pattern = '/^"(?<caller>(?:\+?[0-9]*|unavailable.*|anonymous.*))",' .
+                         '"(.*)",' .
+                         '"(?<callee>[0-9]*)",' .
+                         '"(?<call_type>(?:incoming.*|outgoing.*))",' .
+                         '"(.*)",' .
+                         '"(.*)",' .
+                         '"(.*)",' .
+                         '"(.*)",' .
+                         '"(.*)",' .
+                         '"(?P<call_start>(?<call_start_year>[0-9]{4})-(?<call_start_month>[0-9]{2})-(?<call_start_day>[0-9]{2}) (?<call_start_hour>[0-9]{2}):(?<call_start_min>[0-9]{2}):(?<call_start_sec>[0-9]{2}))",' .
+                         '(?:"(?<call_answer>(?<call_answer_year>[0-9]{4})-(?<call_answer_month>[0-9]{2})-(?<call_answer_day>[0-9]{2}) (?<call_answer_hour>[0-9]{2}):(?<call_answer_min>[0-9]{2}):(?<call_answer_sec>[0-9]{2}))")?,' .
+                         '"(?<call_end>(?<call_end_year>[0-9]{4})-(?<call_end_month>[0-9]{2})-(?<call_end_day>[0-9]{2}) (?<call_end_hour>[0-9]{2}):(?<call_end_min>[0-9]{2}):(?<call_end_sec>[0-9]{2}))",(?<time_start_to_end>[0-9]*),(?<time_answer_to_end>[0-9]*),' .
+                         '"(?<call_status>.*)",' .
+                         '"(.*)",' .
+                         '"(?<uniqueid>.*)".*/';
     }
 
     /*!
