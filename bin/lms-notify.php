@@ -264,6 +264,22 @@ function parse_customer_data($data, $row) {
 			array($row['id']));
 		$data = preg_replace("/\%abonament/", $saldo, $data);
 	}
+
+	if (preg_match("/\%last_10_in_a_table/", $data)) {
+		$last10 = $DB->GetAll("SELECT comment, value, time FROM cash WHERE
+			customerid = ? ORDER BY time DESC LIMIT 10", array($row['id']));
+		// ok, now we are going to rise up system's load
+		$l10 = "-----------+-----------+----------------------------------------------------\n";
+		foreach ($last10 as $row_s) {
+			$op_time = strftime( "%Y/%m/%d", $row_s['time']);
+			$op_amount = sprintf("%9.2f", $row_s['value']);
+			$for_what = sprintf("%-52s", $row_s['comment']);
+			$l10 = $l10 . "$op_time | $op_amount | $for_what\n";
+		}
+		$l10 = $l10."-----------+-----------+----------------------------------------------------\n";
+		$data = preg_replace("/\%last_10_in_a_table/", $l10, $data);
+	}
+
 	// invoices, debit notes
 	$data = preg_replace("/\%invoice/", $row['doc_number'], $data);
 	$data = preg_replace("/\%number/", $row['doc_number'], $data);
