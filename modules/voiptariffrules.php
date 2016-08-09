@@ -256,7 +256,7 @@ else if ($rule) {
 
             foreach ($dbrules as $v) {
                 if (!isset($rule['group'][$v['id']]))
-                    $DB->Execute('DELETE FROM voip_rule_groups
+                    $DB->Execute('DELETE FROM voip_rules
                                   WHERE id = ?', array($v['id']));
             }
         }
