@@ -196,9 +196,6 @@
 
     // delete table row by id
     function deleteRow( id ) {
-        if (!confirm("{trans("Are you sure that you want remove group?")}"))
-            return 0;
-
         var row = getGroupRow(id);
 
         if (row)
