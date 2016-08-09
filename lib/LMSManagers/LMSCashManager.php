@@ -50,7 +50,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 	 * @param array $file Import file information
 	 * @return array Invalid import file rows
 	 */
-	public function CashImportParseFile($filename, $contents, $patterns) {
+	public function CashImportParseFile($filename, $contents, $patterns, $quiet = true) {
 		global $LMS;
 
 		$file = preg_split('/\r?\n/', $contents);
@@ -271,10 +271,14 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 			if ($error['sum']) {
 				$this->db->Execute('DELETE FROM cashimport WHERE sourcefileid = ?', array($sourcefileid));
 				$this->db->Execute('DELETE FROM sourcefiles WHERE id = ?', array($sourcefileid));
-			} elseif (!empty($syslog_records))
-				foreach ($syslog_records as $syslog_record)
-					$this->syslog->AddMessage($syslog_record['resource'], $syslog_record['operation'],
-						$syslog_record['args']);
+			} else {
+				if (!$quiet)
+					printf("File %s: %d records." . PHP_EOL, $filename, count($data));
+				if (!empty($syslog_records))
+					foreach ($syslog_records as $syslog_record)
+						$this->syslog->AddMessage($syslog_record['resource'], $syslog_record['operation'],
+							$syslog_record['args']);
+			}
 
 		return $error;
 	}

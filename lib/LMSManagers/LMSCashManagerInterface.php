@@ -32,7 +32,7 @@
 interface LMSCashManagerInterface {
 	public function GetCashByID($id);
 
-	public function CashImportParseFile($filename, $contents, $patterns);
+	public function CashImportParseFile($filename, $contents, $patterns, $quiet);
 
 	public function CashImportCommit();
 }

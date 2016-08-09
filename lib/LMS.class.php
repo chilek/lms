@@ -440,9 +440,9 @@ class LMS
         return $manager->GetCashByID($id);
     }
 
-	public function CashImportParseFile($filename, $contents, $patterns) {
+	public function CashImportParseFile($filename, $contents, $patterns, $quiet = true) {
 		$manager = $this->getCashManager();
-		return $manager->CashImportParseFile($filename, $contents, $patterns);
+		return $manager->CashImportParseFile($filename, $contents, $patterns, $quiet);
 	}
 
 	public function CashImportCommit() {
