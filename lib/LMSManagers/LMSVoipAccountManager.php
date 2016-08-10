@@ -413,4 +413,101 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         return $result;
     }
 
+    /**
+     * Returns VoIP billings
+     *
+     * @param  array $p      Array with parameters
+     * @return array $result Array with billings
+     */
+    public function getVoipBillings(array $params) {
+
+        $order = explode(',', $params['o']);
+        if (empty($order[1]) || $order[1] != 'desc')
+             $order[1] = 'asc';
+
+         switch ($order[0]) {
+             case 'caller_name':
+             case 'callee_name':
+             case 'caller':
+             case 'callee':
+             case 'begintime':
+             case 'callbegintime':
+             case 'callanswertime':
+             case 'status':
+             case 'type':
+             case 'price':
+                 $order_string = ' ORDER BY ' . $order[0] . ' ' . $order[1];
+              break;
+
+             default:
+                 $order_string = '';
+        }
+
+        // FILTERS
+        $where = array();
+
+        // CUSTOMER ID
+        if (!empty($params['id']))
+            $where[] = '(cdr.callervoipaccountid = ' . $params['id'] . 'OR cdr.calleevoipaccountid = ' . $params['id'] . ')';
+
+        // CALL BILLING RANGE
+        if (!empty($params['frangefrom'])) {
+            list($year, $month, $day) = explode('/', $param['frangefrom']);
+            $from = mktime(0,0,0, $month, $day, $year);
+
+            $where[] = 'call_start_time >= ' . $from;
+            unset($from);
+        }
+
+        if (!empty($params['frangeto'])) {
+            list($year, $month, $day) = explode('/', $param['frangeto']);
+            $to = mktime(23,59,59, $month, $day, $year);
+
+            $where[] = 'call_start_time <= ' . $to;
+            unset($to);
+        }
+
+        // CALL STATUS
+        if (!empty($params['fstatus']))
+            switch ($params['fstatus']) {
+                case CALL_ANSWERED:
+                case CALL_NO_ANSWER:
+                case CALL_BUSY:
+                case CALL_SERVER_FAILED:
+                    $where[] = "cdr.status = " . $params['fstatus'];
+                break;
+            }
+
+        // CALL TYPE
+        if (!empty($params['ftype']))
+            switch ($params['ftype']) {
+                case CALL_OUTGOING:
+                case CALL_INCOMING:
+                    $where[] = "cdr.type = " . $params['ftype'];
+                break;
+            }
+
+        $where_string = ($where) ? ' WHERE ' . implode(' AND ', $where) : '';
+
+        $DB = $this->db;
+        $bill_list = $DB->GetAll('SELECT
+                                     cdr.id, caller, callee, price, call_start_time as begintime,
+                                     time_start_to_end as callbegintime, time_answer_to_end as callanswertime,
+                                     cdr.type as type, callervoipaccountid, calleevoipaccountid,
+                                     cdr.status as status, vacc.ownerid as callerownerid, vacc2.ownerid as calleeownerid,
+                                     c1.name as caller_name, c1.lastname as caller_lastname, c1.city as caller_city,
+                                     c1.street as caller_street, c1.building as caller_building,
+                                     c2.name as callee_name, c2.lastname as callee_lastname, c2.city as callee_city,
+                                     c2.street as callee_street, c2.building as callee_building, caller_flags, callee_flags
+                                  FROM
+                                     voip_cdr cdr
+                                     LEFT JOIN voipaccounts  vacc ON cdr.callervoipaccountid = vacc.id
+                                     LEFT JOIN voipaccounts vacc2 ON cdr.calleevoipaccountid = vacc2.id
+                                     LEFT JOIN customers       c1 ON c1.id = vacc.ownerid
+                                     LEFT JOIN customers       c2 ON c2.id = vacc2.ownerid' .
+                                  $where_string . $order_string);
+
+        return $bill_list;
+    }
+
 }
