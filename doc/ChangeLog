@@ -65,6 +65,7 @@ version ?.??.?? (????-??-??):
   - simplicity syslog code and make it more oop [chilan]
   - more oop improvements for SYSLOG and Auth classes [chilan]
   - added support for %last_10_in_a_table symbol in lms-notify.php [chilan]
+  - allow to filter balance history list by cash import file [chilan]
 
 version 1.11.20 (2016-04-19):
 
