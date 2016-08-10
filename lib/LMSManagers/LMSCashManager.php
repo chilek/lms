@@ -290,6 +290,8 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 	 * Commits cash imports located in database
 	 */
 	public function CashImportCommit() {
+		global $LMS;
+
 		$imports = $this->db->GetAll('SELECT i.*, f.idate
 			FROM cashimport i
 			LEFT JOIN sourcefiles f ON (f.id = i.sourcefileid)
