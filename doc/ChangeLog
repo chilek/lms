@@ -66,6 +66,8 @@ version ?.??.?? (????-??-??):
   - more oop improvements for SYSLOG and Auth classes [chilan]
   - added support for %last_10_in_a_table symbol in lms-notify.php [chilan]
   - allow to filter balance history list by cash import file [chilan]
+  - added cashimport_after_commit hook which is executed immediately after
+    cash import record commit [chilan]
 
 version 1.11.20 (2016-04-19):
 
