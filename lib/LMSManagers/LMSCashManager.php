@@ -391,7 +391,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 				$this->db->CommitTrans();
 
 				if ($this->db->GetOne('SELECT closed FROM cashimport WHERE id = ?', array($import['id'])))
-					$cashimports[] = $imports;
+					$cashimports[] = $import;
 			}
 			$LMS->executeHook('cashimport_after_commit', array('cashimports' => $cashimports));
 		}
