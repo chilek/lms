@@ -372,6 +372,9 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 				}
 
 				$this->db->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($import['id']));
+
+				$LMS->executeHook('cashimport_after_commit', array('cashimport' => $import));
+
 				if ($this->syslog) {
 					$args = array(
 						SYSLOG::RES_CASHIMPORT => $import['id'],
