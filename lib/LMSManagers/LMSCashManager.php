@@ -303,6 +303,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
 			$finance_manager = new LMSFinanceManager($this->db, $this->auth, $this->cache, $this->syslog);
 
+			$cashimports = array();
 			foreach ($imports as $import) {
 
 				$this->db->BeginTrans();
@@ -375,8 +376,6 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
 				$this->db->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($import['id']));
 
-				$LMS->executeHook('cashimport_after_commit', array('cashimport' => $import));
-
 				if ($this->syslog) {
 					$args = array(
 						SYSLOG::RES_CASHIMPORT => $import['id'],
@@ -390,7 +389,11 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 				$finance_manager->AddBalance($balance);
 
 				$this->db->CommitTrans();
+
+				if ($this->db->GetOne('SELECT closed FROM cashimport WHERE id = ?', array($import['id'])))
+					$cashimports[] = $imports;
 			}
+			$LMS->executeHook('cashimport_after_commit', array('cashimports' => $cashimports));
 		}
 	}
 }
