@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,8 +24,7 @@
  *  $Id$
  */
 
-function GetBalanceList($search=NULL, $cat=NULL, $group=NULL, $pagelimit=100, $page=NULL, $from, $to)
-{
+function GetBalanceList($search=NULL, $cat=NULL, $group=NULL, $pagelimit=100, $page=NULL, $from, $to) {
 	global $DB;
 
 	$where = '';
@@ -58,6 +57,9 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL, $pagelimit=100, $p
 				break;
 			case 'comment':
 				$where = ' AND cash.comment ?LIKE? '.$DB->Escape("%$search%");
+				break;
+			case 'cashimport':
+				$where = ' AND cash.importid IN (SELECT i.id FROM cashimport i JOIN sourcefiles f ON f.id = i.sourcefileid WHERE f.name = ' . $DB->Escape("$search") . ')';
 				break;
 		}
 	}
@@ -218,6 +220,13 @@ $SESSION->save('blt', $to);
 
 $pagelimit = ConfigHelper::getConfig('phpui.balancelist_pagelimit');
 $page = (empty($_GET['page']) ? 0 : intval($_GET['page']));
+
+if (isset($_GET['sourcefileid'])) {
+	$s = $DB->GetOne('SELECT name FROM sourcefiles WHERE id = ?', array($_GET['sourcefileid']));
+	$c = 'cashimport';
+	$SESSION->save('bls', $s);
+	$SESSION->save('blc', $c);
+}
 
 $balancelist = GetBalanceList($s, $c, array('group' => $g, 'exclude'=> $ge), $pagelimit, $page, $from, $to);
 

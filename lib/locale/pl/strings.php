@@ -3102,6 +3102,8 @@ $_LANG['multi file zip archive (lms legacy format)'] = 'archiwum zip z wieloma p
 $_LANG['single csv file (uke siis format)'] = 'pojedynczy plik csv (format zgodny ze specyfikacją uke siis)';
 $_LANG['Exported sheets:'] = 'Eksportowane arkusze:';
 
+$_LANG['cash import file'] = 'plik importu płatności';
+
 $_LANG['Azimuth:'] = 'Azymut:';
 $_LANG['Width:'] = 'Szerokość:';
 $_LANG['Altitude:'] = 'Wysokość:';
