@@ -12,7 +12,7 @@
         "components/normalize.css": "^3.0",
         "smarty/smarty": "3.1.30",
         "rospdf/pdf-php": "^0.12.1",
-        "components/jquery": "^3"
+        "components/jqueryui": "^1"
     },
     "require_dev": {
         "phpunit/phpunit": "5.1.*"
