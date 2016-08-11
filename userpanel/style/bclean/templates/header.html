@@ -5,30 +5,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <link rel="stylesheet" href="style/bclean/vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
-        <link href="img/jqueryui/themes/base/jquery-ui.min.css" rel="stylesheet" type="text/css">
-        <link href="img/jquery-datetimepicker/build/jquery.datetimepicker.min.css" rel="stylesheet" type="text/css">
-		<script type="text/javascript">
-		<!--
-			$(function() {
-				$('.calendar').datepicker({
-					dateFormat: "yy/mm/dd"
-				});
-				$('.calendar-time').datetimepicker({
-					lang: "{$_ui_language}",
-					step: 30,
-					closeOnDateSelect: true
-				});
-			});
-		//-->
-		</script>
 	<!-- <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css" integrity="sha384-XXXXXXXX" crossorigin="anonymous"> -->
         <meta http-equiv="refresh" content="{ConfigHelper::getConfig('phpui.timeout')+5}">
         <title>{$page_header} {trans("Virtual Customer Service")}</title>
     <script type="text/javascript" src="style/default/common.js"></script>
-    <script type="text/javascript" src="img/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="img/jqueryui/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="img/jqueryui/ui/minified/i18n/datepicker-{$_ui_language}.js"></script>
-    <script type="text/javascript" src="img/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+	{include file="jquery.html" language=$_ui_language}
     </head>
     <body>
         <div class="container-fluid">

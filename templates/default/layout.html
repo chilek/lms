@@ -10,29 +10,10 @@
         <link href="img/map.css" rel="stylesheet" type="text/css">
         {block name="extra-css-styles"}{/block}
         <link href="img/lms-net.gif" rel="shortcut icon">
-        <link href="img/jqueryui/themes/base/jquery-ui.min.css" rel="stylesheet" type="text/css">
-        <link href="img/jquery-datetimepicker/build/jquery.datetimepicker.min.css" rel="stylesheet" type="text/css">
         <script type="text/javascript" src="img/common.js"></script>
         <script type="text/javascript" src="img/ClickShowHideMenu.js"></script>
         <script type="text/javascript" src="img/autosuggest.js"></script>
-        <script type="text/javascript" src="img/jquery/jquery.min.js"></script>
-        <script type="text/javascript" src="img/jqueryui/jquery-ui.min.js"></script>
-        <script type="text/javascript" src="img/jqueryui/ui/minified/i18n/datepicker-{$LANGDEFS.$_ui_language.html}.js"></script>
-        <script type="text/javascript" src="img/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
-		<script type="text/javascript">
-		<!--
-			$(function() {
-				$('.calendar').datepicker({
-					dateFormat: "yy/mm/dd"
-				});
-				$('.calendar-time').datetimepicker({
-					lang: "{$LANGDEFS.$_ui_language.html}",
-					step: 30,
-					closeOnDateSelect: true
-				});
-			});
-		//-->
-		</script>
+		{include file="jquery.html" language=$LANGDEFS.$_ui_language.html}
     </head>
     <body onload="start_login_timeout({ConfigHelper::getConfig('phpui.timeout')})">
         <div id="overDiv" style="position:absolute; visibility:hidden; z-index:100;"></div>
