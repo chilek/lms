@@ -19,6 +19,11 @@
         <script type="text/javascript" src="img/jqueryui/jquery-ui.min.js"></script>
         <script type="text/javascript" src="img/jqueryui/ui/minified/i18n/datepicker-{$LANGDEFS.$_ui_language.html}.js"></script>
         <script type="text/javascript" src="img/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+		<script type="text/javascript">
+		<!--
+			jQuery.datetimepicker.setLocale('{$LANGDEFS.$_ui_language.html}');
+		//-->
+		</script>
     </head>
     <body onload="start_login_timeout({ConfigHelper::getConfig('phpui.timeout')})">
         <div id="overDiv" style="position:absolute; visibility:hidden; z-index:100;"></div>

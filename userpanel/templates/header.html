@@ -13,6 +13,11 @@
 <script type="text/javascript" language="JavaScript" src="img/jqueryui/jquery-ui.min.js"></script>
 <script type="text/javascript" language="JavaScript" src="img/jqueryui/ui/minified/i18n/datepicker-{$_ui_language}.js"></script>
 <script type="text/javascript" language="JavaScript" src="img/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<script type="text/javascript" language="JavaScript">
+<!--
+	jQuery.datetimepicker.setLocale('{$_ui_language}');
+//-->
+</script>
 {$hint_mode = ConfigHelper::getConfig('userpanel.hint')}
 {if $hint_mode != 'classic' && $hint_mode != 'none'}
 <script type="text/javascript" language="JavaScript" src="style/default/avatar.js"></script>
