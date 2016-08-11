@@ -142,6 +142,7 @@ if (!is_readable($argv[1]))
 	die('smartylint: template file ' . $argv[1] . ' does not exist or is not readable!' . PHP_EOL);
 
 try {
+	$SMARTY->clearCache('file:' . $argv[1]);
 	$SMARTY->fetch('file:' . $argv[1]);
 } catch (Exception $e) {
 	echo $e->getMessage() . PHP_EOL;
