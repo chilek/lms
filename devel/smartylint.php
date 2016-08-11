@@ -129,6 +129,8 @@ $SMARTY->AddTemplateDir(
 $SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
 $SMARTY->debugging = ConfigHelper::checkConfig('phpui.smarty_debug');
 
+$plugin_manager->executeHook('smarty_initialized', $SMARTY);
+
 if ($argc != 2)
 	die('smartylint: syntax error - template file name is required!' . PHP_EOL);
 
