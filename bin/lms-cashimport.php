@@ -161,7 +161,7 @@ if ($import_file != 'php://stdin' && !is_readable($import_file))
 	die("Couldn't read contents from $import_file file!" . PHP_EOL);
 $contents = file_get_contents($import_file);
 
-$LMS->CashImportParseFile($import_filename, $contents, $patterns);
+$LMS->CashImportParseFile($import_filename, $contents, $patterns, false);
 if (ConfigHelper::checkConfig('cashimport.autocommit'))
 	$LMS->CashImportCommit();
 

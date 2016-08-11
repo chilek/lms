@@ -130,6 +130,7 @@
                                 <OPTION value="address"{if $listdata.cat == "address"} SELECTED{/if}>{trans("address")}</OPTION>
                                 <OPTION value="documented"{if $listdata.cat == "documented"} SELECTED{/if}>{trans("with document")}</OPTION>
                                 <OPTION value="notdocumented"{if $listdata.cat == "notdocumented"} SELECTED{/if}>{trans("without document")}</OPTION>
+                                <OPTION value="cashimport"{if $listdata.cat == "cashimport"} selected{/if}>{trans("cash import file")}</OPTION>
                         </SELECT>
                         {trans("Group:")}
                         <SELECT size="1" name="group">

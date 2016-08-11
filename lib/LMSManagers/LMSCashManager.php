@@ -50,7 +50,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 	 * @param array $file Import file information
 	 * @return array Invalid import file rows
 	 */
-	public function CashImportParseFile($filename, $contents, $patterns) {
+	public function CashImportParseFile($filename, $contents, $patterns, $quiet = true) {
 		global $LMS;
 
 		$file = preg_split('/\r?\n/', $contents);
@@ -182,7 +182,10 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
 			if (!empty($pattern['comment_replace']))
 				$comment = preg_replace($pattern['comment_replace']['from'], $pattern['comment_replace']['to'], $comment);
-			foreach (array('srcaccount', 'dstaccount', 'customername') as $replace_symbol) {
+			$cid = $id;
+			if (empty($cid))
+				$cid = '-';
+			foreach (array('srcaccount', 'dstaccount', 'customername', 'cid') as $replace_symbol) {
 				$variable = $$replace_symbol;
 				$variable = empty($variable) ? trans('none') : $variable;
 				$comment = str_replace('%'. $replace_symbol . '%', $variable, $comment);
@@ -271,10 +274,14 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 			if ($error['sum']) {
 				$this->db->Execute('DELETE FROM cashimport WHERE sourcefileid = ?', array($sourcefileid));
 				$this->db->Execute('DELETE FROM sourcefiles WHERE id = ?', array($sourcefileid));
-			} elseif (!empty($syslog_records))
-				foreach ($syslog_records as $syslog_record)
-					$this->syslog->AddMessage($syslog_record['resource'], $syslog_record['operation'],
-						$syslog_record['args']);
+			} else {
+				if (!$quiet)
+					printf("File %s: %d records." . PHP_EOL, $filename, count($data));
+				if (!empty($syslog_records))
+					foreach ($syslog_records as $syslog_record)
+						$this->syslog->AddMessage($syslog_record['resource'], $syslog_record['operation'],
+							$syslog_record['args']);
+			}
 
 		return $error;
 	}
@@ -283,6 +290,8 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 	 * Commits cash imports located in database
 	 */
 	public function CashImportCommit() {
+		global $LMS;
+
 		$imports = $this->db->GetAll('SELECT i.*, f.idate
 			FROM cashimport i
 			LEFT JOIN sourcefiles f ON (f.id = i.sourcefileid)
@@ -294,6 +303,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
 			$finance_manager = new LMSFinanceManager($this->db, $this->auth, $this->cache, $this->syslog);
 
+			$cashimports = array();
 			foreach ($imports as $import) {
 
 				$this->db->BeginTrans();
@@ -365,6 +375,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 				}
 
 				$this->db->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($import['id']));
+
 				if ($this->syslog) {
 					$args = array(
 						SYSLOG::RES_CASHIMPORT => $import['id'],
@@ -378,7 +389,11 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 				$finance_manager->AddBalance($balance);
 
 				$this->db->CommitTrans();
+
+				if ($this->db->GetOne('SELECT closed FROM cashimport WHERE id = ?', array($import['id'])))
+					$cashimports[] = $import;
 			}
+			$LMS->executeHook('cashimport_after_commit', array('cashimports' => $cashimports));
 		}
 	}
 }

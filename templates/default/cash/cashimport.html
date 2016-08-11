@@ -224,7 +224,7 @@
 				{foreach from=$sourcefiles item=item}
 				<TR class="{cycle name=files}">
 					<TD NOWRAP><B>{$item.idate|date_format:"%Y/%m/%d %H:%M"}</B></TD>
-					<TD NOWRAP>{$item.name}</TD>
+					<TD NOWRAP><a href="?m=balancelist&sourcefileid={$item.id}">{$item.name}</a></TD>
 					<TD NOWRAP>{$item.username}</TD>
 					<TD align="right">{$item.count|default:0}</TD>
 					<TD>
