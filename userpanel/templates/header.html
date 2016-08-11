@@ -15,7 +15,16 @@
 <script type="text/javascript" language="JavaScript" src="img/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
 <script type="text/javascript" language="JavaScript">
 <!--
-	jQuery.datetimepicker.setLocale('{$_ui_language}');
+	$(function() {
+		$('.calendar').datepicker({
+			dateFormat: "yyyy/mm/dd"
+		});
+		$('.calendar-time').datetimepicker({
+			lang: "{$_ui_language}",
+			step: 30,
+			closeOnDateSelect: true
+		});
+	});
 //-->
 </script>
 {$hint_mode = ConfigHelper::getConfig('userpanel.hint')}

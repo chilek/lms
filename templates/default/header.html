@@ -20,7 +20,16 @@
 	<script type="text/javascript" src="img/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
 	<script type="text/javascript">
 	<!--
-		jQuery.datetimepicker.setLocale('{$LANGDEFS.$_ui_language.html}');
+		$(function() {
+			$('.calendar').datepicker({
+				dateFormat: "yyyy/mm/dd"
+			});
+			$('.calendar-time').datetimepicker({
+				lang: "{$LANGDEFS.$_ui_language.html}",
+				step: 30,
+				closeOnDateSelect: true
+			});
+		});
 	//-->
 	</script>
 </head>

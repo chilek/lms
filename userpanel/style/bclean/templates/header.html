@@ -9,7 +9,16 @@
         <link href="img/jquery-datetimepicker/build/jquery.datetimepicker.min.css" rel="stylesheet" type="text/css">
 		<script type="text/javascript">
 		<!--
-			jQuery.datetimepicker.setLocale('{$_ui_language}');
+			$(function() {
+				$('.calendar').datepicker({
+					dateFormat: "yyyy/mm/dd"
+				});
+				$('.calendar-time').datetimepicker({
+					lang: "{$_ui_language}",
+					step: 30,
+					closeOnDateSelect: true
+				});
+			});
 		//-->
 		</script>
 	<!-- <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css" integrity="sha384-XXXXXXXX" crossorigin="anonymous"> -->

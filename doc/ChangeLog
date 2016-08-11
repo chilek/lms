@@ -69,6 +69,7 @@ version ?.??.?? (????-??-??):
   - added cashimport_after_commit hook which is executed immediately after
     cash import record commit [chilan]
   - jquery and jquery-ui composer and header/layout template support [chilan]
+  - got rid of old calendar js - use jquery calendar from now [chilan]
 
 version 1.11.20 (2016-04-19):
 
