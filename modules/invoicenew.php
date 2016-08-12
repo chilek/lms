@@ -66,7 +66,6 @@ switch($action)
 		$currtime = time();
 		$invoice['cdate'] = $currtime;
 		$invoice['sdate'] = $currtime;
-		$invoice['paytime'] = ConfigHelper::getConfig('invoices.paytime');
 //		$invoice['paytype'] = ConfigHelper::getConfig('invoices.paytype');
 
 		if(!empty($_GET['customerid']) && $LMS->CustomerExists($_GET['customerid']))
@@ -78,6 +77,13 @@ switch($action)
 				WHERE n.doctype = ? AND n.isdefault = 1 AND a.divisionid = ?',
 				array(DOC_INVOICE, $customer['divisionid']));
 		}
+
+		if (isset($customer) && $customer['paytime'] != -1)
+			$paytime = $customer['paytime'];
+		elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions 
+			WHERE id = ?', array($customer['divisionid']))) === NULL)
+			$paytime = ConfigHelper::getConfig('invoices.paytime');
+		$invoice['deadline'] = $currtime + $paytime * 86400;
 
 		if(empty($invoice['numberplanid']))
 			$invoice['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans
@@ -172,6 +178,8 @@ switch($action)
 
 	case 'setcustomer':
 
+		$customer_paytime = $customer['paytime'];
+
 		unset($invoice); 
 		unset($customer);
 		unset($error);
@@ -233,17 +241,34 @@ switch($action)
 		elseif(!$invoice['cdate'])
 			$invoice['cdate'] = $currtime;
 
+		if ($invoice['deadline']) {
+			list ($dyear, $dmonth, $dday) = explode('/', $invoice['deadline']);
+			if (checkdate($dmonth, $dday, $dyear)) {
+				$invoice['deadline'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $dmonth, $dday, $dyear);
+				$dcurrmonth = $dmonth;
+			} else {
+				$error['deadline'] = trans('Incorrect date format!');
+				$invoice['deadline'] = $currtime;
+				break;
+			}
+		} else {
+			if ($customer_paytime != -1)
+				$paytime = $customer_paytime;
+			elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions
+				WHERE id = ?', array($customer['divisionid']))) === NULL)
+				$paytime = ConfigHelper::getConfig('invoices.paytime');
+			$invoice['deadline'] = $invoice['cdate'] + $paytime * 86400;
+		}
+
+		if ($invoice['deadline'] < $invoice['cdate'])
+			$error['deadline'] = trans('Deadline date should be later than consent date!');
+
 		if($invoice['number'])
 		{
 			if(!preg_match('/^[0-9]+$/', $invoice['number']))
 				$error['number'] = trans('Invoice number must be integer!');
 			elseif($LMS->DocumentExists($invoice['number'], DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']))
 				$error['number'] = trans('Invoice number $a already exists!', $invoice['number']);
-		}
-
-		if(empty($invoice['paytime_default']) && !preg_match('/^[0-9]+$/', $invoice['paytime']))
-		{
-			$error['paytime'] = trans('Integer value required!');
 		}
 
 		if(!isset($error))
@@ -271,17 +296,20 @@ switch($action)
 
 		unset($error);
 
-		// set paytime
-		if(!empty($invoice['paytime_default']))
-		{
-			if($customer['paytime'] != -1)
-				$invoice['paytime'] = $customer['paytime'];
-			elseif(($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions 
-				WHERE id = ?', array($customer['divisionid']))) !== NULL)
-				$invoice['paytime'] = $paytime;
-			else
-				$invoice['paytime'] = ConfigHelper::getConfig('invoices.paytime');
-		}
+		if ($invoice['deadline']) {
+			$deadline = intval($invoice['deadline']);
+			$cdate = intval($invoice['cdate']);
+			if ($deadline < $cdate)
+				break;
+			$invoice['paytime'] = round(($deadline - $cdate) / 86400);
+		} elseif ($customer['paytime'] != -1)
+			$invoice['paytime'] = $customer['paytime'];
+		elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions 
+			WHERE id = ?', array($customer['divisionid']))) !== NULL)
+			$invoice['paytime'] = $paytime;
+		else
+			$invoice['paytime'] = ConfigHelper::getConfig('invoices.paytime');
+
 		// set paytype
 		if(empty($invoice['paytype']))
 		{

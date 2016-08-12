@@ -59,6 +59,7 @@ if(isset($_GET['id']) && $action == 'edit')
 	$SESSION->save('invoicecustomer', $LMS->GetCustomer($invoice['customerid'], true));
 	$invoice['oldcdate'] = $invoice['cdate'];
 	$invoice['oldsdate'] = $invoice['sdate'];
+	$invoice['olddeadline'] = $invoice['deadline'] = $invoice['cdate'] + $invoice['paytime'] * 86400;
 	$SESSION->save('invoice', $invoice);
 	$SESSION->save('invoiceid', $invoice['id']);
 }
@@ -142,6 +143,7 @@ switch($action)
 
 	case 'setcustomer':
 
+		$olddeadline = $invoice['olddeadline'];
 		$oldcdate = $invoice['oldcdate'];
 		$oldsdate = $invoice['oldsdate'];
 		$closed   = $invoice['closed'];
@@ -155,12 +157,9 @@ switch($action)
 			foreach($invoice as $key => $val)
 				$invoice[$key] = $val;
 
-		$invoice['paytime'] = sprintf('%d', $invoice['paytime']);
+		$invoice['olddeadline'] = $olddeadline;
 		$invoice['oldcdate'] = $oldcdate;
 		$invoice['oldsdate'] = $oldsdate;
-
-		if($invoice['paytime'] < 0)
-			$invoice['paytime'] = 14;
 
 		if($invoice['cdate']) // && !$invoice['cdatewarning'])
 		{
@@ -202,6 +201,24 @@ switch($action)
 				$error['sdate'] = trans('Incorrect date format!');
 		}
 
+		if ($invoice['deadline']) {
+			list ($dyear, $dmonth, $dday) = explode('/', $invoice['deadline']);
+			if (checkdate($dmonth, $dday, $dyear)) {
+				$olddday = date('d', $invoice['oldddate']);
+				$olddmonth = date('m', $invoice['oldddate']);
+				$olddyear = date('Y', $invoice['oldddate']);
+
+				if ($olddday != $dday || $olddmonth != $dmonth || $olddyear != $dyear)
+					$invoice['deadline'] = mktime(date('G', time()), date('i', time()), date('s', time()), $dmonth, $dday, $dyear);
+				else // save hour/min/sec value if date is the same
+					$invoice['deadline'] = $invoice['olddeadline'];
+			} else
+				$error['deadline'] = trans('Incorrect date format!');
+		}
+
+		if ($invoice['deadline'] < $invoice['cdate'])
+			$error['deadline'] = trans('Deadline date should be later than consent date!');
+
 		$invoice['customerid'] = $_POST['customerid'];
 		$invoice['closed']     = $closed;
 
@@ -220,6 +237,8 @@ switch($action)
 		$currtime = time();
 		$cdate = $invoice['cdate'] ? $invoice['cdate'] : $currtime;
 		$sdate = $invoice['sdate'] ? $invoice['sdate'] : $currtime;
+		$deadline = $invoice['deadline'] ? $invoice['deadline'] : $currtime;
+		$paytime = round(($deadline - $cdate) / 86400);
 		$iid   = $invoice['id'];
 
 		$DB->BeginTrans();
@@ -231,7 +250,7 @@ switch($action)
 		$args = array(
 			'cdate' => $cdate,
 			'sdate' => $sdate,
-			'paytime' => $invoice['paytime'],
+			'paytime' => $paytime,
 			'paytype' => $invoice['paytype'],
 			SYSLOG::RES_CUST => $customer['id'],
 			'name' => $customer['customername'],
