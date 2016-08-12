@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,14 +27,7 @@
 function smarty_function_tip($params, $template) {
 	$result = '';
 
-	if (isset($params['dynpopup']) && $popup = $params['dynpopup']) {
-		if (is_array($params))
-			foreach ($params as $paramid => $paramval)
-				$popup = str_replace('$'.$paramid, $paramval, $popup);
-
-		$text = " onmouseover=\"popup('$popup',1," . (isset($params['sticky']) && $params['sticky'] ? 1 : 0) . ",30,15)\" onmouseout=\"pophide()\"";
-		return $text;
-	} else if (isset($params['popup']) && $popup = $params['popup']) {
+	if (isset($params['popup']) && $popup = $params['popup']) {
 		if (is_array($params))
 			foreach($params as $paramid => $paramval)
 				$popup = str_replace('$'.$paramid, $paramval, $popup);
