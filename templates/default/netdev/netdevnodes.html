@@ -45,7 +45,7 @@
 						/ <IMG src="img/home.gif" ALT=""> {$netcomplist[netcomplist].location}{if $netcomplist[netcomplist].borough_name} ({$netcomplist[netcomplist].state_name} / {$netcomplist[netcomplist].district_name} / {$_BOROUGHTYPES[$netcomplist[netcomplist].borough_type]} {$netcomplist[netcomplist].borough_name}){/if}
 						{/if}
 						<BR>
-						<IMG SRC="img/customer.gif" ALT=""> <A href="?m=customerinfo&id={$netcomplist[netcomplist].ownerid}" {tip a=$netcomplist[netcomplist].ownerid dynpopup='?m=customerinfoshort&id=$a'}>{$netcomplist[netcomplist].owner}</A>
+						<IMG SRC="img/customer.gif" ALT=""> <A href="?m=customerinfo&id={$netcomplist[netcomplist].ownerid}" class="customerinfo" data-resourceid="{$netcomplist[netcomplist].ownerid}">{$netcomplist[netcomplist].owner}</A>
 					</TD>
 					<TD class="valign-top nobr" id="node_{$netcomplist[netcomplist].id}">
 						{if $netcomplist[netcomplist].linktechnology}{$_LINKTECHNOLOGIES[$netcomplist[netcomplist].linktype][$netcomplist[netcomplist].linktechnology]}{/if}{if $netcomplist[netcomplist].linktype == 1 && $netcomplist[netcomplist].radiosector} ({$netcomplist[netcomplist].radiosector}){/if}<BR>

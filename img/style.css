@@ -344,3 +344,12 @@ td.multiselect select { min-width: 200px; }
 	-o-transform: rotate(90deg);
 	writing-mode: lr-tb;
 }
+
+.ui-tooltip.invoiceinfo,
+.ui-tooltip.docnumber,
+.ui-tooltip.customerinfo,
+.ui-tooltip.nodelist,
+.ui-tooltip.rtticketinfo {
+	padding: 0;
+	max-width: 500px;
+}

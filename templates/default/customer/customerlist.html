@@ -159,14 +159,14 @@
         {block name="customerlist-list-row"}
 	<TR class="highlight {cycle}{if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}"  >
 		<TD onClick="return self.location.href='?m=customerinfo&amp;id={$customerlist[customerlist].id}';">
-			<IMG src="img/{$_CSTATUSES[$customerlist[customerlist].status].img}" alt="">{if $customerlist[customerlist].info}&nbsp;<img src="img/info1.gif" alt="" {tip text=$customerlist[customerlist].info}>{/if}<A name="{$customerlist[customerlist].id}" {tip a=$customerlist[customerlist].id dynpopup='?m=customerinfoshort&amp;id=$a'}>&nbsp;<span class="bold">{$customerlist[customerlist].customername|escape}</span></A><BR>
+			<IMG src="img/{$_CSTATUSES[$customerlist[customerlist].status].img}" alt="">{if $customerlist[customerlist].info}&nbsp;<img src="img/info1.gif" alt="" {tip text=$customerlist[customerlist].info}>{/if}<A name="{$customerlist[customerlist].id}" class="customerinfo" data-resourceid="{$customerlist[customerlist].id}">&nbsp;<span class="bold">{$customerlist[customerlist].customername|escape}</span></A><BR>
 			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].address}{if $customerlist[customerlist].city != ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].country != ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
 		</TD>
 		<TD class="text-right">
 			({$customerlist[customerlist].id|string_format:"%04d"})
 			<BR>
 			{if $customerlist[customerlist].account}
-			<IMG src="img/node{if !$customerlist[customerlist].online}_off{/if}.gif" alt="" {tip a=$customerlist[customerlist].id dynpopup='?m=nodelistshort&amp;id=$a' sticky=1}>
+			<IMG src="img/node{if !$customerlist[customerlist].online}_off{/if}.gif" alt="" class="nodelist" data-resourceid="{$customerlist[customerlist].id}">
 			{/if}
 		</TD>
 		<TD class="text-right nobr">

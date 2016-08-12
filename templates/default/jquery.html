@@ -34,6 +34,29 @@
 				tooltipClass: tooltipClass
 			});
 		});
+
+		[
+			{ class: 'invoiceinfo', url: '?m=invoiceinfo&id='},
+			{ class: 'docnumber', url: '?m=number&id='},
+			{ class: 'customerinfo', url: '?m=customerinfoshort&id='},
+			{ class: 'nodelist', url: '?m=nodelistshort&id='},
+			{ class: 'rtticketinfo', url: '?m=rtticketinfo&id='}
+		].forEach(function(popup) {
+			$('.' + popup.class).tooltip({
+				items: '.' + popup.class,
+				tooltipClass: popup.class,
+				content: function(callback) {
+					var elem = $(this);
+					var resourceid = elem.attr('data-resourceid');
+					$.ajax(popup.url + resourceid, {
+						async: true,
+						success: function(data) {
+							callback(data);
+						}
+					});
+				}
+			});
+		});
 	});
 //-->
 </script>

@@ -64,7 +64,7 @@
                 <a class="bold" name="{$voipaccountlist[voipaccountlist].id}">
                     <img src="img/voip.gif" alt=""> {$voipaccountlist[voipaccountlist].login}
                 </a><br>
-                <img src="img/customer.gif" alt="">&nbsp;<a href="?m=customerinfo&id={$voipaccountlist[voipaccountlist].ownerid}" {tip a=$voipaccountlist[voipaccountlist].ownerid dynpopup='?m=customerinfoshort&id=$a'}>{$voipaccountlist[voipaccountlist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"} ({$voipaccountlist[voipaccountlist].ownerid|string_format:"%04d"})</a>
+                <img src="img/customer.gif" alt="">&nbsp;<a href="?m=customerinfo&id={$voipaccountlist[voipaccountlist].ownerid}" class="customerinfo" data-resourceid="{$voipaccountlist[voipaccountlist].ownerid}">{$voipaccountlist[voipaccountlist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"} ({$voipaccountlist[voipaccountlist].ownerid|string_format:"%04d"})</a>
             </td>
             <td onClick="return self.location.href = '?m=voipaccountinfo&id={$voipaccountlist[voipaccountlist].id}';">
                 ({$voipaccountlist[voipaccountlist].id|string_format:"%04d"})

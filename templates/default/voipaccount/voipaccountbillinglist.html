@@ -174,7 +174,7 @@
 
 				<td nowrap>
 					{if !empty($billings[i].callerownerid)}
-						<a href="?m=customerinfo&amp;id={$billings[i].callerownerid}" {tip a=$billings[i].callerownerid dynpopup='?m=customerinfoshort&amp;id=$a'}>
+						<a href="?m=customerinfo&amp;id={$billings[i].callerownerid}" class="customerinfo" data-resourceid="{$billings[i].callerownerid}">
 							{$billings[i].caller_lastname|lower|ucfirst} {$billings[i].caller_name|ucfirst}
 						</a>
 					{else}
@@ -186,7 +186,7 @@
 					{trans("to")}
 
 					{if !empty($billings[i].calleeownerid)}
-						<a href="?m=customerinfo&amp;id={$billings[i].calleeownerid}" {tip a=$billings[i].calleeownerid dynpopup='?m=customerinfoshort&amp;id=$a'}>
+						<a href="?m=customerinfo&amp;id={$billings[i].calleeownerid}" class="customerinfo" data-resourceid="{$billings[i].calleeownerid}">
 							{$billings[i].callee_lastname|lower|ucfirst} {$billings[i].callee_name|ucfirst}
 						</a>
 					{else}
