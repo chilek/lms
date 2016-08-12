@@ -159,15 +159,17 @@ div.multiselectlayer ul li input { border: none; }
 .click-menu .section    { background-color: #EBE4D6; line-height: 15px; padding: 0px 0px 0px 0px; display: none; }
 .click-menu .section a  { color: #800000; text-decoration: none; white-space: nowrap; }
 .click-menu .section a:hover    { color: #336600; text-decoration: none; white-space: nowrap; }
-.click-menu .box2-hover { background-color: #CCFFCC; }
+.click-menu .box2-hover { background-color: #CCFFCC; font-weight: normal; }
 .click-menu .box2 a,
 .click-menu .box2-hover a {
     display: block;
     padding-left: 21px;
+    font-weight: normal;
 }
 .click-menu .box2 a:before,
 .click-menu .box2-hover a:before {
     content: "\00bb\00a0";
+    font-weight: normal;
 }
 .click-menu .section .active,
 .click-menu .section .active:hover { color: yellow; }
@@ -185,7 +187,7 @@ div.multiselectlayer ul li input { border: none; }
 .red		{ color: #FF0000; }
 .brown		{ color: #A52A2A; }
 .white		{ color: #FFFFFF; }
-.alert		{ color: #FF0000; }
+.alert		{ color: #FF0000 !important; }
 .alertblend	{ color: #FA8072; }
 .suspended	{ color: #30B6C6; }
 .bold		{ font-weight: bold; }

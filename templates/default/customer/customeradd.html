@@ -28,14 +28,17 @@
 			{foreach $_CUSTOMERCONTACTTYPES as $contacttype => $properties}
 			case '{$contacttype}':
 				innerHTML = '<HR><INPUT TYPE="text" size="{$properties.ui.size}" value="" name="customeradd[{$contacttype|cat:"s"}][' + nr + '][contact]"'
-					+ ' onmouseover="popup(\'{$properties.ui.tip}\')" onmouseout="pophide()">';
-				innerHTML += '{foreach $properties.ui.flags as $flagtype => $flagproperties}<label{if isset($flagproperties.tip)} onmouseover="popup(\'{$flagproperties.tip}\')" onmouseout="pophide()"{/if}><INPUT TYPE="checkbox" value="{$flagtype}" name="customeradd[{$contacttype|cat:"s"}][' + nr + '][type][]"> {$flagproperties.label}</label>{/foreach}';
+					+ ' title="{$properties.ui.tip}">';
+				innerHTML += '{foreach $properties.ui.flags as $flagtype => $flagproperties}<label{if isset($flagproperties.tip)} title="{$flagproperties.tip}"{/if}><INPUT TYPE="checkbox" value="{$flagtype}" name="customeradd[{$contacttype|cat:"s"}][' + nr + '][type][]"> {$flagproperties.label}</label>{/foreach}';
 				innerHTML += '<BR><INPUT TYPE="text" size="68" value="" name="customeradd[{$contacttype|cat:"s"}][' + nr + '][name]"'
-					+ ' onmouseover="popup(\'{trans("Enter contact name/description (optional)")}\')" onmouseout="pophide()">';
+					+ ' title="{trans("Enter contact name/description (optional)")}">';
 				break;
 			{/foreach}
 		}
 		newcell.innerHTML = innerHTML;
+		$(newcell).children("[title]").tooltip({
+			position: { my: "left top" }
+		});
 		contactcountelem.value = parseInt(nr) + 1;
 	}
 //-->

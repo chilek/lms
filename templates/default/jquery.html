@@ -7,13 +7,32 @@
 <script type="text/javascript">
 <!--
 	$(function() {
+		var autocomplete = "off";
+
 		$('.calendar').datepicker({
 			dateFormat: "yy/mm/dd"
-		});
+		})
+		.attr("autocomplete", autocomplete);
 		$('.calendar-time').datetimepicker({
 			lang: "{$language}",
 			step: 30,
 			closeOnDateSelect: true
+		})
+		.attr("autocomplete", autocomplete);
+
+		$('[title]').each(function() {
+			tooltipClass = "";
+			if ($(this).hasClass("alert")) {
+				tooltipClass += " alert";
+				if ($(this).hasClass("bold"))
+					tooltipClass += " bold";
+			} else if ($(this).hasClass("bold"))
+				tooltipClass += "bold";
+			$(this).tooltip({
+				show: { delay: 500 },
+				track: true,
+				tooltipClass: tooltipClass
+			});
 		});
 	});
 //-->
