@@ -108,7 +108,7 @@ function setgroup(act)
 						</TD>
 						<TD class="text-right nobr">
 							{if $customernodes[customernodes].gcount}
-							<img src="img/nodegroup.gif" alt="" {tip a=$customernodes[customernodes].id dynpopup='?m=nodeinfo&amp;id=$a&amp;nodegroups=1' sticky=1}>
+							<img src="img/nodegroup.gif" alt="" class="nodegroupinfo" data-resourceid="{$customernodes[customernodes].id}">
 							{/if}
 						</TD>
 						<TD class="text-right bold nobr">

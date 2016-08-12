@@ -349,7 +349,9 @@ td.multiselect select { min-width: 200px; }
 .ui-tooltip.docnumber,
 .ui-tooltip.customerinfo,
 .ui-tooltip.nodelist,
-.ui-tooltip.rtticketinfo {
+.ui-tooltip.customerassignmentinfo,
+.ui-tooltip.rtticketinfo,
+.ui-tooltip.nodegroupinfo {
 	padding: 0;
-	max-width: 500px;
+//	max-width: 500px;
 }
