@@ -3,7 +3,6 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{include file="calendar_js.html"}
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
 {if $printmenu=="customer"}
 <FORM method="POST" name="printcustomerlist" id="printcustomerlist" action="?m=customerprint&amp;type=customerlist">
