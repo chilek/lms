@@ -1,7 +1,11 @@
 <TABLE class="lmsbox-inner" id="table">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 99%;">
+	</COLGROUP>
 	<THEAD>
 	<TR>
-		<TD style="width: 100%;" class="bold nobr" colspan="2">
+		<TD class="bold" colspan="2">
 			<IMG src="img/ticket.gif" alt="">
 			{t a=$ticket.id|string_format:"%06d"}Ticket No. $a{/t}
 		</TD>
@@ -10,30 +14,30 @@
 	<TBODY>
 	{if $ticket.creatorid}
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/users.gif" alt="">
 			{trans("Created by:")}
 		</TD>
-		<TD style="width: 99%;" class="nobr">
+		<TD>
 			<A href="?m=userinfo&id={$ticket.creatorid}">{$ticket.creator}</a>
 		</TD>
 	</TR>
 	{/if}
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/time.gif" alt="">
 			{trans("Uptime:")}
 		</TD>
-		<TD style="width: 99%;" class="nobr">
+		<TD>
 			{$ticket.uptime}
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;"  class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/desc.gif" alt="">
 			{trans("Cause:")}
 		</TD>
-		<TD style="width: 99%;" class="nobr">
+		<TD>
 			{if $ticket.cause==2}{trans("company's side")}
 			{elseif $ticket.cause==1}{trans("customer's side")}
 			{else}{trans("unknown/other")}{/if}
@@ -41,11 +45,11 @@
 	</TR>
 	{if $ticket.message}
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			<IMG src="img/info.gif" alt="">
 			{trans("Body:")}
 		</TD>
-		<TD style="width: 99%;">
+		<TD>
 			<TABLE width="{if strlen($ticket.message)<50}100%{else}300{/if}" cellpadding="5">
 				<TR>
 					<TD class="fall superlight">
