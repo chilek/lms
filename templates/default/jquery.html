@@ -40,9 +40,11 @@
 			{ class: 'docnumber', url: '?m=number&id='},
 			{ class: 'customerinfo', url: '?m=customerinfoshort&id='},
 			{ class: 'nodelist', url: '?m=nodelistshort&id='},
+			{ class: 'ewxnodelist', url: '?m=ewxnodelist&id='},
 			{ class: 'rtticketinfo', url: '?m=rtticketinfo&id='},
 			{ class: 'customerassignmentinfo', url: '?m=customerassignmentinfo&id='},
-			{ class: 'nodegroupinfo', url: '?m=nodeinfo&nodegroups=1&id='}
+			{ class: 'nodegroupinfo', url: '?m=nodeinfo&nodegroups=1&id='},
+			{ class: 'netdevlist', url: '?m=ewxdevlist&id='}
 		].forEach(function(popup) {
 			$('.' + popup.class).tooltip({
 				items: '.' + popup.class,
