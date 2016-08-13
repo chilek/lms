@@ -71,6 +71,7 @@ if (isset($_GET['id']) && $action == 'init')
 		$cnote['paytime'] = 0;
 	else
 		$cnote['paytime'] = floor(($deadline - $cnote['cdate']) / 86400);
+	$cnote['deadline'] = $cnote['cdate'] + $cnote['paytime'] * 86400;
 
 	$cnote['use_current_division'] = true;
 
@@ -112,11 +113,6 @@ switch($action)
 		if($cnote = $_POST['cnote'])
 			foreach($cnote as $key => $val)
 				$cnote[$key] = $val;
-
-		$cnote['paytime'] = sprintf('%d', $cnote['paytime']);
-
-		if($cnote['paytime'] < 0)
-			$cnote['paytime'] = 14;
 
 		$currtime = time();
 
@@ -160,6 +156,21 @@ switch($action)
 		}
 		else
 			$cnote['cdate'] = $currtime;
+
+		if ($cnote['deadline']) {
+			list ($dyear, $dmonth, $dday) = explode('/', $cnote['deadline']);
+			if (checkdate($dmonth, $dday, $dyear))
+				$cnote['deadline'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $dmonth, $dday, $dyear);
+			else {
+				$error['deadline'] = trans('Incorrect date format!');
+				$cnote['deadline'] = $currtime;
+				break;
+			}
+		} else
+			$cnote['deadline'] = $currtime;
+
+		if ($cnote['deadline'] < $cnote['cdate'])
+			$error['deadline'] = trans('Deadline date should be later than consent date!');
 
 		if($cnote['number'])
 		{
@@ -232,6 +243,8 @@ switch($action)
 			$contents[$idx]['valuebrutto'] = $contents[$idx]['valuebrutto'] - $item['valuebrutto'];
 			$contents[$idx]['count'] = $contents[$idx]['count'] - $item['count'];
 		}
+
+		$cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);
 
 		$DB->BeginTrans();
 		$DB->LockTables(array('documents', 'numberplans', 'divisions'));

@@ -15,26 +15,6 @@
 		document.save.action = "?m=invoicenote&action=save&print=1" + add;
 		document.save.submit();
 	}
-
-	function deadline_calendar(elem)
-	{
-		var ts = get_cdate(), deadline = parseInt(elem.value);
-
-		// add paytime days to settlement date
-		ts.setDate(ts.getDate() + (deadline || 0));
-		// display calendar
-		cal3.popup(cal3.gen_date(ts));
-	}
-
-	function get_cdate()
-	{
-		var ts = document.setheader.elements['cnote[cdate]'].value;
-
-		if (!ts.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/))
-			ts = '{$smarty.now|date_format:"%Y/%m/%d"}';
-
-		return cal3.prs_date(ts);
-	}
 //-->
 </script>
 <FORM NAME="setheader" METHOD="POST" ACTION="?m=invoicenoteedit&action=setheader">
@@ -72,7 +52,7 @@
 			<B>{trans("Deadline:")}</B>
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="cnote[paytime]" VALUE="{$cnote.paytime}" SIZE="5" ID="paytime" onclick="deadline_calendar(this)" {tip text="Enter deadline in days (optional)"}>
+			<input type="text" name="cnote[deadline]" value="{$cnote.deadline|date_format:"%Y/%m/%d"}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter deadline date in YYYY/MM/DD format (empty field means default deadline) or click to select it from calendar" trigger="deadline"}>
 		</TD>
 	</TR>
         <TR>
@@ -281,15 +261,7 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-deadline_callback = function(val)
-{
-	var ts = get_cdate(), deadline = cal3.prs_date(val);
-	deadline = parseInt((deadline - ts) / 86400000);
-	document.getElementById('paytime').value = deadline <= 0 ? '' : deadline;
-}
-var cal3 = new calendar(deadline_callback);
-cal3.time_comp = false;
-document.forms['setheader'].elements['cnote[number]'].focus();
+	document.forms['setheader'].elements['cnote[number]'].focus();
 //-->
 </SCRIPT>
 {/block}
