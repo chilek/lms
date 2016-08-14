@@ -33,6 +33,8 @@ class Session {
 	public $islogged = false;
 	public $error;
 
+	public $_content = array();     // session content array
+
 	public function __construct(&$DB, $timeout = 600) {
 		global $LMS;
 

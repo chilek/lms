@@ -1,0 +1,206 @@
+{include file="header.html"}
+
+<STYLE>
+    .billing-tab {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    .billing-tab tr:first-child td {
+        font-weight: bold;
+        width: 1%;
+    }
+    .billing-tab tr td {
+        padding: 6px 10px;
+        white-space: nowrap;
+    }
+    .billing-tab tr:nth-child(n+3):nth-last-child(n+2) {
+        border-top: 1px solid lightgray;
+    }
+    .billing-tab tr:nth-child(n+3):nth-last-child(n+2):hover {
+        background-color: lightgray;
+    }
+
+    .filters {
+        margin: 0 auto;
+        font-weight: bold;
+        font-size: 1.2em;
+        border-spacing: 0;
+    }
+    .filters tr td {
+        padding: 0 25px;
+        white-space: nowrap;
+        border-left: 2px solid black;
+    }
+    .filters tr td:first-child {
+        border: 0;
+    }
+
+    .submit-btn {
+        border-radius: 7px;
+        margin-top: 5px;
+        padding: 2px 25px;
+        height: 90%;
+        font-weight: bold;
+        background-color: #900000;
+        color: white;
+    }
+    .submit-btn:hover {
+        cursor: pointer;
+        background-color: #b30000; 
+    }
+
+    .lms-input {
+        padding: 4px;
+    }
+
+    .pagination a {
+        color: #b30000;
+        font-size: 1.1em;
+    }
+</STYLE>
+
+<TABLE WIDTH="100%" cellpadding="10" ALIGN="center">
+    <TR>
+        <TD>
+            <FORM METHOD="GET" ACTION="?m=voip">
+                <INPUT TYPE="HIDDEN" NAME="m" VALUE="voip">
+
+                <TABLE CLASS="filters">
+                    <TR>
+                        <TD>{trans("My accounts:")}</TD>
+                        <TD>{trans("Date range:")}</TD>
+                        <TD>{trans("Connection type:")}</TD>
+                        <TD>{trans("Status:")}</TD>
+                        <TD ROWSPAN="2">
+                            <INPUT TYPE="submit" CLASS="submit-btn" VALUE="{trans("Search")} &raquo;">
+                        </TD>
+                    </TR>
+                    <TR>
+                        <TD>
+                            <SELECT NAME="account" CLASS="lms-input">
+                                <OPTION VALUE="0">{trans("- all -")}</OPTION>
+                                {foreach from=$voip_accounts item=acc}
+                                <OPTION VALUE="{$acc.id}"{if $params.id == $acc.id} SELECTED{/if}>{$acc.phone}</OPTION>
+                                {/foreach}
+                            </SELECT>
+                        </TD>
+                        <TD>
+                            {trans("from")}
+                            <INPUT TYPE="text"
+                                   SIZE="10"
+                                   NAME="date_from"
+                                   CLASS="calendar lms-input"
+                                   VALUE="{if isset($params.frangefrom)}{$params.frangefrom}{/if}">
+
+                            {trans("to")}
+                            <INPUT TYPE="text"
+                                   SIZE="10"
+                                   NAME="date_to"
+                                   CLASS="calendar lms-input"
+                                   VALUE="{if isset($params.frangeto)}{$params.frangeto}{/if}">
+                        </TD>
+                        <TD>
+                            <SELECT SIZE="1" NAME="ftype" CLASS="lms-input">
+                                <OPTION VALUE="0">{trans("- all -")}</OPTION>
+                                <OPTION VALUE="{CALL_INCOMING}" {if $params.ftype == CALL_INCOMING} SELECTED{/if}>{trans("incoming")}</OPTION>
+                                <OPTION VALUE="{CALL_OUTGOING}" {if $params.ftype == CALL_OUTGOING} SELECTED{/if}>{trans("outgoing")}</OPTION>
+                            </SELECT>
+                        </TD>
+                        <TD>
+                            <SELECT SIZE="1" NAME="fstatus" CLASS="lms-input">
+                                <OPTION VALUE="0">{trans("- all -")}</OPTION>
+                                <OPTION VALUE="{CALL_ANSWERED}"      {if $params.fstatus == CALL_ANSWERED}  SELECTED{/if}>{trans("answered")}</OPTION>
+                                <OPTION VALUE="{CALL_NO_ANSWER}"     {if $params.fstatus == CALL_NO_ANSWER} SELECTED{/if}>{trans("no answer")}</OPTION>
+                                <OPTION VALUE="{CALL_BUSY}"          {if $params.fstatus == CALL_BUSY}      SELECTED{/if}>{trans("busy<!voip>")}</OPTION>
+                                <OPTION VALUE="{CALL_SERVER_FAILED}" {if $params.fstatus == CALL_SERVER_FAILED} SELECTED{/if}>{trans("server error")}</OPTION>
+                            </SELECT>
+                        </TD>
+                    </TR>
+                </TABLE>
+            </FORM>
+        </TD>
+    </TR>
+    <TR>
+        <TD ALIGN="CENTER">
+            {box title="Billing list"}
+                <TABLE CLASS="billing-tab">
+                    <TR>
+                        <TD>{trans("Begin time:<!voip>")}</TD>
+                        <TD>{trans("Caller:")}</TD>
+                        <TD>{trans("Callee:")}</TD>
+                        <TD>{trans("Call begin time:")}</TD>
+                        <TD>{trans("Call answer time:")}</TD>
+                        <TD>{trans("Connection type:")}</TD>
+                        <TD>{trans("Status:")}</TD>
+                        <TD>{trans("Price:")}</TD>
+                        <TD>{trans("Others:")}</TD>
+                    </TR>
+
+                    {if $billings}
+                        {section name=i loop=$billings start=(($pagination->getCurrentPage()-1)*$pagination->getItemsPerPage()) max=$pagination->getItemsPerPage()}
+                            <TR>
+                                <TD>{$billings[i].begintime|date_format:"%e %B %Y %H:%M:%S"}</TD>
+                                <TD>{$billings[i].caller}</TD>
+                                <TD>{$billings[i].callee}</TD>
+                                <TD>{if $billings[i].callbegintime>60}{floor($billings[i].callbegintime/60)}min{/if} {$billings[i].callbegintime%60}s</TD>
+                                <TD>{if $billings[i].callanswertime>60}{floor($billings[i].callanswertime/60)}min{/if} {$billings[i].callanswertime%60}s</TD>
+                                <TD>
+                                    {if $billings[i].type == CALL_OUTGOING}
+                                        {trans("outgoing")}
+                                    {elseif $billings[i].type == CALL_INCOMING}
+                                           {trans("incoming")}
+                                    {/if}
+                                </TD>
+                                <TD>
+                                    {if $billings[i].status == CALL_BUSY}
+                                        {trans("busy<!voip>")}
+                                    {elseif $billings[i].status == CALL_ANSWERED}
+                                        {trans("answered")}
+                                    {elseif $billings[i].status == CALL_NO_ANSWER}
+                                        {trans("no answer")}
+                                    {elseif $billings[i].status == CALL_SERVER_FAILED}
+                                        {trans("server error")}
+                                    {/if}
+                                </TD>
+                                <TD>{$billings[i].price|money_format}</TD>
+                                <TD STYLE="text-align: right; color: black;">
+                                    {if $billings[i].callanswertime}
+                                        {if $billings[i].type == CALL_OUTGOING && $billings[i].caller_flags & CALL_FLAG_CUSTOMER_RECORDING}
+                                            <span class="ui-icon ui-icon-arrowthickstop-1-s"></span>
+                                            <span class="ui-icon ui-icon-volume-on"></span>
+                                        {elseif $billings[i].type == CALL_INCOMING && $billings[i].callee_flags & CALL_FLAG_CUSTOMER_RECORDING}
+                                            <audio src="?m=voip&record={$billings[i].id}" controls preload="none">
+                                                <progress min="0" max="100" value="0"></progress>
+                                                {trans("Your browser does not support the audio element.")}
+                                             </audio>
+                                        {/if}
+                                    {/if}
+                                </TD>
+                            </TR>
+                        {/section}
+                        <TR>
+                            {assign var=pagin_result value=$pagination->getPages()}
+                            {if $pagin_result.pages}
+                                <TD CLASS="pagination" COLSPAN="100%" STYLE="padding: 20px 0; text-align: center;">
+                                    {include file="pagination.html"}
+                                </TD>
+                            {else}
+                                <TD COLSPAN="100%" STYLE="padding: 10px 0;"></TD>
+                            {/if}
+                        </TR>
+                    {else}
+                        <TR>
+                            <TD COLSPAN="100%" STYLE="text-align: center; padding:20px 0; font-weight: bold;">
+                                {trans("No such data for selected period.")}
+                            </TD>
+                        </TR>
+                    {/if}
+                </TABLE>
+            {/box}
+        </TD>
+    </TR>
+</TABLE>
+
+<BR><BR>
+
+{include file="footer.html"}

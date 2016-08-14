@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.11-git
+ *  LMS version 1.11-git
  *
  *  (C) Copyright 2001-2016 LMS Developers
  *
@@ -24,27 +24,11 @@
  *  $Id$
  */
 
-define('VOIP_CALL_DIR', ConfigHelper::getConfig('voip.call_recording_directory',
-	SYS_DIR . DIRECTORY_SEPARATOR . 'voipcalls'));
-
-$filename = $DB->GetOne("SELECT uniqueid FROM voip_cdr WHERE id = ?", array($_GET['id']));
-$filepath = VOIP_CALL_DIR . DIRECTORY_SEPARATOR . $filename;
-
-if (empty($filename))
-	die;
-
-if (is_readable($filepath . '.mp3'))
-	$filepath .= '.mp3';
-elseif (is_readable($filepath . '.ogg'))
-	$filepath .= '.ogg';
-else
-	$filepath .= '.wav';
-
-header('Content-Type: ' . mime_content_type($filepath));
-
-$LMS->DB->GetAll($filepath);
-
-echo file_get_contents($filepath);
-die;
+$USERPANEL->AddModule(trans('Phone'),                                          // Display name
+                      'voip',                                                  // Module name - must be the same as directory name
+                      trans('View phone billings and listen recorded calls.'), // Tip
+                      60,                                                      // Priority
+                      trans('This module is for showing billing list.')        // Description
+                     );
 
 ?>

@@ -23,7 +23,7 @@ TEXTAREA.alert 	{ border-width: 1pt; border-color: #000000; border-style: solid;
 .tabnotsel:hover	{ font-size: 12px; text-decoration: none; color: white; }
 .tabsel:hover		{ font-size: 12px; text-decoration: none; color: black; }
 .superlight	{ background-color: #EEEEEE; }
-.light		{ background-color: #DDDDDD; }
+.light		{ background-color: #F1F1F1; }
 .dark		{ background-color: #CCCCCC; }
 .darkest	{ background-color: #BBBBBB; }
 .hand		{ cursor: pointer; }
@@ -109,4 +109,23 @@ TEXTAREA.alert 	{ border-width: 1pt; border-color: #000000; border-style: solid;
     line-height: 24px;
     /*border-top: 1px solid #B9B9B9;*/
     cursor: default;
+}
+
+.userbox {
+    border-spacing: 0;
+    border-collapse: separate;
+    border: 2px solid #940000;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.userbox-title {
+    text-align:left;
+    color: white;
+    white-space: nowrap;
+    background-color: #940000;
+    padding-left: 5px;
+    padding-top: 2px;
+    font-weight: bold;
+    margin: 0;
 }

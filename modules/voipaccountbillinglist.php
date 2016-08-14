@@ -39,14 +39,7 @@ function sessionHandler($item, $name) {
 $layout['pagetitle'] = trans('Billing list');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
-/*
-$o          = sessionHandler('o', 'vblo');
-$id         = sessionHandler('fvoipaccid', 'vblfvoipaccid');
-$frangefrom = sessionHandler('frangefrom', 'vblfrangefrom');
-$frangeto   = sessionHandler('frangeto', 'vblfrangeto');
-$ftype      = sessionHandler('ftype', 'vblftype');
-$fstatus    = sessionHandler('fstatus', 'vblfstatus');
-*/
+
 $params = array();
 $params['o']          = sessionHandler('o', 'vblo');
 $params['id']         = sessionHandler('fvoipaccid', 'vblfvoipaccid');
@@ -60,17 +53,13 @@ $bill_list = $LMS->getVoipBillings($params);
 // CALL BILLING RANGE
 if (!empty($params['frangefrom'])) {
 	list($year, $month, $day) = explode('/', $params['frangefrom']);
-	$from = mktime(0,0,0, $month, $day, $year);
-	$listdata['frangefrom'] = $from;
+	$listdata['frangefrom'] = mktime(0,0,0, $month, $day, $year);
 }
 
 if (!empty($params['frangeto'])) {
 	list($year, $month, $day) = explode('/', $params['frangeto']);
-	$to = mktime(23,59,59, $month, $day, $year);
-	$listdata['frangeto'] = $to;
+	$listdata['frangeto'] = mktime(23,59,59, $month, $day, $year);
 }
-
-unset($from, $to);
 
 // CALL STATUS
 if (!empty($params['fstatus']))

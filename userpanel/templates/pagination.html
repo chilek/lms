@@ -1,0 +1,41 @@
+<STYLE>
+.pagin-box .pagin-button {
+	display: inline-block;
+	text-decoration: none;
+	padding: 7px;
+	border-radius: 3px;
+	color: black;
+	border: 1px solid gray;
+}
+
+.pagin-box .active:hover {
+	cursor: pointer;
+	background-color: #940000;
+	color: white;
+	border: 1px solid black;	
+}
+
+.pagin-box .inactive {
+	background-color: lightgray;
+	pointer-events: none;
+    cursor: default;
+}
+</STYLE>
+
+<DIV CLASS="pagin-box">
+	{if $pagin_result.prev}
+		<A CLASS="pagin-button active" HREF="?{$pagination->getLink()}&page={$pagin_result.prev}">&laquo;&nbsp;{trans("Previous<!pagin>")}</A>
+	{/if}
+
+	{foreach from=$pagin_result.pages item=p}
+		{if $p.flag == "current"}
+			<A CLASS="pagin-button inactive" HREF="#">{$p.page_num}</A>
+		{else}
+			<A CLASS="pagin-button active" HREF="?{$pagination->getLink()}&page={$p.page_num}">{$p.page_num}</A>
+		{/if}
+	{/foreach}
+
+	{if $pagin_result.next}
+		<A CLASS="pagin-button active" HREF="?{$pagination->getLink()}&page={$pagin_result.next}">{trans("Next<!pagin>")}&nbsp;&raquo;</A>	
+	{/if}
+</DIV>

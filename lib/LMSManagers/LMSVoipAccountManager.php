@@ -437,7 +437,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
              case 'type':
              case 'price':
                  $order_string = ' ORDER BY ' . $order[0] . ' ' . $order[1];
-              break;
+             break;
 
              default:
                  $order_string = '';
@@ -447,24 +447,24 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         $where = array();
 
         // CUSTOMER ID
-        if (!empty($params['id']))
-            $where[] = '(cdr.callervoipaccountid = ' . $params['id'] . 'OR cdr.calleevoipaccountid = ' . $params['id'] . ')';
+        if (!empty($params['id'])) {
+            if (is_array($params['id'])) {
+                $tmp = '(' . implode(',', $params['id']) . ')';
+                $where[] = '(cdr.callervoipaccountid in ' . $tmp . ' OR cdr.calleevoipaccountid in' . $tmp . ')';
+                unset($tmp);
+            } else
+                $where[] = '(cdr.callervoipaccountid = ' . $params['id'] . 'OR cdr.calleevoipaccountid = ' . $params['id'] . ')';
+        }
 
         // CALL BILLING RANGE
         if (!empty($params['frangefrom'])) {
-            list($year, $month, $day) = explode('/', $param['frangefrom']);
-            $from = mktime(0,0,0, $month, $day, $year);
-
-            $where[] = 'call_start_time >= ' . $from;
-            unset($from);
+            list($year,$month,$day) = explode('/', $params['frangefrom']);
+            $where[] = 'call_start_time >= ' . mktime(0,0,0, $month, $day, $year);
         }
 
         if (!empty($params['frangeto'])) {
-            list($year, $month, $day) = explode('/', $param['frangeto']);
-            $to = mktime(23,59,59, $month, $day, $year);
-
-            $where[] = 'call_start_time <= ' . $to;
-            unset($to);
+            list($year,$month,$day) = explode('/', $params['frangeto']);
+            $where[] = 'call_start_time <= ' . mktime(23,59,59, $month, $day, $year);
         }
 
         // CALL STATUS
@@ -491,7 +491,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
         $DB = $this->db;
         $bill_list = $DB->GetAll('SELECT
-                                     cdr.id, caller, callee, price, call_start_time as begintime,
+                                     cdr.id, caller, callee, price, call_start_time as begintime, cdr.uniqueid,
                                      time_start_to_end as callbegintime, time_answer_to_end as callanswertime,
                                      cdr.type as type, callervoipaccountid, calleevoipaccountid,
                                      cdr.status as status, vacc.ownerid as callerownerid, vacc2.ownerid as calleeownerid,

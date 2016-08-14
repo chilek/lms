@@ -1,14 +1,10 @@
-<table width="100%" cellpadding="0" cellspacing="0" class="light">
+<table class="userbox light">
+    {if $boxtitle}
     <tr>
-	<td style="text-align:left; color: white; white-space: nowrap; background-color: #940000; padding-left: 5px; padding-top:2px;">
-	    <b>{$boxtitle}</b>
-	</td>
+        <td class="userbox-title">{$boxtitle}</td>
     </tr>
-</table>
-<table width="100%" cellpadding="3" class="light" style="border:solid; border-color: #940000; border-width: 2px;">
+    {/if}
     <tr>
-	<td>
-	    {$boxcontent}
-	</td>
+        <td>{$boxcontent}</td>
     </tr>
 </table>
