@@ -52,7 +52,7 @@
 			    <IMG src="img/info1.gif" alt="" {tip text=$nodelist[nodelist].info}>
 			{/if}
 			<span class="bold">{$nodelist[nodelist].name}</span></A><BR>
-			<img src="img/customer.gif" ALT="">&nbsp;<A href="?m=customerinfo&amp;id={$nodelist[nodelist].ownerid}" {tip a=$nodelist[nodelist].ownerid dynpopup='?m=customerinfoshort&amp;id=$a'}>{if ! $nodelist[nodelist].access}<font class="blend">{/if}{$nodelist[nodelist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</span>{/if}</A>
+			<img src="img/customer.gif" ALT="">&nbsp;<A href="?m=customerinfo&amp;id={$nodelist[nodelist].ownerid}" class="customerinfo" data-resourceid="{$nodelist[nodelist].ownerid}">{if ! $nodelist[nodelist].access}<font class="blend">{/if}{$nodelist[nodelist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</span>{/if}</A>
 		</TD>
 		<TD style="width: 1%; text-align: right; vertical-align: top;" onClick="return self.location.href='?m=nodeinfo&amp;id={$nodelist[nodelist].id}';">
 			<img src="img/empty.gif" ALT="" width="1" height="16">({$nodelist[nodelist].id|string_format:"%04d"})<BR>

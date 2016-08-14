@@ -192,9 +192,12 @@
 		var newcell = newrow.insertCell(0);
 		newcell.style.width = '100%';
 		newcell.innerHTML = '<INPUT TYPE="TEXT" NAME="ipadd[macs][' + nr + ']" VALUE=""'
-			+ ' onmouseover="popup(\'{trans("Enter MAC address")}\')" onmouseout="pophide()">'
+			+ ' title="{trans("Enter MAC address")}">'
 			+ '<a href="javascript: void(0);" onClick="return macchoosewin(document.editipaddr.elements[\'ipadd[macs][' + nr + ']\']);"'
-			+ ' onmouseover="popup(\'{trans("Click to select MAC from the list")}\')" onmouseout="pophide()">&nbsp;&raquo;&raquo;&raquo;</A>';
+			+ ' title="{trans("Click to select MAC from the list")}">&nbsp;&raquo;&raquo;&raquo;</A>';
+		$(newcell).children("[title]").tooltip({
+			position: { my: "left top" }
+		});
 		macscountelem.value = parseInt(nr) + 1;
 	}
 //-->

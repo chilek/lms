@@ -8,7 +8,7 @@
 <!--
 	$(function() {
 		var autocomplete = "off";
-		
+
 		$('.calendar').datepicker({
 			dateFormat: "yy/mm/dd"
 		})
@@ -20,6 +20,48 @@
 			closeOnDateSelect: true
 		})
 		.attr("autocomplete", autocomplete);
+
+		$('[title]').each(function() {
+			tooltipClass = "";
+			if ($(this).hasClass("alert")) {
+				tooltipClass += " alert";
+				if ($(this).hasClass("bold"))
+					tooltipClass += " bold";
+			} else if ($(this).hasClass("bold"))
+				tooltipClass += "bold";
+			$(this).tooltip({
+				show: { delay: 500 },
+				track: true,
+				tooltipClass: tooltipClass
+			});
+		});
+
+		[
+			{ class: 'invoiceinfo', url: '?m=invoiceinfo&id='},
+			{ class: 'docnumber', url: '?m=number&id='},
+			{ class: 'customerinfo', url: '?m=customerinfoshort&id='},
+			{ class: 'nodelist', url: '?m=nodelistshort&id='},
+			{ class: 'ewxnodelist', url: '?m=ewxnodelist&id='},
+			{ class: 'rtticketinfo', url: '?m=rtticketinfo&id='},
+			{ class: 'customerassignmentinfo', url: '?m=customerassignmentinfo&id='},
+			{ class: 'nodegroupinfo', url: '?m=nodeinfo&nodegroups=1&id='},
+			{ class: 'netdevlist', url: '?m=ewxdevlist&id='}
+		].forEach(function(popup) {
+			$('.' + popup.class).tooltip({
+				items: '.' + popup.class,
+				tooltipClass: popup.class,
+				content: function(callback) {
+					var elem = $(this);
+					var resourceid = elem.attr('data-resourceid');
+					$.ajax(popup.url + resourceid, {
+						async: true,
+						success: function(data) {
+							callback(data);
+						}
+					});
+				}
+			});
+		});
 	});
 //-->
 </script>

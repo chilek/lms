@@ -72,27 +72,6 @@
 		form.taxid.value = taxid;
 		form.valuebrutto.value = valuebrutto;
 	}
-
-	function deadline_calendar(elem)
-	{
-		var ts = get_cdate(), deadline = parseInt(elem.value);
-
-		// add paytime days to settlement date
-		ts.setDate(ts.getDate() + (deadline || 0));
-		// display calendar
-		cal3.popup(cal3.gen_date(ts));
-	 }
-
-	function get_cdate()
-	{
-		var ts = document.setcustomer.elements['invoice[cdate]'].value;
-
-		if (!ts.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/))
-			ts = '{$smarty.now|date_format:"%Y/%m/%d"}';
-
-		return cal3.prs_date(ts);
-	}
-
 //-->
 </script>
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
@@ -134,7 +113,7 @@
 			<B>{trans("Deadline:")}</B>
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="invoice[paytime]" VALUE="{$invoice.paytime}" SIZE="5" ID="paytime" onclick="deadline_calendar(this)" {tip text="Enter deadline in days (optional)"}>
+			<input type="text" name="invoice[deadline]" value="{$invoice.deadline|date_format:"%Y/%m/%d"}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter deadline date in YYYY/MM/DD format (empty field means default deadline) or click to select it from calendar" trigger="deadline"}>
 		</TD>
 	</TR>
 	<TR>
@@ -360,15 +339,7 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-deadline_callback = function(val)
-{
-	var ts = get_cdate(), deadline = cal3.prs_date(val);
-	deadline = parseInt((deadline - ts) / 86400000);
-	document.getElementById('paytime').value = deadline <= 0 ? '' : deadline;
-}
-var cal3 = new calendar(deadline_callback);
-cal3.time_comp = false;
-document.forms['setcustomer'].elements['invoice[cdate]'].focus();
+	document.forms['setcustomer'].elements['invoice[cdate]'].focus();
 //-->
 </SCRIPT>
 {/block}

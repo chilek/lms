@@ -70,6 +70,8 @@ version ?.??.?? (????-??-??):
     cash import record commit [chilan]
   - jquery and jquery-ui composer and header/layout template support [chilan]
   - got rid of old calendar js - use jquery calendar from now [chilan]
+  - ported almost all dynamic popups to jquery [chilan]
+  - added module to user panel for view VoIP billings [kosa/chilan]
 
 version 1.11.20 (2016-04-19):
 

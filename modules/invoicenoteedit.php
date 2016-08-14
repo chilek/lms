@@ -75,6 +75,7 @@ if (isset($_GET['id']) && $action == 'edit') {
 
 	$cnote['oldcdate'] = $cnote['cdate'];
 	$cnote['oldsdate'] = $cnote['sdate'];
+	$cnote['olddeadline'] = $cnote['deadline'] = $cnote['cdate'] + $cnote['paytime'] * 86400;
 	$SESSION->save('cnote', $cnote);
 	$SESSION->save('cnoteid', $cnote['id']);
 }
@@ -109,11 +110,6 @@ switch ($action) {
 			foreach ($cnote as $key => $val)
 				$cnote[$key] = $val;
 
-		$cnote['paytime'] = sprintf('%d', $cnote['paytime']);
-
-		if ($cnote['paytime'] < 0)
-			$cnote['paytime'] = 14;
-
 		$currtime = time();
 
 		if ($cnote['sdate']) {
@@ -143,6 +139,21 @@ switch ($action) {
 		} else
 			$cnote['cdate'] = $currtime;
 
+		if ($cnote['deadline']) {
+			list ($dyear, $dmonth, $dday) = explode('/', $cnote['deadline']);
+			if (checkdate($dmonth, $dday, $dyear))
+				$cnote['deadline'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $dmonth, $dday, $dyear);
+			else {
+				$error['deadline'] = trans('Incorrect date format!');
+				$cnote['deadline'] = $currtime;
+				break;
+			}
+		} else
+			$cnote['deadline'] = $currtime;
+
+		if ($cnote['deadline'] < $cnote['cdate'])
+			$error['deadline'] = trans('Deadline date should be later than consent date!');
+
 		$cnote = array_merge($oldcnote, $cnote);
 		break;
 
@@ -156,6 +167,8 @@ switch ($action) {
 		$currtime = time();
 		$cdate = $cnote['cdate'] ? $cnote['cdate'] : $currtime;
 		$sdate = $cnote['sdate'] ? $cnote['sdate'] : $currtime;
+		$deadline = $cnote['deadline'] ? $cnote['deadline'] : $currtime;
+		$paytime = $cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);
 		$iid   = $cnote['id'];
 
 		$newcontents = r_trim($_POST);
@@ -217,7 +230,7 @@ switch ($action) {
 		$args = array(
 			'cdate' => $cdate,
 			'sdate' => $sdate,
-			'paytime' => $cnote['paytime'],
+			'paytime' => $paytime,
 			'paytype' => $cnote['paytype'],
 			SYSLOG::RES_CUST => $customer['id'],
 			'name' => $customer['customername'],
@@ -284,13 +297,13 @@ switch ($action) {
 				$args = array(
 					SYSLOG::RES_DOC => $iid,
 					'itemid' => $itemid,
-					'value' => -$item['valuebrutto'],
+					'value' => str_replace(',', '.', -$item['valuebrutto']),
 					SYSLOG::RES_TAX => $item['taxid'],
 					'prodid' => $item['prodid'],
 					'content' => $item['content'],
 					'count' => $item['count'],
-					'pdiscount' => $item['pdiscount'],
-					'vdiscount' => $item['vdiscount'],
+					'pdiscount' => str_replace(',', '.', $item['pdiscount']),
+					'vdiscount' => str_replace(',', '.', $item['vdiscount']),
 					'name' => $item['name'],
 					SYSLOG::RES_TARIFF => $item['tariffid'],
 				);

@@ -76,7 +76,7 @@
 						{if $a.upceil}{$a.upceil} kbit/s{else}-{/if}
 					</TD>
 					<TD class="text-right nobr">
-						<img src="img/options.gif" alt="" {tip a=$a.id dynpopup='?m=customerassignmentinfo&amp;id=$a'}>
+						<img src="img/options.gif" alt="" class="customerassignmentinfo" data-resourceid="{$a.id}">
 					</TD>
 					{/if}
 					<TD class="nobr" OnClick="return self.location.href='?m=customerassignmentedit&amp;id={$a.id}'">

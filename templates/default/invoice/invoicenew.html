@@ -46,14 +46,6 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 		document.setcustomer.submit();
 	}
 
-	function setPayTime(type)
-	{
-		var list = document.setcustomer.elements['invoice[paytime_default]'];
-		list[0].checked = type ? true : false;
-		list[1].checked = type ? false : true;
-		document.getElementById('paytime').style.visibility = type ? 'hidden' : 'visible';
-	}
-
 	function printinvoice()
 	{
 		var add = "";
@@ -64,26 +56,6 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 
 		document.additem.action="?m=invoicenew&action=save&print=1" + add;
 		document.additem.submit();
-	}
-
-	function deadline_calendar(elem)
-	{
-		var ts = get_cdate(), deadline = parseInt(elem.value);
-
-		// add paytime days to settlement date
-		ts.setDate(ts.getDate()+(deadline || 0));
-		// display calendar
-		cal3.popup(cal3.gen_date(ts));
-	}
-
-	function get_cdate()
-	{
-		var ts = document.setcustomer.elements['invoice[cdate]'].value;
-
-		if (!ts.match(/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/))
-			ts = '{$smarty.now|date_format:"%Y/%m/%d"}';
-
-		return cal3.prs_date(ts);
 	}
 //-->
 </script>
@@ -144,10 +116,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			{trans("Deadline:")}
 		</TD>
 		<TD style="width: 99%;" class="nobr">
-			<INPUT type="radio" name="invoice[paytime_default]" value="1" id="type1" onchange="setPayTime(1)"{if !isset($invoice.paytime_default) || $invoice.paytime_default} checked{/if}><label for="type1">{trans("default")}</label>
-			<INPUT type="radio" name="invoice[paytime_default]" value="0" id="type0" onchange="setPayTime(0)"{if isset($invoice.paytime_default) && !$invoice.paytime_default} checked{/if}><label for="type0">{trans("other")}</label>
-			<INPUT type="text" name="invoice[paytime]" value="{$invoice.paytime}" size="5" ID="paytime" onclick="deadline_calendar(this)"
-			{if !isset($invoice.paytime_default) || $invoice.paytime_default} style="visibility: hidden"{/if} {tip text="Enter deadline in days (optional)" trigger="paytime"}>
+			<input type="text" name="invoice[deadline]" value="{$invoice.deadline|date_format:"%Y/%m/%d"}" size="12" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter deadline date in YYYY/MM/DD format (empty field means default deadline) or click to select it from calendar" trigger="deadline"}>
 		</TD>
 	</TR>
 	<TR>
@@ -299,6 +268,68 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 		</TD>
 	</TR>
 	</THEAD>
+	<TBODY>
+	{cycle values="light,lucid" print=false}
+	{foreach from=$contents item=item}
+	<TR class="highlight {cycle}">
+		<TD style="width: 1%;" class="bold">
+			{counter}.
+		</TD>
+		<TD style="width: 92%;">
+			{$item.name}
+		</TD>
+		<TD style="width: 1%;" class="nobr">
+			{$item.prodid}
+		</TD>
+		<TD style="width: 1%;" class="text-right nobr">
+			{$item.count|string_format:"%.2f"}<BR>
+			{$item.jm}
+		</TD>
+		<TD style="width: 1%;" class="text-right nobr">
+			{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f%%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|money_format}{/if}{/if}
+		</TD>
+		<TD style="width: 1%;" class="text-right nobr">
+			{$item.valuenetto|money_format}<BR>
+			{$item.s_valuenetto|money_format}
+		</TD>
+		<TD style="width: 1%;" class="text-right nobr">
+			{$item.tax}
+		</TD>
+		<TD style="width: 1%;" class="text-right">
+			{$item.valuebrutto|money_format}<BR>
+			{$item.s_valuebrutto|money_format}
+		</TD>
+		<TD style="width: 1%;" class="nobr">
+			<A href="?m=invoicenew&amp;action=deletepos&posuid={$item.posuid}"><IMG src="img/delete.gif" {tip text="Remove this item from list"}></A>
+		</TD>
+	</TR>
+	{foreachelse}
+	<TR>
+		<TD colspan="9" class="empty-table">
+			<P>{trans("Invoice have no items. Use form below for items addition.")}</P>
+		</TD>
+	</TR>
+	{/foreach}
+	{if $contents}
+	<TR>
+		<TD colspan="5" width="96%" class="text-right bold">
+			{trans("Total:")}
+		</TD>
+		<TD style="width: 1%;" class="text-right bold nobr">
+			{sum array=$contents column=s_valuenetto string_format="%01.2f"}
+		</TD>
+		<TD style="width: 1%;">
+			&nbsp;
+		</TD>
+		<TD style="width: 1%;" class="text-right bold nobr">
+			{sum array=$contents column=s_valuebrutto string_format="%01.2f"}
+		</TD>
+		<TD style="width: 1%;">
+			&nbsp;
+		</TD>
+	</TR>
+	{/if}
+	</TBODY>
 	<TFOOT>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr">
@@ -367,82 +398,13 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			{/if}
 		</TD>
 	</TR>
-</tfoot>
+	</TFOOT>
 </table>
 </FORM>
 
-<table class="lmsbox">
-	{cycle values="light,lucid" print=false}
-	{foreach from=$contents item=item}
-	<TR class="highlight {cycle}">
-		<TD style="width: 1%;" class="bold">
-			{counter}.
-		</TD>
-		<TD style="width: 92%;">
-			{$item.name}
-		</TD>
-		<TD style="width: 1%;" class="nobr">
-			{$item.prodid}
-		</TD>
-		<TD style="width: 1%;" class="text-right nobr">
-			{$item.count|string_format:"%.2f"}<BR>
-			{$item.jm}
-		</TD>
-		<TD style="width: 1%;" class="text-right nobr">
-			{if $item.pdiscount != 0}{$item.pdiscount|string_format:"%.2f%%"}{else}{if $item.vdiscount != 0}{$item.vdiscount|money_format}{/if}{/if}
-		</TD>
-		<TD style="width: 1%;" class="text-right nobr">
-			{$item.valuenetto|money_format}<BR>
-			{$item.s_valuenetto|money_format}
-		</TD>
-		<TD style="width: 1%;" class="text-right nobr">
-			{$item.tax}
-		</TD>
-		<TD style="width: 1%;" class="text-right">
-			{$item.valuebrutto|money_format}<BR>
-			{$item.s_valuebrutto|money_format}
-		</TD>
-		<TD style="width: 1%;" class="nobr">
-			<A href="?m=invoicenew&amp;action=deletepos&posuid={$item.posuid}"><IMG src="img/delete.gif" {tip text="Remove this item from list"}></A>
-		</TD>
-	</TR>
-	{foreachelse}
-	<TR>
-		<TD colspan="9" class="empty-table">
-			<P>{trans("Invoice have no items. Use form below for items addition.")}</P>
-		</TD>
-	</TR>
-	{/foreach}
-	{if $contents}
-	<TR>
-		<TD colspan="5" width="96%" class="text-right bold">
-			{trans("Total:")}
-		</TD>
-		<TD style="width: 1%;" class="text-right bold nobr">
-			{sum array=$contents column=s_valuenetto string_format="%01.2f"}
-		</TD>
-		<TD style="width: 1%;">
-			&nbsp;
-		</TD>
-		<TD style="width: 1%;" class="text-right bold nobr">
-			{sum array=$contents column=s_valuebrutto string_format="%01.2f"}
-		</TD>
-		<TD style="width: 1%;">
-			&nbsp;
-		</TD>
-	</TR>
-	{/if}
-</TABLE>
 <SCRIPT type="text/javascript">
 <!--
-deadline_callback = function(val) {
-	var ts = get_cdate(), deadline = cal3.prs_date(val);
-	deadline = parseInt((deadline - ts) / 86400000);
-	document.getElementById('paytime').value = deadline <= 0 ? '' : deadline;
-}
-var cal3 = new calendar(deadline_callback);
-cal3.time_comp = false;
-document.forms['setcustomer'].elements['invoice[number]'].focus();
+	document.forms['setcustomer'].elements['invoice[number]'].focus();
 //-->
 </SCRIPT>
 {/block}
