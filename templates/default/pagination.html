@@ -1,3 +1,7 @@
+{if isset($layout.userpanel_module)}
+	{$layout['module'] = $layout['userpanel_module']}
+{/if}
+
 <span class="bold">
 {trans("Page:")}
 {if $pagination->getPage() > 1}

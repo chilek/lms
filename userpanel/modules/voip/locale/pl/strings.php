@@ -1,9 +1,9 @@
 <?php
 
 /*
- * LMS version 1.11-git
+ *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2013 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,27 +24,10 @@
  *  $Id$
  */
 
-define('VOIP_CALL_DIR', ConfigHelper::getConfig('voip.call_recording_directory',
-	SYS_DIR . DIRECTORY_SEPARATOR . 'voipcalls'));
-
-$filename = $DB->GetOne("SELECT uniqueid FROM voip_cdr WHERE id = ?", array($_GET['id']));
-$filepath = VOIP_CALL_DIR . DIRECTORY_SEPARATOR . $filename;
-
-if (empty($filename))
-	die;
-
-if (is_readable($filepath . '.mp3'))
-	$filepath .= '.mp3';
-elseif (is_readable($filepath . '.ogg'))
-	$filepath .= '.ogg';
-else
-	$filepath .= '.wav';
-
-header('Content-Type: ' . mime_content_type($filepath));
-
-$LMS->DB->GetAll($filepath);
-
-echo file_get_contents($filepath);
-die;
+$_LANG['View phone billings and listen recorded calls.'] = 'Przeglądaj bilingi telefoniczne i odsłuchuj nagrane rozmowy.';
+$_LANG['Filters:'] = 'Filtry:';
+$_LANG['My accounts:'] = 'Moje konta:';
+$_LANG['Date range:'] = 'Zakres dat:';
+$_LANG['Others:'] = 'Inne:';
 
 ?>

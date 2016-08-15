@@ -2228,6 +2228,16 @@ class LMS
         $manager = $this->getVoipAccountManager();
         return $manager->voipAccountUpdate($voipaccountdata);
     }
+    
+    public function getVoipBillings(array $params)
+    {
+    	$manager = $this->getVoipAccountManager();
+        return $manager->getVoipBillings($params);
+    }
+    
+	/**
+	 * End VoIP functions
+	 */
 
     public function GetCustomerVoipAccounts($id)
     {

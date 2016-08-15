@@ -40,106 +40,46 @@ $layout['pagetitle'] = trans('Billing list');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$o = sessionHandler('o', 'vblo');
-$id = sessionHandler('fvoipaccid', 'vblfvoipaccid');
-$frangefrom = sessionHandler('frangefrom', 'vblfrangefrom');
-$frangeto = sessionHandler('frangeto', 'vblfrangeto');
-$ftype = sessionHandler('ftype', 'vblftype');
-$fstatus = sessionHandler('fstatus', 'vblfstatus');
+$params = array();
+$params['o']          = sessionHandler('o', 'vblo');
+$params['id']         = sessionHandler('fvoipaccid', 'vblfvoipaccid');
+$params['frangefrom'] = sessionHandler('frangefrom', 'vblfrangefrom');
+$params['frangeto']   = sessionHandler('frangeto', 'vblfrangeto');
+$params['ftype']      = sessionHandler('ftype', 'vblftype');
+$params['fstatus']    = sessionHandler('fstatus', 'vblfstatus');
 
-// ORDER
-$order = explode(',', $o);
-if (empty($order[1]) || $order[1] != 'desc')
-	 $order[1] = 'asc';
-
- switch ($order[0]) {
-	case 'caller_name':
-	case 'callee_name':
-	case 'caller':
-	case 'callee':
-	case 'begintime':
-	case 'callbegintime':
-	case 'callanswertime':
-	case 'status':
-	case 'type':
-	case 'price':
-		$order_string = ' ORDER BY ' . $order[0] . ' ' . $order[1];
-	break;
-
-	default:
-		$order_string = '';
-}
-
-// FILTERS
-$where = array();
-
-// CUSTOMER ID
-if ($id !== '')
-	$where[] = "(cdr.callervoipaccountid = $id OR cdr.calleevoipaccountid = $id)";
+$bill_list = $LMS->getVoipBillings($params);
 
 // CALL BILLING RANGE
-if ($frangefrom != '') {
-	list($year, $month, $day) = explode('/', $frangefrom);
-	$from = mktime(0,0,0, $month, $day, $year);
-
-	$where[] = 'call_start_time >= ' . $from;
-	$listdata['frangefrom'] = $from;
-	unset($from);
+if (!empty($params['frangefrom'])) {
+	list($year, $month, $day) = explode('/', $params['frangefrom']);
+	$listdata['frangefrom'] = mktime(0,0,0, $month, $day, $year);
 }
 
-if ($frangeto != '') {
-	list($year, $month, $day) = explode('/', $frangeto);
-	$to = mktime(23,59,59, $month, $day, $year);
-
-	$where[] = 'call_start_time <= ' . $to;
-	$listdata['frangeto'] = $to;
-	unset($to);
+if (!empty($params['frangeto'])) {
+	list($year, $month, $day) = explode('/', $params['frangeto']);
+	$listdata['frangeto'] = mktime(23,59,59, $month, $day, $year);
 }
 
 // CALL STATUS
-if ($fstatus != '')
-	switch ($fstatus) {
+if (!empty($params['fstatus']))
+	switch ($params['fstatus']) {
 		case CALL_ANSWERED:
 		case CALL_NO_ANSWER:
 		case CALL_BUSY:
 		case CALL_SERVER_FAILED:
-			$where[] = "cdr.status = " . $fstatus;
-			$listdata['fstatus'] = $fstatus;
+			$listdata['fstatus'] = $params['fstatus'];
 		break;
 	}
 
 // CALL TYPE
-if ($ftype != '')
-	switch ($ftype) {
+if (!empty($params['ftype']))
+	switch ($params['ftype']) {
 		case CALL_OUTGOING:
 		case CALL_INCOMING:
-			$where[] = "cdr.type = " . $ftype;
-			$listdata['ftype'] = $ftype;
+			$listdata['ftype'] = $params['ftype'];
 		break;
 	}
-
-if ($where) {
-	$where_string = ' WHERE ';
-	foreach ($where as $single_condition)
-		$where_string .= $single_condition . ' AND ';
-	$where_string = rtrim($where_string, ' AND ');
-}
-else
-	$where_string = '';
-
-$bill_list = $DB->GetAll('SELECT
-								   cdr.id, caller, callee, price, call_start_time as begintime, time_start_to_end as callbegintime, time_answer_to_end as callanswertime,
-								   cdr.type as type, callervoipaccountid, calleevoipaccountid, cdr.status as status, vacc.ownerid as callerownerid, vacc2.ownerid as calleeownerid,
-								   c1.name as caller_name, c1.lastname as caller_lastname, c1.city as caller_city, c1.street as caller_street, c1.building as caller_building,
-								   c2.name as callee_name, c2.lastname as callee_lastname, c2.city as callee_city, c2.street as callee_street, c2.building as callee_building,
-								   caller_flags, callee_flags
-								FROM
-								   voip_cdr cdr
-								   left join voipaccounts vacc on cdr.callervoipaccountid = vacc.id
-								   left join voipaccounts vacc2 on cdr.calleevoipaccountid = vacc2.id
-								   left join customers c1 on c1.id = vacc.ownerid
-								   left join customers c2 on c2.id = vacc2.ownerid' .
-								$where_string . $order_string);
 
 $voipaccountlist = $LMS->GetVoipAccountList($o, NULL, NULL);
 unset($voipaccountlist['total']);
@@ -150,6 +90,10 @@ $page = !$_GET['page'] ? 1 : intval($_GET['page']);
 $total = intval(count($bill_list));
 $limit = intval(ConfigHelper::getConfig('phpui.billinglist_pagelimit', 100));
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
+
+$order = explode(',', $params['o']);
+if (empty($order[1]) || $order[1] != 'desc')
+	$order[1] = 'asc';
 
 $listdata['order'] = $order[0];
 $listdata['direction'] = $order[1];
