@@ -23,24 +23,24 @@
 
 $this->BeginTrans();
 
-$this->Execute("RENAME TABLE voip_rules TO voip_rule_groups;
-     
-                RENAME TABLE voip_group_rule_assignments TO voip_rules;
-     
-     			ALTER TABLE voip_rules
-     			DROP FOREIGN KEY voip_rules_ibfk_1,
-				CHANGE COLUMN ruleid rule_group_id INT(11) DEFAULT NULL,
-				ADD CONSTRAINT voip_rules_ibfk_3 FOREIGN KEY (rule_group_id) REFERENCES voip_rule_groups(id);
-				
-				ALTER TABLE voip_rules
-				DROP FOREIGN KEY voip_rules_ibfk_2,
-				CHANGE COLUMN groupid prefix_group_id INT(11) DEFAULT NULL,
-				ADD CONSTRAINT voip_rules_ibfk_4 FOREIGN KEY (prefix_group_id) REFERENCES voip_prefix_groups(id);
-     
-                ALTER TABLE voip_rules CHANGE rule_settings settings text NULL;
-                      
-                UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016080800', 'dbversion'));
-                
+$this->Execute("RENAME TABLE voip_rules TO voip_rule_groups");
+
+$this->Execute("RENAME TABLE voip_group_rule_assignments TO voip_rules");
+
+$this->Execute("ALTER TABLE voip_rules
+	DROP FOREIGN KEY voip_rules_ibfk_1,
+	DROP FOREIGN KEY voip_rules_ibfk_2,
+	CHANGE COLUMN ruleid rule_group_id INT(11) DEFAULT NULL,
+	CHANGE COLUMN groupid prefix_group_id INT(11) DEFAULT NULL");
+
+$this->Execute("ALTER TABLE voip_rules
+	ADD CONSTRAINT voip_rules_ibfk_4 FOREIGN KEY (prefix_group_id) REFERENCES voip_prefix_groups(id),
+	ADD CONSTRAINT voip_rules_ibfk_3 FOREIGN KEY (rule_group_id) REFERENCES voip_rule_groups(id)");
+
+$this->Execute("ALTER TABLE voip_rules CHANGE rule_settings settings text NULL");
+
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016080800', 'dbversion'));
+
 $this->CommitTrans();
 
 ?>
