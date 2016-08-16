@@ -70,13 +70,13 @@ if (isset($_GET['record'])) {
 function module_main() {
     global $LMS, $SMARTY, $SESSION;
 
-    $voip_accs = $LMS->DB->GetAll('SELECT id, phone
+    $voip_accs = $LMS->DB->GetAllByKey('SELECT id, phone
                                    FROM voipaccounts
-                                   WHERE ownerid = ?',
+                                   WHERE ownerid = ?', 'id',
                                    array($SESSION->id));
 
     $params = array();
-    $user_accounts_ids = array_column($voip_accs, 'id');
+    $user_accounts_ids = array_keys($voip_accs);
 
     if (empty($_GET['account']) && count($user_accounts_ids) > 1) {
         $params['id'] = $user_accounts_ids;
