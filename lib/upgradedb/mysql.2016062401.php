@@ -24,31 +24,31 @@
 $this->BeginTrans();
 
 $this->Execute("CREATE TABLE voip_rules (
-						id int(11) NOT NULL AUTO_INCREMENT,
-						name text NOT NULL,
-						description text NULL,
-						PRIMARY KEY (id)
-					) ENGINE=InnoDB;
+	id int(11) NOT NULL AUTO_INCREMENT,
+	name text NOT NULL,
+	description text NULL,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB");
 
-					CREATE TABLE voip_group_rule_assignments (
-						id int(11) NOT NULL AUTO_INCREMENT,
-						ruleid int(11) NOT NULL,
-						groupid int(11) NOT NULL,
-						rule_settings text NULL,
-						FOREIGN KEY (ruleid) REFERENCES voip_rules(id) ON DELETE CASCADE ON UPDATE CASCADE,
-						FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
-						PRIMARY KEY (id)
-					) ENGINE=InnoDB;
+$this->Execute("CREATE TABLE voip_group_rule_assignments (
+	id int(11) NOT NULL AUTO_INCREMENT,
+	ruleid int(11) NOT NULL,
+	groupid int(11) NOT NULL,
+	rule_settings text NULL,
+	FOREIGN KEY (ruleid) REFERENCES voip_rules(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB");
 
-					DROP TABLE IF EXISTS voip_tariff_rules;
-					CREATE TABLE voip_tariff_rules (
-						id int(11) NOT NULL AUTO_INCREMENT,
-						tarifid int(11) NOT NULL,
-						ruleid int(11) NULL,
-						FOREIGN KEY (tarifid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
-						FOREIGN KEY (ruleid) REFERENCES voip_rules(id) ON DELETE CASCADE ON UPDATE CASCADE,
-						PRIMARY KEY (id)
-					) ENGINE=InnoDB;");
+$this->Execute("DROP TABLE IF EXISTS voip_tariff_rules");
+$this->Execute("CREATE TABLE voip_tariff_rules (
+	id int(11) NOT NULL AUTO_INCREMENT,
+	tarifid int(11) NOT NULL,
+	ruleid int(11) NULL,
+	FOREIGN KEY (tarifid) REFERENCES tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (ruleid) REFERENCES voip_rules(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016062401', 'dbversion'));
 
