@@ -146,9 +146,9 @@ class LMSPagination_ext {
         }
 
         if ($range && isset($pages[$current_page-1])) {
-            reset($pages);
-            while (current($pages)['page_num'] != $current_page) {
-                next($pages);
+            $current = reset($pages);
+            while ($current !== false && $current['page_num'] != $current_page) {
+                $current = next($pages);
             }
 
             $steps = 2*$range - count(array_slice($pages, $current_page, $range));

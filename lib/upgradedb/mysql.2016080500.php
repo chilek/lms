@@ -23,61 +23,60 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE tariffs ADD COLUMN voip_tariff_id int(11) DEFAULT NULL;
-                ALTER TABLE tariffs ADD COLUMN voip_tariff_rule_id int(11) DEFAULT NULL;
-                
-                ALTER TABLE voip_prefixes DROP INDEX prefix;
-                ALTER TABLE voip_prefixes ADD UNIQUE (prefix, groupid);
+$this->Execute("ALTER TABLE tariffs ADD COLUMN voip_tariff_id int(11) DEFAULT NULL");
 
-                CREATE TABLE voip_price_groups (
-                   id              int(11)       NOT NULL AUTO_INCREMENT,
-                   voip_tariff_id  int(11)       NOT NULL,
-                   prefix_group_id int(11)       NOT NULL,
-                   price           decimal(12,5) DEFAULT 0 NOT NULL,
-                   unitsize        smallint      DEFAULT 0 NOT NULL,
-                   PRIMARY KEY (id)
-                ) ENGINE=InnoDB;
+$this->Execute("ALTER TABLE tariffs ADD COLUMN voip_tariff_rule_id int(11) DEFAULT NULL");
+$this->Execute("ALTER TABLE voip_prefixes DROP INDEX prefix");
+$this->Execute("ALTER TABLE voip_prefixes ADD UNIQUE (prefix, groupid)");
 
-                INSERT INTO
-                   voip_price_groups (voip_tariff_id, prefix_group_id, price, unitsize)
-                SELECT tariffid, groupid, price, unitsize FROM voip_tariffs;
+$this->Execute("CREATE TABLE voip_price_groups (
+   id              int(11)       NOT NULL AUTO_INCREMENT,
+   voip_tariff_id  int(11)       NOT NULL,
+   prefix_group_id int(11)       NOT NULL,
+   price           decimal(12,5) DEFAULT 0 NOT NULL,
+   unitsize        smallint      DEFAULT 0 NOT NULL,
+   PRIMARY KEY (id)
+) ENGINE=InnoDB");
 
-                DROP TABLE IF EXISTS voip_tariffs;
-                CREATE TABLE voip_tariffs (
-                   id          int(11)      NOT NULL AUTO_INCREMENT,
-                   name        varchar(100) NOT NULL,
-                   description text         NULL DEFAULT NULL,
-                   PRIMARY KEY (id)
-                ) ENGINE=InnoDB;
+$this->Execute("INSERT INTO voip_price_groups (voip_tariff_id, prefix_group_id, price, unitsize)
+	SELECT tariffid, groupid, price, unitsize FROM voip_tariffs");
 
-                INSERT INTO voip_tariffs (id, name)
-                SELECT DISTINCT voip_tariff_id, 'default_name' FROM voip_price_groups;
+$this->Execute("DROP TABLE IF EXISTS voip_tariffs");
+$this->Execute("CREATE TABLE voip_tariffs (
+   id          int(11)      NOT NULL AUTO_INCREMENT,
+   name        varchar(100) NOT NULL,
+   description text         NULL DEFAULT NULL,
+   PRIMARY KEY (id)
+) ENGINE=InnoDB");
 
-                ALTER TABLE voip_price_groups ADD CONSTRAINT price_tariffid
-                FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE;
-                
-                ALTER TABLE voip_price_groups ADD CONSTRAINT group_id_fk
-                FOREIGN KEY (prefix_group_id) REFERENCES voip_prefix_groups (id) ON DELETE CASCADE ON UPDATE CASCADE;
+$this->Execute("INSERT INTO voip_tariffs (id, name)
+	SELECT DISTINCT voip_tariff_id, 'default_name' FROM voip_price_groups");
 
-				ALTER TABLE tariffs ADD CONSTRAINT tariff_id_fk
-                FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE;
+$this->Execute("ALTER TABLE voip_price_groups ADD CONSTRAINT price_tariffid
+	FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE");
 
-                ALTER TABLE tariffs ADD CONSTRAINT tariff_rule_id_fk
-                FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rules (id) ON DELETE SET NULL ON UPDATE CASCADE");
-                
+$this->Execute("ALTER TABLE voip_price_groups ADD CONSTRAINT group_id_fk
+	FOREIGN KEY (prefix_group_id) REFERENCES voip_prefix_groups (id) ON DELETE CASCADE ON UPDATE CASCADE");
+
+$this->Execute("ALTER TABLE tariffs ADD CONSTRAINT tariff_id_fk
+	FOREIGN KEY (voip_tariff_id) REFERENCES voip_tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE");
+
+$this->Execute("ALTER TABLE tariffs ADD CONSTRAINT tariff_rule_id_fk
+	FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rules (id) ON DELETE SET NULL ON UPDATE CASCADE");
+
 $this->Execute("CREATE TABLE voip_rule_states (
-                    id              int(11) NOT NULL AUTO_INCREMENT,
-                    voip_account_id int(11) NOT NULL
-                        REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
-                    rule_id         int(11) NOT NULL
-                        REFERENCES voip_group_rule_assignments (id) ON DELETE CASCADE ON UPDATE CASCADE,
-                    units_left      int(11) NOT NULL,
-                    PRIMARY KEY(id),
-                    UNIQUE(voip_account_id, rule_id)
-                );
-     
-                UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016080500', 'dbversion'));
-                
+  id              int(11) NOT NULL AUTO_INCREMENT,
+  voip_account_id int(11) NOT NULL,
+  rule_id         int(11) NOT NULL,
+  units_left      int(11) NOT NULL,
+  PRIMARY KEY(id),
+  UNIQUE(voip_account_id, rule_id),
+  FOREIGN KEY (voip_account_id) REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (rule_id) REFERENCES voip_group_rule_assignments (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB");
+
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016080500', 'dbversion'));
+
 $this->CommitTrans();
 
 ?>

@@ -154,7 +154,7 @@
 		<TD style="width: 98%;" class="multiselect nobr">
 			<SELECT name="event[userlist][]" id="userid" multiple>
 				{foreach $userlist as $user}
-				<OPTION value="{$user.id}"{if in_array($user.id, $event.userlist)} selected{/if}>{$user.name}</OPTION>
+				<OPTION value="{$user.id}"{if !empty($event.userlist) && in_array($user.id, $event.userlist)} selected{/if}>{$user.name}</OPTION>
 				{/foreach}
 			</SELECT>
 
