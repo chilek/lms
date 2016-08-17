@@ -336,6 +336,59 @@ $assigns = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
 	DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
 	$currtime, $currtime));
 
+
+$date = new DateTime(date("Y-m-d"));
+$time = $date->format("U");
+unset($date);
+
+$query = 'SELECT a.tariffid, a.customerid, 
+		a.period, a.at, a.suspended, a.settlement, a.datefrom, a.pdiscount, a.vdiscount, 
+		a.invoice, t.description AS description, a.id AS assignmentid, 
+		c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
+		d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
+		t.type AS tarifftype, 
+		t.name AS name, 
+		t.taxid AS taxid, 
+		
+		ROUND((SELECT sum(price) FROM voip_cdr vc LEFT JOIN voipaccounts va ON vc.callervoipaccountid = va.id
+			   WHERE va.ownerid = 6 AND
+			   vc.call_start_time >= ISNULL((CASE a.period
+			                          WHEN ' . YEARLY     . ' THEN ' . strtotime("-1 year" , $time) . '
+ 			                          WHEN ' . HALFYEARLY . ' THEN ' . strtotime("-6 month" , $time) . '
+			                          WHEN ' . QUARTERLY  . ' THEN ' . strtotime("-3 month" , $time) . '
+			                          WHEN ' . MONTHLY    . ' THEN ' . strtotime("-1 month" , $time) . '
+			                          WHEN ' . DISPOSABLE . ' THEN ' . strtotime("-1 day"   , $time) . "
+			                          END),0),2) AS value,
+			   
+		(SELECT COUNT(id) FROM assignments 
+			WHERE customerid = c.id AND tariffid = 0 AND liabilityid = 0 
+			AND datefrom <= $currtime
+			AND (dateto > $currtime OR dateto = 0)) AS allsuspended 
+	FROM assignments a 
+	JOIN customers c ON (a.customerid = c.id) 
+	LEFT JOIN tariffs t ON (a.tariffid = t.id) 
+	LEFT JOIN divisions d ON (d.id = c.divisionid) 
+	WHERE (c.status = ? OR c.status = ?)
+		AND ((a.period = ? AND at = ?)
+			OR ((a.period = ?
+			OR (a.period = ? AND at = ?)
+			OR (a.period = ? AND at = ?)
+			OR (a.period = ? AND at = ?)
+			OR (a.period = ? AND at = ?)
+			OR (a.period = ? AND at = ?))
+			AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
+		.(!empty($groupnames) ? $customergroups : "")
+	." ORDER BY a.customerid, a.invoice, a.paytype, a.numberplanid, value DESC";
+
+$billings = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
+	DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
+	$currtime, $currtime));	
+	
+foreach ($billings as $v)
+	array_push($assigns, $v);
+
+print_r($assigns);
+
 if (empty($assigns))
 	die;
 
@@ -357,6 +410,7 @@ foreach ($assigns as $assign) {
 		$desc = $assign['name'];
 	else
 		$desc = $comment;
+		               echo 1;
 	$desc = preg_replace("/\%type/", $assign['tarifftype'] != TARIFF_OTHER ? $TARIFFTYPES[$assign['tarifftype']] : '', $desc);
 	$desc = preg_replace("/\%tariff/", $assign['name'], $desc);
 	$desc = preg_replace("/\%attribute/", $assign['attribute'], $desc);
