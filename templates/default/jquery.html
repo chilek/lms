@@ -63,6 +63,15 @@
 				}
 			});
 		});
+
+		$('.rtattachment').tooltip({
+			items: '.rtattachment',
+			tooltipClass: 'rtattachment',
+			content: function() {
+				var href = $(this).attr('href');
+				return '<img src="' + href + '" style="max-width: 300px;">';
+			}
+		});
 	});
 //-->
 </script>

@@ -65,7 +65,9 @@
 					<TD style="width: 97%;" class="text-right">
 						{if $message.attachments}
 						{foreach $message.attachments as $attachment}
-						<A href="?m=rtmessageview&amp;tid={$ticket.ticketid}&amp;mid={$message.id}&amp;file={$attachment.filename}"{if $attachment.contenttype == "image/jpeg" || $attachment.contenttype == "image/png" || $attachment.contenttype == "image/gif"} onmouseover="popup('?m=rtattachmentview&amp;tid={$ticket.ticketid}&amp;mid={$message.id}&amp;file={$attachment.filename}',1,0,30,15);" onmouseout="pophide();"{/if}>{$attachment.filename} <IMG src="img/attach.gif" alt=""></A>
+						<A href="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={$attachment.filename}"{if $attachment.contenttype == "image/jpeg" || $attachment.contenttype == "image/png" || $attachment.contenttype == "image/gif"} class="rtattachment"{/if}>{$attachment.filename}
+							<IMG src="img/attach.gif" alt="">
+						</A>
 						{/foreach}
 						{/if}
 						<A href="?m=rtmessageview&amp;id={$message.id}">{trans("Details")} <IMG src="img/view.gif" alt=""></A>

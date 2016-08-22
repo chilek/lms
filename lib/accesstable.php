@@ -70,7 +70,7 @@ $access_table = array(
 	),
 	'helpdesk_operation' => array(
 		'label' => trans('Helpdesk (RT) operation'),
-		'allow_regexp' => '^(rtsearch|rtattachmentview|rtqueue(list|info|view)|(rtticket|rtmessage|rtnote)(add|edit|info|view|del|print))$',
+		'allow_regexp' => '^(rtsearch|rtqueue(list|info|view)|(rtticket|rtmessage|rtnote)(add|edit|info|view|del|print))$',
 	),
 	'hosting_management' => array(
 		'label' => trans('hosting management'),
