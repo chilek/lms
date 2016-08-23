@@ -82,9 +82,10 @@
 			modal: true,
 			autoOpen: false,
 			resizable: false,
-			width: '30%',
 			dialogClass: 'rtattachmentdialog',
 			open: function(event, ui) {
+				$(this).dialog('option', 'position', { my: 'center', at: 'center', of: window })
+					.dialog('option', 'width', '30%');
 				$('.ui-widget-overlay').bind('click', function() {
 					$(this).siblings('.ui-dialog').find('.ui-dialog-content')
 						.dialog('close');
