@@ -357,3 +357,10 @@ td.multiselect select { min-width: 200px; }
 .ui-tooltip.rtattachment {
 	padding: 0;
 }
+
+.ui-dialog-content.rtattachmentdialog {
+	padding: 0 !important;
+}
+.ui-dialog.rtattachmentdialog {
+	width: 40% !important;
+}

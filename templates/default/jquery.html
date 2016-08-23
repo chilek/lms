@@ -71,6 +71,29 @@
 				var href = $(this).attr('href');
 				return '<img src="' + href + '" style="max-width: 300px;">';
 			}
+		})
+		.on("click", function() {
+			$('#' + $(this).attr('data-rtattachment-dialog-id')).dialog('open');
+			$(this).tooltip('disable');
+			return false;
+		});;
+
+		$('.rtattachmentdialog').dialog({
+			modal: true,
+			autoOpen: false,
+			dialogClass: 'rtattachmentdialog',
+			open: function(event, ui) {
+				$('.ui-widget-overlay').bind('click', function() {
+					$(this).siblings('.ui-dialog').find('.ui-dialog-content')
+						.dialog('close');
+				});
+			},
+			close: function(event, ui) {
+				$('#' + $(this).attr('id').replace(/dialog/, 'tooltip')).tooltip('enable');
+			}
+		})
+		.on('click', function() {
+			$(this).dialog('close');
 		});
 	});
 //-->
