@@ -1,17 +1,13 @@
 <!--// $Id$ //-->
 <SCRIPT type="text/javascript">
 <!--
-	function randomize()
-	{
+	function randomize() {
 		if (document.customeredit.elements['customerdata[pin]'].value != '')
 			if (!confirm('{trans("Are you sure, you want to generate new PIN?")}'))
 				return;
 
-		var r = 0;
-		do
-			r = Math.floor(Math.random()*1000000-1);
-		while (r<1000);
-		document.customeredit.elements['customerdata[pin]'].value = r;
+		document.customeredit.elements['customerdata[pin]'].value =
+			generate_random_string(Math.floor((Math.random() * 3) - 1), '0123456789');
 	}
 
 	function newcontact(type) {
