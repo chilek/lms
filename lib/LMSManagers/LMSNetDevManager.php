@@ -64,7 +64,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 		$port = 0;
 	} else {
 		$type = isset($link['type']) ? intval($link['type']) : 0;
-		$radiosector = isset($link['radiosector']) ? intval($link['radiosector']) : NULL;
+		$radiosector = isset($link['radiosector']) && !empty($link['radiosector']) ? intval($link['radiosector']) : NULL;
 		$technology = isset($link['technology']) ? intval($link['technology']) : 0;
 		$speed = isset($link['speed']) ? intval($link['speed']) : 100000;
 		$port = isset($link['port']) ? intval($link['port']) : 0;
