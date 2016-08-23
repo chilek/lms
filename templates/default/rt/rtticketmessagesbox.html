@@ -65,9 +65,11 @@
 					<TD style="width: 97%;" class="text-right">
 						{if $message.attachments}
 						{foreach $message.attachments as $attachment}
+						{if $attachment.contenttype == "image/jpeg" || $attachment.contenttype == "image/png" || $attachment.contenttype == "image/gif"}
 						<div class="rtattachmentdialog" id="rtattachmentdialog-{$message.id}-{$attachment@index}" title="{$attachment.filename}" style="display: none;">
 							<img src="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={$attachment.filename}" style="width: 100%;">
 						</div>
+						{/if}
 						<A href="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={$attachment.filename}"
 							{if $attachment.contenttype == "image/jpeg" || $attachment.contenttype == "image/png" || $attachment.contenttype == "image/gif"}
 								class="rtattachment" id="rtattachmenttooltip-{$message.id}-{$attachment@index}"

@@ -126,9 +126,11 @@
 		</TD>
 		<TD width="98%">
 			{foreach from=$message.attachments item=a}
+				{if $a.contenttype == "image/jpeg" || $a.contenttype == "image/png" || $a.contenttype == "image/gif"}
 				<div class="rtattachmentdialog" id="rtattachmentdialog-{$message.id}-{$a@index}" title="{$attachment.filename}" style="display: none;">
 					<img src="?m=rtmessageview&tid={$message.ticketid}&mid={$message.id}&file={$a.filename}" style="width: 100%;">
 				</div>
+				{/if}
 				<A href="?m=rtmessageview&tid={$message.ticketid}&mid={$message.id}&file={$a.filename}"
 					{if $a.contenttype == "image/jpeg" || $a.contenttype == "image/png" || $a.contenttype == "image/gif"}
 						class="rtattachment" id="rtattachmenttooltip-{$message.id}-{$a@index}"
