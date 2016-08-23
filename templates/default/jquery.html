@@ -81,6 +81,7 @@
 		$('.rtattachmentdialog').dialog({
 			modal: true,
 			autoOpen: false,
+			resizable: false,
 			width: '30%',
 			dialogClass: 'rtattachmentdialog',
 			open: function(event, ui) {
@@ -95,6 +96,9 @@
 		})
 		.on('click', function() {
 			$(this).dialog('close');
+		})
+		.parent().resizable({
+			aspectRatio: true
 		});
 	});
 //-->
