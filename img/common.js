@@ -643,6 +643,18 @@ function reset_customer(form, elemname1, elemname2) {
 		document.forms[form].elements[elemname2].value = document.forms[form].elements[elemname1].value;
 }
 
+function generate_random_string(length, characters) {
+	if (length === undefined)
+		length = 10;
+	if (characters === undefined)
+		characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	charactersLength = characters.length;
+	randomString = '';
+	for (var i = 0; i < length; i++)
+		randomString += characters[Math.floor(Math.random() * charactersLength)];
+	return randomString;
+}
+
 if (window.addEventListener)
 	window.addEventListener("load", init_links, false);
 else if (window.attachEvent)
