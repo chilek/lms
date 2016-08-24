@@ -90,14 +90,14 @@ if (!empty($_POST['marks'])) {
 	$filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($doc['md5sum'],0,2) . DIRECTORY_SEPARATOR . $doc['md5sum'];
 	if (file_exists($filename)) {
 		$filename_pdf = DOC_DIR . DIRECTORY_SEPARATOR . substr($doc['md5sum'],0,2) . DIRECTORY_SEPARATOR . $doc['md5sum'].'.pdf';
-                if(file_exists($filename_pdf)){
-                        header('Content-type: application/pdf');
+		if (file_exists($filename_pdf)) {
+			header('Content-type: application/pdf');
 			header('Content-Disposition: inline; filename="' . $docnumber . '.pdf"');
 			header('Content-Transfer-Encoding: binary');
 			header('Content-Length: ' . filesize($filename_pdf));
 			header('Accept-Ranges: bytes');
 			readfile($filename_pdf);
-                } elseif ($doc['contenttype'] != 'pdf' && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
+		} elseif (preg_match('/html/i', $doc['contenttype']) && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
 			if($doc['type'] == DOC_CONTRACT) {
 				$subject = trans('Contract');
 				$title = trans('Contract No. $a', $docnumber);
@@ -114,10 +114,10 @@ if (!empty($_POST['marks'])) {
 			$htmlbuffer = ob_get_contents();
 			ob_end_clean();
 			$margins = explode(",", ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5'));
-                        if(ConfigHelper::getConfig('phpui.cache_documents'))
-                                html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', $margins, ($_GET['save'] == 1) ? true : false, false, $doc['md5sum']);
-                        else
-                                html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', $margins, ($_GET['save'] == 1) ? true : false);
+			if (ConfigHelper::getConfig('phpui.cache_documents'))
+				html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', $margins, ($_GET['save'] == 1) ? true : false, false, $doc['md5sum']);
+			else
+				html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', $margins, ($_GET['save'] == 1) ? true : false);
 		} else {
 			header('Content-Type: '.$doc['contenttype']);
 
