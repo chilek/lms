@@ -81,7 +81,7 @@ function module_main() {
     if (empty($_GET['account']) && count($user_accounts_ids) > 1) {
         $params['id'] = $user_accounts_ids;
     } else {
-         if (in_array($_GET['account'], $user_accounts_ids))
+        if (in_array($_GET['account'], $user_accounts_ids))
             $params['id'] = (int) $_GET['account'];
         else
             $params['id'] = $user_accounts_ids;
@@ -89,6 +89,9 @@ function module_main() {
 
     if (isset($_GET['date_from']) && is_date($_GET['date_from'])) {
         $params['frangefrom'] = $_GET['date_from'];
+    }
+    else if (!isset($_GET['date_from'])) {
+        $params['frangefrom'] = date("Y/m/01");
     }
 
     if (isset($_GET['date_to']) && is_date($_GET['date_to'])) {

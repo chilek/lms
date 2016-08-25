@@ -129,3 +129,44 @@ TEXTAREA.alert 	{ border-width: 1pt; border-color: #000000; border-style: solid;
     font-weight: bold;
     margin: 0;
 }
+
+.pagin-box .pagin-button {
+    display: inline-block;
+    text-decoration: none;
+    padding: 7px;
+    border-radius: 3px;
+    color: black;
+    border: 1px solid gray;
+}
+
+.pagin-box .active:hover {
+    cursor: pointer;
+    background-color: #940000;
+    color: white;
+    border: 1px solid black;
+}
+
+.pagin-box .inactive {
+    background-color: lightgray;
+    pointer-events: none;
+    cursor: default;
+}
+
+.submit-btn {
+    border-radius: 7px;
+    margin-top: 5px;
+    padding: 2px 25px;
+    height: 90%;
+    font-weight: bold;
+    background-color: #900000;
+    color: white;
+}
+
+.submit-btn:hover {
+    cursor: pointer;
+    background-color: #b30000;
+}
+
+.billing-tab tr:nth-child(n+2):nth-last-child(n+2):hover {
+    background-color: #a6a6a6;
+}

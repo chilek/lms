@@ -2,7 +2,6 @@
 
 <STYLE>
     .billing-tab {
-        border-collapse: collapse;
         width: 100%;
     }
     .billing-tab tr:first-child td {
@@ -13,13 +12,6 @@
         padding: 6px 10px;
         white-space: nowrap;
     }
-    .billing-tab tr:nth-child(n+3):nth-last-child(n+2) {
-        border-top: 1px solid lightgray;
-    }
-    .billing-tab tr:nth-child(n+3):nth-last-child(n+2):hover {
-        background-color: lightgray;
-    }
-
     .filters {
         margin: 0 auto;
         font-weight: bold;
@@ -34,27 +26,8 @@
     .filters tr td:first-child {
         border: 0;
     }
-
-    .submit-btn {
-        border-radius: 7px;
-        margin-top: 5px;
-        padding: 2px 25px;
-        height: 90%;
-        font-weight: bold;
-        background-color: #900000;
-        color: white;
-    }
-    .submit-btn:hover {
-        cursor: pointer;
-        background-color: #b30000; 
-    }
-
-    .lms-input {
-        padding: 4px;
-    }
-
+    .lms-input { padding: 4px; }
     .pagination a {
-        color: #b30000;
         font-size: 1.1em;
     }
 </STYLE>
@@ -124,7 +97,7 @@
         <TD ALIGN="CENTER">
             {box title="Billing list"}
                 <TABLE CLASS="billing-tab">
-                    <TR>
+                    <TR CLASS="darkest">
                         <TD>{trans("Begin time:<!voip>")}</TD>
                         <TD>{trans("Caller:")}</TD>
                         <TD>{trans("Callee:")}</TD>
@@ -138,7 +111,7 @@
 
                     {if $billings}
                         {section name=i loop=$billings start=(($pagination->getCurrentPage()-1)*$pagination->getItemsPerPage()) max=$pagination->getItemsPerPage()}
-                            <TR>
+                            <TR CLASS="dark">
                                 <TD>{$billings[i].begintime|date_format:"%e %B %Y %H:%M:%S"}</TD>
                                 <TD>{$billings[i].caller}</TD>
                                 <TD>{$billings[i].callee}</TD>
@@ -178,10 +151,10 @@
                                 </TD>
                             </TR>
                         {/section}
-                        <TR>
+                        <TR CLASS="darkest">
                             {assign var=pagin_result value=$pagination->getPages()}
                             {if $pagin_result.pages}
-                                <TD CLASS="pagination" COLSPAN="100%" STYLE="padding: 20px 0; text-align: center;">
+                                <TD CLASS="pagination" COLSPAN="100%" STYLE="padding: 10px 0; text-align: center;">
                                     {include file="pagination.html"}
                                 </TD>
                             {else}
@@ -189,7 +162,7 @@
                             {/if}
                         </TR>
                     {else}
-                        <TR>
+                        <TR CLASS="darkest">
                             <TD COLSPAN="100%" STYLE="text-align: center; padding:20px 0; font-weight: bold;">
                                 {trans("No such data for selected period.")}
                             </TD>
