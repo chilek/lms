@@ -98,7 +98,7 @@ class ULMS extends LMS {
 				FROM rtmessages
 				LEFT JOIN customers ON (customers.id = customerid)
 				LEFT JOIN users ON (users.id = userid)
-				WHERE ticketid = ? ORDER BY createtime ASC', array($id));
+				WHERE ticketid = ? AND rtmessages.type = ? ORDER BY createtime ASC', array($id, RTMESSAGE_REGULAR));
 
 		foreach ($ticket['messages'] as &$message)
 			$message['attachments'] = $this->DB->GetAll('SELECT filename, contenttype FROM rtattachments WHERE messageid = ?',

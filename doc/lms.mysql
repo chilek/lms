@@ -99,7 +99,6 @@ DROP TABLE IF EXISTS rtticketcategories;
 DROP TABLE IF EXISTS rtcategoryusers;
 DROP TABLE IF EXISTS rtcategories;
 DROP TABLE IF EXISTS rtrights;
-DROP TABLE IF EXISTS rtnotes;
 DROP TABLE IF EXISTS rtattachments;
 DROP TABLE IF EXISTS rtmessages;
 DROP TABLE IF EXISTS rttickets;
@@ -1029,6 +1028,7 @@ CREATE TABLE rtmessages (
   headers text NOT NULL DEFAULT '',
   body mediumtext NOT NULL DEFAULT '',
   createtime int(11) NOT NULL DEFAULT '0',
+  type smallint NOT NULL DEFAULT 0,
   PRIMARY KEY  (id),
   INDEX ticketid (ticketid),
   FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -1044,24 +1044,6 @@ CREATE TABLE rtattachments (
   contenttype varchar(255) NOT NULL DEFAULT '',
   INDEX messageid (messageid),
   FOREIGN KEY (messageid) REFERENCES rtmessages (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table  rtnotes
-#
-CREATE TABLE rtnotes (
-	id int(11) 	     NOT NULL auto_increment,
-	ticketid int(11)     NOT NULL,
-	userid int(11)       NOT NULL,
-	body text            NOT NULL DEFAULT '',
-	createtime int(11)   NOT NULL DEFAULT '0',
-	type smallint NOT NULL DEFAULT 1,
-	PRIMARY KEY (id),
-	INDEX ticketid (ticketid),
-	INDEX userid (userid),
-	FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2721,4 +2703,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016082400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016082500');

@@ -5,8 +5,6 @@
  *
  *  (C) Copyright 2001-2016 LMS Developers
  *
- *  Please, see the doc/AUTHORS for more information about authors!
- *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
  *  published by the Free Software Foundation.
@@ -21,24 +19,24 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
  */
 
-if(!($ticketid = $DB->GetOne('SELECT ticketid FROM rtmessages WHERE id = ? AND type = ?',
-	array($_GET['id'], RTMESSAGE_NOTE))))
-	$SESSION->redirect('?'.$SESSION->get('backto'));
+$this->BeginTrans();
 
-$rights = $LMS->GetUserRightsRT($AUTH->id, 0, $ticketid);
+$this->Execute("ALTER TABLE rtmessages ADD COLUMN type smallint DEFAULT 0 NOT NULL");
 
-if (($rights & 4) != 4) {
-	$SMARTY->display('noaccess.html');
-	$SESSION->close();
-	die;
-}
+$rtnotes = $this->GetAll("SELECT * FROM rtnotes");
+if (!empty($rtnotes))
+	foreach ($rtnotes as $rtnote) {
+		$this->Execute("INSERT INTO rtmessages (ticketid, body, createtime, userid, type)
+			VALUES (?, ?, ?, ?, ?)",
+			array($rtnote['ticketid'], $rtnote['body'], $rtnote['createtime'], $rtnote['userid'], $rtnote['type']));
+	}
 
-$DB->Execute('DELETE FROM rtmessages WHERE id = ? AND type = ?',
-	array($_GET['id'], RTMESSAGE_NOTE));
+$this->Execute("DROP TABLE rtnotes");
 
-$SESSION->redirect('?m=rtticketview&id=' . $ticketid);
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016082500', 'dbversion'));
+
+$this->CommitTrans();
 
 ?>
