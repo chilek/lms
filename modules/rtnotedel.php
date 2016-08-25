@@ -36,8 +36,15 @@ if (($rights & 4) != 4) {
 	die;
 }
 
-$DB->Execute('DELETE FROM rtmessages WHERE id = ? AND type = ?',
-	array($_GET['id'], RTMESSAGE_NOTE));
+$msg = intval($_GET['id']);
+if ($DB->GetOne('SELECT MIN(id) FROM rtmessages WHERE ticketid = ?', array($ticketid)) != $msg) {
+	$mail_dir = ConfigHelper::getConfig('rt.mail_dir');
+	if (!empty($mail_dir))
+		rrmdir($mail_dir.sprintf('/%06d/%06d', $ticketid, $msg));
+
+	$DB->Execute('DELETE FROM rtmessages WHERE id = ? AND type = ?',
+		array($msg, RTMESSAGE_NOTE));
+}
 
 $SESSION->redirect('?m=rtticketview&id=' . $ticketid);
 

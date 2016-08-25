@@ -54,11 +54,57 @@ elseif(isset($_POST['note']))
 		$SESSION->redirect('?m=rtqueuelist');
 	}
 
+	$files = array();
+	foreach ($_FILES['files']['name'] as $fileidx => $filename)
+		if (!empty($filename)) {
+			if (is_uploaded_file($_FILES['files']['tmp_name'][$fileidx]) && $_FILES['files']['size'][$fileidx]) {
+				$filecontents = '';
+				$fd = fopen($_FILES['files']['tmp_name'][$fileidx], 'r');
+				if ($fd) {
+					while (!feof($fd))
+						$filecontents .= fread($fd,256);
+					fclose($fd);
+				}
+				$files[] = array(
+					'name' => $filename,
+					'tmp_name' => $_FILES['files']['tmp_name'][$fileidx],
+					'type' => $_FILES['files']['type'][$fileidx],
+					'contents' => $filecontents,
+				);
+			} else { // upload errors
+				if (isset($error['files']))
+					$error['files'] .= "\n";
+				else
+					$error['files'] = '';
+				switch ($_FILES['files']['error'][$fileidx]) {
+					case 1:
+					case 2: $error['files'] .= trans('File is too large: $a', $filename); break;
+					case 3: $error['files'] .= trans('File upload has finished prematurely: $a', $filename); break;
+					case 4: $error['files'] .= trans('Path to file was not specified: $a', $filename); break;
+					default: $error['files'] .= trans('Problem during file upload: $a', $filename); break;
+				}
+			}
+		}
+
 	if(!$error)
 	{
 		$DB->Execute('INSERT INTO rtmessages (userid, ticketid, body, createtime, type)
 			    VALUES(?, ?, ?, ?NOW?, ?)',
 			    array($AUTH->id, $note['ticketid'], $note['body'], RTMESSAGE_NOTE));
+
+		$mail_dir = ConfigHelper::getConfig('rt.mail_dir');
+		if (!empty($files) && !empty($mail_dir)) {
+			$id = $DB->GetLastInsertId('rtmessages');
+			$dir = $mail_dir . sprintf('/%06d/%06d', $note['ticketid'], $id);
+			@mkdir($mail_dir . sprintf('/%06d', $note['ticketid']), 0700);
+			@mkdir($dir, 0700);
+			foreach ($files as $file) {
+				$newfile = $dir . '/' . $file['name'];
+				if(@rename($file['tmp_name'], $newfile))
+					$DB->Execute('INSERT INTO rtattachments (messageid, filename, contenttype)
+							VALUES (?, ?, ?)', array($id, $file['name'], $file['type']));
+			}
+		}
 
 		// setting status and the ticket owner
 		$props = array(
@@ -107,6 +153,8 @@ elseif(isset($_POST['note']))
 						address, zip, city FROM customeraddressview WHERE id = ?', array($cid));
 				$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
 					WHERE customerid = ?', array($cid));
+				$info['locations'] = $DB->GetCol('SELECT DISTINCT location FROM nodes
+					WHERE ownerid = ?', array($cid));
 
 				$emails = array();
 				$phones = array();
@@ -121,7 +169,8 @@ elseif(isset($_POST['note']))
 
 				$body .= "\n\n-- \n";
 				$body .= trans('Customer:').' '.$info['customername']."\n";
-				$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
+				$body .= trans('Address:') . ' ' . (empty($info['locations']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
+					: implode(', ', $info['locations'])) . "\n";
 				if (!empty($phones))
 					$body .= trans('Phone:').' ' . implode(', ', $phones) . "\n";
 				if (!empty($emails))
@@ -130,7 +179,8 @@ elseif(isset($_POST['note']))
 				$sms_body .= "\n";
 				$sms_body .= trans('Customer:').' '.$info['customername'];
 				$sms_body .= ' '.sprintf('(%04d)', $cid).'. ';
-				$sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'];
+				$sms_body .= (empty($info['locations']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
+					: implode(', ', $info['locations']));
 				if (!empty($phones))
 					$sms_body .= '. ' . trans('Phone:') . ' ' . preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones));
 			}
@@ -139,9 +189,10 @@ elseif(isset($_POST['note']))
 			if ($recipients = $DB->GetCol('SELECT DISTINCT email
 				FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND email != \'\'
-						AND (rtrights.rights & 8) = 8 AND users.id != ?
+						AND (rtrights.rights & 8) = 8
 						AND deleted = 0 AND (ntype & ?) = ?',
-					array($queue['id'], $AUTH->id, MSG_MAIL, MSG_MAIL)))
+					array($queue['id'], MSG_MAIL, MSG_MAIL))
+			)
 				foreach ($recipients as $email) {
 					$headers['To'] = '<'.$email.'>';
 
@@ -153,9 +204,10 @@ elseif(isset($_POST['note']))
 			if (!empty($service) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
 				FROM users, rtrights
 					WHERE users.id=userid AND queueid = ? AND phone != \'\'
-						AND (rtrights.rights & 8) = 8 AND users.id != ?
+						AND (rtrights.rights & 8) = 8
 						AND deleted = 0 AND (ntype & ?) = ?',
-					array($queue['id'], $AUTH->id, MSG_SMS, MSG_SMS))))
+					array($queue['id'], MSG_SMS, MSG_SMS)))
+			)
 				foreach ($recipients as $phone)
 					$LMS->SendSMS($phone, $sms_body);
 		}
