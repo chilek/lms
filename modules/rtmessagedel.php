@@ -39,7 +39,7 @@ if($DB->GetOne('SELECT MIN(id) FROM rtmessages WHERE ticketid = ?', array($ticke
 {
 	$mail_dir = ConfigHelper::getConfig('rt.mail_dir');
 	if(!empty($mail_dir)) {
-		rmdir($mail_dir.sprintf('/%06d/%06d', $ticket, $msg));
+		rrmdir($mail_dir.sprintf('/%06d/%06d', $ticket, $msg));
 	}
 
 	$DB->Execute('DELETE FROM rtmessages WHERE id = ?', array($msg));
