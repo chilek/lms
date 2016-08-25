@@ -1352,28 +1352,11 @@ CREATE TABLE rtmessages (
   headers text 		DEFAULT '' NOT NULL,
   body text		DEFAULT '' NOT NULL,
   createtime integer	DEFAULT 0 NOT NULL,
+  type smallint			DEFAULT 0 NOT NULL,
   PRIMARY KEY (id)
 );
 
 CREATE INDEX rtmessages_ticketid_idx ON rtmessages (ticketid);
-
-DROP SEQUENCE IF EXISTS rtnotes_id_seq;
-CREATE SEQUENCE rtnotes_id_seq;
-DROP TABLE IF EXISTS rtnotes CASCADE;
-CREATE TABLE rtnotes (
-	id integer default nextval('rtnotes_id_seq'::text) NOT NULL,
-	ticketid integer      NOT NULL
-	    REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    userid integer        NOT NULL
-        REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	body text             DEFAULT '' NOT NULL,
-	createtime integer    DEFAULT 0 NOT NULL,
-	type smallint         DEFAULT 1 NOT NULL,
-	PRIMARY KEY (id)
-);
-
-CREATE INDEX rtnotes_ticketid_idx ON rtnotes (ticketid);
-CREATE INDEX rtnotes_userid_idx ON rtnotes (userid);
 
 DROP SEQUENCE IF EXISTS rtrights_id_seq;
 CREATE SEQUENCE rtrights_id_seq;
@@ -2836,6 +2819,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016082400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016082500');
 
 COMMIT;

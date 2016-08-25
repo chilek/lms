@@ -56,9 +56,9 @@ elseif(isset($_POST['note']))
 
 	if(!$error)
 	{
-		$DB->Execute('INSERT INTO rtnotes (userid, ticketid, body, createtime)
-			    VALUES(?, ?, ?, ?NOW?)',
-			    array($AUTH->id, $note['ticketid'], $note['body']));
+		$DB->Execute('INSERT INTO rtmessages (userid, ticketid, body, createtime, type)
+			    VALUES(?, ?, ?, ?NOW?, ?)',
+			    array($AUTH->id, $note['ticketid'], $note['body'], RTMESSAGE_NOTE));
 
 		// setting status and the ticket owner
 		$props = array(

@@ -180,12 +180,9 @@ switch($type)
 		if ($list && $extended)
 		{
 			$tickets = implode(',', array_keys($list));
-			if ($content = $DB->GetAll('(SELECT body, ticketid, createtime, 0 AS note
+			if ($content = $DB->GetAll('(SELECT body, ticketid, createtime, rtmessages.type AS note
 				FROM rtmessages
 				WHERE ticketid in ('.$tickets.'))
-				UNION
-				(SELECT body, ticketid, createtime, 1 AS note
-				FROM rtnotes
 				WHERE ticketid in ('.$tickets.'))
 			        ORDER BY createtime'))
 			{
