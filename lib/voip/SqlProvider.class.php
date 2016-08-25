@@ -199,7 +199,7 @@ class SqlProvider extends VoipDataProvider {
                               prefix ?LIKE? ?',
                           array($pref));
 
-        $this->number_groupname[$number] = $i;
+        $this->number_groupname[$number.'|'.$t_id] = $i;
 
         return $i;
     }
