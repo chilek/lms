@@ -453,12 +453,19 @@ foreach ($assigns as $assign) {
 	$desc = preg_replace("/\%next_period/", $next_period, $desc);
 	$desc = preg_replace("/\%prev_period/", $prev_period, $desc);
 
-	$desc = preg_replace("/\%forward_period/"          , $forward_periods[$assign['period']]         , $desc);
-	$desc = preg_replace("/\%forward_period_aligned/"  , $forward_periods[$assign['period']]         , $desc);
-	$desc = preg_replace("/\%period/"                  , $forward_periods[$assign['period']]         , $desc); //for backward references, please use %forward_period
-	$desc = preg_replace("/\%aligned_period/"          , $forward_aligned_periods[$assign['period']] , $desc);
-	$desc = preg_replace("/\%backward_period/"         , $backward_periods[$assign['period']]        , $desc);
-	$desc = preg_replace("/\%backward_aligned_periods/", $backward_aligned_periods[$assign['period']], $desc);
+	$p = $assign['period'];
+
+	// better use this
+	$desc = preg_replace("/\%forward_periods/"         , $forward_periods[$p]         , $desc);
+	$desc = preg_replace("/\%forward_aligned_periods/" , $forward_aligned_periods[$p] , $desc);
+	$desc = preg_replace("/\%backward_periods/"        , $backward_periods[$p]        , $desc);
+	$desc = preg_replace("/\%backward_aligned_periods/", $backward_aligned_periods[$p], $desc);
+
+	// for backward references
+	$desc = preg_replace("/\%forward_period/"          , $forward_periods[$p]         , $desc);
+	$desc = preg_replace("/\%forward_period_aligned/"  , $forward_aligned_periods[$p] , $desc);
+	$desc = preg_replace("/\%period/"                  , $forward_periods[$p]         , $desc);
+	$desc = preg_replace("/\%aligned_period/"          , $forward_aligned_periods[$p] , $desc);
 
 	if ($suspension_percentage && ($assign['suspended'] || $assign['allsuspended']))
 		$desc .= " ".$suspension_description;
