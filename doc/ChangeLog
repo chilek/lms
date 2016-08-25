@@ -75,6 +75,8 @@ version ?.??.?? (????-??-??):
   - added receipts.default_printpage config variable support [chilan]
   - added support for create voip billing invoices [kosa/chilan]
   - allow to add attachments for helpdesk notes [chilan]
+  - added support for audio prelisten and video preview clicked from helpdesk
+    message and note attachment links [chilan]
 
 version 1.11.20 (2016-04-19):
 

@@ -64,24 +64,40 @@
 			});
 		});
 
-		$('.rtattachment').tooltip({
-			items: '.rtattachment',
+		var rtattachments = $('.rtattachment');
+
+		rtattachments.tooltip({
+			items: '.rtattachment-image',
 			tooltipClass: 'rtattachment',
 			content: function() {
 				var href = $(this).attr('href');
 				return '<img src="' + href + '" style="max-width: 300px;">';
 			}
-		})
-		.on("click", function() {
-			$('#' + $(this).attr('data-rtattachment-dialog-id')).dialog('open');
-			$(this).tooltip('disable');
+		});
+
+		rtattachments.on("click", function() {
+			var dialog = $('#' + $(this).attr('data-rtattachment-dialog-id'));
+			dialog.dialog('open');
+			if ($(this).hasClass('rtattachment-image'))
+				$(this).tooltip('disable');
+			else if ($(this).hasClass('rtattachment-audio')) {
+				var audioelem = dialog.find('audio').get(0);
+				audioelem.currentTime = 0;
+				audioelem.play();
+			} else if ($(this).hasClass('rtattachment-video')) {
+				var videoelem = dialog.find('video').get(0);
+				videoelem.currentTime = 0;
+				videoelem.play();
+			}
 			return false;
-		});;
+		});
 
 		$('.rtattachmentdialog').dialog({
 			modal: true,
 			autoOpen: false,
 			resizable: false,
+			minWidth: 0,
+			minHeight: 0,
 			dialogClass: 'rtattachmentdialog',
 			open: function(event, ui) {
 				$(this).dialog('option', 'position', { my: 'center', at: 'center', of: window })
@@ -92,7 +108,13 @@
 				});
 			},
 			close: function(event, ui) {
-				$('#' + $(this).attr('id').replace(/dialog/, 'tooltip')).tooltip('enable');
+				var elem = $('#' + $(this).attr('id').replace(/dialog/, ''));
+				if (elem.hasClass('rtattachment-image'))
+					elem.tooltip('enable');
+				else if (elem.hasClass('rtattachment-audio'))
+					$(this).find('audio').get(0).pause();
+				else if (elem.hasClass('rtattachment-video'))
+					$(this).find('video').get(0).pause();
 			}
 		})
 		.on('click', function() {
