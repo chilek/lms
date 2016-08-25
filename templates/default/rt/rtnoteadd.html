@@ -3,30 +3,43 @@
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<FORM method="POST" name="note" action="?m=rtnoteadd">
+<FORM method="POST" name="note" action="?m=rtnoteadd" enctype="multipart/form-data">
 <INPUT type="hidden" name="note[ticketid]" value="{$note.ticketid}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 99%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD WIDTH="1%" colspan="2" NOWRAP>
+		<TD colspan="2" class="bold nobr">
 			<IMG src="img/ticket.gif" alt="">
-			<B>{t a=$note.ticketid|string_format:"%06d"}Ticket No. $a{/t}</B>
+			{t a=$note.ticketid|string_format:"%06d"}Ticket No. $a{/t}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="bold nobr">
 			<IMG src="img/note.gif" alt="">
-			<B>{trans("Note content:")}</B>
+			{trans("Note content:")}
 		</TD>
-		<TD WIDTH="99%">
+		<TD>
 			<TEXTAREA name="note[body]" cols="50" rows="5" {tip text="Enter note content" trigger="body"} >{$note.body}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="100%" colspan="2" align="right">
+		<TD class="bold nobr">
+			<IMG src="img/attach.gif" alt="">
+			{trans("Attachments:")}
+		</TD>
+		<TD>
+			<INPUT name="files[]" type="file" size="55" {tip text="Enter path to file or click 'Browse' button" trigger="files"} multiple>
+		</TD>
+	</TR>
+	<TR>
+		<TD colspan="2" class="buttons">
 			<A href="javascript: document.note.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 			<A href="?m=rtticketview&id={$note.ticketid}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
@@ -35,22 +48,24 @@
 </TABLE>
 <BR>
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 99%;">
+	</COLGROUP>
     <TBODY>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-			<IMG src="img/mail.gif" alt="">
-			<label for="notify"><B>{trans("Notify users:")}</B></label>
+		<TD class="bold nobr">
+			<IMG src="img/mail.gif" alt=""> <label for="notify">{trans("Notify users:")}</label>
 		</TD>
-		<TD WIDTH="99%">
+		<TD>
 			<INPUT type="checkbox" name="note[notify]" id="notify" value="1"{if $note.notify} CHECKED{/if}>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-			<IMG src="img/dead.gif" alt="">
-			<B>{trans("Status:")}</B>
+		<TD class="bold nobr">
+			<IMG src="img/dead.gif" alt=""> {trans("Status:")}
 		</TD>
-		<TD WIDTH="99%">
+		<TD>
 			<SELECT SIZE="1" name="note[state]" {tip text="Select status" trigger="state"}>
 				<OPTION value="{$smarty.const.RT_NEW}" {if $note.state == $smarty.const.RT_NEW}SELECTED{/if}>{trans("new")}</OPTION>
 				<OPTION value="{$smarty.const.RT_OPEN}" {if $note.state == $smarty.const.RT_OPEN}SELECTED{/if}>{trans("opened")}</OPTION>
@@ -60,11 +75,10 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-			<IMG src="img/desc.gif" alt="">
-			<B>{trans("Cause:")}</B>
+		<TD class="bold nobr">
+			<IMG src="img/desc.gif" alt=""> {trans("Cause:")}
 		</TD>
-		<TD WIDTH="99%">
+		<TD>
 			<SELECT SIZE="1" name="note[cause]" {tip text="Select request cause" trigger="cause"}>
 				<OPTION value="0" {if !$note.cause}SELECTED{/if}>{trans("unknown/other")}</OPTION>
 				<OPTION value="1" {if $note.cause == 1}SELECTED{/if}>{trans("customer's side")}</OPTION>
@@ -72,12 +86,11 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
-			<IMG src="img/queue.gif" alt="">
-			<B>{trans("Queue:")}</B>
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/queue.gif" alt=""> {trans("Queue:")}
 		</TD>
-		<TD WIDTH="99%" CLASS="fright">
+		<TD>
 			<SELECT size="1" name="note[queueid]" {tip text="Select queue" trigger="queue"}>
 			{foreach from=$queuelist item=item}
 				<OPTION value="{$item.id}" {if $item.id == $note.queueid}SELECTED{/if}>{$item.name}</OPTION>
@@ -85,12 +98,11 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR class="light">
-		<TD WIDTH="1%" CLASS="fbl" NOWRAP>
-			<IMG src="img/users.gif" alt="">
-			<B>{trans("Owner:")}</B>
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/users.gif" alt=""> {trans("Owner:")}
 		</TD>
-			<TD WIDTH="99%" CLASS="fbr">
+			<TD>
 			<SELECT size="1" name="note[owner]" {tip text="Select user" trigger="owner"}>
 				{if $note.owner == 0}
 					<OPTION value="0" SELECTED>- {trans("select user")} -</OPTION>

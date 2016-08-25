@@ -37,16 +37,17 @@
 			<TABLE class="lmsbox-inner" id="messages">
 				{counter start=0 skip=1 print=false assign=msgidx}
 				{foreach from=$ticket.messages item=message}
-				{if !empty($message.subject)}
+				{if $message.type == $smarty.const.RTMESSAGE_REGULAR || $message.type == $smarty.const.RTMESSAGE_NOTE}
 				<THEAD>
 				<TR>
 					<TD style="width: 1%;" class="valign-top text-right bold nobr">
 						{$message.createtime|date_format:"%Y/%m/%d %H:%M"}
 					</TD>
 					<TD style="width: 1%;" class="text-right bold">
-						{trans("From:")}<BR>{trans("Subject:")}
+						{trans("From:")}{if $message.type == $smarty.const.RTMESSAGE_REGULAR}<BR>{trans("Subject:")}{/if}
 					</TD>
 					<TD style="width: 1%;" class="nobr">
+						{if $message.type == $smarty.const.RTMESSAGE_REGULAR}
 						{if $message.customerid}
 						<A href="?m=customerinfo&amp;id={$message.customerid}">{$message.customername}</A>
 						{elseif $message.userid}
@@ -61,17 +62,20 @@
 						{/if}
 						<BR>
 						{$message.subject|escape}
+						{else}
+						<A href="?m=userinfo&amp;id={$message.userid}">{$message.username}</A>
+						{/if}
 					</TD>
 					<TD style="width: 97%;" class="text-right">
 						{if $message.attachments}
 						{foreach $message.attachments as $attachment}
-						{if $attachment.contenttype == "image/jpeg" || $attachment.contenttype == "image/png" || $attachment.contenttype == "image/gif"}
+						{if preg_match('/image\/(jpeg|png|gif)/', $attachment.contenttype)}
 						<div class="rtattachmentdialog" id="rtattachmentdialog-{$message.id}-{$attachment@index}" title="{$attachment.filename}" style="display: none;">
 							<img src="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={$attachment.filename}" style="width: 100%;">
 						</div>
 						{/if}
 						<A href="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={$attachment.filename}"
-							{if $attachment.contenttype == "image/jpeg" || $attachment.contenttype == "image/png" || $attachment.contenttype == "image/gif"}
+							{if preg_match('/image\/(jpeg|png|gif)/', $attachment.contenttype)}
 								class="rtattachment" id="rtattachmenttooltip-{$message.id}-{$attachment@index}"
 								data-rtattachment-dialog-id="rtattachmentdialog-{$message.id}-{$attachment@index}"
 							{/if}>
@@ -79,19 +83,23 @@
 						</A>
 						{/foreach}
 						{/if}
+						{if $message.type == $smarty.const.RTMESSAGE_NOTE}
+						<A href="?m=rtnotedel&amp;id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that note?")}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
+						{else}
 						<A href="?m=rtmessageview&amp;id={$message.id}">{trans("Details")} <IMG src="img/view.gif" alt=""></A>
 						{if $msgidx > 0}
 						<A href="?m=rtmessagedel&amp;id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
 						{/if}
-						{if $ticket.state != 2}
+						{if $ticket.state != $smarty.const.RT_RESOLVED}
 						<A href="?m=rtmessageadd&amp;id={$message.id}&amp;ticketid={$ticket.ticketid}">{trans("Answer")} <IMG src="img/forward.gif" alt=""></A>
+						{/if}
 						{/if}
 					</TD>
 				</TR>
 				</THEAD>
 				<TBODY>
 				<TR>
-					<TD colspan="4" class="fbt superlight">
+					<TD colspan="4" class="fbt superlight{if $message.type == $smarty.const.RTMESSAGE_NOTE} blend{/if}">
 						{$message.body|escape|replace:"\n":"<BR>"}
 					</TD>
 				</TR>
@@ -113,15 +121,6 @@
 				{else}
 				<THEAD>
 				<TR>
-					<TD style="width: 1%;" class="text-right bold nobr">
-						{$message.createtime|date_format:"%Y/%m/%d %H:%M"}
-					</TD>
-					<TD style="width: 1%;" class="text-right bold">
-						{trans("From:")}
-					</TD>
-					<TD style="width: 1%;" class="nobr">
-						<A href="?m=userinfo&amp;id={$message.userid}">{$message.username}</A>
-					</TD>
 					<TD style="width: 97%;" class="text-right nobr">
 						<A href="?m=rtnotedel&amp;id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that note?")}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
 					</TD>
