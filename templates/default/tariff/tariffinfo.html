@@ -249,11 +249,23 @@
                 </TR>
                 <TR>
                     <TD>{trans("VoIP pricelist:")}</TD>
-                    <TD>{if $voip_fields.pricelist}{$voip_fields.pricelist}{else}{trans("not defined<!voip>")}{/if}</TD>
+                    <TD>
+                        {if $voip_fields.pricelist}
+                            <A HREF="?m=voippricelist&id={$voip_fields.pricelist_id}">{$voip_fields.pricelist}</A>
+                        {else}
+                            {trans("not defined<!voip>")}
+                        {/if}
+                    </TD>
                 </TR>
                 <TR>
                     <TD>{trans("Tariff rule:")}</TD>
-                    <TD>{if $voip_fields.rule_name}{$voip_fields.rule_name}{else}{trans("not defined<!voip>")}{/if}</TD>
+                    <TD>
+                        {if $voip_fields.rule_name}
+                            <A HREF="?m=voiptariffrules&id={$voip_fields.rule_name_id}">{$voip_fields.rule_name}</A>
+                        {else}
+                            {trans("not defined<!voip>")}
+                        {/if}
+                    </TD>
                 </TR>
             </TABLE>
         </TD>

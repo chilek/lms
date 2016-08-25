@@ -50,8 +50,8 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 // if selected tariff is phone tariff then load prefixes assigned to this tariff
 if ($tariff['type'] == TARIFF_PHONE) {
 	$SMARTY->assign('voip_fields', $DB->GetRow("SELECT
-                                                    vt.name as pricelist,
-                                                    vr.name as rule_name
+                                                    vt.name as pricelist, vt.id as pricelist_id,
+                                                    vr.name as rule_name, vr.id as rule_name_id
                                                 FROM
                                                     tariffs t
                                                     left join voip_tariffs vt on t.voip_tariff_id = vt.id
