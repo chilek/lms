@@ -715,6 +715,9 @@ $DB->Execute("DELETE FROM liabilities WHERE id IN (
 $DB->Execute("DELETE FROM assignments 
 	WHERE dateto < ?NOW? - 86400 * 30 AND dateto <> 0 AND at < $today - 86400 * 30");
 
+// clear voip tariff rule states
+$DB->Execute("DELETE FROM voip_rule_states");
+
 $DB->Destroy();
 
 ?>
