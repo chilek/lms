@@ -184,20 +184,12 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-	function GenPasswd()
-	{
-		var passwd = new Array();
-		var items = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	function GenPasswd() {
 		var length = {ConfigHelper::getConfig('phpui.nodepassword_length', '16')};
 		if (length > 32) length = 32;
 
-		for (var i=0; i<length; i++)
-		{
-			n = Math.floor(Math.random() * items.length);
-			passwd[i] = items.substring(n, n+1);
-		}
-
-		document.forms['editipaddr'].elements['ipadd[passwd]'].value = passwd.join("");
+		document.forms['editipaddr'].elements['ipadd[passwd]'].value =
+			generate_random_string(length, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
 	}
 
 	function newmac()

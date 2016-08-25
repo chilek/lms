@@ -50,6 +50,7 @@
 {/if}
 //-->
 </SCRIPT>
+{$default_printpage = ConfigHelper::getConfig('receipts.default_printpage')}
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
@@ -170,8 +171,14 @@
 				<TR>
 					<TD ALIGN="left" nowrap>
 						<A HREF="javascript:prints();">{trans("Print")} <IMG SRC="img/printr.gif" ALT="" ></A>&nbsp;
-						<INPUT type="checkbox" id="original" name="original" checked> <label for="original">{trans("original")}</label>&nbsp;
-						<INPUT type="checkbox" id="copy" name="copy" checked> <label for="copy">{trans("copy")}</label>
+						 <label>
+							<INPUT type="checkbox" id="original" name="original"{if preg_match('/original/i', $default_printpage)} checked{/if}>
+							{trans("original")}
+						</label>
+						<label>
+							<INPUT type="checkbox" id="copy" name="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}>
+							{trans("copy")}
+						</label>
 					</TD>
 					<TD class="text-right nobr">
 						<label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'copy'])" VALUE="1">

@@ -281,23 +281,15 @@
 <!--
 	document.forms['editnode'].elements['nodeedit[name]'].focus();
 
-	function GenPasswd()
-	{
+	function GenPasswd() {
 		if(! confirm('{trans("Are you sure, you want to generate new password?")}'))
 			return;
 
-		var passwd = new Array();
-		var items = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		var length = {ConfigHelper::getConfig('phpui.nodepassword_length', '16')};
 		if (length > 32) length = 32;
 
-		for (var i=0; i<length; i++)
-		{
-			n = Math.floor(Math.random() * items.length);
-			passwd[i] = items.substring(n, n+1);
-		}
-
-		document.forms['editnode'].elements['nodeedit[passwd]'].value = passwd.join("");
+		document.forms['editnode'].elements['nodeedit[passwd]'].value =
+			generate_random_string(length, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
 	}
 
 	function newmac()

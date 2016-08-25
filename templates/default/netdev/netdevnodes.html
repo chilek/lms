@@ -111,7 +111,7 @@
 										<OPTION value="{$key}"{if $key==$nodelinktype} selected{/if}>{$item}</OPTION>
 										{/foreach}
 									</SELECT>
-									{if !$devnodeslinktype}{$devnodeslinktype = 0}{/if}
+									{if !isset($nodelinktype)}{$devnodeslinktype = 0}{else}{$devnodeslinktype = $nodelinktype}{/if}
 									<SELECT NAME="linktechnology" id="devnodeslinktechnology" {tip trigger="devnodeslinktechnology" text="Select link technology"} onchange="change_nodelinktechnology(this.options[this.selectedIndex].value)">
 										<OPTION value="0">{trans("- unknown -")}</OPTION>
 										{foreach $_LINKTECHNOLOGIES[$devnodeslinktype] as $linktechnologyidx => $linktechnology}

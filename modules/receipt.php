@@ -112,7 +112,6 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks'
 			$document->Draw($receipt);
 		}
 	}
-	$SMARTY->display('clearfooter.html');
 } elseif ($receipt = GetReceipt($_GET['id'])) {
 	$regid = $DB->GetOne('SELECT DISTINCT regid FROM receiptcontents WHERE docid=?', array($_GET['id']));
 	if (!$DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid))) {

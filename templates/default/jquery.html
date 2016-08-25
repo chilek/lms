@@ -10,7 +10,8 @@
 		var autocomplete = "off";
 
 		$('.calendar').datepicker({
-			dateFormat: "yy/mm/dd"
+			dateFormat: "yy/mm/dd",
+			changeYear: true
 		})
 		.attr("autocomplete", autocomplete);
 
@@ -61,6 +62,44 @@
 					});
 				}
 			});
+		});
+
+		$('.rtattachment').tooltip({
+			items: '.rtattachment',
+			tooltipClass: 'rtattachment',
+			content: function() {
+				var href = $(this).attr('href');
+				return '<img src="' + href + '" style="max-width: 300px;">';
+			}
+		})
+		.on("click", function() {
+			$('#' + $(this).attr('data-rtattachment-dialog-id')).dialog('open');
+			$(this).tooltip('disable');
+			return false;
+		});;
+
+		$('.rtattachmentdialog').dialog({
+			modal: true,
+			autoOpen: false,
+			resizable: false,
+			dialogClass: 'rtattachmentdialog',
+			open: function(event, ui) {
+				$(this).dialog('option', 'position', { my: 'center', at: 'center', of: window })
+					.dialog('option', 'width', '30%');
+				$('.ui-widget-overlay').bind('click', function() {
+					$(this).siblings('.ui-dialog').find('.ui-dialog-content')
+						.dialog('close');
+				});
+			},
+			close: function(event, ui) {
+				$('#' + $(this).attr('id').replace(/dialog/, 'tooltip')).tooltip('enable');
+			}
+		})
+		.on('click', function() {
+			$(this).dialog('close');
+		})
+		.parent().resizable({
+			aspectRatio: true
 		});
 	});
 //-->

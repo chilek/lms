@@ -1684,7 +1684,7 @@ CREATE TABLE cashimport (
     id integer 			DEFAULT nextval('cashimport_id_seq'::text) NOT NULL,
     date integer 		DEFAULT 0 NOT NULL,
     value numeric(9,2) 		DEFAULT 0 NOT NULL,
-    customer varchar(150) 	DEFAULT '' NOT NULL,
+    customer text		DEFAULT '' NOT NULL,
     description text	DEFAULT '' NOT NULL,
     customerid integer 		DEFAULT NULL
 	    REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -2836,6 +2836,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016080801');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016082400');
 
 COMMIT;

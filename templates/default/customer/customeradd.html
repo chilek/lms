@@ -6,13 +6,9 @@
 <H1>{$layout.pagetitle}</H1>
 <SCRIPT type="text/javascript">
 <!--
-	function randomize()
-	{
-		var r = 0;
-		do
-			r = Math.floor(Math.random()*1000000-1);
-		while (r<1000);
-		document.customeradd.elements['customeradd[pin]'].value = r;
+	function randomize() {
+		document.customeradd.elements['customeradd[pin]'].value =
+			generate_random_string(4 + Math.floor(Math.random() * 3), '0123456789');
 	}
 
 	function newcontact(type) {
@@ -356,7 +352,8 @@
 						<IMG src="img/pin.gif" alt="">
 					</TD>
 					<TD style="width: 99%;">
-						<INPUT type="number" pattern="{literal}.{4,6}{/literal}" required size="6" value="{if $customeradd.pin}{$customeradd.pin}{/if}" name="customeradd[pin]" title="{trans("Enter 4 to 6 digits PIN number (optional)")}" {tip text="Enter 4 to 6 digits PIN number (optional)" trigger="pin"}>&nbsp;<A href="javascript:randomize()" {tip text="Generate random PIN"}>&raquo;&raquo;&raquo;</A>
+						<INPUT type="number" pattern="{literal}[0-9]{4,6}{/literal}" required size="6" value="{if $customeradd.pin}{$customeradd.pin}{/if}" name="customeradd[pin]" title="{trans("Enter 4 to 6 digits PIN number (optional)")}" {tip text="Enter 4 to 6 digits PIN number (optional)" trigger="pin"}>&nbsp;
+						<A href="javascript:randomize()" {tip text="Generate random PIN"}>&raquo;&raquo;&raquo;</A>
 					</TD>
 				</TR>
 				<TR>

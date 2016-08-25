@@ -29,6 +29,7 @@
 	}
 //-->
 </SCRIPT>
+{$default_printpage = ConfigHelper::getConfig('receipts.default_printpage')}
 <FORM NAME="receipt" METHOD="POST" ACTION="?m=receiptadv&id={$receipt.id}">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="receipt[id]" value="{$receipt.id}">
@@ -127,8 +128,14 @@
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="100%" ALIGN="right" CLASS="fbottomu">
-			<INPUT type="checkbox" id="original" name="original" checked> <label for="original">{trans("original")}</label>&nbsp;
-			<INPUT type="checkbox" id="copy" name="copy" checked> <label for="copy">{trans("copy")}</label>&nbsp;
+			<label>
+				<INPUT type="checkbox" name="original"{if preg_match('/copy/i', $default_printpage)} checked{/if}>
+				{trans("original")}
+			</label>
+			<label>
+				<INPUT type="checkbox" name="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}>
+				{trans("copy")}
+			</label>
 			<A HREF="?m=receiptlist&regid={$receipt.regid}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>&nbsp;
 			<A HREF="javascript: savereceipt(0);">{trans("Save")} <IMG SRC="img/save.gif" ALT=""></A>&nbsp;
 			<A HREF="javascript: savereceipt(1);">{trans("Save & Print")} <IMG SRC="img/print.gif" ALT=""></A>
