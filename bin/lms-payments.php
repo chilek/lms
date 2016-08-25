@@ -192,7 +192,7 @@ $forward_periods = array(
 	DISPOSABLE => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
 );
 
-$forward_period_aligneds = array(
+$forward_periods_aligned = array(
 	DAILY      => $forward_periods[DAILY],
 	WEEKLY     => $forward_periods[WEEKLY],
 	MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+1, 0, $year)),
@@ -212,7 +212,7 @@ $backward_periods = array(
 	DISPOSABLE => strftime($date_format, mktime(12, 0, 0, $month,   $dom-1, $year))
 );
 
-$backward_period_aligneds = array(
+$backward_periods_aligned = array(
 	DAILY      => strftime($date_format, mktime(12, 0, 0, $month,   $dom-1, $year)),
 	WEEKLY     => strftime($date_format, mktime(12, 0, 0, $month,   $dom-7, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
 	MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month-1, $dom,   $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
