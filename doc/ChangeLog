@@ -73,6 +73,7 @@ version ?.??.?? (????-??-??):
   - ported almost all dynamic popups to jquery [chilan]
   - added module to user panel for view VoIP billings [kosa/chilan]
   - added receipts.default_printpage config variable support [chilan]
+  - added support for create voip billing invoices [kosa/chilan]
 
 version 1.11.20 (2016-04-19):
 
