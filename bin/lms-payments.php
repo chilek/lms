@@ -192,7 +192,7 @@ $forward_periods = array(
 	DISPOSABLE => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
 );
 
-$forward_periods_aligned = array(
+$forward_aligned_periods = array(
 	DAILY      => $forward_periods[DAILY],
 	WEEKLY     => $forward_periods[WEEKLY],
 	MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+1, 0, $year)),
@@ -212,14 +212,16 @@ $backward_periods = array(
 	DISPOSABLE => strftime($date_format, mktime(12, 0, 0, $month,   $dom-1, $year))
 );
 
-$backward_periods_aligned = array(
-	DAILY      => strftime($date_format, mktime(12, 0, 0, $month,   $dom-1, $year)),
-	WEEKLY     => strftime($date_format, mktime(12, 0, 0, $month,   $dom-7, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
-	MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month-1, $dom,   $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
-	QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month-3, $dom,   $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
-	HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month-6, $dom,   $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
-	YEARLY     => strftime($date_format, mktime(12, 0, 0, $month,   $dom,   $year-1)).' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
-	DISPOSABLE => strftime($date_format, mktime(12, 0, 0, $month,   $dom-1, $year))
+$last_sunday = strtotime('last Sunday '.date("Y-m-d"));
+
+$backward_aligned_periods = array(
+	DAILY      => $backward_periods[DAILY],
+	WEEKLY     => strftime($date_format, $last_sunday-518400)                        .' - '.strftime($date_format, $last_sunday),
+	MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month-1, 1     , $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month-1, date("t"), $year)),
+	QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month-3, 1     , $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month-1, date("t"), $year)),
+	HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month-6, 1     , $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month-1, date("t"), $year)),
+	YEARLY     => strftime($date_format, mktime(12, 0, 0, $month  , 1     , $year-1)).' - '.strftime($date_format, mktime(12, 0, 0, $month-1, date("t"), $year)),
+	DISPOSABLE => $backward_periods[DISPOSABLE]
 );
 
 // Special case, ie. you have 01.01.2005-01.31.2005 on invoice, but invoice/
@@ -451,11 +453,12 @@ foreach ($assigns as $assign) {
 	$desc = preg_replace("/\%next_period/", $next_period, $desc);
 	$desc = preg_replace("/\%prev_period/", $prev_period, $desc);
 
-	$desc = preg_replace("/\%forward_period/"         , $forward_periods[$assign['period']]        , $desc);
-	$desc = preg_replace("/\%forward_period_aligned/" , $forward_periods[$assign['period']]        , $desc);
-	$desc = preg_replace("/\%period/"                 , $forward_periods[$assign['period']]        , $desc); //for backward references, please use %forward_period
-	$desc = preg_replace("/\%aligned_period/"         , $forward_periods_aligned[$assign['period']], $desc);
-	$desc = preg_replace("/\%backward_period/"        , $backward_periods[$assign['period']]       , $desc);
+	$desc = preg_replace("/\%forward_period/"          , $forward_periods[$assign['period']]         , $desc);
+	$desc = preg_replace("/\%forward_period_aligned/"  , $forward_periods[$assign['period']]         , $desc);
+	$desc = preg_replace("/\%period/"                  , $forward_periods[$assign['period']]         , $desc); //for backward references, please use %forward_period
+	$desc = preg_replace("/\%aligned_period/"          , $forward_aligned_periods[$assign['period']] , $desc);
+	$desc = preg_replace("/\%backward_period/"         , $backward_periods[$assign['period']]        , $desc);
+	$desc = preg_replace("/\%backward_aligned_periods/", $backward_aligned_periods[$assign['period']], $desc);
 
 	if ($suspension_percentage && ($assign['suspended'] || $assign['allsuspended']))
 		$desc .= " ".$suspension_description;
