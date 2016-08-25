@@ -182,7 +182,7 @@ else
 	$halfyear = $dom + ($month - 1) * 100;
 
 $date_format = ConfigHelper::getConfig('payments.date_format');
-$forward_period = array(
+$forward_periods = array(
 	DAILY      => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
 	WEEKLY     => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month  , $dom+6, $year)),
 	MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+1, $dom-1, $year)),
@@ -192,17 +192,17 @@ $forward_period = array(
 	DISPOSABLE => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
 );
 
-$forward_period_aligned = array(
-	DAILY      => $forward_period[DAILY],
-	WEEKLY     => $forward_period[WEEKLY],
+$forward_period_aligneds = array(
+	DAILY      => $forward_periods[DAILY],
+	WEEKLY     => $forward_periods[WEEKLY],
 	MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+1, 0, $year)),
 	QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+3, 0, $year)),
 	HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+6, 0, $year)),
 	YEARLY     => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month,   0, $year+1)),
-	DISPOSABLE => $forward_period[DISPOSABLE],
+	DISPOSABLE => $forward_periods[DISPOSABLE],
 );
 
-$backward_period = array(
+$backward_periods = array(
 	DAILY      => strftime($date_format, mktime(12, 0, 0, $month,   $dom-1, $year)),
 	WEEKLY     => strftime($date_format, mktime(12, 0, 0, $month,   $dom-7, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
 	MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month-1, $dom,   $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
@@ -212,7 +212,7 @@ $backward_period = array(
 	DISPOSABLE => strftime($date_format, mktime(12, 0, 0, $month,   $dom-1, $year))
 );
 
-$backward_period_aligned = array(
+$backward_period_aligneds = array(
 	DAILY      => strftime($date_format, mktime(12, 0, 0, $month,   $dom-1, $year)),
 	WEEKLY     => strftime($date_format, mktime(12, 0, 0, $month,   $dom-7, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
 	MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month-1, $dom,   $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
@@ -451,11 +451,11 @@ foreach ($assigns as $assign) {
 	$desc = preg_replace("/\%next_period/", $next_period, $desc);
 	$desc = preg_replace("/\%prev_period/", $prev_period, $desc);
 
-	$desc = preg_replace("/\%forward_period/"         , $forward_period[$assign['period']]        , $desc);
-	$desc = preg_replace("/\%forward_period_aligned/" , $forward_period[$assign['period']]        , $desc);
-	$desc = preg_replace("/\%period/"                 , $forward_period[$assign['period']]        , $desc);  //for backward references, please use %forward_period
-	$desc = preg_replace("/\%aligned_period/"         , $forward_period_aligned[$assign['period']], $desc);
-	$desc = preg_replace("/\%backward_period/"        , $backward_period[$assign['period']]       , $desc);
+	$desc = preg_replace("/\%forward_period/"         , $forward_periods[$assign['period']]        , $desc);
+	$desc = preg_replace("/\%forward_period_aligned/" , $forward_periods[$assign['period']]        , $desc);
+	$desc = preg_replace("/\%period/"                 , $forward_periods[$assign['period']]        , $desc); //for backward references, please use %forward_period
+	$desc = preg_replace("/\%aligned_period/"         , $forward_periods_aligned[$assign['period']], $desc);
+	$desc = preg_replace("/\%backward_period/"        , $backward_periods[$assign['period']]       , $desc);
 
 	if ($suspension_percentage && ($assign['suspended'] || $assign['allsuspended']))
 		$desc .= " ".$suspension_description;
