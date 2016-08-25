@@ -182,24 +182,44 @@ else
 	$halfyear = $dom + ($month - 1) * 100;
 
 $date_format = ConfigHelper::getConfig('payments.date_format');
-$txts = array(
-	DAILY => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
-	WEEKLY => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month, $dom + 6, $year)),
-	MONTHLY => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 1, $dom - 1, $year)),
-	QUARTERLY => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 3, $dom - 1, $year)),
-	HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 6, $dom - 1, $year)),
-	YEARLY => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month, $dom - 1, $year + 1)),
+$forward_period = array(
+	DAILY      => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
+	WEEKLY     => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month  , $dom+6, $year)),
+	MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+1, $dom-1, $year)),
+	QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+3, $dom-1, $year)),
+	HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+6, $dom-1, $year)),
+	YEARLY     => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month  , $dom-1, $year+1)),
 	DISPOSABLE => strftime($date_format, mktime(12, 0, 0, $month, $dom, $year)),
 );
 
-$txts_aligned = array(
-	DAILY => $txts[DAILY],
-	WEEKLY => $txts[WEEKLY],
-	MONTHLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 1, 0, $year)),
-	QUARTERLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 3, 0, $year)),
-	HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month + 6, 0, $year)),
-	YEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year))." - ".strftime($date_format, mktime(12, 0, 0, $month, 0, $year + 1)),
-	DISPOSABLE => $txts[DISPOSABLE],
+$forward_period_aligned = array(
+	DAILY      => $forward_period[DAILY],
+	WEEKLY     => $forward_period[WEEKLY],
+	MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+1, 0, $year)),
+	QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+3, 0, $year)),
+	HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month+6, 0, $year)),
+	YEARLY     => strftime($date_format, mktime(12, 0, 0, $month, 1, $year)).' - '.strftime($date_format, mktime(12, 0, 0, $month,   0, $year+1)),
+	DISPOSABLE => $forward_period[DISPOSABLE],
+);
+
+$backward_period = array(
+	DAILY      => strftime($date_format, mktime(12, 0, 0, $month,   $dom-1, $year)),
+	WEEKLY     => strftime($date_format, mktime(12, 0, 0, $month,   $dom-7, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
+	MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month-1, $dom,   $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
+	QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month-3, $dom,   $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
+	HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month-6, $dom,   $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
+	YEARLY     => strftime($date_format, mktime(12, 0, 0, $month,   $dom,   $year-1)).' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
+	DISPOSABLE => strftime($date_format, mktime(12, 0, 0, $month,   $dom-1, $year))
+);
+
+$backward_period_aligned = array(
+	DAILY      => strftime($date_format, mktime(12, 0, 0, $month,   $dom-1, $year)),
+	WEEKLY     => strftime($date_format, mktime(12, 0, 0, $month,   $dom-7, $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
+	MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month-1, $dom,   $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
+	QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month-3, $dom,   $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
+	HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month-6, $dom,   $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
+	YEARLY     => strftime($date_format, mktime(12, 0, 0, $month,   $dom,   $year-1)).' - '.strftime($date_format, mktime(12, 0, 0, $month, $dom-1, $year)),
+	DISPOSABLE => strftime($date_format, mktime(12, 0, 0, $month,   $dom-1, $year))
 );
 
 // Special case, ie. you have 01.01.2005-01.31.2005 on invoice, but invoice/
@@ -341,42 +361,55 @@ $date = new DateTime(date("Y-m-d"));
 $time = $date->format("U");
 unset($date);
 
-$query = 'SELECT a.tariffid, a.customerid, 
-		a.period, a.at, a.suspended, a.settlement, a.datefrom, a.pdiscount, a.vdiscount, 
-		a.invoice, t.description AS description, a.id AS assignmentid, 
-		c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
-		d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
-		t.type AS tarifftype, 
-		t.name AS name, 
-		t.taxid AS taxid, 
-		
-		ROUND((SELECT sum(price) FROM voip_cdr vc LEFT JOIN voipaccounts va ON vc.callervoipaccountid = va.id
-			   WHERE va.ownerid = 6 AND
-			   vc.call_start_time >= ISNULL((CASE a.period
-			                          WHEN ' . YEARLY     . ' THEN ' . strtotime("-1 year" , $time) . '
- 			                          WHEN ' . HALFYEARLY . ' THEN ' . strtotime("-6 month" , $time) . '
-			                          WHEN ' . QUARTERLY  . ' THEN ' . strtotime("-3 month" , $time) . '
-			                          WHEN ' . MONTHLY    . ' THEN ' . strtotime("-1 month" , $time) . '
-			                          WHEN ' . DISPOSABLE . ' THEN ' . strtotime("-1 day"   , $time) . "
-			                          END),0),2) AS value,
-			   
-		(SELECT COUNT(id) FROM assignments 
-			WHERE customerid = c.id AND tariffid = 0 AND liabilityid = 0 
-			AND datefrom <= $currtime
-			AND (dateto > $currtime OR dateto = 0)) AS allsuspended 
-	FROM assignments a 
-	JOIN customers c ON (a.customerid = c.id) 
-	LEFT JOIN tariffs t ON (a.tariffid = t.id) 
-	LEFT JOIN divisions d ON (d.id = c.divisionid) 
-	WHERE (c.status = ? OR c.status = ?)
-		AND ((a.period = ? AND at = ?)
-			OR ((a.period = ?
-			OR (a.period = ? AND at = ?)
-			OR (a.period = ? AND at = ?)
-			OR (a.period = ? AND at = ?)
-			OR (a.period = ? AND at = ?)
-			OR (a.period = ? AND at = ?))
-			AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
+$billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice_description', 'Phone calls between %backward_period');
+
+$query = 'SELECT
+            a.tariffid, a.customerid, a.period, a.at, a.suspended, a.settlement, a.datefrom,
+            a.pdiscount, a.vdiscount, a.invoice, t.description AS description, a.id AS assignmentid,
+			c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
+			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
+			t.type AS tarifftype, t.taxid AS taxid, \'\' as prodid, '
+			. "'set' as liabilityid,"
+			. "'$billing_invoice_description' as name,
+		    ROUND((SELECT
+			          CASE WHEN sum(price) IS NULL THEN 0 ELSE sum(price) END
+			       FROM
+			          voip_cdr vc LEFT JOIN voipaccounts va ON vc.callervoipaccountid = va.id
+			       WHERE
+			          va.ownerid = a.customerid AND
+			          vc.call_start_time >= (CASE a.period
+				                               WHEN " . YEARLY     . ' THEN ' . strtotime("-1 year"  ,$time) . '
+				                               WHEN ' . HALFYEARLY . ' THEN ' . strtotime("-6 month" ,$time) . '
+				                               WHEN ' . QUARTERLY  . ' THEN ' . strtotime("-3 month" ,$time) . '
+				                               WHEN ' . MONTHLY    . ' THEN ' . strtotime("-1 month" ,$time) . '
+				                               WHEN ' . DISPOSABLE . ' THEN ' . strtotime("-1 day"   ,$time) . "
+				                             END)
+	              ),2) AS value,
+		  (SELECT
+		     COUNT(id)
+		   FROM
+		     assignments
+		   WHERE
+		     customerid  = c.id    AND
+		     tariffid    = 0       AND
+			 datefrom <= $currtime AND
+			 (dateto > $currtime OR dateto = 0)) AS allsuspended
+	       FROM assignments a
+	            JOIN customers c ON (a.customerid = c.id)
+	            LEFT JOIN tariffs t ON (a.tariffid = t.id)
+	            LEFT JOIN divisions d ON (d.id = c.divisionid
+	      )
+	    WHERE
+	      (c.status  = ? OR c.status = ?) AND
+		  ((a.period = ? AND at = ?) OR
+		  ((a.period = ? OR
+		  (a.period  = ? AND at = ?) OR
+		  (a.period  = ? AND at = ?) OR
+		  (a.period  = ? AND at = ?) OR
+		  (a.period  = ? AND at = ?) OR
+		  (a.period  = ? AND at = ?)) AND
+		   a.datefrom <= ? AND
+		  (a.dateto > ? OR a.dateto = 0)))"
 		.(!empty($groupnames) ? $customergroups : "")
 	." ORDER BY a.customerid, a.invoice, a.paytype, a.numberplanid, value DESC";
 
@@ -386,8 +419,6 @@ $billings = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION
 	
 foreach ($billings as $v)
 	array_push($assigns, $v);
-
-print_r($assigns);
 
 if (empty($assigns))
 	die;
@@ -410,17 +441,21 @@ foreach ($assigns as $assign) {
 		$desc = $assign['name'];
 	else
 		$desc = $comment;
-		               echo 1;
+
 	$desc = preg_replace("/\%type/", $assign['tarifftype'] != TARIFF_OTHER ? $TARIFFTYPES[$assign['tarifftype']] : '', $desc);
 	$desc = preg_replace("/\%tariff/", $assign['name'], $desc);
 	$desc = preg_replace("/\%attribute/", $assign['attribute'], $desc);
 	$desc = preg_replace("/\%desc/", $assign['description'], $desc);
-	$desc = preg_replace("/\%period/", $txts[$assign['period']], $desc);
-	$desc = preg_replace("/\%aligned_period/", $txts_aligned[$assign['period']], $desc);
 	$desc = preg_replace("/\%current_month/", $current_month, $desc);
 	$desc = preg_replace("/\%current_period/", $current_period, $desc);
 	$desc = preg_replace("/\%next_period/", $next_period, $desc);
 	$desc = preg_replace("/\%prev_period/", $prev_period, $desc);
+
+	$desc = preg_replace("/\%forward_period/"         , $forward_period[$assign['period']]        , $desc);
+	$desc = preg_replace("/\%forward_period_aligned/" , $forward_period[$assign['period']]        , $desc);
+	$desc = preg_replace("/\%period/"                 , $forward_period[$assign['period']]        , $desc);  //for backward references, please use %forward_period
+	$desc = preg_replace("/\%aligned_period/"         , $forward_period_aligned[$assign['period']], $desc);
+	$desc = preg_replace("/\%backward_period/"        , $backward_period[$assign['period']]       , $desc);
 
 	if ($suspension_percentage && ($assign['suspended'] || $assign['allsuspended']))
 		$desc .= " ".$suspension_description;
