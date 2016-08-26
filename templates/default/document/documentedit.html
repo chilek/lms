@@ -143,6 +143,7 @@
 			<INPUT size="50" type="file" name="files[]" {tip text="Enter path to file or click 'Browse' button" trigger="files"}>
 		</TD>
 	</TR>
+	{if !empty($document.attachments)}
 	<TR>
 		<TD>
 			<IMG src="img/attach.gif" alt="">
@@ -174,6 +175,7 @@
 			{/foreach}
 		</TD>
 	</TR>
+	{/if}
 {*
 	<TR>
 		<TD>
