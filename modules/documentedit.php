@@ -151,7 +151,8 @@ if(isset($_POST['document']))
 			// why? document attachment can be shared between different documents.
 			// we should rather use the other message digest in such case!
 			if ($DB->GetOne('SELECT docid FROM documentattachments WHERE md5sum = ?', array($file['md5sum']))
-				&& hash_file('sha256', $file['newfile']) != hash_file('sha256', $file['tmpname'])) {
+				&& (filesize($file['netfile']) != filesize($file['tmpname'])
+					|| hash_file('sha256', $file['newfile']) != hash_file('sha256', $file['tmpname']))) {
 				$error['files'] = trans('Specified file exists in database!');
 				break;
 			}
