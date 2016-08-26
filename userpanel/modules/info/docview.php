@@ -43,7 +43,7 @@ if(!empty($_GET['id'])) {
 	$filename = DOC_DIR.'/'.substr($doc['md5sum'],0,2).'/'.$doc['md5sum'];
 	if(file_exists($filename))
 	{
-		if (strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
+		if (preg_match('/html/i', $doc['contenttype']) && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
 			if($doc['type'] == DOC_CONTRACT) {
 				$subject = trans('Contract');
 				$title = trans('Contract No. $a', $docnumber);
