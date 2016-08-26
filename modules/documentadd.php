@@ -159,7 +159,7 @@ if (isset($_POST['document'])) {
 	if (!$error) {
 		foreach ($files as &$file) {
 			$file['path'] = DOC_DIR . DIRECTORY_SEPARATOR . substr($file['md5sum'], 0, 2);
-			$file['newfile'] = $path . DIRECTORY_SEPARATOR . $file['md5sum'];
+			$file['newfile'] = $file['path'] . DIRECTORY_SEPARATOR . $file['md5sum'];
 
 			// If we have a file with specified md5sum, we assume
 			// it's here because of some error. We can replace it with
