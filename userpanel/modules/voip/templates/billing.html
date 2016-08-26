@@ -142,10 +142,11 @@
                                             <span class="ui-icon ui-icon-arrowthickstop-1-s"></span>
                                             <span class="ui-icon ui-icon-volume-on"></span>
                                         {elseif $billings[i].type == CALL_INCOMING && $billings[i].callee_flags & CALL_FLAG_CUSTOMER_RECORDING}
-                                            <audio src="?m=voip&record={$billings[i].id}" controls preload="none">
-                                                <progress min="0" max="100" value="0"></progress>
-                                                {trans("Your browser does not support the audio element.")}
-                                             </audio>
+                                            {documentview id="{$billings[i].id}"
+                                                          type="audio/mp3"
+                                                          name="{trans("ID:")} {$billings[i].id}, {trans("Date:")} {$billings[i].begintime|date_format:"%e %B %Y %H:%M:%S"}"
+                                                          url="?m=voip&record={$billings[i].id}"
+                                                          text="<span class=\"ui-icon ui-icon-volume-on\"></span>"}
                                         {/if}
                                     {/if}
                                 </TD>
