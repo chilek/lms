@@ -40,7 +40,13 @@
 
                 <TABLE CLASS="filters">
                     <TR>
-                        <TD>{trans("My accounts:")}</TD>
+                        <TD>
+                            {if count($voip_accounts) > 1}
+                                {trans("My accounts:")}
+                            {else}
+                                {trans("My number:")}
+                            {/if}
+                        </TD>
                         <TD>{trans("Date range:")}</TD>
                         <TD>{trans("Connection type:")}</TD>
                         <TD>{trans("Status:")}</TD>
@@ -50,12 +56,19 @@
                     </TR>
                     <TR>
                         <TD>
-                            <SELECT NAME="account" CLASS="lms-input">
-                                <OPTION VALUE="0">{trans("- all -")}</OPTION>
-                                {foreach from=$voip_accounts item=acc}
-                                <OPTION VALUE="{$acc.id}"{if $params.id == $acc.id} SELECTED{/if}>{$acc.phone}</OPTION>
-                                {/foreach}
-                            </SELECT>
+                            {if count($voip_accounts) > 1}
+                                <SELECT NAME="account" CLASS="lms-input">
+                                    <OPTION VALUE="0">{trans("- all -")}</OPTION>
+                                    {foreach from=$voip_accounts item=acc}
+                                    <OPTION VALUE="{$acc.id}"{if $params.id == $acc.id} SELECTED{/if}>{$acc.phone}</OPTION>
+                                    {/foreach}
+                                </SELECT>
+                            {else if count($voip_accounts) == 1}
+                                {assign var=tmp value=array_values($voip_accounts)}
+                                {$tmp[0].phone}
+                            {else}
+                                 <DIV CLASS="text-center">---</DIV>
+                            {/if}
                         </TD>
                         <TD>
                             {trans("from")}
@@ -121,7 +134,7 @@
                                     {if $billings[i].type == CALL_OUTGOING}
                                         {trans("outgoing")}
                                     {elseif $billings[i].type == CALL_INCOMING}
-                                           {trans("incoming")}
+                                        {trans("incoming")}
                                     {/if}
                                 </TD>
                                 <TD>
@@ -155,7 +168,7 @@
                         <TR CLASS="darkest">
                             {assign var=pagin_result value=$pagination->getPages()}
                             {if $pagin_result.pages}
-                                <TD CLASS="pagination" COLSPAN="100%" STYLE="padding: 10px 0; text-align: center;">
+                                <TD CLASS="pagination text-center" COLSPAN="100%" STYLE="padding: 10px 0;">
                                     {include file="pagination.html"}
                                 </TD>
                             {else}
@@ -164,7 +177,7 @@
                         </TR>
                     {else}
                         <TR CLASS="darkest">
-                            <TD COLSPAN="100%" STYLE="text-align: center; padding:20px 0; font-weight: bold;">
+                            <TD COLSPAN="100%" CLASS="bold text-center" STYLE="padding:20px 0;">
                                 {trans("No such data for selected period.")}
                             </TD>
                         </TR>
