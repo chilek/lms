@@ -70,31 +70,31 @@
 						{if $message.attachments}
 						{foreach $message.attachments as $attachment}
 						{if preg_match('/image\/(jpeg|png|gif)/', $attachment.contenttype)}
-						<div class="rtattachmentdialog" id="rtattachmentdialog-{$message.id}-{$attachment@index}" title="{$attachment.filename}" style="display: none;">
+						<div class="documentviewdialog" id="documentviewdialog-{$message.id}-{$attachment@index}" title="{$attachment.filename}" style="display: none;">
 							<img src="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={$attachment.filename}" style="width: 100%;">
 						</div>
 						{elseif preg_match('/audio\/(mp3|ogg|oga|wav)/', $attachment.contenttype)}
-						<div class="rtattachmentdialog" id="rtattachmentdialog-{$message.id}-{$attachment@index}" title="{$attachment.filename}" style="display: none;">
+						<div class="documentviewdialog" id="documentviewdialog-{$message.id}-{$attachment@index}" title="{$attachment.filename}" style="display: none;">
 							<audio src="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={$attachment.filename}" style="width: 100%;" controls preload="none">
 							{trans("Your browser does not support the audio element.")}
 							</audio>
 						</div>
 						{elseif preg_match('/video\/(mp4|ogg|webm)/', $attachment.contenttype)}
-						<div class="rtattachmentdialog" id="rtattachmentdialog-{$message.id}-{$attachment@index}" title="{$attachment.filename}" style="display: none;">
+						<div class="documentviewdialog" id="documentviewdialog-{$message.id}-{$attachment@index}" title="{$attachment.filename}" style="display: none;">
 							<video src="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={$attachment.filename}" style="width: 100%;" controls preload="none">
 							{trans("Your browser does not support the video element.")}
 							</video>
 						</div>
 						{/if}
 						<A href="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={$attachment.filename}"
-							id="rtattachment-{$message.id}-{$attachment@index}"
-							data-rtattachment-dialog-id="rtattachmentdialog-{$message.id}-{$attachment@index}"
+							id="documentview-{$message.id}-{$attachment@index}"
+							data-dialog-id="documentviewdialog-{$message.id}-{$attachment@index}"
 							{if preg_match('/image\/(jpeg|png|gif)/', $attachment.contenttype)}
-								class="rtattachment rtattachment-image"
+								class="documentview documentview-image"
 							{elseif preg_match('/audio\/(mp3|ogg|oga|wav)/', $attachment.contenttype)}
-								class="rtattachment rtattachment-audio"
+								class="documentview documentview-audio"
 							{elseif preg_match('/video\/(mp4|ogg|webm)/', $attachment.contenttype)}
-								class="rtattachment rtattachment-video"
+								class="documentview documentview-video"
 							{/if}>
 							{$attachment.filename} <IMG src="img/attach.gif" alt="">
 						</A>

@@ -3397,4 +3397,7 @@ $_LANG['URL address is required!'] = 'Adres URL jest wymagany!';
 $_LANG['Enter deadline date in YYYY/MM/DD format (empty field means default deadline) or click to select it from calendar'] = 'Podaj termin płatności w formacie RRRR/MM/DD lub kliknij by wybrać go z kalendarza';
 $_LANG['Deadline date should be later than consent date!'] = 'Termin płatności powinien być późniejszy niż data wystawienia!';
 
+$_LANG['Your browser does not support the audio element.'] = 'Twoja przeglądarka nie obsługuje elementu audio.';
+$_LANG['Your browser does not support the video element.'] = 'Twoja przeglądarka nie obsługuje elementu video.';
+
 ?>

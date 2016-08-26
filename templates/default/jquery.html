@@ -38,6 +38,7 @@
 		});
 
 		[
+			{ class: 'voipaccountinfo', url: '?m=voipaccountinfoshort&id='},
 			{ class: 'invoiceinfo', url: '?m=invoiceinfo&id='},
 			{ class: 'docnumber', url: '?m=number&id='},
 			{ class: 'customerinfo', url: '?m=customerinfoshort&id='},
@@ -64,27 +65,27 @@
 			});
 		});
 
-		var rtattachments = $('.rtattachment');
+		var documentviews = $('.documentview');
 
-		rtattachments.tooltip({
-			items: '.rtattachment-image',
-			tooltipClass: 'rtattachment',
+		documentviews.tooltip({
+			items: '.documentview-image',
+			tooltipClass: 'documentview',
 			content: function() {
 				var href = $(this).attr('href');
 				return '<img src="' + href + '" style="max-width: 300px;">';
 			}
 		});
 
-		rtattachments.on("click", function() {
-			var dialog = $('#' + $(this).attr('data-rtattachment-dialog-id'));
+		documentviews.on("click", function() {
+			var dialog = $('#' + $(this).attr('data-dialog-id'));
 			dialog.dialog('open');
-			if ($(this).hasClass('rtattachment-image'))
+			if ($(this).hasClass('documentview-image'))
 				$(this).tooltip('disable');
-			else if ($(this).hasClass('rtattachment-audio')) {
+			else if ($(this).hasClass('documentview-audio')) {
 				var audioelem = dialog.find('audio').get(0);
 				audioelem.currentTime = 0;
 				audioelem.play();
-			} else if ($(this).hasClass('rtattachment-video')) {
+			} else if ($(this).hasClass('documentview-video')) {
 				var videoelem = dialog.find('video').get(0);
 				videoelem.currentTime = 0;
 				videoelem.play();
@@ -92,13 +93,13 @@
 			return false;
 		});
 
-		$('.rtattachmentdialog').dialog({
+		$('.documentviewdialog').dialog({
 			modal: true,
 			autoOpen: false,
 			resizable: false,
 			minWidth: 0,
 			minHeight: 0,
-			dialogClass: 'rtattachmentdialog',
+			dialogClass: 'documentviewdialog',
 			open: function(event, ui) {
 				$(this).dialog('option', 'position', { my: 'center', at: 'center', of: window })
 					.dialog('option', 'width', '30%');
@@ -109,11 +110,11 @@
 			},
 			close: function(event, ui) {
 				var elem = $('#' + $(this).attr('id').replace(/dialog/, ''));
-				if (elem.hasClass('rtattachment-image'))
+				if (elem.hasClass('documentview-image'))
 					elem.tooltip('enable');
-				else if (elem.hasClass('rtattachment-audio'))
+				else if (elem.hasClass('documentview-audio'))
 					$(this).find('audio').get(0).pause();
-				else if (elem.hasClass('rtattachment-video'))
+				else if (elem.hasClass('documentview-video'))
 					$(this).find('video').get(0).pause();
 			}
 		})
