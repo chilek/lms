@@ -355,10 +355,10 @@ td.multiselect select { min-width: 200px; }
 .ui-tooltip.rtticketinfo,
 .ui-tooltip.nodegroupinfo,
 .ui-tooltip.netdevlist,
-.ui-tooltip.rtattachment {
+.ui-tooltip.documentview {
 	padding: 0;
 }
 
-.ui-dialog-content.rtattachmentdialog {
+.ui-dialog-content.documentviewdialog {
 	padding: 0 !important;
 }
