@@ -83,11 +83,10 @@ if (!empty($_POST['marks'])) {
 		die;
 	}
 } elseif($doc = $DB->GetRow('SELECT d.id, d.number, d.cdate, d.type, n.template
-	FROM documentcontents c
-	JOIN documents d ON (d.id = c.docid)
+	FROM documents d
 	LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 	JOIN docrights r ON (r.doctype = d.type)
-	WHERE c.docid = ? AND r.userid = ? AND (r.rights & 1) = 1', array($_GET['id'], $AUTH->id))) {
+	WHERE d.id = ? AND r.userid = ? AND (r.rights & 1) = 1', array($_GET['id'], $AUTH->id))) {
 
 	$docattachments = $DB->GetAllByKey('SELECT * FROM documentattachments WHERE docid = ?
 		ORDER BY main DESC', 'id', array($_GET['id']));
