@@ -27,12 +27,22 @@
 global $LMS, $SESSION;
 
 if(!empty($_GET['id'])) {
-	$doc = $LMS->DB->GetRow('SELECT c.filename, c.md5sum, c.contenttype, d.id, d.number, d.cdate, d.type, d.customerid, n.template
-		FROM documentcontents c
-		JOIN documents d ON (d.id = c.docid)
+	$doc = $LMS->DB->GetRow('SELECT d.id, d.number, d.cdate, d.type, d.customerid, n.template
+		FROM documents d
 		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 		LEFT JOIN divisions ds ON (ds.id = d.divisionid)
-		WHERE c.docid = ?', array(intval($_GET['id'])));
+		WHERE d.id = ?', array(intval($_GET['id'])));
+
+	$docattachments = $LMS->DB->GetAllByKey('SELECT * FROM documentattachments WHERE docid = ?
+		ORDER BY main DESC', 'id', array($_GET['id']));
+	$attachmentid = intval($_GET['attachmentid']);
+	if ($attachmentid)
+		$docattach = $docattachments[$attachmentid];
+	else
+		$docattach = reset($docattachments);
+	$doc['md5sum'] = $docattach['md5sum'];
+	$doc['filename'] = $docattach['filename'];
+	$doc['contenttype'] = $docattach['contenttype'];
 
 	if($doc['customerid'] != $SESSION->id)
 	{

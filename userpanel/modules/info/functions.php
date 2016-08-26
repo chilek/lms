@@ -35,13 +35,18 @@ function module_main()
     $userinfo = $LMS->GetCustomer($SESSION->id);
     $usernodes = $LMS->GetCustomerNodes($SESSION->id);
     //$balancelist = $LMS->GetCustomerBalanceList($SESSION->id);
-    $documents = $LMS->DB->GetAll('SELECT c.docid, d.number, d.type, c.title, c.fromdate, c.todate, 
-	c.description, c.filename, c.md5sum, c.contenttype, n.template, d.closed, d.cdate
-	FROM documentcontents c
-	JOIN documents d ON (c.docid = d.id)
-	LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-	WHERE d.customerid = ?
-	ORDER BY cdate', array($SESSION->id));
+	$documents = $LMS->DB->GetAll('SELECT d.id, d.number, d.type, c.title, c.fromdate, c.todate, 
+		c.description, n.template, d.closed, d.cdate
+		FROM documentcontents c
+		JOIN documents d ON (c.docid = d.id)
+		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+		WHERE d.customerid = ?
+		ORDER BY cdate', array($SESSION->id));
+
+	if (!empty($documents))
+		foreach ($documents as &$doc)
+			$doc['attachments'] = $LMS->DB->GetAllBykey('SELECT * FROM documentattachments WHERE docid = ?
+				ORDER BY main DESC', 'id', array($doc['id']));
 
     $fields_changed = $LMS->DB->GetRow('SELECT id FROM up_info_changes WHERE customerid = ?', 
     	array($SESSION->id));
@@ -65,14 +70,19 @@ function module_updateuserform()
 
     $userinfo = $LMS->GetCustomer($SESSION->id);
     $usernodes = $LMS->GetCustomerNodes($SESSION->id);
-    $documents = $LMS->DB->GetAll('SELECT c.docid, d.number, d.type, c.title, c.fromdate, c.todate, 
-	c.description, c.filename, c.md5sum, c.contenttype, n.template, d.closed, d.cdate
-	FROM documentcontents c
-	JOIN documents d ON (c.docid = d.id)
-	LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-	WHERE d.customerid = ?
-	ORDER BY cdate', array($SESSION->id));
-    
+    $documents = $LMS->DB->GetAll('SELECT d.id, d.number, d.type, c.title, c.fromdate, c.todate, 
+		c.description, n.template, d.closed, d.cdate
+		FROM documentcontents c
+		JOIN documents d ON (c.docid = d.id)
+		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+		WHERE d.customerid = ?
+		ORDER BY cdate', array($SESSION->id));
+
+	if (!empty($documents))
+		foreach ($documents as &$doc)
+			$doc['attachments'] = $LMS->DB->GetAllBykey('SELECT * FROM documentattachments WHERE docid = ?
+				ORDER BY main DESC', 'id', array($doc['id']));
+
     $userinfo['im'] = isset($userinfo['messengers'][IM_GG]) ? $userinfo['messengers'][IM_GG]['uid'] : '';
     $userinfo['yahoo'] = isset($userinfo['messengers'][IM_YAHOO]) ? $userinfo['messengers'][IM_YAHOO]['uid'] : '';
     $userinfo['skype'] = isset($userinfo['messengers'][IM_SKYPE]) ? $userinfo['messengers'][IM_SKYPE]['uid'] : '';
