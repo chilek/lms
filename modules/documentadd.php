@@ -175,9 +175,7 @@ if (isset($_POST['document'])) {
 		if (!$error)
 			foreach ($files as $file) {
 				@mkdir($file['path'], 0700);
-				if (file_exists($file['newfile']))
-					@unlink($file['$newfile']);
-				if (!@rename($file['tmpname'], $file['newfile'])) {
+				if (!file_exists($file['newfile']) && !@rename($file['tmpname'], $file['newfile'])) {
 					$error['files'] = trans('Can\'t save file in "$a" directory!', $file['path']);
 					break;
 				}
