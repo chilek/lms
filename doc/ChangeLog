@@ -79,6 +79,7 @@ version ?.??.?? (????-??-??):
     message and note attachment links [chilan]
   - support for customer document attachment preview in popup dialogs [chilan]
   - added support for document multi-attachments [chilan]
+  - document attached file management is possible from document edit form [chilan]
 
 version 1.11.20 (2016-04-19):
 

@@ -191,6 +191,7 @@ div.multiselectlayer ul li input { border: none; }
 .alertblend	{ color: #FA8072; }
 .suspended	{ color: #30B6C6; }
 .bold		{ font-weight: bold; }
+.crossed	{ text-decoration: line-through; }
 
 .pre		{ font-size:  8pt; font-family: Courier, Courier New; }
 

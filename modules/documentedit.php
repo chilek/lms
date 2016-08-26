@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -46,9 +46,17 @@ if(isset($_GET['action']) && $_GET['action'] == 'confirm')
 $document = $DB->GetRow('SELECT documents.id AS id, closed, type, number, template,
 	cdate, numberplanid, title, fromdate, todate, description, divisionid
 	FROM documents
+	JOIN docrights r ON (r.doctype = documents.type)
 	LEFT JOIN documentcontents ON (documents.id = docid)
 	LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-	WHERE documents.id = ?', array($_GET['id']));
+	WHERE documents.id = ? AND r.userid = ? AND (r.rights & 8) = 8', array($_GET['id'], $AUTH->id));
+if (empty($document)) {
+	$SMARTY->display('noaccess.html');
+	die;
+}
+
+$document['attachments'] = $DB->GetAllByKey('SELECT *, 0 AS deleted FROM documentattachments
+	WHERE docid = ? AND main = 0', 'id', array($_GET['id']));
 
 if(isset($_POST['document']))
 {
@@ -110,65 +118,54 @@ if(isset($_POST['document']))
 	if($documentedit['fromdate'] > $documentedit['todate'] && $documentedit['todate']!=0)
 		$error['todate'] = trans('Start date can\'t be greater than end date!');
 
-/*	if($filename = $_FILES['file']['name'])
-	{
-		if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
-		{
-			$file = $_FILES['file']['tmp_name'];
-			$documentedit['md5sum'] = md5_file($file);
-			$documentedit['contenttype'] = $_FILES['file']['type'];
-			$documentedit['filename'] = $filename;
+	$documentedit['closed'] = isset($documentedit['closed']) ? 1 : 0;
+
+	$files = array();
+	foreach ($_FILES['files']['name'] as $fileidx => $filename)
+		if (!empty($filename)) {
+			if (is_uploaded_file($_FILES['files']['tmp_name'][$fileidx]) && $_FILES['files']['size'][$fileidx])
+				$files[] = array(
+					'md5sum' => md5_file($_FILES['files']['tmp_name'][$fileidx]),
+					'contenttype' => $_FILES['files']['type'][$fileidx],
+					'filename' => $filename,
+					'tmpname' => $_FILES['files']['tmp_name'][$fileidx],
+				);
+			else // upload errors
+				switch ($_FILES['files']['error'][$fileidx]) {
+					case 1:
+					case 2: $error['files'] = trans('File is too large.'); break;
+					case 3: $error['files'] = trans('File upload has finished prematurely.'); break;
+					case 4: $error['files'] = trans('Path to file was not specified.'); break;
+					default: $error['files'] = trans('Problem during file upload.'); break;
+				}
 		}
-		else // upload errors
-			switch($_FILES['file']['error'])
-			{
-				case 1:
-				case 2: $error['file'] = trans('File is too large.'); break;
-				case 3: $error['file'] = trans('File upload has finished prematurely.'); break;
-				case 4: $error['file'] = trans('Path to file was not specified.'); break;
-				default: $error['file'] = trans('Problem during file upload.'); break;
+
+	if (!$error) {
+		foreach ($files as &$file) {
+			$file['path'] = DOC_DIR . DIRECTORY_SEPARATOR . substr($file['md5sum'], 0, 2);
+			$file['newfile'] = $file['path'] . DIRECTORY_SEPARATOR . $file['md5sum'];
+
+			// If we have a file with specified md5sum, we assume
+			// it's here because of some error. We can replace it with
+			// the new document file
+			// why? document attachment can be shared between different documents.
+			// we should rather use the other message digest in such case!
+			if ($DB->GetOne('SELECT docid FROM documentattachments WHERE md5sum = ?', array($file['md5sum']))
+				&& hash_file('sha256', $file['newfile']) != hash_file('sha256', $file['tmpname'])) {
+				$error['files'] = trans('Specified file exists in database!');
+				break;
+			}
+		}
+		unset($file);
+		if (!$error)
+			foreach ($files as $file) {
+				@mkdir($file['path'], 0700);
+				if (!file_exists($file['newfile']) && !@rename($file['tmpname'], $file['newfile'])) {
+					$error['files'] = trans('Can\'t save file in "$a" directory!', $file['path']);
+					break;
+				}
 			}
 	}
-	elseif($documentedit['template'])
-	{
-		include(DOC_DIR.'/templates/'.$documentedit['template'].'/info.php');
-		if(file_exists(DOC_DIR.'/templates/'.$engine['engine'].'/engine.php'))
-			require_once(DOC_DIR.'/templates/'.$engine['engine'].'/engine.php');
-		else
-			require_once(DOC_DIR.'/templates/default/engine.php');
-
-		if($output)
-		{
-			$file = DOC_DIR.'/tmp.file';
-			$fh = fopen($file, 'w');
-			fwrite($fh, $output);
-			fclose($fh);
-
-			$documentedit['md5sum'] = md5_file($file);
-			$documentedit['contenttype'] = $engine['content_type'];
-			$documentedit['filename'] = $engine['output'];
-		}
-		else
-			$error['template'] = trans('Problem during file generation!');
-	}
-	else
-		$error['file'] = trans('You must to specify file for upload or select document template!');
-
-	if(!$error)
-	{
-		$path = DOC_DIR.'/'.substr($documentedit['md5sum'],0,2);
-		@mkdir($path, 0700);
-		$newfile = $path.'/'.$documentedit['md5sum'];
-		if(!file_exists($newfile))
-		{
-			if(!@rename($file, $newfile))
-				$error['file'] = trans('Can\'t save file in "$a" directory!', $path);
-		}
-		else
-			$error['file'] = trans('Specified file exists in database!');
-	}
-*/
-	$documentedit['closed'] = isset($documentedit['closed']) ? 1 : 0;
 
 	if(!$error)
 	{
@@ -187,6 +184,7 @@ if(isset($_POST['document']))
 					$fullnumber,
 					$documentedit['id'],
 					));
+
 		$DB->Execute('UPDATE documentcontents SET title=?, fromdate=?, todate=?, description=?
 				WHERE docid=?',
 				array(	$documentedit['title'],
@@ -195,6 +193,23 @@ if(isset($_POST['document']))
 					$documentedit['description'],
 					$documentedit['id']
 					));
+
+		foreach ($documentedit['attachments'] as $attachmentid => $attachment)
+			if ($attachment['deleted']) {
+				$md5sum = $document['attachments'][$attachmentid]['md5sum'];
+				if ($DB->GetOne('SELECT COUNT(*) FROM documentattachments WHERE md5sum = ?', array($md5sum)) <= 1)
+					@unlink(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2) . DIRECTORY_SEPARATOR . $md5sum);
+				$DB->Execute('DELETE FROM documentattachments WHERE id = ?', array($attachmentid));
+			}
+
+		foreach ($files as $file)
+			$DB->Execute('INSERT INTO documentattachments (docid, filename, contenttype, md5sum, main)
+				VALUES (?, ?, ?, ?, ?)', array($documentedit['id'],
+					$file['filename'],
+					$file['contenttype'],
+					$file['md5sum'],
+					0,
+			));
 
 		$DB->CommitTrans();
 
@@ -210,6 +225,9 @@ if(isset($_POST['document']))
 		$document['numberplanid'] = $documentedit['numberplanid'];
 		$document['fromdate'] = $oldfdate;
 		$document['todate'] = $oldtdate;
+		foreach ($document['attachments'] as $attachmentid => &$attachment)
+			$attachment['deleted'] = $documentedit['attachments'][$attachmentid]['deleted'];
+		unset($attachment);
 	}
 }
 else
