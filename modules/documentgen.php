@@ -105,9 +105,6 @@ if (isset($_POST['document'])) {
 	if (!isset($customerlist) || $customerlist['total'] == 0)
 		$error['customer'] = trans('Customers list is empty!');
 
-	if (!$document['templ'])
-		$error['templ'] = trans('Document template not selected!');
-
 	$globalfiles = array();
 	foreach ($_FILES['files']['name'] as $fileidx => $filename)
 		if (!empty($filename)) {
@@ -128,6 +125,9 @@ if (isset($_POST['document'])) {
 					default: $error['files'] = trans('Problem during file upload.'); break;
 				}
 		}
+
+	if (empty($globalfiles) && empty($document['templ']))
+		$error['files'] = trans('You must to specify file for upload or select document template!');
 
 	if (!$error) {
 		foreach ($globalfiles as &$file) {
@@ -157,8 +157,9 @@ if (isset($_POST['document'])) {
 
 		$numtemplate = $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid']));
 
-		// read template information
-		include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] . DIRECTORY_SEPARATOR . 'info.php');
+		if ($document['templ'])
+			// read template information
+			include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] . DIRECTORY_SEPARATOR . 'info.php');
 
 		foreach ($customerlist as $gencust) {
 			if (!is_array($gencust))
@@ -169,35 +170,42 @@ if (isset($_POST['document'])) {
 			$output = NULL; // delete output
 			$genresult .= $gencount . '. ' . $gencust['customername'] . ': ';
 
-			// run template engine
-			if (file_exists(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
-				. $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php'))
-				include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
-					. $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php');
-			else
-				include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'default'
-					 . DIRECTORY_SEPARATOR . 'engine.php');
-
 			$files = array();
-			if ($output) {
-				$file = DOC_DIR . DIRECTORY_SEPARATOR . 'tmp.file';
-				$fh = fopen($file, 'w');
-				fwrite($fh, $output);
-				fclose($fh);
+			unset($docfile);
 
-				$md5sum = md5_file($file);
-				$path = DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2);
-				$docfile = array(
-					'md5sum' => $md5sum,
-					'contenttype' => $engine['content_type'],
-					'filename' => $engine['output'],
-					'tmpname' => $file,
-					'main' => true,
-					'path' => $path,
-					'newfile' => $path . DIRECTORY_SEPARATOR . $md5sum,
-				);
+			if ($document['templ']) {
+				// run template engine
+				if (file_exists(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+					. $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php'))
+					include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+						. $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php');
+				else
+					include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'default'
+						 . DIRECTORY_SEPARATOR . 'engine.php');
 
-				$files[] = $docfile;
+				if ($output) {
+					$file = DOC_DIR . DIRECTORY_SEPARATOR . 'tmp.file';
+					$fh = fopen($file, 'w');
+					fwrite($fh, $output);
+					fclose($fh);
+
+					$md5sum = md5_file($file);
+					$path = DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2);
+					$docfile = array(
+						'md5sum' => $md5sum,
+						'contenttype' => $engine['content_type'],
+						'filename' => $engine['output'],
+						'tmpname' => $file,
+						'main' => true,
+						'path' => $path,
+						'newfile' => $path . DIRECTORY_SEPARATOR . $md5sum,
+					);
+					$files[] = $docfile;
+				} else
+					$error = trans('Problem during file generation!');
+			}
+
+			if (!$error) {
 				$files = array_merge($files, $globalfiles);
 				foreach ($files as $file) {
 					@mkdir($file['path'], 0700);
@@ -206,8 +214,7 @@ if (isset($_POST['document'])) {
 						break;
 					}
 				}
-			} else
-				$error = trans('Problem during file generation!');
+			}
 
 			if ($error) {
 				$genresult .= '<font class="alert">' . $error . '</font><br>';
@@ -280,7 +287,7 @@ if (isset($_POST['document'])) {
 			$genresult .= docnumber($document['number'], $numtemplate, $time) . '.<br>';
 			$document['number']++;
 
-			if (isset($_GET['print']) && $docfile['contenttype'] == 'text/html') {
+			if (isset($_GET['print']) && isset($docfile) && $docfile['contenttype'] == 'text/html') {
 				print $output;
 				print '<DIV style="page-break-after: always;"></DIV>';
 				flush();
