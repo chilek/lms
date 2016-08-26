@@ -1074,7 +1074,8 @@ CREATE INDEX documents_reference_idx ON documents(reference);
 -------------------------------------------------------- */
 DROP TABLE IF EXISTS documentcontents CASCADE;
 CREATE TABLE documentcontents (
-	docid integer 		DEFAULT 0 NOT NULL,
+	docid integer		NOT NULL
+		REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	title text 		DEFAULT '' NOT NULL,
 	fromdate integer 	DEFAULT 0 NOT NULL,
 	todate integer 		DEFAULT 0 NOT NULL,

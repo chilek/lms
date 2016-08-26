@@ -424,14 +424,15 @@ CREATE TABLE documents (
 # Structure of table documentcontents
 #
 CREATE TABLE documentcontents (
-        docid int(11) DEFAULT '0' NOT NULL,
+	docid int(11) NOT NULL,
 	title text DEFAULT '' NOT NULL,
-        fromdate int(11) DEFAULT '0' NOT NULL,
+	fromdate int(11) DEFAULT '0' NOT NULL,
 	todate int(11) DEFAULT '0' NOT NULL,
 	description text DEFAULT '' NOT NULL,
 	INDEX fromdate (fromdate),
 	INDEX todate (todate),
-	UNIQUE KEY docid (docid)
+	UNIQUE KEY docid (docid),
+	FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------

@@ -34,8 +34,13 @@ $this->Execute("
 		PRIMARY KEY (id),
 		INDEX md5sum (md5sum),
 		FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
-	)"
+	) ENGINE=InnoDB"
 );
+
+$this->Execute("DELETE FROM documentcontents WHERE docid NOT IN (SELECT id FROM documents)");
+$this->Execute("ALTER TABLE documentcontents CHANGE docid docid integer NOT NULL");
+$this->Execute("ALTER TABLE documentcontents ADD FOREIGN KEY (docid)
+	REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE");
 
 $this->Execute("INSERT INTO documentattachments (docid, filename, contenttype, md5sum, main)
 	(SELECT docid, filename, contenttype, md5sum, (CASE WHEN contenttype = 'text/html' THEN 1 ELSE 0 END)
