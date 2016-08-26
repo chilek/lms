@@ -172,8 +172,9 @@ if (isset($_POST['document'])) {
 				break;
 			}
 		}
+		//print_r($files);
 		if (!$error)
-			foreach ($files as $file) {
+			foreach ($files as &$file) {
 				@mkdir($file['path'], 0700);
 				if (!file_exists($file['newfile']) && !@rename($file['tmpname'], $file['newfile'])) {
 					$error['files'] = trans('Can\'t save file in "$a" directory!', $file['path']);
@@ -239,7 +240,7 @@ if (isset($_POST['document'])) {
 				$document['description']
 		));
 
-		foreach ($files as $file)
+		foreach ($files as &$file)
 			$DB->Execute('INSERT INTO documentattachments (docid, filename, contenttype, md5sum, main)
 				VALUES (?, ?, ?, ?, ?)', array($docid,
 					$file['filename'],
