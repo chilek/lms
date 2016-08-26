@@ -46,7 +46,7 @@ function module_main()
 	if (!empty($documents))
 		foreach ($documents as &$doc)
 			$doc['attachments'] = $LMS->DB->GetAllBykey('SELECT * FROM documentattachments WHERE docid = ?
-				ORDER BY main DESC', 'id', array($doc['id']));
+				ORDER BY main DESC, filename', 'id', array($doc['id']));
 
     $fields_changed = $LMS->DB->GetRow('SELECT id FROM up_info_changes WHERE customerid = ?', 
     	array($SESSION->id));
@@ -81,7 +81,7 @@ function module_updateuserform()
 	if (!empty($documents))
 		foreach ($documents as &$doc)
 			$doc['attachments'] = $LMS->DB->GetAllBykey('SELECT * FROM documentattachments WHERE docid = ?
-				ORDER BY main DESC', 'id', array($doc['id']));
+				ORDER BY main DESC, filename', 'id', array($doc['id']));
 
     $userinfo['im'] = isset($userinfo['messengers'][IM_GG]) ? $userinfo['messengers'][IM_GG]['uid'] : '';
     $userinfo['yahoo'] = isset($userinfo['messengers'][IM_YAHOO]) ? $userinfo['messengers'][IM_YAHOO]['uid'] : '';

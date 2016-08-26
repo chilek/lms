@@ -79,7 +79,7 @@ function GetDocumentList($order='cdate,asc', $search) {
 	if (!empty($list))
 		foreach ($list as &$document)
 			$document['attachments'] = $DB->GetAll('SELECT id, filename, md5sum, contenttype, main
-				FROM documentattachments WHERE docid = ? ORDER BY main DESC', array($document['docid']));
+				FROM documentattachments WHERE docid = ? ORDER BY main DESC, filename', array($document['docid']));
 
 	$list['total'] = sizeof($list);
 	$list['direction'] = $direction;

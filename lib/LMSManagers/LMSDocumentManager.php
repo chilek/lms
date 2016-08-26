@@ -47,7 +47,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 			ORDER BY cdate', array($this->auth->id, $customerid))) {
 			foreach ($list as &$doc)
 				$doc['attachments'] = $this->db->GetAll('SELECT * FROM documentattachments
-					WHERE docid = ? ORDER BY main DESC', array($doc['docid']));
+					WHERE docid = ? ORDER BY main DESC, filename', array($doc['docid']));
             if ($limit) {
                 $index = (sizeof($list) - $limit) > 0 ? sizeof($list) - $limit : 0;
                 for ($i = $index; $i < sizeof($list); $i++)

@@ -34,7 +34,7 @@ if(!empty($_GET['id'])) {
 		WHERE d.id = ?', array(intval($_GET['id'])));
 
 	$docattachments = $LMS->DB->GetAllByKey('SELECT * FROM documentattachments WHERE docid = ?
-		ORDER BY main DESC', 'id', array($_GET['id']));
+		ORDER BY main DESC, filename', 'id', array($_GET['id']));
 	$attachmentid = intval($_GET['attachmentid']);
 	if ($attachmentid)
 		$docattach = $docattachments[$attachmentid];

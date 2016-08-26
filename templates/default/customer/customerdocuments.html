@@ -79,7 +79,7 @@
 						<INPUT TYPE="checkbox" NAME="marks[{$docid}]" VALUE="{$docid}"{if $marks.$docid}CHECKED{/if}>
 						<div id="allattachments-{$doc.docid}" style="display: none;">
 							{foreach $doc.attachments as $docattach}
-							{if $docattach@first}{continue}{/if}
+							{if $docattach@first && $docattach.main}{continue}{/if}
 							{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
 								url="?m=documentview&id={$doc.docid}&attachmentid={$docattach.id}" external=true
 								text="{$docattach.filename} <img src=\"img/{if preg_match('/pdf/',$docattach.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)}xls{else}view{/if}.gif\">"}
