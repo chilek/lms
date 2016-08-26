@@ -140,7 +140,7 @@
 			{trans("New files:")}
 		</TD>
 		<TD>
-			<INPUT size="50" type="file" name="files[]" {tip text="Enter path to file or click 'Browse' button" trigger="files"}>
+			<INPUT size="50" type="file" name="files[]" {tip text="Enter path to file or click 'Browse' button" trigger="files"} multiple>
 		</TD>
 	</TR>
 	{if !empty($document.attachments)}

@@ -108,6 +108,46 @@ if (isset($_POST['document'])) {
 	if (!$document['templ'])
 		$error['templ'] = trans('Document template not selected!');
 
+	$globalfiles = array();
+	foreach ($_FILES['files']['name'] as $fileidx => $filename)
+		if (!empty($filename)) {
+			if (is_uploaded_file($_FILES['files']['tmp_name'][$fileidx]) && $_FILES['files']['size'][$fileidx])
+				$globalfiles[] = array(
+					'md5sum' => md5_file($_FILES['files']['tmp_name'][$fileidx]),
+					'contenttype' => $_FILES['files']['type'][$fileidx],
+					'filename' => $filename,
+					'tmpname' => $_FILES['files']['tmp_name'][$fileidx],
+					'main' => false,
+				);
+			else // upload errors
+				switch ($_FILES['files']['error'][$fileidx]) {
+					case 1:
+					case 2: $error['files'] = trans('File is too large.'); break;
+					case 3: $error['files'] = trans('File upload has finished prematurely.'); break;
+					case 4: $error['files'] = trans('Path to file was not specified.'); break;
+					default: $error['files'] = trans('Problem during file upload.'); break;
+				}
+		}
+
+	if (!$error) {
+		foreach ($globalfiles as &$file) {
+			$file['path'] = DOC_DIR . DIRECTORY_SEPARATOR . substr($file['md5sum'], 0, 2);
+			$file['newfile'] = $file['path'] . DIRECTORY_SEPARATOR . $file['md5sum'];
+
+			// If we have a file with specified md5sum, we assume
+			// it's here because of some error. We can replace it with
+			// the new document file
+			// why? document attachment can be shared between different documents.
+			// we should rather use the other message digest in such case!
+			if ($DB->GetOne('SELECT docid FROM documentattachments WHERE md5sum = ?', array($file['md5sum']))
+				&& hash_file('sha256', $file['newfile']) != hash_file('sha256', $file['tmpname'])) {
+				$error['files'] = trans('Specified file exists in database!');
+				break;
+			}
+		}
+		unset($file);
+	}
+
 	if (!$error) {
 		$header = '';
 		$time = time();
@@ -137,22 +177,33 @@ if (isset($_POST['document'])) {
 				include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'default'
 					 . DIRECTORY_SEPARATOR . 'engine.php');
 
+			$files = array();
 			if ($output) {
 				$file = DOC_DIR . DIRECTORY_SEPARATOR . 'tmp.file';
 				$fh = fopen($file, 'w');
 				fwrite($fh, $output);
 				fclose($fh);
 
-				$document['md5sum'] = md5_file($file);
-				$document['contenttype'] = $engine['content_type'];
-				$document['filename'] = $engine['output'];
+				$md5sum = md5_file($file);
+				$path = DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2);
+				$docfile = array(
+					'md5sum' => $md5sum,
+					'contenttype' => $engine['content_type'],
+					'filename' => $engine['output'],
+					'tmpname' => $file,
+					'main' => true,
+					'path' => $path,
+					'newfile' => $path . DIRECTORY_SEPARATOR . $md5sum,
+				);
 
-				$path = DOC_DIR . DIRECTORY_SEPARATOR . substr($document['md5sum'], 0, 2);
-				@mkdir($path, 0700);
-				$newfile = $path . DIRECTORY_SEPARATOR . $document['md5sum'];
-				if (!file_exists($newfile)) {
-					if (!@rename($file, $newfile))
-						$error = trans('Can\'t save file in "$a" directory!', $path);
+				$files[] = $docfile;
+				$files = array_merge($files, $globalfiles);
+				foreach ($files as $file) {
+					@mkdir($file['path'], 0700);
+					if (!file_exists($file['newfile']) && !@rename($file['tmpname'], $file['newfile'])) {
+						$error = trans('Can\'t save file in "$a" directory!', $file['path']);
+						break;
+					}
 				}
 			} else
 				$error = trans('Problem during file generation!');
@@ -163,7 +214,7 @@ if (isset($_POST['document'])) {
 			}
 
 			$DB->BeginTrans();
-			
+
 			$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 				account, inv_header, inv_footer, inv_author, inv_cplace 
 				FROM divisions WHERE id = ? ;',array($gencust['divisionid']));
@@ -214,20 +265,21 @@ if (isset($_POST['document'])) {
 					$document['description']
 			));
 
-			$DB->Execute('INSERT INTO documentattachments (docid, filename, contenttype, md5sum, main)
-				VALUES (?, ?, ?, ?, ?)', array($docid,
-					$document['filename'],
-					$document['contenttype'],
-					$document['md5sum'],
-					1
-			));
+			foreach ($files as $file)
+				$DB->Execute('INSERT INTO documentattachments (docid, filename, contenttype, md5sum, main)
+					VALUES (?, ?, ?, ?, ?)', array($docid,
+						$file['filename'],
+						$file['contenttype'],
+						$file['md5sum'],
+						$file['main'] ? 1 : 0,
+				));
 
 			$DB->CommitTrans();
 
 			$genresult .= docnumber($document['number'], $numtemplate, $time) . '.<br>';
 			$document['number']++;
 
-			if (isset($_GET['print']) && $document['contenttype'] == 'text/html') {
+			if (isset($_GET['print']) && $docfile['contenttype'] == 'text/html') {
 				print $output;
 				print '<DIV style="page-break-after: always;"></DIV>';
 				flush();
