@@ -82,28 +82,33 @@
 <FORM name="documentadd" method="POST" action="?m=documentadd" enctype="multipart/form-data">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 98%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/docum.gif" alt="">
 		</TD>
-		<TD width="1%" NOWRAP>
-			<b>{trans("Title:")}</b>
+		<TD class="bold nobr">
+			{trans("Title:")}
 		</TD>
-		<TD width="98%" NOWRAP>
+		<TD class="nobr">
 			<INPUT type="text" name="document[title]" value="{$document.title}" required {tip text="Enter document title" trigger="title"} size="40">
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD style="width: 1%;">
+		<TD>
 			<IMG src="img/customer.gif" ALT="">
 		</TD>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			{trans("Customer:")}
 		</TD>
-		<TD style="width: 98%;" class="nobr">
+		<TD class="nobr">
 			{if $customers}
 			<SELECT SIZE="1" NAME="customer" onChange="document.documentadd.customerid.value=document.documentadd.customer.value" {tip trigger="customer"}>
 				<OPTION VALUE="0">{trans("... select customer ...")}</OPTION>
@@ -118,36 +123,36 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<b>{trans("Period:")}</b>
+		<TD class="bold">
+			{trans("Period:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			{trans("from:")} <INPUT type="TEXT" name="document[fromdate]" value="{if $document.fromdate}{$document.fromdate}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter start date in YYYY/MM/DD format (optional)" trigger="fromdate"} size="10">&nbsp;
 			{trans("to:")} <INPUT type="TEXT" name="document[todate]" value="{if $document.todate}{$document.todate}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter end date in YYYY/MM/DD format (optional)" trigger="todate"} size="10"><BR>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/info.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<b>{trans("Description:")}</b>
+		<TD class="bold">
+			{trans("Description:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<TEXTAREA name="document[description]" rows="5" cols="50" {tip text="Enter additional information (optional)"}>{$document.description}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/info.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<b>{trans("Type:")}</b>
+		<TD class="bold">
+			{trans("Type:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<SELECT SIZE="1" NAME="document[type]" onchange="setnumberplans();show_templates();" {tip text="Select document type" trigger="type"}>
 				<OPTION VALUE="0">... {trans("select type")} ...</OPTION>
 				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
@@ -157,13 +162,13 @@
 		</TD>
 	</TR>
 	<TR id="templates" style="display:{if $document.type<0}table-row{else}none{/if}">
-		<TD width="1%">
+		<TD>
 			<IMG src="img/class.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<b>{trans("Template:")}</b>
+		<TD class="bold">
+			{trans("Template:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<SELECT SIZE="1" NAME="document[templ]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="templ"} id="templ" onchange="getplugin();">
 				<OPTION VALUE="">... {trans("select template")} ...</OPTION>
 				{foreach $docengines as $docengine}
@@ -173,24 +178,24 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/save.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<b>{trans("File:")}</b>
+		<TD class="bold">
+			{trans("Files:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<INPUT size="50" type="file" name="files[]" {tip text="Enter path to file or click 'Browse' button" trigger="files"} multiple>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/docum.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<b>{trans("Number:")}</b>
+		<TD class="bold">
+			{trans("Number:")}
 		</TD>
-		<TD width="98%">
+		<TD>
 			<INPUT type="text" name="document[number]" value="{if $document.number}{$document.number}{/if}" size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
 			<DIV id="numberplans" style="display: {if !$document.numberplanid}none{else}inline{/if};">
 			{if $numberplans}
@@ -208,16 +213,18 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
-	        	<IMG src="img/confirm.gif" ALT="">
+		<TD>
+			<IMG src="img/confirm.gif" ALT="">
 		</TD>
-		<TD width="1%" nowrap><B>{trans("Confirmed:")}</B></TD>
-		<TD width="98%">
-		        <INPUT type="checkbox" name="document[closed]" value="1" {if $document.closed} checked{/if}>
+		<TD class="bold nobr">
+			<label for="closed">{trans("Confirmed:")}</label>
+		</TD>
+		<TD>
+			<INPUT type="checkbox" name="document[closed]" id="closed" value="1" {if $document.closed} checked{/if}>
 		</TD>
 	</TR>
 	<TR>
-		<TD colspan="3" align="right" NOWRAP>
+		<TD colspan="3" class="buttons">
 			<A href="javascript: document.documentadd.submit();">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A href="javascript: print_document();">{trans("Print")} <IMG SRC="img/print.gif" alt=""></A>
 			<A href="?m=documentlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
@@ -230,8 +237,8 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['documentadd'].elements['document[title]'].focus();
-//setnumberplans();
+	document.forms['documentadd'].elements['document[title]'].focus();
+	//setnumberplans();
 //-->
 </SCRIPT>
 {/block}

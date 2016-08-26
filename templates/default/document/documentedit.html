@@ -197,10 +197,10 @@
 			<IMG src="img/confirm.gif" ALT="">
 		</TD>
 		<TD class="bold nobr">
-			{trans("Confirmed:")}
+			<label for="closed">{trans("Confirmed:")}</label>
 		</TD>
 		<TD>
-			<INPUT type="checkbox" name="document[closed]" value="1" {if $document.closed} checked{/if}>
+			<INPUT type="checkbox" name="document[closed]" id="closed" value="1" {if $document.closed} checked{/if}>
 		</TD>
 	</TR>
 	<TR>

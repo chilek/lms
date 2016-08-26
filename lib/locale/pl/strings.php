@@ -3403,5 +3403,6 @@ $_LANG['Your browser does not support the video element.'] = 'Twoja przeglądark
 $_LANG['more document attachments'] = 'więcej załączników dokumentu';
 $_LANG['New files:'] = 'Nowe pliki:';
 $_LANG['Attached files:'] = 'Załączone pliki:';
+$_LANG['Files:'] = 'Pliki:';
 
 ?>
