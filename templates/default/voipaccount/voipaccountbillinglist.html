@@ -244,9 +244,11 @@
 
 				<td align="right" class="nobr">
 					{if $billings[i].callanswertime && ($billings[i].caller_flags || $billings[i].callee_flags)}
-					<audio src="?m=voipcallrecording&id={$billings[i].id}" controls preload="none">
-						{trans("Your browser does not support the audio element.")}
-					</audio>
+						{documentview id="{$billings[i].id}"
+						              type="audio/mp3"
+						              name="{trans("ID:")} {$billings[i].id}, {trans("Date:")} {$billings[i].begintime|date_format:"%e %B %Y %H:%M:%S"}"
+	                                  url="?m=voipcallrecording&id={$billings[i].id}"
+	                                  text="<span class=\"ui-icon ui-icon-volume-on\"></span>"}
 					{/if}
 					<a href="?m=voipaccountbillinginfo&amp;id={$billings[i].id}">
 						<img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Details")} ]">
