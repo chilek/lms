@@ -52,36 +52,9 @@
 						{if ($docrights.$type.rights & 8)}
 						<a href="?m=documentedit&amp;id={$doc.docid}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
 						{/if}
-						{if preg_match('/image\/(jpeg|png|gif)/', $doc.contenttype)}
-						<div class="documentviewdialog" id="documentviewdialog-{$doc.docid}" title="{$doc.filename}" style="display: none;">
-							<img src="?m=documentview&id={$doc.docid}" style="width: 100%;">
-						</div>
-						{elseif preg_match('/audio\/(mp3|ogg|oga|wav)/', $doc.contenttype)}
-						<div class="documentviewdialog" id="documentviewdialog-{$doc.docid}" title="{$doc.filename}" style="display: none;">
-							<audio src="?m=documentview&id={$doc.docid}" style="width: 100%;" controls preload="none">
-							{trans("Your browser does not support the audio element.")}
-							</audio>
-						</div>
-						{elseif preg_match('/video\/(mp4|ogg|webm)/', $doc.contenttype)}
-						<div class="documentviewdialog" id="documentviewdialog-{$doc.docid}" title="{$doc.filename}" style="display: none;">
-							<video src="?m=documentview&id={$doc.docid}" style="width: 100%;" controls preload="none">
-							{trans("Your browser does not support the video element.")}
-							</video>
-						</div>
-						{/if}
-						<a href="?m=documentview&id={$doc.docid}" id="documentview-{$doc.docid}"
-								data-dialog-id="documentviewdialog-{$doc.docid}"
-								{if preg_match('/image\/(jpeg|png|gif)/', $doc.contenttype)}
-									class="documentview documentview-image"
-								{elseif preg_match('/audio\/(mp3|ogg|oga|wav)/', $doc.contenttype)}
-									class="documentview documentview-audio"
-								{elseif preg_match('/video\/(mp4|ogg|webm)/', $doc.contenttype)}
-									class="documentview documentview-video"
-								{else}
-								rel="external"
-								{/if}>
-							<img src="img/{if preg_match('/pdf/',$doc.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$doc.contenttype)}xls{else}view{/if}.gif">
-						</a>
+						{documentview id="{$doc.docid}" type=$doc.contenttype name=$doc.filename
+							url="?m=documentview&id={$doc.docid}" external=true
+							text="<img src=\"img/{if preg_match('/pdf/',$doc.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$doc.contenttype)}xls{else}view{/if}.gif\">"}
 					</TD>
 				</TR>
 				{foreachelse}
