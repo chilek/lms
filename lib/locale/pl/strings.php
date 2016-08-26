@@ -3400,4 +3400,6 @@ $_LANG['Deadline date should be later than consent date!'] = 'Termin płatności
 $_LANG['Your browser does not support the audio element.'] = 'Twoja przeglądarka nie obsługuje elementu audio.';
 $_LANG['Your browser does not support the video element.'] = 'Twoja przeglądarka nie obsługuje elementu video.';
 
+$_LANG['more document attachments'] = 'więcej załączników dokumentu';
+
 ?>

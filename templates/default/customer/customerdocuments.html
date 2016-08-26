@@ -1,4 +1,17 @@
 <!--// $Id$ //-->
+<script type="text/javascript">
+<!--
+	function toggle_all_attachments(docid) {
+		var elem = $('#allattachments-' + docid);
+		var toggle = $('#allattachments-toggle-' + docid);
+		elem.toggle();
+		if (elem.is(':visible'))
+			toggle.html('<img src="img/desc_order.gif">');
+		else
+			toggle.html('<img src="img/asc_order.gif">');
+	}
+//-->
+</script>
 <TABLE class="lmsbox">
 	<THEAD>
 	<TR>
@@ -52,9 +65,27 @@
 						{if ($docrights.$type.rights & 8)}
 						<a href="?m=documentedit&amp;id={$doc.docid}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
 						{/if}
-						{documentview id="{$doc.docid}" type=$doc.contenttype name=$doc.filename
+						{$docattach = $doc.attachments[0]}
+						{if $docattach.main || count($doc.attachments) == 1}
+						{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
 							url="?m=documentview&id={$doc.docid}" external=true
-							text="<img src=\"img/{if preg_match('/pdf/',$doc.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$doc.contenttype)}xls{else}view{/if}.gif\">"}
+							text="<img src=\"img/{if preg_match('/pdf/',$docattach.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)}xls{else}view{/if}.gif\">"}
+						{/if}
+						{if count($doc.attachments) > 1}
+						<a href="#" id="allattachments-toggle-{$doc.docid}" onclick="toggle_all_attachments({$doc.docid}); return false;" title="{trans("more document attachments")}">
+							<img src="img/asc_order.gif">
+						</a>
+						{/if}
+						<INPUT TYPE="checkbox" NAME="marks[{$docid}]" VALUE="{$docid}"{if $marks.$docid}CHECKED{/if}>
+						<div id="allattachments-{$doc.docid}" style="display: none;">
+							{foreach $doc.attachments as $docattach}
+							{if $docattach@first}{continue}{/if}
+							{documentview id="{$doc.docid}-{$docattach.id}" type=$docattach.contenttype name=$docattach.filename
+								url="?m=documentview&id={$doc.docid}&attachmentid={$docattach.id}" external=true
+								text="{$docattach.filename} <img src=\"img/{if preg_match('/pdf/',$docattach.contenttype)}pdf{elseif preg_match('/csv|excel|spreadsheet/',$docattach.contenttype)}xls{else}view{/if}.gif\">"}
+							<br>
+							{/foreach}
+						</div>
 					</TD>
 				</TR>
 				{foreachelse}

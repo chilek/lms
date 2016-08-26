@@ -206,15 +206,20 @@ if (isset($_POST['document'])) {
 
 			$docid = $DB->GetLastInsertID('documents');
 
-			$DB->Execute('INSERT INTO documentcontents (docid, title, fromdate, todate, filename, contenttype, md5sum, description)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array($docid,
+			$DB->Execute('INSERT INTO documentcontents (docid, title, fromdate, todate, description)
+				VALUES (?, ?, ?, ?, ?)', array($docid,
 					$document['title'],
 					$document['fromdate'],
 					$document['todate'],
+					$document['description']
+			));
+
+			$DB->Execute('INSERT INTO documentattachments (docid, filename, contenttype, md5sum, main)
+				VALUES (?, ?, ?, ?, ?)', array($docid,
 					$document['filename'],
 					$document['contenttype'],
 					$document['md5sum'],
-					$document['description']
+					1
 			));
 
 			$DB->CommitTrans();

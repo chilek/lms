@@ -78,6 +78,7 @@ version ?.??.?? (????-??-??):
   - added support for audio prelisten and video preview clicked from helpdesk
     message and note attachment links [chilan]
   - support for customer document attachment preview in popup dialogs [chilan]
+  - added support for document multi-attachments [chilan]
 
 version 1.11.20 (2016-04-19):
 

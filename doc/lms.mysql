@@ -132,6 +132,7 @@ DROP TABLE IF EXISTS location_boroughs;
 DROP TABLE IF EXISTS location_districts;
 DROP TABLE IF EXISTS location_states;
 DROP TABLE IF EXISTS receiptcontents;
+DROP TABLE IF EXISTS documentattachments;
 DROP TABLE IF EXISTS documentcontents;
 DROP TABLE IF EXISTS documents;
 DROP TABLE IF EXISTS debitnotecontents;
@@ -427,14 +428,26 @@ CREATE TABLE documentcontents (
 	title text DEFAULT '' NOT NULL,
         fromdate int(11) DEFAULT '0' NOT NULL,
 	todate int(11) DEFAULT '0' NOT NULL,
-        filename varchar(255) DEFAULT '' NOT NULL,
-	contenttype varchar(255) DEFAULT '' NOT NULL,
-        md5sum varchar(32) DEFAULT '' NOT NULL,
 	description text DEFAULT '' NOT NULL,
-        INDEX md5sum (md5sum),
 	INDEX fromdate (fromdate),
 	INDEX todate (todate),
 	UNIQUE KEY docid (docid)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table documentattachments
+#
+CREATE TABLE documentattachments (
+	id int(11) NOT NULL AUTO_INCREMENT,
+	docid int(11) NOT NULL,
+	filename varchar(255) NOT NULL,
+	contenttype varchar(255) NOT NULL,
+	md5sum varchar(32) NOT NULL,
+	main smallint DEFAULT 1 NOT NULL,
+	PRIMARY KEY (id),
+	INDEX md5sum (md5sum),
+	FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2703,4 +2716,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016082500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016082600');

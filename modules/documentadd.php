@@ -86,26 +86,9 @@ if (isset($_POST['document'])) {
 	if ($document['fromdate'] > $document['todate'] && $document['todate'] != 0)
 		$error['todate'] = trans('Start date can\'t be greater than end date!');
 
-	if ($filename = $_FILES['file']['name']) {
-		if (is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size']) {
-			$file = $_FILES['file']['tmp_name'];
-			$document['md5sum'] = md5_file($file);
-			$document['contenttype'] = $_FILES['file']['type'];
-			$document['filename'] = $filename;
-		}
-		else // upload errors
-			switch ($_FILES['file']['error']) {
-				case 1:
-				case 2: $error['file'] = trans('File is too large.');
-					break;
-				case 3: $error['file'] = trans('File upload has finished prematurely.');
-					break;
-				case 4: $error['file'] = trans('Path to file was not specified.');
-					break;
-				default: $error['file'] = trans('Problem during file upload.');
-					break;
-			}
-	} elseif ($document['templ']) {
+	$files = array();
+
+	if ($document['templ']) {
 		foreach ($documents_dirs as $doc)
 			if(file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] )) {
 				$doc_dir = $doc;
@@ -139,31 +122,66 @@ if (isset($_POST['document'])) {
 			fwrite($fh, $output);
 			fclose($fh);
 
-			$document['md5sum'] = md5_file($file);
-			$document['contenttype'] = $engine['content_type'];
-			$document['filename'] = $engine['output'];
+			$files[] = array(
+				'md5sum' => md5_file($file),
+				'contenttype' => $engine['content_type'],
+				'filename' => $engine['output'],
+				'tmpname' => $file,
+				'main' => true,
+			);
 		} else if (empty($error))
 			$error['templ'] = trans('Problem during file generation!');
-	} else
-		$error['file'] = trans('You must to specify file for upload or select document template!');
+	}
+
+	foreach ($_FILES['files']['name'] as $fileidx => $filename)
+		if (!empty($filename)) {
+			if (is_uploaded_file($_FILES['files']['tmp_name'][$fileidx]) && $_FILES['files']['size'][$fileidx])
+				$files[] = array(
+					'md5sum' => md5_file($_FILES['files']['tmp_name'][$fileidx]),
+					'contenttype' => $_FILES['files']['type'][$fileidx],
+					'filename' => $filename,
+					'tmpname' => $_FILES['files']['tmp_name'][$fileidx],
+					'main' => false,
+				);
+			else // upload errors
+				switch ($_FILES['files']['error'][$fileidx]) {
+					case 1:
+					case 2: $error['files'] = trans('File is too large.'); break;
+					case 3: $error['files'] = trans('File upload has finished prematurely.'); break;
+					case 4: $error['files'] = trans('Path to file was not specified.'); break;
+					default: $error['files'] = trans('Problem during file upload.'); break;
+				}
+		}
+
+	if (empty($files) && empty($document['templ']))
+		$error['files'] = trans('You must to specify file for upload or select document template!');
 
 	if (!$error) {
-		if ($DB->GetOne('SELECT docid FROM documentcontents WHERE md5sum = ?', array($document['md5sum'])))
-			$error['file'] = trans('Specified file exists in database!');
-		else {
-			$path = DOC_DIR . DIRECTORY_SEPARATOR . substr($document['md5sum'], 0, 2);
-			@mkdir($path, 0700);
-			$newfile = $path . DIRECTORY_SEPARATOR . $document['md5sum'];
+		foreach ($files as &$file) {
+			$file['path'] = DOC_DIR . DIRECTORY_SEPARATOR . substr($file['md5sum'], 0, 2);
+			$file['newfile'] = $path . DIRECTORY_SEPARATOR . $file['md5sum'];
 
 			// If we have a file with specified md5sum, we assume
 			// it's here because of some error. We can replace it with
 			// the new document file
-			if (file_exists($newfile)) {
-				@unlink($newfile);
+			// why? document attachment can be shared between different documents.
+			// we should rather use the other message digest in such case!
+			if ($DB->GetOne('SELECT docid FROM documentattachments WHERE md5sum = ?', array($file['md5sum']))
+				&& hash_file('sha256', $file['newfile']) != hash_file('sha256', $file['tmpname'])) {
+				$error['files'] = trans('Specified file exists in database!');
+				break;
 			}
-			if (!@rename($file, $newfile))
-				$error['file'] = trans('Can\'t save file in "$a" directory!', $path);
 		}
+		if (!$error)
+			foreach ($files as $file) {
+				@mkdir($file['path'], 0700);
+				if (file_exists($file['newfile']))
+					@unlink($file['$newfile']);
+				if (!@rename($file['tmpname'], $file['newfile'])) {
+					$error['files'] = trans('Can\'t save file in "$a" directory!', $file['path']);
+					break;
+				}
+			}
 	}
 
 	if (!$error) {
@@ -215,16 +233,22 @@ if (isset($_POST['document'])) {
 
 		$docid = $DB->GetLastInsertID('documents');
 
-		$DB->Execute('INSERT INTO documentcontents (docid, title, fromdate, todate, filename, contenttype, md5sum, description)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array($docid,
+		$DB->Execute('INSERT INTO documentcontents (docid, title, fromdate, todate, description)
+			VALUES (?, ?, ?, ?, ?)', array($docid,
 				$document['title'],
 				$document['fromdate'],
 				$document['todate'],
-				$document['filename'],
-				$document['contenttype'],
-				$document['md5sum'],
 				$document['description']
 		));
+
+		foreach ($files as $file)
+			$DB->Execute('INSERT INTO documentattachments (docid, filename, contenttype, md5sum, main)
+				VALUES (?, ?, ?, ?, ?)', array($docid,
+					$file['filename'],
+					$file['contenttype'],
+					$file['md5sum'],
+					$file['main'] ? 1 : 0,
+			));
 
 		// template post-action
 		if (!empty($engine['post-action']) && file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates'

@@ -38,13 +38,16 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             return NULL;
 
         if ($list = $this->db->GetAll('SELECT c.docid, d.number, d.type, c.title, c.fromdate, c.todate, 
-			c.description, c.filename, c.md5sum, c.contenttype, n.template, d.closed, d.cdate
+			c.description, n.template, d.closed, d.cdate
 			FROM documentcontents c
 			JOIN documents d ON (c.docid = d.id)
 			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1) = 1)
 			LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 			WHERE d.customerid = ?
 			ORDER BY cdate', array($this->auth->id, $customerid))) {
+			foreach ($list as &$doc)
+				$doc['attachments'] = $this->db->GetAll('SELECT * FROM documentattachments
+					WHERE docid = ? ORDER BY main DESC', array($doc['docid']));
             if ($limit) {
                 $index = (sizeof($list) - $limit) > 0 ? sizeof($list) - $limit : 0;
                 for ($i = $index; $i < sizeof($list); $i++)

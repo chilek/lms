@@ -29,12 +29,14 @@ if (!empty($_POST['marks'])) {
 	foreach ($_POST['marks'] as $id => $mark)
 		$marks[] = intval($mark);
 
-	if ($list = $DB->GetAll('SELECT c.filename, c.md5sum, c.contenttype
-		FROM documentcontents c
+	if ($list = $DB->GetCol('SELECT d.id FROM documentcontents c
 		JOIN documents d ON (d.id = c.docid)
 		JOIN docrights r ON (r.doctype = d.type)
 		WHERE c.docid IN ('.implode(',', $marks).')
 			AND r.userid = ? AND (r.rights & 1) = 1', array($AUTH->id))) {
+
+		$list = $DB->GetAll('SELECT filename, contenttype, md5sum FROM documentattachments
+			WHERE docid IN (' . implode(',', $list) . ')');
 		$ctype = $list[0]['contenttype'];
 
 		if (!preg_match('/^text/i', $ctype)) {
@@ -80,12 +82,24 @@ if (!empty($_POST['marks'])) {
 		}
 		die;
 	}
-} elseif($doc = $DB->GetRow('SELECT c.filename, c.md5sum, c.contenttype, d.id, d.number, d.cdate, d.type, n.template
+} elseif($doc = $DB->GetRow('SELECT d.id, d.number, d.cdate, d.type, n.template
 	FROM documentcontents c
 	JOIN documents d ON (d.id = c.docid)
 	LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 	JOIN docrights r ON (r.doctype = d.type)
 	WHERE c.docid = ? AND r.userid = ? AND (r.rights & 1) = 1', array($_GET['id'], $AUTH->id))) {
+
+	$docattachments = $DB->GetAllByKey('SELECT * FROM documentattachments WHERE docid = ?
+		ORDER BY main DESC', 'id', array($_GET['id']));
+	$attachmentid = intval($_GET['attachmentid']);
+	if ($attachmentid)
+		$docattach = $docattachments[$attachmentid];
+	else
+		$docattach = reset($docattachments);
+	$doc['md5sum'] = $docattach['md5sum'];
+	$doc['filename'] = $docattach['filename'];
+	$doc['contenttype'] = $docattach['contenttype'];
+
 	$docnumber = docnumber($doc['number'], $doc['template'], $doc['cdate']);
 	$filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($doc['md5sum'],0,2) . DIRECTORY_SEPARATOR . $doc['md5sum'];
 	if (file_exists($filename)) {

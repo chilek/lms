@@ -1078,16 +1078,29 @@ CREATE TABLE documentcontents (
 	title text 		DEFAULT '' NOT NULL,
 	fromdate integer 	DEFAULT 0 NOT NULL,
 	todate integer 		DEFAULT 0 NOT NULL,
-	filename varchar(255) 	DEFAULT '' NOT NULL,
-	contenttype varchar(255) DEFAULT '' NOT NULL,
-	md5sum varchar(32) 	DEFAULT '' NOT NULL,
 	description text 	DEFAULT '' NOT NULL,
 	UNIQUE (docid)
 );
-CREATE INDEX documentcontents_md5sum_idx ON documentcontents (md5sum);
 CREATE INDEX documentcontents_todate_idx ON documentcontents (todate);
 CREATE INDEX documentcontents_fromdate_idx ON documentcontents (fromdate);
 
+/* -------------------------------------------------------- 
+  Structure of table "documentattachments"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS documentattachments_id_seq;
+CREATE SEQUENCE documentattachments_id_seq;
+DROP TABLE IF EXISTS documentattachments CASCADE;
+CREATE TABLE documentattachments (
+	id integer DEFAULT nextval('documentattachments_id_seq'::text) NOT NULL,
+	docid integer NOT NULL
+		REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	filename varchar(255) NOT NULL,
+	contenttype varchar(255) NOT NULL,
+	md5sum varchar(32) NOT NULL,
+	main smallint DEFAULT 1 NOT NULL,
+	PRIMARY KEY (id)
+);
+CREATE INDEX documentattachments_md5sum_idx ON documentattachments (md5sum);
 
 /* -------------------------------------------------------- 
   Structure of table "receiptcontents" 
@@ -2819,6 +2832,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016082500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016082600');
 
 COMMIT;
