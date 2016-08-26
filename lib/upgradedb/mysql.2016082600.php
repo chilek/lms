@@ -33,6 +33,7 @@ $this->Execute("
 		main smallint DEFAULT 1 NOT NULL,
 		PRIMARY KEY (id),
 		INDEX md5sum (md5sum),
+		UNIQUE KEY docid (docid, md5sum),
 		FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
 	) ENGINE=InnoDB"
 );

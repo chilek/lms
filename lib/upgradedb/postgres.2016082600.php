@@ -33,7 +33,8 @@ $this->Execute("
 		contenttype varchar(255) NOT NULL,
 		md5sum varchar(32) NOT NULL,
 		main smallint DEFAULT 1 NOT NULL,
-		PRIMARY KEY (id)
+		PRIMARY KEY (id),
+		UNIQUE (docid, md5sum)
 	);
 	CREATE INDEX documentattachments_md5sum_idx ON documentattachments (md5sum);
 ");
