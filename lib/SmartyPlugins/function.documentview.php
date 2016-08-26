@@ -26,6 +26,18 @@
 
 function smarty_function_documentview($params, $template) {
 	static $vars = array('type', 'name', 'url', 'id', 'text');
+	static $types = array(
+		'image/jpeg' => 'image',
+		'image/png' => 'image',
+		'image/gif' => 'image',
+		'audio/mp3' => 'audio',
+		'audio/ogg' => 'audio',
+		'audio/oga' => 'audio',
+		'audio/wav' => 'audio',
+		'video/mp4' => 'video',
+		'video/ogg' => 'video',
+		'video/webm' => 'video',
+	);
 
 	$result = '';
 	foreach ($vars as $var)
@@ -35,12 +47,8 @@ function smarty_function_documentview($params, $template) {
 			return $result;
 	$external = isset($params['external']) && $params['external'] == 'true';
 
-	if (preg_match('/image\/(jpeg|png|gif)/', $type))
-		$type = 'image';
-	elseif (preg_match('/audio\/(mp3|ogg|oga|wav)/', $type))
-		$type = 'audio';
-	elseif (preg_match('/video\/(mp4|ogg|webm)/', $type))
-		$type = 'video';
+	if (isset($types[$type]))
+		$type = $types[$type];
 	else
 		$type = '';
 
