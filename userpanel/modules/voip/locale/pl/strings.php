@@ -29,5 +29,6 @@ $_LANG['Filters:'] = 'Filtry:';
 $_LANG['My accounts:'] = 'Moje konta:';
 $_LANG['Date range:'] = 'Zakres dat:';
 $_LANG['Others:'] = 'Inne:';
+$_LANG['My number:'] = 'Mój numer:';
 
 ?>

@@ -48,18 +48,18 @@
 					</TD>
 					<TD style="width: 1%;" class="nobr">
 						{if $message.type == $smarty.const.RTMESSAGE_REGULAR}
-						{if $message.customerid}
-						<A href="?m=customerinfo&amp;id={$message.customerid}">{$message.customername}</A>
-						{elseif $message.userid}
-						<A href="?m=userinfo&amp;id={$message.userid}">{$message.username}</A>
-						{elseif $message.mailfrom}
-						<A href="mailto:{$message.mailfrom|escape}">{$message.mailfrom|escape}</A>
-						{else}
-						{$ticket.requestor|escape}
-						{if $ticket.requestoremail}
-						&lt;<A href="mailto:{$ticket.requestoremail|escape}">{$ticket.requestoremail|escape}</A>&gt;
-						{/if}
-						{/if}
+							{if $message.customerid}
+								<A href="?m=customerinfo&amp;id={$message.customerid}">{$message.customername}</A>
+							{elseif $message.userid}
+								<A href="?m=userinfo&amp;id={$message.userid}">{$message.username}</A>
+							{elseif $message.mailfrom}
+								<A href="mailto:{$message.mailfrom|escape}">{$message.mailfrom|escape}</A>
+							{else}
+								{$ticket.requestor|escape}
+								{if $ticket.requestoremail}
+									&lt;<A href="mailto:{$ticket.requestoremail|escape}">{$ticket.requestoremail|escape}</A>&gt;
+								{/if}
+							{/if}
 						<BR>
 						{$message.subject|escape}
 						{else}
@@ -68,22 +68,23 @@
 					</TD>
 					<TD style="width: 97%;" class="text-right">
 						{if $message.attachments}
-						{foreach $message.attachments as $attachment}
-							{documentview id="{$message.id}-{$attachment@index}" type=$attachment.contenttype name=$attachment.filename
-								url="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={$attachment.filename}"
-								text="{$attachment.filename} <IMG src=\"img/attach.gif\" alt=\"\">"}
-						{/foreach}
+							{foreach $message.attachments as $attachment}
+								{documentview id="{$message.id}-{$attachment@index}" type=$attachment.contenttype name=$attachment.filename
+									url="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={$attachment.filename}"
+									text="{$attachment.filename} <IMG src=\"img/attach.gif\" alt=\"\">"}
+							{/foreach}
 						{/if}
+
 						{if $message.type == $smarty.const.RTMESSAGE_NOTE}
-						<A href="?m=rtnotedel&amp;id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that note?")}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
+							<A href="?m=rtnotedel&amp;id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that note?")}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
 						{else}
-						<A href="?m=rtmessageview&amp;id={$message.id}">{trans("Details")} <IMG src="img/view.gif" alt=""></A>
-						{if $msgidx > 0}
-						<A href="?m=rtmessagedel&amp;id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
-						{/if}
-						{if $ticket.state != $smarty.const.RT_RESOLVED}
-						<A href="?m=rtmessageadd&amp;id={$message.id}&amp;ticketid={$ticket.ticketid}">{trans("Answer")} <IMG src="img/forward.gif" alt=""></A>
-						{/if}
+							<A href="?m=rtmessageview&amp;id={$message.id}">{trans("Details")} <IMG src="img/view.gif" alt=""></A>
+							{if $msgidx > 0}
+								<A href="?m=rtmessagedel&amp;id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
+							{/if}
+							{if $ticket.state != $smarty.const.RT_RESOLVED}
+								<A href="?m=rtmessageadd&amp;id={$message.id}&amp;ticketid={$ticket.ticketid}">{trans("Answer")} <IMG src="img/forward.gif" alt=""></A>
+							{/if}
 						{/if}
 					</TD>
 				</TR>

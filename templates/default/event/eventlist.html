@@ -12,22 +12,21 @@
 		<COL style="width: 1%;">
 	</COLGROUP>
     <THEAD>
-	<TR>
-		<TD class="nobr" style="min-width: 70px;">
+	<TR CLASS="nobr">
+		<TD class="text-center" style="min-width: 70px;">
 			{trans("Type:")}
 		</TD>
-		<TD class="nobr">
+		<TD>
 			<IMG src="img/time.gif" alt=""> <span class="bold">{trans("Time:")}</span><BR>
 			<IMG src="img/users.gif" alt=""> {trans("User:")}
 		</TD>
-		<TD class="nobr">
+		<TD>
 			<IMG src="img/calendar.gif" alt=""> <span class="bold">{trans("Title:")}</span><BR>
 			<IMG src="img/info1.gif" alt=""> {trans("Description:")}
 		</TD>
-		<TD class="nobr">
+		<TD COLSPAN="2">
 			<IMG src="img/customer.gif" alt=""> {trans("Customer:")}
 		</TD>
-		<TD class="nobr"></TD>
 	</TR>
 	<TR>
 		<TD colspan="5" class="text-center nobr">
@@ -169,12 +168,12 @@
                                 <TD class="text-right nobr">
                                     {if ConfigHelper::checkPrivilege('timetable_management')}
                                         {if $eventlist[eventlist].closed}
-                                        <A href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=open"><IMG src="img/resolved.gif" alt="[ {trans("Open")} ]" title="[ {trans("Open")} ]"></A> 
+                                        <A href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=open"><IMG src="img/resolved.gif" alt="[ {trans("Open")} ]" title="[&nbsp;{trans("Open")}&nbsp;]"></A>
                                         {else}
-                                        <A href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=close"><IMG src="img/open.gif" alt="[ {trans("Close")} ]" title="[ {trans("Close")} ]"></A> 
+                                        <A href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=close"><IMG src="img/open.gif" alt="[ {trans("Close")} ]" title="[&nbsp;{trans("Close")}&nbsp;]"></A>
                                         {/if}
-                                        <A href="?m=eventdel&amp;id={$eventlist[eventlist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>&nbsp; 
-                                        <A href="?m=eventedit&amp;id={$eventlist[eventlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+                                        <A href="?m=eventdel&amp;id={$eventlist[eventlist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[&nbsp;{trans("Delete")}&nbsp;]"></A>&nbsp;
+                                        <A href="?m=eventedit&amp;id={$eventlist[eventlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[&nbsp;{trans("Edit")}&nbsp;]"></A>
                                     {/if}
                                     {if $eventlist[eventlist].note == ''}
                                         {foreach item=user from=$eventlist[eventlist].userlist}
