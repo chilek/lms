@@ -168,7 +168,7 @@ class VoipDbBuffor {
 
         //update customer account balance
         foreach ($cust_load as $k=>$v) {
-            $DB->Execute('UPDATE voipaccounts SET balance=balance-? WHERE phone ?LIKE? ?;', array($v, $k));
+            $DB->Execute("UPDATE voipaccounts SET balance=balance-$v WHERE phone ?LIKE? '$k';");
         }
 
         //update customer tariff rules

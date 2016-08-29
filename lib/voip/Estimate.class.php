@@ -35,7 +35,7 @@ class Estimate {
         $time = 0;
 
         while ($rules && $customer['balance']) {
-            $rule = getBestRule($rules);
+            $rule = $provider->getBestRule($rules);
             $id   = $rule['ruleid'];
 
             if (isset($customer['rules'][$id]['units']) && $customer['rules'][$id]['units'] == 0) {
@@ -81,7 +81,7 @@ class Estimate {
         $result['used_rules'] = array();
 
         while ($rules && $time) {
-            $rule = getBestRule($rules);
+            $rule = $procider->getBestRule($rules);
             $id   = $rule['ruleid'];
 
             if (isset($customer['rules'][$id]['units']) && $customer['rules'][$id]['units'] == 0) {

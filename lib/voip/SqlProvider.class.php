@@ -168,8 +168,8 @@ class SqlProvider extends VoipDataProvider {
                             LEFT JOIN voip_rule_states vrs on va.id = vrs.voip_account_id
                             LEFT JOIN voip_rules vr on vrs.rule_id = vr.id
                           WHERE
-                            va.id      = ? AND
-                            vr.groupid = ?',
+                            va.id            = ? AND
+                            vr.rule_group_id = ?',
                           array($vid, $groupid));
 
         return $s;
