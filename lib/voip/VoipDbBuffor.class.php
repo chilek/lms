@@ -194,7 +194,7 @@ class VoipDbBuffor {
                 } else {
                     $new_rules[] = '(' . $r['voip_acc_id'] . ','
                                        . $r['rule_id']     . ','
-                                       . $r['rule_units']-$r['used_units'] . ')';
+                                       . ($r['rule_units']-$r['used_units']) . ')';
                 }
             }
         }
