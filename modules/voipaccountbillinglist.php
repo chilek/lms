@@ -101,8 +101,8 @@ $listdata['direction'] = $order[1];
 if (!empty($_GET['page']))
 	$listdata['page'] = (int) $_GET['page'];
 
-if ($id != NULL)
-	$listdata['fvoipaccid'] = $id;
+if ($params['id'] != NULL)
+	$listdata['fvoipaccid'] = $params['id'];
 
 if ($SESSION->is_set('valp') && !isset($_GET['page']))
 	$SESSION->restore('valp', $_GET['page']);
