@@ -81,7 +81,7 @@ class Estimate {
         $result['used_rules'] = array();
 
         while ($rules && $time) {
-            $rule = $procider->getBestRule($rules);
+            $rule = $provider->getBestRule($rules);
             $id   = $rule['ruleid'];
 
             if (isset($customer['rules'][$id]['units']) && $customer['rules'][$id]['units'] == 0) {
