@@ -37,7 +37,7 @@ abstract class VoipDataProvider {
      * \return array         array with matched rule
      * \return NULL          when array is empty
      */
-    protected function getBestMatchedRule(array $rules) {
+    protected function getBestRule(array $rules) {
         if (!$rules)
             return NULL;
 
