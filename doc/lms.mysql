@@ -1185,17 +1185,6 @@ CREATE TABLE voipaccounts (
 	FOREIGN KEY (location_street) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-CREATE TABLE voip_rule_states (
-    id              int(11) NOT NULL AUTO_INCREMENT,
-    voip_account_id int(11) NOT NULL
-        REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    rule_id         int(11) NOT NULL
-        REFERENCES voip_rules (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    units_left      int(11) NOT NULL,
-    PRIMARY KEY(id),
-    UNIQUE(voip_account_id, rule_id)
-);
-
 CREATE TABLE voip_rule_groups (
 	id integer NOT NULL AUTO_INCREMENT,
 	name text NOT NULL,
@@ -1209,6 +1198,27 @@ CREATE TABLE voip_prefix_groups (
 	description text NULL,
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
+
+CREATE TABLE voip_rules (
+	id              integer NOT NULL AUTO_INCREMENT,
+	rule_group_id   integer NOT NULL,
+	prefix_group_id integer NOT NULL,
+	settings        text    NULL,
+	FOREIGN KEY (rule_group_id)   REFERENCES voip_rule_groups(id)   ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (prefix_group_id) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE voip_rule_states (
+    id              int(11) NOT NULL AUTO_INCREMENT,
+    voip_account_id int(11) NOT NULL
+        REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    rule_id         int(11) NOT NULL
+        REFERENCES voip_rules (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    units_left      int(11) NOT NULL,
+    PRIMARY KEY(id),
+    UNIQUE(voip_account_id, rule_id)
+);
 
 CREATE TABLE voip_prefixes (
 	id int(11) AUTO_INCREMENT,
@@ -1247,16 +1257,6 @@ CREATE TABLE voip_cdr (
 	UNIQUE KEY (uniqueid),
 	FOREIGN KEY (callervoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	FOREIGN KEY (calleevoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-CREATE TABLE voip_rules (
-	id              integer NOT NULL AUTO_INCREMENT,
-	rule_group_id   integer NOT NULL,
-	prefix_group_id integer NOT NULL,
-	settings        text    NULL,
-	FOREIGN KEY (rule_group_id)   REFERENCES voip_rule_groups(id)   ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (prefix_group_id) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE voip_price_groups (
