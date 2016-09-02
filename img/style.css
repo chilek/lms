@@ -93,7 +93,7 @@ TEXTAREA.alert	{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; border
 SELECT		{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; border-style: solid; border-width: 1pt; background-color: #EBE4D6; vertical-align: middle; }
 SELECT.alert	{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; border-style: solid; border-width: 1pt; background-color: #FF9B9B; vertical-align: middle; }
 
-BUTTON		{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; border-style: solid; border-width: 0pt; background-color: #DFD5BD; vertical-align: middle; }
+BUTTON		{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; font-weight: bold; padding: 5px; }
 
 IMG		{ vertical-align: middle; border: 0; }
 
