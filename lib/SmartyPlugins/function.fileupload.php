@@ -44,15 +44,16 @@ function smarty_function_fileupload($params, $template) {
 				<INPUT name="' . $id . '[]" type="file" multiple class="fileupload-select-btn" style="display: none;">
 			</div>
 			<div class="fileupload-files">';
-	foreach ($fileupload[$id] as $fileidx => $file)
-		$result .= '<div>
-				<a href="#" class="fileupload-file"><img src="img/delete.gif">
-					' . $file['name'] . ' (' . $file['sizestr'] . ')
-				</a>
-				<input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][name]" value="' . $file['name'] . '">
-				<input type="hidden" class="fileupload-file-size" name="fileupload[' . $id . '][' . $fileidx . '][size]" value="' . $file['size'] . '">
-				<input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][type]" value="' . $file['type'] . '">
-			</div>';
+	if (!empty($fileupload))
+		foreach ($fileupload[$id] as $fileidx => $file)
+			$result .= '<div>
+					<a href="#" class="fileupload-file"><img src="img/delete.gif">
+						' . $file['name'] . ' (' . $file['sizestr'] . ')
+					</a>
+					<input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][name]" value="' . $file['name'] . '">
+					<input type="hidden" class="fileupload-file-size" name="fileupload[' . $id . '][' . $fileidx . '][size]" value="' . $file['size'] . '">
+					<input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][type]" value="' . $file['type'] . '">
+				</div>';
 	$result .= '</div>
 			<div class="fileupload-status alert bold">
 			</div>
