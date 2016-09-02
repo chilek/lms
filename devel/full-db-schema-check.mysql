@@ -1,0 +1,5 @@
+DB_TYPE="mysql"
+DB_USER="root"
+DB_PASSWORD="password"
+DB_NAME="lms-test"
+MAILTO="-c login@firma2.pl login@firma1.pl"

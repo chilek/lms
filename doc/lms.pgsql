@@ -691,6 +691,38 @@ CREATE TABLE nodeassignments (
 CREATE INDEX nodeassignments_assignmentid_idx ON nodeassignments (assignmentid);
 
 /* ---------------------------------------------------
+ Structure of table "voipaccounts"
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS voipaccounts_id_seq;
+CREATE SEQUENCE voipaccounts_id_seq;
+DROP TABLE IF EXISTS voipaccounts CASCADE;
+CREATE TABLE voipaccounts (
+	id		integer		NOT NULL DEFAULT nextval('voipaccounts_id_seq'::text),
+	ownerid		integer		NOT NULL DEFAULT 0,
+	login		varchar(255)	NOT NULL DEFAULT '',
+	passwd		varchar(255)	NOT NULL DEFAULT '',
+	phone		varchar(255)	NOT NULL DEFAULT '',
+	access      smallint        NOT NULL DEFAULT 1,
+	creationdate	integer		NOT NULL DEFAULT 0,
+	moddate		integer		NOT NULL DEFAULT 0,
+	creatorid	integer		NOT NULL DEFAULT 0,
+	modid		integer		NOT NULL DEFAULT 0,
+	location varchar(255) DEFAULT NULL,
+	location_city integer
+		REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	location_street integer
+		REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	location_house varchar(32) DEFAULT NULL,
+	location_flat varchar(32) DEFAULT NULL,
+	balance		numeric(12,5) NOT NULL DEFAULT 0,
+	flags		smallint NOT NULL DEFAULT 0,
+	cost_limit	numeric(12,2) NULL DEFAULT NULL,
+	PRIMARY KEY (id)
+);
+CREATE INDEX voipaccounts_location_street_idx ON voipaccounts (location_street);
+CREATE INDEX voipaccounts_location_city_idx ON voipaccounts (location_city, location_street, location_house, location_flat);
+
+/* ---------------------------------------------------
  Voip tables
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS voip_rule_groups_id_seq;
@@ -726,6 +758,20 @@ CREATE TABLE voip_rules (
 	PRIMARY KEY (id)
 );
 
+DROP SEQUENCE IF EXISTS voip_rule_states_id_seq;
+CREATE SEQUENCE voip_rule_states_id_seq;
+DROP TABLE IF EXISTS voip_rule_states CASCADE;
+CREATE TABLE voip_rule_states (
+    id              integer DEFAULT nextval('voip_rule_states_id_seq'::text) NOT NULL,
+    voip_account_id integer NOT NULL DEFAULT NULL
+        REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    rule_id         integer NOT NULL DEFAULT NULL
+        REFERENCES voip_rules (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    units_left      integer NULL DEFAULT NULL,
+    PRIMARY KEY(id),
+    UNIQUE(voip_account_id, rule_id)
+);
+
 DROP SEQUENCE IF EXISTS voip_prefixes_id_seq;
 CREATE SEQUENCE voip_prefixes_id_seq;
 DROP TABLE IF EXISTS voip_prefixes CASCADE;
@@ -746,18 +792,6 @@ CREATE TABLE voip_tariffs (
     name        varchar(100) NOT NULL,
     description text         NULL DEFAULT NULL,
     PRIMARY KEY (id)
-);
-
-DROP SEQUENCE IF EXISTS voip_tariff_rules_id_seq;
-CREATE SEQUENCE voip_tariff_rules_id_seq;
-DROP TABLE IF EXISTS voip_tariff_rules CASCADE;
-CREATE TABLE voip_tariff_rules (
-	id integer DEFAULT nextval('voip_tariff_rules_id_seq'::text) NOT NULL,
-	tarifid integer NOT NULL
-		REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	ruleid integer NULL
-		REFERENCES voip_rules (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id)
 );
 
 DROP SEQUENCE IF EXISTS voip_cdr_id_seq;
@@ -786,15 +820,6 @@ CREATE TABLE voip_cdr (
 	UNIQUE (uniqueid)
 );
 
-DROP TABLE IF EXISTS voip_emergency_numbers CASCADE;
-CREATE TABLE voip_emergency_numbers (
-	location_borough integer NOT NULL
-		REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	number integer NOT NULL,
-	fullnumber varchar(20) NOT NULL,
-	UNIQUE (location_borough, number)
-);
-
 DROP SEQUENCE IF EXISTS voip_price_groups_id_seq;
 CREATE SEQUENCE voip_price_groups_id_seq;
 DROP TABLE IF EXISTS voip_price_groups CASCADE;
@@ -809,20 +834,6 @@ CREATE TABLE voip_price_groups (
     PRIMARY KEY (id)
 );
 
-DROP SEQUENCE IF EXISTS voip_rule_states_id_seq;
-CREATE SEQUENCE voip_rule_states_id_seq;
-DROP TABLE IF EXISTS voip_rule_states CASCADE;
-CREATE TABLE voip_rule_states (
-    id              integer DEFAULT nextval('voip_rule_states_id_seq'::text) NOT NULL,
-    voip_account_id integer NOT NULL DEFAULT NULL
-        REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    rule_id         integer NOT NULL DEFAULT NULL
-        REFERENCES voip_rules (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    units_left      integer NULL DEFAULT NULL,
-    PRIMARY KEY(id),
-    UNIQUE(voip_account_id, rule_id)
-);
-
 DROP SEQUENCE IF EXISTS voip_numbers_id_seq;
 CREATE SEQUENCE voip_numbers_id_seq;
 DROP TABLE IF EXISTS voip_numbers CASCADE;
@@ -834,6 +845,14 @@ CREATE TABLE voip_numbers (
     UNIQUE(phone)
 );
 
+DROP TABLE IF EXISTS voip_emergency_numbers CASCADE;
+CREATE TABLE voip_emergency_numbers (
+	location_borough integer NOT NULL
+		REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	number integer NOT NULL,
+	fullnumber varchar(20) NOT NULL,
+	UNIQUE (location_borough, number)
+);
 CREATE INDEX voip_emergency_numbers_number_idx ON voip_emergency_numbers (number);
 
 /* --------------------------------------------------------
@@ -1929,37 +1948,6 @@ CREATE TABLE zipcodes (
 	UNIQUE (zip)
 );
 CREATE INDEX zipcodes_stateid_idx ON zipcodes (stateid);
-
-/* ---------------------------------------------------
- Structure of table "voipaccounts"
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS voipaccounts_id_seq;
-CREATE SEQUENCE voipaccounts_id_seq;
-DROP TABLE IF EXISTS voipaccounts CASCADE;
-CREATE TABLE voipaccounts (
-	id		integer		NOT NULL DEFAULT nextval('voipaccounts_id_seq'::text),
-	ownerid		integer		NOT NULL DEFAULT 0,
-	login		varchar(255)	NOT NULL DEFAULT '',
-	passwd		varchar(255)	NOT NULL DEFAULT '',
-	access      smallint        NOT NULL DEFAULT 1,
-	creationdate	integer		NOT NULL DEFAULT 0,
-	moddate		integer		NOT NULL DEFAULT 0,
-	creatorid	integer		NOT NULL DEFAULT 0,
-	modid		integer		NOT NULL DEFAULT 0,
-	location varchar(255) DEFAULT NULL,
-	location_city integer
-		REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	location_street integer
-		REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	location_house varchar(32) DEFAULT NULL,
-	location_flat varchar(32) DEFAULT NULL,
-	balance		numeric(12,5) NOT NULL DEFAULT 0,
-	flags		smallint NOT NULL DEFAULT 0,
-	cost_limit	numeric(12,2) NULL DEFAULT NULL,
-	PRIMARY KEY (id)
-);
-CREATE INDEX voipaccounts_location_street_idx ON voipaccounts (location_street);
-CREATE INDEX voipaccounts_location_city_idx ON voipaccounts (location_city, location_street, location_house, location_flat);
 
 /* ---------------------------------------------------
  Structure of table "messages"
