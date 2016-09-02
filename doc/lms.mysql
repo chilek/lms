@@ -1164,7 +1164,6 @@ CREATE TABLE voipaccounts (
 	ownerid 	    int(11) 	  NOT NULL DEFAULT 0,
 	login		    varchar(255)  NOT NULL DEFAULT '',
 	passwd		    varchar(255)  NOT NULL DEFAULT '',
-	phone		    varchar(255)  NOT NULL DEFAULT '',
 	access          tinyint(1)    NOT NULL DEFAULT '1',
 	creationdate	int(11)		  NOT NULL DEFAULT 0,
 	moddate		    int(11)		  NOT NULL DEFAULT 0,
@@ -1277,6 +1276,15 @@ CREATE TABLE voip_emergency_numbers (
 	INDEX voip_emergency_numbers_number_idx (number),
 	UNIQUE KEY number (location_borough, number),
 	FOREIGN KEY (location_borough) REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE voip_numbers (
+    id int(11) AUTO_INCREMENT,
+    voip_account_id int(11) NOT NULL,
+    phone varchar(20) NOT NULL,
+    FOREIGN KEY (voip_account_id) REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    UNIQUE(phone),
+    PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2718,4 +2726,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016082600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016082900');

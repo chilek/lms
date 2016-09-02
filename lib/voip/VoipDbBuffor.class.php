@@ -75,13 +75,13 @@ class VoipDbBuffor {
                 $cdr['price'] = 0;
             break;
 
-               case CALL_OUTGOING:
-                   if (isset($cdr['time_answer_to_end']) && $cdr['time_answer_to_end'] > 0) {
+            case CALL_OUTGOING:
+                if (isset($cdr['time_answer_to_end']) && $cdr['time_answer_to_end'] > 0) {
                     $info  = $this->estimate->getCallCost($cdr['caller'], $cdr['callee'], $cdr['time_answer_to_end']);
 
-                    if ($info['used_rules'])
-                        foreach ($info['used_rules'] as $r) {
-                            if (isset($this->used_rules[$cdr['caller']][$r['ruleid']]))
+                if ($info['used_rules'])
+                    foreach ($info['used_rules'] as $r) {
+                        if (isset($this->used_rules[$cdr['caller']][$r['ruleid']]))
                                 $this->used_rules[$cdr['caller']][$r['rule_id']]['used_units'] += $r['used_units'];
                             else {
                                 $this->used_rules[$cdr['caller']][$r['rule_id']] = $r;
@@ -149,10 +149,10 @@ class VoipDbBuffor {
                                $c['uniqueid']           . ')';
 
             if ($c['price'] > 0) {
-                if (isset($cust_load[$c['caller']]))
-                    $cust_load[$c['caller']] += $c['price'];
+                if (isset($cust_load[$caller['voipaccountid']]))
+                    $cust_load[$caller['voipaccountid']] += $c['price'];
                 else
-                    $cust_load[$c['caller']] = $c['price'];
+                    $cust_load[$caller['voipaccountid']] = $c['price'];
             }
         }
 
@@ -168,7 +168,7 @@ class VoipDbBuffor {
 
         //update customer account balance
         foreach ($cust_load as $k=>$v) {
-            $DB->Execute("UPDATE voipaccounts SET balance=balance-$v WHERE phone ?LIKE? '$k';");
+            $DB->Execute("UPDATE voipaccounts SET balance=balance-$v WHERE id = " . $caller['voipaccountid']);
         }
 
         //update customer tariff rules

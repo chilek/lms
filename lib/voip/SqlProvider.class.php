@@ -74,15 +74,16 @@ class SqlProvider extends VoipDataProvider {
     public function getCustomerByPhone($number) {
         $DB = LMSDB::getInstance();
         $c = $DB->GetRow('SELECT
-                            va.id as voipaccountid, va.phone, va.balance,
+                            va.id as voipaccountid, vn.phone, va.balance,
                             t.voip_tariff_id as tariffid,
                             t.voip_tariff_rule_id as tariffruleid, va.flags
                           FROM
                             voipaccounts va
                             LEFT JOIN assignments a on va.ownerid = a.customerid
                             LEFT JOIN tariffs t on t.id = a.tariffid
+                            LEFT JOIN voip_numbers vn on vn.voip_account_id = va.id
                           WHERE
-                            va.phone ?LIKE? ? AND
+                            vn.phone ?LIKE? ? AND
                             t.type = ?',
                           array($number, TARIFF_PHONE));
 

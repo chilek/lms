@@ -37,29 +37,35 @@
                 <img src="img/phone.gif" alt="{trans("Phone number:")}">
             </td>
             <td class="bold nobr">
-                {trans("Phone number:")}
+                {if count($voipaccountinfo['phones']) > 1}
+                    {trans("Phone numbers:")}
+                {else}
+                    {trans("Phone number:")}
+                {/if}
             </td>
             <td class="nobr">
-                {$voipaccountinfo.phone}
+				{foreach from=$voipaccountinfo['phones'] item=v name=customer_phones}
+					{$v.phone}{if not $smarty.foreach.customer_phones.last}, {/if}
+				{/foreach}
             </td>
         </tr>
         {/block}
         {block name="voipaccountinfobox-customer"}
-	<tr>
-		<td>
-			<img src="img/customer.gif" alt="{trans("Customer:")}">
-		</td>
-		<td class="bold nobr">
-			{trans("Customer:")}
-		</td>
-		<td class="nobr">
-			<a href="?m=customerinfo&id={$voipaccountinfo.ownerid}">{$voipaccountinfo.owner}</a>
-		</td>
-	</tr>
+        <tr>
+            <td>
+                <img src="img/customer.gif" alt="{trans("Customer:")}">
+            </td>
+            <td class="bold nobr">
+                {trans("Customer:")}
+            </td>
+            <td class="nobr">
+                <a href="?m=customerinfo&id={$voipaccountinfo.ownerid}">{$voipaccountinfo.owner}</a>
+            </td>
+        </tr>
         {/block}
         {block name="voipaccountinfobox-location"}
-	{if $voipaccountinfo.location}
-	<tr>
+        {if $voipaccountinfo.location}
+        <tr>
             <td>
                 <img src="img/home.gif" alt="{trans('Location:')}">
             </td>
@@ -69,8 +75,8 @@
             <td class="nobr">
                 {$voipaccountinfo.location}{if $voipaccountinfo.borough_name} ({$voipaccountinfo.state_name} / {$voipaccountinfo.district_name} / {$_BOROUGHTYPES[$voipaccountinfo.borough_type]} {$voipaccountinfo.borough_name}){/if}
             </td>
-	</tr>
-	{/if}
+        </tr>
+        {/if}
         {/block}
         {block name="voipaccountinfobox-status"}
         <tr>
@@ -115,33 +121,18 @@
             </td>
         </tr>
         {/block}
-        {block name="voipaccountinfobox-events"}
-        <tr>
-            <td>
-                <img src="img/users.gif" alt="">
-            </td>
-            <td class="bold">
-                {trans("Created:")}<br>
-                {trans("Modified:")}
-            </td>
-            <td>
-                {$voipaccountinfo.createdby}, {$voipaccountinfo.creationdateh}<br>
-                {if $voipaccountinfo.moddate}{$voipaccountinfo.modifiedby}, {$voipaccountinfo.moddateh}{else}-{/if}
-            </td>
-        </tr>
-        {/block}
 		{block name="voipaccountinfobox-flags"}
         <tr>
             <td>
-                <img src="img/info2.gif" alt="">
+                <img src="img/settings.gif" alt="">
             </td>
             <td class="bold">
-                {trans("Flags:")}
+                {trans("Settings:")}
             </td>
             <td>
 				<table>
 					<tr>
-						<td>{trans("recording for operator:")}</td>
+						<td>{trans("recording for operator")}: </td>
 						<td>
 							{if $voipaccountinfo.flags & CALL_FLAG_ADMIN_RECORDING}
 								{trans("yes")}
@@ -151,7 +142,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td>{trans("recording for customer:")}</td>
+						<td>{trans("recording for customer")}: </td>
 						<td>
 							{if $voipaccountinfo.flags & CALL_FLAG_CUSTOMER_RECORDING}
 								{trans("yes")}
@@ -161,6 +152,21 @@
 						</td>
 					</tr>
 				</table>
+            </td>
+        </tr>
+        {/block}
+        {block name="voipaccountinfobox-events"}
+        <tr>
+            <td>
+                <img src="img/info.gif" alt="">
+            </td>
+            <td class="bold">
+                {trans("Created:")}
+                {if $voipaccountinfo.moddate}<br>{trans("Modified:")}{/if}
+            </td>
+            <td>
+                {$voipaccountinfo.createdby}, {$voipaccountinfo.creationdateh}<br>
+                {if $voipaccountinfo.moddate}{$voipaccountinfo.modifiedby}, {$voipaccountinfo.moddateh}{/if}
             </td>
         </tr>
         {/block}

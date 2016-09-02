@@ -823,6 +823,17 @@ CREATE TABLE voip_rule_states (
     UNIQUE(voip_account_id, rule_id)
 );
 
+DROP SEQUENCE IF EXISTS voip_numbers_id_seq;
+CREATE SEQUENCE voip_numbers_id_seq;
+DROP TABLE IF EXISTS voip_numbers CASCADE;
+CREATE TABLE voip_numbers (
+    id integer DEFAULT nextval('voip_numbers_id_seq'::text) NOT NULL,
+    voip_account_id integer NOT NULL
+        REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    phone varchar(20) NOT NULL,
+    UNIQUE(phone)
+);
+
 CREATE INDEX voip_emergency_numbers_number_idx ON voip_emergency_numbers (number);
 
 /* --------------------------------------------------------
@@ -1930,7 +1941,6 @@ CREATE TABLE voipaccounts (
 	ownerid		integer		NOT NULL DEFAULT 0,
 	login		varchar(255)	NOT NULL DEFAULT '',
 	passwd		varchar(255)	NOT NULL DEFAULT '',
-	phone		varchar(255)	NOT NULL DEFAULT '',
 	access      smallint        NOT NULL DEFAULT 1,
 	creationdate	integer		NOT NULL DEFAULT 0,
 	moddate		integer		NOT NULL DEFAULT 0,
@@ -2834,6 +2844,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016082600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016082900');
 
 COMMIT;
