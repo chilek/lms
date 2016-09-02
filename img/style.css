@@ -362,3 +362,26 @@ td.multiselect select { min-width: 200px; }
 .ui-dialog-content.documentviewdialog {
 	padding: 0 !important;
 }
+
+.fileupload-progress-dialog .ui-dialog-titlebar {
+	display: none !important;
+}
+
+.ui-progressbar {
+	position: relative !important;
+}
+
+/*
+.ui-progressbar-value {
+	background-color: blue !important;
+}
+*/
+
+.fileupload-progress-label {
+	position: absolute;
+	left: 48%;
+	top: 4px;
+	font-weight: bold;
+	text-shadow: 1px 1px 0 #fff;
+}
+

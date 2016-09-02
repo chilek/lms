@@ -3,7 +3,7 @@
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<P><FORM method="POST" name="message" action="?m=rtmessageadd" enctype="multipart/form-data">
+<P><FORM method="POST" name="message" action="?m=rtmessageadd">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="message[inreplyto]" value ="{$message.inreplyto|default:"0"}">
 <INPUT type="hidden" name="message[references]" value ="{$message.references|escape|default:""}">
@@ -56,7 +56,7 @@
 			<B>{trans("Attachments:")}</B>
 		</TD>
 		<TD WIDTH="99%">
-			<INPUT name="files[]" type="file" size="55" {tip text="Enter path to file or click 'Browse' button" trigger="files"} multiple>
+			{fileupload id="files" fileupload=$fileupload}
 		</TD>
 	</TR>
 	<TR>

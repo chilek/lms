@@ -3405,4 +3405,8 @@ $_LANG['New files:'] = 'Nowe pliki:';
 $_LANG['Attached files:'] = 'Załączone pliki:';
 $_LANG['Files:'] = 'Pliki:';
 
+$_LANG['Select files'] = 'Wybierz pliki';
+$_LANG['Uploading files ...'] = 'Wysyłanie plików ...';
+$_LANG['Uploading files to server ...'] = 'Wysyłanie plików na serwer ...';
+
 ?>
