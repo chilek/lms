@@ -44,19 +44,19 @@ function smarty_function_fileupload($params, $template) {
 				<INPUT name="' . $id . '[]" type="file" multiple class="fileupload-select-btn" style="display: none;">
 			</div>
 			<div class="fileupload-files">';
-	foreach ($fileupload['files'] as $fileidx => $file)
+	foreach ($fileupload[$id] as $fileidx => $file)
 		$result .= '<div>
 				<a href="#" class="fileupload-file"><img src="img/delete.gif">
 					' . $file['name'] . ' (' . $file['sizestr'] . ')
 				</a>
-				<input type="hidden" name="fileupload[files][' . $fileidx . '][name]" value="' . $file['name'] . '">
-				<input type="hidden" class="fileupload-file-size" name="fileupload[files][' . $fileidx . '][size]" value="' . $file['size'] . '">
-				<input type="hidden" name="fileupload[files][' . $fileidx . '][type]" value="' . $file['type'] . '">
+				<input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][name]" value="' . $file['name'] . '">
+				<input type="hidden" class="fileupload-file-size" name="fileupload[' . $id . '][' . $fileidx . '][size]" value="' . $file['size'] . '">
+				<input type="hidden" name="fileupload[' . $id . '][' . $fileidx . '][type]" value="' . $file['type'] . '">
 			</div>';
 	$result .= '</div>
 			<div class="fileupload-status alert bold">
 			</div>
-			<input type="hidden" class="fileupload-tmpdir" name="fileupload[files-tmpdir]" value="' . $fileupload['files-tmpdir'] . '">
+			<input type="hidden" class="fileupload-tmpdir" name="fileupload[' . $id . '-tmpdir]" value="' . $fileupload[$id . '-tmpdir'] . '">
 		</div>';
 	$result .= '<script type="text/javascript">
 		<!--
@@ -122,7 +122,7 @@ function smarty_function_fileupload($params, $template) {
 									fileupload_files.append(\'<div><a href="#" class="fileupload-file"><img src="img/delete.gif">&nbsp;\'
 										+ file.name + \' (\' + size.size + \' \' + size.unit + \')</a>\'
 										+ \'<input type="hidden" name="fileupload[\' + elemid + \'][\' + (count + key) + \'][name]" value="\' + file.name + \'">\'
-										+ \'<input type="hidden" name="fileupload[\' + elemid + \'][\' + (count + key) + \'][size]" value="\' + file.size + \'">\'
+										+ \'<input type="hidden" class="fileupload-file-size" name="fileupload[\' + elemid + \'][\' + (count + key) + \'][size]" value="\' + file.size + \'">\'
 										+ \'<input type="hidden" name="fileupload[\' + elemid + \'][\' + (count + key) + \'][type]" value="\' + file.type + \'">\'
 										+ "</div>");
 									elem.find(".fileupload-file").on("click", function() {

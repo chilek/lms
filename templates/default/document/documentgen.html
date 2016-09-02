@@ -127,11 +127,11 @@
 		<TD>
 			<IMG src="img/save.gif" alt="">
 		</TD>
-		<TD class="bold">
+		<TD class="bold valign-top">
 			{trans("Files:")}
 		</TD>
 		<TD>
-			<INPUT size="50" type="file" name="files[]" {tip text="Enter path to file or click 'Browse' button" trigger="files"} multiple>
+			{fileupload id="attachments" fileupload=$fileupload}
 		</TD>
 	</TR>
 	<TR>
@@ -157,12 +157,12 @@
 				<TR>
 					<TD width="1%" {tip text="Select customer's group"}>
 						{foreach $_CSTATUSES as $statusidx => $status}
-						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="{$statusidx}"{if $statusidx == $smarty.const.CSTATUS_CONNECTED} checked{/if}>{$status.plurallabel}</label><BR>
+						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="{$statusidx}"{if (!isset($filter) && $statusidx == $smarty.const.CSTATUS_CONNECTED) || (isset($filter) && $statusidx == $filter)} checked{/if}>{$status.plurallabel}</label><BR>
 						{/foreach}
-						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="51">{trans("with disconnected nodes")}</label><BR>
-						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="52">{trans("in debt")}</label><BR>
-						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="-1">{trans("without nodes")}</label><BR>
-						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="0">{trans("all<!customers>")}</label>
+						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="51"{if isset($filter) && $filter == 51} checked{/if}>{trans("with disconnected nodes")}</label><BR>
+						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="52"{if isset($filter) && $filter == 52} checked{/if}>{trans("in debt")}</label><BR>
+						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="-1"{if isset($filter) && $filter == -1} checked{/if}>{trans("without nodes")}</label><BR>
+						<label class="nobr"><INPUT class="radio light" type="radio" name="filter" value="0"{if isset($filter) && $filter == 0} checked{/if}>{trans("all<!customers>")}</label>
 					</TD>
 					<TD width="5%">&nbsp;</TD>
 					<TD width="1%" class="nobr">
@@ -171,16 +171,17 @@
 					</TD>
 					<TD width="97%">
 						<SELECT size="1" name="network" {tip text="Select network" trigger="customer"}>
-							<OPTION value="0" SELECTED>{trans("- all networks -")}</OPTION>
-							{section name="networks" loop=$networks}
-							<OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:40:"...":true}</OPTION>
-							{/section}
-						</SELECT><BR><BR>
+							<OPTION value="0">{trans("- all networks -")}</OPTION>
+							{foreach $networks as $net}
+							<OPTION value="{$net.id}"{if $network == $net.id} selected{/if}>{$net.name|truncate:40:"...":true}</OPTION>
+							{/foreach}
+						</SELECT>
+						<BR><BR>
 						<SELECT size="1" name="customergroup" {tip text="Select group" trigger="customer"}>
 							<OPTION value="0" SELECTED>{trans("- all groups -")}</OPTION>
-							{section name="customergroups" loop=$customergroups}
-							<OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:40:"...":true}</OPTION>
-							{/section}
+							{foreach $customergroups as $group}
+							<OPTION value="{$group.id}"{if $customergroup == $group.id} selected{/if}>{$group.name|truncate:40:"...":true}</OPTION>
+							{/foreach}
 						</SELECT>
 					</TD>
 				</TR>

@@ -1056,8 +1056,8 @@ function handle_file_uploads($elemid, &$error) {
 					$files2 = array();
 					foreach ($files as &$file) {
 						unset($file2);
-						if (isset($fileupload['files']))
-							foreach ($fileupload['files'] as &$file2)
+						if (isset($fileupload[$elemid]))
+							foreach ($fileupload[$elemid] as &$file2)
 								if ($file['name'] == $file2['name'])
 									continue 2;
 						if (!file_exists($tmppath . DIRECTORY_SEPARATOR . $file['name'])) {

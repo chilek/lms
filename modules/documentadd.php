@@ -124,8 +124,8 @@ if (isset($_POST['document'])) {
 
 			$files[] = array(
 				'md5sum' => md5_file($file),
-				'contenttype' => $engine['content_type'],
-				'filename' => $engine['output'],
+				'type' => $engine['content_type'],
+				'name' => $engine['output'],
 				'tmpname' => $file,
 				'main' => true,
 			);
@@ -133,24 +133,16 @@ if (isset($_POST['document'])) {
 			$error['templ'] = trans('Problem during file generation!');
 	}
 
-	foreach ($_FILES['files']['name'] as $fileidx => $filename)
-		if (!empty($filename)) {
-			if (is_uploaded_file($_FILES['files']['tmp_name'][$fileidx]) && $_FILES['files']['size'][$fileidx])
-				$files[] = array(
-					'md5sum' => md5_file($_FILES['files']['tmp_name'][$fileidx]),
-					'contenttype' => $_FILES['files']['type'][$fileidx],
-					'filename' => $filename,
-					'tmpname' => $_FILES['files']['tmp_name'][$fileidx],
-					'main' => false,
-				);
-			else // upload errors
-				switch ($_FILES['files']['error'][$fileidx]) {
-					case 1:
-					case 2: $error['files'] = trans('File is too large.'); break;
-					case 3: $error['files'] = trans('File upload has finished prematurely.'); break;
-					case 4: $error['files'] = trans('Path to file was not specified.'); break;
-					default: $error['files'] = trans('Problem during file upload.'); break;
-				}
+	$result = handle_file_uploads('attachments', $error);
+	extract($result);
+	$SMARTY->assign('fileupload', $fileupload);
+
+	if (!$error && !empty($attachments))
+		foreach ($attachments as $attachment) {
+			$attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
+			$attachment['md5sum'] = md5_file($attachment['tmpname']);
+			$attachment['main'] = false;
+			$files[] = $attachment;
 		}
 
 	if (empty($files) && empty($document['templ']))
@@ -174,7 +166,7 @@ if (isset($_POST['document'])) {
 			}
 		}
 		unset($file);
-		if (!$error)
+		if (!$error) {
 			foreach ($files as $file) {
 				@mkdir($file['path'], 0700);
 				if (!file_exists($file['newfile']) && !@rename($file['tmpname'], $file['newfile'])) {
@@ -182,6 +174,8 @@ if (isset($_POST['document'])) {
 					break;
 				}
 			}
+			rrmdir($tmppath);
+		}
 	}
 
 	if (!$error) {
@@ -244,8 +238,8 @@ if (isset($_POST['document'])) {
 		foreach ($files as $file)
 			$DB->Execute('INSERT INTO documentattachments (docid, filename, contenttype, md5sum, main)
 				VALUES (?, ?, ?, ?, ?)', array($docid,
-					$file['filename'],
-					$file['contenttype'],
+					$file['name'],
+					$file['type'],
 					$file['md5sum'],
 					$file['main'] ? 1 : 0,
 			));
