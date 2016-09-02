@@ -119,7 +119,7 @@ function smarty_function_fileupload($params, $template) {
 								var count = fileupload_files.find(".fileupload-file").length;
 								$.each(data.files, function(key, file) {
 									var size = get_size_unit(file.size);
-									fileupload_files.append(\'<div><a href="#" class="fileupload-file"><img src="img/delete.gif">\'
+									fileupload_files.append(\'<div><a href="#" class="fileupload-file"><img src="img/delete.gif">&nbsp;\'
 										+ file.name + \' (\' + size.size + \' \' + size.unit + \')</a>\'
 										+ \'<input type="hidden" name="fileupload[\' + elemid + \'][\' + (count + key) + \'][name]" value="\' + file.name + \'">\'
 										+ \'<input type="hidden" name="fileupload[\' + elemid + \'][\' + (count + key) + \'][size]" value="\' + file.size + \'">\'
