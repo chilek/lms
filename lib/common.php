@@ -1012,9 +1012,11 @@ function handle_file_uploads($elemid, &$error) {
 			$tmppath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tmpdir;
 			if (is_dir($tmppath) || !@mkdir($tmppath))
 				$tmpdir = '';
-		} elseif (preg_match('/^lms-fileupload-[0-9a-f]+$/', $tmpdir))
+		} elseif (preg_match('/^lms-fileupload-[0-9a-f]+$/', $tmpdir)) {
 			$tmppath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tmpdir;
-		else
+			if (!file_exists($tmppath))
+				@mkdir($tmppath);
+		} else
 			$tmpdir = '';
 
 		if (isset($_GET['ajax'])) {
