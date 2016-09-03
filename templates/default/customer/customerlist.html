@@ -3,12 +3,6 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<FORM method="get" action="?m={$layout.module}" name="choosefilter">
-<p style="display: none;">
-<INPUT type="submit" class="hiddenbtn">
-<INPUT type="hidden" NAME="m" VALUE="customerlist">
-<INPUT type="hidden" NAME="page" id="page" VALUE="1">
-</p>
 <TABLE class="lmsbox">
 	<COLGROUP>
                 {block name="customerlist-list-columns"}
@@ -42,6 +36,12 @@
         {block name="customerlist-list-filters"}
 	<TR>
 		<TD colspan="{$number_of_table_columns}" class="nobr">
+                    <FORM method="get" action="?m={$layout.module}" name="choosefilter">
+                        <p style="display: none;">
+                            <INPUT type="submit" class="hiddenbtn">
+                            <INPUT type="hidden" NAME="m" VALUE="customerlist">
+                            <INPUT type="hidden" NAME="page" id="page" VALUE="1">
+                        </p>
 			<span class="bold">{trans("Filter:")}</span> {trans("Customers:")}
 			<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
 				<OPTION VALUE="0"{if $listdata.state == 0} SELECTED{/if}>{trans("- all customers -")}</OPTION>
@@ -106,7 +106,8 @@
                             <option value="-3" {if $listdata.assigments eq '-3'} selected {/if}>{trans('active, with invoice')}</option>
                             <option value="-4" {if $listdata.assigments eq '-4'} selected {/if}>{trans('suspended')}</option>
                         </select>
-		</TD>
+                    </FORM>
+               </TD>
 	</TR>
         {/block}
         {block name="customerlist-list-header-pagination"}
@@ -227,5 +228,4 @@
 	{/section}
 	</TBODY>
 </TABLE>
-</FORM>
 {/block}
