@@ -231,7 +231,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 </table>
 </FORM>
 {/if}
-
+{if $customer}
 <FORM method="post" action="?m=invoicenew&amp;action=additem" name="additem" id="additem">
 <table class="lmsbox">
     <thead>
@@ -400,6 +400,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	</TR>
 	</TFOOT>
 </table>
+{/if}
 </FORM>
 
 <SCRIPT type="text/javascript">
