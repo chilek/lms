@@ -5,9 +5,7 @@
 <H1>{$layout.pagetitle}</H1>
 <div class="text-center">
     <ul class="pagination">
-        <li>
-            <A href="?m=eventlist&amp;day=1&amp;month={if $month==1}12{else}{math equation="x-1" x=$month}{/if}&amp;year={if $month==1}{math equation="x-1" x=$year}{else}{$year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A>
-        </li>
+        <li><A href="?m=eventlist&amp;day=1&amp;month={if $month==1}12{else}{math equation="x-1" x=$month}{/if}&amp;year={if $month==1}{math equation="x-1" x=$year}{else}{$year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A></li>
         {section name=days loop=$days.day}
             <li>
                 <A class="{if $days.sel[days]}active {/if}{if !$days.dow[days]}mark{/if}" href="?m=eventlist&amp;day={$days.day[days]}&amp;month={$month}&amp;year={$year}">
