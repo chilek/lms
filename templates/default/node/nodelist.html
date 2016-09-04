@@ -4,12 +4,6 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {$lastonline_limit = ConfigHelper::getConfig('phpui.lastonline_limit')}
-<FORM method="get" action="?m={$layout.module}" name="choosefilter">
-<p style="display: none;">
-<INPUT type="submit" class="hiddenbtn">
-<INPUT type="hidden" NAME="m" VALUE="nodelist">
-<INPUT type="hidden" NAME="page" id="page" VALUE="1">
-</p>
 <TABLE class="lmsbox">
 	<COLGROUP>
 		<COL style="width: 97%;">
@@ -41,6 +35,12 @@
 	</TR>
 	<TR>
 		<TD colspan="5">
+                    <FORM method="get" action="?m={$layout.module}" name="choosefilter">
+                        <p style="display: none;">
+                            <INPUT type="submit" class="hiddenbtn">
+                            <INPUT type="hidden" NAME="m" VALUE="nodelist">
+                            <INPUT type="hidden" NAME="page" id="page" VALUE="1">
+                        </p>
 				<SPAN class="bold">{trans("Filter:")}</SPAN> 
 				<SPAN class="nobr">{trans("Status:")}
 				<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
@@ -82,6 +82,7 @@
 					<OPTION VALUE="{$project.id}"{if $listdata.invprojectid == $project.id} selected{/if}>{$project.name}</OPTION>
 					{/foreach}
 				</SELECT></SPAN>
+                    </FORM>
 		</TD>
 	</TR>
 	{if $pagination->getTotal() != 0}
@@ -169,5 +170,4 @@
 	{/block}
 	</TBODY>
 </TABLE>
-</FORM>
 {/block}
