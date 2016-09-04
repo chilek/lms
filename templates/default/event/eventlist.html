@@ -3,6 +3,21 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+<div class="text-center">
+    <ul class="pagination">
+        <li>
+            <A href="?m=eventlist&amp;day=1&amp;month={if $month==1}12{else}{math equation="x-1" x=$month}{/if}&amp;year={if $month==1}{math equation="x-1" x=$year}{else}{$year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A>
+        </li>
+        {section name=days loop=$days.day}
+            <li>
+                <A class="{if $days.sel[days]}active {/if}{if !$days.dow[days]}mark{/if}" href="?m=eventlist&amp;day={$days.day[days]}&amp;month={$month}&amp;year={$year}">
+                    {$days.day[days]|string_format:"%d"}
+                </A>
+            </li>
+        {/section}
+        <li><A href="?m=eventlist&amp;day=1&amp;month={if $month==12}1{else}{math equation="x+1" x=$month}{/if}&amp;year={if $month==12}{math equation="x+1" x=$year}{else}{$year}{/if}">&raquo;&raquo;&raquo;&nbsp;</A></li>
+    </ul>
+</div>
 <TABLE class="lmsbox">
 	<COLGROUP>
 		<COL style="width: 1%;">
@@ -28,15 +43,6 @@
 			<IMG src="img/customer.gif" alt=""> {trans("Customer:")}
 		</TD>
 		<TD></TD>
-	</TR>
-	<TR>
-		<TD colspan="5" class="text-center nobr">
-			<A href="?m=eventlist&amp;day=1&amp;month={if $month==1}12{else}{math equation="x-1" x=$month}{/if}&amp;year={if $month==1}{math equation="x-1" x=$year}{else}{$year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A>
-			{section name=days loop=$days.day}
-				{if !$days.dow[days]}<span class="light">{/if}<A href="?m=eventlist&amp;day={$days.day[days]}&amp;month={$month}&amp;year={$year}">&nbsp;{if $days.sel[days]}<B>*{/if}{$days.day[days]|string_format:"%d"}{if $days.sel[days]}*</B>{/if} </A>{if !$days.dow[days]}</span>{/if}
-			{/section}
-			<A href="?m=eventlist&amp;day=1&amp;month={if $month==12}1{else}{math equation="x+1" x=$month}{/if}&amp;year={if $month==12}{math equation="x+1" x=$year}{else}{$year}{/if}">&raquo;&raquo;&raquo;&nbsp;</A>
-		</TD>
 	</TR>
 	<TR>
 		<TD colspan="5" class="nobr">
