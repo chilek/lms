@@ -14,10 +14,7 @@
 //-->
 </script>{/if}
 {if $part == "main"}
-<script type="text/javascript" language="JavaScript" src="img/OpenLayers/OpenLayers.js"></script>
-<script type="text/javascript" language="JavaScript" src="img/OpenLayers/lang/{$_ui_language}.js"></script>
-<script type="text/javascript" language="JavaScript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-<script type="text/javascript" language="JavaScript" src="img/map.js"></script>
+{include file="openlayers.html"}
 <script type="text/javascript" language="JavaScript">
 <!--
 	function init()

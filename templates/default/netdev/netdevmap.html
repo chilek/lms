@@ -23,22 +23,8 @@
 </OBJECT>
 </P>
 {elseif $type=='openlayers'}
-<script type="text/javascript" language="JavaScript" src="img/OpenLayers/OpenLayers.js"></script>
-<script type="text/javascript" language="JavaScript" src="img/OpenLayers/lang/{$_ui_language}.js"></script>
-<script type="text/javascript" language="JavaScript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+{include file="openlayers.html"}
 <div id="map" class="map"></div>
-<script type="text/javascript" language="Javascript" src="img/DragPopup.js"></script>
-<!--[if IE]>
-<script type="text/javascript" language="Javascript" src="img/json2.js"></script>
-<![endif]-->
-<script type="text/javascript" language="Javascript">
-<!--
-	var checkhostcaption = "{trans("Check a host ...")}";
-	var centermapcaption = "{trans("Center map around network elements ...")}";
-	var refreshmapcaption = "{trans("Refresh network state ...")}";
-//-->
-</script>
-<script type="text/javascript" language="Javascript" src="img/map.js"></script>
 <script type="text/javascript" language="JavaScript">
 <!--
 	{include file="map.js"}
