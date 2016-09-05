@@ -35,7 +35,7 @@
                 {/if}
             </th>
             <th nowrap>
-                {trans("Phone number:")}
+                {trans("Phone number:")}&nbsp;
             </th>
             <th nowrap>
                 {trans("Password:")}
@@ -97,7 +97,9 @@
                 ({$voipaccountlist[voipaccountlist].id|string_format:"%04d"})
             </td>
             <td onClick="return self.location.href = '?m=voipaccountinfo&amp;id={$voipaccountlist[voipaccountlist].id}';" valign="top" nowrap>
-                <B>{$voipaccountlist[voipaccountlist].phone}</B>
+                {foreach from=$voipaccountlist[voipaccountlist].phone item=$v name=account_phones}
+                    {$v}{if not $smarty.foreach.account_phones.last}<br>{/if}
+                {/foreach}
             </td>
             <td onClick="return self.location.href = '?m=voipaccountinfo&amp;id={$voipaccountlist[voipaccountlist].id}';" valign="top" nowrap>
                 {if ConfigHelper::checkPrivilege('hide_voip_passwords')}{'*'|str_repeat:8}{else}{$voipaccountlist[voipaccountlist].passwd}{/if}

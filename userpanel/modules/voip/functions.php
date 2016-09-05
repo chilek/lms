@@ -70,21 +70,29 @@ if (isset($_GET['record'])) {
 function module_main() {
     global $LMS, $SMARTY, $SESSION;
 
-    $voip_accs = $LMS->DB->GetAllByKey('SELECT id, phone
-                                   FROM voipaccounts
-                                   WHERE ownerid = ?', 'id',
-                                   array($SESSION->id));
+    $user_account_ids = array_keys($LMS->DB->GetAllByKey('SELECT id
+                                                          FROM voipaccounts
+                                                          WHERE ownerid = ?', 'id',
+                                                          array($SESSION->id)));
+
+    $tmp_phones = $LMS->DB->GetAll('SELECT phone
+                                    FROM voip_numbers
+                                    WHERE voip_account_id IN ('.implode(',',$user_account_ids).');');
+
+    $phones = array();
+    foreach($tmp_phones as $v) {
+        $phones[] = $v['phone'];
+    }
 
     $params = array();
-    $user_accounts_ids = array_keys($voip_accs);
 
-    if (empty($_GET['account']) && count($user_accounts_ids) > 1) {
-        $params['id'] = $user_accounts_ids;
+    if (empty($_GET['phone']) && count($user_account_ids) > 1) {
+        $params['id'] = $user_account_ids;
     } else {
-        if (in_array($_GET['account'], $user_accounts_ids))
-            $params['id'] = (int) $_GET['account'];
+        if (in_array($_GET['phone'], $phones))
+            $params['phone'] = $_GET['phone'];
         else
-            $params['id'] = $user_accounts_ids;
+            $params['id'] = $user_account_ids;
     }
 
     if (isset($_GET['date_from']) && is_date($_GET['date_from'])) {
@@ -136,11 +144,11 @@ function module_main() {
     $pagin->setCurrentPage( ((!$_GET['page']) ? 1 : (int) $_GET['page']) );
     $pagin->setRange(3);
 
-    $SMARTY->assign('pagination'   , $pagin);
-    $SMARTY->assign('pagin_result' , $pagin->getPages());
-    $SMARTY->assign('params'       , $params);
-    $SMARTY->assign('billings'     , $billings);
-    $SMARTY->assign('voip_accounts', $voip_accs);
+    $SMARTY->assign('pagination'         , $pagin);
+    $SMARTY->assign('pagin_result'       , $pagin->getPages());
+    $SMARTY->assign('params'             , $params);
+    $SMARTY->assign('billings'           , $billings);
+    $SMARTY->assign('customer_phone_list', $phones);
     $SMARTY->display('module:billing.html');
 }
 
