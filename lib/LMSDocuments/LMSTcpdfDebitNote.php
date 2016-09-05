@@ -47,7 +47,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice {
 	public function note_drawer() {
 		$this->backend->SetFont('arial', '', 10);
 		$drawer = '<b>' . trans('Note drawer:') . '</b><br>';
-		$tmp = $this->data['division_header'];
+		$tmp = $this->data['division_seller'];
 
 		$accounts = array(bankaccount($this->data['customerid'], $this->data['account']));
 		if (ConfigHelper::checkConfig('invoices.show_all_accounts'))

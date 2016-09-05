@@ -601,7 +601,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 	protected function invoice_seller() {
 		$this->backend->SetFont('arial', '', 10);
 		$seller = '<b>' . trans('Seller:') . '</b><br>';
-		$tmp = $this->data['division_header'];
+		$tmp = $this->data['division_seller'];
 
 		$accounts = array(bankaccount($this->data['customerid'], $this->data['account']));
 		if (ConfigHelper::checkConfig('invoices.show_all_accounts'))

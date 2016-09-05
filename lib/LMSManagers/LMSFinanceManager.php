@@ -695,13 +695,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             if ($result['reference'])
                 $result['invoice'] = $this->GetInvoiceContent($result['reference']);
 
-            if (!$result['division_header']) {
-                $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
-                $result['division_header'] = $result['division_name'] . "\n"
-                        . $result['division_address'] . "\n" . $result['division_zip'] . ' ' . $result['division_city']
-                        . ($result['division_countryid'] && $result['countryid'] && $result['division_countryid'] != $result['countryid'] ? "\n" . trans($location_manager->GetCountryName($result['division_countryid'])) : '')
-                        . ($result['division_ten'] != '' ? "\n" . trans('TEN') . ' ' . $result['division_ten'] : '');
-            }
+            $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $result['division_seller'] = $result['division_name'] . "\n"
+                    . $result['division_address'] . "\n" . $result['division_zip'] . ' ' . $result['division_city']
+                    . ($result['division_countryid'] && $result['countryid'] && $result['division_countryid'] != $result['countryid'] ? "\n" . trans($location_manager->GetCountryName($result['division_countryid'])) : '')
+                    . ($result['division_ten'] != '' ? "\n" . trans('TEN') . ' ' . $result['division_ten'] : '');
 
             if ($result['content'] = $this->db->GetAll('SELECT invoicecontents.value AS value, 
 						itemid, taxid, taxes.value AS taxvalue, taxes.label AS taxlabel, 
@@ -823,13 +821,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
             $result['value'] = 0;
 
-            if (!$result['division_header']) {
-                $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
-                $result['division_header'] = $result['division_name'] . "\n"
-                        . $result['division_address'] . "\n" . $result['division_zip'] . ' ' . $result['division_city']
-                        . ($result['division_countryid'] && $result['countryid'] && $result['division_countryid'] != $result['countryid'] ? "\n" . trans($location_manager->GetCountryName($result['division_countryid'])) : '')
-                        . ($result['division_ten'] != '' ? "\n" . trans('TEN') . ' ' . $result['division_ten'] : '');
-            }
+            $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+            $result['division_seller'] = $result['division_name'] . "\n"
+                    . $result['division_address'] . "\n" . $result['division_zip'] . ' ' . $result['division_city']
+                    . ($result['division_countryid'] && $result['countryid'] && $result['division_countryid'] != $result['countryid'] ? "\n" . trans($location_manager->GetCountryName($result['division_countryid'])) : '')
+                    . ($result['division_ten'] != '' ? "\n" . trans('TEN') . ' ' . $result['division_ten'] : '');
 
             if ($result['content'] = $this->db->GetAll('SELECT
 				value, itemid, description 

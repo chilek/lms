@@ -145,7 +145,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 	protected function invoice_seller($x, $y) {
 		$font_size = 10;
 		$y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . trans('Seller:') . '</b>');
-		$tmp = $this->data['division_header'];
+		$tmp = $this->data['division_seller'];
 
 		$accounts = array(bankaccount($this->data['customerid'], $this->data['account']));
 		if (ConfigHelper::checkConfig('invoices.show_all_accounts'))
