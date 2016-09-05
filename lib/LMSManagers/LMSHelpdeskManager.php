@@ -356,8 +356,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             @mkdir(ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d', $id), 0700);
             @mkdir($dir, 0700);
             foreach ($files as $file) {
-                $newfile = $dir . '/' . $file['name'];
-                if (@rename($file['tmp_name'], $newfile))
+                $newfile = $dir . DIRECTORY_SEPARATOR . $file['name'];
+                if (@rename($ticket['tmppath'] . DIRECTORY_SEPARATOR . $file['name'], $newfile))
                     $this->db->Execute('INSERT INTO rtattachments (messageid, filename, contenttype) 
 							VALUES (?,?,?)', array($msgid, $file['name'], $file['type']));
             }

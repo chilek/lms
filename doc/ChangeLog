@@ -80,6 +80,8 @@ version ?.??.?? (????-??-??):
   - support for customer document attachment preview in popup dialogs [chilan]
   - added support for document multi-attachments [chilan]
   - document attached file management is possible from document edit form [chilan]
+  - helpdesk and documents: remember selected file attachments between form posts - brand new
+    file uploader which hardly uses html5 [chilan]
 
 version 1.11.20 (2016-04-19):
 

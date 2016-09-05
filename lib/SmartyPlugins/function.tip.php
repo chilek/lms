@@ -55,7 +55,7 @@ function smarty_function_tip($params, $template) {
 				unset($params['text']);
 				$text = trans(array_merge((array)$text, $params));
 
-				$text = str_replace('\'', '\\\'', $text);
+				//$text = str_replace('\'', '\\\'', $text);
 				$text = str_replace('"', '&quot;', $text);
 				$text = str_replace("\r", '', $text);
 				$text = str_replace("\n", '<BR>', $text);

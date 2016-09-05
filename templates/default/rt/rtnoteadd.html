@@ -3,7 +3,7 @@
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<FORM method="POST" name="note" action="?m=rtnoteadd" enctype="multipart/form-data">
+<FORM method="POST" name="note" action="?m=rtnoteadd">
 <INPUT type="hidden" name="note[ticketid]" value="{$note.ticketid}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
@@ -30,12 +30,12 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="bold nobr">
+		<TD class="bold nobr valign-top">
 			<IMG src="img/attach.gif" alt="">
 			{trans("Attachments:")}
 		</TD>
 		<TD>
-			<INPUT name="files[]" type="file" size="55" {tip text="Enter path to file or click 'Browse' button" trigger="files"} multiple>
+			{fileupload id="files" fileupload=$fileupload}
 		</TD>
 	</TR>
 	<TR>

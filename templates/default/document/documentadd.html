@@ -79,7 +79,7 @@
 	}
 //-->
 </script>
-<FORM name="documentadd" method="POST" action="?m=documentadd" enctype="multipart/form-data">
+<FORM name="documentadd" method="POST" action="?m=documentadd">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
 	<COLGROUP>
@@ -185,7 +185,7 @@
 			{trans("Files:")}
 		</TD>
 		<TD>
-			<INPUT size="50" type="file" name="files[]" {tip text="Enter path to file or click 'Browse' button" trigger="files"} multiple>
+			{fileupload id="attachments" fileupload=$fileupload}
 		</TD>
 	</TR>
 	<TR>

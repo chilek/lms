@@ -655,6 +655,29 @@ function generate_random_string(length, characters) {
 	return randomString;
 }
 
+function get_size_unit(size) {
+	if (size > 10 * 1024 * 1024 * 1024)
+		return {
+			size: (size / 1024 * 1024 * 1024).toFixed(2),
+			unit: 'GiB'
+		};
+	else if (size > 10 * 1024 * 1024)
+		return {
+			size: (size / 1024 * 1024).toFixed(2),
+			unit: 'MiB'
+		};
+	else if (size > 10 * 1024)
+		return {
+			size: (size / 1024).toFixed(2),
+			unit: 'KiB'
+		};
+	else
+		return {
+			size: size,
+			unit: 'B'
+		};
+}
+
 if (window.addEventListener)
 	window.addEventListener("load", init_links, false);
 else if (window.attachEvent)

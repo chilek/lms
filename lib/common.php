@@ -1001,3 +1001,94 @@ function check_url($url) {
 	return true;
 }
 
+function handle_file_uploads($elemid, &$error) {
+	$tmpdir = $tmppath = '';
+	$fileupload = array();
+	if (isset($_POST['fileupload'])) {
+		$fileupload = $_POST['fileupload'];
+		$tmpdir = $fileupload[$elemid . '-tmpdir'];
+		if (empty($tmpdir)) {
+			$tmpdir = uniqid('lms-fileupload-');
+			$tmppath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tmpdir;
+			if (is_dir($tmppath) || !@mkdir($tmppath))
+				$tmpdir = '';
+		} elseif (preg_match('/^lms-fileupload-[0-9a-f]+$/', $tmpdir)) {
+			$tmppath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tmpdir;
+			if (!file_exists($tmppath))
+				@mkdir($tmppath);
+		} else
+			$tmpdir = '';
+
+		if (isset($_GET['ajax'])) {
+			$files = array();
+			if (isset($_FILES[$elemid]))
+				foreach ($_FILES[$elemid]['name'] as $fileidx => $filename) {
+					if (preg_match('/(\.\.|\/)/', $filename))
+						continue;
+					if (!empty($filename)) {
+						if (is_uploaded_file($_FILES[$elemid]['tmp_name'][$fileidx]) && $_FILES[$elemid]['size'][$fileidx]) {
+							$files[] = array(
+								'name' => $filename,
+								'tmp_name' => $_FILES[$elemid]['tmp_name'][$fileidx],
+								'type' => $_FILES[$elemid]['type'][$fileidx],
+								'size' => $_FILES[$elemid]['size'][$fileidx],
+							);
+						} else { // upload errors
+							if (isset($error[$elemid]))
+								$error[$elemid] .= "\n";
+							else
+								$error[$elemid] = '';
+							switch ($_FILES[$elemid]['error'][$fileidx]) {
+								case 1:
+								case 2: $error[$elemid] .= trans('File is too large: $a', $filename); break;
+								case 3: $error[$elemid] .= trans('File upload has finished prematurely: $a', $filename); break;
+								case 4: $error[$elemid] .= trans('Path to file was not specified: $a', $filename); break;
+								default: $error[$elemid] .= trans('Problem during file upload: $a', $filename); break;
+							}
+						}
+					}
+				}
+
+			if ($error && isset($error[$elemid]))
+				$result = array(
+					'error' => $error[$elemid],
+				);
+			else {
+				if (isset($fileupload) && !empty($tmpdir)) {
+					$files2 = array();
+					foreach ($files as &$file) {
+						unset($file2);
+						if (isset($fileupload[$elemid]))
+							foreach ($fileupload[$elemid] as &$file2)
+								if ($file['name'] == $file2['name'])
+									continue 2;
+						if (!file_exists($tmppath . DIRECTORY_SEPARATOR . $file['name'])) {
+							@move_uploaded_file($file['tmp_name'], $tmppath . DIRECTORY_SEPARATOR . $file['name']);
+							unset($file['tmp_name']);
+						}
+						$files2[] = $file;
+					}
+					unset($file);
+					$files = $files2;
+					unset($files2, $file2);
+				}
+				$result = array(
+					'error' => '',
+					'tmpdir' => $tmpdir,
+					'files' => $files,
+				);
+			}
+			header('Content-type: application/json');
+			print json_encode($result);
+			die;
+		} elseif (isset($fileupload[$elemid])) {
+			foreach ($fileupload[$elemid] as &$file) {
+				list ($size, $unit) = setunits($file['size']);
+				$file['sizestr'] = sprintf("%.02f", $size) . ' ' . $unit;
+			}
+			unset($file);
+			$$elemid = $fileupload[$elemid];
+		}
+	}
+	return compact('fileupload', 'tmppath', $elemid);
+}
