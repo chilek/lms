@@ -3216,6 +3216,7 @@ $_LANG['Ticket\'s subject has been changed from $a to $b.'] = 'Temat zgłoszenia
 $_LANG['Ticket has been moved from customer $a ($b) to customer $c ($d).'] = 'Zgłoszenie zostało przeniesione od klienta $a ($b) do klienta $c ($d).';
 $_LANG['Ticket has been moved from $a to customer $b ($c).'] = 'Zgłoszenie zostało przeniesione od $a do klienta $b ($c).';
 $_LANG['Changes of customers waiting for approval:'] = 'Zmiany klientów oczekujące na zatwierdzenie:';
+$_LANG['Documents waiting for approval'] = 'Dokumenty oczekujące na zatwierdzenie';
 $_LANG['the whole network'] = 'cała sieć';
 $_LANG['Disconnected:<!summary>'] = 'Odłączeni:';
 $_LANG['with disconnected nodes'] = 'z odłączonymi komputerami';
