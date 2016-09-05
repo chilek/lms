@@ -112,7 +112,7 @@
 			minHeight: 0,
 			dialogClass: 'documentviewdialog',
 			open: function(event, ui) {
-				$(this).dialog('option', 'position', { my: 'center', at: 'center', of: window })
+				$(this).dialog('option', 'position', { my: 'top', at: 'top', of: window })
 					.dialog('option', 'width', '70%');
 				$('.ui-widget-overlay').bind('click', function() {
 					$(this).siblings('.ui-dialog').find('.ui-dialog-content')
