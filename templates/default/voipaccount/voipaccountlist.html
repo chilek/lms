@@ -35,16 +35,10 @@
                 {/if}
             </th>
             <th nowrap>
-                <a href="?m=voipaccountlist&amp;o=phone{if $listdata.direction == "asc" && $listdata.order == "phone"},desc{/if}">{trans("Phone number:")}</a>
-                {if $listdata.order == "phone"}
-                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
-                {/if}
+                {trans("Phone number:")}&nbsp;
             </th>
             <th nowrap>
-                <a href="?m=voipaccountlist&amp;o=passwd{if $listdata.direction == "asc" && $listdata.order == "passwd"},desc{/if}">{trans("Password:")}</a>
-                {if $listdata.order == "passwd"}
-                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
-                {/if}
+                {trans("Password:")}
             </th>
             <th align="right" class="nobr">
                 {t a=$listdata.total}Total: $a{/t}
@@ -103,7 +97,9 @@
                 ({$voipaccountlist[voipaccountlist].id|string_format:"%04d"})
             </td>
             <td onClick="return self.location.href = '?m=voipaccountinfo&amp;id={$voipaccountlist[voipaccountlist].id}';" valign="top" nowrap>
-                <B>{$voipaccountlist[voipaccountlist].phone}</B>
+                {foreach from=$voipaccountlist[voipaccountlist].phone item=$v name=account_phones}
+                    {$v}{if not $smarty.foreach.account_phones.last}<br>{/if}
+                {/foreach}
             </td>
             <td onClick="return self.location.href = '?m=voipaccountinfo&amp;id={$voipaccountlist[voipaccountlist].id}';" valign="top" nowrap>
                 {if ConfigHelper::checkPrivilege('hide_voip_passwords')}{'*'|str_repeat:8}{else}{$voipaccountlist[voipaccountlist].passwd}{/if}
@@ -139,25 +135,17 @@
         {/section}
     </tbody>
     <tfoot>
-        {block name="voipaccountlist-list-footer-pagination"}
-        {if $listdata.total != 0}
         <tr>
-            <td class="pagination" colspan="{$number_of_table_columns}">
-                {include file="scroller.html" loop=$voipaccountlist}
+            {if $listdata.total != 0}
+            <td class="pagination" colspan="{$number_of_table_columns-1}" style="border-top: 1px solid black;">
+                {include file="scroller.html" loop=$voipaccountlist adlink="&search=1"}
             </td>
-        </tr>
-        {/if}
-        {/block}
-        {block name="voipaccountlist-list-footer"}
-        <tr>
-            <td class="bold text-right" colspan="{$number_of_table_columns - 1}">
+            {/if}
+            <td class="text-right bold" style="border-top: 1px solid black; background-color: #CEBD9B;"{if $listdata.total == 0} colspan="{$number_of_table_columns}"{/if}>
                 {trans("Total:")}
-            </td>
-            <td>
                 {if $listdata.total}{$listdata.total}{else}0{/if}
             </td>
         </tr>
-        {/block}
     </tfoot>
 </table>
 {/block}

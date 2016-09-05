@@ -82,6 +82,7 @@ version ?.??.?? (????-??-??):
   - document attached file management is possible from document edit form [chilan]
   - helpdesk and documents: remember selected file attachments between form posts - brand new
     file uploader which hardly uses html5 [chilan]
+  - added support for multiple phone numbers [kosa/chilan]
 
 version 1.11.20 (2016-04-19):
 

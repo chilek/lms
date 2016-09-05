@@ -26,23 +26,17 @@
                 <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
                 {/if}
             </td>
-            <td class="nobr">
+            <td class="bold nobr">
                 <a href="?m=voipaccountsearch&search&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</a> 
                 {if $listdata.order == "id"}
                 <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
                 {/if}
             </td>
-            <td class="nobr">
-                <a href="?m=voipaccountsearch&search&o=phone{if $listdata.direction == "asc" && $listdata.order == "phone"},desc{/if}">{trans("Phone number:")}</a> 
-                {if $listdata.order == "phone"}
-                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
-                {/if}
+            <td class="bold nobr">
+                {trans("Phone number:")}
             </td>
-            <td class="nobr">
-                <a href="?m=voipaccountsearch&search&o=passwd{if $listdata.direction == "asc" && $listdata.order == "passwd"},desc{/if}">{trans("Password:")}</a> 
-                {if $listdata.order == "passwd"}
-                <img src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">
-                {/if}
+            <td class="bold nobr">
+                {trans("Password:")}
             </td>
             <td class="text-right bold nobr">
                 {t a=$listdata.total}Total: $a{/t}
@@ -94,20 +88,16 @@
             </td>
         </tr>
         {/section}
-        {if $listdata.total != 0}
         <tr>
-            <td class="pagination" colspan="5">
+            {if $listdata.total != 0}
+                <td class="pagination" colspan="4" style="border-top: 1px solid black;">
                 {include file="scroller.html" loop=$voipaccountlist adlink="&search=1"}
-            </td>
-        </tr>
-        {/if}
-        <tr>
-            <td class="text-right bold" colspan="2">
+                </td>
+            {/if}
+            <td class="text-right bold" style="border-top: 1px solid black; background-color: #CEBD9B;"{if $listdata.total == 0} colspan="5"{/if}>
                 {trans("Total:")}
-            </td>
-            <td class="bold" colspan="3">
                 {if $listdata.total}{$listdata.total}{else}0{/if}
-            </td>				
+            </td>
         </tr>
     </tbody>
 </table>
