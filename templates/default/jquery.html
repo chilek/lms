@@ -51,6 +51,7 @@
 		].forEach(function(popup) {
 			$('.' + popup.class).tooltip({
 				items: '.' + popup.class,
+				track: true,
 				tooltipClass: popup.class,
 				content: function(callback) {
 					var elem = $(this);
@@ -68,28 +69,38 @@
 		var documentviews = $('.documentview');
 
 		documentviews.tooltip({
+			track: true,
 			items: '.documentview-image',
 			tooltipClass: 'documentview',
 			content: function() {
 				var href = $(this).attr('href');
 				return '<img src="' + href + '" style="max-width: 300px;">';
+				//return '';
 			}
 		});
 
 		documentviews.on("click", function() {
 			var dialog = $('#' + $(this).attr('data-dialog-id'));
-			dialog.dialog('open');
-			if ($(this).hasClass('documentview-image'))
+			var url = dialog.attr('data-url');
+			if ($(this).hasClass('documentview-image')) {
 				$(this).tooltip('disable');
-			else if ($(this).hasClass('documentview-audio')) {
+				dialog.html('<img src="' + url + '" style="width: 100%;">');
+			} else if ($(this).hasClass('documentview-audio')) {
+				dialog.html('<audio src="' + url + '" style="width: 100%;" controls preload="none">'
+					+ "{trans("Your browser does not support the audio element.")}"
+					+ '</audio>');
 				var audioelem = dialog.find('audio').get(0);
 				audioelem.currentTime = 0;
 				audioelem.play();
 			} else if ($(this).hasClass('documentview-video')) {
+				dialog.html('<video src="' + url + '" style="width: 100%;" controls preload="none">'
+					+ "{trans("Your browser does not support the video element.")}"
+					+ '</video>');
 				var videoelem = dialog.find('video').get(0);
 				videoelem.currentTime = 0;
 				videoelem.play();
 			}
+			dialog.dialog('open');
 			return false;
 		});
 

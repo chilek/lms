@@ -52,22 +52,8 @@ function smarty_function_documentview($params, $template) {
 	else
 		$type = '';
 
-	$result .= '<div class="documentviewdialog" id="documentviewdialog-' . $id . '" title="' . $name . '" style="display: none;">';
-	switch ($type) {
-		case 'image':
-			$result .= '<img src="' . $url . '" style="width: 100%;">';
-			break;
-		case 'audio':
-			$result .= '<audio src="' . $url . '" style="width: 100%;" controls preload="none">'
-				. trans("Your browser does not support the audio element.")
-				. '</audio>';
-			break;
-		case 'video':
-			$result .= '<video src="' . $url . '" style="width: 100%;" controls preload="none">'
-				. trans("Your browser does not support the video element.")
-				. '</video>';
-	}
-	$result .= '</div>';
+	$result .= '<div class="documentviewdialog" id="documentviewdialog-' . $id . '" title="' . $name . '" style="display: none;"
+		data-url="' . $url . '"></div>';
 
 	$result .= '<A href="' . $url . '"';
 	if (empty($type))
