@@ -385,3 +385,33 @@ td.multiselect select { min-width: 200px; }
 	text-shadow: 1px 1px 0 #fff;
 }
 
+/* PAGINATION */
+
+ul.pagination {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+}
+ul.pagination li {
+    display: inline;
+}
+ul.pagination li a {
+    color: black;
+    float: left;
+    padding: 5px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    background-color: #fff;
+}
+ul.pagination li a:hover:not(.active) {
+    background-color: #ff0;
+}
+ul.pagination li a.active {
+    background-color: #f00 !important;;
+    color: #fff !important;;
+    font-weight: bold;
+}
+ul.pagination li a.mark {
+    background-color: #ddd;
+    color: #000;
+}
