@@ -29,8 +29,8 @@
 				{foreach from=$customergroups item=customergroup}
 				<TR class="highlight {cycle name=groups}">
 					<TD style="width: 1%" class="bold nobr"><A href="?m=customergroupinfo&amp;id={$customergroup.id}">{$customergroup.name}</A></TD>
-					<TD style="width: 1%" class="nobr" colspan="2">{$customergroup.description}</TD>
-					<TD style="width: 97%" class="nobr">({$customergroup.id|string_format:"%04d"})</TD>
+					<TD style="width: 97%" colspan="2">{$customergroup.description}</TD>
+					<TD style="width: 1%" class="nobr">({$customergroup.id|string_format:"%04d"})</TD>
 					<TD style="width: 1%" class="text-right nobr"><A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer from group?")}')" href="?m=customergroup&amp;customergroupid={$customergroup.id}&amp;action=delete&amp;id={$customerinfo.id}" {tip text="Remove customer from group"}><IMG src="img/delete.gif" ALT="[ {trans("Delete")} ]"></A></TD>
 				</TR>
 				{foreachelse}
