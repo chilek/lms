@@ -272,7 +272,8 @@ function findFeaturesIntersection(selectFeature, feature, featureLonLat)
 			}
 		}
 	}
-	if (!features.length)
+	// position feature is not needed - we detect it by nullified style
+	if (!features.length && feature.style == null)
 		features.push(feature);
 	return features;
 }
@@ -667,13 +668,12 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		multiple: false,
 		eventListeners: {
 			"featurehighlighted": function(e) {
-				// position feature is not needed - we detect it by nullified style
-				if (mappopup == null && e.feature.style == null)
+				if (mappopup == null)
 				{
 					var map = this.map;
 					var feature = e.feature;
 					var featureLonLat, mapLonLat;
-					if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point") {
+					if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point" && feature.style == null) {
 						featureLonLat = new OpenLayers.LonLat(feature.data.lon, feature.data.lat);
 						featureLonLat.transform(lmsProjection, map.getProjectionObject());
 						mapLonLat = featureLonLat.clone();
@@ -744,10 +744,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				}
 				selectedFeature = feature;
 				var featureLonLat;
-				if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point") {
-					// position feature is not needed - we detect it by nullified style
-					if (feature.style != null)
-						return;
+				// position feature is not needed - we detect it by nullified style
+				if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point" && feature.style == null) {
 					featureLonLat = new OpenLayers.LonLat(feature.data.lon, feature.data.lat);
 					featureLonLat.transform(lmsProjection, map.getProjectionObject());
 				}
