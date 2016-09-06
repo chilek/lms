@@ -27,5 +27,6 @@ OpenLayers.Lang.pl = {
 	'Radio sectors 2.4GHz - areas': "Sektory radiowe 2.4GHz - obszary",
 	'Radio sectors 5GHz - areas': "Sektory radiowe 5GHz - obszary",
 	'Radio sectors 2.4GHz - directions': "Sektory radiowe 2.4GHz - kierunki",
-	'Radio sectors 5GHz - directions': "Sektory radiowe 5GHz - kierunki"
+	'Radio sectors 5GHz - directions': "Sektory radiowe 5GHz - kierunki",
+	'Position': "Pozycja"
 };
