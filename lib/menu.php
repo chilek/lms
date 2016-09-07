@@ -235,10 +235,16 @@ $menu = array(
 					'prio' => 60,
 				),
 				array(
+					'name' => trans('Number pools'),
+					'link' => '?m=voippoolnumberadd',
+					'tip' => trans('Number pools management'),
+					'prio' => 70,
+				),
+				array(
 					'name' => trans('Search'),
 					'link' => '?m=voipaccountsearch',
 					'tip' => trans('Allows you to search VoIP account'),
-					'prio' => 70,
+					'prio' => 80,
 				),
 			),
 		),
