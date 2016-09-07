@@ -412,6 +412,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('message', $message);
 $SMARTY->assign('error', $error);
+$SMARTY->assign('ticket', $LMS->GetTicketContents($message['ticketid']));
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->display('rt/rtmessageadd.html');
