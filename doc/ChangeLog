@@ -85,6 +85,8 @@ version ?.??.?? (????-??-??):
   - added support for multiple phone numbers [kosa/chilan]
   - bumped openlayers version to current 2.x series HEAD and allow to use
     google maps api key defined by phpui.googlemaps_api_key variable [chilan]
+  - show selected position on map for network device and node current coordinates
+    presentaion [chilan]
 
 version 1.11.20 (2016-04-19):
 

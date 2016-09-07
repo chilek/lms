@@ -259,6 +259,9 @@ function findFeaturesIntersection(selectFeature, feature, featureLonLat)
 		var layer = selectFeature.layers[i];
 		for (var j in layer.features) {
 			var currentFeature = layer.features[j];
+			// position feature is not needed - we detect it by nullified style
+			if (currentFeature.style != null)
+				continue;
 			if (currentFeature.getVisibility() && currentFeature.onScreen()) {
 				var currentLonLat = new OpenLayers.LonLat(
 					currentFeature.geometry.x, currentFeature.geometry.y);
@@ -269,7 +272,8 @@ function findFeaturesIntersection(selectFeature, feature, featureLonLat)
 			}
 		}
 	}
-	if (!features.length)
+	// position feature is not needed - we detect it by nullified style
+	if (!features.length && feature.style == null)
 		features.push(feature);
 	return features;
 }
@@ -633,7 +637,30 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		map.addLayer(rsdirectionlayer5);
 	}
 
-	var highlightlayer = new OpenLayers.Control.SelectFeature([devicelayer, devlinklayer, nodelayer, nodelinklayer], {
+	var highlightlayers = [ devicelayer, devlinklayer, nodelayer, nodelinklayer ];
+
+	if (startLon != null && startLat != null) {
+		var positionLayer = new OpenLayers.Layer.Vector(OpenLayers.Lang.translate("Position"));
+
+		var startLonLat = new OpenLayers.LonLat(startLon, startLat).transform(lmsProjection, map.getProjectionObject());
+		positionLayer.addFeatures([
+			new OpenLayers.Feature.Vector(
+				new OpenLayers.Geometry.Point(startLonLat.lon, startLonLat.lat),
+				null, {
+					graphicWidth: 32,
+					graphicHeight: 32,
+					graphicXOffset: -4,
+					graphicYOffset: -28,
+					externalGraphic: "img/location.png"
+				}
+			)
+		]);
+
+		map.addLayer(positionLayer);
+		highlightlayers.push(positionLayer);
+	}
+
+	var highlightlayer = new OpenLayers.Control.SelectFeature(highlightlayers, {
 		hover: true,
 		highlightOnly: true,
 		clickout: false,
@@ -646,7 +673,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 					var map = this.map;
 					var feature = e.feature;
 					var featureLonLat, mapLonLat;
-					if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point") {
+					if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point" && feature.style == null) {
 						featureLonLat = new OpenLayers.LonLat(feature.data.lon, feature.data.lat);
 						featureLonLat.transform(lmsProjection, map.getProjectionObject());
 						mapLonLat = featureLonLat.clone();
@@ -703,7 +730,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 
 	if (selection)
 	{
-		var selectlayer = new OpenLayers.Control.SelectFeature([devlinklayer, nodelinklayer, devicelayer, nodelayer], {
+		var selectlayer = new OpenLayers.Control.SelectFeature(highlightlayers, {
 			clickout: true, toggle: false,
 			multiple: true, hover: false,
 			toggleKey: "ctrlKey", // ctrl key removes from selection
@@ -717,7 +744,8 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				}
 				selectedFeature = feature;
 				var featureLonLat;
-				if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point") {
+				// position feature is not needed - we detect it by nullified style
+				if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point" && feature.style == null) {
 					featureLonLat = new OpenLayers.LonLat(feature.data.lon, feature.data.lat);
 					featureLonLat.transform(lmsProjection, map.getProjectionObject());
 				}
@@ -888,7 +916,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 	var mapLayers = getCookie('mapLayers');
 	if (mapLayers != null) {
 		var visibleLayers = mapLayers.split(';');
-		for (var i = 0; i < visibleLayers.length; i++) {
+		for (var i = 0; i < visibleLayers.length, i < layerSwitcher.dataLayers.length; i++) {
 			for (var j = 0; j < layerSwitcher.dataLayers.length, layerSwitcher.layerStates[j].id != layerSwitcher.dataLayers[i].layer.id; j++);
 			layerSwitcher.dataLayers[i].layer.setVisibility((visibleLayers[i] == '1' ? true : false));
 		}
