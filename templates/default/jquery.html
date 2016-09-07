@@ -108,6 +108,7 @@
 			modal: true,
 			autoOpen: false,
 			resizable: false,
+			draggable: false,
 			minWidth: 0,
 			minHeight: 0,
 			dialogClass: 'documentviewdialog',
@@ -132,12 +133,13 @@
 					$(this).find('video').get(0).pause();
 			}
 		})
-		.on('click', function() {
-			$(this).dialog('close');
-		})
+//		.on('click', function() {
+//			$(this).dialog('close');
+//		})
 		.parent().resizable({
 			aspectRatio: true
-		});
+		})
+		.draggable();
 	});
 //-->
 </script>
