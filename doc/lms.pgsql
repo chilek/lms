@@ -854,8 +854,10 @@ CREATE TABLE voip_pool_numbers (
     name varchar(30) NOT NULL,
     poolstart varchar(20) NOT NULL,
     poolend varchar(20) NOT NULL,
-    description text);
-");
+    description text,
+    PRIMARY KEY (id),
+    UNIQUE (name)
+);
 
 DROP TABLE IF EXISTS voip_emergency_numbers CASCADE;
 CREATE TABLE voip_emergency_numbers (

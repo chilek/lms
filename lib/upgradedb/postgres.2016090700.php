@@ -31,6 +31,7 @@ $this->Execute("CREATE SEQUENCE voip_pool_numbers_id_seq;
                    poolstart varchar(20) NOT NULL,
                    poolend varchar(20) NOT NULL,
                    description text,
+                   PRIMARY KEY (id),
                    UNIQUE (name));
                ");
 
