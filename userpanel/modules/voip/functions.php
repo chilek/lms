@@ -70,73 +70,70 @@ if (isset($_GET['record'])) {
 function module_main() {
     global $LMS, $SMARTY, $SESSION;
 
-    $user_account_ids = array_keys($LMS->DB->GetAllByKey('SELECT id
-                                                          FROM voipaccounts
-                                                          WHERE ownerid = ?', 'id',
-                                                          array($SESSION->id)));
+    $user_account_ids = array_keys($LMS->DB->GetAllByKey('SELECT id FROM voipaccounts
+                                                          WHERE ownerid = ?', 'id', array($SESSION->id)));
 
-    $tmp_phones = $LMS->DB->GetAll('SELECT phone
-                                    FROM voip_numbers
-                                    WHERE voip_account_id IN ('.implode(',',$user_account_ids).');');
+    if ($user_account_ids) {
+        $tmp_phones = $LMS->DB->GetAll('SELECT phone FROM voip_numbers
+                                        WHERE voip_account_id IN ('.implode(',',$user_account_ids).');');
 
-    $phones = array();
-    foreach($tmp_phones as $v) {
-        $phones[] = $v['phone'];
-    }
+        $phones = array();
+        foreach($tmp_phones as $v) {
+            $phones[] = $v['phone'];
+        }
 
-    $params = array();
+        $params = array();
 
-    if (empty($_GET['phone']) && count($user_account_ids) > 1) {
-        $params['id'] = $user_account_ids;
-    } else {
-        if (in_array($_GET['phone'], $phones))
-            $params['phone'] = $_GET['phone'];
-        else
+        if (empty($_GET['phone']) && count($user_account_ids) > 1) {
             $params['id'] = $user_account_ids;
-    }
-
-    if (isset($_GET['date_from']) && is_date($_GET['date_from'])) {
-        $params['frangefrom'] = $_GET['date_from'];
-    }
-    else if (!isset($_GET['date_from'])) {
-        $params['frangefrom'] = date("Y/m/01");
-    }
-
-    if (isset($_GET['date_to']) && is_date($_GET['date_to'])) {
-        $params['frangeto'] = $_GET['date_to'];
-    }
-
-    if (!empty($_GET['fstatus'])) {
-        switch ($_GET['fstatus']) {
-            case CALL_ANSWERED:
-            case CALL_NO_ANSWER:
-            case CALL_BUSY:
-            case CALL_SERVER_FAILED:
-                $params['fstatus'] = $_GET['fstatus'];
-            break;
+        } else {
+            if (in_array($_GET['phone'], $phones))
+                $params['phone'] = $_GET['phone'];
+            else
+                $params['id'] = $user_account_ids;
         }
-    }
 
-    if (!empty($_GET['ftype'])) {
-        switch ($_GET['ftype']) {
-            case CALL_OUTGOING:
-            case CALL_INCOMING:
-                $params['ftype'] = $_GET['ftype'];
-            break;
+        if (isset($_GET['date_from']) && is_date($_GET['date_from']))
+            $params['frangefrom'] = $_GET['date_from'];
+        else if (!isset($_GET['date_from']))
+            $params['frangefrom'] = date("Y/m/01");
+
+        if (isset($_GET['date_to']) && is_date($_GET['date_to']))
+            $params['frangeto'] = $_GET['date_to'];
+
+        if (!empty($_GET['fstatus'])) {
+            switch ($_GET['fstatus']) {
+                case CALL_ANSWERED:
+                case CALL_NO_ANSWER:
+                case CALL_BUSY:
+                case CALL_SERVER_FAILED:
+                    $params['fstatus'] = $_GET['fstatus'];
+                break;
+            }
         }
+
+        if (!empty($_GET['ftype'])) {
+            switch ($_GET['ftype']) {
+                case CALL_OUTGOING:
+                case CALL_INCOMING:
+                    $params['ftype'] = $_GET['ftype'];
+                break;
+            }
+        }
+
+        if (!empty($_GET['o'])) {
+            $order = explode(',', $_GET['o']);
+
+            if (empty($order[1]) || $order[1] != 'desc')
+                $order[1] = 'asc';
+
+            $params['order'] = $order[0];
+            $params['direction'] = $order[1];
+            $params['o'] = $_GET['o'];
+        }
+
+        $billings = $LMS->getVoipBillings($params);
     }
-
-    if (!empty($_GET['o'])) {
-        $order = explode(',', $_GET['o']);
-        if (empty($order[1]) || $order[1] != 'desc')
-            $order[1] = 'asc';
-
-        $params['order'] = $order[0];
-        $params['direction'] = $order[1];
-        $params['o'] = $_GET['o'];
-    }
-
-    $billings = $LMS->getVoipBillings($params);
 
     $pagin = new LMSPagination_ext();
     $pagin->setItemsPerPage( ConfigHelper::getConfig('phpui.billinglist_pagelimit', 100) );
