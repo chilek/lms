@@ -845,6 +845,20 @@ CREATE TABLE voip_numbers (
     UNIQUE(phone)
 );
 
+DROP SEQUENCE IF EXISTS voip_pool_numbers_id_seq;
+CREATE SEQUENCE voip_pool_numbers_id_seq;
+DROP TABLE IF EXISTS voip_pool_numbers CASCADE;
+CREATE TABLE voip_pool_numbers (
+    id integer DEFAULT nextval('voip_pool_numbers_id_seq'::text) NOT NULL,
+    disabled smallint DEFAULT 0,
+    name varchar(30) NOT NULL,
+    poolstart varchar(20) NOT NULL,
+    poolend varchar(20) NOT NULL,
+    description text,
+    PRIMARY KEY (id),
+    UNIQUE (name)
+);
+
 DROP TABLE IF EXISTS voip_emergency_numbers CASCADE;
 CREATE TABLE voip_emergency_numbers (
 	location_borough integer NOT NULL
@@ -2832,6 +2846,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016082900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016090700');
 
 COMMIT;

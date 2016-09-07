@@ -168,7 +168,6 @@ class LMSPagination_ext {
 
         return $result;
     }
-
 }
 
 ?>

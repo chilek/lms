@@ -39,6 +39,7 @@ DROP TABLE IF EXISTS voip_prefixes;
 DROP TABLE IF EXISTS voip_prefix_groups;
 DROP TABLE IF EXISTS voip_rule_groups;
 DROP TABLE IF EXISTS voip_rule_states;
+DROP TABLE IF EXISTS voip_pool_numbers;
 
 DROP TABLE IF EXISTS up_info_changes;
 DROP TABLE IF EXISTS up_help;
@@ -1285,6 +1286,16 @@ CREATE TABLE voip_numbers (
     FOREIGN KEY (voip_account_id) REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
     UNIQUE(phone),
     PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE voip_pool_numbers (
+    id int(11) NOT NULL AUTO_INCREMENT ,
+    disabled smallint DEFAULT 0,
+    name varchar(30) NOT NULL,
+    poolstart varchar(20) NOT NULL,
+    poolend varchar(20) NOT NULL,
+    description text,
+	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2726,4 +2737,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016082900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016090700');
