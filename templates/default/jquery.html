@@ -112,7 +112,10 @@
 			minHeight: 0,
 			dialogClass: 'documentviewdialog',
 			open: function(event, ui) {
-				$(this).dialog('option', 'position', { my: 'top', at: 'top', of: window })
+				var elem = $('#' + $(this).attr('id').replace(/dialog/, ''));
+				console.log(elem);
+				$(this).dialog('option', 'position', elem.hasClass('documentview-audio')
+					? { my: 'center', at: 'center', of: window } : { my: 'top', at: 'top', of: window })
 					.dialog('option', 'width', '70%');
 				$('.ui-widget-overlay').bind('click', function() {
 					$(this).siblings('.ui-dialog').find('.ui-dialog-content')
