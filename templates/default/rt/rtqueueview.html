@@ -138,6 +138,8 @@
 			<A href="?m=rtticketprint&id={$queue[ticket].id}" target="_BLANK"><IMG src="img/print.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]" title="[ {trans("Edit")} ]"> </A>
 			<A href="?m=rtticketdel&id={$queue[ticket].id}" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<A href="?m=rtticketedit&id={$queue[ticket].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"> </A>
+			<A href="?m=rtnoteadd&ticketid={$queue[ticket].id}"><IMG src="img/note.gif" alt="[ {trans("New Note")} ]" title="[ {trans("New Note")} ]"> </A>
+			<A href="?m=rtmessageadd&ticketid={$queue[ticket].id}"><IMG src="img/forward.gif" alt="[ {trans("New Message")} ]" title="[ {trans("New Message")} ]"> </A>
 			<A href="?m=rtticketview&id={$queue[ticket].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"> </A>
 		</TD>
 	</TR>
