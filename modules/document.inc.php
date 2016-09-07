@@ -52,8 +52,8 @@ function plugin($template, $customer) {
 }
 
 function GetDocumentTemplates($rights, $type = NULL) {
-        global $documents_dirs;
-	
+	global $documents_dirs;
+
 	$docengines = array();
 
 	if (!$type)
@@ -62,7 +62,8 @@ function GetDocumentTemplates($rights, $type = NULL) {
 		$types = array($type);
 	else
 		return NULL;
-	
+
+	ob_start();
 	foreach ($documents_dirs as $doc_dir){
 		if ($dirs = getdir($doc_dir . '/templates', '^[a-z0-9_-]+$'))
 			foreach ($dirs as $dir) {
@@ -81,6 +82,7 @@ function GetDocumentTemplates($rights, $type = NULL) {
 				}
 			}
 	}
+	ob_end_clean();
 
 	if (!empty($docengines))
 		ksort($docengines);
