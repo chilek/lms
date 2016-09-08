@@ -169,6 +169,7 @@ $_LANG['Are you sure, you want to delete that payment?'] = 'Jesteś pewien, że 
 $_LANG['Are you sure, you want to delete that tariff?'] = 'Jesteś pewien, że chcesz usunąć tę taryfę?';
 $_LANG['Are you sure, you want to delete this database backup?'] = 'Jesteś pewien, że chcesz usunąć tę kopię bazy danych?';
 $_LANG['Are you sure, you want to delete this liability?'] = 'Jesteś pewien, że chcesz usunąć to zobowiązanie?';
+$_LANG['Are you sure, you want to delete selected liabilities?'] = 'Jesteś pewien, że chcesz usunąć wybrane zobowiązania?';
 $_LANG['Are you sure, you want to drop user $a from that event?'] = 'Jesteś pewien, że chcesz usunąć użytkownika $a z tego zdarzenia?';
 $_LANG['Are you sure, you want to generate new password?'] = 'Jesteś pewien, że chcesz wygenerować nowe hasło?';
 $_LANG['Are you sure, you want to generate new PIN?'] = 'Jesteś pewien, że chcesz wygenerować nowy PIN?';

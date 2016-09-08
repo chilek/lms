@@ -24,84 +24,104 @@
 	<TR id="customerassignments" style="display: none;">
 		<TD style="width: 100%;" colspan="2">
 			<TABLE class="lmsbox-inner">
+				<COLGROUP>
+					<COL style="width: 92%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+				</COLGROUP>
 				<THEAD>
-                                {block name="customerassignments-list-header"}
+				{block name="customerassignments-list-header"}
 				<TR>
-					<TD style="width: 92%;" class="bold nobr">{trans("Liability:")}</TD>
-					<TD style="width: 1%;" class="text-right nobr">
+					<TD class="bold nobr">{trans("Liability:")}</TD>
+					<TD class="text-right nobr">
 						{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{trans("Value:")}{/if}
 					</TD>
-					<TD style="width: 1%;" class="text-right nobr">
+					<TD class="text-right nobr">
 						{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{trans("Discount:")}{/if}
 					</TD>
-					<TD style="width: 1%;" class="nobr">{trans("Accounting:")}</TD>
-					<TD style="width: 1%;" class="text-right nobr">{trans("Downceil:")}</TD>
-					<TD style="width: 1%;" class="text-right nobr">{trans("Upceil:")}</TD>
-					<TD style="width: 1%;" class="nobr">{trans("Options:")}</TD>
-					<TD style="width: 1%;" class="nobr">{trans("Period:")}</TD>
-					<TD style="width: 1%;">&nbsp;</TD>
+					<TD class="nobr">{trans("Accounting:")}</TD>
+					<TD class="text-right nobr">{trans("Downceil:")}</TD>
+					<TD class="text-right nobr">{trans("Upceil:")}</TD>
+					<TD class="nobr">{trans("Options:")}</TD>
+					<TD class="nobr">{trans("Period:")}</TD>
+					<TD>&nbsp;</TD>
 				</TR>
-                                {/block}
+				{/block}
 				</THEAD>
-				<TBODY>
+				<TBODY class="multi-check">
+				<form method="post" name="customerassignments" action="?m=customerassignmentdel">
 				{cycle name=assign values="light,lucid" print=false}
-				{foreach from=$assignments item=a}
-                                {block name="customerassignments-list-row"}
+				{foreach $assignments as $a}
+				{block name="customerassignments-list-row"}
 				<TR class="highlight {cycle name=assign}
 					{if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today && $a.at > 365)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) && !($a.suspended)} alertblend{elseif ($a.suspended)}suspended{/if}">
 					{if !$a.tariffid && !$a.liabilityid}
-					<TD colspan="7" class="bold" OnClick="return self.location.href='?m=customerassignmentedit&amp;id={$a.id}'">
+					<TD colspan="7" class="bold" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
 						{trans("Suspending of all liabilities")}
 					</TD>
 					{else}
-					<TD OnClick="return self.location.href='?m=customerassignmentedit&amp;id={$a.id}'">
+					<TD OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
 						{if $a.tariffid}
-							<A href="?m=tariffinfo&amp;id={$a.tariffid}"><span class="bold">{$a.name}</span></A><b>{if $a.attribute} - {$a.attribute}{/if}</b>
+							<A href="?m=tariffinfo&id={$a.tariffid}"><span class="bold">{$a.name}</span></A><b>{if $a.attribute} - {$a.attribute}{/if}</b>
 						{else}
 							{$a.name}
 						{/if}
 						{if $a.nodes}({foreach from=$a.nodes item=item key=key}{$item.name}{if $key+1<sizeof($a.nodes)}, {/if}{/foreach}){/if}
 					</TD>
-					<TD class="text-right nobr" OnClick="return self.location.href='?m=customerassignmentedit&amp;id={$a.id}'">
+					<TD class="text-right nobr">
 						{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{$a.value|money_format}{/if}
 					</TD>
-					<TD class="nobr" OnClick="return self.location.href='?m=customerassignmentedit&amp;id={$a.id}'">
+					<TD class="nobr">
 						{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{if $a.pdiscount != 0}{$a.pdiscount}%{else}{if $a.vdiscount != 0}{$a.vdiscount|money_format}{else}-{/if}{/if}{/if}
 					</TD>
-					<TD class="nobr" OnClick="return self.location.href='?m=customerassignmentedit&amp;id={$a.id}'">{$a.payday}</TD>
-					<TD class="text-right nobr" OnClick="return self.location.href='?m=customerassignmentedit&amp;id={$a.id}'">
+					<TD class="nobr">{$a.payday}</TD>
+					<TD class="text-right nobr">
 						{if $a.downceil}{$a.downceil} kbit/s{else}-{/if}
 					</TD>
-					<TD class="text-right nobr" OnClick="return self.location.href='?m=customerassignmentedit&amp;id={$a.id}'">
+					<TD class="text-right nobr">
 						{if $a.upceil}{$a.upceil} kbit/s{else}-{/if}
 					</TD>
 					<TD class="text-right nobr">
 						<img src="img/options.gif" alt="" class="customerassignmentinfo" data-resourceid="{$a.id}">
 					</TD>
 					{/if}
-					<TD class="nobr" OnClick="return self.location.href='?m=customerassignmentedit&amp;id={$a.id}'">
+					<TD class="nobr">
 						{if $a.datefrom}{trans("from")} {$a.datefrom|date_format:"%Y/%m/%d"}{/if}
 						{if $a.dateto}{trans("to")} {$a.dateto|date_format:"%Y/%m/%d"}{/if}
 					</TD>
 					<TD class="text-right nobr">
 						{if ($a.tariffid || $a.liabilityid) && (($a.dateto > $today || !$a.dateto) || ($a.liabilityid && $a.at > $today))}
-						<A href="?m=customerassignmentedit&amp;action=suspend&amp;id={$a.id}&amp;suspend={if $a.suspended}0{else}1{/if}" {tip text="Enable/disable accounting of selected liability"}><IMG SRC="img/wait.gif" alt="[ {if $a.suspended}{trans("Restore")}{else}{trans("Suspend")}{/if} ]"></A>
+						<A href="?m=customerassignmentedit&action=suspend&id={$a.id}&suspend={if $a.suspended}0{else}1{/if}"
+							{tip text="Enable/disable accounting of selected liability"}>
+							<IMG SRC="img/wait.gif" alt="[ {if $a.suspended}{trans("Restore")}{else}{trans("Suspend")}{/if} ]">
+						</A>
 						{/if}
-						<A onClick="return confirmLink(this, '{trans("Are you sure, you want to delete this liability?")}')" href="?m=customerassignmentdel&amp;id={$a.id}" {tip text="Delete customer's liability"}><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]"></A>
-						<A href="?m=customerassignmentedit&amp;id={$a.id}"><IMG SRC="img/edit.gif" ALT="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+						<A onClick="return confirmLink(this, '{trans("Are you sure, you want to delete this liability?")}')"
+							href="?m=customerassignmentdel&id={$a.id}" {tip text="Delete customer's liability"}>
+							<IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]">
+						</A>
+						<A href="?m=customerassignmentedit&id={$a.id}"><IMG SRC="img/edit.gif" ALT="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+						<input type="checkbox" name="customerassignments[{$a.id}]" value="{$a.id}" class="multi-check">
 					</TD>
 				</TR>
-                                {/block}
+				{/block}
 				{foreachelse}
-                                {block name="customerassignments-list-empty-row"}
+				{block name="customerassignments-list-empty-row"}
 				<TR>
 					<TD class="empty-table" colspan="9">
 						<P>{trans("That customer hasn't got any assigned subscriptions.")}</P>
 					</TD>
 				</TR>
-                                {/block}
+				{/block}
 				{/foreach}
-                                {block name="customerassignments-list-footer"}
+				</form>
+				{block name="customerassignments-list-footer"}
 				<TR>
 					<TD class="ftop text-right bold">{trans("Total:")}</TD>
 					<TD class="ftop text-right nobr">
@@ -117,9 +137,33 @@
 					<TD class="ftop">&nbsp;</TD>
 					<TD class="ftop text-right nobr">{sum array=$assignments column="real_downceil" assign=downceilsum}{if $downceilsum}{$downceilsum} kbit/s{/if}</TD>
 					<TD class="ftop text-right nobr">{sum array=$assignments column="real_upceil" assign=upceilsum}{if $upceilsum}{$upceilsum} kbit/s{/if}</TD>
-					<TD class="ftop" colspan="3">&nbsp;</TD>
+					<TD class="ftop text-right nobr" colspan="3">
+						<A id="delete-assignments">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></A>
+						<label>
+							{trans("Check All")}
+							<input type="checkbox" id="customerassignments-checkall">
+						</label>
+						<script type="text/javascript">
+						<!--
+							$(function() {
+								$('#customerassignments-checkall').click(function() {
+									CheckAll('customerassignments', this, []);
+								});
+								$('#delete-assignments').click(function() {
+									if (!$(this).closest('tbody.multi-check').find('input:checked').length
+										|| !confirm('{trans("Are you sure, you want to delete selected liabilities?")}'))
+										return false;
+									$('form[name=customerassignments]').attr('action', function(index, value) {
+										return value + '&is_sure=1';
+									});
+									$('form[name=customerassignments]').submit();
+								});
+							});
+						//-->
+						</script>
+					</TD>
 				</TR>
-                                {/block}
+				{/block}
 				</TBODY>
 			</TABLE>
 		</TD>

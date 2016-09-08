@@ -92,6 +92,7 @@ version ?.??.?? (????-??-??):
     select elements on lists [chilan]
   - support of multi message deletions [chilan]
   - multi customer group assignments can be added and deleted from customer form [chilan]
+  - selected liabilities can be deleted from customer form [chilan]
 
 version 1.11.20 (2016-04-19):
 
