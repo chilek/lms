@@ -29,8 +29,8 @@ $action = isset($_GET['action']) ? $_GET['action'] : '';
 if ($action == 'delete') {
 	if (isset($_GET['customergroupid']))
 		$customergroupids = array($_GET['customergroupid']);
-	elseif (isset($_POST['customergroupid']))
-		$customergroupids = $_POST['customergroupid'];
+	elseif (isset($_POST['markedcustomergroupid']))
+		$customergroupids = $_POST['markedcustomergroupid'];
 	if (isset($customergroupids) && !empty($customergroupids))
 		foreach ($customergroupids as $customergroupid)
 			$LMS->CustomerAssignmentDelete(

@@ -42,7 +42,7 @@
 						<A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer from group?")}')" href="?m=customergroup&customergroupid={$customergroup.id}&action=delete&id={$customerinfo.id}" {tip text="Remove customer from group"}>
 							<IMG src="img/delete.gif" ALT="[ {trans("Delete")} ]">
 						</A>
-						<input type="checkbox" name="customergroupid[{$customergroup.id}]" value="{$customergroup.id}" class="multi-check">
+						<input type="checkbox" name="markedcustomergroupid[{$customergroup.id}]" value="{$customergroup.id}" class="multi-check">
 					</TD>
 				</TR>
 				{foreachelse}
@@ -53,18 +53,17 @@
 				</TR>
 				{/foreach}
 				<TR class="ftop">
-					<TD class="bold">
-						<A href="javascript:document.customergroupassignment.submit()" {tip text="Add customer to groups"}>{trans("Add")} <IMG src="img/save.gif" alt=""></A>
+					<TD class="bold valign-top">
+						<A id="add-groups" {tip text="Add customer to groups"}>{trans("Add")} <IMG src="img/save.gif" alt=""></A>
 					</TD>
 					<TD colspan="2">
 						<SELECT SIZE="1" NAME="customergroupid[]" id="customergroupid" {tip text="Select group to attribute to customer"} multiple>
-							<OPTION VALUE="0">{trans("... select group ...")}</OPTION>
 							{section name=t loop=$othercustomergroups}
 							<OPTION VALUE="{$othercustomergroups[t].id}">{$othercustomergroups[t].name} ({$othercustomergroups[t].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
-					<TD colspan="2" class="text-right nobr">
+					<TD colspan="2" class="text-right nobr valign-top">
 						<A id="delete-groups">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></A>
 						<label>
 							{trans("Check All")}
@@ -78,6 +77,12 @@
 						multiselect('customergroupassignment', 'customergroupid', '{trans("... select groups ...")}');
 						$('#customergroups-checkall').on("change", function() {
 							CheckAll('customergroupassignment', this, []);
+						});
+						$('#add-groups').click(function() {
+							if ($("input[name='customergroupid[]']").filter(':checked').length)
+								$('form#customergroupassignment').submit();
+							else
+								return false;
 						});
 						$('#delete-groups').click(function() {
 							if (!$(this).closest('tbody.multi-check').find('input:checked').length
