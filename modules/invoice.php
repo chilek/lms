@@ -96,6 +96,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	$offset = intval(date('Z'));
 	$ids = $DB->GetCol('SELECT id FROM documents d
 				WHERE cdate >= ? AND cdate <= ? AND (type = ? OR type = ?)'
+				.(!empty($_GET['divisionid']) ? ' AND d.divisionid = ' . intval($_GET['divisionid']) : '')
 				.(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
 				.(!empty($_GET['numberplanid']) ? ' AND d.numberplanid = '.intval($_GET['numberplanid']) : '')
 				.(!empty($_GET['autoissued']) ? ' AND d.userid = 0' : '')

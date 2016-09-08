@@ -428,6 +428,7 @@ switch($type)
 			.$type
 			.'&from='.$date['from']
 			.'&to='.$date['to']
+			.(!empty($_POST['division']) ? '&divisionid='.intval($_POST['division']) : '')
 			.(!empty($_POST['customer']) ? '&customerid='.intval($_POST['customer']) : '')
 			.(!empty($_POST['group']) ? '&groupid='.intval($_POST['group']) : '')
 			.(!empty($_POST['numberplan']) ? '&numberplanid='.intval($_POST['numberplan']) : '')

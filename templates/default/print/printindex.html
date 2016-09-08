@@ -702,6 +702,22 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 					    <TABLE width="100%">
 						<TR>
 							<TD style="width: 1%;">
+								<IMG src="img/division.gif" alt="">
+							</TD>
+							<TD style="width: 1%;" class="bold nobr">
+								{trans("Division")}:
+							</TD>
+							<TD style="width: 98%;" class="nobr">
+								<SELECT size="1" name="division" {tip text="Select division"}>
+									<OPTION value="0">- {trans("all")} -</OPTION>
+									{foreach $divisions as $division}
+									<OPTION value="{$division.id}">{$division.shortname}</OPTION>
+									{/foreach}
+								</SELECT>
+							</TD>
+						</TR>
+						<TR>
+							<TD style="width: 1%;">
 								<IMG src="img/customer.gif" alt="">
 							</TD>
 							<TD style="width: 1%;" class="bold nobr">
