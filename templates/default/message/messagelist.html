@@ -6,10 +6,11 @@
 <script type="text/javascript">
 <!--
 	function delete_messages() {
-		if (confirmLink(this, '{trans("Are you sure, you want to delete all selected messages?")}')) {
-			document.messages.action = '?m=messagedel';
+		if (confirm('{trans("Are you sure, you want to delete all selected messages?")}')) {
+			document.messages.action = '?m=messagedel&is_sure=1';
 			document.messages.submit();
-		}
+		} else
+			return false;
 	}
 //-->
 </script>
