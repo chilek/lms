@@ -192,7 +192,7 @@ window.open('?m=invoice&amp;id={$invoice.invoice}&amp;original={$invoice.origina
 			{if $invoice.type == $smarty.const.DOC_CNOTE}
 			<A HREF="?m=invoice&amp;id={$invoice.id}" TARGET="_blank"><IMG src="img/printn.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
 			{/if}
-			<INPUT TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
+			<INPUT TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}" class="multi-check"{if $marks.$invoiceid} checked{/if}>
 		</TD>
 	</TR>
 	{sectionelse}

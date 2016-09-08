@@ -116,7 +116,7 @@
 		<TD class="text-right nobr">
 			<A onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')" href="?m=messagedel&amp;id={$message.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<A href="?m=messageinfo&amp;id={$message.id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
-			<input type="checkbox" name="marks[{$message.id}]" value="{$message.id}"{if $marks.messageid} checked{/if}>
+			<input type="checkbox" name="marks[{$message.id}]" value="{$message.id}" class="multi-check"{if $marks.messageid} checked{/if}>
 		</TD>
 	</TR>
 	{sectionelse}

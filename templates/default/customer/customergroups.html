@@ -1,5 +1,5 @@
 <!--// $Id$ //-->
-<FORM method="post" name="customergroupassignment" action="?m=customergroup&amp;action=add&amp;id={$customerinfo.id}">
+<FORM method="post" name="customergroupassignment" id="customergroupassignment" action="?m=customergroup&action=add&id={$customerinfo.id}">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
 </p>
@@ -16,22 +16,34 @@
 	<TR id="groupspanel" style="display: none;">
 		<TD style="width: 100%;">
 			<TABLE class="lmsbox-inner">
+				<COLGROUP>
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 96%;">
+					<COL style="width: 1%;">
+				</COLGROUP>
 				<THEAD>
 				<TR>
-					<TD style="width: 1%;" class="bold nobr">{trans("Name:")}</TD>
-					<TD style="width: 1%;" class="nobr" colspan="2">{trans("Description:")}</TD>
-					<TD style="width: 97%;" class="nobr">{trans("ID:")}</TD>
-					<TD style="width: 1%;">&nbsp;</TD>
+					<TD class="bold nobr">{trans("Name:")}</TD>
+					<TD class="nobr" colspan="2">{trans("Description:")}</TD>
+					<TD class="nobr">{trans("ID:")}</TD>
+					<TD>&nbsp;</TD>
 				</TR>
 				</THEAD>
-				<TBODY>
+				<TBODY class="multi-check">
 				{cycle name=groups values="light,lucid" print=false}
-				{foreach from=$customergroups item=customergroup}
+				{foreach $customergroups as $customergroup}
 				<TR class="highlight {cycle name=groups}">
-					<TD style="width: 1%" class="bold nobr"><A href="?m=customergroupinfo&amp;id={$customergroup.id}">{$customergroup.name}</A></TD>
-					<TD style="width: 97%" colspan="2">{$customergroup.description}</TD>
-					<TD style="width: 1%" class="nobr">({$customergroup.id|string_format:"%04d"})</TD>
-					<TD style="width: 1%" class="text-right nobr"><A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer from group?")}')" href="?m=customergroup&amp;customergroupid={$customergroup.id}&amp;action=delete&amp;id={$customerinfo.id}" {tip text="Remove customer from group"}><IMG src="img/delete.gif" ALT="[ {trans("Delete")} ]"></A></TD>
+					<TD class="bold nobr"><A href="?m=customergroupinfo&id={$customergroup.id}">{$customergroup.name}</A></TD>
+					<TD class="nobr" colspan="2">{$customergroup.description}</TD>
+					<TD class="nobr">({$customergroup.id|string_format:"%04d"})</TD>
+					<TD class="text-right nobr">
+						<A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer from group?")}')" href="?m=customergroup&customergroupid={$customergroup.id}&action=delete&id={$customerinfo.id}" {tip text="Remove customer from group"}>
+							<IMG src="img/delete.gif" ALT="[ {trans("Delete")} ]">
+						</A>
+						<input type="checkbox" name="customergroupid[{$customergroup.id}]" value="{$customergroup.id}" class="multi-check">
+					</TD>
 				</TR>
 				{foreachelse}
 				<TR>
@@ -41,19 +53,42 @@
 				</TR>
 				{/foreach}
 				<TR class="ftop">
-					<TD colspan="4">
-						<span class="bold">{trans("Add:")}</span>
-						<SELECT SIZE="1" NAME="customergroupid" {tip text="Select group to attribute to customer"}>
+					<TD class="bold">
+						<A href="javascript:document.customergroupassignment.submit()" {tip text="Add customer to groups"}>{trans("Add")} <IMG src="img/save.gif" alt=""></A>
+					</TD>
+					<TD colspan="2">
+						<SELECT SIZE="1" NAME="customergroupid[]" id="customergroupid" {tip text="Select group to attribute to customer"} multiple>
 							<OPTION VALUE="0">{trans("... select group ...")}</OPTION>
 							{section name=t loop=$othercustomergroups}
 							<OPTION VALUE="{$othercustomergroups[t].id}">{$othercustomergroups[t].name} ({$othercustomergroups[t].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
-					<TD rowspan="2" class="text-right nobr">
-						<A href="javascript:document.customergroupassignment.submit()" {tip text="Add customer to group"}>{trans("Add")} <IMG src="img/save.gif" alt=""></A>
+					<TD colspan="2" class="text-right nobr">
+						<A id="delete-groups">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></A>
+						<label>
+							{trans("Check All")}
+							<input type="checkbox" id="customergroups-checkall">
+						</label>
 					</TD>
 				</TR>
+				<script type="text/javascript">
+				<!--
+					$(function() {
+						multiselect('customergroupassignment', 'customergroupid', '{trans("... select groups ...")}');
+						$('#customergroups-checkall').on("change", function() {
+							CheckAll('customergroupassignment', this, []);
+						});
+						$('#delete-groups').click(function() {
+							if (!$(this).closest('tbody.multi-check').find('input:checked').length
+								|| !confirm('{trans("Are you sure, you want to remove customer from selected groups?")}'))
+								return false;
+							$('form#customergroupassignment').attr('action', '?m=customergroup&action=delete&id={$customerinfo.id}&is_sure=1');
+							$('form#customergroupassignment').submit();
+						});
+					});
+				//-->
+				</script>
 				</TBODY>
 			</TABLE>
 		</TD>

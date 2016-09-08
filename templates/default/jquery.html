@@ -148,15 +148,12 @@
 		var tbodies = $('tbody.multi-check');
 		$.each(tbodies, function(index, tbody) {
 			var tbody = $(tbody);
-			var allcheckboxes = tbody.find(':checkbox');
+			var allcheckboxes = tbody.find(':checkbox').filter('.multi-check');
 			$.each(allcheckboxes, function(index, checkbox) {
-				if (checkbox.length > 1)
-					return;
 				var checkbox = $(checkbox)[0];
 				var row = $(checkbox.closest('tr'));
 				row.click(function(e) {
 					if (e.shiftKey) {
-						//document.getSelection().removeAllRanges();
 						var checkboxes = $(this).prevAll('tr').find(':checkbox');
 						for (var i = checkboxes.length; i > 0; i--)
 							if ($(checkboxes[i - 1]).attr('data-prev-checked') !== undefined)
@@ -188,7 +185,6 @@
 				});
 				row.find(':checkbox').click(function(e) {
 					if (e.shiftKey) {
-						//document.getSelection().removeAllRanges();
 						var checkboxes = $(this).closest('tr').prevAll('tr').find(':checkbox');
 						for (var i = checkboxes.length; i > 0; i--)
 							if ($(checkboxes[i - 1]).attr('data-prev-checked') !== undefined)
