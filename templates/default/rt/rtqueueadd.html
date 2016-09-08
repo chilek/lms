@@ -67,7 +67,7 @@
 										<TBODY>
 											{cycle values="light,lucid" print=false}
 											{foreach from=$queue.rights item=right}
-											<TR class="highlight {cycle}">
+											<TR class="highlight {cycle} queue-rights">
 												<TD style="width: 96%;" class="nobr">
 													<A href="?m=userinfo&amp;id={$right.id}">{$right.name}</A>
 													<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">
@@ -86,6 +86,28 @@
 												</TD>
 											</TR>
 											{/foreach}
+											<script type="text/javascript">
+											<!--
+												$(function() {
+													var queuerights = $('.queue-rights');
+													queuerights.click(function() {
+														var checked = true;
+														$.each($(this).find(':checkbox'), function(key, value) {
+															var elem = $(value)[0];
+															if (!key)
+																checked = !elem.checked;
+															elem.checked = checked;
+														});
+													});
+													queuerights.find('a').click(function(e) {
+														e.stopPropagation();
+													});
+													queuerights.find(':checkbox').click(function(e) {
+														e.stopPropagation();
+													});
+												});
+											//-->
+											</script>
                                                                                         <TR class="highlight {cycle}">
                                                                                                 <TD style="width: 96%;" class="nobr text-right">
                                                                                                         <label for="allbox">{trans("Check All")}</label>
