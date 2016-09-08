@@ -108,7 +108,7 @@
 	</TR>
 	{/if}
     </THEAD>
-    <TBODY>
+    <TBODY class="multi-check">
 	{cycle values="light,lucid" print=false}
 	{section name=receiptlist loop=$receiptlist start=$start max=$pagelimit}
 	{assign var=receipt value=$receiptlist[receiptlist]}
