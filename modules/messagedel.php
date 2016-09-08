@@ -33,7 +33,7 @@ if ($_GET['is_sure'] == '1')
 			$DB->Execute('DELETE FROM messages WHERE id = ?', array($id));
 			$DB->CommitTrans();
 		}
-	} elseif (isset($_POST['marks']) && $_GET['is_sure'] == '1') {
+	} elseif (isset($_POST['marks'])) {
 		$ids = implode(',', array_map('intval', $_POST['marks']));
 		if (!empty($ids)) {
 			$DB->BeginTrans();
