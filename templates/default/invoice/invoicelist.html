@@ -134,7 +134,7 @@ window.open('?m=invoice&amp;id={$invoice.invoice}&amp;original={$invoice.origina
 	</TR>
 	{/if}
     </THEAD>
-    <TBODY>
+    <TBODY class="multi-check">
 	{cycle values="light,lucid" print=false}
 	{section name=invoicelist loop=$invoicelist start=$start max=$pagelimit}
 	{assign var=invoice value=$invoicelist[invoicelist]}
