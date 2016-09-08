@@ -113,7 +113,7 @@
 	</TR>
 	{/if}
     </THEAD>
-    <TBODY>
+    <TBODY class="multi-check">
 	{cycle values="light,lucid" print=false}
 	{section loop=$documentlist name=documentlist start=$start max=$pagelimit}
 	{assign var=doc value=$documentlist[documentlist]}
