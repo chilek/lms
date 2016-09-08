@@ -7,13 +7,12 @@
 <!--
 	function delete_messages() {
 		if (confirmLink(this, '{trans("Are you sure, you want to delete all selected messages?")}')) {
-			document.page.action = '?m=messagedel';
-			document.page.submit();
+			document.messages.action = '?m=messagedel';
+			document.messages.submit();
 		}
 	}
 //-->
 </script>
-<form method="post" name="page">
 <TABLE class="lmsbox">
 	<COLGROUP>
 		<COL style="width: 1%;">
@@ -88,6 +87,7 @@
 	{/if}
     </THEAD>
     <TBODY class="multi-check">
+	<form method="post" name="messages">
 	{cycle values="light,lucid" print=false}
 	{section name=messagelist loop=$messagelist start=$start max=$pagelimit}
 	{assign var=message value=$messagelist[messagelist]}
@@ -125,6 +125,7 @@
 		</TD>
 	</TR>	
 	{/section}
+	</form>
     </TBODY>
     <TFOOT>
 	{if $listdata.total != 0}
@@ -150,5 +151,4 @@
 	</TR>
     </TFOOT>
 </TABLE>
-</form>
 {/block}
