@@ -90,6 +90,7 @@ version ?.??.?? (????-??-??):
   - allow to select company/division for mass invoice printing [chilan]
   - defined html class multi-check which allows tbodies function with multi
     select elements on lists [chilan]
+  - support of multi message deletions [chilan]
 
 version 1.11.20 (2016-04-19):
 

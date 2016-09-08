@@ -162,6 +162,7 @@ $_LANG['Are you sure, you want to delete that connection?'] = 'Jesteś pewien, �
 $_LANG['Are you sure, you want to delete that device?'] = 'Jesteś pewien, że chcesz usunąć to urządzenie?';
 $_LANG['Are you sure, you want to delete that event?'] = 'Jesteś pewien, że chcesz usunąć ten wpis?';
 $_LANG['Are you sure, you want to delete that message?'] = 'Jesteś pewien, że chcesz usunąć tę wiadomość?';
+$_LANG['Are you sure, you want to delete all selected messages?'] = 'Jesteś pewien, że chcesz usunąć wszystkie wybrane wiadomości?';
 $_LANG['Are you sure, you want to delete that network?'] = 'Jesteś pewien, że chcesz usunąć tę sieć?';
 $_LANG['Are you sure, you want to delete that payment?'] = 'Jesteś pewien, że chcesz usunąć tę płatność?';
 $_LANG['Are you sure, you want to delete that tariff?'] = 'Jesteś pewien, że chcesz usunąć tę taryfę?';

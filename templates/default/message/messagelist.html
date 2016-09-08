@@ -3,6 +3,17 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+<script type="text/javascript">
+<!--
+	function delete_messages() {
+		if (confirmLink(this, '{trans("Are you sure, you want to delete all selected messages?")}')) {
+			document.page.action = '?m=messagedel';
+			document.page.submit();
+		}
+	}
+//-->
+</script>
+<form method="post" name="page">
 <TABLE class="lmsbox">
 	<COLGROUP>
 		<COL style="width: 1%;">
@@ -76,7 +87,7 @@
 	</TR>
 	{/if}
     </THEAD>
-    <TBODY>
+    <TBODY class="multi-check">
 	{cycle values="light,lucid" print=false}
 	{section name=messagelist loop=$messagelist start=$start max=$pagelimit}
 	{assign var=message value=$messagelist[messagelist]}
@@ -95,8 +106,8 @@
 			<img src="img/sms.gif" alt="sms">
 			{/if}
 		</TD>
-		<TD class="bold" onclick="return self.location.href='?m=messageinfo&amp;id={$message.id}';">
-			{$message.subject}
+		<TD class="bold">
+			<span onclick="return self.location.href='?m=messageinfo&amp;id={$message.id}';">{$message.subject}</span>
 		</TD>
 		<TD class="text-right nobr" onclick="return self.location.href='?m=messageinfo&amp;id={$message.id}';">
 			{$message.cnt|default:0}
@@ -104,6 +115,7 @@
 		<TD class="text-right nobr">
 			<A onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')" href="?m=messagedel&amp;id={$message.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<A href="?m=messageinfo&amp;id={$message.id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+			<input type="checkbox" name="marks[{$message.id}]" value="{$message.id}"{if $marks.messageid} checked{/if}>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -125,10 +137,18 @@
 	<TR>
 		<TD colspan="2" class="nobr">
 		</TD>
-		<TD colspan="3" class="bold">
+		<TD class="bold">
 			{t a=$listdata.total}Total: $a{/t}
+		</TD>
+		<TD colspan="2" class="text-right nobr">
+			<a onclick="javascript:delete_messages();">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></a>&nbsp;
+			<label>
+				{trans("Check All")}
+				<INPUT TYPE="checkbox" NAME="allbox" onchange="CheckAll('page', this, [])" VALUE="1">
+			</label>
 		</TD>
 	</TR>
     </TFOOT>
 </TABLE>
+</form>
 {/block}
