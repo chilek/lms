@@ -19,55 +19,65 @@
 	<TR id="messagespanel"  style="display:none;">
 		<TD style="width: 100%;" colspan="2">
 			<TABLE class="lmsbox-inner">
+				<COLGROUP>
+					<COL style="width: 1%;">
+					<COL style="width: 95%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+				</COLGROUP>
 				<THEAD>
 				<TR>
-					<TD style="width: 1%;" class="nobr">
+					<TD class="nobr">
 						{trans("Date:")}
 					</TD>
-					<TD style="width: 95%;" class="bold nobr">
+					<TD class="bold nobr">
 						{trans("Subject:")}
 					</TD>
-					<TD style="width: 1%;" class="nobr">
+					<TD class="nobr">
 						{trans("Destination:")}
 					</TD>
-					<TD style="width: 1%;" class="nobr">
+					<TD class="nobr">
 						{trans("Last read on:")}
 					</TD>
-					<TD style="width: 1%;" class="nobr">
+					<TD class="nobr">
 						{trans("Was confirm on:")} ({trans("only userpanel message")})
 					</TD>
-					<TD style="width: 1%;" class="nobr"></TD>
+					<TD class="nobr"></TD>
 				</TR>
 				</THEAD>
-				<TBODY>
+				<TBODY class="multi-check">
+				<form method="post" name="customermessages" action="?m=messagedel">
 				{cycle values="light,lucid" print=false name=messages}
 				{foreach from=$messagelist item=item}
 				<TR class="highlight {cycle name=messages}{if $item.status==$smarty.const.MSG_ERROR} alert{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}">
-					<TD style="width: 1%;" class="nobr" onClick="return self.location.href='?m=messageinfo&amp;id={$item.id}'">
+					<TD class="nobr" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
 						{$item.cdate|date_format:"%Y/%m/%d"}
 					</TD>
-					<TD style="width: 95%;" class="bold" onClick="return self.location.href='?m=messageinfo&amp;id={$item.id}'">
-                                                {if $item.type == $smarty.const.MSG_MAIL}
-                                                        <img src="img/email.gif" alt="email">
-                                                {elseif $item.type == $smarty.const.MSG_WWW}
-                                                        <img src="img/network.gif" alt="www">
-                                                {elseif $item.type == $smarty.const.MSG_USERPANEL || $item.type == $smarty.const.MSG_USERPANEL_URGENT}
-                                                        <img src="img/cms.gif" alt="userpanel">
-                                                {else}
-                                                        <img src="img/sms.gif" alt="sms">
-                                                {/if}
+					<TD class="bold" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
+						{if $item.type == $smarty.const.MSG_MAIL}
+						<img src="img/email.gif" alt="email">
+						{elseif $item.type == $smarty.const.MSG_WWW}
+						<img src="img/network.gif" alt="www">
+						{elseif $item.type == $smarty.const.MSG_USERPANEL || $item.type == $smarty.const.MSG_USERPANEL_URGENT}
+						<img src="img/cms.gif" alt="userpanel">
+						{else}
+						<img src="img/sms.gif" alt="sms">
+						{/if}
 						{$item.subject}
 					</TD>
-					<TD style="width: 1%;" class="text-right nobr" onClick="return self.location.href='?m=messageinfo&amp;id={$item.id}'">
+					<TD class="text-right nobr" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
 						{$item.destination}
 					</TD>
-					<TD style="width: 1%;" class="text-right nobr" onClick="return self.location.href='?m=messageinfo&amp;id={$item.id}'">
+					<TD class="text-right nobr">
 						{if $item.lastreaddate}{$item.lastreaddate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 					</TD>
-					<TD style="width: 1%;" class="text-right nobr" onClick="return self.location.href='?m=messageinfo&amp;id={$item.id}'">
+					<TD class="text-right nobr">
 						{if $item.status == $smarty.const.MSG_SENT  && ($item.type == $smarty.const.MSG_USERPANEL || $item.type == $smarty.const.MSG_USERPANEL_URGENT) && $item.lastdate}{$item.lastdate|date_format:"%Y/%m/%d %H:%M"}{else} - {/if}
 					</TD>
-					<TD style="width: 1%;" class="text-right nobr">
+					<TD class="text-right nobr">
+						<input type="checkbox" class="multi-check" name="marks[{$item.id}]" value="{$item.id}">
 					</TD>
 				</TR>
 				{foreachelse}
@@ -77,6 +87,31 @@
 					</TD>
 				</TR>
 				{/foreach}
+				<TR class="ftop">
+					<TD colspan="6" class="buttons">
+						<A id="delete-messages">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></A>
+						<label>
+							{trans("Check All")}
+							<input type="checkbox" class="multi-check-all">
+						</label>
+					</TD>
+				</TR>
+				<script type="text/javascript">
+				<!--
+					$(function() {
+						$('#delete-messages').click(function(e) {
+							if (confirm('{trans("Are you sure, you want to delete all selected messages?")}')) {
+								$('form[name=customermessages]').attr('action', function(index, attr) {
+									return attr + '&is_sure=1';
+								});
+								$('form[name=customermessages]').submit();
+							} else
+								return false;
+						});
+					});
+				//-->
+				</script>
+				</form>
 				</TBODY>
 			</TABLE>
 		</TD>
