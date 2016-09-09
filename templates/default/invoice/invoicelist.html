@@ -224,7 +224,10 @@ window.open('?m=invoice&amp;id={$invoice.invoice}&amp;original={$invoice.origina
 						<INPUT type="checkbox" name="duplicate" id="duplicate"{if preg_match('/duplicate/i', $default_printpage)} checked{/if}><label for="duplicate">{trans("duplicate")}</label>
 					</TD>
 					<TD class="text-right nobr">
-						<label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'duplicate', 'copy', 'groupexclude', 'hideclosed'])" VALUE="1">
+						<label>
+							{trans("Check All")}
+							<INPUT TYPE="checkbox" NAME="allbox" class="multi-check-all" VALUE="1">
+						</label>
 					</TD>
 				</TR>
 			</TABLE>

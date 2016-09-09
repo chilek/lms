@@ -148,69 +148,68 @@
 		var tbodies = $('tbody.multi-check');
 		$.each(tbodies, function(index, tbody) {
 			var tbody = $(tbody);
-			var allcheckboxes = tbody.find(':checkbox').filter('.multi-check');
+			var checkboxes = tbody.find(':checkbox');
+			var allcheckboxes = checkboxes.filter('.multi-check');
+
+			var checkall = checkboxes.filter('.multi-check-all');
+			if (!checkall.length)
+				checkall = tbody.siblings('tfoot').filter('.multi-check-all');
+			if (checkall.length) {
+				checkall.click(function(e) {
+					allcheckboxes.each(function(index, elem) {
+						this.checked = checkall.checked;
+					});
+				});
+				checkall = checkall.get(0);
+			} else
+				checkall = null;
+
+			function checkElements(checkbox) {
+				var i = j = -1;
+				allcheckboxes.each(function(index, elem) {
+					if ($(elem).attr('data-prev-checked') !== undefined)
+						i = index;
+					if ($(elem).is(checkbox))
+						j = index;
+				});
+				if (i == -1)
+					return;
+				var checked = $(allcheckboxes[i]).attr('data-prev-checked') == 'true' ? true : false;
+				var start = Math.min(i, j);
+				var stop = Math.max(i, j);
+				for (var i = start; i <= stop; i++)
+					allcheckboxes[i].checked = checked;
+				if (!start && stop == allcheckboxes.length - 1)
+					checkall.checked = checked;
+			}
+
+			function updateCheckAll() {
+				if (allcheckboxes.filter(':checked').length == allcheckboxes.length)
+					checkall.checked = true;
+				else if (allcheckboxes.filter(':not(:checked)').length == allcheckboxes.length)
+					checkall.checked = false;
+			}
+
 			$.each(allcheckboxes, function(index, checkbox) {
 				var checkbox = $(checkbox)[0];
 				var row = $(checkbox.closest('tr'));
 				row.click(function(e) {
-					if (e.shiftKey) {
-						var checkboxes = $(this).prevAll('tr').find(':checkbox');
-						for (var i = checkboxes.length; i > 0; i--)
-							if ($(checkboxes[i - 1]).attr('data-prev-checked') !== undefined)
-								break;
-						if (i) {
-							var checked = $(checkboxes[i - 1]).attr('data-prev-checked') == 'true' ? true : false;
-							for (var j = checkboxes.length; j > i; j--)
-								checkboxes[j - 1].checked = checked;
-							checkbox.checked = checked;
-						} else {
-							var checkboxes = $(this).nextAll('tr').find(':checkbox');
-							for (var i = 1; i <= checkboxes.length; i++)
-								if ($(checkboxes[i - 1]).attr('data-prev-checked') !== undefined)
-									break;
-							if (i <= checkboxes.length) {
-								var checked = $(checkboxes[i - 1]).attr('data-prev-checked') == 'true' ? true : false;
-								for (var j = 1; j <= i; j++)
-									checkboxes[j - 1].checked = checked;
-								checkbox.checked = checked;
-							}
-						}
-					} else {
+					if (e.shiftKey)
+						checkElements(checkbox);
+					else {
 						checkbox.checked = !checkbox.checked;
-						$.each(allcheckboxes, function(index, checkbox) {
-							$($(checkbox)[0]).removeAttr('data-prev-checked');
-						});
+						allcheckboxes.filter('[data-prev-checked]').removeAttr('data-prev-checked');
 						$(checkbox).attr('data-prev-checked', checkbox.checked);
+						updateCheckAll();
 					}
 				});
 				row.find(':checkbox').click(function(e) {
-					if (e.shiftKey) {
-						var checkboxes = $(this).closest('tr').prevAll('tr').find(':checkbox');
-						for (var i = checkboxes.length; i > 0; i--)
-							if ($(checkboxes[i - 1]).attr('data-prev-checked') !== undefined)
-								break;
-						if (i) {
-							var checked = $(checkboxes[i - 1]).attr('data-prev-checked') == 'true' ? true : false;
-							for (var j = checkboxes.length; j > i; j--)
-								checkboxes[j - 1].checked = checked;
-							this.checked = checked;
-						} else {
-							var checkboxes = $(this).closest('tr').nextAll('tr').find(':checkbox');
-							for (var i = 1; i <= checkboxes.length; i++)
-								if ($(checkboxes[i - 1]).attr('data-prev-checked') !== undefined)
-									break;
-							if (i <= checkboxes.length) {
-								var checked = $(checkboxes[i - 1]).attr('data-prev-checked') == 'true' ? true : false;
-								for (var j = 1; j <= i; j++)
-									checkboxes[j - 1].checked = checked;
-								this.checked = checked;
-							}
-						}
-					} else {
-						$.each(allcheckboxes, function(index, checkbox) {
-							$($(checkbox)[0]).removeAttr('data-prev-checked');
-						});
+					if (e.shiftKey)
+						checkElements(this);
+					else {
+						allcheckboxes.filter('[data-prev-checked]').removeAttr('data-prev-checked');
 						$(this).attr('data-prev-checked', this.checked);
+						updateCheckAll();
 					}
 					e.stopPropagation();
 				});

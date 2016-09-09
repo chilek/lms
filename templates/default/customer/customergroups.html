@@ -67,7 +67,7 @@
 						<A id="delete-groups">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></A>
 						<label>
 							{trans("Check All")}
-							<input type="checkbox" id="customergroups-checkall">
+							<input type="checkbox" class="multi-check-all">
 						</label>
 					</TD>
 				</TR>
@@ -75,9 +75,6 @@
 				<!--
 					$(function() {
 						multiselect('customergroupassignment', 'customergroupid', '{trans("... select groups ...")}');
-						$('#customergroups-checkall').on("change", function() {
-							CheckAll('customergroupassignment', this, []);
-						});
 						$('#add-groups').click(function() {
 							if ($("input[name='customergroupid[]']").filter(':checked').length)
 								$('form#customergroupassignment').submit();

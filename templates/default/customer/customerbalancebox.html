@@ -192,19 +192,10 @@
 								<TD style="width: 1%;" class="text-right nobr">
 									<label>
 										{trans("Check All")}
-										<INPUT type="checkbox" id="customerbalancebox-checkall">
+										<INPUT type="checkbox" class="multi-check-all">
 									</label>
 								</TD>
 							</TR>
-							<script type="text/javascript">
-							<!--
-								$(function() {
-									$('#customerbalancebox-checkall').on("change", function() {
-										CheckAll('addbalance', this, ['copy', 'original', 'duplicate'])
-									});
-								});
-							//-->
-							</script>
 						</TABLE>
 					</TD>
 				</TR>

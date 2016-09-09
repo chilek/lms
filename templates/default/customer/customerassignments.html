@@ -141,14 +141,11 @@
 						<A id="delete-assignments">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></A>
 						<label>
 							{trans("Check All")}
-							<input type="checkbox" id="customerassignments-checkall">
+							<input type="checkbox" class="multi-check-all">
 						</label>
 						<script type="text/javascript">
 						<!--
 							$(function() {
-								$('#customerassignments-checkall').click(function() {
-									CheckAll('customerassignments', this, []);
-								});
 								$('#delete-assignments').click(function() {
 									if (!$(this).closest('tbody.multi-check').find('input:checked').length
 										|| !confirm('{trans("Are you sure, you want to delete selected liabilities?")}'))

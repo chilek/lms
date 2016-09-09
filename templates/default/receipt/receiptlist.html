@@ -181,7 +181,10 @@
 						</label>
 					</TD>
 					<TD class="text-right nobr">
-						<label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['original', 'copy'])" VALUE="1">
+						<label>
+							{trans("Check All")}
+							<INPUT TYPE="checkbox" NAME="allbox" class="multi-check-all" VALUE="1">
+						</label>
 					</TD>
 				</TR>
 			</TABLE>
