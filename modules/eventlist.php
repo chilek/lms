@@ -33,6 +33,18 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 	if(!$month) $month = date('n',time());
 	if(!$day) $day = date('j',time());
 
+	switch ($privacy) {
+		case 0:
+			$privacy_condition = '(private = 0 OR (private = 1 AND userid = ' . intval($AUTH->id) . '))';
+			break;
+		case 1:
+			$privacy_condition = 'private = 0';
+			break;
+		case 2:
+			$privacy_condition = 'private = 1 AND userid = ' . intval($AUTH->id);
+			break;
+	}
+
 	$startdate = mktime(0,0,0, $month, $day, $year);
 	$enddate = mktime(0,0,0, $month, $day+$forward, $year);
 
@@ -44,15 +56,13 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 		LEFT JOIN nodes ON (nodeid = nodes.id)
 		LEFT JOIN customerview c ON (customerid = c.id)
 		LEFT JOIN users ON (userid = users.id)
-		WHERE ((date >= ? AND date < ?) OR (enddate <> 0 AND date < ? AND enddate >= ?))
-			AND (private = 0 OR (private = 1 AND userid = ?)) '
+		WHERE ((date >= ? AND date < ?) OR (enddate <> 0 AND date < ? AND enddate >= ?)) AND ' . $privacy_condition
 		.($customerid ? ' AND customerid = '.intval($customerid) : '')
 		.($userid ? ' AND EXISTS (
 			SELECT 1 FROM eventassignments 
 			WHERE eventid = events.id AND userid = '.intval($userid).'
 			)' : '')
 		. ($type ? ' AND events.type = ' . intval($type) : '')
-		. ($privacy == 1 ? ' AND private = 0' : ($privacy == 2 ? ' AND private = 1' : ''))
 		. ($closed != '' ? ' AND closed = ' . intval($closed) : '')
 		.' ORDER BY date, begintime',
 		 array($startdate, $enddate, $enddate, $startdate, $AUTH->id));
