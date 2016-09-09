@@ -304,7 +304,7 @@ class SYSLOG {
 		$key = (isset($params['key']) && !empty($params['key']) ? $params['key'] : '');
 		$value = (isset($params['value']) && preg_match('/^[0-9]+$/', $params['value']) ? $params['value'] : '');
 		$propname = (isset($params['propname']) && !empty($params['propname']) ? $params['propname'] : '');
-		$propvalue = (isset($params['propvalue']) && !empty($params['propvalue']) ? $params['propvalue'] : '');
+		$propvalue = (isset($params['propvalue']) ? $params['propvalue'] : '');
 		$userid = (isset($params['userid']) && !empty($params['userid']) ? intval($params['userid']) : 0);
 		$offset = (isset($params['offset']) && !empty($params['offset']) ? intval($params['offset']) : 0);
 		$limit = (isset($params['limit']) && !empty($params['limit']) ? intval($params['limit']) : 20);

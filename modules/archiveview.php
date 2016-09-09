@@ -56,14 +56,14 @@ function GetPropertyValues($resource, $propname, $propvalue) {
 	$values = $SYSLOG->GetResourcePropertyValues($resource, $propname);
 	if (empty($values) || count($values) > 19)
 		$result->assign('propertyvaluedata', 'innerHTML', '<input type="text" size="20" name="propertyvalue" id="propertyvalue"'
-			. (!empty($propvalue) ? ' value="' . $propvalue . '"' : '') . '>');
+			. (strlen($propvalue) ? ' value="' . $propvalue . '"' : '') . '>');
 	else {
 		$options = '<SELECT size="1" name="propertyvalue" id="propertyvalue">';
 		$options .= '<OPTION value="">' . trans('- all -') . '</OPTION>';
 		foreach ($values as $value) {
 			$data = array('resource' => $resource, 'name' => $propname, 'value' => $value);
 			$SYSLOG->DecodeMessageData($data);
-			$options .= '<OPTION value="' . $value . '"' . (!empty($propvalue) && $propvalue == $value ? ' selected' : '') . '>'
+			$options .= '<OPTION value="' . $value . '"' . (strlen($propvalue) && $propvalue == $value ? ' selected' : '') . '>'
 				. (strlen($data['value']) > 50 ? substr($data['value'], 0, 50) . '...' : $data['value'])
 				. '</OPTION>';
 		}
@@ -168,7 +168,7 @@ if ($SYSLOG) {
 	$args['offset'] = $page * $limit;
 	if (!empty($propertyname)) {
 		$args['propname'] = $propertyname;
-		if (!empty($propertyvalue)) $args['propvalue'] = $propertyvalue;
+		if (strlen($propertyvalue)) $args['propvalue'] = $propertyvalue;
 	}
 	$trans = $SYSLOG->GetTransactions($args);
 	if (!empty($trans)) {
