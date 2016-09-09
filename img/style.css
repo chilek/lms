@@ -359,8 +359,15 @@ td.multiselect select { min-width: 200px; }
 	padding: 0;
 }
 
+.ui-dialog.documentviewdialog {
+	min-width: 200px;
+	min-height: 50px;
+}
+
 .ui-dialog-content.documentviewdialog {
 	padding: 0 !important;
+	min-width: 200px;
+	min-height: 50px !important;
 }
 
 .fileupload-progress-dialog .ui-dialog-titlebar {
