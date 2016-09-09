@@ -267,7 +267,7 @@ $sourcefiles = $DB->GetAll('SELECT s.*, u.name AS username,
     (SELECT COUNT(*) FROM cashimport WHERE sourcefileid = s.id) AS count
     FROM sourcefiles s
     LEFT JOIN users u ON (u.id = s.userid)
-    ORDER BY s.idate DESC LIMIT 10');
+    ORDER BY s.idate DESC');
 
 $SMARTY->assign('divisions', $divisions);
 $SMARTY->assign('listdata', isset($listdata) ? $listdata : NULL);

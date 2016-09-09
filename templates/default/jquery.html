@@ -1,9 +1,11 @@
 <link href="img/jqueryui/themes/base/jquery-ui.min.css" rel="stylesheet" type="text/css">
 <link href="img/jquery-datetimepicker/build/jquery.datetimepicker.min.css" rel="stylesheet" type="text/css">
+<link href="img/jquery-datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="img/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="img/jqueryui/jquery-ui.min.js"></script>
 <script type="text/javascript" src="img/jqueryui/ui/minified/i18n/datepicker-{$language}.js"></script>
 <script type="text/javascript" src="img/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+<script type="text/javascript" src="img/jquery-datatables/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
 <!--
 	$(function() {
@@ -223,6 +225,25 @@
 					e.stopPropagation();
 				});
 			});
+		});
+
+		$('.datatables').DataTable({
+			language: {
+				"url": "img/jquery-datatables-i18n/{$language}.json"
+			},
+			initComplete: function(settings, json) {
+				$(this).css('display', '');
+			},
+			//deferRender: true,
+			processing: true,
+			stateSave: true,
+			stateDuration: 900,
+			lengthMenu: [[ 10, 25, 50, 100, -1 ], [ 10, 25, 50, 100, "{trans("All")}" ]]
+			//ordering: false
+		})
+		.on('mouseenter', 'tbody > tr', function() {
+			$(this).siblings('tr').removeClass('highlight');
+			$(this).addClass('highlight');
 		});
 	});
 //-->

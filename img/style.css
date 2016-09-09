@@ -392,3 +392,44 @@ td.multiselect select { min-width: 200px; }
 	text-shadow: 1px 1px 0 #fff;
 }
 
+
+table.dataTable tbody tr.odd {
+	background-color: #EBE4D6;
+}
+
+table.dataTable tbody tr.even {
+	background-color: #DFD5BD;
+}
+
+table.dataTable tbody tr.highlight,
+table.dataTable tbody tr.highlight {
+	background-color: #CCFFCC;
+}
+
+table.dataTable tbody th, table.dataTable tbody td {
+	padding: 2px;
+}
+
+table.dataTable thead .sorting_asc {
+	background-image: url(asc_order.gif);
+}
+
+table.dataTable thead .sorting_desc {
+	background-image: url(desc_order.gif);
+}
+
+table.dataTable thead .sorting {
+	background-image: none;
+}
+
+table.dataTable thead th, table.dataTable thead td {
+	padding-top: 2px;
+	padding-bottom: 2px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+	background: linear-gradient(to bottom, #CEBD9B 0%, #AE9D7B 100%)
+}

@@ -93,6 +93,8 @@ version ?.??.?? (????-??-??):
   - support of multi message deletions [chilan]
   - multi customer group assignments can be added and deleted from customer form [chilan]
   - selected liabilities can be deleted from customer form [chilan]
+  - added support for jquery datatables plugin and used it in cash import
+    package list as first appliance [chilan]
 
 version 1.11.20 (2016-04-19):
 
