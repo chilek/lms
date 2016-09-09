@@ -20,7 +20,9 @@
 		document.getElementById('a_name').style.display = val == '' ? '' : 'none';
                 document.getElementById('a_attribute').style.display = val == '' ? 'none' : '';
 		document.getElementById('a_options').style.display = val == -1 ? 'none' : '';
-		document.getElementById('a_nodes').style.display = val == -1 ? 'none' : '';
+		var a_nodes = document.getElementById('a_nodes');
+		if (a_nodes !== null)
+			document.getElementById('a_nodes').style.display = val == -1 ? 'none' : '';
 		document.getElementById('a_day').style.display = val == -1 ? 'none' : '';
 		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 		document.getElementById('a_discount').style.display = val < -1 ? 'none' : '';
