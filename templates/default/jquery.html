@@ -11,7 +11,14 @@
 
 		$('.calendar').datepicker({
 			dateFormat: "yy/mm/dd",
-			changeYear: true
+			changeYear: true,
+			beforeShow: function(input, inst) {
+				$(input).tooltip('disable');
+				$(this).data('tooltip', input);
+			},
+			onClose: function(dateText, inst) {
+				$($(this).data('tooltip')).tooltip('enable');
+			}
 		})
 		.attr("autocomplete", autocomplete);
 
@@ -114,7 +121,6 @@
 			dialogClass: 'documentviewdialog',
 			open: function(event, ui) {
 				var elem = $('#' + $(this).attr('id').replace(/dialog/, ''));
-				console.log(elem);
 				$(this).dialog('option', 'position', elem.hasClass('documentview-audio')
 					? { my: 'center', at: 'center', of: window } : { my: 'top', at: 'top', of: window })
 					.dialog('option', 'width', '70%');
