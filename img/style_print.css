@@ -38,3 +38,11 @@ H1		{ font-size: 14pt; font-family: Arial, Helvetica; }
 .grey		{ background-color: #EEEEEE; }
 .alert          { color: #FF0000; }
 .bold           { font-weight: bold; }
+
+.text-right { text-align: right; }
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.valign-top { vertical-align: top; }
+.valign-bottom { vertical-align: bottom; }
+
+.nobr { white-space: nowrap; }

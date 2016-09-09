@@ -1,11 +1,15 @@
 {include file="clearheader.html"}
 <!--// $Id$ //-->
 <TABLE WIDTH="100%">
+	<COLGROUP>
+		<COL style="width: 50%;">
+		<COL style="width: 50%;">
+	</COLGROUP>
 	<TR>
-		<TD WIDTH="50%" ALIGN="LEFT" NOWRAP>
+		<TD class="text-left nobr">
 			<H1>{$layout.pagetitle}: {$date|date_format:"%x (%A)"}</H1>
 		</TD>
-		<TD WIDTH="50%" ALIGN="RIGHT">
+		<TD class="text-right">
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %e %B %Y"}<BR>
 			{t a=$layout.logname}Prepared by: $a{/t}
@@ -13,54 +17,61 @@
 	</TR>
 </TABLE>
 <TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 70%;">
+		<COL style="width: 14%;">
+		<COL style="width: 14%;">
+	</COLGROUP>
 	<TR>
-		<TD WIDTH="1%" CLASS="HEAD">
+		<TD CLASS="HEAD">
 			{trans("Time")}
 		</TD>
-		<TD WIDTH="1%" CLASS="HEAD" align="center">
+		<TD CLASS="HEAD text-center">
 			{trans("Type")}
 		</TD>
-		<TD WIDTH="96%" CLASS="HEAD" ALIGN="LEFT">
+		<TD CLASS="HEAD text-left">
 			{trans("Title")}<BR>
 			{trans("Description")}/{trans("Note")}
 		</TD>
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER">
+		<TD CLASS="HEAD text-center">
 			{trans("User")}
 		</TD>
-		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER">
+		<TD CLASS="HEAD text-center">
 			{trans("Customer")}
 		</TD>
 	</TR>
 	{cycle values="white,grey" print=false}
 	{foreach item=event from=$eventlist}
 	<TR class="{cycle}"{if $event.closed==1} style="color: lightgray;"{/if}>
-		<TD WIDTH="1%" class="valign-top text-left nobr">
+		<TD class="valign-top text-left nobr">
 			{math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
 			{if $event.begintime != $event.endtime}
 			- {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
 			{/if}
 		</TD>
-		<TD WIDTH="1%" VALIGN="TOP" ALIGN="CENTER">
+		<TD class="valign-top text-center">
 			{$_EVENTTYPES[$event.type]}
 		</TD>
-		<TD WIDTH="96%" ALIGN="LEFT" VALIGN="TOP">
+		<TD class="valign-top text-left">
 			<B>{$event.title}</B><BR>
 			{$event.description}<BR>
 			{$event.note}
 		</TD>
-		<TD WIDTH="1%" class="valign-top text-right nobr">
+		<TD class="valign-top text-right nobr">
 			{foreach item=user from=$event.userlist}
 				{$user.name|truncate:"25":"...":true}<BR>
 			{/foreach}
 		</TD>
-		<TD WIDTH="1%" class="valign-top text-right nobr">
+		<TD class="valign-top text-right nobr">
 			{$event.customername|truncate:"40":"...":true}<BR>
 			{if isset($event.nodelocation)}
 			    {$event.nodelocation}
 			{else}
 			    {$event.customerlocation}
 			{/if}
-			<br/>{$event.customerphone}
+			<br>{$event.customerphone}
 		</TD>
 	</TR>
 	{/foreach}
