@@ -346,6 +346,49 @@ td.multiselect select { min-width: 200px; }
 	writing-mode: lr-tb;
 }
 
+/*
+	jQuery-UI
+*/
+
+.ui-button {
+	background-color: #DFD5BD;
+}
+
+.ui-dialog {
+	background-color: #AE9D7B;
+}
+
+.ui-dialog-titlebar {
+	background-color: #CEBD9B;
+	border: 1px solid #CEBD9B;
+}
+
+.ui-dialog-content {
+	background-color: #DFD5BD;
+}
+
+.ui-dialog-buttonpane {
+	background-color: #DFD5BD;
+}
+
+.ui-tooltip {
+	background-color: #DFD5BD;
+}
+
+.ui-datepicker {
+	background-color: #AE9D7B;
+}
+
+.ui-datepicker-header {
+	background-color: #CEBD9B;
+	border: 1px solid #CEBD9B;
+}
+
+.ui-datepicker-calendar {
+	background-color: #DFD5BD;
+}
+
+.ui-tooltip.voipaccountinfo,
 .ui-tooltip.invoiceinfo,
 .ui-tooltip.docnumber,
 .ui-tooltip.customerinfo,
@@ -391,6 +434,23 @@ td.multiselect select { min-width: 200px; }
 	font-weight: bold;
 	text-shadow: 1px 1px 0 #fff;
 }
+
+.xdsoft_datetimepicker {
+	background-color: #DFD5BD;
+	border: 1px solid #AE9D7B;
+}
+
+.xdsoft_datetimepicker .xdsoft_label {
+	background-color: #DFD5BD;
+}
+
+.xdsoft_datetimepicker .xdsoft_label > .xdsoft_select > div > .xdsoft_option {
+	background-color: #F4F0EC;
+}
+
+/*
+	DataTable
+*/
 
 table.dataTable tbody tr.odd {
 	background-color: #EBE4D6;
