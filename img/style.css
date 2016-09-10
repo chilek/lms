@@ -433,3 +433,8 @@ table.dataTable thead th, table.dataTable thead td {
 .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
 	background: linear-gradient(to bottom, #CEBD9B 0%, #AE9D7B 100%)
 }
+
+.dataTables_wrapper .dataTables_processing {
+	background: linear-gradient(to right, rgba(174,157,123,0) 0%, rgba(174,157,123,0.9) 25%, rgba(174,157,123,0.9) 75%, rgba(174,157,123,0) 100%);
+	font-weight: bold;
+}
