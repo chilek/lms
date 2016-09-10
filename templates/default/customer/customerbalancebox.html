@@ -118,7 +118,7 @@
 	<TBODY class="multi-check">
 	<TR id="customerbalance" class="dark">
 		<TD style="width: 100%;" colspan="2">
-			<TABLE class="lmsbox-inner{if !empty($balancelist.list)} datatables{/if}"{if !empty($balancelist.list)} data-page-length="{$n}" data-display-start="{count($balancelist.list) + $limit}" style="display: none;"{/if}>
+			<TABLE class="lmsbox-inner{if !empty($balancelist.list)} datatables{/if}"{if !empty($balancelist.list)} data-page-length="{$n}" data-display-start="{$n = count($balancelist.list) + $limit}{if $n < 0}0{else}{$n}{/if}" style="display: none;"{/if}>
 				<COLGROUP>
 					<COL style="width: 1%;">
 					<COL style="width: 1%;">
