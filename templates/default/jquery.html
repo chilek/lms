@@ -226,35 +226,57 @@
 			});
 		});
 
-		$('.datatables').each(function() {
-			var displayStart = $(this).attr('data-display-start');
-			if (displayStart === undefined)
-				displayStart = 0;
-			var stateSave = $(this).attr('data-state-save');
-			if (stateSave === undefined)
-				stateSave = false;
-			var ordering = $(this).attr('data-ordering');
-			if (ordering === undefined)
-				ordering = true;
-			$(this).DataTable({
+		function initDataTable(elem) {
+			var init = $(elem).data('init');
+			$(elem).DataTable({
 				language: {
 					"url": "img/jquery-datatables-i18n/{$language}.json"
 				},
 				initComplete: function(settings, json) {
-					$(this).css('display', '');
+					$(elem).css('display', '');
 				},
 				dom: '<"top"lpf>rt<"bottom"i><"clear">',
 				//deferRender: true,
 				processing: true,
-				displayStart: displayStart,
-				stateSave: stateSave,
 				stateDuration: 900,
 				lengthMenu: [[ 10, 25, 50, 100, -1 ], [ 10, 25, 50, 100, "{trans("All")}" ]],
-				ordering: ordering
+				displayStart: init.displayStart,
+				stateSave: init.stateSave,
+				ordering: init.ordering
 			})
 			.on('mouseenter', 'tbody > tr', function() {
 				$(this).siblings('tr').removeClass('highlight');
 				$(this).addClass('highlight');
+			});
+		}
+
+		$('.datatables').each(function() {
+			var init = {};
+			init.displayStart = $(this).attr('data-display-start');
+			if (init.displayStart === undefined)
+				init.displayStart = 0;
+			init.stateSave = $(this).attr('data-state-save');
+			if (init.stateSave === undefined)
+				init.stateSave = false;
+			init.ordering = $(this).attr('data-ordering');
+			if (init.ordering === undefined)
+				init.ordering = true;
+			$(this).data('init', init);
+
+			if ($(this).parents(':hidden').length)
+				return;
+
+			initDataTable(this);
+		});
+
+		$('.lmsbox-titlebar').each(function() {
+			$(this).click(function() {
+				var elemid = $(this).attr('data-lmsbox-content');
+				showOrHide(elemid);
+				$('#' + elemid).find('.datatables').each(function() {
+					if (!$.fn.dataTable.isDataTable(this))
+						initDataTable(this);
+				});
 			});
 		});
 	});

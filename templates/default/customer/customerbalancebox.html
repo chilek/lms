@@ -86,14 +86,11 @@
 <TABLE class="lmsbox">
 	<THEAD>
 	<TR>
-		<TD {if $limit}class="hand nobr" onCLick="showOrHide('customerbalance');" {else}class="fleftu nobr"{/if}>
+		<TD {if $limit}class="hand nobr lmsbox-titlebar" data-lmsbox-content="customerbalance"{else}class="fleftu nobr"{/if}>
 			<IMG src="img/pay.gif" alt="">
 			<span class="bold">{trans("Customer Account:")}</span>
 			{if $limit}
-				{math equation="x * -1" x=$limit assign=n}
-{*
-				({t a=$n}last $a transactions{/t})
-*}
+			{math equation="x * -1" x=$limit assign=n}
 			{/if}
 		</TD>
 		<TD class="text-right nobr">
@@ -280,9 +277,7 @@
 <!--
 {if $limit}
 if (getCookie('customerbalance') == '0')
-{
 	document.getElementById('customerbalance').style.display = 'none';
-}
 {/if}
 //-->
 </SCRIPT>
