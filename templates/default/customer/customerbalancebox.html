@@ -79,7 +79,7 @@
 </SCRIPT>
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
 {$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
-<FORM name="addbalance" method="POST" action="?m=balanceadd&amp;id={$balancelist.customerid}">
+<FORM name="addbalance" method="POST" action="?m=balanceadd&id={$balancelist.customerid}">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
 </p>
@@ -91,7 +91,9 @@
 			<span class="bold">{trans("Customer Account:")}</span>
 			{if $limit}
 				{math equation="x * -1" x=$limit assign=n}
+{*
 				({t a=$n}last $a transactions{/t})
+*}
 			{/if}
 		</TD>
 		<TD class="text-right nobr">
@@ -114,36 +116,46 @@
 	</TR>
 	</THEAD>
 	<TBODY class="multi-check">
-	<TR id="customerbalance">
+	<TR id="customerbalance" class="dark">
 		<TD style="width: 100%;" colspan="2">
-			<TABLE class="lmsbox-inner">
+			<TABLE class="lmsbox-inner{if !empty($balancelist.list)} datatables{/if}"{if !empty($balancelist.list)} data-page-length="{$n}" data-display-start="{count($balancelist.list) + $limit}" style="display: none;"{/if}>
+				<COLGROUP>
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 92%;">
+					<COL style="width: 1%;">
+				</COLGROUP>
 				<THEAD>
 				<TR>
-					<TD style="width: 1%;">{trans("Date:")}</TD>
-					<TD style="width: 1%;">{trans("User:")}</TD>
-					<TD style="width: 1%;" class="text-right">{trans("Liability:")}</TD>
-					<TD style="width: 1%;" class="text-right">{trans("Income:")}</TD>
-					<TD style="width: 1%;" class="text-right">{trans("Expense:")}</TD>
-					<TD style="width: 1%;" class="text-center">&raquo;</TD>
-					<TD style="width: 1%;" class="text-right">{trans("After:")}</TD>
-					<TD style="width: 92%;">{trans("Description:")}</TD>
-					<TD style="width: 1%;">&nbsp;</TD>
+					<TH>{trans("Date:")}</TH>
+					<TH>{trans("User:")}</TH>
+					<TH class="text-right" data-searchable="false">{trans("Liability:")}</TH>
+					<TH class="text-right" data-searchable="false">{trans("Income:")}</TH>
+					<TH class="text-right" data-searchable="false">{trans("Expense:")}</TH>
+					<TH class="text-center" data-orderable="false" data-searchable="false">&raquo;</TH>
+					<TH class="text-right" data-orderable="false" data-searchable="false">{trans("After:")}</TH>
+					<TH data-orderable="false">{trans("Description:")}</TH>
+					<TH data-orderable="false" data-searchable="false">&nbsp;</TH>
 				</TR>
 				</THEAD>
 				<TBODY>
 				{cycle name=bal values="light,lucid" print=false}
-				{section name=balancelist loop=$balancelist.list start=$limit}
-				{$item=$balancelist.list[balancelist]}
-				<TR class="highlight {cycle name=bal}">
-					<TD style="width: 1%;" class="nobr">{$item.date}</TD>
-					<TD style="width: 1%;" class="nobr">{$item.username|truncate:16:"...":true}</TD>
-					<TD style="width: 1%;" class="text-right nobr">{if !$item.type}{($item.value*-1)|money_format}{else}-{/if}</TD>
-					<TD style="width: 1%;" class="text-right nobr{if $item.type && $item.value > 0} green{/if}">{if $item.type && $item.value > 0}+{$item.value|money_format}{else}-{/if}</TD>
-					<TD style="width: 1%;" class="text-right nobr">{if $item.type && $item.value < 0}{($item.value*-1)|money_format}{else}-{/if}</TD>
-					<TD style="width: 1%;" class="text-center">&raquo;</TD>
-					<TD style="width: 1%;" class="text-right nobr{if $item.after < 0} red{/if}">{$item.after|money_format}</TD>
-					<TD style="width: 92%;">{$item.comment}</TD>
-					<TD style="width: 1%;" class="text-right nobr">
+				{foreach $balancelist.list as $item}
+				<TR class="{cycle name=bal}">
+					<TD class="nobr">{$item.date}</TD>
+					<TD class="nobr">{$item.username|truncate:16:"...":true}</TD>
+					<TD class="text-right nobr">{if !$item.type}{($item.value*-1)|money_format}{else}-{/if}</TD>
+					<TD class="text-right nobr{if $item.type && $item.value > 0} green{/if}">{if $item.type && $item.value > 0}+{$item.value|money_format}{else}-{/if}</TD>
+					<TD class="text-right nobr">{if $item.type && $item.value < 0}{($item.value*-1)|money_format}{else}-{/if}</TD>
+					<TD class="text-center">&raquo;</TD>
+					<TD class="text-right nobr{if $item.after < 0} red{/if}">{$item.after|money_format}</TD>
+					<TD>{$item.comment}</TD>
+					<TD class="text-right nobr">
 						{foreach $item.customlinks as $link}
 						<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="[ {$link.label} ]" {$link.tip}>{else}{$link.label}{/if}</A>
 						{if isset($link.extra)}{$link.extra}{/if}
@@ -166,13 +178,28 @@
 						<INPUT type="checkbox" NAME="marks[{$item.id}]" value="{$item.id}" class="multi-check">
 					</TD>
 				</TR>
-				{sectionelse}
+				{foreachelse}
 				<TR>
 					<TD class="empty-table" colspan="9">
 						<p>{trans("That customer hasn't got any transactions.")}</p>
 					</TD>
 				</TR>
-				{/section}
+				{/foreach}
+				</TBODY>
+			</TABLE>
+			<TABLE class="lmsbox-inner">
+				<COLGROUP>
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 92%;">
+					<COL style="width: 1%;">
+				</COLGROUP>
+				<TBODY>
 				<TR>
 					<TD class="ftop text-left" colspan="9">
 						<TABLE width="100%" cellpadding="0" cellspacing="0">
@@ -207,7 +234,7 @@
 					<TD class="ftop nobr">
 						{$layout.logname|truncate:16:"...":true}
 					</TD>
-					<TD class="ftop nobr" colspan="2">
+					<TD class="ftop nobr">
 						<INPUT type="text" size="8" name="addbalance[value]" accesskey="s" {if $value}value="{$value}"{/if} {tip text="Enter transaction value"}>&nbsp;
 						<SELECT SIZE="1" name="addbalance[taxid]" {tip text="Select Tax value"}>
 							{foreach item=tax from=$taxeslist}
@@ -215,7 +242,7 @@
 							{/foreach}
 						</SELECT>
 					</TD>
-					<TD class="ftop nobr" colspan="3">
+					<TD class="ftop nobr">
 						<INPUT type="radio" NAME="addbalance[type]" id="operation0" value="0" {tip text="Select type of operation"}><label for="operation0">{trans("liability")}</label><BR>
 						<INPUT type="radio" NAME="addbalance[type]" id="operation1" value="1" {tip text="Select type of operation"} checked><label for="operation1">{trans("income/expense")}</label>
 						{if $sourcelist}
@@ -228,7 +255,7 @@
 						</SELECT>
 						{/if}
 					</TD>
-					<TD class="ftop" colspan="2">
+					<TD class="ftop" colspan="5">
 						<INPUT type="text" size="30" class="text-left" name="addbalance[comment]" value="{$comment}" {tip text="Enter short description of transaction"}> 
 					</TD>
 				</TR>

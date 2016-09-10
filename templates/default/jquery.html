@@ -156,7 +156,7 @@
 		var tbodies = $('tbody.multi-check');
 		$.each(tbodies, function(index, tbody) {
 			var tbody = $(tbody);
-			var checkboxes = tbody.find(':checkbox');
+			var checkboxes = tbody.parent().find(':checkbox');
 			var allcheckboxes = checkboxes.filter('.multi-check');
 
 			var checkall = checkboxes.filter('.multi-check-all');
@@ -187,8 +187,7 @@
 				var stop = Math.max(i, j);
 				for (var i = start; i <= stop; i++)
 					allcheckboxes[i].checked = checked;
-				if (!start && stop == allcheckboxes.length - 1)
-					checkall.checked = checked;
+				updateCheckAll();
 			}
 
 			function updateCheckAll() {
@@ -227,23 +226,35 @@
 			});
 		});
 
-		$('.datatables').DataTable({
-			language: {
-				"url": "img/jquery-datatables-i18n/{$language}.json"
-			},
-			initComplete: function(settings, json) {
-				$(this).css('display', '');
-			},
-			//deferRender: true,
-			processing: true,
-			stateSave: true,
-			stateDuration: 900,
-			lengthMenu: [[ 10, 25, 50, 100, -1 ], [ 10, 25, 50, 100, "{trans("All")}" ]]
-			//ordering: false
-		})
-		.on('mouseenter', 'tbody > tr', function() {
-			$(this).siblings('tr').removeClass('highlight');
-			$(this).addClass('highlight');
+		$('.datatables').each(function() {
+			var displayStart = $(this).attr('data-display-start');
+			if (displayStart === undefined)
+				displayStart = 0;
+			var stateSave = $(this).attr('data-state-save');
+			if (stateSave === undefined)
+				stateSave = false;
+			var ordering = $(this).attr('data-ordering');
+			if (ordering === undefined)
+				ordering = false;
+			$(this).DataTable({
+				language: {
+					"url": "img/jquery-datatables-i18n/{$language}.json"
+				},
+				initComplete: function(settings, json) {
+					$(this).css('display', '');
+				},
+				//deferRender: true,
+				processing: true,
+				displayStart: displayStart,
+				stateSave: stateSave,
+				stateDuration: 900,
+				lengthMenu: [[ 10, 25, 50, 100, -1 ], [ 10, 25, 50, 100, "{trans("All")}" ]],
+				ordering: ordering
+			})
+			.on('mouseenter', 'tbody > tr', function() {
+				$(this).siblings('tr').removeClass('highlight');
+				$(this).addClass('highlight');
+			});
 		});
 	});
 //-->

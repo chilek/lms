@@ -3,17 +3,6 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<script type="text/javascript">
-<!--
-	function delete_messages() {
-		if (confirm('{trans("Are you sure, you want to delete all selected messages?")}')) {
-			document.messages.action = '?m=messagedel&is_sure=1';
-			document.messages.submit();
-		} else
-			return false;
-	}
-//-->
-</script>
 <TABLE class="lmsbox">
 	<COLGROUP>
 		<COL style="width: 1%;">
@@ -143,13 +132,25 @@
 			{t a=$listdata.total}Total: $a{/t}
 		</TD>
 		<TD colspan="2" class="text-right nobr">
-			<a onclick="javascript:delete_messages();">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></a>&nbsp;
+			<a id="delete-messages">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></a>&nbsp;
 			<label>
 				{trans("Check All")}
 				<INPUT TYPE="checkbox" NAME="allbox" class="multi-check-all" VALUE="1">
 			</label>
 		</TD>
 	</TR>
+	<script type="text/javascript">
+	<!--
+		$(function() {
+			$('#delete-messages').click(function() {
+				if (!$(this).closest('tfoot').siblings('tbody.multi-check').find('input:checked').length
+					|| !confirm('{trans("Are you sure, you want to delete all selected messages?")}'))
+					return false;
+				$('form[name=messages]').attr('action', '?m=messagedel&is_sure=1').submit();
+			});
+		});
+	//-->
+	</script>
     </TFOOT>
 </TABLE>
 {/block}

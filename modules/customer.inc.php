@@ -46,7 +46,7 @@ $customervoipaccounts = $LMS->GetCustomerVoipAccounts($customerid);
 $documents = $LMS->GetDocuments($customerid, 10);
 $taxeslist = $LMS->GetTaxes();
 $allnodegroups = $LMS->GetNodeGroupNames();
-$messagelist = $LMS->GetMessages($customerid, 10);
+$messagelist = $LMS->GetMessages($customerid);
 $eventlist = $LMS->EventSearch(array('customerid' => $customerid), 'date,desc', true);
 $customernodes = $LMS->GetCustomerNodes($customerid);
 $customernetworks = $LMS->GetCustomerNetworks($customerid, 10);
