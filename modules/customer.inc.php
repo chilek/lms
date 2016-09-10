@@ -58,7 +58,7 @@ $customerstats = array(
 );
 
 if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
-	$trans = $SYSLOG->GetTransactions(array('key' => SYSLOG::getResourceKey(SYSLOG::RES_CUST), 'value' => $customerid));
+	$trans = $SYSLOG->GetTransactions(array('key' => SYSLOG::getResourceKey(SYSLOG::RES_CUST), 'value' => $customerid, 'limit' => 300));
 	if (!empty($trans))
 		foreach ($trans as $idx => $tran)
 			$SYSLOG->DecodeTransaction($trans[$idx]);
