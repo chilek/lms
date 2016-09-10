@@ -392,7 +392,6 @@ td.multiselect select { min-width: 200px; }
 	text-shadow: 1px 1px 0 #fff;
 }
 
-
 table.dataTable tbody tr.odd {
 	background-color: #EBE4D6;
 }
@@ -406,7 +405,8 @@ table.dataTable tbody tr.highlight {
 	background-color: #CCFFCC;
 }
 
-table.dataTable tbody th, table.dataTable tbody td {
+table.dataTable tbody th,
+table.dataTable tbody td {
 	padding: 2px;
 }
 
@@ -422,7 +422,8 @@ table.dataTable thead .sorting {
 	background-image: none;
 }
 
-table.dataTable thead th, table.dataTable thead td {
+table.dataTable thead th,
+table.dataTable thead td {
 	padding-top: 2px;
 	padding-bottom: 2px;
 	padding-left: 10px;
@@ -436,5 +437,32 @@ table.dataTable thead th, table.dataTable thead td {
 
 .dataTables_wrapper .dataTables_processing {
 	background: linear-gradient(to right, rgba(174,157,123,0) 0%, rgba(174,157,123,0.9) 25%, rgba(174,157,123,0.9) 75%, rgba(174,157,123,0) 100%);
+	font-weight: bold;
+}
+
+.dataTables_wrapper .dataTables_length {
+	padding-left: 4px;
+	padding-top: 5px;
+	width: 33%;
+}
+
+.dataTables_wrapper .dataTables_paginate {
+	float: left;
+	text-align: center;
+	padding-top: 2px;
+	width: 33%;
+}
+
+.dataTables_wrapper .dataTables_filter {
+	padding-right: 4px;
+	padding-top: 5px;
+	width: 33%;
+}
+
+.dataTables_wrapper .dataTables_info {
+	float: none;
+	text-align: center;
+	padding-top: 3px;
+	padding-bottom: 3px;
 	font-weight: bold;
 }
