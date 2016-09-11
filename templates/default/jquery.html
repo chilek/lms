@@ -24,8 +24,8 @@
 		})
 		.attr("autocomplete", autocomplete);
 
+		$.datetimepicker.setLocale("{$language}");
 		$('.calendar-time').datetimepicker({
-			lang: "{$language}",
 			step: 30,
 			closeOnDateSelect: true
 		})
