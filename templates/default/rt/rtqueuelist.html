@@ -21,7 +21,7 @@
 		<TD align="right" WIDTH="1%">
 			{trans("Opened:")}
 		</TD>
-		<TD align="right" WIDTH="1%" ALIGN="CENTER">
+		<TD align="right" WIDTH="1%">
 			{trans("Last:")}
 		</TD>
 		<TD WIDTH="1%">
@@ -33,7 +33,7 @@
 	{cycle values="light,lucid" print=false}
 	{foreach from=$queues item=queue}
 	<TR class="highlight {cycle}"  >
-		<TD onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';">
+		<TD onClick="return self.location.href='?m=rtqueueview&amp;id={$queue.id}';">
 			<IMG src="img/queue.gif" ALT="">
 			<B>{$queue.name}</B><BR>
 			{if $queue.description}
@@ -43,28 +43,26 @@
 		<TD  align="right">
 			<A HREF="mailto:{$queue.email}">{$queue.email}</A>
 		</TD>
-		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';">
+		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&amp;id={$queue.id}';">
 			{$queue.new|default:0}
 		</TD>
-		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';">
+		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&amp;id={$queue.id}';">
 			{$queue.open|default:0}
 		</TD>
-		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';" NOWRAP>
+		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&amp;id={$queue.id}';" NOWRAP>
 			{if $queue.lastticket}{$queue.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
 		<TD NOWRAP>
-			<A HREF="?m=rtqueueview&id={$queue.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse")} ]" title="[ {trans("Browse")} ]"></A>
-			<A HREF="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A HREF="?m=rtqueueinfo&id={$queue.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+			<A HREF="?m=rtqueueview&amp;id={$queue.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse")} ]" title="[ {trans("Browse")} ]"></A>
+			<A HREF="?m=rtqueuedel&amp;id={$queue.id}" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A HREF="?m=rtqueueedit&amp;id={$queue.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A HREF="?m=rtqueueinfo&amp;id={$queue.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD colspan="6" align="center">
-			<p>&nbsp;</p>
-			<p><B>{trans("There are no queues.")}<B></p>
-			<p>&nbsp;</p>
+		<TD colspan="6" class="empty-table">
+			<p>{trans("There are no queues.")}</p>
 		</TD>
 	</TR>
 	{/foreach}

@@ -5,23 +5,19 @@ lib/Smarty/*
 nbproject/private
 lms.ini
 backups/*
+bin/voip/cache/*
+bin/voip/templates_c/*
+voipcalls/*
 documents/*
 !documents/templates
 cache/*
 contrib/LMS2Nagios-php/generated/*
 lib/teryt/*
+composer.lock
 
 # Temporary files
 *~
 *.swp
 *.swo
 
-# Object files
-*.o
-
-# Shared objects
-*.so
-
-# Executables
-daemon/lmsd
 /vendor/

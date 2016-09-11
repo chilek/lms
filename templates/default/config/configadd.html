@@ -2,6 +2,7 @@
 {block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+<script type="text/javascript" src="img/tinymce3/tiny_mce.js"></script>
 <SCRIPT type="text/javascript">
 <!--
 	function change_section(section) {
@@ -23,7 +24,7 @@
 			<B>{trans("Name:")}</B>
 		</TD>
 		<TD width="98%">
-			<INPUT type="text" name="config[name]" value="{$config.name}" {tip text="Enter option name" trigger="name" bold=1}>&nbsp;
+			<INPUT type="text" name="config[var]" value="{$config.var}" {tip text="Enter option name" trigger="var" bold=1}>&nbsp;
 			<B>{trans("Section:")}</B>
 			<SELECT size="1" name="config[section]" {tip text="Select section" trigger="section"} onchange="javascript:change_section(this.options[this.selectedIndex].value);">
 				{foreach $sections as $section}
@@ -44,7 +45,11 @@
 			<B>{trans("Value:")}</B>
 		</TD>
 		<TD width="98%">
-			<TEXTAREA rows="5" cols="50" name="config[value]" {tip text="Enter option value" trigger="value"}>{$config.value}</TEXTAREA>
+			<label>
+				<input type="checkbox" name="richtext" onclick="javascript:toggle_visual_editor('value');"{if $config.type == $smarty.const.CONFIG_TYPE_RICHTEXT} checked{/if}>
+				{trans("visual editor")}
+			</label><br>
+			<TEXTAREA rows="5" cols="50" name="config[value]" id="value" {tip text="Enter option value" trigger="value"}>{$config.value}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
@@ -69,6 +74,23 @@
 			<INPUT type="checkbox" value="1" name="config[disabled]" id="config_disabled"{if $config.disabled} CHECKED{/if} {tip text="You can turn it off"}><label for="config_disabled">{trans("Off")}</label>
 		</TD>
 	</TR>
+	{if ConfigHelper::checkPrivilege('superuser')}
+	<TR>
+		<TD width="1%">
+			<img src="img/desc.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Type:")}</B>
+		</TD>
+		<TD width="98%">
+			<SELECT size="1" name="config[type]" {tip text="Select config type" trigger="type"}>
+				{foreach $_CONFIG_TYPES as $key => $type}
+					<OPTION value="{$key}"{if $config.type == $key} selected{/if}>{$type}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	{/if}
 	<TR>
 		<TD align="right" colspan="3">
 			<A href="javascript:document.config.submit();" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></A>
@@ -81,7 +103,13 @@
 </P>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['config'].elements['config[name]'].focus();
+document.forms['config'].elements['config[var]'].focus();
+
+tinymce_init('{$_ui_language}');
+
+{if $config.type == $smarty.const.CONFIG_TYPE_RICHTEXT}
+	toggle_visual_editor('value');
+{/if}
 //-->
 </SCRIPT>
 {/block}

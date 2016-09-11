@@ -41,7 +41,6 @@ if(isset($_POST['searchcustomer']) && $_POST['searchcustomer'])
 			.' OR icn LIKE '.$DB->Escape('%'.$search.'%')
 			.' OR rbe LIKE '.$DB->Escape('%'.$search.'%')
 			.' OR regon LIKE '.$DB->Escape('%'.$search.'%')
-			.' OR UPPER(email) LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
 			.' OR UPPER('.$DB->Concat('lastname',"' '",'c.name').') LIKE UPPER('.$DB->Escape('%'.$search.'%').')'
 			.' OR UPPER(address) LIKE UPPER('.$DB->Escape('%'.$search.'%').')) ';
 
@@ -62,22 +61,27 @@ if(isset($_POST['searchnode']) && $_POST['searchnode'])
 	$SMARTY->assign('searchnode', $search);
 }
 
-if(isset($where_node) || isset($where_cust))
-{
-	if($customerlist = $DB->GetAll('SELECT c.*, (SELECT SUM(value) FROM cash WHERE customerid = c.id) AS balance 
-				FROM (SELECT DISTINCT c.id AS id, address, zip, city, email, ssn, 
-				'.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername
-				FROM customersview c ' 
+if (isset($where_node) || isset($where_cust)) {
+	if ($customerlist = $DB->GetAll('SELECT DISTINCT c.id, address, zip, city, cc.email, ssn,
+					' . $DB->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
+					(SELECT SUM(value) FROM cash WHERE customerid = c.id) AS balance
+				FROM customerview c
+				LEFT JOIN customermailsview cc ON cc.customerid = c.id '
 				.(isset($where_node) ? 'LEFT JOIN vnodes ON (c.id = ownerid) ' : '')
 				.'WHERE deleted = 0 '
 				.(isset($where_cust) ? $where_cust : '')
 				.(isset($where_node) ? $where_node : '')
-				.'ORDER BY customername LIMIT 15) c'))
-	{
-		foreach($customerlist as $idx => $row)
+				. (isset($where_cust) ? 'UNION 
+					SELECT DISTINCT c.id, address, zip, city, cc.email, ssn, 
+					' . $DB->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
+					(SELECT SUM(value) FROM cash WHERE customerid = c.id) AS balance 
+					FROM customerview c
+					JOIN customermailsview cc ON cc.customerid = c.id 
+					WHERE deleted = 0 AND UPPER(cc.email) LIKE UPPER(' . $DB->Escape('%' . $search . '%') . ')' : '')
+				.'ORDER BY customername LIMIT 15'))
+		foreach ($customerlist as $idx => $row)
 			$customerlist[$idx]['nodes'] = $DB->GetAll('SELECT id, name, mac, inet_ntoa(ipaddr) AS ip, inet_ntoa(ipaddr_pub) AS ip_pub FROM vnodes 
-									WHERE ownerid=? ORDER BY name',array($row['id']));
-	}
+									WHERE ownerid=? ORDER BY name', array($row['id']));
 
 	$SMARTY->assign('customerlist', $customerlist);
 }

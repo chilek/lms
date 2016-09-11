@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,44 +28,44 @@ $action = isset($_GET['action']) ? $_GET['action'] : '';
 
 if ($action == 'delete') {
 	$params = array(
-		$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => intval($_GET['id']),
-		$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => intval($_GET['nodegroupid'])
+		SYSLOG::RES_NODE => intval($_GET['id']),
+		SYSLOG::RES_NODEGROUP => intval($_GET['nodegroupid'])
 	);
 	if ($SYSLOG) {
 		$id = $DB->GetOne('SELECT id FROM nodegroupassignments WHERE nodeid=? AND nodegroupid=?', array_values($params));
 		$args = $params;
-		$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUPASSIGN]] = $id;
-		$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUPASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+		$args[SYSLOG::RES_NODEGROUPASSIGN] = $id;
+		$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_DELETE, $args);
 	}
 	$DB->Execute('DELETE FROM nodegroupassignments WHERE nodeid=? AND nodegroupid=?', array_values($params));
 } elseif($action ==  'add') {
 	if($LMS->NodeExists(intval($_GET['id']))
 		&& $DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array($_POST['nodegroupid']))) {
 		$params = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => intval($_GET['id']),
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => intval($_POST['nodegroupid'])
+			SYSLOG::RES_NODE => intval($_GET['id']),
+			SYSLOG::RES_NODEGROUP => intval($_POST['nodegroupid'])
 		);
 		$DB->Execute('INSERT INTO nodegroupassignments (nodeid, nodegroupid)
 			VALUES (?, ?)', array_values($params));
 		if ($SYSLOG) {
 			$id = $DB->GetLastInsertID('nodegroupassignments');
 			$args = $params;
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUPASSIGN]] = $id;
-			$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUPASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
+			$args[SYSLOG::RES_NODEGROUPASSIGN] = $id;
+			$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_ADD, $args);
 		}
 	}
 } elseif(!empty($_POST['marks']) && $DB->GetOne('SELECT id FROM nodegroups WHERE id = ?', array(intval($_GET['groupid'])))) {
 	foreach($_POST['marks'] as $mark)
 		if($action == 'unsetgroup') {
 			$params = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => intval($_GET['groupid']),
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $mark
+				SYSLOG::RES_NODEGROUP => intval($_GET['groupid']),
+				SYSLOG::RES_NODE => $mark
 			);
 			if ($SYSLOG) {
 				$id = $DB->GetOne('SELECT id FROM nodegroupassignments WHERE nodegroupid=? AND nodeid=?', array_values($params));
 				$args = $params;
-				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUPASSIGN]] = $id;
-				$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUPASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				$args[SYSLOG::RES_NODEGROUPASSIGN] = $id;
+				$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_DELETE, $args);
 			}
 			$DB->Execute('DELETE FROM nodegroupassignments
 					WHERE nodegroupid = ? AND nodeid = ?', $params);
@@ -74,16 +74,16 @@ if ($action == 'delete') {
 					WHERE nodegroupid = ? AND nodeid = ?',
 					array(intval($_GET['groupid']), $mark))) {
 				$params = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => intval($_GET['groupid']),
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $mark
+					SYSLOG::RES_NODEGROUP => intval($_GET['groupid']),
+					SYSLOG::RES_NODE => $mark
 				);
 				$DB->Execute('INSERT INTO nodegroupassignments 
 					(nodegroupid, nodeid) VALUES (?, ?)', array_values($params));
 				if ($SYSLOG) {
 					$id = $DB->GetLastInsertID('nodegroupassignments');
 					$args = $params;
-					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUPASSIGN]] = $id;
-					$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUPASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
+					$args[SYSLOG::RES_NODEGROUPASSIGN] = $id;
+					$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_ADD, $args);
 				}
 			}
 		}
@@ -96,14 +96,14 @@ if ($action == 'delete') {
 		foreach($nodeassignments['gmnodeid'] as $nodeid)
 		{
 			$params = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => $_GET['id'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeid
+				SYSLOG::RES_NODEGROUP => $_GET['id'],
+				SYSLOG::RES_NODE => $nodeid
 			);
 			if ($SYSLOG) {
 				$id = $DB->GetOne('SELECT id FROM nodegroupassignments WHERE nodegroupid = ? AND nodeid = ?', array_values($params));
 				$args = $params;
-				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUPASSIGN]] = $id;
-				$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUPASSIGN, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				$args[SYSLOG::RES_NODEGROUPASSIGN] = $id;
+				$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_DELETE, $args);
 			}
 			$DB->Execute('DELETE FROM nodegroupassignments WHERE nodegroupid = ? AND nodeid = ?', array_values($params));
 		}
@@ -113,16 +113,16 @@ if ($action == 'delete') {
 		foreach($nodeassignments['mnodeid'] as $nodeid)
 		{
 			$params = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUP] => $_GET['id'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $nodeid
+				SYSLOG::RES_NODEGROUP => $_GET['id'],
+				SYSLOG::RES_NODE => $nodeid
 			);
 			$DB->Execute('INSERT INTO nodegroupassignments (nodegroupid, nodeid)
 				VALUES (?, ?)', array_values($params));
 			if ($SYSLOG) {
 				$id = $DB->GetLastInsertID('nodegroupassignments');
 				$args = $params;
-				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODEGROUPASSIGN]] = $id;
-				$SYSLOG->AddMessage(SYSLOG_RES_NODEGROUPASSIGN, SYSLOG_OPER_ADD, $args, array_keys($args));
+				$args[SYSLOG::RES_NODEGROUPASSIGN] = $id;
+				$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUPASSIGN, SYSLOG::OPER_ADD, $args);
 			}
 		}
 	}

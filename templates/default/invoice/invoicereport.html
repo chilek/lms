@@ -22,7 +22,7 @@
 			{trans("No.")}
 		</TD>
 		<TD WIDTH="100" CLASS="HEAD" ALIGN="CENTER">
-			{trans("Invoice No.")}<BR>
+			{if $doctype == 'invoices'}{trans("Invoice No.")}{else}{trans("Debit Note No.")}{/if}<BR>
 			{trans("Draw-up date")}
 		</TD>
 		<TD WIDTH="100" CLASS="HEAD" ALIGN="CENTER">
@@ -33,8 +33,9 @@
 			{trans("Contractor")}
 		</TD>
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
-			{trans("Gross value")}
+			{if $doctype == 'invoices'}{trans("Gross value")}{else}{trans("Value")}{/if}
 		</TD>
+		{if $doctype == 'invoices'}
 		{foreach item=tax from=$taxes}
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Net value")}
@@ -48,6 +49,7 @@
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Total Tax")}
 		</TD>
+		{/if}
 	</TR>
 	{cycle values="grey,white" print=false}
 	{foreach item=invoice from=$invoicelist}
@@ -70,6 +72,7 @@
 		<TD ALIGN="RIGHT">
 			{$invoice.brutto|string_format:"%01.2f"}
 		</TD>
+		{if $doctype == 'invoices'}
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
 		<TD ALIGN="RIGHT">
@@ -84,13 +87,12 @@
 		<TD ALIGN="RIGHT">
 			{$invoice.tax|string_format:"%01.2f"}
 		</TD>
+		{/if}
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD ALIGN="center" COLSPAN="{math equation="5+x" x=$taxescount}">
-			<P>&nbsp;</P>
-			<P><B>{trans("No such invoices in selected time period.")}</B></P>
-			<P>&nbsp;</P>
+		<TD COLSPAN="{math equation="5+x" x=$taxescount}" class="empty-table">
+			<p>{trans("No such invoices in selected time period.")}</p>
 		</TD>
 	</TR>
 	{/foreach}
@@ -101,6 +103,7 @@
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">
 			<B>{$listdata.brutto|string_format:"%01.2f"}</B>
 		</TD>
+		{if $doctype == 'invoices'}
 		{foreach item=tax from=$taxes}
 		{assign var=taxid value=$tax.id}
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">
@@ -115,6 +118,7 @@
 		<TD CLASS="HEADGREY" ALIGN="RIGHT">
 			<B>{$listdata.tax|string_format:"%01.2f"}</B>
 		</TD>
+		{/if}
 	</TR>
 </TABLE>
 {include file="clearfooter.html"}

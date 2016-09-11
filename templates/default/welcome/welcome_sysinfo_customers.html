@@ -1,4 +1,4 @@
-{if !ConfigHelper::checkPrivilege('hide_sysinfo')}
+{if !ConfigHelper::checkPrivilege('hide_summaries')}
 <table class="lmsbox">
     <colgroup>
         <col style="width: 50%;"/>
@@ -12,44 +12,53 @@
         </tr>
     </thead>
     <tbody>
+		{foreach $_CSTATUSES as $statusidx => $status}
         <tr>
             <td class="text-right bold">
-                <a href="?m=customerlist&amp;s=3">{trans("Connected:")}</a>
+                <a href="?m=customerlist&amp;s={$statusidx}">{$status.summarylabel}</a>
             </td>
             <td>
-                {$customerstats.connected}
+				{$alias=$status.alias}
+                {$customerstats.$alias}
             </td>
         </tr>
+        {/foreach}
         <tr>
             <td class="text-right bold">
-                <a href="?m=customerlist&amp;s=2">{trans("Waiting:")}</a>
-            </td>
-            <td>
-                {$customerstats.awaiting}
-            </td>
-        </tr>
-        <tr>
-            <td class="text-right bold">
-                <a href="?m=customerlist&amp;s=1">{trans("Interested:")}</a>
-            </td>
-            <td>
-                {$customerstats.interested}
-            </td>
-        </tr>
-        <tr>
-            <td class="text-right bold">
-                <a href="?m=customerlist&amp;s=0">{trans("Total:")}</a><br>
-                {if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-                <a href="?m=customerlist&amp;s=6">{trans("Total Dues:")}</a>
-                {/if}
+                <a href="?m=customerlist&amp;s=0">{trans("Total:")}</a>
             </td>
             <td class="nobr">
-                {$customerstats.total}<br>
-                {if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-                {$customerstats.debt} ({trans("amount")} {$customerstats.debtvalue|money_format})
-                {/if}
+                {$customerstats.total}
             </td>
         </tr>
+        {if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+        <tr>
+            <td class="text-right bold">
+                <a href="?m=customerlist&amp;s=52">{trans("Total Dues:")}</a>
+            </td>
+            <td>
+                {$customerstats.debt} ({trans("amount")} {$customerstats.debtvalue|money_format})
+            </td>
+        </tr>
+        {/if}
+        <tr>
+            <td class="text-right bold">
+                <a href="?m=documentlist&amp;s=0">{trans("Documents waiting for approval")}:</a>
+            </td>
+            <td>
+                {$documentsnotapproved}
+            </td>
+        </tr>
+	{if $customerschanges}
+        <tr>
+            <td class="text-right bold">
+                <a href="?m=userpanel&module=info&f=changes">{trans("Changes of customers waiting for approval:")}</a>
+            </td>
+            <td>
+                {$customerschanges}
+            </td>
+        </tr>
+	{/if}
     </tbody>
 </table>
 {/if}

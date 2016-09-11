@@ -58,7 +58,10 @@ $listdata = array('tax' => 0, 'brutto' => 0);
 $invoicelist = array();
 $taxeslist = array();
 $taxes = array();
-$taxescount = 0;
+if ($doctype == 'invoices')
+	$taxescount = 0;
+else
+	$taxescount = -1;
 
 if(!empty($_POST['group']))
 {
@@ -109,6 +112,11 @@ switch ($_POST['datetype']) {
 		$sortcol = 'd.cdate';
 }
 
+if (in_array($_POST['doctype'], array('invoices', 'notes')))
+	$doctype = $_POST['doctype'];
+else
+	$doctype = 'invoices';
+
 if (!empty($_POST['numberplanid'])) {
 	if (is_array($_POST['numberplanid'])) {
 		$numberplans = array_map('intval', $_POST['numberplanid']);
@@ -121,13 +129,21 @@ if (!empty($_POST['numberplanid'])) {
 // because we need here incoices-like round-off
 
 // get documents items numeric values for calculations
-$items = $DB->GetAll('SELECT c.docid, c.itemid, c.taxid, c.value, c.count,
+if ($doctype == 'invoices')
+	$args = array(DOC_INVOICE, DOC_CNOTE);
+else
+	$args = array(DOC_DNOTE, DOC_DNOTE);
+$args[] = $unixfrom;
+$args[] = $unixto;
+
+$items = $DB->GetAll('SELECT c.docid, c.itemid,' . ($doctype == 'invoices' ? ' c.taxid, c.count,' : '1 AS count,') . ' c.value,
 	d.number, d.cdate, d.sdate, d.paytime, d.customerid, d.reference,
 	d.name, d.address, d.zip, d.city, d.ten, d.ssn, n.template
 	    FROM documents d
-	    LEFT JOIN invoicecontents c ON c.docid = d.id
+		' . ($doctype == 'invoices' ? 'LEFT JOIN invoicecontents c ON c.docid = d.id'
+			: 'LEFT JOIN debitnotecontents c ON c.docid = d.id') . '
 	    LEFT JOIN numberplans n ON d.numberplanid = n.id
-	    WHERE (d.type = ? OR d.type = ?) AND ('.$sortcol.' BETWEEN ? AND ?) '
+	    WHERE cancelled = 0 AND (d.type = ? OR d.type = ?) AND ('.$sortcol.' BETWEEN ? AND ?) '
 	    .(isset($numberplans) ? 'AND d.numberplanid IN (' . $numberplans . ')' : '')
 	    .(isset($divwhere) ? $divwhere : '')
 	    .(isset($groupwhere) ? $groupwhere : '')
@@ -135,13 +151,10 @@ $items = $DB->GetAll('SELECT c.docid, c.itemid, c.taxid, c.value, c.count,
                 	    SELECT 1 FROM customerassignments a
 			    JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			    WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)
-	    ORDER BY CEIL('.$sortcol.'/86400), d.id',
-	    array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
+	    ORDER BY CEIL('.$sortcol.'/86400), d.id', $args);
 
-if($items)
-{
-	foreach($items as $row)
-	{
+if ($items) {
+	foreach ($items as $row) {
 		$idx = $row['docid'];
 		$taxid = $row['taxid'];
 
@@ -226,6 +239,7 @@ if($items)
 }
 
 $SMARTY->assign('listdata', $listdata);
+$SMARTY->assign('doctype', $doctype);
 $SMARTY->assign('taxes', $taxeslist);
 $SMARTY->assign('taxescount', $taxescount);
 $SMARTY->assign('layout', $layout);

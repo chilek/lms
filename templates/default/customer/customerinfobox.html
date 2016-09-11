@@ -1,31 +1,31 @@
 <!--// $Id$ //-->
 <TABLE class="lmsbox">
     <THEAD>
-	<TR{if $customerpanel} class="hand" onClick="showOrHide('customerpanel');"{/if}>
-		<TD WIDTH="1%">
+	<TR class="dark">
+		<TD width="99%"{if $customerpanel} class="fleftu hand" onClick="showOrHide('customerpanel');"{else} class="fleftu"{/if}>
 			<IMG SRC="img/customer.gif" ALT="">
 			<b>{if $customerpanel}{trans("Owner:")}{/if}
-			{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <span class="red">({trans("deleted customer")})</span>{/if}</b>
+			{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}{if $customerinfo.extid} / {$customerinfo.extid}{/if}){if $customerinfo.deleted} <span class="red">({trans("deleted customer")})</span>{/if}</b>
+		</TD>
+		<TD width="1%" class="frightu" align="right" nowrap>
+			{if $customerpanel}<a href="?m=customerinfo&amp;id={$customerinfo.id}">{trans('Navigate to the customer')} &raquo;</a>{/if}&nbsp;
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
     <TR {if $customerpanel} id="customerpanel" style="display:none;"{/if}>
-	    <TD WIDTH="100%" {if $customerpanel} CLASS="container" ALIGN="RIGHT"{else}CLASS="container"{/if}>
+	    <TD colspan="2" WIDTH="100%" {if $customerpanel} CLASS="container" ALIGN="RIGHT"{else}CLASS="container"{/if}>
 			<TABLE WIDTH="100%" CELLPADDING="0">
 				<TR>
 					<TD WIDTH="50%" style="vertical-align:top;">
 						<TABLE WIDTH="100%" CELLPADDING="3">
+						{block name="customerinfobox-leftcolumn"}
 	<TR>
 		<TD WIDTH="1%">
-			{if $customerinfo.status == "3"}<IMG src="img/customer.gif" alt="">{/if}
-			{if $customerinfo.status == "2"}<IMG src="img/wait.gif" alt="">{/if}
-			{if $customerinfo.status == "1"}<IMG src="img/unk.gif" alt="">{/if}
+			<IMG src="img/{$_CSTATUSES[$customerinfo.status].img}" alt="">
 		</TD>
-		<TD WIDTH="99%">
-			{if $customerinfo.status == "3"}<B>{trans("connected<!singular>")}</B>{/if}
-			{if $customerinfo.status == "2"}<B>{trans("waiting")}</B>{/if}
-			{if $customerinfo.status == "1"}<B>{trans("interested<!singular>")}</B>{/if}
+		<TD WIDTH="99%" class="bold">
+			{$_CSTATUSES[$customerinfo.status].singularlabel}
 		</TD>
 	</TR>
 {if $customerinfo.division}
@@ -47,52 +47,59 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" style="vertical-align: top">
-			<IMG SRC="img/home.gif" ALT="">
+		<TD style="width: 1%;" class="valign-top">
 		</TD>
-		<TD WIDTH="99%">
-			{$customerinfo.address}<BR>
-			{$customerinfo.zip} {$customerinfo.city}
-			{if $customerinfo.cstate}<BR>{$customerinfo.cstate}{/if}
-			{if $customerinfo.country}<BR>{t}{$customerinfo.country}{/t}{/if}
+		<TD style="width: 99%;">
+			<table>
+				<tr>
+					<td style="width: 1%;">
+						<fieldset style="width: 1%;" class="nobr">
+							<legend class="bold"><IMG SRC="img/home.gif" ALT=""> {trans("Address")}</legend>
+							{$customerinfo.address}<BR>
+							{$customerinfo.zip} {$customerinfo.city}
+							{if $customerinfo.cstate}<BR>{$customerinfo.cstate}{/if}
+							{if $customerinfo.country}<BR>{t}{$customerinfo.country}{/t}{/if}
+						</fieldset>
+					</td>
+					{if $customerinfo.post_name != "" || $customerinfo.post_address != ""}
+					<td style="width: 99%;">
+						<fieldset style="width: 1%;" class="nobr">
+							<legend class="bold"><IMG SRC="img/post.gif" ALT=""> {trans("Postal address")}</legend>
+							{if $customerinfo.post_name != ""}{$customerinfo.post_name}<br>{/if}
+							{if $customerinfo.post_address != ""}{$customerinfo.post_address}<br>{/if}
+							{$customerinfo.post_zip} {$customerinfo.post_city}
+							{if $customerinfo.post_cstate}<br>{$customerinfo.post_cstate}{/if}
+							{if $customerinfo.post_country}<br>{t}{$customerinfo.post_country}{/t}{/if}
+						</fieldset>
+					</td>
+					{/if}
+				</tr>
+			</table>
 		</TD>
 	</TR>
-{if $customerinfo.post_name != "" || $customerinfo.post_address != ""}
+{foreach $_CUSTOMERCONTACTTYPES as $type => $properties}
+{if !empty($customerinfo[$type|cat:"s"])}
 	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/post.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%">
-			{if $customerinfo.post_name != ""}{$customerinfo.post_name}{/if}
-			{if $customerinfo.post_address != ""}<BR>{$customerinfo.post_address}{/if}
-			{$customerinfo.post_zip} {$customerinfo.post_city}
-			{if $customerinfo.post_cstate}<BR>{$customerinfo.post_cstate}{/if}
-			{if $customerinfo.post_country}<BR>{t}{$customerinfo.post_country}{/t}{/if}
+		<TD style="width: 1%;"></TD>
+		<TD style="width: 99%;" class="nobr">
+			<fieldset style="width: 1%;" class="nobr">
+				<legend class="bold"><IMG SRC="{$properties.ui.legend.icon}" ALT=""> {$properties.ui.legend.text}</legend>
+				<TABLE>
+					{foreach $customerinfo[$type|cat:"s"] as $contact}
+					<TR{if ($contact.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>
+						<TD>
+							{if isset($properties.formatter)}{call_user_func($properties['formatter'], $contact.contact)}{else}{$contact.contact}{/if}
+							{if $contact.typestr}[{$contact.typestr}]{/if}
+							{if $contact.name} ({$contact.name|truncate:"40":"...":true}){/if}
+						</TD>
+					</TR>
+					{/foreach}
+				</TABLE>
+			</fieldset>
 		</TD>
 	</TR>
 {/if}
-{foreach from=$customerinfo.contacts item=item}
-	<TR>
-		<TD WIDTH="1%" style="vertical-align: top">
-			<IMG SRC="img/phone.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%">
-			{$item.phone}
-			{if $item.typestr}[{$item.typestr}]{/if}
-			{if $item.name} ({$item.name|truncate:"40":"...":true}){/if}
-		</TD>
-	</TR>
 {/foreach}
-{if $customerinfo.email != ""}
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/mail.gif" ALT="">
-		</TD>
-		<TD WIDTH="99%">
-			<A HREF="mailto:{$customerinfo.email}">{$customerinfo.email}</A>
-		</TD>
-	</TR>
-{/if}
 {foreach from=$customerinfo.messengers item=item}
 	<TR>
 		<TD>
@@ -214,9 +221,9 @@
                 {if $customerinfo.cutoffstop > $smarty.now}
 			    <TR>
 			        <TD colspan="2">
-			            <FONT class="alert">
+			            <span class="alert">
 			            {t a=$customerinfo.cutoffstop|date_format:"%Y/%m/%d"}Cutoff suspended to $a{/t}
-			            </FONT>
+			            </span>
 			        </TD>
 			    </TR>
                 {/if}
@@ -229,6 +236,7 @@
 		</TD>
 		<TD WIDTH="99%">
 		    <TABLE cellpadding="2">
+			{block name="customerinfobox-options"}
 		        <TR>
 		            <TD>
 			            {trans("Consent to personal data processing:")}
@@ -239,7 +247,7 @@
 	            </TR>
 	            <TR>
 	                <TD>
-			            {trans("Consent to electronic invoices:")}
+			            {trans("Cancellation of a traditional invoice (agreement on an electronic invoice):")}
             		</TD>
             		<TD>
             		    {if $customerinfo.einvoice}{trans("yes")}{else}{trans("no")}{/if}
@@ -261,14 +269,17 @@
 		                {if $customerinfo.mailingnotice}{trans("yes")}{else}{trans("no")}{/if}
 	                </TD>
 	            </TR>
+			{/block}
             </TABLE>
         </TD>
     </TR>
 
-                                        </TABLE>
+						{/block}
+						</TABLE>
 				</TD>
 				<TD WIDTH="50%" style="vertical-align:top;">
 					<TABLE WIDTH="100%" CELLPADDING="3">
+					{block name="customerinfobox-rightcolumn"}
 	{if $customerinfo.info}
 	<TR>
 		<TD WIDTH="1%">
@@ -326,7 +337,7 @@
 			<B>{trans("Balance:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			{if $customerinfo.balance < 0}<FONT class="alert">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
+			{if $customerinfo.balance < 0}<span class="alert">{$customerinfo.balance|money_format}</span>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
 		</TD>
 	</TR>
 	{/if}
@@ -356,7 +367,8 @@
 			{if $customerinfo.moddate}{$customerinfo.modifiedby}, {$customerinfo.moddateh}{else}-{/if}
 		</TD>
 	</TR>
-                                        	</TABLE>
+					{/block}
+					</TABLE>
 					</TD>
 				</TR>
 			</TABLE>
@@ -364,25 +376,24 @@
 		</TD>
         </TR>
 	<TR>
-		<TD WIDTH="100%" ALIGN="RIGHT">
+		<TD WIDTH="100%" colspan="2" class="text-right nobr">
 {/if}
 			{block name="customerinfobox-buttons"}
 			{if $customerinfo.deleted}
-				<A HREF="?m=customeredit&id={$customerinfo.id}&action=recover">{trans("Restore")} <IMG SRC="img/recover.gif" ALT="[ {trans("Restore")} ]"></A>
+				{if ConfigHelper::checkPrivilege('permanent_customer_removal')}
+				<A href="?m=customerdel&amp;id={$customerinfo.id}&amp;type=permanent">{trans("Remove permanently")} <img src="img/delete.gif" alt="[ {trans("Remove permanently")} ]"></A>
+				{/if}
+				<A HREF="?m=customeredit&amp;id={$customerinfo.id}&action=recover">{trans("Restore")} <IMG SRC="img/recover.gif" ALT="[ {trans("Restore")} ]"></A>
 			{else}
-				<NOBR>
-				<A HREF="?m=rtsearch&id={$customerinfo.id}">{trans("Tickets")}</A> <IMG src="img/ticket.gif" alt="[ {trans("Tickets")} ]"></A>
-				<A href="?m=accountlist&u={$customerinfo.id}">{trans("Accounts")} <IMG src="img/account.gif" alt="[ {trans("Accounts")} ]"></A>
-				<A href="?m=domainlist&c={$customerinfo.id}">{trans("Domains")} <IMG src="img/network.gif" alt="[ {trans("Domains")} ]"></A>
-				<A href="?m=trafficprint&type=customertraffic&customer={$customerinfo.id}" target="_blank">{trans("Stats")} <IMG src="img/traffic.gif" alt="[ {trans("Stats")} ]"></A>
-				</NOBR>
-				<NOBR>
-				<A href="?m=customeredit&id={$customerinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" alt="[ {trans("Edit")} ]"></A>
-				<A href="?m=customerdel&id={$customerinfo.id}" onClick="return confirmLink(this, '{trans("Are you sure, you want to remove that customer from database?\n\nIf that customer have any computers, they will be automatically removed from database too, and information about them irreversible losed!")}')">{trans("Delete")} <img src="img/delete.gif" alt="[ {trans("Delete")} ]"></A>
-				</NOBR>
+				<A HREF="?m=rtsearch&amp;id={$customerinfo.id}"{if $customerstats['tickets']['notresolved']} class="bold"{/if}>{trans("Tickets")}{if $customerstats['tickets']} ({$customerstats['tickets']['all']}{if $customerstats['tickets']['notresolved']} / {$customerstats['tickets']['notresolved']}{/if}){/if}</A> <IMG src="img/ticket.gif" alt="[ {trans("Tickets")} ]">
+				<A href="?m=accountlist&amp;u={$customerinfo.id}">{trans("Accounts")} ({$customerstats['accounts']})</A> <IMG src="img/account.gif" alt="[ {trans("Accounts")} ]">
+				<A href="?m=domainlist&amp;c={$customerinfo.id}">{trans("Domains")} ({$customerstats['domains']})</A> <IMG src="img/network.gif" alt="[ {trans("Domains")} ]">
+				<A href="?m=trafficprint&amp;type=customertraffic&amp;customer={$customerinfo.id}" target="_blank">{trans("Stats")} <IMG src="img/traffic.gif" alt="[ {trans("Stats")} ]"></A>
+				<A href="?m=customeredit&amp;id={$customerinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" alt="[ {trans("Edit")} ]"></A>
+				<A href="?m=customerdel&amp;id={$customerinfo.id}">{trans("Delete")} <img src="img/delete.gif" alt="[ {trans("Delete")} ]"></A>
 			{/if}
 			{if $info_link}
-				<A href="?m=customerinfo&id={$customerinfo.id}">{trans("Info")} <img src="img/info.gif" alt="[ {trans("Info")} ]"></A>
+				<A href="?m=customerinfo&amp;id={$customerinfo.id}">{trans("Info")} <img src="img/info.gif" alt="[ {trans("Info")} ]"></A>
 			{/if}
 			{/block}
 		</TD>

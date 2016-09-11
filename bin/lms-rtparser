@@ -263,13 +263,13 @@ if($dbtype =~ /mysql/)
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$dbase->do("SET NAMES utf8");
 	$utsfmt = "UNIX_TIMESTAMP()";
-	$custname = "CONCAT(UPPER(lastname), ' ', name) AS customername";
+	$custname = "CONCAT(UPPER(lastname), ' ', c.name) AS customername";
 }
 elsif($dbtype eq "postgres")
 {
 	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
-	$custname = "UPPER(lastname) || ' ' || name AS customername";
+	$custname = "UPPER(lastname) || ' ' || c.name AS customername";
 }
 else
 {
@@ -387,7 +387,9 @@ if(!$queue)
 }
 
 # find customerid
-$dbq = $dbase->prepare("SELECT id FROM customers WHERE email = ?");
+$dbq = $dbase->prepare("SELECT c.id FROM customers c
+	JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & 56 > 0)
+	WHERE cc.contact = ?");
 $dbq->execute($fromemail);
 if(my $row = $dbq->fetchrow_hashref())
 {
@@ -497,7 +499,9 @@ else
 	}
 
 	# find customerid
-	$dbq = $dbase->prepare("SELECT id FROM customers WHERE email = ? AND email!=''");
+	$dbq = $dbase->prepare("SELECT c.id FROM customers c
+		JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & 56 > 0)
+		WHERE cc.contact = ?");
 	$dbq->execute($fromemail);
 	if(my $row = $dbq->fetchrow_hashref())
 	{
@@ -544,10 +548,15 @@ if($notify)
 
 	if($dbq->rows() && $reqcustid && $customerinfo)
 	{
-		my $dbqc = $dbase->prepare("SELECT id, $custname, email, address, zip, city,
-				    (SELECT phone FROM customercontacts WHERE customerid = customers.id 
-					    ORDER BY id LIMIT 1) AS phone
-				    FROM customers WHERE id = $reqcustid");
+		my $dbqc = $dbase->prepare("SELECT id, $custname, address, zip, city,
+					(SELECT contact FROM customercontacts
+						WHERE customerid = c.id AND (customercontacts.type & 7 > 0)
+						ORDER BY id LIMIT 1) AS phone,
+					(SELECT contact FROM customercontacts
+						WHERE customerid = c.id AND (customercontacts.type & 40 > 0)
+						ORDER BY id LIMIT 1) AS email
+					FROM customeraddressview c
+					WHERE id = $reqcustid");
 		$dbqc->execute();
 		if(my $customer = $dbqc->fetchrow_hashref())
 		{

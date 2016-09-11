@@ -53,6 +53,14 @@
 			    </TD>
 			</TR>
 			{/foreach}
+                        <TR>
+                                <TD width="1%" class="text-right">
+                                        <label for="allbox">{trans("Check All")}</label>
+                                </TD>
+                                <TD width="1%" align="center">             
+                                        <INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('category', this)">
+                                </TD>
+                        </TR> 
                         </TBODY>
 		</TABLE>			
 	    </TD>

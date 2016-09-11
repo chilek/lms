@@ -16,14 +16,9 @@
 		document.cashimport.action += '&action=save';
 		document.cashimport.submit();
 	}
-
-	function reset_customer(cid) {
-		if (document.forms['cashimport'].elements['custid[' + cid + ']'].value)
-			document.forms['cashimport'].elements['customer[' + cid + ']'].value = document.forms['cashimport'].elements['custid[' + cid + ']'].value;
-	}
 //-->
 </SCRIPT>
-<P><FORM NAME="cashimport" ACTION="?m=cashimport" METHOD="post">
+<FORM NAME="cashimport" ACTION="?m=cashimport" METHOD="post">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -53,12 +48,12 @@
     </THEAD>
     <TBODY>
 	{foreach from=$divisions item=division}{if $division.list}
-	<TR>
+	<TR class="dark">
 		<TD colspan="4">
 		    <IMG src="img/division.gif" alt=""> <B>{$division.name}</B>
 		</TD>
 		<TD colspan="3" align="right">
-		    <A href="?m=cashimport&action=csv&division={$division.id}">{trans("Download (CSV)")} <IMG src="img/save.gif" alt="">
+		    <A href="?m=cashimport&action=csv&division={$division.id}">{trans("Download (CSV)")}</a> <IMG src="img/save.gif" alt="">
 		</TD>
 	</TR>
 		{cycle values="light,lucid" print=false}
@@ -80,46 +75,36 @@
 			    {$customerlist.$cust.customername}
 			{/if}
 		    </TD>
-		    <TD ALIGN="LEFT">
-			{$item.description}
-		    </TD>
-		    <TD ALIGN="RIGHT" COLSPAN="2" NOWRAP>
-			{if !$item.customerid}
-			<SELECT NAME="customer[{$item.id}]" {tip text="Select customer" trigger=$item.id} onChange="document.forms['cashimport'].elements['custid[{$item.id}]'].value=document.forms['cashimport'].elements['customer[{$item.id}]'].value">
-				<OPTION VALUE="0">{trans("- select customer -")}</OPTION>
-				{foreach from=$customerlist item=customer}
-				<OPTION VALUE="{$customer.id}" {if $customer.id == $item.customerid}SELECTED{/if}>{$customer.customername|truncate:60:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
-				{/foreach}
-			</SELECT>&nbsp;
-			<INPUT type="text" name="custid[{$item.id}]" value="{if $custid[{$item.id}]}{$custid[{$item.id}]}{/if}" size="5"{if $customerlist} onChange="reset_customer({$item.id})" onfocus="reset_customer({$item.id})"{/if} {tip text="Enter customer ID" trigger="custid"}>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.cashimport.elements['custid[{$item.id}]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-			{else}
-			<INPUT TYPE="hidden" NAME="customer[{$item.id}]" VALUE="{$item.customerid}">
-			{/if}
-			<INPUT TYPE="checkbox" NAME="marks[{$item.id}]" VALUE="{$item.id}">
-		</TD>
+			<TD class="text-left">
+				{$item.description}
+			</TD>
+			<TD class="text-right nobr" colspan="2">
+				{customerlist form="cashimport" customers=$customerlist selected=$item.customerid selectname="custid[{$item.id}]" inputname="customer[{$item.id}]"}
+				<INPUT TYPE="checkbox" NAME="marks[{$item.id}]" VALUE="{$item.id}">
+			</TD>
 	    </TR>
 	    {/foreach}
 	{/if}{/foreach}
 	{if !$listdata.total}
 	<TR>
-		<TD ALIGN="center"  COLSPAN="7">
-			<P>&nbsp;</P>
-			<P><B>{trans("No cash operations to import.")}</B></P>
-			<P>&nbsp;</P>
+		<TD class="empty-table" COLSPAN="7">
+			<p>{trans("No cash operations to import.")}</p>
 		</TD>
 	</TR>
 	{/if}
     </TBODY>
     <TFOOT>
-	<TR>
-		<TD COLSPAN="3" nowrap>
-			<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('cashimport', this)" VALUE="1"><label for="allbox">{trans("Check All")}</label>
+	<TR class="dark">
+		<TD class="nobr" colspan="3">
+			<label>
+				<INPUT type="checkbox" name="allbox" onchange="CheckAll('cashimport', this)" value="1">
+				{trans("Check All")}
+			</label>
 		</TD>
-		<TD COLSPAN="2" ALIGN="center" nowrap>
-		    <A href="?m=cashimport&action=txt">{trans("Download all (TXT)")} <IMG src="img/save.gif" alt="">
+		<TD class="text-center nobr" colspan="2">
+			<A href="?m=cashimport&action=txt">{trans("Download all (TXT)")}</a> <IMG src="img/save.gif" alt="">
 		</TD>
-		<TD COLSPAN="2" align="right" nowrap>
+		<TD class="text-right nobr" colspan="2">
 			<A HREF="javascript:Delete();">{trans("Delete")} <IMG src="img/delete.gif" ALT=""></A>
 			<A HREF="javascript:Save();">{trans("Save")} <IMG src="img/save.gif" ALT=""></A>
 			<A HREF="javascript:document.cashimport.submit();">{trans("<!do>Import")} <IMG src="img/save.gif" ALT=""></A>
@@ -127,9 +112,9 @@
 	</TR>
     </TFOOT>
 </TABLE>
-</FORM></P>
+</FORM>
 {if $error.lines}
-<P><TABLE class="lmsbox">
+<TABLE class="lmsbox">
     <THEAD>
 	<TR>
 		<TD width="100%" colspan="2">
@@ -171,9 +156,9 @@
 			</TABLE>
 		</TD>
 	</TR>
-</TABLE></P>
+</TABLE>
 {/if}
-<P><FORM name="parser" enctype="multipart/form-data" method="post" action="?m=cashimportparser">
+<FORM name="parser" enctype="multipart/form-data" method="post" action="?m=cashimportparser">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -209,58 +194,68 @@
 	</TR>
 	<TR>
 		<TD colspan="2" width="100%" align="right" nowrap>
-			<A href="javascript: document.parser.submit();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+			<A href="javascript:document.parser.submit();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
     </TBODY>
 </TABLE>
-</FORM></P>
-<P>
+</FORM>
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 100%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD width="100%">
-		    <IMG src="img/attach.gif" alt="">
-			<B>{trans("Packages:")}</B> ({t a=10}last $a packages{/t})
+		<TD class="bold">
+			<IMG src="img/attach.gif" alt="">
+			{trans("Packages:")}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
-	<TR>
-		<TD WIDTH="100%">
-			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
+	<TR class="dark">
+		<TD>
+			<TABLE{if !empty($sourcefiles)} class="datatables" data-order='[[ 0, "desc" ]]' data-page-length="25" data-state-save="true" style="display: none;"{/if}>
+				<COLGROUP>
+					<COL style="width: 1%;">
+					<COL style="width: 96%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+				</COLGROUP>
+				<THEAD>
 				<TR>
-					<TD WIDTH="1%" NOWRAP><B>{trans("Date:")}</B></TD>
-					<TD WIDTH="96%" NOWRAP>{trans("Filename:")}</TD>
-					<TD WIDTH="1%" NOWRAP>{trans("User:")}</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{trans("Records:")}</TD>
-					<TD WIDTH="1%">&nbsp;</TD>
+					<TH class="bold nobr">{trans("Date:")}</TD>
+					<TH class="text-left nobr">{trans("Filename:")}</TD>
+					<TH class="text-center nobr" data-searchable="false">{trans("User:")}</TD>
+					<TH class="text-center nobr" data-searchable="false">{trans("Records:")}</TD>
+					<TH data-orderable="false" data-searchable="false">&nbsp;</TD>
 				</TR>
+				</THEAD>
+				<TBODY>
 				{cycle name=files values="light,lucid" print=false}
 				{foreach from=$sourcefiles item=item}
 				<TR class="{cycle name=files}">
-					<TD NOWRAP><B>{$item.idate|date_format:"%Y/%m/%d %H:%M"}</B></TD>
-					<TD NOWRAP>{$item.name}</TD>
-					<TD NOWRAP>{$item.username}</TD>
-					<TD align="right">{$item.count|default:0}</TD>
-					<TD>
-					    <A onclick="return confirmLink(this, '{trans("Are you sure, you want to delete this package and related operations?")}')" href="?m=cashpackagedel&id={$item.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+					<TD class="bold nobr">{$item.idate|date_format:"%Y/%m/%d %H:%M"}</TD>
+					<TD><a href="?m=balancelist&sourcefileid={$item.id}">{$item.name}</a></TD>
+					<TD class="text-center nobr">{$item.username}</TD>
+					<TD class="text-center">{$item.count|default:0}</TD>
+					<TD class="text-right">
+						<A onclick="return confirmLink(this, '{trans("Are you sure, you want to delete this package and related operations?")}')" href="?m=cashpackagedel&id={$item.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 					</TD>
 				</TR>
 				{foreachelse}
 				<TR>
-					<TD align="center" WIDTH="100%" colspan="4">
-						<P>&nbsp;</P>
-						<P><B>{trans("There are no packages in database.")}</B></P>
-						<P>&nbsp;</P>
+					<TD class="empty-table" colspan="5">
+						<p>{trans("There are no packages in database.")}</p>
 					</TD>
 				</TR>
 				{/foreach}
+				</TBODY>
 			</TABLE>
 		</TD>
 	</TR>
     </TBODY>
 </TABLE>
-</P>
 {/block}
 

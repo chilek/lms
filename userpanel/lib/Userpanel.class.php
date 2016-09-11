@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,34 +24,25 @@
  *  $Id$
  */
 
-class USERPANEL
-{
-	var $DB;
-	var $SESSION;
-	var $MODULES = array();
-        var $_version = '1.11-git'; 
-        var $_revision = '$Revision$';
-			
-	function USERPANEL(&$DB, &$SESSION) // ustawia zmienne klasy
-	{
-	        $this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/i', '\1', $this->_revision);
+class USERPANEL {
+	private $DB;
+	private $SESSION;
+	public $MODULES = array();
+
+	public function __construct(&$DB, &$SESSION) { // ustawia zmienne klasy
 		$this->DB = &$DB;
 		$this->SESSION = &$SESSION;
 	}
 
-	function _postinit()
-	{
+	public function _postinit() {
 		return TRUE;
 	}
 
-	function AddModule($name = '', $module = '', $tip = '', $prio = 99, $description = '', $submenu = NULL)
-	{
-		if($name != '')
-		{
+	public function AddModule($name = '', $module = '', $tip = '', $prio = 99, $description = '', $submenu = NULL) {
+		if ($name != '') {
 			$this->MODULES[$module] = array('name' => $name, 'tip' => $tip, 'prio' => $prio, 'description' => $description, 'selected' => false, 'module' => $module, 'submenu' => $submenu);
 			if (!function_exists('cmp')) {
-			    function cmp($a, $b)
-			    {
+			    function cmp($a, $b) {
 				if ($a['prio'] == $b['prio']) 
 				{
 				    return 0;
@@ -64,23 +55,22 @@ class USERPANEL
 		}
 		return FALSE;
 	}
-	
-	function GetCustomerRights($id)
-	{
+
+	public function GetCustomerRights($id) {
 		$result = NULL;
-		
+
 		$rights = $this->DB->GetAll('SELECT name, module 
 					FROM up_rights
 					LEFT JOIN up_rights_assignments ON up_rights.id=up_rights_assignments.rightid
-		            		WHERE customerid=?', array($id));
-		
-		if(!$rights)
+					WHERE customerid=?', array($id));
+
+		if (!$rights)
 			$rights = $this->DB->GetAll('SELECT name, module FROM up_rights WHERE setdefault=1');
-		
-		if($rights)
-			foreach($rights as $right)
+
+		if ($rights)
+			foreach ($rights as $right)
 				$result[$right['module']][$right['name']] = true;
-		
+
 		return $result;
 	}
 }

@@ -18,20 +18,20 @@
 //-->
 </script>
 <P>
-<FORM NAME="nodeassignments" METHOD="POST" ACTION="?m=nodegroup&id={$nodegroup.id}">
+<FORM NAME="nodeassignments" METHOD="POST" ACTION="?m=nodegroup&amp;id={$nodegroup.id}">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT TYPE="hidden" NAME="oper" VALUE="1">
 <TABLE WIDTH="100%" CELLPADDING="0">
-    <TR><TD WIDTH="49%" style="vertical-align: top">
+    <TR><TD WIDTH="49%" style="valign-top">
 	    <TABLE class="lmsbox">
                 <THEAD>
 		<TR>
-		    <TD WIDTH="100%" NOWRAP>
+		    <TD style="width: 100;" class="bold nobr">
 			<IMG SRC="img/node.gif" ALT="">&nbsp;<B>{trans("Group members:")}</B>
 		    </TD>
 		</TR>
 		<TR>
-		    <TD colspan="4" ALIGN="CENTER">
+		    <TD style="width: 100%;" class="text-center">
 			    {trans("Network:")}
 			    <SELECT SIZE="1" NAME="nodeassignments[membersnetid]" ONCHANGE="javascript:changeMembersNetwork();">
 			    	<OPTION value="0" {if !$membersnetid}SELECTED{/if}>{trans("- all networks -")}</OPTION>
@@ -76,12 +76,12 @@
 	    <TABLE class="lmsbox">
                 <THEAD>
 		<TR>
-		    <TD WIDTH="100%" NOWRAP>
+		    <TD style="width: 100;" class="bold nobr">
 			<IMG SRC="img/node.gif" ALT="">&nbsp;<B>{trans("Add new member(s):")}</B>
 		    </TD>
 		</TR>
 		<TR>
-		    <TD colspan="4" ALIGN="CENTER">
+		    <TD style="width: 100%;" class="text-center">
 			    {trans("Network:")}
 			    <SELECT SIZE="1" NAME="nodeassignments[othersnetid]" ONCHANGE="javascript:changeOthersNetwork();">
 			    	<OPTION value="0" {if !$othersnetid}SELECTED{/if}>{trans("- all networks -")}</OPTION>

@@ -78,6 +78,41 @@ function module_main()
     $error = NULL;
 
 	$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+	if (isset($_FILES['files'])) {
+		$files = array();
+		foreach ($_FILES['files']['name'] as $fileidx => $filename)
+			if (!empty($filename)) {
+				if (is_uploaded_file($_FILES['files']['tmp_name'][$fileidx]) && $_FILES['files']['size'][$fileidx]) {
+					$filecontents = '';
+					$fd = fopen($_FILES['files']['tmp_name'][$fileidx], 'r');
+					if ($fd) {
+						while (!feof($fd))
+							$filecontents .= fread($fd,256);
+						fclose($fd);
+					}
+					$files[] = array(
+						'name' => $filename,
+						'tmp_name' => $_FILES['files']['tmp_name'][$fileidx],
+						'type' => $_FILES['files']['type'][$fileidx],
+						'contents' => $filecontents,
+					);
+				} else { // upload errors
+					if (isset($error['files']))
+						$error['files'] .= "\n";
+					else
+						$error['files'] = '';
+					switch ($_FILES['files']['error'][$fileidx]) {
+						case 1:
+						case 2: $error['files'] .= trans('File is too large: $a', $filename); break;
+						case 3: $error['files'] .= trans('File upload has finished prematurely: $a', $filename); break;
+						case 4: $error['files'] .= trans('Path to file was not specified: $a', $filename); break;
+						default: $error['files'] .= trans('Problem during file upload: $a', $filename); break;
+					}
+				}
+			}
+	}
+
     if (!$id && isset($_POST['helpdesk']))
     {
         $ticket = $_POST['helpdesk'];
@@ -108,6 +143,8 @@ function module_main()
 	if(!$error)
 	{
 		$ticket['email'] = $LMS->GetCustomerEmail($SESSION->id);
+		if (!empty($ticket['email']))
+			$ticket['email'] = $ticket['email'][0];
 		$ticket['mailfrom'] = $ticket['email'] ? $ticket['email'] : '';
 		$ts = time();
 		
@@ -130,6 +167,19 @@ function module_main()
 					$ticket['body'],
 					$ticket['mailfrom']
 				));
+
+		if (!empty($files) && ConfigHelper::getConfig('rt.mail_dir')) {
+			$msgid = $DB->GetLastInsertID('rtmessages');
+			$dir = ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d/%06d', $id, $msgid);
+			@mkdir(ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d', $id), 0700);
+			@mkdir($dir, 0700);
+			foreach ($files as $file) {
+				$newfile = $dir . '/' . $file['name'];
+				if (@rename($file['tmp_name'], $newfile))
+					$DB->Execute('INSERT INTO rtattachments (messageid, filename, contenttype)
+						VALUES (?,?,?)', array($msgid, $file['name'], $file['type']));
+			}
+		}
 
 		foreach(explode(',', $ticket['categories']) as $catid)
 			$DB->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)',
@@ -162,28 +212,43 @@ function module_main()
 			$body = $ticket['body']."\n\n".ConfigHelper::getConfig('userpanel.lms_url').'/?m=rtticketview&id='.$id;
 
 			$info = $DB->GetRow('SELECT id AS customerid, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-					email, address, zip, city, (SELECT phone FROM customercontacts
-					WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
-				FROM customers WHERE id = ?', array($SESSION->id));
+				address, zip, city FROM customeraddressview WHERE id = ?', array($SESSION->id));
+			$info['contacts'] = $DB->GetAll('SELECT contact, name FROM customercontacts
+					WHERE customerid = ?', array($SESSION->id));
+
+			$emails = array();
+			$phones = array();
+			if (!empty($info['contacts']))
+				foreach ($info['contacts'] as $contact)
+					if ($contact['type'] & CONTACT_NOTIFICATIONS) {
+						$contact = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+						if ($contact['type'] & CONTACT_EMAIL)
+							$emails[] = $contact;
+						else
+							$phones[] = $contact;
+					}
 
 			if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
 				$body .= "\n\n-- \n";
 				$body .= trans('Customer:').' '.$info['customername']."\n";
 				$body .= trans('ID:').' '.sprintf('%04d', $info['customerid'])."\n";
 				$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
-				$body .= trans('Phone:').' '.$info['phone']."\n";
-				$body .= trans('E-mail:').' '.$info['email'];
+				if (!empty($phones))
+					$body .= trans('Phone:') . ' ' . implode(', ', $phones) . "\n";
+				if (!empty($emails))
+					$body .= trans('E-mail:') . ' ' . implode(', ', $emails);
 
 				$sms_body .= "\n";
 				$sms_body .= trans('Customer:').' '.$info['customername'];
 				$sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
 				$sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'].'. ';
-				$sms_body .= $info['phone'];
+				if (!empty($phones))
+					$sms_body .= '. ' . trans('Phone:') . ' ' . preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones));
 			}
 
 			$queuedata = $LMS->GetQueue($ticket['queue']);
 			if (!empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody'])
-				&& !empty($info['email'])) {
+				&& !empty($emails)) {
 				$custmail_subject = $queuedata['newticketsubject'];
 				$custmail_subject = str_replace('%tid', $id, $custmail_subject);
 				$custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
@@ -199,7 +264,7 @@ function module_main()
 					'Reply-To' => $headers['From'],
 					'Subject' => $custmail_subject,
 				);
-				$LMS->SendMail($info['email'], $custmail_headers, $custmail_body);
+				$LMS->SendMail(implode(',', $emails), $custmail_headers, $custmail_body);
 			}
 
 			// send email
@@ -230,7 +295,7 @@ function module_main()
             }
 		}
 
-		header('Location: ?m=helpdesk');
+		header('Location: ?m=helpdesk&op=view&id=' . $id);
 		die;
 	}
 	else
@@ -272,7 +337,20 @@ function module_main()
 		                $ticket['customerid'],
 		            	$ticket['inreplyto'],
 		        ));
-	
+
+		if (!empty($files) && ConfigHelper::getConfig('rt.mail_dir')) {
+			$msgid = $DB->GetLastInsertID('rtmessages');
+			$dir = ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d/%06d', $id, $msgid);
+			@mkdir(ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d', $id), 0700);
+			@mkdir($dir, 0700);
+			foreach ($files as $file) {
+				$newfile = $dir . '/' . $file['name'];
+				if (@rename($file['tmp_name'], $newfile))
+					$DB->Execute('INSERT INTO rtattachments (messageid, filename, contenttype)
+						VALUES (?,?,?)', array($msgid, $file['name'], $file['type']));
+			}
+		}
+
 		// re-open ticket
 		$DB->Execute('UPDATE rttickets SET state = CASE state
 				WHEN 0 THEN 0
@@ -311,24 +389,38 @@ function module_main()
 		$body = $ticket['body']."\n\n".ConfigHelper::getConfig('userpanel.lms_url') . '/?m=rtticketview&id=' . $ticket['id'];
 
 		if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
-			$info = $DB->GetRow('SELECT id AS customerid, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-				email, address, zip, city,
-				(SELECT phone FROM customercontacts
-					WHERE customerid = customers.id ORDER BY id LIMIT 1) AS phone
-				FROM customers WHERE id = ?', array($SESSION->id));
+			$info = $DB->GetRow('SELECT c.id AS customerid, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,
+				address, zip, city FROM customeraddressview c WHERE c.id = ?', array($SESSION->id));
+			$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
+					WHERE customerid = ?', array($SESSION->id));
+
+			$emails = array();
+			$phones = array();
+			if (!empty($info['contacts']))
+				foreach ($info['contacts'] as $contact)
+					if ($contact['type'] & CONTACT_NOTIFICATIONS) {
+						$target = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+						if ($contact['type'] & CONTACT_EMAIL)
+							$emails[] = $target;
+						else
+							$phones[] = $target;
+					}
 
 			$body .= "\n\n-- \n";
 			$body .= trans('Customer:').' '.$info['customername']."\n";
 			$body .= trans('ID:').' '.sprintf('%04d', $info['customerid'])."\n";
 			$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
-			$body .= trans('Phone:').' '.$info['phone']."\n";
-			$body .= trans('E-mail:').' '.$info['email'];
+			if (!empty($phones))
+				$body .= trans('Phone:').' ' . implode(', ', $phones) . "\n";
+			if (!empty($emails))
+				$body .= trans('E-mail:') . ' ' . implode(', ', $emails);
 
 			$sms_body .= "\n";
 			$sms_body .= trans('Customer:').' '.$info['customername'];
 			$sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
 			$sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'].'. ';
-			$sms_body .= $info['phone'];
+			if (!empty($phones))
+				$sms_body .= '. ' . trans('Phone:') . ' ' . preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones));
 		}
 
 		//print_r($headers);die;
@@ -376,7 +468,8 @@ function module_main()
 	$SMARTY->assign('title', trans('Request No. $a / Queue: $b',
 		sprintf('%06d',$ticket['ticketid']), $ticket['queuename']));
 	
-	if($ticket['customerid'] == $SESSION->id)
+	$queues = explode(';',ConfigHelper::getConfig('userpanel.queues'));
+	if($ticket['customerid'] == $SESSION->id && in_array($ticket['queueid'], $queues))
 	{
 	        $SMARTY->assign('ticket', $ticket);
 	        $SMARTY->display('module:helpdeskview.html');
@@ -419,6 +512,27 @@ function module_main()
 	$SMARTY->assign('queues', $queues);
 	$SMARTY->assign('helpdesklist', $helpdesklist);
 	$SMARTY->display('module:helpdesk.html');
+}
+
+function module_attachment() {
+	global $DB, $SESSION;
+	$attach = $DB->GetRow('SELECT ticketid, filename, contenttype FROM rtattachments a
+		JOIN rtmessages m ON m.id = a.messageid
+		JOIN rttickets t ON t.id = m.ticketid
+		WHERE t.customerid = ? AND a.messageid = ? AND filename = ?',
+		array($SESSION->id, $_GET['msgid'], $_GET['file']));
+	if (empty($attach))
+		die;
+	$file = ConfigHelper::getConfig('rt.mail_dir') . sprintf("/%06d/%06d/%s", $attach['ticketid'], $_GET['msgid'], $_GET['file']);
+	if (file_exists($file)) {
+		$size = @filesize($file);
+		header('Content-Length: ' . $size . ' bytes');
+		header('Content-Type: '. $attach['contenttype']);
+		header('Cache-Control: private');
+		header('Content-Disposition: attachment; filename=' . $attach['filename']);
+		@readfile($file);
+	}
+	die;
 }
 
 ?>

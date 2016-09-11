@@ -31,9 +31,8 @@ if (!$userinfo || $userinfo['deleted'])
 	$SESSION->redirect('?m=userlist');
 
 $rights = $LMS->GetUserRights($id);
-foreach($rights as $right)
-	if($access['table'][$right]['name'])
-		$accesslist[] = $access['table'][$right]['name'];
+$access = AccessRights::getInstance();
+$accesslist = $access->getArray($rights);
 
 $ntype = array();
 if ($userinfo['ntype'] & MSG_MAIL)

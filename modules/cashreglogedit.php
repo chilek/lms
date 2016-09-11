@@ -83,17 +83,14 @@ if(isset($_POST['reglog']))
 			'time' => $time,
 			'description' => $reglog['description'],
 			'value' => $reglog['value'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREGHIST] => intval($_GET['id'])
+			SYSLOG::RES_USER => $AUTH->id,
+			SYSLOG::RES_CASHREGHIST => intval($_GET['id'])
 		);
 		$DB->Execute('UPDATE cashreglog SET time=?, description=?, value=?, userid=?
 				WHERE id=?', array_values($args));
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG]] = $regid;
-			$SYSLOG->AddMessage(SYSLOG_RES_CASHREGHIST, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREGHIST],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASHREG],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
+			$args[SYSLOG::RES_CASHREG] = $regid;
+			$SYSLOG->AddMessage(SYSLOG::RES_CASHREGHIST, SYSLOG::OPER_UPDATE, $args);
 		}
 
 		$SESSION->redirect('?'.$SESSION->get('backto'));

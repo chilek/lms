@@ -25,9 +25,11 @@
  */
 
 // variables
-define('USERPANEL_DIR', ConfigHelper::getConfig('directories.userpanel_dir'));
-define('USERPANEL_MODULES_DIR', USERPANEL_DIR.'/modules/');
-define('USERPANEL_LIB_DIR', USERPANEL_DIR.'/lib/');
+$CONFIG['directories']['userpanel_dir'] = (!isset($CONFIG['directories']['userpanel_dir']) ? getcwd() . DIRECTORY_SEPARATOR . 'userpanel' : $CONFIG['directories']['userpanel_dir']);
+
+define('USERPANEL_DIR', $CONFIG['directories']['userpanel_dir']);
+define('USERPANEL_LIB_DIR', USERPANEL_DIR . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR);
+define('USERPANEL_MODULES_DIR', USERPANEL_DIR . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR);
 
 @include(USERPANEL_DIR.'/lib/locale/'.$_ui_language.'/strings.php');
 

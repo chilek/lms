@@ -52,7 +52,7 @@ if(isset($_GET['removeold']))
 
 if(isset($_GET['removedeleted']))
 {
-    if($deleted = $DB->Execute('DELETE FROM stats WHERE nodeid NOT IN (SELECT id FROM nodes)'))
+    if($deleted = $DB->Execute('DELETE FROM stats WHERE nodeid NOT IN (SELECT id FROM vnodes)'))
     {
     	echo trans('$a records for deleted nodes have been removed.<BR>', $deleted);
 	flush();
@@ -71,7 +71,7 @@ if(isset($_GET['level']))
 
     if ($mintime = $DB->GetOne('SELECT MIN(dt) FROM stats'))
     {
-        $nodes = $DB->GetAll('SELECT id, name FROM nodes ORDER BY name');
+        $nodes = $DB->GetAll('SELECT id, name FROM vnodes ORDER BY name');
 
         foreach ($nodes as $node)
         {

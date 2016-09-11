@@ -52,7 +52,8 @@
 				<TD WIDTH="1%">{trans("Address:")}</TD>
 				<TD WIDTH="99%">
 				    {$ticket.address}
-				    {if $ticket.phone}({trans("phone:")} {$ticket.phone}){/if}
+				    {if $ticket.phones}({trans("phone:")} {$ticket.phones}){/if}
+				    {if $ticket.emails}({trans("email:")} {$ticket.emails}){/if}
 				</TD>
 			    </TR>
 			    {/if}
@@ -76,10 +77,8 @@
 {foreachelse}
 <TABLE WIDTH="640" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
-    		<TD ALIGN="center" WIDTH="100%">
-			<P>&nbsp;</P>
-			<P><B>{trans("No such requests in database.")}</B></P>
-			<P>&nbsp;</P>
+    		<TD class="empty-table">
+			<p>{trans("No such requests in database.")}</p>
 		</TD>
 	</TR>
 </TABLE>

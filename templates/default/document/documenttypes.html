@@ -3,7 +3,7 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE class="lmsbox">
+<TABLE class="lmsbox">
     <THEAD>
 	<TR>
 		<TD width="99%" NOWRAP><IMG src="img/docum.gif" alt=""> <B>{trans("Name:")}</B></TD>
@@ -21,19 +21,17 @@
 	{cycle values="light,lucid" print=false}
 	{foreach from=$typelist key=key item=item}
 	<TR class="highlight {cycle}"  >
-		<TD NOWRAP onClick="return self.location.href='?m=documenttypeedit&id={$key}';">
+		<TD NOWRAP onClick="return self.location.href='?m=documenttypeedit&amp;id={$key}';">
 			<IMG src="img/docum.gif" alt=""> <B>{$item}</B>
 		</TD>
 		<TD align="right" NOWRAP>
-			<A href="?m=documenttypeedit&id={$key}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A href="?m=documenttypeedit&amp;id={$key}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD colspan="2" align="center">
-			<p>&nbsp;</p>
-			<p><B>{trans("There are no types in database.")}</B></p>
-			<p>&nbsp;</p>
+		<TD colspan="2" class="empty-table">
+			<p>{trans("There are no types in database.")}</p>
 		</TD>
 	</TR>
 	{/foreach}
@@ -45,5 +43,5 @@
 	</TR>
 	{/if}
     </TBODY>
-</TABLE></P>
+</TABLE>
 {/block}

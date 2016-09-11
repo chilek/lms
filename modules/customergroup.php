@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,27 +26,30 @@
 
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
-if($action == 'delete')
-{
-        $LMS->CustomerAssignmentDelete(
-		array('customerid' => intval($_GET['id']),
-			'customergroupid' => $_GET['customergroupid']));
-}
-elseif($action == 'add')
-{
-	$groupid = intval($_POST['customergroupid']);
+if ($action == 'delete') {
+	if (isset($_GET['customergroupid']))
+		$customergroupids = array($_GET['customergroupid']);
+	elseif (isset($_POST['markedcustomergroupid']))
+		$customergroupids = $_POST['markedcustomergroupid'];
+	if (isset($customergroupids) && !empty($customergroupids))
+		foreach ($customergroupids as $customergroupid)
+			$LMS->CustomerAssignmentDelete(
+				array('customerid' => intval($_GET['id']),
+					'customergroupid' => $customergroupid));
+} elseif ($action == 'add') {
+	$groupids = $_POST['customergroupid'];
+	if (!is_array($groupids))
+		$groupids = array($groupids);
 	$uid = intval($_GET['id']);
-	
-        if ($LMS->CustomerGroupExists($groupid)
-		&& !$LMS->CustomerassignmentExist($groupid, $uid)
-		 && $LMS->CustomerExists($uid))
-        {
-	        $LMS->CustomerAssignmentAdd(
-			array('customerid' => $uid, 'customergroupid' => $groupid));
-	}
-}
-elseif(!empty($_POST['setwarnings']))
-{
+
+	if (!empty($groupids))
+		foreach ($groupids as $groupid)
+			if ($LMS->CustomerGroupExists($groupid)
+				&& !$LMS->CustomerassignmentExist($groupid, $uid)
+				&& $LMS->CustomerExists($uid))
+				$LMS->CustomerAssignmentAdd(
+					array('customerid' => $uid, 'customergroupid' => $groupid));
+} elseif(!empty($_POST['setwarnings'])) {
 	$setwarnings = $_POST['setwarnings'];
 	$oper = isset($_GET['oper']) ? $_GET['oper'] : '';
 	$groupid = isset($setwarnings['customergroup']) ? $setwarnings['customergroup'] : 0;

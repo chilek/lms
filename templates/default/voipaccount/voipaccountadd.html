@@ -4,12 +4,11 @@
 <!--// $Id$ //-->
 <h1>{$layout.pagetitle}</h1>
 {if $customerinfo}
-{include file="calendar_js.html"}
-<div>
     {include file="voipaccount/voipaccountaddbox.html"}
     {block name=extra_content}{/block}
     {include file="customer/customerinfobox.html" customerpanel=1}
     {include file="customer/customernodesbox.html"}
+    {include file="customer/customernetworksbox.html"}
     {include file="customer/customervoipaccountsbox.html"}
     {include file="customer/customerdocuments.html" limit=10}
     {include file="customer/customermessages.html" limit=10}
@@ -17,7 +16,6 @@
     {include file="customer/customergroups.html"}
     {include file="customer/customerassignments.html"}
     {include file="customer/customerbalancebox.html" limit=-10}
-</div>
 {else}
     {include file="voipaccount/voipaccountaddbox.html"}
     {block name=extra_content}{/block}

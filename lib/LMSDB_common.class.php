@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-define('DBVERSION', '2015042700'); // here should be always the newest version of database!
+define('DBVERSION', '2016090700'); // here should be always the newest version of database!
 				 // it placed here to avoid read disk every time when we call this file.
 
 /**
@@ -677,20 +677,27 @@ abstract class LMSDB_common implements LMSDBInterface
 
 	public function UpgradeDb($dbver = DBVERSION, $pluginclass = null, $libdir = null, $docdir = null) {
 		$lastupgrade = null;
-		if ($this->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',
+		if ($dbversion = $this->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',
 				array('dbversion' . (is_null($pluginclass) ? '' : '_' . $pluginclass)))) {
 			if ($dbver > $dbversion) {
 				set_time_limit(0);
+
+				if ($this->_dbtype == LMSDB::POSTGRESQL && $this->GetOne('SELECT COUNT(*) FROM information_schema.routines
+					WHERE routine_name = ? AND specific_schema = ?', array('array_agg', 'pg_catalog')) > 1)
+					$this->Execute('DROP AGGREGATE IF EXISTS array_agg(anyelement)');
+
 				$lastupgrade = $dbversion;
 
 				if (is_null($libdir))
 					$libdir = LIB_DIR;
 
+				$filename_prefix = $this->_dbtype == LMSDB::POSTGRESQL ? 'postgres' : 'mysql';
+
 				$pendingupgrades = array();
-				$upgradelist = getdir($libdir . DIRECTORY_SEPARATOR . 'upgradedb' . DIRECTORY_SEPARATOR . $this->_dbtype . '\.[0-9]{10}\.php$');
+				$upgradelist = getdir($libdir . DIRECTORY_SEPARATOR . 'upgradedb', '^' . $filename_prefix . '\.[0-9]{10}\.php$');
 				if (!empty($upgradelist))
 					foreach ($upgradelist as $upgrade) {
-						$upgradeversion = preg_replace('/^' . $this->_dbtype . '\.([0-9]{10})\.php$/', '\1', $upgrade);
+						$upgradeversion = preg_replace('/^' . $filename_prefix . '\.([0-9]{10})\.php$/', '\1', $upgrade);
 
 						if ($upgradeversion > $dbversion && $upgradeversion <= $dbver)
 							$pendingupgrades[] = $upgradeversion;
@@ -699,8 +706,8 @@ abstract class LMSDB_common implements LMSDBInterface
 				if (!empty($pendingupgrades)) {
 					sort($pendingupgrades);
 					foreach ($pendingupgrades as $upgrade) {
-						include($libdir . DIRECTORY_SEPARATOR . 'upgradedb' . DIRECTORY_SEPARATOR . $this->_dbtype . '.' . $upgrade . '.php');
-						if (!empty($this->errors))
+						include($libdir . DIRECTORY_SEPARATOR . 'upgradedb' . DIRECTORY_SEPARATOR . $filename_prefix . '.' . $upgrade . '.php');
+						if (empty($this->errors))
 							$lastupgrade = $upgrade;
 						else
 							break;

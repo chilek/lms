@@ -56,7 +56,7 @@ while ($adres = <STDIN>)
     	    print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
     	    exit 1;
 	}
-        $dbq = $dbase->prepare_cached("SELECT access,warning FROM nodes WHERE ipaddr=INET_ATON(?)");
+        $dbq = $dbase->prepare_cached("SELECT access,warning FROM vnodes WHERE ipaddr=INET_ATON(?)");
     }
     @lista = split(' ', $adres);
     @ip = split('/', $lista[1]);

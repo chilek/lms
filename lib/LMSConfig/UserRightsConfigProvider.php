@@ -28,13 +28,14 @@
  * UserRightsConfigProvider
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
+ * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 class UserRightsConfigProvider implements ConfigProviderInterface
 {
     const NAME = 'USER_RIGHTS_CONFIG_PROVIDER';
     
     /**
-     * Return user rights mask
+     * Return user rights array
      * 
      * @param array $options Associative array of options
      * @return array
@@ -46,6 +47,9 @@ class UserRightsConfigProvider implements ConfigProviderInterface
         }
         $id = $options['user_id'];
         $db = LMSDB::getInstance();
-        return array($db->GetOne('SELECT rights FROM users WHERE id = ?', array($id)));
+		$rights = $db->GetOne('SELECT rights FROM users WHERE id = ?', array($id));
+		$rights = empty($rights) ? array() : explode(',', $rights);
+
+        return array($rights);
     }
 }

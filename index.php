@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,6 +33,7 @@ $CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIREC
 
 define('START_TIME', microtime(true));
 define('LMS-UI', true);
+define('K_TCPDF_EXTERNAL_CONFIG', true);
 ini_set('error_reporting', E_ALL&~E_NOTICE);
 
 // find alternative config files:
@@ -72,11 +73,15 @@ define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
 define('VENDOR_DIR', $CONFIG['directories']['vendor_dir']);
 
 // Load autoloader
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'autoloader.php');
+$composer_autoload_path = VENDOR_DIR . DIRECTORY_SEPARATOR . 'autoload.php';
+if (file_exists($composer_autoload_path)) {
+    require_once $composer_autoload_path;
+} else {
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
+}
 
 // Do some checks and load config defaults
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'checkdirs.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'config.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 
 // Init database
@@ -93,7 +98,7 @@ try {
 
 // Call any of upgrade process before anything else
 
-$layout['dbschversion'] = array('DB' => $DB->UpgradeDb());
+$layout['dbschversion'] = $DB->UpgradeDb();
 
 // Initialize templates engine (must be before locale settings)
 $SMARTY = new LMSSmarty;
@@ -111,7 +116,10 @@ define('SMARTY_VERSION', $ver_chunks[0]);
 
 // add LMS's custom plugins directory
 $SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
-$SMARTY->registerFilter('pre', array('Smarty_Prefilter_Extendsall_Include', 'prefilter_extendsall_include'));
+
+$SMARTY->setMergeCompiledIncludes(true);
+
+$SMARTY->setDefaultResourceType('extendsall');
 
 // uncomment this line if you're not gonna change template files no more
 //$SMARTY->compile_check = false;
@@ -131,26 +139,21 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'checkip.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'accesstable.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
 
-if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG')) {
-	$SYSLOG = new SYSLOG($DB);
-} else {
-	$SYSLOG = null;
-}
+$SYSLOG = SYSLOG::getInstance();
 
 // Initialize Session, Auth and LMS classes
 
-$SESSION = new Session($DB, ConfigHelper::getConfig('phpui.timeout'));
-$AUTH = new Auth($DB, $SESSION, $SYSLOG);
-if ($SYSLOG)
-	$SYSLOG->SetAuth($AUTH);
+$SESSION = new Session($DB, ConfigHelper::getConfig('phpui.timeout'),
+	ConfigHelper::getConfig('phpui.settings_timeout'));
+$AUTH = new Auth($DB, $SESSION);
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
+$SMARTY->setPluginManager($plugin_manager);
 
 // Initialize Swekey class
 
@@ -181,11 +184,10 @@ $layout['logid'] = $AUTH->id;
 $layout['lmsdbv'] = $DB->GetVersion();
 $layout['smarty_version'] = SMARTY_VERSION;
 $layout['hostname'] = hostname();
-$layout['lmsv'] = '1.11-git';
-//$layout['lmsvr'] = $LMS->_revision.'/'.$AUTH->_revision;
-$layout['lmsvr'] = '';
+$layout['lmsv'] = $LMS->_version;
+$layout['lmsvr'] = $LMS->_revision;
 $layout['dberrors'] = $DB->GetErrors();
-$layout['dbdebug'] = $_DBDEBUG;
+$layout['dbdebug'] = isset($_DBDEBUG) ? $_DBDEBUG : false;
 $layout['popup'] = isset($_GET['popup']) ? true : false;
 
 $SMARTY->assignByRef('layout', $layout);
@@ -215,6 +217,9 @@ $plugin_manager->executeHook('lms_initialized', $LMS);
 
 $plugin_manager->executeHook('smarty_initialized', $SMARTY);
 
+$documents_dirs = array(DOC_DIR);
+$documents_dirs = $plugin_manager->executeHook('documents_dir_initialized', $documents_dirs);
+
 // Check privileges and execute modules
 if ($AUTH->islogged) {
 	// Load plugin files and register hook callbacks
@@ -224,24 +229,21 @@ if ($AUTH->islogged) {
 			if ($plugin['enabled'])
 				require(LIB_DIR . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $plugin_name . '.php');
 
-	$res = $LMS->ExecHook('access_table_init', array('accesstable' => $access['table']));
-	if (isset($res['accesstable']))
-		$access['table'] = $res['accesstable'];
+	$LMS->ExecHook('access_table_init');
 
-	$access['table'] = $LMS->executeHook('access_table_initialized', $access['table']);
+	$LMS->executeHook('access_table_initialized');
 
-        LMSConfig::getConfig(array(
-            'force' => true,
-            'force_user_rights_only' => true,
-            'access_table' => $access['table'],
-            'user_id' => $AUTH->id,
-        ));
+	LMSConfig::getConfig(array(
+		'force' => true,
+		'force_user_rights_only' => true,
+		'user_id' => $AUTH->id,
+	));
 
 	$module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';
 	$deny = $allow = FALSE;
 
 	$res = $LMS->ExecHook('module_load_before', array('module' => $module));
-	if ($res['abort']) {
+	if (array_key_exists('abort', $res) && $res['abort']) {
 		$SESSION->close();
 		$DB->Destroy();
 		die;
@@ -252,46 +254,34 @@ if ($AUTH->islogged) {
 		$module = 'chpasswd';
 
 	if ($module == '')
-	{
 		$module = ConfigHelper::getConfig('phpui.default_module');
-	}
 
-        $module_dir = null;
-        foreach ($modules_dirs as $suspected_module_dir) {
-            if (file_exists($suspected_module_dir . DIRECTORY_SEPARATOR . $module . '.php')) {
-                $module_dir = $suspected_module_dir;
-                break;
-            }
-        }
-        
+	$module_dir = null;
+	foreach ($modules_dirs as $suspected_module_dir)
+		if (file_exists($suspected_module_dir . DIRECTORY_SEPARATOR . $module . '.php')) {
+			$module_dir = $suspected_module_dir;
+			break;
+		}
+
 	if ($module_dir !== null)
 	{
-		$global_allow = !$AUTH->id || (!empty($access['allow']) && preg_match('/'.$access['allow'].'/i', $module));
+		$global_allow = !$AUTH->id || (!empty($global_access_regexp) && preg_match('/' . $global_access_regexp . '/i', $module));
 
 		if ($AUTH->id && ($rights = $LMS->GetUserRights($AUTH->id)))
-			foreach ($rights as $level)
-			{
-
-				if (!$global_allow && !$deny && isset($access['table'][$level]['deny_reg']))
-					$deny = (bool) preg_match('/'.$access['table'][$level]['deny_reg'].'/i', $module);
-				elseif (!$allow && isset($access['table'][$level]['allow_reg']))
-					$allow = (bool) preg_match('/'.$access['table'][$level]['allow_reg'].'/i', $module);
-
-			}
+			$allow = $access->checkRights($module, $rights, $global_allow);
 
 		if ($SYSLOG)
 			$SYSLOG->NewTransaction($module);
 
-		if ($global_allow || ($allow && !$deny))
-		{
+		if ($global_allow || $allow) {
 			$layout['module'] = $module;
 			$LMS->InitUI();
-                        $LMS->executeHook($module.'_on_load');
+			$LMS->executeHook($module.'_on_load');
 			include($module_dir . DIRECTORY_SEPARATOR . $module . '.php');
 		} else {
 			if ($SYSLOG)
-				$SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_USERNOACCESS,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $AUTH->id), array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER]));
+				$SYSLOG->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_USERNOACCESS,
+					array(SYSLOG::RES_USER => $AUTH->id));
 			$SMARTY->display('noaccess.html');
 		}
 	}

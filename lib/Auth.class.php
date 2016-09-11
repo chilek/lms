@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,7 @@
 
 class Auth {
 
-	public $id;
+	public $id = 0;
 	public $login;
 	public $logname;
 	public $passwd;
@@ -50,10 +50,19 @@ class Auth {
 	public $SESSION = NULL;
 	public $SYSLOG = NULL;
 
-	public function __construct(&$DB, &$SESSION, &$SYSLOG) {
+	private static $auth = null;
+
+	public static function GetCurrentUser() {
+		if (self::$auth)
+			return self::$auth->id;
+		return 0;
+	}
+
+	public function __construct(&$DB, &$SESSION) {
+		self::$auth = $this;
 		$this->DB = &$DB;
 		$this->SESSION = &$SESSION;
-		$this->SYSLOG = &$SYSLOG;
+		$this->SYSLOG = SYSLOG::getInstance();
 		//$this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/', '\1', $this->_revision);
 		$this->_revision = '';
 
@@ -107,14 +116,14 @@ class Auth {
 				writesyslog('User '.$this->login.' logged in.', LOG_INFO);
 				if ($this->SYSLOG) {
 					$this->SYSLOG->NewTransaction('auth', $this->id);
-					$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_USERLOGIN,
-						array('userid' => $this->id, 'ip' => $this->ip, 'useragent' => $_SERVER['HTTP_USER_AGENT']),
-						array('userid'));
+					$this->SYSLOG->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_USERLOGIN,
+						array(SYSLOG::RES_USER => $this->id, 'ip' => $this->ip, 'useragent' => $_SERVER['HTTP_USER_AGENT']));
 				}
 			}
 
 			$this->SESSION->save('session_id', $this->id);
 			$this->SESSION->save('session_login', $this->login);
+			$this->SESSION->restore_user_settings();
 			$this->SESSION->save('session_logname', $this->logname);
 			$this->SESSION->save('session_last', $this->last);
 			$this->SESSION->save('session_lastip', $this->lastip);
@@ -131,12 +140,11 @@ class Auth {
 						writesyslog('Bad password for ' . $this->login, LOG_WARNING);
 
 					$this->DB->Execute('UPDATE users SET failedlogindate=?, failedloginip=? WHERE id = ?',
-						array(time(), ip2long($this->ip), $this->id));
+						array(time(), $this->ip, $this->id));
 					if ($this->SYSLOG) {
 						$this->SYSLOG->NewTransaction('auth', $this->id);
-						$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_USERLOGFAIL,
-							array('userid' => $this->id, 'ip' => $this->ip, 'useragent' => $_SERVER['HTTP_USER_AGENT']),
-							array('userid'));
+						$this->SYSLOG->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_USERLOGFAIL,
+							array(SYSLOG::RES_USER => $this->id, 'ip' => $this->ip, 'useragent' => $_SERVER['HTTP_USER_AGENT']));
 					}
 				} else {
 					writesyslog('Unknown login ' . $this->login . ' from ' . $this->ip, LOG_WARNING);
@@ -159,9 +167,8 @@ class Auth {
 			writesyslog('User ' . $this->login . ' logged out.', LOG_INFO);
 			if ($this->SYSLOG) {
 				$this->SYSLOG->NewTransaction('auth', $this->id);
-				$this->SYSLOG->AddMessage(SYSLOG_RES_USER, SYSLOG_OPER_USERLOGOUT,
-					array('userid' => $this->id, 'ip' => $this->ip, 'useragent' => $_SERVER['HTTP_USER_AGENT']),
-					array('userid'));
+				$this->SYSLOG->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_USERLOGOUT,
+					array(SYSLOG::RES_USER => $this->id, 'ip' => $this->ip, 'useragent' => $_SERVER['HTTP_USER_AGENT']));
 			}
 		}
 		$this->SESSION->finish();

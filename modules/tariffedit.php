@@ -107,16 +107,14 @@ if(isset($_POST['tariff']))
 	                'quota_ftp_limit', 'quota_sql_limit',
 	);
 
-	foreach($items as $item)
-	{
-	        if(isset($limit[$item]))
-		        $tariff[$item] = NULL;
-	        elseif(!preg_match('/^[0-9]+$/', $tariff[$item]))
-	                $error[$item] = trans('Integer value expected!');
+	foreach ($items as $item) {
+	    if(isset($limit[$item]))
+		    $tariff[$item] = NULL;
+	    elseif(!preg_match('/^[0-9]+$/', $tariff[$item]))
+	        $error[$item] = trans('Integer value expected!');
 	}
 
-	if(!$error)
-	{
+	if (!$error) {
 		$LMS->TariffUpdate($tariff);
 		$SESSION->redirect('?m=tariffinfo&id='.$tariff['id']);
 	}
@@ -124,10 +122,16 @@ if(isset($_POST['tariff']))
 else
 	$tariff = $LMS->GetTariff($_GET['id']);
 
+if ($tariff['type'] == TARIFF_PHONE) {
+    $SMARTY->assign('voip_tariffs', $DB->GetAll('SELECT id, name FROM voip_tariffs'));
+    $SMARTY->assign('voip_tariffrules', $DB->GetAll('SELECT id, name FROM voip_rule_groups'));
+}
+
 $layout['pagetitle'] = trans('Subscription Edit: $a',$tariff['name']);
 
 $SMARTY->assign('tariff',$tariff);
 $SMARTY->assign('taxeslist',$LMS->GetTaxes());
+$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE));
 $SMARTY->assign('error',$error);
 $SMARTY->display('tariff/tariffedit.html');
 

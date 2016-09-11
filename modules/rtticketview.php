@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -42,8 +42,7 @@ if(!$rights || !$catrights)
 $ticket = $LMS->GetTicketContents($_GET['id']);
 $categories = $LMS->GetCategoryListByUser($AUTH->id);
 
-if ($ticket['customerid'] && ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_stats', false)))
-{
+if ($ticket['customerid'] && ConfigHelper::checkConfig('phpui.helpdesk_stats')) {
 	$yearago = mktime(0, 0, 0, date('n'), date('j'), date('Y')-1);
 	$stats = $DB->GetAllByKey('SELECT COUNT(*) AS num, cause FROM rttickets 
 			    WHERE customerid = ? AND createtime >= ? 
@@ -52,10 +51,9 @@ if ($ticket['customerid'] && ConfigHelper::checkValue(ConfigHelper::getConfig('p
 	$SMARTY->assign('stats', $stats);
 }
 
-if ($ticket['customerid'] && ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.helpdesk_customerinfo', false)))
-{
+if ($ticket['customerid'] && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
 	$customer = $LMS->GetCustomer($ticket['customerid'], true);
-        $customer['groups'] = $LMS->CustomergroupGetForCustomer($ticket['customerid']);
+	$customer['groups'] = $LMS->CustomergroupGetForCustomer($ticket['customerid']);
 
 	if(!empty($customer['contacts'])) $customer['phone'] = $customer['contacts'][0]['phone'];
 

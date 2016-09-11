@@ -1,0 +1,10 @@
+*.php text eol=lf
+*.html text eol=lf
+*.c text eol=lf
+*.h text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.sh text eol=lf
+*.txt text eol=lf
+
+lib/LMS.class.php export-subst

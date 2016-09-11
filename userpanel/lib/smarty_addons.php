@@ -42,8 +42,7 @@ function _smarty_block_box($params, $content, $template, &$repeat)
 		$template->assignGlobal('boxtitle', $title);
 		$template->assignGlobal('boxcontent', $content);
 
-		//return $template->fetch(ConfigHelper::getConfig('directories.userpanel_dir').'/'.$file);
-		return $template->smarty->fetch(ConfigHelper::getConfig('directories.userpanel_dir').'/'.$file);
+		return $template->smarty->fetch(USERPANEL_DIR . DIRECTORY_SEPARATOR . $file);
 	}
 }
 
@@ -67,8 +66,7 @@ function _smarty_function_body($params, $template)
         elseif(file_exists('style/default/body.html'))
 	        $file = 'style/default/body.html';
 
-	//return $template->fetch(ConfigHelper::getConfig('directories.userpanel_dir').'/'.$file);
-	return $template->smarty->fetch(ConfigHelper::getConfig('directories.userpanel_dir').'/'.$file);
+	return $template->smarty->fetch(USERPANEL_DIR . DIRECTORY_SEPARATOR . $file);
 }
 
 function _smarty_function_userpaneltip($params, $template)
@@ -124,6 +122,8 @@ function _smarty_function_img($params, $template)
 	    $file = 'style/'.$style.'/'.$params['src'];
     elseif(file_exists('style/default/'.$params['src']))
     	    $file = 'style/default/'.$params['src'];
+	else
+		$file = 'img/' . $params['src'];
 
     $result  = '<img ';
     $result .= 'src="'.$file.'" ';

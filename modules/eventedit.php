@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2014 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,20 +24,48 @@
  *  $Id$
  */
 
+function select_customer($id)
+{
+    $JSResponse = new xajaxResponse();
+    $nodes_location = LMSDB::getInstance()->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY n.name ASC', array($id));
+    $JSResponse->call('update_nodes_location', (array)$nodes_location);
+    return $JSResponse;
+}
+
+function getUsersForGroup($groupid) {
+	$JSResponse = new xajaxResponse();
+
+	if (empty($groupid))
+		$users = null;
+	else
+		$users = LMSDB::getInstance()->GetCol('SELECT u.id FROM users u
+			JOIN userassignments ua ON ua.userid = u.id
+			WHERE u.deleted = 0 AND u.access = 1 AND ua.usergroupid = ?',
+			array($groupid));
+
+	$JSResponse->call('update_user_selection', $users);
+
+	return $JSResponse;
+}
+
+$LMS->InitXajax();
+$LMS->RegisterXajaxFunction(array('select_customer', 'getUsersForGroup'));
+$SMARTY->assign('xajax', $LMS->RunXajax());
+
 if(isset($_GET['action']) && $_GET['action'] == 'open')
 {
-	$DB->Execute('UPDATE events SET closed = 0 WHERE id = ?',array($_GET['id']));
+	$DB->Execute('UPDATE events SET closed = 0, closeduserid = 0, closeddate = 0 WHERE id = ?',array($_GET['id']));
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 elseif(isset($_GET['action']) && $_GET['action'] == 'close')
 {
-	$DB->Execute('UPDATE events SET closed = 1 WHERE id = ?',array($_GET['id']));
+	$DB->Execute('UPDATE events SET closed = 1, closeduserid = ?, closeddate = ?NOW?  WHERE id = ?',array($AUTH->id, $_GET['id']));
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-$event = $DB->GetRow('SELECT events.id AS id, title, description, note, 
+$event = $DB->GetRow('SELECT events.id AS id, title, description, note, events.type,
 			date, begintime, enddate, endtime, customerid, private, closed, ' 
-			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername
+			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, nodeid
 			FROM events LEFT JOIN customers ON (customers.id = customerid)
 			WHERE events.id = ?', array($_GET['id']));
 
@@ -52,13 +80,24 @@ $eventuserlist = $DB->GetCol('SELECT userid AS id
 				WHERE users.id = userid
 				AND eventid = ?', array($event['id']));
 
+if ($eventuserlist === null) {
+    $eventuserlist = array();
+}
+
 if(isset($_POST['event']))
 {
 	$event = $_POST['event'];
+
+	if (!isset($event['usergroup']))
+		$event['usergroup'] = 0;
+	$SESSION->save('eventgid', $event['usergroup']);
+
 	$event['id'] = $_GET['id'];
-	
+
 	if($event['title'] == '')
 		$error['title'] = trans('Event title is required!');
+	elseif(strlen($event['title']) > 255)
+		$error['title'] = trans('Event title is too long!');
 
 	if ($event['date'] == '')
 		$error['date'] = trans('You have to specify event day!');
@@ -84,12 +123,17 @@ if(isset($_POST['event']))
 
 	if (!$error) {
 		$event['private'] = isset($event['private']) ? 1 : 0;
+		if (isset($event['customerid']))
+			$event['custid'] = $event['customerid'];
+		if ($event['custid'] == '')
+			$event['custid'] = 0;
+		$event['nodeid'] = isset($event['customer_location']) ? NULL : $event['nodeid'];
 
 		$DB->BeginTrans();
 
-		$DB->Execute('UPDATE events SET title=?, description=?, date=?, begintime=?, enddate=?, endtime=?, private=?, note=?, customerid=? WHERE id=?',
-				array($event['title'], $event['description'], $date, $event['begintime'], $enddate, $event['endtime'], $event['private'], $event['note'], $event['customerid'], $event['id']));
-				
+		$DB->Execute('UPDATE events SET title=?, description=?, date=?, begintime=?, enddate=?, endtime=?, private=?, note=?, customerid=?, type=?, nodeid=? WHERE id=?',
+				array($event['title'], $event['description'], $date, $event['begintime'], $enddate, $event['endtime'], $event['private'], $event['note'], $event['custid'], $event['type'], $event['nodeid'], $event['id']));
+
 		if (!empty($event['userlist']) && is_array($event['userlist'])) {
 			$DB->Execute('DELETE FROM eventassignments WHERE eventid = ?', array($event['id']));
 			foreach ($event['userlist'] as $userid)
@@ -111,11 +155,22 @@ $layout['pagetitle'] = trans('Event Edit');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$userlist = $LMS->GetUserNames();
+$usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
+$userlist = $DB->GetAll('SELECT id, name FROM users
+	WHERE deleted = 0 AND users.access = 1 ORDER BY login ASC');
 
-$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
+if (empty($nodes_location))
+	$nodes_location = $DB->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY name ASC', array($event['customerid']));
+
+if (!isset($event['usergroup']))
+	$SESSION->restore('eventgid', $event['usergroup']);
+
+$SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
+$SMARTY->assign('nodes_location', $nodes_location);
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+	$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('userlist', $userlist);
-$SMARTY->assign('userlistsize', sizeof($userlist));
+$SMARTY->assign('usergroups', $usergroups);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('event', $event);
 $SMARTY->assign('hours', 

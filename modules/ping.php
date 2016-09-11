@@ -145,7 +145,7 @@ if (isset($_GET['ip']) && check_ip($_GET['ip']))
 	    $SESSION->restore('ping_type', $type);
 
     if (!$type) {
-        $type = 1;
+        $type = ConfigHelper::getConfig('phpui.ping_type');
     }
 
     $SESSION->save('ping_type', $type);

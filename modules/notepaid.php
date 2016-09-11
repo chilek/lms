@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -42,10 +42,10 @@ if(sizeof($ids))
 		list ($cid, $value, $closed) = array_values($DB->GetRow('SELECT customerid, 
 			(SELECT SUM(value) FROM debitnotecontents
 				WHERE docid = d.id) AS value, closed
-			FROM documents
+			FROM documents d
 			WHERE id = ?', array($noteid)));
 		// add payment
-		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.note_check_payment', false)) && !$closed) {
+		if (ConfigHelper::checkConfig('phpui.note_check_payment') && !$closed) {
 			if ($value != 0)
 				$LMS->AddBalance(array(
 					'type' => 1,
@@ -58,12 +58,11 @@ if(sizeof($ids))
 
 		if ($SYSLOG) {
 			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $noteid,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $cid,
+				SYSLOG::RES_DOC => $noteid,
+				SYSLOG::RES_CUST => $cid,
 				'closed' => intval(!$closed),
 			);
-			$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+			$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
 		}
 		$DB->Execute('UPDATE documents SET closed = 
 			(CASE closed WHEN 0 THEN 1 ELSE 0 END)

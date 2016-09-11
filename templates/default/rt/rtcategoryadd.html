@@ -46,13 +46,21 @@
 			{foreach from=$category.owners item=user}
 			<TR class="highlight {cycle}"  >
 			    <TD width="99%">
-				<A href="?m=userinfo&id={$user.id}">{$user.name}</A>
+				<A href="?m=userinfo&amp;id={$user.id}">{$user.name}</A>
 			    </TD>
 			    <TD width="1%" align="center">
 				    <INPUT type="checkbox" name="category[users][{$user.id}]" value="1" {if $user.owner > 0}CHECKED{/if}>
 			    </TD>
 			</TR>
 			{/foreach}
+                        <TR>
+                                <TD width="1%" class="text-right">
+                                        <label for="allbox">{trans("Check All")}</label>
+                                </TD>
+                                <TD width="1%" align="center">             
+                                        <INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('category', this)">
+                                </TD>
+                        </TR> 
                         </TBODY>
 		</TABLE>			
 	    </TD>
@@ -64,7 +72,7 @@
 	    </TD>
 	</TR>
     </TBODY>
-</TABLE></FORM></P>
+</TABLE></FORM>
 <SCRIPT type="text/javascript">
 <!--
 document.forms['category'].elements['category[name]'].focus();

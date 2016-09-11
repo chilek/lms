@@ -318,7 +318,7 @@ void reload(GLOBAL *g, struct pinger_module *p)
 		g->db->free(&res);
 	}
 
-	res = g->db->pquery(g->db->conn, "SELECT id, INET_NTOA(ipaddr) AS ip FROM nodes");
+	res = g->db->pquery(g->db->conn, "SELECT id, INET_NTOA(ipaddr) AS ip FROM vnodes");
 
 	for(i=0; i<g->db->nrows(res); i++) 
 	{

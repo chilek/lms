@@ -60,7 +60,7 @@
 //-->
 </SCRIPT>
 <H1>{$layout.pagetitle}</H1>
-<P><FORM NAME="setwarnings" METHOD="POST" ACTION="?m=nodewarn" id="setwarnings">
+<FORM NAME="setwarnings" METHOD="POST" ACTION="?m=nodewarn" id="setwarnings">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE width="100%" cellpadding="3">
 	<TR>
@@ -120,25 +120,22 @@
 				</TR>
 				<TR>
 					<TD WIDTH="1%" nowrap>
-						<INPUT TYPE="checkbox" NAME="nodes" OnClick="javascript:SelectAllNodes()"><A HREF="javascript:SelectAllNodes2()">{trans("Select All<!nodes>")}</A></INPUT>
+						<INPUT TYPE="checkbox" NAME="nodes" OnClick="javascript:SelectAllNodes()"><A HREF="javascript:SelectAllNodes2()">{trans("Select All<!nodes>")}</A>
 					</TD>
 					<TD ALIGN="left">
-						 <NOBR>
-						 <INPUT TYPE="checkbox" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}><A HREF="javascript:switchbox1()">{trans("Enable")}</A></INPUT></NOBR>
-						 / <INPUT TYPE="checkbox" NAME="setwarnings[warnoff]" ID="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}><A HREF="javascript:switchbox2()">{trans("Disable")}</A></INPUT>
-						 </NOBR>
+						 <INPUT TYPE="checkbox" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}><A HREF="javascript:switchbox1()">{trans("Enable")}</A>
+						 / <INPUT TYPE="checkbox" NAME="setwarnings[warnoff]" ID="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}><A HREF="javascript:switchbox2()">{trans("Disable")}</A>
 					</TD>
 					<TD ALIGN="RIGHT">
 						<A HREF="javascript:document.setwarnings.submit()">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 					</TD>
-				<TR>
+				</TR>
                             </TBODY>
 			</TABLE>
 		</TD>
 	</TR>
 </TABLE>
 </FORM>
-</P>
 
 <SCRIPT type="text/javascript">
 <!--//

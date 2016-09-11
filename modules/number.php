@@ -47,7 +47,7 @@ if($doc = $DB->GetRow('SELECT number, cdate, type, template, extnumber
 		break;
 	}
 	
-	$SMARTY->assign('content', '<NOBR>'.$ntempl.'</NOBR>');
+	$SMARTY->assign('content', $ntempl);
 	$SMARTY->display('dynpopup.html');
 }
 

@@ -1,0 +1,97 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<h1>{$layout.pagetitle}</h1>
+<TABLE WIDTH="100%" CELLPADDING="3">
+    <TR CLASS="dark"><TD CLASS="fall"><B>{trans("Module Configuration:")}</B></TD></TR>
+    <TR CLASS="light"><TD CLASS="fall">
+            <FORM NAME="moduleconfig" METHOD="POST" ACTION="?m=userpanel&module=helpdesk&f=submit_setup" id="helpdesksetup">
+                <TABLE WIDTH="100%">
+                    <TR>
+                        <TD WIDTH="1%" NOWRAP>
+                            {trans("Queues:")}
+                        </TD>
+                        <TD WIDTH="99%" NOWRAP>
+                            <SELECT NAME="queues[]" multiple id="queues" size="20" {tip text="Helpdesk queues for tickets requested in Userpanel"}>
+                                {*<OPTION value="" SELECTED>{trans("- select queues -")}</OPTION>*}
+                                {foreach $queuelist as $queue}
+                                <OPTION value="{$queue.id}"{if in_array($queue.id, $queues)} SELECTED{/if}>{$queue.name}</OPTION>
+                                {/foreach}
+                            </SELECT> 
+                        </TD>
+                    </TR>
+                    <TR>
+                        <TD WIDTH="1%" NOWRAP>
+                            <label for="tickets_from_selected_queues">{trans("Show tickets from selected queues only:")}</label>
+                        </TD>
+                        <TD WIDTH="99%" NOWRAP>
+                            <INPUT type="checkbox" name="tickets_from_selected_queues" id="tickets_from_selected_queues" value="1" {if $tickets_from_selected_queues}CHECKED{/if}>
+                        </TD>
+                    </TR>
+                    <TR>
+                        <TD WIDTH="1%" NOWRAP>
+                            <label for="allow_message_add_to_closed_tickets">{trans("Allow message add to closed tickets:")}</label>
+                        </TD>
+                        <TD WIDTH="99%" NOWRAP>
+                            <INPUT type="checkbox" name="allow_message_add_to_closed_tickets" id="allow_message_add_to_closed_tickets" value="1" {if $allow_message_add_to_closed_tickets}CHECKED{/if}>
+                        </TD>
+                    </TR>
+                    <TR>
+                        <TD WIDTH="1%" NOWRAP>
+                            <label for="limit_ticket_movements_to_selected_queues">{trans("Limit ticket movements to selected queues:")}</label>
+                        </TD>
+                        <TD WIDTH="99%" NOWRAP>
+                            <INPUT type="checkbox" name="limit_ticket_movements_to_selected_queues" id="limit_ticket_movements_to_selected_queues" value="1" {if $limit_ticket_movements_to_selected_queues}CHECKED{/if}>
+                        </TD>
+                    </TR>
+                    <TR>
+                        <TD WIDTH="1%" NOWRAP>
+                            {trans("Default user:")}
+                        </TD>
+                        <TD WIDTH="99%" NOWRAP>
+                            <SELECT NAME="default_userid" {tip text="Sender of new request notifications and his email. If not specified notifications goes from queue address."}> 
+                                <OPTION value="0" SELECTED>{trans("- select user -")}</OPTION>
+                                {foreach from=$userlist item=user}
+                                <OPTION value="{$user.id}"{if $user.id == $default_userid} SELECTED{/if}>{$user.name}</OPTION>
+                                {/foreach}
+                            </SELECT>
+                        </TD>
+                    </TR>
+                    <TR>
+                        <TD WIDTH="1%" NOWRAP>
+                            {trans("LMS url:")}
+                        </TD>
+                        <TD WIDTH="99%" NOWRAP>
+                            <INPUT TYPE="TEXT" NAME="lms_url" VALUE="{$lms_url}" SIZE="50" {tip text="LMS address needed to build link to new ticket in notification message"}> 
+                        </TD>
+                    </TR>
+                    <TR>
+                        <TD WIDTH="1%" style="vertical-align:top" NOWRAP>
+                            {trans("Default categories:")}
+                        </TD>
+                        <TD WIDTH="99%" NOWRAP>
+                            {foreach from=$categories item=category}
+                            <INPUT type="checkbox" name="lms_categories[{$category.id}]" ID="cat{$category.id}" value="1" {if $category.checked > 0}CHECKED{/if}>
+                            <label for="cat{$category.id}">{$category.name}</label><BR>
+                            {/foreach}
+                        </TD>
+                    </TR>
+                </TABLE>
+            </FORM>
+            <p align="right">
+                <A HREF="?m=userpanel">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
+                <A HREF="javascript:document.moduleconfig.submit();" ACCESSKEY="S">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
+            </p>
+        </TD></TR>
+</TABLE>
+<SCRIPT type="text/javascript">
+<!--
+    /*
+     var queues = [];
+     {foreach $queues as $queue}
+     queues.push({$queue});
+     {/foreach}
+     multiselect('helpdesksetup', 'queues', '{t}- select queues -{/t}', queues);
+     */
+//-->
+</SCRIPT>
+{include file="footer.html"}

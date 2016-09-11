@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -85,7 +85,9 @@ if (isset($_POST['netnode'])) {
 		'ownership'=>$netnodedata['ownership'],
 		'coowner'=>$netnodedata['coowner'],
 		'uip'=>$netnodedata['uip'],
-		'miar'=>$netnodedata['miar']);	
+		'miar'=>$netnodedata['miar'],
+		'divisionid'=>$netnodedata['divisionid']
+                );	
 	
 		if ($netnodedata['invprojectid'] == '-1' || intval($ipi)>0) {
 			$args['invprojectid'] = intval($ipi);	
@@ -103,7 +105,7 @@ if (isset($_POST['netnode'])) {
 						array_push($fields,$key."=".$value);
 			}
 		}
-		$DB->Execute("UPDATE netnodes SET ".join($fields,",")." WHERE id=?",array($id));
+                $DB->Execute("UPDATE netnodes SET ".join($fields,",")." WHERE id=?",array($id));
 		$LMS->CleanupInvprojects();
 		$SESSION->redirect('?m=netnodeinfo&id=' . $id);
 	}
@@ -123,6 +125,7 @@ if ($subtitle)
 $SMARTY->assign('error', $error);
 $SMARTY->assign('netnode', $netnodedata);
 $SMARTY->assign('objectid', $netnodedata['id']);
+$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
 
 $nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
 	array(INV_PROJECT_SYSTEM));

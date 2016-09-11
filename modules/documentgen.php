@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,9 @@
  *  $Id$
  */
 
-include(MODULES_DIR . '/document.inc.php');
+$SMARTY->setDefaultResourceType('file');
+
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'document.inc.php');
 
 $layout['pagetitle'] = trans('Documents Generator');
 
@@ -54,8 +56,7 @@ if (isset($_POST['document'])) {
 			$document['fromdate'] = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
 		else
 			$error['fromdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-	}
-	else
+	} else
 		$document['fromdate'] = 0;
 
 	if ($document['todate']) {
@@ -71,27 +72,27 @@ if (isset($_POST['document'])) {
 	if ($document['fromdate'] > $document['todate'] && $document['todate'] != 0)
 		$error['todate'] = trans('Start date can\'t be greater than end date!');
 
-	switch ($_POST['filter']) {
+	$state = $_POST['filter'];
+	$network = $_POST['network'];
+	$customergroup = $_POST['customergroup'];
+	switch ($state) {
 		case 0:
-			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter'], $_POST['network'], $_POST['customergroup']);
+			$customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
 			break;
-		case 1:
-			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter']);
+		case CSTATUS_INTERESTED: case CSTATUS_WAITING:
+			$customerlist = $LMS->GetCustomerList(compact("state"));
 			break;
-		case 2:
-			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter']);
+		case CSTATUS_CONNECTED: case CSTATUS_DISCONNECTED:
+			$customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
 			break;
-		case 3:
-			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter'], $_POST['network'], $_POST['customergroup']);
+		case 51:
+			$customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
 			break;
-		case 5:
-			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter'], $_POST['network'], $_POST['customergroup']);
-			break;
-		case 6:
-			$customerlist = $LMS->GetCustomerList(NULL, $_POST['filter'], $_POST['network'], $_POST['customergroup']);
+		case 52:
+			$customerlist = $LMS->GetCustomerList(compact("state", "network", "customergroup"));
 			break;
 		case -1:
-			if ($customerlist = $LMS->GetCustomerList(NULL, NULL, NULL, $_POST['customergroup'])) {
+			if ($customerlist = $LMS->GetCustomerList(compact("customergroup"))) {
 				foreach ($customerlist as $idx => $row)
 					if (!$row['account'])
 						$ncustomerlist[] = $customerlist[$idx];
@@ -104,8 +105,47 @@ if (isset($_POST['document'])) {
 	if (!isset($customerlist) || $customerlist['total'] == 0)
 		$error['customer'] = trans('Customers list is empty!');
 
-	if (!$document['templ'])
-		$error['templ'] = trans('Document template not selected!');
+	$SMARTY->assign(array(
+		'filter' => $state,
+		'network' => $network,
+		'customergroup' => $customergroup,
+	));
+
+	$result = handle_file_uploads('attachments', $error);
+	extract($result);
+	$SMARTY->assign('fileupload', $fileupload);
+
+	$globalfiles = array();
+	if (!$error && !empty($attachments))
+		foreach ($attachments as $attachment) {
+			$attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
+			$attachment['md5sum'] = md5_file($attachment['tmpname']);
+			$attachment['main'] = false;
+			$globalfiles[] = $attachment;
+		}
+
+	if (empty($globalfiles) && empty($document['templ']))
+		$error['files'] = trans('You must to specify file for upload or select document template!');
+
+	if (!$error) {
+		foreach ($globalfiles as &$file) {
+			$file['path'] = DOC_DIR . DIRECTORY_SEPARATOR . substr($file['md5sum'], 0, 2);
+			$file['newfile'] = $file['path'] . DIRECTORY_SEPARATOR . $file['md5sum'];
+
+			// If we have a file with specified md5sum, we assume
+			// it's here because of some error. We can replace it with
+			// the new document file
+			// why? document attachment can be shared between different documents.
+			// we should rather use the other message digest in such case!
+			if ($DB->GetOne('SELECT docid FROM documentattachments WHERE md5sum = ?', array($file['md5sum']))
+				&& (filesize($file['newfile']) != filesize($file['tmpname'])
+					|| hash_file('sha256', $file['newfile']) != hash_file('sha256', $file['tmpname']))) {
+				$error['files'] = trans('Specified file exists in database!');
+				break;
+			}
+		}
+		unset($file);
+	}
 
 	if (!$error) {
 		$header = '';
@@ -115,8 +155,9 @@ if (isset($_POST['document'])) {
 
 		$numtemplate = $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid']));
 
-		// read template information
-		include(DOC_DIR . '/templates/' . $document['templ'] . '/info.php');
+		if ($document['templ'])
+			// read template information
+			include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] . DIRECTORY_SEPARATOR . 'info.php');
 
 		foreach ($customerlist as $gencust) {
 			if (!is_array($gencust))
@@ -127,32 +168,51 @@ if (isset($_POST['document'])) {
 			$output = NULL; // delete output
 			$genresult .= $gencount . '. ' . $gencust['customername'] . ': ';
 
-			// run template engine
-			if (file_exists(DOC_DIR . '/templates/' . $engine['engine'] . '/engine.php'))
-				include(DOC_DIR . '/templates/' . $engine['engine'] . '/engine.php');
-			else
-				include(DOC_DIR . '/templates/default/engine.php');
+			$files = array();
+			unset($docfile);
 
-			if ($output) {
-				$file = DOC_DIR . '/tmp.file';
-				$fh = fopen($file, 'w');
-				fwrite($fh, $output);
-				fclose($fh);
+			if ($document['templ']) {
+				// run template engine
+				if (file_exists(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+					. $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php'))
+					include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+						. $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php');
+				else
+					include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'default'
+						 . DIRECTORY_SEPARATOR . 'engine.php');
 
-				$document['md5sum'] = md5_file($file);
-				$document['contenttype'] = $engine['content_type'];
-				$document['filename'] = $engine['output'];
+				if ($output) {
+					$file = DOC_DIR . DIRECTORY_SEPARATOR . 'tmp.file';
+					$fh = fopen($file, 'w');
+					fwrite($fh, $output);
+					fclose($fh);
 
-				$path = DOC_DIR . '/' . substr($document['md5sum'], 0, 2);
-				@mkdir($path, 0700);
-				$newfile = $path . '/' . $document['md5sum'];
-				if (!file_exists($newfile)) {
-					if (!@rename($file, $newfile))
-						$error = trans('Can\'t save file in "$a" directory!', $path);
+					$md5sum = md5_file($file);
+					$path = DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum, 0, 2);
+					$docfile = array(
+						'md5sum' => $md5sum,
+						'type' => $engine['content_type'],
+						'name' => $engine['output'],
+						'tmpname' => $file,
+						'main' => true,
+						'path' => $path,
+						'newfile' => $path . DIRECTORY_SEPARATOR . $md5sum,
+					);
+					$files[] = $docfile;
+				} else
+					$error = trans('Problem during file generation!');
+			}
+
+			if (!$error) {
+				$files = array_merge($files, $globalfiles);
+				foreach ($files as $file) {
+					@mkdir($file['path'], 0700);
+					if (!file_exists($file['newfile']) && !@rename($file['tmpname'], $file['newfile'])) {
+						$error = trans('Can\'t save file in "$a" directory!', $file['path']);
+						break;
+					}
 				}
 			}
-			else
-				$error = trans('Problem during file generation!');
 
 			if ($error) {
 				$genresult .= '<font class="alert">' . $error . '</font><br>';
@@ -160,7 +220,7 @@ if (isset($_POST['document'])) {
 			}
 
 			$DB->BeginTrans();
-			
+
 			$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 				account, inv_header, inv_footer, inv_author, inv_cplace 
 				FROM divisions WHERE id = ? ;',array($gencust['divisionid']));
@@ -203,23 +263,29 @@ if (isset($_POST['document'])) {
 
 			$docid = $DB->GetLastInsertID('documents');
 
-			$DB->Execute('INSERT INTO documentcontents (docid, title, fromdate, todate, filename, contenttype, md5sum, description)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array($docid,
+			$DB->Execute('INSERT INTO documentcontents (docid, title, fromdate, todate, description)
+				VALUES (?, ?, ?, ?, ?)', array($docid,
 					$document['title'],
 					$document['fromdate'],
 					$document['todate'],
-					$document['filename'],
-					$document['contenttype'],
-					$document['md5sum'],
 					$document['description']
 			));
+
+			foreach ($files as $file)
+				$DB->Execute('INSERT INTO documentattachments (docid, filename, contenttype, md5sum, main)
+					VALUES (?, ?, ?, ?, ?)', array($docid,
+						$file['name'],
+						$file['type'],
+						$file['md5sum'],
+						$file['main'] ? 1 : 0,
+				));
 
 			$DB->CommitTrans();
 
 			$genresult .= docnumber($document['number'], $numtemplate, $time) . '.<br>';
 			$document['number']++;
 
-			if (isset($_GET['print']) && $document['contenttype'] == 'text/html') {
+			if (isset($_GET['print']) && isset($docfile) && $docfile['contenttype'] == 'text/html') {
 				print $output;
 				print '<DIV style="page-break-after: always;"></DIV>';
 				flush();
@@ -240,16 +306,20 @@ if (isset($_POST['document'])) {
 		if ($document['templ']) {
 			$result = '';
 			// read template information
-			include(DOC_DIR . '/templates/' . $document['templ'] . '/info.php');
+			include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ']
+				 . DIRECTORY_SEPARATOR . 'info.php');
 			// set some variables
 			$SMARTY->assign('document', $document);
 			// call plugin
-			@include(DOC_DIR . '/templates/' . $engine['name'] . '/' . $engine['plugin'] . '.php');
+			@include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $engine['name']
+				 . DIRECTORY_SEPARATOR . $engine['plugin'] . '.php');
 			// get plugin content
 			$SMARTY->assign('plugin_result', $result);
 		}
 	}
 }
+
+$SMARTY->setDefaultResourceType('extendsall');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
@@ -260,9 +330,8 @@ if (!$rights) {
 	die;
 }
 
-if (!isset($document['numberplanid'])) {
+if (!isset($document['numberplanid']))
 	$document['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype<0 AND isdefault=1 LIMIT 1');
-}
 
 $numberplans = array();
 

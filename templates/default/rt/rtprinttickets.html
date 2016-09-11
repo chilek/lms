@@ -49,7 +49,8 @@
 			{if $ticket.customerid}
 			{$ticket.customername|truncate:"50":"...":true} ({$ticket.customerid|string_format:"%04d"})
 			{if $ticket.address}<BR>{$ticket.address}{/if}
-			{if $ticket.phone}<BR>{trans("phone:")} {$ticket.phone}{/if}
+			{if $ticket.phones}<BR>{trans("phone:")} {$ticket.phones}{/if}
+			{if $ticket.emails}<BR>{trans("email:")} {$ticket.emails}{/if}
 			{else}
 			{$ticket.requestor|truncate:"50":"...":true}
 			{/if}
@@ -57,10 +58,8 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD ALIGN="center" WIDTH="100%" COLSPAN="7">
-			<P>&nbsp;</P>
-			<P><B>{trans("No such requests in database.")}</B></P>
-			<P>&nbsp;</P>
+		<TD COLSPAN="7" class="empty-table">
+			<p>{trans("No such requests in database.")}</p>
 		</TD>
 	</TR>
 	{/foreach}

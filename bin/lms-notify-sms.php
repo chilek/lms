@@ -1,10 +1,10 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
 
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -51,7 +51,7 @@ foreach ($short_to_longs as $short => $long)
 if (array_key_exists('version', $options)) {
 	print <<<EOF
 lms-notify-sms.php
-(C) 2001-2015 LMS Developers
+(C) 2001-2016 LMS Developers
 
 EOF;
 	exit(0);
@@ -60,7 +60,7 @@ EOF;
 if (array_key_exists('help', $options)) {
 	print <<<EOF
 lms-notify-sms.php
-(C) 2001-2015 LMS Developers
+(C) 2001-2016 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -78,7 +78,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
 	print <<<EOF
 lms-notify-sms.php
-(C) 2001-2015 LMS Developers
+(C) 2001-2016 LMS Developers
 
 EOF;
 }
@@ -111,10 +111,12 @@ define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 
 // Load autoloader
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'autoloader.php');
-
-// Do some checks and load config defaults
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'config.php');
+$composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+if (file_exists($composer_autoload_path)) {
+    require_once $composer_autoload_path;
+} else {
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
+}
 
 // Init database
 
@@ -149,16 +151,12 @@ $debug_sms = ConfigHelper::getConfig('sms.debug_sms', '');
 
 // Include required files (including sequence is important)
 
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'SYSLOG.class.php');
 
-if (ConfigHelper::checkConfig('phpui.logging') && class_exists('SYSLOG'))
-	$SYSLOG = new SYSLOG($DB);
-else
-	$SYSLOG = null;
+$SYSLOG = SYSLOG::getInstance();
 
 // Initialize Session, Auth and LMS classes
 
@@ -187,8 +185,7 @@ function parse_data($data, $row) {
 		$saldo = $DB->GetOne("SELECT SUM(value)
 			FROM assignments, tariffs
 			WHERE tariffid = tariffs.id AND customerid = ?
-				AND (datefrom <= ?NOW? OR datefrom = 0)
-				AND (dateto > ?NOW? OR dateto = 0)
+				AND datefrom <= ?NOW? AND (dateto > ?NOW? OR dateto = 0)
 				AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0))",
 			array($row['id']));
 		$data = preg_replace("/\%abonament/", $saldo, $data);
@@ -238,9 +235,9 @@ if ($debtors_message && (empty($types) || in_array('debtors', $types))) {
 			SUM(value) AS balance, x.phone
 		FROM customers c
 		JOIN cash ON (c.id = cash.customerid)
-		JOIN (SELECT " . $DB->GroupConcat('phone') . " AS phone, customerid
+		JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
-			WHERE (type & 1) = 1
+			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) x ON (x.customerid = c.id)
 		LEFT JOIN documents d ON d.id = cash.docid
@@ -249,7 +246,7 @@ if ($debtors_message && (empty($types) || in_array('debtors', $types))) {
 				AND d.cdate + d.paytime * 86400 < ?NOW?)))
 				AND c. mailingnotice = 1
 		GROUP BY c.id, c.pin, c.lastname, c.name, x.phone
-		HAVING SUM(value) < ?", array($limit));
+		HAVING SUM(value) < ?", array(CONTACT_MOBILE | CONTACT_DISABLED, CONTACT_MOBILE, $limit));
 
 	if (!empty($customers)) {
 		if (!$debug)
@@ -278,9 +275,9 @@ if ($invoices_message && (empty($types) || in_array('invoices', $types))) {
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
-		JOIN (SELECT " . $DB->GroupConcat('phone') . " AS phone, customerid
+		JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
-			WHERE (type & 1) = 1
+			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) x ON (x.customerid = d.customerid)
 		JOIN (SELECT SUM(value) * -1 AS value, docid
@@ -295,7 +292,7 @@ if ($invoices_message && (empty($types) || in_array('invoices', $types))) {
 		WHERE d.type = 1
 			AND d.cdate > ?NOW? - 86400
 		 	AND c.mailingnotice = 1
-		");
+		",array(CONTACT_MOBILE | CONTACT_DISABLED, CONTACT_MOBILE));
 
 	if (!empty($documents)) {
 		if (!$debug)
@@ -327,9 +324,9 @@ if ($deadline_message && (empty($types) || in_array('deadline', $types))) {
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
 		JOIN (
-			SELECT " . $DB->GroupConcat('phone') . " AS phone, customerid
+			SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
-			WHERE (type & 1) = 1
+			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) x ON (x.customerid = d.customerid)
 		JOIN (
@@ -351,7 +348,7 @@ if ($deadline_message && (empty($types) || in_array('deadline', $types))) {
 			AND d.cdate + (d.paytime + 1 + ?) * 86400 > ?NOW?
 			AND d.cdate + (d.paytime + ?) * 86400 < ?NOW?
 			AND c.mailingnotice = 1",
-		array($deadline_days, $deadline_days));
+		array(CONTACT_MOBILE | CONTACT_DISABLED, CONTACT_MOBILE, $deadline_days, $deadline_days));
 
 	if (!empty($documents)) {
 		if (!$debug)
@@ -382,9 +379,9 @@ if ($notes_message && (empty($types) || in_array('notes', $types))) {
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
-		JOIN (SELECT " . $DB->GroupConcat('phone') . " AS phone, customerid
+		JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
 			FROM customercontacts
-			WHERE (type & 1) = 1
+			WHERE (type & ?) = ?
 			GROUP BY customerid
 		) x ON (x.customerid = d.customerid)
 		JOIN (SELECT SUM(value) * -1 AS value, docid
@@ -398,7 +395,7 @@ if ($notes_message && (empty($types) || in_array('notes', $types))) {
 		) ca ON (ca.customerid = d.customerid)
 		WHERE d.type = 5
 			AND d.cdate > ?NOW? - 86400
-			AND c.mailingnotice = 1");
+			AND c.mailingnotice = 1",array(CONTACT_MOBILE | CONTACT_DISABLED, CONTACT_MOBILE));
 
 	if (!empty($documents)) {
 		if (!$debug)

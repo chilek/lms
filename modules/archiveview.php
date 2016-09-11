@@ -25,7 +25,7 @@
  */
 
 function GetPropertyNames($resource, $params) {
-	global $SYSLOG;
+	$SYSLOG = SYSLOG::getInstance();
 
 	$result = new XajaxResponse();
 	$names = $SYSLOG->GetResourcePropertyNames($resource);
@@ -50,20 +50,20 @@ function GetPropertyNames($resource, $params) {
 }
 
 function GetPropertyValues($resource, $propname, $propvalue) {
-	global $SYSLOG;
+	$SYSLOG = SYSLOG::getInstance();
 
 	$result = new XajaxResponse();
 	$values = $SYSLOG->GetResourcePropertyValues($resource, $propname);
 	if (empty($values) || count($values) > 19)
 		$result->assign('propertyvaluedata', 'innerHTML', '<input type="text" size="20" name="propertyvalue" id="propertyvalue"'
-			. (!empty($propvalue) ? ' value="' . $propvalue . '"' : '') . '>');
+			. (strlen($propvalue) ? ' value="' . $propvalue . '"' : '') . '>');
 	else {
 		$options = '<SELECT size="1" name="propertyvalue" id="propertyvalue">';
 		$options .= '<OPTION value="">' . trans('- all -') . '</OPTION>';
 		foreach ($values as $value) {
 			$data = array('resource' => $resource, 'name' => $propname, 'value' => $value);
 			$SYSLOG->DecodeMessageData($data);
-			$options .= '<OPTION value="' . $value . '"' . (!empty($propvalue) && $propvalue == $value ? ' selected' : '') . '>'
+			$options .= '<OPTION value="' . $value . '"' . (strlen($propvalue) && $propvalue == $value ? ' selected' : '') . '>'
 				. (strlen($data['value']) > 50 ? substr($data['value'], 0, 50) . '...' : $data['value'])
 				. '</OPTION>';
 		}
@@ -77,7 +77,7 @@ $LMS->InitXajax();
 $LMS->RegisterXajaxFunction(array('GetPropertyNames', 'GetPropertyValues'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
-$limit = get_conf('phpui.archiveview_limit', 100);
+$limit = ConfigHelper::getConfig('phpui.archiveview_limit', 100);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if (isset($_POST['search'])) {
@@ -160,7 +160,7 @@ if ($SYSLOG) {
 	$args = array('limit' => $limit + 1);
 	if (!empty($user)) $args['userid'] = $user;
 	if (!empty($resourcetype)) {
-		$args['key'] = $SYSLOG_RESOURCE_KEYS[$resourcetype];
+		$args['key'] = SYSLOG::getResourceKey($resourcetype);
 		$args['value'] = $resourceid;
 	}
 	if (!empty($datefrom)) $args['datefrom'] = $datefrom;
@@ -168,7 +168,7 @@ if ($SYSLOG) {
 	$args['offset'] = $page * $limit;
 	if (!empty($propertyname)) {
 		$args['propname'] = $propertyname;
-		if (!empty($propertyvalue)) $args['propvalue'] = $propertyvalue;
+		if (strlen($propertyvalue)) $args['propvalue'] = $propertyvalue;
 	}
 	$trans = $SYSLOG->GetTransactions($args);
 	if (!empty($trans)) {

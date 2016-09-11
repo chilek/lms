@@ -85,34 +85,34 @@
 	<TR class="highlight {cycle}{if $queue[ticket].state == 2} blend{/if}"  >
 		<TD onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
 			{if $queue[ticket].state == 0}
-				<IMG src="img/new.gif" alt="" {tip a=$queue[ticket].id dynpopup='?m=rtticketinfo&id=$a'}>
+				<IMG src="img/new.gif" alt="" class="rtticketinfo" data-resourceid="{$queue[ticket].id}">
 			{elseif $queue[ticket].state == 1}
-				<IMG src="img/open.gif" alt="" {tip a=$queue[ticket].id dynpopup='?m=rtticketinfo&id=$a'}>
+				<IMG src="img/open.gif" alt="" class="rtticketinfo" data-resourceid="{$queue[ticket].id}">
 			{elseif $queue[ticket].state == 2}
-				<IMG src="img/resolved.gif" alt="" {tip a=$queue[ticket].id dynpopup='?m=rtticketinfo&id=$a'}>
+				<IMG src="img/resolved.gif" alt="" class="rtticketinfo" data-resourceid="{$queue[ticket].id}">
 			{elseif $queue[ticket].state == 3}
-				<IMG src="img/dead.gif" alt="" {tip a=$queue[ticket].id dynpopup='?m=rtticketinfo&id=$a'}>
+				<IMG src="img/dead.gif" alt="" class="rtticketinfo" data-resourceid="{$queue[ticket].id}">
 			{/if}
 		</TD>
 		<TD NOWRAP onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
 			{if $queue[ticket].state == 0}
-				<FONT class="red">
+				<span class="red">
 			{elseif $queue[ticket].state == 3}
-				<FONT class="brown">
+				<span class="brown">
 			{/if}
 			<B>{$queue[ticket].id|string_format:"%06d"}</B><BR>
 			{$queue[ticket].createtime|date_format:"%Y/%m/%d %H:%M:%S"}
-			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</FONT>{/if}
+			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</span>{/if}
 		</TD>
 		<TD onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
 			{if $queue[ticket].state == 3}
-				<FONT class="brown">
+				<span class="brown">
 			{elseif $queue[ticket].state == 0}
-				<FONT class="red">
+				<span class="red">
 			{/if}
 			<B>{$queue[ticket].subject|escape|truncate:"60":"..."|default:"&nbsp;"}</B><BR>
 			{if $queue[ticket].customerid}
-				<span {tip a=$queue[ticket].customerid dynpopup='?m=nodelistshort&id=$a'}>
+				<span class="nodelist" data-resourceid="{$queue[ticket].customerid}">
 				{$queue[ticket].requestor|escape|truncate:"60":"..."}
 				({$queue[ticket].address})
 				</span>
@@ -122,31 +122,31 @@
 			{if $queue[ticket].requestoremail && !$queue[ticket].customerid}
 				&lt;{$queue[ticket].requestoremail}&gt;
 			{/if}
-			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</FONT>{/if}
+			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</span>{/if}
 		</TD>
 		<TD NOWRAP onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
 			{if $queue[ticket].state == 3}
-				<FONT class="brown">
+				<span class="brown">
 			{elseif $queue[ticket].state == 0}
-				<FONT class="red">
+				<span class="red">
 			{/if}
 			{if $queue[ticket].ownername}{$queue[ticket].ownername|truncate:25:"...":true}{else}-{/if}<BR>
 			{$queue[ticket].lastmodified|date_format:"%Y/%m/%d %H:%M:%S"|default:"-"}
-			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</FONT>{/if}
+			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</span>{/if}
 		</TD>
 		<TD align="right" NOWRAP>
 			<A href="?m=rtticketprint&id={$queue[ticket].id}" target="_BLANK"><IMG src="img/print.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]" title="[ {trans("Edit")} ]"> </A>
 			<A href="?m=rtticketdel&id={$queue[ticket].id}" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<A href="?m=rtticketedit&id={$queue[ticket].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"> </A>
+			<A href="?m=rtnoteadd&ticketid={$queue[ticket].id}"><IMG src="img/note.gif" alt="[ {trans("New Note")} ]" title="[ {trans("New Note")} ]"> </A>
+			<A href="?m=rtmessageadd&ticketid={$queue[ticket].id}"><IMG src="img/forward.gif" alt="[ {trans("New Message")} ]" title="[ {trans("New Message")} ]"> </A>
 			<A href="?m=rtticketview&id={$queue[ticket].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"> </A>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD COLSPAN="5" ALIGN="center">
-			<p>&nbsp;</p>
-			<p><B>{trans("This queue is empty.")}</B></p>
-			<p>&nbsp;</p>
+		<TD COLSPAN="5" class="empty-table">
+			<p>{trans("This queue is empty.")}</p>
 		</TD>
 	</TR>
 	{/section}

@@ -1852,6 +1852,8 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	$DB->Execute('DELETE FROM taxes');
 	$DB->Execute('DELETE FROM invoicecontents');
 	$DB->Execute('DELETE FROM receiptcontents');
+	$DB->Execute('DELETE FROM numberplanassignments');
+	$DB->Execute('DELETE FROM numberplans');
 
 	if(ConfigHelper::getConfig('database.type')=='postgres')
 	{
@@ -1868,6 +1870,8 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$DB->Execute('DROP SEQUENCE "netlinks_id_seq";   CREATE SEQUENCE "netlinks_id_seq"');
 		$DB->Execute('DROP SEQUENCE "documents_id_seq";  CREATE SEQUENCE "documents_id_seq"');
 		$DB->Execute('DROP SEQUENCE "taxes_id_seq";  CREATE SEQUENCE "taxes_id_seq"');
+		$DB->Execute('DROP SEQUENCE "numberplanassignments_id_seq";  CREATE SEQUENCE "numberplanassignments_id_seq"');
+		$DB->Execute('DROP SEQUENCE "numberplans_id_seq";  CREATE SEQUENCE "numberplans_id_seq"');
 	}
 	elseif(ConfigHelper::getConfig('database.type') == 'mysql' || ConfigHelper::getConfig('database.type') == 'mysqli')
 	{
@@ -1878,9 +1882,12 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$DB->Execute('ALTER TABLE netdevices auto_increment=0');
 		$DB->Execute('ALTER TABLE tariffs auto_increment=0');
 		$DB->Execute('ALTER TABLE taxes auto_increment=0');
+		$DB->Execute('ALTER TABLE numberplanassignments auto_increment=0');
+		$DB->Execute('ALTER TABLE numberplans auto_increment=0');
 	}
 
 	$DB->Execute('INSERT INTO divisions (name, shortname) VALUES(?,?)', array('default', 'default'));
+	$divisionid = $DB->GetLastInsertID('divisions');
 
 	$DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)',array('tax-free', 0, 0));
 	$DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)',array('7%', 7, 1));
@@ -1961,7 +1968,9 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		for($j = 0; $j < 6; $j++)
 			$customeradd['phone'] .= mt_rand(0,9);
 		$street = mt_rand(0,$ssize-1);
-		$customeradd['address'] = $streets[$street].' '.mt_rand(1,50).'/'.mt_rand(1,300);
+		$customeradd['street'] = $streets[$street];
+		$customeradd['building'] = mt_rand(1,50);
+		$customeradd['apartment'] = mt_rand(1,300);
 		$customeradd['zip'] = '03-7'.sprintf('%02d',$street);
 		$customeradd['city'] = 'Mahagonny';
 		$customeradd['email'] = preg_replace('/[^0-9a-z@.]/i', '', strtolower($customeradd['name']).'.'.strtolower($customeradd['lastname']).'@'.$emaildomains[mt_rand(0,$esize-1)]);
@@ -1983,6 +1992,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$customeradd['countryid'] = 0;
 		$customeradd['consentdate'] = 0;
 		$customeradd['paytime'] = -1;
+		$customeradd['extid'] = 0;
 
 		$id = $LMS->CustomerAdd($customeradd);
 		$LMS->AddAssignment(array(
@@ -1998,8 +2008,10 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			'settlement' => 0, 
 			'nodes' => NULL
 		));
-		$DB->Execute('INSERT INTO customercontacts (customerid, phone)
-		    VALUES (?, ?)', array($id, $customeradd['phone']));
+		$DB->Execute('INSERT INTO customercontacts (customerid, contact, type)
+			VALUES (?, ?, ?)', array($id, $customeradd['email'], CONTACT_EMAIL));
+		$DB->Execute('INSERT INTO customercontacts (customerid, contact, type)
+			VALUES (?, ?, ?)', array($id, $customeradd['phone'], CONTACT_LANDLINE));
 
 		$nodes = mt_rand(1,2);
 		for($j = 0; $j < $nodes; $j++)
@@ -2020,6 +2032,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			$nodedata['location'] = '';
 			$nodedata['chkmac'] = 1;
 			$nodedata['halfduplex'] = 0;
+			$nodedata['authtype'] = 0;
 			if($nodeid = $LMS->NodeAdd($nodedata))
 				$DB->Execute('UPDATE nodes SET lastonline=? WHERE id=? ', array(mt_rand(time()-2592000,time()+2592000),$nodeid));
 		}
@@ -2028,7 +2041,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	
 	echo ' [OK]<BR>';
 	echo '<B>'.trans('Generating network hardware and connections...').'</B>'; flush();
-	$nodes = $DB->GetOne('SELECT count(id) FROM nodes');
+	$nodes = $DB->GetOne('SELECT count(id) FROM vnodes');
 	$sprod = sizeof($producer);
 	$i = 0;
 	while($nodes)
@@ -2051,6 +2064,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			'secret' => '',
 			'community' => '',
 			'clients' => 0,
+			'status' => 0,
 		));
 		$ports = mt_rand(4,14);
 		for($j = 0; $j < $ports; $j++)
@@ -2073,29 +2087,38 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$startip++;
 */
 		if($i>1)
-			$LMS->NetDevLink($i,$i-1);
+			$LMS->NetDevLink($i, $i-1, array(
+				'type' => 0,
+				'technology' => 8,
+				'speed' => 1000000,
+			));
 	}
 	echo ' [OK]<BR>';
-	
-	if($_GET['i'])
-	{
+
+	if ($_GET['i']) {
+		$DB->Execute('INSERT INTO numberplans (template, period, doctype, isdefault) VALUES (?, ?, ?, ?)',
+			array(DEFAULT_NUMBER_TEMPLATE, YEARLY, DOC_INVOICE, 1));
+		$numberplanid = $DB->GetLastInsertID('numberplans');
+		$DB->Execute('INSERT INTO numberplanassignments (planid, divisionid) VALUES (?, ?)',
+			array($numberplanid, $divisionid));
+
 		echo '<B>'.trans('Generating invoices...').'</B>'; flush();
-		
+
 		if($_GET['i'] > 100) $_GET['i'] = 100;
-		
+
 		$inv['number'] = 0;
 		$inv['paytime'] = 14;
 		$inv['paytype'] = 1; // cash
-		$inv['numberplanid'] = 0;
+		$inv['numberplanid'] = $numberplanid;
 		$inv['type'] = DOC_INVOICE;
 		$inv['cdate'] = time() - ($_GET['i']+1) * 86400;
 		$contents['prodid'] = '';
 		$contents['tariffid'] = 0;
-		$contents['jm'] = trans('pcs.');
+		$contents['jm'] = trans(ConfigHelper::getConfig('payments.default_unit_name'));
 		$contents['name'] = trans('Subscription');
 		
-		$customers = $DB->GetAll('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'customers.name').' AS customername,
-				id, ssn, address, zip, city, ten, divisionid, countryid FROM customers');
+		$customers = $DB->GetAll('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'customeraddressview.name').' AS customername,
+				id, ssn, address, zip, city, ten, divisionid, countryid FROM customeraddressview');
 					    
 		if($customers)
 			for($n=0; $n<$_GET['i']; $n++)

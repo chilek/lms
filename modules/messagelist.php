@@ -90,9 +90,10 @@ function GetMessagesList($order='cdate,desc', $search=NULL, $cat=NULL, $type='',
 	{
 		switch($status)
 		{
-			case MSG_NEW: $where[] = 'x.sent + x.error = 0'; break;
+			case MSG_NEW: $where[] = 'x.sent + x.delivered + x.error = 0'; break;
 			case MSG_ERROR: $where[] = 'x.error > 0'; break;
 			case MSG_SENT: $where[] = 'x.sent = x.cnt'; break;
+			case MSG_DELIVERED: $where[] = 'x.delivered = x.cnt'; break;
 		}
         }
 	
@@ -100,12 +101,13 @@ function GetMessagesList($order='cdate,desc', $search=NULL, $cat=NULL, $type='',
 		$where = 'WHERE '.implode(' AND ', $where);
 	
 	$result = $DB->GetAll('SELECT m.id, m.cdate, m.type, m.subject,
-			x.cnt, x.sent, x.error
+			x.cnt, x.sent, x.error, x.delivered
 	    	FROM messages m
 		JOIN (
 			SELECT i.messageid, 
 				COUNT(*) AS cnt,
 				COUNT(CASE WHEN i.status = '.MSG_SENT.' THEN 1 ELSE NULL END) AS sent,
+				COUNT(CASE WHEN i.status = '.MSG_DELIVERED.' THEN 1 ELSE NULL END) AS delivered,
 				COUNT(CASE WHEN i.status = '.MSG_ERROR.' THEN 1 ELSE NULL END) AS error
 			FROM messageitems i
 			LEFT JOIN (

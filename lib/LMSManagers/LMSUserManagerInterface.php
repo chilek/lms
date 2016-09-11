@@ -54,4 +54,6 @@ interface LMSUserManagerInterface
     public function userUpdate($user);
 
     public function getUserRights($id);
+    
+    public function PasswdExistsInHistory($id, $passwd);
 }

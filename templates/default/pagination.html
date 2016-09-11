@@ -1,0 +1,52 @@
+{if isset($layout.userpanel_module)}
+	{$layout['module'] = $layout['userpanel_module']}
+{/if}
+
+<span class="bold">
+{trans("Page:")}
+{if $pagination->getPage() > 1}
+    <a href="?m={$layout.module}&amp;page={$pagination->getPreviousPage()}">
+{/if}
+    {'&laquo;'|str_repeat:3}
+{if $pagination->getPage() > 1}
+    </a>
+{/if}
+{section name=pagination loop=$pagination->getPages()+1 step=1 start=1}
+    {if $pagination->getPage() == $smarty.section.pagination.index}
+        [{$smarty.section.pagination.index}]
+    {else}
+        {if $pagination->displayLink($smarty.section.pagination.index)}
+        <a href="?m={$layout.module}&amp;page={$smarty.section.pagination.index}">{$smarty.section.pagination.index}</a>
+        {/if}
+        {if !$pagination->displayLink($smarty.section.pagination.index) && $pagination->displayLink($smarty.section.pagination.index + 1)}
+        &hellip;
+        {/if}
+    {/if}
+{/section}
+{if $pagination->getPage() < $pagination->getPages()}
+    <a href="?m={$layout.module}&amp;page={$pagination->getNextPage()}">
+{/if}
+    {'&raquo;'|str_repeat:3}
+{if $pagination->getPage() < $pagination->getPages()}
+    </a>
+{/if}
+</span>
+    ({t a=$pagination->getFirstOnPage() b=$pagination->getLastOnPage() c=$pagination->getTotal()}records $a - $b of $c{/t})
+{if $pagination->displayGoTo()}
+    {counter name=scroller print=false assign=scrollerno}
+    <script type="text/javascript">
+    <!--
+        function pagechange{$scrollerno}() {
+            var elem = document.getElementById('page{$scrollerno}');
+            var pageelem = document.getElementById('page');
+            if (pageelem !== null) {
+                pageelem.value = elem.value;
+                elem.form.submit();
+            }
+        }
+    //-->
+    </script>
+    {t a="<input class=\"scroller\" type=\"number\" min=\"1\" max=\"`$pagination->getPages()`\" id=\"page`$scrollerno`\" value=\"\" size=\"3\">"}Go to $a page{/t}
+    <a href="javascript: void(0);" onclick="javascript: pagechange{$scrollerno}();">{'&raquo;'|str_repeat:3}</a>
+    </form>
+{/if}

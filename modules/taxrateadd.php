@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -90,8 +90,8 @@ if(sizeof($taxrateadd))
 				VALUES (?,?,?,?,?)', array_values($args));
 
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]] = $DB->GetLastInsertID('taxes');
-			$SYSLOG->AddMessage(SYSLOG_RES_TAX, SYSLOG_OPER_ADD, $args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX]));
+			$args[SYSLOG::RES_TAX] = $DB->GetLastInsertID('taxes');
+			$SYSLOG->AddMessage(SYSLOG::RES_TAX, SYSLOG::OPER_ADD, $args);
 		}
 
 		if(!isset($taxrateadd['reuse']))

@@ -58,7 +58,7 @@ function getManagementUrls($formdata = NULL) {
 }
 
 function addManagementUrl($params) {
-	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
+	global $DB, $SYSLOG;
 
 	$result = new xajaxResponse();
 
@@ -73,15 +73,14 @@ function addManagementUrl($params) {
 			$params['url'] = 'http://' . $params['url'];
 
 		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netdevid,
+			SYSLOG::RES_NETDEV => $netdevid,
 			'url' => $params['url'],
 			'comment' => $params['comment'],
 		);
 		$DB->Execute('INSERT INTO managementurls (netdevid, url, comment) VALUES (?, ?, ?)', array_values($args));
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL]] = $DB->GetLastInsertID('managementurls');
-			$SYSLOG->AddMessage(SYSLOG_RES_MGMTURL, SYSLOG_OPER_ADD, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+			$args[SYSLOG::RES_MGMTURL] = $DB->GetLastInsertID('managementurls');
+			$SYSLOG->AddMessage(SYSLOG::RES_MGMTURL, SYSLOG::OPER_ADD, $args);
 		}
 		$params = NULL;
 	}
@@ -93,7 +92,7 @@ function addManagementUrl($params) {
 }
 
 function delManagementUrl($id) {
-	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
+	global $DB, $SYSLOG;
 
 	$result = new xajaxResponse();
 
@@ -103,10 +102,10 @@ function delManagementUrl($id) {
 	$res = $DB->Execute('DELETE FROM managementurls WHERE id = ?', array($id));
 	if ($res && $SYSLOG) {
 		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL] => $id,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netdevid,
+			SYSLOG::RES_MGMTURL => $id,
+			SYSLOG::RES_NETDEV => $netdevid,
 		);
-		$SYSLOG->AddMessage(SYSLOG_RES_MGMTURL, SYSLOG_OPER_DELETE, $args, array_keys($args));
+		$SYSLOG->AddMessage(SYSLOG::RES_MGMTURL, SYSLOG::OPER_DELETE, $args);
 	}
 	$result->call('xajax_getManagementUrls', $netdevid);
 	$result->assign('managementurltable', 'disabled', false);
@@ -115,7 +114,7 @@ function delManagementUrl($id) {
 }
 
 function updateManagementUrl($urlid, $params) {
-	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
+	global $DB, $SYSLOG;
 
 	$result = new xajaxResponse();
 
@@ -136,13 +135,12 @@ function updateManagementUrl($urlid, $params) {
 		$args = array(
 			'url' => $params['url'],
 			'comment' => $params['comment'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL] => $urlid,
+			SYSLOG::RES_MGMTURL => $urlid,
 		);
 		$DB->Execute('UPDATE managementurls SET url = ?, comment = ? WHERE id = ?', array_values($args));
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]] = $netdevid;
-			$SYSLOG->AddMessage(SYSLOG_RES_MGMTURL, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_MGMTURL], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+			$args[SYSLOG::RES_NETDEV] = $netdevid;
+			$SYSLOG->AddMessage(SYSLOG::RES_MGMTURL, SYSLOG::OPER_UPDATE, $args);
 		}
 		$params = NULL;
 	}
@@ -164,8 +162,6 @@ function validateRadioSector($params, $update = false) {
 		$error['name'] = trans('Radio sector name is too long!');
 	elseif (!preg_match('/^[a-z0-9_\-]+$/i', $params['name']))
 		$error['name'] = trans('Radio sector name contains invalid characters!');
-	elseif (!$update && $DB->GetOne('SELECT 1 FROM netradiosectors WHERE UPPER(name) = UPPER(?)', array($params['name'])))
-		$error['name'] = trans('Radio sector with entered name already exists for this network device!');
 
 	if (!strlen($params['azimuth']))
 		$error['azimuth'] = trans('Radio sector azimuth cannot be empty!');
@@ -178,7 +174,7 @@ function validateRadioSector($params, $update = false) {
 		$error['width'] = trans('Radio sector angular width cannot be empty!');
 	elseif (!preg_match('/^[0-9]+(\.[0-9]+)?$/', $params['width']))
 		$error['width'] = trans('Radio sector angular width has invalid format!');
-	elseif ($params['width'] >= 360)
+	elseif ($params['width'] > 360)
 		$error['width'] = trans('Radio sector angular width should be less than 360 degrees!');
 
 	if (!strlen($params['altitude']))
@@ -250,7 +246,7 @@ function getRadioSectors($formdata = NULL, $result = NULL) {
 }
 
 function addRadioSector($params) {
-	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
+	global $DB, $SYSLOG;
 
 	$result = new xajaxResponse();
 
@@ -272,16 +268,15 @@ function addRadioSector($params) {
 			'frequency' => (strlen($params['frequency']) ? $params['frequency'] : null),
 			'frequency2' => (strlen($params['frequency2']) ? $params['frequency2'] : null),
 			'bandwidth' => (strlen($params['bandwidth']) ? str_replace(',', '.', $params['bandwidth'] / 1000) : null),
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netdevid,
+			SYSLOG::RES_NETDEV => $netdevid,
 		);
 		$DB->Execute('INSERT INTO netradiosectors (name, azimuth, width, altitude, rsrange, license, technology,
 			frequency, frequency2, bandwidth, netdev)
 			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			array_values($args));
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR]] = $DB->GetLastInsertID('netradiosectors');
-			$SYSLOG->AddMessage(SYSLOG_RES_RADIOSECTOR, SYSLOG_OPER_ADD, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+			$args[SYSLOG::RES_RADIOSECTOR] = $DB->GetLastInsertID('netradiosectors');
+			$SYSLOG->AddMessage(SYSLOG::RES_RADIOSECTOR, SYSLOG::OPER_ADD, $args);
 		}
 		$params = NULL;
 	}
@@ -294,7 +289,7 @@ function addRadioSector($params) {
 }
 
 function delRadioSector($id) {
-	global $DB, $SYSLOG, $SYSLOG_RESOURCE_KEYS;
+	global $DB, $SYSLOG;
 
 	$result = new xajaxResponse();
 
@@ -304,10 +299,10 @@ function delRadioSector($id) {
 	$res = $DB->Execute('DELETE FROM netradiosectors WHERE id = ?', array($id));
 	if ($res && $SYSLOG) {
 		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR] => $id,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $netdevid,
+			SYSLOG::RES_RADIOSECTOR => $id,
+			SYSLOG::RES_NETDEV => $netdevid,
 		);
-		$SYSLOG->AddMessage(SYSLOG_RES_RADIOSECTOR, SYSLOG_OPER_DELETE, $args, array_keys($args));
+		$SYSLOG->AddMessage(SYSLOG::RES_RADIOSECTOR, SYSLOG::OPER_DELETE, $args);
 	}
 	$result->call('xajax_getRadioSectors', NULL);
 	$result->assign('radiosectortable', 'disabled', false);
@@ -341,15 +336,14 @@ function updateRadioSector($rsid, $params) {
 			'frequency' => (strlen($params['frequency']) ? $params['frequency'] : null),
 			'frequency2' => (strlen($params['frequency2']) ? $params['frequency2'] : null),
 			'bandwidth' => (strlen($params['bandwidth']) ? str_replace(',', '.', $params['bandwidth'] / 1000) : null),
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR] => $rsid,
+			SYSLOG::RES_RADIOSECTOR => $rsid,
 		);
 		$DB->Execute('UPDATE netradiosectors SET name = ?, azimuth = ?, width = ?, altitude = ?,
 			rsrange = ?, license = ?, technology = ?,
 			frequency = ?, frequency2 = ?, bandwidth = ? WHERE id = ?', array_values($args));
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]] = $netdevid;
-			$SYSLOG->AddMessage(SYSLOG_RES_RADIOSECTOR, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_RADIOSECTOR], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+			$args[SYSLOG::RES_NETDEV] = $netdevid;
+			$SYSLOG->AddMessage(SYSLOG::RES_RADIOSECTOR, SYSLOG::OPER_UPDATE, $args);
 		}
 		$params = NULL;
 	}

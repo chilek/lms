@@ -49,10 +49,10 @@
 			<table id="logindata" style="height: 100%; width: 100%;">
 				<tr>
 					<td class="text-right bold nobr">
-						{trans("Customer ID:")}
+						{$_USERPANEL_ID_TYPES[ConfigHelper::getConfig('userpanel.auth_type', 1)].label}
 					</td>
 					<td class="text-left">
-						<input type="text" name="loginform[login]" style="width: 50pt;" />
+						<input type="text" name="loginform[login]" style="width: 100pt;" />
 					</td>
 				</tr>
 				<tr>
@@ -60,7 +60,7 @@
 						{trans("PIN:")}
 					</td>
 					<td class="text-left">
-						<input type="password" name="loginform[pwd]" style="width: 50pt;" />
+						<input type="password" name="loginform[pwd]" style="width: 100pt;" />
 					</td>
 				</tr>
 				<tr>
@@ -124,7 +124,7 @@
 		    </td>
     		</tr>
 	    </table>
-	    <div class="copyrights"><b>LMS Userpanel {$layout.upv}</b><br/>
+	    <div class="copyrights"><b>LMS Userpanel {$layout.lmsv}{if $layout.lmsvr} ({$layout.lmsvr}){/if}</b><br/>
 	    {trans("This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License version 2.")}<br/>
 	    {trans("For more information see")} <a href="doc/COPYING">doc/COPYING</a> {trans("and")} <a href="doc/AUTHORS">doc/AUTHORS</a>
 	    </div>

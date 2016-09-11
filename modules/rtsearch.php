@@ -91,13 +91,13 @@ function RTSearch($search, $order='createtime,desc')
 	if(isset($where))
 		$where = ' WHERE '.implode($op, $where);
 
-	if($result = $DB->GetAll('SELECT DISTINCT t.id, t.customerid, t.subject, t.state, t.owner AS ownerid, 
+	if($result = $DB->GetAll('SELECT DISTINCT t.id, t.customerid, t.subject, t.state, t.owner AS ownerid,
 			users.name AS ownername, CASE WHEN customerid = 0 THEN t.requestor ELSE '
 			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').'
-			END AS requestor, t.requestor AS req, 
-			t.createtime, (SELECT MAX(createtime) FROM rtmessages 
-				WHERE t.id = ticketid) AS lastmodified 
+			END AS requestor, t.requestor AS req, t.createtime,
+			(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified
 			FROM rttickets t
+			LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
 			LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid 
 			LEFT JOIN users ON (t.owner = users.id) 
 			LEFT JOIN customers ON (t.customerid = customers.id)'

@@ -326,7 +326,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	char monthday[3], month[3], year[5], quarterday[4], weekday[2], yearday[4], halfday[4];
 	char monthname[20], nextmon[8];
 
-	char *nets = strdup(" AND EXISTS (SELECT 1 FROM nodes, networks n "
+	char *nets = strdup(" AND EXISTS (SELECT 1 FROM vnodes, networks n "
 				"WHERE ownerid = a.customerid "
 				    "AND (%nets) "
 	                "AND ((ipaddr > address AND ipaddr < broadcast(address, inet_aton(mask))) "
@@ -336,7 +336,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	char *netname = strdup(netnames);
 	char *netsql = strdup("");
 
-	char *enets = strdup(" AND NOT EXISTS (SELECT 1 FROM nodes, networks n "
+	char *enets = strdup(" AND NOT EXISTS (SELECT 1 FROM vnodes, networks n "
 				"WHERE ownerid = a.customerid "
 				    "AND (%enets) "
 	                "AND ((ipaddr > address AND ipaddr < broadcast(address, inet_aton(mask))) "
@@ -558,7 +558,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 			"ELSE ROUND((li.value - li.value * a.pdiscount / 100) - a.vdiscount, 2) "
 			"END) AS value "
 		"FROM assignments a "
-		"JOIN customers c ON (a.customerid = c.id) "
+		"JOIN customeraddressview c ON (a.customerid = c.id) "
 		"LEFT JOIN tariffs t ON (a.tariffid = t.id) "
 		"LEFT JOIN liabilities li ON (a.liabilityid = li.id) "
 		"LEFT JOIN divisions d ON (d.id = c.divisionid) "
@@ -593,7 +593,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	{
 		struct plan *plans = (struct plan *) malloc(sizeof(struct plan));
 		int invoice_number = 0;
-		char *invoice_numbertemplate = NULL;
+		char *invoice_numbertemplate = "%N/LMS/%Y";
 
 		if( g->db->nrows(res) )
 		{
@@ -755,30 +755,29 @@ void reload(GLOBAL *g, struct payments_module *p)
 					last_plan = numberplan;
 
 					// numberplan found
-					if (numberplan >= 0)
-					{
+					if (numberplan >= 0) {
 						numberplanid = strdup(itoa(plans[numberplan].plan));
 						period = plans[numberplan].period;
 						number = plans[numberplan].number;
 						numbertemplate = plans[numberplan].numbertemplate;
-					}
-					else // not found, use default/shared plan
-					{
+					} else { // not found, use default/shared plan
 						numberplanid = strdup(itoa(p->numberplanid));
 						period = p->num_period;
 						number = invoice_number;
-						numbertemplate = invoice_numbertemplate;
+						if (p->numberplanid)
+							numbertemplate = NULL;
+						else
+							numbertemplate = invoice_numbertemplate;
 					}
 
-					if(!number)
-					{
+					if (!number && (numberplan >= 0 || !numbertemplate)) {
 						char *start = get_num_period_start(&tt, period);
 						char *end = get_num_period_end(&tt, period);
 
 						// set invoice number
 						result = g->db->pquery(g->db->conn, "SELECT MAX(number) AS number FROM documents "
 							"WHERE cdate >= ? AND cdate < ? AND numberplanid = ? AND type = 1", 
-							start, end, numberplanid); 
+							start, end, numberplanid);
 
 						if( g->db->nrows(result) )
 							number = atoi(g->db->get_data(result,0,"number"));

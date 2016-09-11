@@ -6,6 +6,7 @@
     <meta name="GENERATOR" content="LMS {$layout.lmsv}">
     <meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
     <meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
+	{include file="jquery.html" language=$LANGDEFS.$_ui_language.html}
     <link href="{ConfigHelper::getConfig('phpui.style', 'img/style.css')}" rel="stylesheet" type="text/css">
     <link href="img/map.css" rel="stylesheet" type="text/css">
     <link href="img/lms-net.gif" rel="shortcut icon">
@@ -33,13 +34,13 @@
 		{foreach from=$newmenu item=menuitem name=menu}
 		<tr>
 			<td class="click-menu bottomline">
-				<div class="tip"{if $menuitem.tip} {tip text="<B>\$a</B>" a=$menuitem.tip}{/if}{if ! $menuitem.submenu} onClick="{if $menuitem.windowopen}window.open('{$menuitem.link}');{else}return self.location.href='{$menuitem.link}';{/if}"{/if}>
+				<div{if $menuitem.tip} {tip class="tip" text="\$a" a=$menuitem.tip bold=1}{else} class="tip"{/if}{if ! $menuitem.submenu} onClick="{if $menuitem.windowopen}window.open('{$menuitem.link}');{else}return self.location.href='{$menuitem.link}';{/if}"{/if}>
 					<div class="box1"><img src="img/{$menuitem.img}" alt="*" style="position: absolute"><span style="margin-left: 21px">{$menuitem.name}</span></div>
 				</div>
 				<div class="section">
 				{if $menuitem.submenu}
 				{foreach from=$menuitem.submenu item=submenuitem}
-					<div class="tip"{if $submenuitem.tip} {tip text="<B>\$a</B>" a=$submenuitem.tip}{/if}>
+					<div{if $submenuitem.tip} {tip class="tip" text="\$a" a=$submenuitem.tip bold=1}{else} class="tip"{/if}>
 						<div class="box2"><a href="{$submenuitem.link|replace:"&":"&amp;"}">{$submenuitem.name}</a></div>
 					</div>
 				{/foreach}
@@ -50,7 +51,7 @@
 		{/foreach}
 		<tr>
 			<td class="click-menu bottomline">
-				<div class="tip" {tip text="<B>Allows you to logout</B>"} onClick="if(confirm('{trans("Are you sure that you want to logout?")}')) { return self.location.href='?m=logout&amp;is_sure=1'; } ">
+				<div {tip class="tip" text="Allows you to logout" bold=1} onClick="if(confirm('{trans("Are you sure that you want to logout?")}')) { return self.location.href='?m=logout&amp;is_sure=1'; } ">
 					<div class="box1"><img src="img/logout.gif" alt="*" style="position: absolute"><span class="nobr" style="margin-left: 21px">{trans("Logout")} {$layout.logname|truncate:10:"..."}</span></div>
 				</div>
 			</td>
@@ -60,34 +61,26 @@
 		</tr>
 	</table>
 	<script type="text/javascript">
+		<!--//
 		var clickMenu1 = new ClickShowHideMenu('click-menu1');
 		clickMenu1.init();
+		//-->
 	</script>
     </div>
     <div id="pagecontent">
+	<script type="text/javascript">
+		<!--//
+		var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
+		//-->
+	</script>
+	{block name="quicksearch"}
     	<div id="autosuggest"><ul><li></li></ul></div>
     	<form method="post" name="quicksearch" action="?m=quicksearch" id="quicksearch">
 	<table width="100%" cellpadding="0" cellspacing="0">
 		<tr>
 		    <td style="width: 1%" class="nobr">
 			{trans("Search:")}
-			<img src="img/customer.gif" alt="">
-			<input class="blend" type="text" id="customerinput" name="qscustomer" value="" size="15" {tip text="Enter customer ID, first/lastname, email or address and press Enter"}>
-			&nbsp;<img src="img/node.gif" alt="">
-			<input class="blend" type="text" id="nodeinput" name="qsnode" value="" size="15" {tip text="Enter node ID, name, IP address or MAC address and press Enter"}>
-			&nbsp;<img src="img/ticket.gif" alt="">
-			<input class="blend" type="text" id="rtinput" name="qsticket" value="" size="15" {tip text="Enter request tracker ID, subject or requestor name and press Enter"}>
-			&nbsp;<img src="img/account.gif" alt="">
-			<input class="blend" type="text" id="accountinput" name="qsaccount" value="" size="15" {tip text="Enter account or alias name and press Enter"}>
-			&nbsp;<img src="img/docum.gif" alt="">
-			<input class="blend" type="text" id="documentinput" name="qsdocument" value="" size="15" {tip text="Enter document number and press Enter"}>
-			<script type="text/javascript">
-				new AutoSuggest(document.getElementById('quicksearch'),document.getElementById('customerinput'),'?m=quicksearch&ajax=1&mode=customer&what=',1);
-				new AutoSuggest(document.getElementById('quicksearch'),document.getElementById('nodeinput'),'?m=quicksearch&ajax=1&mode=node&what=',1);
-				new AutoSuggest(document.getElementById('quicksearch'),document.getElementById('rtinput'),'?m=quicksearch&ajax=1&mode=ticket&what=',1);
-				new AutoSuggest(document.getElementById('quicksearch'),document.getElementById('accountinput'),'?m=quicksearch&ajax=1&mode=account&what=',1);
-				new AutoSuggest(document.getElementById('quicksearch'),document.getElementById('documentinput'),'?m=quicksearch&ajax=1&mode=document&what=',1);
-			</script>
+			{include file="quicksearchcontents.html"}
 			{* Enter key submit hack for IE *}
 			<input type="image" src="img/empty.gif" width="0" height="0" style="border: none;">
 		    </td>
@@ -97,13 +90,14 @@
 		</tr>
 	</table>
 	</form>
+	<SCRIPT type="text/javascript">
+		<!--//
+		document.forms['quicksearch'].elements['customerinput'].focus();
+		//-->
+	</SCRIPT>
+	{/block}
 	{if ! ConfigHelper::checkConfig('phpui.hide_toolbar')}
 		{include file="toolbar.html"}
 	{/if}
 	<hr>
-<SCRIPT type="text/javascript">
-<!--//
-document.forms['quicksearch'].elements['customerinput'].focus();
-//-->
-</SCRIPT>
 {/if}

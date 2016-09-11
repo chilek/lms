@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -80,22 +80,9 @@ if($userinfo)
 
 	if($accessto < $accessfrom && $accessto != 0 && $accessfrom != 0)
 		$error['accessto'] = trans('Incorrect date range!');
-	
-	// let's make an ACL mask...
-	$mask = '';
-	$outmask = '';
 
-	for($i=0;$i<256;$i++)
-		$mask .= '0';
-
-	foreach($access['table'] as $idx => $row)
-		if(isset($acl[$idx]))
-			$mask[255-$idx] = '1';
-
-	for($i=0;$i<256;$i += 4)
-		$outmask = $outmask . dechex(bindec(substr($mask,$i,4)));
-
-	$userinfo['rights'] = preg_replace('/^[0]*(.*)$/','\1',$outmask);
+	$rights = isset($acl) ? array_keys($acl) : array();
+	$userinfo['rights'] = implode(',', $rights);
 
 	if (!empty($userinfo['ntype']))
 		$userinfo['ntype'] = array_sum(array_map('intval', $userinfo['ntype']));
@@ -111,12 +98,11 @@ if($userinfo)
 			if (!empty($groups))
 				foreach ($groups as $group) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_EXCLGROUP] => $group['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $group['customergroupid'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $userinfo['id']
+						SYSLOG::RES_EXCLGROUP => $group['id'],
+						SYSLOG::RES_CUSTGROUP => $group['customergroupid'],
+						SYSLOG::RES_USER => $userinfo['id']
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_EXCLGROUP, SYSLOG_OPER_DELETE, $args,
-						array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_DELETE, $args);
 				}
 		}
 		$DB->Execute('DELETE FROM excludedgroups WHERE userid = ?', array($userinfo['id']));
@@ -126,13 +112,12 @@ if($userinfo)
 						VALUES(?, ?)', array($idx, $userinfo['id']));
 				if ($SYSLOG) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_EXCLGROUP] =>
+						SYSLOG::RES_EXCLGROUP =>
 							$DB->GetLastInsertID('excludedgroups'),
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTGROUP] => $idx,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_USER] => $userinfo['id']
+						SYSLOG::RES_CUSTGROUP => $idx,
+						SYSLOG::RES_USER => $userinfo['id']
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_EXCLGROUP, SYSLOG_OPER_ADD, $args,
-						array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_EXCLGROUP, SYSLOG::OPER_ADD, $args);
 				}
 			}
 
@@ -148,28 +133,16 @@ if($userinfo)
 			}
 		}
 
-		foreach($access['table'] as $idx => $row)
-		{
-			$row['id'] = $idx;
-			if(isset($acl[$idx]))
-				$row['enabled'] = TRUE;
-
-			$accesslist[] = $row;
-		}
+		$access = AccessRights::getInstance();
+		$accesslist = $access->getArray(array_keys($acl));
 	}
 }
 else
 {
 	$rights = $LMS->GetUserRights($id);
 
-	foreach($access['table'] as $idx => $row)
-	{
-		$row['id'] = $idx;
-		foreach($rights as $right)
-			if($right == $idx)
-				$row['enabled'] = TRUE;
-		$accesslist[] = $row;
-	}
+	$access = AccessRights::getInstance();
+	$accesslist = $access->getArray($rights);
 }
 
 foreach($LMS->GetUserInfo($id) as $key => $value)

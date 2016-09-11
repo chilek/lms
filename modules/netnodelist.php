@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -57,6 +57,12 @@ else
 	$w = $_GET['w'];
 $SESSION->save('ndfw', $w);
 
+if(!isset($_GET['d']))
+	$SESSION->restore('ndfd', $d);
+else
+	$d = $_GET['d'];
+$SESSION->save('ndfd', $d);
+
 
 
 list($order,$dir) = sscanf($o,'%[^,],%s');
@@ -96,11 +102,15 @@ if (strlen(trim($w)) && $w!=-1) {
 	$warr[] = "n.ownership=$w";
 }
 
+if (strlen(trim($d)) && $d!=-1) {
+	$warr[] = "n.divisionid=$d";
+}
+
 
 $fstr = empty($warr) ? '' : ' WHERE ' . implode(' AND ', $warr);
 
 $nlist = $DB->GetAll('SELECT n.id, n.name, n.type, n.status, n.invprojectid, p.name AS project,
-		n.location,
+		n.location, n.divisionid,
 		lb.name AS borough_name, lb.type AS borough_type,
 		ld.name AS district_name, ls.name AS state_name
 	FROM netnodes n
@@ -117,6 +127,7 @@ $listdata['status'] = $s;
 $listdata['type'] = $t;
 $listdata['invprojectid'] = $p;
 $listdata['ownership'] = $w;
+$listdata['divisionid'] = $d;
 
 if(!isset($_GET['page']))
         $SESSION->restore('ndlp', $_GET['page']);
@@ -134,6 +145,7 @@ $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);
 $SMARTY->assign('nlist',$nlist);
 $SMARTY->assign('listdata',$listdata);
+$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
 
 $nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
 	array(INV_PROJECT_SYSTEM));

@@ -25,7 +25,12 @@
  */
 
 // Load autloader
-require_once(LIB_DIR.'/autoloader.php');
+$composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+if (file_exists($composer_autoload_path)) {
+    require_once $composer_autoload_path;
+} else {
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
+}
 
 $_MAILDBTYPE = ConfigHelper::getConfig('database.mail_db_type');
 $_MAILDBHOST = ConfigHelper::getConfig('database.mail_db_host');

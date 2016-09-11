@@ -47,4 +47,27 @@
 			</TABLE>
 		</TD>
 	</TR>
+{elseif ConfigHelper::getConfig('phpui.live_traffic_helper')}
+	<TR>
+		<TD style="width: 1%;">
+			<IMG SRC="img/traffic.gif" ALT="">
+		</TD>
+		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
+			<span class="bold">{trans("Traffic stats (download/upload):")}</span>
+		</TD>
+	</TR>
+	<TR>
+		<TD style="width: 1%;"></TD>
+		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
+			<TABLE style="width: 100%;" cellpadding="3">
+				<TR>
+					<TD style="width: 1%; white-space: nowrap;">
+						<span class="bold">{trans("current:")}</span>
+					</TD>
+					<TD style="width: 99%; white-space: nowrap;" id="livetraffic">
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
 {/if}

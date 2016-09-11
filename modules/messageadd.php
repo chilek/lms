@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -63,7 +63,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	$tarifftype = intval($filter['tarifftype']);
 	$consent = isset($filter['consent']);
 
-	if($group == 4)
+	if($group == 50)
 	{
 		$deleted = 1;
 		$network = NULL;
@@ -72,25 +72,29 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	else
 		$deleted = 0;
 
-	$disabled = ($group == 5) ? 1 : 0;
-	$indebted = ($group == 6) ? 1 : 0;
-	$notindebted = ($group == 7) ? 1 : 0;
-	$indebted2 = ($group == 11) ? 1 : 0;
-	$indebted3 = ($group == 12) ? 1 : 0;
+	$disabled = ($group == 51) ? 1 : 0;
+	$indebted = ($group == 52) ? 1 : 0;
+	$notindebted = ($group == 53) ? 1 : 0;
+	$indebted2 = ($group == 57) ? 1 : 0;
+	$indebted3 = ($group == 58) ? 1 : 0;
 
-	if($group>3) $group = 0;
+	if ($group >= 50) $group = 0;
 
 	if($network)
 		$net = $LMS->GetNetworkParams($network);
 
-	if($type == MSG_SMS)
-	{
-		$smstable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('phone') . ' AS phone, customerid
+	if ($type == MSG_SMS)
+		$smstable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('contact') . ' AS phone, customerid
 				FROM customercontacts
-				WHERE (type & '.CONTACT_MOBILE.') = '.CONTACT_MOBILE.'
+				WHERE ((type & ' . (CONTACT_MOBILE | CONTACT_DISABLED) . ') = ' . CONTACT_MOBILE . ' )
 				GROUP BY customerid
 			) x ON (x.customerid = c.id) ';
-	}
+	elseif ($type == MSG_MAIL)
+		$mailtable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('contact') . ' AS email, customerid
+				FROM customercontacts
+				WHERE ((type & ' . (CONTACT_EMAIL | CONTACT_DISABLED) . ') = ' . CONTACT_EMAIL . ')
+				GROUP BY customerid
+			) cc ON (cc.customerid = c.id) ';
 
 	if ($tarifftype) {
 		$tarifftable = 'JOIN (
@@ -105,11 +109,12 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 
 	$suspension_percentage = f_round(ConfigHelper::getConfig('finances.suspension_percentage'));
 
-	$recipients = $LMS->DB->GetAll('SELECT c.id, email, pin, '
-		.($type==MSG_SMS ? 'x.phone, ': '')
-		.$LMS->DB->Concat('c.lastname', "' '", 'c.name').' AS customername,
+	$recipients = $LMS->DB->GetAll('SELECT c.id, pin, '
+		. ($type == MSG_MAIL ? 'cc.email, ' : '')
+		. ($type == MSG_SMS ? 'x.phone, ' : '')
+		. $LMS->DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
 		COALESCE(b.value, 0) AS balance
-		FROM customersview c 
+		FROM customerview c 
 		LEFT JOIN (
 			SELECT SUM(value) AS value, customerid
 			FROM cash GROUP BY customerid
@@ -134,26 +139,27 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 			FROM assignments a
 			LEFT JOIN tariffs t ON (t.id = a.tariffid)
 			LEFT JOIN liabilities l ON (l.id = a.liabilityid AND a.period != ' . DISPOSABLE . ')
-			WHERE (a.datefrom <= ?NOW? OR a.datefrom = 0) AND (a.dateto > ?NOW? OR a.dateto = 0) 
+			WHERE a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0) 
 			GROUP BY a.customerid
 		) t ON (t.customerid = c.id) '
-		.(!empty($smstable) ? $smstable : '')
+		. (isset($mailtable) ? $mailtable : '')
+		. (isset($smstable) ? $smstable : '')
 		. ($tarifftype ? $tarifftable : '')
 		.'WHERE deleted = ' . $deleted
 		. ($consent ? ' AND c.mailingnotice = 1' : '')
-		.($type == MSG_MAIL ? ' AND email != \'\'' : '')
+		. ($type == MSG_WWW ? ' AND c.id IN (SELECT DISTINCT ownerid FROM nodes)' : '')
 		.($group!=0 ? ' AND status = '.$group : '')
-		.($network ? ' AND c.id IN (SELECT ownerid FROM nodes WHERE 
+		.($network ? ' AND c.id IN (SELECT ownerid FROM vnodes WHERE 
 			(netid = ' . $net['id'] . ' AND ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ')
 			OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].'))' : '')
 		.($customergroup ? ' AND c.id IN (SELECT customerid FROM customerassignments
 			WHERE customergroupid IN (' . $customergroup . '))' : '')
-		.($nodegroup ? ' AND c.id IN (SELECT ownerid FROM nodes
-			JOIN nodegroupassignments ON (nodeid = nodes.id)
+		.($nodegroup ? ' AND c.id IN (SELECT ownerid FROM vnodes
+			JOIN nodegroupassignments ON (nodeid = vnodes.id)
 			WHERE nodegroupid = ' . $nodegroup . ')' : '')
-		.($linktype != '' ? ' AND c.id IN (SELECT ownerid FROM nodes
+		.($linktype != '' ? ' AND c.id IN (SELECT ownerid FROM vnodes
 			WHERE linktype = ' . $linktype . ')' : '')
-		.($disabled ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id
+		.($disabled ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id
 			GROUP BY ownerid HAVING (SUM(access) != COUNT(access)))' : '')
 		.($indebted ? ' AND COALESCE(b.value, 0) < 0' : '')
 		. ($indebted2 ? ' AND COALESCE(b.value, 0) < -t.value' : '')
@@ -168,28 +174,13 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	return $recipients;
 }
 
-function GetRecipient($customerid, $type=MSG_MAIL)
-{
-	global $LMS;
+function GetRecipient($customerid) {
+	global $DB;
 
-	if($type == MSG_SMS)
-	{
-		$smstable = 'JOIN (SELECT ' . $LMS->DB->GroupConcat('phone') . ' AS phone, customerid
-				FROM customercontacts 
-				WHERE customerid = '.$customerid.'
-					AND (type & '.CONTACT_MOBILE.') = '.CONTACT_MOBILE.'
-				GROUP BY customerid
-			) x ON (x.customerid = c.id) ';
-	}
-
-	return $LMS->DB->GetAll('SELECT c.id, email, pin, '
-		.($type==MSG_SMS ? 'x.phone, ': '')
-		.$LMS->DB->Concat('c.lastname', "' '", 'c.name').' AS customername,
+	return $DB->GetRow('SELECT c.id, pin, '
+		. $DB->Concat('c.lastname', "' '", 'c.name') . ' AS customername,
 		COALESCE((SELECT SUM(value) FROM cash WHERE customerid = c.id), 0) AS balance
-		FROM customersview c '
-		.(!empty($smstable) ? $smstable : '')
-		.'WHERE c.id = '.$customerid
-		.($type == MSG_MAIL ? ' AND email != \'\'' : ''));
+		FROM customerview c WHERE c.id = ?', array($customerid));
 }
 
 function BodyVars(&$body, $data)
@@ -223,24 +214,14 @@ function BodyVars(&$body, $data)
 
 $layout['pagetitle'] = trans('Message Add');
 
-if(isset($_POST['message']))
-{
+if (isset($_POST['message'])) {
 	$message = $_POST['message'];
 
-	if ($message['type'] == MSG_MAIL)
-		$message['type'] == MSG_MAIL;
-	elseif ($message['type'] == MSG_SMS)
-		$message['type'] == MSG_SMS;
-	elseif ($message['type'] == MSG_ANYSMS)
-		$message['type'] == MSG_ANYSMS;
-	elseif ($message['type'] == MSG_WWW)
-		$message['type'] == MSG_WWW;
-	elseif ($message['type'] == MSG_USERPANEL)
-		$message['type'] == MSG_USERPANEL;
-	else
-		$message['type'] == MSG_USERPANEL_URGENT;
+	if (!in_array($message['type'], array(MSG_MAIL, MSG_SMS, MSG_ANYSMS, MSG_WWW, MSG_USERPANEL)))
+		$message['type'] = MSG_USERPANEL_URGENT;
 
-	if(empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 12))
+	if (empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 58
+		|| ($message['group'] > CSTATUS_LAST && $message['group'] < 50)))
 		$error['group'] = trans('Incorrect customers group!');
 
 	if ($message['type'] == MSG_MAIL) {
@@ -309,31 +290,36 @@ if(isset($_POST['message']))
 	if($message['subject']=='')
 		$error['subject'] = trans('Message subject is required!');
 
-	if($message['body']=='')
-		$error['body'] = trans('Message body is required!');
+	if ($message['body'] == '')
+		if (in_array($message['type'], array(MSG_SMS, MSG_ANYSMS)))
+			$error['smsbody'] = trans('Message body is required!');
+		else
+			$error['mailbody'] = trans('Message body is required!');
 
-	if($filename = $_FILES['file']['name'])
-	{
-		if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
-		{
-			$file = '';
-			$fd = fopen($_FILES['file']['tmp_name'], 'r');
-			if($fd)
-			{
-				while(!feof($fd))
-					$file .= fread($fd,256);
-				fclose($fd);
-			}
-		} 
-		else // upload errors
-			switch($_FILES['file']['error'])
-			{
-				case 1:
-				case 2: $error['file'] = trans('File is too large.'); break;
-				case 3: $error['file'] = trans('File upload has finished prematurely.'); break;
-				case 4: $error['file'] = trans('Path to file was not specified.'); break;
-				default: $error['file'] = trans('Problem during file upload.'); break;
-			}
+	$files = array();
+	if (!empty($_FILES['file']['name'][0])) {
+		foreach ($_FILES['file']['name'] as $fileidx => $filename)
+			if (is_uploaded_file($_FILES['file']['tmp_name'][$fileidx]) && $_FILES['file']['size'][$fileidx]) {
+				$data = '';
+				$fd = fopen($_FILES['file']['tmp_name'][$fileidx], 'r');
+				if ($fd) {
+					while (!feof($fd))
+						$data .= fread($fd,256);
+					fclose($fd);
+					$files[] = array(
+						'content_type' => $_FILES['file']['type'][$fileidx],
+						'filename' => $_FILES['file']['name'][$fileidx],
+						'data' => $data,
+					);
+				}
+			} else // upload errors
+				switch($_FILES['file']['error'][$fileidx]) {
+					case 1:
+					case 2: $error['file'] = trans('File is too large.'); break;
+					case 3: $error['file'] = trans('File upload has finished prematurely.'); break;
+					case 4: $error['file'] = trans('Path to file was not specified.'); break;
+					default: $error['file'] = trans('Problem during file upload.'); break;
+				}
 	}
 
 	if(!$error)
@@ -345,8 +331,26 @@ if(isset($_POST['message']))
 			else
 				foreach ($phonenumbers as $phone)
 					$recipients[]['phone'] = $phone;
-		else
-			$recipients = GetRecipient($message['customerid'], $message['type']);
+		else {
+			$recipient = GetRecipient($message['customerid']);
+			if (!empty($recipient))
+				switch ($message['type']) {
+					case MSG_MAIL:
+						if (empty($message['customermails']))
+							break;
+						$recipient['email'] = implode(',', $message['customermails']);
+						$recipients = array($recipient);
+						break;
+					case MSG_SMS:
+						if (empty($message['customerphones']))
+							break;
+						$recipient['phone'] = implode(',', $message['customerphones']);
+						$recipients = array($recipient);
+						break;
+					default:
+						$recipients = array($recipient);
+				}
+		}
 
 		if(!$recipients)
 			$error['subject'] = trans('Unable to send message. No recipients selected!');
@@ -358,8 +362,11 @@ if(isset($_POST['message']))
 
 		$message['body'] = str_replace("\r", '', $message['body']);
 
-		if($message['type'] == MSG_MAIL)
-			$message['body'] = wordwrap($message['body'],76,"\n");
+		if ($message['type'] == MSG_MAIL) {
+			$message['body'] = wordwrap($message['body'], 76, "\n");
+			$dsn_email = ConfigHelper::getConfig('mail.dsn_email', '', true);
+			$mdn_email = ConfigHelper::getConfig('mail.mdn_email', '', true);
+		}
 
 		$SMARTY->assign('message', $message);
 		$SMARTY->assign('recipcount', sizeof($recipients));
@@ -390,38 +397,46 @@ if(isset($_POST['message']))
 			else
 				$recipients[$key]['destination'] = explode(',', $row['phone']);
 
-			foreach ($recipients[$key]['destination'] as $destination)
+			$customerid = isset($row['id']) ? $row['id'] : 0;
+			foreach ($recipients[$key]['destination'] as $destination) {
 				$DB->Execute('INSERT INTO messageitems (messageid, customerid,
 					destination, status)
-					VALUES (?, ?, ?, ?)', array(
-						$msgid,
-						isset($row['id']) ? $row['id'] : 0,
-						$destination,
-						MSG_NEW,
-					));
+					VALUES (?, ?, ?, ?)', array($msgid, $customerid, $destination, MSG_NEW));
+				if ($message['type'] == MSG_MAIL && (!empty($dsn_email) || !empty($mdn_email))) {
+					$msgitemid = $DB->GetLastInsertID('messageitems');
+					if (!isset($msgitems[$customerid]))
+						$msgitems[$customerid] = array();
+					$msgitems[$customerid][$destination] = $msgitemid;
+				}
+			}
 		}
 
 		$DB->CommitTrans();
 
 		if($message['type'] == MSG_MAIL)
 		{
-			$files = NULL;
-			if (isset($file))
-			{
-				$files[0]['content_type'] = $_FILES['file']['type'];
-				$files[0]['filename'] = $filename;
-				$files[0]['data'] = $file;
-			}
+			if (empty($files))
+				$files = null;
 
 			$debug_email = ConfigHelper::getConfig('mail.debug_email');
 			if(!empty($debug_email))
 				echo '<B>'.trans('Warning! Debug mode (using address $a).',ConfigHelper::getConfig('mail.debug_email')).'</B><BR>';
 
-			$headers['From'] = '"'.$message['from'].'" <'.$message['sender'].'>';
+			$headers['From'] = '"' . qp_encode($message['from']) . '"' . ' <' . $message['sender'] . '>';
 			$headers['Subject'] = $message['subject'];
 			$headers['Reply-To'] = $headers['From'];
+			if (isset($message['copytosender']))
+				$headers['Cc'] = $headers['From'];
 			if (!empty($message['wysiwyg']))
 				$headers['X-LMS-Format'] = 'html';
+			if (!empty($dsn_email)) {
+				$headers['From'] = $dsn_email;
+				$headers['Delivery-Status-Notification-To'] = true;
+			}
+			if (!empty($mdn_email)) {
+				$headers['Return-Receipt-To'] = $mdn_email;
+				$headers['Disposition-Notification-To'] = $mdn_email;
+			}
 		} elseif ($message['type'] != MSG_WWW) {
 			$debug_phone = ConfigHelper::getConfig('sms.debug_phone');
 			if (!empty($debug_phone))
@@ -432,6 +447,8 @@ if(isset($_POST['message']))
 			$body = $message['body'];
 
 			BodyVars($body, $row);
+
+			$customerid = isset($row['id']) ? $row['id'] : 0;
 
 			foreach ($row['destination'] as $destination) {
 				$orig_destination = $destination;
@@ -452,10 +469,14 @@ if(isset($_POST['message']))
 					$row['customername'] . ' &lt;' . $destination . '&gt;');
 				flush();
 
-				if ($message['type'] == MSG_MAIL)
+				if ($message['type'] == MSG_MAIL) {
+					if (isset($message['copytosender']))
+						$destination .= ',' . $message['sender'];
+					if (!empty($dsn_email) || !empty($mdn_email))
+						$headers['X-LMS-Message-Item-Id'] = $msgitems[$customerid][$orig_destination];
 					$result = $LMS->SendMail($destination, $headers, $body, $files);
-				elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT)
-					$result = MSG_NEW;
+				} elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT)
+					$result = MSG_SENT;
 				else
 					$result = $LMS->SendSMS($destination, $body, $msgid);
 
@@ -475,8 +496,7 @@ if(isset($_POST['message']))
 						array(
 							is_int($result) ? $result : MSG_ERROR,
 							is_int($result) ? null : $result,
-							$msgid,
-							isset($row['id']) ? $row['id'] : 0,
+							$msgid, $customerid,
 							$orig_destination,
 						));
 			}
@@ -490,8 +510,20 @@ if(isset($_POST['message']))
 	{
 		$message['customer'] = $DB->GetOne('SELECT '
 			.$DB->Concat('UPPER(lastname)',"' '",'name').'
-			FROM customersview
+			FROM customerview
 			WHERE id = ?', array($message['customerid']));
+
+		$message['phones'] = $DB->GetAll('SELECT contact, name FROM customercontacts
+			WHERE customerid = ? AND (type & ?) = 0 AND (type & ?) > 0',
+			array($message['customerid'], CONTACT_DISABLED, CONTACT_MOBILE | CONTACT_FAX | CONTACT_LANDLINE));
+		if (is_null($message['phones']))
+			$message['phones'] = array();
+
+		$message['emails'] = $DB->GetAll('SELECT contact, name FROM customercontacts
+			WHERE customerid = ? AND (type & ?) = ?',
+			array($message['customerid'], CONTACT_EMAIL | CONTACT_DISABLED, CONTACT_EMAIL));
+		if (is_null($message['emails']))
+			$message['emails'] = array();
 	}
 
 	$SMARTY->assign('error', $error);
@@ -501,8 +533,29 @@ else if (!empty($_GET['customerid']))
 {
 	$message = $DB->GetRow('SELECT id AS customerid, '
 		.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customer
-		FROM customersview
+		FROM customerview
 		WHERE id = ?', array($_GET['customerid']));
+
+	$message['phones'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
+		WHERE customerid = ? AND (type & ?) = 0 AND (type & ?) > 0',
+		array($_GET['customerid'], CONTACT_DISABLED, CONTACT_MOBILE | CONTACT_FAX | CONTACT_LANDLINE));
+	if (is_null($message['phones']))
+		$message['phones'] = array();
+	$message['customerphones'] = array();
+	foreach ($message['phones'] as $idx => $phone)
+		if ($phone['type'] & CONTACT_MOBILE)
+			$message['customerphones'][$idx] = $phone['contact'];
+
+	$message['emails'] = $DB->GetAll('SELECT contact, name FROM customercontacts
+		WHERE customerid = ? AND (type & ?) = ?',
+		array($_GET['customerid'], CONTACT_EMAIL | CONTACT_DISABLED, CONTACT_EMAIL));
+	if (is_null($message['emails']))
+		$message['emails'] = array();
+	$message['customermails'] = array();
+	foreach ($message['emails'] as $idx => $email)
+		$message['customermails'][$idx] = $email['contact'];
+
+	$message['type'] = empty($message['emails']) ? (empty($message['phones']) ? MSG_WWW : MSG_SMS) : MSG_MAIL;
 
 	$SMARTY->assign('message', $message);
 }

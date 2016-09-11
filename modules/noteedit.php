@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -155,9 +155,9 @@ switch($action)
 
 			$args = array(
 				'number' => $note['number'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN] => !empty($note['numberplanid']) ? $note['numberplanid'] : 0,
+				SYSLOG::RES_NUMPLAN => !empty($note['numberplanid']) ? $note['numberplanid'] : 0,
 				'cdate' => $cdate,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+				SYSLOG::RES_CUST => $customer['id'],
 				'name' => $customer['customername'],
 				'address' => $customer['address'],
 				'paytime' => $note['paytime'],
@@ -165,14 +165,14 @@ switch($action)
 				'ssn' => $customer['ssn'],
 				'zip' => $customer['zip'],
 				'city' => $customer['city'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $customer['countryid'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customer['divisionid'],
+				SYSLOG::RES_COUNTRY => $customer['countryid'],
+				SYSLOG::RES_DIV => $customer['divisionid'],
 				'div_name' => ($division['name'] ? $division['name'] : ''),
 				'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
 				'div_address' => ($division['address'] ? $division['address'] : ''), 
 				'div_city' => ($division['city'] ? $division['city'] : ''), 
 				'div_zip' => ($division['zip'] ? $division['zip'] : ''),
-				'div_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => ($division['countryid'] ? $division['countryid'] : 0),
+				'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ? $division['countryid'] : 0),
 				'div_ten'=> ($division['ten'] ? $division['ten'] : ''),
 				'div_regon' => ($division['regon'] ? $division['regon'] : ''),
 				'div_account' => ($division['account'] ? $division['account'] : ''),
@@ -181,7 +181,7 @@ switch($action)
 				'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
 				'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
 				'fullnumber' => $fullnumber,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $note['id'],
+				SYSLOG::RES_DOC => $note['id'],
 			);
 			$DB->Execute('UPDATE documents SET number = ?, numberplanid = ?,
 				cdate = ?, customerid = ?, name = ?, address = ?, paytime = ?,
@@ -192,27 +192,25 @@ switch($action)
 				WHERE id = ?', array_values($args));
 
 			if ($SYSLOG) {
-				$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_UPDATE, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NUMPLAN],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]));
+				$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args,
+					array('div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY)));
 				$dnoteconts = $DB->GetCol('SELECT id FROM debitnotecontents WHERE docid = ?', array($note['id']));
 				foreach ($dnoteconts as $item) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT] => $item,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $note['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+						SYSLOG::RES_DNOTECONT => $item,
+						SYSLOG::RES_DOC => $note['id'],
+						SYSLOG::RES_CUST => $customer['id'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_DNOTECONT, SYSLOG_OPER_DELETE, $args, array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_DNOTECONT, SYSLOG::OPER_DELETE, $args);
 				}
 				$cashids = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($note['id']));
 				foreach ($cashids as $item) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $item,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $note['id'],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+						SYSLOG::RES_CASH => $item,
+						SYSLOG::RES_DOC => $note['id'],
+						SYSLOG::RES_CUST => $customer['id'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
 				}
 			}
 			$DB->Execute('DELETE FROM debitnotecontents WHERE docid = ?', array($note['id']));
@@ -224,7 +222,7 @@ switch($action)
 				$item['value'] = str_replace(',','.', $item['value']);
 
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $note['id'],
+					SYSLOG::RES_DOC => $note['id'],
 					'itemid' => $itemid,
 					'value' => $item['value'],
 					'description' => $item['description']
@@ -232,11 +230,9 @@ switch($action)
 				$DB->Execute('INSERT INTO debitnotecontents (docid, itemid, value, description)
 					VALUES (?, ?, ?, ?)', array_values($args));
 				if ($SYSLOG) {
-					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT]] = $DB->GetLastInsertID('debitnotecontents');
-					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $customer['id'];
-					$SYSLOG->AddMessage(SYSLOG_RES_DNOTECONT, SYSLOG_OPER_ADD, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DNOTECONT], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					$args[SYSLOG::RES_DNOTECONT] = $DB->GetLastInsertID('debitnotecontents');
+					$args[SYSLOG::RES_CUST] = $customer['id'];
+					$SYSLOG->AddMessage(SYSLOG::RES_DNOTECONT, SYSLOG::OPER_ADD, $args);
 				}
 
 				$LMS->AddBalance(array(
@@ -277,10 +273,8 @@ if($action != '')
 	$SESSION->redirect('?m=noteedit');
 }
 
-if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
-{
-        $SMARTY->assign('customers', $LMS->GetCustomerNames());
-}
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);

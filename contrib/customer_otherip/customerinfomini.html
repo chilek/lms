@@ -1,119 +1,113 @@
 <!-- $Id$ -->
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="FLEFTU">
+	<TR CLASS="dark">
+		<TD WIDTH="1%" CLASS="fleftu">
 			<IMG SRC="img/customer.gif" BORDER="0" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
+		<TD WIDTH="99%" CLASS="frightu" COLSPAN="2">
 			<B>{$customerinfo.customername}</B>
 <!-- ({$customerinfo.id|string_format:"%04d"})</B>-->
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR CLASS="light">
 <!--
-		<TD WIDTH="1%" CLASS="FLEFT">
-			{if $customerinfo.status eq "4"}<IMG SRC="img/osbridge.gif" alt="" border="0">{/if}
-			{if $customerinfo.status eq "3"}<IMG SRC="img/customer.gif" alt="" border="0">{/if}
-			{if $customerinfo.status eq "2"}<IMG SRC="img/wait.gif" alt="" border="0">{/if}
-			{if $customerinfo.status eq "1"}<IMG SRC="img/unk.gif" alt="" border="0">{/if}			
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/{$_CSTATUSES[$customerinfo.status].img}" alt="" border="0">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			{if $customerinfo.status eq "4"}<B>OSBRiDGE</B>{/if}
-			{if $customerinfo.status eq "3"}<B>pod³±czony</B>{/if}
-			{if $customerinfo.status eq "2"}<B>oczekuj±cy</B>{/if}
-			{if $customerinfo.status eq "1"}<B>zainteresowany</B>{/if}
+		<TD WIDTH="99%" CLASS="fright" COLSPAN="2">
+			<B>{$_CSTATUSES[$customerinfo.status].singularlabel}</B>
 		</TD>
 	</TR>
 
-  <TR CLASS="LIGHT">
-		  <TD WIDTH="1%" CLASS="FLEFT">
+  <TR CLASS="light">
+		  <TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/customers.gif" BORDER="0" ALT="">
         </TD>
-        <TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+        <TD WIDTH="99%" CLASS="fright" COLSPAN="2">
 		{$customerinfo.g_name}
         </TD>
     </TR>
 
 -->
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/phone.gif" BORDER="0" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="99%" CLASS="fright" COLSPAN="2">
 			{foreach from=$customerinfo.contacts item=item}
 		            {if $item.phone}{$item.phone}{if $item.name} ({$item.name|truncate:"40":"...":true}){/if}<BR>{/if}
 			{/foreach}
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/home.gif" BORDER="0" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="99%" CLASS="fright" COLSPAN="2">
 			{$customerinfo.address}<BR>
 			{$customerinfo.zip} {$customerinfo.city}
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/mail.gif" BORDER="0" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="99%" CLASS="fright" COLSPAN="2">
 			{if $customerinfo.email}<A HREF="mailto:{$customerinfo.email}">{$customerinfo.email}</A>{/if}
 		</TD>
 	</TR>
 	{if $customerinfo.im neq "" && $customerinfo.im !=0}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="http://www.gadu-gadu.pl/users/status.asp?id={$customerinfo.im}&styl=1" BORDER="0" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="99%" CLASS="fright" COLSPAN="2">
 			<A HREF="gg:{$customerinfo.im}">{$customerinfo.im}</A>
 		</TD>
 	</TR>
 	{/if}
 	{if $customerinfo.ten neq ""}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT" ALIGN=CENTER>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" ALIGN=CENTER>
 			<B>{trans("TEN:")}</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="99%" CLASS="fright" COLSPAN="2">
 			<B>{$customerinfo.ten}</B>
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT" valign="top">
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" valign="top">
 			<IMG SRC="img/money.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" valign="top">
 			<B>{trans("Balance:")}<B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-		<H2>	{if $customerinfo.balance < 0}<FONT COLOR="RED"><B>{$customerinfo.balance|money_format}</B></FONT>{else}{$customerinfo.balance|money_format}{/if}</H2>
+		<TD WIDTH="98%" CLASS="fright">
+		<H2>	{if $customerinfo.balance < 0}<FONT COLOR="red"><B>{$customerinfo.balance|money_format}</B></FONT>{else}{$customerinfo.balance|money_format}{/if}</H2>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/users.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%">
 			<B>{trans("Created:")}<BR>
 			{trans("Modified:")}</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
+		<TD WIDTH="98%" CLASS="fright">
 			{$customerinfo.createdby}, {$customerinfo.creationdateh}<BR>
 			{if $customerinfo.moddate}{$customerinfo.modifiedby}, {$customerinfo.moddateh}{else}-{/if}
 		</TD>
 	</TR>
 	{if $customerinfo.info}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="99%" CLASS="fright" COLSPAN="2">
 			<TABLE WIDTH="100%" CELLPADDING="5">
 				<TR>
-					<TD CLASS="FALL" BGCOLOR="#F4F0EC">
+					<TD CLASS="fall" BGCOLOR="#F4F0EC">
 						{$customerinfo.info|replace:"\n":"<BR>"}
 					</TD>
 				</TR>
@@ -121,9 +115,9 @@
 		</TD>
 	</TR>
 	{/if}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
-<!--			<A href="?m=customeredit&id={$customerinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A> <A href="?m=customerdel&id={$customerinfo.id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$customerinfo.customername|upper} z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!')">Usuñ <img border="0" align="absmiddle" src="img/delete.gif" alt=""></A>-->
+	<TR CLASS="light">
+		<TD WIDTH="100%" COLSPAN="3" CLASS="fbottomu" ALIGN="RIGHT">
+<!--			<A href="?m=customeredit&id={$customerinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A> <A href="?m=customerdel&id={$customerinfo.id}" onClick="return confirmLink(this, 'JesteÅ› pewien, Å¼e chcesz usunÄ…Ä‡ uÅ¼ytkownika: {$customerinfo.customername|upper} z bazy danych?\n\nJeÅ¼eli dany uÅ¼ytkownik posiada jakiekolwiek komputery, zostanÄ… automatycznie usuniÄ™te z bazy danych, a informacje o nich nieodwracalnie stracone!')">UsuÅ„ <img border="0" align="absmiddle" src="img/delete.gif" alt=""></A>-->
 		</TD>
 	</TR>
 </TABLE>

@@ -39,6 +39,12 @@
 		document.addbalance.submit();
 	}
 
+	function send_invoices() {
+		document.addbalance.action="?m=invoicesend&marks=cash";
+		document.addbalance.target="_blank";
+		document.addbalance.submit();
+	}
+
 	function show_list()
 	{
 		var type = document.getElementById('showlistselect').value;
@@ -54,9 +60,8 @@
 		document.addbalance.submit();
 	}
 
-	function new_doc()
-	{
-		location.href = document.getElementById('newdocselect').value;
+	function new_doc_type_changed(url) {
+		document.getElementById('newdocanchor').href = url;
 	}
 
 {if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
@@ -74,30 +79,29 @@
 </SCRIPT>
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
 {$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
-<FORM name="addbalance" method="POST" action="?m=balanceadd&amp;id={$balancelist.customerid}">
+<FORM name="addbalance" method="POST" action="?m=balanceadd&id={$balancelist.customerid}">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
 </p>
 <TABLE class="lmsbox">
 	<THEAD>
 	<TR>
-		<TD {if $limit}class="hand nobr" onCLick="showOrHide('customerbalance');" {else}class="fleftu nobr"{/if}>
+		<TD {if $limit}class="hand nobr lmsbox-titlebar" data-lmsbox-content="customerbalance"{else}class="fleftu nobr"{/if}>
 			<IMG src="img/pay.gif" alt="">
 			<span class="bold">{trans("Customer Account:")}</span>
 			{if $limit}
-				{math equation="x * -1" x=$limit assign=n}
-				({t a=$n}last $a transactions{/t})
+			{math equation="x * -1" x=$limit assign=n}
 			{/if}
 		</TD>
 		<TD class="text-right nobr">
-			<A href="javascript: new_doc()">{trans("New document:")}</A>
-			<SELECT name="newdocument" id="newdocselect">
+			<A id="newdocanchor" href="?m=invoicenew&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("New document:")}</A>
+			<SELECT name="newdocument" onchange="javascript:new_doc_type_changed(this.options[this.selectedIndex].value)">
 				<OPTION value="?m=invoicenew&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("invoice")}</OPTION>
 				<OPTION value="?m=receiptadd&amp;type=in&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("cash-in receipt")}</OPTION>
 				<OPTION value="?m=receiptadd&amp;type=out&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("cash-out receipt")}</OPTION>
 				<OPTION value="?m=noteadd&amp;action=init&amp;customerid={$balancelist.customerid}">{trans("debit note")}</OPTION>
 			</SELECT>&nbsp;
-			<A href="javascript: show_list()">{trans("Show All:")}</A>
+			<A href="javascript:show_list()">{trans("Show All:")}</A>
 			<INPUT type="hidden" name="cat" value="customerid">
 			<INPUT type="hidden" name="search" value="{$balancelist.customerid}">
 			<SELECT name="showlist" id="showlistselect">
@@ -108,59 +112,91 @@
 		</TD>
 	</TR>
 	</THEAD>
-	<TBODY>
-	<TR id="customerbalance">
+	<TBODY class="multi-check">
+	<TR id="customerbalance" class="dark">
 		<TD style="width: 100%;" colspan="2">
-			<TABLE class="lmsbox-inner">
+			<TABLE class="lmsbox-inner{if !empty($balancelist.list)} datatables{/if}"{if !empty($balancelist.list)} data-page-length="{$n}" data-display-start="{$n = count($balancelist.list) + $limit}{if $n < 0}0{else}{$n}{/if}" style="display: none;"{/if}>
+				<COLGROUP>
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 92%;">
+					<COL style="width: 1%;">
+				</COLGROUP>
 				<THEAD>
 				<TR>
-					<TD style="width: 1%;">{trans("Date:")}</TD>
-					<TD style="width: 1%;">{trans("User:")}</TD>
-					<TD style="width: 1%;" class="text-right">{trans("Liability:")}</TD>
-					<TD style="width: 1%;" class="text-right">{trans("Income:")}</TD>
-					<TD style="width: 1%;" class="text-right">{trans("Expense:")}</TD>
-					<TD style="width: 1%;" class="text-center">&raquo;</TD>
-					<TD style="width: 1%;" class="text-right">{trans("After:")}</TD>
-					<TD style="width: 92%;">{trans("Description:")}</TD>
-					<TD style="width: 1%;">&nbsp;</TD>
+					<TH>{trans("Date:")}</TH>
+					<TH>{trans("User:")}</TH>
+					<TH class="text-right" data-searchable="false">{trans("Liability:")}</TH>
+					<TH class="text-right" data-searchable="false">{trans("Income:")}</TH>
+					<TH class="text-right" data-searchable="false">{trans("Expense:")}</TH>
+					<TH class="text-center" data-orderable="false" data-searchable="false">&raquo;</TH>
+					<TH class="text-right" data-orderable="false" data-searchable="false">{trans("After:")}</TH>
+					<TH data-orderable="false">{trans("Description:")}</TH>
+					<TH data-orderable="false" data-searchable="false">&nbsp;</TH>
 				</TR>
 				</THEAD>
 				<TBODY>
 				{cycle name=bal values="light,lucid" print=false}
-				{section name=balancelist loop=$balancelist.id start=$limit}
-				<TR class="highlight {cycle name=bal}">
-					<TD style="width: 1%;" class="nobr">{$balancelist.date[balancelist]}</TD>
-					<TD style="width: 1%;" class="nobr">{$balancelist.username[balancelist]|truncate:16:"...":true}</TD>
-					<TD style="width: 1%;" class="text-right nobr">{if !$balancelist.type[balancelist]}{($balancelist.value[balancelist]*-1)|money_format}{else}-{/if}</TD>
-					<TD style="width: 1%;" class="text-right nobr{if $balancelist.type[balancelist] && $balancelist.value[balancelist] > 0} green{/if}">{if $balancelist.type[balancelist] && $balancelist.value[balancelist] > 0}+{$balancelist.value[balancelist]|money_format}{else}-{/if}</TD>
-					<TD style="width: 1%;" class="text-right nobr">{if $balancelist.type[balancelist] && $balancelist.value[balancelist] < 0}{($balancelist.value[balancelist]*-1)|money_format}{else}-{/if}</TD>
-					<TD style="width: 1%;" class="text-center">&raquo;</TD>
-					<TD style="width: 1%;" class="text-right nobr{if $balancelist.after[balancelist] < 0} red{/if}">{$balancelist.after[balancelist]|money_format}</TD>
-					<TD style="width: 92%;">{$balancelist.comment[balancelist]}</TD>
-					<TD style="width: 1%;" class="text-right nobr">
-						{if $balancelist.docid[balancelist]}
-							{if $balancelist.doctype[balancelist] == $smarty.const.DOC_INVOICE}
-								<A href="?m=invoice&amp;id={$balancelist.docid[balancelist]}" rel="external"><IMG src="img/print.gif" alt="[ {trans("Invoice")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&amp;id=$a'}></A>
-							{elseif $balancelist.doctype[balancelist] == $smarty.const.DOC_CNOTE}
-								<A href="?m=invoice&amp;id={$balancelist.docid[balancelist]}" rel="external"><IMG src="img/printn.gif" alt="[ {trans("Credit note")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&amp;id=$a'}></A>
-							{elseif $balancelist.doctype[balancelist] == $smarty.const.DOC_RECEIPT}
-								<A href="?m=receipt&amp;id={$balancelist.docid[balancelist]}" rel="external"><IMG src="img/printr.gif" alt="[ {trans("Cash receipt")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&amp;id=$a'}></A>
-							{elseif $balancelist.doctype[balancelist] == $smarty.const.DOC_DNOTE}
-								<A href="?m=note&amp;id={$balancelist.docid[balancelist]}" rel="external"><IMG src="img/printd.gif" alt="[ {trans("Debit note")} ]" {tip a=$balancelist.docid[balancelist] dynpopup='?m=number&amp;id=$a'}></A>
+				{foreach $balancelist.list as $item}
+				<TR class="{cycle name=bal}">
+					<TD class="nobr">{$item.date}</TD>
+					<TD class="nobr">{$item.username|truncate:16:"...":true}</TD>
+					<TD class="text-right nobr">{if !$item.type}{($item.value*-1)|money_format}{else}-{/if}</TD>
+					<TD class="text-right nobr{if $item.type && $item.value > 0} green{/if}">{if $item.type && $item.value > 0}+{$item.value|money_format}{else}-{/if}</TD>
+					<TD class="text-right nobr">{if $item.type && $item.value < 0}{($item.value*-1)|money_format}{else}-{/if}</TD>
+					<TD class="text-center">&raquo;</TD>
+					<TD class="text-right nobr{if $item.after < 0} red{/if}">{$item.after|money_format}</TD>
+					<TD>{$item.comment}</TD>
+					<TD class="text-right nobr">
+						{foreach $item.customlinks as $link}
+						<A {if isset($link.url)} href="{$link.url}" {/if} rel="external" {if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="[ {$link.label} ]" {$link.tip}>{else}{$link.label}{/if}</A>
+						{if isset($link.extra)}{$link.extra}{/if}
+						{/foreach}
+						{if $item.docid}
+							{if $customerinfo.sendinvoices && ($item.doctype == $smarty.const.DOC_INVOICE
+								|| $item.doctype == $smarty.const.DOC_CNOTE)}
+							<A href="?m=invoicesend&id={$item.docid}" target="_blank" OnClick="return confirmLink(this, '{t a=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to send invoice to customer \'$a\'?{/t}');"><IMG src="img/mail.gif" alt="[ {trans("Send invoice")} ]" title="[ {trans("Send invoice")} ]"></A>
+							{/if}
+							{if $item.doctype == $smarty.const.DOC_INVOICE}
+								<A href="?m=invoice&amp;id={$item.docid}" class="invoiceinfo" data-resourceid="{$item.docid}" rel="external"><img src="img/print.gif" alt="[ {trans("Invoice")} ]"></A>
+							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
+								<A href="?m=invoice&amp;id={$item.docid}" class="docnumber" data-resourceid="{$item.docid}" rel="external"><IMG src="img/printn.gif" alt="[ {trans("Credit note")} ]"></A>
+							{elseif $item.doctype == $smarty.const.DOC_RECEIPT}
+								<A href="?m=receipt&amp;id={$item.docid}" class="docnumber" data-resourceid="{$item.docid}" rel="external"><IMG src="img/printr.gif" alt="[ {trans("Cash receipt")} ]"></A>
+							{elseif $item.doctype == $smarty.const.DOC_DNOTE}
+								<A href="?m=note&amp;id={$item.docid}" class="docnumber" data-resourceid="{$item.docid}" rel="external"><IMG src="img/printd.gif" alt="[ {trans("Debit note")} ]"></A>
 							{/if}
 						{/if}
-						<INPUT type="checkbox" NAME="marks[{$balancelist.id[balancelist]}]" value="{$balancelist.id[balancelist]}">
+						<INPUT type="checkbox" NAME="marks[{$item.id}]" value="{$item.id}" class="multi-check">
 					</TD>
 				</TR>
-				{sectionelse}
+				{foreachelse}
 				<TR>
 					<TD class="empty-table" colspan="9">
-						<p>&nbsp;</p>
 						<p>{trans("That customer hasn't got any transactions.")}</p>
-						<p>&nbsp;</p>
 					</TD>
 				</TR>
-				{/section}
+				{/foreach}
+				</TBODY>
+			</TABLE>
+			<TABLE class="lmsbox-inner">
+				<COLGROUP>
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 92%;">
+					<COL style="width: 1%;">
+				</COLGROUP>
+				<TBODY>
 				<TR>
 					<TD class="ftop text-left" colspan="9">
 						<TABLE width="100%" cellpadding="0" cellspacing="0">
@@ -168,6 +204,7 @@
 							{if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
 							<A href="javascript:delpos();">{trans("Delete")} <IMG src="img/delete.gif" alt="{trans("Delete")}"></A>&nbsp;
 							{/if}
+							<A href="javascript:send_invoices();" OnClick="return confirm('{t}Are you sure, you want to send invoices to customer?{/t}')">{trans("Send invoices")} <IMG src="img/mail.gif" alt=""></A>&nbsp;
 							{trans("Print")}:
 							<A href="javascript:print_doc('invoice');">{trans("invoices")} <IMG src="img/print.gif" alt=""></A>&nbsp;
 							<A href="javascript:printr();">{trans("cash receipts")} <IMG src="img/printr.gif" alt=""></A>&nbsp;
@@ -175,23 +212,26 @@
 							<INPUT type="checkbox" name="original" id="inv-original"{if preg_match('/original/i', $default_printpage)} checked{/if}> <label for="inv-original">{trans("original")}</label>
 							<INPUT type="checkbox" name="copy" id="inv-copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}> <label for="inv-copy">{trans("copy")}</label>
 							<INPUT type="checkbox" name="duplicate" id="inv-duplicate"{if preg_match('/duplicate/i', $default_printpage)} checked{/if}> <label for="inv-duplicate">{trans("duplicate")}</label>
-							</TD><TD style="width: 1%;" class="text-right nobr">
-							<label for="allboxb">{trans("Check All")}</label><INPUT type="checkbox" NAME="allbox" id="allboxb" onchange="CheckAll('addbalance', this, ['copy', 'original', 'duplicate'])" value="1">
-							</TD></TR>
+							</TD>
+								<TD style="width: 1%;" class="text-right nobr">
+									<label>
+										{trans("Check All")}
+										<INPUT type="checkbox" class="multi-check-all">
+									</label>
+								</TD>
+							</TR>
 						</TABLE>
 					</TD>
 				</TR>
 				<TR>
 					<TD class="ftop">
 						<INPUT type="hidden" name="addbalance[customerid]" value="{$balancelist.customerid}">
-						<div class="calendar-time">
-						<INPUT type="text" name="addbalance[time]" size="15" maxlength="16" {tip text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} {if $time}value="{$time|date_format:"%Y/%m/%d %H:%M"}"{/if}>
-						</div>
+						<INPUT type="text" name="addbalance[time]" size="15" maxlength="16" {tip class="calendar-time" text="Enter transaction time in 'yyyy/mm/dd hh:mm' format (empty field means current time). Click to select date from calendar."} {if $time}value="{$time|date_format:"%Y/%m/%d %H:%M"}"{/if}>
 					</TD>
 					<TD class="ftop nobr">
 						{$layout.logname|truncate:16:"...":true}
 					</TD>
-					<TD class="ftop nobr" colspan="2">
+					<TD class="ftop nobr">
 						<INPUT type="text" size="8" name="addbalance[value]" accesskey="s" {if $value}value="{$value}"{/if} {tip text="Enter transaction value"}>&nbsp;
 						<SELECT SIZE="1" name="addbalance[taxid]" {tip text="Select Tax value"}>
 							{foreach item=tax from=$taxeslist}
@@ -199,7 +239,7 @@
 							{/foreach}
 						</SELECT>
 					</TD>
-					<TD class="ftop nobr" colspan="3">
+					<TD class="ftop nobr">
 						<INPUT type="radio" NAME="addbalance[type]" id="operation0" value="0" {tip text="Select type of operation"}><label for="operation0">{trans("liability")}</label><BR>
 						<INPUT type="radio" NAME="addbalance[type]" id="operation1" value="1" {tip text="Select type of operation"} checked><label for="operation1">{trans("income/expense")}</label>
 						{if $sourcelist}
@@ -212,7 +252,7 @@
 						</SELECT>
 						{/if}
 					</TD>
-					<TD class="ftop" colspan="2">
+					<TD class="ftop" colspan="5">
 						<INPUT type="text" size="30" class="text-left" name="addbalance[comment]" value="{$comment}" {tip text="Enter short description of transaction"}> 
 					</TD>
 				</TR>
@@ -237,9 +277,7 @@
 <!--
 {if $limit}
 if (getCookie('customerbalance') == '0')
-{
 	document.getElementById('customerbalance').style.display = 'none';
-}
 {/if}
 //-->
 </SCRIPT>

@@ -2,6 +2,241 @@ $Id$
 
 version ?.??.?? (????-??-??):
 
+  - added support for DSN and MDN in lms-notify.php script [chilan]
+  - smarty installation is provided by composer from now [chilan]
+  - added support for sms notifications in timetable type [chilan]
+  - show event summary for all found events at bottom [chilan]
+  - unification of cash import code as preparation for cashimport backend
+    scripts' usage [chilan]
+  - added bin/lms-cashimport.php script as universal backend for
+    loading cash import file contents from specified files [chilan]
+  - added creation time for events [chilan]
+  - added selection between invoice report and debit note report and
+    generating related report according to this selection [chilan]
+  - current is marked by darker title bar in timetable [chilan]
+  - allow to select between all, public and private events in event list filter [chilan]
+  - lms-notify.php: added %totalB, %totalsaldo, %totalbalance special
+    symbol support for debtors notification type which store total customer balance [chilan]
+  - added script which fetches cash import files from mailbox (pop3, imap, etc.) [chilan]
+  - sending invoices code moved to LMS::SendInvoices() as preparation for
+    invoice sends from LMS UI [chilan]
+  - invoice sends are possible from LMS UI [chilan]
+  - print events accordingly to privacy filter selection [chilan]
+  - changed input types to email and tel where it is sane [kyob]
+  - set required attibute for some form fields [kyob]
+  - improved selection of node and network devices which should be connected
+    to given network device [kosa/chilan]
+  - log customer properties changes after commit userpanel changes from LMS UI [chilan]
+  - added new doc types (price-list, promotion, warranty, regulations) [kyob]
+  - visual improvements of event list [kyob/chilan]
+  - unified visual layout of event list and event search results [chilan]
+  - added preliminary support for voip price lists [kosa/chilan]
+  - phpui.customer_ten_existence_check and phpui.customer_ssn_existence_check settings
+    decide if customer ten and ssn duplication warnings/errors are enabled [chilan]
+  - workaround new mysql version restricted sql mode forbiding default value
+    for text/blob fields [chilan]
+  - improved voip scripts and updated voip tables in database [kosa/chilan]
+  - improved voip billing list search [kosa/chilan]
+  - added check for maximum helpdesk subject length [kosa/chilan]
+  - allow plugins to modify button list in network device info [chilan]
+  - automatically move transfer form to separate page if there is no
+    enough space on tcpdf invoice page [chilan]
+  - invoices.header_image config variable controls pdf invoice logo placement [chilan]
+  - added backend script for voip emergency numbers database creation [chilan]
+  - added backend script which generates sip account and extensions configuration
+    files in asterisk format [chilan]
+  - asterisk configuration file generation script checks call recodings flags [chilan]
+  - added possibility to hide customer balance by invoices.show_balance configuration
+    variable on tcpdf invoice [gbn.pl]
+  - automatically position of invoice footnote on tcpdf invoice [gbn.pl]
+  - listening of voip call recordings are possible from now [chilan]
+  - added tags for tariffs [kyob]
+  - switched to ezpdf supported by composer [chilan]
+  - adding support for dialing phone from smartfones [kosa/chilan]
+  - added variable phpui.settings_timeout determine inactivity time after which
+    user session settings are cleared (0 means settings are stored only to logout) [chilan]
+  - added support for %srcaccount%, %dstaccount% and %customername% replace symbols
+    in imported financial operation comments [chilan]
+  - unification customer contact management code [chilan]
+  - added new customer contact type support - url addresses [chilan]
+  - important fix: avoid to settle duplicated liabilities on invoices when almost their
+    all properties are identical [chilan]
+  - added support for voip tariff rules [kosa/chilan]
+  - simplicity syslog code and make it more oop [chilan]
+  - more oop improvements for SYSLOG and Auth classes [chilan]
+  - added support for %last_10_in_a_table symbol in lms-notify.php [chilan]
+  - allow to filter balance history list by cash import file [chilan]
+  - added cashimport_after_commit hook which is executed immediately after
+    cash import record commit [chilan]
+  - jquery and jquery-ui composer and header/layout template support [chilan]
+  - got rid of old calendar js - use jquery calendar from now [chilan]
+  - ported almost all dynamic popups to jquery [chilan]
+  - added module to user panel for view VoIP billings [kosa/chilan]
+  - added receipts.default_printpage config variable support [chilan]
+  - added support for create voip billing invoices [kosa/chilan]
+  - allow to add attachments for helpdesk notes [chilan]
+  - added support for audio prelisten and video preview clicked from helpdesk
+    message and note attachment links [chilan]
+  - support for customer document attachment preview in popup dialogs [chilan]
+  - added support for document multi-attachments [chilan]
+  - document attached file management is possible from document edit form [chilan]
+  - helpdesk and documents: remember selected file attachments between form posts - brand new
+    file uploader which hardly uses html5 [chilan]
+  - added support for multiple phone numbers [kosa/chilan]
+  - bumped openlayers version to current 2.x series HEAD and allow to use
+    google maps api key defined by phpui.googlemaps_api_key variable [chilan]
+  - show selected position on map for network device and node current coordinates
+    presentaion [chilan]
+  - allow to select company/division for mass invoice printing [chilan]
+  - defined html class multi-check which allows tbodies function with multi
+    select elements on lists [chilan]
+  - support of multi message deletions [chilan]
+  - multi customer group assignments can be added and deleted from customer form [chilan]
+  - selected liabilities can be deleted from customer form [chilan]
+  - added support for jquery datatables plugin and use it for cash import package list,
+    customer messages and customer balance box [chilan]
+
+version 1.11.20 (2016-04-19):
+
+  - bclean: added responsive menu [kyob]
+  - www, userpanel messages are always sent initially and userpanel messages are
+    marked as delivered after message read confirmation [chilan]
+  - added support for user groups [wawryk]
+  - customer address and postal address were separated to street, building and
+    apartment fields [chilan]
+  - added support for external system customer identifiers need to bind
+    lms customers with external system customers [chilan]
+  - invoice notes can be edited from now [chilan]
+  - allow to clone network devices from user interface [chilan]
+  - add hook for documents in plugins [wawryk]
+  - don't allow to issue invoice credit note for invoice which already has issued
+    credit note [chilan]
+  - bumped html2pdf library version to 4.5.0 [prezes_kk]
+  - allow lms-payments.php script to set aligned periods for invoice items
+    (added special symbol %aligned_period) [chilan]
+  - added type, private and opened filters in event list [chilan]
+  - localised bank account functions use common iban account functions [chilan]
+  - we can add many bank accounts to single customer (both source and destination
+    accounts) [chilan]
+  - invoices.show_all_accounts allows to display all customer bank accounts
+    on invoices [chilan]
+  - allow to select customer for all imported transactions [wawryk/chilan]
+  - replaced all customer selectiors by smarty customerlist function [chilan]
+  - removed deprecated chkconfig, check_conf and get_conf public functions [chilan]
+  - lib/config.php is needed only for config load module [chilan]
+  - added column with type in uiconfig, and configuration is validated by this type [pjona]
+  - function $LMS->CheckOption() takes a '$type' as the first parameter [pjona]
+  - lms-sendinvoices.php can send additional file as a separate attachment [pjona]
+  - added support for second mail library (PHPMailer), see mail.backend option [wawryk]
+  - lms-payments.php: added option which allows to define date format [pjona]
+  - node list: added support for investment project selection [chilan]
+  - node list: added support for 'without tariff' status [chilan]
+  - added phpui.quicksearch_limit config variable with 15 as default [chilan]
+  - fixed calculation of brutto value basing on netto value
+    (fixes https://github.com/lmsgit/lms/issues/559) [chilan]
+  - added payments.default_unit_name config variable with "pcs." as default [pjona]
+  - customer and user notifications about still opened events [chilan]
+  - fixed multidays event presentation in event list when end time is 00:00 [chilan]
+  - remember all form settings between user sessions [chilan]
+  - 'unblock' channel support added to lms-notify.php backend script [chilan]
+  - fixed radio sectors visualisation on network map - azimuth points angle related
+    to north direction [chilan]
+  - add filters (with nodes, without nodes, active nodes, e-invoice) in customerlist [wawryk]
+  - add filters (online, without terryt) in nodelist and show info on welcome [wawryk]
+  - bumped used smarty version to 3.1.29 (LMS Plus users should not use the newest
+    lms master version for the moment) [chilan]
+  - allow to view and search node sessions [chilan]
+  - allow to use web browser mechanism to open new invoice/receipt/note form in customer
+    balance box [chilan]
+  - invoices.disable_protection allows to disable modify and copy protection in
+    tcpdf invoice [chilan]
+  - added possibility to add note to events by technician without timetable_access [wawryk]
+  - added showOrHide function to boxes on welcome page [wawryk]
+  - added autolinker in rttickets [wawryk]
+  - copy ip address to clipboard after click on ip.gif image [wawryk]
+  - added clone option to promotions and promotion schemas [wawryk]
+  - added tcpdf support for debit note [pjona]
+  - added documents cacheing [wawryk]
+  - added support for sending debit notes by mail [chilan]
+  - allow to assign numberplans to tariffs [chilan]
+  - receiptadd: we show also not accounted debit notes [pjona]
+  - separation force_ssl for UI and Userpanel [pjona]
+  - added node location info in network devices connected nodes list [chilan]
+  - added support for network searching [kosa/chilan]
+  - added support for different placements of suggestion window
+    (phpui.default_autosuggest_placement) [kosa/chilan]
+  - suggestion window adjust its width to displayed data
+    (phpui.autosuggest_max_length) [kosa/chilan]
+  - improved performance of default type detection for config variables [chilan]
+  - redesigned multiselect window to be more useable [kosa/chilan]
+  - networks: added support for vlan ids [kosa/chilan]
+  - added support for userpanel_<module_name>_<function_name>_before_module_display
+    hooks [chilan]
+  - allow to add custom links in userpanel customer balance list [chilan]
+  - workaround postgresql array_agg multi function existence during db schema updates [chilan]
+  - added delivery status notification support for mail messages [chilan]
+  - invoice sends are optionally confirmed by new messages [chilan]
+  - added mail disposition notification support for mail messages [chilan]
+  - added support for DSN, MDN and Reply-To header in phpmailer backend
+    (DSN required separated patch for PHPMailer code) [chilan]
+
+version 1.11.19 (2015-12-21):
+
+  - updated lms swekey code to be conformed with PHP 7 [prezes_kk]
+  - added support for message delivery status [Jarosław Dziubek]
+  - rewrite of user access rights code completely - it can require
+    related adjustments in 3rd party plugins and patches [chilan]
+  - introduced new hook which allows to attach handlers for all LMS modules
+    before smarty template displaying (*_before_module_display) [chilan]
+  - don't use smarty prefilter for document directory [chilan]
+  - multiple files can be send by email when we create mail message [chilan]
+  - selection of phones and emails is possible when we send message to customer [chilan]
+  - fixed liability reports when assignments with many tax rates for customer was
+    assigned [chilan]
+  - sms.transliterate_message config variable introduced - allows to
+    getting rid of national characters in sms messages [chilan]
+  - added contract filter for customer list and report [chilan]
+  - invoices.customer_credentials and invoices.customer_balance_in_form configuration
+    settings were introduced [chilan]
+  - userpanel helpdesk module: ticket/message attachment support added [chilan]
+  - userpanel helpdesk module: allow customer to download message attachments [chilan]
+  - new pagination engine [maciejlew]
+  - added limit and offset support for customer list [maciejlew]
+  - added flag CONTACT_DISABLED, CONTACT_INVOICES and CONTACT_NOTIFICATIONS to customer contact data [wawryk]
+  - adjusted database schema for powerdns 3.4.x [chilan]
+  - resolved tcpdf invoice problem where position names were not wrapped [chilan]
+  - added holiday information in timetable [pjona]
+  - added event type in timetable [pjona]
+  - added session type for node sessions [chilan]
+  - added extra_css_styles Smarty block - plugins can use it to inject their own CSS styles [maciejlew]
+  - helpdesk: added history of the ticket when you add notes [pjona]
+  - helpdesk: added ability to change queue and owner when you add notes [pjona]
+  - helpdesk: added type to notes [pjona]
+  - added new access type/session types - WiFi AP Client, VoIP Gateway [chilan]
+  - added preliminary support for customer disconnected status and refactoring customer status
+    support code to make adding new customer statuses easier [chilan]
+  - permanent customer removal for customers which are already removed [chilan]
+  - allow to optionally send mail copy to message sender (checkbox is checked by default if
+    phpui.send_message_to_sender_checkbox is set to true) [chilan]
+  - added phpui.capitalize_node_names setting which is true by default and decides
+    if node names are automatically capitalized during node add or update [chilan]
+  - allow plugins to add their own buttons in customer balance box and invoice list [chilan]
+  - allow plugins to add their own content in left and right column of customer info and edit boxes [chilan]
+  - allow assign a whole network to the customer [pjona]
+  - invoices.attachment_name setting allows to define pdf invoice file name pattern (%number symbol
+    is only supported symbol for now) [chilan]
+  - complete rewrite of invoice generation code - common path code for pdf and html invoices [chilan]
+  - lms-sendinvoices.php stopped pretending www browser - it uses new pdf generation code path [chilan]
+  - complete rewrite of receipt generation code - common path code for pdf and html receipts [chilan]
+  - complete rewrite of note generation code [chilan]
+  - complete rewrite of two transfer form types - killed old pdf backend code [chilan]
+  - new bootstrap based userpanel style integrated - bclean [kyob]
+  - customer info box: show customer all and not resolved ticket stats (as bold when there
+    are some unresolved tickets) [chilan]
+  - added support for customer source and destination bank accounts in cash import parser [chilan]
+
+version 1.11.18 (2015-10-01):
+
   - added support of new style plugins in userpanel - hooks executed before
     module load have 'userpanel_*_on_load' name pattern [chilan]
   - added support of new style plugins in userpanel module setup part [chilan]
@@ -10,6 +245,30 @@ version ?.??.?? (????-??-??):
   - move upgrade db schema code to LMSDB class - it can also be used by plugins [chilan]
   - added simple plugin management form [chilan]
   - added support for old style plugin management [chilan]
+  - added location to voip accounts as we're preparing for plicbd2 localisation service [chilan]
+  - we can add many mail accounts in customer properties (customers.mail field in db was removed,
+    but values set so far are stored in customercontacts table from now) [chilan]
+  - added smarty blocks for customer assignments template [maciejlew]
+  - added smarty blocks for customer list template [maciejlew]
+  - added smarty blocks for customer voip accounts list template [maciejlew]
+  - added smarty blocks for voip account add template [maciejlew]
+  - added smarty blocks for voip account edit template [maciejlew]
+  - added smarty blocks for voip account info template [maciejlew]
+  - added smarty blocks for voip account list template [maciejlew]
+  - added number_of_table_columns variables at voip account list template that can be used by plugins [maciejlew]
+  - added customerlist-list-columns smarty block at customer list template [maciejlew]
+  - added number_of_table_columns variables at customer list template [maciejlew]
+  - added colgroup at customer voip account list template [maciejlew]
+  - added customervoipaccountsbox-list-columns smarty block at customer voip account list template [maciejlew]
+  - added number_of_table_columns variables at customer voip account list template [maciejlew]
+  - added posibility to filter document list by document status [chilan]
+  - userpanel: new authentication type - by email and pin [chilan]
+  - userpanel: selection of authentication type is possible from lms user interface [chilan]
+  - userpanel urgent notices are working independently from userpanel style and are completely separated
+    from userpanel code core [chilan]
+  - added support for invoicenew_save_{before,after}_submit plugin hooks [chilan]
+  - daemon: fixed parser module compilation on centos 7 (and probably on other newer linux
+    distributions) [chilan]
 
 version 1.11.17 (2015-06-29):
 
@@ -92,7 +351,7 @@ version 1.11.16 (2015-03-31):
 
 version 1.11.15 (2014-05-15):
 
-  - host owner selection for networks [red/chilan]
+  - host owner selection for networks [pjona/chilan]
   - separation of privileges: finance management and cash registry administration [chilan]
   - show last 10 node sessions in nodeinfo and nodedit [chilan]
   - transaction logging engine introduced [chilan]
@@ -279,10 +538,10 @@ version 1.11.14 (2013-03-25):
   - assignmentlocks -> nodelocks [chilan]
   - we can choose format of reports beetween html and pdf - phpui->report_type [prezes_kk]
   - script for automatic filling of gps coordinates based on Sebastian Wielgosz work [prezes_kk]
-  - changed pin field type from int to varchar(6) [red]
+  - changed pin field type from int to varchar(6) [pjona]
   - liability reports are consistent with invoice/cash issues [chilan]
-  - small fix for new PHP version [red]
-  - fix validation data in domains for DKIM [red]
+  - small fix for new PHP version [pjona]
+  - fix validation data in domains for DKIM [pjona]
   - added management urls for netdevices [chilan]
   - customersearch: we can search customers by tariff [ceho]
   - cashimportparser.php: fixed problem with long customername and description [ceho]
@@ -320,7 +579,7 @@ version 1.11.14 (2013-03-25):
   - don't update time counter for session when we get access to xajax funcions [chilan]
   - netdevmap: openlayers map works again in google chrome [chilan]
   - uke siis reports adjusted to version 3 [chilan]
-  - added possibility to disable the tariffs [red]
+  - added possibility to disable the tariffs [pjona]
   - mysql schema fixes [LoLe/chilan]
   - it's possible to add new config sections from ui [chilan]
 

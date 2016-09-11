@@ -9,6 +9,7 @@
 			{include file="user/userinfobox.html"}
 		</TD>
 	</TR>
+        {block name="transactions"}
 	{if ConfigHelper::checkConfig('phpui.logging') && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))}
 	<TR>
 		<TD style="width: 100%;">
@@ -16,5 +17,6 @@
 		</TD>
 	</TR>
 	{/if}
+        {/block}
 </TABLE>
 {/block}

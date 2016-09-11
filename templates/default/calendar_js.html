@@ -128,7 +128,7 @@ function cal_prs_date1 (str_date) {
 	dt_date.setDate(arr_date[2]);
 	if (dt_date.getMonth() != (arr_date[1]-1)) return cal_error ("{t a="'\" + arr_date[2] + \"'" b="\"+dt_numdays.getDate()+\""}Invalid day of month value: $a.\nAllowed range is 01-$b.{/t}");
 
-	return (dt_date)
+	return (dt_date);
 }
 
 // time parsing function
@@ -159,22 +159,18 @@ function cal_error (str_message) {
 }
 
 function f_tcalGetInputs() {
-	var a_divs = document.getElementsByTagName('div'),
+	var a_inputs = document.getElementsByTagName('input'),
 		e_input, s_rel, a_result_calendar = [], a_result_calendar_time = [];
 
-	for (n = 0; n < a_divs.length; n++) {
-		e_div = a_divs[n];
-		if (!f_tcalHasClass(e_div, 'calendar') && !f_tcalHasClass(e_div, 'calendar-time'))
+	for (n = 0; n < a_inputs.length; n++) {
+		e_input = a_inputs[n];
+		if (e_input.type != 'text' || (!f_tcalHasClass(e_input, 'calendar') && !f_tcalHasClass(e_input, 'calendar-time')))
 			continue;
 
-		for (m = 0; m < a_divs[n].children.length; m++) {
-			if (!a_divs[n].children[m].type || a_divs[n].children[m].type != 'text')
-				continue;
-			if (f_tcalHasClass(e_div, 'calendar'))
-				a_result_calendar[a_result_calendar.length] = a_divs[n].children[m];
-			else
-				a_result_calendar_time[a_result_calendar_time.length] = a_divs[n].children[m];
-		}
+		if (f_tcalHasClass(e_input, 'calendar'))
+			a_result_calendar[a_result_calendar.length] = e_input;
+		else
+			a_result_calendar_time[a_result_calendar_time.length] = e_input;
 	}
 	return { 'calendar': a_result_calendar, 'calendar-time': a_result_calendar_time };
 }

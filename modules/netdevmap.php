@@ -294,7 +294,7 @@ $devicelinks = array();
 $nodemap = array();
 
 if(!$mini && ($nodes = $DB->GetAll('SELECT id, linktype, netdev 
-			FROM nodes 
+			FROM vnodes 
 			WHERE ownerid > 0 AND netdev > 0 
 			ORDER BY name ASC')))
 {
@@ -541,7 +541,7 @@ elseif ($graph == 'flash')
 	$im_d_off = new SWFBitmap(fopen("img/netdev_off.jpg","rb"));
 	$im_d_on  = new SWFBitmap(fopen("img/netdev_on.jpg","rb"));
 	
-	$nodes = $DB->GetAllByKey('SELECT id, name, INET_NTOA(ipaddr) AS ip, lastonline FROM nodes', 'id');
+	$nodes = $DB->GetAllByKey('SELECT id, name, INET_NTOA(ipaddr) AS ip, lastonline FROM vnodes', 'id');
 
 	if($nodemap) foreach($nodemap as $nodeid => $node)
 	{
@@ -580,7 +580,7 @@ elseif ($graph == 'flash')
 
 	$devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, MAX(lastonline) AS lastonline 
 				    FROM netdevices n 
-				    LEFT JOIN nodes ON (n.id = netdev)
+				    LEFT JOIN vnodes ON (n.id = netdev)
 				    GROUP BY n.id, n.name, n.location', 'id');
 
 	foreach($devicemap as $deviceid => $device)
@@ -617,7 +617,7 @@ elseif ($graph == 'flash')
 		$i->moveTo($px,$py);
 
 		if($devip = $DB->GetCol('SELECT INET_NTOA(ipaddr) 
-				    FROM nodes WHERE ownerid = 0 AND netdev = ? 
+				    FROM vnodes WHERE ownerid = 0 AND netdev = ? 
 				    ORDER BY ipaddr LIMIT 4', array($deviceid)))
 		{
 			if(isset($devip[0])) drawtext($px + 16, $py - (isset($devip[1])?16:8), $devip[0], 0,0,255);
@@ -749,7 +749,7 @@ else
 	$im_d_off = imagecreatefrompng('img/netdev_off.png');
 	$im_d_on = imagecreatefrompng('img/netdev_on.png');
 
-	$nodes = $DB->GetAllByKey('SELECT id, name, INET_NTOA(ipaddr) AS ip, lastonline FROM nodes', 'id');
+	$nodes = $DB->GetAllByKey('SELECT id, name, INET_NTOA(ipaddr) AS ip, lastonline FROM vnodes', 'id');
 
 	if($nodemap) foreach($nodemap as $nodeid => $node)
 	{
@@ -774,7 +774,7 @@ else
 
 	$devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, MAX(lastonline) AS lastonline 
 				    FROM netdevices n
-				    LEFT JOIN nodes ON (n.id = netdev)
+				    LEFT JOIN vnodes ON (n.id = netdev)
 				    GROUP BY n.id, n.name, n.location', 'id');
 
 	foreach($devicemap as $deviceid => $device)
@@ -794,7 +794,7 @@ else
 		} else 
 			imagecopy($im,$im_d_unk,$px,$py,0,0,16,16);
 		
-		if($devip = $DB->GetCol('SELECT INET_NTOA(ipaddr) FROM nodes 
+		if($devip = $DB->GetCol('SELECT INET_NTOA(ipaddr) FROM vnodes 
 				    WHERE ownerid = 0 AND netdev = ? 
 				    ORDER BY ipaddr LIMIT 4', array($deviceid)))
 		{

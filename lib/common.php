@@ -461,17 +461,6 @@ function check_email( $email )
 	return TRUE;
 }
 
-function check_emails( $emails )
-{
-	$emails_arr = preg_split("/,\s*/", $emails);
-
-	foreach( $emails_arr as $email )
-		if( !check_email($email) )
-			return FALSE;
-
-	return TRUE;
-}
-
 function get_producer($mac) {
 	$mac = strtoupper(str_replace(':', '-', substr($mac, 0, 8)));
 
@@ -739,7 +728,7 @@ function location_str($data)
     if ($h)
         $location .= ' ' . $h;
 
-    return $location;
+    return htmlentities($location, ENT_COMPAT, 'UTF-8');
 }
 
 function set_timer($label = 0)
@@ -784,7 +773,7 @@ function register_plugin($handle, $plugin)
         $PLUGINS[$handle][] = $plugin;
 }
 
-function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $orientation='P', $margins=array(5, 10, 5, 10), $save=false, $copy=false)
+function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $orientation='P', $margins=array(5, 10, 5, 10), $save=false, $copy=false, $md5sum = '')
 {
 	global $layout, $DB;
 
@@ -792,7 +781,7 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 		if (!is_array($margins))
 			$margins = array(5, 10, 5, 10); /* default */
 
-	$html2pdf = new HTML2PDF($orientation, 'A4', 'en', true, 'UTF-8', $margins);
+	$html2pdf = new LMSHTML2PDF($orientation, 'A4', 'en', true, 'UTF-8', $margins);
 	/* disable font subsetting to improve performance */
 	$html2pdf->pdf->setFontSubsetting(false);
 
@@ -802,7 +791,7 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 			WHERE d.id = ?', array($id));
 	}
 
-	$html2pdf->pdf->SetProducer('LMS Developers');
+	$html2pdf->pdf->SetAuthor('LMS Developers');
 	$html2pdf->pdf->SetCreator('LMS '.$layout['lmsv']);
 	if ($info)
 		$html2pdf->pdf->SetAuthor($info['name']);
@@ -812,11 +801,6 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 		$html2pdf->pdf->SetTitle($title);
 
 	$html2pdf->pdf->SetDisplayMode('fullpage', 'SinglePage', 'UseNone');
-	$html2pdf->AddFont('arial', '', 'arial.php');
-	$html2pdf->AddFont('arial', 'B', 'arialb.php');
-	$html2pdf->AddFont('arial', 'I', 'ariali.php');
-	$html2pdf->AddFont('arial', 'BI', 'arialbi.php');
-	$html2pdf->AddFont('times', '', 'times.php');
 
 	/* if tidy extension is loaded we repair html content */
 	if (extension_loaded('tidy')) {
@@ -890,6 +874,10 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 
 	$html2pdf->pdf->SetProtection(array('modify', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', PASSWORD_CHANGEME, '1');
 
+        // cache pdf file
+	if($md5sum)
+		$html2pdf->Output(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum,0,2) . DIRECTORY_SEPARATOR . $md5sum.'.pdf', 'F');
+
 	if ($save) {
 		if (function_exists('mb_convert_encoding'))
 			$filename = mb_convert_encoding($title, "ISO-8859-2", "UTF-8");
@@ -933,4 +921,174 @@ function getdir($pwd = './', $pattern = '^.*$') {
 	return $files;
 }
 
-?>
+function iban_account($country, $length, $id, $account = NULL) {
+	if ($account === NULL) {
+		$DB = LMSDB::getInstance();
+		$account = $DB->GetOne('SELECT account FROM divisions WHERE id IN (SELECT divisionid
+			FROM customers WHERE id = ?)', array($id));
+	}
+
+	if (!empty($account)) {
+		$acclen = strlen($account);
+
+		if ($acclen <= $length - 6) {
+			$format = '%0' . ($length - 2 - $acclen) . 'd';
+			$account .= sprintf($format, $id);
+			$checkaccount = $account . $country . '00';
+			$numericaccount = '';
+			for ($i = 0; $i < strlen($checkaccount); $i++) {
+				$ch = strtoupper($checkaccount[$i]);
+				$numericaccount .= ctype_alpha($ch) ? ord($ch) - 55 : $ch;
+			}
+			$account = sprintf('%02d', 98 - bcmod($numericaccount, 97)) . $account;
+		}
+	}
+
+	return $account;
+}
+
+function iban_check_account($country, $length, $account) {
+	$account = preg_replace('/[^a-zA-Z0-9]/', '', $account);
+	if (strlen($account) != $length)
+		return false;
+	$checkaccount = substr($account, 2, $length - 2) . $country. '00';
+	$numericaccount = '';
+	for ($i = 0; $i < strlen($checkaccount); $i++) {
+		$ch = strtoupper($checkaccount[$i]);
+		$numericaccount .= ctype_alpha($ch) ? ord($ch) - 55 : $ch;
+	}
+	return sprintf('%02d', 98 - bcmod($numericaccount, 97)) == substr($account, 0, 2);
+}
+
+function generate_random_string($length = 10, $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') {
+	srand();
+	$charactersLength = strlen($characters);
+	$randomString = '';
+	for ($i = 0; $i < $length; $i++)
+		$randomString .= $characters[rand(0, $charactersLength - 1)];
+	return $randomString;
+}
+
+function trans()
+{
+	global $_LANG;
+
+	$args = func_get_args();
+	$content = array_shift($args);
+
+	if (is_array($content)) {
+		$args = array_values($content);
+		$content = array_shift($args);
+	}
+
+	if (isset($_LANG[$content]))
+		$content = trim($_LANG[$content]);
+
+	for ($i = 1, $len = count($args); $i <= $len; $i++) {
+		$content = str_replace('$'.chr(97+$i-1), $args[$i-1], $content);
+	}
+
+	$content = preg_replace('/<![^>]+>/', '', $content);
+	return $content;
+}
+        
+function check_url($url) {
+	$components = parse_url($url);
+	if ($components === false)
+		return false;
+	if (!isset($components['host']) || !isset($components['scheme']))
+		return false;
+	return true;
+}
+
+function handle_file_uploads($elemid, &$error) {
+	$tmpdir = $tmppath = '';
+	$fileupload = array();
+	if (isset($_POST['fileupload'])) {
+		$fileupload = $_POST['fileupload'];
+		$tmpdir = $fileupload[$elemid . '-tmpdir'];
+		if (empty($tmpdir)) {
+			$tmpdir = uniqid('lms-fileupload-');
+			$tmppath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tmpdir;
+			if (is_dir($tmppath) || !@mkdir($tmppath))
+				$tmpdir = '';
+		} elseif (preg_match('/^lms-fileupload-[0-9a-f]+$/', $tmpdir)) {
+			$tmppath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tmpdir;
+			if (!file_exists($tmppath))
+				@mkdir($tmppath);
+		} else
+			$tmpdir = '';
+
+		if (isset($_GET['ajax'])) {
+			$files = array();
+			if (isset($_FILES[$elemid]))
+				foreach ($_FILES[$elemid]['name'] as $fileidx => $filename) {
+					if (preg_match('/(\.\.|\/)/', $filename))
+						continue;
+					if (!empty($filename)) {
+						if (is_uploaded_file($_FILES[$elemid]['tmp_name'][$fileidx]) && $_FILES[$elemid]['size'][$fileidx]) {
+							$files[] = array(
+								'name' => $filename,
+								'tmp_name' => $_FILES[$elemid]['tmp_name'][$fileidx],
+								'type' => $_FILES[$elemid]['type'][$fileidx],
+								'size' => $_FILES[$elemid]['size'][$fileidx],
+							);
+						} else { // upload errors
+							if (isset($error[$elemid]))
+								$error[$elemid] .= "\n";
+							else
+								$error[$elemid] = '';
+							switch ($_FILES[$elemid]['error'][$fileidx]) {
+								case 1:
+								case 2: $error[$elemid] .= trans('File is too large: $a', $filename); break;
+								case 3: $error[$elemid] .= trans('File upload has finished prematurely: $a', $filename); break;
+								case 4: $error[$elemid] .= trans('Path to file was not specified: $a', $filename); break;
+								default: $error[$elemid] .= trans('Problem during file upload: $a', $filename); break;
+							}
+						}
+					}
+				}
+
+			if ($error && isset($error[$elemid]))
+				$result = array(
+					'error' => $error[$elemid],
+				);
+			else {
+				if (isset($fileupload) && !empty($tmpdir)) {
+					$files2 = array();
+					foreach ($files as &$file) {
+						unset($file2);
+						if (isset($fileupload[$elemid]))
+							foreach ($fileupload[$elemid] as &$file2)
+								if ($file['name'] == $file2['name'])
+									continue 2;
+						if (!file_exists($tmppath . DIRECTORY_SEPARATOR . $file['name'])) {
+							@move_uploaded_file($file['tmp_name'], $tmppath . DIRECTORY_SEPARATOR . $file['name']);
+							unset($file['tmp_name']);
+						}
+						$files2[] = $file;
+					}
+					unset($file);
+					$files = $files2;
+					unset($files2, $file2);
+				}
+				$result = array(
+					'error' => '',
+					'tmpdir' => $tmpdir,
+					'files' => $files,
+				);
+			}
+			header('Content-type: application/json');
+			print json_encode($result);
+			die;
+		} elseif (isset($fileupload[$elemid])) {
+			foreach ($fileupload[$elemid] as &$file) {
+				list ($size, $unit) = setunits($file['size']);
+				$file['sizestr'] = sprintf("%.02f", $size) . ' ' . $unit;
+			}
+			unset($file);
+			$$elemid = $fileupload[$elemid];
+		}
+	}
+	return compact('fileupload', 'tmppath', $elemid);
+}

@@ -2,7 +2,7 @@
 {block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
 {block name=module_content}
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE class="lmsbox">
+<TABLE class="lmsbox">
     <THEAD>
 	<TR>
 		<TD width="46%" NOWRAP>{trans("Host:")}</TD>
@@ -16,15 +16,15 @@
 		<TD colspan="6">
 			<TABLE cellpadding="0" cellspacing="0" width="100%">
 			    <TR>
-                    		<TD width="1%" NOWRAP>
+                    		<TD width="1%" NOWRAP class="nobr">
 				<FORM method="GET" action="?m={$layout.module}" name="filter">
 				    <input type="hidden" name="m" value="{$layout.module}">
-				    <NOBR>{trans("Domain:")}
+				    {trans("Domain:")}
 				    <SELECT size="1" name="d" OnChange="document.filter.submit();">
 					{section name=domainlist loop=$domainlist}
 					    <OPTION value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id == $listdata.domain} SELECTED{/if}>{$domainlist[domainlist].name}</OPTION>
 					{/section}
-				    </SELECT></NOBR>
+				    </SELECT>
 				</FORM>
 			    </TD>
 			    <TD width="99%" align="right" nowrap>
@@ -51,23 +51,19 @@
 		<TD align="center" NOWRAP>{$recordslist[recordslist].type}</TD>
 		<TD align="center" NOWRAP>{$recordslist[recordslist].prio}</TD>
 		<TD align="left" NOWRAP onclick="return location.href='?m=recordedit&id={$recordslist[recordslist].id}'">{$recordslist[recordslist].content}</TD>
-		<TD align="right">			
+		<TD class="nobr text-right">			
 			{if $showaddedit}
-			<NOBR>
 			<A href="?m=recordedit&id={$recordslist[recordslist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A> 
 			{if $recordslist[recordslist].type != "SOA"}
 			<A href="?m=recorddel&id={$recordslist[recordslist].id}" OnClick="return confirmLink(this, '{t a=$account}Are you sure you want to delete this record?{/t}')"><IMG src="img/delete.gif" title="[ {trans("Delete")} ]" alt="[ {trans("Delete")} ]"></A> 
 			{/if}
-			</NOBR>
 			{/if}
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD colspan="6" align="center">
-			<p>&nbsp;</p>
-			<p><B>{trans("No such records in database.")}</B></p>
-			<p>&nbsp;</p>
+		<TD colspan="6" class="empty-table">
+			<p>{trans("No such records in database.")}</p>
 		</TD>
 	</TR>
 	{/section}
@@ -89,5 +85,5 @@
 		</TD>
 	</TR>
     </TFOOT>
-</TABLE></P>
+</TABLE>
 {/block}

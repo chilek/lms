@@ -89,7 +89,12 @@ do_reload() {
 	# restarting (for example, when it is sent a SIGHUP),
 	# then implement that here.
 	#
-	start-stop-daemon --stop --signal 1 --quiet --pidfile $PIDFILE --name $NAME
+	if [ -n "$1" ]; then
+                lmsd -i "$1" -q
+        else
+                lmsd -r
+        fi
+	#start-stop-daemon --stop --signal 1 --quiet --pidfile $PIDFILE --name $NAME
 	return 0
 }
 
@@ -119,7 +124,7 @@ case "$1" in
 	# and leave 'force-reload' as an alias for 'restart'.
 	#
 	#log_daemon_msg "Reloading $DESC" "$NAME"
-	#do_reload
+	do_reload "$2"
 	#log_end_msg $?
 	#;;
   restart|force-reload)

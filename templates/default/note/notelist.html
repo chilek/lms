@@ -6,7 +6,7 @@
 {if $note}
 <SCRIPT type="text/javascript">
 <!--
-window.open('?m=note&id={$note}');
+window.open('?m=note&amp;id={$note}');
 //-->
 </SCRIPT>
 {/if}
@@ -58,22 +58,22 @@ window.open('?m=note&id={$note}');
     <THEAD>
 	<TR>
 		<TD WIDTH="1%" nowrap>
-			<A href="?m=notelist&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=notelist&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" nowrap>
-			<A href="?m=notelist&o=cdate{if $listdata.direction == "asc" && $listdata.order == "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order == "cdate"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=notelist&amp;o=cdate{if $listdata.direction == "asc" && $listdata.order == "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order == "cdate"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" nowrap>
-			<A href="?m=notelist&o=number{if $listdata.direction == "asc" && $listdata.order == "number"},desc{/if}">{trans("Number:")}</A> {if $listdata.order == "number"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=notelist&amp;o=number{if $listdata.direction == "asc" && $listdata.order == "number"},desc{/if}">{trans("Number:")}</A> {if $listdata.order == "number"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" nowrap>
-			<A href="?m=notelist&o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}">{trans("Value:")}</A> {if $listdata.order == "value"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=notelist&amp;o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}">{trans("Value:")}</A> {if $listdata.order == "value"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" nowrap>
-			<A href="?m=notelist&o=count{if $listdata.direction == "asc" && $listdata.order == "count"},desc{/if}">{trans("Items:")}</A> {if $listdata.order == "count"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=notelist&amp;o=count{if $listdata.direction == "asc" && $listdata.order == "count"},desc{/if}">{trans("Items:")}</A> {if $listdata.order == "count"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="94%" nowrap>
-			<A href="?m=notelist&o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}">{trans("For:")}</A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=notelist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}">{trans("For:")}</A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%">
 			&nbsp;
@@ -101,13 +101,9 @@ window.open('?m=note&id={$note}');
 					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group == $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:30:"...":true}</OPTION>
 					{/section}
 				</SELECT>
-				<NOBR>
 				<INPUT type="checkbox" name="groupexclude" id="groupexclude"{if $listdata.groupexclude} CHECKED{/if}><label for="groupexclude">{trans("exclude group")}</label>
-				</NOBR>
-				<NOBR>
 				<INPUT type="checkbox" name="hideclosed" id="hideclosed"{if $listdata.hideclosed} CHECKED{/if}><label for="hideclosed">{trans("hide accounted<!plural>")}</label>
-				&nbsp;<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
-				</NOBR>
+				&nbsp;<A href="javascript:filter();">&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
@@ -140,25 +136,21 @@ window.open('?m=note&id={$note}');
 			{$note.count}
 		</TD>
 		<TD WIDTH="94%">
-			<A HREF="?m=customerinfo&id={$note.customerid}"{if $note.closed} class="blend"{/if}>{$note.name}, {$note.address}, {$note.zip} {$note.city}{if $note.country != ""}, {t}{$note.country}{/t}{/if}</A>
+			<A HREF="?m=customerinfo&amp;id={$note.customerid}"{if $note.closed} class="blend"{/if}>{$note.name}, {$note.address}, {$note.zip} {$note.city}{if $note.country != ""}, {t}{$note.country}{/t}{/if}</A>
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT">
-			<NOBR>
+		<TD WIDTH="1%" ALIGN="RIGHT" class="nobr">
 			{if !$note.closed}
-			    <A onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to remove debit note \'$a\' from database?{/t}')" HREF="?m=notedel&id={$note.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			    <A HREF="?m=noteedit&id={$note.id}&action=edit"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			    <A onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to remove debit note \'$a\' from database?{/t}')" HREF="?m=notedel&amp;id={$note.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			    <A HREF="?m=noteedit&amp;id={$note.id}&amp;action=edit"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 			{/if}
-			<A HREF="?m=note&id={$note.id}" TARGET="_blank"><IMG src="img/printd.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
+			<A HREF="?m=note&amp;id={$note.id}" TARGET="_blank"><IMG src="img/printd.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
 			<INPUT TYPE="checkbox" NAME="marks[{$note.id}]" VALUE="{$note.id}"{if $marks.$noteid}CHECKED{/if}>
-			</NOBR>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD WIDTH="100%" ALIGN="center"  COLSPAN="7">
-			<P>&nbsp;</P>
-			<P><B>{trans("No such debit notes in database.")}</B></P>
-			<P>&nbsp;</P>
+		<TD COLSPAN="7" class="empty-table">
+			<p>{trans("No such debit notes in database.")}</p>
 		</TD>
 	</TR>
 	{/section}
@@ -175,12 +167,12 @@ window.open('?m=note&id={$note}');
 		<TD COLSPAN="7">
 			<TABLE WIDTH="100%">
 				<TR>
-					<TD ALIGN="left">
-						<NOBR><A HREF="javascript:pays();">{trans("Check/Uncheck as accounted")} <IMG SRC="img/pay.gif" ALT=""></A></NOBR>&nbsp;
-						<NOBR><A HREF="javascript:prints();">{trans("Print")} <IMG SRC="img/printd.gif" ALT="" ></A></NOBR>&nbsp;
+					<TD ALIGN="left" class="nobr">
+						<A HREF="javascript:pays();">{trans("Check/Uncheck as accounted")} <IMG SRC="img/pay.gif" ALT=""></A>&nbsp;
+						<A HREF="javascript:prints();">{trans("Print")} <IMG SRC="img/printd.gif" ALT="" ></A>&nbsp;
 					</TD>
-					<TD ALIGN="right">
-						<NOBR><label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['groupexclude', 'hideclosed'])" VALUE="1"></NOBR>
+					<TD ALIGN="right" class="nobr">
+						<label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['groupexclude', 'hideclosed'])" VALUE="1">
 					</TD>
 				</TR>
 			</TABLE>

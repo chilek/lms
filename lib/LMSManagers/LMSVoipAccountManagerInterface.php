@@ -56,4 +56,6 @@ interface LMSVoipAccountManagerInterface
     public function voipAccountUpdate($voipaccountdata);
 
     public function getCustomerVoipAccounts($id);
+    
+    public function getVoipBillings(array $a);
 }

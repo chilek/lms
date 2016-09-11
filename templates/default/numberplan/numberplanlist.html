@@ -3,7 +3,7 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE class="lmsbox">
+<TABLE class="lmsbox">
     <THEAD>
 	<TR>
 		<TD width="93%" NOWRAP><IMG src="img/id.gif" alt=""> <B>{trans("Template:")}</B></TD>
@@ -27,40 +27,38 @@
 	{cycle values="light,lucid" print=false}
 	{section name=numberplanlist loop=$numberplanlist}
 	<TR class="highlight {cycle}{if ($numberplanlist[numberplanlist].validfrom !=0 && $numberplanlist[numberplanlist].validfrom > $smarty.now) || ($numberplanlist[numberplanlist].validto !=0 && $numberplanlist[numberplanlist].validto < $smarty.now)} blend{/if}"  >
-		<TD NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
+		<TD NOWRAP onClick="return self.location.href='?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}';">
 			<IMG src="img/id.gif" alt=""> <B>{$numberplanlist[numberplanlist].template}</B>
 		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
+		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}';">
 			({$numberplanlist[numberplanlist].id|string_format:"%04d"})
 		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
+		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}';">
 			{number number=$numberplanlist[numberplanlist].next template=$numberplanlist[numberplanlist].template time=$smarty.now}
 		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
+		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}';">
 			{$numberplanlist[numberplanlist].issued|default:"0"}
 		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
+		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}';">
 			{assign var="doctype" value=$numberplanlist[numberplanlist].doctype}
 			{$_DOCTYPES.$doctype}
 		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
+		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}';">
 			{assign var="period" value=$numberplanlist[numberplanlist].period}
 			{$_NUM_PERIODS.$period}
 		</TD>
-		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&id={$numberplanlist[numberplanlist].id}';">
+		<TD align="right" NOWRAP onClick="return self.location.href='?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}';">
 			{if $numberplanlist[numberplanlist].isdefault}{trans("yes")}{/if}
 		</TD>
 		<TD align="right" NOWRAP>
-			<A href="?m=numberplandel&id={$numberplanlist[numberplanlist].id}" OnClick="return confirmLink(this, '{t a=$numberplanlist[numberplanlist].template}Are you sure, you want to delete numberplan \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=numberplanedit&id={$numberplanlist[numberplanlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A href="?m=numberplandel&amp;id={$numberplanlist[numberplanlist].id}" OnClick="return confirmLink(this, '{t a=$numberplanlist[numberplanlist].template}Are you sure, you want to delete numberplan \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A href="?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD colspan="8" align="center">
-			<p>&nbsp;</p>
-			<p><B>{trans("No such numbering plans in database.")}</B></p>
-			<p>&nbsp;</p>
+		<TD colspan="8" class="empty-table">
+			<p>{trans("No such numbering plans in database.")}</p>
 		</TD>
 	</TR>
 	{/section}
@@ -79,5 +77,5 @@
 		</TD>
 	</TR>
     </TFOOT>
-</TABLE></P>
+</TABLE>
 {/block}

@@ -3,12 +3,45 @@
     "description": "Lan Management System (LMS)",
     "homepage": "http://lms.org.pl/",
     "license": "GPL-2.0",
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "xdan/datetimepicker",
+                "version": "2.5.4",
+                "dist": {
+                    "url": "https://github.com/xdan/datetimepicker/archive/2.5.4.zip",
+                    "type": "zip"
+                }
+            }
+        }
+    ],
     "require": {
         "phine/observer": "2.0",
-        "phine/exception": "1.0"
+        "phine/exception": "1.0",
+        "phpmailer/phpmailer": "^5.2",
+        "tecnickcom/tcpdf": "^6.2",
+        "spipu/html2pdf": "^4.5",
+        "components/normalize.css": "^3.0",
+        "smarty/smarty": "3.1.30",
+        "rospdf/pdf-php": "^0.12.1",
+        "components/jqueryui": "^1",
+        "xdan/datetimepicker": "^2",
+        "datatables/datatables": "^1"
     },
     "require_dev": {
-        "phpunit/phpunit": "4.1.*",
-        "phpunit/phpunit-skeleton-generator": "*"
+        "phpunit/phpunit": "5.1.*"
+    },
+    "autoload": {
+        "classmap": ["lib/", "plugins/"]
+    },
+    "autoload-dev": {
+        "psr-4": { "LMS\\Tests\\": "tests/" }
+    },
+    "scripts": {
+        "pre-autoload-dump": [ "@repairHTML2PDF", "@repairTCPDF", "@repairEZPDF" ],
+        "repairHTML2PDF": "sed -i -e 's/class HTML2PDF_myPdf extends TCPDF/class HTML2PDF_myPdf extends LMSTCPDF/' vendor/spipu/html2pdf/_class/myPdf.class.php",
+        "repairTCPDF": "sed -i -e 's/\\(\\s\\+\\)register_shutdown_function/\\1\\\/\\\/register_shutdown_function/' vendor/tecnickcom/tcpdf/tcpdf.php",
+        "repairEZPDF": "cp -f lib/ezpdf/fonts/arial* vendor/rospdf/pdf-php/src/fonts"
     }
 }

@@ -52,7 +52,7 @@ document.search.searchcustomer.focus();
 			({$customerlist[customerlist].id|string_format:"%04d"})<br>
 			{$customerlist[customerlist].address}{if $customerlist[customerlist].city != ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}
 		</td>
-		<td width="1%" align="right" style="vertical-align: top;" onClick="sendvalue(targetfield,'{$customerlist[customerlist].id}');">
+		<td style="width: 1%;" class="text-right valign-top nobr" onClick="sendvalue(targetfield,'{$customerlist[customerlist].id}');">
 			{foreach from=$customerlist[customerlist].nodes item=node}
 			{$node.name}
 			{/foreach}
@@ -63,16 +63,14 @@ document.search.searchcustomer.focus();
 	</tr>
 	{sectionelse}
 	<tr>
-		<td colspan="3" align="center">
-			<p>&nbsp;</p>
-			<p><b>
+		<td colspan="3" class="empty-table">
+			<p>
 			{if $searchcustomer || $searchnode}
 				{trans("No such customers matching search criteria.")}
 			{else}
 				{trans("Enter customer and/or node data and press Enter.")}
 			{/if}
-			</b></p>
-			<p>&nbsp;</p>
+			</p>
 		</td>
 	</tr>
 	{/section}

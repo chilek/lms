@@ -1,7 +1,10 @@
 <!--// $Id$ //-->
 {$xajax}
+<script src="img/clipboard.min.js"></script>
 <SCRIPT type="text/javascript">
 <!--
+       new Clipboard('.CopyIp');
+
 	function chkmac_change()
 	{
 		if (xjx.$('chkmac').checked)
@@ -20,9 +23,9 @@
 
 	function change_authtype() {
 		var authtype = 0;
-		authtype |= (xjx.$('authtype_pppoe').checked == true) * 1;
-		authtype |= (xjx.$('authtype_dhcp').checked == true) * 2;
-		authtype |= (xjx.$('authtype_eap').checked == true) * 4;
+		{foreach $_SESSIONTYPES as $idx => $sessiontype}
+		authtype |= (xjx.$('authtype{$idx}').checked == true) * {$idx};
+		{/foreach}
 		location.href = '?m=nodeedit&id={$nodeinfo.id}&action=authtype&authtype=' + authtype;
 	}
 
@@ -124,17 +127,18 @@
 				<TR>
 					<TD style="width: 50%; vertical-align: top;">
 						<TABLE style="width: 100%" CELLPADDING="3">
+						{block name="nodeinfobox-leftcolumn"}
 	<TR>
 		<TD style="width: 1%;">
 			<IMG SRC="img/network.gif" ALT="{trans("Network:")}">
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
-			<a href="?m=netinfo&id={$nodeinfo.netid}">{$nodeinfo.netname}</a>
+			<a href="?m=netinfo&amp;id={$nodeinfo.netid}">{$nodeinfo.netname}</a>
 		</TD>
 	</TR>
 	<TR>
 		<TD style="width: 1%;">
-			<IMG SRC="img/ip.gif" ALT="{trans("IP address:")}">
+                       <IMG SRC="img/ip.gif" class="CopyIp" data-clipboard-text="{$nodeinfo.ip}" ALT="{trans("IP address:")}">
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
 			<a href="javascript:ping_popup('{$nodeinfo.ip}')">{$nodeinfo.ip}</a>
@@ -143,7 +147,7 @@
 	{if $nodeinfo.ip_pub != "0.0.0.0"}
 	<TR>
 		<TD style="width: 1%;">
-			<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
+			<IMG SRC="img/ip_pub.gif" class="CopyIp" data-clipboard-text="{$nodeinfo.ip_pub}"s ALT="{trans("Pub. IP address:")}">
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
 			<a href="javascript:ping_popup('{$nodeinfo.ip_pub}')">{$nodeinfo.ip_pub}</a>
@@ -197,14 +201,15 @@
 		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
 			{if $nodeinfo.netdev}
 				<span class="bold">
-				<A HREF="?m=netdevinfo&id={$netdevices.id}">{$netdevices.name} {$netdevices.producer}{if $netdevices.location} / {$netdevices.location}{/if}</A>
+				<A HREF="?m=netdevinfo&amp;id={$netdevices.id}">{$netdevices.name} {$netdevices.producer}{if $netdevices.location} / {$netdevices.location}{/if}</A>
 				</span>
 				{if $nodeinfo.port}[{$nodeinfo.port}]{/if}
 				<IMG src="img/{if $nodeinfo.linktype == 1}wireless.gif{elseif $nodeinfo.linktype == 2}netdev_takenports.gif{else}netdev_takenports.gif{/if}" alt="{$_LINKTYPES[$nodeinfo.linktype]}" {tip text="{if $nodeinfo.linktechnology}{$_LINKTECHNOLOGIES[$nodeinfo.linktype][$nodeinfo.linktechnology]} / {/if}{if $nodeinfo.linkradiosector}{$nodeinfo.linkradiosectorname} / {/if}{$_LINKSPEEDS[$nodeinfo.linkspeed]}"}>
 			{else}
 				{if $netdevices}
+				<a href="javascript: void(0);" onclick="return netDevChooseWin(document.nodelink.elements['devid']);" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
 				<SELECT SIZE="1" style="width: 300px;" NAME="devid" id="netdev" {tip trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value)">
-				<OPTION VALUE="0" {if !$netdevice}SELECTED{/if}>- {trans("no device")} -</OPTION>
+                                <OPTION VALUE="0" {if !$netdevice}SELECTED{/if}>- {trans("no device")} -</OPTION>
 					{section name=netdev loop=$netdevices}
 					{assign var=netdevname value=$netdevices[netdev].name}
 					{if $netdevices[netdev].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$netdevices[netdev].producer}{/if}
@@ -260,20 +265,22 @@
 			<label for="duplex">{trans("Half duplex")}:</label><INPUT TYPE="checkbox" NAME="duplex" ID="duplex" VALUE="1" {if $nodeinfo.halfduplex} checked{/if} onchange="duplex_change();">
 		</TD>
 	</TR>
-		<TR>
+	<TR>
 		<TD style="width: 1%;">
 			<IMG SRC="img/netdev.gif" ALT="">
 		</TD>
-		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
-			<label for="authtype_pppoe">{trans("PPPoE Client")}</label><INPUT TYPE="checkbox" NAME="nodeauthtype[pppoe]" value="1" id="authtype_pppoe" {if $nodeauthtype.pppoe} checked {/if} {tip text="Enable/disable PPPoE Server Client" trigger="pppoe"} onchange="change_authtype()">&nbsp;
-			<label for="authtype_dhcp">{trans("DHCP Client")}</label><INPUT TYPE="checkbox" NAME="nodeauthtype[dhcp]" value="2" id="authtype_dhcp" {if $nodeauthtype.dhcp} checked{/if} {tip text="Enable/disable DHCP Server Client" trigger="dhcp"} onchange="change_authtype()">&nbsp;
-			<label for="authtype_eap">{trans("EAP Client")}</label><INPUT TYPE="checkbox" NAME="nodeauthtype[eap]" value="4" id="authtype_eap" {if $nodeauthtype.eap} checked {/if} {tip text="Enable/disable EAP Server Client" trigger="eap"} onchange="change_authtype()">
+		<TD style="width: 99%;" class="nobr" COLSPAN="2">
+			{foreach $_SESSIONTYPES as $idx => $sessiontype}
+			<label>{$sessiontype.label} <INPUT TYPE="checkbox" NAME="authtype[{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"} onchange="change_authtype()"{if ($nodeinfo.authtype & $idx) == $idx} checked{/if}></label>&nbsp;
+			{/foreach}
 		</TD>
-		</TR>
+	</TR>
+					{/block}
 					</TABLE>
 				</TD>
 				<TD style="width: 50%; vertical-align: top;">
 					<TABLE style="width: 100%;" CELLPADDING="3" id="nodeinfo">
+					{block name="nodeinfobox-rightcolumn"}
 {if $nodeinfo.info}
 	<TR>
 		<TD style="width: 1%;">
@@ -325,7 +332,7 @@
 {/if}
 	<TR>
 		<TD style="width: 1%;">
-			<A HREF="?m=nodeset&id={$nodeinfo.id}"><IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" ALT=""></A>
+			<A HREF="?m=nodeset&amp;id={$nodeinfo.id}"><IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" ALT=""></A>
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
 			<span class="bold">{if $nodeinfo.access}{trans("connected<!singular>")}{else}{trans("disconnected<!singular>")}{/if}</span>
@@ -333,7 +340,7 @@
 	</TR>
 	<TR>
 		<TD style="width: 1%;">
-			<A HREF="?m=nodewarn&id={$nodeinfo.id}"><IMG SRC="img/warning{if ! $nodeinfo.warning}off{else}on{/if}.gif" ALT=""></A>
+			<A HREF="?m=nodewarn&amp;id={$nodeinfo.id}"><IMG SRC="img/warning{if ! $nodeinfo.warning}off{else}on{/if}.gif" ALT=""></A>
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
 			<span class="bold">{if $nodeinfo.warning}{trans("notice enabled")}{else}{trans("notice disabled")}{/if}</span>
@@ -363,7 +370,7 @@
 			{if $nodeinfo.moddate}{$nodeinfo.modifiedby}, {$nodeinfo.moddateh}{else}-{/if}
 		</TD>
 	</TR>
-	
+						{/block}
 						</TABLE>
 					</TD>
 				</TR>
@@ -372,8 +379,10 @@
 	</TR>
 	<TR>
 		<TD style="width: 100%; text-align: right;" COLSPAN="3">
-			<A HREF="?m=nodeedit&id={$nodeinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
-			<A HREF="?m=nodedel&id={$nodeinfo.id}" onClick="return confirmLink(this, '{t a=$nodeinfo.name}Are you sure, you want to remove node \'$a\' from database?{/t}')">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
+			{block name="nodeinfobox-buttons"}
+			<A HREF="?m=nodeedit&amp;id={$nodeinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG SRC="img/edit.gif" ALT=""></A>
+			<A HREF="?m=nodedel&amp;id={$nodeinfo.id}" onClick="return confirmLink(this, '{t a=$nodeinfo.name}Are you sure, you want to remove node \'$a\' from database?{/t}')">{trans("Delete")} <IMG SRC="img/delete.gif" ALT=""></A>
+			{/block}
 		</TD>
 	</TR>	
     </TBODY>

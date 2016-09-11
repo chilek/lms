@@ -3,7 +3,7 @@
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE class="lmsbox">
+<TABLE class="lmsbox">
     <THEAD>
 	<TR>
 		<TD WIDTH="1%" nowrap>
@@ -23,7 +23,7 @@
 			{trans("Description:")}
 		</TD>
 		<TD WIDTH="1%" nowrap>
-			<A href="?m=daemoninstanceadd&hostid={$hostid}">{trans("Add instance")} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=daemoninstanceadd&amp;hostid={$hostid}">{trans("Add instance")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
 	<TR>
@@ -46,36 +46,34 @@
 	{cycle values="light,lucid" print=false}
 	{foreach from=$instancelist item=instance}
 	<TR class="highlight {cycle}{if $instance.disabled} blend{/if}"  >
-		<TD onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';" nowrap>
+		<TD onClick="return self.location.href='?m=daemoninstanceview&amp;id={$instance.id}';" nowrap>
 			<IMG src="img/settings.gif" alt="">
 			<B>{$instance.name}</B>
 		</TD>
-		<TD align="right" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';">
+		<TD align="right" onClick="return self.location.href='?m=daemoninstanceview&amp;id={$instance.id}';">
 			{$instance.hostname}
 		</TD>
-		<TD align="right" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';">
+		<TD align="right" onClick="return self.location.href='?m=daemoninstanceview&amp;id={$instance.id}';">
 			{$instance.priority}
 		</TD>
-		<TD align="right" onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';" nowrap>
+		<TD align="right" onClick="return self.location.href='?m=daemoninstanceview&amp;id={$instance.id}';" nowrap>
 			{$instance.module}<BR>{$instance.crontab}
 		</TD>
-		<TD onClick="return self.location.href='?m=daemoninstanceview&id={$instance.id}';">
+		<TD onClick="return self.location.href='?m=daemoninstanceview&amp;id={$instance.id}';">
 			{$instance.description}
 		</TD>
 		<TD align="right" NOWRAP>
-			<A HREF="?m=daemoninstanceview&id={$instance.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse Configuration")} ]" title="[ {trans("Browse Configuration")} ]"></A>
-			<A HREF="?m=daemoninstanceedit&id={$instance.id}&statuschange=1"><IMG SRC="img/wait.gif" alt="[ {if $instance.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]" title="[ {if $instance.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]"></A>
-			<A HREF="?m=daemoninstanceadd&id={$instance.id}"><IMG SRC="img/clone.gif" alt="[ {trans("Clone")} ]" title="[ {trans("Clone")} ]"></A>
-			<A HREF="?m=daemoninstancedel&id={$instance.id}" OnClick="return confirmLink(this, '{t a=$instance.name}Are you sure, you want to remove instance \'$a\' and all assigned configuration?{/t}');"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A HREF="?m=daemoninstanceedit&id={$instance.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A HREF="?m=daemoninstanceview&amp;id={$instance.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse Configuration")} ]" title="[ {trans("Browse Configuration")} ]"></A>
+			<A HREF="?m=daemoninstanceedit&amp;id={$instance.id}&amp;statuschange=1"><IMG SRC="img/wait.gif" alt="[ {if $instance.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]" title="[ {if $instance.disabled}{trans("Enable")}{else}{trans("Disable")}{/if} ]"></A>
+			<A HREF="?m=daemoninstanceadd&amp;id={$instance.id}"><IMG SRC="img/clone.gif" alt="[ {trans("Clone")} ]" title="[ {trans("Clone")} ]"></A>
+			<A HREF="?m=daemoninstancedel&amp;id={$instance.id}" OnClick="return confirmLink(this, '{t a=$instance.name}Are you sure, you want to remove instance \'$a\' and all assigned configuration?{/t}');"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A HREF="?m=daemoninstanceedit&amp;id={$instance.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD colspan="6" align="center">
-			<p>&nbsp;</p>
-			<p><B>{trans("There are no instances configured.")}<B></p>
-			<p>&nbsp;</p>
+		<TD colspan="6" class="empty-table">
+			<p>{trans("There are no instances configured.")}</p>
 		</TD>
 	</TR>
 	{/foreach}
@@ -83,9 +81,9 @@
     <TFOOT>
 	<TR>
 		<TD colspan="6" align="right">
-			<A href="?m=daemoninstanceadd&hostid={$hostid}">{trans("Add instance")} <IMG src="img/save.gif" alt=""></A>
+			<A href="?m=daemoninstanceadd&amp;hostid={$hostid}">{trans("Add instance")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
     </TFOOT>
-</TABLE></P>
+</TABLE>
 {/block}

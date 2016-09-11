@@ -39,33 +39,36 @@ if (isset($_GET['statuschange'])) {
 	if ($SYSLOG) {
 		$disabled = $DB->GetOne('SELECT disabled FROM uiconfig WHERE id = ?', array($id));
 		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF] => $id,
+			SYSLOG::RES_UICONF => $id,
 			'disabled' => $disabled ? 0 : 1
 		);
-		$SYSLOG->AddMessage(SYSLOG_RES_UICONF, SYSLOG_OPER_UPDATE, $args,
-			array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF]));
+		$SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_UPDATE, $args);
 	}
 	$DB->Execute('UPDATE uiconfig SET disabled = CASE disabled WHEN 0 THEN 1 ELSE 0 END WHERE id = ?',array($id));
 	$SESSION->redirect('?m=configlist');
 }
 
 $config = $DB->GetRow('SELECT * FROM uiconfig WHERE id = ?', array($id));
-$option = $config['var'];
+$option = $config['section'] . '.' . $config['var'];
+$config['type'] = ($config['type'] == CONFIG_TYPE_AUTO) ? $LMS->GetConfigDefaultType($option) : $config['type'];
 
 if(isset($_POST['config']))
 {
 	$cfg = $_POST['config'];
 	$cfg['id'] = $id;
-	
-	foreach($cfg as $key => $val) 
+
+	foreach($cfg as $key => $val)
 		$cfg[$key] = trim($val);
-	
+
+	if(!ConfigHelper::checkPrivilege('superuser'))
+		$cfg['type'] = $config['type'];
+
 	if($cfg['var']=='')
 		$error['var'] = trans('Option name is required!');
 	elseif(strlen($cfg['var'])>64)
 		$error['var'] = trans('Option name is too long (max.64 characters)!');
 	elseif(!preg_match('/^[a-z0-9_-]+$/', $cfg['var']))
-    		$error['var'] = trans('Option name contains forbidden characters!');
+		$error['var'] = trans('Option name contains forbidden characters!');
 
 	if(($cfg['var']!=$config['var'] || $cfg['section']!=$config['section'])
 		&& $LMS->GetConfigOptionId($cfg['var'], $cfg['section'])
@@ -73,30 +76,35 @@ if(isset($_POST['config']))
 		$error['var'] = trans('Option exists!');
 
 	if(!preg_match('/^[a-z0-9_-]+$/', $cfg['section']) && $cfg['section']!='')
-    		$error['section'] = trans('Section name contains forbidden characters!');
-	    
-	if($cfg['value']=='')
-		$error['value'] = trans('Empty option value is not allowed!');
-	elseif($msg = $LMS->CheckOption($cfg['var'], $cfg['value']))
+		$error['section'] = trans('Section name contains forbidden characters!');
+
+	$option = $cfg['section'] . '.' . $cfg['var'];
+	if($cfg['type'] == CONFIG_TYPE_AUTO)
+		$cfg['type'] = $LMS->GetConfigDefaultType($option);
+
+	if($msg = $LMS->CheckOption($option, $cfg['value'], $cfg['type']))
 		$error['value'] = $msg;
-	
+
 	if(!isset($cfg['disabled'])) $cfg['disabled'] = 0;
 
 	if (!$error) {
+		if(isset($_POST['richtext']))
+			$cfg['type'] = CONFIG_TYPE_RICHTEXT;
+
 		$args = array(
 			'section' => $cfg['section'],
 			'var' => $cfg['var'],
 			'value' => $cfg['value'],
 			'description' => $cfg['description'],
 			'disabled' => $cfg['disabled'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF] => $cfg['id']
+			'type' => $cfg['type'],
+			SYSLOG::RES_UICONF => $cfg['id']
 		);
-		$DB->Execute('UPDATE uiconfig SET section = ?, var = ?, value = ?, description = ?, disabled = ? WHERE id = ?', 
+		$DB->Execute('UPDATE uiconfig SET section = ?, var = ?, value = ?, description = ?, disabled = ?, type = ? WHERE id = ?',
 			array_values($args));
 
 		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG_RES_UICONF, SYSLOG_OPER_UPDATE,
-				$args, array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF]));
+			$SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_UPDATE, $args);
 
 		$SESSION->redirect('?m=configlist');
 	}

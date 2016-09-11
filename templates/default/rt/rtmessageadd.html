@@ -3,64 +3,68 @@
 {block name=module_content}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<P><FORM method="POST" name="message" action="?m=rtmessageadd" enctype="multipart/form-data">
+<P><FORM method="POST" name="message" action="?m=rtmessageadd">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="message[inreplyto]" value ="{$message.inreplyto|default:"0"}">
 <INPUT type="hidden" name="message[references]" value ="{$message.references|escape|default:""}">
 <INPUT type="hidden" name="message[ticketid]" value ="{$message.ticketid}">
 <INPUT type="hidden" name="message[customerid]" value ="{$message.customerid}">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 99%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="bold nobr">
 			<IMG src="img/mail.gif" alt="">
-			<B>{trans("Subject:")}</B>
+			{trans("Subject:")}
 		</TD>
-		<TD WIDTH="99%">
-			<INPUT type="text" size="75" name="message[subject]" value="{$message.subject}" {tip text="Enter message subject" trigger="subject"}></INPUT>
+		<TD>
+			<INPUT type="text" size="75" name="message[subject]" maxlength="255" value="{$message.subject}" {tip text="Enter message subject" trigger="subject"}>
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="bold nobr">
 			<IMG src="img/users.gif" alt="">
-			<B>{trans("Submitter:")}</B>
+			{trans("Submitter:")}
 		</TD>
-		<TD WIDTH="99%">
+		<TD>
 			<INPUT class="radio light" type="radio" name="message[sender]" id="sender0" value="user" CHECKED><label for="sender0">{trans("user")}</label>
 			<INPUT class="radio light" type="radio" name="message[sender]" id="sender1" value="customer" {if $message.sender == 'customer'}CHECKED{/if}><label for="sender1">{trans("customer")}</label>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="bold nobr">
 			<IMG src="img/email.gif" alt="">
-			<B>{trans("Recipient's e-mail:")}</B>
+			{trans("Recipient's e-mail:")}
 		</TD>
-		<TD WIDTH="99%">
+		<TD>
 			<INPUT type="text" size="25" name="message[destination]" value="{$message.destination|escape}" {tip text="Enter recipient's e-mail - if sender is an user and message should be sent (optional)" trigger="destination"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="bold nobr">
 			<IMG src="img/edit.gif" alt="">
-			<B>{trans("Content:")}</B>
+			{trans("Content:")}
 		</TD>
-		<TD WIDTH="99%">
+		<TD>
 			<TEXTAREA name="message[body]" cols="75" rows="10" {tip text="Enter message content" trigger="body"}>{$message.body}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="bold nobr valign-top">
 			<IMG src="img/attach.gif" alt="">
-			<B>{trans("Attachments:")}</B>
+			{trans("Attachments:")}
 		</TD>
-		<TD WIDTH="99%">
-			<INPUT name="files[]" type="file" size="55" {tip text="Enter path to file or click 'Browse' button" trigger="files"} multiple>
+		<TD>
+			{fileupload id="files" fileupload=$fileupload}
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="100%" colspan="2" align="right">
+		<TD colspan="2" class="buttons">
 			<A href="javascript:document.message.submit();" accesskey="s">{trans("Submit/Send")} <IMG src="img/save.gif" alt=""></A>
 			<A href="?m=rtticketview&id={$message.ticketid}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
@@ -69,44 +73,81 @@
 </TABLE>
 <BR>
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 99%;">
+	</COLGROUP>
     <TBODY>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="bold nobr">
 			<IMG src="img/mail.gif" alt="">
-		        <label for="notify"><B>{trans("Notify users:")}</B></label>
+			<label for="notify">{trans("Notify users:")}</label>
 		</TD>
-		<TD WIDTH="99%">
+		<TD>
 			<INPUT type="checkbox" name="message[notify]" id="notify" value="1"{if $message.notify} CHECKED{/if}>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="bold nobr">
 			<IMG src="img/resolved.gif" alt="">
-		        <label for="state"><B>{trans("Resolve ticket:")}</B></label>
+			<label for="state">{trans("Resolve ticket:")}</label>
 		</TD>
-		<TD WIDTH="99%">
+		<TD>
 			<INPUT type="checkbox" name="message[state]" id="state" value="{$smarty.const.RT_RESOLVED}"{if $message.state==$smarty.const.RT_RESOLVED} CHECKED{/if}>
 		</TD>
 	</TR>
 	<TR>
-                <TD WIDTH="1%" NOWRAP>
-	                <IMG src="img/desc.gif" alt="">
-	        <B>{trans("Cause:")}</B>
-	        </TD>
-	        <TD WIDTH="99%">
-		        <SELECT SIZE="1" name="message[cause]" {tip text="Select request cause" trigger="cause"}>
-		        	<OPTION value="0" {if !$message.cause}SELECTED{/if}>{trans("unknown/other")}</OPTION>
+		<TD class="bold nobr">
+			<IMG src="img/desc.gif" alt="">
+			{trans("Cause:")}
+		</TD>
+		<TD>
+			<SELECT SIZE="1" name="message[cause]" {tip text="Select request cause" trigger="cause"}>
+				<OPTION value="0" {if !$message.cause}SELECTED{/if}>{trans("unknown/other")}</OPTION>
 				<OPTION value="1" {if $message.cause == 1}SELECTED{/if}>{trans("customer's side")}</OPTION>
-			        <OPTION value="2" {if $message.cause == 2}SELECTED{/if}>{trans("company's side")}</OPTION>
+				<OPTION value="2" {if $message.cause == 2}SELECTED{/if}>{trans("company's side")}</OPTION>
 			</SELECT>
 		</TD>
-        </TR>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/queue.gif" alt="">
+			{trans("Queue:")}
+		</TD>
+		<TD>
+			<SELECT size="1" name="message[queueid]" {tip text="Select queue" trigger="queue"}>
+			{foreach from=$queuelist item=item}
+			<OPTION value="{$item.id}" {if $item.id == $message.queueid}SELECTED{/if}>{$item.name}</OPTION>
+			{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="bold nobr">
+			<IMG src="img/users.gif" alt="">
+			{trans("Owner:")}
+		</TD>
+		<TD>
+			<SELECT size="1" name="message[owner]" {tip text="Select user" trigger="owner"}>
+				{if $note.owner == 0}
+				<OPTION value="0" selected>- {trans("select user")} -</OPTION>
+				{/if}
+				{foreach $userlist as $user}
+				<OPTION value="{$user.id}"{if $user.id == $message.owner} selected{/if}>{$user.name}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
     </TBODY>
 </TABLE>
 </FORM></P>
-{/block}
+
+{include file="rt/rtticketmessagesbox.html"}
+
 <SCRIPT type="text/javascript">
 <!--
 document.forms['message'].elements['message[subject]'].focus();
 //-->
 </SCRIPT>
+
+{/block}

@@ -24,28 +24,6 @@
  *  $Id$
  */
 
-function trans()
-{
-	global $_LANG;
-
-	$args = func_get_args();
-	$content = array_shift($args);
-
-	if (is_array($content)) {
-		$args = array_values($content);
-		$content = array_shift($args);
-	}
-
-	if (isset($_LANG[$content]))
-		$content = trim($_LANG[$content]);
-
-	for ($i = 1, $len = count($args); $i <= $len; $i++) {
-		$content = str_replace('$'.chr(97+$i-1), $args[$i-1], $content);
-	}
-
-	$content = preg_replace('/<![^>]+>/', '', $content);
-	return $content;
-}
 
 $LANGDEFS = array(
 		'pl' => array(
@@ -63,7 +41,7 @@ $LANGDEFS = array(
 			'locale' => 'lt_LT.UTF-8',
 			'charset' => 'UTF-8',
 			'html' => 'lt',
-			'money_format' => '%01.2f LT',
+			'money_format' => '%01.2f EUR',
 //			'mobile' => '(88[08]|50[0-9]|6[09][0-9])[0-9]{6}',
 			),
 		'en' => array(

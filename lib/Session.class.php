@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -35,24 +35,28 @@ class Session {
 	public $DB = NULL;				// database library object
 	public $timeout = 600;			// timeout since session will
 						// be destroyed
+	private $settings_timeout = 28800;			// timeout since user settings will
+						// be cleared
 	public $autoupdate = FALSE;		// do automatic update on each
 						// save() or save_by_ref() ?
 	public $GCprob = 10;			// probality (in percent) of
 						// garbage collector procedure
-	
-	public function __construct(&$DB, $timeout = 0)
-	{
+
+	public function __construct(&$DB, $timeout = 0, $settings_timeout = 0) {
 		$this->DB =& $DB;
-		
-		if(isset($timeout) && $timeout != 0)
+
+		if (isset($timeout) && $timeout != 0)
 			$this->timeout = $timeout;
-		
-		if(! isset($_COOKIE['SID']))
+
+		if (isset($settings_timeout))
+			$this->settings_timeout = $settings_timeout;
+
+		if (!isset($_COOKIE['SID']))
 			$this->_createSession();
 		else
 			$this->_restoreSession();
 
-		if(rand(1,100) <= $this->GCprob)
+		if (rand(1, 100) <= $this->GCprob)
 			$this->_garbageCollector();
 	}
 
@@ -74,10 +78,22 @@ class Session {
 		return md5(uniqid(rand(), true)).sprintf('%09x', $sec).sprintf('%07x', ($usec * 10000000));
 	}
 
-	public function save($variable, $content)
-	{
+	public function restore_user_settings($force_settings_restore = false) {
+		$settings = $this->DB->GetOne('SELECT settings FROM users WHERE login = ?', array($this->_content['session_login']));
+		if (!empty($settings)) {
+			$settings = unserialize($settings);
+			if (!isset($settings['mtime']) || time() - $settings['mtime'] < $this->settings_timeout || $force_settings_restore)
+				$this->_content = array_merge($this->_content, $settings);
+		}
+	}
+
+	public function save($variable, $content) {
 		$this->_content[$variable] = $content;
-		if($this->autoupdate)
+
+		if ($variable == 'session_login')
+			$this->restore_user_settings();
+
+		if ($this->autoupdate)
 			$this->_saveSession();
 		else
 			$this->_updated = TRUE;
@@ -131,45 +147,56 @@ class Session {
 			return FALSE;
 	}
 
-	public function _createSession()
-	{
+	public function _createSession() {
 		$this->SID = $this->makeSID();
 		$this->_content = array();
-		$this->DB->Execute('INSERT INTO sessions (id, ctime, mtime, atime, vdata, content) VALUES (?, ?NOW?, ?NOW?, ?NOW?, ?, ?)', array($this->SID, serialize($this->makeVData()), serialize($this->_content)));
+		$this->DB->Execute('INSERT INTO sessions (id, ctime, mtime, atime, vdata, content) VALUES (?, ?NOW?, ?NOW?, ?NOW?, ?, ?)',
+			array($this->SID, serialize($this->makeVData()), serialize($this->_content)));
 		setcookie('SID', $this->SID);
 	}
 
-	public function _restoreSession()
-	{
+	public function _restoreSession() {
 		$this->SID = $_COOKIE['SID'];
-		
+
 		$row = $this->DB->GetRow('SELECT *, ?NOW? AS tt FROM sessions WHERE id = ?', array($this->SID));
 
-		if($row && serialize($this->makeVData()) == $row['vdata'])
-		{
+		if ($row && serialize($this->makeVData()) == $row['vdata']) {
 			if (($row['mtime'] < $row['tt'] - $this->timeout) && ($row['atime'] < $row['tt'] - $this->timeout))
-			{
 				$this->_destroySession();
-			} else {
+			else {
 				if (!isset($_POST['xjxfun']))
 					$this->DB->Execute('UPDATE sessions SET atime = ?NOW? WHERE id = ?', array($this->SID));
 				$this->_content = unserialize($row['content']);
+				$this->restore_user_settings(true);
 				return;
 			}
-		} elseif($row)
+		} elseif ($row)
 			$this->_destroySession();
-	
+
 		$this->_createSession();
 	}
 
-	public function _saveSession()
-	{
-		if($this->autoupdate || $this->_updated)
-			$this->DB->Execute('UPDATE sessions SET content = ?, mtime = ?NOW? WHERE id = ?', array(serialize($this->_content), $this->SID));
+	public function _saveSession() {
+		static $session_variables = array('session_id' => true, 'session_login' => true,
+			'session_logname' => true, 'session_last' => true, 'session_lastip' => true,
+			'session_smsauthenticated' => true, 'backto' => true, 'lastmodule' => true,
+			'session_passwdrequiredchange' => true);
+
+		if ($this->autoupdate || $this->_updated) {
+			$session_content = array_intersect_key($this->_content, $session_variables);
+			$settings_content = array_diff_key($this->_content, $session_variables);
+			$settings_content['mtime'] = time();
+			$this->DB->Execute('UPDATE sessions SET content = ?, mtime = ?NOW? WHERE id = ?',
+				array(serialize($session_content), $this->SID));
+			$this->DB->Execute('UPDATE users SET settings = ? WHERE login = ?',
+				array(serialize($settings_content), $this->_content['session_login']));
+		}
 	}
 
 	public function _destroySession()
 	{
+		if (time() - $this->_content['mtime'] >= $this->settings_timeout)
+			$this->DB->Execute('UPDATE users SET settings = ? WHERE login = ?', array('', $this->_content['session_login']));
 		$this->DB->Execute('DELETE FROM sessions WHERE id = ?', array($this->SID));
 		$this->_content = array();
 		$this->SID = NULL;

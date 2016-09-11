@@ -354,9 +354,9 @@ if ($debtors_file)
 			SUM(value) AS balance, x.phone
 		FROM customers c
 		JOIN cash ON (c.id = cash.customerid)
-		JOIN (SELECT MIN(phone) AS phone, customerid
+		JOIN (SELECT MIN(contact) AS phone, customerid
 		        FROM customercontacts
-			WHERE (type & 1) = 1
+			WHERE (type & 1 = 1 AND type & 64 <> 64)
 			GROUP BY customerid
 		) x ON (x.customerid = c.id)
 		WHERE c.mailingnotice = 1
@@ -400,9 +400,9 @@ if ($invoices_file)
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
-		JOIN (SELECT MIN(phone) AS phone, customerid
+		JOIN (SELECT MIN(contact) AS phone, customerid
 		        FROM customercontacts
-			WHERE (type & 1) = 1
+			WHERE (type & 1 = 1 AND type & 64 <> 64)
 			GROUP BY customerid
 		) x ON (x.customerid = d.customerid)
 		JOIN (SELECT SUM(value) * -1 AS value, docid
@@ -460,9 +460,9 @@ if ($deadline_file)
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
-		JOIN (SELECT MIN(phone) AS phone, customerid
+		JOIN (SELECT MIN(contact) AS phone, customerid
 		        FROM customercontacts
-			WHERE (type & 1) = 1
+			WHERE (type & 1 = 1 AND type & 64 <> 64)
 			GROUP BY customerid
 		) x ON (x.customerid = d.customerid)
 		JOIN (SELECT SUM(value) * -1 AS value, docid
@@ -521,9 +521,9 @@ if ($notes_file)
 		COALESCE(ca.balance, 0) AS balance, v.value
 		FROM documents d
 		JOIN customers c ON (c.id = d.customerid)
-		JOIN (SELECT MIN(phone) AS phone, customerid
+		JOIN (SELECT MIN(contact) AS phone, customerid
 		        FROM customercontacts
-			WHERE (type & 1) = 1
+			WHERE (type & 1 = 1 AND type & 64 <> 64)
 			GROUP BY customerid
 		) x ON (x.customerid = d.customerid)
 		JOIN (SELECT SUM(value) * -1 AS value, docid

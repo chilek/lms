@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,10 +25,22 @@
  */
 
 class LMSSmarty extends Smarty {
-	public function fetch($template = null, $cache_id = null, $compile_id = null, $parent = null, $display = false, $merge_tpl_vars = true, $no_output_filter = false) {
-		if (!is_null($template) && is_string($template) && !preg_match('/^(\/|[a-z]{2,}:)/i', $template))
-			$template = 'extendsall:' . $template;
-		return parent::fetch($template, $cache_id, $compile_id, $parent, $display, $merge_tpl_vars, $no_output_filter);
+	private $plugin_manager;
+
+	public function setPluginManager(LMSPluginManager $plugin_manager) {
+		$this->plugin_manager = $plugin_manager;
+	}
+
+	public function display($template = null, $cache_id = null, $compile_id = null, $parent = null) {
+		$layout = $this->getTemplateVars('layout');
+		if (!empty($layout))
+			if (array_key_exists('module', $layout))
+				$this->plugin_manager->ExecuteHook($layout['module'] . '_before_module_display',
+					array('smarty' => $this));
+			elseif (array_key_exists('userpanel_module', $layout) && array_key_exists('userpanel_function', $layout))
+				$this->plugin_manager->ExecuteHook('userpanel_' . $layout['userpanel_module'] . '_' . $layout['userpanel_function'] . '_before_module_display',
+					array('smarty' => $this));
+		parent::display($template, $cache_id, $compile_id, $parent);
 	}
 }
 

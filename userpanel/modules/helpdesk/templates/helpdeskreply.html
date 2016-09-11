@@ -3,7 +3,7 @@
 <table style="width: 100%;" cellpadding="10">
     <tr>
         <td>
-<form method="post" action="?m=helpdesk&id={$ticket.id}" name="helpdesk">
+<form method="post" action="?m=helpdesk&id={$ticket.id}" name="helpdesk" enctype="multipart/form-data">
 {box title="Message"}
 <input type="hidden" name="helpdesk[inreplyto]" value="{$helpdesk.inreplyto}" />
 <table width="100%" cellpadding="3" class="light">
@@ -30,6 +30,17 @@
 		</td>
 	</tr>
 	<tr class="light">
+		<td>
+			{img src="attach.gif" alt=""}
+		</td>
+		<td>
+			<b>{trans("Attachments:")}</b>
+		</td>
+		<td>
+			<input type="file" name="files[]" size="55" {userpaneltip text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
+		</td>
+	</tr>
+	<tr class="light">
 		<td width="100%" colspan="3" align="right">
 			<a href="javascript:document.helpdesk.submit()" accesskey="S">{trans("Submit")} {img src="save.gif" alt="[ Submit ]"}</a>
 		</td>
@@ -47,7 +58,7 @@
 		<td width="1%" align="right">
 			<b>{trans("From:")}<br/>{trans("Subject:")}</b>
 		</td>
-		<td width="97%" class="nobr">
+		<td width="96%" class="nobr">
 			    {if $message.customerid}
 				    {$message.customername}
 			    {elseif $message.userid}
@@ -63,12 +74,21 @@
 			    <br />
 			    {$message.subject|escape}
 		</td>
+		<td width="1%" nowrap>
+			{if $message.attachments}
+			{foreach $message.attachments as $attachment}
+			{if !$attachment@first}<br>{/if}<a href="?m=helpdesk&f=attachment&msgid={$message.id}&file={$attachment.filename}">{$attachment.filename} {img src="attach.gif" alt=""}</a>
+			{/foreach}
+			{/if}
+		</td>
 		<td width="1%">
+			{if $ticket.state != $smarty.const.RT_RESOLVED || ConfigHelper::getConfig('userpanel.allow_message_add_to_closed_tickets')}
 			<a href="?m=helpdesk&op=message&id={$ticket.id}&msgid={$message.id}">{trans("Reply")}</a>
+			{else}&nbsp;{/if}
 		</td>
 	</tr>
 	<tr>
-		<td colspan="4">
+		<td colspan="5">
 			{$message.body|escape|replace:"\n":"<br/>"}
 		</td>
 	</tr>

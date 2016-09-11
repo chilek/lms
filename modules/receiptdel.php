@@ -38,25 +38,23 @@ if ($id && $_GET['is_sure'] == '1') {
 	if ($DB->Execute('DELETE FROM documents WHERE id = ?', array($id))) {
 		if ($SYSLOG) {
 			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $id,
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+				SYSLOG::RES_DOC => $id,
+				SYSLOG::RES_CUST => $customerid,
 			);
-			$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_DELETE, $args, array_keys($args));
+			$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
 			$items = $DB->GetCol('SELECT itemid FROM receiptcontents WHERE docid = ?', array($id));
 			foreach ($items as $item) {
 				$args['itemid'] = $item;
-				$SYSLOG->AddMessage(SYSLOG_RES_RECEIPTCONT, SYSLOG_OPER_DELETE, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+				$SYSLOG->AddMessage(SYSLOG::RES_RECEIPTCONT, SYSLOG::OPER_DELETE, $args);
 			}
 			$cashids = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($id));
 			foreach ($cashids as $cashid) {
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $id,
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+					SYSLOG::RES_CASH => $cashid,
+					SYSLOG::RES_DOC => $id,
+					SYSLOG::RES_CUST => $customerid,
 				);
-				$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args, array_keys($args));
+				$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
 			}
 		}
 		$DB->Execute('DELETE FROM receiptcontents WHERE docid = ?', array($id));

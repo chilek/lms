@@ -40,7 +40,7 @@ for lms in lmsy:
 		start=int(c.fetchone()[0])
 		koniec=start+dlugoscsieci
 		#klasa=str(net[1])
-		c.execute("""SELECT name,inet_ntoa(ipaddr) FROM nodes WHERE ipaddr BETWEEN %i AND %i AND (name LIKE 'BTS%%' OR name LIKE 'RTR%%') ORDER BY ipaddr"""%(start,koniec))
+		c.execute("""SELECT name,inet_ntoa(ipaddr) FROM vnodes WHERE ipaddr BETWEEN %i AND %i AND (name LIKE 'BTS%%' OR name LIKE 'RTR%%') ORDER BY ipaddr"""%(start,koniec))
 		z=c.fetchall()
 		for j in z:
 			hostswrite="""define host {

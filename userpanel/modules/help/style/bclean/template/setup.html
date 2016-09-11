@@ -1,0 +1,22 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<h1>{$layout.pagetitle}</h1>
+<TABLE width="100%">
+    <TR class="dark">
+        <TD width="100%" class="fall">
+            <b>{trans("Module Configuration:")}</b>
+        </TD>
+    </TR>
+    <TR class="light">
+        <TD width="100%" class="fall">
+            {if $tree}
+            {include file=$treefile tree=$tree treefile=$treefile}
+            {else}
+            <br/><br/><br/>
+            <div style="text-align:center">{t a="<a href=\"?m=userpanel&module=help&f=add\">" b="</a>"}There is no Help Center tree. Use $athis form$b to add root item.{/t}</div>
+            <br/><br/><br/>
+            {/if}
+        </TD>
+    </TR>
+</TABLE>
+{include file="footer.html"}

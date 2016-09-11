@@ -1,6 +1,8 @@
 <!-- $Id$ -->
+<script src="img/clipboard.min.js"></script>
 <SCRIPT type="text/javascript">
 <!--
+       new Clipboard('.CopyIp');
         function chkmac_change()
 	{
 		if (document.getElementById('chkmac').checked)
@@ -16,10 +18,12 @@
 		else
 			location.href = '?m=netdevedit&id={$netdevinfo.id}&ip={$nodeipdata.id}&action=duplex&duplex=0';
 	}
+
 	function change_authtype() {
 		var authtype = 0;
-		authtype |= (document.getElementById('authtype_dhcp').checked == true) * 2;
-		authtype |= (document.getElementById('authtype_eap').checked == true) * 4;
+		{foreach $_SESSIONTYPES as $idx => $sessiontype}
+		authtype |= (document.getElementById('authtype{$idx}').checked == true) * {$idx};
+		{/foreach}
 		location.href = '?m=netdevedit&ip={$nodeipdata.id}&id={$netdevinfo.id}&action=authtype&authtype=' + authtype;
 
 	}
@@ -36,7 +40,7 @@
     <THEAD>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/ip.gif" ALT="">
+			<IMG SRC="img/ip.gif" class="CopyIp" data-clipboard-text="{$nodeipdata.id|string_format:"%04d"}" ALT="">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			<B>{$nodeipdata.name} ({$nodeipdata.id|string_format:"%04d"})</B>
@@ -60,7 +64,7 @@
 	</TR>
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/ip.gif" ALT="{trans("IP address:")}">
+			<IMG SRC="img/ip.gif" class="CopyIp" data-clipboard-text="{$nodeipdata.ip}" ALT="{trans("IP address:")}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			<a href="javascript:ping_popup('{$nodeipdata.ip}')">{$nodeipdata.ip}</a>
@@ -69,7 +73,7 @@
 	{if $nodeipdata.ip_pub != "0.0.0.0"}
 	<TR>
 		<TD WIDTH="1%">
-			<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
+			<IMG SRC="img/ip_pub.gif" class="CopyIp" data-clipboard-text="{$nodeinfo.ip_pub}" ALT="{trans("Pub. IP address:")}">
 		</TD>
 		<TD WIDTH="99%" COLSPAN="2">
 			<a href="javascript:ping_popup('{$nodeipdata.ip_pub}')">{$nodeipdata.ip_pub}</a>
@@ -110,20 +114,13 @@
 		</TD>
 	</TR>
 	<TR>
-	<TD style="width: 1%;">
-		<IMG SRC="img/netdev.gif" ALT="">
-        </TD>
-        <TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
-	<label for="authtype_dhcp">{trans("DHCP Client")}</label><INPUT TYPE="checkbox" NAME="netdevauthtype[dhcp]" value="2" id="authtype_dhcp" {if $netdevauthtype.dhcp} checked{/if} {tip text="Enable/disable DHCP Server Client" trigger="dhcp"} onchange="change_authtype()">&nbsp;
-	<label for="authtype_eap">{trans("EAP Client")}</label><INPUT TYPE="checkbox" NAME="netdevonntype[eap]" value="4" id="authtype_eap" {if $netdevauthtype.eap} checked {/if} {tip text="Enable/disable EAP Server Client" trigger="eap"} onchange="change_authtype()">
-	</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/network.gif" ALT="{trans("Network:")}">
+		<TD style="width: 1%;">
+			<IMG SRC="img/netdev.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" COLSPAN="2">
-			<B><A HREF="?m=netinfo&id={$nodeipdata.netid}">{$nodeipdata.netname}</A></B>
+		<TD style="width: 99%;" class="nobr" COLSPAN="2">
+			{foreach $_SESSIONTYPES as $idx => $sessiontype}
+			<label>{$sessiontype.label} <INPUT TYPE="checkbox" NAME="authtype[{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"} onchange="change_authtype()"{if ($nodeipdata.authtype & $idx) == $idx} checked{/if}></label>&nbsp;
+			{/foreach}
 		</TD>
 	</TR>
 	<TR>

@@ -229,7 +229,7 @@ define hostgroup {
 	private function getData($data){
 		$ip=array();
 		$q1=$this->QueryMysql("SELECT name,location,producer,model FROM netdevices WHERE id=".$data."");
-		$q2=$this->QueryMysql("SELECT inet_ntoa( n.ipaddr ) as ip FROM nodes as n WHERE n.netdev=".$data." AND n.ownerid=0");
+		$q2=$this->QueryMysql("SELECT inet_ntoa( n.ipaddr ) as ip FROM vnodes as n WHERE n.netdev=".$data." AND n.ownerid=0");
 		if (mysql_num_rows($q1)==1 ) {
 			$row=mysql_fetch_array($q1);
 			$name= $row['name'];

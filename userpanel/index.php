@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -40,6 +40,8 @@ if (is_readable('lms.ini'))
 	$CONFIG_FILE = 'lms.ini';
 elseif (is_readable(DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini'))
 	$CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms-' . $_SERVER['HTTP_HOST'] . '.ini';
+elseif (is_readable('..' . DIRECTORY_SEPARATOR .'lms.ini'))
+	$CONFIG_FILE = '..' . DIRECTORY_SEPARATOR .'lms.ini';
 elseif (!is_readable($CONFIG_FILE))
 	die('Unable to read configuration file ['.$CONFIG_FILE.']!');
 
@@ -57,6 +59,7 @@ $CONFIG['directories']['smarty_compile_dir'] = $CONFIG['directories']['userpanel
 $CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
 $CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
 $CONFIG['directories']['doc_dir'] = (!isset($CONFIG['directories']['doc_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'documents' : $CONFIG['directories']['doc_dir']);
+$CONFIG['directories']['vendor_dir'] = (!isset($CONFIG['directories']['vendor_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'vendor' : $CONFIG['directories']['vendor_dir']);
 
 define('USERPANEL_DIR', $CONFIG['directories']['userpanel_dir']);
 define('USERPANEL_LIB_DIR', USERPANEL_DIR . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR);
@@ -69,14 +72,21 @@ define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
 define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
 define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
+define('VENDOR_DIR', $CONFIG['directories']['vendor_dir']);
+
+define('K_TCPDF_EXTERNAL_CONFIG', true);
 
 // include required files
 
 // Load autoloader
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'autoloader.php');
+$composer_autoload_path = VENDOR_DIR . DIRECTORY_SEPARATOR . 'autoload.php';
+if (file_exists($composer_autoload_path)) {
+    require_once $composer_autoload_path;
+} else {
+    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
+}
 
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'checkdirs.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'config.php');
 
 // Initialize database
 
@@ -91,7 +101,7 @@ try {
 }
 
 // Initialize templates engine (must be before locale settings)
-$SMARTY = new Smarty;
+$SMARTY = new LMSSmarty;
 
 // test for proper version of Smarty
 
@@ -109,9 +119,7 @@ define('SMARTY_VERSION', $ver_chunks[0]);
 $SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
 
 // Redirect to SSL
-
-$_FORCE_SSL = ConfigHelper::checkConfig('phpui.force_ssl');
-
+$_FORCE_SSL = ConfigHelper::checkConfig('userpanel.force_ssl', ConfigHelper::getConfig('phpui.force_ssl'));
 if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 {
      header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
@@ -121,14 +129,16 @@ if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 $_TIMEOUT = ConfigHelper::getConfig('phpui.timeout');
 
 // Include required files (including sequence is important)
-
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 
 $AUTH = NULL;
-$SYSLOG = null;
+$SYSLOG = SYSLOG::getInstance();
+if ($SYSLOG)
+	$SYSLOG->NewTransaction('userpanel');
+
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'Session.class.php');
@@ -142,6 +152,7 @@ $LMS = new ULMS($DB, $AUTH, $SYSLOG);
 
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
+$SMARTY->setPluginManager($plugin_manager);
 
 // Load plugin files and register hook callbacks
 $plugins = $plugin_manager->getAllPluginInfo(LMSPluginManager::OLD_STYLE);
@@ -195,15 +206,16 @@ $SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
 $SMARTY->debugging = ConfigHelper::checkConfig('phpui.smarty_debug');
 require_once(USERPANEL_LIB_DIR . DIRECTORY_SEPARATOR . 'smarty_addons.php');
 
-$layout['upv'] = $USERPANEL->_version.' ('.$USERPANEL->_revision.'/'.$SESSION->_revision.')';
 $layout['lmsdbv'] = $DB->GetVersion();
 $layout['lmsv'] = $LMS->_version;
+$layout['lmsvr'] = $LMS->_revision;
 $layout['smarty_version'] = SMARTY_VERSION;
 $layout['hostname'] = hostname();
 $layout['dberrors'] =& $DB->GetErrors();
 
 $SMARTY->assignByRef('modules', $USERPANEL->MODULES);
 $SMARTY->assignByRef('layout', $layout);
+$SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header'));
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
 
@@ -223,7 +235,7 @@ if($SESSION->islogged)
 
 	if(ConfigHelper::checkConfig('userpanel.hide_nodes_modules'))
 	{
-		if(!$DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid = ? LIMIT 1', array($SESSION->id)))
+		if(!$DB->GetOne('SELECT COUNT(*) FROM vnodes WHERE ownerid = ? LIMIT 1', array($SESSION->id)))
 		{
 			unset($USERPANEL->MODULES['notices']);
 			unset($USERPANEL->MODULES['stats']);
@@ -250,6 +262,8 @@ if($SESSION->islogged)
 		if (function_exists('module_'.$function)) 
 		{
 		    $to_execute = 'module_'.$function;
+			$layout['userpanel_module'] = $module;
+			$layout['userpanel_function'] = $function;
 		    $to_execute();
 		} else {
     		    $layout['error'] = trans('Function <b>$a</b> in module <b>$b</b> not found!', $function, $module);

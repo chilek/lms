@@ -2,7 +2,6 @@
 {block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-{include file="calendar_js.html"}
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" action="?m=taxrateadd" name="taxrateadd">
 <INPUT type="submit" class="hiddenbtn">
@@ -51,9 +50,7 @@
 			<B>{trans("Binds from date:")}</B>
 		</TD>
 		<TD width="98%">
-			<div class="calendar">
-			<INPUT type="text" name="taxrateadd[validfrom]" value="{$taxrateadd.validfrom}" size="10" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validfrom"}>
-			</div>
+			<INPUT type="text" name="taxrateadd[validfrom]" value="{$taxrateadd.validfrom}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validfrom"}>
 		</TD>
 	</TR>
 	<TR>
@@ -64,9 +61,7 @@
 			<B>{trans("Binds to date:")}</B>
 		</TD>
 		<TD width="98%">
-			<div class="calendar">
-			<INPUT type="text" name="taxrateadd[validto]" value="{$taxrateadd.validto}" size="10" {tip text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validto"}>
-			</div>
+			<INPUT type="text" name="taxrateadd[validto]" value="{$taxrateadd.validto}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar" trigger="validto"}>
 		</TD>
 	</TR>
 	<TR>

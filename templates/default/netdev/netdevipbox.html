@@ -6,8 +6,8 @@
 			<IMG SRC="img/ip.gif" ALT="">
 			<B>{t a=$netdevips|@count}IP addresses ($a):{/t}</B>
 		</TD>
-	        <TD width="1%" align="right">
-			<NOBR><A HREF="?m=netdevedit&action=addip&id={$netdevinfo.id}">{trans("New address")} &raquo;</A></NOBR>
+	        <TD width="1%" class="text-right nobr">
+			<A HREF="?m=netdevedit&action=addip&id={$netdevinfo.id}">{trans("New address")} &raquo;</A>
 		</TD>	
 	</TR>
     </THEAD>
@@ -30,10 +30,10 @@
 	{cycle values="light,lucid" print=false}
 	{section name=list loop=$netdevips}
 	<TR class="highlight {cycle}{if ! $netdevips[list].access} blend{/if}"  >
-		<TD WIDTH="95%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
+		<TD WIDTH="95%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';" class="nobr">
 			<B>{$netdevips[list].name}</B>
 			{if $netdevips[list].location}<BR>
-			<NOBR>{$netdevips[list].info|truncate:50:"...":true}</NOBR>
+			    {$netdevips[list].info|truncate:50:"...":true}
 			{/if}
 		</TD>
 		<TD WIDTH="1%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
@@ -58,10 +58,8 @@
 	{/section}
 	{else}
         <TR>
-    		<TD colspan="6" align="center">
-			<p>&nbsp;</p>
-			<p><B>{trans("No IP addresses on device.")}</b></p>
-			<p>&nbsp;</p>
+    		<TD colspan="6" class="empty-table">
+			<p>{trans("No IP addresses on device.")}</p>
 		</TD>
 	</TR>
 	{/if}

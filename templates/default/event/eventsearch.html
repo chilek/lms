@@ -3,7 +3,6 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{include file="calendar_js.html"}
 <FORM method="POST" action="?m=eventsearch" name="event" id="event">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
@@ -34,10 +33,8 @@
 			<B>{trans("Date:")}</B>
 		</TD>
 		<TD width="98%">
-			<div class="calendar">
-			{trans("From:")} <INPUT type="text" name="event[datefrom]" size="10" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
-			{trans("To:")} <INPUT type="text" name="event[dateto]" size="10" {tip text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
-			</div>
+			{trans("From:")} <INPUT type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[datefrom]" size="12" {tip class="calendar" text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
+			{trans("To:")} <INPUT type="text" placeholder="{trans("yyyy/mm/dd")}" name="event[dateto]" size="12" {tip class="calendar" text="Enter date in YYYY/MM/DD format or click to choose it from calendar"}>
 		</TD>
 	</TR>
 	<TR>
@@ -62,7 +59,24 @@
 			<INPUT type="text" name="event[note]" size="50" {tip text="Enter note"}>
 		</TD>
 	</TR>
-{*	<TR>
+	<TR>
+		<TD width="1%">
+			<IMG src="img/desc.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Type:")}</B>
+		</TD>
+		<TD width="98%">
+			<SELECT name="event[type]" size="1">
+				<OPTION value="0" SELECTED>{trans("- all -")}</OPTION>
+				{foreach from=$_EVENTTYPES key=key item=type}
+					<OPTION value="{$key}">{$type}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+{*
+	<TR>
 		<TD width="1%">
 			<IMG src="img/access.gif" alt="">
 		</TD>
@@ -73,7 +87,8 @@
 			<INPUT type="checkbox" name="event[private]" value="1" {tip text="Select event's status"}{if $event.private}CHECKED{/if}> {trans("private")}
 		</TD>
 	</TR>
-*}	<TR>
+*}
+	<TR>
 		<TD width="1%">
 			<IMG src="img/customer.gif" alt="">
 		</TD>
@@ -81,12 +96,7 @@
 			<B>{trans("Customer:")}</B>
 		</TD>
 		<TD width="98%" nowrap>
-			<SELECT name="event[customerid]">
-				<OPTION value="0" SELECTED>{trans("- select customer -")}</OPTION>
-				{foreach from=$customerlist item=customer}	
-				<OPTION value="{$customer.id}">{$customer.customername|truncate:"40":"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
-				{/foreach}
-			</SELECT>
+			{customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer(this);"}
 		</TD>
 	</TR>
 	<TR>
@@ -96,9 +106,8 @@
 		<TD width="1%" valign="top">
 			<B>{trans("User:")}</B>
 		</TD>
-		<TD width="98%" nowrap>
+		<TD style="width: 98%;" class="multiselect nobr">
 			<SELECT name="event[userid][]" id="userid" multiple>
-				{*<OPTION value="">{trans("- select user -")}</OPTION>*}
 				{section name=userlist loop=$userlist}
 				<OPTION value="{$userlist[userlist].id}">{$userlist[userlist].name}</OPTION>
 				{/section}
@@ -113,7 +122,7 @@
 	</TR>
     </TBODY>
 </TABLE>
-</P>
+</form>
 <SCRIPT type="text/javascript">
 <!--
 multiselect('event', 'userid', '{trans("- select user -")}');

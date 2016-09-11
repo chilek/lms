@@ -126,7 +126,10 @@
 		</TD>
 		<TD width="98%">
 			{foreach from=$message.attachments item=a}
-				<A href="?m=rtmessageview&tid={$message.ticketid}&mid={$message.id}&file={$a.filename}">{$a.filename} ({$a.size|string_format:"%.1f"} {$a.unit})</A><BR>
+				{documentview id="{$message.id}-{$a@index}" type=$a.contenttype name=$a.filename
+					url="?m=rtmessageview&tid={$message.ticketid}&mid={$message.id}&file={$a.filename}"
+					text="{$a.filename} ({$a.size|string_format:"%.1f"} {$a.unit})"}
+				<BR>
 			{/foreach}
 		</TD>
 	</TR>

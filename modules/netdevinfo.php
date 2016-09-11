@@ -70,8 +70,6 @@ if (! array_key_exists('xjxfun', $_POST)) {                  // xajax was called
 	}
 	$SMARTY->assign('netdevinfo', $netdevinfo);
 	$SMARTY->assign('objectid', $netdevinfo['id']);
-	$SMARTY->assign('netdevlist', $netdevconnected);
-	$SMARTY->assign('netcomplist', $netcomplist);
 	$SMARTY->assign('restnetdevlist', $netdevlist);
 	$SMARTY->assign('netdevips', $netdevips);
 	$SMARTY->assign('nodelist', $nodelist);
@@ -82,10 +80,23 @@ if (! array_key_exists('xjxfun', $_POST)) {                  // xajax was called
 	$SMARTY->assign('nodelinktechnology', $SESSION->get('nodelinktechnology'));
 	$SMARTY->assign('nodelinkspeed', $SESSION->get('nodelinkspeed'));
 
+	$hook_data = $LMS->executeHook('netdevinfo_before_display',
+		array(
+			'netdevconnected' => $netdevconnected,
+			'netcomplist' => $netcomplist,
+			'smarty' => $SMARTY,
+		)
+	);
+	$netdevconnected = $hook_data['netdevconnected'];
+	$netcomplist = $hook_data['netcomplist'];
+	$SMARTY->assign('netdevlist', $netdevconnected);
+	$SMARTY->assign('netcomplist', $netcomplist);
+
+
 	if (isset($_GET['ip'])) {
 		$nodeipdata = $LMS->GetNodeConnType($_GET['ip']);
 		$netdevauthtype = array();
-		$authtype = $nodeipdata['authtype'];
+		$authtype = $nodeipdata;
 		if ($authtype != 0) {
 			$netdevauthtype['dhcp'] = ($authtype & 2);
 			$netdevauthtype['eap'] = ($authtype & 4);

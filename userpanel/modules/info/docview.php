@@ -27,12 +27,22 @@
 global $LMS, $SESSION;
 
 if(!empty($_GET['id'])) {
-	$doc = $LMS->DB->GetRow('SELECT c.filename, c.md5sum, c.contenttype, d.id, d.number, d.cdate, d.type, d.customerid, n.template
-		FROM documentcontents c
-		JOIN documents d ON (d.id = c.docid)
+	$doc = $LMS->DB->GetRow('SELECT d.id, d.number, d.cdate, d.type, d.customerid, n.template
+		FROM documents d
 		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 		LEFT JOIN divisions ds ON (ds.id = d.divisionid)
-		WHERE c.docid = ?', array(intval($_GET['id'])));
+		WHERE d.id = ?', array(intval($_GET['id'])));
+
+	$docattachments = $LMS->DB->GetAllByKey('SELECT * FROM documentattachments WHERE docid = ?
+		ORDER BY main DESC, filename', 'id', array($_GET['id']));
+	$attachmentid = intval($_GET['attachmentid']);
+	if ($attachmentid)
+		$docattach = $docattachments[$attachmentid];
+	else
+		$docattach = reset($docattachments);
+	$doc['md5sum'] = $docattach['md5sum'];
+	$doc['filename'] = $docattach['filename'];
+	$doc['contenttype'] = $docattach['contenttype'];
 
 	if($doc['customerid'] != $SESSION->id)
 	{
@@ -43,7 +53,7 @@ if(!empty($_GET['id'])) {
 	$filename = DOC_DIR.'/'.substr($doc['md5sum'],0,2).'/'.$doc['md5sum'];
 	if(file_exists($filename))
 	{
-		if (strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
+		if (preg_match('/html/i', $doc['contenttype']) && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
 			if($doc['type'] == DOC_CONTRACT) {
 				$subject = trans('Contract');
 				$title = trans('Contract No. $a', $docnumber);
@@ -62,7 +72,8 @@ if(!empty($_GET['id'])) {
 			readfile($filename);
 			$htmlbuffer = ob_get_contents();
 			ob_end_clean();
-			html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', array(10, 5, 15, 5), ($_GET['save'] == 1) ? true : false, $copy);
+			$margins = explode(",", ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5'));
+			html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', $margins, ($_GET['save'] == 1) ? true : false, $copy);
 		} else {
 			header('Content-Type: '.$doc['contenttype']);
 

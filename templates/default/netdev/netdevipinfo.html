@@ -4,36 +4,25 @@
 <!--// $Id$ //-->
 {$xajax}
 <H1>{$layout.pagetitle}</H1>
-<TABLE WIDTH="100%">
-	<TR>
-		<TD WIDTH="100%">
-			{include file="netdev/netdevipinfobox.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="netdev/netdevinfobox.html" devicepanel=1}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="netdev/netdevipbox.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="netdev/netdevconnbox.html"}
-		</TD>
-	<TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="netdev/netdevnodes.html"}
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="100%">
-			{include file="netdev/radiosectors.html"}
-		</TD>
-	</TR>
-</TABLE>
+{block name=netdevipinfobox}
+	{include file="netdev/netdevipinfobox.html"}
+{/block}
+{block name=netdevinfobox}
+	{include file="netdev/netdevinfobox.html" devicepanel=1}
+{/block}
+{block name=netdevipbox}
+	{include file="netdev/netdevipbox.html"}
+{/block}
+{block name=netdevmanagementurl}
+	{include file="managementurl/managementurls.html"}
+{/block}
+{block name=netdevconnbox}
+	{include file="netdev/netdevconnbox.html"}
+{/block}
+{block name=netdevnodes}
+	{include file="netdev/netdevnodes.html"}
+{/block}
+{block name=radiosectors}
+	{include file="netdev/radiosectors.html"}
+{/block}
 {/block}

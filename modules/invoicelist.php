@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -98,18 +98,24 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 		$where .= ' AND closed = 0';
 
 	if($res = $DB->Exec('SELECT d.id AS id, number, cdate, type,
-			d.customerid, d.name, address, zip, city, countries.name AS country, template, closed, 
+			d.customerid, d.name, address, zip, city, countries.name AS country, template, closed, cancelled, 
 			CASE reference WHEN 0 THEN
 			    SUM(a.value*a.count) 
 			ELSE
 			    SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
 			END AS value, 
-			COUNT(a.docid) AS count
+			COUNT(a.docid) AS count,
+			i.sendinvoices
 			FROM documents d
 			JOIN invoicecontents a ON (a.docid = d.id)
 			LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
 			LEFT JOIN countries ON (countries.id = d.countryid)
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
+			LEFT JOIN (
+				SELECT DISTINCT c.id AS customerid, 1 AS sendinvoices FROM customers c
+				JOIN customercontacts cc ON cc.customerid = c.id
+				WHERE invoicenotice = 1 AND cc.type & ' . (CONTACT_INVOICES | CONTACT_DISABLED) . ' = ' . CONTACT_INVOICES . '
+			) i ON i.customerid = d.customerid
 			LEFT JOIN (
 				SELECT DISTINCT a.customerid FROM customerassignments a
 				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
@@ -123,7 +129,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 			            SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group['group']).'
 			            AND customerid = d.customerid)' : '')
 			.' GROUP BY d.id, number, cdate, d.customerid, 
-			d.name, address, zip, city, template, closed, type, reference, countries.name '
+			d.name, address, zip, city, template, closed, type, reference, countries.name, cancelled, sendinvoices '
 			.(isset($having) ? $having : '')
 			.$sqlord.' '.$direction))
 	{
@@ -135,6 +141,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 
 		while($row = $DB->FetchRow($res))
 		{
+			$row['customlinks'] = array();
 			$result[$id] = $row;
 			// free memory for rows which will not be displayed
 	                if($page > 0)
@@ -194,11 +201,10 @@ $c="month";
 }
 $SESSION->save('ilc', $c);
 
-if (isset($_POST['search'])) {
-	$h = isset($_POST['hideclosed']) ? true : false;
-} elseif (($h = $SESSION->get('ilh')) === NULL) {
-	$h = ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.hide_closed', false));
-}
+if (isset($_POST['search']))
+	$h = isset($_POST['hideclosed']);
+elseif (($h = $SESSION->get('ilh')) === NULL)
+	$h = ConfigHelper::checkConfig('invoices.hide_closed');
 $SESSION->save('ilh', $h);
 
 if(isset($_POST['group'])) {
@@ -248,6 +254,13 @@ if($invoice = $SESSION->get('invoiceprint'))
         $SMARTY->assign('invoice', $invoice);
         $SESSION->remove('invoiceprint');
 }
+
+$hook_data = $LMS->ExecuteHook('invoicelist_before_display',
+	array(
+		'invoicelist' => $invoicelist,
+	)
+);
+$invoicelist = $hook_data['invoicelist'];
 
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('pagelimit',$pagelimit);

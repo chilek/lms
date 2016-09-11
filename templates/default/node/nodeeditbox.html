@@ -1,6 +1,7 @@
 <!--// $Id$ //-->
 <script type="text/javascript" src="img/netnodehelper.js"></script>
-<FORM NAME="editnode" ID="editnode" METHOD="POST" ACTION="?m=nodeedit&id={$nodeinfo.id}">
+<script type="text/javascript" src="https://maps.google.com/maps/api/js?v=3&sensor=false"></script>
+<FORM NAME="editnode" ID="editnode" METHOD="POST" ACTION="?m=nodeedit&amp;id={$nodeinfo.id}">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT TYPE="hidden" NAME="nodeedit[id]" VALUE="{$nodeinfo.id}">
 <TABLE class="lmsbox">
@@ -10,7 +11,7 @@
 			<IMG SRC="img/node.gif" ALT="">
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodeedit[name]" VALUE="{$nodeinfo.name}" MAXLENGTH="32" size="30" {tip text="Enter node name" trigger="name" bold=1}>
+			<INPUT TYPE="TEXT" NAME="nodeedit[name]" VALUE="{$nodeinfo.name}" MAXLENGTH="32" size="30" required {tip text="Enter node name" trigger="name" bold=1}>
 			<span class="bold">({$nodeinfo.id|string_format:"%04d"})</span>
 		</TD>
 	</TR>
@@ -33,6 +34,7 @@
 				<OPTION VALUE="{$net.id}" {if $net.id == $nodeinfo.netid} selected{/if}{if $net.disabled == 1} class="alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</OPTION>
 				{/foreach}
 			</SELECT>
+			<label><input type="checkbox" name="nodeedit[wholenetwork]" VALUE="1" onchange="change_wholenetwork()"{if $nodeinfo.wholenetwork} checked{/if}>&nbsp;{trans("the whole network")}</label>
 		</TD>
 	</TR>
 	<TR>
@@ -40,9 +42,10 @@
 			<IMG SRC="img/ip.gif" ALT="{trans("IP address:")}">
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodeeditipaddr" VALUE="{$nodeinfo.ip}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddr, document.editnode.nodeeditnetid, {$nodeinfo.netid});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
+			<INPUT TYPE="TEXT" NAME="nodeeditipaddr" VALUE="{$nodeinfo.ip}" required {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddr, document.editnode.nodeeditnetid, {$nodeinfo.netid});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
+	{if ConfigHelper::checkValue(ConfigHelper::checkConfig('phpui.public_ip', 'true'))}
 	<TR>
 		<TD style="width: 1%;">
 			<IMG SRC="img/ip_pub.gif" ALT="{trans("Pub. IP address:")}">
@@ -51,6 +54,7 @@
 			<INPUT TYPE="TEXT" NAME="nodeeditipaddrpub" {if $nodeinfo.ip_pub != "0.0.0.0"}VALUE="{$nodeinfo.ip_pub}"{/if} {tip text="Enter IP address (optional)" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddrpub, null, {if $nodeinfo.netpubid}{$nodeinfo.netpubid}{else}0{/if});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
+	{/if}
 	<TR>
 		<TD style="width: 1%;">
 			<IMG SRC="img/mac.gif" ALT="{trans("MAC address:")}">
@@ -59,7 +63,7 @@
 			<TABLE style="width: 100%;" cellpadding="1" cellspacing="0">
 				{foreach from=$nodeinfo.macs item=item key=key}
 				<TR ID="mac{$key}">
-					<TD style="width: 100%;"><INPUT TYPE="TEXT" NAME="nodeedit[macs][{$key}]" VALUE="{$item}" {tip text="Enter MAC address" trigger="mac`$key`"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editnode.elements['nodeedit[macs][{$key}]']);" {tip text="Click to select MAC from the list"}>&raquo;&raquo;&raquo;</A></TD>
+					<TD style="width: 100%;"><INPUT TYPE="TEXT" NAME="nodeedit[macs][{$key}]" VALUE="{$item}" required {tip text="Enter MAC address" trigger="mac`$key`"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editnode.elements['nodeedit[macs][{$key}]']);" {tip text="Click to select MAC from the list"}>&raquo;&raquo;&raquo;</A></TD>
 				</TR>
 				{/foreach}
 			</TABLE>
@@ -81,7 +85,7 @@
 		</TD>
 		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
 			<INPUT TYPE="TEXT" SIZE="40" VALUE="{$nodeinfo.location}" id="location" NAME="nodeedit[location]"  {tip text="Enter location (optional)" trigger="location"}>
-			<A href="javascript: void(0);" onclick="if (check_teryt()) return locationchoosewin('nodeedit', 'editnode', document.forms['editnode'].elements['nodeedit[location_city]'].value,  document.forms['editnode'].elements['nodeedit[location_street]'].value)" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</A>
+			<A href="javascript: void(0);" onclick="if (check_teryt()) return locationchoosewin('nodeedit', 'editnode', document.forms['editnode'].elements['nodeedit[location_city]'].value,  document.forms['editnode'].elements['nodeedit[location_street]'].value, {ConfigHelper::getConfig('phpui.default_teryt_city')})" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</A>
 			<BR>
 			<INPUT type="hidden" name="nodeedit[location_city]" value="{$nodeinfo.location_city}">
 			<INPUT type="hidden" name="nodeedit[location_street]" value="{$nodeinfo.location_street}">
@@ -96,6 +100,7 @@
 			<IMG SRC="img/netdev.gif" ALT="{trans("Net devices:")}">
 		</TD>
 		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
+                        <a href="javascript: void(0);" onclick="return netDevChooseWin(document.editnode.elements['nodeedit[netdev]']);" {tip trigger="netdev" text="Search device"}>&raquo;&raquo;&raquo;</A>
 			<SELECT SIZE="1" NAME="nodeedit[netdev]" id="netdev" {tip text="Select net device from list" trigger="netdev"} onchange="change_netdevice(this.options[this.selectedIndex].value);" style="max-width:250px;">
 				<OPTION VALUE="0" {if ! $nodeinfo.netdev}SELECTED{/if}>- {trans("no device")} -</OPTION>
 				{section name="netdev" loop=$netdevices}
@@ -151,17 +156,8 @@
 		<TD style="width: 1%;">
 			<IMG SRC="img/customer.gif" ALT="{trans("Customer:")}">
 		</TD>
-		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
-			{if $customers}
-			<SELECT SIZE="1" NAME="nodeedit[customerid]" {tip text="Assign node to customer"} style="max-width:160px;" onChange="document.editnode.elements['nodeedit[ownerid]'].value=this.value">
-				{foreach from=$customers item=c}
-				<OPTION VALUE="{$c.id}"{if $nodeinfo.ownerid == $c.id} SELECTED{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
-				{/foreach}
-			</SELECT>
-			{trans("or Customer ID:")}
-			{/if}
-			<INPUT TYPE="TEXT" NAME="nodeedit[ownerid]" VALUE="{$nodeinfo.ownerid}" SIZE="5"{if $customers} onChange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID" trigger="ownerid"}>
-			<A href="javascript: void(0);" onClick="return customerchoosewin(document.editnode.elements['nodeedit[ownerid]']);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+		<TD style="width: 99%;" class="nobr" colspan="2">
+			{customerlist form="editnode" customers=$customers selected=$nodeinfo.ownerid selectname="nodeedit[customerid]" inputname="nodeedit[ownerid]" firstoption="" selecttip="Assign node to customer"}
 		</TD>
 	</TR>
 	<TR>
@@ -176,10 +172,10 @@
 		<TD style="width: 1%;">
 			<IMG SRC="img/netdev.gif" ALT="">
 		</TD>
-		<TD style="width: 98%; white-space: nowrap;" COLSPAN="2">
-			<label for="pppoe">{trans("PPPoE Client")}</label><INPUT TYPE="checkbox" NAME="nodeauthtype[pppoe]" value="1" id="pppoe" {if $nodeauthtype.pppoe}checked="checked"{/if}{tip text="Enable/disable PPPoE Server Client" trigger="pppoe"}>&nbsp;
-			<label for="dhcp">{trans("DHCP Client")}</label><INPUT TYPE="checkbox" NAME="nodeauthtype[dhcp]" value="2" id="dhcp" {if $nodeauthtype.dhcp}checked="checked"{/if}{tip text="Enable/disable DHCP Server Client" trigger="dhcp"}>&nbsp;
-			<label for="eap">{trans("EAP Client")}</label><INPUT TYPE="checkbox" NAME="nodeauthtype[eap]" value="4" id="eap" {if $nodeauthtype.eap}checked="checked"{/if}{tip text="Enable/disable EAP Server Client" trigger="eap"}>
+		<TD style="width: 98%;" class="nobr" COLSPAN="2">
+			{foreach $_SESSIONTYPES as $idx => $sessiontype}
+			<label>{$sessiontype.label} <INPUT TYPE="checkbox" NAME="nodeedit[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}"{tip text="`$sessiontype.tip`" trigger="authtype`$idx`"}{if ($nodeinfo.authtype & $idx) == $idx} checked{/if}></label>&nbsp;
+			{/foreach}
 		</TD>
 		</TR>
 	</TR>
@@ -187,7 +183,15 @@
 				</TD>
 				<TD style="width: 50%; vertical-align: top;">
 					<TABLE style="width: 100%;" CELLPADDING="3">
-	<TR>
+	<tr>
+            <td width="1%">
+                <img src="img/network.gif" alt="">
+            </td>
+            <td colspan="2" width="99%">
+                <a href="javascript:set_lat_lon()" accesskey="s">{trans("Determine GPS coordinates automatically")}</a>
+            </td>
+        </tr>
+        <TR>
 		<TD style="width: 1%;">
 			<IMG SRC="img/home.gif" ALT="{trans("GPS coordinates:")}">
 		</TD>
@@ -267,7 +271,7 @@
 	<TR>
 		<TD style="width: 100%; text-align: right;" COLSPAN="3">
 			<A HREF="javascript:document.editnode.submit();" ACCESSKEY="s">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
-			<A HREF="?m=nodeinfo&id={$nodeinfo.id}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
+			<A HREF="?m=nodeinfo&amp;id={$nodeinfo.id}">{trans("Cancel")} <IMG SRC="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
     </TBODY>
@@ -277,23 +281,15 @@
 <!--
 	document.forms['editnode'].elements['nodeedit[name]'].focus();
 
-	function GenPasswd()
-	{
+	function GenPasswd() {
 		if(! confirm('{trans("Are you sure, you want to generate new password?")}'))
 			return;
 
-		var passwd = new Array();
-		var items = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		var length = {ConfigHelper::getConfig('phpui.nodepassword_length', '16')};
 		if (length > 32) length = 32;
 
-		for (var i=0; i<length; i++)
-		{
-			n = Math.floor(Math.random() * items.length);
-			passwd[i] = items.substring(n, n+1);
-		}
-
-		document.forms['editnode'].elements['nodeedit[passwd]'].value = passwd.join("");
+		document.forms['editnode'].elements['nodeedit[passwd]'].value =
+			generate_random_string(length, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
 	}
 
 	function newmac()
@@ -306,17 +302,13 @@
 		var newcell = newrow.insertCell(0);
 		newcell.style.width = '100%';
 		newcell.innerHTML = '<INPUT TYPE="TEXT" NAME="nodeedit[macs][' + nr + ']" VALUE=""'
-			+ ' onmouseover="popup(\'{trans("Enter MAC address")}\')" onmouseout="pophide()">'
+			+ ' title="{trans("Enter MAC address")}">'
 			+ '<a href="javascript: void(0);" onClick="return macchoosewin(document.editnode.elements[\'nodeedit[macs][' + nr + ']\']);"'
-			+ ' onmouseover="popup(\'{trans("Click to select MAC from the list")}\')" onmouseout="pophide()">&nbsp;&raquo;&raquo;&raquo;</A>';
+			+ ' title="{trans("Click to select MAC from the list")}">&nbsp;&raquo;&raquo;&raquo;</A>';
+		$(newcell).children("[title]").tooltip({
+			position: { my: "left top" }
+		});
 		macscountelem.value = parseInt(nr) + 1;
-	}
-
-	function reset_customer()
-	{
-		var val;
-		if (val = document.forms['editnode'].elements['nodeedit[ownerid]'].value)
-			document.forms['editnode'].elements['nodeedit[customerid]'].value = val;
 	}
 
 	function change_netdevice(id) {
@@ -328,6 +320,15 @@
 			xajax_getRadioSectors(id, xjx.$('linktechnology').value);
 		}
 	}
+
+	function change_wholenetwork() {
+		var wholenetwork = document.forms['editnode'].elements['nodeedit[wholenetwork]'];
+		var display = wholenetwork.checked ? 'none' : 'table-row';
+
+		document.getElementsByName("nodeeditipaddr")[0].parentNode.parentNode.style.display = display;
+		document.getElementsByName("nodeeditipaddrpub")[0].parentNode.parentNode.style.display = display;
+	}
+	change_wholenetwork();
 
 	function change_linktype(linktype) {
 		linktype = parseInt(linktype);
@@ -405,6 +406,17 @@
 	toggle_visual_editor('info');
 	{/if}
 	setNNProject();
+
+    function set_lat_lon(){
+        var loc = document.getElementById('location').value;
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode( { 'address': loc}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                document.getElementById('latitude').value = results[0].geometry.location.lat();
+                document.getElementById('longitude').value = results[0].geometry.location.lng();
+            }
+        });
+    }
 //-->
 </SCRIPT>
 

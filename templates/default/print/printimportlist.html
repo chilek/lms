@@ -49,10 +49,8 @@
 	{assign var=total value=$total+$importlist[importlist].value}
 	{sectionelse}
 	<TR>
-		<TD ALIGN="center" WIDTH="100%" COLSPAN="4">
-			<P>&nbsp;</P>
-			<P><B>{trans("No such cash operations.")}</B></P>
-			<P>&nbsp;</P>
+		<TD COLSPAN="4" class="empty-table">
+			<p>{trans("No such cash operations.")}</p>
 		</TD>
 	</TR>
 	{/section}

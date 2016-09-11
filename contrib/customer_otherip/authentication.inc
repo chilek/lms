@@ -30,8 +30,8 @@ function GetCustomerIDByPhoneAndPIN($phone, $pin)
 	if(!preg_match('/^[0-9]+$/', $pin))
 		return NULL;
 	return $DB->GetOne('SELECT id FROM customers, customercontacts 
-		    WHERE customerid = customers.id AND pin=? AND phone=? LIMIT 1', 
-		    array($pin, $phone));
+		    WHERE customerid = customers.id AND pin=? AND contact=? AND customercontacts.type & ? > 0 LIMIT 1', 
+		    array($pin, $phone, (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE)));
 }
 
 function GetCustomerIDByIDAndPIN($id, $pin)

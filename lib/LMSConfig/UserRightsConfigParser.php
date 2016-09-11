@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,13 +28,14 @@
  * UserRightsConfigParser
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
+ * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 class UserRightsConfigParser implements ConfigParserInterface
 {
     const NAME = 'USER_RIGHTS_CONFIG_PARSER';
     
     /**
-     * Converts user rights mask into it's object representation
+     * Converts user rights array into it's object representation
      * 
      * @param array $raw_config Raw config
      * @param array $options Associative array of options
@@ -42,47 +43,25 @@ class UserRightsConfigParser implements ConfigParserInterface
      */
     public function objectify(array $raw_config = array(), array $options = array())
     {
-        if (!isset($options['access_table'])) {
-            throw new Exception('Access table not provided. Cannot find user rights config!');
-        }
-        
         $config = new ConfigContainer();
-        
-        $access_table = $options['access_table'];
-        
-        $mask = $raw_config[0];
-        
-        $len = strlen($mask);
-        $bin = '';
-        $result = array();
 
-        for ($cnt = $len; $cnt > 0; $cnt--) {
-            $bin = sprintf('%04b', hexdec($mask[$cnt - 1])) . $bin;
-        }
+        $rights = $raw_config[0];
 
-        $len = strlen($bin);
-        for ($cnt = $len - 1; $cnt >= 0; $cnt--) {
-            if ($bin[$cnt] == '1') {
-                $result[] = $len - $cnt - 1;
-            }
-        }
-        
+        $access = AccessRights::getInstance();
         $variables = array();
-        
-        foreach ($result as $level)
-        {
-            if ($level === 0) {
+
+        foreach ($rights as $right) {
+            if ($right === 'full_access') {
                 $variables[] = new ConfigVariable('superuser', true);
             }
-            if (isset($access_table[$level]['privilege'])) {
-                $variables[] = new ConfigVariable($access_table[$level]['privilege'], true);
-            }
+            if ($access->checkPrivilege($right))
+                $variables[] = new ConfigVariable($right, true);
         }
-        
+
         $section = new ConfigSection('privileges');
         $section->addVariables($variables);
         $config->addSection($section);
-        
+
         return $config;
     }
 }

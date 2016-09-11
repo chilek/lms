@@ -3,7 +3,7 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE class="lmsbox">
+<TABLE class="lmsbox">
     <THEAD>
 	<TR>
 		<TD width="1%" NOWRAP><IMG src="img/division.gif" alt=""> <B>{trans("Name:")}</B></TD>
@@ -24,30 +24,28 @@
 	{cycle values="light,lucid" print=false}
 	{section name=list loop=$divisionlist}
 	<TR class="highlight {cycle}{if $divisionlist[list].status} blend{/if}"  >
-		<TD NOWRAP onclick="return self.location.href='?m=divisionedit&id={$divisionlist[list].id}';">
+		<TD NOWRAP onclick="return self.location.href='?m=divisionedit&amp;id={$divisionlist[list].id}';">
 			<IMG src="img/division.gif" alt=""> <B>{$divisionlist[list].shortname}</B>
 		</TD>
-		<TD align="right" NOWRAP onclick="return self.location.href='?m=divisionedit&id={$divisionlist[list].id}';">
+		<TD align="right" NOWRAP onclick="return self.location.href='?m=divisionedit&amp;id={$divisionlist[list].id}';">
 			({$divisionlist[list].id|string_format:"%04d"})
 		</TD>
-		<TD align="left" onclick="return self.location.href='?m=divisionedit&id={$divisionlist[list].id}';">
+		<TD align="left" onclick="return self.location.href='?m=divisionedit&amp;id={$divisionlist[list].id}';">
 			{$divisionlist[list].name}
 		</TD>
-		<TD align="right" onclick="return self.location.href='?m=divisionedit&id={$divisionlist[list].id}';">
+		<TD align="right" onclick="return self.location.href='?m=divisionedit&amp;id={$divisionlist[list].id}';">
 			{$divisionlist[list].cnt|default:0}
 		</TD>
 		<TD align="right" NOWRAP>
-			<A href="?m=divisionedit&id={$divisionlist[list].id}&changestatus=1"><IMG src="img/wait.gif" alt="[ {if $divisionlist[list].status}{trans("Unlock")}{else}{trans("Lock")}{/if} ]" title="[ {if $divisionlist[list].status}{trans("Unlock")}{else}{trans("Lock")}{/if} ]"></A>
-			<A href="?m=divisiondel&id={$divisionlist[list].id}" OnClick="return confirmLink(this, '{t a=$divisionlist[list].name}Are you sure, you want to delete division \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=divisionedit&id={$divisionlist[list].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A href="?m=divisionedit&amp;id={$divisionlist[list].id}&amp;changestatus=1"><IMG src="img/wait.gif" alt="[ {if $divisionlist[list].status}{trans("Unlock")}{else}{trans("Lock")}{/if} ]" title="[ {if $divisionlist[list].status}{trans("Unlock")}{else}{trans("Lock")}{/if} ]"></A>
+			<A href="?m=divisiondel&amp;id={$divisionlist[list].id}" OnClick="return confirmLink(this, '{t a=$divisionlist[list].name}Are you sure, you want to delete division \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A href="?m=divisionedit&amp;id={$divisionlist[list].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD colspan="5" align="center">
-			<p>&nbsp;</p>
-			<p><B>{trans("No such divisions in database.")}</B></p>
-			<p>&nbsp;</p>
+		<TD colspan="5" class="empty-table">
+			<p>{trans("No such divisions in database.")}</p>
 		</TD>
 	</TR>
 	{/section}
@@ -66,5 +64,5 @@
 		</TD>
 	</TR>
     </TFOOT>
-</TABLE></P>
+</TABLE>
 {/block}

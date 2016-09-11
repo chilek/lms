@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -21,12 +21,12 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id: useraccess.php,v 1.0 2012/09/20 06:24:16 sylwek Exp $
+ *  $Id$
  */
 
 
 $LMS->UserAccess(intval($_GET['id']),intval($_GET['access']));
 
-header('Location: ?'.$SESSION->get('backto'));
+$SESSION->redirect('?' . $SESSION->get('backto'));
 
 ?>

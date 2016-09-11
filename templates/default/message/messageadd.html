@@ -22,52 +22,75 @@
 			return 0;
 	}
 
-	function typesel(elem)
-	{
+	function typesel(elem) {
 		if(elem == 'typesms' || elem == 'typeanysms' || elem == 'typewww' || elem == 'typeuserpanel' || elem == 'typeuserpanelurgent') {
-			document.getElementById('mailfrom').style.display = 'none';
-			document.getElementById('mailsender').style.display = 'none';
-			document.getElementById('attachment').style.display = 'none';
+			xjx.$('mailfrom').style.display = 'none';
+			xjx.$('mailsender').style.display = 'none';
+			xjx.$('attachment').style.display = 'none';
+			{if $message.emails}
+			xjx.$('customermails').style.display = 'none';
+			{/if}
 			{if !$message.customerid}
-			var users = document.getElementById('users');
+			var users = xjx.$('users');
 			if (elem == 'typeanysms') {
-				document.getElementById('phonenumber').style.display = '';
+				xjx.$('phonenumber').style.display = '';
 				if (users) users.style.display = '';
 			} else {
-				document.getElementById('phonenumber').style.display = 'none';
+				xjx.$('phonenumber').style.display = 'none';
 				if (users) users.style.display = 'none';
 			}
 			{/if}
 			if (elem == 'typewww') {
-				document.getElementById('mailbody').style.display = '';
-				document.getElementById('smsbody').style.display = 'none';
-				document.getElementById('charscount').style.display = 'none';
+				xjx.$('mailbody').style.display = '';
+				xjx.$('smsbody').style.display = 'none';
+				xjx.$('charscount').style.display = 'none';
+				{if $message.phones}
+				xjx.$('customerphones').style.display = 'none';
+				{/if}
 				xajax_getMessageTemplates({$smarty.const.TMPL_WWW});
-			}	else if (elem == 'typeuserpanel') {
-				document.getElementById('mailbody').style.display = '';
-				document.getElementById('smsbody').style.display = 'none';
-				document.getElementById('charscount').style.display = 'none';
+			} else if (elem == 'typeuserpanel') {
+				xjx.$('mailbody').style.display = '';
+				xjx.$('smsbody').style.display = 'none';
+				xjx.$('charscount').style.display = 'none';
+				{if $message.phones}
+				xjx.$('customerphones').style.display = 'none';
+				{/if}
 				xajax_getMessageTemplates({$smarty.const.TMPL_USERPANEL});
-			}	else if (elem == 'typeuserpanelurgent') {
-				document.getElementById('mailbody').style.display = '';
-				document.getElementById('smsbody').style.display = 'none';
-				document.getElementById('charscount').style.display = 'none';
+			} else if (elem == 'typeuserpanelurgent') {
+				xjx.$('mailbody').style.display = '';
+				xjx.$('smsbody').style.display = 'none';
+				xjx.$('charscount').style.display = 'none';
+				{if $message.phones}
+				xjx.$('customerphones').style.display = 'none';
+				{/if}
 				xajax_getMessageTemplates({$smarty.const.TMPL_USERPANEL_URGENT});
-			}	else {
-				document.getElementById('mailbody').style.display = 'none';
-				document.getElementById('smsbody').style.display = '';
-				document.getElementById('charscount').style.display = '';
+			} else {
+				xjx.$('mailbody').style.display = 'none';
+				xjx.$('smsbody').style.display = '';
+				xjx.$('charscount').style.display = '';
+				{if $message.phones}
+				if (elem == 'typeanysms')
+					xjx.$('customerphones').style.display = 'none';
+				else
+					xjx.$('customerphones').style.display = '';
+				{/if}
 				xajax_getMessageTemplates({$smarty.const.TMPL_SMS});
 			}
 		} else {
-			document.getElementById('mailbody').style.display = '';
-			document.getElementById('mailfrom').style.display = '';
-			document.getElementById('mailsender').style.display = '';
-			document.getElementById('attachment').style.display = '';
-			if (document.getElementById('phonenumber') != undefined)
-				document.getElementById('phonenumber').style.display = 'none';
-			document.getElementById('smsbody').style.display = 'none';
-			document.getElementById('charscount').style.display = 'none';
+			xjx.$('mailbody').style.display = '';
+			xjx.$('mailfrom').style.display = '';
+			xjx.$('mailsender').style.display = '';
+			xjx.$('attachment').style.display = '';
+			{if $message.emails}
+			xjx.$('customermails').style.display = '';
+			{/if}
+			{if $message.phones}
+			xjx.$('customerphones').style.display = 'none';
+			{/if}
+			if (xjx.$('phonenumber') != undefined)
+				xjx.$('phonenumber').style.display = 'none';
+			xjx.$('smsbody').style.display = 'none';
+			xjx.$('charscount').style.display = 'none';
 			xajax_getMessageTemplates({$smarty.const.TMPL_MAIL});
 		}
 		xjx.$('msgtmplid').disabled = true;
@@ -94,7 +117,8 @@
 
 	function change_message_template(tmplid) {
 		if (tmplid)
-			xajax_getMessageTemplate(tmplid, 'subject', xjx.$('typemail').checked || xjx.$('typewww').checked || xjx.$('typeuserpanel').checked || xjx.$('typeuserpanelurgent').checked ? 'mailmessage' : 'smstext');
+			xajax_getMessageTemplate(tmplid, 'subject', {if $message.emails || !isset($message.customerid)}xjx.$('typemail').checked || {/if}
+				xjx.$('typewww').checked || xjx.$('typeuserpanel').checked || xjx.$('typeuserpanelurgent').checked ? 'mailmessage' : 'smstext');
 	}
 
 	function messageTemplateReceived(subjectelem, subject, messageelem, message) {
@@ -137,21 +161,20 @@
 					<TD style="width: 1%;" rowspan="2">
 						<SELECT name="message[group]" {tip trigger="group" text="Select recipients group"}>
 							<option value="0"{if !$message.group} selected{/if}>{trans("- all customers -")}</option>
-							<option value="3"{if $message.group == "3"} selected{/if}>{trans("connected<!plural>")}</option>
-							<option value="2"{if $message.group == "2"} selected{/if}>{trans("awaiting")}</option>
-							<option value="1"{if $message.group == "1"} selected{/if}>{trans("interested<!plural>")}</option>
-							<option value="4"{if $message.group == "4"} selected{/if}>{trans("deleted<!plural>")}</option>
-							<option value="5"{if $message.group == "5"} selected{/if}>{trans("disconnected<!plural>")}</option>
-							<option value="6"{if $message.group == "6"} selected{/if}>{trans("in debt")}</option>
-							<option value="11"{if $message.group == "11"} selected{/if}>{trans("in debt above 100%")}</option>
-							<option value="12"{if $message.group == "12"} selected{/if}>{trans("in debt above 200%")}</option>
-							<option value="7"{if $message.group == "7"} selected{/if}>{trans("not in debt")}</option>
+							{foreach $_CSTATUSES as $statusidx => $status}
+							<option value="{$statusidx}"{if $message.group == $statusidx} selected{/if}>{$status.plurallabel}</option>
+							{/foreach}
+							<option value="50"{if $message.group == "50"} selected{/if}>{trans("deleted<!plural>")}</option>
+							<option value="51"{if $message.group == "51"} selected{/if}>{trans("with disconnected nodes")}</option>
+							<option value="52"{if $message.group == "52"} selected{/if}>{trans("in debt")}</option>
+							<option value="57"{if $message.group == "57"} selected{/if}>{trans("in debt above 100%")}</option>
+							<option value="58"{if $message.group == "58"} selected{/if}>{trans("in debt above 200%")}</option>
+							<option value="53"{if $message.group == "53"} selected{/if}>{trans("not in debt")}</option>
 						</SELECT>
 					</TD>
 					<TD style="width: 1%;" class="nobr">{trans("Group:")}</TD>
-					<TD style="width: 1%;">
+					<TD style="width: 1%;" class="multiselect">
 						<SELECT name="message[customergroup][]" multiple id="customergroups" {tip trigger="customergroup" text="Select customers group"}>
-							{*<option value="0">{trans("- all groups -")}</option>*}
 							{section name="customergroups" loop=$customergroups}
 							<option value="{$customergroups[customergroups].id}"{if $message.customergroup == $customergroups[customergroups].id} selected{/if}>{$customergroups[customergroups].name|truncate:"30":"...":true}</option>
 						{/section}
@@ -214,8 +237,12 @@
 			{trans("Type:")}
 		</TD>
 		<TD style="width: 98%;">
+			{if $message.emails || !isset($message.customerid)}
 			<INPUT type="radio" name="message[type]" id="typemail" value="{$smarty.const.MSG_MAIL}"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typemail"><span class="bold">{trans("email")}</span></label>
+			{/if}
+			{if $message.phones || !isset($message.customerid)}
 			<INPUT type="radio" name="message[type]" id="typesms" value="{$smarty.const.MSG_SMS}"{if $message.type == $smarty.const.MSG_SMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typesms"><span class="bold">{trans("sms")}</span></label>
+			{/if}
 			{if !$message.customerid}
 			<INPUT type="radio" name="message[type]" id="typeanysms" value="{$smarty.const.MSG_ANYSMS}"{if $message.type == $smarty.const.MSG_ANYSMS} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeanysms"><span class="bold">{trans("any sms")}</span></label>
 			{/if}
@@ -224,6 +251,40 @@
 			<INPUT type="radio" name="message[type]" id="typeuserpanelurgent" value="{$smarty.const.MSG_USERPANEL_URGENT}"{if $message.type == $smarty.const.MSG_USERPANEL_URGENT} checked{/if} {tip trigger="type" text="Select message type"} onclick="typesel(this.id)"><label for="typeuserpanelurgent"><span class="bold">{trans("userpanel urgent")}</span></label>
 		</TD>
 	</TR>
+	{if $message.emails}
+	<TR id="customermails"{if $message.type != $smarty.const.MSG_MAIL} style="display: none;"{/if}>
+		<TD>
+			<IMG src="img/email.gif" alt=""> 
+		</TD>
+		<TD class="bold nobr">
+			{trans("E-mail:")}
+		</TD>
+		<TD>
+			{foreach $message.emails as $email}
+			<label><INPUT type="checkbox" name="message[customermails][{$email@index}]" value="{$email.contact}"{if $message.customermails[$email@index]} checked{/if}>
+			{$email.contact}{if $email.name} ({$email.name}){/if}</label>
+			{if !$email@last}<br>{/if}
+			{/foreach}
+		</TD>
+	</TR>
+	{/if}
+	{if $message.phones}
+	<TR id="customerphones"{if $message.type != $smarty.const.MSG_SMS} style="display: none;"{/if}>
+		<TD>
+			<IMG src="img/phone.gif" alt=""> 
+		</TD>
+		<TD class="bold nobr">
+			{trans("Phone:")}
+		</TD>
+		<TD>
+			{foreach $message.phones as $phone}
+			<label><INPUT type="checkbox" name="message[customerphones][{$phone@index}]" value="{$phone.contact}"{if $message.customerphones[$phone@index]} checked{/if}>
+			{$phone.contact}{if $phone.name} ({$phone.name}){/if}</label>
+			{if !$phone@last}<br>{/if}
+			{/foreach}
+		</TD>
+	</TR>
+	{/if}
 	<TR ID="mailsender"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
 		<TD style="width: 1%;">
 			<IMG src="img/email.gif" alt=""> 
@@ -232,7 +293,10 @@
 			{trans("Sender E-mail:")}
 		</TD>
 		<TD style="width: 98%;">
-			<INPUT type="text" name="message[sender]" size="40" value="{if $message.sender}{$message.sender}{elseif $userinfo.email}{$userinfo.email}{/if}" {tip trigger="sender" text="Enter sender e-mail address"}>
+			<INPUT type="email" name="message[sender]" size="40" value="{if $message.sender}{$message.sender}{elseif $userinfo.email}{$userinfo.email}{/if}" {tip trigger="sender" text="Enter sender e-mail address"}>
+			<label {tip trigger="copytosender" text="Check if you want do send message copy to sender"}>
+			<input type="checkbox" name="message[copytosender]"{if ConfigHelper::checkConfig('phpui.send_message_to_sender_checkbox')} checked{/if}>
+			{trans("send copy to sender")}</label>
 		</TD>
 	</TR>
 	<TR ID="mailfrom"{if $message.type > $smarty.const.MSG_MAIL} style="display: none;"{/if}>
@@ -260,6 +324,7 @@
 			{section name="users" loop=$users}
 				<OPTION value="{$users[users].phone}">{$users[users].name|truncate:30:"...":true}</OPTION>
 			{/section}
+			</select>
 		</TD>
 	</TR>
 	{/if}
@@ -271,7 +336,7 @@
 			{trans("Phone number:")}
 		</TD>
 		<TD style="width: 98%;">
-			<INPUT type="text" name="message[phonenumber]" size="60" value="{$message.phonenumber}" {tip trigger="phonenumber" text="Enter phone numbers separated by commas"}>
+			<INPUT type="tel" name="message[phonenumber]" size="60" value="{$message.phonenumber}" {tip trigger="phonenumber" text="Enter phone numbers separated by commas"}>
 		</TD>
 	</TR>
 {/if}
@@ -302,7 +367,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR ID="mailbody"{if $message.type > $smarty.const.MSG_MAIL && $message.type < $smarty.const.MSG_USERPANEL_URGENT} style="display: none"{/if}>
+	<TR ID="mailbody"{if $message.type > $smarty.const.MSG_MAIL && $message.type < $smarty.const.MSG_WWW} style="display: none"{/if}>
 		<TD style="width: 1%;">
 			<IMG src="img/edit.gif" alt="">
 		</TD>
@@ -317,7 +382,7 @@
 						<label for="mailmessage_label">{trans("visual editor")}</label>
 					</TD></TR>
 					<TR><TD>
-						<TEXTAREA name="message[mailbody]" id="mailmessage" cols="80" rows="20" {tip text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="body"}>{$message.body}</TEXTAREA>
+						<TEXTAREA name="message[mailbody]" id="mailmessage" cols="80" rows="20" {tip text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="mailbody"}>{$message.body}</TEXTAREA>
 					</TD></TR>
 					<TR><TD>
 					</TD></TR>
@@ -333,7 +398,7 @@
 			{trans("Message body:")}
 		</TD>
 		<TD style="width: 98%;">
-			<TEXTAREA name="message[smsbody]" id="smstext" cols="60" rows="5" onkeydown="countChars(this)" onkeyup="countChars(this)" {tip text="Enter message body" trigger="body"}>{$message.body}</TEXTAREA>
+			<TEXTAREA name="message[smsbody]" id="smstext" cols="60" rows="5" onkeydown="countChars(this)" onkeyup="countChars(this)" {tip text="Enter message body" trigger="smsbody"}>{$message.body}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
@@ -365,7 +430,7 @@
 			{trans("Attachment:")}
 		</TD>
 		<TD style="width: 98%;">
-			<INPUT name="file" type="file" size="60" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
+			<INPUT name="file[]" type="file" size="60" multiple {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
 		</TD>
 	</TR>
 	<TR>

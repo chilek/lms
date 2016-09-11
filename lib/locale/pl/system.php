@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -145,31 +145,37 @@ function check_icn($icn)
 	return preg_match('/^[A-Z]{2}[0-9]{7}$/i', $icn) || preg_match('/^[A-Z]{3}[0-9]{6}$/i', $icn);
 }
 
-function bankaccount($id, $account=NULL)
-{
-	global $DB;
-
-	if($account === NULL)
-		$account = $DB->GetOne('SELECT account FROM divisions
-			WHERE id IN (SELECT divisionid
-                    		FROM customers WHERE id = ?)', array($id));	
-
-	$acclen = strlen($account);
-	
-	if(!empty($account) && $acclen < 21 && $acclen >= 8)
-	{
-		$cc = '2521';	// Kod kraju - Polska
-		$format = '%0'.(24 - $acclen) .'d';
-		$account .= sprintf($format, $id);
-		return sprintf('%02d', 98-bcmod($account.$cc.'00', 97)).$account;
-	} 
-
-	return $account;
+function bankaccount($id, $account = NULL) {
+	return iban_account('PL', 26, $id, $account);
 }
 
-function format_bankaccount($account)
-{
+function check_bankaccount($account) {
+	return iban_check_account('PL', 26, $account);
+}
+
+function format_bankaccount($account) {
 	return preg_replace('/(..)(....)(....)(....)(....)(....)(....)/i', '${1} ${2} ${3} ${4} ${5} ${6} ${7}', $account);
+}
+
+function getHolidays($year = null) {
+	if(!$year) $year = date("Y");
+	$easterDay = easter_date($year);
+
+	$days[mktime(0,0,0,1,1,$year)] = 'Nowy Rok';
+	$days[mktime(0,0,0,1,6,$year)] = 'Objawienie Pańskie (Trzech Króli)';
+	$days[$easterDay] = 'Pierwszy dzień Wielkiej Nocy (Niedziela Wielkanocna)';
+	$days[strtotime('+1 day', $easterDay)] = 'Drugi dzień Wielkiej Nocy (Poniedziałek Wielkanocny)';
+	$days[mktime(0,0,0,5,1,$year)] = 'Święto Państwowe (Święto Pracy)';
+	$days[mktime(0,0,0,5,3,$year)] = 'Święto Narodowe Trzeciego Maja (Święto Konstytucji Trzeciego Maja)';
+	$days[strtotime('+49 day', $easterDay)] = 'Zesłanie Ducha Świętego (Zielone Świątki)';
+	$days[strtotime('+60 day', $easterDay)] = 'Ciała i Krwi Pańskiej (Boże Ciało)';
+	$days[mktime(0,0,0,8,15,$year)] = 'Wniebowzięcie Najświętszej Maryi Panny';
+	$days[mktime(0,0,0,11,1,$year)] = 'Wszystkich Świętych (Dzień Zmarłych)';
+	$days[mktime(0,0,0,11,11,$year)] = 'Narodowe Święto Niepodległości (Dzień Niepodległości)';
+	$days[mktime(0,0,0,12,25,$year)] = 'Pierwszy dzień Bożego Narodzenia';
+	$days[mktime(0,0,0,12,26,$year)] = 'Drugi dzień Bożego Narodzenia';
+
+	return $days;
 }
 
 ?>

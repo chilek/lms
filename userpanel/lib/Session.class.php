@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,25 +24,22 @@
  *  $Id$
  */
 
-require_once('authentication.inc'); 
-
 class Session {
+	public $id;
+	private $login;
+	private $passwd;
+	private $ip;
+	private $db;
+	public $islogged = false;
+	public $error;
 
-	var $id;
-	var $login;
-	var $passwd;
-	var $ip;
-	var $islogged = FALSE;
-	var $error;
-	var $_version = '1.11-git';
-	var $_revision = '$Revision$';
+	public $_content = array();     // session content array
 
-	function Session(&$DB, $timeout = 600) {
+	public function __construct(&$DB, $timeout = 600) {
 		global $LMS;
 
 		session_start();
-		$this->DB = &$DB;
-		$this->_revision = preg_replace('/^.Revision: ([0-9.]+).*/i', '\1', $this->_revision);
+		$this->db = &$DB;
 		$this->ip = str_replace('::ffff:', '', $_SERVER['REMOTE_ADDR']);
 
 		if (isset($_GET['override']))
@@ -59,15 +56,15 @@ class Session {
 				case 1:
 					if (!check_email($remindform['email']))
 						return;
-					$join = '';
-					$where = ' AND email = ?';
-					$params[] = $remindform['email'];
+					$join = 'JOIN customercontacts cc ON cc.customerid = c.id';
+					$where = ' AND contact = ? AND cc.type & ? > 0';
+					$params = array_merge($params, array($remindform['email'],(CONTACT_EMAIL|CONTACT_INVOICES|CONTACT_NOTIFICATIONS)));
 					break;
 				case 2:
 					if (!preg_match('/^[0-9]+$/', $remindform['phone']))
 						return;
 					$join = 'JOIN customercontacts cc ON cc.customerid = c.id';
-					$where = ' AND phone = ? AND cc.type & ? = ?';
+					$where = ' AND contact = ? AND cc.type & ? = ?';
 					$params = array_merge($params,
 						array(preg_replace('/ -/', '', $remindform['phone']),
 							CONTACT_MOBILE, CONTACT_MOBILE));
@@ -75,7 +72,7 @@ class Session {
 				default:
 					return;
 			}
-			$customer = $this->DB->GetRow("SELECT c.id, pin FROM customers c $join WHERE (REPLACE(ten, '-', '') = ? OR ssn = ?)"
+			$customer = $this->db->GetRow("SELECT c.id, pin FROM customers c $join WHERE (REPLACE(ten, '-', '') = ? OR ssn = ?)"
 				. $where, $params);
 			if (!$customer) {
 				$this->error = trans('Credential reminder couldn\'t be sent!');
@@ -112,7 +109,7 @@ class Session {
 		$authdata = $this->VerifyPassword();
 
 		if ($authdata != NULL) {
-			$authinfo = GetCustomerAuthInfo($authdata['id']);
+			$authinfo = $this->GetCustomerAuthInfo($authdata['id']);
 			if ($authinfo != NULL && isset($authinfo['enabled'])
 				&& $authinfo['enabled'] == 0
 				&& time() - $authinfo['failedlogindate'] < 600)
@@ -129,7 +126,7 @@ class Session {
 
 			if ($this->id)
 			{
-				$authinfo = GetCustomerAuthInfo($this->id);
+				$authinfo = $this->GetCustomerAuthInfo($this->id);
 				if ($authinfo == NULL || $authinfo['failedlogindate'] == NULL)
 				{
 					$authinfo['failedlogindate'] = 0;
@@ -139,7 +136,7 @@ class Session {
 				$authinfo['lastlogindate'] = time();
 				$authinfo['lastloginip'] = $this->ip;
 				$authinfo['enabled'] = 3;
-				SetCustomerAuthInfo($authinfo);
+				$this->SetCustomerAuthInfo($authinfo);
 			}
 		} else {
 			$this->islogged = FALSE;
@@ -149,7 +146,7 @@ class Session {
 
 				if ($authdata != NULL && $authdata['passwd'] == NULL)
 				{
-					$authinfo = GetCustomerAuthInfo($authdata['id']);
+					$authinfo = $this->GetCustomerAuthInfo($authdata['id']);
 					if ($authinfo == NULL)
 					{
 						$authinfo['lastlogindate'] = 0;
@@ -168,7 +165,7 @@ class Session {
 					$authinfo['id'] = $authdata['id'];
 					$authinfo['failedlogindate'] = time();
 					$authinfo['failedloginip'] = $this->ip;
-					SetCustomerAuthInfo($authinfo);
+					$this->SetCustomerAuthInfo($authinfo);
 				}
 				
 				$this->error = trans('Access denied!');
@@ -178,55 +175,146 @@ class Session {
 		}
 	}
 
-	function _postinit()
-	{
+	public function _postinit() {
 		return TRUE;
 	}
 
-	function LogOut()
-	{
+	public function LogOut() {
 		if ($this->islogged)
 			session_destroy();
 		unset($this->login);
 		unset($this->password);
 		unset($this->id);
 		unset($_SESSION);
-	}		
-	
-	function TimeOut($timeout = 600)
-	{
-		if( (time()-$_SESSION['session_timestamp']) > $timeout )
-		{
+	}
+
+	public function TimeOut($timeout = 600) {
+		if ((time()-$_SESSION['session_timestamp']) > $timeout) {
 			$this->error = trans('Idle time limit exceeded ($a sec.)', $timeout);
 			return FALSE;
-		}
-		else
-		{
+		} else {
 			$_SESSION['session_timestamp'] = time();
 			return TRUE;
 		}
 	}
-	
-	function VerifyPassword()
+
+	private function GetCustomerIDByPhoneAndPIN()
 	{
-		if(empty($this->login))
-		{
+		if(!preg_match('/^[0-9]+$/', $this->passwd))
+			return null;
+
+		$authinfo['id'] = $this->db->GetOne('SELECT c.id FROM customers c, customercontacts cc
+			WHERE customerid = c.id AND contact = ? AND cc.type < ? AND deleted = 0 LIMIT 1', 
+			array($this->login, CONTACT_EMAIL));
+
+		if (empty($authinfo['id']))
+			return null;
+
+		$authinfo['passwd'] = $this->db->GetOne('SELECT pin FROM customers
+			WHERE pin = ? AND id = ?', array($this->passwd, $authinfo['id']));
+
+		return $authinfo;
+	}
+
+	private function GetCustomerIDByIDAndPIN()
+	{
+		if(!preg_match('/^[0-9]+$/', $this->passwd) || !preg_match('/^[0-9]+$/', $this->login))
+			return null;
+
+		$authinfo['id'] = $this->db->GetOne('SELECT id FROM customers
+			WHERE id = ? AND deleted = 0', array($this->login));
+
+		if (empty($authinfo['id']))
+			return null;
+
+		$authinfo['passwd'] = $this->db->GetOne('SELECT pin FROM customers
+			WHERE pin = ? AND id = ?', array($this->passwd, $this->login));
+
+		return $authinfo;
+	}
+
+	private function GetCustomerIDByDocumentAndPIN()
+	{
+		if(!preg_match('/^[0-9]+$/', $this->passwd))
+			return null;
+
+		$authinfo['id'] = $this->db->GetOne('SELECT c.id FROM customers c
+			JOIN documents d ON d.customerid = c.id
+			WHERE fullnumber = ? AND deleted = 0',
+			array($this->login));
+
+		if (empty($authinfo['id']))
+			return null;
+
+		$authinfo['passwd'] = $this->db->GetOne('SELECT pin FROM customers
+			WHERE pin = ? AND id = ?', array($this->passwd, $authinfo['id']));
+
+		return $authinfo;
+	}
+
+	private function GetCustomerIDByEmailAndPIN()
+	{
+		if (!preg_match('/^[0-9]+$/', $this->passwd))
+			return null;
+
+		$authinfo['id'] = $this->db->GetOne('SELECT c.id FROM customers c, customercontacts cc
+			WHERE cc.customerid = c.id AND contact = ? AND cc.type & ? > 0 AND deleted = 0 LIMIT 1',
+			array($this->login, (CONTACT_EMAIL|CONTACT_INVOICES|CONTACT_NOTIFICATIONS)));
+
+		if (empty($authinfo['id']))
+			return null;
+
+		$authinfo['passwd'] = $this->db->GetOne('SELECT pin FROM customers
+			WHERE pin = ? AND id = ?', array($this->passwd, $authinfo['id']));
+
+		return $authinfo;
+	}
+
+	private function GetCustomerAuthInfo($customerid)
+	{
+		return $this->db->GetRow('SELECT customerid AS id, lastlogindate, lastloginip, failedlogindate, failedloginip, enabled FROM up_customers WHERE customerid=?',
+			array($customerid));
+	}
+
+	private function SetCustomerAuthInfo($authinfo)
+	{
+		$actauthinfo = $this->GetCustomerAuthInfo($authinfo['id']);
+		if ($actauthinfo != null) {
+			$this->db->Execute('UPDATE up_customers SET lastlogindate=?, lastloginip=?, failedlogindate=?, failedloginip=?, enabled=? WHERE customerid=?',
+				array($authinfo['lastlogindate'], $authinfo['lastloginip'], $authinfo['failedlogindate'], $authinfo['failedloginip'],
+				$authinfo['enabled'], $authinfo['id']));
+		} else {
+			$this->db->Execute('INSERT INTO up_customers(customerid, lastlogindate, lastloginip, failedlogindate, failedloginip, enabled) VALUES (?, ?, ?, ?, ?, ?)',
+				array($authinfo['id'], $authinfo['lastlogindate'], $authinfo['lastloginip'],
+				$authinfo['failedlogindate'], $authinfo['failedloginip'], $authinfo['enabled']));
+		}
+	}
+
+	public function VerifyPassword() {
+		if (empty($this->login)) {
 			$this->error = trans('Please login.');
 			return NULL;
 		}
-		
-		// customer authorization ways
-		// $authinfo = GetCustomerIDByPhoneAndPIN($this->login, $this->passwd);
-		// $authinfo = GetCustomerIDByContractAndPIN($this->login, $this->passwd);
 
-		$authinfo = GetCustomerIDByIDAndPIN($this->login, $this->passwd);
-		
-		if($authinfo != NULL && $authinfo['id'] != NULL)
-			return $authinfo;
-		else 
-		{
-			return NULL;
+		switch (ConfigHelper::getConfig('userpanel.auth_type', 1)) {
+			case 1:
+				$authinfo = $this->GetCustomerIDByIDAndPIN();
+				break;
+			case 2:
+				$authinfo = $this->GetCustomerIDByPhoneAndPIN();
+				break;
+			case 3:
+				$authinfo = $this->GetCustomerIDByDocumentAndPIN();
+				break;
+			case 4:
+				$authinfo = $this->GetCustomerIDByEmailAndPIN();
+				break;
 		}
+
+		if (!empty($authinfo) && isset($authinfo['id']))
+			return $authinfo;
+		else
+			return NULL;
 	}
 }
 

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,22 +24,28 @@
  *  $Id$
  */
 
-if(!($ticketid = $DB->GetOne('SELECT ticketid FROM rtnotes WHERE id = ?', array(intval($_GET['id'])))))
-{
+if(!($ticketid = $DB->GetOne('SELECT ticketid FROM rtmessages WHERE id = ? AND type = ?',
+	array($_GET['id'], RTMESSAGE_NOTE))))
 	$SESSION->redirect('?'.$SESSION->get('backto'));
-}
 
 $rights = $LMS->GetUserRightsRT($AUTH->id, 0, $ticketid);
 
-if(($rights & 4) != 4)
-{
+if (($rights & 4) != 4) {
 	$SMARTY->display('noaccess.html');
 	$SESSION->close();
 	die;
 }
 
-$DB->Execute('DELETE FROM rtnotes WHERE id = ?', array(intval($_GET['id'])));
+$msg = intval($_GET['id']);
+if ($DB->GetOne('SELECT MIN(id) FROM rtmessages WHERE ticketid = ?', array($ticketid)) != $msg) {
+	$mail_dir = ConfigHelper::getConfig('rt.mail_dir');
+	if (!empty($mail_dir))
+		rrmdir($mail_dir.sprintf('/%06d/%06d', $ticketid, $msg));
 
-$SESSION->redirect('?m=rtticketview&id='.$ticketid);
+	$DB->Execute('DELETE FROM rtmessages WHERE id = ? AND type = ?',
+		array($msg, RTMESSAGE_NOTE));
+}
+
+$SESSION->redirect('?m=rtticketview&id=' . $ticketid);
 
 ?>

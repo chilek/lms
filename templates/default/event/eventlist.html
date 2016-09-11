@@ -3,40 +3,47 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<P><TABLE class="lmsbox">
+<TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 95%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
     <THEAD>
-	<TR>
-		<TD width="1%" NOWRAP>
-			<IMG src="img/time.gif" alt=""> <B>{trans("Time:")}</B><BR>
-			<IMG src="img/users.gif" alt=""> {trans("Created by:")}
+	<TR CLASS="nobr">
+		<TD class="text-center" style="min-width: 70px;">
+			{trans("Type:")}
 		</TD>
-		<TD width="96%" NOWRAP>
-			<IMG src="img/calendar.gif" alt=""> <B>{trans("Title:")}</B><BR>
-			<IMG src="img/info1.gif" alt=""> {trans("Description:")}
-		</TD>
-		<TD width="1%" NOWRAP>
+		<TD>
+			<IMG src="img/time.gif" alt=""> <span class="bold">{trans("Time:")}</span><BR>
 			<IMG src="img/users.gif" alt=""> {trans("User:")}
 		</TD>
-		<TD width="1%" NOWRAP>
+		<TD>
+			<IMG src="img/calendar.gif" alt=""> <span class="bold">{trans("Title:")}</span><BR>
+			<IMG src="img/info1.gif" alt=""> {trans("Description:")}
+		</TD>
+		<TD>
 			<IMG src="img/customer.gif" alt=""> {trans("Customer:")}
 		</TD>
-		<TD width="1%" NOWRAP></TD>
+		<TD></TD>
 	</TR>
 	<TR>
-		<TD colspan="5" align="center" NOWRAP>
-			<A href="?m=eventlist&day=1&month={if $month==1}12{else}{math equation="x-1" x=$month}{/if}&year={if $month==1}{math equation="x-1" x=$year}{else}{$year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A>
+		<TD colspan="5" class="text-center nobr">
+			<A href="?m=eventlist&amp;day=1&amp;month={if $month==1}12{else}{math equation="x-1" x=$month}{/if}&amp;year={if $month==1}{math equation="x-1" x=$year}{else}{$year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A>
 			{section name=days loop=$days.day}
-				{if !$days.dow[days]}<FONT>{/if}<A href="?m=eventlist&day={$days.day[days]}&month={$month}&year={$year}">&nbsp;{if $days.sel[days]}<B>*{/if}{$days.day[days]|string_format:"%d"}{if $days.sel[days]}*</B>{/if} </A>{if !$days.dow[days]}</FONT>{/if}
+				{if !$days.dow[days]}<span class="light">{/if}<A href="?m=eventlist&amp;day={$days.day[days]}&amp;month={$month}&amp;year={$year}">&nbsp;{if $days.sel[days]}<B>*{/if}{$days.day[days]|string_format:"%d"}{if $days.sel[days]}*</B>{/if} </A>{if !$days.dow[days]}</span>{/if}
 			{/section}
-			<A href="?m=eventlist&day=1&month={if $month==12}1{else}{math equation="x+1" x=$month}{/if}&year={if $month==12}{math equation="x+1" x=$year}{else}{$year}{/if}">&raquo;&raquo;&raquo;&nbsp;</A>
+			<A href="?m=eventlist&amp;day=1&amp;month={if $month==12}1{else}{math equation="x+1" x=$month}{/if}&amp;year={if $month==12}{math equation="x+1" x=$year}{else}{$year}{/if}">&raquo;&raquo;&raquo;&nbsp;</A>
 		</TD>
 	</TR>
 	<TR>
-		<TD colspan="5" NOWRAP>
-			<FORM method="GET" action="?m=eventlist" name="filter">
+		<TD colspan="5" class="nobr">
+			<FORM method="POST" action="?m=eventlist" name="filter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT type="HIDDEN" name="m" value="eventlist">
-				<B>{trans("Filter:")} </B> {trans("User:")}
+				<span class="bold">{trans("Filter:")} </span> {trans("User:")}
 				<SELECT size="1" name="a" OnChange="document.filter.submit();">
 					<OPTION value="0"{if $listdata.userid == ""} SELECTED{/if}>{trans("- all users -")}</OPTION>
 					{section name=userlist loop=$userlist}
@@ -44,12 +51,17 @@
 					{/section}
 				</SELECT>&nbsp;
 				{trans("Customer:")}
+				{if $customers}
 				<SELECT size="1" name="u" OnChange="document.filter.submit();">
 					<OPTION value="0"{if $listdata.customerid == ""} SELECTED{/if}>{trans("- all customers -")}</OPTION>
 					{foreach from=$customerlist item=customer}
 					    <OPTION value="{$customer.id}"{if $customer.id == $listdata.customerid} SELECTED{/if}>{$customer.customername|truncate:40:"...":true}</OPTION>
 					{/foreach}
 				</SELECT>
+                                {else}
+                                <INPUT type="number" min="1" name="u" value="{$listdata.customerid}" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
+                                <a href="javascript:void(0);" onclick="return customerchoosewin(document.filter.u);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</a>
+                                {/if}
 				{trans("Month:")}
 				<SELECT name="month" onchange="document.filter.submit();">{assign var=temp_date value="2000-m-01"}
 					{section name=month loop=13 start=1}
@@ -65,6 +77,25 @@
 					<OPTION value="{$smarty.section.year.index}"{if $smarty.section.year.index==$year} selected{/if}>{$smarty.section.year.index}</option>
 					{/section}
 				</SELECT>
+				{trans("Type:")}
+				<SELECT name="type" onchange="document.filter.submit();">
+					<OPTION value=""{if $listdata.type == ""} selected{/if}>{trans("- all -")}</OPTION>
+					{foreach $_EVENTTYPES as $id => $label}
+					<OPTION value="{$id}"{if $listdata.type == $id} selected{/if}>{$label}</OPTION>
+					{/foreach}
+				</SELECT>
+				{trans("Status:")}
+				<SELECT name="closed" onchange="document.filter.submit();">
+					<OPTION value=""{if $listdata.closed == ""} selected{/if}>{trans("- all -")}</OPTION>
+					<OPTION value="0"{if $listdata.closed == "0"} selected{/if}>{trans("opened<!plural:event>")}</OPTION>
+					<OPTION value="1"{if $listdata.closed == "1"} selected{/if}>{trans("closed<!plural:event>")}</OPTION>
+				</SELECT>
+				{trans("Privacy:")}
+				<SELECT name="privacy" onchange="document.filter.submit();">
+					<OPTION value="0"{if $listdata.privacy == "0"} selected{/if}>{trans("- all -")}</OPTION>
+					<OPTION value="1"{if $listdata.privacy == "1"} selected{/if}>{trans("public")}</OPTION>
+					<OPTION value="2"{if $listdata.privacy == "2"} selected{/if}>{trans("private")}</OPTION>
+				</SELECT>
 			</FORM>
 		</TD>
 	</TR>
@@ -73,21 +104,31 @@
 	{cycle values="light,lucid" print=false}
 	{section name=daylist loop=$daylist}
 	<TR>
-		<TD width="100%" colspan="5">
+		<TD colspan="5">
                     <TABLE class="lmsbox">
+						<COLGROUP>
+							<COL style="width: 1%;">
+							<COL style="width: 1%;">
+							<COL style="width: 95%;">
+							<COL style="width: 1%;">
+							<COL style="width: 1%;">
+						</COLGROUP>
                         <THEAD>
-                            <TR>
-                                    <TD width="1%" nowrap>
-                                            <IMG src="img/calendar.gif" alt="">
-                                            <B>{$daylist[daylist]|date_format:"%A"}</B>
-                                    </TD>
-                                    <TD width="96%">
-                                            <B>({$daylist[daylist]|date_format:"%x"})</B>
-                                    </TD>
-                                    <TD width="3%" colspan="3" align="right" nowrap>
-                                            <A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.userid}" target="_BLANK">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
-                                            <A href="?m=eventadd&day={$daylist[daylist]|date_format:"%d"}&month={$daylist[daylist]|date_format:"%m"}&year={$daylist[daylist]|date_format:"%Y"}">{trans("Add Event")} <IMG src="img/save.gif" alt=""></A>&nbsp;
-                                    </TD>
+                            <TR{if $daylist[daylist] == $today} class="superdark"{/if}>
+                                <TD class="bold nobr" colspan="2">
+                                    <IMG src="img/calendar.gif" alt="">
+                                    {$daylist[daylist]|date_format:"%A"}
+                                </TD>
+                                <TD>
+									<span class="bold">({$daylist[daylist]|date_format:"%x"})</span>
+									{if $getHolidays[$daylist[daylist]]}
+									<span class="red">{trans("Holiday:")} {$getHolidays[$daylist[daylist]]}</span>
+									{/if}
+                                </TD>
+                                <TD colspan="2" class="text-right nobr">
+                                    <A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.userid}&closed={$listdata.closed}&privacy={$listdata.privacy}" target="_blank">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
+                                    <A href="?m=eventadd&amp;day={$daylist[daylist]|date_format:"%d"}&amp;month={$daylist[daylist]|date_format:"%m"}&amp;year={$daylist[daylist]|date_format:"%Y"}">{trans("Add Event")} <IMG src="img/save.gif" alt=""></A>&nbsp;
+                                </TD>
                             </TR>
                         </THEAD>
                         <TBODY>
@@ -97,36 +138,49 @@
                             {if $eventlist[eventlist].date == $daylist[daylist]}
                             {math equation="x+1" x=$counter assign=counter}
                             <TR class="highlight {cycle}{if $eventlist[eventlist].closed} blend{/if}"  >
-                                <TD width="1%" align="left" onClick="return self.location.href='?m=eventinfo&id={$eventlist[eventlist].id}'" nowrap>
-                                        <IMG src="img/time.gif" alt=""><B>
+                                <TD style="min-width: 70px; {if isset($_EVENTSTYLES[$eventlist[eventlist].type])} {$_EVENTSTYLES[$eventlist[eventlist].type]}{/if}" class="text-center bold">
+                                	{$_EVENTTYPES[$eventlist[eventlist].type]}
+                                </td>
+                                <TD class="text-left nobr" onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
+                                        <span class="bold">
                                         {math equation="floor(x/100)" x=$eventlist[eventlist].begintime format="%02d"}:{math equation="x % 100" x=$eventlist[eventlist].begintime format="%02d"}
                                         {if $eventlist[eventlist].begintime != $eventlist[eventlist].endtime}
                                         - {math equation="floor(x/100)" x=$eventlist[eventlist].endtime format="%02d"}:{math equation="x % 100" x=$eventlist[eventlist].endtime format="%02d"}
-                                        {/if}</B><BR>
-                                        <IMG src="img/users.gif" alt=""> <A href="?m=userinfo&id={$eventlist[eventlist].userid}">{$eventlist[eventlist].username|truncate:"25":"...":true}</A>
+                                        {/if}</span><BR>
+										{foreach $eventlist[eventlist].userlist as $user}
+											<A href="?m=userinfo&amp;id={$user.id}">{$user.name|truncate:"25":"...":true}</A><BR>
+										{/foreach}
                                 </TD>
-                                <TD width="96%" valign="top" onClick="return self.location.href='?m=eventinfo&id={$eventlist[eventlist].id}'">
-                                        <IMG src="img/calendar.gif" alt=""> <B>{$eventlist[eventlist].title}</B><BR>
-                                        <IMG src="img/info1.gif" alt=""> {$eventlist[eventlist].description}
+                                <TD onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
+                                        <IMG src="img/calendar.gif" alt=""><span class="bold">{$eventlist[eventlist].title}</span><BR>
+                                        {if $eventlist[eventlist].description != ''}<IMG src="img/info1.gif" alt=""> {$eventlist[eventlist].description}{/if}<br/>
+                                        {if $eventlist[eventlist].note != ''}<span{if !$eventlist[eventlist].closed} style="color: red;"{/if}><IMG src="img/info.gif" alt="" /> {$eventlist[eventlist].note}</span>{/if}
                                 </TD>
-                                <TD width="1%">
-                                        {foreach item=user from=$eventlist[eventlist].userlist}
-                                                <NOBR><A href="?m=userinfo&id={$user.id}">{$user.name|truncate:"25":"...":true}</A></NOBR><BR>
-                                        {/foreach}
-                                </TD>
-                                <TD width="1%" nowrap>
+                                <TD class="nobr">
                                         {if $eventlist[eventlist].customername}
-                                                <A href="?m=customerinfo&id={$eventlist[eventlist].customerid}">{$eventlist[eventlist].customername|truncate:"30":"...":true}</A>
+                                                <A href="?m=customerinfo&amp;id={$eventlist[eventlist].customerid}">{$eventlist[eventlist].customername|truncate:"30":"...":true}</A><br/>
+						{if isset($eventlist[eventlist].location)}
+						    <a href="?m=nodeinfo&amp;id={$eventlist[eventlist].nodeid}">{$eventlist[eventlist].location}</a>
+						{else}
+						    {$eventlist[eventlist].customerlocation}
+						{/if}
                                         {/if}
                                 </TD>
-                                <TD width="1%" align="right" nowrap>
+                                <TD class="text-right nobr">
+                                    {if ConfigHelper::checkPrivilege('timetable_management')}
                                         {if $eventlist[eventlist].closed}
-                                        <A href="?m=eventedit&id={$eventlist[eventlist].id}&action=open"><IMG src="img/resolved.gif" alt="[ {trans("Open")} ]" title="[ {trans("Open")} ]"></A> 
+                                        <A href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=open"><IMG src="img/resolved.gif" alt="[ {trans("Open")} ]" title="[&nbsp;{trans("Open")}&nbsp;]"></A>
                                         {else}
-                                        <A href="?m=eventedit&id={$eventlist[eventlist].id}&action=close"><IMG src="img/open.gif" alt="[ {trans("Close")} ]" title="[ {trans("Close")} ]"></A> 
+                                        <A href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=close"><IMG src="img/open.gif" alt="[ {trans("Close")} ]" title="[&nbsp;{trans("Close")}&nbsp;]"></A>
                                         {/if}
-                                        <A href="?m=eventdel&id={$eventlist[eventlist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>&nbsp; 
-                                        <A href="?m=eventedit&id={$eventlist[eventlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+                                        <A href="?m=eventdel&amp;id={$eventlist[eventlist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[&nbsp;{trans("Delete")}&nbsp;]"></A>&nbsp;
+                                        <A href="?m=eventedit&amp;id={$eventlist[eventlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[&nbsp;{trans("Edit")}&nbsp;]"></A>
+                                    {/if}
+                                    {if $eventlist[eventlist].note == ''}
+                                        {foreach item=user from=$eventlist[eventlist].userlist}
+                                            {if $layout.logid == $user.id}<A href="?m=eventnote&id={$eventlist[eventlist].id}"><IMG src="img/note.gif" alt="[ {trans("Add Note")} ]" title="[ {trans("Add Note")} ]"></A>{/if}
+                                        {/foreach}
+                                    {/if}
                                 </TD>
                             </TR>
                             {/if}
@@ -137,5 +191,5 @@
 	</TR>
 	{/section}
     </TBODY>
-</TABLE></P>
+</TABLE>
 {/block}

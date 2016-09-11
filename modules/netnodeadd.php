@@ -31,6 +31,9 @@ if(isset($_POST['netnode']))
 	if($netnodedata['name'] == '')
 		$error['name'] = trans('Net node name is required!');
 
+	if($netnodedata['divisionid'] == '-1')
+		$error['divisionid'] = trans('Division is required!');
+
 	if ($netnodedata['invprojectid'] == '-1') { // nowy projekt
 		if (!strlen(trim($netnodedata['projectname']))) {
 		 $error['projectname'] = trans('Project name is required');
@@ -78,15 +81,17 @@ if(isset($_POST['netnode']))
 		'ownership'=>$netnodedata['ownership'],
 		'coowner'=>$netnodedata['coowner'],
 		'uip'=>$netnodedata['uip'],
-		'miar'=>$netnodedata['miar']);
+		'miar'=>$netnodedata['miar'],
+		'divisionid' => !empty($netnodedata['divisionid']) ? $netnodedata['divisionid'] : NULL
+            );
 
 	if ($netnodedata['invprojectid'] == '-1' || intval($ipi)>0) {
 		$args['invprojectid'] = intval($ipi);
-		$fields = 'name,type,status,location,location_city,location_street,location_house,location_flat,longitude,latitude,ownership,coowner,uip,miar,invprojectid';
-		$values = "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?";
+		$fields = 'name,type,status,location,location_city,location_street,location_house,location_flat,longitude,latitude,ownership,coowner,uip,miar,divisionid,invprojectid';
+		$values = "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?";
 	} else {
-		$fields = 'name,type,status,location,location_city,location_street,location_house,location_flat,longitude,latitude,ownership,coowner,uip,miar';
-		$values = "?,?,?,?,?,?,?,?,?,?,?,?,?,?";
+		$fields = 'name,type,status,location,location_city,location_street,location_house,location_flat,longitude,latitude,ownership,coowner,uip,miar,divisionid';
+		$values = "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?";
 	}
 
 
@@ -106,6 +111,7 @@ if(isset($_POST['netnode']))
 }
 
 $SMARTY->assign('netnode', $netnodedata);
+$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
 
 $nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
 	array(INV_PROJECT_SYSTEM));

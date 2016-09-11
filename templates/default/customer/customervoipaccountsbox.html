@@ -7,7 +7,7 @@
 			{t a=$customervoipaccounts.total|default:"0"}Voip Accounts ($a):{/t}
 		</TD>
 		<TD style="width: 1%;" class="text-right nobr">
-			{if $customerinfo.status != "1" and ! $customerinfo.deleted}<A href="?m=voipaccountadd&amp;ownerid={$customerinfo.id}">{trans("New Voip Account")} &raquo;</A>&nbsp;{/if}
+			{if $customerinfo.status != $smarty.const.CSTATUS_INTERESTED && !$customerinfo.deleted}<A href="?m=voipaccountadd&amp;ownerid={$customerinfo.id}">{trans("New Voip Account")} &raquo;</A>&nbsp;{/if}
 		</TD>
 	</TR>
 	</THEAD>
@@ -15,45 +15,56 @@
 	<TR id="voipaccountspanel" style="display: none;">
 		<TD style="width: 100%; " colspan="2">
 			<TABLE class="lmsbox-inner">
+                                {block name="customervoipaccountsbox-list-columns"}
+                                <COLGROUP>
+                                        <COL style="width: 96%;">
+                                        <COL style="width: 1%;" span="5">
+                                        {assign var='number_of_table_columns' value='6'}
+                                </COLGROUP>
+                                {/block}
 				<THEAD>
+                                {block name="customervoipaccountsbox-list-header"}
 				<TR>
-					<TD style="width: 96%;" class="bold nobr">{trans("Login:")}</TD>
-					<TD style="width: 1%;" class="nobr">{trans("ID:")}</TD>
-					<TD style="width: 1%;" class="nobr" colspan="2">{trans("Password:")}</TD>
-					<TD style="width: 1%;" class="nobr">{trans("Phone number:")}</TD>
-					<TD style="width: 1%;">&nbsp;</TD>
+					<TD class="bold nobr">{trans("Login:")}</TD>
+					<TD class="nobr">{trans("ID:")}</TD>
+					<TD class="nobr" colspan="2">{trans("Password:")}</TD>
+					<TD class="nobr">{trans("Phone number:")}</TD>
+					<TD>&nbsp;</TD>
 				</TR>
+                                {/block}
 				</THEAD>
 				<TBODY>
 				{cycle name=voips values="light,lucid" print=false}
 				{foreach from=$customervoipaccounts.accounts item=voipaccount}
+                                {block name="customervoipaccountsbox-list-row"}
 				<TR class="highlight {cycle name=voips}"  >
-					<TD style="width: 96%;" class="bold nobr" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
+					<TD class="bold nobr" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
 						{$voipaccount.login}
 					</TD>
-					<TD style="width: 1%;" class="nobr" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
+					<TD class="nobr" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
 						({$voipaccount.id|string_format:"%04d"})
 					</TD>
-					<TD style="width: 1%;" class="nobr" colspan="2" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
+					<TD class="nobr" colspan="2" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
 						{if !ConfigHelper::checkConfig('privileges.hide_voip_passwords')}{$voipaccount.passwd}{else}{'*'|str_repeat:8}{/if}
 					</TD>
-					<TD style="width: 1%;" class="nobr" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
+					<TD class="nobr" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
 						{$voipaccount.phone}
 					</TD>
-					<TD style="width: 1%;" class="text-right nobr">
+					<TD class="text-right nobr">
 						<A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer voip account?")}')" href="?m=voipaccountdel&amp;id={$voipaccount.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 						<A href="?m=voipaccountedit&amp;id={$voipaccount.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 						<A href="?m=voipaccountinfo&amp;id={$voipaccount.id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 					</TD>
 				</TR>
+                                {/block}
 				{foreachelse}
+                                {block name="customervoipaccountsbox-list-empty-row"}
 				<TR>
-					<TD class="empty-table" colspan="6">
-						<p>&nbsp;</p>
+					<TD class="empty-table" colspan="{$number_of_table_columns}">
 						<p>{trans("That customer does not own any voip account.")}</p>
-						<p>&nbsp;</p>
 					</TD>
 				</TR>
+                                {/block}
 				{/foreach}
 				</TBODY>
 			</TABLE>

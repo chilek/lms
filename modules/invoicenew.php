@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -66,7 +66,6 @@ switch($action)
 		$currtime = time();
 		$invoice['cdate'] = $currtime;
 		$invoice['sdate'] = $currtime;
-		$invoice['paytime'] = ConfigHelper::getConfig('invoices.paytime');
 //		$invoice['paytype'] = ConfigHelper::getConfig('invoices.paytype');
 
 		if(!empty($_GET['customerid']) && $LMS->CustomerExists($_GET['customerid']))
@@ -78,6 +77,13 @@ switch($action)
 				WHERE n.doctype = ? AND n.isdefault = 1 AND a.divisionid = ?',
 				array(DOC_INVOICE, $customer['divisionid']));
 		}
+
+		if (isset($customer) && $customer['paytime'] != -1)
+			$paytime = $customer['paytime'];
+		elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions 
+			WHERE id = ?', array($customer['divisionid']))) === NULL)
+			$paytime = ConfigHelper::getConfig('invoices.paytime');
+		$invoice['deadline'] = $currtime + $paytime * 86400;
 
 		if(empty($invoice['numberplanid']))
 			$invoice['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans
@@ -110,19 +116,19 @@ switch($action)
 			if($itemdata['valuenetto'] != 0)
 			{
 				$itemdata['valuenetto'] = f_round(($itemdata['valuenetto'] - $itemdata['valuenetto'] * $itemdata['pdiscount'] / 100) - $itemdata['vdiscount']);
-				$itemdata['valuebrutto'] = round($itemdata['valuenetto'] * ($taxvalue / 100 + 1),2);
+				$itemdata['valuebrutto'] = $itemdata['valuenetto'] * ($taxvalue / 100 + 1);
+				$itemdata['s_valuebrutto'] = f_round(($itemdata['valuenetto'] * $itemdata['count']) * ($taxvalue / 100 + 1));
 			}
 			elseif($itemdata['valuebrutto'] != 0)
 			{
 				$itemdata['valuebrutto'] = f_round(($itemdata['valuebrutto'] - $itemdata['valuebrutto'] * $itemdata['pdiscount'] / 100) - $itemdata['vdiscount']);
 				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($taxvalue / 100 + 1), 2);
+				$itemdata['s_valuebrutto'] = f_round($itemdata['valuebrutto'] * $itemdata['count']);
 			}
 
 			// str_replace->f_round here is needed because of bug in some PHP versions
-			$itemdata['s_valuebrutto'] = f_round($itemdata['valuebrutto'] * $itemdata['count']);
 			$itemdata['s_valuenetto'] = f_round($itemdata['s_valuebrutto'] /  ($taxvalue / 100 + 1));
 			$itemdata['valuenetto'] = f_round($itemdata['valuenetto']);
-			$itemdata['valuebrutto'] = f_round($itemdata['valuebrutto']);
 			$itemdata['count'] = f_round($itemdata['count']);
 			$itemdata['discount'] = f_round($itemdata['discount']);
 			$itemdata['pdiscount'] = f_round($itemdata['pdiscount']);
@@ -171,6 +177,8 @@ switch($action)
 	break;
 
 	case 'setcustomer':
+
+		$customer_paytime = $customer['paytime'];
 
 		unset($invoice); 
 		unset($customer);
@@ -233,17 +241,34 @@ switch($action)
 		elseif(!$invoice['cdate'])
 			$invoice['cdate'] = $currtime;
 
+		if ($invoice['deadline']) {
+			list ($dyear, $dmonth, $dday) = explode('/', $invoice['deadline']);
+			if (checkdate($dmonth, $dday, $dyear)) {
+				$invoice['deadline'] = mktime(date('G', $currtime), date('i', $currtime), date('s', $currtime), $dmonth, $dday, $dyear);
+				$dcurrmonth = $dmonth;
+			} else {
+				$error['deadline'] = trans('Incorrect date format!');
+				$invoice['deadline'] = $currtime;
+				break;
+			}
+		} else {
+			if ($customer_paytime != -1)
+				$paytime = $customer_paytime;
+			elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions
+				WHERE id = ?', array($customer['divisionid']))) === NULL)
+				$paytime = ConfigHelper::getConfig('invoices.paytime');
+			$invoice['deadline'] = $invoice['cdate'] + $paytime * 86400;
+		}
+
+		if ($invoice['deadline'] < $invoice['cdate'])
+			$error['deadline'] = trans('Deadline date should be later than consent date!');
+
 		if($invoice['number'])
 		{
 			if(!preg_match('/^[0-9]+$/', $invoice['number']))
 				$error['number'] = trans('Invoice number must be integer!');
 			elseif($LMS->DocumentExists($invoice['number'], DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']))
 				$error['number'] = trans('Invoice number $a already exists!', $invoice['number']);
-		}
-
-		if(empty($invoice['paytime_default']) && !preg_match('/^[0-9]+$/', $invoice['paytime']))
-		{
-			$error['paytime'] = trans('Integer value required!');
 		}
 
 		if(!isset($error))
@@ -271,17 +296,20 @@ switch($action)
 
 		unset($error);
 
-		// set paytime
-		if(!empty($invoice['paytime_default']))
-		{
-			if($customer['paytime'] != -1)
-				$invoice['paytime'] = $customer['paytime'];
-			elseif(($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions 
-				WHERE id = ?', array($customer['divisionid']))) !== NULL)
-				$invoice['paytime'] = $paytime;
-			else
-				$invoice['paytime'] = ConfigHelper::getConfig('invoices.paytime');
-		}
+		if ($invoice['deadline']) {
+			$deadline = intval($invoice['deadline']);
+			$cdate = intval($invoice['cdate']);
+			if ($deadline < $cdate)
+				break;
+			$invoice['paytime'] = round(($deadline - $cdate) / 86400);
+		} elseif ($customer['paytime'] != -1)
+			$invoice['paytime'] = $customer['paytime'];
+		elseif (($paytime = $DB->GetOne('SELECT inv_paytime FROM divisions 
+			WHERE id = ?', array($customer['divisionid']))) !== NULL)
+			$invoice['paytime'] = $paytime;
+		else
+			$invoice['paytime'] = ConfigHelper::getConfig('invoices.paytime');
+
 		// set paytype
 		if(empty($invoice['paytype']))
 		{
@@ -317,7 +345,21 @@ switch($action)
 		}
 
 		$invoice['type'] = DOC_INVOICE;
-		$iid = $LMS->AddInvoice(array('customer' => $customer, 'contents' => $contents, 'invoice' => $invoice));
+
+		$hook_data = array(
+			'customer' => $customer,
+			'contents' => $contents,
+			'invoice' => $invoice,
+		);
+		$hook_data = $LMS->ExecuteHook('invoicenew_save_before_submit', $hook_data);
+
+		$iid = $LMS->AddInvoice($hook_data);
+
+		$hook_data['invoice']['id'] = $iid;
+		$hook_data = $LMS->ExecuteHook('invoicenew_save_after_submit', $hook_data);
+
+		$contents = $hook_data['contents'];
+		$invoice = $hook_data['invoice'];
 
 		// usuwamy wczesniejsze zobowiazania bez faktury
 		foreach ($contents as $item)
@@ -328,11 +370,10 @@ switch($action)
 			if ($SYSLOG)
 				foreach ($ids as $cashid) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+						SYSLOG::RES_CASH => $cashid,
+						SYSLOG::RES_CUST => $customer['id'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args,
-						array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
 				}
 			$DB->Execute('DELETE FROM cash WHERE id IN (' . implode(',', $ids) . ')');
 		}
@@ -386,10 +427,8 @@ if(isset($list))
 	else
 		$covenantlist = $list;
 
-if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
-{
-        $SMARTY->assign('customers', $LMS->GetCustomerNames());
-}
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 
 if($newinvoice = $SESSION->get('invoiceprint'))
 {

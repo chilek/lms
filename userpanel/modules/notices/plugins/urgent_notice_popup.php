@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2015 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,7 +27,7 @@
 /**
  * Popup for userpanel messages LMS plugin class. PHP5 only.
  */
-class up_module_call_before_plugin
+class urgent_notice_popup_plugin
 {
     private $lms;
 
@@ -53,31 +53,30 @@ class up_module_call_before_plugin
      */
     function notice_check($vars)
     {
-        // exec("lmsd -q");
-					global $SMARTY;
-					global $SESSION;
+		global $SMARTY;
+		global $SESSION;
 
-					$LMS = $this->lms;
-					$module = $vars['module'];
-					if (!empty($module)){
-							$notice_urgent = $LMS->DB->GetRow('SELECT m.subject, m.cdate, m.body, m.type, mi.id, mi.messageid, mi.destination, mi.status
-                              FROM customers c, messageitems mi, messages m
-                              WHERE c.id=mi.customerid
-                              AND m.id=mi.messageid
-                              AND m.type = 6
-                              AND mi.status = 1
-                              AND c.id=?
-                              ORDER BY m.cdate desc'
-                              , array($SESSION->id));
-							$SMARTY->assign('notice_urgent', $notice_urgent);
-					}
+		$LMS = $this->lms;
+		$notice_urgent = $LMS->DB->GetRow('SELECT m.subject, m.cdate, m.body, m.type, mi.id, mi.messageid, mi.destination, mi.status
+				FROM customers c, messageitems mi, messages m
+				WHERE c.id=mi.customerid
+					AND m.id=mi.messageid
+                    AND m.type = 6
+                    AND mi.status = 1
+                    AND c.id=?
+                    ORDER BY m.cdate desc',
+			array($SESSION->id));
+		$SMARTY->assign('notice_urgent', $notice_urgent);
+
         // always return $vars
         return $vars;
     }
 }
 
 // Initialize plugin
-$popup_plugin = new up_module_call_before_plugin($LMS);
+$popup_plugin = new urgent_notice_popup_plugin($LMS);
 
 // Register plugin actions:
 $LMS->RegisterHook('userpanel_module_call_before', array($popup_plugin, 'notice_check'));
+
+?>

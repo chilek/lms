@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -59,6 +59,7 @@ if(isset($_GET['id']) && $action == 'edit')
 	$SESSION->save('invoicecustomer', $LMS->GetCustomer($invoice['customerid'], true));
 	$invoice['oldcdate'] = $invoice['cdate'];
 	$invoice['oldsdate'] = $invoice['sdate'];
+	$invoice['olddeadline'] = $invoice['deadline'] = $invoice['cdate'] + $invoice['paytime'] * 86400;
 	$SESSION->save('invoice', $invoice);
 	$SESSION->save('invoiceid', $invoice['id']);
 }
@@ -107,23 +108,23 @@ switch($action)
 			if ($itemdata['valuenetto'] != 0)
 			{
 				$itemdata['valuenetto'] = f_round(($itemdata['valuenetto'] - $itemdata['valuenetto'] * f_round($itemdata['pdiscount']) / 100) - $itemdata['vdiscount']);
-				$itemdata['valuebrutto'] = round($itemdata['valuenetto'] * ($taxvalue / 100 + 1), 2);
+				$itemdata['valuebrutto'] = $itemdata['valuenetto'] * ($taxvalue / 100 + 1);
+				$itemdata['s_valuebrutto'] = f_round(($itemdata['valuenetto'] * $itemdata['count']) * ($taxvalue / 100 + 1));
 			}
 			elseif ($itemdata['valuebrutto'] != 0)
 			{
 				$itemdata['valuebrutto'] = f_round(($itemdata['valuebrutto'] - $itemdata['valuebrutto'] * $itemdata['pdiscount'] / 100) - $itemdata['vdiscount']);
 				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($taxvalue / 100 + 1), 2);
+				$itemdata['s_valuebrutto'] = f_round($itemdata['valuebrutto'] * $itemdata['count']);
 			}
 
 			// str_replace here is needed because of bug in some PHP versions (4.3.10)
-			$itemdata['s_valuebrutto'] = str_replace(',', '.', $itemdata['valuebrutto'] * $itemdata['count']);
-			$itemdata['s_valuenetto'] = str_replace(',', '.', $itemdata['s_valuebrutto'] / ($taxvalue / 100 + 1));
-			$itemdata['valuenetto'] = str_replace(',', '.', $itemdata['valuenetto']);
-			$itemdata['valuebrutto'] = str_replace(',', '.', $itemdata['valuebrutto']);
-			$itemdata['count'] = str_replace(',', '.', $itemdata['count']);
-			$itemdata['discount'] = str_replace(',', '.', $itemdata['discount']);
-			$itemdata['pdiscount'] = str_replace(',', '.', $itemdata['pdiscount']);
-			$itemdata['vdiscount'] = str_replace(',', '.', $itemdata['vdiscount']);
+			$itemdata['s_valuenetto'] = f_round($itemdata['s_valuebrutto'] / ($taxvalue / 100 + 1));
+			$itemdata['valuenetto'] = f_round($itemdata['valuenetto']);
+			$itemdata['count'] = f_round($itemdata['count']);
+			$itemdata['discount'] = f_round($itemdata['discount']);
+			$itemdata['pdiscount'] = f_round($itemdata['pdiscount']);
+			$itemdata['vdiscount'] = f_round($itemdata['vdiscount']);
 			$itemdata['tax'] = $taxeslist[$itemdata['taxid']]['label'];
 			$itemdata['posuid'] = (string) getmicrotime();
 			$contents[] = $itemdata;
@@ -142,6 +143,7 @@ switch($action)
 
 	case 'setcustomer':
 
+		$olddeadline = $invoice['olddeadline'];
 		$oldcdate = $invoice['oldcdate'];
 		$oldsdate = $invoice['oldsdate'];
 		$closed   = $invoice['closed'];
@@ -155,12 +157,9 @@ switch($action)
 			foreach($invoice as $key => $val)
 				$invoice[$key] = $val;
 
-		$invoice['paytime'] = sprintf('%d', $invoice['paytime']);
+		$invoice['olddeadline'] = $olddeadline;
 		$invoice['oldcdate'] = $oldcdate;
 		$invoice['oldsdate'] = $oldsdate;
-
-		if($invoice['paytime'] < 0)
-			$invoice['paytime'] = 14;
 
 		if($invoice['cdate']) // && !$invoice['cdatewarning'])
 		{
@@ -202,6 +201,24 @@ switch($action)
 				$error['sdate'] = trans('Incorrect date format!');
 		}
 
+		if ($invoice['deadline']) {
+			list ($dyear, $dmonth, $dday) = explode('/', $invoice['deadline']);
+			if (checkdate($dmonth, $dday, $dyear)) {
+				$olddday = date('d', $invoice['oldddate']);
+				$olddmonth = date('m', $invoice['oldddate']);
+				$olddyear = date('Y', $invoice['oldddate']);
+
+				if ($olddday != $dday || $olddmonth != $dmonth || $olddyear != $dyear)
+					$invoice['deadline'] = mktime(date('G', time()), date('i', time()), date('s', time()), $dmonth, $dday, $dyear);
+				else // save hour/min/sec value if date is the same
+					$invoice['deadline'] = $invoice['olddeadline'];
+			} else
+				$error['deadline'] = trans('Incorrect date format!');
+		}
+
+		if ($invoice['deadline'] < $invoice['cdate'])
+			$error['deadline'] = trans('Deadline date should be later than consent date!');
+
 		$invoice['customerid'] = $_POST['customerid'];
 		$invoice['closed']     = $closed;
 
@@ -220,6 +237,8 @@ switch($action)
 		$currtime = time();
 		$cdate = $invoice['cdate'] ? $invoice['cdate'] : $currtime;
 		$sdate = $invoice['sdate'] ? $invoice['sdate'] : $currtime;
+		$deadline = $invoice['deadline'] ? $invoice['deadline'] : $currtime;
+		$paytime = round(($deadline - $cdate) / 86400);
 		$iid   = $invoice['id'];
 
 		$DB->BeginTrans();
@@ -231,22 +250,22 @@ switch($action)
 		$args = array(
 			'cdate' => $cdate,
 			'sdate' => $sdate,
-			'paytime' => $invoice['paytime'],
+			'paytime' => $paytime,
 			'paytype' => $invoice['paytype'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+			SYSLOG::RES_CUST => $customer['id'],
 			'name' => $customer['customername'],
 			'address' => $customer['address'],
 			'ten' => $customer['ten'],
 			'ssn' => $customer['ssn'],
 			'zip' => $customer['zip'],
 			'city' => $customer['city'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $customer['divisionid'],
+			SYSLOG::RES_DIV => $customer['divisionid'],
 			'div_name' => ($division['name'] ? $division['name'] : ''),
 			'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
 			'div_address' => ($division['address'] ? $division['address'] : ''), 
 			'div_city' => ($division['city'] ? $division['city'] : ''), 
 			'div_zip' => ($division['zip'] ? $division['zip'] : ''),
-			'div_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => ($division['countryid'] ? $division['countryid'] : 0),
+			'div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY) => ($division['countryid'] ? $division['countryid'] : 0),
 			'div_ten'=> ($division['ten'] ? $division['ten'] : ''),
 			'div_regon' => ($division['regon'] ? $division['regon'] : ''),
 			'div_account' => ($division['account'] ? $division['account'] : ''),
@@ -254,7 +273,7 @@ switch($action)
 			'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
 			'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
 			'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
+			SYSLOG::RES_DOC => $iid,
 		);
 		$DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, customerid = ?,
 				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, divisionid = ?,
@@ -263,31 +282,28 @@ switch($action)
 				div_inv_author = ?, div_inv_cplace = ?
 				WHERE id = ?', array_values($args));
 		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG_RES_DOC, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV], 'div_' . $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY]));
+			$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args,
+				array('div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY)));
 
 		if (!$invoice['closed']) {
 			if ($SYSLOG) {
 				$cashids = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($iid));
 				foreach ($cashids as $cashid) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+						SYSLOG::RES_CASH => $cashid,
+						SYSLOG::RES_DOC => $iid,
+						SYSLOG::RES_CUST => $customer['id'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_DELETE, $args,
-						array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
 				}
 				$itemids = $DB->GetCol('SELECT itemid FROM invoicecontents WHERE docid = ?', array($iid));
 				foreach ($itemids as $itemid) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+						SYSLOG::RES_DOC => $iid,
+						SYSLOG::RES_CUST => $customer['id'],
 						'itemid' => $itemid,
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_INVOICECONT, SYSLOG_OPER_DELETE, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					$SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_DELETE, $args);
 				}
 			}
 			$DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($iid));
@@ -298,26 +314,24 @@ switch($action)
 				$itemid++;
 
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
+					SYSLOG::RES_DOC => $iid,
 					'itemid' => $itemid,
-					'value' => $item['valuebrutto'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX] => $item['taxid'],
+					'value' => str_replace(',', '.', $item['valuebrutto']),
+					SYSLOG::RES_TAX => $item['taxid'],
 					'prodid' => $item['prodid'],
 					'content' => $item['jm'],
-					'count' => $item['count'],
-					'pdiscount' => $item['pdiscount'],
-					'vdiscount' => $item['vdiscount'],
+					'count' => str_replace(',', '.', $item['count']),
+					'pdiscount' => str_replace(',', '.', $item['pdiscount']),
+					'vdiscount' => str_replace(',', '.', $item['vdiscount']),
 					'name' => $item['name'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF] => $item['tariffid'],
+					SYSLOG::RES_TARIFF => $item['tariffid'],
 				);
 				$DB->Execute('INSERT INTO invoicecontents (docid, itemid, value,
 					taxid, prodid, content, count, pdiscount, vdiscount, description, tariffid)
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 				if ($SYSLOG) {
-					$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]] = $customer['id'];
-					$SYSLOG->AddMessage(SYSLOG_RES_INVOICECONT, SYSLOG_OPER_ADD, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TAX],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_TARIFF], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					$args[SYSLOG::RES_CUST] = $customer['id'];
+					$SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);
 				}
 
 				$LMS->AddBalance(array(
@@ -335,12 +349,11 @@ switch($action)
 				$cashids = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($iid));
 				foreach ($cashids as $cashid) {
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CASH] => $cashid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DOC] => $iid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customer['id'],
+						SYSLOG::RES_CASH => $cashid,
+						SYSLOG::RES_DOC => $iid,
+						SYSLOG::RES_CUST => $customer['id'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_CASH, SYSLOG_OPER_UPDATE, $args,
-						array_keys($args));
+					$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_UPDATE, $args);
 				}
 			}
 			$DB->Execute('UPDATE cash SET customerid = ? WHERE docid = ?',
@@ -370,10 +383,8 @@ if($action != '')
 	$SESSION->redirect('?m=invoiceedit');
 }
 
-if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
-{
-        $SMARTY->assign('customers', $LMS->GetCustomerNames());
-}
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);

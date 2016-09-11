@@ -7,16 +7,18 @@
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" NAME="m" VALUE="customerlist">
-<INPUT type="hidden" NAME="page" VALUE="1">
+<INPUT type="hidden" NAME="page" id="page" VALUE="1">
 </p>
 <TABLE class="lmsbox">
 	<COLGROUP>
+                {block name="customerlist-list-columns"}
 		<COL style="width: 97%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
+		<COL style="width: 1%;" span="3">
+                {assign var='number_of_table_columns' value='4'}
+                {/block}
 	</COLGROUP>
 	<THEAD>
+        {block name="customerlist-list-header"}
 	<TR {tip text="Click on column name to change sorting order"}>
 		<td scope="col" class="nobr">
 			<img src="img/customer.gif" alt=""> <a href="?m={$layout.module}&amp;s={$listdata.state}&amp;o=customername{if $listdata.direction == "asc" && $listdata.order == "customername"},desc{/if}">{trans("First/last or Company name")}</A> {if $listdata.order == "customername"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
@@ -33,28 +35,37 @@
 		{/if}
 		</td>
 		<td scope="col" class="text-right nobr">
-			{t a=$listdata.total}Total: $a{/t}
+                        {t a=$pagination->getTotal()}Total: $a{/t}
 		</td>
 	</TR>
+        {/block}
+        {block name="customerlist-list-filters"}
 	<TR>
-		<TD colspan="4" class="nobr">
+		<TD colspan="{$number_of_table_columns}" class="nobr">
 			<span class="bold">{trans("Filter:")}</span> {trans("Customers:")}
 			<SELECT SIZE="1" NAME="s" ONCHANGE="document.choosefilter.submit();">
 				<OPTION VALUE="0"{if $listdata.state == 0} SELECTED{/if}>{trans("- all customers -")}</OPTION>
-				<OPTION VALUE="3"{if $listdata.state == 3} SELECTED{/if}>{trans("connected<!plural>")}</OPTION>
-				<OPTION VALUE="2"{if $listdata.state == 2} SELECTED{/if}>{trans("awaiting")}</OPTION>
-				<OPTION VALUE="1"{if $listdata.state == 1} SELECTED{/if}>{trans("interested<!plural>")}</OPTION>
-				<OPTION VALUE="4"{if $listdata.state == 4} SELECTED{/if}>{trans("deleted<!plural>")}</OPTION>
-				<OPTION VALUE="5"{if $listdata.state == 5} SELECTED{/if}>{trans("disconnected<!plural>")}</OPTION>
+				{foreach $_CSTATUSES as $statusidx => $status}
+				<OPTION VALUE="{$statusidx}"{if $listdata.state == $statusidx} selected{/if}>{$status.plurallabel}</OPTION>
+				{/foreach}
+				<OPTION VALUE="50"{if $listdata.state == 50} SELECTED{/if}>{trans("deleted<!plural>")}</OPTION>
+				<OPTION VALUE="51"{if $listdata.state == 51} SELECTED{/if}>{trans("with disconnected nodes")}</OPTION>
 				{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-				<OPTION VALUE="6"{if $listdata.state == 6} SELECTED{/if}>{trans("in debt")}</OPTION>
-				<OPTION VALUE="11"{if $listdata.state == 11} SELECTED{/if}>{trans("in debt above 100%")}</OPTION>
-				<OPTION VALUE="12"{if $listdata.state == 12} SELECTED{/if}>{trans("in debt above 200%")}</OPTION>
+				<OPTION VALUE="52"{if $listdata.state == 52} SELECTED{/if}>{trans("in debt")}</OPTION>
+				<OPTION VALUE="57"{if $listdata.state == 57} SELECTED{/if}>{trans("in debt above 100%")}</OPTION>
+				<OPTION VALUE="58"{if $listdata.state == 58} SELECTED{/if}>{trans("in debt above 200%")}</OPTION>
 				{/if}
-				<OPTION VALUE="7"{if $listdata.state == 7} SELECTED{/if}>{trans("online")}</OPTION>
-				<OPTION VALUE="8"{if $listdata.state == 8} SELECTED{/if}>{trans("without group")}</OPTION>
-				<OPTION VALUE="9"{if $listdata.state == 9} SELECTED{/if}>{trans("without tariff")}</OPTION>
-				<OPTION VALUE="10"{if $listdata.state == 10} SELECTED{/if}>{trans("suspended<!plural>")}</OPTION>
+				<OPTION value="59"{if $listdata.state == 59} SELECTED{/if}>{trans("without contracts")}</OPTION>
+				<OPTION value="60"{if $listdata.state == 60} SELECTED{/if}>{trans("with expired contracts")}</OPTION>
+				<OPTION value="61"{if $listdata.state == 61} SELECTED{/if}>{trans("with expiring contracts")}</OPTION>
+				<OPTION VALUE="53"{if $listdata.state == 53} SELECTED{/if}>{trans("online")}</OPTION>
+				<OPTION VALUE="54"{if $listdata.state == 54} SELECTED{/if}>{trans("without group")}</OPTION>
+				<OPTION VALUE="55"{if $listdata.state == 55} SELECTED{/if}>{trans("without tariff")}</OPTION>
+				<OPTION VALUE="56"{if $listdata.state == 56} SELECTED{/if}>{trans("suspended<!plural>")}</OPTION>
+				<OPTION VALUE="62"{if $listdata.state == 62} SELECTED{/if}>{trans("with e-invoice")}</OPTION>
+				<OPTION VALUE="63"{if $listdata.state == 63} SELECTED{/if}>{trans("with connected nodes")}</OPTION>
+				<OPTION VALUE="64"{if $listdata.state == 64} SELECTED{/if}>{trans("with nodes")}</OPTION>
+				<OPTION VALUE="65"{if $listdata.state == 65} SELECTED{/if}>{trans("without nodes")}</OPTION>
 			</SELECT>
 			{trans("Division")}:
 			<SELECT SIZE="1" NAME="d" ONCHANGE="document.choosefilter.submit();">
@@ -84,25 +95,41 @@
 				<OPTION value="{$nodegroup.id}" {if $listdata.nodegroup == $nodegroup.id} SELECTED {/if}>{$nodegroup.name|truncate:30:"...":true}</OPTION>
 				{/foreach}
 			</SELECT>
+                        {trans("Assigments:")}
+                        <select size="1" name="assigments" onchange="document.choosefilter.submit();" {if $listdata.assigments}class="active"{/if}>
+                            <option value="0" {if $listdata.assigments eq '0'} selected {/if}>{trans('- all -')}</option>
+                            <option value="7" {if $listdata.assigments eq '7'} selected {/if}>{trans('expire in $a days', 7)}</option>
+                            <option value="14" {if $listdata.assigments eq '14'} selected {/if}>{trans('expire in $a days', 14)}</option>
+                            <option value="30" {if $listdata.assigments eq '30'} selected {/if}>{trans('expire in $a days', 30)}</option>
+                            <option value="-1" {if $listdata.assigments eq '-1'} selected {/if}>{trans('without end date')}</option>
+                            <option value="-2" {if $listdata.assigments eq '-2'} selected {/if}>{trans('active')}</option>
+                            <option value="-3" {if $listdata.assigments eq '-3'} selected {/if}>{trans('active, with invoice')}</option>
+                            <option value="-4" {if $listdata.assigments eq '-4'} selected {/if}>{trans('suspended')}</option>
+                        </select>
 		</TD>
 	</TR>
-	{if $listdata.total != 0}
+        {/block}
+        {block name="customerlist-list-header-pagination"}
+	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="pagination" colspan="4">
-			{include file="scroller.html" loop=$customerlist}
+		<TD class="pagination" colspan="{$number_of_table_columns}">
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
-
+        {/block}
 	</THEAD>
 	<TFOOT>
-	{if $listdata.total != 0}
+        {block name="customerlist-list-footer-pagination"}
+	{if $pagination->getTotal() != 0}
 	<TR>
-		<TD class="pagination" colspan="4">
-			{include file="scroller.html" loop=$customerlist}
+		<TD class="pagination" colspan="{$number_of_table_columns}">
+			{include file="pagination.html"}
 		</TD>
 	</TR>
 	{/if}
+        {/block}
+        {block name="customerlist-list-footer"}
 	<TR class="summary">
 		<TD>
 			&nbsp;
@@ -120,24 +147,26 @@
 			{/if}
 		</TD>
 		<TD class="bold">
-			{trans("Total:")} {$listdata.total}
+			{t a=$pagination->getTotal()}Total: $a{/t}
 		</TD>
 	</TR>
+        {/block}
 	</TFOOT>
 	<TBODY>
 
 	{cycle values="light,lucid" print=false}
-	{section name=customerlist loop=$customerlist start=$start max=$pagelimit}
+	{section name=customerlist loop=$customerlist}
+        {block name="customerlist-list-row"}
 	<TR class="highlight {cycle}{if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}"  >
 		<TD onClick="return self.location.href='?m=customerinfo&amp;id={$customerlist[customerlist].id}';">
-			<IMG src="img/{if $customerlist[customerlist].status == 1}unk{/if}{if $customerlist[customerlist].status == 2}wait{/if}{if $customerlist[customerlist].status == 3}customer{/if}.gif" alt="">{if $customerlist[customerlist].info}&nbsp;<img src="img/info1.gif" alt="" {tip text=$customerlist[customerlist].info}>{/if}<A name="{$customerlist[customerlist].id}" {tip a=$customerlist[customerlist].id dynpopup='?m=customerinfoshort&amp;id=$a'}>&nbsp;<span class="bold">{$customerlist[customerlist].customername|escape}</span></A><BR>
+			<IMG src="img/{$_CSTATUSES[$customerlist[customerlist].status].img}" alt="">{if $customerlist[customerlist].info}&nbsp;<img src="img/info1.gif" alt="" {tip text=$customerlist[customerlist].info}>{/if}<A name="{$customerlist[customerlist].id}" class="customerinfo" data-resourceid="{$customerlist[customerlist].id}">&nbsp;<span class="bold">{$customerlist[customerlist].customername|escape}</span></A><BR>
 			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].address}{if $customerlist[customerlist].city != ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].country != ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
 		</TD>
 		<TD class="text-right">
 			({$customerlist[customerlist].id|string_format:"%04d"})
 			<BR>
 			{if $customerlist[customerlist].account}
-			<IMG src="img/node{if !$customerlist[customerlist].online}_off{/if}.gif" alt="" {tip a=$customerlist[customerlist].id dynpopup='?m=nodelistshort&amp;id=$a' sticky=1}>
+			<IMG src="img/node{if !$customerlist[customerlist].online}_off{/if}.gif" alt="" class="nodelist" data-resourceid="{$customerlist[customerlist].id}">
 			{/if}
 		</TD>
 		<TD class="text-right nobr">
@@ -154,7 +183,7 @@
 				{/if}
 			{/if}
 			{if $customerlist[customerlist].account}
-				{if $customerlist[customerlist].status == 3}
+				{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
 					{if $customerlist[customerlist].nodeac == 1}
 						<A href="?m=nodeset&amp;ownerid={$customerlist[customerlist].id}"><IMG src="img/access.gif" alt="[ {trans("Disconnect All")} ]" title="[ {trans("Disconnect All")} ]"></A>
 					{else}
@@ -166,7 +195,7 @@
 				{/if}
 			{/if}
 			{if $customerlist[customerlist].warncount}
-				{if $customerlist[customerlist].status == 3}
+				{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
 					{if $customerlist[customerlist].nodewarn == 1}
 						<A href="?m=nodewarn&amp;ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG src="img/warningon.gif" alt="[ {trans("Disable notices for all")} ]" title="[ {trans("Disable notices for all")} ]"></A>
 					{else}
@@ -177,7 +206,7 @@
 					{/if}
 				{/if}
 			{/if}
-			{if $listdata.state == 4}
+			{if $listdata.state == 50}
 			<A href="?m=customeredit&amp;id={$customerlist[customerlist].id}&amp;action=recover"><IMG src="img/recover.gif" alt="[ {trans("Recover")} ]" title="[ {trans("Recover")} ]"></A> 
 			{else}
 			<A href="?m=customerdel&amp;id={$customerlist[customerlist].id}" OnCLick="return confirmLink(this, '{t a=$customerlist[customerlist].customername|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$a\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A> 
@@ -186,12 +215,15 @@
 			<A href="?m=customerinfo&amp;id={$customerlist[customerlist].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 		</TD>
 	</TR>
+        {/block}
 	{sectionelse}
+        {block name="customerlist-list-empty-row"}
 	<TR>
-		<TD colspan="4" class="empty-table">
-			{trans("No such customers matching search criteria or list is empty.")}
+		<TD colspan="{$number_of_table_columns}" class="empty-table">
+			<p>{trans("No such customers matching search criteria or list is empty.")}</p>
 		</TD>
 	</TR>
+        {/block}
 	{/section}
 	</TBODY>
 </TABLE>

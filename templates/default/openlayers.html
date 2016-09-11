@@ -1,0 +1,16 @@
+<script type="text/javascript" src="img/OpenLayers/OpenLayers.js"></script>
+<script type="text/javascript" src="img/OpenLayers/lang/{$_ui_language}.js"></script>
+{$googlemaps_api_key = ConfigHelper::getConfig('phpui.googlemaps_api_key', '', true)}
+<script type="text/javascript" src="https://maps.google.com/maps/api/js?v=3{if !empty($googlemaps_api_key)}&key={$googlemaps_api_key}{/if}&sensor=false"></script>
+<script type="text/javascript" src="img/DragPopup.js"></script>
+<!--[if IE]>
+<script type="text/javascript" src="img/json2.js"></script>
+<![endif]-->
+<script type="text/javascript">
+<!--
+	var checkhostcaption = "{trans("Check a host ...")}";
+	var centermapcaption = "{trans("Center map around network elements ...")}";
+	var refreshmapcaption = "{trans("Refresh network state ...")}";
+//-->
+</script>
+<script type="text/javascript" src="img/map.js"></script>

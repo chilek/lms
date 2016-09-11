@@ -5,7 +5,6 @@
 <script type="text/javascript" src="img/tinymce3/tiny_mce.js"> </script>
 {$xajax}
 <H1>{$layout.pagetitle}</H1>
-{include file="calendar_js.html"}
 {block name="nodeeditbox"}
 	{include file="node/nodeeditbox.html"}
 {/block}
@@ -26,6 +25,14 @@
 {/block}
 {block name="customernodesbox"}
 	{include file="customer/customernodesbox.html"}
+{/block}
+{block name="customernetworksbox"}
+	{include file="customer/customernetworksbox.html"}
+{/block}
+{block name="transactions"}
+	{if ConfigHelper::checkConfig('phpui.logging') && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))}
+		{include file="transactions.html"}
+	{/if}
 {/block}
 {block name="customervoipaccountsbox"}
 	{include file="customer/customervoipaccountsbox.html"}

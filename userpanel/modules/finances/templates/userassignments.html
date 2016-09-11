@@ -19,7 +19,7 @@
 	<tr class="dark">
 		<td><b>{if ConfigHelper::checkConfig('userpanel.show_tariffname')}{$assignment.name}{/if}</b></td>
 		<td class="nobr" align="right">{$assignment.value|money_format}</td>
-		<td class="nobr" align="right">{if $assignment.discount > 0}{$assignment.discount}%{/if}</td>
+		<td class="nobr" align="right">{if $assignment.pdiscount > 0}{$assignment.pdiscount}%{else}{if $assignment.vdiscount > 0}{$assignment.vdiscount|money_format}{else}-{/if}{/if}</td>
 		<td class="nobr">{$assignment.payday}</td>
 		{if $show_speeds}
 			<td class="nobr" align="right">{$assignment.downrate|default:"-"}({$assignment.downceil|default:"-"}) kbit/s</td>

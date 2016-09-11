@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -201,7 +201,7 @@ switch($type)
 					.($docs ? ($docs == 'documented' ? ' AND c.docid > 0' : ' AND c.docid = 0') : '')
 					.($source ? ' AND c.sourceid = '.intval($source) : '')
 					.($group ? ' AND a.customergroupid = '.$group : '')
-					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
+					.($net ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
 					.($division ? ' AND EXISTS (SELECT 1 FROM customers WHERE id = c.customerid AND divisionid = '.$division.')' : '')
 					.($types ? $typewhere : '')
 					.' AND NOT EXISTS (
@@ -222,7 +222,7 @@ switch($type)
 					.($source ? ($source == -1 ? ' AND c.sourceid IS NULL' : ' AND c.sourceid = '.intval($source)) : '')
 					.(isset($date['from']) ? ' AND time >= '.$date['from'] : '')
 					.($group ? ' AND a.customergroupid = '.$group : '')
-					.($net ? ' AND EXISTS (SELECT 1 FROM nodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
+					.($net ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
 					.($division ? ' AND EXISTS (SELECT 1 FROM customers WHERE id = c.customerid AND divisionid = '.$division.')' : '')
 					.($types ? $typewhere : '')
 					.' AND NOT EXISTS (
@@ -374,7 +374,7 @@ switch($type)
 		$importlist = $DB->GetAll('SELECT c.time, c.value, c.customerid, '
 			.$DB->Concat('upper(v.lastname)',"' '",'v.name').' AS customername 
 			FROM cash c
-			JOIN customersview v ON (v.id = c.customerid)
+			JOIN customerview v ON (v.id = c.customerid)
 			WHERE c.time >= ? AND c.time <= ?'
 			.($source ? ' AND c.sourceid = '.intval($source) : '')
 			.' AND c.importid IS NOT NULL
@@ -428,6 +428,7 @@ switch($type)
 			.$type
 			.'&from='.$date['from']
 			.'&to='.$date['to']
+			.(!empty($_POST['division']) ? '&divisionid='.intval($_POST['division']) : '')
 			.(!empty($_POST['customer']) ? '&customerid='.intval($_POST['customer']) : '')
 			.(!empty($_POST['group']) ? '&groupid='.intval($_POST['group']) : '')
 			.(!empty($_POST['numberplan']) ? '&numberplanid='.intval($_POST['numberplan']) : '')
@@ -441,44 +442,48 @@ switch($type)
 		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
-		$from = $_POST['invoicefrom'];
-		$to = $_POST['invoiceto'];
+		$kind = isset($_GET['kind']) ? intval($_GET['kind']) : 2;
 
-		if($to) {
-			list($year, $month, $day) = explode('/',$to);
-			$date['to'] = mktime(23,59,59,$month,$day,$year);
-		} else { 
-			$to = date('Y/m/d',time());
-			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
+		switch ($kind) {
+			case 1:
+				$from = $_POST['invoicefrom'];
+				$to = $_POST['invoiceto'];
+
+				if ($to) {
+					list($year, $month, $day) = explode('/',$to);
+					$date['to'] = mktime(23,59,59,$month,$day,$year);
+				} else {
+					$to = date('Y/m/d',time());
+					$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
+				}
+
+				if ($from) {
+					list($year, $month, $day) = explode('/',$from);
+					$date['from'] = mktime(0,0,0,$month,$day,$year);
+				} else {
+					$from = date('Y/m/d',time());
+					$date['from'] = mktime(0,0,0); //pocz�tek dnia dzisiejszego
+				}
+
+				$_GET['from'] = $date['from'];
+				$_GET['to'] = $date['to'];
+				$_GET['customerid'] = $_POST['customer'];
+				$_GET['groupid'] = $_POST['group'];
+				$_GET['numberplan'] = $_POST['numberplan'];
+				$_GET['groupexclude'] = !empty($_POST['groupexclude']) ? 1 : 0;
+				$which = '';
+
+				break;
+			case 2:
+				$balance = $_POST['balance'] ? $_POST['balance'] : 0;
+				$customer = isset($_POST['customer']) ? intval($_POST['customer']) : 0;
+				$group = isset($_POST['customergroup']) ? intval($_POST['customergroup']) : 0;
+				$exclgroup = isset($_POST['groupexclude']) ? 1 : 0;
+
+				break;
 		}
-
-		if($from) {
-			list($year, $month, $day) = explode('/',$from);
-			$date['from'] = mktime(0,0,0,$month,$day,$year);
-		} else { 
-			$from = date('Y/m/d',time());
-			$date['from'] = mktime(0,0,0); //pocz�tek dnia dzisiejszego
-		}
-		
-		$_GET['from'] = $date['from'];
-		$_GET['to'] = $date['to'];
-		$_GET['customerid'] = $_POST['customer'];
-		$_GET['groupid'] = $_POST['group'];
-		$_GET['numberplan'] = $_POST['numberplan'];
-		$_GET['groupexclude'] = !empty($_POST['groupexclude']) ? 1 : 0;
-		$which = '';
-		
-		require_once(MODULES_DIR.'/transferforms.php');
-		
-	break;	
-
-	case 'transferforms2': /********************************************/
-
-		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
-			access_denied();
-
-		require_once(MODULES_DIR.'/transferforms2.php');
-	break;
+		require_once(MODULES_DIR . DIRECTORY_SEPARATOR . 'transferforms.php');
+		break;
 
 	case 'liabilityreport': /********************************************/
 
@@ -551,7 +556,7 @@ switch($type)
 						WHEN '.QUARTERLY.' THEN 1.0/3
 						ELSE 1 END)
 					) AS value
-					FROM assignments a, tariffs t, customersview c
+					FROM assignments a, tariffs t, customerview c
 					WHERE a.customerid = c.id AND status = 3 
 					AND a.tariffid = t.id AND t.taxid=?
 					AND c.deleted=0 
@@ -570,7 +575,7 @@ switch($type)
 					.$DB->Concat('city',"' '",'address').' AS address, ten,
 					SUM(((((100 - a.pdiscount) * l.value) / 100) - a.vdiscount) *
 						((CASE a.suspended WHEN 0 THEN 100.0 ELSE '.$suspension_percentage.' END) / 100)) AS value
-					FROM assignments a, liabilities l, customersview c
+					FROM assignments a, liabilities l, customerview c
 					WHERE a.customerid = c.id AND status = 3 
 					AND a.liabilityid = l.id AND l.taxid=?
 					AND c.deleted=0
@@ -610,44 +615,38 @@ switch($type)
 						$total['netto'][$tax['id']] += $reportlist[$idx][$tax['id']]['netto'];
 						$total['tax'][$tax['id']] += $reportlist[$idx][$tax['id']]['tax'];
 					}
-
-					switch($order)
-					{
-						case 'customername':
-							foreach($reportlist as $idx => $row)
-							{
-								$table['idx'][] = $idx;
-								$table['customername'][] = $row['customername'];
-							}
-							if (is_array($table))
-							{
-								array_multisort($table['customername'],($direction == 'desc' ? SORT_DESC : SORT_ASC), $table['idx']);
-								foreach($table['idx'] as $idx)
-									$tmplist[] = $reportlist[$idx];
-							}
-							$reportlist = $tmplist;
-						break;
-						default:
-							foreach($reportlist as $idx => $row)
-							{
-								$table['idx'][] = $idx;
-								$table['value'][] = $row['value'];
-							}
-							if (is_array($table))
-							{
-								array_multisort($table['value'],($direction == 'desc' ? SORT_DESC : SORT_ASC), $table['idx']);
-								foreach($table['idx'] as $idx)
-									$tmplist[] = $reportlist[$idx];
-							}
-							$reportlist = $tmplist;
-						break;
-					}
-
 				}
 			}
 
+			switch ($order) {
+				case 'customername':
+					foreach ($reportlist as $idx => $row) {
+						$table['idx'][] = $idx;
+						$table['customername'][] = $row['customername'];
+					}
+					if (is_array($table)) {
+						array_multisort($table['customername'], ($direction == 'desc' ? SORT_DESC : SORT_ASC), $table['idx']);
+						foreach ($table['idx'] as $idx)
+							$tmplist[] = $reportlist[$idx];
+					}
+					$reportlist = $tmplist;
+					break;
+				default:
+					foreach ($reportlist as $idx => $row) {
+						$table['idx'][] = $idx;
+						$table['value'][] = $row['value'];
+					}
+					if (is_array($table)) {
+						array_multisort($table['value'], ($direction == 'desc' ? SORT_DESC : SORT_ASC), $table['idx']);
+						foreach ($table['idx'] as $idx)
+							$tmplist[] = $reportlist[$idx];
+					}
+					$reportlist = $tmplist;
+					break;
+			}
+
 			$SMARTY->assign('reportlist', $reportlist);
-			$SMARTY->assign('total',$total);
+			$SMARTY->assign('total', $total);
 			$SMARTY->assign('taxes', $taxes);
 			$SMARTY->assign('taxescount', sizeof($taxes));
 		}
@@ -864,10 +863,8 @@ switch($type)
 
 		$layout['pagetitle'] = trans('Reports');
 
-		if (!ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.big_networks', false)))
-		{
+		if (!ConfigHelper::checkConfig('phpui.big_networks'))
 			$SMARTY->assign('customers', $LMS->GetCustomerNames());
-		}
 		$SMARTY->assign('users', $LMS->GetUserNames());
 		$SMARTY->assign('networks', $LMS->GetNetworks());
 		$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());

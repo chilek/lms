@@ -124,7 +124,7 @@ function check_hostname_fqdn($hostname, $wildcard=false, $dns_strict_tld_check=f
 
         foreach ($hostname_labels as $hostname_label) {
                 if ($wildcard && !isset($first)) {
-                        if (!preg_match('/^(\*|[a-zA-Z0-9-\/]+)$/',$hostname_label)) {
+                        if (!preg_match('/^(\*|[a-zA-Z0-9-\/_]+)$/',$hostname_label)) {
 				return trans('You have invalid characters in your hostname!');
 			}
                         $first = 1;

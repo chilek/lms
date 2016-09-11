@@ -23,10 +23,13 @@
 					<TD style="width: 1%;" class="nobr">
 						{trans("Date:")}
 					</TD>
+					<TD style="width: 1%;" class="nobr">
+						{trans("Type:")}
+					</TD>
 					<TD style="width: 40%;" class="bold nobr">
 						{trans("Title:")}
 					</TD>
-					<TD style="width: 50%;" class="nobr">
+					<TD style="width: 49%;" class="nobr">
 						{trans("Description:")}
 					</TD>
 					<TD style="width: 1%;" class="nobr"></TD>
@@ -38,6 +41,9 @@
 				<TR class="highlight {cycle name=events}{if $eventlist[eventlist].closed} blend{/if}"  >
 					<TD style="width: 1%;" class="nobr" onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
 						{$eventlist[eventlist].date|date_format:"%Y/%m/%d"}
+					</TD>
+					<TD style="width: 1%;" align="center" class="nobr" onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
+						{$_EVENTTYPES[$eventlist[eventlist].type]}
 					</TD>
 					<TD style="width: 40%;" class="bold" onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
 						{$eventlist[eventlist].title}
@@ -57,10 +63,8 @@
 				</TR>
 				{sectionelse}
 				<TR>
-					<TD class="empty-table" colspan="4">
-						<P>&nbsp;</P>
+					<TD class="empty-table" colspan="5">
 						<P>{trans("There are no events in timetable.")}</P>
-						<P>&nbsp;</P>
 					</TD>
 				</TR>
 				{/section}

@@ -4,41 +4,38 @@
 <!--// $Id$ //-->
 <script type="text/javascript" src="img/tinymce3/tiny_mce.js"> </script>
 <H1>{$layout.pagetitle}</H1>
-{include file="calendar_js.html"}
 <SCRIPT type="text/javascript">
 <!--
-	function randomize()
-	{
-		var r = 0;
-		do
-			r = Math.floor(Math.random()*1000000-1);
-		while (r<1000);
-		document.customeradd.elements['customeradd[pin]'].value = r;
+	function randomize() {
+		document.customeradd.elements['customeradd[pin]'].value =
+			generate_random_string(4 + Math.floor(Math.random() * 3), '0123456789');
 	}
 
-	function newcontact()
-	{
-		var contactscountelem = document.getElementById('contactscount');
-		var nr = contactscountelem.value;
-		var lastcontactelem = document.getElementById('contact' + (nr - 1));
+	function newcontact(type) {
+		var contactcountelem = document.getElementById(type + 'count');
+		var nr = contactcountelem.value;
+		var lastcontactelem = document.getElementById(type + (nr - 1));
 		var newrow = lastcontactelem.parentNode.insertRow(lastcontactelem.rowIndex + 1);
-		newrow.id = 'contact' + nr;
-		var newcell1 = newrow.insertCell(0);
-		var newcell2 = newrow.insertCell(1);
-		newcell1.style.verticalAlign = 'top';
-		newcell1.style.width = '1%';
-		newcell1.innerHTML = '<IMG src="img/phone.gif" alt="">';
-		newcell2.style.width = '99%';
-		newcell2.style.whiteSpace = 'nowrap';
-		newcell2.innerHTML = '<INPUT type="text" size="15" value="" name="customeradd[contacts][' + nr + '][phone]"'
-				+ ' onmouseover="popup(\'{trans("Enter contact phone")}\')" onmouseout="pophide()">'
-			+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_MOBILE}" ID="chkmobile' + nr + '"'
-				+ ' name="customeradd[contacts][' + nr + '][type][]"><label for="chkmobile' + nr + '">{trans("mobile")}</label>'
-			+ '<INPUT type="checkbox" value="{$smarty.const.CONTACT_FAX}" ID="chkfax' + nr + '"'
-				+ ' name="customeradd[contacts][' + nr + '][type][]"><label for="chkfax' + nr + '">{trans("fax")}</label>'
-			+ '<BR><INPUT type="text" size="38" value="" name="customeradd[contacts][' + nr + '][name]"'
-				+ ' onmouseover="popup(\'{trans("Enter contact name/description (optional)")}\')" onmouseout="pophide()">';
-		contactscountelem.value = parseInt(nr) + 1;
+		newrow.className = 'light';
+		newrow.id = type + nr;
+		var newcell = newrow.insertCell(0);
+		newcell.style.whiteSpace = 'nowrap';
+		switch (type) {
+			{foreach $_CUSTOMERCONTACTTYPES as $contacttype => $properties}
+			case '{$contacttype}':
+				innerHTML = '<HR><INPUT TYPE="text" size="{$properties.ui.size}" value="" name="customeradd[{$contacttype|cat:"s"}][' + nr + '][contact]"'
+					+ ' title="{$properties.ui.tip}">';
+				innerHTML += '{foreach $properties.ui.flags as $flagtype => $flagproperties}<label{if isset($flagproperties.tip)} title="{$flagproperties.tip}"{/if}><INPUT TYPE="checkbox" value="{$flagtype}" name="customeradd[{$contacttype|cat:"s"}][' + nr + '][type][]"> {$flagproperties.label}</label>{/foreach}';
+				innerHTML += '<BR><INPUT TYPE="text" size="68" value="" name="customeradd[{$contacttype|cat:"s"}][' + nr + '][name]"'
+					+ ' title="{trans("Enter contact name/description (optional)")}">';
+				break;
+			{/foreach}
+		}
+		newcell.innerHTML = innerHTML;
+		$(newcell).children("[title]").tooltip({
+			position: { my: "left top" }
+		});
+		contactcountelem.value = parseInt(nr) + 1;
 	}
 //-->
 </SCRIPT>
@@ -50,23 +47,41 @@
 	<THEAD>
 	<TR>
 		<TD style="width: 100%;" colspan="2">
-			<TABLE>
+			<TABLE width="100%">
 				<TR>
-					<TD class="bold">
-						{trans("Name/Surname:")}
+					<TD style="width: 1%;">
+						<TABLE width="100%">
+							<TR>
+								<TD class="bold">
+									{trans("Name/Surname:")}
+								</TD>
+								<TD>&nbsp;</TD>
+								<TD>
+									<INPUT type="text" name="customeradd[lastname]" value="{$customeradd.lastname}" SIZE="50" required {tip text="Enter customer last name or company name" trigger="lastname" bold=1}>
+								</TD>
+							</TR>
+							<TR>
+								<TD class="bold">
+									{trans("First name:")}
+								</TD>
+								<TD>&nbsp;</TD>
+								<TD>
+									<INPUT type="text" name="customeradd[name]" value="{$customeradd.name}" SIZE="50" required {tip text="Enter customer name" trigger="name" bold=1}>
+								</TD>
+							</TR>
+						</TABLE>
 					</TD>
-					<TD>&nbsp;</TD>
-					<TD>
-						<INPUT type="text" name="customeradd[lastname]" value="{$customeradd.lastname}" SIZE="50" {tip text="Enter customer last name or company name" trigger="lastname" bold=1}>
-					</TD>
-				</TR>
-				<TR>
-					<TD class="bold">
-						{trans("First name:")}
-					</TD>
-					<TD>&nbsp;</TD>
-					<TD>
-						<INPUT type="text" name="customeradd[name]" value="{$customeradd.name}" SIZE="50" {tip text="Enter customer name" trigger="name" bold=1}>
+					<TD style="width: 99%;">
+						<TABLE width="100%">
+							<TR>
+								<TD style="width: 1%;" class="bold nobr">
+									{trans("External system identifier:")}
+								</TD>
+								<TD style="width: 99%;">
+									<input type="text" size="20" maxlength="20" name="customeradd[extid]" value="{$customeradd.extid}" {tip text="Enter customer identifier in external system (optional)" trigger="extid"}>
+								</TD>
+							</TR>
+						</TABLE>
 					</TD>
 				</TR>
 			</TABLE>
@@ -77,17 +92,16 @@
 	<TR>
 		<TD style="width: 50%;" class="container valign-top">
 			<TABLE cellpadding="3" width="100%">
+				{block name="customeradd-leftcolumn"}
 				<TR>
 					<TD style="width: 1%;">
-						{if $customeradd.status == "3" || !$customeradd.status}<img src="img/customer.gif" alt="">{/if}
-						{if $customeradd.status == "2"}<img src="img/wait.gif" alt="">{/if}
-						{if $customeradd.status == "1"}<img src="img/unk.gif" alt="">{/if}
+						<img src="img/{if $customeradd.status}{$_CSTATUSES[$customeradd.status].img}{else}{$_CSTATUSES[$smarty.const.CSTATUS_CONNECTED].img}{/if}" alt="">
 					</TD>
 					<TD style="width: 99%;">
 						<SELECT size="1" name="customeradd[status]" {tip text="Select customer state" trigger="status"}>
-							<OPTION value="3"{if $customeradd.status == "3"} SELECTED{/if}>{trans("connected<!singular>")}</OPTION>
-							<OPTION value="2"{if $customeradd.status == "2"} SELECTED{/if}>{trans("waiting")}</option>
-							<OPTION value="1"{if $customeradd.status == "1"} SELECTED{/if}>{trans("interested<!singular>")}</OPTION>
+							{foreach $_CSTATUSES as $statusidx => $status}
+							<OPTION value="{$statusidx}"{if $customeradd.status == $statusidx} selected{/if}>{$status.singularlabel}</OPTION>
+							{/foreach}
 						</SELECT>
 					</TD>
 				</TR>
@@ -105,6 +119,21 @@
 					</TD>
 				</TR>
 				{/if}
+				{if $groups}
+				<TR>
+					<TD style="width: 1%;">
+						<IMG SRC="img/group.gif" alt="">
+					</TD>
+					<TD style="width: 99%;" class="nobr" colspan="2">
+						<SELECT SIZE="1" NAME="customeradd[group]" {tip text="Select group to assign to customer" trigger="group"}>
+							<OPTION VALUE="0">{trans("... select group ...")}</OPTION>
+							{foreach $groups as $group}
+							<OPTION VALUE="{$group.id}" {if $customeradd.group == $group.id}SELECTED{/if}>{$group.name} ({$group.id|string_format:"%04d"})</OPTION>
+							{/foreach}
+						</SELECT>
+					</TD>
+				</TR>
+				{/if}
 				<TR>
 					<TD style="width: 1%;">
 						<IMG SRC="img/folder.gif" alt="">
@@ -115,18 +144,29 @@
 					</TD>
 				</TR>
 				<TR>
-					<TD style="width: 1%;" class="valign-top">
-						<IMG src="img/home.gif" alt="">
-					</TD>
+					<TD style="width: 1%;" class="valign-top"></TD>
 					<TD style="width: 99%;" class="nobr">
+						<table width="100%" cellpadding="1">
+						<tr>
+							<td style="width: 1%;">
+								<fieldset style="width: 1%;" class="nobr">
+									<legend class="bold"><IMG src="img/home.gif" alt=""> {trans("Address")}</legend>
 						<TABLE width="100%" cellpadding="1">
 							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("Address:")}</TD>
-								<TD style="width: 99%;"><INPUT type="text" size="30" value="{$customeradd.address}" name="customeradd[address]" id="address" {tip text="Enter customer address" trigger="address"}></TD>
+								<TD style="width: 1%;" class="nobr">{trans("Street:")}</TD>
+								<TD style="width: 99%;"><INPUT type="text" size="30" value="{$customeradd.street}" name="customeradd[street]" id="street" required {tip text="Enter street" trigger="street"}></TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%;" class="nobr">{trans("Building:")}</TD>
+								<TD style="width: 99%;">
+									<INPUT type="text" size="8" value="{$customeradd.building}" name="customeradd[building]" id="building" {tip text="Enter building number" trigger="building"}>
+									{trans("Apartment:")}
+									<INPUT type="text" size="8" value="{$customeradd.apartment}" name="customeradd[apartment]" id="apartment" {tip text="Enter apartment number" trigger="apartment"}>
+								</TD>
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="nobr">{trans("City:")}</TD>
-								<TD style="width: 99%;"><INPUT type="text" SIZE="30" value="{$customeradd.city}" name="customeradd[city]" id="city" {tip text="Enter customer city" trigger="city"}></TD>
+								<TD style="width: 99%;"><INPUT type="text" SIZE="30" value="{$customeradd.city}" name="customeradd[city]" id="city" {tip text="Enter city" trigger="city"}></TD>
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="nobr">{trans("Zip:")}</TD>
@@ -165,34 +205,42 @@
 							{/if}
 						</TABLE>
 						<script type="text/javascript">
-							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('address'),'?m=customeradd&ajax=1&mode=address&what=',0);
+						<!--
+							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('street'),'?m=customeradd&ajax=1&mode=street&what=',0);
 							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
 							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('city'),'?m=customeradd&ajax=1&mode=city&what=',0);
+						//-->
 						</script>
-					</TD>
-				</TR>
-				<TR>
-					<TD style="width: 1%;" class="valign-top">
-						<IMG src="img/post.gif" alt="">
-					</TD>
-					<TD style="width: 99%;" class="nobr">
+								</fieldset>
+							</td>
+							<td style="width: 99%;">
+								<fieldset style="width: 1%;" class="nobr">
+									<legend class="bold"><IMG src="img/post.gif" alt=""> {trans("Postal address")}</legend>
 						<TABLE width="100%" cellpadding="1">
 							<TR>
 								<TD style="width: 1%;" class="nobr">{trans("Name:")}</TD>
-								<TD style="width: 99%;"><INPUT type="text" size="30" value="{$customeradd.post_name}" name="customeradd[post_name]" id="post_name" {tip text="Enter service name (optional)" trigger="post_name"}></TD>
+								<TD style="width: 99%;"><INPUT type="text" size="30" value="{$customeradd.post_name}" name="customeradd[post_name]" id="post_name" {tip text="Enter name (optional)" trigger="post_name"}></TD>
 							</TR>
 							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("Address:")}</TD>
-								<TD style="width: 99%;"><INPUT type="text" size="30" value="{$customeradd.post_address}" name="customeradd[post_address]" id="post_address" {tip text="Enter service address (optional)" trigger="post_address"}></TD>
+								<TD style="width: 1%;" class="nobr">{trans("Street:")}</TD>
+								<TD style="width: 99%;"><INPUT type="text" size="30" value="{$customeradd.post_street}" name="customeradd[post_street]" id="post_street" {tip text="Enter street name (optional)" trigger="post_street"}></TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%;" class="nobr">{trans("Building:")}</TD>
+								<TD style="width: 99%;">
+									<INPUT type="text" size="8" value="{$customeradd.post_building}" name="customeradd[post_building]" id="post_builing" {tip text="Enter building number (optional)" trigger="post_building"}>
+									{trans("Apartment:")}
+									<INPUT type="text" size="8" value="{$customeradd.post_apartment}" name="customeradd[post_apartment]" id="post_apartment" {tip text="Enter apartment number (optional)" trigger="post_apartment"}>
+								</TD>
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="nobr">{trans("City:")}</TD>
-								<TD style="width: 99%;"><INPUT type="text" SIZE="30" value="{$customeradd.post_city}" name="customeradd[post_city]" id="post_city" {tip text="Enter city of service address (optional)" trigger="post_city"}></TD>
+								<TD style="width: 99%;"><INPUT type="text" SIZE="30" value="{$customeradd.post_city}" name="customeradd[post_city]" id="post_city" {tip text="Enter city (optional)" trigger="post_city"}></TD>
 							</TR>
 							<TR>
 								<TD style="width: 1%;" class="nobr">{trans("Zip:")}</TD>
 								<TD style="width: 99%;">
-									<INPUT type="text" SIZE="10" value="{$customeradd.post_zip}" name="customeradd[post_zip]" id="post_zip" {tip text="Enter zip code of service address (optional)" trigger="post_zip"}>
+									<INPUT type="text" SIZE="10" value="{$customeradd.post_zip}" name="customeradd[post_zip]" id="post_zip" {tip text="Enter zip code (optional)" trigger="post_zip"}>
 									{if $customeradd.post_zipwarning}
 									<INPUT type="hidden" name="customeradd[post_zipwarning]" value="1">
 									{/if}
@@ -226,33 +274,52 @@
 							{/if}
 						</TABLE>
 						<script type="text/javascript">
-							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('post_address'),'?m=customeradd&ajax=1&mode=address&what=',0);
+						<!--
+							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('post_street'),'?m=customeradd&ajax=1&mode=street&what=',0);
 							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('post_zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
 							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('post_city'),'?m=customeradd&ajax=1&mode=city&what=',0);
+						//-->
 						</script>
+								</fieldset>
+							</td>
+						</tr>
+						</table>
 					</TD>
 				</TR>
-				{foreach from=$customeradd.contacts item=item key=key}
-				<TR id="contact{$key}">
-					<TD style="width: 1%;" class="valign-top">
-						<IMG src="img/phone.gif" alt="">
-					</TD>
-					<TD style="width: 99%;" class="nobr">
-						<INPUT type="text" size="15" value="{$item.phone}" name="customeradd[contacts][{$key}][phone]" {tip text="Enter contact phone" trigger="contact`$key`"}>
-						<INPUT type="checkbox" value="{$smarty.const.CONTACT_MOBILE}" id="chkmobile{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_MOBILE)} checked{/if}><label for="chkmobile{$key}">{trans("mobile")}</label>
-						<INPUT type="checkbox" value="{$smarty.const.CONTACT_FAX}" id="chkfax{$key}" name="customeradd[contacts][{$key}][type][]"{if ($item.type & $smarty.const.CONTACT_FAX)} checked{/if}><label for="chkfax{$key}">{trans("fax")}</label>
-						<BR>
-						<INPUT type="text" size="38" value="{$item.name}" name="customeradd[contacts][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
-					</TD>
-				</TR>
-				{/foreach}
+				{foreach $_CUSTOMERCONTACTTYPES as $type => $properties}
 				<TR>
 					<TD style="width: 1%;"></TD>
 					<TD style="width: 99%;" class="nobr">
-						<INPUT type="hidden" id="contactscount" value="{$item@total}">
-						<A href="javascript: newcontact()">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
+						<fieldset style="width: 1%;" class="nobr">
+							<legend class="bold"><IMG src="{$properties.ui.legend.icon}" alt=""> {$properties.ui.legend.text}</legend>
+							<table>
+								{foreach $customeradd[$type|cat:'s'] as $key => $item}
+								<TR id="{$type}{$key}">
+									<TD>
+										{if !$item@first}<HR>{/if}
+										<INPUT type="{$properties.ui.inputtype}" size="{$properties.ui.size}" value="{$item.contact}" name="customeradd[{$type}s][{$key}][contact]" {tip text=$properties.ui.tip trigger="`$type``$key`"}>
+										{foreach $properties.ui.flags as $flagtype => $flagproperties}
+										<label{if isset($flagproperties.tip)} {tip text=$flagproperties.tip}{/if}>
+											<INPUT type="checkbox" value="{$flagtype}" name="customeradd[{$type}s][{$key}][type][]"{if ($item.type & $flagtype)} checked{/if}>
+											{$flagproperties.label}
+										</label>
+										{/foreach}
+										<BR>
+										<INPUT type="text" size="68" value="{$item.name}" name="customeradd[{$type}s][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
+									</TD>
+								</TR>
+								{/foreach}
+								<TR>
+									<TD>
+										<INPUT type="hidden" id="{$type}count" value="{count($customeradd[$type|cat:'s'])}">
+										<A href="javascript:newcontact('{$type}')">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
+									</TD>
+								</TR>
+							</table>
+						</fieldset>
 					</TD>
 				</TR>
+				{/foreach}
 				<TR>
 					<TD style="width: 1%;">
 						<IMG SRC="img/gg.gif" alt="Gadu-Gadu">
@@ -282,18 +349,11 @@
 				</TR>
 				<TR>
 					<TD style="width: 1%;">
-						<IMG src="img/mail.gif" alt="">
-					</TD>
-					<TD style="width: 99%;">
-						<INPUT type="text" size="38" value="{$customeradd.email}" name="customeradd[email]" {tip text="Enter customer e-mail address (optional)" trigger="email"}>
-					</TD>
-				</TR>
-				<TR>
-					<TD style="width: 1%;">
 						<IMG src="img/pin.gif" alt="">
 					</TD>
 					<TD style="width: 99%;">
-						<INPUT type="text" size="6" value="{if $customeradd.pin}{$customeradd.pin}{/if}" name="customeradd[pin]" {tip text="Enter 4 to 6 digits PIN number (optional)" trigger="pin"}>&nbsp;<A href="javascript: randomize()" {tip text="Generate random PIN"}>&raquo;&raquo;&raquo;</A>
+						<INPUT type="number" pattern="{literal}[0-9]{4,6}{/literal}" required size="6" value="{if $customeradd.pin}{$customeradd.pin}{/if}" name="customeradd[pin]" title="{trans("Enter 4 to 6 digits PIN number (optional)")}" {tip text="Enter 4 to 6 digits PIN number (optional)" trigger="pin"}>&nbsp;
+						<A href="javascript:randomize()" {tip text="Generate random PIN"}>&raquo;&raquo;&raquo;</A>
 					</TD>
 				</TR>
 				<TR>
@@ -315,6 +375,9 @@
 									{if $customeradd.ssnwarning}
 									<INPUT type="hidden" name="customeradd[ssnwarning]" value="1">
 									{/if}
+									{if $customeradd.ssnexistencewarning}
+									<INPUT type="hidden" name="customeradd[ssnexistencewarning]" value="1">
+									{/if}
 								</TD>
 							</TR>
 							<TR>
@@ -323,6 +386,9 @@
 									<INPUT type="text" size="30" value="{$customeradd.ten}" name="customeradd[ten]" {tip text="Enter customer Tax Exempt Number (optional)" trigger="ten"}>
 									{if $customeradd.tenwarning}
 									<INPUT type="hidden" name="customeradd[tenwarning]" value="1">
+									{/if}
+									{if $customeradd.tenexistencewarning}
+									<INPUT type="hidden" name="customeradd[tenexistencewarning]" value="1">
 									{/if}
 								</TD>
 							</TR>
@@ -360,6 +426,8 @@
 										<OPTION value="14"{if $customeradd.paytime==14} selected{/if}>14</OPTION>
 										<OPTION value="21"{if $customeradd.paytime==21} selected{/if}>21</OPTION>
 										<OPTION value="30"{if $customeradd.paytime==30} selected{/if}>30</OPTION>
+										<OPTION value="60"{if $customeradd.paytime==60} selected{/if}>60</OPTION>
+										<OPTION value="90"{if $customeradd.paytime==90} selected{/if}>90</OPTION>
 									</SELECT>
 								</TD>
 							</TR>
@@ -381,9 +449,7 @@
 									{trans("Cutoff suspending:")}
 								</TD>
 								<TD>
-									<div class="calendar">
-									<INPUT type="text" name="customeradd[cutoffstop]" id="cutoffstop" {if $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop}"{/if} size="10" {tip text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
-									</div>
+									<INPUT type="text" name="customeradd[cutoffstop]" id="cutoffstop" {if $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop}"{/if} size="10" {tip class="calendar" text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
 								</TD>
 							</TR>
 						</TABLE>
@@ -395,6 +461,7 @@
 					</TD>
 					<TD style="width: 99%">
 						<TABLE cellpadding="0">
+							{block name="customeradd-options"}
 							<TR>
 								<TD>
 									<label for="chkconsent">{trans("Consent to personal data processing:")}</label>
@@ -405,13 +472,13 @@
 							</TR>
 							<TR>
 								<TD>
-									<label for="chkeinvoice">{trans("Consent to electronic invoices:")}</label>
+									<label for="chkeinvoice">{trans("Cancellation of a traditional invoice (agreement on an electronic invoice):")}</label>
 								</TD>
 								<TD>
 									<INPUT type="checkbox" name="customeradd[einvoice]" value="1" id="chkeinvoice"{if $customeradd.einvoice} checked{/if}>
 								</TD>
 							</TR>
-							<TR>
+							<TR {tip text="Consent to invoices delivery via e-mail:" trigger="invoicenotice"}>
 								<TD>
 									<label for="chkinvoicenotice">{trans("Consent to invoices delivery via e-mail:")}</label>
 								</TD>
@@ -427,13 +494,16 @@
 									<INPUT type="checkbox" name="customeradd[mailingnotice]" value="1" id="chkmailingnotice"{if $customeradd.mailingnotice} checked{/if}>
 								</TD>
 							</TR>
+							{/block}
 						</TABLE>
 					</TD>
 				</TR>
+				{/block}
 			</TABLE>
 		</TD>
 		<TD style="width: 50%;" class="container valign-top">
 			<TABLE width="100%" cellpadding="3">
+				{block name="customeradd-rightcolumn"}
 				<TR>
 					<TD style="width: 1%;"><IMG src="img/info1.gif" alt=""></TD>
 					<TD style="width: 99%;">
@@ -458,6 +528,7 @@
 						<TEXTAREA rows="10" cols="60" name="customeradd[notes]" id="notes" {tip text="Enter notes (optional)"}>{$customeradd.notes|escape}</TEXTAREA>
 					</TD>
 				</TR>
+				{/block}
 			</TABLE>
 		</TD>
 	</TR>

@@ -56,7 +56,7 @@ void reload(GLOBAL *g, struct traffic_module *traffic)
 	FILE *fh;
 	
 	// first get hosts data
-	res = g->db->query(g->db->conn, "SELECT id, ipaddr FROM nodes");
+	res = g->db->query(g->db->conn, "SELECT id, ipaddr FROM vnodes");
 
 	if( g->db->nrows(res) )
 	{

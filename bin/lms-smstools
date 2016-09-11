@@ -2,7 +2,7 @@
 #
 #  LMS version 1.11-git
 #
-#  Copyright (C) 2001-2013 LMS Developers
+#  Copyright (C) 2001-2015 LMS Developers
 #
 #  Please, see the doc/AUTHORS for more information about authors!
 #
@@ -44,7 +44,7 @@ if($help)
 {
 	print STDERR <<EOF;
 lms-smstools, version $_version
-(C) 2001-2013 LMS Developers
+(C) 2001-2015 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
 -h, --help			print this help and exit;
@@ -59,7 +59,7 @@ if($version)
 {
 	print STDERR <<EOF;
 lms-smstools, version $_version
-(C) 2001-2013 LMS Developers
+(C) 2001-2015 LMS Developers
 
 EOF
 	exit 0;
@@ -73,7 +73,7 @@ if(!$configfile)
 if(!$quiet)
 {
 	print STDOUT "lms-smstools, version $_version\n";
-	print STDOUT "(C) Copyright 2001-2013 LMS Developers\n";
+	print STDOUT "(C) Copyright 2001-2015 LMS Developers\n";
 	print STDOUT "Using file $configfile as config.\n";
 }
 
@@ -96,6 +96,8 @@ my $dbname = $ini->val('database', 'database') || 'lms';
 # Also 'keep_filename' must be set to 'yes'
 my $sent_dir = $ini->val('smstools', 'sent_dir') || '/var/spool/sms/sent';
 my $failed_dir = $ini->val('smstools', 'failed_dir') || '/var/spool/sms/failed';
+my $incoming_dir = $ini->val('smstools', 'incoming_dir') || '/var/spool/sms/incoming';
+my $failed_prefix = $ini->val('smstools', 'failed_prefix') || 'ERR';
 
 if(! -r $sent_dir)
 {
@@ -130,7 +132,7 @@ else
 
 my @files;
 my $dbq = $dbase->prepare("UPDATE messageitems
-	SET status = ?, lastdate = $utsfmt, error = ?
+	SET status = ?, lastdate = $utsfmt, error = ?, externalmsgid = ?
 	WHERE messageid = ? AND destination = ? AND status = 1");
 
 # sent
@@ -139,14 +141,75 @@ opendir(DIR, $sent_dir);
 closedir(DIR);
 foreach my $file (@files)
 {
-	if ($file =~ /^lms-([0-9]+)-([0-9]+)$/)
+	$file =~ /^lms-([0-9]+)-([0-9]+)$/;
+	my $id=$1;
+	my $dest=$2;
+	$dest=~s/^48//;
+	my $filename = $sent_dir . '/' . $file;
+
+	print "[sms sent] $file\n" if not $quiet;
+	open(FILE,$sent_dir.'/'.$file);
+	my $message_id=0;
+	while (<FILE>)
 	{
-		print "[sms sent] $file\n" if not $quiet;
+		if (/^Message_id: ([0-9]+)$/)
+		{
+			$message_id=$1;
+		}
+	}
+	close FILE;
 
-		$dbq->execute(2, undef, $1, $2);
+	$dbq->execute(2, undef, $message_id, $id, $dest);
 
-		if ($dbq->rows) {
-			my $filename = $sent_dir . '/' . $file;
+	if ($dbq->rows)
+	{
+		unlink($filename) or print STDERR "Unable to delete file $filename\n";
+	}
+}
+
+#  delivered/undelivered
+$dbq = $dbase->prepare("UPDATE messageitems
+	SET status = ?, lastdate = $utsfmt, error = ?
+	WHERE externalmsgid = ?");
+
+opendir(DIR, $incoming_dir);
+@files = grep(/^[^\.]/,readdir(DIR));
+closedir(DIR);
+foreach my $file (@files)
+{
+	open(FILE,$incoming_dir.'/'.$file);
+	my $message_id=0;
+	my $error_code=0;
+	my $error='';
+	while (<FILE>)
+	{
+		if (/^Message_id: ([0-9]+)$/)
+		{
+			$message_id=$1;
+		}
+		elsif (/^status: ([0-9]+),[a-z]+,([a-z\ ]+)$/i)
+		{
+			$error_code=$1;
+			$error=$2;
+		}
+	}
+	close FILE;
+	if ($message_id)
+	{
+		my $status=5;
+		if ($error_code) { $status=3; }
+		$dbq->execute($status, $error, $message_id);
+		if ($dbq->rows)
+		{
+			if ($status==5)
+			{
+				print "[sms delivered] $file\n" if not $quiet;
+			}
+			else
+			{
+				print "[sms undelivered with '$error'] $file\n" if not $quiet;
+			}
+			my $filename=$incoming_dir.'/'.$file;
 			unlink($filename) or print STDERR "Unable to delete file $filename\n";
 		}
 	}
@@ -154,20 +217,18 @@ foreach my $file (@files)
 
 # failed
 opendir(DIR, $failed_dir);
-@files = grep(/^lms-[0-9-]+$/, readdir(DIR));
+@files = grep(/^$failed_prefix\.lms-[0-9-]+$/, readdir(DIR));
 closedir(DIR);
 foreach my $file (@files)
 {
-	if ($file =~ /^lms-([0-9]+)-([0-9]+)$/)
+	print "[sms failed] $file\n" if not $quiet;
+	
+	$dbq->execute(3, 'Sending failed', $1, $2);
+	
+	if ($dbq->rows)
 	{
-		print "[sms failed] $file\n" if not $quiet;
-		
-		$dbq->execute(3, 'Sending failed', $1, $2);
-		
-		if ($dbq->rows) {
-			my $filename = $failed_dir . '/' . $file;
-			unlink($filename) or print STDERR "Unable to delete file $filename\n";
-		}
+		my $filename = $failed_dir . '/' . $file;
+		unlink($filename) or print STDERR "Unable to delete file $filename\n";
 	}
 }
 

@@ -48,7 +48,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         $dateto = intval($search['dateto']);
 
         $list = $this->db->GetAll(
-                'SELECT events.id AS id, title, description, date, begintime, enddate, endtime, customerid, closed, '
+                'SELECT events.id AS id, title, description, date, begintime, enddate, endtime, customerid, closed, events.type, '
                 . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername
 			FROM events
 			LEFT JOIN customers ON (customerid = customers.id)
@@ -56,6 +56,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 . ($datefrom ? " AND (date >= $datefrom OR (enddate <> 0 AND enddate >= $datefrom))" : '')
                 . ($dateto ? " AND (date <= $dateto OR (enddate <> 0 AND enddate <= $dateto))" : '')
                 . (!empty($search['customerid']) ? ' AND customerid = ' . intval($search['customerid']) : '')
+                . (!empty($search['type']) ? ' AND events.type = ' . intval($search['type']) : '')
                 . (!empty($search['title']) ? ' AND title ?LIKE? ' . $this->db->Escape('%' . $search['title'] . '%') : '')
                 . (!empty($search['description']) ? ' AND description ?LIKE? ' . $this->db->Escape('%' . $search['description'] . '%') : '')
                 . (!empty($search['note']) ? ' AND note ?LIKE? ' . $this->db->Escape('%' . $search['note'] . '%') : '')
@@ -85,7 +86,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                             $userfilter = true;
 
                 if ($row['enddate']) {
-                    $days = ($row['enddate'] - $row['date']) / 86400;
+                    $days = intval(($row['enddate'] - $row['date']) / 86400);
                     $row['endtime'] = 0;
                     if ((!$datefrom || $row['date'] >= $datefrom) &&
                             (!$dateto || $row['date'] <= $dateto)) {

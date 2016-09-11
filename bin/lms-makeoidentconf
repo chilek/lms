@@ -203,7 +203,7 @@ my %namelist;
 my %idlist;
 my %ownerlist;
 
-$dbq = $dbase->prepare("SELECT id, name, ipaddr, ownerid FROM nodes");
+$dbq = $dbase->prepare("SELECT id, name, ipaddr, ownerid FROM vnodes");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {

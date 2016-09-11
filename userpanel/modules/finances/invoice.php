@@ -24,97 +24,84 @@
  *  $Id$
  */
 
-global $LMS,$SESSION,$SMARTY,$invoice, $layout, $type;
+global $LMS, $SESSION, $SMARTY, $layout;
 
 $type = ConfigHelper::checkConfig('userpanel.invoice_duplicate') ? trans('DUPLICATE') : trans('ORIGINAL');
 
-if(strtolower(ConfigHelper::getConfig('invoices.type')) == 'pdf')
-{
-    include('invoice_pdf.php');
-    die;
+$attachment_name = ConfigHelper::getConfig('invoices.attachment_name');
+$invoice_type = strtolower(ConfigHelper::getConfig('invoices.type'));
+
+if ($invoice_type == 'pdf') {
+	$pdf_type = ConfigHelper::getConfig('invoices.pdf_type', 'tcpdf');
+	$pdf_type = ucwords($pdf_type);
+	$classname = 'LMS' . $pdf_type . 'Invoice';
+	$document = new $classname('A4', 'portrait', trans('Invoices'));
+} else {
+	// use LMS templates directory
+	define('SMARTY_TEMPLATES_DIR', ConfigHelper::getConfig('directories.smarty_templates_dir', ConfigHelper::getConfig('directories.sys_dir').'/templates'));
+	$SMARTY->setTemplateDir(null);
+	$custom_templates_dir = ConfigHelper::getConfig('phpui.custom_templates_dir');
+	if (!empty($custom_templates_dir) && file_exists(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir)
+		&& !is_file(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir))
+		$SMARTY->AddTemplateDir(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir);
+	$SMARTY->AddTemplateDir(
+		array(
+			SMARTY_TEMPLATES_DIR . '/default',
+			SMARTY_TEMPLATES_DIR,
+		)
+	);
+	$document = new LMSHtmlInvoice($SMARTY);
 }
-
-header('Content-Type: '.ConfigHelper::getConfig('invoices.content_type'));
-if (ConfigHelper::getConfig('invoices.attachment_name') != '')
-	header('Content-Disposition: attachment; filename='.ConfigHelper::getConfig('invoices.attachment_name'));
-
-$SMARTY->assign('css', file(ConfigHelper::getConfig('directories.sys_dir').'/img/style_print.css')); 
-
-// use LMS templates directory
-define('SMARTY_TEMPLATES_DIR', ConfigHelper::getConfig('directories.smarty_templates_dir', ConfigHelper::getConfig('directories.sys_dir').'/templates'));
-$SMARTY->setTemplateDir(null);
-$custom_templates_dir = ConfigHelper::getConfig('phpui.custom_templates_dir');
-if (!empty($custom_templates_dir) && file_exists(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir)
-	&& !is_file(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir))
-	$SMARTY->AddTemplateDir(SMARTY_TEMPLATES_DIR . '/' . $custom_templates_dir);
-$SMARTY->AddTemplateDir(
-	array(
-		SMARTY_TEMPLATES_DIR . '/default',
-		SMARTY_TEMPLATES_DIR,
-	)
-);
 
 // handle multi-invoices print
 if(!empty($_POST['inv']))
 {
 	$layout['pagetitle'] = trans('Invoices');
-        $SMARTY->display('invoice/invoiceheader.html');
 
 	$count = count($_POST['inv']);
 	$i = 0;
-	foreach (array_keys($_POST['inv']) as $key)
-	{
+	foreach (array_keys($_POST['inv']) as $key) {
 		$invoice = $LMS->GetInvoiceContent(intval($key));
 		$i++;
-		if($invoice['customerid'] != $SESSION->id)
-		{
+		if ($invoice['customerid'] != $SESSION->id)
 			continue;
-		}
+
+		if ($count == 1)
+			$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 
 		if($i == $count)
 			$invoice['last'] = TRUE;
 		$invoice['type'] = $type;
 
-		$SMARTY->assign('invoice', $invoice);
-		$SMARTY->assign('type', $type);
-
-		if(isset($invoice['invoice']))
-			$SMARTY->display('invoice/'.ConfigHelper::getConfig('invoices.cnote_template_file'));
-		else
-			$SMARTY->display('invoice/'.ConfigHelper::getConfig('invoices.template_file'));
+		$document->Draw($invoice);
+		if (!isset($invoice['last']))
+			$document->NewPage();
 	}
+} else {
+	$invoice = $LMS->GetInvoiceContent($_GET['id']);
 
-	$SMARTY->display('clearfooter.html');
-	die;
+	if ($invoice['customerid'] != $SESSION->id)
+		die;
+
+	$invoice['last'] = TRUE;
+	$invoice['type'] = $type;
+
+	$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+
+	if(!isset($invoice['invoice']))
+		$layout['pagetitle'] = trans('Invoice No. $a', $docnumber);
+	else
+		$layout['pagetitle'] = trans('Credit Note No. $a', $docnumber);
+
+	$document->Draw($invoice);
 }
 
-$invoice = $LMS->GetInvoiceContent($_GET['id']);
+if (!is_null($attachment_name) && isset($docnumber)) {
+	$attachment_name = str_replace('%number', $docnumber, $attachment_name);
+	$attachment_name = preg_replace('/[^[:alnum:]_\.]/i', '_', $attachment_name);
+} else
+	$attachment_name = 'invoices.pdf';
 
-if($invoice['customerid'] != $SESSION->id)
-{
-	die;
-}
-
-$invoice['last'] = TRUE;
-$invoice['type'] = $type;
-
-$number = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-
-if(!isset($invoice['invoice']))
-	$layout['pagetitle'] = trans('Invoice No. $a', $number);
-else
-	$layout['pagetitle'] = trans('Credit Note No. $a', $number);
-
-$SMARTY->display('invoice/invoiceheader.html');
-
-$SMARTY->assign('invoice', $invoice);
-$SMARTY->assign('type', $type);
-
-if(isset($invoice['invoice']))
-	$SMARTY->display('invoice/'.ConfigHelper::getConfig('invoices.cnote_template_file'));
-else
-	$SMARTY->display('invoice/'.ConfigHelper::getConfig('invoices.template_file'));
-
-$SMARTY->display('clearfooter.html');
+$document->WriteToBrowser($attachment_name);
 
 ?>

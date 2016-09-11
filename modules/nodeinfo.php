@@ -42,7 +42,7 @@ else
 if (!$LMS->NodeExists($nodeid)) {
 	if (isset($_GET['ownerid']))
 		$SESSION->redirect('?m=customerinfo&id=' . $_GET['ownerid']);
-	else if ($DB->GetOne('SELECT 1 FROM nodes WHERE id = ? AND ownerid = 0', array($nodeid)))
+	else if ($DB->GetOne('SELECT 1 FROM vnodes WHERE id = ? AND ownerid = 0', array($nodeid)))
 		$SESSION->redirect('?m=netdevinfo&ip=' . $nodeid . '&id=' . $LMS->GetNetDevIDByNode($nodeid));
 	else
 		$SESSION->redirect('?m=nodelist');
@@ -72,12 +72,6 @@ else
 	$netdevices = $LMS->GetNetDev($nodeinfo['netdev']);
 
 $layout['pagetitle'] = trans('Node Info: $a', $nodeinfo['name']);
-
-include(MODULES_DIR . '/nodexajax.inc.php');
-
-$nodeinfo = $LMS->ExecHook('node_info_init', $nodeinfo);
-
-$SMARTY->assign('xajax', $LMS->RunXajax());
 
 $nodeinfo['projectname'] = trans('none');
 if ($nodeinfo['invprojectid']) {
@@ -114,6 +108,21 @@ if ($authtype != 0) {
 	$nodeauthtype['dhcp'] = ($authtype & 2);
 	$nodeauthtype['eap'] = ($authtype & 4);
 }
+
+include(MODULES_DIR . '/nodexajax.inc.php');
+
+$nodeinfo = $LMS->ExecHook('node_info_init', $nodeinfo);
+
+$hook_data = $LMS->executeHook('nodeinfo_before_display',
+	array(
+		'nodeinfo' => $nodeinfo,
+		'smarty' => $SMARTY,
+	)
+);
+$nodeinfo = $hook_data['nodeinfo'];
+
+$SMARTY->assign('xajax', $LMS->RunXajax());
+
 $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));
 $SMARTY->assign('netdevices', $netdevices);
 $SMARTY->assign('nodeauthtype', $nodeauthtype);

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,52 +24,48 @@
  *  $Id$
  */
 
-if(isset($_GET['ajax'])) 
-{
+if (isset($_GET['ajax'])) {
 	header('Content-type: text/plain');
 	$search = urldecode(trim($_GET['what']));
 
-	switch($_GET['mode'])
-	{
-	        case 'address':
-			$mode='address';
-                        $database_type = ConfigHelper::getConfig('database.type');
-			if ($database_type == 'mysql' || $database_type == 'mysqli') 
-				$mode = 'substring(address from 1 for length(address)-locate(\' \',reverse(address))+1)';
-			elseif($database_type == 'postgres') 
-				$mode = 'substring(address from \'^.* \')';
-		break;
-	        case 'zip':
-			$mode='zip';
-		break;
-	        case 'city':
-			$mode='city';
-		break;
+	switch ($_GET['mode']) {
+		case 'street':
+			$mode = 'street';
+			break;
+
+		case 'zip':
+			$mode = 'zip';
+			break;
+
+		case 'city':
+			$mode = 'city';
+			break;
 	}
 
 	if (!isset($mode)) { print 'false;'; exit; }
 
-	$candidates = $DB->GetAll('SELECT '.$mode.' as item, count(id) as entries
-	    FROM customers
-	    WHERE '.$mode.' != \'\' AND lower('.$mode.') ?LIKE? lower(' . $DB->Escape('%'.$search.'%') . ')
-	    GROUP BY item
-	    ORDER BY entries desc, item asc
-	    LIMIT 15');
+	$candidates = $DB->GetAll('SELECT ' . $mode . ' as item, count(id) AS entries
+		FROM customers
+		WHERE ' . $mode . ' != \'\' AND lower(' . $mode . ') ?LIKE? lower(' . $DB->Escape('%' . $search . '%') . ')
+		GROUP BY item
+		ORDER BY entries DESC, item ASC
+		LIMIT 15');
 
-	$eglible=array(); $descriptions=array();
+	$eglible = array(); $descriptions = array();
 	if ($candidates)
-	foreach($candidates as $idx => $row) {
-		$eglible[$row['item']] = escape_js($row['item']);
-		$descriptions[$row['item']] = escape_js($row['entries'].' '.trans('entries'));
-	}
+		foreach ($candidates as $idx => $row) {
+			$eglible[$row['item']] = escape_js($row['item']);
+			$descriptions[$row['item']] = escape_js($row['entries'] . ' ' . trans('entries'));
+		}
 	if ($eglible) {
-		print "this.eligible = [\"".implode('","',$eglible)."\"];\n";
-		print "this.descriptions = [\"".implode('","',$descriptions)."\"];\n";
-	} else {
+		print "this.eligible = [\"" . implode('","', $eglible) . "\"];\n";
+		print "this.descriptions = [\"" . implode('","', $descriptions) . "\"];\n";
+	} else
 		print "false;\n";
-	}
 	exit;
 }
+
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
 $customeradd = array();
 
@@ -77,12 +73,16 @@ if (isset($_POST['customeradd']))
 {
 	$customeradd = $_POST['customeradd'];
 
-	if(sizeof($customeradd))
-		foreach($customeradd as $key => $value)
-			if($key != 'uid' && $key != 'contacts')
+	$contacttypes = array_keys($CUSTOMERCONTACTTYPES);
+	foreach ($contacttypes as &$contacttype)
+		$contacttype .= 's';
+
+	if (sizeof($customeradd))
+		foreach ($customeradd as $key => $value)
+			if ($key != 'uid' && !in_array($key, $contacttypes))
 				$customeradd[$key] = trim($value);
 
-	if($customeradd['name'] == '' && $customeradd['lastname'] == '' && $customeradd['address'] == '' && $customeradd['email'] == '')
+	if($customeradd['name'] == '' && $customeradd['lastname'] == '' && $customeradd['address'] == '')
 	{
 		$SESSION->redirect('?m=customeradd');
 	}
@@ -93,19 +93,68 @@ if (isset($_POST['customeradd']))
 	if($customeradd['name'] == '' && !$customeradd['type'])
 		$error['name'] = trans('First name cannot be empty!');
 	
-	if($customeradd['address'] == '')
-		$error['address'] = trans('Address required!');
+	if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required',false))) {
+		if($customeradd['group'] == 0)
+			$error['group'] = trans('Group name required!');
+	}
 	
-	if($customeradd['ten'] !='' && !check_ten($customeradd['ten']) && !isset($customeradd['tenwarning']))
-	{
-		$error['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
-		$customeradd['tenwarning'] = 1;
+	if ($customeradd['street'] == '')
+		$error['street'] = trans('Street name required!');
+
+	if ($customeradd['building'] != '' && $customeradd['street'] == '')
+		$error['street'] = trans('Street name required!');
+
+	if ($customeradd['apartment'] != '' && $customeradd['building'] == '')
+		$error['building'] = trans('Building number required!');
+
+	if ($customeradd['post_building'] != '' && $customeradd['post_street'] == '')
+		$error['post_street'] = trans('Street name required!');
+
+	if ($customeradd['post_apartment'] != '' && $customeradd['post_building'] == '')
+		$error['post_building'] = trans('Building number required!');
+
+	if ($customeradd['ten'] !='') {
+		if (!isset($customeradd['tenwarning']) && !check_ten($customeradd['ten'])) {
+			$error['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
+			$customeradd['tenwarning'] = 1;
+		}
+		$ten_existence_check = ConfigHelper::getConfig('phpui.customer_ten_existence_check', 'none');
+		$ten_exists = $DB->GetOne("SELECT id FROM customers WHERE id <> ? AND REPLACE(REPLACE(ten, '-', ''), ' ', '') = ?",
+			array($_GET['id'], preg_replace('/- /', '', $customeradd['ten']))) > 0;
+		switch ($ten_existence_check) {
+			case 'warning':
+				if (!isset($customeradd['tenexistencewarning']) && $ten_exists) {
+					$error['ten'] = trans('Customer with specified Tax Exempt Number already exists! If you are sure you want to accept it, then click "Submit" again.');
+					$customeradd['tenexistencewarning'] = 1;
+				}
+				break;
+			case 'error':
+				if ($ten_exists)
+					$error['ten'] = trans('Customer with specified Tax Exempt Number already exists!');
+				break;
+		}
 	}
 
-	if($customeradd['ssn'] != '' && !check_ssn($customeradd['ssn']) && !isset($customeradd['ssnwarning']))
-	{
-		$error['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
-		$customeradd['ssnwarning'] = 1;
+	if ($customeradd['ssn'] != '') {
+		if (!isset($customeradd['ssnwarning']) && !check_ssn($customeradd['ssn'])) {
+			$error['ssn'] = trans('Incorrect Social Security Number! If you are sure you want to accept it, then click "Submit" again.');
+			$customeradd['ssnwarning'] = 1;
+		}
+		$ssn_existence_check = ConfigHelper::getConfig('phpui.customer_ssn_existence_check', 'none');
+		$ssn_exists = $DB->GetOne("SELECT id FROM customers WHERE id <> ? AND REPLACE(REPLACE(ssn, '-', ''), ' ', '') = ?",
+			array($_GET['id'], preg_replace('/- /', '', $customeradd['ssn']))) > 0;
+		switch ($ssn_existence_check) {
+			case 'warning':
+				if (!isset($customeradd['ssnexistencewarning']) && $ssn_exists) {
+					$error['ssn'] = trans('Customer with specified Social Security Number already exists! If you are sure you want to accept it, then click "Submit" again.');
+					$customeradd['ssnexistencewarning'] = 1;
+				}
+				break;
+			case 'error':
+				if ($ssn_exists)
+					$error['ssn'] = trans('Customer with specified Social Security Number already exists!');
+				break;
+		}
 	}
 
 	if($customeradd['icn'] != '' && !check_icn($customeradd['icn']))
@@ -130,9 +179,6 @@ if (isset($_POST['customeradd']))
         elseif(!preg_match('/^[0-9]{4,6}$/', $customeradd['pin']))
 	        $error['pin'] = trans('Incorrect PIN code!');
 
-	if($customeradd['email']!='' && !check_emails($customeradd['email']))
-		$error['email'] = trans('Incorrect email!');
-
 	foreach($customeradd['uid'] as $idx => $val)
 	{
 		$val = trim($val);
@@ -155,19 +201,19 @@ if (isset($_POST['customeradd']))
 		if($val) $im[$idx] = $val;
 	}
 
-	foreach($customeradd['contacts'] as $idx => $val)
-	{
-		$phone = trim($val['phone']);
-		$name = trim($val['name']);
-		$type = !empty($val['type']) ? array_sum($val['type']) : NULL;
+	$contacts = array();
 
-		$customeradd['contacts'][$idx]['type'] = $type;
+	$emaileinvoice = false;
 
-		if($name && !$phone)
-			$error['contact'.$idx] = trans('Phone number is required!');
-		elseif ($phone)
-			$contacts[] = array('name' => $name, 'phone' => $phone, 'type' => $type);
-	}
+	foreach ($CUSTOMERCONTACTTYPES as $contacttype => $properties)
+		$properties['validator']($customeradd, $contacts, $error);
+
+	foreach ($customeradd['emails'] as $idx => $val)
+		if ($val['type'] & (CONTACT_INVOICES | CONTACT_DISABLED))
+			$emaileinvoice = true;
+
+	if (isset($customeradd['invoicenotice']) && !$emaileinvoice)
+		$error['invoicenotice'] = trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');
 
 	if ($customeradd['cutoffstop'] == '')
 		$cutoffstop = 0;
@@ -191,6 +237,7 @@ if (isset($_POST['customeradd']))
         $error = $hook_data['error'];
         
         
+//	print_r($error);die;
 	if (!$error) {
 		$customeradd['cutoffstop'] = $cutoffstop;
 
@@ -218,33 +265,31 @@ if (isset($_POST['customeradd']))
 				if ($SYSLOG) {
 					$contactid = $DB->GetLastInsertID('imessengers');
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_IMCONTACT] => $contactid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
+						SYSLOG::RES_IMCONTACT => $contactid,
+						SYSLOG::RES_CUST => $id,
 						'uid' => $val,
 						'type' => $idx
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_IMCONTACT, SYSLOG_OPER_ADD, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_IMCONTACT],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					$SYSLOG->AddMessage(SYSLOG::RES_IMCONTACT, SYSLOG::OPER_ADD, $args);
 				}
 			}
 
-		if(isset($contacts) && $id)
-			foreach($contacts as $contact) {
-				$DB->Execute('INSERT INTO customercontacts (customerid, phone, name, type)
-					VALUES(?, ?, ?, ?)', array($id, $contact['phone'], $contact['name'], $contact['type']));
+		if ($id && !empty($contacts))
+			foreach ($contacts as $contact) {
+				if ($contact['type'] & CONTACT_BANKACCOUNT)
+					$contact['contact'] = preg_replace('/[^a-zA-Z0-9]/', '', $contact['contact']);
+				$DB->Execute('INSERT INTO customercontacts (customerid, contact, name, type)
+					VALUES(?, ?, ?, ?)', array($id, $contact['contact'], $contact['name'], $contact['type']));
 				if ($SYSLOG) {
 					$contactid = $DB->GetLastInsertID('customercontacts');
 					$args = array(
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT] => $contactid,
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $id,
-						'phone' => $contact['phone'],
+						SYSLOG::RES_CUSTCONTACT => $contactid,
+						SYSLOG::RES_CUST => $id,
+						'contact' => $contact['contact'],
 						'name' => $contact['name'],
-						'type' => $contact['type']
+						'type' => $contact['type'],
 					);
-					$SYSLOG->AddMessage(SYSLOG_RES_CUSTCONTACT, SYSLOG_OPER_ADD, $args,
-						array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUSTCONTACT],
-							$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+					$SYSLOG->AddMessage(SYSLOG::RES_CUSTCONTACT, SYSLOG::OPER_ADD, $args);
 				}
 			}
 
@@ -254,20 +299,22 @@ if (isset($_POST['customeradd']))
 		}
 
 		$reuse['status'] = $customeradd['status'];
-		$reuse['contacts'][] = array();
+		foreach (array_keys($CUSTOMERCONTACTTYPES) as $contacttype)
+			$reuse[$contacttype . 's'][] = array();
 		unset($customeradd);
 		$customeradd = $reuse;
 		$customeradd['reuse'] = '1';
 	}
-}
-else
-{
-	$customeradd['contacts'][] = array();
-}
+} else
+	foreach (array_keys($CUSTOMERCONTACTTYPES) as $contacttype)
+		$customeradd[$contacttype . 's'][] = array();
 
 $default_zip = ConfigHelper::getConfig('phpui.default_zip');
 $default_city = ConfigHelper::getConfig('phpui.default_city');
 $default_address = ConfigHelper::getConfig('phpui.default_address');
+$default_stateid = ConfigHelper::getConfig('phpui.default_stateid');
+$default_countryid = ConfigHelper::getConfig('phpui.default_countryid');
+$default_status = ConfigHelper::getConfig('phpui.default_status');
 
 if (!isset($customeradd['zip']) && $default_zip) {
 	$customeradd['zip'] = $default_zip;
@@ -275,9 +322,17 @@ if (!isset($customeradd['zip']) && $default_zip) {
 	$customeradd['city'] = $default_city;
 } if (!isset($customeradd['address']) && $default_address) {
 	$customeradd['address'] = $default_address;
+} if (!isset($customeradd['default_stateid']) && $default_stateid) {
+	$customeradd['stateid'] = $default_stateid;
+} if (!isset($customeradd['default_countryid']) && $default_countryid) {
+	$customeradd['countryid'] = $default_countryid;
+} if (!isset($customeradd['default_status']) && $default_status) {
+        $customeradd['status'] = $default_status;
 }
 
 $layout['pagetitle'] = trans('New Customer');
+
+$LMS->InitXajax();
 
 $hook_data = $LMS->executeHook(
     'customeradd_before_display',
@@ -288,10 +343,14 @@ $hook_data = $LMS->executeHook(
 );
 $customeradd = $hook_data['customeradd'];
 
+$SMARTY->assign('xajax', $LMS->RunXajax());
 $SMARTY->assign('cstateslist', $LMS->GetCountryStates());
 $SMARTY->assign('countrieslist', $LMS->GetCountries());
 $SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname, status FROM divisions ORDER BY shortname'));
 $SMARTY->assign('customeradd', $customeradd);
+if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required',false))) {
+		$SMARTY->assign('groups',$DB->GetAll('SELECT id,name FROM customergroups ORDER BY id'));
+	}
 $SMARTY->assign('error', $error);
 
 

@@ -177,7 +177,7 @@ foreach my $ip (@iplist)
 		if($logmessage)
     		{ 
         		$dbase->do("UPDATE nodes SET warning = 1 WHERE ipaddr = inet_aton('$ip')");
-			my $dbq = $dbase->prepare("SELECT ownerid FROM nodes WHERE ownerid != 0 AND ipaddr = inet_aton('$ip')");
+			my $dbq = $dbase->prepare("SELECT ownerid FROM vnodes WHERE ownerid != 0 AND ipaddr = inet_aton('$ip')");
 			$dbq->execute();
 			if(my $row = $dbq->fetchrow_hashref())
 			{

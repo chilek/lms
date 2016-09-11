@@ -141,8 +141,7 @@ function GetTariffList($order = 'name,asc', $type = NULL, $customergroupid = NUL
 						SELECT 1 FROM assignments b
 						WHERE b.customerid = a.customerid
 							AND liabilityid = 0 AND tariffid = 0
-							AND (b.datefrom <= ?NOW? OR b.datefrom = 0)
-							AND (b.dateto > ?NOW? OR b.dateto = 0)
+							AND b.datefrom <= ?NOW? AND (b.dateto > ?NOW? OR b.dateto = 0)
 					)
 				)'
 				.($type ? ' AND t.type = '.intval($type) : '')
@@ -197,6 +196,15 @@ function GetTariffList($order = 'name,asc', $type = NULL, $customergroupid = NUL
 	return $tarifflist;
 }
 
+function GetTariffTagList() {
+    $db = LMSDB::getInstance();
+    $tarifftaglist = $db->GetAll('SELECT t.id AS tariff_id, t.name AS tariff_name, tt.name AS tag_name
+        FROM tariffs t
+        LEFT JOIN tariffassignments ta ON (ta.tariffid = t.id)
+        LEFT JOIN tarifftags tt ON (ta.tarifftagid = tt.id)');
+    return $tarifftaglist;
+}
+
 if (!isset($_GET['o']))
 	$SESSION->restore('tlo', $o);
 else
@@ -228,6 +236,7 @@ else
 $SESSION->save('tls', $s);
 
 $tarifflist = GetTariffList($o, $t, $g, $p, $s);
+$tarifftaglist = GetTariffTagList();
 
 $customergroups = $LMS->CustomergroupGetAll();
 $promotions = $DB->GetAll('SELECT id, name FROM promotions ORDER BY name');
@@ -256,6 +265,7 @@ $layout['pagetitle'] = trans('Subscription List');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+$SMARTY->assign('tarifftaglist', $tarifftaglist);
 $SMARTY->assign('tarifflist', $tarifflist);
 $SMARTY->assign('customergroups', $customergroups);
 $SMARTY->assign('promotions', $promotions);

@@ -16,6 +16,7 @@
 				{foreach $device.radiosectors as $radiosector}
 					{
 						name: '{$radiosector.name}',
+						technology: {$radiosector.technology},
 						azimuth: {$radiosector.azimuth},
 						width: {$radiosector.width},
 						rsrange: {$radiosector.rsrange},

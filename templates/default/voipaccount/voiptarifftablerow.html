@@ -1,0 +1,39 @@
+<tr id="{$row_id}" class="highlight">
+	<td>
+        <input type="hidden" name="rule[group][{$row_id}][ruleid]"  value="{$row_id}">
+		<input type="hidden" name="rule[group][{$row_id}][groupid]" value="{$group.groupid}">
+		{$group.groupid}
+	</td>
+	<td>
+		<input type="hidden" name="rule[group][{$row_id}][name]" value="{$group.name}">
+		{$group.name}
+	</td>
+	<td>
+		<input type="number"
+		       name="rule[group][{$row_id}][price]"
+		       min="0"
+		       step="any"
+		       onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46 || event.charCode == 44" {* 0-9 dot and comma *}
+		       value="{if isset($group.price)}{$group.price}{elseif isset($default.price)}{$default.price}{/if}"
+		       {tip trigger="price{$row_id}"}>
+	</td>
+	<td>
+		<input type="number"
+			   name="rule[group][{$row_id}][units]"
+			   min="0"
+		       onkeypress="return event.charCode >= 48 && event.charCode <= 57" {* 0-9 *}
+		       value="{if isset($group.units)}{$group.units}{elseif isset($default.units)}{$default.units}{/if}"
+		       {tip trigger="units{$row_id}"}>
+	</td>
+	<td>
+	    <input type="number"
+	           name="rule[group][{$row_id}][unit_size]"
+	           min="0"
+	           onkeypress="return event.charCode >= 48 && event.charCode <= 57" {* 0-9 *}
+	           value="{if isset($group.unit_size)}{$group.unit_size}{elseif isset($default.unit_size)}{$default.unit_size}{/if}"
+		       {tip trigger="unit_size{$row_id}"}>
+	</td>
+	<td>
+		<a href="javascript:deleteRow('{$row_id}')">{trans("delete")}</a>
+	</td>
+</tr>

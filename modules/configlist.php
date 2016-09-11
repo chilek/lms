@@ -54,7 +54,19 @@ function GetConfigList($order='var,asc', $section='', $search='')
 		{
 			case 'phpui':
 				switch($item['var'])
-				{
+				{	
+				case 'autosuggest_max_length':
+					$config[$idx]['description'] = trans('Max length of auto suggest proposal, further characters will be dotted.');
+				break;
+
+				case 'default_autosuggest_placement':
+					$config[$idx]['description'] = trans('Default placement of suggestion window (left/right/top/bottom)');
+				break;
+
+				case 'allow_from2':
+					$config[$idx]['description'] = trans('List of networks and IP addresses, with access to LMS. If empty, every IP address has access to LMS. When you write list of addresses or address pools here, LMS will dismiss every unwanted user with HTTP 403 error.');
+				break;
+
 				case 'allow_from':
 					$config[$idx]['description'] = trans('List of networks and IP addresses, with access to LMS. If empty, every IP address has access to LMS. When you write list of addresses or address pools here, LMS will dismiss every unwanted user with HTTP 403 error.');
 				break;
@@ -113,6 +125,10 @@ function GetConfigList($order='var,asc', $section='', $search='')
 				
 				case 'numberplanlist_pagelimit':
 					$config[$idx]['description'] = trans('Limit of records displayed on one page in numbering plans list. Default: 100.');
+				break;
+				
+				case 'billinglist_pagelimit':
+					$config[$idx]['description'] = trans('Limit of billings displayed on one page. Default: 100.');
 				break;
 
 				case 'divisionlist_pagelimit':
@@ -225,6 +241,10 @@ function GetConfigList($order='var,asc', $section='', $search='')
 					$config[$idx]['description'] = trans('Value of tax rate which will be selected by default on tax rates lists. Default: 22.0');
 				break;
 
+				case 'default_prodid':
+					$config[$idx]['description'] = trans ('Value of product ID. Default: empty');
+				break;
+
 				case 'helpdesk_reply_body':
 					$config[$idx]['description'] = trans('Adds body of message in ticket reply. Default: false');
 				break;
@@ -284,11 +304,44 @@ function GetConfigList($order='var,asc', $section='', $search='')
 				case 'logging':
 					$config[$idx]['description'] = trans('Does this LMS have transaction log support (not opensource). Default: false.');
 				break;
+			
+				case 'add_customer_group_required':
+					$config[$idx]['description'] = trans('If isset "true" when adding new customer select group is required. Default "false"');
+				break;
+
+				case 'event_max_userlist_size':
+					$config[$idx]['description'] = trans('Automatically adjusts the size of the selection list to the number of users when set to 0.');
+				break;
+
+				case 'ping_type':
+					$config[$idx]['description'] = trans('Default ping type. You can use "1" for ping or "2" for arping. Default: 1.');
+				break;
+				
+                                case 'default_teryt_city':
+					$config[$idx]['description'] = trans('Default City in TERYT. Set city id in TERYT.');
+				break;
 
 				default:
 					$config[$idx]['description'] = trans('Unknown option. No description.');
 				break;
 			} //end: var
+			break;
+
+			case 'payments':
+				switch($item['var'])
+				{
+					case 'date_format':
+						$config[$idx]['description'] = trans('Define date format for variable: %period, %aligned_period, %current_month used in payments.comment and payments.settlement_comment');
+					break;
+
+					case 'default_unit_name':
+						$config[$idx]['description'] = trans('Unit name on invoice, default: "pcs."');
+					break;
+
+					default:
+						$config[$idx]['description'] = trans('Unknown option. No description.');
+					break;
+				} //end: var
 			break;
 
 			case 'finances':
@@ -375,6 +428,10 @@ function GetConfigList($order='var,asc', $section='', $search='')
 						$config[$idx]['description'] = trans('Default invoices paytype. Default: "1" (cash)');
 					break;
 
+					case 'customer_bankaccount':
+						$config[$idx]['description'] = trans('Show bankaccount on invoice. Default: 0');
+					break;
+
 					default:
 						$config[$idx]['description'] = trans('Unknown option. No description.');
 					break;
@@ -447,6 +504,26 @@ function GetConfigList($order='var,asc', $section='', $search='')
 					case 'smtp_password':
 					case 'smtp_auth_type':
 						$config[$idx]['description'] = trans('SMTP settings.');
+					break;
+
+					case 'backend':
+						$config[$idx]['description'] = trans('Mail backend settings. Available options: pear or phpmailer.');
+					break;
+
+					case 'phpmailer_from':
+						$config[$idx]['description'] = trans('E-mail address from which we send mail.');
+					break;
+
+					case 'phpmailer_from_name':
+						$config[$idx]['description'] = trans('E-mail address name from which we send mail.');
+					break;
+
+					case 'phpmailer_is_html':
+						$config[$idx]['description'] = trans('Email message in html format.');
+					break;
+
+					case 'smtp_secure':
+						$config[$idx]['description'] = trans('Security protocol. Available options: ssl or tls.');
 					break;
 
 					default:

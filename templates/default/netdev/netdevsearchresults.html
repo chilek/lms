@@ -47,21 +47,17 @@
 			<IMG src="img/port.gif" ALT=""> {$netdevlist[netdevlist].ports} ({$netdevlist[netdevlist].takenports})<BR>
 			<IMG src="img/serialnumber.gif" ALT=""> {$netdevlist[netdevlist].serialnumber}
 		</TD>
-		<TD WIDTH="1%" align="right">
-			<nobr>
+		<TD WIDTH="1%" align="right" class="nobr">
 			<a href="?m=netdevdel&id={$netdevlist[netdevlist].id}" onClick="return confirmLink(this, '{t a=$netdevlist[netdevlist].name}Are you sure, you want to remove device \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<a href="?m=netdevedit&id={$netdevlist[netdevlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 			<a href="?m=netdevinfo&id={$netdevlist[netdevlist].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
-			</nobr>
 		</TD>
 	</TR>
 	{if $netdevlist[netdevlist.index_next].ownerid == $netdevlist[netdevlist].ownerid && $listdata.order == "owner"}{cycle print=false}{/if}
 	{sectionelse}
 	<TR>
-		<TD colspan="4" align="center">
-			<p>&nbsp;</p>
-			<p><B>{trans("No such devices matching search criteria.")}</b></p>
-			<p>&nbsp;</p>
+		<TD colspan="4" class="empty-table">
+			<p>{trans("No such devices matching search criteria.")}</p>
 		</TD>
 	</TR>
 	{/section}

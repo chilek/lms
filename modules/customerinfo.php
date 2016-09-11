@@ -26,15 +26,30 @@
 
 $customerid = intval($_GET['id']);
 
-include(MODULES_DIR.'/customer.inc.php');
+$LMS->InitXajax();
 
-//if($customerinfo['cutoffstop'] > mktime(0,0,0))
-//        $customerinfo['cutoffstopnum'] = floor(($customerinfo['cutoffstop'] - mktime(23,59,59))/86400);
+if (!isset($_POST['xjxfun'])) {
+	include(MODULES_DIR.'/customer.inc.php');
+	require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+	//if($customerinfo['cutoffstop'] > mktime(0,0,0))
+	//        $customerinfo['cutoffstopnum'] = floor(($customerinfo['cutoffstop'] - mktime(23,59,59))/86400);
 
-$layout['pagetitle'] = trans('Customer Info: $a',$customerinfo['customername']);
+	$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+	$layout['pagetitle'] = trans('Customer Info: $a',$customerinfo['customername']);
+}
+
+$hook_data = $LMS->executeHook(
+	'customerinfo_before_display',
+	array(
+		'customerinfo' => $customerinfo,
+		'smarty' => $SMARTY,
+	)
+);
+$customerinfo = $hook_data['customerinfo'];
+
+$SMARTY->assign('xajax', $LMS->RunXajax());
 $SMARTY->display('customer/customerinfo.html');
 
 ?>

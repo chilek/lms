@@ -2,7 +2,6 @@
 {block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-{include file="calendar_js.html"}
 <SCRIPT type="text/javascript">
 <!--
 	function update_homedir()
@@ -25,7 +24,7 @@
 			<B>{trans("Login:")}</B>
 		</TD>
 		<TD width="98%">
-			<input type="text" name="account[login]" value="{$account.login}" {tip text="Enter account name" trigger="login"} onkeyup="update_homedir();">
+			<input type="text" name="account[login]" value="{$account.login}" required {tip text="Enter account name" trigger="login"} onkeyup="update_homedir();">
 		</TD>
 	</TR>
     </THEAD>
@@ -98,9 +97,7 @@
 					<B>{trans("Expiration date:")}</B>
 				    </TD>
 				    <TD width="98%">
-					<div class="calendar">
-					<input type="text" size="10" name="account[expdate]" value="{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{/if}" {tip text="Enter or click to choose expiration date for account in YYYY/MM/DD format (Empty field means account never expires)" trigger="expdate"}>
-					</div>
+					<input type="text" size="10" name="account[expdate]" value="{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter or click to choose expiration date for account in YYYY/MM/DD format (Empty field means account never expires)" trigger="expdate"}>
 				    </TD>
 			    	</TR>
 				<TR>
@@ -111,7 +108,7 @@
 					<B>{trans("Forward e-mail:")}</B>
 				    </TD>
 				    <TD width="98%">
-					<input type="text" name="account[mail_forward]" size="25" value="{$account.mail_forward}" {tip text="Enter destination e-mail address for redirect (optional)" trigger="mail_forward"}>
+					<input type="email" name="account[mail_forward]" size="25" value="{$account.mail_forward}" {tip text="Enter destination e-mail address for redirect (optional)" trigger="mail_forward"}>
 				    </TD>
 				</TR>
 				<TR>
@@ -122,7 +119,7 @@
 					<B>{trans("BCC e-mail:")}</B>
 				    </TD>
 				    <TD width="98%">
-					<input type="text" name="account[mail_bcc]" size="25" value="{$account.mail_bcc}" {tip text="Enter e-mail address for blind carbon copy (optional)" trigger="mail_bcc"}>
+					<input type="email" name="account[mail_bcc]" size="25" value="{$account.mail_bcc}" {tip text="Enter e-mail address for blind carbon copy (optional)" trigger="mail_bcc"}>
 				    </TD>
 				</TR>
 			    </TABLE>

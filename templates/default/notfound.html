@@ -2,8 +2,8 @@
 {block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1 ALIGN="CENTER"><FONT class="red">{trans("Error!")}</FONT></H1>
+<H1 ALIGN="CENTER"><span class="red">{trans("Error!")}</span></H1>
 <P ALIGN="CENTER"><IMG SRC="img/error.gif" ALT=""></P>
-<P ALIGN="CENTER"><FONT class="alert">{trans("No such module. Requested URL:")}</FONT></P>
-<P ALIGN="CENTER"><FONT class="alert">{$server.QUERY_STRING}</FONT></P>
+<P ALIGN="CENTER"><span class="alert">{trans("No such module. Requested URL:")}</span></P>
+<P ALIGN="CENTER"><span class="alert">{$server.QUERY_STRING}</span></P>
 {/block}

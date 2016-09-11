@@ -131,9 +131,11 @@
 		<TD style="width: 1%;" class="bold nobr">{trans("Access rights:")}</TD>
 		<TD style="width: 98%;" class="fright">
 			<ul>
-			{section name=acl loop=$accesslist}
-			<li class="acl">{$accesslist[acl]}</li>
-			{/section}
+			{foreach $accesslist as $access}
+			{if $access.enabled}
+			<li class="acl">{$access.name}</li>
+			{/if}
+			{/foreach}
 			</ul>
 		</TD>
 	</TR>
@@ -166,6 +168,8 @@
 			{$userinfo.faillogin}, {$userinfo.failedloginip} {if $userinfo.failedloginip != $userinfo.failedloginhost}({$userinfo.failedloginhost}){/if}
 		</TD>
 	</TR>
+        {block name="other-information"}
+        {/block}
 	<TR class="light">
 		<TD COLSPAN="3" class="fbottomu text-right">
 			{if $layout.logid ne $userinfo.id}

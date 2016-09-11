@@ -30,7 +30,7 @@
 			<IMG src="img/network.gif" alt=""> {trans("Name:")}
 		</TD>
 		<TD style="width: 99%;" class="bold" colspan="3">
-			 <INPUT type="text" name="networkdata[name]" value="{$network.name}" {tip trigger="name" bold=1}> ({$network.id|string_format:"%04d"})
+			 <INPUT type="text" name="networkdata[name]" value="{$network.name}" required {tip trigger="name" bold=1}> ({$network.id|string_format:"%04d"})
 		</TD>
 		{/if}
 	</TR>
@@ -41,7 +41,7 @@
 			<IMG src="img/ip.gif" alt=""> {trans("Address/prefix:")}
 		</TD>
 		<TD style="width: 48%;" class="nobr">
-			{if $unlockedit}<INPUT type="text" name="networkdata[address]" value="{$network.address}" {tip text="Write down network address and select mask" trigger="address"}> / <SELECT size="1" title="Prefixlen" name="networkdata[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION value="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] == $network.prefix} selected{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>{else}{$network.address}/{$network.prefix}{/if}
+			{if $unlockedit}<INPUT type="text" name="networkdata[address]" value="{$network.address}" required {tip text="Write down network address and select mask" trigger="address"}> / <SELECT size="1" title="Prefixlen" name="networkdata[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION value="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] == $network.prefix} selected{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>{else}{$network.address}/{$network.prefix}{/if}
 		</TD>
 		<TD style="width: 2%;" class="bold nobr" rowspan="2">
 			<IMG src="img/dhcp.gif" alt=""> {trans("DHCP range:")}
@@ -70,9 +70,11 @@
 		</TD>
 		<TD style="width: 99%;" colspan="3">
 			{if $unlockedit}
-			<INPUT type="text" name="networkdata[interface]" value="{$network.interface}" {tip text="Enter interface where network is connected to (optional)" trigger="interface"}>
+			<INPUT TYPE="text" NAME="networkdata[interface]" VALUE="{$network.interface}" {tip text="Enter interface where network is connected to (optional)" trigger="interface"}>
+			<span class="bold">{trans("vlan:")}</span>
+			<INPUT TYPE="text" NAME="networkdata[vlanid]" VALUE="{if $network.vlanid}{$network.vlanid}{/if}" SIZE="5" MAXLENGTH="4" {tip text="Enter vlan ID (optional)" trigger="vlanid"}>
 			{else}
-			{$network.interface}
+			{if !empty($network.interface)}{$network.interface}{/if}{if !empty($network.vlanid)}, {trans("vlan:")} {$network.vlanid}{/if}
 			{/if}
 		</TD>
 	</TR>
@@ -122,6 +124,20 @@
 			{/if}
 		</TD>
 	</TR>
+	{if $network.ownerid || $unlockedit}
+	<tr>
+		<TD style="width: 2%;" class="fleft bold nobr">
+			<img src="img/customer.gif" alt=""> {trans("Customer:")}
+		</td>
+		<TD style="width: 98%;" colspan="3">
+			{if $unlockedit}
+				{customerlist form="netedit" customers=$customers selected=$network.ownerid selectname="networkdata[customerid]" inputname="networkdata[ownerid]" selecttip="Assign network to customer" inputtip="Enter customer ID (optional)"}
+			{else}
+				<a href="?m=customerinfo&id={$network.ownerid}">{$network.customername}</a>
+			{/if}
+		</td>
+	</tr>
+	{/if}
 	{if $network.hostid || $unlockedit}
 	<tr> 
 		<TD style="width: 2%;" class="fleft bold nobr">

@@ -56,6 +56,9 @@
 			{$userslist[userslist].lastloginip} {if $userslist[userslist].lastloginip != $userslist[userslist].lastloginhost}({$userslist[userslist].lastloginhost}){/if}
 		</TD>
 		<TD class="text-right nobr">
+			{if $userslist[userslist].swekey_id}
+			<img src="img/swekey/swekey-green-8x16.png" alt="{trans("Use Swekey")}" title="{trans("Use Swekey")}">&nbsp;
+			{/if}
 			{if $layout.logid ne $userslist[userslist].id}
 			    {if !$userslist[userslist].access}
 				<a href="?m=useraccess&amp;id={$userslist[userslist].id}&amp;access=1"><img src="img/noaccess.gif" alt="[ {trans('Connect')} ]" title="[ {trans('Connect')} ]"></a>
@@ -64,7 +67,7 @@
 			    {/if}
 			{/if}
 			<a href="?m=userpasswd&amp;id={$userslist[userslist].id}"><img src="img/keys.gif" alt="[ {trans("Change password")} ]" title="[ {trans("Change password")} ]"></a>
-			{if $userslist[userslist].id != $layout.logid}<a href="?m=userdel&amp;id={$userslist[userslist].id}" onClick="return confirmLink(this, '{trans("Are you sure, you want to irreversibly delete that user account?")}');">{/if}<img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>
+			{if $userslist[userslist].id != $layout.logid}<a href="?m=userdel&amp;id={$userslist[userslist].id}" onClick="return confirmLink(this, '{trans("Are you sure, you want to irreversibly delete that user account?")}');"><img src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></a>{/if}
 			<a href="?m=useredit&amp;id={$userslist[userslist].id}"><img src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></a>
 			<a href="?m=userinfo&amp;id={$userslist[userslist].id}"><img src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></a>
 		</TD>

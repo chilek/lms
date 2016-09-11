@@ -76,7 +76,7 @@ interface LMSHelpdeskManagerInterface
 
     public function GetTicketContents($id);
 
-    public function SetTicketState($ticket, $state);
-
     public function GetMessage($id);
+    
+    public function TicketChange($ticketid, array $props); 
 }

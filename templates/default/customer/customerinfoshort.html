@@ -1,15 +1,3 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<!--// $Id$ //-->
-<html><head>
-<meta name="GENERATOR" content="LMS {$layout.lmsv}">
-<meta http-equiv="Content-Language" content="{$LANGDEFS.$_ui_language.html}">
-<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_ui_language.charset}">
-<title>::: LMS :::</title>
-<link href="img/style.css" rel="stylesheet" type="text/css">
-<SCRIPT TYPE="text/javascript" SRC="img/autoiframe.js"></SCRIPT>
-<SCRIPT TYPE="text/javascript" SRC="img/common.js"></SCRIPT>
-</head>
-<body>
 <TABLE class="lmsbox-inner" id="table">
     <THEAD>
 	<TR>
@@ -17,21 +5,17 @@
 			<IMG SRC="img/customer.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%">
-			<B>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <FONT COLOR="RED">({trans("deleted customer")})</FONT>{/if}</B>
+			<B>{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}){if $customerinfo.deleted} <span COLOR="RED">({trans("deleted customer")})</span>{/if}</B>
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
 		<TD WIDTH="1%">
-			{if $customerinfo.status == "3"}<IMG src="img/customer.gif" alt="">{/if}
-			{if $customerinfo.status == "2"}<IMG src="img/wait.gif" alt="">{/if}
-			{if $customerinfo.status == "1"}<IMG src="img/unk.gif" alt="">{/if}
+			<IMG src="img/{$_CSTATUSES[$customerinfo.status].img}" alt="">
 		</TD>
-		<TD WIDTH="99%">
-			{if $customerinfo.status == "3"}<B>{trans("connected<!singular>")}</B>{/if}
-			{if $customerinfo.status == "2"}<B>{trans("waiting")}</B>{/if}
-			{if $customerinfo.status == "1"}<B>{trans("interested<!singular>")}</B>{/if}
+		<TD WIDTH="99%" class="bold">
+			{$_CSTATUSES[$customerinfo.status].singularlabel}
 		</TD>
 	</TR>
 	<TR>
@@ -55,25 +39,29 @@
 		</TD>
 	</TR>
 {/if}
-{foreach from=$customerinfo.contacts item=item}
+{foreach $customerinfo.contacts as $item}
 	<TR>
-		<TD WIDTH="1%">
+		<TD style="width: 1%;">
 			<IMG SRC="img/phone.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<TD style="width: 99%;" class="nobr">
 		    {$item.phone}
 		    {if $item.typestr}[{$item.typestr}]{/if}
 		    {if $item.name} ({$item.name|truncate:"40":"...":true}){/if}
 		</TD>
 	</TR>
 {/foreach}
-{if $customerinfo.email != ""}
+{if !empty($customerinfo.emails)}
 	<TR>
-		<TD WIDTH="1%" >
+		<TD style="width: 1%;">
 			<IMG SRC="img/mail.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%">
-			<A HREF="mailto:{$customerinfo.email}">{$customerinfo.email}</A>
+		<TD style="width: 99%;" class="nobr">
+			{foreach $customerinfo.emails as $email}
+			<A HREF="mailto:{$email.email}">{$email.email}</A>
+			{if $email.name} ({$email.name|truncate:"40":"...":true}){/if}
+			{if !$email@last}<br>{/if}
+			{/foreach}
 		</TD>
 	</TR>
 {/if}
@@ -172,17 +160,9 @@
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 			<B>{trans("Balance:")}</B>
-			{if $customerinfo.balance < 0}<FONT class="alert">{$customerinfo.balance|money_format}</FONT>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
+			{if $customerinfo.balance < 0}<span class="alert">{$customerinfo.balance|money_format}</span>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
 		</TD>
 	</TR>
 {/if}
     </TBODY>
 </TABLE>
-<SCRIPT TYPE="text/javascript">
-<!--
-var table = document.getElementById('table');
-autoiframe_setsize('autoiframe', table.offsetWidth, table.offsetHeight);
-//-->
-</SCRIPT>
-</BODY>
-</HTML>

@@ -46,17 +46,20 @@ else
 {
 	$owner = $LMS->GetNodeOwner($nodeid);
 
-    $plugin_data = array(
-        'id'      => $nodeid,
-        'ownerid' => $owner,
-    );
+	$plugin_data = array(
+		'id'		=> $nodeid,
+		'ownerid'	=> $owner,
+	);
+	$LMS->ExecHook('node_del_before', $plugin_data);
 
-    $LMS->ExecHook('node_del_before', $plugin_data);
+	$LMS->executeHook('nodedel_before_submit', $plugin_data);
 
 	$LMS->DeleteNode($nodeid);
 	$LMS->CleanupInvprojects();
 
-    $LMS->ExecHook('node_del_after', $plugin_data);
+	$LMS->ExecHook('node_del_after', $plugin_data);
+
+	$LMS->executeHook('nodedel_after_submit', $plugin_data);
 
 	if ($SESSION->is_set('backto'))
 		header('Location: ?'.$SESSION->get('backto'));

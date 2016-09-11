@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -84,21 +84,19 @@ switch ($action) {
 
 			if ($SYSLOG) {
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $dev2['id'],
+					SYSLOG::RES_NETDEV => $dev2['id'],
 					'location' => $dev1['location'],
 					'latitude' => $dev1['latitude'],
 					'longitude' => $dev1['longitude'],
 				);
-				$SYSLOG->AddMessage(SYSLOG_RES_NETDEV, SYSLOG_OPER_UPDATE, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+				$SYSLOG->AddMessage(SYSLOG::RES_NETDEV, SYSLOG::OPER_UPDATE, $args);
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $dev1['id'],
+					SYSLOG::RES_NETDEV => $dev1['id'],
 					'location' => $dev2['location'],
 					'latitude' => $dev2['latitude'],
 					'longitude' => $dev2['longitude'],
 				);
-				$SYSLOG->AddMessage(SYSLOG_RES_NETDEV, SYSLOG_OPER_UPDATE, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+				$SYSLOG->AddMessage(SYSLOG::RES_NETDEV, SYSLOG::OPER_UPDATE, $args);
 			}
 
 			$LMS->NetDevDelLinks($dev1['id']);
@@ -195,13 +193,11 @@ switch ($action) {
 	case 'chkmac':
 		if ($SYSLOG) {
 			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $_GET['ip'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $_GET['id'],
+				SYSLOG::RES_NODE => $_GET['ip'],
+				SYSLOG::RES_NETDEV => $_GET['id'],
 				'chkmac' => $_GET['chkmac'],
 			);
-			$SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+			$SYSLOG->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
 		}
 		$DB->Execute('UPDATE nodes SET chkmac=? WHERE id=?', array($_GET['chkmac'], $_GET['ip']));
 		$SESSION->redirect('?m=netdevinfo&id=' . $_GET['id'] . '&ip=' . $_GET['ip']);
@@ -209,13 +205,11 @@ switch ($action) {
 	case 'duplex':
 		if ($SYSLOG) {
 			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $_GET['ip'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $_GET['id'],
+				SYSLOG::RES_NODE => $_GET['ip'],
+				SYSLOG::RES_NETDEV => $_GET['id'],
 				'halfduplex' => $_GET['duplex'],
 			);
-			$SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+			$SYSLOG->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
 		}
 		$DB->Execute('UPDATE nodes SET halfduplex=? WHERE id=?', array($_GET['duplex'], $_GET['ip']));
 		$SESSION->redirect('?m=netdevinfo&id=' . $_GET['id'] . '&ip=' . $_GET['ip']);
@@ -223,13 +217,11 @@ switch ($action) {
 	case 'nas':
 		if ($SYSLOG) {
 			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $_GET['ip'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $_GET['id'],
+				SYSLOG::RES_NODE => $_GET['ip'],
+				SYSLOG::RES_NETDEV => $_GET['id'],
 				'nas' => $_GET['nas'],
 			);
-			$SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+			$SYSLOG->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
 		}
 		$DB->Execute('UPDATE nodes SET nas=? WHERE id=?', array($_GET['nas'], $_GET['ip']));
 		$SESSION->redirect('?m=netdevinfo&id=' . $_GET['id'] . '&ip=' . $_GET['ip']);
@@ -257,7 +249,7 @@ switch ($action) {
 			if ($dev['srcport']) {
 				if (!preg_match('/^[0-9]+$/', $dev['srcport']) || $dev['srcport'] > $ports2) {
 					$error['srcport'] = trans('Incorrect port number!');
-				} elseif ($DB->GetOne('SELECT id FROM nodes WHERE netdev=? AND port=? AND ownerid>0', array($dev['id'], $dev['srcport']))
+				} elseif ($DB->GetOne('SELECT id FROM vnodes WHERE netdev=? AND port=? AND ownerid>0', array($dev['id'], $dev['srcport']))
 						|| $DB->GetOne('SELECT 1 FROM netlinks WHERE (src = ? OR dst = ?)
 					AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?', array($dev['id'], $dev['id'], $dev['id'], $dev['srcport']))) {
 					$error['srcport'] = trans('Selected port number is taken by other device or node!');
@@ -267,7 +259,7 @@ switch ($action) {
 			if ($dev['dstport']) {
 				if (!preg_match('/^[0-9]+$/', $dev['dstport']) || $dev['dstport'] > $ports1) {
 					$error['dstport'] = trans('Incorrect port number!');
-				} elseif ($DB->GetOne('SELECT id FROM nodes WHERE netdev=? AND port=? AND ownerid>0', array($_GET['id'], $dev['dstport']))
+				} elseif ($DB->GetOne('SELECT id FROM vnodes WHERE netdev=? AND port=? AND ownerid>0', array($_GET['id'], $dev['dstport']))
 						|| $DB->GetOne('SELECT 1 FROM netlinks WHERE (src = ? OR dst = ?)
 					AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?', array($_GET['id'], $_GET['id'], $_GET['id'], $dev['dstport']))) {
 					$error['dstport'] = trans('Selected port number is taken by other device or node!');
@@ -315,7 +307,7 @@ switch ($action) {
 		elseif ($node['port']) {
 			if (!preg_match('/^[0-9]+$/', $node['port']) || $node['port'] > $ports) {
 				$error['port'] = trans('Incorrect port number!');
-			} elseif ($DB->GetOne('SELECT id FROM nodes WHERE netdev=? AND port=? AND ownerid>0', array($_GET['id'], $node['port']))
+			} elseif ($DB->GetOne('SELECT id FROM vnodes WHERE netdev=? AND port=? AND ownerid>0', array($_GET['id'], $node['port']))
 					|| $DB->GetOne('SELECT 1 FROM netlinks WHERE (src = ? OR dst = ?)
 				AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?', array($_GET['id'], $_GET['id'], $_GET['id'], $node['port']))) {
 				$error['port'] = trans('Selected port number is taken by other device or node!');
@@ -370,10 +362,10 @@ switch ($action) {
 		if ($_GET['is_sure'] == '1' && !empty($_GET['ip'])) {
 			if ($SYSLOG) {
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $_GET['ip'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $_GET['id'],
+					SYSLOG::RES_NODE => $_GET['ip'],
+					SYSLOG::RES_NETDEV => $_GET['id'],
 				);
-				$SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args, array_keys($args));
+				$SYSLOG->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
 			}
 			$DB->Execute('DELETE FROM nodes WHERE id = ? AND ownerid = 0', array($_GET['ip']));
 		}
@@ -383,16 +375,14 @@ switch ($action) {
 	case 'ipset':
 		if (!empty($_GET['ip'])) {
 			if ($SYSLOG) {
-				$access = $DB->GetOne('SELECT access FROM nodes WHERE id = ? AND ownerid = 0',
+				$access = $DB->GetOne('SELECT access FROM vnodes WHERE id = ? AND ownerid = 0',
 					array($_GET['ip']));
 				$args = array(
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $_GET['ip'],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV] => $_GET['id'],
+					SYSLOG::RES_NODE => $_GET['ip'],
+					SYSLOG::RES_NETDEV => $_GET['id'],
 					'access' => intval(!$access),
 				);
-				$SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE],
-						$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NETDEV]));
+				$SYSLOG->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
 			}
 			$DB->Execute('UPDATE nodes SET access = (CASE access WHEN 1 THEN 0 ELSE 1 END)
 			WHERE id = ? AND ownerid = 0', array($_GET['ip']));
@@ -421,7 +411,7 @@ switch ($action) {
 		if ($nodeipdata['name'] == '')
 			$error['ipname'] = trans('Address field is required!');
 		elseif (strlen($nodeipdata['name']) > 32)
-			$error['ipname'] = trans('Specified name is too long (max.$a characters)!', '32');
+			$error['ipname'] = trans('Specified name is too long (max. $a characters)!', '32');
 		elseif ($LMS->GetNodeIDByName($nodeipdata['name']))
 			$error['ipname'] = trans('Specified name is in use!');
 		elseif (!preg_match('/^[_a-z0-9-]+$/i', $nodeipdata['name']))
@@ -455,7 +445,7 @@ switch ($action) {
 		$macs = array();
 		foreach ($nodeipdata['macs'] as $key => $value)
 			if (check_mac($value)) {
-				if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.allow_mac_sharing', false)))
+				if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing'))
 					if ($LMS->GetNodeIDByMAC($value))
 						$error['mac' . $key] = trans('MAC address is in use!');
 				$macs[] = $value;
@@ -476,16 +466,13 @@ switch ($action) {
 			$nodeipdata['halfduplex'] = 0;
 		if (!isset($nodeipdata['nas']))
 			$nodeipdata['nas'] = 0;
-		$nodeipdata['authtype'] = 0;
-		if(isset($_POST['netdevauthtype'])) {
-			$authtype = $_POST['netdevauthtype'];
-			if (!empty($authtype)) {
-				foreach ($authtype as $op) {
-					$op = (int)$op;
-					$nodeipdata['authtype'] |= $op;
-				}
-			}
-		}
+
+		$authtype = 0;
+		if (isset($nodeipdata['authtype']))
+			foreach ($nodeipdata['authtype'] as $value)
+				$authtype |= intval($value);
+		$nodeipdata['authtype'] = $authtype;
+
 		if (!$error) {
 			$nodeipdata['warning'] = 0;
 			$nodeipdata['location'] = '';
@@ -517,7 +504,7 @@ switch ($action) {
 		if ($nodeipdata['name'] == '')
 			$error['ipname'] = trans('Address field is required!');
 		elseif (strlen($nodeipdata['name']) > 32)
-			$error['ipname'] = trans('Specified name is too long (max.$a characters)!', '32');
+			$error['ipname'] = trans('Specified name is too long (max. $a characters)!', '32');
 		elseif ($LMS->GetNodeIDByName($nodeipdata['name']) &&
 				$LMS->GetNodeName($_GET['ip']) != $nodeipdata['name'])
 			$error['ipname'] = trans('Specified name is in use!');
@@ -579,16 +566,13 @@ switch ($action) {
 			$nodeipdata['halfduplex'] = 0;
 		if (!isset($nodeipdata['nas']))
 			$nodeipdata['nas'] = 0;
-		$nodeipdata['authtype'] = 0;
-		if(isset($_POST['netdevauthtype'])) {
-			$authtype = $_POST['netdevauthtype'];
-			if (!empty($authtype)) {
-				foreach ($authtype as $op) {
-					$op = (int)$op;
-					$nodeipdata['authtype'] |= $op;
-				}
-			}
-		}
+
+		$authtype = 0;
+		if (isset($nodeipdata['authtype']))
+			foreach ($nodeipdata['authtype'] as $value)
+				$authtype |= intval($value);
+		$nodeipdata['authtype'] = $authtype;
+
 		if (!$error) {
 			$nodeipdata['warning'] = 0;
 			$nodeipdata['location'] = '';
@@ -606,12 +590,11 @@ switch ($action) {
 		$DB->Execute('UPDATE nodes SET authtype=? WHERE id=?', array($_GET['authtype'], $_GET['ip']));
 		if ($SYSLOG) {
 			$args = array(
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE] => $_GET['ip'],
-				$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST] => $customerid,
+				SYSLOG::RES_NODE => $_GET['ip'],
+				SYSLOG::RES_CUST => $customerid,
 				'authtype' => intval($_GET['authtype']),
 			);
-			$SYSLOG->AddMessage(SYSLOG_RES_NODE, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_NODE], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_CUST]));
+			$SYSLOG->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
 		}
 		$SESSION->redirect('?m=netdevinfo&id=' . $_GET['id'].'&ip='.$_GET['ip']);
 		break;
@@ -626,8 +609,8 @@ if (isset($_POST['netdev'])) {
 
 	if ($netdevdata['name'] == '')
 		$error['name'] = trans('Device name is required!');
-	elseif (strlen($netdevdata['name']) > 32)
-		$error['name'] = trans('Specified name is too long (max.$a characters)!', '32');
+	elseif (strlen($netdevdata['name']) > 60)
+		$error['name'] = trans('Specified name is too long (max. $a characters)!', '60');
 
 	$netdevdata['ports'] = intval($netdevdata['ports']);
 
@@ -736,6 +719,10 @@ if (isset($_POST['netdev'])) {
 
 		$LMS->NetDevUpdate($netdevdata);
 		$LMS->CleanupInvprojects();
+		$hook_data = $LMS->executeHook('netdevedit_after_update',
+			array(
+				'smarty' => $SMARTY,
+			));
 		$SESSION->redirect('?m=netdevinfo&id=' . $_GET['id']);
 	}
 } else {
@@ -751,12 +738,6 @@ if (isset($_POST['netdev'])) {
 }
 
 $netdevdata['id'] = $_GET['id'];
-
-$netdevauthtype = array();
-if ($authtype != 0) {
-        $netdevauthtype['dhcp'] = ($authtype & 2);
-        $netdevauthtype['eap'] = ($authtype & 4);
-}
 
 $netdevips = $LMS->GetNetDevIPs($_GET['id']);
 $nodelist = $LMS->GetUnlinkedNodes();
@@ -806,7 +787,7 @@ include(MODULES_DIR . '/netdevxajax.inc.php');
 
 switch ($edit) {
 	case 'data':
-		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false)))
+		if (ConfigHelper::checkConfig('phpui.ewx_support'))
 			$SMARTY->assign('channels', $DB->GetAll('SELECT id, name FROM ewx_channels ORDER BY name'));
 
 		$SMARTY->display('netdev/netdevedit.html');

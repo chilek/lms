@@ -973,7 +973,6 @@ $_LANG['Option exists!'] = 'Opţiunea există!';
 $_LANG['Option name contains forbidden characters!'] = 'Nume opţiune conţine niedozwolone caractere.';
 $_LANG['Option name is required!'] = 'Nume opţiune este obligatoriu de completat!';
 $_LANG['Option name is too long (max.64 characters)!'] = 'Nume opţiune este obligatoriu de completat (maks 64 caractere)!';
-$_LANG['Option with empty value not allowed!'] = 'Opţiunea cu valoare goală nu e permisă!';
 $_LANG['Option with specified name exists in that instance!'] = 'Opţiunea o podanej nume istnieje w tej instancji!';
 $_LANG['OR'] = 'SAU';
 $_LANG['or Customer ID:'] = 'sau identificator client:';

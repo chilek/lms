@@ -6170,7 +6170,7 @@ syslog("Komunikat");
    listą adresów i nazw komputerów (oraz urządzeń).
 
    Przykład 6-1. Parser: Tworzenie pliku /etc/hosts
-{result = SELECT name, inet_ntoa(ipaddr) AS ip FROM nodes}\
+{result = SELECT name, inet_ntoa(ipaddr) AS ip FROM vnodes}\
 127.0.0.1    localhost
 {for (r=0; r<number(result); r++)}\
 {result[r].name}{"\t"}{result[r].ip}
@@ -6195,7 +6195,7 @@ for (r=0; r<number(CUSTOMERS); r++)
    adresu.
 
    Przykład 6-3. Parser: Opisy komputerów dla iptrafa.
-{list = SELECT LOWER(mac) AS mac, UPPER(name) AS name, inet_ntoa(ipaddr) AS ip from nodes}\
+{list = SELECT LOWER(mac) AS mac, UPPER(name) AS name, inet_ntoa(ipaddr) AS ip from vnodes}\
 {for(i=0; i<number(list); i++)}\
 {replace(":","",list[i].mac)}:{list[i].name} {list[i].ip}
 {/for}
@@ -6282,7 +6282,7 @@ PS. Poniżej załączamy ostatnie 10 operacji na Państwa koncie.
    Przykład 6-6. Parser: Statystyki.
 {
 log = "/var/log/traffic.log";
-nodes = SELECT id, INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub FROM nodes;
+nodes = SELECT id, INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub FROM vnodes;
 if(! fileexists(log))
     exit;
 /if;

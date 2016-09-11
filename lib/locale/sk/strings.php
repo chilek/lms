@@ -1002,7 +1002,6 @@ $_LANG['Option exists!'] = 'Voľba už existuje!';
 $_LANG['Option name contains forbidden characters!'] = 'Meno voľby obsahuje zakázané znaky.';
 $_LANG['Option name is required!'] = 'Meno voľby je povinné!';
 $_LANG['Option name is too long (max.64 characters)!'] = 'Meno voľby je príliš dlhé (max. 64 znakov)!';
-$_LANG['Option with empty value not allowed!'] = 'Voľba s prázdnou hodnotou nieje povolená!';
 $_LANG['Option with specified name exists in that instance!'] = 'Voľba s daným menom v danej inštancií už existuje!';
 $_LANG['OR'] = 'ALEBO';
 $_LANG['or Customer ID:'] = 'alebo ID zákazníka:';

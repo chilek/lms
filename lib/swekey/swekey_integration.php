@@ -1,39 +1,39 @@
 <?php
 
-include_once(dirname(__FILE__) . '/swekey.php');
+include_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'swekey.php');
 
 class SwekeyIntegration {
-	var $ajax_test_mode;
-	var $is_user_logged;
-	var $swekey_dir_url;
-	var $show_result_url;
-	var $logout_url;
-	var $swekey_id_of_logged_user;
-	var $input_names;
-	var $multiple_logos;
-	var $dynamic_login_form;
-	var $lang;
-	var $logFile;
-	var $show_debug_info;
-	var $session_id;
+	public $ajax_test_mode;
+	public $is_user_logged;
+	public $swekey_dir_url;
+	public $show_result_url;
+	public $logout_url;
+	public $swekey_id_of_logged_user;
+	public $input_names;
+	public $multiple_logos;
+	public $dynamic_login_form;
+	public $lang;
+	public $logFile;
+	public $show_debug_info;
+	public $session_id;
 
-	function LogStr($text) {
+	public function LogStr($text) {
 		if (!empty($this->logFile))
 			error_log(">" . $text . "\n", 3, $this->logFile);
 	}
 
-	function LocalizedStr($strId) {
+	public function LocalizedStr($strId) {
 		return '';
 	}
 
-	function LoadSession($iCreateIfNotExist = false) {
+	public function LoadSession($iCreateIfNotExist = false) {
 		$dir_path = session_save_path();
 		if (empty($dir_path))
 			$dir_path = "/tmp";
 
 		$path = null;
 		if (!empty($_COOKIE['swekey_session_id']) && mb_ereg('^[a-f0-9]{32}$', $_COOKIE['swekey_session_id'])) {
-			$path = $dir_path . "/" . $_COOKIE['swekey_session_id'] . ".swekey_session";
+			$path = $dir_path . DIRECTORY_SEPARATOR . $_COOKIE['swekey_session_id'] . ".swekey_session";
 			$time = @filemtime($path);
 			if ($time == FALSE) {
 				$path = null;
@@ -57,7 +57,7 @@ class SwekeyIntegration {
 		return array();
 	}
 
-	function SaveSession($data) {
+	public function SaveSession($data) {
 		if (empty($this->session_id))
 			return;
 
@@ -65,34 +65,34 @@ class SwekeyIntegration {
 		if (empty($dir_path))
 			$dir_path = "/tmp";
 
-		@file_put_contents($dir_path . "/" . $this->session_id . ".swekey_session", serialize($data));
+		@file_put_contents($dir_path . DIRECTORY_SEPARATOR . $this->session_id . ".swekey_session", serialize($data));
 	}
 
-	function DestroySession() {
+	public function DestroySession() {
 		$dir_path = session_save_path();
 		if (empty($dir_path))
 			$dir_path = "/tmp";
 
-		$path = $dir_path . "/" . @$_COOKIE['swekey_session_id'] . ".swekey_session";
+		$path = $dir_path . DIRECTORY_SEPARATOR . @$_COOKIE['swekey_session_id'] . ".swekey_session";
 		@unlink($path);
 	}
 
-	function GetConfig() {
-		include(dirname(__FILE__) . '/swekey_config.php');
+	public function GetConfig() {
+		include(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'swekey_config.php');
 		return $config;
 	}
 
-	function AdditionalJavaScript() {
+	public function AdditionalJavaScript() {
 		return "";
 	}
 
-	function GetJavaScriptIncludes() {
+	public function GetJavaScriptIncludes() {
 		$res = '<script type="text/javascript" src="' . $this->swekey_dir_url . 'swekey.js"></script>' . "\n";
 		$res .= '<script type="text/javascript" src="' . $this->swekey_dir_url . 'swekey_integration.js"></script>' . "\n";
 		return $res;
 	}
 
-	function GetIntegrationScript($uid) {
+	public function GetIntegrationScript($uid) {
 		$config = $this->GetConfig();
 
 		$require_js_includes = false;
@@ -456,7 +456,7 @@ class SwekeyIntegration {
 		return $result;
 	}
 
-	function IsSwekeyAuthenticated($swekey_id) {
+	public function IsSwekeyAuthenticated($swekey_id) {
 		$config = $this->GetConfig();
 
 		// delete the cookie

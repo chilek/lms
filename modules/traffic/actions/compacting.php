@@ -40,7 +40,7 @@ if(isset($_POST['removedeleted']))
 {
     if($nodes_from_stats = $DB->GetCol('SELECT DISTINCT nodeid FROM stats')) 
     {
-	$nodes = $DB->GetCol('SELECT id FROM nodes');
+	$nodes = $DB->GetCol('SELECT id FROM vnodes');
 	foreach($nodes_from_stats as $node)
 	{
 	    if(!in_array($node,$nodes))
@@ -61,7 +61,7 @@ if(isset($_POST['level']))
     }
     if($mintime = $DB->GetOne('SELECT MIN(dt) FROM stats'))
     {
-	$nodes = $DB->GetAll('SELECT id, name FROM nodes ORDER BY name');
+	$nodes = $DB->GetAll('SELECT id, name FROM vnodes ORDER BY name');
 	foreach($nodes as $node)
 	{
     	    echo "'".$node['name']."'\t: "; 

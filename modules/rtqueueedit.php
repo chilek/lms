@@ -50,7 +50,7 @@ if(isset($_POST['queue']))
 				newticketsubject=?, newticketbody=?,
 				newmessagesubject=?, newmessagebody=?,
 				resolveticketsubject=?, resolveticketbody=? WHERE id=?',
-				array($queue['name'],
+				array(trim($queue['name']),
 					$queue['email'], $queue['description'],
 					$queue['newticketsubject'], $queue['newticketbody'],
 					$queue['newmessagesubject'], $queue['newmessagebody'],

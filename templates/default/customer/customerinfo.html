@@ -3,12 +3,14 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{include file="calendar_js.html"}
 {block name="customerinfobox"}
 	{include file="customer/customerinfobox.html"}
 {/block}
 {block name="customernodesbox"}
 	{include file="customer/customernodesbox.html"}
+{/block}
+{block name="customernetworksbox"}
+	{include file="customer/customernetworksbox.html"}
 {/block}
 {block name="transactions"}
 	{if ConfigHelper::checkConfig('phpui.logging') && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))}

@@ -6,7 +6,7 @@
 {if $bars}
 {if ($download || $upload) && function_exists('imagecreate')}
 <P align="center">
-	<IMG src="?m=trafficgraph&bar={$bar}{if $customer}&customer={$customer}{/if}{if $net}&net={$net}{/if}{if $datefrom}&from={$datefrom}{/if}{if $dateto}&to={$dateto}{/if}" alt="{trans("Network Statistics")}">
+	<IMG src="?m=trafficgraph&amp;bar={$bar}{if $customer}&customer={$customer}{/if}{if $net}&net={$net}{/if}{if $datefrom}&from={$datefrom}{/if}{if $dateto}&to={$dateto}{/if}" alt="{trans("Network Statistics")}">
 </P>
 {/if}
 <TABLE WIDTH="100%" ALIGN="center" CELLPADDING="3">
@@ -27,7 +27,7 @@
 						<B><A HREF="?m=nodeinfo&id={$download.nodeid[download]}">{if $showips}{$download.ipaddr[download]}{else}{$download.name[download]|truncate:25:"...":true}{/if}</A></B>
 					</TD>
 					<TD CLASS="fright hand" WIDTH="99%" NOWRAP>
-						<IMG SRC="img/redpx.gif" HEIGHT="12" WIDTH="{$download.bar[download]}" BORDER="1" ALT="" {tip a=$download.nodeid[download] b=$bar c=$datefrom d=$dateto sticky=1 popup='?m=trafficgraph&nodeid=$a&bar=$b&from=$c&to=$d'}>
+						<IMG SRC="img/redpx.gif" HEIGHT="12" WIDTH="{$download.bar[download]}" BORDER="1" ALT="" {tip a=$download.nodeid[download] b=$bar c=$datefrom d=$dateto sticky=1 popup='?m=trafficgraph&nodeid=$a&amp;bar=$b&from=$c&to=$d'}>
 						{$download.data[download]|string_format:"%.2f"}&nbsp;{$download.unit[download]} ({$download.avg[download]|string_format:"%d"}&nbsp;kbit/s) 
 					</TD>
 				</TR>
@@ -58,7 +58,7 @@
 						<B><A HREF="?m=nodeinfo&id={$upload.nodeid[upload]}">{if $showips}{$upload.ipaddr[upload]}{else}{$upload.name[upload]|truncate:25:"...":true}{/if}</A></B>
 					</TD>
 					<TD CLASS="fright hand" WIDTH="99%" NOWRAP>
-						<IMG SRC="img/bluepx.gif" HEIGHT="12" WIDTH="{$upload.bar[upload]}" BORDER="1" ALT="" {tip a=$upload.nodeid[upload] b=$bar c=$datefrom d=$dateto sticky=1 popup='?m=trafficgraph&nodeid=$a&bar=$b&from=$c&to=$d'}>
+						<IMG SRC="img/bluepx.gif" HEIGHT="12" WIDTH="{$upload.bar[upload]}" BORDER="1" ALT="" {tip a=$upload.nodeid[upload] b=$bar c=$datefrom d=$dateto sticky=1 popup='?m=trafficgraph&nodeid=$a&amp;bar=$b&from=$c&to=$d'}>
 						{$upload.data[upload]|string_format:"%.2f"}&nbsp;{$upload.unit[upload]} ({$upload.avg[upload]|string_format:"%d"}&nbsp;kbit/s) 
 					</TD>
 				</TR>
@@ -79,7 +79,7 @@
 	{/if}
 </TABLE>
 {else}
-<FORM NAME="traffic" METHOD="POST" ACTION="?m=traffic&bar=user">
+<FORM NAME="traffic" METHOD="POST" ACTION="?m=traffic&amp;bar=user">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -133,24 +133,14 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%">
+		<TD style="width: 1%;">
 			<IMG src="img/customer.gif" alt="">
 		</TD>
-		<TD nowrap>
-			<B>{trans("Customer:")}</B>
+		<TD class="bold nobr">
+			{trans("Customer:")}
 		</TD>
 		<TD>
-			{if $customers}
-			<SELECT size="1" name="customerid" {tip text="Select customer"}>
-				<OPTION VALUE="0">{trans("- all customers -")}</OPTION>
-				{foreach from=$customers item=customer}
-				<OPTION value="{$customer.id}">{$customer.customername|truncate:40:"...":true} ({$customer.id|string_format:"%04d"})</OPTION>
-				{/foreach}
-			</SELECT>
-			{else}
-			<INPUT type="text" name="customerid" value="" size="5" {tip text="Enter customer ID"}>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.traffic.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
-			{/if}
+			{customerlist form="traffic" customers=$customers selectname="custid" inputname="customerid" firstoption="- all customers -"}
 		</TD>
 	</TR>
 	<TR {tip text="Select results sorting order"}>
@@ -178,7 +168,7 @@
 			<B>{trans("Nodes limit:")}</B>
 		</TD>
 		<TD>
-			<INPUT TYPE="text" NAME="limit" SIZE="3"></INPUT>
+			<INPUT TYPE="text" NAME="limit" SIZE="3">
 		</TD>
 	</TR>
 	<TR {tip text="Nodes depiction way on charts"}>
@@ -189,7 +179,7 @@
 			<B>{trans("IP addresses instead of nodes names")}</B>
 		</TD>
 		<TD>
-			<INPUT TYPE="checkbox" NAME="showips" VALUE="1"></INPUT>
+			<INPUT TYPE="checkbox" NAME="showips" VALUE="1">
 		</TD>
 	</TR>
 	<TR>

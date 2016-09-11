@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,12 +30,11 @@ if (!empty($_GET['changestatus'])) {
 	if ($SYSLOG) {
 		$div = $DB->GetRow('SELECT countryid, status FROM divisions WHERE id = ?', array($id));
 		$args = array(
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $id,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $div['countryid'],
+			SYSLOG::RES_DIV => $id,
+			SYSLOG::RES_COUNTRY => $div['countryid'],
 			'status' => intval($div['status']) ? 0 : 1
 		);
-		$SYSLOG->AddMessage(SYSLOG_RES_DIV, SYSLOG_OPER_UPDATE, $args,
-			array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV], $SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY]));
+		$SYSLOG->AddMessage(SYSLOG::RES_DIV, SYSLOG::OPER_UPDATE, $args);
 	}
 	$DB->Execute('UPDATE divisions SET status = (CASE WHEN status > 0 THEN 0 ELSE 1 END)
 		WHERE id = ?', array($id));
@@ -102,7 +101,7 @@ if(!empty($_POST['division']))
 			'address' => $division['address'],
 			'city' => $division['city'],
 			'zip' => $division['zip'],
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY] => $division['countryid'],
+			SYSLOG::RES_COUNTRY => $division['countryid'],
 			'ten' => $division['ten'],
 			'regon' => $division['regon'],
 			'account' => $division['account'],
@@ -114,7 +113,7 @@ if(!empty($_POST['division']))
 			'inv_paytype' => $division['inv_paytype'] ? $division['inv_paytype'] : null,
 			'description' => $division['description'],
 			'status' => !empty($division['status']) ? 1 : 0,
-			$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV] => $division['id']
+			SYSLOG::RES_DIV => $division['id']
 		);
 		$DB->Execute('UPDATE divisions SET name=?, shortname=?, address=?, 
 			city=?, zip=?, countryid=?, ten=?, regon=?, account=?, inv_header=?, 
@@ -123,9 +122,7 @@ if(!empty($_POST['division']))
 			WHERE id=?', array_values($args));
 
 		if ($SYSLOG)
-			$SYSLOG->AddMessage(SYSLOG_RES_DIV, SYSLOG_OPER_UPDATE, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_COUNTRY],
-					$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_DIV]));
+			$SYSLOG->AddMessage(SYSLOG::RES_DIV, SYSLOG::OPER_UPDATE, $args);
 
 		$SESSION->redirect('?m=divisionlist');
 	}

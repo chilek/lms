@@ -226,7 +226,7 @@ foreach my $key (@networks)
 	my $dbq = $dbase->prepare("SELECT inet_ntoa(address) AS address, mask FROM networks WHERE name = UPPER('$key')");
 	$dbq->execute();
 	while (my $row = $dbq->fetchrow_hashref()) {
-		my $sdbq = $dbase->prepare("SELECT inet_ntoa(ipaddr) AS ipaddr FROM nodes WHERE access = 1");
+		my $sdbq = $dbase->prepare("SELECT inet_ntoa(ipaddr) AS ipaddr FROM vnodes WHERE access = 1");
 		$sdbq->execute();
 		while(my $srow = $sdbq->fetchrow_hashref())
 		{

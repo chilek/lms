@@ -39,7 +39,7 @@
 				{if $device && $network.nodes.name[iplist] == "<b>GATEWAY</b>"}
 					<A href="javascript: void(0);" onClick="send_address_settings('{$network.nodes.address[iplist]}');">{$network.nodes.name[iplist]}</A>
 				{else}
-					<FONT class="blend">{$network.nodes.name[iplist]}</FONT>
+					<span class="blend">{$network.nodes.name[iplist]}</span>
 				{/if}
 			{else}
 			<A href="javascript: void(0);" onClick="send_address_settings('{$network.nodes.address[iplist]}');">{$network.nodes.address[iplist]}</A>
@@ -89,23 +89,23 @@
 	<tr>
 		<td class="fall light" align="center">
 			<B>
-			{if $network.page > 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page=1'; return false;">&#9668;</A>{elseif $network.pages > 1}<FONT CLASS="blend">&#9668;</FONT>{/if}
+			{if $network.page > 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page=1'; return false;">&#9668;</A>{elseif $network.pages > 1}<span CLASS="blend">&#9668;</span>{/if}
 
-			{if $network.page - 50 >= 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x - 50" x=$network.page}'; return false;">&laquo;&laquo;&laquo;</A>{elseif $network.pages > 50}<FONT CLASS="blend">&laquo;&laquo;&laquo;</FONT>{/if}
+			{if $network.page - 50 >= 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x - 50" x=$network.page}'; return false;">&laquo;&laquo;&laquo;</A>{elseif $network.pages > 50}<span CLASS="blend">&laquo;&laquo;&laquo;</span>{/if}
 
-			{if $network.page - 10 >= 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x - 10" x=$network.page}'; return false;">&laquo;&laquo;</A>{elseif $network.pages > 10}<FONT CLASS="blend">&laquo;&laquo;</FONT>{/if}
+			{if $network.page - 10 >= 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x - 10" x=$network.page}'; return false;">&laquo;&laquo;</A>{elseif $network.pages > 10}<span CLASS="blend">&laquo;&laquo;</span>{/if}
 
-			{if $network.page > 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x - 1" x=$network.page}'; return false;">&laquo;</A>{else}<FONT CLASS="blend">&laquo;</FONT>{/if}
+			{if $network.page > 1}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x - 1" x=$network.page}'; return false;">&laquo;</A>{else}<span CLASS="blend">&laquo;</span>{/if}
 
 			{t a=$network.page b=$network.pages}Page $a of $b{/t}
 
-			{if $network.page < $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x + 1" x=$network.page}'; return false;">&raquo;</A>{else}<FONT CLASS="blend">&raquo;<FONT>{/if}</B>
+			{if $network.page < $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x + 1" x=$network.page}'; return false;">&raquo;</A>{else}<span CLASS="blend">&raquo;<span>{/if}</B>
 
-			{if $network.page + 10 <= $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x + 10" x=$network.page}'; return false;">&raquo;&raquo;</A>{elseif $network.pages > 10}<FONT CLASS="blend">&raquo;&raquo;<FONT>{/if}</B>
+			{if $network.page + 10 <= $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x + 10" x=$network.page}'; return false;">&raquo;&raquo;</A>{elseif $network.pages > 10}<span CLASS="blend">&raquo;&raquo;<span>{/if}</B>
 
-			{if $network.page + 50 <= $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x + 50" x=$network.page}'; return false;">&raquo;&raquo;&raquo;</A>{elseif $network.pages > 50}<FONT CLASS="blend">&raquo;&raquo;&raquo;<FONT>{/if}</B>
+			{if $network.page + 50 <= $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={math equation="x + 50" x=$network.page}'; return false;">&raquo;&raquo;&raquo;</A>{elseif $network.pages > 50}<span CLASS="blend">&raquo;&raquo;&raquo;<span>{/if}</B>
 
-			{if $network.page < $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={$network.pages}'; return false;">&#9658;</A>{elseif $network.pages > 1}<FONT CLASS="blend">&#9658;<FONT>{/if}
+			{if $network.page < $network.pages}<A HREF="javascript:void(0);" onclick="parent.location.href='?m=chooseip&netid={$netid}{if $device}&device={$device}{/if}&page={$network.pages}'; return false;">&#9658;</A>{elseif $network.pages > 1}<span CLASS="blend">&#9658;<span>{/if}
 			</B>
 		</td>
 	</tr>

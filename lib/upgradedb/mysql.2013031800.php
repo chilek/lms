@@ -83,9 +83,9 @@ $this->Execute("ALTER TABLE customerassignments ADD FOREIGN KEY (customergroupid
 	ADD FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE");
 $this->Execute("UPDATE sourcefiles SET userid = NULL WHERE userid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM users WHERE id = userid)");
 $this->Execute("ALTER TABLE sourcefiles ADD FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE");
-$this->Execute("UPDATE cashimport SET customerid = NULL AND NOT EXISTS (SELECT 1 FROM customers WHERE id = customerid)");
-$this->Execute("UPDATE cashimport SET sourceid = NULL AND NOT EXISTS (SELECT 1 FROM cashsources WHERE id = sourceid)");
-$this->Execute("UPDATE cashimport SET sourcefileid = NULL AND NOT EXISTS (SELECT 1 FROM sourcefiles WHERE id = sourcefileid)");
+$this->Execute("UPDATE cashimport SET customerid = NULL WHERE customerid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM customers WHERE id = customerid)");
+$this->Execute("UPDATE cashimport SET sourceid = NULL WHERE sourceid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM cashsources WHERE id = sourceid)");
+$this->Execute("UPDATE cashimport SET sourcefileid = NULL WHERE sourcefileid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM sourcefiles WHERE id = sourcefileid)");
 $this->Execute("ALTER TABLE cashimport ADD FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	ADD FOREIGN KEY (sourceid) REFERENCES cashsources (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	ADD FOREIGN KEY (sourcefileid) REFERENCES sourcefiles (id) ON DELETE SET NULL ON UPDATE CASCADE");

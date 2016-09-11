@@ -26,13 +26,14 @@
 
 $SESSION->restore('conls', $section);
 
-function parse_cfg_val($value)
-{
+function parse_cfg_val($value) {
 	if (is_bool($value))
 		return $value ? 'true' : 'false';
 	else
 		return (string) $value;
 }
+
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'config.php');
 
 $DB->BeginTrans();
 
@@ -48,9 +49,8 @@ foreach (array('phpui', 'invoices', 'notes', 'receipts', 'finances', 'sms', 'mai
 				array_values($args));
 
 			if ($SYSLOG) {
-				$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_OPER_ADD]] = $DB->GetLastInsertID('uiconfig');
-				$SYSLOG->AddMessage(SYSLOG_RES_UICONF, SYSLOG_OPER_ADD, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF]));
+				$args[SYSLOG::RES_UICONFIG] = $DB->GetLastInsertID('uiconfig');
+				$SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_ADD, $args);
 			}
 		}
 
@@ -59,9 +59,8 @@ if (isset($CONFIG['userpanel'])) {
 		$configs = $DB->GetCol('SELECT id FROM uiconfig WHERE section = ?', array('userpanel'));
 		if (!empty($configs))
 			foreach ($configs as $config) {
-				$args = array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF] => $config);
-				$SYSLOG->AddMessage(SYSLOG_RES_UICONF, SYSLOG_OPER_DELETE, $args,
-					array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF]));
+				$args = array(SYSLOG::RES_UICONF => $config);
+				$SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_DELETE, $args);
 			}
 	}
 	// it's possible that userpanel config is in database yet
@@ -76,9 +75,8 @@ if (isset($CONFIG['userpanel'])) {
 		$DB->Execute('INSERT INTO uiconfig(section, var, value) VALUES(?,?,?)', array_values($args));
 
 		if ($SYSLOG) {
-			$args[$SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF]] = $DB->GetLastInsertID('uiconfig');
-			$SYSLOG->AddMessage(SYSLOG_RES_UICONF, SYSLOG_OPER_ADD, $args,
-				array($SYSLOG_RESOURCE_KEYS[SYSLOG_RES_UICONF]));
+			$args[SYSLOG::RES_UICONF] = $DB->GetLastInsertID('uiconfig');
+			$SYSLOG->AddMessage(SYSLOG::RES_UICONF, SYSLOG::OPER_ADD, $args);
 		}
 	}
 }

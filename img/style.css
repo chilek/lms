@@ -1,4 +1,5 @@
-BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; background-color: #EBE4D6; margin: 0; padding: 0; vertical-align: middle; }
+HTML { height: 100%; }
+BODY		{ font-size: 8pt; font-family: Arial, Helvetica, Verdana; background-color: #EBE4D6; margin: 0; padding: 0; vertical-align: middle; min-height: 100%;}
 TABLE		{ border-collapse: collapse; border-color: #000000 }
 
 #pagecontainer  { height: 100%; }
@@ -7,7 +8,8 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 
 .bottomline { border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #bdac8a; }
 
-TD		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; vertical-align: middle; border-color: black; }
+TD		{ font-size: 8pt; font-family: Arial, Helvetica, Verdana; vertical-align: middle; border-color: black; }
+td[onclick]	{ cursor: pointer; }
 .fleft           { border-left-width: 1pt; border-left-style: solid; }
 .fright          { border-right-width: 1pt; border-right-style: solid; }
 .ftop		{ border-top-width: 1pt; border-top-style: solid; }
@@ -39,17 +41,21 @@ TR.blend A	{ color: #888888; }
 TR.alertblend A	{ color: #FA8072; }
 TR.suspended A  { color: #30B6C6; }
 
-P		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
-P.nor		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
-P.txt		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; text-align: justify; }
-P.separated	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; margin-top: 5; margin-bottom: 5 }
+P		{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; }
+P.nor		{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; }
+P.txt		{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; text-align: justify; }
+P.separated	{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; margin-top: 5; margin-bottom: 5 }
 
-H1		{ font-size: 14pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
-H2		{ font-size: 12pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
-H3		{ font-size: 10pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+H1		{ font-size: 14pt; font-family: Arial, Helvetica, Verdana; }
+H2		{ font-size: 12pt; font-family: Arial, Helvetica, Verdana; }
+H3		{ font-size: 10pt; font-family: Arial, Helvetica, Verdana; }
 HR      { border: 0; height: 1px; color: black; background-color: black; }
 
 INPUT[type="text"],
+INPUT[type="email"],
+INPUT[type="search"],
+INPUT[type="number"],
+INPUT[type="tel"],
 INPUT[type="password"],
 INPUT[type="submit"],
 INPUT[type="button"],
@@ -59,7 +65,7 @@ INPUT[type="file"] {
 }
 INPUT { /* IE */
 	font-size:  8pt;
-	font-family: Tahoma, Verdana, Arial, Helvetica;
+	font-family: Arial, Helvetica, Verdana;
 	vertical-align: middle;
 	border-style: expression(this.type=='checkbox' || this.type=='radio' ? 'none' : 'solid');
 	border-width: expression(this.type=='checkbox' || this.type=='radio' ? '0' : '1px');
@@ -81,27 +87,29 @@ INPUT.hiddenbtn	{ display : none; }
 INPUT.blend	{ border-style: solid; border-color: #c0c0c0; border-width: 1px; vertical-align: middle; color: black; }
 INPUT.scroller	{ border-style: solid; border-color: grey; border-width: 1px; vertical-align: middle; background-color: #DFD5BD; }
 
-TEXTAREA	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #EBE4D6; vertical-align: middle; }
-TEXTAREA.alert	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #FF9B9B; vertical-align: middle; }
+TEXTAREA	{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; border-style: solid; border-width: 1pt; background-color: #EBE4D6; vertical-align: middle; }
+TEXTAREA.alert	{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; border-style: solid; border-width: 1pt; background-color: #FF9B9B; vertical-align: middle; }
 
-SELECT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #EBE4D6; vertical-align: middle; }
-SELECT.alert	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #FF9B9B; vertical-align: middle; }
+SELECT		{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; border-style: solid; border-width: 1pt; background-color: #EBE4D6; vertical-align: middle; }
+SELECT.alert	{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; border-style: solid; border-width: 1pt; background-color: #FF9B9B; vertical-align: middle; }
 
-BUTTON		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 0pt; background-color: #DFD5BD; vertical-align: middle; }
+BUTTON		{ font-size:  8pt; font-family: Arial, Helvetica, Verdana; font-weight: bold; padding: 5px; }
 
 IMG		{ vertical-align: middle; border: 0; }
 
 div.multiselect { 
 	font-size:  8pt;
-	font-family: Tahoma, Verdana, Arial, Helvetica;
+	font-family: Arial, Helvetica, Verdana;
 	border: solid 1px #888888;
 	vertical-align: middle;
 	padding: 0px 20px 0px 4px;
 	cursor: default;
-	background: url('dropdown.gif') no-repeat right #EBE4D6;
-	height: 16px;
-	width: 90px;
+	background: url('dropdown.gif') no-repeat right bottom #EBE4D6;
+	min-height: 16px;
+	max-width: 200px;
+	white-space: pre-wrap;
 	overflow: hidden;
+	min-width: 200px;
 }
 div.multiselectlayer {
 	position: absolute;
@@ -151,21 +159,24 @@ div.multiselectlayer ul li input { border: none; }
 .click-menu .section    { background-color: #EBE4D6; line-height: 15px; padding: 0px 0px 0px 0px; display: none; }
 .click-menu .section a  { color: #800000; text-decoration: none; white-space: nowrap; }
 .click-menu .section a:hover    { color: #336600; text-decoration: none; white-space: nowrap; }
-.click-menu .box2-hover { background-color: #CCFFCC; }
+.click-menu .box2-hover { background-color: #CCFFCC; font-weight: normal; }
 .click-menu .box2 a,
 .click-menu .box2-hover a {
     display: block;
     padding-left: 21px;
+    font-weight: normal;
 }
 .click-menu .box2 a:before,
 .click-menu .box2-hover a:before {
     content: "\00bb\00a0";
+    font-weight: normal;
 }
 .click-menu .section .active,
 .click-menu .section .active:hover { color: yellow; }
 .tip		{ width: 162px; }
 
 .dark		{ background-color: #CEBD9B; }
+.superdark	{ background-color: #AE9D7B; }
 .light		{ background-color: #DFD5BD; }
 .lucid		{ background-color: #EBE4D6; }
 .superlight	{ background-color: #F4F0EC; }
@@ -176,16 +187,18 @@ div.multiselectlayer ul li input { border: none; }
 .red		{ color: #FF0000; }
 .brown		{ color: #A52A2A; }
 .white		{ color: #FFFFFF; }
-.alert		{ color: #FF0000; }
+.alert		{ color: #FF0000 !important; }
 .alertblend	{ color: #FA8072; }
 .suspended	{ color: #30B6C6; }
 .bold		{ font-weight: bold; }
+.crossed	{ text-decoration: line-through; }
 
 .pre		{ font-size:  8pt; font-family: Courier, Courier New; }
 
-.suggestion_list { background-color: #EBE4D6; border: 1px solid; padding: 0px; width: 320px; }
-.suggestion_list ul { padding: 0; margin: 0; list-style-type: none; } 
-.suggestion_list span { position: absolute; right: 0; font-size: 9px; margin-right: 2px; color: brown; }
+.suggestion_list:hover { cursor: pointer; }
+.suggestion_list { background-color: #EBE4D6; border: 1px solid; padding: 0px; min-width: 320px; }
+.suggestion_list ul { padding: 0; margin: 0; list-style-type: none;} 
+.suggestion_list span { float: right; right: 0; font-size: 9px; margin-right: 2px; color: brown; padding-left: 20px; }
 .suggestion_list a { text-decoration: none; padding-left: 2px; color: black; }
 .suggestion_list .selected { background-color: #CCFFCC; }
 .suggestion_list .selected a { color: black; }
@@ -195,7 +208,7 @@ div.multiselectlayer ul li input { border: none; }
 
 .overlib {
     min-width: 10px;
-    font-family: Tahoma, Verdana, Arial, Helvetica;
+    font-family: Arial, Helvetica, Verdana;
     background-color: #F4F0EC;
     padding: 2px 4px;
     border: 1px solid #333;
@@ -206,6 +219,14 @@ div.multiselectlayer ul li input { border: none; }
     -moz-box-shadow: 1px 1px 12px #333;
     -webkit-box-shadow: #333 1px 1px 12px;
     behavior: url(img/pie.htc);
+}
+
+@media (min-device-width: 640px) {
+    .phone_number:link {
+        pointer-events: none;
+        cursor: default;
+        color: black;
+    }
 }
 
 table.lmsbox {
@@ -252,6 +273,10 @@ table.lmsbox > tfoot > tr {
     border-top: 1px solid black;
 }
 
+tr.space_row > td {
+	padding-top: 20px;
+}
+
 .summary {
 	text-align: right;
 	font-weight: bold;
@@ -273,9 +298,13 @@ table.lmsbox > tfoot > tr {
 
 table.lmsbox > thead { text-align: left; }
 
-td.empty-table { text-align: center; font-weight: bold; padding: 2em; background-color: #EBE4D6; }
+td.empty-table { background-color: #EBE4D6; }
+td.empty-table p { text-align: center; font-weight: bold; padding: 2em; }
+td.multiselect { min-width: 230px; }
+td.multiselect select { min-width: 200px; }
 
 .nobr { white-space: nowrap; }
+.line-break { white-space: normal !important;}
 .text-right { text-align: right; }
 .text-left { text-align: left; }
 .text-center { text-align: center; }
@@ -307,3 +336,193 @@ td.empty-table { text-align: center; font-weight: bold; padding: 2em; background
 .wf { width: 100%; }
 .wh { width: 50%; }
 .wq { width: 25%; }
+
+.cancel { background: #ff6c6c; }
+
+.rotate-90 {
+	-webkit-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+	-o-transform: rotate(90deg);
+	writing-mode: lr-tb;
+}
+
+/*
+	jQuery-UI
+*/
+
+.ui-button {
+	background-color: #DFD5BD;
+}
+
+.ui-dialog {
+	background-color: #AE9D7B;
+}
+
+.ui-dialog-titlebar {
+	background-color: #CEBD9B;
+	border: 1px solid #CEBD9B;
+}
+
+.ui-dialog-content {
+	background-color: #DFD5BD;
+}
+
+.ui-dialog-buttonpane {
+	background-color: #DFD5BD;
+}
+
+.ui-tooltip {
+	background-color: #DFD5BD;
+}
+
+.ui-datepicker {
+	background-color: #AE9D7B;
+}
+
+.ui-datepicker-header {
+	background-color: #CEBD9B;
+	border: 1px solid #CEBD9B;
+}
+
+.ui-datepicker-calendar {
+	background-color: #DFD5BD;
+}
+
+.ui-tooltip.voipaccountinfo,
+.ui-tooltip.invoiceinfo,
+.ui-tooltip.docnumber,
+.ui-tooltip.customerinfo,
+.ui-tooltip.nodelist,
+.ui-tooltip.ewxnodelist,
+.ui-tooltip.customerassignmentinfo,
+.ui-tooltip.rtticketinfo,
+.ui-tooltip.nodegroupinfo,
+.ui-tooltip.netdevlist,
+.ui-tooltip.documentview {
+	padding: 0;
+}
+
+.ui-dialog.documentviewdialog {
+	min-width: 200px;
+	min-height: 50px;
+}
+
+.ui-dialog-content.documentviewdialog {
+	padding: 0 !important;
+	min-width: 200px;
+	min-height: 50px !important;
+}
+
+.fileupload-progress-dialog .ui-dialog-titlebar {
+	display: none !important;
+}
+
+.ui-progressbar {
+	position: relative !important;
+}
+
+/*
+.ui-progressbar-value {
+	background-color: blue !important;
+}
+*/
+
+.fileupload-progress-label {
+	position: absolute;
+	left: 48%;
+	top: 4px;
+	font-weight: bold;
+	text-shadow: 1px 1px 0 #fff;
+}
+
+.xdsoft_datetimepicker {
+	background-color: #DFD5BD;
+	border: 1px solid #AE9D7B;
+}
+
+.xdsoft_datetimepicker .xdsoft_label {
+	background-color: #DFD5BD;
+}
+
+.xdsoft_datetimepicker .xdsoft_label > .xdsoft_select > div > .xdsoft_option {
+	background-color: #F4F0EC;
+}
+
+/*
+	DataTable
+*/
+
+table.dataTable tbody tr.odd {
+	background-color: #EBE4D6;
+}
+
+table.dataTable tbody tr.even {
+	background-color: #DFD5BD;
+}
+
+table.dataTable tbody tr.highlight,
+table.dataTable tbody tr.highlight {
+	background-color: #CCFFCC;
+}
+
+table.dataTable tbody th,
+table.dataTable tbody td {
+	padding: 2px;
+}
+
+table.dataTable thead .sorting_asc {
+	background-image: url(asc_order.gif);
+}
+
+table.dataTable thead .sorting_desc {
+	background-image: url(desc_order.gif);
+}
+
+table.dataTable thead .sorting {
+	background-image: none;
+}
+
+table.dataTable thead th,
+table.dataTable thead td {
+	padding-top: 2px;
+	padding-bottom: 2px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+	background: linear-gradient(to bottom, #CEBD9B 0%, #AE9D7B 100%)
+}
+
+.dataTables_wrapper .dataTables_processing {
+	background: linear-gradient(to right, rgba(174,157,123,0) 0%, rgba(174,157,123,0.9) 25%, rgba(174,157,123,0.9) 75%, rgba(174,157,123,0) 100%);
+	font-weight: bold;
+}
+
+.dataTables_wrapper .dataTables_length {
+	padding-left: 4px;
+	padding-top: 5px;
+	width: 33%;
+}
+
+.dataTables_wrapper .dataTables_paginate {
+	float: left;
+	text-align: center;
+	padding-top: 2px;
+	width: 33%;
+}
+
+.dataTables_wrapper .dataTables_filter {
+	padding-right: 4px;
+	padding-top: 5px;
+	width: 33%;
+}
+
+.dataTables_wrapper .dataTables_info {
+	float: none;
+	text-align: center;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	font-weight: bold;
+}
