@@ -390,19 +390,6 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 		    execn = 1;
 	            }
 
-        if(c->cuton)
-        {
-           n = g->db_pexec(g->conn, "UPDATE nodes n1,(SELECT n.id FROM "
-		"nodes n LEFT JOIN nodeassignments ON n.id = nodeassignments.nodeid LEFT "
-		"JOIN assignments ON nodeassignments.assignmentid=assignments.id WHERE "
-		"(assignments.dateto > unix_timestamp() or assignments.dateto='0' ) AND "
-		"assignments.datefrom < unix_timestamp() AND assignments.suspended = 0 AND "
-		"assignments.tariffid > 0 AND access = 0 AND (SELECT SUM(value) "
-		"FROM cash WHERE customerid = n.ownerid) >= 0) AS n2 SET n1.access=1, n1.warning=0 WHERE n1.id = n2.id"
-		);
-                execn = 1;
-        }
-
 	// debtors
 	if(plimit)
 		query = strdup(
