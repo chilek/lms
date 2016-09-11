@@ -74,6 +74,7 @@ function smarty_function_fileupload($params, $template) {
 					modal: true,
 					autoOpen: false,
 					resizable: false,
+					draggable: false,
 					minWidth: 0,
 					minHeight: 0,
 					dialogClass: "fileupload-progress-dialog",
@@ -84,7 +85,7 @@ function smarty_function_fileupload($params, $template) {
 							$(this).dialog("close");
 						}
 					}]
-				});
+				}).parent().draggable();
 				progressbar.progressbar({
 					value: false
 				});
