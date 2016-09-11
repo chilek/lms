@@ -350,25 +350,72 @@ td.multiselect select { min-width: 200px; }
 	jQuery-UI
 */
 
-.ui-button {
+.ui-widget.ui-widget-content {
+	border: 1px solid #AE9D7B;
+}
+
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default,
+.ui-button,
+html .ui-button.ui-state-disabled:hover,
+html .ui-button.ui-state-disabled:active {
+	border: 1px solid #AE9D7B;
 	background-color: #DFD5BD;
+}
+
+.ui-state-hover,
+.ui-widget-content .ui-state-hover,
+.ui-widget-header .ui-state-hover,
+.ui-state-focus,
+.ui-widget-content .ui-state-focus,
+.ui-widget-header .ui-state-focus,
+.ui-button:hover,
+.ui-button:focus {
+	background-color: #EFE5CD;
+}
+
+.ui-state-highlight,
+.ui-widget-content .ui-state-highlight,
+.ui-widget-header .ui-state-highlight {
+	background-color: #fffa90;
+}
+
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active,
+a.ui-button:active,
+.ui-button:active,
+.ui-button.ui-state-active:hover {
+	background-color: #007fff;
 }
 
 .ui-dialog {
-	background-color: #AE9D7B;
-}
-
-.ui-dialog-titlebar {
 	background-color: #CEBD9B;
-	border: 1px solid #CEBD9B;
 }
 
 .ui-dialog-content {
-	background-color: #DFD5BD;
+	background-color: #CEBD9B;
 }
 
-.ui-dialog-buttonpane {
-	background-color: #DFD5BD;
+.ui-dialog-titlebar {
+	background-color: #AE9D7B;
+	border: 1px solid #AE9D7B;
+}
+
+.ui-dialog .ui-dialog-content {
+	background-color: #CEBD9B;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+	background-color: #CEBD9B;
+	border-top: 0;
+	padding-right: 6px;
+}
+
+.ui-dialog-buttonpane .ui-dialog-buttonset {
+	width: 100%;
+	text-align: center;
 }
 
 .ui-tooltip {
@@ -385,7 +432,7 @@ td.multiselect select { min-width: 200px; }
 }
 
 .ui-datepicker-calendar {
-	background-color: #DFD5BD;
+	background-color: #CEBD9B;
 }
 
 .ui-tooltip.voipaccountinfo,
@@ -414,11 +461,17 @@ td.multiselect select { min-width: 200px; }
 }
 
 .fileupload-progress-dialog .ui-dialog-titlebar {
-	display: none !important;
+	display: none;
 }
 
 .ui-progressbar {
 	position: relative !important;
+	background-color: #DFD5BD;
+}
+
+.ui-progressbar .ui-progressbar-value {
+	background-color: #AE9D7B;
+	border-color: #AE9D7B;
 }
 
 /*
