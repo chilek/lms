@@ -100,19 +100,21 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
         $tmp_phone_list = $this->db->GetAll('SELECT voip_account_id, phone FROM voip_numbers;');
         $phone_list = array();
-        foreach ($tmp_phone_list as $k=>$v) {
-            if (isset($phone_list[$v['voip_account_id']]))
-                $phone_list[$v['voip_account_id']][] = $v['phone'];
-            else
-                $phone_list[$v['voip_account_id']] = array($v['phone']);
-        }
-        unset($tmp_phone_list);
+		if (!empty($tmp_phone_list)) {
+			foreach ($tmp_phone_list as $k=>$v)
+				if (isset($phone_list[$v['voip_account_id']]))
+					$phone_list[$v['voip_account_id']][] = $v['phone'];
+				else
+					$phone_list[$v['voip_account_id']] = array($v['phone']);
+			unset($tmp_phone_list);
+		}
 
-        foreach ($voipaccountlist as $k=>$v) {
-            if (isset($phone_list[$v['id']])) {
-                $voipaccountlist[$k]['phone'] = $phone_list[$v['id']];
-            }
-        }
+		if (!empty($voipaccountlist)) {
+			foreach ($voipaccountlist as &$voipaccount)
+				if (isset($phone_list[$v['id']]))
+					$voipaccount['phone'] = $phone_list[$v['id']];
+			unset($voipaccount);
+		}
 
         $voipaccountlist['total'] = count($voipaccountlist);
         $voipaccountlist['order'] = $order;
