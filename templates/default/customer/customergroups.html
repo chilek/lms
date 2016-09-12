@@ -53,15 +53,19 @@
 				</TR>
 				{/foreach}
 				<TR class="ftop">
-					<TD class="bold valign-top">
+					<TD class="bold nobr valign-top">
+						{if !empty($othercustomergroups)}
 						<A id="add-groups" {tip text="Add customer to groups"}>{trans("Add")} <IMG src="img/save.gif" alt=""></A>
+						{/if}
 					</TD>
 					<TD colspan="2">
+						{if !empty($othercustomergroups)}
 						<SELECT SIZE="1" NAME="customergroupid[]" id="customergroupid" {tip text="Select group to attribute to customer"} multiple>
-							{section name=t loop=$othercustomergroups}
-							<OPTION VALUE="{$othercustomergroups[t].id}">{$othercustomergroups[t].name} ({$othercustomergroups[t].id|string_format:"%04d"})</OPTION>
-							{/section}
+							{foreach $othercustomergroups as $customergroup}
+							<OPTION VALUE="{$customergroup.id}">{$customergroup.name} ({$customergroup.id|string_format:"%04d"})</OPTION>
+							{/foreach}
 						</SELECT>
+						{/if}
 					</TD>
 					<TD colspan="2" class="text-right nobr valign-top">
 						<A id="delete-groups">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></A>
@@ -73,14 +77,19 @@
 				</TR>
 				<script type="text/javascript">
 				<!--
+					{if !empty($othercustomergroups)}
+					multiselect('customergroupassignment', 'customergroupid', '{trans("... select groups ...")}');
+					{/if}
+
 					$(function() {
-						multiselect('customergroupassignment', 'customergroupid', '{trans("... select groups ...")}');
+						{if !empty($othercustomergroups)}
 						$('#add-groups').click(function() {
 							if ($("input[name='customergroupid[]']").filter(':checked').length)
 								$('form#customergroupassignment').submit();
 							else
 								return false;
 						});
+						{/if}
 						$('#delete-groups').click(function() {
 							if (!$(this).closest('tbody.multi-check').find('input:checked').length
 								|| !confirm('{trans("Are you sure, you want to remove customer from selected groups?")}'))
