@@ -81,7 +81,7 @@
 				</div>
 				<SELECT size="5" name="tg[]" id="tagfilter" onchange="document.choosefilter.submit();" multiple>
 					{foreach $tags as $tag}
-					<OPTION value="{$tag.id}"{if in_array($tag.id, $listdata.tags)} selected{/if}>{$tag.name}</OPTION>
+					<OPTION value="{$tag.id}"{if !empty($listdata.tags) && in_array($tag.id, $listdata.tags)} selected{/if}>{$tag.name}</OPTION>
 					{/foreach}
 				</SELECT>
 				<script type="text/javascript">
