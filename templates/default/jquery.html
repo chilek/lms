@@ -279,6 +279,24 @@
 				});
 			});
 		});
+
+		$('.row-all-check').each(function() {
+			$(this).click(function() {
+				var checked = true;
+				$.each($(this).find(':checkbox'), function(key, value) {
+					var elem = $(value)[0];
+					if (!key)
+						checked = !elem.checked;
+					elem.checked = checked;
+				});
+			});
+			$(this).find('a').click(function(e) {
+				e.stopPropagation();
+			});
+			$(this).find(':checkbox').click(function(e) {
+				e.stopPropagation();
+			});
+		});
 	});
 //-->
 </script>

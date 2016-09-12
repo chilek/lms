@@ -50,7 +50,7 @@
 				<TBODY>
 				{cycle values="light,lucid" print=false}
 				{foreach from=$documenttype.rights item=right key=key}
-				<TR class="highlight {cycle} doctype-rights">
+				<TR class="highlight {cycle} row-all-check">
 					<TD>
 						<A href="?m=userinfo&id={$key}">{$right.name}</A>
 					</TD>
@@ -71,28 +71,6 @@
 					</TD>
 				</TR>
 				{/foreach}
-				<script type="text/javascript">
-				<!--
-					$(function() {
-						var doctyperights = $('.doctype-rights');
-						doctyperights.click(function() {
-							var checked = true;
-							$.each($(this).find(':checkbox'), function(key, value) {
-								var elem = $(this)[0];
-								if (!key)
-									checked = !elem.checked;
-								elem.checked = checked;
-							});
-						});
-						doctyperights.find('a').click(function(e) {
-							e.stopPropagation();
-						});
-						doctyperights.find(':checkbox').click(function(e) {
-							e.stopPropagation();
-						});
-					});
-				//-->
-				</script>
 				<TR>
 					<TD></TD>
 					<TD colspan="5"></TD>

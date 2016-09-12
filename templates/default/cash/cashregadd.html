@@ -109,7 +109,7 @@
 				<TBODY>
 				{cycle values="light,lucid" print=false}
 				{foreach from=$registry.rights item=right}
-				<TR class="highlight {cycle} cashreg-rights">
+				<TR class="highlight {cycle} row-all-check">
 					<TD>
 						<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
 						<INPUT type="hidden" name="registry[usernames][{$right.id}]" value="{$right.name}">
@@ -137,28 +137,6 @@
 					</TD>
 				</TR>
 				{/foreach}
-				<script type="text/javascript">
-				<!--
-					$(function() {
-						var cashregrights = $('.cashreg-rights');
-						cashregrights.click(function() {
-							var checked = true;
-							$.each($(this).find(':checkbox'), function(key, value) {
-								var elem = $(value)[0];
-								if (!key)
-									checked = !elem.checked;
-								elem.checked = checked;
-							});
-						});
-						cashregrights.find('a').click(function(e) {
-							e.stopPropagation();
-						});
-						cashregrights.find(':checkbox').click(function(e) {
-							e.stopPropagation();
-						});
-					});
-				//-->
-				</script>
 				<TR>
 					<TD></TD>
 					<TD colspan="7"></TD>
