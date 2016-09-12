@@ -100,10 +100,13 @@
 		<TD WIDTH="93%">
 			<IMG SRC="img/money.gif" ALT="">&nbsp;<a href="?m=tariffinfo&amp;id={$tariff.id}"><B>{$tariff.name}</B></a><BR>
 			{if $tariff.description}<IMG SRC="img/info1.gif" ALT="">&nbsp;{$tariff.description}{/if}
+			{if !empty($tariff.tags)}
 			<br>
+			{trans("Tags:")}
 			{foreach $tariff.tags as $tag}
 			<a href="?m=tarifftaginfo&id={$tag.tag_id}" class="bold">{$tag.tag_name}</a>{if !$tag@last} / {/if}
 			{/foreach}
+			{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&amp;id={$tariff.id}';">
 			({$tariff.id|string_format:"%04d"})
