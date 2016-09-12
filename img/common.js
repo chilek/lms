@@ -311,9 +311,8 @@ function multiselect(formid, elemid, def)
 	if (old_element.style.cssText)
 		new_element.style.cssText = old_element.style.cssText;
 
-	// save (overlib) popups
-	new_element.onmouseover = old_element.onmouseover;
-	new_element.onmouseout = old_element.onmouseout;
+	// save title for tooltips
+	new_element.title = old_element.title;
 
 	// save onchange event handler
 	new_element.onchange = old_element.onchange;
