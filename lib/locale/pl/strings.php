@@ -3430,4 +3430,6 @@ $_LANG['Select files'] = 'Wybierz pliki';
 $_LANG['Uploading files ...'] = 'Wysyłanie plików ...';
 $_LANG['Uploading files to server ...'] = 'Wysyłanie plików na serwer ...';
 
+$_LANG['Tags:'] = 'Etykiety:';
+
 ?>

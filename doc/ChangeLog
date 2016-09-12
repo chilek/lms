@@ -95,6 +95,9 @@ version ?.??.?? (????-??-??):
   - selected liabilities can be deleted from customer form [chilan]
   - added support for jquery datatables plugin and use it for cash import package list,
     customer messages and customer balance box [chilan]
+  - multiselect control supports onchange event handler so we can use it quite
+    easy in resource filters [chilan]
+  - tariff list can be filtered by multi selection of tariff tags from upper filter [chilan]
 
 version 1.11.20 (2016-04-19):
 
