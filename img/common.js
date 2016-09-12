@@ -285,18 +285,13 @@ function get_object_pos(obj)
 	return {x:x, y:y};
 }
 
-function multiselect(formid, elemid, def, selected)
+function multiselect(formid, elemid, def)
 {
 	var old_element = document.getElementById(elemid);
 	var form = document.getElementById(formid);
 
-	if (!old_element || !form) {
+	if (!old_element || !form)
 		return 0;
-	}
-
-	var selected_elements = null;
-	if (selected)
-		selected_elements = '|' + selected.join('|') + '|';
 
 	// create new multiselect div
 	var new_element = document.createElement('DIV');
@@ -310,7 +305,8 @@ function multiselect(formid, elemid, def, selected)
 		else
 			elem[old_element.options[i].text.replace(' ', '&nbsp;')] = 0;
 
-	new_element.innerHTML =  generateSelectedString(elem);
+	var old_selected = generateSelectedString(elem);
+	new_element.innerHTML = old_selected;
 
 	if (old_element.style.cssText)
 		new_element.style.cssText = old_element.style.cssText;
@@ -318,6 +314,9 @@ function multiselect(formid, elemid, def, selected)
 	// save (overlib) popups
 	new_element.onmouseover = old_element.onmouseover;
 	new_element.onmouseout = old_element.onmouseout;
+
+	// save onchange event handler
+	new_element.onchange = old_element.onchange;
 
 	// replace select with multiselect
 	old_element.parentNode.replaceChild(new_element, old_element);
@@ -403,6 +402,9 @@ function multiselect(formid, elemid, def, selected)
 			}
 		} else {
 			list.style.display = 'none';
+			if (new_element.innerHTML != old_selected && typeof new_element.onchange === 'function')
+				new_element.onchange();
+			old_selected = new_element.innerHTML;
 		}
 	};
 
@@ -413,8 +415,12 @@ function multiselect(formid, elemid, def, selected)
 
 		var parent = e.target.parentNode.innerHTML.indexOf(old_element.name);
 
-		if (e.target.innerHTML.indexOf("<head>") > -1 || parent == -1 || (parent > -1 && e.target.nodeName != 'INPUT' && e.target.nodeName != 'LI' && e.target.nodeName != 'SPAN'))
+		if (e.target.innerHTML.indexOf("<head>") > -1 || parent == -1 || (parent > -1 && e.target.nodeName != 'INPUT' && e.target.nodeName != 'LI' && e.target.nodeName != 'SPAN')) {
 			div.style.display = 'none';
+			if (new_element.innerHTML != old_selected && typeof new_element.onchange === 'function')
+				new_element.onchange();
+			old_selected = new_element.innerHTML;
+		}
 	}
 
 	// TODO: keyboard events
