@@ -321,9 +321,9 @@
 		</TD>
 		<TD style="width: 98%;">
 			<SELECT size="4" name="message[users][]" multiple id="messageusers" {tip text="Select users"}>
-			{section name="users" loop=$users}
-				<OPTION value="{$users[users].phone}">{$users[users].name|truncate:30:"...":true}</OPTION>
-			{/section}
+			{foreach $users as $user}
+				<OPTION value="{$user.phone}"{if in_array($user.phone, $message.users)} selected{/if}>{$user.name|truncate:30:"...":true}</OPTION>
+			{/foreach}
 			</select>
 		</TD>
 	</TR>
@@ -446,11 +446,7 @@
 document.forms['message'].elements['message[sender]'].focus();
 countChars(document.getElementById('smstext'));
 
-var users = [];
-{foreach $message.users as $phone}
-	users.push('{$phone}');
-{/foreach}
-multiselect('message', 'messageusers', '{trans("- none -")}', users);
+multiselect('message', 'messageusers', '{trans("- none -")}');
 multiselect('message', 'customergroups', '{trans("- all groups -")}');
 
 tinymce_init('{$_ui_language}');
