@@ -6,7 +6,7 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 #pageleftbar	{ position: absolute; left: 0px; width: 160px; background-color: #CEBD9B; overflow: hidden; border: 1px solid black; }
 #pagecontent	{ margin-left: 172px; _width: 100%; margin-right: 10px; margin-bottom: 10px; padding: 5px 0px; }
 
-.bottomline { border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #bdac8a; }
+.bottomline { border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #CEBD9B; }
 
 TD		{ font-size: 8pt; font-family: Arial, Helvetica, Verdana; vertical-align: middle; border-color: black; }
 td[onclick]	{ cursor: pointer; }
