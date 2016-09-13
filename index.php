@@ -277,7 +277,18 @@ if ($AUTH->islogged) {
 			$layout['module'] = $module;
 			$LMS->InitUI();
 			$LMS->executeHook($module.'_on_load');
-			include($module_dir . DIRECTORY_SEPARATOR . $module . '.php');
+
+			try {
+				include($module_dir . DIRECTORY_SEPARATOR . $module . '.php');
+			} catch (Exception $e) {
+				$SMARTY->display('header.html');
+				echo '<div class="bold">' . $e->getFile() . '[' . $e->getLine() . ']: <span class="red">'
+					. str_replace("\n", '<br>', $e->getMessage())
+					. '</span></div>';
+				$SMARTY->display('footer.html');
+				die;
+			}
+
 		} else {
 			if ($SYSLOG)
 				$SYSLOG->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_USERNOACCESS,
