@@ -3436,4 +3436,7 @@ $_LANG['Uploading files to server ...'] = 'Wysyłanie plików na serwer ...';
 $_LANG['Tags:'] = 'Etykiety:';
 $_LANG['Select tariff tags'] = 'Wybierz etykiety taryf';
 
+$_LANG['LMS: operation failed!'] = 'LMS: operacja nie powiodła się!';
+$_LANG['AJAX: Invalid result - status:'] = 'AJAX: niepoprawny wynik - status:';
+
 ?>
