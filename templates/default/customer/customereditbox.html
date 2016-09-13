@@ -38,12 +38,10 @@
 	}
 //-->
 </SCRIPT>
-<FORM name="customeredit" id="customeredit" method="post" action="?m=customeredit&amp;id={$customerinfo.id}{if $recover}&amp;action=recover{/if}">
-<p style="display: none;">
+<FORM name="customeredit" id="customeredit" method="post" action="?m=customeredit&id={$customerinfo.id}{if $recover}&action=recover{/if}">
 <INPUT type="hidden" name="customerdata[id]" value="{$customerinfo.id}">
 <INPUT type="submit" class="hiddenbtn">
-</p>
-<TABLE class="lmsbox">
+<TABLE class="lmsbox non-sortable">
 	<THEAD>
 	<TR>
 		<TD style="width: 100%;" class="nobr">
