@@ -26,7 +26,9 @@
 
 if (isset($_POST['netadd']))
 {
-	$netadd = array_map('trim', $_POST['netadd']);
+	foreach ($netadd as $key => $value)
+		if ($key != 'authtype')
+			$netadd[$key] = trim($value);
 
 	if (
 			$netadd['name'] == '' &&
@@ -115,6 +117,12 @@ if (isset($_POST['netadd']))
 
 	if (!empty($netadd['ownerid']) && !$LMS->CustomerExists($netadd['ownerid']))
 		$error['ownerid'] = trans('Customer with the specified ID does not exist');
+
+	$authtype = 0;
+	if (isset($netadd['authtype']))
+		foreach ($netadd['authtype'] as $idx)
+			$authtype |= intval($idx);
+	$netadd['authtype'] = $authtype;
 
 	if (!$error)
 	{

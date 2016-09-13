@@ -49,8 +49,9 @@ if(isset($_POST['networkdata']))
 	$networkdata = $_POST['networkdata'];
 
 	foreach($networkdata as $key => $value)
-		$networkdata[$key] = trim($value);
-		
+		if ($key != 'authtype')
+			$networkdata[$key] = trim($value);
+
 	$networkdata['id'] = $_GET['id'];
 	$networkdata['size'] = pow(2,32-$networkdata['prefix']);
 	$networkdata['addresslong'] = ip_long($networkdata['address']);
@@ -165,6 +166,12 @@ if(isset($_POST['networkdata']))
 	if (!empty($networkdata['ownerid']) && !$LMS->CustomerExists($networkdata['ownerid']))
 		$error['ownerid'] = trans('Customer with the specified ID does not exist');
 
+	$authtype = 0;
+	if (isset($networkdata['authtype']))
+		foreach ($networkdata['authtype'] as $idx)
+			$authtype |= intval($idx);
+	$networkdata['authtype'] = $authtype;
+
 	if (!$error) {
 		if (isset($networkdata['needshft']) && $networkdata['needshft'])
 			$LMS->NetworkShift($network['hostid'], $network['address'], $network['mask'], $networkdata['addresslong'] - $network['addresslong']);
@@ -200,6 +207,7 @@ if(isset($_POST['networkdata']))
 	$network['notes'] = $networkdata['notes'];
 	$network['hostid'] = $networkdata['hostid'];
 	$network['ownerid'] = $networkdata['ownerid'];
+	$network['authtype'] = $networkdata['authtype'];
 }
 
 $networks = $LMS->GetNetworks();

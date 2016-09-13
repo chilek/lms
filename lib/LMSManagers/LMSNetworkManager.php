@@ -119,10 +119,11 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             'notes' => $netadd['notes'],
 			'vlanid' => intval($netadd['vlanid']),
             SYSLOG::RES_HOST => $netadd['hostid'],
+            'authtype' => $netadd['authtype'],
         );
         if ($this->db->Execute('INSERT INTO networks (name, address, mask, interface, gateway,
-				dns, dns2, domain, wins, dhcpstart, dhcpend, notes, vlanid, hostid)
-				VALUES (?, inet_aton(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+				dns, dns2, domain, wins, dhcpstart, dhcpend, notes, vlanid, hostid, authtype)
+				VALUES (?, inet_aton(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
             $netid = $this->db->GetOne('SELECT id FROM networks WHERE address = inet_aton(?) AND hostid = ?', array($netadd['address'], $netadd['hostid']));
             if ($this->syslog && $netid) {
                 $args[SYSLOG::RES_NETWORK] = $netid;
@@ -208,7 +209,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     public function GetNetDevIPs($id)
     {
         return $this->db->GetAll('SELECT n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, 
-			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info, port, n.netid, net.name AS netname, authtype
+			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info, port, n.netid, net.name AS netname, n.authtype
 			FROM vnodes n
 			JOIN networks net ON net.id = n.netid
 			WHERE ownerid = 0 AND netdev = ?', array($id));
@@ -442,12 +443,13 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             'dhcpend' => $networkdata['dhcpend'],
             'notes' => $networkdata['notes'],
             SYSLOG::RES_HOST => $networkdata['hostid'],
+            'authtype' => $networkdata['authtype'],
             SYSLOG::RES_NETWORK => $networkdata['id']
         );
 
         $res = $this->db->Execute('UPDATE networks SET name=?, address=inet_aton(?), 
             mask=?, interface=?, vlanid=?, gateway=?, dns=?, dns2=?, domain=?, wins=?,
-            dhcpstart=?, dhcpend=?, notes=?, hostid=? WHERE id=?', array_values($args));
+            dhcpstart=?, dhcpend=?, notes=?, hostid=?, authtype=? WHERE id=?', array_values($args));
 
         if($networkdata['ownerid']) {
             $args[SYSLOG::RES_CUST] = $networkdata['ownerid'];
@@ -584,7 +586,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     {
         $network = $this->db->GetRow('SELECT no.ownerid, ne.id, ne.name, ne.vlanid, inet_ntoa(ne.address) AS address,
                 ne.address AS addresslong, ne.mask, ne.interface, ne.gateway, ne.dns, ne.dns2,
-                ne.domain, ne.wins, ne.dhcpstart, ne.dhcpend, ne.hostid,
+                ne.domain, ne.wins, ne.dhcpstart, ne.dhcpend, ne.hostid, ne.authtype,
                 mask2prefix(inet_aton(ne.mask)) AS prefix, ne.notes,
                 inet_ntoa(broadcast(ne.address, inet_aton(ne.mask))) AS broadcast
             FROM networks ne
