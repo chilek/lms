@@ -79,9 +79,10 @@
 </SCRIPT>
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
 {$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
+<div class="sortable" id="customerbalancebox">
 <FORM name="addbalance" method="POST" action="?m=balanceadd&id={$balancelist.customerid}">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox" id="customerbalancebox">
+<TABLE class="lmsbox">
 	<THEAD>
 	<TR>
 		<TD {if $limit}class="hand nobr lmsbox-titlebar" data-lmsbox-content="customerbalance"{else}class="fleftu nobr"{/if}>
@@ -271,6 +272,7 @@
 	</TBODY>
 </TABLE>
 </FORM>
+</div>
 <SCRIPT type="text/javascript">
 <!--
 {if $limit}

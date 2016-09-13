@@ -1,7 +1,8 @@
 <!--// $Id$ //-->
+<div class="sortable" id="nodegroups">
 <FORM METHOD="POST" NAME="nodegroupassignment" id="nodegroupassignment" ACTION="?m=nodegroup&action=add&id={$nodeinfo.id}">
 <INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox" id="nodegroups">
+<TABLE class="lmsbox">
     <THEAD>
 	<TR class="hand lmsbox-titlebar" data-lmsbox-content="nodegroupspanel">
 		<TD class="bold">
@@ -104,6 +105,7 @@
 	</TBODY>
 </TABLE>
 </FORM>
+</div>
 <SCRIPT type="text/javascript">
 <!--
 	if (getCookie('nodegroupspanel') == '1')
