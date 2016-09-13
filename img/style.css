@@ -273,6 +273,18 @@ table.lmsbox > tfoot > tr {
     border-top: 1px solid black;
 }
 
+table.lmsbox tbody.background-cycle > tr:nth-child(even) {
+	background-color: #DFD5BD;
+}
+
+table.lmsbox tbody.background-cycle > tr:nth-child(odd) {
+	background-color: #EBE4D6;
+}
+
+table.lmsbox tbody.background-cycle > tr.highlight:hover {
+	background-color: #CCFFCC;
+}
+
 tr.space_row > td {
 	padding-top: 20px;
 }

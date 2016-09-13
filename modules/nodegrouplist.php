@@ -47,53 +47,25 @@ function GroupList()
         return $nodegrouplist;
 }
 
-if (isset($_POST['from']) && isset($_POST['to']))
-{
-	$from = $_POST['from'];
-	$to = $_POST['to'];
-	if ($from != '' && $to != '' && $from != $to)
-	{
-		$prio['from'] = $DB->GetOne('SELECT prio FROM nodegroups WHERE id=?', array($from));
-		$prio['to'] = $DB->GetOne('SELECT prio FROM nodegroups WHERE id=?', array($to));
-
-		if ($prio['to'] < $prio['from']) {
-			$DB->Execute('UPDATE nodegroups SET prio=prio+1 WHERE id<>? AND prio<? AND prio>=?',
-				array($from, $prio['from'], $prio['to']));
-
-			if ($SYSLOG)
-				$nodegroups = $DB->GetAll('SELECT id, prio FROM nodegroups WHERE id<>? AND prio<? AND prio>=?',
-					array($from, $prio['from'] + 1, $prio['to'] + 1));
-		} else {
-			$DB->Execute('UPDATE nodegroups SET prio=prio-1 WHERE id<>? AND prio<=? AND prio>?',
-				array($from, $prio['to'], $prio['from']));
-
-			if ($SYSLOG)
-				$nodegroups = $DB->GetAll('SELECT id, prio FROM nodegroups WHERE id<>? AND prio<=? AND prio>?',
-					array($from, $prio['to'] - 1, $prio['from'] - 1));
-		}
-		if ($SYSLOG && isset($nodegroups))
-			foreach ($nodegroups as $nodegroup) {
-				$args = array(
-					SYSLOG::RES_NODEGROUP => $nodegroup['id'],
-					'prio' => $nodegroup['prio'],
-				);
-				$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUP, SYSLOG::OPER_UPDATE, $args);
-			}
-
-		$args = array(
-			'prio' => $prio['to'],
-			SYSLOG::RES_NODEGROUP => $from,
-		);
-		$DB->Execute('UPDATE nodegroups SET prio=? WHERE id=?', array_values($args));
-
-		if ($SYSLOG)
+if (isset($_POST['nodegroupids'])) {
+	$nodegroupids = $_POST['nodegroupids'];
+	if (empty($nodegroupids))
+		die;
+	foreach ($nodegroupids as $idx => $nodegroupid) {
+		$DB->Execute('UPDATE nodegroups SET prio = ? WHERE id = ?',
+			array($idx + 1, $nodegroupid));
+		if ($SYSLOG) {
+			$args = array(
+				SYSLOG::RES_NODEGROUP => $nodegroupid,
+				'prio' => $idx + 1,
+			);
 			$SYSLOG->AddMessage(SYSLOG::RES_NODEGROUP, SYSLOG::OPER_UPDATE, $args);
-
-		$LMS->CompactNodeGroups();
+		}
 	}
+	header('Content-Type: application/json');
+	echo json_encode(array('result' => 'OK'));
+	die;
 }
-else
-	$from = 0;
 
 $layout['pagetitle'] = trans('Node Groups List');
 
@@ -105,7 +77,6 @@ $listdata['nodestotal'] = $nodegrouplist['nodestotal'];
 unset($nodegrouplist['total']);
 unset($nodegrouplist['nodestotal']);
 
-$SMARTY->assign('selectednodegroupid', $from);
 $SMARTY->assign('nodegrouplist', $nodegrouplist);
 $SMARTY->assign('listdata', $listdata);
 

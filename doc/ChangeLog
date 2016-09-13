@@ -100,6 +100,7 @@ version ?.??.?? (????-??-??):
   - tariff list can be filtered by multi selection of tariff tags from upper filter [chilan]
   - multi node group assignments can be added and deleted from node form [chilan]
   - added global try/catch block as default resort error handler [chilan]
+  - ported node group list sort to jquery and ajax [chilan]
 
 version 1.11.20 (2016-04-19):
 
