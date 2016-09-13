@@ -1,7 +1,7 @@
-<TABLE class="lmsbox">
+<TABLE class="lmsbox" id="customernetworksbox">
 	<THEAD>
 	<TR>
-		<TD style="width: 99%;" class="hand bold" onclick="showOrHide('networkspanel-{$layout.module}');">
+		<TD style="width: 99%;" class="hand bold lmsbox-titlebar" data-lmsbox-content="networkspanel-{$layout.module}">
 			<IMG src="img/network.gif" alt="">
 			{t a=$customernetworks|@count|default:"0"}Customer Networks ($a):{/t}
 		</TD>

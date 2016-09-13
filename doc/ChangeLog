@@ -102,6 +102,7 @@ version ?.??.?? (????-??-??):
   - added global try/catch block as default resort error handler [chilan]
   - ported node group list sort to jquery and ajax [chilan]
   - support of auth type for networks [chilan]
+  - user is able to sort node and customer tabs on his own and order is persistent [chilan]
 
 version 1.11.20 (2016-04-19):
 

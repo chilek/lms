@@ -30,10 +30,10 @@ function setgroup(act)
 </SCRIPT>
 {$lastonline_limit=ConfigHelper::getConfig('phpui.lastonline_limit')}
 {if ConfigHelper::checkConfig('phpui.ewx_support')}{assign var=ewx value=1}{else}{assign var=ewx value=0}{/if}
-<TABLE class="lmsbox">
+<TABLE class="lmsbox" id="customernodesbox">
 	<THEAD>
 	<TR>
-		<TD style="width: 99%;" class="hand bold" onclick="showOrHide('nodespanel-{$layout.module}');">
+		<TD style="width: 99%;" class="hand bold lmsbox-titlebar" data-lmsbox-content="nodespanel-{$layout.module}">
 			<IMG src="img/node.gif" alt="">
 			{t a=$customernodes|@count|default:"0"}Customer Nodes ($a):{/t}
 		</TD>

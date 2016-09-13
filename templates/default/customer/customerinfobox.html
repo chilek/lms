@@ -1,8 +1,8 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox">
+<TABLE class="lmsbox" id="customerinfobox">
     <THEAD>
-	<TR class="dark">
-		<TD width="99%"{if $customerpanel} class="fleftu hand" onClick="showOrHide('customerpanel');"{else} class="fleftu"{/if}>
+	<TR>
+		<TD width="99%"{if $customerpanel} class="fleftu hand lmsbox-titlebar" data-lmsbox-content="customerpanel"{else} class="fleftu"{/if}>
 			<IMG SRC="img/customer.gif" ALT="">
 			<b>{if $customerpanel}{trans("Owner:")}{/if}
 			{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}{if $customerinfo.extid} / {$customerinfo.extid}{/if}){if $customerinfo.deleted} <span class="red">({trans("deleted customer")})</span>{/if}</b>

@@ -1,7 +1,7 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox">
+<TABLE class="lmsbox" id="managementurls">
     <THEAD>
-	<TR class="hand" onclick="showOrHideManagementUrlsPanel();">
+	<TR class="hand lmsbox-titlebar" data-lmsbox-content="managementurlspanel">
 		<TD>
 			<IMG src="img/network.gif" alt="">
 			<span class="bold"><A name="managementurls">{trans("Management URL's:")}</A></span>
@@ -27,7 +27,6 @@ if (getCookie('managementurlspanel') == '1') {
 }
 
 function showOrHideManagementUrlsPanel() {
-	showOrHide('managementurlspanel');
 	if (xjx.$('managementurlspanel').style.display == '')
 		xajax_getManagementUrls();
 }
@@ -94,5 +93,11 @@ function updateManagementUrl(id) {
 //	xjx.$('delete_button_' + id).disabled = true;
 	xajax_updateManagementUrl(id, params);
 }
+
+$(function() {
+	$('tr[data-lmsbox-content="managementurlspanel"]').click(function() {
+		showOrHideManagementUrlsPanel();
+	});
+});
 //-->
 </SCRIPT>

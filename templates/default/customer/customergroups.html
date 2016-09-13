@@ -1,11 +1,9 @@
 <!--// $Id$ //-->
+<TABLE class="lmsbox" id="customergroups">
 <FORM method="post" name="customergroupassignment" id="customergroupassignment" action="?m=customergroup&action=add&id={$customerinfo.id}">
-<p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
-</p>
-<TABLE class="lmsbox">
 	<THEAD>
-	<TR class="hand bold" onclick="showOrHide('groupspanel');">
+	<TR class="hand bold lmsbox-titlebar" data-lmsbox-content="groupspanel">
 		<TD>
 			<IMG src="img/group.gif" alt="">
 			{trans("Customer Groups:")}
@@ -105,8 +103,8 @@
 		</TD>
 	</TR>
 	</TBODY>
-</TABLE>
 </FORM>
+</TABLE>
 <SCRIPT type="text/javascript">
 <!--
 	if (getCookie('groupspanel') == '1')

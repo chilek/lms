@@ -1,13 +1,11 @@
 <!--// $Id$ //-->
 {*$xajax*}
+<TABLE class="lmsbox" id="transactions">
 <FORM name="search" method="post" action="?m=archiveview">
-<p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="hidden" name="search[resourcetype]" value="{$resourcetype}">
 <INPUT type="hidden" name="search[resourceid]" value="{$resourceid}">
 <INPUT type="hidden" name="search[userid]" value="{$userid}">
-</p>
-<TABLE class="lmsbox">
 	<THEAD>
 	<TR class="hand lmsbox-titlebar" data-lmsbox-content="transactionpanel">
 		<TD>
@@ -80,8 +78,8 @@
 		</TD>
 	</TR>
 	</TBODY>
-</TABLE>
 </FORM>
+</TABLE>
 <SCRIPT type="text/javascript">
 <!--
 	if (getCookie('transactionpanel') == '1')

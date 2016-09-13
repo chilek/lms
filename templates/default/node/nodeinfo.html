@@ -7,6 +7,7 @@
 {block name="nodeinfobox"}
 	{include file="node/nodeinfobox.html"}
 {/block}
+<div id="nodeinfo-sortable" class="persistent-order">
 {block name="nodesessions"}
 	{include file="node/nodesessions.html"}
 {/block}
@@ -54,4 +55,10 @@
 {block name="customerbalancebox"}
 	{include file="customer/customerbalancebox.html" limit=-10}
 {/block}
+</div>
+<script type="text/javascript">
+<!--
+	restoreSortable('nodeinfo-sortable');
+//-->
+</script>
 {/block}

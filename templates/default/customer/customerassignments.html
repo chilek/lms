@@ -1,9 +1,9 @@
 <!--// $Id$ //-->
 {assign var=today value=$smarty.now|date_format:"%x 00:00:00"}{assign var=today value=$today|date_format:"%s"}
-<TABLE class="lmsbox">
+<TABLE class="lmsbox" id="customerassignments">
 	<THEAD>
 	<TR>
-		<TD style="width: 99%;" class="hand text-left bold nobr" onClick="showOrHide('customerassignments');">
+		<TD style="width: 99%;" class="hand text-left bold nobr lmsbox-titlebar" data-lmsbox-content="customerassignments">
 			<IMG src="img/money.gif" alt="">
 			{trans("Customer Liabilities:")}
 		</TD>

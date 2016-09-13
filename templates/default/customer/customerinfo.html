@@ -6,6 +6,7 @@
 {block name="customerinfobox"}
 	{include file="customer/customerinfobox.html"}
 {/block}
+<div id="customerinfo-sortable" class="persistent-order">
 {block name="customernodesbox"}
 	{include file="customer/customernodesbox.html"}
 {/block}
@@ -41,4 +42,10 @@
 {block name="customeractions"}
 	{include file="customer/customeractions.html"}
 {/block}
+</div>
+<script type="text/javascript">
+<!--
+	restoreSortable('customerinfo-sortable');
+//-->
+</script>
 {/block}
