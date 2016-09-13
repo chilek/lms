@@ -3,7 +3,7 @@
 <TABLE class="lmsbox sortable" id="customerassignments">
 	<THEAD>
 	<TR>
-		<TD style="width: 99%;" class="hand text-left bold nobr lmsbox-titlebar" data-lmsbox-content="customerassignments">
+		<TD style="width: 99%;" class="hand text-left bold nobr lmsbox-titlebar" data-lmsbox-content="customerassignmentpanel">
 			<IMG src="img/money.gif" alt="">
 			{trans("Customer Liabilities:")}
 		</TD>
@@ -21,7 +21,7 @@
 	</TR>
 	</THEAD>
 	<TBODY>
-	<TR id="customerassignments" style="display: none;">
+	<TR id="customerassignmentpanel" style="display: none;">
 		<TD style="width: 100%;" colspan="2">
 			<TABLE class="lmsbox-inner">
 				<COLGROUP>
@@ -169,7 +169,7 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-	if (getCookie('customerassignments')=='1')
-		document.getElementById('customerassignments').style.display = '';
+	if (getCookie('customerassignmentpanel')=='1')
+		document.getElementById('customerassignmentpanel').style.display = '';
 //-->
 </SCRIPT>
