@@ -424,7 +424,12 @@ table.lmsbox {
 }
 
 table.lmsbox-inner {
-	&>thead,
+	&.datatables>thead {
+		background-color: @dark;
+	}
+	&:not(.datatables)>thead {
+		background-color: @light;
+	}
 	&>tfoot {
 		border-width: 1px;
 		border-style: solid;

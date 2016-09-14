@@ -582,15 +582,19 @@ table.lmsbox > thead, table.lmsbox > tfoot, table.lmsbox > tbody {
   border-style: solid;
   border-color: black;
 }
-table.lmsbox-inner > thead, table.lmsbox-inner > tfoot {
+table.lmsbox-inner.datatables > thead {
+  background-color: #cebd9b;
+}
+table.lmsbox-inner:not(.datatables) > thead {
+  background-color: #dfd5bd;
+}
+table.lmsbox-inner > tfoot {
   border-width: 1px;
   border-style: solid;
   border-color: black;
 }
-table.lmsbox > thead, table.lmsbox-inner > thead {
-  background-color: #cebd9b;
-}
 table.lmsbox > thead {
+  background-color: #cebd9b;
   text-align: left;
 }
 table.lmsbox > tbody, table.lmsbox > tfoot {
