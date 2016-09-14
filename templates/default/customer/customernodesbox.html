@@ -51,18 +51,30 @@ function setgroup(act)
 		<TD colspan="2">
 			<FORM method="post" action="" name="custnodeslist">
 			<TABLE class="lmsbox-inner">
+				<COLGROUP>
+					<COL style="width: {math equation="x-y" x=95 y=$ewx}%;">
+					<COL style="width: 1%;">
+					{if $ewx}
+					<COL style="width: 1%;">
+					{/if}
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+				</COLGROUP>
 				<THEAD>
 					<TR>
-						<TD style="width: {math equation="x-y" x=95 y=$ewx}%;" class="bold">{trans("Name:")}</TD>
-						<TD style="width: 1%;" class="text-right">{trans("ID:")}</TD>
+						<TD class="bold">{trans("Name:")}</TD>
+						<TD class="text-right">{trans("ID:")}</TD>
 						{if $ewx}
-						<TD style="width: 1%;" class="text-right">{trans("Channel:")}</TD>
+						<TD class="text-right">{trans("Channel:")}</TD>
 						{/if}
-						<TD style="width: 1%;" class="text-right">{trans("Address:")}</TD>
-						<TD style="width: 1%;" class="text-right">{trans("MAC:")}</TD>
-						<TD style="width: 1%;" class="text-right">{trans("Groups:")}</TD>
-						<TD style="width: 1%;" class="text-right">{trans("Network:")}</TD>
-						<TD style="width: 1%;">&nbsp;</TD>
+						<TD class="text-right">{trans("Address:")}</TD>
+						<TD class="text-right">{trans("MAC:")}</TD>
+						<TD class="text-right">{trans("Groups:")}</TD>
+						<TD class="text-right">{trans("Network:")}</TD>
+						<TD>&nbsp;</TD>
 					</TR>
 				</THEAD>
 				<TBODY>
