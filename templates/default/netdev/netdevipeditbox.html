@@ -121,7 +121,10 @@
 		</TD>
 		<TD style="width: 99%;" class="nobr" COLSPAN="2">
 			{foreach $_SESSIONTYPES as $idx => $sessiontype}
-			<label>{$sessiontype.label} <INPUT TYPE="checkbox" NAME="ipadd[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"} onchange="change_authtype()"{if ($nodeipdata.authtype & idx) == $idx} checked{/if}></label>&nbsp;
+			<label>
+				<INPUT TYPE="checkbox" NAME="ipadd[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"} onchange="change_authtype()"{if ($nodeipdata.authtype & idx) == $idx} checked{/if}>
+				{$sessiontype.label}
+			</label>
 			{/foreach}
 		</TD>
 	</TR>
