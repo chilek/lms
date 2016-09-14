@@ -1,11 +1,14 @@
 <!--// $Id$ //-->
 {$xajax}
 <TABLE class="lmsbox sortable" id="nodelocks">
+	<COLGROUP>
+		<COL style="width: 100%;">
+	</COLGROUP>
     <THEAD>
 	<TR class="hand lmsbox-titlebar" data-lmsbox-content="nodelockspanel">
-		<TD>
+		<TD class="bold">
 			<IMG src="img/time.gif" alt="">
-			<span class="bold"><A name="nodelocks">{trans("Locks:")}</A></span>
+			<A name="nodelocks">{trans("Locks:")}</A>
 		</TD>
 	</TR>
     </THEAD>
@@ -23,9 +26,7 @@
 <SCRIPT type="text/javascript">
 <!--
 if (getCookie('nodelockspanel') == '1')
-{
 	document.getElementById('nodelockspanel').style.display = '';
-}
 
 function addNodeLock() {
 	xajax.$('nodelockaddlink').disabled = true;

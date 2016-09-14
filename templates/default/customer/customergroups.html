@@ -3,9 +3,12 @@
 <FORM method="post" name="customergroupassignment" id="customergroupassignment" action="?m=customergroup&action=add&id={$customerinfo.id}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 100%;">
+	</COLGROUP>
 	<THEAD>
-	<TR class="hand bold lmsbox-titlebar" data-lmsbox-content="groupspanel">
-		<TD>
+	<TR class="hand lmsbox-titlebar" data-lmsbox-content="groupspanel">
+		<TD class="bold">
 			<IMG src="img/group.gif" alt="">
 			{trans("Customer Groups:")}
 		</TD>
@@ -13,7 +16,7 @@
 	</THEAD>
 	<TBODY>
 	<TR id="groupspanel" style="display: none;">
-		<TD style="width: 100%;">
+		<TD>
 			<TABLE class="lmsbox-inner">
 				<COLGROUP>
 					<COL style="width: 1%;">

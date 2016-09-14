@@ -7,20 +7,24 @@
 <INPUT type="hidden" name="search[resourceid]" value="{$resourceid}">
 <INPUT type="hidden" name="search[userid]" value="{$userid}">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 99%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
 	<THEAD>
 	<TR class="hand lmsbox-titlebar" data-lmsbox-content="transactionpanel">
 		<TD>
 			<IMG src="img/recover.gif" alt="">
 			<span class="bold"><A name="transactions">{trans("Transaction Log:")}</A></span>&nbsp;({t a=300}last $a transactions{/t})
 		</TD>
-		<TD class="text-right">
+		<TD class="text-right nobr">
 			<A id="more-transactions">{trans("More")} &raquo;</A>
 		</TD>
 	</TR>
 	</THEAD>
 	<TBODY>
 	<TR id="transactionpanel" class="dark" style="display: none;">
-		<TD style="width: 100%;" class="fall" id="transactiontable" colspan="2">
+		<TD class="fall" id="transactiontable" colspan="2">
 			<TABLE class="lmsbox-inner{if $transactions} datatables{/if}"{if $transactions} data-order='[[ 0, "desc" ]]' data-page-length="10" style="display: none;"{/if}>
 				<COLGROUP>
 					<COL style="width: 1%;">

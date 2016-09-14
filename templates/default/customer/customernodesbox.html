@@ -31,20 +31,24 @@ function setgroup(act)
 {$lastonline_limit=ConfigHelper::getConfig('phpui.lastonline_limit')}
 {if ConfigHelper::checkConfig('phpui.ewx_support')}{assign var=ewx value=1}{else}{assign var=ewx value=0}{/if}
 <TABLE class="lmsbox sortable" id="customernodesbox">
+	<COLGROUP>
+		<COL style="width: 99%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
 	<THEAD>
-	<TR>
-		<TD style="width: 99%;" class="hand bold lmsbox-titlebar" data-lmsbox-content="nodespanel-{$layout.module}">
+	<TR class="hand lmsbox-titlebar" data-lmsbox-content="nodespanel-{$layout.module}">
+		<TD class="bold">
 			<IMG src="img/node.gif" alt="">
 			{t a=$customernodes|@count|default:"0"}Customer Nodes ($a):{/t}
 		</TD>
-		<TD style="width: 1%;" class="text-right nobr">
+		<TD class="text-right nobr">
 			{if $customerinfo.status != $smarty.const.CSTATUS_INTERESTED && ! $customerinfo.deleted}<A href="?m=nodeadd&amp;ownerid={$customerinfo.id}">{trans("New Node")} &raquo;</A>&nbsp;{/if}
 		</TD>
 	</TR>
 	</THEAD>
 	<TBODY>
 	<TR id="nodespanel-{$layout.module}" style="display:none;">
-		<TD style="width: 100%;" colspan="2">
+		<TD colspan="2">
 			<FORM method="post" action="" name="custnodeslist">
 			<TABLE class="lmsbox-inner">
 				<THEAD>
@@ -158,9 +162,7 @@ function setgroup(act)
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-if (getCookie('nodespanel-{$layout.module}') == '1')
-{
-	document.getElementById('nodespanel-{$layout.module}').style.display = '';
-}
+	if (getCookie('nodespanel-{$layout.module}') == '1')
+		document.getElementById('nodespanel-{$layout.module}').style.display = '';
 //-->
 </SCRIPT>

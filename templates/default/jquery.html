@@ -279,6 +279,9 @@
 						initDataTable(this);
 				});
 			});
+			$(this).find('td a,td :input').click(function(e) {
+				e.stopPropagation();
+			});
 		});
 
 		$('.row-all-check').each(function() {
@@ -301,7 +304,7 @@
 
 		$('.persistent-order').sortable({
 			items: "> .sortable",
-			handle: "table > thead > tr.lmsbox-titlebar",
+			handle: "tr.lmsbox-titlebar",
 			axis: "y",
 			opacity: 0.9,
 			update: function(event, ui) {

@@ -83,9 +83,13 @@
 <FORM name="addbalance" method="POST" action="?m=balanceadd&id={$balancelist.customerid}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 99%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
 	<THEAD>
-	<TR>
-		<TD {if $limit}class="hand nobr lmsbox-titlebar" data-lmsbox-content="customerbalance"{else}class="fleftu nobr"{/if}>
+	<TR{if $limit} class="hand lmsbox-titlebar" data-lmsbox-content="customerbalancepanel"{/if}>
+		<TD{if $limit} class="fleftu"{/if}>
 			<IMG src="img/pay.gif" alt="">
 			<span class="bold">{trans("Customer Account:")}</span>
 			{if $limit}
@@ -112,8 +116,8 @@
 	</TR>
 	</THEAD>
 	<TBODY class="multi-check">
-	<TR id="customerbalance" class="dark">
-		<TD style="width: 100%;" colspan="2">
+	<TR id="customerbalancepanel" class="dark">
+		<TD colspan="2">
 			<TABLE class="lmsbox-inner{if !empty($balancelist.list)} datatables{/if}"{if !empty($balancelist.list)} data-page-length="{$n}" data-display-start="{$n = count($balancelist.list) + $limit}{if $n < 0}0{else}{$n}{/if}" style="display: none;"{/if}>
 				<COLGROUP>
 					<COL style="width: 1%;">
@@ -276,8 +280,8 @@
 <SCRIPT type="text/javascript">
 <!--
 {if $limit}
-if (getCookie('customerbalance') == '0')
-	document.getElementById('customerbalance').style.display = 'none';
+	if (getCookie('customerbalancepanel') == '0')
+		document.getElementById('customerbalancepanel').style.display = 'none';
 {/if}
 //-->
 </SCRIPT>

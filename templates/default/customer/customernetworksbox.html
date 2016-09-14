@@ -1,18 +1,22 @@
 <TABLE class="lmsbox sortable" id="customernetworksbox">
+	<COLGROUP>
+		<COL style="width: 99%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
 	<THEAD>
-	<TR>
-		<TD style="width: 99%;" class="hand bold lmsbox-titlebar" data-lmsbox-content="networkspanel-{$layout.module}">
+	<TR class="hand lmsbox-titlebar" data-lmsbox-content="networkspanel-{$layout.module}">
+		<TD class="bold">
 			<IMG src="img/network.gif" alt="">
 			{t a=$customernetworks|@count|default:"0"}Customer Networks ($a):{/t}
 		</TD>
-		<TD style="width: 1%;" class="text-right nobr">
+		<TD class="text-right nobr">
 			{if $customerinfo.status != $smarty.const.CSTATUS_INTERESTED && !$customerinfo.deleted}<A href="?m=netadd&amp;ownerid={$customerinfo.id}">{trans("New Network")} &raquo;</A>&nbsp;{/if}
 		</TD>
 	</TR>
 	</THEAD>
 	<TBODY>
 	<TR id="networkspanel-{$layout.module}" style="display:none;">
-		<TD style="width: 100%;" colspan="2">
+		<TD colspan="2">
 			<TABLE class="lmsbox-inner">
 				<THEAD>
 					<TR>
@@ -64,9 +68,7 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-if (getCookie('networkspanel-{$layout.module}') == '1')
-{
-	document.getElementById('networkspanel-{$layout.module}').style.display = '';
-}
+	if (getCookie('networkspanel-{$layout.module}') == '1')
+		document.getElementById('networkspanel-{$layout.module}').style.display = '';
 //-->
 </SCRIPT>

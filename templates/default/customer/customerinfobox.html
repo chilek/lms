@@ -1,20 +1,24 @@
 <!--// $Id$ //-->
 <TABLE class="lmsbox{if $customerpanel} sortable{/if}" id="customerinfobox">
+	<COLGROUP>
+		<COL style="width: 99%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
     <THEAD>
-	<TR>
-		<TD width="99%"{if $customerpanel} class="fleftu hand lmsbox-titlebar" data-lmsbox-content="customerpanel"{else} class="fleftu"{/if}>
+	<TR{if $customerpanel} class="hand lmsbox-titlebar" data-lmsbox-content="customerpanel"{/if}>
+		<TD class="bold{if !$customerpanel} fleftu{/if}">
 			<IMG SRC="img/customer.gif" ALT="">
-			<b>{if $customerpanel}{trans("Owner:")}{/if}
-			{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}{if $customerinfo.extid} / {$customerinfo.extid}{/if}){if $customerinfo.deleted} <span class="red">({trans("deleted customer")})</span>{/if}</b>
+			{if $customerpanel}{trans("Owner:")}{/if}
+			{$customerinfo.customername|escape} ({$customerinfo.id|string_format:"%04d"}{if $customerinfo.extid} / {$customerinfo.extid}{/if}){if $customerinfo.deleted} <span class="red">({trans("deleted customer")})</span>{/if}
 		</TD>
-		<TD width="1%" class="frightu" align="right" nowrap>
+		<TD class="text-right nobr{if !$customerpanel} frightu{/if}">
 			{if $customerpanel}<a href="?m=customerinfo&amp;id={$customerinfo.id}">{trans('Navigate to the customer')} &raquo;</a>{/if}&nbsp;
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
     <TR {if $customerpanel} id="customerpanel" style="display:none;"{/if}>
-	    <TD colspan="2" WIDTH="100%" {if $customerpanel} CLASS="container" ALIGN="RIGHT"{else}CLASS="container"{/if}>
+	    <TD colspan="2" {if $customerpanel} CLASS="container" ALIGN="RIGHT"{else}CLASS="container"{/if}>
 			<TABLE WIDTH="100%" CELLPADDING="0">
 				<TR>
 					<TD WIDTH="50%" style="vertical-align:top;">

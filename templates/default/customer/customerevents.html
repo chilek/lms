@@ -1,22 +1,26 @@
 <!--// $Id$ //-->
 <TABLE class="lmsbox sortable" id="customerevents">
+	<COLGROUP>
+		<COL style="width: 99%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
 	<THEAD>
-	<TR>
-		<TD style="width: 99%;" class="hand lmsbox-titlebar" data-lmsbox-content="eventspanel">
+	<TR class="hand lmsbox-titlebar" data-lmsbox-content="eventspanel">
+		<TD>
 			<IMG src="img/calendar.gif" alt="">
 			<span class="bold">{trans("Customer Timetable:")}</span>
 			{if $limit}
 				({t a=$limit}last $a events{/t})
 			{/if}
 		</TD>
-		<TD style="width: 1%;" class="text-right nobr">
-			<A href="?m=eventadd&amp;customerid={$customerinfo.id}">{trans("New Event")} &raquo;</A>&nbsp;
+		<TD class="text-right nobr">
+			<A href="?m=eventadd&customerid={$customerinfo.id}">{trans("New Event")} &raquo;</A>&nbsp;
 		</TD>
 	</TR>
 	</THEAD>
 	<TBODY>
 	<TR id="eventspanel"  style="display: none;">
-		<TD style="width: 100%;" colspan="2">
+		<TD colspan="2">
 			<TABLE class="lmsbox-inner">
 				<THEAD>
 				<TR>

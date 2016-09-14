@@ -1,19 +1,24 @@
 <!--// $Id$ //-->
 <TABLE class="lmsbox sortable" id="nodesessions">
+	<COLGROUP>
+		<COL style="width: 99%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
 	<THEAD>
-	<TR>
-		<TD style="width: 99%;" class="hand lmsbox-titlebar" data-lmsbox-content="nodesessionpanel">
+	<TR class="hand lmsbox-titlebar" data-lmsbox-content="nodesessionpanel">
+		<TD>
 			<IMG src="img/calendar.gif" alt="">
-			<span class="bold"><A name="nodesessions">{trans("Node Sessions:")}</A></span> {t a=ConfigHelper::getConfig('phpui.nodesession_limit', 10)}(last $a sessions){/t}
+			<span class="bold"><A name="nodesessions">{trans("Node Sessions:")}</A></span>
+			{t a=ConfigHelper::getConfig('phpui.nodesession_limit', 10)}(last $a sessions){/t}
 		</TD>
-		<TD style="width: 1%;" class="text-right nobr">
+		<TD class="text-right nobr">
 			<a href="?m=nodesessionlist&nodeid={$nodeinfo.id}">{trans("All sessions")} &raquo;</a>
 		</TD>
 	</TR>
 	</THEAD>
 	<TBODY>
 	<TR id="nodesessionpanel" style="display:none;">
-		<TD WIDTH="100%" class="fall" colspan="2">
+		<TD class="fall" colspan="2">
 			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 				<TR class="dark">
 					<TD class="fleftu bold nobr" style="width: 11%;">{trans("IP Address:")}</TD>
@@ -63,7 +68,7 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-	if (getCookie('nodesessionpanel')=='1')
+	if (getCookie('nodesessionpanel') == '1')
 		document.getElementById('nodesessionpanel').style.display = '';
 //-->
 </SCRIPT>
