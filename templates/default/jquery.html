@@ -301,6 +301,7 @@
 
 		$('.persistent-order').sortable({
 			items: "> .sortable",
+			handle: "table > thead > tr.lmsbox-titlebar",
 			axis: "y",
 			opacity: 0.9,
 			update: function(event, ui) {
