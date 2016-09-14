@@ -80,16 +80,16 @@ if (isset($_POST['voipaccountedit'])) {
 	elseif (!preg_match('/^[_a-z0-9-@]+$/i', $voipaccountedit['passwd']))
 		$error['passwd'] = trans('Specified password contains forbidden characters!');
 
-    foreach ($voipaccountedit['phone'] as $k=>$v) {
-        if ($voipaccountedit['phone'][$k]=='')
-            $error['phone'.$k] = trans('Voip account phone number is required!');
-        elseif (strlen($voipaccountedit['phone'][$k]) > 32)
-            $error['phone'.$k] = trans('Voip account phone number is too long (max.32 characters)!');
-        elseif ($LMS->GetVoipAccountIDByPhone($voipaccountedit['phone'][$k]) && $LMS->GetVoipAccountIDByPhone($voipaccountedit['phone'][$k]) != $voipaccountedit['id'])
-            $error['phone'.$k] = trans('Specified phone is in use!');
-        elseif (!preg_match('/^C?[0-9]+$/', $voipaccountedit['phone'][$k]))
-            $error['phone'.$k] = trans('Specified phone number contains forbidden characters!');
-    }
+	foreach ($voipaccountedit['phone'] as $k => $phone) {
+		if (!strlen($phone))
+			$error['phone'.$k] = trans('Voip account phone number is required!');
+		elseif (strlen($phone) > 32)
+			$error['phone'.$k] = trans('Voip account phone number is too long (max.32 characters)!');
+		elseif (($accountid = $LMS->GetVoipAccountIDByPhone($phone)) > 0 && $accountid != $voipaccountedit['id'])
+			$error['phone'.$k] = trans('Specified phone is in use!');
+		elseif (!preg_match('/^C?[0-9]+$/', $phone))
+			$error['phone'.$k] = trans('Specified phone number contains forbidden characters!');
+	}
 
 	if (!$LMS->CustomerExists($voipaccountedit['ownerid']))
 		$error['customer'] = trans('You have to select owner!');

@@ -88,8 +88,9 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 . $this->db->Concat('c.lastname', "' '", 'c.name')
                 . ' AS owner, v.access,
 				location, lb.name AS borough_name, ld.name AS district_name, ls.name AS state_name
-			FROM voipaccounts v
-				JOIN customerview c ON (v.ownerid = c.id)
+			FROM voipaccounts v '
+				. (isset($search['phone']) ? 'JOIN voip_numbers n ON n.voip_account_id = v.id' : '')
+				. ' JOIN customerview c ON (v.ownerid = c.id)
 				LEFT JOIN location_cities lc ON lc.id = v.location_city
 				LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
@@ -347,7 +348,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      * @return int    VoIP account id
      */
     public function getVoipAccountIDByPhone($phone) {
-        return $this->db->GetOne('SELECT voip_account_id FROM voip_numbers WHERE phone ?LIKE? ?', array((string)$phone));
+        return $this->db->GetOne('SELECT voip_account_id FROM voip_numbers WHERE phone = ?', array($phone));
     }
 
     /**
