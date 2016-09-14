@@ -271,6 +271,7 @@
 		});
 
 		$('.lmsbox-titlebar').each(function() {
+			$(this).unbind('click');
 			$(this).click(function() {
 				var elemid = $(this).attr('data-lmsbox-content');
 				showOrHide(elemid);
