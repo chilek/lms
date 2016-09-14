@@ -163,7 +163,7 @@
 		</td>
 	</tr>
 	{/if}
-	{if $network.authtype}
+	{if $network.authtype || $unlockedit}
 	<TR>
 		<TD class="bold nobr">
 			<IMG SRC="img/netdev.gif" ALT=""> {trans("Type:")}
