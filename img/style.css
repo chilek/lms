@@ -653,6 +653,12 @@ td.multiselect {
 td.multiselect select {
   min-width: 200px;
 }
+.lms-ui-selectable-draggable-active {
+  box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.75);
+}
+.lms-ui-selectable-draggable-active.lms-ui-selectable-draggable-hover {
+  box-shadow: 0px 0px 25px 0px rgba(0,0,0,0.75);
+}
 .nobr {
   white-space: nowrap;
 }
@@ -813,6 +819,9 @@ a.ui-button:active,
 .ui-progressbar .ui-progressbar-value {
   background-color: #ae9d7b;
   border-color: #ae9d7b;
+}
+.ui-selected {
+  background-color: #ccffcc;
 }
 .fileupload-progress-label {
   position: absolute;

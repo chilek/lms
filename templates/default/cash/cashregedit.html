@@ -109,7 +109,7 @@
 				<TBODY>
 				{cycle values="light,lucid" print=false}
 				{foreach from=$registry.rights item=right}
-				<TR class="highlight {cycle} row-all-check">
+				<TR class="highlight {cycle} lms-ui-row-all-check">
 					<TD>
 						<A href="?m=userinfo&id={$right.id}">{$right.name}</A>
 						<INPUT type="hidden" name="registry[usernames][{$right.id}]" value="{$right.name}">

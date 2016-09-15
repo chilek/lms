@@ -514,6 +514,13 @@ td.multiselect {
 	}
 }
 
+.lms-ui-selectable-draggable-active {
+	box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.75);
+	&.lms-ui-selectable-draggable-hover {
+		box-shadow: 0px 0px 25px 0px rgba(0,0,0,0.75);
+	}
+}
+
 .nobr { white-space: nowrap; }
 .line-break { white-space: normal !important;}
 .text-right { text-align: right; }
@@ -680,6 +687,10 @@ a.ui-button:active,
 		background-color: @superdark;
 		border-color: @superdark;
 	}
+}
+
+.ui-selected {
+	background-color: @highlight;
 }
 
 .fileupload-progress-label {

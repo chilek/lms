@@ -67,7 +67,7 @@
 										<TBODY>
 											{cycle values="light,lucid" print=false}
 											{foreach from=$queue.rights item=right}
-											<TR class="highlight {cycle} row-all-check">
+											<TR class="highlight {cycle} lms-ui-row-all-check">
 												<TD style="width: 96%;" class="nobr">
 													<A href="?m=userinfo&amp;id={$right.id}">{$right.name}</A>
 													<INPUT type="hidden" name="queue[usernames][{$right.id}]" value="{$right.name}">

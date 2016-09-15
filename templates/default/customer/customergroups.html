@@ -33,7 +33,7 @@
 					<TD>&nbsp;</TD>
 				</TR>
 				</THEAD>
-				<TBODY class="multi-check">
+				<TBODY class="lms-ui-multi-check">
 				{cycle name=groups values="light,lucid" print=false}
 				{foreach $customergroups as $customergroup}
 				<TR class="highlight {cycle name=groups}">
@@ -44,7 +44,7 @@
 						<A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer from group?")}')" href="?m=customergroup&customergroupid={$customergroup.id}&action=delete&id={$customerinfo.id}" {tip text="Remove customer from group"}>
 							<IMG src="img/delete.gif" ALT="[ {trans("Delete")} ]">
 						</A>
-						<input type="checkbox" name="markedcustomergroupid[{$customergroup.id}]" value="{$customergroup.id}" class="multi-check">
+						<input type="checkbox" name="markedcustomergroupid[{$customergroup.id}]" value="{$customergroup.id}" class="lms-ui-multi-check">
 					</TD>
 				</TR>
 				{foreachelse}
@@ -73,7 +73,7 @@
 						<A id="delete-groups">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></A>
 						<label>
 							{trans("Check All")}
-							<input type="checkbox" class="multi-check-all">
+							<input type="checkbox" class="lms-ui-multi-check-all">
 						</label>
 					</TD>
 				</TR>
@@ -93,7 +93,7 @@
 						});
 						{/if}
 						$('#delete-groups').click(function() {
-							if (!$(this).closest('tbody.multi-check').find('input:checked').length
+							if (!$(this).closest('tbody.lms-ui-multi-check').find('input:checked').length
 								|| !confirm('{trans("Are you sure, you want to remove customer from selected groups?")}'))
 								return false;
 							$('form#customergroupassignment').attr('action', '?m=customergroup&action=delete&id={$customerinfo.id}&is_sure=1');

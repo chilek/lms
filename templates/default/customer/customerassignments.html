@@ -58,7 +58,7 @@
 				</TR>
 				{/block}
 				</THEAD>
-				<TBODY class="multi-check">
+				<TBODY class="lms-ui-multi-check">
 				<form method="post" name="customerassignments" action="?m=customerassignmentdel">
 				{cycle name=assign values="light,lucid" print=false}
 				{foreach $assignments as $a}
@@ -111,7 +111,7 @@
 							<IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]">
 						</A>
 						<A href="?m=customerassignmentedit&id={$a.id}"><IMG SRC="img/edit.gif" ALT="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-						<input type="checkbox" name="customerassignments[{$a.id}]" value="{$a.id}" class="multi-check">
+						<input type="checkbox" name="customerassignments[{$a.id}]" value="{$a.id}" class="lms-ui-multi-check">
 					</TD>
 				</TR>
 				{/block}
@@ -145,13 +145,13 @@
 						<A id="delete-assignments">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></A>
 						<label>
 							{trans("Check All")}
-							<input type="checkbox" class="multi-check-all">
+							<input type="checkbox" class="lms-ui-multi-check-all">
 						</label>
 						<script type="text/javascript">
 						<!--
 							$(function() {
 								$('#delete-assignments').click(function() {
-									if (!$(this).closest('tbody.multi-check').find('input:checked').length
+									if (!$(this).closest('tbody.lms-ui-multi-check').find('input:checked').length
 										|| !confirm('{trans("Are you sure, you want to delete selected liabilities?")}'))
 										return false;
 									$('form[name=customerassignments]').attr('action', function(index, value) {

@@ -153,15 +153,15 @@
 			$('body').css('user-select', e.shiftKey ? 'none' : 'auto');
 		});
 
-		var tbodies = $('tbody.multi-check');
+		var tbodies = $('tbody.lms-ui-multi-check');
 		$.each(tbodies, function(index, tbody) {
 			var tbody = $(tbody);
 			var checkboxes = tbody.parent().find(':checkbox');
-			var allcheckboxes = checkboxes.filter('.multi-check');
+			var allcheckboxes = checkboxes.filter('.lms-ui-multi-check');
 
-			var checkall = checkboxes.filter('.multi-check-all');
+			var checkall = checkboxes.filter('.lms-ui-multi-check-all');
 			if (!checkall.length)
-				checkall = tbody.siblings('tfoot').filter('.multi-check-all');
+				checkall = tbody.siblings('tfoot').filter('.lms-ui-multi-check-all');
 			if (checkall.length) {
 				checkall.click(function(e) {
 					allcheckboxes.each(function(index, elem) {
@@ -173,21 +173,16 @@
 				checkall = null;
 
 			function checkElements(checkbox) {
-				var i = j = -1;
-				allcheckboxes.each(function(index, elem) {
-					if ($(elem).attr('data-prev-checked') !== undefined)
-						i = index;
-					if ($(elem).is(checkbox))
-						j = index;
-				});
-				if (i == -1)
-					return;
-				var checked = $(allcheckboxes[i]).attr('data-prev-checked') == 'true' ? true : false;
-				var start = Math.min(i, j);
-				var stop = Math.max(i, j);
-				for (var i = start; i <= stop; i++)
-					allcheckboxes[i].checked = checked;
-				updateCheckAll();
+				var i = allcheckboxes.index(allcheckboxes.filter('[data-prev-checked]')),
+					j = allcheckboxes.index(checkbox);
+				if (i > -1) {
+					var checked = $(allcheckboxes[i]).attr('data-prev-checked') == 'true' ? true : false;
+					var start = Math.min(i, j);
+					var stop = Math.max(i, j);
+					for (i = start; i <= stop; i++)
+						allcheckboxes[i].checked = checked;
+					updateCheckAll();
+				}
 			}
 
 			function updateCheckAll() {
@@ -251,7 +246,7 @@
 			});
 		}
 
-		$('.datatables').each(function() {
+		$('.lms-ui-datatable').each(function() {
 			var init = {};
 			init.displayStart = $(this).attr('data-display-start');
 			if (init.displayStart === undefined)
@@ -275,7 +270,7 @@
 			$(this).click(function() {
 				var elemid = $(this).attr('data-lmsbox-content');
 				showOrHide(elemid);
-				$('#' + elemid).find('.datatables').each(function() {
+				$('#' + elemid).find('.lms-ui-datatable').each(function() {
 					if (!$.fn.dataTable.isDataTable(this))
 						initDataTable(this);
 				});
@@ -285,7 +280,7 @@
 			});
 		});
 
-		$('.row-all-check').each(function() {
+		$('.lms-ui-row-all-check').each(function() {
 			$(this).click(function() {
 				var checked = true;
 				$.each($(this).find(':checkbox'), function(key, value) {
@@ -303,7 +298,7 @@
 			});
 		});
 
-		$('.persistent-order').sortable({
+		$('.lms-ui-persistent-order').sortable({
 			items: "> .sortable",
 			handle: "tr.lmsbox-titlebar",
 			axis: "y",
@@ -311,6 +306,98 @@
 			update: function(event, ui) {
 				var tabs = $(this).sortable("toArray").join(';');
 				setCookie($(this).attr('id') + '-order', tabs, true);
+			}
+		});
+
+		$('table.lms-ui-selectable-draggable > tbody > tr').draggable({
+			handle: "td",
+			revert: "invalid",
+			revertDuration: 300,
+			helper: function() {
+				var table = $(this).parents('table.lms-ui-selectable-draggable');
+				if (!table.find('tr.ui-selected').length)
+					$(this).addClass('ui-selected');
+				else if (!$(this).hasClass('ui-selected')) {
+					table.find('tr').removeClass('ui-selected');
+					$(this).addClass('ui-selected');
+				}
+				table = table.clone();
+				table.find('tr:not(.ui-selected)').remove();
+				table.find('tr').removeClass('ui-selected');
+				return table;
+			},
+			start: function(event, ui) {
+				$(this).parents('table.lms-ui-selectable-draggable').find('tr.ui-selected')
+					.toggle();
+			},
+			stop: function(event, ui) {
+				$(this).parents('table.lms-ui-selectable-draggable').find('tr.ui-selected:not(:visible)')
+					.toggle();
+			}
+		});
+
+		$('table.lms-ui-selectable-draggable').selectable({
+			filter: 'tbody > tr'
+		});
+
+		$('table.lms-ui-selectable-draggable > tbody > tr').click(function(e) {
+			if (!e.ctrlKey) {
+				if (e.shiftKey) {
+					var rows = $(this).parent().children('tr');
+					var i = rows.index($(this).siblings('tr[data-prev-selected]')),
+						j = rows.index(this);
+					if (i > -1) {
+						var selected = $(rows[i]).attr('data-prev-selected') == 'true' ? true : false;
+						var start = Math.min(i, j);
+						var stop = Math.max(i, j);
+						for (i = start; i <= stop; i++)
+							if (selected)
+								$(rows[i]).addClass('ui-selecting');
+							else
+								$(rows[i]).removeClass('ui-selected');
+					}
+				} else {
+					$(this).siblings('tr[data-prev-selected]').removeAttr('data-prev-selected');
+					if ($(this).hasClass('ui-selected')) {
+						$(this).removeClass('ui-selected');
+						$(this).attr('data-prev-selected', false);
+					} else {
+						$(this).parents('table.lms-ui-selectable-draggable > tbody').children('tr').removeClass('ui-selected');
+						$(this).addClass('ui-selecting');
+						$(this).attr('data-prev-selected', true);
+					}
+				}
+			} else {
+				if ($(this).hasClass('ui-selected'))
+					$(this).removeClass('ui-selected');
+				else
+					$(this).addClass('ui-selecting');
+			}
+			$(this).parents('table.lms-ui-selectable-draggable').data('ui-selectable')._mouseStop(null);
+		});
+
+		$('table.lms-ui-selectable-draggable:not(.not-droppable)').droppable({
+			accept: function(draggable) {
+				if (/lms-ui-droppable-([^\s]+)/.exec($(this).attr('class')) !== null) {
+					var droppable = RegExp.$1;
+					return $(draggable).parents('table.lms-ui-selectable-draggable')
+						.hasClass('lms-ui-droppable-' + droppable);
+				}
+				return false;
+			},
+			classes: {
+				"ui-droppable-hover": "lms-ui-selectable-draggable-hover",
+				"ui-droppable-active": "lms-ui-selectable-draggable-active"
+			},
+			tolerance: "touch",
+			drop: function(event, ui) {
+				if (!ui.draggable.parents('table.lms-ui-selectable-draggable').is(this)) {
+					var selected = ui.draggable.parent().find('.ui-selected');
+					var handled = ui.draggable.parents('table.lms-ui-selectable-draggable')
+						.triggerHandler('lmsdrop', [ selected ]);
+					if (handled === true)
+						selected.toggle().appendTo($(this));
+				}
 			}
 		});
 	});
