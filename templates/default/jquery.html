@@ -376,7 +376,7 @@
 			$(this).parents('table.lms-ui-selectable-draggable').data('ui-selectable')._mouseStop(null);
 		});
 
-		$('table.lms-ui-selectable-draggable:not(.not-droppable)').droppable({
+		$('table.lms-ui-selectable-draggable:not(.lms-ui-not-droppable)').droppable({
 			accept: function(draggable) {
 				if (/lms-ui-droppable-([^\s]+)/.exec($(this).attr('class')) !== null) {
 					var droppable = RegExp.$1;
