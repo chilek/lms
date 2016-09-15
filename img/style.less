@@ -400,28 +400,71 @@ div.multiselectlayer {
 }
 
 table.lmsbox {
-	width: 100%;
-	margin: 0px 2px 4px 0px;
-	td {
-		padding: 2px;
+	&,
+	&-inner,
+	&-innerbox {
+		width: 100%;
+		td {
+			padding: 2px;
+		}
+		&>thead {
+			background-color: @dark;
+		}
 	}
-}
-
-table.lmsbox-inner {
-	width: 100%;
-	td {
-		padding: 2px;
-		border-spacing: 0px;
+	& {
+		margin: 0px 2px 4px 0px;
 	}
-}
-
-table.lmsbox {
+	&>tbody,
+	&-inner>tbody {
+		background-color: @light;
+	}
 	&>thead,
 	&>tfoot,
-	&>tbody {
+	&>tbody,
+	&-inner>tfoot,
+	&-innerbox>thead,
+	&-innerbox>tfoot {
 		border-width: 1px;
 		border-style: solid;
 		border-color: black;
+	}
+	&-inner {
+		td {
+			border-spacing: 0px;
+		}
+	}
+	&-inner>thead,
+	&-innerbox>thead,
+	&-innerbox>tfoot {
+		background-color: @dark;
+	}
+	&>thead>tr,
+	&>tfoot>tr {
+		border-top: 1px solid black;
+	}
+}
+
+table.lmsbox>thead {
+	text-align: left;
+}
+
+table.lmsbox {
+	&,
+	&-inner {
+		&>tfoot {
+			background-color: @light;
+		}
+	}
+	& tbody.background-cycle {
+		&>tr:nth-child(even) {
+			background-color: @light;
+		}
+		&>tr:nth-child(odd) {
+			background-color: @lucid;
+		}
+		&>tr.highlight:hover {
+			background-color: @highlight;
+		}
 	}
 }
 
@@ -431,53 +474,6 @@ table.lmsbox-inner {
 	}
 	&:not(.datatables)>thead {
 		background-color: @light;
-	}
-	&>tfoot {
-		border-width: 1px;
-		border-style: solid;
-		border-color: black;
-	}
-}
-
-table.lmsbox>thead,
-table.lmsbox-inner>thead {
-	background-color: @dark;
-}
-
-table.lmsbox>thead {
-	text-align: left;
-}
-
-table.lmsbox {
-	&>tbody,
-	&>tfoot {
-		background-color: @light;
-	}
-}
-
-table.lmsbox-inner {
-	&>tbody,
-	&>tfoot {
-		background-color: @light;
-	}
-}
-
-table.lmsbox {
-	&>thead>tr,
-	&>tfoot>tr {
-		border-top: 1px solid black;
-	}
-}
-
-table.lmsbox tbody.background-cycle {
-	&>tr:nth-child(even) {
-		background-color: @light;
-	}
-	&>tr:nth-child(odd) {
-		background-color: @lucid;
-	}
-	&>tr.highlight:hover {
-		background-color: @highlight;
 	}
 }
 

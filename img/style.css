@@ -429,22 +429,19 @@ div.multiselectlayer ul span {
   text-decoration: none;
   white-space: nowrap;
 }
-.click-menu .section .active,
-.click-menu .section .active:hover {
+.click-menu .section .active, .click-menu .section .active:hover {
   color: yellow;
 }
 .click-menu .box2-hover {
   background-color: #ccffcc;
   font-weight: normal;
 }
-.click-menu .box2 a,
-.click-menu .box2-hover a {
+.click-menu .box2 a, .click-menu .box2-hover a {
   display: block;
   padding-left: 21px;
   font-weight: normal;
 }
-.click-menu .box2 a:before,
-.click-menu .box2-hover a:before {
+.click-menu .box2 a:before, .click-menu .box2-hover a:before {
   content: "\00bb\00a0";
   font-weight: normal;
 }
@@ -567,56 +564,47 @@ div.multiselectlayer ul span {
     color: black;
   }
 }
-table.lmsbox {
+table.lmsbox, table.lmsbox-inner, table.lmsbox-innerbox {
   width: 100%;
+}
+table.lmsbox td, table.lmsbox-inner td, table.lmsbox-innerbox td {
+  padding: 2px;
+}
+table.lmsbox > thead, table.lmsbox-inner > thead, table.lmsbox-innerbox > thead {
+  background-color: #cebd9b;
+}
+table.lmsbox {
   margin: 0px 2px 4px 0px;
 }
-table.lmsbox td {
-  padding: 2px;
-}
-table.lmsbox-inner {
-  width: 100%;
-}
-table.lmsbox-inner td {
-  padding: 2px;
-  border-spacing: 0px;
+table.lmsbox > tbody, table.lmsbox-inner > tbody {
+  background-color: #dfd5bd;
 }
 table.lmsbox > thead,
 table.lmsbox > tfoot,
-table.lmsbox > tbody {
+table.lmsbox > tbody,
+table.lmsbox-inner > tfoot,
+table.lmsbox-innerbox > thead,
+table.lmsbox-innerbox > tfoot {
   border-width: 1px;
   border-style: solid;
   border-color: black;
 }
-table.lmsbox-inner.datatables > thead {
+table.lmsbox-inner td {
+  border-spacing: 0px;
+}
+table.lmsbox-inner > thead,
+table.lmsbox-innerbox > thead,
+table.lmsbox-innerbox > tfoot {
   background-color: #cebd9b;
 }
-table.lmsbox-inner:not(.datatables) > thead {
-  background-color: #dfd5bd;
-}
-table.lmsbox-inner > tfoot {
-  border-width: 1px;
-  border-style: solid;
-  border-color: black;
-}
-table.lmsbox > thead,
-table.lmsbox-inner > thead {
-  background-color: #cebd9b;
+table.lmsbox > thead > tr, table.lmsbox > tfoot > tr {
+  border-top: 1px solid black;
 }
 table.lmsbox > thead {
   text-align: left;
 }
-table.lmsbox > tbody,
-table.lmsbox > tfoot {
+table.lmsbox > tfoot, table.lmsbox-inner > tfoot {
   background-color: #dfd5bd;
-}
-table.lmsbox-inner > tbody,
-table.lmsbox-inner > tfoot {
-  background-color: #dfd5bd;
-}
-table.lmsbox > thead > tr,
-table.lmsbox > tfoot > tr {
-  border-top: 1px solid black;
 }
 table.lmsbox tbody.background-cycle > tr:nth-child(even) {
   background-color: #dfd5bd;
@@ -626,6 +614,12 @@ table.lmsbox tbody.background-cycle > tr:nth-child(odd) {
 }
 table.lmsbox tbody.background-cycle > tr.highlight:hover {
   background-color: #ccffcc;
+}
+table.lmsbox-inner.datatables > thead {
+  background-color: #cebd9b;
+}
+table.lmsbox-inner:not(.datatables) > thead {
+  background-color: #dfd5bd;
 }
 tr.space_row > td {
   padding-top: 20px;
@@ -683,8 +677,7 @@ td.multiselect select {
 .valign-bottom {
   vertical-align: bottom;
 }
-.cf:before,
-.cf:after {
+.cf:before, .cf:after {
   content: " ";
   display: table;
 }
@@ -847,8 +840,7 @@ table.dataTable tbody tr.even {
 table.dataTable tbody tr.highlight {
   background-color: #ccffcc;
 }
-table.dataTable tbody th,
-table.dataTable tbody td {
+table.dataTable tbody th, table.dataTable tbody td {
   padding: 2px;
 }
 table.dataTable thead .sorting_asc {
@@ -860,8 +852,7 @@ table.dataTable thead .sorting_desc {
 table.dataTable thead .sorting {
   background-image: none;
 }
-table.dataTable thead th,
-table.dataTable thead td {
+table.dataTable thead th, table.dataTable thead td {
   padding-top: 2px;
   padding-bottom: 2px;
   padding-left: 10px;
@@ -872,7 +863,7 @@ table.dataTable thead td {
   background: linear-gradient(to bottom,#cebd9b 0%,#ae9d7b 100%);
 }
 .dataTables_wrapper .dataTables_processing {
-  background: linear-gradient(to right,rgba(ae,9d,7b,0) 0%,rgba(174,157,123,0.9)25%,rgba(174,157,123,0.9)75%,rgba(ae,9d,7b,0) 100%);
+  background: linear-gradient(to right,#ae9d7b00 0%,rgba(174,157,123,0.9)25%,rgba(174,157,123,0.9)75%,#ae9d7b00 100%);
   font-weight: bold;
 }
 .dataTables_wrapper .dataTables_length {
