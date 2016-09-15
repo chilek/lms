@@ -6,29 +6,33 @@
 <FORM method="POST" name="search" action="?m=rtsearch">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 99%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD WIDTH="100%" colspan="2" NOWRAP>
-			<B>{trans("Display tickets matching the following criteria:")}:</B>
+		<TD class="bold nobr" colspan="2">
+			{trans("Display tickets matching the following criteria:")}:
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="bold nobr">
 			<IMG src="img/ticket.gif" alt="">
-			<B>{trans("Subject:")}</B>
+			{trans("Subject:")}
 		</TD>
-		<TD WIDTH="99%">
+		<TD>
 			<INPUT type="search" size="50" name="search[subject]" value="{$search.subject}" {tip text="Enter subject"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="bold nobr">
 			<IMG src="img/customer.gif" alt="">
-			<B>{trans("Submitter:")}</B>
+			{trans("Submitter:")}
 		</TD>
-		<TD WIDTH="99%">
+		<TD>
 			<TABLE width="100%" cellpadding="1">
 			    <TR>
 			    	<TD width="100%" colspan="2" class="nobr">
@@ -54,55 +58,55 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="bold nobr">
 			<IMG src="img/users.gif" alt="">
-			<B>{trans("Owner:")}</B>
+			{trans("Owner:")}
 		</TD>
-		<TD WIDTH="99%">
+		<TD>
 			<SELECT size="1" name="search[owner]" {tip text="Select user/owner of the ticket"}>
 				<OPTION value="0">{trans("- all owners -")}</OPTION>
-				{foreach from=$userlist item=item}
-			        <OPTION value="{$item.id}" {if $item.id == $search.owner}SELECTED{/if}>{$item.name}</OPTION>
+				{foreach $userlist as $item}
+				<OPTION value="{$item.id}" {if $item.id == $search.owner}SELECTED{/if}>{$item.name}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="bold nobr">
 			<IMG src="img/queue.gif" alt="">
-			<B>{trans("Queue:")}</B>
+			{trans("Queue:")}
 		</TD>
-		<TD WIDTH="99%">
+		<TD>
 			<SELECT size="1" name="search[queue]" {tip text="Select queue" trigger="queue"}>
 				<OPTION value="0" SELECTED>{trans("- all -")}</OPTION>
-			{foreach from=$queuelist item=item}
+				{foreach $queuelist as $item}
 				<OPTION value="{$item.id}" {if $item.id == $search.queue}SELECTED{/if}>{$item.name}</OPTION>
-			{/foreach}
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="bold nobr">
 			<IMG src="img/dead.gif" alt="">
-			<B>{trans("Status:")}</B>
+			{trans("Status:")}
 		</TD>
-		<TD WIDTH="99%">
+		<TD>
 			<SELECT SIZE="1" name="search[state]" {tip text="Select ticket status"}>
 				<OPTION value="" {if $search.state==""}SELECTED{/if}>{trans("- all -")}</OPTION>
 				<OPTION value="-1" {if $search.state=="-1"}SELECTED{/if}>{trans("not resolved")}</OPTION>
-				<OPTION value="0" {if $search.state=="0"}SELECTED{/if}>{trans("new")}</OPTION>
-				<OPTION value="1" {if $search.state=="1"}SELECTED{/if}>{trans("opened")}</OPTION>
-				<OPTION value="2" {if $search.state=="2"}SELECTED{/if}>{trans("resolved")}</OPTION>
-				<OPTION value="3" {if $search.state=="3"}SELECTED{/if}>{trans("dead")}</OPTION>
+				<OPTION value="{$smarty.const.RT_NEW}"{if $search.state == $smarty.const.RT_NEW} selected{/if}>{trans("new")}</OPTION>
+				<OPTION value="{$smarty.const.RT_OPEN}"{if $search.state == $smarty.const.RT_OPEN} selected{/if}>{trans("opened")}</OPTION>
+				<OPTION value="{$smarty.const.RT_RESOLVED}"{if $search.state == $smarty.const.RT_RESOLVED} selected{/if}>{trans("resolved")}</OPTION>
+				<OPTION value="{$smarty.const.RT_DEAD}"{if $search.state == $smarty.const.RT_DEAD} selected{/if}>{trans("dead")}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="bold nobr">
 			<IMG src="img/time.gif" alt="">
-			<B>{trans("Min. Uptime")}</B>
+			{trans("Min. Uptime")}
 		</TD>
-		<TD WIDTH="99%">
+		<TD>
 			<SELECT SIZE="1" name="search[uptime]" {tip text="Select ticket uptime"}>
 				<OPTION value="" {if $search.uptime==""}SELECTED{/if}>{trans("- all -")}</OPTION>
 				<OPTION value="604800" {if $search.uptime=="604800"}SELECTED{/if}>{trans("7 days")}</OPTION>
@@ -112,19 +116,21 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" style="vertical-align:top" NOWRAP>
+		<TD class="bold nobr valign-top">
 			<IMG src="img/queue.gif" alt="">
-			<B>{trans("Categories:")}</B>
+			{trans("Categories:")}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			{foreach from=$categories item=category}
-				<INPUT type="checkbox" name="search[categories][{$category.id}]" ID="cat{$category.id}" value="1" {if $category.checked > 0}CHECKED{/if}>
-				<label for="cat{$category.id}">{$category.name}</label><BR />
+		<TD class="nobr">
+			{foreach $categories as $category}
+			<label>
+				{$category.name}<BR>
+				<INPUT type="checkbox" name="search[categories][{$category.id}]" value="1"{if $category.checked > 0} checked{/if}>
+			</label>
 			{/foreach}
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="100%" colspan="2" align="right">
+		<TD class="buttons" colspan="2">
 			<A href="javascript:document.search.submit();" accesskey="s">{trans("Search")}</a><IMG src="img/search.gif" alt="">
 		</TD>
 	</TR>
@@ -133,7 +139,7 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['search'].elements['search[subject]'].focus();
+	document.forms['search'].elements['search[subject]'].focus();
 //-->
 </SCRIPT>
 {/block}
