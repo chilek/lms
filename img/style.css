@@ -606,13 +606,13 @@ table.lmsbox > thead {
 table.lmsbox > tfoot, table.lmsbox-inner > tfoot {
   background-color: #dfd5bd;
 }
-table.lmsbox tbody.background-cycle > tr:nth-child(even) {
+table.lmsbox tbody.lms-ui-background-cycle > tr:nth-child(even) {
   background-color: #dfd5bd;
 }
-table.lmsbox tbody.background-cycle > tr:nth-child(odd) {
+table.lmsbox tbody.lms-ui-background-cycle > tr:nth-child(odd) {
   background-color: #ebe4d6;
 }
-table.lmsbox tbody.background-cycle > tr.highlight:hover {
+table.lmsbox tbody.lms-ui-background-cycle > tr.highlight:hover {
   background-color: #ccffcc;
 }
 table.lmsbox-inner.datatables > thead {
