@@ -103,6 +103,9 @@ version ?.??.?? (????-??-??):
   - ported node group list sort to jquery and ajax [chilan]
   - support of auth type for networks [chilan]
   - user is able to sort node and customer tabs on his own and order is persistent [chilan]
+  - added support for ssl_verify_peer, ssl_verify_peer_name, ssl_allow_self_signed boolean
+    configuration variables in LMS::SendMail (for now these variables are handled only
+    by phpmailer mail.backend) [chilan]
 
 version 1.11.20 (2016-04-19):
 
