@@ -7,7 +7,7 @@
 <script type="text/javascript" src="img/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
 <script type="text/javascript" src="img/jquery-datatables/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
-
+<!--
 	$(function() {
 		var autocomplete = "off";
 
@@ -246,8 +246,8 @@
 				$(this).siblings('tr').removeClass('highlight');
 				$(this).addClass('highlight');
 			});
-			var tr = $('thead tr.lms-ui-datatable-filter', elem).removeClass('lms-ui-datatable-filter')
-				.clone().addClass('lms-ui-datatable-filter');
+			var tr = $('thead tr.lms-ui-datatable-column-search', elem)
+				.removeClass('lms-ui-datatable-column-search').clone();
 			$('thead', elem).append(tr).find('th').each(function(key, th) {
 				$(th).html((searchable = $(th).attr('data-searchable')) === undefined
 					|| searchable == 'true' ? '<input type="text" placeholder="{trans("Search")}">' : '');
