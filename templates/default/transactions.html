@@ -41,10 +41,9 @@
 					<TH class="bold nobr" data-orderable="false">{trans("Operations:")}</TH>
 				</TR>
 				</THEAD>
-				<TBODY>
-				{cycle values="light,lucid" print=false name=trans}
+				<TBODY class="lms-ui-background-cycle">
 				{foreach $transactions as $tr}
-				<TR class="{cycle name=trans}">
+				<TR>
 					<TD class="valign-bottom nobr">
 						{$tr.time|date_format:"Y.m.d H:i:s"}
 					</TD>

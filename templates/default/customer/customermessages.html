@@ -49,10 +49,9 @@
 					<TH class="nobr" data-orderable="false" data-searchable="false"></TH>
 				</TR>
 				</THEAD>
-				<TBODY>
-				{cycle values="light,lucid" print=false name=messages}
+				<TBODY class="lms-ui-background-cycle">
 				{foreach $messagelist as $item}
-				<TR class="{cycle name=messages}{if $item.status==$smarty.const.MSG_ERROR} alert{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}">
+				<TR class="{if $item.status==$smarty.const.MSG_ERROR} alert{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}">
 					<TD class="nobr" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
 						{$item.cdate|date_format:"%Y/%m/%d"}
 					</TD>

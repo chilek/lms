@@ -456,10 +456,10 @@ table.lmsbox {
 		}
 	}
 	& tbody.lms-ui-background-cycle {
-		&>tr:nth-child(even) {
+		&>tr:nth-child(even):not(.ui-selected) {
 			background-color: @light;
 		}
-		&>tr:nth-child(odd) {
+		&>tr:nth-child(odd):not(.ui-selected) {
 			background-color: @lucid;
 		}
 		&>tr.highlight:hover {
@@ -718,11 +718,14 @@ a.ui-button:active,
 
 table.dataTable {
 	tbody {
-		tr.odd {
+		tr.odd:not(.ui-selected) {
 			background-color: @lucid;
 		}
-		tr.even {
+		tr.even:not(.ui-selected) {
 			background-color: @light;
+		}
+		tr.ui-selected {
+			background-color: @dark;
 		}
 		tr.highlight {
 			background-color: @highlight;

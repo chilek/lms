@@ -232,6 +232,7 @@
 					$(elem).css('display', '');
 				},
 				dom: '<"top"lpf>rt<"bottom"i><"clear">',
+				stripeClasses: [],
 				//deferRender: true,
 				processing: true,
 				stateDuration: 900,
@@ -309,38 +310,7 @@
 			}
 		});
 
-		$('table.lms-ui-selectable-draggable > tbody > tr').draggable({
-			handle: "td",
-			revert: "invalid",
-			revertDuration: 300,
-			helper: function() {
-				var table = $(this).parents('table.lms-ui-selectable-draggable');
-				if (!table.find('tr.ui-selected').length)
-					$(this).addClass('ui-selected');
-				else if (!$(this).hasClass('ui-selected')) {
-					table.find('tr').removeClass('ui-selected');
-					$(this).addClass('ui-selected');
-				}
-				table = table.clone();
-				table.find('tr:not(.ui-selected)').remove();
-				table.find('tr').removeClass('ui-selected');
-				return table;
-			},
-			start: function(event, ui) {
-				$(this).parents('table.lms-ui-selectable-draggable').find('tr.ui-selected')
-					.toggle();
-			},
-			stop: function(event, ui) {
-				$(this).parents('table.lms-ui-selectable-draggable').find('tr.ui-selected:not(:visible)')
-					.toggle();
-			}
-		});
-
-		$('table.lms-ui-selectable-draggable').selectable({
-			filter: 'tbody > tr'
-		});
-
-		$('table.lms-ui-selectable-draggable > tbody > tr').click(function(e) {
+		function selectableClickHandler(e) {
 			if (!e.ctrlKey) {
 				if (e.shiftKey) {
 					var rows = $(this).parent().children('tr');
@@ -374,7 +344,43 @@
 					$(this).addClass('ui-selecting');
 			}
 			$(this).parents('table.lms-ui-selectable-draggable').data('ui-selectable')._mouseStop(null);
-		});
+		}
+
+		var draggable_options = {
+			handle: "td",
+			revert: "invalid",
+			revertDuration: 300,
+			helper: function() {
+				var table = $(this).parents('table.lms-ui-selectable-draggable');
+				if (!table.find('tr.ui-selected').length)
+					$(this).addClass('ui-selected');
+				else if (!$(this).hasClass('ui-selected')) {
+					table.find('tr').removeClass('ui-selected');
+					$(this).addClass('ui-selected');
+				}
+				table = table.clone();
+				table.css('z-index', 100);
+				table.find('tr:not(.ui-selected)').remove();
+				table.find('tr').removeClass('ui-selected');
+				return table;
+			},
+			start: function(event, ui) {
+				$(this).parents('table.lms-ui-selectable-draggable').find('tr.ui-selected')
+					.toggle();
+			},
+			stop: function(event, ui) {
+				$(this).parents('table.lms-ui-selectable-draggable').find('tr.ui-selected:not(:visible)')
+					.toggle();
+			}
+		};
+		$('table.lms-ui-selectable-draggable > tbody > tr').draggable(draggable_options);
+
+		var selectable_options = {
+			filter: 'tbody > tr'
+		};
+		$('table.lms-ui-selectable-draggable').selectable(selectable_options);
+
+		$('table.lms-ui-selectable-draggable > tbody > tr').click(selectableClickHandler);
 
 		$('table.lms-ui-selectable-draggable:not(.lms-ui-not-droppable)').droppable({
 			accept: function(draggable) {
@@ -392,11 +398,21 @@
 			tolerance: "touch",
 			drop: function(event, ui) {
 				if (!ui.draggable.parents('table.lms-ui-selectable-draggable').is(this)) {
-					var selected = ui.draggable.parent().find('.ui-selected');
-					var handled = ui.draggable.parents('table.lms-ui-selectable-draggable')
-						.triggerHandler('lmsdrop', [ selected ]);
-					if (handled === true)
-						selected.toggle().appendTo($(this));
+					var table = ui.draggable.parents('table.lms-ui-selectable-draggable');
+					if (table.hasClass('lms-ui-datatable')) {
+						$(this).DataTable().rows.add(table.DataTable().rows('.ui-selected').data()).draw();
+						$(this).find('tbody > tr.ui-draggable').draggable('destroy');
+						$(this).selectable('destroy');
+						$(this).find('tbody > tr').draggable(draggable_options);
+						$(this).selectable(selectable_options);
+						$(this).find('tbody > tr').unbind('click').click(selectableClickHandler);
+						table.DataTable().rows('.ui-selected').remove().draw();
+					} else {
+						var selected = ui.draggable.parent().find('.ui-selected');
+						var handled = table.triggerHandler('lmsdrop', [ selected ]);
+						if (handled === true)
+							selected.toggle().appendTo($(this));
+					}
 				}
 			}
 		});

@@ -232,10 +232,9 @@
 					<TH data-orderable="false" data-searchable="false">&nbsp;</TD>
 				</TR>
 				</THEAD>
-				<TBODY>
-				{cycle name=files values="light,lucid" print=false}
-				{foreach from=$sourcefiles item=item}
-				<TR class="{cycle name=files}">
+				<TBODY class="lms-ui-background-cycle">
+				{foreach $sourcefiles as $item}
+				<TR>
 					<TD class="bold nobr">{$item.idate|date_format:"%Y/%m/%d %H:%M"}</TD>
 					<TD><a href="?m=balancelist&sourcefileid={$item.id}">{$item.name}</a></TD>
 					<TD class="text-center nobr">{$item.username}</TD>

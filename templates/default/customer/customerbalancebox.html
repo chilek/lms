@@ -143,10 +143,9 @@
 					<TH data-orderable="false" data-searchable="false">&nbsp;</TH>
 				</TR>
 				</THEAD>
-				<TBODY>
-				{cycle name=bal values="light,lucid" print=false}
+				<TBODY class="lms-ui-background-cycle">
 				{foreach $balancelist.list as $item}
-				<TR class="{cycle name=bal}">
+				<TR>
 					<TD class="nobr">{$item.date}</TD>
 					<TD class="nobr">{$item.username|truncate:16:"...":true}</TD>
 					<TD class="text-right nobr">{if !$item.type}{($item.value*-1)|money_format}{else}-{/if}</TD>
