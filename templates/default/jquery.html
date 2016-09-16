@@ -246,23 +246,25 @@
 				$(this).siblings('tr').removeClass('highlight');
 				$(this).addClass('highlight');
 			});
-			var tr = $('thead tr.lms-ui-datatable-column-search', elem)
-				.removeClass('lms-ui-datatable-column-search').clone();
-			$('thead', elem).append(tr).find('th').each(function(key, th) {
-				$(th).html((searchable = $(th).attr('data-searchable')) === undefined
-					|| searchable == 'true' ? '<input type="text" placeholder="{trans("Search")}">' : '');
-			});
-			$('thead input', elem).on('keyup change', function() {
-				$(elem).DataTable().column($(this).parent().index() + ':visible')
-					.search(this.value).draw();
-			});
-			$(this).on('init.dt', function(e, settings) {
-				var api = new $.fn.dataTable.Api(settings);
-				var state = api.state.loaded();
-				$('thead input', elem).each(function(index, input) {
-					$(input).attr('value', state.columns[$(input).parent().index()].search.search);
+			if ($(elem).hasClass('lms-ui-datatable-column-search')) {
+				var tr = $('thead tr', elem).clone();
+				$('thead', elem).append(tr).find('th').each(function(key, th) {
+					$(th).html((searchable = $(th).attr('data-searchable')) === undefined
+						|| searchable == 'true' ? '<input type="search" placeholder="{trans("Search")}">' : '');
 				});
-			});
+				$('thead input', elem).on('keyup change search', function() {
+					$(elem).DataTable().column($(this).parent().index() + ':visible')
+						.search(this.value).draw();
+				});
+			}
+			if ($(elem).hasClass('lms-ui-datatable-column-search'))
+				$(this).on('init.dt', function(e, settings) {
+					var api = new $.fn.dataTable.Api(settings);
+					var state = api.state.loaded();
+					$('thead input', elem).each(function(index, input) {
+						$(input).attr('value', state.columns[$(input).parent().index()].search.search);
+					});
+				});
 		}
 
 		$('.lms-ui-datatable').each(function() {

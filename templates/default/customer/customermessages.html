@@ -20,7 +20,7 @@
 	<TR id="messagespanel"  style="display:none;" class="dark">
 		<TD colspan="2">
 			<form method="post" name="customermessages" action="?m=messagedel">
-			<TABLE class="lmsbox-inner{if !empty($messagelist)} lms-ui-datatable{/if}"{if !empty($messagelist)}{if $limit} data-page-length="{$limit}"{/if} data-order='[[ 0, "desc" ]]' style="display: none;"{/if}>
+			<TABLE class="lmsbox-inner{if !empty($messagelist)} lms-ui-datatable{/if}"{if !empty($messagelist)}{if $limit} data-page-length="{$limit}"{/if} data-order='[[ 0, "desc" ]]' style="display: none;"{/if} width="100%">
 				<COLGROUP>
 					<COL style="width: 1%;">
 					<COL style="width: 95%;">
@@ -49,7 +49,7 @@
 					<TH class="nobr" data-orderable="false" data-searchable="false"></TH>
 				</TR>
 				</THEAD>
-				<TBODY class="lms-ui-background-cycle">
+				<TBODY>
 				{foreach $messagelist as $item}
 				<TR class="{if $item.status==$smarty.const.MSG_ERROR} alert{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}">
 					<TD class="nobr" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">

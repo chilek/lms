@@ -606,13 +606,13 @@ table.lmsbox > thead {
 table.lmsbox > tfoot, table.lmsbox-inner > tfoot {
   background-color: #dfd5bd;
 }
-table.lmsbox tbody.lms-ui-background-cycle > tr:nth-child(even):not(.ui-selected) {
+table.lmsbox.lms-ui-background-cycle tbody tr:nth-child(even):not(.ui-selected) {
   background-color: #dfd5bd;
 }
-table.lmsbox tbody.lms-ui-background-cycle > tr:nth-child(odd):not(.ui-selected) {
+table.lmsbox.lms-ui-background-cycle tbody tr:nth-child(odd):not(.ui-selected) {
   background-color: #ebe4d6;
 }
-table.lmsbox tbody.lms-ui-background-cycle > tr.highlight:hover {
+table.lmsbox.lms-ui-background-cycle tbody tr.highlight:hover {
   background-color: #ccffcc;
 }
 table.lmsbox-inner.datatables > thead {
@@ -620,6 +620,15 @@ table.lmsbox-inner.datatables > thead {
 }
 table.lmsbox-inner:not(.datatables) > thead {
   background-color: #dfd5bd;
+}
+table.lms-ui-datatable tbody tr:nth-child(even):not(.ui-selected) {
+  background-color: #dfd5bd;
+}
+table.lms-ui-datatable tbody tr:nth-child(odd):not(.ui-selected) {
+  background-color: #ebe4d6;
+}
+table.lms-ui-datatable tbody tr.highlight:hover {
+  background-color: #ccffcc;
 }
 tr.space_row > td {
   padding-top: 20px;

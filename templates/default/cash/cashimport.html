@@ -215,7 +215,7 @@
     <TBODY>
 	<TR class="dark">
 		<TD>
-			<TABLE{if !empty($sourcefiles)} class="lms-ui-datatable" data-order='[[ 0, "desc" ]]' data-page-length="25" data-state-save="true" style="display: none;"{/if}>
+			<TABLE{if !empty($sourcefiles)} class="lms-ui-datatable lms-ui-datatable-column-search" data-order='[[ 0, "desc" ]]' data-page-length="25" data-state-save="true" style="display: none;"{/if} width="100%">
 				<COLGROUP>
 					<COL style="width: 1%;">
 					<COL style="width: 96%;">
@@ -224,7 +224,7 @@
 					<COL style="width: 1%;">
 				</COLGROUP>
 				<THEAD>
-				<TR class="lms-ui-datatable-column-search">
+				<TR>
 					<TH class="bold nobr">{trans("Date:")}</TD>
 					<TH class="text-left nobr">{trans("Filename:")}</TD>
 					<TH class="text-center nobr" data-searchable="false">{trans("User:")}</TD>
@@ -232,7 +232,7 @@
 					<TH data-orderable="false" data-searchable="false">&nbsp;</TD>
 				</TR>
 				</THEAD>
-				<TBODY class="lms-ui-background-cycle">
+				<TBODY>
 				{foreach $sourcefiles as $item}
 				<TR>
 					<TD class="bold nobr">{$item.idate|date_format:"%Y/%m/%d %H:%M"}</TD>
