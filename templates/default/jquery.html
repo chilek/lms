@@ -7,7 +7,7 @@
 <script type="text/javascript" src="img/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
 <script type="text/javascript" src="img/jquery-datatables/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
-<!--
+
 	$(function() {
 		var autocomplete = "off";
 
@@ -239,11 +239,29 @@
 				lengthMenu: [[ 10, 25, 50, 100, -1 ], [ 10, 25, 50, 100, "{trans("All")}" ]],
 				displayStart: init.displayStart,
 				stateSave: init.stateSave,
-				ordering: init.ordering
+				ordering: init.ordering,
+				orderCellsTop: init.orderCellsTop
 			})
 			.on('mouseenter', 'tbody > tr', function() {
 				$(this).siblings('tr').removeClass('highlight');
 				$(this).addClass('highlight');
+			});
+			var tr = $('thead tr.lms-ui-datatable-filter', elem).removeClass('lms-ui-datatable-filter')
+				.clone().addClass('lms-ui-datatable-filter');
+			$('thead', elem).append(tr).find('th').each(function(key, th) {
+				$(th).html((searchable = $(th).attr('data-searchable')) === undefined
+					|| searchable == 'true' ? '<input type="text" placeholder="{trans("Search")}">' : '');
+			});
+			$('thead input', elem).on('keyup change', function() {
+				$(elem).DataTable().column($(this).parent().index() + ':visible')
+					.search(this.value).draw();
+			});
+			$(this).on('init.dt', function(e, settings) {
+				var api = new $.fn.dataTable.Api(settings);
+				var state = api.state.loaded();
+				$('thead input', elem).each(function(index, input) {
+					$(input).attr('value', state.columns[$(input).parent().index()].search.search);
+				});
 			});
 		}
 
@@ -258,6 +276,9 @@
 			init.ordering = $(this).attr('data-ordering');
 			if (init.ordering === undefined)
 				init.ordering = true;
+			init.orderCellsTop = $(this).attr('data-searching');
+			if (init.orderCellsTop === undefined)
+				init.orderCellsTop = true;
 			$(this).data('init', init);
 
 			if ($(this).parents(':hidden').length)
@@ -403,9 +424,11 @@
 						$(this).DataTable().rows.add(table.DataTable().rows('.ui-selected').data()).draw();
 						$(this).find('tbody > tr.ui-draggable').draggable('destroy');
 						$(this).selectable('destroy');
-						$(this).find('tbody > tr').draggable(draggable_options);
+						var rows = $(this).find('tbody > tr');
+						rows.draggable(draggable_options);
 						$(this).selectable(selectable_options);
-						$(this).find('tbody > tr').unbind('click').click(selectableClickHandler);
+						rows.unbind('click').click(selectableClickHandler);
+						table.removeClass('ui-droppable-active').removeClass('lms-ui-selectable-draggable-active');
 						table.DataTable().rows('.ui-selected').remove().draw();
 					} else {
 						var selected = ui.draggable.parent().find('.ui-selected');

@@ -870,6 +870,12 @@ table.dataTable thead th, table.dataTable thead td {
   padding-left: 10px;
   padding-right: 10px;
 }
+table.dataTable thead tr th {
+  border: none;
+}
+table.dataTable thead tr:last-child th {
+  border-bottom: 1px solid black;
+}
 .dataTables_wrapper .dataTables_paginate .paginate_button.current,
 .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
   background: linear-gradient(to bottom,#cebd9b 0%,#ae9d7b 100%);
