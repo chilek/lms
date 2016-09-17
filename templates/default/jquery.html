@@ -262,15 +262,16 @@
 			$(this).on('init.dt', function(e, settings) {
 				var api = new $.fn.dataTable.Api(settings);
 				var state = api.state.loaded();
-				if (columnSearch)
+				if (state && columnSearch)
 					$('thead input[type="search"]', elem).each(function(index, input) {
 						var column = $(input).parent().index();
 						$(input).attr('value', state.columns[column].search.search);
 					});
 				if (columnToggle) {
-					$('thead tr:last-child th', elem).each(function(index, th) {
-						$(th).css('display', state.columns[index].visible ? '' : 'none');
-					});
+					if (state)
+						$('thead tr:last-child th', elem).each(function(index, th) {
+							$(th).css('display', state.columns[index].visible ? '' : 'none');
+						});
 					var toggle = $(elem).siblings('div.top').find('div.column-toggle');
 					var content = '<form name="' + $(elem).attr('id') + '" class="column-toggle">'
 						+ '<select class="column-toggle" name="' + $(elem).attr('id') + '-column-toggle[]" multiple>';
@@ -278,7 +279,7 @@
 						var text = $(this.header()).text().trim();
 						if (text.indexOf(':') > 0)
 							content += '<option value="' + index + '"'
-								+ (state.columns[index].visible ? ' selected' : '') + '>' + text.replace(':', '') + '</option>';
+								+ (state && state.columns[index].visible ? ' selected' : '') + '>' + text.replace(':', '') + '</option>';
 					});
 					content += '</select></form>';
 					toggle.html(content);
