@@ -235,7 +235,7 @@
 				stripeClasses: [],
 				//deferRender: true,
 				processing: true,
-				stateDuration: 900,
+				stateDuration: {intval(ConfigHelper::getConfig('phpui.settings_timout', 28800))},
 				lengthMenu: [[ 10, 25, 50, 100, -1 ], [ 10, 25, 50, 100, "{trans("All")}" ]],
 				displayStart: init.displayStart,
 				stateSave: init.stateSave,
