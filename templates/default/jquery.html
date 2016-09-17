@@ -229,9 +229,9 @@
 					"url": "img/jquery-datatables-i18n/{$language}.json"
 				},
 				initComplete: function(settings, json) {
-					$(elem).css('display', '');
+					$(elem).toggle();
 				},
-				dom: '<"top"lpf>rt<"bottom"i><"clear">',
+				dom: init.dom,
 				stripeClasses: [],
 				//deferRender: true,
 				processing: true,
@@ -257,14 +257,36 @@
 						.search(this.value).draw();
 				});
 			}
-			if ($(elem).hasClass('lms-ui-datatable-column-search'))
-				$(this).on('init.dt', function(e, settings) {
-					var api = new $.fn.dataTable.Api(settings);
-					var state = api.state.loaded();
-					$('thead input', elem).each(function(index, input) {
-						$(input).attr('value', state.columns[$(input).parent().index()].search.search);
+			$(this).on('init.dt', function(e, settings) {
+				var api = new $.fn.dataTable.Api(settings);
+				var state = api.state.loaded();
+				if ($(elem).hasClass('lms-ui-datatable-column-search'))
+					$('thead input[type="search"]', elem).each(function(index, input) {
+						var column = $(input).parent().index();
+						$(input).attr('value', state.columns[column].search.search)
+						.parent().css('display', state.columns[column].visible ? '' : 'none');
 					});
-				});
+				if ($(elem).hasClass('lms-ui-datatable-column-toggle')) {
+					var toggle = $(elem).siblings('div.top').find('div.column-toggle');
+					var content = '<form name="' + $(elem).attr('id') + '" class="column-toggle">'
+						+ '<select class="column-toggle" name="' + $(elem).attr('id') + '-column-toggle[]" multiple>';
+					api.columns().every(function(index) {
+						var text = $(this.header()).text().trim();
+						if (text.indexOf(':') > 0)
+							content += '<option value="' + index + '"'
+								+ (state.columns[index].visible ? ' selected' : '') + '>' + text.replace(':', '') + '</option>';
+					});
+					content += '</select></form>';
+					toggle.html(content);
+					multiselect(toggle.find('form.column-toggle').uniqueId().attr('id'),
+						toggle.find('select.column-toggle').uniqueId().attr('id'), null);
+					toggle.find('div.multiselectlayer li').on('click', function() {
+						var checkbox = $(this).find('input:checkbox');
+						$(elem).find('thead tr:last-child th:nth-child(' + (parseInt(checkbox.val()) + 1) + ')').toggle();
+						api.column(checkbox.val()).visible(checkbox.is(':checked'));
+					});
+				}
+			});
 		}
 
 		$('.lms-ui-datatable').each(function() {
@@ -281,6 +303,10 @@
 			init.orderCellsTop = $(this).attr('data-searching');
 			if (init.orderCellsTop === undefined)
 				init.orderCellsTop = true;
+			if ($(this).hasClass('lms-ui-datatable-column-toggle'))
+				init.dom = '<"top"l<"column-toggle">pf>rt<"bottom"i><"clear">';
+			else
+				init.dom = '<"top"lpf>rt<"bottom"i><"clear">';
 			$(this).data('init', init);
 
 			if ($(this).parents(':hidden').length)

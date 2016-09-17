@@ -106,8 +106,8 @@ version ?.??.?? (????-??-??):
   - added support for ssl_verify_peer, ssl_verify_peer_name, ssl_allow_self_signed boolean
     configuration variables in LMS::SendMail (for now these variables are handled only
     by phpmailer mail.backend) [chilan]
-  - allow to switch on column filter for lms-ui-datatable using
-    lms-ui-datatable-column-search class [chilan]
+  - allow to switch on column filter and toggle for lms-ui-datatable using
+    lms-ui-datatable-column-search and lms-ui-datatable-column-toggle classes respectively [chilan]
 
 version 1.11.20 (2016-04-19):
 

@@ -900,7 +900,14 @@ table.dataTable thead tr:last-child th {
 .dataTables_wrapper .dataTables_length {
   padding-left: 4px;
   padding-top: 5px;
-  width: 33%;
+  width: 10%;
+  white-space: nowrap;
+}
+.dataTables_wrapper .column-toggle {
+  float: left;
+  padding-left: 0;
+  padding-top: 3px;
+  width: 22%;
 }
 .dataTables_wrapper .dataTables_paginate {
   float: left;

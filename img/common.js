@@ -268,21 +268,20 @@ function CheckAll(form, elem, excl)
     }
 }
 
-function get_object_pos(obj)
-{
+function get_object_pos(obj) {
 	// get old element size/position
-	var x = (document.layers) ? obj.x : obj.offsetLeft;
-	var y = (document.layers) ? obj.y : obj.offsetTop;
+	var x = obj.offsetLeft;
+	var y = obj.offsetTop;
 
 	// calculate element position
 	var elm = obj.offsetParent;
-	while (elm) {
-	    x += elm.offsetLeft;
+	while (elm && window.getComputedStyle(elm).position != 'relative') {
+		x += elm.offsetLeft;
 		y += elm.offsetTop;
 		elm = elm.offsetParent;
 	}
 
-	return {x:x, y:y};
+	return { x: x, y: y };
 }
 
 function multiselect(formid, elemid, def)
