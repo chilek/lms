@@ -784,28 +784,32 @@ table.dataTable {
 		background: linear-gradient(to right, rgba(174,157,123,0.0) 0%, rgba(174,157,123,0.9) 25%, rgba(174,157,123,0.9) 75%, rgba(174,157,123,0.0) 100%);
 		font-weight: bold;
 	}
+	.top {
+		display: flex;
+		justify-content: space-between;
+	}
+	.length-column-toggle {
+		display: flex;
+		justify-content: space-between;
+	}
 	.dataTables_length {
 		padding-left: 4px;
 		padding-top: 5px;
-		width: 10%;
 		white-space: nowrap;
 	}
 	.column-toggle {
 		float: left;
-		padding-left: 0;
-		padding-top: 3px;
-		width: 22%;
+		padding-left: 4px;
+		padding-top: 2px;
 	}
 	.dataTables_paginate {
 		float: left;
 		text-align: center;
 		padding-top: 2px;
-		width: 33%;
 	}
 	.dataTables_filter {
 		padding-right: 4px;
 		padding-top: 5px;
-		width: 33%;
 	}
 	.dataTables_info {
 		float: none;

@@ -897,28 +897,32 @@ table.dataTable thead tr:last-child th {
   background: linear-gradient(to right,rgba(174,157,123,0.0)0%,rgba(174,157,123,0.9)25%,rgba(174,157,123,0.9)75%,rgba(174,157,123,0.0)100%);
   font-weight: bold;
 }
+.dataTables_wrapper .top {
+  display: flex;
+  justify-content: space-between;
+}
+.dataTables_wrapper .length-column-toggle {
+  display: flex;
+  justify-content: space-between;
+}
 .dataTables_wrapper .dataTables_length {
   padding-left: 4px;
   padding-top: 5px;
-  width: 10%;
   white-space: nowrap;
 }
 .dataTables_wrapper .column-toggle {
   float: left;
-  padding-left: 0;
-  padding-top: 3px;
-  width: 22%;
+  padding-left: 4px;
+  padding-top: 2px;
 }
 .dataTables_wrapper .dataTables_paginate {
   float: left;
   text-align: center;
   padding-top: 2px;
-  width: 33%;
 }
 .dataTables_wrapper .dataTables_filter {
   padding-right: 4px;
   padding-top: 5px;
-  width: 33%;
 }
 .dataTables_wrapper .dataTables_info {
   float: none;

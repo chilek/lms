@@ -279,7 +279,7 @@
 						var text = $(this.header()).text().trim();
 						if (text.indexOf(':') > 0)
 							content += '<option value="' + index + '"'
-								+ (state && state.columns[index].visible ? ' selected' : '') + '>' + text.replace(':', '') + '</option>';
+								+ (!state || state.columns[index].visible ? ' selected' : '') + '>' + text.replace(':', '') + '</option>';
 					});
 					content += '</select></form>';
 					toggle.html(content);
@@ -309,7 +309,8 @@
 			if (init.orderCellsTop === undefined)
 				init.orderCellsTop = true;
 			if ($(this).hasClass('lms-ui-datatable-column-toggle'))
-				init.dom = '<"top"l<"column-toggle">pf>rt<"bottom"i><"clear">';
+				//init.dom = '<"top"l<"column-toggle">pf>rt<"bottom"i><"clear">';
+				init.dom = '<"top"<"length-column-toggle"l<"column-toggle">>pf>rt<"bottom"i><"clear">';
 			else
 				init.dom = '<"top"lpf>rt<"bottom"i><"clear">';
 			$(this).data('init', init);
