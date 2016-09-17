@@ -619,10 +619,10 @@ table.lmsbox.lms-ui-background-cycle tbody tr:nth-child(odd):not(.ui-selected) {
 table.lmsbox.lms-ui-background-cycle tbody tr.highlight:hover {
   background-color: #ccffcc;
 }
-table.lmsbox-inner.datatables > thead {
+table.lmsbox-inner.dataTable > thead {
   background-color: #cebd9b;
 }
-table.lmsbox-inner:not(.datatables) > thead {
+table.lmsbox-inner:not(.dataTable) > thead {
   background-color: #dfd5bd;
 }
 table.lms-ui-datatable tbody tr:nth-child(even):not(.ui-selected) {
