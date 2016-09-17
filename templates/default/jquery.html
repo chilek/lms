@@ -246,7 +246,9 @@
 				$(this).siblings('tr').removeClass('highlight');
 				$(this).addClass('highlight');
 			});
-			if ($(elem).hasClass('lms-ui-datatable-column-search')) {
+			var columnSearch = $(elem).hasClass('lms-ui-datatable-column-search');
+			var columnToggle = $(elem).hasClass('lms-ui-datatable-column-toggle');
+			if (columnSearch) {
 				var tr = $('thead tr', elem).clone();
 				$('thead', elem).append(tr).find('th').each(function(key, th) {
 					$(th).html((searchable = $(th).attr('data-searchable')) === undefined
@@ -260,13 +262,15 @@
 			$(this).on('init.dt', function(e, settings) {
 				var api = new $.fn.dataTable.Api(settings);
 				var state = api.state.loaded();
-				if ($(elem).hasClass('lms-ui-datatable-column-search'))
+				if (columnSearch)
 					$('thead input[type="search"]', elem).each(function(index, input) {
 						var column = $(input).parent().index();
-						$(input).attr('value', state.columns[column].search.search)
-						.parent().css('display', state.columns[column].visible ? '' : 'none');
+						$(input).attr('value', state.columns[column].search.search);
 					});
-				if ($(elem).hasClass('lms-ui-datatable-column-toggle')) {
+				if (columnToggle) {
+					$('thead tr:last-child th', elem).each(function(index, th) {
+						$(th).css('display', state.columns[index].visible ? '' : 'none');
+					});
 					var toggle = $(elem).siblings('div.top').find('div.column-toggle');
 					var content = '<form name="' + $(elem).attr('id') + '" class="column-toggle">'
 						+ '<select class="column-toggle" name="' + $(elem).attr('id') + '-column-toggle[]" multiple>';
