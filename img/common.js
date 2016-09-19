@@ -419,10 +419,11 @@ function multiselect(options) {
 	// hide combobox after click out of the window
 	document.onclick = function(e) {
 		var elem = e.target;
-		while (elem.nodeName != 'DIV' || elem.className.match(/^multiselect/) === null)
-			elem = elem.parentNode;
+		if (tiny)
+			while (elem && (elem.nodeName != 'DIV' || elem.className.match(/^multiselect/) === null))
+				elem = elem.parentNode;
 
-		if (div.style.display == 'none' || elem.id == old_element.id)
+		if (div.style.display == 'none' || (elem && elem.id == old_element.id))
 			return 0;
 
 		var parent = e.target.parentNode.innerHTML.indexOf(old_element.name);

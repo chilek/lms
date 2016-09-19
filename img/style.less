@@ -208,17 +208,20 @@ div.multiselect {
 	max-width: 200px;
 	white-space: pre-wrap;
 	min-width: 200px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
 }
 div.multiselect-tiny {
 	overflow: hidden;
 	vertical-align: middle;
 	cursor: pointer;
 	-ms-user-select: none;
+	display: flex;
+	align-items: center;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	user-select: none;
-	display: flex;
-	align-items: center;
 }
 div.multiselectlayer {
 	position: absolute;
