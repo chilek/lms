@@ -85,13 +85,13 @@
 	<TR class="highlight {cycle}{if $queue[ticket].state == 2} blend{/if}"  >
 		<TD onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
 			{if $queue[ticket].state == 0}
-				<IMG src="img/new.gif" alt="" class="rtticketinfo" data-resourceid="{$queue[ticket].id}">
+				<IMG src="img/new.gif" alt="" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$queue[ticket].id}">
 			{elseif $queue[ticket].state == 1}
-				<IMG src="img/open.gif" alt="" class="rtticketinfo" data-resourceid="{$queue[ticket].id}">
+				<IMG src="img/open.gif" alt="" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$queue[ticket].id}">
 			{elseif $queue[ticket].state == 2}
-				<IMG src="img/resolved.gif" alt="" class="rtticketinfo" data-resourceid="{$queue[ticket].id}">
+				<IMG src="img/resolved.gif" alt="" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$queue[ticket].id}">
 			{elseif $queue[ticket].state == 3}
-				<IMG src="img/dead.gif" alt="" class="rtticketinfo" data-resourceid="{$queue[ticket].id}">
+				<IMG src="img/dead.gif" alt="" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$queue[ticket].id}">
 			{/if}
 		</TD>
 		<TD NOWRAP onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
@@ -112,7 +112,7 @@
 			{/if}
 			<B>{$queue[ticket].subject|escape|truncate:"60":"..."|default:"&nbsp;"}</B><BR>
 			{if $queue[ticket].customerid}
-				<span class="nodelist" data-resourceid="{$queue[ticket].customerid}">
+				<span class="lms-ui-tooltip-nodelist" data-resourceid="{$queue[ticket].customerid}">
 				{$queue[ticket].requestor|escape|truncate:"60":"..."}
 				({$queue[ticket].address})
 				</span>

@@ -89,7 +89,7 @@
 		{if $voipaccountlist[voipaccountlist].location} / {$voipaccountlist[voipaccountlist].location}{if $voipaccountlist[voipaccountlist].borough_name} ({$voipaccountlist[voipaccountlist].state_name} / {$voipaccountlist[voipaccountlist].district_name} / {$_BOROUGHTYPES[$voipaccountlist[voipaccountlist].borough_type]} {$voipaccountlist[voipaccountlist].borough_name}){/if}{/if}
 		<br>
                 <img src="img/customer.gif" alt="">&nbsp;
-                <a href="?m=customerinfo&amp;id={$voipaccountlist[voipaccountlist].ownerid}" class="customerinfo" data-resourceid="{$voipaccountlist[voipaccountlist].ownerid}">
+                <a href="?m=customerinfo&id={$voipaccountlist[voipaccountlist].ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$voipaccountlist[voipaccountlist].ownerid}">
                     {$voipaccountlist[voipaccountlist].owner|truncate:40:"...":true|replace:" ":"&nbsp;"} ({$voipaccountlist[voipaccountlist].ownerid|string_format:"%04d"})
                 </a>
             </td>

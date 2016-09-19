@@ -187,13 +187,13 @@
 		<TD class="text-right nobr">
 			{if $balancelist[balancelist].docid}
 				{if $balancelist[balancelist].doctype==$smarty.const.DOC_INVOICE}
-				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" class="docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/print.gif" ALT="[ {trans("Invoice")} ]"></A>
+				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/print.gif" ALT="[ {trans("Invoice")} ]"></A>
 				{elseif $balancelist[balancelist].doctype==$smarty.const.DOC_CNOTE}
-				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" class="docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/printn.gif" ALT="[ {trans("Credit note")} ]"></A>
+				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/printn.gif" ALT="[ {trans("Credit note")} ]"></A>
 				{elseif $balancelist[balancelist].doctype==$smarty.const.DOC_RECEIPT}
-				<A HREF="?m=receipt&id={$balancelist[balancelist].docid}" class="docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/printr.gif" ALT="[ {trans("Cash receipt")} ]"></A>
+				<A HREF="?m=receipt&id={$balancelist[balancelist].docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/printr.gif" ALT="[ {trans("Cash receipt")} ]"></A>
 				{elseif $balancelist[balancelist].doctype==$smarty.const.DOC_DNOTE}
-				<A HREF="?m=note&id={$balancelist[balancelist].docid}" class="docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/printd.gif" ALT="[ {trans("Debit note")} ]"></A>
+				<A HREF="?m=note&id={$balancelist[balancelist].docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/printd.gif" ALT="[ {trans("Debit note")} ]"></A>
 				{/if}
 			{/if}
 			<INPUT TYPE="checkbox" NAME="marks[{$balancelist[balancelist].id}]" VALUE="{$balancelist[balancelist].id}">
