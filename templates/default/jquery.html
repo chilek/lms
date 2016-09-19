@@ -153,15 +153,15 @@
 			$('body').css('user-select', e.shiftKey ? 'none' : 'auto');
 		});
 
-		var tbodies = $('tbody.multi-check');
+		var tbodies = $('tbody.lms-ui-multi-check');
 		$.each(tbodies, function(index, tbody) {
 			var tbody = $(tbody);
 			var checkboxes = tbody.parent().find(':checkbox');
-			var allcheckboxes = checkboxes.filter('.multi-check');
+			var allcheckboxes = checkboxes.filter('.lms-ui-multi-check');
 
-			var checkall = checkboxes.filter('.multi-check-all');
+			var checkall = checkboxes.filter('.lms-ui-multi-check-all');
 			if (!checkall.length)
-				checkall = tbody.siblings('tfoot').filter('.multi-check-all');
+				checkall = tbody.siblings('tfoot').filter('.lms-ui-multi-check-all');
 			if (checkall.length) {
 				checkall.click(function(e) {
 					allcheckboxes.each(function(index, elem) {
@@ -173,21 +173,16 @@
 				checkall = null;
 
 			function checkElements(checkbox) {
-				var i = j = -1;
-				allcheckboxes.each(function(index, elem) {
-					if ($(elem).attr('data-prev-checked') !== undefined)
-						i = index;
-					if ($(elem).is(checkbox))
-						j = index;
-				});
-				if (i == -1)
-					return;
-				var checked = $(allcheckboxes[i]).attr('data-prev-checked') == 'true' ? true : false;
-				var start = Math.min(i, j);
-				var stop = Math.max(i, j);
-				for (var i = start; i <= stop; i++)
-					allcheckboxes[i].checked = checked;
-				updateCheckAll();
+				var i = allcheckboxes.index(allcheckboxes.filter('[data-prev-checked]')),
+					j = allcheckboxes.index(checkbox);
+				if (i > -1) {
+					var checked = $(allcheckboxes[i]).attr('data-prev-checked') == 'true' ? true : false;
+					var start = Math.min(i, j);
+					var stop = Math.max(i, j);
+					for (i = start; i <= stop; i++)
+						allcheckboxes[i].checked = checked;
+					updateCheckAll();
+				}
 			}
 
 			function updateCheckAll() {
@@ -234,24 +229,72 @@
 					"url": "img/jquery-datatables-i18n/{$language}.json"
 				},
 				initComplete: function(settings, json) {
-					$(elem).css('display', '');
+					$(elem).show();
 				},
-				dom: '<"top"lpf>rt<"bottom"i><"clear">',
+				dom: init.dom,
+				stripeClasses: [],
 				//deferRender: true,
 				processing: true,
-				stateDuration: 900,
+				stateDuration: {intval(ConfigHelper::getConfig('phpui.settings_timout', 28800))},
 				lengthMenu: [[ 10, 25, 50, 100, -1 ], [ 10, 25, 50, 100, "{trans("All")}" ]],
 				displayStart: init.displayStart,
 				stateSave: init.stateSave,
-				ordering: init.ordering
+				ordering: init.ordering,
+				orderCellsTop: init.orderCellsTop
 			})
 			.on('mouseenter', 'tbody > tr', function() {
 				$(this).siblings('tr').removeClass('highlight');
 				$(this).addClass('highlight');
 			});
+			var columnSearch = $(elem).hasClass('lms-ui-datatable-column-search');
+			var columnToggle = $(elem).hasClass('lms-ui-datatable-column-toggle');
+			if (columnSearch) {
+				var tr = $('thead tr', elem).clone();
+				$('thead', elem).append(tr).find('th').each(function(key, th) {
+					$(th).html((searchable = $(th).attr('data-searchable')) === undefined
+						|| searchable == 'true' ? '<input type="search" placeholder="{trans("Search")}">' : '');
+				});
+				$('thead input', elem).on('keyup change search', function() {
+					$(elem).DataTable().column($(this).parent().index() + ':visible')
+						.search(this.value).draw();
+				});
+			}
+			$(this).on('init.dt', function(e, settings) {
+				var api = new $.fn.dataTable.Api(settings);
+				var state = api.state.loaded();
+				if (state && columnSearch)
+					$('thead input[type="search"]', elem).each(function(index, input) {
+						var column = $(input).parent().index();
+						$(input).attr('value', state.columns[column].search.search);
+					});
+				if (columnToggle) {
+					if (state)
+						$('thead tr:last-child th', elem).each(function(index, th) {
+							$(th).css('display', state.columns[index].visible ? '' : 'none');
+						});
+					var toggle = $(elem).siblings('div.top').find('div.column-toggle');
+					var content = '<form name="' + $(elem).attr('id') + '" class="column-toggle">'
+						+ '<select class="column-toggle" name="' + $(elem).attr('id') + '-column-toggle[]" multiple>';
+					api.columns().every(function(index) {
+						var text = $(this.header()).text().trim();
+						if (text.indexOf(':') > 0)
+							content += '<option value="' + index + '"'
+								+ (!state || state.columns[index].visible ? ' selected' : '') + '>' + text.replace(':', '') + '</option>';
+					});
+					content += '</select></form>';
+					toggle.html(content);
+					multiselect(toggle.find('form.column-toggle').uniqueId().attr('id'),
+						toggle.find('select.column-toggle').uniqueId().attr('id'), null);
+					toggle.find('div.multiselectlayer li').on('click', function() {
+						var checkbox = $(this).find('input:checkbox');
+						$(elem).find('thead tr:last-child th:nth-child(' + (parseInt(checkbox.val()) + 1) + ')').toggle();
+						api.column(checkbox.val()).visible(checkbox.is(':checked'));
+					});
+				}
+			});
 		}
 
-		$('.datatables').each(function() {
+		$('.lms-ui-datatable').each(function() {
 			var init = {};
 			init.displayStart = $(this).attr('data-display-start');
 			if (init.displayStart === undefined)
@@ -262,6 +305,14 @@
 			init.ordering = $(this).attr('data-ordering');
 			if (init.ordering === undefined)
 				init.ordering = true;
+			init.orderCellsTop = $(this).attr('data-searching');
+			if (init.orderCellsTop === undefined)
+				init.orderCellsTop = true;
+			if ($(this).hasClass('lms-ui-datatable-column-toggle'))
+				//init.dom = '<"top"l<"column-toggle">pf>rt<"bottom"i><"clear">';
+				init.dom = '<"top"<"length-column-toggle"l<"column-toggle">>pf>rt<"bottom"i><"clear">';
+			else
+				init.dom = '<"top"lpf>rt<"bottom"i><"clear">';
 			$(this).data('init', init);
 
 			if ($(this).parents(':hidden').length)
@@ -271,10 +322,11 @@
 		});
 
 		$('.lmsbox-titlebar').each(function() {
+			$(this).prop('onclick', null);
 			$(this).click(function() {
 				var elemid = $(this).attr('data-lmsbox-content');
 				showOrHide(elemid);
-				$('#' + elemid).find('.datatables').each(function() {
+				$('#' + elemid).find('.lms-ui-datatable').each(function() {
 					if (!$.fn.dataTable.isDataTable(this))
 						initDataTable(this);
 				});
@@ -284,7 +336,7 @@
 			});
 		});
 
-		$('.row-all-check').each(function() {
+		$('.lms-ui-row-all-check').each(function() {
 			$(this).click(function() {
 				var checked = true;
 				$.each($(this).find(':checkbox'), function(key, value) {
@@ -302,7 +354,7 @@
 			});
 		});
 
-		$('.persistent-order').sortable({
+		$('.lms-ui-persistent-order').sortable({
 			items: "> .sortable",
 			handle: "tr.lmsbox-titlebar",
 			axis: "y",
@@ -310,6 +362,115 @@
 			update: function(event, ui) {
 				var tabs = $(this).sortable("toArray").join(';');
 				setCookie($(this).attr('id') + '-order', tabs, true);
+			}
+		});
+
+		function selectableClickHandler(e) {
+			if (!e.ctrlKey) {
+				if (e.shiftKey) {
+					var rows = $(this).parent().children('tr');
+					var i = rows.index($(this).siblings('tr[data-prev-selected]')),
+						j = rows.index(this);
+					if (i > -1) {
+						var selected = $(rows[i]).attr('data-prev-selected') == 'true' ? true : false;
+						var start = Math.min(i, j);
+						var stop = Math.max(i, j);
+						for (i = start; i <= stop; i++)
+							if (selected)
+								$(rows[i]).addClass('ui-selecting');
+							else
+								$(rows[i]).removeClass('ui-selected');
+					}
+				} else {
+					$(this).siblings('tr[data-prev-selected]').removeAttr('data-prev-selected');
+					if ($(this).hasClass('ui-selected')) {
+						$(this).removeClass('ui-selected');
+						$(this).attr('data-prev-selected', false);
+					} else {
+						$(this).parents('table.lms-ui-selectable-draggable > tbody').children('tr').removeClass('ui-selected');
+						$(this).addClass('ui-selecting');
+						$(this).attr('data-prev-selected', true);
+					}
+				}
+			} else {
+				if ($(this).hasClass('ui-selected'))
+					$(this).removeClass('ui-selected');
+				else
+					$(this).addClass('ui-selecting');
+			}
+			$(this).parents('table.lms-ui-selectable-draggable').data('ui-selectable')._mouseStop(null);
+		}
+
+		var draggable_options = {
+			handle: "td",
+			revert: "invalid",
+			revertDuration: 300,
+			helper: function() {
+				var table = $(this).parents('table.lms-ui-selectable-draggable');
+				if (!table.find('tr.ui-selected').length)
+					$(this).addClass('ui-selected');
+				else if (!$(this).hasClass('ui-selected')) {
+					table.find('tr').removeClass('ui-selected');
+					$(this).addClass('ui-selected');
+				}
+				table = table.clone();
+				table.css('z-index', 100);
+				table.find('tr:not(.ui-selected)').remove();
+				table.find('tr').removeClass('ui-selected');
+				return table;
+			},
+			start: function(event, ui) {
+				$(this).parents('table.lms-ui-selectable-draggable').find('tr.ui-selected')
+					.toggle();
+			},
+			stop: function(event, ui) {
+				$(this).parents('table.lms-ui-selectable-draggable').find('tr.ui-selected:not(:visible)')
+					.toggle();
+			}
+		};
+		$('table.lms-ui-selectable-draggable > tbody > tr').draggable(draggable_options);
+
+		var selectable_options = {
+			filter: 'tbody > tr'
+		};
+		$('table.lms-ui-selectable-draggable').selectable(selectable_options);
+
+		$('table.lms-ui-selectable-draggable > tbody > tr').click(selectableClickHandler);
+
+		$('table.lms-ui-selectable-draggable:not(.lms-ui-not-droppable)').droppable({
+			accept: function(draggable) {
+				if (/lms-ui-droppable-([^\s]+)/.exec($(this).attr('class')) !== null) {
+					var droppable = RegExp.$1;
+					return $(draggable).parents('table.lms-ui-selectable-draggable')
+						.hasClass('lms-ui-droppable-' + droppable);
+				}
+				return false;
+			},
+			classes: {
+				"ui-droppable-hover": "lms-ui-selectable-draggable-hover",
+				"ui-droppable-active": "lms-ui-selectable-draggable-active"
+			},
+			tolerance: "touch",
+			drop: function(event, ui) {
+				if (!ui.draggable.parents('table.lms-ui-selectable-draggable').is(this)) {
+					var table = ui.draggable.parents('table.lms-ui-selectable-draggable');
+					if (table.hasClass('lms-ui-datatable')) {
+						$(this).DataTable().rows.add(table.DataTable().rows('.ui-selected').data()).draw();
+						$(this).find('tbody > tr.ui-draggable').draggable('destroy');
+						$(this).selectable('destroy');
+						var rows = $(this).find('tbody > tr');
+						rows.draggable(draggable_options);
+						$(this).selectable(selectable_options);
+						rows.unbind('click').click(selectableClickHandler);
+						table.removeClass('ui-droppable-active').removeClass('lms-ui-selectable-draggable-active');
+						table.DataTable().rows('.ui-selected').remove().draw();
+					} else {
+						var selected = ui.draggable.parent().find('.ui-selected');
+						var handled = table.triggerHandler('lmsdrop', [ selected ]);
+						if (handled === true)
+							selected.toggle().appendTo($(this));
+					}
+				}
 			}
 		});
 	});

@@ -191,6 +191,7 @@ A.blend {
 A:hover {
   text-decoration: underline;
   color: #336600;
+  cursor: pointer;
 }
 TR.blend A {
   color: #888888;
@@ -252,6 +253,10 @@ INPUT[type="file"] {
 }
 INPUT[type="radio"] {
   vertical-align: text-bottom;
+}
+INPUT {
+  font-size: 8pt;
+  font-family: Arial, Helvetica, Verdana;
 }
 INPUT.alert {
   background-color: #ff9b9b;
@@ -563,58 +568,70 @@ div.multiselectlayer ul span {
     color: black;
   }
 }
-table.lmsbox {
+table.lmsbox, table.lmsbox-inner, table.lmsbox-innerbox {
   width: 100%;
+}
+table.lmsbox td, table.lmsbox-inner td, table.lmsbox-innerbox td {
+  padding: 2px;
+}
+table.lmsbox > thead, table.lmsbox-inner > thead, table.lmsbox-innerbox > thead {
+  background-color: #cebd9b;
+}
+table.lmsbox {
   margin: 0px 2px 4px 0px;
 }
-table.lmsbox td {
-  padding: 2px;
+table.lmsbox > tbody, table.lmsbox-inner > tbody {
+  background-color: #dfd5bd;
 }
-table.lmsbox-inner {
-  width: 100%;
+table.lmsbox > thead,
+table.lmsbox > tfoot,
+table.lmsbox > tbody,
+table.lmsbox-inner > tfoot,
+table.lmsbox-innerbox > thead,
+table.lmsbox-innerbox > tfoot {
+  border-width: 1px;
+  border-style: solid;
+  border-color: black;
 }
 table.lmsbox-inner td {
-  padding: 2px;
   border-spacing: 0px;
 }
-table.lmsbox > thead, table.lmsbox > tfoot, table.lmsbox > tbody {
-  border-width: 1px;
-  border-style: solid;
-  border-color: black;
-}
-table.lmsbox-inner.datatables > thead {
+table.lmsbox-inner > thead,
+table.lmsbox-innerbox > thead,
+table.lmsbox-innerbox > tfoot {
   background-color: #cebd9b;
-}
-table.lmsbox-inner:not(.datatables) > thead {
-  background-color: #dfd5bd;
-}
-table.lmsbox-inner > tfoot {
-  border-width: 1px;
-  border-style: solid;
-  border-color: black;
-}
-table.lmsbox > thead, table.lmsbox-inner > thead {
-  background-color: #cebd9b;
-}
-table.lmsbox > thead {
-  text-align: left;
-}
-table.lmsbox > tbody, table.lmsbox > tfoot {
-  background-color: #dfd5bd;
-}
-table.lmsbox-inner > tbody, table.lmsbox-inner > tfoot {
-  background-color: #dfd5bd;
 }
 table.lmsbox > thead > tr, table.lmsbox > tfoot > tr {
   border-top: 1px solid black;
 }
-table.lmsbox tbody.background-cycle > tr:nth-child(even) {
+table.lmsbox > thead {
+  text-align: left;
+}
+table.lmsbox > tfoot, table.lmsbox-inner > tfoot {
   background-color: #dfd5bd;
 }
-table.lmsbox tbody.background-cycle > tr:nth-child(odd) {
+table.lmsbox.lms-ui-background-cycle tbody tr:nth-child(even):not(.ui-selected) {
+  background-color: #dfd5bd;
+}
+table.lmsbox.lms-ui-background-cycle tbody tr:nth-child(odd):not(.ui-selected) {
   background-color: #ebe4d6;
 }
-table.lmsbox tbody.background-cycle > tr.highlight:hover {
+table.lmsbox.lms-ui-background-cycle tbody tr.highlight:hover {
+  background-color: #ccffcc;
+}
+table.lmsbox-inner.dataTable > thead {
+  background-color: #cebd9b;
+}
+table.lmsbox-inner:not(.dataTable) > thead {
+  background-color: #dfd5bd;
+}
+table.lms-ui-datatable tbody tr:nth-child(even):not(.ui-selected) {
+  background-color: #dfd5bd;
+}
+table.lms-ui-datatable tbody tr:nth-child(odd):not(.ui-selected) {
+  background-color: #ebe4d6;
+}
+table.lms-ui-datatable tbody tr.highlight:hover {
   background-color: #ccffcc;
 }
 tr.space_row > td {
@@ -648,6 +665,12 @@ td.multiselect {
 }
 td.multiselect select {
   min-width: 200px;
+}
+.lms-ui-selectable-draggable-active {
+  box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.75);
+}
+.lms-ui-selectable-draggable-active.lms-ui-selectable-draggable-hover {
+  box-shadow: 0px 0px 25px 0px rgba(0,0,0,0.75);
 }
 .nobr {
   white-space: nowrap;
@@ -810,6 +833,9 @@ a.ui-button:active,
   background-color: #ae9d7b;
   border-color: #ae9d7b;
 }
+.ui-selected {
+  background-color: #ccffcc;
+}
 .fileupload-progress-label {
   position: absolute;
   left: 48%;
@@ -827,11 +853,14 @@ a.ui-button:active,
 .xdsoft_datetimepicker .xdsoft_label > .xdsoft_select > div > .xdsoft_option {
   background-color: #f4f0ec;
 }
-table.dataTable tbody tr.odd {
+table.dataTable tbody tr.odd:not(.ui-selected) {
   background-color: #ebe4d6;
 }
-table.dataTable tbody tr.even {
+table.dataTable tbody tr.even:not(.ui-selected) {
   background-color: #dfd5bd;
+}
+table.dataTable tbody tr.ui-selected {
+  background-color: #cebd9b;
 }
 table.dataTable tbody tr.highlight {
   background-color: #ccffcc;
@@ -854,29 +883,46 @@ table.dataTable thead th, table.dataTable thead td {
   padding-left: 10px;
   padding-right: 10px;
 }
+table.dataTable thead tr th {
+  border: none;
+}
+table.dataTable thead tr:last-child th {
+  border-bottom: 1px solid black;
+}
 .dataTables_wrapper .dataTables_paginate .paginate_button.current,
 .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
   background: linear-gradient(to bottom,#cebd9b 0%,#ae9d7b 100%);
 }
 .dataTables_wrapper .dataTables_processing {
-  background: linear-gradient(to right,#ae9d7b00 0%,rgba(174,157,123,0.9)25%,rgba(174,157,123,0.9)75%,#ae9d7b00 100%);
+  background: linear-gradient(to right,rgba(174,157,123,0.0)0%,rgba(174,157,123,0.9)25%,rgba(174,157,123,0.9)75%,rgba(174,157,123,0.0)100%);
   font-weight: bold;
+}
+.dataTables_wrapper .top {
+  display: flex;
+  justify-content: space-between;
+}
+.dataTables_wrapper .length-column-toggle {
+  display: flex;
+  justify-content: space-between;
 }
 .dataTables_wrapper .dataTables_length {
   padding-left: 4px;
   padding-top: 5px;
-  width: 33%;
+  white-space: nowrap;
+}
+.dataTables_wrapper .column-toggle {
+  float: left;
+  padding-left: 4px;
+  padding-top: 2px;
 }
 .dataTables_wrapper .dataTables_paginate {
   float: left;
   text-align: center;
   padding-top: 2px;
-  width: 33%;
 }
 .dataTables_wrapper .dataTables_filter {
   padding-right: 4px;
   padding-top: 5px;
-  width: 33%;
 }
 .dataTables_wrapper .dataTables_info {
   float: none;

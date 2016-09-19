@@ -159,11 +159,17 @@ try {
 	die("Fatal error: cannot connect to database!" . PHP_EOL);
 }
 
-$host = ConfigHelper::getConfig($config_section . '.smtp_host');
-$port = ConfigHelper::getConfig($config_section . '.smtp_port');
-$user = ConfigHelper::getConfig($config_section . '.smtp_user');
-$pass = ConfigHelper::getConfig($config_section . '.smtp_pass');
-$auth = ConfigHelper::getConfig($config_section . '.smtp_auth');
+// now it's time for script settings
+$smtp_options = array(
+	'host' => ConfigHelper::getConfig($config_section . '.smtp_host'),
+	'port' => ConfigHelper::getConfig($config_section . '.smtp_port'),
+	'user' => ConfigHelper::getConfig($config_section . '.smtp_user'),
+	'pass' => ConfigHelper::getConfig($config_section . '.smtp_pass'),
+	'auth' => ConfigHelper::getConfig($config_section . '.smtp_auth'),
+	'ssl_verify_peer' => ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.smtp_ssl_verify_peer', true)),
+	'ssl_verify_peer_name' => ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.smtp_ssl_verify_peer_name', true)),
+	'ssl_allow_self_signed' => ConfigHelper::checkConfig($config_section . '.smtp_ssl_allow_self_signed'),
+);
 
 $debug_email = ConfigHelper::getConfig($config_section . '.debug_email', '', true);
 $mail_from = ConfigHelper::getConfig($config_section . '.mailfrom', '', true);
@@ -312,7 +318,7 @@ function create_message($type, $subject, $template) {
 
 function send_mail($msgid, $cid, $rmail, $rname, $subject, $body) {
 	global $LMS, $DB, $mail_from, $notify_email, $reply_email, $dsn_email, $mdn_email;
-	global $host, $port, $user, $pass, $auth;
+	global $smtp_options;
 
 	$DB->Execute("INSERT INTO messageitems
 		(messageid, customerid, destination, status)
@@ -341,7 +347,7 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body) {
 		$headers['X-LMS-Message-Item-Id'] = $msgitemid;
 	}
 
-	$result = $LMS->SendMail($rmail, $headers, $body, null, $host, $port, $user, $pass, $auth);
+	$result = $LMS->SendMail($rmail, $headers, $body, null, $smtp_options);
 
 	$query = "UPDATE messageitems
 		SET status = ?, lastdate = ?NOW?, error = ?
@@ -374,13 +380,13 @@ function send_sms($msgid, $cid, $phone, $data) {
 
 function send_mail_to_user($rmail, $rname, $subject, $body) {
 	global $LMS, $mail_from, $notify_email;
-	global $host, $port, $user, $pass, $auth;
+	global $smtp_options;
 
 	$headers = array('From' => $mail_from, 'To' => qp_encode($rname) . " <$rmail>",
 		'Subject' => $subject);
 	if (!empty($notify_email))
 		$headers['Cc'] = $notify_email;
-	$result = $LMS->SendMail($rmail, $headers, $body, null, $host, $port, $user, $pass, $auth);
+	$result = $LMS->SendMail($rmail, $headers, $body, null, $smtp_options);
 }
 
 function send_sms_to_user($phone, $data) {

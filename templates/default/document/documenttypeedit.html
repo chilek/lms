@@ -50,7 +50,7 @@
 				<TBODY>
 				{cycle values="light,lucid" print=false}
 				{foreach from=$documenttype.rights item=right key=key}
-				<TR class="highlight {cycle} row-all-check">
+				<TR class="highlight {cycle} lms-ui-row-all-check">
 					<TD>
 						<A href="?m=userinfo&id={$key}">{$right.name}</A>
 					</TD>

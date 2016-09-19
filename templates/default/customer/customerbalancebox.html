@@ -115,10 +115,10 @@
 		</TD>
 	</TR>
 	</THEAD>
-	<TBODY class="multi-check">
+	<TBODY class="lms-ui-multi-check">
 	<TR id="customerbalancepanel" class="dark">
 		<TD colspan="2">
-			<TABLE class="lmsbox-inner{if !empty($balancelist.list)} datatables{/if}"{if !empty($balancelist.list)} data-page-length="{$n}" data-display-start="{$n = count($balancelist.list) + $limit}{if $n < 0}0{else}{$n}{/if}" style="display: none;"{/if}>
+			<TABLE class="lmsbox-inner{if !empty($balancelist.list)} lms-ui-datatable{/if}"{if !empty($balancelist.list)} data-page-length="{$n}" data-display-start="{$n = count($balancelist.list) + $limit}{if $n < 0}0{else}{$n}{/if}" style="display: none;"{/if} width="100%">
 				<COLGROUP>
 					<COL style="width: 1%;">
 					<COL style="width: 1%;">
@@ -144,9 +144,8 @@
 				</TR>
 				</THEAD>
 				<TBODY>
-				{cycle name=bal values="light,lucid" print=false}
 				{foreach $balancelist.list as $item}
-				<TR class="{cycle name=bal}">
+				<TR>
 					<TD class="nobr">{$item.date}</TD>
 					<TD class="nobr">{$item.username|truncate:16:"...":true}</TD>
 					<TD class="text-right nobr">{if !$item.type}{($item.value*-1)|money_format}{else}-{/if}</TD>
@@ -175,7 +174,7 @@
 								<A href="?m=note&amp;id={$item.docid}" class="docnumber" data-resourceid="{$item.docid}" rel="external"><IMG src="img/printd.gif" alt="[ {trans("Debit note")} ]"></A>
 							{/if}
 						{/if}
-						<INPUT type="checkbox" NAME="marks[{$item.id}]" value="{$item.id}" class="multi-check">
+						<INPUT type="checkbox" NAME="marks[{$item.id}]" value="{$item.id}" class="lms-ui-multi-check">
 					</TD>
 				</TR>
 				{foreachelse}
@@ -219,7 +218,7 @@
 								<TD style="width: 1%;" class="text-right nobr">
 									<label>
 										{trans("Check All")}
-										<INPUT type="checkbox" class="multi-check-all">
+										<INPUT type="checkbox" class="lms-ui-multi-check-all">
 									</label>
 								</TD>
 							</TR>

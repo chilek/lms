@@ -16,11 +16,11 @@
 		</TD>
 	</TR>
 	</THEAD>
-	<TBODY class="multi-check">
+	<TBODY class="lms-ui-multi-check">
 	<TR id="messagespanel"  style="display:none;" class="dark">
 		<TD colspan="2">
 			<form method="post" name="customermessages" action="?m=messagedel">
-			<TABLE class="lmsbox-inner{if !empty($messagelist)} datatables{/if}"{if !empty($messagelist)}{if $limit} data-page-length="{$limit}"{/if} data-order='[[ 0, "desc" ]]' style="display: none;"{/if}>
+			<TABLE class="lmsbox-inner{if !empty($messagelist)} lms-ui-datatable{/if}"{if !empty($messagelist)}{if $limit} data-page-length="{$limit}"{/if} data-order='[[ 0, "desc" ]]' style="display: none;"{/if} width="100%">
 				<COLGROUP>
 					<COL style="width: 1%;">
 					<COL style="width: 95%;">
@@ -50,9 +50,8 @@
 				</TR>
 				</THEAD>
 				<TBODY>
-				{cycle values="light,lucid" print=false name=messages}
 				{foreach $messagelist as $item}
-				<TR class="{cycle name=messages}{if $item.status==$smarty.const.MSG_ERROR} alert{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}">
+				<TR class="{if $item.status==$smarty.const.MSG_ERROR} alert{elseif $item.status==$smarty.const.MSG_SENT} blend{elseif $item.status==$smarty.const.MSG_DELIVERED} green{/if}">
 					<TD class="nobr" onClick="return self.location.href='?m=messageinfo&id={$item.id}'">
 						{$item.cdate|date_format:"%Y/%m/%d"}
 					</TD>
@@ -81,7 +80,7 @@
 						<A onclick="return confirmLink(this, '{trans("Are you sure, you want to delete that message?")}')" href="?m=messagedel&id={$item.id}">
 							<IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]">
 						</A>
-						<input type="checkbox" class="multi-check" name="marks[{$item.id}]" value="{$item.id}">
+						<input type="checkbox" class="lms-ui-multi-check" name="marks[{$item.id}]" value="{$item.id}">
 					</TD>
 				</TR>
 				{foreachelse}
@@ -103,7 +102,7 @@
 						<A id="delete-messages">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></A>
 						<label>
 							{trans("Check All")}
-							<input type="checkbox" class="multi-check-all">
+							<input type="checkbox" class="lms-ui-multi-check-all">
 						</label>
 					</TD>
 				</TR>
@@ -111,7 +110,7 @@
 				<!--
 					$(function() {
 						$('#delete-messages').click(function(e) {
-							if (!$(this).closest('tbody.multi-check').find('input:checked').length
+							if (!$(this).closest('tbody.lms-ui-multi-check').find('input:checked').length
 								|| !confirm('{trans("Are you sure, you want to delete all selected messages?")}'))
 								return false;
 							console.log('click');

@@ -44,7 +44,7 @@
                         <TBODY>
 			{cycle values="light,lucid" print=false}
 			{foreach from=$category.owners item=user}
-			<TR class="highlight {cycle} row-all-check">
+			<TR class="highlight {cycle} lms-ui-row-all-check">
 			    <TD width="99%">
 				<A href="?m=userinfo&id={$user.id}">{$user.name}</A>
 			    </TD>

@@ -67,7 +67,9 @@ A {
 		color: @blend;
 	}
 	&:hover {
-		text-decoration: underline; color: #336600;
+		text-decoration: underline;
+		color: #336600;
+		cursor: pointer;
 	}
 }
 TR {
@@ -125,6 +127,8 @@ INPUT[type="radio"] {
 }
 
 INPUT {
+	font-size: 8pt;
+	font-family: @fonts;
 	&.alert {
 		background-color: @alert;
 	}
@@ -398,48 +402,48 @@ div.multiselectlayer {
 }
 
 table.lmsbox {
-	width: 100%;
-	margin: 0px 2px 4px 0px;
-	td {
-		padding: 2px;
+	&,
+	&-inner,
+	&-innerbox {
+		width: 100%;
+		td {
+			padding: 2px;
+		}
+		&>thead {
+			background-color: @dark;
+		}
 	}
-}
-
-table.lmsbox-inner {
-	width: 100%;
-	td {
-		padding: 2px;
-		border-spacing: 0px;
+	& {
+		margin: 0px 2px 4px 0px;
 	}
-}
-
-table.lmsbox {
-	&>thead,
-	&>tfoot,
-	&>tbody {
-		border-width: 1px;
-		border-style: solid;
-		border-color: black;
-	}
-}
-
-table.lmsbox-inner {
-	&.datatables>thead {
-		background-color: @dark;
-	}
-	&:not(.datatables)>thead {
+	&>tbody,
+	&-inner>tbody {
 		background-color: @light;
 	}
-	&>tfoot {
+	&>thead,
+	&>tfoot,
+	&>tbody,
+	&-inner>tfoot,
+	&-innerbox>thead,
+	&-innerbox>tfoot {
 		border-width: 1px;
 		border-style: solid;
 		border-color: black;
 	}
-}
-
-table.lmsbox>thead,
-table.lmsbox-inner>thead {
-	background-color: @dark;
+	&-inner {
+		td {
+			border-spacing: 0px;
+		}
+	}
+	&-inner>thead,
+	&-innerbox>thead,
+	&-innerbox>tfoot {
+		background-color: @dark;
+	}
+	&>thead>tr,
+	&>tfoot>tr {
+		border-top: 1px solid black;
+	}
 }
 
 table.lmsbox>thead {
@@ -447,34 +451,42 @@ table.lmsbox>thead {
 }
 
 table.lmsbox {
-	&>tbody,
-	&>tfoot {
-		background-color: @light;
+	&,
+	&-inner {
+		&>tfoot {
+			background-color: @light;
+		}
+	}
+	&.lms-ui-background-cycle tbody {
+		tr:nth-child(even):not(.ui-selected) {
+			background-color: @light;
+		}
+		tr:nth-child(odd):not(.ui-selected) {
+			background-color: @lucid;
+		}
+		tr.highlight:hover {
+			background-color: @highlight;
+		}
 	}
 }
 
 table.lmsbox-inner {
-	&>tbody,
-	&>tfoot {
+	&.dataTable>thead {
+		background-color: @dark;
+	}
+	&:not(.dataTable)>thead {
 		background-color: @light;
 	}
 }
 
-table.lmsbox {
-	&>thead>tr,
-	&>tfoot>tr {
-		border-top: 1px solid black;
-	}
-}
-
-table.lmsbox tbody.background-cycle {
-	&>tr:nth-child(even) {
+table.lms-ui-datatable tbody {
+	tr:nth-child(even):not(.ui-selected) {
 		background-color: @light;
 	}
-	&>tr:nth-child(odd) {
+	tr:nth-child(odd):not(.ui-selected) {
 		background-color: @lucid;
 	}
-	&>tr.highlight:hover {
+	tr.highlight:hover {
 		background-color: @highlight;
 	}
 }
@@ -513,6 +525,13 @@ td.multiselect {
 	min-width: 230px;
 	select {
 		min-width: 200px;
+	}
+}
+
+.lms-ui-selectable-draggable-active {
+	box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.75);
+	&.lms-ui-selectable-draggable-hover {
+		box-shadow: 0px 0px 25px 0px rgba(0,0,0,0.75);
 	}
 }
 
@@ -684,6 +703,10 @@ a.ui-button:active,
 	}
 }
 
+.ui-selected {
+	background-color: @highlight;
+}
+
 .fileupload-progress-label {
 	position: absolute;
 	left: 48%;
@@ -709,11 +732,14 @@ a.ui-button:active,
 
 table.dataTable {
 	tbody {
-		tr.odd {
+		tr.odd:not(.ui-selected) {
 			background-color: @lucid;
 		}
-		tr.even {
+		tr.even:not(.ui-selected) {
 			background-color: @light;
+		}
+		tr.ui-selected {
+			background-color: @dark;
 		}
 		tr.highlight {
 			background-color: @highlight;
@@ -738,6 +764,12 @@ table.dataTable {
 			padding-left: 10px;
 			padding-right: 10px;
 		}
+		tr th {
+			border: none;
+		}
+		tr:last-child th {
+			border-bottom: 1px solid black;
+		}
 	}
 }
 
@@ -749,24 +781,35 @@ table.dataTable {
 		}
 	}
 	.dataTables_processing {
-		background: linear-gradient(to right, rgba(174,157,123,0) 0%, rgba(174,157,123,0.9) 25%, rgba(174,157,123,0.9) 75%, rgba(174,157,123,0) 100%);
+		background: linear-gradient(to right, rgba(174,157,123,0.0) 0%, rgba(174,157,123,0.9) 25%, rgba(174,157,123,0.9) 75%, rgba(174,157,123,0.0) 100%);
 		font-weight: bold;
+	}
+	.top {
+		display: flex;
+		justify-content: space-between;
+	}
+	.length-column-toggle {
+		display: flex;
+		justify-content: space-between;
 	}
 	.dataTables_length {
 		padding-left: 4px;
 		padding-top: 5px;
-		width: 33%;
+		white-space: nowrap;
+	}
+	.column-toggle {
+		float: left;
+		padding-left: 4px;
+		padding-top: 2px;
 	}
 	.dataTables_paginate {
 		float: left;
 		text-align: center;
 		padding-top: 2px;
-		width: 33%;
 	}
 	.dataTables_filter {
 		padding-right: 4px;
 		padding-top: 5px;
-		width: 33%;
 	}
 	.dataTables_info {
 		float: none;

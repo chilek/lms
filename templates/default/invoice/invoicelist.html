@@ -134,7 +134,7 @@ window.open('?m=invoice&amp;id={$invoice.invoice}&amp;original={$invoice.origina
 	</TR>
 	{/if}
     </THEAD>
-    <TBODY class="multi-check">
+    <TBODY class="lms-ui-multi-check">
 	{cycle values="light,lucid" print=false}
 	{section name=invoicelist loop=$invoicelist start=$start max=$pagelimit}
 	{assign var=invoice value=$invoicelist[invoicelist]}
@@ -192,7 +192,7 @@ window.open('?m=invoice&amp;id={$invoice.invoice}&amp;original={$invoice.origina
 			{if $invoice.type == $smarty.const.DOC_CNOTE}
 			<A HREF="?m=invoice&amp;id={$invoice.id}" TARGET="_blank"><IMG src="img/printn.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
 			{/if}
-			<INPUT TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}" class="multi-check"{if $marks.$invoiceid} checked{/if}>
+			<INPUT TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}" class="lms-ui-multi-check"{if $marks.$invoiceid} checked{/if}>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -226,7 +226,7 @@ window.open('?m=invoice&amp;id={$invoice.invoice}&amp;original={$invoice.origina
 					<TD class="text-right nobr">
 						<label>
 							{trans("Check All")}
-							<INPUT TYPE="checkbox" NAME="allbox" class="multi-check-all" VALUE="1">
+							<INPUT TYPE="checkbox" NAME="allbox" class="lms-ui-multi-check-all" VALUE="1">
 						</label>
 					</TD>
 				</TR>

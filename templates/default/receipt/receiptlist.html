@@ -108,7 +108,7 @@
 	</TR>
 	{/if}
     </THEAD>
-    <TBODY class="multi-check">
+    <TBODY class="lms-ui-multi-check">
 	{cycle values="light,lucid" print=false}
 	{section name=receiptlist loop=$receiptlist start=$start max=$pagelimit}
 	{assign var=receipt value=$receiptlist[receiptlist]}
@@ -146,7 +146,7 @@
 			<A onClick="return confirmLink(this, '{t a=$receipt.number}Are you sure, you want to remove receipt \'$a\' from database?{/t}')" HREF="?m=receiptdel&id={$receipt.id}"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<A HREF="?m=receiptedit&id={$receipt.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 			<A HREF="?m=receipt&id={$receipt.id}" TARGET="_blank"><IMG src="img/printr.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
-			<INPUT TYPE="checkbox" NAME="marks[{$receipt.id}]" VALUE="{$receipt.id}" class="multi-check"{if $marks.$receiptid} checked{/if}>
+			<INPUT TYPE="checkbox" NAME="marks[{$receipt.id}]" VALUE="{$receipt.id}" class="lms-ui-multi-check"{if $marks.$receiptid} checked{/if}>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -183,7 +183,7 @@
 					<TD class="text-right nobr">
 						<label>
 							{trans("Check All")}
-							<INPUT TYPE="checkbox" NAME="allbox" class="multi-check-all" VALUE="1">
+							<INPUT TYPE="checkbox" NAME="allbox" class="lms-ui-multi-check-all" VALUE="1">
 						</label>
 					</TD>
 				</TR>

@@ -185,11 +185,16 @@ if ($invoice_filetype != 'pdf' || $dnote_filetype != 'pdf') {
 }
 
 // now it's time for script settings
-$smtp_host = ConfigHelper::getConfig('sendinvoices.smtp_host');
-$smtp_port = ConfigHelper::getConfig('sendinvoices.smtp_port');
-$smtp_user = ConfigHelper::getConfig('sendinvoices.smtp_user');
-$smtp_pass = ConfigHelper::getConfig('sendinvoices.smtp_pass');
-$smtp_auth = ConfigHelper::getConfig('sendinvoices.smtp_auth');
+$smtp_options = array(
+	'host' => ConfigHelper::getConfig('sendinvoices.smtp_host'),
+	'port' => ConfigHelper::getConfig('sendinvoices.smtp_port'),
+	'user' => ConfigHelper::getConfig('sendinvoices.smtp_user'),
+	'pass' => ConfigHelper::getConfig('sendinvoices.smtp_pass'),
+	'auth' => ConfigHelper::getConfig('sendinvoices.smtp_auth'),
+	'ssl_verify_peer' => ConfigHelper::checkValue(ConfigHelper::getConfig('sendinvoices.smtp_ssl_verify_peer', true)),
+	'ssl_verify_peer_name' => ConfigHelper::checkValue(ConfigHelper::getConfig('sendinvoices.smtp_ssl_verify_peer_name', true)),
+	'ssl_allow_self_signed' => ConfigHelper::checkConfig('sendinvoices.smtp_ssl_allow_self_signed'),
+);
 
 $debug_email = ConfigHelper::getConfig('sendinvoices.debug_email', '', true);
 $sender_name = ConfigHelper::getConfig('sendinvoices.sender_name', '', true);
@@ -275,7 +280,6 @@ if (!empty($docs))
 	$LMS->SendInvoices($docs, 'backend', compact('SMARTY', 'invoice_filetype', 'dnote_filetype' , 'invoice_filename', 'dnote_filename', 'debug_email',
 		'mail_body', 'mail_subject', 'currtime', 'sender_email', 'sender_name', 'extrafile',
 		'dsn_email', 'reply_email', 'mdn_email', 'notify_email', 'quiet', 'test', 'add_message',
-		'smtp_host', 'smtp_port', 'smtp_user', 'smtp_pass', 'smtp_auth'));
-
+		'smtp_options'));
 
 ?>
