@@ -376,7 +376,10 @@
 <SCRIPT type="text/javascript">
 <!--
 document.forms['customersearch'].elements['search[customername]'].focus();
-multiselect('customersearch', 'customertariffs', '{trans("- all -")}', null);
+multiselect({
+	id: 'customertariffs',
+	defaultValue: '{trans("- all -")}'
+});
 //-->
 </SCRIPT>
 {/block}

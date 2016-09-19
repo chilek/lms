@@ -196,18 +196,29 @@ BUTTON		{ font-size:  8pt; font-family: @fonts; font-weight: bold; padding: 5px;
 IMG		{ vertical-align: middle; border: 0; }
 
 div.multiselect {
+	overflow: hidden;
 	font-size:  8pt;
 	font-family: @fonts;
-	border: solid 1px @blend;
 	vertical-align: middle;
-	padding: 0px 20px 0px 4px;
 	cursor: default;
+	border: solid 1px @blend;
+	padding: 0px 20px 0px 4px;
 	background: url('dropdown.gif') no-repeat right bottom @lucid;
 	min-height: 16px;
 	max-width: 200px;
 	white-space: pre-wrap;
-	overflow: hidden;
 	min-width: 200px;
+}
+div.multiselect-tiny {
+	overflow: hidden;
+	vertical-align: middle;
+	cursor: pointer;
+	-ms-user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+	display: flex;
+	align-items: center;
 }
 div.multiselectlayer {
 	position: absolute;

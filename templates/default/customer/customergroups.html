@@ -80,7 +80,10 @@
 				<script type="text/javascript">
 				<!--
 					{if !empty($othercustomergroups)}
-					multiselect('customergroupassignment', 'customergroupid', '{trans("... select groups ...")}');
+					multiselect({
+						id: 'customergroupid',
+						defaultValue: '{trans("... select groups ...")}'
+					});
 					{/if}
 
 					$(function() {

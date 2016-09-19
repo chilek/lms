@@ -446,8 +446,14 @@
 document.forms['message'].elements['message[sender]'].focus();
 countChars(document.getElementById('smstext'));
 
-multiselect('message', 'messageusers', '{trans("- none -")}');
-multiselect('message', 'customergroups', '{trans("- all groups -")}');
+multiselect({
+	id: 'messageusers',
+	defaultValue: '{trans("- none -")}'
+});
+multiselect({
+	id: 'customergroups',
+	defaultValue: '{trans("- all groups -")}'
+});
 
 tinymce_init('{$_ui_language}');
 {if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}

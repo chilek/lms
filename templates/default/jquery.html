@@ -7,7 +7,7 @@
 <script type="text/javascript" src="img/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
 <script type="text/javascript" src="img/jquery-datatables/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
-<!--
+
 	$(function() {
 		var autocomplete = "off";
 
@@ -283,8 +283,13 @@
 					});
 					content += '</select></form>';
 					toggle.html(content);
-					multiselect(toggle.find('form.column-toggle').uniqueId().attr('id'),
-						toggle.find('select.column-toggle').uniqueId().attr('id'), null);
+					multiselect({
+						id: toggle.find('select.column-toggle').uniqueId().attr('id'),
+						defaultValue: null,
+						icon: 'img/settings.gif',
+						label: '{trans("Columns")}',
+						type: 'tiny'
+					});
 					toggle.find('div.multiselectlayer li').on('click', function() {
 						var checkbox = $(this).find('input:checkbox');
 						$(elem).find('thead tr:last-child th:nth-child(' + (parseInt(checkbox.val()) + 1) + ')').toggle();

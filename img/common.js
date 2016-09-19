@@ -284,18 +284,25 @@ function get_object_pos(obj) {
 	return { x: x, y: y };
 }
 
-function multiselect(formid, elemid, def)
-{
+function multiselect(options) {
+	var elemid = options.id;
+	var def = options.defaultValue;
+	var tiny = options.type !== undefined && options.type == 'tiny' ? true : false;
+	var icon = options.icon !== undefined ? options.icon : 'img/settings.gif';
+	var label = options.label !== undefined ? options.label : '';
+
 	var old_element = document.getElementById(elemid);
-	var form = document.getElementById(formid);
+	var form = $(old_element).closest('form').get(0);
 
 	if (!old_element || !form)
 		return 0;
 
 	// create new multiselect div
 	var new_element = document.createElement('DIV');
-	new_element.className = 'multiselect';
+	new_element.className = 'multiselect' + (tiny ? '-tiny' : '');
 	new_element.id = elemid;
+	if (tiny)
+		new_element.innerHTML = '<img src="' + icon + '">&nbsp' + label;
 
 	var elem = [];
 	for (var i = 0; i < old_element.options.length; i++)
@@ -304,8 +311,9 @@ function multiselect(formid, elemid, def)
 		else
 			elem[old_element.options[i].text.replace(' ', '&nbsp;')] = 0;
 
-	var old_selected = generateSelectedString(elem);
-	new_element.innerHTML = old_selected;
+	var old_selected = new_selected = generateSelectedString(elem);
+	if (!tiny)
+		new_element.innerHTML = old_selected;
 
 	if (old_element.style.cssText)
 		new_element.style.cssText = old_element.style.cssText;
@@ -370,7 +378,9 @@ function multiselect(formid, elemid, def)
 				addClass(this, 'selected');
 			}
 
-			new_element.innerHTML = generateSelectedString(elem);
+			new_selected = generateSelectedString(elem);
+			if (!tiny)
+				new_element.innerHTML = new_selected;
 		};
 		// TODO: keyboard events
 
@@ -400,24 +410,28 @@ function multiselect(formid, elemid, def)
 			}
 		} else {
 			list.style.display = 'none';
-			if (new_element.innerHTML != old_selected && typeof new_element.onchange === 'function')
+			if (new_selected != old_selected && typeof new_element.onchange === 'function')
 				new_element.onchange();
-			old_selected = new_element.innerHTML;
+			old_selected = new_selected;
 		}
 	};
 
 	// hide combobox after click out of the window
 	document.onclick = function(e) {
-		if (div.style.display == 'none' || e.target.id == old_element.id)
+		var elem = e.target;
+		while (elem.nodeName != 'DIV' || elem.className.match(/^multiselect/) === null)
+			elem = elem.parentNode;
+
+		if (div.style.display == 'none' || elem.id == old_element.id)
 			return 0;
 
 		var parent = e.target.parentNode.innerHTML.indexOf(old_element.name);
 
 		if (e.target.innerHTML.indexOf("<head>") > -1 || parent == -1 || (parent > -1 && e.target.nodeName != 'INPUT' && e.target.nodeName != 'LI' && e.target.nodeName != 'SPAN')) {
 			div.style.display = 'none';
-			if (new_element.innerHTML != old_selected && typeof new_element.onchange === 'function')
+			if (new_selected != old_selected && typeof new_element.onchange === 'function')
 				new_element.onchange();
-			old_selected = new_element.innerHTML;
+			old_selected = new_selected;
 		}
 	}
 
@@ -452,7 +466,9 @@ function multiselect(formid, elemid, def)
 				elem[text] = 0;
 			}
 		}
-		new_element.innerHTML = selected.join(', ');
+		new_selected = selected.join(', ');
+		if (!tiny)
+			new_elem.innerHTML = new_selected;
 	}
 
 	this.filterSelection = function(idArray) {
@@ -473,7 +489,9 @@ function multiselect(formid, elemid, def)
 				elem[text] = 0;
 			}
 		}
-		new_element.innerHTML = selected.join(', ');
+		new_selected = selected.join(', ');
+		if (!tiny)
+			new_element.innerHTML = new_selected;
 	}
 }
 

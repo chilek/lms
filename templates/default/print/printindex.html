@@ -369,7 +369,10 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
+multiselect({
+	id: 'balancelisttype',
+	defaultValue: '{trans("- all types -")}'
+});
 //-->
 </SCRIPT>
 </P>
@@ -560,8 +563,14 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-multiselect('invoicereport', 'invoicereportgroup', '{trans("- all groups -")}');
-multiselect('invoicereport', 'numberplanid', '{trans("all")}');
+multiselect({
+	id: 'invoicereportgroup',
+	defaultValue: '{trans("- all groups -")}'
+});
+multiselect({
+	id: 'numberplanid',
+	defaultValue: '{trans("all")}'
+});
 //-->
 </SCRIPT>
 </P>
@@ -1301,7 +1310,10 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-multiselect('printnetdev', 'invprojects', '{trans("- all -")}');
+multiselect({
+	id: 'invprojects',
+	defaultValue: '{trans("- all -")}'
+});
 //-->
 </SCRIPT>
 </P>

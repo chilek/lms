@@ -125,7 +125,10 @@
 </form>
 <SCRIPT type="text/javascript">
 <!--
-multiselect('event', 'userid', '{trans("- select user -")}');
+multiselect({
+	id: 'userid',
+	defaultValue: '{trans("- select user -")}'
+});
 document.forms['event'].elements['event[title]'].focus();
 //-->
 </SCRIPT>

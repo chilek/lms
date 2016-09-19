@@ -203,7 +203,10 @@
 <SCRIPT type="text/javascript">
 <!--
 document.forms['event'].elements['event[title]'].focus();
-var userms = new multiselect('event', 'userid', '{trans("- select user -")}');
+var userms = new multiselect({
+	id: 'userid',
+	defaultValue: '{trans("- select user -")}'
+});
 
 function update_user_selection(users) {
 	{if ConfigHelper::getConfig('phpui.event_usergroup_selection_type', 'update') == 'update'}

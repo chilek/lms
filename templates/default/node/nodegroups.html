@@ -76,7 +76,10 @@
 					<script type="text/javascript">
 					<!--
 						{if !empty($othernodegroups)}
-						multiselect('nodegroupassignment', 'nodegroupid', '{trans("... select groups ...")}');
+						multiselect({
+							id: 'nodegroupid',
+							defaultValue: '{trans("... select groups ...")}'
+						});
 						{/if}
 
 						$(function() {
