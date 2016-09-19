@@ -1,0 +1,213 @@
+{extends file="layout.html"}
+{block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
+{block name=module_content}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+
+<P STYLE="display: none;"><INPUT TYPE="submit" CLASS="hiddenbtn"></P>
+
+{assign var='bulb_off' value='<img src="img/noaccess.gif" alt="[&nbsp;'|cat:trans("Connect")|cat:'&nbsp;]" title="[&nbsp;'|cat:trans("Connect")|cat:'&nbsp;]">'}
+{assign var='bulb_on' value='<img src="img/access.gif" alt="[&nbsp;'|cat:trans("Disconnect")|cat:'&nbsp;]" title="[&nbsp;'|cat:trans("Disconnect")|cat:'&nbsp;]">'}
+{assign var='delete_ico' value='<img src="img/delete.gif" alt="[&nbsp;'|cat:trans("Delete")|cat:'&nbsp;]" title="[&nbsp;'|cat:trans("Delete")|cat:'&nbsp;]">'}
+
+<TABLE ID="poolnumbers" class="lmsbox datatables">
+	<COLGROUP>
+	    <COL STYLE="width: 1%;">
+	    <COL STYLE="width: 90%;">
+	    <COL STYLE="width: 1%;">
+	    <COL STYLE="width: 1%;">
+	    <COL STYLE="width: 1%;">
+	    <COL STYLE="width: 1%;">
+	    <COL STYLE="width: 1%;">
+	    <COL STYLE="width: 1%;">
+	</COLGROUP>
+	<THEAD>
+		<TR CLASS="bold nobr">
+			<TH>{trans("Name")}</TD>
+			<TH data-orderable="false">{trans("Description")}</TD>
+			<TH>{trans("First number")}</TD>
+			<TH>{trans("Last number")}</TD>
+			<TH>{trans("Quantity of numbers")}</TD>
+			<TH>{trans("Used")}</TD>
+			<TH>{trans("Free")}</TD>
+			<TH data-orderable="false"></TH>
+		</TR>
+	</THEAD>
+	<TBODY>
+		{foreach from=$pool_list item=pool}
+		{assign var=size value=$pool.poolend-$pool.poolstart+1}
+		
+		<TR ID="pool-{$pool.id}" {if $pool.disabled == 1} CLASS="blend"{/if}>
+			<TD CLASS="nobr">{$pool.name}</TD>
+			<TD>{$pool.description}</TD>
+			<TD>{$pool.poolstart}</TD>
+			<TD>{$pool.poolend}</TD>
+			<TD>{$size}</TD>
+			<TD>{$pool.used_phones}</TD>
+			<TD>{$size-$pool.used_phones}</TD>
+			<TD CLASS="nobr">
+				{if $pool.disabled == 1}{$bulb_off}{else}{$bulb_on}{/if}
+				{$delete_ico}
+			</TD>
+		</TR>
+		{/foreach}
+	</TBODY>
+	<TFOOT>
+		<TR>
+			<TD CLASS="buttons" COLSPAN="8">
+				<button id="create-user">{trans("Add")}</button>
+			</TD>
+		</TR>
+	</TFOOT>		
+</TABLE>
+
+<DIV ID="dialog-form" TITLE="{trans("Add pool")}">
+    <STYLE>
+		ol.dialog-box {
+			list-style: none;
+			padding-left: 0;
+		}
+		ol.dialog-box li {
+			padding-bottom: 5px;
+		}
+		ol.dialog-box textarea {
+			width: 98%;
+			resize: vertical;
+		}
+		ol.dialog-box select {
+			padding: 2px;
+		}   	           	
+    </STYLE>
+    	    
+    <OL CLASS="dialog-box">
+      	<LI>
+       		{trans("Name:")}<BR>
+			<INPUT TYPE="text" ID="name" CLASS="text ui-widget-content ui-corner">
+		</LI>
+		<LI>
+			{trans("First number:")}<BR>
+			<INPUT TYPE="number" ID="poolstart" MAXLENGTH="20" MIN="0" CLASS="text ui-widget-content ui-corner">
+		</Li>
+		<LI>
+       		{trans("Last number:")}<BR>
+			<INPUT TYPE="text" ID="poolend" MAXLENGTH="20" MIN="0" CLASS="text ui-widget-content ui-corner">
+		</LI>
+		<LI>
+			{trans("Status:")}<BR>
+			<SELECT ID="status">
+				    <OPTION VALUE="0">{trans('active<!voip>')}</OPTION>
+					<OPTION VALUE="1">{trans('inactive')}</OPTION>
+			</SELECT>
+		</LI>
+		<LI>
+			{trans("Description:")}<BR>
+   	        <TEXTAREA ID="description" CLASS="text ui-croner" ROWS="7" {tip text="Enter notes (optional)"}></TEXTAREA>
+		</LI>
+	</OL>
+
+    <INPUT TYPE="submit" style="position:absolute; top:-1000px">
+</DIV>
+
+<SCRIPT TYPE="text/javascript">
+<!--
+{literal}
+
+$( function() {
+	var dialog;
+ 
+    function addUser() {
+    	$('.dialog-box').find("*").removeClass("ui-state-error").removeAttr("title");
+    	
+    	$.ajax({
+            method: "POST",
+            url: "?m=voippoolnumberlist&ajax=1",
+            data: { name       : $("#name").val(),
+            	    poolstart  : $("#poolstart").val(),
+            	    poolend    : $("#poolend").val(),
+            	    description: $("#description").val(),
+            	    status     : $("#status").val() 
+           	},
+            beforeSend: function() {
+            	$('.ui-button').attr("disabled", true);
+    	    }
+        })
+        .done(function(data) {
+        	if (data) {
+				var response = JSON.parse(data);
+				
+				if (response['poolend'] != undefined)
+					$("#poolend").addClass("ui-state-error").prop('title', response['poolend']);
+				
+				if (response['poolstart'] != undefined)
+					$("#poolstart").addClass("ui-state-error").prop('title', response['poolstart']);
+				
+				if (response['name'] != undefined)
+					$("#name").addClass("ui-state-error").prop('title', response['name']);
+			} else {
+				var table = $("#poolnumbers").DataTable();
+				var size  = $("#poolend").val() - $("#poolstart").val() + 1;
+				var appended_class = "";
+				var bulb  = '{/literal}{$bulb_on}{literal}';
+				
+				if ($("#status").val() == 1) {
+					appended_class = "blend";
+					bulb  = '{/literal}{$bulb_off}{literal}';
+				}
+				
+				table.row.add([$("#name").val(), $("#description").val(), $("#poolstart").val(), $("#poolend").val(), size, 0, size, bulb+' {/literal}{$delete_ico}{literal}'])
+						 .draw()
+						 .nodes()
+						 .to$()
+						 .addClass(appended_class)
+						 .effect("highlight",{},4000);
+			    
+			    dialog.dialog("close");
+			    $("#name").val("");
+            	$("#poolstart").val("");
+            	$("#poolend").val("");
+            	$("#description").val("");
+            	$("#status").val("0");
+    		}
+    		
+    		$('.ui-button').attr("disabled", false);
+        });
+    }
+ 
+    dialog = $("#dialog-form").dialog({
+    	autoOpen: false,
+    	height: 355,
+    	width: 280,
+    	modal: true,
+    	resizable: false,
+    	buttons: {
+        	"{/literal}{trans("Add")}{literal}": addUser,
+	        "{/literal}{trans("Cancel")}{literal}": function() {
+            	dialog.dialog( "close" );
+        	}
+    	},
+        show: {
+			effect: "fade",
+			duration: 150
+		},
+		hide: {
+			effect: "fade",
+			duration: 150
+		},
+		open: function(){
+			$('.dialog-box').find("*").removeClass("ui-state-error").removeAttr("title");
+            jQuery('.ui-widget-overlay').bind('click',function(){
+                jQuery('#dialog-form').dialog('close');
+            })
+        }
+    });
+ 
+    $("#create-user").button().on("click", function() {
+    	dialog.dialog("open");
+    });
+});
+
+
+//-->
+{/literal}
+</SCRIPT>
+{/block}

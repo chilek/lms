@@ -593,8 +593,10 @@ table.lmsbox-inner > tfoot {
   border-style: solid;
   border-color: black;
 }
-table.lmsbox > thead {
+table.lmsbox > thead, table.lmsbox-inner > thead {
   background-color: #cebd9b;
+}
+table.lmsbox > thead {
   text-align: left;
 }
 table.lmsbox > tbody, table.lmsbox > tfoot {
