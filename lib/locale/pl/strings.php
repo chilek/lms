@@ -3440,5 +3440,7 @@ $_LANG['LMS: operation failed!'] = 'LMS: operacja nie powiodła się!';
 $_LANG['AJAX: Invalid result - status:'] = 'AJAX: niepoprawny wynik - status:';
 
 $_LANG['Columns'] = 'Kolumny';
+$_LANG['Column visibility'] = 'Widoczność kolumn';
+$_LANG['Clear settings'] = 'Skasuj ustawienia';
 
 ?>
