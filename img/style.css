@@ -915,7 +915,7 @@ table.dataTable thead tr:last-child th {
   display: flex;
   justify-content: space-between;
 }
-.dataTables_wrapper .length-column-toggle {
+.dataTables_wrapper div.lms-ui-datatable-toolbar {
   display: flex;
   justify-content: space-between;
 }
@@ -924,10 +924,16 @@ table.dataTable thead tr:last-child th {
   padding-top: 5px;
   white-space: nowrap;
 }
-.dataTables_wrapper .column-toggle {
+.dataTables_wrapper div.lms-ui-datatable-clear-settings {
   float: left;
   padding-left: 4px;
-  padding-top: 2px;
+  padding-top: 4px;
+  cursor: pointer;
+}
+.dataTables_wrapper div.lms-ui-datatable-column-toggle {
+  float: left;
+  padding-left: 3px;
+  padding-top: 4px;
 }
 .dataTables_wrapper .dataTables_paginate {
   float: left;

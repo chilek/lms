@@ -272,9 +272,10 @@
 						$('thead tr:last-child th', elem).each(function(index, th) {
 							$(th).css('display', state.columns[index].visible ? '' : 'none');
 						});
-					var toggle = $(elem).siblings('div.top').find('div.column-toggle');
+					var toggle = $(elem).siblings('div.top').find('div.lms-ui-datatable-column-toggle');
 					var content = '<form name="' + $(elem).attr('id') + '" class="column-toggle">'
-						+ '<select class="column-toggle" name="' + $(elem).attr('id') + '-column-toggle[]" multiple>';
+						+ '<select class="column-toggle" name="' + $(elem).attr('id') + '-column-toggle[]" multiple'
+						+ ' title="{trans("Column visibility")}">';
 					api.columns().every(function(index) {
 						var text = $(this.header()).text().trim();
 						if (text.indexOf(':') > 0)
@@ -287,7 +288,7 @@
 						id: toggle.find('select.column-toggle').uniqueId().attr('id'),
 						defaultValue: null,
 						icon: 'img/settings.gif',
-						label: '{trans("Columns")}',
+						//label: '{trans("Columns")}',
 						type: 'tiny'
 					});
 					toggle.find('div.multiselectlayer li').on('click', function() {
@@ -296,6 +297,41 @@
 						api.column(checkbox.val()).visible(checkbox.is(':checked'));
 					});
 				}
+				var clearSettings = $(elem).siblings('div.top').find('div.lms-ui-datatable-clear-settings');
+				clearSettings.html('<img src="img/delete.gif" title="{trans("Clear settings")}">');
+				clearSettings.click(function() {
+					if (state)
+						api.state.clear();
+					$('thead tr:last-child th', elem).each(function(index, th) {
+						if ($(th).find('input[type="search"]').length) {
+							$('input[type="search"]', th).val('');
+							api.column(index).search('');
+						}
+						api.column(index).visible(true);
+					});
+					console.log($(elem).parent().find('div.multiselectlayer li:not(.selected)'));
+					$(elem).parent().find('div.multiselectlayer li:not(.selected)').addClass('selected')
+						.find(':checkbox').prop('checked', true);
+
+					var pageLen = $(elem).attr('data-page-length');
+					if (pageLen !== undefined)
+						api.page.len(pageLen);
+					else
+						api.page.len(10);
+
+					var order = $(elem).attr('data-order');
+					if (order !== undefined)
+						api.order(JSON.parse(order));
+					else
+						api.order([[0, 'asc']]);
+					api.search('');
+
+					api.draw('full-hold');
+
+					var displayStart = $(elem).attr('data-display-start');
+					api.page(displayStart !== undefined ?
+						Math.ceil(displayStart / pageLen) : 0).draw('page');
+				});
 			});
 		}
 
@@ -313,11 +349,7 @@
 			init.orderCellsTop = $(this).attr('data-searching');
 			if (init.orderCellsTop === undefined)
 				init.orderCellsTop = true;
-			if ($(this).hasClass('lms-ui-datatable-column-toggle'))
-				//init.dom = '<"top"l<"column-toggle">pf>rt<"bottom"i><"clear">';
-				init.dom = '<"top"<"length-column-toggle"l<"column-toggle">>pf>rt<"bottom"i><"clear">';
-			else
-				init.dom = '<"top"lpf>rt<"bottom"i><"clear">';
+			init.dom = '<"top"<"lms-ui-datatable-toolbar"<"lms-ui-datatable-clear-settings"><"lms-ui-datatable-column-toggle">l>pf>rt<"bottom"i><"clear">';
 			$(this).data('init', init);
 
 			if ($(this).parents(':hidden').length)
