@@ -56,7 +56,16 @@ if (isset($_GET['id']) && $action == 'init')
 		$invoicecontents[$nitem['itemid']] = $nitem;
 	}
 
-	$cnote['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype = ? AND isdefault = 1', array(DOC_CNOTE));
+	if (empty($invoice['divisionid']))
+		$cnote['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans
+			WHERE doctype = ? AND isdefault = 1',
+			array(DOC_CNOTE));
+	else
+		$cnote['numberplanid'] = $DB->GetOne('SELECT p.id FROM numberplans p
+			JOIN numberplanassignments a ON a.planid = p.id
+			WHERE doctype = ? AND a.divisionid = ? AND isdefault = 1',
+			array(DOC_CNOTE, $invoice['divisionid']));
+
 	$currtime = time();
 	$cnote['cdate'] = $currtime;
 	//$cnote['sdate'] = $currtime;
