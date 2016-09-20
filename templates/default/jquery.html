@@ -303,13 +303,13 @@
 					if (state)
 						api.state.clear();
 					$('thead tr:last-child th', elem).each(function(index, th) {
-						if ($(th).find('input[type="search"]').length) {
+						if ($('input[type="search"]', th).length) {
 							$('input[type="search"]', th).val('');
 							api.column(index).search('');
 						}
+						$(th).show();
 						api.column(index).visible(true);
 					});
-					console.log($(elem).parent().find('div.multiselectlayer li:not(.selected)'));
 					$(elem).parent().find('div.multiselectlayer li:not(.selected)').addClass('selected')
 						.find(':checkbox').prop('checked', true);
 
