@@ -56,7 +56,7 @@ if ($_GET['is_sure'] == '1') {
 			die;
 		}
 
-		$md5sums = $DB->GetCol('SELECT md5sums FROM documentattachments
+		$md5sums = $DB->GetCol('SELECT md5sum FROM documentattachments
 			WHERE docid = ?', array($_GET['id']));
 		foreach ($md5sums as $md5sum)
 			if ($DB->GetOne('SELECT COUNT(*) FROM documentattachments WHERE md5sum = ?', array((string)$md5sum)) == 1)
