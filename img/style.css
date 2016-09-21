@@ -1,3 +1,9 @@
+.lms-ui-no-user-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 HTML {
   height: 100%;
 }
@@ -339,19 +345,16 @@ div.multiselect {
   max-width: 200px;
   white-space: pre-wrap;
   min-width: 200px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
 }
 div.multiselect-tiny {
   overflow: hidden;
   vertical-align: middle;
   cursor: pointer;
-  -ms-user-select: none;
   display: flex;
   align-items: center;
   -webkit-user-select: none;
   -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
 }
 div.multiselectlayer {
@@ -359,6 +362,10 @@ div.multiselectlayer {
   z-index: 100;
   overflow: hidden;
   width: 350px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 div.multiselectlayer ul {
   list-style: none;

@@ -8,6 +8,13 @@
 @blend: #888888;
 @fonts: Arial, Helvetica, Verdana;
 
+.lms-ui-no-user-select {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
 HTML { height: 100%; }
 BODY		{ font-size: 8pt; font-family: @fonts; background-color: @lucid; margin: 0; padding: 0; vertical-align: middle; min-height: 100%;}
 TABLE		{ border-collapse: collapse; border-color: #000000 }
@@ -208,26 +215,21 @@ div.multiselect {
 	max-width: 200px;
 	white-space: pre-wrap;
 	min-width: 200px;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	user-select: none;
 }
 div.multiselect-tiny {
 	overflow: hidden;
 	vertical-align: middle;
 	cursor: pointer;
-	-ms-user-select: none;
 	display: flex;
 	align-items: center;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	user-select: none;
+	.lms-ui-no-user-select;
 }
 div.multiselectlayer {
 	position: absolute;
 	z-index: 100;
 	overflow: hidden;
 	width: 350px;
+	.lms-ui-no-user-select;
 	ul {
 		list-style: none;
 		cursor: default;
