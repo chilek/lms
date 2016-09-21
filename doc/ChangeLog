@@ -108,6 +108,8 @@ version ?.??.?? (????-??-??):
     by phpmailer mail.backend) [chilan]
   - allow to switch on column filter and toggle for lms-ui-datatable using
     lms-ui-datatable-column-search and lms-ui-datatable-column-toggle classes respectively [chilan]
+  - introduced persistent settings: tabs order are stored persistently
+    in users.persistentsettings database table [chilan]
 
 version 1.11.20 (2016-04-19):
 

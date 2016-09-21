@@ -3443,4 +3443,6 @@ $_LANG['Columns'] = 'Kolumny';
 $_LANG['Column visibility'] = 'Widoczność kolumn';
 $_LANG['Clear settings'] = 'Skasuj ustawienia';
 
+$_LANG['AJAX: Error during persistent setting save on server:'] = 'AJAX: Błąd podczas zapisu trwałego ustawienia na serwerze:';
+
 ?>

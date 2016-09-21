@@ -130,6 +130,7 @@ $SMARTY->assign('nodegroups', $nodegroups);
 $SMARTY->assign('othernodegroups', $othernodegroups);
 $SMARTY->assign('nodeinfo', $nodeinfo);
 $SMARTY->assign('objectid', $nodeinfo['id']);
+$SMARTY->assign('nodeinfo_sortable_order', $SESSION->get_persistent_setting('nodeinfo-sortable-order'));
 $SMARTY->display('node/nodeinfo.html');
 
 ?>

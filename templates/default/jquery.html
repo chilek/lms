@@ -8,6 +8,19 @@
 <script type="text/javascript" src="img/jquery-datatables/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
 
+	function savePersistentSettings(data) {
+		$.ajax('?m=persistentsetting', {
+			async: true,
+			method: 'POST',
+			data: data,
+			dataType: 'json',
+			error: function(jqXHR, textStatus, errorThrown) {
+				if (errorThrown != 'abort')
+					alert('{trans("AJAX: Error during persistent setting save on server:")} ' + errorThrown);
+			}
+		});
+	}
+
 	$(function() {
 		var autocomplete = "off";
 
@@ -397,8 +410,9 @@
 			axis: "y",
 			opacity: 0.9,
 			update: function(event, ui) {
-				var tabs = $(this).sortable("toArray").join(';');
-				setCookie($(this).attr('id') + '-order', tabs, true);
+				data = {};
+				data[$(this).attr('id') + '-order'] = $(this).sortable("toArray").join(';');
+				savePersistentSettings(data);
 			}
 		});
 
@@ -512,14 +526,13 @@
 		});
 	});
 
-	function restoreSortable(sortable) {
-		tabs = getCookie(sortable + '-order');
-		if (tabs !== null) {
-			$.each(tabs.split(';'), function(key, value) {
-				if (value.length)
-					$('#' + value).appendTo('#' + sortable);
-			});
-		}
+	function restoreSortable(sortable, value) {
+		if (typeof(value) != 'string' || !value.length || value == 'null')
+			return;
+		$.each(value.split(';'), function(key, value) {
+			if (value.length)
+				$('#' + value).appendTo('#' + sortable);
+		});
 	}
 //-->
 </script>
