@@ -297,17 +297,17 @@
 					});
 					content += '</select></form>';
 					toggle.html(content);
+					var multiselectId = toggle.find('select.column-toggle').uniqueId().attr('id');
 					multiselect({
-						id: toggle.find('select.column-toggle').uniqueId().attr('id'),
+						id: multiselectId,
 						defaultValue: null,
 						icon: 'img/settings.gif',
 						//label: '{trans("Columns")}',
 						type: 'tiny'
 					});
-					toggle.find('div.multiselectlayer li').on('click', function() {
-						var checkbox = $(this).find('input:checkbox');
-						$(elem).find('thead tr:last-child th:nth-child(' + (parseInt(checkbox.val()) + 1) + ')').toggle();
-						api.column(checkbox.val()).visible(checkbox.is(':checked'));
+					toggle.find('#' + multiselectId).on('itemclick', function(e, data) {
+						$(elem).find('thead tr:last-child th:nth-child(' + (parseInt(data.index) + 1) + ')').toggle();
+						api.column(data.index).visible(data.checked);
 					});
 				}
 				var clearSettings = $(elem).siblings('div.top').find('div.lms-ui-datatable-clear-settings');

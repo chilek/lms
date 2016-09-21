@@ -287,154 +287,145 @@ function get_object_pos(obj) {
 function multiselect(options) {
 	var elemid = options.id;
 	var def = options.defaultValue;
-	var tiny = options.type !== undefined && options.type == 'tiny' ? true : false;
+	var tiny = options.type !== undefined && options.type == 'tiny';
 	var icon = options.icon !== undefined ? options.icon : 'img/settings.gif';
 	var label = options.label !== undefined ? options.label : '';
 
-	var old_element = document.getElementById(elemid);
-	var form = $(old_element).closest('form').get(0);
+	var old_element = $('#' + elemid);
+	var form = old_element.closest('form');
 
-	if (!old_element || !form)
+	if (!old_element.length || !form.length)
 		return 0;
 
 	// create new multiselect div
-	var new_element = document.createElement('DIV');
-	new_element.className = 'multiselect' + (tiny ? '-tiny' : '');
-	new_element.id = elemid;
+	var new_element = $('<div/>', {
+		class: 'multiselect' + (tiny ? '-tiny' : ''),
+		id: elemid,
+		// save title for tooltips
+		title: old_element.attr('title')
+	});
 	if (tiny)
-		new_element.innerHTML = '<img src="' + icon + '">&nbsp' + label;
+		new_element.html('<img src="' + icon + '">&nbsp' + label);
 
 	var elem = [];
-	for (var i = 0; i < old_element.options.length; i++)
-		if (old_element.options[i].selected)
-			elem[old_element.options[i].text.replace(' ', '&nbsp;')] = 1;
-		else
-			elem[old_element.options[i].text.replace(' ', '&nbsp;')] = 0;
+	$('option', old_element).each(function(index) {
+		elem[$(this).text().replace(' ', '&nbsp;')] =
+			$(this).prop('selected') ? 1 : 0;
+	});
 
 	var old_selected = new_selected = generateSelectedString(elem);
 	if (!tiny)
-		new_element.innerHTML = old_selected;
+		new_element.html(old_selected);
 
-	if (old_element.style.cssText)
-		new_element.style.cssText = old_element.style.cssText;
-
-	// save title for tooltips
-	new_element.title = old_element.title;
-
+	new_element.prop('style', old_element.prop('style'));
 	// save onchange event handler
-	new_element.onchange = old_element.onchange;
+	if (typeof(onchange = old_element.prop('onchange')) == 'function')
+		new_element.on('change', onchange);
+	// save onitemclick event handler
+	if (typeof(itemclick = old_element.prop('onitemclick')) == 'function')
+		new_element.on('itemclick', onchange);
 
 	// replace select with multiselect
-	old_element.parentNode.replaceChild(new_element, old_element);
+	old_element.replaceWith(new_element);
 
 	// create multiselect list div (hidden)
-	var div = document.createElement('DIV');
-	var ul = document.createElement('UL');
+	var div = $('<div/>', {
+		class: 'multiselectlayer',
+		id: elemid + '-layer'
+	}).hide().appendTo(form);
+	var ul = $('<ul/>').appendTo(div);
 
-	div.className = 'multiselectlayer';
-	div.id = elemid + '-layer';
-	div.style.display = 'none';
+	$('option', old_element).each(function(i) {
+		var li = $('<li/>').appendTo(ul);
 
-	for (var i=0, len=old_element.options.length; i<len; ++i)
-	{
-		var li = document.createElement('LI');
+		// add elements
+		var box = $('<input/>', {
+			type: 'checkbox',
+			name: old_element.attr('name'),
+			value: $(this).val()
+		}).appendTo(li);
 
-		var box = document.createElement('INPUT');
-		box.type = 'checkbox';
-		box.name = old_element.name;
-		box.value = old_element.options[i].value;
+		var text = $(this).text().replace(' ', '&nbsp;');
+		var span = $('<span/>').html(text)
+			.appendTo(li);
 
-		var span = document.createElement('SPAN');
-		span.innerHTML = old_element.options[i].text.replace(' ', '&nbsp;');
-
-		if (elem[span.innerHTML]) {
-			box.checked = true;
-			addClass(li, 'selected');
+		if (elem[text]) {
+			box.prop('checked', true);
+			li.addClass('selected');
 		}
 
 		// add some mouse/key events handlers
-		li.onclick = function() {
-			var userName = '';
-			var box = this.childNodes[0];
-			var selected = this.className.match(/selected/);
-			box.checked = selected ? false : true;
+		li.click(function(e) {
+			if ($(e.target).is('input'))
+				return;
 
+			$(this).toggleClass('selected');
+			var box = $(':checkbox', this);
+			box.prop('checked', !box.prop('checked'));
+
+			var optionValue = '';
 			if (/<span>(.*?)<\/span>/i.exec(this.innerHTML) !== null)
-				userName = RegExp.$1;
+				optionValue = RegExp.$1;
 
-			if (selected) {
-				elem[userName] = 0; //mark user as unselected
-
-				removeClass(this, 'selected');
-				if (def) {
-					var xlen = this.parentNode.childNodes.length;
-
-					for (var x=0; x<xlen; ++x)
-						if (this.parentNode.childNodes[x].className.match(/selected/))
-							break;
-				}
-			} else {
-				elem[userName] = 1; //mark user as selected
-				addClass(this, 'selected');
-			}
+			if (box.is(':checked'))
+				elem[optionValue] = 1; //mark option as selected
+			else
+				elem[optionValue] = 0; //mark option as unselected
 
 			new_selected = generateSelectedString(elem);
 			if (!tiny)
-				new_element.innerHTML = new_selected;
-		};
+				new_element.html(new_selected);
+
+			new_element.triggerHandler('itemclick', {
+				index: $(this).index(),
+				checked: box.is(':checked')
+			});
+		});
 		// TODO: keyboard events
-
-		// add elements
-		li.appendChild(box);
-		li.appendChild(span);
-		ul.appendChild(li);
-	}
-
-	// add list
-	div.appendChild(ul);
-	form.appendChild(div);
+	});
 
 	// add some mouse/key event handlers
-	new_element.onclick = function() {
-		var list = document.getElementById(this.id + '-layer');
-
-		if(list.style.display == 'none') {
+	new_element.click(function() {
+		var list = $('#' + this.id + '-layer');
+		if (!list.is(':visible')) {
 			var pos = get_object_pos(this);
-
-			list.style.left = (pos.x + this.offsetWidth) + 'px';
-			list.style.top = pos.y + 'px';
-			list.style.display = 'block';
-			// IE max-height hack
-			if(document.all && list.childNodes[1].offsetHeight > 200) {
-				list.childNodes[1].style.height = '200px';
-			}
+			list.css('left', (pos.x + this.offsetWidth) + 'px')
+				.css('top', pos.y + 'px').show();
+/*
+			list.position({
+				my: 'left top',
+				at: 'right top',
+				of: new_element
+			});
+*/
 		} else {
-			list.style.display = 'none';
-			if (new_selected != old_selected && typeof new_element.onchange === 'function')
-				new_element.onchange();
+			list.hide();
+			if (new_selected != old_selected)
+				new_element.triggerHandler('change');
 			old_selected = new_selected;
 		}
-	};
+	});
 
 	// hide combobox after click out of the window
-	document.onclick = function(e) {
+	$(document).click(function(e) {
 		var elem = e.target;
 		if (tiny)
 			while (elem && (elem.nodeName != 'DIV' || elem.className.match(/^multiselect/) === null))
 				elem = elem.parentNode;
 
-		if (div.style.display == 'none' || (elem && elem.id == old_element.id))
+		if (!$(div).is(':visible') || (elem && elem.id == old_element.attr('id')))
 			return 0;
 
-		var parent = e.target.parentNode.innerHTML.indexOf(old_element.name);
+		var parent = $(e.target).parent().html().indexOf(old_element.attr('name'));
 
-		if (e.target.innerHTML.indexOf("<head>") > -1 || parent == -1 || (parent > -1 && e.target.nodeName != 'INPUT' && e.target.nodeName != 'LI' && e.target.nodeName != 'SPAN')) {
-			div.style.display = 'none';
-			if (new_selected != old_selected && typeof new_element.onchange === 'function')
-				new_element.onchange();
+		if ($(e.target).html().indexOf("<head>") > -1 || parent == -1
+			|| (parent > -1 && e.target.nodeName != 'INPUT' && e.target.nodeName != 'LI' && e.target.nodeName != 'SPAN')) {
+			$(div).hide();
+			if (new_selected != old_selected)
+				new_element.triggerHandler('change');
 			old_selected = new_selected;
 		}
-	}
+	});
 
 	// TODO: keyboard events
 
@@ -452,47 +443,42 @@ function multiselect(options) {
 	}
 
 	this.updateSelection = function(idArray) {
-		var elems = div.childNodes[0].getElementsByTagName('input');
 		var selected = [];
-		for (var i = 0; i < elems.length; i++) {
-			var text = elems[i].parentNode.getElementsByTagName('span')[0].innerHTML;
-			if (idArray == null || idArray.indexOf(elems[i].value) != -1) {
-				elems[i].checked = true;
-				elems[i].parentNode.className = 'selected';
+		$('input:checkbox', div).each(function() {
+			var text = $(this).siblings('span').html();
+			if (idArray == null || idArray.indexOf($(this).val()) != -1) {
+				$(this).prop('checked', true).parent().addClass('selected');
 				selected.push(text);
 				elem[text] = 1;
 			} else {
-				elems[i].checked = false;
-				elems[i].parentNode.className = '';
+				$(this).prop('checked', false).parent().removeClass('selected');
 				elem[text] = 0;
 			}
-		}
+		});
 		new_selected = selected.join(', ');
 		if (!tiny)
-			new_elem.innerHTML = new_selected;
+			new_elem.html(new_selected);
 	}
 
 	this.filterSelection = function(idArray) {
-		var elems = div.childNodes[0].getElementsByTagName('input');
 		var selected = [];
-		for (var i = 0; i < elems.length; i++) {
-			var text = elems[i].parentNode.getElementsByTagName('span')[0].innerHTML;
-			if (idArray == null || idArray.indexOf(elems[i].value) != -1) {
-				elems[i].parentNode.style.display = '';
-				if (elems[i].checked) {
+		$('input:checkbox', div).each(function() {
+			var text = $(this).siblings('span').html();
+			if (idArray == null || idArray.indexOf($(this).val()) != -1) {
+				$(this).parent().show();
+				if ($(this).prop('checked')) {
 					elem[text] = 1;
 					selected.push(text);
 				}
 			} else {
-				elems[i].checked = false;
+				$(this).prop('checked', false).parent().hide();
 				elems[i].parentNode.className = '';
-				elems[i].parentNode.style.display = 'none';
 				elem[text] = 0;
 			}
-		}
+		});
 		new_selected = selected.join(', ');
 		if (!tiny)
-			new_element.innerHTML = new_selected;
+			new_element.html(new_selected);
 	}
 }
 
