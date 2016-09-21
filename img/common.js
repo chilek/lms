@@ -378,6 +378,7 @@ function multiselect(options) {
 
 			new_element.triggerHandler('itemclick', {
 				index: $(this).index(),
+				value: box.val(),
 				checked: box.is(':checked')
 			});
 		});
