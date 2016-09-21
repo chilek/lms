@@ -79,19 +79,11 @@
 				</SELECT>
 				{trans("Tags:")}
 				</div>
-				<SELECT size="5" name="tg[]" id="tagfilter" onchange="document.choosefilter.submit();" {tip text="Select tariff tags" trigger="tagfilter"} multiple>
+				<SELECT size="5" name="tg[]" class="lms-ui-multiselect" onchange="document.choosefilter.submit();" {tip text="Select tariff tags"} multiple>
 					{foreach $tags as $tag}
 					<OPTION value="{$tag.id}"{if !empty($listdata.tags) && in_array($tag.id, $listdata.tags)} selected{/if}>{$tag.name}</OPTION>
 					{/foreach}
 				</SELECT>
-				<script type="text/javascript">
-				<!--
-					multiselect({
-						id: 'tagfilter',
-						defaultValue: ''
-					});
-				//-->
-				</script>
 			</FORM>
 		</TD>
 	</TR>

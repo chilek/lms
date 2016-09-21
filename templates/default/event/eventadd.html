@@ -152,7 +152,7 @@
 		</TD>
 
 		<TD style="width: 98%;" class="multiselect nobr">
-			<SELECT name="event[userlist][]" id="userid" multiple>
+			<SELECT name="event[userlist][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- select user -")}">
 				{foreach $userlist as $user}
 				<OPTION value="{$user.id}"{if !empty($event.userlist) && in_array($user.id, $event.userlist)} selected{/if}>{$user.name}</OPTION>
 				{/foreach}
@@ -185,12 +185,9 @@
 <SCRIPT type="text/javascript">
 <!--
 document.forms['event'].elements['event[title]'].focus();
-var userms = new multiselect({
-	id: 'userid',
-	defaultValue: '{trans("- select user -")}'
-});
 
 function update_user_selection(users) {
+	var userms = $('.lms-ui-multiselect').data('data-multiselect-object');
 	{if ConfigHelper::getConfig('phpui.event_usergroup_selection_type', 'update') == 'update'}
 	userms.updateSelection(users);
 	{else}

@@ -174,10 +174,10 @@
 					</TD>
 					<TD style="width: 1%;" class="nobr">{trans("Group:")}</TD>
 					<TD style="width: 1%;" class="multiselect">
-						<SELECT name="message[customergroup][]" multiple id="customergroups" {tip trigger="customergroup" text="Select customers group"}>
-							{section name="customergroups" loop=$customergroups}
-							<option value="{$customergroups[customergroups].id}"{if $message.customergroup == $customergroups[customergroups].id} selected{/if}>{$customergroups[customergroups].name|truncate:"30":"...":true}</option>
-						{/section}
+						<SELECT name="message[customergroup][]" multiple class="lms-ui-multiselect" {tip trigger="customergroup" text="Select customers group"} data-default-value="{trans("- all groups -")}">
+							{foreach $customergroups as $customergroup}
+							<option value="{$customergroup.id}"{if in_array($customergroup.id, $message.customergroup)} selected{/if}>{$customergroup.name|truncate:"30":"...":true}</option>
+							{/foreach}
 						</SELECT>
 					</TD>
 					<TD style="width: 1%;" class="nobr">{trans("Network:")}</TD>
@@ -320,10 +320,10 @@
 			{trans("Users:")}
 		</TD>
 		<TD style="width: 98%;">
-			<SELECT size="4" name="message[users][]" multiple id="messageusers" {tip text="Select users"}>
-			{foreach $users as $user}
+			<SELECT size="4" name="message[users][]" multiple class="lms-ui-multiselect" {tip text="Select users"} data-default-value="{trans("- none -")}">
+				{foreach $users as $user}
 				<OPTION value="{$user.phone}"{if in_array($user.phone, $message.users)} selected{/if}>{$user.name|truncate:30:"...":true}</OPTION>
-			{/foreach}
+				{/foreach}
 			</select>
 		</TD>
 	</TR>
@@ -445,15 +445,6 @@
 <!--
 document.forms['message'].elements['message[sender]'].focus();
 countChars(document.getElementById('smstext'));
-
-multiselect({
-	id: 'messageusers',
-	defaultValue: '{trans("- none -")}'
-});
-multiselect({
-	id: 'customergroups',
-	defaultValue: '{trans("- all groups -")}'
-});
 
 tinymce_init('{$_ui_language}');
 {if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}

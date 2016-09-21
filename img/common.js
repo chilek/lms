@@ -286,7 +286,7 @@ function get_object_pos(obj) {
 
 function multiselect(options) {
 	var elemid = options.id;
-	var def = options.defaultValue;
+	var def = options.defaultValue !== undefined ? options.defaultValue : '';
 	var tiny = options.type !== undefined && options.type == 'tiny';
 	var icon = options.icon !== undefined ? options.icon : 'img/settings.gif';
 	var label = options.label !== undefined ? options.label : '';
@@ -299,7 +299,7 @@ function multiselect(options) {
 
 	// create new multiselect div
 	var new_element = $('<div/>', {
-		class: 'multiselect' + (tiny ? '-tiny' : ''),
+		class: 'lms-ui-multiselect' + (tiny ? '-tiny' : ''),
 		id: elemid,
 		// save title for tooltips
 		title: old_element.attr('title')
@@ -317,7 +317,8 @@ function multiselect(options) {
 	if (!tiny)
 		new_element.html(old_selected);
 
-	new_element.prop('style', old_element.prop('style'));
+	new_element.data('data-multiselect-object', this)
+		.prop('style', old_element.prop('style'));
 	// save onchange event handler
 	if (typeof(onchange = old_element.prop('onchange')) == 'function')
 		new_element.on('change', onchange);
@@ -330,7 +331,7 @@ function multiselect(options) {
 
 	// create multiselect list div (hidden)
 	var div = $('<div/>', {
-		class: 'multiselectlayer',
+		class: 'lms-ui-multiselectlayer',
 		id: elemid + '-layer'
 	}).hide().appendTo(form);
 	var ul = $('<ul/>').appendTo(div);
@@ -411,7 +412,7 @@ function multiselect(options) {
 	$(document).click(function(e) {
 		var elem = e.target;
 		if (tiny)
-			while (elem && (elem.nodeName != 'DIV' || elem.className.match(/^multiselect/) === null))
+			while (elem && (elem.nodeName != 'DIV' || elem.className.match(/^lms-ui-multiselect/) === null))
 				elem = elem.parentNode;
 
 		if (!$(div).is(':visible') || (elem && elem.id == old_element.attr('id')))
@@ -437,7 +438,7 @@ function multiselect(options) {
 			if (objArray.hasOwnProperty(k) && objArray[k] == 1)
 				selected.push(k);
 
-		if (selected.length == 0)
+		if (!selected.length)
 			return def;
 
 		return selected.join(', ');
@@ -458,7 +459,7 @@ function multiselect(options) {
 		});
 		new_selected = selected.join(', ');
 		if (!tiny)
-			new_elem.html(new_selected);
+			new_element.html(new_selected);
 	}
 
 	this.filterSelection = function(idArray) {

@@ -62,7 +62,7 @@
 					</TD>
 					<TD colspan="2">
 						{if !empty($othercustomergroups)}
-						<SELECT SIZE="1" NAME="customergroupid[]" id="customergroupid" {tip text="Select group to attribute to customer"} multiple>
+						<SELECT SIZE="1" NAME="customergroupid[]" class="lms-ui-multiselect" {tip text="Select group to attribute to customer"} multiple>
 							{foreach $othercustomergroups as $customergroup}
 							<OPTION VALUE="{$customergroup.id}">{$customergroup.name} ({$customergroup.id|string_format:"%04d"})</OPTION>
 							{/foreach}
@@ -79,13 +79,6 @@
 				</TR>
 				<script type="text/javascript">
 				<!--
-					{if !empty($othercustomergroups)}
-					multiselect({
-						id: 'customergroupid',
-						defaultValue: '{trans("... select groups ...")}'
-					});
-					{/if}
-
 					$(function() {
 						{if !empty($othercustomergroups)}
 						$('#add-groups').click(function() {

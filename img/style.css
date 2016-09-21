@@ -332,7 +332,7 @@ IMG {
   vertical-align: middle;
   border: 0;
 }
-div.multiselect {
+div.lms-ui-multiselect {
   overflow: hidden;
   font-size: 8pt;
   font-family: Arial, Helvetica, Verdana;
@@ -346,7 +346,7 @@ div.multiselect {
   white-space: pre-wrap;
   min-width: 200px;
 }
-div.multiselect-tiny {
+div.lms-ui-multiselect-tiny {
   overflow: hidden;
   vertical-align: middle;
   cursor: pointer;
@@ -357,7 +357,7 @@ div.multiselect-tiny {
   -ms-user-select: none;
   user-select: none;
 }
-div.multiselectlayer {
+div.lms-ui-multiselectlayer {
   position: absolute;
   z-index: 100;
   overflow: hidden;
@@ -367,7 +367,7 @@ div.multiselectlayer {
   -ms-user-select: none;
   user-select: none;
 }
-div.multiselectlayer ul {
+div.lms-ui-multiselectlayer ul {
   list-style: none;
   cursor: default;
   padding: 0;
@@ -379,21 +379,21 @@ div.multiselectlayer ul {
   overflow-x: hidden;
   overflow-y: auto;
 }
-div.multiselectlayer ul li {
+div.lms-ui-multiselectlayer ul li {
   padding: 0;
   margin: 0;
   background-color: #ebe4d6;
 }
-div.multiselectlayer ul li input {
+div.lms-ui-multiselectlayer ul li input {
   border: none;
 }
-div.multiselectlayer ul li.selected {
+div.lms-ui-multiselectlayer ul li.selected {
   background-color: #cebd9b;
 }
-div.multiselectlayer ul li:hover {
+div.lms-ui-multiselectlayer ul li:hover {
   background-color: #dfd5bd;
 }
-div.multiselectlayer ul span {
+div.lms-ui-multiselectlayer ul span {
   padding-left: 3px;
 }
 .click-menu {

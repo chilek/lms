@@ -107,10 +107,10 @@
 			<B>{trans("User:")}</B>
 		</TD>
 		<TD style="width: 98%;" class="multiselect nobr">
-			<SELECT name="event[userid][]" id="userid" multiple>
-				{section name=userlist loop=$userlist}
-				<OPTION value="{$userlist[userlist].id}">{$userlist[userlist].name}</OPTION>
-				{/section}
+			<SELECT name="event[userid][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- select user -")}">
+				{foreach $userlist as $user}
+				<OPTION value="{$user.id}">{$user.name}</OPTION>
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
@@ -125,11 +125,7 @@
 </form>
 <SCRIPT type="text/javascript">
 <!--
-multiselect({
-	id: 'userid',
-	defaultValue: '{trans("- select user -")}'
-});
-document.forms['event'].elements['event[title]'].focus();
+	document.forms['event'].elements['event[title]'].focus();
 //-->
 </SCRIPT>
 {/block}
