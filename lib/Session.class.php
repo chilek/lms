@@ -85,7 +85,8 @@ class Session {
 			if (isset($settings['persistentsettings']))
 				$this->_persistent_settings = unserialize($settings['persistentsettings']);
 			$settings = unserialize($settings['settings']);
-			if (!isset($settings['mtime']) || time() - $settings['mtime'] < $this->settings_timeout || $force_settings_restore)
+			if (!empty($settings) && (!isset($settings['mtime'])
+				|| time() - $settings['mtime'] < $this->settings_timeout || $force_settings_restore))
 				$this->_content = array_merge($this->_content, $settings);
 		}
 	}
