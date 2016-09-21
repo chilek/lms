@@ -190,8 +190,8 @@ function GetTariffList($order = 'name,asc', $type = NULL, $customergroupid = NUL
 	if (!empty($tarifflist)) {
 		$tarifftags = $DB->GetAll('SELECT t.id AS tariff_id, t.name AS tariff_name, tt.name AS tag_name, tt.id AS tag_id
 			FROM tariffs t
-			LEFT JOIN tariffassignments ta ON (ta.tariffid = t.id)
-			LEFT JOIN tarifftags tt ON (ta.tarifftagid = tt.id)'
+			JOIN tariffassignments ta ON (ta.tariffid = t.id)
+			JOIN tarifftags tt ON (ta.tarifftagid = tt.id)'
 			. (!empty($tags) ? ' WHERE tarifftagid IN (' . implode(',', $tags). ')' : ''));
 		if (!empty($tarifftags))
 			foreach ($tarifftags as $tarifftag) {
