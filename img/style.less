@@ -417,6 +417,10 @@ div.lms-ui-multiselectlayer {
     }
 }
 
+.lms-ui-multi-check-all {
+	.lms-ui-no-user-select;
+}
+
 table.lmsbox {
 	&,
 	&-inner,
@@ -473,7 +477,7 @@ table.lmsbox {
 			background-color: @light;
 		}
 	}
-	&.lms-ui-background-cycle tbody {
+	&.lms-ui-background-cycle>tbody {
 		tr:nth-child(even):not(.ui-selected) {
 			background-color: @light;
 		}
@@ -495,7 +499,7 @@ table.lmsbox-inner {
 	}
 }
 
-table.lms-ui-datatable tbody {
+table.lms-ui-datatable>tbody {
 	tr:nth-child(even):not(.ui-selected) {
 		background-color: @light;
 	}
@@ -529,7 +533,6 @@ tr.space_row>td {
 .pagination {
     background-color: @dark;
 }
-
 
 td.empty-table {
 	background-color: @lucid;

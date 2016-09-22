@@ -589,6 +589,12 @@ div.lms-ui-multiselectlayer ul span {
     color: black;
   }
 }
+.lms-ui-multi-check-all {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 table.lmsbox, table.lmsbox-inner, table.lmsbox-innerbox {
   width: 100%;
 }
@@ -631,13 +637,13 @@ table.lmsbox > thead {
 table.lmsbox > tfoot, table.lmsbox-inner > tfoot {
   background-color: #dfd5bd;
 }
-table.lmsbox.lms-ui-background-cycle tbody tr:nth-child(even):not(.ui-selected) {
+table.lmsbox.lms-ui-background-cycle > tbody tr:nth-child(even):not(.ui-selected) {
   background-color: #dfd5bd;
 }
-table.lmsbox.lms-ui-background-cycle tbody tr:nth-child(odd):not(.ui-selected) {
+table.lmsbox.lms-ui-background-cycle > tbody tr:nth-child(odd):not(.ui-selected) {
   background-color: #ebe4d6;
 }
-table.lmsbox.lms-ui-background-cycle tbody tr.highlight:hover {
+table.lmsbox.lms-ui-background-cycle > tbody tr.highlight:hover {
   background-color: #ccffcc;
 }
 table.lmsbox-inner.dataTable > thead {
@@ -646,13 +652,13 @@ table.lmsbox-inner.dataTable > thead {
 table.lmsbox-inner:not(.dataTable) > thead {
   background-color: #dfd5bd;
 }
-table.lms-ui-datatable tbody tr:nth-child(even):not(.ui-selected) {
+table.lms-ui-datatable > tbody tr:nth-child(even):not(.ui-selected) {
   background-color: #dfd5bd;
 }
-table.lms-ui-datatable tbody tr:nth-child(odd):not(.ui-selected) {
+table.lms-ui-datatable > tbody tr:nth-child(odd):not(.ui-selected) {
   background-color: #ebe4d6;
 }
-table.lms-ui-datatable tbody tr.highlight:hover {
+table.lms-ui-datatable > tbody tr.highlight:hover {
   background-color: #ccffcc;
 }
 tr.space_row > td {

@@ -184,6 +184,7 @@
 			if (!checkall.length)
 				checkall = tbody.siblings('tfoot').filter('.lms-ui-multi-check-all');
 			if (checkall.length) {
+				checkall.parent().addClass('lms-ui-multi-check-all');
 				checkall.click(function(e) {
 					allcheckboxes.each(function(index, elem) {
 						this.checked = checkall.checked;
