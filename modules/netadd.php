@@ -26,6 +26,8 @@
 
 if (isset($_POST['netadd']))
 {
+	$netadd = $_POST['netadd'];
+
 	foreach ($netadd as $key => $value)
 		if ($key != 'authtype')
 			$netadd[$key] = trim($value);
