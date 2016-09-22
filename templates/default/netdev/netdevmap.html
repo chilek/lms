@@ -29,6 +29,8 @@
 <!--
 	{include file="map.js"}
 
+	$('div#pagecontent').show();
+
 	{if $lon && $lat}
 	map = createMap(devices, devlinks, nodes, nodelinks, true, '{$lon}', '{$lat}');
 	{else}
