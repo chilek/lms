@@ -2,7 +2,6 @@
 {block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<script type="text/javascript" src="img/tinymce3/tiny_mce.js"> </script>
 <H1>{$layout.pagetitle}</H1>
 <SCRIPT type="text/javascript">
 <!--
@@ -507,25 +506,19 @@
 				<TR>
 					<TD style="width: 1%;"><IMG src="img/info1.gif" alt=""></TD>
 					<TD style="width: 99%;">
-						<input type="checkbox" id="info_label" onclick="javascript:toggle_visual_editor('info');"{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'} checked{/if}>
-						<label for="info_label">{trans("visual editor")}</label><br>
-						<TEXTAREA rows="10" cols="60" name="customeradd[info]" id="info" {tip text="Enter additional information (optional)"}>{$customeradd.info|escape}</TEXTAREA>
+						<TEXTAREA rows="10" cols="60" name="customeradd[info]" class="lms-ui-wysiwyg-editor" {tip text="Enter additional information (optional)"}{if isset($customeradd.wysiwyg.info)} data-wysiwyg="{$customeradd.wysiwyg.info}"{/if}>{$customeradd.info|escape}</TEXTAREA>
 					</TD>
 				</TR>
 				<TR>
 					<TD style="width: 1%;"><IMG src="img/warningon.gif" alt=""></TD>
 					<TD style="width: 99%;">
-						<input type="checkbox" id="message_label" onclick="javascript:toggle_visual_editor('message');"{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'} checked{/if}>
-						<label for="message_label">{trans("visual editor")}</label><br>
-						<TEXTAREA rows="10" cols="60" name="customeradd[message]" id="message" {tip text="Enter notice contents (optional)"}>{$customeradd.message|escape}</TEXTAREA>
+						<TEXTAREA rows="10" cols="60" name="customeradd[message]" class="lms-ui-wysiwyg-editor" {tip text="Enter notice contents (optional)"}{if isset($customeradd.wysiwyg.message)} data-wysiwyg="{$customeradd.wysiwyg.message}"{/if}>{$customeradd.message|escape}</TEXTAREA>
 					</TD>
 				</TR>
 				<TR>
 					<TD style="width: 1%;"><IMG src="img/note.gif" alt=""></TD>
 					<TD style="width: 99%;">
-						<input type="checkbox" id="notes_label" onclick="javascript:toggle_visual_editor('notes');"{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'} checked{/if}>
-						<label for="notes_label">{trans("visual editor")}</label><br>
-						<TEXTAREA rows="10" cols="60" name="customeradd[notes]" id="notes" {tip text="Enter notes (optional)"}>{$customeradd.notes|escape}</TEXTAREA>
+						<TEXTAREA rows="10" cols="60" name="customeradd[notes]" class="lms-ui-wysiwyg-editor" {tip text="Enter notes (optional)"}{if isset($customeradd.wysiwyg.notes)} data-wysiwyg="{$customeradd.wysiwyg.notes}"{/if}>{$customeradd.notes|escape}</TEXTAREA>
 					</TD>
 				</TR>
 				{/block}
@@ -546,13 +539,6 @@
 <!--
 	document.forms['customeradd'].elements['customeradd[lastname]'].focus();
 	if(document.forms['customeradd'].elements['customeradd[pin]'].value == '') randomize();
-
-	tinymce_init('{$_ui_language}');
-	{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}
-	toggle_visual_editor('info');
-	toggle_visual_editor('message');
-	toggle_visual_editor('notes');
-	{/if}
 //-->
 </SCRIPT>
 {/block}

@@ -87,7 +87,7 @@
 			<B>{trans("Description:")}</B>
 		</TD>
 		<TD width="98%">
-			<TEXTAREA name="event[description]" class="lms-ui-wysiwyg-editor" cols="50" rows="5" {tip text="Enter additional information (optional)"}{if isset($event.wysiwyg)} data-wysiwyg="{$event.wysiwyg}"{/if}>{$event.description}</TEXTAREA>
+			<TEXTAREA name="event[description]" class="lms-ui-wysiwyg-editor" cols="50" rows="5" {tip text="Enter additional information (optional)"}{if isset($event.wysiwyg.description)} data-wysiwyg="{$event.wysiwyg.description}"{/if}>{$event.description}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>

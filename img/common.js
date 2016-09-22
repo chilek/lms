@@ -603,42 +603,6 @@ function changeMacFormat(id)
 	elem.innerHTML = curmac;
 }
 
-function tinymce_init(ui_language) {
-	tinyMCE.init({
-		setup : function(ed) {
-			ed.onBeforeSetContent.add(function(ed, o) {
-				if (o.initial) {
-					o.content = o.content.replace(/\r?\n/g, '<br />');
-				}
-			});
-		},
-		mode: "none",
-		language: ui_language,
-		theme: "advanced",
-		plugins: "advimage,advlink,preview,autoresize,contextmenu,fullscreen,inlinepopups,searchreplace,style,table",
-		theme_advanced_buttons1_add: "|,forecolor,backcolor,|,styleprops",
-		theme_advanced_buttons2_add: "|,preview,fullscreen",
-		theme_advanced_buttons3_add: "|,search,replace,|,tablecontrols",
-		//theme_advanced_toolbar_location: "external",
-		theme_advanced_toolbar_align: "left",
-		//theme_advanced_statusbar_location: "bottom",
-		theme_advanced_statusbar_location: "none",
-		theme_advanced_resizing: true,
-		autoresize_max_height: 250,
-		dialog_type: "window",
-		skin: "lms",
-	});
-}
-
-function toggle_visual_editor(id) {
-	if (document.getElementById(id) == undefined)
-		return 0;
-	if (tinymce.get(id))
-		tinyMCE.execCommand('mceToggleEditor', false, id);
-	else
-		tinyMCE.execCommand('mceAddControl', true, id);
-}
-
 function init_links() {
 	for (i in document.links) {
 		link = document.links[i];

@@ -79,7 +79,7 @@ if (isset($_POST['customeradd']))
 
 	if (sizeof($customeradd))
 		foreach ($customeradd as $key => $value)
-			if ($key != 'uid' && !in_array($key, $contacttypes))
+			if ($key != 'uid' && $key != 'wysiwyg' && !in_array($key, $contacttypes))
 				$customeradd[$key] = trim($value);
 
 	if($customeradd['name'] == '' && $customeradd['lastname'] == '' && $customeradd['address'] == '')

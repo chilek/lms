@@ -47,7 +47,7 @@ elseif (isset($_POST['customerdata']))
 		$contacttype .= 's';
 
 	foreach ($customerdata as $key => $value)
-		if ($key != 'uid' && !in_array($key, $contacttypes))
+		if ($key != 'uid' && $key != 'wysiwyg' && !in_array($key, $contacttypes))
 			$customerdata[$key] = trim($value);
 
 	if($customerdata['lastname'] == '')

@@ -28,11 +28,11 @@ $layout['pagetitle'] = trans('New Config Option');
 
 $config = isset($_POST['config']) ? $_POST['config'] : array();
 
-if(sizeof($config))
-{
+if (sizeof($config)) {
 	foreach($config as $key => $val)
-	    $config[$key] = trim($val);
-	
+		if ($key != 'wysiwyg')
+			$config[$key] = trim($val);
+
 	if(!($config['var'] || $config['value'] || $config['description']))
 	{
 		$SESSION->redirect('?m=configlist');

@@ -491,9 +491,7 @@
 			<IMG src="img/info1.gif" alt="">
 		</TD>
 		<TD style="width: 99%;">
-			<input type="checkbox" id="info_label" onclick="javascript:toggle_visual_editor('info');"{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'} checked{/if}>
-			<label for="info_label">{trans("visual editor")}</label><br>
-			<TEXTAREA name="customerdata[info]" id="info" COLS="60" ROWS="10" {tip text="Enter additional information (optional)"}>{$customerinfo.info|escape}</TEXTAREA>
+			<TEXTAREA name="customerdata[info]" class="lms-ui-wysiwyg-editor" COLS="60" ROWS="10" {tip text="Enter additional information (optional)"}{if isset($customerinfo.wysiwyg.info)} data-wysiwyg="{$customerinfo.wysiwyg.info}"{/if}>{$customerinfo.info|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
@@ -501,9 +499,7 @@
 			<IMG src="img/warningon.gif" alt="">
 		</TD>
 		<TD style="width: 99%;">
-			<input type="checkbox" id="message_label" onclick="javascript:toggle_visual_editor('message');"{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'} checked{/if}>
-			<label for="message_label">{trans("visual editor")}</label><br>
-			<TEXTAREA name="customerdata[message]" id="message" COLS="60" ROWS="10" {tip text="Enter notice contents (optional)"}>{$customerinfo.message|escape}</TEXTAREA>
+			<TEXTAREA name="customerdata[message]" class="lms-ui-wysiwyg-editor" COLS="60" ROWS="10" {tip text="Enter notice contents (optional)"}{if isset($customerinfo.wysiwyg.message)} data-wysiwyg="{$customerinfo.wysiwyg.message}"{/if}>{$customerinfo.message|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
@@ -511,9 +507,7 @@
 			<IMG src="img/note.gif" alt="">
 		</TD>
 		<TD style="width: 99%;">
-			<input type="checkbox" id="notes_label" onclick="javascript:toggle_visual_editor('notes');"{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'} checked{/if}>
-			<label for="notes_label">{trans("visual editor")}</label><br>
-			<TEXTAREA name="customerdata[notes]" id="notes" COLS="60" ROWS="10" {tip text="Enter notes (optional)"}>{$customerinfo.notes|escape}</TEXTAREA>
+			<TEXTAREA name="customerdata[notes]" class="lms-ui-wysiwyg-editor" COLS="60" ROWS="10" {tip text="Enter notes (optional)"}{if isset($customerinfo.wysiwyg.notes)} data-wysiwyg="{$customerinfo.wysiwyg.notes}"{/if}>{$customerinfo.notes|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>
@@ -552,13 +546,6 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['customeredit'].elements['customerdata[lastname]'].focus();
-
-tinymce_init('{$_ui_language}');
-{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}
-toggle_visual_editor('info');
-toggle_visual_editor('message');
-toggle_visual_editor('notes');
-{/if}
+	document.forms['customeredit'].elements['customerdata[lastname]'].focus();
 //-->
 </SCRIPT>

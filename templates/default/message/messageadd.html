@@ -3,7 +3,6 @@
 {block name=module_content}
 <!--// $Id$ //-->
 {$xajax}
-<script type="text/javascript" src="img/tinymce3/tiny_mce.js"> </script>
 <H1>{$layout.pagetitle}</H1>
 <FORM name="message" id="message" method="post" action="?m=messageadd" enctype="multipart/form-data">
 <p style="display: none;">
@@ -123,8 +122,8 @@
 
 	function messageTemplateReceived(subjectelem, subject, messageelem, message) {
 		xjx.$(subjectelem).value = subject;
-		if (tinyMCE.get(messageelem) != undefined) {
-			tinyMCE.get(messageelem).setContent(message);
+		if (tinyMCE.editors.length) {
+			tinyMCE.editors[0].setContent(message);
 			xjx.$(messageelem).value = message;
 		} else
 			xjx.$(messageelem).value = message;
@@ -375,19 +374,7 @@
 			{trans("Message body:")}
 		</TD>
 		<TD style="width: 98%;">
-			<TABLE class="lmsbox-inner">
-				<TBODY>
-					<TR><TD>
-						<input type="checkbox" id="mailmessage_label" name="message[wysiwyg]" onClick="javascript:toggle_visual_editor('mailmessage');"{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'} checked{/if}>
-						<label for="mailmessage_label">{trans("visual editor")}</label>
-					</TD></TR>
-					<TR><TD>
-						<TEXTAREA name="message[mailbody]" id="mailmessage" cols="80" rows="20" {tip text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="mailbody"}>{$message.body}</TEXTAREA>
-					</TD></TR>
-					<TR><TD>
-					</TD></TR>
-				</TBODY>
-			</TABLE>
+			<TEXTAREA name="message[mailbody]" class="lms-ui-wysiwyg-editor" cols="80" rows="20" {tip text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="mailbody"}{if isset($message.wysiwyg.mailbody)} data-wysiwyg="{$message.wysiwyg.mailbody}"{/if}>{$message.body}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR ID="smsbody"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
@@ -445,11 +432,6 @@
 <!--
 document.forms['message'].elements['message[sender]'].focus();
 countChars(document.getElementById('smstext'));
-
-tinymce_init('{$_ui_language}');
-{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}
-toggle_visual_editor('mailmessage');
-{/if}
 
 document.getElementById('smstext').onmouseout = function() {
 	countChars(this);

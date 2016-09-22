@@ -60,7 +60,7 @@ if (isset($_POST['nodedata']))
 		$nodedata['macs'][$key] = str_replace('-',':',$value);
 
 	foreach($nodedata as $key => $value)
-		if($key != 'macs' && $key != 'authtype')
+		if($key != 'macs' && $key != 'authtype' && $key != 'wysiwyg')
 			$nodedata[$key] = trim($value);
 
 	if($nodedata['ipaddr']=='' && $nodedata['ipaddr_pub'] && $nodedata['mac']=='' && $nodedata['name']=='')
