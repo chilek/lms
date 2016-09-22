@@ -47,7 +47,8 @@
 		$('select.lms-ui-multiselect').each(function() {
 			multiselect({
 				id: $(this).uniqueId().attr('id'),
-				defaultValue: $(this).attr('data-default-value')
+				defaultValue: $(this).attr('data-default-value'),
+				type: $(this).attr('data-type')
 			});
 		});
 
