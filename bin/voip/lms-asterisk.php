@@ -147,9 +147,11 @@ if (!empty($records))
 		$boroughs[$location_borough][$number] = $record;
 	}
 
-$accounts = $DB->GetAll("SELECT a.login, a.passwd, a.phone, a.flags, lc.boroughid
+$accounts = $DB->GetAll("SELECT a.login, a.passwd, " . $DB->GroupConcat("n.phone") . " AS phones, a.flags, lc.boroughid
 	FROM voipaccounts a
-	LEFT JOIN location_cities lc ON lc.id = a.location_city");
+	LEFT JOIN voip_numbers n ON n.voip_account_id = a.id
+	LEFT JOIN location_cities lc ON lc.id = a.location_city
+	GROUP BY a.login, a.passwd, a.flags, lc.boroughid");
 
 $fhs = fopen($sip_config_file, "w+");
 if (empty($fhs))
@@ -168,18 +170,23 @@ if (!empty($accounts)) {
 	foreach ($accounts as $account) {
 		extract($account);
 
-		fprintf($fheo, "exten => _%s,1,Goto(incoming,%s,1)\n", $phone, $phone);
+		$phones = explode(',', $phones);
+
+		foreach ($phones as $phone)
+			fprintf($fheo, "exten => _%s,1,Goto(incoming,%s,1)\n", $phone, $phone);
 
 		fprintf($fhs, "[%s]\nmd5secret=%s\ncontext=outgoing-lms-%s\nqualify=yes\ntype=friend\ninsecure=no\nhost=dynamic\nnat=no\ndirectmedia=no\n\n",
-			$login, md5($login . ':asterisk:' . $passwd), $phone);
+			$login, md5($login . ':asterisk:' . $passwd), reset($phones));
 
-		$prio = 1;
-		fprintf($fhei, "\nexten => _%s,%d,Set(CDR(exten)=\${EXTEN})\n", $phone, $prio++);
-		fprintf($fhei, "exten => _%s,%d,Set(CDR(accountcode)=\${CALLERID(num)})\n", $phone, $prio++);
-		if ($flags & (CALL_FLAG_ADMIN_RECORDING | CALL_FLAG_CUSTOMER_RECORDING))
-			fprintf($fhei, "exten => _%s,%d,Monitor(wav,\${CDR(uniqueid)},mb)\n", $phone, $prio++);
-		fprintf($fhei, "exten => _%s,%d,Dial(SIP/%s,30)\n", $phone, $prio++, $login);
-		fprintf($fhei, "exten => _%s,%d,Hangup()\n", $phone, $prio++);
+		foreach ($phones as $phone) {
+			$prio = 1;
+			fprintf($fhei, "\nexten => _%s,%d,Set(CDR(exten)=\${EXTEN})\n", $phone, $prio++);
+			fprintf($fhei, "exten => _%s,%d,Set(CDR(accountcode)=\${CALLERID(num)})\n", $phone, $prio++);
+			if ($flags & (CALL_FLAG_ADMIN_RECORDING | CALL_FLAG_CUSTOMER_RECORDING))
+				fprintf($fhei, "exten => _%s,%d,Monitor(wav,\${CDR(uniqueid)},mb)\n", $phone, $prio++);
+			fprintf($fhei, "exten => _%s,%d,Dial(SIP/%s,30)\n", $phone, $prio++, $login);
+			fprintf($fhei, "exten => _%s,%d,Hangup()\n", $phone, $prio++);
+		}
 	}
 
 	fprintf($fheo, "\nexten => _X.,1,Goto(outgoing,\${EXTEN},2)\n");
@@ -187,22 +194,26 @@ if (!empty($accounts)) {
 	foreach ($accounts as $account) {
 		extract($account);
 
-		fprintf($fheo, "\n[outgoing-lms-%s]\n", $phone);
-		$prio = 1;
-		fprintf($fheo, "exten => _+.,%d,Goto(outgoing-lms-%s,\${EXTEN:1},1)\n", $prio++, $phone);
-		$prio = 1;
-		if ($flags & (CALL_FLAG_ADMIN_RECORDING | CALL_FLAG_CUSTOMER_RECORDING))
-			fprintf($fheo, "exten => _X.,%d,Monitor(wav,\${CDR(uniqueid)},mb)\n", $prio++);
-		fprintf($fheo, "exten => _X.,%d,Goto(outgoing,\${EXTEN},1)\n", $prio++);
+		$phones = explode(',', $phones);
 
-		if (isset($boroughs[$boroughid]))
-			foreach ($boroughs[$boroughid] as $number => $record) {
-				$prio = 1;
-				if ($flags & (CALL_FLAG_ADMIN_RECORDING | CALL_FLAG_CUSTOMER_RECORDING))
-					fprintf($fheo, "exten => _%s,%d,Monitor(wav,\${CDR(uniqueid)},mb)\n", $record['number'],
-						$prio++, $record['fullnumber']);
-				fprintf($fheo, "exten => _%s,%d,Goto(outgoing,%s,2)\n", $record['number'], $prio++, $record['fullnumber']);
-			}
+		foreach ($phones as $phone) {
+			fprintf($fheo, "\n[outgoing-lms-%s]\n", $phone);
+			$prio = 1;
+			fprintf($fheo, "exten => _+.,%d,Goto(outgoing-lms-%s,\${EXTEN:1},1)\n", $prio++, $phone);
+			$prio = 1;
+			if ($flags & (CALL_FLAG_ADMIN_RECORDING | CALL_FLAG_CUSTOMER_RECORDING))
+				fprintf($fheo, "exten => _X.,%d,Monitor(wav,\${CDR(uniqueid)},mb)\n", $prio++);
+			fprintf($fheo, "exten => _X.,%d,Goto(outgoing,\${EXTEN},1)\n", $prio++);
+
+			if (isset($boroughs[$boroughid]))
+				foreach ($boroughs[$boroughid] as $number => $record) {
+					$prio = 1;
+					if ($flags & (CALL_FLAG_ADMIN_RECORDING | CALL_FLAG_CUSTOMER_RECORDING))
+						fprintf($fheo, "exten => _%s,%d,Monitor(wav,\${CDR(uniqueid)},mb)\n", $record['number'],
+							$prio++, $record['fullnumber']);
+					fprintf($fheo, "exten => _%s,%d,Goto(outgoing,%s,2)\n", $record['number'], $prio++, $record['fullnumber']);
+				}
+		}
 	}
 }
 
