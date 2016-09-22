@@ -366,8 +366,10 @@
 
 				if (initiatedDataTables < visibleDataTables) {
 					initiatedDataTables++;
-					if (initiatedDataTables == visibleDataTables)
+					if (initiatedDataTables == visibleDataTables) {
+						$('div#lms-ui-spinner').hide();
 						$('div#pagecontent').show();
+					}
 				}
 			});
 		}
@@ -550,8 +552,10 @@
 			}
 		});
 
-		if (!dataTables.length || !visibleDataTables)
+		if (!dataTables.length || !visibleDataTables) {
+			$('div#lms-ui-spinner').hide();
 			$('div#pagecontent').show();
+		}
 	});
 
 	function restoreSortable(sortable, value) {

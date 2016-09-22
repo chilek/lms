@@ -595,6 +595,19 @@ div.lms-ui-multiselectlayer ul span {
   -ms-user-select: none;
   user-select: none;
 }
+#lms-ui-spinner {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16pt;
+  font-family: Arial, Helvetica, Verdana;
+  font-weight: bold;
+}
 table.lmsbox, table.lmsbox-inner, table.lmsbox-innerbox {
   width: 100%;
 }
