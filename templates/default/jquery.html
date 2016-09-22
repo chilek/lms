@@ -6,6 +6,7 @@
 <script type="text/javascript" src="img/jqueryui/ui/minified/i18n/datepicker-{$language}.js"></script>
 <script type="text/javascript" src="img/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
 <script type="text/javascript" src="img/jquery-datatables/media/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="img/tinymce3/tiny_mce.js"></script>
 <script type="text/javascript">
 
 	function savePersistentSettings(data) {
@@ -552,6 +553,30 @@
 			}
 		});
 
+		var editors = $('textarea.lms-ui-wysiwyg-editor');
+		if (editors.length) {
+			tinymce_init('{$language}');
+			editors.each(function() {
+				var parent = $(this).parent();
+				var textareaid = $(this).uniqueId().attr('id');
+				var wysiwyg = $(this).attr('data-wysiwyg');
+				wysiwyg = (wysiwyg !== undefined && wysiwyg == '1')
+					|| (wysiwyg === undefined && {if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}true{else}false{/if});
+				var textarea = parent.html();
+				$(this).replaceWith($('<TABLE/>').addClass('lmsbox-inner').html('<TBODY><TR><TD>'
+					+ '<label><input type="checkbox" name="' + $(this).closest('form').attr('name')
+						+ '[wysiwyg]" value="1"' + (wysiwyg ? ' checked' : '') + '>'
+					+ '{trans("visual editor")}</label></TD></TR>'
+					+ '<TR><TD>' + textarea + '</TD></TR>'
+					+ '</TBODY>'));
+				$('[name*="wysiwyg"]:checkbox', parent).click(function() {
+					toggle_visual_editor(textareaid);
+				});
+				if (wysiwyg)
+					toggle_visual_editor(textareaid);
+			});
+		}
+
 		if (!dataTables.length || !visibleDataTables) {
 			$('div#lms-ui-spinner').hide();
 			$('div#pagecontent').show();
@@ -562,7 +587,7 @@
 		if (typeof(value) != 'string' || !value.length || value == 'null')
 			return;
 		$.each(value.split(';'), function(key, value) {
-			if (value.length)
+			if (value.length && value.match(/^[a-z0-9-]+$/i))
 				$('#' + value).appendTo('#' + sortable);
 		});
 	}

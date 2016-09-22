@@ -111,6 +111,8 @@ version ?.??.?? (????-??-??):
   - introduced persistent settings: tabs order are stored persistently
     in users.persistentsettings database table [chilan]
   - allow to limit invoice send by mail count per hour [olimplan/chilan]
+  - lms-ui-wysiwyg-editor css class point text areas which should have
+    tinymce toggle feature [chilan]
 
 version 1.11.20 (2016-04-19):
 
