@@ -11,6 +11,14 @@ function savePersistentSettings(data) {
 	});
 }
 
+var dataTablesLanguage = {};
+$.ajax("img/jquery-datatables-i18n/" + lmsSettings.language + ".json", {
+	method: "GET",
+	success: function(data, textStatus, jqXHR) {
+		dataTablesLanguage = data;
+	}
+});
+
 $(function() {
 	var autocomplete = "off";
 
@@ -257,9 +265,10 @@ $(function() {
 	function initDataTable(elem) {
 		var init = $(elem).data('init');
 		$(elem).DataTable({
-			language: {
-				url: "img/jquery-datatables-i18n/" + lmsSettings.language + ".json"
-			},
+//			language: {
+//				url: "img/jquery-datatables-i18n/" + lmsSettings.language + ".json"
+//			},
+			language: dataTablesLanguage,
 			initComplete: function(settings, json) {
 				$(elem).show();
 			},
