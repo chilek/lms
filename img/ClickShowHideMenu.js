@@ -116,7 +116,6 @@ function ClickShowHideMenu(params) {
 				elem.className = 'box1-open-hover';
 			}
 		}
-//		this.save();
     }
 
     this.box2over = function(id, className) {
@@ -132,15 +131,19 @@ function ClickShowHideMenu(params) {
     }
 
     this.show = function(id) {
-		if (document.getElementById(id + "-section"))
-			document.getElementById(id + "-section").style.display = "block";
-		this.appendOpenedSection(id);
+		if ((section = document.getElementById(id + "-section")) !== null
+			&& section.childNodes.length > 1) {
+			section.style.display = "block";
+			this.appendOpenedSection(id);
+		}
     }
 
     this.hide = function(id) {
-		if (document.getElementById(id + "-section"))
-			document.getElementById(id + "-section").style.display = "";
-		this.removeOpenedSection(id);
+		if ((section = document.getElementById(id + "-section")) !== null
+			&& section.childNodes.length > 1) {
+			section.style.display = "";
+			this.removeOpenedSection(id);
+		}
     }
 
     this.save = function() {
