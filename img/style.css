@@ -401,6 +401,10 @@ div.lms-ui-multiselectlayer ul span {
   padding: 0px 0px;
   margin-top: 0;
   margin-bottom: 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .click-menu .box1 {
   background-color: #CEBD9B;

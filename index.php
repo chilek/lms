@@ -222,6 +222,8 @@ $documents_dirs = $plugin_manager->executeHook('documents_dir_initialized', $doc
 
 // Check privileges and execute modules
 if ($AUTH->islogged) {
+	$SMARTY->assign('main_menu_sortable_order', $SESSION->get_persistent_setting('main-menu-order'));
+
 	// Load plugin files and register hook callbacks
 	$plugins = $plugin_manager->getAllPluginInfo(LMSPluginManager::OLD_STYLE);
 	if (!empty($plugins))
