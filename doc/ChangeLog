@@ -113,6 +113,8 @@ version ?.??.?? (????-??-??):
   - allow to limit invoice send by mail count per hour [olimplan/chilan]
   - lms-ui-wysiwyg-editor css class point text areas which should have
     tinymce toggle feature [chilan]
+  - many items can be opened in menu at the same time - phpui.max_opened_menus
+    (default: 3; 0 means unlimited) configuration variable controls this [chilan]
 
 version 1.11.20 (2016-04-19):
 

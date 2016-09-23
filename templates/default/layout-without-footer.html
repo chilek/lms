@@ -64,7 +64,10 @@
                     </tr>
                 </table>
                 <script type="text/javascript">
-                    var clickMenu1 = new ClickShowHideMenu('click-menu1');
+                    var clickMenu1 = new ClickShowHideMenu({
+                    	id: 'click-menu1',
+                    	maxOpened: {intval(ConfigHelper::getConfig('phpui.max_opened_menus', 3))}
+                    });
                     clickMenu1.init();
                 </script>
             </div>
