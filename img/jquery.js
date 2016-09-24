@@ -51,8 +51,7 @@ $(function() {
 	});
 
 	$('[title]').each(function() {
-		$(this).mouseenter(function() {
-			$(this).off('mouseenter');
+		$(this).one('mouseenter', function() {
 			tooltipClass = '';
 			if ($(this).hasClass('alert')) {
 				tooltipClass += ' alert';
