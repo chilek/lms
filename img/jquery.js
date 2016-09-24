@@ -52,30 +52,29 @@ $(function() {
 
 	$('[title]').each(function() {
 		$(this).mouseenter(function() {
-			if ($(this).is('[title]')) {
-				tooltipClass = '';
-				if ($(this).hasClass('alert')) {
-					tooltipClass += ' alert';
-					if ($(this).hasClass('bold'))
-						tooltipClass += ' bold';
-				} else if ($(this).hasClass('bold'))
-					tooltipClass += 'bold';
+			$(this).off('mouseenter');
+			tooltipClass = '';
+			if ($(this).hasClass('alert')) {
+				tooltipClass += ' alert';
+				if ($(this).hasClass('bold'))
+					tooltipClass += ' bold';
+			} else if ($(this).hasClass('bold'))
+				tooltipClass += 'bold';
 
-				var title = $(this).attr('title');
-				$(this).attr('data-tooltip', title).removeAttr('title');
-				$(this).tooltip({
-					items: '[data-tooltip]',
-					content: title,
-					show: { delay: 500 },
-					track: true,
-					classes: {
-						'ui-tooltip': tooltipClass
-					},
-					create: function() {
-						$(this).tooltip('open');
-					}
-				});
-			}
+			var title = $(this).attr('title');
+			$(this).attr('data-tooltip', title).removeAttr('title');
+			$(this).tooltip({
+				items: '[data-tooltip]',
+				content: title,
+				show: { delay: 500 },
+				track: true,
+				classes: {
+					'ui-tooltip': tooltipClass
+				},
+				create: function() {
+					$(this).tooltip('open');
+				}
+			});
 		});
 	});
 
