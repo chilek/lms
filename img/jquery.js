@@ -5,8 +5,9 @@ function savePersistentSettings(data) {
 		data: data,
 		dataType: 'json',
 		error: function(jqXHR, textStatus, errorThrown) {
-			if (errorThrown != 'abort')
+			if (errorThrown != 'abort') {
 				alert(lmsMessages.persistentSettingSaveError + ' ' + errorThrown);
+			}
 		}
 	});
 }
@@ -55,10 +56,12 @@ $(function() {
 			tooltipClass = '';
 			if ($(this).hasClass('alert')) {
 				tooltipClass += ' alert';
-				if ($(this).hasClass('bold'))
+				if ($(this).hasClass('bold')) {
 					tooltipClass += ' bold';
-			} else if ($(this).hasClass('bold'))
+				}
+			} else if ($(this).hasClass('bold')) {
 				tooltipClass += 'bold';
+			}
 
 			var title = $(this).attr('title');
 			$(this).attr('data-tooltip', title).removeAttr('title');
@@ -126,14 +129,14 @@ $(function() {
 			$(this).tooltip('disable');
 			dialog.html('<img src="' + url + '" style="width: 100%;">');
 		} else if ($(this).hasClass('documentview-audio')) {
-			dialog.html('<audio src="' + url + '" style="width: 100%;" controls preload="none">'
-				+ lmsMessages.noAudioSupport + '</audio>');
+			dialog.html('<audio src="' + url + '" style="width: 100%;" controls preload="none">' +
+				lmsMessages.noAudioSupport + '</audio>');
 			var audioelem = dialog.find('audio').get(0);
 			audioelem.currentTime = 0;
 			audioelem.play();
 		} else if ($(this).hasClass('documentview-video')) {
-			dialog.html('<video src="' + url + '" style="width: 100%;" controls preload="none">'
-				+ lmsMessages.noVideoSupport + '</video>');
+			dialog.html('<video src="' + url + '" style="width: 100%;" controls preload="none">' +
+				lmsMessages.noVideoSupport + '</video>');
 			var videoelem = dialog.find('video').get(0);
 			videoelem.currentTime = 0;
 			videoelem.play();
@@ -152,8 +155,8 @@ $(function() {
 		dialogClass: 'documentviewdialog',
 		open: function(event, ui) {
 			var elem = $('#' + $(this).attr('id').replace(/dialog/, ''));
-			$(this).dialog('option', 'position', elem.hasClass('documentview-audio')
-				? { my: 'center', at: 'center', of: window } : { my: 'top', at: 'top', of: window })
+			$(this).dialog('option', 'position', elem.hasClass('documentview-audio') ?
+				{ my: 'center', at: 'center', of: window } : { my: 'top', at: 'top', of: window })
 				.dialog('option', 'width', '70%');
 			$('.ui-widget-overlay').bind('click', function() {
 				$(this).siblings('.ui-dialog').find('.ui-dialog-content')
@@ -162,12 +165,13 @@ $(function() {
 		},
 		close: function(event, ui) {
 			var elem = $('#' + $(this).attr('id').replace(/dialog/, ''));
-			if (elem.hasClass('documentview-image'))
+			if (elem.hasClass('documentview-image')) {
 				elem.tooltip('enable');
-			else if (elem.hasClass('documentview-audio'))
+			} else if (elem.hasClass('documentview-audio')) {
 				$(this).find('audio').get(0).pause();
-			else if (elem.hasClass('documentview-video'))
+			} else if (elem.hasClass('documentview-video')) {
 				$(this).find('video').get(0).pause();
+			}
 		}
 	})
 //		.on('click', function() {
@@ -183,14 +187,15 @@ $(function() {
 	});
 
 	var tbodies = $('tbody.lms-ui-multi-check');
-	$.each(tbodies, function(index, tbody) {
-		var tbody = $(tbody);
+	$.each(tbodies, function(index, elem) {
+		var tbody = $(elem);
 		var checkboxes = tbody.parent().find(':checkbox');
 		var allcheckboxes = checkboxes.filter('.lms-ui-multi-check');
 
 		var checkall = checkboxes.filter('.lms-ui-multi-check-all');
-		if (!checkall.length)
+		if (!checkall.length) {
 			checkall = tbody.siblings('tfoot').filter('.lms-ui-multi-check-all');
+		}
 		if (checkall.length) {
 			checkall.parent().addClass('lms-ui-multi-check-all');
 			checkall.click(function(e) {
@@ -199,8 +204,9 @@ $(function() {
 				});
 			});
 			checkall = checkall.get(0);
-		} else
+		} else {
 			checkall = null;
+		}
 
 		function checkElements(checkbox) {
 			var i = allcheckboxes.index(allcheckboxes.filter('[data-prev-checked]')),
@@ -209,27 +215,30 @@ $(function() {
 				var checked = $(allcheckboxes[i]).attr('data-prev-checked') == 'true' ? true : false;
 				var start = Math.min(i, j);
 				var stop = Math.max(i, j);
-				for (i = start; i <= stop; i++)
+				for (i = start; i <= stop; i++) {
 					allcheckboxes[i].checked = checked;
+				}
 				updateCheckAll();
 			}
 		}
 
 		function updateCheckAll() {
-			if (checkall)
-				if (allcheckboxes.filter(':checked').length == allcheckboxes.length)
+			if (checkall) {
+				if (allcheckboxes.filter(':checked').length == allcheckboxes.length) {
 					checkall.checked = true;
-				else if (allcheckboxes.filter(':not(:checked)').length == allcheckboxes.length)
+				} else if (allcheckboxes.filter(':not(:checked)').length == allcheckboxes.length) {
 					checkall.checked = false;
+				}
+			}
 		}
 
-		$.each(allcheckboxes, function(index, checkbox) {
-			var checkbox = $(checkbox)[0];
+		$.each(allcheckboxes, function(index, elem) {
+			var checkbox = $(elem)[0];
 			var row = $(checkbox.closest('tr'));
 			row.click(function(e) {
-				if (e.shiftKey)
+				if (e.shiftKey) {
 					checkElements(checkbox);
-				else {
+			} 	else {
 					checkbox.checked = !checkbox.checked;
 					allcheckboxes.filter('[data-prev-checked]').removeAttr('data-prev-checked');
 					$(checkbox).attr('data-prev-checked', checkbox.checked);
@@ -237,9 +246,9 @@ $(function() {
 				}
 			});
 			row.find(':checkbox').click(function(e) {
-				if (e.shiftKey)
+				if (e.shiftKey) {
 					checkElements(this);
-				else {
+				} else {
 					allcheckboxes.filter('[data-prev-checked]').removeAttr('data-prev-checked');
 					$(this).attr('data-prev-checked', this.checked);
 					updateCheckAll();
@@ -256,8 +265,9 @@ $(function() {
 	var dataTablesToInitiate = 0;
 	dataTables.each(function() {
 		var trStyle = $(this).closest('tr').attr('style');
-		if (trStyle === undefined || !trStyle.match(/display:\s*none/))
+		if (trStyle === undefined || !trStyle.match(/display:\s*none/)) {
 			dataTablesToInitiate++;
+		}
 	});
 
 	function initDataTable(elem) {
@@ -269,8 +279,8 @@ $(function() {
 		if (columnSearch) {
 			var tr = $('thead tr', elem).clone();
 			tr.appendTo($('thead', elem)).find('th').each(function(key, th) {
-				$(th).html((searchable = $(th).attr('data-searchable')) === undefined
-					|| searchable == 'true' ? '<input type="search" placeholder="' + lmsMessages.search + '">' : '');
+				$(th).html((searchable = $(th).attr('data-searchable')) === undefined ||
+					searchable == 'true' ? '<input type="search" placeholder="' + lmsMessages.search + '">' : '');
 			});
 			$('thead input', elem).on('keyup change search', function() {
 				$(elem).DataTable().column($(this).parent().index() + ':visible')
@@ -281,23 +291,25 @@ $(function() {
 		$(elem).on('init.dt', function(e, settings) {
 			var api = new $.fn.dataTable.Api(settings);
 			var state = api.state.loaded();
-			if (state && columnSearch)
+			if (state && columnSearch) {
 				$('thead input[type="search"]', elem).each(function(index, input) {
 					var column = $(input).parent().index();
 					$(input).attr('value', state.columns[column].search.search);
 				});
+			}
 
 			if (columnToggle) {
 				var toggle = $(elem).siblings('div.top').find('div.lms-ui-datatable-column-toggle');
-				var content = '<form name="' + $(elem).attr('id') + '" class="column-toggle">'
-					+ '<select class="column-toggle" class="lms-ui-multiselect" name="'
-					+ $(elem).attr('id') + '-column-toggle[]" multiple'
-					+ ' title="' + lmsMessages.columnVisibility + '">';
+				var content = '<form name="' + $(elem).attr('id') + '" class="column-toggle">' +
+					'<select class="column-toggle" class="lms-ui-multiselect" name="' +
+					$(elem).attr('id') + '-column-toggle[]" multiple' +
+					' title="' + lmsMessages.columnVisibility + '">';
 				api.columns().every(function(index) {
 					var text = $(this.header()).text().trim();
-					if (text.indexOf(':') > 0)
-						content += '<option value="' + index + '"'
-							+ (!state || state.columns[index].visible ? ' selected' : '') + '>' + text.replace(':', '') + '</option>';
+					if (text.indexOf(':') > 0) {
+						content += '<option value="' + index + '"' +
+							(!state || state.columns[index].visible ? ' selected' : '') + '>' + text.replace(':', '') + '</option>';
+					}
 				});
 				content += '</select></form>';
 				toggle.html(content);
@@ -316,8 +328,9 @@ $(function() {
 			var clearSettings = $(elem).siblings('div.top').find('div.lms-ui-datatable-clear-settings');
 			clearSettings.html('<img src="img/delete.gif" title="' + lmsMessages.clearSettings + '">');
 			clearSettings.click(function() {
-				if (state)
+				if (state) {
 					api.state.clear();
+				}
 				api.columns().every(function() {
 					this.visible(true);
 				});
@@ -331,16 +344,18 @@ $(function() {
 					.find(':checkbox').prop('checked', true);
 
 				var pageLen = $(elem).attr('data-page-length');
-				if (pageLen !== undefined)
+				if (pageLen !== undefined) {
 					api.page.len(pageLen);
-				else
+				} else {
 					api.page.len(10);
+				}
 
 				var order = $(elem).attr('data-order');
-				if (order !== undefined)
+				if (order !== undefined) {
 					api.order(JSON.parse(order));
-				else
+				} else {
 					api.order([[0, 'asc']]);
+				}
 				api.search('');
 
 				api.draw('full-hold');
@@ -388,23 +403,28 @@ $(function() {
 	dataTables.each(function() {
 		var init = {};
 		init.displayStart = $(this).attr('data-display-start');
-		if (init.displayStart === undefined)
+		if (init.displayStart === undefined) {
 			init.displayStart = 0;
+		}
 		init.stateSave = $(this).attr('data-state-save');
-		if (init.stateSave === undefined)
+		if (init.stateSave === undefined) {
 			init.stateSave = false;
+		}
 		init.ordering = $(this).attr('data-ordering');
-		if (init.ordering === undefined)
+		if (init.ordering === undefined) {
 			init.ordering = true;
+		}
 		init.orderCellsTop = $(this).attr('data-searching');
-		if (init.orderCellsTop === undefined)
+		if (init.orderCellsTop === undefined) {
 			init.orderCellsTop = true;
+		}
 		init.dom = '<"top"<"lms-ui-datatable-toolbar"<"lms-ui-datatable-clear-settings"><"lms-ui-datatable-column-toggle">l>pf>rt<"bottom"i><"clear">';
 		$(this).data('init', init);
 
 		var trStyle = $(this).closest('tr').attr('style');
-		if (trStyle !== undefined && trStyle.match(/display:\s*none/))
+		if (trStyle !== undefined && trStyle.match(/display:\s*none/)) {
 			return;
+		}
 
 		initDataTable(this);
 	});
@@ -415,8 +435,9 @@ $(function() {
 			var elemid = $(this).attr('data-lmsbox-content');
 			showOrHide(elemid);
 			$('#' + elemid).find('.lms-ui-datatable').each(function() {
-				if (!$.fn.dataTable.isDataTable(this))
+				if (!$.fn.dataTable.isDataTable(this)) {
 					initDataTable(this);
+				}
 			});
 		});
 		$(this).find('td a,td :input').click(function(e) {
@@ -429,8 +450,9 @@ $(function() {
 			var checked = true;
 			$.each($(this).find(':checkbox'), function(key, value) {
 				var elem = $(value)[0];
-				if (!key)
+				if (!key) {
 					checked = !elem.checked;
+				}
 				elem.checked = checked;
 			});
 		});
@@ -464,11 +486,13 @@ $(function() {
 					var selected = $(rows[i]).attr('data-prev-selected') == 'true' ? true : false;
 					var start = Math.min(i, j);
 					var stop = Math.max(i, j);
-					for (i = start; i <= stop; i++)
-						if (selected)
+					for (i = start; i <= stop; i++) {
+						if (selected) {
 							$(rows[i]).addClass('ui-selecting');
-						else
+						} else {
 							$(rows[i]).removeClass('ui-selected');
+						}
+					}
 				}
 			} else {
 				$(this).siblings('tr[data-prev-selected]').removeAttr('data-prev-selected');
@@ -482,10 +506,11 @@ $(function() {
 				}
 			}
 		} else {
-			if ($(this).hasClass('ui-selected'))
+			if ($(this).hasClass('ui-selected')) {
 				$(this).removeClass('ui-selected');
-			else
+			} else {
 				$(this).addClass('ui-selecting');
+			}
 		}
 		$(this).parents('table.lms-ui-selectable-draggable').data('ui-selectable')._mouseStop(null);
 	}
@@ -496,9 +521,9 @@ $(function() {
 		revertDuration: 300,
 		helper: function() {
 			var table = $(this).parents('table.lms-ui-selectable-draggable');
-			if (!table.find('tr.ui-selected').length)
+			if (!table.find('tr.ui-selected').length) {
 				$(this).addClass('ui-selected');
-			else if (!$(this).hasClass('ui-selected')) {
+			} else if (!$(this).hasClass('ui-selected')) {
 				table.find('tr').removeClass('ui-selected');
 				$(this).addClass('ui-selected');
 			}
@@ -556,8 +581,9 @@ $(function() {
 				} else {
 					var selected = ui.draggable.parent().find('.ui-selected');
 					var handled = table.triggerHandler('lmsdrop', [ selected ]);
-					if (handled === true)
+					if (handled === true) {
 						selected.toggle().appendTo($(this));
+					}
 				}
 			}
 		}
@@ -602,10 +628,11 @@ $(function() {
 
 		editors.each(function() {
 			function toggle_visual_editor(id) {
-				if (tinyMCE.get(id))
+				if (tinyMCE.get(id)) {
 					tinyMCE.execCommand('mceToggleEditor', false, id);
-				else
+				} else {
 					tinyMCE.execCommand('mceAddControl', true, id);
+				}
 			}
 
 			var parent = $(this).parent();
@@ -613,15 +640,16 @@ $(function() {
 			var wysiwyg = $(this).attr('data-wysiwyg');
 			wysiwyg = (wysiwyg !== undefined && wysiwyg == '1') || (wysiwyg === undefined && lmsSettings.wysiwygEditor);
 			var textarea = parent.html();
-			if ($(this).attr('name').match(/^([^\[]+)(\[[^\[]+\])$/i))
+			if ($(this).attr('name').match(/^([^\[]+)(\[[^\[]+\])$/i)) {
 				inputname = RegExp.$1 + '[wysiwyg]' + RegExp.$2;
-			else
+			} else {
 				inputname = $(this).closest('form').attr('name') + '[wysiwyg]';
-			$(this).replaceWith($('<TABLE/>').addClass('lmsbox-inner').html('<TBODY><TR><TD>'
-				+ '<label><input type="checkbox" name="' + inputname + '" value="1"' + (wysiwyg ? ' checked' : '') + '>'
-				+ lmsMessages.visualEditor + '</label></TD></TR>'
-				+ '<TR><TD>' + textarea + '</TD></TR>'
-				+ '</TBODY>'));
+			}
+			$(this).replaceWith($('<TABLE/>').addClass('lmsbox-inner').html('<TBODY><TR><TD>' +
+				'<label><input type="checkbox" name="' + inputname + '" value="1"' + (wysiwyg ? ' checked' : '') + '>' +
+				lmsMessages.visualEditor + '</label></TD></TR>' +
+				'<TR><TD>' + textarea + '</TD></TR>' +
+				'</TBODY>'));
 			$('[name="' + inputname + '"]:checkbox', parent).click(function() {
 				toggle_visual_editor(textareaid);
 			});
@@ -639,10 +667,12 @@ $(function() {
 });
 
 function restoreSortable(sortable, value) {
-	if (typeof(value) != 'string' || !value.length || value == 'null')
+	if (typeof value != 'string' || !value.length || value == 'null') {
 		return;
+	}
 	$.each(value.split(';'), function(key, value) {
-		if (value.length && value.match(/^[a-z0-9-]+$/i))
+		if (value.length && value.match(/^[a-z0-9\-]+$/i)) {
 			$('#' + value).appendTo('#' + sortable);
+		}
 	});
 }
