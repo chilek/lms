@@ -264,34 +264,13 @@ $(function() {
 
 	function initDataTable(elem) {
 		var init = $(elem).data('init');
-		$(elem).DataTable({
-//			language: {
-//				url: "img/jquery-datatables-i18n/" + lmsSettings.language + ".json"
-//			},
-			language: dataTablesLanguage,
-			initComplete: function(settings, json) {
-				$(elem).show();
-			},
-			dom: init.dom,
-			stripeClasses: [],
-			//deferRender: true,
-			processing: true,
-			stateDuration: lmsSettings.settingsTimeout,
-			lengthMenu: [[ 10, 25, 50, 100, -1 ], [ 10, 25, 50, 100, lmsMessages.all ]],
-			displayStart: init.displayStart,
-			stateSave: init.stateSave,
-			ordering: init.ordering,
-			orderCellsTop: init.orderCellsTop
-		})
-		.on('mouseenter', 'tbody > tr', function() {
-			$(this).siblings('tr').removeClass('highlight');
-			$(this).addClass('highlight');
-		});
+
 		var columnSearch = $(elem).hasClass('lms-ui-datatable-column-search');
 		var columnToggle = $(elem).hasClass('lms-ui-datatable-column-toggle');
+
 		if (columnSearch) {
 			var tr = $('thead tr', elem).clone();
-			$('thead', elem).append(tr).find('th').each(function(key, th) {
+			tr.appendTo($('thead', elem)).find('th').each(function(key, th) {
 				$(th).html((searchable = $(th).attr('data-searchable')) === undefined
 					|| searchable == 'true' ? '<input type="search" placeholder="' + lmsMessages.search + '">' : '');
 			});
@@ -300,7 +279,8 @@ $(function() {
 					.search(this.value).draw();
 			});
 		}
-		$(this).on('init.dt', function(e, settings) {
+
+		$(elem).on('init.dt', function(e, settings) {
 			var api = new $.fn.dataTable.Api(settings);
 			var state = api.state.loaded();
 			if (state && columnSearch)
@@ -308,11 +288,8 @@ $(function() {
 					var column = $(input).parent().index();
 					$(input).attr('value', state.columns[column].search.search);
 				});
+
 			if (columnToggle) {
-				if (state)
-					$('thead tr:last-child th', elem).each(function(index, th) {
-						$(th).css('display', state.columns[index].visible ? '' : 'none');
-					});
 				var toggle = $(elem).siblings('div.top').find('div.lms-ui-datatable-column-toggle');
 				var content = '<form name="' + $(elem).attr('id') + '" class="column-toggle">'
 					+ '<select class="column-toggle" class="lms-ui-multiselect" name="'
@@ -334,22 +311,23 @@ $(function() {
 					type: 'tiny'
 				});
 				toggle.find('#' + multiselectId).on('itemclick', function(e, data) {
-					$(elem).find('thead tr:last-child th:nth-child(' + (parseInt(data.index) + 1) + ')').toggle();
 					api.column(data.index).visible(data.checked);
 				});
 			}
+
 			var clearSettings = $(elem).siblings('div.top').find('div.lms-ui-datatable-clear-settings');
 			clearSettings.html('<img src="img/delete.gif" title="' + lmsMessages.clearSettings + '">');
 			clearSettings.click(function() {
 				if (state)
 					api.state.clear();
+				api.columns().every(function() {
+					this.visible(true);
+				});
 				$('thead tr:last-child th', elem).each(function(index, th) {
 					if ($('input[type="search"]', th).length) {
 						$('input[type="search"]', th).val('');
 						api.column(index).search('');
 					}
-					$(th).show();
-					api.column(index).visible(true);
 				});
 				$(elem).parent().find('div.lms-ui-multiselectlayer li:not(.selected)').addClass('selected')
 					.find(':checkbox').prop('checked', true);
@@ -382,6 +360,31 @@ $(function() {
 				}
 			}
 		});
+
+		$(elem).DataTable({
+//			language: {
+//				url: "img/jquery-datatables-i18n/" + lmsSettings.language + ".json"
+//			},
+			language: dataTablesLanguage,
+			initComplete: function(settings, json) {
+				$(elem).show();
+			},
+			dom: init.dom,
+			stripeClasses: [],
+			//deferRender: true,
+			processing: true,
+			stateDuration: lmsSettings.settingsTimeout,
+			lengthMenu: [[ 10, 25, 50, 100, -1 ], [ 10, 25, 50, 100, lmsMessages.all ]],
+			displayStart: init.displayStart,
+			stateSave: init.stateSave,
+			ordering: init.ordering,
+			orderCellsTop: init.orderCellsTop
+		})
+		.on('mouseenter', 'tbody > tr', function() {
+			$(this).siblings('tr').removeClass('highlight');
+			$(this).addClass('highlight');
+		});
+
 	}
 
 	dataTables.each(function() {
