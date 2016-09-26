@@ -3442,5 +3442,6 @@ $_LANG['Clear settings'] = 'Skasuj ustawienia';
 $_LANG['AJAX: Error during persistent setting save on server:'] = 'AJAX: Błąd podczas zapisu trwałego ustawienia na serwerze:';
 
 $_LANG['Enter street'] = 'Podaj ulicę';
+$_LANG['- any -'] = '- dowolne -';
 
 ?>

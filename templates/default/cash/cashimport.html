@@ -225,11 +225,17 @@
 				</COLGROUP>
 				<THEAD>
 				<TR>
-					<TH class="bold nobr">{trans("Date:")}</TD>
-					<TH class="text-left nobr">{trans("Filename:")}</TD>
-					<TH class="text-center nobr" data-searchable="false">{trans("User:")}</TD>
-					<TH class="text-center nobr" data-searchable="false">{trans("Records:")}</TD>
-					<TH data-orderable="false" data-searchable="false">&nbsp;</TD>
+					<TH class="bold nobr">{trans("Date:")}</TH>
+					<TH class="text-left nobr">{trans("Filename:")}</TH>
+					{$users = array()}
+					{foreach $sourcefiles as $item}
+					{$users[$item.username] = true}
+					{/foreach}
+					{$users = array_keys($users)}
+					{sort($users)}
+					<TH class="text-center nobr" {if empty($users)}data-searchable="false"{else}data-searchable="true" data-search-values="{implode(";", $users)}"{/if}>{trans("User:")}</TH>
+					<TH class="text-center nobr" data-searchable="false">{trans("Records:")}</TH>
+					<TH data-orderable="false" data-searchable="false">&nbsp;</TH>
 				</TR>
 				</THEAD>
 				<TBODY>

@@ -279,12 +279,36 @@ $(function() {
 		if (columnSearch) {
 			var tr = $('thead tr', elem).clone();
 			tr.appendTo($('thead', elem)).find('th').each(function(key, th) {
-				$(th).html((searchable = $(th).attr('data-searchable')) === undefined ||
-					searchable == 'true' ? '<input type="search" placeholder="' + lmsMessages.search + '">' : '');
+				var content = '';
+				if ((searchable = $(th).attr('data-searchable')) === undefined ||
+					searchable == 'true') {
+					if ((searchValues = $(th).attr('data-search-values')) !== undefined) {
+						if (searchValues.length) {
+							content = '<select><option value="">'  + lmsMessages.selectionAny + '</option>';
+							searchValues.split(';').forEach(function(value, index) {
+								content += '<option value="' + value + '">' + value + '</option>';
+							});
+							content += '</select>';
+						}
+					} else {
+						content = '<input type="search" placeholder="' + lmsMessages.search + '">';
+					}
+				} else {
+					content = '';
+				}
+				$(th).html(content);
 			});
 			$('thead input', elem).on('keyup change search', function() {
 				$(elem).DataTable().column($(this).parent().index() + ':visible')
 					.search(this.value).draw();
+			});
+			$('thead select', elem).on('change', function() {
+				var value = this.value;
+				if (value.length) {
+					console.log(value);
+				}
+				$(elem).DataTable().column($(this).parent().index() + ':visible')
+					.search(value).draw();
 			});
 		}
 
@@ -295,6 +319,10 @@ $(function() {
 				$('thead input[type="search"]', elem).each(function(index, input) {
 					var column = $(input).parent().index();
 					$(input).attr('value', state.columns[column].search.search);
+				});
+				$('thead select', elem).each(function(index, select) {
+					var column = $(select).parent().index();
+					$(select).val(state.columns[column].search.search);
 				});
 			}
 
@@ -337,6 +365,9 @@ $(function() {
 				$('thead tr:last-child th', elem).each(function(index, th) {
 					if ($('input[type="search"]', th).length) {
 						$('input[type="search"]', th).val('');
+						api.column(index).search('');
+					} else if ($('select', th).length) {
+						$('select', th).prop('selectedIndex', 0);
 						api.column(index).search('');
 					}
 				});
