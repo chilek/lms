@@ -282,14 +282,20 @@ $(function() {
 				var content = '';
 				if ((searchable = $(th).attr('data-searchable')) === undefined ||
 					searchable == 'true') {
-					if ((searchValues = $(th).attr('data-search-values')) !== undefined) {
-						if (searchValues.length) {
-							content = '<select><option value="">'  + lmsMessages.selectionAny + '</option>';
-							searchValues.split(';').sort().forEach(function(value, index) {
-								content += '<option value="' + value + '">' + value + '</option>';
-							});
-							content += '</select>';
-						}
+					if ((selectValue = $(th).attr('data-select-value')) !== undefined &&
+						selectValue == 'true') {
+						var selectValues = [];
+						tr.parent().siblings('tbody').children('tr').each(function(index, row) {
+							value = $($('td', row)[key]).html();
+							if (selectValues.indexOf(value) == -1) {
+								selectValues.push(value);
+							}
+						});
+						content = '<select><option value="">'  + lmsMessages.selectionAny + '</option>';
+						selectValues.sort().forEach(function(value, index) {
+							content += '<option value="' + value + '">' + value + '</option>';
+						});
+						content += '</select>';
 					} else {
 						content = '<input type="search" placeholder="' + lmsMessages.search + '">';
 					}
@@ -304,9 +310,6 @@ $(function() {
 			});
 			$('thead select', elem).on('change', function() {
 				var value = this.value;
-				if (value.length) {
-					console.log(value);
-				}
 				$(elem).DataTable().column($(this).parent().index() + ':visible')
 					.search(value).draw();
 			});
@@ -630,7 +633,6 @@ $(function() {
 					}
 				});
 				ed.onInit.add(function(ed) {
-					console.log(elementsToInitiate);
 					if (elementsToInitiate > 0) {
 						elementsToInitiate--;
 						if (!elementsToInitiate) {
