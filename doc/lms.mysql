@@ -176,10 +176,9 @@ CREATE TABLE users (
   access tinyint(1) NOT NULL DEFAULT '1',
   accessfrom int(11) NOT NULL DEFAULT '0',
   accessto int(11) NOT NULL DEFAULT '0',
-  swekey_id varchar(32) NULL DEFAULT NULL,
   settings mediumtext NOT NULL DEFAULT '',
   PRIMARY KEY  (id),
-  UNIQUE KEY login (login, swekey_id)
+  UNIQUE KEY login (login)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------

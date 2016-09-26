@@ -56,9 +56,6 @@
 			{$userslist[userslist].lastloginip} {if $userslist[userslist].lastloginip != $userslist[userslist].lastloginhost}({$userslist[userslist].lastloginhost}){/if}
 		</TD>
 		<TD class="text-right nobr">
-			{if $userslist[userslist].swekey_id}
-			<img src="img/swekey/swekey-green-8x16.png" alt="{trans("Use Swekey")}" title="{trans("Use Swekey")}">&nbsp;
-			{/if}
 			{if $layout.logid ne $userslist[userslist].id}
 			    {if !$userslist[userslist].access}
 				<a href="?m=useraccess&amp;id={$userslist[userslist].id}&amp;access=1"><img src="img/noaccess.gif" alt="[ {trans('Connect')} ]" title="[ {trans('Connect')} ]"></a>
