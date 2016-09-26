@@ -29,10 +29,9 @@ CREATE TABLE users (
 	access smallint DEFAULT 1 NOT NULL,
 	accessfrom integer DEFAULT 0 NOT NULL,
 	accessto integer DEFAULT 0 NOT NULL,
-	swekey_id varchar(32) DEFAULT NULL,
 	settings text NOT NULL DEFAULT '',
 	PRIMARY KEY (id),
-	UNIQUE (login, swekey_id)
+	UNIQUE (login)
 );
 
 /* --------------------------------------------------------

@@ -116,6 +116,7 @@ version ?.??.?? (????-??-??):
   - many items can be opened in menu at the same time - phpui.max_opened_menus
     (default: 3; 0 means unlimited) configuration variable controls this [chilan]
   - main menu items are sortable by draging menu icon and dropping it in another place [chilan]
+  - removed support for swekey [prezes_kk]
 
 version 1.11.20 (2016-04-19):
 

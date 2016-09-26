@@ -155,14 +155,6 @@ $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
 $SMARTY->setPluginManager($plugin_manager);
 
-// Initialize Swekey class
-
-if (ConfigHelper::checkConfig('phpui.use_swekey')) {
-	require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'swekey' . DIRECTORY_SEPARATOR . 'lms_integration.php');
-	$LMS_SWEKEY = new LmsSwekeyIntegration($DB, $AUTH, $LMS);
-	$SMARTY->assign('lms_swekey', $LMS_SWEKEY->GetIntegrationScript($AUTH->id));
-}
-
 // Set some template and layout variables
 
 $SMARTY->setTemplateDir(null);

@@ -37,8 +37,6 @@ class Auth {
 	public $access = FALSE;
 	public $accessfrom = FALSE;
 	public $accessto = FALSE;
-	public $swekeyauthenticated = FALSE;
-	public $swekeyid;
 	public $last;
 	public $ip;
 	public $lastip;
@@ -248,7 +246,7 @@ class Auth {
 		$this->islogged = false;
 
 		if ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, lastlogindate, lastloginip, 
-			passwdexpiration, passwdlastchange, access, accessfrom, accessto, swekey_id
+			passwdexpiration, passwdlastchange, access, accessfrom, accessto
 			FROM users WHERE login=? AND deleted=0', array($this->login)))
 		{
 			$this->logname = $user['name'];
@@ -257,7 +255,6 @@ class Auth {
 			$this->lastip = $user['lastloginip'];
 			$this->passwdexpiration = $user['passwdexpiration'];
 			$this->passwdlastchange = $user['passwdlastchange'];
-			$this->swekeyid = $user['swekey_id'];
 
 			$this->passverified = $this->VerifyPassword($user['passwd']);
 			$this->hostverified = $this->VerifyHost($user['hosts']);
@@ -265,17 +262,6 @@ class Auth {
 			$this->accessfrom = $this->VerifyAccessFrom($user['accessfrom']);
 			$this->accessto = $this->VerifyAccessTo($user['accessto']);
 			$this->islogged = ($this->passverified && $this->hostverified && $this->access && $this->accessfrom && $this->accessto);
-
-			if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.use_swekey', false))) {
-				require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'swekey' . DIRECTORY_SEPARATOR . 'swekey_integration.php');
-				$SWEKEY = new SwekeyIntegration;
-				$this->swekeyauthenticated = $SWEKEY->IsSwekeyAuthenticated($this->swekeyid);
-				if (!$this->swekeyauthenticated && $this->swekeyid) {
-					$this->error = trans('You must login with your Swekey');
-					$this->islogged = false;
-					$SWEKEY->DestroySession();
-				}
-			}
 
 			if ($this->islogged && $this->passwdexpiration
 				&& (time() - $this->passwdlastchange) / 86400 >= $user['passwdexpiration'])

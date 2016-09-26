@@ -10,7 +10,6 @@ index.php                       /usr/share/lms/
 lib/locale                      /usr/share/lms/lib/
 lib/plugins                     /usr/share/lms/lib/
 lib/SmartyPlugins               /usr/share/lms/lib/
-lib/swekey                      /usr/share/lms/lib/
 lib/tcpdf                       /usr/share/lms/lib/
 lib/upgradedb                   /usr/share/lms/lib/
 lib/LMSConfig                   /usr/share/lms/lib/
