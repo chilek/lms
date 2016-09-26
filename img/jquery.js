@@ -270,9 +270,6 @@ $(function() {
 		}
 	});
 
-	var editors = $('textarea.lms-ui-wysiwyg-editor');
-	elementsToInitiate += editors.length;
-
 	function initDataTable(elem) {
 		var init = $(elem).data('init');
 
@@ -592,6 +589,7 @@ $(function() {
 		}
 	});
 
+	var editors = $('textarea.lms-ui-wysiwyg-editor');
 	if (editors.length) {
 		tinyMCE.init({
 			setup : function(ed) {
@@ -601,6 +599,7 @@ $(function() {
 					}
 				});
 				ed.onInit.add(function(ed) {
+					console.log(elementsToInitiate);
 					if (elementsToInitiate > 0) {
 						elementsToInitiate--;
 						if (!elementsToInitiate) {
@@ -655,6 +654,7 @@ $(function() {
 				toggle_visual_editor(textareaid);
 			});
 			if (wysiwyg) {
+				elementsToInitiate++;
 				toggle_visual_editor(textareaid);
 			}
 		});
