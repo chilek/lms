@@ -731,7 +731,7 @@ td.multiselect select {
   writing-mode: lr-tb;
 }
 .ui-widget.ui-widget-content {
-  border: 1px solid #ae9d7b;
+  border: 1px solid #615847;
 }
 .ui-state-default,
 .ui-widget-content .ui-state-default,
@@ -739,7 +739,7 @@ td.multiselect select {
 .ui-button,
 html .ui-button.ui-state-disabled:hover,
 html .ui-button.ui-state-disabled:active {
-  border: 1px solid #ae9d7b;
+  border: 1px solid #615847;
   background-color: #dfd5bd;
 }
 .ui-state-hover,
@@ -750,7 +750,11 @@ html .ui-button.ui-state-disabled:active {
 .ui-widget-header .ui-state-focus,
 .ui-button:hover,
 .ui-button:focus {
-  background-color: #efe5cd;
+  box-shadow: inset 1px 1px 3px 0px rgba(0,0,0,0.6);
+  background-color: #dfd5bd;
+  border: 1px solid #615847;
+  outline: none;
+  color: black;
 }
 .ui-state-highlight,
 .ui-widget-content .ui-state-highlight,
@@ -760,10 +764,12 @@ html .ui-button.ui-state-disabled:active {
 .ui-state-active,
 .ui-widget-content .ui-state-active,
 .ui-widget-header .ui-state-active,
-a.ui-button:active,
 .ui-button:active,
+.ui-button:focus,
 .ui-button.ui-state-active:hover {
-  background-color: #007fff;
+  box-shadow: inset 1px 1px 4px 0px rgba(0,0,0,0.4);
+  background: #cebd9b;
+  border: 1px solid #615847;
 }
 .ui-dialog {
   background-color: #cebd9b;
@@ -889,6 +895,9 @@ table.dataTable thead tr th {
 table.dataTable thead tr:last-child th {
   border-bottom: 1px solid black;
 }
+.dataTables_wrapper {
+  margin-bottom: 4px;
+}
 .dataTables_wrapper .dataTables_paginate .paginate_button.current,
 .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
   background: linear-gradient(to bottom,#cebd9b 0%,#ae9d7b 100%);
@@ -930,4 +939,28 @@ table.dataTable thead tr:last-child th {
   padding-top: 3px;
   padding-bottom: 3px;
   font-weight: bold;
+}
+.dataTables_wrapper .lmsbox.lms-ui-datatable {
+  border: 1px solid black;
+  border-top: 0;
+  margin-bottom: 0;
+}
+.dataTables_wrapper .top {
+  border: 1px solid black;
+  border-bottom: 0;
+  background-color: #cebd9b;
+}
+.dataTables_wrapper .bottom {
+  background-color: #cebd9b;
+  border: 1px solid black;
+  border-top: 0;
+}
+.lmsbox .dataTables_wrapper {
+  margin-bottom: 0;
+}
+.lmsbox .dataTables_wrapper .bottom, .lmsbox .dataTables_wrapper .top {
+  border: 0;
+}
+.lms-ui-cursor-pointer:hover {
+  cursor: pointer;
 }

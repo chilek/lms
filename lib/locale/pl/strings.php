@@ -64,11 +64,9 @@ $_LANG['Account<!singular:noun>'] = 'Konto';
 $_LANG['Accounts'] = 'Konta';
 $_LANG['Hosting Services Management'] = 'Zarządzanie usługami hostingowymi';
 $_LANG['Number pools management'] = 'Zarządzanie pulami numeracyjnymi';
-$_LANG['Pool start is already in use!'] = 'Początek puli jest obecnie w użyciu!';
-$_LANG['Pool end is already in use!'] = 'Koniec puli jest obecnie w użyciu!';
-$_LANG['Pool start is required!'] = 'Początek puli jest wymagany!';
-$_LANG['Pool end is required!'] = 'Koniec puli jest wymagany!';
-$_LANG['Pool start must be lower that end number!'] = 'Początek puli musi być mniejszy niż numer końcowy!';
+$_LANG['Number coincides with pool `$a` !'] = 'Numer pokrywa się z pulą `$a` !';
+$_LANG['Number range coincides with pool `$a` !'] = 'Zakres numerów pokrywa się z pulą `$a` !';
+$_LANG['Pool start must be lower that end!'] = 'Początek puli musi być mniejszy niż numer końcowy!';
 $_LANG['Name is already in use!'] = 'Nazwa jest obecnie używana!';
 $_LANG['Name is required!'] = 'Nazwa jest wymagana!';
 $_LANG['Incorrect format! Only values 0 to 9.'] = 'Niepoprawny format! Tylko znaki od 0 do 9.';
@@ -148,6 +146,7 @@ $_LANG['AND'] = 'I';
 $_LANG['Answer'] = 'Odpowiedz';
 $_LANG['Approved By'] = 'Zatwierdził';
 $_LANG['Are you sure that you want to logout?'] = 'Czy na pewno chcesz się wylogować?';
+$_LANG['Are you sure that you want to remove'] = 'Czy na pewno chcesz usunąć';
 $_LANG['Are you sure, you want to account ALL debts of customer \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz rozliczyć WSZYSTKIE należności użytkownika \\\'$a\\\'?';
 $_LANG['Are you sure, you want to assign new addresses for all computers? Remember, it can make problems for your network!'] = 'Jesteś pewien, że chcesz przypisać nowe adresy do wszystkich komputerów? Pamiętaj, to może stwarzać problemy w twojej sieci!';
 $_LANG['Are you sure, you want to change network $a to network \'+getText(\'mapto\')+\'?'] = 'Jesteś pewien, że chcesz przeadresować sieć $a do sieci \'+getText(\'mapto\')+\'?';
@@ -3445,6 +3444,7 @@ $_LANG['Tags:'] = 'Etykiety:';
 $_LANG['Select tariff tags'] = 'Wybierz etykiety taryf';
 
 $_LANG['LMS: operation failed!'] = 'LMS: operacja nie powiodła się!';
+$_LANG['Operation failed!'] = 'Operacja nie powiodła się!';
 $_LANG['AJAX: Invalid result - status:'] = 'AJAX: niepoprawny wynik - status:';
 
 ?>

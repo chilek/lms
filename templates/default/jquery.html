@@ -6,6 +6,7 @@
 <script type="text/javascript" src="img/jqueryui/ui/minified/i18n/datepicker-{$language}.js"></script>
 <script type="text/javascript" src="img/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
 <script type="text/javascript" src="img/jquery-datatables/media/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="img/lms-ui-dialog.js"></script>
 <script type="text/javascript">
 <!--
 	$(function() {
@@ -310,9 +311,9 @@
 				init.orderCellsTop = true;
 			if ($(this).hasClass('lms-ui-datatable-column-toggle'))
 				//init.dom = '<"top"l<"column-toggle">pf>rt<"bottom"i><"clear">';
-				init.dom = '<"top"<"length-column-toggle"l<"column-toggle">>pf>rt<"bottom"i><"clear">';
+				init.dom = '<"top"<"length-column-toggle"l<"column-toggle">>pf>tr<"bottom"i><"clear">';
 			else
-				init.dom = '<"top"lpf>rt<"bottom"i><"clear">';
+				init.dom = '<"top"lpf>tr<"bottom"i><"clear">';
 			$(this).data('init', init);
 
 			if ($(this).parents(':hidden').length)
