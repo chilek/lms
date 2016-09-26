@@ -285,7 +285,8 @@ $(function() {
 					if ((searchValues = $(th).attr('data-search-values')) !== undefined) {
 						if (searchValues.length) {
 							content = '<select><option value="">'  + lmsMessages.selectionAny + '</option>';
-							searchValues.split(';').forEach(function(value, index) {
+							searchValues = searchValues.split(';').sort();
+							searchValues.forEach(function(value, index) {
 								content += '<option value="' + value + '">' + value + '</option>';
 							});
 							content += '</select>';
