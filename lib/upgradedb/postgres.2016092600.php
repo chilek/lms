@@ -23,8 +23,8 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE users DROP COLUMN swekey_id;
-	ALTER TABLE users DROP CONSTRAINT users_login_key;
+$this->Execute("
+	ALTER TABLE users DROP COLUMN swekey_id;
 	ALTER TABLE users ADD CONSTRAINT users_login_key UNIQUE (login);
 ");
 
