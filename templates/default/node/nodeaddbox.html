@@ -1,6 +1,6 @@
 <!--// $Id$ //-->
 <script type="text/javascript" src="img/netnodehelper.js"></script>
-<script type="text/javascript" src="https://maps.google.com/maps/api/js?v=3&sensor=false"></script>
+{include file="google-maps.html"}
 <FORM NAME="nodeadd" ID="nodeadd" METHOD="POST" ACTION="?m=nodeadd{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
@@ -229,7 +229,7 @@
 			<IMG SRC="img/info1.gif" ALT="{trans("Description:")}">
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
-			<TEXTAREA NAME="nodedata[info]" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}>{$nodedata.info}</TEXTAREA>
+			<TEXTAREA NAME="nodedata[info]" class="lms-ui-wysiwyg-editor" COLS="50" ROWS="5" {tip text="Enter additional information (optional)"}{if isset($nodedata.wysiwyg.info)} data-wysiwyg="{$nodedata.wysiwyg.info}"{/if}>{$nodedata.info}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR>

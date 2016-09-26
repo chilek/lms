@@ -239,9 +239,9 @@
 			<IMG src="img/money.gif" alt=""> {trans("Tariffs:")}
 		</TD>
 		<TD style="width: 99%;" class="multiselect">
-			<SELECT SIZE="1" name="search[tariffs][]" multiple id="customertariffs">
-				{foreach from=$tariffs item=item}
-				 	<OPTION VALUE="{$item.id}">{$item.name}</OPTION>
+			<SELECT SIZE="1" name="search[tariffs][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- all -")}">
+				{foreach $tariffs as $item}
+				<OPTION VALUE="{$item.id}">{$item.name}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
@@ -375,8 +375,7 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['customersearch'].elements['search[customername]'].focus();
-multiselect('customersearch', 'customertariffs', '{trans("- all -")}', null);
+	document.forms['customersearch'].elements['search[customername]'].focus();
 //-->
 </SCRIPT>
 {/block}

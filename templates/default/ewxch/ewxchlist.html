@@ -71,13 +71,13 @@
 		<TD align="right" onClick="return self.location.href='?m=ewxchinfo&id={$channels[channels].id}'">
 			{$channels[channels].devcnt|default:0}
 			{if $channels[channels].devcnt}
-			<IMG SRC="img/netdev.gif" ALT="" class="netdevlist" data-resourceid="{$channels[channels].id}"></A>
+			<IMG SRC="img/netdev.gif" ALT="" class="lms-ui-tooltip-netdevlist" data-resourceid="{$channels[channels].id}"></A>
 			{/if}
 		</TD>
 		<TD align="right" onClick="return self.location.href='?m=ewxchinfo&id={$channels[channels].id}'">
 			{$channels[channels].nodecnt|default:0}
 			{if $channels[channels].nodecnt}
-			<IMG SRC="img/node.gif" ALT="" class="ewxnodelist" data-resourceid="{$channels[channels].id}"></A>
+			<IMG SRC="img/node.gif" ALT="" class="lms-ui-tooltip-ewxnodelist" data-resourceid="{$channels[channels].id}"></A>
 			{/if}
 		</TD>
 		<TD class="text-right nobr">

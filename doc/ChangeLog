@@ -108,6 +108,16 @@ version ?.??.?? (????-??-??):
     by phpmailer mail.backend) [chilan]
   - allow to switch on column filter and toggle for lms-ui-datatable using
     lms-ui-datatable-column-search and lms-ui-datatable-column-toggle classes respectively [chilan]
+  - introduced persistent settings: tabs order are stored persistently
+    in users.persistentsettings database table [chilan]
+  - allow to limit invoice send by mail count per hour [olimplan/chilan]
+  - lms-ui-wysiwyg-editor css class point text areas which should have
+    tinymce toggle feature [chilan]
+  - many items can be opened in menu at the same time - phpui.max_opened_menus
+    (default: 3; 0 means unlimited) configuration variable controls this [chilan]
+  - main menu items are sortable by draging menu icon and dropping it in another place [chilan]
+  - removed support for swekey [prezes_kk]
+  - datatables column search supports selection lists [chilan]
 
 version 1.11.20 (2016-04-19):
 

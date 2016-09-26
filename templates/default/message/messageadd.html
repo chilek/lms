@@ -3,7 +3,6 @@
 {block name=module_content}
 <!--// $Id$ //-->
 {$xajax}
-<script type="text/javascript" src="img/tinymce3/tiny_mce.js"> </script>
 <H1>{$layout.pagetitle}</H1>
 <FORM name="message" id="message" method="post" action="?m=messageadd" enctype="multipart/form-data">
 <p style="display: none;">
@@ -123,8 +122,8 @@
 
 	function messageTemplateReceived(subjectelem, subject, messageelem, message) {
 		xjx.$(subjectelem).value = subject;
-		if (tinyMCE.get(messageelem) != undefined) {
-			tinyMCE.get(messageelem).setContent(message);
+		if (tinyMCE.editors.length) {
+			tinyMCE.editors[0].setContent(message);
 			xjx.$(messageelem).value = message;
 		} else
 			xjx.$(messageelem).value = message;
@@ -174,10 +173,10 @@
 					</TD>
 					<TD style="width: 1%;" class="nobr">{trans("Group:")}</TD>
 					<TD style="width: 1%;" class="multiselect">
-						<SELECT name="message[customergroup][]" multiple id="customergroups" {tip trigger="customergroup" text="Select customers group"}>
-							{section name="customergroups" loop=$customergroups}
-							<option value="{$customergroups[customergroups].id}"{if $message.customergroup == $customergroups[customergroups].id} selected{/if}>{$customergroups[customergroups].name|truncate:"30":"...":true}</option>
-						{/section}
+						<SELECT name="message[customergroup][]" multiple class="lms-ui-multiselect" {tip trigger="customergroup" text="Select customers group"} data-default-value="{trans("- all groups -")}">
+							{foreach $customergroups as $customergroup}
+							<option value="{$customergroup.id}"{if in_array($customergroup.id, $message.customergroup)} selected{/if}>{$customergroup.name|truncate:"30":"...":true}</option>
+							{/foreach}
 						</SELECT>
 					</TD>
 					<TD style="width: 1%;" class="nobr">{trans("Network:")}</TD>
@@ -320,10 +319,10 @@
 			{trans("Users:")}
 		</TD>
 		<TD style="width: 98%;">
-			<SELECT size="4" name="message[users][]" multiple id="messageusers" {tip text="Select users"}>
-			{foreach $users as $user}
+			<SELECT size="4" name="message[users][]" multiple class="lms-ui-multiselect" {tip text="Select users"} data-default-value="{trans("- none -")}">
+				{foreach $users as $user}
 				<OPTION value="{$user.phone}"{if in_array($user.phone, $message.users)} selected{/if}>{$user.name|truncate:30:"...":true}</OPTION>
-			{/foreach}
+				{/foreach}
 			</select>
 		</TD>
 	</TR>
@@ -375,19 +374,7 @@
 			{trans("Message body:")}
 		</TD>
 		<TD style="width: 98%;">
-			<TABLE class="lmsbox-inner">
-				<TBODY>
-					<TR><TD>
-						<input type="checkbox" id="mailmessage_label" name="message[wysiwyg]" onClick="javascript:toggle_visual_editor('mailmessage');"{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'} checked{/if}>
-						<label for="mailmessage_label">{trans("visual editor")}</label>
-					</TD></TR>
-					<TR><TD>
-						<TEXTAREA name="message[mailbody]" id="mailmessage" cols="80" rows="20" {tip text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="mailbody"}>{$message.body}</TEXTAREA>
-					</TD></TR>
-					<TR><TD>
-					</TD></TR>
-				</TBODY>
-			</TABLE>
+			<TEXTAREA name="message[mailbody]" class="lms-ui-wysiwyg-editor" cols="80" rows="20" {tip text="Use carriage return for indentation only. LMS will reformat paragraphs and break long lines." trigger="mailbody"}{if isset($message.wysiwyg.mailbody)} data-wysiwyg="{$message.wysiwyg.mailbody}"{/if}>{$message.body}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR ID="smsbody"{if $message.type < $smarty.const.MSG_SMS || $message.type > $smarty.const.MSG_ANYSMS} style="display: none"{/if}>
@@ -445,14 +432,6 @@
 <!--
 document.forms['message'].elements['message[sender]'].focus();
 countChars(document.getElementById('smstext'));
-
-multiselect('message', 'messageusers', '{trans("- none -")}');
-multiselect('message', 'customergroups', '{trans("- all groups -")}');
-
-tinymce_init('{$_ui_language}');
-{if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}
-toggle_visual_editor('mailmessage');
-{/if}
 
 document.getElementById('smstext').onmouseout = function() {
 	countChars(this);

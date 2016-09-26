@@ -47,7 +47,7 @@ elseif (isset($_POST['customerdata']))
 		$contacttype .= 's';
 
 	foreach ($customerdata as $key => $value)
-		if ($key != 'uid' && !in_array($key, $contacttypes))
+		if ($key != 'uid' && $key != 'wysiwyg' && !in_array($key, $contacttypes))
 			$customerdata[$key] = trim($value);
 
 	if($customerdata['lastname'] == '')
@@ -354,6 +354,7 @@ $SMARTY->assign('cstateslist',$LMS->GetCountryStates());
 $SMARTY->assign('countrieslist',$LMS->GetCountries());
 $SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname, status FROM divisions ORDER BY shortname'));
 $SMARTY->assign('recover',($action == 'recover' ? 1 : 0));
+$SMARTY->assign('customeredit_sortable_order', $SESSION->get_persistent_setting('customeredit-sortable-order'));
 $SMARTY->display('customer/customeredit.html');
 
 ?>

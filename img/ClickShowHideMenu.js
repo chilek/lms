@@ -2,16 +2,32 @@
  * DO NOT REMOVE THIS NOTICE
  *
  * PROJECT:   mygosuMenu
- * VERSION:   1.3.3
+ * VERSION:   1.3.3 (hardly modified for LMS)
  * COPYRIGHT: (c) 2003,2004 Cezary Tomczak
+ *            (c) 2016 Tomasz Chiliński
  * LINK:      http://gosu.pl/dhtml/mygosumenu.html
  * LICENSE:   BSD (revised)
  */
 
-function ClickShowHideMenu(id) {
+function ClickShowHideMenu(params) {
+	if (typeof(params) == 'string') {
+		this.id = params;
+		this.maxOpened = 1;
+	} else {
+		if (params.id == undefined) {
+			alert("Id of element was not specified. ClickShowHideMenu cannot be initialized");
+			return;
+		}
+		this.id = params.id;
+		this.maxOpened = parseInt(params.maxOpened);
+		if (isNaN(this.maxOpened))
+			this.maxOpened = 1;
+	}
+
     this.box1Hover = true;
     this.box2Hover = true;
     this.highlightActive = false;
+    this.openedSections = [];
 
     this.init = function() {
         if (!document.getElementById(this.id)) {
@@ -66,45 +82,40 @@ function ClickShowHideMenu(id) {
     this.box1over = function(id) {
         if (!this.box1Hover) return;
         if (!document.getElementById(id)) return;
-        document.getElementById(id).className = (this.id_openbox == id ? "box1-open-hover" : "box1-hover");
+		var sections = document.getElementsByClassName('section');
+		for (var i = 0; i < sections.length; i++) {
+			var section = document.getElementById(sections[i].id.replace('-section', ''));
+			if (section.id == id)
+				section.className = (sections[i].style.display == 'block' ? "box1-open-hover" : "box1-hover");
+		}
     }
 
     this.box1out = function(id) {
         if (!this.box1Hover) return;
         if (!document.getElementById(id)) return;
-        document.getElementById(id).className = (this.id_openbox == id ? "box1-open" : "box1");
+		var sections = document.getElementsByClassName('section');
+		for (var i = 0; i < sections.length; i++) {
+			var section = document.getElementById(sections[i].id.replace('-section', ''));
+			if (section.id == id)
+				section.className = (sections[i].style.display == 'block' ? "box1-open" : "box1");
+		}
     }
 
     this.box1click = function(id) {
-        if (!document.getElementById(id)) {
-            return;
-        }
-        var id_openbox = this.id_openbox;
-        if (this.id_openbox) {
-            if (!document.getElementById(id + "-section")) {
-                return;
-            }
-            this.hide();
-            if (id_openbox == id) {
-                if (this.box1hover) {
-                    document.getElementById(id_openbox).className = "box1-hover";
-                } else {
-                    document.getElementById(id_openbox).className = "box1";
-                }
-            } else {
-                document.getElementById(id_openbox).className = "box1";
-            }
-        }
-        if (id_openbox != id) {
-            this.show(id);
-            var className = document.getElementById(id).className;
-            if ("box1-hover" == className) {
-                document.getElementById(id).className = "box1-open-hover";
-            }
-            if ("box1" == className) {
-                document.getElementById(id).className = "box1-open";
-            }
-        }
+		if ((elem = document.getElementById(id)) === null)
+			return;
+		var section = document.getElementById(id + "-section");
+		if (this.openedSections.indexOf(id) > -1) {
+			this.hide(id);
+			if (this.box1Hover)
+				elem.className = 'box1-hover';
+		} else {
+			this.show(id);
+			if (this.box1Hover) {
+				elem = document.getElementById(id);
+				elem.className = 'box1-open-hover';
+			}
+		}
     }
 
     this.box2over = function(id, className) {
@@ -120,32 +131,60 @@ function ClickShowHideMenu(id) {
     }
 
     this.show = function(id) {
-        if (document.getElementById(id + "-section")) {
-            document.getElementById(id + "-section").style.display = "block";
-            this.id_openbox = id;
-        }
+		if ((section = document.getElementById(id + "-section")) !== null
+			&& section.childNodes.length > 1) {
+			section.style.display = "block";
+			this.appendOpenedSection(id);
+		}
     }
 
-    this.hide = function() {
-        document.getElementById(this.id_openbox + "-section").style.display = "none";
-        this.id_openbox = "";
+    this.hide = function(id) {
+		if ((section = document.getElementById(id + "-section")) !== null
+			&& section.childNodes.length > 1) {
+			section.style.display = "";
+			this.removeOpenedSection(id);
+		}
     }
 
     this.save = function() {
-        if (this.id_openbox) {
-            this.cookie.set(this.id, this.id_openbox);
-        } else {
-            this.cookie.del(this.id);
-        }
+		var sections = document.getElementsByClassName('section');
+		var openedSections = [];
+		for (var i = 0; i < sections.length; i++)
+			if (sections[i].style.display == 'block')
+				openedSections.push(sections[i].id.replace('-section', ''));
+		if (openedSections.length)
+			this.cookie.set(this.id, openedSections.join(';'));
+		else
+			this.cookie.del(this.id);
     }
 
     this.load = function() {
-        var id_openbox = this.cookie.get(this.id);
-        if (id_openbox) {
-            this.show(id_openbox);
-            document.getElementById(id_openbox).className = "box1-open";
-        }
+		var openedSections = this.cookie.get(this.id);
+		if (openedSections) {
+			openedSections = openedSections.split(';');
+			for (var i = 0; i < openedSections.length; i++) {
+				this.show(openedSections[i]);
+				document.getElementById(openedSections[i]).className = "box1-open";
+			}
+		}
     }
+
+	this.appendOpenedSection = function(id) {
+		var index;
+		if ((index = this.openedSections.indexOf(id)) > -1)
+			this.openedSections.splice(index, 1);
+		this.openedSections.push(id);
+		if (this.maxOpened && this.openedSections.length > this.maxOpened)
+			this.hide(this.openedSections[0]);
+	}
+
+	this.removeOpenedSection = function(id) {
+		if ((index = this.openedSections.indexOf(id)) > -1) {
+			this.openedSections.splice(index, 1);
+			if (this.box1Hover && (elem = document.getElementById(id)) !== null)
+				elem.className = 'box1';
+		}
+	}
 
     function Cookie() {
         this.get = function(name) {
@@ -171,9 +210,7 @@ function ClickShowHideMenu(id) {
     }
 
     var self = this;
-    this.id = id;
     this.tree = [];
     this.cookie = new Cookie();
-    this.id_openbox = "";
 }
 

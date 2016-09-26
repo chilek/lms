@@ -34,6 +34,7 @@ $parameters = array(
 	'v' => 'version',
 	't' => 'test',
 	'f:' => 'fakedate:',
+	'g:' => 'fakehour:',
 	'e:' => 'extra-file:',
 );
 
@@ -69,6 +70,7 @@ lms-sendinvoices.php
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
 -f, --fakedate=YYYY/MM/DD       override system date;
+-g, --fakehour=HH               override system hour; if no fakehour is present - current hour will be used;
 -e, --extra-file=/tmp/file.pdf  send additional file as attachment
 
 EOF;
@@ -208,6 +210,7 @@ $reply_email = ConfigHelper::getConfig('sendinvoices.reply_email', '', true);
 $add_message = ConfigHelper::checkConfig('sendinvoices.add_message');
 $dsn_email = ConfigHelper::getConfig('sendinvoices.dsn_email', '', true);
 $mdn_email = ConfigHelper::getConfig('sendinvoices.mdn_email', '', true);
+$count_limit = intval(ConfigHelper::getConfig('sendinvoices.limit', '0'));
 
 if (empty($sender_email))
 	die("Fatal error: sender_email unset! Can't continue, exiting." . PHP_EOL);
@@ -217,6 +220,7 @@ if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $smtp_au
 	die("Fatal error: smtp_auth setting not supported! Can't continue, exiting." . PHP_EOL);
 
 $fakedate = (array_key_exists('fakedate', $options) ? $options['fakedate'] : NULL);
+$fakehour = (array_key_exists('fakedate', $options) ? $options['fakehour'] : NULL);
 
 $extrafile = (array_key_exists('extra-file', $options) ? $options['extra-file'] : NULL);
 if ($extrafile && !is_readable($extrafile))
@@ -231,6 +235,10 @@ function localtime2() {
 		return time();
 }
 
+if (!empty($fakehour))
+	$curr_h = intval($fakehour);
+else
+	$curr_h = intval(date('H', time()));
 $timeoffset = date('Z');
 $currtime = localtime2() + $timeoffset;
 $daystart = (intval($currtime / 86400) * 86400) - $timeoffset;
@@ -264,6 +272,9 @@ $test = array_key_exists('test', $options);
 if ($test)
 	echo "WARNING! You are using test mode." . PHP_EOL;
 
+if (!empty($count_limit))
+	$count_offset = $curr_h * $count_limit;
+
 $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, n.template, m.email
 		FROM documents d 
 		LEFT JOIN customers c ON c.id = d.customerid 
@@ -273,7 +284,7 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctyp
 		WHERE c.deleted = 0 AND d.type IN (?, ?, ?) AND c.invoicenotice = 1
 			AND d.cdate >= $daystart AND d.cdate <= $dayend"
 			. (!empty($groupnames) ? $customergroups : "")
-		. " ORDER BY d.number";
+		. " ORDER BY d.number" . (!empty($count_limit) ? " LIMIT $count_limit OFFSET $count_offset" : '');
 $docs = $DB->GetAll($query, array(CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_INVOICES, DOC_INVOICE, DOC_CNOTE, DOC_DNOTE));
 
 if (!empty($docs))

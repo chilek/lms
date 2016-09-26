@@ -27,7 +27,7 @@
         "rospdf/pdf-php": "^0.12.1",
         "components/jqueryui": "^1",
         "xdan/datetimepicker": "^2",
-        "datatables/datatables": "^1"
+        "datatables/datatables": "^1.10"
     },
     "require_dev": {
         "phpunit/phpunit": "5.1.*"

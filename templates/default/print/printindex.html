@@ -306,7 +306,7 @@
 							<B>{trans("Transaction type:")}</B>
 						    </TD>
 							<TD style="98%;" class="multiselect">
-								<SELECT name="types[]" id="balancelisttype" {tip text="Select transaction type"} multiple>
+								<SELECT name="types[]" class="lms-ui-multiselect" {tip text="Select transaction type"} multiple data-default-value="{trans("- all types -")}">
 									<OPTION value="1">{trans("Liability")}</OPTION>
 									<OPTION value="2">{trans("Income")}</OPTION>
 									<OPTION value="3">{trans("Expense")}</OPTION>
@@ -367,11 +367,6 @@
     </TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
-//-->
-</SCRIPT>
 </P>
 {/if}
 {if ($printmenu=="customer" || $printmenu=="finances") && (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances'))}
@@ -471,10 +466,10 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 							<B>{trans("Group:")}</B>
 						    </TD>
 							<TD style="width: 97%;" class="multiselect nobr">
-								<SELECT size="4" name="group[]" multiple id="invoicereportgroup" {tip text="Select group"}>
-									{section name="customergroups" loop=$customergroups}
-									<OPTION value="{$customergroups[customergroups].id}">{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
-									{/section}
+								<SELECT size="4" name="group[]" class="lms-ui-multiselect" multiple {tip text="Select group"} data-default-value="{trans("- all groups -")}">
+									{foreach $customergroups as $customergroup}
+									<OPTION value="{$customergroup.id}">{$customergroup.name|truncate:30:"...":true}</OPTION>
+									{/foreach}
 								</SELECT>
 							</TD>
 						    <TD style="width: 1%;" nowrap>
@@ -489,10 +484,9 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
 							<B>{trans("Plan:")}</B>
 						    </TD>
 							<TD style="width: 98%;" colspan="2" class="multiselect nobr">
-								<SELECT name="numberplanid[]" id="numberplanid" style="min-width: 200px;" {tip text="Select numbering plan"} multiple>
-									<OPTION value="0">- {trans("all")} -</OPTION>
-									{foreach item=plan from=$numberplans}
-									{assign var=period value=$plan.period}
+								<SELECT name="numberplanid[]" class="lms-ui-multiselect" style="min-width: 200px;" {tip text="Select numbering plan"} multiple data-default-value="{trans("- all -")}">
+									{foreach $numberplans as $plan}
+									{$period = $plan.period}
 									<OPTION value="{$plan.id}">{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
 									{/foreach}
 								</SELECT>
@@ -558,12 +552,6 @@ multiselect('printbalancelist', 'balancelisttype', '{trans("- all types -")}');
     </TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-multiselect('invoicereport', 'invoicereportgroup', '{trans("- all groups -")}');
-multiselect('invoicereport', 'numberplanid', '{trans("all")}');
-//-->
-</SCRIPT>
 </P>
 {/if}
 {if $printmenu=="finances"}
@@ -1233,7 +1221,7 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
 					</TD>
 					<TD style="width: 98%;">
 						{if $invprojects}
-						<SELECT name="invprojects[]" id="invprojects" {tip text="Select investment projects"} multiple>
+						<SELECT name="invprojects[]" class="lms-ui-multiselect" {tip text="Select investment projects"} multiple data-default-value="{trans("- all -")}">
 							{foreach $invprojects as $invproject}
 							<OPTION value="{$invproject.id}">{$invproject.name}</OPTION>
 							{/foreach}
@@ -1299,11 +1287,6 @@ multiselect('invoicereport', 'numberplanid', '{trans("all")}');
     </TBODY>
 </TABLE>
 </FORM>
-<SCRIPT type="text/javascript">
-<!--
-multiselect('printnetdev', 'invprojects', '{trans("- all -")}');
-//-->
-</SCRIPT>
 </P>
 {/if}
 {/block}

@@ -79,7 +79,7 @@
 </SCRIPT>
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
 {$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
-<div class="sortable" id="customerbalancebox">
+<div class="lms-ui-sortable" id="customerbalancebox">
 <FORM name="addbalance" method="POST" action="?m=balanceadd&id={$balancelist.customerid}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
@@ -165,13 +165,13 @@
 							<A href="?m=invoicesend&id={$item.docid}" target="_blank" OnClick="return confirmLink(this, '{t a=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to send invoice to customer \'$a\'?{/t}');"><IMG src="img/mail.gif" alt="[ {trans("Send invoice")} ]" title="[ {trans("Send invoice")} ]"></A>
 							{/if}
 							{if $item.doctype == $smarty.const.DOC_INVOICE}
-								<A href="?m=invoice&amp;id={$item.docid}" class="invoiceinfo" data-resourceid="{$item.docid}" rel="external"><img src="img/print.gif" alt="[ {trans("Invoice")} ]"></A>
+								<A href="?m=invoice&id={$item.docid}" class="lms-ui-tooltip-invoiceinfo" data-resourceid="{$item.docid}" rel="external"><img src="img/print.gif" alt="[ {trans("Invoice")} ]"></A>
 							{elseif $item.doctype == $smarty.const.DOC_CNOTE}
-								<A href="?m=invoice&amp;id={$item.docid}" class="docnumber" data-resourceid="{$item.docid}" rel="external"><IMG src="img/printn.gif" alt="[ {trans("Credit note")} ]"></A>
+								<A href="?m=invoice&id={$item.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}" rel="external"><IMG src="img/printn.gif" alt="[ {trans("Credit note")} ]"></A>
 							{elseif $item.doctype == $smarty.const.DOC_RECEIPT}
-								<A href="?m=receipt&amp;id={$item.docid}" class="docnumber" data-resourceid="{$item.docid}" rel="external"><IMG src="img/printr.gif" alt="[ {trans("Cash receipt")} ]"></A>
+								<A href="?m=receipt&id={$item.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}" rel="external"><IMG src="img/printr.gif" alt="[ {trans("Cash receipt")} ]"></A>
 							{elseif $item.doctype == $smarty.const.DOC_DNOTE}
-								<A href="?m=note&amp;id={$item.docid}" class="docnumber" data-resourceid="{$item.docid}" rel="external"><IMG src="img/printd.gif" alt="[ {trans("Debit note")} ]"></A>
+								<A href="?m=note&id={$item.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}" rel="external"><IMG src="img/printd.gif" alt="[ {trans("Debit note")} ]"></A>
 							{/if}
 						{/if}
 						<INPUT type="checkbox" NAME="marks[{$item.id}]" value="{$item.id}" class="lms-ui-multi-check">

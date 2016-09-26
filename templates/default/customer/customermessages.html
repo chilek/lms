@@ -1,5 +1,5 @@
 <!--// $Id$ //-->
-<TABLE class="lmsbox sortable" id="customermessages">
+<TABLE class="lmsbox lms-ui-sortable" id="customermessages">
 	<COLGROUP>
 		<COL style="width: 99%;">
 		<COL style="width: 1%;">
@@ -17,7 +17,7 @@
 	</TR>
 	</THEAD>
 	<TBODY class="lms-ui-multi-check">
-	<TR id="messagespanel"  style="display:none;" class="dark">
+	<TR id="messagespanel"  style="display: none;" class="dark">
 		<TD colspan="2">
 			<form method="post" name="customermessages" action="?m=messagedel">
 			<TABLE class="lmsbox-inner{if !empty($messagelist)} lms-ui-datatable{/if}"{if !empty($messagelist)}{if $limit} data-page-length="{$limit}"{/if} data-order='[[ 0, "desc" ]]' style="display: none;"{/if} width="100%">

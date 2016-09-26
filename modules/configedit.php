@@ -57,8 +57,9 @@ if(isset($_POST['config']))
 	$cfg = $_POST['config'];
 	$cfg['id'] = $id;
 
-	foreach($cfg as $key => $val)
-		$cfg[$key] = trim($val);
+	foreach ($cfg as $key => $val)
+		if ($key != 'wysiwyg')
+			$cfg[$key] = trim($val);
 
 	if(!ConfigHelper::checkPrivilege('superuser'))
 		$cfg['type'] = $config['type'];

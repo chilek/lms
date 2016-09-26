@@ -3,7 +3,7 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<div id="customerinfo-sortable" class="lms-ui-persistent-order">
+<div id="customerinfo-sortable" class="lms-ui-sortable-persistent">
 {block name="customerinfobox"}
 	{include file="customer/customerinfobox.html"}
 {/block}
@@ -45,7 +45,7 @@
 </div>
 <script type="text/javascript">
 <!--
-	restoreSortable('customerinfo-sortable');
+	restoreSortable('customerinfo-sortable', '{$customerinfo_sortable_order}');
 //-->
 </script>
 {/block}

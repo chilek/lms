@@ -2830,10 +2830,6 @@ $_LANG['- new section -'] = '- nowa sekcja -';
 $_LANG['Enter section name'] = 'Podaj nazwę sekcji';
 $_LANG['Section name can\'t be empty'] = 'Nazwa sekcji nie może być pusta!';
 
-$_LANG['Swekey:'] = 'Klucz Swekey:';
-$_LANG['Use Swekey'] = 'Używaj klucza Swekey';
-$_LANG['You must login with your Swekey'] = 'Aby się zalogować potrzebny jest klucz Swekey';
-
 $_LANG['Select host'] = 'Wybierz hosta';
 $_LANG['Host should be selected!'] = 'Powinien zostać wybrany host!';
 
@@ -3446,5 +3442,14 @@ $_LANG['Select tariff tags'] = 'Wybierz etykiety taryf';
 $_LANG['LMS: operation failed!'] = 'LMS: operacja nie powiodła się!';
 $_LANG['Operation failed!'] = 'Operacja nie powiodła się!';
 $_LANG['AJAX: Invalid result - status:'] = 'AJAX: niepoprawny wynik - status:';
+
+$_LANG['Columns'] = 'Kolumny';
+$_LANG['Column visibility'] = 'Widoczność kolumn';
+$_LANG['Clear settings'] = 'Skasuj ustawienia';
+
+$_LANG['AJAX: Error during persistent setting save on server:'] = 'AJAX: Błąd podczas zapisu trwałego ustawienia na serwerze:';
+
+$_LANG['Enter street'] = 'Podaj ulicę';
+$_LANG['- any -'] = '- dowolne -';
 
 ?>

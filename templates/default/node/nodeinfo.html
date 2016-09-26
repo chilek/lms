@@ -4,7 +4,7 @@
 <!--// $Id$ //-->
 {$xajax}
 <H1>{$layout.pagetitle}</H1>
-<div id="nodeinfo-sortable" class="lms-ui-persistent-order">
+<div id="nodeinfo-sortable" class="lms-ui-sortable-persistent">
 {block name="nodeinfobox"}
 	{include file="node/nodeinfobox.html"}
 {/block}
@@ -58,7 +58,7 @@
 </div>
 <script type="text/javascript">
 <!--
-	restoreSortable('nodeinfo-sortable');
+	restoreSortable('nodeinfo-sortable', '{$nodeinfo_sortable_order}');
 //-->
 </script>
 {/block}

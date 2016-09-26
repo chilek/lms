@@ -137,7 +137,7 @@
 			    <IMG src="img/info1.gif" alt="" {tip text=$nodelist[nodelist].info}>
 			{/if}
 			{$nodelist[nodelist].name}</A></span><BR>
-			<span class="nobr{if ! $nodelist[nodelist].access} blend{/if}"><img src="img/customer.gif" alt=""> <A href="?m=customerinfo&amp;id={$nodelist[nodelist].ownerid}" class="customerinfo" data-resourceid="{$nodelist[nodelist].ownerid}">{$nodelist[nodelist].owner|truncate:40:"...":true|replace:" ":"&nbsp;"}</A></span>
+			<span class="nobr{if ! $nodelist[nodelist].access} blend{/if}"><img src="img/customer.gif" alt=""> <A href="?m=customerinfo&id={$nodelist[nodelist].ownerid}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$nodelist[nodelist].ownerid}">{$nodelist[nodelist].owner|truncate:40:"...":true|replace:" ":"&nbsp;"}</A></span>
 		</TD>
 		<TD class="nobr" onClick="return self.location.href='?m=nodeinfo&amp;id={$nodelist[nodelist].id}';">
 		{$nodelist[nodelist].location}{if $nodelist[nodelist].borough_name}<br><span class="blend">({$nodelist[nodelist].state_name} / {$nodelist[nodelist].district_name} / {$_BOROUGHTYPES[$nodelist[nodelist].borough_type]} {$nodelist[nodelist].borough_name})</span>{/if}

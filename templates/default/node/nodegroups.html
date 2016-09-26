@@ -1,5 +1,5 @@
 <!--// $Id$ //-->
-<div class="sortable" id="nodegroups">
+<div class="lms-ui-sortable" id="nodegroups">
 <FORM METHOD="POST" NAME="nodegroupassignment" id="nodegroupassignment" ACTION="?m=nodegroup&action=add&id={$nodeinfo.id}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
@@ -59,7 +59,7 @@
 					</TD>
 					<TD COLSPAN="3">
 						{if !empty($othernodegroups)}
-						<SELECT SIZE="1" NAME="nodegroupid[]" id="nodegroupid" {tip text="Select groups to attribute to node"} multiple>
+						<SELECT SIZE="1" NAME="nodegroupid[]" class="lms-ui-multiselect" {tip text="Select groups to attribute to node"} multiple data-default-value="{trans("... select groups ...")}">
 							{foreach $othernodegroups as $item}
 							<OPTION VALUE="{$item.id}">{$item.name} ({$item.id|string_format:"%04d"})</OPTION>
 							{/foreach}
@@ -75,10 +75,6 @@
 					</TD>
 					<script type="text/javascript">
 					<!--
-						{if !empty($othernodegroups)}
-						multiselect('nodegroupassignment', 'nodegroupid', '{trans("... select groups ...")}');
-						{/if}
-
 						$(function() {
 							{if !empty($othernodegroups)}
 							$('#add-nodegroups').click(function() {
