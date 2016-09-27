@@ -513,6 +513,7 @@ table.lmsbox {
 	}
 }
     */
+
 table.lms-ui-datatable>tbody {
 	tr:nth-child(even):not(.ui-selected) {
 		background-color: @light;
@@ -866,9 +867,14 @@ table.dataTable {
 		font-weight: bold;
 	}
 	.lmsbox.lms-ui-datatable {
+		width: 100% !important;
 		border: 1px solid black;
 		border-top: 0;
 		margin-bottom: 0;
+
+		table {
+            width: 100% !important;
+		}
 	}
 	.top {
 		border: 1px solid black;

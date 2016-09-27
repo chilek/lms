@@ -1025,9 +1025,13 @@ table.dataTable thead tr:last-child th {
   font-weight: bold;
 }
 .dataTables_wrapper .lmsbox.lms-ui-datatable {
+  width: 100% !important;
   border: 1px solid black;
   border-top: 0;
   margin-bottom: 0;
+}
+.dataTables_wrapper .lmsbox.lms-ui-datatable table {
+  width: 100% !important;
 }
 .dataTables_wrapper .top {
   border: 1px solid black;
