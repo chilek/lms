@@ -35,7 +35,7 @@ $this->Execute("CREATE SEQUENCE voip_pool_numbers_id_seq;
                    UNIQUE (name));
                ");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016092700', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016090700', 'dbversion'));
 
 $this->CommitTrans();
 

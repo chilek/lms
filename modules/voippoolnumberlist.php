@@ -124,11 +124,10 @@ switch($_GET['action']) {
     break;
 
     case 'edit':
-        $id   = (empty($_POST['poolid'])) ? 0 : intval($_POST['poolid']);
-        $pool = array_map('trim', $_POST);
+        $id = (empty($_POST['poolid'])) ? 0 : intval($_POST['poolid']);
+        $p  = array_map('trim', $_POST);
 
-        $error = valid_pool( $pool['name'], $pool['poolstart'], $pool['poolend'], $id );
-        print_r($error);
+        $error = valid_pool( $p['name'], $p['poolstart'], $p['poolend'], $id );
 
         if ($error) {
             die( json_encode($error) );
@@ -138,12 +137,13 @@ switch($_GET['action']) {
 
         $status = ($pool['status'] == '1') ? 1 : 0;
 
-        $query = $DB->Execute('INSERT INTO voip_pool_numbers (disabled, name, poolstart, poolend, description) VALUES (?,?,?,?,?)',
-                               array($status, $pool['name'], $pool['poolstart'], $pool['poolend'], $pool['description']));
+        $query = $DB->Execute('UPDATE voip_pool_numbers SET
+                               disabled = ?, name = ?, poolstart = ?, poolend = ?, description = ?
+                               WHERE id = ?',
+                               array($p['status'], $p['name'], $p['poolstart'], $p['poolend'], $p['description'], $p['poolid']));
 
         if ($query == 1) {
             $DB->CommitTrans();
-            die( json_encode( array('id' => $DB->GetLastInsertID("voip_pool_numbers")) ) );
         } else {
             $DB->RollbackTrans();
             die( json_encode( array('name' => trans("Operation failed!")) ) );

@@ -22,7 +22,7 @@
         <OL CLASS="dialog-box">
             <LI>
                 {trans("Name:")}<BR>
-                <INPUT TYPE="text" ID="edit-name" NAME="name"  CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
+                <INPUT TYPE="text" ID="edit-name" NAME="name" CLASS="text ui-widget-content ui-corner lms-ui-dialog-input">
             </LI>
             <LI>
                 {trans("First number:")}<BR>
@@ -87,11 +87,9 @@ $( function() {
             }
         })
         .done(function(data) {
-            console.log(data);
+            if (data) {
+                var response = JSON.parse(data);
             
-            var response = JSON.parse(data);
-
-            if (response['id'] == undefined) {
                 if (response['poolend'] != undefined)
                     $("#poolend").addClass("ui-state-error").prop('title', response['poolend']);
 
@@ -101,6 +99,8 @@ $( function() {
                 if (response['name'] != undefined)
                     $("#name").addClass("ui-state-error").prop('title', response['name']);
             } else {
+            
+            /*
                 var table = $("#poolnumbers").DataTable();
                 var size  = $("#poolend").val() - $("#poolstart").val() + 1;
                 var appended_class = "";
@@ -117,7 +117,7 @@ $( function() {
                          .to$()
                          .addClass(appended_class)
                          .attr("data-row-id", response['id'])
-                         .effect("highlight",{},4000);
+                         .effect("highlight",{},3000);
 
                 pool_edit_dialog.close();
                 pool_edit_dialog.formReset();
@@ -125,6 +125,7 @@ $( function() {
                 $(pool_edit_dialog.handler).find("*")
                                            .removeClass("ui-state-error")
                                            .removeAttr("title");
+                                           */
             }
             pool_edit_dialog.enableButtons();
         });

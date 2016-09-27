@@ -74,7 +74,7 @@ $( function() {
         })
         .done(function(data) {
             var response = JSON.parse(data);
-
+                                              console.log(data);
             if (response['id'] == undefined) {
                 if (response['poolend'] != undefined)
                     $("#poolend").addClass("ui-state-error").prop('title', response['poolend']);
