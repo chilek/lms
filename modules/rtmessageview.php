@@ -26,7 +26,7 @@
 
 if(isset($_GET['file']))
 {
-	$filename = $_GET['file'];
+	$filename = urldecode($_GET['file']);
 	if($attach = $DB->GetRow('SELECT * FROM rtattachments WHERE messageid = ? AND filename = ?', array(intval($_GET['mid']), $filename)))
 	{
 		$file = ConfigHelper::getConfig('rt.mail_dir').sprintf("/%06d/%06d/%s",$_GET['tid'],$_GET['mid'],$filename);

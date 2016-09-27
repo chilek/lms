@@ -70,7 +70,7 @@
 						{if $message.attachments}
 							{foreach $message.attachments as $attachment}
 								{documentview id="{$message.id}-{$attachment@index}" type=$attachment.contenttype name=$attachment.filename
-									url="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={$attachment.filename}"
+									url="?m=rtmessageview&tid={$ticket.ticketid}&mid={$message.id}&file={urlencode($attachment.filename)}"
 									text="{$attachment.filename} <IMG src=\"img/attach.gif\" alt=\"\">"}
 							{/foreach}
 						{/if}
