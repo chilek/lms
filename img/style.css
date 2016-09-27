@@ -48,6 +48,8 @@ TABLE {
 #lms-ui-main-menu-toggle {
   background-image: url(left.gif);
   background-repeat: no-repeat;
+  width: 7px;
+  height: 7px;
 }
 .pageleftbar-hidden #lms-ui-main-menu-toggle {
   background-image: url(right.gif);
