@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,29 +24,11 @@
  *  $Id$
  */
 
-function GetConfigList($order='var,asc', $section='', $search='')
-{
-	global $DB;
-
-	list($order, $direction) = sscanf($order, '%[^,],%s');
-
-	$direction = ($direction != 'desc') ? 'asc' : 'desc';
-
-	switch($order)
-	{
-		case 'section':
-			$sqlord = " ORDER BY section $direction, var";
-		break;
-		default:
-			$sqlord = " ORDER BY var $direction";
-		break;
-	}
+function GetConfigList() {
+	$DB = LMSDB::getInstance();
 
 	$config = $DB->GetAll('SELECT id, section, var, value, description as usercomment, disabled 
-			FROM uiconfig WHERE section != \'userpanel\''
-			.($section ? ' AND section = '.$DB->Escape($section) : '')
-			.($search ? ' AND var ?LIKE? '.$DB->Escape('%'.$search.'%') : '')
-			.$sqlord);
+			FROM uiconfig WHERE section != \'userpanel\'');
 
 	if($config) foreach ($config as $idx => $item)
 	{
@@ -614,62 +596,19 @@ function GetConfigList($order='var,asc', $section='', $search='')
 			$config[$idx]['usercomment'] = str_replace("\n", '<br>', $config[$idx]['usercomment']);
 	} //end: foreach
 
-	$config['total'] = sizeof($config);
-	$config['order'] = $order;
-	$config['direction'] = $direction;
-	$config['section'] = $section;
-
 	return $config;
 }
 
 $layout['pagetitle'] = trans('User Interface Configuration');
 
-if(!isset($_GET['o']))
-	$SESSION->restore('conlo', $o);
-else
-	$o = $_GET['o'];
-$SESSION->save('conlo', $o);
+$configlist = GetConfigList();
 
-if(!isset($_GET['s']))
-        $SESSION->restore('conls', $s);
-else
-	$s = $_GET['s'];
-$SESSION->save('conls', $s);
-
-if(!isset($_GET['n']))
-    $SESSION->restore('conln', $n);
-else
-	$n = $_GET['n'];
-$SESSION->save('conln', $n);
-
-if ($SESSION->is_set('conlp') && !isset($_GET['page']))
-	$SESSION->restore('conlp', $_GET['page']);
-
-$configlist = GetConfigList($o, $s, $n);
-
-$listdata['total'] = $configlist['total'];
-$listdata['order'] = $configlist['order'];
-$listdata['direction'] = $configlist['direction'];
-$listdata['section'] = $configlist['section'];
-$listdata['search'] = $n;
-
-unset($configlist['total']);
-unset($configlist['order']);
-unset($configlist['direction']);
-unset($configlist['section']);
-
-$page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
 $pagelimit = ConfigHelper::getConfig('phpui.configlist_pagelimit', $listdata['total']);
-$start = ($page - 1) * $pagelimit;
-
-$SESSION->save('conlp', $page);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('sections', $LMS->GetConfigSections());
 $SMARTY->assign('pagelimit', $pagelimit);
-$SMARTY->assign('page', $page);
-$SMARTY->assign('start', $start);
 $SMARTY->assign('configlist', $configlist);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->display('config/configlist.html');
