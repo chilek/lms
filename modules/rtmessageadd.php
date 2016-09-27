@@ -128,7 +128,14 @@ if(isset($_POST['message']))
 				&& $message['destination'] != $queue['email'])
 			{
 				$recipients = $message['destination'];
-				$message['mailfrom'] = $user['email'] ? $user['email'] : $queue['email'];
+				$mail_backend = ConfigHelper::getConfig('mail.backend');
+				$phpmailer_from = ConfigHelper::getConfig('mail.phpmailer_from');
+				if ($mail_backend == 'phpmailer' && $phpmailer_from) {
+					$message['mailfrom'] = $phpmailer_from;
+				} else {
+					$message['mailfrom'] = $user['email'] ? $user['email'] : $queue['email'];
+				}
+
 
 				$headers['Date'] = date('r');
 				$headers['From'] = $mailfname.' <'.$message['mailfrom'].'>';
