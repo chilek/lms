@@ -3,7 +3,7 @@
 	<script type="text/javascript">
 	<!--
 		var mainMenuVisible = getCookie('main-menu-visible');
-		mainMenuVisible = mainMenuVisible === undefined || mainMenuVisible == 'true';
+		mainMenuVisible = mainMenuVisible === null || mainMenuVisible == 'true';
 		if (!mainMenuVisible) {
 			$('#pageleftbar').addClass('pageleftbar-hidden');
 			$('#lms-ui-main-menu-toggle').attr('src', 'img/right.gif');
