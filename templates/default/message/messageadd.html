@@ -124,9 +124,8 @@
 		xjx.$(subjectelem).value = subject;
 		if (tinyMCE.editors.length) {
 			tinyMCE.editors[0].setContent(message);
-			xjx.$(messageelem).value = message;
-		} else
-			xjx.$(messageelem).value = message;
+		}
+		$('textarea[name="message[mailbody]"]').html(message);
 	}
 -->
 </SCRIPT>
