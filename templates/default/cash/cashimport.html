@@ -161,39 +161,43 @@
 <FORM name="parser" enctype="multipart/form-data" method="post" action="?m=cashimportparser">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 99%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD width="100%" colspan="2">
-			<B>{trans("Import from file")}:</B>
+		<TD colspan="2" class="bold">
+			{trans("Import from file:")}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD width="1%" NOWRAP>
+		<TD class="bold nobr">
 			<IMG src="img/attach.gif" alt="">
-			<B>{trans("Import file:")} </B>
+			{trans("Import file:")}
 		</TD>
-		<TD width="99%" NOWRAP>
+		<TD class="nobr">
 			<INPUT name="file" type="file" size="70" {tip text="Enter path to file or click 'Browse' button" trigger="file"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%" NOWRAP>
+		<TD class="bold nobr">
 			<IMG src="img/isource.gif" alt="">
-			<B>{trans("Source:")} </B>
+			{trans("Source:")}
 		</TD>
-		<TD width="99%" NOWRAP>
+		<TD class="nobr">
 			<SELECT name="source" {tip text="Select import source (optional)" trigger="source"}>
-			<OPTION value="0">{trans("- auto -")}</OPTION> 
-			{foreach from=$sourcelist item=item}
-			<OPTION value="{$item.id}">{$item.name}</OPTION>
-			{/foreach}
+				<OPTION value="0">{trans("- auto -")}</OPTION> 
+				{foreach $sourcelist as $item}
+				<OPTION value="{$item.id}">{$item.name}</OPTION>
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
 	<TR>
-		<TD colspan="2" width="100%" align="right" nowrap>
+		<TD colspan="2" class="buttons">
 			<A href="javascript:document.parser.submit();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
