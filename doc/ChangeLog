@@ -118,6 +118,7 @@ version ?.??.?? (????-??-??):
   - main menu items are sortable by draging menu icon and dropping it in another place [chilan]
   - removed support for swekey [prezes_kk]
   - datatables column search supports selection lists [chilan]
+  - allow to toggle main menu visibility [chilan]
 
 version 1.11.20 (2016-04-19):
 
