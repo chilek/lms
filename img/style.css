@@ -791,7 +791,11 @@ td.multiselect select {
 	jQuery-UI
 */
 .ui-widget.ui-widget-content {
+<<<<<<< HEAD
+  border: 1px solid #615847;
+=======
   border: 1px solid #AE9D7B;
+>>>>>>> ad33da76cc21fb70ae2302c787fa52ce73a12b49
 }
 .ui-state-default,
 .ui-widget-content .ui-state-default,
@@ -799,8 +803,13 @@ td.multiselect select {
 .ui-button,
 html .ui-button.ui-state-disabled:hover,
 html .ui-button.ui-state-disabled:active {
+<<<<<<< HEAD
+  border: 1px solid #615847;
+  background-color: #dfd5bd;
+=======
   border: 1px solid #AE9D7B;
   background-color: #DFD5BD;
+>>>>>>> ad33da76cc21fb70ae2302c787fa52ce73a12b49
 }
 .ui-state-hover,
 .ui-widget-content .ui-state-hover,
@@ -810,7 +819,15 @@ html .ui-button.ui-state-disabled:active {
 .ui-widget-header .ui-state-focus,
 .ui-button:hover,
 .ui-button:focus {
+<<<<<<< HEAD
+  box-shadow: inset 1px 1px 3px 0px rgba(0,0,0,0.6);
+  background-color: #dfd5bd;
+  border: 1px solid #615847;
+  outline: none;
+  color: black;
+=======
   background-color: #EFE5CD;
+>>>>>>> ad33da76cc21fb70ae2302c787fa52ce73a12b49
 }
 .ui-state-highlight,
 .ui-widget-content .ui-state-highlight,
@@ -820,10 +837,12 @@ html .ui-button.ui-state-disabled:active {
 .ui-state-active,
 .ui-widget-content .ui-state-active,
 .ui-widget-header .ui-state-active,
-a.ui-button:active,
 .ui-button:active,
+.ui-button:focus,
 .ui-button.ui-state-active:hover {
-  background-color: #007fff;
+  box-shadow: inset 1px 1px 4px 0px rgba(0,0,0,0.4);
+  background: #cebd9b;
+  border: 1px solid #615847;
 }
 .ui-dialog {
   background-color: #CEBD9B;
@@ -954,6 +973,9 @@ table.dataTable thead tr th {
 table.dataTable thead tr:last-child th {
   border-bottom: 1px solid black;
 }
+.dataTables_wrapper {
+  margin-bottom: 4px;
+}
 .dataTables_wrapper .dataTables_paginate .paginate_button.current,
 .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
   background: linear-gradient(to bottom, #CEBD9B 0%, #AE9D7B 100%);
@@ -1002,6 +1024,32 @@ table.dataTable thead tr:last-child th {
   padding-bottom: 3px;
   font-weight: bold;
 }
+<<<<<<< HEAD
+.dataTables_wrapper .lmsbox.lms-ui-datatable {
+  border: 1px solid black;
+  border-top: 0;
+  margin-bottom: 0;
+}
+.dataTables_wrapper .top {
+  border: 1px solid black;
+  border-bottom: 0;
+  background-color: #cebd9b;
+}
+.dataTables_wrapper .bottom {
+  background-color: #cebd9b;
+  border: 1px solid black;
+  border-top: 0;
+}
+.lmsbox .dataTables_wrapper {
+  margin-bottom: 0;
+}
+.lmsbox .dataTables_wrapper .bottom, .lmsbox .dataTables_wrapper .top {
+  border: 0;
+}
+.lms-ui-cursor-pointer:hover {
+  cursor: pointer;
+}
+=======
 #lms-ui-spinner {
   position: fixed;
   left: 0;
@@ -1155,3 +1203,4 @@ table.dataTable thead tr:last-child th {
     opacity: 1;
   }
 }
+>>>>>>> ad33da76cc21fb70ae2302c787fa52ce73a12b49

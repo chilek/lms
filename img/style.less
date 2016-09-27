@@ -1,5 +1,6 @@
 @dark: #CEBD9B;
 @superdark: #AE9D7B;
+@darkbrown: #615847;
 @light: #DFD5BD;
 @lucid: #EBE4D6;
 @superlight: #F4F0EC;
@@ -499,8 +500,24 @@ table.lmsbox-inner {
 		background-color: @light;
 	}
 }
+  /*
+table.lmsbox {
+	border: 1px solid black;
+	border-top: 0;
 
+<<<<<<< HEAD
+	&.dataTable>tfoot {
+		background-color: @dark;
+	}
+	div.top {
+		border: 1px solid black;
+	}
+}
+    */
+table.lms-ui-datatable tbody {
+=======
 table.lms-ui-datatable>tbody {
+>>>>>>> ad33da76cc21fb70ae2302c787fa52ce73a12b49
 	tr:nth-child(even):not(.ui-selected) {
 		background-color: @light;
 	}
@@ -603,7 +620,7 @@ td.multiselect {
 */
 
 .ui-widget.ui-widget-content {
-	border: 1px solid @superdark;
+	border: 1px solid @darkbrown;
 }
 
 .ui-state-default,
@@ -612,7 +629,7 @@ td.multiselect {
 .ui-button,
 html .ui-button.ui-state-disabled:hover,
 html .ui-button.ui-state-disabled:active {
-	border: 1px solid @superdark;
+	border: 1px solid @darkbrown;
 	background-color: @light;
 }
 
@@ -624,7 +641,11 @@ html .ui-button.ui-state-disabled:active {
 .ui-widget-header .ui-state-focus,
 .ui-button:hover,
 .ui-button:focus {
-	background-color: #EFE5CD;
+	box-shadow: inset 1px 1px 3px 0px rgba(0,0,0,0.6);
+	background-color: @light;
+	border: 1px solid @darkbrown;
+	outline: none;
+	color: black;
 }
 
 .ui-state-highlight,
@@ -636,10 +657,12 @@ html .ui-button.ui-state-disabled:active {
 .ui-state-active,
 .ui-widget-content .ui-state-active,
 .ui-widget-header .ui-state-active,
-a.ui-button:active,
 .ui-button:active,
+.ui-button:focus,
 .ui-button.ui-state-active:hover {
-	background-color: #007fff;
+	box-shadow: inset 1px 1px 4px 0px rgba(0,0,0,0.4);
+	background: @dark;
+	border: 1px solid @darkbrown;
 }
 
 .ui-dialog {
@@ -794,6 +817,8 @@ table.dataTable {
 }
 
 .dataTables_wrapper {
+	margin-bottom: 4px;
+
 	.dataTables_paginate {
 		.paginate_button.current,
 		.paginate_button.current:hover {
@@ -844,6 +869,34 @@ table.dataTable {
 		padding-bottom: 3px;
 		font-weight: bold;
 	}
+	.lmsbox.lms-ui-datatable {
+		border: 1px solid black;
+		border-top: 0;
+		margin-bottom: 0;
+	}
+	.top {
+		border: 1px solid black;
+		border-bottom: 0;
+		background-color: @dark;
+	}
+	.bottom {
+		background-color: @dark;
+		border: 1px solid black;
+		border-top: 0;
+	}
+}
+
+.lmsbox .dataTables_wrapper {
+	margin-bottom: 0;
+
+	.bottom,
+	.top {
+		border: 0;
+	}
+}
+
+.lms-ui-cursor-pointer:hover {
+	cursor: pointer;
 }
 
 #lms-ui-spinner {

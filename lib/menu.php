@@ -235,8 +235,8 @@ $menu = array(
 					'prio' => 60,
 				),
 				array(
-					'name' => trans('Number pools'),
-					'link' => '?m=voippoolnumberadd',
+					'name' => trans('Pool numbers'),
+					'link' => '?m=voippoolnumberlist',
 					'tip' => trans('Number pools management'),
 					'prio' => 70,
 				),
