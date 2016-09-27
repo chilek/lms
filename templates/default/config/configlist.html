@@ -78,9 +78,11 @@
 <!--
 	$('.configadd').click(function() {
 		var select = $('thead tr select', $(this).closest('table'));
+		href = '?m=configadd';
 		if (select.prop('selectedIndex')) {
-			window.location.href = '?m=configadd&section=' + select.val();
+			href += '&section=' + select.val();
 		}
+		window.location.href = href;
 	});
 //-->
 </script>
