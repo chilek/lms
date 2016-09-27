@@ -11,10 +11,10 @@
 {assign var='edit_ico' value='<img class="edit-pool lms-ui-cursor-pointer" src="img/edit.gif" alt="[&nbsp;'|cat:trans("Edit")|cat:'&nbsp;]" title="[&nbsp;'|cat:trans("Edit")|cat:'&nbsp;]">'}
 {assign var='delete_ico' value='<img class="delete-pool lms-ui-cursor-pointer" src="img/delete.gif" alt="[&nbsp;'|cat:trans("Delete")|cat:'&nbsp;]" title="[&nbsp;'|cat:trans("Delete")|cat:'&nbsp;]">'}
 
-<TABLE ID="poolnumbers" class="lmsbox lms-ui-datatable">
+<TABLE id="poolnumbers" class="lmsbox lms-ui-datatable">
     <COLGROUP>
         <COL STYLE="width: 1%;">
-        <COL STYLE="width: 90%;">
+        <COL STYLE="width: 93%;">
         <COL STYLE="width: 1%;">
         <COL STYLE="width: 1%;">
         <COL STYLE="width: 1%;">
@@ -23,14 +23,14 @@
         <COL STYLE="width: 1%;">
     </COLGROUP>
     <THEAD>
-        <TR CLASS="bold nobr">
-            <TH>{trans("Name")}</TD>
-            <TH data-orderable="false">{trans("Description")}</TD>
-            <TH>{trans("First number")}</TD>
-            <TH>{trans("Last number")}</TD>
-            <TH>{trans("Quantity of numbers")}</TD>
-            <TH>{trans("Used")}</TD>
-            <TH>{trans("Free")}</TD>
+        <TR class="bold nobr">
+            <TH>{trans("Name")}</TH>
+            <TH data-orderable="false">{trans("Description")}</TH>
+            <TH>{trans("First number")}</TH>
+            <TH>{trans("Last number")}</TH>
+            <TH>{trans("Quantity of numbers")}</TH>
+            <TH>{trans("Used")}</TH>
+            <TH>{trans("Free")}</TH>
             <TH data-orderable="false"></TH>
         </TR>
     </THEAD>
@@ -38,7 +38,7 @@
         {foreach from=$pool_list item=pool}
         {assign var=size value=$pool.poolend-$pool.poolstart+1}
 
-        <TR DATA-POOL-ID="{$pool.id}" {if $pool.disabled == 1} CLASS="blend"{/if}>
+        <TR data-pool-id="{$pool.id}" {if $pool.disabled == 1} CLASS="blend"{/if}>
             <TD data-role="name" CLASS="nobr">{$pool.name}</TD>
             <TD data-role="desc">{$pool.description}</TD>
             <TD data-role="pstart">{$pool.poolstart}</TD>

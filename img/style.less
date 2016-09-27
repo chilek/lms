@@ -505,7 +505,6 @@ table.lmsbox {
 	border: 1px solid black;
 	border-top: 0;
 
-<<<<<<< HEAD
 	&.dataTable>tfoot {
 		background-color: @dark;
 	}
@@ -514,10 +513,7 @@ table.lmsbox {
 	}
 }
     */
-table.lms-ui-datatable tbody {
-=======
-table.lms-ui-datatable>tbody {
->>>>>>> ad33da76cc21fb70ae2302c787fa52ce73a12b49
+table.lms-ui-datatable > tbody {
 	tr:nth-child(even):not(.ui-selected) {
 		background-color: @light;
 	}
@@ -870,9 +866,14 @@ table.dataTable {
 		font-weight: bold;
 	}
 	.lmsbox.lms-ui-datatable {
+		width: 100% !important;
 		border: 1px solid black;
 		border-top: 0;
 		margin-bottom: 0;
+
+		table {
+            width: 100% !important;
+		}
 	}
 	.top {
 		border: 1px solid black;
