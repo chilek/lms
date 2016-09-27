@@ -44,19 +44,12 @@ TABLE		{ border-collapse: collapse; border-color: #000000 }
 	}
 }
 #lms-ui-main-menu-toggle {
-	vertical-align: top;
+	background-image: url(left.gif);
+	background-repeat: no-repeat;
 }
-#pageremover	{ 
-	float: left; position: absolute; visibility: visible;
-	left: 162px; top: 250px; width: 10px; height: 100px;
-	margin: 0px; padding: 0px;
-	text-align: center;
-	vertical-align: middle;
-	line-height: 20px;
-	background-color: @dark;
-	border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-right-style: solid; border-right-width: 1pt;
+.pageleftbar-hidden #lms-ui-main-menu-toggle {
+	background-image: url(right.gif);
 }
-
 .bottomline { border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: @dark; }
 
 TD		{ font-size: 8pt; font-family: @fonts; vertical-align: middle; border-color: black; }
