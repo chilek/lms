@@ -3452,4 +3452,6 @@ $_LANG['AJAX: Error during persistent setting save on server:'] = 'AJAX: Błąd 
 $_LANG['Enter street'] = 'Podaj ulicę';
 $_LANG['- any -'] = '- dowolne -';
 
+$_LANG['Import from file:'] = 'Import z pliku:';
+
 ?>
