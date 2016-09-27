@@ -9,11 +9,11 @@
 		}
 
 		$('#lms-ui-main-menu-toggle').click(function() {
-			var mainMenuVisible = 'false';
+			var mainMenuVisible = 'true';
 			$('#pageleftbar').toggleClass('pageleftbar-hidden');
 			$('#pagecontent').toggleClass('pagecontent-wide');
 			if ($('#pageleftbar').hasClass('pageleftbar-hidden')) {
-				mainMenuVisible = 'true';
+				mainMenuVisible = 'false';
 			}
 			setCookie('main-menu-visible', mainMenuVisible);
 		});
