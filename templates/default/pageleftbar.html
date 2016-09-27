@@ -1,4 +1,20 @@
 <div id="pageleftbar">
+	<img src="img/left.gif" id="lms-ui-main-menu-toggle">
+	<script type="text/javascript">
+	<!--
+		$(function() {
+			$('#lms-ui-main-menu-toggle').click(function() {
+				$('#pageleftbar').toggleClass('pageleftbar-hidden');
+				$('#pagecontent').toggleClass('pagecontent-wide');
+				if ($('#pageleftbar').hasClass('pageleftbar-hidden')) {
+					$('#lms-ui-main-menu-toggle').attr('src', 'img/right.gif');
+				} else {
+					$('#lms-ui-main-menu-toggle').attr('src', 'img/left.gif');
+				}
+			});
+		});
+	//-->
+	</script>
 	<table width="100%">
 		<tr>
 			<td class="text-center valign-top bottomline">

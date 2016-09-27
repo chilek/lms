@@ -21,8 +21,31 @@ BODY		{ font-size: 8pt; font-family: @fonts; background-color: @lucid; margin: 0
 TABLE		{ border-collapse: collapse; border-color: #000000 }
 
 #pagecontainer  { height: 100%; }
-#pageleftbar	{ position: absolute; left: 0px; width: 160px; background-color: @dark; overflow: hidden; border: 1px solid black; }
-#pagecontent	{ margin-left: 174px; _width: 100%; margin-right: 10px; margin-bottom: 10px; padding: 5px 0px; }
+#pageleftbar {
+	position: absolute;
+	left: 0px;
+	width: 160px;
+	background-color:
+	@dark; overflow: hidden;
+	border: 1px solid black;
+	&.pageleftbar-hidden {
+		width: 7px;
+		height: 7px;
+	}
+}
+#pagecontent {
+	margin-left: 174px;
+	_width: 100%;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	padding: 5px 0px;
+	&.pagecontent-wide {
+		margin-left: 17px;
+	}
+}
+#lms-ui-main-menu-toggle {
+	vertical-align: top;
+}
 #pageremover	{ 
 	float: left; position: absolute; visibility: visible;
 	left: 162px; top: 250px; width: 10px; height: 100px;
