@@ -2,16 +2,24 @@
 	<img src="img/left.gif" id="lms-ui-main-menu-toggle">
 	<script type="text/javascript">
 	<!--
-		$(function() {
-			$('#lms-ui-main-menu-toggle').click(function() {
-				$('#pageleftbar').toggleClass('pageleftbar-hidden');
-				$('#pagecontent').toggleClass('pagecontent-wide');
-				if ($('#pageleftbar').hasClass('pageleftbar-hidden')) {
-					$('#lms-ui-main-menu-toggle').attr('src', 'img/right.gif');
-				} else {
-					$('#lms-ui-main-menu-toggle').attr('src', 'img/left.gif');
-				}
-			});
+		var mainMenuVisible = getCookie('main-menu-visible');
+		mainMenuVisible = mainMenuVisible === undefined || mainMenuVisible == 'true';
+		if (!mainMenuVisible) {
+			$('#pageleftbar').addClass('pageleftbar-hidden');
+			$('#lms-ui-main-menu-toggle').attr('src', 'img/right.gif');
+		}
+
+		$('#lms-ui-main-menu-toggle').click(function() {
+			var mainMenuVisible = 'false';
+			$('#pageleftbar').toggleClass('pageleftbar-hidden');
+			$('#pagecontent').toggleClass('pagecontent-wide');
+			if ($('#pageleftbar').hasClass('pageleftbar-hidden')) {
+				$('#lms-ui-main-menu-toggle').attr('src', 'img/right.gif');
+			} else {
+				$('#lms-ui-main-menu-toggle').attr('src', 'img/left.gif');
+				mainMenuVisible = 'true';
+			}
+			setCookie('main-menu-visible', mainMenuVisible);
 		});
 	//-->
 	</script>

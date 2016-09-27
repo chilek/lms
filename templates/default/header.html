@@ -26,6 +26,10 @@
 	<script type="text/javascript">
 		<!--//
 		var AUTOSUGGEST_MAX_LENGTH = {ConfigHelper::getConfig('phpui.autosuggest_max_length', 40)};
+
+		if (!mainMenuVisible) {
+			$('#pagecontent').addClass('pagecontent-wide');
+		}
 		//-->
 	</script>
 	{block name="quicksearch"}
