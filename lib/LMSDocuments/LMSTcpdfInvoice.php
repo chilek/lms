@@ -702,6 +702,8 @@ class LMSTcpdfInvoice extends LMSInvoice {
 	}
 
 	protected function invoice_dates() {
+		$y = $this->backend->GetY();
+
 		$paytype = $this->data['paytype'];
 		$this->backend->SetFont('arial', '', 8);
 		$this->backend->Ln();
@@ -711,6 +713,8 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		}
 		$payment = trans('Payment type:') . ' <b>' . $this->data['paytypename'] . '</b>';
 		$this->backend->writeHTMLCell(0, 0, '', '', $payment, 0, 1, 0, true, 'L');
+
+		$y = $this->backend->SetY($y);
 	}
 
 	protected function invoice_expositor() {
@@ -736,7 +740,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			$this->backend->SetFont('arial', '', 8);
 			$h = $this->backend->getStringHeight(0, $tmp);
 			$tmp = mb_ereg_replace('\r?\n', '<br>', $tmp);
-			$this->backend->writeHTMLCell(0, 0, '', $this->backend->GetY() - $h, $tmp, 0, 1, 0, true, 'C');
+			$this->backend->writeHTMLCell(0, 0, '', '', $tmp, 0, 1, 0, true, 'C');
 		}
 	}
 
