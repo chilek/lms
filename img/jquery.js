@@ -51,11 +51,15 @@ $(function() {
 		dateFormat: "yy/mm/dd",
 		changeYear: true,
 		beforeShow: function(input, inst) {
-			$(input).tooltip('disable');
-			$(this).data('tooltip', input);
+			if ($(input).hasClass('ui-tooltip')) {
+				$(input).tooltip('disable');
+				$(this).data('tooltip', input);
+			}
 		},
 		onClose: function(dateText, inst) {
-			$($(this).data('tooltip')).tooltip('enable');
+			if ($(this).data('tooltip') !== undefined) {
+				$(this).tooltip('enable');
+			}
 		}
 	})
 	.attr("autocomplete", autocomplete);
