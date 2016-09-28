@@ -31,7 +31,7 @@
  * \param  $start pool start number
  * \param  $end   pool end number
  * \param  $id    pool id who want ignore
- * \return string error text message
+ * \return array  array with text messages
  * \return 0      no error
  */
 function valid_pool( $name, $pstart, $pend, $id = 0 ) {
@@ -64,31 +64,48 @@ function valid_pool( $name, $pstart, $pend, $id = 0 ) {
         $error['poolend'] = trans('Incorrect format! Only values 0 to 9.');
     }
 
-    $fval_pstart = floatval($pstart);
-    $fval_pend   = floatval($pend);
-
-    if (empty($error['poolstart']) && empty($error['poolend']) && $fval_pstart >= $fval_pend) {
+    if (gmp_cmp($pstart, $pend) == 0 || gmp_cmp($pstart, $pend) == 1) {
         $error['poolstart'] = trans('Pool start must be lower that end!');
     }
 
     foreach ($pool_list as $v) {
-        if ($id == $v['id'])
+        if ($id == $v['id'] || !$id)
             continue;
 
-        $v_pstart = floatval($v['poolstart']);
-        $v_pend   = floatval($v['poolend']);
+        $check1 = gmp_cmp($pstart, $v['poolstart']);
+        $check2 = gmp_cmp($pstart, $v['poolend']);
 
-        if ($fval_pstart >= $v_pstart && $fval_pstart <= $v_pend)
+        if ( ($check1 == 1 || $check1 == 0) && ($check2 == -1 || $check2 == 0) ) {
             $error['poolstart'] = trans('Number coincides with pool `$a` !', $v['name']);
+        }
 
-        if ($fval_pend >= $v_pstart && $fval_pend <= $v_pend)
+        $check1 = gmp_cmp($pend, $v['poolstart']);
+        $check2 = gmp_cmp($pend, $v['poolend']);
+
+        if ( ($check1 == 1 || $check1 == 0) && ($check2 == -1 || $check2 == 0) ) {
             $error['poolend'] = trans('Number coincides with pool `$a` !', $v['name']);
+        }
 
-        if ($fval_pstart < $v_pstart && $fval_pend > $v_pend)
+        if ($check1 == -1 && $check2 == 1) {
             $error['poolstart'] = trans('Number range coincides with pool `$a` !', $v['name']);
+        }
     }
 
     return ($error) ? $error : 0;
+}
+
+/*
+ * \brief Function return pool size by begining and end number.
+ *
+ * \param $begin start number
+ * \param $end   end number
+ * return string pool range
+ */
+function getPoolSize( $begin, $end ) {
+    // end - begin + 1
+    $size = gmp_add( gmp_sub($end, $begin), 1);
+
+    return gmp_strval($size);
 }
 
 if (empty($_GET['action'])) {
@@ -98,9 +115,8 @@ if (empty($_GET['action'])) {
 switch($_GET['action']) {
 
     case 'add':
-        $pool  = array_map('trim', $_POST);
-
-        $error = valid_pool( $pool['name'], $pool['poolstart'], $pool['poolend'] );
+        $p     = array_map('trim', $_POST);
+        $error = valid_pool( $p['name'], $p['poolstart'], $p['poolend'] );
 
         if ($error) {
             die( json_encode($error) );
@@ -108,18 +124,38 @@ switch($_GET['action']) {
 
         $DB->BeginTrans();
 
-        $status = ($pool['status'] == '1') ? 1 : 0;
+        $status = ($p['status'] == '1') ? 1 : 0;
 
         $query = $DB->Execute('INSERT INTO voip_pool_numbers (disabled, name, poolstart, poolend, description) VALUES (?,?,?,?,?)',
-                               array($status, $pool['name'], $pool['poolstart'], $pool['poolend'], $pool['description']));
+                               array($status, $p['name'], $p['poolstart'], $p['poolend'], $p['description']));
 
         if ($query == 1) {
             $DB->CommitTrans();
-            die( json_encode( array('id' => $DB->GetLastInsertID("voip_pool_numbers")) ) );
+
+            $size = getPoolSize($p['poolstart'], $p['poolend']);
+            $phones_used = 0;
+
+            $voip_phones = $DB->GetAll("SELECT phone FROM voip_numbers;");
+
+            if (count($voip_phones)) {
+                foreach ($voip_phones as $phone) {
+                    $ph = $phone['phone'];
+
+                    if (gmp_cmp($ph, $p['poolstart']) != -1 && gmp_cmp($ph, $p['poolend']) != 1) {
+                        ++$phones_used;
+                    }
+                }
+            }
+
+            die( json_encode( array('id'            => $DB->GetLastInsertID("voip_pool_numbers"),
+                                    'size'          => getPoolSize($p['poolstart'], $p['poolend']),
+                                    'phones_used'   => $phones_used,
+                                    'phones_unused' => gmp_strval( gmp_sub($size, $phones_used) ) ) ) );
         } else {
             $DB->RollbackTrans();
             die( json_encode( array('name' => trans("Operation failed!")) ) );
         }
+
         return 0;
     break;
 
@@ -144,6 +180,7 @@ switch($_GET['action']) {
 
         if ($query == 1) {
             $DB->CommitTrans();
+            die( json_encode( array('id' => $p['poolid']) ) );
         } else {
             $DB->RollbackTrans();
             die( json_encode( array('name' => trans("Operation failed!")) ) );
@@ -176,7 +213,7 @@ switch($_GET['action']) {
         $query = $DB->Execute("UPDATE voip_pool_numbers SET disabled=? WHERE id=?", array($state, $id));
 
         if ($query == 0) {
-            echo json_encode( array( trans("Operation failed!")) );
+            echo json_encode( array( trans("Operation failed!") ) );
             $DB->RollbackTrans();
         } else {
             $DB->CommitTrans();
@@ -190,10 +227,28 @@ $pool_list = $DB->GetAll("SELECT id, disabled, name, poolstart, poolend, descrip
                           (select count(*) from voip_numbers where phone between vpn.poolstart AND vpn.poolend) as used_phones
                           FROM voip_pool_numbers vpn;");
 
-$layout['pagetitle'] = trans('Pool numbers');
+$voip_phones = $DB->GetAll("SELECT phone FROM voip_numbers;");
 
-if (!ConfigHelper::checkConfig('phpui.big_networks'))
-    $SMARTY->assign('customers', $LMS->GetCustomerNames());
+if ($pool_list) {
+    $counter = count($pool_list);
+
+    for ($i=0; $i<$counter; ++$i) {
+        $pool_list[$i]['size']  = getPoolSize($pool_list[$i]['poolstart'], $pool_list[$i]['poolend']);
+        $pool_list[$i]['phones_used'] = 0;
+
+        foreach ($voip_phones as $phone) {
+            $p = $phone['phone'];
+
+            if (gmp_cmp($p, $pool_list[$i]['poolstart']) != -1 && gmp_cmp($p, $pool_list[$i]['poolend']) != 1) {
+                ++$pool_list[$i]['phones_used'];
+            }
+        }
+
+        $pool_list[$i]['phones_unused'] = gmp_strval( gmp_sub($pool_list[$i]['size'], $pool_list[$i]['phones_used']) );
+    }
+}
+
+$layout['pagetitle'] = trans('Pool numbers');
 
 $SMARTY->assign('prefixlist', $LMS->GetPrefixList());
 $SMARTY->assign('pool_list' , $pool_list);
