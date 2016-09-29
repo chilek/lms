@@ -176,9 +176,6 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			$y -= 5;
 		}
 
-		if ($this->data['cancelled'])
-			$y = $y - $this->backend->text_align_left($x,$y,$font_size, '<b>' . trans('(CANCELLED)') . '</b>');
-
 		//$font_size = 16;
 		//$y = $y - $this->backend->text_align_left($x, $y, $font_size, $this->data['type']);
 
@@ -849,6 +846,11 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		}
 	}
 
+	protected function invoice_cancelled() {
+		if ($this->data['cancelled'])
+			$this->backend->addText(80, 200, 85, trans('CANCELLED'), 0, 'left', -45);
+	}
+
 	public function invoice_body_standard() {
 		$page = $this->backend->ezStartPageNumbers($this->backend->ez['pageWidth']-50,20,8,'right',trans('Page $a of $b', '{PAGENUM}','{TOTALPAGENUM}'),1);
 		$top = $this->backend->ez['pageHeight'] - 50;
@@ -867,6 +869,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$top = $this->invoice_to_pay(30, $top);
 		$top = $top - 20;
 		$this->invoice_footnote(30, $top, 530, 10);
+		$this->invoice_cancelled();
 		$page = $this->backend->ezStopPageNumbers(1, 1, $page);
 	}
 
@@ -892,6 +895,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			$this->invoice_main_form_fill(187, 3, 0.4);
 			$this->invoice_simple_form_fill(14, 3, 0.4);
 		}
+		$this->invoice_cancelled();
 		$page = $this->backend->ezStopPageNumbers(1,1,$page);
 	}
 }

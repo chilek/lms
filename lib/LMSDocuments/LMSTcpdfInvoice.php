@@ -581,12 +581,6 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			$title = trans('Invoice No. $a', $docnumber);
 		$this->backend->Write(0, $title, '', 0, 'C', true, 0, false, false, 0);
 
-		if ($this->data['cancelled']) {
-			$oldy = $this->backend->GetY();
-			$this->backend->Write(0, trans('(CANCELLED)'), '', 0, 'C', true, 0, false, false, 0);
-			$this->backend->SetY($oldy);
-		}
-
 		if (isset($this->data['invoice'])) {
 			$this->backend->SetFont('arial', 'B', 12);
 			$docnumber = docnumber($this->data['invoice']['number'], $this->data['invoice']['template'], $this->data['invoice']['cdate']);
@@ -757,6 +751,22 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->backend->writeHTMLCell(40, 0, 15, 6, '<img src="' . $image_path . '">');
 	}
 
+	public function invoice_cancelled() {
+		if ($this->data['cancelled']) {
+			$x = $this->backend->GetX();
+			$y = $this->backend->GetY();
+
+			$this->backend->StartTransform();
+			$this->backend->SetFont('arial', 'B', 70);
+			$this->backend->Rotate(45, 0, 200);
+			$this->backend->SetXY(0, 200);
+			$this->backend->Write(0, trans('CANCELLED'), '', 0, 'C', true, 0, false, false, 0);
+			$this->backend->StopTransform();
+
+			$this->backend->SetXY($x, $y);
+		}
+	}
+
 	public function invoice_body_standard() {
 		$this->invoice_header_image();
 		$this->invoice_date();
@@ -770,6 +780,8 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->invoice_dates();
 		$this->invoice_expositor();
 		$this->invoice_footnote();
+		$this->invoice_cancelled();
+
 		$docnumber = docnumber($this->data['number'], $this->data['template'], $this->data['cdate']);
 		$this->backend->SetTitle(trans('Invoice No. $a', $docnumber));
 		$this->backend->SetAuthor($this->data['division_name']);
@@ -821,6 +833,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			$this->invoice_simple_form_fill();
 			$this->invoice_main_form_fill();
 		}
+		$this->invoice_cancelled();
 
 		$docnumber = docnumber($this->data['number'], $this->data['template'], $this->data['cdate']);
 		$this->backend->SetTitle(trans('Invoice No. $a', $docnumber));
