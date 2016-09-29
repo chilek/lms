@@ -3462,4 +3462,6 @@ $_LANG['Document has been published already! Are you sure you want to cancel it 
 $_LANG['Some documents have been published already! Are you sure you want to delete them despite this?'] = 'Cześć dokumentów została już upubliczniona! Jesteś pewien, że mimo tego chcesz je usunąć?';
 $_LANG['Some documents have been published already!'] = 'Cześć dokumentów została już upubliczniona!';
 
+$_LANG['(CANCELLED)'] = '(ANULOWANA)';
+
 ?>

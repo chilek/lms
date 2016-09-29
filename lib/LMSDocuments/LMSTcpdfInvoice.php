@@ -581,6 +581,12 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			$title = trans('Invoice No. $a', $docnumber);
 		$this->backend->Write(0, $title, '', 0, 'C', true, 0, false, false, 0);
 
+		if ($this->data['cancelled']) {
+			$oldy = $this->backend->GetY();
+			$this->backend->Write(0, trans('(CANCELLED)'), '', 0, 'C', true, 0, false, false, 0);
+			$this->backend->SetY($oldy);
+		}
+
 		if (isset($this->data['invoice'])) {
 			$this->backend->SetFont('arial', 'B', 12);
 			$docnumber = docnumber($this->data['invoice']['number'], $this->data['invoice']['template'], $this->data['invoice']['cdate']);

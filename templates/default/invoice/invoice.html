@@ -11,6 +11,9 @@
 			{else}
 			    <B>{t a=$number}Invoice No. $a{/t}</B><BR>
 			{/if}
+			{if $invoice.cancelled}
+			<B>{trans("(CANCELLED)")}</B><BR>
+			{/if}
 			<!--<B>{*$type*}</B>//-->
 			{if $duplicate}
 			<BR><font class="sdr">{trans("Duplicate draw-up date:")} {$smarty.now|date_format:"%Y/%m/%d"}</font>

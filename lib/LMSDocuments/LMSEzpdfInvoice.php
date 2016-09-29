@@ -176,6 +176,9 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			$y -= 5;
 		}
 
+		if ($this->data['cancelled'])
+			$y = $y - $this->backend->text_align_left($x,$y,$font_size, '<b>' . trans('(CANCELLED)') . '</b>');
+
 		//$font_size = 16;
 		//$y = $y - $this->backend->text_align_left($x, $y, $font_size, $this->data['type']);
 
