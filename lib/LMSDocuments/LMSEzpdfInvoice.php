@@ -847,13 +847,26 @@ class LMSEzpdfInvoice extends LMSInvoice {
 	}
 
 	protected function invoice_cancelled() {
-		if ($this->data['cancelled'])
-			$this->backend->addText(80, 200, 85, trans('CANCELLED'), 0, 'left', -45);
+		if ($this->data['cancelled']) {
+			$this->backend->setColor(0.5, 0.5, 0.5);
+			$this->backend->addText(80, 200, 80, trans('CANCELLED'), 0, 'left', -45);
+			$this->backend->setColor(0, 0, 0);
+		}
+	}
+
+	protected function invoice_no_accountant() {
+		if (!$this->data['publish']) {
+			$this->backend->setColor(0.5, 0.5, 0.5);
+			$this->backend->addText(80, 200, 50, trans('NO ACCOUNTANT DOCUMENT'), 0, 'left', -45);
+			$this->backend->setColor(0, 0, 0);
+		}
 	}
 
 	public function invoice_body_standard() {
 		$page = $this->backend->ezStartPageNumbers($this->backend->ez['pageWidth']-50,20,8,'right',trans('Page $a of $b', '{PAGENUM}','{TOTALPAGENUM}'),1);
 		$top = $this->backend->ez['pageHeight'] - 50;
+		$this->invoice_cancelled();
+		$this->invoice_no_accountant();
 		$this->invoice_header_image(30, $top - (self::HEADER_IMAGE_HEIGHT / 2));
 		$this->invoice_dates(500, $top);
 		$this->invoice_address_box(400, $top - 100);
@@ -869,13 +882,14 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$top = $this->invoice_to_pay(30, $top);
 		$top = $top - 20;
 		$this->invoice_footnote(30, $top, 530, 10);
-		$this->invoice_cancelled();
 		$page = $this->backend->ezStopPageNumbers(1, 1, $page);
 	}
 
 	public function invoice_body_ft0100() {
 		$page = $this->backend->ezStartPageNumbers($this->backend->ez['pageWidth']/2+10,$this->backend->ez['pageHeight']-30,8,'',trans('Page $a of $b', '{PAGENUM}','{TOTALPAGENUM}'),1);
 		$top = $this->backend->ez['pageHeight'] - 50;
+		$this->invoice_cancelled();
+		$this->invoice_no_accountant();
 		$this->invoice_header_image(30, $top - (self::HEADER_IMAGE_HEIGHT / 2));
 		$this->invoice_dates(500, $top);
 		$this->invoice_address_box(400, $top - 100);
@@ -895,7 +909,6 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			$this->invoice_main_form_fill(187, 3, 0.4);
 			$this->invoice_simple_form_fill(14, 3, 0.4);
 		}
-		$this->invoice_cancelled();
 		$page = $this->backend->ezStopPageNumbers(1,1,$page);
 	}
 }

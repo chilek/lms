@@ -3463,5 +3463,6 @@ $_LANG['Some documents have been published already! Are you sure you want to del
 $_LANG['Some documents have been published already!'] = 'Cześć dokumentów została już upubliczniona!';
 
 $_LANG['CANCELLED'] = 'ANULOWANO';
+$_LANG['NO ACCOUNTANT DOCUMENT'] = 'DOKUMENT NIEKSIĘGOWY';
 
 ?>

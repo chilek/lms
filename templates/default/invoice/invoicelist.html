@@ -197,10 +197,16 @@ window.open('?m=invoice&amp;id={$invoice.invoice}&amp;original={$invoice.origina
 				<a onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to recover cancelled invoice \'$a\' from database?{/t}')" href="?m=invoicecancel&amp;id={$invoice.id}&recover=1"><img src="img/recover.gif" alt="[ {trans("Recover")} ]" title="[{trans("Recover")}]"></a>
 			{/if}
 			{if $invoice.type == $smarty.const.DOC_INVOICE}
-			<A HREF="?m=invoice&amp;id={$invoice.id}" TARGET="_blank"><IMG src="img/print.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
+			{if !$invoice.published || ConfigHelper::checkConfig('privileges.superuser')}
+			<A HREF="?m=invoice&id={$invoice.id}&dontpublish=1" TARGET="_blank"><IMG src="img/view.gif" alt="[ {trans("View")} ]" title="[ {trans("View")} ]"></A>
+			{/if}
+			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/print.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
 			{/if}
 			{if $invoice.type == $smarty.const.DOC_CNOTE}
-			<A HREF="?m=invoice&amp;id={$invoice.id}" TARGET="_blank"><IMG src="img/printn.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
+			{if !$invoice.published || ConfigHelper::checkConfig('privileges.superuser')}
+			<A HREF="?m=invoice&id={$invoice.id}&dontpublish=1" TARGET="_blank"><IMG src="img/view.gif" alt="[ {trans("View")} ]" title="[ {trans("View")} ]"></A>
+			{/if}
+			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/printn.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
 			{/if}
 			<INPUT TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}" class="lms-ui-multi-check"{if $marks.$invoiceid} checked{/if}>
 		</TD>

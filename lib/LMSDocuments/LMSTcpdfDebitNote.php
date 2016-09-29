@@ -191,6 +191,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice {
 	public function Draw($note) {
 		$this->data = $note;
 
+		$this->invoice_no_accountant();
 		$this->note_date();
 		$this->note_title();
 		$this->note_drawer();

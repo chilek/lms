@@ -14,6 +14,9 @@
 			{if $invoice.cancelled}
 			<B>{trans("CANCELLED")}</B><BR>
 			{/if}
+			{if !$invoice.publish}
+			<B>{trans("NO ACCOUNTANT DOCUMENT")}</B><BR>
+			{/if}
 			<!--<B>{*$type*}</B>//-->
 			{if $duplicate}
 			<BR><font class="sdr">{trans("Duplicate draw-up date:")} {$smarty.now|date_format:"%Y/%m/%d"}</font>
