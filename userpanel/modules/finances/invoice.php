@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -76,6 +76,9 @@ if(!empty($_POST['inv']))
 		$document->Draw($invoice);
 		if (!isset($invoice['last']))
 			$document->NewPage();
+
+		if (!$invoice['published'])
+			$db->Execute('UPDATE documents SET published = 1 WHERE id = ?', array($invoice['id']));
 	}
 } else {
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
@@ -94,6 +97,9 @@ if(!empty($_POST['inv']))
 		$layout['pagetitle'] = trans('Credit Note No. $a', $docnumber);
 
 	$document->Draw($invoice);
+
+	if (!$invoice['published'])
+		$db->Execute('UPDATE documents SET published = 1 WHERE id = ?', array($invoice['id']));
 }
 
 if (!is_null($attachment_name) && isset($docnumber)) {

@@ -27,6 +27,9 @@
 $id = intval($_GET['id']);
 
 if ($id && $_GET['is_sure'] == '1') {
+	if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkConfig('privileges.superuser'))
+		return;
+
 	$DB->BeginTrans();
 	if ($SYSLOG) {
 		$customerid = $DB->GetOne('SELECT customerid FROM documents WHERE id = ?', array($id));

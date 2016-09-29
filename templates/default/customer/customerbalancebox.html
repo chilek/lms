@@ -67,6 +67,17 @@
 {if ConfigHelper::checkConfig('phpui.delete_link_in_customerbalancebox')}
 	function delpos()
 	{
+		if ($('tr[data-published="1"] :checked').length) {
+			{if ConfigHelper::checkConfig('privileges.superuser')}
+			if (!confirm('{trans("Some documents have been published already! Are you sure you want to delete them despite this?")}')) {
+				return;
+			}
+			{else}
+			alert('{trans("Some documents have been published already!")}');
+			return;
+			{/if}
+		}
+
 		if (!confirm('{trans("Are you sure, you want to delete selected operation(s) and document item(s)?")}'))
 			return;
 
@@ -145,7 +156,7 @@
 				</THEAD>
 				<TBODY>
 				{foreach $balancelist.list as $item}
-				<TR>
+				<TR{if $item.docid} data-published="{$item.published}"{/if}>
 					<TD class="nobr">{$item.date}</TD>
 					<TD class="nobr">{$item.username|truncate:16:"...":true}</TD>
 					<TD class="text-right nobr">{if !$item.type}{($item.value*-1)|money_format}{else}-{/if}</TD>

@@ -95,4 +95,6 @@ interface LMSFinanceManagerInterface
     public function GetTaxes($from = NULL, $to = NULL);
     
     public function CalcAt($period, $date);
+
+	public function isDocumentPublished($id);
 }
