@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2014 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -138,6 +138,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		}
 	}
 } elseif ($invoice = $LMS->GetInvoiceContent($_GET['id'])) {
+	$ids = array($_GET['id']);
+
 	$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 	if(!isset($invoice['invoice']))
 		$layout['pagetitle'] = trans('Invoice No. $a', $docnumber);
@@ -179,5 +181,8 @@ if (!is_null($attachment_name) && isset($docnumber)) {
 	$attachment_name = 'invoices.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
 
 $document->WriteToBrowser($attachment_name);
+
+if (isset($ids) && !empty($ids))
+	$DB->Execute('UPDATE documents SET published = 1 WHERE id IN (' . implode(',', $ids) . ')');
 
 ?>

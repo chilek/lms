@@ -114,6 +114,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		$document->Draw($note);
 	}
 } elseif ($note = $LMS->GetNoteContent($_GET['id'])) {
+	$ids = array($_GET['id']);
+
 	$docnumber = $number = docnumber($note['number'], $note['template'], $note['cdate']);
 	$layout['pagetitle'] = trans('Debit Note No. $a', $number);
 
@@ -131,5 +133,8 @@ if (!is_null($attachment_name) && isset($docnumber)) {
 	$attachment_name = 'invoices.' . ($note_type == 'pdf' ? 'pdf' : 'html');
 
 $document->WriteToBrowser($attachment_name);
+
+if (isset($ids) && !empty($ids))
+	$DB->Execute('UPDATE documents SET published = 1 WHERE id IN (' . implode(',', $ids) . ')');
 
 ?>
