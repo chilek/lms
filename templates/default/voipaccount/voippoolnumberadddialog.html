@@ -74,7 +74,7 @@ $( function() {
         })
         .done(function(data) {
             var response = JSON.parse(data);
-                                              console.log(data);
+
             if (response['id'] == undefined) {
                 if (response['poolend'] != undefined)
                     $("#poolend").addClass("ui-state-error").prop('title', response['poolend']);
@@ -86,7 +86,6 @@ $( function() {
                     $("#name").addClass("ui-state-error").prop('title', response['name']);
             } else {
                 var table = $("#poolnumbers").DataTable();
-                var size  = $("#poolend").val() - $("#poolstart").val() + 1;
                 var appended_class = "";
                 var bulb  = '{$bulb_on}';
 
@@ -95,13 +94,20 @@ $( function() {
                     bulb = '{$bulb_off}';
                 }
 
-                table.row.add([$("#name").val(), $("#description").val(), $("#poolstart").val(), $("#poolend").val(), size, 0, size, bulb + ' {$edit_ico} {$delete_ico}'])
+                var t = table.row.add([$("#name").val(), $("#description").val(), $("#poolstart").val(), $("#poolend").val(), response['size'],
+                                       response['phones_used'], response['phones_unused'], bulb + ' {$edit_ico} {$delete_ico}'])
                          .draw()
                          .nodes()
                          .to$()
                          .addClass(appended_class)
-                         .attr("data-row-id", response['id'])
+                         .attr("data-pool-id", response['id'])
                          .effect("highlight",{},3000);
+
+                $(t).find('td:eq(0)').attr('data-role', 'name');
+                $(t).find('td:eq(1)').attr('data-role', 'desc');
+                $(t).find('td:eq(2)').attr('data-role', 'pstart');
+                $(t).find('td:eq(3)').attr('data-role', 'pend');
+                $(t).find('td:eq(7)').addClass( "nobr" );
 
                 pool_add_dialog.close();
                 pool_add_dialog.formReset();

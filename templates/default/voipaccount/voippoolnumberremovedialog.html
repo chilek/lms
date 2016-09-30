@@ -36,7 +36,7 @@ $( function() {
         })
         .done(function(data) {
             if (data) {
-            	$("#dialog-remove-pool-message").text( JSON.parse(data("poolid")) );
+                $("#dialog-remove-pool-message").text( JSON.parse(data("poolid")) );
             } else {
                 $("#poolnumbers").DataTable()
                                  .row("tr[data-pool-id=" + (pool_remove_dialog.handler.data("poolid")) + "]")

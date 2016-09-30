@@ -1,14 +1,15 @@
 <!--// $Id$ //-->
 
-{assign var=remove_number value='<a href="javascript:void(0);" class="remove_number"><span class="ui-icon ui-icon-closethick"></span></a>'}
+{assign var=remove_number      value='<span class="ui-icon ui-icon-closethick remove-number"></span>'}
+{assign var=pool_number_select value='<span class="ui-icon ui-icon-clipboard show-pool-list"></span>'}
 
 <style>
-    .phone-table tr:hover td:nth-child(2) div a {
+    .phone-table tr:hover td:nth-child(2) div span {
         visibility: visible;
         cursor: pointer;
     }
 
-    .phone-table tr td:nth-child(2) div a {
+    .phone-table tr td:nth-child(2) div span {
         visibility: hidden;
     }
 </style>
@@ -64,7 +65,7 @@
                     <table id="phone_numbers_table" class="phone-table">
                         <tr>
                             <td><input type="tel" name="voipaccountedit[phone][0]" value="{$voipaccountinfo.phones[0].phone}" {tip trigger="phone0"}></td>
-                            <td><div><a href="#" id="add_number"><span class="ui-icon ui-icon-plusthick"></span></a></div></td>
+                            <td><div>{$pool_number_select}</div></td>
                         </tr>
 
                         {if isset($voipaccountinfo['phones'])}
@@ -78,11 +79,12 @@
 
                                 <tr class="row">
                                     <td><input type="tel" name="voipaccountedit[phone][{$k}]" value="{$v.phone}" {tip trigger="phone{$k}"}></td>
-                                    <td><div>{$remove_number}</div></td>
+                                    <td><div>{$pool_number_select} {$remove_number}</div></td>
                                 </tr>
                             {/foreach}
                         {/if}
                     </table>
+                    <a href="#" id="add_number"><span class="ui-icon ui-icon-plusthick"></span> {trans("add next")}</a>
                 </td>
             </tr>
             {/block}
@@ -225,25 +227,30 @@
         </tbody>
     </table>
 </form>
+
+{include file='voipaccount/voipaccountaddboxdialog.html'}
+
 <script type="text/javascript">
 <!--
-	document.forms['editvoipaccount'].elements['voipaccountedit[login]'].focus();
-	check_teryt('location', true);
+    document.forms['editvoipaccount'].elements['voipaccountedit[login]'].focus();
+    check_teryt('location', true);
 
     $('#teryt').change(function () {
         $("#location-box").toggle();
     });
 
     var remove_number = '{$remove_number}';
+    var pool_number_select = '{$pool_number_select}';
+
     $i = {if !isset($phone_next_index)}0{else}{$phone_next_index}{/if};
 
     $('#add_number').on('click', function () {
         ++$i;
         var phone_number_input = '<input type="tel" name="voipaccountedit[phone]['+$i+']" {tip trigger="phone'+i+'"}>';
-        $('#phone_numbers_table').append('<tr class="row"><td>' + phone_number_input + '</td><td><div>' + remove_number + '</div></td></tr>');
+        $('#phone_numbers_table').append('<tr class="row"><td>' + phone_number_input + '</td><td><div>' + pool_number_select + ' ' + remove_number + '</div></td></tr>');
     });
 
-    $("#phone_numbers_table").on('click', '.remove_number', function() {
+    $( "body" ).on('click', '.remove-number', function() {
         $(this).closest('tr').remove();
     });
 //-->

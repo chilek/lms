@@ -43,9 +43,9 @@
             <TD data-role="desc">{$pool.description}</TD>
             <TD data-role="pstart">{$pool.poolstart}</TD>
             <TD data-role="pend">{$pool.poolend}</TD>
-            <TD>{$size}</TD>
-            <TD>{$pool.used_phones}</TD>
-            <TD>{$size-$pool.used_phones}</TD>
+            <TD>{$pool.size}</TD>
+            <TD>{$pool.phones_used}</TD>
+            <TD>{$pool.phones_unused}</TD>
             <TD CLASS="nobr">
                 {if $pool.disabled == 1}{$bulb_off}{else}{$bulb_on}{/if}
                 {$edit_ico}

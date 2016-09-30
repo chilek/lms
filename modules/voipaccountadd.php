@@ -24,6 +24,38 @@
  *  $Id$
  */
 
+if (empty($_GET['action'])) {
+    $_GET['action'] = 'none';
+}
+
+switch ($_GET['action']) {
+
+    case 'getpoolnumbers':
+        $poolid = intval($_POST['poolid']);
+
+        $pool = $DB->GetRow("SELECT poolstart, poolend FROM voip_pool_numbers WHERE id = ?" ,array($poolid));
+
+        $range   = array();
+        $range[] = array($pool['poolstart'],'');
+        $tmp     = $pool['poolstart'];
+
+        while ( gmp_cmp($tmp, $pool['poolend']) ) {
+            $tmp = gmp_strval( gmp_add($tmp, 1) );
+            $range[$tmp] = array($tmp,'');
+        }
+
+        $numbers = $DB->GetAll("SELECT phone FROM voip_numbers;");
+        foreach ($numbers as $n) {
+            if (isset($range[$n['phone']]))
+                $range[$n['phone']][1] = trans("used");
+        }
+
+        $range = array_values($range);
+
+        die( json_encode($range) );
+    break;
+}
+
 $voipaccountdata['access'] = 1;
 $voipaccountdata['ownerid'] = 0;
 
@@ -155,6 +187,7 @@ $hook_data = $plugin_manager->executeHook(
 
 $voipaccountdata = $hook_data['voipaccountdata'];
 
+$SMARTY->assign('pool_list', $DB->GetAll("SELECT id,name FROM voip_pool_numbers;"));
 $SMARTY->assign('customers', $customers);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('voipaccountdata', $voipaccountdata);
