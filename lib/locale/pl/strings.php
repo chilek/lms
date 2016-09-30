@@ -228,6 +228,7 @@ $_LANG['Begin:'] = 'Początek:';
 $_LANG['Start map from:'] = 'Zacznij mapę od:';
 $_LANG['Begin of DHCP range:'] = 'Początek zakresu DHCP:';
 $_LANG['Enter customer ID, first/lastname, email or address and press Enter'] = 'Wprowadź identyfikator klienta, imię, nazwisko, adres lub email i naciśnij Enter';
+$_LANG['Enter phone number and press Enter'] = 'Wprowadź numer telefonu i naciśnij Enter';
 $_LANG['Enter node ID, name, IP address or MAC address and press Enter'] = 'Wprowadź identyfikator komputera, nazwę, adres IP lub adres MAC i naciśnij Enter';
 $_LANG['Enter request tracker ID, subject or requestor name and press Enter'] = 'Wprowadź identyfikator zgłoszenia, temat lub nazwisko/nazwę zgłaszającego i naciśnij Enter';
 $_LANG['Both IP addresses for DHCP range are required!'] = 'Obydwa adresy IP są wymagane dla zakresu DHCP!';
