@@ -1201,3 +1201,6 @@ table.dataTable thead tr:last-child th {
     opacity: 1;
   }
 }
+input.lms-ui-quick-search {
+  display: none;
+}

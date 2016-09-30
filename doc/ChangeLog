@@ -125,6 +125,8 @@ version ?.??.?? (????-??-??):
   - added suport for voip pool numbers [kosa/chilan]
   - document form title is automatically set after document template selection
     to form_title or title template property [chilan]
+  - dynamic presentation of quick search input depending - they are shown after
+    mouse over on quick search icons [chilan]
 
 version 1.11.20 (2016-04-19):
 
