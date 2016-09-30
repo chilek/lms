@@ -732,6 +732,11 @@ $(function() {
 	var qs_inputs = $('input.lms-ui-quick-search');
 	var qs_timers = [];
 
+	qs_inputs.each(function(index, input) {
+		new AutoSuggest($(input).closest('form').get(0), input,
+			'?m=quicksearch&ajax=1&mode=' + $(input).attr('data-mode') + '&what=', lmsSettings.quickSearchAutoSubmit);
+	});
+
 	function clearTimers() {
 		$.each(qs_timers, function(index, timer) {
 			clearTimeout(timer);

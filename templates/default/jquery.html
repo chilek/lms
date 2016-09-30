@@ -12,7 +12,8 @@
 	var lmsSettings = {
 		language: '{$language}',
 		settingsTimeout: {intval(ConfigHelper::getConfig('phpui.settings_timout', 28800))},
-		wysiwygEditor: {if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}true{else}false{/if}
+		wysiwygEditor: {if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}true{else}false{/if},
+		quickSearchAutoSubmit: '{ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')}'
 	}
 	var lmsMessages = {
 		persistentSettingSaveError: '{trans("AJAX: Error during persistent setting save on server:")}',
