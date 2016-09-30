@@ -123,6 +123,8 @@ version ?.??.?? (????-??-??):
     probably received by customer [chilan]
   - financial documents can be previewed without publishing [chilan]
   - added suport for voip pool numbers [kosa/chilan]
+  - document form title is automatically set after document template selection
+    to form_title or title template property [chilan]
 
 version 1.11.20 (2016-04-19):
 
