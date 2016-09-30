@@ -849,13 +849,13 @@ class LMSEzpdfInvoice extends LMSInvoice {
 	protected function invoice_cancelled() {
 		if ($this->data['cancelled']) {
 			$this->backend->setColor(0.5, 0.5, 0.5);
-			$this->backend->addText(80, 200, 80, trans('CANCELLED'), 0, 'left', -45);
+			$this->backend->addText(180, 350, 50, trans('CANCELLED'), 0, 'left', -45);
 			$this->backend->setColor(0, 0, 0);
 		}
 	}
 
 	protected function invoice_no_accountant() {
-		if (!$this->data['publish']) {
+		if (!$this->data['publish'] && !$this->data['cancelled']) {
 			$this->backend->setColor(0.5, 0.5, 0.5);
 			$this->backend->addText(80, 200, 50, trans('NO ACCOUNTANT DOCUMENT'), 0, 'left', -45);
 			$this->backend->setColor(0, 0, 0);
