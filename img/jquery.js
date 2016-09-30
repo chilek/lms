@@ -776,7 +776,8 @@ $(function() {
 		if (e.keyCode != 9)
 			return;
 		var input = $(e.target);
-		var index = qs_inputs.index(input);
+		if (qs_inputs.index(input) == -1)
+			return;
 		if (e.shiftKey) {
 			newInput = input.prev().prev('input.lms-ui-quick-search');
 			if (!newInput.length) {
