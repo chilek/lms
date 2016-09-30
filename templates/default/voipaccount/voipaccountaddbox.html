@@ -56,11 +56,7 @@
                     <table id="phone_numbers_table" class="phone-table">
                         <tr>
                             <td><input type="tel" name="voipaccountdata[phone][0]" value="{$voipaccountdata.phone[0]}" {tip trigger="phone0"}></td>
-                            <td>
-                                <div>
-                                    {$pool_number_select}
-                                </div>
-                            </td>
+                            <td><div>{$pool_number_select}</div></td>
                         </tr>
 
                         {if isset($voipaccountdata['phone'])}
