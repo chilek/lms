@@ -2,30 +2,57 @@
     .full-width {
         width: 20%;
     }
-
+    #adv_options {
+        display: none;
+    }
+    #adv_options > div {
+        display: none;
+        line-height: 1.5em;
+    }
+    #adv_options > span {
+        font-weight: bold;
+    }
+    #adv_options > span:hover {
+        cursor: pointer;
+    }
+    #adv_options > div > span:hover {
+        color: #800000;
+        cursor: pointer;
+    }
 </STYLE>
 
 <DIV ID="pool-select-number-dialog" CLASS="lms-ui-dialog" TITLE="{trans("Select number<!voip>")}">
     <FORM ACTION="?m={$layout.module}" METHOD="POST">
         {trans("Pool numbers")}<BR>
-           <SELECT ID="pool_list" CLASS="full-width">
-              <OPTION VALUE="0">- {trans("select")} -</OPTION>
-               {foreach from=$pool_list item=v}
-              <OPTION VALUE="{$v.id}">{$v.name}</OPTION>
-              {/foreach}
-           </SELECT>
-          <BR><BR>
+        <SELECT ID="pool_list" CLASS="full-width">
+            <OPTION VALUE="0">- {trans("select")} -</OPTION>
+            {foreach from=$pool_list item=v}
+            <OPTION VALUE="{$v.id}">{$v.name}</OPTION>
+            {/foreach}
+        </SELECT>
+        <BR><BR>
 
         <DIV CLASS="lmsbox">
             <TABLE ID="numbers-table" CLASS="lms-ui-datatable">
                 <THEAD>
-                       <TR>
-                           <TH>{trans("Phone number:")}</TH>
+                    <TR>
+                        <TH>{trans("Phone number:")}</TH>
                         <TH>Status</TH>
                     </TR>
                 </THEAD>
                 <TBODY></TBODY>
             </TABLE>
+        </DIV>
+
+        <DIV ID="adv_options" CLASS="text-right">
+            <SPAN>
+                 <SPAN CLASS="ui-icon ui-icon-plusthick"></SPAN> {trans("advanced")}
+            </SPAN>
+            <DIV>
+                <SPAN ID="first_avible">{trans("Select first avible")}</SPAN><BR>
+                <SPAN ID="last_avible">{trans("Select last avible")}</SPAN><BR>
+                <SPAN ID="select_random">{trans("Select random")}</SPAN>
+            </DIV>
         </DIV>
         <INPUT TYPE="submit" style="position:absolute; top:-1000px">
     </FORM>
@@ -72,22 +99,6 @@ $( function() {
                              .find( "td:nth-child(2)" ).text("");
         }
 
-        //var table = $( "#numbers-table" ).DataTable();
-          /*
-        console.log(
-                datatable.row('tr td:contains("' + selected_input.val() + '")')
-                     .nodes()
-                     .draw()
-                     .to$()
-                     .closest( 'tr' )
-                     .addClass( 'blend' )
-         );
-
-        datatable.rows().every( function () {
-            this.invalidate(); // invalidate the data DataTables has cached for this row
-        });
-        */
-
         selected_input.val( $(this).find( "td:first-child" ).text() );
         pool_select_number_dialog.close();
         $( this ).addClass( "blend" );
@@ -101,11 +112,13 @@ $( function() {
         var poolid = $(this).val();
 
         if (poolid == 0) {
+            datatable.clear().draw();
+            $( "#adv_options" ).css( "display", "none" );
             return 0;
         } else if (cached_pool_numbers[ poolid ] != undefined) {
             loadNumbersToTable( cached_pool_numbers[ poolid ] );
         } else {
-              $.ajax({
+            $.ajax({
                 method: "POST",
                 url: "?m=voipaccountadd&action=getpoolnumbers",
                 data: { "poolid" : poolid },
@@ -115,6 +128,8 @@ $( function() {
                 loadNumbersToTable( data );
             });
         }
+
+        $( "#adv_options" ).css( "display", "block" );
     });
 
     /*
@@ -134,7 +149,6 @@ $( function() {
      * Function take into account numbers from inputs.
      */
     function markSelectedPhones() {
-
         var phones_in_inputs = [];
 
         $( "#phone_numbers_table input" ).each( function() {
@@ -162,7 +176,87 @@ $( function() {
         });
 
         datatable.draw();
-        previous_selected = phones_in_inputs;
+        prev = phones_in_inputs;
+    }
+
+    /*
+     * \brief Show/hide advanced menu in number select dialog.
+     */
+    $( "#adv_options > span" ).click(function(){
+        $( "#adv_options > div" ).slideToggle(200);
+        $( '#adv_options > span > span' ).toggleClass("ui-icon-minusthick").toggleClass("ui-icon-plusthick");
+    });
+
+    /*
+     * \brief Select first avible number from selected pool.
+     */
+    $( "#first_avible" ).click( function() {
+
+        var phones = datatable.column(1, { order : "index" }).data();
+
+        $.each(phones, function(rowIndex, state) {
+            if ( state.length )
+                return true; //continue
+
+            markRowAsUsed( rowIndex );
+            return false;
+        });
+    });
+
+    /*
+     * \brief Select last avible number from selected pool.
+     */
+    $( "#last_avible" ).click( function() {
+
+        var i = datatable.rows().count() - 1;
+        var row_data;
+
+        while (i >= 0) {
+            row_data = datatable.cell(i,1).data();
+
+            if ( row_data ) {
+                --i;
+                continue;
+            }
+
+            markRowAsUsed( i );
+            break;
+        }
+    });
+
+    /*
+     * \brief Select random number from selected pool.
+     */
+    $( "#select_random" ).click( function() {
+        var counter = datatable.rows().count() - 1;
+        var list = [];
+        var rand_index;
+
+        for (var i = 0; i <= counter; ++i) {
+            list.push(i);
+        }
+
+        do {
+            rand_index = list[Math.floor(Math.random() * list.length)];
+
+            if (datatable.cell(rand_index,1).data()) {
+                list.splice(rand_index, 1);
+            } else {
+                markRowAsUsed( rand_index );
+                break;
+            }
+        } while( list.length );
+    });
+
+    /*
+     * \brief Mark
+     */
+    function markRowAsUsed( index ) {
+        datatable.cell( index, 1 ).data("{trans("used")}");
+        $( datatable.row( index ).invalidate().node() ).addClass( "blend" );
+        datatable.draw();
+        selected_input.val( datatable.cell( index, 0 ).data() );
+        pool_select_number_dialog.close();
     }
 });
 //-->
