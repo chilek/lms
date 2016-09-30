@@ -127,6 +127,7 @@ version ?.??.?? (????-??-??):
     to form_title or title template property [chilan]
   - dynamic presentation of quick search input depending - they are shown after
     mouse over on quick search icons [chilan]
+  - added quick search customers by phone numbers on top [chilan]
 
 version 1.11.20 (2016-04-19):
 

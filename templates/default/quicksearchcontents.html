@@ -1,6 +1,8 @@
 {block name="quicksearchcontents"}
 <img src="img/customer.gif" alt="" {tip text="Enter customer ID, first/lastname, email or address and press Enter"}>
 <input class="blend lms-ui-quick-search" type="text" id="customerinput" name="qs[customer]" value="" size="15" {tip text="Enter customer ID, first/lastname, email or address and press Enter"}>
+&nbsp;<img src="img/phone.gif" alt="" {tip text="Enter phone number and press Enter"}>
+<input class="blend lms-ui-quick-search" type="text" id="phoneinput" name="qs[phone]" value="" size="15" {tip text="Enter phone number and press Enter"}>
 &nbsp;<img src="img/node.gif" alt="" {tip text="Enter node ID, name, IP address or MAC address and press Enter"}>
 <input class="blend lms-ui-quick-search" type="text" id="nodeinput" name="qs[node]" value="" size="15" {tip text="Enter node ID, name, IP address or MAC address and press Enter"}>
 &nbsp;<img src="img/ticket.gif" alt="" {tip text="Enter request tracker ID, subject or requestor name and press Enter"}>
@@ -12,6 +14,7 @@
 <script type="text/javascript">
 <!--
 	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('customerinput'), '?m=quicksearch&ajax=1&mode=customer&what=', {ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')});
+	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('phoneinput'), '?m=quicksearch&ajax=1&mode=phone&what=', {ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')});
 	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('nodeinput'), '?m=quicksearch&ajax=1&mode=node&what=', {ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')});
 	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('rtinput'), '?m=quicksearch&ajax=1&mode=ticket&what=', {ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')});
 	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('accountinput'), '?m=quicksearch&ajax=1&mode=account&what=', {ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')});

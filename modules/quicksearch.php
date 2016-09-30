@@ -163,6 +163,54 @@ switch ($mode) {
 		$target = '?m=customersearch&search=1';
 	break;
 
+	case 'phone':
+		if(isset($_GET['ajax'])) // support for AutoSuggest
+		{
+			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS phone, address, post_name, post_address, deleted,
+			    ".$DB->Concat('UPPER(lastname)',"' '",'c.name')." AS username
+				FROM customerview c
+				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & " . (CONTACT_LANDLINE | CONTACT_MOBILE | CONTACT_FAX) . " > 0)
+				WHERE cc.contact ?LIKE? $sql_search
+				ORDER by deleted, username, cc.contact, address
+				LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+
+			$eglible=array(); $actions=array(); $descriptions=array();
+			if ($candidates)
+			foreach($candidates as $idx => $row) {
+				$actions[$row['id']] = '?m=customerinfo&id='.$row['id'];
+				$eglible[$row['id']] = escape_js(($row['deleted'] ? '<font class="blend">' : '')
+				    .truncate_str($row['username'], 50).($row['deleted'] ? '</font>' : ''));
+
+				$descriptions[$row['id']] = escape_js(trans('Phone:').' '.$row['phone']);
+			}
+			header('Content-type: text/plain');
+			if ($eglible) {
+				print "this.eligible = [\"".implode('","',$eglible)."\"];\n";
+				print "this.descriptions = [\"".implode('","',$descriptions)."\"];\n";
+				print "this.actions = [\"".implode('","',$actions)."\"];\n";
+			} else {
+				print "false;\n";
+			}
+			$SESSION->close();
+			$DB->Destroy();
+			exit;
+		}
+
+		// use customersearch module to find all customers
+		$s['phone'] = $search;
+
+		$SESSION->save('customersearch', $s);
+		$SESSION->save('cslk', 'OR');
+
+		$SESSION->remove('cslp');
+		$SESSION->remove('csln');
+		$SESSION->remove('cslg');
+		$SESSION->remove('csls');
+
+		$target = '?m=customersearch&search=1';
+	break;
+
+
 	case 'node':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
