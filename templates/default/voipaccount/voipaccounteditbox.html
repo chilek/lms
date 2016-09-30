@@ -1,7 +1,13 @@
 <!--// $Id$ //-->
 
-{assign var=remove_number      value='<span class="ui-icon ui-icon-closethick remove-number"></span>'}
-{assign var=pool_number_select value='<span class="ui-icon ui-icon-clipboard show-pool-list"></span>'}
+{assign var=remove_number value='<span class="ui-icon ui-icon-closethick remove-number"></span>'}
+
+{if $pool_list}
+    {assign var=pool_number_select value='<span class="ui-icon ui-icon-clipboard show-pool-list"></span>'}
+    {include file='voipaccount/voipaccountaddboxdialog.html'}
+{else}
+    {assign var=pool_number_select value=''}
+{/if}
 
 <style>
     .phone-table tr:hover td:nth-child(2) div span {
@@ -227,8 +233,6 @@
         </tbody>
     </table>
 </form>
-
-{include file='voipaccount/voipaccountaddboxdialog.html'}
 
 <script type="text/javascript">
 <!--
