@@ -170,7 +170,7 @@ switch ($mode) {
 			    ".$DB->Concat('UPPER(lastname)',"' '",'c.name')." AS username
 				FROM customerview c
 				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & " . (CONTACT_LANDLINE | CONTACT_MOBILE | CONTACT_FAX) . " > 0)
-				WHERE cc.contact ?LIKE? $sql_search
+				WHERE REPLACE(REPLACE(cc.contact, '-', ''), ' ', '') ?LIKE? $sql_search
 				ORDER by deleted, username, cc.contact, address
 				LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
