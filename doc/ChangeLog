@@ -119,6 +119,9 @@ version ?.??.?? (????-??-??):
   - removed support for swekey [prezes_kk]
   - datatables column search supports selection lists [chilan]
   - allow to toggle main menu visibility [chilan]
+  - added published flag to documents which means if document has been published and
+    probably received by customer [chilan]
+  - financial documents can be previewed without publishing [chilan]
 
 version 1.11.20 (2016-04-19):
 

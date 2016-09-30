@@ -220,7 +220,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'SELECT cash.id AS id, time, cash.type AS type, 
                 cash.value AS value, taxes.label AS tax, cash.customerid AS customerid, 
                 comment, docid, users.name AS username,
-                documents.type AS doctype, documents.closed AS closed, cash.importid
+                documents.type AS doctype, documents.closed AS closed,
+                documents.published, cash.importid
             FROM cash
             LEFT JOIN users ON users.id = cash.userid
             LEFT JOIN documents ON documents.id = docid

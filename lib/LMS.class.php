@@ -2150,6 +2150,12 @@ class LMS
         return $manager->CalcAt($period, $date);
     }
 
+    public function isDocumentPublished($id)
+    {
+        $manager = $this->getFinanaceManager();
+        return $manager->isDocumentPublished($id);
+    }
+
     /**
      * VoIP functions
      */
@@ -3059,6 +3065,7 @@ class LMS
 					}
 				}
 
+				$published = $doc['published'] == 1;
 				foreach (explode(',', $custemail) as $email) {
 					if ($add_message && (!empty($dsn_email) || !empty($mdn_email))) {
 						if (!empty($dsn_email))
@@ -3081,6 +3088,11 @@ class LMS
 					} else {
 						$status = MSG_SENT;
 						$res = NULL;
+					}
+
+					if ($status == MSG_SENT && !$published) {
+						$this->DB->Execute('UPDATE documents SET published = 1 WHERE id = ?', array($doc['id']));
+						$published = true;
 					}
 
 					if ($add_message)

@@ -29,7 +29,8 @@ $action = isset($_GET['action']) ? $_GET['action'] : '';
 
 if(isset($_GET['id']) && $action=='edit')
 {
-    $note = $LMS->GetNoteContent($_GET['id']);
+	if ($LMS->isDocumentPublished($_GET['id']) && !ConfigHelper::checkConfig('privileges.superuser'))
+		return;
 
     $SESSION->remove('notecontents');
     $SESSION->remove('notecustomer');

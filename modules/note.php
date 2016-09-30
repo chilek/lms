@@ -26,6 +26,7 @@
 
 $attachment_name = ConfigHelper::getConfig('notes.attachment_name');
 $note_type = ConfigHelper::getConfig('notes.type');
+$publish = !isset($_GET['dontpublish']);
 
 if ($note_type == 'pdf') {
 	$template = ConfigHelper::getConfig('notes.template_file', 'standard');
@@ -70,6 +71,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		if ($count == 1)
 			$docnumber = docnumber($note['number'], $note['template'], $note['cdate']);
 
+		$note['publish'] = $publish;
 		$i++;
 		if ($i == $count)
 			$note['last'] = true;
@@ -109,14 +111,18 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		if ($count == 1)
 			$docnumber = docnumber($note['number'], $note['template'], $note['cdate']);
 
+		$note['publish'] = $publish;
 		$note['division_header'] = str_replace('%bankaccount',
 			format_bankaccount(bankaccount($note['customerid'], $note['account'])), $note['division_header']);
 		$document->Draw($note);
 	}
 } elseif ($note = $LMS->GetNoteContent($_GET['id'])) {
+	$ids = array($_GET['id']);
+
 	$docnumber = $number = docnumber($note['number'], $note['template'], $note['cdate']);
 	$layout['pagetitle'] = trans('Debit Note No. $a', $number);
 
+	$note['publish'] = $publish;
 	$note['last'] = TRUE;
 	$note['division_header'] = str_replace('%bankaccount',
 		format_bankaccount(bankaccount($note['customerid'], $note['account'])), $note['division_header']);
@@ -131,5 +137,8 @@ if (!is_null($attachment_name) && isset($docnumber)) {
 	$attachment_name = 'invoices.' . ($note_type == 'pdf' ? 'pdf' : 'html');
 
 $document->WriteToBrowser($attachment_name);
+
+if ($publish && isset($ids) && !empty($ids))
+	$DB->Execute('UPDATE documents SET published = 1 WHERE id IN (' . implode(',', $ids) . ')');
 
 ?>

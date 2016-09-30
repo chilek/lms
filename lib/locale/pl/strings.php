@@ -3459,4 +3459,13 @@ $_LANG['- any -'] = '- dowolne -';
 
 $_LANG['Import from file:'] = 'Import z pliku:';
 
+$_LANG['Document has been published already! Are you sure you want to edit it despite this?'] = 'Dokument został już upubliczniony! Jesteś pewien, że mimo tego chcesz go edytować?';
+$_LANG['Document has been published already! Are you sure you want to remove it despite this?'] = 'Dokument został już upubliczniony! Jesteś pewien, że mimo tego chcesz go usunąć?';
+$_LANG['Document has been published already! Are you sure you want to cancel it despite this?'] = 'Dokument został już upubliczniony! Jesteś pewien, że mimo tego chcesz go anulować?';
+$_LANG['Some documents have been published already! Are you sure you want to delete them despite this?'] = 'Cześć dokumentów została już upubliczniona! Jesteś pewien, że mimo tego chcesz je usunąć?';
+$_LANG['Some documents have been published already!'] = 'Cześć dokumentów została już upubliczniona!';
+
+$_LANG['CANCELLED'] = 'ANULOWANO';
+$_LANG['NO ACCOUNTANT DOCUMENT'] = 'DOKUMENT NIEKSIĘGOWY';
+
 ?>

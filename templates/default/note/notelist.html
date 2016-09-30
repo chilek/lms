@@ -55,33 +55,42 @@ window.open('?m=note&amp;id={$note}');
 <FORM METHOD="POST" NAME="page">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 94%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD WIDTH="1%" nowrap>
+		<TD class="nobr">
 			<A href="?m=notelist&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">{trans("ID:")}</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" nowrap>
+		<TD class="nobr">
 			<A href="?m=notelist&amp;o=cdate{if $listdata.direction == "asc" && $listdata.order == "cdate"},desc{/if}">{trans("Date:")}</A> {if $listdata.order == "cdate"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" nowrap>
+		<TD class="nobr">
 			<A href="?m=notelist&amp;o=number{if $listdata.direction == "asc" && $listdata.order == "number"},desc{/if}">{trans("Number:")}</A> {if $listdata.order == "number"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" nowrap>
+		<TD class="nobr">
 			<A href="?m=notelist&amp;o=value{if $listdata.direction == "asc" && $listdata.order == "value"},desc{/if}">{trans("Value:")}</A> {if $listdata.order == "value"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" nowrap>
+		<TD class="nobr">
 			<A href="?m=notelist&amp;o=count{if $listdata.direction == "asc" && $listdata.order == "count"},desc{/if}">{trans("Items:")}</A> {if $listdata.order == "count"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="94%" nowrap>
+		<TD class="nobr">
 			<A href="?m=notelist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}">{trans("For:")}</A> {if $listdata.order == "name"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%">
+		<TD>
 			&nbsp;
 		</TD>
 	</TR>
 	<TR>
 		<TD colspan="7">
-				<B>{trans("Filter:")} </B> 
+				<span class="bold">{trans("Filter:")}</span>
 				<INPUT type="text" name="search" value="{$listdata.search}" size="15" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<SELECT size="1" name="cat">
 					<OPTION value=""{if $listdata.cat == ""} SELECTED{/if}>{trans("- select filter category -")}</OPTION>
@@ -108,7 +117,7 @@ window.open('?m=note&amp;id={$note}');
 	</TR>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" WIDTH="100%" COLSPAN="7">
+		<TD class="pagination" COLSPAN="7">
 			{include file="scroller.html" loop=$notelist scrollerno=1}
 		</TD>
 	</TR>
@@ -119,31 +128,36 @@ window.open('?m=note&amp;id={$note}');
 	{section name=notelist loop=$notelist start=$start max=$pagelimit}
 	{assign var=note value=$notelist[notelist]}
 	{assign var=noteid value=$note.id}
-	<TR class="highlight {cycle}{if $note.closed} blend{/if}"  >
-		<TD WIDTH="1%">
+	<TR class="highlight {cycle}{if $note.closed} blend{/if}">
+		<TD>
 			{$note.id|string_format:"%06d"}
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="nobr">
 			{$note.cdate|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
-		<TD WIDTH="1%" NOWRAP align="right">
+		<TD class="text-right nobr">
 			{number number=$note.number template=$note.template time=$note.cdate assign=number}{$number}
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{$note.value|money_format} 
+		<TD class="text-right nobr">
+			{$note.value|money_format}
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+		<TD class="text-right nobr">
 			{$note.count}
 		</TD>
-		<TD WIDTH="94%">
-			<A HREF="?m=customerinfo&amp;id={$note.customerid}"{if $note.closed} class="blend"{/if}>{$note.name}, {$note.address}, {$note.zip} {$note.city}{if $note.country != ""}, {t}{$note.country}{/t}{/if}</A>
+		<TD>
+			<A HREF="?m=customerinfo&id={$note.customerid}"{if $note.closed} class="blend"{/if}>{$note.name}, {$note.address}, {$note.zip} {$note.city}{if $note.country != ""}, {t}{$note.country}{/t}{/if}</A>
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" class="nobr">
+		<TD class="text-right nobr">
 			{if !$note.closed}
-			    <A onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to remove debit note \'$a\' from database?{/t}')" HREF="?m=notedel&amp;id={$note.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			    <A HREF="?m=noteedit&amp;id={$note.id}&amp;action=edit"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+				{if !$note.published || ConfigHelper::checkConfig('privileges.superuser')}
+				<A onClick="{if $note.published}if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to remove it despite this?")}')) return false;{/if};return confirmLink(this, '{t a=$number}Are you sure, you want to remove debit note \'$a\' from database?{/t}')" HREF="?m=notedel&id={$note.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+				<A HREF="?m=noteedit&id={$note.id}&action=edit"{if $note.published} onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"{/if}><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+				{/if}
 			{/if}
-			<A HREF="?m=note&amp;id={$note.id}" TARGET="_blank"><IMG src="img/printd.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
+			{if !$note.published || ConfigHelper::checkConfig('privileges.superuser')}
+			<A HREF="?m=note&id={$note.id}&dontpublish=1" TARGET="_blank"><IMG src="img/view.gif" alt="[ {trans("View")} ]" title="[ {trans("View")} ]"></A>
+			{/if}
+			<A HREF="?m=note&id={$note.id}" TARGET="_blank"><IMG src="img/printd.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
 			<INPUT TYPE="checkbox" NAME="marks[{$note.id}]" VALUE="{$note.id}"{if $marks.$noteid}CHECKED{/if}>
 		</TD>
 	</TR>
@@ -158,7 +172,7 @@ window.open('?m=note&amp;id={$note}');
     <TFOOT>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" WIDTH="100%" COLSPAN="7">
+		<TD class="pagination" COLSPAN="7">
 			{include file="scroller.html" loop=$notelist scrollerno=2}
 		</TD>
 	</TR>
@@ -167,12 +181,15 @@ window.open('?m=note&amp;id={$note}');
 		<TD COLSPAN="7">
 			<TABLE WIDTH="100%">
 				<TR>
-					<TD ALIGN="left" class="nobr">
+					<TD class="text-left nobr">
 						<A HREF="javascript:pays();">{trans("Check/Uncheck as accounted")} <IMG SRC="img/pay.gif" ALT=""></A>&nbsp;
 						<A HREF="javascript:prints();">{trans("Print")} <IMG SRC="img/printd.gif" ALT="" ></A>&nbsp;
 					</TD>
-					<TD ALIGN="right" class="nobr">
-						<label for="allbox">{trans("Check All")}</label><INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('page', this, ['groupexclude', 'hideclosed'])" VALUE="1">
+					<TD class="text-right nobr">
+						<label>
+							{trans("Check All")}
+							<INPUT TYPE="checkbox" NAME="allbox" onchange="CheckAll('page', this, ['groupexclude', 'hideclosed'])" VALUE="1">
+						</label>
 					</TD>
 				</TR>
 			</TABLE>

@@ -53,6 +53,8 @@ if($id && $_GET['is_sure'] == '1') {
 			$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
 		}
 	} else {
+		if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkConfig('privileges.superuser'))
+			return;
 		$DB->Execute('UPDATE documents SET cancelled = 1 WHERE id = ?', array($id));
 		$DB->Execute('DELETE FROM cash WHERE docid = ?', array($id));
 		$document = $DB->GetRow('SELECT * FROM documents WHERE id = ?', array($id));

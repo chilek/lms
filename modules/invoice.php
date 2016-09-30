@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2014 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -32,6 +32,7 @@ function invoice_body($document, $invoice) {
 
 $attachment_name = ConfigHelper::getConfig('invoices.attachment_name');
 $invoice_type = strtolower(ConfigHelper::getConfig('invoices.type'));
+$publish = !isset($_GET['dontpublish']);
 
 if ($invoice_type == 'pdf') {
 	$pdf_type = ConfigHelper::getConfig('invoices.pdf_type', 'tcpdf');
@@ -83,6 +84,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		if (count($ids) == 1)
 			$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 
+		$invoice['publish'] = $publish;
 		foreach ($which as $type) {
 			$i++;
 			if ($i == $count) $invoice['last'] = TRUE;
@@ -130,6 +132,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		if (count($ids) == 1)
 			$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 
+		$invoice['publish'] = $publish;
 		foreach ($which as $type) {
 			$i++;
 			if ($i == $count) $invoice['last'] = TRUE;
@@ -138,6 +141,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		}
 	}
 } elseif ($invoice = $LMS->GetInvoiceContent($_GET['id'])) {
+	$ids = array($_GET['id']);
+
 	$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
 	if(!isset($invoice['invoice']))
 		$layout['pagetitle'] = trans('Invoice No. $a', $docnumber);
@@ -163,6 +168,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	$count = sizeof($which);
 	$i = 0;
 
+	$invoice['publish'] = $publish;
 	foreach ($which as $type) {
 		$i++;
 		if ($i == $count) $invoice['last'] = TRUE;
@@ -179,5 +185,8 @@ if (!is_null($attachment_name) && isset($docnumber)) {
 	$attachment_name = 'invoices.' . ($invoice_type == 'pdf' ? 'pdf' : 'html');
 
 $document->WriteToBrowser($attachment_name);
+
+if ($publish && isset($ids) && !empty($ids))
+	$DB->Execute('UPDATE documents SET published = 1 WHERE id IN (' . implode(',', $ids) . ')');
 
 ?>
