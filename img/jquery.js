@@ -776,6 +776,7 @@ $(function() {
 				input.hide();
 			}, 500));
 		});
+	qs_inputs.first().show().focus();
 
 	$(document).keydown(function(e) {
 		if (e.keyCode != 9)
