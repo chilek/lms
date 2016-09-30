@@ -13,7 +13,6 @@
     },
     "require": {
         "twbs/bootstrap": "@alpha",
-        "components/jquery": "^2.1",
         "bordercloud/tether": "^1.1"
     },
     "license": "MIT"
