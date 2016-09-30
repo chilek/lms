@@ -48,6 +48,7 @@ function plugin($template, $customer) {
 		include($file);
 
 	$JSResponse->assign('plugin', 'innerHTML', $result);
+	$JSResponse->assign('title', 'value', isset($engine['form_title']) ? $engine['form_title'] : $engine['title']);
 	return $JSResponse;
 }
 
