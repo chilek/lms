@@ -730,53 +730,18 @@ $(function() {
 
 	// quick search input auto show/hide support
 	var qs_inputs = $('input.lms-ui-quick-search');
-	var qs_timers = [];
 
+	qs_inputs.prev().addClass('lms-ui-quick-search');
 	qs_inputs.each(function(index, input) {
 		new AutoSuggest($(input).closest('form').get(0), input,
 			'?m=quicksearch&ajax=1&mode=' + $(input).attr('data-mode') + '&what=', lmsSettings.quickSearchAutoSubmit);
 	});
 
-	function clearTimers() {
-		$.each(qs_timers, function(index, timer) {
-			clearTimeout(timer);
-		});
-		qs_timers = [];
-	}
-
-	// this = img
-	function onMouseEnter() {
-		clearTimers();
-		var input = $(this).next().show().focus();
-		qs_inputs.each(function() {
-			if (!input.is(this)) {
-				$(this).hide();
-			}
-			input.prev().unbind('mouseenter')
-				.one('mouseenter', onMouseEnter);
-		});
-	}
-
-	qs_inputs.hide().mouseleave(function() {
-		var input = $(this);
-		qs_timers.push(setTimeout(function() {
-			input.hide();
-		}, 500));
-	}).mouseenter(function() {
-		clearTimers();
-	}).focusout(function() {
-		var input = $(this);
-		qs_timers.push(setTimeout(function() {
-			input.hide();
-		}, 500));
-	}).prev().one('mouseenter', onMouseEnter)
-		.mouseleave(function() {
-			var input = $(this).next();
-			qs_timers.push(setTimeout(function() {
-				input.hide();
-			}, 500));
-		});
-	qs_inputs.first().show().focus();
+	qs_inputs.prev().mouseenter(function() {
+		('input.lms-ui-quick-search-active', qs_inputs).removeClass('lms-ui-quick-search-active');
+		$(this).next().addClass('lms-ui-quick-search-active').focus();
+	})
+	qs_inputs.first().addClass('lms-ui-quick-search-active').focus();
 
 	$(document).keydown(function(e) {
 		if (e.keyCode != 9)
@@ -795,9 +760,8 @@ $(function() {
 				newInput = qs_inputs.first();
 			}
 		}
-		input.hide();
-		clearTimers();
-		newInput.show().focus();
+		input.removeClass('lms-ui-quick-search-active');
+		newInput.addClass('lms-ui-quick-search-active').focus();
 		e.preventDefault();
 	});
 });

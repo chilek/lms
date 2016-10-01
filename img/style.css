@@ -1201,6 +1201,16 @@ table.dataTable thead tr:last-child th {
     opacity: 1;
   }
 }
+img.lms-ui-quick-search {
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 input.lms-ui-quick-search {
   display: none;
+}
+input.lms-ui-quick-search.lms-ui-quick-search-active {
+  display: inline-block;
 }
