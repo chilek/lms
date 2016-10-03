@@ -30,6 +30,7 @@ CREATE TABLE users (
 	accessfrom integer DEFAULT 0 NOT NULL,
 	accessto integer DEFAULT 0 NOT NULL,
 	settings text NOT NULL DEFAULT '',
+	persistentsettings text NOT NULL DEFAULT '',
 	PRIMARY KEY (id),
 	UNIQUE (login)
 );
