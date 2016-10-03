@@ -2791,7 +2791,7 @@ $_LANG['Connect to device'] = 'Podłączenie do urządzenia';
 $_LANG['Previous operation has not been finished yet!'] = 'Poprzednia czynność nie została jeszcze zakończona!';
 $_LANG['You haven\\\'t selected any nodes!'] = 'Nie wybrałeś żadnego komputera!';
 
-$_LANG['Your balance on date of invoice issue:'] = 'Saldo w dniu wystawienia faktury:';
+$_LANG['Your balance before invoice issue:'] = 'Saldo przed wystawieniem faktury:';
 
 $_LANG['Remove management URL'] = 'Usuń adres URL do zarządzania';
 $_LANG['Edit management URL'] = 'Edytuj adres URL do zarządzania';
