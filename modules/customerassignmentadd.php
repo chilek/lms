@@ -318,7 +318,6 @@ $customernodes = $LMS->GetCustomerNodes($customer['id']);
 unset($customernodes['total']);
 
 $schemas_only_names = $DB->GetAll('SELECT name FROM promotions WHERE disabled <> 1');
-
 $schemas = $DB->GetAll('SELECT p.name AS promotion, s.name, s.id,
 	(SELECT '.$DB->GroupConcat('tariffid', ',').'
 		FROM promotionassignments WHERE promotionschemaid = s.id
