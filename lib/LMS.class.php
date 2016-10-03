@@ -3065,11 +3065,9 @@ class LMS
 					}
 				}
 
-				$published = $doc['published'] == 1;
 				foreach (explode(',', $custemail) as $email) {
 					if ($add_message && (!empty($dsn_email) || !empty($mdn_email))) {
 						if (!empty($dsn_email))
-							$headers['Delivery-Status-Notification-To'] = true;
 						$headers['X-LMS-Message-Item-Id'] = $msgitems[$doc['customerid']][$email];
 					}
 
@@ -3090,7 +3088,7 @@ class LMS
 						$res = NULL;
 					}
 
-					if ($status == MSG_SENT && !$published) {
+					if ($status == MSG_SENT) {
 						$this->DB->Execute('UPDATE documents SET published = 1 WHERE id = ?', array($doc['id']));
 						$published = true;
 					}

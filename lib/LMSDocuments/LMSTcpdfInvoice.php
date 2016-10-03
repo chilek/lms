@@ -771,7 +771,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 	}
 
 	public function invoice_no_accountant() {
-		if (!$this->data['publish'] && !$this->data['cancelled']) {
+		if ($this->data['dontpublish'] && !$this->data['cancelled']) {
 			$x = $this->backend->GetX();
 			$y = $this->backend->GetY();
 

@@ -737,7 +737,7 @@ $(function() {
 			'?m=quicksearch&ajax=1&mode=' + $(input).attr('data-mode') + '&what=', lmsSettings.quickSearchAutoSubmit);
 	});
 
-	qs_inputs.prev().mouseenter(function() {
+	qs_inputs.prev().on('mouseenter click', function() {
 		('input.lms-ui-quick-search-active', qs_inputs).removeClass('lms-ui-quick-search-active');
 		$(this).next().addClass('lms-ui-quick-search-active').focus();
 	})
