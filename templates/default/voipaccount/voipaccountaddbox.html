@@ -35,7 +35,7 @@
                     {trans("Login:")}
                 </td>
                 <td>
-                    <input type="text" name="voipaccountdata[login]" value="{$voipaccountdata.login}" maxlength="32" size="20" required {tip text="Enter voip account login" trigger="login" bold=1}>
+                    <input type="text" id="voip-login" name="voipaccountdata[login]" value="{$voipaccountdata.login}" maxlength="32" size="20" required {tip text="Enter voip account login" trigger="login" bold=1}>
                 </td>
             </tr>
             {/block}
@@ -194,7 +194,7 @@
 
 <SCRIPT type="text/javascript">
 <!--
-    document.forms['voipaccountadd'].elements['voipaccountdata[login]'].focus();
+    document.getElementById("voip-login").focus();
     check_teryt('location', true);
 
     $('#teryt').change(function () {
