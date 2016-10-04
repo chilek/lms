@@ -95,7 +95,7 @@ function GetNotesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL, $o
 	if($hideclosed)
 		$where .= ' AND closed = 0';
 
-	if($res = $DB->Exec('SELECT d.id AS id, number, cdate, template, closed, 
+	if($res = $DB->Exec('SELECT d.id AS id, number, cdate, template, closed, published,
 			d.customerid, d.name, address, zip, city, c.name AS country,
 			SUM(n.value) AS value, COUNT(n.docid) AS count
 			FROM documents d
@@ -114,7 +114,7 @@ function GetNotesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL, $o
 			            SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group['group']).'
 			            AND customerid = d.customerid)' : '')
 			.' GROUP BY d.id, number, cdate, d.customerid, 
-			d.name, address, zip, city, template, closed, c.name '
+			d.name, address, zip, city, template, closed, published, c.name '
 			.(isset($having) ? $having : '')
 			.$sqlord.' '.$direction))
 	{
