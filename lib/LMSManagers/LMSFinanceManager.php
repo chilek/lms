@@ -1085,7 +1085,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         return $this->db->GetAll('SELECT t.id, t.name, t.value, uprate, taxid, prodid,
 				downrate, upceil, downceil, climit, plimit, taxes.value AS taxvalue,
-				taxes.label AS tax, t.period
+				taxes.label AS tax, t.period, t.type AS tarifftype
 				FROM tariffs t
 				LEFT JOIN taxes ON t.taxid = taxes.id
 				WHERE t.disabled = 0

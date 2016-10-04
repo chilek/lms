@@ -128,6 +128,8 @@ version ?.??.?? (????-??-??):
   - dynamic presentation of quick search input depending - they are shown after
     mouse over on quick search icons [chilan]
   - added quick search customers by phone numbers on top [chilan]
+  - added phpui.node_assignment_warning configuration variable which
+    determines if alert is displayed when no node has selected for internet assignment [chilan]
 
 version 1.11.20 (2016-04-19):
 
