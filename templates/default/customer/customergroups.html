@@ -20,9 +20,9 @@
 			<TABLE class="lmsbox-inner">
 				<COLGROUP>
 					<COL style="width: 1%;">
-					<COL style="width: 1%;">
-					<COL style="width: 1%;">
 					<COL style="width: 96%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
 					<COL style="width: 1%;">
 				</COLGROUP>
 				<THEAD>
@@ -38,7 +38,7 @@
 				{foreach $customergroups as $customergroup}
 				<TR class="highlight {cycle name=groups}">
 					<TD class="bold nobr"><A href="?m=customergroupinfo&id={$customergroup.id}">{$customergroup.name}</A></TD>
-					<TD class="nobr" colspan="2">{$customergroup.description}</TD>
+					<TD colspan="2">{$customergroup.description}</TD>
 					<TD class="nobr">({$customergroup.id|string_format:"%04d"})</TD>
 					<TD class="text-right nobr">
 						<A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer from group?")}')" href="?m=customergroup&customergroupid={$customergroup.id}&action=delete&id={$customerinfo.id}" {tip text="Remove customer from group"}>
