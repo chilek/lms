@@ -130,6 +130,7 @@ version ?.??.?? (????-??-??):
   - added quick search customers by phone numbers on top [chilan]
   - added phpui.node_assignment_warning configuration variable which
     determines if alert is displayed when no node has selected for internet assignment [chilan]
+  - added node list filter: without gps coordinates [chilan]
 
 version 1.11.20 (2016-04-19):
 
