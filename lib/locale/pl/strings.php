@@ -3474,4 +3474,6 @@ $_LANG['No nodes has been selected for assignment, by at least one is recommende
 
 $_LANG['without gps coords'] = 'bez współrzędnych gps';
 
+$_LANG['without invoice flag'] = 'bez flagi z fakturą';
+
 ?>
