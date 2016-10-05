@@ -9,7 +9,7 @@
         {trans("Pool numbers")}<BR>
         <SELECT ID="pool_list" STYLE="width: 20%;">
             <OPTION VALUE="0">- {trans("select")} -</OPTION>
-            {foreach from=$pool_list item=v}
+            {foreach $pool_list as $v}
             <OPTION VALUE="{$v.id}">{$v.name}</OPTION>
             {/foreach}
         </SELECT>
