@@ -41,7 +41,7 @@ var selected_input;
 var datatable;
 var prev;
 {if count($pool_list) == 1}
-var datatable_inicialized = 0;
+var datatable_initialized = 0;
 {/if}
 
 $( function() {
@@ -63,7 +63,7 @@ $( function() {
 
             $( "#pool_list" ).val( pooltmpid );
             $( "#pool_list" ).trigger( "change" );
-            datatable_inicialized = 1;
+            datatable_initialized = 1;
         }
         {/if}
 
