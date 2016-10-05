@@ -123,6 +123,7 @@ version ?.??.?? (????-??-??):
     probably received by customer [chilan]
   - financial documents can be previewed without publishing [chilan]
   - added support for voip pool numbers [kosa/chilan]
+  - added support for voip phone priority [kosa/chilan]
 
 version 1.11.20 (2016-04-19):
 
