@@ -122,7 +122,7 @@ version ?.??.?? (????-??-??):
   - added published flag to documents which means if document has been published and
     probably received by customer [chilan]
   - financial documents can be previewed without publishing [chilan]
-  - added suport for voip pool numbers [kosa/chilan]
+  - added support for voip pool numbers [kosa/chilan]
 
 version 1.11.20 (2016-04-19):
 

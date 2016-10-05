@@ -71,7 +71,12 @@
                     <table id="phone_numbers_table" class="phone-table">
                         <tr>
                             <td><input type="tel" name="voipaccountedit[phone][0]" value="{$voipaccountinfo.phones[0].phone}" {tip trigger="phone0"}></td>
-                            <td><div>{$pool_number_select}</div></td>
+                            <td>
+                                <div>
+                                    {$pool_number_select}
+                                    <span class="ui-icon ui-icon-closethick remove-number lms-ui-visibility-hidden"></span>
+                                </div>
+                            </td>
                         </tr>
 
                         {if isset($voipaccountinfo['phones'])}
@@ -239,23 +244,39 @@
     document.forms['editvoipaccount'].elements['voipaccountedit[login]'].focus();
     check_teryt('location', true);
 
-    $('#teryt').change(function () {
-        $("#location-box").toggle();
-    });
-
     var remove_number = '{$remove_number}';
     var pool_number_select = '{$pool_number_select}';
 
-    $i = {if !isset($phone_next_index)}0{else}{$phone_next_index}{/if};
+    $( function() {
+        $('#teryt').change(function () {
+            $("#location-box").toggle();
+        });
 
-    $('#add_number').on('click', function () {
-        ++$i;
-        var phone_number_input = '<input type="tel" name="voipaccountedit[phone]['+$i+']" {tip trigger="phone'+i+'"}>';
-        $('#phone_numbers_table').append('<tr class="row"><td>' + phone_number_input + '</td><td><div>' + pool_number_select + ' ' + remove_number + '</div></td></tr>');
-    });
+        $i = {if !isset($phone_next_index)}0{else}{$phone_next_index}{/if};
 
-    $( "body" ).on('click', '.remove-number', function() {
-        $(this).closest('tr').remove();
-    });
+        $('#add_number').on('click', function () {
+            ++$i;
+            var phone_number_input = '<input type="tel" name="voipaccountedit[phone]['+$i+']" {tip trigger="phone'+i+'"}>';
+            $('#phone_numbers_table').append('<tr class="row"><td>' + phone_number_input + '</td><td><div>' + pool_number_select + ' ' + remove_number + '</div></td></tr>');
+        });
+
+        $( "body" ).on('click', '.remove-number', function() {
+            $(this).closest('tr').remove();
+        });
+
+        $( "#phone_numbers_table" ).sortable({
+            items: ">tbody tr",
+            update: function(event, ui) {
+                 $.each( $( "#phone_numbers_table .remove-number" ), function( i ) {
+                     if (i == 0 && !$( this ).hasClass( "lms-ui-visibility-hidden" )) {
+                         $( this ).addClass( "lms-ui-visibility-hidden" );
+                     } else if ( i != 0 && $( this ).hasClass( "lms-ui-visibility-hidden" ) ){
+                         $( this ).removeClass( "lms-ui-visibility-hidden" );
+                     }
+                 });
+            }
+        });
+        $( "#phone_numbers_table" ).disableSelection();
+    } );
 //-->
 </script>
