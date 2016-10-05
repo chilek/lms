@@ -1,21 +1,14 @@
 {block name="quicksearchcontents"}
-<img src="img/customer.gif" alt="">
-<input class="blend" type="text" id="customerinput" name="qs[customer]" value="" size="15" {tip text="Enter customer ID, first/lastname, email or address and press Enter"}>
-&nbsp;<img src="img/node.gif" alt="">
-<input class="blend" type="text" id="nodeinput" name="qs[node]" value="" size="15" {tip text="Enter node ID, name, IP address or MAC address and press Enter"}>
-&nbsp;<img src="img/ticket.gif" alt="">
-<input class="blend" type="text" id="rtinput" name="qs[ticket]" value="" size="15" {tip text="Enter request tracker ID, subject or requestor name and press Enter"}>
-&nbsp;<img src="img/account.gif" alt="">
-<input class="blend" type="text" id="accountinput" name="qs[account]" value="" size="15" {tip text="Enter account or alias name and press Enter"}>
-&nbsp;<img src="img/docum.gif" alt="">
-<input class="blend" type="text" id="documentinput" name="qs[document]" value="" size="15" {tip text="Enter document number and press Enter"}>
-<script type="text/javascript">
-<!--
-	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('customerinput'), '?m=quicksearch&ajax=1&mode=customer&what=', {ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')});
-	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('nodeinput'), '?m=quicksearch&ajax=1&mode=node&what=', {ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')});
-	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('rtinput'), '?m=quicksearch&ajax=1&mode=ticket&what=', {ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')});
-	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('accountinput'), '?m=quicksearch&ajax=1&mode=account&what=', {ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')});
-	new AutoSuggest(document.getElementById('quicksearch'), document.getElementById('documentinput'), '?m=quicksearch&ajax=1&mode=document&what=', {ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')});
-//-->
-</script>
+<img src="img/customer.gif" alt="" {tip text="Enter customer ID, first/lastname, email or address and press Enter"}>
+<input class="blend lms-ui-quick-search" type="text" name="qs[customer]" data-mode="customer" value="" size="15" {tip text="Enter customer ID, first/lastname, email or address and press Enter"}>
+&nbsp;<img src="img/phone.gif" alt="" {tip text="Enter phone number and press Enter"}>
+<input class="blend lms-ui-quick-search" type="text" name="qs[phone]" data-mode="phone" value="" size="15" {tip text="Enter phone number and press Enter"}>
+&nbsp;<img src="img/node.gif" alt="" {tip text="Enter node ID, name, IP address or MAC address and press Enter"}>
+<input class="blend lms-ui-quick-search" type="text" name="qs[node]" data-mode="node" value="" size="15" {tip text="Enter node ID, name, IP address or MAC address and press Enter"}>
+&nbsp;<img src="img/ticket.gif" alt="" {tip text="Enter request tracker ID, subject or requestor name and press Enter"}>
+<input class="blend lms-ui-quick-search" type="text" name="qs[ticket]" data-mode="ticket" value="" size="15" {tip text="Enter request tracker ID, subject or requestor name and press Enter"}>
+&nbsp;<img src="img/account.gif" alt="" {tip text="Enter account or alias name and press Enter"}>
+<input class="blend lms-ui-quick-search" type="text" name="qs[account]" data-mode="account" value="" size="15" {tip text="Enter account or alias name and press Enter"}>
+&nbsp;<img src="img/docum.gif" alt="" {tip text="Enter document number and press Enter"}>
+<input class="blend lms-ui-quick-search" type="text" name="qs[document]" data-mode="document" value="" size="15" {tip text="Enter document number and press Enter"}>
 {/block}

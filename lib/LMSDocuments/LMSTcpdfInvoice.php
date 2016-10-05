@@ -698,7 +698,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		global $LMS;
 
 		$this->backend->SetFont('arial', '', 7);
-		$this->backend->writeHTMLCell(0, 0, '', '', trans('Your balance on date of invoice issue:') . ' ' . moneyf($LMS->GetCustomerBalance($this->data['customerid'], $this->data['cdate'])), 0, 1, 0, true, 'L');
+		$this->backend->writeHTMLCell(0, 0, '', '', trans('Your balance before invoice issue:') . ' ' . moneyf($LMS->GetCustomerBalance($this->data['customerid'], $this->data['cdate'])), 0, 1, 0, true, 'L');
 	}
 
 	protected function invoice_dates() {
@@ -771,7 +771,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 	}
 
 	public function invoice_no_accountant() {
-		if (!$this->data['publish'] && !$this->data['cancelled']) {
+		if ($this->data['dontpublish'] && !$this->data['cancelled']) {
 			$x = $this->backend->GetX();
 			$y = $this->backend->GetY();
 

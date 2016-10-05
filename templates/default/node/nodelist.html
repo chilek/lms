@@ -52,6 +52,7 @@
 					<OPTION VALUE="5"{if $listdata.state == 5} SELECTED{/if}>{trans("TERRIT not specified")}</OPTION>
 					<OPTION VALUE="6"{if $listdata.state == 6} SELECTED{/if}>{trans("Net Device not specified")}</OPTION>
 					<OPTION VALUE="7"{if $listdata.state == 7} SELECTED{/if}>{trans("with warning")}</OPTION>
+					<OPTION value="8"{if $listdata.state == 8} selected{/if}>{trans("without gps coords")}</OPTION>
 				</SELECT></SPAN>
 				<SPAN class="nobr">{trans("Network:")}
 				<SELECT SIZE="1" NAME="n" ONCHANGE="document.choosefilter.submit();">

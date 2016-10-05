@@ -32,6 +32,8 @@ if(isset($_GET['id']) && $action == 'edit')
 	if ($LMS->isDocumentPublished($_GET['id']) && !ConfigHelper::checkConfig('privileges.superuser'))
 		return;
 
+	$invoice = $LMS->GetInvoiceContent($_GET['id']);
+
 	$SESSION->remove('invoicecontents');
 	$SESSION->remove('invoicecustomer');
 

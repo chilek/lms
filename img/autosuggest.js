@@ -24,7 +24,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 
 	this.form = form;
 	this.uri = uri;
-	this.autosubmit = autosubmit;
+	this.autosubmit = (autosubmit == 1 || autosubmit == 'true');
 
 	//Arrow to store a subset of eligible suggestions that match the user's input
 	this.eligible = [];
@@ -195,7 +195,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 			this.form.onsubmit = function () { return false; };
 			setTimeout("document.getElementById('" + this.form.id + "').onsubmit = function () { return true; }",10);
 			//Go to search results.
-			if (this.autosubmit == 1) location.href = gotothisuri;
+			if (this.autosubmit) location.href = gotothisuri;
 			if (this.onsubmit !== undefined)
 				eval(this.onsubmit);
 		}
