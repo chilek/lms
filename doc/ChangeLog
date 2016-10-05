@@ -122,7 +122,7 @@ version ?.??.?? (????-??-??):
   - added published flag to documents which means if document has been published and
     probably received by customer [chilan]
   - financial documents can be previewed without publishing [chilan]
-  - added suport for voip pool numbers [kosa/chilan]
+  - added support for voip pool numbers [kosa/chilan]
   - document form title is automatically set after document template selection
     to form_title or title template property [chilan]
   - dynamic presentation of quick search input depending - they are shown after
@@ -132,6 +132,7 @@ version ?.??.?? (????-??-??):
     determines if alert is displayed when no node has selected for internet assignment [chilan]
   - added node list filter: without gps coordinates [chilan]
   - added customer list filter: liabilities without invoice flag [chilan]
+  - added support for voip phone priority [kosa/chilan]
 
 version 1.11.20 (2016-04-19):
 

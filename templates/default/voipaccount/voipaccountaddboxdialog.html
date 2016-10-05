@@ -137,7 +137,6 @@ $( function() {
         phones_in_inputs.sort();
 
         var phones = datatable.column(0, { order : "index" }).data();
-
         $.each(phones_in_inputs, function(index, phone) {
             if ((rowIndex = phones.indexOf(phone)) > -1) {
                 datatable.cell(rowIndex, 1).data("{trans("used")}");
@@ -155,14 +154,6 @@ $( function() {
         datatable.draw();
         prev = phones_in_inputs;
     }
-
-    /*
-     * \brief Show/hide advanced menu in number select dialog.
-     */
-    $( "#adv_options > span" ).click(function(){
-        $( "#adv_options > div" ).slideToggle(200);
-        $( '#adv_options > span > span' ).toggleClass("ui-icon-minusthick").toggleClass("ui-icon-plusthick");
-    });
 
     /*
      * \brief Select first avible number from selected pool.

@@ -1181,6 +1181,9 @@ table.dataTable thead tr:last-child th {
   -webkit-animation-delay: -0.1s;
   animation-delay: -0.1s;
 }
+.lms-ui-visibility-hidden {
+  visibility: hidden !important;
+}
 @-webkit-keyframes lms-ui-sk-circleFadeDelay {
   0%,
   39%,
