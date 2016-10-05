@@ -44,9 +44,9 @@
                 {/if}
             </td>
             <td class="nobr">
-				{foreach from=$voipaccountinfo['phones'] item=v name=customer_phones}
-					{$v.phone}{if not $smarty.foreach.customer_phones.last}, {/if}
-				{/foreach}
+                {foreach $voipaccountinfo['phones'] as $v}
+                    {if $v.index == 1 && $v@total > 1}<B>{$v.phone}</B>{else}{$v.phone}{/if}{if !$v@last}, {/if}
+                {/foreach}
             </td>
         </tr>
         {/block}

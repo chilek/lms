@@ -323,7 +323,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             $result['modifiedby']    = $user_manager->getUserName($result['modid']);
             $result['creationdateh'] = date('Y/m/d, H:i', $result['creationdate']);
             $result['moddateh']      = date('Y/m/d, H:i', $result['moddate']);
-            $result['phones']        = $this->db->GetAll('SELECT phone FROM voip_numbers WHERE voip_account_id = ?;', array($id));
+            $result['phones']        = $this->db->GetAll('SELECT phone, index FROM voip_numbers WHERE voip_account_id = ?;', array($id));
             $result['owner']         = $customer_manager->getCustomerName($result['ownerid']);
             return $result;
         }

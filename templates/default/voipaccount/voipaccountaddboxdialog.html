@@ -1,7 +1,4 @@
 <STYLE>
-    .full-width {
-        width: 20%;
-    }
     #first_avible {
         visibility: hidden;
     }
@@ -10,9 +7,9 @@
 <DIV ID="pool-select-number-dialog" CLASS="lms-ui-dialog" TITLE="{trans("Select number<!voip>")}">
     <FORM ACTION="?m={$layout.module}" METHOD="POST">
         {trans("Pool numbers")}<BR>
-        <SELECT ID="pool_list" CLASS="full-width">
+        <SELECT ID="pool_list" STYLE="width: 20%;">
             <OPTION VALUE="0">- {trans("select")} -</OPTION>
-            {foreach from=$pool_list item=v}
+            {foreach $pool_list as $v}
             <OPTION VALUE="{$v.id}">{$v.name}</OPTION>
             {/foreach}
         </SELECT>
@@ -43,6 +40,9 @@ var cached_pool_numbers = [];
 var selected_input;
 var datatable;
 var prev;
+{if count($pool_list) == 1}
+var datatable_initialized = 0;
+{/if}
 
 $( function() {
     datatable = $( "#numbers-table" ).DataTable();
@@ -56,6 +56,16 @@ $( function() {
     $( "body" ).on("click", ".show-pool-list", function() {
         selected_input = $(this).closest( "tr" ).find( "input" );
         markSelectedPhones();
+
+        {if count($pool_list) == 1}
+        if (datatable_initialized == 0) {
+            var pooltmpid = $( "#pool_list option:nth-child(2)").val();
+
+            $( "#pool_list" ).val( pooltmpid );
+            $( "#pool_list" ).trigger( "change" );
+            datatable_initialized = 1;
+        }
+        {/if}
 
         pool_select_number_dialog.open();
     });
