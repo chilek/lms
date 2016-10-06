@@ -78,7 +78,7 @@ if(!empty($_POST['inv']))
 			$document->NewPage();
 
 		if (!$invoice['published'])
-			$db->Execute('UPDATE documents SET published = 1 WHERE id = ?', array($invoice['id']));
+			$LMS->DB->Execute('UPDATE documents SET published = 1 WHERE id = ?', array($invoice['id']));
 	}
 } else {
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
@@ -99,7 +99,7 @@ if(!empty($_POST['inv']))
 	$document->Draw($invoice);
 
 	if (!$invoice['published'])
-		$db->Execute('UPDATE documents SET published = 1 WHERE id = ?', array($invoice['id']));
+		$LMS->DB->Execute('UPDATE documents SET published = 1 WHERE id = ?', array($invoice['id']));
 }
 
 if (!is_null($attachment_name) && isset($docnumber)) {

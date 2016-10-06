@@ -172,6 +172,10 @@ FORM {
 }
 LABEL {
   cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 A {
   text-decoration: none;
@@ -1180,6 +1184,9 @@ table.dataTable thead tr:last-child th {
 .lms-ui-sk-fading-circle .lms-ui-sk-circle12:before {
   -webkit-animation-delay: -0.1s;
   animation-delay: -0.1s;
+}
+.lms-ui-visibility-hidden {
+  visibility: hidden !important;
 }
 @-webkit-keyframes lms-ui-sk-circleFadeDelay {
   0%,

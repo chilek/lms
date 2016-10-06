@@ -302,6 +302,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 			$icheck = ConfigHelper::checkConfig('finances.cashimport_checkinvoices');
 
 			$finance_manager = new LMSFinanceManager($this->db, $this->auth, $this->cache, $this->syslog);
+			$customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
 
 			$cashimports = array();
 			foreach ($imports as $import) {
@@ -342,7 +343,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 						foreach ($invoices as $inv)
 							$sum += $inv['value'];
 
-						$bval = $finance_manager->GetCustomerBalance($balance['customerid']);
+						$bval = $customer_manager->GetCustomerBalance($balance['customerid']);
 						$value = f_round($bval + $import['value'] + $sum);
 
 						foreach ($invoices as $inv) {

@@ -76,7 +76,11 @@ td[onclick]	{ cursor: pointer; }
 .container       { padding: 0; }
 FORM		{ display: inline; }
 
-LABEL       { cursor: pointer; }
+LABEL {
+	cursor: pointer;
+	.lms-ui-no-user-select;
+}
+
 A {
 	text-decoration: none;
 	vertical-align: baseline;
@@ -1054,6 +1058,10 @@ table.dataTable {
 .lms-ui-sk-fading-circle .lms-ui-sk-circle12:before {
 	-webkit-animation-delay: -0.1s;
 	animation-delay: -0.1s;
+}
+
+.lms-ui-visibility-hidden {
+	visibility: hidden !important;
 }
 
 @-webkit-keyframes lms-ui-sk-circleFadeDelay {

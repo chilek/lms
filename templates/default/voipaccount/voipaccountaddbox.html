@@ -1,15 +1,16 @@
 <!--// $Id$ //-->
+
+{assign var=remove_number value='<span class="ui-icon ui-icon-closethick remove-number"></span>'}
+
+{if $pool_list}
+    {assign var=pool_number_select value='<span class="ui-icon ui-icon-clipboard show-pool-list"></span>'}
+    {include file='voipaccount/voipaccountaddboxdialog.html'}
+{else}
+    {assign var=pool_number_select value=''}
+{/if}
+
 <form name="voipaccountadd" method="post" action="?m=voipaccountadd{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">
     <input type="submit" class="hiddenbtn">
-
-    {assign var=remove_number value='<span class="ui-icon ui-icon-closethick remove-number"></span>'}
-
-    {if $pool_list}
-        {assign var=pool_number_select value='<span class="ui-icon ui-icon-clipboard show-pool-list"></span>'}
-        {include file='voipaccount/voipaccountaddboxdialog.html'}
-    {else}
-        {assign var=pool_number_select value=''}
-    {/if}
 
     <style>
         .phone-table tr:hover td:nth-child(2) div span {
@@ -35,7 +36,7 @@
                     {trans("Login:")}
                 </td>
                 <td>
-                    <input type="text" name="voipaccountdata[login]" value="{$voipaccountdata.login}" maxlength="32" size="20" required {tip text="Enter voip account login" trigger="login" bold=1}>
+                    <input type="text" id="voip-login" name="voipaccountdata[login]" value="{$voipaccountdata.login}" maxlength="32" size="20" {tip text="Enter voip account login" trigger="login" bold=1}>
                 </td>
             </tr>
             {/block}
@@ -48,7 +49,7 @@
                     {trans("Password:")}
                 </td>
                 <td>
-                    <input type="{if ConfigHelper::checkPrivilege('hide_voip_passwords')}password{else}text{/if}" name="voipaccountdata[passwd]" value="{$voipaccountdata.passwd}" required {tip text="Enter password" trigger="passwd"}>
+                    <input type="{if ConfigHelper::checkPrivilege('hide_voip_passwords')}password{else}text{/if}" name="voipaccountdata[passwd]" value="{$voipaccountdata.passwd}" {tip text="Enter password" trigger="passwd"}>
                 </td>
             </tr>
             {/block}
@@ -62,7 +63,12 @@
                     <table id="phone_numbers_table" class="phone-table">
                         <tr>
                             <td><input type="tel" name="voipaccountdata[phone][0]" value="{$voipaccountdata.phone[0]}" {tip trigger="phone0"}></td>
-                            <td><div>{$pool_number_select}</div></td>
+                            <td>
+                                <div>
+                                    {$pool_number_select}
+                                    <span class="ui-icon ui-icon-closethick remove-number lms-ui-visibility-hidden"></span>
+                                </div>
+                            </td>
                         </tr>
 
                         {if isset($voipaccountdata['phone'])}
@@ -194,26 +200,41 @@
 
 <SCRIPT type="text/javascript">
 <!--
-    document.forms['voipaccountadd'].elements['voipaccountdata[login]'].focus();
+    document.getElementById("voip-login").focus();
     check_teryt('location', true);
-
-    $('#teryt').change(function () {
-        $("#location-box").toggle();
-    });
-
     var remove_number = '{$remove_number}';
     var pool_number_select = '{$pool_number_select}';
 
-    $i = {if !isset($phone_next_index)}0{else}{$phone_next_index}{/if};
+    $( function() {
+        $('#teryt').change(function () {
+            $("#location-box").toggle();
+        });
 
-    $('#add_number').on('click', function () {
-        ++$i;
-        var phone_number_input = '<input type="tel" name="voipaccountdata[phone]['+$i+']" {tip trigger="phone'+i+'"}>';
-        $('#phone_numbers_table').append('<tr class="row"><td>' + phone_number_input + '</td><td><div>' + pool_number_select + ' ' + remove_number + '</div></td></tr>');
-    });
+        $i = {if !isset($phone_next_index)}0{else}{$phone_next_index}{/if};
 
-    $( "body" ).on('click', '.remove-number', function() {
-        $(this).closest('tr').remove();
-    });
+        $('#add_number').on('click', function () {
+            ++$i;
+            var phone_number_input = '<input type="tel" name="voipaccountdata[phone]['+$i+']" {tip trigger="phone'+i+'"}>';
+            $('#phone_numbers_table').append('<tr class="row"><td>' + phone_number_input + '</td><td><div>' + pool_number_select + ' ' + remove_number + '</div></td></tr>');
+        });
+
+        $( "body" ).on('click', '.remove-number', function() {
+            $(this).closest('tr').remove();
+        });
+
+        $( "#phone_numbers_table" ).sortable({
+            items: ">tbody tr",
+            update: function(event, ui) {
+                $.each( $( "#phone_numbers_table .remove-number" ), function( i ) {
+                    if (i == 0 && !$( this ).hasClass( "lms-ui-visibility-hidden" )) {
+                        $( this ).addClass( "lms-ui-visibility-hidden" );
+                    } else if ( i != 0 && $( this ).hasClass( "lms-ui-visibility-hidden" ) ){
+                        $( this ).removeClass( "lms-ui-visibility-hidden" );
+                    }
+                });
+            }
+        });
+        $( "#phone_numbers_table" ).disableSelection();
+    } );
 //-->
 </SCRIPT>

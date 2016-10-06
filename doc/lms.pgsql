@@ -30,6 +30,7 @@ CREATE TABLE users (
 	accessfrom integer DEFAULT 0 NOT NULL,
 	accessto integer DEFAULT 0 NOT NULL,
 	settings text NOT NULL DEFAULT '',
+	persistentsettings text NOT NULL DEFAULT '',
 	PRIMARY KEY (id),
 	UNIQUE (login)
 );
@@ -842,7 +843,9 @@ CREATE TABLE voip_numbers (
     voip_account_id integer NOT NULL
         REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
     phone varchar(20) NOT NULL,
-    UNIQUE(phone)
+    number_index smallint,
+    UNIQUE(phone),
+    UNIQUE(voip_account_id, number_index)
 );
 
 DROP SEQUENCE IF EXISTS voip_pool_numbers_id_seq;
@@ -1649,6 +1652,8 @@ CREATE TABLE events (
 	customerid 	integer 	DEFAULT 0 NOT NULL,
 	private 	smallint 	DEFAULT 0 NOT NULL,
 	closed 		smallint 	DEFAULT 0 NOT NULL,
+	closeddate	integer		DEFAULT 0 NOT NULL,
+	closeduserid	integer		DEFAULT 0 NOT NULL,
 	creationdate	integer		DEFAULT 0 NOT NULL,
 	moddate		integer		DEFAULT 0 NOT NULL,
 	moduserid	integer		DEFAULT 0 NOT NULL,
@@ -2847,6 +2852,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016092900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016100600');
 
 COMMIT;

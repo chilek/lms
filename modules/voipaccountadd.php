@@ -32,11 +32,10 @@ switch ($_GET['action']) {
 
     case 'getpoolnumbers':
         $poolid = intval($_POST['poolid']);
-
         $pool = $DB->GetRow("SELECT poolstart, poolend FROM voip_pool_numbers WHERE id = ?" ,array($poolid));
 
         $range   = array();
-        $range[] = array($pool['poolstart'],'');
+        $range[$pool['poolstart']] = array($pool['poolstart'],'');
         $tmp     = $pool['poolstart'];
 
         while ( gmp_cmp($tmp, $pool['poolend']) ) {
