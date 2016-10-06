@@ -28,16 +28,18 @@ $this->Execute("ALTER TABLE voip_numbers ADD COLUMN `index` smallint");
 $numbers_list = $this->GetAll("SELECT voip_account_id, phone FROM voip_numbers ORDER BY id");
 $counter = array();
 
-foreach ($numbers_list as $number) {
-	$vaccid = $number['voip_account_id'];
-	$phone  = $number['phone'];
+if ($numbers_list) {
+	foreach ($numbers_list as $number) {
+		$vaccid = $number['voip_account_id'];
+		$phone  = $number['phone'];
 
-	if (isset($counter[$vaccid])) {
-		++$counter[$vaccid];
-		$this->Execute("UPDATE voip_numbers SET index = ? WHERE phone ?LIKE? ?", array($counter[$vaccid], $phone));
-	} else {
-		$counter[$vaccid] = 1;
-		$this->Execute("UPDATE voip_numbers SET index = 1 WHERE phone ?LIKE? ?", array($phone));	
+		if (isset($counter[$vaccid])) {
+			++$counter[$vaccid];
+			$this->Execute("UPDATE voip_numbers SET index = ? WHERE phone ?LIKE? ?", array($counter[$vaccid], $phone));
+		} else {
+			$counter[$vaccid] = 1;
+			$this->Execute("UPDATE voip_numbers SET index = 1 WHERE phone ?LIKE? ?", array($phone));
+		}
 	}
 }
 
