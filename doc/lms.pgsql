@@ -843,9 +843,9 @@ CREATE TABLE voip_numbers (
     voip_account_id integer NOT NULL
         REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
     phone varchar(20) NOT NULL,
-    index smallint,
+    number_index smallint,
     UNIQUE(phone),
-    UNIQUE(voip_account_id, index)
+    UNIQUE(voip_account_id, number_index)
 );
 
 DROP SEQUENCE IF EXISTS voip_pool_numbers_id_seq;
@@ -2852,6 +2852,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016100500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016100600');
 
 COMMIT;

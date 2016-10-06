@@ -252,7 +252,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             }
 
             if ($phones) {
-                $DB->Execute('INSERT INTO voip_numbers (voip_account_id, phone, index) VALUES ' . implode(',', $phones));
+                $DB->Execute('INSERT INTO voip_numbers (voip_account_id, phone, number_index) VALUES ' . implode(',', $phones));
                 $DB->CommitTrans();
                 return $id;
             } else {
@@ -323,7 +323,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             $result['modifiedby']    = $user_manager->getUserName($result['modid']);
             $result['creationdateh'] = date('Y/m/d, H:i', $result['creationdate']);
             $result['moddateh']      = date('Y/m/d, H:i', $result['moddate']);
-            $result['phones']        = $this->db->GetAll('SELECT phone, index FROM voip_numbers WHERE voip_account_id = ?;', array($id));
+            $result['phones']        = $this->db->GetAll('SELECT phone, number_index FROM voip_numbers WHERE voip_account_id = ?;', array($id));
             $result['owner']         = $customer_manager->getCustomerName($result['ownerid']);
             return $result;
         }
@@ -405,7 +405,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         );
 
         if ($result) {
-            $this->db->Execute("UPDATE voip_numbers SET index = null WHERE voip_account_id = ?", array($data['id']));
+            $this->db->Execute("UPDATE voip_numbers SET number_index = null WHERE voip_account_id = ?", array($data['id']));
             $current_phones = $this->db->GetAllByKey('SELECT phone FROM voip_numbers WHERE voip_account_id = ?;', 'phone', array($data['id']));
             $phone_index = 0;
 
@@ -416,7 +416,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 if (!isset($current_phones[$v])) {
                     $phone_to_insert[] = '('.$data['id'].",'$v','" . (++$phone_index) . "')";
                 } else {
-                    $this->db->Execute('UPDATE voip_numbers SET index = ? WHERE phone ?LIKE? ?', array(++$phone_index, $v));
+                    $this->db->Execute('UPDATE voip_numbers SET number_index = ? WHERE phone ?LIKE? ?', array(++$phone_index, $v));
                 }
             }
 
@@ -430,7 +430,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 $this->db->Execute('DELETE FROM voip_numbers WHERE ' . implode('OR', $phone_to_delete));
 
             if ($phone_to_insert)
-                $this->db->Execute('INSERT INTO voip_numbers (voip_account_id, phone, index) VALUES ' . implode(',', $phone_to_insert));
+                $this->db->Execute('INSERT INTO voip_numbers (voip_account_id, phone, number_index) VALUES ' . implode(',', $phone_to_insert));
 
             $this->db->CommitTrans();
             return TRUE;

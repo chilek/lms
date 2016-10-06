@@ -1286,10 +1286,10 @@ CREATE TABLE voip_numbers (
     id int(11) AUTO_INCREMENT,
     voip_account_id int(11) NOT NULL,
     phone varchar(20) NOT NULL,
-    `index` smallint NULL,
+    number_index smallint NULL,
     FOREIGN KEY (voip_account_id) REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
     UNIQUE(phone),
-    UNIQUE(voip_account_id, `index`),
+    UNIQUE(voip_account_id, number_index),
     PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
@@ -2744,4 +2744,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016100500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016100600');
