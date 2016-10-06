@@ -1578,6 +1578,8 @@ CREATE TABLE events (
     customerid int(11) NOT NULL DEFAULT '0',
     private tinyint(1) NOT NULL DEFAULT '0',
     closed tinyint(1) NOT NULL DEFAULT '0',
+    closeddate int(11) NOT NULL DEFAULT '0',
+    closeduserid int(11) NOT NULL DEFAULT '0',
     creationdate int(11) NOT NULL DEFAULT '0',
     moddate int(11) NOT NULL DEFAULT '0',
     moduserid int(11) NOT NULL DEFAULT '0',
