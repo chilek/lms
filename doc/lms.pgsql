@@ -1652,6 +1652,8 @@ CREATE TABLE events (
 	customerid 	integer 	DEFAULT 0 NOT NULL,
 	private 	smallint 	DEFAULT 0 NOT NULL,
 	closed 		smallint 	DEFAULT 0 NOT NULL,
+	closeddate	integer		DEFAULT 0 NOT NULL,
+	closeduserid	integer		DEFAULT 0 NOT NULL,
 	creationdate	integer		DEFAULT 0 NOT NULL,
 	moddate		integer		DEFAULT 0 NOT NULL,
 	moduserid	integer		DEFAULT 0 NOT NULL,
