@@ -150,7 +150,7 @@ if (!empty($records))
 $accounts = $DB->GetAll("SELECT a.login, a.passwd, " . $DB->GroupConcat("n.phone") . " AS phones, a.flags, lc.boroughid
 	FROM voipaccounts a
 	LEFT JOIN (
-		SELECT voip_account_id, phone FROM voip_numbers ORDER BY voip_account_id, index
+		SELECT voip_account_id, phone FROM voip_numbers ORDER BY voip_account_id, number_index
 	) n ON n.voip_account_id = a.id
 	LEFT JOIN location_cities lc ON lc.id = a.location_city
 	GROUP BY a.login, a.passwd, a.flags, lc.boroughid");
@@ -177,8 +177,9 @@ if (!empty($accounts)) {
 		foreach ($phones as $phone)
 			fprintf($fheo, "exten => _%s,1,Goto(incoming,%s,1)\n", $phone, $phone);
 
+		$phone = reset($phones);
 		fprintf($fhs, "[%s]\nmd5secret=%s\ncontext=outgoing-lms-%s\nqualify=yes\ntype=friend\ninsecure=no\nhost=dynamic\nnat=no\ndirectmedia=no\n\n",
-			$login, md5($login . ':asterisk:' . $passwd), reset($phones));
+			$login, md5($login . ':asterisk:' . $passwd), $phone);
 
 		foreach ($phones as $phone) {
 			$prio = 1;
@@ -205,7 +206,7 @@ if (!empty($accounts)) {
 			$prio = 1;
 			if ($flags & (CALL_FLAG_ADMIN_RECORDING | CALL_FLAG_CUSTOMER_RECORDING))
 				fprintf($fheo, "exten => _X.,%d,Monitor(wav,\${CDR(uniqueid)},mb)\n", $prio++);
-			fprintf($fheo, "exten => _X.,%d,Set(ORIGINAL_CALLER_ID=%s)\n", $prio++, $login);
+			fprintf($fheo, "exten => _X.,%d,Set(CDR(accountcode)=%s)\n", $prio++, $phone);
 			fprintf($fheo, "exten => _X.,%d,Goto(outgoing,\${EXTEN},1)\n", $prio++);
 
 			if (isset($boroughs[$boroughid]))
