@@ -205,6 +205,7 @@ if (!empty($accounts)) {
 			$prio = 1;
 			if ($flags & (CALL_FLAG_ADMIN_RECORDING | CALL_FLAG_CUSTOMER_RECORDING))
 				fprintf($fheo, "exten => _X.,%d,Monitor(wav,\${CDR(uniqueid)},mb)\n", $prio++);
+			fprintf($fheo, "exten => _X.,%d,Set(ORIGINAL_CALLER_ID=%s)\n", $prio++, $login);
 			fprintf($fheo, "exten => _X.,%d,Goto(outgoing,\${EXTEN},1)\n", $prio++);
 
 			if (isset($boroughs[$boroughid]))
