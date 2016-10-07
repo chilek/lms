@@ -213,7 +213,7 @@
 		<TD style="width: 1%; white-space: nowrap;">
 			<span class="bold">{trans("GPS latitude:")}</span>
 		</TD>
-		<TD style="width; 98%; white-space: nowrap;">
+		<TD style="width: 98%; white-space: nowrap;">
 			<INPUT ID="latitude" TYPE="text" NAME="nodeedit[latitude]" VALUE="{if $nodeinfo.latitude}{$nodeinfo.latitude}{else}{/if}" {tip text="Enter device latitude (optional)" trigger="latitude"}>
 			<a href="javascript: void(0);" onClick="return gpscoordschoosewin(document.editnode.elements['nodeedit[longitude]'], document.editnode.elements['nodeedit[latitude]']);" {tip text="Click to select gps coordinates from map"}>&raquo;&raquo;&raquo;</A>
 		</TD>

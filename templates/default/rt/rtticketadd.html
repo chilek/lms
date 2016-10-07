@@ -85,7 +85,7 @@
 			<TABLE width="100%" cellpadding="1" {tip trigger="categories"}>
 				{foreach from=$categories item=category}
 				<TR>
-					<TD style="width: 1%;" class="text-center=">
+					<TD style="width: 1%;" class="text-center">
 						<INPUT type="checkbox" name="ticket[categories][{$category.id}]" ID="cat{$category.id}" value="1" {if $category.checked > 0}checked{/if}>
 					</TD>
 					<TD style="width: 99%;">
