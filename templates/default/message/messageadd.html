@@ -117,7 +117,7 @@
 	function change_message_template(tmplid) {
 		if (tmplid)
 			xajax_getMessageTemplate(tmplid, 'subject', {if $message.emails || !isset($message.customerid)}xjx.$('typemail').checked || {/if}
-				xjx.$('typewww').checked || xjx.$('typeuserpanel').checked || xjx.$('typeuserpanelurgent').checked ? 'mailmessage' : 'smstext');
+				xjx.$('typewww').checked || xjx.$('typeuserpanel').checked || xjx.$('typeuserpanelurgent').checked ? 'mailbody' : 'smsbody');
 	}
 
 	function messageTemplateReceived(subjectelem, subject, messageelem, message) {
@@ -125,7 +125,7 @@
 		if (tinyMCE.editors.length) {
 			tinyMCE.editors[0].setContent(message);
 		}
-		$('textarea[name="message[mailbody]"]').html(message);
+		$('textarea[name="message[' + messageelem + ']"]').html(message);
 	}
 -->
 </SCRIPT>
