@@ -92,7 +92,7 @@
 					{foreach $customerinfo[$type|cat:"s"] as $contact}
 					<TR{if ($contact.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>
 						<TD>
-							{if isset($properties.formatter)}{call_user_func($properties['formatter'], $contact.contact)}{else}{$contact.contact}{/if}
+							{if isset($properties.formatter)}{call_user_func($properties['formatter'], $contact)}{else}{$contact.contact}{/if}
 							{if $contact.typestr}[{$contact.typestr}]{/if}
 							{if $contact.name} ({$contact.name|truncate:"40":"...":true}){/if}
 						</TD>
@@ -103,32 +103,6 @@
 		</TD>
 	</TR>
 {/if}
-{/foreach}
-{foreach from=$customerinfo.messengers item=item}
-	<TR>
-		<TD>
-			{if $item.type == $smarty.const.IM_GG}
-			<IMG src="http://status.gadu-gadu.pl/users/status.asp?id={$item.uid}&styl=1" alt="">
-			{elseif $item.type == $smarty.const.IM_YAHOO}
-			<IMG src="http://opi.yahoo.com/online?u='{$item.uid}'&m=g&t=5" alt="">
-			{elseif $item.type == $smarty.const.IM_SKYPE}
-			<IMG src="http://mystatus.skype.com/smallicon/{$item.uid}" alt="">
-			{else}
-			<IMG src="img/gg.gif" alt="">
-			{/if}
-		</TD>
-		<TD>
-			{if $item.type == $smarty.const.IM_GG}
-			<A HREF="gg:{$item.uid}">{$item.uid}</A>
-			{elseif $item.type == $smarty.const.IM_YAHOO}
-			<A HREF="ymsgr:sendIM?{$item.uid}">{$item.uid}</A>
-			{elseif $item.type == $smarty.const.IM_SKYPE}
-			<A HREF="skype:{$item.uid}?call">{$item.uid}</A>
-			{else}
-			{$item.uid}
-			{/if}
-		</TD>
-	</TR>
 {/foreach}
 {if $customerinfo.pin != 0}
 	<TR>

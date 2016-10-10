@@ -858,7 +858,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function GetCustomer($id, $short = false)
     {
         global $CONTACTTYPES, $CUSTOMERCONTACTTYPES;
-;
+
 		require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
         if ($result = $this->db->GetRow('SELECT c.*, '
@@ -907,9 +907,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $result['balance'] = $this->getCustomerBalance($result['id']);
             $result['bankaccount'] = bankaccount($result['id'], $result['account']);
 
-            $result['messengers'] = $this->db->GetAllByKey('SELECT uid, type 
-					FROM imessengers WHERE customerid = ? ORDER BY type', 'type', array($result['id']));
-
 			foreach ($CUSTOMERCONTACTTYPES as $contacttype => $properties)
 				$result[$contacttype . 's'] = $this->db->GetAll('SELECT contact AS ' . $contacttype . ',
 						contact, name, type
@@ -920,13 +917,17 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 			$result['sendinvoices'] = false;
 
 			foreach (array_keys($CUSTOMERCONTACTTYPES) as $ctype) {
+				$customercontacttype = $CUSTOMERCONTACTTYPES[$ctype];
 				$ctype .= 's';
 				if (is_array($result[$ctype]))
 					foreach ($result[$ctype] as $idx => $row) {
 						$types = array();
 						foreach ($CONTACTTYPES as $tidx => $tname)
-							if ($row['type'] & $tidx)
+							if ($row['type'] & $tidx && isset($customercontacttype['ui']['flags'][$row['type'] & $tidx]))
 								$types[] = $tname;
+
+						if (isset($customercontacttype['ui']['typeselectors']))
+							$result[$ctype][$idx]['typeselector'] = $tidx;
 
 						if ($ctype == 'emails' && (($row['type'] & (CONTACT_INVOICES | CONTACT_DISABLED)) == CONTACT_INVOICES))
 							$result['sendinvoices'] = true;

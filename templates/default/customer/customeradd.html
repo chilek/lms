@@ -22,9 +22,17 @@
 		switch (type) {
 			{foreach $_CUSTOMERCONTACTTYPES as $contacttype => $properties}
 			case '{$contacttype}':
-				innerHTML = '<HR><INPUT TYPE="text" size="{$properties.ui.size}" value="" name="customeradd[{$contacttype|cat:"s"}][' + nr + '][contact]"'
+				innerHTML = '<HR>';
+				{if isset($properties.ui.typeselectors)}
+				innerHTML += '<SELECT name="customeradd[{$contacttype}s][' + nr + '][typeselector]">'
+					{foreach $properties.ui.typeselectors as $typeselector}
+					+ '<OPTION value="{$typeselector}">{$_CONTACTTYPES[$typeselector]}</OPTION>'
+					{/foreach}
+					+ '</SELECT>&nbsp;';
+				{/if}
+				innerHTML += '<INPUT TYPE="text" size="{$properties.ui.size}" value="" name="customeradd[{$contacttype|cat:"s"}][' + nr + '][contact]"'
 					+ ' title="{$properties.ui.tip}">';
-				innerHTML += '{foreach $properties.ui.flags as $flagtype => $flagproperties}<label{if isset($flagproperties.tip)} title="{$flagproperties.tip}"{/if}><INPUT TYPE="checkbox" value="{$flagtype}" name="customeradd[{$contacttype|cat:"s"}][' + nr + '][type][]"> {$flagproperties.label}</label>{/foreach}';
+				innerHTML += '{foreach $properties.ui.flags as $flagtype => $flagproperties}&nbsp;<label{if isset($flagproperties.tip)} title="{$flagproperties.tip}"{/if}><INPUT TYPE="checkbox" value="{$flagtype}" name="customeradd[{$contacttype|cat:"s"}][' + nr + '][type][]"> {$flagproperties.label}</label>{/foreach}';
 				innerHTML += '<BR><INPUT TYPE="text" size="68" value="" name="customeradd[{$contacttype|cat:"s"}][' + nr + '][name]"'
 					+ ' title="{trans("Enter contact name/description (optional)")}">';
 				break;
@@ -297,6 +305,13 @@
 									<TD>
 										{if !$item@first}<HR>{/if}
 										<INPUT type="{$properties.ui.inputtype}" size="{$properties.ui.size}" value="{$item.contact}" name="customeradd[{$type}s][{$key}][contact]" {tip text=$properties.ui.tip trigger="`$type``$key`"}>
+										{if isset($properties.ui.typeselectors)}
+										<SELECT name="customeradd[{$type}s][{$key}][typeselector]">
+											{foreach $properties.ui.typeselectors as $typeselector}
+											<OPTION value="{$typeselector}"{if $item.type & $typeselector} selected{/if}>{$_CONTACTTYPES[$typeselector]}</OPTION>
+											{/foreach}
+										</SELECT>
+										{/if}
 										{foreach $properties.ui.flags as $flagtype => $flagproperties}
 										<label{if isset($flagproperties.tip)} {tip text=$flagproperties.tip}{/if}>
 											<INPUT type="checkbox" value="{$flagtype}" name="customeradd[{$type}s][{$key}][type][]"{if ($item.type & $flagtype)} checked{/if}>
@@ -319,33 +334,6 @@
 					</TD>
 				</TR>
 				{/foreach}
-				<TR>
-					<TD style="width: 1%;">
-						<IMG SRC="img/gg.gif" alt="Gadu-Gadu">
-					</TD>
-					<TD style="width: 99%;">
-						{assign var=gg value=$smarty.const.IM_GG}
-						<INPUT type="text" name="customeradd[uid][{$gg}]" value="{if $customeradd.uid.$gg}{$customeradd.uid.$gg}{/if}" SIZE="20" {tip text="Enter Gadu-Gadu ID (optional)" trigger="gg"}>
-					</TD>
-				</TR>
-				<TR>
-					<TD style="width: 1%;">
-						<IMG src="img/yim.gif" alt="Yahoo">
-					</TD>
-					<TD style="width: 99%;">
-					{assign var=yahoo value=$smarty.const.IM_YAHOO}
-						<INPUT type="text" name="customeradd[uid][{$yahoo}]" value="{if $customeradd.uid.$yahoo}{$customeradd.uid.$yahoo}{/if}" SIZE="20" {tip text="Enter Yahoo Messenger ID (optional)" trigger="yahoo"}>
-					</TD>
-				</TR>
-				<TR>
-					<TD style="width: 1%;">
-						<IMG src="img/skype.gif" alt="Skype">
-					</TD>
-					<TD style="width: 99%;">
-					{assign var=skype value=$smarty.const.IM_SKYPE}
-						<INPUT type="text" name="customeradd[uid][{$skype}]" value="{if $customeradd.uid.$skype}{$customeradd.uid.$skype}{/if}" SIZE="20" {tip text="Enter Skype ID (optional)" trigger="skype"}>
-					</TD>
-				</TR>
 				<TR>
 					<TD style="width: 1%;">
 						<IMG src="img/pin.gif" alt="">

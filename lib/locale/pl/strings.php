@@ -3482,4 +3482,9 @@ $_LANG['without gps coords'] = 'bez współrzędnych gps';
 
 $_LANG['without invoice flag'] = 'bez flagi z fakturą';
 
+$_LANG['Instant messengers'] = 'Komunikatory internetowe';
+$_LANG['Enter IM uid (optional)'] = 'Podaj identyfikator użytkownika (opcjonalne)';
+$_LANG['Check if IM uid should be disabled'] = 'Oznacz, jeśli identyfikator użytkownika ma być wyłączony';
+$_LANG['IM uid is required!'] = 'Identyfikator użytkownika jest wymagany!';
+
 ?>

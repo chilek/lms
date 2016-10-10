@@ -114,48 +114,26 @@
 {/if}
 		</td>
 	</tr>
-{if $rights.info.edit_contact || $rights.info.edit_contact_ack || $userinfo.im}
+{foreach $userinfo.ims as $item}
 	<tr class="dark">
 		<td width="1%" align="center">
+			{if $item.type & $smarty.const.CONTACT_IM_GG}
 			{img src="gg.gif" alt=""}
-		</td>
-		<td width="99%">
-{if $rights.info.edit_contact || $rights.info.edit_contact_ack}
-			<INPUT TYPE="TEXT" NAME="userdata[im]" VALUE="{if $userinfo.im}{$userinfo.im}{/if}" {userpaneltip text="Enter IM number"}>
-{else}
-			{$userinfo.im}
-{/if}
-		</td>
-	</tr>
-{/if}
-{if ($rights.info.edit_contact || $rights.info.edit_contact_ack) && isset($userinfo.yahoo)}
-	<tr class="dark">
-		<td width="1%" align="center">
+			{elseif $item.type & $smarty.const.CONTACT_IM_YAHOO}
 			{img src="yahoo.gif" alt=""}
-		</td>
-		<td width="99%">
-{if $rights.info.edit_contact || $rights.info.edit_contact_ack}
-			<INPUT TYPE="TEXT" NAME="userdata[yahoo]" VALUE="{$userinfo.yahoo}"  {userpaneltip text="Enter Yahoo identifier"}>
-{else}
-			{$userinfo.yahoo}
-{/if}
-		</td>
-	</tr>
-{/if}
-{if ($rights.info.edit_contact || $rights.info.edit_contact_ack) && isset($userinfo.skype)}
-	<tr class="dark">
-		<td width="1%" align="center">
+			{elseif $item.type & $smarty.const.CONTACT_IM_SKYPE}
 			{img src="skype.gif" alt=""}
+			{/if}
 		</td>
 		<td width="99%">
 {if $rights.info.edit_contact || $rights.info.edit_contact_ack}
-			<INPUT TYPE="TEXT" NAME="userdata[skype]" VALUE="{$userinfo.skype}"  {userpaneltip text="Enter Skype identifier"}>
+			<INPUT TYPE="TEXT" NAME="userdata[im][{$item.id}]" VALUE="{$item.uid}" {userpaneltip text="Enter IM number"}>
 {else}
-			{$userinfo.skype}
+			{$item.uid}
 {/if}
 		</td>
 	</tr>
-{/if}
+{/foreach}
 	<tr>
 		<td width="1%" align="center">
 			<b>{trans("TEN")}</b>

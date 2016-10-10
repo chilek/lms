@@ -22,7 +22,15 @@
 		switch (type) {
 			{foreach $_CUSTOMERCONTACTTYPES as $contacttype => $properties}
 			case '{$contacttype}':
-				innerHTML = '<HR><INPUT TYPE="text" size="{$properties.ui.size}" value="" name="customerdata[{$contacttype|cat:"s"}][' + nr + '][contact]"'
+				innerHTML = '<HR>';
+				{if isset($properties.ui.typeselectors)}
+				innerHTML += '<SELECT name="customerdata[{$contacttype}s][' + nr + '][typeselector]">'
+					{foreach $properties.ui.typeselectors as $typeselector}
+					+ '<OPTION value="{$typeselector}">{$_CONTACTTYPES[$typeselector]}</OPTION>'
+					{/foreach}
+					+ '</SELECT>&nbsp;';
+				{/if}
+				innerHTML += '<INPUT TYPE="text" size="{$properties.ui.size}" value="" name="customerdata[{$contacttype|cat:"s"}][' + nr + '][contact]"'
 					+ ' title="{$properties.ui.tip}">';
 				innerHTML += '{foreach $properties.ui.flags as $flagtype => $flagproperties}<label{if isset($flagproperties.tip)} title="{$flagproperties.tip}"{/if}><INPUT TYPE="checkbox" value="{$flagtype}" name="customerdata[{$contacttype|cat:"s"}][' + nr + '][type][]"> {$flagproperties.label}</label>{/foreach}';
 				innerHTML += '<BR><INPUT TYPE="text" size="68" value="" name="customerdata[{$contacttype|cat:"s"}][' + nr + '][name]"'
@@ -279,6 +287,13 @@
 					<TR id="{$type}{$key}">
 						<TD>
 							{if !$item@first}<HR>{/if}
+							{if isset($properties.ui.typeselectors)}
+							<SELECT name="customerdata[{$type}s][{$key}][typeselector]">
+								{foreach $properties.ui.typeselectors as $typeselector}
+								<OPTION value="{$typeselector}"{if $item.type & $typeselector} selected{/if}>{$_CONTACTTYPES[$typeselector]}</OPTION>
+								{/foreach}
+							</SELECT>
+							{/if}
 							<INPUT type="{$properties.ui.inputtype}" size="{$properties.ui.size}" value="{$item.contact}" name="customerdata[{$type}s][{$key}][contact]" {tip text=$properties.ui.tip trigger="`$type``$key`"}>
 							{foreach $properties.ui.flags as $flagtype => $flagproperties}
 							<label{if isset($flagproperties.tip)} {tip text=$flagproperties.tip}{/if}>
@@ -302,33 +317,6 @@
 		</TD>
 	</TR>
 	{/foreach}
-	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/gg.gif" alt="Gadu-Gadu">
-		</TD>
-		<TD style="width: 99%;">
-			{assign var=gg value=$smarty.const.IM_GG}
-			<INPUT type="text" name="customerdata[uid][{$gg}]" value="{if $customerinfo.uid.$gg}{$customerinfo.uid.$gg}{/if}" size="20" {tip text="Enter Gadu-Gadu ID (optional)" trigger="gg"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/yim.gif" alt="Yahoo">
-		</TD>
-		<TD style="width: 99%">
-			{assign var=yahoo value=$smarty.const.IM_YAHOO}
-			<INPUT type="text" name="customerdata[uid][{$yahoo}]" value="{if $customerinfo.uid.$yahoo}{$customerinfo.uid.$yahoo}{/if}" size="20" {tip text="Enter Yahoo Messenger ID (optional)" trigger="yahoo"}>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG src="img/skype.gif" alt="Skype">
-		</TD>
-		<TD style="width: 99%;">
-			{assign var=skype value=$smarty.const.IM_SKYPE}
-			<INPUT type="text" name="customerdata[uid][{$skype}]" value="{if $customerinfo.uid.$skype}{$customerinfo.uid.$skype}{/if}" size="20" {tip text="Enter Skype ID (optional)" trigger="skype"}>
-		</TD>
-	</TR>
 	<TR>
 		<TD style="width: 1%;">
 			<IMG src="img/pin.gif" alt="">

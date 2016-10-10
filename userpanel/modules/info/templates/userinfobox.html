@@ -49,24 +49,14 @@
 		</td>
 	</tr>
 {/if}
-{if $userinfo.im != "" && $userinfo.im != 0}
+{foreach $userinfo.ims as $item}
 	<tr>
 		<td width="1%">
+			{if $item.type & $smarty.const.CONTACT_IM_GG}
 			{img src="gg.gif" alt=""}
-		</td>
-		<td width="99%" colspan="2">
-			{$userinfo.im}
-		</td>
-	</tr>
-{/if}
-{foreach from=$userinfo.messengers item=item}
-	<tr>
-		<td width="1%">
-			{if $item.type == $smarty.const.IM_GG}
-			{img src="gg.gif" alt=""}
-			{elseif $item.type == $smarty.const.IM_YAHOO}
+			{elseif $item.type & $smarty.const.CONTACT_IM_YAHOO}
 			{img src="yahoo.gif" alt=""}
-			{elseif $item.type == $smarty.const.IM_SKYPE}
+			{elseif $item.type & $smarty.const.CONTACT_IM_SKYPE}
 			{img src="skype.gif" alt=""}
 			{/if}
 		</td>

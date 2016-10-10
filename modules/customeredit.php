@@ -140,28 +140,6 @@ elseif (isset($_POST['customerdata']))
 	if($customerdata['status'] == 1 && $LMS->GetCustomerNodesNo($customerdata['id'])) 
 		$error['status'] = trans('Interested customers can\'t have computers!');
 
-	foreach($customerdata['uid'] as $idx => $val)
-	{
-		$val = trim($val);
-		switch($idx)
-		{
-			case IM_GG:
-				if($val!='' && !check_gg($val))
-					$error['gg'] = trans('Incorrect IM uin!');
-			break;
-			case IM_YAHOO:
-				if($val!='' && !check_yahoo($val))
-					$error['yahoo'] = trans('Incorrect IM uin!');
-			break;
-			case IM_SKYPE:
-				if($val!='' && !check_skype($val))
-					$error['skype'] = trans('Incorrect IM uin!');
-			break;
-		}
-
-		if($val) $im[$idx] = $val;
-	}
-
 	$contacts = array();
 
 	$emaileinvoice = false;
@@ -221,34 +199,6 @@ elseif (isset($_POST['customerdata']))
                 );
                 $customeradd = $hook_data['customeradd'];
                 $id = $hook_data['id'];
-                
-		if ($SYSLOG) {
-			$imids = $DB->GetCol('SELECT id FROM imessengers WHERE customerid = ?', array($customerdata['id']));
-			if (!empty($imids))
-				foreach ($imids as $imid) {
-					$args = array(
-						SYSLOG::RES_IMCONTACT => $imid,
-						SYSLOG::RES_CUST => $customerdata['id']
-					);
-					$SYSLOG->AddMessage(SYSLOG::RES_IMCONTACT, SYSLOG::OPER_DELETE, $args);
-				}
-		}
-		$DB->Execute('DELETE FROM imessengers WHERE customerid = ?', array($customerdata['id']));
-		if(isset($im))
-			foreach($im as $idx => $val) {
-				$DB->Execute('INSERT INTO imessengers (customerid, uid, type)
-					VALUES(?, ?, ?)', array($customerdata['id'], $val, $idx));
-				if ($SYSLOG) {
-					$imid = $DB->GetLastInsertID('imessengers');
-					$args = array(
-						SYSLOG::RES_IMCONTACT => $imid,
-						SYSLOG::RES_CUST => $customerdata['id'],
-						'uid' => $val,
-						'type' => $idx
-					);
-					$SYSLOG->AddMessage(SYSLOG::RES_IMCONTACT, SYSLOG::OPER_ADD, $args);
-				}
-			}
 
 		if ($SYSLOG) {
 			$contactids = $DB->GetCol('SELECT id FROM customercontacts WHERE customerid = ?', array($customerdata['id']));

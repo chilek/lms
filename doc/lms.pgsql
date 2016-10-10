@@ -1652,6 +1652,8 @@ CREATE TABLE events (
 	customerid 	integer 	DEFAULT 0 NOT NULL,
 	private 	smallint 	DEFAULT 0 NOT NULL,
 	closed 		smallint 	DEFAULT 0 NOT NULL,
+	closeddate	integer		DEFAULT 0 NOT NULL,
+	closeduserid	integer		DEFAULT 0 NOT NULL,
 	creationdate	integer		DEFAULT 0 NOT NULL,
 	moddate		integer		DEFAULT 0 NOT NULL,
 	moduserid	integer		DEFAULT 0 NOT NULL,
@@ -1876,22 +1878,6 @@ CREATE TABLE dbinfo (
 );
 
 /* ---------------------------------------------------
- Structure of table "imessengers"
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS imessengers_id_seq;
-CREATE SEQUENCE imessengers_id_seq;
-DROP TABLE IF EXISTS imessengers CASCADE;
-CREATE TABLE imessengers (
-    id 		integer         DEFAULT nextval('imessengers_id_seq'::text) NOT NULL,
-    customerid 	integer    	NOT NULL
-	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    uid 	varchar(32)     DEFAULT '' NOT NULL,
-    type 	smallint        DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id)
-);
-CREATE INDEX imessengers_customerid_idx ON imessengers (customerid);
-
-/* ---------------------------------------------------
  Structure of table "customercontacts"
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS customercontacts_id_seq;
@@ -1903,7 +1889,7 @@ CREATE TABLE customercontacts (
 	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
     name 	varchar(255) 	NOT NULL DEFAULT '',
     contact	varchar(255) 	NOT NULL DEFAULT '',
-    type    smallint        DEFAULT NULL,
+    type    integer         DEFAULT NULL,
     PRIMARY KEY (id)
 );
 CREATE INDEX customercontacts_customerid_idx ON customercontacts (customerid);
@@ -2850,6 +2836,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016100600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016101000');
 
 COMMIT;
