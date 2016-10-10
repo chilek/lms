@@ -133,6 +133,7 @@ version ?.??.?? (????-??-??):
   - added node list filter: without gps coordinates [chilan]
   - added customer list filter: liabilities without invoice flag [chilan]
   - added support for voip phone priority [kosa/chilan]
+  - added support for change voip account settings in userpanel by customer [kosa/chilan]
 
 version 1.11.20 (2016-04-19):
 
