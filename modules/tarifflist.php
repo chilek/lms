@@ -194,11 +194,12 @@ function GetTariffList($order = 'name,asc', $type = NULL, $customergroupid = NUL
 			JOIN tarifftags tt ON (ta.tarifftagid = tt.id)'
 			. (!empty($tags) ? ' WHERE tarifftagid IN (' . implode(',', $tags). ')' : ''));
 		if (!empty($tarifftags))
-			foreach ($tarifftags as $tarifftag) {
-				if (!isset($tarifflist[$tarifftag['tariff_id']]['tags']))
-					$tarifflist[$tarifftag['tariff_id']]['tags'] = array();
-				$tarifflist[$tarifftag['tariff_id']]['tags'][] = $tarifftag;
-			}
+			foreach ($tarifftags as $tarifftag)
+				if (isset($tarifflist[$tarifftag['tariff_id']])) {
+					if (!isset($tarifflist[$tarifftag['tariff_id']]['tags']))
+						$tarifflist[$tarifftag['tariff_id']]['tags'] = array();
+					$tarifflist[$tarifftag['tariff_id']]['tags'][] = $tarifftag;
+				}
 	}
 
 	$tarifflist['total'] = sizeof($tarifflist);
@@ -218,8 +219,10 @@ else
 	$o = $_POST['o'];
 $SESSION->save('tlo', $o);
 
-if (!isset($_POST['t']))
+if (!isset($_POST['t']) && !isset($_GET['t']))
 	$SESSION->restore('tlt', $t);
+elseif (isset($_GET['t']))
+	$t = $_GET['t'];
 else
 	$t = $_POST['t'];
 $SESSION->save('tlt', $t);
