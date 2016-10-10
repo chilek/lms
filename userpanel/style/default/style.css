@@ -154,12 +154,15 @@ TEXTAREA.alert 	{ border-width: 1pt; border-color: #000000; border-style: solid;
 
 .submit-btn {
     border-radius: 7px;
-    margin-top: 5px;
     padding: 2px 25px;
-    height: 90%;
+    height: 30px;
     font-weight: bold;
     background-color: #900000;
     color: white;
+    -webkit-box-shadow: 2px 2px 7px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 2px 2px 7px 0px rgba(0,0,0,0.75);
+	box-shadow: 2px 2px 7px 0px rgba(0,0,0,0.75);
+	outline:0;
 }
 
 .submit-btn:hover {

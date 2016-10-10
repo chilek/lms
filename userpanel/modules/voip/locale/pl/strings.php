@@ -26,9 +26,13 @@
 
 $_LANG['View phone billings and listen recorded calls.'] = 'Przeglądaj bilingi telefoniczne i odsłuchuj nagrane rozmowy.';
 $_LANG['Filters:'] = 'Filtry:';
-$_LANG['My accounts:'] = 'Moje konta:';
+$_LANG['My phones:'] = 'Moje numery:';
 $_LANG['Date range:'] = 'Zakres dat:';
 $_LANG['Others:'] = 'Inne:';
 $_LANG['My number:'] = 'Mój numer:';
+$_LANG['Account ID'] = 'ID konta';
+$_LANG['Assigned phones'] = 'Przypisane numery';
+$_LANG["You can turn on/off record of your phone calls. Recordings can listen in 'billings' tab. Setting can be changed for each account separetly."] = "Możesz włączyć/wyłączyć nagrywanie swoich rozmów telefonicznych. Nagrania można przesłuchać w zakładce 'bilingi'. Ustawienie można zmienić dla każdego konta osobno.";
+$_LANG['Change indexes for phones assigned to your account.'] = 'Zmiana indeksów dla numerów telefonicznych przypisanych do Twojego konta.';
 
 ?>
