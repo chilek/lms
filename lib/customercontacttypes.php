@@ -51,7 +51,8 @@ function format_customer_im($contact) {
 				. '<a href="ymsgr:sendIM?' . $contact['contact'] . '">' . $contact['contact'] . '</a>';
 			break;
 		case CONTACT_IM_SKYPE:
-			return trans('Skype') . ': ' . '<IMG src="http://mystatus.skype.com/smallicon/' . $contact['contact'] . '"  alt=""> '
+//			return trans('Skype') . ': ' . '<IMG src="http://mystatus.skype.com/smallicon/' . $contact['contact'] . '"  alt=""> '
+			return trans('Skype') . ': '
 				. '<a href="skype:' . $contact['contact'] . '">' . $contact['contact'] . '</a>';
 			break;
 	}
