@@ -179,28 +179,6 @@ if (isset($_POST['customeradd']))
         elseif(!preg_match('/^[0-9]{4,6}$/', $customeradd['pin']))
 	        $error['pin'] = trans('Incorrect PIN code!');
 
-	foreach($customeradd['uid'] as $idx => $val)
-	{
-		$val = trim($val);
-		switch($idx)
-		{
-			case IM_GG:
-				if($val!='' && !check_gg($val))
-					$error['gg'] = trans('Incorrect IM uin!');
-			break;
-			case IM_YAHOO:
-				if($val!='' && !check_yahoo($val))
-					$error['yahoo'] = trans('Incorrect IM uin!');
-			break;
-			case IM_SKYPE:
-				if($val!='' && !check_skype($val))
-					$error['skype'] = trans('Incorrect IM uin!');
-			break;
-		}
-
-		if($val) $im[$idx] = $val;
-	}
-
 	$contacts = array();
 
 	$emaileinvoice = false;
@@ -257,22 +235,6 @@ if (isset($_POST['customeradd']))
                 );
                 $customeradd = $hook_data['customeradd'];
                 $id = $hook_data['id'];
-                
-		if(isset($im) && $id)
-			foreach($im as $idx => $val) {
-				$DB->Execute('INSERT INTO imessengers (customerid, uid, type)
-					VALUES(?, ?, ?)', array($id, $val, $idx));
-				if ($SYSLOG) {
-					$contactid = $DB->GetLastInsertID('imessengers');
-					$args = array(
-						SYSLOG::RES_IMCONTACT => $contactid,
-						SYSLOG::RES_CUST => $id,
-						'uid' => $val,
-						'type' => $idx
-					);
-					$SYSLOG->AddMessage(SYSLOG::RES_IMCONTACT, SYSLOG::OPER_ADD, $args);
-				}
-			}
 
 		if ($id && !empty($contacts))
 			foreach ($contacts as $contact) {

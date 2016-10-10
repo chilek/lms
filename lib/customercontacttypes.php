@@ -25,19 +25,36 @@
  */
 
 function format_customer_phone($contact) {
-	return '<a class="phone_number" href="tel:' . $contact . '">' . $contact . '</a>';
+	return '<a class="phone_number" href="tel:' . $contact['contact'] . '">' . $contact['contact'] . '</a>';
 }
 
 function format_customer_email($contact) {
-	return '<a href="mailto:' . $contact . '">' . $contact . '</a>';
+	return '<a href="mailto:' . $contact['contact'] . '">' . $contact['contact'] . '</a>';
 }
 
 function format_customer_account($contact) {
-	return format_bankaccount($contact);
+	return format_bankaccount($contact['contact']);
 }
 
 function format_customer_url($contact) {
-	return '<a href="' . $contact . '">' . $contact . '</a>';
+	return '<a href="' . $contact['contact'] . '">' . $contact['contact'] . '</a>';
+}
+
+function format_customer_im($contact) {
+	switch ($contact['type'] & CONTACT_IM) {
+		case CONTACT_IM_GG:
+			return trans('Gadu-Gadu') . ': ' . '<IMG src="http://status.gadu-gadu.pl/users/status.asp?id=' . $contact['contact'] . '&styl=1" alt=""> '
+				. '<a href="gg:' . $contact['contact'] . '">' . $contact['contact'] . '</a>';
+			break;
+		case CONTACT_IM_YAHOO:
+			return trans('Yahoo') . ': ' . '<IMG src="http://opi.yahoo.com/online?u=' . $contact['contact'] . '&m=g&t=5"  alt=""> '
+				. '<a href="ymsgr:sendIM?' . $contact['contact'] . '">' . $contact['contact'] . '</a>';
+			break;
+		case CONTACT_IM_SKYPE:
+			return trans('Skype') . ': ' . '<IMG src="http://mystatus.skype.com/smallicon/' . $contact['contact'] . '"  alt=""> '
+				. '<a href="skype:' . $contact['contact'] . '">' . $contact['contact'] . '</a>';
+			break;
+	}
 }
 
 function validate_customer_phones(&$customerdata, &$contacts, &$error) {
@@ -111,6 +128,27 @@ function validate_customer_urls(&$customerdata, &$contacts, &$error) {
 			$error['url' . $idx] = trans('URL address is required!');
 		elseif ($url)
 			$contacts[] = array('name' => $name, 'contact' => $url, 'type' => $type);
+	}
+}
+
+function validate_customer_ims(&$customerdata, &$contacts, &$error) {
+	foreach ($customerdata['ims'] as $idx => &$val) {
+		$im = trim($val['contact']);
+		$name = trim($val['name']);
+		$type = !empty($val['type']) ? array_sum($val['type']) : 0;
+		$type |= $val['typeselector'];
+
+		$val['type'] = $type;
+
+		$imtype = $type & CONTACT_IM;
+		if ($im != '' && (($imtype == CONTACT_IM_GG && !check_gg($im))
+			|| ($imtype == CONTACT_IM_YAHOO && !check_yahoo($im))
+			|| ($imtype == CONTACT_IM_SKYPE && !check_skype($im))))
+			$error['im' . $idx] = trans('Incorrect IM uin!');
+		elseif ($name && !$im)
+			$error['im' . $idx] = trans('IM uid is required!');
+		elseif ($im)
+			$contacts[] = array('name' => $name, 'contact' => $im, 'type' => $type);
 	}
 }
 
@@ -220,6 +258,31 @@ $CUSTOMERCONTACTTYPES = array(
 		'flagmask' => CONTACT_URL,
 		'formatter' => 'format_customer_url',
 		'validator' => 'validate_customer_urls',
+	),
+	'im' => array(
+		'ui' => array(
+			'legend' => array(
+				'icon' => 'img/skype.gif',
+				'text' => trans('Instant messengers'),
+			),
+			'inputtype' => 'text',
+			'size' => 16,
+			'tip' => trans('Enter IM uid (optional)'),
+			'typeselectors' => array(CONTACT_IM_GG, CONTACT_IM_YAHOO, CONTACT_IM_SKYPE),
+			'flags' => array(
+				CONTACT_DISABLED => array(
+					'label' => $CONTACTTYPES[CONTACT_DISABLED],
+					'tip' => trans('Check if IM uid should be disabled'),
+				),
+				CONTACT_NOTIFICATIONS => array(
+					'label' => $CONTACTTYPES[CONTACT_NOTIFICATIONS],
+					'tip' => trans('Check if send notification'),
+				),
+			),
+		),
+		'flagmask' => CONTACT_IM_GG | CONTACT_IM_YAHOO | CONTACT_IM_SKYPE,
+		'formatter' => 'format_customer_im',
+		'validator' => 'validate_customer_ims',
 	),
 );
 

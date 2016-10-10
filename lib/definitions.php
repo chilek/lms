@@ -233,17 +233,6 @@ $GUARANTEEPERIODS = array(
     60 => trans('$a months', 60)
 );
 
-// Internet Messengers
-define('IM_GG', 0);
-define('IM_YAHOO', 1);
-define('IM_SKYPE', 2);
-
-$MESSENGERS = array(
-    IM_GG    => trans('Gadu-Gadu'),
-    IM_YAHOO => trans('Yahoo'),
-    IM_SKYPE => trans('Skype'),
-);
-
 define('DISPOSABLE', 0);
 define('DAILY', 1);
 define('WEEKLY', 2);
@@ -327,6 +316,10 @@ define('CONTACT_NOTIFICATIONS', 32);
 define('CONTACT_BANKACCOUNT', 64);
 define('CONTACT_TECHNICAL', 128);
 define('CONTACT_URL', 256);
+define('CONTACT_IM', 3584);
+define('CONTACT_IM_GG', 512);
+define('CONTACT_IM_YAHOO', 1024);
+define('CONTACT_IM_SKYPE', 2048);
 define('CONTACT_DISABLED', 16384);
 
 $CONTACTTYPES = array(
@@ -336,6 +329,9 @@ $CONTACTTYPES = array(
     CONTACT_DISABLED        =>	trans('disabled'),
     CONTACT_NOTIFICATIONS   =>	trans('notifications'),
     CONTACT_TECHNICAL       =>	trans('technical'),
+    CONTACT_IM_GG           =>	trans('Gadu-Gadu'),
+    CONTACT_IM_YAHOO        =>	trans('Yahoo'),
+    CONTACT_IM_SKYPE        =>	trans('Skype'),
 );
 
 define('DISCOUNT_PERCENTAGE', 1);

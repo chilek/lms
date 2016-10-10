@@ -65,32 +65,24 @@
 		</TD>
 	</TR>
 {/if}
-{foreach from=$customerinfo.messengers item=item}
+{if !empty($customerinfo.ims)}
 	<TR>
 		<TD>
-			{if $item.type == $smarty.const.IM_GG}
-			<IMG src="http://status.gadu-gadu.pl/users/status.asp?id={$item.uid}&styl=1" alt="">
-			{elseif $item.type == $smarty.const.IM_YAHOO}
-			<IMG src="http://opi.yahoo.com/online?u='{$item.uid}'&m=g&t=5" alt="">
-			{elseif $item.type == $smarty.const.IM_SKYPE}
-			<IMG src="http://mystatus.skype.com/smallicon/{$item.uid}" alt="">
-			{else}
-			<IMG src="img/gg.gif" alt="">
-			{/if}
+			<IMG src="img/skype.gif" alt="">
 		</TD>
-		<TD>
-			{if $item.type == $smarty.const.IM_GG}
-			<A HREF="gg:{$item.uid}">{$item.uid}</A>
-			{elseif $item.type == $smarty.const.IM_YAHOO}
-			<A HREF="ymsgr:sendIM?{$item.uid}">{$item.uid}</A>
-			{elseif $item.type == $smarty.const.IM_SKYPE}
-			<A HREF="skype:{$item.uid}?call">{$item.uid}</A>
-			{else}
-			{$item.uid}
-			{/if}
+		<TD class="nobr">
+			{$properties = $_CUSTOMERCONTACTTYPES['im']}
+			{foreach $customerinfo.ims as $im}
+				<span{if ($im.type & $smarty.const.CONTACT_DISABLED) == $smarty.const.CONTACT_DISABLED} class="blend"{/if}>
+				{if isset($properties.formatter)}{call_user_func($properties['formatter'], $im)}{else}{$im.contact}{/if}
+				{if $im.typestr}[{$im.typestr}]{/if}
+				{if $im.name} ({$im.name|truncate:"40":"...":true}){/if}
+				</span>
+				{if !$im@last}<br>{/if}
+			{/foreach}
 		</TD>
 	</TR>
-{/foreach}
+{/if}
 {if $customerinfo.icn != ""}
 	<TR>
 		<TD WIDTH="1%">

@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
+
 function module_main()
 {
     global $LMS,$SMARTY,$SESSION;
@@ -83,10 +85,6 @@ function module_updateuserform()
 			$doc['attachments'] = $LMS->DB->GetAllBykey('SELECT * FROM documentattachments WHERE docid = ?
 				ORDER BY main DESC, filename', 'id', array($doc['id']));
 
-    $userinfo['im'] = isset($userinfo['messengers'][IM_GG]) ? $userinfo['messengers'][IM_GG]['uid'] : '';
-    $userinfo['yahoo'] = isset($userinfo['messengers'][IM_YAHOO]) ? $userinfo['messengers'][IM_YAHOO]['uid'] : '';
-    $userinfo['skype'] = isset($userinfo['messengers'][IM_SKYPE]) ? $userinfo['messengers'][IM_SKYPE]['uid'] : '';
-    
     $SMARTY->assign('userinfo',$userinfo);
     $SMARTY->assign('usernodes',$usernodes);
     $SMARTY->assign('documents',$documents);
@@ -98,10 +96,6 @@ function module_updateusersave()
     global $LMS, $SMARTY, $SESSION, $rights, $error;
 
     $userinfo = $LMS->GetCustomer($SESSION->id);
-
-    $userinfo['im'] = isset($userinfo['messengers'][IM_GG]) ? $userinfo['messengers'][IM_GG]['uid'] : '';
-    $userinfo['yahoo'] = isset($userinfo['messengers'][IM_YAHOO]) ? $userinfo['messengers'][IM_YAHOO]['uid'] : '';
-    $userinfo['skype'] = isset($userinfo['messengers'][IM_SKYPE]) ? $userinfo['messengers'][IM_SKYPE]['uid'] : '';
 
     $userdata = $_POST['userdata'];
     $right = $rights['info'];
@@ -115,9 +109,9 @@ function module_updateusersave()
     )
 	foreach(array_diff_assoc($userdata, $userinfo) as $field => $val) 
 	{
-	    if($field == 'phone' || $field == 'email')
+	    if($field == 'phone' || $field == 'email' || $field == 'im')
 	    {
-		    $type = $field == 'phone' ? 'contacts' : 'emails';
+		    $type = $field == 'phone' ? 'contacts' : $field;
 		    foreach($val as $i => $v)
 		    {
 		        $v = trim(htmlspecialchars($v, ENT_NOQUOTES));
@@ -207,39 +201,6 @@ function module_updateusersave()
 						VALUES(?, ?, ?)', array($id, $field, $val));
 			}
 			break;
-		case 'im':
-			if(isset($right['edit_contact']))
-			{
-				$LMS->DB->Execute('DELETE FROM imessengers WHERE customerid = ? AND type = ?', array($id, IM_GG));
-				if($val)
-					$LMS->DB->Execute('INSERT INTO imessengers (customerid, uid, type) VALUES (?,?,?)', array($id,$val,IM_GG));
-			}
-			elseif(isset($right['edit_contact_ack']))
-				$LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue) 
-					VALUES(?, ?, ?)', array($id, $field, $val));
-			break;
-		case 'yahoo':
-			if(isset($right['edit_contact']))
-			{
-				$LMS->DB->Execute('DELETE FROM imessengers WHERE customerid = ? AND type = ?', array($id, IM_YAHOO));
-				if($val)
-					$LMS->DB->Execute('INSERT INTO imessengers (customerid, uid, type) VALUES (?,?,?)', array($id,$val,IM_YAHOO));
-			}
-			elseif(isset($right['edit_contact_ack']))
-				$LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue) 
-					VALUES(?, ?, ?)', array($id, $field, $val));
-			break;
-		case 'skype':
-			if(isset($right['edit_contact']))
-			{
-				$LMS->DB->Execute('DELETE FROM imessengers WHERE customerid = ? AND type = ?', array($id, IM_SKYPE));
-				if($val)
-					$LMS->DB->Execute('INSERT INTO imessengers (customerid, uid, type) VALUES (?,?,?)', array($id,$val,IM_SKYPE));
-			}
-			elseif(isset($right['edit_contact_ack']))
-				$LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue) 
-					VALUES(?, ?, ?)', array($id, $field, $val));
-			break;
 		default:
 			break;
 	    }
@@ -285,26 +246,14 @@ if(defined('USERPANEL_SETUPMODE'))
 				elseif (preg_match('/email([0-9]+)/', $change['fieldname'], $matches))
 					$old = $DB->GetOne('SELECT contact AS email FROM customercontacts WHERE id = ? AND type & ? > 0',
 						array($matches[1], (CONTACT_EMAIL|CONTACT_INVOICES|CONTACT_NOTIFICATIONS)));
-				else
-					switch($change['fieldname'])
-					{
-					case 'im':
-						$old = $DB->GetOne('SELECT uid FROM imessengers WHERE customerid = ? AND type = ?', array($change['customerid'], IM_GG));
-					break;
-					case 'yahoo':
-						$old = $DB->GetOne('SELECT uid FROM imessengers WHERE customerid = ? AND type = ?', array($change['customerid'], IM_YAHOO));
-					break;
-					case 'skype':
-						$old = $DB->GetOne('SELECT uid FROM imessengers WHERE customerid = ? AND type = ?', array($change['customerid'], IM_SKYPE));
-					break;
-					}
-				
-				if(isset($old))
-				{
+				elseif (preg_match('/im([0-9]+)/', $change['fieldname'], $matches))
+					$old = $DB->GetOne('SELECT contact AS im FROM customercontacts WHERE id = ? AND type & ? > 0',
+						array($matches[1], CONTACT_IM));
+
+				if (isset($old)) {
 					$userchanges[$key]['oldvalue'] = $old;
 					unset($old);
-				}
-				elseif(isset($userchanges[$key][$change['fieldname']]))
+				} elseif (isset($userchanges[$key][$change['fieldname']]))
 					$userchanges[$key]['oldvalue'] = $userchanges[$key][$change['fieldname']];
 			}
 
@@ -328,7 +277,7 @@ if(defined('USERPANEL_SETUPMODE'))
 						SYSLOG::RES_USER => $LMS->AUTH->id,
 					);
 
-				if (preg_match('/(phone|email)([0-9]+)/', $changes['fieldname'], $matches)) {
+				if (preg_match('/(phone|email|im)([0-9]+)/', $changes['fieldname'], $matches)) {
 					if ($matches[2]) {
 						$fields = array(
 							SYSLOG::RES_CUST => $changes['customerid'],
@@ -361,33 +310,6 @@ if(defined('USERPANEL_SETUPMODE'))
 					}
 				} else
 				switch ($changes['fieldname']) {
-					case 'im':
-					case 'yahoo':
-					case 'skype':
-						$contact_types = array(
-							'im' => IM_GG,
-							'yahoo' => IM_YAHOO,
-							'skype' => IM_SKYPE,
-						);
-						$contact_type = $contact_types[$changes['fieldname']];
-						$fields = array(
-							SYSLOG::RES_CUST => $changes['customerid'],
-							SYSLOG::RES_USER => $LMS->AUTH->id,
-							'type' => $contact_type,
-						);
-
-						$DB->Execute('DELETE FROM imessengers WHERE customerid = ? AND type = ?', array($changes['customerid'], $contact_type));
-						if ($LMS->SYSLOG)
-							$LMS->SYSLOG->AddMessage(SYSLOG::RES_IMCONTACT, SYSLOG::OPER_DELETE, $fields);
-						if ($changes['fieldvalue']) {
-							$DB->Execute('INSERT INTO imessengers (customerid, uid, type) VALUES (?, ?, ?)',
-								array($changes['customerid'], $changes['fieldvalue'], $contact_type));
-							if ($LMS->SYSLOG) {
-								$fields['uid'] = $changes['fieldvalue'];
-								$LMS->SYSLOG->AddMessage(SYSLOG::RES_IMCONTACT, SYSLOG::OPER_ADD, $fields);
-							}
-						}
-						break;
 					case 'name':
 					case 'lastname':
 					case 'street':
