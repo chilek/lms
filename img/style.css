@@ -1221,8 +1221,6 @@ input.lms-ui-quick-search {
 input.lms-ui-quick-search.lms-ui-quick-search-active {
   display: inline-block;
 }
-
-
 .lms-ui-icon {
     vertical-align: middle;
     display: inline-block;
@@ -1233,7 +1231,6 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
     width: 16px;
     height: 16px;
 }
-
 .lms-ui-icon-administration {
     background: url("users.gif");
 }
