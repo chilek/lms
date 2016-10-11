@@ -27,7 +27,7 @@
 $menu = array(
 		'admin' => array(
 			'name' => trans('Administration'),
-			'img' =>'users.gif',
+			'css' => 'lms-ui-icon lms-ui-icon-size16 lms-ui-icon-administration',
 			'link' =>'?m=welcome',
 			'tip' => trans('System information and management'),
 			'accesskey' =>'i',
@@ -81,7 +81,7 @@ $menu = array(
 
 		'customers' => array(
 			'name' => trans('Customers'),
-			'img' =>'customer.gif',
+			'css' => 'lms-ui-icon lms-ui-icon-size16 lms-ui-icon-customer',
 			'link' =>'?m=customerlist',
 			'tip' => trans('Customers Management'),
 			'accesskey' =>'u',
@@ -129,12 +129,12 @@ $menu = array(
 					'tip' => trans('Lists and reports printing'),
 					'prio' => 70,
 				),
-			),		 
+			),
 		),
 
 		'nodes' => array(
 			'name' => trans('Nodes'),
-			'img' =>'node.gif',
+			'css' => 'lms-ui-icon lms-ui-icon-size16 lms-ui-icon-node',
 			'link' =>'?m=nodelist',
 			'tip' => trans('Nodes Management'),
 			'accesskey' =>'k',
@@ -193,7 +193,7 @@ $menu = array(
 
 		'VoIP' => array(
 			'name' => trans('VoIP'),
-			'img' =>'voip.gif',
+			'css' => 'lms-ui-icon lms-ui-icon-size16 lms-ui-icon-voip',
 			'tip' => trans('VoIP Management'),
 			'accesskey' =>'v',
 			'prio' => 11,
@@ -251,7 +251,7 @@ $menu = array(
 
 		'netdevices' => array(
 			'name' => trans('Net Devices'),
-			'img' =>'netdev.gif',
+			'css' => 'lms-ui-icon lms-ui-icon-size16 lms-ui-icon-netdevice',
 			'link' =>'?m=netdevlist',
 			'tip' => trans('Network Devices Management'),
 			'accesskey' =>'o',
@@ -310,7 +310,7 @@ $menu = array(
 
 		'networks' => array(
 			'name' => trans('IP Networks'),
-			'img' =>'network.gif',
+			'css' => 'lms-ui-icon lms-ui-icon-size16 lms-ui-icon-network',
 			'link' =>'?m=netlist',
 			'tip' => trans('IP Address Pools Management'),
 			'accesskey' =>'t',
@@ -339,7 +339,7 @@ $menu = array(
 
 		'finances' => array(
 			'name' => trans('Finances'),
-			'img' =>'money.gif',
+			'css' => 'lms-ui-icon lms-ui-icon-size16 lms-ui-icon-finances',
 			'link' =>'?m=tarifflist',
 			'tip' => trans('Subscriptions and Network Finances Management'),
 			'accesskey' =>'f',
@@ -404,7 +404,7 @@ $menu = array(
 					'link' => '?m=noteadd&action=init',
 					'tip' => trans('Generate debit note'),
 					'prio' => 85,
-				), 
+				),
 				array(
 					'name' => trans('Cash Registry'),
 					'link' => '?m=cashreglist',
@@ -452,7 +452,7 @@ $menu = array(
 
 		'documents' => array(
 			'name' => trans('Documents'),
-			'img' =>'docum.gif',
+			'css' => 'lms-ui-icon lms-ui-icon-size16 lms-ui-icon-document',
 			'link' =>'?m=documentlist',
 			'tip' => trans('Documents Management'),
 			'accesskey' => '',
@@ -493,7 +493,7 @@ $menu = array(
 
 		'hosting' => array(
 			'name' => trans('Hosting'),
-			'img' =>'account.gif',
+			'css' => 'lms-ui-icon lms-ui-icon-size16 lms-ui-icon-hosting',
 			'link' =>'?m=accountlist',
 			'tip' => trans('Hosting Services Management'),
 			'accesskey' =>'a',
@@ -546,7 +546,7 @@ $menu = array(
 
 		'messages' => array(
 			'name' => trans('Messages'),
-			'img' =>'mailsms.gif',
+			'css' => 'lms-ui-icon lms-ui-icon-size16 lms-ui-icon-message',
 			'link' =>'?m=messageadd',
 			'tip' => trans('Customers Messaging'),
 			'accesskey' =>'m',
@@ -569,7 +569,7 @@ $menu = array(
 
 		'reload' => array(
 			'name' => trans('Reload'),
-			'img' =>'reload.gif',
+			'css' => 'lms-ui-icon lms-ui-icon-size16 lms-ui-icon-reload',
 			'link' =>'?m=reload',
 			'tip' => trans(''),
 			'accesskey' =>'r',
@@ -578,7 +578,7 @@ $menu = array(
 
 		'stats' => array(
 			'name' => trans('Stats'),
-			'img' =>'traffic.gif',
+			'css' => 'lms-ui-icon lms-ui-icon-size16 lms-ui-icon-stats',
 			'link' =>'?m=traffic',
 			'tip' => trans('Statistics of Internet Link Usage'),
 			'accesskey' =>'x',
@@ -631,7 +631,7 @@ $menu = array(
 
 		'helpdesk' => array(
 			'name' => trans('Helpdesk'),
-			'img' =>'ticket.gif',
+			'css' => 'lms-ui-icon lms-ui-icon-size16 lms-ui-icon-helpdesk',
 			'link' =>'?m=rtqueuelist',
 			'tip' => trans('Requests Tracking'),
 			'accesskey' =>'h',
@@ -684,7 +684,7 @@ $menu = array(
 
 		'timetable' => array(
 			'name' => trans('Timetable'),
-			'img' =>'calendar.gif',
+			'css' => 'lms-ui-icon lms-ui-icon-size16 lms-ui-icon-timetable',
 			'link' =>'?m=eventlist',
 			'tip' => trans('Events Tracking'),
 			'accesskey' =>'v',
@@ -713,7 +713,7 @@ $menu = array(
 
 		'password' => array(
 			'name' => trans('Password'),
-			'img' => 'pass.gif',
+			'css' => 'lms-ui-icon lms-ui-icon-size16 lms-ui-icon-password',
 			'link' => '?m=chpasswd',
 			'tip' => trans('Allows you to change your password'),
 			'accesskey' => 'p',
@@ -722,7 +722,7 @@ $menu = array(
 
 		'config' => array(
 			'name' => trans('Configuration'),
-			'img' =>'settings.gif',
+			'css' => 'lms-ui-icon lms-ui-icon-size16 lms-ui-icon-configuration',
 			'link' =>'?m=configlist',
 			'tip' => trans('System Configuration'),
 			'accesskey' =>'o',
@@ -799,7 +799,7 @@ $menu = array(
 
 		'documentation' => array(
 			'name' => trans('Documentation'),
-			'img' => 'doc.gif',
+			'css' => 'lms-ui-icon lms-ui-icon-size16 lms-ui-icon-documentation',
 			'link' => (is_dir('doc' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . $LMS->ui_lang)
 				? 'doc' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . $LMS->ui_lang . DIRECTORY_SEPARATOR
 				: 'doc' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'en' . DIRECTORY_SEPARATOR),
@@ -830,7 +830,7 @@ if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false)
 if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.logging', false))) {
 	$menu['log'] = array(
 		'name' => trans('Transaction Log'),
-		'img' => 'recover.gif',
+		'css' => 'lms-ui-icon lms-ui-icon-size16 lms-ui-icon-log',
 		'link' => '?m=archiveview',
 		'tip' => trans('Transaction Log Management'),
 		'accesskey' => 't',
@@ -889,5 +889,7 @@ foreach($menu as $idx => $item)
 		uasort($menu[$idx]['submenu'],'menu_cmp');
 
 uasort($menu,'menu_cmp');
+
+
 
 ?>
