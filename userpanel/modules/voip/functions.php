@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+global $LMS, $SESSION;
+
 /*!
  * \brief Check if string has date format.
  *
@@ -35,26 +37,12 @@ function is_date($date) {
     return checkdate((int)$month,(int)$day,(int)$year);
 }
 
-/*!
- * \brief Return user voip account ids by owner id passed as param.
- *
- * \param  int   owner id
- * \return array array with voip account ids assigned to user.
- */
-function getUserVoipAccountIds( $id ) {
-    global $LMS;
-
-    return $LMS->DB->GetAllByKey('SELECT id FROM voipaccounts WHERE ownerid = ?', 'id', array($id));
-}
-
 if (empty($_GET['action'])) {
     $_GET['action'] = 'none';
 }
 
 switch ($_GET['action']) {
     case 'getaccountinfo':
-        global $LMS, $SESSION;
-
         $id = (int) $_POST['accid'];
         $user_accs = $LMS->DB->GetAllByKey('SELECT id FROM voipaccounts WHERE ownerid = ?', 'id', array( $SESSION->id ));
 
@@ -71,8 +59,6 @@ switch ($_GET['action']) {
     break;
 
     case 'updateaccountinfo':
-        global $LMS, $SESSION;
-
         $rec = ($_POST['recording'] == 1) ? 1 : 0;
         $id  = (int) $_POST['voipaccid'];
 
@@ -94,29 +80,31 @@ switch ($_GET['action']) {
         }
         $LMS->DB->Execute('UPDATE voipaccounts SET flags = ? WHERE id = ?', array($flags, $id));
 
-        // --- UPDATE CUSTOMER PHONE INDEXES ---
-        $phones = $_POST['phones'];
+        if (isset($_POST['phones'])) {
+            // --- UPDATE CUSTOMER PHONE INDEXES ---
+            $phones = $_POST['phones'];
 
-        //get list of current phones
-        $current_phones = $LMS->DB->GetAllBykey('SELECT phone FROM voip_numbers WHERE voip_account_id = ?', 'phone', array($id));
+            //get list of current phones
+            $current_phones = $LMS->DB->GetAllBykey('SELECT phone FROM voip_numbers WHERE voip_account_id = ?', 'phone', array($id));
 
-        // reset indexes before set new
-        $LMS->DB->Execute('UPDATE voip_numbers SET number_index = null WHERE voip_account_id = ?', array($id));
+            // reset indexes before set new
+            $LMS->DB->Execute('UPDATE voip_numbers SET number_index = null WHERE voip_account_id = ?', array($id));
 
-        // set new indexes
-        if (count($_POST['phones']) != count($current_phones) ) {
-            $LMS->DB->RollbackTrans();
-            die();
-        }
-
-        $i = 0;
-        foreach ($phones as $p) {
-            if (!isset($current_phones[$p])) {
+            // set new indexes
+            if (count($_POST['phones']) != count($current_phones) ) {
                 $LMS->DB->RollbackTrans();
                 die();
             }
 
-            $LMS->DB->Execute('UPDATE voip_numbers SET number_index = ? WHERE phone ?LIKE? ?', array(++$i, $p));
+            $i = 0;
+            foreach ($phones as $p) {
+                if (!isset($current_phones[$p])) {
+                    $LMS->DB->RollbackTrans();
+                    die();
+                }
+
+                $LMS->DB->Execute('UPDATE voip_numbers SET number_index = ? WHERE phone ?LIKE? ?', array(++$i, $p));
+            }
         }
 
         $LMS->DB->CommitTrans();
@@ -125,8 +113,6 @@ switch ($_GET['action']) {
 }
 
 if (isset($_GET['record'])) {
-    global $SESSION, $LMS;
-
     $uid = $LMS->DB->GetOne('SELECT uniqueid
                              FROM voip_cdr c
                              WHERE
@@ -158,10 +144,11 @@ if (isset($_GET['record'])) {
 
 function module_main() {
     global $LMS, $SMARTY, $SESSION;
+
     $phones = array();
     $params = array();
 
-    $user_accounts = $LMS->DB->GetAllByKey('SELECT id, login FROM voipaccounts
+    $user_accounts = $LMS->DB->GetAllByKey('SELECT id, login, flags FROM voipaccounts
                                             WHERE ownerid = ?', 'id', array($SESSION->id));
 
     $user_acc_ids = array_keys($user_accounts);

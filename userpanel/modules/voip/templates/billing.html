@@ -1,5 +1,7 @@
 {include file="header.html"}
 
+
+
 <STYLE>
     .help-tip {
         font-weight: bold;
@@ -25,8 +27,21 @@
         min-width: 400px;
         text-align: left;
     }
+
+    {if count($user_accounts) > 1}
+    .settings-tab tbody {
+       display: none;
+    }
+    {/if}
+
     .settings-tab tbody tr td {
         padding-bottom: 15px;
+    }
+    .settings-tab th:nth-child(1) {
+        width: 150px;
+    }
+    .settings-tab th:nth-child(2) {
+        width: 200px;
     }
     .filters {
         margin: 0 auto;
@@ -289,6 +304,7 @@
                 <tr>
                     <th colspan="3"><span style="font-size: 16px;">Ustawienia</span></th>
                 </tr>
+                {if count($user_accounts) > 1}
                 <tr>
                     <th style="font-weight: normal;">Wybierz konto</th>
                     <th colspan="2">
@@ -300,6 +316,7 @@
                         </select>
                     <th>
                 </tr>
+                {/if}
                 <tr>
                     <th colspan="3"><hr></th>
                 </tr>
@@ -311,9 +328,10 @@
                         <label><input type="radio" name="callrecording" id="callrecordyes" value="1" checked> {trans("yes")}</label>
                         <label><input type="radio" name="callrecording" id="callrecordno" value="0"> {trans("no")}</label>
                     </td>
-                    <td><span class="help-tip" title="{trans("You can turn on/off record of your phone calls. Recordings can listen in 'billings' tab. Setting can be changed for each account separetly.")}">?</span></td>
+                    <td><span class="help-tip" title="{trans("You can turn on/off record of your phone calls. Recordings can listen in 'billings' tab.")}">?</span></td>
                 </tr>
 
+                {if count($user_accounts) > 1}
                 <tr id="customer-phones">
                     <td class="valign-top">{trans("Assigned phones")} :</td>
                     <td>
@@ -321,6 +339,7 @@
                     </td>
                     <td class="valign-top"><span class="help-tip" title="{trans("Change indexes for phones assigned to your account.")}">?</span></td>
                 </tr>
+                {/if}
 
                 <tr>
                     <td colspan="3" style="text-align: right; padding-top: 20px;">
@@ -337,7 +356,11 @@
 
 <script>
     $( function() {
-        $( '.settings-tab tbody' ).css('display', 'none');
+        {if count($user_accounts) == 1}
+            {assign var=useracc value=reset($user_accounts)}
+            updateRecordingRadioBtn( {$useracc.flags} );
+        {/if}
+
         $( "#tabs" ).tabs();
 
         $( ".userpanel-phones-sortable" ).sortable({
@@ -364,15 +387,16 @@
 
                     $( '.userpanel-phones-sortable' ).empty();
 
-                    if (parsed_data[0]['flags'] & {CALL_FLAG_CUSTOMER_RECORDING}) {
-                        $( '#callrecordyes' ).prop( 'checked', true );
-                    } else {
-                        $( '#callrecordno' ).prop( 'checked', true );
-                    }
+                    updateRecordingRadioBtn( parsed_data[0]['flags'] );
 
-                    $.each(parsed_data, function( k, v ) {
-                        $("#phones-sortable").append('<li>' + v['phone'] + '</li>');
-                    });
+                    if (parsed_data.length > 1) {
+                        $( '#customer-phones' ).css('display', 'table-row');
+                        $.each(parsed_data, function( k, v ) {
+                            $("#phones-sortable").append('<li>' + v['phone'] + '</li>');
+                        });
+                    } else {
+                        $( '#customer-phones' ).css('display', 'none');
+                    }
 
                     $( '.settings-tab tbody' ).css('display', 'table-row-group');
                 });
@@ -389,9 +413,7 @@
                                     .text( "{trans("Loading")}..." )
                                     .fadeIn();
 
-            var recording = $('input[name=callrecording]:checked').val();
             var phones = [];
-
             $.each( $( '.userpanel-phones-sortable' ).children(), function() {
                 phones.push( $(this).text() );
             });
@@ -399,15 +421,16 @@
             $.ajax({
                 method: "POST",
                 url: "?m=voip&action=updateaccountinfo",
-                data: { "voipaccid" : $( '#account-select' ).val(),
-                        "recording" : recording,
+                data: { "voipaccid" : {if count($user_accounts) > 1}$( '#account-select' ).val(){else}{$useracc['id']}{/if},
+                        "recording" : $('input[name=callrecording]:checked').val(),
                         "phones"    : phones }
             })
             .done(function(data) {
                 if ( !data ) {
                     $( '#updateacc-status' ).text( "Occoured problem" ).css( 'color', '#900000' ).fadeOut(5000);
-                     console.log( 'Update failed.' );
-                      return 0;
+
+                    console.log( 'Update failed.' );
+                    return 0;
                 }
 
                 $( '#updateacc-status' ).text( "{trans("Saved")}" ).css( 'color', '#004d1a' ).fadeOut(5000);
@@ -415,6 +438,19 @@
                 save_btn.attr( 'disabled', false );
             });
         });
+
+        /*
+         * \brief Function check/uncheck radio button responsibility for customer call recordings.
+         *
+         * \param  int/string customer flags
+         */
+        function updateRecordingRadioBtn( flags ) {
+            if (flags & {CALL_FLAG_CUSTOMER_RECORDING}) {
+                $( '#callrecordyes' ).prop( 'checked', true );
+            } else {
+                $( '#callrecordno' ).prop( 'checked', true );
+            }
+        }
     } );
 </script>
 
