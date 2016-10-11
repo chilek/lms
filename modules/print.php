@@ -39,7 +39,7 @@ switch($type)
 		$from = $_POST['from'];
 		$to = $_POST['to'];
 
-		// date format 'yyyy/mm/dd'	
+		// date format 'yyyy/mm/dd'
 		if($from && preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $from))
 		{
 			list($year, $month, $day) = explode('/',$from);
@@ -52,7 +52,7 @@ switch($type)
 		{
 			list($year, $month, $day) = explode('/',$to);
 			$date['to'] = mktime(23,59,59,$month,$day,$year);
-		} else { 
+		} else {
 			$to = date('Y/m/d',time());
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
 		}
@@ -68,12 +68,12 @@ switch($type)
 		$list['summary'] = 0;
 		$list['customerid'] = $id;
 
-		if($tslist = $DB->GetAll('SELECT c.id AS id, time, type, c.value AS value, 
-				    taxes.label AS taxlabel, customerid, comment, name AS username 
+		if($tslist = $DB->GetAll('SELECT c.id AS id, time, type, c.value AS value,
+				    taxes.label AS taxlabel, customerid, comment, name AS username
 				    FROM cash c
 				    LEFT JOIN taxes ON (c.taxid = taxes.id)
 				    LEFT JOIN users ON (users.id = userid)
-				    WHERE c.customerid = ? 
+				    WHERE c.customerid = ?
 					    AND NOT EXISTS (
 				                    SELECT 1 FROM customerassignments a
 					            JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
@@ -105,7 +105,7 @@ switch($type)
 					$list['username'][] = $saldolist['username'][$i];
 					$list['comment'][] = $saldolist['comment'][$i];
 					$list['summary'] += $saldolist['value'][$i];
-					
+
 					if($saldolist['type'][$i])
 					{
 						if($saldolist['value'][$i] > 0)
@@ -119,10 +119,10 @@ switch($type)
 					        $list['liability'] -= $saldolist['value'][$i];
 				}
 			}
-			
+
 			$list['total'] = sizeof($list['id']);
 		}
-		
+
 		$SMARTY->assign('balancelist', $list);
 		if (strtolower(ConfigHelper::getConfig('phpui.report_type')) == 'pdf') {
 			$output = $SMARTY->fetch('print/printcustomerbalance.html');
@@ -131,7 +131,7 @@ switch($type)
 			$SMARTY->display('print/printcustomerbalance.html');
 		}
 	break;
-	
+
 	case 'balancelist': /********************************************/
 
 		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
@@ -168,7 +168,7 @@ switch($type)
 			$layout['pagetitle'] = trans('Balance Sheet of User: $a ($b to $c)', $LMS->GetUserName($user), ($from ? $from : ''), $to);
 		else
 			$layout['pagetitle'] = trans('Balance Sheet ($a to $b)', ($from ? $from : ''), $to);
-	
+
 		if($types)
 		{
 			foreach($types as $tt)
@@ -187,14 +187,14 @@ switch($type)
 						$typetxt[] = trans('Expense');
 					break;
 				}
-			
+
 			$typewhere = ' AND ('.implode(' OR ', $typewhere).')';
 		}
-		
+
 		$customerslist = $DB->GetAllByKey('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers','id');
-		
+
 		if(isset($date['from']))
-			$lastafter = $DB->GetOne('SELECT SUM(CASE WHEN c.customerid!=0 AND type=0 THEN 0 ELSE value END) 
+			$lastafter = $DB->GetOne('SELECT SUM(CASE WHEN c.customerid!=0 AND type=0 THEN 0 ELSE value END)
 					FROM cash c '
 					.($group ? 'LEFT JOIN customerassignments a ON (c.customerid = a.customerid) ' : '')
 					.'WHERE time<?'
@@ -211,10 +211,10 @@ switch($type)
 					, array($date['from']));
 		else
 			$lastafter = 0;
-			
-		if($balancelist = $DB->GetAll('SELECT c.id AS id, time, userid, c.value AS value, 
+
+		if($balancelist = $DB->GetAll('SELECT c.id AS id, time, userid, c.value AS value,
 					taxes.label AS taxlabel, c.customerid, comment, c.type AS type
-					FROM cash c 
+					FROM cash c
 					LEFT JOIN taxes ON (taxid = taxes.id) '
 					.($group ? 'LEFT JOIN customerassignments a ON (c.customerid = a.customerid)  ' : '')
 					.'WHERE time <= ? '
@@ -235,7 +235,7 @@ switch($type)
 			$listdata['expense'] = 0;
 			$listdata['liability'] = 0;
 			$x = 0;
-			
+
 			foreach($balancelist as $idx => $row)
 			{
 				if($user)
@@ -264,7 +264,7 @@ switch($type)
 				{
 					//customer payment
 					$list[$x]['after'] = $lastafter + $list[$x]['value'];
-			
+
 					if($row['value'] > 0)
         					//income
 						$listdata['income'] += $list[$x]['value'];
@@ -277,9 +277,9 @@ switch($type)
 				$x++;
 				unset($balancelist[$idx]);
 			}
-		
+
 			$listdata['total'] = $listdata['income'] - $listdata['expense'];
-		
+
 			$SMARTY->assign('listdata', $listdata);
 			$SMARTY->assign('balancelist', $list);
 		}
@@ -311,10 +311,10 @@ switch($type)
 		$from = $_POST['from'];
 		$to = $_POST['to'];
 
-		// date format 'yyyy/mm/dd'	
+		// date format 'yyyy/mm/dd'
 		list($year, $month, $day) = explode('/',$from);
 		$date['from'] = mktime(0,0,0, (int)$month, (int)$day, (int)$year);
-		
+
 		if($to) {
 			list($year, $month, $day) = explode('/',$to);
 			$date['to'] = mktime(23,59,59,$month,$day,$year);
@@ -322,9 +322,9 @@ switch($type)
 			$to = date("Y/m/d",time());
 			$date['to'] = mktime(23,59,59); // end of today
 		}
-		
+
 		$layout['pagetitle'] = trans('Total Invoiceless Income ($a to $b)',($from ? $from : ''), $to);
-		
+
 		$incomelist = $DB->GetAll('SELECT floor(time/86400)*86400 AS date, SUM(value) AS value
 			FROM cash c
 			WHERE value>0 AND time>=? AND time<=? AND docid=0
@@ -372,7 +372,7 @@ switch($type)
 		$layout['pagetitle'] = trans('Cash Import History ($a to $b)', $from, $to);
 
 		$importlist = $DB->GetAll('SELECT c.time, c.value, c.customerid, '
-			.$DB->Concat('upper(v.lastname)',"' '",'v.name').' AS customername 
+			.$DB->Concat('upper(v.lastname)',"' '",'v.name').' AS customername
 			FROM cash c
 			JOIN customerview v ON (v.id = c.customerid)
 			WHERE c.time >= ? AND c.time <= ?'
@@ -403,7 +403,7 @@ switch($type)
 		if($to) {
 			list($year, $month, $day) = explode('/',$to);
 			$date['to'] = mktime(23,59,59,$month,$day,$year);
-		} else { 
+		} else {
 			$to = date('Y/m/d',time());
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
 		}
@@ -411,7 +411,7 @@ switch($type)
 		if($from) {
 			list($year, $month, $day) = explode('/',$from);
 			$date['from'] = mktime(0,0,0,$month,$day,$year);
-		} else { 
+		} else {
 			$from = date('Y/m/d',time());
 			$date['from'] = mktime(0,0,0); //pocz�tek dnia dzisiejszego
 		}
@@ -421,9 +421,9 @@ switch($type)
 		$type .= isset($_POST['invoicecopy']) ? '&copy=1' : '';
 		$type .= isset($_POST['invoicedup']) ? '&duplicate=1' : '';
 		if(!$type) $type = '&oryginal=1';
-		
+
 		$layout['pagetitle'] = trans('Invoices');
-	
+
 		header('Location: ?m=invoice&fetchallinvoices=1'
 			.$type
 			.'&from='.$date['from']
@@ -490,7 +490,7 @@ switch($type)
 		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.finances_management'))
 			access_denied();
 
-		if (isset($_POST['day']) && $_POST['day']) 
+		if (isset($_POST['day']) && $_POST['day'])
 		{
 			list($year, $month, $day) = explode('/', $_POST['day']);
 			$reportday = mktime(0, 0, 0, $month, $day, $year);
@@ -540,7 +540,7 @@ switch($type)
 			foreach($taxes as $taxidx => $tax)
 			{
 				$list1 = $DB->GetAllByKey('SELECT a.customerid AS id, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername, '
-					.$DB->Concat('city',"' '",'address').' AS address, ten, 
+					.$DB->Concat('city',"' '",'address').' AS address, ten,
 					SUM((((((100 - a.pdiscount) * t.value) / 100) - a.vdiscount) *
 						((CASE a.suspended WHEN 0 THEN 100.0 ELSE '.$suspension_percentage.' END) / 100))
 					* (CASE a.period
@@ -557,10 +557,10 @@ switch($type)
 						ELSE 1 END)
 					) AS value
 					FROM assignments a, tariffs t, customerview c
-					WHERE a.customerid = c.id AND status = 3 
+					WHERE a.customerid = c.id AND status = 3
 					AND a.tariffid = t.id AND t.taxid=?
-					AND c.deleted=0 
-					AND (a.datefrom<=? OR a.datefrom=0) AND (a.dateto>=? OR a.dateto=0) 
+					AND c.deleted=0
+					AND (a.datefrom<=? OR a.datefrom=0) AND (a.dateto>=? OR a.dateto=0)
 					AND ((a.period='.DISPOSABLE.' AND a.at=?)
 						OR (a.period='.WEEKLY.'. AND a.at=?)
 						OR (a.period='.MONTHLY.' AND a.at=?)
@@ -576,17 +576,17 @@ switch($type)
 					SUM(((((100 - a.pdiscount) * l.value) / 100) - a.vdiscount) *
 						((CASE a.suspended WHEN 0 THEN 100.0 ELSE '.$suspension_percentage.' END) / 100)) AS value
 					FROM assignments a, liabilities l, customerview c
-					WHERE a.customerid = c.id AND status = 3 
+					WHERE a.customerid = c.id AND status = 3
 					AND a.liabilityid = l.id AND l.taxid=?
 					AND c.deleted=0
-					AND (a.datefrom<=? OR a.datefrom=0) AND (a.dateto>=? OR a.dateto=0) 
+					AND (a.datefrom<=? OR a.datefrom=0) AND (a.dateto>=? OR a.dateto=0)
 					AND ((a.period='.DISPOSABLE.' AND a.at=?)
-						OR (a.period='.WEEKLY.'. AND a.at=?) 
-						OR (a.period='.MONTHLY.' AND a.at=?) 
-						OR (a.period='.QUARTERLY.' AND a.at=?) 
+						OR (a.period='.WEEKLY.'. AND a.at=?)
+						OR (a.period='.MONTHLY.' AND a.at=?)
+						OR (a.period='.QUARTERLY.' AND a.at=?)
 						OR (a.period='.HALFYEARLY.' AND a.at=?)
 						OR (a.period='.YEARLY.' AND a.at=?)) '
-					.($customerid ? 'AND a.customerid='.$customerid : ''). 
+					.($customerid ? 'AND a.customerid='.$customerid : '').
 					' GROUP BY a.customerid, lastname, c.name, city, address, ten ', 'id',
 					array($tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $halfyear, $yearday));
 
@@ -602,7 +602,7 @@ switch($type)
 					{
 						$idx = $row['id'];
 						if (!isset($reportlist[$idx]))
-						{ 
+						{
 							$reportlist[$idx]['id'] = $row['id'];
 							$reportlist[$idx]['customername'] = $row['customername'];
 							$reportlist[$idx]['address'] = $row['address'];
@@ -658,7 +658,7 @@ switch($type)
 			$SMARTY->display('print/printliabilityreport.html');
 		}
 	break;
-	
+
 	case 'receiptlist':
 
 		if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.cash_operations'))
@@ -671,7 +671,7 @@ switch($type)
 		}
 		else
 			$from = mktime(0,0,0, date('m'), date('d'), date('Y'));
-		
+
 		if($_POST['to'])
 		{
 			list($year, $month, $day) = explode('/', $_POST['to']);
@@ -684,7 +684,7 @@ switch($type)
 		$user = intval($_POST['user']);
 		$group = intval($_POST['group']);
 		$where = '';
-		
+
 		if($registry)
 			$where .= ' AND regid = '.$registry;
 		if($from)
@@ -704,7 +704,7 @@ switch($type)
 
 		if($from > 0)
 			$listdata['startbalance'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents
-						LEFT JOIN documents d ON (docid = d.id AND type = ?) 
+						LEFT JOIN documents d ON (docid = d.id AND type = ?)
 						WHERE cdate < ?'
 						.($registry ? ' AND regid='.$registry : '')
 						.($user ? ' AND userid='.$user : '')
@@ -718,11 +718,11 @@ switch($type)
 		$listdata['totalincome'] = 0;
 		$listdata['totalexpense'] = 0;
 		$listdata['advances'] = 0;
-			
+
 		if($list = $DB->GetAll(
-	    		'SELECT d.id AS id, SUM(value) AS value, number, cdate, customerid, 
-				d.name, address, zip, city, template, extnumber, closed, 
-				MIN(description) AS title, COUNT(*) AS posnumber 
+	    		'SELECT d.id AS id, SUM(value) AS value, number, cdate, customerid,
+				d.name, address, zip, city, template, extnumber, closed,
+				MIN(description) AS title, COUNT(*) AS posnumber
 			FROM documents d
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 			LEFT JOIN receiptcontents ON (d.id = docid)
@@ -740,7 +740,7 @@ switch($type)
 				$list[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate'], $row['extnumber']);
 				$list[$idx]['customer'] = $row['name'].' '.$row['address'].' '.$row['zip'].' '.$row['city'];
 
-				if($row['posnumber'] > 1) 
+				if($row['posnumber'] > 1)
 					$list[$idx]['title'] = $DB->GetCol('SELECT description FROM receiptcontents WHERE docid=? ORDER BY itemid', array($list[$idx]['id']));
 
 				// summary
@@ -749,7 +749,7 @@ switch($type)
 				else
 					$listdata['totalexpense'] += -$row['value'];
 
-				if($idx==0) 
+				if($idx==0)
 					$list[$idx]['after'] = $listdata['startbalance'] + $row['value'];
 				else
 					$list[$idx]['after'] = $list[$idx-1]['after'] + $row['value'];
@@ -770,7 +770,7 @@ switch($type)
 			$period = $from.' - '.$to;
 
 		$layout['pagetitle'] = trans('Cash Report').' '.$period;
-		
+
 		if($registry)
 			$layout['registry'] = trans('Registry: $a', ($registry ? $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($registry)) : trans('all')));
 		if($user)
@@ -778,10 +778,10 @@ switch($type)
 		if($group)
 		{
 			$groupname = $DB->GetOne('SELECT name FROM customergroups WHERE id=?', array($group));
-	
+
 			if(isset($_POST['groupexclude']))
 				$layout['group'] = trans('Group: all excluding $a', $groupname);
-			else	
+			else
 				$layout['group'] = trans('Group: $a', $groupname);
 		}
 		$SMARTY->assign('receiptlist', $list);
@@ -796,7 +796,7 @@ switch($type)
 			// I think 20 records is fine, but someone needs 19.
 			$rows = ConfigHelper::getConfig('phpui.printout_pagelimit', 20);
 
-			// create a new array and do some calculations 
+			// create a new array and do some calculations
 			// (summaries and page size calculations)
 			$maxrows = $rows * 2;	// dwie linie na rekord
 			$counter = $maxrows;
@@ -825,7 +825,7 @@ switch($type)
 				else
 					$totals[$page]['expense'] += -$row['value'];
 
-				$totals[$page]['rows'] = $rows; 
+				$totals[$page]['rows'] = $rows;
 			}
 
 			foreach($totals as $page => $t)
