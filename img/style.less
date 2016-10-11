@@ -8,6 +8,8 @@
 @alert: #FF9B9B;
 @blend: #888888;
 @fonts: Arial, Helvetica, Verdana;
+@fonts: Arial, Helvetica, Verdana;
+@icon-size: 16px;
 
 .lms-ui-no-user-select {
 	-webkit-user-select: none;
@@ -1087,113 +1089,91 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
 	display: inline-block;
 }
 
-.lms-ui-icon {
+.lms-ui-icon(@icon-size) {
     vertical-align: middle;
     display: inline-block;
-}
-.lms-ui-icon-size16 {
     background-repeat: no-repeat;
-    background-size: 16px;
-    width: 16px;
-    height: 16px;
+    background-size: @icon-size;
+    width: @icon-size;
+    height: @icon-size;
 }
 .lms-ui-icon-administration {
-    .lms-ui-icon;
-    .lms-ui-icon-size16;
+    .lms-ui-icon(@icon-size);
     background: url("users.gif");
 }
 .lms-ui-icon-customer {
-    .lms-ui-icon;
-    .lms-ui-icon-size16;
+    .lms-ui-icon(@icon-size);
     background: url("customer.gif");
 }
 .lms-ui-icon-node {
-    .lms-ui-icon;
-    .lms-ui-icon-size16;
+    .lms-ui-icon(@icon-size);
     background: url("node.gif");
 }
 .lms-ui-icon-voip {
-    .lms-ui-icon;
-    .lms-ui-icon-size16;
+    .lms-ui-icon(@icon-size);
     background: url("voip.gif");
 }
 .lms-ui-icon-netdevice {
-    .lms-ui-icon;
-    .lms-ui-icon-size16;
+    .lms-ui-icon(@icon-size);
     background: url("netdev.gif");
 }
 .lms-ui-icon-network {
-    .lms-ui-icon;
-    .lms-ui-icon-size16;
+    .lms-ui-icon(@icon-size);
     background: url("network.gif");
 }
 .lms-ui-icon-finances {
-    .lms-ui-icon;
-    .lms-ui-icon-size16;
+    .lms-ui-icon(@icon-size);
     background: url("money.gif");
 }
 .lms-ui-icon-document {
-    .lms-ui-icon;
-    .lms-ui-icon-size16;
+    .lms-ui-icon(@icon-size);
     background: url("docum.gif");
 }
 .lms-ui-icon-hosting {
-    .lms-ui-icon;
-    .lms-ui-icon-size16;
+    .lms-ui-icon(@icon-size);
     background: url("account.gif");
 }
 .lms-ui-icon-message {
-    .lms-ui-icon;
-    .lms-ui-icon-size16;
+    .lms-ui-icon(@icon-size);
     background: url("mailsms.gif");
 }
 .lms-ui-icon-reload {
-    .lms-ui-icon;
-    .lms-ui-icon-size16;
+    .lms-ui-icon(@icon-size);
     background: url("reload.gif");
 }
 .lms-ui-icon-stats {
-    .lms-ui-icon;
-    .lms-ui-icon-size16;
+    .lms-ui-icon(@icon-size);
     background: url("traffic.gif");
 }
 .lms-ui-icon-helpdesk {
-    .lms-ui-icon;
-    .lms-ui-icon-size16;
+    .lms-ui-icon(@icon-size);
     background: url("ticket.gif");
 }
 .lms-ui-icon-timetable {
-    .lms-ui-icon;
-    .lms-ui-icon-size16;
+    .lms-ui-icon(@icon-size);
     background: url("calendar.gif");
 }
 .lms-ui-icon-password {
-    .lms-ui-icon;
-    .lms-ui-icon-size16;
+    .lms-ui-icon(@icon-size);
     background: url("pass.gif");
 }
 .lms-ui-icon-configuration {
-    .lms-ui-icon;
-    .lms-ui-icon-size16;
+    .lms-ui-icon(@icon-size);
     background: url("settings.gif");
 }
 .lms-ui-icon-documentation {
-    .lms-ui-icon;
-    .lms-ui-icon-size16;
+    .lms-ui-icon(@icon-size);
     background: url("doc.gif");
 }
 .lms-ui-icon-log {
-    .lms-ui-icon;
-    .lms-ui-icon-size16;
+    .lms-ui-icon(@icon-size);
     background: url("recover.gif");
 }
 .lms-ui-icon-logout {
-    .lms-ui-icon;
-    .lms-ui-icon-size16;
+    .lms-ui-icon(@icon-size);
     background: url("logout.gif");
 }
 .lms-ui-icon-userpanel {
-    .lms-ui-icon;
-    .lms-ui-icon-size16;
+    .lms-ui-icon(@icon-size);
     background: url("cms.gif");
 }

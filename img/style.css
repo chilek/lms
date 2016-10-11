@@ -1221,16 +1221,6 @@ input.lms-ui-quick-search {
 input.lms-ui-quick-search.lms-ui-quick-search-active {
   display: inline-block;
 }
-.lms-ui-icon {
-  vertical-align: middle;
-  display: inline-block;
-}
-.lms-ui-icon-size16 {
-  background-repeat: no-repeat;
-  background-size: 16px;
-  width: 16px;
-  height: 16px;
-}
 .lms-ui-icon-administration {
   vertical-align: middle;
   display: inline-block;
