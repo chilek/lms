@@ -345,7 +345,7 @@
                     <td colspan="3" style="text-align: right; padding-top: 20px;">
                         <span id="updateacc-status" style="font-weight:bold;"></span>
                         &nbsp;&nbsp;&nbsp;
-                        <button type="button" class="submit-btn">{trans("Save")}</button>
+                        <button type="button" id="save-settings" class="submit-btn">{trans("Save")}</button>
                     </td>
                 </tr>
             </tbody>
@@ -405,7 +405,7 @@
             }
         });
 
-        $( '.submit-btn' ).click( function() {
+        $( '#save-settings' ).click( function() {
             var save_btn = $( this );
             save_btn.attr( 'disabled', true );
             $( '#updateacc-status' ).stop()
