@@ -44,21 +44,6 @@ function check_zip($zip)
 	return preg_match('/^[0-9]{6}$/', $zip);
 }
 
-function check_gg($im) //check_im for polish gadu gadu -zet
-{
-	return preg_match('/^[0-9]{0,32}$/', $im);
-}
-
-function check_yahoo($im) 
-{
-	return preg_match('/^[-_.a-z0-9]{0,32}$/i', $im);
-}
-
-function check_skype($im) 
-{
-	return preg_match('/^[-_.a-z0-9]{0,32}$/i', $im);
-}
-
 function check_regon($regon) // business registration number
 {
 	return true;

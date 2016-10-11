@@ -74,21 +74,6 @@ function check_zip($zip)
 	return preg_match('/^[0-9]{5}$/', $zip);
 }
 
-function check_gg($im)
-{
-	return preg_match('/^[0-9]{0,32}$/', $im);  // gadu-gadu ID check
-}
-
-function check_yahoo($im)
-{
-	return preg_match('/^[-_.a-z0-9]{0,32}$/i', $im);
-}
-
-function check_skype($im)
-{
-	return preg_match('/^[-_.a-z0-9]{0,32}$/i', $im);
-}
-
 function check_regon($regon)
 {
 	$regon = str_replace('-', '', $regon);

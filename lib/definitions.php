@@ -316,10 +316,11 @@ define('CONTACT_NOTIFICATIONS', 32);
 define('CONTACT_BANKACCOUNT', 64);
 define('CONTACT_TECHNICAL', 128);
 define('CONTACT_URL', 256);
-define('CONTACT_IM', 3584);
+define('CONTACT_IM', 7680);
 define('CONTACT_IM_GG', 512);
 define('CONTACT_IM_YAHOO', 1024);
 define('CONTACT_IM_SKYPE', 2048);
+define('CONTACT_IM_FACEBOOK', 4096);
 define('CONTACT_DISABLED', 16384);
 
 $CONTACTTYPES = array(
@@ -332,6 +333,7 @@ $CONTACTTYPES = array(
     CONTACT_IM_GG           =>	trans('Gadu-Gadu'),
     CONTACT_IM_YAHOO        =>	trans('Yahoo'),
     CONTACT_IM_SKYPE        =>	trans('Skype'),
+    CONTACT_IM_FACEBOOK      =>	trans('Facebook'),
 );
 
 define('DISCOUNT_PERCENTAGE', 1);

@@ -55,6 +55,10 @@ function format_customer_im($contact) {
 			return trans('Skype') . ': '
 				. '<a href="skype:' . $contact['contact'] . '">' . $contact['contact'] . '</a>';
 			break;
+		case CONTACT_IM_FACEBOOK:
+			return trans('Facebook') . ': '
+				. '<a href="https://m.me/' . $contact['contact'] . '">' . $contact['contact'] . '</a>';
+			break;
 	}
 }
 
@@ -144,7 +148,8 @@ function validate_customer_ims(&$customerdata, &$contacts, &$error) {
 		$imtype = $type & CONTACT_IM;
 		if ($im != '' && (($imtype == CONTACT_IM_GG && !check_gg($im))
 			|| ($imtype == CONTACT_IM_YAHOO && !check_yahoo($im))
-			|| ($imtype == CONTACT_IM_SKYPE && !check_skype($im))))
+			|| ($imtype == CONTACT_IM_SKYPE && !check_skype($im))
+			|| ($imtype == CONTACT_IM_FACEBOOK && !check_facebook($im))))
 			$error['im' . $idx] = trans('Incorrect IM uin!');
 		elseif ($name && !$im)
 			$error['im' . $idx] = trans('IM uid is required!');
@@ -269,7 +274,7 @@ $CUSTOMERCONTACTTYPES = array(
 			'inputtype' => 'text',
 			'size' => 16,
 			'tip' => trans('Enter IM uid (optional)'),
-			'typeselectors' => array(CONTACT_IM_GG, CONTACT_IM_YAHOO, CONTACT_IM_SKYPE),
+			'typeselectors' => array(CONTACT_IM_GG, CONTACT_IM_YAHOO, CONTACT_IM_SKYPE, CONTACT_IM_FACEBOOK),
 			'flags' => array(
 				CONTACT_DISABLED => array(
 					'label' => $CONTACTTYPES[CONTACT_DISABLED],
@@ -281,7 +286,7 @@ $CUSTOMERCONTACTTYPES = array(
 				),
 			),
 		),
-		'flagmask' => CONTACT_IM_GG | CONTACT_IM_YAHOO | CONTACT_IM_SKYPE,
+		'flagmask' => CONTACT_IM_GG | CONTACT_IM_YAHOO | CONTACT_IM_SKYPE | CONTACT_IM_FACEBOOK,
 		'formatter' => 'format_customer_im',
 		'validator' => 'validate_customer_ims',
 	),

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -1091,4 +1091,20 @@ function handle_file_uploads($elemid, &$error) {
 		}
 	}
 	return compact('fileupload', 'tmppath', $elemid);
+}
+
+function check_gg($im) {
+	return preg_match('/^[0-9]{0,32}$/', $im);
+}
+
+function check_skype($im) {
+	return preg_match('/^[-_.a-z0-9]{0,32}$/i', $im);
+}
+
+function check_yahoo($im) {
+	return preg_match('/^[-_.a-z0-9]{0,32}$/i', $im);
+}
+
+function check_facebook($im) {
+	return preg_match('/^[.a-z0-9]{5,}$/i', $im);
 }
