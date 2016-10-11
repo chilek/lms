@@ -308,6 +308,7 @@ else {
 		$output = $SMARTY->fetch('invoice/invoicereport.html');
 		html2pdf($output, trans('Reports'), $layout['pagetitle'], NULL, NULL, 'L', array(5, 5, 5, 5), ($_GET['save'] == 1) ? true : false);
 	} else {
+		$SMARTY->assign('printcustomerid', $_POST['printcustomerid']);
 		$SMARTY->display('invoice/invoicereport.html');
 	}
 }
