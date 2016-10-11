@@ -333,7 +333,7 @@ $CONTACTTYPES = array(
     CONTACT_IM_GG           =>	trans('Gadu-Gadu'),
     CONTACT_IM_YAHOO        =>	trans('Yahoo'),
     CONTACT_IM_SKYPE        =>	trans('Skype'),
-    CONTACT_IM_FACEBOOK      =>	trans('Facebook'),
+    CONTACT_IM_FACEBOOK     =>	trans('Facebook'),
 );
 
 define('DISCOUNT_PERCENTAGE', 1);
