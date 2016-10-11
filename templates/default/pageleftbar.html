@@ -35,7 +35,11 @@
 			<td class="click-menu bottomline">
 			<div{if $menuitem.tip} {tip class="tip" text="\$a" a=$menuitem.tip bold=1}{else} class="tip"{/if}{if ! $menuitem.submenu} onClick="{if $menuitem.windowopen}window.open('{$menuitem.link}'); {else}return self.location.href = '{$menuitem.link}'; {/if}"{/if}>
 				<div class="box1">
+					{if $menuitem.img}
+					<img src="img/{$menuitem.img}">
+					{else}
 					<i class="{$menuitem.css}"></i>
+					{/if}
 					{$menuitem.name}
 				</div>
 			</div>
@@ -79,7 +83,7 @@
 
 		$('#main-menu').sortable({
 			items: "tr",
-			handle: "i",
+			handle: "i,img",
 			axis: "y",
 			opacity: 0.9,
 			update: function(event, ui) {
