@@ -1222,72 +1222,192 @@ input.lms-ui-quick-search.lms-ui-quick-search-active {
   display: inline-block;
 }
 .lms-ui-icon {
-    vertical-align: middle;
-    display: inline-block;
+  vertical-align: middle;
+  display: inline-block;
 }
 .lms-ui-icon-size16 {
-    background-repeat: no-repeat;
-    background-size: 16px;
-    width: 16px;
-    height: 16px;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
 }
 .lms-ui-icon-administration {
-    background: url("users.gif");
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("users.gif");
 }
 .lms-ui-icon-customer {
-    background: url("customer.gif");
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("customer.gif");
 }
 .lms-ui-icon-node {
-    background: url("node.gif");
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("node.gif");
 }
 .lms-ui-icon-voip {
-    background: url("voip.gif");
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("voip.gif");
 }
 .lms-ui-icon-netdevice {
-    background: url("netdev.gif");
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("netdev.gif");
 }
 .lms-ui-icon-network {
-    background: url("network.gif");
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("network.gif");
 }
 .lms-ui-icon-finances {
-    background: url("money.gif");
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("money.gif");
 }
 .lms-ui-icon-document {
-    background: url("docum.gif");
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("docum.gif");
 }
 .lms-ui-icon-hosting {
-    background: url("account.gif");
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("account.gif");
 }
 .lms-ui-icon-message {
-    background: url("mailsms.gif");
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("mailsms.gif");
 }
 .lms-ui-icon-reload {
-    background: url("reload.gif");
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("reload.gif");
 }
 .lms-ui-icon-stats {
-    background: url("traffic.gif");
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("traffic.gif");
 }
 .lms-ui-icon-helpdesk {
-    background: url("ticket.gif");
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("ticket.gif");
 }
 .lms-ui-icon-timetable {
-    background: url("calendar.gif");
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("calendar.gif");
 }
 .lms-ui-icon-password {
-    background: url("pass.gif");
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("pass.gif");
 }
 .lms-ui-icon-configuration {
-    background: url("settings.gif");
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("settings.gif");
 }
 .lms-ui-icon-documentation {
-    background: url("doc.gif");
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("doc.gif");
 }
 .lms-ui-icon-log {
-    background: url("recover.gif");
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("recover.gif");
 }
 .lms-ui-icon-logout {
-    background: url("logout.gif");
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("logout.gif");
 }
 .lms-ui-icon-userpanel {
-    background: url("cms.gif");
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("cms.gif");
 }
