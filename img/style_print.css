@@ -1,14 +1,14 @@
 BODY {
-  font-size: 7pt;
+  font-size: 8pt;
   font-family: Arial, Helvetica;
   padding: 0pt;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 }
 BODY.landscape {
-  font-size: 7pt;
+  font-size: 8pt;
   font-family: Arial, Helvetica;
   padding: 0pt;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   size: landscape;
 }
 TABLE {
@@ -16,7 +16,7 @@ TABLE {
   border-color: #000000;
 }
 TD {
-  font-size: 7pt;
+  font-size: 8pt;
   padding: 2px;
   padding-right: 6px;
 }
@@ -93,7 +93,7 @@ TD.head {
 }
 TD.headgrey {
   color: black;
-  background-color: #A9A9A9;
+  background-color: #a9a9a9;
   font-weight: bold;
   border-width: 1pt;
   border-style: solid;
@@ -105,20 +105,20 @@ A {
   text-decoration: none;
 }
 P {
-  font-size: 7pt;
+  font-size: 8pt;
   font-family: Arial, Helvetica;
 }
 P.nor {
-  font-size: 7pt;
+  font-size: 8pt;
   font-family: Arial, Helvetica;
 }
 P.txt {
-  font-size: 7pt;
+  font-size: 8pt;
   font-family: Arial, Helvetica;
   text-align: justify;
 }
 P.separated {
-  font-size: 7pt;
+  font-size: 8pt;
   font-family: Arial, Helvetica;
   margin-top: 5;
   margin-bottom: 5;
@@ -150,13 +150,13 @@ H1 {
   background-color: #888888;
 }
 .white {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 }
 .grey {
-  background-color: #EEEEEE;
+  background-color: #eeeeee;
 }
 .alert {
-  color: #FF0000;
+  color: #ff0000;
 }
 .bold {
   font-weight: bold;
