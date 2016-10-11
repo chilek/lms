@@ -1221,3 +1221,183 @@ input.lms-ui-quick-search {
 input.lms-ui-quick-search.lms-ui-quick-search-active {
   display: inline-block;
 }
+.lms-ui-icon-administration {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("users.gif");
+}
+.lms-ui-icon-customer {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("customer.gif");
+}
+.lms-ui-icon-node {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("node.gif");
+}
+.lms-ui-icon-voip {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("voip.gif");
+}
+.lms-ui-icon-netdevice {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("netdev.gif");
+}
+.lms-ui-icon-network {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("network.gif");
+}
+.lms-ui-icon-finances {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("money.gif");
+}
+.lms-ui-icon-document {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("docum.gif");
+}
+.lms-ui-icon-hosting {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("account.gif");
+}
+.lms-ui-icon-message {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("mailsms.gif");
+}
+.lms-ui-icon-reload {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("reload.gif");
+}
+.lms-ui-icon-stats {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("traffic.gif");
+}
+.lms-ui-icon-helpdesk {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("ticket.gif");
+}
+.lms-ui-icon-timetable {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("calendar.gif");
+}
+.lms-ui-icon-password {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("pass.gif");
+}
+.lms-ui-icon-configuration {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("settings.gif");
+}
+.lms-ui-icon-documentation {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("doc.gif");
+}
+.lms-ui-icon-log {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("recover.gif");
+}
+.lms-ui-icon-logout {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("logout.gif");
+}
+.lms-ui-icon-userpanel {
+  vertical-align: middle;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
+  background: url("cms.gif");
+}
