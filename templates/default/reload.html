@@ -37,7 +37,7 @@
 					</TD>
 					<TD class="nobr">{trans("Description:")}</TD>
 					<TD class="text-center nobr">{trans("Last Reload:")}</TD>
-					<TD class="nobr">{trans("Status:")}</TD>
+					<TD class="text-center nobr">{trans("Status:")}</TD>
 					<TD></TD>
 				</TR>
 				</THEAD>
@@ -51,7 +51,7 @@
 					<TD class="text-center nobr">
 						{if $host.lastreload}{$host.lastreload|date_format:"%Y/%m/%d %H:%M"}{else}-{/if}
 					</TD>
-					<TD class="nobr">
+					<TD class="text-center nobr">
 						{if $host.reload==1}{trans("waiting")}
 						{elseif $host.reload==0}{trans("OK")}
 						{else}{trans("unknown")}{/if}
