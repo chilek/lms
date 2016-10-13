@@ -82,7 +82,7 @@ function smarty_function_customerlist($params, $template) {
 
 	$result .= '>';
 	if (empty($params['customers']))
-		$result .= '<script type="text/javascript">getCustomerName($(\'[name="' . $params['inputname']. '"]\').get(0));</script>';
+		$result .= '<script type="text/javascript">getCustomerNameDeferred($(\'[name="' . $params['inputname']. '"]\').get(0));</script>';
 	$result .= '<a href="javascript: void(0);" onClick="return customerchoosewin(document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\']);" ';
 	$result .= smarty_function_tip(array('text' => 'Click to search customer'), $template) . '>&nbsp;';
 	$result .= trans("Search") . '&nbsp;&raquo;&raquo;&raquo;</A>';

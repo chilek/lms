@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,14 +24,26 @@
  *  $Id$
  */
 
-$customerid = intval($_GET['id']);
-
 if (isset($_GET['ajax'])) {
-	$customername = $LMS->GetCustomerName($customerid);
+	if (!isset($_POST['id']))
+		die;
+	if (is_array($_POST['id']))
+		$ids = $_POST['id'];
+	else
+		$ids = array($_POST['id']);
+
+	$customernames = array();
+	foreach ($ids as $id) {
+		$customername = $LMS->GetCustomerName($id);
+		if (!empty($customername))
+			$customernames[$id] = $customername;
+	}
 	header('Content-Type: application/json');
-	echo json_encode(array('customername' => empty($customername) ? '' : $customername));
+	echo json_encode(array('customernames' => $customernames));
 	die;
 }
+
+$customerid = intval($_GET['id']);
 
 $LMS->InitXajax();
 
