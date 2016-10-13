@@ -2230,13 +2230,23 @@ class LMS
         $manager = $this->getVoipAccountManager();
         return $manager->voipAccountUpdate($voipaccountdata);
     }
-    
+
     public function getVoipBillings(array $params)
     {
     	$manager = $this->getVoipAccountManager();
         return $manager->getVoipBillings($params);
     }
-    
+
+    public function getVoipTariffs()
+    {
+        return $this->getVoipAccountManager()->getVoipTariffs();
+    }
+
+    public function getVoipTariffRuleGroups()
+    {
+        return $this->getVoipAccountManager()->getVoipTariffRuleGroups();
+    }
+
 	/**
 	 * End VoIP functions
 	 */
