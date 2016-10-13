@@ -577,7 +577,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
     }
 
     /**
-     * Returns voip tariffs.
+     * Returns voip tariff rule groups.
      *
      * @return array Array with tariffs
      */

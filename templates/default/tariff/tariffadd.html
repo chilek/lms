@@ -349,14 +349,23 @@
         function updateui() {
             var selected_item = $( "#tariff-type" ).val();
 
-            if (selected_item == {$smarty.const.TARIFF_PHONE}) {
-                $( '#tariff-account-settings' ).hide();
-                $( '#tariff-capacity-settings' ).hide();
-                $( '#tariff-phone-settings' ).show();
-            } else {
-                $( '#tariff-account-settings' ).show();
-                $( '#tariff-capacity-settings' ).show();
-                $( '#tariff-phone-settings' ).hide();
+            switch (selected_item) {
+                case "{$smarty.const.TARIFF_PHONE}":
+                    $( '#tariff-account-settings' ).hide();
+                    $( '#tariff-capacity-settings' ).hide();
+                    $( '#tariff-phone-settings' ).show();
+                break;
+
+                case "{$smarty.const.TARIFF_TV}":
+                    $( '#tariff-account-settings' ).hide();
+                    $( '#tariff-capacity-settings' ).show();
+                    $( '#tariff-phone-settings' ).hide();
+                break;
+
+                default:
+                    $( '#tariff-account-settings' ).show();
+                    $( '#tariff-capacity-settings' ).show();
+                    $( '#tariff-phone-settings' ).hide();
             }
         }
     })
