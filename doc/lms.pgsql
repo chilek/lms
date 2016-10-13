@@ -886,7 +886,7 @@ CREATE TABLE tariffs (
 	period smallint 	DEFAULT NULL,
 	taxid integer 		DEFAULT 0 NOT NULL,
 	numberplanid integer DEFAULT NULL
-		REFERENCES numberplans (id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+		REFERENCES numberplans (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	prodid varchar(255) 	DEFAULT '' NOT NULL,
 	uprate integer		DEFAULT 0 NOT NULL,
 	upceil integer		DEFAULT 0 NOT NULL,
