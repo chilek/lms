@@ -143,6 +143,8 @@ $layout['pagetitle'] = trans('New Subscription');
 
 $SMARTY->assign('taxeslist',$LMS->GetTaxes());
 $SMARTY->assign('tariff', $tariff);
+$SMARTY->assign('voip_tariffs', $DB->GetAll('SELECT id, name FROM voip_tariffs'));
+$SMARTY->assign('voip_tariffrules', $DB->GetAll('SELECT id, name FROM voip_rule_groups'));
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE));
 $SMARTY->display('tariff/tariffadd.html');
 
