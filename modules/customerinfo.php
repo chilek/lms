@@ -26,6 +26,13 @@
 
 $customerid = intval($_GET['id']);
 
+if (isset($_GET['ajax'])) {
+	$customername = $LMS->GetCustomerName($customerid);
+	header('Content-Type: application/json');
+	echo json_encode(array('customername' => empty($customername) ? '' : $customername));
+	die;
+}
+
 $LMS->InitXajax();
 
 if (!isset($_POST['xjxfun'])) {

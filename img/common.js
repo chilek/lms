@@ -653,6 +653,17 @@ function get_size_unit(size) {
 		};
 }
 
+function getCustomerName(elem) {
+	$.ajax('?m=customerinfo&id=' + $(elem).val() + '&ajax=1', {
+		async: true,
+		method: 'POST',
+		dataType: 'json',
+		success: function(data, textStatus, jqXHR) {
+			$(elem).prev().html(data.customername);
+		}
+	});
+}
+
 if (window.addEventListener)
 	window.addEventListener("load", init_links, false);
 else if (window.attachEvent)

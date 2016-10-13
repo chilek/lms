@@ -63,8 +63,10 @@ function smarty_function_customerlist($params, $template) {
 			$result .= '>' . mb_substr($customer['customername'], 0 , 40) . ' (' . sprintf("%04d", $customer['id']) . ')</OPTION>';
 		}
 		$result .= '</SELECT>&nbsp;' . trans("or Customer ID:");
-	} else
-		$result = trans("ID:");
+	} else {
+		$result = '<span></span>,&nbsp;';
+		$result .= trans("ID:");
+	}
 	$result .= '&nbsp;<INPUT type="text" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" size="5" ';
 
 	$on_change = !empty($params['customOnChange']) ? $params['customOnChange'] : '';
@@ -73,16 +75,19 @@ function smarty_function_customerlist($params, $template) {
 		$reset_customer = "reset_customer('${params['form']}', '${params['inputname']}', '${params['selectname']}'); ${on_change}";
 		$result .= "onChange=\"${reset_customer}\" onFocus=\"${reset_customer}\"";
 	} else
-		$result .= sprintf(' onblur="%1$s" onfocus="%1$s" oninput="%1$s" ', $on_change);
+		$result .= sprintf(' onblur="%1$s" onfocus="%1$s" oninput="%1$s" ', $on_change . ';getCustomerName(this)');
 
 	if (!empty($params['inputtip']))
 		$result .= smarty_function_tip(array('text' => $params['inputtip']), $template);
-	else {
+	else
 		$result .= smarty_function_tip(array('text' => 'Enter customer ID', 'trigger' => 'customerid'), $template);
-		$result .= '><a href="javascript: void(0);" onClick="return customerchoosewin(document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\']);" ';
-		$result .= smarty_function_tip(array('text' => 'Click to search customer'), $template) . '>&nbsp;';
-		$result .= trans("Search") . '&nbsp;&raquo;&raquo;&raquo;</A>';
-	}
+
+	$result .= '>';
+	if (empty($params['customers']))
+		$result .= '<script type="text/javascript">getCustomerName($(\'[name="' . $params['inputname']. '"]\').get(0));</script>';
+	$result .= '<a href="javascript: void(0);" onClick="return customerchoosewin(document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\']);" ';
+	$result .= smarty_function_tip(array('text' => 'Click to search customer'), $template) . '>&nbsp;';
+	$result .= trans("Search") . '&nbsp;&raquo;&raquo;&raquo;</A>';
 
 	return $result;
 }
