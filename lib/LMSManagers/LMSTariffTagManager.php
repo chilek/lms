@@ -25,11 +25,11 @@
  */
 
 class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInterface{
-    
+
     public function TarifftagGetId($name){
         return $this->db->GetOne('SELECT id FROM tarifftags WHERE name=?', array($name));
     }
-    
+
     public function TarifftagAdd($tarifftagdata){
         if ($this->db->Execute('INSERT INTO tarifftags (name, description) VALUES (?, ?)', array($tarifftagdata['name'], $tarifftagdata['description']))) {
             $id = $this->db->GetLastInsertID('tarifftags');
@@ -46,11 +46,11 @@ class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInter
             return FALSE;
         }
     }
-    
+
     public function TarifftagGetList(){
         if ($tarifftaglist = $this->db->GetAll('SELECT id, name, description,
 				(SELECT COUNT(*)
-					FROM tariffassignments 
+					FROM tariffassignments
 					WHERE tarifftagid = tarifftags.id
 				) AS tariffscount
 				FROM tarifftags ORDER BY name ASC')) {
@@ -66,7 +66,7 @@ class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInter
 
         return $tarifftaglist;
     }
-    
+
     public function TarifftagGet($id){
         $result = $this->db->GetRow('SELECT id, name, description FROM tarifftags WHERE id=?', array($id));
         $result['tariffs'] = $this->db->GetAll('SELECT t.id AS id, t.name AS tariffname FROM tariffassignments, tariffs t '
@@ -77,19 +77,19 @@ class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInter
         $result['count'] = $result['tariffscount'];
         return $result;
     }
-    
+
     public function TarifftagExists($id){
         return ($this->db->GetOne('SELECT id FROM tarifftags WHERE id=?', array($id)) ? TRUE : FALSE);
     }
-    
+
     public function GetTariffWithoutTagNames($tagid){
-        return $this->db->GetAll('SELECT t.id AS id, t.name AS tariffname FROM tariffs t WHERE t.disabled = 0 
+        return $this->db->GetAll('SELECT t.id AS id, t.name AS tariffname FROM tariffs t WHERE t.disabled = 0
 	    AND t.id NOT IN (
-		SELECT tariffid FROM tariffassignments WHERE tarifftagid = ?) 
+		SELECT tariffid FROM tariffassignments WHERE tarifftagid = ?)
 	    GROUP BY t.id, t.name
 	    ORDER BY t.name', array($tagid));
     }
-    
+
     public function TariffassignmentDelete($tariffassignmentdata){
         if ($this->syslog){
             $assign = $this->db->GetRow('SELECT tariffid FROM tariffassignments WHERE tarifftagid = ? AND tariffid = ?', array($tariffassignmentdata['tarifftagid'], $tariffassignmentdata['tariffid']));
@@ -104,11 +104,11 @@ class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInter
         }
         return $this->db->Execute('DELETE FROM tariffassignments WHERE tarifftagid=? AND tariffid=?', array($tariffassignmentdata['tarifftagid'], $tariffassignmentdata['tariffid']));
     }
-    
+
     public function TariffassignmentExist($tagid, $tariffid){
         return $this->db->GetOne('SELECT 1 FROM tariffassignments WHERE tarifftagid=? AND tariffid=?', array($tagid, $tariffid));
     }
-    
+
     public function TariffassignmentAdd($tariffassignmentdata){
         $res = $this->db->Execute('INSERT INTO tariffassignments (tarifftagid, tariffid) VALUES (?, ?)', array($tariffassignmentdata['tarifftagid'], $tariffassignmentdata['tariffid']));
         if ($this->syslog && $res) {
@@ -122,7 +122,7 @@ class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInter
         }
         return $res;
     }
-    
+
     public function TarifftagDelete($id){
         if (!$this->TarifftagWithTariffGet($id)) {
             if ($this->syslog) {
@@ -141,15 +141,15 @@ class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInter
             }
             $this->db->Execute('DELETE FROM tarifftags WHERE id=?', array($id));
             return TRUE;
-        } 
+        }
 	else
 	    return FALSE;
     }
-    
+
     public function TarifftagWithTariffGet($id){
         return $this->db->GetOne('SELECT COUNT(*) FROM tariffassignments WHERE tarifftagid = ?', array($id));
     }
-    
+
     public function TarifftagUpdate($tarifftagdata){
         $args = array(
             'name' => $tarifftagdata['name'],
@@ -160,10 +160,8 @@ class LMSTariffTagManager extends LMSManager implements LMSTariffTagManagerInter
             $this->syslog->AddMessage(SYSLOG::RES_TARIFFTAG, SYSLOG::OPER_UPDATE, $args);
         return $this->db->Execute('UPDATE tarifftags SET name=?, description=? WHERE id=?', array_values($args));
     }
-    
+
     public function TarifftagGetAll(){
         return $this->db->GetAll('SELECT g.id, g.name, g.description FROM tarifftags g ORDER BY g.name ASC');
     }
-    
 }
-

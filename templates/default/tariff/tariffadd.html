@@ -349,7 +349,7 @@
         function updateui() {
             var selected_item = $( "#tariff-type" ).val();
 
-            if (selected_item == {TARIFF_PHONE}) {
+            if (selected_item == {$smarty.const.TARIFF_PHONE}) {
                 $( '#tariff-account-settings' ).hide();
                 $( '#tariff-capacity-settings' ).hide();
                 $( '#tariff-phone-settings' ).show();

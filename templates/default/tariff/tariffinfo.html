@@ -80,7 +80,7 @@
                             <TR>
                                 <TD><IMG SRC="img/money.gif" ALT=""></TD>
                                 <TD>{trans("Type:")}</TD>
-                                <TD>{assign var=typeid value=$tariff.type}{$_TARIFFTYPES.$typeid}</TD>
+                                <TD>{$_TARIFFTYPES.$typeid}</TD>
                             </TR>
 
                             {if isset($tariff.numberplan)}
@@ -134,6 +134,7 @@
 
                         </TABLE>
                     </TD>
+                    {if $tariff.type != $smarty.const.TARIFF_PHONE}
                     <TD WIDTH="50%" CLASS="valign-top">
                         <TABLE CLASS="tariff_tab bold-second">
                             <TR>
@@ -173,11 +174,12 @@
                             </TR>
                         </TABLE>
                     </TD>
+                    {/if}
                 </TR>
             </TABLE>
         </TD>
     </TR>
-
+    {if $tariff.type != $smarty.const.TARIFF_PHONE}
     <TR>
         <TD COLSPAN="2">
             <TABLE CLASS="tariff_tab bold-first">
@@ -237,9 +239,8 @@
             </TABLE>
         </TD>
     </TR>
-
-    {if $tariff.type == TARIFF_PHONE}
-    <TR CLASS="space_row">
+    {else}
+    <TR>
         <TD COLSPAN="2">
             <TABLE CLASS="tariff_tab bold-first">
                 <TR>

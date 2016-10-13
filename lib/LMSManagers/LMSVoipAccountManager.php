@@ -531,7 +531,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 case CALL_NO_ANSWER:
                 case CALL_BUSY:
                 case CALL_SERVER_FAILED:
-                    $where[] = "cdr.status = " . $params['fstatus'];
+                    $where[] = 'cdr.status = ' . $params['fstatus'];
                 break;
             }
 
@@ -540,7 +540,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             switch ($params['ftype']) {
                 case CALL_OUTGOING:
                 case CALL_INCOMING:
-                    $where[] = "cdr.type = " . $params['ftype'];
+                    $where[] = 'cdr.type = ' . $params['ftype'];
                 break;
             }
 
@@ -567,4 +567,21 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         return $bill_list;
     }
 
+    /**
+     * Returns voip tariffs.
+     *
+     * @return array Array with tariffs
+     */
+    public function getVoipTariffs() {
+        return $this->db->GetAll('SELECT id, name, description FROM voip_tariffs');
+    }
+
+    /**
+     * Returns voip tariffs.
+     *
+     * @return array Array with tariffs
+     */
+    public function getVoipTariffRuleGroups() {
+        return $this->db->GetAll('SELECT id, name, description FROM voip_rule_groups');
+    }
 }
