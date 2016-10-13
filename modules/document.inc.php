@@ -24,6 +24,24 @@
  *  $Id$
  */
 
+// support for dynamic loading of plugin javascript code
+if (isset($_GET['template'])) {
+	foreach ($documents_dirs as $doc)
+		if (file_exists($dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $_GET['template'])) {
+			$doc_dir = $dir;
+			continue;
+		}
+	// read template information
+	if (file_exists($file =  $doc_dir . DIRECTORY_SEPARATOR . 'info.php')) {
+		include($file);
+		if (file_exists($file = $doc_dir . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js')) {
+			header('Content-Type: text/javascript');
+			echo file_get_contents($file);
+		}
+	}
+	die;
+}
+
 function plugin($template, $customer) {
 	global $documents_dirs;
 	
@@ -44,8 +62,12 @@ function plugin($template, $customer) {
 		include($file);
 	// call plugin
 	
-	if (!empty($engine['plugin']) && file_exists($file = $doc_dir . '/templates/' . $engine['name'] . '/' . $engine['plugin'] . '.php'))
-		include($file);
+	if (!empty($engine['plugin'])) {
+		if (file_exists($file = $doc_dir . '/templates/' . $engine['name'] . '/' . $engine['plugin'] . '.php'))
+			include($file);
+		if (file_exists($doc_dir . '/templates/' . $engine['name'] . '/' . $engine['plugin'] . '.js'))
+			$JSResponse->includeScript($_SERVER['REQUEST_URI'] . '&template=' . $template);
+	}
 
 	$JSResponse->assign('plugin', 'innerHTML', $result);
 	$JSResponse->assign('title', 'value', isset($engine['form_title']) ? $engine['form_title'] : $engine['title']);
