@@ -245,7 +245,6 @@
         </TD>
     </TR>
 
-    {if $tariff.type == TARIFF_PHONE}
     <TR CLASS="space_row" ID="tariff-phone-settings">
         <TD>
             <TABLE CLASS="tariff_tab bold-first">
@@ -287,7 +286,6 @@
             </TABLE>
         </TD>
     </TR>
-    {/if}
 
     <TR>
         <TD WIDTH="100%" ALIGN="RIGHT">
@@ -324,6 +322,7 @@
                     $( '#tariff-phone-settings' ).show();
                 break;
 
+                case "{$smarty.const.TARIFF_INTERNET}":
                 case "{$smarty.const.TARIFF_TV}":
                     $( '#tariff-account-settings' ).hide();
                     $( '#tariff-capacity-settings' ).show();
