@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,14 +27,16 @@
 // support for dynamic loading of plugin javascript code
 if (isset($_GET['template'])) {
 	foreach ($documents_dirs as $doc)
-		if (file_exists($dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $_GET['template'])) {
-			$doc_dir = $dir;
+		if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $_GET['template'])) {
+			$doc_dir = $doc;
 			continue;
 		}
 	// read template information
-	if (file_exists($file =  $doc_dir . DIRECTORY_SEPARATOR . 'info.php')) {
+	if (file_exists($file =  $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+		. $_GET['template']  . DIRECTORY_SEPARATOR . 'info.php')) {
 		include($file);
-		if (file_exists($file = $doc_dir . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js')) {
+		if (file_exists($file = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+			. $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js')) {
 			header('Content-Type: text/javascript');
 			echo file_get_contents($file);
 		}
@@ -50,23 +52,25 @@ function plugin($template, $customer) {
 	// xajax response object, can be used in the plugin
 	$JSResponse = new xajaxResponse();
 
-	foreach ($documents_dirs as $doc){
-	    if(file_exists($doc. '/templates/' . $template)){
-		$doc_dir = $doc;
-		continue;
-	    }
-	}
-	
+	foreach ($documents_dirs as $doc)
+		if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template)) {
+			$doc_dir = $doc;
+			continue;
+		}
+
 	// read template information
-	if (file_exists($file = $doc_dir . '/templates/' . $template . '/info.php'))
+	if (file_exists($file = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+		. $template . DIRECTORY_SEPARATOR . 'info.php'))
 		include($file);
+
 	// call plugin
-	
 	if (!empty($engine['plugin'])) {
-		if (file_exists($file = $doc_dir . '/templates/' . $engine['name'] . '/' . $engine['plugin'] . '.php'))
+		if (file_exists($file = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+			. $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.php'))
 			include($file);
-		if (file_exists($doc_dir . '/templates/' . $engine['name'] . '/' . $engine['plugin'] . '.js'))
-			$JSResponse->includeScript($_SERVER['REQUEST_URI'] . '&template=' . $template);
+		if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+			. $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js'))
+			$JSResponse->includeScriptOnce($_SERVER['REQUEST_URI'] . '&template=' . $template);
 	}
 
 	$JSResponse->assign('plugin', 'innerHTML', $result);
