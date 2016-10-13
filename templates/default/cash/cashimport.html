@@ -55,7 +55,7 @@
 		</TD>
 	</TR>
     </THEAD>
-    <TBODY>
+    <TBODY class="lms-ui-multi-check">
 	{foreach from=$divisions item=division}{if $division.list}
 	<TR class="dark">
 		<TD colspan="4" class="bold">
@@ -91,7 +91,7 @@
 				{customerlist form="cashimport" customers=$customerlist selected=$item.customerid selectname="custid[{$item.id}]" inputname="customer[{$item.id}]"}
 			</TD>
 			<TD class="text-right">
-				<INPUT TYPE="checkbox" NAME="marks[{$item.id}]" VALUE="{$item.id}">
+				<INPUT TYPE="checkbox" NAME="marks[{$item.id}]" VALUE="{$item.id}" class="lms-ui-multi-check">
 			</TD>
 		</TR>
 		{/foreach}
@@ -108,7 +108,7 @@
 	<TR class="dark">
 		<TD class="nobr" colspan="3">
 			<label>
-				<INPUT type="checkbox" name="allbox" onchange="CheckAll('cashimport', this)" value="1">
+				<INPUT type="checkbox" name="allbox" class="lms-ui-multi-check-all" value="1">
 				{trans("Check All")}
 			</label>
 		</TD>
