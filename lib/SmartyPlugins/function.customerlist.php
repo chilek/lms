@@ -63,11 +63,9 @@ function smarty_function_customerlist($params, $template) {
 			$result .= '>' . mb_substr($customer['customername'], 0 , 40) . ' (' . sprintf("%04d", $customer['id']) . ')</OPTION>';
 		}
 		$result .= '</SELECT>&nbsp;' . trans("or Customer ID:");
-	} else {
-		$result = '<span></span>';
+	} else
 		$result .= trans("ID:");
-	}
-	$result .= '&nbsp;<INPUT type="text" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" size="5" ';
+	$result .= '<INPUT type="text" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" size="5" ';
 
 	$on_change = !empty($params['customOnChange']) ? $params['customOnChange'] : '';
 
@@ -88,6 +86,9 @@ function smarty_function_customerlist($params, $template) {
 	$result .= '<a href="javascript: void(0);" onClick="return customerchoosewin(document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\']);" ';
 	$result .= smarty_function_tip(array('text' => 'Click to search customer'), $template) . '>&nbsp;';
 	$result .= trans("Search") . '&nbsp;&raquo;&raquo;&raquo;</A>';
+
+	if (empty($params['customers']))
+		$result .= '&nbsp;&nbsp;&nbsp;<span></span>';
 
 	return $result;
 }
