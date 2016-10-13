@@ -668,7 +668,7 @@ function getCustomerNameDeferred(elem) {
 	customerinputs.push(elem);
 }
 
-if (typeof $ == 'undefined') {
+if (typeof $ != 'undefined') {
 	$(function() {
 		var cids = [];
 		$.each(customerinputs, function(index, elem) {
