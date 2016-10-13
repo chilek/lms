@@ -64,7 +64,7 @@ function smarty_function_customerlist($params, $template) {
 		}
 		$result .= '</SELECT>&nbsp;' . trans("or Customer ID:");
 	} else {
-		$result = '<span></span>,&nbsp;';
+		$result = '<span></span>';
 		$result .= trans("ID:");
 	}
 	$result .= '&nbsp;<INPUT type="text" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" size="5" ';

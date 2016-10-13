@@ -659,7 +659,7 @@ function getCustomerName(elem) {
 		method: 'POST',
 		dataType: 'json',
 		success: function(data, textStatus, jqXHR) {
-			$(elem).prev().html(data.customername);
+			$(elem).prev().html(data.customername.length ? data.customername + ',&nbsp;' : '');
 		}
 	});
 }
