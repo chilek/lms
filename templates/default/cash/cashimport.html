@@ -21,69 +21,78 @@
 <FORM NAME="cashimport" ACTION="?m=cashimport" METHOD="post">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 40%;">
+		<COL style="width: 55%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD WIDTH="1%">
+		<TD>
 			{trans("ID:")}
 		</TD>
-		<TD WIDTH="1%">
+		<TD>
 			{trans("Date:")}
 		</TD>
-		<TD WIDTH="1%">
-			<B>{trans("Value:")}</B>
+		<TD class="bold">
+			{trans("Value:")}
 		</TD>
-		<TD WIDTH="40%">
+		<TD>
 			{trans("Customer:")}
 		</TD>
-		<TD WIDTH="55%">
+		<TD>
 			{trans("Description:")}
 		</TD>
-		<TD WIDTH="1%" nowrap>
+		<TD class="nobr">
 			{trans("Link to:")}
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" nowrap>
-			<B>{trans("Total:")} {$listdata.total}</B>&nbsp;
+		<TD class="text-right bold nobr">
+			{trans("Total:")} {$listdata.total}&nbsp;
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	{foreach from=$divisions item=division}{if $division.list}
 	<TR class="dark">
-		<TD colspan="4">
-		    <IMG src="img/division.gif" alt=""> <B>{$division.name}</B>
+		<TD colspan="4" class="bold">
+			<IMG src="img/division.gif" alt=""> {$division.name}
 		</TD>
-		<TD colspan="3" align="right">
-		    <A href="?m=cashimport&action=csv&division={$division.id}">{trans("Download (CSV)")}</a> <IMG src="img/save.gif" alt="">
+		<TD colspan="3" class="text-right">
+			<A href="?m=cashimport&action=csv&division={$division.id}">{trans("Download (CSV)")}</a> <IMG src="img/save.gif" alt="">
 		</TD>
 	</TR>
 		{cycle values="light,lucid" print=false}
 		{foreach from=$division.list item=item}
 		<TR class="{cycle}">
-		    <TD>
-			{$item.id|string_format:"%04d"}
-		    </TD>
-		    <TD NOWRAP>
-			{$item.date|date_format:"%Y/%m/%d"}
-		    </TD>
-		    <TD NOWRAP ALIGN="RIGHT">
-			<B>{$item.value|money_format}</B>
-		    </TD>
-		    <TD ALIGN="LEFT">
-			{if $item.customer}{$item.customer}
-			{elseif $item.customerid}
-			    {assign var=cust value=$item.customerid}
-			    {$customerlist.$cust.customername}
-			{/if}
-		    </TD>
+			<TD>
+				{$item.id|string_format:"%04d"}
+			</TD>
+			<TD class="nobr">
+				{$item.date|date_format:"%Y/%m/%d"}
+			</TD>
+			<TD class="text-right bold nobr">
+				{$item.value|money_format}
+			</TD>
+			<TD class="text-left">
+				{if $item.customer}{$item.customer}
+				{elseif $item.customerid}
+				{assign var=cust value=$item.customerid}
+				{$customerlist.$cust.customername}
+				{/if}
+			 </TD>
 			<TD class="text-left">
 				{$item.description}
 			</TD>
-			<TD class="text-right nobr" colspan="2">
+			<TD class="text-left nobr" colspan="2">
 				{customerlist form="cashimport" customers=$customerlist selected=$item.customerid selectname="custid[{$item.id}]" inputname="customer[{$item.id}]"}
 				<INPUT TYPE="checkbox" NAME="marks[{$item.id}]" VALUE="{$item.id}">
 			</TD>
-	    </TR>
-	    {/foreach}
+		</TR>
+		{/foreach}
 	{/if}{/foreach}
 	{if !$listdata.total}
 	<TR>
