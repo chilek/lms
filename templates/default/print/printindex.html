@@ -493,18 +493,22 @@
 							</TD>
 						</TR>
 						<TR>
-						    <TD style="width: 1%;">
-							<IMG src="img/settings.gif" alt="">
-						    </TD>
-						    <TD style="width: 1%;" nowrap>
-							<B>{trans("Show on report")}:</B>
-						    </TD>
-						    <TD style="width: 98%;" colspan="2" nowrap>
-                                                        <label>
-                                                            <input type="checkbox" name="printcustomerid" value="1" checked>
-                                                            {trans("customer ID")}
-                                                        </label>
-                                                    </TD>
+							<TD style="width: 1%;">
+								<IMG src="img/settings.gif" alt="">
+							</TD>
+							<TD style="width: 1%;" nowrap>
+								<B>{trans("Adjust the print")}:</B>
+							</TD>
+							<TD style="width: 98%;" colspan="2" nowrap>
+								<label>
+									<input type="checkbox" name="printcustomerid" value="1">
+									{trans("hide customer ID")}
+								</label>
+								<label>
+									<input type="checkbox" name="printonlysummary" value="1">
+									{trans("only summary")}
+								</label>
+							</TD>
 						</TR>
 					    </TABLE>
 					</TD>
