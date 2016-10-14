@@ -2,13 +2,13 @@ BODY {
   font-size: 8pt;
   font-family: Arial, Helvetica;
   padding: 0pt;
-  background-color: #ffffff;
+  background-color: #FFFFFF;
 }
 BODY.landscape {
   font-size: 8pt;
   font-family: Arial, Helvetica;
   padding: 0pt;
-  background-color: #ffffff;
+  background-color: #FFFFFF;
   size: landscape;
 }
 TABLE {
@@ -93,7 +93,7 @@ TD.head {
 }
 TD.headgrey {
   color: black;
-  background-color: #a9a9a9;
+  background-color: #A9A9A9;
   font-weight: bold;
   border-width: 1pt;
   border-style: solid;
@@ -150,13 +150,13 @@ H1 {
   background-color: #888888;
 }
 .white {
-  background-color: #ffffff;
+  background-color: #FFFFFF;
 }
 .grey {
-  background-color: #eeeeee;
+  background-color: #EEEEEE;
 }
 .alert {
-  color: #ff0000;
+  color: #FF0000;
 }
 .bold {
   font-weight: bold;
