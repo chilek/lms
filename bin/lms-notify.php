@@ -1072,6 +1072,9 @@ if (empty($types) || in_array('events', $types)) {
 
 // send message to customers which have awaiting www messages
 if (in_array('www', $channels) && (empty($types) || in_array('messages', $types))) {
+	if (!$debug)
+		$fh = fopen($notifications['messages']['file'], 'w');
+
 	$nodes = $DB->GetAll("SELECT INET_NTOA(ipaddr) AS ip
 			FROM vnodes n
 		JOIN (SELECT DISTINCT customerid FROM messageitems
@@ -1080,22 +1083,19 @@ if (in_array('www', $channels) && (empty($types) || in_array('messages', $types)
 		) m ON m.customerid = n.ownerid
 		ORDER BY ipaddr", array(MSG_WWW, MSG_NEW));
 
-	if (!$debug) {
-		if (!($fh = fopen($notifications['messages']['file'], 'w')))
-			continue;
+	if (!$debug && $fh)
 		fwrite($fh, str_replace("\\n", PHP_EOL, $notifications['messages']['header']));
-	}
 
 	if (!empty($nodes))
 		foreach ($nodes as $node) {
 			if (!$quiet)
 				printf("[www/messages] %s" . PHP_EOL, $node['ip']);
-			if (!$debug)
+			if (!$debug && $fh)
 				fwrite($fh, str_replace("\\n", PHP_EOL,
 					parse_node_data($notifications['messages']['rule'], $node)));
 		}
 
-	if (!$debug) {
+	if (!$debug && $fh) {
 		fwrite($fh, str_replace("\\n", PHP_EOL, $notifications['messages']['footer']));
 		fclose($fh);
 	}
