@@ -81,9 +81,9 @@ try {
 //bug - modyfikacje błednego wsdl-a z BGZ-tu - zamiast http musi byc https!!
 class My_SoapClient extends SoapClient {
 //source http://www.victorstanciu.ro/php-soapclient-port-bug-workaround/ +modification
-    public function __doRequest($request, $location, $action, $version) {
+    public function __doRequest($request, $location, $action, $version, $one_way = 0) {
  			$location='https'.substr($location,4);
-        $return = parent::__doRequest($request, $location, $action, $version);
+        $return = parent::__doRequest($request, $location, $action, $version, $one_way);
         return $return;
     }
 }
