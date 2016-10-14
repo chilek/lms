@@ -2,6 +2,8 @@ $Id$
 
 version ?.??.?? (????-??-??):
 
+version 1.11.21 (2016-10-14):
+
   - added support for DSN and MDN in lms-notify.php script [chilan]
   - smarty installation is provided by composer from now [chilan]
   - added support for sms notifications in timetable type [chilan]
