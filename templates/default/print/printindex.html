@@ -15,7 +15,7 @@
 		<TD style="width: 1%;">
 			<IMG src="img/customer.gif" alt="">
 		</TD>
-		<TD style="width: 99%;" class="bold">
+		<TD style="width: 99%;" class="bold nobr">
 			{trans("Customers List:")}
 		</TD>
 	</TR>
@@ -96,7 +96,7 @@
 							</TR>
 							<TR>
 								<TD style="width: 1%;"><IMG src="img/network.gif" alt=""></TD>
-								<TD style="width: 1%;" class="bold">{trans("Network:")}</TD>
+								<TD style="width: 1%;" class="bold nobr">{trans("Network:")}</TD>
 								<TD style="width: 98%;" class="nobr">
 									<SELECT size="1" name="network" {tip text="Select network"}>
 										<OPTION value="0" selected>{trans("- all networks -")}</OPTION>
@@ -108,7 +108,7 @@
 							</TR>
 							<TR>
 								<TD style="width: 1%;"><IMG src="img/group.gif" alt=""></TD>
-								<TD style="width: 1%;" class="bold">{trans("Group:")}</TD>
+								<TD style="width: 1%;" class="bold nobr">{trans("Group:")}</TD>
 								<TD style="width: 98%;" class="nobr">
 									<SELECT size="1" name="customergroup" {tip text="Select group"}>
 										<OPTION value="0" selected>{trans("- all groups -")}</OPTION>
@@ -145,7 +145,7 @@
 						</TABLE>
 					</TD>
 					<TD style="width: 1%;"><IMG src="img/view.gif" alt=""></TD>
-					<TD style="width: 1%;" class="bold">{trans("Sorting:")}</TD>
+					<TD style="width: 1%;" class="bold nobr">{trans("Sorting:")}</TD>
 					<TD style="width: 97%;">
 						<TABLE style="width: 1%;" {tip text="Select sorting direction and criteria"}>
 							<TR>
@@ -183,14 +183,14 @@
 							<TR>
 								<TD style="width: 1%;"><IMG src="img/docum.gif" alt=""></TD>
 								<TD style="width: 99%;" class="nobr" colspan="2">
-									<span class="bold">{trans("With document of type:")}</span>
+									<span class="bold nobr">{trans("With document of type:")}</span>
 									<SELECT SIZE="1" name="doctype" {tip text="Select document type"}>
 										<OPTION value="0">{trans("- all -")}</OPTION>
 										{foreach from=$_DOCTYPES key=key item=item}
 										<OPTION value="{$key}">{$item}</OPTION>
 										{/foreach}
 									</SELECT>
-									<span class="bold">{trans("in date:")}</span>
+									<span class="bold nobr">{trans("in date:")}</span>
 									{trans("From")}&nbsp;<INPUT type="text" name="docfrom" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
 									{trans("To")}&nbsp;<INPUT type="text" name="docto" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
 								</TD>
@@ -235,7 +235,7 @@
 					    	    <TD style="width: 1%;">
 							<IMG src="img/users.gif" alt="">
 						    </TD>
-						    <TD style="width: 1%;" class="bold">
+						    <TD style="width: 1%;" class="bold nobr">
 						        {trans("User:")}
 						    </TD>
 						    <TD style="width: 98%;">
@@ -266,7 +266,7 @@
 						    <TD style="width: 1%;">
 							<IMG src="img/division.gif" alt="">
 						    </TD>
-						    <TD style="width: 1%;" class="bold">
+						    <TD style="width: 1%;" class="bold nobr">
 							{trans("Division")}:
 						    </TD>
 						    <TD style="width: 98%;" class="nobr">
@@ -282,7 +282,7 @@
 						    <TD style="width: 1%;">
 							<IMG src="img/group.gif" alt="">
 						    </TD>
-						    <TD style="width: 1%;" class="bold">
+						    <TD style="width: 1%;" class="bold nobr">
 							{trans("Group:")}
 						    </TD>
 						    <TD style="width: 98%;">
@@ -351,7 +351,7 @@
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
 					<TD style="width: 95%;" class="nobr">
-						<span class="bold">{trans("Period:")}</span>
+						<span class="bold nobr">{trans("Period:")}</span>
 						{trans("From")}&nbsp;<INPUT type="text" name="balancefrom" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
 						{trans("To")}&nbsp;<INPUT type="text" name="balanceto" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
@@ -394,7 +394,7 @@
 					<TD style="width: 1%;">
 						<IMG src="img/customer.gif" alt="">
 					</TD>
-					<TD style="width: 1%;" class="bold">
+					<TD style="width: 1%;" class="bold nobr">
 						{trans("Customer:")}
 					</TD>
 					<TD style="width: 1%;" class="nobr">
@@ -404,7 +404,7 @@
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
 					<TD style="width: 96%;" class="nobr">
-						<span class="bold">{trans("Period:")}</span>&nbsp;
+						<span class="bold nobr">{trans("Period:")}</span>&nbsp;
 						{trans("From")}&nbsp;<INPUT type="text" name="from" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means 1970/01/01) or click to choose it from calendar"}>
 						{trans("To")}&nbsp;<INPUT type="text" name="to" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
@@ -462,7 +462,7 @@
 						    <TD style="width: 1%;">
 							<IMG src="img/group.gif" alt="">
 						    </TD>
-						    <TD style="width: 1%;" class="bold">
+						    <TD style="width: 1%;" class="bold nobr">
 							{trans("Group:")}
 						    </TD>
 							<TD style="width: 97%;" class="multiselect nobr">
@@ -480,7 +480,7 @@
 						    <TD style="width: 1%;">
 							<IMG src="img/queue.gif" alt="">
 						    </TD>
-						    <TD style="width: 1%;" class="bold">
+						    <TD style="width: 1%;" class="bold nobr">
 							{trans("Plan:")}
 						    </TD>
 							<TD style="width: 98%;" colspan="2" class="multiselect nobr">
@@ -518,7 +518,7 @@
 						        <TD style="width: 1%;">
 						            <IMG src="img/calendar.gif" alt="">
 					            </TD>
-					            <TD style="width: 1%;" class="bold">
+					            <TD style="width: 1%;" class="bold nobr">
 						            {trans("Period:")}
 					            </TD>
 					            <TD style="width: 1%;" class="nobr">
@@ -543,7 +543,7 @@
 								<TD style="width: 1%;">
 									<IMG src="img/docum.gif" alt="">
 								</TD>
-								<TD style="width: 1%;" class="bold">
+								<TD style="width: 1%;" class="bold nobr">
 									{trans("Type:")}
 								</TD>
 								<TD colspan="2">
@@ -647,7 +647,7 @@
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
 					<TD style="width: 1%;" class="nobr">
-						<span class="bold">{trans("Period:")}</span>&nbsp;
+						<span class="bold nobr">{trans("Period:")}</span>&nbsp;
 						{trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 						{trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
@@ -694,7 +694,7 @@
 		<TD style="width: 1%;">
 			<IMG src="img/money.gif" alt="">
 		</TD>
-		<TD style="width: 99%;" class="bold">
+		<TD style="width: 99%;" class="bold nobr">
 			{trans("Invoices")}
 		</TD>
 	</TR>
@@ -754,7 +754,7 @@
 						    <TD style="width: 1%;">
 							<IMG src="img/queue.gif" alt="">
 						    </TD>
-						    <TD style="width: 1%;" class="bold">
+						    <TD style="width: 1%;" class="bold nobr">
 							{trans("Plan:")}
 						    </TD>
 						    <TD style="width: 98%;" class="nobr">
@@ -776,7 +776,7 @@
 									<IMG src="img/calendar.gif" alt="">
 								</TD>
 								<TD style="width: 1%;" class="nobr">
-									<span class="bold">{trans("Period:")}</span>&nbsp;
+									<span class="bold nobr">{trans("Period:")}</span>&nbsp;
 									{trans("From")}&nbsp;<INPUT type="text" name="invoicefrom" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 									{trans("To")}&nbsp;<INPUT type="text" name="invoiceto" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 								</TD>
@@ -849,7 +849,7 @@
 						    <TD style="width: 1%;">
 							<IMG src="img/group.gif" alt="">
 						    </TD>
-						    <TD style="width: 1%;" class="bold">
+						    <TD style="width: 1%;" class="bold nobr">
 							{trans("Group:")}
 						    </TD>
 						    <TD style="width: 98%;" class="nobr">
@@ -907,7 +907,7 @@
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
 					<TD style="width: 99%;" class="nobr">
-						<span class="bold">{trans("Period:")}</span>&nbsp;
+						<span class="bold nobr">{trans("Period:")}</span>&nbsp;
 						{trans("From")}&nbsp;<INPUT type="text" name="from" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
 						{trans("To")}&nbsp;<INPUT type="text" name="to" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
@@ -937,7 +937,7 @@
 		<TD style="width: 1%;">
 			<IMG src="img/money.gif" alt="">
 		</TD>
-		<TD style="width: 99%;" class="bold">
+		<TD style="width: 99%;" class="bold nobr">
 			{trans("Liability Report")}
 		</TD>
 	</TR>
@@ -1024,7 +1024,7 @@
 					<TD style="width: 1%;" class="nobr">
 						<IMG src="img/isource.gif" alt="">
 					</TD>
-					<TD style="width: 1%;" class="bold">
+					<TD style="width: 1%;" class="bold nobr">
 						{trans("Source:")}
 					</TD>
 					<TD style="width: 1%;">
@@ -1039,7 +1039,7 @@
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
 					<TD style="width: 96%;" class="nobr">
-						<span class="bold">{trans("Period:")}</span>
+						<span class="bold nobr">{trans("Period:")}</span>
 						{trans("From")}&nbsp;<INPUT type="text" name="importfrom" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
 						{trans("To")}&nbsp;<INPUT type="text" name="importto" SIZE="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
 					</TD>
@@ -1076,7 +1076,7 @@
 		<TD class="container" width="100%" colspan="2">
 			<TABLE cellpadding="3">
 				<TR>
-					<TD class="bold">>
+					<TD class="bold nobr">>
 						<IMG src="img/node.gif" alt="">{trans("Status:")}
 					</TD>
 					<TD {tip text="Select nodes group"}>
@@ -1087,7 +1087,7 @@
 					</TD>
 				</tr>
 				<tr>
-					<TD class="bold">
+					<TD class="bold nobr">
 						<IMG src="img/network.gif" alt="">
 						{trans("Network:")}
 					</td>
@@ -1101,7 +1101,7 @@
 					</TD>
 				</TR>
 				<TR>
-					<TD class="bold">>
+					<TD class="bold nobr">>
 						<IMG src="img/group.gif" alt="">{trans("Group:")}
 					</TD>
 					<TD>
@@ -1114,7 +1114,7 @@
 					</TD>
 				</TR>
 				<tr>
-					<TD class="bold">
+					<TD class="bold nobr">
 						<IMG src="img/view.gif" alt="">{trans("Sorting:")}
 					</TD>
 					<TD {tip text="Select sorting direction and criteria"}>
@@ -1158,7 +1158,7 @@
 		<TD style="width: 1%;">
 			<IMG src="img/traffic.gif" alt="">
 		</TD>
-		<TD style="width: 99%;" class="bold">
+		<TD style="width: 99%;" class="bold nobr">
 			{trans("Stats")}
 		</TD>
 	</TR>
@@ -1180,7 +1180,7 @@
 					<TD style="width: 1%;">
 						<IMG src="img/calendar.gif" alt="">
 					</TD>
-					<TD style="width: 1%;" class="bold">
+					<TD style="width: 1%;" class="bold nobr">
 						{trans("Year:")}
 					</TD>
 					<TD style="width: 1%;">
@@ -1190,7 +1190,7 @@
 							{/foreach}
 						</SELECT>
 					</TD>
-					<TD style="width: 1%;" class="bold">
+					<TD style="width: 1%;" class="bold nobr">
 						{trans("Month:")}
 					</TD>
 					<TD style="width: 1%;">
@@ -1220,7 +1220,7 @@
 <TABLE class="lmsbox">
     <THEAD>
 	<TR>
-		<TD style="width: 100%;" colspan="2" class="bold">
+		<TD style="width: 100%;" colspan="2" class="bold nobr">
 		    <IMG src="img/netdev.gif" alt=""> {trans("UKE report")}
 		</TD>
 	</TR>
