@@ -69,8 +69,10 @@ function plugin($template, $customer) {
 			. $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.php'))
 			include($file);
 		if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
-			. $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js'))
-			$JSResponse->includeScriptOnce($_SERVER['REQUEST_URI'] . '&template=' . $template);
+			. $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js')) {
+			$JSResponse->removeScript($_SERVER['REQUEST_URI'] . '&template=' . $template);
+			$JSResponse->includeScript($_SERVER['REQUEST_URI'] . '&template=' . $template);
+		}
 	}
 
 	$JSResponse->assign('plugin', 'innerHTML', $result);
