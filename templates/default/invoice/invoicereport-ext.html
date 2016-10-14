@@ -1,7 +1,7 @@
 {include file="clearheader.html" landscape=true}
 <!--// $Id$ //-->
 {$report_type = ConfigHelper::getConfig('phpui.report_type')}
-{foreach from=$pages item=item}{assign var=previtem value=$item-1}
+{foreach $pages as $item}{assign var=previtem value=$item-1}
 {if $report_type == 'pdf'}
 {if $item > 1}<page>{/if}
 {else}
@@ -37,7 +37,7 @@
 			{trans("Contractor")}
 		</TD>
 		{if $doctype == 'invoices'}
-		{foreach item=tax from=$taxes}
+		{foreach $taxes as $tax}
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Net value")} {$tax.label}
 		</TD>
@@ -78,7 +78,7 @@
 			{$invoicelist[invoicelist].custaddress}
 		</TD>
 		{if $doctype == 'invoices'}
-		{foreach item=tax from=$taxes}
+		{foreach $taxes as $tax}
 		{assign var=taxid value=$tax.id}
 		<TD ALIGN="RIGHT">
 			{$invoicelist[invoicelist].$taxid.val|string_format:"%01.2f"}
@@ -106,7 +106,7 @@
 			<B>{trans("Page total:")}</B>
 		</TD>
 		{if $doctype == 'invoices'}
-		{foreach item=tax from=$taxes}
+		{foreach $taxes as $tax}
 		{assign var=taxid value=$tax.id}
 		<TD ALIGN="RIGHT" class="HEADGREY">
 			<B>{$totals.$item.val.$taxid|string_format:"%01.2f"}</B>
@@ -132,7 +132,7 @@
 			<B>{trans("Transfered from previous page:")}</B>
 		</TD>
 		{if $doctype == 'invoices'}
-		{foreach item=tax from=$taxes}
+		{foreach $taxes as $tax}
 		{assign var=taxid value=$tax.id}
 		<TD ALIGN="RIGHT" class="HEADGREY">
 			<B>{$totals.$previtem.allval.$taxid|string_format:"%01.2f"}</B>
@@ -158,7 +158,7 @@
 			<B>{trans("Total from start of period:")}</B>
 		</TD>
 		{if $doctype == 'invoices'}
-		{foreach item=tax from=$taxes}
+		{foreach $taxes as $tax}
 		{assign var=taxid value=$tax.id}
 		<TD ALIGN="RIGHT" class="HEADGREY">
 			<B>{$totals.$item.allval.$taxid|string_format:"%01.2f"}</B>
@@ -216,7 +216,7 @@
 			{trans("Contractor")}
 		</TD>
 		{if $doctype == 'invoices'}
-		{foreach item=tax from=$taxes}
+		{foreach $taxes as $tax}
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
 			{trans("Net value")}
 		</TD>
