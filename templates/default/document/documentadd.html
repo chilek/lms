@@ -109,7 +109,7 @@
 			{trans("Customer:")}
 		</TD>
 		<TD class="nobr">
-			{if $customer.id}{$cid=$customer.id}{elseif $document.customerid}{$cid=$document.customerid}{else}{$cid=0}{/if}
+			{if $customer.id}{$cid=$customer.id}{elseif $document.customerid}{$cid=$document.customerid}{else}{$cid=""}{/if}
 			{customerlist form="documentadd" customers=$customers selected=$cid selectname="customer" inputname="customerid" customOnChange="getplugin()"}
 		</TD>
 	</TR>
