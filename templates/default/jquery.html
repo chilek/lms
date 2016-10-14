@@ -14,7 +14,7 @@
 		settingsTimeout: {intval(ConfigHelper::getConfig('phpui.settings_timout', 28800))},
 		wysiwygEditor: {if ConfigHelper::getConfig('phpui.default_editor') == 'wysiwyg'}true{else}false{/if},
 		quickSearchAutoSubmit: '{ConfigHelper::getConfig('phpui.quicksearch_autosubmit', 'true')}'
-	}
+	};
 	var lmsMessages = {
 		persistentSettingSaveError: '{trans("AJAX: Error during persistent setting save on server:")}',
 		noAudioSupport: '{trans("Your browser does not support the audio element.")}',
