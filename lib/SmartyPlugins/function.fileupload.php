@@ -44,7 +44,7 @@ function smarty_function_fileupload($params, $template) {
 				<INPUT name="' . $id . '[]" type="file" multiple class="fileupload-select-btn" style="display: none;">
 			</div>
 			<div class="fileupload-files">';
-	if (!empty($fileupload))
+	if (!empty($fileupload) && isset($fileupload[$id]))
 		foreach ($fileupload[$id] as $fileidx => $file)
 			$result .= '<div>
 					<a href="#" class="fileupload-file"><img src="img/delete.gif">
