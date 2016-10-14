@@ -109,17 +109,8 @@
 			{trans("Customer:")}
 		</TD>
 		<TD class="nobr">
-			{if $customers}
-			<SELECT SIZE="1" NAME="customer" onChange="document.documentadd.customerid.value=document.documentadd.customer.value" {tip trigger="customer"}>
-				<OPTION VALUE="0">{trans("... select customer ...")}</OPTION>
-				{foreach from=$customers item=c}
-				<OPTION VALUE="{$c.id}"{if $c.id == $customer.id || $document.customerid == $c.id} SELECTED{/if}>{$c.customername|truncate:"40":"...":true} ({$c.id|string_format:"%04d"})</OPTION>
-				{/foreach}
-			</SELECT>
-			{trans("or Customer ID:")}
-			{/if}
-			<INPUT TYPE="TEXT" NAME="customerid" VALUE="{if $customer.id}{$customer.id}{elseif $document.customerid}{$document.customerid}{/if}" SIZE="5"{if $customers} onchange="reset_customer()" onfocus="reset_customer()"{/if} {tip text="Enter customer ID"}>
-			<a href="javascript: void(0);" onClick="return customerchoosewin(document.documentadd.customerid);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</A>
+			{if $customer.id}{$cid=$customer.id}{elseif $document.customerid}{$cid=$document.customerid}{else}{$cid=0}{/if}
+			{customerlist form="documentadd" customers=$customers selected=$cid selectname="customer" inputname="customerid" customOnChange="getplugin()"}
 		</TD>
 	</TR>
 	<TR>
