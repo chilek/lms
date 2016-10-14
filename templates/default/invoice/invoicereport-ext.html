@@ -57,6 +57,7 @@
 		</TD>
 		{/if}
 	</TR>
+	{if !isset($printonlysummary)}
 	{cycle values="grey,white" print=false}
 	{math assign=start equation="(x-1)*y" x=$item y=$rows}
 	{section name=invoicelist loop=$invoicelist start=$start max=$rows}
@@ -73,7 +74,7 @@
 			{$invoicelist[invoicelist].pdate|date_format:"%d.%m.%Y"}
 		</TD>
 		<TD>
-			<B>{$invoicelist[invoicelist].custname}</B> ({$invoicelist[invoicelist].customerid|string_format:"%04d"}){if $invoicelist[invoicelist].ten}, {$invoicelist[invoicelist].ten}{/if}<BR>
+			<B>{$invoicelist[invoicelist].custname}</B> {if !isset($printcustomerid)}({$invoicelist[invoicelist].customerid|string_format:"%04d"}){/if}{if $invoicelist[invoicelist].ten}, {$invoicelist[invoicelist].ten}{/if}<BR>
 			{$invoicelist[invoicelist].custaddress}
 		</TD>
 		{if $doctype == 'invoices'}
@@ -99,6 +100,7 @@
 		{/if}
 	</TR>
 	{/section}
+	{/if}
 	<TR>
 		<TD COLSPAN="4" ALIGN="RIGHT" class="HEADGREY">
 			<B>{trans("Page total:")}</B>
