@@ -131,10 +131,10 @@
 		</TD>
 		<TD style="width: 98%;">
 			<SELECT size="1" name="assignment[schemaid]" {tip text="Select promotion schema"} onchange="set_schema()">
-				{foreach from=$promotionschemasnames item=schemaname}
+				{foreach $promotionschemanames as $schemaname}
                                     <optgroup label="{$schemaname.name}">
-                                        {foreach from=$promotionschemas item=schema}
-                                            {if $schemaname.name eq $schema.promotion}
+                                        {foreach $promotionschemas as $schema}
+                                            {if $schemaname.name == $schema.promotion}
                                                 <OPTION value="{$schema.id}"{if $assignment.schemaid == $schema.id} SELECTED{/if}>{$schema.name|truncate:40:"...":true}</OPTION>
                                             {/if}
                                         {/foreach}
