@@ -658,7 +658,7 @@ function _getCustomerNames(ids, success) {
 function getCustomerName(elem) {
 	_getCustomerNames([ $(elem).val() ], function(data, textStatus, jqXHR) {
 		$(elem).nextAll('span').html(data.customernames[$(elem).val()] === undefined ? ''
-			: data.customernames[$(elem).val()]);
+			: '<a href="?m=customerinfo&id=' + $(elem).val() + '">' + data.customernames[$(elem).val()] + '</a>');
 	});
 }
 
@@ -677,7 +677,7 @@ if (typeof $ != 'undefined') {
 		_getCustomerNames(cids, function(data, textStatus, jqXHR) {
 			$.each(customerinputs, function(index, elem) {
 				$(elem).nextAll('span').html(data.customernames[$(elem).val()] === undefined ?
-					'' : data.customernames[$(elem).val()]);
+					'' : '<a href="?m=customerinfo&id=' + $(elem).val() + '">' + data.customernames[$(elem).val()] + '</a>');
 			});
 		});
 
