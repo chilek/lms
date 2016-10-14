@@ -72,7 +72,7 @@ if(!empty($_POST['group']))
 	else
 		$groups = intval($_POST['group']);
 
-	$groupwhere = ' AND '.(isset($_POST['groupexclude']) ? 'NOT' : '').' 
+	$groupwhere = ' AND '.(isset($_POST['groupexclude']) ? 'NOT' : '').'
 		EXISTS (SELECT 1 FROM customerassignments a
 			WHERE a.customergroupid IN ('.$groups.')
 			AND a.customerid = d.customerid)';
@@ -93,7 +93,7 @@ if(!empty($_POST['division']))
 {
 	$divwhere = ' AND d.divisionid '.(isset($_POST['divexclude']) ? '!=' : '=').' '.intval($_POST['division']);
 
-	$divname = $DB->GetOne('SELECT name FROM divisions WHERE id = ?', 
+	$divname = $DB->GetOne('SELECT name FROM divisions WHERE id = ?',
 			array(intval($_POST['division'])));
 
 	$layout['division'] = $divname;
@@ -183,8 +183,8 @@ if ($items) {
 			// I think we can simply do query here instead of building
 			// big sql join in $items query, we've got so many credit notes?
 			$item = $DB->GetRow('SELECT taxid, value, count
-						FROM invoicecontents 
-						WHERE docid=? AND itemid=?', 
+						FROM invoicecontents
+						WHERE docid=? AND itemid=?',
 						array($row['reference'], $row['itemid']));
 
 			$row['value'] += $item['value'];
@@ -308,6 +308,8 @@ else {
 		$output = $SMARTY->fetch('invoice/invoicereport.html');
 		html2pdf($output, trans('Reports'), $layout['pagetitle'], NULL, NULL, 'L', array(5, 5, 5, 5), ($_GET['save'] == 1) ? true : false);
 	} else {
+		$SMARTY->assign('printcustomerid', $_POST['printcustomerid']);
+		$SMARTY->assign('printonlysummary', $_POST['printonlysummary']);
 		$SMARTY->display('invoice/invoicereport.html');
 	}
 }

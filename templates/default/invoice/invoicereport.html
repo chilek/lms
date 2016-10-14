@@ -51,6 +51,7 @@
 		</TD>
 		{/if}
 	</TR>
+	{if !isset($printonlysummary)}
 	{cycle values="grey,white" print=false}
 	{foreach item=invoice from=$invoicelist}
 	<TR class="{cycle}">
@@ -66,7 +67,7 @@
 			{$invoice.pdate|date_format:"%d.%m.%Y"}
 		</TD>
 		<TD>
-			<B>{$invoice.custname}</B> ({$invoice.customerid|string_format:"%04d"}){if $invoice.ten}, {$invoice.ten}{/if}<BR>
+			<B>{$invoice.custname}</B> {if !isset($printcustomerid)}({$invoice.customerid|string_format:"%04d"}){/if}{if $invoice.ten}, {$invoice.ten}{/if}<BR>
 			{$invoice.custaddress}
 		</TD>
 		<TD ALIGN="RIGHT">
@@ -96,6 +97,7 @@
 		</TD>
 	</TR>
 	{/foreach}
+	{/if}
 	<TR>
 		<TD CLASS="HEADGREY" COLSPAN="4" ALIGN="RIGHT">
 			<B>{trans("Total:")}</B>
