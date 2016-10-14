@@ -101,11 +101,10 @@ if(isset($_POST['tariff']))
 	if(!isset($tariff['taxid']))
 		$tariff['taxid'] = 0;
 
-	$items = array('domain_limit', 'alias_limit',
-                        'sh_limit', 'mail_limit', 'www_limit', 'ftp_limit', 'sql_limit',
-	                'quota_sh_limit', 'quota_mail_limit', 'quota_www_limit',
-	                'quota_ftp_limit', 'quota_sql_limit',
-	);
+    $items = array('domain_limit', 'alias_limit', 'sh_limit', 'mail_limit',
+                   'www_limit', 'ftp_limit', 'sql_limit', 'quota_sh_limit',
+                   'quota_mail_limit', 'quota_www_limit', 'quota_ftp_limit',
+                   'quota_sql_limit');
 
 	foreach ($items as $item) {
 	    if(isset($limit[$item]))
@@ -122,17 +121,14 @@ if(isset($_POST['tariff']))
 else
 	$tariff = $LMS->GetTariff($_GET['id']);
 
-if ($tariff['type'] == TARIFF_PHONE) {
-    $SMARTY->assign('voip_tariffs', $DB->GetAll('SELECT id, name FROM voip_tariffs'));
-    $SMARTY->assign('voip_tariffrules', $DB->GetAll('SELECT id, name FROM voip_rule_groups'));
-}
-
 $layout['pagetitle'] = trans('Subscription Edit: $a',$tariff['name']);
 
-$SMARTY->assign('tariff',$tariff);
-$SMARTY->assign('taxeslist',$LMS->GetTaxes());
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE));
-$SMARTY->assign('error',$error);
+$SMARTY->assign('voip_tariffs'    , $LMS->getVoipTariffs());
+$SMARTY->assign('voip_tariffrules', $LMS->getVoipTariffRuleGroups());
+$SMARTY->assign('tariff'          , $tariff);
+$SMARTY->assign('taxeslist'       , $LMS->GetTaxes());
+$SMARTY->assign('numberplanlist'  , $LMS->GetNumberPlans(DOC_INVOICE));
+$SMARTY->assign('error'           , $error);
 $SMARTY->display('tariff/tariffedit.html');
 
 ?>

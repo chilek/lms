@@ -603,16 +603,6 @@ function changeMacFormat(id)
 	elem.innerHTML = curmac;
 }
 
-function init_links() {
-	for (i in document.links) {
-		link = document.links[i];
-		if (link.rel && link.rel.indexOf('external') != -1) {
-			link.onclick = function() { window.open(this.href); return false; }
-			link.onkeypress = function() { window.open(this.href); return false; }
-		}
-	}
-}
-
 function reset_customer(form, elemname1, elemname2) {
 	if (document.forms[form].elements[elemname1].value)
 		document.forms[form].elements[elemname2].value = document.forms[form].elements[elemname1].value;
@@ -653,7 +643,50 @@ function get_size_unit(size) {
 		};
 }
 
-if (window.addEventListener)
-	window.addEventListener("load", init_links, false);
-else if (window.attachEvent)
-	window.attachEvent("onload", init_links);
+function _getCustomerNames(ids, success) {
+	$.ajax('?m=customerinfo&ajax=1', {
+		async: true,
+		method: 'POST',
+		data: {
+			id: ids
+		},
+		dataType: 'json',
+		success: success
+	});
+}
+
+function getCustomerName(elem) {
+	_getCustomerNames([ $(elem).val() ], function(data, textStatus, jqXHR) {
+		$(elem).nextAll('span').html(data.customernames[$(elem).val()] === undefined ? ''
+			: data.customernames[$(elem).val()]);
+	});
+}
+
+var customerinputs = [];
+
+function getCustomerNameDeferred(elem) {
+	customerinputs.push(elem);
+}
+
+if (typeof $ != 'undefined') {
+	$(function() {
+		var cids = [];
+		$.each(customerinputs, function(index, elem) {
+			cids.push($(elem).val());
+		});
+		_getCustomerNames(cids, function(data, textStatus, jqXHR) {
+			$.each(customerinputs, function(index, elem) {
+				$(elem).nextAll('span').html(data.customernames[$(elem).val()] === undefined ?
+					'' : data.customernames[$(elem).val()]);
+			});
+		});
+
+		for (i in document.links) {
+			link = document.links[i];
+			if (link.rel && link.rel.indexOf('external') != -1) {
+				link.onclick = function() { window.open(this.href); return false; }
+				link.onkeypress = function() { window.open(this.href); return false; }
+			}
+		}
+	});
+}

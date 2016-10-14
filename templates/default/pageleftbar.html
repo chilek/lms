@@ -35,7 +35,7 @@
 			<td class="click-menu bottomline">
 			<div{if $menuitem.tip} {tip class="tip" text="\$a" a=$menuitem.tip bold=1}{else} class="tip"{/if}{if ! $menuitem.submenu} onClick="{if $menuitem.windowopen}window.open('{$menuitem.link}'); {else}return self.location.href = '{$menuitem.link}'; {/if}"{/if}>
 				<div class="box1">
-					{if $menuitem.img}
+					{if isset($menuitem.img)}
 					<img src="img/{$menuitem.img}">
 					{else}
 					<i class="{$menuitem.css}"></i>

@@ -35,7 +35,7 @@ if (!$DB->GetOne('SELECT * FROM netnodes WHERE id=?',array($id)))
 
 if (isset($_POST['netnode'])) {
 	$netnodedata = $_POST['netnode'];
-	$netnodedata['id'] = $id;	
+	$netnodedata['id'] = $id;
 	if($netnodedata['name'] == '')
 		$error['name'] = trans('Net node name is required!');
 
@@ -55,7 +55,6 @@ if (isset($_POST['netnode'])) {
 	}
 
 	if (!$error) {
-		
 		if (empty($netnodedata['teryt'])) {
 			$netnodedata['location_city'] = null;
 			$netnodedata['location_street'] = null;
@@ -72,40 +71,27 @@ if (isset($_POST['netnode'])) {
 			$DB->CommitTrans();
 		} 
 
-		$args = array('name'=>$netnodedata['name'],
-		'type'=>$netnodedata['type'],
-		'status'=>$netnodedata['status'],
-		'location' => $netnodedata['location'],
-		'location_city' => $netnodedata['location_city'] ? $netnodedata['location_city'] : null,
-		'location_street' => $netnodedata['location_street'] ? $netnodedata['location_street'] : null,
-		'location_house' => $netnodedata['location_house'] ? $netnodedata['location_house'] : null,
-		'location_flat' => $netnodedata['location_flat'] ? $netnodedata['location_flat'] : null,
-		'longitude' => !empty($netnodedata['longitude']) ? str_replace(',', '.', $netnodedata['longitude']) : NULL,
-		'latitude' => !empty($netnodedata['latitude']) ? str_replace(',', '.', $netnodedata['latitude']) : NULL,
-		'ownership'=>$netnodedata['ownership'],
-		'coowner'=>$netnodedata['coowner'],
-		'uip'=>$netnodedata['uip'],
-		'miar'=>$netnodedata['miar'],
-		'divisionid'=>$netnodedata['divisionid']
-                );	
-	
-		if ($netnodedata['invprojectid'] == '-1' || intval($ipi)>0) {
-			$args['invprojectid'] = intval($ipi);	
-		} else {
-			$args['invprojectid'] = 'NULL';
-		}
-		
-		$fields = array();
-		foreach ($args as $key=>$value) {
-			if ($key == 'name' || $key == 'location' ||$key == 'location_house' 
-				|| $key == 'location_flat' || $key == 'coowner' ) {	
-					array_push($fields,$key."='".$value."'");
-				} else {
-					if (strval($value)!='')
-						array_push($fields,$key."=".$value);
-			}
-		}
-                $DB->Execute("UPDATE netnodes SET ".join($fields,",")." WHERE id=?",array($id));
+		$args = array(
+			'name'=>$netnodedata['name'],
+			'type'=>$netnodedata['type'],
+			'status'=>$netnodedata['status'],
+			'location' => $netnodedata['location'],
+			'location_city' => $netnodedata['location_city'] ? $netnodedata['location_city'] : null,
+			'location_street' => $netnodedata['location_street'] ? $netnodedata['location_street'] : null,
+			'location_house' => $netnodedata['location_house'] ? $netnodedata['location_house'] : null,
+			'location_flat' => $netnodedata['location_flat'] ? $netnodedata['location_flat'] : null,
+			'longitude' => !empty($netnodedata['longitude']) ? str_replace(',', '.', $netnodedata['longitude']) : null,
+			'latitude' => !empty($netnodedata['latitude']) ? str_replace(',', '.', $netnodedata['latitude']) : null,
+			'ownership'=>$netnodedata['ownership'],
+			'coowner'=>$netnodedata['coowner'],
+			'uip'=>$netnodedata['uip'],
+			'miar'=>$netnodedata['miar'],
+			'divisionid'=>$netnodedata['divisionid'],
+			'invprojectid' => $netnodedata['invprojectid'] == '-1' || intval($ipi) > 0 ? intval($ipi) : null,
+		);
+
+		$DB->Execute('UPDATE netnodes SET ' . implode(' = ?, ', array_keys($args)) . ' = ? WHERE id = ?',
+			array_merge(array_values($args), array($id)));
 		$LMS->CleanupInvprojects();
 		$SESSION->redirect('?m=netnodeinfo&id=' . $id);
 	}
