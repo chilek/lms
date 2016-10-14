@@ -339,7 +339,7 @@ $LMS->executeHook(
 
 $SMARTY->assign('assignment', $a);
 $SMARTY->assign('customernodes', $customernodes);
-$SMARTY->assign('promotionschemasnames', $schemas_only_names);
+$SMARTY->assign('promotionschemanames', $schemas_only_names);
 $SMARTY->assign('promotionschemas', $schemas);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
