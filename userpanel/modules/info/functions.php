@@ -42,7 +42,8 @@ function module_main()
 		FROM documentcontents c
 		JOIN documents d ON (c.docid = d.id)
 		LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-		WHERE d.customerid = ?
+		WHERE d.customerid = ?'
+			. (ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only') ? ' AND d.closed = 1': '') . '
 		ORDER BY cdate', array($SESSION->id));
 
 	if (!empty($documents))
@@ -346,24 +347,24 @@ if(defined('USERPANEL_SETUPMODE'))
 
 		module_changes();
 	}
-	
-	function module_setup()
-	{
+
+	function module_setup() {
 		global $SMARTY, $LMS;
-		
+
 		$SMARTY->assign('hide_nodesbox', ConfigHelper::getConfig('userpanel.hide_nodesbox'));
 		$SMARTY->assign('consent_text', ConfigHelper::getConfig('userpanel.data_consent_text'));
-    		$SMARTY->display('module:info:setup.html');
-        }
-	
-	function module_submit_setup()
-	{
-		global $DB;
+		$SMARTY->assign('show_confirmed_documents_only', ConfigHelper::checkConfig('userpanel.show_confirmed_documents_only'));
+		$SMARTY->display('module:info:setup.html');
+	}
 
+	function module_submit_setup() {
+		$DB = LMSDB::getInstance();
 		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
 			array(isset($_POST['hide_nodesbox']) ? 1 : 0, 'userpanel', 'hide_nodesbox'));
 		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
 			array($_POST['consent_text'], 'userpanel', 'data_consent_text'));
+		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+			array(isset($_POST['show_confirmed_documents_only']) ? 'true' : 'false', 'userpanel', 'show_confirmed_documents_only'));
 
 		header('Location: ?m=userpanel&module=info');
 	}

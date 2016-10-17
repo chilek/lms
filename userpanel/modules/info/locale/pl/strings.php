@@ -81,4 +81,7 @@ $_LANG['Bank accounts:'] = 'Konta bankowe:';
 $_LANG['Phones:'] = 'Telefony:';
 $_LANG['Postal address:'] = 'Adres korespondencyjny:';
 
+$_LANG['Show confirmed documents only:'] = 'Pokaż wyłącznie dokumenty zatwierdzone:';
+$_LANG['Show only documents which are confirmed'] = 'Pokaż wyłącznie dokumenty, które zostały zatwierdzone';
+
 ?>
