@@ -58,7 +58,7 @@ if (!empty($_POST['marks'])) {
 
 			$filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($doc['md5sum'],0,2) . DIRECTORY_SEPARATOR . $doc['md5sum'];
 			if (file_exists($filename)) {
-				if ($ctype != 'pdf' && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
+				if (preg_match('/html/i', $ctype) && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
 					if($i > 0)
 						$htmlbuffer .= "\n<page>\n";
 					ob_start();
@@ -76,7 +76,7 @@ if (!empty($_POST['marks'])) {
 			}
 			$i++;
 		}
-		if ($ctype != 'pdf' && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
+		if (preg_match('/html/i', $ctype) && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
 			$margins = explode(",", ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5'));
 			html2pdf($htmlbuffer, trans('Document'), NULL, NULL, NULL, 'P', $margins);
 		}
