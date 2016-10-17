@@ -4,6 +4,7 @@ version ?.??.?? (????-??-??):
 
   - userpanel enhancement: show confirmed documents only checkbox decides if confirmed
     documents are only shown for customer [chilan]
+  - documentview enhancement: allow to view many pdf documents as single pdf file [chilan]
 
 version 1.11.21 (2016-10-14):
 

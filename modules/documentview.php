@@ -37,28 +37,51 @@ if (!empty($_POST['marks'])) {
 
 		$list = $DB->GetAll('SELECT filename, contenttype, md5sum FROM documentattachments
 			WHERE docid IN (' . implode(',', $list) . ')');
+
+		$html = $pdf = $other = false;
+		foreach ($list as $doc) {
+			$ctype = $doc['contenttype'];
+			if (!$html && !$pdf)
+				if (preg_match('/^html/i', $ctype))
+					$html = true;
+				elseif (preg_match('/pdf$/i', $ctype))
+					$pdf = true;
+				else {
+					$other = true;
+					break;
+				}
+			else
+				if (($html && !preg_match('/^html/i', $ctype))
+					|| ($pdf && !preg_match('/pdf$/i', $ctype))) {
+					$other = true;
+					break;
+				}
+		}
+
+		if ($other && sizeof($list) > 1)
+			die('Currently you can only print many documents of type text/html or application/pdf!');
+
 		$ctype = $list[0]['contenttype'];
 
-		if (!preg_match('/^text/i', $ctype)) {
-			if (sizeof($list))
-				die('Currently you can only print many documents of type text/html!');
-
-			header('Content-Disposition: attachment; filename="'.$list[0]['filename'] . '"');
+		if (!$html) {
+			header('Content-Disposition: ' . ($pdf ? 'inline' : 'attachment') . '; filename='.$list[0]['filename']);
 			header('Pragma: public');
+			if ($pdf)
+				$pdf = new FPDI();
 		}
 		header('Content-Type: '.$ctype);
 
-		if (strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf')
+		if ($html && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf')
 			$htmlbuffer = NULL;
 		$i = 0;
 		foreach ($list as $doc) {
 			// we can display only documents with the same content type
-			if ($doc['contenttype'] != $ctype)
-				continue;
+//			if ($doc['contenttype'] != $ctype)
+//				continue;
 
 			$filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($doc['md5sum'],0,2) . DIRECTORY_SEPARATOR . $doc['md5sum'];
 			if (file_exists($filename)) {
-				if (preg_match('/html/i', $ctype) && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
+				if ($html && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
 					if($i > 0)
 						$htmlbuffer .= "\n<page>\n";
 					ob_start();
@@ -71,14 +94,35 @@ if (!empty($_POST['marks'])) {
 					if ($i && preg_match('/html/i', $doc['contenttype']))
 						echo '<div style="page-break-after: always;">&nbsp;</div>';
 
-					readfile($filename);
+					if ($pdf) {
+						$pageCount = $pdf->setSourceFile($filename);
+						for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+							// import a page
+							$templateId = $pdf->importPage($pageNo);
+							// get the size of the imported page
+							$size = $pdf->getTemplateSize($templateId);
+
+							// create a page (landscape or portrait depending on the imported page size)
+							if ($size['w'] > $size['h'])
+								$pdf->AddPage('L', array($size['w'], $size['h']));
+							else
+								$pdf->AddPage('P', array($size['w'], $size['h']));
+
+							// use the imported page
+							$pdf->useTemplate($templateId);
+						}
+					} else
+						readfile($filename);
 				}
 			}
 			$i++;
 		}
-		if (preg_match('/html/i', $ctype) && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
+		if ($html && strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
 			$margins = explode(",", ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5'));
 			html2pdf($htmlbuffer, trans('Document'), NULL, NULL, NULL, 'P', $margins);
+		} elseif ($pdf) {
+			// Output the new PDF
+			$pdf->Output();
 		}
 		die;
 	}
