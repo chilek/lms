@@ -6,9 +6,7 @@
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
 {if $printmenu=="customer"}
 <FORM method="POST" name="printcustomerlist" id="printcustomerlist" action="?m=customerprint&amp;type=customerlist">
-<p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
-</p>
 <TABLE class="lmsbox">
     <COLGROUP>
         <COL style="width: 1%;">
@@ -215,7 +213,7 @@
 </FORM>
 {/if}
 {if $printmenu=="finances"}
-<P><FORM method="post" name="printbalancelist" id="printbalancelist" action="?m=print&type=balancelist">
+<FORM method="post" name="printbalancelist" id="printbalancelist" action="?m=print&type=balancelist">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <COLGROUP>
@@ -375,14 +373,10 @@
     </TBODY>
 </TABLE>
 </FORM>
-</P>
 {/if}
 {if ($printmenu=="customer" || $printmenu=="finances") && (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances'))}
-<br>
 <FORM method="post" name="printcustomerbalance" id="printcustomerbalance" action="?m=print&amp;type=customerbalance">
-<p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
-</p>
 <TABLE class="lmsbox">
     <COLGROUP>
         <COL style="width: 1%;">
@@ -434,7 +428,7 @@
 </FORM>
 {/if}
 {if $printmenu=="finances"}
-<P><FORM method="post" name="invoicereport" id="invoicereport" action="?m=invoicereport">
+<FORM method="post" name="invoicereport" id="invoicereport" action="?m=invoicereport">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <COLGROUP>
@@ -586,10 +580,9 @@
     </TBODY>
 </TABLE>
 </FORM>
-</P>
 {/if}
 {if $printmenu=="finances"}
-<P><FORM method="post" name="printreceiptlist" id="printreceiptlist" action="?m=print&type=receiptlist">
+<FORM method="post" name="printreceiptlist" id="printreceiptlist" action="?m=print&type=receiptlist">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <COLGROUP>
@@ -686,10 +679,9 @@
     </TBODY>
 </TABLE>
 </FORM>
-</P>
 {/if}
 {if $printmenu=="finances"}
-<P><FORM method="post" name="printinvoices" id="printinvoices" action="?m=print&type=invoices">
+<FORM method="post" name="printinvoices" id="printinvoices" action="?m=print&type=invoices">
 <INPUT type="submit" class="hiddenbtn">
 <SCRIPT type="text/javascript">
 <!--
@@ -835,10 +827,9 @@
     </TBODY>
 </TABLE>
 </FORM>
-</P>
 {/if}
 {if $printmenu=="finances"}
-<P><FORM method="post" name="printforms" id="printforms" action="?m=print&type=transferforms&kind=2">
+<FORM method="post" name="printforms" id="printforms" action="?m=print&type=transferforms&kind=2">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <COLGROUP>
@@ -910,10 +901,9 @@
     </TBODY>
 </TABLE>
 </FORM>
-</P>
 {/if}
 {if $printmenu=="incomereport" || $printmenu=="finances"}
-<P><FORM method="post" name="printincomereport" id="printincomereport" action="?m=print&type=incomereport">
+<FORM method="post" name="printincomereport" id="printincomereport" action="?m=print&type=incomereport">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <COLGROUP>
@@ -955,10 +945,8 @@
     </TBODY>
 </TABLE>
 </FORM>
-</P>
 {/if}
 {if ($printmenu=="customer" || $printmenu=="finances") && (ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances'))}
-<br>
 <FORM method="post" name="liabilityreport" id="liabilityreport" action="?m=print&amp;type=liabilityreport">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
@@ -1039,7 +1027,7 @@
 </FORM>
 {/if}
 {if $printmenu=="finances"}
-<P><FORM method="post" name="printimportlist" id="printimportlist" action="?m=print&type=importlist">
+<FORM method="post" name="printimportlist" id="printimportlist" action="?m=print&type=importlist">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <COLGROUP>
@@ -1095,10 +1083,9 @@
     </TBODY>
 </TABLE>
 </FORM>
-</P>
 {/if}
 {if $printmenu=="node"}
-<P><FORM method="post" name="printnodelist" id="printnodelist" action="?m=nodeprint&type=nodelist">
+<FORM method="post" name="printnodelist" id="printnodelist" action="?m=nodeprint&type=nodelist">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <COLGROUP>
@@ -1188,14 +1175,10 @@
     </TBODY>
 </TABLE>
 </FORM>
-</P>
 {/if}
 {if $printmenu=="traffic" || $printmenu=="customer"}
-<br>
 <FORM method="post" name="printcustomertraffic" id="printcustomertraffic"  action="?m=trafficprint&amp;type=customertraffic">
-<p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
-</p>
 <TABLE class="lmsbox">
     <COLGROUP>
         <COL style="width: 1%;">
@@ -1263,7 +1246,7 @@
 </FORM>
 {/if}
 {if $printmenu=="netdev"}
-<P><FORM method="post" name="printnetdev" id="printnetdev" action="?m=netdevprint&type=uke">
+<FORM method="post" name="printnetdev" id="printnetdev" action="?m=netdevprint&type=uke">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <COLGROUP>
@@ -1356,6 +1339,5 @@
     </TBODY>
 </TABLE>
 </FORM>
-</P>
 {/if}
 {/block}
