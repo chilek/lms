@@ -178,4 +178,13 @@ function module_submit_rights_default()
     module_rights();
 }
 
+function module_save_module_order() {
+	$DB = LMSDB::getInstance();
+	$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+		array(implode(',', $_POST['modules']), 'userpanel', 'module_order'));
+	header('Content-Type: application/json');
+	echo json_encode(array('result' => 'OK'));
+	die;
+}
+
 ?>
