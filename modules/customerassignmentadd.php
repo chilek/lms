@@ -317,6 +317,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $customernodes = $LMS->GetCustomerNodes($customer['id']);
 unset($customernodes['total']);
 
+$schemas_only_names = $DB->GetAll('SELECT name FROM promotions WHERE disabled <> 1');
 $schemas = $DB->GetAll('SELECT p.name AS promotion, s.name, s.id,
 	(SELECT '.$DB->GroupConcat('tariffid', ',').'
 		FROM promotionassignments WHERE promotionschemaid = s.id
@@ -338,6 +339,7 @@ $LMS->executeHook(
 
 $SMARTY->assign('assignment', $a);
 $SMARTY->assign('customernodes', $customernodes);
+$SMARTY->assign('promotionschemanames', $schemas_only_names);
 $SMARTY->assign('promotionschemas', $schemas);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
