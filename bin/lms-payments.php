@@ -417,10 +417,12 @@ $query = 'SELECT
 
 $billings = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
 	DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
-	$currtime, $currtime));	
-	
-foreach ($billings as $v)
-	array_push($assigns, $v);
+	$currtime, $currtime));
+
+if ($billings) {
+	foreach ($billings as $v)
+		array_push($assigns, $v);
+}
 
 if (empty($assigns))
 	die;
