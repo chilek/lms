@@ -170,7 +170,7 @@ abstract class LMSPagination
     /**
      * Sets total records
      * 
-     * @param int $page Total records
+     * @param int $total Total records
      * @param int $recalculate_pages Recalculate pages flag
      * @throws DomainException if total records is not an integer or is less than 0
      */
