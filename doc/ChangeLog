@@ -7,6 +7,8 @@ version ?.??.?? (????-??-??):
   - documentview enhancement: allow to view many pdf documents as single pdf file [chilan]
   - userpanel enhancement: module order can be changed from LMS userpanel configuration
     using drag&drop (fixes LMS+ #102) [chilan]
+  - improvement - don't show boxes for contact types when no contact
+    type is assigned to customer [chilan]
 
 version 1.11.21 (2016-10-14):
 

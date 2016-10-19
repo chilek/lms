@@ -267,9 +267,7 @@ if (isset($_POST['customeradd']))
 		$customeradd = $reuse;
 		$customeradd['reuse'] = '1';
 	}
-} else
-	foreach (array_keys($CUSTOMERCONTACTTYPES) as $contacttype)
-		$customeradd[$contacttype . 's'][] = array();
+}
 
 $default_zip = ConfigHelper::getConfig('phpui.default_zip');
 $default_city = ConfigHelper::getConfig('phpui.default_city');

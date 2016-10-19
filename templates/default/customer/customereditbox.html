@@ -9,41 +9,6 @@
 		document.customeredit.elements['customerdata[pin]'].value =
 			generate_random_string(4 + Math.floor(Math.random() * 3), '0123456789');
 	}
-
-	function newcontact(type) {
-		var contactcountelem = document.getElementById(type + 'count');
-		var nr = contactcountelem.value;
-		var lastcontactelem = document.getElementById(type + (nr - 1));
-		var newrow = lastcontactelem.parentNode.insertRow(lastcontactelem.rowIndex + 1);
-		newrow.className = 'light';
-		newrow.id = type + nr;
-		var newcell = newrow.insertCell(0);
-		newcell.style.whiteSpace = 'nowrap';
-		switch (type) {
-			{foreach $_CUSTOMERCONTACTTYPES as $contacttype => $properties}
-			case '{$contacttype}':
-				innerHTML = '<HR>';
-				{if isset($properties.ui.typeselectors)}
-				innerHTML += '<SELECT name="customerdata[{$contacttype}s][' + nr + '][typeselector]">'
-					{foreach $properties.ui.typeselectors as $typeselector}
-					+ '<OPTION value="{$typeselector}">{$_CONTACTTYPES[$typeselector]}</OPTION>'
-					{/foreach}
-					+ '</SELECT>&nbsp;';
-				{/if}
-				innerHTML += '<INPUT TYPE="text" size="{$properties.ui.size}" value="" name="customerdata[{$contacttype|cat:"s"}][' + nr + '][contact]"'
-					+ ' title="{$properties.ui.tip}">';
-				innerHTML += '{foreach $properties.ui.flags as $flagtype => $flagproperties}<label{if isset($flagproperties.tip)} title="{$flagproperties.tip}"{/if}><INPUT TYPE="checkbox" value="{$flagtype}" name="customerdata[{$contacttype|cat:"s"}][' + nr + '][type][]"> {$flagproperties.label}</label>{/foreach}';
-				innerHTML += '<BR><INPUT TYPE="text" size="68" value="" name="customerdata[{$contacttype|cat:"s"}][' + nr + '][name]"'
-					+ ' title="{trans("Enter contact name/description (optional)")}">';
-				break;
-			{/foreach}
-		}
-		newcell.innerHTML = innerHTML;
-		$(newcell).children("[title]").tooltip({
-			position: { my: "left top" }
-		});
-		contactcountelem.value = parseInt(nr) + 1;
-	}
 //-->
 </SCRIPT>
 <FORM name="customeredit" id="customeredit" method="post" action="?m=customeredit&id={$customerinfo.id}{if $recover}&action=recover{/if}">
@@ -276,47 +241,7 @@
 			</table>
 		</td>
 	</TR>
-	{foreach $_CUSTOMERCONTACTTYPES as $type => $properties}
-	<TR>
-		<TD style="width: 1%;"></TD>
-		<TD style="width: 99%;" class="nobr">
-			<fieldset style="width: 1%;" class="nobr">
-				<legend class="bold"><IMG src="{$properties.ui.legend.icon}" alt=""> {$properties.ui.legend.text}</legend>
-				<table>
-					{foreach $customerinfo[$type|cat:'s'] as $key => $item}
-					<TR id="{$type}{$key}">
-						<TD>
-							{if !$item@first}<HR>{/if}
-							{if isset($properties.ui.typeselectors)}
-							<SELECT name="customerdata[{$type}s][{$key}][typeselector]">
-								{foreach $properties.ui.typeselectors as $typeselector}
-								<OPTION value="{$typeselector}"{if $item.type & $typeselector} selected{/if}>{$_CONTACTTYPES[$typeselector]}</OPTION>
-								{/foreach}
-							</SELECT>
-							{/if}
-							<INPUT type="{$properties.ui.inputtype}" size="{$properties.ui.size}" value="{$item.contact}" name="customerdata[{$type}s][{$key}][contact]" {tip text=$properties.ui.tip trigger="`$type``$key`"}>
-							{foreach $properties.ui.flags as $flagtype => $flagproperties}
-							<label{if isset($flagproperties.tip)} {tip text=$flagproperties.tip}{/if}>
-								<INPUT type="checkbox" value="{$flagtype}" name="customerdata[{$type}s][{$key}][type][]"{if ($item.type & $flagtype)} checked{/if}>
-								{$flagproperties.label}
-							</label>
-							{/foreach}
-							<BR>
-							<INPUT type="text" size="68" value="{$item.name}" name="customerdata[{$type}s][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
-						</TD>
-					</TR>
-					{/foreach}
-					<TR>
-						<TD>
-							<INPUT type="hidden" id="{$type}count" value="{count($customerinfo[$type|cat:'s'])}">
-							<A href="javascript:newcontact('{$type}')">{trans("Add contact field")} &raquo;&raquo;&raquo;</A>
-						</TD>
-					</TR>
-				</table>
-			</fieldset>
-		</TD>
-	</TR>
-	{/foreach}
+	{include file="customer/customercontacts.html" customerinfo=$customerinfo formelemprefix="customerdata"}
 	<TR>
 		<TD style="width: 1%;">
 			<IMG src="img/pin.gif" alt="">

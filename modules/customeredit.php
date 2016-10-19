@@ -264,10 +264,6 @@ elseif (isset($_POST['customerdata']))
 	else
 		$customerinfo['cutoffstop'] = 0;
 
-	foreach (array_keys($CUSTOMERCONTACTTYPES) as $contacttype)
-		if (empty($customerinfo[$contacttype . 's']))
-			$customerinfo[$contacttype . 's'][] = array();
-
 	if (!empty($customerinfo['accounts']))
 		foreach ($customerinfo['accounts'] as &$account)
 			$account['contact'] = format_bankaccount($account['contact']);
