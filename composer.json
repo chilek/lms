@@ -24,7 +24,7 @@
         "spipu/html2pdf": "^4.5",
         "components/normalize.css": "^3.0",
         "smarty/smarty": "3.1.30",
-        "rospdf/pdf-php": "^0.12.1",
+        "rospdf/pdf-php": "0.12.22",
         "components/jqueryui": "^1",
         "xdan/datetimepicker": "^2",
         "datatables/datatables": "^1.10",
