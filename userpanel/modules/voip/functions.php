@@ -151,7 +151,7 @@ function module_main() {
     $user_accounts = $LMS->DB->GetAllByKey('SELECT id, login, flags FROM voipaccounts
                                             WHERE ownerid = ?', 'id', array($SESSION->id));
 
-    $user_acc_ids = array_keys($user_accounts);
+    $user_acc_ids = (is_array($user_accounts)) ? array_keys($user_accounts) : '';
 
     if ($user_acc_ids) {
         $tmp_phones = $LMS->DB->GetAll('SELECT phone FROM voip_numbers
