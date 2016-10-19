@@ -264,10 +264,6 @@ elseif (isset($_POST['customerdata']))
 	else
 		$customerinfo['cutoffstop'] = 0;
 
-	if($customerinfo['messengers'])
-		foreach($customerinfo['messengers'] as $idx => $val)
-			$customerinfo['uid'][$idx] = $val['uid'];
-
 	foreach (array_keys($CUSTOMERCONTACTTYPES) as $contacttype)
 		if (empty($customerinfo[$contacttype . 's']))
 			$customerinfo[$contacttype . 's'][] = array();
