@@ -97,7 +97,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $assignments[$idx] = $row;
 
                 // assigned nodes
-                $assignments[$idx]['nodes'] = $this->db->GetAll('SELECT vnodes.name, vnodes.id FROM nodeassignments, vnodes
+                $assignments[$idx]['nodes'] = $this->db->GetAll('SELECT vnodes.name, vnodes.id, vnodes.location FROM nodeassignments, vnodes
 						    WHERE nodeid = vnodes.id AND assignmentid = ?', array($row['id']));
 
                 $assignments[$idx]['discounted_value'] = (((100 - $row['pdiscount']) * $row['value']) / 100) - $row['vdiscount'];
