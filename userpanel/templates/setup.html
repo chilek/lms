@@ -131,7 +131,7 @@
 	</THEAD>
 	<TBODY>
 		{foreach $menu as $menuitem}
-		<TR class="{if !in_array($menuitem.module, $enabled_modules)}blend {/if}{cycle}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" data-module="{$menuitem.module}">
+		<TR class="{if !in_array($menuitem.module, $enabled_modules)}blend {/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" data-module="{$menuitem.module}">
 			<td onClick="return self.location.href='?m=userpanel&module={$menuitem.module}';">
 				<img src="img/recover.gif">&nbsp;{$menuitem.module}
 			</td>
