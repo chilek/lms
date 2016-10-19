@@ -9,6 +9,8 @@ version ?.??.?? (????-??-??):
     using drag&drop (fixes LMS+ #102) [chilan]
   - improvement - don't show boxes for contact types when no contact
     type is assigned to customer [chilan]
+  - enhancement: phpui.disable_active_links_in_nodeinfo controls if some controls
+    are active ui elements [chilan]
 
 version 1.11.21 (2016-10-14):
 
