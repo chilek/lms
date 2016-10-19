@@ -51,14 +51,14 @@
 								<TD>&nbsp;</TD>
 							</TR>
 							</THEAD>
-							<TBODY class="multi-check">
+							<TBODY class="lms-ui-multi-check">
 							{cycle values="light,lucid" print=false}
 							{foreach from=$userpanelrights item=right}
 							<TR class="{cycle advance=false}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 								<TD class="nobr">{$right.module}</TD>
 								<TD class="nobr"><label for="setdefaultrights{$right.id}">{t}{$right.description}{/t}</label></TD>
 								<TD>
-									<INPUT CLASS="multi-check box {cycle}" TYPE="checkbox" NAME="setdefaultrights[{$right.id}]" ID="setdefaultrights{$right.id}" VALUE="{$right.id}"{if $right.setdefault} CHECKED{/if}>
+									<INPUT CLASS="lms-ui-multi-check box {cycle}" TYPE="checkbox" NAME="setdefaultrights[{$right.id}]" ID="setdefaultrights{$right.id}" VALUE="{$right.id}"{if $right.setdefault} CHECKED{/if}>
 								</TD>
 							</TR>
 							{foreachelse}
@@ -123,7 +123,7 @@
 								<TD>&nbsp;</TD>
 							</TR>
 							</THEAD>
-							<TBODY class="multi-check">
+							<TBODY class="lms-ui-multi-check">
 							{cycle values="light,lucid" print=false}
 							{foreach $userpanelrights as $right}
 							<TR class="{cycle advance=false}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
@@ -132,7 +132,7 @@
 									<label for="setrightsrights{$right.id}">{t}{$right.description}{/t}</label>
 								</TD>
 								<TD>
-									<INPUT CLASS="multi-check box {cycle}" TYPE="checkbox" NAME="setrights[rights][{$right.id}]" ID="setrightsrights{$right.id}" VALUE="{$right.id}">
+									<INPUT CLASS="lms-ui-multi-check box {cycle}" TYPE="checkbox" NAME="setrights[rights][{$right.id}]" ID="setrightsrights{$right.id}" VALUE="{$right.id}">
 								</TD>
 							</TR>
 							{foreachelse}
