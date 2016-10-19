@@ -1,5 +1,4 @@
 {include file="header.html"}
-
 <div id="tabs">
 	<ul class="nav nav-tabs">
 		<li class="nav-item">
@@ -9,12 +8,9 @@
 			<a class="nav-link" href="#tab-settings">{trans("Settings")}</a>
 		</li>
 	</ul>
-
 	<DIV ID="tab-billings">
-
 		<FORM METHOD="GET" ACTION="?m=voip" class="form-inline">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="voip">
-
 			<div class="form-group">
 				<label for="phonelabel">
 					{if count($customer_phone_list) > 1}
@@ -38,18 +34,15 @@
 					<input type="text" class="form-control" disabled value="&ndash;&ndash;&ndash;">
 				{/if}
 			</div>
-
 			<div class="form-group">
 				<label for="exampleInputName2">
 					{trans("Date range:")}
 				</label>
 				{trans("from")}
 				<INPUT TYPE="text" NAME="date_from" CLASS="calendar form-control" VALUE="{if isset($params.frangefrom)}{$params.frangefrom}{/if}">
-
 				{trans("to")}
 				<INPUT TYPE="text" NAME="date_to" CLASS="calendar form-control" VALUE="{if isset($params.frangeto)}{$params.frangeto}{/if}">
 			</div>
-
 			<div class="form-group">
 				<label for="exampleInputName2">
 					{trans("Connection type:")}
@@ -60,7 +53,6 @@
 					<OPTION VALUE="{CALL_OUTGOING}" {if $params.ftype == CALL_OUTGOING} SELECTED{/if}>{trans("outgoing")}</OPTION>
 				</SELECT>
 			</div>
-
 			<div class="form-group">
 				<label for="exampleInputName2">
 					{trans("Status:")}
@@ -73,12 +65,10 @@
 					<OPTION VALUE="{CALL_SERVER_FAILED}" {if $params.fstatus == CALL_SERVER_FAILED} SELECTED{/if}>{trans("server error")}</OPTION>
 				</SELECT>
 			</div>
-
 			<INPUT TYPE="submit" CLASS="btn btn-danger" VALUE="{trans("Search")} &raquo;">
 		</FORM>
 		<hr>
 		{box title="Billing list"}
-
 		{if $billings}
 			<TABLE CLASS="table table-sm table-condensed">
 				<thead>
@@ -129,7 +119,6 @@
 								{else}
 									{assign var=flags value=0}
 								{/if}
-
 								{if $flags & CALL_FLAG_CUSTOMER_RECORDING}
 									{documentview id="{$billings[i].id}"
                                                                   type="audio/mp3"
@@ -155,13 +144,10 @@
 		{else}
 			<div class="alert alert-info">{trans("No such data for selected period.")}</div>
 		{/if}
-
 		{/box}
 	</DIV>
-
 	<DIV ID="tab-settings">
 		<div class="form-group form-inline">
-
 			{if count($user_accounts) > 1}
 				<select id="account-select" class="form-control">
 					<option value="0">{trans("Select account")}</option>
@@ -172,8 +158,6 @@
 			{/if}
 			<button type="button" id="save-settings" class="btn btn-danger">{trans("Save")}</button>
 		</div>
-
-
 		<div class="form-group">
 			<span class="font-weight-bold" data-toggle="tooltip" data-placement="top" title="{trans("You can turn on/off record of your phone calls. Recordings can listen in 'billings' tab.")}">{trans("Call recording")}:</span>
 			<label class="form-check-inline">
@@ -191,7 +175,6 @@
 		{/if}
 	</DIV>
 </div>
-
 <script>
     $( function() {
 	    $('[data-toggle="tooltip"]').tooltip();
@@ -293,5 +276,4 @@
         }
     } );
 </script>
-
 {include file="footer.html"}
