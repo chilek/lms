@@ -40,7 +40,7 @@
     </tr>
     {/foreach}
 	{if $count > 1}
-    <tr class="bg-primary">
+    <tr class="bg-primary text-white">
 	<td>{trans("Total:")}</td>
 	<td>{sum array=$assignments column="real_value" string_format=$LANGDEFS.$_language.money_format}</td>
 	<td>({sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format})</td>
