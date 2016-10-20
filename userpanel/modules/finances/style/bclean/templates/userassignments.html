@@ -4,14 +4,14 @@
 <div class="table-responsive">
 <table class="table table-bordered table-striped">
     <tr class="bg-primary">
-        <th>Taryfa</th>
-	<th>Abonament</th>
+        <th>{trans("Tariff")}</th>
+	<th>{trans("Subscription")}</th>
         <th>{trans("Discount:")}</th>
         <th>{trans("Accounting day:")}</th>
-        <th>Prędkość pobierania</th>
-	<th>Prędkość wysyłania</th>
-        <th>{trans("Invoice:")}</th>
-        <th>{trans("Period:")}</th>
+        <th>{trans("Download speed")}</th>
+	<th>{trans("Upload speed")}</th>
+        <th>{trans("Invoice")}</th>
+        <th>{trans("Period")}</th>
     </tr>
     {foreach $assignments as $assignment}
     {if ($assignment.tariffid || $assignment.liabilityid) && !($assignment.suspended || ($assignment.dateto < $smarty.now && $assignment.dateto) || ($assignment.datefrom > $smarty.now && $assignment.datefrom))}
