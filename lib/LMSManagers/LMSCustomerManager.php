@@ -774,7 +774,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function getCustomerNodes($id, $count = null)
     {
         if ($result = $this->db->GetAll('SELECT n.id, n.name, mac, ipaddr,
-				inet_ntoa(ipaddr) AS ip, ipaddr_pub,
+				inet_ntoa(ipaddr) AS ip, ipaddr_pub, n.authtype,
 				inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access,
 				warning, info, ownerid, lastonline, location,
 				(SELECT COUNT(*) FROM nodegroupassignments
