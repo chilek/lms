@@ -256,13 +256,28 @@
 			{$nodeinfo.projectname}
 		</TD>
 	</TR>
+	{$disable_active_links=ConfigHelper::checkConfig('phpui.disable_active_links_in_nodeinfo')}
 	<TR>
 		<TD style="width: 1%;">
 			<IMG SRC="img/options.gif" ALT="">
 		</TD>
 		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
-			<label for="chkmac">{trans("MAC checking")}:</label><INPUT TYPE="checkbox" NAME="chkmac" ID="chkmac" VALUE="1" {if $nodeinfo.chkmac} checked{/if} onchange="chkmac_change();">&nbsp;
-			<label for="duplex">{trans("Half duplex")}:</label><INPUT TYPE="checkbox" NAME="duplex" ID="duplex" VALUE="1" {if $nodeinfo.halfduplex} checked{/if} onchange="duplex_change();">
+			<label>
+				{trans("MAC checking")}:
+				{if $disable_active_links}
+				{if $nodeinfo.chkmac}{trans("yes")}{else}{trans("no")}{/if}
+				{else}
+				<INPUT TYPE="checkbox" NAME="chkmac" VALUE="1" {if $nodeinfo.chkmac} checked{/if} onchange="chkmac_change();">
+				{/if}
+			</label>
+			<label>
+				{trans("Half duplex")}:
+				{if $disable_active_links}
+				{if $nodeinfo.halfduplex}{trans("yes")}{else}{trans("no")}{/if}
+				{else}
+				<INPUT TYPE="checkbox" NAME="duplex" VALUE="1" {if $nodeinfo.halfduplex} checked{/if} onchange="duplex_change();">
+				{/if}
+			</label>
 		</TD>
 	</TR>
 	<TR>
@@ -270,8 +285,16 @@
 			<IMG SRC="img/netdev.gif" ALT="">
 		</TD>
 		<TD style="width: 99%;" class="nobr" COLSPAN="2">
+			{$first=true}
 			{foreach $_SESSIONTYPES as $idx => $sessiontype}
-			<label>{$sessiontype.label} <INPUT TYPE="checkbox" NAME="authtype[{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"} onchange="change_authtype()"{if ($nodeinfo.authtype & $idx) == $idx} checked{/if}></label>&nbsp;
+			{if $disable_active_links}
+				{if !$first} / {/if}{$first=false}{$sessiontype.label}
+			{else}
+			<label>
+				{$sessiontype.label}
+				<INPUT TYPE="checkbox" NAME="authtype[{$idx}]" value="{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"} onchange="change_authtype()"{if ($nodeinfo.authtype & $idx) == $idx} checked{/if}>
+			</label>
+			{/if}
 			{/foreach}
 		</TD>
 	</TR>
@@ -332,7 +355,11 @@
 {/if}
 	<TR>
 		<TD style="width: 1%;">
-			<A HREF="?m=nodeset&amp;id={$nodeinfo.id}"><IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" ALT=""></A>
+			{if $disable_active_links}
+			<IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" ALT="">
+			{else}
+			<A HREF="?m=nodeset&id={$nodeinfo.id}"><IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" ALT=""></A>
+			{/if}
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
 			<span class="bold">{if $nodeinfo.access}{trans("connected<!singular>")}{else}{trans("disconnected<!singular>")}{/if}</span>
@@ -340,7 +367,11 @@
 	</TR>
 	<TR>
 		<TD style="width: 1%;">
-			<A HREF="?m=nodewarn&amp;id={$nodeinfo.id}"><IMG SRC="img/warning{if ! $nodeinfo.warning}off{else}on{/if}.gif" ALT=""></A>
+			{if $disable_active_links}
+			<IMG SRC="img/warning{if ! $nodeinfo.warning}off{else}on{/if}.gif" ALT="">
+			{else}
+			<A HREF="?m=nodewarn&id={$nodeinfo.id}"><IMG SRC="img/warning{if ! $nodeinfo.warning}off{else}on{/if}.gif" ALT=""></A>
+			{/if}
 		</TD>
 		<TD style="width: 99%;" COLSPAN="2">
 			<span class="bold">{if $nodeinfo.warning}{trans("notice enabled")}{else}{trans("notice disabled")}{/if}</span>

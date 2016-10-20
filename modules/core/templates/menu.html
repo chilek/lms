@@ -36,7 +36,7 @@
 			<td>
 				<div class="tip" {tip text="<B>Enter customer ID, first/lastname, telephone or part of customer email address and press Enter</B>"}>
 					<br>&nbsp;&nbsp;<img src="img/customer.gif" alt="*">&nbsp;<input type="text" id="customerinput" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="customer">
-				<script language="Javascript">
+				<script>
 					new AutoSuggest(document.getElementById('customerform'),document.getElementById('customerinput'),'?m=quicksearch&ajax=1&mode=customer&what=',1);
 				</script>
 				</div>
@@ -48,7 +48,7 @@
 			<td>
 				<div class="tip" {tip text="<B>Enter node ID, name, IP address or MAC address and press Enter</B>"}>
 					&nbsp;&nbsp;<img src="img/node.gif" alt="*">&nbsp;<input type="text" id="nodeinput" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="node">
-				<script language="Javascript">
+				<script>
 					new AutoSuggest(document.getElementById('nodeform'),document.getElementById('nodeinput'),'?m=quicksearch&ajax=1&mode=node&what=',1);
 				</script>
 				</div>
@@ -60,7 +60,7 @@
 			<td>
 				<div class="tip" {tip text="<B>Enter request tracker ID or customer name and press Enter</B>"}>
 					&nbsp;&nbsp;<img src="img/ticket.gif" alt="*">&nbsp;<input type="text" id="rtinput" name="what" value="" size="15"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="ticket">
-				<script language="Javascript">
+				<script>
 					new AutoSuggest(document.getElementById('rtform'),document.getElementById('rtinput'),'?m=quicksearch&ajax=1&mode=ticket&what=',1);
 				</script>
 				</div>
