@@ -6,6 +6,9 @@
 .multiselect {
 	float: left;
 }
+.tag-bar {
+	padding: 2px;
+}
 </style>
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
@@ -99,7 +102,7 @@
 			<br>
 			{trans("Tags:")}
 			{foreach $tariff.tags as $tag}
-			<a href="?m=tarifftaginfo&id={$tag.tag_id}" class="bold">{$tag.tag_name}</a>{if !$tag@last} / {/if}
+			<span class="dark tag-bar"><a href="?m={$layout.module}&tag={$tag.tag_id}">{$tag.tag_name}</a>&nbsp;<a href="?m=tarifftaginfo&id={$tag.tag_id}" class="bold">&raquo;</a></span>{if !$tag@last} / {/if}
 			{/foreach}
 			{/if}
 		</TD>
