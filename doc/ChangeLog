@@ -12,7 +12,7 @@ version ?.??.?? (????-??-??):
   - enhancement: phpui.disable_active_links_in_nodeinfo controls if some controls
     are active ui elements [chilan]
   - performance improvement: phpui.datatables_max_records limits datatables initialisation
-    to tables with specified record number [chilan]
+    to tables with specified record number (default: 300) [chilan]
 
 version 1.11.21 (2016-10-14):
 
