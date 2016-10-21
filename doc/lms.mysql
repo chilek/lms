@@ -16,18 +16,6 @@ DROP VIEW IF EXISTS vmacs;
 DROP VIEW IF EXISTS vnodes;
 DROP VIEW IF EXISTS vnodes_mac;
 DROP VIEW IF EXISTS nas;
-DROP VIEW IF EXISTS vnetworks;
-DROP VIEW IF EXISTS customermailsview;
-DROP VIEW IF EXISTS teryt_ulic;
-DROP VIEW IF EXISTS teryt_simc;
-DROP VIEW IF EXISTS teryt_terc;
-DROP VIEW IF EXISTS customeraddressview;
-DROP VIEW IF EXISTS contractorview;
-DROP VIEW IF EXISTS customerview;
-DROP VIEW IF EXISTS vmacs;
-DROP VIEW IF EXISTS vnodes;
-DROP VIEW IF EXISTS vnodes_mac;
-DROP VIEW IF EXISTS nas;
 
 DROP TABLE IF EXISTS voip_emergency_numbers;
 DROP TABLE IF EXISTS voip_numbers;
