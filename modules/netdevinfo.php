@@ -36,6 +36,10 @@ if (! array_key_exists('xjxfun', $_POST)) {                  // xajax was called
 	$netcomplist = $LMS->GetNetdevLinkedNodes($_GET['id']);
 	$netdevlist = $LMS->GetNotConnectedDevices($_GET['id']);
 
+	if ($netdevinfo['ownerid']) {
+		$netdevinfo['owner'] = $LMS->getCustomerName( $netdevinfo['ownerid'] );
+	}
+
 	$nodelist = $LMS->GetUnlinkedNodes();
 	$netdevips = $LMS->GetNetDevIPs($_GET['id']);
 

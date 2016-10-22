@@ -617,10 +617,11 @@ if (isset($_POST['netdev'])) {
 	if ($netdevdata['ports'] < $LMS->CountNetDevLinks($_GET['id']))
 		$error['ports'] = trans('Connected devices number exceeds number of ports!');
 
-	if (empty($netdevdata['clients']))
-		$netdevdata['clients'] = 0;
-	else
-		$netdevdata['clients'] = intval($netdevdata['clients']);
+	$netdevdata['clients'] = (empty($netdevdata['clients'])) ? 0 : intval($netdevdata['clients']);
+
+    if (!$LMS->customerExists($netdevdata['ownerid'])) {
+        $error['ownerid'] = "doesnt exists";
+    }
 
 	$netdevdata['purchasetime'] = 0;
 	if ($netdevdata['purchasedate'] != '') {
@@ -673,6 +674,7 @@ if (isset($_POST['netdev'])) {
 			$netdevdata['location_house'] = null;
 			$netdevdata['location_flat'] = null;
 		}
+
 		$ipi = $netdevdata['invprojectid'];
 		if ($ipi == '-1') {
 			$DB->BeginTrans();
@@ -680,7 +682,7 @@ if (isset($_POST['netdev'])) {
 				array($netdevdata['projectname'], INV_PROJECT_REGULAR));
 			$ipi = $DB->GetLastInsertID('invprojects');
 			$DB->CommitTrans();
-		} 
+		}
 		if ($netdevdata['invprojectid'] == '-1' || intval($ipi)>0) {
 			$netdevdata['invprojectid'] = intval($ipi);
 		} else {

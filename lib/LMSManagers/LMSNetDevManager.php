@@ -238,13 +238,14 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'netnodeid' => $data['netnodeid'],
             'status' => $data['status'],
             'netdevicemodelid' => !empty($data['netdevicemodelid']) ? $data['netdevicemodelid'] : null,
+            'ownerid' => (empty($data['ownerid'])) ? 0 : intval($data['ownerid']),
             SYSLOG::RES_NETDEV => $data['id'],
         );
         $res = $this->db->Execute('UPDATE netdevices SET name=?, description=?, producer=?, location=?,
 				location_city=?, location_street=?, location_house=?, location_flat=?,
 				model=?, serialnumber=?, ports=?, purchasetime=?, guaranteeperiod=?, shortname=?,
 				nastype=?, clients=?, secret=?, community=?, channelid=?, longitude=?, latitude=?,
-				invprojectid=?, netnodeid=?, status=?, netdevicemodelid=?
+				invprojectid=?, netnodeid=?, status=?, netdevicemodelid=?, ownerid=?
 				WHERE id=?', array_values($args));
         if ($this->syslog && $res)
             $this->syslog->AddMessage(SYSLOG::RES_NETDEV, SYSLOG::OPER_UPDATE, $args);
@@ -278,14 +279,15 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'netnodeid' => $data['netnodeid'],
             'status' => $data['status'],
             'netdevicemodelid' => !empty($data['netdevicemodelid']) ? $data['netdevicemodelid'] : null,
+            'ownerid' => empty($data['ownerid']) ? NULL : $data['ownerid']
         );
         if ($this->db->Execute('INSERT INTO netdevices (name, location,
 				location_city, location_street, location_house, location_flat,
 				description, producer, model, serialnumber,
 				ports, purchasetime, guaranteeperiod, shortname,
 				nastype, clients, secret, community, channelid,
-				longitude, latitude, invprojectid, netnodeid, status, netdevicemodelid)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+				longitude, latitude, invprojectid, netnodeid, status, netdevicemodelid, ownerid)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
             $id = $this->db->GetLastInsertID('netdevices');
 
             // EtherWerX support (devices have some limits)
@@ -429,6 +431,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				elseif ($value == -2)
 					$where[] = "d.$key = ''";
 				break;
+			case 'ownerid':
+				$where[] = 'ownerid = ' . $value;
+				break;
 		}
 
 	$netdevlist = $this->db->GetAll('SELECT d.id, d.name, d.location,
@@ -476,7 +481,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function GetNetDev($id)
     {
-        $result = $this->db->GetRow('SELECT d.*, t.name AS nastypename, c.name AS channel,
+        $result = $this->db->GetRow('SELECT d.*, t.name AS nastypename, c.name AS channel, d.ownerid,
 				(CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS street_name,
 				lt.name AS street_type,
 				lc.name AS city_name,

@@ -39,7 +39,12 @@ if (isset($_GET['ajax'])) {
 			$customernames[$id] = $customername;
 	}
 	header('Content-Type: application/json');
-	echo json_encode(array('customernames' => $customernames));
+
+	if (empty($customernames))
+		echo json_encode(array('error' => trans("Not exists")));
+	else
+		echo json_encode(array('customernames' => $customernames));
+
 	die;
 }
 
