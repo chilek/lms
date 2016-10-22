@@ -11,6 +11,10 @@ version ?.??.?? (????-??-??):
     type is assigned to customer [chilan]
   - enhancement: phpui.disable_active_links_in_nodeinfo controls if some controls
     are active ui elements [chilan]
+  - performance improvement: phpui.datatables_max_records limits datatables initialisation
+    to tables with specified number of records (default: 300) [chilan]
+  - improvement: click on tariff tag should add tag to filter and click on right side
+    should move to tariff tag info (should fix LMS+ #101) [chilan]
 
 version 1.11.21 (2016-10-14):
 

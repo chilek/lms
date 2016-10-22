@@ -25,7 +25,7 @@
  */
 
 $_LANG['$a dollars $b cents'] = '$a zł $b gr';
-$_LANG['Accounting day:'] = 'Dzień naliczania:';
+$_LANG['Accounting day'] = 'Dzień naliczania';
 $_LANG['Admin:'] = 'Administrator:';
 $_LANG['After:'] = 'Po:';
 $_LANG['All your covenants are settled'] = 'Wszystkie Twoje zobowiązania są rozliczone';
@@ -95,5 +95,7 @@ $_LANG['Reason:'] = 'Powód:';
 $_LANG['Check all'] = 'Zaznacz wszystkie';
 $_LANG['Print selected'] = 'Drukuj zaznaczone';
 $_LANG['Current balance:'] = 'Bieżące saldo:';
+$_LANG['Download speed'] = 'Prędkość pobierania';
+$_LANG['Upload speed'] = 'Prędkość wysyłania';
 
 ?>

@@ -245,11 +245,19 @@ else
 	$s = $_POST['s'];
 $SESSION->save('tls', $s);
 
-if (!isset($_POST['tg']))
+if (!isset($_POST['tg']) && !is_null($_POST['tg']))
 	$SESSION->restore('tltg', $tg);
 else
 	$tg = $_POST['tg'];
-$SESSION->save('tlt', $tg);
+if (isset($_GET['tag'])) {
+	if (!is_array($tg))
+		$tg = array();
+	if ($newtag = intval($_GET['tag'])) {
+		array_push($tg, $newtag);
+		$tg = array_unique($tg);
+	}
+}
+$SESSION->save('tltg', $tg);
 
 $tarifflist = GetTariffList($o, $t, $g, $p, $s, $tg);
 
