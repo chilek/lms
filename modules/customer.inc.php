@@ -57,6 +57,11 @@ $customerstats = array(
 	'accounts' => $DB->GetOne('SELECT COUNT(*) FROM passwd WHERE ownerid = ?', array($customerid))
 );
 
+$customerdevices = $LMS->GetNetDevList('name,asc', array('ownerid' => intval($customerid)));
+unset($customerdevices['total']);
+unset($customerdevices['order']);
+unset($customerdevices['direction']);
+
 if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
 	$trans = $SYSLOG->GetTransactions(array('key' => SYSLOG::getResourceKey(SYSLOG::RES_CUST), 'value' => $customerid, 'limit' => 300));
 	if (!empty($trans))
@@ -67,10 +72,9 @@ if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelpe
 	$SMARTY->assign('resourceid', $customerid);
 }
 
-if(!empty($documents))
-{
-        $SMARTY->assign('docrights', $DB->GetAllByKey('SELECT doctype, rights
-	        FROM docrights WHERE userid = ? AND rights > 1', 'doctype', array($AUTH->id)));
+if(!empty($documents)) {
+    $SMARTY->assign('docrights', $DB->GetAllByKey('SELECT doctype, rights
+        FROM docrights WHERE userid = ? AND rights > 1', 'doctype', array($AUTH->id)));
 }
 
 $SMARTY->assign(array(
@@ -84,6 +88,7 @@ $SMARTY->assign(array(
 $SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources WHERE deleted = 0 ORDER BY name'));
 $SMARTY->assignByRef('customernodes', $customernodes);
 $SMARTY->assignByRef('customernetworks', $customernetworks);
+$SMARTY->assignByRef('customerdevices', $customerdevices);
 $SMARTY->assignByRef('customerstats', $customerstats);
 $SMARTY->assignByRef('assignments', $assignments);
 $SMARTY->assignByRef('customergroups', $customergroups);

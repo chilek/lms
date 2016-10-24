@@ -532,6 +532,7 @@ define('SESSIONTYPE_DHCP', 2);
 define('SESSIONTYPE_EAP', 4);
 define('SESSIONTYPE_WIFI', 8);
 define('SESSIONTYPE_VOIP', 16);
+define('SESSIONTYPE_STB', 32);
 
 $SESSIONTYPES = array(
 	SESSIONTYPE_PPPOE => array(
@@ -553,6 +554,10 @@ $SESSIONTYPES = array(
 	SESSIONTYPE_VOIP => array(
 		'label' => trans('VoIP Gateway'),
 		'tip' => 'Enable/disable VoIP Gateway access'
+	),
+	SESSIONTYPE_STB => array(
+		'label' => trans('Set-top box'),
+		'tip' => 'Enable/disable set-top box access'
 	),
 );
 

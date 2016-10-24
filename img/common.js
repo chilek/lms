@@ -656,7 +656,17 @@ function _getCustomerNames(ids, success) {
 }
 
 function getCustomerName(elem) {
+	if ( $(elem).val().length == 0 ) {
+		$(elem).nextAll('span').html('');
+		return 0;
+	}
+
 	_getCustomerNames([ $(elem).val() ], function(data, textStatus, jqXHR) {
+		if (data.error != undefined) {
+			$(elem).nextAll('span').html( data.error );
+			return 0;
+		}
+
 		$(elem).nextAll('span').html(data.customernames[$(elem).val()] === undefined ? ''
 			: '<a href="?m=customerinfo&id=' + $(elem).val() + '">' + data.customernames[$(elem).val()] + '</a>');
 	});
@@ -676,6 +686,16 @@ if (typeof $ != 'undefined') {
 		});
 		_getCustomerNames(cids, function(data, textStatus, jqXHR) {
 			$.each(customerinputs, function(index, elem) {
+				if ( $(elem).val().length == 0 ) {
+					$(elem).nextAll('span').html('');
+					return 0;
+				}
+
+				if (data.error != undefined) {
+					$(elem).nextAll('span').html( data.error );
+					return 0;
+				}
+
 				$(elem).nextAll('span').html(data.customernames[$(elem).val()] === undefined ?
 					'' : '<a href="?m=customerinfo&id=' + $(elem).val() + '">' + data.customernames[$(elem).val()] + '</a>');
 			});

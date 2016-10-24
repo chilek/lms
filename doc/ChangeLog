@@ -15,6 +15,7 @@ version ?.??.?? (????-??-??):
     to tables with specified number of records (default: 300) [chilan]
   - improvement: click on tariff tag should add tag to filter and click on right side
     should move to tariff tag info (should fix LMS+ #101) [chilan]
+  - added support for attribution network device for customer [kosa/chilan]
 
 version 1.11.21 (2016-10-14):
 

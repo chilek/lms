@@ -24,6 +24,17 @@
 		                <TR>
 		                        <TD WIDTH="50%" style="vertical-align:top;">
 		                                <TABLE WIDTH="100%" CELLPADDING="3">
+                                            <tr>
+												<td><img src="img/customer.gif" alt=""></td>
+												<td class="bold">{trans("Customer:")}</td>
+                                                <td>
+                                                    {if isset($netdevinfo.ownerid)}
+                                                        {customerlist form="netdevedit" customers=$customers selected=$netdevinfo.ownerid selectname="customer" inputname="netdev[ownerid]"}
+                                                    {else}
+                                                        {customerlist form="netdevedit" customers=$customers selected="" selectname="customer" inputname="netdev[ownerid]"}
+                                                    {/if}
+												</td>
+											</tr>
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/producer.gif" ALT="">
@@ -86,6 +97,7 @@
 			<INPUT TYPE="TEXT" NAME="netdev[ports]" VALUE="{if $netdevinfo.ports}{$netdevinfo.ports}{/if}" {tip trigger="ports" text="Enter number of ports (optional)"}>
 		</TD>
 	</TR>
+
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="">

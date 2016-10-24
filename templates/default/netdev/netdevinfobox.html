@@ -17,6 +17,13 @@
 				<TR>
 					<TD WIDTH="50%" style="vertical-align:top;">
 						<TABLE WIDTH="100%" CELLPADDING="3">
+							{if $netdevinfo.ownerid != null}
+							<tr>
+								<td><img src="img/customer.gif" alt=""></td>
+								<td class="bold">{trans("Owner:")}</td>
+								<td><a href="?m=customerinfo&id={$netdevinfo.ownerid}">{$netdevinfo.owner}</a></td>
+							</tr>
+							{/if}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/producer.gif" ALT="">

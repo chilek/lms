@@ -1,0 +1,55 @@
+<!--// $Id$ //-->
+<div class="lms-ui-sortable" id="customerdevices">
+<TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 100%;">
+	</COLGROUP>
+	<THEAD>
+	<TR class="hand lmsbox-titlebar" data-lmsbox-content="devicespanel">
+		<TD class="bold">
+			<IMG src="img/netdev.gif" alt="">
+			{trans("Network Devices:")}
+		</TD>
+	</TR>
+	</THEAD>
+	<TBODY>
+	<TR id="devicespanel" style="display: none;">
+		<TD>
+			<TABLE class="lmsbox-inner">
+				<COLGROUP>
+					<COL style="width: 1%;">
+					<COL style="width: 98%;">
+				</COLGROUP>
+				<THEAD>
+				<TR>
+					<TD class="bold nobr">{trans("Name:")}</TD>
+					<TD class="nobr" colspan="2">{trans("Description:")}</TD>
+				</TR>
+				</THEAD>
+				<TBODY class="lms-ui-multi-check">
+				{cycle name=groups values="light,lucid" print=false}
+				{foreach $customerdevices as $customerdevice}
+				<TR class="highlight {cycle name=devices}">
+					<TD class="bold nobr"><A href="?m=netdevinfo&id={$customerdevice.id}">{$customerdevice.name}</A></TD>
+					<TD>{$customerdevice.description}</TD>
+				</TR>
+				{foreachelse}
+				<TR>
+					<TD class="empty-table" colspan="2">
+						<p>{trans("That customer hasn't got any assigned network devices.")}</p>
+					</TD>
+				</TR>
+				{/foreach}
+				</TBODY>
+			</TABLE>
+		</TD>
+	</TR>
+	</TBODY>
+</TABLE>
+</div>
+<SCRIPT type="text/javascript">
+<!--
+	if (getCookie('devicespanel') == '1')
+		document.getElementById('devicespanel').style.display = '';
+//-->
+</SCRIPT>

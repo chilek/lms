@@ -737,6 +737,7 @@ CREATE TABLE netdevices (
   invprojectid	int(11)		DEFAULT NULL,
   status	tinyint		DEFAULT '0',
   netdevicemodelid int(11) DEFAULT NULL,
+  ownerid int(11) DEFAULT NULL,
   PRIMARY KEY (id),
   INDEX channelid (channelid),
   INDEX location_city (location_city, location_street, location_house, location_flat),
@@ -746,7 +747,8 @@ CREATE TABLE netdevices (
   FOREIGN KEY (channelid) REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (netnodeid) REFERENCES netnodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY (netdevicemodelid) REFERENCES netdevicemodels (id) ON UPDATE CASCADE ON DELETE SET NULL
+  FOREIGN KEY (netdevicemodelid) REFERENCES netdevicemodels (id) ON UPDATE CASCADE ON DELETE SET NULL,
+  FOREIGN KEY (ownerid) REFERENCES customers (id) ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2719,4 +2721,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016101800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016102100');
