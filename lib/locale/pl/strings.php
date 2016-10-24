@@ -599,6 +599,7 @@ $_LANG['Enter receipt number. WARNING! Changing this number can be DANGEROUS! (l
 $_LANG['Enter zip code'] = 'Wprowadź kod pocztowy';
 $_LANG['Enter primary DNS address (optional)'] = 'Wprowadź podstawowy adres DNS (opcjonalnie)';
 $_LANG['Enter address or name of DNS server (optional)'] = 'Wprowadź adres lub nazwę serwera DNS (opcjonalnie)';
+$_LANG['Enter address name'] = 'Wprowadź nazwę adresu';
 $_LANG['Enter producer name (optional)'] = 'Wprowadź nazwę producenta (opcjonalnie)';
 $_LANG['Enter Product ID number (optional)'] = 'Wprowadź numer PKWiU (opcjonalnie)';
 $_LANG['Enter queue name'] = 'Wprowadź nazwę kolejki';
