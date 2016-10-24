@@ -18,24 +18,48 @@
 			<TABLE class="lmsbox-inner">
 				<COLGROUP>
 					<COL style="width: 1%;">
-					<COL style="width: 98%;">
+					<COL style="width: 96%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
+					<COL style="width: 1%;">
 				</COLGROUP>
 				<THEAD>
 				<TR>
 					<TD class="bold nobr">{trans("Name:")}</TD>
-					<TD class="nobr" colspan="2">{trans("Description:")}</TD>
+					<TD>{trans("Description:")}</TD>
+					<TD class="nobr">{trans("Serial number:")}</TD>
+					<TD class="nobr">{trans("IP address:")}</TD>
+					<TD class="nobr">{trans("MAC address:")}</TD>
+					<TD></TD>
 				</TR>
 				</THEAD>
 				<TBODY class="lms-ui-multi-check">
-				{cycle name=groups values="light,lucid" print=false}
 				{foreach $customerdevices as $customerdevice}
-				<TR class="highlight {cycle name=devices}">
+				<TR class="highlight {if $customerdevice@iteration is div by 2}light{else}lucid{/if}">
 					<TD class="bold nobr"><A href="?m=netdevinfo&id={$customerdevice.id}">{$customerdevice.name}</A></TD>
 					<TD>{$customerdevice.description}</TD>
+					<TD>{$customerdevice.serialnumber}</TD>
+					<TD>
+						{foreach $customerdevice.ips as $v}
+							{$v.ip}<br>
+						{foreachelse}
+							&mdash;
+						{/foreach}
+					</TD>
+					<TD>
+						{foreach $customerdevice.ips as $v}
+							{$v.mac}<br>
+						{foreachelse}
+							&mdash;
+						{/foreach}
+					</TD>
+					<TD>
+						<a href="?m=netdevinfo&id={$customerdevice.id}"><img src="img/view.gif" alt=""></a>
+					</TD>
 				</TR>
 				{foreachelse}
 				<TR>
-					<TD class="empty-table" colspan="2">
+					<TD class="empty-table" colspan="5">
 						<p>{trans("That customer hasn't got any assigned network devices.")}</p>
 					</TD>
 				</TR>

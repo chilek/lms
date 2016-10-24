@@ -62,6 +62,11 @@ unset($customerdevices['total']);
 unset($customerdevices['order']);
 unset($customerdevices['direction']);
 
+$counter = count($customerdevices);
+for ($i=0; $i<$counter; ++$i) {
+    $customerdevices[$i]['ips'] = $LMS->GetNetDevIPs( $customerdevices[$i]['id'] );
+}
+
 if ($SYSLOG && (ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.transaction_logs'))) {
 	$trans = $SYSLOG->GetTransactions(array('key' => SYSLOG::getResourceKey(SYSLOG::RES_CUST), 'value' => $customerid, 'limit' => 300));
 	if (!empty($trans))
