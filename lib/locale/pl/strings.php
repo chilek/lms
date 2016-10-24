@@ -1405,6 +1405,7 @@ $_LANG['TEN:'] = 'NIP:';
 $_LANG['TEN/SSN'] = 'NIP/PESEL';
 $_LANG['Thanks for using our services!'] = 'Dziękujemy za korzystanie z naszych usług!';
 $_LANG['That customer hasn\'t got any assigned subscriptions.'] = 'Ten klient nie ma przypisanych żadnych taryf.';
+$_LANG['That customer hasn\'t got any assigned network devices.'] = 'Ten klient nie ma przypisanych żadnych urządzeń sieciowych.';
 $_LANG['That customer hasn\'t got any node.'] = 'Ten klient nie posiada żadnych komputerów.';
 $_LANG['That customer hasn\'t got any network.'] = 'Ten klient nie posiada żadnych sieci.';
 $_LANG['That customer hasn\'t got any transactions.'] = 'Ten klient nie posiada żadnych transakcji.';
