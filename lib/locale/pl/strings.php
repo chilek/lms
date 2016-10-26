@@ -2906,6 +2906,7 @@ $_LANG['node group<!syslog>'] = 'grupa komputerów';
 $_LANG['node group assignment<!syslog>'] = 'powiązanie komputera z grupą';
 $_LANG['tax rate<!syslog>'] = 'stawka podatkowa';
 $_LANG['number plan<!syslog>'] = 'plan numeracyjny';
+$_LANG['Number plan:'] = 'Plan numeracyjny:';
 $_LANG['number plan assignment<!syslog>'] = 'powiązanie planu numeracyjnego z firmą';
 $_LANG['division<!syslog>'] = 'firma';
 $_LANG['country<!syslog>'] = 'kraj';

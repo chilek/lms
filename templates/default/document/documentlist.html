@@ -90,14 +90,22 @@
 				<B>{trans("Period:")}</B>&nbsp;
 				{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 				{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
-				<SELECT name="p" onChange="filter()" {tip text="Select numbering plan"}>
-					<OPTION value="0">- {trans("all")} -</OPTION>
-					{foreach $numberplans as $plan}
-					{$period = $plan.period}
-					<OPTION value="{$plan.id}"{if $listdata.numberplan == $plan.id} selected{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
-					{/foreach}
-				</SELECT>&nbsp;
-				<span class="bold">{trans("Status:")}</span>&nbsp;<SELECT name="s" onChange="filter()" {tip text="Select document status"}>
+
+				{if count($numberplans) > 0}
+					{trans("Number plan:")}
+					<SELECT name="p" onChange="filter()" {tip text="Select numbering plan"}>
+						<OPTION value="0">- {trans("all")} -</OPTION>
+						{foreach $numberplans as $plan}
+						{$period = $plan.period}
+						<OPTION value="{$plan.id}"{if $listdata.numberplan == $plan.id} selected{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+						{/foreach}
+					</SELECT>&nbsp;
+				{else}
+					<input type="hidden" name="p" value="0">
+				{/if}
+
+				{trans("Status:")}
+				<SELECT name="s" onChange="filter()" {tip text="Select document status"}>
 					<OPTION value="-1">- {trans("all")} - </OPTION>
 					<OPTION value="0"{if $listdata.status == 0} selected{/if}>{trans("unconfirmed")}</OPTION>
 					<OPTION value="1"{if $listdata.status == 1} selected{/if}>{trans("confirmed")}</OPTION>
@@ -187,6 +195,7 @@
 	{/if}
 	<TR>
 		<TD COLSPAN="5">
+			{if count($documentlist) > 0}
 			<TABLE WIDTH="100%">
 				<TR>
 					<TD ALIGN="left" class="nobr">
@@ -202,6 +211,7 @@
 					</TD>
 				</TR>
 			</TABLE>
+			{/if}
 		</TD>
 	</TR>
     </TFOOT>
