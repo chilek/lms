@@ -743,6 +743,20 @@ td.multiselect select {
 .lms-ui-selectable-draggable-active.lms-ui-selectable-draggable-hover {
   box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 0.75);
 }
+.lms-inline-list {
+  display: inline;
+  list-style: none;
+  padding: 0;
+}
+.lms-inline-list li {
+  display: inline;
+}
+.lms-inline-list li:after {
+  content: ', ';
+}
+.lms-inline-list li:last-child:after {
+  content: '';
+}
 .nobr {
   white-space: nowrap;
 }
@@ -757,6 +771,9 @@ td.multiselect select {
 }
 .text-center {
   text-align: center;
+}
+.font-normal {
+  font-weight: normal !important;
 }
 .lighter {
   font-weight: lighter;

@@ -527,7 +527,7 @@ CREATE TABLE netdevices (
 	netdevicemodelid integer DEFAULT NULL
 		REFERENCES netdevicemodels (id) ON UPDATE CASCADE ON DELETE SET NULL,
 	ownerid integer DEFAULT NULL
-		REFERENCES customerid (id) ON UPDATE CASCADE ON DELETE SET NULL,
+		REFERENCES customers (id) ON UPDATE CASCADE ON DELETE SET NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX netdevices_channelid_idx ON netdevices (channelid);

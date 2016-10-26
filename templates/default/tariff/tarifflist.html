@@ -73,20 +73,28 @@
 					<OPTION value="1"{if $listdata.state == 1} SELECTED{/if}>{trans("enabled")}</OPTION>
 					<OPTION value="2"{if $listdata.state == 2} SELECTED{/if}>{trans("disabled")}</OPTION>
 				</SELECT>
-				{trans("Group:")}
-				<SELECT SIZE="1" NAME="g" ONCHANGE="document.choosefilter.submit();">
-					<OPTION value="0"{if !$listdata.customergroupid} SELECTED{/if}>{trans("- all -")}</OPTION>
-					{section name=customergroups loop=$customergroups}
-					<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroupid == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>
-					{/section}
-				</SELECT>
-				{trans("Tags:")}
-				</div>
-				<SELECT size="5" name="tg[]" class="lms-ui-multiselect" onchange="document.choosefilter.submit();" {tip text="Select tariff tags"} multiple>
-					{foreach $tags as $tag}
-					<OPTION value="{$tag.id}"{if !empty($listdata.tags) && in_array($tag.id, $listdata.tags)} selected{/if}>{$tag.name}</OPTION>
-					{/foreach}
-				</SELECT>
+
+				{if count($customergroups) > 0}
+					{trans("Group:")}
+					<SELECT SIZE="1" NAME="g" ONCHANGE="document.choosefilter.submit();">
+						<OPTION value="0"{if !$listdata.customergroupid} SELECTED{/if}>{trans("- all -")}</OPTION>
+						{section name=customergroups loop=$customergroups}
+						<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroupid == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>
+						{/section}
+					</SELECT>
+				{else}
+					<input type="hidden" name="g" value="">
+				{/if}
+
+				{if count($tags) > 0}
+					{trans("Tags:")}
+					</div>
+					<SELECT size="5" name="tg[]" class="lms-ui-multiselect" onchange="document.choosefilter.submit();" {tip text="Select tariff tags"} multiple>
+						{foreach $tags as $tag}
+						<OPTION value="{$tag.id}"{if !empty($listdata.tags) && in_array($tag.id, $listdata.tags)} selected{/if}>{$tag.name}</OPTION>
+						{/foreach}
+					</SELECT>
+				{/if}
 			</FORM>
 		</TD>
 	</TR>
