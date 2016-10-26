@@ -582,7 +582,7 @@ if (isset($_POST['netdev'])) {
 
 	$netdevdata['clients'] = (empty($netdevdata['clients'])) ? 0 : intval($netdevdata['clients']);
 
-    if (!$LMS->customerExists($netdevdata['ownerid'])) {
+    if (!empty($netdevdata['ownerid']) && !$LMS->customerExists($netdevdata['ownerid'])) {
         $error['ownerid'] = "doesnt exists";
     }
 
