@@ -275,22 +275,30 @@
         </TR>
         {/if}
 	<TR>
-		<TD colspan="2" NOWRAP>
-			<b>{trans("Investment project:")}</b>	
+		<td>
+			<img src="img/money.gif" alt="">
+		</td>
+		<TD class="nobr bold">
+			{trans("Investment project:")}
 		</TD>
 		<TD>
 			{$netdevinfo.projectname}
 		</TD>
 	</TR>
+
+	{if $netdevinfo.netnodeid}
 	<TR>
-		<TD colspan="2" NOWRAP>
-			<b>{trans("Net node:")}</b>	
+		<td>
+			<img src="img/netdev.gif" alt="">
+		</td>
+		<TD class="nobr bold">
+			{trans("Net node:")}
 		</TD>
 		<TD>
-			{if $netdevinfo.netnodeid}<a href="?m=netnodeinfo&id={$netdevinfo.netnodeid}" class="bold">{$netdevinfo.nodename}</a>
-			{else}-{/if}
+			<a href="?m=netnodeinfo&id={$netdevinfo.netnodeid}" class="bold">{$netdevinfo.nodename}</a>
 		</TD>
 	</TR>
+	{/if}
 
 	                                        </TABLE>
 					</TD>

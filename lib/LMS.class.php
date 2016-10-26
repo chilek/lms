@@ -835,6 +835,12 @@ class LMS
         return $manager->SetNodeLinkType($node, $link);
     }
 
+    public function updateNodeField($nodeid, $field, $value)
+    {
+        $manager = $this->getNodeManager();
+        return $manager->updateNodeField($nodeid, $field, $value);
+    }
+
     /*
      *  Tarrifs and finances
      */

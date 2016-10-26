@@ -36,6 +36,11 @@ $nodeid = intval($_GET['id']);
 $customerid = $LMS->GetNodeOwner($nodeid);
 
 switch ($action) {
+    case 'updatenodefield':
+        $LMS->updateNodeField($_POST['nodeid'], $_POST['field'], $_POST['val']);
+        die();
+    break;
+
 	case 'link':
 		if (empty($_GET['devid']) || !($netdev = $LMS->GetNetDev($_GET['devid']))) {
 			$SESSION->redirect('?m=nodeinfo&id=' . $nodeid);
@@ -50,43 +55,7 @@ switch ($action) {
 		} else {
 			$SESSION->redirect('?m=nodeinfo&id=' . $nodeid . '&devid=' . $_GET['devid']);
 		}
-		break;
-	case 'chkmac':
-		$DB->Execute('UPDATE nodes SET chkmac=? WHERE id=?', array($_GET['chkmac'], $nodeid));
-		if ($SYSLOG) {
-			$args = array(
-				SYSLOG::RES_NODE => $nodeid,
-				SYSLOG::RES_CUST => $customerid,
-				'chkmac' => $_GET['chkmac']
-			);
-			$SYSLOG->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
-		}
-		$SESSION->redirect('?m=nodeinfo&id=' . $nodeid);
-		break;
-	case 'duplex':
-		$DB->Execute('UPDATE nodes SET halfduplex=? WHERE id=?', array($_GET['duplex'], $nodeid));
-		if ($SYSLOG) {
-			$args = array(
-				SYSLOG::RES_NODE => $nodeid,
-				SYSLOG::RES_CUST => $customerid,
-				'halfduplex' => $_GET['duplex']
-			);
-			$SYSLOG->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
-		}
-		$SESSION->redirect('?m=nodeinfo&id=' . $nodeid);
-		break;
-	case 'authtype':
-		$DB->Execute('UPDATE nodes SET authtype=? WHERE id=?', array(intval($_GET['authtype']), $nodeid));
-		if ($SYSLOG) {
-			$args = array(
-				SYSLOG::RES_NODE => $nodeid,
-				SYSLOG::RES_CUST => $customerid,
-				'authtype' => intval($_GET['authtype']),
-			);
-			$SYSLOG->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
-		}
-		$SESSION->redirect('?m=nodeinfo&id=' . $nodeid);
-		break;
+	break;
 }
 
 $nodeinfo = $LMS->GetNode($nodeid);

@@ -96,7 +96,6 @@ if (! array_key_exists('xjxfun', $_POST)) {                  // xajax was called
 	$SMARTY->assign('netdevlist', $netdevconnected);
 	$SMARTY->assign('netcomplist', $netcomplist);
 
-
 	if (isset($_GET['ip'])) {
 		$nodeipdata = $LMS->GetNodeConnType($_GET['ip']);
 		$netdevauthtype = array();
