@@ -58,7 +58,7 @@ if (isset($_POST['netdev'])) {
 		}
 	}
 
-    if (!$LMS->customerExists($netdevdata['ownerid'])) {
+    if (!empty($netdevdata['ownerid']) && !$LMS->customerExists($netdevdata['ownerid'])) {
         $error['ownerid'] = "doesnt exists";
     }
 
