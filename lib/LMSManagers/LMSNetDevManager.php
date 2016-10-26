@@ -238,7 +238,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'netnodeid' => $data['netnodeid'],
             'status' => $data['status'],
             'netdevicemodelid' => !empty($data['netdevicemodelid']) ? $data['netdevicemodelid'] : null,
-            'ownerid' => (empty($data['ownerid'])) ? 0 : intval($data['ownerid']),
+            'ownerid' => (empty($data['ownerid'])) ? NULL: intval($data['ownerid']),
             SYSLOG::RES_NETDEV => $data['id'],
         );
         $res = $this->db->Execute('UPDATE netdevices SET name=?, description=?, producer=?, location=?,
