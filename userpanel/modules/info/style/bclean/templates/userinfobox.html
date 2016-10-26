@@ -1,12 +1,12 @@
-{box title="Informations about you"}
+{box title="Information about the subscriber"}
 {if $fields_changed}<div class="alert alert-danger">{trans("WARNING! Some fields have been changed and changes must become accepted by admin")}.</div>{/if}
 <div class="table-responsive">
 <table class="table table-bordered table-hover">
     <tr class="bg-primary text-white">
-        <th colspan="2">Dane osobowe:</th>
+        <th colspan="2">{if $userinfo.type == 0}{trans("Personal data")}{else}{trans("Company data")}{/if}</th>
     </tr>
     <tr>
-        <td><strong>Imię i nazwisko / Nazwa firmy</strong></td>
+        <td><strong>{if $userinfo.type == 0}{trans("First and last name")}{else}{trans("Company name")}{/if}:</strong></td>
         <td>{$userinfo.customername} ({$userinfo.id|string_format:"%04d"})</td>
     </tr>
     {if $userinfo.emails}
