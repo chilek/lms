@@ -16,6 +16,7 @@ version ?.??.?? (????-??-??):
   - improvement: click on tariff tag should add tag to filter and click on right side
     should move to tariff tag info (should fix LMS+ #101) [chilan]
   - added support for attribution network device for customer [kosa/chilan]
+  - enhancement: added support for pro forma invoices (should resolve LMS+ #120) [chilan]
 
 version 1.11.21 (2016-10-14):
 

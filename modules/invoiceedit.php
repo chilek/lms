@@ -74,7 +74,8 @@ $SESSION->restore('invoiceediterror', $error);
 $itemdata = r_trim($_POST);
 
 $ntempl = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-$layout['pagetitle'] = trans('Invoice Edit: $a', $ntempl);
+$layout['pagetitle'] = $invoice['doctype'] == DOC_INVOICE_PRO
+	? trans('Pro Forma Invoice Edit: $a', $ntempl) : trans('Invoice Edit: $a', $ntempl);
 
 if(isset($_GET['customerid']) && $_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
 	$action = 'setcustomer';
@@ -235,7 +236,7 @@ switch($action)
 			break;
 
 		$SESSION->restore('invoiceid', $invoice['id']);
-		$invoice['type'] = DOC_INVOICE;
+		$invoice['type'] = $invoice['doctype'];
 
 		$currtime = time();
 		$cdate = $invoice['cdate'] ? $invoice['cdate'] : $currtime;
@@ -290,14 +291,16 @@ switch($action)
 
 		if (!$invoice['closed']) {
 			if ($SYSLOG) {
-				$cashids = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($iid));
-				foreach ($cashids as $cashid) {
-					$args = array(
-						SYSLOG::RES_CASH => $cashid,
-						SYSLOG::RES_DOC => $iid,
-						SYSLOG::RES_CUST => $customer['id'],
-					);
-					$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
+				if ($invoice['doctype'] == DOC_INVOICE) {
+					$cashids = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($iid));
+					foreach ($cashids as $cashid) {
+						$args = array(
+							SYSLOG::RES_CASH => $cashid,
+							SYSLOG::RES_DOC => $iid,
+							SYSLOG::RES_CUST => $customer['id'],
+						);
+						$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
+					}
 				}
 				$itemids = $DB->GetCol('SELECT itemid FROM invoicecontents WHERE docid = ?', array($iid));
 				foreach ($itemids as $itemid) {
@@ -310,7 +313,8 @@ switch($action)
 				}
 			}
 			$DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($iid));
-			$DB->Execute('DELETE FROM cash WHERE docid = ?', array($iid));
+			if ($invoice['doctype'] == DOC_INVOICE)
+				$DB->Execute('DELETE FROM cash WHERE docid = ?', array($iid));
 
 			$itemid=0;
 			foreach ($contents as $idx => $item) {
@@ -337,17 +341,18 @@ switch($action)
 					$SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);
 				}
 
-				$LMS->AddBalance(array(
-					'time' => $cdate,
-					'value' => $item['valuebrutto']*$item['count']*-1,
-					'taxid' => $item['taxid'],
-					'customerid' => $customer['id'],
-					'comment' => $item['name'],
-					'docid' => $iid,
-					'itemid' => $itemid
-					));
+				if ($invoice['doctype'] == DOC_INVOICE)
+					$LMS->AddBalance(array(
+						'time' => $cdate,
+						'value' => $item['valuebrutto']*$item['count']*-1,
+						'taxid' => $item['taxid'],
+						'customerid' => $customer['id'],
+						'comment' => $item['name'],
+						'docid' => $iid,
+						'itemid' => $itemid
+						));
 			}
-		} else {
+		} elseif ($invoice['doctype'] == DOC_INVOICE) {
 			if ($SYSLOG) {
 				$cashids = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($iid));
 				foreach ($cashids as $cashid) {

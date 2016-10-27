@@ -25,7 +25,7 @@ window.open('?m=invoice&amp;id={$invoice.invoice}&amp;original={$invoice.origina
 	{
 		var add = "";
 		if (document.page.original.checked)
-			add = "&amp;original=1";
+			add = "&original=1";
 		if (document.page.copy.checked)
 			add += "&copy=1";
 		if (document.page.duplicate.checked)
@@ -44,7 +44,7 @@ window.open('?m=invoice&amp;id={$invoice.invoice}&amp;original={$invoice.origina
 
 	function filter()
 	{
-		document.page.action="?m=invoicelist";
+		document.page.action="?m=invoicelist{if $proforma}&proforma=1{/if}";
 		document.page.target="";
 		document.page.submit();
 	}
@@ -156,7 +156,7 @@ window.open('?m=invoice&amp;id={$invoice.invoice}&amp;original={$invoice.origina
 			{$invoice.count}
 		</TD>
 		<TD>
-			<A HREF="?m=customerinfo&amp;id={$invoice.customerid}"{if $invoice.closed} class="blend"{/if}>{$invoice.name}, {$invoice.address}, {$invoice.zip} {$invoice.city}{if $invoice.country != ""}, {t}{$invoice.country}{/t}{/if}</A>
+			<A HREF="?m=customerinfo&id={$invoice.customerid}"{if $invoice.closed} class="blend"{/if}>{$invoice.name}, {$invoice.address}, {$invoice.zip} {$invoice.city}{if $invoice.country != ""}, {t}{$invoice.country}{/t}{/if}</A>
 		</TD>
 		<TD class="text-right nobr">
 			{foreach $invoice.customlinks as $link}
@@ -165,12 +165,16 @@ window.open('?m=invoice&amp;id={$invoice.invoice}&amp;original={$invoice.origina
 			{if $invoice.sendinvoices && ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE)}
 			<A href="?m=invoicesend&id={$invoice.id}" target="_blank" OnClick="return confirmLink(this, '{t a=$invoice.name|escape:"javascript"|escape:"html"}Are you sure, you want to send invoice to customer \'$a\'?{/t}');"><IMG src="img/mail.gif" alt="[ {trans("Send invoice")} ]" title="[ {trans("Send invoice")} ]"></A>
 			{/if}
-			{if $invoice.type == $smarty.const.DOC_INVOICE}
+			{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO}
+				{if $invoice.type == $smarty.const.DOC_INVOICE}
 				<A HREF="?m=invoicenote&id={$invoice.id}&action=init"><IMG src="img/eraser.gif" alt="[ {trans("Revise")} ]" title="[ {trans("Revise")} ]"></A>
 				{if !$invoice.closed}
 				{if !$invoice.published || ConfigHelper::checkConfig('privileges.superuser')}
 				<A onClick="{if $invoice.published}if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to remove it despite this?")}')) return false;{/if}return confirmLink(this, '{t a=$number}Are you sure, you want to remove invoice \'$a\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 				{/if}
+				{/if}
+				{else}
+				<A HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 				{/if}
 			{/if}
 			{if !$invoice.closed}
@@ -179,9 +183,13 @@ window.open('?m=invoice&amp;id={$invoice.invoice}&amp;original={$invoice.origina
 				<A onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to remove credit note \'$a\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 				{/if}
 				{/if}
+				{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO}
 				{if $invoice.type == $smarty.const.DOC_INVOICE}
 				{if !$invoice.published || ConfigHelper::checkConfig('privileges.superuser')}
 				<A HREF="?m=invoiceedit&id={$invoice.id}&action=edit"{if $invoice.published} onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}')"{/if}><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+				{/if}
+				{else}
+				<A HREF="?m=invoiceedit&id={$invoice.id}&action=edit"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 				{/if}
 				{elseif $invoice.type == $smarty.const.DOC_CNOTE}
 				{if !$invoice.published || ConfigHelper::checkConfig('privileges.superuser')}
@@ -190,14 +198,14 @@ window.open('?m=invoice&amp;id={$invoice.invoice}&amp;original={$invoice.origina
 				{/if}
 			{/if}
 			{if !$invoice.cancelled}
-				{if !$invoice.published || ConfigHelper::checkConfig('privileges.superuser')}
+				{if $invoice.type != $smarty.const.DOC_INVOICE_PRO && (!$invoice.published || ConfigHelper::checkConfig('privileges.superuser'))}
 				<a onClick="{if $invoice.published}if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to cancel it despite this?")}')) return false;{/if}return confirmLink(this, '{t a=$number}Are you sure, you want to cancel invoice \'$a\' from database?{/t}')" href="?m=invoicecancel&id={$invoice.id}"><img src="img/cancel.gif" alt="[ {trans("Cancel")} ]" title="[{trans("Cancel")}]"></a>
 				{/if}
 			{elseif $invoice.cancelled}
-				<a onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to recover cancelled invoice \'$a\' from database?{/t}')" href="?m=invoicecancel&amp;id={$invoice.id}&recover=1"><img src="img/recover.gif" alt="[ {trans("Recover")} ]" title="[{trans("Recover")}]"></a>
+				<a onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to recover cancelled invoice \'$a\' from database?{/t}')" href="?m=invoicecancel&id={$invoice.id}&recover=1"><img src="img/recover.gif" alt="[ {trans("Recover")} ]" title="[{trans("Recover")}]"></a>
 			{/if}
-			{if $invoice.type == $smarty.const.DOC_INVOICE}
-			{if !$invoice.published || ConfigHelper::checkConfig('privileges.superuser')}
+			{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type ==  $smarty.const.DOC_INVOICE_PRO}
+			{if $invoice.type == $smarty.const.DOC_INVOICE && (!$invoice.published || ConfigHelper::checkConfig('privileges.superuser'))}
 			<A HREF="?m=invoice&id={$invoice.id}&dontpublish=1" TARGET="_blank"><IMG src="img/view.gif" alt="[ {trans("View")} ]" title="[ {trans("View")} ]"></A>
 			{/if}
 			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG src="img/print.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]"></A>
@@ -232,7 +240,9 @@ window.open('?m=invoice&amp;id={$invoice.invoice}&amp;original={$invoice.origina
 			<TABLE WIDTH="100%">
 				<TR>
 					<TD class="text-left nobr">
+						{if !$proforma}
 						<A HREF="javascript:pays();">{trans("Check/Uncheck as accounted")} <IMG SRC="img/pay.gif" ALT=""></A>&nbsp;
+						{/if}
 						<A HREF="javascript:send_invoices();" OnClick="return confirm('{t}Are you sure, you want to send invoices to customers?{/t}');">{trans("Send invoices")} <IMG SRC="img/mail.gif" ALT=""></A>&nbsp;
 						<A HREF="javascript:prints();">{trans("Print")} <IMG SRC="img/print.gif" ALT="" ></A>&nbsp;
 						<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', $default_printpage)} checked{/if}><label for="original">{trans("original")}</label>

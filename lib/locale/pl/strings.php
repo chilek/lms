@@ -3501,4 +3501,14 @@ $_LANG['IM uid is required!'] = 'Identyfikator użytkownika jest wymagany!';
 
 $_LANG['Facebook'] = 'Facebook';
 
+$_LANG['New Pro Forma Invoice'] = 'Nowa faktura pro forma';
+$_LANG['pro forma invoice'] = 'faktura pro forma';
+$_LANG['pro forma invoices'] = 'faktury pro forma';
+$_LANG['Pro Forma Invoice List'] = 'Lista faktur pro forma';
+$_LANG['Pro Forma Invoice No. $a'] = 'Faktura pro forma nr $a';
+$_LANG['Payment for pro forma invoice No. $a'] = 'Zapłata za fakturę pro forma nr $a';
+$_LANG['Pro Forma Invoice Edit: $a'] = 'Edycja Faktury Pro Forma: $a';
+$_LANG['List of pro forma invoices'] = 'Lista faktur pro forma';
+$_LANG['Generate pro forma invoice'] = 'Wygeneruj fakturę pro forma';
+
 ?>
