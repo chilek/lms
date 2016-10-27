@@ -29,23 +29,21 @@ $customer = $DB->GetRow('SELECT id, divisionid, '
     .$DB->Concat('lastname',"' '",'name').' AS name
     FROM customerview WHERE id = ?', array($_GET['id']));
 
-if(!$customer)
-{
+if (!$customer) {
     $SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-if(isset($_POST['assignment']))
-{
+if (isset($_POST['assignment'])) {
 	$a = $_POST['assignment'];
 
-	foreach($a as $key => $val)
-	    if(!is_array($val))
+	foreach ($a as $key => $val) {
+	    if (!is_array($val))
 		    $a[$key] = trim($val);
+	}
 
 	$period = sprintf('%d',$a['period']);
 
-	switch($period)
-	{
+	switch($period) {
 		case DAILY:
 			$at = 0;
 		break;
@@ -56,7 +54,7 @@ if(isset($_POST['assignment']))
 			if (ConfigHelper::checkConfig('phpui.use_current_payday') && $at == 0)
 				$at = strftime('%u', time());
 
-			if($at < 1 || $at > 7)
+			if ($at < 1 || $at > 7)
 				$error['at'] = trans('Incorrect day of week (1-7)!');
 		break;
 
@@ -81,21 +79,17 @@ if(isset($_POST['assignment']))
 				$d = date('j', time());
 				$m = date('n', time());
 				$a['at'] = $d.'/'.$m;
-			}
-			elseif(!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at']))
-			{
+			} elseif(!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
 				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
-			}
-			else
-			{
+			} else {
 				list($d,$m) = explode('/',$a['at']);
 			}
 
-			if(!$error)
-			{
-				if($d>30 || $d<1 || ($d>28 && $m==2))
+			if (!$error) {
+				if ($d>30 || $d<1 || ($d>28 && $m==2))
 					$error['at'] = trans('This month doesn\'t contain specified number of days');
-				if($m>3 || $m<1)
+
+				if ($m>3 || $m<1)
 					$error['at'] = trans('Incorrect month number (max.3)!');
 
 				$at = ($m-1) * 100 + $d;
@@ -109,17 +103,15 @@ if(isset($_POST['assignment']))
 				$d = date('j', time());
 				$m = date('n', time());
 				$a['at'] = $d.'/'.$m;
-			}
-			else
-			{
+			} else {
 				list($d,$m) = explode('/',$a['at']);
 			}
 
-			if(!$error)
-			{
-				if($d>30 || $d<1 || ($d>28 && $m==2))
+			if (!$error) {
+				if ($d>30 || $d<1 || ($d>28 && $m==2))
 					$error['at'] = trans('This month doesn\'t contain specified number of days');
-				if($m>6 || $m<1)
+
+				if ($m>6 || $m<1)
 					$error['at'] = trans('Incorrect month number (max.6)!');
 
 				$at = ($m-1) * 100 + $d;
@@ -131,21 +123,17 @@ if(isset($_POST['assignment']))
 				$d = date('j', time());
 				$m = date('n', time());
 				$a['at'] = $d.'/'.$m;
-			}
-			elseif(!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at']))
-			{
+			} elseif(!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
 				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
-			}
-			else
-			{
+			} else {
 				list($d,$m) = explode('/',$a['at']);
 			}
 
-			if(!$error)
-			{
-				if($d>30 || $d<1 || ($d>28 && $m==2))
+			if (!$error) {
+				if ($d>30 || $d<1 || ($d>28 && $m==2))
 					$error['at'] = trans('This month doesn\'t contain specified number of days');
-				if($m>12 || $m<1)
+
+				if ($m>12 || $m<1)
 					$error['at'] = trans('Incorrect month number');
 
 				$ttime = mktime(12, 0, 0, $m, $d, 1990);
@@ -156,106 +144,104 @@ if(isset($_POST['assignment']))
 		default: // DISPOSABLE
 			$period = DISPOSABLE;
 
-			if(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['at']))
-			{
+			if(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
 				list($y, $m, $d) = explode('/', $a['at']);
-				if(checkdate($m, $d, $y))
-				{
+				if (checkdate($m, $d, $y)) {
 					$at = mktime(0, 0, 0, $m, $d, $y);
 
 					if ($at < mktime(0, 0, 0) && !$a['atwarning']) {
 						$a['atwarning'] = TRUE;
 						$error['at'] = trans('Incorrect date!');
 					}
-				}
-				else
+				} else
 					$error['at'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-			}
-			else
+			} else
 				$error['at'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
 		break;
 	}
 
-	if($a['datefrom'] == '')
+	if ($a['datefrom'] == '') {
 		$from = 0;
-	elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/',$a['datefrom']))
-	{
+	} elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/',$a['datefrom'])) {
 		list($y, $m, $d) = explode('/', $a['datefrom']);
-		if(checkdate($m, $d, $y))
+
+		if (checkdate($m, $d, $y))
 			$from = mktime(0, 0, 0, $m, $d, $y);
 		else
 			$error['datefrom'] = trans('Incorrect charging time!');
-	}
-	else
+	} else
 		$error['datefrom'] = trans('Incorrect charging time!');
 
-	if($a['dateto'] == '')
+	if ($a['dateto'] == '') {
 		$to = 0;
-	elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['dateto']))
-	{
+	} elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['dateto'])) {
 		list($y, $m, $d) = explode('/', $a['dateto']);
-		if(checkdate($m, $d, $y))
+
+		if (checkdate($m, $d, $y))
 			$to = mktime(23, 59, 59, $m, $d, $y);
 		else
 			$error['dateto'] = trans('Incorrect charging time!');
-	}
-	else
+	} else
 		$error['dateto'] = trans('Incorrect charging time!');
 
-	if($to < $from && $to != 0 && $from != 0)
+	if ($to < $from && $to != 0 && $from != 0)
 		$error['dateto'] = trans('Incorrect date range!');
 
 	$a['discount'] = str_replace(',', '.', $a['discount']);
 	$a['pdiscount'] = 0;
 	$a['vdiscount'] = 0;
-	if (preg_match('/^[0-9]+(\.[0-9]+)*$/', $a['discount']))
-	{
+	if (preg_match('/^[0-9]+(\.[0-9]+)*$/', $a['discount'])) {
 		$a['pdiscount'] = ($a['discount_type'] == DISCOUNT_PERCENTAGE ? floatval($a['discount']) : 0);
 		$a['vdiscount'] = ($a['discount_type'] == DISCOUNT_AMOUNT ? floatval($a['discount']) : 0);
 	}
 	if ($a['pdiscount'] < 0 || $a['pdiscount'] > 99.99)
 		$error['discount'] = trans('Wrong discount value!');
 
-	// suspending
-	if ($a['tariffid'] == -1)
-	{
-		$a['tariffid'] = 0;
-		$a['discount'] = 0;
-		$a['pdiscount'] = 0;
-		$a['vdiscount'] = 0;
-		$a['value'] = 0;
-		unset($a['schemaid']);
-		unset($a['invoice']);
-		unset($a['settlement']);
-		unset($error['at']);
-		$at = 0;
-	}
-	// promotion schema
-	elseif ($a['tariffid'] == -2) {
-		if (!$from) {
-			$error['datefrom'] = trans('Promotion start date is required!');
-		}
-		else {
-			$a['promotiontariffid'] = $a['stariffid'];
-			$a['value'] = 0;
-			$a['discount'] = 0;
+	switch ($a['tariffid']) {
+		// suspending
+		case -1:
+			$a['tariffid']  = 0;
+			$a['discount']  = 0;
 			$a['pdiscount'] = 0;
 			$a['vdiscount'] = 0;
-			// @TODO: handle other period/at values
-			$a['period'] = MONTHLY;
-			$a['at'] = 1;
-		}
-	}
-	// tariffless
-	elseif (!$a['tariffid']) {
-		if (!$a['name'])
-			$error['name'] = trans('Liability name is required!');
-		if (!$a['value'])
-			$error['value'] = trans('Liability value is required!');
-		elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']))
-			$error['value'] = trans('Incorrect value!');
+			$a['value']     = 0;
 
-		unset($a['schemaid']);
+			unset($a['schemaid'], $a['invoice'], $a['settlement', $error['at']);
+			$at = 0;
+		break;
+
+		// promotion schema
+		case -2:
+			if (!$from) {
+				$error['datefrom'] = trans('Promotion start date is required!');
+			} else {
+				if (count($a['stariffid']) == 1) {
+					$a['promotiontariffid'] = $a['stariffid'][0];
+				} else {
+					$a['promotiontariffid'] = $a['stariffid'];
+				}
+
+				$a['value']     = 0;
+				$a['discount']  = 0;
+				$a['pdiscount'] = 0;
+				$a['vdiscount'] = 0;
+				// @TODO: handle other period/at values
+				$a['period'] = MONTHLY; // dont know why, remove if you are sure
+				$a['at'] = 1;
+			}
+		break;
+
+		// tariffless
+		default:
+			if (!$a['name'])
+				$error['name'] = trans('Liability name is required!');
+
+			if (!$a['value'])
+				$error['value'] = trans('Liability value is required!');
+			elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']))
+				$error['value'] = trans('Incorrect value!');
+
+			unset($a['schemaid']);
 	}
 
         $hook_data = $LMS->executeHook(
@@ -267,9 +253,8 @@ if(isset($_POST['assignment']))
         );
         $a = $hook_data['a'];
         $error = $hook_data['error'];
-        
-	if (!$error)
-	{
+
+	if (!$error) {
 		$a['customerid'] = $customer['id'];
 		$a['period']     = $period;
 		$a['at']         = $at;
@@ -277,7 +262,21 @@ if(isset($_POST['assignment']))
 		$a['dateto']     = $to;
 
 		$DB->BeginTrans();
-		$LMS->AddAssignment($a);
+
+		if (is_array($a['stariffid'])) {
+			$copy_a = $a;
+		
+			foreach ($a['stariffid'] as $v) {
+				if (!$v)
+					continue;
+
+			    $copy_a['promotiontariffid'] = $v;
+				$LMS->AddAssignment($copy_a);
+			}
+		} else {
+			$LMS->AddAssignment($a);
+		}
+
 		$DB->CommitTrans();
 
 		$LMS->executeHook(
@@ -337,16 +336,51 @@ $LMS->executeHook(
     )
 );
 
-$SMARTY->assign('assignment', $a);
-$SMARTY->assign('customernodes', $customernodes);
+$tmp_promo_list = $DB->GetAll('SELECT 
+		   	  		              p.name as promotion_name, ps.name as schema_name, t.name as tariff_name, pa.optional,
+		   	  		              selectionid, t.id as tariffid
+						       FROM promotions p
+						       	  LEFT JOIN promotionschemas ps ON p.id = ps.promotionid
+							      LEFT JOIN promotionassignments pa ON ps.id = pa.promotionschemaid
+							      LEFT JOIN tariffs t ON pa.tariffid = t.id
+							   ORDER BY
+							      p.name, ps.name, pa.optional ASC');
+
+$promotions = array();
+if (!empty($tmp_promo_list)) {
+    foreach ($tmp_promo_list as $v) {
+        $p   = $v['promotion_name'];
+        $s   = $v['schema_name'];
+        $sid = $v['selectionid'];
+        
+        $promotion_item = array('tariffid' => $v['tariffid'],
+        						'tariff'   => $v['tariff_name'],
+                                'value'    => $v['value'],
+                                'optional' => $v['optional'] );
+        
+        if (!empty($sid)) {
+            if ($v['optional'] == 0) {
+                $promotions[$p][$s]['lists'][$sid]['required'] = 1;
+            }
+         
+            $promotions[$p][$s]['lists'][$sid]['items'][] = $promotion_item;
+        } else {
+            $promotions[$p][$s]['single'][] = $promotion_item;
+        }
+    }
+}
+
+$SMARTY->assign('assignment'          , $a);
+$SMARTY->assign('customernodes'       , $customernodes);
 $SMARTY->assign('promotionschemanames', $schemas_only_names);
-$SMARTY->assign('promotionschemas', $schemas);
-$SMARTY->assign('tariffs', $LMS->GetTariffs());
-$SMARTY->assign('taxeslist', $LMS->GetTaxes());
-$SMARTY->assign('expired', $expired);
-$SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customer['id'], $expired));
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE, NULL, $customer['divisionid'], false));
-$SMARTY->assign('customerinfo', $customer);
+$SMARTY->assign('promotionschemas'    , $schemas);
+$SMARTY->assign('promotions'          , $promotions);
+$SMARTY->assign('tariffs'             , $LMS->GetTariffs());
+$SMARTY->assign('taxeslist'           , $LMS->GetTaxes());
+$SMARTY->assign('expired'             , $expired);
+$SMARTY->assign('assignments'         , $LMS->GetCustomerAssignments($customer['id'], $expired));
+$SMARTY->assign('numberplanlist'      , $LMS->GetNumberPlans(DOC_INVOICE, NULL, $customer['divisionid'], false));
+$SMARTY->assign('customerinfo'        , $customer);
 
 $SMARTY->display('customer/customerassignmentsedit.html');
 
