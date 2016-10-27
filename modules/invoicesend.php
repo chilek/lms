@@ -83,10 +83,10 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
 			JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
 				FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id
 			LEFT JOIN numberplans n ON n.id = d.numberplanid
-			WHERE d.type IN (?, ?, ?) AND d.id IN (" . implode(',', $docids) . ")
+			WHERE d.type IN (?, ?, ?, ?) AND d.id IN (" . implode(',', $docids) . ")
 			ORDER BY d.number",
 			array(CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_INVOICES,
-				DOC_INVOICE, DOC_CNOTE, DOC_DNOTE));
+				DOC_INVOICE, DOC_CNOTE, DOC_DNOTE, DOC_INVOICE_PRO));
 
 		if (!empty($docs)) {
 			$currtime = time();

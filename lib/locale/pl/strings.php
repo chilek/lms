@@ -3511,5 +3511,6 @@ $_LANG['Pro Forma Invoice Edit: $a'] = 'Edycja Faktury Pro Forma: $a';
 $_LANG['List of pro forma invoices'] = 'Lista faktur pro forma';
 $_LANG['Generate pro forma invoice'] = 'Wygeneruj fakturę pro forma';
 $_LANG['Are you sure, you want to remove pro forma invoice \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć fakturę pro forma \\\'$a\\\' z bazy danych?';
+$_LANG['Pro Forma Invoice No. $a for $b'] = 'Faktura pro forma nr $a dla $b';
 
 ?>
