@@ -80,7 +80,14 @@
 <INPUT type="submit" class="hiddenbtn">
 <INPUT type="HIDDEN" name="invoice[number]" value="{$invoice.number}">
 <INPUT type="HIDDEN" name="invoice[template]" value="{$invoice.template}">
+{if $invoice.proforma}
+<input type="hidden" name="invoice[proforma]" value="1">
+{/if}
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 99%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
 		<TD WIDTH="100%" COLSPAN="2">
@@ -89,11 +96,31 @@
 	</TR>
     </THEAD>
     <TBODY>
+	{if $invoice.proforma}
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Settlement date:")}</B>
+		<TD class="bold nobr">
+			{trans("Invoice number:")}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<TD class="nobr">
+			<INPUT type="text" name="invoice[number]" value="{$invoice.number}" size="12" {tip text="Enter invoice number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
+			{if $numberplanlist}
+			<SELECT name="invoice[numberplanid]" {tip text="Select numbering plan"}>
+			{foreach item=plan from=$numberplanlist}
+				{assign var=period value=$plan.period}
+				<OPTION value="{$plan.id}"{if $plan.id==$invoice.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+			{/foreach}
+			</SELECT>
+			{else}
+				<INPUT type="hidden" name="invoice[numberplanid]" value="0">
+			{/if}
+		</TD>
+	</TR>
+	{/if}
+	<TR>
+		<TD class="bold nobr">
+			{trans("Settlement date:")}
+		</TD>
+		<TD class="nobr">
 			<INPUT TYPE="TEXT" NAME="invoice[cdate]" VALUE="{$invoice.cdate|date_format:"%Y/%m/%d"}" SIZE="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 			{if $invoice.cdatewarning}
 			<INPUT TYPE="HIDDEN" NAME="invoice[cdatewarning]" VALUE="1">
@@ -101,26 +128,26 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Sale date:")}</B>
+		<TD class="bold nobr">
+			{trans("Sale date:")}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<TD class="nobr">
 			<INPUT TYPE="TEXT" NAME="invoice[sdate]" VALUE="{$invoice.sdate|date_format:"%Y/%m/%d"}" SIZE="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="sdate"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Deadline:")}</B>
+		<TD class="bold nobr">
+			{trans("Deadline:")}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<TD class="nobr">
 			<input type="text" name="invoice[deadline]" value="{$invoice.deadline|date_format:"%Y/%m/%d"}" size="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter deadline date in YYYY/MM/DD format (empty field means default deadline) or click to select it from calendar" trigger="deadline"}>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
-			<B>{trans("Payment type (cash/transfer/etc):")}</B>
+		<TD class="bold nobr">
+			{trans("Payment type (cash/transfer/etc):")}
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<TD class="nobr">
 			<SELECT name="invoice[paytype]" {tip text="Select payment type" trigger="paytype"}>
 				{foreach from=$_PAYTYPES item=item key=key}
 				<OPTION value="{$key}"{if $invoice.paytype==$key} selected{/if}>{$item}</OPTION>
@@ -129,10 +156,10 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD style="width: 1%;" class="bold nobr">
+		<TD class="bold nobr">
 			{trans("Customer:")}
 		</TD>
-		<TD style="width: 99%;" class="nobr">
+		<TD class="nobr">
 			{if isset($customer.id)}
 			{customerlist form="setcustomer" customers=$customers selected=$customer.id selectname="customer" inputname="customerid"}
 			{else}
@@ -141,7 +168,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="100%" ALIGN="right" COLSPAN="2">
+		<TD class="buttons" colspan="2">
 			<A HREF="javascript: saveheader();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
