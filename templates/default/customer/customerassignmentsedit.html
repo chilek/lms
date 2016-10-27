@@ -10,25 +10,26 @@
 	tariffTypes[{$tariff.id}] = {$tariff.tarifftype};
 	{/foreach}
 
-	function set_tariff()
-	{
+	function set_tariff() {
 		var val = document.forms['assignment'].elements['assignment[tariffid]'].value;
 
 		{if $promotionschemas}
-		document.getElementById('a_schema').style.display = val == -2 ? '' : 'none';
+		document.getElementById('a_schema').style.display       = val == -2 ? '' : 'none';
 		document.getElementById('a_schematariff').style.display = val == -2 ? '' : 'none';
 		{/if}
 
-		document.getElementById('a_tax').style.display = val == '' ? '' : 'none';
-		document.getElementById('a_value').style.display = val == '' ? '' : 'none';
+		document.getElementById('a_tax').style.display       = val == '' ? '' : 'none';
+		document.getElementById('a_value').style.display     = val == '' ? '' : 'none';
 		document.getElementById('a_productid').style.display = val == '' ? '' : 'none';
-		document.getElementById('a_name').style.display = val == '' ? '' : 'none';
-                document.getElementById('a_attribute').style.display = val == '' ? 'none' : '';
-		document.getElementById('a_options').style.display = val == -1 ? 'none' : '';
+		document.getElementById('a_name').style.display      = val == '' ? '' : 'none';
+        document.getElementById('a_attribute').style.display = val == '' ? 'none' : '';
+		document.getElementById('a_options').style.display   = val == -1 ? 'none' : '';
+		document.getElementById('a_day').style.display       = val == -1 ? 'none' : '';
 		var a_nodes = document.getElementById('a_nodes');
+		
 		if (a_nodes !== null)
 			document.getElementById('a_nodes').style.display = val == -1 ? 'none' : '';
-		document.getElementById('a_day').style.display = val == -1 ? 'none' : '';
+			
 		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 		document.getElementById('a_discount').style.display = val < -1 ? 'none' : '';
 		{/if}
@@ -37,6 +38,7 @@
 	function assignment_submit() {
 		{if ConfigHelper::checkConfig('phpui.node_assignment_warning')}
 		var tariffid = parseInt($('form[name="assignment"] select[name="assignment[tariffid]"]').val());
+		
 		if (isNaN(tariffid)) {
 			document.assignment.submit();
 			return;
@@ -62,32 +64,39 @@
 	}
 
 {if $promotionschemas}
+/*
 	function set_schema()
 	{
 		var sid = document.forms['assignment'].elements['assignment[schemaid]'].value,
-			assignments = { {strip}
+		assignments = { {strip}
 			{foreach name=fps from=$promotionschemas item=schema}
-				{if $smarty.foreach.fps.index},{/if}"{$schema.id}": [{$schema.tariffs}]
+				{if $smarty.foreach.fps.index} , {/if}"{$schema.id}":[{$schema.tariffs}]
 			{/foreach}
-			{/strip} },
-			select = document.forms['assignment'].elements['assignment[stariffid]'],
-			t_select = document.forms['assignment'].elements['assignment[tariffid]'],
-			options = t_select.getElementsByTagName('OPTION'),
-			selected = select.value,
-			i, len;
+		{/strip} },
+		
+		select   = document.forms['assignment'].elements['assignment[stariffid]'],
+		t_select = document.forms['assignment'].elements['assignment[tariffid]'],
+		options  = t_select.getElementsByTagName('OPTION'),
+		selected = select.value
+		, i, len;
 
 		// remove old options
 		select.innerHTML = '';
+		
 		// copy options from t_select element
-		for (i=0, len=options.length; i<len; i++)
-			if (inArray(assignments[sid], options[i].value))
+		for (i=0, len=options.length; i<len; i++) {
+			if (inArray(assignments[sid], options[i].value)) {
 				select.appendChild(options[i].cloneNode(true));
+			}
+	    }
 
 		select.value = selected;
 	}
+	*/
 {/if}
 //-->
 </SCRIPT>
+
 <FORM method="POST" name="assignment" action="?m={$layout.module}{if $assignment.id}&id={$assignment.id}{if $assignment.liabilityid}&lid={$assignment.liabilityid}{/if}{else}&id={$customerinfo.id}{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
@@ -96,305 +105,396 @@
 		<COL style="width: 1%;">
 		<COL style="width: 98%;">
 	</COLGROUP>
+	
     <THEAD>
-	<TR>
-		<TD>
-			<IMG src="img/money.gif" alt="">
-		</TD>
-		<TD class="bold">
-			{trans("Type")}/{trans("Tariff")}:
-		</TD>
-		<TD>
-			<SELECT size="1" name="assignment[tariffid]" {tip text="Select liability type" trigger="tariffid"} onchange="set_tariff();">
-				<OPTION value=""{if !$assignment.tariffid} SELECTED{/if}>- {trans("tariffless liability")} -</OPTION>
-				<OPTION value="-1"{if $assignment.tariffid == -1} SELECTED{/if}>{trans("- all liabilities suspended -")}</OPTION>
-				{if $promotionschemas}
-				<OPTION value="-2"{if $assignment.tariffid == -2} SELECTED{/if}>- {trans("per promotion schema")} -</OPTION>
-				{/if}
-				{foreach $tariffs as $tariff}
-				<OPTION value="{$tariff.id}"{if $tariff.id==$assignment.tariffid} selected{/if}>
-				{$tariff.name} ({if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{$tariff.value|money_format}, {/if}{if $tariff.upceil || $tariff.downceil}{$tariff.downceil}/{$tariff.upceil} kbit/s{/if})
-				</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
+		<TR>
+			<TD>
+				<IMG src="img/money.gif" alt="">
+			</TD>
+			<TD class="bold">
+				{trans("Type")}/{trans("Tariff")}:
+			</TD>
+			<TD>
+				<SELECT size="1" name="assignment[tariffid]" {tip text="Select liability type" trigger="tariffid"} onchange="set_tariff();">
+					<OPTION value=""{if !$assignment.tariffid} SELECTED{/if}>- {trans("tariffless liability")} -</OPTION>
+					<OPTION value="-1"{if $assignment.tariffid == -1} SELECTED{/if}>{trans("- all liabilities suspended -")}</OPTION>
+
+					{if $promotionschemas}
+						<OPTION value="-2"{if $assignment.tariffid == -2} SELECTED{/if}>- {trans("per promotion schema")} -</OPTION>
+					{/if}
+	
+					{foreach $tariffs as $tariff}
+						<OPTION value="{$tariff.id}"{if $tariff.id==$assignment.tariffid} selected{/if}>
+						{$tariff.name} ({if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{$tariff.value|money_format}, {/if}{if $tariff.upceil || $tariff.downceil}{$tariff.downceil}/{$tariff.upceil} kbit/s{/if})
+						</OPTION>
+					{/foreach}
+				</SELECT>
+			</TD>
+		</TR>
     </THEAD>
+    
     <TBODY>
-{if $promotionschemas}
-	<TR id="a_schema">
-		<TD>
-			<IMG src="img/promoschema.gif" alt="">
-		</TD>
-		<TD class="bold">
-			{trans("Schema")}:
-		</TD>
-		<TD style="width: 98%;">
-			<SELECT size="1" name="assignment[schemaid]" {tip text="Select promotion schema"} onchange="set_schema()">
-				{foreach $promotionschemanames as $schemaname}
-                                    <optgroup label="{$schemaname.name}">
-                                        {foreach $promotionschemas as $schema}
-                                            {if $schemaname.name == $schema.promotion}
-                                                <OPTION value="{$schema.id}"{if $assignment.schemaid == $schema.id} SELECTED{/if}>{$schema.name|truncate:40:"...":true}</OPTION>
-                                            {/if}
-                                        {/foreach}
-                                    </optgroup>
+		{if $promotionschemas}
+		<TR id="a_schema">
+			<TD>
+				<IMG src="img/promoschema.gif" alt="">
+			</TD>
+			<TD class="bold">
+				{trans("Schema")}:
+			</TD>
+			<TD style="width: 98%;">
+				<SELECT size="1" name="assignment[schemaid]" id="promotionselect" {tip text="Select promotion schema"}>
+					{foreach $promotionschemanames as $schemaname}
+      	    	        <optgroup label="{$schemaname.name}">
+                	        {foreach $promotionschemas as $schema}
+                    	        {if $schemaname.name == $schema.promotion}
+                        	        <OPTION value="{$schema.id}"{if $assignment.schemaid == $schema.id} SELECTED{/if}>{$schema.name|truncate:40:"...":true}</OPTION>
+                                {/if}
+                            {/foreach}
+                        </optgroup>
+                    {/foreach}
+				</SELECT>
+			</TD>
+		</TR>
+	
+		<TR id="a_schematariff">
+			<TD></TD>
+			<TD></TD>
+			<TD>
+				<!--
+				<SELECT size="1" name="assignment[stariffid]" {tip text="Select subscription" trigger="stariffid"}>
+					{foreach $tariffs as $tariff}
+					<OPTION value="{$tariff.id}"{if $tariff.id==$assignment.stariffid} selected{/if}>
+					{$tariff.name} ({$tariff.value|money_format}{if $tariff.upceil || $tariff.downceil}, {$tariff.downceil}/{$tariff.upceil} kbit/s{/if})
+					</OPTION>
+					{/foreach}
+				</SELECT>
+				-->
+				
+				{foreach $promotions as $p}
+                	{foreach $p as $k=>$items}
+                    	<table id="{$k}" class="promotionstable">
+                            {if isset($items.single)}
+                                {foreach $items.single as $v}
+                                    {if $v.optional == 1}
+                                        <tr><td><label><input type="checkbox" name="assignment[stariffid][]" value="{$v.tariffid}">{$v.tariff}</label></td></tr>
+                                    {else}
+                                        <tr>
+                                            <td class="blend">
+                                                <label><input type="checkbox" data-mandatory="true" checked disabled> {$v.tariff}</label>
+                                                <input type="hidden" name="assignment[stariffid][]" value="{$v.tariffid}">
+                                            </td>
+                                        </tr>
+                                    {/if}
                                 {/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR id="a_schematariff">
-		<TD>
-			<IMG src="img/money.gif" alt="">
-		</TD>
-		<TD class="bold">
-			{trans("Tariff")}:
-		</TD>
-		<TD>
-			<SELECT size="1" name="assignment[stariffid]" {tip text="Select subscription" trigger="stariffid"}>
-				{foreach $tariffs as $tariff}
-				<OPTION value="{$tariff.id}"{if $tariff.id==$assignment.stariffid} selected{/if}>
-				{$tariff.name} ({$tariff.value|money_format}{if $tariff.upceil || $tariff.downceil}, {$tariff.downceil}/{$tariff.upceil} kbit/s{/if})
-				</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-{/if}
-	<TR>
-	    <TD colspan="3" class="container">
-	        <TABLE class="lmsbox-inner">
-				<COLGROUP>
-					<COL style="width: 50%;">
-					<COL style="width: 50%;">
-				</COLGROUP>
-				<TBODY>
-	            <TR>
-	                <TD class="valign-top">
-	                    <TABLE style="width: 100%;" cellpadding="3">
-						<COLGROUP>
-							<COL style="width: 1%;">
-							<COL style="width: 1%;">
-							<COL style="width: 98%;">
-						</COLGROUP>
-						<TBODY>
-	<TR id="a_name">
-		<TD>
-			<IMG src="img/money.gif" alt="">
-		</TD>
-		<TD class="bold nobr">
-			{trans("Name:")}
-		</TD>
-		<TD>
-			<INPUT type="text" name="assignment[name]" value="{if $assignment.tariffid<=0}{$assignment.name}{/if}" size="30" {tip text="Enter liability name/description (tariffless liabilities only)" trigger="name"}>
-		</TD>
-	</TR>
-	<TR id="a_attribute">
-		<TD>
-			<IMG src="img/money.gif" alt="">
-		</TD>
-		<TD class="bold nobr">
-			{trans("Attribute:")}
-		</TD>
-		<TD>
-			<INPUT type="text" name="assignment[attribute]" value="{if $assignment.attribute}{$assignment.attribute}{/if}" size="30" {tip text="Enter tariff attribute" trigger="attribute"}>
-		</TD>
-	</TR>
-	<TR id="a_day">
-		<TD>
-			<IMG src="img/calendar.gif" alt="">
-		</TD>
-		<TD class="bold nobr">
-			{trans("Accounting:")}
-		</TD>
-		<TD>
-			<SELECT size="1" name="assignment[period]" {tip text="Select time period to account liability"}>
-				{foreach from=$_PERIODS key=key item=item}
-				<OPTION value="{$key}"{if $assignment.period == $key} SELECTED{/if}>{$item}</OPTION>
-				{/foreach}
-			</SELECT>
-			<INPUT type="TEXT" name="assignment[at]" value="{if $assignment.at}{$assignment.at}{/if}" {tip text="Enter accounting time. For disposable accounting enter date in format YYYY/MM/DD, for weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter day and month in format DD/MM (15/09 means September 15th), for half-yearly DD/MM (MM <=6) and for quarterly DD/MM (MM <= 3)" trigger="at"} SIZE="8">
-			{if $assignment.atwarning}
-			<INPUT type="hidden" name="assignment[atwarning]" value="1">
-			{/if}
-		</TD>
-	</TR>
-	<TR id="a_period">
-		<TD>
-			<IMG src="img/calendar.gif" alt="">
-		</TD>
-		<TD class="bold nobr">
-			{trans("Period:")}
-		</TD>
-		<TD class="nobr">
-			{trans("from:")} <INPUT type="TEXT" name="assignment[datefrom]" value="{if $assignment.datefrom}{$assignment.datefrom}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter accounting start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10">
-			{trans("to:")} <INPUT type="TEXT" name="assignment[dateto]" value="{if $assignment.dateto}{$assignment.dateto}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
-		</TD>
-	</TR>
-	<TR id="a_value">
-		<TD>
-			<IMG src="img/value.gif" alt="">
-		</TD>
-		<TD class="bold">
-			{trans("Value:")}
-		</TD>
-		<TD>
-			<INPUT type="text" name="assignment[value]" value="{if $assignment.value}{$assignment.value}{/if}" size="10" {tip text="Enter liability value (tariffless liabilities only)" trigger="value"}>
-		</TD>
-	</TR>
-	<TR id="a_discount">
-		<TD style="{if ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
-			<IMG src="img/value.gif" alt="">
-		</TD>
-		<TD class="bold" style="{if ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
-			<span class="bold">{trans("Discount:")}</span>
-		</TD>
-		<TD style="{if ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
-			<INPUT type="text" size="8" name="assignment[discount]" value="{if $assignment.pdiscount != 0}{$assignment.pdiscount|string_format:"%.2f"}{else}{if $assignment.vdiscount != 0}{$assignment.vdiscount|string_format:"%.2f"}{/if}{/if}" {tip text="Enter discount percentage or amount" trigger="discount"}>
-			<SELECT name="assignment[discount_type]">
-				{foreach from=$_DISCOUNTTYPES item=item key=key}
-					<OPTION value="{$key}"{if $assignment.discount_type == $key} selected{/if}>{$item}</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR id="a_tax">
-		<TD>
-			<IMG src="img/tax.gif" alt="">
-		</TD>
-		<TD class="bold">
-			{trans("Tax:")}
-		</TD>
-		<TD>
-			<SELECT SIZE="1" name="assignment[taxid]" {tip text="Select Tax value"}>
-				{foreach item=tax from=$taxeslist}
-					<OPTION value="{$tax.id}"{if ($assignment.taxid && $tax.id == $assignment.taxid) || (!$assignment.taxid && $tax.value == ConfigHelper::getConfig('phpui.default_taxrate'))} selected{/if}>{$tax.label}</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR id="a_productid">
-		<TD>
-			<IMG src="img/class.gif" alt="">
-		</TD>
-		<TD class="bold">
-			{trans("Product ID:")}
-		</TD>
-		<TD>
-			<INPUT type="text" name="assignment[prodid]" value="{$assignment.prodid}" size="10" {tip text="Enter liability Product ID (tariffless liabilities only)"}>
-		</TD>
-	</TR>
-	<TR id="a_numberplan">
-		<TD>
-			<IMG src="img/id.gif" alt="">
-		</TD>
-		<TD class="bold nobr">
-			{trans("Numbering Plan:")}
-		</TD>
-		<TD>
-			<SELECT name="assignment[numberplanid]" {tip text="Select numbering plan"}>
-				<OPTION value=""{if !$assignment.numberplanid} selected{/if}>- {trans("default")} -</OPTION>
-				{foreach item=plan from=$numberplanlist}
-				{assign var=period value=$plan.period}
-				<OPTION value="{$plan.id}"{if $plan.id==$assignment.numberplanid} SELECTED{/if}>{$plan.template} ({$_NUM_PERIODS.$period})</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR id="a_paytype">
-		<TD>
-			<IMG src="img/print.gif" alt="">
-		</TD>
-		<TD class="bold nobr">
-			{trans("Payment Type:")}
-		</TD>
-		<TD>
-			<SELECT name="assignment[paytype]" {tip text="Select payment type" trigger="paytype"}>
-				<OPTION value=""{if !$assignment.paytype} selected{/if}>- {trans("default")} -</OPTION>
-				{foreach from=$_PAYTYPES item=item key=key}
-				<OPTION value="{$key}"{if $assignment.paytype==$key} selected{/if}>{$item}</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
-						</TBODY>
-						</TABLE>
-					</TD>
-					<TD class="valign-top">
-						<TABLE style="width: 100%;" cellpadding="3">
-						<COLGROUP>
-							<COL style="width: 1%;">
-							<COL style="width: 1%;">
-							<COL style="width: 98%;">
-						</COLGROUP>
-						<TBODY>
-	<TR id="a_options">
-		<TD>
-			<IMG src="img/options.gif" alt="">
-		</TD>
-		<TD class="bold">
-			{trans("Options:")}
-		</TD>
-		<TD class="nobr">
-			<label>
-				<INPUT type="checkbox" name="assignment[invoice]" value="1"{if $assignment.invoice} checked{/if}>
-				{trans("with invoice")}
-			</label>
-			<label>
-				<INPUT type="checkbox" name="assignment[settlement]" value="1"{if $assignment.settlement} checked{/if}>
-				{trans("with settlement of first deficient period")}
-			</label>
-		</TD>
-	</TR>
-{if $customernodes}
-	<TR id="a_nodes">
-		<TD>
-			<IMG src="img/node.gif" alt="">
-		</TD>
-		<TD class="bold">
-			{trans("Nodes:")}
-		</TD>
-		<TD class="nobr" id="nodeslist">
-			{foreach $customernodes as $customernode}
-			{assign var=nodeid value=$customernode.id}
-			<label>
-				<INPUT type="checkbox" name="assignment[nodes][{counter}]" value="{$customernode.id}"{if in_array($nodeid, (array)$assignment.nodes)} checked{/if}>
-				<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
-			</label>
-			<BR>
-			{/foreach}
-			{if count($customernodes) > 1}
-			<label>
-				<INPUT TYPE="checkbox" NAME="allbox" onchange="CheckAll('assignment', this, ['assignment[invoice]', 'assignment[settlement]'])" VALUE="1">
-				{trans("check all<!items>")}
-			</label>
-			{/if}
-		</TD>
-	</TR>
-{/if}
-						</TBODY>
-						</TABLE>
-					</TD>
-				</TR>
-				</TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD class="buttons" colspan="3">
-			<A href="#" onclick="return assignment_submit();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>&nbsp;
-			<A href="?m=customerinfo&id={$customerinfo.id}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
-		</TD>
-	</TR>
+                            {/if}
+
+                            {if isset($items.lists)}
+                                {foreach $items.lists as $v}
+                                    <tr>
+                                        <td>
+                                            <select id="{key($v)}" name="assignment[stariffid][]">
+                                                {if !isset($v.required)}<option value="0">-- wybierz --</option>{/if}
+                                                {foreach $v.items as $item}
+                                                     <option value="{$item.tariffid}">{$item.tariff}</option>
+                                                {/foreach}
+                                            </select>
+                                        </td>
+                                    </tr>
+                                {/foreach}
+                            {/if}
+                        </table>
+                    {/foreach}
+                {/foreach}
+			</TD>
+		</TR>
+		{/if}
+	
+		<TR>
+		    <TD colspan="3" class="container">
+		        <TABLE class="lmsbox-inner">
+					<COLGROUP>
+						<COL style="width: 50%;">
+						<COL style="width: 50%;">
+					</COLGROUP>
+	
+					<TBODY>
+			            <TR>
+			                <TD class="valign-top">
+			                    <TABLE style="width: 100%;" cellpadding="3">
+									<COLGROUP>
+										<COL style="width: 1%;">
+										<COL style="width: 1%;">
+										<COL style="width: 98%;">
+									</COLGROUP>
+			
+									<TBODY>
+									
+										<TR id="a_name">
+											<TD>
+												<IMG src="img/money.gif" alt="">
+											</TD>
+											<TD class="bold nobr">
+												{trans("Name:")}
+											</TD>
+											<TD>
+												<INPUT type="text" name="assignment[name]" value="{if $assignment.tariffid<=0}{$assignment.name}{/if}" size="30" {tip text="Enter liability name/description (tariffless liabilities only)" trigger="name"}>
+											</TD>
+										</TR>
+									
+										<TR id="a_attribute">
+											<TD>
+												<IMG src="img/money.gif" alt="">
+											</TD>
+											<TD class="bold nobr">
+												{trans("Attribute:")}
+											</TD>
+											<TD>
+												<INPUT type="text" name="assignment[attribute]" value="{if $assignment.attribute}{$assignment.attribute}{/if}" size="30" {tip text="Enter tariff attribute" trigger="attribute"}>
+											</TD>
+										</TR>
+									
+										<TR id="a_day">
+											<TD>
+												<IMG src="img/calendar.gif" alt="">
+											</TD>
+											<TD class="bold nobr">
+												{trans("Accounting:")}
+											</TD>
+											<TD>
+												<SELECT size="1" name="assignment[period]" {tip text="Select time period to account liability"}>
+													{foreach from=$_PERIODS key=key item=item}
+														<OPTION value="{$key}"{if $assignment.period == $key} SELECTED{/if}>{$item}</OPTION>
+													{/foreach}
+												</SELECT>
+									
+												<INPUT type="TEXT" name="assignment[at]" value="{if $assignment.at}{$assignment.at}{/if}" {tip text="Enter accounting time. For disposable accounting enter date in format YYYY/MM/DD, for weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter day and month in format DD/MM (15/09 means September 15th), for half-yearly DD/MM (MM <=6) and for quarterly DD/MM (MM <= 3)" trigger="at"} SIZE="8">
+												{if $assignment.atwarning}
+													<INPUT type="hidden" name="assignment[atwarning]" value="1">
+												{/if}
+											</TD>
+										</TR>
+
+										<TR id="a_period">
+											<TD>
+												<IMG src="img/calendar.gif" alt="">
+											</TD>
+											<TD class="bold nobr">
+												{trans("Period:")}
+											</TD>
+											<TD class="nobr">
+												{trans("from:")}
+												<INPUT type="TEXT" name="assignment[datefrom]" value="{if $assignment.datefrom}{$assignment.datefrom}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter accounting start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10">
+												
+												{trans("to:")}
+												<INPUT type="TEXT" name="assignment[dateto]" value="{if $assignment.dateto}{$assignment.dateto}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
+											</TD>
+										</TR>
+									
+										<TR id="a_value">
+											<TD>
+												<IMG src="img/value.gif" alt="">
+											</TD>
+											<TD class="bold">
+												{trans("Value:")}
+											</TD>
+											<TD>
+												<INPUT type="text" name="assignment[value]" value="{if $assignment.value}{$assignment.value}{/if}" size="10" {tip text="Enter liability value (tariffless liabilities only)" trigger="value"}>
+											</TD>
+										</TR>
+
+										<TR id="a_discount">
+											<TD style="{if ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
+												<IMG src="img/value.gif" alt="">
+											</TD>
+											<TD class="bold" style="{if ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
+												<span class="bold">{trans("Discount:")}</span>
+											</TD>
+											<TD style="{if ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
+												<INPUT type="text" size="8" name="assignment[discount]" value="{if $assignment.pdiscount != 0}{$assignment.pdiscount|string_format:"%.2f"}{else}{if $assignment.vdiscount != 0}{$assignment.vdiscount|string_format:"%.2f"}{/if}{/if}" {tip text="Enter discount percentage or amount" trigger="discount"}>
+												<SELECT name="assignment[discount_type]">
+													{foreach from=$_DISCOUNTTYPES item=item key=key}
+														<OPTION value="{$key}"{if $assignment.discount_type == $key} selected{/if}>{$item}</OPTION>
+													{/foreach}
+												</SELECT>
+											</TD>
+										</TR>
+									
+										<TR id="a_tax">
+											<TD>
+												<IMG src="img/tax.gif" alt="">
+											</TD>
+											<TD class="bold">
+												{trans("Tax:")}
+											</TD>
+											<TD>
+												<SELECT SIZE="1" name="assignment[taxid]" {tip text="Select Tax value"}>
+													{foreach item=tax from=$taxeslist}
+														<OPTION value="{$tax.id}"{if ($assignment.taxid && $tax.id == $assignment.taxid) || (!$assignment.taxid && $tax.value == ConfigHelper::getConfig('phpui.default_taxrate'))} selected{/if}>{$tax.label}</OPTION>
+													{/foreach}
+												</SELECT>
+											</TD>
+										</TR>
+
+										<TR id="a_productid">
+											<TD>
+												<IMG src="img/class.gif" alt="">
+											</TD>
+											<TD class="bold">
+												{trans("Product ID:")}
+											</TD>
+											<TD>
+												<INPUT type="text" name="assignment[prodid]" value="{$assignment.prodid}" size="10" {tip text="Enter liability Product ID (tariffless liabilities only)"}>
+											</TD>
+										</TR>
+									
+										<TR id="a_numberplan">
+											<TD>
+												<IMG src="img/id.gif" alt="">
+											</TD>
+											<TD class="bold nobr">
+												{trans("Numbering Plan:")}
+											</TD>
+											<TD>
+												<SELECT name="assignment[numberplanid]" {tip text="Select numbering plan"}>
+													<OPTION value=""{if !$assignment.numberplanid} selected{/if}>- {trans("default")} -</OPTION>
+									
+													{foreach item=plan from=$numberplanlist}
+														{assign var=period value=$plan.period}
+														<OPTION value="{$plan.id}"{if $plan.id==$assignment.numberplanid} SELECTED{/if}>{$plan.template} ({$_NUM_PERIODS.$period})</OPTION>
+													{/foreach}
+												</SELECT>
+											</TD>
+										</TR>
+	
+										<TR id="a_paytype">
+											<TD>
+												<IMG src="img/print.gif" alt="">
+											</TD>
+											<TD class="bold nobr">
+												{trans("Payment Type:")}
+											</TD>
+											<TD>
+												<SELECT name="assignment[paytype]" {tip text="Select payment type" trigger="paytype"}>									
+													<OPTION value=""{if !$assignment.paytype} selected{/if}>- {trans("default")} -</OPTION>
+	
+													{foreach from=$_PAYTYPES item=item key=key}
+														<OPTION value="{$key}"{if $assignment.paytype==$key} selected{/if}>{$item}</OPTION>
+													{/foreach}
+												</SELECT>
+											</TD>
+										</TR>
+									</TBODY>
+								</TABLE>
+							</TD>
+							<TD class="valign-top">
+								<TABLE style="width: 100%;" cellpadding="3">
+									<COLGROUP>
+										<COL style="width: 1%;">
+										<COL style="width: 1%;">
+										<COL style="width: 98%;">
+									</COLGROUP>
+			
+									<TBODY>
+										<TR id="a_options">
+											<TD>
+												<IMG src="img/options.gif" alt="">
+											</TD>
+											<TD class="bold">
+												{trans("Options:")}
+											</TD>
+											<TD class="nobr">
+												<label>
+													<INPUT type="checkbox" name="assignment[invoice]" value="1"{if $assignment.invoice} checked{/if}>
+													{trans("with invoice")}
+												</label>
+
+												<label>
+													<INPUT type="checkbox" name="assignment[settlement]" value="1"{if $assignment.settlement} checked{/if}>
+													{trans("with settlement of first deficient period")}
+												</label>
+											</TD>
+										</TR>
+										
+										{if $customernodes}
+										<TR id="a_nodes">
+											<TD>
+												<IMG src="img/node.gif" alt="">
+											</TD>
+											<TD class="bold">
+												{trans("Nodes:")}
+											</TD>
+											<TD class="nobr" id="nodeslist">
+												{foreach $customernodes as $customernode}
+													{assign var=nodeid value=$customernode.id}
+									
+													<label>
+														<INPUT type="checkbox" name="assignment[nodes][{counter}]" value="{$customernode.id}"{if in_array($nodeid, (array)$assignment.nodes)} checked{/if}>
+														<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
+													</label>
+													<BR>
+												{/foreach}
+		
+												{if count($customernodes) > 1}
+												<label>
+													<INPUT TYPE="checkbox" NAME="allbox" onchange="CheckAll('assignment', this, ['assignment[invoice]', 'assignment[settlement]'])" VALUE="1">
+													{trans("check all<!items>")}
+												</label>
+												{/if}
+											</TD>
+										</TR>
+										{/if}
+									</TBODY>
+								</TABLE>
+							</TD>
+						</TR>
+					</TBODY>
+				</TABLE>
+			</TD>
+		</TR>
+	
+		<TR>
+			<TD class="buttons" colspan="3">
+				<A href="#" onclick="return assignment_submit();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>&nbsp;
+				<A href="?m=customerinfo&id={$customerinfo.id}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
+			</TD>
+		</TR>
     </TBODY>
 </TABLE>
 </FORM>
 <BR>
+
 {include file="customer/customerassignments.html"}
 <SCRIPT type="text/javascript">
 <!--
-set_tariff();
-{if $promotionschemas}set_schema();{/if}
+	set_tariff();
+	
+	function updatePromotionsTable() {
+		$.each( $( '.promotionstable' ), function() {
+			$( this ).css('display', 'none');
+		
+			$.each( $(this).find( 'input, select' ), function() {
+				if ( $( this ).attr('data-mandatory') == undefined ) {
+					$( this ).attr('disabled', true);
+				}
+			});
+		});
+	}
+
+	$( '#promotionselect' ).change( function() {
+		updatePromotionsTable();
+		
+		var t = $(this).find('option:selected').text();
+			
+		$("[id='" + t + "']").css('display', 'table');
+	
+		$.each( $("[id='" + t + "']").find( 'input, select' ), function() {
+			if ( $( this ).attr('data-mandatory') == undefined ) {
+				$( this ).attr('disabled', false);
+			}
+		});
+	});
+	$( '#promotionselect' ).trigger('change');
 //-->
 </SCRIPT>
 {/block}
