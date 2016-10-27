@@ -174,7 +174,7 @@ window.open('?m=invoice&amp;id={$invoice.invoice}&amp;original={$invoice.origina
 				{/if}
 				{/if}
 				{else}
-				<A HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+				<A onclick="return confirmLink(this, '{t a=$number}Are you sure, you want to remove pro forma invoice \'$a\' from database?{/t}')" HREF="?m=invoicedel&id={$invoice.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 				{/if}
 			{/if}
 			{if !$invoice.closed}
