@@ -73,7 +73,10 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			$this->backend->text_autosize(15*$scale+$x,215*$scale+$y,30*$scale,trans('Payment for liabilities'),350*$scale);
 		else {
 			$tmp = docnumber($this->data['number'], $this->data['template'], $this->data['cdate']);
-			$this->backend->text_autosize(15*$scale+$x,215*$scale+$y,30*$scale,trans('Payment for invoice No. $a', $tmp),350*$scale);
+			if ($this->data['doctype'] == DOC_INVOICE_PRO)
+				$this->backend->text_autosize(15*$scale+$x,215*$scale+$y,30*$scale,trans('Payment for pro forma invoice No. $a', $tmp),350*$scale);
+			else
+				$this->backend->text_autosize(15*$scale+$x,215*$scale+$y,30*$scale,trans('Payment for invoice No. $a', $tmp),350*$scale);
 		}
 	}
 
@@ -109,7 +112,10 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			$this->backend->text_autosize(15*$scale+$x,250*$scale+$y,30*$scale, trans('Payment for liabilities'),950*$scale);
 		else {
 			$tmp = docnumber($this->data['number'], $this->data['template'], $this->data['cdate']);
-			$this->backend->text_autosize(15*$scale+$x,250*$scale+$y,30*$scale, trans('Payment for invoice No. $a',$tmp),950*$scale);
+			if ($this->data['doctype'] == DOC_INVOICE_PRO)
+				$this->backend->text_autosize(15*$scale+$x,250*$scale+$y,30*$scale, trans('Payment for pro forma invoice No. $a',$tmp),950*$scale);
+			else
+				$this->backend->text_autosize(15*$scale+$x,250*$scale+$y,30*$scale, trans('Payment for invoice No. $a',$tmp),950*$scale);
 		}
 	}
 
@@ -166,6 +172,8 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$tmp = docnumber($this->data['number'], $this->data['template'], $this->data['cdate']);
 		if (isset($this->data['invoice']))
 			$y=$y - $this->backend->text_align_left($x,$y,$font_size,'<b>' . trans('Credit Note No. $a',$tmp) . '</b>');
+		elseif ($this->data['doctype'] == DOC_INVOICE_PRO)
+			$y=$y - $this->backend->text_align_left($x,$y,$font_size,'<b>' . trans('Pro Forma Invoice No. $a',$tmp) . '</b>');
 		else
 			$y=$y - $this->backend->text_align_left($x,$y,$font_size,'<b>' . trans('Invoice No. $a',$tmp) . '</b>');
 

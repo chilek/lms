@@ -615,15 +615,16 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $this->syslog->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);
             }
 
-            $this->AddBalance(array(
-                'time' => $cdate,
-                'value' => $item['valuebrutto'] * $item['count'] * -1,
-                'taxid' => $item['taxid'],
-                'customerid' => $invoice['customer']['id'],
-                'comment' => $item['name'],
-                'docid' => $iid,
-                'itemid' => $itemid
-            ));
+			if ($type != DOC_INVOICE_PRO)
+				$this->AddBalance(array(
+					'time' => $cdate,
+					'value' => $item['valuebrutto'] * $item['count'] * -1,
+					'taxid' => $item['taxid'],
+					'customerid' => $invoice['customer']['id'],
+					'comment' => $item['name'],
+					'docid' => $iid,
+					'itemid' => $itemid
+				));
         }
 
         return $iid;
@@ -711,7 +712,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         global $PAYTYPES, $LMS;
 
-        if ($result = $this->db->GetRow('SELECT d.id, d.number, d.name, d.customerid,
+        if ($result = $this->db->GetRow('SELECT d.id, d.type AS doctype, d.number, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
 				d.ten, d.ssn, d.cdate, d.sdate, d.paytime, d.paytype, d.numberplanid,
 				d.closed, d.cancelled, d.published, d.reference, d.reason, d.divisionid,
@@ -730,7 +731,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-				WHERE d.id = ? AND (d.type = ? OR d.type = ?)', array($invoiceid, DOC_INVOICE, DOC_CNOTE))) {
+				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)', array($invoiceid, DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO))) {
 
 			$result['bankaccounts'] = $this->db->GetCol('SELECT contact FROM customercontacts
 				WHERE customerid = ? AND (type & ?) = ?',

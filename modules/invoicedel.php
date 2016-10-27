@@ -32,6 +32,6 @@ if ($id && $_GET['is_sure'] == '1') {
 	$LMS->InvoiceDelete($id);
 }
 
-$SESSION->redirect('?m=invoicelist');
+$SESSION->redirect($_SERVER['HTTP_REFERER']);
 
 ?>

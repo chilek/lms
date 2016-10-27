@@ -3025,6 +3025,9 @@ class LMS
 					case DOC_INVOICE:
 						$msg = trans('Invoice No. $a for $b', $invoice_number, $mailto);
 						break;
+					case DOC_INVOICE_PRO:
+						$msg = trans('Pro Forma Invoice No. $a for $b', $invoice_number, $mailto);
+						break;
 				}
 				if ($type == 'frontend') {
 					echo htmlspecialchars($msg) . $eol;

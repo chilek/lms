@@ -578,7 +578,7 @@ if (empty($types) || in_array('debtors', $types)) {
 				(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE c.paytime END) + ?) * 86400 < $currtime)))
 			OR (cash.docid <> 0 AND ((d.type IN (?, ?) AND cash.time < $currtime
 				OR (d.type IN (?, ?) AND d.cdate + (d.paytime + ?) * 86400 < $currtime)))))
-		GROUP BY c.id, c.pin, c.lastname, c.name, m.email, x.phone, divisions.account
+		GROUP BY c.id, c.pin, c.lastname, c.name, b.balance, m.email, x.phone, divisions.account
 		HAVING SUM(value) < ?", array(
 			CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
 			CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
