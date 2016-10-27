@@ -192,10 +192,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $datefrom    = $data['datefrom'];
             $cday        = date('d', $datefrom);
             
-            print_r($data);
-            						print_r($data_schema);
-                                  print_r($data_tariff);
-                                  //die();
             foreach ($data_tariff as $idx => $dt) {
                 list($value, $period) = explode(':', $dt);
                 
@@ -204,7 +200,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                     // if activation value specified, create disposable liability
                     if (f_round($value)) {
-                    echo "this";
                         $start_day   = date('d', $data['datefrom']);
                         $start_month = date('n', $data['datefrom']);
                         $start_year  = date('Y', $data['datefrom']);
@@ -243,7 +238,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 // promotion period
                 else {
                     $lid = 0;
-                         echo "Asd";
+
                     if (!$period)
                         $period = $data['period'];
                         
@@ -257,7 +252,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     // assume $data['at'] == 1, set last day of the specified month
                     $dateto = mktime(23, 59, 59, $month + $length + ($cday && $cday != 1 ? 1 : 0), 0, $year);
                     $cday   = 0;
-                             echo $datefrom, ' ' , $dateto,'|';
+
                     // Find tariff with specified name+value+period...
                     $tariffid = null;
                     if ($tariff['period'] !== null) {

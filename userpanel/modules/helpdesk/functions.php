@@ -423,7 +423,6 @@ function module_main()
 				$sms_body .= '. ' . trans('Phone:') . ' ' . preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones));
 		}
 
-		//print_r($headers);die;
 		// send email
 		if ($recipients = $DB->GetCol('SELECT DISTINCT email
 			FROM users, rtrights
