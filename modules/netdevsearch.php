@@ -100,7 +100,7 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND')
 				(SELECT COUNT(*) FROM vnodes WHERE netdev = d.id AND n.ownerid > 0)
 	            		+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id) AS takenports
 	        		FROM netdevices d'
-				.(isset($nodes) ? ' LEFT JOIN vnodes n ON (netdev = d.id AND ownerid = 0)' : '')
+				.(isset($nodes) ? ' LEFT JOIN vnodes n ON (netdev = d.id AND n.ownerid = 0)' : '')
 				.(isset($searchargs) ? $searchargs : '')
 				.($sqlord != '' ? $sqlord.' '.$direction : ''));
 
