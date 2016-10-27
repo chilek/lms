@@ -177,28 +177,38 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         // Create assignments according to promotion schema
         if (!empty($data['promotiontariffid']) && !empty($data['schemaid'])) {
+
             $data['tariffid'] = $data['promotiontariffid'];
-            $tariff = $this->db->GetRow('SELECT a.data, s.data AS sdata,
-                    t.name, t.value, t.period, t.id, t.prodid, t.taxid,
-                    s.continuation, s.ctariffid
-                    FROM promotionassignments a
-                    JOIN promotionschemas s ON (s.id = a.promotionschemaid)
-                    JOIN tariffs t ON (t.id = a.tariffid)
-                    WHERE a.promotionschemaid = ? AND a.tariffid = ?', array($data['schemaid'], $data['promotiontariffid']));
+            $tariff = $this->db->GetRow('SELECT a.data, s.data AS sdata, t.name, t.value, t.period,
+                                         	t.id, t.prodid, t.taxid, s.continuation, s.ctariffid
+					                     FROM
+					                     	promotionassignments a
+						                    JOIN promotionschemas s ON (s.id = a.promotionschemaid)
+						                    JOIN tariffs t ON (t.id = a.tariffid)
+					                     WHERE a.promotionschemaid = ? AND a.tariffid = ?', array($data['schemaid'], $data['promotiontariffid']));
+                    
             $data_schema = explode(';', $tariff['sdata']);
             $data_tariff = explode(';', $tariff['data']);
-            $datefrom = $data['datefrom'];
-            $cday = date('d', $datefrom);
-
+            $datefrom    = $data['datefrom'];
+            $cday        = date('d', $datefrom);
+            
+            print_r($data);
+            						print_r($data_schema);
+                                  print_r($data_tariff);
+                                  //die();
             foreach ($data_tariff as $idx => $dt) {
                 list($value, $period) = explode(':', $dt);
+                
                 // Activation
                 if (!$idx) {
+
                     // if activation value specified, create disposable liability
                     if (f_round($value)) {
-                        $start_day = date('d', $data['datefrom']);
+                    echo "this";
+                        $start_day   = date('d', $data['datefrom']);
                         $start_month = date('n', $data['datefrom']);
-                        $start_year = date('Y', $data['datefrom']);
+                        $start_year  = date('Y', $data['datefrom']);
+                        
                         // payday is before the start of the period
                         // set activation payday to next month's payday
                         if ($start_day > $data['at']) {
@@ -212,8 +222,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             SYSLOG::RES_TAX => intval($tariff['taxid']),
                             'prodid' => $tariff['prodid']
                         );
-                        $this->db->Execute('INSERT INTO liabilities (name, value, taxid, prodid)
-							VALUES (?, ?, ?, ?)', array_values($args));
+                        $this->db->Execute('INSERT INTO liabilities (name, value, taxid, prodid) VALUES (?, ?, ?, ?)', array_values($args));
+                        
                         $lid = $this->db->GetLastInsertID('liabilities');
 
                         if ($this->syslog) {
@@ -223,40 +233,45 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         }
 
                         $tariffid = 0;
-                        $period = DISPOSABLE;
-                        $at = $datefrom;
+                        $period   = DISPOSABLE;
+                        $at       = $datefrom;
                     } else {
                         continue;
                     }
                 }
+                
                 // promotion period
                 else {
                     $lid = 0;
+                         echo "Asd";
                     if (!$period)
                         $period = $data['period'];
-                    $datefrom = $_datefrom ? $_datefrom : $datefrom;
+                        
+                    $datefrom  = $_datefrom ? $_datefrom : $datefrom;
                     $_datefrom = 0;
-                    $at = $this->CalcAt($period, $datefrom);
-                    $length = $data_schema[$idx - 1];
-                    $month = date('n', $datefrom);
-                    $year = date('Y', $datefrom);
+                    $at        = $this->CalcAt($period, $datefrom);
+                    $length    = $data_schema[$idx - 1];
+                    $month     = date('n', $datefrom);
+                    $year      = date('Y', $datefrom);
+                    
                     // assume $data['at'] == 1, set last day of the specified month
                     $dateto = mktime(23, 59, 59, $month + $length + ($cday && $cday != 1 ? 1 : 0), 0, $year);
-                    $cday = 0;
-
+                    $cday   = 0;
+                             echo $datefrom, ' ' , $dateto,'|';
                     // Find tariff with specified name+value+period...
                     $tariffid = null;
                     if ($tariff['period'] !== null) {
-                        $tariffid = $this->db->GetOne('
-                            SELECT id FROM tariffs
-                            WHERE name = ? AND value = ? AND period = ?
-                            LIMIT 1',
-                            array(
-                                $tariff['name'],
-                                str_replace(',', '.', $value),
-                                $tariff['period'],
-                            )
-                        );
+                    
+                        $tariffid = $this->db->GetOne('SELECT id FROM tariffs 
+                        							   WHERE 
+                        							   		name   = ? AND
+                        							   		value  = ? AND
+                        							   		period = ?
+                        							   LIMIT 1',
+							                           array( $tariff['name'],
+                                                              str_replace(',', '.', $value),
+                                                              $tariff['period'] ) );
+                        
                     } else {
                         $tariffid = $this->db->GetOne('
                             SELECT id FROM tariffs
@@ -271,26 +286,32 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                     // ... if not found clone tariff
                     if (!$tariffid) {
-                        $args = $this->db->GetRow('SELECT name, value, period,
-							' . SYSLOG::RES_TAX . ', type, upceil, downceil, uprate, downrate,
-							prodid, plimit, climit, dlimit, upceil_n, downceil_n, uprate_n, downrate_n,
-							domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
-							quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit
-							FROM tariffs WHERE id = ?', array($tariff['id']));
-                        $args = array_merge($args, array(
-                            SYSLOG::RES_TAX => $args[SYSLOG::RES_TAX],
-                            'name' => $tariff['name'],
-                            'value' => str_replace(',', '.', $value),
-                            'period' => $tariff['period']
-                        ));
+                        $args = $this->db->GetRow('SELECT
+                        							  name, value, period, ' . SYSLOG::RES_TAX . ', type, upceil,
+                                                  	  downceil, uprate, downrate, prodid, plimit, climit, dlimit, upceil_n,
+                                                  	  downceil_n, uprate_n, downrate_n, domain_limit, alias_limit, sh_limit,
+                                                  	  www_limit, ftp_limit, mail_limit, sql_limit, quota_sh_limit, quota_www_limit,
+                                                  	  quota_ftp_limit, quota_mail_limit, quota_sql_limit
+												   FROM 
+												   	  tariffs WHERE id = ?', array($tariff['id']));
+
+                        $args = array_merge($args, array( SYSLOG::RES_TAX => $args[SYSLOG::RES_TAX],
+								                          'name' => $tariff['name'],
+								                          'value' => str_replace(',', '.', $value),
+								                          'period' => $tariff['period'] ));
+
                         unset($args['taxid']);
-                        $this->db->Execute('INSERT INTO tariffs (name, value, period,
-							taxid, type, upceil, downceil, uprate, downrate,
-							prodid, plimit, climit, dlimit, upceil_n, downceil_n, uprate_n, downrate_n,
-							domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
-							quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit)
-							VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+
+                        $this->db->Execute('INSERT INTO tariffs 
+                        					   (name, value, period, taxid, type, upceil, downceil, uprate, downrate, prodid,
+                        					   plimit, climit, dlimit, upceil_n, downceil_n, uprate_n, downrate_n,
+				   							   domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
+											   quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit)
+							                VALUES
+							                   (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+
                         $tariffid = $this->db->GetLastInsertId('tariffs');
+
                         if ($this->syslog) {
                             $args[SYSLOG::RES_TARIFF] = $tariffid;
                             $this->syslog->AddMessage(SYSLOG::RES_TARIFF, SYSLOG::OPER_ADD, $args);
@@ -300,22 +321,23 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                 // Create assignment
                 $args = array(
-                    SYSLOG::RES_TARIFF => $tariffid,
-                    SYSLOG::RES_CUST => $data['customerid'],
-                    'period' => $period,
-                    'at' => $at,
-                    'invoice' => !empty($data['invoice']) ? 1 : 0,
-                    'settlement' => !empty($data['settlement']) ? 1 : 0,
+                    SYSLOG::RES_TARIFF  => $tariffid,
+                    SYSLOG::RES_CUST    => $data['customerid'],
+                    'period'            => $period,
+                    'at'                => $at,
+                    'invoice'           => !empty($data['invoice']) ? 1 : 0,
+                    'settlement'        => !empty($data['settlement']) ? 1 : 0,
                     SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
-                    'paytype' => !empty($data['paytype']) ? $data['paytype'] : NULL,
-                    'datefrom' => $idx ? $datefrom : 0,
-                    'dateto' => $idx ? $dateto : 0,
-                    'pdiscount' => 0,
-                    'vdiscount' => 0,
-                    'attribute' => !empty($data['attribute']) ? $data['attribute'] : NULL,
-                    SYSLOG::RES_LIAB => $lid,
+                    'paytype'           => !empty($data['paytype']) ? $data['paytype'] : NULL,
+                    'datefrom'          => $idx ? $datefrom : 0,
+                    'dateto'            => $idx ? $dateto : 0,
+                    'pdiscount'         => 0,
+                    'vdiscount'         => 0,
+                    'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
+                    SYSLOG::RES_LIAB    => $lid,
                 );
 
+				/*
                 $this->db->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
 					    settlement, numberplanid, paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid)
 					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
@@ -325,9 +347,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 if ($this->syslog) {
                     $args[SYSLOG::RES_ASSIGN] = $id;
                     $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_ADD, $args);
-                }
+                } 
+                */
 
-                $result[] = $id;
+                $result[] = $this->insertAssignment( $args );
+                
                 if ($idx) {
                     $datefrom = $dateto + 1;
                 }
@@ -335,6 +359,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
             // add "after promotion" tariff(s)
             if ($tariff['continuation'] || !$data_schema[0]) {
+            
                 $tariffs[] = $tariff['id'];
                 if ($tariff['ctariffid'] && $data_schema[0] != 0) {
                     $tariffs[] = $tariff['ctariffid'];
@@ -343,22 +368,23 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 // Create assignments
                 foreach ($tariffs as $t) {
                     $args = array(
-                        SYSLOG::RES_TARIFF => $t,
-                        SYSLOG::RES_CUST => $data['customerid'],
-                        'period' => $data['period'],
-                        'at' => $this->CalcAt($data['period'], $datefrom),
-                        'invoice' => !empty($data['invoice']) ? 1 : 0,
-                        'settlement' => !empty($data['settlement']) ? 1 : 0,
+                        SYSLOG::RES_TARIFF  => $t,
+                        SYSLOG::RES_CUST    => $data['customerid'],
+                        'period'            => $data['period'],
+                        'at'                => $this->CalcAt($data['period'], $datefrom),
+                        'invoice'           => !empty($data['invoice']) ? 1 : 0,
+                        'settlement'        => !empty($data['settlement']) ? 1 : 0,
                         SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
-                        'paytype' => !empty($data['paytype']) ? $data['paytype'] : NULL,
-                        'datefrom' => $datefrom,
-                        'dateto' => 0,
-                        'pdiscount' => 0,
-                        'vdiscount' => 0,
-                         'attribute' => !empty($data['attribute']) ? $data['attribute'] : NULL,
-                        SYSLOG::RES_LIAB => 0,
+                        'paytype'           => !empty($data['paytype']) ? $data['paytype'] : NULL,
+                        'datefrom'          => $datefrom,
+                        'dateto'            => 0,
+                        'pdiscount'         => 0,
+                        'vdiscount'         => 0,
+                        'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
+                        SYSLOG::RES_LIAB    => 0,
                     );
 
+/*
                     $this->db->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
 					    settlement, numberplanid, paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid)
 					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
@@ -369,8 +395,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $args[SYSLOG::RES_ASSIGN] = $id;
                         $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_ADD, $args);
                     }
+                    */
 
-                    $result[] = $id;
+                    $result[] = $this->insertAssignment( $args );
                 }
             }
         }
@@ -394,21 +421,23 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
 
             $args = array(
-                SYSLOG::RES_TARIFF => intval($data['tariffid']),
-                SYSLOG::RES_CUST => $data['customerid'],
-                'period' => $data['period'],
-                'at' => $data['at'],
-                'invoice' => !empty($data['invoice']) ? 1 : 0,
-                'settlement' => !empty($data['settlement']) ? 1 : 0,
+                SYSLOG::RES_TARIFF  => intval($data['tariffid']),
+                SYSLOG::RES_CUST    => $data['customerid'],
+                'period'            => $data['period'],
+                'at'                => $data['at'],
+                'invoice'           => !empty($data['invoice']) ? 1 : 0,
+                'settlement'        => !empty($data['settlement']) ? 1 : 0,
                 SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
-                'paytype' => !empty($data['paytype']) ? $data['paytype'] : NULL,
-                'datefrom' => $data['datefrom'],
-                'dateto' => $data['dateto'],
-                'pdiscount' => str_replace(',', '.', $data['pdiscount']),
-                'vdiscount' => str_replace(',', '.', $data['vdiscount']),
-                 'attribute' => !empty($data['attribute']) ? $data['attribute'] : NULL,
-                SYSLOG::RES_LIAB => isset($lid) ? $lid : 0,
+                'paytype'           => !empty($data['paytype']) ? $data['paytype'] : NULL,
+                'datefrom'          => $data['datefrom'],
+                'dateto'            => $data['dateto'],
+                'pdiscount'         => str_replace(',', '.', $data['pdiscount']),
+                'vdiscount'         => str_replace(',', '.', $data['vdiscount']),
+                'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
+                SYSLOG::RES_LIAB    => isset($lid) ? $lid : 0,
             );
+            
+            /*
             $this->db->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
 					    settlement, numberplanid, paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid)
 					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
@@ -419,8 +448,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $args[SYSLOG::RES_ASSIGN] = $id;
                 $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_ADD, $args);
             }
+               */
 
-            $result[] = $id;
+            $result[] = $this->insertAssignment( $args );
         }
 
         if (!empty($result) && count($result = array_filter($result))) {
@@ -447,8 +477,31 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 }
             }
         }
-
+           //die();
         return $result;
+    }
+    
+    /*
+     * Helper method who insert assignment.
+     *
+     * \param  array $args array with parameters for SQL query
+     * \return int   last inserted id
+     */
+    private function insertAssignment($args) {
+    	$this->db->Execute('INSERT INTO assignments
+    							(tariffid, customerid, period, at, invoice, settlement, numberplanid,
+    							paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid)
+					        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+					        array_values($args));
+
+        $id = $this->db->GetLastInsertID('assignments');
+
+        if ($this->syslog) {
+            $args[SYSLOG::RES_ASSIGN] = $id;
+            $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_ADD, $args);
+        }
+        
+        return $id;
     }
 
     public function SuspendAssignment($id, $suspend = TRUE)
