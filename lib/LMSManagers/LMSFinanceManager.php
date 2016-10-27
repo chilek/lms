@@ -272,7 +272,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     // ... if not found clone tariff
                     if (!$tariffid) {
                         $args = $this->db->GetRow('SELECT name, value, period,
-							taxid AS ' . SYSLOG::RES_TAX . ', type, upceil, downceil, uprate, downrate,
+							' . SYSLOG::RES_TAX . ', type, upceil, downceil, uprate, downrate,
 							prodid, plimit, climit, dlimit, upceil_n, downceil_n, uprate_n, downrate_n,
 							domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
 							quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit
