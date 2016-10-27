@@ -213,9 +213,7 @@ if (isset($_POST['customeradd']))
         );
         $customeradd = $hook_data['customeradd'];
         $error = $hook_data['error'];
-        
-        
-//	print_r($error);die;
+
 	if (!$error) {
 		$customeradd['cutoffstop'] = $cutoffstop;
 
