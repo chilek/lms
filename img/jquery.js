@@ -357,9 +357,10 @@ $(function() {
 				var i = 0;
 				var searchFields = $('thead input[type="search"],thead select', elem);
 				api.columns().every(function(index) {
-					var column = state.columns[index];
-					if (!column.visible)
+					var columnState = state.columns[index];
+					if (!columnState.visible) {
 						return;
+					}
 					if (typeof searchColumns[index].search === 'undefined') {
 						$(searchFields[i]).val(state.columns[index].search.search);
 					} else {
@@ -447,12 +448,23 @@ $(function() {
 					$('div#pagecontent').show();
 				}
 			}
-		}).on('column-visibility.dt', function(e, settings, column, state) {
-			if (!state)
+		}).on('column-visibility.dt', function(e, settings, column, visible) {
+			if (!visible)
 				return;
 			var api = $(this).data('api');
 			var searchValue = api.columns(column).search()[0];
-			$('thead tr:last-child th:nth-child(' + (column + 1) + ') :input', elem).val(searchValue);
+			var columnStates = api.state().columns;
+			var i = 0;
+			api.columns().every(function(index) {
+				if (index == column) {
+					$('thead tr:last-child th:nth-child(' + (i + 1) + ') :input', elem).val(searchValue);
+					console.log(i + ' ' + index + ' ' + column);
+				}
+				if (!columnStates[index].visible) {
+					return;
+				}
+				i++;
+			});
 		});
 
 		$(elem).DataTable({
