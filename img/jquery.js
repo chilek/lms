@@ -350,6 +350,7 @@ $(function() {
 		$(elem).on('init.dt', function(e, settings) {
 			var searchColumns = $(this).data('init').searchColumns;
 			var api = new $.fn.dataTable.Api(settings);
+			$(this).data('api', api);
 			var state = api.state.loaded();
 
 			if (state && columnSearch) {
@@ -446,6 +447,12 @@ $(function() {
 					$('div#pagecontent').show();
 				}
 			}
+		}).one('column-visibility.dt', function(e, settings, column, state) {
+			if (!state)
+				return;
+			var api = $(this).data('api');
+			var searchValue = api.columns(column).search()[0];
+			$('thead tr:last-child th:nth-child(' + (column + 1) + ') :input', elem).val(searchValue);
 		});
 
 		$(elem).DataTable({
