@@ -90,7 +90,11 @@
 	<TR class="highlight {cycle}">
 		<TD onClick="return self.location.href='?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}';" VALIGN="TOP">
 			<IMG src="img/netdev.gif" ALT=""> <a name="{$netdevlist[netdevlist].id}"><B>{$netdevlist[netdevlist].name}</B></A><BR>
-			<IMG src="img/producer.gif" ALT=""> {$netdevlist[netdevlist].producer} {if $netdevlist[netdevlist].model}/ {$netdevlist[netdevlist].model}{/if}
+			{if $netdevlist[netdevlist].producer}
+				<IMG src="img/producer.gif" ALT=""> {$netdevlist[netdevlist].producer} {if $netdevlist[netdevlist].model}/ {$netdevlist[netdevlist].model}{/if}
+			{else}
+				<br>
+			{/if}
 		</TD>
 		<TD onClick="return self.location.href='?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}';" class="nobr valign-top">
 			{if $netdevlist[netdevlist].location}{$netdevlist[netdevlist].location}{if $netdevlist[netdevlist].borough_name}<br><span class="blend">({$netdevlist[netdevlist].state_name} / {$netdevlist[netdevlist].district_name} / {$_BOROUGHTYPES[$netdevlist[netdevlist].borough_type]} {$netdevlist[netdevlist].borough_name})</span>{/if}{/if}
