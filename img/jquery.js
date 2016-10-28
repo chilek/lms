@@ -351,15 +351,21 @@ $(function() {
 			var searchColumns = $(this).data('init').searchColumns;
 			var api = new $.fn.dataTable.Api(settings);
 			var state = api.state.loaded();
+
 			if (state && columnSearch) {
-				$('thead input[type="search"],thead select', elem).each(function(index, input) {
-					var column = $(input).parent().index();
-					if (typeof searchColumns[column].search === 'undefined')
-						$(input).val(state.columns[column].search.search);
-					else {
-						$(input).val(searchColumns[column].search);
-						$(elem).DataTable().column(column).search(searchColumns[column].search).draw();
+				var i = 0;
+				var searchFields = $('thead input[type="search"],thead select', elem);
+				api.columns().every(function(index) {
+					var column = state.columns[index];
+					if (!column.visible)
+						return;
+					if (typeof searchColumns[index].search === 'undefined') {
+						$(searchFields[i]).val(state.columns[index].search.search);
+					} else {
+						$(searchFields[i]).val(searchColumns[index].search);
+						api.column(index).search(searchColumns[index].search).draw();
 					}
+					i++;
 				});
 			}
 
