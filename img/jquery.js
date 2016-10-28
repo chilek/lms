@@ -131,6 +131,8 @@ $(function() {
 					async: true,
 					success: function(data) {
 						callback(data);
+						elem.tooltip('disable');
+						elem.tooltip('enable');
 					}
 				});
 			}
@@ -346,16 +348,18 @@ $(function() {
 		}
 
 		$(elem).on('init.dt', function(e, settings) {
+			var searchColumns = $(this).data('init').searchColumns;
 			var api = new $.fn.dataTable.Api(settings);
 			var state = api.state.loaded();
 			if (state && columnSearch) {
-				$('thead input[type="search"]', elem).each(function(index, input) {
+				$('thead input[type="search"],thead select', elem).each(function(index, input) {
 					var column = $(input).parent().index();
-					$(input).attr('value', state.columns[column].search.search);
-				});
-				$('thead select', elem).each(function(index, select) {
-					var column = $(select).parent().index();
-					$(select).val(state.columns[column].search.search);
+					if (typeof searchColumns[column].search === 'undefined')
+						$(input).val(state.columns[column].search.search);
+					else {
+						$(input).val(searchColumns[column].search);
+						$(elem).DataTable().column(column).search(searchColumns[column].search).draw();
+					}
 				});
 			}
 
@@ -453,6 +457,7 @@ $(function() {
 			stateDuration: lmsSettings.settingsTimeout,
 			lengthMenu: [[ 10, 25, 50, 100, -1 ], [ 10, 25, 50, 100, lmsMessages.all ]],
 			displayStart: init.displayStart,
+			searchCols: init.searchColumns,
 			stateSave: init.stateSave,
 			ordering: init.ordering,
 			orderCellsTop: init.orderCellsTop
@@ -469,6 +474,12 @@ $(function() {
 		init.displayStart = $(this).attr('data-display-start');
 		if (init.displayStart === undefined) {
 			init.displayStart = 0;
+		}
+		init.searchColumns = $(this).attr('data-search-columns');
+		if (init.searchColumns === undefined) {
+			init.searchColumns = [];
+		} else {
+			init.searchColumns = eval(init.searchColumns);
 		}
 		init.stateSave = $(this).attr('data-state-save');
 		if (init.stateSave === undefined) {
