@@ -447,7 +447,7 @@ $(function() {
 					$('div#pagecontent').show();
 				}
 			}
-		}).one('column-visibility.dt', function(e, settings, column, state) {
+		}).on('column-visibility.dt', function(e, settings, column, state) {
 			if (!state)
 				return;
 			var api = $(this).data('api');
