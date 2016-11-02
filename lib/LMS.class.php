@@ -492,6 +492,12 @@ class LMS
         return $manager->getCustomerNodes($id, $count);
     }
 
+    public function GetCustomerNetDevs($customer_id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->GetCustomerNetDevs($customer_id);
+    }
+
     public function GetCustomerNetworks($id, $count = null)
     {
         $manager = $this->getCustomerManager();

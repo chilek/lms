@@ -830,8 +830,32 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     }
 
     /**
+     * Returns customer network devices.
+     *
+     * @param  int   $customer_id Customer id
+     * @return array network devices
+     */
+    public function GetCustomerNetDevs( $customer_id ) {
+        $netdevs = $this->db->GetAllByKey('SELECT
+                                              nd.id, nd.name, lc.name as location_city, lc.id as location_city_id, ls.name as location_street,
+                                              ls.id as location_street_id, nd.location_house, nd.location_flat, nd.description, nd.producer,
+                                              nd.model, nd.serialnumber, nd.ports, nd.purchasetime, nd.guaranteeperiod, nd.shortname, nd.nastype,
+                                              nd.clients, nd.community, nd.channelid, nd.longitude, nd.latitude, nd.netnodeid, nd.invprojectid,
+                                              nd.status, nd.netdevicemodelid, nd.ownerid, no.authtype
+                                           FROM
+                                              netdevices nd
+                                              LEFT JOIN location_cities lc ON nd.location_city = lc.id
+                                              LEFT JOIN location_streets ls ON nd.location_street = ls.id
+                                              LEFT JOIN nodes no ON nd.id = no.netdev
+                                           WHERE
+                                              nd.ownerid = ?', 'id', array($customer_id));
+
+        return $netdevs;
+    }
+
+    /**
      * Returns customer networks
-     * 
+     *
      * @param int $id Customer id
      * @param int $count Limit
      * @return array Networks
