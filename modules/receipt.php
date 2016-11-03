@@ -31,7 +31,7 @@ function GetReceipt($id) {
 					ds.name AS d_name, ds.address AS d_address,
 					ds.zip AS d_zip, ds.city AS d_city
 				FROM documents d
-				LEFT JOIN users u ON (d.userid = u.id)
+				LEFT JOIN vusers u ON (d.userid = u.id)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				LEFT JOIN customers c ON (d.customerid = c.id)
 				LEFT JOIN divisions ds ON (ds.id = c.divisionid)
