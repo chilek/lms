@@ -143,7 +143,11 @@ if (!empty($_POST['marks'])) {
 	$doc['filename'] = $docattach['filename'];
 	$doc['contenttype'] = $docattach['contenttype'];
 
-	$docnumber = docnumber($doc['number'], $doc['template'], $doc['cdate']);
+	$docnumber = docnumber(array(
+		'number' => $doc['number'],
+		'template' => $doc['template'],
+		'cdate' => $doc['cdate'],
+	));
 	$filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($doc['md5sum'],0,2) . DIRECTORY_SEPARATOR . $doc['md5sum'];
 	if (file_exists($filename)) {
 		$filename_pdf = DOC_DIR . DIRECTORY_SEPARATOR . substr($doc['md5sum'],0,2) . DIRECTORY_SEPARATOR . $doc['md5sum'].'.pdf';

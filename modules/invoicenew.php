@@ -269,7 +269,12 @@ switch($action)
 		{
 			if(!preg_match('/^[0-9]+$/', $invoice['number']))
 				$error['number'] = trans('Invoice number must be integer!');
-			elseif($LMS->DocumentExists($invoice['number'], $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']))
+			elseif($LMS->DocumentExists(array(
+					'number' => $invoice['number'],
+					'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+					'planid' => $invoice['numberplanid'],
+					'cdate' => $invoice['cdate'],
+				)))
 				$error['number'] = trans('Invoice number $a already exists!', $invoice['number']);
 		}
 
@@ -333,15 +338,28 @@ switch($action)
 		$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions'));
 
 		if(!$invoice['number'])
-			$invoice['number'] = $LMS->GetNewDocumentNumber($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
+			$invoice['number'] = $LMS->GetNewDocumentNumber(array(
+				'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+				'planid' => $invoice['numberplanid'],
+				'cdate' => $invoice['cdate'],
+			));
 		else {
 			if(!preg_match('/^[0-9]+$/', $invoice['number']))
 				$error['number'] = trans('Invoice number must be integer!');
-			elseif($LMS->DocumentExists($invoice['number'], $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']))
+			elseif($LMS->DocumentExists(array(
+					'number' => $invoice['number'],
+					'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+					'planid' => $invoice['numberplanid'],
+					'cdate' => $invoice['cdate'],
+				)))
 				$error['number'] = trans('Invoice number $a already exists!', $invoice['number']);
 
 			if($error) {
-				$invoice['number'] = $LMS->GetNewDocumentNumber($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
+				$invoice['number'] = $LMS->GetNewDocumentNumber(array(
+					'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, 
+					'planid' => $invoice['numberplanid'],
+					'cdate' => $invoice['cdate'],
+				));
 				$error = null;
 			}
 		}
@@ -444,7 +462,10 @@ $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, date('Y/m', $invoice['cdate'])));
+$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
+	'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+	'cdate' => date('Y/m', $invoice['cdate']),
+)));
 $SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->display('invoice/invoicenew.html');
 

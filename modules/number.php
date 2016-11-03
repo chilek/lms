@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,7 +29,12 @@ if($doc = $DB->GetRow('SELECT number, cdate, type, template, extnumber
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 			WHERE documents.id = ?', array($_GET['id'])))
 {
-	$ntempl = docnumber($doc['number'], $doc['template'], $doc['cdate'], $doc['extnumber']);
+	$ntempl = docnumber(array(
+		'number' => $doc['number'],
+		'template' => $doc['template'],
+		'cdate' => $doc['cdate'],
+		'ext_num' => $doc['extnumber'],
+	));
 
 	switch($doc['type'])
 	{

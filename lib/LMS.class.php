@@ -2109,22 +2109,22 @@ class LMS
         return $manager->EventSearch($search, $order, $simple);
     }
 
-    public function GetNumberPlans($doctype = NULL, $cdate = NULL, $division = NULL, $next = true)
+    public function GetNumberPlans($properties)
     {
         $manager = $this->getDocumentManager();
-        return $manager->GetNumberPlans($doctype, $cdate, $division, $next);
+        return $manager->GetNumberPlans($properties);
     }
 
-    public function GetNewDocumentNumber($doctype = NULL, $planid = NULL, $cdate = NULL)
+    public function GetNewDocumentNumber($properties)
     {
         $manager = $this->getDocumentManager();
-        return $manager->GetNewDocumentNumber($doctype, $planid, $cdate);
+        return $manager->GetNewDocumentNumber($properties);
     }
 
-    public function DocumentExists($number, $doctype = NULL, $planid = 0, $cdate = NULL)
+    public function DocumentExists($properties)
     {
         $manager = $this->getDocumentManager();
-        return $manager->DocumentExists($number, $doctype, $planid, $cdate);
+        return $manager->DocumentExists($properties);
     }
 
     public function GetCountryStates()
@@ -3000,7 +3000,11 @@ class LMS
 					$body = $mail_body;
 			$subject = $mail_subject;
 
-			$invoice_number = docnumber($doc['number'], $invoice_number, $doc['cdate'] + date('Z'));
+			$invoice_number = docnumber(array(
+				'number' => $doc['number'],
+				'template' => $invoice_number,
+				'cdate' => $doc['cdate'] + date('Z'),
+			));
 			$body = preg_replace('/%invoice/', $invoice_number, $body);
 			$body = preg_replace('/%balance/', $this->GetCustomerBalance($doc['customerid']), $body);
 			$body = preg_replace('/%today/', $year . '-' . $month . '-' . $day, $body);

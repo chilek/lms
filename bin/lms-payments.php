@@ -545,7 +545,11 @@ foreach ($assigns as $assign) {
 				$paytime = $customer['paytime'];
 				if ($paytime == -1) $paytime = $deadline;
 
-				$fullnumber = docnumber($numbers[$plan], $numbertemplates[$plan], $currtime);
+				$fullnumber = docnumber(array(
+					'number' => $numbers[$plan],
+					'template' => $numbertemplates[$plan],
+					'cdate' => $currtime,
+				));
 				$DB->Execute("INSERT INTO documents (number, numberplanid, type, countryid, divisionid, 
 					customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype,
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,

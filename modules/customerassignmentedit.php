@@ -456,7 +456,12 @@ $SMARTY->assign('taxeslist', $LMS->GetTaxes());
 $SMARTY->assign('expired', $expired);
 $SMARTY->assign('assignment', $a);
 $SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customer['id'], $expired));
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE, NULL, $customer['divisionid'], false));
+$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
+	'doctype' => DOC_INVOICE,
+	'cdate' => null,
+	'division' => $customer['divisionid'],
+	'next' => false,
+)));
 $SMARTY->assign('customerinfo', $customer);
 $SMARTY->display('customer/customerassignmentsedit.html');
 

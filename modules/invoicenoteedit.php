@@ -87,7 +87,11 @@ $SESSION->restore('cnote', $cnote);
 $SESSION->restore('cnoteediterror', $error);
 $itemdata = r_trim($_POST);
 
-$ntempl = docnumber($cnote['number'], $cnote['template'], $cnote['cdate']);
+$ntempl = docnumber(array(
+	'number' => $cnote['number'],
+	'template' => $cnote['template'],
+	'cdate' => $cnote['cdate'],
+));
 $layout['pagetitle'] = trans('Credit Note for Invoice Edit: $a', $ntempl);
 
 switch ($action) {

@@ -78,7 +78,11 @@ if(isset($_GET['id']) && $action == 'edit')
 			WHERE n.doctype = ? AND n.isdefault = 1 AND a.divisionid = ?',
 			array(DOC_INVOICE, $customer['divisionid']));
 
-		$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
+		$invoice['number'] = $LMS->GetNewDocumentNumber(array(
+			'doctype' => DOC_INVOICE,
+			'planid' => $invoice['numberplanid'],
+			'cdate' => $invoice['cdate'],
+		));
 	}
 
 	$SESSION->save('invoice', $invoice);
@@ -91,7 +95,11 @@ $SESSION->restore('invoice', $invoice);
 $SESSION->restore('invoiceediterror', $error);
 $itemdata = r_trim($_POST);
 
-$ntempl = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+$ntempl = docnumber(array(
+	'number' => $invoice['number'],
+	'template' => $invoice['template'],
+	'cdate' => $invoice['cdate'],
+));
 if (isset($invoice['proforma']))
 	$layout['pagetitle'] = trans('Conversion Pro Forma Invoice $a To Invoice', $ntempl);
 elseif($invoice['doctype'] == DOC_INVOICE_PRO)
@@ -274,15 +282,28 @@ switch($action)
 			FROM divisions WHERE id = ? ;',array($customer['divisionid']));
 
 		if (!$invoice['number'])
-			$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
+			$invoice['number'] = $LMS->GetNewDocumentNumber(array(
+				'doctype' => DOC_INVOICE,
+				'planid' => $invoice['numberplanid'],
+				'cdate' => $invoice['cdate'],
+			));
 		else {
 			if(!preg_match('/^[0-9]+$/', $invoice['number']))
 				$error['number'] = trans('Invoice number must be integer!');
-			elseif($LMS->DocumentExists($invoice['number'], DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']))
+			elseif($LMS->DocumentExists(array(
+					'number' => $invoice['number'],
+					'doctype' => DOC_INVOICE,
+					'planid' => $invoice['numberplanid'],
+					'cdate' => $invoice['cdate'],
+				)))
 				$error['number'] = trans('Invoice number $a already exists!', $invoice['number']);
 
 			if ($error) {
-				$invoice['number'] = $LMS->GetNewDocumentNumber(DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
+				$invoice['number'] = $LMS->GetNewDocumentNumber(array(
+					'doctype' => DOC_INVOICE,
+					'planid' => $invoice['numberplanid'],
+					'cdate' => $invoice['cdate'],
+				));
 				$error = null;
 			}
 		}
@@ -319,8 +340,11 @@ switch($action)
 			$args['type'] = DOC_INVOICE;
 			$args['number'] = $invoice['number'];
 			if ($invoice['numberplanid'])
-				$args['fullnumber'] = docnumber($invoice['number'],
-					$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($invoice['numberplanid'])), $invoice['cdate']);
+				$args['fullnumber'] = docnumber(array(
+					'number' => $invoice['number'],
+					'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($invoice['numberplanid'])),
+					'cdate' => $invoice['cdate'],
+				));
 			else
 				$args['fullnumber'] = null;
 			$args[SYSLOG::RES_NUMPLAN] = $invoice['numberplanid'];
@@ -456,7 +480,10 @@ $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('taxeslist', $taxeslist);
 if (isset($invoice['proforma']))
-	$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_INVOICE, date('Y/m', $invoice['cdate'])));
+	$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
+		'doctype' => DOC_INVOICE,
+		'cdate' => date('Y/m', $invoice['cdate']),
+	)));
 $SMARTY->display('invoice/invoiceedit.html');
 
 ?>

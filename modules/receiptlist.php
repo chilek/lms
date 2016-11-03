@@ -105,7 +105,12 @@ function GetReceiptList($registry, $order='', $search=NULL, $cat=NULL, $from=0, 
 
 		foreach($list as $idx => $row)
 		{
-			$list[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate'], $row['extnumber']);
+			$list[$idx]['number'] = docnumber(array(
+				'number' => $row['number'],
+				'template' => $row['template'],
+				'cdate' => $row['cdate'],
+				'ext_num' => $row['extnumber'],
+			));
 			$list[$idx]['customer'] = $row['customer'].' '.$row['address'].' '.$row['zip'].' '.$row['city'];
 
 			// don't retrive descriptions of all items to not decrease speed

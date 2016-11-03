@@ -737,7 +737,12 @@ switch($type)
 		{
 			foreach($list as $idx => $row)
 			{
-				$list[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate'], $row['extnumber']);
+				$list[$idx]['number'] = docnumber(array(
+					'number' => $row['number'],
+					'template' => $row['template'],
+					'cdate' => $row['cdate'],
+					'ext_num' => $row['extnumber'],
+				));
 				$list[$idx]['customer'] = $row['name'].' '.$row['address'].' '.$row['zip'].' '.$row['city'];
 
 				if($row['posnumber'] > 1)
@@ -868,7 +873,9 @@ switch($type)
 		$SMARTY->assign('users', $LMS->GetUserNames());
 		$SMARTY->assign('networks', $LMS->GetNetworks());
 		$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
-		$SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(DOC_INVOICE, DOC_CNOTE)));
+		$SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(
+			'doctype' => array(DOC_INVOICE, DOC_CNOTE),
+		)));
 		$SMARTY->assign('cashreglist', $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id'));
 		$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
 		$SMARTY->assign('sourcelist', $DB->GetAll('SELECT id, name FROM cashsources ORDER BY name'));

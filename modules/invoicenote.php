@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,9 @@
  *  $Id$
  */
 
-$numberplanlist = $LMS->GetNumberPlans(DOC_CNOTE);
+$numberplanlist = $LMS->GetNumberPlans(array(
+	'doctype' => DOC_CNOTE,
+));
 
 $action = isset($_GET['action']) ? $_GET['action'] : NULL;
 
@@ -97,7 +99,11 @@ $SESSION->restore('cnoteerror', $error);
 
 $taxeslist = $LMS->GetTaxes($invoice['cdate'],$invoice['cdate']);
 
-$ntempl = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+$ntempl = docnumber(array(
+	'number' => $invoice['number'],
+	'template' => $invoice['template'],
+	'cdate' => $invoice['cdate'],
+));
 $layout['pagetitle'] = trans('Credit Note for Invoice: $a', $ntempl);
 
 switch($action)
@@ -184,9 +190,14 @@ switch($action)
 		if($cnote['number'])
 		{
 			if(!preg_match('/^[0-9]+$/', $cnote['number']))
-			        $error['number'] = trans('Credit note number must be integer!');
-			elseif($LMS->DocumentExists($cnote['number'], DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']))
-			        $error['number'] = trans('Credit note number $a already exists!', $cnote['number']);
+				$error['number'] = trans('Credit note number must be integer!');
+			elseif($LMS->DocumentExists(array(
+					'number' => $cnote['number'],
+					'doctype' => DOC_CNOTE,
+					'planid' => $cnote['numberplanid'],
+					'cdate' => $cnote['cdate'],
+				)))
+				$error['number'] = trans('Credit note number $a already exists!', $cnote['number']);
 		}
 
 		// finally check if selected customer can use selected numberplan
@@ -259,15 +270,28 @@ switch($action)
 		$DB->LockTables(array('documents', 'numberplans', 'divisions'));
 
 		if(!isset($cnote['number']) || !$cnote['number'])
-			$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);
+			$cnote['number'] = $LMS->GetNewDocumentNumber(array(
+				'doctype' => DOC_CNOTE,
+				'planid' => $cnote['numberplanid'],
+				'cdate' => $cnote['cdate'],
+			));
 		else {
 			if (!preg_match('/^[0-9]+$/', $cnote['number']))
 				$error['number'] = trans('Credit note number must be integer!');
-			elseif ($LMS->DocumentExists($cnote['number'], DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']))
+			elseif ($LMS->DocumentExists(array(
+					'number' => $cnote['number'],
+					'doctype' => DOC_CNOTE,
+					'planid' => $cnote['numberplanid'],
+					'cdate' => $cnote['cdate'],
+				)))
 				$error['number'] = trans('Credit note number $a already exists!', $cnote['number']);
 
 			if ($error)
-				$cnote['number'] = $LMS->GetNewDocumentNumber(DOC_CNOTE, $cnote['numberplanid'], $cnote['cdate']);
+				$cnote['number'] = $LMS->GetNewDocumentNumber(array(
+					'doctype' => DOC_CNOTE,
+					'planid' => $cnote['numberplanid'],
+					'cdate' => $cnote['cdate'],
+				));
 		}
 
 		$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
@@ -276,9 +300,11 @@ switch($action)
 						array(!empty($cnote['use_current_division']) ? $invoice['current_divisionid'] : $invoice['divisionid']));
 
 		if ($cnote['numberplanid'])
-			$fullnumber = docnumber($cnote['number'],
-				$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($cnote['numberplanid'])),
-				$cnote['cdate']);
+			$fullnumber = docnumber(array(
+				'number' => $cnote['number'],
+				'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($cnote['numberplanid'])),
+				'cdate' => $cnote['cdate'],
+			));
 		else
 			$fullnumber = null;
 

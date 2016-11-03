@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -98,7 +98,12 @@ if(isset($_GET['type']) && $_GET['type'] == 'cash')
 
 			$clariondate = intval($row['cdate']/86400)+61731;
 			$date = date($date_format, $row['cdate']);
-			$number = docnumber($row['number'], $row['template'], $row['cdate'], $row['extnumber']);
+			$number = docnumber(array(
+				'number' => $row['number'],
+				'template' => $row['template'],
+				'cdate' => $row['cdate'],
+				'ext_num' => $row['extnumber'],
+			));
 
 			$line = str_replace('%CLARION_DATE', $clariondate, $line);
 			$line = str_replace('%NUMBER', $number, $line);
@@ -124,11 +129,21 @@ if(isset($_GET['type']) && $_GET['type'] == 'cash')
 			{
 				$tmp = explode('%N',$row['template']);
 				if($tmp[0])
-					$line = str_replace('%PREFIX', docnumber($row['number'], $tmp[0], $row['cdate'], $row['extnumber']), $line);
+					$line = str_replace('%PREFIX', docnumber(array(
+							'number' => $row['number'],
+							'template' => $tmp[0],
+							'cdate' => $row['cdate'],
+							'ext_num' => $row['extnumber'],
+						)), $line);
 				else
 					$line = str_replace('%PREFIX', '', $line);
 				if($tmp[1])
-					$line = str_replace('%SUFFIX', docnumber($row['number'], $tmp[1], $row['cdate'], $row['extnumber']), $line);
+					$line = str_replace('%SUFFIX', docnumber(array(
+							'number' => $row['number'],
+							'template' => $tmp[1],
+							'cdate' => $row['cdate'],
+							'ext_num' => $row['extnumber'],
+						)), $line);
 				else
 					$line = str_replace('%SUFFIX', '', $line);
 			}
@@ -271,7 +286,12 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 
 				$clariondate = intval($doc['cdate']/86400)+61731;
 				$date = date($date_format, $doc['cdate']);
-				$number = docnumber($doc['number'], $doc['template'], $doc['cdate'], $doc['extnumber']);
+				$number = docnumber(array(
+					'number' => $doc['number'],
+					'template' => $doc['template'],
+					'cdate' => $doc['cdate'],
+					'ext_num' => $doc['extnumber'],
+				));
 
 				$line = str_replace('%CLARION_DATE', $clariondate, $line);
 				$line = str_replace('%NUMBER', $number, $line);
@@ -322,11 +342,21 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 				{
 					$tmp = explode('%N',$doc['template']);
 					if($tmp[0])
-						$line = str_replace('%PREFIX', docnumber($doc['number'], $tmp[0], $doc['cdate'], $doc['extnumber']), $line);
+						$line = str_replace('%PREFIX', docnumber(array(
+								'number' => $doc['number'],
+								'template' => $tmp[0],
+								'cdate' => $doc['cdate'],
+								'ext_num' => $doc['extnumber'],
+							)), $line);
 					else
 						$line = str_replace('%PREFIX', '', $line);
 					if($tmp[1])
-						$line = str_replace('%SUFFIX', docnumber($doc['number'], $tmp[1], $doc['cdate'], $doc['extnumber']), $line);
+						$line = str_replace('%SUFFIX', docnumber(array(
+								'number' => $doc['number'],
+								'template' => $tmp[1],
+								'cdate' => $doc['cdate'],
+								'ext_num' => $doc['extnumber'],
+							)), $line);
 					else
 						$line = str_replace('%SUFFIX', '', $line);
 				}

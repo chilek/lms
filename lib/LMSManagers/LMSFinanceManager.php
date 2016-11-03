@@ -523,7 +523,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $number = $invoice['invoice']['number'];
         $type = $invoice['invoice']['type'];
         if ($invoice['invoice']['numberplanid'])
-            $fullnumber = docnumber($number, $this->db->GetOne('SELECT template FROM numberplans WHERE id = ?', array($invoice['invoice']['numberplanid'])), $cdate);
+            $fullnumber = docnumber(array(
+            	'number' => $number,
+            	'template' => $this->db->GetOne('SELECT template FROM numberplans WHERE id = ?', array($invoice['invoice']['numberplanid'])),
+            	'cdate' => $cdate,
+            ));
         else
             $fullnumber = null;
 

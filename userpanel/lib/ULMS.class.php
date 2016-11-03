@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -32,7 +32,11 @@ class ULMS extends LMS {
 					FROM documents 
 					LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 					WHERE documents.id = ?', array($id)))
-			return docnumber($doc['number'], $doc['template'], $doc['cdate']);
+			return docnumber(array(
+				'number' => $doc['number'],
+				'template' => $doc['template'],
+				'cdate' => $doc['cdate'],
+			));
 		else
 			return NULL;
 	}

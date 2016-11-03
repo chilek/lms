@@ -299,7 +299,11 @@ if ($invoices_message && (empty($types) || in_array('invoices', $types))) {
 			$msgid = create_message($invoices_subject, $invoices_message);
 
 		foreach ($documents as $row) {
-			$row['doc_number'] = docnumber($row['number'], ($row['template'] ? $row['template'] : '%N/LMS/%Y'), $row['cdate']);
+			$row['doc_number'] = docnumber(array(
+				'number' => $row['number'],
+				'template' => ($row['template'] ? $row['template'] : '%N/LMS/%Y'),
+				'cdate' => $row['cdate'],
+			));
 
 			$row['phone'] = ($debug_sms ? $debug_sms : $row['phone']);
 
@@ -355,7 +359,11 @@ if ($deadline_message && (empty($types) || in_array('deadline', $types))) {
 			$msgid = create_message($deadline_subject, $deadline_message);
 
 		foreach ($documents as $row) {
-			$row['doc_number'] = docnumber($row['number'], ($row['template'] ? $row['template'] : '%N/LMS/%Y'), $row['cdate']);
+			$row['doc_number'] = docnumber(array(
+				'number' => $row['number'],
+				'template' => ($row['template'] ? $row['template'] : '%N/LMS/%Y'),
+				'cdate' => $row['cdate'],
+			));
 
 			$row['phone'] = ($debug_sms ? $debug_sms : $row['phone']);
 
@@ -402,7 +410,11 @@ if ($notes_message && (empty($types) || in_array('notes', $types))) {
 			$msgid = create_message($notes_subject, $notes_message);
 
 		foreach ($documents as $row) {
-			$row['doc_number'] = docnumber($row['number'], ($row['template'] ? $row['template'] : '%N/LMS/%Y'), $row['cdate']);
+			$row['doc_number'] = docnumber(array(
+				'number' => $row['number'],
+				'template' => ($row['template'] ? $row['template'] : '%N/LMS/%Y'),
+				'cdate' => $row['cdate'],
+			));
 
 			$row['phone'] = ($debug_sms ? $debug_sms : $row['phone']);
 

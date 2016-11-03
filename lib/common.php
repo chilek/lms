@@ -547,12 +547,24 @@ if (!function_exists('bcmod'))
     }
 }
 
-function docnumber($number=NULL, $template=NULL, $time=NULL, $ext_num='')
-{
+function docnumber($number = null, $template = null, $cdate = null, $ext_num = '') {
+	if (is_array($number)) {
+		unset($template, $cdate, $ext_num);
+		extract($number);
+		if (!isset($number))
+			$number = null;
+		if (!isset($template))
+			$template = null;
+		if (!isset($cdate))
+			$cdate = null;
+		if (!isset($ext_num))
+			$ext_num = '';
+	}
+
 	$number = $number ? $number : 1;
 	$template = $template ? $template : DEFAULT_NUMBER_TEMPLATE;
-	$time = $time ? $time : time();
-	
+	$cdate = $cdate ? $cdate : time();
+
 	// extended number part
 	$result = str_replace('%I', $ext_num, $template);
 
@@ -569,7 +581,7 @@ function docnumber($number=NULL, $template=NULL, $time=NULL, $ext_num='')
 		}, $result);
 
 	// time conversion specifiers
-	return strftime($result, $time);
+	return strftime($result, $cdate);
 }
 
 // our finance round

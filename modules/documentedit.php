@@ -79,7 +79,10 @@ if(isset($_POST['document']))
 	{
 		if($document['numberplanid'] != $documentedit['numberplanid'])
 		{
-			$tmp = $LMS->GetNewDocumentNumber($documentedit['type'], $documentedit['numberplanid']);
+			$tmp = $LMS->GetNewDocumentNumber(array(
+				'doctype' => $documentedit['type'],
+				'planid' => $documentedit['numberplanid'],
+			));
 			$documentedit['number'] = $tmp ? $tmp : 1;
 		}
 		else
@@ -89,7 +92,11 @@ if(isset($_POST['document']))
     		$error['number'] = trans('Document number must be an integer!');
 	elseif($document['number'] != $documentedit['number'] || $document['numberplanid'] != $documentedit['numberplanid'])
 	{
-		if($LMS->DocumentExists($documentedit['number'], $documentedit['type'], $documentedit['numberplanid']))
+		if($LMS->DocumentExists(array(
+				'number' => $documentedit['number'],
+				'doctype' => $documentedit['type'],
+				'planid' => $documentedit['numberplanid'],
+			)))
 			$error['number'] = trans('Document with specified number exists!');
 	}
 
@@ -165,9 +172,11 @@ if(isset($_POST['document']))
 	if (!$error) {
 		$DB->BeginTrans();
 
-		$fullnumber = docnumber($documentedit['number'],
-			$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($documentedit['numberplanid'])),
-			$document['cdate']);
+		$fullnumber = docnumber(array(
+			'number' => $documentedit['number'],
+			'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($documentedit['numberplanid'])),
+			'cdate' => $document['cdate'],
+		));
 
 		$DB->Execute('UPDATE documents SET type=?, closed=?, number=?, numberplanid=?, fullnumber=?
 				WHERE id=?',
@@ -248,7 +257,7 @@ if(!$rights || !$DB->GetOne('SELECT 1 FROM docrights
 $allnumberplans = array();
 $numberplans = array();
 
-if($templist = $LMS->GetNumberPlans())
+if($templist = $LMS->GetNumberPlans(array()))
         foreach($templist as $item)
 	        if($item['doctype']<0)
 			$allnumberplans[] = $item;
@@ -276,7 +285,11 @@ if($dirs = getdir(DOC_DIR.'/templates', '^[a-z0-9_-]+$'))
 if($docengines) ksort($docengines);
 */
 
-$layout['pagetitle'] = trans('Edit Document: $a', docnumber($document['number'], $document['template'], $document['cdate']));
+$layout['pagetitle'] = trans('Edit Document: $a', docnumber(array(
+	'number' => $document['number'],
+	'template' => $document['template'],
+	'cdate' => $document['cdate'],
+)));
 
 //$SMARTY->assign('docengines', $docengines);
 $SMARTY->assign('numberplans', $numberplans);

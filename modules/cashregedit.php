@@ -113,7 +113,9 @@ $layout['pagetitle'] = trans('Edit Cash Registry: $a', $registry['name']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('registry', $registry);
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_RECEIPT));
+$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
+	'doctype' => DOC_RECEIPT,
+)));
 $SMARTY->assign('error', $error);
 $SMARTY->display('cash/cashregedit.html');
 

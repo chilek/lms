@@ -678,7 +678,11 @@ if (empty($types) || in_array('reminder', $types)) {
 		$notifications['reminder']['customers'] = array();
 		foreach ($documents as $row) {
 			$notifications['reminder']['customers'][] = $row['id'];
-			$row['doc_number'] = docnumber($row['number'], ($row['template'] ? $row['template'] : '%N/LMS/%Y'), $row['cdate']);
+			$row['doc_number'] = docnumber(array(
+				'number' => $row['number'],
+				'template' => ($row['template'] ? $row['template'] : '%N/LMS/%Y'),
+				'cdate' => $row['cdate'],
+			));
 
 			$message = parse_customer_data($notifications['reminder']['message'], $row);
 			$subject = parse_customer_data($notifications['reminder']['subject'], $row);
@@ -756,7 +760,11 @@ if (empty($types) || in_array('invoices', $types)) {
 		$notifications['invoices']['customers'] = array();
 		foreach ($documents as $row) {
 			$notifications['invoices']['customers'][] = $row['id'];
-			$row['doc_number'] = docnumber($row['number'], ($row['template'] ? $row['template'] : '%N/LMS/%Y'), $row['cdate']);
+			$row['doc_number'] = docnumber(array(
+				'number' => $row['number'],
+				'template' => ($row['template'] ? $row['template'] : '%N/LMS/%Y'),
+				'cdate' => $row['cdate'],
+			));
 
 			$message = parse_customer_data($notifications['invoices']['message'], $row);
 			$subject = parse_customer_data($notifications['invoices']['subject'], $row);
@@ -833,7 +841,11 @@ if (empty($types) || in_array('notes', $types)) {
 		$notifications['notes']['customers'] = array();
 		foreach ($documents as $row) {
 			$notifications['notes']['customers'][] = $row['id'];
-			$row['doc_number'] = docnumber($row['number'], ($row['template'] ? $row['template'] : '%N/LMS/%Y'), $row['cdate']);
+			$row['doc_number'] = docnumber(array(
+				'number' => $row['number'],
+				'template' => ($row['template'] ? $row['template'] : '%N/LMS/%Y'),
+				'cdate' => $row['cdate'],
+			));
 
 			$message = parse_customer_data($notifications['notes']['message'], $row);
 			$subject = parse_customer_data($notifications['notes']['subject'], $row);

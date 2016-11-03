@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,6 +28,7 @@
  * LMSDocumentManager
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
+ * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterface
 {
@@ -59,8 +60,24 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
     }
 
-    public function GetNumberPlans($doctype = NULL, $cdate = NULL, $division = NULL, $next = true)
-    {
+	/*
+	 \param array $properties - associative array with function parameters:
+		doctype: document type
+		cdate: document creation date
+		division: id of company/division
+		next: flag which tells if next number should be determined
+	*/
+	public function GetNumberPlans($properties) {
+		extract($properties);
+		if (!isset($doctype))
+			$doctype = null;
+		if (!isset($cdate))
+			$cdate = null;
+		if (!isset($division))
+			$division = null;
+		if (!isset($next))
+			$next = true;
+
         if (is_array($doctype))
             $where[] = 'doctype IN (' . implode(',', $doctype) . ')';
         else if ($doctype)
@@ -143,8 +160,23 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         return $list;
     }
 
-    public function GetNewDocumentNumber($doctype = NULL, $planid = NULL, $cdate = NULL)
-    {
+	/*
+	 \param array $properties - associative array with function parameters:
+		doctype: document type
+		planid: id of number plan
+		cdate: document creation date
+	*/
+	public function GetNewDocumentNumber($properties) {
+		extract($properties);
+		if (!isset($doctype))
+			$doctype = null;
+		if (!isset($planid))
+			$planid = null;
+		if (!isset($cdate))
+			$cdate = null;
+		if (!isset($customerid))
+			$customerid = null;
+
         if ($planid)
             $period = $this->db->GetOne('SELECT period FROM numberplans WHERE id=?', array($planid));
         else
@@ -213,8 +245,22 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         return $number ? ++$number : 1;
     }
 
-    public function DocumentExists($number, $doctype = NULL, $planid = 0, $cdate = NULL)
-    {
+	/*
+	 \param array $properties - associative array with function parameters:
+		number: document number
+		doctype: document type
+		planid: id of number plan
+		cdate: document creation date
+	*/
+	public function DocumentExists($properties) {
+		extract($properties);
+		if (!isset($doctype))
+			$doctype = null;
+		if (!isset($planid))
+			$planid = 0;
+		if (!isset($cdate))
+			$cdate = null;
+
         if ($planid)
             $period = $this->db->GetOne('SELECT period FROM numberplans WHERE id=?', array($planid));
 

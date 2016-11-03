@@ -48,7 +48,11 @@ function GetCustomerCovenants($id)
 				continue;
 			}
 
-			$invoicelist[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate']);
+			$invoicelist[$idx]['number'] = docnumber(array(
+				'number' => $row['number'],
+				'template' => $row['template'],
+				'cdate' => $row['cdate'],
+			));
 
 			// invoice has cnote reference
 			if($row['reference'])
@@ -65,7 +69,11 @@ function GetCustomerCovenants($id)
 					$invoicelist[$idx]['number'] .= ' (';
 					foreach($cnotes as $cidx => $cnote)
 					{
-						$invoicelist[$idx]['number'] .= docnumber($cnote['number'], $cnote['template'], $cnote['cdate']);
+						$invoicelist[$idx]['number'] .= docnumber(array(
+							'number' => $cnote['number'],
+							'template' => $cnote['template'],
+							'cdate' => $cnote['cdate'],
+						));
 						$invoicelist[$idx]['value'] -= $cnote['value'];
 						if($cidx < count($cnotes)-1)
 							$invoicelist[$idx]['number'] .= ',';
@@ -88,7 +96,11 @@ function GetCustomerCovenants($id)
 	{
 		foreach($notelist as $idx => $row)
 		{
-			$notelist[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate']);
+			$notelist[$idx]['number'] = docnumber(array(
+				'number' => $row['number'],
+				'template' => $row['template'],
+				'cdate' => $row['cdate'],
+			));
 		}
 		$invoicelist = array_merge($invoicelist, $notelist);
 	}
@@ -113,7 +125,11 @@ function GetCustomerNotes($id)
 	{
 		foreach($invoicelist as $idx => $row)
 		{
-			$invoicelist[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate']);
+			$invoicelist[$idx]['number'] = docnumber(array(
+				'number' => $row['number'],
+				'template' => $row['template'],
+				'cdate' => $row['cdate'],
+			));
 		}
 
 		return $invoicelist;
@@ -326,11 +342,23 @@ switch($action)
 				$itemdata['posuid'] = (string) (getmicrotime()+$id);
 
 				if($row['type']==DOC_INVOICE)
-					$itemdata['description'] = trans('Invoice No. $a', docnumber($row['number'], $row['template'], $row['cdate']));
+					$itemdata['description'] = trans('Invoice No. $a', docnumber(array(
+						'number' => $row['number'],
+						'template' => $row['template'],
+						'cdate' => $row['cdate'],
+					)));
 				elseif($row['type']==DOC_CNOTE)
-					$itemdata['description'] = trans('Credit Note No. $a', docnumber($row['number'], $row['template'], $row['cdate']));
+					$itemdata['description'] = trans('Credit Note No. $a', docnumber(array(
+						'number' => $row['number'],
+						'template' => $row['template'],
+						'cdate' => $row['cdate'],
+					)));
 				else
-					$itemdata['description'] = trans('Debit Note No. $a', docnumber($row['number'], $row['template'], $row['cdate']));
+					$itemdata['description'] = trans('Debit Note No. $a', docnumber(array(
+						'number' => $row['number'],
+						'template' => $row['template'],
+						'cdate' => $row['cdate'],
+					)));
 
 				if($row['reference'] && $receipt['type']=='in')
 				{
@@ -346,7 +374,11 @@ switch($action)
 						$itemdata['description'] .= ' (';
 						foreach($cnotes as $cidx => $cnote)
 						{
-							$itemdata['description'] .= docnumber($cnote['number'], $cnote['template'], $cnote['cdate']);
+							$itemdata['description'] .= docnumber(array(
+								'number' => $cnote['number'],
+								'template' => $cnote['template'],
+								'cdate' => $cnote['cdate'],
+							));
 							$itemdata['value'] -= $cnote['value'];
 							$itemdata['references'][] = $cnote['docid'];
 							if($cidx < count($cnotes)-1)
@@ -441,7 +473,12 @@ switch($action)
 		{
 			if(!preg_match('/^[0-9]+$/', $receipt['number']))
 				$error['number'] = trans('Receipt number must be integer!');
-			elseif($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
+			elseif($LMS->DocumentExists(array(
+					'number' => $receipt['number'],
+					'doctype' => DOC_RECEIPT,
+					'planid' => $receipt['numberplanid'],
+					'cdate' => $receipt['cdate'],
+				)))
 				$error['number'] = trans('Receipt number $a already exists!', $receipt['number']);
 		}
 
@@ -575,21 +612,36 @@ switch($action)
 			$DB->LockTables(array('documents', 'numberplans'));
 
 			if(!$receipt['number'])
-				$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
+				$receipt['number'] = $LMS->GetNewDocumentNumber(array(
+					'doctype' => DOC_RECEIPT,
+					'planid' => $receipt['numberplanid'],
+					'cdate' => $receipt['cdate'],
+				));
 			else
 			{
 				if(!preg_match('/^[0-9]+$/', $receipt['number']))
 					$error['number'] = trans('Receipt number must be integer!');
-				elseif($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
+				elseif($LMS->DocumentExists(array(
+						'number' => $receipt['number'],
+						'doctype' => DOC_RECEIPT,
+						'planid' => $receipt['numberplanid'],
+						'cdate' => $receipt['cdate'],
+					)))
 					$error['number'] = trans('Receipt number $a already exists!', $receipt['number']);
 
 				if($error)
-					$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
+					$receipt['number'] = $LMS->GetNewDocumentNumber(array(
+						'doctype' => DOC_RECEIPT,
+						'planid' => $receipt['numberplanid'],
+						'cdate' => $receipt['cdate'],
+					));
 			}
 
-			$fullnumber = docnumber($receipt['number'],
-				$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
-				$receipt['cdate']);
+			$fullnumber = docnumber(array(
+				'number' => $receipt['number'],
+				'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
+				'cdate' => $receipt['cdate'],
+			));
 
 			$args = array(
 				'type' => DOC_RECEIPT,
@@ -704,21 +756,36 @@ switch($action)
 			$DB->LockTables(array('documents', 'numberplans'));
 
 			if(!$receipt['number'])
-				$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
+				$receipt['number'] = $LMS->GetNewDocumentNumber(array(
+					'doctype' => DOC_RECEIPT,
+					'planid' => $receipt['numberplanid'],
+					'cdate' => $receipt['cdate'],
+				));
 			else
 			{
 				if(!preg_match('/^[0-9]+$/', $receipt['number']))
 					$error['number'] = trans('Receipt number must be integer!');
-				elseif($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
+				elseif($LMS->DocumentExists(array(
+						'number' => $receipt['number'],
+						'doctype' => DOC_RECEIPT,
+						'planid' => $receipt['numberplanid'],
+						'cdate' => $receipt['cdate'],
+					)))
 					$error['number'] = trans('Receipt number $a already exists!', $receipt['number']);
 
 				if($error)
-					$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
+					$receipt['number'] = $LMS->GetNewDocumentNumber(array(
+						'doctype' => DOC_RECEIPT,
+						'planid' => $receipt['numberplanid'],
+						'cdate' => $receipt['cdate'],
+					));
 			}
 
-			$fullnumber = docnumber($receipt['number'],
-				$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
-				$receipt['cdate']);
+			$fullnumber = docnumber(array(
+				'number' => $receipt['number'],
+				'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
+				'cdate' => $receipt['cdate'],
+			));
 
 			$args = array(
 				'type' => DOC_RECEIPT,
@@ -820,24 +887,39 @@ switch($action)
 			$DB->BeginTrans();
 
 			if(!$receipt['number'])
-				$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
+				$receipt['number'] = $LMS->GetNewDocumentNumber(array(
+					'doctype' => DOC_RECEIPT,
+					'planid' => $receipt['numberplanid'],
+					'cdate' => $receipt['cdate'],
+				));
 			else
 			{
 				if(!preg_match('/^[0-9]+$/', $receipt['number']))
 					$error['number'] = trans('Receipt number must be integer!');
-				elseif($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
+				elseif($LMS->DocumentExists(array(
+						'number' => $receipt['number'],
+						'doctype' => DOC_RECEIPT,
+						'planid' => $receipt['numberplanid'],
+						'cdate' => $receipt['cdate'],
+					)))
 					$error['number'] = trans('Receipt number $a already exists!', $receipt['number']);
 
 				if($error)
-					$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
+					$receipt['number'] = $LMS->GetNewDocumentNumber(array(
+						'doctype' => DOC_RECEIPT,
+						'planid' => $receipt['numberplanid'],
+						'cdate' => $receipt['cdate'],
+					));
 			}
 
 			// cash-out
 			$description = trans('Moving assets to registry $a',$DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($dest)));
 
-			$fullnumber = docnumber($receipt['number'],
-				$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
-				$receipt['cdate']);
+			$fullnumber = docnumber(array(
+				'number' => $receipt['number'],
+				'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
+				'cdate' => $receipt['cdate'],
+			));
 
 			$args = array(
 				'type' => DOC_RECEIPT,
@@ -876,17 +958,27 @@ switch($action)
 
 			// number of cash-out receipt
 			$template = $DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($receipt['numberplanid']));
-			$r_number = docnumber($receipt['number'], $template, $receipt['cdate']);
+			$r_number = docnumber(array(
+				'number' => $receipt['number'],
+				'template' => $template,
+				'cdate' => $receipt['cdate'],
+			));
 
 			// cash-in
 			$description = trans('Moving assets from registry $a ($b)',$DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($receipt['regid'])), $r_number);
 			$numberplan = $DB->GetOne('SELECT in_numberplanid FROM cashregs WHERE id=?', array($dest));
-			$number = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $numberplan, $receipt['cdate']);
+			$number = $LMS->GetNewDocumentNumber(array(
+				'doctype' => DOC_RECEIPT,
+				'planid' => $numberplan,
+				'cdate' => $receipt['cdate'],
+			));
 
 			if ($numberplan)
-				$fullnumber = docnumber($number,
-					$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($numberplan)),
-					$receipt['cdate']);
+				$fullnumber = docnumber(array(
+					'number' => $number,
+					'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($numberplan)),
+					'cdate' => $receipt['cdate'],
+				));
 			else
 				$fullnumber = null;
 
