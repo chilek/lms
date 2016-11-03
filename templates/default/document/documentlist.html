@@ -97,7 +97,7 @@
 						<OPTION value="0">- {trans("all")} -</OPTION>
 						{foreach $numberplans as $plan}
 						{$period = $plan.period}
-						<OPTION value="{$plan.id}"{if $listdata.numberplan == $plan.id} selected{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+						<OPTION value="{$plan.id}"{if $listdata.numberplan == $plan.id} selected{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate customerid=$listdata.customer} ({$_NUM_PERIODS.$period})</OPTION>
 						{/foreach}
 					</SELECT>&nbsp;
 				{else}
@@ -130,7 +130,7 @@
 		<TD NOWRAP onclick="window.open('?m=documentview&amp;id={$doc.docid}');"{if $doc.description} {tip text=$doc.description}{/if}>
 			{$doc.cdate|date_format:"%Y/%m/%d"}
 			{if $doc.number}<BR>
-				<B>{number number=$doc.number template=$doc.template time=$doc.cdate}</B>
+				<B>{number number=$doc.number template=$doc.template time=$doc.cdate customerid=$doc.customerid}</B>
 			{/if}
 		</TD>
 		<TD NOWRAP onclick="window.open('?m=documentview&amp;id={$doc.docid}');"><B>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</B></TD>

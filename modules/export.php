@@ -103,6 +103,7 @@ if(isset($_GET['type']) && $_GET['type'] == 'cash')
 				'template' => $row['template'],
 				'cdate' => $row['cdate'],
 				'ext_num' => $row['extnumber'],
+				'customerid' => $row['customerid'],
 			));
 
 			$line = str_replace('%CLARION_DATE', $clariondate, $line);
@@ -134,6 +135,7 @@ if(isset($_GET['type']) && $_GET['type'] == 'cash')
 							'template' => $tmp[0],
 							'cdate' => $row['cdate'],
 							'ext_num' => $row['extnumber'],
+							'customerid' => $row['customerid'],
 						)), $line);
 				else
 					$line = str_replace('%PREFIX', '', $line);
@@ -143,6 +145,7 @@ if(isset($_GET['type']) && $_GET['type'] == 'cash')
 							'template' => $tmp[1],
 							'cdate' => $row['cdate'],
 							'ext_num' => $row['extnumber'],
+							'customerid' => $row['customerid'],
 						)), $line);
 				else
 					$line = str_replace('%SUFFIX', '', $line);
@@ -211,7 +214,7 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 	// because we need here incoices-like round-off
 
 	// get documents items numeric values for calculations
-	$items = $DB->GetAll('SELECT docid, itemid, taxid, value, count, description, prodid, content
+	$items = $DB->GetAll('SELECT docid, itemid, taxid, value, count, description, prodid, content, d.customerid
 		FROM documents d
 		LEFT JOIN invoicecontents ON docid = d.id 
 		WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?) 
@@ -291,6 +294,7 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 					'template' => $doc['template'],
 					'cdate' => $doc['cdate'],
 					'ext_num' => $doc['extnumber'],
+					'customerid' => $doc['customerid'],
 				));
 
 				$line = str_replace('%CLARION_DATE', $clariondate, $line);
@@ -347,6 +351,7 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 								'template' => $tmp[0],
 								'cdate' => $doc['cdate'],
 								'ext_num' => $doc['extnumber'],
+								'customerid' => $doc['customerid'],
 							)), $line);
 					else
 						$line = str_replace('%PREFIX', '', $line);
@@ -356,6 +361,7 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 								'template' => $tmp[1],
 								'cdate' => $doc['cdate'],
 								'ext_num' => $doc['extnumber'],
+								'customerid' => $doc['customerid'],
 							)), $line);
 					else
 						$line = str_replace('%SUFFIX', '', $line);

@@ -44,7 +44,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'confirm')
 }
 
 $document = $DB->GetRow('SELECT documents.id AS id, closed, type, number, template,
-	cdate, numberplanid, title, fromdate, todate, description, divisionid
+	cdate, numberplanid, title, fromdate, todate, description, divisionid, documents.customerid
 	FROM documents
 	JOIN docrights r ON (r.doctype = documents.type)
 	LEFT JOIN documentcontents ON (documents.id = docid)
@@ -82,6 +82,7 @@ if(isset($_POST['document']))
 			$tmp = $LMS->GetNewDocumentNumber(array(
 				'doctype' => $documentedit['type'],
 				'planid' => $documentedit['numberplanid'],
+				'customerid' => $document['customerid'],
 			));
 			$documentedit['number'] = $tmp ? $tmp : 1;
 		}
@@ -176,6 +177,7 @@ if(isset($_POST['document']))
 			'number' => $documentedit['number'],
 			'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($documentedit['numberplanid'])),
 			'cdate' => $document['cdate'],
+			'customerid' => $document['customerid'],
 		));
 
 		$DB->Execute('UPDATE documents SET type=?, closed=?, number=?, numberplanid=?, fullnumber=?
@@ -257,9 +259,11 @@ if(!$rights || !$DB->GetOne('SELECT 1 FROM docrights
 $allnumberplans = array();
 $numberplans = array();
 
-if($templist = $LMS->GetNumberPlans(array()))
-        foreach($templist as $item)
-	        if($item['doctype']<0)
+if ($templist = $LMS->GetNumberPlans(array(
+		'customerid' => $document['customerid'],
+	)))
+	foreach ($templist as $item)
+		if ($item['doctype'] < 0)
 			$allnumberplans[] = $item;
 
 if(isset($document['numberplanid']))
@@ -289,6 +293,7 @@ $layout['pagetitle'] = trans('Edit Document: $a', docnumber(array(
 	'number' => $document['number'],
 	'template' => $document['template'],
 	'cdate' => $document['cdate'],
+	'customerid' => $document['customerid'],
 )));
 
 //$SMARTY->assign('docengines', $docengines);

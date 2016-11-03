@@ -161,6 +161,8 @@ if (isset($_POST['document'])) {
 		$genresult = '<H1>' . $layout['pagetitle'] . '</H1>';
 
 		$numtemplate = $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid']));
+		// number template has got %C special symbol which means customer id substitution
+		$customernumtemplate = strpos($numtemplate, '%C') !== false;
 
 		if ($document['templ'])
 			// read template information
@@ -232,10 +234,18 @@ if (isset($_POST['document'])) {
 				account, inv_header, inv_footer, inv_author, inv_cplace 
 				FROM divisions WHERE id = ? ;',array($gencust['divisionid']));
 
+			if ($customernumtemplate)
+				$document['number'] = $LMS->GetNewDocumentNumber(array(
+					'doctype' => $document['type'],
+					'planid' => $document['numberplanid'],
+					'customerid' => $document['customerid'],
+				));
+
 			$fullnumber = docnumber(array(
 				'number' => $document['number'],
-				'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid'])),
+				'template' => $numtemplate,
 				'cdate' => $time,
+				'customerid' => $document['customerid'],
 			));
 			$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, customerid, userid, divisionid, name, address, zip, city, ten, ssn, closed,
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
@@ -295,8 +305,10 @@ if (isset($_POST['document'])) {
 					'number' => $document['number'],
 					'template' => $numtemplate,
 					'cdate' => $time,
+					'customerid' => $document['customerid'],
 				)) . '.<br>';
-			$document['number']++;
+			if (!$customernumtemplate)
+				$document['number']++;
 
 			if (isset($_GET['print']) && isset($docfile) && $docfile['contenttype'] == 'text/html') {
 				print $output;
