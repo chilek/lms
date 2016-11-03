@@ -52,9 +52,9 @@ function GetCashLog($order='time,asc', $regid=0)
 	}
 
 	$list = $DB->GetAll('SELECT cashreglog.id, time, value, description, 
-				    snapshot, userid, users.name AS username
+				    snapshot, userid, vusers.name AS username
 			    FROM cashreglog
-			    LEFT JOIN users ON (userid = users.id)
+			    LEFT JOIN vusers ON (userid = vusers.id)
 			    WHERE regid = ?
 			    '.($sqlord != '' ? $sqlord : ''), 
 			    array($regid));

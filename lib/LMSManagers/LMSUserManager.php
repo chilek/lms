@@ -69,7 +69,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             if ($this->auth && $this->auth->id == $id) {
                 $name = $this->auth->logname;
             } else {
-                $name = $this->db->GetOne('SELECT name FROM users WHERE id=?', array($id));
+                $name = $this->db->GetOne('SELECT name FROM vusers WHERE id=?', array($id));
             }
             $this->cache->setCache('users', $id, 'name', $name);
         }
@@ -83,7 +83,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
      */
     public function getUserNames()
     {
-        return $this->db->GetAll('SELECT id, name FROM users WHERE deleted=0 ORDER BY name ASC');
+        return $this->db->GetAll('SELECT id, name FROM vusers WHERE deleted=0 ORDER BY name ASC');
     }
 
     /**
@@ -95,7 +95,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         $userlist = $this->db->GetAll(
             'SELECT id, login, name, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access, accessfrom, accessto  
-            FROM users 
+            FROM vusers 
             WHERE deleted=0 
             ORDER BY login ASC'
         );
@@ -166,7 +166,8 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         $args = array(
             'login' => $user['login'],
-            'name' => $user['name'],
+            'firstname' => $user['firstname'],
+            'lastname' => $user['lastname'],
             'email' => $user['email'],
             'passwd' => crypt($user['password']),
             'rights' => $user['rights'],
@@ -180,8 +181,8 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'accessto' => !empty($user['accessto']) ? $user['accessto'] : 0,
         );
         $user_inserted = $this->db->Execute(
-            'INSERT INTO users (login, name, email, passwd, rights, hosts, position, ntype, phone, passwdexpiration, access, accessfrom, accessto)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO users (login, firstname, lastname, email, passwd, rights, hosts, position, ntype, phone, passwdexpiration, access, accessfrom, accessto)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array_values($args)
         );
         if ($user_inserted) {
@@ -329,7 +330,8 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     {
         $args = array(
             'login' => $user['login'],
-            'name' => $user['name'],
+            'firstname' => $user['firstname'],
+            'lastname' => $user['lastname'],
             'email' => $user['email'],
             'rights' => $user['rights'],
             'hosts' => $user['hosts'],
@@ -342,7 +344,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
             'accessto' => !empty($user['accessto']) ? $user['accessto'] : 0,
             SYSLOG::RES_USER => $user['id']
         );
-        $res = $this->db->Execute('UPDATE users SET login=?, name=?, email=?, rights=?,
+        $res = $this->db->Execute('UPDATE users SET login=?, firstname=?, lastname=?, email=?, rights=?,
 				hosts=?, position=?, ntype=?, phone=?, passwdexpiration=?, access=?, accessfrom=?, accessto=? WHERE id=?', array_values($args));
         if ($res && $this->syslog) {
             $this->syslog->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_UPDATE, $args);

@@ -8,9 +8,9 @@ $event = $DB->GetRow('SELECT events.id AS id, title, description, note,
 
 $event['date'] = sprintf('%04d/%02d/%02d', date('Y',$event['date']),date('n',$event['date']),date('j',$event['date']));
 
-$eventuserlist = $DB->GetAll('SELECT userid AS id, users.name
-	FROM users, eventassignments
-	WHERE users.id = userid AND eventid = ?', array($event['id']));
+$eventuserlist = $DB->GetAll('SELECT userid AS id, vusers.name
+	FROM vusers, eventassignments
+	WHERE vusers.id = userid AND eventid = ?', array($event['id']));
 
 if(isset($_POST['event'])) {
 	$event = $_POST['event'];

@@ -146,7 +146,8 @@ SET SESSION sql_mode   = '';
 CREATE TABLE users (
   id int(11)            NOT NULL auto_increment,
   login varchar(32)     NOT NULL DEFAULT '',
-  name varchar(64)      NOT NULL DEFAULT '',
+  firstname varchar(64) NOT NULL DEFAULT '',
+  lastname varchar(64) NOT NULL DEFAULT '',
   email varchar(255)    NOT NULL DEFAULT '',
   phone varchar(32)     DEFAULT NULL,
   position varchar(255) NOT NULL DEFAULT '',
@@ -169,6 +170,10 @@ CREATE TABLE users (
   PRIMARY KEY  (id),
   UNIQUE KEY login (login)
 ) ENGINE=InnoDB;
+
+CREATE VIEW vusers AS
+	SELECT *, CONCAT(firstname, ' ', lastname) AS name, CONCAT(lastname, ' ', firstname) AS rname
+	FROM users;
 
 # --------------------------------------------------------
 #
@@ -2721,4 +2726,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016102100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016102500');

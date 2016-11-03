@@ -150,8 +150,8 @@ $layout['pagetitle'] = trans('New Event');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
-$userlist = $DB->GetAll('SELECT id, name FROM users
-	WHERE deleted = 0 AND access = 1 ORDER BY login ASC');
+$userlist = $DB->GetAll('SELECT id, rname FROM vusers
+	WHERE deleted = 0 AND access = 1 ORDER BY lastname ASC');
 
 if (!isset($event['usergroup']))
 	$SESSION->restore('eventgid', $event['usergroup']);

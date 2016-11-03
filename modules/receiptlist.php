@@ -41,7 +41,7 @@ function GetReceiptList($registry, $order='', $search=NULL, $cat=NULL, $from=0, 
 			$sqlord = " ORDER BY documents.name $direction, documents.cdate";
 		break;
 		case 'user':
-			$sqlord = " ORDER BY users.name $direction, documents.cdate";
+			$sqlord = " ORDER BY vusers.lastname $direction, documents.cdate";
 		break;
 		case 'cdate':
 		default:
@@ -87,14 +87,14 @@ function GetReceiptList($registry, $order='', $search=NULL, $cat=NULL, $from=0, 
 	if($list = $DB->GetAll(
 	        'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid, 
 		documents.name AS customer, address, zip, city, template, extnumber, closed,
-		MIN(description) AS title, COUNT(*) AS posnumber, users.name AS user 
+		MIN(description) AS title, COUNT(*) AS posnumber, vusers.name AS user 
 		FROM documents 
 		LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-		LEFT JOIN users ON (userid = users.id)
+		LEFT JOIN vusers ON (userid = vusers.id)
 		LEFT JOIN receiptcontents ON (documents.id = docid AND type = ?) 
 		WHERE regid = ?'
 		.$where
-		.' GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, template, users.name, extnumber, closed '
+		.' GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, template, vusers.name, extnumber, closed '
 		.$having
 		.($sqlord != '' ? $sqlord : ''), 
 		array(DOC_RECEIPT, $registry)

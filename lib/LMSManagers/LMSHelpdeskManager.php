@@ -35,7 +35,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function GetQueue($id)
     {
         if ($queue = $this->db->GetRow('SELECT * FROM rtqueues WHERE id=?', array($id))) {
-            $users = $this->db->GetAll('SELECT id, name FROM users WHERE deleted=0');
+            $users = $this->db->GetAll('SELECT id, name FROM vusers WHERE deleted=0');
             foreach ($users as $user) {
                 $user['rights'] = $this->GetUserRightsRT($user['id'], $id);
                 $queue['rights'][] = $user;
@@ -94,7 +94,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
         if ($result = $this->db->GetAll(
-                'SELECT DISTINCT t.id, t.customerid, c.address, users.name AS ownername,
+                'SELECT DISTINCT t.id, t.customerid, c.address, vusers.name AS ownername,
 			    t.subject, state, owner AS ownerid, t.requestor AS req,
 			    CASE WHEN customerid = 0 THEN t.requestor ELSE '
                 . $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor, 
@@ -103,9 +103,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		    FROM rttickets t 
 		    LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
 		    LEFT JOIN rtticketcategories tc ON (t.id = tc.ticketid)
-		    LEFT JOIN users ON (owner = users.id)
+		    LEFT JOIN vusers ON (owner = vusers.id)
 		    LEFT JOIN customeraddressview c ON (t.customerid = c.id)
-		    LEFT JOIN users u ON (t.creatorid = u.id)
+		    LEFT JOIN vusers u ON (t.creatorid = u.id)
 		    WHERE 1=1 '
                 . (is_array($ids) ? ' AND t.queueid IN (' . implode(',', $ids) . ')' : ($ids != 0 ? ' AND t.queueid = ' . $ids : ''))
                 . (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
@@ -206,7 +206,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function GetCategory($id)
     {
         if ($category = $this->db->GetRow('SELECT * FROM rtcategories WHERE id=?', array($id))) {
-            $users = $this->db->GetAll('SELECT id, name FROM users WHERE deleted=0 ORDER BY login asc');
+            $users = $this->db->GetAll('SELECT id, name FROM vusers WHERE deleted=0 ORDER BY login asc');
             foreach ($users as $user) {
                 $user['owner'] = $this->db->GetOne('SELECT 1 FROM rtcategoryusers WHERE userid = ? AND categoryid = ?', array($user['id'], $id));
                 $category['owners'][] = $user;
@@ -376,8 +376,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				    o.name AS ownername, t.createtime, t.resolvetime, t.subject
 				FROM rttickets t
 				LEFT JOIN rtqueues ON (t.queueid = rtqueues.id)
-				LEFT JOIN users o ON (t.owner = o.id)
-				LEFT JOIN users c ON (t.creatorid = c.id)
+				LEFT JOIN vusers o ON (t.owner = o.id)
+				LEFT JOIN vusers c ON (t.creatorid = c.id)
 				LEFT JOIN customers ON (customers.id = t.customerid)
 				WHERE t.id = ?', array($id));
 
@@ -386,10 +386,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $ticket['messages'] = $this->db->GetAll(
                 '(SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, '
                 . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername, 
-				    userid, users.name AS username, customerid, rtmessages.type
+				    userid, vusers.name AS username, customerid, rtmessages.type
 				FROM rtmessages
 				LEFT JOIN customers ON (customers.id = customerid)
-				LEFT JOIN users ON (users.id = userid)
+				LEFT JOIN vusers ON (vusers.id = userid)
 				WHERE ticketid = ?)
 				ORDER BY createtime ASC', array($id));
 

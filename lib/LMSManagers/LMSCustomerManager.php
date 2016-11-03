@@ -219,11 +219,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $result['list'] = $this->db->GetAll(
             'SELECT cash.id AS id, time, cash.type AS type, 
                 cash.value AS value, taxes.label AS tax, cash.customerid AS customerid, 
-                comment, docid, users.name AS username,
+                comment, docid, vusers.name AS username,
                 documents.type AS doctype, documents.closed AS closed,
                 documents.published, cash.importid
             FROM cash
-            LEFT JOIN users ON users.id = cash.userid
+            LEFT JOIN vusers ON vusers.id = cash.userid
             LEFT JOIN documents ON documents.id = docid
             LEFT JOIN taxes ON cash.taxid = taxes.id
             WHERE cash.customerid = ?'

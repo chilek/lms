@@ -403,7 +403,7 @@ function send_sms_to_user($phone, $data) {
 if (empty($types) || in_array('timetable', $types)) {
 	$days = $notifications['timetable']['days'];
 	$users = $DB->GetAll("SELECT id, name, (CASE WHEN ntype & ? > 0 THEN email ELSE '' END) AS email,
-			(CASE WHEN ntype & ? > 0 THEN phone ELSE '' END) AS phone FROM users
+			(CASE WHEN ntype & ? > 0 THEN phone ELSE '' END) AS phone FROM vusers
 		WHERE deleted = 0 AND access = 1 AND ntype & ? > 0 AND (email <> '' OR phone <> '')",
 		array(MSG_MAIL, MSG_SMS, (MSG_MAIL | MSG_SMS)));
 	$date = mktime(0, 0, 0);
@@ -961,7 +961,7 @@ if (empty($types) || in_array('events', $types)) {
 	if (!empty($events)) {
 		$customers = array();
 		$users = $DB->GetAllByKey("SELECT id, name, (CASE WHEN (ntype & ?) > 0 THEN email ELSE '' END) AS email,
-				(CASE WHEN (ntype & ?) > 0 THEN phone ELSE '' END) AS phone FROM users
+				(CASE WHEN (ntype & ?) > 0 THEN phone ELSE '' END) AS phone FROM vusers
 			WHERE deleted = 0 AND accessfrom <= ?NOW? AND (accessto = 0 OR accessto >= ?NOW?)
 			ORDER BY id",
 			'id', array(MSG_MAIL, MSG_SMS));

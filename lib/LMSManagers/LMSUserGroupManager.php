@@ -69,9 +69,9 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
     
     public function UsergroupGet($id){
         $result = $this->db->GetRow('SELECT id, name, description FROM usergroups WHERE id=?', array($id));
-        $result['users'] = $this->db->GetAll('SELECT u.id AS id, u.name AS username FROM userassignments, users u '
-                . 'WHERE u.id = userid AND usergroupid = ? '
-                . ' GROUP BY u.id, u.name ORDER BY u.name', array($id));
+        $result['users'] = $this->db->GetAll('SELECT vu.id AS id, vu.name AS username FROM userassignments, vusers vu '
+                . 'WHERE vu.id = userid AND usergroupid = ? '
+                . ' GROUP BY vu.id, vu.name ORDER BY vu.lastname', array($id));
 
         $result['userscount'] = sizeof($result['users']);
         $result['count'] = $result['userscount'];
@@ -83,11 +83,11 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
     }
     
     public function GetUserWithoutGroupNames($groupid){
-        return $this->db->GetAll('SELECT u.id AS id, u.name AS username FROM users u WHERE u.deleted = 0 
-	    AND u.id NOT IN (
+        return $this->db->GetAll('SELECT vu.id AS id, vu.name AS username FROM vusers vu WHERE vu.deleted = 0 
+	    AND vu.id NOT IN (
 		SELECT userid FROM userassignments WHERE usergroupid = ?) 
-	    GROUP BY u.id, u.name
-	    ORDER BY u.name', array($groupid));
+	    GROUP BY vu.id, vu.name
+	    ORDER BY vu.lastname', array($groupid));
     }
     
     public function UserassignmentDelete($userassignmentdata){

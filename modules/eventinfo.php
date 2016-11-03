@@ -32,19 +32,19 @@ if(!$_GET['id'])
 $event = $DB->GetRow('SELECT events.id AS id, title, description, note, userid, events.creationdate,
 				customerid, date, begintime, enddate, endtime, private, closed, events.type, '
 			    .$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
-			    users.name AS username, events.moddate, events.moduserid, events.closeddate, events.closeduserid, nodes.location AS location, '
+			    vusers.name AS username, events.moddate, events.moduserid, events.closeddate, events.closeduserid, nodes.location AS location, '
 			    .$DB->Concat('c.city',"', '",'c.address').' AS customerlocation,
-			    (SELECT name FROM users WHERE id=events.moduserid) AS modusername,
-			    (SELECT name FROM users WHERE id=events.closeduserid) AS closedusername
+			    (SELECT name FROM vusers WHERE id=events.moduserid) AS modusername,
+			    (SELECT name FROM vusers WHERE id=events.closeduserid) AS closedusername
 			    FROM events 
 			    LEFT JOIN nodes ON (nodeid = nodes.id)
 			    LEFT JOIN customerview c ON (c.id = customerid)
-			    LEFT JOIN users ON (users.id = userid)
+			    LEFT JOIN vusers ON (vusers.id = userid)
 			    WHERE events.id = ?', array($_GET['id']));
 
-$event['userlist'] = $DB->GetAll('SELECT userid AS id, users.name
-					FROM users, eventassignments
-					WHERE users.id = userid
+$event['userlist'] = $DB->GetAll('SELECT userid AS id, vusers.name
+					FROM vusers, eventassignments
+					WHERE vusers.id = userid
 					AND eventid = ?', array($event['id']));
 
 $layout['pagetitle'] = trans('Event Info');

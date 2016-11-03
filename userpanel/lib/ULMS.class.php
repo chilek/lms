@@ -92,19 +92,19 @@ class ULMS extends LMS {
 		$ticket = $this->DB->GetRow('SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, 
 				    requestor, state, owner, customerid, cause, '
 				    .$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, 
-				    users.name AS ownername, createtime, resolvetime, subject
+				    vusers.name AS ownername, createtime, resolvetime, subject
 				FROM rttickets
 				LEFT JOIN rtqueues ON (queueid = rtqueues.id)
-				LEFT JOIN users ON (owner = users.id)
+				LEFT JOIN vusers ON (owner = vusers.id)
 				LEFT JOIN customers ON (customers.id = customerid)
 				WHERE rttickets.id = ?', array($id));
 
 		$ticket['messages'] = $this->DB->GetAll('SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, '
 				    .$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, 
-				    userid, users.name AS username, customerid
+				    userid, vusers.name AS username, customerid
 				FROM rtmessages
 				LEFT JOIN customers ON (customers.id = customerid)
-				LEFT JOIN users ON (users.id = userid)
+				LEFT JOIN vusers ON (vusers.id = userid)
 				WHERE ticketid = ? AND rtmessages.type = ? ORDER BY createtime ASC', array($id, RTMESSAGE_REGULAR));
 
 		foreach ($ticket['messages'] as &$message)

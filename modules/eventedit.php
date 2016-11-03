@@ -156,8 +156,8 @@ $layout['pagetitle'] = trans('Event Edit');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
-$userlist = $DB->GetAll('SELECT id, name FROM users
-	WHERE deleted = 0 AND users.access = 1 ORDER BY login ASC');
+$userlist = $DB->GetAll('SELECT id, name FROM vusers
+	WHERE deleted = 0 AND vusers.access = 1 ORDER BY lastname ASC');
 
 if (empty($nodes_location))
 	$nodes_location = $DB->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY name ASC', array($event['customerid']));
