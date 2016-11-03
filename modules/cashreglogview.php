@@ -51,14 +51,14 @@ function GetCashLog($order='time,asc', $regid=0)
 		break;
 	}
 
-	$list = $DB->GetAll('SELECT cashreglog.id, time, value, description, 
-				    snapshot, userid, users.name AS username
+	$list = $DB->GetAll('SELECT cashreglog.id, time, value, description,
+				    snapshot, userid, vusers.name AS username
 			    FROM cashreglog
-			    LEFT JOIN users ON (userid = users.id)
+			    LEFT JOIN vusers ON (userid = vusers.id)
 			    WHERE regid = ?
-			    '.($sqlord != '' ? $sqlord : ''), 
+			    '.($sqlord != '' ? $sqlord : ''),
 			    array($regid));
-	
+
 	$list['total'] = sizeof($list);
 	$list['order'] = $order;
 	$list['direction'] = $direction;
@@ -82,7 +82,7 @@ if(!$regid)
 {
         $SESSION->redirect('?m=cashreglist');
 }
-	
+
 if(! $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid)) )
 {
         $SMARTY->display('noaccess.html');
@@ -104,7 +104,7 @@ unset($cashreglog['direction']);
 if ($SESSION->is_set('crlp') && !isset($_GET['page']))
 	$SESSION->restore('crlp', $_GET['page']);
 
-$page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
+$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.cashreglog_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
 
@@ -112,7 +112,7 @@ $SESSION->save('crlp', $page);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$layout['pagetitle'] = trans('Cash History of Registry:'). 
+$layout['pagetitle'] = trans('Cash History of Registry:').
 		' <A href="?m=receiptlist&regid='.$regid.'">'.$DB->GetOne('SELECT name FROM cashregs WHERE id = ?', array($regid)).'</A>';
 
 $SMARTY->assign('pagelimit', $pagelimit);

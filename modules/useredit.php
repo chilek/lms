@@ -46,8 +46,10 @@ if($userinfo)
 	elseif($LMS->GetUserIDByLogin($userinfo['login']) && $LMS->GetUserIDByLogin($userinfo['login']) != $id)
 		$error['login'] = trans('User with specified login exists or that login was used in the past!');
 
-	if($userinfo['name'] == '')
-		$error['name'] = trans('You have to enter first and lastname!');
+	if($useradd['firstname']=='')
+		$error['firstname'] = trans('You have to enter firstname!');
+	if($useradd['lastname']=='')
+		$error['lastname'] = trans('You have to enter lastname!');
 
 	if($userinfo['email']!='' && !check_email($userinfo['email']))
 		$error['email'] = trans('E-mail isn\'t correct!');
@@ -150,7 +152,7 @@ foreach($LMS->GetUserInfo($id) as $key => $value)
 		$userinfo[$key] = $value;
 
 if(!isset($userinfo['selected']))
-	$userinfo['selected'] = $DB->GetAllByKey('SELECT g.id, g.name 
+	$userinfo['selected'] = $DB->GetAllByKey('SELECT g.id, g.name
 		FROM customergroups g, excludedgroups
 	        WHERE customergroupid = g.id AND userid = ?
 		ORDER BY name', 'id', array($userinfo['id']));

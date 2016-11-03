@@ -491,7 +491,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 else
 {
 	# find userid
-	$dbq = $dbase->prepare("SELECT id FROM users WHERE email = ? AND email!=''");
+	$dbq = $dbase->prepare("SELECT id FROM vusers WHERE email = ? AND email!=''");
 	$dbq->execute($fromemail);
 	if(my $row = $dbq->fetchrow_hashref())
 	{
@@ -540,8 +540,8 @@ if($notify)
 	my $body = "$mailbody\n\n$lms_url/?m=rtticketview&id=$ticket_id";
 
 	# find users emails
-	$dbq = $dbase->prepare("SELECT name, email FROM users, rtrights 
-			WHERE users.id = userid AND queueid = $queue 
+	$dbq = $dbase->prepare("SELECT name, email FROM vusers, rtrights 
+			WHERE vusers.id = userid AND queueid = $queue 
 			AND email != '' AND (rtrights.rights & 8) = 8
 			AND deleted = 0");
 	$dbq->execute();

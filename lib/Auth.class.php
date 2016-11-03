@@ -247,7 +247,7 @@ class Auth {
 
 		if ($user = $this->DB->GetRow('SELECT id, name, passwd, hosts, lastlogindate, lastloginip, 
 			passwdexpiration, passwdlastchange, access, accessfrom, accessto
-			FROM users WHERE login=? AND deleted=0', array($this->login)))
+			FROM vusers WHERE login=? AND deleted=0', array($this->login)))
 		{
 			$this->logname = $user['name'];
 			$this->id = $user['id'];
