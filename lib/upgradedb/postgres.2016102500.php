@@ -46,7 +46,6 @@ foreach ($users as $user) {
 
 $this->Execute("ALTER TABLE users DROP COLUMN name");
 
-$this->Execute("DROP VIEW vusers");
 $this->Execute("CREATE VIEW vusers AS SELECT *, " . $this->Concat('firstname', "' '", 'lastname') . " AS name, " . $this->Concat('lastname', "' '", 'firstname') . " AS rname FROM users");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016102500', 'dbversion'));
