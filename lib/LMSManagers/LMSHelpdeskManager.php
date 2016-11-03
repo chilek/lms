@@ -97,10 +97,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 'SELECT DISTINCT t.id, t.customerid, c.address, vusers.name AS ownername,
 			    t.subject, state, owner AS ownerid, t.requestor AS req,
 			    CASE WHEN customerid = 0 THEN t.requestor ELSE '
-                . $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor, 
+                . $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor,
 			    t.createtime AS createtime, u.name AS creatorname,
 				(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified
-		    FROM rttickets t 
+		    FROM rttickets t
 		    LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
 		    LEFT JOIN rtticketcategories tc ON (t.id = tc.ticketid)
 		    LEFT JOIN vusers ON (owner = vusers.id)
@@ -149,7 +149,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function GetQueueList($stats = true)
     {
-        if ($result = $this->db->GetAll('SELECT q.id, name, email, description 
+        if ($result = $this->db->GetAll('SELECT q.id, name, email, description
 				FROM rtqueues q'
                 . (!ConfigHelper::checkConfig('privileges.superuser') ? ' JOIN rtrights r ON r.queueid = q.id
 					WHERE r.rights <> 0 AND r.userid = ?' : '') . ' ORDER BY name', array($this->auth->id))) {
@@ -164,7 +164,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function GetQueueNames()
     {
         return $this->db->GetAll('SELECT q.id, name FROM rtqueues q'
-                        . (!ConfigHelper::checkConfig('privileges.superuser') ? ' JOIN rtrights r ON r.queueid = q.id 
+                        . (!ConfigHelper::checkConfig('privileges.superuser') ? ' JOIN rtrights r ON r.queueid = q.id
 				WHERE r.rights <> 0 AND r.userid = ?' : '') . ' ORDER BY name', array($this->auth->id));
     }
 
@@ -190,14 +190,14 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function GetQueueStats($id)
     {
-        if ($result = $this->db->GetAll('SELECT state, COUNT(state) AS scount 
+        if ($result = $this->db->GetAll('SELECT state, COUNT(state) AS scount
 			FROM rttickets WHERE queueid = ? GROUP BY state ORDER BY state ASC', array($id))) {
             foreach ($result as $row)
                 $stats[$row['state']] = $row['scount'];
             foreach (array('new', 'open', 'resolved', 'dead') as $idx => $value)
                 $stats[$value] = isset($stats[$idx]) ? $stats[$idx] : 0;
         }
-        $stats['lastticket'] = $this->db->GetOne('SELECT createtime FROM rttickets 
+        $stats['lastticket'] = $this->db->GetOne('SELECT createtime FROM rttickets
 			WHERE queueid = ? ORDER BY createtime DESC', array($id));
 
         return $stats;
@@ -235,15 +235,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function GetCategoryList($stats = true)
     {
-        if ($result = $this->db->GetAll('SELECT id, name, description 
+        if ($result = $this->db->GetAll('SELECT id, name, description
 				FROM rtcategories ORDER BY name')) {
             if ($stats)
                 foreach ($result as $idx => $row)
                     foreach ($this->GetCategoryStats($row['id']) as $sidx => $row)
                         $result[$idx][$sidx] = $row;
             foreach ($result as $idx => $category)
-                $result[$idx]['owners'] = $this->db->GetAll('SELECT u.id, name FROM rtcategoryusers cu 
-				LEFT JOIN users u ON cu.userid = u.id 
+                $result[$idx]['owners'] = $this->db->GetAll('SELECT u.id, name FROM rtcategoryusers cu
+				LEFT JOIN users u ON cu.userid = u.id
 				WHERE categoryid = ?', array($category['id']));
         }
         return $result;
@@ -251,16 +251,16 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function GetCategoryStats($id)
     {
-        if ($result = $this->db->GetAll('SELECT state, COUNT(state) AS scount 
-			FROM rttickets LEFT JOIN rtticketcategories ON rttickets.id = rtticketcategories.ticketid 
+        if ($result = $this->db->GetAll('SELECT state, COUNT(state) AS scount
+			FROM rttickets LEFT JOIN rtticketcategories ON rttickets.id = rtticketcategories.ticketid
 			WHERE rtticketcategories.categoryid = ? GROUP BY state ORDER BY state ASC', array($id))) {
             foreach ($result as $row)
                 $stats[$row['state']] = $row['scount'];
             foreach (array('new', 'open', 'resolved', 'dead') as $idx => $value)
                 $stats[$value] = isset($stats[$idx]) ? $stats[$idx] : 0;
         }
-        $stats['lastticket'] = $this->db->GetOne('SELECT createtime FROM rttickets 
-			LEFT JOIN rtticketcategories ON rttickets.id = rtticketcategories.ticketid 
+        $stats['lastticket'] = $this->db->GetOne('SELECT createtime FROM rttickets
+			LEFT JOIN rtticketcategories ON rttickets.id = rtticketcategories.ticketid
 			WHERE rtticketcategories.categoryid = ? ORDER BY createtime DESC', array($id));
 
         return $stats;
@@ -280,7 +280,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         return $this->db->GetAll('SELECT c.id, name
 		    FROM rtcategories c
-		    LEFT JOIN rtcategoryusers cu 
+		    LEFT JOIN rtcategoryusers cu
 			ON c.id = cu.categoryid '
                         . ($userid ? 'WHERE userid = ' . intval($userid) : '' )
                         . ' ORDER BY name');
@@ -299,7 +299,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				    COUNT(CASE state WHEN ' . RT_RESOLVED . ' THEN 1 END) AS resolved,
 				    COUNT(CASE state WHEN ' . RT_DEAD . ' THEN 1 END) AS dead,
 				    COUNT(CASE WHEN state != ' . RT_RESOLVED . ' THEN 1 END) AS unresolved
-				    FROM rtcategories c  
+				    FROM rtcategories c
 				    LEFT JOIN rtticketcategories tc ON c.id = tc.categoryid
 				    LEFT JOIN rttickets t ON t.id = tc.ticketid
 				    WHERE c.id IN (' . implode(',', $catids) . ')
@@ -324,7 +324,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function TicketAdd($ticket, $files = NULL)
     {
-        $this->db->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject, 
+        $this->db->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject,
 				state, owner, createtime, cause, creatorid)
 				VALUES (?, ?, ?, ?, 0, ?, ?NOW?, ?, ?)', array($ticket['queue'],
             $ticket['customerid'],
@@ -337,7 +337,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $id = $this->db->GetLastInsertID('rttickets');
 
-        $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime, 
+        $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
 				subject, body, mailfrom)
 				VALUES (?, ?, ?NOW?, ?, ?, ?)', array($id,
             $ticket['customerid'],
@@ -348,7 +348,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$msgid = $this->db->GetLastInsertID('rtmessages');
 
         foreach (array_keys($ticket['categories']) as $catid)
-            $this->db->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) 
+            $this->db->Execute('INSERT INTO rtticketcategories (ticketid, categoryid)
 				VALUES (?, ?)', array($id, $catid));
 
         if (!empty($files) && ConfigHelper::getConfig('rt.mail_dir')) {
@@ -358,7 +358,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             foreach ($files as $file) {
                 $newfile = $dir . DIRECTORY_SEPARATOR . $file['name'];
                 if (@rename($ticket['tmppath'] . DIRECTORY_SEPARATOR . $file['name'], $newfile))
-                    $this->db->Execute('INSERT INTO rtattachments (messageid, filename, contenttype) 
+                    $this->db->Execute('INSERT INTO rtattachments (messageid, filename, contenttype)
 							VALUES (?,?,?)', array($msgid, $file['name'], $file['type']));
             }
         }
@@ -370,9 +370,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         global $RT_STATES;
 
-        $ticket = $this->db->GetRow('SELECT t.id AS ticketid, t.queueid, rtqueues.name AS queuename, 
+        $ticket = $this->db->GetRow('SELECT t.id AS ticketid, t.queueid, rtqueues.name AS queuename,
 				    t.requestor, t.state, t.owner, t.customerid, t.cause, t.creatorid, c.name AS creator, '
-                . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername, 
+                . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
 				    o.name AS ownername, t.createtime, t.resolvetime, t.subject
 				FROM rttickets t
 				LEFT JOIN rtqueues ON (t.queueid = rtqueues.id)
@@ -385,7 +385,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $ticket['messages'] = $this->db->GetAll(
                 '(SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, '
-                . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername, 
+                . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
 				    userid, vusers.name AS username, customerid, rtmessages.type
 				FROM rtmessages
 				LEFT JOIN customers ON (customers.id = customerid)
@@ -426,21 +426,21 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         if($ticket['owner'] != $props['owner'] && isset($props['owner'])) {
             $note .= trans('Ticket has been assigned to user $a.', $LMS->GetUserName($props['owner'])) .'<br>';
             $type = $type | RTMESSAGE_OWNER_CHANGE;
-        } else 
+        } else
 			   $props['owner'] = $ticket['owner'];
-			   
+
         if($ticket['queueid'] != $props['queueid'] && isset($props['queueid'])) {
             $note .= trans('Ticket has been moved from queue $a to queue $b.', $LMS->GetQueueName($ticket['queueid']), $LMS->GetQueueName($props['queueid'])) .'<br>';
             $type = $type | RTMESSAGE_QUEUE_CHANGE;
-        } else 
+        } else
 			   $props['queueid'] = $ticket['queueid'];
-        
+
         if($ticket['cause'] != $props['cause'] && isset($props['cause'])) {
             $note .= trans('Ticket\'s cause has been changed from $a to $b.', $RT_CAUSE[$ticket['cause']], $RT_CAUSE[$props['cause']]) .'<br>';
             $type = $type | RTMESSAGE_CAUSE_CHANGE;
         } else
-			   $props['cause'] = $ticket['cause'];         
-        
+			   $props['cause'] = $ticket['cause'];
+
         if($ticket['state'] != $props['state'] && isset($props['state'])) {
             $note .= trans('Ticket\'s state has been changed from $a to $b.', $RT_STATES[$ticket['state']], $RT_STATES[$props['state']]) .'<br>';
             $type = $type | RTMESSAGE_STATE_CHANGE;
@@ -455,18 +455,18 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if($ticket['customerid'] != $props['customerid'] && isset($props['customerid'])) {
 				if($ticket['customerid'])
-            	$note .= trans('Ticket has been moved from customer $a ($b) to customer $c ($d).', 
+            	$note .= trans('Ticket has been moved from customer $a ($b) to customer $c ($d).',
             		$LMS->getCustomerName($ticket['customerid']), $ticket['customerid'], $LMS->getCustomerName($props['customerid']), $props['customerid']) .'<br>';
-            else 
-            	$note .= trans('Ticket has been moved from $a to customer $b ($c).', 
-            		$ticket['requestor'], $LMS->getCustomerName($props['customerid']), $props['customerid']) .'<br>';            
+            else
+            	$note .= trans('Ticket has been moved from $a to customer $b ($c).',
+            		$ticket['requestor'], $LMS->getCustomerName($props['customerid']), $props['customerid']) .'<br>';
             $type = $type | RTMESSAGE_CUSTOMER_CHANGE;
         }else
             $props['customerid'] = $ticket['customerid'];
 
         if($type){
         		($state == 2 ? $resolvetime = time() : $resolvetime = 0);
-        		
+
         		if($props['state'] == RT_RESOLVED) {
         		    if ($this->db->GetOne('SELECT owner FROM rttickets WHERE id=?', array($ticketid))){
                     $this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, resolvetime=?, subject = ?, customerid = ? WHERE id = ?', array(

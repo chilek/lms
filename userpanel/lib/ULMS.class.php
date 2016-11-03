@@ -28,8 +28,8 @@
 // Extending LMS class for Userpanel-specific functions
 class ULMS extends LMS {
 	public function docnumber($id) {
-		if($doc = $this->DB->GetRow('SELECT number, cdate, template 
-					FROM documents 
+		if($doc = $this->DB->GetRow('SELECT number, cdate, template
+					FROM documents
 					LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 					WHERE documents.id = ?', array($id)))
 			return docnumber(array(
@@ -89,9 +89,9 @@ class ULMS extends LMS {
 	public function GetTicketContents($id) {
 		global $RT_STATES;
 
-		$ticket = $this->DB->GetRow('SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, 
+		$ticket = $this->DB->GetRow('SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename,
 				    requestor, state, owner, customerid, cause, '
-				    .$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, 
+				    .$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername,
 				    vusers.name AS ownername, createtime, resolvetime, subject
 				FROM rttickets
 				LEFT JOIN rtqueues ON (queueid = rtqueues.id)
@@ -100,7 +100,7 @@ class ULMS extends LMS {
 				WHERE rttickets.id = ?', array($id));
 
 		$ticket['messages'] = $this->DB->GetAll('SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, '
-				    .$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, 
+				    .$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername,
 				    userid, vusers.name AS username, customerid
 				FROM rtmessages
 				LEFT JOIN customers ON (customers.id = customerid)

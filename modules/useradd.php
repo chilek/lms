@@ -29,9 +29,9 @@ $useradd = isset($_POST['useradd']) ? $_POST['useradd'] : array();
 
 if(sizeof($useradd))
 {
-    
+
         $error = array();
-    
+
 	foreach($useradd as $key => $value)
 	    if (!is_array($value))
 		    $useradd[$key] = trim($value);

@@ -85,18 +85,18 @@ function GetReceiptList($registry, $order='', $search=NULL, $cat=NULL, $from=0, 
 		$where = ' AND closed = 0';
 
 	if($list = $DB->GetAll(
-	        'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid, 
+	        'SELECT documents.id AS id, SUM(value) AS value, number, cdate, customerid,
 		documents.name AS customer, address, zip, city, template, extnumber, closed,
-		MIN(description) AS title, COUNT(*) AS posnumber, vusers.name AS user 
-		FROM documents 
+		MIN(description) AS title, COUNT(*) AS posnumber, vusers.name AS user
+		FROM documents
 		LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 		LEFT JOIN vusers ON (userid = vusers.id)
-		LEFT JOIN receiptcontents ON (documents.id = docid AND type = ?) 
+		LEFT JOIN receiptcontents ON (documents.id = docid AND type = ?)
 		WHERE regid = ?'
 		.$where
 		.' GROUP BY documents.id, number, cdate, customerid, documents.name, address, zip, city, template, vusers.name, extnumber, closed '
 		.$having
-		.($sqlord != '' ? $sqlord : ''), 
+		.($sqlord != '' ? $sqlord : ''),
 		array(DOC_RECEIPT, $registry)
 		))
 	{
@@ -233,7 +233,7 @@ $listdata['cashstate'] = $DB->GetOne('SELECT SUM(value) FROM receiptcontents WHE
 if($from > 0)
 	$listdata['startbalance'] = $DB->GetOne(
 		'SELECT SUM(value) FROM receiptcontents
-		LEFT JOIN documents ON (docid = documents.id AND type = ?) 
+		LEFT JOIN documents ON (docid = documents.id AND type = ?)
 		WHERE cdate < ? AND regid = ?',
 		array(DOC_RECEIPT, $from, $regid));
 
@@ -243,7 +243,7 @@ $pagelimit = ConfigHelper::getConfig('phpui.receiptlist_pagelimit');
 $page = (!isset($_GET['page']) ? ceil($listdata['total']/$pagelimit) : $_GET['page']);
 $start = ($page - 1) * $pagelimit;
 
-$logentry = $DB->GetRow('SELECT * FROM cashreglog WHERE regid = ? 
+$logentry = $DB->GetRow('SELECT * FROM cashreglog WHERE regid = ?
 			ORDER BY time DESC LIMIT 1', array($regid, $regid));
 
 $layout['pagetitle'] = trans('Cash Registry: $a', $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($regid)));
@@ -255,7 +255,7 @@ if($receipt = $SESSION->get('receiptprint'))
 	$SMARTY->assign('receipt', $receipt);
 	$SESSION->remove('receiptprint');
 }
-$SMARTY->assign('logentry', $logentry); 
+$SMARTY->assign('logentry', $logentry);
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);

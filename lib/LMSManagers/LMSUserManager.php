@@ -34,7 +34,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 
     /**
      * Sets user password
-     * 
+     *
      * @param int $id User id
      * @param string $passwd Password
      */
@@ -54,7 +54,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 
     /**
      * Returns user name
-     * 
+     *
      * @param int $id User id
      * @return string User name
      */
@@ -78,7 +78,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 
     /**
      * Returns active users names
-     * 
+     *
      * @return array Users names
      */
     public function getUserNames()
@@ -88,15 +88,15 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 
     /**
      * Returns users
-     * 
+     *
      * @return array Users data
      */
     public function getUserList()
     {
         $userlist = $this->db->GetAll(
-            'SELECT id, login, name, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access, accessfrom, accessto  
-            FROM vusers 
-            WHERE deleted=0 
+            'SELECT id, login, name, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access, accessfrom, accessto
+            FROM vusers
+            WHERE deleted=0
             ORDER BY login ASC'
         );
         if ($userlist) {
@@ -147,7 +147,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 
     /**
      * Returns user id for given login
-     * 
+     *
      * @param string $login User login
      * @return int User id
      */
@@ -158,7 +158,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 
     /**
      * Adds user
-     * 
+     *
      * @param array $user User data
      * @return int|false User id on success, false otherwise
      */
@@ -187,7 +187,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         );
         if ($user_inserted) {
             $id = $this->db->GetOne(
-                'SELECT id FROM users WHERE login=?', 
+                'SELECT id FROM users WHERE login=?',
                 array($user['login'])
             );
             if ($this->syslog) {
@@ -203,7 +203,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 
     /**
      * Deletes user
-     * 
+     *
      * @param int $id User id
      * @return boolean True on success
      */
@@ -225,7 +225,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 
     /**
      * Checks if user exists
-     * 
+     *
      * @param int $id User id
      * @return boolean|int True if exists, false if not exists, -1 if exists but deleted
      */
@@ -247,7 +247,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 
     /**
      * Sets user access
-     * 
+     *
      * @param int $id User id
      * @param int $access Access
      */
@@ -258,7 +258,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 
     /**
      * Returns user data
-     * 
+     *
      * @param int $id User id
      * @return array
      */
@@ -322,7 +322,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 
     /**
      * Updates user data
-     * 
+     *
      * @param array $user New user data
      * @return int|false Affected rows
      */
@@ -354,7 +354,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 
     /**
      * Returns user rights
-     * 
+     *
      * @param int $id User id
      * @return array User rights
      */
@@ -368,8 +368,8 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 
         return $rights;
     }
-    
-    public function PasswdExistsInHistory($id, $passwd) 
+
+    public function PasswdExistsInHistory($id, $passwd)
     {
 	    $history = $this->db->GetAll('SELECT id, hash FROM passwdhistory WHERE userid = ? ORDER BY id DESC LIMIT ?', array($id, intval(ConfigHelper::getConfig('phpui.passwordhistory'))));
 	    foreach ($history as $h) {

@@ -152,7 +152,7 @@ foreach($LMS->GetUserInfo($id) as $key => $value)
 		$userinfo[$key] = $value;
 
 if(!isset($userinfo['selected']))
-	$userinfo['selected'] = $DB->GetAllByKey('SELECT g.id, g.name 
+	$userinfo['selected'] = $DB->GetAllByKey('SELECT g.id, g.name
 		FROM customergroups g, excludedgroups
 	        WHERE customergroupid = g.id AND userid = ?
 		ORDER BY name', 'id', array($userinfo['id']));

@@ -25,9 +25,9 @@
  */
 
 $reglog = $DB->GetRow('SELECT l.*, vusers.name AS username
-			FROM cashreglog l 
+			FROM cashreglog l
 			LEFT JOIN vusers ON (l.userid = vusers.id)
-			WHERE l.id = ?', 
+			WHERE l.id = ?',
 			array(intval($_GET['id'])));
 
 if(!$reglog)
