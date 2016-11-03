@@ -31,6 +31,8 @@ if (isset($_GET['id']) && $action == 'edit') {
 	if ($LMS->isDocumentPublished($_GET['id']) && !ConfigHelper::checkConfig('privileges.superuser'))
 		return;
 
+	$cnote = $LMS->GetInvoiceContent($_GET['id']);
+
 	$invoice = array();
 	foreach ($cnote['invoice']['content'] as $item)
 		$invoice[$item['itemid']] = $item;
