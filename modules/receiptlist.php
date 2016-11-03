@@ -110,6 +110,7 @@ function GetReceiptList($registry, $order='', $search=NULL, $cat=NULL, $from=0, 
 				'template' => $row['template'],
 				'cdate' => $row['cdate'],
 				'ext_num' => $row['extnumber'],
+				'customerid' => $row['customerid'],
 			));
 			$list[$idx]['customer'] = $row['customer'].' '.$row['address'].' '.$row['zip'].' '.$row['city'];
 

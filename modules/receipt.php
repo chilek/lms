@@ -47,6 +47,7 @@ function GetReceipt($id) {
 			'template' => $receipt['template'],
 			'cdate' => $receipt['cdate'],
 			'ext_num' => $receipt['extnumber'],
+			'customerid' => $receipt['customerid'],
 		));
 
 		if ($receipt['total'] < 0) {

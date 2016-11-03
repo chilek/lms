@@ -162,6 +162,7 @@ $receipt['titlenumber'] = docnumber(array(
 	'template' => $receipt['template'],
 	'cdate' => $receipt['cdate'],
 	'ext_num' => isset($receipt['extnumber']) ? $receipt['extnumber'] : '',
+	'customerid' => $receipt['customerid'],
 ));
 
 if($receipt['type']=='in')
@@ -261,6 +262,7 @@ switch($action)
 				'doctype' => DOC_RECEIPT,
 				'planid' => $receipt['numberplanid'],
 				'cdate' => $receipt['cdate'],
+				'customerid' => $receipt['customerid'],
 			));
 		else
 		{
@@ -272,6 +274,7 @@ switch($action)
 						'doctype' => DOC_RECEIPT,
 						'planid' => $receipt['numberplanid'],
 						'cdate' => $receipt['cdate'],
+						'customerid' => $receipt['customerid'],
 					)))
 					$error['number'] = trans('Receipt number $a already exists!', $receipt['number']);
 		}
@@ -384,6 +387,7 @@ switch($action)
 				'number' => $receipt['number'],
 				'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
 				'cdate' => $receipt['cdate'],
+				'customerid' => $customer['id'],
 			));
 
 			// re-add receipt 
@@ -471,7 +475,7 @@ switch($action)
 					'value' => $value,
 					'comment' => $item['description'],
 					SYSLOG::RES_USER => $AUTH->id,
-					SYSLOG::RES_CUST =>$customer['id']
+					SYSLOG::RES_CUST => $customer['id']
 				);
 				$DB->Execute('INSERT INTO cash (type, time, docid, itemid, value, comment, userid, customerid)
 						VALUES(?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
