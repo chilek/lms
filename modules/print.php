@@ -779,7 +779,7 @@ switch($type)
 		if($registry)
 			$layout['registry'] = trans('Registry: $a', ($registry ? $DB->GetOne('SELECT name FROM cashregs WHERE id=?', array($registry)) : trans('all')));
 		if($user)
-			$layout['username'] = trans('Cashier: $a', $DB->GetOne('SELECT name FROM users WHERE id=?', array($user)));
+			$layout['username'] = trans('Cashier: $a', $DB->GetOne('SELECT name FROM vusers WHERE id=?', array($user)));
 		if($group)
 		{
 			$groupname = $DB->GetOne('SELECT name FROM customergroups WHERE id=?', array($group));

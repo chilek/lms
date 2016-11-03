@@ -50,7 +50,7 @@ if ($LMS->UserExists($id)) {
 
 	$passwd['id'] = $id;
 
-	$layout['pagetitle'] = trans('Password Change for User $a', $DB->GetOne('SELECT name FROM users WHERE id = ?', array($id)));
+	$layout['pagetitle'] = trans('Password Change for User $a', $DB->GetOne('SELECT name FROM vusers WHERE id = ?', array($id)));
 
 	$SMARTY->assign('error', $error);
 	$SMARTY->assign('passwd', $passwd);
