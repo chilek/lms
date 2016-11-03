@@ -303,6 +303,7 @@ if ($invoices_message && (empty($types) || in_array('invoices', $types))) {
 				'number' => $row['number'],
 				'template' => ($row['template'] ? $row['template'] : '%N/LMS/%Y'),
 				'cdate' => $row['cdate'],
+				'customerid' => $row['id'],
 			));
 
 			$row['phone'] = ($debug_sms ? $debug_sms : $row['phone']);
@@ -363,6 +364,7 @@ if ($deadline_message && (empty($types) || in_array('deadline', $types))) {
 				'number' => $row['number'],
 				'template' => ($row['template'] ? $row['template'] : '%N/LMS/%Y'),
 				'cdate' => $row['cdate'],
+				'customerid' => $row['id'],
 			));
 
 			$row['phone'] = ($debug_sms ? $debug_sms : $row['phone']);
@@ -414,6 +416,7 @@ if ($notes_message && (empty($types) || in_array('notes', $types))) {
 				'number' => $row['number'],
 				'template' => ($row['template'] ? $row['template'] : '%N/LMS/%Y'),
 				'cdate' => $row['cdate'],
+				'customerid' => $row['id'],
 			));
 
 			$row['phone'] = ($debug_sms ? $debug_sms : $row['phone']);

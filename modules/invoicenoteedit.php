@@ -93,6 +93,7 @@ $ntempl = docnumber(array(
 	'number' => $cnote['number'],
 	'template' => $cnote['template'],
 	'cdate' => $cnote['cdate'],
+	'customerid' => $cnote['customerid'],
 ));
 $layout['pagetitle'] = trans('Credit Note for Invoice Edit: $a', $ntempl);
 

@@ -167,6 +167,7 @@ if ($items) {
 			'number' => $row['number'],
 			'template' => $row['template'],
 			'cdate' => $row['cdate'],
+			'customerid' => $row['customerid'],
 		));
 		$invoicelist[$idx]['cdate'] = $row['cdate'];
 		$invoicelist[$idx]['sdate'] = $row['sdate'];

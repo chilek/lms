@@ -549,6 +549,7 @@ foreach ($assigns as $assign) {
 					'number' => $numbers[$plan],
 					'template' => $numbertemplates[$plan],
 					'cdate' => $currtime,
+					'customerid' => $cid,
 				));
 				$DB->Execute("INSERT INTO documents (number, numberplanid, type, countryid, divisionid, 
 					customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype,

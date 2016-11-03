@@ -29,6 +29,7 @@ function smarty_function_number($params, $template) {
 		'number' => $params['number'],
 		'template' => $params['template'],
 		'cdate' => $params['time'],
+		'customerid' => $params['customerid'],
 	));
 	if(isset($params['assign']))
 		$template->assign($params['assign'], $result);

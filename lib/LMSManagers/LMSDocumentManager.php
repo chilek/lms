@@ -66,6 +66,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 		cdate: document creation date
 		division: id of company/division
 		next: flag which tells if next number should be determined
+		customerid: customer id for number plans
 	*/
 	public function GetNumberPlans($properties) {
 		extract($properties);
@@ -77,6 +78,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 			$division = null;
 		if (!isset($next))
 			$next = true;
+		if (!isset($customerid))
+			$customerid = null;
 
         if (is_array($doctype))
             $where[] = 'doctype IN (' . implode(',', $doctype) . ')';
@@ -130,31 +133,35 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             $daystart = mktime(0, 0, 0);
             $dayend = mktime(0, 0, 0, date('n'), date('j') + 1);
 
-            $max = $this->db->GetAllByKey('SELECT numberplanid AS id, MAX(number) AS max 
-					    FROM documents LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-					    WHERE '
-                    . ($doctype ? 'numberplanid IN (' . implode(',', array_keys($list)) . ') AND ' : '')
-                    . ' cdate >= (CASE period
-						WHEN ' . YEARLY . ' THEN ' . $yearstart . '
-						WHEN ' . HALFYEARLY . ' THEN ' . $halfyearstart . '
-						WHEN ' . QUARTERLY . ' THEN ' . $quarterstart . '
-						WHEN ' . MONTHLY . ' THEN ' . $monthstart . '
-						WHEN ' . WEEKLY . ' THEN ' . $weekstart . '
-						WHEN ' . DAILY . ' THEN ' . $daystart . ' ELSE 0 END)
-					    AND cdate < (CASE period
-						WHEN ' . YEARLY . ' THEN ' . $yearend . '
-						WHEN ' . HALFYEARLY . ' THEN ' . $halfyearend . '
-						WHEN ' . QUARTERLY . ' THEN ' . $quarterend . '
-						WHEN ' . MONTHLY . ' THEN ' . $monthend . '
-						WHEN ' . WEEKLY . ' THEN ' . $weekend . '
-						WHEN ' . DAILY . ' THEN ' . $dayend . ' ELSE 4294967296 END)
-					    GROUP BY numberplanid', 'id');
+			foreach ($list as &$item) {
+				$max = $this->db->GetOne('SELECT MAX(number) AS max 
+					FROM documents
+					LEFT JOIN numberplans ON (numberplanid = numberplans.id)
+					WHERE numberplanid = ? AND ' . (strpos('%C', $item['template']) !== false && empty($customerid)
+						? '' : 'customerid = ' . intval($customerid) . ' AND ')
+					. ($doctype ? 'numberplanid IN (' . implode(',', array_keys($list)) . ') AND ' : '')
+					. ' cdate >= (CASE period
+					WHEN ' . YEARLY . ' THEN ' . $yearstart . '
+					WHEN ' . HALFYEARLY . ' THEN ' . $halfyearstart . '
+					WHEN ' . QUARTERLY . ' THEN ' . $quarterstart . '
+					WHEN ' . MONTHLY . ' THEN ' . $monthstart . '
+					WHEN ' . WEEKLY . ' THEN ' . $weekstart . '
+					WHEN ' . DAILY . ' THEN ' . $daystart . ' ELSE 0 END)
+					AND cdate < (CASE period
+					WHEN ' . YEARLY . ' THEN ' . $yearend . '
+					WHEN ' . HALFYEARLY . ' THEN ' . $halfyearend . '
+					WHEN ' . QUARTERLY . ' THEN ' . $quarterend . '
+					WHEN ' . MONTHLY . ' THEN ' . $monthend . '
+					WHEN ' . WEEKLY . ' THEN ' . $weekend . '
+					WHEN ' . DAILY . ' THEN ' . $dayend . ' ELSE 4294967296 END)',
+					array($item['id']));
 
-            foreach ($list as $idx => $item)
-                if (isset($max[$item['id']]['max']))
-                    $list[$idx]['next'] = $max[$item['id']]['max'] + 1;
-                else
-                    $list[$idx]['next'] = 1;
+				if (empty($max))
+					$item['next'] = 1;
+				else
+					$item['next'] = $max + 1;
+			}
+			unset($item);
         }
 
         return $list;
@@ -231,7 +238,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 break;
             case CONTINUOUS:
                 $number = $this->db->GetOne('SELECT MAX(number) FROM documents 
-						WHERE type = ? AND numberplanid = ?', array($doctype, $planid));
+					WHERE type = ? AND numberplanid = ?'
+					. (empty($customerid) ? '' : ' AND customerid = ' . intval($customerid)),
+					array($doctype, $planid));
 
                 return $number ? ++$number : 1;
                 break;
@@ -240,7 +249,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $number = $this->db->GetOne('
 				SELECT MAX(number) 
 				FROM documents 
-				WHERE cdate >= ? AND cdate < ? AND type = ? AND numberplanid = ?', array($start, $end, $doctype, $planid));
+				WHERE cdate >= ? AND cdate < ? AND type = ? AND numberplanid = ?'
+				. (empty($customerid) ? '' : ' AND customerid = ' . intval($customerid)),
+				array($start, $end, $doctype, $planid));
 
         return $number ? ++$number : 1;
     }
@@ -260,6 +271,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 			$planid = 0;
 		if (!isset($cdate))
 			$cdate = null;
+		if (!isset($customerid))
+			$customerid = null;
 
         if ($planid)
             $period = $this->db->GetOne('SELECT period FROM numberplans WHERE id=?', array($planid));
@@ -312,13 +325,17 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $end = mktime(0, 0, 0, 1, 1, date('Y', $cdate) + 1);
                 break;
             case CONTINUOUS:
-                return $this->db->GetOne('SELECT number FROM documents 
-						WHERE type = ? AND number = ? AND numberplanid = ?', array($doctype, $number, $planid)) ? TRUE : FALSE;
+                return $this->db->GetOne('SELECT number FROM documents
+					WHERE type = ? AND number = ? AND numberplanid = ?'
+					. (empty($customerid) ? '' : ' AND customerid = ' . intval($customerid)),
+					array($doctype, $number, $planid)) ? true : false;
                 break;
         }
 
-        return $this->db->GetOne('SELECT number FROM documents 
-				WHERE cdate >= ? AND cdate < ? AND type = ? AND number = ? AND numberplanid = ?', array($start, $end, $doctype, $number, $planid)) ? TRUE : FALSE;
+		return $this->db->GetOne('SELECT number FROM documents
+			WHERE cdate >= ? AND cdate < ? AND type = ? AND number = ? AND numberplanid = ?'
+			. (empty($customerid) ? '' : ' AND customerid = ' . intval($customerid)),
+			array($start, $end, $doctype, $number, $planid)) ? true : false;
     }
 
 }

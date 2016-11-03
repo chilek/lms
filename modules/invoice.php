@@ -86,6 +86,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 				'number' => $invoice['number'],
 				'template' => $invoice['template'],
 				'cdate' => $invoice['cdate'],
+				'customerid' => $invoice['customerid'],
 			));
 
 		$invoice['dontpublish'] = $dontpublish;
@@ -138,6 +139,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 				'number' => $invoice['number'],
 				'template' => $invoice['template'],
 				'cdate' => $invoice['cdate'],
+				'customerid' => $invoice['customerid'],
 			));
 
 		$invoice['dontpublish'] = $dontpublish;
@@ -155,6 +157,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		'number' => $invoice['number'],
 		'template' => $invoice['template'],
 		'cdate' => $invoice['cdate'],
+		'customerid' => $invoice['customerid'],
 	));
 	if(!isset($invoice['invoice']))
 		$layout['pagetitle'] = trans('Invoice No. $a', $docnumber);

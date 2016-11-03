@@ -147,7 +147,7 @@ window.open('?m=invoice&amp;id={$invoice.invoice}&amp;original={$invoice.origina
 			{$invoice.cdate|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
 		<TD class="text-right nobr">
-			{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number}{$number}
+			{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number customerid=$invoice.customerid}{$number}
 		</TD>
 		<TD class="text-right nobr">
 			{$invoice.value|money_format} 

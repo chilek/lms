@@ -72,7 +72,12 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false)))
 			$this->backend->text_autosize(15*$scale+$x,215*$scale+$y,30*$scale,trans('Payment for liabilities'),350*$scale);
 		else {
-			$tmp = docnumber($this->data['number'], $this->data['template'], $this->data['cdate']);
+			$tmp = docnumber(array(
+				'number' => $this->data['number'],
+				'template' => $this->data['template'],
+				'cdate' => $this->data['cdate'],
+				'customerid' => $this->data['customerid'],
+			));
 			if ($this->data['doctype'] == DOC_INVOICE_PRO)
 				$this->backend->text_autosize(15*$scale+$x,215*$scale+$y,30*$scale,trans('Payment for pro forma invoice No. $a', $tmp),350*$scale);
 			else
@@ -111,7 +116,12 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false)))
 			$this->backend->text_autosize(15*$scale+$x,250*$scale+$y,30*$scale, trans('Payment for liabilities'),950*$scale);
 		else {
-			$tmp = docnumber($this->data['number'], $this->data['template'], $this->data['cdate']);
+			$tmp = docnumber(array(
+				'number' => $this->data['number'],
+				'template' => $this->data['template'],
+				'cdate' => $this->data['cdate'],
+				'customerid' => $this->data['customerid'],
+			));
 			if ($this->data['doctype'] == DOC_INVOICE_PRO)
 				$this->backend->text_autosize(15*$scale+$x,250*$scale+$y,30*$scale, trans('Payment for pro forma invoice No. $a',$tmp),950*$scale);
 			else
@@ -169,7 +179,12 @@ class LMSEzpdfInvoice extends LMSInvoice {
 
 	protected function invoice_title($x, $y) {
 		$font_size = 16;
-		$tmp = docnumber($this->data['number'], $this->data['template'], $this->data['cdate']);
+		$tmp = docnumber(array(
+			'number' => $this->data['number'],
+			'template' => $this->data['template'],
+			'cdate' => $this->data['cdate'],
+			'customerid' => $this->data['customerid'],
+		));
 		if (isset($this->data['invoice']))
 			$y=$y - $this->backend->text_align_left($x,$y,$font_size,'<b>' . trans('Credit Note No. $a',$tmp) . '</b>');
 		elseif ($this->data['doctype'] == DOC_INVOICE_PRO)
@@ -179,7 +194,12 @@ class LMSEzpdfInvoice extends LMSInvoice {
 
 		if(isset($this->data['invoice'])) {
 			$font_size = 12; $y += 8;
-			$tmp = docnumber($this->data['invoice']['number'], $this->data['invoice']['template'], $this->data['invoice']['cdate']);
+			$tmp = docnumber(array(
+				'number' => $this->data['invoice']['number'],
+				'template' => $this->data['invoice']['template'],
+				'cdate' => $this->data['invoice']['cdate'],
+				'customerid' => $this->data['customerid'],
+			));
 			$y = $y - $this->backend->text_align_left($x,$y,$font_size,'<b>' . trans('for Invoice No. $a',$tmp) . '</b>');
 			$y -= 5;
 		}

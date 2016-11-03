@@ -99,6 +99,7 @@ $ntempl = docnumber(array(
 	'number' => $invoice['number'],
 	'template' => $invoice['template'],
 	'cdate' => $invoice['cdate'],
+	'customerid' => $invoice['customerid'],
 ));
 if (isset($invoice['proforma']))
 	$layout['pagetitle'] = trans('Conversion Pro Forma Invoice $a To Invoice', $ntempl);
@@ -344,6 +345,7 @@ switch($action)
 					'number' => $invoice['number'],
 					'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($invoice['numberplanid'])),
 					'cdate' => $invoice['cdate'],
+					'customerid' => $customer['id'],
 				));
 			else
 				$args['fullnumber'] = null;

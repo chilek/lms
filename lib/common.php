@@ -559,14 +559,21 @@ function docnumber($number = null, $template = null, $cdate = null, $ext_num = '
 			$cdate = null;
 		if (!isset($ext_num))
 			$ext_num = '';
+		if (!isset($customerid))
+			$customerid = null;
 	}
 
 	$number = $number ? $number : 1;
 	$template = $template ? $template : DEFAULT_NUMBER_TEMPLATE;
 	$cdate = $cdate ? $cdate : time();
 
+	if (empty($customerid))
+		$result = str_replace('%C', trans('customer ID'), $template);
+	else
+		$result = str_replace('%C', $customerid, $template);
+
 	// extended number part
-	$result = str_replace('%I', $ext_num, $template);
+	$result = str_replace('%I', $ext_num, $result);
 
 	// main document number
 	// code for php < 5.3

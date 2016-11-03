@@ -24,10 +24,6 @@
  *  $Id$
  */
 
-$numberplanlist = $LMS->GetNumberPlans(array(
-	'doctype' => DOC_CNOTE,
-));
-
 $action = isset($_GET['action']) ? $_GET['action'] : NULL;
 
 if (isset($_GET['id']) && $action == 'init')
@@ -97,12 +93,18 @@ $SESSION->restore('invoice', $invoice);
 $SESSION->restore('cnote', $cnote);
 $SESSION->restore('cnoteerror', $error);
 
+$numberplanlist = $LMS->GetNumberPlans(array(
+	'doctype' => DOC_CNOTE,
+	'customerid' => $invoice['customerid'],
+));
+
 $taxeslist = $LMS->GetTaxes($invoice['cdate'],$invoice['cdate']);
 
 $ntempl = docnumber(array(
 	'number' => $invoice['number'],
 	'template' => $invoice['template'],
 	'cdate' => $invoice['cdate'],
+	'customerid' => $invoice['customerid'],
 ));
 $layout['pagetitle'] = trans('Credit Note for Invoice: $a', $ntempl);
 
@@ -274,6 +276,7 @@ switch($action)
 				'doctype' => DOC_CNOTE,
 				'planid' => $cnote['numberplanid'],
 				'cdate' => $cnote['cdate'],
+				'customerid' => $invoice['customerid'],
 			));
 		else {
 			if (!preg_match('/^[0-9]+$/', $cnote['number']))
@@ -283,6 +286,7 @@ switch($action)
 					'doctype' => DOC_CNOTE,
 					'planid' => $cnote['numberplanid'],
 					'cdate' => $cnote['cdate'],
+					'customerid' => $invoice['customerid'],
 				)))
 				$error['number'] = trans('Credit note number $a already exists!', $cnote['number']);
 
@@ -291,6 +295,7 @@ switch($action)
 					'doctype' => DOC_CNOTE,
 					'planid' => $cnote['numberplanid'],
 					'cdate' => $cnote['cdate'],
+					'customerid' => $invoice['customerid'],
 				));
 		}
 
@@ -304,6 +309,7 @@ switch($action)
 				'number' => $cnote['number'],
 				'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($cnote['numberplanid'])),
 				'cdate' => $cnote['cdate'],
+				'customerid' => $invoice['customerid'],
 			));
 		else
 			$fullnumber = null;

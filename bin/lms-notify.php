@@ -682,6 +682,7 @@ if (empty($types) || in_array('reminder', $types)) {
 				'number' => $row['number'],
 				'template' => ($row['template'] ? $row['template'] : '%N/LMS/%Y'),
 				'cdate' => $row['cdate'],
+				'customerid' => $row['id'],
 			));
 
 			$message = parse_customer_data($notifications['reminder']['message'], $row);
@@ -764,6 +765,7 @@ if (empty($types) || in_array('invoices', $types)) {
 				'number' => $row['number'],
 				'template' => ($row['template'] ? $row['template'] : '%N/LMS/%Y'),
 				'cdate' => $row['cdate'],
+				'customerid' => $row['id'],
 			));
 
 			$message = parse_customer_data($notifications['invoices']['message'], $row);
@@ -845,6 +847,7 @@ if (empty($types) || in_array('notes', $types)) {
 				'number' => $row['number'],
 				'template' => ($row['template'] ? $row['template'] : '%N/LMS/%Y'),
 				'cdate' => $row['cdate'],
+				'customerid' => $row['id'],
 			));
 
 			$message = parse_customer_data($notifications['notes']['message'], $row);

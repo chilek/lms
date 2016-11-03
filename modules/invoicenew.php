@@ -265,6 +265,8 @@ switch($action)
 		if ($invoice['deadline'] < $invoice['cdate'])
 			$error['deadline'] = trans('Deadline date should be later than consent date!');
 
+		$cid = isset($_GET['customerid']) && $_GET['customerid'] != '' ? intval($_GET['customerid']) : intval($_POST['customerid']);
+
 		if($invoice['number'])
 		{
 			if(!preg_match('/^[0-9]+$/', $invoice['number']))
@@ -274,14 +276,13 @@ switch($action)
 					'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
 					'planid' => $invoice['numberplanid'],
 					'cdate' => $invoice['cdate'],
+					'customerid' => $cid
 				)))
 				$error['number'] = trans('Invoice number $a already exists!', $invoice['number']);
 		}
 
 		if(!isset($error))
 		{
-    		$cid = isset($_GET['customerid']) && $_GET['customerid'] != '' ? intval($_GET['customerid']) : intval($_POST['customerid']);
-
 			if($LMS->CustomerExists($cid))
 				$customer = $LMS->GetCustomer($cid, true);
 
@@ -342,6 +343,7 @@ switch($action)
 				'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
 				'planid' => $invoice['numberplanid'],
 				'cdate' => $invoice['cdate'],
+				'customerid' => $customer['id'],
 			));
 		else {
 			if(!preg_match('/^[0-9]+$/', $invoice['number']))
@@ -351,6 +353,7 @@ switch($action)
 					'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
 					'planid' => $invoice['numberplanid'],
 					'cdate' => $invoice['cdate'],
+					'customerid' => $customer['id'],
 				)))
 				$error['number'] = trans('Invoice number $a already exists!', $invoice['number']);
 
@@ -359,6 +362,7 @@ switch($action)
 					'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, 
 					'planid' => $invoice['numberplanid'],
 					'cdate' => $invoice['cdate'],
+					'customerid' => $customer['id'],
 				));
 				$error = null;
 			}
@@ -465,6 +469,7 @@ $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
 	'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
 	'cdate' => date('Y/m', $invoice['cdate']),
+	'customerid' => isset($customer) ? $customer['id'] : null,
 )));
 $SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->display('invoice/invoicenew.html');
