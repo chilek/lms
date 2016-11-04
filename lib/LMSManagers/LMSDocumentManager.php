@@ -137,7 +137,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				$max = $this->db->GetOne('SELECT MAX(number) AS max 
 					FROM documents
 					LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-					WHERE numberplanid = ? AND ' . (strpos('%C', $item['template']) !== false && empty($customerid)
+					WHERE numberplanid = ? AND ' . (strpos($item['template'], '%C') === false || empty($customerid)
 						? '' : 'customerid = ' . intval($customerid) . ' AND ')
 					. ($doctype ? 'numberplanid IN (' . implode(',', array_keys($list)) . ') AND ' : '')
 					. ' cdate >= (CASE period
@@ -184,10 +184,13 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 		if (!isset($customerid))
 			$customerid = null;
 
-        if ($planid)
-            $period = $this->db->GetOne('SELECT period FROM numberplans WHERE id=?', array($planid));
-        else
-            $planid = 0;
+		if ($planid) {
+			$numplan = $this->db->GetRow('SELECT template, period FROM numberplans WHERE id=?', array($planid));
+			$numtemplate = $numplan['template'];
+			$period = $numplan['period'];
+		} else {
+			$planid = 0;
+		}
 
         $period = isset($period) ? $period : YEARLY;
         $cdate = $cdate ? $cdate : time();
@@ -250,7 +253,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				SELECT MAX(number) 
 				FROM documents 
 				WHERE cdate >= ? AND cdate < ? AND type = ? AND numberplanid = ?'
-				. (empty($customerid) ? '' : ' AND customerid = ' . intval($customerid)),
+				. (!isset($numtemplate) || strpos($numtemplate, '%C') === false || empty($customerid)
+					? '' : ' AND customerid = ' . intval($customerid)),
 				array($start, $end, $doctype, $planid));
 
         return $number ? ++$number : 1;
@@ -274,8 +278,11 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 		if (!isset($customerid))
 			$customerid = null;
 
-        if ($planid)
-            $period = $this->db->GetOne('SELECT period FROM numberplans WHERE id=?', array($planid));
+		if ($planid) {
+			$numplan = $this->db->GetRow('SELECT template, period FROM numberplans WHERE id=?', array($planid));
+			$numtemplate = $numplan['template'];
+			$period = $numplan['period'];
+		}
 
         $period = isset($period) ? $period : YEARLY;
         $cdate = $cdate ? $cdate : time();
@@ -327,14 +334,16 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
             case CONTINUOUS:
                 return $this->db->GetOne('SELECT number FROM documents
 					WHERE type = ? AND number = ? AND numberplanid = ?'
-					. (empty($customerid) ? '' : ' AND customerid = ' . intval($customerid)),
+					. (!isset($numtemplate) || strpos($numtemplate, '%C') === false || empty($customerid)
+						? '' : ' AND customerid = ' . intval($customerid)),
 					array($doctype, $number, $planid)) ? true : false;
                 break;
         }
 
 		return $this->db->GetOne('SELECT number FROM documents
 			WHERE cdate >= ? AND cdate < ? AND type = ? AND number = ? AND numberplanid = ?'
-			. (empty($customerid) ? '' : ' AND customerid = ' . intval($customerid)),
+			. (!isset($numtemplate) || strpos($numtemplate, '%C') === false || empty($customerid)
+				? '' : ' AND customerid = ' . intval($customerid)),
 			array($start, $end, $doctype, $number, $planid)) ? true : false;
     }
 
