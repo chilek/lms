@@ -170,6 +170,7 @@ switch($action)
 					'doctype' => DOC_DNOTE,
 					'planid' => $note['numberplanid'],
 					'cdate' => $note['cdate'],
+					'customerid' => $customer['id'],
 				));
 			else
 			{
@@ -180,6 +181,7 @@ switch($action)
 						'doctype' => DOC_DNOTE,
 						'planid' => $note['numberplanid'],
 						'cdate' => $note['cdate'],
+						'customerid' => $customer['id'],
 					)))
 					$error['number'] = trans('Debit note number $a already exists!', $note['number']);
 
@@ -188,6 +190,7 @@ switch($action)
 						'doctype' => DOC_DNOTE,
 						'planid' => $note['numberplanid'],
 						'cdate' => $note['cdate'],
+						'customerid' => $customer['id'],
 					));
 			}
 			
@@ -214,6 +217,7 @@ switch($action)
 					'number' => $note['number'],
 					'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid'])),
 					'cdate' => $cdate,
+					'customerid' => $customer['id'],
 				));
 			else
 				$fullnumber = null;

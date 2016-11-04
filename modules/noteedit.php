@@ -61,6 +61,7 @@ $ntempl = docnumber(array(
 	'number' => $note['number'],
 	'template' => $note['template'],
 	'cdate' => $note['cdate'],
+	'customerid' => $note['customerid'],
 ));
 $layout['pagetitle'] = trans('Debit Note Edit: $a', $ntempl);
 
@@ -156,6 +157,7 @@ switch($action)
 					'number' => $note['number'],
 					'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid'])),
 					'cdate' => $cdate,
+					'customerid' => $customer['id'],
 				));
 			else
 				$fullnumber = null;
