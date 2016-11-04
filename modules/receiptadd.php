@@ -334,7 +334,7 @@ switch($action)
 
 			foreach($_POST['marks'] as $id)
 			{
-				$row = $DB->GetRow('SELECT SUM(value) AS value, number, cdate, template, documents.type AS type, documents.customerid
+				$row = $DB->GetRow('SELECT SUM(value) AS value, number, cdate, template, documents.type AS type, documents.customerid,
 						    (SELECT dd.id FROM documents dd WHERE dd.reference = docid AND dd.closed = 0 LIMIT 1) AS reference
 						    FROM cash 
 						    LEFT JOIN documents ON (docid = documents.id)
