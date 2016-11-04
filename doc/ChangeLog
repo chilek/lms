@@ -19,6 +19,7 @@ version ?.??.?? (????-??-??):
   - enhancement: added support for pro forma invoices (should resolve LMS+ #120) [chilan]
   - enhancement: support of convertion pro forma invoice to invoice [chilan]
   - improvement: splited user name to separated first name and last name components [kyob]
+  - enhancement: support of customer number plans with special symbol %C [chilan]
 
 version 1.11.21 (2016-10-14):
 
