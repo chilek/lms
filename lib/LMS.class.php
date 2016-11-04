@@ -1715,8 +1715,8 @@ class LMS
 
 			$this->mail_object->Dsn = isset($headers['Delivery-Status-Notification-To']);
 
-			preg_match('/^(.+) <([a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>$/A', $headers['From'], $from);
-			$this->mail_object->setFrom($from[2], trim($from[1], "\""));
+			preg_match('/^(?:(?<name>.+) )?<(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>$/A', $headers['From'], $from);
+			$this->mail_object->setFrom($from['mail'], trim($from['name'], "\""));
 			$this->mail_object->addReplyTo($headers['Reply-To']);
 			$this->mail_object->CharSet = 'UTF-8';
 			$this->mail_object->Subject = $headers['Subject'];
