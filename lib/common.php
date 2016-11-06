@@ -567,10 +567,15 @@ function docnumber($number = null, $template = null, $cdate = null, $ext_num = '
 	$template = $template ? $template : DEFAULT_NUMBER_TEMPLATE;
 	$cdate = $cdate ? $cdate : time();
 
+	// customer id support
 	if (empty($customerid))
-		$result = str_replace('%C', trans('customer ID'), $template);
-	else
-		$result = str_replace('%C', $customerid, $template);
+		$result = preg_replace('/%\\d*C/', trans('customer ID'), $template);
+	else {
+		$result = preg_replace_callback('/%(\\d*)C/',
+			function ($m) use ($customerid) {
+				return sprintf('%0' . $m[1] . 'd', $customerid);
+			}, $template);
+	}
 
 	// extended number part
 	$result = str_replace('%I', $ext_num, $result);
