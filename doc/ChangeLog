@@ -20,6 +20,9 @@ version ?.??.?? (????-??-??):
   - enhancement: support of convertion pro forma invoice to invoice [chilan]
   - improvement: splited user name to separated first name and last name components [kyob]
   - enhancement: support of customer number plans with special symbol %C [chilan]
+  - enhancement: allow to select first free ip address automatically in node forms
+    (phpui.first_reserved_addresses controls how many first addresses are omitted
+    for selected network) [chilan]
 
 version 1.11.21 (2016-10-14):
 
