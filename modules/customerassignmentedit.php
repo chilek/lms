@@ -440,6 +440,7 @@ $layout['pagetitle'] = trans('Liability Edit: $a', '<A href="?m=customerinfo&id=
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $customernodes = $LMS->GetCustomerNodes($customer['id']);
+
 unset($customernodes['total']);
 
 $LMS->executeHook(

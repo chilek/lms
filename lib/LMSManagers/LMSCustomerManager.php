@@ -767,23 +767,45 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     /**
      * Returns customer nodes
      * 
-     * @param int $id Customer id
-     * @param int $count Limit
+     * @param  int   $id Customer id
+     * @param  int   $count Rows limit for SQL query
      * @return array Nodes
      */
     public function getCustomerNodes($id, $count = null)
     {
-        if ($result = $this->db->GetAll('SELECT n.id, n.name, mac, ipaddr,
-				inet_ntoa(ipaddr) AS ip, ipaddr_pub, n.authtype,
-				inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access,
-				warning, info, ownerid, lastonline, location,
-				(SELECT COUNT(*) FROM nodegroupassignments
-					WHERE nodeid = n.id) AS gcount,
-				n.netid, net.name AS netname
-				FROM vnodes n
-				JOIN networks net ON net.id = n.netid
-				WHERE ownerid = ?
-				ORDER BY n.name ASC ' . ($count ? 'LIMIT ' . $count : ''), array($id))) {
+		$result = $this->db->GetAll('SELECT
+		                                n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip,
+		                                ipaddr_pub, n.authtype, inet_ntoa(ipaddr_pub) AS ip_pub,
+		                                passwd, access, warning, info, ownerid, lastonline, location,
+				                        (SELECT COUNT(*)
+				                         FROM nodegroupassignments
+					                     WHERE nodeid = n.id) AS gcount,
+				                        n.netid, net.name AS netname
+				                     FROM
+				                     	vnodes n
+				                     JOIN networks net ON net.id = n.netid
+            				         WHERE
+            				            ownerid = ?
+				                     ORDER BY
+				                        n.name ASC ' . ($count ? 'LIMIT ' . $count : ''), array($id));
+
+        $netdevs = $this->db->GetAll("SELECT
+										n.id, n.name, '' as mac, ipaddr, inet_ntoa(ipaddr) AS ip,
+										ipaddr_pub, n.authtype, inet_ntoa(ipaddr_pub) AS ip_pub,
+										passwd, access, warning, info, nd.ownerid, lastonline, nd.location,
+										(SELECT COUNT(*)
+										FROM nodegroupassignments
+										WHERE nodeid = n.id) AS gcount,
+										n.netid, nd.name AS netname, netdev
+									FROM
+										nodes n
+										LEFT JOIN netdevices nd ON n.netdev = nd.id
+									WHERE
+										nd.ownerid = ?", array($id, $id));
+
+		$result = array_merge($result, $netdevs);
+
+        if ($result) {
             // assign network(s) to node record
             $network_manager = new LMSNetworkManager($this->db, $this->auth, $this->cache);
             $networks = (array) $network_manager->GetNetworks();
@@ -810,7 +832,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
                 $channels = $this->db->GetAllByKey('SELECT nodeid, channelid, c.name, c.id, cid,
 				        nc.upceil, nc.downceil
-					FROM ewx_stm_nodes
+			 		FROM ewx_stm_nodes
 					JOIN ewx_stm_channels nc ON (channelid = nc.id)
 					LEFT JOIN ewx_channels c ON (c.id = nc.cid)
 					WHERE nodeid IN (' . implode(',', array_keys($ids)) . ')', 'nodeid');
@@ -818,11 +840,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 if ($channels)
                     foreach ($channels as $channel) {
                         $idx = $ids[$channel['nodeid']];
-                        $result[$idx]['channelid'] = $channel['id'] ? $channel['id'] : $channel['channelid'];
+                        $result[$idx]['channelid']   = $channel['id'] ? $channel['id'] : $channel['channelid'];
                         $result[$idx]['channelname'] = $channel['name'];
-                        $result[$idx]['cid'] = $channel['cid'];
-                        $result[$idx]['downceil'] = $channel['downceil'];
-                        $result[$idx]['upceil'] = $channel['upceil'];
+                        $result[$idx]['cid']         = $channel['cid'];
+                        $result[$idx]['downceil']    = $channel['downceil'];
+                        $result[$idx]['upceil']      = $channel['upceil'];
                     }
             }
         }

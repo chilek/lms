@@ -206,7 +206,7 @@ if (isset($_POST['assignment'])) {
 			$a['vdiscount'] = 0;
 			$a['value']     = 0;
 
-			unset($a['schemaid'], $a['invoice'], $a['settlement', $error['at']);
+			unset($a['schemaid'], $a['invoice'], $a['settlement'], $error['at']);
 			$at = 0;
 		break;
 

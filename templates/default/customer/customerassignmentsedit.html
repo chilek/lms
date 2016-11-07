@@ -415,8 +415,21 @@
 												</label>
 											</TD>
 										</TR>
-										
+
+										{$nodes   = 0}
+										{$netdevs = 0}
+
 										{if $customernodes}
+											{foreach $customernodes as $v}
+												{if isset($v['netdev'])}
+													{$netdevs++}
+												{else}
+													{$nodes++}
+												{/if}
+											{/foreach}
+										{/if}
+
+										{if $nodes}
 										<TR id="a_nodes">
 											<TD>
 												<IMG src="img/node.gif" alt="">
@@ -426,23 +439,54 @@
 											</TD>
 											<TD class="nobr" id="nodeslist">
 												{foreach $customernodes as $customernode}
-													{assign var=nodeid value=$customernode.id}
-									
-													<label>
-														<INPUT type="checkbox" name="assignment[nodes][{counter}]" value="{$customernode.id}"{if in_array($nodeid, (array)$assignment.nodes)} checked{/if}>
-														<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
-													</label>
-													<BR>
+													{if !isset($customernode['netdev'])}
+														{assign var=nodeid value=$customernode.id}
+
+														<label>
+															<INPUT type="checkbox" name="assignment[nodes][{counter}]" value="{$customernode.id}"{if in_array($nodeid, (array)$assignment.nodes)} checked{/if}>
+															<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
+														</label>
+														<BR>
+													{/if}
 												{/foreach}
-		
-												{if count($customernodes) > 1}
+											</TD>
+										</TR>
+										{/if}
+
+										{if $netdevs}
+										<TR id="a_nodes">
+											<TD>
+												<IMG src="img/netdev.gif" alt="">
+											</TD>
+											<TD class="bold">
+												{trans("Network Devices:")}
+											</TD>
+											<TD class="nobr" id="nodeslist">
+												{foreach $customernodes as $customernode}
+													{if isset($customernode['netdev'])}
+														{assign var=nodeid value=$customernode.id}
+
+														<label>
+															<INPUT type="checkbox" name="assignment[nodes][{counter}]" value="{$customernode.id}"{if in_array($nodeid, (array)$assignment.nodes)} checked{/if}>
+															<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
+														</label>
+														<BR>
+													{/if}
+												{/foreach}
+											</TD>
+										</TR>
+										{/if}
+
+										{if count($customernodes) > 1}
+										<tr>
+											<td colspan=2"></td>
+											<td>
 												<label>
 													<INPUT TYPE="checkbox" NAME="allbox" onchange="CheckAll('assignment', this, ['assignment[invoice]', 'assignment[settlement]'])" VALUE="1">
 													{trans("check all<!items>")}
 												</label>
-												{/if}
-											</TD>
-										</TR>
+											</td>
+										</tr>
 										{/if}
 									</TBODY>
 								</TABLE>
@@ -452,7 +496,7 @@
 				</TABLE>
 			</TD>
 		</TR>
-	
+
 		<TR>
 			<TD class="buttons" colspan="3">
 				<A href="#" onclick="return assignment_submit();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>&nbsp;
