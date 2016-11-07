@@ -76,4 +76,6 @@ interface LMSNetworkManagerInterface
     public function GetNetworkRecord($id, $page = 0, $plimit = 4294967296, $firstfree = false);
     
     public function ScanNodes();
+
+	public function GetNetworkPageForIp($netid, $ip);
 }

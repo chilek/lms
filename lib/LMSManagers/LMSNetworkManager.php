@@ -697,4 +697,11 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         return $result;
     }
 
+	public function GetNetworkPageForIp($netid, $ip) {
+		$netmask = $this->db->GetOne('SELECT mask FROM networks WHERE id = ?', array($netid));
+		$net = ip_long(getnetaddr($ip, $netmask));
+		$ip = ip_long($ip);
+		$page = floor(($ip - $net) / ConfigHelper::getConfig('phpui.networkhosts_pagelimit')) + 1;
+		return $page;
+	}
 }

@@ -1040,6 +1040,11 @@ class LMS
         $manager = $this->getNetworkManager();
         return $manager->ScanNodes();
     }
+    public function GetNetworkPageForIp($netid, $ip)
+    {
+        $manager = $this->getNetworkManager();
+        return $manager->GetNetworkPageForIp($netid, $ip);
+    }
 
     /*
      *  IP Networks

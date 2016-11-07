@@ -24,6 +24,8 @@ version ?.??.?? (????-??-??):
     (phpui.first_reserved_addresses controls how many first addresses are omitted
     for selected network) [chilan]
   - added support for assignment tariffs to network device hosts [kosa/chilan]
+  - improvement: if ip address is not empty go to the page in ip address selection
+    window where this non-empty ip address is visible [chilan]
 
 version 1.11.21 (2016-10-14):
 

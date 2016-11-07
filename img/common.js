@@ -87,10 +87,14 @@ function openSelectWindow2(theURL, winName, myWidth, myHeight, isCenter, formfie
 	return false;
 }
 
-function ipchoosewin(formfield1, formfield2, netid, device)
-{
-	var url = '?m=chooseip' +  (netid ? '&netid=' + netid : '') + (device ? '&device=' + device : '');
-	return openSelectWindow2(url, 'chooseip', 350, 380, 'true', formfield1, formfield2);
+function ipchoosewin(hostparams) {
+	var ipelem = hostparams.ipelem;
+	var netelem = hostparams.netelem;
+	var ip = (typeof hostparams.ip === 'undefined' ? '' : hostparams.ip);
+	var netid = (typeof hostparams.netid === 'undefined' ? '' : hostparams.netid);
+	var device = (typeof hostparams.device === 'undefined' ? '' : hostparams.device);
+	var url = '?m=chooseip' +  (netid ? '&netid=' + netid : '') + (ip ? '&ip=' + ip : '') + (device ? '&device=' + device : '');
+	return openSelectWindow2(url, 'chooseip', 350, 380, 'true', ipelem, netelem);
 }
 
 function macchoosewin(formfield)

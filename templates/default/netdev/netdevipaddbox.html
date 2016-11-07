@@ -47,7 +47,13 @@
 			<B>{trans("IP address:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			<INPUT TYPE="TEXT" NAME="ipadd[ipaddr]" VALUE="{$nodeipdata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr]'], document.editipaddr['ipadd[netid]'], 0, {$netdevinfo.id});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
+			<INPUT TYPE="TEXT" NAME="ipadd[ipaddr]" VALUE="{$nodeipdata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}>
+			<a href="javascript: void(0);" onClick="return ipchoosewin({
+					ipelem: document.editipaddr['ipadd[ipaddr]'],
+					netelem: document.editipaddr['ipadd[netid]'],
+					netid: 0,
+					device: {$netdevinfo.id}
+				});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	{if ConfigHelper::checkConfig('phpui.public_ip')}
