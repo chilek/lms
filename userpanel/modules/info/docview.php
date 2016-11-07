@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -49,7 +49,11 @@ if(!empty($_GET['id'])) {
 		die;
 	}
 
-	$docnumber = docnumber($doc['number'], $doc['template'], $doc['cdate']);
+	$docnumber = docnumber(array(
+		'number' => $doc['number'],
+		'template' => $doc['template'],
+		'cdate' => $doc['cdate'],
+	));
 	$filename = DOC_DIR.'/'.substr($doc['md5sum'],0,2).'/'.$doc['md5sum'];
 	if(file_exists($filename))
 	{

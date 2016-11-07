@@ -157,8 +157,13 @@ $SESSION->restore('receiptcustomer', $customer);
 $SESSION->restore('receipt', $receipt);
 $SESSION->restore('receiptediterror', $error);
 
-$receipt['titlenumber'] = docnumber($receipt['number'], $receipt['template'], $receipt['cdate'], 
-			    isset($receipt['extnumber']) ? $receipt['extnumber'] : '');
+$receipt['titlenumber'] = docnumber(array(
+	'number' => $receipt['number'],
+	'template' => $receipt['template'],
+	'cdate' => $receipt['cdate'],
+	'ext_num' => isset($receipt['extnumber']) ? $receipt['extnumber'] : '',
+	'customerid' => $receipt['customerid'],
+));
 
 if($receipt['type']=='in')
 	$layout['pagetitle'] = trans('Cash-in Receipt Edit: $a', $receipt['titlenumber']);
@@ -253,13 +258,24 @@ switch($action)
 			$receipt['cdate'] = $oldcdate;
 			
 		if(!$receipt['number'])
-			$receipt['number'] = $LMS->GetNewDocumentNumber(DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']);
+			$receipt['number'] = $LMS->GetNewDocumentNumber(array(
+				'doctype' => DOC_RECEIPT,
+				'planid' => $receipt['numberplanid'],
+				'cdate' => $receipt['cdate'],
+				'customerid' => $receipt['customerid'],
+			));
 		else
 		{
 			if(!preg_match('/^[0-9]+$/', $receipt['number']))
 				$error['number'] = trans('Receipt number must be integer!');
 			elseif($receipt['number']!=$oldnumber)
-				if($LMS->DocumentExists($receipt['number'], DOC_RECEIPT, $receipt['numberplanid'], $receipt['cdate']))
+				if($LMS->DocumentExists(array(
+						'number' => $receipt['number'],
+						'doctype' => DOC_RECEIPT,
+						'planid' => $receipt['numberplanid'],
+						'cdate' => $receipt['cdate'],
+						'customerid' => $receipt['customerid'],
+					)))
 					$error['number'] = trans('Receipt number $a already exists!', $receipt['number']);
 		}
 
@@ -367,9 +383,12 @@ switch($action)
 				$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
 			}
 
-			$fullnumber = docnumber($receipt['number'],
-				$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
-				$receipt['cdate']);
+			$fullnumber = docnumber(array(
+				'number' => $receipt['number'],
+				'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
+				'cdate' => $receipt['cdate'],
+				'customerid' => $customer['id'],
+			));
 
 			// re-add receipt 
 			$args = array(
@@ -456,7 +475,7 @@ switch($action)
 					'value' => $value,
 					'comment' => $item['description'],
 					SYSLOG::RES_USER => $AUTH->id,
-					SYSLOG::RES_CUST =>$customer['id']
+					SYSLOG::RES_CUST => $customer['id']
 				);
 				$DB->Execute('INSERT INTO cash (type, time, docid, itemid, value, comment, userid, customerid)
 						VALUES(?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
@@ -480,9 +499,11 @@ switch($action)
 				$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
 			}
 
-			$fullnumber = docnumber($receipt['number'],
-				$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
-				$receipt['cdate']);
+			$fullnumber = docnumber(array(
+				'number' => $receipt['number'],
+				'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
+				'cdate' => $receipt['cdate'],
+			));
 
 			$args = array(
 				'type' => DOC_RECEIPT,

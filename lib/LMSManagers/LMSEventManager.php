@@ -74,9 +74,9 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         if ($list) {
             foreach ($list as $idx => $row) {
                 if (!$simple)
-                    $row['userlist'] = $this->db->GetAll('SELECT userid AS id, users.name
-						FROM eventassignments, users
-						WHERE userid = users.id AND eventid = ? ', array($row['id']));
+                    $row['userlist'] = $this->db->GetAll('SELECT userid AS id, vusers.name
+						FROM eventassignments, vusers
+						WHERE userid = vusers.id AND eventid = ? ', array($row['id']));
                 $endtime = $row['endtime'];
 
                 $userfilter = false;

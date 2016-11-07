@@ -127,7 +127,9 @@ $SMARTY->assign('voip_tariffs'    , $LMS->getVoipTariffs());
 $SMARTY->assign('voip_tariffrules', $LMS->getVoipTariffRuleGroups());
 $SMARTY->assign('tariff'          , $tariff);
 $SMARTY->assign('taxeslist'       , $LMS->GetTaxes());
-$SMARTY->assign('numberplanlist'  , $LMS->GetNumberPlans(DOC_INVOICE));
+$SMARTY->assign('numberplanlist'  , $LMS->GetNumberPlans(array(
+	'doctype' => DOC_INVOICE,
+)));
 $SMARTY->assign('error'           , $error);
 $SMARTY->display('tariff/tariffedit.html');
 

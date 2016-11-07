@@ -69,7 +69,11 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	foreach($ids as $idx => $noteid) {
 		$note = $LMS->GetNoteContent($noteid);
 		if ($count == 1)
-			$docnumber = docnumber($note['number'], $note['template'], $note['cdate']);
+			$docnumber = docnumber(array(
+				'number' => $note['number'],
+				'template' => $note['template'],
+				'cdate' => $note['cdate'],
+			));
 
 		$note['dontpublish'] = $dontpublish;
 		$i++;
@@ -109,7 +113,11 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	foreach ($ids as $idx => $noteid) {
 		$note = $LMS->GetNoteContent($noteid);
 		if ($count == 1)
-			$docnumber = docnumber($note['number'], $note['template'], $note['cdate']);
+			$docnumber = docnumber(array(
+				'number' => $note['number'],
+				'template' => $note['template'],
+				'cdate' => $note['cdate'],
+			));
 
 		$note['dontpublish'] = $dontpublish;
 		$note['division_header'] = str_replace('%bankaccount',
@@ -119,7 +127,11 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 } elseif ($note = $LMS->GetNoteContent($_GET['id'])) {
 	$ids = array($_GET['id']);
 
-	$docnumber = $number = docnumber($note['number'], $note['template'], $note['cdate']);
+	$docnumber = $number = docnumber(array(
+		'number' => $note['number'],
+		'template' => $note['template'],
+		'cdate' => $note['cdate'],
+	));
 	$layout['pagetitle'] = trans('Debit Note No. $a', $number);
 
 	$note['dontpublish'] = $dontpublish;

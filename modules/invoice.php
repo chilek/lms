@@ -82,7 +82,12 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	foreach ($ids as $idx => $invoiceid) {
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
 		if (count($ids) == 1)
-			$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+			$docnumber = docnumber(array(
+				'number' => $invoice['number'],
+				'template' => $invoice['template'],
+				'cdate' => $invoice['cdate'],
+				'customerid' => $invoice['customerid'],
+			));
 
 		$invoice['dontpublish'] = $dontpublish;
 		foreach ($which as $type) {
@@ -130,7 +135,12 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	foreach ($ids as $idx => $invoiceid) {
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
 		if (count($ids) == 1)
-			$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+			$docnumber = docnumber(array(
+				'number' => $invoice['number'],
+				'template' => $invoice['template'],
+				'cdate' => $invoice['cdate'],
+				'customerid' => $invoice['customerid'],
+			));
 
 		$invoice['dontpublish'] = $dontpublish;
 		foreach ($which as $type) {
@@ -143,7 +153,12 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 } elseif ($invoice = $LMS->GetInvoiceContent($_GET['id'])) {
 	$ids = array($_GET['id']);
 
-	$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+	$docnumber = docnumber(array(
+		'number' => $invoice['number'],
+		'template' => $invoice['template'],
+		'cdate' => $invoice['cdate'],
+		'customerid' => $invoice['customerid'],
+	));
 	if(!isset($invoice['invoice']))
 		$layout['pagetitle'] = trans('Invoice No. $a', $docnumber);
 	else

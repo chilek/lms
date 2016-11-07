@@ -57,12 +57,21 @@ if (isset($_POST['document'])) {
 		$error['number'] = trans('Selected numbering plan doesn\'t match customer\'s division!');
 	elseif ($document['number'] == '') {
 	// check number
-		$tmp = $LMS->GetNewDocumentNumber($document['type'], $document['numberplanid']);
+		$tmp = $LMS->GetNewDocumentNumber(array(
+			'doctype' => $document['type'],
+			'planid' => $document['numberplanid'],
+			'customerid' => $document['customerid'],
+		));
 		$document['number'] = $tmp ? $tmp : 0;
 		$autonumber = true;
 	} elseif (!preg_match('/^[0-9]+$/', $document['number']))
 		$error['number'] = trans('Document number must be an integer!');
-	elseif ($LMS->DocumentExists($document['number'], $document['type'], $document['numberplanid']))
+	elseif ($LMS->DocumentExists(array(
+			'number' => $document['number'],
+			'doctype' => $document['type'],
+			'planid' => $document['numberplanid'],
+			'customerid' => $document['customerid'],
+		)))
 		$error['number'] = trans('Document with specified number exists!');
 
 	if ($document['fromdate']) {
@@ -188,9 +197,12 @@ if (isset($_POST['document'])) {
 				account, inv_header, inv_footer, inv_author, inv_cplace 
 				FROM divisions WHERE id = ? ;',array($customer['divisionid']));
 
-		$fullnumber = docnumber($document['number'],
-			$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid'])),
-			$time);
+		$fullnumber = docnumber(array(
+			'number' => $document['number'],
+			'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid'])),
+			'cdate' => $time,
+			'customerid' => $document['customerid'],
+		));
 		$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, 
 			customerid, userid, name, address, zip, city, ten, ssn, divisionid, 
 			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
@@ -287,7 +299,9 @@ if (!$rights) {
 $allnumberplans = array();
 $numberplans = array();
 
-if ($templist = $LMS->GetNumberPlans())
+if ($templist = $LMS->GetNumberPlans(array(
+		'customerid' => isset($document['customerid']) ? $document['customerid'] : null,
+	)))
 	foreach ($templist as $item)
 		if ($item['doctype'] < 0)
 			$allnumberplans[] = $item;

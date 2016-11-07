@@ -11,11 +11,9 @@
     {section name=helpdesklist loop=$helpdesklist start=$limit}
     <tr {userpaneltip text="Click icon on the left to see request details"}>
         <td>
-            {if $helpdesklist[helpdesklist].state == $smarty.const.RT_RESOLVED}
-            <a class="btn btn-secondary" href="?m=helpdesk&amp;op=view&amp;id={$helpdesklist[helpdesklist].id}">{$helpdesklist[helpdesklist].id|string_format:"%06d"}</a>
-            {elseif $helpdesklist[helpdesklist].state == $smarty.const.RT_NEW}
-            <a class="btn btn-primary" href="?m=helpdesk&amp;op=view&amp;id={$helpdesklist[helpdesklist].id}">{$helpdesklist[helpdesklist].id|string_format:"%06d"}</a>
-            {/if}
+            <a class="btn {if $helpdesklist[helpdesklist].state == $smarty.const.RT_RESOLVED}btn-secondary{elseif $helpdesklist[helpdesklist].state == $smarty.const.RT_NEW}btn-primary{else}btn-info{/if}" href="?m=helpdesk&op=view&id={$helpdesklist[helpdesklist].id}">
+            	{$helpdesklist[helpdesklist].id|string_format:"%06d"}
+            </a>
         </td>
         <td>{$helpdesklist[helpdesklist].createtime|date_format:"%Y/%m/%d %H:%M"}</td>
         <td><b>{$helpdesklist[helpdesklist].subject|escape}</b></td>

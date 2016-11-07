@@ -21,10 +21,18 @@
 	<TBODY>
 	<TR>
 		<TD class="bold nobr">
-			<IMG src="img/users.gif" alt=""> {trans("First/last name:")}
+			<IMG src="img/users.gif" alt=""> {trans("First name:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="useradd[name]" value="{$useradd.name}" size="40" required {tip text="Enter user name" trigger="name"}>
+			<INPUT type="text" name="useradd[firstname]" value="{$useradd.firstname}" size="40" required {tip text="Enter user first name" trigger="firstname"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/users.gif" alt=""> {trans("Last name:")}
+		</TD>
+		<TD>
+			<INPUT type="text" name="useradd[lastname]" value="{$useradd.lastname}" size="40" required {tip text="Enter user last name" trigger="lastname"}>
 		</TD>
 	</TR>
 	<TR>

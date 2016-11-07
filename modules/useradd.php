@@ -29,14 +29,14 @@ $useradd = isset($_POST['useradd']) ? $_POST['useradd'] : array();
 
 if(sizeof($useradd))
 {
-    
+
         $error = array();
-    
+
 	foreach($useradd as $key => $value)
 	    if (!is_array($value))
 		    $useradd[$key] = trim($value);
 
-	if($useradd['login']=='' && $useradd['name']=='' && $useradd['password']=='' && $useradd['confirm']=='')
+	if($useradd['login']=='' && $useradd['firstname']=='' && $useradd['lastname']=='' && $useradd['password']=='' && $useradd['confirm']=='')
 	{
 		$SESSION->redirect('?m=useradd');
 	}
@@ -51,8 +51,10 @@ if(sizeof($useradd))
 	if($useradd['email']!='' && !check_email($useradd['email']))
 		$error['email'] = trans('E-mail isn\'t correct!');
 
-	if($useradd['name']=='')
-		$error['name'] = trans('You have to enter first and lastname!');
+	if($useradd['firstname']=='')
+		$error['firstname'] = trans('You have to enter firstname!');
+	if($useradd['lastname']=='')
+		$error['lastname'] = trans('You have to enter lastname!');
 
 	if ($useradd['password'] == '')
 		$error['password'] = trans('Empty passwords are not allowed!');

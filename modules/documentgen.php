@@ -43,11 +43,18 @@ if (isset($_POST['document'])) {
 		$error['title'] = trans('Document title is required!');
 
 	if ($document['number'] == '') {
-		$tmp = $LMS->GetNewDocumentNumber($document['type'], $document['numberplanid']);
+		$tmp = $LMS->GetNewDocumentNumber(array(
+			'doctype' => $document['type'],
+			'planid' => $document['numberplanid'],
+		));
 		$document['number'] = $tmp ? $tmp : 0;
 	} elseif (!preg_match('/^[0-9]+$/', $document['number']))
 		$error['number'] = trans('Document number must be an integer!');
-	elseif ($LMS->DocumentExists($document['number'], $document['type'], $document['numberplanid']))
+	elseif ($LMS->DocumentExists(array(
+			'number' => $document['number'],
+			'doctype' => $document['type'],
+			'planid' => $document['numberplanid'],
+		)))
 		$error['number'] = trans('Document with specified number exists!');
 
 	if ($document['fromdate']) {
@@ -154,6 +161,8 @@ if (isset($_POST['document'])) {
 		$genresult = '<H1>' . $layout['pagetitle'] . '</H1>';
 
 		$numtemplate = $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid']));
+		// number template has got %C special symbol which means customer id substitution
+		$customernumtemplate = strpos($numtemplate, '%C') !== false;
 
 		if ($document['templ'])
 			// read template information
@@ -225,9 +234,19 @@ if (isset($_POST['document'])) {
 				account, inv_header, inv_footer, inv_author, inv_cplace 
 				FROM divisions WHERE id = ? ;',array($gencust['divisionid']));
 
-			$fullnumber = docnumber($document['number'],
-				$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($document['numberplanid'])),
-				$time);
+			if ($customernumtemplate)
+				$document['number'] = $LMS->GetNewDocumentNumber(array(
+					'doctype' => $document['type'],
+					'planid' => $document['numberplanid'],
+					'customerid' => $document['customerid'],
+				));
+
+			$fullnumber = docnumber(array(
+				'number' => $document['number'],
+				'template' => $numtemplate,
+				'cdate' => $time,
+				'customerid' => $document['customerid'],
+			));
 			$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, customerid, userid, divisionid, name, address, zip, city, ten, ssn, closed,
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 					div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber)
@@ -282,8 +301,14 @@ if (isset($_POST['document'])) {
 
 			$DB->CommitTrans();
 
-			$genresult .= docnumber($document['number'], $numtemplate, $time) . '.<br>';
-			$document['number']++;
+			$genresult .= docnumber(array(
+					'number' => $document['number'],
+					'template' => $numtemplate,
+					'cdate' => $time,
+					'customerid' => $document['customerid'],
+				)) . '.<br>';
+			if (!$customernumtemplate)
+				$document['number']++;
 
 			if (isset($_GET['print']) && isset($docfile) && $docfile['contenttype'] == 'text/html') {
 				print $output;
@@ -335,7 +360,7 @@ if (!isset($document['numberplanid']))
 
 $numberplans = array();
 
-if ($templist = $LMS->GetNumberPlans())
+if ($templist = $LMS->GetNumberPlans(array()))
 	foreach ($templist as $item)
 		if ($item['doctype'] < 0)
 			$numberplans[] = $item;

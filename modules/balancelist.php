@@ -99,7 +99,7 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL, $pagelimit=100, $p
 					AND customerid = cash.customerid)' : '')
 				.' ORDER BY time, cash.id'))
 	{
-		$userlist = $DB->GetAllByKey('SELECT id, name FROM users','id');
+		$userlist = $DB->GetAllByKey('SELECT id, name FROM vusers','id');
 
 		$balancelist['liability'] = 0;
 		$balancelist['expense'] = 0;

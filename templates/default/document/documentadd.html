@@ -75,6 +75,7 @@
 </script>
 <FORM name="documentadd" method="POST" action="?m=documentadd">
 <INPUT type="submit" class="hiddenbtn">
+{if $customer.id}{$cid=$customer.id}{elseif $document.customerid}{$cid=$document.customerid}{else}{$cid=""}{/if}
 <TABLE class="lmsbox">
 	<COLGROUP>
 		<COL style="width: 1%;">
@@ -103,7 +104,6 @@
 			{trans("Customer:")}
 		</TD>
 		<TD class="nobr">
-			{if $customer.id}{$cid=$customer.id}{elseif $document.customerid}{$cid=$document.customerid}{else}{$cid=""}{/if}
 			{customerlist form="documentadd" customers=$customers selected=$cid selectname="customer" inputname="customerid" customOnChange="getplugin()"}
 		</TD>
 	</TR>
@@ -188,7 +188,7 @@
 				<OPTION value="0"{if !$document.numberplanid} SELECTED{/if}>... {trans("select numbering plan")} ...</OPTION>
 			    {foreach item=plan from=$numberplans}
 				{assign var=period value=$plan.period}
-				<OPTION value="{$plan.id}"{if $plan.id==$document.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$document.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+				<OPTION value="{$plan.id}"{if $plan.id==$document.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$document.cdate customerid=$cid} ({$_NUM_PERIODS.$period})</OPTION>
 			    {/foreach}
 			</SELECT>
 			{else}

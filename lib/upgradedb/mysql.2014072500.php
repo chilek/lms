@@ -43,7 +43,11 @@ do {
 				$template = $numberplans[$doc['numberplanid']]['template'];
 			else
 				$template = DEFAULT_NUMBER_TEMPLATE;
-			$fullnumber = docnumber($doc['number'], $template, $doc['cdate']);
+			$fullnumber = docnumber(array(
+				'number' => $doc['number'],
+				'template' => $template,
+				'cdate' => $doc['cdate'],
+			));
 			$this->Execute("UPDATE documents SET fullnumber = ? WHERE id = ?",
 				array($fullnumber, $doc['id']));
 		}

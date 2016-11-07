@@ -10,7 +10,7 @@
 		box = document.forms['event'].elements['event[begintime]'];
 		document.forms['event'].elements['event[endtime]'].value = box.options[box.selectedIndex].value;
 	}
-	
+
 	function CheckEndtime()
 	{
 		start = document.forms['event'].elements['event[begintime]'];
@@ -154,7 +154,7 @@
 		<TD style="width: 98%;" class="multiselect nobr">
 			<SELECT name="event[userlist][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- select user -")}">
 				{foreach $userlist as $user}
-				<OPTION value="{$user.id}"{if !empty($event.userlist) && in_array($user.id, $event.userlist)} selected{/if}>{$user.name}</OPTION>
+				<OPTION value="{$user.id}"{if !empty($event.userlist) && in_array($user.id, $event.userlist)} selected{/if}>{$user.rname}</OPTION>
 				{/foreach}
 			</SELECT>
 

@@ -102,7 +102,7 @@ function GetItemList($id, $order='id,desc', $search=NULL, $cat=NULL, $status=NUL
 
 $message = $DB->GetRow('SELECT m.*, u.name
 		FROM messages m
-		LEFT JOIN users u ON (u.id = m.userid) 
+		LEFT JOIN vusers u ON (u.id = m.userid) 
 		WHERE m.id = ?', array(intval($_GET['id'])));
 
 if(!$message)

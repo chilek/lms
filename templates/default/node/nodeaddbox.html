@@ -40,8 +40,21 @@
 		</TD>
 		<TD style="width: 99%;">
 			<INPUT TYPE="TEXT" NAME="nodedataipaddr" VALUE="{$nodedata.ipaddr}" required {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript:void(0);" onClick="return ipchoosewin(document.nodeadd.nodedataipaddr, document.nodeadd.nodedatanetid);" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
+			<a href="#" id="selectfirstfreeaddress">{trans("Select first free address")}</a>
 		</TD>
 	</TR>
+	<script type="text/javascript">
+	<!--
+		$(function() {
+			$('#selectfirstfreeaddress').click(function() {
+				var netid = $('[name="nodedatanetid"]').val();
+				if (netid == 0)
+					return;
+				xajax_getFirstFreeAddress(netid, $('[name="nodedataipaddr"]').uniqueId().attr('id'));
+			});
+		});
+	//-->
+	</script>
 	{if ConfigHelper::checkValue(ConfigHelper::checkConfig('phpui.public_ip', 'true'))}
 	<TR>
 		<TD style="width: 1%;">

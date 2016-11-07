@@ -31,6 +31,8 @@ if (isset($_GET['id']) && $action == 'edit') {
 	if ($LMS->isDocumentPublished($_GET['id']) && !ConfigHelper::checkConfig('privileges.superuser'))
 		return;
 
+	$cnote = $LMS->GetInvoiceContent($_GET['id']);
+
 	$invoice = array();
 	foreach ($cnote['invoice']['content'] as $item)
 		$invoice[$item['itemid']] = $item;
@@ -87,7 +89,12 @@ $SESSION->restore('cnote', $cnote);
 $SESSION->restore('cnoteediterror', $error);
 $itemdata = r_trim($_POST);
 
-$ntempl = docnumber($cnote['number'], $cnote['template'], $cnote['cdate']);
+$ntempl = docnumber(array(
+	'number' => $cnote['number'],
+	'template' => $cnote['template'],
+	'cdate' => $cnote['cdate'],
+	'customerid' => $cnote['customerid'],
+));
 $layout['pagetitle'] = trans('Credit Note for Invoice Edit: $a', $ntempl);
 
 switch ($action) {

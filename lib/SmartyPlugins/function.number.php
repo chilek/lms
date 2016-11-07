@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,9 +24,13 @@
  *  $Id$
  */
 
-function smarty_function_number($params, $template)
-{
-	$result = docnumber($params['number'], $params['template'], $params['time']);
+function smarty_function_number($params, $template) {
+	$result = docnumber(array(
+		'number' => $params['number'],
+		'template' => $params['template'],
+		'cdate' => $params['time'],
+		'customerid' => $params['customerid'],
+	));
 	if(isset($params['assign']))
 		$template->assign($params['assign'], $result);
 	else

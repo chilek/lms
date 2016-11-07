@@ -61,6 +61,11 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 </script>
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
 {$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
+{if isset($customer.id)}
+{$customerid = $customer.id}
+{else}
+{$customerid = $invoice.customerid}
+{/if}
 <FORM name="setcustomer" method="POST" action="?m=invoicenew&amp;action=setcustomer">
 <p style="display: none;">
 <INPUT type="submit" class="hiddenbtn">
@@ -85,7 +90,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			<SELECT name="invoice[numberplanid]" {tip text="Select numbering plan"}>
 			{foreach item=plan from=$numberplanlist}
 				{assign var=period value=$plan.period}
-				<OPTION value="{$plan.id}"{if $plan.id==$invoice.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
+				<OPTION value="{$plan.id}"{if $plan.id==$invoice.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate customerid=$customerid} ({$_NUM_PERIODS.$period})</OPTION>
 			{/foreach}
 			</SELECT>
 			{else}
@@ -138,11 +143,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			{trans("Customer:")}
 		</TD>
 		<TD style="width: 99%;" class="nobr">
-			{if isset($customer.id)}
-			{customerlist form="setcustomer" customers=$customers selected=$customer.id selectname="customer" inputname="customerid"}
-			{else}
-			{customerlist form="setcustomer" customers=$customers selected=$invoice.customerid selectname="customer" inputname="customerid"}
-			{/if}
+			{customerlist form="setcustomer" customers=$customers selected=$customerid selectname="customer" inputname="customerid"}
 		</TD>
 	</TR>
 	<TR>

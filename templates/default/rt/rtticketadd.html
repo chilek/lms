@@ -109,7 +109,7 @@
 			<SELECT size="1" name="ticket[owner]" {tip text="Select user" trigger="owner"}>
 				<OPTION value="0">- {trans("select user")} -</OPTION>
 				{foreach from=$userlist item=item}
-				<OPTION value="{$item.id}"{if $item.id == $ticket.owner} selected{/if}>{$item.name}</OPTION>
+				<OPTION value="{$item.id}"{if $item.id == $ticket.owner} selected{/if}>{$item.rname}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>

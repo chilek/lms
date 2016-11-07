@@ -547,14 +547,38 @@ if (!function_exists('bcmod'))
     }
 }
 
-function docnumber($number=NULL, $template=NULL, $time=NULL, $ext_num='')
-{
+function docnumber($number = null, $template = null, $cdate = null, $ext_num = '') {
+	if (is_array($number)) {
+		unset($template, $cdate, $ext_num);
+		extract($number);
+		if (!isset($number))
+			$number = null;
+		if (!isset($template))
+			$template = null;
+		if (!isset($cdate))
+			$cdate = null;
+		if (!isset($ext_num))
+			$ext_num = '';
+		if (!isset($customerid))
+			$customerid = null;
+	}
+
 	$number = $number ? $number : 1;
 	$template = $template ? $template : DEFAULT_NUMBER_TEMPLATE;
-	$time = $time ? $time : time();
-	
+	$cdate = $cdate ? $cdate : time();
+
+	// customer id support
+	if (empty($customerid))
+		$result = preg_replace('/%\\d*C/', trans('customer ID'), $template);
+	else {
+		$result = preg_replace_callback('/%(\\d*)C/',
+			function ($m) use ($customerid) {
+				return sprintf('%0' . $m[1] . 'd', $customerid);
+			}, $template);
+	}
+
 	// extended number part
-	$result = str_replace('%I', $ext_num, $template);
+	$result = str_replace('%I', $ext_num, $result);
 
 	// main document number
 	// code for php < 5.3
@@ -569,7 +593,7 @@ function docnumber($number=NULL, $template=NULL, $time=NULL, $ext_num='')
 		}, $result);
 
 	// time conversion specifiers
-	return strftime($result, $time);
+	return strftime($result, $cdate);
 }
 
 // our finance round

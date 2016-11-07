@@ -127,7 +127,12 @@ switch($action)
 		{
 			if(!preg_match('/^[0-9]+$/', $note['number']))
 				$error['number'] = trans('Debit note number must be integer!');
-			elseif($LMS->DocumentExists($note['number'], DOC_DNOTE, $note['numberplanid'], $note['cdate']))
+			elseif($LMS->DocumentExists(array(
+					'number' => $note['number'],
+					'doctype' => DOC_DNOTE,
+					'planid' => $note['numberplanid'],
+					'cdate' => $note['cdate'],
+				)))
 				$error['number'] = trans('Debit note number $a already exists!', $note['number']);
 		}
 
@@ -161,16 +166,32 @@ switch($action)
 			$DB->LockTables(array('documents', 'cash', 'debitnotecontents', 'numberplans', 'divisions'));
 
 			if(!$note['number'])
-				$note['number'] = $LMS->GetNewDocumentNumber(DOC_DNOTE, $note['numberplanid'], $note['cdate']);
+				$note['number'] = $LMS->GetNewDocumentNumber(array(
+					'doctype' => DOC_DNOTE,
+					'planid' => $note['numberplanid'],
+					'cdate' => $note['cdate'],
+					'customerid' => $customer['id'],
+				));
 			else
 			{
 				if(!preg_match('/^[0-9]+$/', $note['number']))
 					$error['number'] = trans('Debit note number must be integer!');
-				elseif($LMS->DocumentExists($note['number'], DOC_DNOTE, $note['numberplanid'], $note['cdate']))
+				elseif($LMS->DocumentExists(array(
+						'number' => $note['number'],
+						'doctype' => DOC_DNOTE,
+						'planid' => $note['numberplanid'],
+						'cdate' => $note['cdate'],
+						'customerid' => $customer['id'],
+					)))
 					$error['number'] = trans('Debit note number $a already exists!', $note['number']);
-				
+
 				if($error)
-					$note['number'] = $LMS->GetNewDocumentNumber(DOC_DNOTE, $note['numberplanid'], $note['cdate']);
+					$note['number'] = $LMS->GetNewDocumentNumber(array(
+						'doctype' => DOC_DNOTE,
+						'planid' => $note['numberplanid'],
+						'cdate' => $note['cdate'],
+						'customerid' => $customer['id'],
+					));
 			}
 			
 			// set paytime
@@ -192,9 +213,12 @@ switch($action)
 				FROM divisions WHERE id = ? ;',array($customer['divisionid']));
 
 			if ($note['numberplanid'])
-				$fullnumber = docnumber($note['number'],
-					$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid'])),
-					$cdate);
+				$fullnumber = docnumber(array(
+					'number' => $note['number'],
+					'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid'])),
+					'cdate' => $cdate,
+					'customerid' => $customer['id'],
+				));
 			else
 				$fullnumber = null;
 
@@ -319,7 +343,10 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('note', $note);
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_DNOTE, date('Y/m', $note['cdate'])));
+$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
+	'doctype' => DOC_DNOTE,
+	'cdate' => date('Y/m', $note['cdate']),
+)));
 //$SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->display('note/noteadd.html');
 

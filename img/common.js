@@ -474,7 +474,6 @@ function multiselect(options) {
 				}
 			} else {
 				$(this).prop('checked', false).parent().hide();
-				elems[i].parentNode.className = '';
 				elem[text] = 0;
 			}
 		});

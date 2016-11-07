@@ -197,52 +197,55 @@ if (isset($_POST['assignment'])) {
 	if ($a['pdiscount'] < 0 || $a['pdiscount'] > 99.99)
 		$error['discount'] = trans('Wrong discount value!');
 
-	switch ($a['tariffid']) {
-		// suspending
-		case -1:
-			$a['tariffid']  = 0;
-			$a['discount']  = 0;
-			$a['pdiscount'] = 0;
-			$a['vdiscount'] = 0;
-			$a['value']     = 0;
-
-			unset($a['schemaid'], $a['invoice'], $a['settlement'], $error['at']);
-			$at = 0;
-		break;
-
-		// promotion schema
-		case -2:
-			if (!$from) {
-				$error['datefrom'] = trans('Promotion start date is required!');
-			} else {
-				if (count($a['stariffid']) == 1) {
-					$a['promotiontariffid'] = $a['stariffid'][0];
-				} else {
-					$a['promotiontariffid'] = $a['stariffid'];
-				}
-
-				$a['value']     = 0;
+	if (intval($a['tariffid']) <= 0)
+		switch ($a['tariffid']) {
+			// suspending
+			case -1:
+				$a['tariffid']  = 0;
 				$a['discount']  = 0;
 				$a['pdiscount'] = 0;
 				$a['vdiscount'] = 0;
-				// @TODO: handle other period/at values
-				$a['period'] = MONTHLY; // dont know why, remove if you are sure
-				$a['at'] = 1;
-			}
-		break;
+				$a['value']     = 0;
 
-		// tariffless
-		default:
-			if (!$a['name'])
-				$error['name'] = trans('Liability name is required!');
+				unset($a['schemaid'], $a['invoice'], $a['settlement'], $error['at']);
+				$at = 0;
+			break;
 
-			if (!$a['value'])
-				$error['value'] = trans('Liability value is required!');
-			elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']))
-				$error['value'] = trans('Incorrect value!');
+			// promotion schema
+			case -2:
+				if (!$from) {
+					$error['datefrom'] = trans('Promotion start date is required!');
+				} else {
+					if (count($a['stariffid']) == 1) {
+						$a['promotiontariffid'] = $a['stariffid'][0];
+					} else {
+						$a['promotiontariffid'] = $a['stariffid'];
+					}
 
-			unset($a['schemaid']);
-	}
+					$a['value']     = 0;
+					$a['discount']  = 0;
+					$a['pdiscount'] = 0;
+					$a['vdiscount'] = 0;
+					// @TODO: handle other period/at values
+					$a['period'] = MONTHLY; // dont know why, remove if you are sure
+					$a['at'] = 1;
+				}
+			break;
+
+			// tariffless
+			default:
+				if (!$a['name'])
+					$error['name'] = trans('Liability name is required!');
+
+				if (!$a['value'])
+					$error['value'] = trans('Liability value is required!');
+				elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']))
+					$error['value'] = trans('Incorrect value!');
+
+				unset($a['schemaid']);
+		}
+	else
+		unset($a['schemaid']);
 
         $hook_data = $LMS->executeHook(
             'customerassignmentadd_validation_before_submit', 
@@ -379,7 +382,12 @@ $SMARTY->assign('tariffs'             , $LMS->GetTariffs());
 $SMARTY->assign('taxeslist'           , $LMS->GetTaxes());
 $SMARTY->assign('expired'             , $expired);
 $SMARTY->assign('assignments'         , $LMS->GetCustomerAssignments($customer['id'], $expired));
-$SMARTY->assign('numberplanlist'      , $LMS->GetNumberPlans(DOC_INVOICE, NULL, $customer['divisionid'], false));
+$SMARTY->assign('numberplanlist'      , $LMS->GetNumberPlans(array(
+	'doctype' => DOC_INVOICE,
+	'cdate' => null,
+	'division' => $customer['divisionid'],
+	'next' => false,
+)));
 $SMARTY->assign('customerinfo'        , $customer);
 
 $SMARTY->display('customer/customerassignmentsedit.html');

@@ -603,14 +603,14 @@ $layout['pagetitle'] = trans('User Interface Configuration');
 
 $configlist = GetConfigList();
 
-$pagelimit = ConfigHelper::getConfig('phpui.configlist_pagelimit', $listdata['total']);
+$pagelimit = ConfigHelper::getConfig('phpui.configlist_pagelimit', count($configlist));
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('sections', $LMS->GetConfigSections());
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('configlist', $configlist);
-$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign('section', isset($_GET['s']) ? $_GET['s'] : '');
 $SMARTY->display('config/configlist.html');
 
 ?>

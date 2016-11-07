@@ -58,7 +58,7 @@ if(isset($_POST['rights']))
 	}
 	else
 	{
-		$users = $DB->GetAllByKey('SELECT id, name FROM users
+		$users = $DB->GetAllByKey('SELECT id, name FROM vusers
 			WHERE deleted = 0 ORDER BY name', 'id');
 	
 		foreach($users as $idx => $user)
@@ -72,7 +72,7 @@ if(isset($_POST['rights']))
 else
 {
 	$rights = $DB->GetAllByKey('SELECT u.id, u.name, d.rights
-		FROM users u
+		FROM vusers u
 		LEFT JOIN docrights d ON (u.id = d.userid AND d.doctype = ?)
 		WHERE u.deleted = 0
 		ORDER BY u.name', 'id', array($id));

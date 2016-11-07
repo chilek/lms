@@ -57,7 +57,12 @@ $SESSION->restore('notecustomer', $customer);
 $SESSION->restore('note', $note);
 $SESSION->restore('noteediterror', $error);
 
-$ntempl = docnumber($note['number'], $note['template'], $note['cdate']);
+$ntempl = docnumber(array(
+	'number' => $note['number'],
+	'template' => $note['template'],
+	'cdate' => $note['cdate'],
+	'customerid' => $note['customerid'],
+));
 $layout['pagetitle'] = trans('Debit Note Edit: $a', $ntempl);
 
 if(!empty($_GET['customerid']) && $LMS->CustomerExists($_GET['customerid']))
@@ -148,9 +153,12 @@ switch($action)
 				FROM divisions WHERE id = ? ;',array($customer['divisionid']));
 
 			if ($note['numberplanid'])
-				$fullnumber = docnumber($note['number'],
-					$DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid'])),
-					$cdate);
+				$fullnumber = docnumber(array(
+					'number' => $note['number'],
+					'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($note['numberplanid'])),
+					'cdate' => $cdate,
+					'customerid' => $customer['id'],
+				));
 			else
 				$fullnumber = null;
 

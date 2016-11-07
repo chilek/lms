@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -163,7 +163,12 @@ if ($items) {
 		$invoicelist[$idx]['custname'] = $row['name'];
 		$invoicelist[$idx]['custaddress'] = $row['zip'].' '.$row['city'].', '.$row['address'];
 		$invoicelist[$idx]['ten'] = ($row['ten'] ? trans('TEN').' '.$row['ten'] : ($row['ssn'] ? trans('SSN').' '.$row['ssn'] : ''));
-		$invoicelist[$idx]['number'] = docnumber($row['number'], $row['template'], $row['cdate']);
+		$invoicelist[$idx]['number'] = docnumber(array(
+			'number' => $row['number'],
+			'template' => $row['template'],
+			'cdate' => $row['cdate'],
+			'customerid' => $row['customerid'],
+		));
 		$invoicelist[$idx]['cdate'] = $row['cdate'];
 		$invoicelist[$idx]['sdate'] = $row['sdate'];
 		$invoicelist[$idx]['pdate'] = $row['cdate'] + ($row['paytime'] * 86400);

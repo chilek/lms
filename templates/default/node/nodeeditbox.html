@@ -66,8 +66,21 @@
 									</td>
 									<td>
 										<input type="text" name="nodeeditipaddr" value="{$nodeinfo.ip}" required {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddr, document.editnode.nodeeditnetid, {$nodeinfo.netid});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
+										<a href="#" id="selectfirstfreeaddress">{trans("Select first free address")}</a>
 									</td>
 								</tr>
+								<script type="text/javascript">
+								<!--
+									$(function() {
+										$('#selectfirstfreeaddress').click(function() {
+											var netid = $('[name="nodeeditnetid"]').val();
+											if (netid == 0)
+												return;
+											xajax_getFirstFreeAddress(netid, $('[name="nodeeditipaddr"]').uniqueId().attr('id'));
+										});
+									});
+								//-->
+								</script>
 
 								{if ConfigHelper::checkValue(ConfigHelper::checkConfig('phpui.public_ip', 'true'))}
 								<tr>

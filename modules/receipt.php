@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,7 +31,7 @@ function GetReceipt($id) {
 					ds.name AS d_name, ds.address AS d_address,
 					ds.zip AS d_zip, ds.city AS d_city
 				FROM documents d
-				LEFT JOIN users u ON (d.userid = u.id)
+				LEFT JOIN vusers u ON (d.userid = u.id)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				LEFT JOIN customers c ON (d.customerid = c.id)
 				LEFT JOIN divisions ds ON (ds.id = c.divisionid)
@@ -42,7 +42,13 @@ function GetReceipt($id) {
 		foreach ($receipt['contents'] as $row)
 			$receipt['total'] += $row['value'];
 
-		$receipt['number'] = docnumber($receipt['number'], $receipt['template'], $receipt['cdate'], $receipt['extnumber']);
+		$receipt['number'] = docnumber(array(
+			'number' => $receipt['number'],
+			'template' => $receipt['template'],
+			'cdate' => $receipt['cdate'],
+			'ext_num' => $receipt['extnumber'],
+			'customerid' => $receipt['customerid'],
+		));
 
 		if ($receipt['total'] < 0) {
 			$receipt['type'] = 'out';

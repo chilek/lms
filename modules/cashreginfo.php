@@ -39,7 +39,7 @@ if( !$registry )
 	$SESSION->redirect('?m=cashreglist');
 }
 
-$users = $DB->GetAll('SELECT id, name FROM users WHERE deleted=0');
+$users = $DB->GetAll('SELECT id, name FROM vusers WHERE deleted=0');
 foreach($users as $user)
 {
         $user['rights'] = $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($user['id'], $id));

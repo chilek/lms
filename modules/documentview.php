@@ -126,7 +126,7 @@ if (!empty($_POST['marks'])) {
 		}
 		die;
 	}
-} elseif($doc = $DB->GetRow('SELECT d.id, d.number, d.cdate, d.type, n.template
+} elseif($doc = $DB->GetRow('SELECT d.id, d.number, d.cdate, d.type, d.customerid, n.template
 	FROM documents d
 	LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 	JOIN docrights r ON (r.doctype = d.type)
@@ -143,7 +143,12 @@ if (!empty($_POST['marks'])) {
 	$doc['filename'] = $docattach['filename'];
 	$doc['contenttype'] = $docattach['contenttype'];
 
-	$docnumber = docnumber($doc['number'], $doc['template'], $doc['cdate']);
+	$docnumber = docnumber(array(
+		'number' => $doc['number'],
+		'template' => $doc['template'],
+		'cdate' => $doc['cdate'],
+		'customerid' => $doc['customerid'],
+	));
 	$filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($doc['md5sum'],0,2) . DIRECTORY_SEPARATOR . $doc['md5sum'];
 	if (file_exists($filename)) {
 		$filename_pdf = DOC_DIR . DIRECTORY_SEPARATOR . substr($doc['md5sum'],0,2) . DIRECTORY_SEPARATOR . $doc['md5sum'].'.pdf';

@@ -67,7 +67,11 @@ if(!empty($_POST['inv']))
 			continue;
 
 		if ($count == 1)
-			$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+			$docnumber = docnumber(array(
+				'number' => $invoice['number'],
+				'template' => $invoice['template'],
+				'cdate' => $invoice['cdate'],
+			));
 
 		if($i == $count)
 			$invoice['last'] = TRUE;
@@ -89,7 +93,11 @@ if(!empty($_POST['inv']))
 	$invoice['last'] = TRUE;
 	$invoice['type'] = $type;
 
-	$docnumber = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
+	$docnumber = docnumber(array(
+		'number' => $invoice['number'],
+		'template' => $invoice['template'],
+		'cdate' => $invoice['cdate'],
+	));
 
 	if(!isset($invoice['invoice']))
 		$layout['pagetitle'] = trans('Invoice No. $a', $docnumber);

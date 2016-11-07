@@ -22,10 +22,21 @@
 			<IMG src="img/users.gif" alt="">
 		</TD>
 		<TD class="bold nobr">
-			{trans("First/last name:")}
+			{trans("First name:")}
 		</TD>
 		<TD>
-			<INPUT type="text" name="userinfo[name]" value="{$userinfo.name}" required size="40" {tip text="Enter user name" trigger="name"}>
+			<INPUT type="text" name="userinfo[firstname]" value="{$userinfo.firstname}" required size="40" {tip text="Enter user first name" trigger="firstname"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<IMG src="img/users.gif" alt="">
+		</TD>
+		<TD class="bold nobr">
+			{trans("Last name:")}
+		</TD>
+		<TD>
+			<INPUT type="text" name="userinfo[lastname]" value="{$userinfo.lastname}" required size="40" {tip text="Enter user last name" trigger="lastname"}>
 		</TD>
 	</TR>
 	<TR>

@@ -142,7 +142,7 @@ class authLMS extends AuthPlugin {
 
 	public function updateUser(&$user) {
 		$db = $this->getDatabase();
-		$sql = "SELECT id, login, email, name FROM users where LOWER(login) = LOWER('".$user->mName."')";
+		$sql = "SELECT id, login, email, name FROM vusers where LOWER(login) = LOWER('".$user->mName."')";
 		$res = $db->query($sql);
 		$val = $db->fetchObject($res);
 		$db->close();

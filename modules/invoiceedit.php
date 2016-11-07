@@ -34,6 +34,8 @@ if(isset($_GET['id']) && $action == 'edit')
 
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
 
+	$invoice['proforma'] = isset($_GET['proforma']) ? 1 : null;
+
 	$SESSION->remove('invoicecontents');
 	$SESSION->remove('invoicecustomer');
 
@@ -63,6 +65,26 @@ if(isset($_GET['id']) && $action == 'edit')
 	$invoice['oldcdate'] = $invoice['cdate'];
 	$invoice['oldsdate'] = $invoice['sdate'];
 	$invoice['olddeadline'] = $invoice['deadline'] = $invoice['cdate'] + $invoice['paytime'] * 86400;
+
+	if ($invoice['proforma']) {
+		$currtime = time();
+		$invoice['cdate'] = $currtime;
+		$invoice['sdate'] = $currtime;
+		$invoice['deadline'] = $invoice['cdate'] + $invoice['paytime'] * 86400;
+
+		$customer = $LMS->GetCustomer($invoice['customerid'], true);
+		$invoice['numberplanid'] = $DB->GetOne('SELECT n.id FROM numberplans n
+			JOIN numberplanassignments a ON (n.id = a.planid)
+			WHERE n.doctype = ? AND n.isdefault = 1 AND a.divisionid = ?',
+			array(DOC_INVOICE, $customer['divisionid']));
+
+		$invoice['number'] = $LMS->GetNewDocumentNumber(array(
+			'doctype' => DOC_INVOICE,
+			'planid' => $invoice['numberplanid'],
+			'cdate' => $invoice['cdate'],
+		));
+	}
+
 	$SESSION->save('invoice', $invoice);
 	$SESSION->save('invoiceid', $invoice['id']);
 }
@@ -73,9 +95,18 @@ $SESSION->restore('invoice', $invoice);
 $SESSION->restore('invoiceediterror', $error);
 $itemdata = r_trim($_POST);
 
-$ntempl = docnumber($invoice['number'], $invoice['template'], $invoice['cdate']);
-$layout['pagetitle'] = $invoice['doctype'] == DOC_INVOICE_PRO
-	? trans('Pro Forma Invoice Edit: $a', $ntempl) : trans('Invoice Edit: $a', $ntempl);
+$ntempl = docnumber(array(
+	'number' => $invoice['number'],
+	'template' => $invoice['template'],
+	'cdate' => $invoice['cdate'],
+	'customerid' => $invoice['customerid'],
+));
+if (isset($invoice['proforma']))
+	$layout['pagetitle'] = trans('Conversion Pro Forma Invoice $a To Invoice', $ntempl);
+elseif($invoice['doctype'] == DOC_INVOICE_PRO)
+	$layout['pagetitle'] = trans('Pro Forma Invoice Edit: $a', $ntempl);
+else
+	$layout['pagetitle'] = trans('Invoice Edit: $a', $ntempl);
 
 if(isset($_GET['customerid']) && $_GET['customerid'] != '' && $LMS->CustomerExists($_GET['customerid']))
 	$action = 'setcustomer';
@@ -251,6 +282,33 @@ switch($action)
 			account, inv_header, inv_footer, inv_author, inv_cplace 
 			FROM divisions WHERE id = ? ;',array($customer['divisionid']));
 
+		if (!$invoice['number'])
+			$invoice['number'] = $LMS->GetNewDocumentNumber(array(
+				'doctype' => DOC_INVOICE,
+				'planid' => $invoice['numberplanid'],
+				'cdate' => $invoice['cdate'],
+			));
+		else {
+			if(!preg_match('/^[0-9]+$/', $invoice['number']))
+				$error['number'] = trans('Invoice number must be integer!');
+			elseif($LMS->DocumentExists(array(
+					'number' => $invoice['number'],
+					'doctype' => DOC_INVOICE,
+					'planid' => $invoice['numberplanid'],
+					'cdate' => $invoice['cdate'],
+				)))
+				$error['number'] = trans('Invoice number $a already exists!', $invoice['number']);
+
+			if ($error) {
+				$invoice['number'] = $LMS->GetNewDocumentNumber(array(
+					'doctype' => DOC_INVOICE,
+					'planid' => $invoice['numberplanid'],
+					'cdate' => $invoice['cdate'],
+				));
+				$error = null;
+			}
+		}
+
 		$args = array(
 			'cdate' => $cdate,
 			'sdate' => $sdate,
@@ -277,14 +335,37 @@ switch($action)
 			'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
 			'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
 			'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
-			SYSLOG::RES_DOC => $iid,
 		);
-		$DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, customerid = ?,
-				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, divisionid = ?,
-				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
-				div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
-				div_inv_author = ?, div_inv_cplace = ?
-				WHERE id = ?', array_values($args));
+
+		if (isset($invoice['proforma'])) {
+			$args['type'] = DOC_INVOICE;
+			$args['number'] = $invoice['number'];
+			if ($invoice['numberplanid'])
+				$args['fullnumber'] = docnumber(array(
+					'number' => $invoice['number'],
+					'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($invoice['numberplanid'])),
+					'cdate' => $invoice['cdate'],
+					'customerid' => $customer['id'],
+				));
+			else
+				$args['fullnumber'] = null;
+			$args[SYSLOG::RES_NUMPLAN] = $invoice['numberplanid'];
+			$args[SYSLOG::RES_DOC] = $iid;
+			$DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, customerid = ?,
+					name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, divisionid = ?,
+					div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
+					div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
+					div_inv_author = ?, div_inv_cplace = ?, type = ?, number = ?, fullnumber = ?, numberplanid = ?
+					WHERE id = ?', array_values($args));
+		} else {
+			$args[SYSLOG::RES_DOC] = $iid;
+			$DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, customerid = ?,
+					name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, divisionid = ?,
+					div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
+					div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
+					div_inv_author = ?, div_inv_cplace = ?
+					WHERE id = ?', array_values($args));
+		}
 		if ($SYSLOG)
 			$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args,
 				array('div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY)));
@@ -341,7 +422,7 @@ switch($action)
 					$SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);
 				}
 
-				if ($invoice['doctype'] == DOC_INVOICE)
+				if ($invoice['doctype'] == DOC_INVOICE || isset($invoice['proforma']))
 					$LMS->AddBalance(array(
 						'time' => $cdate,
 						'value' => $item['valuebrutto']*$item['count']*-1,
@@ -400,6 +481,11 @@ $SMARTY->assign('customer', $customer);
 $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('taxeslist', $taxeslist);
+if (isset($invoice['proforma']))
+	$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
+		'doctype' => DOC_INVOICE,
+		'cdate' => date('Y/m', $invoice['cdate']),
+	)));
 $SMARTY->display('invoice/invoiceedit.html');
 
 ?>

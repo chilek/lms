@@ -146,7 +146,8 @@ SET SESSION sql_mode   = '';
 CREATE TABLE users (
   id int(11)            NOT NULL auto_increment,
   login varchar(32)     NOT NULL DEFAULT '',
-  name varchar(64)      NOT NULL DEFAULT '',
+  firstname varchar(64) NOT NULL DEFAULT '',
+  lastname varchar(64) NOT NULL DEFAULT '',
   email varchar(255)    NOT NULL DEFAULT '',
   phone varchar(32)     DEFAULT NULL,
   position varchar(255) NOT NULL DEFAULT '',
@@ -169,6 +170,10 @@ CREATE TABLE users (
   PRIMARY KEY  (id),
   UNIQUE KEY login (login)
 ) ENGINE=InnoDB;
+
+CREATE VIEW vusers AS
+	SELECT *, CONCAT(firstname, ' ', lastname) AS name, CONCAT(lastname, ' ', firstname) AS rname
+	FROM users;
 
 # --------------------------------------------------------
 #
@@ -643,8 +648,8 @@ CREATE TABLE divisions (
 #
 CREATE TABLE invprojects (
         id int(11) NOT NULL auto_increment,
-	name varchar(255) NOT NULL, 
-	type tinyint DEFAULT 0, 
+	name varchar(255) NOT NULL,
+	type tinyint DEFAULT 0,
         divisionid int(11) DEFAULT NULL,
 	PRIMARY KEY (id),
         FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE
@@ -656,7 +661,7 @@ CREATE TABLE invprojects (
 #
 CREATE TABLE netnodes (
         id int(11) NOT NULL auto_increment,
-	name varchar(255) NOT NULL, 
+	name varchar(255) NOT NULL,
 	type tinyint DEFAULT 0,
 	invprojectid int(11),
 	status tinyint DEFAULT 0,
@@ -1059,7 +1064,7 @@ CREATE TABLE rtattachments (
 # Structure of table  rtrights
 #
 CREATE TABLE rtrights (
-    id INT(11) NOT NULL auto_increment, 
+    id INT(11) NOT NULL auto_increment,
     userid INT(11) NOT NULL,
     queueid INT(11) NOT NULL,
     rights INT(11) DEFAULT 0 NOT NULL,
@@ -1438,10 +1443,10 @@ CREATE TABLE liabilities (
 # Structure of table customergroups
 #
 CREATE TABLE customergroups (
-  id int(11) NOT NULL auto_increment, 
-  name varchar(255) NOT NULL DEFAULT '', 
-  description text NOT NULL, 
-  PRIMARY KEY (id), 
+  id int(11) NOT NULL auto_increment,
+  name varchar(255) NOT NULL DEFAULT '',
+  description text NOT NULL,
+  PRIMARY KEY (id),
   UNIQUE KEY name (name)
 ) ENGINE=InnoDB;
 
@@ -1846,7 +1851,7 @@ CREATE TABLE messageitems (
         PRIMARY KEY (id),
 	INDEX messageid (messageid),
 	INDEX customerid (customerid)
-) ENGINE=InnoDB; 
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
@@ -2034,9 +2039,9 @@ CREATE TABLE passwdhistory (
 
 CREATE VIEW nas AS
     SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
-	d.clients AS ports, d.secret, d.community, d.description 
-        FROM nodes n 
-        JOIN netdevices d ON (n.netdev = d.id) 
+	d.clients AS ports, d.secret, d.community, d.description
+        FROM nodes n
+        JOIN netdevices d ON (n.netdev = d.id)
         WHERE n.nas = 1;
 
 CREATE VIEW vnodes_mac AS
@@ -2072,7 +2077,7 @@ CREATE VIEW customerview AS
 	WHERE NOT EXISTS (
 			SELECT 1 FROM customerassignments a
 			JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
-			WHERE e.userid = lms_current_user() AND a.customerid = c.id) 
+			WHERE e.userid = lms_current_user() AND a.customerid = c.id)
 		AND c.type < 2;
 
 CREATE VIEW contractorview AS
@@ -2721,4 +2726,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016102100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016102500');

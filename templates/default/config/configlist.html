@@ -3,7 +3,7 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<TABLE {if empty($configlist)}class="lmsbox"{else}class="lmsbox lms-ui-datatable lms-ui-datatable-column-search lms-ui-datatable-column-toggle" data-order='[[ 1, "asc" ]]' data-page-length="{$pagelimit}" data-state-save="true" style="display: none;"{/if}>
+<TABLE {if empty($configlist)}class="lmsbox"{else}class="lmsbox lms-ui-datatable lms-ui-datatable-column-search lms-ui-datatable-column-toggle" data-order='[[ 1, "asc" ]]' data-page-length="{$pagelimit}" data-state-save="true"{if !empty($section)} data-search-columns='[ { "search": "{$section}" }, null, null, null, null ]'{/if} style="display: none;"{/if}>
     <COLGROUP>
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
@@ -56,11 +56,7 @@
 	<TR>
 		<TD colspan="5" class="empty-table">
 			<p>
-				{if $listdata.search}
-				{trans("No configuration options in database.")}
-				{else}
 				{trans("No configuration options in database.")} {t}Click <A href="?m=configload">here</A> to import them from lms.ini.{/t}
-				{/if}
 			</p>
 		</TD>
 	</TR>

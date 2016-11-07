@@ -131,6 +131,8 @@ $(function() {
 					async: true,
 					success: function(data) {
 						callback(data);
+						elem.tooltip('disable');
+						elem.tooltip('enable');
 					}
 				});
 			}
@@ -346,16 +348,26 @@ $(function() {
 		}
 
 		$(elem).on('init.dt', function(e, settings) {
+			var searchColumns = $(this).data('init').searchColumns;
 			var api = new $.fn.dataTable.Api(settings);
+			$(this).data('api', api);
 			var state = api.state.loaded();
+
 			if (state && columnSearch) {
-				$('thead input[type="search"]', elem).each(function(index, input) {
-					var column = $(input).parent().index();
-					$(input).attr('value', state.columns[column].search.search);
-				});
-				$('thead select', elem).each(function(index, select) {
-					var column = $(select).parent().index();
-					$(select).val(state.columns[column].search.search);
+				var i = 0;
+				var searchFields = $('thead input[type="search"],thead select', elem);
+				api.columns().every(function(index) {
+					var columnState = state.columns[index];
+					if (!columnState.visible) {
+						return;
+					}
+					if (typeof searchColumns[index].search === 'undefined') {
+						$(searchFields[i]).val(state.columns[index].search.search);
+					} else {
+						$(searchFields[i]).val(searchColumns[index].search);
+						api.column(index).search(searchColumns[index].search).draw();
+					}
+					i++;
 				});
 			}
 
@@ -436,6 +448,23 @@ $(function() {
 					$('div#pagecontent').show();
 				}
 			}
+		}).on('column-visibility.dt', function(e, settings, column, visible) {
+			if (!visible)
+				return;
+			var api = $(this).data('api');
+			var searchValue = api.columns(column).search()[0];
+			var columnStates = api.state().columns;
+			var i = 0;
+			api.columns().every(function(index) {
+				if (index == column) {
+					$('thead tr:last-child th:nth-child(' + (i + 1) + ') :input', elem).val(searchValue);
+					console.log(i + ' ' + index + ' ' + column);
+				}
+				if (!columnStates[index].visible) {
+					return;
+				}
+				i++;
+			});
 		});
 
 		$(elem).DataTable({
@@ -453,6 +482,7 @@ $(function() {
 			stateDuration: lmsSettings.settingsTimeout,
 			lengthMenu: [[ 10, 25, 50, 100, -1 ], [ 10, 25, 50, 100, lmsMessages.all ]],
 			displayStart: init.displayStart,
+			searchCols: init.searchColumns,
 			stateSave: init.stateSave,
 			ordering: init.ordering,
 			orderCellsTop: init.orderCellsTop
@@ -469,6 +499,12 @@ $(function() {
 		init.displayStart = $(this).attr('data-display-start');
 		if (init.displayStart === undefined) {
 			init.displayStart = 0;
+		}
+		init.searchColumns = $(this).attr('data-search-columns');
+		if (init.searchColumns === undefined) {
+			init.searchColumns = [];
+		} else {
+			init.searchColumns = eval(init.searchColumns);
 		}
 		init.stateSave = $(this).attr('data-state-save');
 		if (init.stateSave === undefined) {

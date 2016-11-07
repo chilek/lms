@@ -136,7 +136,7 @@ window.open('?m=note&amp;id={$note}');
 			{$note.cdate|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
 		<TD class="text-right nobr">
-			{number number=$note.number template=$note.template time=$note.cdate assign=number}{$number}
+			{number number=$note.number template=$note.template time=$note.cdate assign=number customerid=$note.customerid}{$number}
 		</TD>
 		<TD class="text-right nobr">
 			{$note.value|money_format}

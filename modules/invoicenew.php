@@ -265,18 +265,24 @@ switch($action)
 		if ($invoice['deadline'] < $invoice['cdate'])
 			$error['deadline'] = trans('Deadline date should be later than consent date!');
 
+		$cid = isset($_GET['customerid']) && $_GET['customerid'] != '' ? intval($_GET['customerid']) : intval($_POST['customerid']);
+
 		if($invoice['number'])
 		{
 			if(!preg_match('/^[0-9]+$/', $invoice['number']))
 				$error['number'] = trans('Invoice number must be integer!');
-			elseif($LMS->DocumentExists($invoice['number'], $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']))
+			elseif($LMS->DocumentExists(array(
+					'number' => $invoice['number'],
+					'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+					'planid' => $invoice['numberplanid'],
+					'cdate' => $invoice['cdate'],
+					'customerid' => $cid
+				)))
 				$error['number'] = trans('Invoice number $a already exists!', $invoice['number']);
 		}
 
 		if(!isset($error))
 		{
-    		$cid = isset($_GET['customerid']) && $_GET['customerid'] != '' ? intval($_GET['customerid']) : intval($_POST['customerid']);
-
 			if($LMS->CustomerExists($cid))
 				$customer = $LMS->GetCustomer($cid, true);
 
@@ -333,15 +339,31 @@ switch($action)
 		$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions'));
 
 		if(!$invoice['number'])
-			$invoice['number'] = $LMS->GetNewDocumentNumber($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
+			$invoice['number'] = $LMS->GetNewDocumentNumber(array(
+				'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+				'planid' => $invoice['numberplanid'],
+				'cdate' => $invoice['cdate'],
+				'customerid' => $customer['id'],
+			));
 		else {
 			if(!preg_match('/^[0-9]+$/', $invoice['number']))
 				$error['number'] = trans('Invoice number must be integer!');
-			elseif($LMS->DocumentExists($invoice['number'], DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']))
+			elseif($LMS->DocumentExists(array(
+					'number' => $invoice['number'],
+					'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+					'planid' => $invoice['numberplanid'],
+					'cdate' => $invoice['cdate'],
+					'customerid' => $customer['id'],
+				)))
 				$error['number'] = trans('Invoice number $a already exists!', $invoice['number']);
 
 			if($error) {
-				$invoice['number'] = $LMS->GetNewDocumentNumber($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, $invoice['numberplanid'], $invoice['cdate']);
+				$invoice['number'] = $LMS->GetNewDocumentNumber(array(
+					'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, 
+					'planid' => $invoice['numberplanid'],
+					'cdate' => $invoice['cdate'],
+					'customerid' => $customer['id'],
+				));
 				$error = null;
 			}
 		}
@@ -444,7 +466,11 @@ $SMARTY->assign('contents', $contents);
 $SMARTY->assign('customer', $customer);
 $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans($invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE, date('Y/m', $invoice['cdate'])));
+$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
+	'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+	'cdate' => date('Y/m', $invoice['cdate']),
+	'customerid' => isset($customer) ? $customer['id'] : null,
+)));
 $SMARTY->assign('taxeslist', $taxeslist);
 $SMARTY->display('invoice/invoicenew.html');
 

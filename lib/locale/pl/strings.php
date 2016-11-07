@@ -667,6 +667,7 @@ $_LANG['Form of Cash Transfer'] = 'Formularz przelewu/wpłaty';
 $_LANG['For what'] = 'Za co';
 $_LANG['Found inside'] = 'Znaleziono w';
 $_LANG['First name:'] = 'Imię:';
+$_LANG['Last name:'] = 'Nazwisko:';
 $_LANG['Empty ports:'] = 'Wolne porty:';
 $_LANG['free:'] = 'wolne:';
 $_LANG['Free'] = 'Wolne';
@@ -957,6 +958,7 @@ $_LANG['Name'] = 'Nazwa';
 $_LANG['Name:'] = 'Nazwa:';
 $_LANG['First/last name'] = 'Imię i nazwisko';
 $_LANG['First/last name:'] = 'Imię i nazwisko:';
+$_LANG['Last and first name'] = 'Nazwisko i imię';
 $_LANG['Name contains forbidden characters!'] = 'Nazwisko zawiera niepoprawne znaki!';
 $_LANG['Name of messages sender or predefined variables: "queue" - queue name, "user" - logged user name. Default: none.'] = 'Nazwa nadawcy wiadomości lub jedna z predefiniowanych wartości: "queue" - nazwa kolejki, "user" - zalogowany użytkownik. Domyślnie: pusta.';
 $_LANG['Name of product, commodity or service:'] = 'Nazwa produktu, towaru lub usługi:';
@@ -2663,6 +2665,8 @@ $_LANG['Contract prolongation after promotion period:'] = 'Przedłużenie umowy 
 $_LANG['Enter phone number for SMS notification (optional)'] = 'Wprowadź numer telefonu dla powiadomień SMS';
 $_LANG['Enter user login'] = 'Wprowadź login użytkownika';
 $_LANG['Enter user name'] = 'Wprowadź nazwisko i imię użytkownika';
+$_LANG['Enter user first name'] = 'Wprowadź imię użytkownika';
+$_LANG['Enter user last name'] = 'Wprowadź nazwisko użytkownika';
 $_LANG['Enter user position (optional)'] = 'Wprowadź stanowisko użytkownika (optional)';
 $_LANG['Notification:'] = 'Powiadomienia:';
 $_LANG['SMS message is empty!'] = 'Wiadomość SMS jest pusta!';
@@ -3512,5 +3516,11 @@ $_LANG['List of pro forma invoices'] = 'Lista faktur pro forma';
 $_LANG['Generate pro forma invoice'] = 'Wygeneruj fakturę pro forma';
 $_LANG['Are you sure, you want to remove pro forma invoice \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz usunąć fakturę pro forma \\\'$a\\\' z bazy danych?';
 $_LANG['Pro Forma Invoice No. $a for $b'] = 'Faktura pro forma nr $a dla $b';
+$_LANG['Convert to invoice'] = 'Przekształć w fakturę';
+$_LANG['Conversion Pro Forma Invoice $a To Invoice'] = 'Przekształcanie faktury pro forma $a w fakturę';
+
+$_LANG['Change the format of presentation of the MAC address.'] = 'Zmień format prezentacji adresu MAC.';
+
+$_LANG['Select first free address'] = 'Wybierz pierwszy dostępny adres';
 
 ?>

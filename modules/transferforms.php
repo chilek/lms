@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -75,7 +75,11 @@ $i = 0;
 foreach ($list as $row) {
 	if ($kind == 1) {
 		$row = $LMS->GetInvoiceContent($row);
-		$row['t_number'] = docnumber($row['number'], $row['template'], $row['cdate']);
+		$row['t_number'] = docnumber(array(
+			'number' => $row['number'],
+			'template' => $row['template'],
+			'cdate' => $row['cdate'],
+		));
 	}
 	$i++;
 	$row['last'] = ($i == $count);

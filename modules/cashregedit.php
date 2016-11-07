@@ -100,7 +100,7 @@ if(isset($_POST['registry']))
 	$registry = $DB->GetRow('SELECT id, name, description, in_numberplanid, out_numberplanid, disabled
 			FROM cashregs WHERE id=?', array($id));
 
-	$users = $DB->GetAll('SELECT id, name FROM users WHERE deleted=0');
+	$users = $DB->GetAll('SELECT id, name FROM vusers WHERE deleted=0');
 	foreach($users as $user)
 	{
     		$user['rights'] = $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($user['id'], $id));
@@ -113,7 +113,9 @@ $layout['pagetitle'] = trans('Edit Cash Registry: $a', $registry['name']);
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('registry', $registry);
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(DOC_RECEIPT));
+$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
+	'doctype' => DOC_RECEIPT,
+)));
 $SMARTY->assign('error', $error);
 $SMARTY->display('cash/cashregedit.html');
 
