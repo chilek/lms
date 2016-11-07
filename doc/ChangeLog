@@ -23,6 +23,7 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to select first free ip address automatically in node forms
     (phpui.first_reserved_addresses controls how many first addresses are omitted
     for selected network) [chilan]
+  - added support for assignment tariffs to network device hosts [kosa/chilan]
 
 version 1.11.21 (2016-10-14):
 
