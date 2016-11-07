@@ -70,7 +70,13 @@
 										{trans("IP address:")}
 									</td>
 									<td>
-				                       <input type="text" name="ipadd[ipaddr]" value="{$nodeipdata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr]'], document.editipaddr['ipadd[netid]'], {$nodeipdata.netid}, {$netdevinfo.id});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
+										<input type="text" name="ipadd[ipaddr]" value="{$nodeipdata.ipaddr}" {tip text="Enter IP address" trigger="ipaddr"}>
+										<a href="javascript: void(0);" onClick="return ipchoosewin({
+												ipelem: document.editipaddr['ipadd[ipaddr]'],
+												netelem: document.editipaddr['ipadd[netid]'],
+												netid: {$nodeipdata.netid},
+												device: {$netdevinfo.id}
+											});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
 									</td>
 								</tr>
 
