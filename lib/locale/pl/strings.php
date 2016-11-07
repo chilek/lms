@@ -3520,4 +3520,7 @@ $_LANG['Convert to invoice'] = 'Przekształć w fakturę';
 $_LANG['Conversion Pro Forma Invoice $a To Invoice'] = 'Przekształcanie faktury pro forma $a w fakturę';
 
 $_LANG['Change the format of presentation of the MAC address.'] = 'Zmień format prezentacji adresu MAC.';
+
+$_LANG['Select first free address'] = 'Wybierz pierwszy dostępny adres';
+
 ?>
