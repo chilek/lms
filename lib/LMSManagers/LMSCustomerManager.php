@@ -852,6 +852,69 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     }
 
     /**
+     * Returns customer network device nodes
+     *
+     * @param  int   $id Customer id
+     * @param  int   $count Rows limit for SQL query
+     * @return array Nodes
+     */
+    public function getCustomerNetDevNodes($id, $count = null)
+    {
+        $result = $this->db->GetAll("SELECT
+										n.id, n.name, '' as mac, ipaddr, inet_ntoa(ipaddr) AS ip,
+										ipaddr_pub, n.authtype, inet_ntoa(ipaddr_pub) AS ip_pub,
+										passwd, access, warning, info, nd.ownerid, lastonline, nd.location,
+										(SELECT COUNT(*)
+										FROM nodegroupassignments
+										WHERE nodeid = n.id) AS gcount,
+										n.netid, nd.name AS netname, netdev
+									FROM
+										nodes n
+										LEFT JOIN netdevices nd ON n.netdev = nd.id
+									WHERE
+										nd.ownerid = ?", array($id, $id));
+
+        if ($result) {
+            // assign network(s) to node record
+            $network_manager = new LMSNetworkManager($this->db, $this->auth, $this->cache);
+            $networks = (array) $network_manager->GetNetworks();
+
+            foreach ($result as $idx => $node) {
+                $ids[$node['id']] = $idx;
+                $result[$idx]['lastonlinedate'] = lastonline_date($node['lastonline']);
+
+                if ($node['ipaddr_pub'])
+                    foreach ($networks as $net)
+                        if (isipin($node['ip_pub'], $net['address'], $net['mask'])) {
+                            $result[$idx]['network_pub'] = $net;
+                            break;
+                        }
+            }
+
+            // get EtherWerX channels
+            if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
+                $channels = $this->db->GetAllByKey('SELECT nodeid, channelid, c.name, c.id, cid,
+				        nc.upceil, nc.downceil
+			 		FROM ewx_stm_nodes
+					JOIN ewx_stm_channels nc ON (channelid = nc.id)
+					LEFT JOIN ewx_channels c ON (c.id = nc.cid)
+					WHERE nodeid IN (' . implode(',', array_keys($ids)) . ')', 'nodeid');
+
+                if ($channels)
+                    foreach ($channels as $channel) {
+                        $idx = $ids[$channel['nodeid']];
+                        $result[$idx]['channelid']   = $channel['id'] ? $channel['id'] : $channel['channelid'];
+                        $result[$idx]['channelname'] = $channel['name'];
+                        $result[$idx]['cid']         = $channel['cid'];
+                        $result[$idx]['downceil']    = $channel['downceil'];
+                        $result[$idx]['upceil']      = $channel['upceil'];
+                    }
+            }
+        }
+        return $result;
+    }
+
+    /**
      * Returns customer network devices.
      *
      * @param  int   $customer_id Customer id

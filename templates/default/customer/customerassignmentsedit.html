@@ -422,9 +422,9 @@
 										{if $customernodes}
 											{foreach $customernodes as $v}
 												{if isset($v['netdev'])}
-													{$netdevs++}
+													{assign var=netdevs value=$netdevs + 1}
 												{else}
-													{$nodes++}
+													{assign var=nodes value=$nodes + 1}
 												{/if}
 											{/foreach}
 										{/if}
