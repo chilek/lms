@@ -514,6 +514,17 @@ abstract class LMSDB_common implements LMSDBInterface
 		return $this->_driver_day($date);
 	}
 
+	/**
+	* Check if database resource exists (table, view)
+	*
+	* @param string $name
+	* @param int $type
+	* @return exists boolean
+	*/
+	public function ResourceExists($name, $type) {
+		return $this->_driver_resourceexists($name, $type);
+	}
+
     /**
      * Prepares query before execution.
      * 

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -36,6 +36,10 @@ class LMSDB
     const MYSQL = 'mysql';
     const MYSQLI = 'mysqli';
     const POSTGRESQL = 'postgres';
+
+	const RESOURCE_TYPE_TABLE = 1;
+	const RESOURCE_TYPE_VIEW = 2;
+	const RESOURCE_TYPE_COLUMN = 3;
 
     private static $db;
     
