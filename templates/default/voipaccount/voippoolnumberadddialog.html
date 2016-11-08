@@ -33,8 +33,16 @@
             <LI>
                 {trans("Status:")}<BR>
                 <SELECT ID="status" NAME="status" CLASS="lms-ui-dialog-input">
-                        <OPTION VALUE="0">{trans('active<!voip>')}</OPTION>
-                        <OPTION VALUE="1">{trans('inactive')}</OPTION>
+                    <OPTION VALUE="0">{trans('active<!voip>')}</OPTION>
+                    <OPTION VALUE="1">{trans('inactive')}</OPTION>
+                </SELECT>
+            </LI>
+            <LI>
+                {trans("Pool type:")}<BR>
+                <SELECT ID="pooltype" NAME="pooltype" CLASS="lms-ui-dialog-input">
+                    {foreach $pooltypes as $k=>$v}
+                    <option value="{$k}">{$v}</option>
+                    {/foreach}
                 </SELECT>
             </LI>
             <LI>
@@ -84,6 +92,9 @@ $( function() {
 
                 if (response['name'] != undefined)
                     $("#name").addClass("ui-state-error").prop('title', response['name']);
+
+                if (response['pooltype'] != undefined)
+                    $("#pooltype").addClass("ui-state-error").prop('title', response['pooltype']);
             } else {
                 var table = $("#poolnumbers").DataTable();
                 var appended_class = "";
@@ -94,7 +105,7 @@ $( function() {
                     bulb = '{$bulb_off}';
                 }
 
-                var t = table.row.add([$("#name").val(), $("#description").val(), $("#poolstart").val(), $("#poolend").val(), response['size'],
+                var t = table.row.add([$("#name").val(), $("#description").val(), response['type'], $("#poolstart").val(), $("#poolend").val(), response['size'],
                                        response['phones_used'], response['phones_unused'], bulb + ' {$edit_ico} {$delete_ico}'])
                          .draw()
                          .nodes()
@@ -105,9 +116,9 @@ $( function() {
 
                 $(t).find('td:eq(0)').attr('data-role', 'name');
                 $(t).find('td:eq(1)').attr('data-role', 'desc');
-                $(t).find('td:eq(2)').attr('data-role', 'pstart');
-                $(t).find('td:eq(3)').attr('data-role', 'pend');
-                $(t).find('td:eq(7)').addClass( "nobr" );
+                $(t).find('td:eq(3)').attr('data-role', 'pstart');
+                $(t).find('td:eq(4)').attr('data-role', 'pend');
+                $(t).find('td:eq(8)').addClass( "nobr" );
 
                 pool_add_dialog.close();
                 pool_add_dialog.formReset();

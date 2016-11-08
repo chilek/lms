@@ -2449,6 +2449,7 @@ $_LANG['New DNS Record'] = 'Nowy rekord DNS';
 $_LANG['New Record'] = 'Nowy rekord';
 $_LANG['Content'] = 'Dane';
 $_LANG['Type'] = 'Typ';
+$_LANG['Pool type:'] = 'Typ puli:';
 $_LANG['Records'] = 'Rekordy';
 $_LANG['DNS Record Edit'] = 'Edycja rekordu DNS';
 $_LANG['No such records in database.'] = 'Nie ma rekordów w bazie danych';
@@ -3464,6 +3465,10 @@ $_LANG['Select files'] = 'Wybierz pliki';
 $_LANG['Uploading files ...'] = 'Wysyłanie plików ...';
 $_LANG['Uploading files to server ...'] = 'Wysyłanie plików na serwer ...';
 $_LANG['Loading'] = 'Wczytywanie';
+
+$_LANG['Mobile'] = 'Komórkowa';
+$_LANG['Fixed'] = 'Stacjonarna';
+$_LANG['Incorrect pool type!'] = 'Nieprawidłowy typ puli';
 
 $_LANG['Tags:'] = 'Etykiety:';
 $_LANG['Select tariff tags'] = 'Wybierz etykiety taryf';

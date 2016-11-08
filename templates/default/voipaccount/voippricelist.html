@@ -89,7 +89,7 @@
                 <td style="vertical-align: top;">
                     <fieldset style="display: block; min-width: 30%;">
                         <legend><b>{trans("Prefix groups assigned to price list")}</b></legend>
-                        
+
                         {if count($pricelist.group) > 50}
                         <div style="text-align: right;">
                             <a href="javascript:document.voippricelist.submit();">
@@ -100,7 +100,7 @@
                             </a>
                         </div>
                         {/if}
-                        
+
                         <table id="groups_table" name="groups_table">
                             <tr>
                                 <td colspan="100%"><b>{trans("Add group")}</b></td>
@@ -125,7 +125,7 @@
                             {/foreach}
                             {/if}
                         </table>
-                        
+
                         {if !$pricelist.group}
                         <div id="groups_table_info" style="text-align: center; padding: 10px; font-weight: bold;">
                             {trans("No prefix groups assigned to tariff.")}

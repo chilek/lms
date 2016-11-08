@@ -21,11 +21,13 @@
         <COL STYLE="width: 1%;">
         <COL STYLE="width: 1%;">
         <COL STYLE="width: 1%;">
+        <COL STYLE="width: 1%;">
     </COLGROUP>
     <THEAD>
         <TR class="bold nobr">
             <TH>{trans("Name")}</TH>
             <TH data-orderable="false">{trans("Description")}</TH>
+            <TH>{trans("Pool type:")}</TH>
             <TH>{trans("First number")}</TH>
             <TH>{trans("Last number")}</TH>
             <TH>{trans("Quantity of numbers")}</TH>
@@ -41,6 +43,7 @@
         <TR data-pool-id="{$pool.id}" {if $pool.disabled == 1} CLASS="blend"{/if}>
             <TD data-role="name" CLASS="nobr">{$pool.name}</TD>
             <TD data-role="desc">{$pool.description}</TD>
+            <TD data-role="type" data-typeid="{$pool.typeid}">{$pool.type}</TD>
             <TD data-role="pstart">{$pool.poolstart}</TD>
             <TD data-role="pend">{$pool.poolend}</TD>
             <TD>{$pool.size}</TD>
@@ -93,9 +96,7 @@ $( function() {
                     state: state }
         })
         .done(function(data) {
-            if (data) {
-                //var response = JSON.parse(data);
-            } else {
+            if (!data) {
                 $(row).toggleClass("blend");
 
                 if (state) {
