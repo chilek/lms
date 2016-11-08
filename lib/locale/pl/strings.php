@@ -3043,9 +3043,9 @@ $_LANG['total'] = 'wszystkie';
 
 $_LANG['today'] = 'dziś';
 $_LANG['yesterday'] = 'wczoraj';
-$_LANG['current month'] = 'bierzący miesiąc';
+$_LANG['current month'] = 'bieżący miesiąc';
 $_LANG['last month'] = 'poprzedni miesiąc';
-$_LANG['current year'] = 'bierzący rok';
+$_LANG['current year'] = 'bieżący rok';
 $_LANG['Last year'] = 'Ostatni rok';
 $_LANG['last year<!voip>'] = 'poprzedni rok';
 
