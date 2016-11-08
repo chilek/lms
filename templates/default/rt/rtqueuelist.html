@@ -62,7 +62,7 @@
 	{foreachelse}
 	<TR>
 		<TD colspan="6" class="empty-table">
-			<p>{trans("There are no queues.")}</p>
+			<p>{trans("There are no queues.")} {trans('Click $a to create.', '<a href="?m=rtqueueadd">'|cat: trans('here')|cat: '</a>')} </p>
 		</TD>
 	</TR>
 	{/foreach}
