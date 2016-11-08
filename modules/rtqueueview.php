@@ -35,10 +35,11 @@ if(! $LMS->QueueExists($queuedata['id']) && $queuedata['id'] != 0)
 	$SESSION->redirect('?m=rtqueuelist');
 }
 
+
+
 if($queuedata['id'])
 {
 	$right = $LMS->GetUserRightsRT($AUTH->id, $queuedata['id']);
-
 	if(!$right)
 	{
 		$SMARTY->display('noaccess.html');

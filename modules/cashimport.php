@@ -263,7 +263,7 @@ if($importlist = $DB->GetAll('SELECT i.*, c.divisionid
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$sourcefiles = $DB->GetAll('SELECT s.*, u.name AS username,
+$sourcefiles = $DB->GetAll('SELECT s.*, u.firstname AS username,
     (SELECT COUNT(*) FROM cashimport WHERE sourcefileid = s.id) AS count
     FROM sourcefiles s
     LEFT JOIN users u ON (u.id = s.userid)
