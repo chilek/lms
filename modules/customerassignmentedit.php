@@ -439,10 +439,8 @@ $layout['pagetitle'] = trans('Liability Edit: $a', '<A href="?m=customerinfo&id=
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$customerNodes       = $LMS->GetCustomerNodes($customer['id']);
+$customerNodes       = $LMS->GetCustomerNodes( $customer['id']);
 $customerNetDevNodes = $LMS->getCustomerNetDevNodes( $customer['id'] );
-
-$customerNodes = array_merge($customerNodes, $customerNetDevNodes);
 
 unset($customernodes['total']);
 
@@ -454,13 +452,14 @@ $LMS->executeHook(
     )
 );
 
-$SMARTY->assign('customernodes', $customerNodes);
-$SMARTY->assign('tariffs', $LMS->GetTariffs());
-$SMARTY->assign('taxeslist', $LMS->GetTaxes());
-$SMARTY->assign('expired', $expired);
-$SMARTY->assign('assignment', $a);
-$SMARTY->assign('assignments', $LMS->GetCustomerAssignments($customer['id'], $expired));
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
+$SMARTY->assign('customernodes'      , $customerNodes);
+$SMARTY->assign('customernetdevnodes', $customerNetDevNodes);
+$SMARTY->assign('tariffs'            , $LMS->GetTariffs());
+$SMARTY->assign('taxeslist'          , $LMS->GetTaxes());
+$SMARTY->assign('expired'            , $expired);
+$SMARTY->assign('assignment'         , $a);
+$SMARTY->assign('assignments'        , $LMS->GetCustomerAssignments($customer['id'], $expired));
+$SMARTY->assign('numberplanlist'     , $LMS->GetNumberPlans(array(
 	'doctype' => DOC_INVOICE,
 	'cdate' => null,
 	'division' => $customer['divisionid'],
