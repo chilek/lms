@@ -861,6 +861,7 @@ CREATE TABLE voip_pool_numbers (
     poolstart varchar(20) NOT NULL,
     poolend varchar(20) NOT NULL,
     description text,
+    type smallint NOT NULL DEFAULT 1,
     PRIMARY KEY (id),
     UNIQUE (name)
 );
@@ -2845,6 +2846,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016102500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016110800');
 
 COMMIT;
