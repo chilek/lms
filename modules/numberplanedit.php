@@ -38,8 +38,9 @@ if(sizeof($numberplanedit))
 
 	if($numberplanedit['template'] == '')
 		$error['template'] = trans('Number template is required!');
-	elseif(!preg_match('/%[1-9]{0,1}N/', $numberplanedit['template']))
-		$error['template'] = trans('Template must consist "%N" specifier!');
+	elseif (!preg_match('/%[1-9]{0,1}N/', $numberplanedit['template'])
+		&& !preg_match('/%[1-9]{0,1}C/', $numberplanedit['template']))
+		$error['template'] = trans('Template must contain "%N" or "%C" specifier!');
 
 	if(!isset($numberplanedit['isdefault']))
 		$numberplanedit['isdefault'] = 0;
