@@ -287,8 +287,8 @@ define('VOIP_POOL_NUMBER_MOBILE', 1);
 define('VOIP_POOL_NUMBER_FIXED' , 2);
 
 $VOIP_POOL_NUMBER_TYPES = array(
-    VOIP_POOL_NUMBER_MOBILE => trans("Mobile"),
-    VOIP_POOL_NUMBER_FIXED  => trans("Fixed")
+    VOIP_POOL_NUMBER_MOBILE => trans("mobile"),
+    VOIP_POOL_NUMBER_FIXED  => trans("fixed")
 );
 
 // bit flags for VoIP call

@@ -3466,8 +3466,8 @@ $_LANG['Uploading files ...'] = 'Wysyłanie plików ...';
 $_LANG['Uploading files to server ...'] = 'Wysyłanie plików na serwer ...';
 $_LANG['Loading'] = 'Wczytywanie';
 
-$_LANG['Mobile'] = 'Komórkowa';
-$_LANG['Fixed'] = 'Stacjonarna';
+$_LANG['mobile'] = 'komórkowa';
+$_LANG['fixed'] = 'stacjonarna';
 $_LANG['Incorrect pool type!'] = 'Nieprawidłowy typ puli';
 
 $_LANG['Tags:'] = 'Etykiety:';
