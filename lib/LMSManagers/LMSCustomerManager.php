@@ -767,23 +767,56 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     /**
      * Returns customer nodes
      *
-     * @param int $id Customer id
-     * @param int $count Limit
+     * @param  int   $id Customer id
+     * @param  int   $count Rows limit for SQL query
      * @return array Nodes
      */
     public function getCustomerNodes($id, $count = null)
     {
-        if ($result = $this->db->GetAll('SELECT n.id, n.name, mac, ipaddr,
-				inet_ntoa(ipaddr) AS ip, ipaddr_pub, n.authtype,
-				inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access,
-				warning, info, ownerid, lastonline, location,
-				(SELECT COUNT(*) FROM nodegroupassignments
-					WHERE nodeid = n.id) AS gcount,
-				n.netid, net.name AS netname
-				FROM vnodes n
-				JOIN networks net ON net.id = n.netid
-				WHERE ownerid = ?
-				ORDER BY n.name ASC ' . ($count ? 'LIMIT ' . $count : ''), array($id))) {
+        return $this->customerNodesProvider( $id, 'default', $count );
+    }
+
+    /**
+     * Returns customer network device nodes
+     *
+     * @param  int   $id Customer id
+     * @param  int   $count Rows limit for SQL query
+     * @return array Nodes
+     */
+    public function getCustomerNetDevNodes($id, $count = null)
+    {
+        return $this->customerNodesProvider( $id, 'netdev', $count );
+    }
+
+    protected function customerNodesProvider( $customer_id, $type = '', $count = null ) {
+        $type = strtolower($type);
+        switch ($type) {
+            case 'netdev':
+                $type = 'nd.ownerid = ?';
+            break;
+
+            default:
+                $type = 'n.ownerid = ?';
+        }
+
+        $result = $this->db->GetAll("SELECT
+                                        n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip,
+                                        ipaddr_pub, n.authtype, inet_ntoa(ipaddr_pub) AS ip_pub,
+                                        passwd, access, warning, info, n.ownerid, lastonline, n.location,
+                                        (SELECT COUNT(*)
+                                        FROM nodegroupassignments
+                                        WHERE nodeid = n.id) AS gcount,
+                                        n.netid, net.name AS netname
+                                     FROM
+                                        vnodes n
+                                        JOIN networks net ON net.id = n.netid
+                                        LEFT JOIN netdevices nd ON n.netdev = nd.id
+                                     WHERE
+                                        " . $type . "
+                                     ORDER BY
+                                        n.name ASC " . ($count ? 'LIMIT ' . $count : ''), array($customer_id));
+
+        if ($result) {
             // assign network(s) to node record
             $network_manager = new LMSNetworkManager($this->db, $this->auth, $this->cache);
             $networks = (array) $network_manager->GetNetworks();
@@ -791,12 +824,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             foreach ($result as $idx => $node) {
                 $ids[$node['id']] = $idx;
                 $result[$idx]['lastonlinedate'] = lastonline_date($node['lastonline']);
-
-                //foreach ($networks as $net)
-                //	if (isipin($node['ip'], $net['address'], $net['mask'])) {
-                //		$result[$idx]['network'] = $net;
-                //		break;
-                //	}
 
                 if ($node['ipaddr_pub'])
                     foreach ($networks as $net)
@@ -810,7 +837,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.ewx_support', false))) {
                 $channels = $this->db->GetAllByKey('SELECT nodeid, channelid, c.name, c.id, cid,
 				        nc.upceil, nc.downceil
-					FROM ewx_stm_nodes
+			 		FROM ewx_stm_nodes
 					JOIN ewx_stm_channels nc ON (channelid = nc.id)
 					LEFT JOIN ewx_channels c ON (c.id = nc.cid)
 					WHERE nodeid IN (' . implode(',', array_keys($ids)) . ')', 'nodeid');
@@ -818,14 +845,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 if ($channels)
                     foreach ($channels as $channel) {
                         $idx = $ids[$channel['nodeid']];
-                        $result[$idx]['channelid'] = $channel['id'] ? $channel['id'] : $channel['channelid'];
+                        $result[$idx]['channelid']   = $channel['id'] ? $channel['id'] : $channel['channelid'];
                         $result[$idx]['channelname'] = $channel['name'];
-                        $result[$idx]['cid'] = $channel['cid'];
-                        $result[$idx]['downceil'] = $channel['downceil'];
-                        $result[$idx]['upceil'] = $channel['upceil'];
+                        $result[$idx]['cid']         = $channel['cid'];
+                        $result[$idx]['downceil']    = $channel['downceil'];
+                        $result[$idx]['upceil']      = $channel['upceil'];
                     }
             }
         }
+
         return $result;
     }
 
@@ -836,6 +864,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      * @return array network devices
      */
     public function GetCustomerNetDevs( $customer_id ) {
+
         $netdevs = $this->db->GetAllByKey('SELECT
                                               nd.id, nd.name, lc.name as location_city, lc.id as location_city_id, ls.name as location_street,
                                               ls.id as location_street_id, nd.location_house, nd.location_flat, nd.description, nd.producer,

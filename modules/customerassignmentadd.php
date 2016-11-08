@@ -375,6 +375,7 @@ if (!empty($tmp_promo_list)) {
 
 $SMARTY->assign('assignment'          , $a);
 $SMARTY->assign('customernodes'       , $customernodes);
+$SMARTY->assign('customernetdevnodes' , $LMS->getCustomerNetDevNodes($customer['id']));
 $SMARTY->assign('promotionschemanames', $schemas_only_names);
 $SMARTY->assign('promotionschemas'    , $schemas);
 $SMARTY->assign('promotions'          , $promotions);

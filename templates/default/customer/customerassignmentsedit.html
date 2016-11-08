@@ -18,18 +18,23 @@
 		document.getElementById('a_schematariff').style.display = val == -2 ? '' : 'none';
 		{/if}
 
-		document.getElementById('a_tax').style.display       = val == '' ? '' : 'none';
-		document.getElementById('a_value').style.display     = val == '' ? '' : 'none';
-		document.getElementById('a_productid').style.display = val == '' ? '' : 'none';
-		document.getElementById('a_name').style.display      = val == '' ? '' : 'none';
+		document.getElementById('a_tax').style.display       = val == '' ? ''     : 'none';
+		document.getElementById('a_value').style.display     = val == '' ? ''     : 'none';
+		document.getElementById('a_productid').style.display = val == '' ? ''     : 'none';
+		document.getElementById('a_name').style.display      = val == '' ? ''     : 'none';
         document.getElementById('a_attribute').style.display = val == '' ? 'none' : '';
 		document.getElementById('a_options').style.display   = val == -1 ? 'none' : '';
 		document.getElementById('a_day').style.display       = val == -1 ? 'none' : '';
+
 		var a_nodes = document.getElementById('a_nodes');
-		
+		var a_netdevnodes = document.getElementById('a_netdevnodes');
+
 		if (a_nodes !== null)
 			document.getElementById('a_nodes').style.display = val == -1 ? 'none' : '';
-			
+
+		if (a_netdevnodes !== null)
+			document.getElementById('a_netdevnodes').style.display = val == -1 ? 'none' : '';
+
 		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 		document.getElementById('a_discount').style.display = val < -1 ? 'none' : '';
 		{/if}
@@ -415,34 +420,61 @@
 												</label>
 											</TD>
 										</TR>
-										
+
 										{if $customernodes}
-										<TR id="a_nodes">
-											<TD>
-												<IMG src="img/node.gif" alt="">
-											</TD>
-											<TD class="bold">
+										<tr id="a_nodes">
+											<td>
+												<img src="img/node.gif" alt="">
+											</td>
+											<td class="bold">
 												{trans("Nodes:")}
-											</TD>
-											<TD class="nobr" id="nodeslist">
+											</td>
+											<td class="nobr" id="nodeslist">
 												{foreach $customernodes as $customernode}
 													{assign var=nodeid value=$customernode.id}
-									
+
 													<label>
-														<INPUT type="checkbox" name="assignment[nodes][{counter}]" value="{$customernode.id}"{if in_array($nodeid, (array)$assignment.nodes)} checked{/if}>
+														<input type="checkbox" name="assignment[nodes][{counter}]" value="{$customernode.id}"{if in_array($nodeid, (array)$assignment.nodes)} checked{/if}>
 														<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
 													</label>
-													<BR>
+													<br>
 												{/foreach}
-		
-												{if count($customernodes) > 1}
+											</td>
+										</tr>
+										{/if}
+
+										{if $customernetdevnodes}
+										<tr id="a_netdevnodes">
+											<td>
+												<img src="img/netdev.gif" alt="">
+											</td>
+											<td class="bold">
+												{trans("Network Devices:")}
+											</td>
+											<td class="nobr" id="nodeslist">
+												{foreach $customernetdevnodes as $customernode}
+													{assign var=nodeid value=$customernode.id}
+
+													<label>
+														<input type="checkbox" name="assignment[nodes][{counter}]" value="{$customernode.id}"{if in_array($nodeid, (array)$assignment.nodes)} checked{/if}>
+														<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
+													</label>
+													<br>
+												{/foreach}
+											</td>
+										</tr>
+										{/if}
+
+										{if count($customernodes) || count($customernetdevnodes)}
+										<tr>
+											<td colspan=2"></td>
+											<td>
 												<label>
 													<INPUT TYPE="checkbox" NAME="allbox" onchange="CheckAll('assignment', this, ['assignment[invoice]', 'assignment[settlement]'])" VALUE="1">
 													{trans("check all<!items>")}
 												</label>
-												{/if}
-											</TD>
-										</TR>
+											</td>
+										</tr>
 										{/if}
 									</TBODY>
 								</TABLE>
@@ -452,7 +484,7 @@
 				</TABLE>
 			</TD>
 		</TR>
-	
+
 		<TR>
 			<TD class="buttons" colspan="3">
 				<A href="#" onclick="return assignment_submit();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>&nbsp;

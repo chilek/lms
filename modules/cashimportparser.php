@@ -55,7 +55,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $sourcefiles = $DB->GetAll('SELECT s.*, u.name AS username,
     (SELECT COUNT(*) FROM cashimport WHERE sourcefileid = s.id) AS count
     FROM sourcefiles s
-    LEFT JOIN users u ON (u.id = s.userid)
+    LEFT JOIN vusers u ON (u.id = s.userid)
     ORDER BY s.idate DESC LIMIT 10');
 
 $SMARTY->assign('error', $error);

@@ -439,7 +439,11 @@ $layout['pagetitle'] = trans('Liability Edit: $a', '<A href="?m=customerinfo&id=
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$customernodes = $LMS->GetCustomerNodes($customer['id']);
+$customerNodes       = $LMS->GetCustomerNodes($customer['id']);
+$customerNetDevNodes = $LMS->getCustomerNetDevNodes( $customer['id'] );
+
+$customerNodes = array_merge($customerNodes, $customerNetDevNodes);
+
 unset($customernodes['total']);
 
 $LMS->executeHook(
@@ -450,7 +454,7 @@ $LMS->executeHook(
     )
 );
 
-$SMARTY->assign('customernodes', $customernodes);
+$SMARTY->assign('customernodes', $customerNodes);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('taxeslist', $LMS->GetTaxes());
 $SMARTY->assign('expired', $expired);
