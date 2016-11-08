@@ -25,6 +25,22 @@
  */
 
 /*
+ * \brief Function for validate pool type id.
+ *
+ * \param  int    $id number of pool type
+ * \return string empty string if not found, string contains name if exists
+ */
+function getPoolTypeNameByNumber( $number ) {
+	global $VOIP_POOL_NUMBER_TYPES;
+	$name = '';
+
+	if ( in_array($number, array_keys($VOIP_POOL_NUMBER_TYPES)) )
+		$name = $VOIP_POOL_NUMBER_TYPES[ $number ];
+
+	return $name;
+}
+
+/*
  * \brief Pool range valid function.
  *
  * \param  $name  pool name
@@ -34,11 +50,16 @@
  * \return array  array with text messages
  * \return 0      no error
  */
-function valid_pool( $name, $pstart, $pend, $id = 0 ) {
+function valid_pool( $p, $id = 0 ) {
     $error = array();
     $DB    = LMSDB::getInstance();
     $id    = (int) $id;
     $pool_list = $DB->GetAllByKey("SELECT id, name, poolstart, poolend FROM voip_pool_numbers;", 'name');
+
+    $name   = (!empty($p['name']))      ? trim($p['name'])      : null;
+    $pstart = (!empty($p['poolstart'])) ? trim($p['poolstart']) : null;
+    $pend   = (!empty($p['poolend']))   ? trim($p['poolend'])   : null;
+    $type   = (!empty($p['pooltype']))  ? trim($p['pooltype'])  : null;
 
     if (empty($name)) {
         $error['name'] = trans('Name is required!');
@@ -67,6 +88,9 @@ function valid_pool( $name, $pstart, $pend, $id = 0 ) {
     if (gmp_cmp($pstart, $pend) == 0 || gmp_cmp($pstart, $pend) == 1) {
         $error['poolstart'] = trans('Pool start must be lower that end!');
     }
+
+    if ( !getPoolTypeNameByNumber( $type ) )
+        $error['pooltype'] = trans("Incorrect pool type!");
 
     foreach ($pool_list as $v) {
         if ($id == $v['id'] || !$id)
@@ -116,7 +140,7 @@ switch($_GET['action']) {
 
     case 'add':
         $p     = array_map('trim', $_POST);
-        $error = valid_pool( $p['name'], $p['poolstart'], $p['poolend'] );
+        $error = valid_pool( $p );
 
         if ($error) {
             die( json_encode($error) );
@@ -126,8 +150,8 @@ switch($_GET['action']) {
 
         $status = ($p['status'] == '1') ? 1 : 0;
 
-        $query = $DB->Execute('INSERT INTO voip_pool_numbers (disabled, name, poolstart, poolend, description) VALUES (?,?,?,?,?)',
-                               array($status, $p['name'], $p['poolstart'], $p['poolend'], $p['description']));
+        $query = $DB->Execute('INSERT INTO voip_pool_numbers (disabled, name, poolstart, poolend, description, type) VALUES (?,?,?,?,?,?)',
+                               array($status, $p['name'], $p['poolstart'], $p['poolend'], $p['description'], $p['pooltype']));
 
         if ($query == 1) {
             $DB->CommitTrans();
@@ -147,10 +171,12 @@ switch($_GET['action']) {
                 }
             }
 
+            // return inserted pool data
             die( json_encode( array('id'            => $DB->GetLastInsertID("voip_pool_numbers"),
                                     'size'          => getPoolSize($p['poolstart'], $p['poolend']),
                                     'phones_used'   => $phones_used,
-                                    'phones_unused' => gmp_strval( gmp_sub($size, $phones_used) ) ) ) );
+                                    'phones_unused' => gmp_strval( gmp_sub($size, $phones_used) ),
+                                    'type'          => getPoolTypeNameByNumber($p['pooltype']) ) ) );
         } else {
             $DB->RollbackTrans();
             die( json_encode( array('name' => trans("Operation failed!")) ) );
@@ -163,7 +189,7 @@ switch($_GET['action']) {
         $id = (empty($_POST['poolid'])) ? 0 : intval($_POST['poolid']);
         $p  = array_map('trim', $_POST);
 
-        $error = valid_pool( $p['name'], $p['poolstart'], $p['poolend'], $id );
+        $error = valid_pool( $p, $id );
 
         if ($error) {
             die( json_encode($error) );
@@ -174,13 +200,13 @@ switch($_GET['action']) {
         $status = ($pool['status'] == '1') ? 1 : 0;
 
         $query = $DB->Execute('UPDATE voip_pool_numbers SET
-                               disabled = ?, name = ?, poolstart = ?, poolend = ?, description = ?
+                               disabled = ?, name = ?, poolstart = ?, poolend = ?, description = ?, type = ?
                                WHERE id = ?',
-                               array($p['status'], $p['name'], $p['poolstart'], $p['poolend'], $p['description'], $p['poolid']));
+                               array($p['status'], $p['name'], $p['poolstart'], $p['poolend'], $p['description'], $p['pooltype'], $p['poolid']));
 
         if ($query == 1) {
             $DB->CommitTrans();
-            die( json_encode( array('id' => $p['poolid']) ) );
+            die( json_encode( array('id' => $p['poolid'], 'typeid' => $p['pooltype']) ) );
         } else {
             $DB->RollbackTrans();
             die( json_encode( array('name' => trans("Operation failed!")) ) );
@@ -223,13 +249,15 @@ switch($_GET['action']) {
     break;
 }
 
-$pool_list = $DB->GetAll("SELECT id, disabled, name, poolstart, poolend, description,
+$pool_list = $DB->GetAll("SELECT id, disabled, name, poolstart, poolend, description, type as typeid,
                           (select count(*) from voip_numbers where phone between vpn.poolstart AND vpn.poolend) as used_phones
                           FROM voip_pool_numbers vpn;");
 
 $voip_phones = $DB->GetAll("SELECT phone FROM voip_numbers;");
 
 if ($pool_list) {
+    global $VOIP_POOL_NUMBER_TYPES;
+
     $counter = count($pool_list);
 
     for ($i=0; $i<$counter; ++$i) {
@@ -245,11 +273,18 @@ if ($pool_list) {
         }
 
         $pool_list[$i]['phones_unused'] = gmp_strval( gmp_sub($pool_list[$i]['size'], $pool_list[$i]['phones_used']) );
+
+        if ( !empty($VOIP_POOL_NUMBER_TYPES[$pool_list[$i]['typeid']]) ) {
+            $pool_list[$i]['type'] = $VOIP_POOL_NUMBER_TYPES[$pool_list[$i]['typeid']];
+        } else {
+            $pool_list[$i]['type'] = trans('undefined');
+        }
     }
 }
 
 $layout['pagetitle'] = trans('Pool numbers');
 
+$SMARTY->assign('pooltypes' , $VOIP_POOL_NUMBER_TYPES);
 $SMARTY->assign('prefixlist', $LMS->GetPrefixList());
 $SMARTY->assign('pool_list' , $pool_list);
 $SMARTY->assign('hostlist'  , $LMS->DB->GetAll('SELECT id, name FROM hosts ORDER BY name'));

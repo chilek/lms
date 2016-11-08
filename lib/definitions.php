@@ -282,6 +282,15 @@ define('CALL_ANSWERED', 2);
 define('CALL_NO_ANSWER', 3);
 define('CALL_SERVER_FAILED', 4);
 
+// VoIP pool number types
+define('VOIP_POOL_NUMBER_MOBILE', 1);
+define('VOIP_POOL_NUMBER_FIXED' , 2);
+
+$VOIP_POOL_NUMBER_TYPES = array(
+    VOIP_POOL_NUMBER_MOBILE => trans("mobile"),
+    VOIP_POOL_NUMBER_FIXED  => trans("fixed")
+);
+
 // bit flags for VoIP call
 define('CALL_FLAG_ADMIN_RECORDING', 1);
 define('CALL_FLAG_CUSTOMER_RECORDING', 2);

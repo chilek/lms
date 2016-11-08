@@ -26,6 +26,7 @@ version ?.??.?? (????-??-??):
   - added support for assignment tariffs to network device hosts [kosa/chilan]
   - improvement: if ip address is not empty go to the page in ip address selection
     window where this non-empty ip address is visible [chilan]
+  - added support for set type of voip pool numbers [kosa/chilan]
 
 version 1.11.21 (2016-10-14):
 

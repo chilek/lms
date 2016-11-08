@@ -35,8 +35,16 @@
             <LI>
                 {trans("Status:")}<BR>
                 <SELECT ID="edit-status" NAME="status" CLASS="lms-ui-dialog-input">
-                        <OPTION VALUE="0">{trans('active<!voip>')}</OPTION>
-                        <OPTION VALUE="1">{trans('inactive')}</OPTION>
+                    <OPTION VALUE="0">{trans('active<!voip>')}</OPTION>
+                    <OPTION VALUE="1">{trans('inactive')}</OPTION>
+                </SELECT>
+            </LI>
+            <LI>
+                {trans("Pool type:")}<BR>
+                <SELECT ID="edit-pooltype" NAME="pooltype" CLASS="lms-ui-dialog-input">
+                    {foreach $pooltypes as $k=>$v}
+                    <option value="{$k}">{$v}</option>
+                    {/foreach}
                 </SELECT>
             </LI>
             <LI>
@@ -88,21 +96,22 @@ $( function() {
                     $("#edit-name").addClass("ui-state-error").prop('title', response['name']);
             } else {
                 var table = $("#poolnumbers").DataTable();
-                //var size  = $("#poolend").val() - $("#poolstart").val() + 1;
-                var size = 3;
-                var row = table.row('tr[data-pool-id=' + response['id'] + ']');
+                var size  = 3;
+                var row   = table.row('tr[data-pool-id=' + response['id'] + ']');
 
                 if ($("#edit-status").val() == 1 && !row.to$().hasClass( "blend" )) {
                     var add_class = "blend";
                     var rem_class = "";
-                    var bulb = '{$bulb_off}';
-                } else if ($("#edit-status").val() == 0 ) {
+                    var bulb      = '{$bulb_off}';
+                } else if ($("#edit-status").val() == 0) {
                     var add_class = "";
                     var rem_class = "blend";
-                    var bulb  = '{$bulb_on}';
+                    var bulb      = '{$bulb_on}';
                 }
 
-                row.data([$("#edit-name").val(), $("#edit-description").val(), $("#edit-poolstart").val(), $("#edit-poolend").val(), size, 0, size, bulb + ' {$edit_ico} {$delete_ico}'])
+                $("#poolnumbers").find('tr[data-pool-id=' + response['id'] + ']').find("td[data-role=type]").attr("data-typeid", response['typeid']);
+
+                row.data([$("#edit-name").val(), $("#edit-description").val(), $("#edit-pooltype option:selected").text(), $("#edit-poolstart").val(), $("#edit-poolend").val(), size, 0, size, bulb + ' {$edit_ico} {$delete_ico}'])
                    .draw()
                    .nodes()
                    .to$()
@@ -133,6 +142,7 @@ $( function() {
         $("#edit-name")     .val( $(row).find("td[data-role=name]").text() );
         $("#edit-poolstart").val( $(row).find("td[data-role=pstart]").text() );
         $("#edit-poolend")  .val( $(row).find("td[data-role=pend]").text() );
+        $("#edit-pooltype") .val( $(row).find("td[data-role=type]").attr('data-typeid') );
         $("#edit-status")   .val( $(row).hasClass("blend") ? 1 : 0 );
 
         pool_edit_dialog.open();

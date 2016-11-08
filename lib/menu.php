@@ -621,7 +621,7 @@ $menu = array(
 					'prio' => 40,
 				),
 				array(
-					'name' => trans('Last Year'),
+					'name' => trans('Last year'),
 					'link' => '?m=traffic&bar=year',
 					'tip' => trans('Last year stats for all networks'),
 					'prio' => 50,

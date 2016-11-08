@@ -2449,6 +2449,7 @@ $_LANG['New DNS Record'] = 'Nowy rekord DNS';
 $_LANG['New Record'] = 'Nowy rekord';
 $_LANG['Content'] = 'Dane';
 $_LANG['Type'] = 'Typ';
+$_LANG['Pool type:'] = 'Typ puli:';
 $_LANG['Records'] = 'Rekordy';
 $_LANG['DNS Record Edit'] = 'Edycja rekordu DNS';
 $_LANG['No such records in database.'] = 'Nie ma rekordów w bazie danych';
@@ -3042,9 +3043,10 @@ $_LANG['total'] = 'wszystkie';
 
 $_LANG['today'] = 'dziś';
 $_LANG['yesterday'] = 'wczoraj';
-$_LANG['current month'] = 'bierzący miesiąc';
+$_LANG['current month'] = 'bieżący miesiąc';
 $_LANG['last month'] = 'poprzedni miesiąc';
-$_LANG['current year'] = 'bierzący rok';
+$_LANG['current year'] = 'bieżący rok';
+$_LANG['Last year'] = 'Ostatni rok';
 $_LANG['last year<!voip>'] = 'poprzedni rok';
 
 $_LANG['busy'] = 'zajęte';
@@ -3464,6 +3466,10 @@ $_LANG['Select files'] = 'Wybierz pliki';
 $_LANG['Uploading files ...'] = 'Wysyłanie plików ...';
 $_LANG['Uploading files to server ...'] = 'Wysyłanie plików na serwer ...';
 $_LANG['Loading'] = 'Wczytywanie';
+
+$_LANG['mobile'] = 'komórkowa';
+$_LANG['fixed'] = 'stacjonarna';
+$_LANG['Incorrect pool type!'] = 'Nieprawidłowy typ puli';
 
 $_LANG['Tags:'] = 'Etykiety:';
 $_LANG['Select tariff tags'] = 'Wybierz etykiety taryf';
