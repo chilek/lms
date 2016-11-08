@@ -1904,7 +1904,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			    'quota_sh_limit' => 0, 'quota_www_limit' => 0, 'quota_mail_limit' => 0, 'quota_sql_limit' => 0, 'quota_ftp_limit' => 0,
 			    'domain_limit' => 0, 'alias_limit' => 0,
 			    'type' => TARIFF_INTERNET);
-	$LMS->TariffAdd($tariffdata);
+	$t1 = $LMS->TariffAdd($tariffdata);
 	$tariffdata = array( 'name' => 'Standart', 'description' => 'Standart Tariff', 
 			    'value' => '60', 'taxid' => '2', 'prodid' => '', 
 			    'uprate' => '128', 'upceil' => '128', 
@@ -1914,7 +1914,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			    'quota_sh_limit' => 0, 'quota_www_limit' => 0, 'quota_mail_limit' => 0, 'quota_sql_limit' => 0, 'quota_ftp_limit' => 0,
 			    'domain_limit' => 0, 'alias_limit' => 0,
 			    'type' => TARIFF_INTERNET);
-	$LMS->TariffAdd($tariffdata);
+	$t2 = $LMS->TariffAdd($tariffdata);
 	$tariffdata = array( 'name' => 'Gold', 'description' => 'Gold Tariff', 
 			    'value' => '120', 'taxid' => '3', 'prodid' => '', 
 			    'uprate' => '256', 'upceil' => '256', 
@@ -1924,9 +1924,9 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			    'quota_sh_limit' => 0, 'quota_www_limit' => 0, 'quota_mail_limit' => 0, 'quota_sql_limit' => 0, 'quota_ftp_limit' => 0,
 			    'domain_limit' => 0, 'alias_limit' => 0,
 			    'type' => TARIFF_INTERNET);
-	$LMS->TariffAdd($tariffdata);
+	$t3 = $LMS->TariffAdd($tariffdata);
+	echo ($t1 && $t2 && $t3) ? ' [OK]<BR>' : ' <span style="color: red;">[FAIL]</span><br>';
 
-	echo ' [OK]<BR>';
 	echo '<B>'.trans('Generating payments...').'</B>'; flush();
 	$paymentdata = array( 'name' => 'DSL-2048', 'description' => 'Internet Link subscription', 'value' => '200', 'creditor' => 'Internet Super Provider Ltd.', 'period' => MONTHLY, 'at' => '10');
 	$LMS->PaymentAdd($paymentdata);
@@ -1936,21 +1936,32 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	$LMS->PaymentAdd($paymentdata);
 
 	echo ' [OK]<BR>';
-	echo '<B>'.trans('Generating host...').'</B>'; flush();
+	echo '<B>'.trans('Generating hosts...').'</B>'; flush();
 	$DB->Execute('INSERT INTO hosts (name, description) VALUES(?, ?)',
 		array('test', 'test host'));
 	$hostid = $DB->GetLastInsertID('hosts');
+	echo ($hostid) ? ' [OK]<BR>' : ' <span style="color: red;">[FAIL]</span><br>';
 
-	echo ' [OK]<BR>';
 	echo '<B>'.trans('Generating network...').'</B>'; flush();
 	$prefix = ($_GET['l']*2>1024) ? 16 : 22;
-	$netdata = array( 'name' => 'LAN1', 'address' => '192.168.0.0', 'prefix' => $prefix, 'gateway' => '192.168.0.1',
-		'dns' => '192.168.0.1', 'dns2' => '192.168.3.254', 'domain' => 'ultralan.net', 'wins' => '192.168.0.2',
-		'dhcpstart' => '192.168.3.230', 'dhcpend' => '192.168.3.253', 'interface' => 'eth0', 'hostid' => $hostid,
-		'notes' => '');
-	$netid = $LMS->NetworkAdd($netdata);
 
-	echo ' [OK]<BR>';
+	$netdata = array('name'      => 'LAN1',
+                     'address'   => '192.168.0.0',
+                     'prefix'    => $prefix,
+                     'gateway'   => '192.168.0.1',
+                     'dns'       => '192.168.0.1',
+                     'dns2'      => '192.168.3.254',
+                     'domain'    => 'ultralan.net',
+                     'wins'      => '192.168.0.2',
+                     'dhcpstart' => '192.168.3.230',
+                     'dhcpend'   => '192.168.3.253',
+                     'interface' => 'eth0',
+                     'hostid'    => $hostid,
+                     'authtype'  => 0,
+                     'notes'     => '');
+	$netid = $LMS->NetworkAdd($netdata);
+	echo ($netid) ? ' [OK]<BR>' : ' <span style="color: red;">[FAIL]</span><br>';
+
 	echo '<B>'.trans('Generating customers...').'</B>';	flush();
 	$startip = ip_long('192.168.0.0')+1;
 	$cnt = 0;
