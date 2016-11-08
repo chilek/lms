@@ -242,8 +242,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                     foreach ($this->GetCategoryStats($row['id']) as $sidx => $row)
                         $result[$idx][$sidx] = $row;
             foreach ($result as $idx => $category)
-                $result[$idx]['owners'] = $this->db->GetAll('SELECT u.id, firstname FROM rtcategoryusers cu
-				LEFT JOIN users u ON cu.userid = u.id
+                $result[$idx]['owners'] = $this->db->GetAll('SELECT u.id, name FROM rtcategoryusers cu
+				LEFT JOIN vusers u ON cu.userid = u.id
 				WHERE categoryid = ?', array($category['id']));
         }
         return $result;
