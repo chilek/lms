@@ -125,7 +125,7 @@
 	{sectionelse}
 	<TR>
 		<TD colspan="5" class="empty-table">
-			<p>{trans("No such accounts in database.")}</p>
+			<p>{trans("No such accounts in database.")} {trans('Click $a to create.', '<a href="?m=accountadd">'|cat: trans("here")|cat: '</a>')}</p>
 		</TD>
 	</TR>
 	{/section}
