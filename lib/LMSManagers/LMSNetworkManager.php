@@ -121,23 +121,27 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             SYSLOG::RES_HOST => $netadd['hostid'],
             'authtype' => $netadd['authtype'],
         );
-        if ($this->db->Execute('INSERT INTO networks (name, address, mask, interface, gateway,
+		if ($this->db->Execute('INSERT INTO networks (name, address, mask, interface, gateway,
 				dns, dns2, domain, wins, dhcpstart, dhcpend, notes, vlanid, hostid, authtype)
 				VALUES (?, inet_aton(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
-            $netid = $this->db->GetOne('SELECT id FROM networks WHERE address = inet_aton(?) AND hostid = ?', array($netadd['address'], $netadd['hostid']));
-            if ($this->syslog && $netid) {
-                $args[SYSLOG::RES_NETWORK] = $netid;
-
-                if($netadd['ownerid']) {
-                    $args[SYSLOG::RES_CUST] = $netadd['ownerid'];
-                    $this->db->Execute('INSERT INTO nodes (name, ownerid, netid) VALUES(?, ?, ?)', array($netadd['name'], $netadd['ownerid'], $netid));
-                }
-
-                $this->syslog->AddMessage(SYSLOG::RES_NETWORK, SYSLOG::OPER_ADD, $args);
-            }
-            return $netid;
-        } else
-            return FALSE;
+			$netid = $this->db->GetLastInsertID('networks');
+			if (!$netid)
+				return false;
+			if ($this->syslog)
+				$this->syslog->AddMessage(SYSLOG::RES_NETWORK, SYSLOG::OPER_ADD, $args);
+			if ($netadd['ownerid']) {
+				$args = array(
+					'name' => $netadd['name'],
+					SYSLOG::RES_CUST => $netadd['ownerid'],
+					SYSLOG::RES_NETWORK => $netid,
+				);
+				$this->db->Execute('INSERT INTO nodes (name, ownerid, netid) VALUES(?, ?, ?)', array_values($args));
+				if ($this->syslog)
+					$this->syslog->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_ADD, $args);
+			}
+			return $netid;
+		} else
+			return false;
     }
 
     public function NetworkDelete($id)
@@ -451,12 +455,8 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             mask=?, interface=?, vlanid=?, gateway=?, dns=?, dns2=?, domain=?, wins=?,
             dhcpstart=?, dhcpend=?, notes=?, hostid=?, authtype=? WHERE id=?', array_values($args));
 
-        if($networkdata['ownerid']) {
-            $args[SYSLOG::RES_CUST] = $networkdata['ownerid'];
-        }
-
-        if ($this->syslog && $res)
-            $this->syslog->AddMessage(SYSLOG::RES_NETWORK, SYSLOG::OPER_UPDATE, $args);
+		if ($res && $this->syslog)
+			$this->syslog->AddMessage(SYSLOG::RES_NETWORK, SYSLOG::OPER_UPDATE, $args);
     }
 
     public function NetworkCompress($id, $shift = 0)
