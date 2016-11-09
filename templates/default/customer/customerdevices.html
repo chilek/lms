@@ -35,20 +35,26 @@
 				</THEAD>
 				<TBODY class="lms-ui-multi-check">
 				{foreach $customerdevices as $customerdevice}
+				{$customer_netdev_id = $customerdevice.id}
+
 				<TR class="highlight {if $customerdevice@iteration is div by 2}light{else}lucid{/if}">
 					<TD class="bold nobr"><A href="?m=netdevinfo&id={$customerdevice.id}">{$customerdevice.name}</A></TD>
 					<TD>{$customerdevice.description}</TD>
-					<TD>{$customerdevice.serialnumber}</TD>
-					<TD>
+					<TD class="nobr">{$customerdevice.serialnumber}</TD>
+					<TD class="nobr">
 						{foreach $customerdevice.ips as $v}
-							{$v.ip}<br>
+							{$v.ip}
+							(<a href="?m=netdevinfo&id={$customer_netdev_id}&ip={$v.id}">{$v.name}</a>)
+							<br>
 						{foreachelse}
 							&mdash;
 						{/foreach}
 					</TD>
-					<TD>
+					<TD class="nobr">
 						{foreach $customerdevice.ips as $v}
-							{$v.mac}<br>
+							{$v.mac}
+							(<a href="?m=netdevinfo&id={$customer_netdev_id}&ip={$v.id}">{$v.name}</a>)
+							<br>
 						{foreachelse}
 							&mdash;
 						{/foreach}
