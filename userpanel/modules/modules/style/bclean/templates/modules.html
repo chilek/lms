@@ -1,24 +1,28 @@
 {include file="header.html"}
 {box title="Loaded modules"}
 <div class="table-responsive">
-<table class="table table-bordered">
-    <tr>
-        <th>{trans("Module")}</th>
-        <th>{trans("Display name")}</th>
-        <th>{trans("Prio")}</th>
-        <th>{trans("Tip")}</th>
-        <th>{trans("Description")}</th>
-    </tr>
-    {foreach from=$modules item=module}
-    <tr>
-        <td>{$module.module}</td>
-        <td>{$module.name}</td>
-        <td>{$module.prio}</td>
-        <td>{t}{$module.tip}{/t}</td>
-        <td>{t}{$module.description}{/t}</td>
-    </tr>
-    {/foreach}
-</table>
+	<table class="table table-bordered table-condensed table-striped">
+		<thead>
+			<tr>
+				<th>{trans("Module")}</th>
+				<th>{trans("Display name")}</th>
+				<th>{trans("Prio")}</th>
+				<th>{trans("Tip")}</th>
+				<th>{trans("Description")}</th>
+			</tr>
+		</thead>
+		{foreach $modules as $module}
+			<tbody>
+				<tr>
+					<td>{$module.module}</td>
+					<td>{$module.name}</td>
+					<td>{$module.prio}</td>
+					<td>{t}{$module.tip}{/t}</td>
+					<td>{t}{$module.description}{/t}</td>
+				</tr>
+			</tbody>
+		{/foreach}
+	</table>
 </div>
 {/box}
 {include file="footer.html"}
