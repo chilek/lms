@@ -63,7 +63,7 @@ if (isset($_POST['nodedata']))
 		if($key != 'macs' && $key != 'authtype' && $key != 'wysiwyg')
 			$nodedata[$key] = trim($value);
 
-	if($nodedata['ipaddr']=='' && $nodedata['ipaddr_pub'] && $nodedata['mac']=='' && $nodedata['name']=='')
+	if($nodedata['ipaddr']=='' && $nodedata['ipaddr_pub'] && $nodedata['mac']=='' && $nodedata['name']=='' && !isset($nodedata['wholenetwork']))
 		if($_GET['ownerid'])
 		{
 			$SESSION->redirect('?m=customerinfo&id='.$_GET['ownerid']);
@@ -80,7 +80,10 @@ if (isset($_POST['nodedata']))
 	elseif($LMS->GetNodeIDByName($nodedata['name']))
 		$error['name'] = trans('Specified name is in use!');
 
-	if(!$nodedata['ipaddr'])
+	if (isset($nodedata['wholenetwork'])) {
+		$nodedata['ipaddr'] = '0.0.0.0';
+		$nodedata['ipaddr_pub'] = '0.0.0.0';
+	} elseif (!$nodedata['ipaddr'])
 		$error['ipaddr'] = trans('Node IP address is required!');
 	elseif(!check_ip($nodedata['ipaddr']))
 		$error['ipaddr'] = trans('Incorrect node IP address!');

@@ -32,6 +32,10 @@
 				<OPTION VALUE="{$net.id}" {if $net.id == $nodedata.netid} selected{/if}{if $net.disabled == 1} class="alert"{/if}>{$net.name|truncate:20:"":true}: {$net.address}/{$net.prefix}</OPTION>
 				{/foreach}
 			</SELECT>
+			<label>
+				<input type="checkbox" name="nodedata[wholenetwork]" value="1" onchange="change_wholenetwork()"{if $nodedata.wholenetwork} checked{/if}>
+				{trans("the whole network")}
+			</label>
 		</TD>
 	</TR>
 	<TR>
@@ -324,6 +328,15 @@
 		});
 		macscountelem.value = parseInt(nr) + 1;
 	}
+
+	function change_wholenetwork() {
+		var wholenetwork = document.forms['nodeadd'].elements['nodedata[wholenetwork]'];
+		var display = wholenetwork.checked ? 'none' : 'table-row';
+
+		document.getElementsByName("nodedataipaddr")[0].parentNode.parentNode.style.display = display;
+		document.getElementsByName("nodedataipaddr_pub")[0].parentNode.parentNode.style.display = display;
+	}
+	change_wholenetwork();
 
 	function change_netdevice(id) {
 		if (xjx.$('linktype').value == 1) {
