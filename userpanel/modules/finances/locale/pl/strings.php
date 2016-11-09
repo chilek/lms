@@ -97,5 +97,8 @@ $_LANG['Print selected'] = 'Drukuj zaznaczone';
 $_LANG['Current balance:'] = 'Bieżące saldo:';
 $_LANG['Download speed'] = 'Prędkość pobierania';
 $_LANG['Upload speed'] = 'Prędkość wysyłania';
-
+$_LANG['Commitment'] = 'Zobowiązanie';
+$_LANG['Payment'] = 'Wpłata';
+$_LANG['Transfer title'] = 'Tytuł przelewu';
+$_LANG['Invoice title'] = 'Tytuł faktury';
 ?>
