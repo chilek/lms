@@ -1,6 +1,6 @@
 {box title="Your documents"}
 <div class="table-responsive">
-	<table class="table table-bordered table-hover">
+	<table class="table table-hover table-bordered table-striped table-condensed">
 		{if $documents}
 			<tr class="bg-primary text-white">
 				<th>{trans("Number:")}</th>
@@ -10,7 +10,7 @@
 				<th>&nbsp;</th>
 			</tr>
 		{/if}
-		{foreach from=$documents item=doc}
+		{foreach $documents as $doc}
 			<tr class="{if !$doc.closed}text-muted{/if}">
 				<td><b>{number number=$doc.number template=$doc.template time=$doc.cdate}</b></td>
 				<td>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</td>
