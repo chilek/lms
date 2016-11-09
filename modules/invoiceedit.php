@@ -65,6 +65,8 @@ if(isset($_GET['id']) && $action == 'edit')
 	$invoice['oldcdate'] = $invoice['cdate'];
 	$invoice['oldsdate'] = $invoice['sdate'];
 	$invoice['olddeadline'] = $invoice['deadline'] = $invoice['cdate'] + $invoice['paytime'] * 86400;
+	$invoice['oldnumber'] = $invoice['number'];
+	$invoice['oldnumberplanid'] = $invoice['numberplanid'];
 
 	if ($invoice['proforma']) {
 		$currtime = time();
@@ -181,6 +183,8 @@ switch($action)
 		$olddeadline = $invoice['olddeadline'];
 		$oldcdate = $invoice['oldcdate'];
 		$oldsdate = $invoice['oldsdate'];
+		$oldnumber = $invoice['oldnumber'];
+		$oldnumberplanid = $invoice['oldnumberplanid'];
 		$closed   = $invoice['closed'];
 
 		unset($invoice);
@@ -195,6 +199,8 @@ switch($action)
 		$invoice['olddeadline'] = $olddeadline;
 		$invoice['oldcdate'] = $oldcdate;
 		$invoice['oldsdate'] = $oldsdate;
+		$invoice['oldnumber'] = $oldnumber;
+		$invoice['oldnumberplanid'] = $oldnumberplanid;
 
 		if($invoice['cdate']) // && !$invoice['cdatewarning'])
 		{
@@ -257,6 +263,20 @@ switch($action)
 		$invoice['customerid'] = $_POST['customerid'];
 		$invoice['closed']     = $closed;
 
+		if ($invoice['number']) {
+			if (!preg_match('/^[0-9]+$/', $invoice['number']))
+				$error['number'] = trans('Invoice number must be integer!');
+			elseif (($invoice['proforma'] || $invoice['oldnumber'] != $invoice['number']
+				|| $invoice['oldnumberplanid'] != $invoice['numberplanid']) && $LMS->DocumentExists(array(
+					'number' => $invoice['number'],
+					'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+					'planid' => $invoice['numberplanid'],
+					'cdate' => $invoice['cdate'],
+					'customerid' => $cid,
+				)))
+				$error['number'] = trans('Invoice number $a already exists!', $invoice['number']);
+		}
+
 		if(!$error)
 			if($LMS->CustomerExists($invoice['customerid']))
 				$customer = $LMS->GetCustomer($invoice['customerid'], true);
@@ -277,6 +297,7 @@ switch($action)
 		$iid   = $invoice['id'];
 
 		$DB->BeginTrans();
+		$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions'));
 
 		$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 			account, inv_header, inv_footer, inv_author, inv_cplace 
@@ -337,35 +358,25 @@ switch($action)
 			'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
 		);
 
-		if (isset($invoice['proforma'])) {
-			$args['type'] = DOC_INVOICE;
-			$args['number'] = $invoice['number'];
-			if ($invoice['numberplanid'])
-				$args['fullnumber'] = docnumber(array(
-					'number' => $invoice['number'],
-					'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($invoice['numberplanid'])),
-					'cdate' => $invoice['cdate'],
-					'customerid' => $customer['id'],
-				));
-			else
-				$args['fullnumber'] = null;
-			$args[SYSLOG::RES_NUMPLAN] = $invoice['numberplanid'];
-			$args[SYSLOG::RES_DOC] = $iid;
-			$DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, customerid = ?,
-					name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, divisionid = ?,
-					div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
-					div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
-					div_inv_author = ?, div_inv_cplace = ?, type = ?, number = ?, fullnumber = ?, numberplanid = ?
-					WHERE id = ?', array_values($args));
-		} else {
-			$args[SYSLOG::RES_DOC] = $iid;
-			$DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, customerid = ?,
-					name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, divisionid = ?,
-					div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
-					div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
-					div_inv_author = ?, div_inv_cplace = ?
-					WHERE id = ?', array_values($args));
-		}
+		$args['type'] = DOC_INVOICE;
+		$args['number'] = $invoice['number'];
+		if ($invoice['numberplanid'])
+			$args['fullnumber'] = docnumber(array(
+				'number' => $invoice['number'],
+				'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($invoice['numberplanid'])),
+				'cdate' => $invoice['cdate'],
+				'customerid' => $customer['id'],
+			));
+		else
+			$args['fullnumber'] = null;
+		$args[SYSLOG::RES_NUMPLAN] = $invoice['numberplanid'];
+		$args[SYSLOG::RES_DOC] = $iid;
+		$DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, customerid = ?,
+				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, divisionid = ?,
+				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
+				div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
+				div_inv_author = ?, div_inv_cplace = ?, type = ?, number = ?, fullnumber = ?, numberplanid = ?
+				WHERE id = ?', array_values($args));
 		if ($SYSLOG)
 			$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args,
 				array('div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY)));
@@ -449,6 +460,7 @@ switch($action)
 				array($customer['id'], $iid));
 		}
 
+		$DB->UnLockTables();
 		$DB->CommitTrans();
 
 		if (isset($_GET['print']))
@@ -481,11 +493,10 @@ $SMARTY->assign('customer', $customer);
 $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('taxeslist', $taxeslist);
-if (isset($invoice['proforma']))
-	$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
-		'doctype' => DOC_INVOICE,
-		'cdate' => date('Y/m', $invoice['cdate']),
-	)));
+$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
+	'doctype' => DOC_INVOICE,
+	'cdate' => date('Y/m', $invoice['cdate']),
+)));
 $SMARTY->display('invoice/invoiceedit.html');
 
 ?>

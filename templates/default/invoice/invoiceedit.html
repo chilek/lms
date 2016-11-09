@@ -78,7 +78,6 @@
 {$default_taxrate   = ConfigHelper::getConfig('phpui.default_taxrate')}
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=invoiceedit&action=setcustomer">
 <INPUT type="submit" class="hiddenbtn">
-<INPUT type="HIDDEN" name="invoice[number]" value="{$invoice.number}">
 <INPUT type="HIDDEN" name="invoice[template]" value="{$invoice.template}">
 <input type="hidden" name="invoice[doctype]" value="{$invoice.doctype}">
 {if $invoice.proforma}
@@ -97,7 +96,6 @@
 	</TR>
     </THEAD>
     <TBODY>
-	{if $invoice.proforma}
 	<TR>
 		<TD class="bold nobr">
 			{trans("Invoice number:")}
@@ -116,7 +114,6 @@
 			{/if}
 		</TD>
 	</TR>
-	{/if}
 	<TR>
 		<TD class="bold nobr">
 			{trans("Settlement date:")}
