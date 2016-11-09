@@ -71,9 +71,9 @@ function smarty_function_customerlist($params, $template) {
 
 	if (!empty($params['customers'])) {
 		$reset_customer = "reset_customer('${params['form']}', '${params['inputname']}', '${params['selectname']}'); ${on_change}";
-		$result .= "onChange=\"${reset_customer}\" onFocus=\"${reset_customer}\"";
+		$result .= "onChange=\"${reset_customer}\"";
 	} else
-		$result .= sprintf(' onblur="%1$s" onfocus="%1$s" oninput="%1$s" ', $on_change . ';getCustomerName(this)');
+		$result .= sprintf(' oninput="%1$s" ', $on_change . ';getCustomerName(this)');
 
 	if (!empty($params['inputtip']))
 		$result .= smarty_function_tip(array('text' => $params['inputtip']), $template);

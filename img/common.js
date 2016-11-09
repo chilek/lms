@@ -647,6 +647,9 @@ function get_size_unit(size) {
 }
 
 function _getCustomerNames(ids, success) {
+	if (!ids || String(ids).length == 0)
+		return 0;
+
 	$.ajax('?m=customerinfo&ajax=1', {
 		async: true,
 		method: 'POST',

@@ -1714,6 +1714,7 @@ $_LANG['Not set'] = 'Nie ustawione';
 $_LANG['New network is too small. Put in order IP addresses first!'] = 'Nowa sieć jest zbyt mała. Uporządkuj najpierw adresy IP!';
 $_LANG['You can assign customer to ticket'] = 'Możesz przypisać klienta do zgłoszenia';
 $_LANG['Generating invoices...'] = 'Generuję faktury...';
+$_LANG['Generating hosts...'] = 'Generuję hosty...';
 $_LANG['equal to'] = 'równe';
 $_LANG['not equal to'] = 'różne';
 $_LANG['greater than'] = 'większe niż';
