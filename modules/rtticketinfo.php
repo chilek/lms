@@ -43,7 +43,7 @@ if(!$rights || !$catrights)
 $ticket = $DB->GetRow('SELECT t.id, t.cause, t.creatorid, c.name AS creator, 
 		    t.createtime, t.resolvetime
 		    FROM rttickets t
-		    LEFT JOIN users c ON (t.creatorid = c.id)
+		    LEFT JOIN vusers c ON (t.creatorid = c.id)
 		    WHERE t.id = ?', array($id));
 
 $ticket['message'] = $DB->GetOne('SELECT body FROM rtmessages
