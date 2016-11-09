@@ -1,0 +1,13 @@
+{if $tree}
+	<ul>
+		{foreach from=$tree key="name" item="subtree"}
+			{if ($name|truncate:4:"") == 'next'}
+				{include file=$treefile tree=$subtree treefile=$treefile}
+			{else}
+				<li><a href="?m=userpanel&module=help&f=edit&nr={$name}" {tip text="Edit this item"}>{$subtree} <img src="img/edit.gif"></a> 
+					<a href="?m=userpanel&module=help&f=add&refid={$name}" {tip text="Add new subitem"}><img src="img/down.gif"></a> 
+					<a href="?m=userpanel&module=help&f=delete&nr={$name}" {tip text="Delete this item"}> <img src="img/delete.gif"></a></li>
+					{/if}
+				{/foreach}
+	</ul>
+{/if}
