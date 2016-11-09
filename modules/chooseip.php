@@ -35,13 +35,13 @@ if(!$p || $p == 'main')
 else
 	$js = '';
 
-if (isset($_POST['netid']))
+if (isset($_POST['netid']) && $_POST['netid'])
 	$netid = $_POST['netid'];
-elseif (isset($_GET['netid']))
+elseif (isset($_GET['netid']) && $_GET['netid'])
 	$netid = $_GET['netid'];
 elseif ($SESSION->is_set('netid'))
 	$SESSION->restore('netid', $netid);
-else
+if (empty($netid))
 	$netid = $networks[0]['id'];
 
 if (isset($_POST['page']))
