@@ -51,10 +51,10 @@ if(sizeof($useradd))
 	if($useradd['email']!='' && !check_email($useradd['email']))
 		$error['email'] = trans('E-mail isn\'t correct!');
 
-	if($useradd['firstname']=='')
-		$error['firstname'] = trans('You have to enter firstname!');
-	if($useradd['lastname']=='')
-		$error['lastname'] = trans('You have to enter lastname!');
+	if ($useradd['firstname'] == '')
+		$error['firstname'] = trans('You have to enter first and lastname!');
+	if ($useradd['lastname'] == '')
+		$error['lastname'] = trans('You have to enter first and lastname!');
 
 	if ($useradd['password'] == '')
 		$error['password'] = trans('Empty passwords are not allowed!');

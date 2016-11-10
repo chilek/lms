@@ -46,10 +46,10 @@ if($userinfo)
 	elseif($LMS->GetUserIDByLogin($userinfo['login']) && $LMS->GetUserIDByLogin($userinfo['login']) != $id)
 		$error['login'] = trans('User with specified login exists or that login was used in the past!');
 
-	if($useradd['firstname']=='')
-		$error['firstname'] = trans('You have to enter firstname!');
-	if($useradd['lastname']=='')
-		$error['lastname'] = trans('You have to enter lastname!');
+	if ($userinfo['firstname'] == '')
+		$error['firstname'] = trans('You have to enter first and lastname!');
+	if ($userinfo['lastname'] == '')
+		$error['lastname'] = trans('You have to enter first and lastname!');
 
 	if($userinfo['email']!='' && !check_email($userinfo['email']))
 		$error['email'] = trans('E-mail isn\'t correct!');
