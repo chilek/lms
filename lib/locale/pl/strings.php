@@ -3530,4 +3530,6 @@ $_LANG['Change the format of presentation of the MAC address.'] = 'Zmień format
 
 $_LANG['Select first free address'] = 'Wybierz pierwszy dostępny adres';
 
+$_LANG['Selected network is already assigned to customer $a ($b)!'] = 'Wybrana sieć jest już przypisana do klienta $a ($b)!';
+
 ?>
