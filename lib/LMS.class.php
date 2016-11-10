@@ -3015,6 +3015,7 @@ class LMS
 				'number' => $doc['number'],
 				'template' => $invoice_number,
 				'cdate' => $doc['cdate'] + date('Z'),
+				'customerid' => $doc['customerid'],
 			));
 			$body = preg_replace('/%invoice/', $invoice_number, $body);
 			$body = preg_replace('/%balance/', $this->GetCustomerBalance($doc['customerid']), $body);
