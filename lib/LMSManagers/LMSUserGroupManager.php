@@ -87,7 +87,7 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
 	    AND vu.id NOT IN (
 		SELECT userid FROM userassignments WHERE usergroupid = ?)
 	    GROUP BY vu.id, vu.name
-	    ORDER BY vu.lastname', array($groupid));
+	    ORDER BY vu.name', array($groupid));
     }
 
     public function UserassignmentDelete($userassignmentdata){
