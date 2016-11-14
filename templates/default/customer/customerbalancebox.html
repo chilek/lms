@@ -134,7 +134,7 @@
 	<TR id="customerbalancepanel" class="dark">
 		<TD colspan="2">
 			{$datatables_max_records=intval(ConfigHelper::getConfig('phpui.datatables_max_records', 300))}
-			<TABLE class="lmsbox-inner{if !empty($balancelist.list) && count($balancelist.list) < $datatables_max_records} lms-ui-datatable{else} lms-ui-background-cycle{/if}"{if !empty($balancelist.list) && count($balancelist.list) < $datatables_max_records} data-page-length="{$n}" data-display-start="{$n = count($balancelist.list) + $limit}{if $n < 0}0{else}{$n}{/if}" style="display: none;"{/if} width="100%">
+			<TABLE id="customerbalancebox-datatable" class="lmsbox-inner{if !empty($balancelist.list) && count($balancelist.list) < $datatables_max_records} lms-ui-datatable{else} lms-ui-background-cycle{/if}"{if !empty($balancelist.list) && count($balancelist.list) < $datatables_max_records} data-page-length="{$n}" data-display-start="{$n = count($balancelist.list) + $limit}{if $n < 0}0{else}{$n}{/if}" style="display: none;"{/if} width="100%">
 				<COLGROUP>
 					<COL style="width: 1%;">
 					<COL style="width: 1%;">

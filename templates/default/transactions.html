@@ -25,7 +25,7 @@
 	<TBODY>
 	<TR id="transactionpanel" class="dark" style="display: none;">
 		<TD class="fall" id="transactiontable" colspan="2">
-			<TABLE class="lmsbox-inner{if $transactions} lms-ui-datatable{/if}"{if $transactions} data-order='[[ 0, "desc" ]]' data-page-length="10" style="display: none;"{/if} width="100%">
+			<TABLE id="transactions-datatable" class="lmsbox-inner{if $transactions} lms-ui-datatable{/if}"{if $transactions} data-order='[[ 0, "desc" ]]' data-page-length="10" style="display: none;"{/if} width="100%">
 				<COLGROUP>
 					<COL style="width: 1%;">
 					<COL style="width: 1%;">
