@@ -174,13 +174,23 @@ if(isset($_POST['ticket']))
 					$sms_body .= trans('Customer:').' '.$requestor;
 				}
 
+			$notify_author = ConfigHelper::checkConfig('phpui.helpdesk_author_notify');
+			$args = array(
+				'queue' => $queue,
+				'user' => $AUTH->id,
+			);
+			if ($notify_author)
+				unset($args['user']);
+
 			// send email
+			$args['type'] = MSG_MAIL;
 			if ($recipients = $DB->GetCol('SELECT DISTINCT email
 				FROM users, rtrights
 					WHERE users.id = userid AND queueid = ? AND email != \'\'
-						AND (rtrights.rights & 8) = 8 AND deleted = 0
-						AND (ntype & ?) = ?',
-					array($queue, MSG_MAIL, MSG_MAIL)))
+						AND (rtrights.rights & 8) = 8 AND deleted = 0'
+						. ($notify_author ? '' : ' AND users.id <> ?')
+						. ' AND (ntype & ?) > 0',
+					array_values($args)))
 			{
 				foreach($recipients as $email) {
 					$headers['To'] = '<'.$email.'>';
@@ -191,12 +201,14 @@ if(isset($_POST['ticket']))
 
 			// send sms
 			$service = ConfigHelper::getConfig('sms.service');
+			$args['type'] = MSG_SMS;
 			if (!empty($service) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
 				FROM users, rtrights
 					WHERE users.id = userid AND queueid = ? AND phone != \'\'
-						AND (rtrights.rights & 8) = 8 AND deleted = 0
-						AND (ntype & ?) = ?',
-					array($queue, MSG_SMS, MSG_SMS))))
+						AND (rtrights.rights & 8) = 8 AND deleted = 0'
+						. ($notify_author ? '' : ' AND users.id <> ?')
+						. ' AND (ntype & ?) > 0',
+					array_values($args))))
 			{
 				foreach ($recipients as $phone) {
 					$LMS->SendSMS($phone, $sms_body);

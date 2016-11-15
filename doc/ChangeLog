@@ -28,6 +28,8 @@ version ?.??.?? (????-??-??):
     window where this non-empty ip address is visible [chilan]
   - added support for set type of voip pool numbers [kosa/chilan]
   - improvement: allow to change number and number plan for edited invoices [chilan]
+  - improvement: phpui.helpdesk_author_notify configuration variable controls
+    if new helpdesk ticket/message/note notifications are sent to author [chilan]
 
 version 1.11.21 (2016-10-14):
 
