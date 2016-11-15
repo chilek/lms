@@ -40,7 +40,15 @@
 	}
 
 	function send_invoices() {
-		document.addbalance.action="?m=invoicesend&marks=cash";
+		var add = "";
+		if(document.addbalance.original.checked)
+			add = "&original=1";
+		if(document.addbalance.copy.checked)
+			add += "&copy=1";
+		if(document.addbalance.duplicate.checked)
+			add += "&duplicate=1";
+
+		document.addbalance.action="?m=invoicesend&marks=cash" + add;
 		document.addbalance.target="_blank";
 		document.addbalance.submit();
 	}

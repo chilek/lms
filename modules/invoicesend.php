@@ -89,12 +89,18 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
 				DOC_INVOICE, DOC_CNOTE, DOC_DNOTE, DOC_INVOICE_PRO));
 
 		if (!empty($docs)) {
+			$which = array();
+			if (!empty($_GET['original'])) $which[] = trans('ORIGINAL');
+			if (!empty($_GET['copy'])) $which[] = trans('COPY');
+			if (!empty($_GET['duplicate'])) $which[] = trans('DUPLICATE');
+			if (empty($which)) $which[] = trans('ORIGINAL');
+
 			$currtime = time();
 			$LMS->SendInvoices($docs, 'frontend', compact('SMARTY', 'invoice_filetype', 'dnote_filetype',
 				'invoice_filename', 'dnote_filename', 'debug_email',
 				'mail_body', 'mail_subject', 'currtime', 'sender_email', 'sender_name', 'extrafile',
 				'dsn_email', 'reply_email', 'mdn_email', 'notify_email', 'quiet', 'test', 'add_message',
-				'smtp_host', 'smtp_port', 'smtp_user', 'smtp_pass', 'smtp_auth'));
+				'which', 'smtp_host', 'smtp_port', 'smtp_user', 'smtp_pass', 'smtp_auth'));
 		}
 	}
 
