@@ -119,7 +119,9 @@ function hideslave() {
 	document.getElementById('ipmailserver').style.display = '';
 }
 
-document.forms['domainadd'].elements['domainadd[name]'].focus();
+$(function() {
+	$('form[name="domainadd"] [name="domainadd[name]"]').focus();
+});
 
 if (document.getElementById('domainadd[type]').value == 'SLAVE')
 	showslave();

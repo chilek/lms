@@ -216,7 +216,9 @@
 </FORM></P>
 <SCRIPT type="text/javascript">
 <!--
-	document.forms['documentedit'].elements['document[title]'].focus();
+	$(function() {
+		$('form[name="documentedit"] [name="document[title]"]').focus();
+	});
 	setnumberplans();
 //-->
 </SCRIPT>

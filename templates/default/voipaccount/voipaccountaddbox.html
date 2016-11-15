@@ -200,12 +200,13 @@
 
 <SCRIPT type="text/javascript">
 <!--
-    document.getElementById("voip-login").focus();
     check_teryt('location', true);
     var remove_number = '{$remove_number}';
     var pool_number_select = '{$pool_number_select}';
 
     $( function() {
+		$('#voip-login').focus();
+
         $('#teryt').change(function () {
             $("#location-box").toggle();
         });

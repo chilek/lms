@@ -300,7 +300,9 @@
 </TABLE></FORM>
 <SCRIPT type="text/javascript">
 <!--
-	document.forms['nodeadd'].elements['nodedata[name]'].focus();
+	$(function() {
+		$('form[name="nodeadd"] [name="nodedata[name]"]').focus();
+	});
 
 	function GenPasswd() {
 		var length = {ConfigHelper::getConfig('phpui.nodepassword_length', '16')};

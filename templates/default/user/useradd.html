@@ -167,7 +167,9 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['useradd'].elements['useradd[login]'].focus();
+$(function() {
+	$('form[name="useradd"] [name="useradd[login]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

@@ -139,7 +139,9 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-	document.forms['search'].elements['search[subject]'].focus();
+	$(function() {
+		$('form[name="search"] [name="search[subject]"]').focus();
+	});
 //-->
 </SCRIPT>
 {/block}

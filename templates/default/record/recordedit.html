@@ -219,9 +219,11 @@ function change_rec_type(select)
 	}
 }
 
-var elem = document.forms['record'].elements['record[type]'];
-elem.focus();
-change_rec_type(elem);
+$(function() {
+	var elem = $('form[name="record"] [name="record[type]"]');
+	elem.focus();
+	change_rec_type(elem[0]);
+});
 //-->
 </SCRIPT>
 {/block}

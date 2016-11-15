@@ -56,7 +56,9 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['tedit'].elements['nodegroup[name]'].focus();
+$(function() {
+	$('forms[name="tedit"] [name="nodegroup[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {include file="node/nodegroupassignments.html"}

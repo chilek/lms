@@ -42,7 +42,9 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['stateadd'].elements['stateadd[name]'].focus();
+$(function() {
+	$('form[name="stateadd"] [name="stateadd[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

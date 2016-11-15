@@ -375,7 +375,9 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-	document.forms['customersearch'].elements['search[customername]'].focus();
+	$(function() {
+		$('form[name="customersearch"] [name="search[customername]"]').focus();
+	});
 //-->
 </SCRIPT>
 {/block}

@@ -241,13 +241,14 @@
 
 <script type="text/javascript">
 <!--
-    document.forms['editvoipaccount'].elements['voipaccountedit[login]'].focus();
     check_teryt('location', true);
 
     var remove_number = '{$remove_number}';
     var pool_number_select = '{$pool_number_select}';
 
     $( function() {
+		$('form[name="editvoipaccount"] [name="voipaccountedit[login]"]').focus();
+
         $('#teryt').change(function () {
             $("#location-box").toggle();
         });

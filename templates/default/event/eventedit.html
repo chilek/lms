@@ -202,7 +202,9 @@
 </P>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['event'].elements['event[title]'].focus();
+$(function() {
+	$('form[name="event"] [name="event[title]"]').focus();
+});
 
 function update_user_selection(users) {
 	var userms = $('.lms-ui-multiselect').data('data-multiselect-object');

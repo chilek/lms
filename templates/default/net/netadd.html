@@ -112,7 +112,9 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['netadd'].elements['netadd[name]'].focus();
+$(function() {
+	$('form[name="netadd"] [name="netadd[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

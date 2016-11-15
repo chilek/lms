@@ -118,7 +118,9 @@ function togglelogin()
 </FORM>
 <SCRIPT type="text/javascript">
 <!--//
-document.forms['aliasadd'].elements['alias[login]'].focus();
+$(function() {
+	$('form[name="aliasadd"] [name="alias[login]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

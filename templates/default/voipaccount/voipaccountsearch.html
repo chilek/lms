@@ -86,7 +86,9 @@
 </form>
 <script type="text/javascript">
 <!--
-    document.forms['voipaccountsearch'].elements['search[login]'].focus();
+	$(function() {
+		$('form[name="voipaccountsearch"] [name="search[login]"]').focus();
+	});
 //-->
 </script>
 {/block}

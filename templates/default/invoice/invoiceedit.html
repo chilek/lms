@@ -364,7 +364,9 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-	document.forms['setcustomer'].elements['invoice[cdate]'].focus();
+	$(function() {
+		$('form[name="setcustomer"] [name="invoice[cdate]"]').focus();
+	});
 //-->
 </SCRIPT>
 {/block}

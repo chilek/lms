@@ -173,7 +173,9 @@ function update_selection(type, data, selected)
 	select.focus();
 }
 
-document.forms['nodesearch'].elements['search[name]'].focus();
+$(function() {
+	$('form[name="nodesearch"] [name="search[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

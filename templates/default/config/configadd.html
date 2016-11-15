@@ -98,7 +98,9 @@
 </P>
 <SCRIPT type="text/javascript">
 <!--
-	document.forms['config'].elements['config[var]'].focus();
+	$(function() {
+		$('form[name="config"] [name="config[var]"]').focus();
+	});
 //-->
 </SCRIPT>
 {/block}

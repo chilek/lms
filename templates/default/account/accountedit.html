@@ -183,7 +183,9 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['account'].elements['account[login]'].focus();
+$(function() {
+	$('form[name="account"] [name="account[login]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

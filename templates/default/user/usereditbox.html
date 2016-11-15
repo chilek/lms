@@ -181,6 +181,8 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['useredit'].elements['userinfo[login]'].focus();
+$(function() {
+	$('form[name="useredit"] [name="userinfo[login]"]').focus();
+});
 //-->
 </SCRIPT>

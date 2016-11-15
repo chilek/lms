@@ -325,7 +325,9 @@
 </P>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['setcustomer'].elements['receipt[cdate]'].focus();
+$(function() {
+	$('form[name="setcustomer"] [name="receipt[cdate]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

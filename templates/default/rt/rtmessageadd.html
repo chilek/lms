@@ -146,7 +146,9 @@
 
 <SCRIPT type="text/javascript">
 <!--
-document.forms['message'].elements['message[subject]'].focus();
+$(function() {
+	$('form[name="message"] [name="message[subject]"]').focus();
+});
 //-->
 </SCRIPT>
 
