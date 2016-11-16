@@ -285,7 +285,8 @@ $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctyp
 			AND d.cdate >= $daystart AND d.cdate <= $dayend"
 			. (!empty($groupnames) ? $customergroups : "")
 		. " ORDER BY d.number" . (!empty($count_limit) ? " LIMIT $count_limit OFFSET $count_offset" : '');
-$docs = $DB->GetAll($query, array(CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_INVOICES, DOC_INVOICE, DOC_CNOTE, DOC_DNOTE));
+$docs = $DB->GetAll($query, array(CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED,
+	CONTACT_EMAIL | CONTACT_INVOICES, DOC_INVOICE, DOC_CNOTE, DOC_DNOTE));
 
 if (!empty($docs))
 	$LMS->SendInvoices($docs, 'backend', compact('SMARTY', 'invoice_filetype', 'dnote_filetype' , 'invoice_filename', 'dnote_filename', 'debug_email',
