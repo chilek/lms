@@ -35,6 +35,7 @@ $this->LockTables("documents");
 $offset = 0;
 do {
 	$docs = $this->GetAll("SELECT id, cdate, number, numberplanid FROM documents
+		WHERE fullnumber IS NULL
 		ORDER BY id LIMIT 100000 OFFSET $offset");
 	$stop = empty($docs);
 	if (!$stop) {
