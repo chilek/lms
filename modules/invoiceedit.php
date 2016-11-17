@@ -312,7 +312,8 @@ switch($action)
 		else {
 			if(!preg_match('/^[0-9]+$/', $invoice['number']))
 				$error['number'] = trans('Invoice number must be integer!');
-			elseif($LMS->DocumentExists(array(
+			elseif (($invoice['number'] != $invoice['oldnumber'] || $invoice['numberplanid'] != $invoice['oldnumberplanid'])
+				&& $LMS->DocumentExists(array(
 					'number' => $invoice['number'],
 					'doctype' => DOC_INVOICE,
 					'planid' => $invoice['numberplanid'],
