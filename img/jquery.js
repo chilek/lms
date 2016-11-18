@@ -51,7 +51,7 @@ $(function() {
 		dateFormat: "yy/mm/dd",
 		changeYear: true,
 		beforeShow: function(input, inst) {
-			if ($(input).hasClass('ui-tooltip')) {
+			if ($(input).is('[data-tooltip]')) {
 				$(input).tooltip('disable');
 				$(this).data('tooltip', input);
 			}
