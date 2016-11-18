@@ -592,8 +592,10 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		));
 		if (isset($this->data['invoice']))
 			$title = trans('Credit Note No. $a', $docnumber);
-		else
+		elseif ($this->data['doctype'] == DOC_INVOICE)
 			$title = trans('Invoice No. $a', $docnumber);
+		else
+			$title = trans('Pro Forma Invoice No. $a', $docnumber);
 		$this->backend->Write(0, $title, '', 0, 'C', true, 0, false, false, 0);
 
 		if (isset($this->data['invoice'])) {
@@ -831,7 +833,10 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			'cdate' => $this->data['cdate'],
 			'customerid' => $this->data['customerid'],
 		));
-		$this->backend->SetTitle(trans('Invoice No. $a', $docnumber));
+		if ($this->data['doctype'] == DOC_INVOICE_PRO)
+			$this->backend->SetTitle(trans('Pro Forma Invoice No. $a', $docnumber));
+		else
+			$this->backend->SetTitle(trans('Invoice No. $a', $docnumber));
 		$this->backend->SetAuthor($this->data['division_name']);
 		$this->backend->setBarcode($docnumber);
 
@@ -843,7 +848,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$info = array(
 			'Name' => $this->data['division_name'],
 			'Location' => trans('Invoices'),
-			'Reason' => trans('Invoice No. $a', $docnumber),
+			'Reason' => $this->data['doctype'] == DOC_INVOICE_PRO ? trans('Pro Forma Invoice No. $a', $docnumber) : trans('Invoice No. $a', $docnumber),
 			'ContactInfo' => $this->data['division_author']
 		);
 
@@ -890,7 +895,10 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			'cdate' => $this->data['cdate'],
 			'customerid' => $this->data['customerid'],
 		));
-		$this->backend->SetTitle(trans('Invoice No. $a', $docnumber));
+		if ($this->data['doctype'] == DOC_INVOICE_PRO)
+			$this->backend->SetTitle(trans('Pro Forma Invoice No. $a', $docnumber));
+		else
+			$this->backend->SetTitle(trans('Invoice No. $a', $docnumber));
 		$this->backend->SetAuthor($this->data['division_name']);
 
 		/* setup your cert & key file */
@@ -901,7 +909,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$info = array(
 			'Name' => $this->data['division_name'],
 			'Location' => trans('Invoices'),
-			'Reason' => trans('Invoice No. $a', $docnumber),
+			'Reason' => $this->data['doctype'] == DOC_INVOICE_PRO ? trans('Pro Forma Invoice No. $a', $docnumber) : trans('Invoice No. $a', $docnumber),
 			'ContactInfo' => $this->data['division_author']
 		);
 

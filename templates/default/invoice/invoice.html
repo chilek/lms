@@ -9,9 +9,9 @@
 			    <B>{t a=$number}Credit Note No. $a{/t}</B><BR>
 			    <B class="mdf">{t a=$number_ref}for Invoice No. $a{/t}</B><BR>
 			{elseif $invoice.doctype == $smarty.const.DOC_INVOICE_PRO}
-			    <B>{t a=$number}Invoice No. $a{/t}</B><BR>
-			{else}
 			    <B>{t a=$number}Pro Forma Invoice No. $a{/t}</B><BR>
+			{else}
+			    <B>{t a=$number}Invoice No. $a{/t}</B><BR>
 			{/if}
 			{if $invoice.cancelled}
 			<B>{trans("CANCELLED")}</B><BR>
