@@ -1,5 +1,24 @@
 {include file="header.html"}
-{include file="module:balance.html"}
-{include file="module:userassignments.html"}
-{include file="module:userbalancebox.html"}
+<ul class="nav nav-tabs mb-1" role="tablist">
+	<li class="nav-item">
+		<a class="nav-link active" data-toggle="tab" href="#balance" role="tab">{trans("Balance")}</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" data-toggle="tab" href="#userassignments" role="tab">{trans("Your subscriptions")}</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" data-toggle="tab" href="#userbalancebox" role="tab">{trans("Your balance")}</a>
+	</li>
+</ul>
+<div class="tab-content">
+	<div class="tab-pane active" id="balance" role="tabpanel">
+		{include file="module:balance.html"}
+	</div>
+	<div class="tab-pane" id="userassignments" role="tabpanel">
+		{include file="module:userassignments.html"}
+	</div>
+	<div class="tab-pane" id="userbalancebox" role="tabpanel">
+		{include file="module:userbalancebox.html"}
+	</div>
+</div>
 {include file="footer.html"}

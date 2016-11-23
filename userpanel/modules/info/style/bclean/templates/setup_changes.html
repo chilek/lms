@@ -15,7 +15,7 @@
                         <TD WIDTH="5%" class="frightu">&nbsp;</TD>
                     </TR>
                     {cycle values="light,lucid" print=false}
-                    {foreach from=$userchanges item=change}
+                    {foreach $userchanges as $change}
                     <TR class="{cycle advance=false}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
                         <TD CLASS="fleft" WIDTH="30%" NOWRAP onClick="return self.location.href = '?m=customerinfo&id={$change.customerid}';"><B>{$change.customername|truncate:50:" ..."} ({$change.customerid|string_format:"%04d"})</B></TD>
                         <TD WIDTH="15%" NOWRAP>{t}{$change.fieldname|regex_replace:"/[^a-z]/":""}{/t}</TD>

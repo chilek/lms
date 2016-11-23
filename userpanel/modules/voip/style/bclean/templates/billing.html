@@ -22,7 +22,7 @@
 				{if count($customer_phone_list) > 1}
 					<SELECT NAME="phone" CLASS="form-control" id="phonelabel">
 						<OPTION VALUE="0">{trans("- all -")}</OPTION>
-							{foreach from=$customer_phone_list item=phone}
+							{foreach $customer_phone_list as $phone}
 							<OPTION VALUE="{$phone}"{if $params.phone == $phone} SELECTED{/if}>{$phone}</OPTION>
 							{/foreach}
 					</SELECT>

@@ -80,10 +80,10 @@ $_LANG['indefinitely'] = 'bezterminowo';
 $_LANG['Bank accounts:'] = 'Konta bankowe:';
 $_LANG['Phones:'] = 'Telefony:';
 $_LANG['Postal address:'] = 'Adres korespondencyjny:';
-
 $_LANG['Show confirmed documents only:'] = 'Pokaż wyłącznie dokumenty zatwierdzone:';
 $_LANG['Show only documents which are confirmed'] = 'Pokaż wyłącznie dokumenty, które zostały zatwierdzone';
 $_LANG['Company data'] = 'Dane firmy';
+$_LANG['Personal data'] = 'Dane osobowe';
 $_LANG['Company name'] = 'Nazwa firmy';
 $_LANG['Information about the subscriber'] = 'Informacje o abonencie';
 

@@ -1,52 +1,52 @@
-{box title="New Request"}
-<form method="post" action="?m=helpdesk" name="helpdesk" enctype="multipart/form-data">
-<div class="table-responsive">
-    <table class="table table-bordered">
-        <tr>
-            <th>
-                {trans("Queue:")}
-            </th>
-            <td>
-                <select class="form-control" name="helpdesk[queue]" {userpaneltip text="Select queue" trigger="queue"}>
-                    {foreach $queues as $queue}
-                    <option value="{$queue.id}"{if $helpdesk.queue == $queue.id} selected{/if}>{$queue.name}</option>
-                    {/foreach}
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <th>
-                {trans("Subject:")}
-            </th>
-            <td>
-                <input class="form-control" type="text" name="helpdesk[subject]" value="{$helpdesk.subject}" {userpaneltip text="Enter request subject" trigger="subject"} />
-            </td>
-        </tr>
-        <tr>
-            <th>
-                {trans("Body:")}
-            </th>
-            <td>
-                <textarea class="form-control" name="helpdesk[body]" {userpaneltip text="Enter request contents" trigger="body"}>{$helpdesk.body}</textarea>
-            </td>
-        </tr>
-        <tr>
-            <th>
-                {trans("Attachments:")}
-            </th>
-            <td>
-                <input class="form-control" type="file" name="files[]" size="55" {userpaneltip text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <a class="btn btn-primary" href="javascript:document.helpdesk.submit()" accesskey="S">{trans("Submit")}</a>                   
-                <input type="hidden" name="wyslane" value="1">
-            </td>
-        </tr>
-    </table>
+<button type="button" class="btn btn-danger mb-1" data-toggle="modal" data-target="#newrequest" accesskey="N">
+	{trans("New Request")}
+</button>
+<div class="modal fade" id="newrequest" tabindex="-1" role="dialog" aria-labelledby="newrequest" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title">{trans("New Request")}</h4>
+			</div>
+			<div class="modal-body">
+				<form method="post" action="?m=helpdesk" name="helpdesk" enctype="multipart/form-data">
+					<div class="form-group">
+						<label for="queue">{trans("Queue:")}</label>
+						<select class="form-control" name="helpdesk[queue]" {userpaneltip text="Select queue" trigger="queue"}>
+							{foreach $queues as $queue}
+								<option value="{$queue.id}"{if $helpdesk.queue == $queue.id} selected{/if}>{$queue.name}</option>
+							{/foreach}
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="subject">{trans("Subject:")}</label>
+						<input class="form-control" type="text" name="helpdesk[subject]" placeholder="{trans("Enter request subject")}" required />
+					</div>
+
+					<div class="form-group">
+						<label for="body">{trans("Body:")}</label>
+						<textarea class="form-control" name="helpdesk[body]" placeholder="{trans("Enter request contents")}" required></textarea>
+					</div>
+
+					<div class="form-group">
+						<label for="attachments">{trans("Attachments:")}</label>
+						<input class="form-control" type="file" name="files[]" {userpaneltip text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
+					</div>
+
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">{trans("Close")}</button>
+				{if $rights.info.edit_addr || $rights.info.edit_addr_ack || $rights.info.edit_contact || $rights.info.edit_contact_ack}
+					<a class="btn btn-danger" formnovalidate href="javascript:document.helpdesk.submit()" accesskey="S">{trans("Submit")}</a>
+				{/if}
+				<input type="hidden" name="wyslane" value="1">
+			</div>
+		</div>
+	</div>
 </div>
-</form>
-{/box}
 
 
