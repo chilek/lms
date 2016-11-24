@@ -32,6 +32,8 @@ version ?.??.?? (????-??-??):
     if new helpdesk ticket/message/note notifications are sent to author [chilan]
   - improvement: allow to search for customers which are not assigned to any
     customer groups [chilan]
+  - bugfix: taxes were inproperly displayed on invoice for both zero tax and tax free
+    values were present at the same time [chilan]
 
 version 1.11.21 (2016-10-14):
 
