@@ -218,7 +218,7 @@
 		{if $doctype == 'invoices'}
 		{foreach $taxes as $tax}
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
-			{trans("Net value")}
+			{trans("Net value")} {$tax.label}
 		</TD>
 		{if $tax.value}
 		<TD WIDTH="50" CLASS="HEAD" ALIGN="CENTER">
