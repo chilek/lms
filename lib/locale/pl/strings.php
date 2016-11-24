@@ -3532,4 +3532,6 @@ $_LANG['Select first free address'] = 'Wybierz pierwszy dostępny adres';
 
 $_LANG['Selected network is already assigned to customer $a ($b)!'] = 'Wybrana sieć jest już przypisana do klienta $a ($b)!';
 
+$_LANG['- without assigned groups -'] = '- bez przypisanych grup -';
+
 ?>

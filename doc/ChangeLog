@@ -30,6 +30,8 @@ version ?.??.?? (????-??-??):
   - improvement: allow to change number and number plan for edited invoices [chilan]
   - improvement: phpui.helpdesk_author_notify configuration variable controls
     if new helpdesk ticket/message/note notifications are sent to author [chilan]
+  - improvement: allow to search for customers which are not assigned to any
+    customer groups [chilan]
 
 version 1.11.21 (2016-10-14):
 
