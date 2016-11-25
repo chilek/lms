@@ -848,7 +848,8 @@ CREATE TABLE voip_numbers (
     phone varchar(20) NOT NULL,
     number_index smallint,
     UNIQUE(phone),
-    UNIQUE(voip_account_id, number_index)
+    UNIQUE(voip_account_id, number_index),
+    PRIMARY KEY (id)
 );
 
 DROP SEQUENCE IF EXISTS voip_pool_numbers_id_seq;
@@ -2846,6 +2847,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016110800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016112500');
 
 COMMIT;
