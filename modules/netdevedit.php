@@ -756,6 +756,7 @@ switch ($edit) {
 		$SMARTY->display('netdev/netdevedit.html');
 		break;
 	case 'ip':
+		$SMARTY->assign('nodesessions', $LMS->GetNodeSessions($_GET['ip']));
 		$SMARTY->display('netdev/netdevipedit.html');
 		break;
 	case 'addip':

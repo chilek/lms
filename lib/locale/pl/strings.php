@@ -23,6 +23,10 @@
  *
  *  $Id$
  */
+
+$_LANG['Export to JPK format'] = 'Eksport do formatu JPK';
+$_LANG['Division not selected!'] = 'Nie wybrano firmy!';
+
 $_LANG['billing'] = 'biling';
 $_LANG['Billing'] = 'Biling';
 $_LANG['Billings'] = 'Bilingi';
@@ -2863,6 +2867,7 @@ $_LANG['Host should be selected!'] = 'Powinien zostać wybrany host!';
 $_LANG['cash registry administration'] = 'administracja rejestrami kasowymi';
 
 $_LANG['Node Sessions:'] = 'Sesje komputera:';
+$_LANG['Network Device Sessions For Selected IP Address:'] = 'Sesje urządzenia sieciowego dla wybranego adresu IP:';
 $_LANG['(last $a sessions)'] = '(ostatnie $a sesji)';
 $_LANG['Started:'] = 'Rozpoczęto:';
 $_LANG['Finished:'] = 'Zakończono:';
