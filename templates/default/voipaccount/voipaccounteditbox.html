@@ -74,20 +74,14 @@
                             <td>
                                 <div>
                                     {$pool_number_select}
-                                    <span class="ui-icon ui-icon-closethick remove-number lms-ui-visibility-hidden"></span>
+                                    <span class="ui-icon ui-icon-closethick remove-number{if count($voipaccountinfo.phones) < 2} lms-ui-visiblity-hidden{/if}"></span>
                                 </div>
                             </td>
                         </tr>
 
                         {if isset($voipaccountinfo['phones'])}
-                            {assign var=phone_next_index value=1}
-                            {foreach from=$voipaccountinfo['phones'] key=k item=v}
-                                {if $k==0 || $v.phone==''}{continue}{/if}
-
-                                {if $k > $phone_next_index}
-                                    {assign var=phone_next_index value=$k}
-                                {/if}
-
+                            {foreach $voipaccountinfo['phones'] as $k => $v}
+                                {if $v@first || $v.phone==''}{continue}{/if}
                                 <tr class="row">
                                     <td><input type="tel" name="voipaccountedit[phone][{$k}]" value="{$v.phone}" {tip trigger="phone{$k}"}></td>
                                     <td><div>{$pool_number_select} {$remove_number}</div></td>
@@ -259,10 +253,18 @@
             ++$i;
             var phone_number_input = '<input type="tel" name="voipaccountedit[phone]['+$i+']" {tip trigger="phone'+i+'"}>';
             $('#phone_numbers_table').append('<tr class="row"><td>' + phone_number_input + '</td><td><div>' + pool_number_select + ' ' + remove_number + '</div></td></tr>');
+            if ($('#phone_numbers_table .remove-number').length < 2)
+            	$('#phone_numbers_table .remove-number').addClass('lms-ui-visibility-hidden');
+            else
+            	$('#phone_numbers_table .remove-number').removeClass('lms-ui-visibility-hidden');
         });
 
         $( "body" ).on('click', '.remove-number', function() {
             $(this).closest('tr').remove();
+            if ($('#phone_numbers_table .remove-number').length < 2)
+            	$('#phone_numbers_table .remove-number').addClass('lms-ui-visibility-hidden');
+            else
+            	$('#phone_numbers_table .remove-number').removeClass('lms-ui-visibility-hidden');
         });
 
         $( "#phone_numbers_table" ).sortable({

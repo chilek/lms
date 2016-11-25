@@ -66,20 +66,14 @@
                             <td>
                                 <div>
                                     {$pool_number_select}
-                                    <span class="ui-icon ui-icon-closethick remove-number lms-ui-visibility-hidden"></span>
+                                    <span class="ui-icon ui-icon-closethick remove-number{if !isset($voipaccountdata.phone) || empty($voipaccountdata.phone)} lms-ui-visibility-hidden{/if}"></span>
                                 </div>
                             </td>
                         </tr>
 
                         {if isset($voipaccountdata['phone'])}
-                            {assign var=phone_next_index value=1}
-                            {foreach from=$voipaccountdata['phone'] key=k item=phone}
-                                {if $k==0 || $phone==''}{continue}{/if}
-
-                                {if $k > $phone_next_index}
-                                    {assign var=phone_next_index value=$k}
-                                {/if}
-
+                            {foreach $voipaccountdata['phone'] as $k => $phone}
+                                {if $phone@first || $phone==''}{continue}{/if}
                                 <tr class="row">
                                     <td><input type="tel" name="voipaccountdata[phone][{$k}]" value="{$phone}" {tip trigger="phone{$k}"}></td>
                                     <td><div>{$pool_number_select} {$remove_number}</div></td>
@@ -217,10 +211,18 @@
             ++$i;
             var phone_number_input = '<input type="tel" name="voipaccountdata[phone]['+$i+']" {tip trigger="phone'+i+'"}>';
             $('#phone_numbers_table').append('<tr class="row"><td>' + phone_number_input + '</td><td><div>' + pool_number_select + ' ' + remove_number + '</div></td></tr>');
+            if ($('#phone_numbers_table .remove-number').length < 2)
+            	$('#phone_numbers_table .remove-number').addClass('lms-ui-visibility-hidden');
+            else
+            	$('#phone_numbers_table .remove-number').removeClass('lms-ui-visibility-hidden');
         });
 
         $( "body" ).on('click', '.remove-number', function() {
             $(this).closest('tr').remove();
+            if ($('#phone_numbers_table .remove-number').length < 2)
+            	$('#phone_numbers_table .remove-number').addClass('lms-ui-visibility-hidden');
+            else
+            	$('#phone_numbers_table .remove-number').removeClass('lms-ui-visibility-hidden');
         });
 
         $( "#phone_numbers_table" ).sortable({
