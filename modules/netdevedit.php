@@ -362,9 +362,7 @@ switch ($action) {
 		foreach ($nodeipdata['macs'] as $key => $value)
 			$nodeipdata['macs'][$key] = str_replace('-', ':', $value);
 
-		foreach ($nodeipdata as $key => $value)
-			if ($key != 'macs')
-				$nodeipdata[$key] = trim($value);
+		$nodeipdata = trim_rec($nodeipdata);
 
 		if ($nodeipdata['ipaddr'] == '' && empty($nodeipdata['macs']) && $nodeipdata['name'] == '' && $nodeipdata['passwd'] == '') {
 			$SESSION->redirect('?m=netdevedit&action=addip&id=' . $_GET['id']);

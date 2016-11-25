@@ -1132,3 +1132,25 @@ function check_yahoo($im) {
 function check_facebook($im) {
 	return preg_match('/^[.a-z0-9]{5,}$/i', $im);
 }
+
+/*!
+ * \brief Recursive trim function.
+ *
+ * \param $data mixed
+ */
+function trim_rec( $data ) {
+
+    if ( is_array($data) ) {
+        foreach ($data as $k => $v) {
+            if ( is_array($data[$k]) ) {
+                $data[$k] = trim_rec($data[$k]);
+            } else {
+                $data[$k] = trim($data[$k]);
+            }
+        }
+
+        return $data;
+    } else {
+        return trim($data);
+    }
+}
