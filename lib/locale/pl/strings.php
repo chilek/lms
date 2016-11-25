@@ -23,7 +23,6 @@
  *
  *  $Id$
  */
-
 $_LANG['billing'] = 'biling';
 $_LANG['Billing'] = 'Biling';
 $_LANG['Billings'] = 'Bilingi';
