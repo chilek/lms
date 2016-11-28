@@ -1,6 +1,7 @@
 {extends file="layout.html"}
 {block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
 {block name=module_content}
+{$xajax}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
 {block name=netdevipeditbox}
@@ -23,5 +24,8 @@
 {/block}
 {block name=netdevnodes}
 	{include file="netdev/netdevnodes.html"}
+{/block}
+{block name=netdevradiosectors}
+	{include file="netdev/radiosectors.html"}
 {/block}
 {/block}
