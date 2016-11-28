@@ -344,6 +344,7 @@
 		<TD style="width: 99%;">
 			<SELECT SIZE="1" name="g">
 				<OPTION value="" {if !$listdata.customergroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
+				<OPTION value="-1"{if $listdata.customergroup == -1} selected{/if}>{trans("- without assigned groups -")}</OPTION>
 				{section name=customergroups loop=$customergroups}
 				<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:50:"...":true}</OPTION>
 				{/section}
@@ -375,7 +376,9 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-	document.forms['customersearch'].elements['search[customername]'].focus();
+	$(function() {
+		$('form[name="customersearch"] [name="search[customername]"]').focus();
+	});
 //-->
 </SCRIPT>
 {/block}

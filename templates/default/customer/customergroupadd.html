@@ -44,7 +44,9 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['customergroupadd'].elements['customergroupadd[name]'].focus();
+$(function() {
+	$('form[name="customergroupadd"] [name="customergroupadd[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

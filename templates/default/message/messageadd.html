@@ -429,7 +429,9 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['message'].elements['message[sender]'].focus();
+$(function() {
+	$('form[name="message"] [name="message[sender]"]').focus();
+});
 countChars(document.getElementById('smstext'));
 
 document.getElementById('smstext').onmouseout = function() {

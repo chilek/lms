@@ -42,7 +42,9 @@
 </P>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['hostedit'].elements['hostedit[name]'].focus();
+$(function() {
+	$('form[name="hostedit"] [name="hostedit[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

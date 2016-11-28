@@ -450,7 +450,9 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-	document.forms['customeradd'].elements['customeradd[lastname]'].focus();
+	$(function() {
+		$('form[name="customeradd"] [name="customeradd[lastname]"]').focus();
+	});
 	if(document.forms['customeradd'].elements['customeradd[pin]'].value == '') randomize();
 //-->
 </SCRIPT>

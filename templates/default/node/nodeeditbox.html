@@ -394,7 +394,9 @@
 </form>
 <script type="text/javascript">
 <!--
-	document.forms['editnode'].elements['nodeedit[name]'].focus();
+	$(function() {
+		$('form[name="editnode"] [name="nodeedit[name]"]').focus();
+	});
 
 	// ---------------------
 	//  NOTICE ICON UPDATE

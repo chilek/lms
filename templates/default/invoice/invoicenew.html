@@ -407,7 +407,9 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 
 <SCRIPT type="text/javascript">
 <!--
-	document.forms['setcustomer'].elements['invoice[number]'].focus();
+	$(function() {
+		$('form[name="setcustomer"] [name="invoice[number]"]').focus();
+	});
 //-->
 </SCRIPT>
 {/block}

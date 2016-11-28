@@ -83,6 +83,9 @@ if (isset($_POST['nodedata']))
 	if (isset($nodedata['wholenetwork'])) {
 		$nodedata['ipaddr'] = '0.0.0.0';
 		$nodedata['ipaddr_pub'] = '0.0.0.0';
+		$net = $LMS->GetNetworkRecord($nodedata['netid'], 0, 1);
+		if (!empty($net['ownerid']) && !empty($nodedata['ownerid']) && $net['ownerid'] != $nodedata['ownerid'])
+			$error['netid'] = trans('Selected network is already assigned to customer $a ($b)!', $net['customername'], $net['ownerid']);
 	} elseif (!$nodedata['ipaddr'])
 		$error['ipaddr'] = trans('Node IP address is required!');
 	elseif(!check_ip($nodedata['ipaddr']))

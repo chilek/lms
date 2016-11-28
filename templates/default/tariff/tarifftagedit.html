@@ -47,7 +47,11 @@
     </tbody>
 </table>
 <script type="text/javascript">
-    document.forms['tedit'].elements['tarifftag[name]'].focus();
+<!--
+	$(function() {
+		$('form[name="tedit"] [name="tarifftag[name]"]').focus();
+	});
+//-->
 </script>
 {include file="tariff/tarifftagassignments.html"}
 {/block}

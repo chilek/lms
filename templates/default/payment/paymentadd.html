@@ -80,7 +80,9 @@
 </TABLE></FORM>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['paymentadd'].elements['payment[name]'].focus();
+$(function() {
+	$('form[name="paymentadd"] [name="payment[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

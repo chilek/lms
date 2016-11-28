@@ -76,7 +76,9 @@
 </TABLE></FORM></P>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['category'].elements['category[name]'].focus();
+$(function() {
+	$('form[name="category"] [name="category[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

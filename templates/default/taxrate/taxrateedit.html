@@ -74,7 +74,9 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['taxrateedit'].elements['taxrateedit[label]'].focus();
+	$(function() {
+		$('form[name="taxrateedit"] [name="taxrateedit[label]"]').focus();
+	});
 //-->
 </SCRIPT>
 {/block}

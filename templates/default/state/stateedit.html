@@ -41,7 +41,9 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['stateedit'].elements['stateedit[name]'].focus();
+$(function() {
+	$('form[name="stateedit"] [name="stateedit[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

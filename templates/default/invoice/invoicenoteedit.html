@@ -261,7 +261,9 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-	document.forms['setheader'].elements['cnote[number]'].focus();
+	$(function() {
+		$('form[name="setheader"] [name="cnote[number]"]').focus();
+	});
 //-->
 </SCRIPT>
 {/block}

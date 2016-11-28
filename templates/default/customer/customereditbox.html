@@ -459,6 +459,8 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-	document.forms['customeredit'].elements['customerdata[lastname]'].focus();
+	$(function() {
+		$('form[name="customeredit"] [name="customerdata[lastname]"]').focus();
+	});
 //-->
 </SCRIPT>

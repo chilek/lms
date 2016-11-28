@@ -633,7 +633,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             LEFT JOIN (SELECT customerid, (' . $this->db->GroupConcat('contact') . ') AS email
             FROM customercontacts WHERE (type & ' . CONTACT_EMAIL .' = '. CONTACT_EMAIL .') GROUP BY customerid) cc ON cc.customerid = c.id
             LEFT JOIN countries ON (c.countryid = countries.id) '
-            . ($customergroup ? 'LEFT JOIN customerassignments ON (c.id = customerassignments.customerid) ' : '')
+            . ($customergroup ? 'LEFT JOIN (SELECT customerassignments.customerid, COUNT(*) AS gcount
+            	FROM customerassignments '
+            		. ($customergroup > 0 ? ' WHERE customergroupid = ' . intval($customergroup) : '') . '
+            		GROUP BY customerassignments.customerid) ca ON ca.customerid = c.id ' : '')
             . 'LEFT JOIN (SELECT SUM(value) AS value, customerid FROM cash'
             . ($time ? ' WHERE time < ' . $time : '') . '
                 GROUP BY customerid
@@ -713,7 +716,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 . ($network ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id
                 AND (netid = ' . $network . '
                 OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')))' : '')
-                . ($customergroup ? ' AND customergroupid=' . intval($customergroup) : '')
+                . ($customergroup > 0 ? ' AND ca.gcount = 1 ' : '')
+                . ($customergroup == -1 ? ' AND ca.gcount IS NULL ' : '')
                 . ($nodegroup ? ' AND EXISTS (SELECT 1 FROM nodegroupassignments na
                     JOIN vnodes n ON (n.id = na.nodeid)
                     WHERE n.ownerid = c.id AND na.nodegroupid = ' . intval($nodegroup) . ')' : '')

@@ -121,7 +121,9 @@
 
 <SCRIPT type="text/javascript">
 <!--
-document.forms['note'].elements['note[body]'].focus();
+$(function() {
+	$('form[name="note"] [name="note[body]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

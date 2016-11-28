@@ -2863,6 +2863,7 @@ $_LANG['Host should be selected!'] = 'Powinien zostać wybrany host!';
 $_LANG['cash registry administration'] = 'administracja rejestrami kasowymi';
 
 $_LANG['Node Sessions:'] = 'Sesje komputera:';
+$_LANG['Network Device Sessions For Selected IP Address:'] = 'Sesje urządzenia sieciowego dla wybranego adresu IP:';
 $_LANG['(last $a sessions)'] = '(ostatnie $a sesji)';
 $_LANG['Started:'] = 'Rozpoczęto:';
 $_LANG['Finished:'] = 'Zakończono:';
@@ -3529,5 +3530,9 @@ $_LANG['Conversion Pro Forma Invoice $a To Invoice'] = 'Przekształcanie faktury
 $_LANG['Change the format of presentation of the MAC address.'] = 'Zmień format prezentacji adresu MAC.';
 
 $_LANG['Select first free address'] = 'Wybierz pierwszy dostępny adres';
+
+$_LANG['Selected network is already assigned to customer $a ($b)!'] = 'Wybrana sieć jest już przypisana do klienta $a ($b)!';
+
+$_LANG['- without assigned groups -'] = '- bez przypisanych grup -';
 
 ?>

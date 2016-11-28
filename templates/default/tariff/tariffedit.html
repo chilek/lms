@@ -303,9 +303,9 @@
         document.forms['tariff'].elements['tariff[' + elem.id + ']'].style.display = elem.checked ? 'none' : '';
     }
 
-    document.forms['tariff'].elements['tariff[name]'].focus();
-
     $( function() {
+		$('form[name="tariff"] [name="tariff[name]"]').focus();
+
         updateui();
 
         $( "#tariff-type" ).change( function() {

@@ -466,7 +466,9 @@
 <SCRIPT type="text/javascript">
 <!--
 {if !$receipt.selected}
-document.forms['setcustomer'].elements['receipt[regid]'].focus();
+$(function() {
+	$('form[name="setcustomer"] [name="receipt[regid]"]').focus();
+});
 {/if}
 //-->
 </SCRIPT>

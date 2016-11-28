@@ -205,7 +205,9 @@
 </TABLE></FORM></P>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['queue'].elements['queue[name]'].focus();
+$(function() {
+	$('form[name="queue"] [name="queue[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

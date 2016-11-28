@@ -43,7 +43,9 @@
 </P>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['hostadd'].elements['hostadd[name]'].focus();
+$(function() {
+	$('form[name="hostadd"] [name="hostadd[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

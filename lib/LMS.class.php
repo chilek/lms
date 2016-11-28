@@ -2983,6 +2983,10 @@ class LMS
 		if (!empty($sender_name))
 			$from = "$sender_name <$from>";
 
+		if (!isset($which) || empty($which))
+			$which = array(trans('ORIGINAL'));
+		$count = count($which);
+
 		foreach ($docs as $doc) {
 			if ($doc['doctype'] == DOC_DNOTE) {
 				if ($dnote_filetype == 'pdf')
@@ -2998,8 +3002,14 @@ class LMS
 				$invoice = $this->GetInvoiceContent($doc['id']);
 			}
 
-			$invoice['type'] = trans('ORIGINAL');
-			$document->Draw($invoice);
+			$i = 0;
+			foreach ($which as $doctype) {
+				$i++;
+				$invoice['type'] = $doctype;
+				$document->Draw($invoice);
+				if ($i < $count)
+					$document->NewPage();
+			}
 			$res = $document->WriteToString();
 
 			$custemail = (!empty($debug_email) ? $debug_email : $doc['email']);
@@ -3015,6 +3025,7 @@ class LMS
 				'number' => $doc['number'],
 				'template' => $invoice_number,
 				'cdate' => $doc['cdate'] + date('Z'),
+				'customerid' => $doc['customerid'],
 			));
 			$body = preg_replace('/%invoice/', $invoice_number, $body);
 			$body = preg_replace('/%balance/', $this->GetCustomerBalance($doc['customerid']), $body);

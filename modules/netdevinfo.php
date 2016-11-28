@@ -105,6 +105,7 @@ if (! array_key_exists('xjxfun', $_POST)) {                  // xajax was called
 			$netdevauthtype['eap'] = ($authtype & 4);
 		}
 		$SMARTY->assign('nodeipdata', $LMS->GetNode($_GET['ip']));
+		$SMARTY->assign('nodesessions', $LMS->GetNodeSessions($_GET['ip']));
 		$SMARTY->assign('netdevauthtype', $netdevauthtype);
 		$SMARTY->display('netdev/netdevipinfo.html');
 	} else {

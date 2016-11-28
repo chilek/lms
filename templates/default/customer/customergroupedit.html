@@ -56,7 +56,9 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['tedit'].elements['customergroup[name]'].focus();
+$(function() {
+	$('form[name="tedit"] [name="customergroup[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {include file="customer/customergroupassignments.html"}

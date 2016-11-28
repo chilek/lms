@@ -231,7 +231,7 @@ $CUSTOMERCONTACTTYPES = array(
 			'size' => 50,
 			'tip' => trans('Enter bank account (optional)'),
 			'flags' => array(
-				CONTACT_MOBILE => array(
+				CONTACT_INVOICES => array(
 					'label' => $CONTACTTYPES[CONTACT_INVOICES],
 					'tip' => trans('Check if bank account should be visible on invoice'),
 				),

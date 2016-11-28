@@ -37,7 +37,9 @@
 </P>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['invprojectedit'].elements['invprojectedit[name]'].focus();
+$(function() {
+	$('form[name="invprojectedit"] [name="invprojectedit[name]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

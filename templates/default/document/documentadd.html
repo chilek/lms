@@ -222,7 +222,9 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-	document.forms['documentadd'].elements['document[title]'].focus();
+	$(function() {
+		$('form[name="documentadd"] [name="document[title]"]').focus();
+	});
 	//setnumberplans();
 //-->
 </SCRIPT>

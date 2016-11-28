@@ -85,7 +85,9 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['numberplanadd'].elements['numberplanadd[template]'].focus();
+$(function() {
+	$('form[name="numberplanadd"] [name="numberplanadd[template]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

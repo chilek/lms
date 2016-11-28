@@ -187,7 +187,9 @@
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--
-document.forms['setcustomer'].elements['note[cdate]'].focus();
+$(function() {
+	$('form[name="setcustomer"] [name="note[cdate]"]').focus();
+});
 //-->
 </SCRIPT>
 {/block}

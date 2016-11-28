@@ -1,58 +1,56 @@
 {include file="header.html"}
 {if $download || $upload}
-<ol class="breadcrumb" style="margin-bottom: 5px;">
-    <li>{trans("Filter")}</li>
-    <li {if $bar=='hour'}class="active"{/if}><a href="?m=stats&amp;bar=hour">{trans("Last hour")}</a></li>
-    <li {if $bar=='day'}class="active"{/if}><a href="?m=stats&amp;bar=day">{trans("Last day")}</a></li>
-    <li {if $bar=='month'}class="active"{/if}><a href="?m=stats&amp;bar=month">{trans("Last 30 days")}</a></li>
-    <li {if $bar=='year'}class="active"{/if}><a href="?m=stats&amp;bar=year">{trans("Last year")}</a></li>
-    <li {if $bar=='all'}class="active"{/if}><a href="?m=stats&amp;bar=all">{trans("All")}</a></li>
-</ol>
-<div class="row">
-    <div class="col-md-6">
-        {box title="Download"}
-	<div class="table-responsive">
-        <table class="table">
-            {section name=download loop=$download.name}
-            <tr>
-                <td>
-                    <b>{$download.name[download]|truncate:32:"..."}</b>
-                </td>
-                <td>
-                    {img src="redpx.gif" height="16" width=$download.bar[download] style="border-width: 1pt; border-color: #000000;"} {$download.data[download]|string_format:"%.2f"} {$download.unit[download]} ({$download.avg[download]|string_format:"%.2f"} kbit/s) 
-                </td>
-            </tr>
-            {/section}
-        </table>
-	</div>
-        {trans("Total:")} {$download.sum.data|string_format:"%.2f "}{$download.sum.unit} ({$download.avgsum|string_format:"%.2f"}&nbsp;kbit/s)
-        {/box}
-    </div>
-    <div class="col-md-6">
-        {box title="Upload"}
-	<div class="table-responsive">
-        <table class="table">
-            {section name=upload loop=$upload.name}
-            <tr>
-                <td>
-                    <b>{$upload.name[upload]|truncate:32:"..."}</b>
-                </td>
-                <td>
-                    {img src="bluepx.gif" height="16" width=$upload.bar[upload] border="1"} {$upload.data[upload]|string_format:"%.2f"}&nbsp;{$upload.unit[upload]}&nbsp;({$upload.avg[upload]|string_format:"%.2f"}&nbsp;kbit/s) 
-                </td>
-            </tr>
-            {/section}
-        </table>
-	</div>
-        {trans("Total:")} {$upload.sum.data|string_format:"%.2f "}{$upload.sum.unit} ({$upload.avgsum|string_format:"%.2f"}&nbsp;kbit/s)
-        {/box}
-    </div>
+	<ol class="breadcrumb mb-1">
+		<li class="breadcrumb-item">{trans("Filter")}</li>
+		<li class="breadcrumb-item{if $bar=='hour'} active{/if}"><a href="?m=stats&amp;bar=hour">{trans("Last hour")}</a></li>
+		<li class="breadcrumb-item{if $bar=='day'} active{/if}"><a href="?m=stats&amp;bar=day">{trans("Last day")}</a></li>
+		<li class="breadcrumb-item{if $bar=='month'} active{/if}"><a href="?m=stats&amp;bar=month">{trans("Last 30 days")}</a></li>
+		<li class="breadcrumb-item{if $bar=='year'} active{/if}"><a href="?m=stats&amp;bar=year">{trans("Last year")}</a></li>
+		<li class="breadcrumb-item{if $bar=='all'} active{/if}"><a href="?m=stats&amp;bar=all">{trans("All")}</a></li>
+	</ol>
+	<div class="row">
+		<div class="col-md-6">
+			{box title="Download"}
+			<div class="table-responsive">
+				<table class="table">
+					{section name=download loop=$download.name}
+						<tr>
+							<td>
+								<b>{$download.name[download]|truncate:32:"..."}</b>
+							</td>
+							<td>
+								{img src="redpx.gif" height="16" width=$download.bar[download] style="border-width: 1pt; border-color: #000000;"} {$download.data[download]|string_format:"%.2f"} {$download.unit[download]} ({$download.avg[download]|string_format:"%.2f"} kbit/s)
+							</td>
+						</tr>
+					{/section}
+				</table>
+			</div>
+			{trans("Total:")} {$download.sum.data|string_format:"%.2f "}{$download.sum.unit} ({$download.avgsum|string_format:"%.2f"}&nbsp;kbit/s)
+			{/box}
+		</div>
+		<div class="col-md-6">
+			{box title="Upload"}
+			<div class="table-responsive">
+				<table class="table">
+					{section name=upload loop=$upload.name}
+						<tr>
+							<td>
+								<b>{$upload.name[upload]|truncate:32:"..."}</b>
+							</td>
+							<td>
+								{img src="bluepx.gif" height="16" width=$upload.bar[upload] border="1"} {$upload.data[upload]|string_format:"%.2f"}&nbsp;{$upload.unit[upload]}&nbsp;({$upload.avg[upload]|string_format:"%.2f"}&nbsp;kbit/s)
+							</td>
+						</tr>
+					{/section}
+				</table>
+			</div>
+			{trans("Total:")} {$upload.sum.data|string_format:"%.2f "}{$upload.sum.unit} ({$upload.avgsum|string_format:"%.2f"}&nbsp;kbit/s)
+			{/box}
+		</div>
     {else}
-    <div class="col-md-12">
-        {box title="Network Statistics"}
-        <div class="alert alert-danger">{trans("No such data for selected period.")}</div>
-        {/box}
-    </div>
+		{box title="Network Statistics"}
+		<div class="alert alert-danger">{trans("No such data for selected period.")}</div>
+		{/box}
     {/if}
 </div>
 {include file="footer.html"}

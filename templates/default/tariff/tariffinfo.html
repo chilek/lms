@@ -34,7 +34,7 @@
 
     ({trans("night:")}
 
-    {if $val_night}{$val_night|default:0} kbit/s{else}{trans("not defined")}{/if})
+    {if $night}{$night|default:0} kbit/s{else}{trans("not defined")}{/if})
 {/function}
 
 {function user_restrictions}
@@ -291,7 +291,7 @@
 
     <TR>
         <TD WIDTH="100%" COLSPAN="2">
-            <TABLE CLASS="lmsbox-inner">
+            <TABLE CLASS="lmsbox-innerbox">
                 <THEAD>
                 <TR>
                     <TD CLASS="bold">{trans("Customers in Subscription:")}</TD>

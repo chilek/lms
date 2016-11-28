@@ -200,7 +200,9 @@
 </FORM>
 <SCRIPT type="text/javascript">
 <!--
-	document.forms['documentgen'].elements['document[title]'].focus();
+	$(function() {
+		$('form[name="documentgen"] [name="document[title]"]').focus();
+	});
 //-->
 </SCRIPT>
 {/block}

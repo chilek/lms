@@ -92,6 +92,9 @@ if (isset($_POST['nodeedit'])) {
 	if(isset($nodeedit['wholenetwork'])) {
 		$nodeedit['ipaddr'] = '0.0.0.0';
 		$nodeedit['ipaddr_pub'] = '0.0.0.0';
+		$net = $LMS->GetNetworkRecord($nodeedit['netid'], 0, 1);
+		if (!empty($net['ownerid']) && !empty($nodeedit['ownerid']) && $net['ownerid'] != $nodeedit['ownerid'])
+			$error['netid'] = trans('Selected network is already assigned to customer $a ($b)!', $net['customername'], $net['ownerid']);
 	} elseif (check_ip($nodeedit['ipaddr'])) {
 		if ($LMS->IsIPValid($nodeedit['ipaddr'])) {
 			if (empty($nodeedit['netid']))
