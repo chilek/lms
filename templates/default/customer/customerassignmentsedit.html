@@ -406,7 +406,7 @@
 												{foreach $customervoipaccs.accounts as $acc}
 													{foreach $acc.phones as $p}
                                                         <label>
-															<input type="checkbox" name="assignment[phones][]" value="{$p.id}" {if in_array($p.id, $assignment.phones)} checked{/if}>
+															<input type="checkbox" name="assignment[phones][]" value="{$p.id}" {if !empty($assignment.phones) && in_array($p.id, $assignment.phones)} checked{/if}>
 															<span class="bold">{$p.phone}</span> / {$acc.login}
 														</label>
 														<br>
