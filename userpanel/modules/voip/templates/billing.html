@@ -1,8 +1,10 @@
 {include file="header.html"}
 
-
-
 <STYLE>
+	.margin {
+		padding: 50px;
+		font-weight: bold;
+	}
     .help-tip {
         font-weight: bold;
         font-size: 1.1em;
@@ -97,7 +99,7 @@
     }
 
     .flex-container {
-         padding: 0;
+        padding: 0;
         margin: 0;
         list-style: none;
 
@@ -130,12 +132,13 @@
 </STYLE>
 
 <DIV ID="tabs">
+	{if $user_accounts}
     <UL>
         <LI><A HREF="#tab-billings">{trans("Billings")}</A></LI>
         <LI><A HREF="#tab-settings">{trans("Settings")}</A></LI>
     </UL>
 
-      <DIV ID="tab-billings">
+    <DIV ID="tab-billings">
         <TABLE WIDTH="100%" cellpadding="10" ALIGN="center">
             <TR>
                 <TD>
@@ -351,9 +354,18 @@
             </tbody>
         </table>
     </DIV>
+    {else}
+
+    <div class="text-center margin">
+        {trans("You don't have any VoIP account.")}
+    </div>
+
+    {/if}
+
 </DIV>
 <BR><BR>
 
+{if $user_accounts}
 <script>
     $( function() {
         {if count($user_accounts) == 1}
@@ -453,5 +465,6 @@
         }
     } );
 </script>
+{/if}
 
 {include file="footer.html"}
