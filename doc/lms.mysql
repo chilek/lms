@@ -29,6 +29,7 @@ DROP TABLE IF EXISTS voip_prefix_groups;
 DROP TABLE IF EXISTS voip_rule_groups;
 DROP TABLE IF EXISTS voip_rule_states;
 DROP TABLE IF EXISTS voip_pool_numbers;
+DROP TABLE IF EXISTS voip_number_assignments;
 
 DROP TABLE IF EXISTS up_info_changes;
 DROP TABLE IF EXISTS up_help;
@@ -1282,6 +1283,7 @@ CREATE TABLE voip_numbers (
     phone varchar(20) NOT NULL,
     number_index smallint NULL,
     FOREIGN KEY (voip_account_id) REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (tariff_id)        REFERENCES tariffs (id)      ON DELETE SET NULL ON UPDATE CASCADE;
     UNIQUE(phone),
     UNIQUE(voip_account_id, number_index),
     PRIMARY KEY (id)
@@ -1296,6 +1298,15 @@ CREATE TABLE voip_pool_numbers (
     description text,
     type smallint NOT NULL DEFAULT 1,
 	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE voip_number_assignments (
+    id            int(11) NOT NULL auto_increment,
+    number_id     int(11) NOT NULL,
+    assignment_id int(11) NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (number_id)     REFERENCES voip_numbers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (assignment_id) REFERENCES assignments  (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2727,4 +2738,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016112500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016112800');

@@ -9,37 +9,7 @@
 	{foreach $tariffs as $tariff}
 	tariffTypes[{$tariff.id}] = {$tariff.tarifftype};
 	{/foreach}
-
-	function set_tariff() {
-		var val = document.forms['assignment'].elements['assignment[tariffid]'].value;
-
-		{if $promotionschemas}
-		document.getElementById('a_schema').style.display       = val == -2 ? '' : 'none';
-		document.getElementById('a_schematariff').style.display = val == -2 ? '' : 'none';
-		{/if}
-
-		document.getElementById('a_tax').style.display       = val == '' ? ''     : 'none';
-		document.getElementById('a_value').style.display     = val == '' ? ''     : 'none';
-		document.getElementById('a_productid').style.display = val == '' ? ''     : 'none';
-		document.getElementById('a_name').style.display      = val == '' ? ''     : 'none';
-        document.getElementById('a_attribute').style.display = val == '' ? 'none' : '';
-		document.getElementById('a_options').style.display   = val == -1 ? 'none' : '';
-		document.getElementById('a_day').style.display       = val == -1 ? 'none' : '';
-
-		var a_nodes = document.getElementById('a_nodes');
-		var a_netdevnodes = document.getElementById('a_netdevnodes');
-
-		if (a_nodes !== null)
-			document.getElementById('a_nodes').style.display = val == -1 ? 'none' : '';
-
-		if (a_netdevnodes !== null)
-			document.getElementById('a_netdevnodes').style.display = val == -1 ? 'none' : '';
-
-		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-		document.getElementById('a_discount').style.display = val < -1 ? 'none' : '';
-		{/if}
-	}
-
+	
 	function assignment_submit() {
 		{if ConfigHelper::checkConfig('phpui.node_assignment_warning')}
 		var tariffid = parseInt($('form[name="assignment"] select[name="assignment[tariffid]"]').val());
@@ -60,45 +30,13 @@
 
 		if (tariffTypes[tariffid] == {$smarty.const.TARIFF_INTERNET} &&
 			!$('#nodeslist :checked:not([name="allbox"])').length &&
-			!confirm('{trans("No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?")}')) {
+			!confirm('{trans("No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?")}')){
 			return false;
 		}
 		{/if}
 
 		document.assignment.submit();
 	}
-
-{if $promotionschemas}
-/*
-	function set_schema()
-	{
-		var sid = document.forms['assignment'].elements['assignment[schemaid]'].value,
-		assignments = { {strip}
-			{foreach name=fps from=$promotionschemas item=schema}
-				{if $smarty.foreach.fps.index} , {/if}"{$schema.id}":[{$schema.tariffs}]
-			{/foreach}
-		{/strip} },
-		
-		select   = document.forms['assignment'].elements['assignment[stariffid]'],
-		t_select = document.forms['assignment'].elements['assignment[tariffid]'],
-		options  = t_select.getElementsByTagName('OPTION'),
-		selected = select.value
-		, i, len;
-
-		// remove old options
-		select.innerHTML = '';
-		
-		// copy options from t_select element
-		for (i=0, len=options.length; i<len; i++) {
-			if (inArray(assignments[sid], options[i].value)) {
-				select.appendChild(options[i].cloneNode(true));
-			}
-	    }
-
-		select.value = selected;
-	}
-	*/
-{/if}
 //-->
 </SCRIPT>
 
@@ -120,20 +58,21 @@
 				{trans("Type")}/{trans("Tariff")}:
 			</TD>
 			<TD>
-				<SELECT size="1" name="assignment[tariffid]" {tip text="Select liability type" trigger="tariffid"} onchange="set_tariff();">
-					<OPTION value=""{if !$assignment.tariffid} SELECTED{/if}>- {trans("tariffless liability")} -</OPTION>
-					<OPTION value="-1"{if $assignment.tariffid == -1} SELECTED{/if}>{trans("- all liabilities suspended -")}</OPTION>
+				<input type="hidden" value="" name="assignment[tarifftype]" id="tarifftype">
+				<select id="tariff_select" size="1" name="assignment[tariffid]" {tip text="Select liability type" trigger="tariffid"}>
+					<option value=""   data-tarifftype="0" {if !$assignment.tariffid} selected{/if}>- {trans("tariffless liability")} -</option>
+					<option value="-1" data-tarifftype="0" {if $assignment.tariffid == -1} selected{/if}>{trans("- all liabilities suspended -")}</option>
 
 					{if $promotionschemas}
-						<OPTION value="-2"{if $assignment.tariffid == -2} SELECTED{/if}>- {trans("per promotion schema")} -</OPTION>
+						<option value="-2" data-tarifftype="0" {if $assignment.tariffid == -2} selected{/if}>- {trans("per promotion schema")} -</option>
 					{/if}
 	
 					{foreach $tariffs as $tariff}
-						<OPTION value="{$tariff.id}"{if $tariff.id==$assignment.tariffid} selected{/if}>
-						{$tariff.name} ({if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{$tariff.value|money_format}, {/if}{if $tariff.upceil || $tariff.downceil}{$tariff.downceil}/{$tariff.upceil} kbit/s{/if})
-						</OPTION>
+						<option value="{$tariff.id}" data-tarifftype="{$tariff.tarifftype}" {if $tariff.id==$assignment.tariffid} selected{/if}>
+						{$tariff.name} ({if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{$tariff.value|money_format}{/if}{if $tariff.upceil || $tariff.downceil}, {$tariff.downceil}/{$tariff.upceil} kbit/s{/if})
+						</option>
 					{/foreach}
-				</SELECT>
+				</select>
 			</TD>
 		</TR>
     </THEAD>
@@ -166,23 +105,13 @@
 			<TD></TD>
 			<TD></TD>
 			<TD>
-				<!--
-				<SELECT size="1" name="assignment[stariffid]" {tip text="Select subscription" trigger="stariffid"}>
-					{foreach $tariffs as $tariff}
-					<OPTION value="{$tariff.id}"{if $tariff.id==$assignment.stariffid} selected{/if}>
-					{$tariff.name} ({$tariff.value|money_format}{if $tariff.upceil || $tariff.downceil}, {$tariff.downceil}/{$tariff.upceil} kbit/s{/if})
-					</OPTION>
-					{/foreach}
-				</SELECT>
-				-->
-				
 				{foreach $promotions as $p}
                 	{foreach $p as $k=>$items}
                     	<table id="{$k}" class="promotionstable">
                             {if isset($items.single)}
                                 {foreach $items.single as $v}
                                     {if $v.optional == 1}
-                                        <tr><td><label><input type="checkbox" name="assignment[stariffid][]" value="{$v.tariffid}">{$v.tariff}</label></td></tr>
+                                        <tr><td><label><input type="checkbox" name="assignment[stariffid][]" value="{$v.tariffid}"> {$v.tariff}</label></td></tr>
                                     {else}
                                         <tr>
                                             <td class="blend">
@@ -464,6 +393,28 @@
 											</td>
 										</tr>
 										{/if}
+										
+										{if $customervoipaccs}
+										<tr id="a_phones">
+											<td>
+												<img src="img/voip.gif" alt="">
+											</td>
+											<td class="bold">
+												{trans("Phones:")}
+											</td>
+											<td class="nobr" id="nodeslist">
+												{foreach $customervoipaccs.accounts as $acc}
+													{foreach $acc.phones as $p}
+                                                        <label>
+															<input type="checkbox" name="assignment[phones][]" value="{$p.id}" {if in_array($p.id, $assignment.phones)} checked{/if}>
+															<span class="bold">{$p.phone}</span> / {$acc.login}
+														</label>
+														<br>
+													{/foreach}
+												{/foreach}
+											</td>
+										</tr>
+										{/if}
 
 										{if count($customernodes) || count($customernetdevnodes)}
 										<tr>
@@ -499,8 +450,46 @@
 {include file="customer/customerassignments.html"}
 <SCRIPT type="text/javascript">
 <!--
-	set_tariff();
-	
+    $( '#tariff_select' ).change( function() {
+    	var tarifftype = $(this).find(':selected').attr('data-tarifftype');
+    	var val = $(this).val();
+    	
+    	$('#tarifftype').val( tarifftype );
+
+		{if $promotionschemas}
+		document.getElementById('a_schema').style.display       = val == -2 ? '' : 'none';
+		document.getElementById('a_schematariff').style.display = val == -2 ? '' : 'none';
+		{/if}
+
+		document.getElementById('a_tax').style.display       = val == '' ? ''     : 'none';
+		document.getElementById('a_value').style.display     = val == '' ? ''     : 'none';
+		document.getElementById('a_productid').style.display = val == '' ? ''     : 'none';
+		document.getElementById('a_name').style.display      = val == '' ? ''     : 'none';
+        document.getElementById('a_attribute').style.display = val == '' ? 'none' : '';
+		document.getElementById('a_options').style.display   = val == -1 ? 'none' : '';
+		document.getElementById('a_day').style.display       = val == -1 ? 'none' : '';
+
+		if (tarifftype == {$smarty.const.TARIFF_PHONE}) {
+			$('#a_phones'     ).show();
+			$('#a_nodes'      ).hide();
+			$('#a_netdevnodes').hide();
+		} else {
+			$('#a_phones').hide();
+			
+			if (val == -1) {
+				$('#a_nodes').hide();
+				$('#a_netdevnodes').hide();
+			} else {
+				$('#a_nodes').show();
+				$('#a_netdevnodes').show();
+			}
+		}
+
+		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+		document.getElementById('a_discount').style.display = val < -1 ? 'none' : '';
+		{/if}
+    });
+
 	function updatePromotionsTable() {
 		$.each( $( '.promotionstable' ), function() {
 			$( this ).css('display', 'none');
@@ -526,7 +515,9 @@
 			}
 		});
 	});
+	
 	$( '#promotionselect' ).trigger('change');
+	$( '#tariff_select'   ).trigger('change');
 //-->
 </SCRIPT>
 {/block}
