@@ -35,5 +35,6 @@ $_LANG['Select account'] = 'Wybierz konto';
 $_LANG['Assigned phones'] = 'Przypisane numery';
 $_LANG["You can turn on/off record of your phone calls. Recordings can listen in 'billings' tab."] = "Możesz włączyć/wyłączyć nagrywanie swoich rozmów telefonicznych. Nagrania można odsłuchać w zakładce 'bilingi'.";
 $_LANG['Change indexes for phones assigned to your account.'] = 'Zmiana indeksów dla numerów telefonicznych przypisanych do Twojego konta.';
+$_LANG["You don't have any VoIP account."] = 'Nie posiadasz kont VoIP.';
 
 ?>
