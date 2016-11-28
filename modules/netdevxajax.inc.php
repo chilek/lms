@@ -371,11 +371,41 @@ function getRadioSectorsForNetdev($callback_name, $devid, $technology = 0) {
 	return $result;
 }
 
+function getFirstFreeAddress($netid, $elemid) {
+	global $LMS;
+
+	$DB = LMSDB::getInstance();
+
+	$result = new xajaxResponse();
+
+	$reservedaddresses = intval(ConfigHelper::getConfig('phpui.first_reserved_addresses', 0, true));
+	$net = $LMS->GetNetworkRecord($netid);
+	$ip = '';
+
+	foreach ($net['nodes']['id'] as $idx => $nodeid) {
+		if ($idx < $reservedaddresses)
+			continue;
+		if ($nodeid) {
+			$firstnodeid = $idx;
+			$ip = '';
+		}
+		if (!$nodeid && !isset($net['nodes']['name'][$idx]) && empty($ip)) {
+			$ip = $net['nodes']['address'][$idx];
+			if (isset($firstnodeid))
+				break;
+		}
+	}
+	if (!empty($ip))
+		$result->assign($elemid, 'value', $ip);
+
+	return $result;
+}
+
 $LMS->InitXajax();
 $LMS->RegisterXajaxFunction(array(
 	'getManagementUrls','addManagementUrl', 'delManagementUrl', 'updateManagementUrl',
 	'getRadioSectors', 'addRadioSector', 'delRadioSector', 'updateRadioSector',
-	'getRadioSectorsForNetdev',
+	'getRadioSectorsForNetdev', 'getFirstFreeAddress'
 ));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 

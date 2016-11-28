@@ -51,11 +51,26 @@
 			<a href="javascript: void(0);" onClick="return ipchoosewin({
 					ipelem: document.editipaddr['ipadd[ipaddr]'],
 					netelem: document.editipaddr['ipadd[netid]'],
-					netid: 0,
+					ip: document.editipaddr['ipadd[ipaddr]'].value,
+					netid: document.editipaddr['ipadd[netid]'].value,
 					device: {$netdevinfo.id}
 				});" {tip text="Click to select IP from the list"}>&raquo;&raquo;&raquo;</A>
+			<br>
+			<a href="#" id="selectfirstfreeaddress">{trans("Select first free address")}</a>
 		</TD>
 	</TR>
+	<script type="text/javascript">
+	<!--
+		$(function() {
+			$('#selectfirstfreeaddress').click(function() {
+				var netid = $('[name="ipadd[netid]"]').val();
+				if (netid == 0)
+					return;
+				xajax_getFirstFreeAddress(netid, $('[name="ipadd[ipaddr]"]').uniqueId().attr('id'));
+			});
+		});
+	//-->
+	</script>
 	{if ConfigHelper::checkConfig('phpui.public_ip')}
 	<TR>
 		<TD WIDTH="1%">
