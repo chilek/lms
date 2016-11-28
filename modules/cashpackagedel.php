@@ -53,14 +53,15 @@ elseif ($_GET['is_sure'] != 1) {
 				$importids[] = $import['id'];
 			}
 			$cash = $DB->GetAll('SELECT id, customerid, docid FROM cash WHERE importid IN (' . implode(',', $importids) . ')');
-			foreach ($cash as $item) {
-				$args = array(
-					SYSLOG::RES_CASH => $item['id'],
-					SYSLOG::RES_CUST => $item['customerid'],
-					SYSLOG::RES_DOC => $item['docid'],
-				);
-				$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
-			}
+			if (!empty($cash))
+				foreach ($cash as $item) {
+					$args = array(
+						SYSLOG::RES_CASH => $item['id'],
+						SYSLOG::RES_CUST => $item['customerid'],
+						SYSLOG::RES_DOC => $item['docid'],
+					);
+					$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
+				}
 			$userid = $DB->GetOne('SELECT userid FROM sourcefiles WHERE id = ?', array($sourcefileid));
 			$args = array(
 				SYSLOG::RES_SOURCEFILE => $sourcefileid,
