@@ -459,14 +459,20 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             WHERE ownerid=?
             ORDER BY login ASC', array($id)
         );
+        
         if ($result['accounts']) {
+        	foreach ($result['accounts'] as $k=>$v) {
+	            $result['accounts'][$k]['phones'] = $this->db->GetAll('SELECT * FROM voip_numbers WHERE voip_account_id = ?', array($v['id']) );
+           	}
+        
             $result['total'] = count($result['accounts']);
         }
+
         return $result;
     }
 
     /**
-     * Returns VoIP billings.
+     * Returns VoIP billing list.
      *
      * @param  array $p      Array with parameters
      * @return array $result Array with billings

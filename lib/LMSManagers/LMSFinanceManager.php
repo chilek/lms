@@ -45,19 +45,24 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         $now = mktime(0, 0, 0, date('n'), date('d'), date('Y'));
 
-        if ($assignments = $this->db->GetAll('SELECT a.id AS id, a.tariffid,
-			a.customerid, a.period, a.at, a.suspended, a.invoice, a.settlement,
-			a.datefrom, a.dateto, a.pdiscount, a.vdiscount, a.attribute, a.liabilityid,
-			t.uprate, t.upceil, t.downceil, t.downrate,
-			(CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) AS value,
-			(CASE WHEN t.name IS NULL THEN l.name ELSE t.name END) AS name
-			FROM assignments a
-			LEFT JOIN tariffs t ON (a.tariffid = t.id)
-			LEFT JOIN liabilities l ON (a.liabilityid = l.id)
-			WHERE a.customerid=? '
-                . (!$show_expired ? 'AND (a.dateto > ' . $now . ' OR a.dateto = 0)
-			    AND (a.at >= ' . $now . ' OR a.at < 531)' : '')
-                . ' ORDER BY a.datefrom, t.name, value', array($id))) {
+        $assignments = $this->db->GetAll('SELECT
+                                            a.id AS id, a.tariffid, a.customerid, a.period,
+                                            a.at, a.suspended, a.invoice, a.settlement,
+                                            a.datefrom, a.dateto, a.pdiscount, a.vdiscount,
+                                            a.attribute, a.liabilityid, t.uprate, t.upceil,
+                                            t.downceil, t.downrate,
+                                            (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) AS value,
+                                            (CASE WHEN t.name IS NULL THEN l.name ELSE t.name END) AS name
+                                          FROM
+                                            assignments a
+                                            LEFT JOIN tariffs t     ON (a.tariffid = t.id)
+                                            LEFT JOIN liabilities l ON (a.liabilityid = l.id)
+                                          WHERE a.customerid=? '
+                                            . (!$show_expired ? 'AND (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531)' : '') . '
+                                          ORDER BY
+                                            a.datefrom, t.name, value', array($id));
+
+        if ($assignments) {
             foreach ($assignments as $idx => $row) {
                 switch ($row['period']) {
                     case DISPOSABLE:
@@ -97,9 +102,21 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $assignments[$idx] = $row;
 
                 // assigned nodes
-                $assignments[$idx]['nodes'] = $this->db->GetAll('SELECT vn.name, vn.id, vn.location, nd.name as netdev_name, nd.ownerid as netdev_ownerid FROM nodeassignments, vnodes vn
-                			LEFT JOIN netdevices nd ON vn.netdev = nd.id
-						    WHERE nodeid = vn.id AND assignmentid = ?', array($row['id']));
+                $assignments[$idx]['nodes'] = $this->db->GetAll('SELECT vn.name, vn.id, vn.location, nd.name as netdev_name,
+                                                                   nd.ownerid as netdev_ownerid
+                                                                 FROM
+                                                                   nodeassignments, vnodes vn
+                                                                   LEFT JOIN netdevices nd ON vn.netdev = nd.id
+                                                                 WHERE
+                                                                   nodeid = vn.id AND
+                                                                   assignmentid = ?', array($row['id']));
+
+                $assignments[$idx]['phones'] = $this->db->GetAllByKey('SELECT vn.phone
+                                                                       FROM
+                                                                         voip_number_assignments vna
+                                                                         LEFT JOIN voip_numbers vn ON vna.number_id = vn.id
+                                                                       WHERE
+                                                                         assignment_id = ?', 'phone', array($row['id']));
 
                 $assignments[$idx]['discounted_value'] = (((100 - $row['pdiscount']) * $row['value']) / 100) - $row['vdiscount'];
 
@@ -473,7 +490,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 }
             }
         }
-           //die();
+
         return $result;
     }
 

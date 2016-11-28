@@ -76,7 +76,14 @@
 						{else}
 							{$a.name}
 						{/if}
-						{if $a.nodes}({foreach $a.nodes as $v}{$v.name}{if !empty($v.netdev_name) && $v.netdev_ownerid == $customerinfo.id} / {$v.netdev_name}{/if}{if !$v@last}, {/if}{/foreach}){/if}
+
+						{if $a.nodes}
+							({foreach $a.nodes as $v}{$v.name}{if !empty($v.netdev_name) && $v.netdev_ownerid == $customerinfo.id} / {$v.netdev_name}{/if}{if !$v@last}, {/if}{/foreach})
+						{/if}
+
+						{if $a.phones}
+							({foreach $a.phones as $v}{trans("phone:")} {$v.phone}{if !$v@last}, {/if}{/foreach})
+						{/if}
 					</TD>
 					<TD class="text-right nobr">
 						{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{$a.value|money_format}{/if}

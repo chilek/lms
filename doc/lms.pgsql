@@ -847,6 +847,8 @@ CREATE TABLE voip_numbers (
         REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
     phone varchar(20) NOT NULL,
     number_index smallint,
+    tariff_id integer NULL
+        REFERENCES voip_numbers (id) ON DELETE SET NULL ON UPDATE CASCADE,
     UNIQUE(phone),
     UNIQUE(voip_account_id, number_index),
     PRIMARY KEY (id)
@@ -876,6 +878,16 @@ CREATE TABLE voip_emergency_numbers (
 	UNIQUE (location_borough, number)
 );
 CREATE INDEX voip_emergency_numbers_number_idx ON voip_emergency_numbers (number);
+
+DROP SEQUENCE IF EXISTS voip_number_assignments_id_seq;
+CREATE SEQUENCE voip_number_assignments_id_seq;
+DROP TABLE IF EXISTS voip_number_assignments CASCADE;
+CREATE TABLE voip_number_assignments (
+    id            integer DEFAULT nextval('voip_number_assignments_id_seq'::text) NOT NULL,
+    number_id     integer NOT NULL REFERENCES voip_numbers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    assignment_id integer NOT NULL REFERENCES assignments  (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (id)
+);
 
 /* --------------------------------------------------------
   Structure of table "tariffs"
@@ -2847,6 +2859,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016112500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016112800');
 
 COMMIT;

@@ -378,6 +378,8 @@ $query = 'SELECT
 			       FROM
 			          voip_cdr vc LEFT JOIN voipaccounts va ON vc.callervoipaccountid = va.id
 			       WHERE
+			          a.id in (SELECT assignment_id FROM voip_number_assignments vna
+                               LEFT JOIN voip_numbers vn ON vna.number_id = vn.id WHERE vn.phone = vc.caller) AND
 			          va.ownerid = a.customerid AND
 			          vc.call_start_time >= (CASE a.period
 				                               WHEN " . YEARLY     . ' THEN ' . strtotime("-1 year"  ,$time) . '

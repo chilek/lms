@@ -274,11 +274,18 @@ if (isset($_POST['assignment'])) {
 					continue;
 
 			    $copy_a['promotiontariffid'] = $v;
-				$LMS->AddAssignment($copy_a);
+				$tariffid = $LMS->AddAssignment($copy_a);
 			}
 		} else {
 			$LMS->AddAssignment($a);
 		}
+
+        if ($a['tarifftype'] == TARIFF_PHONE && !empty($a['phones'])) {
+            $tariffid = $tariffid[0];
+
+            foreach($a['phones'] as $p)
+                $DB->Execute('INSERT INTO voip_number_assignments (number_id, assignment_id) VALUES (?,?)', array($p, $tariffid));
+        }
 
 		$DB->CommitTrans();
 
@@ -376,6 +383,7 @@ if (!empty($tmp_promo_list)) {
 $SMARTY->assign('assignment'          , $a);
 $SMARTY->assign('customernodes'       , $customernodes);
 $SMARTY->assign('customernetdevnodes' , $LMS->getCustomerNetDevNodes($customer['id']));
+$SMARTY->assign('customervoipaccs'    , $LMS->getCustomerVoipAccounts($customer['id']));
 $SMARTY->assign('promotionschemanames', $schemas_only_names);
 $SMARTY->assign('promotionschemas'    , $schemas);
 $SMARTY->assign('promotions'          , $promotions);
