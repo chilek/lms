@@ -39,7 +39,7 @@ elseif ($_GET['is_sure'] != 1) {
 	$DB->BeginTrans();
 
 	if ($SYSLOG) {
-		$imports = $DB->GetCol('SELECT id, customerid, sourceid FROM cashimport WHERE sourcefileid = ?', array($sourcefileid));
+		$imports = $DB->GetAll('SELECT id, customerid, sourceid FROM cashimport WHERE sourcefileid = ?', array($sourcefileid));
 		if (!empty($imports)) {
 			$importids = array();
 			foreach ($imports as $import) {
