@@ -1,6 +1,7 @@
 {extends file="layout.html"}
 {block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
 {block name=module_content}
+{$xajax}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -32,6 +33,11 @@
 	<TR>
 		<TD WIDTH="100%">
 			{include file="netdev/netdevnodes.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%">
+			{include file="netdev/radiosectors.html"}
 		</TD>
 	</TR>
 </TABLE>

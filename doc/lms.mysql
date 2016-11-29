@@ -1234,81 +1234,6 @@ CREATE TABLE voip_tariffs (
     PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
-CREATE TABLE voip_cdr (
-	id int(11) AUTO_INCREMENT,
-	caller              varchar(20)   NOT NULL,
-	callee              varchar(20)   NOT NULL,
-	call_start_time     int(11)       NOT NULL,
-	time_start_to_end   int(11)       NOT NULL,
-	time_answer_to_end  int(11)       NOT NULL,
-	price               decimal(12,5) NOT NULL,
-	status              smallint      NOT NULL,
-	type                smallint      NOT NULL,
-	callervoipaccountid int(11)       NULL,
-	calleevoipaccountid int(11)       NULL,
-	caller_flags        smallint      NOT NULL DEFAULT '0',
-	callee_flags        smallint      NOT NULL DEFAULT '0',
-	caller_prefix_group varchar(100)  NULL,
-	callee_prefix_group varchar(100)  NULL,
-	uniqueid            varchar(20)   NOT NULL,
-	PRIMARY KEY (id),
-	UNIQUE KEY (uniqueid),
-	FOREIGN KEY (callervoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
-	FOREIGN KEY (calleevoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-CREATE TABLE voip_price_groups (
-    id              int(11)       NOT NULL AUTO_INCREMENT,
-    voip_tariff_id  int(11)       NOT NULL,
-    prefix_group_id int(11)       NOT NULL,
-    price           decimal(12,5) DEFAULT 0 NOT NULL,
-    unitsize        smallint      DEFAULT 0 NOT NULL,
-    FOREIGN KEY (voip_tariff_id)  REFERENCES voip_tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (prefix_group_id) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-CREATE TABLE voip_emergency_numbers (
-	location_borough int(11) NOT NULL,
-	number int(11) NOT NULL,
-	fullnumber varchar(20) NOT NULL,
-	INDEX voip_emergency_numbers_number_idx (number),
-	UNIQUE KEY number (location_borough, number),
-	FOREIGN KEY (location_borough) REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-CREATE TABLE voip_numbers (
-    id int(11) AUTO_INCREMENT,
-    voip_account_id int(11) NOT NULL,
-    phone varchar(20) NOT NULL,
-    number_index smallint NULL,
-    FOREIGN KEY (voip_account_id) REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (tariff_id)        REFERENCES tariffs (id)      ON DELETE SET NULL ON UPDATE CASCADE;
-    UNIQUE(phone),
-    UNIQUE(voip_account_id, number_index),
-    PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-CREATE TABLE voip_pool_numbers (
-    id int(11) NOT NULL AUTO_INCREMENT ,
-    disabled smallint DEFAULT 0,
-    name varchar(30) NOT NULL,
-    poolstart varchar(20) NOT NULL,
-    poolend varchar(20) NOT NULL,
-    description text,
-    type smallint NOT NULL DEFAULT 1,
-	PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-CREATE TABLE voip_number_assignments (
-    id            int(11) NOT NULL auto_increment,
-    number_id     int(11) NOT NULL,
-    assignment_id int(11) NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (number_id)     REFERENCES voip_numbers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (assignment_id) REFERENCES assignments  (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
 # --------------------------------------------------------
 #
 # Structure of table tariffs
@@ -1357,6 +1282,82 @@ CREATE TABLE tariffs (
   FOREIGN KEY (numberplanid)        REFERENCES numberplans  (id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (voip_tariff_id)      REFERENCES voip_tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rules   (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE voip_cdr (
+	id int(11) AUTO_INCREMENT,
+	caller              varchar(20)   NOT NULL,
+	callee              varchar(20)   NOT NULL,
+	call_start_time     int(11)       NOT NULL,
+	time_start_to_end   int(11)       NOT NULL,
+	time_answer_to_end  int(11)       NOT NULL,
+	price               decimal(12,5) NOT NULL,
+	status              smallint      NOT NULL,
+	type                smallint      NOT NULL,
+	callervoipaccountid int(11)       NULL,
+	calleevoipaccountid int(11)       NULL,
+	caller_flags        smallint      NOT NULL DEFAULT '0',
+	callee_flags        smallint      NOT NULL DEFAULT '0',
+	caller_prefix_group varchar(100)  NULL,
+	callee_prefix_group varchar(100)  NULL,
+	uniqueid            varchar(20)   NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE KEY (uniqueid),
+	FOREIGN KEY (callervoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	FOREIGN KEY (calleevoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE voip_price_groups (
+    id              int(11)       NOT NULL AUTO_INCREMENT,
+    voip_tariff_id  int(11)       NOT NULL,
+    prefix_group_id int(11)       NOT NULL,
+    price           decimal(12,5) DEFAULT 0 NOT NULL,
+    unitsize        smallint      DEFAULT 0 NOT NULL,
+    FOREIGN KEY (voip_tariff_id)  REFERENCES voip_tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (prefix_group_id) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE voip_emergency_numbers (
+	location_borough int(11) NOT NULL,
+	number int(11) NOT NULL,
+	fullnumber varchar(20) NOT NULL,
+	INDEX voip_emergency_numbers_number_idx (number),
+	UNIQUE KEY number (location_borough, number),
+	FOREIGN KEY (location_borough) REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE voip_numbers (
+    id int(11) AUTO_INCREMENT,
+    voip_account_id int(11) NOT NULL,
+    phone varchar(20) NOT NULL,
+    number_index smallint NULL,
+    tariff_id int(11),
+    UNIQUE(phone),
+    UNIQUE(voip_account_id, number_index),
+    FOREIGN KEY (voip_account_id) REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (tariff_id)       REFERENCES tariffs (id)      ON DELETE SET NULL ON UPDATE CASCADE,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE voip_pool_numbers (
+    id int(11) NOT NULL AUTO_INCREMENT ,
+    disabled smallint DEFAULT 0,
+    name varchar(30) NOT NULL,
+    poolstart varchar(20) NOT NULL,
+    poolend varchar(20) NOT NULL,
+    description text,
+    type smallint NOT NULL DEFAULT 1,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE voip_number_assignments (
+    id            int(11) NOT NULL auto_increment,
+    number_id     int(11) NOT NULL,
+    assignment_id int(11) NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (number_id)     REFERENCES voip_numbers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (assignment_id) REFERENCES assignments  (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------

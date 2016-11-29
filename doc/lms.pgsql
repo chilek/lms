@@ -798,97 +798,6 @@ CREATE TABLE voip_tariffs (
     PRIMARY KEY (id)
 );
 
-DROP SEQUENCE IF EXISTS voip_cdr_id_seq;
-CREATE SEQUENCE voip_cdr_id_seq;
-DROP TABLE IF EXISTS voip_cdr CASCADE;
-CREATE TABLE voip_cdr (
-	id integer DEFAULT nextval('voip_cdr_id_seq'::text) NOT NULL,
-	caller varchar(20) NOT NULL,
-	callee varchar(20) NOT NULL,
-	call_start_time integer NOT NULL,
-	time_start_to_end integer NOT NULL,
-	time_answer_to_end integer NOT NULL,
-	price numeric(12,5) NOT NULL,
-	status smallint NOT NULL,
-	type smallint NOT NULL,
-	callervoipaccountid integer NULL
-		REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
-	calleevoipaccountid integer NULL
-		REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
-	caller_flags smallint NOT NULL DEFAULT 0,
-	callee_flags smallint NOT NULL DEFAULT 0,
-	caller_prefix_group varchar(100) NULL,
-	callee_prefix_group varchar(100) NULL,
-	uniqueid varchar(20) NOT NULL,
-	PRIMARY KEY (id),
-	UNIQUE (uniqueid)
-);
-
-DROP SEQUENCE IF EXISTS voip_price_groups_id_seq;
-CREATE SEQUENCE voip_price_groups_id_seq;
-DROP TABLE IF EXISTS voip_price_groups CASCADE;
-CREATE TABLE voip_price_groups (
-    id              integer       DEFAULT nextval('voip_price_groups_id_seq'::text) NOT NULL,
-    voip_tariff_id  integer       NOT NULL
-        REFERENCES voip_tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    prefix_group_id integer       NOT NULL
-        REFERENCES voip_prefix_groups (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    price           numeric(12,5) DEFAULT 0 NOT NULL,
-    unitsize        smallint      DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id)
-);
-
-DROP SEQUENCE IF EXISTS voip_numbers_id_seq;
-CREATE SEQUENCE voip_numbers_id_seq;
-DROP TABLE IF EXISTS voip_numbers CASCADE;
-CREATE TABLE voip_numbers (
-    id integer DEFAULT nextval('voip_numbers_id_seq'::text) NOT NULL,
-    voip_account_id integer NOT NULL
-        REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    phone varchar(20) NOT NULL,
-    number_index smallint,
-    tariff_id integer NULL
-        REFERENCES voip_numbers (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    UNIQUE(phone),
-    UNIQUE(voip_account_id, number_index),
-    PRIMARY KEY (id)
-);
-
-DROP SEQUENCE IF EXISTS voip_pool_numbers_id_seq;
-CREATE SEQUENCE voip_pool_numbers_id_seq;
-DROP TABLE IF EXISTS voip_pool_numbers CASCADE;
-CREATE TABLE voip_pool_numbers (
-    id integer DEFAULT nextval('voip_pool_numbers_id_seq'::text) NOT NULL,
-    disabled smallint DEFAULT 0,
-    name varchar(30) NOT NULL,
-    poolstart varchar(20) NOT NULL,
-    poolend varchar(20) NOT NULL,
-    description text,
-    type smallint NOT NULL DEFAULT 1,
-    PRIMARY KEY (id),
-    UNIQUE (name)
-);
-
-DROP TABLE IF EXISTS voip_emergency_numbers CASCADE;
-CREATE TABLE voip_emergency_numbers (
-	location_borough integer NOT NULL
-		REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	number integer NOT NULL,
-	fullnumber varchar(20) NOT NULL,
-	UNIQUE (location_borough, number)
-);
-CREATE INDEX voip_emergency_numbers_number_idx ON voip_emergency_numbers (number);
-
-DROP SEQUENCE IF EXISTS voip_number_assignments_id_seq;
-CREATE SEQUENCE voip_number_assignments_id_seq;
-DROP TABLE IF EXISTS voip_number_assignments CASCADE;
-CREATE TABLE voip_number_assignments (
-    id            integer DEFAULT nextval('voip_number_assignments_id_seq'::text) NOT NULL,
-    number_id     integer NOT NULL REFERENCES voip_numbers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    assignment_id integer NOT NULL REFERENCES assignments  (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY (id)
-);
-
 /* --------------------------------------------------------
   Structure of table "tariffs"
 -------------------------------------------------------- */
@@ -940,6 +849,97 @@ CREATE TABLE tariffs (
 	CONSTRAINT tariffs_name_key UNIQUE (name, value, period)
 );
 CREATE INDEX tariffs_type_idx ON tariffs (type);
+
+DROP SEQUENCE IF EXISTS voip_cdr_id_seq;
+CREATE SEQUENCE voip_cdr_id_seq;
+DROP TABLE IF EXISTS voip_cdr CASCADE;
+CREATE TABLE voip_cdr (
+	id integer DEFAULT nextval('voip_cdr_id_seq'::text) NOT NULL,
+	caller varchar(20) NOT NULL,
+	callee varchar(20) NOT NULL,
+	call_start_time integer NOT NULL,
+	time_start_to_end integer NOT NULL,
+	time_answer_to_end integer NOT NULL,
+	price numeric(12,5) NOT NULL,
+	status smallint NOT NULL,
+	type smallint NOT NULL,
+	callervoipaccountid integer NULL
+		REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	calleevoipaccountid integer NULL
+		REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	caller_flags smallint NOT NULL DEFAULT 0,
+	callee_flags smallint NOT NULL DEFAULT 0,
+	caller_prefix_group varchar(100) NULL,
+	callee_prefix_group varchar(100) NULL,
+	uniqueid varchar(20) NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (uniqueid)
+);
+
+DROP SEQUENCE IF EXISTS voip_price_groups_id_seq;
+CREATE SEQUENCE voip_price_groups_id_seq;
+DROP TABLE IF EXISTS voip_price_groups CASCADE;
+CREATE TABLE voip_price_groups (
+    id              integer       DEFAULT nextval('voip_price_groups_id_seq'::text) NOT NULL,
+    voip_tariff_id  integer       NOT NULL
+        REFERENCES voip_tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    prefix_group_id integer       NOT NULL
+        REFERENCES voip_prefix_groups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    price           numeric(12,5) DEFAULT 0 NOT NULL,
+    unitsize        smallint      DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id)
+);
+
+DROP SEQUENCE IF EXISTS voip_numbers_id_seq;
+CREATE SEQUENCE voip_numbers_id_seq;
+DROP TABLE IF EXISTS voip_numbers CASCADE;
+CREATE TABLE voip_numbers (
+    id integer DEFAULT nextval('voip_numbers_id_seq'::text) NOT NULL,
+    voip_account_id integer NOT NULL
+        REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    phone varchar(20) NOT NULL,
+    number_index smallint,
+    tariff_id integer NULL
+        REFERENCES tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    UNIQUE(phone),
+    UNIQUE(voip_account_id, number_index),
+    PRIMARY KEY (id)
+);
+
+DROP SEQUENCE IF EXISTS voip_pool_numbers_id_seq;
+CREATE SEQUENCE voip_pool_numbers_id_seq;
+DROP TABLE IF EXISTS voip_pool_numbers CASCADE;
+CREATE TABLE voip_pool_numbers (
+    id integer DEFAULT nextval('voip_pool_numbers_id_seq'::text) NOT NULL,
+    disabled smallint DEFAULT 0,
+    name varchar(30) NOT NULL,
+    poolstart varchar(20) NOT NULL,
+    poolend varchar(20) NOT NULL,
+    description text,
+    type smallint NOT NULL DEFAULT 1,
+    PRIMARY KEY (id),
+    UNIQUE (name)
+);
+
+DROP TABLE IF EXISTS voip_emergency_numbers CASCADE;
+CREATE TABLE voip_emergency_numbers (
+	location_borough integer NOT NULL
+		REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	number integer NOT NULL,
+	fullnumber varchar(20) NOT NULL,
+	UNIQUE (location_borough, number)
+);
+CREATE INDEX voip_emergency_numbers_number_idx ON voip_emergency_numbers (number);
+
+DROP SEQUENCE IF EXISTS voip_number_assignments_id_seq;
+CREATE SEQUENCE voip_number_assignments_id_seq;
+DROP TABLE IF EXISTS voip_number_assignments CASCADE;
+CREATE TABLE voip_number_assignments (
+    id            integer DEFAULT nextval('voip_number_assignments_id_seq'::text) NOT NULL,
+    number_id     integer NOT NULL REFERENCES voip_numbers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    assignment_id integer NOT NULL REFERENCES assignments  (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (id)
+);
 
 /* --------------------------------------------------------
   Structure of table "tariffstags"

@@ -36,6 +36,8 @@ version ?.??.?? (????-??-??):
     values were present at the same time [chilan]
   - enhancement: added node session support for ip addresses assigned to network
     devices [chilan]
+  - enhancement: allow to automatically get first free address for network device
+    ip addresses [chilan]
 
 version 1.11.21 (2016-10-14):
 
