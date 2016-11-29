@@ -211,11 +211,19 @@
 				</td>
 
 				<td>
-					{if $billings[i].callbegintime>60}{floor($billings[i].callbegintime/60)}min{/if} {$billings[i].callbegintime%60}s
+					{$min_tmp = intval($billings[i].callbegintime / 60)}
+					{$sec_tmp = $billings[i].callbegintime % 60}
+
+					{if $min_tmp}{$min_tmp}min{/if}
+					{if $sec_tmp}{$sec_tmp}s{/if}
 				</td>
 
 				<td>
-					{if $billings[i].callanswertime>60}{floor($billings[i].callanswertime/60)}min{/if} {$billings[i].callanswertime%60}s
+					{$min_tmp = intval($billings[i].callanswertime / 60)}
+					{$sec_tmp = $billings[i].callanswertime % 60}
+
+					{if $min_tmp}{$min_tmp}min{/if}
+					{if $sec_tmp}{$sec_tmp}s{/if}
 				</td>
 
 				<td>
@@ -271,9 +279,38 @@
 			</TD>
 		</TR>
 		{/if}
+
+		{$sum = 0}
+		{$call_time = 0}
+		{$talk_time = 0}
+
+		{foreach $billings as $b}
+			{$sum = $sum + $b.price}
+			{$call_time = $call_time + $b.callbegintime}
+			{$call_talk = $call_talk + $b.callanswertime}
+		{/foreach}
+
         <tr>
-            <td class="bold text-right" colspan="{$number_of_table_columns}">
-                {trans("Total:")} {if $total}{$total}{else}0{/if}
+            <td class="text-right bold" colspan="{$number_of_table_columns-6}">
+                {trans("Page total:")|lower}<br>
+                {trans("all")}:
+            </td>
+            <td>
+                {gmdate("H:i:s", $call_time)}<br>
+                {gmdate("H:i:s", $stats.call)}
+            </td>
+
+            <td>
+                {gmdate("H:i:s", $call_talk)}<br>
+                {gmdate("H:i:s", $stats.answer)}
+            </td>
+            <td colspan="3" class="text-right">
+                {$sum|money_format}<br>
+                {$stats.price|money_format}
+            </td>
+            <td class="bold text-center">
+                {if $total}{$total}{else}0{/if}<br>
+                {intval($stats.count)}
             </td>
         </tr>
     </tfoot>
