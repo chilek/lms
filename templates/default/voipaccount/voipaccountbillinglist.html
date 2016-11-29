@@ -211,11 +211,19 @@
 				</td>
 
 				<td>
-					{if $billings[i].callbegintime>60}{floor($billings[i].callbegintime/60)}min{/if} {$billings[i].callbegintime%60}s
+					{$min_tmp = ltrim(gmdate("i", $billings[i].callbegintime), 0)}
+					{$sec_tmp = ltrim(gmdate("s", $billings[i].callbegintime), 0)}
+
+					{if $min_tmp}{$min_tmp}min{/if}
+					{if $sec_tmp}{$sec_tmp}s{/if}
 				</td>
 
 				<td>
-					{if $billings[i].callanswertime>60}{floor($billings[i].callanswertime/60)}min{/if} {$billings[i].callanswertime%60}s
+					{$min_tmp = ltrim(gmdate("i", $billings[i].callanswertime), 0)}
+					{$sec_tmp = ltrim(gmdate("s", $billings[i].callanswertime), 0)}
+
+					{if $min_tmp}{$min_tmp}min{/if}
+					{if $sec_tmp}{$sec_tmp}s{/if}
 				</td>
 
 				<td>
