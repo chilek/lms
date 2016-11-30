@@ -193,7 +193,9 @@ if (isset($_POST['customeradd']))
 	if (isset($customeradd['invoicenotice']) && !$emaileinvoice)
 		$error['invoicenotice'] = trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');
 
-	if ($customeradd['cutoffstop'] == '')
+	if (isset($customeradd['cutoffstopindefinitely']))
+		$cutoffstop = intval(pow(2, 31) - 1);
+	elseif ($customeradd['cutoffstop'] == '')
 		$cutoffstop = 0;
 	elseif (check_date($customeradd['cutoffstop'])) {
 			list ($y, $m, $d) = explode('/', $customeradd['cutoffstop']);
@@ -287,6 +289,9 @@ if (!isset($customeradd['zip']) && $default_zip) {
 } if (!isset($customeradd['default_status']) && $default_status) {
         $customeradd['status'] = $default_status;
 }
+
+if (!isset($customeradd['cutoffstopindefinitely']))
+	$customeradd['cutoffstopindefinitely'] = 0;
 
 $layout['pagetitle'] = trans('New Customer');
 

@@ -2020,6 +2020,7 @@ $_LANG['no guarantee'] = 'brak';
 $_LANG['Select date of cutoff suspending (optional)'] = 'Wybierz datę zawieszenia blokowania (opcjonalnie)';
 $_LANG['Incorrect date of cutoff suspending!'] = 'Nieprawidłowa data zawieszenia blokowania!';
 $_LANG['Cutoff suspended to $a'] = 'Blokowanie zawieszone do dnia $a';
+$_LANG['Cutoff suspended indefinitely'] = 'Blokowanie zawieszone bezterminowo';
 $_LANG['Customer has got disconnected nodes!'] = 'Klient posiada odłączone komputery!';
 $_LANG['Clone'] = 'Klonuj';
 $_LANG['Add node to group'] = 'Dodaj komputer do grupy';

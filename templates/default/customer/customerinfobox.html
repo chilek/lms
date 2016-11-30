@@ -200,7 +200,11 @@
 			    <TR>
 			        <TD colspan="2">
 			            <span class="alert">
+			            {if $customerinfo.cutoffstop == intval(pow(2, 31) - 1)}
+			            {trans("Cutoff suspended indefinitely")}
+			            {else}
 			            {t a=$customerinfo.cutoffstop|date_format:"%Y/%m/%d"}Cutoff suspended to $a{/t}
+			            {/if}
 			            </span>
 			        </TD>
 			    </TR>

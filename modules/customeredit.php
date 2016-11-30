@@ -154,7 +154,9 @@ elseif (isset($_POST['customerdata']))
 	if (isset($customerdata['invoicenotice']) && !$emaileinvoice)
 		$error['invoicenotice'] = trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');
 
-	if ($customerdata['cutoffstop'] == '')
+	if (isset($customerdata['cutoffstopindefinitely']))
+		$cutoffstop = intval(pow(2, 31) - 1);
+	elseif ($customerdata['cutoffstop'] == '')
 		$cutoffstop = 0;
 	elseif (check_date($customerdata['cutoffstop'])) {
 		list ($y, $m, $d) = explode('/', $customerdata['cutoffstop']);
@@ -259,8 +261,13 @@ elseif (isset($_POST['customerdata']))
 } else {
 	$customerinfo = $LMS->GetCustomer($_GET['id']);
 
+	$customerinfo['cutoffstopindefinitely'] = 0;
 	if ($customerinfo['cutoffstop'])
-		$customerinfo['cutoffstop'] = strftime('%Y/%m/%d', $customerinfo['cutoffstop']);
+		if ($customerinfo['cutoffstop'] == intval(pow(2, 31) - 1)) {
+			$customerinfo['cutoffstop'] = 0;
+			$customerinfo['cutoffstopindefinitely'] = 1;
+		} else
+			$customerinfo['cutoffstop'] = strftime('%Y/%m/%d', $customerinfo['cutoffstop']);
 	else
 		$customerinfo['cutoffstop'] = 0;
 
