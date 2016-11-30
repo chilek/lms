@@ -1158,13 +1158,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetTariffs()
     {
-        return $this->db->GetAll('SELECT t.id, t.name, t.value, uprate, taxid, prodid,
+        return $this->db->GetAllByKey('SELECT t.id, t.name, t.value, uprate, taxid, prodid,
 				downrate, upceil, downceil, climit, plimit, taxes.value AS taxvalue,
 				taxes.label AS tax, t.period, t.type AS tarifftype
 				FROM tariffs t
 				LEFT JOIN taxes ON t.taxid = taxes.id
 				WHERE t.disabled = 0
-				ORDER BY t.name, t.value DESC');
+				ORDER BY t.name, t.value DESC', 'id');
     }
 
     public function TariffSet($id)
