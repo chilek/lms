@@ -27,15 +27,13 @@
 		selectionAny: '{trans("- any -")}'
 	}
 
-    {if ConfigHelper::getConfig('phpui.hide_tooltips_on_mobile', 'true') == 'true'}
-    $( function() {
-        if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-            $('[title]').each( function() {
-                $(this).removeAttr('title');
-            });
-        }
-    });
-    {/if}
+	{if ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.disable_mobile_tooltips', true))}
+	$(function() {
+		if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+			$('[title]').removeAttr('title');
+		}
+	});
+	{/if}
 //-->
 </script>
 <script type="text/javascript" src="img/jquery.js"></script>
