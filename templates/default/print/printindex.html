@@ -698,6 +698,15 @@
 		document.printinvoices.target='_blank';
 		document.printinvoices.submit();
 	}
+
+	function export_to_jpk() {
+		if ($('form[name="printinvoices"] select[name="division"]').val() == '0') {
+			alert('{trans("Division not selected!")}');
+			return;
+		}
+		document.printinvoices.action = "?m=print&type=invoices&jpk=1";
+		document.printinvoices.submit();
+	}
 //-->
 </SCRIPT>
 <TABLE class="lmsbox">
@@ -820,6 +829,7 @@
 	</TR>
 	<TR>
 		<TD style="width: 100%;" colspan="2" align="right">
+			<a href="javascript:export_to_jpk();">{trans("Export to JPK format")} <img src="img/docum.gif" alt="" hspace="2"></a>
 			<A href="javascript:print_forms();">{trans("Print form of cash transfer")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 			<A href="javascript:print();">{trans("Print")} <IMG src="img/print.gif" alt="" hspace="2"></A>
 		</TD>

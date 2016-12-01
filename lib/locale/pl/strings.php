@@ -23,6 +23,10 @@
  *
  *  $Id$
  */
+
+$_LANG['Export to JPK format'] = 'Eksport do formatu JPK';
+$_LANG['Division not selected!'] = 'Nie wybrano firmy!';
+
 $_LANG['billing'] = 'biling';
 $_LANG['Billing'] = 'Biling';
 $_LANG['Billings'] = 'Bilingi';
