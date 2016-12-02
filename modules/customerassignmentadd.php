@@ -384,16 +384,16 @@ if (!empty($tmp_promo_list)) {
 // remove duplicated customer nodes
 // -----
 
-$neddevnodes = $LMS->getCustomerNetDevNodes($customer['id']);
+$netdevnodes = $LMS->getCustomerNetDevNodes($customer['id']);
 
 if ($customernodes) {
 	foreach ($customernodes as $v) {
-		if (isset($neddevnodes[$v['id']]))
-			unset($neddevnodes[$v['id']]);
+		if (isset($netdevnodes[$v['id']]))
+			unset($netdevnodes[$v['id']]);
     }
 }
 
-$SMARTY->assign('customernetdevnodes' , $neddevnodes);
+$SMARTY->assign('customernetdevnodes' , $netdevnodes);
 
 // -----
 

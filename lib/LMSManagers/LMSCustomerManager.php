@@ -789,7 +789,17 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      */
     public function getCustomerNetDevNodes($id, $count = null)
     {
-        return $this->customerNodesProvider( $id, 'netdev', $count );
+        $tmp = $this->customerNodesProvider( $id, 'netdev', $count );
+
+        if (!$tmp)
+            return null;
+
+        $netdevs = array();
+        foreach ($tmp as $v) {
+            $netdevs[ $v['id'] ] = $v;
+        }
+
+        return $netdevs;
     }
 
     protected function customerNodesProvider( $customer_id, $type = '', $count = null ) {
@@ -803,7 +813,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $type = 'n.ownerid = ?';
         }
 
-        $result = $this->db->GetAllByKey("SELECT
+        $result = $this->db->GetAll("SELECT
                                         n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, nd.name as netdev_name,
                                         ipaddr_pub, n.authtype, inet_ntoa(ipaddr_pub) AS ip_pub,
                                         passwd, access, warning, info, n.ownerid, lastonline, n.location,
@@ -818,7 +828,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                      WHERE
                                         " . $type . "
                                      ORDER BY
-                                        n.name ASC " . ($count ? 'LIMIT ' . $count : ''), 'id', array($customer_id));
+                                        n.name ASC " . ($count ? 'LIMIT ' . $count : ''), array($customer_id));
 
         if ($result) {
             // assign network(s) to node record
