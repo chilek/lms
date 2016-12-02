@@ -803,7 +803,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $type = 'n.ownerid = ?';
         }
 
-        $result = $this->db->GetAll("SELECT
+        $result = $this->db->GetAllByKey("SELECT
                                         n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, nd.name as netdev_name,
                                         ipaddr_pub, n.authtype, inet_ntoa(ipaddr_pub) AS ip_pub,
                                         passwd, access, warning, info, n.ownerid, lastonline, n.location,
@@ -818,7 +818,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                      WHERE
                                         " . $type . "
                                      ORDER BY
-                                        n.name ASC " . ($count ? 'LIMIT ' . $count : ''), array($customer_id));
+                                        n.name ASC " . ($count ? 'LIMIT ' . $count : ''), 'id', array($customer_id));
 
         if ($result) {
             // assign network(s) to node record
