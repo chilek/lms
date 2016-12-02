@@ -456,8 +456,7 @@ $layout['pagetitle'] = trans('Liability Edit: $a', '<A href="?m=customerinfo&id=
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$customerNodes       = $LMS->GetCustomerNodes( $customer['id']);
-$customerNetDevNodes = $LMS->getCustomerNetDevNodes( $customer['id'] );
+$customerNodes = $LMS->GetCustomerNodes( $customer['id']);
 
 unset($customernodes['total']);
 
@@ -469,8 +468,25 @@ $LMS->executeHook(
     )
 );
 
+// -----
+// remove duplicated customer nodes
+// -----
+
+$netdevnodes = $LMS->getCustomerNetDevNodes($customer['id']);
+
+if ($customerNodes) {
+    foreach ($customerNodes as $v) {
+        if (isset($netdevnodes[$v['id']]))
+            unset($netdevnodes[$v['id']]);
+    }
+}
+
+$SMARTY->assign('customernetdevnodes', $netdevnodes);
+
+// -----
+
 $SMARTY->assign('customernodes'      , $customerNodes);
-$SMARTY->assign('customernetdevnodes', $customerNetDevNodes);
+$SMARTY->assign('customernetdevnodes', $netdevnodes);
 $SMARTY->assign('customervoipaccs'   , $LMS->getCustomerVoipAccounts($customer['id']));
 $SMARTY->assign('tariffs'            , $LMS->GetTariffs());
 $SMARTY->assign('taxeslist'          , $LMS->GetTaxes());
