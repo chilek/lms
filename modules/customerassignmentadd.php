@@ -381,7 +381,7 @@ if (!empty($tmp_promo_list)) {
 }
 
 // -----
-// remove duplicates customer nodes
+// remove duplicated customer nodes
 // -----
 
 $neddevnodes = $LMS->getCustomerNetDevNodes($customer['id']);
