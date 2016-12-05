@@ -2087,6 +2087,17 @@ class LMS
 
                 $errors[] = 'Smsapi error: message has not been sent!';
                 continue 2;
+             case 'custom':
+                $data = $this->executeHook('send_sms_after', $data);
+
+                if ($data['abort']) {
+                    if (is_string($data['result'])) {
+                        $errors[] = $data['result'];
+                        continue 2;
+                    }
+                }
+                else
+                    return MSG_SENT;
             default:
                 $errors[] = trans('Unknown SMS service!');
                 continue 2;
