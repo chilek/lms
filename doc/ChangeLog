@@ -40,6 +40,7 @@ version ?.??.?? (????-??-??):
     ip addresses [chilan]
   - enhancement: allow to specify indefinite cutoff stop dates [chilan]
   - enhancement: JPK FA (invoices) support added [chilan]
+  - enhacement: allow to define teryt addresses and tax office codes for divisions [chilan]
 
 version 1.11.21 (2016-10-14):
 
