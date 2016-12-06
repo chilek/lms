@@ -26,6 +26,9 @@
 
 $_LANG['Export to JPK format'] = 'Eksport do formatu JPK';
 $_LANG['Division not selected!'] = 'Nie wybrano firmy!';
+$_LANG['Tax Office Code:'] = 'Kod Urzędu Podatkowego:';
+$_LANG['Enter Tax Office Code (optional)'] = 'Wprowadź Kod Urzędu Podatkowego (opcjpnalnie)';
+$_LANG['Invalid format of Tax Office Code!'] = 'Niepoprawny format Kodu Urzędu Podatkowego!';
 
 $_LANG['billing'] = 'biling';
 $_LANG['Billing'] = 'Biling';

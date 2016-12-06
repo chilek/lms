@@ -407,6 +407,13 @@ CREATE TABLE divisions (
 	inv_paytype	smallint	DEFAULT NULL,
 	description 	text		NOT NULL DEFAULT '',
 	status 		smallint 	NOT NULL DEFAULT 0,
+	location_city integer DEFAULT NULL
+		REFERENCES location_cities (id) ON UPDATE CASCADE ON DELETE SET NULL,
+	location_street integer DEFAULT NULL
+		REFERENCES location_streets (id) ON UPDATE CASCADE ON DELETE SET NULL,
+	location_house varchar(32) DEFAULT NULL,
+	location_flat varchar(32) DEFAULT NULL,
+	tax_office_code varchar(8) DEFAULT NULL;
 	PRIMARY KEY (id),
 	UNIQUE (shortname)
 );
@@ -2859,6 +2866,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016112800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016120600');
 
 COMMIT;

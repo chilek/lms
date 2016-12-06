@@ -552,6 +552,7 @@ function check_teryt(locid, init)
 {
     var checked = document.getElementById('teryt').checked;
 
+	console.log(locid);
     if (locid) {
         var loc = document.getElementById(locid);
         if (checked) {
