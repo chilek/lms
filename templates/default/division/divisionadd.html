@@ -126,6 +126,7 @@
 		<TD>
 			{if isset($_TAX_OFFICE_CODES)}
 			<SELECT name="division[tax_office_code]" {tip text="Enter Tax Office Code (optional)" trigger="tax_office_code"}>
+				<OPTION value="0">{trans("- none -")}</OPTION>
 				{foreach $_TAX_OFFICE_CODES as $code => $tax_office}
 				<OPTION value="{$code}"{if $division.tax_office_code == $code} selected{/if}>{$tax_office}</OPTION>
 				{/foreach}
