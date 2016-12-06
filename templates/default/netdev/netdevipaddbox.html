@@ -158,7 +158,7 @@
 			<label>
 				<INPUT TYPE="checkbox" NAME="ipadd[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"} onchange="change_authtype()" {if ($nodeipdata.authtype & $idx) == $idx} checked{/if}>
 				{$sessiontype.label}
-			</label>
+			</label><br>
 			{/foreach}
 		</TD>
 	</TR>

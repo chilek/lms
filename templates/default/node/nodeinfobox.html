@@ -263,7 +263,7 @@
 													<label>
 														<input type="checkbox" name="authtype[{$idx}]" value="{$idx}" class="authtype" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"} {if ($nodeinfo.authtype & $idx) == $idx} checked{/if}>
 														{$sessiontype.label}
-													</label>
+													</label><br>
 												{/if}
 											{/foreach}
 										{/if}
