@@ -29,6 +29,7 @@ function module_setup()
     global $SMARTY, $DB, $USERPANEL, $layout, $LMS;
     $layout['pagetitle'] = trans('Userpanel Configuration');
     $SMARTY->assign('page_header', ConfigHelper::getConfig('userpanel.page_header', ''));
+    $SMARTY->assign('company_logo', ConfigHelper::getConfig('userpanel.company_logo', ''));
     $SMARTY->assign('stylelist', getdir(USERPANEL_DIR . DIRECTORY_SEPARATOR . 'style', '^[a-z0-9]*$'));
     $SMARTY->assign('style', ConfigHelper::getConfig('userpanel.style', 'default'));
     $SMARTY->assign('hint', ConfigHelper::getConfig('userpanel.hint', 'modern'));
@@ -71,7 +72,7 @@ function module_submit_setup()
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'style'", array($_POST['style']));
     else
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'style', ?)", array($_POST['style']));
-    
+
     if($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'hide_nodes_modules'"))
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'hide_nodes_modules'", array(isset($_POST['hide_nodes_modules']) ? 1 : 0));
     else
@@ -96,6 +97,11 @@ function module_submit_setup()
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'page_header'", array($_POST['page_header']));
     else
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'page_header', ?)", array($_POST['page_header']));
+
+    if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'company_logo'"))
+        $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'company_logo'", array($_POST['company_logo']));
+    else
+        $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'company_logo', ?)", array($_POST['company_logo']));
 
     if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'reminder_sms_body'"))
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'reminder_sms_body'", array($_POST['reminder_sms_body']));
@@ -125,16 +131,16 @@ function module_submit_setup()
         'force' => true,
         'force_ui_only' => true,
     ));
-    
+
     module_setup();
 }
 
 function module_rights()
 {
     global $SMARTY, $DB, $LMS, $layout;
-    
+
     $layout['pagetitle'] = trans('Customers\' rights');
-    
+
     $customerlist = $LMS->GetCustomerNames();
     $userpanelrights = $DB->GetAll('SELECT id, module, name, description, setdefault FROM up_rights');
 
