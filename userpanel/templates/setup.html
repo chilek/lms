@@ -17,7 +17,7 @@
 	</TR>
 	</THEAD>
 	<TBODY>
-        <!-- remove condition if $page_header will be implemented in all themes -->
+        <!-- remove condition if $page_header, $company_logo will be implemented in all themes -->
         {if $style=='bclean'}
         <tr>
             <td scope="col" class="nobr">
@@ -27,8 +27,17 @@
                 <input type="text" size="50" name="page_header" id="page_header" value="{$page_header}">
             </td>
         </tr>
+        <tr>
+            <td scope="col" class="nobr">
+                <label for="company_logo">{trans("Company logo")}:</label>
+            </td>
+            <td scope="col">
+                <input type="text" size="50" name="company_logo" id="company_logo" value="{$company_logo}" placeholder="{trans("Enter path to your company logo")}.">
+            </td>
+        </tr>
         {else}
                 <input type="hidden" name="page_header" id="page_header" value="{$page_header}">
+                <input type="hidden" name="company_logo" id="company_logo" value="{$company_logo}">
         {/if}
 	<TR>
 		<TD scope="col" class="text-left nobr">

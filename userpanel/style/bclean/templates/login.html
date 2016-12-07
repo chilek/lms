@@ -6,7 +6,6 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <title>{trans('Virtual Customer Service')}</title>
         <link rel="stylesheet" href="style/bclean/vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
-	<!-- <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css" integrity="sha384-XXXXXXXX" crossorigin="anonymous"> -->
         <style>
             .form-signin {
                 max-width: 400px;
@@ -54,8 +53,15 @@
             <div class="row">
                 <div class="col-md-12">
                     <h2 class="form-signin text-center">
-                        {$page_header}<br/>
-                        <small class="text-muted">{trans('Virtual Customer Service')}</small>
+						{if $company_logo}
+							<img src="{$company_logo}">
+						{/if}
+						{if $page_header}
+							<br><small class="text-muted">{$page_header}</small>
+						{/if}
+						{if !$company_logo && !$page_header}
+							<br><small class="text-muted">{trans('Virtual Customer Service')}</small>
+						{/if}
                     </h2>
                 </div>
             </div>
@@ -98,39 +104,39 @@
                         <p><a href="javascript:switch_form('login');">{trans('Login form')}</a></p>
                     </form>
                 </div>
-            </div>                    
+            </div>
         </div> <!-- /container -->
         <script>
-            function switch_form(type) {
-                if (type == 'login') {
-                    document.getElementById('login').style.display = '';
-                    document.getElementById('remind').style.display = 'none';
-                } else {
-                    document.getElementById('login').style.display = 'none';
-                    document.getElementById('remind').style.display = '';
-                }
-            }
+			function switch_form(type) {
+				if (type == 'login') {
+					document.getElementById('login').style.display = '';
+					document.getElementById('remind').style.display = 'none';
+				} else {
+					document.getElementById('login').style.display = 'none';
+					document.getElementById('remind').style.display = '';
+				}
+			}
 
-            function show_email_phone(type) {
-                if (type == 'email') {
-                    var remindMail = document.getElementById("remindMail");
-                    remindMail.classList.add("active");
-                    var remindPhone = document.getElementById("remindPhone");
-                    remindPhone.classList.remove("active");
-                    document.getElementById('email').style.display = '';
-                    document.getElementById('phone').style.display = 'none';
-                    document.getElementById('remindType').value = '1';
-                } else {
-                    var remindPhone = document.getElementById("remindPhone");
-                    remindPhone.classList.add("active");
-                    var remindMail = document.getElementById("remindMail");
-                    remindMail.classList.remove("active");
-                    document.getElementById('email').style.display = 'none';
-                    document.getElementById('phone').style.display = '';
-                    document.getElementById('remindType').value = '2';
-                }
-            }
-            document.forms['login'].elements['loginform[login]'].focus();
+			function show_email_phone(type) {
+				if (type == 'email') {
+					var remindMail = document.getElementById("remindMail");
+					remindMail.classList.add("active");
+					var remindPhone = document.getElementById("remindPhone");
+					remindPhone.classList.remove("active");
+					document.getElementById('email').style.display = '';
+					document.getElementById('phone').style.display = 'none';
+					document.getElementById('remindType').value = '1';
+				} else {
+					var remindPhone = document.getElementById("remindPhone");
+					remindPhone.classList.add("active");
+					var remindMail = document.getElementById("remindMail");
+					remindMail.classList.remove("active");
+					document.getElementById('email').style.display = 'none';
+					document.getElementById('phone').style.display = '';
+					document.getElementById('remindType').value = '2';
+				}
+			}
+			document.forms['login'].elements['loginform[login]'].focus();
         </script>
     </body>
 </html>
