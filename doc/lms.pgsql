@@ -413,7 +413,7 @@ CREATE TABLE divisions (
 		REFERENCES location_streets (id) ON UPDATE CASCADE ON DELETE SET NULL,
 	location_house varchar(32) DEFAULT NULL,
 	location_flat varchar(32) DEFAULT NULL,
-	tax_office_code varchar(8) DEFAULT NULL;
+	tax_office_code varchar(8) DEFAULT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (shortname)
 );
