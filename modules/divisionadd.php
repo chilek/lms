@@ -98,7 +98,7 @@ if(!empty($_POST['division']))
 			'inv_paytype' => $division['inv_paytype'] ? $division['inv_paytype'] : null,
 			'description' => $division['description'],
 			'location_city' => $division['location_city'],
-			'location_street' => $division['location_street'],
+			'location_street' => $division['location_street'] ? $division['location_street'] : null,
 			'location_house' => $division['location_house'],
 			'location_flat' => $division['location_flat'],
 			'tax_office_code' => $division['tax_office_code'],

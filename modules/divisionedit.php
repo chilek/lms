@@ -130,7 +130,7 @@ if(!empty($_POST['division']))
 			'description' => $division['description'],
 			'status' => !empty($division['status']) ? 1 : 0,
 			'location_city' => $division['location_city'],
-			'location_street' => $division['location_street'],
+			'location_street' => $division['location_street'] ? $division['location_street'] : null,
 			'location_house' => $division['location_house'],
 			'location_flat' => $division['location_flat'],
 			'tax_office_code' => $division['tax_office_code'],
