@@ -552,6 +552,9 @@ function check_teryt(locid, init)
 {
     var checked = document.getElementById('teryt').checked;
 
+	if (typeof locid == 'undefined')
+		return checked;
+
 	if (Array.isArray(locid))
 		locids = locid;
 	else
