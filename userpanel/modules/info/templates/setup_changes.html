@@ -25,10 +25,10 @@
 					<TD>&nbsp;</TD>
 				</TR>
 				</THEAD>
-				<TBODY class="multi-check">
+				<TBODY class="lms-ui-multi-check">
 				{cycle values="light,lucid" print=false}
 				{foreach $userchanges as $change}
-				<TR class="multi-check {cycle advance=false}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
+				<TR class="lms-ui-multi-check {cycle advance=false}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')">
 					<TD class="bold nobr" onClick="return self.location.href='?m=customerinfo&id={$change.customerid}';">
 						{$change.customername|truncate:50:" ..."} ({$change.customerid|string_format:"%04d"})
 					</TD>
@@ -36,7 +36,7 @@
 					<TD class="nobr">{$change.oldvalue}</TD>
 					<TD class="nobr">{$change.newvalue}</TD>
 					<TD>
-						<INPUT CLASS="multi-check box {cycle}" TYPE="checkbox" NAME="userchanges[]" VALUE="{$change.changeid}">
+						<INPUT CLASS="lms-ui-multi-check box {cycle}" TYPE="checkbox" NAME="userchanges[]" VALUE="{$change.changeid}">
 					</TD>
 				</TR>
 				{foreachelse}
