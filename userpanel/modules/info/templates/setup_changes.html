@@ -49,7 +49,13 @@
 				</TBODY>
 				<TFOOT>
 				<TR>
-					<TD class="buttons" COLSPAN="5">
+					<td class="nobr">
+						<label>
+							{trans("Select All")}
+							<input type="checkbox" class="lms-ui-multi-check-all">
+						</label>
+					</td>
+					<TD class="buttons" COLSPAN="4">
 						<A HREF="javascript:document.changes.action='?m=userpanel&module=info&f=submit_changes_save';document.changes.submit()">{trans("Save")} <IMG SRC="img/save.gif" alt=""></A>
 						/
 						<A HREF="javascript:document.changes.action='?m=userpanel&module=info&f=submit_changes_delete';document.changes.submit()">{trans("Delete")} <IMG SRC="img/delete.gif" alt=""></A>
