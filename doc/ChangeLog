@@ -43,6 +43,8 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to define teryt addresses and tax office codes for divisions [chilan]
   - improvement: JPK FA (invoices) report uses recently added division teryt location
     and division tax office assigned [chilan]
+  - improvement: allow to print web layout without left menu bar, top autosuggest fields
+    and toolbar [chilan]
 
 version 1.11.21 (2016-10-14):
 
