@@ -45,6 +45,7 @@ version ?.??.?? (????-??-??):
     and division tax office assigned [chilan]
   - improvement: allow to print web layout without left menu bar, top autosuggest fields
     and toolbar [chilan]
+  - enhancement: show document creator on document lists [chilan]
 
 version 1.11.21 (2016-10-14):
 
