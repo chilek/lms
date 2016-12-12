@@ -57,6 +57,9 @@ function GetDocumentList($order='cdate,asc', $search) {
 		case 'cuser':
 			$sqlord = ' ORDER BY u2.lastname '.$direction.', title';
 		break;
+		case 'sdate':
+			$sqlord = ' ORDER BY d.sdate '.$direction.', d.name';
+		break;
 		default:
 			$sqlord = ' ORDER BY d.cdate '.$direction.', d.name';
 		break;
