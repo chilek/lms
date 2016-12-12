@@ -54,17 +54,21 @@ function GetDocumentList($order='cdate,asc', $search) {
 		case 'user':
 			$sqlord = ' ORDER BY u.lastname '.$direction.', title';
 		break;
+		case 'cuser':
+			$sqlord = ' ORDER BY u2.lastname '.$direction.', title';
+		break;
 		default:
 			$sqlord = ' ORDER BY d.cdate '.$direction.', d.name';
 		break;
 	}
 
 	$list = $DB->GetAll('SELECT docid, d.number, d.type, title, d.cdate, u.name AS username, u.lastname, fromdate, todate, description, 
-				template, d.closed, d.name, d.customerid
+				template, d.closed, d.name, d.customerid, d.sdate, d.cuserid, u2.name AS cusername, u2.lastname AS clastname
 			FROM documentcontents
 			JOIN documents d ON (d.id = documentcontents.docid)
 			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1) = 1)
 			JOIN vusers u ON u.id = d.userid
+			LEFT JOIN vusers u2 ON u2.id = d.cuserid
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
 			LEFT JOIN (
 				SELECT DISTINCT a.customerid FROM customerassignments a

@@ -37,7 +37,7 @@
 				<TR>
 					<TD style="width: 1%;" class="bold nobr">{trans("Number:")}</TD>
 					<TD style="width: 1%;" class="nobr">{trans("Created:")}</TD>
-					<TD style="width: 1%;" class="nobr">{trans("User:")}</TD>
+					<TD style="width: 1%;" class="nobr">{trans("Created<!document>")} / {trans("Confirmed<!document>")} {trans("by:<!document>")}</TD>
 					<TD style="width: 1%;" class="bold nobr">{trans("Type:")}</TD>
 					<TD style="width: 94%;" class="nobr">{trans("Title:")}</TD>
 					<TD style="width: 1%;" class="nobr">{trans("Period:")}</TD>
@@ -52,7 +52,9 @@
 						{number number=$doc.number template=$doc.template time=$doc.cdate}
 					</TD>
 					<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">{$doc.cdate|date_format:"%Y/%m/%d"}</TD>
-					<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">{$doc.username}</TD>
+					<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
+						{$doc.username}{if $doc.cusername} / {$doc.cusername}{/if}
+					</TD>
 					<TD class="bold nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">{assign var=type value=$doc.type}{$_DOCTYPES.$type}</TD>
 					<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">{$doc.title|truncate:40:"...":true}</TD>
 					<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">

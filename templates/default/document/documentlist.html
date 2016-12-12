@@ -69,7 +69,11 @@
     <THEAD>
 	<TR>
 		<TD WIDTH="1%" NOWRAP> <A href="?m=documentlist&amp;o=cdate{if $listdata.direction == "asc" && $listdata.order == "cdate"},desc{/if}">{trans("Date:")}</A>{if $listdata.order == "cdate"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR><B>{trans("Number:")}</B></TD>
-		<TD WIDTH="1%" NOWRAP> <A href="?m=documentlist&amp;o=user{if $listdata.direction == "asc" && $listdata.order == "user"},desc{/if}">{trans("User:")}</A>{if $listdata.order == "user"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR><A href="?m=documentlist&amp;o=type{if $listdata.direction == "asc" && $listdata.order == "type"},desc{/if}"><B>{trans("Type:")}</B></A>{if $listdata.order == "type"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<A href="?m=documentlist&o=user{if $listdata.direction == "asc" && $listdata.order == "user"},desc{/if}">{trans("Created<!document>")}</A>{if $listdata.order == "user"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			/ <A href="?m=documentlist&o=cuser{if $listdata.direction == "asc" && $listdata.order == "cuser"},desc{/if}">{trans("Confirmed<!document>")}</A>{if $listdata.order == "cuser"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} {trans("by:<!document>")}
+			<BR><A href="?m=documentlist&o=type{if $listdata.direction == "asc" && $listdata.order == "type"},desc{/if}"><B>{trans("Type:")}</B></A>{if $listdata.order == "type"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+		</TD>
 		<TD WIDTH="1%" NOWRAP> <A href="?m=documentlist&amp;o=title{if $listdata.direction == "asc" && $listdata.order == "title"},desc{/if}">{trans("Title:")}</A>{if $listdata.order == "title"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>{trans("Period:")}</TD>
 		<TD WIDTH="96%" NOWRAP> <A href="?m=documentlist&amp;o=customer{if $listdata.direction == "asc" && $listdata.order == "customer"},desc{/if}">{trans("Customer:")}</A>{if $listdata.order == "customer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
 		<TD WIDTH="1%" NOWRAP align="right">
@@ -133,7 +137,10 @@
 				<B>{number number=$doc.number template=$doc.template time=$doc.cdate customerid=$doc.customerid}</B>
 			{/if}
 		</TD>
-		<TD NOWRAP onclick="window.open('?m=documentview&amp;id={$doc.docid}');">{$doc.username}<BR><B>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</B></TD>
+		<TD NOWRAP onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
+			{$doc.username}{if $doc.cuserid} / {$doc.cusername}{/if}
+			<BR><B>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</B>
+		</TD>
 		<TD NOWRAP onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
 			{$doc.title|truncate:40:"...":true}
 			{if $doc.fromdate || $doc.todate}<BR>

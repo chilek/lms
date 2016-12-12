@@ -3543,4 +3543,8 @@ $_LANG['Selected network is already assigned to customer $a ($b)!'] = 'Wybrana s
 
 $_LANG['- without assigned groups -'] = '- bez przypisanych grup -';
 
+$_LANG['Created<!document>'] = 'Utworzony';
+$_LANG['Confirmed<!document>'] = 'Zatwierdzony';
+$_LANG['by:<!document>'] = 'przez:';
+
 ?>

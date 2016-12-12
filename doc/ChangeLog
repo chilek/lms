@@ -46,6 +46,7 @@ version ?.??.?? (????-??-??):
   - improvement: allow to print web layout without left menu bar, top autosuggest fields
     and toolbar [chilan]
   - enhancement: show document creator on document lists [chilan]
+  - enhancement: added support for confirmation user storage in documents [chilan]
 
 version 1.11.21 (2016-10-14):
 
