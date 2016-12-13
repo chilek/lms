@@ -47,6 +47,7 @@ version ?.??.?? (????-??-??):
     and toolbar [chilan]
   - enhancement: show document creator on document lists [chilan]
   - enhancement: added support for confirmation user storage in documents [chilan]
+  - enhancement: allow to select which helpdesk ticket details are printed [chilan]
 
 version 1.11.21 (2016-10-14):
 

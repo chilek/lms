@@ -3548,4 +3548,7 @@ $_LANG['Confirmation date<!document>'] = 'Data zatwierdzenia';
 $_LANG['Created by<!document>'] = 'Utworzono przez';
 $_LANG['Confirmed by<!document>'] = 'Zatwierdzono przez';
 
+$_LANG['Notes<!rt>'] = 'Notatki';
+$_LANG['History<!rt>'] = 'Historia';
+
 ?>
