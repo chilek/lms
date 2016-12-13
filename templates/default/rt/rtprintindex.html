@@ -106,24 +106,26 @@
 					</TD>
 					<TD width="1%">
 						<TABLE>
-						{foreach from=$categories item=category}
+							<TBODY class="lms-ui-multi-check">
+							{foreach $categories as $category}
 							<TR>
 								<TD width="1%" align="center">
-									<INPUT type="checkbox" name="categories[{$category.id}]" ID="cat1{$category.id}" value="1" CHECKED>
+									<INPUT type="checkbox" name="categories[{$category.id}]" class="lms-ui-multi-check" value="1" CHECKED>
 								</TD>
 								<TD width="1%">
 									<label for="cat1{$category.id}">{$category.name}</label>
 								</TD>
 							</TR>
-						{/foreach}
+							{/foreach}
 							<TR>
 								<TD width="1%" align="center" class="ftop">
-									<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('ticketslist', this, ['extended', 'contacts'])" VALUE="1" CHECKED>
+									<INPUT TYPE="checkbox" NAME="allbox" id="allbox-1" class="lms-ui-multi-check-all" VALUE="1" CHECKED>
 								</TD>
 								<TD width="1%" class="ftop">
-									<label for="allbox">{trans("Check All")}</label>
+									<label for="allbox-1">{trans("Check All")}</label>
 								</TD>
 							</TR>
+							</TBODY>
 						</TABLE>
 					</TD>
 				</TR>
@@ -204,24 +206,26 @@
 					</TD>
 					<TD width="1%">
 						<TABLE>
-						{foreach from=$categories item=category}
+							<tbody class="lms-ui-multi-check">
+							{foreach $categories as $category}
 							<TR>
 								<TD width="1%" align="center">
-									<INPUT type="checkbox" name="categories[{$category.id}]" ID="cat2{$category.id}" value="1" CHECKED>
+									<INPUT type="checkbox" name="categories[{$category.id}]" class="lms-ui-multi-check" value="1" CHECKED>
 								</TD>
 								<TD width="1%">
 									<label for="cat2{$category.id}">{$category.name}</label>
 								</TD>
 							</TR>
-						{/foreach}
+							{/foreach}
 							<TR>
 								<TD width="1%" align="center" class="ftop">
-									<INPUT TYPE="checkbox" NAME="allbox" id="allbox" onchange="CheckAll('stats', this)" VALUE="1" CHECKED>
+									<INPUT TYPE="checkbox" NAME="allbox" id="allbox-2" class="lms-ui-multi-check-all" VALUE="1" CHECKED>
 								</TD>
 								<TD width="1%"  class="ftop">
-									<label for="allbox">{trans("Check All")}</label>
+									<label for="allbox-2">{trans("Check All")}</label>
 								</TD>
 							</TR>
+							</tbody>
 						</TABLE>
 					</TD>
 				</TR>
