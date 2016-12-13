@@ -222,9 +222,11 @@ function submit_location()
 			locat = borough + ', ' + locat;
 			/^(.+)\s*,\s*(.+)$/.test(locat);
 		}
-		loc.value = RegExp.$2;
 		if (loc_city) {
+			loc.value = RegExp.$2;
 			loc_city.value = RegExp.$1;
+		} else {
+			loc.value = locat;
 		}
 	}
 
