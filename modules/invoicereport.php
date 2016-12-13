@@ -100,16 +100,23 @@ if(!empty($_POST['division']))
 }
 
 // Sorting
-switch ($_POST['datetype']) {
+switch ($_POST['sorttype']) {
 	case 'sdate':
-		$sortcol = 'COALESCE(d.sdate, d.cdate)';
+		$sortcol = 'CEIL(COALESCE(d.sdate, d.cdate) / 86400)';
+		$wherecol = 'COALESCE(d.sdate, d.cdate)';
 		break;
 	case 'pdate':
-		$sortcol = '(d.cdate + (d.paytime * 86400))';
+		$sortcol = 'CEIL((d.cdate + (d.paytime * 86400)) / 86400)';
+		$wherecol = '(d.cdate + (d.paytime * 86400))';
+		break;
+	case 'number':
+		$sortcol = 'd.number';
+		$wherecol = 'd.cdate';
 		break;
 	case 'cdate':
 	default:
-		$sortcol = 'd.cdate';
+		$sortcol = 'CEIL(d.cdate / 86400)';
+		$wherecol = 'd.cdate';
 }
 
 if (in_array($_POST['doctype'], array('invoices', 'notes')))
@@ -143,7 +150,7 @@ $items = $DB->GetAll('SELECT c.docid, c.itemid,' . ($doctype == 'invoices' ? ' c
 		' . ($doctype == 'invoices' ? 'LEFT JOIN invoicecontents c ON c.docid = d.id'
 			: 'LEFT JOIN debitnotecontents c ON c.docid = d.id') . '
 	    LEFT JOIN numberplans n ON d.numberplanid = n.id
-	    WHERE cancelled = 0 AND (d.type = ? OR d.type = ?) AND ('.$sortcol.' BETWEEN ? AND ?) '
+	    WHERE cancelled = 0 AND (d.type = ? OR d.type = ?) AND (' . $wherecol . ' BETWEEN ? AND ?) '
 	    .(isset($numberplans) ? 'AND d.numberplanid IN (' . $numberplans . ')' : '')
 	    .(isset($divwhere) ? $divwhere : '')
 	    .(isset($groupwhere) ? $groupwhere : '')
@@ -151,7 +158,7 @@ $items = $DB->GetAll('SELECT c.docid, c.itemid,' . ($doctype == 'invoices' ? ' c
                 	    SELECT 1 FROM customerassignments a
 			    JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 			    WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)
-	    ORDER BY CEIL('.$sortcol.'/86400), d.id', $args);
+	    ORDER BY ' . $sortcol . ', d.id', $args);
 
 if ($items) {
 	foreach ($items as $row) {
