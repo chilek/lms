@@ -121,6 +121,7 @@ DROP TABLE IF EXISTS location_cities;
 DROP TABLE IF EXISTS location_boroughs;
 DROP TABLE IF EXISTS location_districts;
 DROP TABLE IF EXISTS location_states;
+DROP TABLE IF EXISTS location_buildings;
 DROP TABLE IF EXISTS receiptcontents;
 DROP TABLE IF EXISTS documentattachments;
 DROP TABLE IF EXISTS documentcontents;
@@ -545,6 +546,24 @@ CREATE TABLE location_streets (
     FOREIGN KEY (typeid) REFERENCES location_street_types (id) ON DELETE SET NULL ON UPDATE CASCADE,
     FOREIGN KEY (cityid) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
+# Structure of table location_streets
+#
+CREATE TABLE location_buildings (
+    id           int(11) auto_increment,
+    city_id      int(11) NOT NULL,
+    street_id    int(11) NULL,
+    building_num varchar(20) NULL,
+    flats        int(11) NULL,
+    latitude     numeric(10,6) NULL,
+    longitude    numeric(10,6) NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (city_id) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (street_id) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    INDEX location_cityid_index (city_id)
+) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
