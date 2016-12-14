@@ -40,6 +40,15 @@ version ?.??.?? (????-??-??):
     ip addresses [chilan]
   - enhancement: allow to specify indefinite cutoff stop dates [chilan]
   - enhancement: JPK FA (invoices) support added [chilan]
+  - enhancement: allow to define teryt addresses and tax office codes for divisions [chilan]
+  - improvement: JPK FA (invoices) report uses recently added division teryt location
+    and division tax office assigned [chilan]
+  - improvement: allow to print web layout without left menu bar, top autosuggest fields
+    and toolbar [chilan]
+  - enhancement: show document creator on document lists [chilan]
+  - enhancement: added support for confirmation user storage in documents [chilan]
+  - enhancement: allow to select which helpdesk ticket details are printed [chilan]
+  - enhancement: added document number sort cryterion to invoice report [chilan]
 
 version 1.11.21 (2016-10-14):
 

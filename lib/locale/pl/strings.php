@@ -26,6 +26,9 @@
 
 $_LANG['Export to JPK format'] = 'Eksport do formatu JPK';
 $_LANG['Division not selected!'] = 'Nie wybrano firmy!';
+$_LANG['Tax Office Code:'] = 'Kod Urzędu Podatkowego:';
+$_LANG['Enter Tax Office Code (optional)'] = 'Wprowadź Kod Urzędu Podatkowego (opcjpnalnie)';
+$_LANG['Invalid format of Tax Office Code!'] = 'Niepoprawny format Kodu Urzędu Podatkowego!';
 
 $_LANG['billing'] = 'biling';
 $_LANG['Billing'] = 'Biling';
@@ -3539,5 +3542,17 @@ $_LANG['Select first free address'] = 'Wybierz pierwszy dostępny adres';
 $_LANG['Selected network is already assigned to customer $a ($b)!'] = 'Wybrana sieć jest już przypisana do klienta $a ($b)!';
 
 $_LANG['- without assigned groups -'] = '- bez przypisanych grup -';
+
+$_LANG['Creation date<!document>'] = 'Data utworzenia';
+$_LANG['Confirmation date<!document>'] = 'Data zatwierdzenia';
+$_LANG['Created by<!document>'] = 'Utworzono przez';
+$_LANG['Confirmed by<!document>'] = 'Zatwierdzono przez';
+
+$_LANG['Notes<!rt>'] = 'Notatki';
+$_LANG['History<!rt>'] = 'Historia';
+
+$_LANG['sort by'] = 'sortuj wg';
+$_LANG['Select sort cryterion'] = 'Wybierz kryterium sortowania';
+$_LANG['Document number'] = 'Numer dokumentu';
 
 ?>

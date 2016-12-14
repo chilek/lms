@@ -87,14 +87,19 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             'SELECT v.id, v.login, v.passwd, v.ownerid, '
                 . $this->db->Concat('c.lastname', "' '", 'c.name')
                 . ' AS owner, v.access,
-				location, lb.name AS borough_name, ld.name AS district_name, ls.name AS state_name
+				location, lb.name AS borough_name, ld.name AS district_name, lst.name AS state_name,
+				lc.name AS city_name,
+				(CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
+				lt.name AS street_type
 			FROM voipaccounts v '
 				. (isset($search['phone']) ? 'JOIN voip_numbers n ON n.voip_account_id = v.id' : '')
 				. ' JOIN customerview c ON (v.ownerid = c.id)
 				LEFT JOIN location_cities lc ON lc.id = v.location_city
+				LEFT JOIN location_streets ls ON (ls.id = v.location_street)
+				LEFT JOIN location_street_types lt ON (lt.id = ls.typeid)
 				LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
-				LEFT JOIN location_states ls ON ls.id = ld.stateid '
+				LEFT JOIN location_states lst ON lst.id = ld.stateid '
 	            . (isset($searchargs) ? $searchargs : '')
 	            . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
         );
@@ -306,12 +311,18 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         $result = $this->db->GetRow('
             SELECT v.id, ownerid, login, passwd, creationdate, moddate, creatorid, modid, access, balance,
                 location, location_city, location_street, location_house, location_flat,
-                lb.name AS borough_name, ld.name AS district_name, ls.name AS state_name, v.flags, v.balance, v.cost_limit
+                lb.name AS borough_name, ld.name AS district_name, lst.name AS state_name,
+				lc.name AS city_name,
+				(CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
+				lt.name AS street_type,
+                v.flags, v.balance, v.cost_limit
             FROM voipaccounts v
                 LEFT JOIN location_cities lc ON lc.id = v.location_city
+				LEFT JOIN location_streets ls ON (ls.id = v.location_street)
+				LEFT JOIN location_street_types lt ON (lt.id = ls.typeid)
                 LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
                 LEFT JOIN location_districts ld ON ld.id = lb.districtid
-                LEFT JOIN location_states ls ON ls.id = ld.stateid
+                LEFT JOIN location_states lst ON lst.id = ld.stateid
             WHERE v.id = ?',
             array($id)
         );
@@ -449,13 +460,18 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
     public function getCustomerVoipAccounts($id) {
         $result['accounts'] = $this->db->GetAll(
             'SELECT v.id, login, passwd, ownerid, access,
-		location, location_city, location_street, location_house, location_flat,
-		lb.name AS borough_name, ld.name AS district_name, ls.name AS state_name
+			location, location_city, location_street, location_house, location_flat,
+			lb.name AS borough_name, ld.name AS district_name, lst.name AS state_name,
+			lc.name AS city_name,
+			(CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
+			lt.name AS street_type
 		FROM voipaccounts v
 		LEFT JOIN location_cities lc ON lc.id = v.location_city
+		LEFT JOIN location_streets ls ON (ls.id = v.location_street)
+		LEFT JOIN location_street_types lt ON (lt.id = ls.typeid)
 		LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
 		LEFT JOIN location_districts ld ON ld.id = lb.districtid
-		LEFT JOIN location_states ls ON ls.id = ld.stateid
+		LEFT JOIN location_states lst ON lst.id = ld.stateid
             WHERE ownerid=?
             ORDER BY login ASC', array($id)
         );

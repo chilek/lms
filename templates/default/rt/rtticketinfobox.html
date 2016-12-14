@@ -1,4 +1,18 @@
 <!-- $Id$ -->
+<script type="text/javascript">
+<!--
+	$(function() {
+		$('#print-anchor').click(function() {
+			window.open('?m=rtticketprint&id={$ticket.ticketid}'
+				+ ($('#messages-chkbox:checked').length ? '&messages=1' : '')
+				+ ($('#notes-chkbox:checked').length ? '&notes=1' : '')
+				+ ($('#history-chkbox:checked').length ? '&history=1' : ''),
+				'_blank');
+			return false;
+		});
+	});
+//-->
+</script>
 <TABLE class="lmsbox">
 	<THEAD>
 	<TR>
@@ -148,7 +162,21 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD class="buttons" colspan="3">
+		<TD class="buttons" colspan="3" style="line-height: 180%;">
+			<label>
+				<input type="checkbox" id="messages-chkbox">
+				{trans("Messages")}
+			</label>
+			<label>
+				<input type="checkbox" id="notes-chkbox">
+				{trans("Notes<!rt>")}
+			</label>
+			<label>
+				<input type="checkbox" id="history-chkbox">
+				{trans("History<!rt>")}
+			</label>
+			<A id="print-anchor" href="?m=rtticketprint&id={$ticket.ticketid}"><IMG src="img/print.gif" alt=""> {trans("Print")}</A>
+			<br>
 			{if $ticket.owner != $layout.logid}
 			<A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;assign">{trans("Assign to me")} <IMG src="img/users.gif" alt=""></A>
 			{/if}
@@ -157,7 +185,6 @@
 			{/if}
 			<A href="?m=rtticketdel&amp;id={$ticket.ticketid}" onClick="return confirmLink(this, '{t a=$ticket.ticketid}Are you sure, you want to remove ticket $a?{/t}')">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
 			<A href="?m=rtticketedit&amp;id={$ticket.ticketid}">{trans("Edit")} <IMG src="img/edit.gif" alt=""></A>
-			<A href="?m=rtticketprint&amp;id={$ticket.ticketid}" rel="external">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
 		</TD>
 	</TR>
 	</TBODY>

@@ -29,22 +29,22 @@ if(isset($_GET['action']) && $_GET['action'] == 'confirm')
 	if(!empty($_POST['marks']))
 	{
 	        foreach($_POST['marks'] as $id => $mark)
-			$DB->Execute('UPDATE documents SET closed=1 WHERE id=?
+			$DB->Execute('UPDATE documents SET sdate=?NOW?, cuserid=?, closed=1 WHERE id=?
 				AND EXISTS (SELECT 1 FROM docrights r WHERE r.userid = ?
 					AND r.doctype = documents.type AND (r.rights & 4) = 4)',
-				array($mark, $AUTH->id));
+				array($AUTH->id, $mark, $AUTH->id));
 	}
 	else
-		$DB->Execute('UPDATE documents SET closed=1 WHERE id=?
+		$DB->Execute('UPDATE documents SET sdate=?NOW?, cuserid=?, closed=1 WHERE id=?
 			AND EXISTS (SELECT 1 FROM docrights r WHERE r.userid = ?
 				AND r.doctype = documents.type AND (r.rights & 4) = 4)',
-			array($_GET['id'], $AUTH->id));
+			array($AUTH->id, $_GET['id'], $AUTH->id));
 
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
 $document = $DB->GetRow('SELECT documents.id AS id, closed, type, number, template,
-	cdate, numberplanid, title, fromdate, todate, description, divisionid, documents.customerid
+	cdate, sdate, cuserid, numberplanid, title, fromdate, todate, description, divisionid, documents.customerid
 	FROM documents
 	JOIN docrights r ON (r.doctype = documents.type)
 	LEFT JOIN documentcontents ON (documents.id = docid)
@@ -180,10 +180,12 @@ if(isset($_POST['document']))
 			'customerid' => $document['customerid'],
 		));
 
-		$DB->Execute('UPDATE documents SET type=?, closed=?, number=?, numberplanid=?, fullnumber=?
+		$DB->Execute('UPDATE documents SET type=?, closed=?, sdate=?, cuserid=?, number=?, numberplanid=?, fullnumber=?
 				WHERE id=?',
 				array(	$documentedit['type'],
 					$documentedit['closed'],
+					$documentedit['closed'] ? ($document['closed'] ? $document['sdate'] : time()) : 0,
+					$documentedit['closed'] ? ($document['closed'] ? $document['cuserid'] : $AUTH->id) : 0,
 					$documentedit['number'],
 					$documentedit['numberplanid'],
 					$fullnumber,

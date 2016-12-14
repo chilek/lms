@@ -112,13 +112,14 @@ function module_updateusersave()
 	{
 	    if($field == 'phone' || $field == 'email' || $field == 'im')
 	    {
-		    $type = $field == 'phone' ? 'contacts' : $field;
+		    $type = $field == 'phone' ? 'contacts' : $field . 's';
+		    $checked_property = $field == 'im' ? 'uid' : $field;
 		    foreach($val as $i => $v)
 		    {
 		        $v = trim(htmlspecialchars($v, ENT_NOQUOTES));
 			if(isset($right['edit_contact']))
 			{
-			    if(isset($userinfo[$type][$i]) && $userinfo[$type][$i][$field] != $v)
+			    if(isset($userinfo[$type][$i]) && $userinfo[$type][$i][$checked_property] != $v)
 			    {
 				    if($v)
 					    $LMS->DB->Execute('UPDATE customercontacts SET contact = ? WHERE id = ? AND customerid = ?', array($v, $i, $id));
@@ -129,10 +130,10 @@ function module_updateusersave()
 			    	    $LMS->DB->Execute('INSERT INTO customercontacts (customerid, contact, type) VALUES (?, ?, ?)',
 					array($id, $v, CONTACT_LANDLINE));
 			    
-			    $userinfo[$type][$i][$field] = $v;
+			    $userinfo[$type][$i][$checked_property] = $v;
 			}
-			elseif(isset($right['edit_contact_ack']) && ($v || isset($userinfo['contacts'][$i])))
-				if(!isset($userinfo[$type][$i]) || $userinfo[$type][$i][$field] != $v)
+			elseif(isset($right['edit_contact_ack']) && ($v || isset($userinfo[$type][$i])))
+				if(!isset($userinfo[$type][$i]) || $userinfo[$type][$i][$checked_property] != $v)
 					$LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue) 
 						VALUES(?, ?, ?)', array($id, $field.$i, $v));
 		    }

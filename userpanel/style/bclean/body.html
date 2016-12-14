@@ -1,5 +1,13 @@
 <h1 class="mt-1">
-	{$page_header} <small class="text-muted">{trans('Virtual Customer Service')}</small>
+	{if $company_logo}
+		<img src="{$company_logo}">
+	{/if}
+	{if $page_header}
+		<br><small class="text-muted">{$page_header}</small>
+	{/if}
+	{if !$company_logo && !$page_header}
+		<br><small class="text-muted">{trans('Virtual Customer Service')}</small>
+	{/if}
 </h1>
 {if $modules}
 	<nav class="navbar navbar-dark bg-primary mb-1">

@@ -36,9 +36,10 @@
 				<THEAD>
 				<TR>
 					<TD style="width: 1%;" class="bold nobr">{trans("Number:")}</TD>
-					<TD style="width: 1%;" class="nobr">{trans("Created:")}</TD>
+					<TD style="width: 1%;" class="nobr">{trans("Creation date<!document>")} / {trans("Confirmation date<!document>")}:</TD>
+					<TD style="width: 1%;" class="nobr">{trans("Created by<!document>")} / {trans("Confirmed by<!document>")}:</TD>
 					<TD style="width: 1%;" class="bold nobr">{trans("Type:")}</TD>
-					<TD style="width: 95%;" class="nobr">{trans("Title:")}</TD>
+					<TD style="width: 94%;" class="nobr">{trans("Title:")}</TD>
 					<TD style="width: 1%;" class="nobr">{trans("Period:")}</TD>
 					<TD style="width: 1%;" class="nobr"></TD>
 				</TR>
@@ -50,7 +51,12 @@
 					<TD class="bold nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');"{if $doc.description} {tip text=$doc.description}{/if}>
 						{number number=$doc.number template=$doc.template time=$doc.cdate}
 					</TD>
-					<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">{$doc.cdate|date_format:"%Y/%m/%d"}</TD>
+					<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
+						{$doc.cdate|date_format:"%Y/%m/%d %H:%M"}{if $doc.sdate} / {$doc.sdate|date_format:"%Y/%m/%d %H:%M"}{/if}
+					</TD>
+					<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
+						{$doc.username}{if $doc.cusername} / {$doc.cusername}{/if}
+					</TD>
 					<TD class="bold nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">{assign var=type value=$doc.type}{$_DOCTYPES.$type}</TD>
 					<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">{$doc.title|truncate:40:"...":true}</TD>
 					<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
@@ -94,7 +100,7 @@
 				</TR>
 				{foreachelse}
 				<TR>
-					<TD class="empty-table" colspan="6">
+					<TD class="empty-table" colspan="7">
 						<p>{trans("That customer hasn't got any documents.")}</p>
 					</TD>
 				</TR>

@@ -41,7 +41,14 @@ if (!empty($_GET['changestatus'])) {
 	$SESSION->redirect('?m=divisionlist');
 }
 
-$olddiv = $DB->GetRow('SELECT * FROM divisions WHERE id = ?', array($_GET['id']));
+$olddiv = $DB->GetRow('SELECT d.*, lc.name AS city_name,
+		(CASE WHEN ls.name2 IS NOT NULL THEN ' . $DB->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
+		lt.name AS street_type
+	FROM divisions d
+	LEFT JOIN location_cities lc ON lc.id = d.location_city
+	LEFT JOIN location_streets ls ON ls.id = d.location_street
+	LEFT JOIN location_street_types lt ON lt.id = ls.typeid
+	WHERE d.id = ?', array($_GET['id']));
 
 if(!empty($_POST['division'])) 
 {
@@ -94,7 +101,16 @@ if(!empty($_POST['division']))
 	if($division['inv_paytime'] == '')
                 $division['inv_paytime'] = NULL;
 
+	if (!preg_match('/^[0-9]*$/', $division['tax_office_code']))
+		$error['tax_office_code'] = trans('Invalid format of Tax Office Code!');
+
 	if (!$error) {
+		if (empty($division['teryt'])) {
+			$division['location_city'] = null;
+			$division['location_street'] = null;
+			$division['location_house'] = null;
+			$division['location_flat'] = null;
+		}
 		$args = array(
 			'name' => $division['name'],
 			'shortname' => $division['shortname'],
@@ -113,12 +129,18 @@ if(!empty($_POST['division']))
 			'inv_paytype' => $division['inv_paytype'] ? $division['inv_paytype'] : null,
 			'description' => $division['description'],
 			'status' => !empty($division['status']) ? 1 : 0,
+			'location_city' => $division['location_city'],
+			'location_street' => $division['location_street'] ? $division['location_street'] : null,
+			'location_house' => $division['location_house'],
+			'location_flat' => $division['location_flat'],
+			'tax_office_code' => $division['tax_office_code'],
 			SYSLOG::RES_DIV => $division['id']
 		);
 		$DB->Execute('UPDATE divisions SET name=?, shortname=?, address=?, 
 			city=?, zip=?, countryid=?, ten=?, regon=?, account=?, inv_header=?, 
 			inv_footer=?, inv_author=?, inv_cplace=?, inv_paytime=?,
-			inv_paytype=?, description=?, status=? 
+			inv_paytype=?, description=?, status=?, location_city = ?, location_street = ?,
+			location_house = ?, location_flat = ?, tax_office_code = ?
 			WHERE id=?', array_values($args));
 
 		if ($SYSLOG)
@@ -126,9 +148,21 @@ if(!empty($_POST['division']))
 
 		$SESSION->redirect('?m=divisionlist');
 	}
+} else {
+	if ($olddiv['location_city'] || $olddiv['location_street']) {
+		$olddiv['teryt'] = true;
+		if ($olddiv['location_city'] && $olddiv['location_street']) {
+			preg_match('/^(?<city>.+)\s*,\s*(?<address>.+)$/', location_str($olddiv), $m);
+			$olddiv['city'] = $m['city'];
+			$oldciv['address'] = $m['address'];
+		}
+	}
 }
 
 $layout['pagetitle'] = trans('Edit Division: $a', $olddiv['shortname']);
+
+if ($_language == 'pl')
+	require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'tax_office_codes.php');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

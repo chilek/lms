@@ -154,8 +154,10 @@ if (isset($_POST['voipaccountedit'])) {
 		die;
 	}
 } else
-	if ($voipaccountinfo['location_city'] && $voipaccountinfo['location_street'])
+	if ($voipaccountinfo['location_city'] && $voipaccountinfo['location_street']) {
 		$voipaccountinfo['teryt'] = 1;
+		$voipaccountinfo['location'] = location_str($voipaccountinfo);
+	}
 
 $customers = $LMS->GetCustomerNames();
 

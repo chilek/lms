@@ -552,16 +552,25 @@ function check_teryt(locid, init)
 {
     var checked = document.getElementById('teryt').checked;
 
-    if (locid) {
-        var loc = document.getElementById(locid);
-        if (checked) {
-            //if (!init)
-            //    loc.value = '';
-            loc.setAttribute('readonly', true);
-        }
-        else {
-            loc.removeAttribute('readonly');
-        }
+	if (typeof locid == 'undefined')
+		return checked;
+
+	if (Array.isArray(locid))
+		locids = locid;
+	else
+		locids = [ locid ];
+
+    if (locids) {
+		locids.forEach(function(locid) {
+			var loc = document.getElementById(locid);
+			if (checked) {
+				//if (!init)
+				//    loc.value = '';
+				loc.setAttribute('readonly', true);
+			} else {
+				loc.removeAttribute('readonly');
+			}
+		});
     }
 
     return checked;

@@ -152,6 +152,17 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	if ($jpk) {
 		$jpk_data .= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 		$jpk_data .= "<JPK xmlns=\"http://jpk.mf.gov.pl/wzor/2016/03/09/03095/\" xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2016/01/25/eD/DefinicjeTypy/\">\n";
+
+		$divisionid = intval($_GET['divisionid']);
+		$division = $DB->GetRow("SELECT d.name, shortname, address, city, zip, countryid, ten, regon,
+				account, inv_header, inv_footer, inv_author, inv_cplace, location_city, location_street, tax_office_code,
+				lb.name AS borough, ld.name AS district, ls.name AS state FROM divisions d
+				LEFT JOIN location_cities lc ON lc.id = location_city
+				LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
+				LEFT JOIN location_districts ld ON ld.id = lb.districtid
+				LEFT JOIN location_states ls ON ls.id = ld.stateid
+				WHERE d.id = ?", array($divisionid));
+
 		// JPK header
 		$jpk_data .= "\t<Naglowek>\n";
 		$jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_FA (1)\" wersjaSchemy=\"1-0\">JPK_FA</KodFormularza>\n";
@@ -161,13 +172,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		$jpk_data .= "\t\t<DataOd>" . strftime('%Y-%m-%d', $datefrom) . "</DataOd>\n";
 		$jpk_data .= "\t\t<DataDo>" . strftime('%Y-%m-%d', $dateto) . "</DataDo>\n";
 		$jpk_data .= "\t\t<DomyslnyKodWaluty>PLN</DomyslnyKodWaluty>\n";
-		$jpk_data .= "\t\t<KodUrzedu>" . ConfigHelper::getConfig('jpk.tax_office_code', '', true) . "</KodUrzedu>\n";
+		$jpk_data .= "\t\t<KodUrzedu>" . (!empty($division['tax_office_code']) ? $division['tax_office_code']
+			: ConfigHelper::getConfig('jpk.tax_office_code', '', true)) . "</KodUrzedu>\n";
 		$jpk_data .= "\t</Naglowek>\n";
-
-		$divisionid = intval($_GET['divisionid']);
-		$division = $DB->GetRow("SELECT name, shortname, address, city, zip, countryid, ten, regon,
-				account, inv_header, inv_footer, inv_author, inv_cplace
-				FROM divisions WHERE id = ?", array($divisionid));
 
 		$jpk_data .= "\t<Podmiot1>\n";
 		$jpk_data .= "\t\t<IdentyfikatorPodmiotu>\n";
@@ -177,9 +184,12 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		$jpk_data .= "\t\t</IdentyfikatorPodmiotu>\n";
 		$jpk_data .= "\t\t<AdresPodmiotu>\n";
 		$jpk_data .= "\t\t\t<etd:KodKraju>PL</etd:KodKraju>\n";
-		$jpk_data .= "\t\t\t<etd:Wojewodztwo>" . ConfigHelper::getConfig('jpk.division_state', '', true) . "</etd:Wojewodztwo>\n";
-		$jpk_data .= "\t\t\t<etd:Powiat>" . ConfigHelper::getConfig('jpk.division_district', '', true) . "</etd:Powiat>\n";
-		$jpk_data .= "\t\t\t<etd:Gmina>" . ConfigHelper::getConfig('jpk.division_borough', '', true) . "</etd:Gmina>\n";
+		$jpk_data .= "\t\t\t<etd:Wojewodztwo>" . (!empty($division['state']) ? $division['state']
+			: ConfigHelper::getConfig('jpk.division_state', '', true)) . "</etd:Wojewodztwo>\n";
+		$jpk_data .= "\t\t\t<etd:Powiat>" . (!empty($division['district']) ? $division['district']
+			: ConfigHelper::getConfig('jpk.division_district', '', true)) . "</etd:Powiat>\n";
+		$jpk_data .= "\t\t\t<etd:Gmina>" . (!empty($division['borough']) ? $division['borough']
+			: ConfigHelper::getConfig('jpk.division_borough', '', true)) . "</etd:Gmina>\n";
 		$address = parse_address($division['address']);
 		$jpk_data .= "\t\t\t<etd:Ulica>" . $address['street'] . "</etd:Ulica>\n";
 		$jpk_data .= "\t\t\t<etd:NrDomu>" . $address['house'] . "</etd:NrDomu>\n";

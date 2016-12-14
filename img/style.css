@@ -595,6 +595,12 @@ div.lms-ui-multiselectlayer ul span {
     color: black;
   }
 }
+@media print {
+  .no-print,
+  .no-print * {
+    display: none !important;
+  }
+}
 .lms-ui-multi-check-all {
   -webkit-user-select: none;
   -moz-user-select: none;

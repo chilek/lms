@@ -99,5 +99,7 @@ $_LANG['Authentication type:'] = 'Rodzaj uwierzytelniania:';
 $_LANG['Userpanel authentication type'] = 'Rodzaj uwierzytelniania używany przez Userpanel';
 
 $_LANG['Page header'] = 'Nagłówek strony';
+$_LANG['Company logo'] = 'Logo firmy';
+$_LANG['Enter path to your company logo'] = 'Wpisz ścieżkę do logo firmy';
 
 ?>

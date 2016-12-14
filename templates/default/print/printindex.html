@@ -541,11 +541,12 @@
 						    <TR>
 						        <TD colspan="2"></TD>
 					            <TD colspan="2" class="nobr">
-					                {trans("by date")}:
-					                <SELECT name="datetype" {tip text="Select date type"}>
+					                {trans("sort by")}:
+					                <SELECT name="sorttype" {tip text="Select sort cryterion"}>
 					                    <OPTION value="cdate">{trans("Draw-up date")}</OPTION>
 					                    <OPTION value="sdate">{trans("Sale date")}</OPTION>
 					                    <OPTION value="pdate">{trans("Deadline")}</OPTION>
+					                    <option value="number">{trans("Document number")}</option>
 					                </SELECT>
 					            </TD>
 					        </TR>

@@ -183,6 +183,7 @@ function submit_location()
 		flat = document.getElementById('flat_input'),
 		cr = document.getElementById('city'),
 		loc = window.parent.document.getElementById('location');
+		loc_city = window.parent.document.getElementById('location_city');
 
 	if (cr.style.display == 'none' || city.value == 0) {
 		alert('{trans("City has not been selected!")}');
@@ -207,10 +208,26 @@ function submit_location()
 	locform.elements[varname+'[location_flat]'].value = flat.value;
 
 	if (loc) {
-		 loc.value = build_location_str(
+		locat = build_location_str(
 			city.value ? city.options[city.selectedIndex].text : '',
 			street.value ? street.options[street.selectedIndex].text : '',
 			house.value, flat.value);
+		if (!/^(.+)\s*,\s*(.+)$/.test(locat)) {
+			// handle variant with city without street names
+			/^.+\((.+)\)$/.test(city.options[city.selectedIndex].text);
+			var borough = RegExp.$1;
+			{foreach $_BOROUGHTYPES as $key => $item}
+			borough = borough.replace('{$item} ', '');
+			{/foreach}
+			locat = borough + ', ' + locat;
+			/^(.+)\s*,\s*(.+)$/.test(locat);
+		}
+		if (loc_city) {
+			loc.value = RegExp.$2;
+			loc_city.value = RegExp.$1;
+		} else {
+			loc.value = locat;
+		}
 	}
 
 	window.parent.popclick();
