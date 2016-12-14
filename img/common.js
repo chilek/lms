@@ -725,3 +725,39 @@ if (typeof $ !== 'undefined') {
 		}
 	});
 }
+
+/*!
+ * \brief Auto hide left vertical menu on print
+ */
+
+var show_menu_after_print = 0;
+
+var LMS_beforePrintEvent = function() {
+	if ( $('#pageleftbar').hasClass('pageleftbar-hidden') ) {
+		show_menu_after_print = 0;
+	} else {
+		$( "#lms-ui-main-menu-toggle" ).trigger( "click" );
+		show_menu_after_print = 1;
+	}
+};
+
+var LMS_afterPrintEvent = function() {
+	if ( show_menu_after_print == 1 ) {
+		$( "#lms-ui-main-menu-toggle" ).trigger( "click" );
+    }
+};
+
+if (window.matchMedia) {
+    var mediaQueryList = window.matchMedia('print');
+
+    mediaQueryList.addListener(function(mql) {
+        if (mql.matches) {
+            LMS_beforePrintEvent();
+        } else {
+            LMS_afterPrintEvent();
+        }
+    });
+}
+
+window.onbeforeprint = LMS_beforePrintEvent;
+window.onafterprint  = LMS_afterPrintEvent;

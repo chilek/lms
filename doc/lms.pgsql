@@ -260,6 +260,25 @@ CREATE TABLE location_streets (
 );
 
 /* --------------------------------------------------------
+  Structure of table "location_buildings"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS location_buildings_id_seq;
+CREATE SEQUENCE location_buildings_id_seq");
+DROP TABLE IF EXISTS location_buildings CASCADE;
+CREATE TABLE location_buildings (
+    id           integer DEFAULT nextval('location_buildings_id_seq'::text) NOT NULL,
+    city_id      integer NOT NULL REFERENCES location_cities  (id) ON DELETE CASCADE  ON UPDATE CASCADE,
+    street_id    integer NULL     REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    building_num varchar(20) NULL,
+    flats        integer NULL,
+    latitude     numeric(10,6) NULL,
+    longitude    numeric(10,6) NULL,
+    PRIMARY KEY (id)
+);
+DROP INDEX IF EXISTS location_cityid_index;
+CREATE INDEX location_cityid_index ON location_buildings (city_id);
+
+/* --------------------------------------------------------
   Structure of table "pna"
 -------------------------------------------------------- */
 DROP SEQUENCE IF EXISTS pna_id_seq;
