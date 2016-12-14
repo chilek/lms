@@ -147,6 +147,10 @@ $LMS->lang = $_language;
    We should have all hard work here which is being done by our script!
    ********************************************************************/
 
+ini_set('memory_limit', '512M');
+$stderr = fopen('php://stderr', 'w');
+$stdout = fopen('php://stdout', 'w');
+
 /*!
  * \brief Change text to asociative array.
  *
@@ -168,24 +172,19 @@ function parseRow($row) {
 }
 
 if (empty($options['file'])) {
-    echo 'File isn\'t set. Please use -f --file to set file to read.', PHP_EOL;
+    fwrite($stderr, 'File isn\'t set. Please use -f --file to set file to read.' . PHP_EOL);
     exit;
 }
 
 $fh = fopen($options['file'], "r");
 
 if (!$fh) {
-    echo 'File \'', $options['file'], '\' not exists or name isn\'t correct.', PHP_EOL;
+    fwrite($stderr, 'File \'' . $options['file'] . '\' not exists or name isn\'t correct.' . PHP_EOL);
     exit;
 }
 
-ini_set('memory_limit', '512M');
-$stderr = fopen('php://stderr', 'w');
-$stdout = fopen('php://stdout', 'w');
-
 $steps = ceil( filesize($options['file']) / 4096 );
 $i = 1;
-
 $to_update = array();
 $to_insert = array();
 
@@ -199,7 +198,7 @@ if ($fh) {
 
     // ---------
 
-    echo 'Parsing file', PHP_EOL;
+    fwrite($stdout, 'Parsing file' . PHP_EOL);
 
     while (!feof($fh)) {
         $lines = explode("\n", fread($fh, 4096));
@@ -332,7 +331,7 @@ if ($fh) {
         // ---------
         // PROGRES MESSAGES
 
-        echo $i, ' / ', $steps, PHP_EOL;
+        fwrite($stdout, $i . ' / ' . $steps . PHP_EOL);
         ++$i;
 
         // ---------
@@ -346,13 +345,13 @@ if ($fh) {
          $DB->Execute( 'UPDATE location_buildings SET updated = 1 WHERE id in (' . implode(',', $to_update) . ')' );
     }
 
-    echo 'done', PHP_EOL;
-    echo 'Remove old buildings', PHP_EOL;
+    fwrite($stdout, 'done' . PHP_EOL);
+    fwrite($stdout, 'Remove old buildings' . PHP_EOL);
 
     $DB->Execute('DELETE FROM location_buildings WHERE updated = 0;');
     $DB->Execute('UPDATE location_buildings SET updated = 0;');
 
-    echo 'done', PHP_EOL;
+    fwrite($stdout, 'done' . PHP_EOL);
 
     fclose($fh);
     fclose($stderr);
