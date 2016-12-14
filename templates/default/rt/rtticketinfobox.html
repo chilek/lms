@@ -175,7 +175,7 @@
 				<input type="checkbox" id="history-chkbox">
 				{trans("History<!rt>")}
 			</label>
-			<A id="print-anchor" href="?m=rtticketprint&id={$ticket.ticketid}">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
+			<A id="print-anchor" href="?m=rtticketprint&id={$ticket.ticketid}"><IMG src="img/print.gif" alt=""> {trans("Print")}</A>
 			<br>
 			{if $ticket.owner != $layout.logid}
 			<A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;assign">{trans("Assign to me")} <IMG src="img/users.gif" alt=""></A>
