@@ -263,7 +263,7 @@ CREATE TABLE location_streets (
   Structure of table "location_buildings"
 -------------------------------------------------------- */
 DROP SEQUENCE IF EXISTS location_buildings_id_seq;
-CREATE SEQUENCE location_buildings_id_seq");
+CREATE SEQUENCE location_buildings_id_seq;
 DROP TABLE IF EXISTS location_buildings CASCADE;
 CREATE TABLE location_buildings (
     id           integer DEFAULT nextval('location_buildings_id_seq'::text) NOT NULL,
@@ -273,6 +273,7 @@ CREATE TABLE location_buildings (
     flats        integer NULL,
     latitude     numeric(10,6) NULL,
     longitude    numeric(10,6) NULL,
+    updated      smallint DEFAULT 0,
     PRIMARY KEY (id)
 );
 DROP INDEX IF EXISTS location_cityid_index;
@@ -2886,6 +2887,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016121400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016121401');
 
 COMMIT;
