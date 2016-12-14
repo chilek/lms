@@ -37,6 +37,7 @@ $parameters = array(
 	't:' => 'type:',
 	's:' => 'section:',
 	'c:' => 'channel:',
+	'a:' => 'actions:',
 );
 
 foreach ($parameters as $key => $val) {
@@ -77,6 +78,9 @@ lms-notify.php
                                 (separated by colons)
 -s, --section=<section-name>    section name from lms configuration where settings
                                 are stored
+-a, --actions=<node-access,customer-status,assignment-invoice,all-assignment-suspension>
+                                action names which should be performed for
+                                virtual block/unblock channels
 
 EOF;
 	exit(0);
@@ -104,6 +108,15 @@ if (array_key_exists('channel', $options))
 if (empty($channels))
 	$channels[] = 'mail';
 
+$actions = array();
+if (isset($options['actions']))
+	$actions = explode(',', $options['actions']);
+else
+	$actions = array('node-access', 'customer-status', 'assignment-invoice');
+
+$current_month = intval(strftime('%m'));
+$current_year = intval(strftime('%Y'));
+
 $config_section = (array_key_exists('section', $options) && preg_match('/^[a-z0-9-_]+$/i', $options['section']) ? $options['section'] : 'notify');
 
 $timeoffset = date('Z');
@@ -123,10 +136,10 @@ else
 	$CONFIG_FILE = DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'lms' . DIRECTORY_SEPARATOR . 'lms.ini';
 
 if (!$quiet)
-	echo "Using file ".$CONFIG_FILE." as config." . PHP_EOL;
+	echo "Using file " . $CONFIG_FILE . " as config." . PHP_EOL;
 
 if (!is_readable($CONFIG_FILE))
-	die("Unable to read configuration file [".$CONFIG_FILE."]!" . PHP_EOL);
+	die("Unable to read configuration file [" . $CONFIG_FILE . "]!" . PHP_EOL);
 
 define('CONFIG_FILE', $CONFIG_FILE);
 
@@ -141,11 +154,10 @@ define('LIB_DIR', $CONFIG['directories']['lib_dir']);
 
 // Load autoloader
 $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-if (file_exists($composer_autoload_path)) {
-    require_once $composer_autoload_path;
-} else {
-    die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/");
-}
+if (file_exists($composer_autoload_path))
+	require_once $composer_autoload_path;
+else
+	die("Composer autoload not found. Run 'composer install' command from LMS directory and try again. More informations at https://getcomposer.org/" . PHP_EOL);
 
 // Init database
 
@@ -240,7 +252,7 @@ if (!empty($mail_fname))
 //include(LIB_DIR . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'mtsms.php');
 
 function parse_customer_data($data, $row) {
-	global $DB;
+	$DB = LMSDB::getInstance();
 
 	$amount = -$row['balance'];
 	$totalamount = -$row['totalbalance'];
@@ -308,7 +320,7 @@ function parse_node_data($data, $row) {
 }
 
 function create_message($type, $subject, $template) {
-	global $DB;
+	$DB = LMSDB::getInstance();
 
 	$DB->Execute("INSERT INTO messages (type, cdate, subject, body)
 		VALUES (?, ?NOW?, ?, ?)",
@@ -317,8 +329,10 @@ function create_message($type, $subject, $template) {
 }
 
 function send_mail($msgid, $cid, $rmail, $rname, $subject, $body) {
-	global $LMS, $DB, $mail_from, $notify_email, $reply_email, $dsn_email, $mdn_email;
+	global $LMS, $mail_from, $notify_email, $reply_email, $dsn_email, $mdn_email;
 	global $smtp_options;
+
+	$DB = LMSDB::getInstance();
 
 	$DB->Execute("INSERT INTO messageitems
 		(messageid, customerid, destination, status)
@@ -360,7 +374,10 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body) {
 }
 
 function send_sms($msgid, $cid, $phone, $data) {
-	global $LMS, $DB;
+	global $LMS;
+
+	$DB = LMSDB::getInstance();
+
 	$DB->Execute("INSERT INTO messageitems
 		(messageid, customerid, destination, status)
 		VALUES (?, ?, ?, ?)",
@@ -1157,16 +1174,6 @@ if (!empty($intersect)) {
 		if (array_key_exists('customers', $notification))
 			$customers = array_merge($customers, $notification['customers']);
 	$customers = array_unique($customers);
-/*
-	if (!empty($customers)) {
-		$customers = $DB->GetCol("SELECT id FROM customers
-			WHERE (status = ? OR status = ?) AND id IN (" . implode(',', $customers) . ")",
-			array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION));
-		if (empty($customers))
-			$customers = array();
-	}
-	$customers = implode(',', $customers);
-*/
 
 	foreach (array('block', 'unblock') as $channel)
 		if (in_array($channel, $channels))
@@ -1179,16 +1186,25 @@ if (!empty($intersect)) {
 						array(CSTATUS_CONNECTED));
 					if (empty($customers))
 						break;
-					$DB->Execute("UPDATE nodes SET access = ?
-						WHERE access = ? AND ownerid IN (" . implode(',', $customers) . ")",
-						array(0, 1));
-					$DB->Execute("UPDATE assignments SET invoice = ?
-						WHERE invoice = ? AND (tariffid <> 0 OR liabilityid <> 0)
-							AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
-							AND customerid IN (" . implode(',', $customers) . ")",
-						array(0, 1));
-					$DB->Execute("UPDATE customers SET status = ? WHERE id IN (" . implode(',', $customers) . ")",
-						array(CSTATUS_DEBT_COLLECTION));
+					if (in_array('node-access', $actions))
+						$DB->Execute("UPDATE nodes SET access = ?
+							WHERE access = ? AND ownerid IN (" . implode(',', $customers) . ")",
+							array(0, 1));
+					if (in_array('assignment-invoice', $actions))
+						$DB->Execute("UPDATE assignments SET invoice = ?
+							WHERE invoice = ? AND (tariffid <> 0 OR liabilityid <> 0)
+								AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
+								AND customerid IN (" . implode(',', $customers) . ")",
+							array(0, 1));
+					if (in_array('customer-status', $actions))
+						$DB->Execute("UPDATE customers SET status = ? WHERE id IN (" . implode(',', $customers) . ")",
+							array(CSTATUS_DEBT_COLLECTION));
+					if (in_array('all-assignment-suspension', $actions))
+						foreach ($customers as $cid)
+							if (!$DB->GetOne("SELECT id FROM assignments WHERE customerid = ? AND tariffid = 0 AND liabilityid = 0",
+								array($cid)))
+								$DB->Execute("INSERT INTO assignments (customerid, datefrom, tariffid, liabilityid)
+									VALUES (?, ?NOW?, 0, 0)", array($cid));
 					break;
 				case 'unblock':
 					$customers = $DB->GetCol("SELECT id FROM customers
@@ -1196,16 +1212,34 @@ if (!empty($intersect)) {
 						array(CSTATUS_DEBT_COLLECTION));
 					if (empty($customers))
 						break;
-					$DB->Execute("UPDATE nodes SET access = ?
-						WHERE access = ? AND ownerid IN (" . implode(',', $customers) . ")",
-						array(1, 0));
-					$DB->Execute("UPDATE assignments SET invoice = ?
-						WHERE invoice = ? AND (tariffid <> 0 OR liabilityid <> 0)
-							AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
-							AND customerid IN (" . implode(',', $customers) . ")",
-						array(1, 0));
-					$DB->Execute("UPDATE customers SET status = ? WHERE id IN (" . implode(',', $customers) . ")",
-						array(CSTATUS_CONNECTED));
+					if (in_array('node-access', $actions))
+						$DB->Execute("UPDATE nodes SET access = ?
+							WHERE access = ? AND ownerid IN (" . implode(',', $customers) . ")",
+							array(1, 0));
+					if (in_array('assignment-invoice', $actions))
+						$DB->Execute("UPDATE assignments SET invoice = ?
+							WHERE invoice = ? AND (tariffid <> 0 OR liabilityid <> 0)
+								AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
+								AND customerid IN (" . implode(',', $customers) . ")",
+							array(1, 0));
+					if (in_array('customer-status', $actions))
+						$DB->Execute("UPDATE customers SET status = ? WHERE id IN (" . implode(',', $customers) . ")",
+							array(CSTATUS_CONNECTED));
+					if (in_array('all-assignment-suspension', $actions))
+						foreach ($customers as $cid) {
+							if ($datefrom = $DB->GetOne("SELECT datefrom FROM assignments WHERE customerid = ? AND tariffid = 0 AND liabilityid = 0",
+								array($cid))) {
+								$year = intval(strftime('%Y', $datefrom));
+								$month = intval(strftime('%m', $datefrom));
+								if ($year < $current_year || ($year == $current_year && $month < $current_month))
+									$DB->Execute("UPDATE assignments SET settlement = 1, datefrom = ?NOW?
+										WHERE customerid = ? AND (tariffid <> 0 OR liabilityid <> 0)
+											AND datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?)",
+										array($cid));
+							}
+							$DB->Execute("DELETE FROM assignments WHERE customerid = ? AND tariffid = 0 AND liabilityid = 0",
+								array($cid));
+						}
 					break;
 			}
 }
