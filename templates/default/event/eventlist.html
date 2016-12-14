@@ -119,13 +119,12 @@
                                     <IMG src="img/calendar.gif" alt="">
                                     {$daylist[daylist]|date_format:"%A"}
                                 </TD>
-                                <TD>
+                                <TD colspan="2">
 									<span class="bold">({$daylist[daylist]|date_format:"%x"})</span>
 									{if $getHolidays[$daylist[daylist]]}
 									<span class="red">{trans("Holiday:")} {$getHolidays[$daylist[daylist]]}</span>
 									{/if}
                                 </TD>
-                                <TD></TD>
                                 <TD colspan="2" class="text-right nobr">
                                 	<div class="no-print">
                                     <A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.userid}&closed={$listdata.closed}&privacy={$listdata.privacy}" target="_blank">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
