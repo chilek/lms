@@ -49,6 +49,7 @@ version ?.??.?? (????-??-??):
   - enhancement: added support for confirmation user storage in documents [chilan]
   - enhancement: allow to select which helpdesk ticket details are printed [chilan]
   - enhancement: added document number sort cryterion to invoice report [chilan]
+  - added script to load and bind buildings with teryt localizations [kosa/chilan]
 
 version 1.11.21 (2016-10-14):
 
