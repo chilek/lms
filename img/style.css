@@ -596,6 +596,7 @@ div.lms-ui-multiselectlayer ul span {
   }
 }
 @media print {
+  .ui-tooltip,
   .no-print,
   .no-print * {
     display: none !important;
