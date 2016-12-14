@@ -50,6 +50,7 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to select which helpdesk ticket details are printed [chilan]
   - enhancement: added document number sort cryterion to invoice report [chilan]
   - added script to load and bind buildings with teryt localizations [kosa/chilan]
+  - improvement: switched to new multi attachment code for new mail messages [chilan]
 
 version 1.11.21 (2016-10-14):
 

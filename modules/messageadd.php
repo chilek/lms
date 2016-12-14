@@ -296,32 +296,6 @@ if (isset($_POST['message'])) {
 		else
 			$error['mailbody'] = trans('Message body is required!');
 
-	$files = array();
-	if (!empty($_FILES['file']['name'][0])) {
-		foreach ($_FILES['file']['name'] as $fileidx => $filename)
-			if (is_uploaded_file($_FILES['file']['tmp_name'][$fileidx]) && $_FILES['file']['size'][$fileidx]) {
-				$data = '';
-				$fd = fopen($_FILES['file']['tmp_name'][$fileidx], 'r');
-				if ($fd) {
-					while (!feof($fd))
-						$data .= fread($fd,256);
-					fclose($fd);
-					$files[] = array(
-						'content_type' => $_FILES['file']['type'][$fileidx],
-						'filename' => $_FILES['file']['name'][$fileidx],
-						'data' => $data,
-					);
-				}
-			} else // upload errors
-				switch($_FILES['file']['error'][$fileidx]) {
-					case 1:
-					case 2: $error['file'] = trans('File is too large.'); break;
-					case 3: $error['file'] = trans('File upload has finished prematurely.'); break;
-					case 4: $error['file'] = trans('Path to file was not specified.'); break;
-					default: $error['file'] = trans('Problem during file upload.'); break;
-				}
-	}
-
 	if(!$error)
 	{
 		$recipients = array();
@@ -354,6 +328,12 @@ if (isset($_POST['message'])) {
 
 		if(!$recipients)
 			$error['subject'] = trans('Unable to send message. No recipients selected!');
+	}
+
+	if ($message['type'] == MSG_MAIL) {
+		$result = handle_file_uploads('files', $error);
+		extract($result);
+		$SMARTY->assign('fileupload', $fileupload);
 	}
 
 	if(!$error)
@@ -415,8 +395,14 @@ if (isset($_POST['message'])) {
 
 		if($message['type'] == MSG_MAIL)
 		{
-			if (empty($files))
-				$files = null;
+			$attachments = NULL;
+			if (!empty($files))
+				foreach ($files as $file)
+					$attachments[] = array(
+						'content_type' => $file['type'],
+						'filename' => $file['name'],
+						'data' => file_get_contents($tmppath . DIRECTORY_SEPARATOR . $file['name']),
+					);
 
 			$debug_email = ConfigHelper::getConfig('mail.debug_email');
 			if(!empty($debug_email))
@@ -474,7 +460,7 @@ if (isset($_POST['message'])) {
 						$destination .= ',' . $message['sender'];
 					if (!empty($dsn_email) || !empty($mdn_email))
 						$headers['X-LMS-Message-Item-Id'] = $msgitems[$customerid][$orig_destination];
-					$result = $LMS->SendMail($destination, $headers, $body, $files);
+					$result = $LMS->SendMail($destination, $headers, $body, $attachments);
 				} elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT)
 					$result = MSG_SENT;
 				else
