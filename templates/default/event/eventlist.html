@@ -30,7 +30,7 @@
 		<TD></TD>
 	</TR>
 	<TR>
-		<TD colspan="5" class="text-center nobr">
+		<TD colspan="5" class="text-center nobr no-print">
 			<A href="?m=eventlist&amp;day=1&amp;month={if $month==1}12{else}{math equation="x-1" x=$month}{/if}&amp;year={if $month==1}{math equation="x-1" x=$year}{else}{$year}{/if}">&laquo;&laquo;&laquo;&nbsp;</A>
 			{section name=days loop=$days.day}
 				{if !$days.dow[days]}<span class="light">{/if}<A href="?m=eventlist&amp;day={$days.day[days]}&amp;month={$month}&amp;year={$year}">&nbsp;{if $days.sel[days]}<B>*{/if}{$days.day[days]|string_format:"%d"}{if $days.sel[days]}*</B>{/if} </A>{if !$days.dow[days]}</span>{/if}
@@ -39,7 +39,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD colspan="5" class="nobr">
+		<TD colspan="5" class="nobr no-print">
 			<FORM method="POST" action="?m=eventlist" name="filter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT type="HIDDEN" name="m" value="eventlist">
@@ -111,11 +111,11 @@
 							<COL style="width: 1%;">
 							<COL style="width: 95%;">
 							<COL style="width: 1%;">
-							<COL style="width: 1%;">
+							<COL style="width: 1%;" class"no-print">
 						</COLGROUP>
                         <THEAD>
                             <TR{if $daylist[daylist] == $today} class="superdark"{/if}>
-                                <TD class="bold nobr" colspan="2">
+                                <TD class="bold nobr">
                                     <IMG src="img/calendar.gif" alt="">
                                     {$daylist[daylist]|date_format:"%A"}
                                 </TD>
@@ -125,9 +125,12 @@
 									<span class="red">{trans("Holiday:")} {$getHolidays[$daylist[daylist]]}</span>
 									{/if}
                                 </TD>
+                                <TD></TD>
                                 <TD colspan="2" class="text-right nobr">
+                                	<div class="no-print">
                                     <A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.userid}&closed={$listdata.closed}&privacy={$listdata.privacy}" target="_blank">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
                                     <A href="?m=eventadd&amp;day={$daylist[daylist]|date_format:"%d"}&amp;month={$daylist[daylist]|date_format:"%m"}&amp;year={$daylist[daylist]|date_format:"%Y"}">{trans("Add Event")} <IMG src="img/save.gif" alt=""></A>&nbsp;
+                                    </div>
                                 </TD>
                             </TR>
                         </THEAD>
@@ -167,6 +170,7 @@
                                         {/if}
                                 </TD>
                                 <TD class="text-right nobr">
+                                	<div class="no-print">
                                     {if ConfigHelper::checkPrivilege('timetable_management')}
                                         {if $eventlist[eventlist].closed}
                                         <A href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=open"><IMG src="img/resolved.gif" alt="[ {trans("Open")} ]" title="[&nbsp;{trans("Open")}&nbsp;]"></A>
@@ -181,6 +185,7 @@
                                             {if $layout.logid == $user.id}<A href="?m=eventnote&id={$eventlist[eventlist].id}"><IMG src="img/note.gif" alt="[ {trans("Add Note")} ]" title="[ {trans("Add Note")} ]"></A>{/if}
                                         {/foreach}
                                     {/if}
+                                    </div>
                                 </TD>
                             </TR>
                             {/if}
