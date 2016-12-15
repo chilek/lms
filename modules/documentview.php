@@ -42,7 +42,7 @@ if (!empty($_POST['marks'])) {
 		foreach ($list as $doc) {
 			$ctype = $doc['contenttype'];
 			if (!$html && !$pdf)
-				if (preg_match('/^html/i', $ctype))
+				if (preg_match('/html$/i', $ctype))
 					$html = true;
 				elseif (preg_match('/pdf$/i', $ctype))
 					$pdf = true;
@@ -51,7 +51,7 @@ if (!empty($_POST['marks'])) {
 					break;
 				}
 			else
-				if (($html && !preg_match('/^html/i', $ctype))
+				if (($html && !preg_match('/html$/i', $ctype))
 					|| ($pdf && !preg_match('/pdf$/i', $ctype))) {
 					$other = true;
 					break;
