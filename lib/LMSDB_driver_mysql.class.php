@@ -462,7 +462,7 @@ class LMSDB_driver_mysql extends LMSDB_common implements LMSDBDriverInterface
 		if (isset($table_name))
 			return $this->GetOne('SELECT COUNT(*) FROM information_schema.columns
 				WHERE table_schema = ? AND table_name = ? AND column_name = ?',
-				array($this->_dbname, $table_name, $column_name) > 0);
+				array($this->_dbname, $table_name, $column_name)) > 0;
 		else
 			return $this->GetOne('SELECT COUNT(*) FROM information_schema.tables
 				WHERE table_schema = ? AND table_name = ? AND table_type = ?',
