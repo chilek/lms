@@ -264,7 +264,7 @@ $(function() {
 
 		$.each(allcheckboxes, function(index, elem) {
 			var checkbox = $(elem)[0];
-			var row = $(checkbox.closest('tr'));
+			var row = $(checkbox).closest('tr');
 			row.click(function(e) {
 				if (e.shiftKey) {
 					checkElements(checkbox);

@@ -322,7 +322,7 @@ function multiselect(options) {
 		new_element.html(old_selected);
 
 	new_element.data('data-multiselect-object', this)
-		.prop('style', old_element.prop('style'));
+		.attr('style', old_element.attr('style'));
 	// save onchange event handler
 	if (typeof(onchange = old_element.prop('onchange')) == 'function')
 		new_element.on('change', onchange);
