@@ -245,7 +245,7 @@ if (isset($_POST['assignment'])) {
 				unset($a['schemaid']);
 		}
 	else
-		unset($a['schemaid']);
+		unset($a['schemaid'], $a['stariffid']);
 
         $hook_data = $LMS->executeHook(
             'customerassignmentadd_validation_before_submit', 
