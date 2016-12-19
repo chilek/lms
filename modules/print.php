@@ -72,7 +72,7 @@ switch($type)
 				    taxes.label AS taxlabel, customerid, comment, name AS username
 				    FROM cash c
 				    LEFT JOIN taxes ON (c.taxid = taxes.id)
-				    LEFT JOIN users ON (users.id = userid)
+				    LEFT JOIN vusers ON (vusers.id = userid)
 				    WHERE c.customerid = ?
 					    AND NOT EXISTS (
 				                    SELECT 1 FROM customerassignments a
