@@ -2386,7 +2386,7 @@ CREATE VIEW customermailsview AS
 			GROUP BY customerid;
 
 CREATE VIEW vusers AS
-	SELECT (firstname || ' ' || lastname) AS username, (lastname || ' ' || firstname) AS rname
+	SELECT *, (firstname || ' ' || lastname) AS username, (lastname || ' ' || firstname) AS rname
 	FROM users;
 
 /* ---------------------------------------------------
