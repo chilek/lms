@@ -242,7 +242,7 @@ if (isset($_POST['assignment'])) {
 				elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']))
 					$error['value'] = trans('Incorrect value!');
 
-				unset($a['schemaid']);
+				unset($a['schemaid'], $a['stariffid']);
 		}
 	else
 		unset($a['schemaid'], $a['stariffid']);
