@@ -51,6 +51,8 @@ version ?.??.?? (????-??-??):
   - enhancement: added document number sort cryterion to invoice report [chilan]
   - added script to load and bind buildings with teryt localizations [kosa/chilan]
   - improvement: switched to new multi attachment code for new mail messages [chilan]
+  - improvement: when we try to send messages to more than 50 customers at once, confirmation
+    dialog is displayed [chilan]
 
 version 1.11.21 (2016-10-14):
 
