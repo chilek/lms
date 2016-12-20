@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$_LANG['Are you sure you want to send messages to $a customer(s)?'] = 'Jesteś pewien, że chcesz wysłać wiadmości do $a klient(a/ów)?';
+
 $_LANG['Export to JPK format'] = 'Eksport do formatu JPK';
 $_LANG['Division not selected!'] = 'Nie wybrano firmy!';
 $_LANG['Tax Office Code:'] = 'Kod Urzędu Podatkowego:';
