@@ -9,7 +9,7 @@
 <H2 align="center" class="hdf">
 {number number=$note.number template=$note.template time=$note.cdate assign=number}
 <B>{t a=$number}Debit Note No. $a{/t}</B>
-{if !$note.publish}
+{if $note.dontpublish}
 <BR><B>{trans("NO ACCOUNTANT DOCUMENT")}</B>
 {/if}
 </H2>
