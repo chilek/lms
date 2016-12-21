@@ -109,7 +109,7 @@ if(isset($_POST['tariff']))
 
 	if(!$error)
 	{
-		$SESSION->redirect('?m=tarifflist&id='.$LMS->TariffAdd($tariff));
+		$SESSION->redirect('?m=tariffinfo&id='.$LMS->TariffAdd($tariff));
 	}
 
 	$SMARTY->assign('error',$error);
