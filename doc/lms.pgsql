@@ -1744,6 +1744,7 @@ CREATE TABLE cashsources (
     id integer      	DEFAULT nextval('cashsources_id_seq'::text) NOT NULL,
     name varchar(32)    DEFAULT '' NOT NULL,
     description text	DEFAULT NULL,
+    account varchar(48) NOT NULL DEFAULT '',
     deleted smallint	NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     UNIQUE (name)
@@ -2887,6 +2888,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016121401');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016122100');
 
 COMMIT;

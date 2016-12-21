@@ -53,6 +53,7 @@ version ?.??.?? (????-??-??):
   - improvement: switched to new multi attachment code for new mail messages [chilan]
   - improvement: when we try to send messages to more than 50 customers at once, confirmation
     dialog is displayed [chilan]
+  - enhancement: cash source: added suport for main bank account definition [chilan]
 
 version 1.11.21 (2016-10-14):
 

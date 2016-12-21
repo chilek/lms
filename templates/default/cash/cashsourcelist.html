@@ -7,6 +7,7 @@
     <COLGROUP>
         <COL style="width: 1%;">
         <COL style="width: 1%;">
+        <COL style="width: 1%;">
         <COL style="width: 97%;">
         <COL style="width: 1%;">
     </COLGROUP>
@@ -17,6 +18,9 @@
 		</TH>
 		<TH scope="col" class="nobr lighter">
                         {trans("ID:")}
+		</TH>
+		<TH scope="col" class="nobr lighter">
+                        {trans("Main bank account:")}
 		</TH>
 		<TH scope="col" class="lighter">
 			{trans("Description:")}
@@ -36,6 +40,11 @@
 		<TD onClick="return self.location.href='?m=cashsourceedit&id={$source.id}'">
 			({$source.id|string_format:"%04d"})
 		</TD>
+		<TD class="nobr" onClick="return self.location.href='?m=cashsourceedit&id={$source.id}'">
+			{if $source.account}
+			{format_bankaccount($source.account)}
+			{/if}
+		</TD>
 		<TD onClick="return self.location.href='?m=cashsourceedit&id={$source.id}'">
 			{$source.description}
 		</TD>
@@ -51,7 +60,7 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD colspan="4" class="empty-table">
+		<TD colspan="5" class="empty-table">
 			<p>{trans("There are no sources in database.")}</p>
 		</TD>
 	</TR>
@@ -59,7 +68,7 @@
     </TBODY>
     <TFOOT>
 	<TR>
-		<TD colspan="4" class="text-right nobr">
+		<TD colspan="5" class="text-right nobr">
                         <A href="?m=cashsourceadd">{trans("Add source")} <IMG src="img/save.gif" alt=""></A>
 		</TD>
 	</TR>
