@@ -53,8 +53,6 @@ $SMARTY->assign('objectid', $result['id']);
 $nlist = $DB->GetAll("SELECT * FROM netdevices WHERE netnodeid=? ORDER BY name", array($id));
 $SMARTY->assign('netdevlist', $nlist);
 
-
-
 $SMARTY->display('netnode/netnodeinfo.html');
 
 ?>

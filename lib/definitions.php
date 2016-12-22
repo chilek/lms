@@ -606,4 +606,9 @@ define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');
 define('INV_PROJECT_REGULAR', 0);
 define('INV_PROJECT_SYSTEM', 1);
 
+// Address types
+define('POSTAL_ADDRESS'  , 0);
+define('BILLING_ADDRESS' , 1);
+define('LOCATION_ADDRESS', 2);
+
 ?>

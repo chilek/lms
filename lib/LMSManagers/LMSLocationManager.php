@@ -34,7 +34,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 
     /**
      * Inserts or updates country state
-     * 
+     *
      * @param string $zip Zip
      * @param int $stateid State id
      * @return null
@@ -53,7 +53,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         );
         if ($cstate === null) {
             $this->db->Execute(
-                'INSERT INTO zipcodes (stateid, zip) VALUES (?, ?)', 
+                'INSERT INTO zipcodes (stateid, zip) VALUES (?, ?)',
                 array_values($args)
             );
             if ($this->syslog) {
@@ -62,7 +62,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             }
         } else if ($cstate != $stateid) {
             $this->db->Execute(
-                'UPDATE zipcodes SET stateid = ? WHERE zip = ?', 
+                'UPDATE zipcodes SET stateid = ? WHERE zip = ?',
                 array_values($args)
             );
             if ($this->syslog) {
