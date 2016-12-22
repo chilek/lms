@@ -54,6 +54,7 @@ version ?.??.?? (????-??-??):
   - improvement: when we try to send messages to more than 50 customers at once, confirmation
     dialog is displayed [chilan]
   - enhancement: cash source: added suport for main bank account definition [chilan]
+  - enhancement: lms-notify.php: all actions are logged into transaction log [chilan]
 
 version 1.11.21 (2016-10-14):
 
