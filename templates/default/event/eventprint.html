@@ -43,21 +43,21 @@
 	{cycle values="white,grey" print=false}
 	{foreach item=event from=$eventlist}
 	<TR class="{cycle}"{if $event.closed==1} style="color: lightgray;"{/if}>
-		<TD class="valign-center text-center nobr">
+		<TD class="text-center nobr">
 			{math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
 			{if $event.begintime != $event.endtime}
 			- {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
 			{/if}
 		</TD>
-		<TD class="valign-center text-center">
+		<TD class="text-center">
 			{$_EVENTTYPES[$event.type]}
 		</TD>
-		<TD class="valign-center text-left">
+		<TD class="text-left">
 			<B>{$event.title}</B><BR>
 			{$event.description}<BR>
 			{$event.note}
 		</TD>
-		<TD class="valign-center text-center nobr">
+		<TD class="text-center nobr">
 			{foreach item=user from=$event.userlist}
 				{$user.name|truncate:"25":"...":true}<BR>
 			{/foreach}
