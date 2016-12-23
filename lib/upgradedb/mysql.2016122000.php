@@ -22,8 +22,7 @@
  */
 
 function moveTableLocation( $DB, $table ) {
-    $DB->Execute('ALTER TABLE ' . $table . ' ADD COLUMN address_id integer NULL;');
-    $DB->Execute('ALTER TABLE ' . $table . ' ADD CONSTRAINT ' . $table .'_address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE;');
+    $DB->Execute('ALTER TABLE ' . $table . ' ADD COLUMN address_id int(11), ADD FOREIGN KEY ' . $table . '_address_id_fk (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE;');
 
     $locations = $DB->GetAll('SELECT id, location_city, location_street, location_house, location_flat
                               FROM ' . $table . '
@@ -50,21 +49,22 @@ define('LOCATION_ADDRESS', 2);
 
 $this->BeginTrans();
 
-$this->Execute("DROP SEQUENCE IF EXISTS addresses_id_seq;
-                CREATE SEQUENCE addresses_id_seq;
-                DROP TABLE IF EXISTS addresses;
-                CREATE TABLE addresses (
-                    id              integer DEFAULT nextval('addresses_id_seq'::text) NOT NULL,
-                    name            text NULL,
-                    city            varchar(32),
-                    city_id         integer REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
-                    street          varchar(255) NULL,
-                    street_id       integer REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-                    zip             varchar(10) NULL,
-                    country_id      integer REFERENCES countries (id) ON DELETE SET NULL ON UPDATE CASCADE,
-                    house           varchar(20) NULL,
-                    flat            varchar(20) NULL,
-                    PRIMARY KEY (id))");
+$this->Execute("CREATE TABLE addresses (
+                    id         int(11) NOT NULL auto_increment,
+                    name       text NULL,
+                    city       varchar(32) NULL,
+                    city_id    int(11) NULL,
+                    street     varchar(255) NULL,
+                    street_id  int(11) NULL,
+                    zip        varchar(10) NULL,
+                    country_id int(11) NULL,
+                    house      varchar(20) NULL,
+                    flat       varchar(20) NULL,
+                    PRIMARY KEY (id),
+                    CONSTRAINT `addresses_city_id_fk`    FOREIGN KEY (city_id)    REFERENCES location_cities  (id) ON DELETE SET NULL ON UPDATE CASCADE,
+                    CONSTRAINT `addresses_street_id_fk`  FOREIGN KEY (street_id)  REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+                    CONSTRAINT `addresses_country_id_fk` FOREIGN KEY (country_id) REFERENCES countries        (id) ON DELETE SET NULL ON UPDATE CASCADE
+                ) ENGINE=InnoDB;");
 
 moveTableLocation( $this, 'nodes'        );
 moveTableLocation( $this, 'netnodes'     );
@@ -75,17 +75,16 @@ moveTableLocation( $this, 'voipaccounts' );
 /* --------------------------------
     CUSTOMERS
  -------------------------------- */
-$this->Execute("DROP SEQUENCE IF EXISTS customer_addresses_id_seq;
-                CREATE SEQUENCE customer_addresses_id_seq;
-                DROP TABLE IF EXISTS customer_addresses;
-                CREATE TABLE customer_addresses (
-                    id          integer DEFAULT nextval('customer_addresses_id_seq'::text) NOT NULL,
-                    customer_id integer REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-                    address_id  integer REFERENCES addresses (id) ON DELETE CASCADE ON UPDATE CASCADE,
+$this->Execute("CREATE TABLE customer_addresses (
+                    id          int(11) NOT NULL auto_increment,
+                    customer_id int(11),
+                    address_id  int(11),
                     type        smallint NULL,
                     PRIMARY KEY (id),
+                    CONSTRAINT `customer_addresses_customer_id_fk` FOREIGN KEY (customer_id) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+                    CONSTRAINT `customer_addresses_address_id_fk`  FOREIGN KEY (address_id)  REFERENCES addresses (id) ON DELETE CASCADE ON UPDATE CASCADE,
                     UNIQUE(customer_id, address_id)
-                );");
+                ) ENGINE=InnoDB;");
 
 $customers_loc = $this->GetAll('SELECT id, zip, city, building, street, apartment, countryid,
                                    post_name, post_street, post_building, post_apartment, post_zip,
@@ -95,7 +94,7 @@ $customers_loc = $this->GetAll('SELECT id, zip, city, building, street, apartmen
 if ( $customers_loc ) {
     foreach ($customers_loc as $v) {
 
-        /* --- POSTAL ADDRESS --- */
+        // --- POSTAL ADDRESS --- //
         $any_to_up = false;
 
         if ($v['post_name']) {
@@ -154,7 +153,7 @@ if ( $customers_loc ) {
             $this->Execute('INSERT INTO customer_addresses (customer_id,address_id, type) VALUES (?,?,?);', array($v['id'], $this->GetLastInsertID('addresses'), POSTAL_ADDRESS));
         }
 
-        /* --- BILLING ADDRESS --- */
+        // --- BILLING ADDRESS --- //
         $any_to_up = false;
 
         if ($v['street']) {
@@ -215,10 +214,17 @@ unset( $customer_loc );
 /* --------------------------------
     REWRITE VIEWS AND TABLES WHO USING OLD LOCATION FIELDS
  -------------------------------- */
-$this->Execute("DROP INDEX IF EXISTS nodes_location_city_idx;");
-$this->Execute("DROP INDEX IF EXISTS nodes_location_street_idx;");
-$this->Execute("DROP INDEX IF EXISTS netdevices_location_street_idx;");
-$this->Execute("DROP INDEX IF EXISTS netdevices_location_city_idx;");
+$this->Execute("ALTER TABLE nodes DROP FOREIGN KEY `nodes_ibfk_1`;");
+$this->Execute("ALTER TABLE nodes DROP FOREIGN KEY `nodes_ibfk_2`;");
+$this->Execute("ALTER TABLE netdevices DROP FOREIGN KEY `netdevices_ibfk_1`;");
+$this->Execute("ALTER TABLE netdevices DROP FOREIGN KEY `netdevices_ibfk_2`;");
+$this->Execute("ALTER TABLE netnodes DROP FOREIGN KEY `netnodes_ibfk_2`;");
+$this->Execute("ALTER TABLE netnodes DROP FOREIGN KEY `netnodes_ibfk_3`;");
+
+$this->Execute("DROP INDEX IF EXISTS location_city ON nodes;");
+$this->Execute("DROP INDEX IF EXISTS location_street ON nodes;");
+$this->Execute("DROP INDEX IF EXISTS location_street ON netdevices;");
+$this->Execute("DROP INDEX IF EXISTS location_city ON netdevices;");
 
 $this->Execute("DROP VIEW IF EXISTS customerview;");
 $this->Execute("DROP VIEW IF EXISTS contractorview;");
@@ -294,13 +300,11 @@ $this->Execute("
         SELECT n.*, m.mac, a.city_id as location_city, a.street_id as location_street,
             a.house as location_building, a.flat as location_flat
         FROM nodes n
-            LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid)
+            LEFT JOIN vnodes_mac m ON (n.id = m.nodeid)
             LEFT JOIN addresses a ON n.address_id = a.id
         WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;");
 
-$this->Execute("selecta");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016122300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016123000', 'dbversion'));
 
 $this->CommitTrans();
 
