@@ -1991,7 +1991,7 @@ DROP SEQUENCE IF EXISTS zipcodes_id_seq;
 CREATE SEQUENCE zipcodes_id_seq;
 DROP TABLE IF EXISTS zipcodes CASCADE;
 CREATE TABLE zipcodes (
-    	id 		integer 	DEFAULT nextval('customerassignments_id_seq'::text) NOT NULL,
+    	id 		integer 	DEFAULT nextval('zipcodes_id_seq'::text) NOT NULL,
 	zip 		varchar(10) 	NOT NULL DEFAULT '',
 	stateid 	integer 	NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
