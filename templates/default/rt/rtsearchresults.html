@@ -40,7 +40,7 @@
     <TBODY>
 	<TR>
 		<TD COLSPAN="5" class="text-right">
-			<A HREF="?m=rtticketadd&id={$queuedata.queue}&customerid={$search.customerid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
+			<A HREF="?m=rtticketadd&id={$queuedata.queue}&customerid={$search.customerid}"><IMG src="img/save.gif" ALT=""> {trans("New Ticket")}</A>
 		</TD>
 	</TR>
 	{cycle values="light,lucid" print=false}
@@ -117,7 +117,7 @@
 	{/if}
 	<TR>
 		<TD COLSPAN="5" class="buttons">
-			<A HREF="?m=rtticketadd&id={$queuedata.queue}&customerid={$search.customerid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
+			<A HREF="?m=rtticketadd&id={$queuedata.queue}&customerid={$search.customerid}"><IMG src="img/save.gif" ALT=""> {trans("New Ticket")}</A>
 		</TD>
 	</TR>
     </TFOOT>
