@@ -59,10 +59,11 @@ switch ($action) {
 }
 
 $nodeinfo = $LMS->GetNode($nodeid);
-
 $macs = array();
+
 foreach ($nodeinfo['macs'] as $key => $value)
 	$macs[] = $nodeinfo['macs'][$key]['mac'];
+
 $nodeinfo['macs'] = $macs;
 
 if (!isset($_GET['ownerid']))
@@ -75,9 +76,11 @@ $layout['pagetitle'] = trans('Node Edit: $a', $nodeinfo['name']);
 if (isset($_POST['nodeedit'])) {
 	$nodeedit = $_POST['nodeedit'];
 
-	$nodeedit['netid'] = $_POST['nodeeditnetid'];
-	$nodeedit['ipaddr'] = $_POST['nodeeditipaddr'];
+	$nodeedit['address_id'] = $nodeinfo['address_id'];
+	$nodeedit['netid']      = $_POST['nodeeditnetid'];
+	$nodeedit['ipaddr']     = $_POST['nodeeditipaddr'];
 	$nodeedit['ipaddr_pub'] = $_POST['nodeeditipaddrpub'];
+
 	foreach ($nodeedit['macs'] as $key => $value)
 		$nodeedit['macs'][$key] = str_replace('-', ':', $value);
 

@@ -43,21 +43,22 @@ $layout['pagetitle'] = trans('Voip Account Edit: $a', $voipaccountinfo['login'])
 
 if (isset($_POST['voipaccountedit'])) {
 	$voipaccountedit = $_POST['voipaccountedit'];
-	
+	$voipaccountedit['address_id'] = $voipaccountinfo['address_id'];
+
 	foreach ($voipaccountedit as $key => $value) {
 		if (!is_array($value)) {
 			$voipaccountedit[$key] = trim($value);
 		}
 	}
-	
+
 	if ($voipaccountedit['login']=='')
 		$error['login'] = trans('Voip account login is required!');
 	else {
 		$loginids = $LMS->GetVoipAccountIDByLogin($voipaccountedit['login']);
 
 		$foundid = 0;
-		if(isset($loginids))
-			foreach($loginids as $loginid)
+		if (isset($loginids))
+			foreach ($loginids as $loginid)
 			{
 				$foundid = ($loginid['id'] == $voipaccountedit['id']);
 				if($foundid)
@@ -65,8 +66,8 @@ if (isset($_POST['voipaccountedit'])) {
 				else
 					$error['login'] = trans('Specified login is in use!');
 			}
-
 	}
+
 	if (!$error['login'])
 		if (!preg_match('/^[_a-z0-9-]+$/i', $voipaccountedit['login']))
 			$error['login'] = trans('Specified login contains forbidden characters!');

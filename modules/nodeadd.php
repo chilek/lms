@@ -104,19 +104,18 @@ if (isset($_POST['nodedata']))
 			$error['ipaddr'] = trans('Specified IP address is network gateway!');
 	}
 
-	if($nodedata['ipaddr_pub']!='0.0.0.0' && $nodedata['ipaddr_pub']!='')
-	{
-		if(!check_ip($nodedata['ipaddr_pub']))
-                	$error['ipaddr_pub'] = trans('Incorrect node IP address!');
-        	elseif(!$LMS->IsIPValid($nodedata['ipaddr_pub']))
-                	$error['ipaddr_pub'] = trans('Specified IP address doesn\'t overlap with any network!');
-		elseif(!$LMS->IsIPFree($nodedata['ipaddr_pub']))
+	if ($nodedata['ipaddr_pub']!='0.0.0.0' && $nodedata['ipaddr_pub']!='') {
+		if (!check_ip($nodedata['ipaddr_pub']))
+            $error['ipaddr_pub'] = trans('Incorrect node IP address!');
+        else if (!$LMS->IsIPValid($nodedata['ipaddr_pub']))
+            $error['ipaddr_pub'] = trans('Specified IP address doesn\'t overlap with any network!');
+		else if (!$LMS->IsIPFree($nodedata['ipaddr_pub']))
 			$error['ipaddr_pub'] = trans('Specified IP address is in use!');
-		elseif($LMS->IsIPGateway($nodedata['ipaddr_pub']))
+		else if ($LMS->IsIPGateway($nodedata['ipaddr_pub']))
 			$error['ipaddr_pub'] = trans('Specified IP address is network gateway!');
 	}
 	else
-    		$nodedata['ipaddr_pub'] = '0.0.0.0';
+        $nodedata['ipaddr_pub'] = '0.0.0.0';
 
 	$macs = array();
 	foreach ($nodedata['macs'] as $key => $value)
@@ -132,7 +131,7 @@ if (isset($_POST['nodedata']))
 		$error['mac0'] = trans('MAC address is required!');
 	$nodedata['macs'] = $macs;
 
-	if(strlen($nodedata['passwd']) > 32)
+	if (strlen($nodedata['passwd']) > 32)
 		$error['passwd'] = trans('Password is too long (max.32 characters)!');
 
     if (!$nodedata['ownerid'])
@@ -145,21 +144,21 @@ if (isset($_POST['nodedata']))
 		if($status == 1) // unknown (interested)
 			$error['ownerid'] = trans('Selected customer is not connected!');
 		elseif($status == 2 && $nodedata['access']) // awaiting
-	                $error['access'] = trans('Node owner is not connected!');
+	        $error['access'] = trans('Node owner is not connected!');
 	}
 
-	if($nodedata['netdev'])
+	if ($nodedata['netdev'])
 	{
 		$ports = $DB->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($nodedata['netdev']));
 	        $takenports = $LMS->CountNetDevLinks($nodedata['netdev']);
 
-		if($ports <= $takenports) 
+		if ($ports <= $takenports)
 			$error['netdev'] = trans('No free ports on device!');
-		elseif($nodedata['port'])
+		else if ($nodedata['port'])
 		{
-		        if(!preg_match('/^[0-9]+$/', $nodedata['port']) || $nodedata['port'] > $ports)
+		        if (!preg_match('/^[0-9]+$/', $nodedata['port']) || $nodedata['port'] > $ports)
 		        {
-		                $error['port'] = trans('Incorrect port number!');
+		            $error['port'] = trans('Incorrect port number!');
 		        }
 		        elseif($DB->GetOne('SELECT id FROM vnodes WHERE netdev=? AND port=? AND ownerid>0',
 		        		array($nodedata['netdev'], $nodedata['port']))
@@ -174,9 +173,8 @@ if (isset($_POST['nodedata']))
 	else
 		$nodedata['netdev'] = 0;
 
-	if(!isset($nodedata['chkmac']))	$nodedata['chkmac'] = 0;
-	if(!isset($nodedata['halfduplex'])) $nodedata['halfduplex'] = 0;
-	
+	if (!isset($nodedata['chkmac']))	$nodedata['chkmac'] = 0;
+	if (!isset($nodedata['halfduplex'])) $nodedata['halfduplex'] = 0;
 
 	if ($nodedata['invprojectid'] == '-1') { // nowy projekt
 		if (!strlen(trim($nodedata['projectname']))) {
@@ -202,40 +200,38 @@ if (isset($_POST['nodedata']))
 	$nodedata = $hook_data['nodeadd'];
 	$error = $hook_data['error'];
 
-	if(!$error)
-	{
+	if (!$error) {
         if (empty($nodedata['teryt'])) {
-            $nodedata['location_city'] = null;
+            $nodedata['location_city']   = null;
             $nodedata['location_street'] = null;
-            $nodedata['location_house'] = null;
-            $nodedata['location_flat'] = null;
+            $nodedata['location_house']  = null;
+            $nodedata['location_flat']   = null;
         }
+
         if (empty($nodedata['location']) && !empty($nodedata['ownerid'])) {
             $location = $LMS->GetCustomer($nodedata['ownerid']);
             $nodedata['location'] = $location['address'] . ', ' . $location['zip'] . ' ' . $location['city'];
         }
 
-
-
         $nodedata = $LMS->ExecHook('node_add_before', $nodedata);
 
-	$ipi = $nodedata['invprojectid'];
-	if ($ipi == '-1') {
-		$DB->BeginTrans();
-		$DB->Execute("INSERT INTO invprojects (name, type) VALUES (?, ?)",
-			array($nodedata['projectname'], INV_PROJECT_REGULAR));
-		$ipi = $DB->GetLastInsertID('invprojects');
-		$DB->CommitTrans();
-	} 
-	if ($nodedata['invprojectid'] == '-1' || intval($ipi)>0)
-		$nodedata['invprojectid'] = intval($ipi);
-	else
-		$nodedata['invprojectid'] = NULL;
+        $ipi = $nodedata['invprojectid'];
+        if ($ipi == '-1') {
+			$DB->BeginTrans();
+			$DB->Execute("INSERT INTO invprojects (name, type) VALUES (?, ?)",
+				array($nodedata['projectname'], INV_PROJECT_REGULAR));
+			$ipi = $DB->GetLastInsertID('invprojects');
+			$DB->CommitTrans();
+		}
+
+		if ($nodedata['invprojectid'] == '-1' || intval($ipi)>0)
+			$nodedata['invprojectid'] = intval($ipi);
+		else
+			$nodedata['invprojectid'] = NULL;
 
 		$nodeid = $LMS->NodeAdd($nodedata);
 
-		if($nodedata['nodegroup'] != '0')
-		{
+		if ($nodedata['nodegroup'] != '0') {
 			$DB->Execute('INSERT INTO nodegroupassignments (nodeid, nodegroupid)
 				VALUES (?, ?)', array($nodeid, intval($nodedata['nodegroup'])));
 		}
@@ -250,8 +246,7 @@ if (isset($_POST['nodedata']))
 		);
 		$nodedata = $hook_data['nodeadd'];
 
-		if(!isset($nodedata['reuse']))
-		{
+		if (!isset($nodedata['reuse'])) {
 			$SESSION->redirect('?m=nodeinfo&id='.$nodeid);
 		}
 
@@ -262,18 +257,17 @@ if (isset($_POST['nodedata']))
 		$nodedata['reuse'] = '1';
 	}
 	else {
-		if($nodedata['ipaddr_pub']=='0.0.0.0')
+		if ($nodedata['ipaddr_pub']=='0.0.0.0')
 			$nodedata['ipaddr_pub'] = '';
     }
 }
 
-if(empty($nodedata['macs']))
+if (empty($nodedata['macs']))
     $nodedata['macs'][] = '';
 
 $layout['pagetitle'] = trans('New Node');
 
-if($customerid = $nodedata['ownerid'])
-{
+if ($customerid = $nodedata['ownerid']) {
 	include(MODULES_DIR.'/customer.inc.php');
 }
 else

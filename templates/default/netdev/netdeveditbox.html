@@ -109,10 +109,11 @@
 		    <INPUT TYPE="TEXT" SIZE="30" VALUE="{$netdevinfo.location}" id="location" NAME="netdev[location]"  {tip text="Enter location (optional)" trigger="location"}>
 			<A href="javascript: void(0);" onclick="if (check_teryt()) return locationchoosewin('netdev', 'netdevedit', document.forms['netdevedit'].elements['netdev[location_city]'].value,  document.forms['netdevedit'].elements['netdev[location_street]'].value, {ConfigHelper::getConfig('phpui.default_teryt_city')})" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</A>
 			<BR>
-		    <INPUT type="hidden" name="netdev[location_city]" value="{$netdevinfo.location_city}">
+		    <INPUT type="hidden" name="netdev[location_city]"   value="{$netdevinfo.location_city}">
 		    <INPUT type="hidden" name="netdev[location_street]" value="{$netdevinfo.location_street}">
-		    <INPUT type="hidden" name="netdev[location_house]" value="{$netdevinfo.location_house}">
-		    <INPUT type="hidden" name="netdev[location_flat]" value="{$netdevinfo.location_flat}">
+		    <INPUT type="hidden" name="netdev[location_house]"  value="{$netdevinfo.location_house}">
+		    <INPUT type="hidden" name="netdev[location_flat]"   value="{$netdevinfo.location_flat}">
+		    <INPUT type="hidden" name="netdev[address_id]"      value="{$netdevinfo.address_id}">
 			<INPUT TYPE="checkbox" name="netdev[teryt]" id="teryt" onchange="check_teryt('location')"{if $netdevinfo.teryt} checked{/if}><label for="teryt">{trans("TERRIT-DB")}</label>
 		</TD>
 	</TR>

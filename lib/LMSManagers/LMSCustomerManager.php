@@ -296,53 +296,63 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function customerAdd($customeradd)
     {
         $args = array(
-			'extid' => $customeradd['extid'],
-            'name' => $customeradd['name'],
-            'lastname' => $customeradd['lastname'],
-            'type' => empty($customeradd['type']) ? 0 : 1,
-            'street' => $customeradd['street'],
-            'building' => strlen($customeradd['building']) ? $customeradd['building'] : null,
-            'apartment' => strlen($customeradd['apartment']) ? $customeradd['apartment'] : null,
-            'zip' => $customeradd['zip'],
-            'city' => $customeradd['city'],
-            SYSLOG::RES_COUNTRY => $customeradd['countryid'],
-            'ten' => $customeradd['ten'],
-            'ssn' => $customeradd['ssn'],
-            'status' => $customeradd['status'],
-            'post_name' => $customeradd['post_name'],
-            'post_street' => strlen($customeradd['post_street']) ? $customeradd['post_street'] : null,
-            'post_building' => strlen($customeradd['post_building']) ? $customeradd['post_building'] : null,
-            'post_apartment' => strlen($customeradd['post_apartment']) ? $customeradd['post_apartment'] : null,
-            'post_zip' => $customeradd['post_zip'],
-            'post_city' => $customeradd['post_city'],
-            'post_countryid' => $customeradd['post_countryid'],
+            'extid'          => $customeradd['extid'],
+            'name'           => $customeradd['name'],
+            'lastname'       => $customeradd['lastname'],
+            'type'           => empty($customeradd['type']) ? 0 : 1,
+            'ten'            => $customeradd['ten'],
+            'ssn'            => $customeradd['ssn'],
+            'status'         => $customeradd['status'],
             SYSLOG::RES_USER => $this->auth->id,
-            'info' => $customeradd['info'],
-            'notes' => $customeradd['notes'],
-            'message' => $customeradd['message'],
-            'pin' => $customeradd['pin'],
-            'regon' => $customeradd['regon'],
-            'rbe' => $customeradd['rbe'],
-            'icn' => $customeradd['icn'],
-            'cutoffstop' => $customeradd['cutoffstop'],
-            'consentdate' => $customeradd['consentdate'],
-            'einvoice' => $customeradd['einvoice'],
-            SYSLOG::RES_DIV => $customeradd['divisionid'],
-            'paytime' => $customeradd['paytime'],
-            'paytype' => !empty($customeradd['paytype']) ? $customeradd['paytype'] : null,
-            'invoicenotice' => $customeradd['invoicenotice'],
-            'mailingnotice' => $customeradd['mailingnotice'],
+            'info'           => $customeradd['info'],
+            'notes'          => $customeradd['notes'],
+            'message'        => $customeradd['message'],
+            'pin'            => $customeradd['pin'],
+            'regon'          => $customeradd['regon'],
+            'rbe'            => $customeradd['rbe'],
+            'icn'            => $customeradd['icn'],
+            'cutoffstop'     => $customeradd['cutoffstop'],
+            'consentdate'    => $customeradd['consentdate'],
+            'einvoice'       => $customeradd['einvoice'],
+            SYSLOG::RES_DIV  => $customeradd['divisionid'],
+            'paytime'        => $customeradd['paytime'],
+            'paytype'        => !empty($customeradd['paytype']) ? $customeradd['paytype'] : null,
+            'invoicenotice'  => $customeradd['invoicenotice'],
+            'mailingnotice'  => $customeradd['mailingnotice'],
         );
+
         if ($this->db->Execute('INSERT INTO customers (extid, name, lastname, type,
-				    street, building, apartment, zip, city, countryid, ten, ssn, status, creationdate,
-				    post_name, post_street, post_building, post_apartment, post_zip, post_city, post_countryid,
-				    creatorid, info, notes, message, pin, regon, rbe,
-				    icn, cutoffstop, consentdate, einvoice, divisionid, paytime, paytype,
-				    invoicenotice, mailingnotice)
-				    VALUES (?, ?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?,
-				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
+                    ten, ssn, status, creationdate,
+                    creatorid, info, notes, message, pin, regon, rbe,
+                    icn, cutoffstop, consentdate, einvoice, divisionid, paytime, paytype,
+                    invoicenotice, mailingnotice)
+                    VALUES (?, ?, UPPER(?), ?, ?, ?, ?, ?NOW?,
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
         ) {
             $id = $this->db->GetLastInsertID('customers');
+
+            $this->db->Execute('INSERT INTO addresses (city,street,zip,country_id,house,flat) VALUES (?,?,?,?,?,?)',
+                                array($customeradd['city'],$customeradd['street'],$customeradd['zip'],
+                                (!empty($customeradd['countryid']) ? $customeradd['countryid'] : null),
+                                (strlen($customeradd['building'])  ? $customeradd['building']  : null),
+                                (strlen($customeradd['apartment']) ? $customeradd['apartment'] : null)));
+
+            $last_addr_id = $this->db->GetLastInsertID( 'addresses' );
+            $this->db->Execute('INSERT INTO customer_addresses (customer_id, address_id, type) VALUES (?,?,?)',
+                                array($id,$last_addr_id,BILLING_ADDRESS));
+
+            $this->db->Execute('INSERT INTO addresses (name,city,street,zip,country_id,house,flat) VALUES (?,?,?,?,?,?,?)',
+                                array($customeradd['post_name'],$customeradd['post_city'],
+                                (strlen($customeradd['post_street']) ? $customeradd['post_street'] : null),
+                                $customeradd['post_zip'],
+                                (!empty($customeradd['post_countryid']) ? $customeradd['postcountryid']  : null),
+                                (strlen($customeradd['post_building'])  ? $customeradd['post_building']  : null),
+                                (strlen($customeradd['post_apartment']) ? $customeradd['post_apartment'] : null)));
+
+            $last_addr_id = $this->db->GetLastInsertID( 'addresses' );
+            $this->db->Execute('INSERT INTO customer_addresses (customer_id, address_id, type) VALUES (?,?,?)',
+                                array($id,$last_addr_id,POSTAL_ADDRESS));
+
             $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
             $location_manager->UpdateCountryState($customeradd['zip'], $customeradd['stateid']);
             if ($customeradd['post_zip'] != $customeradd['zip']) {
@@ -372,9 +382,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             return false;
         }
     }
-
-
-
 
     /**
      * Returns customer list
@@ -1022,25 +1029,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function customerUpdate($customerdata)
     {
         $args = array(
-			'extid' => $customerdata['extid'],
+            'extid' => $customerdata['extid'],
             'status' => $customerdata['status'],
             'type' => empty($customerdata['type']) ? 0 : 1,
-            'street' => $customerdata['street'],
-            'building' => strlen($customerdata['building']) ? $customerdata['building'] : null,
-            'apartment' => strlen($customerdata['apartment']) ? $customerdata['apartment'] : null,
-            'zip' => $customerdata['zip'],
-            'city' => $customerdata['city'],
-            SYSLOG::RES_COUNTRY => $customerdata['countryid'],
             'ten' => $customerdata['ten'],
             'ssn' => $customerdata['ssn'],
             SYSLOG::RES_USER => isset($this->auth->id) ? $this->auth->id : 0,
-            'post_name' => $customerdata['post_name'],
-            'post_street' => strlen($customerdata['post_street']) ? $customerdata['post_street'] : null,
-            'post_building' => strlen($customerdata['post_building']) ? $customerdata['post_building'] : null,
-            'post_apartment' => strlen($customerdata['post_apartment']) ? $customerdata['post_apartment'] : null,
-            'post_zip' => $customerdata['post_zip'],
-            'post_city' => $customerdata['post_city'],
-            'post_countryid' => $customerdata['post_countryid'],
             'info' => $customerdata['info'],
             'notes' => $customerdata['notes'],
             'lastname' => $customerdata['lastname'],
@@ -1060,17 +1054,50 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'paytype' => $customerdata['paytype'] ? $customerdata['paytype'] : null,
             SYSLOG::RES_CUST => $customerdata['id']
         );
-        $res = $this->db->Execute('UPDATE customers SET extid=?, status=?, type=?, street=?, building=?, apartment=?,
-                               zip=?, city=?, countryid=?, ten=?, ssn=?, moddate=?NOW?, modid=?,
-                               post_name=?, post_street=?, post_building=?, post_apartment=?,
-                               post_zip=?, post_city=?, post_countryid=?,
+
+        // INSERT OR UPDATE BILLING ADDRESS
+        $billing_address = $this->db->GetOne('SELECT address_id FROM customer_addresses WHERE customer_id = ? AND type = ?;', array($customerdata['id'], BILLING_ADDRESS));
+        $house = strlen($customerdata['building'])  ? $customerdata['building'] : null;
+        $flat  = strlen($customerdata['apartment']) ? $customerdata['apartment'] : null;
+
+        if ( $billing_address ) {
+            $this->db->Execute('UPDATE addresses SET street = ?, house = ?, flat = ?, zip = ?, city = ?, country_id = ? WHERE id = ?;',
+                                array($customerdata['street'], $house, $flat, $customerdata['zip'], $customerdata['city'], $customerdata['countryid'], $billing_address));
+        } else {
+            $this->db->Execute('INSERT INTO addresses (street, house, flat, zip, city, country_id) VALUES (?,?,?,?,?,?);',
+                                array($customerdata['street'], $house, $flat, $customerdata['zip'], $customerdata['city'], $customerdata['countryid']));
+            $last_addr_id = $this->db->GetLastInsertID( 'addresses' );
+
+            $this->db->Execute('INSERT INTO customer_addresses (customer_id, address_id, type) VALUES (?,?,?);', array($customerdata['id'], $last_addr_id, BILLING_ADDRESS));
+        }
+
+        // INSERT OR UPDATE POSTAL ADDRESS
+        $postal_address = $this->db->GetOne('SELECT address_id FROM customer_addresses WHERE customer_id = ? AND type = ?;', array($customerdata['id'], POSTAL_ADDRESS));
+        $phouse  = strlen($customerdata['post_building'])  ? $customerdata['post_building'] : null;
+        $pflat   = strlen($customerdata['post_apartment']) ? $customerdata['post_apartment'] : null;
+        $pstreet = strlen($customerdata['post_street'])    ? $customerdata['post_street'] : null;
+
+        if ( $postal_address ) {
+            $this->db->Execute('UPDATE addresses SET name = ?, city = ?, street = ?, zip = ?, country_id = ?, house = ?, flat = ? WHERE id = ?;',
+                                array($customerdata['post_name'], $customerdata['post_city'], $pstreet, $customerdata['post_zip'], $customerdata['post_countryid'], $phouse, $pflat, $postal_address));
+        } else {
+            $this->db->Execute('INSERT INTO addresses (name,city,street,zip,country_id,house,flat) VALUES (?,?,?,?,?,?,?);',
+                                array($customerdata['post_name'], $customerdata['post_city'], $pstreet, $customerdata['post_zip'], $customerdata['post_countryid'], $phouse, $pflat) );
+            $last_addr_id = $this->db->GetLastInsertID( 'addresses' );
+
+            $this->db->Execute('INSERT INTO customer_addresses (customer_id, address_id, type) VALUES (?,?,?);', array($customerdata['id'], $last_addr_id, POSTAL_ADDRESS));
+        }
+
+        // UPDATE CUSTOMER FIELDS
+        $res = $this->db->Execute('UPDATE customers SET extid=?, status=?, type=?,
+                               ten=?, ssn=?, moddate=?NOW?, modid=?,
                                info=?, notes=?, lastname=UPPER(?), name=?,
                                deleted=0, message=?, pin=?, regon=?, icn=?, rbe=?,
                                cutoffstop=?, consentdate=?, einvoice=?, invoicenotice=?, mailingnotice=?,
                                divisionid=?, paytime=?, paytype=?
                                WHERE id=?', array_values($args));
 
-        if ($res) {
+        if ( $res ) {
             if ($this->syslog) {
                 unset($args[SYSLOG::RES_USER]);
                 $args['deleted'] = 0;

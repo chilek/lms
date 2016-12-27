@@ -45,7 +45,7 @@ if (isset($_GET['ajax'])) {
 	if (!isset($mode)) { print 'false;'; exit; }
 
 	$candidates = $DB->GetAll('SELECT ' . $mode . ' as item, count(id) AS entries
-		FROM customers
+		FROM customerview
 		WHERE ' . $mode . ' != \'\' AND lower(' . $mode . ') ?LIKE? lower(' . $DB->Escape('%' . $search . '%') . ')
 		GROUP BY item
 		ORDER BY entries DESC, item ASC
@@ -157,27 +157,26 @@ if (isset($_POST['customeradd']))
 		}
 	}
 
-	if($customeradd['icn'] != '' && !check_icn($customeradd['icn']))
+	if ($customeradd['icn'] != '' && !check_icn($customeradd['icn']))
 		$error['icn'] = trans('Incorrect Identity Card Number!');
 
-	if($customeradd['regon'] != '' && !check_regon($customeradd['regon']))
+	if ($customeradd['regon'] != '' && !check_regon($customeradd['regon']))
 		$error['regon'] = trans('Incorrect Business Registration Number!');
 
-	if($customeradd['zip'] !='' && !check_zip($customeradd['zip']) && !isset($customeradd['zipwarning']))
-	{
+	if ($customeradd['zip'] !='' && !check_zip($customeradd['zip']) && !isset($customeradd['zipwarning'])) {
 		$error['zip'] = trans('Incorrect ZIP code! If you are sure you want to accept it, then click "Submit" again.');
 		$customeradd['zipwarning'] = 1;
 	}
-	if($customeradd['post_zip'] !='' && !check_zip($customeradd['post_zip']) && !isset($customeradd['post_zipwarning']))
-	{
+
+	if ($customeradd['post_zip'] !='' && !check_zip($customeradd['post_zip']) && !isset($customeradd['post_zipwarning'])) {
 		$error['post_zip'] = trans('Incorrect ZIP code! If you are sure you want to accept it, then click "Submit" again.');
 		$customeradd['post_zipwarning'] = 1;
 	}
 
-	if($customeradd['pin'] == '')
+	if ($customeradd['pin'] == '')
 		$error['pin'] = trans('PIN code is required!');
-        elseif(!preg_match('/^[0-9]{4,6}$/', $customeradd['pin']))
-	        $error['pin'] = trans('Incorrect PIN code!');
+    else if (!preg_match('/^[0-9]{4,6}$/', $customeradd['pin']))
+	    $error['pin'] = trans('Incorrect PIN code!');
 
 	$contacts = array();
 
@@ -186,9 +185,13 @@ if (isset($_POST['customeradd']))
 	foreach ($CUSTOMERCONTACTTYPES as $contacttype => $properties)
 		$properties['validator']($customeradd, $contacts, $error);
 
-	foreach ($customeradd['emails'] as $idx => $val)
-		if ($val['type'] & (CONTACT_INVOICES | CONTACT_DISABLED))
-			$emaileinvoice = true;
+    if ( !empty($customeradd['emails']) ) {
+		foreach ($customeradd['emails'] as $idx => $val) {
+			if ($val['type'] & (CONTACT_INVOICES | CONTACT_DISABLED)) {
+				$emaileinvoice = true;
+			}
+		}
+	}
 
 	if (isset($customeradd['invoicenotice']) && !$emaileinvoice)
 		$error['invoicenotice'] = trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');

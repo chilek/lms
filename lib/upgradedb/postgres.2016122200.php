@@ -232,13 +232,17 @@ $this->Execute("ALTER TABLE customers DROP IF EXISTS zip, DROP IF EXISTS city, D
                     DROP IF EXISTS post_building, DROP IF EXISTS post_apartment, DROP IF EXISTS post_zip, DROP IF EXISTS post_city,
                     DROP IF EXISTS post_countryid;");
 
-$this->Execute("ALTER TABLE nodes DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat;");
-$this->Execute("ALTER TABLE netnodes DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat;");
-$this->Execute("ALTER TABLE netdevices DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat;");
+$this->Execute("ALTER TABLE nodes        DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat;");
+$this->Execute("ALTER TABLE netnodes     DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat;");
+$this->Execute("ALTER TABLE netdevices   DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat;");
+$this->Execute("ALTER TABLE divisions    DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat;");
+$this->Execute("ALTER TABLE voipaccounts DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat;");
 
 $this->Execute("
     CREATE VIEW customerview AS
         SELECT c.*,
+            a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street, a1.house as building, a1.flat as apartment,
+            a2.country_id as post_countryid, a2.zip as post_zip, a1.city as post_city, a2.street as post_street, a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
             (CASE WHEN a1.house IS NULL THEN a1.street ELSE (CASE WHEN a1.flat IS NULL THEN a1.street || ' ' || a1.house ELSE a1.street || ' ' || a1.house || '/' || a1.flat END) END) as address,
             (CASE WHEN a2.house IS NULL THEN a2.street ELSE (CASE WHEN a2.flat IS NULL THEN a2.street || ' ' || a2.house ELSE a2.street || ' ' || a2.house || '/' || a2.flat END) END) as post_address
         FROM customers c
@@ -252,7 +256,9 @@ $this->Execute("
 
 $this->Execute("
     CREATE VIEW contractorview AS
-        SELECT c.*,
+        SELECT c.*, 
+            a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street, a1.house as building, a1.flat as apartment,
+            a2.country_id as post_countryid, a2.zip as post_zip, a1.city as post_city, a2.street as post_street, a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
             (CASE WHEN a1.house IS NULL THEN a1.street ELSE (CASE WHEN a1.flat IS NULL THEN a1.street || ' ' || a1.house ELSE a1.street || ' ' || a1.house || '/' || a1.flat END) END) as address,
             (CASE WHEN a2.house IS NULL THEN a2.street ELSE (CASE WHEN a2.flat IS NULL THEN a2.street || ' ' || a2.house ELSE a2.street || ' ' || a2.house || '/' || a2.flat END) END) as post_address
         FROM customers c
@@ -263,6 +269,8 @@ $this->Execute("
 $this->Execute("
     CREATE VIEW customeraddressview AS
         SELECT c.*,
+            a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street, a1.house as building, a1.flat as apartment,
+            a2.country_id as post_countryid, a2.zip as post_zip, a1.city as post_city, a2.street as post_street, a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
             (CASE WHEN a1.house IS NULL THEN a1.street ELSE (CASE WHEN a1.flat IS NULL THEN a1.street || ' ' || a1.house ELSE a1.street || ' ' || a1.house || '/' || a1.flat END) END) as address,
             (CASE WHEN a2.house IS NULL THEN a2.street ELSE (CASE WHEN a2.flat IS NULL THEN a2.street || ' ' || a2.house ELSE a2.street || ' ' || a2.house || '/' || a2.flat END) END) as post_address
         FROM customers c
@@ -291,16 +299,15 @@ $this->Execute("
 
 $this->Execute("
     CREATE VIEW vnodes AS
-        SELECT n.*, m.mac, a.city_id as location_city, a.street_id as location_street,
-            a.house as location_building, a.flat as location_flat
+        SELECT n.*, m.mac,
+            a.city_id as location_city, a.street_id as location_street,
+            a.house as location_house, a.flat as location_flat
         FROM nodes n
             LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid)
             LEFT JOIN addresses a ON n.address_id = a.id
         WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;");
 
-$this->Execute("selecta");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016122300', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016122200', 'dbversion'));
 
 $this->CommitTrans();
 
