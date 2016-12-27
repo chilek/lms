@@ -146,7 +146,7 @@
 	</TR>
 	<TR>
 		<TD width="1%">
-			<IMG src="img/info.gif" alt="">
+			<IMG src="img/note.gif" alt="">
 		</TD>
 		<TD width="1%">
 			<B>{trans("Note:")}</B>
@@ -186,15 +186,15 @@
 	{/block}
 	<TR>
 		<TD align="right" colspan="3">
-			<A href="javascript:document.event.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+			<A href="javascript:document.event.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
                         {if ConfigHelper::checkPrivilege('timetable_management')}
                             {if !$event.closed}
-                            <A href="?m=eventedit&id={$event.id}&action=close">{trans("Close")} <IMG src="img/dead.gif" alt=""></A>
+                            <A href="?m=eventedit&id={$event.id}&action=close"><IMG src="img/dead.gif" alt=""> {trans("Close")}</A>
                             {else}
-                            <A href="?m=eventedit&id={$event.id}&action=open">{trans("Open")} <IMG src="img/open.gif" alt=""></A>
+                            <A href="?m=eventedit&id={$event.id}&action=open"><IMG src="img/open.gif" alt=""> {trans("Open")}</A>
                             {/if}
                         {/if}
-			<A href="?m=eventlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
+			<A href="?m=eventlist"><IMG src="img/cancel.gif" alt="">{trans("Cancel")}</A>
 		</TD>
 	</TR>
     </TBODY>

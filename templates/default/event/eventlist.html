@@ -128,8 +128,8 @@
                                 </TD>
                                 <TD colspan="2" class="text-right nobr">
                                 	<div class="no-print">
-                                    <A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.userid}&closed={$listdata.closed}&privacy={$listdata.privacy}" target="_blank">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
-                                    <A href="?m=eventadd&amp;day={$daylist[daylist]|date_format:"%d"}&amp;month={$daylist[daylist]|date_format:"%m"}&amp;year={$daylist[daylist]|date_format:"%Y"}">{trans("Add Event")} <IMG src="img/save.gif" alt=""></A>&nbsp;
+                                    <A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.userid}&closed={$listdata.closed}&privacy={$listdata.privacy}" target="_blank"><IMG src="img/print.gif" alt=""> {trans("Print")}</A>
+                                    <A href="?m=eventadd&amp;day={$daylist[daylist]|date_format:"%d"}&amp;month={$daylist[daylist]|date_format:"%m"}&amp;year={$daylist[daylist]|date_format:"%Y"}"><IMG src="img/save.gif" alt=""> {trans("Add Event")}</A>&nbsp;
                                     </div>
                                 </TD>
                             </TR>
@@ -155,9 +155,9 @@
 										{/foreach}
                                 </TD>
                                 <TD onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
-                                        <IMG src="img/calendar.gif" alt=""><span class="bold">{$eventlist[eventlist].title}</span><BR>
+                                        <IMG src="img/calendar.gif" alt=""> <span class="bold">{$eventlist[eventlist].title}</span><BR>
                                         {if $eventlist[eventlist].description != ''}<IMG src="img/info1.gif" alt=""> {$eventlist[eventlist].description}{/if}<br/>
-                                        {if $eventlist[eventlist].note != ''}<span{if !$eventlist[eventlist].closed} style="color: red;"{/if}><IMG src="img/info.gif" alt="" /> {$eventlist[eventlist].note}</span>{/if}
+                                        {if $eventlist[eventlist].note != ''}<span{if !$eventlist[eventlist].closed} style="color: red;"{/if}><IMG src="img/note.gif" alt="" /> {$eventlist[eventlist].note}</span>{/if}
                                 </TD>
                                 <TD class="nobr">
                                         {if $eventlist[eventlist].customername}
