@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -580,7 +580,6 @@ if(isset($SMARTY))
 	$SMARTY->assign('_NUM_PERIODS', $NUM_PERIODS);
 	$SMARTY->assign('_RT_STATES', $RT_STATES);
 	$SMARTY->assign('_CONFIG_TYPES', $CONFIG_TYPES);
-	$SMARTY->assign('_MESSENGERS', $MESSENGERS);
 	$SMARTY->assign('_TARIFFTYPES', $TARIFFTYPES);
 	$SMARTY->assign('_PAYTYPES', $PAYTYPES);
 	$SMARTY->assign('_CONTACTTYPES', $CONTACTTYPES);
