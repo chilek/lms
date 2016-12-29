@@ -733,10 +733,10 @@ if (typeof $ !== 'undefined') {
 var show_menu_after_print = -1;
 
 var LMS_beforePrintEvent = function() {
-	if (typeof $ === 'undefined') {
+	if (typeof $ === 'undefined' || show_menu_after_print > -1) {
 		return;
 	}
-	if ( $('#pageleftbar').hasClass('pageleftbar-hidden') ) {
+	if ($('#pageleftbar').hasClass('pageleftbar-hidden')) {
 		show_menu_after_print = 0;
 	} else {
 		$( "#lms-ui-main-menu-toggle" ).trigger( "click" );
@@ -745,13 +745,13 @@ var LMS_beforePrintEvent = function() {
 };
 
 var LMS_afterPrintEvent = function() {
-	if (typeof $ === 'undefined') {
+	if (typeof $ === 'undefined' || show_menu_after_print == -1) {
 		return;
 	}
-	if ( show_menu_after_print == 1 ) {
+	if (show_menu_after_print == 1) {
 		$( "#lms-ui-main-menu-toggle" ).trigger( "click" );
 		show_menu_after_print = -1;
-    }
+	}
 };
 
 if (window.matchMedia) {
