@@ -158,9 +158,26 @@
 										<input type="hidden" name="nodeedit[location_street]" value="{$nodeinfo.location_street}">
 										<input type="hidden" name="nodeedit[location_house]" value="{$nodeinfo.location_house}">
 										<input type="hidden" name="nodeedit[location_flat]" value="{$nodeinfo.location_flat}">
-										<input type="checkbox" name="nodeedit[teryt]" id="teryt" onchange="check_teryt('location')"{if $nodeinfo.teryt} checked{/if}><label for="teryt">{trans("TERRIT-DB")}</label>
+										<input type="checkbox" name="nodeedit[teryt]" id="teryt" onchange="check_teryt('location')"{if $nodeinfo.teryt} checked{/if}> <label for="teryt">{trans("TERRIT-DB")}</label>
 									</td>
 								</tr>
+
+									<tr>
+										<td>
+											<img src="img/nodegroup.gif" alt="{trans("Node group:")}">
+										</td>
+										<td>
+											{trans("Node group:")}
+										</td>
+										<td>
+											<select size="1" name="nodedata[nodegroup]" {tip text="Select group to attribute to node" trigger="nodegroup"} style="max-width:250px;">
+												<option value="0">{trans("... select group ...")}</option>
+												{foreach from=$allnodegroups item=group}
+												<option value="{$group.id}" {if $group.id==$nodedata.nodegroup} selected{/if}>{$group.name} ({$group.id|string_format:"%04d"})</option>
+												{/foreach}
+											</select>
+										</td>
+									</tr>
 
 								{if $netdevices}
 								<tr>
