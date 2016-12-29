@@ -730,9 +730,12 @@ if (typeof $ !== 'undefined') {
  * \brief Auto hide left vertical menu on print
  */
 
-var show_menu_after_print = 0;
+var show_menu_after_print = -1;
 
 var LMS_beforePrintEvent = function() {
+	if (typeof $ === 'undefined') {
+		return;
+	}
 	if ( $('#pageleftbar').hasClass('pageleftbar-hidden') ) {
 		show_menu_after_print = 0;
 	} else {
@@ -742,8 +745,12 @@ var LMS_beforePrintEvent = function() {
 };
 
 var LMS_afterPrintEvent = function() {
+	if (typeof $ === 'undefined') {
+		return;
+	}
 	if ( show_menu_after_print == 1 ) {
 		$( "#lms-ui-main-menu-toggle" ).trigger( "click" );
+		show_menu_after_print = -1;
     }
 };
 
