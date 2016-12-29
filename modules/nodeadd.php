@@ -60,7 +60,7 @@ if (isset($_POST['nodedata']))
 		$nodedata['macs'][$key] = str_replace('-',':',$value);
 
 	foreach($nodedata as $key => $value)
-		if($key != 'macs' && $key != 'authtype' && $key != 'wysiwyg')
+		if($key != 'macs' && $key != 'authtype' && $key != 'wysiwyg' && $key != 'nodegroup')
 			$nodedata[$key] = trim($value);
 
 	if($nodedata['ipaddr']=='' && $nodedata['ipaddr_pub'] && $nodedata['mac']=='' && $nodedata['name']=='' && !isset($nodedata['wholenetwork']))
@@ -153,7 +153,7 @@ if (isset($_POST['nodedata']))
 		$ports = $DB->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($nodedata['netdev']));
 	        $takenports = $LMS->CountNetDevLinks($nodedata['netdev']);
 
-		if($ports <= $takenports) 
+		if($ports <= $takenports)
 			$error['netdev'] = trans('No free ports on device!');
 		elseif($nodedata['port'])
 		{
@@ -176,7 +176,6 @@ if (isset($_POST['nodedata']))
 
 	if(!isset($nodedata['chkmac']))	$nodedata['chkmac'] = 0;
 	if(!isset($nodedata['halfduplex'])) $nodedata['halfduplex'] = 0;
-	
 
 	if ($nodedata['invprojectid'] == '-1') { // nowy projekt
 		if (!strlen(trim($nodedata['projectname']))) {
@@ -215,8 +214,6 @@ if (isset($_POST['nodedata']))
             $nodedata['location'] = $location['address'] . ', ' . $location['zip'] . ' ' . $location['city'];
         }
 
-
-
         $nodedata = $LMS->ExecHook('node_add_before', $nodedata);
 
 	$ipi = $nodedata['invprojectid'];
@@ -226,7 +223,7 @@ if (isset($_POST['nodedata']))
 			array($nodedata['projectname'], INV_PROJECT_REGULAR));
 		$ipi = $DB->GetLastInsertID('invprojects');
 		$DB->CommitTrans();
-	} 
+	}
 	if ($nodedata['invprojectid'] == '-1' || intval($ipi)>0)
 		$nodedata['invprojectid'] = intval($ipi);
 	else
@@ -234,10 +231,12 @@ if (isset($_POST['nodedata']))
 
 		$nodeid = $LMS->NodeAdd($nodedata);
 
-		if($nodedata['nodegroup'] != '0')
+		if(count($nodedata['nodegroup']) > 0)
 		{
-			$DB->Execute('INSERT INTO nodegroupassignments (nodeid, nodegroupid)
-				VALUES (?, ?)', array($nodeid, intval($nodedata['nodegroup'])));
+			foreach ($nodedata['nodegroup'] as $nodegroupid) {
+				$DB->Execute('INSERT INTO nodegroupassignments (nodeid, nodegroupid)
+					VALUES (?, ?)', array($nodeid, intval($nodegroupid)));
+			}
 		}
 
         $nodedata['id'] = $nodeid;

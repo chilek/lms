@@ -161,10 +161,9 @@
 												{trans("Node group:")}
 											</td>
 											<td>
-												<select size="1" name="nodedata[nodegroup]" {tip text="Select group to attribute to node" trigger="nodegroup"} style="max-width:250px;">
-													<option value="0">{trans("... select group ...")}</option>
-													{foreach from=$allnodegroups item=group}
-														<option value="{$group.id}" {if $group.id==$nodedata.nodegroup} SELECTED{/if}>{$group.name} ({$group.id|string_format:"%04d"})</option>
+												<select size="1" name="nodedata[nodegroup][]" class="lms-ui-multiselect" {tip text="Select groups to attribute to node"} multiple data-default-value="{trans("... select groups ...")}">
+													{foreach $allnodegroups as $group}
+														<option value="{$group.id}">{$group.name} ({$group.id|string_format:"%04d"})</option>
 													{/foreach}
 												</select>
 											</td>
