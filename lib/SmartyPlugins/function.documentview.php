@@ -57,7 +57,7 @@ function smarty_function_documentview($params, $template) {
 
 	$result .= '<A href="' . $url . '"';
 	if (empty($type))
-		$result .=  ($external ? 'rel="external"' : '');
+		$result .=  ($external ? ' rel="external"' : '');
 	else
 		$result .= ' id="documentview-' . $id . '" data-dialog-id="documentviewdialog-' . $id . '" '
 			. 'class="documentview documentview-' . $type . '"';
