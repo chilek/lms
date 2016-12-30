@@ -62,10 +62,10 @@ function smarty_function_customerlist($params, $template) {
 				$result .= 'selected';
 			$result .= '>' . mb_substr($customer['customername'], 0 , 40) . ' (' . sprintf("%04d", $customer['id']) . ')</OPTION>';
 		}
-		$result .= '</SELECT>&nbsp;' . trans("or Customer ID:");
-	} else
-		$result .= trans("ID:");
-	$result .= '&nbsp;<INPUT type="text" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" size="5" ';
+		$result .= '</SELECT>&nbsp;' . trans("or Customer ID:").'&nbsp;';
+	}
+
+	$result .= '<INPUT type="number" min="1" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" placeholder="' . trans("ID") . '" ';
 
 	$on_change = !empty($params['customOnChange']) ? $params['customOnChange'] : '';
 
