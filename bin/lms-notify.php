@@ -1176,7 +1176,7 @@ if (!empty($intersect)) {
 	$customers = array_unique($customers);
 
 	if ($SYSLOG)
-		$SYSLOG->NetTransaction('lms-notify.php');
+		$SYSLOG->NewTransaction('lms-notify.php');
 
 	foreach (array('block', 'unblock') as $channel)
 		if (in_array($channel, $channels))
