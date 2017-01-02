@@ -57,6 +57,7 @@ version ?.??.?? (????-??-??):
   - enhancement: lms-notify.php: all actions are logged into transaction log [chilan]
   - improvement: voip.cdr_billing_record_format configuration variable describes
     format of billing record [chilan]
+  - improvement: allow to print invoices manually issued [chilan]
 
 version 1.11.21 (2016-10-14):
 
