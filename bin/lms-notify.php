@@ -1269,7 +1269,7 @@ if (!empty($intersect)) {
 						$nodes = $DB->GetAll("SELECT id, ownerid FROM nodes WHERE access = ?
 							AND ownerid IN (" . implode(',', $customers) . ")",
 							array(0));
-						if (!empty($nodeids))
+						if (!empty($nodes))
 							foreach ($nodes as $node) {
 								$DB->Execute("UPDATE nodes SET access = ?
 									WHERE id = ?", array(1, $node['id']));
