@@ -1175,9 +1175,6 @@ if (!empty($intersect)) {
 			$customers = array_merge($customers, $notification['customers']);
 	$customers = array_unique($customers);
 
-	if ($SYSLOG)
-		$SYSLOG->NewTransaction('lms-notify.php');
-
 	foreach (array('block', 'unblock') as $channel)
 		if (in_array($channel, $channels))
 			switch ($channel) {
@@ -1197,10 +1194,12 @@ if (!empty($intersect)) {
 							foreach ($nodes as $node) {
 								$DB->Execute("UPDATE nodes SET access = ?
 									WHERE id = ?", array(0, $node['id']));
-								if ($SYSLOG)
+								if ($SYSLOG) {
+									$SYSLOG->NewTransaction('lms-notify.php');
 									$SYSLOG->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE,
 										array(SYSLOG::RES_NODE => $node['id'], SYSLOG::RES_CUST => $node['ownerid'],
 											'access' => 0));
+								}
 							}
 					}
 					if (in_array('assignment-invoice', $actions)) {
@@ -1213,10 +1212,12 @@ if (!empty($intersect)) {
 							foreach ($assigns as $assign) {
 								$DB->Execute("UPDATE assignments SET invoice = ?
 									WHERE id = ?", array(0, $assign['id']));
-								if ($SYSLOG)
+								if ($SYSLOG) {
+									$SYSLOG->NewTransaction('lms-notify.php');
 									$SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE,
 										array(SYSLOG::RES_ASSIGN => $assign['id'], SYSLOG::RES_CUST => $assign['customerid'],
 											'invoice' => 0));
+								}
 							}
 					}
 					if (in_array('customer-status', $actions)) {
@@ -1227,9 +1228,11 @@ if (!empty($intersect)) {
 							foreach ($custids as $custid) {
 								$DB->Execute("UPDATE customers SET status = ? WHERE id = ?",
 									array(CSTATUS_DEBT_COLLECTION, $custid));
-								if ($SYSLOG)
+								if ($SYSLOG) {
+									$SYSLOG->NewTransaction('lms-notify.php');
 									$SYSLOG->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE,
 										array(SYSLOG::RES_CUST => $custid, 'status' => CSTATUS_DEBT_COLLECTION));
+								}
 							}
 					}
 					if (in_array('all-assignment-suspension', $actions)) {
@@ -1246,6 +1249,7 @@ if (!empty($intersect)) {
 								$DB->Execute("INSERT INTO assignments (customerid, datefrom, tariffid, liabilityid)
 									VALUES (?, ?, 0, 0)", array($cid, $args['datefrom']));
 								if ($SYSLOG) {
+									$SYSLOG->NewTransaction('lms-notify.php');
 									$args[SYSLOG::RES_ASSIGN] = $DB->GetLastInsertID('assignments');
 									$args[SYSLOG::RES_CUST] = $cid;
 									$SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_ADD, $args);
@@ -1269,10 +1273,12 @@ if (!empty($intersect)) {
 							foreach ($nodes as $node) {
 								$DB->Execute("UPDATE nodes SET access = ?
 									WHERE id = ?", array(1, $node['id']));
-								if ($SYSLOG)
+								if ($SYSLOG) {
+									$SYSLOG->NewTransaction('lms-notify.php');
 									$SYSLOG->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE,
 										array(SYSLOG::RES_NODE => $node['id'], SYSLOG::RES_CUST => $node['ownerid'],
 											'access' => 1));
+								}
 							}
 					}
 					if (in_array('assignment-invoice', $actions)) {
@@ -1285,10 +1291,12 @@ if (!empty($intersect)) {
 							foreach ($assigns as $assign) {
 								$DB->Execute("UPDATE assignments SET invoice = ?
 									WHERE id = ?", array(1, $assign['id']));
-								if ($SYSLOG)
+								if ($SYSLOG) {
+									$SYSLOG->NewTransaction('lms-notify.php');
 									$SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE,
 										array(SYSLOG::RES_ASSIGN => $assign['id'], SYSLOG::RES_CUST => $assign['customerid'],
 											'invoice' => 1));
+								}
 							}
 					}
 					if (in_array('customer-status', $actions)) {
@@ -1299,9 +1307,11 @@ if (!empty($intersect)) {
 							foreach ($custids as $custid) {
 								$DB->Execute("UPDATE customers SET status = ? WHERE id = ?",
 									array(CSTATUS_CONNECTED, $custid));
-								if ($SYSLOG)
+								if ($SYSLOG) {
+									$SYSLOG->NewTransaction('lms-notify.php');
 									$SYSLOG->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE,
 										array(SYSLOG::RES_CUST => $custid, 'status' => CSTATUS_CONNECTED));
+								}
 							}
 					}
 					if (in_array('all-assignment-suspension', $actions)) {
@@ -1312,6 +1322,8 @@ if (!empty($intersect)) {
 							'datefrom' => time(),
 						);
 						foreach ($customers as $cid) {
+							if ($SYSLOG)
+								$SYSLOG->NewTransaction('lms-notify.php');
 							if ($datefrom = $DB->GetOne("SELECT datefrom FROM assignments WHERE customerid = ? AND tariffid = 0 AND liabilityid = 0",
 								array($cid))) {
 								$year = intval(strftime('%Y', $datefrom));
