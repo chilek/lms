@@ -2828,6 +2828,7 @@ $_LANG['Management URL cannot be empty!'] = 'Adres URL do zarządzania nie może
 $_LANG['Management URL is too short!'] = 'Adres URL do zarządzania jest zbyt krótki!';
 
 $_LANG['only automatically issued'] = 'tylko wystawione automatycznie';
+$_LANG['only manually issued'] = 'tylko wystawione ręcznie';
 
 $_LANG['Password expiration:'] = 'Wygasanie hasła:';
 $_LANG['Last password change:'] = 'Ostatnia zmiana hasła:';
