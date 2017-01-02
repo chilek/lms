@@ -55,6 +55,8 @@ version ?.??.?? (????-??-??):
     dialog is displayed [chilan]
   - enhancement: cash source: added suport for main bank account definition [chilan]
   - enhancement: lms-notify.php: all actions are logged into transaction log [chilan]
+  - improvement: voip.cdr_billing_record_format configuration variable describes
+    format of billing record [chilan]
 
 version 1.11.21 (2016-10-14):
 
