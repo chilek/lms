@@ -76,9 +76,11 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				port=?, nas=?, longitude=?, latitude=?, netid=?, invprojectid=?, authtype=?
 				WHERE id=?', array_values($args));
 
-        $this->db->Execute('UPDATE addresses SET city_id = ?, street_id = ?, house = ?, flat = ? WHERE id = ?',
+        $this->db->Execute('UPDATE addresses SET city = ?, city_id = ?, street = ?, street_id = ?, house = ?, flat = ? WHERE id = ?',
                             array(
+                                trim($nodedata['location_city_name']),
                                 $nodedata['location_city']   ? $nodedata['location_city']   : null,
+                                trim($nodedata['location_street_name']),
                                 $nodedata['location_street'] ? $nodedata['location_street'] : null,
                                 $nodedata['location_house']  ? $nodedata['location_house']  : null,
                                 $nodedata['location_flat']   ? $nodedata['location_flat']   : null,
@@ -219,7 +221,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				(CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
 				lt.name AS street_type,
 			lb.name AS borough_name, lb.type AS borough_type,
-			ld.name AS district_name, lst.name AS state_name
+			ld.name AS district_name, lst.name AS state_name,
+			addr.city as location_city_name, addr.street as location_city_street
 			FROM vnodes n
 			LEFT JOIN addresses addr ON addr.id = n.address_id
 			LEFT JOIN netradiosectors rs ON rs.id = n.linkradiosector

@@ -231,8 +231,6 @@ if (isset($_POST['nodeedit'])) {
 		if (empty($nodeedit['teryt'])) {
 			$nodeedit['location_city'] = null;
 			$nodeedit['location_street'] = null;
-			$nodeedit['location_house'] = null;
-			$nodeedit['location_flat'] = null;
 		}
 		if (empty($nodeedit['location']) && !empty($nodeedit['ownerid'])) {
                     $location = $LMS->GetCustomer($nodeedit['ownerid']);

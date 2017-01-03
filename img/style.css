@@ -602,6 +602,14 @@ div.lms-ui-multiselectlayer ul span {
     display: none !important;
   }
 }
+.lms-ui-button {
+  color: #800000;
+}
+.lms-ui-button:hover {
+  color: #336600;
+  cursor: pointer;
+  text-decoration: underline;
+}
 .lms-ui-multi-check-all {
   -webkit-user-select: none;
   -moz-user-select: none;

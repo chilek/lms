@@ -20,7 +20,7 @@
     <input type="submit" class="hiddenbtn">
     <table id="searchtable" cellpadding="5" width="100%">
         <tr>
-            <td class="fall dark" nowrap>
+            <td class="fall dark nobr">
                  <img src="img/home.gif" alt="">
                  <input type="text" name="searchcity" value="" size="40" onkeyup="document.search.submit();" {tip text="Enter city name"}>
             </td>
@@ -87,19 +87,19 @@
 		    </td>
 	    </tr>
 	    <tr class="light" id="house"{if empty($data.streetid) && empty($data.cityid)} style="display:none"{/if}>
-		    <td nowrap>{trans("House No.")}:</td>
+		    <td class="nobr">{trans("House No.")}:</td>
 		    <td>
                 <input type="text" size="8" maxlength="8" id="house_input" name="house" value="" {tip text="Enter house number"}>
 		    </td>
 	    </tr>
 	    <tr class="light" id="flat"{if empty($data.streetid) && empty($data.cityid)} style="display:none"{/if}>
-		    <td nowrap>{trans("Flat No.")}:</td>
+		    <td class="nobr">{trans("Flat No.")}:</td>
 		    <td>
                 <input type="text" size="8" maxlength="8" id="flat_input" name="flat" value="" {tip text="Enter flat number"}>
 		    </td>
 	    </tr>
         <tr class="light">
-            <td colspan="2" align="right" nowrap>
+            <td colspan="2" class="text-right nobr">
                 <a href="javascript:submit_location()" accesskey="s">{trans("Submit")} <img src="img/save.gif" alt=""></a>
             </td>
         </tr>
@@ -177,12 +177,12 @@ function search_update(cityid, districtid, stateid)
 
 function submit_location()
 {
-	var city = document.getElementById('city_sel'),
-		street = document.getElementById('street_sel'),
-		house = document.getElementById('house_input'),
-		flat = document.getElementById('flat_input'),
-		cr = document.getElementById('city'),
-		loc = window.parent.document.getElementById('location');
+	var city     = document.getElementById('city_sel'),
+		street   = document.getElementById('street_sel'),
+		house    = document.getElementById('house_input'),
+		flat     = document.getElementById('flat_input'),
+		cr       = document.getElementById('city'),
+		loc      = window.parent.document.getElementById('location');
 		loc_city = window.parent.document.getElementById('location_city');
 
 	if (cr.style.display == 'none' || city.value == 0) {
@@ -274,6 +274,7 @@ document.search.searchcity.focus();
 {/if}
 
 resize_frame();
+
 //-->
 </script>
 </body>

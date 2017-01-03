@@ -109,8 +109,43 @@ function customerchoosewin(formfield)
 
 function locationchoosewin(varname, formname, city, street, default_city)
 {
-        if(city == '' && default_city) city = default_city;
-	return openSelectWindow('?m=chooselocation&name='+varname+'&form='+formname+'&city='+city+'&street='+street,'chooselocation',350,200,'true');
+    if (city == '' && default_city)
+        city = default_city;
+
+    return openSelectWindow('?m=chooselocation&name='+varname+'&form='+formname+'&city='+city+'&street='+street,'chooselocation',350,200,'true');
+}
+
+if ( typeof $ !== 'undefined' ) {
+    $(function() {
+        // open location dialog window if teryt is checked
+        $( ".teryt-address-button" ).click(function() {
+
+            var box = $( this ).closest( ".lmsui-address-box" );
+
+            if ( ! box.find("input[data-address='teryt-checkbox']").is(':checked') ) {
+                return 0;
+            }
+
+            var city   = box.find("input[data-address='city-hidden']").val();
+            var street = box.find("input[data-address='street-hidden']").val();
+
+            openSelectWindow('?m=chooselocation&city=' + city + '&street=' + street + "&boxid=" + box.attr('id'), 'chooselocation', 350, 200, 'true');
+        });
+
+        // disable and enable inputs after click
+        $( '.lmsui-address-teryt-checkbox' ).change( function() {
+            var boxid = $( this ).closest( ".lmsui-address-box" ).attr( 'id' );
+
+            if ( $( this ).is(':checked') ) {
+                $("#" + boxid + " input[type=text]").prop("readonly", true);
+            } else {
+                $("#" + boxid + " input[type=text]").prop("readonly", false);
+            }
+        });
+
+        // simulate click for update input state
+        $( '.lmsui-address-teryt-checkbox' ).trigger( 'change' );
+    });
 }
 
 function netdevmodelchoosewin(varname, formname, netdevmodelid, producer, model)

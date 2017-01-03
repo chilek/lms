@@ -10,6 +10,8 @@
 @fonts: Arial, Helvetica, Verdana;
 @fonts: Arial, Helvetica, Verdana;
 @icon-size: 16px;
+@link: #800000;
+@linkhover: #336600;
 
 .lms-ui-no-user-select {
 	-webkit-user-select: none;
@@ -87,20 +89,20 @@ A {
 	text-decoration: none;
 	vertical-align: baseline;
 	&:link {
-		color: #800000;
+		color: @link;
 	}
 	&:active {
-		color: #336600;
+		color: @linkhover;
 	}
 	&:visited {
-		color: #800000;
+		color: @link;
 	}
 	&.blend {
 		color: @blend;
 	}
 	&:hover {
 		text-decoration: underline;
-		color: #336600;
+		color: @linkhover;
 		cursor: pointer;
 	}
 }
@@ -303,7 +305,7 @@ div.lms-ui-multiselectlayer {
 	}
 	.box1-hover {
 		background-color: @highlight;
-		color: #800000;
+		color: @link;
 		font-weight: bold;
 		padding: 5px 5px;
 		cursor: default;
@@ -312,7 +314,7 @@ div.lms-ui-multiselectlayer {
 	}
 	.box1-open {
 		background-color: #DACAB2;
-		color: #800000;
+		color: @link;
 		font-weight: bold;
 		padding: 5px 5px;
 		cursor: default;
@@ -321,7 +323,7 @@ div.lms-ui-multiselectlayer {
 	}
 	.box1-open-hover {
 		background-color: @highlight;
-		color: #800000;
+		color: @link;
 		font-weight: bold;
 		padding: 5px 5px;
 		cursor: default;
@@ -334,12 +336,12 @@ div.lms-ui-multiselectlayer {
 		padding: 0px 0px 0px 0px;
 		display: none;
 		a {
-			color: #800000;
+			color: @link;
 			text-decoration: none;
 			white-space: nowrap;
 		}
 		a:hover {
-			color: #336600;
+			color: @linkhover;
 			text-decoration: none;
 			white-space: nowrap;
 		}
@@ -452,6 +454,15 @@ div.lms-ui-multiselectlayer {
 	}
 }
 
+
+.lms-ui-button {
+    color: @link;
+    &:hover {
+        color: @linkhover;
+        cursor: pointer;
+        text-decoration: underline;
+    }
+}
 .lms-ui-multi-check-all {
 	.lms-ui-no-user-select;
 }
