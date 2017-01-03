@@ -29,12 +29,20 @@
     }
 </STYLE>
 
-{function restrictions}
+{function bitrate_restrictions}
     {if $day}{$day} kbit/s{else}{trans("no limits")}{/if}
 
     ({trans("night:")}
 
     {if $night}{$night|default:0} kbit/s{else}{trans("not defined")}{/if})
+{/function}
+
+{function restrictions}
+    {if $day}{$day}{else}{trans("no limits")}{/if}
+
+    ({trans("night:")}
+
+    {if $night}{$night|default:0}{else}{trans("not defined")}{/if})
 {/function}
 
 {function user_restrictions}
@@ -142,22 +150,22 @@
                             <TR>
                                 <TD><IMG SRC="img/uprate.gif" ALT=""></TD>
                                 <TD>{trans("Upload rate:")}</TD>
-                                <TD>{restrictions day=$tariff.uprate night=$tariff.uprate_n}</TD>
+                                <TD>{bitrate_restrictions day=$tariff.uprate night=$tariff.uprate_n}</TD>
                             </TR>
                             <TR>
                                 <TD></TD>
                                 <TD>{trans("Upload ceil:")}</TD>
-                                <TD>{restrictions day=$tariff.upceil night=$tariff.upceil_n}</TD>
+                                <TD>{bitrate_restrictions day=$tariff.upceil night=$tariff.upceil_n}</TD>
                             </TR>
                             <TR>
                                 <TD><IMG SRC="img/downrate.gif" ALT=""></TD>
                                 <TD>{trans("Download rate:")}</TD>
-                                <TD>{restrictions day=$tariff.downrate night=$tariff.downrate_n}</TD>
+                                <TD>{bitrate_restrictions day=$tariff.downrate night=$tariff.downrate_n}</TD>
                             </TR>
                             <TR>
                                 <TD></TD>
                                 <TD>{trans("Download ceil:")}</TD>
-                                <TD>{restrictions day=$tariff.downceil night=$tariff.downceil_n}</TD>
+                                <TD>{bitrate_restrictions day=$tariff.downceil night=$tariff.downceil_n}</TD>
                             </TR>
                             <TR>
                                 <TD><IMG SRC="img/options.gif" ALT=""></TD>
