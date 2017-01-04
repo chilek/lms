@@ -3632,6 +3632,7 @@ $_LANG['authorising'] = 'zatwierdzający';
 
 $_LANG['vacation'] = 'urlop';
 $_LANG['duty'] = 'dyżur';
+$_LANG['Show outdated events in events tab. Default true'] = 'Pokaż przeterminowane wydarzenia w karcie terminarza. Domyślnie włączone.';
 
 $_LANG['If set to "true" then logout confirmation is required. Default "false"'] = 'Ustawienie opcji na "true" wymusza potwierdzenie wylogowania. Domyślnie wyłączone';
 

@@ -299,12 +299,14 @@ function GetConfigList() {
 					$config[$idx]['description'] = trans('Default ping type. You can use "1" for ping or "2" for arping. Default: 1.');
 				break;
 				
-                                case 'default_teryt_city':
+				case 'default_teryt_city':
 					$config[$idx]['description'] = trans('Default City in TERYT. Set city id in TERYT.');
 				break;
 
 				case 'logout_confirmation':
 					$config[$idx]['description'] = trans('If set to "true" then logout confirmation is required. Default "false"');
+				case 'show_old_events':
+					$config[$idx]['description'] = trans('Show outdated events in events tab. Default true');
 				break;
 
 				default:

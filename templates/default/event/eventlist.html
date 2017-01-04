@@ -93,6 +93,52 @@
     </THEAD>
     <TBODY>
 	{cycle values="light,lucid" print=false}
+	{section name=oldEventlist loop=$oldEventlist}
+    <TR class="highlight {cycle}" style="background-color: rgba(255,0,0,0.3); border-bottom: 1px solid black"  >
+        <TD style="min-width: 70px; {if isset($_EVENTSTYLES[$oldEventlist[oldEventlist].type])} {$_EVENTSTYLES[$oldEventlist[oldEventlist].type]}{/if}" class="text-center bold">
+        	{$_EVENTTYPES[$oldEventlist[oldEventlist].type]}
+        </td>
+        <TD class="text-left nobr" onClick="return self.location.href='?m=eventinfo&amp;id={$oldEventlist[oldEventlist].id}'">
+                <span class="bold">{$oldEventlist[oldEventlist].date|date_format:"%Y-%m-%d"}</span><BR>
+				{foreach $oldEventlist[oldEventlist].userlist as $user}
+					<A href="?m=userinfo&amp;id={$user.id}">{$user.name|truncate:"25":"...":true}</A><BR>
+				{/foreach}
+        </TD>
+        <TD onClick="return self.location.href='?m=eventinfo&amp;id={$oldEventlist[oldEventlist].id}'">
+                <IMG src="img/calendar.gif" alt=""> <span class="bold">{$oldEventlist[oldEventlist].title}</span><BR>
+                {if $oldEventlist[oldEventlist].description != ''}<IMG src="img/info1.gif" alt=""> {$oldEventlist[oldEventlist].description}{/if}<br/>
+                {if $oldEventlist[oldEventlist].note != ''}<span{if !$oldEventlist[oldEventlist].closed} style="color: red;"{/if}><IMG src="img/note.gif" alt="" /> {$oldEventlist[oldEventlist].note}</span>{/if}
+        </TD>
+        <TD class="nobr">
+                {if $oldEventlist[oldEventlist].customername}
+                        <A href="?m=customerinfo&amp;id={$oldEventlist[oldEventlist].customerid}">{$oldEventlist[oldEventlist].customername|truncate:"30":"...":true}</A><br/>
+			{if isset($oldEventlist[oldEventlist].location)}
+			    <a href="?m=nodeinfo&amp;id={$oldEventlist[oldEventlist].nodeid}">{$oldEventlist[oldEventlist].location}</a>
+			{else}
+			    {$oldEventlist[oldEventlist].customerlocation}
+			{/if}
+			                {/if}
+        </TD>
+        <TD class="text-right nobr">
+        	<div class="no-print">
+            {if ConfigHelper::checkPrivilege('timetable_management')}
+                {if $oldEventlist[oldEventlist].closed}
+                <A href="?m=eventedit&amp;id={$oldEventlist[oldEventlist].id}&amp;action=open"><IMG src="img/resolved.gif" alt="[ {trans("Open")} ]" title="[&nbsp;{trans("Open")}&nbsp;]"></A>
+                {else}
+                <A href="?m=eventedit&amp;id={$oldEventlist[oldEventlist].id}&amp;action=close"><IMG src="img/open.gif" alt="[ {trans("Close")} ]" title="[&nbsp;{trans("Close")}&nbsp;]"></A>
+                {/if}
+                <A href="?m=eventdel&amp;id={$oldEventlist[oldEventlist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[&nbsp;{trans("Delete")}&nbsp;]"></A>&nbsp;
+                <A href="?m=eventedit&amp;id={$oldEventlist[oldEventlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[&nbsp;{trans("Edit")}&nbsp;]"></A>
+            {/if}
+            {if $oldEventlist[oldEventlist].note == ''}
+                {foreach item=user from=$oldEventlist[oldEventlist].userlist}
+                    {if $layout.logid == $user.id}<A href="?m=eventnote&id={$oldEventlist[oldEventlist].id}"><IMG src="img/note.gif" alt="[ {trans("Add Note")} ]" title="[ {trans("Add Note")} ]"></A>{/if}
+                {/foreach}
+            {/if}
+            </div>
+        </TD>
+    </TR>
+    {/section}
 	{section name=daylist loop=$daylist}
 	<TR>
 		<TD colspan="5">
