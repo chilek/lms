@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $userid=0, $type = 0, $privacy = 0, $closed = '') {
+function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customerid=0, $userid=0, $type = 0, $privacy = 0, $closed = '', $outDate = 0) {
 	global $AUTH;
 
 	$DB = LMSDB::getInstance();
@@ -50,7 +50,8 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 	}
 
 	$startdate = mktime(0,0,0, $month, $day, $year);
-	$enddate = mktime(0,0,0, $month, $day+$forward, $year);
+	!$outDate ? $enddate = mktime(0,0,0, $month, $day+$forward, $year) : '';
+	$outDate ? $closed = '0' : $closed = $closed;
 
 	$list = $DB->GetAll(
 		'SELECT events.id AS id, title, note, description, date, begintime, enddate, endtime, customerid, closed, events.type, '
@@ -60,8 +61,9 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 		FROM events
 		LEFT JOIN vnodes as vn ON (nodeid = vn.id)
 		LEFT JOIN customerview c ON (customerid = c.id)
-		LEFT JOIN vusers ON (userid = vusers.id)
-		WHERE ((date >= ? AND date < ?) OR (enddate <> 0 AND date < ? AND enddate >= ?)) AND ' . $privacy_condition
+		LEFT JOIN vusers ON (userid = vusers.id)'
+		.($outDate ?  'WHERE date < ? AND ' : 'WHERE ((date >= ? AND date < ?) OR (enddate <> 0 AND date < ? AND enddate >= ?)) AND ')
+		. $privacy_condition
 		.($customerid ? ' AND customerid = '.intval($customerid) : '')
 		.($userid ? ' AND EXISTS (
 			SELECT 1 FROM eventassignments
@@ -180,6 +182,9 @@ unset($t);
 $layout['pagetitle'] = trans('Timetable');
 
 $eventlist = GetEventList($year, $month, $day, ConfigHelper::getConfig('phpui.timetable_days_forward'), $u, $a, $type, $privacy, $closed);
+//show Outdated events at begining of events list
+ConfigHelper::getConfig('phpui.show_old_events') ? $OldEventlist = $OldEventlist = GetEventList($year, $month, $day, 0, $u, $a, $type, $privacy, 1, 1) : $OldEventlist = array();
+
 $SESSION->restore('elu', $listdata['customerid']);
 $SESSION->restore('ela', $listdata['userid']);
 $SESSION->restore('elt', $listdata['type']);
@@ -209,6 +214,7 @@ $SMARTY->assign('today', $today);
 
 $SMARTY->assign('period', $DB->GetRow('SELECT MIN(date) AS fromdate, MAX(date) AS todate FROM events'));
 $SMARTY->assign('eventlist',$eventlist);
+$SMARTY->assign('oldEventlist',$OldEventlist);
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('days',$days);
 $SMARTY->assign('day',$day);
