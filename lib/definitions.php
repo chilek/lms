@@ -331,6 +331,7 @@ define('CONTACT_IM_YAHOO', 1024);
 define('CONTACT_IM_SKYPE', 2048);
 define('CONTACT_IM_FACEBOOK', 4096);
 define('CONTACT_DISABLED', 16384);
+define('CONTACT_DOCUMENTS', 32768);
 
 $CONTACTTYPES = array(
     CONTACT_MOBILE          =>	trans('mobile'),
@@ -343,6 +344,7 @@ $CONTACTTYPES = array(
     CONTACT_IM_YAHOO        =>	trans('Yahoo'),
     CONTACT_IM_SKYPE        =>	trans('Skype'),
     CONTACT_IM_FACEBOOK     =>	trans('Facebook'),
+    CONTACT_DOCUMENTS		=>	trans('documents'),
 );
 
 define('DISCOUNT_PERCENTAGE', 1);

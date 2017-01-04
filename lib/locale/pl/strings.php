@@ -24,6 +24,9 @@
  *  $Id$
  */
 
+$_LANG['documents'] = 'dokumenty';
+$_LANG['Check if contact should be printed on documents'] = 'Zaznacz jeśli kontakt powinien być drukowany na dokumentach';
+
 $_LANG['Are you sure you want to send messages to $a customer(s)?'] = 'Jesteś pewien, że chcesz wysłać wiadmości do $a klient(a/ów)?';
 
 $_LANG['Export to JPK format'] = 'Eksport do formatu JPK';

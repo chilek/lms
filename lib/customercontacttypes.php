@@ -179,6 +179,10 @@ $CUSTOMERCONTACTTYPES = array(
 					'label' => $CONTACTTYPES[CONTACT_NOTIFICATIONS],
 					'tip' => trans('Check if send notification'),
 				),
+				CONTACT_DOCUMENTS => array(
+					'label' => $CONTACTTYPES[CONTACT_DOCUMENTS],
+					'tip' => trans('Check if contact should be printed on documents'),
+				),
 				CONTACT_DISABLED => array(
 					'label' => $CONTACTTYPES[CONTACT_DISABLED],
 					'tip' => trans('Not visible by the customer in electronic Customer Service Representative'),
@@ -210,6 +214,10 @@ $CUSTOMERCONTACTTYPES = array(
 				CONTACT_TECHNICAL => array(
 					'label' => $CONTACTTYPES[CONTACT_TECHNICAL],
 					'tip' => trans('Check if send technical notification'),
+				),
+				CONTACT_DOCUMENTS => array(
+					'label' => $CONTACTTYPES[CONTACT_DOCUMENTS],
+					'tip' => trans('Check if contact should be printed on documents'),
 				),
 				CONTACT_DISABLED => array(
 					'label' => $CONTACTTYPES[CONTACT_DISABLED],
