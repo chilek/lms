@@ -58,6 +58,8 @@ version ?.??.?? (????-??-??):
   - improvement: voip.cdr_billing_record_format configuration variable describes
     format of billing record [chilan]
   - improvement: allow to print invoices manually issued [chilan]
+  - enhacement: added documents flag to email and phone customer contacts which allows
+    to decide if those contacts should be printed on documents [chilan]
 
 version 1.11.21 (2016-10-14):
 
