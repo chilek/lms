@@ -112,7 +112,7 @@
 										{trans("Location:")}
 									</td>
 									<td>
-										{$nodeinfo.location}{if $nodeinfo.borough_name} ({$nodeinfo.state_name} / {$nodeinfo.district_name} / {$_BOROUGHTYPES[$nodeinfo.borough_type]} {$nodeinfo.borough_name}){/if}
+										{$nodeinfo.location}
 									</td>
 								</tr>
 								{/if}
@@ -206,7 +206,6 @@
 										{$nodeinfo.projectname}
 									</td>
 								</tr>
-
 
 								{if !$disable_active_links || ($nodeinfo.chkmac + $nodeinfo.halfduplex) != 0}
 								<tr>

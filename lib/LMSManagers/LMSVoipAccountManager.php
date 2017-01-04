@@ -593,17 +593,22 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                                      time_start_to_end as callbegintime, time_answer_to_end as callanswertime,
                                      cdr.type as type, callervoipaccountid, calleevoipaccountid,
                                      cdr.status as status, vacc.ownerid as callerownerid, vacc2.ownerid as calleeownerid,
-                                     c1.name as caller_name, c1.lastname as caller_lastname, c1.city as caller_city,
-                                     c1.street as caller_street, c1.building as caller_building,
-                                     c2.name as callee_name, c2.lastname as callee_lastname, c2.city as callee_city,
-                                     c2.street as callee_street, c2.building as callee_building, caller_flags, callee_flags
+
+                                     c1.name as caller_name, c1.lastname as caller_lastname, addr1.city as caller_city,
+                                     addr1.street as caller_street, addr1.house as caller_building,
+                                     c2.name as callee_name, c2.lastname as callee_lastname, addr2.city as callee_city,
+                                     addr2.street as callee_street, addr2.house as callee_building, caller_flags, callee_flags
                                   FROM
                                      voip_cdr cdr
-                                     LEFT JOIN voipaccounts  vacc ON cdr.callervoipaccountid = vacc.id
-                                     LEFT JOIN voipaccounts vacc2 ON cdr.calleevoipaccountid = vacc2.id
-                                     LEFT JOIN customers       c1 ON c1.id = vacc.ownerid
-                                     LEFT JOIN customers       c2 ON c2.id = vacc2.ownerid' .
-                                  $where_string . $order_string);
+                                     LEFT JOIN voipaccounts      vacc ON cdr.callervoipaccountid = vacc.id
+                                     LEFT JOIN voipaccounts     vacc2 ON cdr.calleevoipaccountid = vacc2.id
+                                     LEFT JOIN customers           c1 ON c1.id = vacc.ownerid
+                                     LEFT JOIN customers           c2 ON c2.id = vacc2.ownerid
+                                     LEFT JOIN customer_addresses ca1 ON ca1.customer_id = c1.id AND ca1.type = ' . BILLING_ADDRESS . '
+                                     LEFT JOIN        addresses addr1 ON ca1.address_id = addr1.id
+                                     LEFT JOIN customer_addresses ca2 ON ca2.customer_id = c2.id AND ca2.type = ' . BILLING_ADDRESS . '
+                                     LEFT JOIN        addresses addr2 ON ca2.address_id = addr2.id
+                                     ' . $where_string . $order_string);
 
         return $bill_list;
     }

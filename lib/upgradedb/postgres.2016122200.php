@@ -21,14 +21,42 @@
  *
  */
 
+/*!
+ * \brief Function to explode address string to single fields.
+ *
+ * \param   string $address
+ * \returns array  array with address fields
+ * \returns null   can't explode string
+ */
+function parse_address($address) {
+    $address = trim($address);
+
+    if (!($res = preg_match('/^((?<city>.+),\s?)?(?<street>.+)\s+(?<house>[0-9][0-9a-z]*(?:\/[0-9][0-9a-z]*)?)(?:\s+|\s*(?:\/|m\.?|lok\.?)\s*)(?<flat>[0-9a-z]+)$/i', $address, $m))) {
+        if (!($res = preg_match('/^((?<city>.+),\s?)?(?<street>.+)\s+(?<house>[0-9][0-9a-z]*)$/i', $address, $m))) {
+            $res = preg_match('/^((?<city>.+),\s?)?(?<street>.+)$/i', $address, $m);
+
+            if (!$res) {
+                return null;
+            }
+        }
+    }
+
+    $m = array_filter( $m, 'strlen' );
+    $m = array_filter( $m, 'is_string', ARRAY_FILTER_USE_KEY);
+
+    return $m;
+}
+
 function moveTableLocation( $DB, $table ) {
     $DB->Execute('ALTER TABLE ' . $table . ' ADD COLUMN address_id integer NULL;');
     $DB->Execute('ALTER TABLE ' . $table . ' ADD CONSTRAINT ' . $table .'_address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE;');
 
     $locations = $DB->GetAll('SELECT id, location_city, location_street, location_house, location_flat
                               FROM ' . $table . '
-                              WHERE location_city is not null OR location_street is not null OR
-                                 location_house is not null OR location_flat is not null;');
+                              WHERE location_city   is not null OR
+                                    location_street is not null OR
+                                    location_house  is not null OR
+                                    location_flat   is not null;');
 
     if ( $locations ) {
         foreach ($locations as $v) {
@@ -44,9 +72,10 @@ function moveTableLocation( $DB, $table ) {
 }
 
 // Address types
-define('POSTAL_ADDRESS'  , 0);
-define('BILLING_ADDRESS' , 1);
-define('LOCATION_ADDRESS', 2);
+define('POSTAL_ADDRESS'          , 0);
+define('BILLING_ADDRESS'         , 1);
+define('LOCATION_ADDRESS'        , 2);
+define('DEFAULT_LOCATION_ADDRESS', 3);
 
 $this->BeginTrans();
 
@@ -54,27 +83,18 @@ $this->Execute("DROP SEQUENCE IF EXISTS addresses_id_seq;
                 CREATE SEQUENCE addresses_id_seq;
                 DROP TABLE IF EXISTS addresses;
                 CREATE TABLE addresses (
-                    id              integer DEFAULT nextval('addresses_id_seq'::text) NOT NULL,
-                    name            text NULL,
-                    city            varchar(32),
-                    city_id         integer REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
-                    street          varchar(255) NULL,
-                    street_id       integer REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-                    zip             varchar(10) NULL,
-                    country_id      integer REFERENCES countries (id) ON DELETE SET NULL ON UPDATE CASCADE,
-                    house           varchar(20) NULL,
-                    flat            varchar(20) NULL,
+                    id          integer DEFAULT nextval('addresses_id_seq'::text) NOT NULL,
+                    name        text NULL,
+                    city        varchar(32),
+                    city_id     integer REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
+                    street      varchar(255) NULL,
+                    street_id   integer REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+                    zip         varchar(10) NULL,
+                    country_id  integer REFERENCES countries (id) ON DELETE SET NULL ON UPDATE CASCADE,
+                    house       varchar(20) NULL,
+                    flat        varchar(20) NULL,
                     PRIMARY KEY (id))");
 
-moveTableLocation( $this, 'nodes'        );
-moveTableLocation( $this, 'netnodes'     );
-moveTableLocation( $this, 'netdevices'   );
-moveTableLocation( $this, 'divisions'    );
-moveTableLocation( $this, 'voipaccounts' );
-
-/* --------------------------------
-    CUSTOMERS
- -------------------------------- */
 $this->Execute("DROP SEQUENCE IF EXISTS customer_addresses_id_seq;
                 CREATE SEQUENCE customer_addresses_id_seq;
                 DROP TABLE IF EXISTS customer_addresses;
@@ -87,6 +107,201 @@ $this->Execute("DROP SEQUENCE IF EXISTS customer_addresses_id_seq;
                     UNIQUE(customer_id, address_id)
                 );");
 
+/* --------------------------------
+    NODES
+ -------------------------------- */
+$this->Execute('ALTER TABLE nodes ADD COLUMN address_id integer NULL;');
+$this->Execute('ALTER TABLE nodes ADD CONSTRAINT nodes_address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE;');
+
+$locations = $this->GetAll('SELECT id, location, location_city, location_street, location_house, location_flat, ownerid
+                            FROM nodes
+                            WHERE (location is not null OR char_length(location) > 0) OR
+                                  location_city   is not null OR
+                                  location_street is not null OR
+                                  location_house  is not null OR
+                                  location_flat   is not null;');
+
+$customer_nodes = array();
+
+if ( $locations ) {
+    foreach ($locations as $v) {
+        $city   = ($v['location_city'])   ? $v['location_city']          : 'null';
+        $street = ($v['location_street']) ? $v['location_street']        : 'null';
+        $house  = ($v['location_house'])  ? "'".$v['location_house']."'" : 'null';
+        $flat   = ($v['location_flat'])   ? "'".$v['location_flat']."'"  : 'null';
+        $loc    = parse_address( $v['location'] );
+
+        if ( $city == 'null' && $street == 'null' && $house == 'null' && $flat == 'null' && !$v['location'] ) {
+            continue;
+        }
+
+        $this->Execute('INSERT INTO addresses (city, city_id, street, street_id, house, flat) VALUES
+                        (\'' . ((!empty($loc['city'])) ? $loc['city'] : '') . "',$city,'" . ((!empty($loc['street'])) ? $loc['street'] : $v['location']) . "',$street,$house,$flat" . ')');
+
+        $addr_id = $this->GetLastInsertID('addresses');
+
+        if ( $v['ownerid'] != 0 ) {
+
+            if ( isset($customer_nodes[ $v['ownerid'] ]) ) {
+                $type = LOCATION_ADDRESS;
+            } else {
+                $customer_nodes[ $v['ownerid'] ] = 1;
+                $type = DEFAULT_LOCATION_ADDRESS;
+            }
+
+            $this->Execute('INSERT INTO customer_addresses (customer_id, address_id, type) VALUES (?,?,?)', array($v['ownerid'], $addr_id, $type));
+        }
+
+        $this->Execute('UPDATE nodes SET address_id = ? WHERE id = ?;', array( $addr_id, $v['id']));
+    }
+}
+
+/* --------------------------------
+    NETNODES
+ -------------------------------- */
+$this->Execute('ALTER TABLE netnodes ADD COLUMN address_id integer NULL;');
+$this->Execute('ALTER TABLE netnodes ADD CONSTRAINT netnodes_address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE;');
+
+$locations = $this->GetAll('SELECT id, location, location_city, location_street, location_house, location_flat
+                            FROM netnodes
+                            WHERE (location is not null AND char_length(location) > 0) OR
+                                  location_city   is not null OR
+                                  location_street is not null OR
+                                  location_house  is not null OR
+                                  location_flat   is not null;');
+
+if ( $locations ) {
+    foreach ($locations as $v) {
+        $city   = ($v['location_city'])   ? $v['location_city']          : 'null';
+        $street = ($v['location_street']) ? $v['location_street']        : 'null';
+        $house  = ($v['location_house'])  ? "'".$v['location_house']."'" : 'null';
+        $flat   = ($v['location_flat'])   ? "'".$v['location_flat']."'"  : 'null';
+        $loc    = parse_address( $v['location'] );
+
+        $this->Execute('INSERT INTO addresses (city, city_id, street, street_id, house, flat) VALUES
+                        (\'' . ((!empty($loc['city'])) ? $loc['city'] : '') . "',$city,'" . ((!empty($loc['street'])) ? $loc['street'] : $v['location']) . "',$street,$house,$flat" . ')');
+
+
+        $this->Execute('UPDATE netnodes SET address_id = ? WHERE id = ?;', array( $this->GetLastInsertID('addresses'), $v['id']));
+    }
+}
+
+/* --------------------------------
+    NETDEVICES
+ -------------------------------- */
+$this->Execute('ALTER TABLE netdevices ADD COLUMN address_id integer NULL;');
+$this->Execute('ALTER TABLE netdevices ADD CONSTRAINT netdevices_address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE;');
+
+$locations = $this->GetAll('SELECT id, location, location_city, location_street, location_house, location_flat, ownerid
+                            FROM netdevices
+                            WHERE (location is not null AND char_length(location) > 0) OR
+                                  location_city   is not null OR
+                                  location_street is not null OR
+                                  location_house  is not null OR
+                                  location_flat   is not null;');
+
+if ( $locations ) {
+    foreach ($locations as $v) {
+        $city   = ($v['location_city'])   ? $v['location_city']          : 'null';
+        $street = ($v['location_street']) ? $v['location_street']        : 'null';
+        $house  = ($v['location_house'])  ? "'".$v['location_house']."'" : 'null';
+        $flat   = ($v['location_flat'])   ? "'".$v['location_flat']."'"  : 'null';
+        $loc    = parse_address( $v['location'] );
+
+        $this->Execute('INSERT INTO addresses (city, city_id, street, street_id, house, flat) VALUES
+                        (\'' . ((!empty($loc['city'])) ? $loc['city'] : '') . "',$city,'" . ((!empty($loc['street'])) ? $loc['street'] : $v['location']) . "',$street,$house,$flat" . ')');
+
+        $addr_id = $this->GetLastInsertID('addresses');
+
+        if ( $v['ownerid'] != 0 ) {
+
+            if ( isset($customer_nodes[ $v['ownerid'] ]) ) {
+                $type = LOCATION_ADDRESS;
+            } else {
+                $customer_nodes[ $v['ownerid'] ] = 1;
+                $type = DEFAULT_LOCATION_ADDRESS;
+            }
+
+            $this->Execute('INSERT INTO customer_addresses (customer_id, address_id, type) VALUES (?,?,?)', array($v['ownerid'], $addr_id, $type));
+        }
+
+        $this->Execute('UPDATE netdevices SET address_id = ? WHERE id = ?;', array( $addr_id, $v['id']));
+    }
+}
+
+/* --------------------------------
+    DIVISIONS
+ -------------------------------- */
+$this->Execute('ALTER TABLE divisions ADD COLUMN address_id integer NULL;');
+$this->Execute('ALTER TABLE divisions ADD CONSTRAINT divisions_address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE;');
+
+$locations = $this->GetAll('SELECT id, address, city, zip, countryid
+                            FROM divisions;');
+
+if ( $locations ) {
+    foreach ($locations as $v) {
+        $city      = ($v['city'])      ? "'".$v['city']."'" : 'null';
+        $zip       = ($v['zip'])       ? "'".$v['zip']."'"  : 'null';
+        $countryid = ($v['countryid']) ? $v['countryid']    : 'null';
+
+        $loc    = parse_address( $v['address'] );
+        $street = (!empty($loc['street'])) ? "'".$loc['street']."'" : "'".$v['address']."'";
+        $house  = (!empty($loc['house']))  ? "'".$loc['house']."'"  : "'".$v['house']."'";
+        $flat   = (!empty($loc['flat']))   ? "'".$loc['flat']."'"   : 'null';
+
+        $this->Execute('INSERT INTO addresses (city, street, house, flat, country_id) VALUES
+                        (' . "$city,$street,$house,$flat,$countryid" . ')');
+
+        $this->Execute('UPDATE divisions SET address_id = ? WHERE id = ?;', array( $this->GetLastInsertID('addresses'), $v['id']));
+    }
+}
+
+/* --------------------------------
+    VOIPACCOUNTS
+ -------------------------------- */
+$this->Execute('ALTER TABLE voipaccounts ADD COLUMN address_id integer NULL;');
+$this->Execute('ALTER TABLE voipaccounts ADD CONSTRAINT voipaccounts_address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE;');
+
+$locations = $this->GetAll('SELECT id, location, location_city, location_street, location_house, location_flat, ownerid
+                            FROM voipaccounts
+                            WHERE (location is not null AND char_length(location) > 0) OR
+                                  location_city   is not null OR
+                                  location_street is not null OR
+                                  location_house  is not null OR
+                                  location_flat   is not null;');
+
+if ( $locations ) {
+    foreach ($locations as $v) {
+        $city   = ($v['location_city'])   ? $v['location_city']          : 'null';
+        $street = ($v['location_street']) ? $v['location_street']        : 'null';
+        $house  = ($v['location_house'])  ? "'".$v['location_house']."'" : 'null';
+        $flat   = ($v['location_flat'])   ? "'".$v['location_flat']."'"  : 'null';
+        $loc    = parse_address( $v['location'] );
+
+        $this->Execute('INSERT INTO addresses (city, city_id, street, street_id, house, flat) VALUES
+                        (\'' . ((!empty($loc['city'])) ? $loc['city'] : '') . "',$city,'" . ((!empty($loc['street'])) ? $loc['street'] : $v['location']) . "',$street,$house,$flat" . ')');
+
+        $addr_id = $this->GetLastInsertID('addresses');
+
+        if ( $v['ownerid'] != 0 ) {
+
+            if ( isset($customer_nodes[ $v['ownerid'] ]) ) {
+                $type = LOCATION_ADDRESS;
+            } else {
+                $customer_nodes[ $v['ownerid'] ] = 1;
+                $type = DEFAULT_LOCATION_ADDRESS;
+            }
+
+            $this->Execute('INSERT INTO customer_addresses (customer_id, address_id, type) VALUES (?,?,?)', array($v['ownerid'], $addr_id, $type));
+        }
+
+        $this->Execute('UPDATE voipaccounts SET address_id = ? WHERE id = ?;', array( $addr_id, $v['id']));
+    }
+}
+
+/* --------------------------------
+    CUSTOMERS
+ -------------------------------- */
 $customers_loc = $this->GetAll('SELECT id, zip, city, building, street, apartment, countryid,
                                    post_name, post_street, post_building, post_apartment, post_zip,
                                    post_city, post_countryid
@@ -98,49 +313,49 @@ if ( $customers_loc ) {
         /* --- POSTAL ADDRESS --- */
         $any_to_up = false;
 
-        if ($v['post_name']) {
+        if ( $v['post_name'] ) {
             $post_name = "'".$v['post_name']."'";
             $any_to_up = true;
         } else {
             $post_name = 'null';
         }
 
-        if ($v['post_street']) {
+        if ( $v['post_street'] ) {
             $post_street = "'".$v['post_street']."'";
             $any_to_up = true;
         } else {
             $post_street = 'null';
         }
 
-        if ($v['post_building']) {
+        if ( $v['post_building'] ) {
             $post_building = "'".$v['post_building']."'";
             $any_to_up = true;
         } else {
             $post_building = 'null';
         }
 
-        if ($v['post_apartment']) {
+        if ( $v['post_apartment'] ) {
             $post_apartment = "'".$v['post_apartment']."'";
             $any_to_up = true;
         } else {
             $post_apartment = 'null';
         }
 
-        if ($v['post_zip']) {
+        if ( $v['post_zip'] ) {
             $post_zip = "'".$v['post_zip']."'";
             $any_to_up = true;
         } else {
             $post_zip = 'null';
         }
 
-        if ($v['post_city']) {
+        if ( $v['post_city'] ) {
             $post_city = "'".$v['post_city']."'";
             $any_to_up = true;
         } else {
             $post_city = 'null';
         }
 
-        if ($v['post_countryid']) {
+        if ( $v['post_countryid'] ) {
             $post_countryid = $v['post_countryid'];
             $any_to_up = true;
         } else {
@@ -157,42 +372,42 @@ if ( $customers_loc ) {
         /* --- BILLING ADDRESS --- */
         $any_to_up = false;
 
-        if ($v['street']) {
+        if ( $v['street'] ) {
             $street = "'".$v['street']."'";
             $any_to_up = true;
         } else {
             $street = 'null';
         }
 
-        if ($v['building']) {
+        if ( $v['building'] ) {
             $building = "'".$v['building']."'";
             $any_to_up = true;
         } else {
             $building = 'null';
         }
 
-        if ($v['apartment']) {
+        if ( $v['apartment'] ) {
             $apartment = "'".$v['apartment']."'";
             $any_to_up = true;
         } else {
             $apartment = 'null';
         }
 
-        if ($v['zip']) {
+        if ( $v['zip'] ) {
             $zip = "'".$v['zip']."'";
             $any_to_up = true;
         } else {
             $zip = 'null';
         }
 
-        if ($v['city']) {
+        if ( $v['city'] ) {
             $city = "'".$v['city']."'";
             $any_to_up = true;
         } else {
             $city = 'null';
         }
 
-        if ($v['countryid']) {
+        if ( $v['countryid'] ) {
             $countryid = $v['countryid'];
             $any_to_up = true;
         } else {
@@ -232,17 +447,18 @@ $this->Execute("ALTER TABLE customers DROP IF EXISTS zip, DROP IF EXISTS city, D
                     DROP IF EXISTS post_building, DROP IF EXISTS post_apartment, DROP IF EXISTS post_zip, DROP IF EXISTS post_city,
                     DROP IF EXISTS post_countryid;");
 
-$this->Execute("ALTER TABLE nodes        DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat;");
-$this->Execute("ALTER TABLE netnodes     DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat;");
-$this->Execute("ALTER TABLE netdevices   DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat;");
-$this->Execute("ALTER TABLE divisions    DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat;");
-$this->Execute("ALTER TABLE voipaccounts DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat;");
+$this->Execute("ALTER TABLE nodes        DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat, DROP IF EXISTS location;");
+$this->Execute("ALTER TABLE netnodes     DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat, DROP IF EXISTS location;");
+$this->Execute("ALTER TABLE netdevices   DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat, DROP IF EXISTS location;");
+$this->Execute("ALTER TABLE voipaccounts DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat, DROP IF EXISTS location;");
+
+$this->Execute("ALTER TABLE divisions    DROP IF EXISTS address, DROP IF EXISTS city, DROP IF EXISTS zip");
 
 $this->Execute("
     CREATE VIEW customerview AS
         SELECT c.*,
             a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street, a1.house as building, a1.flat as apartment,
-            a2.country_id as post_countryid, a2.zip as post_zip, a1.city as post_city, a2.street as post_street, a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
+            a2.country_id as post_countryid, a2.zip as post_zip, a2.city as post_city, a2.street as post_street, a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
             (CASE WHEN a1.house IS NULL THEN a1.street ELSE (CASE WHEN a1.flat IS NULL THEN a1.street || ' ' || a1.house ELSE a1.street || ' ' || a1.house || '/' || a1.flat END) END) as address,
             (CASE WHEN a2.house IS NULL THEN a2.street ELSE (CASE WHEN a2.flat IS NULL THEN a2.street || ' ' || a2.house ELSE a2.street || ' ' || a2.house || '/' || a2.flat END) END) as post_address
         FROM customers c
@@ -258,7 +474,7 @@ $this->Execute("
     CREATE VIEW contractorview AS
         SELECT c.*, 
             a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street, a1.house as building, a1.flat as apartment,
-            a2.country_id as post_countryid, a2.zip as post_zip, a1.city as post_city, a2.street as post_street, a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
+            a2.country_id as post_countryid, a2.zip as post_zip, a2.city as post_city, a2.street as post_street, a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
             (CASE WHEN a1.house IS NULL THEN a1.street ELSE (CASE WHEN a1.flat IS NULL THEN a1.street || ' ' || a1.house ELSE a1.street || ' ' || a1.house || '/' || a1.flat END) END) as address,
             (CASE WHEN a2.house IS NULL THEN a2.street ELSE (CASE WHEN a2.flat IS NULL THEN a2.street || ' ' || a2.house ELSE a2.street || ' ' || a2.house || '/' || a2.flat END) END) as post_address
         FROM customers c
@@ -281,7 +497,18 @@ $this->Execute("
 $this->Execute("
     CREATE VIEW vmacs AS
         SELECT n.*, m.mac, m.id AS macid, a.city_id as location_city, a.street_id as location_street,
-            a.house as location_building, a.flat as location_flat
+            a.house as location_building, a.flat as location_flat,
+            ( trim(both ' ' from  '' ||
+                 CASE WHEN a.city   is not null AND char_length(city)   > 0 THEN a.city          ELSE '' END ||
+                 CASE WHEN a.street is not null AND char_length(street) > 0 THEN ' ' || a.street ELSE '' END ||
+                 CASE WHEN
+                         a.house is not null
+                     THEN
+                         CASE WHEN a.flat is not null THEN ' ' || a.house || '/' || a.flat ELSE ' ' || a.house END
+                     ELSE
+                         CASE WHEN a.flat is not null THEN ' ' || a.flat ELSE '' END
+                     END
+            )) AS location
         FROM nodes n
             JOIN macs m ON (n.id = m.nodeid)
             LEFT JOIN addresses a ON n.address_id = a.id
@@ -289,8 +516,19 @@ $this->Execute("
 
 $this->Execute("
     CREATE VIEW vnetworks AS
-        SELECT h.name AS hostname, ne.*, no.ownerid, no.location, a.city_id as location_city, a.street_id as location_street, a.house as location_house, a.flat as location_flat, no.chkmac,
-            inet_ntoa(ne.address) || '/' || mask2prefix(inet_aton(ne.mask)) AS ip, no.id AS nodeid
+        SELECT h.name AS hostname, ne.*, no.ownerid, a.city_id as location_city, a.street_id as location_street, a.house as location_house, a.flat as location_flat, no.chkmac,
+            inet_ntoa(ne.address) || '/' || mask2prefix(inet_aton(ne.mask)) AS ip, no.id AS nodeid,
+            ( trim(both ' ' from  '' ||
+                 CASE WHEN a.city   is not null AND char_length(city)   > 0 THEN a.city          ELSE ' ' END ||
+                 CASE WHEN a.street is not null AND char_length(street) > 0 THEN ' ' || a.street ELSE ' ' END ||
+                 CASE WHEN
+                         a.house is not null
+                     THEN
+                         CASE WHEN a.flat is not null THEN ' ' || a.house || '/' || a.flat ELSE ' ' || a.house END
+                     ELSE
+                         CASE WHEN a.flat is not null THEN ' ' || a.flat ELSE '' END
+                     END
+            )) AS location
         FROM nodes no
             LEFT JOIN networks ne ON (ne.id = no.netid)
             LEFT JOIN hosts h ON (h.id = ne.hostid)
@@ -301,7 +539,18 @@ $this->Execute("
     CREATE VIEW vnodes AS
         SELECT n.*, m.mac,
             a.city_id as location_city, a.street_id as location_street,
-            a.house as location_house, a.flat as location_flat
+            a.house as location_house, a.flat as location_flat,
+            ( trim(both ' ' from  '' ||
+                 CASE WHEN a.city   is not null AND char_length(city)   > 0 THEN a.city          ELSE ' ' END ||
+                 CASE WHEN a.street is not null AND char_length(street) > 0 THEN ' ' || a.street ELSE ' ' END ||
+                 CASE WHEN
+                         a.house is not null
+                     THEN
+                         CASE WHEN a.flat is not null THEN ' ' || a.house || '/' || a.flat ELSE ' ' || a.house END
+                     ELSE
+                         CASE WHEN a.flat is not null THEN ' ' || a.flat ELSE '' END
+                     END
+            )) AS location
         FROM nodes n
             LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid)
             LEFT JOIN addresses a ON n.address_id = a.id

@@ -222,7 +222,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				lt.name AS street_type,
 			lb.name AS borough_name, lb.type AS borough_type,
 			ld.name AS district_name, lst.name AS state_name,
-			addr.city as location_city_name, addr.street as location_city_street
+			addr.city as location_city_name, addr.street as location_street_name
 			FROM vnodes n
 			LEFT JOIN addresses addr ON addr.id = n.address_id
 			LEFT JOIN netradiosectors rs ON rs.id = n.linkradiosector
