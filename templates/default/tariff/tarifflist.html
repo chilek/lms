@@ -15,7 +15,9 @@
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
 		<TD WIDTH="93%" NOWRAP>
-			<IMG SRC="img/money.gif" ALT=""> <A href="?m=tarifflist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+			<IMG SRC="img/money.gif" ALT=""> <A href="?m=tarifflist&amp;o=name{if $listdata.direction == "asc" && $listdata.order == "name"},desc{/if}"><B>{trans("Name:")}</B></A> {if $listdata.order == "name"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			({trans("Effective date")})
+			<BR>
 			<IMG SRC="img/info1.gif" ALT=""> <A href="?m=tarifflist&amp;o=description{if $listdata.direction == "asc" && $listdata.order == "description"},desc{/if}">{trans("Description:")}</A> {if $listdata.order == "description"}<IMG SRC="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD WIDTH="1%" align="right" NOWRAP>
@@ -104,7 +106,16 @@
 	{foreach $tarifflist as $tariff}
 	<TR class="highlight {cycle}{if $tariff.disabled == 1 && !$listdata.state} blend{/if}"  >
 		<TD WIDTH="93%">
-			<IMG SRC="img/money.gif" ALT="">&nbsp;<a href="?m=tariffinfo&amp;id={$tariff.id}"><B>{$tariff.name}</B></a><BR>
+			<IMG SRC="img/money.gif" ALT="">&nbsp;<a href="?m=tariffinfo&amp;id={$tariff.id}"><B>{$tariff.name}</B></a>
+			{if $tariff.datefrom || $tariff.dateto}
+				{if $tariff.datefrom}
+				({trans("from:")} {$tariff.datefrom|date_format:"%Y/%m/%d"}{if !$tariff.dateto}){/if}
+				{/if}
+				{if $tariff.dateto}
+				{if !$tariff.datefrom}({/if}{trans("to:")} {$tariff.dateto|date_format:"%Y/%m/%d"})
+				{/if}
+			{/if}
+			<BR>
 			{if $tariff.description}<IMG SRC="img/info1.gif" ALT="">&nbsp;{$tariff.description}{/if}
 			{if !empty($tariff.tags)}
 			<br>

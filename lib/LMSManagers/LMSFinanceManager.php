@@ -953,6 +953,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'period' => $tariff['period'] ? $tariff['period'] : null,
             SYSLOG::RES_TAX => $tariff['taxid'],
             SYSLOG::RES_NUMPLAN => $tariff['numberplanid'] ? $tariff['numberplanid'] : null,
+            'datefrom' => $tariff['from'],
+            'dateto' => $tariff['to'],
             'prodid' => $tariff['prodid'],
             'uprate' => $tariff['uprate'],
             'downrate' => $tariff['downrate'],
@@ -982,12 +984,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'alias_limit' => $tariff['alias_limit'],
         );
         $result = $this->db->Execute('INSERT INTO tariffs (name, description, value,
-				period, taxid, numberplanid, prodid, uprate, downrate, upceil, downceil, climit,
+				period, taxid, numberplanid, datefrom, dateto, prodid, uprate, downrate, upceil, downceil, climit,
 				plimit, uprate_n, downrate_n, upceil_n, downceil_n, climit_n,
 				plimit_n, dlimit, type, sh_limit, www_limit, mail_limit, sql_limit,
 				ftp_limit, quota_sh_limit, quota_www_limit, quota_mail_limit,
 				quota_sql_limit, quota_ftp_limit, domain_limit, alias_limit)
-				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', array_values($args));
+				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', array_values($args));
         if ($result) {
             $id = $this->db->GetLastInsertID('tariffs');
             if ($this->syslog) {
@@ -1008,6 +1010,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'period' => $tariff['period'] ? $tariff['period'] : null,
             SYSLOG::RES_TAX => $tariff['taxid'],
             SYSLOG::RES_NUMPLAN => $tariff['numberplanid'] ? $tariff['numberplanid'] : null,
+            'datefrom' => $tariff['from'],
+            'dateto' => $tariff['to'],
             'prodid' => $tariff['prodid'],
             'uprate' => $tariff['uprate'],
             'downrate' => $tariff['downrate'],
@@ -1040,7 +1044,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             SYSLOG::RES_TARIFF => $tariff['id']
         );
         $res = $this->db->Execute('UPDATE tariffs SET name=?, description=?, value=?,
-				period=?, taxid=?, numberplanid=?, prodid=?, uprate=?, downrate=?, upceil=?, downceil=?,
+				period=?, taxid=?, numberplanid=?, datefrom=?, dateto=?, prodid=?, uprate=?, downrate=?, upceil=?, downceil=?,
 				climit=?, plimit=?, uprate_n=?, downrate_n=?, upceil_n=?, downceil_n=?,
 				climit_n=?, plimit_n=?, dlimit=?, sh_limit=?, www_limit=?, mail_limit=?,
 				sql_limit=?, ftp_limit=?, quota_sh_limit=?, quota_www_limit=?,
@@ -1158,8 +1162,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetTariffs()
     {
-        return $this->db->GetAllByKey('SELECT t.id, t.name, t.value, uprate, taxid, prodid,
-				downrate, upceil, downceil, climit, plimit, taxes.value AS taxvalue,
+        return $this->db->GetAllByKey('SELECT t.id, t.name, t.value, uprate, taxid,
+				datefrom, dateto, (CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid,
+				prodid, downrate, upceil, downceil, climit, plimit, taxes.value AS taxvalue,
 				taxes.label AS tax, t.period, t.type AS tarifftype
 				FROM tariffs t
 				LEFT JOIN taxes ON t.taxid = taxes.id

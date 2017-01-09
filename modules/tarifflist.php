@@ -73,7 +73,7 @@ function GetTariffList($order = 'name,asc', $type = NULL, $customergroupid = NUL
 	$totalactivecount = 0;
 
 	if ($tarifflist = $DB->GetAllByKey('SELECT t.id, t.name, t.value,
-			taxes.label AS tax, taxes.value AS taxvalue, prodid, t.disabled,
+			taxes.label AS tax, taxes.value AS taxvalue, t.datefrom, t.dateto, prodid, t.disabled,
 			t.uprate, t.downrate, t.upceil, t.downceil, t.climit, t.plimit,
 			t.uprate_n, t.downrate_n, t.upceil_n, t.downceil_n, t.climit_n, t.plimit_n,
 			t.description, t.period, a.customerscount, a.count, a.value AS sumval

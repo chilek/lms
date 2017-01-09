@@ -533,6 +533,8 @@ $_LANG['Enter date in \'yyyy/mm/dd\' format or click to choose it from calendar'
 $_LANG['Enter date in YYYY/MM/DD format or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd\' (puste pole oznacza aktualną datę) lub kliknij żeby wybrać z kalendarza';
 $_LANG['Enter accounting start date in YYYY/MM/DD format. If you don\'t want to define \'From\' date leave this field empty'] = 'Podaj datę od której taryfa powinna obowiązywać lub zostaw to pole puste. Data powinna być w formacie RRRR/MM/DD';
 $_LANG['Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don\'t want to set expiration date'] = 'Wprowadź datę w formacie RRRR/MM/DD kiedy zakończyć naliczanie. Zostaw to pole puste, jeśli nie chcesz ustawiać daty wygaśnięcia zobowiązania';
+$_LANG['Enter tariff start date in YYYY/MM/DD format. If you don\'t want to define \'From\' date leave this field empty'] = 'Podaj datę od której taryfa powinna obowiązywać lub zostaw to pole puste. Data powinna być w formacie RRRR/MM/DD';
+$_LANG['Enter tariff end date in YYYY/MM/DD format. Leave this field empty if you don\'t want to set expiration date'] = 'Wprowadź datę w formacie RRRR/MM/DD oznaczającą koniec obowiązywania taryfy. Zostaw to pole puste, jeśli nie chcesz ustawiać daty wygaśnięcia taryfy';
 $_LANG['Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar'] = 'Wprowadź datę sprzedaży w formacie RRRR/MM/DD lub kliknij by wybrać ją z kalendarza. Puste pole oznacza datę dzisiejszą';
 $_LANG['Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar'] = 'Wprowadź datę wystawienia w formacie RRRR/MM/DD lub kliknij by wybrać ją z kalendarza. Puste pole oznacza datę dzisiejszą';
 $_LANG['Enter deadline in days (optional)'] = 'Wprowadź termin zapłaty w dniach (opcjonalnie)';
@@ -751,6 +753,8 @@ $_LANG['If you have any questions or doubts, contact with our Customer Service R
 $_LANG['Income:'] = 'Przychód:';
 $_LANG['Incorrect charging end time!'] = 'Błędnie podany czas końca naliczania!';
 $_LANG['Incorrect charging start time!'] = 'Błędnie podany czas początku naliczania!';
+$_LANG['Incorrect effective end time!'] = 'Błędnie podany czas końca obowiązywania!';
+$_LANG['Incorrect effective start time!'] = 'Błędnie podany czas początku obowiązywania!';
 $_LANG['Incorrect crontab format!'] = 'Niepoprawny format crontaba!';
 $_LANG['Incorrect Customer ID.'] = 'Niepoprawny identyfikator klienta.';
 $_LANG['Incorrect customers group!'] = 'Niepoprawna grupa klientów!';
@@ -3563,5 +3567,9 @@ $_LANG['Document number'] = 'Numer dokumentu';
 
 $_LANG['Enter main bank account number'] = 'Wprowadź główny numer rachunku bankowego (opcjonalnie)';
 $_LANG['Main bank account:'] = 'Główny numer rachunku:';
+
+$_LANG['Effective date'] = 'Data obowiązywania';
+$_LANG['show all tariffs'] = 'pokaż wszystkie taryfy';
+$_LANG['Check if all tariffs should be displayed'] = 'Zaznacz, jeśli wszystkie taryfy powinny zostać wyświetlone';
 
 ?>

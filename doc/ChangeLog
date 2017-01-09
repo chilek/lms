@@ -60,6 +60,8 @@ version ?.??.?? (????-??-??):
   - improvement: allow to print invoices manually issued [chilan]
   - enhacement: added documents flag to email and phone customer contacts which allows
     to decide if those contacts should be printed on documents [chilan]
+  - enhancement: added support for effective dates of tariffs - only effective ones
+    are display by default [chilan]
 
 version 1.11.21 (2016-10-14):
 
