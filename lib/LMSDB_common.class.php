@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-define('DBVERSION', '2017010900'); // here should be always the newest version of database!
+define('DBVERSION', '2017010901'); // here should be always the newest version of database!
 				 // it placed here to avoid read disk every time when we call this file.
 
 /**
