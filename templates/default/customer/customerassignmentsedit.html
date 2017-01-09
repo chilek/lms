@@ -48,7 +48,7 @@
 		<COL style="width: 1%;">
 		<COL style="width: 98%;">
 	</COLGROUP>
-	
+
     <THEAD>
 		<TR>
 			<TD>
@@ -77,27 +77,10 @@
 					<input type="checkbox" name="assignment[alltariffs]" {tip text="Check if all tariffs should be displayed" trigger="alltariffs"}{if $assignment.alltariffs} checked{/if}>
 					{trans("show all tariffs")}
 				</label>
-				<script type="text/javascript">
-				<!--
-					$(function() {
-						$('[name="assignment[alltariffs]"]').click(function() {
-							var checked = this.checked;
-							$('select>option', $(this).closest('td')).each(function() {
-								if ($(this).attr('data-valid') == '0') {
-									$(this).css('display', checked ? '' : 'none');
-									if (!checked && $(this).parent().val() == $(this).val()) {
-										$(this).parent().val('');
-									}
-								}
-							});
-						});
-					});
-				//-->
-				</script>
 			</TD>
 		</TR>
     </THEAD>
-    
+
     <TBODY>
 		{if $promotionschemas}
 		<TR id="a_schema">
@@ -110,10 +93,10 @@
 			<TD style="width: 98%;">
 				<SELECT size="1" name="assignment[schemaid]" id="promotionselect" {tip text="Select promotion schema"}>
 					{foreach $promotionschemanames as $schemaname}
-      	    	        <optgroup label="{$schemaname.name}">
+      	    	        <optgroup label="{$schemaname.name}" data-valid="{$schemaname.valid}"{if !$schemaname.valid} class="blend"{if !$assignment.alltariffs} style="display: none;"{/if}{/if}>
                 	        {foreach $promotionschemas as $schema}
                     	        {if $schemaname.name == $schema.promotion}
-                        	        <OPTION value="{$schema.id}"{if $assignment.schemaid == $schema.id} SELECTED{/if}>{$schema.name|truncate:40:"...":true}</OPTION>
+                        	        <OPTION value="{$schema.id}"{if $assignment.schemaid == $schema.id} SELECTED{/if} data-valid="{$schemaname.valid}"{if !$schemaname.valid} class="blend"{/if}>{$schema.name|truncate:40:"...":true}</OPTION>
                                 {/if}
                             {/foreach}
                         </optgroup>
@@ -471,6 +454,33 @@
 {include file="customer/customerassignments.html"}
 <SCRIPT type="text/javascript">
 <!--
+	$(function() {
+		$('[name="assignment[alltariffs]"]').click(function() {
+			var checked = this.checked;
+
+			var tariffselect = $('select', $(this).closest('td'));
+			$('option', tariffselect).each(function() {
+				if ($(this).attr('data-valid') == '0') {
+					$(this).css('display', checked ? '' : 'none');
+				}
+			});
+			if (!checked && $('option[data-valid="0"]', tariffselect).filter(':selected').val() == tariffselect.val()) {
+				tariffselect.val($('option:nth(0)').val());
+			}
+
+			var promoselect = $('#promotionselect');
+			$('optgroup', promoselect).each(function() {
+				if ($(this).attr('data-valid') == '0') {
+					$(this).css('display', checked ? '' : 'none');
+				}
+			});
+			if (!checked && $('option[data-valid="0"]', promoselect).filter(':selected').val() == promoselect.val()) {
+				promoselect.val($('option[data-valid="1"]:nth(0)', promoselect).val());
+				promoselect.trigger('change');
+			}
+		});
+	});
+
     $( '#tariff_select' ).change( function() {
     	var tarifftype = $(this).find(':selected').attr('data-tarifftype');
     	var val = $(this).val();

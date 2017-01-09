@@ -26,7 +26,7 @@
 
 $layout['pagetitle'] = trans('Promotions List');
 
-$promolist = $DB->GetAll('SELECT p.id, p.name, p.description, disabled,
+$promolist = $DB->GetAll('SELECT p.id, p.name, p.description, p.datefrom, p.dateto, disabled,
 			(SELECT COUNT(*) FROM promotionschemas
 				WHERE p.id = promotionid) AS scs,
 			(SELECT COUNT(DISTINCT a.tariffid)
