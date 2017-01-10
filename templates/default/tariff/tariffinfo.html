@@ -99,6 +99,21 @@
                             </TR>
                             {/if}
 
+							{if $tariff.datefrom || $tariff.dateto}
+							<TR>
+								<TD><img src="img/calendar.gif" alt=""></td>
+								<td>{trans("Period:")}</td>
+								<td>
+									{if $tariff.datefrom}
+									{trans("from:")} {$tariff.datefrom|date_format:"%Y/%m/%d"}
+									{/if}
+									{if $tariff.dateto}
+									{trans("to:")} {$tariff.dateto|date_format:"%Y/%m/%d"}
+									{/if}
+								</td>
+							</TR>
+							{/if}
+
                             {if !empty($tariff.prodid)}
                             <TR>
                                 <TD><IMG SRC="img/class.gif" ALT=""></TD>
