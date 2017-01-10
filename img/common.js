@@ -761,10 +761,10 @@ if (typeof $ !== 'undefined') {
 	});
 }
 
+
 /*!
  * \brief Auto hide left vertical menu on print
  */
-
 var show_menu_after_print = 0;
 
 var LMS_beforePrintEvent = function() {
@@ -796,3 +796,40 @@ if (window.matchMedia) {
 
 window.onbeforeprint = LMS_beforePrintEvent;
 window.onafterprint  = LMS_afterPrintEvent;
+
+
+/*!
+ * \brief Returns customer addresses by id.
+ *
+ * \param  int  id customer id
+ * \return json    customer addresses
+ * \return false   if id is incorrect
+ */
+function getCustomerAddresses( id = -1 ) {
+    // test to check if 'id' is integer
+    if ( Math.floor(id) != id || !$.isNumeric(id) ) {
+        return false;
+    }
+
+    // check id value
+    if ( id <= 0 ) {
+        return false;
+    }
+
+    // send request
+    var addresses = null;
+
+    $.ajax({
+        url:"?m=customeraddresses&action=getcustomeraddresses&id=" + id,
+        async: false,
+        success:function(data) {
+            addresses = data;
+        }
+    });
+
+    if ( addresses !== null ) {
+        return JSON.parse( addresses );
+    } else {
+        return [];
+    }
+}

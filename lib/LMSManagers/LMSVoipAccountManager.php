@@ -86,10 +86,12 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             'SELECT v.id, v.login, v.passwd, v.ownerid, '
                 . $this->db->Concat('c.lastname', "' '", 'c.name')
                 . ' AS owner, v.access,
-				location, lb.name AS borough_name, ld.name AS district_name, lst.name AS state_name,
+				lb.name AS borough_name, ld.name AS district_name, lst.name AS state_name,
 				lc.name AS city_name,
 				(CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
 				lt.name AS street_type,
+				addr.name as location_name,
+				addr.city as location_city_name, addr.street as location_street_name,
 				addr.city_id as location_city, addr.street_id as location_street,
 				addr.house as location_house, addr.flat as location_flat
 			FROM voipaccounts v '
@@ -105,6 +107,17 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 	            . (isset($searchargs) ? $searchargs : '')
 	            . ($sqlord != '' ? $sqlord . ' ' . $direction : '')
         );
+
+        if ( $voipaccountlist ) {
+            foreach ($voipaccountlist as $k=>$acc) {
+                $tmp = array('city_name'      => $acc['location_city_name'],
+                             'location_house' => $acc['location_house'],
+                             'location_flat'  => $acc['location_flat'],
+                             'street_name'    => $acc['location_street_name']);
+
+                $voipaccountlist[$k]['location'] = location_str( $tmp );
+            }
+        }
 
         $tmp_phone_list = $this->db->GetAll('SELECT voip_account_id, phone FROM voip_numbers;');
         $phone_list = array();
@@ -228,9 +241,14 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         $DB = $this->db;
         $DB->BeginTrans();
 
+        // -1 is equal to no selected, then set null
+        if ( $voipaccountdata['address_id'] < 0 ) {
+            $voipaccountdata['address_id'] = null;
+        }
+
         $voip_account_inserted = $DB->Execute(
             'INSERT INTO voipaccounts (ownerid, login, passwd, creatorid, creationdate, access,
-            location, balance, flags, cost_limit)
+            balance, flags, cost_limit, address_id)
             VALUES (?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?)',
             array(
                 $voipaccountdata['ownerid'],
@@ -238,26 +256,15 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 $voipaccountdata['passwd'],
                 $this->auth->id,
                 $voipaccountdata['access'],
-                $voipaccountdata['location'],
-                $voipaccountdata['balance'] ? $voipaccountdata['balance'] : ConfigHelper::getConfig('voip.default_cost_limit', 200),
-                $voipaccountdata['flags'] ? $voipaccountdata['flags'] : ConfigHelper::getConfig('voip.default_account_flags', 0),
-                $voipaccountdata['cost_limit'] ? $voipaccountdata['cost_limit'] : null
+                $voipaccountdata['balance']    ? $voipaccountdata['balance']    : ConfigHelper::getConfig('voip.default_cost_limit', 200),
+                $voipaccountdata['flags']      ? $voipaccountdata['flags']      : ConfigHelper::getConfig('voip.default_account_flags', 0),
+                $voipaccountdata['cost_limit'] ? $voipaccountdata['cost_limit'] : null,
+                $voipaccountdata['address_id'] ? $voipaccountdata['address_id'] : null,
             )
         );
 
         if ($voip_account_inserted) {
             $id = $DB->GetLastInsertID('voipaccounts');
-
-            $DB->Execute('INSERT INTO addresses (city_id,street_id,house,flat) VALUES (?,?,?,?)',
-                          array(
-                              $voipaccountdata['location_city']   ? $voipaccountdata['location_city']   : null,
-                              $voipaccountdata['location_street'] ? $voipaccountdata['location_street'] : null,
-                              $voipaccountdata['location_house']  ? $voipaccountdata['location_house']  : null,
-                              $voipaccountdata['location_flat']   ? $voipaccountdata['location_flat']   : null,
-                          ));
-
-            $addr_id = $DB->GetLastInsertID('addresses');
-            $DB->Execute('UPDATE voipaccounts SET address_id = ? WHERE id = ?', array($addr_id, $id));
 
             $phone_index = 0;
             $phones = array();
@@ -320,11 +327,12 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
     public function getVoipAccount($id) {
         $result = $this->db->GetRow('
             SELECT v.id, ownerid, login, passwd, creationdate, moddate, creatorid,
-                modid, access, balance, location, lb.name AS borough_name,
+                modid, access, balance, lb.name AS borough_name,
                 ld.name AS district_name, lst.name AS state_name, lc.name AS city_name,
                 (CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
-                lt.name AS street_type, v.address_id,
-                v.flags, v.balance, v.cost_limit,
+                lt.name AS street_type, v.address_id, v.flags, v.balance,
+                v.cost_limit, v.address_id, addr.name as location_name,
+                addr.city as location_city_name, addr.street as location_street_name,
                 addr.city_id as location_city, addr.street_id as location_street,
                 addr.house as location_house, addr.flat as location_flat
             FROM voipaccounts v
@@ -339,7 +347,14 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             array($id)
         );
 
-        if ($result) {
+        if ( $result ) {
+            $tmp = array('city_name'      => $result['location_city_name'],
+                         'location_house' => $result['location_house'],
+                         'location_flat'  => $result['location_flat'],
+                         'street_name'    => $result['location_street_name']);
+
+            $result['location'] = location_str( $tmp );
+
             $customer_manager        = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
             $user_manager            = new LMSUserManager($this->db, $this->auth, $this->cache, $this->syslog);
             $result['createdby']     = $user_manager->getUserName($result['creatorid']);
@@ -404,10 +419,15 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
     public function voipAccountUpdate($data) {
         $this->db->BeginTrans();
 
+        // -1 is equal to no selected, then set null
+        if ( $data['address_id'] < 0 ) {
+            $data['address_id'] = null;
+        }
+
         $result = $this->db->Execute(
             'UPDATE voipaccounts
              SET login=?, passwd=?, moddate=?NOW?, access=?, modid=?,
-                 ownerid=?, location=?, flags=?, balance=?, cost_limit=?
+                 ownerid=?, flags=?, balance=?, cost_limit=?, address_id=?
              WHERE id=?',
              array(
                 $data['login'],
@@ -415,24 +435,15 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 $data['access'],
                 $this->auth->id,
                 $data['ownerid'],
-                $data['location'],
                 $data['flags']      ? $data['flags']      : ConfigHelper::getConfig('voip.default_account_flags', 0),
                 $data['balance']    ? $data['balance']    : 0,
                 $data['cost_limit'] ? $data['cost_limit'] : null,
+                $data['address_id'] ? $data['address_id'] : null,
                 $data['id']
              )
         );
 
         if ($result) {
-            $this->db->Execute('UPDATE addresses SET city_id = ?, street_id = ?, house = ?, flat = ? WHERE id = ?',
-                                array(
-                                    $data['location_city']   ? $data['location_city']   : null,
-                                    $data['location_street'] ? $data['location_street'] : null,
-                                    $data['location_house']  ? $data['location_house']  : null,
-                                    $data['location_flat']   ? $data['location_flat']   : null,
-                                    $data['address_id']
-                                ));
-
             $this->db->Execute('UPDATE voip_numbers SET number_index = null WHERE voip_account_id = ?', array($data['id']));
             $current_phones = $this->db->GetAllByKey('SELECT phone FROM voip_numbers WHERE voip_account_id = ?;', 'phone', array($data['id']));
             $phone_index = 0;
@@ -476,11 +487,12 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      */
     public function getCustomerVoipAccounts($id) {
         $result['accounts'] = $this->db->GetAll(
-            'SELECT v.id, login, passwd, ownerid, access, location,
+            'SELECT v.id, login, passwd, ownerid, access,
                 lb.name AS borough_name, ld.name AS district_name,
                 lst.name AS state_name, lc.name AS city_name,
                 (CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
-                lt.name AS street_type,
+                lt.name AS street_type, addr.name as location_name,
+                addr.city as location_city_name, addr.street as location_street_name,
                 addr.city_id as location_city, addr.street_id as location_street,
                 addr.house as location_house, addr.flat as location_flat
             FROM voipaccounts v
@@ -495,9 +507,15 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             ORDER BY login ASC', array($id)
         );
 
-        if ($result['accounts']) {
+        if ( $result['accounts'] ) {
             foreach ($result['accounts'] as $k=>$v) {
-                $result['accounts'][$k]['phones'] = $this->db->GetAll('SELECT * FROM voip_numbers WHERE voip_account_id = ?', array($v['id']) );
+                $tmp = array('city_name'      => $v['location_city_name'],
+                             'location_house' => $v['location_house'],
+                             'location_flat'  => $v['location_flat'],
+                             'street_name'    => $v['location_street_name']);
+
+                $result['accounts'][$k]['location'] = location_str( $tmp );
+                $result['accounts'][$k]['phones']   = $this->db->GetAll('SELECT * FROM voip_numbers WHERE voip_account_id = ?', array($v['id']) );
             }
 
             $result['total'] = count($result['accounts']);

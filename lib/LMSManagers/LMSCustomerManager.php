@@ -1238,4 +1238,63 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         $this->db->CommitTrans();
     }
+
+    /**
+     * Check if address is belong to customer.
+     *
+     * \param  int $a_id address id
+     * \param  int $c id customer id
+     * \return boolean   true/false
+     */
+    public function checkCustomerAddress( $a_id, $c_id ) {
+        $addr_id = $this->db->GetOne('SELECT address_id
+                                      FROM customer_addresses
+                                      WHERE
+                                         customer_id = ? AND
+                                         address_id  = ?', array( $c_id, $a_id ));
+
+        if ( $a_id != $addr_id ) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Returns all customer addresses.
+     *
+     * \param  int   $id           customer id
+     * \param  bool  $hide_deleted show only active customers
+     * \return array
+     */
+    public function getCustomerAddresses($id, $hide_deleted = false ) {
+
+        $data = $this->db->GetAll('SELECT
+                                      addr.id, addr.city, addr.street, addr.house, addr.flat, ca.type
+                                   FROM
+                                      customerview cv
+                                      LEFT JOIN customer_addresses ca ON ca.customer_id = cv.id
+                                      LEFT JOIN addresses addr        ON addr.id = ca.address_id
+                                   WHERE
+                                      cv.id = ?' .
+                                      (($hide_deleted) ? ' AND cv.deleted != 1' : ''),
+                                   array( $id ));
+
+        if ( !$data ) {
+            return array();
+        }
+
+        foreach ( $data as $k=>$v ) {
+            $tmp = array(
+                     'city_name'      => $v['city'],
+                     'street_name'    => $v['street'],
+                     'location_house' => $v['house'],
+                     'location_flat'  => $v['flat']
+                   );
+
+            $data[$k]['location'] = location_str($tmp);
+        }
+
+        return $data;
+    }
 }

@@ -30,30 +30,38 @@ function smarty_function_location_dialog( $params = array(), $template )
     define('LOCATION_ID', 'lmsui-' . uniqid() );
 
     // input size
-    define('INPUT_SIZE' , 35);
+    define('INPUT_SIZE' , 30);
 
     // base name for localization inputs
-    $input_name_city      = 'location_city_name';
-    $input_name_city_id   = 'location_city';
-    $input_name_street    = 'location_street_name';
-    $input_name_street_id = 'location_street';
-    $input_name_house     = 'location_house';
-    $input_name_flat      = 'location_flat';
-    $input_name_location  = 'location';
-    $input_name_teryt     = 'teryt';
+    $input_name_country_id = 'location_country';
+    $input_name_state      = 'location_state_name';
+    $input_name_state_id   = 'location_state';
+    $input_name_city       = 'location_city_name';
+    $input_name_city_id    = 'location_city';
+    $input_name_street     = 'location_street_name';
+    $input_name_street_id  = 'location_street';
+    $input_name_house      = 'location_house';
+    $input_name_flat       = 'location_flat';
+    $input_name_location   = 'location_name';
+    $input_name_zip        = 'location_zip';
+    $input_name_teryt      = 'teryt';
 
     // check if prefix for input names is set
     if ( isset($params['prefix']) && strlen(trim($params['prefix'])) > 0 ) {
         $prefix = trim( $params['prefix'] );
 
-        $input_name_city      = $prefix . '[' . $input_name_city      . ']';
-        $input_name_city_id   = $prefix . '[' . $input_name_city_id   . ']';
-        $input_name_street    = $prefix . '[' . $input_name_street    . ']';
-        $input_name_street_id = $prefix . '[' . $input_name_street_id . ']';
-        $input_name_house     = $prefix . '[' . $input_name_house     . ']';
-        $input_name_flat      = $prefix . '[' . $input_name_flat      . ']';
-        $input_name_location  = $prefix . '[' . $input_name_location  . ']';
-        $input_name_teryt     = $prefix . '[' . $input_name_teryt     . ']';
+        $input_name_country_id = $prefix . '[' . $input_name_country_id . ']';
+        $input_name_state      = $prefix . '[' . $input_name_state      . ']';
+        $input_name_state_id   = $prefix . '[' . $input_name_state_id   . ']';
+        $input_name_city       = $prefix . '[' . $input_name_city       . ']';
+        $input_name_city_id    = $prefix . '[' . $input_name_city_id    . ']';
+        $input_name_street     = $prefix . '[' . $input_name_street     . ']';
+        $input_name_street_id  = $prefix . '[' . $input_name_street_id  . ']';
+        $input_name_house      = $prefix . '[' . $input_name_house      . ']';
+        $input_name_flat       = $prefix . '[' . $input_name_flat       . ']';
+        $input_name_location   = $prefix . '[' . $input_name_location   . ']';
+        $input_name_zip        = $prefix . '[' . $input_name_zip        . ']';
+        $input_name_teryt      = $prefix . '[' . $input_name_teryt      . ']';
 
         unset( $prefix );
     }
@@ -68,7 +76,15 @@ function smarty_function_location_dialog( $params = array(), $template )
     echo '<tr>
               <td>' . trans('Name') . '</td>
               <td>
-                  <input type="text" value="" name="' . $input_name_location . '" size="' . INPUT_SIZE . '" data-address="location-name">
+                  <input type="text" value="' . (!empty($params['name']) ? $params['name'] : '' ) . '" name="' . $input_name_location . '" size="' . INPUT_SIZE . '" data-address="location-name">
+              </td>
+          </tr>';
+
+    echo '<tr>
+              <td>' . trans('State') . '</td>
+              <td>
+                  <input type="text"   value="' . (!empty($params['state'])   ? $params['state']   : '' ) . '" size="' . INPUT_SIZE . '" data-address="state" name="' . $input_name_state . '">
+                  <input type="hidden" value="' . (!empty($params['stateid']) ? $params['stateid'] : '' ) . '" data-address="state-hidden" name="' . $input_name_state_id . '">
               </td>
           </tr>';
 
@@ -99,8 +115,35 @@ function smarty_function_location_dialog( $params = array(), $template )
           </tr>';
 
     echo '<tr>
+              <td class="nobr">' . trans('Postcode:') . '</td>
+              <td><input type="text"   value="' . (!empty($params['zip']) ? $params['zip'] : '' ) . '" name="' . $input_name_zip . '" data-address="zip" size="7"></td>
+          </tr>';
+
+    global $DB;
+
+    if ( empty($params['countryid']) ) {
+        $params['countryid'] = -1;
+    }
+
+    $countries = $DB->GetAll('SELECT id, name FROM countries;');
+    if ( $countries ) {
+        echo '<tr><td>' . trans('Country:') . '</td><td>
+              <select name="' . $input_name_country_id . '" data-address="country">';
+
+        foreach ($countries as $v) {
+            if ( $v['id'] == $params['countryid'] ) {
+                echo '<option value="'.$v['id'].'" selected>' . trans($v['name']) . '</option>' ;
+            } else {
+                echo '<option value="'.$v['id'].'">' . trans($v['name']) . '</option>' ;
+            }
+        }
+
+        echo '</select></td></tr>';
+    }
+
+    echo '<tr>
               <td colspan="2">
-                  <label><input type="checkbox" name="' . $input_name_teryt . '" class="lmsui-address-teryt-checkbox" ' . (!empty($params['teryt']) ? 'checked' : '' ) . ' data-address="teryt-checkbox">' . trans("TERRIT-DB") . '</label>
+                  <label><input type="checkbox" name="' . $input_name_teryt . '" class="lmsui-address-teryt-checkbox" ' . (!empty($params['teryt']) ? 'checked' : '') . ' data-address="teryt-checkbox">' . trans("TERRIT-DB") . '</label>
                   <span class="lms-ui-button teryt-address-button">&raquo;&raquo;&raquo;</span>
               </td>
           </tr>';

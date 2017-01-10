@@ -143,28 +143,6 @@
 									</td>
 								</tr>
 
-								<tr>
-									<td>
-										<img src="img/home.gif" alt="">
-									</td>
-									<td>
-										{trans("Location:")}
-									</td>
-									<td class="nobr">
-										{location_dialog
-											prefix   = "nodeedit"
-											location = "{$nodeinfo.location}"
-											city     = "{$nodeinfo.location_city_name}"
-											cityid   = "{$nodeinfo.location_city}"
-											street   = "{$nodeinfo.location_street_name}"
-											streetid = "{$nodeinfo.location_street}"
-										    house    = "{$nodeinfo.location_house}"
-										    flat     = "{$nodeinfo.location_flat}"
-										    teryt    = "{$nodeinfo.teryt}"
-										}
-									</td>
-								</tr>
-
 								{if $netdevices}
 								<tr>
 									<td>
@@ -243,7 +221,29 @@
 										{trans("Customer:")}
 									</td>
 									<td class="nobr">
-										{customerlist form="editnode" customers=$customers selected=$nodeinfo.ownerid selectname="nodeedit[customerid]" inputname="nodeedit[ownerid]" firstoption="" selecttip="Assign node to customer"}
+										{customerlist
+											form        = "editnode"
+											customers   = $customers
+											selected    = $nodeinfo.ownerid
+											selectname  = "nodeedit[customerid]"
+											select_id   = "customerid_select"
+											inputname   = "nodeedit[ownerid]"
+											input_id    = "customerid_input"
+											firstoption = ""
+											selecttip   = "Assign node to customer"
+										}
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<img src="img/home.gif" alt="">
+									</td>
+									<td>
+										{trans("Location:")}
+									</td>
+									<td class="nobr">
+										<select id="customer_addresses" name="nodeedit[address_id]" {tip trigger="address_id"}></select>
 									</td>
 								</tr>
 
@@ -395,8 +395,12 @@
     </tbody>
 </table>
 </form>
+
+<script type="text/javascript" src="img/lms-ui-iconselectmenu.js"></script>
 <script type="text/javascript">
 <!--
+	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+
 	$(function() {
 		$('form[name="editnode"] [name="nodeedit[name]"]').focus();
 	});
@@ -559,13 +563,12 @@
 
 	xajax_getRadioSectors({$nodeinfo.netdev}, {$nodeinfo.linktechnology});
 
-	//check_teryt('location', true);
-
 	setNNProject();
 
     function set_lat_lon(){
         var loc = document.getElementById('location').value;
         var geocoder = new google.maps.Geocoder();
+
         geocoder.geocode( { 'address': loc}, function(results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
                 document.getElementById('latitude').value = results[0].geometry.location.lat();
@@ -573,6 +576,35 @@
             }
         });
     }
+
+    /*!
+     * \brief Update addresses list on customer input change.
+     */
+    $( '#customerid_input' ).on('input', function() {
+        customer_addresses.setAddressList( getCustomerAddresses($(this).val()) );
+    });
+
+    {if ConfigHelper::checkConfig('phpui.big_networks')}
+        // refresh customer addresses on page load
+        $( '#customerid_select, #customerid_input' ).trigger( 'change' );
+    {else}
+        /*!
+         * \brief Update addresses list on customer select change.
+         * Using when big_networks is set as false.
+         */
+        $( '#customerid_select' ).change( function() {
+            customer_addresses.setAddressList( getCustomerAddresses($(this).val()) );
+        });
+
+        // refresh customer addresses on page load
+        $( '#customerid_select' ).trigger( 'change' );
+    {/if}
+
+    {if $nodeinfo.address_id}
+        $( '#customer_addresses' ).val( {$nodeinfo.address_id} );
+    {/if}
+
+    customer_addresses.init();
 //-->
 </SCRIPT>
 

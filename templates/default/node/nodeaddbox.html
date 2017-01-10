@@ -104,21 +104,9 @@
 			<INPUT TYPE="TEXT" NAME="nodedata[passwd]" VALUE="{$nodedata.passwd}" {tip text="Enter password (optional)" trigger="passwd"}> <a href="javascript:GenPasswd();" {tip text="Click to generate random password"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
-	<TR>
-		<TD style="width: 1%; vertical-align: top;">
-			<IMG SRC="img/home.gif" ALT="{trans("Location:")}">
-		</TD>
-		<TD style="width: 99%; white-space: nowrap;" COLSPAN="2">
-			<INPUT TYPE="TEXT" SIZE="40" VALUE="{$nodedata.location}" id="location" NAME="nodedata[location]"  {tip text="Enter location (optional)" trigger="location"}>
-			<A href="javascript:void(0);" onclick="if (check_teryt()) return locationchoosewin('nodedata', 'nodeadd', document.forms['nodeadd'].elements['nodedata[location_city]'].value,  document.forms['nodeadd'].elements['nodedata[location_street]'].value, {ConfigHelper::getConfig('phpui.default_teryt_city')})" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</A>
-			<BR>
-			<INPUT type="hidden" name="nodedata[location_city]" value="{$nodedata.location_city}">
-			<INPUT type="hidden" name="nodedata[location_street]" value="{$nodedata.location_street}">
-			<INPUT type="hidden" name="nodedata[location_house]" value="{$nodedata.location_house}">
-			<INPUT type="hidden" name="nodedata[location_flat]" value="{$nodedata.location_flat}">
-			<INPUT TYPE="checkbox" name="nodedata[teryt]" id="teryt" onchange="check_teryt('location')"{if $nodedata.teryt} checked{/if}> <label for="teryt">{trans("TERRIT-DB")}</label>
-		</TD>
-	</TR>
+
+
+
 	<TR>
 		<TD style="width: 1%;">
 			<IMG SRC="img/nodegroup.gif" ALT="{trans("Node group:")}">
@@ -187,14 +175,33 @@
 			 
 		</TD>
 	</TR>
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/customer.gif" ALT="{trans("Customer:")}">
-		</TD>
-		<TD style="width: 99%;" class="nobr">
-			{customerlist form="nodeadd" customers=$customers selected=$nodedata.ownerid selectname="nodedata[customerid]" inputname="nodedata[ownerid]" selecttip="Assign node to customer"}
-		</TD>
-	</TR>
+	<tr>
+		<td style="width: 1%;">
+			<img src="img/customer.gif" alt="{trans("Customer:")}">
+		</td>
+		<td style="width: 99%;" class="nobr">
+			{customerlist
+				form       = "nodeadd"
+				customers  = $customers
+				selected   = $nodedata.ownerid
+				selectname = "nodedata[customerid]"
+				select_id  = "customerid_select"
+				inputname  = "nodedata[ownerid]"
+				input_id   = "customerid_input"
+				selecttip  = "Assign node to customer"
+			}
+		</td>
+	</tr>
+
+	<tr>
+		<td style="width: 1%; vertical-align: top;">
+			<img src="img/home.gif" alt="{trans("Location:")}">
+		</td>
+		<td style="width: 99%; white-space: nowrap;" colspan="2">
+			<select id="customer_addresses" name="nodedata[address_id]" {tip trigger="address_id"}></select>
+		</td>
+	</tr>
+
 	<TR>
 		<TD style="width: 1%;">
 			<IMG SRC="img/options.gif" ALT="">
@@ -298,8 +305,12 @@
 	</TR>
     </TBODY>
 </TABLE></FORM>
-<SCRIPT type="text/javascript">
+
+<script type="text/javascript" src="img/lms-ui-iconselectmenu.js"></script>
+<script type="text/javascript">
 <!--
+	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+
 	$(function() {
 		$('form[name="nodeadd"] [name="nodedata[name]"]').focus();
 	});
@@ -392,7 +403,6 @@
 		xjx.$('radiosector').style.display = (linktype == 1 ? '' : 'none');
 	}
 
-	check_teryt('location', true);
 	setNNProject();
 
     function set_lat_lon(){
@@ -405,5 +415,34 @@
             }
         });
     }
+
+    /*!
+     * \brief Update addresses list on customer input change.
+     */
+    $( '#customerid_input' ).on('input', function() {
+        customer_addresses.setAddressList( getCustomerAddresses($(this).val()) );
+    });
+
+    {if ConfigHelper::checkConfig('phpui.big_networks')}
+        // refresh customer addresses on page load
+        $( '#customerid_select, #customerid_input' ).trigger( 'change' );
+    {else}
+        /*!
+         * \brief Update addresses list on customer select change.
+         * Using when big_networks is set as false.
+         */
+        $( '#customerid_select' ).change( function() {
+            customer_addresses.setAddressList( getCustomerAddresses($(this).val()) );
+        });
+
+        // refresh customer addresses on page load
+        $( '#customerid_select' ).trigger( 'change' );
+    {/if}
+
+    {if $nodedata.address_id}
+        $( '#customer_addresses' ).val( {$nodedata.address_id} );
+    {/if}
+
+    customer_addresses.init();
 //-->
 </SCRIPT>

@@ -56,28 +56,28 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function NetDevLinkNode($id, $devid, $link = NULL)
     {
-	if (empty($link)) {
-		$type = 0;
-		$technology = 0;
-		$radiosector = NULL;
-		$speed = 100000;
-		$port = 0;
-	} else {
-		$type = isset($link['type']) ? intval($link['type']) : 0;
-		$radiosector = isset($link['radiosector']) && !empty($link['radiosector']) ? intval($link['radiosector']) : NULL;
-		$technology = isset($link['technology']) ? intval($link['technology']) : 0;
-		$speed = isset($link['speed']) ? intval($link['speed']) : 100000;
-		$port = isset($link['port']) ? intval($link['port']) : 0;
-	}
+		if (empty($link)) {
+			$type        = 0;
+			$technology  = 0;
+			$radiosector = NULL;
+			$speed       = 100000;
+			$port        = 0;
+		} else {
+			$type        = isset($link['type']) ? intval($link['type']) : 0;
+			$radiosector = isset($link['radiosector']) && !empty($link['radiosector']) ? intval($link['radiosector']) : NULL;
+			$technology  = isset($link['technology']) ? intval($link['technology']) : 0;
+			$speed       = isset($link['speed']) ? intval($link['speed']) : 100000;
+			$port        = isset($link['port'])  ? intval($link['port'])  : 0;
+		}
 
         $args = array(
             SYSLOG::RES_NETDEV => $devid,
-            'linktype' => $type,
-            'linkradiosector' => $radiosector,
-            'linktechnology' => $technology,
-            'linkspeed' => $speed,
-            'port' => intval($port),
-            SYSLOG::RES_NODE => $id,
+            'linktype'         => $type,
+            'linkradiosector'  => $radiosector,
+            'linktechnology'   => $technology,
+            'linkspeed'        => $speed,
+            'port'             => intval($port),
+            SYSLOG::RES_NODE   => $id,
         );
         $res = $this->db->Execute('UPDATE nodes SET netdev=?, linktype=?, linkradiosector=?,
 			linktechnology=?, linkspeed=?, port=?
@@ -91,55 +91,56 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function SetNetDevLinkType($dev1, $dev2, $link = NULL)
     {
-	if (empty($link)) {
-		$type = 0;
-		$srcradiosector = null;
-		$dstradiosector = null;
-		$technology = 0;
-		$speed = 100000;
-	} else {
-		$type = isset($link['type']) ? $link['type'] : 0;
-		$srcradiosector = isset($link['srcradiosector']) ? (intval($link['srcradiosector']) ? intval($link['srcradiosector']) : null) : null;
-		$dstradiosector = isset($link['dstradiosector']) ? (intval($link['dstradiosector']) ? intval($link['dstradiosector']) : null) : null;
-		$technology = isset($link['technology']) ? $link['technology'] : 0;
-		$speed = isset($link['speed']) ? $link['speed'] : 100000;
-	}
+		if (empty($link)) {
+			$type = 0;
+			$srcradiosector = null;
+			$dstradiosector = null;
+			$technology = 0;
+			$speed = 100000;
+		} else {
+			$type = isset($link['type']) ? $link['type'] : 0;
+			$srcradiosector = isset($link['srcradiosector']) ? (intval($link['srcradiosector']) ? intval($link['srcradiosector']) : null) : null;
+			$dstradiosector = isset($link['dstradiosector']) ? (intval($link['dstradiosector']) ? intval($link['dstradiosector']) : null) : null;
+			$technology = isset($link['technology']) ? $link['technology'] : 0;
+			$speed = isset($link['speed']) ? $link['speed'] : 100000;
+		}
 
-	$args = array(
-		'type' => $type,
-		'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $srcradiosector,
-		'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $dstradiosector,
-		'technology' => $technology,
-		'speed' => $speed,
-		'src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV) => $dev2,
-		'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV) => $dev1,
-	);
-	$res = $this->db->Execute('UPDATE netlinks SET type=?, srcradiosector=?, dstradiosector=?, technology=?, speed=?
-		WHERE src=? AND dst=?', array_values($args));
-	if (!$res) {
 		$args = array(
 			'type' => $type,
 			'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $srcradiosector,
 			'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $dstradiosector,
 			'technology' => $technology,
 			'speed' => $speed,
-			'src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV) => $dev1,
-			'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV) => $dev2,
+			'src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV) => $dev2,
+			'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV) => $dev1,
 		);
-		$res = $this->db->Execute('UPDATE netlinks SET type=?, dstradiosector=?, srcradiosector=?, technology=?, speed=?
+		$res = $this->db->Execute('UPDATE netlinks SET type=?, srcradiosector=?, dstradiosector=?, technology=?, speed=?
 			WHERE src=? AND dst=?', array_values($args));
-	}
-	if ($this->syslog && $res) {
-		$args[SYSLOG::RES_NETLINK] =
-			$this->db->GetOne('SELECT id FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
-		$this->syslog->AddMessage(SYSLOG::RES_NETLINK, SYSLOG::OPER_UPDATE, $args,
-			array('src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV),
-			'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV),
-			'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR),
-			'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR),
-		));
-	}
-	return $res;
+		if (!$res) {
+			$args = array(
+				'type' => $type,
+				'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $srcradiosector,
+				'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR) => $dstradiosector,
+				'technology' => $technology,
+				'speed' => $speed,
+				'src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV) => $dev1,
+				'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV) => $dev2,
+			);
+			$res = $this->db->Execute('UPDATE netlinks SET type=?, dstradiosector=?, srcradiosector=?, technology=?, speed=?
+				WHERE src=? AND dst=?', array_values($args));
+		}
+		if ($this->syslog && $res) {
+			$args[SYSLOG::RES_NETLINK] =
+				$this->db->GetOne('SELECT id FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
+			$this->syslog->AddMessage(SYSLOG::RES_NETLINK, SYSLOG::OPER_UPDATE, $args,
+				array('src_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV),
+				'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_NETDEV),
+				'src_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR),
+				'dst_' . SYSLOG::getResourceKey(SYSLOG::RES_RADIOSECTOR),
+			));
+		}
+
+		return $res;
     }
 
     public function IsNetDevLink($dev1, $dev2)
@@ -259,32 +260,32 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     public function NetDevAdd($data)
     {
         $args = array(
-            'name' => $data['name'],
-            'location' => trim($data['location']),
-            'location_city' => $data['location_city'] ? trim($data['location_city']) : null,
-            'location_street' => $data['location_street'] ? trim($data['location_street']) : null,
-            'location_house' => $data['location_house'] ? trim($data['location_house']) : null,
-            'location_flat' => $data['location_flat'] ? trim($data['location_flat']) : null,
-            'description' => $data['description'],
-            'producer' => $data['producer'],
-            'model' => $data['model'],
-            'serialnumber' => $data['serialnumber'],
-            'ports' => $data['ports'],
-            'purchasetime' => $data['purchasetime'],
-            'guaranteeperiod' => $data['guaranteeperiod'],
-            'shortname' => $data['shortname'],
-            'nastype' => $data['nastype'],
-            'clients' => $data['clients'],
-            'secret' => $data['secret'],
-            'community' => $data['community'],
-            'channelid' => !empty($data['channelid']) ? $data['channelid'] : NULL,
-            'longitude' => !empty($data['longitude']) ? str_replace(',', '.', $data['longitude']) : NULL,
-            'latitude' => !empty($data['latitude']) ? str_replace(',', '.', $data['latitude']) : NULL,
-            'invprojectid' => $data['invprojectid'],
-            'netnodeid' => $data['netnodeid'],
-            'status' => $data['status'],
+            'name'             => $data['name'],
+            'location'         => trim($data['location']),
+            'location_city'    => $data['location_city']   ? trim($data['location_city'])   : null,
+            'location_street'  => $data['location_street'] ? trim($data['location_street']) : null,
+            'location_house'   => $data['location_house']  ? trim($data['location_house'])  : null,
+            'location_flat'    => $data['location_flat']   ? trim($data['location_flat'])   : null,
+            'description'      => $data['description'],
+            'producer'         => $data['producer'],
+            'model'            => $data['model'],
+            'serialnumber'     => $data['serialnumber'],
+            'ports'            => $data['ports'],
+            'purchasetime'     => $data['purchasetime'],
+            'guaranteeperiod'  => $data['guaranteeperiod'],
+            'shortname'        => $data['shortname'],
+            'nastype'          => $data['nastype'],
+            'clients'          => $data['clients'],
+            'secret'           => $data['secret'],
+            'community'        => $data['community'],
+            'channelid'        => !empty($data['channelid']) ? $data['channelid'] : NULL,
+            'longitude'        => !empty($data['longitude']) ? str_replace(',', '.', $data['longitude']) : NULL,
+            'latitude'         => !empty($data['latitude']) ? str_replace(',', '.', $data['latitude']) : NULL,
+            'invprojectid'     => $data['invprojectid'],
+            'netnodeid'        => $data['netnodeid'],
+            'status'           => $data['status'],
             'netdevicemodelid' => !empty($data['netdevicemodelid']) ? $data['netdevicemodelid'] : null,
-            'ownerid' => empty($data['ownerid']) ? NULL : $data['ownerid']
+            'ownerid'          => empty($data['ownerid']) ? NULL : $data['ownerid']
         );
         if ($this->db->Execute('INSERT INTO netdevices (name, location,
 				location_city, location_street, location_house, location_flat,
@@ -347,7 +348,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     public function GetNetDevConnectedNames($id)
     {
         return $this->db->GetAll('SELECT d.id, d.name, d.description,
-			d.location, d.producer, d.ports, l.type AS linktype,
+			d.producer, d.ports, l.type AS linktype,
 			l.technology AS linktechnology, l.speed AS linkspeed, l.srcport, l.dstport,
 			srcrs.name AS srcradiosector, dstrs.name AS dstradiosector,
 			(SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id)
@@ -442,7 +443,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				break;
 		}
 
-	$netdevlist = $this->db->GetAll('SELECT d.id, d.name, d.location,
+	$netdevlist = $this->db->GetAll('SELECT d.id, d.name,
 			d.description, d.producer, d.model, d.serialnumber, d.ports,
 			(SELECT COUNT(*) FROM nodes WHERE ipaddr <> 0 AND netdev=d.id AND ownerid > 0)
 			+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id)
@@ -476,7 +477,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     public function GetNotConnectedDevices($id)
     {
         return $this->db->GetAll('SELECT d.id, d.name, d.description,
-			d.location, d.producer, d.ports
+			d.producer, d.ports
 			FROM netdevices d
 			LEFT JOIN (SELECT DISTINCT
 				(CASE src WHEN ? THEN dst ELSE src END) AS dev
@@ -497,15 +498,15 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				addr.city_id as location_city, addr.street_id as location_street,
 				addr.house as location_house, addr.flat as location_flat
 			FROM netdevices d
-			LEFT JOIN addresses addr           ON addr.id = d.address_id
-			LEFT JOIN nastypes t               ON (t.id = d.nastype)
-			LEFT JOIN ewx_channels c           ON (d.channelid = c.id)
-			LEFT JOIN location_cities lc       ON (lc.id = addr.city_id)
-			LEFT JOIN location_streets lst     ON (lst.id = addr.street_id)
-			LEFT JOIN location_street_types lt ON (lt.id = lst.typeid)
-			LEFT JOIN location_boroughs lb     ON (lb.id = lc.boroughid)
-			LEFT JOIN location_districts ld    ON (ld.id = lb.districtid)
-			LEFT JOIN location_states ls       ON (ls.id = ld.stateid)
+				LEFT JOIN addresses addr           ON addr.id = d.address_id
+				LEFT JOIN nastypes t               ON (t.id = d.nastype)
+				LEFT JOIN ewx_channels c           ON (d.channelid = c.id)
+				LEFT JOIN location_cities lc       ON (lc.id = addr.city_id)
+				LEFT JOIN location_streets lst     ON (lst.id = addr.street_id)
+				LEFT JOIN location_street_types lt ON (lt.id = lst.typeid)
+				LEFT JOIN location_boroughs lb     ON (lb.id = lc.boroughid)
+				LEFT JOIN location_districts ld    ON (ld.id = lb.districtid)
+				LEFT JOIN location_states ls       ON (ls.id = ld.stateid)
 			WHERE d.id = ?', array($id));
 
         $result['takenports'] = $this->CountNetDevLinks($id);

@@ -41,30 +41,32 @@ if (!empty($_GET['changestatus'])) {
 	$SESSION->redirect('?m=divisionlist');
 }
 
-$olddiv = $DB->GetRow('SELECT d.*, lc.name AS city_name,
-		(CASE WHEN ls.name2 IS NOT NULL THEN ' . $DB->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
-		lt.name AS street_type,
+$olddiv = $DB->GetRow('SELECT d.*,
+		addr.name as location_name,
+		addr.city as location_city_name, addr.street as location_street_name,
 		addr.city_id as location_city, addr.street_id as location_street,
-		addr.house as location_house, addr.flat as location_flat
+		addr.house as location_house, addr.flat as location_flat,
+		addr.zip as location_zip, addr.state as location_state_name,
+		addr.state_id as location_state, addr.country_id as location_country
 	FROM divisions d
-	LEFT JOIN addresses addr           ON addr.id = d.address_id
-	LEFT JOIN location_cities lc       ON lc.id = addr.city_id
-	LEFT JOIN location_streets ls      ON ls.id = addr.street_id
-	LEFT JOIN location_street_types lt ON lt.id = ls.typeid
+		LEFT JOIN addresses addr           ON addr.id = d.address_id
+		LEFT JOIN location_cities lc       ON lc.id = addr.city_id
+		LEFT JOIN location_streets ls      ON ls.id = addr.street_id
+		LEFT JOIN location_street_types lt ON lt.id = ls.typeid
 	WHERE d.id = ?', array($_GET['id']));
 
-if (!empty($_POST['division'])) {
+if ( !empty($_POST['division']) ) {
 	$division = $_POST['division'];
-		
+
 	foreach($division as $key => $value)
 	        $division[$key] = trim($value);
-			
+
 	if ($division['name']=='' && $division['description']=='' && $division['shortname']=='') {
 		$SESSION->redirect('?m=divisionlist');
 	}
-	
+
 	$division['id'] = $olddiv['id'];
-	
+
 	if ($division['name'] == '')
 		$error['name'] = trans('Division long name is required!');
 
@@ -75,16 +77,13 @@ if (!empty($_POST['division'])) {
 	{
 		$error['shortname'] = trans('Division with specified name already exists!');
 	}
-	
-	if ($division['address'] == '')
-		$error['address'] = trans('Address is required!');
 
-	if ($division['city'] == '')
+	if ($division['location_city_name'] == '')
 		$error['city'] = trans('City is required!');
-	
-	if ($division['zip'] == '')
+
+	if ($division['location_zip'] == '')
 		$error['zip'] = trans('Zip code is required!');
-	else if (!check_zip($division['zip']))
+	else if (!check_zip($division['location_zip']))
 		$error['zip'] = trans('Incorrect ZIP code!');
 
     if ($division['ten'] != '' && !check_ten($division['ten']) && !isset($division['tenwarning'])) {
@@ -108,16 +107,10 @@ if (!empty($_POST['division'])) {
 		if (empty($division['teryt'])) {
 			$division['location_city']   = null;
 			$division['location_street'] = null;
-			$division['location_house']  = null;
-			$division['location_flat']   = null;
 		}
 		$args = array(
 			'name'        => $division['name'],
 			'shortname'   => $division['shortname'],
-			'address'     => $division['address'],
-			'city'        => $division['city'],
-			'zip'         => $division['zip'],
-			SYSLOG::RES_COUNTRY => $division['countryid'],
 			'ten'         => $division['ten'],
 			'regon'       => $division['regon'],
 			'account'     => $division['account'],
@@ -132,18 +125,30 @@ if (!empty($_POST['division'])) {
 			'tax_office_code' => $division['tax_office_code'],
 			SYSLOG::RES_DIV   => $division['id']
 		);
-		$DB->Execute('UPDATE divisions SET name=?, shortname=?, address=?,
-			city=?, zip=?, countryid=?, ten=?, regon=?, account=?, inv_header=?,
+		$DB->Execute('UPDATE divisions SET name=?, shortname=?,
+			ten=?, regon=?, account=?, inv_header=?,
 			inv_footer=?, inv_author=?, inv_cplace=?, inv_paytime=?,
 			inv_paytype=?, description=?, status=?, tax_office_code = ?
 			WHERE id=?', array_values($args));
 
-        $DB->Execute('UPDATE addresses SET city_id = ?, street_id = ?, house = ?, flat = ? WHERE id = ?',
+        $DB->Execute('UPDATE addresses
+                      SET name = ?, state = ?, state_id = ?, city = ?, city_id = ?,
+                          street = ?, street_id = ?, house = ?, flat = ?, zip = ?,
+                          country_id = ?
+                      WHERE id = ?',
                       array(
+                          $division['location_name'],
+                          $division['location_state_name'],
+                          $division['location_state'],
+                          $division['location_city_name'],
                           $division['location_city'],
-                          $division['location_street'] ? $division['location_street'] : null,
+                          $division['location_street_name'] ? $division['location_street_name'] : null,
+                          $division['location_street']      ? $division['location_street']      : null,
                           $division['location_house'],
-                          $division['location_flat']
+                          $division['location_flat'],
+                          $division['location_zip'],
+                          $division['location_country'],
+                          $olddiv['address_id']
                       ));
 
 		if ($SYSLOG)
@@ -169,9 +174,9 @@ if ($_language == 'pl')
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('division', !empty($division) ? $division : $olddiv);
+$SMARTY->assign('division' , !empty($division) ? $division : $olddiv);
 $SMARTY->assign('countries', $LMS->GetCountries());
-$SMARTY->assign('error', $error);
+$SMARTY->assign('error    ', $error);
 $SMARTY->display('division/divisionedit.html');
 
 ?>

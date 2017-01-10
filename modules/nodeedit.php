@@ -76,7 +76,6 @@ $layout['pagetitle'] = trans('Node Edit: $a', $nodeinfo['name']);
 if (isset($_POST['nodeedit'])) {
 	$nodeedit = $_POST['nodeedit'];
 
-	$nodeedit['address_id'] = $nodeinfo['address_id'];
 	$nodeedit['netid']      = $_POST['nodeeditnetid'];
 	$nodeedit['ipaddr']     = $_POST['nodeeditipaddr'];
 	$nodeedit['ipaddr_pub'] = $_POST['nodeeditipaddrpub'];

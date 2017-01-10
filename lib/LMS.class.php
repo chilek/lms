@@ -409,7 +409,7 @@ class LMS
         $manager = $this->getCustomerManager();
         return $manager->DeleteCustomer($id);
     }
-    
+
     public function DeleteCustomerPermanent($id)
     {
         $manager = $this->getCustomerManager();
@@ -526,6 +526,18 @@ class LMS
     {
         $manager = $this->getCustomerManager();
         return $manager->customerStats();
+    }
+
+    public function checkCustomerAddress($a_id, $c_id)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->checkCustomerAddress($a_id, $c_id);
+    }
+
+    public function getCustomerAddresses($id, $hide_deleted = false)
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getCustomerAddresses($id, $hide_deleted);
     }
 
     /*

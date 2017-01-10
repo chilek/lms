@@ -859,6 +859,7 @@ td.multiselect select {
 .ui-button,
 html .ui-button.ui-state-disabled:hover,
 html .ui-button.ui-state-disabled:active {
+  padding: 0em 1em;
   border: 1px solid #615847;
   background-color: #DFD5BD;
 }
@@ -875,6 +876,12 @@ html .ui-button.ui-state-disabled:active {
   border: 1px solid #615847;
   outline: none;
   color: black;
+}
+.ui-selectmenu-text {
+  padding-top: 2px;
+}
+.ui-selectmenu-button.ui-button {
+  width: 20em;
 }
 .ui-state-highlight,
 .ui-widget-content .ui-state-highlight,

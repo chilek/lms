@@ -36,73 +36,32 @@
 			<TEXTAREA NAME="division[name]" COLS="45" ROWS="4" {tip text="Enter division long name" trigger="name"}>{$division.name}</TEXTAREA>
 		</TD>
 	</TR>
-	<TR>
-		<TD>
+	<tr>
+		<td>
 			<IMG src="img/home.gif" alt="">
-		</TD>
-		<TD class="bold nobr">
+		</td>
+		<td class="bold nobr">
 			{trans("Address:")}
-		</TD>
-		<TD>
-			<TABLE width="100%" cellpadding="2" cellspacing="0">
-				<COLGROUP>
-					<COL style="width: 1%;">
-					<COL style="width: 99%;">
-				<COLGROUP>
-				<TBODY>
-				<TR>
-					<TD class="nobr">
-						{trans("Address:")}
-					</TD>
-					<TD>
-						<INPUT type="text" size="30" value="{$division.address}" id="location" name="division[address]" {tip text="Enter address" trigger="address"}>
-						<A href="javascript:void(0);" onclick="if (check_teryt()) return locationchoosewin('division', 'division', document.forms['division'].elements['division[location_city]'].value, document.forms['division'].elements['division[location_street]'].value, {ConfigHelper::getConfig('phpui.default_teryt_city')})" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</A>
-					</TD>
-				</TR>
-				<TR>
-					<TD class="nobr valign-top">
-						{trans("City:")}
-					</TD>
-					<TD>
-						<INPUT type="TEXT" size="30" value="{$division.city}" id="location_city" name="division[city]" {tip text="Enter city" trigger="city"}>
-						<A href="javascript:void(0);" onclick="if (check_teryt()) return locationchoosewin('division', 'division', document.forms['division'].elements['division[location_city]'].value, document.forms['division'].elements['division[location_street]'].value, {ConfigHelper::getConfig('phpui.default_teryt_city')})" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</A>
-						<INPUT type="hidden" name="division[location_city]" value="{$division.location_city}">
-						<INPUT type="hidden" name="division[location_street]" value="{$division.location_street}">
-						<INPUT type="hidden" name="division[location_house]" value="{$division.location_house}">
-						<INPUT type="hidden" name="division[location_flat]" value="{$division.location_flat}">
-						<br>
-						<label>
-							{trans("TERRIT-DB")}
-							<INPUT TYPE="checkbox" name="division[teryt]" id="teryt" onchange="check_teryt(['location', 'location_city'])"{if $division.teryt} checked{/if}>
-						</label>
-					</TD>
-				</TR>
-				<TR>
-					<TD class="nobr">
-						{trans("Zip:")}
-					</TD>
-					<TD>
-						<INPUT type="text" size="10" value="{$division.zip}" name="division[zip]" {tip text="Enter zip code" trigger="zip"}>
-					</TD>
-				</TR>
-				<TR>
-					<TD class="nobr">
-						{trans("Country:")}
-					</TD>
-					<TD>
-						<SELECT NAME="division[countryid]" {tip text="Enter country" trigger="countryid"}>
-							<OPTION value="0"></OPTION>
-							{foreach $countries as $key => $item}
-							<OPTION value="{$key}"{if $key == $division.countryid} SELECTED{/if}>{t}{$item.name}{/t}</OPTION>
-							{/foreach}
-						</SELECT>
-					</TD>
-				</TR>
-				<TBODY>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
+		</td>
+		<td>
+			{location_dialog
+				prefix    = "division"
+				name      = "{$division.location_name}"
+				state     = "{$division.location_state_name}"
+				stateid   = "{$division.location_state}"
+				city      = "{$division.location_city_name}"
+				cityid    = "{$division.location_city}"
+				street    = "{$division.location_street_name}"
+				streetid  = "{$division.location_street}"
+				house     = "{$division.location_house}"
+				flat      = "{$division.location_flat}"
+				zip       = "{$division.location_zip}"
+				countryid = "{$division.location_country}"
+				teryt     = "{$division.teryt}"
+			}
+		</td>
+	</tr>
+	<tr>
 		<TD>
 			<IMG src="img/serialnumber.gif" alt="">
 		</TD>
@@ -272,7 +231,7 @@
 $(function() {
 	$('form[name="division"] [name="division[shortname]"]').focus();
 
-	check_teryt(['location', 'location_city'], true);
+	//check_teryt(['location', 'location_city'], true);
 });
 //-->
 </SCRIPT>

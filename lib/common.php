@@ -1154,3 +1154,51 @@ function trim_rec( $data ) {
         return trim($data);
     }
 }
+
+/*!
+ * \brief Create one address string from single fields.
+ *
+ * \param  string $city   city name
+ * \param  string $street street name
+ * \param  string $house  house number
+ * \param  string $falt   flat number
+ * \return string $l      location string
+ * \return null           if all fields are empty
+ */
+function createAddressString( $city = null, $street = null, $house = null, $flat = null ) {
+
+    $city   = ( trim($city)   ) ? trim($city)   : null;
+    $street = ( trim($street) ) ? trim($street) : null;
+    $house  = ( trim($house)  ) ? trim($house)  : null;
+    $flat   = ( trim($flat)   ) ? trim($flat)   : null;
+
+    if ( !$city && !$street && !$house && !$flat ) {
+        return null;
+    }
+
+    if ( $city ) {
+        $l = $city;
+    } else {
+        $l = '';
+    }
+
+    if ( $city && $street ) {
+        $l .= ', ' . $street;
+    } else if ( $street ) {
+        $l .= $street;
+    }
+
+    if ( $house && $flat ) {
+        $l .= ' ' . $house . '/' . $flat;
+    } else if ( $house ) {
+        $l .= ' ' . $house;
+    } else if ( $flat ) {
+        $l .= ' ' . $flat;
+    }
+
+    if ( strlen($l) > 0 ) {
+        return $l;
+    } else {
+        return null;
+    }
+}
