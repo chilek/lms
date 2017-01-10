@@ -833,3 +833,21 @@ function getCustomerAddresses( id = -1 ) {
         return [];
     }
 }
+
+/*!
+ * \brief Put address coordinates to inputs by single address string.
+ *
+ * \param string address
+ * \param string latitude_id id of latitude input
+ * \param string latitude_id id of longitude input
+ */
+function setAddressLocation( address, latitude_id, longitude_id ) {
+    var geocoder = new google.maps.Geocoder();
+
+    geocoder.geocode( { 'address':address }, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            $( latitude_id  ).val( results[0].geometry.location.lat() );
+            $( longitude_id ).val( results[0].geometry.location.lng() )
+        }
+    });
+}

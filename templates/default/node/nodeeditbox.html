@@ -298,7 +298,7 @@
 						                <img src="img/network.gif" alt="">
 						            </td>
 						            <td colspan="2" class="font-normal">
-						                <a href="javascript:set_lat_lon()" accesskey="s">{trans("Determine GPS coordinates automatically")}</a>
+						                <span class="lms-ui-button" id="set_gps">{trans("Determine GPS coordinates automatically")}</span>
 						            </td>
 						        </tr>
 
@@ -565,17 +565,12 @@
 
 	setNNProject();
 
-    function set_lat_lon(){
-        var loc = document.getElementById('location').value;
-        var geocoder = new google.maps.Geocoder();
-
-        geocoder.geocode( { 'address': loc}, function(results, status) {
-            if (status == google.maps.GeocoderStatus.OK) {
-                document.getElementById('latitude').value = results[0].geometry.location.lat();
-                document.getElementById('longitude').value = results[0].geometry.location.lng();
-            }
-        });
-    }
+    /*
+     * \brief Update address location update. Require google API key.
+     */
+    $( '#set_gps' ).click( function() {
+        setAddressLocation( $("#customer_addresses option:selected").text(), "#latitude", "#longitude" );
+    });
 
     /*!
      * \brief Update addresses list on customer input change.
