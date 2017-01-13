@@ -217,11 +217,11 @@ if(isset($_POST['ticket']))
 				$phones = array();
 				if (!empty($info['contacts']))
 					foreach ($info['contacts'] as $contact) {
-						$contact = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+						$target = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
 						if ($contact['type'] & CONTACT_EMAIL)
-							$emails[] = $contact;
+							$emails[] = $target;
 						else
-							$phones[] = $contact;
+							$phones[] = $target;
 					}
 
 				$body .= "\n\n-- \n";
