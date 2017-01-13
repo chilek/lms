@@ -2531,7 +2531,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('mail', 'smtp_host', '127.0.0.1', '', 0),
 ('mail', 'smtp_port', '25', '', 0),
 ('mail', 'backend', 'pear', '', 0),
-('mail', 'smtp_secure', 'ssl', '', 0),
+('mail', 'smtp_secure', 'tls', '', 0),
 ('zones', 'hostmaster_mail', 'hostmaster.localhost', '', 0),
 ('zones', 'master_dns', 'localhost', '', 0),
 ('zones', 'slave_dns', 'localhost', '', 0),
@@ -2892,6 +2892,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017010901');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017011300');
 
 COMMIT;
