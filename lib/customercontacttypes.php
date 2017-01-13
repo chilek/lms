@@ -63,6 +63,8 @@ function format_customer_im($contact) {
 }
 
 function validate_customer_phones(&$customerdata, &$contacts, &$error) {
+	if (!isset($customerdata['phones']))
+		return;
 	foreach ($customerdata['phones'] as $idx => &$val) {
 		$phone = trim($val['contact']);
 		$name = trim($val['name']);
@@ -80,6 +82,8 @@ function validate_customer_phones(&$customerdata, &$contacts, &$error) {
 }
 
 function validate_customer_emails(&$customerdata, &$contacts, &$error) {
+	if (!isset($customerdata['emails']))
+		return;
 	foreach ($customerdata['emails'] as $idx => &$val) {
 		$email = trim($val['contact']);
 		$name = trim($val['name']);
@@ -101,6 +105,8 @@ function validate_customer_emails(&$customerdata, &$contacts, &$error) {
 }
 
 function validate_customer_accounts(&$customerdata, &$contacts, &$error) {
+	if (!isset($customerdata['accounts']))
+		return;
 	foreach ($customerdata['accounts'] as $idx => &$val) {
 		$account = trim($val['contact']);
 		$name = trim($val['name']);
@@ -119,6 +125,8 @@ function validate_customer_accounts(&$customerdata, &$contacts, &$error) {
 }
 
 function validate_customer_urls(&$customerdata, &$contacts, &$error) {
+	if (!isset($customerdata['urls']))
+		return;
 	foreach ($customerdata['urls'] as $idx => &$val) {
 		$url = trim($val['contact']);
 		$name = trim($val['name']);
@@ -137,6 +145,8 @@ function validate_customer_urls(&$customerdata, &$contacts, &$error) {
 }
 
 function validate_customer_ims(&$customerdata, &$contacts, &$error) {
+	if (!isset($customerdata['ims']))
+		return;
 	foreach ($customerdata['ims'] as $idx => &$val) {
 		$im = trim($val['contact']);
 		$name = trim($val['name']);
