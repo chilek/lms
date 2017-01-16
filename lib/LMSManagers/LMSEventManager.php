@@ -57,6 +57,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 . ($dateto ? " AND (date <= $dateto OR (enddate <> 0 AND enddate <= $dateto))" : '')
                 . (!empty($search['customerid']) ? ' AND customerid = ' . intval($search['customerid']) : '')
                 . (!empty($search['type']) ? ' AND events.type = ' . intval($search['type']) : '')
+                . (!is_int($search['closed']) ? ' AND closed = ' . intval($search['closed']) : '')
                 . (!empty($search['title']) ? ' AND title ?LIKE? ' . $this->db->Escape('%' . $search['title'] . '%') : '')
                 . (!empty($search['description']) ? ' AND description ?LIKE? ' . $this->db->Escape('%' . $search['description'] . '%') : '')
                 . (!empty($search['note']) ? ' AND note ?LIKE? ' . $this->db->Escape('%' . $search['note'] . '%') : '')
@@ -124,5 +125,4 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 return $list2;
         }
     }
-
 }

@@ -75,6 +75,21 @@
 			</SELECT>
 		</TD>
 	</TR>
+	<TR>
+		<TD width="1%">
+			<IMG src="img/desc.gif" alt="">
+		</TD>
+		<TD width="1%">
+			<B>{trans("Status:")}</B>
+		</TD>
+		<TD width="98%">
+			<SELECT name="event[closed]" size="1">
+				<OPTION value="" SELECTED>{trans("- all -")}</OPTION>
+				<OPTION value="0">{trans("opened<!plural:event>")}</OPTION>
+				<OPTION value="1">{trans("closed<!plural:event>")}</OPTION>
+			</SELECT>
+		</TD>
+	</TR>
 {*
 	<TR>
 		<TD width="1%">
