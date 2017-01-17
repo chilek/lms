@@ -10,12 +10,12 @@
 	{/if}
 </h1>
 {if $modules}
-	<nav class="navbar navbar-dark bg-primary mb-1">
-		<button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#exCollapsingNavbar2">
-			&#9776;
+	<nav class="navbar navbar-inverse bg-primary navbar-toggleable-md">
+		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
 		</button>
-		<div class="collapse navbar-toggleable-xs" id="exCollapsingNavbar2">
-			<ul class="nav navbar-nav">
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav mr-auto">
 				{foreach from=$modules item=menuitem}
 					<li class="nav-item {if strpos($smarty.get.m, $menuitem.module) !== false && strlen($smarty.get.m)==strlen($menuitem.module) }active{/if}">
 						<a class="nav-link" href="?m={$menuitem.module}" {userpaneltip text=$menuitem.tip}>{$smarty.get.page} {$menuitem.name|replace:" ":"&nbsp;"}</a>
@@ -23,5 +23,6 @@
 				{/foreach}
 			</ul>
 		</div>
+		<a class="navbar-brand" href="#">&nbsp;</a> <!-- temporary fix for navbar-toggleable -->
 	</nav>
 {/if}
