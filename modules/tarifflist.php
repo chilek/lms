@@ -213,8 +213,10 @@ function GetTariffList($order = 'name,asc', $type = NULL, $customergroupid = NUL
 	return $tarifflist;
 }
 
-if (!isset($_POST['o']))
+if (!isset($_POST['o']) && !isset($_GET['o']))
 	$SESSION->restore('tlo', $o);
+elseif (isset($_GET['o']))
+	$o = $_GET['o'];
 else
 	$o = $_POST['o'];
 $SESSION->save('tlo', $o);
