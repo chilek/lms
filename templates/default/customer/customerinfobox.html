@@ -154,12 +154,29 @@
 		</TD>
 	</TR>
 {/if}
-{if $customerinfo.rbe != ""}
+{if $customerinfo.rbename != ""}
 	<TR>
-		<TD WIDTH="1%">
+		<TD style="width: 1%;" class="valign-top">
 			<IMG SRC="img/serialnumber.gif" ALT="">
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<TD style="width: 99%;" class="nobr">
+			{trans("RBE Name:")}
+			<TABLE CELLPADDING="5">
+				<TR>
+					<TD CLASS="fall superlight">
+						{$customerinfo.rbename|replace:"\n":"<BR>"}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+{/if}
+{if $customerinfo.rbe != ""}
+	<TR>
+		<TD style="width: 1%;">
+			<IMG SRC="img/serialnumber.gif" ALT="">
+		</TD>
+		<TD style="width: 99%;" class="nobr">
 			{trans("RBE")}: {$customerinfo.rbe}
 		</TD>
 	</TR>

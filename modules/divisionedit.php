@@ -120,6 +120,8 @@ if(!empty($_POST['division']))
 			SYSLOG::RES_COUNTRY => $division['countryid'],
 			'ten' => $division['ten'],
 			'regon' => $division['regon'],
+			'rbename' => $division['rbename'],
+			'rbe' => $division['rbe'],
 			'account' => $division['account'],
 			'inv_header' => $division['inv_header'],
 			'inv_footer' => $division['inv_footer'],
@@ -136,8 +138,8 @@ if(!empty($_POST['division']))
 			'tax_office_code' => $division['tax_office_code'],
 			SYSLOG::RES_DIV => $division['id']
 		);
-		$DB->Execute('UPDATE divisions SET name=?, shortname=?, address=?, 
-			city=?, zip=?, countryid=?, ten=?, regon=?, account=?, inv_header=?, 
+		$DB->Execute('UPDATE divisions SET name=?, shortname=?, address=?,
+			city=?, zip=?, countryid=?, ten=?, regon=?, rbename=?, rbe=?, account=?, inv_header=?,
 			inv_footer=?, inv_author=?, inv_cplace=?, inv_paytime=?,
 			inv_paytype=?, description=?, status=?, location_city = ?, location_street = ?,
 			location_house = ?, location_flat = ?, tax_office_code = ?

@@ -89,6 +89,8 @@ if(!empty($_POST['division']))
 			SYSLOG::RES_COUNTRY => $division['countryid'],
 			'ten' => $division['ten'],
 			'regon' => $division['regon'],
+			'rbename' => $division['rbename'],
+			'rbe' => $division['rbe'],
 			'account' => $division['account'],
 			'inv_header' => $division['inv_header'],
 			'inv_footer' => $division['inv_footer'],
@@ -104,10 +106,10 @@ if(!empty($_POST['division']))
 			'tax_office_code' => $division['tax_office_code'],
 		);
 		$DB->Execute('INSERT INTO divisions (name, shortname, address, city, zip,
-			countryid, ten, regon, account, inv_header, inv_footer, inv_author,
+			countryid, ten, regon, rbe, rbename, account, inv_header, inv_footer, inv_author,
 			inv_cplace, inv_paytime, inv_paytype, description, location_city, location_street,
 			location_house, location_flat, tax_office_code)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
 		if ($SYSLOG) {
 			$args[SYSLOG::RES_DIV] = $DB->GetLastInsertID('divisions');
