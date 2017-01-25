@@ -230,7 +230,9 @@ function radio_sectors_received_for_dstnetdev(radiosectors) {
 	xjx.$('connboxdstradiosector').disabled = false;
 }
 
+{if $restnetdevlist[0]}
 xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', {$restnetdevlist[0].id});
+{/if}
 
 if (getCookie('devicedevices') == '1')
 	xjx.$('devicedevices').style.display = '';
