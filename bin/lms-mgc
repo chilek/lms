@@ -484,10 +484,10 @@ sub instance($)
 				SUM(downrate) AS downrate, SUM(downrate_n) AS downrate_n, SUM(upceil) AS upceil, 
 				SUM(upceil_n) AS upceil_n, SUM(downceil) AS downceil, SUM(downceil_n) AS downceil_n, 
 				SUM(climit) AS climit, SUM(climit_n) AS climit_n, SUM(plimit) AS plimit, SUM(plimit_n) AS plimit_n
-				FROM assignments, customers, tariffs 
+				FROM assignments a, customers, tariffs 
 				WHERE customers.id = customerid AND deleted = 0 AND tariffid = tariffs.id 
-					AND (datefrom <= $utsfmt OR datefrom = 0) 
-					AND (dateto > $utsfmt OR dateto = 0) 
+					AND a.datefrom <= $utsfmt
+					AND (a.dateto > $utsfmt OR a.dateto = 0)
 				GROUP BY customerid");
 		$dbq->execute();
 		while(my $row = $dbq->fetchrow_hashref())
