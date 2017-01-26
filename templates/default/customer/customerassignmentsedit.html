@@ -242,13 +242,13 @@
 										</TR>
 
 										<TR id="a_discount">
-											<TD style="{if ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
+											<TD style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
 												<IMG src="img/value.gif" alt="">
 											</TD>
-											<TD class="bold" style="{if ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
+											<TD class="bold" style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
 												<span class="bold">{trans("Discount:")}</span>
 											</TD>
-											<TD style="{if ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
+											<TD style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
 												<INPUT type="text" size="8" name="assignment[discount]" value="{if $assignment.pdiscount != 0}{$assignment.pdiscount|string_format:"%.2f"}{else}{if $assignment.vdiscount != 0}{$assignment.vdiscount|string_format:"%.2f"}{/if}{/if}" {tip text="Enter discount percentage or amount" trigger="discount"}>
 												<SELECT name="assignment[discount_type]">
 													{foreach from=$_DISCOUNTTYPES item=item key=key}
