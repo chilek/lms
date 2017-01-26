@@ -481,7 +481,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 		"JOIN nodes n ON (na.nodeid = n.id) "
 		"LEFT JOIN netdevices d ON (n.netdev = d.id) "
 		"WHERE "
-			"(a.datefrom <= %NOW% OR a.datefrom = 0) AND (a.dateto >= %NOW% OR a.dateto = 0)"
+			"a.datefrom <= %NOW% AND (a.dateto >= %NOW% OR a.dateto = 0)"
 			"%disabled"
 			"%enets"
 	);

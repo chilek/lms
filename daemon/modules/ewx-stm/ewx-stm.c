@@ -421,7 +421,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 				"SUM(t.downrate) AS downrate, SUM(t.downceil) AS downceil "
 			"FROM assignments a "
 			"LEFT JOIN tariffs t ON (a.tariffid = t.id) "
-			"WHERE (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) "
+			"WHERE a.datefrom <= %NOW% AND (a.dateto >= %NOW% OR a.dateto = 0) "
 				"AND EXISTS (SELECT 1 FROM nodeassignments JOIN vnodes n ON (n.id = nodeid) " 
 					"WHERE a.id = assignmentid"
 					"%disabled%enets) "
@@ -489,7 +489,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 			"GROUP BY assignmentid"
 			") cn ON (cn.assignmentid = na.assignmentid) "
 		"WHERE "
-			"(a.datefrom <= %NOW% OR a.datefrom = 0) AND (a.dateto >= %NOW% OR a.dateto = 0)"
+			"a.datefrom <= %NOW% AND (a.dateto >= %NOW% OR a.dateto = 0)"
 			"%disabled"
 			"%enets"
 	);
