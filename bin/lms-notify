@@ -232,11 +232,11 @@ sub parse_data
 	}
 	if ($data =~ /\%abonament/) {
 		my $saldo_dbq = $dbase->prepare("SELECT SUM(value) AS value
-			FROM assignments, tariffs
+			FROM assignments a, tariffs
 			WHERE tariffid = tariffs.id AND customerid = ?
-				AND (datefrom <= $utsfmt OR datefrom = 0)
-				AND (dateto > $utsfmt OR dateto = 0)
-				AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0))");
+				AND a.datefrom <= $utsfmt
+				AND (a/dateto > $utsfmt OR a.dateto = 0)
+				AND ((a.datefrom < a.dateto) OR (a.datefrom = 0 AND a.datefrom = 0))");
 		$saldo_dbq->execute($row->{'id'});
 		my $ow_s = $saldo_dbq->fetchrow_hashref();
 		$data =~ s/\%abonament/$ow_s->{'value'}/g;

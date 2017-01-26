@@ -275,10 +275,10 @@ function parse_customer_data($data, $row) {
 	$data = preg_replace("/\%cid/", $row['id'], $data);
 	if (preg_match("/\%abonament/", $data)) {
 		$saldo = $DB->GetOne("SELECT SUM(value)
-			FROM assignments, tariffs
+			FROM assignments a, tariffs
 			WHERE tariffid = tariffs.id AND customerid = ?
-				AND datefrom <= $currtime AND (dateto > $currtime OR dateto = 0)
-				AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0))",
+				AND a.datefrom <= $currtime AND (a.dateto > $currtime OR a.dateto = 0)
+				AND ((a.datefrom < a.dateto) OR (a.datefrom = 0 AND a.datefrom = 0))",
 			array($row['id']));
 		$data = preg_replace("/\%abonament/", $saldo, $data);
 	}
