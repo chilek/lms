@@ -341,7 +341,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 				    icn, cutoffstop, consentdate, einvoice, divisionid, paytime, paytype,
 				    invoicenotice, mailingnotice)
 				    VALUES (?, ?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?,
-				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
+				    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
         ) {
             $id = $this->db->GetLastInsertID('customers');
             $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
