@@ -3,6 +3,7 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+<script type="text/javascript" src="img/location_box_expandable.js"></script>
 <SCRIPT type="text/javascript">
 <!--
 	function randomize() {
@@ -115,149 +116,82 @@
 						<INPUT type="radio" name="customeradd[type]" value="1" id="company" {tip text="Select legal personality type" trigger="type"}{if $customeradd.type == $smarty.const.CTYPES_COMPANY} CHECKED{/if}><label for="company">{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}</label>
 					</TD>
 				</TR>
-				<TR>
-					<TD style="width: 1%;" class="valign-top"></TD>
-					<TD style="width: 99%;" class="nobr">
-						<table width="100%" cellpadding="1">
-						<tr>
-							<td style="width: 1%;">
-								<fieldset style="width: 1%;" class="nobr">
-									<legend class="bold"><IMG src="img/home.gif" alt=""> {trans("Address")}</legend>
-						<TABLE width="100%" cellpadding="1">
-							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("Street:")}</TD>
-								<TD style="width: 99%;"><INPUT type="text" size="30" value="{$customeradd.street}" name="customeradd[street]" id="street" required {tip text="Enter street" trigger="street"}></TD>
-							</TR>
-							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("Building:")}</TD>
-								<TD style="width: 99%;">
-									<INPUT type="text" size="8" value="{$customeradd.building}" name="customeradd[building]" id="building" {tip text="Enter building number" trigger="building"}>
-									{trans("Apartment:")}
-									<INPUT type="text" size="8" value="{$customeradd.apartment}" name="customeradd[apartment]" id="apartment" {tip text="Enter apartment number" trigger="apartment"}>
-								</TD>
-							</TR>
-							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("City:")}</TD>
-								<TD style="width: 99%;"><INPUT type="text" SIZE="30" value="{$customeradd.city}" name="customeradd[city]" id="city" {tip text="Enter city" trigger="city"}></TD>
-							</TR>
-							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("Zip:")}</TD>
-								<TD style="width: 99%;">
-									<INPUT type="text" SIZE="10" value="{$customeradd.zip}" name="customeradd[zip]" id="zip" {tip text="Enter zip code" trigger="zip"}>
-									{if $customeradd.zipwarning}
-									<INPUT type="hidden" name="customeradd[zipwarning]" value="1">
+
+				{$addr_counter = 0}
+
+				<tr>
+					<td style="width: 1%;" class="valign-top"><img src="img/home.gif" alt=""></td>
+					<td style="width: 99%;">
+						{$addr_found = 0}
+						{foreach $customeradd.addresses as $v}
+							{if $v.location_address_type == $smarty.const.BILLING_ADDRESS}
+								{$v.prefix = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
+								{$addr_counter = $addr_counter + 1}
+								{$addr_found = 1}
+								{location_box_expandable data=$v}
+							{/if}
+						{/foreach}
+
+						{* if billing address is not set *}
+						{if $addr_found == 0}
+							{$tmp['location_address_type'] = $smarty.const.BILLING_ADDRESS}
+							{$tmp['prefix'] = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
+							{$tmp['location_zip']        = ConfigHelper::getConfig('phpui.default_zip')}
+							{$tmp['location_city_name']  = ConfigHelper::getConfig('phpui.default_city')}
+							{$tmp['location_state']      = ConfigHelper::getConfig('phpui.default_stateid')}
+							{$tmp['location_country_id'] = ConfigHelper::getConfig('phpui.default_countryid')}
+							{$addr_counter = $addr_counter + 1}
+
+							{location_box_expandable data=$tmp}
+							{$tmp = array()}
+						{/if}
+					</td>
+				</tr>
+
+				<tr>
+					<td style="width: 1%;" class="valign-top"><img src="img/post.gif" alt=""></td>
+					<td style="width: 99%;">
+						{$addr_found = 0}
+						{foreach $customeradd.addresses as $v}
+							{if $v.location_address_type == $smarty.const.POSTAL_ADDRESS}
+								{$v.prefix = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
+								{$addr_counter = $addr_counter + 1}
+								{$addr_found = 1}
+								{location_box_expandable data=$v}
+							{/if}
+						{/foreach}
+
+						{* if postal address is not set *}
+						{if $addr_found == 0}
+							{$tmp['location_address_type'] = $smarty.const.POSTAL_ADDRESS}
+							{$tmp['prefix'] = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
+							{$addr_counter = $addr_counter + 1}
+							{location_box_expandable data=$tmp}
+						{/if}
+					</td>
+				</tr>
+
+				<tr>
+					<td style="width: 1%;" class="valign-top"><img src="img/location.png" alt=""></td>
+					<td style="width: 99%;">
+						<div class="customer-location-addresses-box">
+							<div class="addresses-container">
+								{foreach $customeradd.addresses as $v}
+									{if $v.location_address_type != $smarty.const.BILLING_ADDRESS && $v.location_address_type != $smarty.const.POSTAL_ADDRESS }
+										{$v.prefix = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
+										{$v.default_type = 1}
+										{$v.clear_button = 1}
+										{$addr_counter = $addr_counter + 1}
+										{location_box_expandable data=$v}
 									{/if}
-								</TD>
-							</TR>
-							{if $cstateslist}
-							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("State:")}</TD>
-								<TD style="width: 99%;">
-									<SELECT name="customeradd[stateid]" {tip text="Select country state (optional)" trigger="stateid"}>
-										<OPTION value="0"></OPTION>
-										{foreach from=$cstateslist item=item key=key}
-										<OPTION value="{$key}"{if $key==$customeradd.stateid} SELECTED{/if}>{$item.name}</OPTION>
-										{/foreach}
-									</SELECT>
-								</TD>
-							</TR>
-							{/if}
-							{if $countrieslist}
-							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("Country:")}</TD>
-								<TD style="width: 99%;">
-									<SELECT name="customeradd[countryid]" {tip text="Select country (optional)" trigger="countryid"}>
-										<OPTION value="0"></OPTION>
-										{foreach from=$countrieslist item=item key=key}
-										<OPTION value="{$key}"{if $key==$customeradd.countryid} SELECTED{/if}>{t}{$item.name}{/t}</OPTION>
-										{/foreach}
-									</SELECT>
-								</TD>
-							</TR>
-							{/if}
-						</TABLE>
-						<script type="text/javascript">
-						<!--
-							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('street'),'?m=customeradd&ajax=1&mode=street&what=',0);
-							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
-							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('city'),'?m=customeradd&ajax=1&mode=city&what=',0);
-						//-->
-						</script>
-								</fieldset>
-							</td>
-							<td style="width: 99%;">
-								<fieldset style="width: 1%;" class="nobr">
-									<legend class="bold"><IMG src="img/post.gif" alt=""> {trans("Postal address")}</legend>
-						<TABLE width="100%" cellpadding="1">
-							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("Name:")}</TD>
-								<TD style="width: 99%;"><INPUT type="text" size="30" value="{$customeradd.post_name}" name="customeradd[post_name]" id="post_name" {tip text="Enter name (optional)" trigger="post_name"}></TD>
-							</TR>
-							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("Street:")}</TD>
-								<TD style="width: 99%;"><INPUT type="text" size="30" value="{$customeradd.post_street}" name="customeradd[post_street]" id="post_street" {tip text="Enter street name (optional)" trigger="post_street"}></TD>
-							</TR>
-							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("Building:")}</TD>
-								<TD style="width: 99%;">
-									<INPUT type="text" size="8" value="{$customeradd.post_building}" name="customeradd[post_building]" id="post_builing" {tip text="Enter building number (optional)" trigger="post_building"}>
-									{trans("Apartment:")}
-									<INPUT type="text" size="8" value="{$customeradd.post_apartment}" name="customeradd[post_apartment]" id="post_apartment" {tip text="Enter apartment number (optional)" trigger="post_apartment"}>
-								</TD>
-							</TR>
-							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("City:")}</TD>
-								<TD style="width: 99%;"><INPUT type="text" SIZE="30" value="{$customeradd.post_city}" name="customeradd[post_city]" id="post_city" {tip text="Enter city (optional)" trigger="post_city"}></TD>
-							</TR>
-							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("Zip:")}</TD>
-								<TD style="width: 99%;">
-									<INPUT type="text" SIZE="10" value="{$customeradd.post_zip}" name="customeradd[post_zip]" id="post_zip" {tip text="Enter zip code (optional)" trigger="post_zip"}>
-									{if $customeradd.post_zipwarning}
-									<INPUT type="hidden" name="customeradd[post_zipwarning]" value="1">
-									{/if}
-								</TD>
-							</TR>
-							{if $cstateslist}
-							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("State:")}</TD>
-								<TD style="width: 99%;">
-									<SELECT name="customeradd[post_stateid]" {tip text="Select country state (optional)" trigger="post_stateid"}>
-										<OPTION value="0"></OPTION>
-										{foreach from=$cstateslist item=item key=key}
-										<OPTION value="{$key}"{if $key==$customeradd.post_stateid} SELECTED{/if}>{$item.name}</OPTION>
-										{/foreach}
-									</SELECT>
-								</TD>
-							</TR>
-							{/if}
-							{if $countrieslist}
-							<TR>
-								<TD style="width: 1%;" class="nobr">{trans("Country:")}</TD>
-								<TD style="width: 99%;">
-									<SELECT name="customeradd[post_countryid]" {tip text="Select country (optional)" trigger="post_countryid"}>
-										<OPTION value="0"></OPTION>
-										{foreach from=$countrieslist item=item key=key}
-										<OPTION value="{$key}"{if $key==$customeradd.post_countryid} SELECTED{/if}>{t}{$item.name}{/t}</OPTION>
-										{/foreach}
-									</SELECT>
-								</TD>
-							</TR>
-							{/if}
-						</TABLE>
-						<script type="text/javascript">
-						<!--
-							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('post_street'),'?m=customeradd&ajax=1&mode=street&what=',0);
-							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('post_zip'),'?m=customeradd&ajax=1&mode=zip&what=',0);
-							new AutoSuggest(document.getElementById('customeradd'),document.getElementById('post_city'),'?m=customeradd&ajax=1&mode=city&what=',0);
-						//-->
-						</script>
-								</fieldset>
-							</td>
-						</tr>
-						</table>
-					</TD>
-				</TR>
+								{/foreach}
+							</div>
+
+							<br><span class="lms-ui-button locbox-addnew" data-prefix="customeradd">Dodaj adres &raquo;&raquo;&raquo;</span><br><br>
+						</div>
+					</td>
+				</tr>
+
 				{include file="customer/customercontacts.html" customerinfo=$customeradd formelemprefix="customeradd"}
 				<TR>
 					<TD style="width: 1%;">

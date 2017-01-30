@@ -118,7 +118,7 @@ function locationchoosewin(varname, formname, city, street, default_city)
 if ( typeof $ !== 'undefined' ) {
     $(function() {
         // open location dialog window if teryt is checked
-        $( ".teryt-address-button" ).click(function() {
+        $('body').on('click', '.teryt-address-button', function() {
 
             var box = $( this ).closest( ".lmsui-address-box" );
 
@@ -651,8 +651,12 @@ function changeMacFormat(id)
 }
 
 function reset_customer(form, elemname1, elemname2) {
-	if (document.forms[form].elements[elemname1].value)
+
+	if (document.forms[form].elements[elemname1].value) {
 		document.forms[form].elements[elemname2].value = document.forms[form].elements[elemname1].value;
+
+		$( document.forms[form].elements[elemname1] ).trigger( 'keyup' );
+	}
 }
 
 function generate_random_string(length, characters) {
@@ -761,7 +765,6 @@ if (typeof $ !== 'undefined') {
 	});
 }
 
-
 /*!
  * \brief Auto hide left vertical menu on print
  */
@@ -797,15 +800,14 @@ if (window.matchMedia) {
 window.onbeforeprint = LMS_beforePrintEvent;
 window.onafterprint  = LMS_afterPrintEvent;
 
-
 /*!
  * \brief Returns customer addresses by id.
  *
- * \param  int  id customer id
- * \return json    customer addresses
- * \return false   if id is incorrect
+ * \param  int   id customer id
+ * \return json     customer addresses
+ * \return false    if id is incorrect
  */
-function getCustomerAddresses( id = -1 ) {
+function getCustomerAddresses( id ) {
     // test to check if 'id' is integer
     if ( Math.floor(id) != id || !$.isNumeric(id) ) {
         return false;
@@ -837,7 +839,7 @@ function getCustomerAddresses( id = -1 ) {
 /*!
  * \brief Put address coordinates to inputs by single address string.
  *
- * \param string address
+ * \param string address     address string
  * \param string latitude_id id of latitude input
  * \param string latitude_id id of longitude input
  */
@@ -850,4 +852,51 @@ function setAddressLocation( address, latitude_id, longitude_id ) {
             $( longitude_id ).val( results[0].geometry.location.lng() )
         }
     });
+}
+
+/*!
+ * \brief Concatenate address fields to one string.
+ *
+ * \param string address
+ * \param string latitude_id id of latitude input
+ * \param string latitude_id id of longitude input
+ */
+function location_str( city, street, house, flat ) {
+    var location = '';
+
+    if ( city.length > 0 && street.length > 0) {
+        location += city + ", " + street;
+    }
+    else if ( city.length > 0 ) {
+        location += city;
+    }
+    else if ( street.length > 0 ) {
+        location += street;
+    }
+
+    if ( location.length > 0  ) {
+        if ( house.length > 0 && flat.length > 0 ) {
+            location += " " + house + "/" + flat;
+        }
+        else if ( house.length > 0 ) {
+            location += " " + house;
+        }
+    }
+
+    return location;
+}
+
+/*!
+ * \brief Generate unique id.
+ *
+ * \return int
+ */
+function lms_uniqid() {
+    var uid = Date.now();
+
+    // do nothing, only wait
+    // secure for use two times in a row
+    while ( uid == Date.now() ) {}
+
+    return uid;
 }

@@ -109,13 +109,21 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         );
 
         if ( $voipaccountlist ) {
+            global $LMS;
+
             foreach ($voipaccountlist as $k=>$acc) {
                 $tmp = array('city_name'      => $acc['location_city_name'],
                              'location_house' => $acc['location_house'],
                              'location_flat'  => $acc['location_flat'],
                              'street_name'    => $acc['location_street_name']);
 
-                $voipaccountlist[$k]['location'] = location_str( $tmp );
+                $location = location_str( $tmp );
+
+                if ( $location ) {
+                    $voipaccountlist[$k]['location'] = $location;
+                } else if ( $acc['ownerid'] ) {
+                    $voipaccountlist[$k]['location'] = $LMS->getAddressForCustomerStuff( $acc['ownerid'] );
+                }
             }
         }
 

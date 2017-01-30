@@ -69,49 +69,31 @@ require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
 $customeradd = array();
 
-if (isset($_POST['customeradd']))
-{
+if (isset($_POST['customeradd'])) {
 	$customeradd = $_POST['customeradd'];
 
 	$contacttypes = array_keys($CUSTOMERCONTACTTYPES);
 	foreach ($contacttypes as &$contacttype)
 		$contacttype .= 's';
 
-	if (sizeof($customeradd))
-		foreach ($customeradd as $key => $value)
-			if ($key != 'uid' && $key != 'wysiwyg' && !in_array($key, $contacttypes))
-				$customeradd[$key] = trim($value);
-
-	if($customeradd['name'] == '' && $customeradd['lastname'] == '' && $customeradd['address'] == '')
-	{
-		$SESSION->redirect('?m=customeradd');
+	if (count($customeradd)) {
+		foreach ($customeradd as $key => $value) {
+			if ($key != 'uid' && $key != 'wysiwyg' && !in_array($key, $contacttypes)) {
+				$customeradd[$key] = trim_rec($value);
+			}
+		}
 	}
 
-	if($customeradd['lastname'] == '')
+	if ($customeradd['lastname'] == '')
 		$error['lastname'] = trans('Last/Company name cannot be empty!');
 
-	if($customeradd['name'] == '' && !$customeradd['type'])
+	if ($customeradd['name'] == '' && !$customeradd['type'])
 		$error['name'] = trans('First name cannot be empty!');
 	
-	if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required',false))) {
-		if($customeradd['group'] == 0)
+	if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required', false))) {
+		if ($customeradd['group'] == 0)
 			$error['group'] = trans('Group name required!');
 	}
-	
-	if ($customeradd['street'] == '')
-		$error['street'] = trans('Street name required!');
-
-	if ($customeradd['building'] != '' && $customeradd['street'] == '')
-		$error['street'] = trans('Street name required!');
-
-	if ($customeradd['apartment'] != '' && $customeradd['building'] == '')
-		$error['building'] = trans('Building number required!');
-
-	if ($customeradd['post_building'] != '' && $customeradd['post_street'] == '')
-		$error['post_street'] = trans('Street name required!');
-
-	if ($customeradd['post_apartment'] != '' && $customeradd['post_building'] == '')
-		$error['post_building'] = trans('Building number required!');
 
 	if ($customeradd['ten'] !='') {
 		if (!isset($customeradd['tenwarning']) && !check_ten($customeradd['ten'])) {
@@ -163,16 +145,6 @@ if (isset($_POST['customeradd']))
 	if ($customeradd['regon'] != '' && !check_regon($customeradd['regon']))
 		$error['regon'] = trans('Incorrect Business Registration Number!');
 
-	if ($customeradd['zip'] !='' && !check_zip($customeradd['zip']) && !isset($customeradd['zipwarning'])) {
-		$error['zip'] = trans('Incorrect ZIP code! If you are sure you want to accept it, then click "Submit" again.');
-		$customeradd['zipwarning'] = 1;
-	}
-
-	if ($customeradd['post_zip'] !='' && !check_zip($customeradd['post_zip']) && !isset($customeradd['post_zipwarning'])) {
-		$error['post_zip'] = trans('Incorrect ZIP code! If you are sure you want to accept it, then click "Submit" again.');
-		$customeradd['post_zipwarning'] = 1;
-	}
-
 	if ($customeradd['pin'] == '')
 		$error['pin'] = trans('PIN code is required!');
     else if (!preg_match('/^[0-9]{4,6}$/', $customeradd['pin']))
@@ -190,6 +162,19 @@ if (isset($_POST['customeradd']))
 			if ($val['type'] & (CONTACT_INVOICES | CONTACT_DISABLED)) {
 				$emaileinvoice = true;
 			}
+		}
+	}
+	
+	// check addresses
+	foreach ( $customeradd['addresses'] as $k=>$v ) {
+		if ( $v['location_address_type'] == BILLING_ADDRESS && !$v['location_street_name'] ) {
+			$error['customeradd[addresses][' . $k . '][location_street_name]'] = trans('Street name required!');
+			$customeradd['addresses'][ $k ]['show'] = true;
+		}
+
+		if ( $v['location_zip'] && !check_zip($v['location_zip']) ) {
+			$error['customeradd[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
+			$customeradd['addresses'][ $k ]['show'] = true;
 		}
 	}
 
@@ -229,15 +214,15 @@ if (isset($_POST['customeradd']))
 
 		$id = $LMS->CustomerAdd($customeradd);
 
-                $hook_data = $LMS->executeHook(
-                    'customeradd_after_submit', 
-                    array(
-                        'id' => $id,
-                        'customeradd' => $customeradd,
-                    )
-                );
-                $customeradd = $hook_data['customeradd'];
-                $id = $hook_data['id'];
+        $hook_data = $LMS->executeHook(
+            'customeradd_after_submit',
+                array(
+                    'id' => $id,
+                    'customeradd' => $customeradd,
+                )
+            );
+        $customeradd = $hook_data['customeradd'];
+        $id = $hook_data['id'];
 
 		if ($id && !empty($contacts))
 			foreach ($contacts as $contact) {
@@ -258,8 +243,7 @@ if (isset($_POST['customeradd']))
 				}
 			}
 
-		if(!isset($customeradd['reuse']))
-		{
+		if (!isset($customeradd['reuse'])) {
 			$SESSION->redirect('?m=customerinfo&id='.$id);
 		}
 
@@ -270,27 +254,6 @@ if (isset($_POST['customeradd']))
 		$customeradd = $reuse;
 		$customeradd['reuse'] = '1';
 	}
-}
-
-$default_zip = ConfigHelper::getConfig('phpui.default_zip');
-$default_city = ConfigHelper::getConfig('phpui.default_city');
-$default_address = ConfigHelper::getConfig('phpui.default_address');
-$default_stateid = ConfigHelper::getConfig('phpui.default_stateid');
-$default_countryid = ConfigHelper::getConfig('phpui.default_countryid');
-$default_status = ConfigHelper::getConfig('phpui.default_status');
-
-if (!isset($customeradd['zip']) && $default_zip) {
-	$customeradd['zip'] = $default_zip;
-} if (!isset($customeradd['city']) && $default_city) {
-	$customeradd['city'] = $default_city;
-} if (!isset($customeradd['address']) && $default_address) {
-	$customeradd['address'] = $default_address;
-} if (!isset($customeradd['default_stateid']) && $default_stateid) {
-	$customeradd['stateid'] = $default_stateid;
-} if (!isset($customeradd['default_countryid']) && $default_countryid) {
-	$customeradd['countryid'] = $default_countryid;
-} if (!isset($customeradd['default_status']) && $default_status) {
-        $customeradd['status'] = $default_status;
 }
 
 if (!isset($customeradd['cutoffstopindefinitely']))
@@ -309,11 +272,11 @@ $hook_data = $LMS->executeHook(
 );
 $customeradd = $hook_data['customeradd'];
 
-$SMARTY->assign('xajax', $LMS->RunXajax());
-$SMARTY->assign('cstateslist', $LMS->GetCountryStates());
+$SMARTY->assign('xajax'        , $LMS->RunXajax());
+$SMARTY->assign('cstateslist'  , $LMS->GetCountryStates());
 $SMARTY->assign('countrieslist', $LMS->GetCountries());
-$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname, status FROM divisions ORDER BY shortname'));
-$SMARTY->assign('customeradd', $customeradd);
+$SMARTY->assign('divisions'    , $DB->GetAll('SELECT id, shortname, status FROM divisions ORDER BY shortname'));
+$SMARTY->assign('customeradd'  , $customeradd);
 if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required',false))) {
 		$SMARTY->assign('groups',$DB->GetAll('SELECT id,name FROM customergroups ORDER BY id'));
 	}

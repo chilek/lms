@@ -213,11 +213,12 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function NetDevUpdate($data)
     {
+        global $LMS;
+
         $args = array(
             'name'             => $data['name'],
             'description'      => $data['description'],
             'producer'         => $data['producer'],
-            'location'         => trim($data['location']),
             'model'            => $data['model'],
             'serialnumber'     => $data['serialnumber'],
             'ports'            => $data['ports'],
@@ -230,7 +231,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'community'        => $data['community'],
             'channelid'        => !empty($data['channelid']) ? $data['channelid'] : NULL,
             'longitude'        => !empty($data['longitude']) ? str_replace(',', '.', $data['longitude']) : null,
-            'latitude'         => !empty($data['latitude']) ? str_replace(',', '.', $data['latitude']) : null,
+            'latitude'         => !empty($data['latitude'])  ? str_replace(',', '.', $data['latitude'])  : null,
             'invprojectid'     => $data['invprojectid'],
             'netnodeid'        => $data['netnodeid'],
             'status'           => $data['status'],
@@ -238,34 +239,51 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'ownerid'          => (empty($data['ownerid'])) ? NULL: intval($data['ownerid']),
             SYSLOG::RES_NETDEV => $data['id'],
         );
-        $res = $this->db->Execute('UPDATE netdevices SET name=?, description=?, producer=?, location=?,
+        $res = $this->db->Execute('UPDATE netdevices SET name=?, description=?, producer=?,
 				model=?, serialnumber=?, ports=?, purchasetime=?, guaranteeperiod=?, shortname=?,
 				nastype=?, clients=?, secret=?, community=?, channelid=?, longitude=?, latitude=?,
 				invprojectid=?, netnodeid=?, status=?, netdevicemodelid=?, ownerid=?
 				WHERE id=?', array_values($args));
 
-		$this->db->Execute('UPDATE addresses SET city_id = ?, street_id = ?, house = ?, flat = ? WHERE id = ?',
-                            array(
-                                $data['location_city']   ? trim($data['location_city'])   : null,
-                                $data['location_street'] ? trim($data['location_street']) : null,
-                                $data['location_house']  ? trim($data['location_house'])  : null,
-                                $data['location_flat']   ? trim($data['location_flat'])   : null,
-                                $data['address_id']
-                            ));
+		if ( $data['address_id'] && $data['address_id'] < 0 ) {
+			$data['address_id'] = null;
+		}
 
-        if ($this->syslog && $res)
+		if ( $data['ownerid'] ) {
+			if ( $data['address_id'] && !$this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id'])) ) {
+				$LMS->DeleteAddress( $data['address_id'] );
+			}
+
+			$this->db->Execute('UPDATE netdevices SET address_id = ? WHERE id = ?',
+								array(
+									($data['customer_address_id'] >= 0 ? $data['customer_address_id'] : null),
+									$data['id']
+									)
+								);
+		} else {
+			if ( !$data['address_id'] || $data['address_id'] && $this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id'])) ) {
+				$address_id = $LMS->InsertAddress($data);
+
+				$this->db->Execute('UPDATE netdevices SET address_id = ? WHERE id = ?',
+									array(
+										($address_id >= 0 ? $address_id : null),
+										$data['id']
+										)
+									);
+			} else {
+				$LMS->UpdateAddress($data);
+			}
+		}
+
+        if ($this->syslog && $res) {
             $this->syslog->AddMessage(SYSLOG::RES_NETDEV, SYSLOG::OPER_UPDATE, $args);
+        }
     }
 
     public function NetDevAdd($data)
     {
         $args = array(
             'name'             => $data['name'],
-            'location'         => trim($data['location']),
-            'location_city'    => $data['location_city']   ? trim($data['location_city'])   : null,
-            'location_street'  => $data['location_street'] ? trim($data['location_street']) : null,
-            'location_house'   => $data['location_house']  ? trim($data['location_house'])  : null,
-            'location_flat'    => $data['location_flat']   ? trim($data['location_flat'])   : null,
             'description'      => $data['description'],
             'producer'         => $data['producer'],
             'model'            => $data['model'],
@@ -280,21 +298,35 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'community'        => $data['community'],
             'channelid'        => !empty($data['channelid']) ? $data['channelid'] : NULL,
             'longitude'        => !empty($data['longitude']) ? str_replace(',', '.', $data['longitude']) : NULL,
-            'latitude'         => !empty($data['latitude']) ? str_replace(',', '.', $data['latitude']) : NULL,
+            'latitude'         => !empty($data['latitude'])  ? str_replace(',', '.', $data['latitude'])  : NULL,
             'invprojectid'     => $data['invprojectid'],
             'netnodeid'        => $data['netnodeid'],
             'status'           => $data['status'],
             'netdevicemodelid' => !empty($data['netdevicemodelid']) ? $data['netdevicemodelid'] : null,
-            'ownerid'          => empty($data['ownerid']) ? NULL : $data['ownerid']
+            'address_id'       => ($data['address_id'] >= 0 ? $data['address_id'] : null),
+            'ownerid'          => !empty($data['ownerid'])  ? $data['ownerid']    : null
         );
-        if ($this->db->Execute('INSERT INTO netdevices (name, location,
-				location_city, location_street, location_house, location_flat,
+
+        if ($this->db->Execute('INSERT INTO netdevices (name,
 				description, producer, model, serialnumber,
 				ports, purchasetime, guaranteeperiod, shortname,
 				nastype, clients, secret, community, channelid,
-				longitude, latitude, invprojectid, netnodeid, status, netdevicemodelid, ownerid)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+				longitude, latitude, invprojectid, netnodeid, status, netdevicemodelid, address_id, ownerid)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+
             $id = $this->db->GetLastInsertID('netdevices');
+
+            if ( empty($data['ownerid']) ) {
+                global $LMS;
+
+                $address_id = $LMS->InsertAddress($data);
+
+                if ( $address_id ) {
+                    $this->db->Execute('UPDATE netdevices SET address_id = ? WHERE id = ?', array($address_id, $id));
+                }
+            } else if ($data['address_id'] && $data['address_id'] >= 0) {
+                $this->db->Execute('UPDATE netdevices SET address_id = ? WHERE id = ?', array($data['address_id'], $id));
+            }
 
             // EtherWerX support (devices have some limits)
             // We must to replace big ID with smaller (first free)
@@ -443,23 +475,47 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				break;
 		}
 
-	$netdevlist = $this->db->GetAll('SELECT d.id, d.name,
-			d.description, d.producer, d.model, d.serialnumber, d.ports,
-			(SELECT COUNT(*) FROM nodes WHERE ipaddr <> 0 AND netdev=d.id AND ownerid > 0)
-			+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id)
-			AS takenports, d.netnodeid, n.name AS netnode,
-			lb.name AS borough_name, lb.type AS borough_type,
-			ld.name AS district_name, ls.name AS state_name
+		$netdevlist = $this->db->GetAll('SELECT d.id, d.name,
+				d.description, d.producer, d.model, d.serialnumber, d.ports, d.ownerid,
+				(SELECT COUNT(*) FROM nodes WHERE ipaddr <> 0 AND netdev=d.id AND ownerid > 0)
+				+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id)
+				AS takenports, d.netnodeid, n.name AS netnode,
+				lb.name AS borough_name, lb.type AS borough_type,
+				ld.name AS district_name, ls.name AS state_name,
+				addr.state as location_state_name, addr.state_id as location_state,
+				addr.zip as location_zip, addr.country_id as location_country,
+				addr.city as location_city_name, addr.street as location_street_name,
+				addr.city_id as location_city, addr.street_id as location_street,
+				addr.house as location_house, addr.flat as location_flat
 			FROM netdevices d
-			LEFT JOIN addresses addr ON d.address_id = addr.id
-			LEFT JOIN invprojects p ON p.id = d.invprojectid
-			LEFT JOIN netnodes n ON n.id = d.netnodeid
-			LEFT JOIN location_cities lc ON lc.id = addr.city_id
-			LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
-			LEFT JOIN location_districts ld ON ld.id = lb.districtid
-			LEFT JOIN location_states ls ON ls.id = ld.stateid '
-			. (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
+				LEFT JOIN addresses addr        ON d.address_id = addr.id
+				LEFT JOIN invprojects p         ON p.id = d.invprojectid
+				LEFT JOIN netnodes n            ON n.id = d.netnodeid
+				LEFT JOIN location_cities lc    ON lc.id = addr.city_id
+				LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
+				LEFT JOIN location_districts ld ON ld.id = lb.districtid
+				LEFT JOIN location_states ls    ON ls.id = ld.stateid '
+				. (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
                 . ($sqlord != '' ? $sqlord . ' ' . $direction : ''));
+
+		if ($netdevlist) {
+			global $LMS;
+		
+			foreach ($netdevlist as $k=>$acc) {
+				$tmp = array('city_name'     => $acc['location_city_name'],
+							'location_house' => $acc['location_house'],
+							'location_flat'  => $acc['location_flat'],
+							'street_name'    => $acc['location_street_name']);
+
+				$location = location_str( $tmp );
+
+				if ( $location ) {
+					$netdevlist[$k]['location'] = $location;
+				} else if ( $acc['ownerid'] ) {
+					$netdevlist[$k]['location'] = $LMS->getAddressForCustomerStuff( $acc['ownerid'] );
+				}
+			}
+		}
 
         $netdevlist['total'] = sizeof($netdevlist);
         $netdevlist['order'] = $order;
@@ -470,8 +526,46 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function GetNetDevNames()
     {
-        return $this->db->GetAll('SELECT id, name, location, producer
-			FROM netdevices ORDER BY name');
+        global $LMS;
+
+        $netdevs = $this->db->GetAll('SELECT nd.id, nd.name, nd.producer, nd.ownerid,
+                                         addr.city as city_name, addr.flat as location_flat,
+                                         addr.house as location_house, addr.street as street_name
+                                     FROM netdevices nd
+                                     LEFT JOIN addresses addr ON nd.address_id = addr.id
+                                     ORDER BY name');
+
+        foreach ( $netdevs as $k=>$v ) {
+            $location = location_str( $v );
+
+            if ( $location ) {
+                $netdevs[$k]['location'] = $location;
+            } else if ( $v['ownerid'] ) {
+                $netdevs[$k]['location'] = $LMS->getAddressForCustomerStuff( $v['ownerid'] );
+                // if network device don't have defined address then try match customer addresses
+/*
+                $addresses = $this->db->GetAllByKey('SELECT
+                                                         addr.city as city_name, addr.flat as location_flat,
+                                                         addr.house as location_house, addr.street as street_name, ca.type
+                                                     FROM customer_addresses ca
+                                                         LEFT JOIN addresses addr ON ca.address_id = addr.id
+                                                     WHERE
+                                                         ca.customer_id = ?', 'type', $v['ownerid']);
+
+                if ( isset($addresses[ DEFAULT_LOCATION_ADDRESS ]) ) {
+                    $location = location_str( $addresses[ DEFAULT_LOCATION_ADDRESS ] );
+                } else if ( isset($addresses[ BILLING_ADDRESS ]) ) {
+                    $location = location_str( $addresses[ BILLING_ADDRESS ] );
+                }
+
+                if ( $location ) {
+                    $netdevs[$k]['location'] = $location;
+                }
+*/
+            }
+        }
+
+        return $netdevs;
     }
 
     public function GetNotConnectedDevices($id)
@@ -491,10 +585,13 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
     {
         $result = $this->db->GetRow('SELECT d.*, t.name AS nastypename, c.name AS channel, d.ownerid,
 				(CASE WHEN lst.name2 IS NOT NULL THEN ' . $this->db->Concat('lst.name2', "' '", 'lst.name') . ' ELSE lst.name END) AS street_name,
-				lt.name AS street_type,
-				lc.name AS city_name,
+				lt.name AS street_type, lc.name AS city_name,
 				lb.name AS borough_name, lb.type AS borough_type,
-				ld.name AS district_name, ls.name AS state_name,
+				ld.name AS district_name, ls.name AS state_name, addr.id as address_id,
+				addr.name as location_name,
+				addr.state as location_state_name, addr.state_id as location_state,
+				addr.zip as location_zip, addr.country_id as location_country,
+				addr.city as location_city_name, addr.street as location_street_name,
 				addr.city_id as location_city, addr.street_id as location_street,
 				addr.house as location_house, addr.flat as location_flat
 			FROM netdevices d
@@ -509,7 +606,23 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				LEFT JOIN location_states ls       ON (ls.id = ld.stateid)
 			WHERE d.id = ?', array($id));
 
-        $result['takenports'] = $this->CountNetDevLinks($id);
+		if ($result) {
+			$tmp = array('city_name'     => $result['location_city_name'],
+						'location_house' => $result['location_house'],
+						'location_flat'  => $result['location_flat'],
+						'street_name'    => $result['location_street_name']);
+
+			$result['location'] = location_str( $tmp );
+		}
+
+		// if location is empty and owner is set then heirdom address from owner
+		if ( !$result['location'] && $result['ownerid'] ) {
+			global $LMS;
+
+			$result['location'] = $LMS->getAddressForCustomerStuff( $result['ownerid'] );
+		}
+
+        $result['takenports']   = $this->CountNetDevLinks($id);
         $result['radiosectors'] = $this->db->GetAll('SELECT * FROM netradiosectors WHERE netdev = ? ORDER BY name', array($id));
 
         if ($result['guaranteeperiod'] != NULL && $result['guaranteeperiod'] != 0)

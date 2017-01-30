@@ -85,9 +85,9 @@ $this->Execute("DROP SEQUENCE IF EXISTS addresses_id_seq;
                 CREATE TABLE addresses (
                     id          integer DEFAULT nextval('addresses_id_seq'::text) NOT NULL,
                     name        text NULL,
-                    state       varchar(64),
+                    state       varchar(64) NULL,
                     state_id    integer REFERENCES location_states (id) ON DELETE SET NULL ON UPDATE CASCADE,
-                    city        varchar(32),
+                    city        varchar(32) NULL,
                     city_id     integer REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
                     street      varchar(255) NULL,
                     street_id   integer REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -217,26 +217,6 @@ if ( $locations ) {
         $house  = ($v['location_house'])  ? "'".$v['location_house']."'" : 'null';
         $flat   = ($v['location_flat'])   ? "'".$v['location_flat']."'"  : 'null';
         $loc    = parse_address( $v['location'] );
-        /*
-        $this->Execute('INSERT INTO addresses (city, city_id, street, street_id, house, flat) VALUES
-                        (\'' . ((!empty($loc['city'])) ? $loc['city'] : '') . "',$city,'" . ((!empty($loc['street'])) ? $loc['street'] : $v['location']) . "',$street,$house,$flat" . ')');
-
-        $addr_id = $this->GetLastInsertID('addresses');
-
-        if ( $v['ownerid'] != 0 ) {
-
-            if ( isset($customer_nodes[ $v['ownerid'] ]) ) {
-                $type = LOCATION_ADDRESS;
-            } else {
-                $customer_nodes[ $v['ownerid'] ] = 1;
-                $type = DEFAULT_LOCATION_ADDRESS;
-            }
-
-            $this->Execute('INSERT INTO customer_addresses (customer_id, address_id, type) VALUES (?,?,?)', array($v['ownerid'], $addr_id, $type));
-        }
-
-        $this->Execute('UPDATE netdevices SET address_id = ? WHERE id = ?;', array( $addr_id, $v['id']));
-        */
 
         $tmp = strtolower( ((!empty($loc['city'])) ? $loc['city'] : '') . "|$city|" . ((!empty($loc['street'])) ? $loc['street'] : $v['location']) . "|$street|$house|$flat" );
 
@@ -314,26 +294,7 @@ if ( $locations ) {
         $house  = ($v['location_house'])  ? "'".$v['location_house']."'" : 'null';
         $flat   = ($v['location_flat'])   ? "'".$v['location_flat']."'"  : 'null';
         $loc    = parse_address( $v['location'] );
-        /*
-        $this->Execute('INSERT INTO addresses (city, city_id, street, street_id, house, flat) VALUES
-                        (\'' . ((!empty($loc['city'])) ? $loc['city'] : '') . "',$city,'" . ((!empty($loc['street'])) ? $loc['street'] : $v['location']) . "',$street,$house,$flat" . ')');
 
-        $addr_id = $this->GetLastInsertID('addresses');
-
-        if ( $v['ownerid'] != 0 ) {
-
-            if ( isset($customer_nodes[ $v['ownerid'] ]) ) {
-                $type = LOCATION_ADDRESS;
-            } else {
-                $customer_nodes[ $v['ownerid'] ] = 1;
-                $type = DEFAULT_LOCATION_ADDRESS;
-            }
-
-            $this->Execute('INSERT INTO customer_addresses (customer_id, address_id, type) VALUES (?,?,?)', array($v['ownerid'], $addr_id, $type));
-        }
-
-        $this->Execute('UPDATE voipaccounts SET address_id = ? WHERE id = ?;', array( $addr_id, $v['id']));
-        */
         $tmp = strtolower( ((!empty($loc['city'])) ? $loc['city'] : '') . "|$city|" . ((!empty($loc['street'])) ? $loc['street'] : $v['location']) . "|$street|$house|$flat" );
 
         if ( $v['ownerid'] != 0 && isset($ADDRESSES[$v['ownerid']][$tmp]) ) {
@@ -497,6 +458,8 @@ $this->Execute("DROP INDEX IF EXISTS nodes_location_city_idx;");
 $this->Execute("DROP INDEX IF EXISTS nodes_location_street_idx;");
 $this->Execute("DROP INDEX IF EXISTS netdevices_location_street_idx;");
 $this->Execute("DROP INDEX IF EXISTS netdevices_location_city_idx;");
+$this->Execute("DROP INDEX IF EXISTS voipaccounts_location_street_idx;");
+$this->Execute("DROP INDEX IF EXISTS voipaccounts_location_city_idx;");
 
 $this->Execute("DROP VIEW IF EXISTS customerview;");
 $this->Execute("DROP VIEW IF EXISTS contractorview;");
@@ -505,10 +468,10 @@ $this->Execute("DROP VIEW IF EXISTS vmacs;");
 $this->Execute("DROP VIEW IF EXISTS vnetworks;");
 $this->Execute("DROP VIEW IF EXISTS vnodes;");
 
-$this->Execute("ALTER TABLE customers DROP IF EXISTS zip, DROP IF EXISTS city, DROP IF EXISTS building, DROP IF EXISTS street,
-                    DROP IF EXISTS apartment, DROP IF EXISTS countryid, DROP IF EXISTS post_name, DROP IF EXISTS post_street,
-                    DROP IF EXISTS post_building, DROP IF EXISTS post_apartment, DROP IF EXISTS post_zip, DROP IF EXISTS post_city,
-                    DROP IF EXISTS post_countryid;");
+$this->Execute("ALTER TABLE customers    DROP IF EXISTS zip,           DROP IF EXISTS city,           DROP IF EXISTS building,  DROP IF EXISTS street,
+                                         DROP IF EXISTS apartment,     DROP IF EXISTS countryid,      DROP IF EXISTS post_name, DROP IF EXISTS post_street,
+                                         DROP IF EXISTS post_building, DROP IF EXISTS post_apartment, DROP IF EXISTS post_zip,  DROP IF EXISTS post_city,
+                                         DROP IF EXISTS post_countryid;");
 
 $this->Execute("ALTER TABLE nodes        DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat, DROP IF EXISTS location;");
 $this->Execute("ALTER TABLE netnodes     DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat, DROP IF EXISTS location;");
@@ -565,9 +528,9 @@ $this->Execute("
             ( trim(both ' ' from
                  CASE WHEN a.city is not null AND char_length(city) > 0
                      THEN
-                         CASE WHEN a.street is not null AND char_length(street) > 0 THEN a.city || ', ' || a.street ELSE a.street END ||
+                         CASE WHEN a.street is not null AND char_length(street) > 0 THEN a.city || ', ' || a.street ELSE a.street END
                      ELSE
-                         CASE WHEN a.street is not null AND char_length(street) > 0 THEN a.street ELSE '' END ||
+                         CASE WHEN a.street is not null AND char_length(street) > 0 THEN a.street ELSE '' END
                      END ||
                  CASE WHEN
                          a.house is not null
@@ -589,9 +552,9 @@ $this->Execute("
             ( trim(both ' ' from
                  CASE WHEN a.city is not null AND char_length(city) > 0
                      THEN
-                         CASE WHEN a.street is not null AND char_length(street) > 0 THEN a.city || ', ' || a.street ELSE a.street END ||
+                         CASE WHEN a.street is not null AND char_length(street) > 0 THEN a.city || ', ' || a.street ELSE a.street END
                      ELSE
-                         CASE WHEN a.street is not null AND char_length(street) > 0 THEN a.street ELSE '' END ||
+                         CASE WHEN a.street is not null AND char_length(street) > 0 THEN a.street ELSE '' END
                      END ||
                  CASE WHEN
                          a.house is not null
@@ -615,9 +578,9 @@ $this->Execute("
             ( trim(both ' ' from
                  CASE WHEN a.city is not null AND char_length(city) > 0
                      THEN
-                         CASE WHEN a.street is not null AND char_length(street) > 0 THEN a.city || ', ' || a.street ELSE a.street END ||
+                         CASE WHEN a.street is not null AND char_length(street) > 0 THEN a.city || ', ' || a.street ELSE a.street END
                      ELSE
-                         CASE WHEN a.street is not null AND char_length(street) > 0 THEN a.street ELSE '' END ||
+                         CASE WHEN a.street is not null AND char_length(street) > 0 THEN a.street ELSE '' END
                      END ||
                  CASE WHEN
                          a.house is not null
@@ -635,6 +598,5 @@ $this->Execute("
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016122200', 'dbversion'));
 
 $this->CommitTrans();
-//$this->Execute('asd');
 
 ?>

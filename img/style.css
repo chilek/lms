@@ -1104,6 +1104,20 @@ table.dataTable thead tr:last-child th {
 .lmsbox .dataTables_wrapper .top {
   border: 0;
 }
+.location-box-expandable {
+  padding-top: 2px;
+}
+.toggle-address {
+  font-size: 1.4em;
+  font-family: "Times New Roman", Times, serif;
+  font-weight: bold;
+  width: 7px;
+  display: inline-block;
+  padding: 0 5px;
+}
+.toggle-address:hover {
+  cursor: pointer;
+}
 .lms-ui-cursor-pointer:hover {
   cursor: pointer;
 }

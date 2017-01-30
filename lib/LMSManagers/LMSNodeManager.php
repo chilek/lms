@@ -65,7 +65,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             SYSLOG::RES_NETWORK => $nodedata['netid'],
             'invprojectid'      => $nodedata['invprojectid'],
             'authtype'          => $nodedata['authtype']   ? $nodedata['authtype']   : 0,
-            'address_id'        => ($nodedata['address_id'] && $nodedata['address_id'] != -1) ? $nodedata['address_id'] : null,
+            'address_id'        => ($nodedata['address_id'] >= 0) ? $nodedata['address_id'] : null,
             SYSLOG::RES_NODE    => $nodedata['id']
         );
 
@@ -211,7 +211,12 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				lt.name AS street_type,
 				lb.name AS borough_name, lb.type AS borough_type,
 				ld.name AS district_name, lst.name AS state_name,
-				addr.city as location_city_name, addr.street as location_street_name
+				addr.name as location_name,
+				addr.state as location_state_name, addr.state_id as location_state,
+				addr.zip as location_zip, addr.country_id as location_country,
+				addr.city as location_city_name, addr.street as location_street_name,
+				addr.city_id as location_city, addr.street_id as location_street,
+				addr.house as location_house, addr.flat as location_flat
 			FROM vnodes n
 				LEFT JOIN addresses addr           ON addr.id = n.address_id
 				LEFT JOIN netradiosectors rs       ON rs.id = n.linkradiosector
@@ -223,6 +228,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				LEFT JOIN location_states lst      ON (lst.id = ld.stateid)
 			WHERE n.id = ?', array($id))
         ) {
+
             $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
             $user_manager = new LMSUserManager($this->db, $this->auth, $this->cache, $this->syslog);
             $result['radiosectors'] = $this->db->GetAll('SELECT * FROM netradiosectors WHERE netdev = ?', array($result['netdev']));
@@ -232,6 +238,13 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             $result['creationdateh'] = date('Y/m/d, H:i', $result['creationdate']);
             $result['moddateh'] = date('Y/m/d, H:i', $result['moddate']);
             $result['lastonlinedate'] = lastonline_date($result['lastonline']);
+
+            // if location is empty and owner is set then heirdom address from owner
+            if ( !$result['location'] && $result['ownerid'] ) {
+                global $LMS;
+
+                $result['location'] = $LMS->getAddressForCustomerStuff( $result['ownerid'] );
+            }
 
             $result['mac'] = preg_split('/,/', $result['mac']);
             foreach ($result['mac'] as $mac)
@@ -392,9 +405,17 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
 		if (!$count) {
 			$nodelist = $this->db->GetAll($sql);
+
 			if (!empty($nodelist)) {
 				foreach ($nodelist as $idx => $row) {
 					($row['access']) ? $totalon++ : $totaloff++;
+
+					// if location is empty and owner is set then heirdom address from owner
+					if ( !$row['location'] && $row['ownerid'] ) {
+						global $LMS;
+
+						$nodelist[$idx]['location'] = $LMS->getAddressForCustomerStuff( $row['ownerid'] );
+					}
 				}
 
 				$nodelist['total'] = sizeof($nodelist);
@@ -594,7 +615,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             SYSLOG::RES_NETWORK => $nodedata['netid'],
             'invprojectid'      => $nodedata['invprojectid'],
             'authtype'          => $nodedata['authtype'],
-            'address_id'        => $nodedata['address_id']
+            'address_id'        => ($nodedata['address_id'] >= 0) ? $nodedata['address_id'] : null
         );
 
         if ($this->db->Execute('INSERT INTO nodes (name, ipaddr, ipaddr_pub, ownerid,

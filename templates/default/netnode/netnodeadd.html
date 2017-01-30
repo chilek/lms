@@ -121,14 +121,22 @@
 			<B>{trans("Location:")}</B>
 		</TD>
 		<TD WIDTH="98%" NOWRAP>
-		    <INPUT TYPE="TEXT" SIZE="30" VALUE="{$netnode.location}" id="location" NAME="netnode[location]"  {tip text="Enter location (optional)" trigger="location"}>
-			<A href="javascript: void(0);" onclick="if (check_teryt()) return locationchoosewin('netnode', 'netnodeadd', document.forms['netnodeadd'].elements['netnode[location_city]'].value,  document.forms['netnodeadd'].elements['netnode[location_street]'].value, {ConfigHelper::getConfig('phpui.default_teryt_city')})" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</A>
-			<BR>
-		    <INPUT type="hidden" name="netnode[location_city]" value="{$netnode.location_city}">
-		    <INPUT type="hidden" name="netnode[location_street]" value="{$netnode.location_street}">
-		    <INPUT type="hidden" name="netnode[location_house]" value="{$netnode.location_house}">
-		    <INPUT type="hidden" name="netnode[location_flat]" value="{$netnode.location_flat}">
-			<INPUT TYPE="checkbox" name="netnode[teryt]" id="teryt" onchange="check_teryt('location')"{if $netnode.teryt} checked{/if}><label for="teryt">{trans("TERRIT-DB")}</label>
+			{location_box
+				prefix               = "netnode"
+				address_id           = "{$netnode.address_id}"
+				location_name        = "{$netnode.location_name}"
+				location_state_name  = "{$netnode.location_state_name}"
+				location_state       = "{$netnode.location_state}"
+				location_city_name   = "{$netnode.location_city_name}"
+				location_city        = "{$netnode.location_city}"
+				location_street_name = "{$netnode.location_street_name}"
+				location_street      = "{$netnode.location_street}"
+				location_house       = "{$netnode.location_house}"
+				location_flat        = "{$netnode.location_flat}"
+				location_zip         = "{$netnode.location_zip}"
+				location_country_id  = "{$netnode.location_country_id}"
+				teryt                = "{$netnode.teryt}"
+			}
 		</TD>
 	</TR>
 	<tr>
@@ -136,7 +144,7 @@
 			<img src="img/network.gif" alt="">
 		</td>
 		<td colspan="2" width="99%">
-			<a href="javascript:set_lat_lon()" accesskey="s">{trans("Determine GPS coordinates automatically")}</a>
+			<span class="lms-ui-button" id="set_gps">{trans("Determine GPS coordinates automatically")}</span>
 		</td>
 	</tr>
 	<TR>
@@ -205,21 +213,26 @@
 <SCRIPT type="text/javascript">
 <!--
 document.forms['netnodeadd'].elements['netnode[name]'].focus();
-check_teryt('location', true);
+
 setNNProject();
 setNNOwner();
 
-function set_lat_lon() {
-    var loc = document.getElementById('location').value;
+/*
+ * \brief Update address location update. Require google API key.
+ */
+$( '#set_gps' ).click( function() {
+    var city   = $('[data-address="city"]').val();
+    var street = $('[data-address="street"]').val();
+    var house  = $('[data-address="house"]').val();
+    var flat   = $('[data-address="flat"]').val();
 
-    var geocoder = new google.maps.Geocoder();
-    geocoder.geocode( { 'address': loc}, function(results, status) {
-        if (status == google.maps.GeocoderStatus.OK) {
-            document.getElementById('latitude').value = results[0].geometry.location.lat();
-            document.getElementById('longitude').value = results[0].geometry.location.lng();
-        }
-    });
-}
+    var location = location_str( city, street, house, flat );
+
+    if ( location.length > 0 ) {
+        setAddressLocation( location, "#latitude", "#longitude" );
+    }
+});
+
 //-->
 </SCRIPT>
 {/block}

@@ -47,7 +47,7 @@ $olddiv = $DB->GetRow('SELECT d.*,
 		addr.city_id as location_city, addr.street_id as location_street,
 		addr.house as location_house, addr.flat as location_flat,
 		addr.zip as location_zip, addr.state as location_state_name,
-		addr.state_id as location_state, addr.country_id as location_country
+		addr.state_id as location_state, addr.country_id as location_country_id
 	FROM divisions d
 		LEFT JOIN addresses addr           ON addr.id = d.address_id
 		LEFT JOIN location_cities lc       ON lc.id = addr.city_id
@@ -79,12 +79,12 @@ if ( !empty($_POST['division']) ) {
 	}
 
 	if ($division['location_city_name'] == '')
-		$error['city'] = trans('City is required!');
+		$error['division[location_city_name]'] = trans('City is required!');
 
 	if ($division['location_zip'] == '')
-		$error['zip'] = trans('Zip code is required!');
+		$error['division[location_zip]'] = trans('Zip code is required!');
 	else if (!check_zip($division['location_zip']))
-		$error['zip'] = trans('Incorrect ZIP code!');
+		$error['division[location_zip]'] = trans('Incorrect ZIP code!');
 
     if ($division['ten'] != '' && !check_ten($division['ten']) && !isset($division['tenwarning'])) {
         $error['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
@@ -104,10 +104,8 @@ if ( !empty($_POST['division']) ) {
 		$error['tax_office_code'] = trans('Invalid format of Tax Office Code!');
 
 	if (!$error) {
-		if (empty($division['teryt'])) {
-			$division['location_city']   = null;
-			$division['location_street'] = null;
-		}
+		$LMS->UpdateAddress( $division );
+
 		$args = array(
 			'name'        => $division['name'],
 			'shortname'   => $division['shortname'],
@@ -125,31 +123,12 @@ if ( !empty($_POST['division']) ) {
 			'tax_office_code' => $division['tax_office_code'],
 			SYSLOG::RES_DIV   => $division['id']
 		);
+
 		$DB->Execute('UPDATE divisions SET name=?, shortname=?,
 			ten=?, regon=?, account=?, inv_header=?,
 			inv_footer=?, inv_author=?, inv_cplace=?, inv_paytime=?,
 			inv_paytype=?, description=?, status=?, tax_office_code = ?
 			WHERE id=?', array_values($args));
-
-        $DB->Execute('UPDATE addresses
-                      SET name = ?, state = ?, state_id = ?, city = ?, city_id = ?,
-                          street = ?, street_id = ?, house = ?, flat = ?, zip = ?,
-                          country_id = ?
-                      WHERE id = ?',
-                      array(
-                          $division['location_name'],
-                          $division['location_state_name'],
-                          $division['location_state'],
-                          $division['location_city_name'],
-                          $division['location_city'],
-                          $division['location_street_name'] ? $division['location_street_name'] : null,
-                          $division['location_street']      ? $division['location_street']      : null,
-                          $division['location_house'],
-                          $division['location_flat'],
-                          $division['location_zip'],
-                          $division['location_country'],
-                          $olddiv['address_id']
-                      ));
 
 		if ($SYSLOG)
 			$SYSLOG->AddMessage(SYSLOG::RES_DIV, SYSLOG::OPER_UPDATE, $args);
@@ -176,7 +155,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('division' , !empty($division) ? $division : $olddiv);
 $SMARTY->assign('countries', $LMS->GetCountries());
-$SMARTY->assign('error    ', $error);
+$SMARTY->assign('error'    , $error);
 $SMARTY->display('division/divisionedit.html');
 
 ?>

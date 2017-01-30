@@ -79,8 +79,7 @@ LmsUiIconSelectMenu.prototype.setAddressList = function( addresses_list ) {
     // insert new addresses
     $.each( addresses_list, function(index) {
 
-        switch ( this['type'] ) {
-
+        switch ( this['location_address_type'] ) {
             case "0": // postal address
                 icon = "img/post.gif";
             break;
@@ -93,15 +92,32 @@ LmsUiIconSelectMenu.prototype.setAddressList = function( addresses_list ) {
                 icon = "img/location.png";
             break;
 
-            default:  // empty (no icon)
+            default:  // location address (no icon)
                 icon = "";
         }
 
-        $( select_id ).append( $('<option>', { value:this['id'], text:this['location'], 'data-style': "background-image: url("+icon+")" } ));
+        $( select_id ).append( $('<option>', { value:this['address_id'], text:this['location'], 'data-style': "background-image: url("+icon+")" } ));
     });
 
+    this.refresh();
+}
+
+/*
+ * \brief Refresh select.
+ *
+ * \return boolean refresh status
+ */
+LmsUiIconSelectMenu.prototype.refresh = function() {
     // refresh select if ready
     if ( this.ready == 1 ) {
         $( this.select_id ).iconselectmenu( 'refresh' );
+        return true;
     }
+
+    return false;
 }
+
+
+
+
+

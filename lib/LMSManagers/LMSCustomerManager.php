@@ -67,7 +67,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      */
     public function customerExists($id)
     {
-        $customer_deleted = $this->db->GetOne('SELECT deleted FROM customerview WHERE id=?', array($id));
+        $customer_deleted = $this->db->GetOne('SELECT deleted FROM customers WHERE id=?', array($id));
         switch ($customer_deleted) {
             case '0':
                 return true;
@@ -295,6 +295,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      */
     public function customerAdd($customeradd)
     {
+        $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+
         $args = array(
             'extid'          => $customeradd['extid'],
             'name'           => $customeradd['name'],
@@ -322,47 +324,32 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         );
 
         if ($this->db->Execute('INSERT INTO customers (extid, name, lastname, type,
-                    ten, ssn, status, creationdate,
-                    creatorid, info, notes, message, pin, regon, rbe,
-                    icn, cutoffstop, consentdate, einvoice, divisionid, paytime, paytype,
-                    invoicenotice, mailingnotice)
+                        ten, ssn, status, creationdate,
+                        creatorid, info, notes, message, pin, regon, rbe,
+                        icn, cutoffstop, consentdate, einvoice, divisionid, paytime, paytype,
+                        invoicenotice, mailingnotice)
                     VALUES (?, ?, UPPER(?), ?, ?, ?, ?, ?NOW?,
-                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
         ) {
             $id = $this->db->GetLastInsertID('customers');
 
-            $this->db->Execute('INSERT INTO addresses (city,street,zip,country_id,house,flat) VALUES (?,?,?,?,?,?)',
-                                array($customeradd['city'],$customeradd['street'],$customeradd['zip'],
-                                (!empty($customeradd['countryid']) ? $customeradd['countryid'] : null),
-                                (strlen($customeradd['building'])  ? $customeradd['building']  : null),
-                                (strlen($customeradd['apartment']) ? $customeradd['apartment'] : null)));
-
-            $last_addr_id = $this->db->GetLastInsertID( 'addresses' );
-            $this->db->Execute('INSERT INTO customer_addresses (customer_id, address_id, type) VALUES (?,?,?)',
-                                array($id,$last_addr_id,BILLING_ADDRESS));
-
-            $this->db->Execute('INSERT INTO addresses (name,city,street,zip,country_id,house,flat) VALUES (?,?,?,?,?,?,?)',
-                                array($customeradd['post_name'],$customeradd['post_city'],
-                                (strlen($customeradd['post_street']) ? $customeradd['post_street'] : null),
-                                $customeradd['post_zip'],
-                                (!empty($customeradd['post_countryid']) ? $customeradd['postcountryid']  : null),
-                                (strlen($customeradd['post_building'])  ? $customeradd['post_building']  : null),
-                                (strlen($customeradd['post_apartment']) ? $customeradd['post_apartment'] : null)));
-
-            $last_addr_id = $this->db->GetLastInsertID( 'addresses' );
-            $this->db->Execute('INSERT INTO customer_addresses (customer_id, address_id, type) VALUES (?,?,?)',
-                                array($id,$last_addr_id,POSTAL_ADDRESS));
-
-            $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
-            $location_manager->UpdateCountryState($customeradd['zip'], $customeradd['stateid']);
-            if ($customeradd['post_zip'] != $customeradd['zip']) {
-                $location_manager->UpdateCountryState($customeradd['post_zip'], $customeradd['post_stateid']);
+            // INSERT ADDRESSES
+            foreach ( $customeradd['addresses'] as $v ) {
+                $a = $location_manager->InsertCustomerAddress( $id, $v );
+                     var_dump($a);
+                     var_dump($id);
+                // update country states
+                if ( $v['location_zip'] && $v['location_state'] ) {
+                    $location_manager->UpdateCountryState($v['location_zip'], $v['location_state']);
+                }
             }
+
             if ($this->syslog) {
                 $args[SYSLOG::RES_CUST] = $id;
                 unset($args[SYSLOG::RES_USER]);
                 $this->syslog->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_ADD, $args);
             }
+
 						if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required',false))) {
 							$gargs = array(
 									'customerid' => $id,
@@ -1015,6 +1002,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 			if (empty($result['invoicenotice']))
 				$result['sendinvoices'] = false;
 
+			$result['addresses'] = $this->getCustomerAddresses( $result['id'] );
+
             return $result;
         } else
             return false;
@@ -1028,64 +1017,64 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     */
     public function customerUpdate($customerdata)
     {
+        $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+
         $args = array(
-            'extid' => $customerdata['extid'],
-            'status' => $customerdata['status'],
-            'type' => empty($customerdata['type']) ? 0 : 1,
-            'ten' => $customerdata['ten'],
-            'ssn' => $customerdata['ssn'],
+            'extid'          => $customerdata['extid'],
+            'status'         => $customerdata['status'],
+            'type'           => empty($customerdata['type']) ? 0 : 1,
+            'ten'            => $customerdata['ten'],
+            'ssn'            => $customerdata['ssn'],
             SYSLOG::RES_USER => isset($this->auth->id) ? $this->auth->id : 0,
-            'info' => $customerdata['info'],
-            'notes' => $customerdata['notes'],
-            'lastname' => $customerdata['lastname'],
-            'name' => $customerdata['name'],
-            'message' => $customerdata['message'],
-            'pin' => $customerdata['pin'],
-            'regon' => $customerdata['regon'],
-            'icn' => $customerdata['icn'],
-            'rbe' => $customerdata['rbe'],
-            'cutoffstop' => $customerdata['cutoffstop'],
-            'consentdate' => $customerdata['consentdate'],
-            'einvoice' => $customerdata['einvoice'],
-            'invoicenotice' => $customerdata['invoicenotice'],
-            'mailingnotice' => $customerdata['mailingnotice'],
-            SYSLOG::RES_DIV => $customerdata['divisionid'],
-            'paytime' => $customerdata['paytime'],
-            'paytype' => $customerdata['paytype'] ? $customerdata['paytype'] : null,
+            'info'           => $customerdata['info'],
+            'notes'          => $customerdata['notes'],
+            'lastname'       => $customerdata['lastname'],
+            'name'           => $customerdata['name'],
+            'message'        => $customerdata['message'],
+            'pin'            => $customerdata['pin'],
+            'regon'          => $customerdata['regon'],
+            'icn'            => $customerdata['icn'],
+            'rbe'            => $customerdata['rbe'],
+            'cutoffstop'     => $customerdata['cutoffstop'],
+            'consentdate'    => $customerdata['consentdate'],
+            'einvoice'       => $customerdata['einvoice'],
+            'invoicenotice'  => $customerdata['invoicenotice'],
+            'mailingnotice'  => $customerdata['mailingnotice'],
+            SYSLOG::RES_DIV  => $customerdata['divisionid'],
+            'paytime'        => $customerdata['paytime'],
+            'paytype'        => $customerdata['paytype'] ? $customerdata['paytype'] : null,
             SYSLOG::RES_CUST => $customerdata['id']
         );
 
-        // INSERT OR UPDATE BILLING ADDRESS
-        $billing_address = $this->db->GetOne('SELECT address_id FROM customer_addresses WHERE customer_id = ? AND type = ?;', array($customerdata['id'], BILLING_ADDRESS));
-        $house = strlen($customerdata['building'])  ? $customerdata['building'] : null;
-        $flat  = strlen($customerdata['apartment']) ? $customerdata['apartment'] : null;
+        $current_addresses = $this->getCustomerAddresses($customerdata['id']);
 
-        if ( $billing_address ) {
-            $this->db->Execute('UPDATE addresses SET street = ?, house = ?, flat = ?, zip = ?, city = ?, country_id = ? WHERE id = ?;',
-                                array($customerdata['street'], $house, $flat, $customerdata['zip'], $customerdata['city'], $customerdata['countryid'], $billing_address));
-        } else {
-            $this->db->Execute('INSERT INTO addresses (street, house, flat, zip, city, country_id) VALUES (?,?,?,?,?,?);',
-                                array($customerdata['street'], $house, $flat, $customerdata['zip'], $customerdata['city'], $customerdata['countryid']));
-            $last_addr_id = $this->db->GetLastInsertID( 'addresses' );
+        // INSERT OR UPDATE ADDRESS
+        foreach ( $customerdata['addresses'] as $v ) {
+            if ( empty($v['address_id']) ) {
+                $id = $location_manager->InsertCustomerAddress( $customerdata['id'], $v );
+            } else {
+                $location_manager->UpdateCustomerAddress( $customerdata['id'], $v );
+            }
 
-            $this->db->Execute('INSERT INTO customer_addresses (customer_id, address_id, type) VALUES (?,?,?);', array($customerdata['id'], $last_addr_id, BILLING_ADDRESS));
+            // update country states
+            if ( $v['location_zip'] && $v['location_state'] ) {
+                $location_manager->UpdateCountryState( $v['location_zip'], $v['location_state'] );
+            }
         }
 
-        // INSERT OR UPDATE POSTAL ADDRESS
-        $postal_address = $this->db->GetOne('SELECT address_id FROM customer_addresses WHERE customer_id = ? AND type = ?;', array($customerdata['id'], POSTAL_ADDRESS));
-        $phouse  = strlen($customerdata['post_building'])  ? $customerdata['post_building'] : null;
-        $pflat   = strlen($customerdata['post_apartment']) ? $customerdata['post_apartment'] : null;
-        $pstreet = strlen($customerdata['post_street'])    ? $customerdata['post_street'] : null;
+        // DELETE OLD ADDRESSES
+        foreach ( $current_addresses as $k=>$v ) {
+            $found = 0;
 
-        if ( $postal_address ) {
-            $this->db->Execute('UPDATE addresses SET name = ?, city = ?, street = ?, zip = ?, country_id = ?, house = ?, flat = ? WHERE id = ?;',
-                                array($customerdata['post_name'], $customerdata['post_city'], $pstreet, $customerdata['post_zip'], $customerdata['post_countryid'], $phouse, $pflat, $postal_address));
-        } else {
-            $this->db->Execute('INSERT INTO addresses (name,city,street,zip,country_id,house,flat) VALUES (?,?,?,?,?,?,?);',
-                                array($customerdata['post_name'], $customerdata['post_city'], $pstreet, $customerdata['post_zip'], $customerdata['post_countryid'], $phouse, $pflat) );
-            $last_addr_id = $this->db->GetLastInsertID( 'addresses' );
+            foreach ( $customerdata['addresses'] as $v2 ) {
+                if ( !empty($v2['address_id']) && $v2['address_id'] == $v['address_id'] ) {
+                    $found = 1;
+                }
+            }
 
-            $this->db->Execute('INSERT INTO customer_addresses (customer_id, address_id, type) VALUES (?,?,?);', array($customerdata['id'], $last_addr_id, POSTAL_ADDRESS));
+            if ( !$found ) {
+                $location_manager->DeleteAddress($k);
+            }
         }
 
         // UPDATE CUSTOMER FIELDS
@@ -1103,11 +1092,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 $args['deleted'] = 0;
                 $this->syslog->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE, $args);
             }
-            $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
-            $location_manager->UpdateCountryState($customerdata['zip'], $customerdata['stateid']);
-            if ($customerdata['post_zip'] != $customerdata['zip']) {
-                $location_manager->UpdateCountryState($customerdata['post_zip'], $customerdata['post_stateid']);
-            }
         }
 
         return $res;
@@ -1121,7 +1105,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      */
     public function deleteCustomer($id)
     {
-
         global $LMS;
         $this->db->BeginTrans();
 
@@ -1175,6 +1158,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         }
                 }
         }
+
         $liabs = $this->db->GetCol('SELECT liabilityid FROM assignments WHERE liabilityid <> 0 AND customerid = ?', array($id));
         if (!empty($liabs))
             $this->db->Execute('DELETE FROM liabilities WHERE id IN (' . implode(',', $liabs) . ')');
@@ -1208,9 +1192,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             $this->db->Execute('DELETE FROM nodes WHERE ownerid=?', array($id));
             $LMS->ExecHook('node_del_after', $plugin_data);
         }
+
         // hosting
         $this->db->Execute('UPDATE passwd SET ownerid=0 WHERE ownerid=?', array($id));
         $this->db->Execute('UPDATE domains SET ownerid=0 WHERE ownerid=?', array($id));
+
         // Remove Userpanel rights
         $userpanel_dir = ConfigHelper::getConfig('directories.userpanel_dir');
         if (!empty($userpanel_dir))
@@ -1227,6 +1213,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function deleteCustomerPermanent($id)
     {
         $this->db->BeginTrans();
+
+        // Remove customer addresses
+        $addr_ids = $this->db->GetCol('SELECT address_id FROM customer_addresses WHERE customer_id = ?', array($id));
+        $this->db->Execute('DELETE FROM addresses WHERE id in (' . implode($addr_ids, ',') . ')');
 
         $this->deleteCustomer($id);
 
@@ -1269,16 +1259,22 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      */
     public function getCustomerAddresses($id, $hide_deleted = false ) {
 
-        $data = $this->db->GetAll('SELECT
-                                      addr.id, addr.city, addr.street, addr.house, addr.flat, ca.type
-                                   FROM
-                                      customerview cv
-                                      LEFT JOIN customer_addresses ca ON ca.customer_id = cv.id
-                                      LEFT JOIN addresses addr        ON addr.id = ca.address_id
-                                   WHERE
-                                      cv.id = ?' .
-                                      (($hide_deleted) ? ' AND cv.deleted != 1' : ''),
-                                   array( $id ));
+        $data = $this->db->GetAllByKey('SELECT
+                                          addr.id as address_id, addr.name as location_name,
+                                          addr.state as location_state_name, addr.state_id as location_state,
+                                          addr.city as location_city_name, addr.city_id as location_city,
+                                          addr.street as location_street_name, addr.street_id as location_street,
+                                          addr.house as location_house, addr.zip as location_zip,
+                                          addr.country_id as location_country_id, addr.flat as location_flat,
+                                          ca.type as location_address_type
+                                       FROM
+                                          customerview cv
+                                          LEFT JOIN customer_addresses ca ON ca.customer_id = cv.id
+                                          LEFT JOIN addresses addr        ON addr.id = ca.address_id
+                                       WHERE
+                                          cv.id = ?' .
+                                          (($hide_deleted) ? ' AND cv.deleted != 1' : ''), 'address_id',
+                                       array( $id ));
 
         if ( !$data ) {
             return array();
@@ -1286,15 +1282,58 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         foreach ( $data as $k=>$v ) {
             $tmp = array(
-                     'city_name'      => $v['city'],
-                     'street_name'    => $v['street'],
-                     'location_house' => $v['house'],
-                     'location_flat'  => $v['flat']
+                     'city_name'      => $v['location_city_name'],
+                     'street_name'    => $v['location_street_name'],
+                     'location_house' => $v['location_house'],
+                     'location_flat'  => $v['location_flat']
                    );
 
-            $data[$k]['location'] = location_str($tmp);
+            // generate address as single string
+            $location = location_str($tmp);
+
+            if ( strlen($location) > 0 ) {
+                $data[$k]['location'] = $location;
+            } else {
+                $data[$k]['location'] = trans('undefined');
+            }
+
+            // check if teryt is set
+            if ( $v['location_city'] && $v['location_street'] ) {
+                $data[$k]['teryt'] = 1;
+            }
         }
 
         return $data;
+    }
+
+    /*!
+     * \brief Method return best matching address for customer stuff.
+     * As first method try get DEFAULT_LOCATION_ADDRESS, if not found
+     * then returns BILLING_ADDRESS
+     *
+     * \param  int    $customer_id customer_id
+     * \return string location string
+     * \return null   any address not found
+     */
+    public function getAddressForCustomerStuff( $customer_id ) {
+        $addresses = $this->db->GetAllByKey('SELECT
+                                                addr.city as city_name, addr.flat as location_flat,
+                                                addr.house as location_house, addr.street as street_name, ca.type
+                                             FROM customer_addresses ca
+                                                LEFT JOIN addresses addr ON ca.address_id = addr.id
+                                             WHERE
+                                                ca.customer_id = ?', 'type', array($customer_id));
+
+        $location = null;
+
+        if ( isset($addresses[ DEFAULT_LOCATION_ADDRESS ]) ) {
+            $location = location_str( $addresses[ DEFAULT_LOCATION_ADDRESS ] );
+        }
+
+        if ( !$location && isset($addresses[ BILLING_ADDRESS ]) ) {
+            return location_str( $addresses[ BILLING_ADDRESS ] );
+        }
+
+        return $location;
     }
 }

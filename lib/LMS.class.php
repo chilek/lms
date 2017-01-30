@@ -540,6 +540,12 @@ class LMS
         return $manager->getCustomerAddresses($id, $hide_deleted);
     }
 
+    public function getAddressForCustomerStuff( $customer_id )
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getAddressForCustomerStuff( $customer_id );
+    }
+
     /*
      * Customer groups
      */
@@ -1443,7 +1449,7 @@ class LMS
     }
 
     /*
-     * Konfiguracja LMS-UI
+     *  LMS-UI configuration
      */
 
     public function GetConfigOptionId($var, $section)
@@ -2150,6 +2156,10 @@ class LMS
         return $manager->DocumentExists($properties);
     }
 
+    /*
+     *  Location
+     */
+
     public function GetCountryStates()
     {
         $manager = $this->getLocationManager();
@@ -2172,6 +2182,36 @@ class LMS
     {
         $manager = $this->getLocationManager();
         return $manager->UpdateCountryState($zip, $stateid);
+    }
+
+    public function DeleteAddress( $address_id ) {
+        $manager = $this->getLocationManager();
+        return $manager->DeleteAddress( $address_id );
+    }
+
+    public function InsertAddress( $args ) {
+        $manager = $this->getLocationManager();
+        return $manager->InsertAddress( $args );
+    }
+
+    public function InsertCustomerAddress( $customer_id, $args ) {
+        $manager = $this->getLocationManager();
+        return $manager->InsertCustomerAddress( $customer_id, $args );
+    }
+
+    public function UpdateAddress( $args ) {
+        $manager = $this->getLocationManager();
+        return $manager->UpdateAddress( $args );
+    }
+
+    public function UpdateCustomerAddress( $customer_id, $args ) {
+        $manager = $this->getLocationManager();
+        return $manager->UpdateCustomerAddress( $customer_id, $args );
+    }
+
+    public function ValidAddress( $args ) {
+        $manager = $this->getLocationManager();
+        return $manager->ValidAddress( $args );
     }
 
     public function GetNAStypes()

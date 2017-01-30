@@ -26,12 +26,22 @@
 
 switch ( $_GET['action'] ) {
 
+    /*!
+     * \brief Returns customer addresses.
+     *
+     * \param  int customer id, GET paramenter
+     * \return json
+     */
     case 'getcustomeraddresses':
         if ( empty($_GET['id']) ) {
             return 0;
         }
 
         $caddr = $LMS->getCustomerAddresses( (int) $_GET['id'], true );
+
+        if ( !$caddr ) {
+            die( json_encode( array() ) );
+        }
 
         foreach ($caddr as $k=>$v) {
             if ( empty($v['location']) ) {
@@ -40,6 +50,40 @@ switch ( $_GET['action'] ) {
         }
 
         die( json_encode( $caddr ) );
+    break;
+
+    /*!
+     * \brief Returns html code with function.location_box.php.
+     *
+     * \param string optional GET parameter contains prefix for location box
+     */
+    case 'getlocationboxhtml':
+        global $SMARTY;
+
+        if ( !function_exists('smarty_function_location_box_expandable') ) {
+            foreach ( $SMARTY->getPluginsDir() as $v ) {
+                if ( file_exists($v . 'function.location_box_expandable.php') ) {
+                    require_once $v . 'function.location_box_expandable.php';
+                }
+            }
+        }
+
+        $params = array();
+
+        if ( !empty($_GET['prefix']) ) {
+            $params['data']['prefix'] = $_GET['prefix'];
+        }
+
+        if ( !empty($_GET['clear_button']) ) {
+            $params['data']['clear_button'] = 1;
+        }
+
+        if ( !empty($_GET['default_type']) ) {
+            $params['data']['default_type'] = 1;
+        }
+
+        smarty_function_location_box_expandable( $params, $SMARTY );
+        die();
     break;
 
     default:

@@ -134,9 +134,10 @@ if (isset($_POST['nodedata']))
 	if (strlen($nodedata['passwd']) > 32)
 		$error['passwd'] = trans('Password is too long (max.32 characters)!');
 
-    if (!$nodedata['ownerid'])
-        $error['ownerid'] = trans('Customer not selected!');
-	else if (! $LMS->CustomerExists($nodedata['ownerid']))
+    if (!$nodedata['ownerid']) {
+        $error['nodedata[customerid]'] = trans('Customer not selected!');
+        $error['nodedata[ownerid]']    = trans('Customer not selected!');
+	} else if (! $LMS->CustomerExists($nodedata['ownerid']))
 		$error['ownerid'] = trans('You have to select owner!');
 	else
 	{
@@ -198,9 +199,6 @@ if (isset($_POST['nodedata']))
 	);
 	$nodedata = $hook_data['nodeadd'];
 	$error = $hook_data['error'];
-
-print_r($nodedata);
-print_r($error);
 
 	if (!$error) {
         $nodedata = $LMS->ExecHook('node_add_before', $nodedata);
