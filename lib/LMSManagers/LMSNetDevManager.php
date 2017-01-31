@@ -535,33 +535,15 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                                      LEFT JOIN addresses addr ON nd.address_id = addr.id
                                      ORDER BY name');
 
-        foreach ( $netdevs as $k=>$v ) {
-            $location = location_str( $v );
-
-            if ( $location ) {
-                $netdevs[$k]['location'] = $location;
-            } else if ( $v['ownerid'] ) {
-                $netdevs[$k]['location'] = $LMS->getAddressForCustomerStuff( $v['ownerid'] );
-                // if network device don't have defined address then try match customer addresses
-/*
-                $addresses = $this->db->GetAllByKey('SELECT
-                                                         addr.city as city_name, addr.flat as location_flat,
-                                                         addr.house as location_house, addr.street as street_name, ca.type
-                                                     FROM customer_addresses ca
-                                                         LEFT JOIN addresses addr ON ca.address_id = addr.id
-                                                     WHERE
-                                                         ca.customer_id = ?', 'type', $v['ownerid']);
-
-                if ( isset($addresses[ DEFAULT_LOCATION_ADDRESS ]) ) {
-                    $location = location_str( $addresses[ DEFAULT_LOCATION_ADDRESS ] );
-                } else if ( isset($addresses[ BILLING_ADDRESS ]) ) {
-                    $location = location_str( $addresses[ BILLING_ADDRESS ] );
-                }
+        if ( $netdevs ) {
+            foreach ( $netdevs as $k=>$v ) {
+                $location = location_str( $v );
 
                 if ( $location ) {
                     $netdevs[$k]['location'] = $location;
+                } else if ( $v['ownerid'] ) {
+                    $netdevs[$k]['location'] = $LMS->getAddressForCustomerStuff( $v['ownerid'] );
                 }
-*/
             }
         }
 
@@ -713,6 +695,13 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             $args = array(SYSLOG::RES_NETDEV => $id);
             $this->syslog->AddMessage(SYSLOG::RES_NETDEV, SYSLOG::OPER_DELETE, $args);
         }
+
+        $netdev = $this->db->GetRow('SELECT ownerid, address_id FROM netdevices WHERE id = ?', array($id));
+        if ( !$netdev['ownerid'] && $netdev['address_id'] ) {
+            global $LMS;
+            $LMS->DeleteAddress( $netdev['address_id'] );
+        }
+
         $this->db->Execute('DELETE FROM netlinks WHERE src=? OR dst=?', array($id, $id));
         $this->db->Execute('DELETE FROM nodes WHERE ownerid=0 AND netdev=?', array($id));
         $this->db->Execute('UPDATE nodes SET netdev=0 WHERE netdev=?', array($id));

@@ -47,7 +47,7 @@ if (isset($_GET['is_sure']) && $_GET['is_sure'] == 1 && $id) {
 				}
 		}
 
-		$DB->Execute('DELETE FROM addresses a WHERE a.id = (SELECT address_id FROM divisions d WHERE d.id = 1)');
+		$DB->Execute('DELETE FROM addresses a WHERE a.id = (SELECT address_id FROM divisions d WHERE d.id = ?)', array($id));
 		$DB->Execute('DELETE FROM divisions WHERE id=?', array($id));
 		$DB->Execute('DELETE FROM numberplanassignments WHERE divisionid=?', array($id));
 	}

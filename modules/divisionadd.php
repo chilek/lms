@@ -43,12 +43,12 @@ if (!empty($_POST['division'])) {
 		$error['shortname'] = trans('Division with specified name already exists!');
 
 	if ($division['location_city_name'] == '')
-		$error['location_city'] = trans('City is required!');
+		$error['division[location_city_name]'] = trans('City is required!');
 
 	if ($division['location_zip'] == '')
-		$error['location_zip'] = trans('Zip code is required!');
+		$error['division[location_zip]'] = trans('Zip code is required!');
 	else if (!check_zip($division['location_zip']))
-		$error['location_zip'] = trans('Incorrect ZIP code!');
+		$error['division[location_zip]'] = trans('Incorrect ZIP code!');
 
 	if ($division['ten'] != '' && !check_ten($division['ten']) && !isset($division['tenwarning'])) {
 		$error['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
@@ -75,8 +75,8 @@ if (!empty($_POST['division'])) {
 			'shortname'       => $division['shortname'],
 			'ten'             => $division['ten'],
 			'regon'           => $division['regon'],
-			'rbename'         => $division['rbename'],
 			'rbe'             => $division['rbe'],
+			'rbename'         => $division['rbename'],
 			'account'         => $division['account'],
 			'inv_header'      => $division['inv_header'],
 			'inv_footer'      => $division['inv_footer'],
@@ -92,7 +92,7 @@ if (!empty($_POST['division'])) {
 		$DB->Execute('INSERT INTO divisions (name, shortname,
 			ten, regon, rbe, rbename, account, inv_header, inv_footer, inv_author,
 			inv_cplace, inv_paytime, inv_paytype, description, tax_office_code, address_id)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
 		if ($SYSLOG) {
 			$args[SYSLOG::RES_DIV] = $DB->GetLastInsertID('divisions');
