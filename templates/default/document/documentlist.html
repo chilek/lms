@@ -66,21 +66,28 @@
 <INPUT type="hidden" name="m" value="documentlist">
 <INPUT type="hidden" name="page" value="1">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 1%;">
+		<COL style="width: 96%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="nobr">
 			<A href="?m=documentlist&o=cdate{if $listdata.direction == "asc" && $listdata.order == "cdate"},desc{/if}">{trans("Creation date<!document>")}</A>{if $listdata.order == "cdate"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			/ <A href="?m=documentlist&o=sdate{if $listdata.direction == "asc" && $listdata.order == "sdate"},desc{/if}">{trans("Confirmation date<!document>")}:</A>{if $listdata.order == "sdate"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			<BR><B>{trans("Number:")}</B>
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
+		<TD class="nobr">
 			<A href="?m=documentlist&o=user{if $listdata.direction == "asc" && $listdata.order == "user"},desc{/if}">{trans("Created by<!document>")}</A>{if $listdata.order == "user"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			/ <A href="?m=documentlist&o=cuser{if $listdata.direction == "asc" && $listdata.order == "cuser"},desc{/if}">{trans("Confirmed by<!document>")}:</A>{if $listdata.order == "cuser"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			<BR><A href="?m=documentlist&o=type{if $listdata.direction == "asc" && $listdata.order == "type"},desc{/if}"><B>{trans("Type:")}</B></A>{if $listdata.order == "type"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%" NOWRAP> <A href="?m=documentlist&amp;o=title{if $listdata.direction == "asc" && $listdata.order == "title"},desc{/if}">{trans("Title:")}</A>{if $listdata.order == "title"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>{trans("Period:")}</TD>
-		<TD WIDTH="96%" NOWRAP> <A href="?m=documentlist&amp;o=customer{if $listdata.direction == "asc" && $listdata.order == "customer"},desc{/if}">{trans("Customer:")}</A>{if $listdata.order == "customer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
-		<TD WIDTH="1%" NOWRAP align="right">
+		<TD class="nobr"> <A href="?m=documentlist&amp;o=title{if $listdata.direction == "asc" && $listdata.order == "title"},desc{/if}">{trans("Title:")}</A>{if $listdata.order == "title"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>{trans("Period:")}</TD>
+		<TD class="nobr"> <A href="?m=documentlist&amp;o=customer{if $listdata.direction == "asc" && $listdata.order == "customer"},desc{/if}">{trans("Customer:")}</A>{if $listdata.order == "customer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
+		<TD class="text-right nobr">
 			<A href="?m=documentadd&amp;cid={$listdata.customer}&amp;typeOD={$listdata.type}">{trans("New Document")}</A> <IMG src="img/save.gif" alt="">
 		</TD>
 	</TR>
@@ -95,7 +102,29 @@
 					<OPTION VALUE="{$key}"{if $listdata.type==$key} SELECTED{/if}>{$item}</OPTION>
 					{/if}{/foreach}
 				</SELECT>&nbsp;
-				<B>{trans("Period:")}</B>&nbsp;
+				{trans("User:")}&nbsp;
+				{if empty($users)}
+				<input type="hidden" name="usertype" value="">
+				<input type="hidden" name="u" value="">
+				{else}
+				<SELECT name="usertype" onchange="filter()">
+					<option value="creator"{if empty($listdata.usertype) || $listdata.usertype == 'creator'} selected{/if}>{trans("creator")}</option>
+					<option value="authorising"{if $listdata.usertype == 'authorising'} selected{/if}>{trans("authorising")}</option>
+				</SELECT>&nbsp;
+				<SELECT name="u" onchange="filter()">
+					<option value=""{if empty($listdata.userid)} selected{/if}>{trans("- all -")}</option>
+					{foreach $users as $user}
+					<option value="{$user.id}"{if $user.id == $listdata.userid} selected{/if}>{$user.name}</option>
+					{/foreach}
+				</SELECT>
+				{/if}
+				<span class="bold">{trans("Period:")}</span>&nbsp;
+				<SELECT name="periodtype" ONCHANGE="filter()">
+					<OPTION value="creationdate"{if empty($listdata.periodtype) || $listdata.periodtype == 'creationdate'} selected{/if}>{trans("creation date")}</OPTION>
+					<OPTION value="confirmationdate"{if $listdata.periodtype == 'confirmationdate'} selected{/if}>{trans("confirmation date")}</OPTION>
+					<OPTION value="fromdate"{if $listdata.periodtype == 'fromdate'} selected{/if}>{trans("'from' date")}</OPTION>
+					<OPTION value="todate"{if $listdata.periodtype == 'todate'} selected{/if}>{trans("'to' date")}</OPTION>
+				</SELECT>
 				{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
 				{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
 
@@ -135,25 +164,25 @@
 	{assign var=doc value=$documentlist[documentlist]}
 	{assign var=docid value=$doc.docid}
 	<TR class="highlight {cycle}{if $doc.closed} blend{/if}"  >
-		<TD NOWRAP onclick="window.open('?m=documentview&amp;id={$doc.docid}');"{if $doc.description} {tip text=$doc.description}{/if}>
+		<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');"{if $doc.description} {tip text=$doc.description}{/if}>
 			{$doc.cdate|date_format:"%Y/%m/%d %H:%M"}{if $doc.sdate} / {$doc.sdate|date_format:"%Y/%m/%d %H:%M"}{/if}
 			{if $doc.number}<BR>
 				<B>{number number=$doc.number template=$doc.template time=$doc.cdate customerid=$doc.customerid}</B>
 			{/if}
 		</TD>
-		<TD NOWRAP onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
+		<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
 			{$doc.username}{if $doc.cuserid} / {$doc.cusername}{/if}
 			<BR><B>{assign var=type value=$doc.type}{$_DOCTYPES.$type}</B>
 		</TD>
-		<TD NOWRAP onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
+		<TD class="nobr" onclick="window.open('?m=documentview&amp;id={$doc.docid}');">
 			{$doc.title|truncate:40:"...":true}
 			{if $doc.fromdate || $doc.todate}<BR>
 			    {if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"%Y/%m/%d"}{/if}
 			    {if $doc.todate}{trans("to")} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
 			{/if}
 		</TD>
-		<TD NOWRAP><A href="?m=customerinfo&amp;id={$doc.customerid}">{$doc.name|truncate:40:"...":true}</A></TD>
-		<TD ALIGN="RIGHT" NOWRAP>
+		<TD class="nobr"><A href="?m=customerinfo&amp;id={$doc.customerid}">{$doc.name|truncate:40:"...":true}</A></TD>
+		<TD class="text-right nobr">
 			{assign var=type value=$doc.type}
 			<a href="?m=documentview&amp;id={$doc.docid}&amp;save=1"><img src="img/save.gif" alt="[ {trans("Save")} ]" title="[ {trans("Save")} ]"></a>
 			{if ! $doc.closed && ($docrights.$type.rights & 4)}
@@ -209,12 +238,12 @@
 			{if count($documentlist) > 0}
 			<TABLE WIDTH="100%">
 				<TR>
-					<TD ALIGN="left" class="nobr">
+					<TD class="nobr">
 						<A HREF="javascript:print_docs();">{trans("Print")} <IMG SRC="img/print.gif" ALT="{trans("Print")}"></A>&nbsp;
 						<A HREF="javascript:mark_docs();">{trans("Confirm")} <IMG SRC="img/confirm.gif" ALT="{trans("Confirm")}"></A>&nbsp;
 						<A HREF="javascript:delete_docs();">{trans("Delete")} <IMG SRC="img/delete.gif" ALT="{trans("Delete")}"></A>
 					</TD>
-					<TD ALIGN="right" class="nobr">
+					<TD class="text-right nobr">
 						<label>
 							{trans("Check All")}
 							<INPUT TYPE="checkbox" NAME="allbox" class="lms-ui-multi-check-all" VALUE="1">

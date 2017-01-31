@@ -3576,4 +3576,12 @@ $_LANG['Effective date'] = 'Data obowiązywania';
 $_LANG['show all tariffs'] = 'pokaż wszystkie taryfy';
 $_LANG['Check if all tariffs should be displayed'] = 'Zaznacz, jeśli wszystkie taryfy powinny zostać wyświetlone';
 
+$_LANG['creation date'] = 'data utworzenia';
+$_LANG['confirmation date'] = 'data zatwierdzenia';
+$_LANG['\'from\' date'] = 'data obowiązywania \'od\'';
+$_LANG['\'to\' date'] = 'data obowiązywania \'do\'';
+
+$_LANG['creator'] = 'twórca';
+$_LANG['authorising'] = 'zatwierdzający';
+
 ?>

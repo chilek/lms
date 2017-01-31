@@ -25,14 +25,19 @@
  */
 
 function GetDocumentList($order='cdate,asc', $search) {
-	$type = array_key_exists('type', $search) ? $search['type'] : NULL;
-	$customer = array_key_exists('customer', $search) ? $search['customer'] : NULL;
-	$numberplan = array_key_exists('numberplan', $search) ? $search['numberplan'] : NULL;
-	$from = array_key_exists('from', $search) ? $search['from'] : 0;
-	$to = array_key_exists('to', $search) ? $search['to'] : 0;
-	$status = array_key_exists('status', $search) ? $search['status'] : -1;
+	$type = isset($search['type']) ? $search['type'] : NULL;
+	$customer = isset($search['customer']) ? $search['customer'] : NULL;
+	$numberplan = isset($search['numberplan']) ? $search['numberplan'] : NULL;
+	$usertype = isset($search['usertype']) ? $search['usertype'] : 'creator';
+	$userid = isset($search['userid']) ? $search['userid'] : NULL;
+	$periodtype = isset($search['periodtype']) ? $search['periodtype'] : 'creationdate';
+	$from = isset($search['from']) ? $search['from'] : 0;
+	$to = isset($search['to']) ? $search['to'] : 0;
+	$status = isset($search['status']) ? $search['status'] : -1;
 
-	global $DB, $AUTH;
+	global $AUTH;
+
+	$DB = LMSDB::getInstance();
 
 	if($order=='')
 		$order='cdate,asc';
@@ -65,6 +70,34 @@ function GetDocumentList($order='cdate,asc', $search) {
 		break;
 	}
 
+	switch ($usertype) {
+		case 'creator':
+			$userfield = 'd.userid';
+			break;
+		case 'authorising':
+			$userfield = 'd.cuserid';
+			break;
+		default:
+			$userfield = 'd.userid';
+	}
+
+	switch ($periodtype) {
+		case 'creationdate':
+			$datefield = 'd.cdate';
+			break;
+		case 'confirmationdate':
+			$datefield = 'd.sdate';
+			break;
+		case 'fromdate':
+			$datefield = 'documentcontents.fromdate';
+			break;
+		case 'todate':
+			$datefield = 'documentcontents.todate';
+			break;
+		default:
+			$datefield = 'd.cdate';
+	}
+
 	$list = $DB->GetAll('SELECT docid, d.number, d.type, title, d.cdate, u.name AS username, u.lastname, fromdate, todate, description, 
 				template, d.closed, d.name, d.customerid, d.sdate, d.cuserid, u2.name AS cusername, u2.lastname AS clastname
 			FROM documentcontents
@@ -81,9 +114,10 @@ function GetDocumentList($order='cdate,asc', $search) {
 			WHERE e.customerid IS NULL '
 			.($customer ? 'AND d.customerid = '.intval($customer) : '')
 			.($type ? ' AND d.type = '.intval($type) : '')
+			. ($userid ? ' AND ' . $userfield . ' = ' . intval($userid) : '')
 			. ($numberplan ? ' AND d.numberplanid = ' . intval($numberplan) : '')
-			.($from ? ' AND d.cdate >= '.intval($from) : '')
-			.($to ? ' AND d.cdate <= '.intval($to) : '')
+			.($from ? ' AND ' . $datefield . ' >= '.intval($from) : '')
+			.($to ? ' AND ' . $datefield . ' <= '.intval($to) : '')
 			.($status == -1 ? '' : ' AND d.closed = ' . intval($status))
 			.$sqlord, array($AUTH->id));
 
@@ -124,6 +158,28 @@ if (empty($_GET['init']))
 	else
 		$p = $_GET['p'];
 	$SESSION->save('doclp', $p);
+
+	if (!isset($_GET['usertype']))
+		$SESSION->restore('doclut', $usertype);
+	else
+		$usertype = $_GET['usertype'];
+	if (empty($usertype))
+		$usertype = 'creator';
+	$SESSION->save('doclut', $usertype);
+
+	if (!isset($_GET['u']))
+		$SESSION->restore('doclu', $u);
+	else
+		$u = $_GET['u'];
+	$SESSION->save('doclu', $u);
+
+	if (!isset($_GET['periodtype']))
+		$SESSION->restore('doclpt', $periodtype);
+	else
+		$periodtype = $_GET['periodtype'];
+	if (empty($periodtype))
+		$periodtype = 'creationdate';
+	$SESSION->save('doclpt', $periodtype);
 
     if(isset($_GET['from']))
     {
@@ -168,6 +224,9 @@ $documentlist = GetDocumentList($o, array(
 	'type' => $t,
 	'customer' => $c,
 	'numberplan' => $p,
+	'usertype' => $usertype,
+	'userid' => $u,
+	'periodtype' => $periodtype,
 	'from' => $from,
 	'to' => $to,
 	'status' => $s,
@@ -179,6 +238,9 @@ $listdata['direction'] = $documentlist['direction'];
 $listdata['type'] = $t;
 $listdata['customer'] = $c;
 $listdata['numberplan'] = $p;
+$listdata['usertype'] = $usertype;
+$listdata['userid'] = $u;
+$listdata['periodtype'] = $periodtype;
 $listdata['from'] = $from;
 $listdata['to'] = $to;
 $listdata['status'] = $s;
@@ -210,6 +272,7 @@ if($listdata['total'])
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 
+$SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->assign('numberplans', $LMS->GetNumberPlans(array(
 	'doctype' => array(DOC_CONTRACT, DOC_ANNEX, DOC_PROTOCOL, DOC_ORDER, DOC_SHEET, -6, -7, -8, -9, -99, DOC_PRICELIST, DOC_PROMOTION, DOC_WARRANTY, DOC_REGULATIONS, DOC_OTHER),
 )));
