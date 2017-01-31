@@ -53,7 +53,7 @@ CREATE TABLE customers (
 	ssn varchar(11) 	DEFAULT '' NOT NULL,
 	regon varchar(255) 	DEFAULT '' NOT NULL,
 	rbe varchar(255) 	DEFAULT '' NOT NULL, -- EDG/KRS
-	rbename varchar(255) 	DEFAULT '' NOT NULL,
+	rbename varchar(255)	DEFAULT '' NOT NULL,
 	icn varchar(255) 	DEFAULT '' NOT NULL, -- dow.os.
 	info text		DEFAULT '' NOT NULL,
 	notes text		DEFAULT '' NOT NULL,
@@ -2935,6 +2935,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017012400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017013100');
 
 COMMIT;

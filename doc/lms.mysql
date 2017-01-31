@@ -1483,6 +1483,8 @@ CREATE TABLE userassignments (
 CREATE TABLE addresses (
 	id         int(11) NOT NULL auto_increment,
 	name       text NULL,
+	state      varchar(64) NULL,
+	state_id   int(11) NULL,
 	city       varchar(32) NULL,
 	city_id    int(11) NULL,
 	street     varchar(255) NULL,
@@ -1492,6 +1494,7 @@ CREATE TABLE addresses (
 	house      varchar(20) NULL,
 	flat       varchar(20) NULL,
 	PRIMARY KEY (id),
+	CONSTRAINT `addresses_state_id_fk`   FOREIGN KEY (state_id)   REFERENCES location_states  (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT `addresses_city_id_fk`    FOREIGN KEY (city_id)    REFERENCES location_cities  (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT `addresses_street_id_fk`  FOREIGN KEY (street_id)  REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT `addresses_country_id_fk` FOREIGN KEY (country_id) REFERENCES countries        (id) ON DELETE SET NULL ON UPDATE CASCADE
@@ -2828,4 +2831,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017012400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017013100');
