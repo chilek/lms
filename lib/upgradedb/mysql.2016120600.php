@@ -23,10 +23,10 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE divisions ADD COLUMN location_city int(11) DEFAULT NULL
-		FOREIGN KEY (location_city) REFERENCES location_cities (id) ON UPDATE CASCADE ON DELETE SET NULL");
-$this->Execute("ALTER TABLE divisions ADD COLUMN location_street int(11) DEFAULT NULL
-		FOREIGN KEY (location_street) REFERENCES location_streets (id) ON UPDATE CASCADE ON DELETE SET NULL");
+$this->Execute("ALTER TABLE divisions ADD COLUMN location_city int(11) DEFAULT NULL,
+		ADD FOREIGN KEY (location_city) REFERENCES location_cities (id) ON UPDATE CASCADE ON DELETE SET NULL");
+$this->Execute("ALTER TABLE divisions ADD COLUMN location_street int(11) DEFAULT NULL,
+		ADD FOREIGN KEY (location_street) REFERENCES location_streets (id) ON UPDATE CASCADE ON DELETE SET NULL");
 $this->Execute("ALTER TABLE divisions ADD COLUMN location_house varchar(32) DEFAULT NULL");
 $this->Execute("ALTER TABLE divisions ADD COLUMN location_flat varchar(32) DEFAULT NULL");
 $this->Execute("ALTER TABLE divisions ADD COLUMN tax_office_code varchar(8) DEFAULT NULL");

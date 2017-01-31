@@ -24,17 +24,6 @@
 		                <TR>
 		                        <TD WIDTH="50%" style="vertical-align:top;">
 		                                <TABLE WIDTH="100%" CELLPADDING="3">
-                                            <tr>
-												<td><img src="img/customer.gif" alt=""></td>
-												<td class="bold">{trans("Customer:")}</td>
-                                                <td>
-                                                    {if isset($netdevinfo.ownerid)}
-                                                        {customerlist form="netdevedit" customers=$customers selected=$netdevinfo.ownerid selectname="customer" inputname="netdev[ownerid]"}
-                                                    {else}
-                                                        {customerlist form="netdevedit" customers=$customers selected="" selectname="customer" inputname="netdev[ownerid]"}
-                                                    {/if}
-												</td>
-											</tr>
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/producer.gif" ALT="">
@@ -70,9 +59,9 @@
 		</TD>
 		<TD WIDTH="98%">
 			<INPUT TYPE="TEXT" NAME="netdev[model]" VALUE="{$netdevinfo.model}" {tip text="Enter model name (optional)" }>
-                        <A href="javascript: void(0);" onclick="return netdevmodelchoosewin('netdev', 'netdevedit', document.forms['netdevedit'].elements['netdev[netdevicemodelid]'].value, document.forms['netdevedit'].elements['netdev[producer]'].value, document.forms['netdevedit'].elements['netdev[model]'].value)" {tip text="Click to select model"}>&raquo;&raquo;&raquo;</A>
+			<A href="javascript: void(0);" onclick="return netdevmodelchoosewin('netdev', 'netdevedit', document.forms['netdevedit'].elements['netdev[netdevicemodelid]'].value, document.forms['netdevedit'].elements['netdev[producer]'].value, document.forms['netdevedit'].elements['netdev[model]'].value)" {tip text="Click to select model"}>&raquo;&raquo;&raquo;</A>
 			<BR>
-                        <INPUT type="hidden" name="netdev[netdevicemodelid]" value="{$netdevinfo.netdevicemodelid}">
+			<INPUT type="hidden" name="netdev[netdevicemodelid]" value="{$netdevinfo.netdevicemodelid}">
 		</TD>
 	</TR>
 	<TR>
@@ -98,32 +87,67 @@
 		</TD>
 	</TR>
 
-	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/home.gif" ALT="">
-		</TD>
-		<TD WIDTH="1%" NOWRAP>
+	<tr>
+		<td><img src="img/customer.gif" alt=""></td>
+		<td class="bold">{trans("Customer:")}</td>
+		<td>
+			{if isset($netdevinfo.ownerid)}
+				{customerlist form="netdevedit" customers=$customers selected=$netdevinfo.ownerid selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input"}
+			{else}
+				{customerlist form="netdevedit" customers=$customers selected="" selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input"}
+			{/if}
+		</td>
+	</tr>
+
+	<tr id="location_select">
+		<td><img src="img/home.gif" alt=""></td>
+		<td>{trans("Location:")}</td>
+		<td>
+			<select id="customer_addresses" name="netdev[customer_address_id]" {tip trigger="address_id"}></select>
+		</td>
+	</tr>
+
+	<tr id="location_box">
+		<td width="1%">
+			<img src="img/home.gif" alt="">
+		</td>
+		<td width="1%" class="nobr">
 			<B>{trans("Location:")}</B>
-		</TD>
-		<TD WIDTH="98%" NOWRAP>
-		    <INPUT TYPE="TEXT" SIZE="30" VALUE="{$netdevinfo.location}" id="location" NAME="netdev[location]"  {tip text="Enter location (optional)" trigger="location"}>
-			<A href="javascript: void(0);" onclick="if (check_teryt()) return locationchoosewin('netdev', 'netdevedit', document.forms['netdevedit'].elements['netdev[location_city]'].value,  document.forms['netdevedit'].elements['netdev[location_street]'].value, {ConfigHelper::getConfig('phpui.default_teryt_city')})" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</A>
-			<BR>
-		    <INPUT type="hidden" name="netdev[location_city]" value="{$netdevinfo.location_city}">
-		    <INPUT type="hidden" name="netdev[location_street]" value="{$netdevinfo.location_street}">
-		    <INPUT type="hidden" name="netdev[location_house]" value="{$netdevinfo.location_house}">
-		    <INPUT type="hidden" name="netdev[location_flat]" value="{$netdevinfo.location_flat}">
-			<INPUT TYPE="checkbox" name="netdev[teryt]" id="teryt" onchange="check_teryt('location')"{if $netdevinfo.teryt} checked{/if}><label for="teryt">{trans("TERRIT-DB")}</label>
-		</TD>
-	</TR>
-        <tr>
-            <td width="1%">
-                <img src="img/network.gif" alt="">
-            </td>
-            <td colspan="2" width="99%">
-                <a href="javascript:set_lat_lon()" accesskey="s">{trans("Determine GPS coordinates automatically")}</a>
-            </td>
-        </tr>
+		</td>
+		<td width="98%" class="nobr">
+			<input type="hidden" name="netdev[previous_address_id]" value="{$netdevinfo.address_id}">
+			{if isset($netdevinfo.ownerid)}
+				{location_box prefix = "netdev"}
+			{else}
+				{location_box
+					prefix               = "netdev"
+					address_id           = "{$netdevinfo.address_id}"
+					location_name        = "{$netdevinfo.location_name}"
+					location_state_name  = "{$netdevinfo.location_state_name}"
+					location_state       = "{$netdevinfo.location_state}"
+					location_city_name   = "{$netdevinfo.location_city_name}"
+					location_city        = "{$netdevinfo.location_city}"
+					location_street_name = "{$netdevinfo.location_street_name}"
+					location_street      = "{$netdevinfo.location_street}"
+					location_house       = "{$netdevinfo.location_house}"
+					location_flat        = "{$netdevinfo.location_flat}"
+					location_zip         = "{$netdevinfo.location_zip}"
+					location_country_id  = "{$netdevinfo.location_country}"
+					teryt                = "{$netdevinfo.teryt}"
+				}
+			{/if}
+		</td>
+	</tr>
+
+    <tr>
+        <td width="1%">
+            <img src="img/network.gif" alt="">
+        </td>
+        <td colspan="2" width="99%">
+            <span class="lms-ui-button" id="set_gps">{trans("Determine GPS coordinates automatically")}</span>
+        </td>
+    </tr>
+
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="">
@@ -219,12 +243,12 @@
 		        <B>{trans("Channel:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-		        <SELECT NAME="netdev[channelid]" {tip text="Select channel (optional)" trigger="channelid"}>
-		        	<OPTION VALUE="">- {trans("none")} -</OPTION>
-		        	{foreach from=$channels item=item}
-			        <OPTION VALUE="{$item.id}" {if $item.id == $netdevinfo.channelid} SELECTED{/if}>{$item.name}</OPTION>
-			        {/foreach}
-		        </SELECT>
+			<SELECT NAME="netdev[channelid]" {tip text="Select channel (optional)" trigger="channelid"}>
+				<OPTION VALUE="">- {trans("none")} -</OPTION>
+				{foreach from=$channels item=item}
+					<OPTION VALUE="{$item.id}" {if $item.id == $netdevinfo.channelid} SELECTED{/if}>{$item.name}</OPTION>
+				{/foreach}
+			</SELECT>
 		</TD>
 	</TR>
 {/if}
@@ -319,20 +343,102 @@
 	</TR>
         </TBODY>
 </TABLE>
-<SCRIPT type="text/javascript">
-<!--
-check_teryt('location', true);
-setNNProject();
-function set_lat_lon(){
-    var loc = document.getElementById('location').value;
 
-    var geocoder = new google.maps.Geocoder();
-    geocoder.geocode( { 'address': loc}, function(results, status) {
-        if (status == google.maps.GeocoderStatus.OK) {
-            document.getElementById('latitude').value = results[0].geometry.location.lat();
-            document.getElementById('longitude').value = results[0].geometry.location.lng();
+<script type="text/javascript" src="img/lms-ui-iconselectmenu.js"></script>
+<script type="text/javascript">
+<!--
+    var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+    var timer;
+    setNNProject();
+
+    /*
+     * \brief Update address location coordinates. Require google API key.
+     */
+    $( '#set_gps' ).click( function() {
+        var owner_id = $( '#ownerid_input' ).val();
+        var location = '';
+
+        if ( owner_id != 'undefined' && owner_id > 0 && $( '#customer_addresses' ).val() > 0 ) {
+            location = $( '#customer_addresses option:selected' ).text();
+        } else {
+            var city   = $('[data-address="city"]').val();
+            var street = $('[data-address="street"]').val();
+            var house  = $('[data-address="house"]').val();
+            var flat   = $('[data-address="flat"]').val();
+
+            location = location_str( city, street, house, flat );
+        }
+
+        if ( location.length > 0 ) {
+            setAddressLocation( location, "#latitude", "#longitude" );
         }
     });
-}
+
+    /*!
+     * \brief Show / hide location choose box.
+     * If owner id is set then show list with customer addresses,
+     * else show location box to manual set location for network device.
+     *
+     * \param customer_id
+     */
+    function updateLocationBoxesDisplay( customer_id ) {
+        if ( customer_id == 'undefined' || customer_id == 0 ) {
+            $( '#location_select' ).css('display', 'none');
+            $( '#location_box'    ).css('display', 'table-row');
+        } else {
+            $( '#location_select' ).css('display', 'table-row');
+            $( '#location_box'    ).css('display', 'none');
+        }
+    }
+
+    /*!
+     * \brief Update customer addresses list on input change.
+     */
+    $( '#ownerid_input' ).on('keyup input paste', function() {
+        var id = $(this).val();
+
+        updateLocationBoxesDisplay( id );
+
+        if ( id != 'undefined' && id > 0 ) {
+            // delay for send request, 300ms
+            clearTimeout( timer );
+            timer = setTimeout( function() { customer_addresses.setAddressList( getCustomerAddresses(id) ); }, 300);
+        }
+    });
+
+    /*!
+     * \brief On keydown, clear the countdown.
+     */
+    $( '#ownerid_input' ).on('keydown', function () {
+        clearTimeout(timer);
+    });
+
+    {if !ConfigHelper::checkConfig('phpui.big_networks')}
+    /*!
+     * \brief Update customer addresses list on select change.
+     * Using when big_networks is set as false.
+     */
+    $( '#ownerid_select' ).change( function() {
+        var id = $(this).val();
+
+        updateLocationBoxesDisplay( id );
+
+        if ( id != 'undefined' && id > 0 ) {
+            customer_addresses.setAddressList( getCustomerAddresses(id) );
+        }
+    });
+    {/if}
+
+    updateLocationBoxesDisplay( {intval($netdevinfo.ownerid)} );
+
+    {if $netdevinfo.ownerid}
+        customer_addresses.setAddressList( getCustomerAddresses( {intval($netdevinfo.ownerid)} ) );
+    {/if}
+
+    {if $netdevinfo.address_id && $netdevinfo.ownerid}
+        $( '#customer_addresses' ).val( {$netdevinfo.address_id} );
+    {/if}
+
+    customer_addresses.init();
 //-->
-</SCRIPT>
+</script>

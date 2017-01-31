@@ -65,6 +65,10 @@ version ?.??.?? (????-??-??):
   - enhancement: added rbe info fields to divisions and rbe name for customers [chilan]
   - enhancement: allow filter document list by creator/authorising and all date types
     for periods [chilan]
+  - moved addresses from nodes, netdevices, customers, netnodes, voipaccounts and divisions
+    to one table [kosa/chilan]
+  - removed possibility for setting up custom address for nodes and voipaccounts [kosa/chilan]
+  - added possibility for create many addresses for each customer [kosa/chilan]
 
 version 1.11.21 (2016-10-14):
 

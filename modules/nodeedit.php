@@ -59,10 +59,11 @@ switch ($action) {
 }
 
 $nodeinfo = $LMS->GetNode($nodeid);
-
 $macs = array();
+
 foreach ($nodeinfo['macs'] as $key => $value)
 	$macs[] = $nodeinfo['macs'][$key]['mac'];
+
 $nodeinfo['macs'] = $macs;
 
 if (!isset($_GET['ownerid']))
@@ -75,9 +76,10 @@ $layout['pagetitle'] = trans('Node Edit: $a', $nodeinfo['name']);
 if (isset($_POST['nodeedit'])) {
 	$nodeedit = $_POST['nodeedit'];
 
-	$nodeedit['netid'] = $_POST['nodeeditnetid'];
-	$nodeedit['ipaddr'] = $_POST['nodeeditipaddr'];
+	$nodeedit['netid']      = $_POST['nodeeditnetid'];
+	$nodeedit['ipaddr']     = $_POST['nodeeditipaddr'];
 	$nodeedit['ipaddr_pub'] = $_POST['nodeeditipaddrpub'];
+
 	foreach ($nodeedit['macs'] as $key => $value)
 		$nodeedit['macs'][$key] = str_replace('-', ':', $value);
 
@@ -196,9 +198,10 @@ if (isset($_POST['nodeedit'])) {
 		}
 	}
 
-	if (!$nodeedit['ownerid'])
-		$error['ownerid'] = trans('Customer not selected!');
-	else if ($nodeedit['access'] && $LMS->GetCustomerStatus($nodeedit['ownerid']) < 3)
+	if (!$nodeedit['ownerid']) {
+		$error['nodeedit[customerid]'] = trans('Customer not selected!');
+		$error['nodeedit[ownerid]']    = trans('Customer not selected!');
+	} else if ($nodeedit['access'] && $LMS->GetCustomerStatus($nodeedit['ownerid']) < 3)
 		$error['access'] = trans('Node owner is not connected!');
 
 	if ($nodeedit['invprojectid'] == '-1') { // nowy projekt
@@ -225,17 +228,6 @@ if (isset($_POST['nodeedit'])) {
 	$error = $hook_data['error'];
 
 	if (!$error) {
-		if (empty($nodeedit['teryt'])) {
-			$nodeedit['location_city'] = null;
-			$nodeedit['location_street'] = null;
-			$nodeedit['location_house'] = null;
-			$nodeedit['location_flat'] = null;
-		}
-		if (empty($nodeedit['location']) && !empty($nodeedit['ownerid'])) {
-                    $location = $LMS->GetCustomer($nodeedit['ownerid']);
-                    $nodeedit['location'] = $location['address'] . ', ' . $location['zip'] . ' ' . $location['city'];
-                }
-
 		$nodeedit = $LMS->ExecHook('node_edit_before', $nodeedit);
 
 		$ipi = $nodeedit['invprojectid'];
@@ -278,13 +270,6 @@ if (isset($_POST['nodeedit'])) {
 	$nodeinfo['chkmac'] = $nodeedit['chkmac'];
 	$nodeinfo['halfduplex'] = $nodeedit['halfduplex'];
 	$nodeinfo['port'] = $nodeedit['port'];
-	$nodeinfo['zipwarning'] = empty($zipwarning) ? 0 : 1;
-	$nodeinfo['location'] = $nodeedit['location'];
-	$nodeinfo['location_city'] = $nodeedit['location_city'];
-	$nodeinfo['location_street'] = $nodeedit['location_street'];
-	$nodeinfo['location_house'] = $nodeedit['location_house'];
-	$nodeinfo['location_flat'] = $nodeedit['location_flat'];
-	$nodeinfo['teryt'] = empty($nodeedit['teryt']) ? 0 : 1;
 	$nodeinfo['stateid'] = $nodeedit['stateid'];
 	$nodeinfo['latitude'] = $nodeedit['latitude'];
 	$nodeinfo['longitude'] = $nodeedit['longitude'];
@@ -293,11 +278,6 @@ if (isset($_POST['nodeedit'])) {
 
 	if ($nodeedit['ipaddr_pub'] == '0.0.0.0')
 		$nodeinfo['ipaddr_pub'] = '';
-} else {
-	if ($nodeinfo['city_name'] || $nodeinfo['street_name']) {
-		$nodeinfo['teryt'] = true;
-		$nodeinfo['location'] = location_str($nodeinfo);
-	}
 }
 
 if (empty($nodeinfo['macs']))

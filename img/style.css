@@ -602,6 +602,14 @@ div.lms-ui-multiselectlayer ul span {
     display: none !important;
   }
 }
+.lms-ui-button {
+  color: #800000;
+}
+.lms-ui-button:hover {
+  color: #336600;
+  cursor: pointer;
+  text-decoration: underline;
+}
 .lms-ui-multi-check-all {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -851,6 +859,7 @@ td.multiselect select {
 .ui-button,
 html .ui-button.ui-state-disabled:hover,
 html .ui-button.ui-state-disabled:active {
+  padding: 0em 1em;
   border: 1px solid #615847;
   background-color: #DFD5BD;
 }
@@ -867,6 +876,12 @@ html .ui-button.ui-state-disabled:active {
   border: 1px solid #615847;
   outline: none;
   color: black;
+}
+.ui-selectmenu-text {
+  padding-top: 2px;
+}
+.ui-selectmenu-button.ui-button {
+  width: 20em;
 }
 .ui-state-highlight,
 .ui-widget-content .ui-state-highlight,
@@ -1088,6 +1103,20 @@ table.dataTable thead tr:last-child th {
 .lmsbox .dataTables_wrapper .bottom,
 .lmsbox .dataTables_wrapper .top {
   border: 0;
+}
+.location-box-expandable {
+  padding-top: 2px;
+}
+.toggle-address {
+  font-size: 1.4em;
+  font-family: "Times New Roman", Times, serif;
+  font-weight: bold;
+  width: 7px;
+  display: inline-block;
+  padding: 0 5px;
+}
+.toggle-address:hover {
+  cursor: pointer;
 }
 .lms-ui-cursor-pointer:hover {
   cursor: pointer;

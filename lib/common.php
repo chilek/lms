@@ -746,7 +746,7 @@ function location_str($data)
 
     if ($data['street_name']) {
         $street = $data['street_type'] .' '. $data['street_name'];
-        $location .= ($location ? ', ' : '') . $street;
+        $location .= ($location ? ',' : '') . $street;
     }
 
     if ($h)

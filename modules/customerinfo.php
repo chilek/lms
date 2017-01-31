@@ -53,6 +53,7 @@ $customerid = intval($_GET['id']);
 $LMS->InitXajax();
 
 if (!isset($_POST['xjxfun'])) {
+
 	include(MODULES_DIR.'/customer.inc.php');
 	require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 

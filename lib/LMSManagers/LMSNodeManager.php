@@ -42,42 +42,38 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         $args = array(
             'name' => ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_node_names', true))
             	? strtoupper($nodedata['name']) : $nodedata['name'],
-            'ipaddr_pub' => $nodedata['ipaddr_pub'],
-            'ipaddr' => $nodedata['ipaddr'],
-            'passwd' => $nodedata['passwd'],
-            SYSLOG::RES_NETDEV => $nodedata['netdev'],
-            SYSLOG::RES_USER => $this->auth->id,
-            'access' => $nodedata['access'],
-            'warning' => $nodedata['warning'],
-            SYSLOG::RES_CUST => $nodedata['ownerid'],
-            'info' => $nodedata['info'],
-            'location' => $nodedata['location'],
-            'location_city' => $nodedata['location_city'] ? $nodedata['location_city'] : null,
-            'location_street' => $nodedata['location_street'] ? $nodedata['location_street'] : null,
-            'location_house' => $nodedata['location_house'] ? $nodedata['location_house'] : null,
-            'location_flat' => $nodedata['location_flat'] ? $nodedata['location_flat'] : null,
-            'chkmac' => $nodedata['chkmac'],
-            'halfduplex' => $nodedata['halfduplex'],
-            'linktype' => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
-	    'linkradiosector' => (isset($nodedata['linktype']) && intval($nodedata['linktype']) == 1 ?
-		(isset($nodedata['radiosector']) && intval($nodedata['radiosector']) ? intval($nodedata['radiosector']) : null) : null),
-            'linktechnology' => isset($nodedata['linktechnology']) ? intval($nodedata['linktechnology']) : 0,
-            'linkspeed' => isset($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : 100000,
-            'port' => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
-            'nas' => isset($nodedata['nas']) ? $nodedata['nas'] : 0,
-            'longitude' => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
-            'latitude' => !empty($nodedata['latitude']) ? str_replace(',', '.', $nodedata['latitude']) : null,
+            'ipaddr_pub'        => $nodedata['ipaddr_pub'],
+            'ipaddr'            => $nodedata['ipaddr'],
+            'passwd'            => $nodedata['passwd'],
+            SYSLOG::RES_NETDEV  => $nodedata['netdev'],
+            SYSLOG::RES_USER    => $this->auth->id,
+            'access'            => $nodedata['access'],
+            'warning'           => $nodedata['warning'],
+            SYSLOG::RES_CUST    => $nodedata['ownerid'],
+            'info'              => $nodedata['info'],
+            'chkmac'            => $nodedata['chkmac'],
+            'halfduplex'        => $nodedata['halfduplex'],
+            'linktype'          => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
+            'linkradiosector'   => (isset($nodedata['linktype']) && intval($nodedata['linktype']) == 1 ?
+        (isset($nodedata['radiosector']) && intval($nodedata['radiosector']) ? intval($nodedata['radiosector']) : null) : null),
+            'linktechnology'    => isset($nodedata['linktechnology']) ? intval($nodedata['linktechnology']) : 0,
+            'linkspeed'         => isset($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : 100000,
+            'port'              => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
+            'nas'               => isset($nodedata['nas']) ? $nodedata['nas'] : 0,
+            'longitude'         => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
+            'latitude'          => !empty($nodedata['latitude'])  ? str_replace(',', '.', $nodedata['latitude'])  : null,
             SYSLOG::RES_NETWORK => $nodedata['netid'],
-            'invprojectid' => $nodedata['invprojectid'],
-	    'authtype' => $nodedata['authtype'] ? $nodedata['authtype'] : 0,
-            SYSLOG::RES_NODE => $nodedata['id']
+            'invprojectid'      => $nodedata['invprojectid'],
+            'authtype'          => $nodedata['authtype']   ? $nodedata['authtype']   : 0,
+            'address_id'        => ($nodedata['address_id'] >= 0) ? $nodedata['address_id'] : null,
+            SYSLOG::RES_NODE    => $nodedata['id']
         );
+
         $this->db->Execute('UPDATE nodes SET name=?, ipaddr_pub=inet_aton(?),
 				ipaddr=inet_aton(?), passwd=?, netdev=?, moddate=?NOW?,
-				modid=?, access=?, warning=?, ownerid=?, info=?, location=?,
-				location_city=?, location_street=?, location_house=?, location_flat=?,
+				modid=?, access=?, warning=?, ownerid=?, info=?,
 				chkmac=?, halfduplex=?, linktype=?, linkradiosector=?, linktechnology=?, linkspeed=?,
-				port=?, nas=?, longitude=?, latitude=?, netid=?, invprojectid=?, authtype=?
+				port=?, nas=?, longitude=?, latitude=?, netid=?, invprojectid=?, authtype=?, address_id=?
 				WHERE id=?', array_values($args));
 
         if ($this->syslog) {
@@ -209,22 +205,30 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     public function GetNode($id)
     {
         if ($result = $this->db->GetRow('SELECT n.*, rs.name AS linkradiosectorname,
-		    inet_ntoa(n.ipaddr) AS ip, inet_ntoa(n.ipaddr_pub) AS ip_pub,
-		    lc.name AS city_name,
+				inet_ntoa(n.ipaddr) AS ip, inet_ntoa(n.ipaddr_pub) AS ip_pub,
+				lc.name AS city_name,
 				(CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
 				lt.name AS street_type,
-			lb.name AS borough_name, lb.type AS borough_type,
-			ld.name AS district_name, lst.name AS state_name
+				lb.name AS borough_name, lb.type AS borough_type,
+				ld.name AS district_name, lst.name AS state_name,
+				addr.name as location_name,
+				addr.state as location_state_name, addr.state_id as location_state,
+				addr.zip as location_zip, addr.country_id as location_country,
+				addr.city as location_city_name, addr.street as location_street_name,
+				addr.city_id as location_city, addr.street_id as location_street,
+				addr.house as location_house, addr.flat as location_flat
 			FROM vnodes n
-			LEFT JOIN netradiosectors rs ON rs.id = n.linkradiosector
-			LEFT JOIN location_cities lc ON (lc.id = n.location_city)
-			LEFT JOIN location_streets ls ON (ls.id = n.location_street)
-			LEFT JOIN location_street_types lt ON (lt.id = ls.typeid)
-			LEFT JOIN location_boroughs lb ON (lb.id = lc.boroughid)
-			LEFT JOIN location_districts ld ON (ld.id = lb.districtid)
-			LEFT JOIN location_states lst ON (lst.id = ld.stateid)
+				LEFT JOIN addresses addr           ON addr.id = n.address_id
+				LEFT JOIN netradiosectors rs       ON rs.id = n.linkradiosector
+				LEFT JOIN location_cities lc       ON (lc.id = addr.city_id)
+				LEFT JOIN location_streets ls      ON (ls.id = addr.street_id)
+				LEFT JOIN location_street_types lt ON (lt.id = ls.typeid)
+				LEFT JOIN location_boroughs lb     ON (lb.id = lc.boroughid)
+				LEFT JOIN location_districts ld    ON (ld.id = lb.districtid)
+				LEFT JOIN location_states lst      ON (lst.id = ld.stateid)
 			WHERE n.id = ?', array($id))
         ) {
+
             $customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
             $user_manager = new LMSUserManager($this->db, $this->auth, $this->cache, $this->syslog);
             $result['radiosectors'] = $this->db->GetAll('SELECT * FROM netradiosectors WHERE netdev = ?', array($result['netdev']));
@@ -234,6 +238,13 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             $result['creationdateh'] = date('Y/m/d, H:i', $result['creationdate']);
             $result['moddateh'] = date('Y/m/d, H:i', $result['moddate']);
             $result['lastonlinedate'] = lastonline_date($result['lastonline']);
+
+            // if location is empty and owner is set then heirdom address from owner
+            if ( !$result['location'] && $result['ownerid'] ) {
+                global $LMS;
+
+                $result['location'] = $LMS->getAddressForCustomerStuff( $result['ownerid'] );
+            }
 
             $result['mac'] = preg_split('/,/', $result['mac']);
             foreach ($result['mac'] as $mac)
@@ -394,9 +405,17 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
 		if (!$count) {
 			$nodelist = $this->db->GetAll($sql);
+
 			if (!empty($nodelist)) {
 				foreach ($nodelist as $idx => $row) {
 					($row['access']) ? $totalon++ : $totaloff++;
+
+					// if location is empty and owner is set then heirdom address from owner
+					if ( !$row['location'] && $row['ownerid'] ) {
+						global $LMS;
+
+						$nodelist[$idx]['location'] = $LMS->getAddressForCustomerStuff( $row['ownerid'] );
+					}
 				}
 
 				$nodelist['total'] = sizeof($nodelist);
@@ -571,45 +590,42 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     public function NodeAdd($nodedata)
     {
         $args = array(
-            'name' => ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_node_names', true))
-            	? strtoupper($nodedata['name']) : $nodedata['name'],
-            'ipaddr' => $nodedata['ipaddr'],
-            'ipaddr_pub' => $nodedata['ipaddr_pub'],
-            SYSLOG::RES_CUST => $nodedata['ownerid'],
-            'passwd' => $nodedata['passwd'],
-            SYSLOG::RES_USER => $this->auth->id,
-            'access' => $nodedata['access'],
-            'warning' => $nodedata['warning'],
-            'info' => $nodedata['info'],
-            SYSLOG::RES_NETDEV => $nodedata['netdev'],
-            'location' => $nodedata['location'],
-            'location_city' => $nodedata['location_city'] ? $nodedata['location_city'] : null,
-            'location_street' => $nodedata['location_street'] ? $nodedata['location_street'] : null,
-            'location_house' => $nodedata['location_house'] ? $nodedata['location_house'] : null,
-            'location_flat' => $nodedata['location_flat'] ? $nodedata['location_flat'] : null,
-            'linktype' => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
-	    'linkradiosector' => (isset($nodedata['linktype']) && intval($nodedata['linktype']) == 1 ?
-		(isset($nodedata['radiosector']) && intval($nodedata['radiosector']) ? intval($nodedata['radiosector']) : null) : null),
-            'linktechnology' => isset($nodedata['linktechnology']) ? intval($nodedata['linktechnology']) : 0,
-            'linkspeed' => isset($nodedata['linkspeed']) ? intval($nodedata['linkspeed']) : 100000,
-            'port' => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
-            'chkmac' => $nodedata['chkmac'],
-            'halfduplex' => $nodedata['halfduplex'],
-            'nas' => isset($nodedata['nas']) ? $nodedata['nas'] : 0,
-            'longitude' => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
-            'latitude' => !empty($nodedata['latitude']) ? str_replace(',', '.', $nodedata['latitude']) : null,
+            'name'              => ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_node_names', true))
+                ? strtoupper($nodedata['name']) : $nodedata['name'],
+            'ipaddr'            => $nodedata['ipaddr'],
+            'ipaddr_pub'        => $nodedata['ipaddr_pub'],
+            SYSLOG::RES_CUST    => $nodedata['ownerid'],
+            'passwd'            => $nodedata['passwd'],
+            SYSLOG::RES_USER    => $this->auth->id,
+            'access'            => $nodedata['access'],
+            'warning'           => $nodedata['warning'],
+            'info'              => $nodedata['info'],
+            SYSLOG::RES_NETDEV  => $nodedata['netdev'],
+            'linktype'          => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
+            'linkradiosector'   => (isset($nodedata['linktype']) && intval($nodedata['linktype']) == 1 ?
+        (isset($nodedata['radiosector']) && intval($nodedata['radiosector']) ? intval($nodedata['radiosector']) : null) : null),
+            'linktechnology'    => isset($nodedata['linktechnology']) ? intval($nodedata['linktechnology']) : 0,
+            'linkspeed'         => isset($nodedata['linkspeed'])      ? intval($nodedata['linkspeed'])      : 100000,
+            'port'              => isset($nodedata['port']) && $nodedata['netdev'] ? intval($nodedata['port']) : 0,
+            'chkmac'            => $nodedata['chkmac'],
+            'halfduplex'        => $nodedata['halfduplex'],
+            'nas'               => isset($nodedata['nas']) ? $nodedata['nas'] : 0,
+            'longitude'         => !empty($nodedata['longitude']) ? str_replace(',', '.', $nodedata['longitude']) : null,
+            'latitude'          => !empty($nodedata['latitude'])  ? str_replace(',', '.', $nodedata['latitude'])  : null,
             SYSLOG::RES_NETWORK => $nodedata['netid'],
-            'invprojectid' => $nodedata['invprojectid'],
-	    'authtype' => $nodedata['authtype'],
+            'invprojectid'      => $nodedata['invprojectid'],
+            'authtype'          => $nodedata['authtype'],
+            'address_id'        => ($nodedata['address_id'] >= 0) ? $nodedata['address_id'] : null
         );
 
         if ($this->db->Execute('INSERT INTO nodes (name, ipaddr, ipaddr_pub, ownerid,
 			passwd, creatorid, creationdate, access, warning, info, netdev,
-			location, location_city, location_street, location_house, location_flat,
-			linktype, linkradiosector, linktechnology, linkspeed, port, chkmac, halfduplex, nas,
-			longitude, latitude, netid, invprojectid, authtype)
+			linktype, linkradiosector, linktechnology,
+			linkspeed, port, chkmac, halfduplex, nas,
+			longitude, latitude, netid, invprojectid, authtype, address_id)
 			VALUES (?, inet_aton(?), inet_aton(?), ?, ?, ?,
-			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+			?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))) {
+
             $id = $this->db->GetLastInsertID('nodes');
 
             // EtherWerX support (devices have some limits)

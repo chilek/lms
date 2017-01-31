@@ -24,127 +24,109 @@
  *  $Id$
  */
 
-if(!empty($_POST['division'])) 
-{
+if (!empty($_POST['division'])) {
 	$division = $_POST['division'];
-	
+
 	foreach($division as $key => $value)
-	        $division[$key] = trim($value);
-			
-	if($division['name']=='' && $division['description']=='' && $division['shortname']=='')
-	{
+		$division[$key] = trim($value);
+
+	if ($division['name']=='' && $division['description']=='' && $division['shortname']=='') {
 		$SESSION->redirect('?m=divisionlist');
 	}
-	
-	if($division['name'] == '')
+
+	if ($division['name'] == '')
 		$error['name'] = trans('Division long name is required!');
 
-	if($division['shortname'] == '')
+	if ($division['shortname'] == '')
 		$error['shortname'] = trans('Division short name is required!');
-	elseif($DB->GetOne('SELECT 1 FROM divisions WHERE shortname = ?', array($division['shortname'])))
+	elseif ($DB->GetOne('SELECT 1 FROM divisions WHERE shortname = ?', array($division['shortname'])))
 		$error['shortname'] = trans('Division with specified name already exists!');
 
-	if($division['address'] == '')
-		$error['address'] = trans('Address is required!');
+	if ($division['location_city_name'] == '')
+		$error['division[location_city_name]'] = trans('City is required!');
 
-	if($division['city'] == '')
-		$error['city'] = trans('City is required!');
-	
-	if($division['zip'] == '')
-		$error['zip'] = trans('Zip code is required!');
-	elseif(!check_zip($division['zip']))
-		$error['zip'] = trans('Incorrect ZIP code!');
+	if ($division['location_zip'] == '')
+		$error['division[location_zip]'] = trans('Zip code is required!');
+	else if (!check_zip($division['location_zip']))
+		$error['division[location_zip]'] = trans('Incorrect ZIP code!');
 
-	if($division['ten'] != '' && !check_ten($division['ten']) && !isset($division['tenwarning']))
-	{
+	if ($division['ten'] != '' && !check_ten($division['ten']) && !isset($division['tenwarning'])) {
 		$error['ten'] = trans('Incorrect Tax Exempt Number! If you are sure you want to accept it, then click "Submit" again.');
 		$division['tenwarning'] = 1;
 	}
 
-	if($division['regon'] != '' && !check_regon($division['regon']))
+	if ($division['regon'] != '' && !check_regon($division['regon']))
 		$error['regon'] = trans('Incorrect Business Registration Number!');
 
-	if($division['account'] != '' && (strlen($division['account'])>48 || !preg_match('/^([A-Z][A-Z])?[0-9]+$/', $division['account'])))
+	if ($division['account'] != '' && (strlen($division['account'])>48 || !preg_match('/^([A-Z][A-Z])?[0-9]+$/', $division['account'])))
 		$error['account'] = trans('Wrong account number!');
 
-	if($division['inv_paytime'] == '')
+	if ($division['inv_paytime'] == '')
 		$division['inv_paytime'] = NULL;
 
 	if (!preg_match('/^[0-9]*$/', $division['tax_office_code']))
 		$error['tax_office_code'] = trans('Invalid format of Tax Office Code!');
 
-	if (!$error) {
-		if (empty($division['teryt'])) {
-			$division['location_city'] = null;
-			$division['location_street'] = null;
-			$division['location_house'] = null;
-			$division['location_flat'] = null;
-		}
+    if (!$error) {
+		$address_id = $LMS->InsertAddress( $division );
+
 		$args = array(
-			'name' => $division['name'],
-			'shortname' => $division['shortname'],
-			'address' => $division['address'],
-			'city' => $division['city'],
-			'zip' => $division['zip'],
-			SYSLOG::RES_COUNTRY => $division['countryid'],
-			'ten' => $division['ten'],
-			'regon' => $division['regon'],
-			'rbename' => $division['rbename'],
-			'rbe' => $division['rbe'],
-			'account' => $division['account'],
-			'inv_header' => $division['inv_header'],
-			'inv_footer' => $division['inv_footer'],
-			'inv_author' => $division['inv_author'],
-			'inv_cplace' => $division['inv_cplace'],
-			'inv_paytime' => $division['inv_paytime'],
-			'inv_paytype' => $division['inv_paytype'] ? $division['inv_paytype'] : null,
-			'description' => $division['description'],
-			'location_city' => $division['location_city'],
-			'location_street' => $division['location_street'] ? $division['location_street'] : null,
-			'location_house' => $division['location_house'],
-			'location_flat' => $division['location_flat'],
+			'name'            => $division['name'],
+			'shortname'       => $division['shortname'],
+			'ten'             => $division['ten'],
+			'regon'           => $division['regon'],
+			'rbe'             => $division['rbe'],
+			'rbename'         => $division['rbename'],
+			'account'         => $division['account'],
+			'inv_header'      => $division['inv_header'],
+			'inv_footer'      => $division['inv_footer'],
+			'inv_author'      => $division['inv_author'],
+			'inv_cplace'      => $division['inv_cplace'],
+			'inv_paytime'     => $division['inv_paytime'],
+			'inv_paytype'     => $division['inv_paytype'] ? $division['inv_paytype'] : null,
+			'description'     => $division['description'],
 			'tax_office_code' => $division['tax_office_code'],
+			'address_id'      => ($address_id >= 0 ? $address_id : null)
 		);
-		$DB->Execute('INSERT INTO divisions (name, shortname, address, city, zip,
-			countryid, ten, regon, rbe, rbename, account, inv_header, inv_footer, inv_author,
-			inv_cplace, inv_paytime, inv_paytype, description, location_city, location_street,
-			location_house, location_flat, tax_office_code)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+
+		$DB->Execute('INSERT INTO divisions (name, shortname,
+			ten, regon, rbe, rbename, account, inv_header, inv_footer, inv_author,
+			inv_cplace, inv_paytime, inv_paytype, description, tax_office_code, address_id)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
 		if ($SYSLOG) {
 			$args[SYSLOG::RES_DIV] = $DB->GetLastInsertID('divisions');
 			$SYSLOG->AddMessage(SYSLOG::RES_DIV, SYSLOG::OPER_ADD, $args);
 		}
 
-		if(!isset($division['reuse']))
-		{
+		if (!isset($division['reuse'])) {
 			$SESSION->redirect('?m=divisionlist');
 		}
 	}
-}	
+}
 
-$default_zip = ConfigHelper::getConfig('phpui.default_zip');
-$default_city = ConfigHelper::getConfig('phpui.default_city');
+$default_zip     = ConfigHelper::getConfig('phpui.default_zip');
+$default_city    = ConfigHelper::getConfig('phpui.default_city');
 $default_address = ConfigHelper::getConfig('phpui.default_address');
 
-if (!isset($division['zip']) && $default_zip) {
-	$division['zip'] = $default_zip;
-} if (!isset($division['city']) && $default_city) {
-	$division['city'] = $default_city;
-} if (!isset($division['address']) && $default_address) {
-	$division['address'] = $default_address;
+if (!isset($division['location_zip']) && $default_zip) {
+	$division['location_zip'] = $default_zip;
+}
+
+if (!isset($division['location_city']) && $default_city) {
+	$division['location_city'] = $default_city;
 }
 
 $layout['pagetitle'] = trans('New Division');
 
 if ($_language == 'pl')
-	require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'tax_office_codes.php');
+    require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'tax_office_codes.php');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('division', $division);
+$SMARTY->assign('division' , $division);
 $SMARTY->assign('countries', $LMS->GetCountries());
-$SMARTY->assign('error', $error);
+$SMARTY->assign('error'    , $error);
 $SMARTY->display('division/divisionadd.html');
 
 ?>

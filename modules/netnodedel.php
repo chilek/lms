@@ -30,7 +30,14 @@ if (!$DB->GetOne('SELECT * FROM netnodes WHERE id=?',array($id)))
 
 $DB->BeginTrans();
 
+$addr_id = $DB->GetOne('SELECT address_id FROM netnodes WHERE id = ?', array($id));
+
+if ( is_numeric($addr_id) ) {
+    $DB->Execute('DELETE FROM addresses WHERE id = ?', array($addr_id));
+}
+
 $DB->Execute("DELETE FROM netnodes WHERE id=?",array($id));
+
 $LMS->CleanupInvprojects();
 
 $DB->CommitTrans();

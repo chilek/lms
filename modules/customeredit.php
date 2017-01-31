@@ -30,11 +30,11 @@ if (!isset($_POST['xjxfun'])) {
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 $exists = $LMS->CustomerExists($_GET['id']);
 
-if($exists < 0 && $action != 'recover')
+if ($exists < 0 && $action != 'recover')
 {
 	$SESSION->redirect('?m=customerinfo&id='.$_GET['id']);
 }
-elseif(!$exists)
+elseif (!$exists)
 {
 	$SESSION->redirect('?m=customerlist');
 }
@@ -48,28 +48,26 @@ elseif (isset($_POST['customerdata']))
 
 	foreach ($customerdata as $key => $value)
 		if ($key != 'uid' && $key != 'wysiwyg' && !in_array($key, $contacttypes))
-			$customerdata[$key] = trim($value);
+			$customerdata[$key] = trim_rec($value);
 
-	if($customerdata['lastname'] == '')
+	if ($customerdata['lastname'] == '')
 		$error['lastname'] = trans('Last/Company name cannot be empty!');
 
-    if($customerdata['name'] == '' && !$customerdata['type'])
+    if ($customerdata['name'] == '' && !$customerdata['type'])
         $error['name'] = trans('First name cannot be empty!');
 
-	if ($customerdata['street'] == '')
-		$error['street'] = trans('Street name required!');
+	// check addresses
+	foreach ( $customerdata['addresses'] as $k=>$v ) {
+		if ( $v['location_address_type'] == BILLING_ADDRESS && !$v['location_street_name'] ) {
+			$error['customerdata[addresses][' . $k . '][location_street_name]'] = trans('Street name required!');
+			$customerdata['addresses'][ $k ]['show'] = true;
+		}
 
-	if ($customerdata['building'] != '' && $customerdata['street'] == '')
-		$error['street'] = trans('Street name required!');
-
-	if ($customerdata['apartment'] != '' && $customerdata['building'] == '')
-		$error['building'] = trans('Building number required!');
-
-	if ($customerdata['post_building'] != '' && $customerdata['post_street'] == '')
-		$error['post_street'] = trans('Street name required!');
-
-	if ($customerdata['post_apartment'] != '' && $customerdata['post_building'] == '')
-		$error['post_building'] = trans('Building number required!');
+		if ( $v['location_zip'] && !check_zip($v['location_zip']) ) {
+			$error['customerdata[addresses][' . $k . '][location_zip]'] = trans('Incorrect ZIP code!');
+			$customerdata['addresses'][ $k ]['show'] = true;
+		}
+	}
 
 	if ($customerdata['ten'] !='') {
 		if (!isset($customerdata['tenwarning']) && !check_ten($customerdata['ten'])) {
@@ -115,29 +113,18 @@ elseif (isset($_POST['customerdata']))
 		}
 	}
 
-	if($customerdata['regon'] != '' && !check_regon($customerdata['regon']))
+	if ($customerdata['regon'] != '' && !check_regon($customerdata['regon']))
 		$error['regon'] = trans('Incorrect Business Registration Number!');
 
-	if($customerdata['icn'] != '' && !check_icn($customerdata['icn']))
+	if ($customerdata['icn'] != '' && !check_icn($customerdata['icn']))
 		$error['icn'] = trans('Incorrect Identity Card Number!');
 
-	if($customerdata['zip'] !='' && !check_zip($customerdata['zip']) && !isset($customerdata['zipwarning']))
-	{
-		$error['zip'] = trans('Incorrect ZIP code! If you are sure you want to accept it, then click "Submit" again.');
-		$zipwarning = 1;
-	}
-	if($customerdata['post_zip'] !='' && !check_zip($customerdata['post_zip']) && !isset($customerdata['post_zipwarning']))
-	{
-		$error['post_zip'] = trans('Incorrect ZIP code! If you are sure you want to accept it, then click "Submit" again.');
-		$post_zipwarning = 1;
-	}
-
-	if($customerdata['pin'] == '')
+	if ($customerdata['pin'] == '')
 		$error['pin'] = trans('PIN code is required!');
-	elseif(!preg_match('/^[0-9]{4,6}$/',$customerdata['pin']))
+	elseif (!preg_match('/^[0-9]{4,6}$/',$customerdata['pin']))
 		$error['pin'] = trans('Incorrect PIN code!');
 
-	if($customerdata['status'] == 1 && $LMS->GetCustomerNodesNo($customerdata['id'])) 
+	if ($customerdata['status'] == 1 && $LMS->GetCustomerNodesNo($customerdata['id'])) 
 		$error['status'] = trans('Interested customers can\'t have computers!');
 
 	$contacts = array();
@@ -147,9 +134,13 @@ elseif (isset($_POST['customerdata']))
 	foreach ($CUSTOMERCONTACTTYPES as $contacttype => $properties)
 		$properties['validator']($customerdata, $contacts, $error);
 
-	foreach ($customerdata['emails'] as $idx => $val)
-		if ($val['type'] & (CONTACT_INVOICES | CONTACT_DISABLED))
-			$emaileinvoice = true;
+	if ($customerdata['emails']) {
+		foreach ($customerdata['emails'] as $idx => $val) {
+			if ($val['type'] & (CONTACT_INVOICES | CONTACT_DISABLED)) {
+				$emaileinvoice = true;
+			}
+		}
+	}
 
 	if (isset($customerdata['invoicenotice']) && !$emaileinvoice)
 		$error['invoicenotice'] = trans('If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices');
@@ -174,13 +165,14 @@ elseif (isset($_POST['customerdata']))
                 'error' => $error
             )
         );
+
         $customerdata = $hook_data['customerdata'];
         $error = $hook_data['error'];
-        
-	if(!$error) {
+
+	if (!$error) {
 		$customerdata['cutoffstop'] = $cutoffstop;
 
-		if(!isset($customerdata['consentdate']))
+		if (!isset($customerdata['consentdate']))
 			$customerdata['consentdate'] = 0;
 		else {
 			$consent = $DB->GetOne('SELECT consentdate FROM customers WHERE id = ?', array($customerdata['id']));
@@ -188,13 +180,13 @@ elseif (isset($_POST['customerdata']))
 				$customerdata['consentdate'] = $consent;
 		}
 
-		if(!isset($customerdata['divisionid']))
+		if (!isset($customerdata['divisionid']))
 			$customerdata['divisionid'] = 0;
 
 		$LMS->CustomerUpdate($customerdata);
 
                 $hook_data = $LMS->executeHook(
-                    'customeredit_after_submit', 
+                    'customeredit_after_submit',
                     array(
                         'customerdata' => $customerdata,
                     )
@@ -249,8 +241,6 @@ elseif (isset($_POST['customerdata']))
 		$customerinfo['balance'] = $olddata['balance'];
 		$customerinfo['stateid'] = isset($olddata['stateid']) ? $olddata['stateid'] : 0;
 		$customerinfo['post_stateid'] = isset($olddata['post_stateid']) ? $olddata['post_stateid'] : 0;
-		$customerinfo['zipwarning'] = empty($zipwarning) ? 0 : 1;
-		$customerinfo['post_zipwarning'] = empty($post_zipwarning) ? 0 : 1;
 		$customerinfo['tenwarning'] = empty($tenwarning) ? 0 : 1;
 		$customerinfo['tenexistencewarning'] = empty($tenexistencewarning) ? 0 : 1;
 		$customerinfo['ssnwarning'] = empty($ssnwarning) ? 0 : 1;
@@ -297,12 +287,12 @@ $hook_data = $LMS->executeHook(
 );
 $customerinfo = $hook_data['customerinfo'];
 
-$SMARTY->assign('xajax', $LMS->RunXajax());
-$SMARTY->assign('customerinfo',$customerinfo);
-$SMARTY->assign('cstateslist',$LMS->GetCountryStates());
-$SMARTY->assign('countrieslist',$LMS->GetCountries());
-$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname, status FROM divisions ORDER BY shortname'));
-$SMARTY->assign('recover',($action == 'recover' ? 1 : 0));
+$SMARTY->assign('xajax'        , $LMS->RunXajax());
+$SMARTY->assign('customerinfo' , $customerinfo);
+$SMARTY->assign('cstateslist'  , $LMS->GetCountryStates());
+$SMARTY->assign('countrieslist', $LMS->GetCountries());
+$SMARTY->assign('divisions'    , $DB->GetAll('SELECT id, shortname, status FROM divisions ORDER BY shortname'));
+$SMARTY->assign('recover'      , ($action == 'recover' ? 1 : 0));
 $SMARTY->assign('customeredit_sortable_order', $SESSION->get_persistent_setting('customeredit-sortable-order'));
 $SMARTY->display('customer/customeredit.html');
 

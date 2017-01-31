@@ -186,10 +186,17 @@ if (!empty($data['cityid'])) {
 	$SMARTY->assign('streets', $streets);
 }
 
-$data['varname'] = $_GET['name'];
-$data['formname'] = $_GET['form'];
+$data['varname']   = $_GET['name'];
+$data['formname']  = $_GET['form'];
+$data['boxid']     = ( !empty($_GET['boxid'])) ? $_GET['boxid'] : null;
+$data['countries'] = $DB->GetAll('SELECT id, name FROM countries;');
 
 $SMARTY->assign('data', $data);
 $SMARTY->assign('states', $states);
-$SMARTY->display('choose/chooselocation.html');
+
+if ( empty($_GET['boxid']) ) {
+    $SMARTY->display('choose/chooselocation.html');
+} else {
+    $SMARTY->display('choose/chooselocation_ext.html');
+}
 ?>

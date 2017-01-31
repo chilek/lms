@@ -106,32 +106,47 @@ if (strlen(trim($d)) && $d!=-1) {
 	$warr[] = "n.divisionid=$d";
 }
 
-
 $fstr = empty($warr) ? '' : ' WHERE ' . implode(' AND ', $warr);
 
 $nlist = $DB->GetAll('SELECT n.id, n.name, n.type, n.status, n.invprojectid, p.name AS project,
-		n.location, n.divisionid,
+		n.divisionid,
 		lb.name AS borough_name, lb.type AS borough_type,
-		ld.name AS district_name, ls.name AS state_name
+		ld.name AS district_name, ls.name AS state_name,
+		addr.name as location_name,
+        addr.city as location_city_name, addr.street as location_street_name,
+        addr.city_id as location_city, addr.street_id as location_street,
+        addr.house as location_house, addr.flat as location_flat
 	FROM netnodes n
-	LEFT JOIN invprojects p ON (n.invprojectid = p.id) 
-	LEFT JOIN location_cities lc ON lc.id = n.location_city
-	LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
-	LEFT JOIN location_districts ld ON ld.id = lb.districtid
-	LEFT JOIN location_states ls ON ls.id = ld.stateid ' . $fstr . ' ' . $ostr . ' ' . $dir);
+		LEFT JOIN addresses addr        ON addr.id = n.address_id
+		LEFT JOIN invprojects p         ON (n.invprojectid = p.id)
+		LEFT JOIN location_cities lc    ON lc.id = addr.city_id
+		LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
+		LEFT JOIN location_districts ld ON ld.id = lb.districtid
+		LEFT JOIN location_states ls    ON ls.id = ld.stateid ' . $fstr . ' ' . $ostr . ' ' . $dir);
 
-$listdata['total'] = sizeof($nlist);
-$listdata['order'] = $order;
-$listdata['direction'] = $dir;
-$listdata['status'] = $s;
-$listdata['type'] = $t;
+if ( $nlist ) {
+    foreach ($nlist as $k=>$v) {
+        $tmp = array('city_name'      => $v['location_city_name'],
+                     'location_house' => $v['location_house'],
+                     'location_flat'  => $v['location_flat'],
+                     'street_name'    => $v['location_street_name']);
+
+        $nlist[$k]['location'] = location_str( $tmp );
+    }
+}
+
+$listdata['total']        = sizeof($nlist);
+$listdata['order']        = $order;
+$listdata['direction']    = $dir;
+$listdata['status']       = $s;
+$listdata['type']         = $t;
 $listdata['invprojectid'] = $p;
-$listdata['ownership'] = $w;
-$listdata['divisionid'] = $d;
+$listdata['ownership']    = $w;
+$listdata['divisionid']   = $d;
 
-if(!isset($_GET['page']))
-        $SESSION->restore('ndlp', $_GET['page']);
-	
+if (!isset($_GET['page']))
+	$SESSION->restore('ndlp', $_GET['page']);
+
 $page = (! $_GET['page'] ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']);
 $start = ($page - 1) * $pagelimit;
@@ -140,11 +155,11 @@ $SESSION->save('ndlp', $page);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('page',$page);
-$SMARTY->assign('pagelimit',$pagelimit);
-$SMARTY->assign('start',$start);
-$SMARTY->assign('nlist',$nlist);
-$SMARTY->assign('listdata',$listdata);
+$SMARTY->assign('page'     , $page);
+$SMARTY->assign('pagelimit', $pagelimit);
+$SMARTY->assign('start'    , $start);
+$SMARTY->assign('nlist'    , $nlist);
+$SMARTY->assign('listdata' , $listdata);
 $SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
 
 $nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
