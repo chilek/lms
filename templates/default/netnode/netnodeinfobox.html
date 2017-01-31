@@ -58,27 +58,27 @@
 			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-		        <B>{trans("Project:")}</B>
+			<B>{trans("Project:")}</B>
 		</TD>
 		<TD WIDTH="98%">
 			{if ($nodeinfo.invprojectid == '')}{trans("none")}{else}{$nodeinfo.projectname}{/if}
 		</TD>
 	</TR>
-	
-	
+
 	{if $nodeinfo.location}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-		        <B>{trans("Location:")}</B>
+			<B>{trans("Location:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-		        {$nodeinfo.location}{if $nodeinfo.borough_name} ({$nodeinfo.state_name} / {$nodeinfo.district_name} / {$_BOROUGHTYPES[$nodeinfo.borough_type]} {$nodeinfo.borough_name}){/if}
+			{$nodeinfo.location}{if $nodeinfo.borough_name} ({$nodeinfo.state_name} / {$nodeinfo.district_name} / {$_BOROUGHTYPES[$nodeinfo.borough_type]} {$nodeinfo.borough_name}){/if}
 		</TD>
 	</TR>
 	{/if}
+
 	{if $nodeinfo.longitude || $nodeinfo.latitude}
 	<TR>
 		<TD WIDTH="1%">
@@ -108,7 +108,7 @@
 		<TD WIDTH="2%" COLSPAN="2">
 		</TD>
 		<TD WIDTH="98%">
-			<a HREF="?m=netdevmap&lon={$nodeinfo.longitude}&lat={$nodeinfo.latitude}"><img src="img/network.gif" alt=""> {trans("Show on map")} &raquo;&raquo;&raquo;</a>			
+			<a HREF="?m=netdevmap&lon={$nodeinfo.longitude}&lat={$nodeinfo.latitude}"><img src="img/network.gif" alt=""> {trans("Show on map")} &raquo;&raquo;&raquo;</a>
 		</TD>
 	</TR>
 	{/if}

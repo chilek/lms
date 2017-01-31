@@ -15,7 +15,10 @@
 			<A href="?m=netdevlist&amp;o=model{if $listdata.direction == "asc" && $listdata.order == "model"},desc{/if}">{trans("Model:")}</A> {if $listdata.order == "model"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="nobr alift-left valign-top">
-			<A href="?m=netdevlist&amp;o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">{trans("Location:")}</A> {if $listdata.order == "location"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<A href="?m=netdevlist&amp;o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">
+				{trans("Location:")}
+			</A>
+			{if $listdata.order == "location"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" class="nobr align-left valign-top">
 			<A href="?m=netdevlist&amp;o=netnode{if $listdata.direction == "asc" && $listdata.order == "netnode"},desc{/if}">{trans("Network node:")}</A> {if $listdata.order == "netnode"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}

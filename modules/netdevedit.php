@@ -64,7 +64,7 @@ switch ($action) {
 			ORDER BY srcport', array($dev1['id'], $dev1['id'], $dev1['id'], $dev1['id'], $dev1['id'],
 					$dev1['id'], $dev1['id'], $dev1['id']));
 
-			$links2 = $DB->GetAll('(SELECT type, 
+			$links2 = $DB->GetAll('(SELECT type,
 				(CASE src WHEN ? THEN dst ELSE src END) AS id,
 				speed, technology,
 				(CASE src WHEN ? THEN srcport ELSE dstport END) AS srcport,
@@ -609,7 +609,7 @@ if (isset($_POST['netdev'])) {
 
 	if ($netdevdata['invprojectid'] == '-1') { // nowy projekt
 		if (!strlen(trim($netdevdata['projectname']))) {
-		 $error['projectname'] = trans('Project name is required');
+			$error['projectname'] = trans('Project name is required');
 		}
 		if ($DB->GetOne("SELECT id FROM invprojects WHERE name=? AND type<>?",
 			array($netdevdata['projectname'], INV_PROJECT_SYSTEM)))
@@ -629,13 +629,6 @@ if (isset($_POST['netdev'])) {
 		if (!isset($netdevdata['nastype']))
 			$netdevdata['nastype'] = 0;
 
-		if (empty($netdevdata['teryt'])) {
-			$netdevdata['location_city'] = null;
-			$netdevdata['location_street'] = null;
-			$netdevdata['location_house'] = null;
-			$netdevdata['location_flat'] = null;
-		}
-
 		$ipi = $netdevdata['invprojectid'];
 		if ($ipi == '-1') {
 			$DB->BeginTrans();
@@ -644,40 +637,16 @@ if (isset($_POST['netdev'])) {
 			$ipi = $DB->GetLastInsertID('invprojects');
 			$DB->CommitTrans();
 		}
+
 		if ($netdevdata['invprojectid'] == '-1' || intval($ipi)>0) {
 			$netdevdata['invprojectid'] = intval($ipi);
 		} else {
 			$netdevdata['invprojectid'] = NULL;
 		}
-		if ($netdevdata['netnodeid']=="-1") {
-			$netdevdata['netnodeid']=NULL;
-			$netnodeid = $DB->GetOne("SELECT netnodeid FROM netdevices WHERE id = ?", array($netdevdata['id']));
-			if ($netnodeid) {
-				/* Był jakiś węzeł i został usunięty */
-				$netdevdata['location'] = '';
-				$netdevdata['location_city'] = null;
-				$netdevdata['location_street'] = null;
-				$netdevdata['location_house'] = null;
-				$netdevdata['location_flat'] = null;
-				$netdevdata['longitude'] = null;
-            			$netdevdata['latitude'] = null;
-			}
-		} else {
-			/* dziedziczenie lokalizacji */
-			$dev = $DB->GetRow("SELECT * FROM netnodes n WHERE id = ?", array($netdevdata['netnodeid']));
-			if ($dev) {
-				if (!strlen($netdevdata['location'])) {
-					$netdevdata['location'] = $dev['location'];
-					$netdevdata['location_city'] = $dev['location_city'];
-					$netdevdata['location_street'] = $dev['location_street'];
-					$netdevdata['location_house'] = $dev['location_house'];
-					$netdevdata['location_flat'] = $dev['location_flat'];
-				}
-				if (!strlen($netdevdata['longitude']) || !strlen($netdevdata['latitude'])) {
-					$netdevdata['longitude'] = $dev['longitude'];
-					$netdevdata['latitude'] = $dev['latitude'];
-				}
-			}
+
+		// no net node selected
+		if ($netdevdata['netnodeid'] == "-1") {
+			$netdevdata['netnodeid'] = null;
 		}
 
 		$LMS->NetDevUpdate($netdevdata);
@@ -694,24 +663,22 @@ if (isset($_POST['netdev'])) {
 	if ($netdevdata['purchasetime'])
 		$netdevdata['purchasedate'] = date('Y/m/d', $netdevdata['purchasetime']);
 
-	if ($netdevdata['city_name'] || $netdevdata['street_name']) {
+	if (($netdevdata['location_city'] || $netdevdata['location_street']) && !$netdevdata['ownerid'] ) {
 		$netdevdata['teryt'] = true;
-		$netdevdata['location'] = location_str($netdevdata);
 	}
 }
 
 $netdevdata['id'] = $_GET['id'];
 
-$netdevips = $LMS->GetNetDevIPs($_GET['id']);
-$nodelist = $LMS->GetUnlinkedNodes();
+$netdevips       = $LMS->GetNetDevIPs($_GET['id']);
+$nodelist        = $LMS->GetUnlinkedNodes();
 $netdevconnected = $LMS->GetNetDevConnectedNames($_GET['id']);
-$netcomplist = $LMS->GetNetDevLinkedNodes($_GET['id']);
-$netdevlist = $LMS->GetNotConnectedDevices($_GET['id']);
+$netcomplist     = $LMS->GetNetDevLinkedNodes($_GET['id']);
+$netdevlist      = $LMS->GetNotConnectedDevices($_GET['id']);
 
 unset($netdevlist['total']);
 unset($netdevlist['order']);
 unset($netdevlist['direction']);
-
 
 $layout['pagetitle'] = trans('Device Edit: $a ($b)', $netdevdata['name'], $netdevdata['producer']);
 
@@ -724,27 +691,29 @@ $SMARTY->assign('NNprojects',$nprojects);
 $netnodes = $DB->GetAll("SELECT * FROM netnodes ORDER BY name");
 $SMARTY->assign('NNnodes',$netnodes);
 
-
-$SMARTY->assign('error', $error);
-$SMARTY->assign('netdevinfo', $netdevdata);
-$SMARTY->assign('objectid', $netdevdata['id']);
-$SMARTY->assign('netdevlist', $netdevconnected);
-$SMARTY->assign('netcomplist', $netcomplist);
-$SMARTY->assign('nodelist', $nodelist);
-$SMARTY->assign('netdevcontype', $netdevcontype);
-$SMARTY->assign('netdevauthtype', $netdevauthtype);
-$SMARTY->assign('netdevips', $netdevips);
-$SMARTY->assign('restnetdevlist', $netdevlist);
-$SMARTY->assign('devlinktype', $SESSION->get('devlinktype'));
+$SMARTY->assign('error'                , $error);
+$SMARTY->assign('netdevinfo'           , $netdevdata);
+$SMARTY->assign('objectid'             , $netdevdata['id']);
+$SMARTY->assign('netdevlist'           , $netdevconnected);
+$SMARTY->assign('netcomplist'          , $netcomplist);
+$SMARTY->assign('nodelist'             , $nodelist);
+$SMARTY->assign('netdevcontype'        , $netdevcontype);
+$SMARTY->assign('netdevauthtype'       , $netdevauthtype);
+$SMARTY->assign('netdevips'            , $netdevips);
+$SMARTY->assign('restnetdevlist'       , $netdevlist);
+$SMARTY->assign('devlinktype'          , $SESSION->get('devlinktype'));
 $SMARTY->assign('devlinksrcradiosector', $SESSION->get('devlinksrcradiosector'));
 $SMARTY->assign('devlinkdstradiosector', $SESSION->get('devlinkdstradiosector'));
-$SMARTY->assign('devlinktechnology', $SESSION->get('devlinktechnology'));
-$SMARTY->assign('devlinkspeed', $SESSION->get('devlinkspeed'));
-$SMARTY->assign('nodelinktype', $SESSION->get('nodelinktype'));
-$SMARTY->assign('nodelinkradiosector', $SESSION->get('nodelinkradiosector'));
-$SMARTY->assign('nodelinktechnology', $SESSION->get('nodelinktechnology'));
-$SMARTY->assign('nodelinkspeed', $SESSION->get('nodelinkspeed'));
-$SMARTY->assign('nastype', $LMS->GetNAStypes());
+$SMARTY->assign('devlinktechnology'    , $SESSION->get('devlinktechnology'));
+$SMARTY->assign('devlinkspeed'         , $SESSION->get('devlinkspeed'));
+$SMARTY->assign('nodelinktype'         , $SESSION->get('nodelinktype'));
+$SMARTY->assign('nodelinkradiosector'  , $SESSION->get('nodelinkradiosector'));
+$SMARTY->assign('nodelinktechnology'   , $SESSION->get('nodelinktechnology'));
+$SMARTY->assign('nodelinkspeed'        , $SESSION->get('nodelinkspeed'));
+$SMARTY->assign('nastype'              , $LMS->GetNAStypes());
+
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+    $SMARTY->assign('customers', $LMS->GetCustomerNames());
 
 include(MODULES_DIR . '/netdevxajax.inc.php');
 

@@ -17,7 +17,6 @@
 	}
 </style>
 
-
 <form name="netdevadd" method="post" action="?m=netdevadd">
 <input type="submit" class="hiddenbtn">
 
@@ -45,16 +44,7 @@
 				<tr>
 					<td width="50%" class="valign-top">
 					    <table class="tab-beautify">
-                            <tr>
-								<td><img src="img/customer.gif" alt=""> {trans("Owner:")}</td>
-								<td>
-									{if isset($customer.id)}
-                                        {customerlist form="netdevadd" customers=$customers selected=$customer.id selectname="customer" inputname="netdev[ownerid]"}
-						            {else}
-                                        {customerlist form="netdevadd" customers=$customers selected=$note.customerid selectname="customer" inputname="netdev[ownerid]"}
-						            {/if}
-								</td>
-							</tr>
+                            
 							<tr>
 								<td><img src="img/producer.gif" alt=""> {trans("Status:")}</td>
 								<td>
@@ -94,22 +84,48 @@
 							</tr>
 
 							<tr>
+								<td><img src="img/customer.gif" alt=""> {trans("Owner:")}</td>
+								<td>
+									{if isset($customer.id)}
+										{customerlist form="netdevadd" customers=$customers selected=$customer.id selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input"}
+									{else}
+										{customerlist form="netdevadd" customers=$customers selected=$note.customerid selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input"}
+									{/if}
+								</td>
+							</tr>
+
+							<tr id="location_select">
 								<td><img src="img/home.gif" alt=""> {trans("Location:")}</td>
 								<td>
-								    <input type="text" size="30" value="{$netdev.location}" id="location" name="netdev[location]"  {tip text="Enter location (optional)" trigger="location"}>
-									<a href="javascript:void(0);" onclick="if (check_teryt()) return locationchoosewin('netdev', 'netdevadd', document.forms['netdevadd'].elements['netdev[location_city]'].value,  document.forms['netdevadd'].elements['netdev[location_street]'].value, {ConfigHelper::getConfig('phpui.default_teryt_city')})" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</a>
-									<br>
-								    <input type="hidden" name="netdev[location_city]" value="{$netdev.location_city}">
-								    <input type="hidden" name="netdev[location_street]" value="{$netdev.location_street}">
-								    <input type="hidden" name="netdev[location_house]" value="{$netdev.location_house}">
-								    <input type="hidden" name="netdev[location_flat]" value="{$netdev.location_flat}">
-									<input type="checkbox" name="netdev[teryt]" id="teryt" onchange="check_teryt('location')"{if $netdev.teryt} checked{/if}><label for="teryt">{trans("TERRIT-DB")}</label>
+									<select id="customer_addresses" name="netdev[address_id]" {tip trigger="address_id"}></select>
+								</td>
+							</tr>
+
+							<tr id="location_box">
+								<td><img src="img/home.gif" alt=""> {trans("Location:")}</td>
+								<td>
+									{location_box
+										prefix               = "netdev"
+										address_id           = "{$netdev.address_id}"
+										location_name        = "{$netdev.location_name}"
+										location_state_name  = "{$netdev.location_state_name}"
+										location_state       = "{$netdev.location_state}"
+										location_city_name   = "{$netdev.location_city_name}"
+										location_city        = "{$netdev.location_city}"
+										location_street_name = "{$netdev.location_street_name}"
+										location_street      = "{$netdev.location_street}"
+										location_house       = "{$netdev.location_house}"
+										location_flat        = "{$netdev.location_flat}"
+										location_zip         = "{$netdev.location_zip}"
+										location_country_id  = "{$netdev.location_country_id}"
+										teryt                = "{$netdev.teryt}"
+									}
 								</td>
 							</tr>
 					        <tr>
 					            <td colspan="2" class="text-normal">
                                     <img src="img/network.gif" alt="">
-                                    <a href="javascript:set_lat_lon()" accesskey="s">{trans("Determine GPS coordinates automatically")}</a>
+                                    <span class="lms-ui-button" id="set_gps">{trans("Determine GPS coordinates automatically")}</span>
 					            </td>
 					        </tr>
 							<tr>
@@ -245,25 +261,33 @@
 </table>
 
 </form>
+
+<script type="text/javascript" src="img/lms-ui-iconselectmenu.js"></script>
 <script type="text/javascript">
 <!--
+    var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+    var timer;
+
     document.forms['netdevadd'].elements['netdev[name]'].focus();
-    check_teryt('location', true);
     setNNProject();
 
-    function set_lat_lon(){
-        var loc = document.getElementById('location').value;
+    /*
+     * \brief Update address location coordinates. Require google API key.
+     */
+    $( '#set_gps' ).click( function() {
+        var owner_id = $( '#ownerid_input' ).val();
+        var address_string = '';
 
-        {literal}
-        var geocoder = new google.maps.Geocoder();
-        geocoder.geocode( {'address' : loc}, function(results, status) {
-            if (status == google.maps.GeocoderStatus.OK) {
-                document.getElementById('latitude').value = results[0].geometry.location.lat();
-                document.getElementById('longitude').value = results[0].geometry.location.lng();
-            }
-        });
-        {/literal}
-    }
+        if ( owner_id != 'undefined' && owner_id > 0 && $( '#customer_addresses' ).val() > 0 ) {
+            address_string = $( '#customer_addresses option:selected' ).text();
+        } else {
+            
+        }
+
+        if ( address_string.length > 0 ) {
+            setAddressLocation( address_string, "#latitude", "#longitude" );
+        }
+    });
 
     $( function() {
         $( "#modelselect" ).click( function() {
@@ -271,6 +295,71 @@
             event.preventDefault();
         });
     });
+
+    /*!
+     * \brief Show / hide location choose box.
+     * If owner id is set then show list with customer addresses,
+     * else show location box to manual set location for network device.
+     *
+     * \param customer_id
+     */
+    function updateLocationBoxesDisplay( customer_id ) {
+        if ( customer_id == 'undefined' || customer_id == 0 ) {
+            $( '#location_select' ).css('display', 'none');
+            $( '#location_box'    ).css('display', 'table-row');
+        } else {
+            $( '#location_select' ).css('display', 'table-row');
+            $( '#location_box'    ).css('display', 'none');
+        }
+    }
+
+    /*!
+     * \brief Update customer addresses list on input change.
+     */
+    $( '#ownerid_input' ).on('input', function() {
+        var id = $(this).val();
+
+        updateLocationBoxesDisplay( id );
+
+        if ( id != 'undefined' && id > 0 ) {
+            // delay for send request, 300ms
+            clearTimeout(timer);
+            timer = setTimeout( function() { customer_addresses.setAddressList( getCustomerAddresses(id) ); }, 300);
+        }
+    });
+
+    /*!
+     * \brief On keydown, clear the countdown.
+     */
+    $( '#ownerid_input' ).on('keydown', function () {
+        clearTimeout(timer);
+    });
+
+    {if !ConfigHelper::checkConfig('phpui.big_networks')}
+    /*!
+     * \brief Update customer addresses list on select change.
+     * Using when big_networks is set as false.
+     */
+    $( '#ownerid_select' ).change( function() {
+        var id = $(this).val();
+
+        updateLocationBoxesDisplay( id );
+
+        if ( id != 'undefined' && id > 0 ) {
+            customer_addresses.setAddressList( getCustomerAddresses(id) );
+        }
+    });
+    {/if}
+
+    updateLocationBoxesDisplay( {intval($netdevinfo.ownerid)} );
+
+    {if $netdevinfo.address_id && $netdevinfo.ownerid}
+        customer_addresses.setAddressList( getCustomerAddresses( {intval($netdevinfo.ownerid)} ) );
+        $( '#customer_addresses' ).val( {$netdevinfo.address_id} );
+    {/if}
+
+    customer_addresses.init();
+    customer_addresses.refresh();
 //-->
 </script>
 {/block}

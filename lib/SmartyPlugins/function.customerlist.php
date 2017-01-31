@@ -31,6 +31,10 @@ function smarty_function_customerlist($params, $template) {
 
 		$result .= sprintf('<SELECT name="%s" value="%s" ', $params['selectname'], $params['selected']);
 
+		if ( !empty($params['select_id']) ) {
+			$result .= 'id="' . $params['select_id'] . '" ';
+		}
+
 		if (!empty($params['selecttip']))
 			$result .= smarty_function_tip(array('text' => $params['selecttip']), $template);
 		else
@@ -66,6 +70,10 @@ function smarty_function_customerlist($params, $template) {
 	} else
 		$result .= trans("ID:");
 	$result .= '&nbsp;<INPUT type="text" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" size="5" ';
+
+	if ( !empty($params['input_id']) ) {
+		$result .= 'id="' . $params['input_id'] . '" ';
+	}
 
 	$on_change = !empty($params['customOnChange']) ? $params['customOnChange'] : '';
 

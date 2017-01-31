@@ -43,21 +43,22 @@ $layout['pagetitle'] = trans('Voip Account Edit: $a', $voipaccountinfo['login'])
 
 if (isset($_POST['voipaccountedit'])) {
 	$voipaccountedit = $_POST['voipaccountedit'];
-	
+	//$voipaccountedit['address_id'] = $voipaccountinfo['address_id'];
+
 	foreach ($voipaccountedit as $key => $value) {
 		if (!is_array($value)) {
 			$voipaccountedit[$key] = trim($value);
 		}
 	}
-	
+
 	if ($voipaccountedit['login']=='')
 		$error['login'] = trans('Voip account login is required!');
 	else {
 		$loginids = $LMS->GetVoipAccountIDByLogin($voipaccountedit['login']);
 
 		$foundid = 0;
-		if(isset($loginids))
-			foreach($loginids as $loginid)
+		if (isset($loginids))
+			foreach ($loginids as $loginid)
 			{
 				$foundid = ($loginid['id'] == $voipaccountedit['id']);
 				if($foundid)
@@ -65,8 +66,8 @@ if (isset($_POST['voipaccountedit'])) {
 				else
 					$error['login'] = trans('Specified login is in use!');
 			}
-
 	}
+
 	if (!$error['login'])
 		if (!preg_match('/^[_a-z0-9-]+$/i', $voipaccountedit['login']))
 			$error['login'] = trans('Specified login contains forbidden characters!');
@@ -116,19 +117,19 @@ if (isset($_POST['voipaccountedit'])) {
 		$voipaccountedit['cost_limit'] = $voipaccountinfo['cost_limit'];
 	}
 
-	$voipaccountinfo['flags'] = $voipaccountedit['flags'] = $flags;
-	$voipaccountinfo['login'] = $voipaccountedit['login'];
-	$voipaccountinfo['passwd'] = $voipaccountedit['passwd'];
-	$voipaccountinfo['ownerid'] = $voipaccountedit['ownerid'];
-	$voipaccountinfo['location'] = $voipaccountedit['location'];
-	$voipaccountinfo['location_city'] = $voipaccountedit['location_city'];
-	$voipaccountinfo['location_street'] = $voipaccountedit['location_street'];
-	$voipaccountinfo['location_house'] = $voipaccountedit['location_house'];
-	$voipaccountinfo['location_flat'] = $voipaccountedit['location_flat'];
+    $voipaccountinfo['flags']   = $voipaccountedit['flags'] = $flags;
+    $voipaccountinfo['login']   = $voipaccountedit['login'];
+    $voipaccountinfo['passwd']  = $voipaccountedit['passwd'];
+    $voipaccountinfo['ownerid'] = $voipaccountedit['ownerid'];
 
-	foreach ($voipaccountedit['phone'] as $k=>$v)
-		$voipaccountinfo['phones'][$k] = array('phone'=>$v);
+    foreach ($voipaccountedit['phone'] as $k=>$v)
+        $voipaccountinfo['phones'][$k] = array('phone'=>$v);
 
+    // check if selected address belongs to customer
+    if ( $voipaccountedit['address_id'] != -1 && !$LMS->checkCustomerAddress($voipaccountedit['address_id'], $voipaccountedit['ownerid']) ) {
+        $error['address_id'] = trans('Selected address was not assigned to customer.');
+        $voipaccountedit['address_id'] = null;
+    }
 
     $hook_data = $plugin_manager->executeHook(
         'voipaccountedit_before_submit',
@@ -142,22 +143,11 @@ if (isset($_POST['voipaccountedit'])) {
     $error = $hook_data['error'];
 
 	if (!$error) {
-		if (empty($voipaccountedit['teryt'])) {
-			$voipaccountedit['location_city']   = null;
-			$voipaccountedit['location_street'] = null;
-			$voipaccountedit['location_house']  = null;
-			$voipaccountedit['location_flat']   = null;
-		}
-
 		$LMS->VoipAccountUpdate($voipaccountedit);
 		$SESSION->redirect('?m=voipaccountinfo&id='.$voipaccountedit['id']);
 		die;
 	}
-} else
-	if ($voipaccountinfo['location_city'] && $voipaccountinfo['location_street']) {
-		$voipaccountinfo['teryt'] = 1;
-		$voipaccountinfo['location'] = location_str($voipaccountinfo);
-	}
+}
 
 $customers = $LMS->GetCustomerNames();
 
@@ -173,11 +163,13 @@ $hook_data = $plugin_manager->executeHook(
 
 $voipaccountinfo = $hook_data['voipaccountinfo'];
 
-$SMARTY->assign('pool_list', $DB->GetAll("SELECT id,name FROM voip_pool_numbers;"));
-$SMARTY->assign('customervoipaccounts',$customervoipaccounts);
-$SMARTY->assign('error',$error);
-$SMARTY->assign('voipaccountinfo',$voipaccountinfo);
-$SMARTY->assign('customers',$customers);
+$SMARTY->assign('pool_list'           , $DB->GetAll("SELECT id,name FROM voip_pool_numbers;"));
+$SMARTY->assign('customervoipaccounts', $customervoipaccounts);
+$SMARTY->assign('error'               , $error);
+$SMARTY->assign('voipaccountinfo'     , $voipaccountinfo);
+$SMARTY->assign('customers'           , $customers);
+$SMARTY->assign('customer_addresses'  , $LMS->getCustomerAddresses($voipaccountinfo['ownerid']) );
+
 $SMARTY->display('voipaccount/voipaccountedit.html');
 
 ?>

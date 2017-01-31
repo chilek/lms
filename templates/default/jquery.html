@@ -34,6 +34,22 @@
 		}
 	});
 	{/if}
+
+	$( function() {
+		var lmsErrors = {
+			{if $error}
+			{foreach $error as $k=>$v}
+				"{$k|replace:'"':'\"'}":"{$v|replace:'"':'\"'}",
+			{/foreach}
+			{/if}
+		};
+
+		$.each( lmsErrors, function( index, value ) {
+			$("[name='" + index + "']")
+				.attr('title', value)
+				.addClass('alert');
+		});
+	});
 //-->
 </script>
 <script type="text/javascript" src="img/jquery.js"></script>

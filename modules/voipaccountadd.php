@@ -131,6 +131,12 @@ if (isset($_POST['voipaccountdata'])) {
 			$error['customer'] = trans('Voip account owner is not connected!');
 	}
 
+    // check if selected address belongs to customer
+    if ( $voipaccountdata['address_id'] != -1 && !$LMS->checkCustomerAddress($voipaccountdata['address_id'], $voipaccountdata['ownerid']) ) {
+        $error['address_id'] = trans('Selected address was not assigned to customer.');
+        $voipaccountdata['address_id'] = null;
+    }
+
     $hook_data = $plugin_manager->executeHook(
         'voipaccountadd_before_submit',
         array('voipaccountdata'=>$voipaccountdata, 'error'=>$error)
@@ -146,13 +152,6 @@ if (isset($_POST['voipaccountdata'])) {
 
 		if (isset($voipaccountdata['customer_record_flag']))
 			$voipaccountdata['flags'] |= CALL_FLAG_CUSTOMER_RECORDING;
-
-		if (empty($voipaccountdata['teryt'])) {
-			$voipaccountdata['location_city'] = null;
-			$voipaccountdata['location_street'] = null;
-			$voipaccountdata['location_house'] = null;
-			$voipaccountdata['location_flat'] = null;
-		}
 
 		$voipaccountid = $LMS->VoipAccountAdd($voipaccountdata);
 
@@ -177,7 +176,7 @@ if ($customerid = $voipaccountdata['ownerid']) {
 }
 
 $hook_data = $plugin_manager->executeHook(
-    'voipaccountadd_before_display', 
+    'voipaccountadd_before_display',
     array(
         'voipaccountdata' => $voipaccountdata,
         'smarty' => $SMARTY,
