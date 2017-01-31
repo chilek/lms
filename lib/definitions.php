@@ -521,6 +521,8 @@ define('EVENT_NETWORK', 2);
 define('EVENT_SERVICE', 3);
 define('EVENT_INSTALLATION', 4);
 define('EVENT_MEETING', 5);
+define('EVENT_VACATION', 6);
+define('EVENT_DUTY', 7);
 
 $EVENTTYPES = array(
 	EVENT_OTHER => trans('other'),
@@ -528,6 +530,8 @@ $EVENTTYPES = array(
 	EVENT_SERVICE => trans('service<!event>'),
 	EVENT_INSTALLATION => trans('installation'),
 	EVENT_MEETING => trans('meeting')
+	EVENT_VACATION => trans('vacation')
+	EVENT_DUTY => trans('duty')
 );
 
 $EVENTSTYLES = array(
@@ -536,6 +540,8 @@ $EVENTSTYLES = array(
 	EVENT_SERVICE => 'background-color: red; color: white;',
 	EVENT_INSTALLATION => 'background-color: green; color: white;',
 	EVENT_MEETING => 'background-color: yellow; color: black;'
+	EVENT_VACATION => 'background-color: white; color: black;'
+	EVENT_DUTY => 'background-color: brown; color: white;'
 );
 
 define('SESSIONTYPE_PPPOE', 1);

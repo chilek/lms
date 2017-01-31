@@ -3584,4 +3584,7 @@ $_LANG['\'to\' date'] = 'data obowiązywania \'do\'';
 $_LANG['creator'] = 'twórca';
 $_LANG['authorising'] = 'zatwierdzający';
 
+$_LANG['vacation'] = 'urlop';
+$_LANG['duty'] = 'dyżur';
+
 ?>
