@@ -180,86 +180,125 @@ $allradiosectors = $DB->GetAllByKey("SELECT * FROM netradiosectors ORDER BY id",
 
 $truenetnodes = $DB->GetAllByKey("SELECT nn.id, nn.name, nn.invprojectid, nn.type, nn.status, nn.ownership, nn.coowner,
 		nn.uip, nn.miar,
-		nn.location_city, nn.location_street, nn.location_house, nn.location_flat, nn.location,
+		a.city_id as location_city, a.street_id as location_street, a.house as location_house, a.flat as location_flat,
+		a.city as location_city_name, a.street as location_street_name,
 		(SELECT ls.name FROM location_cities lc
-			JOIN location_boroughs lb ON lb.id = lc.boroughid
+			JOIN location_boroughs lb  ON lb.id = lc.boroughid
 			JOIN location_districts ld ON ld.id = lb.districtid
 			JOIN location_states ls ON ls.id = ld.stateid
-			WHERE lc.id = nn.location_city) AS area_woj,
+			WHERE lc.id = a.city_id) AS area_woj,
 		(SELECT ld.name FROM location_cities lc
 			JOIN location_boroughs lb ON lb.id = lc.boroughid
 			JOIN location_districts ld ON ld.id = lb.districtid
 			JOIN location_states ls ON ls.id = ld.stateid
-			WHERE lc.id = nn.location_city) AS area_pow,
-		(SELECT lb.name FROM location_boroughs lb JOIN location_cities lc ON lc.boroughid = lb.id WHERE lc.id = nn.location_city) AS area_gmi, 
+			WHERE lc.id = a.city_id) AS area_pow,
+		(SELECT lb.name FROM location_boroughs lb JOIN location_cities lc ON lc.boroughid = lb.id WHERE lc.id = a.city_id) AS area_gmi,
 		(SELECT ".$DB->Concat('ls.ident', "'_'", 'ld.ident', "'_'", 'lb.ident', "'_'", 'lb.type')." 
 			FROM location_cities lc 
-			JOIN location_boroughs lb ON lb.id = lc.boroughid 
+			JOIN location_boroughs lb  ON lb.id = lc.boroughid 
 			JOIN location_districts ld ON ld.id = lb.districtid 
-			JOIN location_states ls ON ls.id = ld.stateid 
-			WHERE lc.id = nn.location_city) AS area_terc, 
-		(SELECT lc.name FROM location_cities lc WHERE lc.id = nn.location_city) AS area_city, 
-		(SELECT lc.ident FROM location_cities lc WHERE lc.id = nn.location_city) AS area_simc, 
-		(SELECT tu.cecha FROM teryt_ulic tu WHERE tu.id = nn.location_street) AS address_cecha, 
+			JOIN location_states ls    ON ls.id = ld.stateid
+			WHERE lc.id = a.city_id) AS area_terc,
+		(SELECT lc.name  FROM location_cities lc WHERE lc.id = a.city_id) AS area_city,
+		(SELECT lc.ident FROM location_cities lc WHERE lc.id = a.city_id) AS area_simc,
+		(SELECT tu.cecha FROM teryt_ulic tu WHERE tu.id = a.street_id) AS address_cecha,
 		(SELECT (CASE WHEN ls.name2 IS NOT NULL THEN ".$DB->Concat('ls.name2' , "' '", 'ls.name')." ELSE ls.name END) AS name 
-			FROM location_streets ls WHERE ls.id = nn.location_street) AS address_ulica, 
-		(SELECT tu.sym_ul FROM teryt_ulic tu WHERE tu.id = nn.location_street) AS address_symul, 
-		(CASE WHEN (nn.location_flat IS NULL OR nn.location_flat = '') THEN nn.location_house ELSE "
-			.$DB->Concat('nn.location_house ', "'/'", 'nn.location_flat')." END) AS address_budynek, 
-		(SELECT zip FROM pna WHERE pna.cityid = nn.location_city
-			AND (pna.streetid IS NULL OR (pna.streetid IS NOT NULL AND pna.streetid = nn.location_street)) LIMIT 1) AS location_zip,
+			FROM location_streets ls WHERE ls.id = a.street_id) AS address_ulica,
+		(SELECT tu.sym_ul FROM teryt_ulic tu WHERE tu.id = a.street_id) AS address_symul,
+		(CASE WHEN (a.flat IS NULL OR a.flat = '') THEN a.house ELSE "
+			.$DB->Concat('a.house ', "'/'", 'a.flat')." END) AS address_budynek,
+		(SELECT zip FROM pna WHERE pna.cityid = a.city_id
+			AND (pna.streetid IS NULL OR (pna.streetid IS NOT NULL AND pna.streetid = a.street_id)) LIMIT 1) AS location_zip,
 		nn.longitude, nn.latitude
 	FROM netnodes nn
+		LEFT JOIN addresses a ON nn.address_id = a.id
 	ORDER BY nn.id", "id");
-if (empty($truenetnodes))
+
+if (empty($truenetnodes)) {
 	$truenetnodes = array();
+} else {
+	foreach ($truenetnodes as $k=>$v) {
+        $tmp = array('city_name'      => $v['location_city_name'],
+                     'location_house' => $v['location_house'],
+                     'location_flat'  => $v['location_flat'],
+                     'street_name'    => $v['location_street_name']);
+
+        $location = location_str( $tmp );
+
+        if ( !$location ) {
+            $location = "";
+        }
+
+        $truenetnodes[$k]['location'] = $location;
+    }
+}
+
 //foreach ($truenetnodes as $idx => $netnode)
 //	echo "network node $idx: " . print_r($netnode, true) . '<br>';
 
 // prepare info about network devices from lms database
-$netdevices = $DB->GetAllByKey("SELECT nd.id, nd.location_city, nd.location_street, nd.location_house, nd.location_flat, nd.location, 
+$netdevices = $DB->GetAllByKey("SELECT nd.id, a.city_id as location_city, a.street_id as location_street, a.house as location_house, a.flat as location_flat,
+		a.city as location_city_name, a.street as location_street_name, nd.ownerid,
 		(SELECT ls.name FROM location_cities lc
-			JOIN location_boroughs lb ON lb.id = lc.boroughid
+			JOIN location_boroughs lb  ON lb.id = lc.boroughid
 			JOIN location_districts ld ON ld.id = lb.districtid
-			JOIN location_states ls ON ls.id = ld.stateid
-			WHERE lc.id = nd.location_city) AS area_woj,
+			JOIN location_states ls    ON ls.id = ld.stateid
+			WHERE lc.id = a.city_id) AS area_woj,
 		(SELECT ld.name FROM location_cities lc
-			JOIN location_boroughs lb ON lb.id = lc.boroughid
+			JOIN location_boroughs lb  ON lb.id = lc.boroughid
 			JOIN location_districts ld ON ld.id = lb.districtid
-			JOIN location_states ls ON ls.id = ld.stateid
-			WHERE lc.id = nd.location_city) AS area_pow,
-		(SELECT lb.name FROM location_boroughs lb JOIN location_cities lc ON lc.boroughid = lb.id WHERE lc.id = nd.location_city) AS area_gmi, 
-		(SELECT ".$DB->Concat('ls.ident', "'_'", 'ld.ident', "'_'", 'lb.ident', "'_'", 'lb.type')." 
-			FROM location_cities lc 
-			JOIN location_boroughs lb ON lb.id = lc.boroughid 
-			JOIN location_districts ld ON ld.id = lb.districtid 
-			JOIN location_states ls ON ls.id = ld.stateid 
-			WHERE lc.id = nd.location_city) AS area_terc, 
-		(SELECT lc.name FROM location_cities lc WHERE lc.id = nd.location_city) AS area_city, 
-		(SELECT lc.ident FROM location_cities lc WHERE lc.id = nd.location_city) AS area_simc, 
-		(SELECT tu.cecha FROM teryt_ulic tu WHERE tu.id = nd.location_street) AS address_cecha, 
-		(SELECT (CASE WHEN ls.name2 IS NOT NULL THEN ".$DB->Concat('ls.name2' , "' '", 'ls.name')." ELSE ls.name END) AS name 
-			FROM location_streets ls WHERE ls.id = nd.location_street) AS address_ulica, 
-		(SELECT tu.sym_ul FROM teryt_ulic tu WHERE tu.id = nd.location_street) AS address_symul, 
-		(CASE WHEN (nd.location_flat IS NULL OR nd.location_flat = '') THEN nd.location_house ELSE "
-			.$DB->Concat('nd.location_house ', "'/'", 'nd.location_flat')." END) AS address_budynek, 
-		(SELECT zip FROM pna WHERE pna.cityid = nd.location_city
-			AND (pna.streetid IS NULL OR (pna.streetid IS NOT NULL AND pna.streetid = nd.location_street)) LIMIT 1) AS location_zip, 
-		ports, 
+			JOIN location_states ls    ON ls.id = ld.stateid
+			WHERE lc.id = a.city_id) AS area_pow,
+		(SELECT lb.name FROM location_boroughs lb JOIN location_cities lc ON lc.boroughid = lb.id WHERE lc.id = a.city_id) AS area_gmi,
+		(SELECT ".$DB->Concat('ls.ident', "'_'", 'ld.ident', "'_'", 'lb.ident', "'_'", 'lb.type')."
+			FROM location_cities lc
+			JOIN location_boroughs lb  ON lb.id = lc.boroughid
+			JOIN location_districts ld ON ld.id = lb.districtid
+			JOIN location_states ls    ON ls.id = ld.stateid
+			WHERE lc.id = a.city_id) AS area_terc,
+		(SELECT lc.name FROM location_cities lc WHERE lc.id = a.city_id) AS area_city,
+		(SELECT lc.ident FROM location_cities lc WHERE lc.id = a.city_id) AS area_simc,
+		(SELECT tu.cecha FROM teryt_ulic tu WHERE tu.id = a.street_id) AS address_cecha,
+		(SELECT (CASE WHEN ls.name2 IS NOT NULL THEN ".$DB->Concat('ls.name2' , "' '", 'ls.name')." ELSE ls.name END) AS name
+			FROM location_streets ls WHERE ls.id = a.street_id) AS address_ulica,
+		(SELECT tu.sym_ul FROM teryt_ulic tu WHERE tu.id = a.street_id) AS address_symul,
+		(CASE WHEN (a.flat IS NULL OR a.flat = '') THEN a.house ELSE "
+			.$DB->Concat('a.house ', "'/'", 'a.flat')." END) AS address_budynek,
+		(SELECT zip FROM pna WHERE pna.cityid = a.city_id
+			AND (pna.streetid IS NULL OR (pna.streetid IS NOT NULL AND pna.streetid = a.street_id)) LIMIT 1) AS location_zip,
+		ports,
 		nd.longitude, nd.latitude, nd.status, nd.netnodeid,
 		(CASE WHEN nd.invprojectid = 1 THEN nn.invprojectid ELSE nd.invprojectid END) AS invprojectid
-		FROM netdevices nd
+	FROM netdevices nd
 		LEFT JOIN netnodes nn ON nn.id = nd.netnodeid
-		WHERE EXISTS (SELECT id FROM netlinks nl WHERE nl.src = nd.id OR nl.dst = nd.id) 
+		LEFT JOIN addresses a ON nd.address_id = a.id
+	WHERE EXISTS (SELECT id FROM netlinks nl WHERE nl.src = nd.id OR nl.dst = nd.id)
 		ORDER BY nd.name", "id");
 
 // prepare info about network nodes
-$netnodes = array();
-$netdevs = array();
+$netnodes   = array();
+$netdevs    = array();
 $foreigners = array();
 $netnodeid = 1;
+
+global $LMS;
+
 if ($netdevices)
 	foreach ($netdevices as $netdevid => $netdevice) {
+
+        $tmp = array('city_name'      => $netdevice['location_city_name'],
+                     'location_house' => $netdevice['location_house'],
+                     'location_flat'  => $netdevice['location_flat'],
+                     'street_name'    => $netdevice['location_street_name']);
+
+        $location = location_str( $tmp );
+
+        if ( $location ) {
+            $netdevices[$netdevid]['location'] = $location;
+        } else if ( $netdevice['ownerid'] ){
+            $netdevices[$netdevid]['location'] = $LMS->getAddressForCustomerStuff( $netdevice['ownerid'] );
+        }
+
 		$backboneports = $DB->GetAll("SELECT nl.type, nl.technology, speed,
 				(CASE src WHEN ? THEN (CASE WHEN rssrc.frequency IS NULL THEN rsdst.frequency ELSE rssrc.frequency END)
 					ELSE (CASE WHEN rsdst.frequency IS NULL THEN rssrc.frequency ELSE rsdst.frequency END) END) AS freq,
@@ -276,6 +315,7 @@ if ($netdevices)
 					OR (nddst.netnodeid IS NOT NULL AND nndst.ownership = 2))
 			GROUP BY nl.type, nl.technology, speed, freq",
 			array($netdevice['id'], $netdevice['id'], $netdevice['id']));
+
 		$distports = $DB->GetAll("SELECT nl.type, nl.technology, speed,
 				(CASE src WHEN ? THEN (CASE WHEN rssrc.frequency IS NULL THEN rsdst.frequency ELSE rssrc.frequency END)
 					ELSE (CASE WHEN rsdst.frequency IS NULL THEN rssrc.frequency ELSE rsdst.frequency END) END) AS freq,
@@ -291,6 +331,7 @@ if ($netdevices)
 				AND (nddst.netnodeid IS NULL OR nndst.ownership < 2)
 			GROUP BY nl.type, nl.technology, speed, freq",
 			array($netdevice['id'], $netdevice['id'], $netdevice['id']));
+
 		$accessports = $DB->GetAll("SELECT linktype AS type, linktechnology AS technology,
 				linkspeed AS speed, rs.frequency, " . $DB->GroupConcat('rs.id') . " AS radiosectors,
 				c.type AS customertype, COUNT(port) AS portcount
@@ -335,13 +376,13 @@ if ($netdevices)
 
 		$netdevice['netnodename'] = $netdevices[$netdevid]['netnodename'] = $netnodename;
 		if (!array_key_exists($netnodename, $netnodes)) {
-			$netnodes[$netnodename]['ports'] = 0;
-			$netnodes[$netnodename]['backboneports'] = array();
-			$netnodes[$netnodename]['totalbackboneports'] = 0;
-			$netnodes[$netnodename]['distports'] = array();
-			$netnodes[$netnodename]['totaldistports'] = 0;
-			$netnodes[$netnodename]['accessports'] = array();
-			$netnodes[$netnodename]['personalaccessports'] = 0;
+			$netnodes[$netnodename]['ports']                 = 0;
+			$netnodes[$netnodename]['backboneports']         = array();
+			$netnodes[$netnodename]['totalbackboneports']    = 0;
+			$netnodes[$netnodename]['distports']             = array();
+			$netnodes[$netnodename]['totaldistports']        = 0;
+			$netnodes[$netnodename]['accessports']           = array();
+			$netnodes[$netnodename]['personalaccessports']   = 0;
 			$netnodes[$netnodename]['commercialaccessports'] = 0;
 
 			$netnodes[$netnodename]['id'] = $netnodeid;
@@ -359,15 +400,19 @@ if ($netdevices)
 				$netnodes[$netnodename]['miar'] = intval($netnode['miar']);
 				$netnodes[$netnodename]['ownership'] = intval($netnode['ownership']);
 				$netnodes[$netnodename]['coowner'] = $netnode['coowner'];
+
 				if (strlen($netnode['coowner'])) {
 					$coowner = $netnode['coowner'];
+
 					if (!array_key_exists($coowner, $foreigners))
 						$foreigners[$coowner] = array(
 							'projects' => array(),
 						);
+
 					if (!in_array($prj, $foreigners[$coowner]['projects']))
 						$foreigners[$coowner]['projects'][] = $prj;
 				}
+
 				if (isset($netnode['area_woj'])) {
 					$netnodes[$netnodename]['area_woj'] = $netnode['area_woj'];
 					$netnodes[$netnodename]['area_pow'] = $netnode['area_pow'];
@@ -883,10 +928,12 @@ foreach ($netnodes as $netnodename => $netnode) {
 	}
 
 	// save info about network ranges
-	$ranges = $DB->GetAll("SELECT n.linktype, n.linktechnology, n.location_street, n.location_city, n.location_house
+	$ranges = $DB->GetAll("SELECT n.linktype, n.linktechnology,
+			a.city_id as location_city, a.street_id as location_street, a.house as location_house
 		FROM nodes n
-		WHERE n.ownerid > 0 AND n.location_city <> 0 AND n.netdev IN (" . implode(',', $netnode['netdevices']) . ")
-		GROUP BY n.linktype, n.linktechnology, n.location_street, n.location_city, n.location_house");
+			LEFT JOIN addresses a ON n.address_id = a.id
+		WHERE n.ownerid > 0 AND a.city_id <> 0 AND n.netdev IN (" . implode(',', $netnode['netdevices']) . ")
+		GROUP BY n.linktype, n.linktechnology, a.street_id, a.city_id, a.house");
 	if (empty($ranges))
 		continue;
 
@@ -964,9 +1011,10 @@ foreach ($netnodes as $netnodename => $netnode) {
 				WHEN ".TARIFF_TV." THEN 'TV'
 				ELSE 'INT' END)") . " AS servicetypes, SUM(t.downceil) AS downstream, SUM(t.upceil) AS upstream
 			FROM nodeassignments na
-			JOIN nodes n ON n.id = na.nodeid
-			JOIN assignments a ON a.id = na.assignmentid
-			JOIN tariffs t ON t.id = a.tariffid
+			JOIN nodes n             ON n.id = na.nodeid
+			LEFT JOIN addresses addr ON addr.id = n.address_id
+			JOIN assignments a       ON a.id = na.assignmentid
+			JOIN tariffs t           ON t.id = a.tariffid
 			JOIN customers c ON c.id = n.ownerid
 			LEFT JOIN (SELECT aa.customerid AS cid, COUNT(id) AS total FROM assignments aa
 				WHERE aa.tariffid = 0 AND aa.liabilityid = 0
@@ -974,8 +1022,8 @@ foreach ($netnodes as $netnodename => $netnode) {
 					AND (aa.dateto > ?NOW? OR aa.dateto = 0) GROUP BY aa.customerid)
 				AS allsuspended ON allsuspended.cid = c.id
 			JOIN netdevices nd ON nd.id = n.netdev
-			WHERE n.ownerid > 0 AND n.netdev > 0 AND n.linktype = ? AND n.linktechnology = ? AND n.location_city = ?
-				AND (n.location_street = ? OR n.location_street IS NULL) AND n.location_house = ?
+			WHERE n.ownerid > 0 AND n.netdev > 0 AND n.linktype = ? AND n.linktechnology = ? AND addr.city_id = ?
+				AND (addr.street_id = ? OR addr.street_id IS NULL) AND addr.house = ?
 				AND a.suspended = 0 AND a.period IN (".implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)).")
 				AND (a.datefrom = 0 OR a.datefrom < ?NOW?) AND (a.dateto = 0 OR a.dateto > ?NOW?)
 				AND allsuspended.total IS NULL
