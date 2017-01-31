@@ -63,6 +63,8 @@ version ?.??.?? (????-??-??):
   - enhancement: added support for effective dates of tariffs and promotions - only effective
     ones are displayed by default [chilan]
   - enhancement: added rbe info fields to divisions and rbe name for customers [chilan]
+  - enhancement: allow filter document list by creator/authorising and all date types
+    for periods [chilan]
 
 version 1.11.21 (2016-10-14):
 
