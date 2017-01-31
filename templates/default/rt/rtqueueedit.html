@@ -196,9 +196,9 @@
 	</TR>
 	<TR>
 		<TD style="width: 100%;" class="text-right">
-			<A HREF="javascript:document.queue.submit();" accesskey="s">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			<A HREF="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');" accesskey="d">{trans("Delete")}<IMG src="img/delete.gif" alt=""></A>
-			<A HREF="?m=rtqueuelist">{trans("Cancel")}<IMG src="img/cancel.gif" alt=""></A>
+			<A HREF="javascript:document.queue.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
+			<A HREF="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');" accesskey="d"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
+			<A HREF="?m=rtqueuelist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A>
 		</TD>
 	</TR>
     </TBODY>

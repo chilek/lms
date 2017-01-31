@@ -212,6 +212,12 @@
 					</TD>
 				</TR>
 				<TR>
+					<TD style="width: 1%;" class="nobr">{trans("RBE Name:")}</TD>
+					<TD style="width: 99%;">
+						<TEXTAREA name="customerdata[rbename]" cols="45" rows="4" {tip text="Enter National Court Register / Register of Business Entities Name (optional)" trigger="rbename"}>{$customerinfo.rbename|escape}</TEXTAREA>
+					</TD>
+				</TR>
+				<TR>
 					<TD style="width: 1%;" class="nobr">{trans("RBE")}:</TD>
 					<TD style="width: 99%;">
 						<INPUT type="text" value="{$customerinfo.rbe}" name="customerdata[rbe]" size="30" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>

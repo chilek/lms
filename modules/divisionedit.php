@@ -111,6 +111,7 @@ if ( !empty($_POST['division']) ) {
 			'shortname'   => $division['shortname'],
 			'ten'         => $division['ten'],
 			'regon'       => $division['regon'],
+			'rbename'     => $customeradd['rbename'],
 			'account'     => $division['account'],
 			'inv_header'  => $division['inv_header'],
 			'inv_footer'  => $division['inv_footer'],
@@ -125,7 +126,7 @@ if ( !empty($_POST['division']) ) {
 		);
 
 		$DB->Execute('UPDATE divisions SET name=?, shortname=?,
-			ten=?, regon=?, account=?, inv_header=?,
+			ten=?, regon=?, rbename=?, account=?, inv_header=?,
 			inv_footer=?, inv_author=?, inv_cplace=?, inv_paytime=?,
 			inv_paytype=?, description=?, status=?, tax_office_code = ?
 			WHERE id=?', array_values($args));

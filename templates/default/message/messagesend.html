@@ -11,7 +11,15 @@
         <TR>
         	<TD CLASS="fall superlight"><PRE>{$message.body}</PRE></TD>
 	</TR>
-</TABLE>				
+</TABLE>
+<script type="text/javascript">
+<!--
+	{if $recipcount > 50}
+		if (!confirm('{t a=$recipcount}Are you sure you want to send messages to $a customer(s)?{/t}'))
+			window.stop();
+	{/if}
+//-->
+</script>
 {if $recipcount}
 <BR><B>{trans("Sending messages to:")}</B><BR>
 {/if}

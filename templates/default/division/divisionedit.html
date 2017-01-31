@@ -109,6 +109,28 @@
 	</TR>
 	<TR>
 		<TD>
+			<IMG src="img/serialnumber.gif" alt="">
+		</TD>
+		<TD class="bold nobr">
+			{trans("RBE Name:")}
+		</TD>
+		<TD>
+			<TEXTAREA name="division[rbename]" cols="45" rows="4" {tip text="Enter National Court Register / Register of Business Entities Name (optional)" trigger="rbename"}>{$division.rbename|escape}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<IMG src="img/serialnumber.gif" alt="">
+		</TD>
+		<TD class="bold nobr">
+			{trans("RBE:")}
+		</TD>
+		<TD>
+			<INPUT type="text" value="{$division.rbe}" name="division[rbe]" size="30" {tip text="Enter National Court Register / Register of Business Entities Number (optional)" trigger="rbe"}>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
 			<IMG src="img/card.gif" alt="">
 		</TD>
 		<TD class="bold nobr">

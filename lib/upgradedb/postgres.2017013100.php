@@ -595,7 +595,7 @@ $this->Execute("
             LEFT JOIN addresses a ON n.address_id = a.id
         WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;");
 
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016122200', 'dbversion'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017013100', 'dbversion'));
 
 $this->CommitTrans();
 

@@ -217,11 +217,11 @@ if(isset($_POST['ticket']))
 				$phones = array();
 				if (!empty($info['contacts']))
 					foreach ($info['contacts'] as $contact) {
-						$contact = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+						$target = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
 						if ($contact['type'] & CONTACT_EMAIL)
-							$emails[] = $contact;
+							$emails[] = $target;
 						else
-							$phones[] = $contact;
+							$phones[] = $target;
 					}
 
 				$body .= "\n\n-- \n";
@@ -313,7 +313,8 @@ if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 
 $queuelist = $LMS->GetQueueNames();
-if (strpos('helpdesk', ConfigHelper::getConfig('userpanel.enabled_modules')) !== false
+$userpanel_enabled_modules = ConfigHelper::getConfig('userpanel.enabled_modules');
+if ((empty($userpanel_enabled_modules) || strpos('helpdesk', $userpanel_enabled_modules) !== false)
 	&& ConfigHelper::getConfig('userpanel.limit_ticket_movements_to_selected_queues')) {
 	$selectedqueues = explode(';', ConfigHelper::getConfig('userpanel.queues'));
 	if (in_array($ticket['queueid'], $selectedqueues))

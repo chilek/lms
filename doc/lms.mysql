@@ -207,7 +207,8 @@ CREATE TABLE customers (
   ten varchar(16) 	NOT NULL DEFAULT '',
   ssn varchar(11) 	NOT NULL DEFAULT '',
   regon varchar(255) 	NOT NULL DEFAULT '',
-  rbe varchar(255) 	NOT NULL DEFAULT '',
+  rbe varchar(255)	NOT NULL DEFAULT '',
+  rbename varchar(255)	NOT NULL DEFAULT '',
   icn varchar(255) 	NOT NULL DEFAULT '',
   info text 		NOT NULL,
   notes text 		NOT NULL DEFAULT '',
@@ -1082,6 +1083,7 @@ CREATE TABLE cashsources (
     id      int(11)         NOT NULL auto_increment,
     name	varchar(32)     DEFAULT '' NOT NULL,
     description text		DEFAULT NULL,
+    account varchar(48)     NOT NULL DEFAULT '',
     deleted smallint		NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     UNIQUE KEY name (name)
@@ -1622,6 +1624,8 @@ CREATE TABLE promotions (
     name varchar(255)   NOT NULL,
     description text    DEFAULT NULL,
     disabled tinyint(1) DEFAULT '0' NOT NULL,
+    datefrom int(11)    DEFAULT '0' NOT NULL,
+    dateto   int(11)    DEFAULT '0' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY name (name)
 ) ENGINE=InnoDB;
@@ -1743,6 +1747,8 @@ CREATE TABLE tariffs (
   disabled tinyint  NOT NULL DEFAULT '0',
   voip_tariff_id      int(11) DEFAULT NULL,
   voip_tariff_rule_id int(11) DEFAULT NULL,
+  datefrom            int(11) NOT NULL DEFAULT '0',
+  dateto              int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   UNIQUE KEY name (name, value, period),
   INDEX type (type),
@@ -2461,7 +2467,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('mail','smtp_host','127.0.0.1','',0),
 ('mail','smtp_port','25','',0),
 ('mail', 'backend', 'pear', '', 0),
-('mail', 'smtp_secure', 'ssl', '', 0),
+('mail', 'smtp_secure', 'tls', '', 0),
 ('zones','hostmaster_mail','hostmaster.localhost','',0),
 ('zones','master_dns','localhost','',0),
 ('zones','slave_dns','localhost','',0),
@@ -2822,4 +2828,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016122300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017012400');

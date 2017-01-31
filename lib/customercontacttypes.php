@@ -63,10 +63,8 @@ function format_customer_im($contact) {
 }
 
 function validate_customer_phones(&$customerdata, &$contacts, &$error) {
-    if (empty($customerdata['phones'])) {
-		return 0;
-    }
-
+	if (!isset($customerdata['phones']))
+		return;
 	foreach ($customerdata['phones'] as $idx => &$val) {
 		$phone = trim($val['contact']);
 		$name = trim($val['name']);
@@ -84,10 +82,8 @@ function validate_customer_phones(&$customerdata, &$contacts, &$error) {
 }
 
 function validate_customer_emails(&$customerdata, &$contacts, &$error) {
-    if (empty($customerdata['emails'])) {
-		return 0;
-    }
-
+	if (!isset($customerdata['emails']))
+		return;
 	foreach ($customerdata['emails'] as $idx => &$val) {
 		$email = trim($val['contact']);
 		$name = trim($val['name']);
@@ -109,10 +105,8 @@ function validate_customer_emails(&$customerdata, &$contacts, &$error) {
 }
 
 function validate_customer_accounts(&$customerdata, &$contacts, &$error) {
-    if (empty($customerdata['accounts'])) {
-        return 0;
-    }
-
+	if (!isset($customerdata['accounts']))
+		return;
 	foreach ($customerdata['accounts'] as $idx => &$val) {
 		$account = trim($val['contact']);
 		$name = trim($val['name']);
@@ -131,10 +125,8 @@ function validate_customer_accounts(&$customerdata, &$contacts, &$error) {
 }
 
 function validate_customer_urls(&$customerdata, &$contacts, &$error) {
-    if (empty($customerdata['urls'])) {
-        return 0;
-    }
-
+	if (!isset($customerdata['urls']))
+		return;
 	foreach ($customerdata['urls'] as $idx => &$val) {
 		$url = trim($val['contact']);
 		$name = trim($val['name']);
@@ -153,10 +145,8 @@ function validate_customer_urls(&$customerdata, &$contacts, &$error) {
 }
 
 function validate_customer_ims(&$customerdata, &$contacts, &$error) {
-    if (empty($customerdata['ims'])) {
-        return 0;
-    }
-
+	if (!isset($customerdata['ims']))
+		return;
 	foreach ($customerdata['ims'] as $idx => &$val) {
 		$im = trim($val['contact']);
 		$name = trim($val['name']);
@@ -199,6 +189,10 @@ $CUSTOMERCONTACTTYPES = array(
 					'label' => $CONTACTTYPES[CONTACT_NOTIFICATIONS],
 					'tip' => trans('Check if send notification'),
 				),
+				CONTACT_DOCUMENTS => array(
+					'label' => $CONTACTTYPES[CONTACT_DOCUMENTS],
+					'tip' => trans('Check if contact should be printed on documents'),
+				),
 				CONTACT_DISABLED => array(
 					'label' => $CONTACTTYPES[CONTACT_DISABLED],
 					'tip' => trans('Not visible by the customer in electronic Customer Service Representative'),
@@ -230,6 +224,10 @@ $CUSTOMERCONTACTTYPES = array(
 				CONTACT_TECHNICAL => array(
 					'label' => $CONTACTTYPES[CONTACT_TECHNICAL],
 					'tip' => trans('Check if send technical notification'),
+				),
+				CONTACT_DOCUMENTS => array(
+					'label' => $CONTACTTYPES[CONTACT_DOCUMENTS],
+					'tip' => trans('Check if contact should be printed on documents'),
 				),
 				CONTACT_DISABLED => array(
 					'label' => $CONTACTTYPES[CONTACT_DISABLED],

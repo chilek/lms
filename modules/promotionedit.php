@@ -72,13 +72,40 @@ if ($promotion) {
 		$error['name'] = trans('Specified name is in use!');
 	}
 
+	if ($promotion['datefrom'] == '')
+		$promotion['from'] = 0;
+	elseif (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $promotion['datefrom'])) {
+		list ($y, $m, $d) = explode('/', $promotion['datefrom']);
+		if (checkdate($m, $d, $y))
+			$promotion['from'] = mktime(0, 0, 0, $m, $d, $y);
+		else
+			$error['datefrom'] = trans('Incorrect effective start time!');
+	} else
+		$error['datefrom'] = trans('Incorrect effective start time!');
+
+	if ($promotion['dateto'] == '')
+		$promotion['to'] = 0;
+	elseif (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $promotion['dateto'])) {
+		list ($y, $m, $d) = explode('/', $promotion['dateto']);
+		if (checkdate($m, $d, $y))
+			$promotion['to'] = mktime(23, 59, 59, $m, $d, $y);
+		else
+			$error['dateto'] = trans('Incorrect effective end time!');
+	} else
+		$error['dateto'] = trans('Incorrect effective end time!');
+
+	if ($promotion['to'] != 0 && $promotion['from'] != 0 && $promotion['to'] < $promotion['from'])
+		$error['dateto'] = trans('Incorrect date range!');
+
 	if (!$error) {
 		$args = array(
 			'name' => $promotion['name'],
 			'description' => $promotion['description'],
+			'datefrom' => $promotion['from'],
+			'dateto' => $promotion['to'],
 			SYSLOG::RES_PROMO => $promotion['id']
 		);
-		$DB->Execute('UPDATE promotions SET name = ?, description = ?
+		$DB->Execute('UPDATE promotions SET name = ?, description = ?, datefrom = ?, dateto = ?
 			WHERE id = ?', array_values($args));
 
 		if ($SYSLOG)
@@ -89,6 +116,12 @@ if ($promotion) {
 } else {
 	$promotion = $DB->GetRow('SELECT * FROM promotions WHERE id = ?',
 		array(intval($_GET['id'])));
+
+	if ($promotion['datefrom'])
+		$promotion['datefrom'] = date('Y/m/d', $promotion['datefrom']);
+
+	if ($promotion['dateto'])
+		$promotion['dateto'] = date('Y/m/d', $promotion['dateto']);
 }
 
 $layout['pagetitle'] = trans('Promotion Edit: $a', $promotion['name']);

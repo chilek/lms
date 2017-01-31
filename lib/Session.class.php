@@ -199,8 +199,9 @@ class Session {
 
 	public function _destroySession()
 	{
-		if (time() - $this->_content['mtime'] >= $this->settings_timeout)
-			$this->DB->Execute('UPDATE users SET settings = ? WHERE login = ?', array('', $this->_content['session_login']));
+		if (isset($this->_content['mtime']) && time() - $this->_content['mtime'] >= $this->settings_timeout)
+			if (isset($this->_content['session_login']))
+				$this->DB->Execute('UPDATE users SET settings = ? WHERE login = ?', array('', $this->_content['session_login']));
 		$this->DB->Execute('DELETE FROM sessions WHERE id = ?', array($this->SID));
 		$this->_content = array();
 		$this->SID = NULL;

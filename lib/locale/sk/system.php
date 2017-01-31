@@ -70,7 +70,7 @@ function check_ssn($ssn)
 
 function check_zip($zip)
 {
-	return preg_match('/^[0-9]{2}-[0-9]{3}$/', $zip);
+	return preg_match('/^[0-9]{3}[\-\s]?[0-9]{2}$/', $zip);
 }
 
 function check_regon($regon)

@@ -53,6 +53,7 @@ CREATE TABLE customers (
 	ssn varchar(11) 	DEFAULT '' NOT NULL,
 	regon varchar(255) 	DEFAULT '' NOT NULL,
 	rbe varchar(255) 	DEFAULT '' NOT NULL, -- EDG/KRS
+	rbename varchar(255) 	DEFAULT '' NOT NULL,
 	icn varchar(255) 	DEFAULT '' NOT NULL, -- dow.os.
 	info text		DEFAULT '' NOT NULL,
 	notes text		DEFAULT '' NOT NULL,
@@ -469,6 +470,8 @@ CREATE TABLE divisions (
 	countryid	integer		NOT NULL DEFAULT 0,
 	ten		varchar(16)	NOT NULL DEFAULT '',
 	regon		varchar(255)	NOT NULL DEFAULT '',
+	rbe			varchar(255)	NOT NULL DEFAULT '',
+	rbename		varchar(255)	NOT NULL DEFAULT '',
 	account		varchar(48) 	NOT NULL DEFAULT '',
 	inv_header 	text		NOT NULL DEFAULT '',
 	inv_footer 	text		NOT NULL DEFAULT '',
@@ -893,6 +896,8 @@ CREATE TABLE tariffs (
 		REFERENCES voip_tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	voip_tariff_rule_id integer DEFAULT NULL
 		REFERENCES voip_rules (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	datefrom integer	NOT NULL DEFAULT 0,
+	dateto integer		NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	CONSTRAINT tariffs_name_key UNIQUE (name, value, period)
 );
@@ -1035,6 +1040,8 @@ CREATE TABLE promotions (
     name varchar(255)   NOT NULL,
     description text    DEFAULT NULL,
     disabled smallint   DEFAULT 0 NOT NULL,
+    datefrom integer	DEFAULT 0 NOT NULL,
+    dateto integer		DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
     UNIQUE (name)
 );
@@ -1781,6 +1788,7 @@ CREATE TABLE cashsources (
     id integer      	DEFAULT nextval('cashsources_id_seq'::text) NOT NULL,
     name varchar(32)    DEFAULT '' NOT NULL,
     description text	DEFAULT NULL,
+    account varchar(48) NOT NULL DEFAULT '',
     deleted smallint	NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     UNIQUE (name)
@@ -2566,7 +2574,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('mail', 'smtp_host', '127.0.0.1', '', 0),
 ('mail', 'smtp_port', '25', '', 0),
 ('mail', 'backend', 'pear', '', 0),
-('mail', 'smtp_secure', 'ssl', '', 0),
+('mail', 'smtp_secure', 'tls', '', 0),
 ('zones', 'hostmaster_mail', 'hostmaster.localhost', '', 0),
 ('zones', 'master_dns', 'localhost', '', 0),
 ('zones', 'slave_dns', 'localhost', '', 0),
@@ -2927,6 +2935,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2016122300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017012400');
 
 COMMIT;

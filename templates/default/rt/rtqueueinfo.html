@@ -170,9 +170,9 @@
 	{/if}
 	<TR>
 	    <TD width="100%" COLSPAN="3" ALIGN="RIGHT"> 
-	        <A HREF="?m=rtqueueview&id={$queue.id}">{trans("Browse")} <IMG src="img/view.gif" alt=""></A>
-	    	<A HREF="?m=rtqueueedit&id={$queue.id}">{trans("Edit")} <IMG src="img/save.gif" alt=""></A>
-		<A HREF="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
+	        <A HREF="?m=rtqueueview&id={$queue.id}"><IMG src="img/view.gif" alt=""> {trans("Browse")}</A>
+	    	<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG src="img/save.gif" alt=""> {trans("Edit")}</A>
+		<A HREF="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
 	    </TD>
 	</TR>
     </TBODY>

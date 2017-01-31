@@ -818,8 +818,15 @@
 							<TR>
 								<TD style="width: 3%;" colspan="3">&nbsp;</TD>
 								<TD style="width: 97%;">
-									<input type="checkbox" id="autoissued" name="autoissued">
-									<label for="autoissued">{trans("only automatically issued")}</label>
+									<label>
+										<input type="checkbox" name="autoissued">
+										{trans("only automatically issued")}
+									</label>
+									<br>
+									<label>
+										<input type="checkbox" name="manualissued">
+										{trans("only manually issued")}
+									</label>
 								</TD>
 							</TR>
 						</TABLE>

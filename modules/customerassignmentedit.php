@@ -391,6 +391,8 @@ if(isset($_POST['assignment']))
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 
+	$a['alltariffs'] = isset($a['alltariffs']);
+
 	$SMARTY->assign('error', $error);
 }
 else

@@ -194,7 +194,7 @@ if (isset($_POST['schema'])) {
 
 		if ($SYSLOG) {
 			$args[SYSLOG::RES_PROMO] = $oldschema['promotionid'];
-			$SYSLOG->AddMessage(SYSLOG_RES_PROMOSCHEMA, SYSLOG_OPER_UPDATE, $args);
+			$SYSLOG->AddMessage(SYSLOG::RES_PROMOSCHEMA, SYSLOG::OPER_UPDATE, $args);
 		}
 
 		// re-check promotionassignments data, check the number of periods

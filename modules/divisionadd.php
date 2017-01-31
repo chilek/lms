@@ -75,6 +75,8 @@ if (!empty($_POST['division'])) {
 			'shortname'       => $division['shortname'],
 			'ten'             => $division['ten'],
 			'regon'           => $division['regon'],
+			'rbename'         => $division['rbename'],
+			'rbe'             => $division['rbe'],
 			'account'         => $division['account'],
 			'inv_header'      => $division['inv_header'],
 			'inv_footer'      => $division['inv_footer'],
@@ -88,7 +90,7 @@ if (!empty($_POST['division'])) {
 		);
 
 		$DB->Execute('INSERT INTO divisions (name, shortname,
-			ten, regon, account, inv_header, inv_footer, inv_author,
+			ten, regon, rbe, rbename, account, inv_header, inv_footer, inv_author,
 			inv_cplace, inv_paytime, inv_paytype, description, tax_office_code, address_id)
 			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 

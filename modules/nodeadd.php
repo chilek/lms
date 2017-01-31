@@ -61,7 +61,7 @@ if (isset($_POST['nodedata']))
 		$nodedata['macs'][$key] = str_replace('-',':',$value);
 
 	foreach($nodedata as $key => $value)
-		if ($key != 'macs' && $key != 'authtype' && $key != 'wysiwyg')
+		if ($key != 'macs' && $key != 'authtype' && $key != 'wysiwyg' && $key != 'nodegroup')
 			$nodedata[$key] = trim($value);
 
 	if ($nodedata['ipaddr']=='' && $nodedata['ipaddr_pub'] && $nodedata['mac']=='' && $nodedata['name']=='' && !isset($nodedata['wholenetwork']))
@@ -148,10 +148,9 @@ if (isset($_POST['nodedata']))
 	        $error['access'] = trans('Node owner is not connected!');
 	}
 
-	if ($nodedata['netdev'])
-	{
+	if ($nodedata['netdev']) {
 		$ports = $DB->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($nodedata['netdev']));
-	        $takenports = $LMS->CountNetDevLinks($nodedata['netdev']);
+		$takenports = $LMS->CountNetDevLinks($nodedata['netdev']);
 
 		if ($ports <= $takenports)
 			$error['netdev'] = trans('No free ports on device!');
@@ -173,8 +172,11 @@ if (isset($_POST['nodedata']))
 	else
 		$nodedata['netdev'] = 0;
 
-	if (!isset($nodedata['chkmac']))	$nodedata['chkmac'] = 0;
-	if (!isset($nodedata['halfduplex'])) $nodedata['halfduplex'] = 0;
+	if (!isset($nodedata['chkmac']))
+		$nodedata['chkmac'] = 0;
+
+	if (!isset($nodedata['halfduplex']))
+		$nodedata['halfduplex'] = 0;
 
 	if ($nodedata['invprojectid'] == '-1') { // nowy projekt
 		if (!strlen(trim($nodedata['projectname']))) {
@@ -219,9 +221,11 @@ if (isset($_POST['nodedata']))
 
 		$nodeid = $LMS->NodeAdd($nodedata);
 
-		if ($nodedata['nodegroup'] != '0') {
-			$DB->Execute('INSERT INTO nodegroupassignments (nodeid, nodegroupid)
-				VALUES (?, ?)', array($nodeid, intval($nodedata['nodegroup'])));
+		if (count($nodedata['nodegroup']) > 0) {
+			foreach ($nodedata['nodegroup'] as $nodegroupid) {
+				$DB->Execute('INSERT INTO nodegroupassignments (nodeid, nodegroupid)
+					VALUES (?, ?)', array($nodeid, intval($nodegroupid)));
+			}
 		}
 
         $nodedata['id'] = $nodeid;

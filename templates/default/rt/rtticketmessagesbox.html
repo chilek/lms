@@ -8,8 +8,8 @@
 		</TD>
 		<TD style="width: 99%;" class="text-right nobr" colspan="2">
 			{if $ticket.state != 2}
-			<A href="?m=rtnoteadd&amp;ticketid={$ticket.ticketid}">{trans("New Note")} <IMG src="img/note.gif" alt=""></A>
-			<A href="?m=rtmessageadd&amp;ticketid={$ticket.ticketid}">{trans("New Message")} <IMG src="img/mail.gif" alt=""></A>
+			<A href="?m=rtnoteadd&amp;ticketid={$ticket.ticketid}"><IMG src="img/note.gif" alt=""> {trans("New Note")}</A>
+			<A href="?m=rtmessageadd&amp;ticketid={$ticket.ticketid}"><IMG src="img/mail.gif" alt=""> {trans("New Message")}</A>
 			{/if}
 		</TD>
 	</TR>
@@ -76,14 +76,14 @@
 						{/if}
 
 						{if $message.type == $smarty.const.RTMESSAGE_NOTE}
-							<A href="?m=rtnotedel&amp;id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that note?")}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
+							<A href="?m=rtnotedel&amp;id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that note?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
 						{else}
-							<A href="?m=rtmessageview&amp;id={$message.id}">{trans("Details")} <IMG src="img/view.gif" alt=""></A>
+							<A href="?m=rtmessageview&amp;id={$message.id}"><IMG src="img/view.gif" alt=""> {trans("Details")}</A>
 							{if $msgidx > 0}
-								<A href="?m=rtmessagedel&amp;id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
+								<A href="?m=rtmessagedel&amp;id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
 							{/if}
 							{if $ticket.state != $smarty.const.RT_RESOLVED}
-								<A href="?m=rtmessageadd&amp;id={$message.id}&amp;ticketid={$ticket.ticketid}">{trans("Answer")} <IMG src="img/forward.gif" alt=""></A>
+								<A href="?m=rtmessageadd&amp;id={$message.id}&amp;ticketid={$ticket.ticketid}"><IMG src="img/forward.gif" alt=""> {trans("Answer")}</A>
 							{/if}
 						{/if}
 					</TD>
@@ -114,7 +114,7 @@
 				<THEAD>
 				<TR>
 					<TD style="width: 97%;" class="text-right nobr">
-						<A href="?m=rtnotedel&amp;id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that note?")}');">{trans("Delete")} <IMG src="img/delete.gif" alt=""></A>
+						<A href="?m=rtnotedel&amp;id={$message.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that note?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
 					</TD>
 				</TR>
 				</THEAD>

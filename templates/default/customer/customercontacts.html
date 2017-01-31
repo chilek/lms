@@ -7,6 +7,7 @@
 		var nr = $('tr', table).length - 1;
 		if (nr)
 			innerHTML += '<HR>';
+		innerHTML += '<table class="lmsbox-inner"><tr><td>';
 		switch (type) {
 			{foreach $_CUSTOMERCONTACTTYPES as $contacttype => $properties}
 			case '{$contacttype}':
@@ -18,13 +19,14 @@
 					+ '</SELECT>&nbsp;';
 				{/if}
 				innerHTML += '<INPUT TYPE="text" size="{$properties.ui.size}" value="" name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][contact]"'
-					+ ' title="{$properties.ui.tip}">';
-				innerHTML += '{foreach $properties.ui.flags as $flagtype => $flagproperties}<label{if isset($flagproperties.tip)} title="{$flagproperties.tip}"{/if}><INPUT TYPE="checkbox" value="{$flagtype}" name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][type][]"> {$flagproperties.label}</label>{/foreach}';
-				innerHTML += '<BR><INPUT TYPE="text" size="68" value="" name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][name]"'
+					+ ' title="{$properties.ui.tip}"></td><td class="valign-top">';
+				innerHTML += '{foreach $properties.ui.flags as $flagtype => $flagproperties}{if $flagproperties@index && !($flagproperties@index % 3)}<br>{/if}<label{if isset($flagproperties.tip)} title="{$flagproperties.tip}"{/if}><INPUT TYPE="checkbox" value="{$flagtype}" name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][type][]"> {$flagproperties.label}</label>{/foreach}';
+				innerHTML += '</td></tr><tr><td colspan="2"><INPUT TYPE="text" size="68" value="" name="{$formelemprefix}[{$contacttype|cat:"s"}][' + nr + '][name]"'
 					+ ' title="{trans("Enter contact name/description (optional)")}">';
 				break;
 			{/foreach}
 		}
+		innerHTML += '</td></tr></table>';
 		innerHTML += '</td></tr>';
 		table.append(innerHTML);
 		$('[title]', table).tooltip({
@@ -52,22 +54,34 @@
 				<TR>
 					<TD>
 						{if !$item@first}<HR>{/if}
-						{if isset($properties.ui.typeselectors)}
-						<SELECT name="{$formelemprefix}[{$type}s][{$key}][typeselector]">
-							{foreach $properties.ui.typeselectors as $typeselector}
-							<OPTION value="{$typeselector}"{if $item.type & $typeselector} selected{/if}>{$_CONTACTTYPES[$typeselector]}</OPTION>
-							{/foreach}
-						</SELECT>
-						{/if}
-						<INPUT type="{$properties.ui.inputtype}" size="{$properties.ui.size}" value="{$item.contact}" name="{$formelemprefix}[{$type}s][{$key}][contact]" {tip text=$properties.ui.tip trigger="`$type``$key`"}>
-						{foreach $properties.ui.flags as $flagtype => $flagproperties}
-						<label{if isset($flagproperties.tip)} {tip text=$flagproperties.tip}{/if}>
-							<INPUT type="checkbox" value="{$flagtype}" name="{$formelemprefix}[{$type}s][{$key}][type][]"{if ($item.type & $flagtype)} checked{/if}>
-							{$flagproperties.label}
-						</label>
-						{/foreach}
-						<BR>
-						<INPUT type="text" size="68" value="{$item.name}" name="{$formelemprefix}[{$type}s][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
+						<table class="lmsbox-inner">
+							<TR>
+								<TD>
+									{if isset($properties.ui.typeselectors)}
+									<SELECT name="{$formelemprefix}[{$type}s][{$key}][typeselector]">
+										{foreach $properties.ui.typeselectors as $typeselector}
+										<OPTION value="{$typeselector}"{if $item.type & $typeselector} selected{/if}>{$_CONTACTTYPES[$typeselector]}</OPTION>
+										{/foreach}
+									</SELECT>
+									{/if}
+									<INPUT type="{$properties.ui.inputtype}" size="{$properties.ui.size}" value="{$item.contact}" name="{$formelemprefix}[{$type}s][{$key}][contact]" {tip text=$properties.ui.tip trigger="`$type``$key`"}>
+								</TD>
+								<TD class="valign-top">
+									{foreach $properties.ui.flags as $flagtype => $flagproperties}
+									{if $flagproperties@index && !($flagproperties@index % 3)}<br>{/if}
+									<label{if isset($flagproperties.tip)} {tip text=$flagproperties.tip}{/if}>
+										<INPUT type="checkbox" value="{$flagtype}" name="{$formelemprefix}[{$type}s][{$key}][type][]"{if ($item.type & $flagtype)} checked{/if}>
+										{$flagproperties.label}
+									</label>
+									{/foreach}
+									</TD>
+							</TR>
+							<TR>
+								<TD colspan="2">
+									<INPUT type="text" size="68" value="{$item.name}" name="{$formelemprefix}[{$type}s][{$key}][name]" {tip text="Enter contact name/description (optional)"}>
+								</TD>
+							</TR>
+						</table>
 					</TD>
 				</TR>
 				{/foreach}

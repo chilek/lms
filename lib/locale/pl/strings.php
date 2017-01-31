@@ -24,6 +24,11 @@
  *  $Id$
  */
 
+$_LANG['documents'] = 'dokumenty';
+$_LANG['Check if contact should be printed on documents'] = 'Zaznacz jeśli kontakt powinien być drukowany na dokumentach';
+
+$_LANG['Are you sure you want to send messages to $a customer(s)?'] = 'Jesteś pewien, że chcesz wysłać wiadmości do $a klient(a/ów)?';
+
 $_LANG['Export to JPK format'] = 'Eksport do formatu JPK';
 $_LANG['Division not selected!'] = 'Nie wybrano firmy!';
 $_LANG['Tax Office Code:'] = 'Kod Urzędu Podatkowego:';
@@ -530,6 +535,10 @@ $_LANG['Enter date in \'yyyy/mm/dd\' format or click to choose it from calendar'
 $_LANG['Enter date in YYYY/MM/DD format or click to choose it from calendar'] = 'Podaj datę w formacie \'rrrr/mm/dd\' (puste pole oznacza aktualną datę) lub kliknij żeby wybrać z kalendarza';
 $_LANG['Enter accounting start date in YYYY/MM/DD format. If you don\'t want to define \'From\' date leave this field empty'] = 'Podaj datę od której taryfa powinna obowiązywać lub zostaw to pole puste. Data powinna być w formacie RRRR/MM/DD';
 $_LANG['Enter accounting end date in YYYY/MM/DD format. Leave this field empty if you don\'t want to set expiration date'] = 'Wprowadź datę w formacie RRRR/MM/DD kiedy zakończyć naliczanie. Zostaw to pole puste, jeśli nie chcesz ustawiać daty wygaśnięcia zobowiązania';
+$_LANG['Enter tariff start date in YYYY/MM/DD format. If you don\'t want to define \'From\' date leave this field empty'] = 'Podaj datę od której taryfa powinna obowiązywać lub zostaw to pole puste. Data powinna być w formacie RRRR/MM/DD';
+$_LANG['Enter tariff end date in YYYY/MM/DD format. Leave this field empty if you don\'t want to set expiration date'] = 'Wprowadź datę w formacie RRRR/MM/DD oznaczającą koniec obowiązywania taryfy. Zostaw to pole puste, jeśli nie chcesz ustawiać daty wygaśnięcia taryfy';
+$_LANG['Enter promotion start date in YYYY/MM/DD format. If you don\'t want to define \'From\' date leave this field empty'] = 'Podaj datę od której promocja powinna obowiązywać lub zostaw to pole puste. Data powinna być w formacie RRRR/MM/DD';
+$_LANG['Enter promotion end date in YYYY/MM/DD format. Leave this field empty if you don\'t want to set expiration date'] = 'Wprowadź datę w formacie RRRR/MM/DD oznaczającą koniec obowiązywania promocji. Zostaw to pole puste, jeśli nie chcesz ustawiać daty wygaśnięcia promocji';
 $_LANG['Enter date of sale in YYYY/MM/DD format (empty field means current date) or click to select it from calendar'] = 'Wprowadź datę sprzedaży w formacie RRRR/MM/DD lub kliknij by wybrać ją z kalendarza. Puste pole oznacza datę dzisiejszą';
 $_LANG['Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar'] = 'Wprowadź datę wystawienia w formacie RRRR/MM/DD lub kliknij by wybrać ją z kalendarza. Puste pole oznacza datę dzisiejszą';
 $_LANG['Enter deadline in days (optional)'] = 'Wprowadź termin zapłaty w dniach (opcjonalnie)';
@@ -748,6 +757,8 @@ $_LANG['If you have any questions or doubts, contact with our Customer Service R
 $_LANG['Income:'] = 'Przychód:';
 $_LANG['Incorrect charging end time!'] = 'Błędnie podany czas końca naliczania!';
 $_LANG['Incorrect charging start time!'] = 'Błędnie podany czas początku naliczania!';
+$_LANG['Incorrect effective end time!'] = 'Błędnie podany czas końca obowiązywania!';
+$_LANG['Incorrect effective start time!'] = 'Błędnie podany czas początku obowiązywania!';
 $_LANG['Incorrect crontab format!'] = 'Niepoprawny format crontaba!';
 $_LANG['Incorrect Customer ID.'] = 'Niepoprawny identyfikator klienta.';
 $_LANG['Incorrect customers group!'] = 'Niepoprawna grupa klientów!';
@@ -1837,6 +1848,7 @@ $_LANG['Select document template'] = 'Wybierz szablon dokumentu';
 $_LANG['Enter Business Registration Number (optional)'] = 'Wprowadź numer REGON (opcjonalnie)';
 $_LANG['Enter Identity Card Number (optional)'] = 'Wprowadź numer Dowodu Osobistego (opcjonalnie)';
 $_LANG['Enter National Court Register / Register of Business Entities Number (optional)'] = 'Wprowadź numer EDG/KRS (opcjonalnie)';
+$_LANG['Enter National Court Register / Register of Business Entities Name (optional)'] = 'Wprowadź nazwę EDG/KRS (opcjonalnie)';
 $_LANG['Incorrect Business Registration Number!'] = 'Niepoprawny numer REGON!';
 $_LANG['Incorrect Identity Card Number!'] = 'Niepoprawny numer Dowodu Osobistego!';
 $_LANG['OK'] = 'OK';
@@ -1846,6 +1858,7 @@ $_LANG['unknown'] = 'nieznany';
 $_LANG['Enter node location'] = 'Wprowadź położenie komputera';
 $_LANG['ICN:'] = 'Dowód osobisty:';
 $_LANG['RBE:'] = 'EDG/KRS:';
+$_LANG['RBE Name:'] = 'Nazwa EDG/KRS:';
 $_LANG['Allows you to add new document'] = 'Dodanie nowego dokumentu';
 $_LANG['Allows you to add the new prefixes'] = 'Dodanie nowych prefiksów';
 $_LANG['Allows you to search documents'] = 'Wyszukiwanie dokumentów';
@@ -2837,6 +2850,7 @@ $_LANG['Management URL cannot be empty!'] = 'Adres URL do zarządzania nie może
 $_LANG['Management URL is too short!'] = 'Adres URL do zarządzania jest zbyt krótki!';
 
 $_LANG['only automatically issued'] = 'tylko wystawione automatycznie';
+$_LANG['only manually issued'] = 'tylko wystawione ręcznie';
 
 $_LANG['Password expiration:'] = 'Wygasanie hasła:';
 $_LANG['Last password change:'] = 'Ostatnia zmiana hasła:';
@@ -3565,5 +3579,12 @@ $_LANG['History<!rt>'] = 'Historia';
 $_LANG['sort by'] = 'sortuj wg';
 $_LANG['Select sort cryterion'] = 'Wybierz kryterium sortowania';
 $_LANG['Document number'] = 'Numer dokumentu';
+
+$_LANG['Enter main bank account number'] = 'Wprowadź główny numer rachunku bankowego (opcjonalnie)';
+$_LANG['Main bank account:'] = 'Główny numer rachunku:';
+
+$_LANG['Effective date'] = 'Data obowiązywania';
+$_LANG['show all tariffs'] = 'pokaż wszystkie taryfy';
+$_LANG['Check if all tariffs should be displayed'] = 'Zaznacz, jeśli wszystkie taryfy powinny zostać wyświetlone';
 
 ?>

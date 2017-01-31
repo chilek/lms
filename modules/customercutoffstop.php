@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,7 +30,9 @@ if (!$LMS->CustomerExists($customerid))
 	$SESSION->redirect('?m=customerlist');
 
 if (isset($_GET['cutoffstop'])) {
-	if ($_GET['cutoffstop'] == '')
+	if (isset($_GET['cutoffstopindefinitely']))
+		$cutoffstop = intval(pow(2, 31) - 1);
+	elseif ($_GET['cutoffstop'] == '')
 		$cutoffstop = 0;
 	elseif (check_date($_GET['cutoffstop'])) {
 		list ($y, $m, $d) = explode('/', $_GET['cutoffstop']);

@@ -79,8 +79,11 @@
 			<table id="reminddata" style="height: 100%; width: 100%; display: none;">
 				<tr>
 					<td colspan="2" class="text-center bold nobr">
-						<input type="radio" id="emailradio" name="remindform[type]" value="1" onclick="javascript:show_email_phone('email');" checked /><label for="emailradio">{trans("E-mail")}</label>
+						{$sms_service = ConfigHelper::getConfig('sms.service', '', true)}
+						<input type="{if empty($sms_service)}hidden{else}radio{/if}" id="emailradio" name="remindform[type]" value="1" onclick="javascript:show_email_phone('email');" checked /><label for="emailradio">{trans("E-mail")}</label>
+						{if !empty($sms_service)}
 						<input type="radio" id="smsradio" name="remindform[type]" value="2" onclick="javascript:show_email_phone('phone');" /><label for="smsradio">{trans("SMS")}</label>
+						{/if}
 						<br />&nbsp;
 					</td>
 				</tr>

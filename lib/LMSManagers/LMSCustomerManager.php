@@ -311,6 +311,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'message'        => $customeradd['message'],
             'pin'            => $customeradd['pin'],
             'regon'          => $customeradd['regon'],
+            'rbename'        => $customeradd['rbename'],
             'rbe'            => $customeradd['rbe'],
             'icn'            => $customeradd['icn'],
             'cutoffstop'     => $customeradd['cutoffstop'],
@@ -325,7 +326,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if ($this->db->Execute('INSERT INTO customers (extid, name, lastname, type,
                         ten, ssn, status, creationdate,
-                        creatorid, info, notes, message, pin, regon, rbe,
+                        creatorid, info, notes, message, pin, regon, rbename, rbe,
                         icn, cutoffstop, consentdate, einvoice, divisionid, paytime, paytype,
                         invoicenotice, mailingnotice)
                     VALUES (?, ?, UPPER(?), ?, ?, ?, ?, ?NOW?,
@@ -336,8 +337,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             // INSERT ADDRESSES
             foreach ( $customeradd['addresses'] as $v ) {
                 $a = $location_manager->InsertCustomerAddress( $id, $v );
-                     var_dump($a);
-                     var_dump($id);
+
                 // update country states
                 if ( $v['location_zip'] && $v['location_state'] ) {
                     $location_manager->UpdateCountryState($v['location_zip'], $v['location_state']);
@@ -1034,6 +1034,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'pin'            => $customerdata['pin'],
             'regon'          => $customerdata['regon'],
             'icn'            => $customerdata['icn'],
+            'rbename'        => $customerdata['rbename'],
             'rbe'            => $customerdata['rbe'],
             'cutoffstop'     => $customerdata['cutoffstop'],
             'consentdate'    => $customerdata['consentdate'],
@@ -1081,7 +1082,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $res = $this->db->Execute('UPDATE customers SET extid=?, status=?, type=?,
                                ten=?, ssn=?, moddate=?NOW?, modid=?,
                                info=?, notes=?, lastname=UPPER(?), name=?,
-                               deleted=0, message=?, pin=?, regon=?, icn=?, rbe=?,
+                               deleted=0, message=?, pin=?, regon=?, icn=?, rbename=?, rbe=?,
                                cutoffstop=?, consentdate=?, einvoice=?, invoicenotice=?, mailingnotice=?,
                                divisionid=?, paytime=?, paytype=?
                                WHERE id=?', array_values($args));

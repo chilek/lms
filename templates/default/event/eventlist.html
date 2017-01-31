@@ -43,13 +43,27 @@
 			<FORM method="POST" action="?m=eventlist" name="filter">
 				<INPUT type="submit" class="hiddenbtn">
 				<INPUT type="HIDDEN" name="m" value="eventlist">
-				<span class="bold">{trans("Filter:")} </span> {trans("User:")}
+				<span class="bold">{trans("Filter:")} </span>
+				{trans("Type:")}
+				<SELECT name="type" onchange="document.filter.submit();">
+					<OPTION value=""{if $listdata.type == ""} selected{/if}>{trans("- all -")}</OPTION>
+					{foreach $_EVENTTYPES as $id => $label}
+					<OPTION value="{$id}"{if $listdata.type == $id} selected{/if}>{$label}</OPTION>
+					{/foreach}
+				</SELECT>
+				{trans("User:")}
 				<SELECT size="1" name="a" OnChange="document.filter.submit();">
 					<OPTION value="0"{if $listdata.userid == ""} SELECTED{/if}>{trans("- all users -")}</OPTION>
 					{section name=userlist loop=$userlist}
 					    <OPTION value="{$userlist[userlist].id}"{if $userlist[userlist].id == $listdata.userid} SELECTED{/if}>{$userlist[userlist].name|truncate:40:"...":true}</OPTION>
 					{/section}
-				</SELECT>&nbsp;
+				</SELECT>
+				{trans("Privacy:")}
+				<SELECT name="privacy" onchange="document.filter.submit();">
+					<OPTION value="0"{if $listdata.privacy == "0"} selected{/if}>{trans("- all -")}</OPTION>
+					<OPTION value="1"{if $listdata.privacy == "1"} selected{/if}>{trans("public")}</OPTION>
+					<OPTION value="2"{if $listdata.privacy == "2"} selected{/if}>{trans("private")}</OPTION>
+				</SELECT>
 				{trans("Customer:")}
 				{if $customers}
 				<SELECT size="1" name="u" OnChange="document.filter.submit();">
@@ -77,24 +91,11 @@
 					<OPTION value="{$smarty.section.year.index}"{if $smarty.section.year.index==$year} selected{/if}>{$smarty.section.year.index}</option>
 					{/section}
 				</SELECT>
-				{trans("Type:")}
-				<SELECT name="type" onchange="document.filter.submit();">
-					<OPTION value=""{if $listdata.type == ""} selected{/if}>{trans("- all -")}</OPTION>
-					{foreach $_EVENTTYPES as $id => $label}
-					<OPTION value="{$id}"{if $listdata.type == $id} selected{/if}>{$label}</OPTION>
-					{/foreach}
-				</SELECT>
 				{trans("Status:")}
 				<SELECT name="closed" onchange="document.filter.submit();">
 					<OPTION value=""{if $listdata.closed == ""} selected{/if}>{trans("- all -")}</OPTION>
 					<OPTION value="0"{if $listdata.closed == "0"} selected{/if}>{trans("opened<!plural:event>")}</OPTION>
 					<OPTION value="1"{if $listdata.closed == "1"} selected{/if}>{trans("closed<!plural:event>")}</OPTION>
-				</SELECT>
-				{trans("Privacy:")}
-				<SELECT name="privacy" onchange="document.filter.submit();">
-					<OPTION value="0"{if $listdata.privacy == "0"} selected{/if}>{trans("- all -")}</OPTION>
-					<OPTION value="1"{if $listdata.privacy == "1"} selected{/if}>{trans("public")}</OPTION>
-					<OPTION value="2"{if $listdata.privacy == "2"} selected{/if}>{trans("private")}</OPTION>
 				</SELECT>
 			</FORM>
 		</TD>
@@ -127,8 +128,8 @@
                                 </TD>
                                 <TD colspan="2" class="text-right nobr">
                                 	<div class="no-print">
-                                    <A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.userid}&closed={$listdata.closed}&privacy={$listdata.privacy}" target="_blank">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
-                                    <A href="?m=eventadd&amp;day={$daylist[daylist]|date_format:"%d"}&amp;month={$daylist[daylist]|date_format:"%m"}&amp;year={$daylist[daylist]|date_format:"%Y"}">{trans("Add Event")} <IMG src="img/save.gif" alt=""></A>&nbsp;
+                                    <A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.userid}&closed={$listdata.closed}&privacy={$listdata.privacy}" target="_blank"><IMG src="img/print.gif" alt=""> {trans("Print")}</A>
+                                    <A href="?m=eventadd&amp;day={$daylist[daylist]|date_format:"%d"}&amp;month={$daylist[daylist]|date_format:"%m"}&amp;year={$daylist[daylist]|date_format:"%Y"}"><IMG src="img/save.gif" alt=""> {trans("Add Event")}</A>&nbsp;
                                     </div>
                                 </TD>
                             </TR>
@@ -154,9 +155,9 @@
 										{/foreach}
                                 </TD>
                                 <TD onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
-                                        <IMG src="img/calendar.gif" alt=""><span class="bold">{$eventlist[eventlist].title}</span><BR>
+                                        <IMG src="img/calendar.gif" alt=""> <span class="bold">{$eventlist[eventlist].title}</span><BR>
                                         {if $eventlist[eventlist].description != ''}<IMG src="img/info1.gif" alt=""> {$eventlist[eventlist].description}{/if}<br/>
-                                        {if $eventlist[eventlist].note != ''}<span{if !$eventlist[eventlist].closed} style="color: red;"{/if}><IMG src="img/info.gif" alt="" /> {$eventlist[eventlist].note}</span>{/if}
+                                        {if $eventlist[eventlist].note != ''}<span{if !$eventlist[eventlist].closed} style="color: red;"{/if}><IMG src="img/note.gif" alt="" /> {$eventlist[eventlist].note}</span>{/if}
                                 </TD>
                                 <TD class="nobr">
                                         {if $eventlist[eventlist].customername}

@@ -1,6 +1,16 @@
 <!--// $Id$ //-->
+
+<style>
+    .tab-beautify td { padding: 3px; }
+    .tab-beautify tr td:nth-child(2) {
+        font-weight: bold;
+        white-space: nowrap;
+    }
+</style>
+
 <script type="text/javascript" src="img/netnodehelper.js"></script>
 {include file="google-maps.html"}
+
 <FORM NAME="nodeadd" ID="nodeadd" METHOD="POST" ACTION="?m=nodeadd{if $customerinfo.id}&ownerid={$customerinfo.id}{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
@@ -105,21 +115,6 @@
 		</TD>
 	</TR>
 
-
-
-	<TR>
-		<TD style="width: 1%;">
-			<IMG SRC="img/nodegroup.gif" ALT="{trans("Node group:")}">
-		</TD>
-		<TD style="width: 99%; white-space: nowrap;">
-			<SELECT SIZE="1" NAME="nodedata[nodegroup]" {tip text="Select group to attribute to node" trigger="nodegroup"} style="max-width:250px;">
-				<OPTION VALUE="0">{trans("... select group ...")}</OPTION>
-				{foreach from=$allnodegroups item=group}
-				<OPTION VALUE="{$group.id}" {if $group.id==$nodedata.nodegroup} SELECTED{/if}>{$group.name} ({$group.id|string_format:"%04d"})</OPTION>
-				{/foreach}
-			</SELECT>
-		</TD>
-	</TR>
 	{if $netdevices}
 	<TR>
 		<TD style="width: 1%;">
@@ -332,10 +327,10 @@
 		newrow.id = 'mac' + nr;
 		var newcell = newrow.insertCell(0);
 		newcell.style.width = '100%';
-		newcell.innerHTML = '<INPUT TYPE="TEXT" NAME="nodedata[macs][' + nr + ']" VALUE=""'
+		newcell.innerHTML = '<input type="text" name="nodedata[macs][' + nr + ']" value=""'
 			+ ' title="{trans("Enter MAC address")}">'
 			+ '<a href="javascript:void(0);" onClick="return macchoosewin(document.nodeadd.elements[\'nodedata[macs][' + nr + ']\']);"'
-			+ ' title="{trans("Click to select MAC from the list")}">&nbsp;&raquo;&raquo;&raquo;</A>';
+			+ ' title="{trans("Click to select MAC from the list")}">&nbsp;&raquo;&raquo;&raquo;</a>';
 		$(newcell).children("[title]").tooltip({
 			position: { my: "left top" }
 		});
@@ -441,4 +436,4 @@
 
     customer_addresses.init();
 //-->
-</SCRIPT>
+</script>

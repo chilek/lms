@@ -768,10 +768,13 @@ if (typeof $ !== 'undefined') {
 /*!
  * \brief Auto hide left vertical menu on print
  */
-var show_menu_after_print = 0;
+var show_menu_after_print = -1;
 
 var LMS_beforePrintEvent = function() {
-	if ( $('#pageleftbar').hasClass('pageleftbar-hidden') ) {
+	if (typeof $ === 'undefined' || show_menu_after_print > -1) {
+		return;
+	}
+	if ($('#pageleftbar').hasClass('pageleftbar-hidden')) {
 		show_menu_after_print = 0;
 	} else {
 		$( "#lms-ui-main-menu-toggle" ).trigger( "click" );
@@ -780,9 +783,13 @@ var LMS_beforePrintEvent = function() {
 };
 
 var LMS_afterPrintEvent = function() {
-	if ( show_menu_after_print == 1 ) {
+	if (typeof $ === 'undefined' || show_menu_after_print == -1) {
+		return;
+	}
+	if (show_menu_after_print == 1) {
 		$( "#lms-ui-main-menu-toggle" ).trigger( "click" );
-    }
+		show_menu_after_print = -1;
+	}
 };
 
 if (window.matchMedia) {

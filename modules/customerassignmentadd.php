@@ -207,7 +207,7 @@ if (isset($_POST['assignment'])) {
 				$a['vdiscount'] = 0;
 				$a['value']     = 0;
 
-				unset($a['schemaid'], $a['invoice'], $a['settlement'], $error['at']);
+				unset($a['schemaid'], $a['stariffid'], $a['invoice'], $a['settlement'], $error['at']);
 				$at = 0;
 			break;
 
@@ -299,6 +299,8 @@ if (isset($_POST['assignment'])) {
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 
+	$a['alltariffs'] = isset($a['alltariffs']);
+
 	$SMARTY->assign('error', $error);
 }
 else
@@ -326,7 +328,9 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $customernodes = $LMS->GetCustomerNodes($customer['id']);
 unset($customernodes['total']);
 
-$schemas_only_names = $DB->GetAll('SELECT name FROM promotions WHERE disabled <> 1');
+$schemas_only_names = $DB->GetAll('SELECT name,
+	(CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid
+	FROM promotions WHERE disabled <> 1');
 $schemas = $DB->GetAll('SELECT p.name AS promotion, s.name, s.id,
 	(SELECT '.$DB->GroupConcat('tariffid', ',').'
 		FROM promotionassignments WHERE promotionschemaid = s.id

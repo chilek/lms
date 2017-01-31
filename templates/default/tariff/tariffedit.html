@@ -15,11 +15,17 @@
     }
 </STYLE>
 
-{function restrictions}
+{function bitrate_restrictions}
     <INPUT TYPE="TEXT" VALUE="{if $var[$v]}{$var[$v]}{/if}" SIZE="6" NAME="tariff[{$v}]" {tip text="$tip" trigger="$v"}>
     {trans("night:")}
     <INPUT TYPE="TEXT" VALUE="{if $var[$v_n]}{$var[$v_n]}{/if}" SIZE="6" NAME="tariff[{$v_n}]" {tip text="$tip" trigger="$v_n"}>
     kbit/s
+{/function}
+
+{function restrictions}
+    <INPUT TYPE="TEXT" VALUE="{if $var[$v]}{$var[$v]}{/if}" SIZE="6" NAME="tariff[{$v}]" {tip text="$tip" trigger="$v"}>
+    {trans("night:")}
+    <INPUT TYPE="TEXT" VALUE="{if $var[$v_n]}{$var[$v_n]}{/if}" SIZE="6" NAME="tariff[{$v_n}]" {tip text="$tip" trigger="$v_n"}>
 {/function}
 
 {function hosting_restrictions}
@@ -100,6 +106,20 @@
                                     </SELECT>
                                 </TD>
                             </TR>
+							<TR>
+								<TD>
+									<IMG src="img/calendar.gif" alt="">
+								</TD>
+								<TD>
+									{trans("Period:")}
+								</TD>
+								<TD class="nobr">
+									{trans("from:")}
+									<INPUT type="TEXT" name="tariff[datefrom]" value="{if $tariff.datefrom}{$tariff.datefrom}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter tariff start date in YYYY/MM/DD format. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10">
+									{trans("to:")}
+									<INPUT type="TEXT" name="tariff[dateto]" value="{if $tariff.dateto}{$tariff.dateto}{/if}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter tariff end date in YYYY/MM/DD format. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
+								</TD>
+							</TR>
                             <TR>
                                 <TD><IMG SRC="img/money.gif" alt=""></TD>
                                 <TD>{trans("Numbering Plan:")}</TD>
@@ -141,22 +161,22 @@
                             <TR>
                                 <TD><IMG SRC="img/uprate.gif" alt=""></TD>
                                 <TD>{trans("Upload rate:")}</TD>
-                                <TD>{restrictions var=$tariff v="uprate" v_n="uprate_n" tip="Enter minimal warranted upload value (optional)"}</TD>
+                                <TD>{bitrate_restrictions var=$tariff v="uprate" v_n="uprate_n" tip="Enter minimal warranted upload value (optional)"}</TD>
                             </TR>
                             <TR>
                                 <TD></TD>
                                 <TD>{trans("Upload ceil:")}</TD>
-                                <TD>{restrictions var=$tariff v="upceil" v_n="uprate_n" tip="Enter maximum upload value (optional)"}</TD>
+                                <TD>{bitrate_restrictions var=$tariff v="upceil" v_n="uprate_n" tip="Enter maximum upload value (optional)"}</TD>
                             </TR>
                             <TR>
                                 <TD><IMG SRC="img/downrate.gif" alt=""></TD>
                                 <TD>{trans("Download rate:")}</TD>
-                                <TD>{restrictions var=$tariff v="downrate" v_n="downrate_n" tip="Enter minimal warranted download value (optional)"}</TD>
+                                <TD>{bitrate_restrictions var=$tariff v="downrate" v_n="downrate_n" tip="Enter minimal warranted download value (optional)"}</TD>
                             </TR>
                             <TR>
                                 <TD></TD>
                                 <TD>{trans("Download ceil:")}</TD>
-                                <TD>{restrictions var=$tariff v="downceil" v_n="downceil_n" tip="Enter maximum download value (optional)"}</TD>
+                                <TD>{bitrate_restrictions var=$tariff v="downceil" v_n="downceil_n" tip="Enter maximum download value (optional)"}</TD>
                             </TR>
                             <TR>
                                 <TD><IMG SRC="img/options.gif" alt=""></TD>
@@ -166,7 +186,7 @@
                             <TR>
                                 <TD></TD>
                                 <TD>{trans("Packet limit:")}</TD>
-                                <TD>{restrictions var=$tariff v="climit" v_n="climit_n" tip="Enter limit of packets in time unit (optional"}</TD>
+                                <TD>{restrictions var=$tariff v="plimit" v_n="plimit_n" tip="Enter limit of packets in time unit (optional"}</TD>
                             </TR>
                             <TR>
                                 <TD></TD>
