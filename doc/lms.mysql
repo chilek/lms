@@ -215,7 +215,6 @@ CREATE TABLE customers (
   paytime smallint	NOT NULL DEFAULT '-1',
   paytype smallint  DEFAULT NULL,
   PRIMARY KEY  (id),
-  INDEX zip (zip),
   INDEX name (lastname, name)
 ) ENGINE=InnoDB;
 
@@ -1522,10 +1521,6 @@ CREATE TABLE divisions (
     id 		int(11) 	NOT NULL auto_increment,
 	shortname       varchar(255) 	NOT NULL DEFAULT '',
     name        	text    	NOT NULL DEFAULT '',
-	address         varchar(255) 	NOT NULL DEFAULT '',
-	city            varchar(255) 	NOT NULL DEFAULT '',
-	zip             varchar(255) 	NOT NULL DEFAULT '',
-	countryid	int(11)		NOT NULL DEFAULT '0',
 	ten		varchar(16)	NOT NULL DEFAULT '',
 	regon		varchar(255)	NOT NULL DEFAULT '',
 	account         varchar(48) 	NOT NULL DEFAULT '',
