@@ -29,9 +29,13 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 
 	$DB = LMSDB::getInstance();
 
-	if(!$year) $year = date('Y',time());
-	if(!$month) $month = date('n',time());
-	if(!$day) $day = date('j',time());
+	$t = time();
+
+	if(!$year) $year   = date('Y', $t);
+	if(!$month) $month = date('n', $t);
+	if(!$day) $day     = date('j', $t);
+
+	unset($t);
 
 	switch ($privacy) {
 		case 0:
@@ -164,9 +168,13 @@ $SESSION->save('elt', $type);
 $SESSION->save('elp', $privacy);
 $SESSION->save('elc', $closed);
 
-$day = (isset($day) ? $day : date('j',time()));
-$month = (isset($month) ? sprintf('%d',$month) : date('n',time()));
-$year = (isset($year) ? $year : date('Y',time()));
+$t = time();
+
+$day   = (isset($day)   ? $day  : date('j', $t));
+$month = (isset($month) ? sprintf('%d',$month) : date('n', $t));
+$year  = (isset($year)  ? $year : date('Y', $t));
+
+unset($t);
 
 $layout['pagetitle'] = trans('Timetable');
 
