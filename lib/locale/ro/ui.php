@@ -26,8 +26,10 @@
 
 function uptimef($ts)
 {
-	if($ts==0)
-		return 'n/a';
+	if ($ts < 60) {
+		return trans('less than one minute ago');
+	}
+
 	$min= $ts / 60;
 	$hours = $min / 60;
 	$days  = floor($hours / 24);

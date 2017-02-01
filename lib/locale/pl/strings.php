@@ -1740,6 +1740,7 @@ $_LANG['equal to'] = 'równe';
 $_LANG['not equal to'] = 'różne';
 $_LANG['greater than'] = 'większe niż';
 $_LANG['less than'] = 'mniejsze niż';
+$_LANG['less than one minute ago'] = 'mniej niż minutę temu';
 $_LANG['greater than or equal to'] = 'większe równe';
 $_LANG['less than or equal to'] = 'mniejsze równe';
 $_LANG['duplicate'] = 'duplikat';
