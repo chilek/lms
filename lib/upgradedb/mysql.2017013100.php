@@ -30,6 +30,7 @@
  */
 function parse_address($address) {
     $address = trim($address);
+    $m = array();
 
     if (!($res = preg_match('/^((?<city>.+),\s?)?(?<street>.+)\s+(?<house>[0-9][0-9a-z]*(?:\/[0-9][0-9a-z]*)?)(?:\s+|\s*(?:\/|m\.?|lok\.?)\s*)(?<flat>[0-9a-z]+)$/i', $address, $m))) {
         if (!($res = preg_match('/^((?<city>.+),\s?)?(?<street>.+)\s+(?<house>[0-9][0-9a-z]*)$/i', $address, $m))) {
@@ -460,7 +461,8 @@ $this->Execute("ALTER TABLE netdevices DROP FOREIGN KEY `netdevices_ibfk_1`;");
 $this->Execute("ALTER TABLE netdevices DROP FOREIGN KEY `netdevices_ibfk_2`;");
 $this->Execute("ALTER TABLE netnodes DROP FOREIGN KEY `netnodes_ibfk_2`;");
 $this->Execute("ALTER TABLE netnodes DROP FOREIGN KEY `netnodes_ibfk_3`;");
-$this->Execute("ALTER TABLE voipaccounts DROP FOREIGN KEY `voipaccounts_address_id_fk`;");
+$this->Execute("ALTER TABLE voipaccounts DROP FOREIGN KEY IF EXISTS `voipaccounts_ibfk_1`;");
+$this->Execute("ALTER TABLE voipaccounts DROP FOREIGN KEY IF EXISTS `voipaccounts_ibfk_2`;");
 $this->Execute("ALTER TABLE divisions DROP FOREIGN KEY `divisions_ibfk_1`;");
 $this->Execute("ALTER TABLE divisions DROP FOREIGN KEY `divisions_ibfk_2`;");
 
@@ -484,6 +486,7 @@ $this->Execute("ALTER TABLE customers  DROP IF EXISTS zip,           DROP IF EXI
 $this->Execute("ALTER TABLE nodes      DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat, DROP IF EXISTS location;");
 $this->Execute("ALTER TABLE netnodes   DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat, DROP IF EXISTS location;");
 $this->Execute("ALTER TABLE netdevices DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat, DROP IF EXISTS location;");
+$this->Execute("ALTER TABLE voipaccounts DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat, DROP IF EXISTS location;");
 
 $this->Execute("ALTER TABLE divisions  DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat, DROP IF EXISTS countryid,
                                        DROP IF EXISTS address, DROP IF EXISTS city, DROP IF EXISTS zip;");

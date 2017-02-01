@@ -22,6 +22,10 @@
  */
 
 function splitNameToFirstAndLastName($users_before) {
+	if (!$users_before) {
+		return array();
+	}
+
 	foreach ($users_before as $id => $user) {
 		$parts = explode(' ', $user['name']);
 		$lastname = array_pop($parts);
@@ -40,8 +44,11 @@ $this->Execute("ALTER TABLE users ADD COLUMN lastname varchar(64) NOT NULL DEFAU
 
 $users_before = $this->GetAll('SELECT id, name FROM users');
 $users = splitNameToFirstAndLastName($users_before);
-foreach ($users as $user) {
-	$this->Execute("UPDATE users SET firstname=?, lastname=? WHERE id = ?", array($user['firstname'], $user['lastname'], $user['id']));
+
+if ($users) {
+	foreach ($users as $user) {
+		$this->Execute("UPDATE users SET firstname=?, lastname=? WHERE id = ?", array($user['firstname'], $user['lastname'], $user['id']));
+	}
 }
 
 $this->Execute("ALTER TABLE users DROP COLUMN name");
