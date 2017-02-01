@@ -579,23 +579,23 @@
         customer_addresses.setAddressList( getCustomerAddresses($(this).val()) );
     });
 
-    {if ConfigHelper::checkConfig('phpui.big_networks')}
-        // refresh customer addresses on page load
-        $( '#customerid_select, #customerid_input' ).trigger( 'change' );
-    {else}
-        /*!
-         * \brief Update addresses list on customer select change.
-         * Using when big_networks is set as false.
-         */
-        $( '#customerid_select' ).change( function() {
-            customer_addresses.setAddressList( getCustomerAddresses($(this).val()) );
-        });
+    {if !ConfigHelper::checkConfig('phpui.big_networks')}
+    /*!
+     * \brief Update customer addresses list on select change.
+     * Using when big_networks is set as false.
+     */
+    $( '#customerid_select' ).change( function() {
+        var id = $(this).val();
 
-        // refresh customer addresses on page load
-        $( '#customerid_select' ).trigger( 'change' );
+        if ( id != 'undefined' && id > 0 ) {
+            customer_addresses.setAddressList( getCustomerAddresses(id) );
+        }
+    });
     {/if}
 
-    {if $nodeinfo.address_id}
+    customer_addresses.setAddressList( getCustomerAddresses( {intval($nodeinfo.ownerid)} ) );
+
+    {if $nodeinfo.address_id && $nodeinfo.ownerid}
         $( '#customer_addresses' ).val( {$nodeinfo.address_id} );
     {/if}
 

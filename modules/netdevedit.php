@@ -680,7 +680,11 @@ unset($netdevlist['total']);
 unset($netdevlist['order']);
 unset($netdevlist['direction']);
 
-$layout['pagetitle'] = trans('Device Edit: $a ($b)', $netdevdata['name'], $netdevdata['producer']);
+if ($netdevdata['producer']) {
+	$layout['pagetitle'] = trans('Device Edit: $a ($b)', $netdevdata['name'], $netdevdata['producer']);
+} else {
+	$layout['pagetitle'] = trans('Device Edit: $a', $netdevdata['name']);
+}
 
 if ($subtitle)
 	$layout['pagetitle'] .= ' - ' . $subtitle;
