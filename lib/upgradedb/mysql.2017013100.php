@@ -388,7 +388,7 @@ if ( $customers_loc ) {
         }
 
         if ( $any_to_up === true ) {
-            $this->Execute('INSERT INTO addresses (name, city, street, zip, cou1ntry_id, house, flat)
+            $this->Execute('INSERT INTO addresses (name, city, street, zip, country_id, house, flat)
                             VALUES (' . "$post_name,$post_city,$post_street,$post_zip,$post_countryid,$post_building,$post_apartment" . ');');
 
             $this->Execute('INSERT INTO customer_addresses (customer_id,address_id, type) VALUES (?,?,?);', array($v['id'], $this->GetLastInsertID('addresses'), POSTAL_ADDRESS));
