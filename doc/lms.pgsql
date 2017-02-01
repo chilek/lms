@@ -485,6 +485,16 @@ CREATE TABLE divisions (
 );
 
 /* ---------------------------------------------------
+ Structure of view "vdivisions"
+------------------------------------------------------*/
+CREATE VIEW vdivisions AS
+    SELECT d.*,
+        a.country_id as countryid, a.zip as zip, a.city as city,
+        (CASE WHEN a.house IS NULL THEN a.street ELSE (CASE WHEN a.flat IS NULL THEN a.street || ' ' || a.house ELSE a.street || ' ' || a.house || '/' || a.flat END) END) as address
+    FROM divisions d
+        JOIN addresses a ON a.id = d.address_id;
+
+/* ---------------------------------------------------
  Structure of table "invprojects"
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS invprojects_id_seq;
@@ -2931,6 +2941,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017013100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017020100');
 
 COMMIT;

@@ -542,7 +542,7 @@ foreach ($assigns as $assign) {
 
 				$division = $DB->GetRow("SELECT name, shortname, address, city, zip, countryid, ten, regon,
 						account, inv_header, inv_footer, inv_author, inv_cplace
-						FROM divisions WHERE id = ?", array($customer['divisionid']));
+						FROM vdivisions WHERE id = ?", array($customer['divisionid']));
 
 				$paytime = $customer['paytime'];
 				if ($paytime == -1) $paytime = $deadline;
@@ -558,8 +558,11 @@ foreach ($assigns as $assign) {
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 					div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber) 
 					VALUES(?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-					array($numbers[$plan], $plan, $customer['countryid'], $customer['divisionid'], $cid,
-					$customer['lastname']." ".$customer['name'], $customer['address'], $customer['zip'],
+					array($numbers[$plan], $plan,
+					$customer['countryid'] ? $customer['countryid'] : 0,
+					$customer['divisionid'], $cid,
+					$customer['lastname']." ".$customer['name'], $customer['address'],
+					$customer['zip'] ? $customer['zip'] : '',
 					$customer['city'], $customer['ten'], $customer['ssn'], $currtime, $saledate, $paytime, $inv_paytype,
 					($division['name'] ? $division['name'] : ''),
 					($division['shortname'] ? $division['shortname'] : ''),
@@ -574,7 +577,7 @@ foreach ($assigns as $assign) {
 					($division['inv_footer'] ? $division['inv_footer'] : ''), 
 					($division['inv_author'] ? $division['inv_author'] : ''), 
 					($division['inv_cplace'] ? $division['inv_cplace'] : ''),
-					$fullnumber,
+					$fullnumber
 					));
 
 				$invoices[$cid] = $DB->GetLastInsertID("documents");

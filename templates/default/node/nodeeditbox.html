@@ -143,25 +143,6 @@
 									</td>
 								</tr>
 
-								<tr>
-									<td>
-										<img src="img/home.gif" alt="">
-									</td>
-									<td>
-										{trans("Location:")}
-									</td>
-									<td class="nobr">
-										<input type="text" SIZE="40" value="{$nodeinfo.location}" id="location" name="nodeedit[location]"  {tip text="Enter location (optional)" trigger="location"}>
-										<A href="javascript: void(0);" onclick="if (check_teryt()) return locationchoosewin('nodeedit', 'editnode', document.forms['editnode'].elements['nodeedit[location_city]'].value,  document.forms['editnode'].elements['nodeedit[location_street]'].value, {ConfigHelper::getConfig('phpui.default_teryt_city')})" {tip text="Click to select location"}>&raquo;&raquo;&raquo;</A>
-										<br>
-										<input type="hidden" name="nodeedit[location_city]" value="{$nodeinfo.location_city}">
-										<input type="hidden" name="nodeedit[location_street]" value="{$nodeinfo.location_street}">
-										<input type="hidden" name="nodeedit[location_house]" value="{$nodeinfo.location_house}">
-										<input type="hidden" name="nodeedit[location_flat]" value="{$nodeinfo.location_flat}">
-										<input type="checkbox" name="nodeedit[teryt]" id="teryt" onchange="check_teryt('location')"{if $nodeinfo.teryt} checked{/if}> <label for="teryt">{trans("TERRIT-DB")}</label>
-									</td>
-								</tr>
-
 								{if $netdevices}
 								<tr>
 									<td>

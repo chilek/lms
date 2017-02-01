@@ -50,37 +50,40 @@
 			{if $customerinfo.type == $smarty.const.CTYPES_COMPANY}{assign var='type' value=$smarty.const.CTYPES_COMPANY}{$_CTYPES.$type}{elseif $customerinfo.type == $smarty.const.CTYPES_PRIVATE}{assign var='type' value=$smarty.const.CTYPES_PRIVATE}{$_CTYPES.$type}{/if}
 		</TD>
 	</TR>
-	<TR>
-		<TD style="width: 1%;" class="valign-top">
-		</TD>
-		<TD style="width: 99%;">
-			<table>
-				<tr>
-					<td style="width: 1%;">
-						<fieldset style="width: 1%;" class="nobr">
-							<legend class="bold"><IMG SRC="img/home.gif" ALT=""> {trans("Address")}</legend>
-							{$customerinfo.address}<BR>
-							{$customerinfo.zip} {$customerinfo.city}
-							{if $customerinfo.cstate}<BR>{$customerinfo.cstate}{/if}
-							{if $customerinfo.country}<BR>{t}{$customerinfo.country}{/t}{/if}
-						</fieldset>
-					</td>
-					{if $customerinfo.post_name != "" || $customerinfo.post_address != ""}
-					<td style="width: 99%;">
-						<fieldset style="width: 1%;" class="nobr">
-							<legend class="bold"><IMG SRC="img/post.gif" ALT=""> {trans("Postal address")}</legend>
-							{if $customerinfo.post_name != ""}{$customerinfo.post_name}<br>{/if}
-							{if $customerinfo.post_address != ""}{$customerinfo.post_address}<br>{/if}
-							{$customerinfo.post_zip} {$customerinfo.post_city}
-							{if $customerinfo.post_cstate}<br>{$customerinfo.post_cstate}{/if}
-							{if $customerinfo.post_country}<br>{t}{$customerinfo.post_country}{/t}{/if}
-						</fieldset>
-					</td>
-					{/if}
-				</tr>
-			</table>
-		</TD>
-	</TR>
+
+	{foreach $customerinfo.addresses as $v}
+		{if $v.location_address_type == $smarty.const.BILLING_ADDRESS}
+		<tr>
+			<td style="width: 1%;"><img src="img/home.gif" alt=""></td>
+			<td style="width: 99%;">{$v.location}</td>
+		</tr>
+		{break}
+		{/if}
+	{/foreach}
+
+	{foreach $customerinfo.addresses as $v}
+		{if $v.location_address_type == $smarty.const.POSTAL_ADDRESS}
+		<tr>
+			<td style="width: 1%;"><img src="img/post.gif" alt=""></td>
+			<td style="width: 99%;">{$v.location}</td>
+		</tr>
+		{break}
+		{/if}
+	{/foreach}
+
+	{foreach $customerinfo.addresses as $v}
+		{if $v.location_address_type != $smarty.const.BILLING_ADDRESS && $v.location_address_type != $smarty.const.POSTAL_ADDRESS}
+		<tr>
+			<td style="width: 1%;">
+				{if $v.location_address_type == $smarty.const.DEFAULT_LOCATION_ADDRESS}
+				<img src="img/location.png" alt="">
+				{/if}
+			</td>
+			<td style="width: 99%;">{$v.location}</td>
+		</tr>
+		{/if}
+	{/foreach}
+
 {foreach $_CUSTOMERCONTACTTYPES as $type => $properties}
 {if !empty($customerinfo[$type|cat:"s"])}
 	<TR>
