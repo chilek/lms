@@ -428,6 +428,7 @@ $_LANG['Details'] = 'Szczegóły';
 $_LANG['Call details'] = 'Szczegóły połączenia';
 $_LANG['Device connected to other device or node can\'t be deleted.'] = 'Urządzenie podłączone do innego urządzenia lub komputera nie może zostać usunięte.';
 $_LANG['Device Edit: $a ($b)'] = 'Edycja urządzenia: $a ($b)';
+$_LANG['Device Edit: $a'] = 'Edycja urządzenia: $a';
 $_LANG['No free ports on device!'] = 'Urządzenie nie posiada wolnych portów!';
 $_LANG['No IP addresses on device.'] = 'Urządzenie nie posiada adresu IP.';
 $_LANG['Device Info: $a $b $c'] = 'Informacje o urządzeniu: $a $b $c';
