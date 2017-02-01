@@ -111,7 +111,7 @@ if ( !empty($_POST['division']) ) {
 			'shortname'   => $division['shortname'],
 			'ten'         => $division['ten'],
 			'regon'       => $division['regon'],
-			'rbename'     => $customeradd['rbename'],
+			'rbename'     => $division['rbename'] ? $division['rbename'] : '',
 			'account'     => $division['account'],
 			'inv_header'  => $division['inv_header'],
 			'inv_footer'  => $division['inv_footer'],

@@ -76,7 +76,7 @@ if (!empty($_POST['division'])) {
 			'ten'             => $division['ten'],
 			'regon'           => $division['regon'],
 			'rbe'             => $division['rbe'],
-			'rbename'         => $division['rbename'],
+			'rbename'         => $division['rbename'] ? $division['rbename'] : '',
 			'account'         => $division['account'],
 			'inv_header'      => $division['inv_header'],
 			'inv_footer'      => $division['inv_footer'],
