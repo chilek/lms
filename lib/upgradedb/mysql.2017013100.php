@@ -30,6 +30,7 @@
  */
 function parse_address($address) {
     $address = trim($address);
+    $m = array();
 
     if (!($res = preg_match('/^((?<city>.+),\s?)?(?<street>.+)\s+(?<house>[0-9][0-9a-z]*(?:\/[0-9][0-9a-z]*)?)(?:\s+|\s*(?:\/|m\.?|lok\.?)\s*)(?<flat>[0-9a-z]+)$/i', $address, $m))) {
         if (!($res = preg_match('/^((?<city>.+),\s?)?(?<street>.+)\s+(?<house>[0-9][0-9a-z]*)$/i', $address, $m))) {
