@@ -551,7 +551,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $division = $this->db->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 				account, inv_header, inv_footer, inv_author, inv_cplace
-				FROM divisions WHERE id = ? ;', array($invoice['customer']['divisionid']));
+				FROM vdivisions WHERE id = ? ;', array($invoice['customer']['divisionid']));
 
         $args = array(
             'number' => $number,
@@ -569,7 +569,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'ssn' => $invoice['customer']['ssn'],
             'zip' => $invoice['customer']['zip'],
             'city' => $invoice['customer']['city'],
-            SYSLOG::RES_COUNTRY => $invoice['customer']['countryid'],
+            SYSLOG::RES_COUNTRY => $invoice['customer']['countryid'] ? $invoice['customer']['countryid'] : 0,
             SYSLOG::RES_DIV => $invoice['customer']['divisionid'],
             'div_name' => ($division['name'] ? $division['name'] : ''),
             'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
@@ -953,8 +953,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'period' => $tariff['period'] ? $tariff['period'] : null,
             SYSLOG::RES_TAX => $tariff['taxid'],
             SYSLOG::RES_NUMPLAN => $tariff['numberplanid'] ? $tariff['numberplanid'] : null,
-            'datefrom' => $tariff['from'],
-            'dateto' => $tariff['to'],
+            'datefrom' => $tariff['from'] ? $tariff['from'] : 0,
+            'dateto' => $tariff['to'] ? $tariff['to'] : 0,
             'prodid' => $tariff['prodid'],
             'uprate' => $tariff['uprate'],
             'downrate' => $tariff['downrate'],

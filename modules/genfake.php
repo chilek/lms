@@ -1854,6 +1854,8 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	$DB->Execute('DELETE FROM receiptcontents');
 	$DB->Execute('DELETE FROM numberplanassignments');
 	$DB->Execute('DELETE FROM numberplans');
+	$DB->Execute('DELETE FROM customer_addresses');
+	$DB->Execute('DELETE FROM addresses');
 
 	if(ConfigHelper::getConfig('database.type')=='postgres')
 	{
@@ -1973,17 +1975,41 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 	$esize = sizeof($emaildomains);
 	for($i = 0; $i < sprintf('%d',$_GET['l']); $i++)
 	{
+		$customeradd = array();
 		$customeradd['lastname'] = $lastnames[mt_rand(0,$lnsize-1)];
 		$customeradd['name'] = $names[mt_rand(0,$nsize-1)];
 		$customeradd['phone'] = $phoneprefix[mt_rand(0,$ppsize-1)];
 		for($j = 0; $j < 6; $j++)
 			$customeradd['phone'] .= mt_rand(0,9);
 		$street = mt_rand(0,$ssize-1);
-		$customeradd['street'] = $streets[$street];
-		$customeradd['building'] = mt_rand(1,50);
-		$customeradd['apartment'] = mt_rand(1,300);
-		$customeradd['zip'] = '03-7'.sprintf('%02d',$street);
-		$customeradd['city'] = 'Mahagonny';
+
+		$customeradd['addresses'][0]['location_address_type'] = BILLING_ADDRESS;
+		$customeradd['addresses'][0]['location_city_name']    = 'Mahagonny';
+		$customeradd['addresses'][0]['location_street_name']  = $streets[$street];
+		$customeradd['addresses'][0]['location_house']        = mt_rand(1,50);
+		$customeradd['addresses'][0]['location_flat']         = mt_rand(1,300);
+		$customeradd['addresses'][0]['location_zip']          = '03-7'.sprintf('%02d',$street);
+
+		if ( mt_rand(1, 4) == 1 ) {
+			$customeradd['addresses'][1]['location_address_type'] = POSTAL_ADDRESS;
+			$customeradd['addresses'][1]['location_city_name']    = 'Mahagonny';
+			$customeradd['addresses'][1]['location_street_name']  = $streets[$street];
+			$customeradd['addresses'][1]['location_house']        = mt_rand(1,50);
+			$customeradd['addresses'][1]['location_flat']         = mt_rand(1,300);
+			$customeradd['addresses'][1]['location_zip']          = '03-7'.sprintf('%02d',$street);
+		}
+            /*
+		for ($i=2; $i<5; ++$i) {
+			if ( mt_rand(1, 3) == 1 ) {
+				$customeradd['addresses'][]['location_address_type'] = LOCATION_ADDRESS;
+				$customeradd['addresses'][]['location_city_name']    = 'Mahagonny';
+				$customeradd['addresses'][]['location_street_name']  = $streets[$street];
+				$customeradd['addresses'][]['location_house']        = mt_rand(1,50);
+				$customeradd['addresses'][]['location_flat']         = mt_rand(1,300);
+				$customeradd['addresses'][]['location_zip']          = '03-7'.sprintf('%02d',$street);
+			}
+		}
+*/
 		$customeradd['email'] = preg_replace('/[^0-9a-z@.]/i', '', strtolower($customeradd['name']).'.'.strtolower($customeradd['lastname']).'@'.$emaildomains[mt_rand(0,$esize-1)]);
 		$customeradd['status'] = 3;
 		$customeradd['tariff'] = mt_rand(1,3);
@@ -1993,6 +2019,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$customeradd['ssn'] = '';
 		$customeradd['regon'] = '';
 		$customeradd['rbe'] = '';
+		$customeradd['rbename'] = '';
 		$customeradd['icn'] = '';
 		$customeradd['notes'] = '';
 		$customeradd['info'] = '';
@@ -2060,22 +2087,22 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$i++;
 		$prod = mt_rand(0,$sprod-1);
 		$LMS->NetDevAdd(array(
-			'name' => 'SWITCH_'.$i,
-			'location' => $streets[mt_rand(0,$ssize-1)].' '.mt_rand(1,50),
-			'description' => '',
-			'producer' => $producer[$prod],
-			'model' => '10/100 Mbps Switch',
+			'name'         => 'SWITCH_'.$i,
+			'location'     => $streets[mt_rand(0,$ssize-1)].' '.mt_rand(1,50),
+			'description'  => '',
+			'producer'     => $producer[$prod],
+			'model'        => '10/100 Mbps Switch',
 			'serialnumber' => ($i*1000000+$i*200000).'-'.($i*11111).'-'.($i*33),
-			'ports' => '16',
+			'ports'        => '16',
 			'purchasetime' => 0,
 			'guaranteeperiod' => NULL,
-			'info' => '',
-			'shortname' => '',
-			'nastype' => 0,
-			'secret' => '',
-			'community' => '',
-			'clients' => 0,
-			'status' => 0,
+			'info'         => '',
+			'shortname'    => '',
+			'nastype'      => 0,
+			'secret'       => '',
+			'community'    => '',
+			'clients'      => 0,
+			'status'       => 0,
 		));
 		$ports = mt_rand(4,14);
 		for($j = 0; $j < $ports; $j++)
@@ -2127,10 +2154,10 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$contents['tariffid'] = 0;
 		$contents['jm'] = trans(ConfigHelper::getConfig('payments.default_unit_name'));
 		$contents['name'] = trans('Subscription');
-		
+
 		$customers = $DB->GetAll('SELECT '.$DB->Concat('UPPER(lastname)',"' '",'customeraddressview.name').' AS customername,
 				id, ssn, address, zip, city, ten, divisionid, countryid FROM customeraddressview');
-					    
+
 		if($customers)
 			for($n=0; $n<$_GET['i']; $n++)
 			{
@@ -2140,7 +2167,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 				$contents['pdiscount'] = 0;
 				$contents['vdiscount'] = 0;
 				$inv['cdate'] += 86400;
-				
+
 				foreach($customers as $c)
 				{
 					$inv['number']++;
