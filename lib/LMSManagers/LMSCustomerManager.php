@@ -161,6 +161,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
      */
     public function getCustomerNodesAC($id)
     {
+        $y = 0;
+        $n = 0;
+
         $acl = $this->db->GetAll('SELECT access FROM vnodes WHERE ownerid=?', array($id));
         if ($acl) {
             foreach ($acl as $value) {
