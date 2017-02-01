@@ -529,8 +529,8 @@ $EVENTTYPES = array(
 	EVENT_NETWORK => trans('network'),
 	EVENT_SERVICE => trans('service<!event>'),
 	EVENT_INSTALLATION => trans('installation'),
-	EVENT_MEETING => trans('meeting')
-	EVENT_VACATION => trans('vacation')
+	EVENT_MEETING => trans('meeting'),
+	EVENT_VACATION => trans('vacation'),
 	EVENT_DUTY => trans('duty')
 );
 
@@ -539,8 +539,8 @@ $EVENTSTYLES = array(
 	EVENT_NETWORK => 'background-color: blue; color: white;',
 	EVENT_SERVICE => 'background-color: red; color: white;',
 	EVENT_INSTALLATION => 'background-color: green; color: white;',
-	EVENT_MEETING => 'background-color: yellow; color: black;'
-	EVENT_VACATION => 'background-color: white; color: black;'
+	EVENT_MEETING => 'background-color: yellow; color: black;',
+	EVENT_VACATION => 'background-color: white; color: black;',
 	EVENT_DUTY => 'background-color: brown; color: white;'
 );
 
