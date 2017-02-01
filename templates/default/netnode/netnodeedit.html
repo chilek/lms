@@ -176,7 +176,7 @@
 			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>Udostępnianie powierzchni</B>
+			<b>{trans("Sharing surface")}</b>
 		</TD>
 		<TD WIDTH="98%">
 			<INPUT TYPE="RADIO" NAME="netnode[uip]" VALUE="1" id="uip_yes" {tip text="Możliwość udostępniania innym podmiotom powierzchni w obiekcie, w którym znajduje się węzeł"}{if ($netnode['uip']==1)} checked{/if}><label for="uip_yes">{trans("Yes")}</label>
@@ -188,7 +188,7 @@
 			<IMG SRC="img/producer.gif" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>Instalacja anten</B>
+			<b>{trans("Antennas installation")}</b>
 		</TD>
 		<TD WIDTH="98%">
 			<INPUT TYPE="RADIO" NAME="netnode[miar]" VALUE="1" id="miar_yes" {tip text="Możliwość instalacji anten dla radiowej sieci dostępowej lub anten dla radiolinii w obiekcie, w którym znajduje się węzeł"}{if ($netnode['miar']==1)} checked{/if}><label for="miar_yes">{trans("Yes")}</label>
