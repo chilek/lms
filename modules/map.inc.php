@@ -24,25 +24,48 @@
  *  $Id$
  */
 
-$devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, '.$DB->GroupConcat('INET_NTOA(CASE WHEN vnodes.ownerid = 0 THEN vnodes.ipaddr ELSE NULL END)', ',', true)
-				.' AS ipaddr, '.$DB->GroupConcat('CASE WHEN vnodes.ownerid = 0 THEN vnodes.id ELSE NULL END', ',', true).' AS nodeid, 
+$devices = $DB->GetAllByKey('SELECT n.id, n.name, '.$DB->GroupConcat('INET_NTOA(CASE WHEN vnodes.ownerid = 0 THEN vnodes.ipaddr ELSE NULL END)', ',', true)
+				.' AS ipaddr, '.$DB->GroupConcat('CASE WHEN vnodes.ownerid = 0 THEN vnodes.id ELSE NULL END', ',', true).' AS nodeid,
 				MAX(lastonline) AS lastonline, n.latitude AS lat, n.longitude AS lon,
-				' . $DB->GroupConcat('rs.id') . ' AS radiosectors
-				FROM netdevices n 
-				LEFT JOIN vnodes ON n.id = vnodes.netdev 
-				LEFT JOIN netradiosectors rs ON rs.netdev = n.id
-				WHERE n.latitude IS NOT NULL AND n.longitude IS NOT NULL 
-				GROUP BY n.id, n.name, n.location, n.latitude, n.longitude', 'id');
+				' . $DB->GroupConcat('rs.id') . ' AS radiosectors, n.ownerid,
+					a.city as location_city_name, a.street as location_street_name,
+					a.house as location_house, a.flat as location_flat
+				FROM netdevices n
+					LEFT JOIN addresses a ON n.address_id = a.id
+					LEFT JOIN vnodes ON n.id = vnodes.netdev
+					LEFT JOIN netradiosectors rs ON rs.netdev = n.id
+				WHERE n.latitude IS NOT NULL AND n.longitude IS NOT NULL
+				GROUP BY n.id, n.name, n.latitude, n.longitude, n.ownerid, a.city, a.street, a.house, a.flat', 'id');
 
 if ($devices) {
+	foreach ($devices as $k=>$acc) {
+		$tmp = array('city_name'     => $acc['location_city_name'],
+					'location_house' => $acc['location_house'],
+					'location_flat'  => $acc['location_flat'],
+					'street_name'    => $acc['location_street_name']);
+
+		$location = location_str( $tmp );
+
+		if ( $location ) {
+			$devices[$k]['location'] = $location;
+		} else if ( $acc['ownerid'] ) {
+			$devices[$k]['location'] = $LMS->getAddressForCustomerStuff( $acc['ownerid'] );
+		}
+	}
+}
+
+if ($devices) {
+	$time_now = time();
+
 	foreach ($devices as $devidx => $device) {
 		if ($device['lastonline'])
-			if (time() - $device['lastonline'] > ConfigHelper::getConfig('phpui.lastonline_limit'))
+			if ($time_now - $device['lastonline'] > ConfigHelper::getConfig('phpui.lastonline_limit'))
 				$devices[$devidx]['state'] = 2;
 			else
 				$devices[$devidx]['state'] = 1;
 		else
 			$devices[$devidx]['state'] = 0;
+
 		$urls = $DB->GetRow('SELECT '.$DB->GroupConcat('url').' AS url,
 			'.$DB->GroupConcat('comment').' AS comment FROM managementurls WHERE netdevid = ?',
 			array($device['id']));
