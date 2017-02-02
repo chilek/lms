@@ -422,7 +422,7 @@ CREATE INDEX zipcodes_stateid_idx ON zipcodes (stateid);
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS addresses_id_seq;
 CREATE SEQUENCE addresses_id_seq;
-DROP TABLE IF EXISTS addresses;
+DROP TABLE IF EXISTS addresses CASCADE;
 CREATE TABLE addresses (
     id         integer DEFAULT nextval('addresses_id_seq'::text) NOT NULL,
     name       text NULL,
@@ -444,7 +444,7 @@ CREATE TABLE addresses (
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS customer_addresses_id_seq;
 CREATE SEQUENCE customer_addresses_id_seq;
-DROP TABLE IF EXISTS customer_addresses;
+DROP TABLE IF EXISTS customer_addresses CASCADE;
 CREATE TABLE customer_addresses (
     id          integer DEFAULT nextval('customer_addresses_id_seq'::text) NOT NULL,
     customer_id integer REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
