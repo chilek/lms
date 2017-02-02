@@ -42,8 +42,14 @@ function parse_address($address) {
         }
     }
 
-    $m = array_filter( $m, 'strlen' );
-    $m = array_filter( $m, 'is_string', ARRAY_FILTER_USE_KEY);
+    $m = array_filter( $m, 'strlen'   );
+    $m = array_filter( $m, 'is_string');
+
+    foreach ($m as $k => $v) {
+        if ( is_numeric($k) ) {
+            unset( $m[$k] );
+        }
+    }
 
     return $m;
 }
