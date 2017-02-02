@@ -38,7 +38,17 @@ function parse_address($address) {
 			if (!$res)
 				return null;
 		}
-	return array_filter($m, 'is_string', ARRAY_FILTER_USE_KEY);
+
+	// ARRAY_FILTER_USE_KEY flag is only for php 5.6 and above
+	$m = array_filter($m, 'is_string');
+
+	foreach ($m as $k => $v) {
+		if ( is_numeric($k) ) {
+			unset( $m[$k] );
+		}
+	}
+
+	return $m;
 }
 
 $attachment_name = ConfigHelper::getConfig('invoices.attachment_name');
