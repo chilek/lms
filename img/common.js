@@ -673,17 +673,17 @@ function generate_random_string(length, characters) {
 }
 
 function get_size_unit(size) {
-	if (size > 10 * 1024 * 1024 * 1024)
+	if (size > 10737418240) // 10737418240 = 10 * 1024 * 1024 * 1024
 		return {
-			size: (size / 1024 * 1024 * 1024).toFixed(2),
+			size: (size / 1073741824).toFixed(2),
 			unit: 'GiB'
 		};
-	else if (size > 10 * 1024 * 1024)
+	else if (size > 10485760) // 10485760 = 10 * 1024 * 1024
 		return {
-			size: (size / 1024 * 1024).toFixed(2),
+			size: (size / 1048576).toFixed(2),
 			unit: 'MiB'
 		};
-	else if (size > 10 * 1024)
+	else if (size > 10240) // 10240 = 10 * 1024
 		return {
 			size: (size / 1024).toFixed(2),
 			unit: 'KiB'
