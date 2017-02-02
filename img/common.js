@@ -656,6 +656,7 @@ function reset_customer(form, elemname1, elemname2) {
 		document.forms[form].elements[elemname2].value = document.forms[form].elements[elemname1].value;
 
 		$( document.forms[form].elements[elemname1] ).trigger( 'keyup' );
+		$( document.forms[form].elements[elemname2] ).trigger( 'reset_customer' );
 	}
 }
 
@@ -724,6 +725,8 @@ function getCustomerName(elem) {
 		$(elem).nextAll('span').html(data.customernames[$(elem).val()] === undefined ? ''
 			: '<a href="?m=customerinfo&id=' + $(elem).val() + '">' + data.customernames[$(elem).val()] + '</a>');
 	});
+
+	$(elem).trigger('change');
 }
 
 var customerinputs = [];
