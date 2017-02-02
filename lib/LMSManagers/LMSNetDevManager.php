@@ -500,7 +500,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
 		if ($netdevlist) {
 			global $LMS;
-		
+
 			foreach ($netdevlist as $k=>$acc) {
 				$tmp = array('city_name'     => $acc['location_city_name'],
 							'location_house' => $acc['location_house'],
