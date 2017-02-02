@@ -1998,18 +1998,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			$customeradd['addresses'][1]['location_flat']         = mt_rand(1,300);
 			$customeradd['addresses'][1]['location_zip']          = '03-7'.sprintf('%02d',$street);
 		}
-            /*
-		for ($i=2; $i<5; ++$i) {
-			if ( mt_rand(1, 3) == 1 ) {
-				$customeradd['addresses'][]['location_address_type'] = LOCATION_ADDRESS;
-				$customeradd['addresses'][]['location_city_name']    = 'Mahagonny';
-				$customeradd['addresses'][]['location_street_name']  = $streets[$street];
-				$customeradd['addresses'][]['location_house']        = mt_rand(1,50);
-				$customeradd['addresses'][]['location_flat']         = mt_rand(1,300);
-				$customeradd['addresses'][]['location_zip']          = '03-7'.sprintf('%02d',$street);
-			}
-		}
-*/
+
 		$customeradd['email'] = preg_replace('/[^0-9a-z@.]/i', '', strtolower($customeradd['name']).'.'.strtolower($customeradd['lastname']).'@'.$emaildomains[mt_rand(0,$esize-1)]);
 		$customeradd['status'] = 3;
 		$customeradd['tariff'] = mt_rand(1,3);
