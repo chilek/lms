@@ -410,7 +410,7 @@
     /*!
      * \brief Update addresses list on customer input change.
      */
-    $( '#customerid_input' ).on('input', function() {
+    $( '#customerid_input' ).on('input reset_customer', function() {
         customer_addresses.setAddressList( getCustomerAddresses($(this).val()) );
     });
 
@@ -419,7 +419,7 @@
      * \brief Update customer addresses list on select change.
      * Using when big_networks is set as false.
      */
-    $( '#customerid_select' ).change( function() {
+    $( '#customerid_select' ).on('change reset_customer', function() {
         var id = $(this).val();
 
         if ( id != 'undefined' && id > 0 ) {
