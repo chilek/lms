@@ -192,6 +192,7 @@ switch (strtolower($options['action'])) {
             fclose($fh);
         } else {
             try {
+                $cdr = array();
                 $cdr['caller']             = $options['caller'];
                 $cdr['callee']             = $options['callee'];
                 $cdr['call_start']         = $options['startcall'];
