@@ -163,20 +163,37 @@ foreach ($posts as $postid) {
 		$parts = $post->parts;
 		//print_r($parts);
 
-		foreach ($parts as $partid => $part)
-			if ($part->ifdisposition && in_array(strtolower($part->disposition), array('attachment', 'inline'))
-				&& $part->ifdparameters)
-				foreach ($part->dparameters as $dparameter)
-					if (strtolower($dparameter->attribute) == 'filename') {
-						$fname = $dparameter->value;
-						$body = imap_fetchbody($ih, $postid, $partid + 1);
-						if ($part->encoding == 3)
-							$body = imap_base64($body);
-						$files[] = array(
-							'name' => $fname,
-							'contents' => $body,
-						);
-					}
+		foreach ($parts as $partid => $part) {
+			if ($part->ifdisposition) {
+				if (in_array(strtolower($part->disposition), array('attachment', 'inline'))
+					&& $part->ifdparameters)
+					foreach ($part->dparameters as $dparameter)
+						if (strtolower($dparameter->attribute) == 'filename') {
+							$fname = $dparameter->value;
+							$body = imap_fetchbody($ih, $postid, $partid + 1);
+							if ($part->encoding == 3)
+								$body = imap_base64($body);
+							$files[] = array(
+								'name' => $fname,
+								'contents' => $body,
+							);
+						}
+			} elseif ($part->ifsubtype) {
+				if (strtolower($part->subtype) == 'octet-stream' && $part->ifparameters)
+					foreach ($part->parameters as $parameter)
+						if (strtolower($parameter->attribute) == 'name') {
+							$elems = imap_mime_header_decode($parameter->value);
+							$fname = iconv($elems[0]->charset, 'utf-8', $elems[0]->text);
+							$body = imap_fetchbody($ih, $postid, $partid + 1);
+							if ($part->encoding == 3)
+								$body = imap_base64($body);
+							$files[] = array(
+								'name' => $fname,
+								'contents' => $body,
+							);
+						}
+			}
+		}
 	} elseif ($post->type == 3 && $post->ifdispostion
 		&& in_array(strtolower($post->disposition), array('attachment', 'inline'))
 		&& $post->ifdparameters)
