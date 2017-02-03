@@ -118,6 +118,10 @@ class Estimate {
      * \return float
      */
     private function calcCost($t, $s, $p) {
+        if ($s == 0) {
+            throw new Exception('Unit size must be higher than 0.');
+        }
+
         return ceil($t/$s) * (($p*$s) / 60);
     }
 
@@ -127,9 +131,18 @@ class Estimate {
      * \param  int   $c account balance
      * \param  int   $s unit size
      * \param  float $p price per minute
-     * \return float 
+     * \return float
      */
     private function calcTime($c, $s, $p) {
+        if ($s == 0) {
+            throw new Exception('Unit size must be higher than 0.');
+        }
+
+        // if price is equals to 0 then simulate infinity
+        if ($p == 0) {
+            return PHP_INT_MAX;
+        }
+
         return floor(($c*60) / ($p*$s)) * $s;
     }
 }
