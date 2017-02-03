@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,6 +33,7 @@ $parameters = array(
 	'h' => 'help',
 	'v' => 'version',
 	'c' => 'stdout',
+	's:' => 'section:',
 );
 
 foreach ($parameters as $key => $val) {
@@ -50,7 +51,7 @@ foreach ($short_to_longs as $short => $long)
 if (array_key_exists('version', $options)) {
 	print <<<EOF
 lms-cashimport-mail.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2017 LMS Developers
 
 EOF;
 	exit(0);
@@ -59,13 +60,15 @@ EOF;
 if (array_key_exists('help', $options)) {
 	print <<<EOF
 lms-cashimport-mail.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2017 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
 -c, --stdout                    write cash import file contents to stdout
+-s, --section=<section-name>    section name from lms configuration where settings
+                                are stored
 
 EOF;
 	exit(0);
@@ -75,7 +78,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
 	print <<<EOF
 lms-cashimport-mail.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2017 LMS Developers
 
 EOF;
 }
@@ -126,21 +129,21 @@ try {
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
 
 // Initialize Session, Auth and LMS classes
 
-$stdout = array_key_exists('stdout', $options);
+$stdout = isset($options['stdout']);
+$config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $options['section']) ? $options['section'] : 'cashimport';
 
-$cashimport_server = ConfigHelper::getConfig('cashimport.server');
-$cashimport_username = ConfigHelper::getConfig('cashimport.username');
-$cashimport_password = ConfigHelper::getConfig('cashimport.password');
-$cashimport_filename_pattern = ConfigHelper::getConfig('cashimport.filename_pattern', '', true);
+$cashimport_server = ConfigHelper::getConfig($config_section . '.server');
+$cashimport_username = ConfigHelper::getConfig($config_section . '.username');
+$cashimport_password = ConfigHelper::getConfig($config_section . '.password');
+$cashimport_filename_pattern = ConfigHelper::getConfig($config_section . '.filename_pattern', '', true);
 
 if (empty($cashimport_server) || empty($cashimport_username) || empty($cashimport_password))
 	die("Fatal error: mailbox credentials are not set!" . PHP_EOL);
 
-$cashimport_use_seen_flag = ConfigHelper::checkValue(ConfigHelper::getConfig('cashimport.use_seen_flag', true));
+$cashimport_use_seen_flag = ConfigHelper::checkValue(ConfigHelper::getConfig($config_section . '.use_seen_flag', true));
 
 $ih = @imap_open("{" . $cashimport_server . "}INBOX", $cashimport_username, $cashimport_password);
 if (!$ih)
