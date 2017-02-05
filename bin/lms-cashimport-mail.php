@@ -169,7 +169,11 @@ foreach ($posts as $postid) {
 					&& $part->ifdparameters)
 					foreach ($part->dparameters as $dparameter)
 						if (strtolower($dparameter->attribute) == 'filename') {
-							$fname = $dparameter->value;
+							if (preg_match('/^=\?/', $dparameter->value)) {
+								$elems = imap_mime_header_decode($dparameter->value);
+								$fname = iconv($elems[0]->charset, 'utf-8', $elems[0]->text);
+							} else
+								$fname = $dparameter->value;
 							$body = imap_fetchbody($ih, $postid, $partid + 1);
 							if ($part->encoding == 3)
 								$body = imap_base64($body);
@@ -194,12 +198,16 @@ foreach ($posts as $postid) {
 						}
 			}
 		}
-	} elseif ($post->type == 3 && $post->ifdispostion
+	} elseif ($post->type == 3 && $post->ifdisposition
 		&& in_array(strtolower($post->disposition), array('attachment', 'inline'))
 		&& $post->ifdparameters)
-		foreach ($part->dparameters as $dparameter)
+		foreach ($post->dparameters as $dparameter)
 			if (strtolower($dparameter->attribute) == 'filename') {
-				$fname = $dparameter->value;
+				if (preg_match('/^=\?/', $dparameter->value)) {
+					$elems = imap_mime_header_decode($dparameter->value);
+					$fname = iconv($elems[0]->charset, 'utf-8', $elems[0]->text);
+				} else
+					$fname = $dparameter->value;
 				$body = imap_fetchbody($ih, $postid, '1');
 				if ($post->encoding == 3)
 					$body = imap_base64($body);
