@@ -193,9 +193,23 @@ if (isset($_POST['document'])) {
 
 		$DB->BeginTrans();
 
-		$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
-				account, inv_header, inv_footer, inv_author, inv_cplace 
-				FROM divisions WHERE id = ? ;',array($customer['divisionid']));
+		$division = $DB->GetRow('SELECT d.name, d.shortname, d.ten, d.regon,
+									d.account, d.inv_header, d.inv_footer, d.inv_author, d.inv_cplace,
+									addr.country_id as countryid, addr.zip,
+									addr.city, addr.house, addr.flat, addr.street
+								FROM
+									divisions d
+									LEFT JOIN addresses addr ON d.address_id = addr.id
+								WHERE d.id = ?;',array($customer['divisionid']));
+
+		if ($division) {
+			$tmp = array('city_name'     => $division['city'],
+						'location_house' => $division['house'],
+						'location_flat'  => $division['flat'],
+						'street_name'    => $division['street']);
+
+			$division['address'] = location_str( $tmp );
+		}
 
 		$fullnumber = docnumber(array(
 			'number' => $document['number'],
