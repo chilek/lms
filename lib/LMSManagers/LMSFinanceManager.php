@@ -348,20 +348,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'vdiscount'         => 0,
                     'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
                     SYSLOG::RES_LIAB    => $lid,
+                    'address_id'        => $data['address_id'] >= 0 ? $data['address_id'] : NULL
                 );
-
-				/*
-                $this->db->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
-					    settlement, numberplanid, paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid)
-					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
-
-                $id = $this->db->GetLastInsertID('assignments');
-
-                if ($this->syslog) {
-                    $args[SYSLOG::RES_ASSIGN] = $id;
-                    $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_ADD, $args);
-                }
-                */
 
                 $result[] = $this->insertAssignment( $args );
 
@@ -395,20 +383,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'vdiscount'         => 0,
                         'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
                         SYSLOG::RES_LIAB    => 0,
+                        'address_id'        => $data['address_id'] >= 0 ? $data['address_id'] : NULL
                     );
-
-/*
-                    $this->db->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
-					    settlement, numberplanid, paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid)
-					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
-
-                    $id = $this->db->GetLastInsertID('assignments');
-
-                    if ($this->syslog) {
-                        $args[SYSLOG::RES_ASSIGN] = $id;
-                        $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_ADD, $args);
-                    }
-                    */
 
                     $result[] = $this->insertAssignment( $args );
                 }
@@ -448,20 +424,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 'vdiscount'         => str_replace(',', '.', $data['vdiscount']),
                 'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
                 SYSLOG::RES_LIAB    => isset($lid) ? $lid : 0,
+                'address_id'        => $data['address_id'] >= 0 ? $data['address_id'] : NULL
             );
-
-            /*
-            $this->db->Execute('INSERT INTO assignments (tariffid, customerid, period, at, invoice,
-					    settlement, numberplanid, paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid)
-					    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
-
-            $id = $this->db->GetLastInsertID('assignments');
-
-            if ($this->syslog) {
-                $args[SYSLOG::RES_ASSIGN] = $id;
-                $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_ADD, $args);
-            }
-               */
 
             $result[] = $this->insertAssignment( $args );
         }
@@ -503,8 +467,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     private function insertAssignment($args) {
     	$this->db->Execute('INSERT INTO assignments
     							(tariffid, customerid, period, at, invoice, settlement, numberplanid,
-    							paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid)
-					        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    							paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid, address_id)
+					        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					        array_values($args));
 
         $id = $this->db->GetLastInsertID('assignments');

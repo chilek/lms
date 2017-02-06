@@ -241,6 +241,7 @@
 											</TD>
 										</TR>
 
+
 										<TR id="a_discount">
 											<TD style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
 												<IMG src="img/value.gif" alt="">
@@ -257,7 +258,7 @@
 												</SELECT>
 											</TD>
 										</TR>
-									
+
 										<TR id="a_tax">
 											<TD>
 												<IMG src="img/tax.gif" alt="">
@@ -304,7 +305,7 @@
 												</SELECT>
 											</TD>
 										</TR>
-	
+
 										<TR id="a_paytype">
 											<TD>
 												<IMG src="img/print.gif" alt="">
@@ -313,15 +314,33 @@
 												{trans("Payment Type:")}
 											</TD>
 											<TD>
-												<SELECT name="assignment[paytype]" {tip text="Select payment type" trigger="paytype"}>									
+												<SELECT name="assignment[paytype]" {tip text="Select payment type" trigger="paytype"}>
 													<OPTION value=""{if !$assignment.paytype} selected{/if}>- {trans("default")} -</OPTION>
-	
+
 													{foreach from=$_PAYTYPES item=item key=key}
 														<OPTION value="{$key}"{if $assignment.paytype==$key} selected{/if}>{$item}</OPTION>
 													{/foreach}
 												</SELECT>
 											</TD>
 										</TR>
+
+										<tr id="a_address">
+											<td>
+												<img src="img/info3.gif" alt="">
+											</td>
+											<td class="bold">
+												<span class="bold">{trans("Recipient:")}</span>
+											</td>
+											<td>
+												<select name="assignment[address_id]">
+													<option value="-1">{trans("none")}</option>
+													{foreach $customeraddresses as $v}
+														<option value="{$v.address_id}"{if $assignment.address_id == $v.address_id} selected{/if}>{$v.location}</option>
+													{/foreach}
+												</select>
+											</td>
+										</tr>
+
 									</TBODY>
 								</TABLE>
 							</TD>
@@ -332,7 +351,7 @@
 										<COL style="width: 1%;">
 										<COL style="width: 98%;">
 									</COLGROUP>
-			
+
 									<TBODY>
 										<TR id="a_options">
 											<TD>

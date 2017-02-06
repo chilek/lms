@@ -320,7 +320,7 @@ if (!empty($groupsql))
 	$customergroups = preg_replace("/\%groups/", $groupsql, $customergroups);
 
 # let's go, fetch *ALL* assignments in given day
-$query = "SELECT a.tariffid, a.liabilityid, a.customerid, 
+$query = "SELECT a.tariffid, a.liabilityid, a.customerid, a.address_id,
 		a.period, a.at, a.suspended, a.settlement, a.datefrom, a.pdiscount, a.vdiscount, 
 		a.invoice, t.description AS description, a.id AS assignmentid, 
 		c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
@@ -353,7 +353,7 @@ $query = "SELECT a.tariffid, a.liabilityid, a.customerid,
 			OR (a.period = ? AND at = ?))
 			AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
 		.(!empty($groupnames) ? $customergroups : "")
-	." ORDER BY a.customerid, a.invoice, a.paytype, a.numberplanid, value DESC";
+	." ORDER BY a.customerid, a.address_id, a.invoice,  a.paytype, a.numberplanid, value DESC";
 $assigns = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
 	DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
 	$currtime, $currtime));
@@ -432,6 +432,7 @@ if (empty($assigns))
 $suspended = 0;
 $invoices = array();
 $paytypes = array();
+$addresses = array();
 $numberplans = array();
 
 foreach ($assigns as $assign) {
@@ -523,7 +524,7 @@ foreach ($assigns as $assign) {
 			else
 				$plan = (array_key_exists($divid, $plans) ? $plans[$divid] : 0);
 
-			if ($invoices[$cid] == 0 || $paytypes[$cid] != $inv_paytype || $numberplans[$cid] != $plan)
+			if ($invoices[$cid] == 0 || $paytypes[$cid] != $inv_paytype || $numberplans[$cid] != $plan || $assign['address_id'] != $addresses[$cid])
 			{
 				if (!isset($numbers[$plan]))
 				{
@@ -563,7 +564,8 @@ foreach ($assigns as $assign) {
 					$customer['divisionid'], $cid,
 					$customer['lastname']." ".$customer['name'], $customer['address'],
 					$customer['zip'] ? $customer['zip'] : '',
-					$customer['city'], $customer['ten'], $customer['ssn'], $currtime, $saledate, $paytime, $inv_paytype,
+					$customer['city'] ? $customer['city'] : '',
+					$customer['ten'], $customer['ssn'], $currtime, $saledate, $paytime, $inv_paytype,
 					($division['name'] ? $division['name'] : ''),
 					($division['shortname'] ? $division['shortname'] : ''),
 					($division['address'] ? $division['address'] : ''), 
@@ -582,6 +584,7 @@ foreach ($assigns as $assign) {
 
 				$invoices[$cid] = $DB->GetLastInsertID("documents");
 				$paytypes[$cid] = $inv_paytype;
+				$addresses[$cid] = $assign['address_id'];
 				$numberplans[$cid] = $plan;
 			}
 			if (($tmp_itemid = $DB->GetOne("SELECT itemid FROM invoicecontents 
