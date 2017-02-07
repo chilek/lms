@@ -70,6 +70,8 @@ version ?.??.?? (????-??-??):
   - removed possibility for setting up custom address for nodes and voipaccounts [kosa/chilan]
   - added possibility for create many addresses for each customer [kosa/chilan]
   - improvement: added new event types - vacation and duty [chilan]
+  - enhancement: number plan list is updated automatically after customer or document
+    type selection change [chilan]
 
 version 1.11.21 (2016-10-14):
 
