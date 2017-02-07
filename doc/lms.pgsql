@@ -116,7 +116,9 @@ CREATE TABLE assignments (
 	paytype smallint    DEFAULT NULL,
 	numberplanid integer DEFAULT NULL
 	    REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
-        attribute varchar(255) DEFAULT NULL,
+	attribute varchar(255) DEFAULT NULL,
+	address_id integer DEFAULT NULL
+		CONSTRAINT address_id_fk REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
 CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
@@ -2941,6 +2943,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017020100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017020600');
 
 COMMIT;

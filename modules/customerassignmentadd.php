@@ -343,14 +343,14 @@ $schemas = $DB->GetAll('SELECT p.name AS promotion, s.name, s.id,
 	ORDER BY p.name, s.name');
 
 $LMS->executeHook(
-    'customerassignmentadd_before_display', 
+    'customerassignmentadd_before_display',
     array(
         'a' => $a,
         'smarty' => $SMARTY,
     )
 );
 
-$tmp_promo_list = $DB->GetAll('SELECT 
+$tmp_promo_list = $DB->GetAll('SELECT
 		   	  		              p.name as promotion_name, ps.name as schema_name, t.name as tariff_name, pa.optional,
 		   	  		              selectionid, t.id as tariffid
 						       FROM promotions p
@@ -366,17 +366,17 @@ if (!empty($tmp_promo_list)) {
         $p   = $v['promotion_name'];
         $s   = $v['schema_name'];
         $sid = $v['selectionid'];
-        
+
         $promotion_item = array('tariffid' => $v['tariffid'],
         						'tariff'   => $v['tariff_name'],
                                 'value'    => $v['value'],
                                 'optional' => $v['optional'] );
-        
+
         if (!empty($sid)) {
             if ($v['optional'] == 0) {
                 $promotions[$p][$s]['lists'][$sid]['required'] = 1;
             }
-         
+
             $promotions[$p][$s]['lists'][$sid]['items'][] = $promotion_item;
         } else {
             $promotions[$p][$s]['single'][] = $promotion_item;
@@ -404,6 +404,7 @@ $SMARTY->assign('customernetdevnodes' , $netdevnodes);
 $SMARTY->assign('assignment'          , $a);
 $SMARTY->assign('customernodes'       , $customernodes);
 $SMARTY->assign('customervoipaccs'    , $LMS->getCustomerVoipAccounts($customer['id']));
+$SMARTY->assign('customeraddresses'   , $LMS->getCustomerAddresses($customer['id']));
 $SMARTY->assign('promotionschemanames', $schemas_only_names);
 $SMARTY->assign('promotionschemas'    , $schemas);
 $SMARTY->assign('promotions'          , $promotions);

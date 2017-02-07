@@ -55,9 +55,9 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 	$list = $DB->GetAll(
 		'SELECT events.id AS id, title, note, description, date, begintime, enddate, endtime, customerid, closed, events.type, '
 		.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
-		userid, vusers.name AS username, '.$DB->Concat('c.city',"', '",'c.address').' AS customerlocation, nodeid, nodes.location AS location
+		userid, vusers.name AS username, '.$DB->Concat('c.city',"', '",'c.address').' AS customerlocation, nodeid, vn.location AS location
 		FROM events
-		LEFT JOIN nodes ON (nodeid = nodes.id)
+		LEFT JOIN vnodes as vn ON (nodeid = vn.id)
 		LEFT JOIN customerview c ON (customerid = c.id)
 		LEFT JOIN vusers ON (userid = vusers.id)
 		WHERE ((date >= ? AND date < ?) OR (enddate <> 0 AND date < ? AND enddate >= ?)) AND ' . $privacy_condition
