@@ -69,7 +69,7 @@ function smarty_function_customerlist($params, $template) {
 		$result .= '</SELECT>&nbsp;' . trans("or Customer ID:");
 	} else
 		$result .= trans("ID:");
-	$result .= '&nbsp;<INPUT type="text" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" size="5" ';
+	$result .= '&nbsp;<INPUT type="text" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" data-prev-value="' . $params['selected'] . '" size="5" ';
 
 	if ( !empty($params['input_id']) ) {
 		$result .= 'id="' . $params['input_id'] . '" ';
@@ -78,10 +78,10 @@ function smarty_function_customerlist($params, $template) {
 	$on_change = !empty($params['customOnChange']) ? $params['customOnChange'] : '';
 
 	if (!empty($params['customers'])) {
-		$reset_customer = "reset_customer('${params['form']}', '${params['inputname']}', '${params['selectname']}'); ${on_change}";
+		$reset_customer = "if (this.value != \$(this).attr('data-prev-value')) { reset_customer('${params['form']}', '${params['inputname']}', '${params['selectname']}'); ${on_change}; \$(this).attr('data-prev-value', this.value); }";
 		$result .= "onChange=\"${reset_customer}\" onFocus=\"${reset_customer}\"";
 	} else
-		$result .= sprintf(' onblur="%1$s" onfocus="%1$s" oninput="%1$s" ', $on_change . ';getCustomerName(this)');
+		$result .= sprintf(' onblur="%1$s" onfocus="%1$s" oninput="%1$s" ', 'if (this.value != $(this).attr(\'data-prev-value\')) { ' . $on_change . ';getCustomerName(this); $(this).attr(\'data-prev-value\', this.value); }');
 
 	if (!empty($params['inputtip']))
 		$result .= smarty_function_tip(array('text' => $params['inputtip']), $template);
