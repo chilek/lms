@@ -92,65 +92,33 @@ CREATE TABLE numberplans (
 	PRIMARY KEY (id)
 );
 
-/* ----------------------------------------------------
- Structure of table "assignments"
----------------------------------------------------*/
-DROP SEQUENCE IF EXISTS assignments_id_seq;
-CREATE SEQUENCE assignments_id_seq;
-DROP TABLE IF EXISTS assignments CASCADE;
-CREATE TABLE assignments (
-	id integer default nextval('assignments_id_seq'::text) NOT NULL,
-	tariffid integer 	DEFAULT 0 NOT NULL,
-	liabilityid integer 	DEFAULT 0 NOT NULL,
-	customerid integer	NOT NULL
-	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	period smallint 	DEFAULT 0 NOT NULL,
-	at integer 		DEFAULT 0 NOT NULL,
-	datefrom integer	DEFAULT 0 NOT NULL,
-	dateto integer		DEFAULT 0 NOT NULL,
-	invoice smallint 	DEFAULT 0 NOT NULL,
-	suspended smallint	DEFAULT 0 NOT NULL,
-	settlement smallint	DEFAULT 0 NOT NULL,
-	pdiscount numeric(4,2)	DEFAULT 0 NOT NULL,
-	vdiscount numeric(9,2) DEFAULT 0 NOT NULL,
-	paytype smallint    DEFAULT NULL,
-	numberplanid integer DEFAULT NULL
-	    REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	attribute varchar(255) DEFAULT NULL,
-	address_id integer DEFAULT NULL
-		CONSTRAINT address_id_fk REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	PRIMARY KEY (id)
+/* ---------------------------------------------------
+ Structure of table "countries"
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS countries_id_seq;
+CREATE SEQUENCE countries_id_seq;
+DROP TABLE IF EXISTS countries CASCADE;
+CREATE TABLE countries (
+	id      integer DEFAULT nextval('countries_id_seq'::text) NOT NULL,
+	name    varchar(255) NOT NULL DEFAULT '',
+	PRIMARY KEY (id),
+	UNIQUE (name)
 );
-CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
-CREATE INDEX assignments_customerid_idx ON assignments (customerid);
-CREATE INDEX assignments_numberplanid_idx ON assignments (numberplanid);
 
-/* --------------------------------------------------------
-  Structure of table "cash"
--------------------------------------------------------- */
-DROP SEQUENCE IF EXISTS cash_id_seq;
-CREATE SEQUENCE cash_id_seq;
-DROP TABLE IF EXISTS cash CASCADE;
-CREATE TABLE cash (
-	id integer 		DEFAULT nextval('cash_id_seq'::text) NOT NULL,
-	time integer 		DEFAULT 0 NOT NULL,
-	type smallint 		DEFAULT 0 NOT NULL,
-	userid integer 		DEFAULT 0 NOT NULL,
-	value numeric(9,2) 	DEFAULT 0 NOT NULL,
-	taxid integer		DEFAULT 0 NOT NULL,
-	customerid integer 	DEFAULT 0 NOT NULL,
-	comment text 		DEFAULT '' NOT NULL,
-	docid integer 		DEFAULT 0 NOT NULL,
-	itemid smallint		DEFAULT 0 NOT NULL,
-	importid integer	DEFAULT NULL,
-	sourceid integer	DEFAULT NULL,
-	PRIMARY KEY (id)
+/* ---------------------------------------------------
+ Structure of table "zipcodes"
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS zipcodes_id_seq;
+CREATE SEQUENCE zipcodes_id_seq;
+DROP TABLE IF EXISTS zipcodes CASCADE;
+CREATE TABLE zipcodes (
+    	id 		integer 	DEFAULT nextval('customerassignments_id_seq'::text) NOT NULL,
+	zip 		varchar(10) 	NOT NULL DEFAULT '',
+	stateid 	integer 	NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE (zip)
 );
-CREATE INDEX cash_customerid_idx ON cash (customerid);
-CREATE INDEX cash_docid_idx ON cash (docid);
-CREATE INDEX cash_importid_idx ON cash (importid);
-CREATE INDEX cash_sourceid_idx ON cash (sourceid);
-CREATE INDEX cash_time_idx ON cash (time);
+CREATE INDEX zipcodes_stateid_idx ON zipcodes (stateid);
 
 /* --------------------------------------------------------
   Structure of table "location_states"
@@ -267,6 +235,103 @@ CREATE TABLE location_buildings (
 );
 DROP INDEX IF EXISTS location_cityid_index;
 CREATE INDEX location_cityid_index ON location_buildings (city_id);
+
+/* ---------------------------------------------------
+ Structure of table "addresses"
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS addresses_id_seq;
+CREATE SEQUENCE addresses_id_seq;
+DROP TABLE IF EXISTS addresses CASCADE;
+CREATE TABLE addresses (
+    id         integer DEFAULT nextval('addresses_id_seq'::text) NOT NULL,
+    name       text NULL,
+    state      varchar(64) NULL,
+    state_id   integer REFERENCES location_states (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    city       varchar(32) NULL,
+    city_id    integer REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    street     varchar(255) NULL,
+    street_id  integer REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    zip        varchar(10) NULL,
+    country_id integer REFERENCES countries (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    house      varchar(20) NULL,
+    flat       varchar(20) NULL,
+    PRIMARY KEY (id)
+);
+
+/* ---------------------------------------------------
+ Structure of table "customer_addresses"
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS customer_addresses_id_seq;
+CREATE SEQUENCE customer_addresses_id_seq;
+DROP TABLE IF EXISTS customer_addresses CASCADE;
+CREATE TABLE customer_addresses (
+    id          integer DEFAULT nextval('customer_addresses_id_seq'::text) NOT NULL,
+    customer_id integer REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    address_id  integer REFERENCES addresses (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    type        smallint NULL,
+    PRIMARY KEY (id),
+    UNIQUE(customer_id, address_id)
+);
+
+/* ----------------------------------------------------
+ Structure of table "assignments"
+---------------------------------------------------*/
+DROP SEQUENCE IF EXISTS assignments_id_seq;
+CREATE SEQUENCE assignments_id_seq;
+DROP TABLE IF EXISTS assignments CASCADE;
+CREATE TABLE assignments (
+	id integer default nextval('assignments_id_seq'::text) NOT NULL,
+	tariffid integer 	DEFAULT 0 NOT NULL,
+	liabilityid integer 	DEFAULT 0 NOT NULL,
+	customerid integer	NOT NULL
+	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	period smallint 	DEFAULT 0 NOT NULL,
+	at integer 		DEFAULT 0 NOT NULL,
+	datefrom integer	DEFAULT 0 NOT NULL,
+	dateto integer		DEFAULT 0 NOT NULL,
+	invoice smallint 	DEFAULT 0 NOT NULL,
+	suspended smallint	DEFAULT 0 NOT NULL,
+	settlement smallint	DEFAULT 0 NOT NULL,
+	pdiscount numeric(4,2)	DEFAULT 0 NOT NULL,
+	vdiscount numeric(9,2) DEFAULT 0 NOT NULL,
+	paytype smallint    DEFAULT NULL,
+	numberplanid integer DEFAULT NULL
+	    REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	attribute varchar(255) DEFAULT NULL,
+	address_id integer DEFAULT NULL
+		CONSTRAINT address_id_fk REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	PRIMARY KEY (id)
+);
+CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
+CREATE INDEX assignments_customerid_idx ON assignments (customerid);
+CREATE INDEX assignments_numberplanid_idx ON assignments (numberplanid);
+
+/* --------------------------------------------------------
+  Structure of table "cash"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS cash_id_seq;
+CREATE SEQUENCE cash_id_seq;
+DROP TABLE IF EXISTS cash CASCADE;
+CREATE TABLE cash (
+	id integer 		DEFAULT nextval('cash_id_seq'::text) NOT NULL,
+	time integer 		DEFAULT 0 NOT NULL,
+	type smallint 		DEFAULT 0 NOT NULL,
+	userid integer 		DEFAULT 0 NOT NULL,
+	value numeric(9,2) 	DEFAULT 0 NOT NULL,
+	taxid integer		DEFAULT 0 NOT NULL,
+	customerid integer 	DEFAULT 0 NOT NULL,
+	comment text 		DEFAULT '' NOT NULL,
+	docid integer 		DEFAULT 0 NOT NULL,
+	itemid smallint		DEFAULT 0 NOT NULL,
+	importid integer	DEFAULT NULL,
+	sourceid integer	DEFAULT NULL,
+	PRIMARY KEY (id)
+);
+CREATE INDEX cash_customerid_idx ON cash (customerid);
+CREATE INDEX cash_docid_idx ON cash (docid);
+CREATE INDEX cash_importid_idx ON cash (importid);
+CREATE INDEX cash_sourceid_idx ON cash (sourceid);
+CREATE INDEX cash_time_idx ON cash (time);
 
 /* --------------------------------------------------------
   Structure of table "pna"
@@ -390,71 +455,6 @@ CREATE TABLE networks (
 	CONSTRAINT networks_address_key UNIQUE (address, hostid)
 );
 CREATE INDEX networks_hostid_idx ON networks (hostid);
-
-/* ---------------------------------------------------
- Structure of table "countries"
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS countries_id_seq;
-CREATE SEQUENCE countries_id_seq;
-DROP TABLE IF EXISTS countries CASCADE;
-CREATE TABLE countries (
-	id      integer DEFAULT nextval('countries_id_seq'::text) NOT NULL,
-	name    varchar(255) NOT NULL DEFAULT '',
-	PRIMARY KEY (id),
-	UNIQUE (name)
-);
-
-/* ---------------------------------------------------
- Structure of table "zipcodes"
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS zipcodes_id_seq;
-CREATE SEQUENCE zipcodes_id_seq;
-DROP TABLE IF EXISTS zipcodes CASCADE;
-CREATE TABLE zipcodes (
-    	id 		integer 	DEFAULT nextval('customerassignments_id_seq'::text) NOT NULL,
-	zip 		varchar(10) 	NOT NULL DEFAULT '',
-	stateid 	integer 	NOT NULL DEFAULT 0,
-	PRIMARY KEY (id),
-	UNIQUE (zip)
-);
-CREATE INDEX zipcodes_stateid_idx ON zipcodes (stateid);
-
-/* ---------------------------------------------------
- Structure of table "addresses"
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS addresses_id_seq;
-CREATE SEQUENCE addresses_id_seq;
-DROP TABLE IF EXISTS addresses CASCADE;
-CREATE TABLE addresses (
-    id         integer DEFAULT nextval('addresses_id_seq'::text) NOT NULL,
-    name       text NULL,
-    state      varchar(64) NULL,
-    state_id   integer REFERENCES location_states (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    city       varchar(32) NULL,
-    city_id    integer REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    street     varchar(255) NULL,
-    street_id  integer REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    zip        varchar(10) NULL,
-    country_id integer REFERENCES countries (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    house      varchar(20) NULL,
-    flat       varchar(20) NULL,
-    PRIMARY KEY (id)
-);
-
-/* ---------------------------------------------------
- Structure of table "customer_addresses"
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS customer_addresses_id_seq;
-CREATE SEQUENCE customer_addresses_id_seq;
-DROP TABLE IF EXISTS customer_addresses CASCADE;
-CREATE TABLE customer_addresses (
-    id          integer DEFAULT nextval('customer_addresses_id_seq'::text) NOT NULL,
-    customer_id integer REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    address_id  integer REFERENCES addresses (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    type        smallint NULL,
-    PRIMARY KEY (id),
-    UNIQUE(customer_id, address_id)
-);
 
 /* ---------------------------------------------------
  Structure of table "divisions"
@@ -788,7 +788,7 @@ CREATE TABLE voipaccounts (
 /* ---------------------------------------------------
  Voip tables
 ------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS voip_rule_groups_id_seq;
+DROP SEQUENCE IF EXISTS voip_rule_groups_id_seq CASCADE;
 CREATE SEQUENCE voip_rule_groups_id_seq;
 DROP TABLE IF EXISTS voip_rule_groups CASCADE;
 CREATE TABLE voip_rule_groups (
@@ -808,7 +808,7 @@ CREATE TABLE voip_prefix_groups (
 	PRIMARY KEY (id)
 );
 
-DROP SEQUENCE IF EXISTS voip_rules_id_seq;
+DROP SEQUENCE IF EXISTS voip_rules_id_seq CASCADE;
 CREATE SEQUENCE voip_rules_id_seq;
 DROP TABLE IF EXISTS voip_rules CASCADE;
 CREATE TABLE voip_rules (
@@ -1733,7 +1733,7 @@ CREATE TABLE uiconfig (
 /* ---------------------------------------------------
  Structure of table "events" (Timetable)
 ------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS events_id_seq;
+DROP SEQUENCE IF EXISTS events_id_seq CASCADE;
 CREATE SEQUENCE events_id_seq;
 DROP TABLE IF EXISTS events CASCADE;
 CREATE TABLE events (
@@ -2943,6 +2943,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017020100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017020600');
 
 COMMIT;
