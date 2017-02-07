@@ -56,16 +56,7 @@
 		</TD>
 		<TD>
 			<INPUT type="text" name="document[number]" value="{if $document.number}{$document.number}{/if}" size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
-			{if $numberplans}
-			<SELECT name="document[numberplanid]" {tip text="Select numbering plan"}>
-			{foreach item=plan from=$numberplans}
-				{assign var=period value=$plan.period}
-				<OPTION value="{$plan.id}"{if $plan.id==$document.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$document.cdate} ({$_NUM_PERIODS.$period})</OPTION>
-			{/foreach}
-			{else}
-				<INPUT type="hidden" name="document[numberplanid]" value="0">
-			{/if}
-			</SELECT>
+			{include file="document/documentnumberplans.html" numberplanid=$document.numberplanid cdate=$document.cdate}
 		</TD>
 	</TR>
 	<TR>

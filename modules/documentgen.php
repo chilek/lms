@@ -365,12 +365,13 @@ if ($templist = $LMS->GetNumberPlans(array()))
 		if ($item['doctype'] < 0)
 			$numberplans[] = $item;
 
+$SMARTY->assign('numberplans', $numberplans);
+
 $docengines = GetDocumentTemplates($rights, isset($document['type']) ? $document['type'] : NULL);
 
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('error', $error);
-$SMARTY->assign('numberplans', $numberplans);
 $SMARTY->assign('docrights', $rights);
 $SMARTY->assign('docengines', $docengines);
 $SMARTY->assign('document', $document);

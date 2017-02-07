@@ -120,9 +120,10 @@ function GetDocumentTemplates($rights, $type = NULL) {
 }
 
 function GetTemplates($type) {
-	global $SMARTY, $DB, $AUTH;
+	global $SMARTY;
 
-	$rights = $DB->GetCol('SELECT doctype FROM docrights WHERE userid = ? AND (rights & 2) = 2', array($AUTH->id));
+	$DB = LMSDB::getInstance();
+	$rights = $DB->GetCol('SELECT doctype FROM docrights WHERE userid = ? AND (rights & 2) = 2', array(Auth::GetCurrentUser()));
 	$docengines = GetDocumentTemplates($rights, $type);
 	$SMARTY->assign('docengines', $docengines);
 	$contents = $SMARTY->fetch('document/documenttemplateoptions.html');
@@ -133,8 +134,52 @@ function GetTemplates($type) {
 	return $JSResponse;
 }
 
+function GetDocumentNumberPlans($doctype, $customerid = null) {
+	global $LMS;
+
+	$DB = LMSDB::getInstance();
+
+	if (!empty($doctype)) {
+		$args = array(
+			'doctype' => $doctype,
+		);
+		if (!empty($customerid)) {
+			$args['customerid'] = array(
+				'customerid' => $customerid,
+			);
+			$divisionid = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($customerid));
+			if (!empty($divisionid))
+				$args['division'] = $divisionid;
+		}
+		$numberplans = $LMS->GetNumberPlans($args);
+		if (empty($numberplans))
+			$numberplans = array();
+	} else
+		$numberplans = array();
+
+	return $numberplans;
+}
+
+function GetNumberPlans($doctype, $numberplanid, $customerid = null) {
+	global $SMARTY;
+
+	$numberplans = GetDocumentNumberPlans($doctype, $customerid);
+
+	$SMARTY->assign('numberplans', $numberplans);
+	$SMARTY->assign('numberplanid', $numberplanid);
+	$SMARTY->assign('customerid', $customerid);
+	$contents = $SMARTY->fetch('document/documentnumberplans.html');
+
+	$JSResponse = new xajaxResponse();
+	$JSResponse->assign('numberplans', 'innerHTML', $contents);
+	$JSResponse->assign('numberplans', 'style', empty($numberplans) ? 'display: none' : 'display: inline');
+	$JSResponse->call('numberplans_received');
+
+	return $JSResponse;
+}
+
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction(array('plugin', 'GetTemplates'));
+$LMS->RegisterXajaxFunction(array('plugin', 'GetTemplates', 'GetNumberPlans'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 ?>

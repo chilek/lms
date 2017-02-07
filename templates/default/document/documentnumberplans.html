@@ -1,0 +1,21 @@
+{if $numberplans}
+<SELECT name="document[numberplanid]" {tip text="Select numbering plan"}>
+{*
+	<OPTION value="0"{if (isset($numberplanid) && !$numberplanid} selected{/if}>... {trans("select numbering plan")} ...</OPTION>
+*}
+	{$selected=false}
+	{foreach $numberplans as $plan}
+	{$period=$plan.period}
+	<OPTION value="{$plan.id}"{if (isset($numberplanid) && ($plan.id == $numberplanid || ($plan.id != $numberplanid && $plan.isdefault))) || (!isset($numberplanid) && $plan.isdefault)}{if !$selected} selected{$selected=true}{/if}{/if}>
+		{if isset($customerid)}
+		{number number=$plan.next template=$plan.template time=$cdate customerid=$customerid}
+		{else}
+		{number number=$plan.next template=$plan.template time=$cdate}
+		{/if}
+		({$_NUM_PERIODS.$period})
+	</OPTION>
+	{/foreach}
+</SELECT>
+{else}
+	<INPUT type="hidden" name="document[numberplanid]" value="0">
+{/if}

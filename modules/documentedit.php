@@ -43,6 +43,8 @@ if(isset($_GET['action']) && $_GET['action'] == 'confirm')
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'document.inc.php');
+
 $document = $DB->GetRow('SELECT documents.id AS id, closed, type, number, template,
 	cdate, sdate, cuserid, numberplanid, title, fromdate, todate, description, divisionid, documents.customerid
 	FROM documents
@@ -258,22 +260,10 @@ if(!$rights || !$DB->GetOne('SELECT 1 FROM docrights
         die;
 }
 
-$allnumberplans = array();
-$numberplans = array();
-
-if ($templist = $LMS->GetNumberPlans(array(
-		'customerid' => $document['customerid'],
-	)))
-	foreach ($templist as $item)
-		if ($item['doctype'] < 0)
-			$allnumberplans[] = $item;
-
-if(isset($document['numberplanid']))
-{
-        foreach($allnumberplans as $plan)
-                if($plan['doctype'] == $document['numberplanid'])
-                        $numberplans[] = $plan;
-}
+$numberplans = GetDocumentNumberPlans($document['type'], $document['customerid']);
+if (empty($numberplans))
+	$numberplans = array();
+$SMARTY->assign('numberplans', $numberplans);
 
 /*
 if($dirs = getdir(DOC_DIR.'/templates', '^[a-z0-9_-]+$'))
@@ -299,9 +289,7 @@ $layout['pagetitle'] = trans('Edit Document: $a', docnumber(array(
 )));
 
 //$SMARTY->assign('docengines', $docengines);
-$SMARTY->assign('numberplans', $numberplans);
 $SMARTY->assign('docrights', $rights);
-$SMARTY->assign('allnumberplans', $allnumberplans);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('document', $document);
 $SMARTY->display('document/documentedit.html');

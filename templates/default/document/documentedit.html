@@ -5,47 +5,14 @@
 <H1>{$layout.pagetitle}</H1>
 <script type="text/javascript">
 <!--
-	function setnumberplans()
-	{
-		var type = document.forms['documentedit'].elements['document[type]'].value,
-			plans = document.getElementById('numberplans');
+	function setnumberplans() {
+		reset_login_timeout();
+		xajax_GetNumberPlans(document.forms['documenteditd'].elements['document[type]'].value,
+			document.forms['documentedit'].elements['document[numberplanid]'].value,
+			document.forms['documentedit'].elements['customerid'].value);
+	}
 
-		if (type == 0)
-		{
-			plans.style.display = 'none';
-			plans.innerHTML = '<INPUT type="hidden" name="document[numberplanid]" value="0">';
-		}
-		else
-		{
-			var p = [], pr = [];
-			var s = {$document.numberplanid|default:0};
-			{foreach from=$_DOCTYPES key=key item=item}{if $key < 0}
-				p[{$key}] = [];
-				pr[{$key}] = [];
-				{foreach from=$allnumberplans item=plan}{if $plan.doctype == $key}{assign var=period value=$plan.period}
-					p[{$key}][{$plan.id}] = '{number number=$plan.next template=$plan.template time=$document.cdate customerid=$document.customerid}';
-					pr[{$key}][{$plan.id}] = '{$_NUM_PERIODS.$period}';
-				{/if}{/foreach}
-			{/if}{/foreach}
-			if (p[type].length)
-			{
-				var key, result = '<SELECT name="document[numberplanid]">';
-				for (key in p[type])
-				{
-					result = result + '<OPTION value="' + key + '"';
-					if(key == s)
-						result += ' SELECTED';
-					result = result + '>' + p[type][key] + ' (' + pr[type][key] + ') </OPTION>';
-				}
-				result += '</SELECT>';
-
-				plans.innerHTML = result;
-			}
-			else
-				plans.innerHTML = '<INPUT type="hidden" name="document[numberplanid]" value="0">';
-
-			plans.style.display = 'inline';
-		}
+	function numberplans_received() {
 	}
 //-->
 </script>
@@ -95,17 +62,8 @@
 		</TD>
 		<TD>
 			<INPUT type="text" name="document[number]" value="{$document.number}" size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
-			<DIV id="numberplans" style="display: {if !$document.numberplanid}none{else}inline{/if};">
-			{if $numberplans}
-			<SELECT name="document[numberplanid]" {tip text="Select numbering plan"}>
-			{foreach item=plan from=$numberplans}
-				{assign var=period value=$plan.period}
-				<OPTION value="{$plan.id}"{if $plan.id==$document.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$document.cdate customerid=$document.customerid} ({$_NUM_PERIODS.$period})</OPTION>
-			{/foreach}
-			</SELECT>
-			{else}
-				<INPUT type="hidden" name="document[numberplanid]" value="0">
-			{/if}
+			<DIV id="numberplans" style="display: {if empty($numberplans)}none{else}inline{/if};">
+			{include file="document/documentnumberplans.html" numberplanid=$document.numberplanid cdate=$document.cdate customerid=$document.customerid}
 			</DIV>
 		</TD>
 	</TR>

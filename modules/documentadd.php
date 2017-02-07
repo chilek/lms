@@ -312,21 +312,12 @@ if (!$rights) {
 	die;
 }
 
-$allnumberplans = array();
-$numberplans = array();
-
-if ($templist = $LMS->GetNumberPlans(array(
-		'customerid' => isset($document['customerid']) ? $document['customerid'] : null,
-	)))
-	foreach ($templist as $item)
-		if ($item['doctype'] < 0)
-			$allnumberplans[] = $item;
-
 if (isset($document['type'])) {
-	foreach ($allnumberplans as $plan)
-		if ($plan['doctype'] == $document['type'])
-			$numberplans[] = $plan;
-}
+	$customerid = isset($document['customerid']) ? $document['customerid'] : null;
+	$numberplans = GetDocumentNumberPlans($document['type'], $customerid);
+} else
+	$numberplans = array();
+$SMARTY->assign('numberplans', $numberplans);
 
 $docengines = GetDocumentTemplates($rights, isset($document['type']) ? $document['type'] : NULL);
 
@@ -338,9 +329,7 @@ if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 
 $SMARTY->assign('error', $error);
-$SMARTY->assign('numberplans', $numberplans);
 $SMARTY->assign('docrights', $rights);
-$SMARTY->assign('allnumberplans', $allnumberplans);
 $SMARTY->assign('docengines', $docengines);
 $SMARTY->assign('document', $document);
 $SMARTY->display('document/documentadd.html');
