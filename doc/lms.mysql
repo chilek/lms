@@ -234,6 +234,172 @@ CREATE TABLE numberplans (
 
 # --------------------------------------------------------
 #
+# Structure of table countries
+#
+CREATE TABLE countries (
+    	id 		int(11) 	NOT NULL auto_increment,
+	name 		varchar(255) 	NOT NULL DEFAULT '',
+	PRIMARY KEY (id),
+	UNIQUE KEY name (name)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table zipcodes
+#
+CREATE TABLE zipcodes (
+    	id 		int(11) 	NOT NULL auto_increment,
+	zip 		varchar(10) 	NOT NULL DEFAULT '',
+	stateid 	int(11) 	NOT NULL DEFAULT '0',
+	PRIMARY KEY (id),
+	UNIQUE KEY zip (zip),
+	INDEX stateid (stateid)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table location_states
+#
+CREATE TABLE location_states (
+    id int(11)          NOT NULL auto_increment,
+    ident varchar(8)    NOT NULL, -- TERYT: WOJ
+    name varchar(64)    NOT NULL, -- TERYT: NAZWA
+    PRIMARY KEY (id),
+    UNIQUE KEY name (name)
+) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
+# Structure of table location_districts
+#
+CREATE TABLE location_districts (
+    id int(11)          NOT NULL auto_increment,
+    name varchar(64)    NOT NULL, -- TERYT: NAZWA
+    ident varchar(8)    NOT NULL, -- TERYT: POW
+    stateid int(11)     NOT NULL,  -- TERYT: WOJ
+    PRIMARY KEY (id),
+    UNIQUE KEY stateid (stateid, name),
+    FOREIGN KEY (stateid) REFERENCES location_states (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table location_boroughs
+#
+CREATE TABLE location_boroughs (
+    id int(11)          NOT NULL auto_increment,
+    name varchar(64)    NOT NULL, -- TERYT: NAZWA
+    ident varchar(8)    NOT NULL, -- TERYT: GMI
+    districtid int(11)  NOT NULL,
+    type smallint       NOT NULL, -- TERYT: RODZ
+    PRIMARY KEY (id),
+    UNIQUE KEY districtid (districtid, name, type),
+    FOREIGN KEY (districtid) REFERENCES location_districts (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
+# Structure of table location_cities
+#
+CREATE TABLE location_cities (
+    id int(11)          NOT NULL auto_increment,
+    ident varchar(8)    NOT NULL, -- TERYT: SYM / SYMPOD
+    name varchar(64)    NOT NULL, -- TERYT: NAZWA
+    cityid int(11)      DEFAULT NULL,
+    boroughid int(11)   DEFAULT NULL,
+    PRIMARY KEY (id),
+    INDEX cityid (cityid),
+    INDEX boroughid (boroughid, name),
+    FOREIGN KEY (boroughid) REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
+# Structure of table location_street_types
+#
+CREATE TABLE location_street_types (
+    id int(11)          NOT NULL auto_increment,
+    name varchar(8)     NOT NULL, -- TERYT: CECHA
+    PRIMARY KEY (id)
+) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
+# Structure of table location_streets
+#
+CREATE TABLE location_streets (
+    id int(11)          NOT NULL auto_increment,
+    name varchar(128)   NOT NULL, -- TERYT: NAZWA_1
+    name2 varchar(128)  DEFAULT NULL, -- TERYT: NAZWA_2
+    ident varchar(8)    NOT NULL, -- TERYT: SYM_UL
+    typeid int(11)      DEFAULT NULL,
+    cityid int(11)      NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY (cityid, name, ident),
+    FOREIGN KEY (typeid) REFERENCES location_street_types (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (cityid) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
+# Structure of table location_streets
+#
+CREATE TABLE location_buildings (
+    id           int(11) auto_increment,
+    city_id      int(11) NOT NULL,
+    street_id    int(11) NULL,
+    building_num varchar(20) NULL,
+    flats        int(11) NULL,
+    latitude     numeric(10,6) NULL,
+    longitude    numeric(10,6) NULL,
+    updated      smallint DEFAULT 0,
+    PRIMARY KEY (id),
+    FOREIGN KEY (city_id) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (street_id) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    INDEX location_cityid_index (city_id)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table addresses
+#
+CREATE TABLE addresses (
+	id         int(11) NOT NULL auto_increment,
+	name       text NULL,
+	state      varchar(64) NULL,
+	state_id   int(11) NULL,
+	city       varchar(32) NULL,
+	city_id    int(11) NULL,
+	street     varchar(255) NULL,
+	street_id  int(11) NULL,
+	zip        varchar(10) NULL,
+	country_id int(11) NULL,
+	house      varchar(20) NULL,
+	flat       varchar(20) NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT `addresses_state_id_fk`   FOREIGN KEY (state_id)   REFERENCES location_states  (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT `addresses_city_id_fk`    FOREIGN KEY (city_id)    REFERENCES location_cities  (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT `addresses_street_id_fk`  FOREIGN KEY (street_id)  REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT `addresses_country_id_fk` FOREIGN KEY (country_id) REFERENCES countries        (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table customer_addresses
+#
+CREATE TABLE customer_addresses (
+	id          int(11) NOT NULL auto_increment,
+	customer_id int(11),
+	address_id  int(11),
+	type        smallint NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT `customer_addresses_customer_id_fk` FOREIGN KEY (customer_id) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT `customer_addresses_address_id_fk`  FOREIGN KEY (address_id)  REFERENCES addresses (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	UNIQUE(customer_id, address_id)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table  assignments
 #
 CREATE TABLE assignments (
@@ -455,109 +621,6 @@ CREATE TABLE receiptcontents (
 	regid int(11)		NOT NULL DEFAULT '0',
 	INDEX docid (docid),
 	INDEX regid (regid)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table location_states
-#
-CREATE TABLE location_states (
-    id int(11)          NOT NULL auto_increment,
-    ident varchar(8)    NOT NULL, -- TERYT: WOJ
-    name varchar(64)    NOT NULL, -- TERYT: NAZWA
-    PRIMARY KEY (id),
-    UNIQUE KEY name (name)
-) ENGINE=INNODB;
-
-# --------------------------------------------------------
-#
-# Structure of table location_districts
-#
-CREATE TABLE location_districts (
-    id int(11)          NOT NULL auto_increment,
-    name varchar(64)    NOT NULL, -- TERYT: NAZWA
-    ident varchar(8)    NOT NULL, -- TERYT: POW
-    stateid int(11)     NOT NULL,  -- TERYT: WOJ
-    PRIMARY KEY (id),
-    UNIQUE KEY stateid (stateid, name),
-    FOREIGN KEY (stateid) REFERENCES location_states (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table location_boroughs
-#
-CREATE TABLE location_boroughs (
-    id int(11)          NOT NULL auto_increment,
-    name varchar(64)    NOT NULL, -- TERYT: NAZWA
-    ident varchar(8)    NOT NULL, -- TERYT: GMI
-    districtid int(11)  NOT NULL,
-    type smallint       NOT NULL, -- TERYT: RODZ
-    PRIMARY KEY (id),
-    UNIQUE KEY districtid (districtid, name, type),
-    FOREIGN KEY (districtid) REFERENCES location_districts (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=INNODB;
-
-# --------------------------------------------------------
-#
-# Structure of table location_cities
-#
-CREATE TABLE location_cities (
-    id int(11)          NOT NULL auto_increment,
-    ident varchar(8)    NOT NULL, -- TERYT: SYM / SYMPOD
-    name varchar(64)    NOT NULL, -- TERYT: NAZWA
-    cityid int(11)      DEFAULT NULL,
-    boroughid int(11)   DEFAULT NULL,
-    PRIMARY KEY (id),
-    INDEX cityid (cityid),
-    INDEX boroughid (boroughid, name),
-    FOREIGN KEY (boroughid) REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=INNODB;
-
-# --------------------------------------------------------
-#
-# Structure of table location_street_types
-#
-CREATE TABLE location_street_types (
-    id int(11)          NOT NULL auto_increment,
-    name varchar(8)     NOT NULL, -- TERYT: CECHA
-    PRIMARY KEY (id)
-) ENGINE=INNODB;
-
-# --------------------------------------------------------
-#
-# Structure of table location_streets
-#
-CREATE TABLE location_streets (
-    id int(11)          NOT NULL auto_increment,
-    name varchar(128)   NOT NULL, -- TERYT: NAZWA_1
-    name2 varchar(128)  DEFAULT NULL, -- TERYT: NAZWA_2
-    ident varchar(8)    NOT NULL, -- TERYT: SYM_UL
-    typeid int(11)      DEFAULT NULL,
-    cityid int(11)      NOT NULL,
-    PRIMARY KEY (id),
-    UNIQUE KEY (cityid, name, ident),
-    FOREIGN KEY (typeid) REFERENCES location_street_types (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    FOREIGN KEY (cityid) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=INNODB;
-
-# --------------------------------------------------------
-#
-# Structure of table location_streets
-#
-CREATE TABLE location_buildings (
-    id           int(11) auto_increment,
-    city_id      int(11) NOT NULL,
-    street_id    int(11) NULL,
-    building_num varchar(20) NULL,
-    flats        int(11) NULL,
-    latitude     numeric(10,6) NULL,
-    longitude    numeric(10,6) NULL,
-    updated      smallint DEFAULT 0,
-    PRIMARY KEY (id),
-    FOREIGN KEY (city_id) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (street_id) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    INDEX location_cityid_index (city_id)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1236,30 +1299,6 @@ CREATE TABLE states (
 
 # --------------------------------------------------------
 #
-# Structure of table countries
-#
-CREATE TABLE countries (
-    	id 		int(11) 	NOT NULL auto_increment,
-	name 		varchar(255) 	NOT NULL DEFAULT '',
-	PRIMARY KEY (id),
-	UNIQUE KEY name (name)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table zipcodes
-#
-CREATE TABLE zipcodes (
-    	id 		int(11) 	NOT NULL auto_increment,
-	zip 		varchar(10) 	NOT NULL DEFAULT '',
-	stateid 	int(11) 	NOT NULL DEFAULT '0',
-	PRIMARY KEY (id),
-	UNIQUE KEY zip (zip),
-	INDEX stateid (stateid)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
 # Structure of table excludedgroups
 #
 CREATE TABLE excludedgroups (
@@ -1463,45 +1502,6 @@ CREATE TABLE userassignments (
 	FOREIGN KEY (usergroupid) REFERENCES usergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	UNIQUE KEY userassignments_usergroupid_key (usergroupid, userid)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table addresses
-#
-CREATE TABLE addresses (
-	id         int(11) NOT NULL auto_increment,
-	name       text NULL,
-	state      varchar(64) NULL,
-	state_id   int(11) NULL,
-	city       varchar(32) NULL,
-	city_id    int(11) NULL,
-	street     varchar(255) NULL,
-	street_id  int(11) NULL,
-	zip        varchar(10) NULL,
-	country_id int(11) NULL,
-	house      varchar(20) NULL,
-	flat       varchar(20) NULL,
-	PRIMARY KEY (id),
-	CONSTRAINT `addresses_state_id_fk`   FOREIGN KEY (state_id)   REFERENCES location_states  (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT `addresses_city_id_fk`    FOREIGN KEY (city_id)    REFERENCES location_cities  (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT `addresses_street_id_fk`  FOREIGN KEY (street_id)  REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT `addresses_country_id_fk` FOREIGN KEY (country_id) REFERENCES countries        (id) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table customer_addresses
-#
-CREATE TABLE customer_addresses (
-	id          int(11) NOT NULL auto_increment,
-	customer_id int(11),
-	address_id  int(11),
-	type        smallint NULL,
-	PRIMARY KEY (id),
-	CONSTRAINT `customer_addresses_customer_id_fk` FOREIGN KEY (customer_id) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT `customer_addresses_address_id_fk`  FOREIGN KEY (address_id)  REFERENCES addresses (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	UNIQUE(customer_id, address_id)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
