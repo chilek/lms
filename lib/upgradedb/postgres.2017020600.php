@@ -21,6 +21,8 @@
  *
  */
 
+$this->BeginTrans();
+
 $this->Execute("ALTER TABLE assignments ADD COLUMN address_id int;");
 $this->Execute("ALTER TABLE assignments ADD CONSTRAINT address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE;");
 
