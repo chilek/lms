@@ -27,8 +27,10 @@
 function select_customer($id)
 {
     $JSResponse = new xajaxResponse();
-    $nodes_location = LMSDB::getInstance()->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY n.name ASC', array($id));
-    $JSResponse->call('update_nodes_location', (array)$nodes_location);
+	if (!empty($id)) {
+		$nodes_location = LMSDB::getInstance()->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY n.name ASC', array($id));
+		$JSResponse->call('update_nodes_location', (array)$nodes_location);
+	}
     return $JSResponse;
 }
 
