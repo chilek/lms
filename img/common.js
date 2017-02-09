@@ -726,6 +726,7 @@ function getCustomerName(elem) {
 			: '<a href="?m=customerinfo&id=' + $(elem).val() + '">' + data.customernames[$(elem).val()] + '</a>');
 	});
 
+	$(elem).trigger('reset_customer');
 	$(elem).trigger('change');
 }
 
