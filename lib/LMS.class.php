@@ -3175,7 +3175,7 @@ class LMS
 					}
 
 					$res = $this->SendMail($email . ',' . $notify_email, $headers, $body,
-						$files, (isset($smtp_options) ? $smtp_options : null));
+						$files, null, (isset($smtp_options) ? $smtp_options : null));
 
 					if (is_string($res)) {
 						$msg = trans('Error sending mail: $a', $res);
