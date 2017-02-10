@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,6 +28,7 @@
  * UseraddHandler
  *
  * @author Maciej Lew <maciej.lew.1987@gmail.com>
+ * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 class UseraddHandler
 {
@@ -39,8 +40,8 @@ class UseraddHandler
      */
     public function useraddValidationBeforeSubmit($hook_data)
     {
-        if (strpos($hook_data['useradd']['name'], 'X') !== 0) {
-            $hook_data['error']['name'] = 'Name must start with "X" ;-)';
+        if (strpos($hook_data['useradd']['firstname'], 'X') !== 0) {
+            $hook_data['error']['firstname'] = 'Firstname must start with "X" ;-)';
         }
         return $hook_data;
     }
