@@ -203,7 +203,6 @@ $sender_name = ConfigHelper::getConfig('sendinvoices.sender_name', '', true);
 $sender_email = ConfigHelper::getConfig('sendinvoices.sender_email', '', true);
 $mail_subject = ConfigHelper::getConfig('sendinvoices.mail_subject', 'Invoice No. %invoice');
 $mail_body = ConfigHelper::getConfig('sendinvoices.mail_body', ConfigHelper::getConfig('mail.sendinvoice_mail_body'));
-$mail_format = ConfigHelper::getConfig('sendinvoices.mail_format', 'text');
 $invoice_filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'invoice_%docid');
 $dnote_filename = ConfigHelper::getConfig('sendinvoices.debitnote_filename', 'dnote_%docid');
 $notify_email = ConfigHelper::getConfig('sendinvoices.notify_email', '', true);

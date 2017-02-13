@@ -3152,9 +3152,6 @@ class LMS
 				if (!empty($notify_email))
 					$headers['Cc'] = $notify_email;
 
-				if (isset($mail_format) && $mail_format == 'html')
-					$headers['X-LMS-Format'] = 'html';
-
 				if ($add_message) {
 					$this->DB->Execute('INSERT INTO messages (subject, body, cdate, type, userid)
 						VALUES (?, ?, ?NOW?, ?, ?)',
