@@ -72,6 +72,8 @@ version ?.??.?? (????-??-??):
   - improvement: added new event types - vacation and duty [chilan]
   - enhancement: number plan list is updated automatically after customer or document
     type selection change [chilan]
+  - improvement: sendinvoices.mail_format=text|html ('text' by default) allows
+    to select mail format between html and text [chilan]
 
 version 1.11.21 (2016-10-14):
 
