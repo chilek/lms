@@ -34,7 +34,7 @@ function GetReceipt($id) {
 				LEFT JOIN vusers u ON (d.userid = u.id)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				LEFT JOIN customers c ON (d.customerid = c.id)
-				LEFT JOIN divisions ds ON (ds.id = c.divisionid)
+				LEFT JOIN vdivisions ds ON (ds.id = c.divisionid)
 				WHERE d.type = 2 AND d.id = ?', array($id))) {
 		$receipt['contents'] = $db->GetAll('SELECT * FROM receiptcontents WHERE docid = ? ORDER BY itemid', array($id));
 		$receipt['total'] = 0;

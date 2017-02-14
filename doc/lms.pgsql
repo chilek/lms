@@ -1163,8 +1163,8 @@ CREATE TABLE documents (
 	divisionid integer	DEFAULT 0 NOT NULL,
 	name varchar(255)	DEFAULT '' NOT NULL,
 	address varchar(255)	DEFAULT '' NOT NULL,
-	zip varchar(10)		DEFAULT '' NOT NULL,
-	city varchar(32)	DEFAULT '' NOT NULL,
+	zip varchar(10)		NULL DEFAULT NULL,
+	city varchar(32)	NULL DEFAULT NULL,
 	countryid integer	DEFAULT 0 NOT NULL,
 	ten varchar(16)		DEFAULT '' NOT NULL,
 	ssn varchar(11)		DEFAULT '' NOT NULL,
@@ -2943,6 +2943,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017020600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017021400');
 
 COMMIT;
