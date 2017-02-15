@@ -1874,6 +1874,8 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$DB->Execute('DROP SEQUENCE "taxes_id_seq";  CREATE SEQUENCE "taxes_id_seq"');
 		$DB->Execute('DROP SEQUENCE "numberplanassignments_id_seq";  CREATE SEQUENCE "numberplanassignments_id_seq"');
 		$DB->Execute('DROP SEQUENCE "numberplans_id_seq";  CREATE SEQUENCE "numberplans_id_seq"');
+		$DB->Execute('DROP SEQUENCE "addresses_id_seq";  CREATE SEQUENCE "addresses_id_seq"');
+		$DB->Execute('DROP SEQUENCE "customer_addresses_id_seq";  CREATE SEQUENCE "customer_addresses_id_seq"');
 	}
 	elseif(ConfigHelper::getConfig('database.type') == 'mysql' || ConfigHelper::getConfig('database.type') == 'mysqli')
 	{
@@ -1888,7 +1890,14 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$DB->Execute('ALTER TABLE numberplans auto_increment=0');
 	}
 
-	$DB->Execute('INSERT INTO divisions (name, shortname) VALUES(?,?)', array('default', 'default'));
+	$addr = array(
+				'location_city_name'   => 'Mahagonny',
+				'location_street_name' => $streets[ array_rand( $streets ) ],
+				'location_flat'        => mt_rand(1,300),
+				'location_zip'         => '03-7'.sprintf('%02d',$street),
+			);
+
+	$DB->Execute('INSERT INTO divisions (name, shortname, address_id) VALUES(?,?,?)', array('default', 'default', $LMS->InsertAddress( $addr )));
 	$divisionid = $DB->GetLastInsertID('divisions');
 
 	$DB->Execute('INSERT INTO taxes (label, value, taxed) VALUES(?,?,?)',array('tax-free', 0, 0));
