@@ -187,7 +187,7 @@ foreach ($posts as $postid) {
 						}
 			} elseif ($part->ifsubtype) {
 				if (strtolower($part->subtype) == 'octet-stream' && $part->ifparameters)
-					foreach ($part->parameters as $parameter)
+					foreach ($part->parameters as $parameter) {
 						if (strtolower($parameter->attribute) == 'name') {
 							$elems = imap_mime_header_decode($parameter->value);
 							if ($elems[0]->charset != 'default')
@@ -202,6 +202,32 @@ foreach ($posts as $postid) {
 								'contents' => $body,
 							);
 						}
+					}
+				elseif (strtolower($part->subtype) == 'mixed' && isset($part->parts))
+					foreach ($part->parts as $subpartid => $subpart) {
+						if ($subpart->type == 3 && $subpart->ifdisposition
+								&& in_array(strtolower($subpart->disposition), array('attachment', 'inline'))
+								&& $subpart->ifdparameters)
+								foreach ($subpart->dparameters as $dparameter) {
+									if (strtolower($dparameter->attribute) == 'filename') {
+										if (preg_match('/^=\?/', $dparameter->value)) {
+											$elems = imap_mime_header_decode($dparameter->value);
+											if ($elems[0]->charset != 'default')
+												$fname = iconv($elems[0]->charset, 'utf-8', $elems[0]->text);
+											else
+												$fname = $elems[0]->text;
+										} else
+											$fname = $dparameter->value;
+										$body = imap_fetchbody($ih, $postid, ($partid + 1) . '.' . ($subpartid + 1));
+										if ($subpart->encoding == 3)
+											$body = imap_base64($body);
+										$files[] = array(
+											'name' => $fname,
+											'contents' => $body,
+										);
+									}
+								}
+					}
 			}
 		}
 	} elseif ($post->type == 3 && $post->ifdisposition
