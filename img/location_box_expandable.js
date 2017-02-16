@@ -112,6 +112,9 @@ $(function() {
             }
         });
 
+        // clear location address text
+        box.find('.address-full').text('...');
+
         // choose first option for each select inside location box
         $( box.find('select') ).each(function() {
             $(this).val( $(this).find('option:first').val() );
