@@ -102,16 +102,20 @@ function smarty_function_location_box( $params = array(), $template )
     }
 
     if ( $states ) {
-        echo '<select style="height: 16px;';
+        echo '<select name="' . $input_name_state . '" style="height: 16px;';
         if ( !empty($params['teryt']) ) {
             echo 'display: none;';
         }
         echo '" data-address="state-select">';
         echo '<option></option>';
 
+        $tmp_state = strtolower($params['location_state_name']);
+
         foreach ( $states as $v ) {
-            echo '<option>' . $v . '</option>';
+            echo '<option ' . (strtolower($v) == $tmp_state ? 'selected' : '')  . '>' . $v . '</option>';
         }
+
+        unset($tmp_state);
 
         echo '</select>';
     }

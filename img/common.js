@@ -138,12 +138,12 @@ if ( typeof $ !== 'undefined' ) {
 
             if ( $( this ).is(':checked') ) {
                 $("#" + boxid + " input[type=text]").prop("readonly", true);
-                $("#" + boxid).find("select[data-address='state-select']").css('display', 'none');
-                $("#" + boxid).find("input[data-address='state']").css('display', 'block');
+                $("#" + boxid).find("select[data-address='state-select']").css('display', 'none').attr('disabled', true);
+                $("#" + boxid).find("input[data-address='state']").css('display', 'block').attr('disabled', false);
             } else {
                 $("#" + boxid + " input[type=text]").prop("readonly", false);
-                $("#" + boxid).find("select[data-address='state-select']").css('display', 'inline-block');
-                $("#" + boxid).find("input[data-address='state']").css('display', 'none');
+                $("#" + boxid).find("select[data-address='state-select']").css('display', 'inline-block').attr('disabled', false);
+                $("#" + boxid).find("input[data-address='state']").css('display', 'none').attr('disabled', true);
             }
         });
 
