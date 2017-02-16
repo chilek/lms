@@ -39,6 +39,26 @@ $(function() {
     });
 
     /*!
+     * \brief Update address string name on box input change.
+     */
+    $('body').on('input', '.location-box-expandable input', function(){
+        var box = getLocationBox(this);
+
+        var city   = box.find('[data-address="city"]').val();
+        var street = box.find('[data-address="street"]').val();
+        var house  = box.find('[data-address="house"]').val();
+        var flat   = box.find('[data-address="flat"]').val();
+
+        var location = location_str( city, street, house, flat );
+
+        if ( location.length > 0 ) {
+            box.find('.address-full').text( location );
+        } else {
+            box.find('.address-full').text( '...' );
+        }
+    });
+
+    /*!
      * \brief Function insert row content into table.
      * Before insert will be generated new id for
      * handle events using inside.
