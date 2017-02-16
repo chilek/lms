@@ -23,10 +23,10 @@ $(function() {
      * \brief Add new address box to table.
      */
     $('.locbox-addnew').click( function() {
-        var box = $(this).closest(".customer-location-addresses-box").find(".addresses-container");
+        var _buttonrow = $(this).closest('tr');
 
         if ( counter == -1 ) {
-            counter = $(this).closest(".customer-location-addresses-box").find(".addresses-container > div").length + 2;
+            counter = $('body').find('.location-box-expandable').length + 1;
         } else {
             ++counter;
         }
@@ -34,7 +34,7 @@ $(function() {
         $.ajax({
             url: "?m=customeraddresses&action=getlocationboxhtml&prefix=" + $(this).attr('data-prefix') + "[addresses][" + counter + "]&default_type=1&clear_button=1",
         }).done( function(data) {
-            insertRow( box, data );
+            insertRow( _buttonrow, data );
         });
     });
 
@@ -74,7 +74,14 @@ $(function() {
         data = String(data).replace( prev_id, id );
 
         // insert data
-        container.append(data);
+        var row_content = '';
+
+        row_content += '<tr>';
+        row_content += '<td class="valign-top"><img src="" alt="" class="location-box-image"></td>';
+        row_content += '<td>' + data + '</td>';
+        row_content += '</tr>';
+
+        $(container).before( row_content );
     }
 
     /*!
@@ -117,6 +124,11 @@ $(function() {
     $('body').on('click', '.lmsui-address-box-def-address', function() {
         var state = this.checked;
 
+        // set all image source as empty
+        $( $('.location-box-image') ).each(function() {
+            $(this).attr('src', '');
+        });
+
         // unmark all checkboxes
         $( $('.lmsui-address-box-def-address') ).each(function() {
             $(this).prop('checked', false);
@@ -125,14 +137,15 @@ $(function() {
         // toggle current clicked checkbox
         if ( state == true ) {
             $(this).prop('checked', true);
+            getLocationBox(this).closest('tr').find('.location-box-image').attr('src', 'img/location.png');
         }
     });
 
     /*!
      * \brief Get closest location box.
      *
-     * \param  object inside box
-     * \return object
+     * \param  any object inside box
+     * \return box object
      */
     function getLocationBox( _this ) {
         return $( _this ).closest(".location-box-expandable");
