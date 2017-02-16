@@ -135,7 +135,13 @@ function smarty_function_location_box( $params = array(), $template )
         $params['countryid'] = -1;
     }
 
-    $countries = $DB->GetAll('SELECT id, name FROM countries;');
+    if ( $template->getTemplateVars('__countries') ) {
+        $countries = $template->getTemplateVars('__countries');
+    } else {
+        $countries = $DB->GetAll('SELECT id, name FROM countries;');
+        $template->assign('__countries', $countries);
+    }
+
     if ( $countries ) {
         echo '<tr><td>' . trans('Country:') . '</td><td>
               <select name="' . $input_name_country_id . '" data-address="country">
