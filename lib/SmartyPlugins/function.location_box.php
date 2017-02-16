@@ -26,6 +26,8 @@
 
 function smarty_function_location_box( $params = array(), $template )
 {
+    global $DB;
+
     // generate unique id for location box
     $LOCATION_ID = 'lmsui-' . uniqid();
 
@@ -72,8 +74,6 @@ function smarty_function_location_box( $params = array(), $template )
         unset( $prefix );
     }
 
-    $default_city = ConfigHelper::getConfig('phpui.default_teryt_city');
-
     echo '<fieldset class="lmsui-address-box" id="' . $LOCATION_ID . '">';
 
     if ( isset($params['address_id']) && $params['address_id'] != null ) {
@@ -92,10 +92,40 @@ function smarty_function_location_box( $params = array(), $template )
 
     echo '<tr>
               <td>' . trans('State') . '</td>
-              <td>
-                  <input type="text"   value="' . (!empty($params['location_state_name']) ? $params['location_state_name'] : '' ) . '" size="' . INPUT_SIZE . '" data-address="state" name="' . $input_name_state . '" maxlength="64">
-                  <input type="hidden" value="' . (!empty($params['location_state'])      ? $params['location_state']      : '' ) . '" data-address="state-hidden" name="' . $input_name_state_id . '">
-              </td>
+              <td>';
+
+    if ( $template->getTemplateVars('__states') ) {
+        $states = $template->getTemplateVars('__states');
+    } else {
+        $states = $DB->GetCol('SELECT name FROM states;');
+        $template->assign('__states', $states);
+    }
+
+    if ( $states ) {
+        echo '<select style="height: 16px;';
+        if ( !empty($params['teryt']) ) {
+            echo 'display: none;';
+        }
+        echo '" data-address="state-select">';
+        echo '<option></option>';
+
+        foreach ( $states as $v ) {
+            echo '<option>' . $v . '</option>';
+        }
+
+        echo '</select>';
+    }
+
+    echo '<input type="text"
+                 value="' . (!empty($params['location_state_name']) ? $params['location_state_name'] : '' ) . '"
+                 size="' . INPUT_SIZE . '"
+                 data-address="state"
+                 name="' . $input_name_state . '"
+                 ' . (empty($params['teryt']) ? 'style="display:none;"' : '') . '
+                 maxlength="64">
+
+          <input type="hidden" value="' . (!empty($params['location_state']) ? $params['location_state'] : '' ) . '" data-address="state-hidden" name="' . $input_name_state_id . '">
+          </td>
           </tr>';
 
     echo '<tr>
@@ -128,8 +158,6 @@ function smarty_function_location_box( $params = array(), $template )
               <td class="nobr">' . trans('Postcode:') . '</td>
               <td><input type="text"   value="' . (!empty($params['location_zip']) ? $params['location_zip'] : '' ) . '" name="' . $input_name_zip . '" data-address="zip" size="7" maxlength="10"></td>
           </tr>';
-
-    global $DB;
 
     if ( empty($params['countryid']) ) {
         $params['countryid'] = -1;
