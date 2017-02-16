@@ -1,6 +1,7 @@
 {extends file="layout.html"}
 {block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
 {block name=module_content}
+{$xajax}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <SCRIPT type="text/javascript">
@@ -58,13 +59,8 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>{trans("Cash Registry:")}</B>
 		</TD>
-		<TD WIDTH="99%" NOWRAP>
-			<SELECT SIZE="1" NAME="receipt[regid]" {tip text="Select cash registry" trigger="regid"}>
-				<OPTION VALUE="0">{trans("- select registry -")}</OPTION>
-				{foreach from=$cashreglist item=c}
-				<OPTION VALUE="{$c.id}"{if $c.id == $receipt.regid} SELECTED{/if}>{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
-				{/foreach}
-			</SELECT>
+		<TD WIDTH="99%" NOWRAP id="cashregistries">
+			{include file="receipt/receiptcashregistries.html" regid=$receipt.regid}
 		</TD>
 	</TR>
 	{if !$receipt.type}
@@ -124,9 +120,9 @@
 				</TD>
 				<TD style="width: 99%;" class="nobr">
 					{if isset($customer.id)}
-					{customerlist form="setcustomer" customers=$customerlist selected=$customer.id selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;"}
+					{customerlist form="setcustomer" customers=$customerlist selected=$customer.id selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;xajax_GetCashRegistriesXajax($('[name=customerid]').val())"}
 					{else}
-					{customerlist form="setcustomer" customers=$customerlist selected=$receipt.customerid selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;"}
+					{customerlist form="setcustomer" customers=$customerlist selected=$receipt.customerid selectname="customer" inputname="customerid" customOnChange="document.getElementById('radio_customer').checked=true;xajax_GetCashRegistriesXajax($('[name=customerid]').val())"}
 					{/if}
 				</TD>
 			</TR>
