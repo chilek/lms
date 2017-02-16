@@ -93,7 +93,7 @@ function smarty_function_location_box( $params = array(), $template )
     echo '<tr>
               <td>' . trans('State') . '</td>
               <td>
-                  <input type="text"   value="' . (!empty($params['location_state_name']) ? $params['location_state_name'] : '' ) . '" size="' . INPUT_SIZE . '" data-address="state" name="' . $input_name_state . '">
+                  <input type="text"   value="' . (!empty($params['location_state_name']) ? $params['location_state_name'] : '' ) . '" size="' . INPUT_SIZE . '" data-address="state" name="' . $input_name_state . '" maxlength="64">
                   <input type="hidden" value="' . (!empty($params['location_state'])      ? $params['location_state']      : '' ) . '" data-address="state-hidden" name="' . $input_name_state_id . '">
               </td>
           </tr>';
@@ -101,7 +101,7 @@ function smarty_function_location_box( $params = array(), $template )
     echo '<tr>
               <td>' . trans('City') . '</td>
               <td>
-                  <input type="text"   value="' . (!empty($params['location_city_name']) ? $params['location_city_name'] : '' ) . '" size="' . INPUT_SIZE . '" data-address="city" name="' . $input_name_city . '">
+                  <input type="text"   value="' . (!empty($params['location_city_name']) ? $params['location_city_name'] : '' ) . '" size="' . INPUT_SIZE . '" data-address="city" name="' . $input_name_city . '" maxlength="32">
                   <input type="hidden" value="' . (!empty($params['location_city'])      ? $params['location_city']      : '' ) . '" data-address="city-hidden" name="' . $input_name_city_id . '">
               </td>
           </tr>';
@@ -109,24 +109,24 @@ function smarty_function_location_box( $params = array(), $template )
     echo '<tr>
               <td>' . trans('Street') . '</td>
               <td>
-                  <input type="text"   value="' . (!empty($params['location_street_name']) ? $params['location_street_name'] : '' ) . '" size="' . INPUT_SIZE . '" data-address="street" name="' . $input_name_street . '">
+                  <input type="text"   value="' . (!empty($params['location_street_name']) ? $params['location_street_name'] : '' ) . '" size="' . INPUT_SIZE . '" data-address="street" name="' . $input_name_street . '" maxlength="255">
                   <input type="hidden" value="' . (!empty($params['location_street'])      ? $params['location_street']      : '' ) . '" data-address="street-hidden" name="' . $input_name_street_id . '">
               </td>
           </tr>';
 
     echo '<tr>
               <td class="nobr">' . trans('House No.') . '</td>
-              <td><input type="text"   value="' . (!empty($params['location_house']) ? $params['location_house'] : '' ) . '" name="' . $input_name_house . '" data-address="house" size="7"></td>
+              <td><input type="text"   value="' . (!empty($params['location_house']) ? $params['location_house'] : '' ) . '" name="' . $input_name_house . '" data-address="house" size="7" maxlength="20"></td>
           </tr>';
 
     echo '<tr>
               <td class="nobr">' . trans('Flat No.') . '</td>
-              <td><input type="text"   value="' . (!empty($params['location_flat']) ? $params['location_flat'] : '' ) . '" name="' . $input_name_flat . '" data-address="flat" size="7"></td>
+              <td><input type="text"   value="' . (!empty($params['location_flat']) ? $params['location_flat'] : '' ) . '" name="' . $input_name_flat . '" data-address="flat" size="7" maxlength="20"></td>
           </tr>';
 
     echo '<tr>
               <td class="nobr">' . trans('Postcode:') . '</td>
-              <td><input type="text"   value="' . (!empty($params['location_zip']) ? $params['location_zip'] : '' ) . '" name="' . $input_name_zip . '" data-address="zip" size="7"></td>
+              <td><input type="text"   value="' . (!empty($params['location_zip']) ? $params['location_zip'] : '' ) . '" name="' . $input_name_zip . '" data-address="zip" size="7" maxlength="10"></td>
           </tr>';
 
     global $DB;
