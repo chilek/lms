@@ -47,11 +47,11 @@ function smarty_function_location_box_expandable( $params = array(), $template )
 
     if ( isset($params['data']['show']) ) {
         echo '<span class="toggle-address" data-target="' . $uid . '" data-state="opened">–</span>';
-        echo '<span>' . ($params['data']['location'] ? $params['data']['location'] : '...') . '</span>';
+        echo '<span class="address-full">' . ($params['data']['location'] ? $params['data']['location'] : '...') . '</span>';
         echo '<div id="' . $uid . '">';
     } else {
         echo '<span class="toggle-address" data-target="' . $uid . '" data-state="closed">+</span>';
-        echo '<span>' . ($params['data']['location'] ? $params['data']['location'] : '...') . '</span>';
+        echo '<span class="address-full">' . ($params['data']['location'] ? $params['data']['location'] : '...') . '</span>';
         echo '<div id="' . $uid . '" style="display: none;">';
     }
 
