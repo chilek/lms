@@ -112,7 +112,7 @@
 										{/foreach}
 									</SELECT>
 									{if !isset($nodelinktype)}{$devnodeslinktype = 0}{else}{$devnodeslinktype = $nodelinktype}{/if}
-									<SELECT NAME="linktechnology" id="devnodeslinktechnology" {tip trigger="devnodeslinktechnology" text="Select link technology"} onchange="change_nodelinktechnology(this.options[this.selectedIndex].value)">
+									<SELECT NAME="linktechnology" id="devnodeslinktechnology" {tip trigger="devnodeslinktechnology" text="Select link technology"} onchange="change_nodelinktechnology()">
 										<OPTION value="0">{trans("- unknown -")}</OPTION>
 										{foreach $_LINKTECHNOLOGIES[$devnodeslinktype] as $linktechnologyidx => $linktechnology}
 										<OPTION value="{$linktechnologyidx}"{if $linktechnologyidx == $nodelinktechnology} selected{/if}>{$linktechnology}</OPTION>
@@ -167,8 +167,8 @@ function change_nodelinktype(linktype) {
 	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_node', {$netdevinfo.id});
 }
 
-function change_nodelinktechnology(linktechnology) {
-	linktechnology = parseInt(linktechnology);
+function change_nodelinktechnology() {
+	linktechnology = parseInt(xjx.$('devnodeslinktechnology').options[xjx.$('devnodeslinktechnology').selectedIndex].value);
 	var linktype = xjx.$('devnodeslinktype').value;
 	if (linktype != 1)
 		return;
