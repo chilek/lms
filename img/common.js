@@ -133,13 +133,17 @@ if ( typeof $ !== 'undefined' ) {
         });
 
         // disable and enable inputs after click
-        $( '.lmsui-address-teryt-checkbox' ).change( function() {
+        $('body').on('change', '.lmsui-address-teryt-checkbox', function() {
             var boxid = $( this ).closest( ".lmsui-address-box" ).attr( 'id' );
 
             if ( $( this ).is(':checked') ) {
                 $("#" + boxid + " input[type=text]").prop("readonly", true);
+                $("#" + boxid).find("select[data-address='state-select']").css('display', 'none').attr('disabled', true);
+                $("#" + boxid).find("input[data-address='state']").css('display', 'block').attr('disabled', false);
             } else {
                 $("#" + boxid + " input[type=text]").prop("readonly", false);
+                $("#" + boxid).find("select[data-address='state-select']").css('display', 'inline-block').attr('disabled', false);
+                $("#" + boxid).find("input[data-address='state']").css('display', 'none').attr('disabled', true);
             }
         });
 
