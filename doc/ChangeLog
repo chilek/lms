@@ -74,6 +74,8 @@ version ?.??.?? (????-??-??):
     type selection change [chilan]
   - improvement: sendinvoices.mail_format=text|html ('text' by default) allows
     to select mail format between html and text [chilan]
+  - improvement: for new receipt show only cash registries to which cashier have
+    read/write access privileges (we also take selected customer division into account) [chilan]
 
 version 1.11.21 (2016-10-14):
 
