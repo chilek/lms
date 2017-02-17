@@ -1,6 +1,7 @@
 {extends file="layout.html"}
 {block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
 {block name=module_content}
+{$xajax}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <script type="text/javascript">
@@ -72,6 +73,14 @@
 		form.taxid.value = taxid;
 		form.valuebrutto.value = valuebrutto;
 	}
+
+	function GetNumberPlans() {
+		xajax_GetNumberPlans('{$invoice.proforma}', {
+			number: $('form[name="setcustomer"] [name="invoice[number]"]').val(),
+			cdate: $('form[name="setcustomer"] [name="invoice[cdate]"]').attr('data-cdate'),
+			numberplanid: $('form[name="setcustomer"] [name="invoice[numberplanid]"]').val(),
+		}, $('form[name="setcustomer"] [name=customerid]').val());
+	}
 //-->
 </script>
 {$default_printpage = ConfigHelper::getConfig('invoices.default_printpage')}
@@ -100,18 +109,8 @@
 		<TD class="bold nobr">
 			{trans("Invoice number:")}
 		</TD>
-		<TD class="nobr">
-			<INPUT type="text" name="invoice[number]" value="{$invoice.number}" size="12" {tip text="Enter invoice number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
-			{if $numberplanlist}
-			<SELECT name="invoice[numberplanid]" {tip text="Select numbering plan"}>
-			{foreach item=plan from=$numberplanlist}
-				{assign var=period value=$plan.period}
-				<OPTION value="{$plan.id}"{if $plan.id==$invoice.numberplanid} SELECTED{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate} ({$_NUM_PERIODS.$period})</OPTION>
-			{/foreach}
-			</SELECT>
-			{else}
-				<INPUT type="hidden" name="invoice[numberplanid]" value="0">
-			{/if}
+		<TD class="nobr" id="invoicenumberplans">
+			{include file="invoice/invoicenumberplans.html" invoice=$invoice}
 		</TD>
 	</TR>
 	<TR>
@@ -119,7 +118,7 @@
 			{trans("Settlement date:")}
 		</TD>
 		<TD class="nobr">
-			<INPUT TYPE="TEXT" NAME="invoice[cdate]" VALUE="{$invoice.cdate|date_format:"%Y/%m/%d"}" SIZE="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
+			<INPUT TYPE="TEXT" NAME="invoice[cdate]" VALUE="{$invoice.cdate|date_format:"%Y/%m/%d"}" SIZE="10" placeholder="{trans("yyyy/mm/dd")}" date-cdate="{$invoice.cdate}" {tip class="calendar" text="Enter date of settlement in YYYY/MM/DD format (empty field means current date) or click to select it from calendar" trigger="cdate"}>
 			{if $invoice.cdatewarning}
 			<INPUT TYPE="HIDDEN" NAME="invoice[cdatewarning]" VALUE="1">
 			{/if}
@@ -159,9 +158,9 @@
 		</TD>
 		<TD class="nobr">
 			{if isset($customer.id)}
-			{customerlist form="setcustomer" customers=$customers selected=$customer.id selectname="customer" inputname="customerid"}
+			{customerlist form="setcustomer" customers=$customers selected=$customer.id selectname="customer" inputname="customerid" customOnChange="GetNumberPlans()"}
 			{else}
-			{customerlist form="setcustomer" customers=$customers selected=$invoice.customerid selectname="customer" inputname="customerid"}
+			{customerlist form="setcustomer" customers=$customers selected=$invoice.customerid selectname="customer" inputname="customerid" customOnChange="GetNumberPlans()"}
 			{/if}
 		</TD>
 	</TR>
