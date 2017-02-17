@@ -76,6 +76,8 @@ version ?.??.?? (????-??-??):
     to select mail format between html and text [chilan]
   - improvement: for new receipt show only cash registries to which cashier have
     read/write access privileges (we also take selected customer division into account) [chilan]
+  - improvement: switched to pear/mail maintained by composer [chilan]
+
 
 version 1.11.21 (2016-10-14):
 

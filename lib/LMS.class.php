@@ -1637,10 +1637,6 @@ class LMS
 		$persist = is_null($persist) ? ConfigHelper::getConfig('mail.smtp_persist', true) : $persist;
 
 		if (ConfigHelper::getConfig('mail.backend') == 'pear') {
-			@include_once('Mail.php');
-			if (!class_exists('Mail'))
-				return trans('Can\'t send message. PEAR::Mail not found!');
-
 			if (!is_object($this->mail_object) || !$persist) {
 				$params['host'] = (!isset($smtp_options['host']) ? ConfigHelper::getConfig('mail.smtp_host') : $smtp_options['host']);
 				$params['port'] = (!isset($smtp_options['port']) ? ConfigHelper::getConfig('mail.smtp_port') : $smtp_options['port']);

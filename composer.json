@@ -28,7 +28,8 @@
         "components/jqueryui": "^1",
         "xdan/datetimepicker": "^2",
         "datatables/datatables": "^1.10",
-        "setasign/fpdi-tcpdf": "^1.6"
+        "setasign/fpdi-tcpdf": "^1.6",
+        "pear/mail": "^1.3"
     },
     "require_dev": {
         "phpunit/phpunit": "5.1.*"
