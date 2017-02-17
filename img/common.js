@@ -845,7 +845,13 @@ function getCustomerAddresses( id ) {
     });
 
     if ( addresses !== null ) {
-        return JSON.parse( addresses );
+        var json_addr = JSON.parse( addresses );
+
+        $.each( json_addr, function( i, v ) {
+            json_addr[i]['location'] = $("<div/>").html( v['location'] ).text();
+        });
+
+        return json_addr;
     } else {
         return [];
     }
