@@ -190,7 +190,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		$jpk_data .= "\t<Podmiot1>\n";
 		$jpk_data .= "\t\t<IdentyfikatorPodmiotu>\n";
 		$jpk_data .= "\t\t\t<etd:NIP>" . preg_replace('/[\s\-]/', '', $division['ten']) . "</etd:NIP>\n";
-		$jpk_data .= "\t\t\t<etd:PelnaNazwa>" . $division['name'] . "</etd:PelnaNazwa>\n";
+		$jpk_data .= "\t\t\t<etd:PelnaNazwa>" . str_replace('&', '&amp;', $division['name']) . "</etd:PelnaNazwa>\n";
 		$jpk_data .= "\t\t\t<etd:REGON>" . $division['regon'] . "</etd:REGON>\n";
 		$jpk_data .= "\t\t</IdentyfikatorPodmiotu>\n";
 		$jpk_data .= "\t\t<AdresPodmiotu>\n";
