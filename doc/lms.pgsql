@@ -298,8 +298,8 @@ CREATE TABLE assignments (
 	numberplanid integer DEFAULT NULL
 	    REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	attribute varchar(255) DEFAULT NULL,
-	address_id integer DEFAULT NULL
-		CONSTRAINT address_id_fk REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	recipient_address_id integer DEFAULT NULL
+		CONSTRAINT recipient_address_id_fk2 REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
 CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
@@ -1190,6 +1190,8 @@ CREATE TABLE documents (
 	cancelled smallint	DEFAULT 0 NOT NULL,
 	published smallint	DEFAULT 0 NOT NULL,
 	cuserid integer		DEFAULT 0 NOT NULL,
+	recipient_address_id integer DEFAULT NULL
+        REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
 CREATE INDEX documents_cdate_idx ON documents(cdate);
@@ -2943,6 +2945,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017021400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017021700');
 
 COMMIT;

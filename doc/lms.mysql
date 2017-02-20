@@ -419,14 +419,14 @@ CREATE TABLE assignments (
   paytype smallint DEFAULT NULL,
   numberplanid int(11) DEFAULT NULL,
   attribute varchar(255) DEFAULT NULL,
-  address_id int(11),
+  recipient_address_id int(11),
   PRIMARY KEY (id),
   INDEX tariffid (tariffid),
   INDEX customerid (customerid),
   INDEX numberplanid (numberplanid),
   FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY address_id_fk(address_id) REFERENCES addresses(id) ON DELETE SET NULL ON UPDATE CASCADE
+  FOREIGN KEY recipient_address_id_fk2(address_id) REFERENCES addresses(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -568,12 +568,14 @@ CREATE TABLE documents (
 	cancelled smallint DEFAULT 0 NOT NULL,
 	published tinyint(1) NOT NULL DEFAULT 0,
 	cuserid int(11) NOT NULL DEFAULT '0',
+	recipient_address_id int(11),
 	PRIMARY KEY (id),
 	INDEX cdate (cdate),
 	INDEX numberplanid (numberplanid),
 	INDEX customerid (customerid),
 	INDEX closed (closed),
-	INDEX reference (reference)
+	INDEX reference (reference),
+	FOREIGN KEY recipient_address_id_fk(recipient_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2875,4 +2877,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017021400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017021700');

@@ -332,10 +332,10 @@
 												<span class="bold">{trans("Recipient:")}</span>
 											</td>
 											<td>
-												<select name="assignment[address_id]">
+												<select name="assignment[recipient_address_id]">
 													<option value="-1">{trans("none")}</option>
 													{foreach $customeraddresses as $v}
-														<option value="{$v.address_id}"{if $assignment.address_id == $v.address_id} selected{/if}>{$v.location}</option>
+														<option value="{$v.address_id}"{if $assignment.recipient_address_id == $v.address_id} selected{/if}>{$v.location}</option>
 													{/foreach}
 												</select>
 											</td>
