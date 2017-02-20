@@ -54,7 +54,9 @@ if ($handle = opendir(ConfigHelper::getConfig('directories.backup_dir')))
 					}
 					
 					$dblist['name'][] = $name;
-					$dblist['size'][] = filesize(ConfigHelper::getConfig('directories.backup_dir').'/'.$file);
+					$dblist['size'][] = $filesize = filesize(ConfigHelper::getConfig('directories.backup_dir').'/'.$file);
+					list ($hsize, $hunit) = setunits($filesize);
+					$dblist['hsize'][] = f_round($hsize) . ' ' . $hunit;
 					$dblist['type'][] = 'plain';
 				}
 			}
@@ -74,7 +76,9 @@ if ($handle = opendir(ConfigHelper::getConfig('directories.backup_dir')))
 						$dblist['time'][] = (int) $name;
 					}
 					$dblist['name'][] = $name;
-					$dblist['size'][] = filesize(ConfigHelper::getConfig('directories.backup_dir').'/'.$file);
+					$dblist['size'][] = $filesize = filesize(ConfigHelper::getConfig('directories.backup_dir').'/'.$file);
+					list ($hsize, $hunit) = setunits($filesize);
+					$dblist['hsize'][] = f_round($hsize) . ' ' . $hunit;
 					$dblist['type'][] = 'gz';
 				}
 			}
