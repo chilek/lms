@@ -79,6 +79,7 @@ version ?.??.?? (????-??-??):
   - improvement: switched to pear/mail maintained by composer [chilan]
   - improvement: invoices: dynamic adjustment of number plan list according to
     selected customer division [chilan]
+  - improvement: show db backup sizes also in human friendly units [chilan]
 
 version 1.11.21 (2016-10-14):
 
