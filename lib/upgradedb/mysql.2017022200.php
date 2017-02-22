@@ -21,6 +21,8 @@
  *
  */
 
+$this->BeginTrans();
+
 $this->Execute("DROP VIEW IF EXISTS vdivisions;");
 $this->Execute("DROP VIEW IF EXISTS vnodes;");
 $this->Execute("DROP VIEW IF EXISTS vmacs;");
