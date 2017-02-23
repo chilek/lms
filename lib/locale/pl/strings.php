@@ -29,7 +29,8 @@ $_LANG['Check if contact should be printed on documents'] = 'Zaznacz jeśli kont
 
 $_LANG['Are you sure you want to send messages to $a customer(s)?'] = 'Jesteś pewien, że chcesz wysłać wiadmości do $a klient(a/ów)?';
 
-$_LANG['Export to JPK format'] = 'Eksport do formatu JPK';
+$_LANG['Export to JPK-FA format'] = 'Eksport do formatu JPK-FA';
+$_LANG['Export to JPK-VAT format'] = 'Eksport do formatu JPK-VAT';
 $_LANG['Division not selected!'] = 'Nie wybrano firmy!';
 $_LANG['Tax Office Code:'] = 'Kod Urzędu Podatkowego:';
 $_LANG['Enter Tax Office Code (optional)'] = 'Wprowadź Kod Urzędu Podatkowego (opcjpnalnie)';
