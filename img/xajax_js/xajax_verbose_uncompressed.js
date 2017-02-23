@@ -12,7 +12,7 @@
 
 /*
 	@package xajax
-	@version $Id$
+	@version $Id: xajax_verbose_uncompressed 327 2007-02-28 16:55:26Z calltoconstruct $
 	@copyright Copyright (c) 2005-2007 by Jared White & J. Max Wilson
 	@copyright Copyright (c) 2008-2009 by Joseph Woolley, Steffen Konerow, Jared White  & J. Max Wilson
 	@license http://www.xajaxproject.org/bsd_license.txt BSD License

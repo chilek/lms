@@ -12,9 +12,9 @@
 
 /*
 	@package xajax
-	@version $Id$
+	@version $Id: xajaxFunctionPlugin.inc.php 362 2007-05-29 15:32:24Z calltoconstruct $
 	@copyright Copyright (c) 2005-2007 by Jared White & J. Max Wilson
-	@copyright Copyright (c) 2008-2009 by Joseph Woolley, Steffen Konerow, Jared White  & J. Max Wilson
+	@copyright Copyright (c) 2008-2010 by Joseph Woolley, Steffen Konerow, Jared White  & J. Max Wilson
 	@license http://www.xajaxproject.org/bsd_license.txt BSD License
 */
 
@@ -42,7 +42,7 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
 		An array of <xajaxUserFunction> object that are registered and
 		available via a <xajax.request> call.
 	*/
-	var $aFunctions;
+	private $aFunctions;
 
 	/*
 		String: sXajaxPrefix
@@ -50,7 +50,7 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
 		A configuration setting that is stored locally and used during
 		the client script generation phase.
 	*/
-	var $sXajaxPrefix;
+	private $sXajaxPrefix;
 	
 	/*
 		String: sDefer
@@ -58,9 +58,9 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
 		Configuration option that can be used to request that the
 		javascript file is loaded after the page has been fully loaded.
 	*/
-	var $sDefer;
+	private $sDefer;
 	
-	var $bDeferScriptGeneration;
+	private $bDeferScriptGeneration;
 
 	/*
 		String: sRequestedFunction
@@ -71,17 +71,17 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
 		Since canProcessRequest loads this value from the get or post
 		data, it is unnecessary to load it again.
 	*/
-	var $sRequestedFunction;
+	private $sRequestedFunction;
 
 	/*
-		Function: xajaxFunctionPlugin
+		Function: __construct
 		
 		Constructs and initializes the <xajaxFunctionPlugin>.  The GET and POST
 		data is searched for xajax function call parameters.  This will later
 		be used to determine if the request is for a registered function in
 		<xajaxFunctionPlugin->canProcessRequest>
 	*/
-	function xajaxFunctionPlugin()
+	public function __construct()
 	{
 		$this->aFunctions = array();
 
@@ -100,7 +100,7 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
 		
 		Sets/stores configuration options used by this plugin.
 	*/
-	function configure($sName, $mValue)
+	public function configure($sName, $mValue)
 	{
 		if ('wrapperPrefix' == $sName) {
 			$this->sXajaxPrefix = $mValue;
@@ -121,7 +121,7 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
 		Provides a mechanism for functions to be registered and made available to
 		the page via the javascript <xajax.request> call.
 	*/
-	function register($aArgs)
+	public function register($aArgs)
 	{
 		if (1 < count($aArgs))
 		{
@@ -129,23 +129,39 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
 
 			if (XAJAX_FUNCTION == $sType)
 			{
-				$xuf =& $aArgs[1];
+				$xuf = $aArgs[1];
 
-				if (false === is_a($xuf, 'xajaxUserFunction'))
+				if (false === ($xuf instanceof xajaxUserFunction))
 					$xuf = new xajaxUserFunction($xuf);
 
 				if (2 < count($aArgs))
+				{
 					if (is_array($aArgs[2]))
+					{
 						foreach ($aArgs[2] as $sName => $sValue)
+						{
 							$xuf->configure($sName, $sValue);
-
-				$this->aFunctions[] =& $xuf;
+						}
+					} else {
+						$xuf->configure('include', $aArgs[2]);
+					}
+				}
+				$this->aFunctions[] = $xuf;
 
 				return $xuf->generateRequest($this->sXajaxPrefix);
 			}
 		}
 
 		return false;
+	}
+
+
+	public function generateHash()
+	{
+		$sHash = '';
+		foreach (array_keys($this->aFunctions) as $sKey)
+			$sHash .= $this->aFunctions[$sKey]->getName();
+		return md5($sHash);
 	}
 
 	/*
@@ -156,21 +172,12 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
 		contain function declarations that can be used on the browser through
 		javascript to initiate xajax requests.
 	*/
-	function generateClientScript()
+	public function generateClientScript()
 	{
-		if (false === $this->bDeferScriptGeneration || 'deferred' === $this->bDeferScriptGeneration)
+		if (0 < count($this->aFunctions))
 		{
-			if (0 < count($this->aFunctions))
-			{
-				echo "\n<script type='text/javascript' " . $this->sDefer . "charset='UTF-8'>\n";
-				echo "/* <![CDATA[ */\n";
-
-				foreach (array_keys($this->aFunctions) as $sKey)
-					$this->aFunctions[$sKey]->generateClientScript($this->sXajaxPrefix);
-
-				echo "/* ]]> */\n";
-				echo "</script>\n";
-			}
+			foreach (array_keys($this->aFunctions) as $sKey)
+				$this->aFunctions[$sKey]->generateClientScript($this->sXajaxPrefix);
 		}
 	}
 
@@ -185,7 +192,7 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
 		boolean - True if the current request can be handled by this plugin;
 			false otherwise.
 	*/
-	function canProcessRequest()
+	public function canProcessRequest()
 	{
 		if (NULL == $this->sRequestedFunction)
 			return false;
@@ -204,17 +211,17 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
 		mixed - True when the request has been processed successfully.
 			An error message when an error has occurred.
 	*/
-	function processRequest()
+	public function processRequest()
 	{
 		if (NULL == $this->sRequestedFunction)
 			return false;
 
-		$objArgumentManager =& xajaxArgumentManager::getInstance();
+		$objArgumentManager = xajaxArgumentManager::getInstance();
 		$aArgs = $objArgumentManager->process();
 
 		foreach (array_keys($this->aFunctions) as $sKey)
 		{
-			$xuf =& $this->aFunctions[$sKey];
+			$xuf = $this->aFunctions[$sKey];
 
 			if ($xuf->getName() == $this->sRequestedFunction)
 			{
@@ -227,5 +234,5 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
 	}
 }
 
-$objPluginManager =& xajaxPluginManager::getInstance();
+$objPluginManager = xajaxPluginManager::getInstance();
 $objPluginManager->registerPlugin(new xajaxFunctionPlugin(), 100);

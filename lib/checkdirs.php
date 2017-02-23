@@ -44,6 +44,15 @@ if(!is_dir(DOC_DIR))
 if(!is_writable(DOC_DIR))
 	$startup_errors[] = 'chown -R '.posix_geteuid().':'.posix_getegid().' '.DOC_DIR."\nchmod -R 755 ".DOC_DIR;
 
+$__xajax_deferred_dir = SYS_DIR . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'xajax_js' . DIRECTORY_SEPARATOR . 'deferred';
+
+if (!is_dir($__xajax_deferred_dir))
+	$startup_errors[] = 'mkdir ' . $__xajax_deferred_dir;
+
+if (!is_writable($__xajax_deferred_dir))
+	$startup_errors[] = 'chown -R ' . posix_geteuid() . ':' . posix_getegid() . ' ' . $__xajax_deferred_dir
+		. "\nchmod -R 755 " . $__xajax_deferred_dir;
+
 if (count($startup_errors) > 0) {
 	print('Can not start because detected some problems. Please run:<PRE>');
 	foreach ($startup_errors as &$err) {
