@@ -80,6 +80,8 @@ version ?.??.?? (????-??-??):
   - improvement: invoices: dynamic adjustment of number plan list according to
     selected customer division [chilan]
   - improvement: show db backup sizes also in human friendly units [chilan]
+  - improvement: switched to xajax 0.6 beta fork from https://github.com/feuzeu/xajax which
+    generates much less warnings in PHP 7 (if any at all) [chilan]
 
 version 1.11.21 (2016-10-14):
 
