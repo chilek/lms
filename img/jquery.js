@@ -458,7 +458,7 @@ $(function() {
 			api.columns().every(function(index) {
 				if (index == column) {
 					$('thead tr:last-child th:nth-child(' + (i + 1) + ') :input', elem).val(searchValue);
-					console.log(i + ' ' + index + ' ' + column);
+					//console.log(i + ' ' + index + ' ' + column);
 				}
 				if (!columnStates[index].visible) {
 					return;
