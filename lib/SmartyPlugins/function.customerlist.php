@@ -51,19 +51,19 @@ function smarty_function_customerlist($params, $template) {
 			if (!empty($params['firstoption'])) {
 				$result .= '<OPTION value="0"';
 				if (empty($params['selected']))
-					$result .= 'selected';
+					$result .= ' selected';
 				$result .= '>' . trans($params['firstoption']) . '</OPTION>';
 			}
 		} else {
 			$result .= '<OPTION value="0"';
 			if (empty($params['selected']))
-				$result .= 'selected';
+				$result .= ' selected';
 			$result .= '>' . trans("- select customer -") . '</OPTION>';
 		}
 		foreach ($params['customers'] as $customer) {
 			$result .= '<OPTION value="' . $customer['id'] . '"';
 			if ($customer['id'] == $params['selected'])
-				$result .= 'selected';
+				$result .= ' selected';
 			$result .= '>' . mb_substr($customer['customername'], 0 , 40) . ' (' . sprintf("%04d", $customer['id']) . ')</OPTION>';
 		}
 		$result .= '</SELECT>&nbsp;' . trans("or Customer ID:");
