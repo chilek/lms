@@ -391,7 +391,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 				$jpk_data .= "\t\t<P_106E_2>false</P_106E_2>\n";
 				$jpk_data .= "\t\t<RodzajFaktury>" . (isset($invoice['invoice']) ? 'KOREKTA' : 'VAT') . "</RodzajFaktury>\n";
 				if (isset($invoice['invoice'])) {
-					$jpk_data .= "\t\t<PrzyczynaKorekty>" . $invoice['reason'] . "</PrzyczynaKorekty>\n";
+					$jpk_data .= "\t\t<PrzyczynaKorekty>" . (empty($invoice['reason']) ? 'błędne wystawienie faktury' : $invoice['reason']) . "</PrzyczynaKorekty>\n";
 					$invoice['invoice']['fullnumber'] = docnumber(array(
 						'number' => $invoice['invoice']['number'],
 						'template' => $invoice['invoice']['template'],
