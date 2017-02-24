@@ -667,7 +667,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     (CASE WHEN MAX(lastonline) > ?NOW? - ' . intval(ConfigHelper::getConfig('phpui.lastonline_limit')) . '
                         THEN 1 ELSE 0 END) AS online
                     FROM nodes
-                    WHERE ownerid > 0
+                    WHERE ownerid > 0 AND ipaddr <> 0
                     GROUP BY ownerid
                 ) s ON (s.ownerid = c.id) '
                 . ($contracts == 1 ? '
