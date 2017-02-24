@@ -13,7 +13,7 @@ documents/*
 cache/*
 contrib/LMS2Nagios-php/generated/*
 lib/teryt/*
-img/xajax_js/dererred/*
+img/xajax_js/deferred/*
 composer.lock
 
 # Temporary files
