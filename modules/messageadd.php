@@ -210,6 +210,12 @@ function BodyVars(&$body, $data)
 		}
 		$body = str_replace('%last_10_in_a_table', $last10, $body);
 	}
+
+	$hook_data = $LMS->ExecuteHook('messageadd_variable_parser', array(
+		'body' => $body,
+		'data' => $data,
+	));
+	$body = $hook_data['body'];
 }
 
 $layout['pagetitle'] = trans('Message Add');
