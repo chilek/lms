@@ -44,9 +44,9 @@
 {if $rights.info.edit_contact || $rights.info.edit_contact_ack}
 			<TABLE cellpadding="0" cellspacing="2">
 			{foreach $userinfo.emails as $email}
-				<TR><TD><INPUT TYPE="TEXT" NAME="userdata[email][{$email.id}]" VALUE="{$email.email}" SIZE="50" {userpaneltip text="Enter email address"}></TD></TR>
+				<TR><TD><INPUT TYPE="TEXT" NAME="userdata[emails][{$email.id}]" VALUE="{$email.email}" SIZE="50" {userpaneltip text="Enter email address"}></TD></TR>
 			{foreachelse}
-				<TR><TD><INPUT TYPE="TEXT" NAME="userdata[email][0]" VALUE="{$userinfo.email}" SIZE="50" {userpaneltip text="Enter email address"}></TD></TR>
+				<TR><TD><INPUT TYPE="TEXT" NAME="userdata[emails][0]" VALUE="{$userinfo.email}" SIZE="50" {userpaneltip text="Enter email address"}></TD></TR>
 			{/foreach}
 			</TABLE>
 {else}
@@ -102,9 +102,9 @@
 {if $rights.info.edit_contact || $rights.info.edit_contact_ack}
 			<TABLE cellpadding="0" cellspacing="2">
 			    {foreach from=$userinfo.contacts item=item}
-			    <TR><TD><INPUT TYPE="TEXT" NAME="userdata[phone][{$item.id}]" VALUE="{$item.phone}" {userpaneltip text="Enter phone number"}></TD></TR>
+			    <TR><TD><INPUT TYPE="TEXT" NAME="userdata[contacts][phone][{$item.id}]" VALUE="{$item.phone}" {userpaneltip text="Enter phone number"}></TD></TR>
 			{foreachelse}
-			    <TR><TD><INPUT TYPE="TEXT" NAME="userdata[phone][0]" VALUE="{$userinfo.phone}" {userpaneltip text="Enter phone number"}></TD></TR>
+			    <TR><TD><INPUT TYPE="TEXT" NAME="userdata[contacts][phone][0]" VALUE="{$userinfo.phone}" {userpaneltip text="Enter phone number"}></TD></TR>
 			{/foreach}
 			</TABLE>
 {else}
@@ -127,7 +127,7 @@
 		</td>
 		<td width="99%">
 {if $rights.info.edit_contact || $rights.info.edit_contact_ack}
-			<INPUT TYPE="TEXT" NAME="userdata[im][{$item.id}]" VALUE="{$item.uid}" {userpaneltip text="Enter IM number"}>
+			<INPUT TYPE="TEXT" NAME="userdata[ims][{$item.id}]" VALUE="{$item.uid}" {userpaneltip text="Enter IM number"}>
 {else}
 			{$item.uid}
 {/if}
