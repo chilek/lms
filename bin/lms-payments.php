@@ -217,10 +217,10 @@ $last_sunday = strtotime('last Sunday '.date("Y-m-d"));
 $backward_aligned_periods = array(
 	DAILY      => $backward_periods[DAILY],
 	WEEKLY     => strftime($date_format, $last_sunday-518400)                        .' - '.strftime($date_format, $last_sunday),
-	MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month-1, 1     , $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month-1, date("t"), $year)),
-	QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month-3, 1     , $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month-1, date("t"), $year)),
-	HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month-6, 1     , $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month-1, date("t"), $year)),
-	YEARLY     => strftime($date_format, mktime(12, 0, 0, $month  , 1     , $year-1)).' - '.strftime($date_format, mktime(12, 0, 0, $month-1, date("t"), $year)),
+	MONTHLY    => strftime($date_format, mktime(12, 0, 0, $month-1, 1     , $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
+	QUARTERLY  => strftime($date_format, mktime(12, 0, 0, $month-3, 1     , $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
+	HALFYEARLY => strftime($date_format, mktime(12, 0, 0, $month-6, 1     , $year))  .' - '.strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
+	YEARLY     => strftime($date_format, mktime(12, 0, 0, $month  , 1     , $year-1)).' - '.strftime($date_format, mktime(12, 0, 0, $month, 0, $year)),
 	DISPOSABLE => $backward_periods[DISPOSABLE]
 );
 
