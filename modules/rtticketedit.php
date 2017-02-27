@@ -170,8 +170,10 @@ if(isset($_POST['ticket']))
 			'customerid' => $ticketedit['customerid'],			
 		);
 		$LMS->TicketChange($ticketedit['ticketid'], $props);
-		
-		$DB->Execute('DELETE FROM rtticketcategories WHERE ticketid = ?', array($id));
+
+                foreach($categories as $category)
+                        $DB->Execute('DELETE FROM rtticketcategories WHERE ticketid = ? and categoryid = ?',
+				array($id, $category['id']));
 		foreach($ticketedit['categories'] as $categoryid => $val)
 			$DB->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) VALUES(?, ?)',
 				array($id, $categoryid));
