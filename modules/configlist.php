@@ -304,7 +304,7 @@ function GetConfigList() {
 				break;
 
 				case 'logout_confirmation':
-					$config[$idx]['description'] = trans('If isset "true" when logout confirmation is required. Default "false"');
+					$config[$idx]['description'] = trans('If set to "true" then logout confirmation is required. Default "false"');
 				break;
 
 				default:
