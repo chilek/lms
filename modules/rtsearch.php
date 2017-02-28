@@ -62,8 +62,8 @@ function RTSearch($search, $order='createtime,desc')
 
 	if(!empty($search['owner']))
 		$where[] = 'owner = '.intval($search['owner']);
-	if(!empty($search['customerid']))
-		$where[] = 't.customerid = '.intval($search['customerid']);
+	if(!empty($search['custid']))
+		$where[] = 't.customerid = '.intval($search['custid']);
 	if(!empty($search['subject']))
 		$where[] = 't.subject ?LIKE? '.$DB->Escape('%'.$search['subject'].'%');
 	if(!empty($search['state']))
@@ -106,7 +106,7 @@ function RTSearch($search, $order='createtime,desc')
 	{
 		foreach($result as $idx => $ticket)
 		{
-			if(!$ticket['customerid'])
+			if(!$ticket['custid'])
 				list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['req'], "%[^<]<%[^>]");
 			else
 				list($ticket['requestoremail']) = sscanf($ticket['req'], "<%[^>]");
@@ -132,14 +132,14 @@ elseif(isset($_GET['s']))
         $SESSION->restore('rtsearch', $search);
 
 if(isset($_GET['id']))
-	$search['customerid'] = $_GET['id'];
+	$search['custid'] = $_GET['id'];
 
 if(isset($_GET['state']))
 {
 	$search = array(
 		'state' => $_GET['state'],
 		'subject' => '',
-		'customerid' => '0',
+		'custid' => '0',
 		'name' => '',
 		'email' => '',
 		'owner' => '0',
