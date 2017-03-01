@@ -284,6 +284,8 @@ function addRadioSector($params) {
 	//$result->call('xajax_getRadioSectors', $params);
 	$result->assign('add_new_radiosector_button', 'disabled', false);
 	$result->assign('cancel_new_radiosector_button', 'disabled', false);
+	$result->call('get_radio_sectors_for_self_netdev', null);
+	$result->call('change_nodelinktechnology', null);
 
 	return $result;
 }
@@ -306,6 +308,8 @@ function delRadioSector($id) {
 	}
 	$result->call('xajax_getRadioSectors', NULL);
 	$result->assign('radiosectortable', 'disabled', false);
+	$result->call('get_radio_sectors_for_self_netdev', null);
+	$result->call('change_nodelinktechnology', null);
 
 	return $result;
 }
@@ -348,7 +352,9 @@ function updateRadioSector($rsid, $params) {
 		$params = NULL;
 	}
 
-	$result->call('xajax_getRadioSectors', $params);
+	$result->call('xajax_getRadioSectors', null);
+	$result->call('get_radio_sectors_for_self_netdev', null);
+	$result->call('change_nodelinktechnology', null);
 
 	return $result;
 }

@@ -95,7 +95,9 @@ class LMS
             require(LIB_DIR . DIRECTORY_SEPARATOR . 'xajax' . DIRECTORY_SEPARATOR . 'xajax_core' . DIRECTORY_SEPARATOR . 'xajax.inc.php');
             $this->xajax = new xajax();
             $this->xajax->configure('errorHandler', true);
-            $this->xajax->configure('javascript URI', 'img');
+            $this->xajax->configure('javascript Dir', SYS_DIR . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'xajax_js');
+            $this->xajax->configure('javascript URI', 'img/xajax_js');
+            //$this->xajax->configure('deferScriptGeneration', false);
         }
     }
 
@@ -1637,10 +1639,6 @@ class LMS
 		$persist = is_null($persist) ? ConfigHelper::getConfig('mail.smtp_persist', true) : $persist;
 
 		if (ConfigHelper::getConfig('mail.backend') == 'pear') {
-			@include_once('Mail.php');
-			if (!class_exists('Mail'))
-				return trans('Can\'t send message. PEAR::Mail not found!');
-
 			if (!is_object($this->mail_object) || !$persist) {
 				$params['host'] = (!isset($smtp_options['host']) ? ConfigHelper::getConfig('mail.smtp_host') : $smtp_options['host']);
 				$params['port'] = (!isset($smtp_options['port']) ? ConfigHelper::getConfig('mail.smtp_port') : $smtp_options['port']);

@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoicexajax.inc.php');
+
 $taxeslist = $LMS->GetTaxes();
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
@@ -494,10 +496,17 @@ $SMARTY->assign('customer', $customer);
 $SMARTY->assign('invoice', $invoice);
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('taxeslist', $taxeslist);
-$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans(array(
+
+$args = array(
 	'doctype' => DOC_INVOICE,
 	'cdate' => date('Y/m', $invoice['cdate']),
-)));
+);
+if (isset($customer) && !empty($customer)) {
+	$args['customerid'] = $customer['id'];
+	$args['division'] = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($customer['id']));
+}
+$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans($args));
+
 $SMARTY->display('invoice/invoiceedit.html');
 
 ?>

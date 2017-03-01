@@ -15,9 +15,9 @@
 
 /*
 	@package xajax
-	@version $Id$
+	@version $Id: xajax_core_uncompressed.js 327 2007-02-28 16:55:26Z calltoconstruct $
 	@copyright Copyright (c) 2005-2007 by Jared White & J. Max Wilson
-	@copyright Copyright (c) 2008-2009 by Joseph Woolley, Steffen Konerow, Jared White  & J. Max Wilson
+	@copyright Copyright (c) 2008-2010 by Joseph Woolley, Steffen Konerow, Jared White  & J. Max Wilson
 	@license http://www.xajaxproject.org/bsd_license.txt BSD License
 */
 
@@ -184,7 +184,7 @@ xajax.config.setDefault('defaultRetry', 5);
 /*
 	Object: defaultReturnValue
 	
-	The value returned by <xajax.call> when in asynchronous
+	The value returned by <xajax.request> when in asynchronous
 	mode, or when a syncrhonous call does not specify the
 	return value.
 */
@@ -334,7 +334,10 @@ xajax.tools = {}
 xajax.tools.$ = function(sId) {
 	if (!sId)
 		return null;
-	
+    //sId not an string so return it maybe its an object.
+	if(typeof sId != 'string')
+        return sId;
+
 	var oDoc = xajax.config.baseDocument;
 
 	var obj = oDoc.getElementById(sId);
@@ -348,7 +351,7 @@ xajax.tools.$ = function(sId) {
 }
 
 /*
-	Function xajax.tools.arrayContainsValue
+	Function xajax.tools.in_array
 	
 	Looks for a value within the specified array and, if found, 
 	returns true; otherwise it returns false.
@@ -367,7 +370,7 @@ xajax.tools.$ = function(sId) {
 		
 	false : The value was not found in the specified array.
 */
-xajax.tools.arrayContainsValue = function(array, valueToCheck) {
+xajax.tools.in_array = function(array, valueToCheck) {
 	var i = 0;
 	var l = array.length;
 	while (i < l) {
@@ -388,11 +391,12 @@ xajax.tools.arrayContainsValue = function(array, valueToCheck) {
 	
 	haystack - The source string to be scanned.
 	
-	Returns:
+	Returns:  false on error
 	
 	string - A new string with the modifications applied.
 */
 xajax.tools.doubleQuotes = function(haystack) {
+    if(typeof haystack == 'undefined') return false;
 	return haystack.replace(new RegExp("'", 'g'), '"');
 }
 
@@ -408,9 +412,11 @@ xajax.tools.doubleQuotes = function(haystack) {
 	
 	string - A new string with the modification applied.
 */
+/*
 xajax.tools.singleQuotes = function(haystack) {
 	return haystack.replace(new RegExp('"', 'g'), "'");
 }
+*/
 
 /*
 	Function: xajax.tools._escape
@@ -433,10 +439,10 @@ xajax.tools.singleQuotes = function(haystack) {
 		When the specified object is NOT a string, the value is returned
 		as is.
 */
+/*
 xajax.tools._escape = function(data) {
 	if ('undefined' == typeof data)
 		return data;
-	
 	// 'object' is handled elsewhere, 
 	// 'string' handled below, 
 	// 'number' will be returned here
@@ -474,6 +480,7 @@ xajax.tools._escape = function(data) {
 	
 	return data;
 }
+*/
 
 /*
 	Function: xajax.tools._objectToXML
@@ -499,6 +506,8 @@ xajax.tools._escape = function(data) {
 	
 	<xajax.config.maxObjectDepth> and <xajax.config.maxObjectSize>
 */
+
+/*
 xajax.tools._objectToXML = function(obj, guard) {
 	var aXml = [];
 	aXml.push('<xjxobj>');
@@ -549,6 +558,7 @@ xajax.tools._objectToXML = function(obj, guard) {
 	
 	return aXml.join('');
 }
+*/
 
 /*
 	Function: xajax.tools._enforceDataType 
@@ -807,7 +817,7 @@ xajax.tools._getFormValues = function(aFormValues, children, submitDisabledEleme
 	var iLen = children.length;
 	for (var i = 0; i < iLen; ++i) {
 		var child = children[i];
-		if ('undefined' != typeof child.childNodes)
+		if (('undefined' != typeof child.childNodes) && (child.type != 'select-one') && (child.type != 'select-multiple'))
 			xajax.tools._getFormValues(aFormValues, child.childNodes, submitDisabledElements, prefix);
 		xajax.tools._getFormValue(aFormValues, child, submitDisabledElements, prefix);
 	}
@@ -819,75 +829,87 @@ xajax.tools._getFormValues = function(aFormValues, children, submitDisabledEleme
 	Used internally by <xajax.tools._getFormValues> to extract a single form value.
 	This will detect the type of element (radio, checkbox, multi-select) and 
 	add it's value(s) to the form values array.
+
+	Modified version for multidimensional arrays
 */
 xajax.tools._getFormValue = function(aFormValues, child, submitDisabledElements, prefix)
 {
-	if (!child.name)
-		return;
-		
-	if ('PARAM' == child.tagName) return;
-		
-	if (child.disabled)
-		if (true == child.disabled)
-			if (false == submitDisabledElements)
-				return;
-				
-	if (prefix != child.name.substring(0, prefix.length))
-		return;
-		
-	if (child.type)
-		if (child.type == 'radio' || child.type == 'checkbox')
-			if (false == child.checked)
-				return;
+    if (!child.name)
+        return;
 
-	var name = child.name;
+    if ('PARAM' == child.tagName) return;
 
-	var values = [];
+    if (child.disabled)
+        if (true == child.disabled)
+            if (false == submitDisabledElements)
+                return;
 
- 	if ('select-multiple' == child.type) {
- 		var jLen = child.length;
- 		for (var j = 0; j < jLen; ++j) {
- 			var option = child.options[j];
- 			if (true == option.selected)
- 				values.push(option.value);
- 		}
- 	} else {
- 		values = child.value;
- 	}
+    if (prefix != child.name.substring(0, prefix.length))
+        return;
 
-	var keyBegin = name.indexOf('[');
-	if (0 <= keyBegin) {
-		var n = name;
-		var k = n.substr(0, n.indexOf('['));
-		var a = n.substr(n.indexOf('['));
-		if (typeof aFormValues[k] == 'undefined')
-			aFormValues[k] = [];
-		var p = aFormValues; // pointer reset
-		while (a.length != 0) {
-			var sa = a.substr(0, a.indexOf(']')+1);
-			
-			var lk = k; //save last key
-			var lp = p; //save last pointer
-			
-			a = a.substr(a.indexOf(']')+1);
-			p = p[k];
-			k = sa.substr(1, sa.length-2);
-			if (k == '') {
-				if ('select-multiple' == child.type) {
-					k = lk; //restore last key
-					p = lp;
-				} else {
-					k = p.length;
-				}
-			}
-			if (typeof p[k] == 'undefined')
-				p[k] = []; 
-		}
-		p[k] = values;
-	} else {
-		aFormValues[name] = values;
-	}
+    if (child.type)
+        if (child.type == 'radio' || child.type == 'checkbox')
+            if (false == child.checked)
+                return;
+
+    var name = child.name;
+
+    var values = [];
+
+    if ('select-multiple' == child.type) {
+        var jLen = child.length;
+        for (var j = 0; j < jLen; ++j) {
+            var option = child.options[j];
+            if (true == option.selected)
+                values.push(option.value);
+        }
+    } else {
+        values = child.value;
+    }
+
+    var keyBegin = name.indexOf('[');
+    /* exists name/object before the Bracket?*/
+    if (0 <= keyBegin) {
+        var n = name;
+        var k = n.substr(0, n.indexOf('['));
+        var a = n.substr(n.indexOf('['));
+        if (typeof aFormValues[k] == 'undefined')
+            aFormValues[k] = {};
+        var p = aFormValues; // pointer reset
+        while (a.length != 0) {
+            var sa = a.substr(0, a.indexOf(']')+1);
+
+            var lk = k; //save last key
+            var lp = p; //save last pointer
+
+            a = a.substr(a.indexOf(']')+1);
+            p = p[k];
+            k = sa.substr(1, sa.length-2);
+            if (k == '') {
+                if ('select-multiple' == child.type) {
+                    k = lk; //restore last key
+                    p = lp;
+                } else {
+                    k = p.length;
+                }
+            }
+            if (typeof k == 'undefined')
+            {
+                /*check against the global aFormValues Stack wich is the next(last) usable index */
+                k=0;
+                for (var i in lp[lk]) k++;
+            }
+            if (typeof p[k] == 'undefined'){
+
+                p[k] ={};
+            }
+        }
+        p[k] = values;
+    } else {
+        aFormValues[name] = values;
+    }
 }
+
 
 /*
 	Function: xajax.tools.stripOnPrefix
@@ -932,6 +954,8 @@ xajax.tools.addOnPrefix = function(sEventName) {
 	
 	return sEventName;
 }
+
+
 
 /*
 	Class: xajax.tools.xml
@@ -1272,6 +1296,106 @@ xajax.tools.queue.pop = function(theQ) {
 xajax.responseProcessor = {};
 
 /*
+	Function: xajax.responseProcessor.json
+	
+	Parse the JSON response into a series of commands.  The commands
+	are constructed by calling <xajax.tools.xml.parseAttributes> and 
+	<xajax.tools.xml.parseChildren>.
+	
+	Parameters: 
+	
+	oRequest - (object):  The request context object.
+*/
+
+
+xajax.tools.json = {}
+
+xajax.tools.json.processFragment = function(nodes, seq, oRet, oRequest) {
+    var xx = xajax;
+    var xt = xx.tools;
+    for (nodeName in nodes) {
+        if ('xjxobj' == nodeName) {
+            for (a in nodes[nodeName])
+            {
+            
+             /*
+             prevents from using not numbered indexes of 'xjxobj'
+             nodes[nodeName][a]= "0" is an valid xajax response stack item
+             nodes[nodeName][a]= "pop" is an method from somewhere but not from xjxobj
+             */
+             if( parseInt(a) !=a)  continue;
+            
+             var obj = nodes[nodeName][a];
+   
+             obj.fullName = '*unknown*';
+             obj.sequence = seq;
+             obj.request = oRequest;
+             obj.context = oRequest.context;
+             xt.queue.push(xx.response, obj);
+             ++seq;
+   
+            }
+        } else if ('xjxrv' == nodeName) {
+            oRet = nodes[nodeName];
+        } else if ('debugmsg' == nodeName) {
+             txt = nodes[nodeName];
+        } else
+            throw { code: 10004, data: obj.fullName}
+    }
+    return oRet;
+}
+
+xajax.responseProcessor.json = function (oRequest) {
+	
+	var xx = xajax;
+	var xt = xx.tools;
+	var xcb = xx.callback;
+	var gcb = xcb.global;
+	var lcb = oRequest.callback;
+	
+	var oRet = oRequest.returnValue;
+	
+	if (xt.in_array(xx.responseSuccessCodes, oRequest.request.status)) {
+		xcb.execute([gcb, lcb], 'onSuccess', oRequest);
+		var seq = 0;
+		if (oRequest.request.responseText) {
+			try {
+				var responseJSON = eval('('+oRequest.request.responseText+')');
+			} catch (ex) {
+				throw(ex);
+			}
+			if ( ('object' == typeof responseJSON) && ('object' == typeof responseJSON.xjxobj) ) {
+				oRequest.status.onProcessing();
+				oRet = xt.json.processFragment(responseJSON, seq, oRet, oRequest);
+			} else {
+			}
+		} 
+		var obj = {};
+		obj.fullName = 'Response Complete';
+		obj.sequence = seq;
+		obj.request = oRequest;
+		obj.context = oRequest.context;
+		obj.cmd = 'rcmplt';
+		xt.queue.push(xx.response, obj);
+		
+		// do not re-start the queue if a timeout is set
+		if (null == xx.response.timeout)
+			xt.queue.process(xx.response);
+	} else if (xt.in_array(xx.responseRedirectCodes, oRequest.request.status)) {
+		xcb.execute([gcb, lcb], 'onRedirect', oRequest);
+		window.location = oRequest.request.getResponseHeader('location');
+		xx.completeResponse(oRequest);
+	} else if (xt.in_array(xx.responseErrorsForAlert, oRequest.request.status)) {
+		xcb.execute([gcb, lcb], 'onFailure', oRequest);
+		xx.completeResponse(oRequest);
+	}
+	
+	return oRet;
+
+	
+}
+
+/*
 	Function: xajax.responseProcessor.xml
 	
 	Parse the response XML into a series of commands.  The commands
@@ -1291,7 +1415,7 @@ xajax.responseProcessor.xml = function(oRequest) {
 	
 	var oRet = oRequest.returnValue;
 	
-	if (xt.arrayContainsValue(xx.responseSuccessCodes, oRequest.request.status)) {
+	if (xt.in_array(xx.responseSuccessCodes, oRequest.request.status)) {
 		xcb.execute([gcb, lcb], 'onSuccess', oRequest);
 		var seq = 0;
 		if (oRequest.request.responseXML) {
@@ -1314,11 +1438,11 @@ xajax.responseProcessor.xml = function(oRequest) {
 		// do not re-start the queue if a timeout is set
 		if (null == xx.response.timeout)
 			xt.queue.process(xx.response);
-	} else if (xt.arrayContainsValue(xx.responseRedirectCodes, oRequest.request.status)) {
+	} else if (xt.in_array(xx.responseRedirectCodes, oRequest.request.status)) {
 		xcb.execute([gcb, lcb], 'onRedirect', oRequest);
 		window.location = oRequest.request.getResponseHeader('location');
 		xx.completeResponse(oRequest);
-	} else if (xt.arrayContainsValue(xx.responseErrorsForAlert, oRequest.request.status)) {
+	} else if (xt.in_array(xx.responseErrorsForAlert, oRequest.request.status)) {
 		xcb.execute([gcb, lcb], 'onFailure', oRequest);
 		xx.completeResponse(oRequest);
 	}
@@ -1515,9 +1639,10 @@ xajax.js.confirmCommands = function(command) {
 xajax.js.execute = function(args) {
 	args.fullName = 'execute Javascript';
 	var returnValue = true;
+	args.context = args.context ? args.context : {};
 	args.context.xajaxDelegateCall = function() {
 		eval(args.data);
-	}
+	};
 	args.context.xajaxDelegateCall();
 	return returnValue;
 }
@@ -2116,6 +2241,98 @@ xajax.dom.contextPrepend = function(args) {
 
 
 /*
+	Class: xajax.domResponse
+*/
+xajax.domResponse = {}
+
+xajax.domResponse.startResponse = function(args) {
+	xjxElm = [];
+}
+
+xajax.domResponse.createElement = function(args) {
+	eval(
+		[ args.tgt, ' = document.createElement(args.data)' ]
+		.join('')
+		);
+}
+
+xajax.domResponse.setAttribute = function(args) {
+	args.context.xajaxDelegateCall = function() {
+		eval(
+			[ args.tgt, '.setAttribute(args.key, args.data)' ]
+			.join('')
+			);
+	}
+	args.context.xajaxDelegateCall();
+}
+
+xajax.domResponse.appendChild = function(args) {
+	args.context.xajaxDelegateCall = function() {
+		eval(
+			[ args.par, '.appendChild(', args.data, ')' ]
+			.join('')
+			);
+	}
+	args.context.xajaxDelegateCall();
+}
+
+xajax.domResponse.insertBefore = function(args) {
+	args.context.xajaxDelegateCall = function() {
+		eval(
+			[ args.tgt, '.parentNode.insertBefore(', args.data, ', ', args.tgt, ')' ]
+			.join('')
+			);
+	}
+	args.context.xajaxDelegateCall();
+}
+
+xajax.domResponse.insertAfter = function(args) {
+	args.context.xajaxDelegateCall = function() {
+		eval(
+			[ args.tgt, 'parentNode.insertBefore(', args.data, ', ', args.tgt, '.nextSibling)' ]
+			.join('')
+			);
+	}
+	args.context.xajaxDelegateCall();
+}
+
+xajax.domResponse.appendText = function(args) {
+	args.context.xajaxDelegateCall = function() {
+		eval(
+			[ args.par, '.appendChild(document.createTextNode(args.data))' ]
+			.join('')
+			);
+	}
+	args.context.xajaxDelegateCall();
+}
+
+xajax.domResponse.removeChildren = function(args) {
+	var skip = args.skip || 0;
+	var remove = args.remove || -1;
+	var element = null;
+	args.context.xajaxDelegateCall = function() {
+		eval( [ 'element = ', args.data ].join( '' ) );
+	}
+	args.context.xajaxDelegateCall();
+	var children = element.childNodes;
+	for (var i in children) {
+		if (isNaN(i) == false && children[i].nodeType == 1) {
+			if (skip > 0) skip = skip - 1;
+			else if (remove != 0) {
+				if (remove > 0)
+					remove = remove - 1;
+				element.removeChild(children[i]);
+			}
+		}
+	}
+}
+
+xajax.domResponse.endResponse = function(args) {
+	xjxElm = [];
+}
+
+
+/*
 	Class: xajax.css
 */
 xajax.css = {}
@@ -2401,15 +2618,15 @@ xajax.events = {}
 	true - The operation completed successfully.
 */
 xajax.events.setEvent = function(command) {
-	command.fullName = 'addEvent';
+	command.fullName = 'setEvent';
 	var element = command.id;
 	var sEvent = command.prop;
 	var code = command.data;
-	if ('string' == typeof element)
-		element = xajax.$(element);
+    //force to get the element 
+	element = xajax.$(element);
 	sEvent = xajax.tools.addOnPrefix(sEvent);
 	code = xajax.tools.doubleQuotes(code);
-	eval('element.' + sEvent + ' = function() { ' + code + '; }');
+	eval('element.' + sEvent + ' = function(e) { ' + code + '; }');
 	return true;
 }
 
@@ -2878,6 +3095,16 @@ xajax.command.handler.register('ia', function(args) {
 	return xajax.dom.insertAfter(args.id, args.data, args.prop);
 });
 
+xajax.command.handler.register('DSR', xajax.domResponse.startResponse);
+xajax.command.handler.register('DCE', xajax.domResponse.createElement);
+xajax.command.handler.register('DSA', xajax.domResponse.setAttribute);
+xajax.command.handler.register('DAC', xajax.domResponse.appendChild);
+xajax.command.handler.register('DIB', xajax.domResponse.insertBefore);
+xajax.command.handler.register('DIA', xajax.domResponse.insertAfter);
+xajax.command.handler.register('DAT', xajax.domResponse.appendText);
+xajax.command.handler.register('DRC', xajax.domResponse.removeChildren);
+xajax.command.handler.register('DER', xajax.domResponse.endResponse);
+
 xajax.command.handler.register('c:as', xajax.dom.contextAssign);
 xajax.command.handler.register('c:ap', xajax.dom.contextAppend);
 xajax.command.handler.register('c:pp', xajax.dom.contextPrepend);
@@ -3054,12 +3281,13 @@ xajax.processParameters = function(oRequest) {
 			var oVal = oRequest.parameters[i];
 			if ('object' == typeof oVal && null != oVal) {
 				try {
-					var oGuard = {};
-					oGuard.depth = 0;
-					oGuard.maxDepth = oRequest.maxObjectDepth;
-					oGuard.size = 0;
-					oGuard.maxSize = oRequest.maxObjectSize;
-					oVal = xt._objectToXML(oVal, oGuard);
+//					var oGuard = {};
+//					oGuard.depth = 0;
+//					oGuard.maxDepth = oRequest.maxObjectDepth;
+//					oGuard.size = 0;
+//					oGuard.maxSize = oRequest.maxObjectSize;
+					//oVal = xt._objectToXML(oVal, oGuard);
+					oVal = JSON.stringify(oVal);
 				} catch (e) {
 					oVal = '';
 					// do nothing, if the debug module is installed
@@ -3071,7 +3299,7 @@ xajax.processParameters = function(oRequest) {
 				++i;
 			} else {
 				rd.push('&xjxargs[]=');
-				oVal = xt._escape(oVal);
+
 				if ('undefined' == typeof oVal || null == oVal) {
 					rd.push('*');
 				} else {
@@ -3131,6 +3359,8 @@ xajax.prepareRequest = function(oRequest) {
 	}
 	oRequest.setCommonRequestHeaders = function() {
 		this.setRequestHeaders(this.commonHeaders);
+		if (this.challengeResponse)
+			this.request.setRequestHeader('challenge-response', this.challengeResponse);
 	}
 	oRequest.setPostRequestHeaders = function() {
 		this.setRequestHeaders(this.postHeaders);
@@ -3235,60 +3465,10 @@ xajax.request = function() {
 			return xx.submitRequest(oRequest);
 		} catch (e) {
 			xajax.callback.execute(
-				[xajax.callback.global, oRequest.callback], 
-				'onFailure', oRequest);
-			if (0 == oRequest.requestRetry)
-				throw e;
-		}
-	}
-}
-
-/*
-	Function: xajax.call
-	
-	Initiates a call to the server.
-	
-	Parameters:
-	
-	sFunctionName - (string):  The name of the function to execute
-		on the server.
-		
-	oRequestOptions - (object, optional):  A request object which 
-		may contain call specific parameters.  This object will be
-		used by xajax to store all the request parameters as well
-		as temporary variables needed during the processing of the
-		request.
-		
-	Returns:
-	
-	unknown - For asynchronous calls, the return value will always
-		be the value set for <xajax.config.defaultReturnValue>
-*/
-xajax.call = function() {
-	var numArgs = arguments.length;
-	if (0 == numArgs)
-		return false;
-	
-	var oRequest = {}
-	if (1 < numArgs)
-		oRequest = arguments[1];
-	
-	oRequest.functionName = { xjxfun: arguments[0] };
-	
-	var xx = xajax;
-	
-	xx.initializeRequest(oRequest);
-	xx.processParameters(oRequest);
-	
-	while (0 < oRequest.requestRetry) {
-		try {
-			--oRequest.requestRetry;
-			xx.prepareRequest(oRequest);
-			return xx.submitRequest(oRequest);
-		} catch (e) {
-			xajax.callback.execute(
-				[xajax.callback.global, oRequest.callback], 
-				'onFailure', oRequest);
+				[xajax.callback.global, oRequest.callback],
+				'onFailure',
+				oRequest
+				);
 			if (0 == oRequest.requestRetry)
 				throw e;
 		}
@@ -3384,6 +3564,13 @@ xajax.responseReceived = function(oRequest) {
 	xcb.clearTimer([gcb, lcb], 'onResponseDelay');
 	
 	xcb.execute([gcb, lcb], 'beforeResponseProcessing', oRequest);
+
+	var challenge = oRequest.request.getResponseHeader('challenge');
+	if (challenge) {
+		oRequest.challengeResponse = challenge;
+		xx.prepareRequest(oRequest);
+		return xx.submitRequest(oRequest);
+	}
 	
 	var fProc = xx.getResponseProcessor(oRequest);
 	if ('undefined' == typeof fProc) {
@@ -3418,8 +3605,8 @@ xajax.getResponseProcessor = function(oRequest) {
 		if (cTyp) {
 			if (0 <= cTyp.indexOf('text/xml')) {
 				fProc = xajax.responseProcessor.xml;
-	//		} else if (0 <= cTyp.indexOf('application/json')) {
-	//			fProc = xajax.responseProcessor.json;
+			} else if (0 <= cTyp.indexOf('application/json')) {
+				fProc = xajax.responseProcessor.json;
 			}
 		}
 	} else fProc = oRequest.responseProcessor;
@@ -3478,8 +3665,10 @@ xajax.executeCommand = function(command) {
 */
 xajax.completeResponse = function(oRequest) {
 	xajax.callback.execute(
-		[xajax.callback.global, oRequest.callback], 
-		'onComplete', oRequest);
+		[xajax.callback.global, oRequest.callback],
+		'onComplete',
+		oRequest
+		);
 	oRequest.cursor.onComplete();
 	oRequest.status.onComplete();
 	// clean up -- these items are restored when the request is initiated
@@ -3496,8 +3685,9 @@ xajax.completeResponse = function(oRequest) {
 	delete oRequest['setGetRequestHeaders'];
 	delete oRequest['applyRequestHeaders'];
 	delete oRequest['finishRequest'];
-	delete oRequest['status'];	
-	delete oRequest['cursor'];	
+	delete oRequest['status'];
+	delete oRequest['cursor'];
+	delete oRequest['challengeResponse'];
 }
 
 /*
@@ -3543,11 +3733,7 @@ xjx.$ = xajax.tools.$;
 */
 xjx.getFormValues = xajax.tools.getFormValues;
 
-/*
-	Function: xjx.call
-	
-	Shortcut to <xajax.call>.
-*/
-xjx.call = xajax.call;
 
 xjx.request = xajax.request;
+
+if ('undefined' == typeof JSON) xajax.js.includeScript({data:xajax.config.JavaScriptURI+'xajax_js/JSON.js'});

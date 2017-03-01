@@ -87,7 +87,7 @@
 				<TR>
 					<TD style="width: 99%; white-space: nowrap;">
 						<span class="bold">{trans("Connect")}:</span>
-						{trans("Device:")}<SELECT NAME="netdev" id="srcnetdev" style="width: 300px" {tip trigger="link" text="Select from list device for connection"} onchange="get_radio_sectors_for_netdev(this.options[this.selectedIndex].value)">
+						{trans("Device:")}<SELECT NAME="netdev" id="srcnetdev" style="width: 300px" {tip trigger="link" text="Select from list device for connection"} onchange="get_radio_sectors_for_netdev()">
 						{section name=restnetdevlist loop=$restnetdevlist}
 							{assign var=netdevname value=$restnetdevlist[restnetdevlist].name}
 							{if $restnetdevlist[restnetdevlist].producer}{assign var=netdevname value=$netdevname|cat:" / "|cat:$restnetdevlist[restnetdevlist].producer}{/if}
@@ -191,9 +191,14 @@ function change_devlinktechnology(linktechnology) {
 	}
 }
 
-function get_radio_sectors_for_netdev(netdev) {
+function get_radio_sectors_for_self_netdev() {
+	xjx.$('connboxdstradiosector').disabled = true;
+	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_dstnetdev', {$netdevinfo.id});
+}
+
+function get_radio_sectors_for_netdev() {
 	xjx.$('connboxsrcradiosector').disabled = true;
-	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', netdev);
+	xajax_getRadioSectorsForNetdev('radio_sectors_received_for_srcnetdev', xjx.$('srcnetdev').options[xjx.$('srcnetdev').selectedIndex].value);
 }
 
 function radio_sectors_received_for_srcnetdev(radiosectors) {

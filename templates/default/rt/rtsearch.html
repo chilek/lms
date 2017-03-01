@@ -34,17 +34,10 @@
 		</TD>
 		<TD>
 			<TABLE width="100%" cellpadding="1">
-			    <TR>
+				<TR>
 			    	<TD width="100%" colspan="2" class="nobr">
-				    <SELECT size="1" name="search[customerid]" {tip text="select customer from list or enter his data if is not a customer"} onChange="document.forms['search'].elements['search[custid]'].value=document.forms['search'].elements['search[customerid]'].value">
-					<OPTION value="0">{trans("- all customers -")}</OPTION>
-					{foreach from=$customerlist item=item}
-					    <OPTION value="{$item.id}" {if $item.id == $search.customerid}SELECTED{/if}>{$item.customername} ({$item.id|string_format:"%04d"})</OPTION>
-					{/foreach}
-				    </SELECT>
-				    {trans("or Customer ID:")}
-				    <INPUT TYPE="number" min="1" NAME="search[custid]" VALUE="{$search.custid}" SIZE="5" onChange="document.forms['search'].elements['search[customerid]'].value=document.forms['search'].elements['search[custid]'].value" {tip trigger="custid"}>
-				</TD>
+						{customerlist form="search" customers=$customerlist selected=$search.customerid selectname="search[customerid]" inputname="search[custid]" firstoption="- all customers -" selecttip="select customer from list or enter his data if is not a customer" inputtip="select customer from list or enter his data if is not a customer"}
+					</TD>
 			    </TR>
 			    <TR>
 				<TD width="1%" NOWRAP>{trans("First/last or Company name:")}</TD>

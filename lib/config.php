@@ -104,7 +104,8 @@ $DEFAULTS = array(
 		'default_editor' => 'html',
 		'logging' => false,
 		'hide_toolbar' => false,
-		'auto_remove_investment_project' => true
+		'auto_remove_investment_project' => true,
+		'logout_confirmation' => false
 	),
 	'invoices' => array(
 		'template_file' => 'invoice.html',

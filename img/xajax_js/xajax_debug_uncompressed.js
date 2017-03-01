@@ -14,7 +14,7 @@
 
 /*
 	@package xajax
-	@version $Id$
+	@version $Id: xajax_debug_uncompressed.js 327 2007-02-28 16:55:26Z calltoconstruct $
 	@copyright Copyright (c) 2005-2007 by Jared White & J. Max Wilson
 	@copyright Copyright (c) 2008-2009 by Joseph Woolley, Steffen Konerow, Jared White  & J. Max Wilson
 	@license http://www.xajaxproject.org/bsd_license.txt BSD License
@@ -705,7 +705,7 @@ try
 		
 		try {
 			var status = oRequest.request.status;
-			if (xt.arrayContainsValue(xx.responseSuccessCodes, status)) {
+			if (xt.in_array(xx.responseSuccessCodes, status)) {
 				var packet = oRequest.request.responseText;
 				packet = packet.replace(new RegExp('<cmd', 'g'), '\n<cmd');
 				packet = packet.replace(new RegExp('<xjx>', 'g'), '\n<xjx>');
@@ -723,13 +723,13 @@ try
 				msg += xajax.debug.text[121];
 				msg += packet;
 				xd.writeMessage(msg);
-			} else if (xt.arrayContainsValue(xx.responseErrorsForAlert, status)) {
+			} else if (xt.in_array(xx.responseErrorsForAlert, status)) {
 				var msg = xajax.debug.text[122];
 				msg += status;
 				msg += xajax.debug.text[123];
 				msg += oRequest.request.responseText;
 				xd.writeMessage(msg, xajax.debug.text[101], 'errorText');
-			} else if (xt.arrayContainsValue(xx.responseRedirectCodes, status)) {
+			} else if (xt.in_array(xx.responseRedirectCodes, status)) {
 				var msg = xajax.debug.text[124];
 				msg += oRequest.request.getResponseHeader('location');
 				xd.writeMessage(msg);

@@ -55,7 +55,7 @@
 				<IMG src="img/zipped.gif" alt="">
 			{else}
 				<IMG src="img/plain.gif" alt="">
-			{/if} {$dblist.size[dblist]} {trans("bytes")}
+			{/if} {$dblist.size[dblist]} {trans("bytes")} ({$dblist.hsize[dblist]})
 		</TD>
 		<TD class="text-right nobr">
 			{if $dblist.dbv[dblist] == $layout.dbschversion}

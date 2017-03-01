@@ -141,6 +141,44 @@ function GetCustomerNotes($id)
 	}
 }
 
+function GetCashRegistries($cid = null) {
+	$DB = LMSDB::getInstance();
+	$userid = Auth::GetCurrentUser();
+
+	if (empty($cid)) {
+		$where = '';
+		$join = '';
+	} else {
+		$divisionid = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($cid));
+		$join = ' JOIN numberplanassignments npa ON npa.planid = in_numberplanid ';;
+		$where = ' AND npa.divisionid = ' . intval($divisionid);
+	}
+
+	$result = $DB->GetAllByKey('SELECT r.id, name FROM cashregs r
+		JOIN cashrights cr ON regid = r.id
+		' . $join . '
+		WHERE rights > 1 AND userid = ? ' . $where . '
+		ORDER BY name', 'id', array($userid));
+	return $result;
+}
+
+function GetCashRegistriesXajax($cid) {
+	global $SMARTY;
+
+	$result = new xajaxResponse();
+
+	$cashreglist = GetCashRegistries($cid);
+	$SMARTY->assign('cashreglist', $cashreglist);
+	$contents = $SMARTY->fetch('receipt/receiptcashregistries.html');
+	$result->assign('cashregistries', 'innerHTML', $contents);
+
+	return $result;
+}
+
+$LMS->InitXajax();
+$LMS->RegisterXajaxFunction(array('GetCashRegistriesXajax'));
+$SMARTY->assign('xajax', $LMS->RunXajax());
+
 // receipt positions adding with double click protection
 function additem(&$content, $item)
 {
@@ -163,8 +201,6 @@ $SESSION->restore('receiptregid', $receipt['regid']);
 $SESSION->restore('receipttype', $receipt['type']);
 $SESSION->restore('receiptadderror', $error);
 
-$cashreglist = $DB->GetAllByKey('SELECT id, name FROM cashregs ORDER BY name', 'id');
-
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
 switch($action)
@@ -181,6 +217,8 @@ switch($action)
 		$receipt['regid'] = isset($_GET['regid']) ? $_GET['regid'] : $oldreg;
 		$receipt['type'] = isset($_GET['type']) ? $_GET['type'] : (isset($_POST['type']) ? $_POST['type'] : 0);
 		$receipt['customerid'] = isset($_GET['customerid']) ? $_GET['customerid'] : 0;
+
+		$cashreglist = GetCashRegistries($receipt['customerid']);
 
 		// when registry is not selected but we've got only one registry in database
 		if(!$receipt['regid'] && count($cashreglist) == 1)
@@ -1047,6 +1085,9 @@ switch($action)
 	break;
 
 }
+
+if (!isset($cashreglist))
+	$cashreglist = GetCashRegistries($receipt['customerid']);
 
 $SESSION->save('receipt', $receipt);
 $SESSION->save('receiptregid', $receipt['regid']);

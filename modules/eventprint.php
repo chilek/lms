@@ -50,7 +50,7 @@ function GetEvents($date=NULL, $userid=0, $customerid=0, $privacy = 0, $closed =
 		 nodes.location AS nodelocation,
 		 (SELECT contact FROM customercontacts WHERE customerid = c.id
 			AND (customercontacts.type & ?) > 0 AND (customercontacts.type & ?) <> ?  ORDER BY id LIMIT 1) AS customerphone
-		 FROM events LEFT JOIN customerview c ON (customerid = c.id) LEFT JOIN nodes ON (nodeid = nodes.id)
+		 FROM events LEFT JOIN customerview c ON (customerid = c.id) LEFT JOIN vnodes nodes ON (nodeid = nodes.id)
 		 WHERE ((date >= ? AND date < ?) OR (enddate <> 0 AND date < ? AND enddate >= ?)) AND ' . $privacy_condition
 		 .($customerid ? 'AND customerid = '.intval($customerid) : '')
 		.($userid ? ' AND EXISTS (

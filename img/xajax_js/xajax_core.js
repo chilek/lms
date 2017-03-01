@@ -32,33 +32,10 @@ xajax.tools.$=function(sId){if(!sId)
 return null;var oDoc=xajax.config.baseDocument;var obj=oDoc.getElementById(sId);if(obj)
 return obj;if(oDoc.all)
 return oDoc.all[sId];return obj;}
-xajax.tools.arrayContainsValue=function(array,valueToCheck){var i=0;var l=array.length;while(i < l){if(array[i]==valueToCheck)
+xajax.tools.in_array=function(array,valueToCheck){var i=0;var l=array.length;while(i < l){if(array[i]==valueToCheck)
 return true;++i;}
 return false;}
 xajax.tools.doubleQuotes=function(haystack){return haystack.replace(new RegExp("'",'g'),'"');}
-xajax.tools.singleQuotes=function(haystack){return haystack.replace(new RegExp('"','g'),"'");}
-xajax.tools._escape=function(data){if('undefined'==typeof data)
-return data;if('string'!=typeof data)
-return data;var needCDATA=false;if(encodeURIComponent(data)!=data){needCDATA=true;var segments=data.split('<![CDATA[');var segLen=segments.length;data=[];for(var i=0;i < segLen;++i){var segment=segments[i];var fragments=segment.split(']]>');var fragLen=fragments.length;segment='';for(var j=0;j < fragLen;++j){if(0!=j)
-segment+=']]]]><![CDATA[>';segment+=fragments[j];}
-if(0!=i)
-data.push('<![]]><![CDATA[CDATA[');data.push(segment);}
-data=data.join('');}
-if(needCDATA)
-data='<![CDATA['+data+']]>';return data;}
-xajax.tools._objectToXML=function(obj,guard){var aXml=[];aXml.push('<xjxobj>');for(var key in obj){++guard.size;if(guard.maxSize < guard.size)
-return aXml.join('');if('undefined'!=typeof obj[key]){if('constructor'==key)
-continue;if('function'==typeof obj[key])
-continue;aXml.push('<e><k>');var val=xajax.tools._escape(key);aXml.push(val);aXml.push('</k><v>');if('object'==typeof obj[key]){++guard.depth;if(guard.maxDepth > guard.depth){try{aXml.push(xajax.tools._objectToXML(obj[key],guard));}catch(e){}
-}
---guard.depth;}else{var val=xajax.tools._escape(obj[key]);if('undefined'==typeof val||null==val){aXml.push('*');}else{var sType=typeof val;if('string'==sType)
-aXml.push('S');else if('boolean'==sType)
-aXml.push('B');else if('number'==sType)
-aXml.push('N');aXml.push(val);}
-}
-aXml.push('</v></e>');}
-}
-aXml.push('</xjxobj>');return aXml.join('');}
 xajax.tools._enforceDataType=function(value){value=new String(value);var type=value.substr(0,1);value=value.substr(1);if('*'==type)
 value=null;else if('N'==type)
 value=value-0;else if('B'==type)
@@ -95,7 +72,7 @@ prefix=arguments[2];if('string'==typeof parent)
 parent=xajax.$(parent);var aFormValues={};if(parent)
 if(parent.childNodes)
 xajax.tools._getFormValues(aFormValues,parent.childNodes,submitDisabledElements,prefix);return aFormValues;}
-xajax.tools._getFormValues=function(aFormValues,children,submitDisabledElements,prefix){var iLen=children.length;for(var i=0;i < iLen;++i){var child=children[i];if('undefined'!=typeof child.childNodes)
+xajax.tools._getFormValues=function(aFormValues,children,submitDisabledElements,prefix){var iLen=children.length;for(var i=0;i < iLen;++i){var child=children[i];if(('undefined'!=typeof child.childNodes)&&(child.type!='select-one')&&(child.type!='select-multiple'))
 xajax.tools._getFormValues(aFormValues,child.childNodes,submitDisabledElements,prefix);xajax.tools._getFormValue(aFormValues,child,submitDisabledElements,prefix);}
 }
 xajax.tools._getFormValue=function(aFormValues,child,submitDisabledElements,prefix){if(!child.name)
@@ -110,10 +87,11 @@ return;var name=child.name;var values=[];if('select-multiple'==child.type){var j
 values.push(option.value);}
 }else{values=child.value;}
 var keyBegin=name.indexOf('[');if(0 <=keyBegin){var n=name;var k=n.substr(0,n.indexOf('['));var a=n.substr(n.indexOf('['));if(typeof aFormValues[k]=='undefined')
-aFormValues[k]=[];var p=aFormValues;while(a.length!=0){var sa=a.substr(0,a.indexOf(']')+1);var lk=k;var lp=p;a=a.substr(a.indexOf(']')+1);p=p[k];k=sa.substr(1,sa.length-2);if(k==''){if('select-multiple'==child.type){k=lk;p=lp;}else{k=p.length;}
+aFormValues[k]={};var p=aFormValues;while(a.length!=0){var sa=a.substr(0,a.indexOf(']')+1);var lk=k;var lp=p;a=a.substr(a.indexOf(']')+1);p=p[k];k=sa.substr(1,sa.length-2);if(k==''){if('select-multiple'==child.type){k=lk;p=lp;}else{k=p.length;}
 }
-if(typeof p[k]=='undefined')
-p[k]=[];}
+if(typeof k=='undefined'){k=0;for(var i in lp[lk])k++;}
+if(typeof p[k]=='undefined'){p[k]={};}
+}
 p[k]=values;}else{aFormValues[name]=values;}
 }
 xajax.tools.stripOnPrefix=function(sEventName){sEventName=sEventName.toLowerCase();if(0==sEventName.indexOf('on'))
@@ -159,10 +137,22 @@ xajax.tools.queue.pushFront=function(theQ,obj){xajax.tools.queue.rewind(theQ);th
 xajax.tools.queue.pop=function(theQ){var next=theQ.start;if(next==theQ.end)
 return null;next++;if(next > theQ.size)
 next=0;var obj=theQ.commands[theQ.start];delete theQ.commands[theQ.start];theQ.start=next;return obj;}
-xajax.responseProcessor={};xajax.responseProcessor.xml=function(oRequest){var xx=xajax;var xt=xx.tools;var xcb=xx.callback;var gcb=xcb.global;var lcb=oRequest.callback;var oRet=oRequest.returnValue;if(xt.arrayContainsValue(xx.responseSuccessCodes,oRequest.request.status)){xcb.execute([gcb,lcb],'onSuccess',oRequest);var seq=0;if(oRequest.request.responseXML){var responseXML=oRequest.request.responseXML;if(responseXML.documentElement){oRequest.status.onProcessing();var child=responseXML.documentElement.firstChild;oRet=xt.xml.processFragment(child,seq,oRet,oRequest);}
+xajax.responseProcessor={};xajax.tools.json={}
+xajax.tools.json.processFragment=function(nodes,seq,oRet,oRequest){var xx=xajax;var xt=xx.tools;for(nodeName in nodes){if('xjxobj'==nodeName){for(a in nodes[nodeName]){if(parseInt(a)!=a)continue;var obj=nodes[nodeName][a];obj.fullName='*unknown*';obj.sequence=seq;obj.request=oRequest;obj.context=oRequest.context;xt.queue.push(xx.response,obj);++seq;}
+}else if('xjxrv'==nodeName){oRet=nodes[nodeName];}else if('debugmsg'==nodeName){txt=nodes[nodeName];}else
+throw{code:10004,data:obj.fullName}
+}
+return oRet;}
+xajax.responseProcessor.json=function(oRequest){var xx=xajax;var xt=xx.tools;var xcb=xx.callback;var gcb=xcb.global;var lcb=oRequest.callback;var oRet=oRequest.returnValue;if(xt.in_array(xx.responseSuccessCodes,oRequest.request.status)){xcb.execute([gcb,lcb],'onSuccess',oRequest);var seq=0;if(oRequest.request.responseText){try{var responseJSON=eval('('+oRequest.request.responseText+')');}catch(ex){throw(ex);}
+if(('object'==typeof responseJSON)&&('object'==typeof responseJSON.xjxobj)){oRequest.status.onProcessing();oRet=xt.json.processFragment(responseJSON,seq,oRet,oRequest);}else{}
 }
 var obj={};obj.fullName='Response Complete';obj.sequence=seq;obj.request=oRequest;obj.context=oRequest.context;obj.cmd='rcmplt';xt.queue.push(xx.response,obj);if(null==xx.response.timeout)
-xt.queue.process(xx.response);}else if(xt.arrayContainsValue(xx.responseRedirectCodes,oRequest.request.status)){xcb.execute([gcb,lcb],'onRedirect',oRequest);window.location=oRequest.request.getResponseHeader('location');xx.completeResponse(oRequest);}else if(xt.arrayContainsValue(xx.responseErrorsForAlert,oRequest.request.status)){xcb.execute([gcb,lcb],'onFailure',oRequest);xx.completeResponse(oRequest);}
+xt.queue.process(xx.response);}else if(xt.in_array(xx.responseRedirectCodes,oRequest.request.status)){xcb.execute([gcb,lcb],'onRedirect',oRequest);window.location=oRequest.request.getResponseHeader('location');xx.completeResponse(oRequest);}else if(xt.in_array(xx.responseErrorsForAlert,oRequest.request.status)){xcb.execute([gcb,lcb],'onFailure',oRequest);xx.completeResponse(oRequest);}
+return oRet;}
+xajax.responseProcessor.xml=function(oRequest){var xx=xajax;var xt=xx.tools;var xcb=xx.callback;var gcb=xcb.global;var lcb=oRequest.callback;var oRet=oRequest.returnValue;if(xt.in_array(xx.responseSuccessCodes,oRequest.request.status)){xcb.execute([gcb,lcb],'onSuccess',oRequest);var seq=0;if(oRequest.request.responseXML){var responseXML=oRequest.request.responseXML;if(responseXML.documentElement){oRequest.status.onProcessing();var child=responseXML.documentElement.firstChild;oRet=xt.xml.processFragment(child,seq,oRet,oRequest);}
+}
+var obj={};obj.fullName='Response Complete';obj.sequence=seq;obj.request=oRequest;obj.context=oRequest.context;obj.cmd='rcmplt';xt.queue.push(xx.response,obj);if(null==xx.response.timeout)
+xt.queue.process(xx.response);}else if(xt.in_array(xx.responseRedirectCodes,oRequest.request.status)){xcb.execute([gcb,lcb],'onRedirect',oRequest);window.location=oRequest.request.getResponseHeader('location');xx.completeResponse(oRequest);}else if(xt.in_array(xx.responseErrorsForAlert,oRequest.request.status)){xcb.execute([gcb,lcb],'onFailure',oRequest);xx.completeResponse(oRequest);}
 return oRet;}
 xajax.js={}
 xajax.js.includeScriptOnce=function(command){command.fullName='includeScriptOnce';var fileName=command.data;var oDoc=xajax.config.baseDocument;var loadedScripts=oDoc.getElementsByTagName('script');var iLen=loadedScripts.length;for(var i=0;i < iLen;++i){var script=loadedScripts[i];if(script.src){if(0 <=script.src.indexOf(fileName))
@@ -180,8 +170,7 @@ return true;}
 xajax.js.confirmCommands=function(command){command.fullName='confirmCommands';var msg=command.data;var numberOfCommands=command.id;if(false==confirm(msg)){while(0 < numberOfCommands){xajax.tools.queue.pop(xajax.response);--numberOfCommands;}
 }
 return true;}
-xajax.js.execute=function(args){args.fullName='execute Javascript';var returnValue=true;args.context.xajaxDelegateCall=function(){eval(args.data);}
-args.context.xajaxDelegateCall();return returnValue;}
+xajax.js.execute=function(args){args.fullName='execute Javascript';var returnValue=true;args.context=args.context ? args.context:{};args.context.xajaxDelegateCall=function(){eval(args.data);};args.context.xajaxDelegateCall();return returnValue;}
 xajax.js.waitFor=function(args){args.fullName='waitFor';var bResult=false;var cmdToEval='bResult = (';cmdToEval+=args.data;cmdToEval+=');';try{args.context.xajaxDelegateCall=function(){eval(cmdToEval);}
 args.context.xajaxDelegateCall();}catch(e){}
 if(false==bResult){if(xajax.tools.queue.retry(args,args.prop)){xajax.tools.queue.setWakeup(xajax.response,100);return false;}
@@ -239,6 +228,44 @@ xajax.dom.contextAppend=function(args){args.fullName='context append';var code=[
 args.context.xajaxDelegateCall(args.data);return true;}
 xajax.dom.contextPrepend=function(args){args.fullName='context prepend';var code=[];code.push('this.');code.push(args.prop);code.push(' = data + this.');code.push(args.prop);code.push(';');code=code.join('');args.context.xajaxDelegateCall=function(data){eval(code);}
 args.context.xajaxDelegateCall(args.data);return true;}
+xajax.domResponse={}
+xajax.domResponse.startResponse=function(args){xjxElm=[];}
+xajax.domResponse.createElement=function(args){eval(
+[ args.tgt,' = document.createElement(args.data)' ]
+.join('')
+);}
+xajax.domResponse.setAttribute=function(args){args.context.xajaxDelegateCall=function(){eval(
+[ args.tgt,'.setAttribute(args.key, args.data)' ]
+.join('')
+);}
+args.context.xajaxDelegateCall();}
+xajax.domResponse.appendChild=function(args){args.context.xajaxDelegateCall=function(){eval(
+[ args.par,'.appendChild(',args.data,')' ]
+.join('')
+);}
+args.context.xajaxDelegateCall();}
+xajax.domResponse.insertBefore=function(args){args.context.xajaxDelegateCall=function(){eval(
+[ args.tgt,'.parentNode.insertBefore(',args.data,', ',args.tgt,')' ]
+.join('')
+);}
+args.context.xajaxDelegateCall();}
+xajax.domResponse.insertAfter=function(args){args.context.xajaxDelegateCall=function(){eval(
+[ args.tgt,'parentNode.insertBefore(',args.data,', ',args.tgt,'.nextSibling)' ]
+.join('')
+);}
+args.context.xajaxDelegateCall();}
+xajax.domResponse.appendText=function(args){args.context.xajaxDelegateCall=function(){eval(
+[ args.par,'.appendChild(document.createTextNode(args.data))' ]
+.join('')
+);}
+args.context.xajaxDelegateCall();}
+xajax.domResponse.removeChildren=function(args){var skip=args.skip||0;var remove=args.remove||-1;var element=null;args.context.xajaxDelegateCall=function(){eval([ 'element = ',args.data ].join(''));}
+args.context.xajaxDelegateCall();var children=element.childNodes;for(var i in children){if(isNaN(i)==false&&children[i].nodeType==1){if(skip > 0)skip=skip-1;else if(remove!=0){if(remove > 0)
+remove=remove-1;element.removeChild(children[i]);}
+}
+}
+}
+xajax.domResponse.endResponse=function(args){xjxElm=[];}
 xajax.css={}
 xajax.css.add=function(fileName,media){var oDoc=xajax.config.baseDocument;var oHeads=oDoc.getElementsByTagName('head');var oHead=oHeads[0];var oLinks=oHead.getElementsByTagName('link');var found=false;var iLen=oLinks.length;for(var i=0;i < iLen&&false==found;++i)
 if(0 <=oLinks[i].href.indexOf(fileName)&&oLinks[i].media==media)
@@ -316,7 +343,7 @@ xajax.command.handler.call=function(command){var shortName=command.cmd;return xa
 xajax.command.handler.register('rcmplt',function(args){xajax.completeResponse(args.request);return true;});xajax.command.handler.register('css',function(args){args.fullName='includeCSS';if('undefined'==typeof args.media)
 args.media='screen';return xajax.css.add(args.data,args.media);});xajax.command.handler.register('rcss',function(args){args.fullName='removeCSS';if('undefined'==typeof args.media)
 args.media='screen';return xajax.css.remove(args.data,args.media);});xajax.command.handler.register('wcss',function(args){args.fullName='waitForCSS';return xajax.css.waitForCSS(args);});xajax.command.handler.register('as',function(args){args.fullName='assign/clear';try{return xajax.dom.assign(args.target,args.prop,args.data);}catch(e){}
-return true;});xajax.command.handler.register('ap',function(args){args.fullName='append';return xajax.dom.append(args.target,args.prop,args.data);});xajax.command.handler.register('pp',function(args){args.fullName='prepend';return xajax.dom.prepend(args.target,args.prop,args.data);});xajax.command.handler.register('rp',function(args){args.fullName='replace';return xajax.dom.replace(args.id,args.prop,args.data);});xajax.command.handler.register('rm',function(args){args.fullName='remove';return xajax.dom.remove(args.id);});xajax.command.handler.register('ce',function(args){args.fullName='create';return xajax.dom.create(args.id,args.data,args.prop);});xajax.command.handler.register('ie',function(args){args.fullName='insert';return xajax.dom.insert(args.id,args.data,args.prop);});xajax.command.handler.register('ia',function(args){args.fullName='insertAfter';return xajax.dom.insertAfter(args.id,args.data,args.prop);});xajax.command.handler.register('c:as',xajax.dom.contextAssign);xajax.command.handler.register('c:ap',xajax.dom.contextAppend);xajax.command.handler.register('c:pp',xajax.dom.contextPrepend);xajax.command.handler.register('s',xajax.js.sleep);xajax.command.handler.register('ino',xajax.js.includeScriptOnce);xajax.command.handler.register('in',xajax.js.includeScript);xajax.command.handler.register('rjs',xajax.js.removeScript);xajax.command.handler.register('wf',xajax.js.waitFor);xajax.command.handler.register('js',xajax.js.execute);xajax.command.handler.register('jc',xajax.js.call);xajax.command.handler.register('sf',xajax.js.setFunction);xajax.command.handler.register('wpf',xajax.js.wrapFunction);xajax.command.handler.register('al',function(args){args.fullName='alert';alert(args.data);return true;});xajax.command.handler.register('cc',xajax.js.confirmCommands);xajax.command.handler.register('ci',xajax.forms.createInput);xajax.command.handler.register('ii',xajax.forms.insertInput);xajax.command.handler.register('iia',xajax.forms.insertInputAfter);xajax.command.handler.register('ev',xajax.events.setEvent);xajax.command.handler.register('ah',xajax.events.addHandler);xajax.command.handler.register('rh',xajax.events.removeHandler);xajax.command.handler.register('dbg',function(args){args.fullName='debug message';return true;});xajax.initializeRequest=function(oRequest){var xx=xajax;var xc=xx.config;oRequest.append=function(opt,def){if('undefined'!=typeof this[opt]){for(var itmName in def)
+return true;});xajax.command.handler.register('ap',function(args){args.fullName='append';return xajax.dom.append(args.target,args.prop,args.data);});xajax.command.handler.register('pp',function(args){args.fullName='prepend';return xajax.dom.prepend(args.target,args.prop,args.data);});xajax.command.handler.register('rp',function(args){args.fullName='replace';return xajax.dom.replace(args.id,args.prop,args.data);});xajax.command.handler.register('rm',function(args){args.fullName='remove';return xajax.dom.remove(args.id);});xajax.command.handler.register('ce',function(args){args.fullName='create';return xajax.dom.create(args.id,args.data,args.prop);});xajax.command.handler.register('ie',function(args){args.fullName='insert';return xajax.dom.insert(args.id,args.data,args.prop);});xajax.command.handler.register('ia',function(args){args.fullName='insertAfter';return xajax.dom.insertAfter(args.id,args.data,args.prop);});xajax.command.handler.register('DSR',xajax.domResponse.startResponse);xajax.command.handler.register('DCE',xajax.domResponse.createElement);xajax.command.handler.register('DSA',xajax.domResponse.setAttribute);xajax.command.handler.register('DAC',xajax.domResponse.appendChild);xajax.command.handler.register('DIB',xajax.domResponse.insertBefore);xajax.command.handler.register('DIA',xajax.domResponse.insertAfter);xajax.command.handler.register('DAT',xajax.domResponse.appendText);xajax.command.handler.register('DRC',xajax.domResponse.removeChildren);xajax.command.handler.register('DER',xajax.domResponse.endResponse);xajax.command.handler.register('c:as',xajax.dom.contextAssign);xajax.command.handler.register('c:ap',xajax.dom.contextAppend);xajax.command.handler.register('c:pp',xajax.dom.contextPrepend);xajax.command.handler.register('s',xajax.js.sleep);xajax.command.handler.register('ino',xajax.js.includeScriptOnce);xajax.command.handler.register('in',xajax.js.includeScript);xajax.command.handler.register('rjs',xajax.js.removeScript);xajax.command.handler.register('wf',xajax.js.waitFor);xajax.command.handler.register('js',xajax.js.execute);xajax.command.handler.register('jc',xajax.js.call);xajax.command.handler.register('sf',xajax.js.setFunction);xajax.command.handler.register('wpf',xajax.js.wrapFunction);xajax.command.handler.register('al',function(args){args.fullName='alert';alert(args.data);return true;});xajax.command.handler.register('cc',xajax.js.confirmCommands);xajax.command.handler.register('ci',xajax.forms.createInput);xajax.command.handler.register('ii',xajax.forms.insertInput);xajax.command.handler.register('iia',xajax.forms.insertInputAfter);xajax.command.handler.register('ev',xajax.events.setEvent);xajax.command.handler.register('ah',xajax.events.addHandler);xajax.command.handler.register('rh',xajax.events.removeHandler);xajax.command.handler.register('dbg',function(args){args.fullName='debug message';return true;});xajax.initializeRequest=function(oRequest){var xx=xajax;var xc=xx.config;oRequest.append=function(opt,def){if('undefined'!=typeof this[opt]){for(var itmName in def)
 if('undefined'==typeof this[opt][itmName])
 this[opt][itmName]=def[itmName];}else this[opt]=def;}
 oRequest.append('commonHeaders',xc.commonHeaders);oRequest.append('postHeaders',xc.postHeaders);oRequest.append('getHeaders',xc.getHeaders);oRequest.set=function(option,defaultValue){if('undefined'==typeof this[option])
@@ -336,8 +363,8 @@ throw{code:10005}
 }
 xajax.processParameters=function(oRequest){var xx=xajax;var xt=xx.tools;var rd=[];var separator='';for(var sCommand in oRequest.functionName){if('constructor'!=sCommand){rd.push(separator);rd.push(sCommand);rd.push('=');rd.push(encodeURIComponent(oRequest.functionName[sCommand]));separator='&';}
 }
-var dNow=new Date();rd.push('&xjxr=');rd.push(dNow.getTime());delete dNow;if(oRequest.parameters){var i=0;var iLen=oRequest.parameters.length;while(i < iLen){var oVal=oRequest.parameters[i];if('object'==typeof oVal&&null!=oVal){try{var oGuard={};oGuard.depth=0;oGuard.maxDepth=oRequest.maxObjectDepth;oGuard.size=0;oGuard.maxSize=oRequest.maxObjectSize;oVal=xt._objectToXML(oVal,oGuard);}catch(e){oVal='';}
-rd.push('&xjxargs[]=');oVal=encodeURIComponent(oVal);rd.push(oVal);++i;}else{rd.push('&xjxargs[]=');oVal=xt._escape(oVal);if('undefined'==typeof oVal||null==oVal){rd.push('*');}else{var sType=typeof oVal;if('string'==sType)
+var dNow=new Date();rd.push('&xjxr=');rd.push(dNow.getTime());delete dNow;if(oRequest.parameters){var i=0;var iLen=oRequest.parameters.length;while(i < iLen){var oVal=oRequest.parameters[i];if('object'==typeof oVal&&null!=oVal){try{oVal=JSON.stringify(oVal);}catch(e){oVal='';}
+rd.push('&xjxargs[]=');oVal=encodeURIComponent(oVal);rd.push(oVal);++i;}else{rd.push('&xjxargs[]=');if('undefined'==typeof oVal||null==oVal){rd.push('*');}else{var sType=typeof oVal;if('string'==sType)
 rd.push('S');else if('boolean'==sType)
 rd.push('B');else if('number'==sType)
 rd.push('N');oVal=encodeURIComponent(oVal);rd.push(oVal);}
@@ -349,7 +376,8 @@ oRequest.requestData=rd.join('');}
 xajax.prepareRequest=function(oRequest){var xx=xajax;var xt=xx.tools;oRequest.request=xt.getRequestObject();oRequest.setRequestHeaders=function(headers){if('object'==typeof headers){for(var optionName in headers)
 this.request.setRequestHeader(optionName,headers[optionName]);}
 }
-oRequest.setCommonRequestHeaders=function(){this.setRequestHeaders(this.commonHeaders);}
+oRequest.setCommonRequestHeaders=function(){this.setRequestHeaders(this.commonHeaders);if(this.challengeResponse)
+this.request.setRequestHeader('challenge-response',this.challengeResponse);}
 oRequest.setPostRequestHeaders=function(){this.setRequestHeaders(this.postHeaders);}
 oRequest.setGetRequestHeaders=function(){this.setRequestHeaders(this.getHeaders);}
 if('asynchronous'==oRequest.mode){oRequest.request.onreadystatechange=function(){if(oRequest.request.readyState!=4)
@@ -378,16 +406,9 @@ return false;var oRequest={}
 if(1 < numArgs)
 oRequest=arguments[1];oRequest.functionName=arguments[0];var xx=xajax;xx.initializeRequest(oRequest);xx.processParameters(oRequest);while(0 < oRequest.requestRetry){try{--oRequest.requestRetry;xx.prepareRequest(oRequest);return xx.submitRequest(oRequest);}catch(e){xajax.callback.execute(
 [xajax.callback.global,oRequest.callback],
-'onFailure',oRequest);if(0==oRequest.requestRetry)
-throw e;}
-}
-}
-xajax.call=function(){var numArgs=arguments.length;if(0==numArgs)
-return false;var oRequest={}
-if(1 < numArgs)
-oRequest=arguments[1];oRequest.functionName={xjxfun:arguments[0]};var xx=xajax;xx.initializeRequest(oRequest);xx.processParameters(oRequest);while(0 < oRequest.requestRetry){try{--oRequest.requestRetry;xx.prepareRequest(oRequest);return xx.submitRequest(oRequest);}catch(e){xajax.callback.execute(
-[xajax.callback.global,oRequest.callback],
-'onFailure',oRequest);if(0==oRequest.requestRetry)
+'onFailure',
+oRequest
+);if(0==oRequest.requestRetry)
 throw e;}
 }
 }
@@ -395,9 +416,10 @@ xajax.submitRequest=function(oRequest){oRequest.status.onRequest();var xcb=xajax
 xajax._internalSend=function(oRequest){oRequest.request.send(oRequest.requestData);}
 xajax.abortRequest=function(oRequest){oRequest.aborted=true;oRequest.request.abort();xajax.completeResponse(oRequest);}
 xajax.responseReceived=function(oRequest){var xx=xajax;var xcb=xx.callback;var gcb=xcb.global;var lcb=oRequest.callback;if(oRequest.aborted)
-return;xcb.clearTimer([gcb,lcb],'onExpiration');xcb.clearTimer([gcb,lcb],'onResponseDelay');xcb.execute([gcb,lcb],'beforeResponseProcessing',oRequest);var fProc=xx.getResponseProcessor(oRequest);if('undefined'==typeof fProc){xcb.execute([gcb,lcb],'onFailure',oRequest);xx.completeResponse(oRequest);return;}
+return;xcb.clearTimer([gcb,lcb],'onExpiration');xcb.clearTimer([gcb,lcb],'onResponseDelay');xcb.execute([gcb,lcb],'beforeResponseProcessing',oRequest);var challenge=oRequest.request.getResponseHeader('challenge');if(challenge){oRequest.challengeResponse=challenge;xx.prepareRequest(oRequest);return xx.submitRequest(oRequest);}
+var fProc=xx.getResponseProcessor(oRequest);if('undefined'==typeof fProc){xcb.execute([gcb,lcb],'onFailure',oRequest);xx.completeResponse(oRequest);return;}
 return fProc(oRequest);}
-xajax.getResponseProcessor=function(oRequest){var fProc;if('undefined'==typeof oRequest.responseProcessor){var cTyp=oRequest.request.getResponseHeader('content-type');if(cTyp){if(0 <=cTyp.indexOf('text/xml')){fProc=xajax.responseProcessor.xml;}
+xajax.getResponseProcessor=function(oRequest){var fProc;if('undefined'==typeof oRequest.responseProcessor){var cTyp=oRequest.request.getResponseHeader('content-type');if(cTyp){if(0 <=cTyp.indexOf('text/xml')){fProc=xajax.responseProcessor.xml;}else if(0 <=cTyp.indexOf('application/json')){fProc=xajax.responseProcessor.json;}
 }
 }else fProc=oRequest.responseProcessor;return fProc;}
 xajax.executeCommand=function(command){if(xajax.command.handler.isRegistered(command)){if(command.id)
@@ -406,6 +428,8 @@ command.target=xajax.$(command.id);if(false==xajax.command.handler.call(command)
 return true;}
 xajax.completeResponse=function(oRequest){xajax.callback.execute(
 [xajax.callback.global,oRequest.callback],
-'onComplete',oRequest);oRequest.cursor.onComplete();oRequest.status.onComplete();delete oRequest['functionName'];delete oRequest['requestURI'];delete oRequest['requestData'];delete oRequest['requestRetry'];delete oRequest['request'];delete oRequest['set'];delete oRequest['open'];delete oRequest['setRequestHeaders'];delete oRequest['setCommonRequestHeaders'];delete oRequest['setPostRequestHeaders'];delete oRequest['setGetRequestHeaders'];delete oRequest['applyRequestHeaders'];delete oRequest['finishRequest'];delete oRequest['status'];delete oRequest['cursor'];}
+'onComplete',
+oRequest
+);oRequest.cursor.onComplete();oRequest.status.onComplete();delete oRequest['functionName'];delete oRequest['requestURI'];delete oRequest['requestData'];delete oRequest['requestRetry'];delete oRequest['request'];delete oRequest['set'];delete oRequest['open'];delete oRequest['setRequestHeaders'];delete oRequest['setCommonRequestHeaders'];delete oRequest['setPostRequestHeaders'];delete oRequest['setGetRequestHeaders'];delete oRequest['applyRequestHeaders'];delete oRequest['finishRequest'];delete oRequest['status'];delete oRequest['cursor'];delete oRequest['challengeResponse'];}
 xajax.$=xajax.tools.$;xajax.getFormValues=xajax.tools.getFormValues;xajax.isLoaded=true;xjx={}
-xjx.$=xajax.tools.$;xjx.getFormValues=xajax.tools.getFormValues;xjx.call=xajax.call;xjx.request=xajax.request;
+xjx.$=xajax.tools.$;xjx.getFormValues=xajax.tools.getFormValues;xjx.request=xajax.request;if('undefined'==typeof JSON)xajax.js.includeScript({data:xajax.config.JavaScriptURI+'xajax_js/JSON.js'});

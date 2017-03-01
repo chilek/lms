@@ -1,0 +1,11 @@
+<INPUT type="text" name="invoice[number]" value="{$invoice.number}" size="12" {tip text="Enter invoice number. WARNING! Changing this number can be DANGEROUS! (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
+{if $numberplanlist}
+<SELECT name="invoice[numberplanid]" {tip text="Select numbering plan"}>
+{foreach $numberplanlist as $plan}
+	{$period=$plan.period}
+	<OPTION value="{$plan.id}"{if $plan.id == $invoice.numberplanid} selected{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate customerid=$customerid} ({$_NUM_PERIODS.$period})</OPTION>
+{/foreach}
+</SELECT>
+{else}
+<INPUT type="hidden" name="invoice[numberplanid]" value="0">
+{/if}
