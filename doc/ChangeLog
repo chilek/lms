@@ -83,6 +83,8 @@ version ?.??.?? (????-??-??):
   - improvement: switched to xajax 0.6 beta fork from https://github.com/feuzeu/xajax which
     generates much less warnings in PHP 7 (if any at all) [chilan]
   - enhancement: added support for JPK-VAT exports [chilan]
+  - rewrite lms-teryt to PHP [kosa/chilan]
+  - merged lms-teryt and lms-teryt-buildings scripts [kosa/chilan]
 
 version 1.11.21 (2016-10-14):
 
