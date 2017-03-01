@@ -165,7 +165,7 @@
                 {trans("Call begin time:")}
             </td>
             <td class="nobr">
-               {if $cdr.time_start_to_end>60}{floor($cdr.time_start_to_end/60)}min{/if} {$cdr.time_start_to_end%60}s
+               {if $cdr.totaltime>60}{floor($cdr.totaltime/60)}min{/if} {$cdr.totaltime%60}s
             </td>
         </tr>
 		<tr>
@@ -174,7 +174,7 @@
                 {trans("Call answer time:")}
             </td>
             <td class="nobr">
-               {if $cdr.time_answer_to_end>60}{floor($cdr.time_answer_to_end/60)}min{/if} {$cdr.time_answer_to_end%60}s
+               {if $cdr.billedtime>60}{floor($cdr.billedtime/60)}min{/if} {$cdr.billedtime%60}s
             </td>
         </tr>
 		<tr>

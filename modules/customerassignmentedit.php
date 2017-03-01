@@ -331,13 +331,13 @@ if (isset($_POST['assignment']))
 			SYSLOG::RES_LIAB => $a['liabilityid'],
 			SYSLOG::RES_NUMPLAN => !empty($a['numberplanid']) ? $a['numberplanid'] : NULL,
 			'paytype' => !empty($a['paytype']) ? $a['paytype'] : NULL,
-			'address_id' => ($a['address_id'] >= 0) ? $a['address_id'] : NULL,
+			'recipient_address_id' => ($a['recipient_address_id'] >= 0) ? $a['recipient_address_id'] : NULL,
 			SYSLOG::RES_ASSIGN => $a['id']
 		);
 
 		$DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, attribute=?, period=?, at=?,
 			invoice=?, settlement=?, datefrom=?, dateto=?, pdiscount=?, vdiscount=?,
-			liabilityid=?, numberplanid=?, paytype=?, address_id=?
+			liabilityid=?, numberplanid=?, paytype=?, recipient_address_id=?
 			WHERE id=?', array_values($args));
 		if ($SYSLOG) {
 			$SYSLOG->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_UPDATE, $args);
@@ -404,7 +404,7 @@ else
 				a.invoice, a.settlement, a.pdiscount, a.vdiscount, a.attribute, a.liabilityid,
 				(CASE liabilityid WHEN 0 THEN tariffs.name ELSE liabilities.name END) AS name,
 				liabilities.value AS value, liabilities.prodid AS prodid, liabilities.taxid AS taxid,
-				address_id
+				recipient_address_id
 				FROM assignments a
 				LEFT JOIN tariffs ON (tariffs.id = a.tariffid)
 				LEFT JOIN liabilities ON (liabilities.id = a.liabilityid)

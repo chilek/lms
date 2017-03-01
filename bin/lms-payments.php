@@ -320,7 +320,7 @@ if (!empty($groupsql))
 	$customergroups = preg_replace("/\%groups/", $groupsql, $customergroups);
 
 # let's go, fetch *ALL* assignments in given day
-$query = "SELECT a.tariffid, a.liabilityid, a.customerid, a.address_id,
+$query = "SELECT a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id,
 		a.period, a.at, a.suspended, a.settlement, a.datefrom, a.pdiscount, a.vdiscount, 
 		a.invoice, t.description AS description, a.id AS assignmentid, 
 		c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
@@ -353,7 +353,7 @@ $query = "SELECT a.tariffid, a.liabilityid, a.customerid, a.address_id,
 			OR (a.period = ? AND at = ?))
 			AND a.datefrom <= ? AND (a.dateto > ? OR a.dateto = 0)))"
 		.(!empty($groupnames) ? $customergroups : "")
-	." ORDER BY a.customerid, a.address_id, a.invoice,  a.paytype, a.numberplanid, value DESC";
+	." ORDER BY a.customerid, a.recipient_address_id, a.invoice,  a.paytype, a.numberplanid, value DESC";
 $assigns = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
 	DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
 	$currtime, $currtime));
@@ -524,7 +524,7 @@ foreach ($assigns as $assign) {
 			else
 				$plan = (array_key_exists($divid, $plans) ? $plans[$divid] : 0);
 
-			if ($invoices[$cid] == 0 || $paytypes[$cid] != $inv_paytype || $numberplans[$cid] != $plan || $assign['address_id'] != $addresses[$cid])
+			if ($invoices[$cid] == 0 || $paytypes[$cid] != $inv_paytype || $numberplans[$cid] != $plan || $assign['recipient_address_id'] != $addresses[$cid])
 			{
 				if (!isset($numbers[$plan]))
 				{
@@ -554,17 +554,31 @@ foreach ($assigns as $assign) {
 					'cdate' => $currtime,
 					'customerid' => $cid,
 				));
+
+				if ( $assign['recipient_address_id'] ) {
+					$addr = $DB->GetRow('SELECT * FROM addresses WHERE id = ?;', array($assign['recipient_address_id']));
+					unset($addr['id']);
+
+					$copy_address_query = "INSERT INTO addresses (" . implode(",", array_keys($addr)) . ") VALUES (" . implode(",", array_fill(0, count($addr), '?'))  . ")";
+					$DB->Execute( $copy_address_query, $addr );
+
+					$recipient_address_id = $DB->GetLastInsertID('addresses');
+				} else {
+					$recipient_address_id = null;
+				}
+
 				$DB->Execute("INSERT INTO documents (number, numberplanid, type, countryid, divisionid, 
 					customerid, name, address, zip, city, ten, ssn, cdate, sdate, paytime, paytype,
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
-					div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber) 
-					VALUES(?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+					div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
+					recipient_address_id)
+					VALUES(?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 					array($numbers[$plan], $plan,
 					$customer['countryid'] ? $customer['countryid'] : 0,
 					$customer['divisionid'], $cid,
 					$customer['lastname']." ".$customer['name'], $customer['address'],
-					$customer['zip'] ? $customer['zip'] : '',
-					$customer['city'] ? $customer['city'] : '',
+					$customer['zip'] ? $customer['zip'] : null,
+					$customer['city'] ? $customer['city'] : null,
 					$customer['ten'], $customer['ssn'], $currtime, $saledate, $paytime, $inv_paytype,
 					($division['name'] ? $division['name'] : ''),
 					($division['shortname'] ? $division['shortname'] : ''),
@@ -579,12 +593,13 @@ foreach ($assigns as $assign) {
 					($division['inv_footer'] ? $division['inv_footer'] : ''), 
 					($division['inv_author'] ? $division['inv_author'] : ''), 
 					($division['inv_cplace'] ? $division['inv_cplace'] : ''),
-					$fullnumber
+					$fullnumber,
+					$recipient_address_id,
 					));
 
 				$invoices[$cid] = $DB->GetLastInsertID("documents");
 				$paytypes[$cid] = $inv_paytype;
-				$addresses[$cid] = $assign['address_id'];
+				$addresses[$cid] = $assign['recipient_address_id'];
 				$numberplans[$cid] = $plan;
 			}
 			if (($tmp_itemid = $DB->GetOne("SELECT itemid FROM invoicecontents 

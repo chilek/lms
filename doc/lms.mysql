@@ -349,7 +349,6 @@ CREATE TABLE location_buildings (
     city_id      int(11) NOT NULL,
     street_id    int(11) NULL,
     building_num varchar(20) NULL,
-    flats        int(11) NULL,
     latitude     numeric(10,6) NULL,
     longitude    numeric(10,6) NULL,
     updated      smallint DEFAULT 0,
@@ -419,14 +418,14 @@ CREATE TABLE assignments (
   paytype smallint DEFAULT NULL,
   numberplanid int(11) DEFAULT NULL,
   attribute varchar(255) DEFAULT NULL,
-  address_id int(11),
+  recipient_address_id int(11),
   PRIMARY KEY (id),
   INDEX tariffid (tariffid),
   INDEX customerid (customerid),
   INDEX numberplanid (numberplanid),
   FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY address_id_fk(address_id) REFERENCES addresses(id) ON DELETE SET NULL ON UPDATE CASCADE
+  FOREIGN KEY recipient_address_id_fk2(address_id) REFERENCES addresses(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -568,12 +567,14 @@ CREATE TABLE documents (
 	cancelled smallint DEFAULT 0 NOT NULL,
 	published tinyint(1) NOT NULL DEFAULT 0,
 	cuserid int(11) NOT NULL DEFAULT '0',
+	recipient_address_id int(11),
 	PRIMARY KEY (id),
 	INDEX cdate (cdate),
 	INDEX numberplanid (numberplanid),
 	INDEX customerid (customerid),
 	INDEX closed (closed),
-	INDEX reference (reference)
+	INDEX reference (reference),
+	FOREIGN KEY recipient_address_id_fk(recipient_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1816,8 +1817,8 @@ CREATE TABLE voip_cdr (
 	caller              varchar(20)   NOT NULL,
 	callee              varchar(20)   NOT NULL,
 	call_start_time     int(11)       NOT NULL,
-	time_start_to_end   int(11)       NOT NULL,
-	time_answer_to_end  int(11)       NOT NULL,
+	totaltime           int(11)       NOT NULL,
+	billedtime          int(11)       NOT NULL,
 	price               decimal(12,5) NOT NULL,
 	status              smallint      NOT NULL,
 	type                smallint      NOT NULL,
@@ -2875,4 +2876,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017022200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017030101');

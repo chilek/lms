@@ -227,7 +227,6 @@ CREATE TABLE location_buildings (
     city_id      integer NOT NULL REFERENCES location_cities  (id) ON DELETE CASCADE  ON UPDATE CASCADE,
     street_id    integer NULL     REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
     building_num varchar(20) NULL,
-    flats        integer NULL,
     latitude     numeric(10,6) NULL,
     longitude    numeric(10,6) NULL,
     updated      smallint DEFAULT 0,
@@ -298,8 +297,8 @@ CREATE TABLE assignments (
 	numberplanid integer DEFAULT NULL
 	    REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	attribute varchar(255) DEFAULT NULL,
-	address_id integer DEFAULT NULL
-		CONSTRAINT address_id_fk REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	recipient_address_id integer DEFAULT NULL
+		CONSTRAINT recipient_address_id_fk2 REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
 CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
@@ -919,8 +918,8 @@ CREATE TABLE voip_cdr (
 	caller varchar(20) NOT NULL,
 	callee varchar(20) NOT NULL,
 	call_start_time integer NOT NULL,
-	time_start_to_end integer NOT NULL,
-	time_answer_to_end integer NOT NULL,
+	totaltime integer NOT NULL,
+	billedtime integer NOT NULL,
 	price numeric(12,5) NOT NULL,
 	status smallint NOT NULL,
 	type smallint NOT NULL,
@@ -1190,6 +1189,8 @@ CREATE TABLE documents (
 	cancelled smallint	DEFAULT 0 NOT NULL,
 	published smallint	DEFAULT 0 NOT NULL,
 	cuserid integer		DEFAULT 0 NOT NULL,
+	recipient_address_id integer DEFAULT NULL
+        REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
 CREATE INDEX documents_cdate_idx ON documents(cdate);
@@ -2943,6 +2944,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017022200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017030101');
 
 COMMIT;

@@ -12,14 +12,14 @@ class LocationCache {
     // cache array with key as city ident
     private $city_by_ident        = array();
     private $city_by_ident_loaded = false;
-    
+
     // location buildings cache
     private $buildings            = array();
-    
+
     // location street cache
     private $streets              = array();
     private $streets_loaded       = false;
-    
+
     // load policy types
     const LOAD_FULL = 'full';
     const LOAD_ONE  = 'one';
@@ -94,7 +94,7 @@ class LocationCache {
 			    	return null;
 			    }
 			break;
-			
+
 			case self::LOAD_ONE:
 				if ( isset( $this->city_by_id[ $id ] ) ) {
 			        return $this->city_by_id[ $id ];
@@ -134,7 +134,7 @@ class LocationCache {
 			    	return null;
 			    }
 			break;
-			
+
 			case self::LOAD_ONE:
 				if ( isset( $this->city_by_ident[ $ident ] ) ) {
 			        return $this->city_by_ident[ $ident ];
@@ -143,7 +143,7 @@ class LocationCache {
 
 			    	if ( isset( $this->city_by_ident[ $ident ] ) ) {
 			        	return $this->city_by_ident[ $ident ];
-			    	} else {		    	
+			    	} else {
 				    	return null;
 				    }
 			    }
@@ -200,10 +200,10 @@ class LocationCache {
 	 */
 	public function buildingExists( $cityid, $streetid, $building_num ) {
 		if ( !isset($this->buildings[ $cityid ]) ) {
-			$tmp = $this->DB->GetAllByKey("SELECT (city_id || '|' || street_id || '|' || building_num) as lms_building_key,
-										   flats, longitude, latitude, id
-			                               FROM location_buildings lb
-			                               WHERE city_id = ?", 'lms_building_key', array($cityid));
+			$tmp = $this->DB->GetAllByKey("SELECT (city_id || '|' || case when street_id is null then '' else '' || street_id end || '|' || building_num) as lms_building_key,
+											longitude, latitude, id
+											FROM location_buildings lb
+											WHERE city_id = ?", 'lms_building_key', array($cityid));
 
 			$this->buildings = null;
 			$this->buildings[ $cityid ] = $tmp;
@@ -217,11 +217,11 @@ class LocationCache {
 	    	return false;
 	    }
 	}
-	
+
     /*
      * \brief Create cache array or try imitate from other cache file.
      */
-    private function initCityByIdentCache() {                                                                         
+    private function initCityByIdentCache() {
 
     	if ( $this->city_by_id_loaded == true ) {
             foreach ($this->city_by_id as $v) {
@@ -230,15 +230,15 @@ class LocationCache {
 		} else {
 			$this->city_by_ident = $this->DB->GetAllByKey('SELECT id, ident, cityid FROM location_cities;', 'ident');
 		}
-    
+
     	$this->city_by_ident_loaded = true;
     }
-    
+
     /*
      * \brief Create cache array or try imitate from other cache file.
      */
     private function initCityByIdCache() {
-    	
+
     	if ( $this->city_by_ident_loaded == true ) {
             foreach ($this->city_by_ident as $v) {
                 $this->city_by_id[ $v['id'] ] = $v;
@@ -246,7 +246,7 @@ class LocationCache {
 		} else {
 			$this->city_by_id = $this->DB->GetAllByKey('SELECT id, ident, cityid FROM location_cities;', 'id');
 		}
-    
+
     	$this->city_by_id_loaded = true;
     }
 }
