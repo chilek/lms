@@ -616,7 +616,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         $DB = $this->db;
         $bill_list = $DB->GetAll('SELECT
                                      cdr.id, caller, callee, price, call_start_time as begintime, cdr.uniqueid,
-                                     time_start_to_end as callbegintime, time_answer_to_end as callanswertime,
+                                     totaltime as callbegintime, billedtime as callanswertime,
                                      cdr.type as type, callervoipaccountid, calleevoipaccountid,
                                      cdr.status as status, vacc.ownerid as callerownerid, vacc2.ownerid as calleeownerid,
 

@@ -111,8 +111,8 @@ $SESSION->save('valp', $page);
 
 $billing_stats = $DB->GetRow('SELECT
                                  sum(price) as price,
-                                 sum(time_start_to_end) as call,
-                                 sum(time_answer_to_end) as answer,
+                                 sum(totaltime) as call,
+                                 sum(billedtime) as answer,
                                  count(*) as count
                               FROM
                                  voip_cdr');

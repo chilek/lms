@@ -48,7 +48,7 @@ class VoipDbBuffor {
                          '"(.*)",' .
                          '"(?<call_start>(?<call_start_year>[0-9]{4})-(?<call_start_month>[0-9]{2})-(?<call_start_day>[0-9]{2}) (?<call_start_hour>[0-9]{2}):(?<call_start_min>[0-9]{2}):(?<call_start_sec>[0-9]{2}))",' .
                          '(?:"(?<call_answer>(?<call_answer_year>[0-9]{4})-(?<call_answer_month>[0-9]{2})-(?<call_answer_day>[0-9]{2}) (?<call_answer_hour>[0-9]{2}):(?<call_answer_min>[0-9]{2}):(?<call_answer_sec>[0-9]{2}))")?,' .
-                         '"(?<call_end>(?<call_end_year>[0-9]{4})-(?<call_end_month>[0-9]{2})-(?<call_end_day>[0-9]{2}) (?<call_end_hour>[0-9]{2}):(?<call_end_min>[0-9]{2}):(?<call_end_sec>[0-9]{2}))",(?<time_start_to_end>[0-9]*),(?<time_answer_to_end>[0-9]*),' .
+                         '"(?<call_end>(?<call_end_year>[0-9]{4})-(?<call_end_month>[0-9]{2})-(?<call_end_day>[0-9]{2}) (?<call_end_hour>[0-9]{2}):(?<call_end_min>[0-9]{2}):(?<call_end_sec>[0-9]{2}))",(?<totaltime>[0-9]*),(?<billedtime>[0-9]*),' .
                          '"(?<call_status>.*)",' .
                          '"(.*)",' .
                          '"(?<uniqueid>.*)".*') . '$/';
@@ -76,8 +76,8 @@ class VoipDbBuffor {
             break;
 
             case CALL_OUTGOING:
-                if (isset($cdr['time_answer_to_end']) && $cdr['time_answer_to_end'] > 0) {
-                    $info  = $this->estimate->getCallCost($cdr['caller'], $cdr['callee'], $cdr['time_answer_to_end']);
+                if (isset($cdr['billedtime']) && $cdr['billedtime'] > 0) {
+                    $info  = $this->estimate->getCallCost($cdr['caller'], $cdr['callee'], $cdr['billedtime']);
 
                 if ($info['used_rules'])
                     foreach ($info['used_rules'] as $r) {
@@ -135,8 +135,8 @@ class VoipDbBuffor {
             $insert[] = "('" . $c['caller']             . "'," .
                         "'"  . $c['callee']             . "'," .
                                $c['call_start']         . ',' .
-                               $c['time_start_to_end']  . ',' .
-                               $c['time_answer_to_end'] . ',' .
+                               $c['totaltime']          . ',' .
+                               $c['billedtime']         . ',' .
                                $c['price']              . ',' .
                                $c['call_status']        . ',' .
                                $c['call_type']          . ',' .
@@ -161,7 +161,7 @@ class VoipDbBuffor {
 
         //insert cdr records
         $DB->Execute('INSERT INTO voip_cdr
-                         (caller, callee, call_start_time, time_start_to_end, time_answer_to_end,
+                         (caller, callee, call_start_time, totaltime, billedtime,
                           price, status, type, callervoipaccountid, calleevoipaccountid, caller_flags,
                           callee_flags, caller_prefix_group, callee_prefix_group, uniqueid)
                       VALUES ' . implode(',', $insert));
@@ -306,15 +306,15 @@ class VoipDbBuffor {
         else if (!is_numeric($r['call_start']))
             $error = "Call start time has incorrect format.";
 
-        if (!isset($r['time_start_to_end']))
-            $error = "Time start to end isn't set.";
-        else if (!is_numeric($r['time_start_to_end']))
-            $error = "Time start to end has incorrect format.";
+        if (!isset($r['totaltime']))
+            $error = "Totaltime isn't set.";
+        else if (!is_numeric($r['totaltime']))
+            $error = "Totaltime has incorrect format.";
 
-        if (!isset($r['time_answer_to_end']))
-            $error = "Time answer to end isn't set.";
-        else if (!is_numeric($r['time_answer_to_end']))
-            $error = "Time answer to end has incorract format.";
+        if (!isset($r['billedtime']))
+            $error = "Billedtime isn't set.";
+        else if (!is_numeric($r['billedtime']))
+            $error = "Billedtime has incorract format.";
 
         if (!isset($r['uniqueid']))
             $error = "Call unique id isn't set.";

@@ -193,14 +193,14 @@ switch (strtolower($options['action'])) {
         } else {
             try {
                 $cdr = array();
-                $cdr['caller']             = $options['caller'];
-                $cdr['callee']             = $options['callee'];
-                $cdr['call_start']         = $options['startcall'];
-                $cdr['time_start_to_end']  = $options['totaltime'];
-                $cdr['time_answer_to_end'] = $options['calltime'];
-                $cdr['call_status']        = $options['status'];
-                $cdr['call_type']          = $options['type'];
-                $cdr['uniqueid']           = $options['uniqueid'];
+                $cdr['caller']      = $options['caller'];
+                $cdr['callee']      = $options['callee'];
+                $cdr['call_start']  = $options['startcall'];
+                $cdr['totaltime']   = $options['totaltime'];
+                $cdr['billedtime']  = $options['calltime'];
+                $cdr['call_status'] = $options['status'];
+                $cdr['call_type']   = $options['type'];
+                $cdr['uniqueid']    = $options['uniqueid'];
 
                 $db_buffor->appendCdr($cdr);
             }
