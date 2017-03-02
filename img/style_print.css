@@ -88,8 +88,12 @@ TD.head {
   color: white;
   background-color: black;
   font-weight: bold;
-  border-width: 1pt;
-  border-style: solid;
+  border: 1pt solid black;
+}
+@media print {
+  TD.head {
+    color: black;
+  }
 }
 TD.headgrey {
   color: black;
