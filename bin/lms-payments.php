@@ -388,7 +388,7 @@ $query = 'SELECT
 				                               WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month, 0, $year) . '
 				                               WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month, 0, $year) . '
 				                               WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month, 0, $year) . '
-				                               WHEN ' . DISPOSABLE . ' THEN ' . $currtime + 86400 . "
+				                               WHEN ' . DISPOSABLE . ' THEN ' . ($currtime + 86400) . "
 				                             END)
 	              ),2) AS value,
 		  (SELECT
