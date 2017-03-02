@@ -85,8 +85,12 @@ TD {
 		color: white;
 		background-color: black;
 		font-weight: bold;
-		border-width: 1pt;
-		border-style: solid;
+		border: 1pt solid black;
+	}
+	@media print {
+		&.head {
+			color: black;
+		}
 	}
 	&.headgrey {
 		color: black;
@@ -143,3 +147,9 @@ H1		{ font-size: 14pt; font-family: Arial, Helvetica; }
 .valign-bottom { vertical-align: bottom; }
 
 .nobr { white-space: nowrap; }
+
+.address-header {
+    padding-bottom: 3px;
+    font-size: 1.05em;
+    font-weight: bold;
+}

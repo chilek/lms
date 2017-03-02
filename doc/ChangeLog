@@ -85,6 +85,7 @@ version ?.??.?? (????-??-??):
   - enhancement: added support for JPK-VAT exports [chilan]
   - rewrite lms-teryt to PHP [kosa/chilan]
   - merged lms-teryt and lms-teryt-buildings scripts [kosa/chilan]
+  - added posibility to set recipient for invoices [kosa/chilan]
 
 version 1.11.21 (2016-10-14):
 
