@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -56,7 +56,7 @@ foreach ($short_to_longs as $short => $long)
 if (array_key_exists('version', $options)) {
 	print <<<EOF
 lms-payments.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2017 LMS Developers
 
 EOF;
 	exit(0);
@@ -65,7 +65,7 @@ EOF;
 if (array_key_exists('help', $options)) {
 	print <<<EOF
 lms-payments.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2017 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -81,7 +81,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
 	print <<<EOF
 lms-payments.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2017 LMS Developers
 
 EOF;
 }
@@ -358,11 +358,6 @@ $assigns = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
 	DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
 	$currtime, $currtime));
 
-
-$date = new DateTime(date("Y-m-d"));
-$time = $date->format("U");
-unset($date);
-
 $billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice_description', 'Phone calls between %backward_periods');
 
 $query = 'SELECT
@@ -382,11 +377,18 @@ $query = 'SELECT
                                LEFT JOIN voip_numbers vn ON vna.number_id = vn.id WHERE vn.phone = vc.caller) AND
 			          va.ownerid = a.customerid AND
 			          vc.call_start_time >= (CASE a.period
-				                               WHEN " . YEARLY     . ' THEN ' . strtotime("-1 year"  ,$time) . '
-				                               WHEN ' . HALFYEARLY . ' THEN ' . strtotime("-6 month" ,$time) . '
-				                               WHEN ' . QUARTERLY  . ' THEN ' . strtotime("-3 month" ,$time) . '
-				                               WHEN ' . MONTHLY    . ' THEN ' . strtotime("-1 month" ,$time) . '
-				                               WHEN ' . DISPOSABLE . ' THEN ' . strtotime("-1 day"   ,$time) . "
+				                               WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month  , 1, $year-1) . '
+				                               WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month-6, 1, $year)   . '
+				                               WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month-3, 1, $year)   . '
+				                               WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month-1, 1, $year)   . '
+				                               WHEN ' . DISPOSABLE . ' THEN ' . $currtime . "
+				                             END) AND
+			          vc.call_start_time < (CASE a.period
+				                               WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month, 0, $year) . '
+				                               WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month, 0, $year) . '
+				                               WHEN ' . QUARTERLY  . ' THEN ' . mktime(0, 0, 0, $month, 0, $year) . '
+				                               WHEN ' . MONTHLY    . ' THEN ' . mktime(0, 0, 0, $month, 0, $year) . '
+				                               WHEN ' . DISPOSABLE . ' THEN ' . $currtime + 86400 . "
 				                             END)
 	              ),2) AS value,
 		  (SELECT
