@@ -800,8 +800,9 @@ while( $xml->read() ) {
          $DB->Execute('INSERT INTO location_street_types (name) VALUES (?);',
                        array( strtolower($row['cecha']) ));
 
-         $insertid = last_insert_id('location_street_types');
-         $str_types[$row['cecha']] = $typeid = int($insertid);
+         $insertid = $DB->GetLastInsertID('location_street_types');
+         $str_types[$row['cecha']] = $typeid = $insertid;
+         unset($insertid);
          ++$ulic_insert;
     }
 
