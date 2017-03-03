@@ -854,6 +854,7 @@ CREATE TABLE rtmessages (
   ticketid int(11) NOT NULL,
   userid int(11) NOT NULL DEFAULT '0',
   customerid int(11) NOT NULL DEFAULT '0',
+  phonefrom varchar(20) NOT NULL DEFAULT '',
   mailfrom varchar(255) NOT NULL DEFAULT '',
   subject varchar(255) NOT NULL DEFAULT '',
   messageid varchar(255) NOT NULL DEFAULT '',
@@ -2876,4 +2877,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017030101');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017030300');

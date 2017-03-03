@@ -3605,4 +3605,6 @@ $_LANG['duty'] = 'dyżur';
 
 $_LANG['If set to "true" then logout confirmation is required. Default "false"'] = 'Ustawienie opcji na "true" wymusza potwierdzenie wylogowania. Domyślnie wyłączone';
 
+$_LANG['SMS from $a'] = 'SMS od $a';
+
 ?>
