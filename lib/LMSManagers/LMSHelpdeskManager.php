@@ -344,7 +344,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $ticket['subject'],
             preg_replace("/\r/", "", $ticket['body']),
             $ticket['mailfrom'],
-            $ticket['phonefrom']));
+            empty($ticket['phonefrom']) ? '' : $ticket['phonefrom']));
 
 		$msgid = $this->db->GetLastInsertID('rtmessages');
 
