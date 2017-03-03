@@ -209,19 +209,19 @@ if (($fh = fopen($message_file, "r")) != NULL) {
 //	if ($phone[0] != "+")
 //		$phone = "+" . $phone;
 
-	$DB->Execute("INSERT INTO rttickets (queueid, requestor, 
-		subject, customerid, createtime) VALUES(?, ?, ?, ?, ?)",
-		array($queueid, !empty($customer['name']) ? $customer['name'] : (empty($phone) ? '' : $formatted_phone),
-			trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)), !empty($customer['cid']) ? $customer['cid'] : 0, $date));
-	$tid = $DB->GetLastInsertID("rttickets");
-	$DB->Execute("INSERT INTO rtmessages (ticketid, customerid, phonefrom, subject, body, createtime)
-		VALUES(?, ?, ?, ?, ?, ?NOW?)",
-		array($tid, !empty($customer['cid']) ? $customer['cid'] : 0, empty($phone) ? '' : $phone,
-			trans('SMS from $a', empty($phone) ? trans("unknown") : $formatted_phone), $message));
-
-	foreach($categories as $category)
-		if (($catid = $DB->GetOne("SELECT id FROM rtcategories WHERE name = ?", array($category))) != NULL)
-			$DB->Execute("INSERT INTO rtticketcategories (ticketid, categoryid) VALUES(?, ?)", array($tid, $catid));
+	$cats = array();
+	foreach ($categories as $category)
+		if (($catid = $LMS->GetCategoryIdByName($category)) != null)
+			$cats[$catid] = $category;
+	$tid = $LMS->TicketAdd(array(
+		'queue' => $queueid,
+		'requestor' => !empty($customer['name']) ? $customer['name'] : (empty($phone) ? '' : $formatted_phone),
+		'subject' => trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
+		'customerid' => !empty($customer['cid']) ? $customer['cid'] : 0,
+		'body' => $message,
+		'phonefrom' => empty($phone) ? '' : $phone,
+		'categories' => $cats,
+	));
 
 	if ($newticket_notify) {
 		if (!empty($helpdesk_sender_name)) {
