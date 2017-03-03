@@ -330,7 +330,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $ticket['customerid'],
             $ticket['requestor'],
             $ticket['subject'],
-            $ticket['owner'],
+            isset($ticket['owner']) ? $ticket['owner'] : 0,
             isset($ticket['cause']) ? $ticket['cause'] : 0,
             isset($this->auth->id) ? $this->auth->id : 0
         ));
