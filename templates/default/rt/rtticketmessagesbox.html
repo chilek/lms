@@ -54,13 +54,14 @@
 								<A href="?m=userinfo&amp;id={$message.userid}">{$message.username}</A>
 							{elseif $message.mailfrom}
 								<A href="mailto:{$message.mailfrom|escape}">{$message.mailfrom|escape}</A>
-							{elseif $message.phonefrom}
-								<A class="phone_number" href="tel:{$message.phonefrom}">{$message.phonefrom}</A>
 							{else}
 								{$ticket.requestor|escape}
 								{if $ticket.requestoremail}
 									&lt;<A href="mailto:{$ticket.requestoremail|escape}">{$ticket.requestoremail|escape}</A>&gt;
 								{/if}
+							{/if}
+							{if $message.phonefrom}
+							&nbsp;&nbsp;&nbsp;<A class="phone_number" href="tel:{$message.phonefrom}"><img src="img/phone.gif"> {$message.phonefrom}</A>
 							{/if}
 						<BR>
 						{$message.subject|escape}
