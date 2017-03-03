@@ -210,7 +210,7 @@ switch($action)
 
 			$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 				account, inv_header, inv_footer, inv_author, inv_cplace 
-				FROM divisions WHERE id = ? ;',array($customer['divisionid']));
+				FROM vdivisions WHERE id = ? ;',array($customer['divisionid']));
 
 			if ($note['numberplanid'])
 				$fullnumber = docnumber(array(
