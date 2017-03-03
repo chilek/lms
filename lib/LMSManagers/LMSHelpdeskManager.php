@@ -384,7 +384,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $ticket['categories'] = $this->db->GetAllByKey('SELECT categoryid AS id FROM rtticketcategories WHERE ticketid = ?', 'id', array($id));
 
         $ticket['messages'] = $this->db->GetAll(
-                '(SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, '
+                '(SELECT rtmessages.id AS id, phonefrom, mailfrom, subject, body, createtime, '
                 . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
 				    userid, vusers.name AS username, customerid, rtmessages.type
 				FROM rtmessages

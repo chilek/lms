@@ -36,6 +36,8 @@ $_LANG['Tax Office Code:'] = 'Kod Urzędu Podatkowego:';
 $_LANG['Enter Tax Office Code (optional)'] = 'Wprowadź Kod Urzędu Podatkowego (opcjpnalnie)';
 $_LANG['Invalid format of Tax Office Code!'] = 'Niepoprawny format Kodu Urzędu Podatkowego!';
 
+$_LANG['Notify customer:'] = 'Powiadom klienta:';
+
 $_LANG['billing'] = 'biling';
 $_LANG['Billing'] = 'Biling';
 $_LANG['Billings'] = 'Bilingi';
