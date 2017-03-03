@@ -117,7 +117,7 @@
 	{/if}
 	<TR>
 		<TD COLSPAN="5" class="buttons">
-			<A HREF="?m=rtticketadd&id={$queuedata.queue}&customerid={$search.customerid}"><IMG src="img/save.gif" ALT=""> {trans("New Ticket")}</A>
+			<A HREF="?m=rtticketadd{if $queuedata.queue}&id={$queuedata.queue}{/if}&customerid={$search.custid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
     </TFOOT>
