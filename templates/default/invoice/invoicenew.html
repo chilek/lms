@@ -146,9 +146,15 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 			{trans("Customer:")}
 		</TD>
 		<TD class="nobr">
-			{customerlist form="setcustomer" customers=$customers selected=$customerid selectname="customer" inputname="customerid" customOnChange="GetNumberPlans()"}
+			{customerlist form="setcustomer" customers=$customers selected=$customerid selectname="customer" inputname="customerid" customOnChange="GetNumberPlans()" select_id="ownerid_select" input_id="ownerid_input"}
 		</TD>
 	</TR>
+	<tr>
+		<td class="bold">{trans("Recipient address:")}</td>
+		<td>
+			<select id="customer_addresses" name="invoice[recipient_address_id]"></select>
+		</td>
+	</tr>
 	<TR>
 		<TD class="text-right" colspan="2">
 			<A href="javascript:saveheader();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
@@ -416,10 +422,56 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 </FORM>
 {/if}
 
+<script type="text/javascript" src="img/lms-ui-iconselectmenu.js"></script>
 <SCRIPT type="text/javascript">
 <!--
 	$(function() {
-		$('form[name="setcustomer"] [name="invoice[number]"]').focus();
+        var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+        var timer;
+
+        $('form[name="setcustomer"] [name="invoice[number]"]').focus();
+
+        /*!
+         * \brief Update customer addresses list on input change.
+         */
+        $( '#ownerid_input' ).on('keyup input paste', function() {
+            var id = $(this).val();
+
+            if ( id != 'undefined' && id > 0 ) {
+                // delay for send request, 250ms
+                clearTimeout( timer );
+                timer = setTimeout( function() { customer_addresses.setAddressList( getCustomerAddresses(id) ); }, 250);
+            }
+        });
+
+        /*!
+         * \brief On keydown, clear the countdown.
+         */
+        $( '#ownerid_input' ).on('keydown', function () {
+            clearTimeout(timer);
+        });
+
+        {if !ConfigHelper::checkConfig('phpui.big_networks')}
+        /*!
+         * \brief Update customer addresses list on select change.
+         * Using when big_networks is set as false.
+         */
+        $( '#ownerid_select' ).change( function() {
+            var id = $(this).val();
+
+            if ( id != 'undefined' && id > 0 ) {
+                customer_addresses.setAddressList( getCustomerAddresses(id) );
+            }
+        });
+        {/if}
+
+        customer_addresses.setAddressList( getCustomerAddresses( {intval($invoice.customerid)} ) );
+
+        {if $invoice.customerid && $invoice.recipient_address_id }
+            $( '#customer_addresses' ).val( {$invoice.recipient_address_id} );
+        {/if}
+
+        customer_addresses.init();
 	});
 //-->
 </SCRIPT>
