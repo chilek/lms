@@ -517,6 +517,19 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				account, inv_header, inv_footer, inv_author, inv_cplace
 				FROM vdivisions WHERE id = ? ;', array($invoice['customer']['divisionid']));
 
+		// if isset invoice recipient address then make copy of selected address
+		if ( !empty($invoice['invoice']['recipient_address_id']) ) {
+			$addr = $this->db->GetRow('SELECT * FROM addresses WHERE id = ?;', array($invoice['invoice']['recipient_address_id']));
+			unset($addr['id']);
+
+			$copy_address_query = "INSERT INTO addresses (" . implode(",", array_keys($addr)) . ") VALUES (" . implode(",", array_fill(0, count($addr), '?'))  . ")";
+			$this->db->Execute( $copy_address_query, $addr );
+
+			$invocie['invoice']['recipient_address_id'] = $this->db->GetLastInsertID('addresses');
+		} else {
+			$invocie['invoice']['recipient_address_id'] = null;
+		}
+
         $args = array(
             'number' => $number,
             SYSLOG::RES_NUMPLAN => $invoice['invoice']['numberplanid'] ? $invoice['invoice']['numberplanid'] : 0,
@@ -549,14 +562,16 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
             'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
             'fullnumber' => $fullnumber,
+            'recipient_address_id' => $invocie['invoice']['recipient_address_id']
         );
 
         $this->db->Execute('INSERT INTO documents (number, numberplanid, type,
 			cdate, sdate, paytime, paytype, userid, customerid, name, address,
 			ten, ssn, zip, city, countryid, divisionid,
 			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
-			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
+			recipient_address_id)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
         $iid = $this->db->GetLastInsertID('documents');
         if ($this->syslog) {
             unset($args[SYSLOG::RES_USER]);
