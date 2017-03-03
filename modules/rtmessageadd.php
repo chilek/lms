@@ -405,8 +405,11 @@ else
 		else 
 			$message['destination'] = preg_replace('/^.* <(.+@.+)>/','\1',$reply['mailfrom']);
 
-		if ($reply['phonefrom'])
-			$message['smsnotify'] = $reply['phonefrom'];
+		if ($reply['phonefrom']) {
+			$message['phonefrom'] = $reply['phonefrom'];
+			if (ConfigHelper::checkConfig('phpui.helpdesk_customer_notify'))
+				$message['smsnotify'] = true;
+		}
 
 		if (!$message['destination'] && !$reply['userid']) {
 			$message['destination'] = $LMS->GetCustomerEmail($message['customerid']);
