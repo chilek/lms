@@ -54,7 +54,7 @@ foreach ($short_to_longs as $short => $long)
 
 if (array_key_exists('version', $options)) {
     print <<<EOF
-lms-stub.php
+lms-teryt.php
 (C) 2001-2017 LMS Developers
 
 EOF;
@@ -63,7 +63,7 @@ EOF;
 
 if (array_key_exists('help', $options)) {
     print <<<EOF
-lms-stub.php
+lms-teryt.php
 (C) 2001-2017 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini alternate config file (default: /etc/lms/lms.ini);
@@ -83,7 +83,7 @@ EOF;
 $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
-lms-stub.php
+lms-teryt.php
 (C) 2001-2017 LMS Developers
 
 EOF;
