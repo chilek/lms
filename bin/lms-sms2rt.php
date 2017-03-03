@@ -38,6 +38,7 @@ $parameters = array(
 	'q' => 'quiet',
 	'h' => 'help',
 	'v' => 'version',
+	's:' => 'section:',
 	'm:' => 'message-file:',
 );
 
@@ -72,6 +73,8 @@ lms-sms2rt.php
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
+-s, --section=<section-name>    section name from lms configuration where settings
+                                are stored
 
 EOF;
 	exit(0);
@@ -85,6 +88,8 @@ lms-sms2rt.php
 
 EOF;
 }
+
+$config_section = isset($options['section']) && preg_match('/^[a-z0-9-_]+$/i', $options['section']) ? $options['section'] : 'sms';
 
 if (array_key_exists('config-file', $options))
 	$CONFIG_FILE = $options['config-file'];
@@ -146,13 +151,13 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
-$incoming_queue = ConfigHelper::getConfig('sms.incoming_queue', 'SMS');
-$default_mail_from = ConfigHelper::getConfig('sms.default_mail_from', 'root@localhost');
-$categories = ConfigHelper::getConfig('sms.categories', 'default');
+$incoming_queue = ConfigHelper::getConfig($config_section . '.incoming_queue', 'SMS');
+$default_mail_from = ConfigHelper::getConfig($config_section . '.default_mail_from', 'root@localhost');
+$categories = ConfigHelper::getConfig($config_section . '.categories', 'default');
 $categories = preg_split('/\s*,\s*/', trim($categories));
-$lms_url = ConfigHelper::getConfig('sms.lms_url', '', true);
-$service = ConfigHelper::getConfig('sms.service', '', true);
-$prefix = ConfigHelper::getConfig('sms.prefix', '', true);
+$lms_url = ConfigHelper::getConfig($config_section . '.lms_url', '', true);
+$service = ConfigHelper::getConfig($config_section . '.service', '', true);
+$prefix = ConfigHelper::getConfig($config_section . '.prefix', '', true);
 $newticket_notify = ConfigHelper::checkConfig('phpui.newticket_notify');
 $helpdesk_customerinfo = ConfigHelper::checkConfig('phpui.helpdesk_customerinfo');
 $helpdesk_sendername = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
