@@ -465,7 +465,7 @@ while (my $record = get_entry($fh)) {
         $cities{$id} = $data->{'id'};
     }
     # add new city
-    elsif (!defined $refid || $simc{$refid}) {
+    elsif (!defined $refid || $simc{$record->{'SYMPOD'}}) {
         $city_insert->execute($terc_data->{'id'}, $record->{'NAZWA'}, $refid, $id);
         my $insertid = last_insert_id('location_cities');
         $simc{$id} = {
