@@ -90,6 +90,8 @@ version ?.??.?? (????-??-??):
     messages has been received by smstools [chilan]
   - enhancement: allow to notify customer via sms for helpdesk ticket messages which were
     created from customer sms earlier [chilan]
+  - improvement: phpui.helpdesk_customer_notify determines if customer notify checkbox
+    should be checked by default (for messages created from customer smses) [chilan]
 
 version 1.11.21 (2016-10-14):
 
