@@ -60,6 +60,9 @@
 									&lt;<A href="mailto:{$ticket.requestoremail|escape}">{$ticket.requestoremail|escape}</A>&gt;
 								{/if}
 							{/if}
+							{if $message.phonefrom}
+							&nbsp;&nbsp;&nbsp;<A class="phone_number" href="tel:{$message.phonefrom}"><img src="img/phone.gif"> {$message.phonefrom}</A>
+							{/if}
 						<BR>
 						{$message.subject|escape}
 						{else}

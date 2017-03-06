@@ -229,6 +229,15 @@ if(isset($_POST['message']))
 		);
 		$LMS->TicketChange($message['ticketid'], $props);
 		
+
+		$service = ConfigHelper::getConfig('sms.service');
+
+		// customer notification via sms when we reply to ticket message created from customer sms
+		if (isset($message['smsnotify']) && !empty($message['smsnotify']) && !empty($service)) {
+			$sms_body = preg_replace('/\r?\n/', ' ', $message['body']);
+			$LMS->SendSMS($message['smsnotify'], $sms_body);
+		}
+
 		// Users notification
 		if (isset($message['notify']) && ($user['email'] || $queue['email']))
 		{
@@ -353,7 +362,6 @@ if(isset($_POST['message']))
 			}
 
 			// send sms
-			$service = ConfigHelper::getConfig('sms.service');
 			$args['type'] = MSG_SMS;
 			if (!empty($service) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
 				FROM users, rtrights
@@ -396,6 +404,12 @@ else
 			$message['destination'] = preg_replace('/^.* <(.+@.+)>/','\1',$reply['replyto']);
 		else 
 			$message['destination'] = preg_replace('/^.* <(.+@.+)>/','\1',$reply['mailfrom']);
+
+		if ($reply['phonefrom']) {
+			$message['phonefrom'] = $reply['phonefrom'];
+			if (ConfigHelper::checkConfig('phpui.helpdesk_customer_notify'))
+				$message['smsnotify'] = true;
+		}
 
 		if (!$message['destination'] && !$reply['userid']) {
 			$message['destination'] = $LMS->GetCustomerEmail($message['customerid']);

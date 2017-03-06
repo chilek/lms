@@ -330,7 +330,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $ticket['customerid'],
             $ticket['requestor'],
             $ticket['subject'],
-            $ticket['owner'],
+            isset($ticket['owner']) ? $ticket['owner'] : 0,
             isset($ticket['cause']) ? $ticket['cause'] : 0,
             isset($this->auth->id) ? $this->auth->id : 0
         ));
@@ -338,12 +338,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $id = $this->db->GetLastInsertID('rttickets');
 
         $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
-				subject, body, mailfrom)
-				VALUES (?, ?, ?NOW?, ?, ?, ?)', array($id,
+				subject, body, mailfrom, phonefrom)
+				VALUES (?, ?, ?NOW?, ?, ?, ?, ?)', array($id,
             $ticket['customerid'],
             $ticket['subject'],
             preg_replace("/\r/", "", $ticket['body']),
-            $ticket['mailfrom']));
+            empty($ticket['mailfrom']) ? '' : $ticket['mailfrom'],
+            empty($ticket['phonefrom']) ? '' : $ticket['phonefrom']));
 
 		$msgid = $this->db->GetLastInsertID('rtmessages');
 
@@ -384,7 +385,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $ticket['categories'] = $this->db->GetAllByKey('SELECT categoryid AS id FROM rtticketcategories WHERE ticketid = ?', 'id', array($id));
 
         $ticket['messages'] = $this->db->GetAll(
-                '(SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, '
+                '(SELECT rtmessages.id AS id, phonefrom, mailfrom, subject, body, createtime, '
                 . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
 				    userid, vusers.name AS username, customerid, rtmessages.type
 				FROM rtmessages

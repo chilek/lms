@@ -69,7 +69,7 @@ if($message['inreplyto'])
 	$message['inreplytoid'] = $reply['subject'];
 }
 
-if(!$message['customerid'] && !$message['userid'] && !$message['mailfrom'])
+if(!$message['customerid'] && !$message['userid'] && !$message['mailfrom'] && !$message['phonefrom'])
 {
 	$message['requestor'] = $DB->GetOne('SELECT requestor FROM rttickets WHERE id=?', array($message['ticketid']));
 }

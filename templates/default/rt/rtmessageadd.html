@@ -87,6 +87,18 @@
 			<INPUT type="checkbox" name="message[notify]" id="notify" value="1"{if $message.notify} CHECKED{/if}>
 		</TD>
 	</TR>
+	{if $message.phonefrom}
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/phone.gif" alt="">
+			<label for="smsnotify">{trans("Notify customer:")}</label>
+		</TD>
+		<TD>
+			<INPUT type="checkbox" name="message[smsnotify]" id="smsnotify" value="1"{if $message.smsnotify} checked{/if}>
+			<input type="hidden" name="message[phonefrom]" value="{$message.phonefrom}">
+		</TD>
+	</TR>
+	{/if}
 	<TR>
 		<TD class="bold nobr">
 			<IMG src="img/resolved.gif" alt="">

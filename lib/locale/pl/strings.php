@@ -36,6 +36,8 @@ $_LANG['Tax Office Code:'] = 'Kod Urzędu Podatkowego:';
 $_LANG['Enter Tax Office Code (optional)'] = 'Wprowadź Kod Urzędu Podatkowego (opcjpnalnie)';
 $_LANG['Invalid format of Tax Office Code!'] = 'Niepoprawny format Kodu Urzędu Podatkowego!';
 
+$_LANG['Notify customer:'] = 'Powiadom klienta:';
+
 $_LANG['billing'] = 'biling';
 $_LANG['Billing'] = 'Biling';
 $_LANG['Billings'] = 'Bilingi';
@@ -3605,5 +3607,7 @@ $_LANG['vacation'] = 'urlop';
 $_LANG['duty'] = 'dyżur';
 
 $_LANG['If set to "true" then logout confirmation is required. Default "false"'] = 'Ustawienie opcji na "true" wymusza potwierdzenie wylogowania. Domyślnie wyłączone';
+
+$_LANG['SMS from $a'] = 'SMS od $a';
 
 ?>
