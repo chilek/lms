@@ -291,6 +291,22 @@ switch($action)
 		$SESSION->restore('invoiceid', $invoice['id']);
 		$invoice['type'] = $invoice['doctype'];
 
+		$prev_rec_addr = $DB->GetOne('SELECT recipient_address_id FROM documents WHERE id = ?;', array($invoice['id']));
+
+		if ( $prev_rec_addr != $invoice['recipient_address_id'] ) {
+			if ( $prev_rec_addr ) {
+				$DB->Execute('DELETE FROM addresses WHERE id = ?;', array($prev_rec_addr));
+			}
+
+			if ( $invoice['recipient_address_id'] ) {
+				$DB->Execute('UPDATE documents SET recipient_address_id = ? WHERE id = ?;',
+							array(
+								$LMS->CopyAddress($invoice['recipient_address_id']),
+								$invoice['id']
+							));
+			}
+		}
+
 		$currtime = time();
 		$cdate = $invoice['cdate'] ? $invoice['cdate'] : $currtime;
 		$sdate = $invoice['sdate'] ? $invoice['sdate'] : $currtime;
@@ -373,6 +389,7 @@ switch($action)
 		else
 			$args['fullnumber'] = null;
 		$args[SYSLOG::RES_NUMPLAN] = $invoice['numberplanid'];
+		//$args['recipient_address_id'] = $invoice
 		$args[SYSLOG::RES_DOC] = $iid;
 		$DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, customerid = ?,
 				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, divisionid = ?,

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -314,6 +314,12 @@ switch($action)
 		else
 			$fullnumber = null;
 
+		if ( !empty($invoice['recipient_address_id']) ) {
+			$invocie['recipient_address_id'] = $LMS->CopyAddress($invoice['recipient_address_id']);
+		} else {
+			$invocie['recipient_address_id'] = null;
+		}
+
 		$args = array(
 			'number' => $cnote['number'],
 			SYSLOG::RES_NUMPLAN => $cnote['numberplanid'] ? $cnote['numberplanid'] : 0,
@@ -348,13 +354,15 @@ switch($action)
 			'div_inv_author' => $division['inv_author'] ? $division['inv_author'] : '',
 			'div_inv_cplace' => $division['inv_cplace'] ? $division['inv_cplace'] : '',
 			'fullnumber' => $fullnumber,
+			'recipient_address_id' => $invoice['recipient_address_id']
 		);
 		$DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, sdate, paytime, paytype,
 				userid, customerid, name, address, ten, ssn, zip, city, countryid, reference, reason, divisionid,
 				div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
-				div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber)
+				div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
+				recipient_address_id)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
 		$id = $DB->GetOne('SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = ?',
 			array($cnote['number'], $cnote['cdate'], DOC_CNOTE));

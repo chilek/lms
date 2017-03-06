@@ -24,12 +24,13 @@
  *  $Id$
  */
 
-switch ( $_GET['action'] ) {
+switch ( strtolower($_GET['action']) ) {
 
     /*!
      * \brief Returns customer addresses.
      *
-     * \param  int customer id, GET paramenter
+     * \param  int  $_GET['id'] customer id
+     * \return 0                customer id is empty
      * \return json
      */
     case 'getcustomeraddresses':
@@ -49,7 +50,55 @@ switch ( $_GET['action'] ) {
             }
         }
 
-        die( json_encode( $caddr ) );
+        die( json_encode($caddr) );
+    break;
+
+    /*!
+     * \brief Returns single address by id.
+     *
+     * \param  int  $_GET['id'] customer id
+     * \return json
+     */
+    case 'getsingleaddress':
+        if ( empty($_GET['id']) ) {
+            return 0;
+        }
+
+        $addr = $DB->GetAllByKey('SELECT
+                                 id as address_id, name as location_name,
+                                 state as location_state_name, state_id as location_state,
+                                 city as location_city_name, city_id as location_city,
+                                 street as location_street_name, street_id as location_street,
+                                 house as location_house, zip as location_zip,
+                                 country_id as location_country_id, flat as location_flat,
+                                 -1 as location_address_type
+                             FROM addresses
+                             WHERE id = ?;', 'address_id',
+                             array((int) $_GET['id']));
+
+        if ( !$addr ) {
+            die( json_encode( array() ) );
+        }
+
+        foreach ( $addr as $k=>$v ) {
+            $tmp = array(
+                'city_name'      => $v['location_city_name'],
+                'street_name'    => $v['location_street_name'],
+                'location_house' => $v['location_house'],
+                'location_flat'  => $v['location_flat']
+            );
+
+            // generate address as single string
+            $location = location_str($tmp);
+
+            if ( strlen($location) > 0 ) {
+                $addr[$k]['location'] = $location;
+            } else {
+                $addr[$k]['location'] = trans('undefined');
+            }
+        }
+
+        die( json_encode($addr) );
     break;
 
     /*!
