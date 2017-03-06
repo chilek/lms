@@ -618,5 +618,6 @@ define('POSTAL_ADDRESS'          , 0);
 define('BILLING_ADDRESS'         , 1);
 define('LOCATION_ADDRESS'        , 2);
 define('DEFAULT_LOCATION_ADDRESS', 3);
+define('RECIPIENT_ADDRESS'       , 4);
 
 ?>

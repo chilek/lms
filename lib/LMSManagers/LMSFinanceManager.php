@@ -517,15 +517,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				account, inv_header, inv_footer, inv_author, inv_cplace
 				FROM vdivisions WHERE id = ? ;', array($invoice['customer']['divisionid']));
 
-		// if isset invoice recipient address then make copy of selected address
 		if ( !empty($invoice['invoice']['recipient_address_id']) ) {
-			$addr = $this->db->GetRow('SELECT * FROM addresses WHERE id = ?;', array($invoice['invoice']['recipient_address_id']));
-			unset($addr['id']);
-
-			$copy_address_query = "INSERT INTO addresses (" . implode(",", array_keys($addr)) . ") VALUES (" . implode(",", array_fill(0, count($addr), '?'))  . ")";
-			$this->db->Execute( $copy_address_query, $addr );
-
-			$invocie['invoice']['recipient_address_id'] = $this->db->GetLastInsertID('addresses');
+			global $LMS;
+			$invocie['invoice']['recipient_address_id'] = $LMS->CopyAddress( $invoice['invoice']['recipient_address_id'] );
 		} else {
 			$invocie['invoice']['recipient_address_id'] = null;
 		}
