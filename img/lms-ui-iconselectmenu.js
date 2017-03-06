@@ -41,7 +41,7 @@ $.widget( "custom.iconselectmenu", $.ui.selectmenu, {
     }
 });
 
-/*
+/*!
  * \brief Pseudo class for manage icon select menu.
  */
 function LmsUiIconSelectMenu( id ) {
@@ -63,22 +63,43 @@ LmsUiIconSelectMenu.prototype.init = function() {
     this.ready = 1;
 }
 
-/*
+/*!
  * \brief Clear list and set new items.
  *
  * \param address_list
  */
-LmsUiIconSelectMenu.prototype.setAddressList = function( addresses_list ) {
-    var icon;
-    var select_id = this.select_id; // can't use this inside of each
-
+LmsUiIconSelectMenu.prototype.setAddressList = function( address_list ) {
     // clear addresses list
-    $( this.select_id ).empty()
-                       .append( $('<option>', { value: -1, text: "---", 'data-style': "background-image: url()" }) );
+    this._clearList();
 
     // insert new addresses
-    $.each( addresses_list, function(index) {
+    this._appendAddressList( address_list );
 
+    // refresh list
+    this.refresh();
+}
+
+/*!
+ * \brief Append address list to current select.
+ *
+ * \param address_list
+ */
+LmsUiIconSelectMenu.prototype.appendAddressList = function( address_list ) {
+    // append addresses
+    this._appendAddressList( address_list );
+
+    // refresh list
+    this.refresh();
+}
+
+/*!
+ * \brief Pseudo private method for append address list to current select.
+ */
+LmsUiIconSelectMenu.prototype._appendAddressList = function( address_list ) {
+    var icon;
+    var select_id = this.select_id; // can't use 'this' inside of each
+
+    $.each( address_list, function(index) {
         switch ( this['location_address_type'] ) {
             case "0": // postal address
                 icon = "img/post.gif";
@@ -92,17 +113,29 @@ LmsUiIconSelectMenu.prototype.setAddressList = function( addresses_list ) {
                 icon = "img/location.png";
             break;
 
+            case "4": // default location address
+                icon = "img/info3.gif";
+            break;
+
             default:  // location address (no icon)
                 icon = "";
         }
 
         $( select_id ).append( $('<option>', { value:this['address_id'], text:this['location'], 'data-style': "background-image: url("+icon+")" } ));
     });
+}
+
+/*!
+ * \brief Clear select.
+ */
+LmsUiIconSelectMenu.prototype._clearList = function() {
+    $( this.select_id ).empty()
+                       .append( $('<option>', {value: -1, text: "---", 'data-style': "background-image: url()"}) );
 
     this.refresh();
 }
 
-/*
+/*!
  * \brief Refresh select.
  *
  * \return boolean refresh status

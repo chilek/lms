@@ -311,4 +311,26 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             return false;
         }
     }
+
+    /*!
+     * \brief Method create copy of address indicated by id.
+     *
+     * \param  int   $id address id
+     * \return int       new address id
+     * \return false     address id not found
+     */
+    public function CopyAddress( $address_id ) {
+        $addr = $this->db->GetRow('SELECT * FROM addresses WHERE id = ?;', array($address_id));
+
+        if ( $addr ) {
+            unset($addr['id']);
+
+            $copy_address_query = "INSERT INTO addresses (" . implode(",", array_keys($addr)) . ") VALUES (" . implode(",", array_fill(0, count($addr), '?'))  . ")";
+            $this->db->Execute( $copy_address_query, $addr );
+
+            return $this->db->GetLastInsertID('addresses');
+        } else {
+            return false;
+        }
+    }
 }

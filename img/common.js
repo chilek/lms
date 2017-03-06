@@ -823,23 +823,50 @@ window.onafterprint  = LMS_afterPrintEvent;
  * \return false    if id is incorrect
  */
 function getCustomerAddresses( id ) {
+    return _getAddressList( 'customeraddresses', id );
+}
+
+/*!
+ * \brief Returns single address by id.
+ *
+ * \param  int   id address id
+ * \return json     address data
+ * \return false    if id is incorrect
+ */
+function getSingleAddress( address_id ) {
+    return _getAddressList( 'singleaddress', address_id );
+}
+
+function _getAddressList( action, v ) {
+    action = action.toLowerCase();
+
     // test to check if 'id' is integer
-    if ( Math.floor(id) != id || !$.isNumeric(id) ) {
+    if ( Math.floor(v) != v || !$.isNumeric(v) ) {
         return false;
     }
 
     // check id value
-    if ( id <= 0 ) {
-        return false;
+    if ( v <= 0 ) {
+        return [];
     }
 
-    // send request
+    var url;
     var addresses = null;
 
+    switch ( action ) {
+        case 'customeraddresses':
+            url = "?m=customeraddresses&action=getcustomeraddresses&id=" + v;
+        break;
+
+        case 'singleaddress':
+            url = "?m=customeraddresses&action=getsingleaddress&id=" + v;
+        break;
+    }
+
     $.ajax({
-        url:"?m=customeraddresses&action=getcustomeraddresses&id=" + id,
-        async: false,
-        success:function(data) {
+        url    : url,
+        async  : false,
+        success: function(data) {
             addresses = data;
         }
     });

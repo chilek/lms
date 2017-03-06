@@ -158,12 +158,18 @@
 		</TD>
 		<TD class="nobr">
 			{if isset($customer.id)}
-			{customerlist form="setcustomer" customers=$customers selected=$customer.id selectname="customer" inputname="customerid" customOnChange="GetNumberPlans()"}
+			{customerlist form="setcustomer" customers=$customers selected=$customer.id selectname="customer" inputname="customerid" customOnChange="GetNumberPlans()" select_id="ownerid_select" input_id="ownerid_input"}
 			{else}
-			{customerlist form="setcustomer" customers=$customers selected=$invoice.customerid selectname="customer" inputname="customerid" customOnChange="GetNumberPlans()"}
+			{customerlist form="setcustomer" customers=$customers selected=$invoice.customerid selectname="customer" inputname="customerid" customOnChange="GetNumberPlans()" select_id="ownerid_select" input_id="ownerid_input"}
 			{/if}
 		</TD>
 	</TR>
+	<tr>
+		<td class="bold">{trans("Recipient address:")}</td>
+		<td>
+			<select id="customer_addresses" name="invoice[recipient_address_id]"></select>
+		</td>
+	</tr>
 	<TR>
 		<TD class="buttons" colspan="2">
 			<A HREF="javascript: saveheader();">{trans("Submit")} <IMG SRC="img/save.gif" ALT=""></A>
@@ -361,11 +367,70 @@
 	</FORM>
     </TFOOT>
 </TABLE>
+
+<script type="text/javascript" src="img/lms-ui-iconselectmenu.js"></script>
 <SCRIPT type="text/javascript">
 <!--
-	$(function() {
-		$('form[name="setcustomer"] [name="invoice[number]"]').focus();
-	});
+    $(function() {
+        var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+        var timer;
+        var recipient_addr;
+
+        $('form[name="setcustomer"] [name="invoice[number]"]').focus();
+
+        /*!
+         * \brief Update customer addresses list on input change.
+         */
+        $( '#ownerid_input' ).on('keyup input paste', function() {
+            var id = $(this).val();
+
+            if ( id != 'undefined' && id > 0 ) {
+                // delay for send request, 250ms
+                clearTimeout( timer );
+                timer = setTimeout( function() { customer_addresses.setAddressList( getCustomerAddresses(id) ); }, 250);
+            }
+        });
+
+        /*!
+         * \brief On keydown, clear the countdown.
+         */
+        $( '#ownerid_input' ).on('keydown', function () {
+            clearTimeout(timer);
+        });
+
+        {if !ConfigHelper::checkConfig('phpui.big_networks')}
+        /*!
+         * \brief Update customer addresses list on select change.
+         * Using when big_networks is set as false.
+         */
+        $( '#ownerid_select' ).change( function() {
+            var id = $(this).val();
+            if ( id != 'undefined' ) {
+                {if $invoice.customerid && $invoice.recipient_address_id }
+                    customer_addresses.setAddressList( recipient_addr );
+                    $( '#customer_addresses' ).val( {$invoice.recipient_address_id} );
+                {/if}
+
+                customer_addresses.appendAddressList( getCustomerAddresses(id) );
+                customer_addresses.refresh();
+            }
+        });
+        {/if}
+
+        {if $invoice.customerid && $invoice.recipient_address_id }
+            recipient_addr = getSingleAddress({intval($invoice.recipient_address_id)});
+
+            $.each( recipient_addr, function( i, v ) {
+                recipient_addr[i]['location_address_type'] = "{$smarty.const.RECIPIENT_ADDRESS}";
+            });
+
+            customer_addresses.setAddressList( recipient_addr );
+            $( '#customer_addresses' ).val( {$invoice.recipient_address_id} );
+        {/if}
+
+        customer_addresses.appendAddressList( getCustomerAddresses( {intval($invoice.customerid)} ) );
+        customer_addresses.init();
+    });
 //-->
 </SCRIPT>
 {/block}
