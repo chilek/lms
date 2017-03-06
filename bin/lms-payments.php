@@ -407,6 +407,7 @@ $query = 'SELECT
 	      )
 	    WHERE
 	      (c.status  = ? OR c.status = ?) AND
+	      t.type = ? AND
 		  ((a.period = ? AND at = ?) OR
 		  ((a.period = ? OR
 		  (a.period  = ? AND at = ?) OR
@@ -419,7 +420,7 @@ $query = 'SELECT
 		.(!empty($groupnames) ? $customergroups : "")
 	." ORDER BY a.customerid, a.invoice, a.paytype, a.numberplanid, value DESC";
 
-$billings = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION,
+$billings = $DB->GetAll($query, array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION, TARIFF_PHONE,
 	DISPOSABLE, $today, DAILY, WEEKLY, $weekday, MONTHLY, $dom, QUARTERLY, $quarter, HALFYEARLY, $halfyear, YEARLY, $yearday,
 	$currtime, $currtime));
 
