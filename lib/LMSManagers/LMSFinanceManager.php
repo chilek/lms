@@ -556,7 +556,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
             'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
             'fullnumber' => $fullnumber,
-            'recipient_address_id' => $invocie['invoice']['recipient_address_id']
+            'recipient_address_id' => $invoice['invoice']['recipient_address_id']
         );
 
         $this->db->Execute('INSERT INTO documents (number, numberplanid, type,
