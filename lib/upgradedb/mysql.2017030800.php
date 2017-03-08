@@ -21,6 +21,8 @@
  *
  */
 
+$this->BeginTrans();
+
 $this->Execute("
 CREATE VIEW vaddresses AS
     SELECT *,
