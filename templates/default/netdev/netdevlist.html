@@ -14,16 +14,16 @@
 			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netdevlist&amp;o=producer{if $listdata.direction == "asc" && $listdata.order == "producer"},desc{/if}">{trans("Manufacturer:")}</A> {if $listdata.order == "producer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} / 
 			<A href="?m=netdevlist&amp;o=model{if $listdata.direction == "asc" && $listdata.order == "model"},desc{/if}">{trans("Model:")}</A> {if $listdata.order == "model"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD width="1%" class="nobr alift-left valign-top">
+		<td width="1%" class="nobr valign-top">
 			<A href="?m=netdevlist&amp;o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">
 				{trans("Location:")}
 			</A>
 			{if $listdata.order == "location"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
-		</TD>
+		</td>
 		<TD width="1%" class="nobr align-left valign-top">
 			<A href="?m=netdevlist&amp;o=netnode{if $listdata.direction == "asc" && $listdata.order == "netnode"},desc{/if}">{trans("Network node:")}</A> {if $listdata.order == "netnode"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD width="1%" align="right" valign="top">
+		<TD width="1%" class="text-right valign-top">
 			<A href="?m=netdevlist&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">ID:</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
 		<TD width="1%" NOWRAP>
@@ -31,9 +31,9 @@
 			(<A href="?m=netdevlist&amp;o=takenports{if $listdata.direction == "asc" && $listdata.order == "takenports"},desc{/if}">{trans("Ports used:")}</A>{if $listdata.order == "takenports"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if})<BR>
 			<IMG src="img/serialnumber.gif" ALT="">&nbsp;<A href="?m=netdevlist&amp;o=serialnumber{if $listdata.direction == "asc" && $listdata.order == "serialnumber"},desc{/if}">{trans("Serial number:")}</A> {if $listdata.order == "serialnumber"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD width="1%" align="right" nowrap>
-			<B>{trans("Total:")} {$listdata.total|default:"0"}</B>
-		</TD>
+		<td width="1%" class="text-right nobr bold">
+			{trans("Total:")} {$listdata.total|default:"0"}
+		</td>
 	</TR>
 	<TR>
 		<TD colspan="6" class="nobr">
@@ -100,7 +100,15 @@
 			{/if}
 		</TD>
 		<TD onClick="return self.location.href='?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}';" class="nobr valign-top">
-			{if $netdevlist[netdevlist].location}{$netdevlist[netdevlist].location}{if $netdevlist[netdevlist].borough_name}<br><span class="blend">({$netdevlist[netdevlist].state_name} / {$netdevlist[netdevlist].district_name} / {$_BOROUGHTYPES[$netdevlist[netdevlist].borough_type]} {$netdevlist[netdevlist].borough_name})</span>{/if}{/if}
+			{if $netdevlist[netdevlist].location}
+				{$netdevlist[netdevlist].location}
+
+				{if $netdevlist[netdevlist].borough_name}
+					<div class="blend">
+						({$netdevlist[netdevlist].state_name} / {$netdevlist[netdevlist].district_name} / {$_BOROUGHTYPES[$netdevlist[netdevlist].borough_type]} {$netdevlist[netdevlist].borough_name})
+					</div>
+				{/if}
+			{/if}
 		</TD>
 		<TD onClick="return self.location.href='?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}';" class="nobr valign-top">
 			{if $netdevlist[netdevlist].netnode}<a href="?m=netnodeinfo&amp;id={$netdevlist[netdevlist].netnodeid}">{$netdevlist[netdevlist].netnode}</a>{/if}
@@ -112,7 +120,7 @@
 			<IMG src="img/port.gif" ALT=""> {$netdevlist[netdevlist].ports} ({$netdevlist[netdevlist].takenports})<BR>
 			<IMG src="img/serialnumber.gif" ALT=""> {$netdevlist[netdevlist].serialnumber}
 		</TD>
-		<TD align="right" class="nobr">
+		<TD class="text-right nobr">
 			<a href="?m=netdevdel&amp;id={$netdevlist[netdevlist].id}" onClick="return confirmLink(this, '{t a=$netdevlist[netdevlist].name}Are you sure, you want to remove device \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<a href="?m=netdevedit&amp;id={$netdevlist[netdevlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 			<a href="?m=netdevadd&amp;id={$netdevlist[netdevlist].id}"><IMG src="img/clone.gif" alt="[ {trans("Clone")} ]" title="[ {trans("Clone")} ]"></A>
@@ -135,12 +143,9 @@
 	</TR>
 	{/if}
 	<TR>
-		<TD COLSPAN="5" ALIGN="right">
-			<B>
-				{trans("Total:")} {$listdata.total|default:"0"}
-			</B>
-		</TD>
-		<TD COLSPAN="1"></TD>
+		<td colspan="6" class="text-right bold">
+			{trans("Total:")} {$listdata.total|default:"0"}
+		</td>
 	</TR>
     </TBODY>
 </TABLE>
