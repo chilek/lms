@@ -519,9 +519,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
 		if ( !empty($invoice['invoice']['recipient_address_id']) ) {
 			global $LMS;
-			$invocie['invoice']['recipient_address_id'] = $LMS->CopyAddress( $invoice['invoice']['recipient_address_id'] );
+			$invoice['invoice']['recipient_address_id'] = $LMS->CopyAddress( $invoice['invoice']['recipient_address_id'] );
 		} else {
-			$invocie['invoice']['recipient_address_id'] = null;
+			$invoice['invoice']['recipient_address_id'] = null;
 		}
 
         $args = array(
