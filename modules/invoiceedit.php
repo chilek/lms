@@ -298,7 +298,7 @@ switch($action)
 				$DB->Execute('DELETE FROM addresses WHERE id = ?;', array($prev_rec_addr));
 			}
 
-			if ( $invoice['recipient_address_id'] ) {
+			if ($invoice['recipient_address_id'] > 0) {
 				$DB->Execute('UPDATE documents SET recipient_address_id = ? WHERE id = ?;',
 							array(
 								$LMS->CopyAddress($invoice['recipient_address_id']),
