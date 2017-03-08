@@ -1421,30 +1421,6 @@ SELECT
 	length(replace(ltrim(textin(bit_out($1::bit(32))), '0'), '0', ''))::smallint;
 $$ LANGUAGE SQL IMMUTABLE;
 
-CREATE VIEW vnetworks AS
-    SELECT h.name AS hostname, ne.*, no.ownerid, a.city_id as location_city, a.street_id as location_street, a.house as location_house, a.flat as location_flat, no.chkmac,
-        inet_ntoa(ne.address) || '/' || mask2prefix(inet_aton(ne.mask)) AS ip, no.id AS nodeid,
-        ( trim(both ' ' from
-            CASE WHEN a.city is not null AND char_length(city) > 0
-            THEN
-                CASE WHEN a.street is not null AND char_length(street) > 0 THEN a.city || ', ' || a.street ELSE a.street END
-            ELSE
-                CASE WHEN a.street is not null AND char_length(street) > 0 THEN a.street ELSE '' END
-            END ||
-            CASE WHEN
-                a.house is not null
-            THEN
-                CASE WHEN a.flat is not null THEN ' ' || a.house || '/' || a.flat ELSE ' ' || a.house END
-            ELSE
-                CASE WHEN a.flat is not null THEN ' ' || a.flat ELSE '' END
-            END
-        )) AS location
-    FROM nodes no
-        LEFT JOIN networks ne ON (ne.id = no.netid)
-        LEFT JOIN hosts h ON (h.id = ne.hostid)
-        LEFT JOIN addresses a ON no.address_id = a.id
-    WHERE no.ipaddr = 0 AND no.ipaddr_pub = 0;
-
 CREATE OR REPLACE FUNCTION broadcast(bigint, bigint) RETURNS bigint AS $$
 SELECT
 	($1::bit(32) |  ~($2::bit(32)))::bigint;
@@ -2306,15 +2282,48 @@ CASE
 END
 ' LANGUAGE SQL;
 
+CREATE VIEW vaddresses AS
+SELECT *,
+    ( trim(both ' ' from
+        CASE WHEN city is not null AND char_length(city) > 0
+            THEN
+                CASE WHEN street is not null AND char_length(street) > 0 THEN city || ', ' || street ELSE street END
+            ELSE
+                CASE WHEN street is not null AND char_length(street) > 0 THEN street ELSE '' END
+            END ||
+        CASE WHEN house is not null
+            THEN
+               CASE WHEN flat is not null THEN ' ' || house || '/' || flat ELSE ' ' || house END
+            ELSE
+               CASE WHEN flat is not null THEN ' ' || flat ELSE '' END
+            END
+)) AS location
+FROM addresses;
+
+CREATE VIEW vnetworks AS
+    SELECT h.name AS hostname, ne.*, no.ownerid, a.city_id as location_city,
+        a.street_id as location_street, a.house as location_house, a.flat as location_flat,
+        no.chkmac, inet_ntoa(ne.address) || '/' || mask2prefix(inet_aton(ne.mask)) AS ip,
+        no.id AS nodeid, a.location
+    FROM nodes no
+        LEFT JOIN networks ne ON (ne.id = no.netid)
+        LEFT JOIN hosts h ON (h.id = ne.hostid)
+        LEFT JOIN vaddresses a ON no.address_id = a.id
+    WHERE no.ipaddr = 0 AND no.ipaddr_pub = 0;
+
 CREATE VIEW customerview AS
     SELECT c.*,
-        a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street, a1.house as building, a1.flat as apartment,
-        a2.country_id as post_countryid, a2.zip as post_zip, a2.city as post_city, a2.street as post_street, a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
-        (CASE WHEN a1.house IS NULL THEN a1.street ELSE (CASE WHEN a1.flat IS NULL THEN a1.street || ' ' || a1.house ELSE a1.street || ' ' || a1.house || '/' || a1.flat END) END) as address,
-        (CASE WHEN a2.house IS NULL THEN a2.street ELSE (CASE WHEN a2.flat IS NULL THEN a2.street || ' ' || a2.house ELSE a2.street || ' ' || a2.house || '/' || a2.flat END) END) as post_address
+        a1.country_id as countryid, a1.zip as zip, a1.city as city,
+        a1.street as street,a1.house as building, a1.flat as apartment,
+        a2.country_id as post_countryid, a2.zip as post_zip,
+        a2.city as post_city, a2.street as post_street, a2.name as post_name,
+        a2.house as post_building, a2.flat as post_apartment,
+        a1.location as address, a2.location as post_address
     FROM customers c
-        JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1 LEFT JOIN addresses a1 ON ca1.address_id = a1.id
-        LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0 LEFT JOIN addresses a2 ON ca2.address_id = a2.id
+        JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1
+        LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
+        LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
+        LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
     WHERE NOT EXISTS (
         SELECT 1 FROM customerassignments a
         JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
@@ -2323,24 +2332,30 @@ CREATE VIEW customerview AS
 
 CREATE VIEW contractorview AS
     SELECT c.*,
-        a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street, a1.house as building, a1.flat as apartment,
-        a2.country_id as post_countryid, a2.zip as post_zip, a2.city as post_city, a2.street as post_street, a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
-        (CASE WHEN a1.house IS NULL THEN a1.street ELSE (CASE WHEN a1.flat IS NULL THEN a1.street || ' ' || a1.house ELSE a1.street || ' ' || a1.house || '/' || a1.flat END) END) as address,
-        (CASE WHEN a2.house IS NULL THEN a2.street ELSE (CASE WHEN a2.flat IS NULL THEN a2.street || ' ' || a2.house ELSE a2.street || ' ' || a2.house || '/' || a2.flat END) END) as post_address
+        a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street,
+        a1.house as building, a1.flat as apartment, a2.country_id as post_countryid,
+        a2.zip as post_zip, a2.city as post_city, a2.street as post_street,
+        a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
+        a1.location as address, a2.location as post_address
     FROM customers c
-        JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1 LEFT JOIN addresses a1 ON ca1.address_id = a1.id
-        LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0 LEFT JOIN addresses a2 ON ca2.address_id = a2.id
+        JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1
+        LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
+        LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
+        LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
     WHERE c.type = 2;
 
 CREATE VIEW customeraddressview AS
     SELECT c.*,
-        a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street, a1.house as building, a1.flat as apartment,
-        a2.country_id as post_countryid, a2.zip as post_zip, a1.city as post_city, a2.street as post_street, a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
-        (CASE WHEN a1.house IS NULL THEN a1.street ELSE (CASE WHEN a1.flat IS NULL THEN a1.street || ' ' || a1.house ELSE a1.street || ' ' || a1.house || '/' || a1.flat END) END) as address,
-        (CASE WHEN a2.house IS NULL THEN a2.street ELSE (CASE WHEN a2.flat IS NULL THEN a2.street || ' ' || a2.house ELSE a2.street || ' ' || a2.house || '/' || a2.flat END) END) as post_address
+        a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street,
+        a1.house as building, a1.flat as apartment, a2.country_id as post_countryid,
+        a2.zip as post_zip, a1.city as post_city, a2.street as post_street,
+        a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
+        a1.location as address, a2.location as post_address
     FROM customers c
-        JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1 LEFT JOIN addresses a1 ON ca1.address_id = a1.id
-        LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0 LEFT JOIN addresses a2 ON ca2.address_id = a2.id
+        JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1
+        LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
+        LEFT JOIN customer_addresses ca2 ON c.id = ca2.customer_id AND ca2.type = 0
+        LEFT JOIN vaddresses a2 ON ca2.address_id = a2.id
     WHERE c.type < 2;
 
 CREATE OR REPLACE FUNCTION int2txt(bigint) RETURNS text AS $$
@@ -2358,47 +2373,19 @@ CREATE VIEW vnodes AS
     SELECT n.*, m.mac,
         a.city_id as location_city, a.street_id as location_street,
         a.house as location_house, a.flat as location_flat,
-        ( trim(both ' ' from
-            CASE WHEN a.city is not null AND char_length(city) > 0
-            THEN
-                CASE WHEN a.street is not null AND char_length(street) > 0 THEN a.city || ', ' || a.street ELSE a.street END
-            ELSE
-                CASE WHEN a.street is not null AND char_length(street) > 0 THEN a.street ELSE '' END
-            END ||
-            CASE WHEN
-                a.house is not null
-            THEN
-                CASE WHEN a.flat is not null THEN ' ' || a.house || '/' || a.flat ELSE ' ' || a.house END
-            ELSE
-                CASE WHEN a.flat is not null THEN ' ' || a.flat ELSE '' END
-            END
-        )) AS location
+        a.location
     FROM nodes n
         LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid)
-        LEFT JOIN addresses a ON n.address_id = a.id
+        LEFT JOIN vaddresses a ON n.address_id = a.id
     WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
 
 CREATE VIEW vmacs AS
-    SELECT n.*, m.mac, m.id AS macid, a.city_id as location_city, a.street_id as location_street,
-        a.house as location_building, a.flat as location_flat,
-        ( trim(both ' ' from
-            CASE WHEN a.city is not null AND char_length(city) > 0
-            THEN
-                CASE WHEN a.street is not null AND char_length(street) > 0 THEN a.city || ', ' || a.street ELSE a.street END
-            ELSE
-                CASE WHEN a.street is not null AND char_length(street) > 0 THEN a.street ELSE '' END
-            END ||
-            CASE WHEN
-                a.house is not null
-            THEN
-                CASE WHEN a.flat is not null THEN ' ' || a.house || '/' || a.flat ELSE ' ' || a.house END
-            ELSE
-                CASE WHEN a.flat is not null THEN ' ' || a.flat ELSE '' END
-            END
-        )) AS location
+    SELECT n.*, m.mac, m.id AS macid, a.city_id as location_city,
+        a.street_id as location_street, a.location,
+        a.house as location_building, a.flat as location_flat
     FROM nodes n
         JOIN macs m ON (n.id = m.nodeid)
-        LEFT JOIN addresses a ON n.address_id = a.id
+        LEFT JOIN vaddresses a ON n.address_id = a.id
     WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
 
 CREATE VIEW teryt_terc AS
@@ -2945,6 +2932,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017030300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017030800');
 
 COMMIT;
