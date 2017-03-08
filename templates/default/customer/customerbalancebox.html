@@ -169,6 +169,13 @@
 				</THEAD>
 				<TBODY>
 				{foreach $balancelist.list as $item}
+				{if count($balancelist.list) >= $datatables_max_records}
+					{if $limit < 0 && $item@iteration <= count($balancelist.list) + $limit}
+					{continue}
+					{elseif $limit > 0 && $item@iteration > $limit}
+					{continue}
+					{/if}
+				{/if}
 				<TR{if $item.docid} data-published="{$item.published}"{/if}>
 					<TD class="nobr">{$item.date}</TD>
 					<TD class="nobr">{$item.username|truncate:16:"...":true}</TD>
