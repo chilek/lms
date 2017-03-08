@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -38,16 +38,15 @@ switch ($_RELOAD_TYPE) {
 	case 'exec':
 		$hosts = $DB->GetAll('SELECT id, name, lastreload, reload, description FROM hosts ORDER BY name');
 
-		if (isset($_GET['setreloads']) && isset($_POST['hosts'])) {
+		if ((isset($_GET['setreloads']) && isset($_POST['hosts'])) || count($hosts) == 1) {
 			$SMARTY->display('header.html');
 
 			echo '<H1>'.$layout['pagetitle'].'</H1>';
 
 			$execlist = explode(';',$_EXECCMD);
 
-			foreach($hosts as $host)
-				if(in_array($host['id'], $_POST['hosts']))
-				{
+			foreach ($hosts as $host)
+				if (count($hosts) == 1 || in_array($host['id'], $_POST['hosts'])) {
 					echo '<H3>'.trans('Host:').' '.$host['name'].'</H3>';
 					echo '<TABLE WIDTH="100%" class="superlight" CELLPADDING="5"><TR><TD class="fall">';
 					foreach($execlist as $execcmd)
@@ -82,16 +81,15 @@ switch ($_RELOAD_TYPE) {
 
 		$reload_sqlquery = ConfigHelper::getConfig('phpui.reload_sqlquery');
 		if (!empty($reload_sqlquery) && $hosts) {
-			if (isset($_GET['setreloads']) && isset($_POST['hosts'])) {
+			if ((isset($_GET['setreloads']) && isset($_POST['hosts'])) || count($hosts) == 1) {
 				$SMARTY->display('header.html');
 
 				$sqlqueries = explode(';', $reload_sqlquery);
 
 				echo '<H1>'.$layout['pagetitle'].'</H1>';
 
-				foreach($hosts as $host)
-					if(in_array($host['id'], $_POST['hosts']))
-					{
+				foreach ($hosts as $host)
+					if (count($hosts) == 1 || in_array($host['id'], $_POST['hosts'])) {
 						echo '<H3>'.trans('Host:').' '.$host['name'].'</H3>';
 						echo '<TABLE WIDTH="100%" class="superlight" CELLPADDING="5"><TR><TD class="fall">';
 						foreach($sqlqueries as $query)
