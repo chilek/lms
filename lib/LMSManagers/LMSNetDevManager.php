@@ -486,9 +486,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				addr.zip as location_zip, addr.country_id as location_country,
 				addr.city as location_city_name, addr.street as location_street_name,
 				addr.city_id as location_city, addr.street_id as location_street,
-				addr.house as location_house, addr.flat as location_flat
+				addr.house as location_house, addr.flat as location_flat, addr.location
 			FROM netdevices d
-				LEFT JOIN addresses addr        ON d.address_id = addr.id
+				LEFT JOIN vaddresses addr       ON d.address_id = addr.id
 				LEFT JOIN invprojects p         ON p.id = d.invprojectid
 				LEFT JOIN netnodes n            ON n.id = d.netnodeid
 				LEFT JOIN location_cities lc    ON lc.id = addr.city_id
@@ -498,20 +498,11 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				. (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '')
                 . ($sqlord != '' ? $sqlord . ' ' . $direction : ''));
 
-		if ($netdevlist) {
+		if ( $netdevlist ) {
 			global $LMS;
 
 			foreach ($netdevlist as $k=>$acc) {
-				$tmp = array('city_name'     => $acc['location_city_name'],
-							'location_house' => $acc['location_house'],
-							'location_flat'  => $acc['location_flat'],
-							'street_name'    => $acc['location_street_name']);
-
-				$location = location_str( $tmp );
-
-				if ( $location ) {
-					$netdevlist[$k]['location'] = $location;
-				} else if ( $acc['ownerid'] ) {
+				if ( !$acc['location'] && $acc['ownerid'] ) {
 					$netdevlist[$k]['location'] = $LMS->getAddressForCustomerStuff( $acc['ownerid'] );
 				}
 			}
@@ -530,18 +521,15 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
         $netdevs = $this->db->GetAll('SELECT nd.id, nd.name, nd.producer, nd.ownerid,
                                          addr.city as city_name, addr.flat as location_flat,
-                                         addr.house as location_house, addr.street as street_name
+                                         addr.house as location_house, addr.street as street_name,
+                                         addr.location
                                      FROM netdevices nd
-                                     LEFT JOIN addresses addr ON nd.address_id = addr.id
+                                     LEFT JOIN vaddresses addr ON nd.address_id = addr.id
                                      ORDER BY name');
 
         if ( $netdevs ) {
             foreach ( $netdevs as $k=>$v ) {
-                $location = location_str( $v );
-
-                if ( $location ) {
-                    $netdevs[$k]['location'] = $location;
-                } else if ( $v['ownerid'] ) {
+                if ( !$v['location'] && $v['ownerid'] ) {
                     $netdevs[$k]['location'] = $LMS->getAddressForCustomerStuff( $v['ownerid'] );
                 }
             }
@@ -575,9 +563,9 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				addr.zip as location_zip, addr.country_id as location_country,
 				addr.city as location_city_name, addr.street as location_street_name,
 				addr.city_id as location_city, addr.street_id as location_street,
-				addr.house as location_house, addr.flat as location_flat
+				addr.house as location_house, addr.flat as location_flat, addr.location
 			FROM netdevices d
-				LEFT JOIN addresses addr           ON addr.id = d.address_id
+				LEFT JOIN vaddresses addr          ON addr.id = d.address_id
 				LEFT JOIN nastypes t               ON (t.id = d.nastype)
 				LEFT JOIN ewx_channels c           ON (d.channelid = c.id)
 				LEFT JOIN location_cities lc       ON (lc.id = addr.city_id)
@@ -587,15 +575,6 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 				LEFT JOIN location_districts ld    ON (ld.id = lb.districtid)
 				LEFT JOIN location_states ls       ON (ls.id = ld.stateid)
 			WHERE d.id = ?', array($id));
-
-		if ($result) {
-			$tmp = array('city_name'     => $result['location_city_name'],
-						'location_house' => $result['location_house'],
-						'location_flat'  => $result['location_flat'],
-						'street_name'    => $result['location_street_name']);
-
-			$result['location'] = location_str( $tmp );
-		}
 
 		// if location is empty and owner is set then heirdom address from owner
 		if ( !$result['location'] && $result['ownerid'] ) {

@@ -93,11 +93,11 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 				addr.name as location_name,
 				addr.city as location_city_name, addr.street as location_street_name,
 				addr.city_id as location_city, addr.street_id as location_street,
-				addr.house as location_house, addr.flat as location_flat
+				addr.house as location_house, addr.flat as location_flat, addr.location
 			FROM voipaccounts v '
 				. (isset($search['phone']) ? 'JOIN voip_numbers n ON n.voip_account_id = v.id' : '')
 				. ' JOIN customerview c ON (v.ownerid = c.id)
-				LEFT JOIN addresses addr           ON addr.id = v.address_id
+				LEFT JOIN vaddresses addr          ON addr.id = v.address_id
 				LEFT JOIN location_cities lc       ON lc.id   = addr.city_id
 				LEFT JOIN location_streets ls      ON ls.id   = addr.street_id
 				LEFT JOIN location_street_types lt ON lt.id   = ls.typeid
@@ -111,18 +111,9 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         if ( $voipaccountlist ) {
             global $LMS;
 
-            foreach ($voipaccountlist as $k=>$acc) {
-                $tmp = array('city_name'      => $acc['location_city_name'],
-                             'location_house' => $acc['location_house'],
-                             'location_flat'  => $acc['location_flat'],
-                             'street_name'    => $acc['location_street_name']);
-
-                $location = location_str( $tmp );
-
-                if ( $location ) {
-                    $voipaccountlist[$k]['location'] = $location;
-                } else if ( $acc['ownerid'] ) {
-                    $voipaccountlist[$k]['location'] = $LMS->getAddressForCustomerStuff( $acc['ownerid'] );
+            foreach ($voipaccountlist as $k=>$v) {
+                if ( !$v['location'] && $v['ownerid'] ) {
+                    $voipaccountlist[$k]['location'] = $LMS->getAddressForCustomerStuff( $v['ownerid'] );
                 }
             }
         }
@@ -342,9 +333,9 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 v.cost_limit, v.address_id, addr.name as location_name,
                 addr.city as location_city_name, addr.street as location_street_name,
                 addr.city_id as location_city, addr.street_id as location_street,
-                addr.house as location_house, addr.flat as location_flat
+                addr.house as location_house, addr.flat as location_flat, addr.location
             FROM voipaccounts v
-                LEFT JOIN addresses addr           ON addr.id = v.address_id
+                LEFT JOIN vaddresses addr          ON addr.id = v.address_id
                 LEFT JOIN location_cities lc       ON lc.id   = addr.city_id
                 LEFT JOIN location_streets ls      ON ls.id   = addr.street_id
                 LEFT JOIN location_street_types lt ON lt.id   = ls.typeid
@@ -356,13 +347,6 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
         );
 
         if ( $result ) {
-            $tmp = array('city_name'      => $result['location_city_name'],
-                         'location_house' => $result['location_house'],
-                         'location_flat'  => $result['location_flat'],
-                         'street_name'    => $result['location_street_name']);
-
-            $result['location'] = location_str( $tmp );
-
             $customer_manager        = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
             $user_manager            = new LMSUserManager($this->db, $this->auth, $this->cache, $this->syslog);
             $result['createdby']     = $user_manager->getUserName($result['creatorid']);
@@ -502,9 +486,9 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 lt.name AS street_type, addr.name as location_name,
                 addr.city as location_city_name, addr.street as location_street_name,
                 addr.city_id as location_city, addr.street_id as location_street,
-                addr.house as location_house, addr.flat as location_flat
+                addr.house as location_house, addr.flat as location_flat, addr.location
             FROM voipaccounts v
-                LEFT JOIN addresses addr           ON addr.id = v.address_id
+                LEFT JOIN vaddresses addr          ON addr.id = v.address_id
                 LEFT JOIN location_cities lc       ON lc.id   = addr.city_id
                 LEFT JOIN location_streets ls      ON ls.id   = addr.street_id
                 LEFT JOIN location_street_types lt ON lt.id   = ls.typeid
@@ -517,12 +501,6 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
         if ( $result['accounts'] ) {
             foreach ($result['accounts'] as $k=>$v) {
-                $tmp = array('city_name'      => $v['location_city_name'],
-                             'location_house' => $v['location_house'],
-                             'location_flat'  => $v['location_flat'],
-                             'street_name'    => $v['location_street_name']);
-
-                $result['accounts'][$k]['location'] = location_str( $tmp );
                 $result['accounts'][$k]['phones']   = $this->db->GetAll('SELECT * FROM voip_numbers WHERE voip_account_id = ?', array($v['id']) );
             }
 
