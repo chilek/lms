@@ -292,9 +292,11 @@ switch($action)
 		$invoice['type'] = $invoice['doctype'];
 
 		$prev_rec_addr = $DB->GetOne('SELECT recipient_address_id FROM documents WHERE id = ?;', array($invoice['id']));
+		if (empty($prev_rec_addr))
+			$prev_rec_addr = -1;
 
 		if ( $prev_rec_addr != $invoice['recipient_address_id'] ) {
-			if ( $prev_rec_addr ) {
+			if ( $prev_rec_addr > 0) {
 				$DB->Execute('DELETE FROM addresses WHERE id = ?;', array($prev_rec_addr));
 			}
 
