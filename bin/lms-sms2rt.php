@@ -157,6 +157,8 @@ $categories = ConfigHelper::getConfig($config_section . '.categories', 'default'
 $categories = preg_split('/\s*,\s*/', trim($categories));
 $lms_url = ConfigHelper::getConfig($config_section . '.lms_url', '', true);
 $service = ConfigHelper::getConfig($config_section . '.service', '', true);
+if (!empty($service))
+	LMSConfig::getConfig()->getSection('sms')->addVariable(new ConfigVariable('service', $service));
 $prefix = ConfigHelper::getConfig($config_section . '.prefix', '', true);
 $newticket_notify = ConfigHelper::checkConfig('phpui.newticket_notify');
 $helpdesk_customerinfo = ConfigHelper::checkConfig('phpui.helpdesk_customerinfo');
