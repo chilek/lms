@@ -92,6 +92,8 @@ version ?.??.?? (????-??-??):
     created from customer sms earlier [chilan]
   - improvement: phpui.helpdesk_customer_notify determines if customer notify checkbox
     should be checked by default (for messages created from customer smses) [chilan]
+  - mprovement: hosts are automatically reloaded after one click if there is only
+    one host in database [chilan]
 
 version 1.11.21 (2016-10-14):
 
