@@ -517,7 +517,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				account, inv_header, inv_footer, inv_author, inv_cplace
 				FROM vdivisions WHERE id = ? ;', array($invoice['customer']['divisionid']));
 
-		if ( !empty($invoice['invoice']['recipient_address_id']) ) {
+		if ($invoice['invoice']['recipient_address_id'] > 0) {
 			global $LMS;
 			$invoice['invoice']['recipient_address_id'] = $LMS->CopyAddress( $invoice['invoice']['recipient_address_id'] );
 		} else {
