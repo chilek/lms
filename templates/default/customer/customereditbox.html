@@ -104,7 +104,7 @@
 	{$addr_counter = 0}
 
 	<tr>
-		<td style="width: 1%;" class="valign-top"><img src="img/home.gif" alt=""></td>
+		<td style="width: 1%;" class="valign-top"><img src="img/home.gif" alt="" title="{trans('billing address')}"></td>
 		<td style="width: 99%;">
 			{foreach $customerinfo.addresses as $v}
 				{if $v.location_address_type == $smarty.const.BILLING_ADDRESS}
@@ -117,7 +117,7 @@
 	</tr>
 
 	<tr>
-		<td style="width: 1%;" class="valign-top"><img src="img/post.gif" alt=""></td>
+		<td style="width: 1%;" class="valign-top"><img src="img/post.gif" alt="" title="{trans('postal adress')}"></td>
 		<td style="width: 99%;">
 			{$postal_addr = 0}
 			{foreach $customerinfo.addresses as $v}
@@ -143,7 +143,11 @@
 		{if $v.location_address_type != $smarty.const.BILLING_ADDRESS && $v.location_address_type != $smarty.const.POSTAL_ADDRESS }
 		<tr>
 			<td style="width: 1%;" class="valign-top">
-				<img src="img/{if $v.location_address_type == DEFAULT_LOCATION_ADDRESS}pin_blue.png{else}location.png{/if}" alt="" class="location-box-image">
+				{if $v.location_address_type == $smarty.const.DEFAULT_LOCATION_ADDRESS}
+					<img src="img/pin_blue.png" alt="" title="{trans('default location address')}" class="location-box-image">
+				{else}
+					<img src="img/location.png" alt="" title="{trans('location/recipient address')}" class="location-box-image">
+				{/if}
 			</td>
 			<td style="width: 99%;">
 				{$v.prefix = "customerdata[addresses]["|cat:$addr_counter|cat:"]"}
@@ -159,7 +163,7 @@
 	<tr>
 		<td></td>
 		<td>
-			<span class="lms-ui-button locbox-addnew" data-prefix="customerdata">{trans('Dodaj adres')} &raquo;&raquo;&raquo;</span><br><br>
+			<span class="lms-ui-button locbox-addnew" data-prefix="customerdata">{trans('Add address')} &raquo;&raquo;&raquo;</span><br><br>
 		</td>
 	</tr>
 

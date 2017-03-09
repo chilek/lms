@@ -2643,6 +2643,7 @@ $_LANG['Activation'] = 'Aktywacja';
 $_LANG['postal address'] = 'adres korespondencyjny';
 $_LANG['billing address'] = 'adres klienta';
 $_LANG['default location address'] = 'domyślny adres lokalizacyjny';
+$_LANG['location/recipient address'] = 'adres lokalizacji/odbiorcy';
 $_LANG['location/recipient'] = 'lokalizacja/odbiorca';
 $_LANG['Recipient address:'] = 'Adres odbiorcy';
 $_LANG['Add assignment'] = 'Dodaj powiązanie';

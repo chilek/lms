@@ -74,12 +74,10 @@ $(function() {
         var flat   = box.find('[data-address="flat"]').val();
 
         var location = location_str( city, street, house, flat );
+        location = location.length > 0 ? location : '...';
 
-        if ( location.length > 0 ) {
-            box.find('.address-full').text( location );
-        } else {
-            box.find('.address-full').text( '...' );
-        }
+        box.find('.address-full').text( location );
+        box.find('[data-address="location"]').val( location );
     });
 
     /*!
@@ -99,13 +97,15 @@ $(function() {
 
         // insert data
         var row_content = '';
+        var uid = lms_uniqid();
 
-        row_content += '<tr>';
-        row_content += '<td class="valign-top"><img src="img/location.png" alt="" class="location-box-image"></td>';
-        row_content += '<td>' + data + '</td>';
-        row_content += '</tr>';
+        row_content += '<tr><td class="valign-top">';
+        row_content += '<img src="img/location.png" alt="" class="location-box-image" title="' + lmsMessages['locationRecipientAddress'] + '" id="' + uid + '"></td>';
+        row_content += '<td>' + data + '</td></tr>';
 
         $(container).before( row_content );
+
+        $( '#'+uid ).tooltip().removeAttr('id');
     }
 
     /*!
@@ -163,21 +163,28 @@ $(function() {
 
         // set all image source as empty
         $( $('.location-box-image') ).each(function() {
-            $(this).attr('src', 'img/location.png');
+            $(this).attr('src'  , 'img/location.png')                              // change icon source
+                   .attr('title', lmsMessages['locationRecipientAddress'])         // update icon title
+                   .tooltip();                                                     // init LMS tooltip
         });
 
         // unmark all checkboxes
         $( $('.lmsui-address-box-def-address') ).each(function() {
-            $(this).prop('checked', false);
+            $(this).prop('checked', false);                                        // uncheck all default address checkboxes
         });
 
         // toggle current clicked checkbox
         if ( state == true ) {
-            $(this).prop('checked', true);
+            $(this).prop('checked', true);                                         // check default address checkbox
 
             var box = getLocationBox(this);
-            box.closest('tr').find('.location-box-image').attr('src', 'img/pin_blue.png'); // change icon
-            box.find("input[data-address='address_type']").val(3);                         // update location type
+            box.closest('tr').find('.location-box-image')
+                             .attr('src'  , 'img/pin_blue.png')                    // change icon source
+                             .attr('title', lmsMessages['defaultLocationAddress']) // update icon title
+                             .tooltip();                                           // init LMS tooltip
+
+            box.find("input[data-address='address_type']").val(3);                 // update address type
+                                                                                   // 3 = DEFAULT_LOCATION_ADDRESS
         }
     });
 
