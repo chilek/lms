@@ -117,7 +117,7 @@ $access_table = array(
 	),
 	'voip_account_management' => array(
 		'label' => trans('voip accounts management'),
-		'allow_regexp' => '^(voipimport|voipaccount(list|search|info|add|del|edit))$',
+		'allow_regexp' => '^(voipimport|voipaccount(list|search|info|add|del|edit|rules))$',
 	),
 	'userpanel_management' => array(
 		'label' => trans('Userpanel management'),
