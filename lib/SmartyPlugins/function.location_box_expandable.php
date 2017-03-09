@@ -65,9 +65,9 @@ function smarty_function_location_box_expandable( $params = array(), $template )
     echo '</div>';
 
     if ( isset($params['data']['location_address_type']) ) {
-        echo '<input type="hidden" value="' . $params['data']['location_address_type']  . '" name="' . $params['data']['prefix'] . '[location_address_type]">';
+        echo '<input type="hidden" value="' . $params['data']['location_address_type']  . '" name="' . $params['data']['prefix'] . '[location_address_type]" data-address="address_type">';
     } else {
-        echo '<input type="hidden" value="' . LOCATION_ADDRESS  . '" name="' . $params['data']['prefix'] . '[location_address_type]">';
+        echo '<input type="hidden" value="' . LOCATION_ADDRESS .                          '" name="' . $params['data']['prefix'] . '[location_address_type]" data-address="address_type">';
     }
 
     ++$i;

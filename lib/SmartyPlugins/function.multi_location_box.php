@@ -73,7 +73,7 @@ function smarty_function_multi_location_box( $params = array(), $template )
         }
 
         echo '</table>';
-        echo '<span class="lms-ui-button locbox-addnew">Dodaj adres &raquo;&raquo;&raquo;</span>';
+        echo '<span class="lms-ui-button locbox-addnew">' ,trans('Add address'), ' &raquo;&raquo;&raquo;</span>';
         echo '</div>';
     }
 }

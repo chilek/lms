@@ -99,6 +99,7 @@ $_LANG['Settings:'] = 'Ustawienia:';
 $_LANG['Settings'] = 'Ustawienia';
 $_LANG['Add'] = 'Dodaj';
 $_LANG['Add:'] = 'Dodaj:';
+$_LANG['Add address'] = 'Dodaj adres';
 $_LANG['Add group:'] = 'Dodaj grupę:';
 $_LANG['Add group'] = 'Dodaj grupę';
 $_LANG['Add pool'] = 'Dodaj pulę';

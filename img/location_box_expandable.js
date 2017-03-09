@@ -101,7 +101,7 @@ $(function() {
         var row_content = '';
 
         row_content += '<tr>';
-        row_content += '<td class="valign-top"><img src="" alt="" class="location-box-image"></td>';
+        row_content += '<td class="valign-top"><img src="img/location.png" alt="" class="location-box-image"></td>';
         row_content += '<td>' + data + '</td>';
         row_content += '</tr>';
 
@@ -151,9 +151,19 @@ $(function() {
     $('body').on('click', '.lmsui-address-box-def-address', function() {
         var state = this.checked;
 
+        // mark old default location address as normal location address
+        // open definitions.php for more
+        // 3 = DEFAULT_LOCATION_ADDRESS
+        // 2 = LOCATION_ADDRESS
+        $( $("input[data-address='address_type']") ).each(function() {
+            if ( $(this).val() == 3 ) {
+                $(this).val(2);
+            }
+        });
+
         // set all image source as empty
         $( $('.location-box-image') ).each(function() {
-            $(this).attr('src', '');
+            $(this).attr('src', 'img/location.png');
         });
 
         // unmark all checkboxes
@@ -164,7 +174,10 @@ $(function() {
         // toggle current clicked checkbox
         if ( state == true ) {
             $(this).prop('checked', true);
-            getLocationBox(this).closest('tr').find('.location-box-image').attr('src', 'img/location.png');
+
+            var box = getLocationBox(this);
+            box.closest('tr').find('.location-box-image').attr('src', 'img/pin_blue.png'); // change icon
+            box.find("input[data-address='address_type']").val(3);                         // update location type
         }
     });
 

@@ -75,9 +75,7 @@
 		{if $v.location_address_type != $smarty.const.BILLING_ADDRESS && $v.location_address_type != $smarty.const.POSTAL_ADDRESS}
 		<tr>
 			<td style="width: 1%;">
-				{if $v.location_address_type == $smarty.const.DEFAULT_LOCATION_ADDRESS}
-				<img src="img/location.png" alt="">
-				{/if}
+				<img src="img/{if $v.location_address_type == $smarty.const.DEFAULT_LOCATION_ADDRESS}pin_blue.png{else}location.png{/if}" alt="">
 			</td>
 			<td style="width: 99%;">{$v.location}</td>
 		</tr>
