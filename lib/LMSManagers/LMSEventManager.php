@@ -125,4 +125,9 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 return $list2;
         }
     }
+
+    public function GetCustomerIdByTicketId($id)
+    {
+        return $this->db->GetOne('SELECT customerid FROM rttickets WHERE id=?', array($id));
+    }
 }

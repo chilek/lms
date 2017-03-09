@@ -37,9 +37,12 @@
 	}
 //-->
 </SCRIPT>
-<H1>{$layout.pagetitle}</H1>
-<P align="CENTER">
+
+{if empty($eventticketid)}<H1>{$layout.pagetitle}</H1>{else}<H1>{trans("Add new event to request:")} #{$eventticketid} {/if}</H1>
+
+<P class="text-center" >
 <FORM method="POST" action="?m=eventadd" name="event" id="event">
+<INPUT type="text" name="event[ticketid]" id="event[ticketid]" value="{$eventticketid}" style="display: none">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -47,8 +50,8 @@
 		<TD width="1%">
 			<IMG src="img/calendar.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Title:")}</B>
+		<TD width="1%" class="bold">
+			{trans("Title:")}
 		</TD>
 		<TD width="98%">
 			<INPUT type="text" name="event[title]" id="event[title]" value="{$event.title}" size="50" required {tip text="Enter event title" trigger="title"}>
@@ -60,8 +63,8 @@
 		<TD width="1%">
 			<IMG src="img/time.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Time:")}</B>
+		<TD width="1%" class="bold">
+			{trans("Time:")}
 		</TD>
 		<TD width="98%">
 {*			<INPUT type="hidden" name="event[date]" value="{$event.date}">*}
@@ -83,8 +86,8 @@
 		<TD width="1%">
 			<IMG src="img/info.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Description:")}</B>
+		<TD width="1%" class="bold">
+			{trans("Description:")}
 		</TD>
 		<TD width="98%">
 			<TEXTAREA name="event[description]" class="lms-ui-wysiwyg-editor" cols="50" rows="5" {tip text="Enter additional information (optional)"}{if isset($event.wysiwyg.description)} data-wysiwyg="{$event.wysiwyg.description}"{/if}>{$event.description}</TEXTAREA>
@@ -94,10 +97,10 @@
 		<TD width="1%">
 			<IMG src="img/access.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Status:")}</B>
+		<TD width="1%" clas="bold">
+			{trans("Status:")}
 		</TD>
-		<TD width="98%" nowrap>
+		<TD width="98%" class="nobr">
 			<INPUT type="checkbox" name="event[status]" id="event_status" value="1" {tip text="Select event's status"}{if $event.status}CHECKED{/if}> <label for="event_status">{trans("private")}</label>
 		</TD>
 	</TR>
@@ -105,10 +108,10 @@
 		<TD width="1%">
 			<IMG src="img/desc.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Type:")}</B>
+		<TD width="1%" class="bold">
+			{trans("Type:")}
 		</TD>
-		<TD width="98%" nowrap>
+		<TD width="98%" class="nobr">
 			<SELECT name="event[type]" size="1">
 				{foreach from=$_EVENTTYPES key=key item=type}
 					<OPTION value="{$key}" {if $key == $event.type || (!$event.type && $key == $smarty.const.EVENT_OTHER)}SELECTED{/if}>{$type}</OPTION>
@@ -120,35 +123,47 @@
 		<TD width="1%">
 			<IMG src="img/customer.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Customer:")}</B>
+		<TD width="1%" class="bold">
+			{trans("Customer:")}
 		</TD>
-		<TD width="98%" nowrap>
-			{customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer(this);"}
+		<TD width="98%" class="nobr">
+			{if empty($eventticketid) && empty($customerid)}
+                                                        {customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer(this);"}
+                                                {else}
+                                                    {if $customerid != 0}
+                                                        {$customerlist[$customerid].customername}:({$customerid})
+                                                    {else}
+                                                        {trans("Request not assigned to any customer.")}
+                                                    {/if}
+                                                {/if}
 		</TD>
 	</TR>
 	<TR>
 		<TD width="1%">
 			<IMG src="img/node.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Node:")}</B>
+		<TD width="1%" class="bold">
+			{trans("Node:")}
 		</TD>
-		<TD width="98%" nowrap>
+		<TD width="98%" class="nobr">
+                                {if empty($eventticketid) && empty($customerid)}
 		    <select id="nodes_location_sel" name="event[nodeid]" {tip text="Select node location"}>
 			{foreach from=$nodes_location item=item}
 			    <option value="{$item.id}"{if $item.id == $data.nodeid} selected{/if}>{$item.location}</option>
 			{/foreach}
 		    </select>
 		    <label>{trans("Use customer location:")} <input type="checkbox" name="event[customer_location]"></label>
+                                {else}
+                                    {trans("Request not assigned to any customer location.")}
+                                {/if}
 		</TD>
 	</TR>
 	<TR>
 		<TD width="1%">
 			<IMG src="img/users.gif" alt="">
 		</TD>
-		<TD width="1%">
-			<B>{trans("Users:")}</B>
+		<TD width="1%" class="bold">
+			{trans("Users:")}
 		</TD>
 
 		<TD style="width: 98%;" class="multiselect nobr">
@@ -158,7 +173,7 @@
 				{/foreach}
 			</SELECT>
 
-			<div style="float: left; padding-top: 30px;">
+			<div style="float: left; padding-top: 5px;">
 				<label>
 					<input type="radio" name="event[usergroup]" id="usergroup_0" value="0" onChange="xajax_getUsersForGroup(0)"{if empty($event.usergroup)} checked{/if}>
 					{trans("All users")}<br>
@@ -172,12 +187,81 @@
 			</div>
 		</TD>
 	</TR>
+                {if empty($eventticketid) && empty($customerid)}
 	<TR>
-		<TD align="right" colspan="3">
-			<A href="javascript:document.event.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
-			<A href="?m=eventlist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A><BR>
-			<INPUT type="checkbox" name="event[reuse]" id="reuse" value="ON" {if $event.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when this event is saved")}</label>
-		</TD>
+                <TD>
+                    <IMG src="img/ticket.gif" alt="">
+                </TD>
+                <TD class="bold">
+                    {trans("Add new request to Helpdesk")}
+                </TD>
+                <TD>
+                    <input type="checkbox" name="event[helpdesk]" value="1" checked="checked" />
+                </TD>
+                </TR>
+                {/if}
+                <TR>
+                <TD>
+                    <IMG src="img/queue.gif" alt="">
+                </TD>
+                <TD class="bold">
+                    {trans("Queue:")}
+                </TD>
+                <TD>
+                    {if empty($eventticketid) && empty($customerid)}
+                    <SELECT size="1" name="event[rtqueue]" {tip text="Select queue" trigger="queue"}>
+                    {foreach from=$queuelist item=item}
+                        <OPTION value="{$item.id}" {if $item.id == '6'}SELECTED{/if}>{$item.name}</OPTION>
+                    {/foreach}
+                    {else}
+                        {$tqname}
+                    {/if}
+                    </SELECT>
+                </TD>
+                </TR>
+                {if empty($eventticketid) && empty($customerid)}
+	<TR {tip trigger="categories"}>
+                    <TD width='1%'>
+                        <IMG src="img/queue.gif" alt="">
+                    </TD>
+                    <TD class='bold' width='1%'>
+                        {trans("Categories:")}
+                    </TD>
+                    <TD>
+                    {if isset($error['categories'])}{$error['categories']}<BR>{/if}
+                    {foreach from=$categories item=category}
+                        <INPUT type="checkbox" name="event[categories][{$category.id}]" id="cat{$category.id}" value="1" {if !empty($category.checked) || $category.id =='0' }checked{/if}>
+                        <label for="cat{$category.id}">{$category.name}</label><BR>
+                    {/foreach}
+                    </TD>
+	</TR>
+                <TR>
+                    <TD rowspan="4"><IMG src="img/name.gif" alt=""></TD>
+                    <TD class="bold">{trans("Submitter:")}</TD>
+                    <TD></TD>
+                </TR>
+                <TR>
+                    <TD width="1%">{trans("Name/Surname:")}</TD>
+                    <TD width="99%">
+                        <INPUT type="text" name="event[surname]" value="{$ticket.surname}" {tip text="Select customer from list or enter his data if is not a customer" trigger="surname"}>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD width="1%">{trans("Firstname")}:</TD>
+                    <TD width="99%"><INPUT type="text" name="event[name]" value="{$ticket.name}" {tip text="select customer from list or enter his data if is not a customer"}></TD>
+                </TR>
+                <TR>
+                    <TD width="1%">{trans("E-mail:")}</TD>
+                    <TD width="99%"><INPUT type="text" name="event[email]" value="{$ticket.email}" {tip trigger="email" text="select customer from list or enter his data if is not a customer"}></TD>
+                </TR>
+                {/if}
+                <TR>
+                    <TD colspan="2"></TD>
+                    <TD class="text-right">
+                        <A href="javascript:document.event.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
+                        <A href="?m=eventlist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A><BR>
+                        <INPUT type="checkbox" name="event[reuse]" id="reuse" value="ON" {if $event.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when this event is saved")}</label>
+                    </TD>
 	</TR>
     </TBODY>
 </TABLE>

@@ -197,13 +197,13 @@
 		<TD>
 			<IMG src="img/note.gif" alt="">
 		</TD>
-		<TD class="bold">
+		<TD class="bold nobr">
 			{trans("Note:")}
 		</TD>
 		<TD>
 			<TABLE WIDTH="95%" CELLPADDING="5">
 				<TR>
-					<TD BGCOLOR="#F4F0EC">
+					<TD class="fall superlight">
 						{$event.note|replace:"\n":"<BR>"}
 					</TD>
 				</TR>
@@ -226,6 +226,21 @@
 		</TD>
 	</TR>
 {/if}
+	<TR>
+		<TD>
+                                    <IMG src="img/helpdesk.png" alt="">
+		</TD>
+		<TD class="bold">
+                                    {trans("Helpdesk assignment:")}
+                                </TD>
+		<TD>
+                                    {if isset($event.ticketid)}
+                                        <a href="?m=rtticketview&id={$event.ticketid}">#{$event.ticketid}</a>
+                                    {else}
+                                        {trans("This event is not assigned to any helpdesk request.")}
+                                    {/if}
+		</TD>
+	</TR>
 	<TR>
 		<TD class="text-right" colspan="3">
 			<A href="?m=eventedit&id={$event.id}"><IMG src="img/edit.gif" alt=""> {trans("Edit")}</A>

@@ -1735,6 +1735,8 @@ CREATE TABLE events (
 	type		smallint	DEFAULT 1 NOT NULL,
 	nodeid		integer		DEFAULT NULL
 	    REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	ticketid integer DEFAULT NULL,
+        CONSTRAINT event_ticketid_ritickets_id_fk REFERENCES rttickets (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
 CREATE INDEX events_date_idx ON events(date);
@@ -2932,6 +2934,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017030800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017031000');
 
 COMMIT;

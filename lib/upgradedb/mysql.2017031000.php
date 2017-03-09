@@ -1,11 +1,9 @@
 <?php
 
 /*
- *  LMS version 1.11-git
+ * LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
- *
- *  Please, see the doc/AUTHORS for more information about authors!
+ *  (C) Copyright 2001-2016 LMS Developers
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -21,17 +19,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
  */
 
-/**
- * LMSEventManagerInterface
- * 
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
- */
-interface LMSEventManagerInterface
-{
-    public function EventSearch($search, $order = 'date,asc', $simple = false);
+$this->BeginTrans();
 
-    public function GetCustomerIdByTicketId($id);
-}
+$this->Execute("ALTER TABLE events ADD COLUMN ticketid int(11)");
+$this->Execute("ALTER TABLE events ADD CONSTRAINT 'event_ticketid_ritickets_id_fk' FOREIGN KEY (ticketid) REFERENCES ticketid (id) ON DELETE SET NULL ON UPDATE CASCADE");
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017031000', 'dbversion'));
+
+$this->CommitTrans();
+
+?>

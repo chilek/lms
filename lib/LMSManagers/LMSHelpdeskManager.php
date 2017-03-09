@@ -113,6 +113,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . ($owner ? ' AND t.owner = ' . intval($owner) : '')
                 . ($sqlord != '' ? $sqlord . ' ' . $direction : ''))) {
             foreach ($result as $idx => $ticket) {
+		$ticket['eventcount'] = $this->db->GetOne('SELECT COUNT(id) FROM events WHERE ticketid = ?', array($ticket['id']));
                 //$ticket['requestoremail'] = preg_replace('/^.*<(.*@.*)>$/', '\1',$ticket['requestor']);
                 //$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
                 if (!$ticket['customerid'])
@@ -176,6 +177,26 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function GetQueueIdByName($queue)
     {
         return $this->db->GetOne('SELECT id FROM rtqueues WHERE name=?', array($queue));
+    }
+
+    public function GetQueueNameByTicketId($id)
+    {
+        return $this->db->GetOne('SELECT name FROM rtqueues '
+                . 'WHERE id=(SELECT queueid FROM rttickets WHERE id=?)', array($id));
+    }
+
+    public function GetEventsByTicketId($id)
+    {
+        return $this->db->GetAll('SELECT events.id as id, title, description, note, date, begintime, endtime, '
+                . 'userid, userid AS uad, customerid, private, closed, closeduserid, events.type, '
+                . ''.$this->db->Concat('customers.name',"' '",'customers.lastname').' AS customername, '
+                . ''.$this->db->Concat('users.firstname',"' '",'users.lastname').' AS username, '
+                . ''.$this->db->Concat('u.firstname',"' '",'u.lastname').' AS closedusername '
+                . 'FROM events '
+                . 'LEFT JOIN customers ON (customerid = customers.id) '
+                . 'LEFT JOIN users ON (userid = users.id) '
+                . 'LEFT JOIN users u ON (closeduserid = u.id) '
+                . 'WHERE ticketid = ? ORDER BY events.id ASC', array($id));
     }
 
     public function GetQueueName($id)
