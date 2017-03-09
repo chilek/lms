@@ -143,7 +143,7 @@
 		{if $v.location_address_type != $smarty.const.BILLING_ADDRESS && $v.location_address_type != $smarty.const.POSTAL_ADDRESS }
 		<tr>
 			<td style="width: 1%;" class="valign-top">
-				<img src="{if $v.location_address_type == DEFAULT_LOCATION_ADDRESS}img/location.png{/if}" alt="" class="location-box-image">
+				<img src="img/{if $v.location_address_type == DEFAULT_LOCATION_ADDRESS}pin_blue.png{else}location.png{/if}" alt="" class="location-box-image">
 			</td>
 			<td style="width: 99%;">
 				{$v.prefix = "customerdata[addresses]["|cat:$addr_counter|cat:"]"}
@@ -159,7 +159,7 @@
 	<tr>
 		<td></td>
 		<td>
-			<span class="lms-ui-button locbox-addnew" data-prefix="customerdata">Dodaj adres &raquo;&raquo;&raquo;</span><br><br>
+			<span class="lms-ui-button locbox-addnew" data-prefix="customerdata">{trans('Dodaj adres')} &raquo;&raquo;&raquo;</span><br><br>
 		</td>
 	</tr>
 

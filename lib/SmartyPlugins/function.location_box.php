@@ -198,7 +198,7 @@ function smarty_function_location_box( $params = array(), $template )
         echo '<tr>
                  <td colspan="2">
                      <label>
-                         <input type="checkbox" class="lmsui-address-box-def-address" name="' . $input_name_def_address . '"' . ($params['location_address_type'] == DEFAULT_LOCATION_ADDRESS ? 'checked' : '') . '>
+                         <input type="checkbox" class="lmsui-address-box-def-address" name="' . $input_name_def_address . '"' . ($params['location_address_type'] == DEFAULT_LOCATION_ADDRESS || isset($params['location_def_address']) ? 'checked' : '') . '>
                          ' . trans('default location address') . '
                      </label>
                  </td>

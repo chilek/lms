@@ -171,24 +171,27 @@
 					</td>
 				</tr>
 
+				{foreach $customeradd.addresses as $v}
+				{if $v.location_address_type != $smarty.const.BILLING_ADDRESS && $v.location_address_type != $smarty.const.POSTAL_ADDRESS }
 				<tr>
-					<td style="width: 1%;"></td>
+					<td style="width: 1%;" class="valign-top">
+						<img src="img/{if $v.location_address_type == DEFAULT_LOCATION_ADDRESS || isset($v.location_def_address)}pin_blue.png{else}location.png{/if}" alt="" class="location-box-image">
+					</td>
 					<td style="width: 99%;">
-						<div class="customer-location-addresses-box">
-							<div class="addresses-container">
-								{foreach $customeradd.addresses as $v}
-									{if $v.location_address_type != $smarty.const.BILLING_ADDRESS && $v.location_address_type != $smarty.const.POSTAL_ADDRESS }
-										{$v.prefix = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
-										{$v.default_type = 1}
-										{$v.clear_button = 1}
-										{$addr_counter = $addr_counter + 1}
-										{location_box_expandable data=$v}
-									{/if}
-								{/foreach}
-							</div>
+						{$v.prefix = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
+						{$v.default_type = 1}
+						{$v.clear_button = 1}
+						{$addr_counter = $addr_counter + 1}
+						{location_box_expandable data=$v}
+					</td>
+				</tr>
+				{/if}
+				{/foreach}
 
-							<span class="lms-ui-button locbox-addnew" data-prefix="customeradd">Dodaj adres &raquo;&raquo;&raquo;</span><br><br>
-						</div>
+				<tr>
+					<td></td>
+					<td>
+						<span class="lms-ui-button locbox-addnew" data-prefix="customeradd">{trans('Add address')} &raquo;&raquo;&raquo;</span><br><br>
 					</td>
 				</tr>
 
