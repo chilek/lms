@@ -127,6 +127,9 @@ if ( typeof $ !== 'undefined' ) {
             }
 
             var city   = box.find("input[data-address='city-hidden']").val();
+            if (city == '' && lmsSettings.defaultTerytCity) {
+                city = lmsSettings.defaultTerytCity;
+            }
             var street = box.find("input[data-address='street-hidden']").val();
 
             openSelectWindow('?m=chooselocation&city=' + city + '&street=' + street + "&boxid=" + box.attr('id'), 'chooselocation', 350, 200, 'true');

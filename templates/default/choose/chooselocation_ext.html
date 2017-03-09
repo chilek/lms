@@ -262,7 +262,7 @@ document.search.searchcity.focus();
 // select city and street from selects
 $( '#state_sel'     ).val( {$data.stateid} );
 $( '#district_sel'  ).val( {$data.districtid} );
-$( '#city_sel'      ).val( location_box.find( "input[data-address='city-hidden']"   ).val() );
+$( '#city_sel'      ).val( {$data.cityid} ).val() );
 $( '#street_sel'    ).val( location_box.find( "input[data-address='street-hidden']" ).val() );
 $( '#location-name' ).val( location_box.find( "input[data-address='location-name']" ).val() );
 
