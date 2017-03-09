@@ -122,8 +122,12 @@ if ( typeof $ !== 'undefined' ) {
 
             var box = $( this ).closest( ".lmsui-address-box" );
 
+            // if teryt checkbox is not checked during teryt button click then
+            // we check it automatically for user convenience
             if ( ! box.find("input[data-address='teryt-checkbox']").is(':checked') ) {
-                return 0;
+                box.find("input[data-address='teryt-checkbox']").prop('checked', true);
+                // simulate click for update input state
+                $( '.lmsui-address-teryt-checkbox' ).trigger( 'change' );
             }
 
             var city   = box.find("input[data-address='city-hidden']").val();
