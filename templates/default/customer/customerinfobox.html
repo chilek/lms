@@ -55,7 +55,9 @@
 		{if $v.location_address_type == $smarty.const.BILLING_ADDRESS}
 		<tr>
 			<td style="width: 1%;"><img src="img/home.gif" alt="" title="{trans('billing address')}"></td>
-			<td style="width: 99%;">{$v.location}</td>
+			<td style="width: 99%;">
+				<span title="{trans('billing address')}">{$v.location}</span>
+			</td>
 		</tr>
 		{break}
 		{/if}
@@ -65,7 +67,9 @@
 		{if $v.location_address_type == $smarty.const.POSTAL_ADDRESS}
 		<tr>
 			<td style="width: 1%;"><img src="img/post.gif" alt="" title="{trans('postal address')}"></td>
-			<td style="width: 99%;">{$v.location}</td>
+			<td style="width: 99%;">
+				<span title="{trans('postal address')}">{$v.location}</span>
+			</td>
 		</tr>
 		{break}
 		{/if}
@@ -74,14 +78,20 @@
 	{foreach $customerinfo.addresses as $v}
 		{if $v.location_address_type != $smarty.const.BILLING_ADDRESS && $v.location_address_type != $smarty.const.POSTAL_ADDRESS}
 		<tr>
+			{if $v.location_address_type == $smarty.const.DEFAULT_LOCATION_ADDRESS}
+				{$icon  = 'img/pin_blue.png'}
+				{$title = trans('default location address')}
+			{else}
+				{$icon  = 'img/location.png'}
+				{$title = trans('location/recipient address')}
+			{/if}
+
 			<td style="width: 1%;">
-				{if $v.location_address_type == $smarty.const.DEFAULT_LOCATION_ADDRESS}
-					<img src="img/pin_blue.png" alt="" title="{trans('default location address')}">
-				{else}
-					<img src="img/location.png" alt="" title="{trans('location/recipient address')}">
-				{/if}
+				<img src="{$icon}" alt="" title="{$title}">
 			</td>
-			<td style="width: 99%;">{$v.location}</td>
+			<td style="width: 99%;">
+				<span title="{$title}">{$v.location}</span>
+			</td>
 		</tr>
 		{/if}
 	{/foreach}

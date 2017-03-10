@@ -101,23 +101,13 @@ LmsUiIconSelectMenu.prototype._appendAddressList = function( address_list ) {
 
     $.each( address_list, function(index) {
         switch ( this['location_address_type'] ) {
-            case "0": // postal address
-                icon = "img/post.gif";
-            break;
+            case "0": icon = "img/post.gif";     break; // postal address
+            case "1": icon = "img/customer.gif"; break; // billing address
+            case "2": icon = "img/location.png"; break; // location/recipient address
+            case "3": icon = "img/pin_blue.png"; break; // default location address
+            case "4": icon = "img/info3.gif";    break; // invoice address
 
-            case "1": // billing address
-                icon = "img/customer.gif";
-            break;
-
-            case "3": // default location address
-                icon = "img/location.png";
-            break;
-
-            case "4": // default location address
-                icon = "img/info3.gif";
-            break;
-
-            default:  // location address (no icon)
+            default:
                 icon = "";
         }
 
