@@ -22,6 +22,9 @@
  *  $Id$
  */
 
+var _lms_ui_address_ico     = 'img/location.png';
+var _lms_ui_address_def_ico = 'img/pin_blue.png';
+
 /*!
  * \brief File used by function.location_box_expandable.php smarty plugin.
  */
@@ -31,15 +34,13 @@ $(function() {
     /*!
      * \brief Show/hide single address box.
      */
-    $('body').on('click', '.toggle-address', function() {
+    $('body').on('click', '.address-full', function() {
         $( '#' + $(this).attr( 'data-target' ) ).slideToggle(200);
 
         if ( $(this).attr('data-state') == 'closed' ) {
-            $(this).attr('data-state', 'opened')
-                   .text('–');
+            $(this).attr('data-state', 'opened');
         } else {
-            $(this).attr('data-state', 'closed')
-                   .text('+');
+            $(this).attr('data-state', 'closed');
         }
     });
 
@@ -72,12 +73,13 @@ $(function() {
         var street = box.find('[data-address="street"]').val();
         var house  = box.find('[data-address="house"]').val();
         var flat   = box.find('[data-address="flat"]').val();
+        var adtype = box.find('[data-address="address_type"]').val();
 
         var location = location_str( city, street, house, flat );
         location = location.length > 0 ? location : '...';
 
-        box.find('.address-full').text( location );
         box.find('[data-address="location"]').val( location );
+        box.find('.address-full').text( location );
     });
 
     /*!
@@ -91,16 +93,18 @@ $(function() {
     function insertRow( container, data ) {
         var prev_id = $(data).attr('id');
         var id = lms_uniqid();
+        var uid = lms_uniqid();
 
         // replace old id with current generated
         data = String(data).replace( prev_id, id );
 
         // insert data
         var row_content = '';
-        var uid = lms_uniqid();
 
-        row_content += '<tr><td class="valign-top">';
-        row_content += '<img src="img/location.png" alt="" class="location-box-image" title="' + lmsMessages['locationRecipientAddress'] + '" id="' + uid + '"></td>';
+        row_content += '<tr>';
+        row_content += '<td class="valign-top">';
+        row_content += '<img src="' + _lms_ui_address_ico + '" alt="" class="location-box-image" title="' + lmsMessages['locationRecipientAddress'] + '" id="' + uid + '">';
+        row_content += '</td>';
         row_content += '<td>' + data + '</td></tr>';
 
         $(container).before( row_content );
@@ -130,8 +134,8 @@ $(function() {
 
                 case 'text':
                 case 'hidden':
-                    $(this).val('');
-                    $(this).removeAttr('readonly');
+                    $(this).val('')
+                           .removeAttr('readonly');
                 break;
             }
         });
@@ -150,6 +154,7 @@ $(function() {
      */
     $('body').on('click', '.lmsui-address-box-def-address', function() {
         var state = this.checked;
+        var box = getLocationBox(this);
 
         // mark old default location address as normal location address
         // open definitions.php for more
@@ -157,34 +162,47 @@ $(function() {
         // 2 = LOCATION_ADDRESS
         $( $("input[data-address='address_type']") ).each(function() {
             if ( $(this).val() == 3 ) {
-                $(this).val(2);
+                $(this).val(2)                                                // update address type
+                       .closest('tr')
+                       .find('.address-full')
+                       .tooltip().tooltip('destroy')                          // can't destroy or update not initialized tooltip
+                       .attr('title',lmsMessages['locationRecipientAddress']) // update title
+                       .tooltip();                                            // init tooltip
             }
         });
 
-        // set all image source as empty
+        // set all image source as default
         $( $('.location-box-image') ).each(function() {
-            $(this).attr('src'  , 'img/location.png')                              // change icon source
-                   .attr('title', lmsMessages['locationRecipientAddress'])         // update icon title
-                   .tooltip();                                                     // init LMS tooltip
+            $(this).attr('src', _lms_ui_address_ico)                          // change icon source
+                   .tooltip().tooltip('destroy')                              // can't destroy or update not initialized tooltip
+                   .attr('title',lmsMessages['locationRecipientAddress'])     // update title
+                   .tooltip();                                                // init tooltip
         });
 
         // unmark all checkboxes
         $( $('.lmsui-address-box-def-address') ).each(function() {
-            $(this).prop('checked', false);                                        // uncheck all default address checkboxes
+            $(this).prop('checked', false);                                   // uncheck all default address checkboxes
         });
 
         // toggle current clicked checkbox
         if ( state == true ) {
-            $(this).prop('checked', true);                                         // check default address checkbox
+            $(this).prop('checked', true);                                    // check default address checkbox
 
-            var box = getLocationBox(this);
-            box.closest('tr').find('.location-box-image')
-                             .attr('src'  , 'img/pin_blue.png')                    // change icon source
-                             .attr('title', lmsMessages['defaultLocationAddress']) // update icon title
-                             .tooltip();                                           // init LMS tooltip
+            box.closest('tr')
+               .find('.address-full')
+               .tooltip().tooltip('destroy')                                  // can't destroy or update not initialized tooltip
+               .attr('title',lmsMessages['defaultLocationAddress'])           // update title
+               .tooltip();                                                    // init tooltip
 
-            box.find("input[data-address='address_type']").val(3);                 // update address type
-                                                                                   // 3 = DEFAULT_LOCATION_ADDRESS
+            box.closest('tr')
+               .find('.location-box-image')
+               .attr('src', _lms_ui_address_def_ico)                          // change icon source
+               .tooltip().tooltip('destroy')                                  // can't destroy or update not initialized tooltip
+               .attr('title',lmsMessages['defaultLocationAddress'])           // update icon title
+               .tooltip();                                                    // init tooltip
+
+            box.find("input[data-address='address_type']").val(3);            // update address type
+                                                                              // 3 = DEFAULT_LOCATION_ADDRESS
         }
     });
 

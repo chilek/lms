@@ -46,22 +46,32 @@ function smarty_function_location_box_expandable( $params = array(), $template )
     $uid = uniqid();
     $location_str = $params['data']['location'] ? $params['data']['location'] : '...';
 
+    $title = '';
+
+    switch ( $params['data']['location_address_type']  ) {
+        case POSTAL_ADDRESS           : $title = trans('postal address');             break;
+        case BILLING_ADDRESS          : $title = trans('billing address');            break;
+        case LOCATION_ADDRESS         : $title = trans('location/recipient address'); break;
+        case DEFAULT_LOCATION_ADDRESS : $title = trans('default location address');   break;
+    }
+
+    echo '<div class="address-full"
+                title="' . $title . '"
+                data-target="' . $uid . '"
+                data-state="' . (isset($params['data']['show']) ? 'opened' : 'closed') . '">' .
+                $location_str . '</div>';
+
     if ( isset($params['data']['show']) ) {
-        echo '<span class="toggle-address" data-target="' . $uid . '" data-state="opened">–</span>';
-        echo '<span class="address-full">' . $location_str . '</span>';
         echo '<div id="' . $uid . '">';
     } else {
-        echo '<span class="toggle-address" data-target="' . $uid . '" data-state="closed">+</span>';
-        echo '<span class="address-full">' . $location_str . '</span>';
-        //echo '<input class="address-full-input" type="hidden" value="' . $location_str . '" name="' . $params['data']['prefix'] . '[location]" >';
         echo '<div id="' . $uid . '" style="display: none;">';
     }
 
     echo '<div style="padding: 3px 0;">';
-    echo '<span class="lms-ui-button clear-location-box"><img src="img/eraser.gif" alt="">  ' . trans('Clear')  . '</span>';
+    echo '<span class="lms-ui-button clear-location-box"><img src="img/eraser.gif" alt="">' . trans('Clear') . '</span>';
 
     if ( isset($params['data']['clear_button']) ) {
-        echo '&nbsp;&nbsp;<span class="lms-ui-button delete-location-box"><img src="img/delete.gif" alt=""> ' . trans('Delete') . '</span>';
+        echo '&nbsp;&nbsp;<span class="lms-ui-button delete-location-box"><img src="img/delete.gif" alt="">' . trans('Delete') . '</span>';
     }
 
     echo '</div>';
