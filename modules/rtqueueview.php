@@ -136,7 +136,7 @@ $start = ($page - 1) * $pagelimit;
 $SESSION->save('rtp', $page);
 
 $queues = $LMS->GetQueueList(false);
-$categories = $LMS->GetCategoryList(false);
+$categories = $LMS->GetCategoryListByUser($AUTH->id);
 
 $SMARTY->assign('queues', $queues);
 $SMARTY->assign('categories', $categories);
