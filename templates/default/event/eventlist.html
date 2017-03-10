@@ -65,7 +65,7 @@
 					<OPTION value="2"{if $listdata.privacy == "2"} selected{/if}>{trans("private")}</OPTION>
 				</SELECT>
 				{trans("Customer:")}
-				{customerlist form="filter" customers=$customers selected=$listdata.customerid selectname="u" inputname="u" customOnChange="document.filter.submit();"}
+				{customerlist form="filter" customers=$customers selected=$listdata.customerid selectname="u" inputname="u" customOnChange="document.filter.submit();" customername=false}
 				{trans("Month:")}
 				<SELECT name="month" onchange="document.filter.submit();">{assign var=temp_date value="2000-m-01"}
 					{section name=month loop=13 start=1}
