@@ -65,17 +65,7 @@
 					<OPTION value="2"{if $listdata.privacy == "2"} selected{/if}>{trans("private")}</OPTION>
 				</SELECT>
 				{trans("Customer:")}
-				{if $customers}
-				<SELECT size="1" name="u" OnChange="document.filter.submit();">
-					<OPTION value="0"{if $listdata.customerid == ""} SELECTED{/if}>{trans("- all customers -")}</OPTION>
-					{foreach from=$customerlist item=customer}
-					    <OPTION value="{$customer.id}"{if $customer.id == $listdata.customerid} SELECTED{/if}>{$customer.customername|truncate:40:"...":true}</OPTION>
-					{/foreach}
-				</SELECT>
-                                {else}
-                                <INPUT type="number" min="1" name="u" value="{$listdata.customerid}" size="5" {tip text="Enter customer ID or leave empty for all customers"}>
-                                <a href="javascript:void(0);" onclick="return customerchoosewin(document.filter.u);" {tip text="Click to search customer"}>{trans("Search")}&nbsp;&raquo;&raquo;&raquo;</a>
-                                {/if}
+				{customerlist form="filter" customers=$customers selected=$listdata.customerid selectname="u" inputname="u" customOnChange="document.filter.submit();"}
 				{trans("Month:")}
 				<SELECT name="month" onchange="document.filter.submit();">{assign var=temp_date value="2000-m-01"}
 					{section name=month loop=13 start=1}
