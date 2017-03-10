@@ -517,11 +517,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				account, inv_header, inv_footer, inv_author, inv_cplace
 				FROM vdivisions WHERE id = ? ;', array($invoice['customer']['divisionid']));
 
-		if ( !empty($invoice['invoice']['recipient_address_id']) ) {
+		if ($invoice['invoice']['recipient_address_id'] > 0) {
 			global $LMS;
-			$invocie['invoice']['recipient_address_id'] = $LMS->CopyAddress( $invoice['invoice']['recipient_address_id'] );
+			$invoice['invoice']['recipient_address_id'] = $LMS->CopyAddress( $invoice['invoice']['recipient_address_id'] );
 		} else {
-			$invocie['invoice']['recipient_address_id'] = null;
+			$invoice['invoice']['recipient_address_id'] = null;
 		}
 
         $args = array(
@@ -556,7 +556,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
             'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
             'fullnumber' => $fullnumber,
-            'recipient_address_id' => $invocie['invoice']['recipient_address_id']
+            'recipient_address_id' => $invoice['invoice']['recipient_address_id']
         );
 
         $this->db->Execute('INSERT INTO documents (number, numberplanid, type,

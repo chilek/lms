@@ -1276,7 +1276,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                               THEN 1 ELSE 0
                                           END) as teryt
                                        FROM
-                                          customerview cv
+                                          customers cv
                                           LEFT JOIN customer_addresses ca ON ca.customer_id = cv.id
                                           LEFT JOIN vaddresses addr       ON addr.id = ca.address_id
                                        WHERE

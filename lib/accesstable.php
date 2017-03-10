@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -34,7 +34,7 @@ $access_table = array(
 	),
 	'read_only' => array(
 		'label' => trans('read only (excluding helpdesk)'),
-		'allow_regexp' => '^(([a-z]+(list|info|view|search|balance|infoshort))|netdevmap|eventprint|eventnote|nodelistshort|number|choose[a-z]+)$',
+		'allow_regexp' => '^(([a-z]+(list|info|view|search|balance|infoshort))|customeraddresses|netdevmap|eventprint|eventnote|nodelistshort|number|choose[a-z]+)$',
 	),
 	'node_connections' => array(
 		'label' => trans('nodes connection/disconnection'),
@@ -50,7 +50,7 @@ $access_table = array(
 	),
 	'customer_management' => array(
 		'label' => trans('customers management'),
-		'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|del|print|search|warn|cutoffstop|group)|documentgen|documentview|nodewarn|choosenode)$',
+		'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|del|print|search|warn|cutoffstop|group)|customeraddresses|documentgen|documentview|nodewarn|choosenode)$',
 	),
 	'node_management' => array(
 		'label' => trans('nodes management'),
