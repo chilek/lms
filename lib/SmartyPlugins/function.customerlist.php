@@ -27,6 +27,8 @@
 function smarty_function_customerlist($params, $template) {
 	$result = '';
 
+	$customername = !isset($params['customername']) || $params['customername'];
+
 	if (!empty($params['customers'])) {
 
 		$result .= sprintf('<SELECT name="%s" value="%s" ', $params['selectname'], $params['selected']);
@@ -47,7 +49,7 @@ function smarty_function_customerlist($params, $template) {
 
 		$result .= '">';
 
-		if (array_key_exists('firstoption', $params)) {
+		if (isset($params['firstoption'])) {
 			if (!empty($params['firstoption'])) {
 				$result .= '<OPTION value="0"';
 				if (empty($params['selected']))
@@ -67,8 +69,10 @@ function smarty_function_customerlist($params, $template) {
 			$result .= '>' . mb_substr($customer['customername'], 0 , 40) . ' (' . sprintf("%04d", $customer['id']) . ')</OPTION>';
 		}
 		$result .= '</SELECT>&nbsp;' . trans("or Customer ID:");
-	} else
+	} else {
 		$result .= trans("ID:");
+		$timer_var = 'customerlist_timer_' . md5($params['inputname']);
+	}
 	$result .= '&nbsp;<INPUT type="text" name="' . $params['inputname'] . '" value="' . $params['selected'] . '" data-prev-value="' . $params['selected'] . '" size="5" ';
 
 	if ( !empty($params['input_id']) ) {
@@ -81,7 +85,9 @@ function smarty_function_customerlist($params, $template) {
 		$reset_customer = "if (this.value != \$(this).attr('data-prev-value')) { reset_customer('${params['form']}', '${params['inputname']}', '${params['selectname']}'); ${on_change}; \$(this).attr('data-prev-value', this.value); }";
 		$result .= "onChange=\"${reset_customer}\" onFocus=\"${reset_customer}\"";
 	} else
-		$result .= sprintf(' onblur="%1$s" onfocus="%1$s" oninput="%1$s" ', 'if (this.value != $(this).attr(\'data-prev-value\')) { ' . $on_change . ';getCustomerName(this); $(this).attr(\'data-prev-value\', this.value); }');
+		$result .= sprintf(' onblur="%1$s" onfocus="%1$s" oninput="%1$s" ', 'if (this.value != $(this).attr(\'data-prev-value\')) {'
+			. 'var elem=this; clearTimeout(' . $timer_var . '); ' . $timer_var . '=setTimeout(function(){'
+				. $on_change . ';' . ($customername ? 'getCustomerName(elem);' : '') . ' $(elem).attr(\'data-prev-value\', elem.value);}, 500);}');
 
 	if (!empty($params['inputtip']))
 		$result .= smarty_function_tip(array('text' => $params['inputtip']), $template);
@@ -90,7 +96,9 @@ function smarty_function_customerlist($params, $template) {
 
 	$result .= '>';
 	if (empty($params['customers']))
-		$result .= '<script type="text/javascript">var cid = $(\'[name="' . $params['inputname']. '"]\'); if (cid.val()) getCustomerNameDeferred(cid.get(0));</script>';
+		$result .= '<script type="text/javascript">var ' . $timer_var . ';'
+			. ($customername ? ' var cid = $(\'[name="' . $params['inputname']. '"]\'); if (cid.val()) getCustomerNameDeferred(cid.get(0));' : '')
+			. '</script>';
 	$result .= '<a href="javascript: void(0);" onClick="return customerchoosewin(document.forms[\'' . $params['form'] . '\'].elements[\'' . $params['inputname'] . '\']);" ';
 	$result .= smarty_function_tip(array('text' => 'Click to search customer'), $template) . '>&nbsp;';
 	$result .= trans("Search") . '&nbsp;&raquo;&raquo;&raquo;</A>';
