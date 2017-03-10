@@ -259,7 +259,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
 				$jpk_data .= "\t\t<LpSprzedazy>" . ($idx + 1) . "</LpSprzedazy>\n";
 				if (empty($invoice['ten']))
-					$invoice['ten'] = 'nieznany';
+					$invoice['ten'] = 'brak';
 				$jpk_data .= "\t\t<NrKontrahenta>" . preg_replace('/[\s\-]/', '', $invoice['ten']) . "</NrKontrahenta>\n";
 				$jpk_data .= "\t\t<NazwaKontrahenta>" . str_replace('&', '&amp;', $invoice['name']) . "</NazwaKontrahenta>\n";
 				$jpk_data .= "\t\t<AdresKontrahenta>" . $invoice['address'] . ', '
@@ -393,7 +393,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 					$jpk_data .= "\t\t<P_4B>" . $m['ten'] . "</P_4B>\n";
 				} else
 					$jpk_data .= "\t\t<P_4B>" . preg_replace('/[\s\-]/', '', $invoice['division_ten']) . "</P_4B>\n";
-				if (!empty($invoice['ten'])) {
+				if (!empty($invoice['ten']))
 					if (preg_match('/^(?<country>[A-Z]{2})(?<ten>[0-9]+)$/', $invoice['ten'], $m)) {
 						if (preg_match('/^[1-9]((\d[1-9])|([1-9]\d))\d{7}$/', $m['ten'])) {
 							$jpk_data .= "\t\t<P_5A>" . $m['country'] . "</P_5A>\n";
@@ -401,7 +401,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 						}
 					} else
 						$jpk_data .= "\t\t<P_5B>" . preg_replace('/[\s\-]/', '', $invoice['ten']) . "</P_5B>\n";
-				}
+				else
+					$jpk_data .= "\t\t<P_5B>brak</P_5B>\n";
 
 				if (isset($invoice['invoice'])) {
 					if (isset($invoice['taxest']['23.00'])) {
