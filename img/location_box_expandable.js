@@ -34,13 +34,13 @@ $(function() {
     /*!
      * \brief Show/hide single address box.
      */
-    $('body').on('click', '.toggle-address', function() {
+    $('body').on('click', '.address-full', function() {
         $( '#' + $(this).attr( 'data-target' ) ).slideToggle(200);
 
         if ( $(this).attr('data-state') == 'closed' ) {
-            $(this).attr('data-state', 'opened').text('–');
+            $(this).attr('data-state', 'opened');
         } else {
-            $(this).attr('data-state', 'closed').text('+');
+            $(this).attr('data-state', 'closed');
         }
     });
 

@@ -46,12 +46,6 @@ function smarty_function_location_box_expandable( $params = array(), $template )
     $uid = uniqid();
     $location_str = $params['data']['location'] ? $params['data']['location'] : '...';
 
-    if ( isset($params['data']['show']) ) {
-        echo '<span class="toggle-address" data-target="' . $uid . '" data-state="opened">–</span>';
-    } else {
-        echo '<span class="toggle-address" data-target="' . $uid . '" data-state="closed">+</span>';
-    }
-
     $title = '';
 
     switch ( $params['data']['location_address_type']  ) {
@@ -61,7 +55,11 @@ function smarty_function_location_box_expandable( $params = array(), $template )
         case DEFAULT_LOCATION_ADDRESS : $title = trans('default location address');   break;
     }
 
-    echo '<span class="address-full" title="' . $title . '">' . $location_str . '</span>';
+    echo '<div class="address-full"
+                title="' . $title . '"
+                data-target="' . $uid . '"
+                data-state="' . (isset($params['data']['show']) ? 'opened' : 'closed') . '">' .
+                $location_str . '</div>';
 
     if ( isset($params['data']['show']) ) {
         echo '<div id="' . $uid . '">';
