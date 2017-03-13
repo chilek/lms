@@ -28,9 +28,13 @@ if(! $LMS->TicketExists($_GET['id']))
 {
 	$SESSION->redirect('?m=rtqueuelist');
 }
+else
+{
+	$id = $_GET['id'];
+}
 
-$rights = $LMS->GetUserRightsRT($AUTH->id, 0, $_GET['id']);
-$catrights = $LMS->GetUserRightsToCategory($AUTH->id, 0, $_GET['id']);
+$rights = $LMS->GetUserRightsRT($AUTH->id, 0, $id);
+$catrights = $LMS->GetUserRightsToCategory($AUTH->id, 0, $id);
 
 if(!$rights || !$catrights)
 {
@@ -39,7 +43,7 @@ if(!$rights || !$catrights)
 	die;
 }
 
-$ticket = $LMS->GetTicketContents($_GET['id']);
+$ticket = $LMS->GetTicketContents($id);
 $categories = $LMS->GetCategoryListByUser($AUTH->id);
 
 if ($ticket['customerid'] && ConfigHelper::checkConfig('phpui.helpdesk_stats')) {
@@ -85,6 +89,7 @@ foreach ($categories as $category)
 	$ncategories[] = $category;
 }
 $categories = $ncategories;
+$assignedevents = $LMS->GetEventsByTicketId($id);
 
 $layout['pagetitle'] = trans('Ticket Review: $a',sprintf("%06d", $ticket['ticketid']));
 
@@ -92,6 +97,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('categories', $categories);
+$SMARTY->assign('assignedevents', $assignedevents);
 $SMARTY->display('rt/rtticketview.html');
 
 ?>

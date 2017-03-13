@@ -1,0 +1,99 @@
+<!-- $Id$ -->
+<TABLE class="lmsbox">
+    <THEAD>
+    <TR class="valign-center">
+	<TD width="1%" class="nobr bold" colspan="4">
+	    <IMG src="img/calendar.gif" alt=""> {trans("Timetable assigned events")}
+	</TD>
+	<TD class="bold nobr text-right" colspan="5">
+	    {if $ticket.state != 2}
+                        {if $ticket.customerid }
+                            <A href="?m=eventadd&ticketid={$ticket.ticketid}&customerid={$ticket.customerid}"><IMG src="img/event-add.png" alt=""> {trans("Add new event to request:")} #{$ticket.ticketid}&nbsp; &nbsp;</A>
+                            <A href="?m=eventedit&id=6134&action=close&ticketid={$ticket.ticketid}"><IMG src="img/event-close.png" alt=""> {trans("Close all events assigned to request:")} #{$ticket.ticketid}&nbsp; &nbsp;</A>
+                        {else}
+                            <A href="?m=eventadd&ticketid={$ticket.ticketid}"><IMG src="img/event-add.png" alt=""> {trans("Add new event to request:")} #{$ticket.ticketid}&nbsp; &nbsp;</A>
+                            <A href="?m=eventedit&id=6134&action=close&ticketid={$ticket.ticketid}"><IMG src="img/event-close.png" alt=""> {trans("Close all events assigned to request:")} #{$ticket.ticketid}&nbsp; &nbsp;</A>
+                        {/if}
+	    {/if}
+	</TD>
+    </TR>
+    </THEAD>
+    <TBODY>
+		{counter start=0 skip=1 print=false assign=msgidx}
+		{foreach from=$assignedevents item=event}
+                                        <TR class="fall {if $event.closed==1}blend{/if}">
+			<TD width="4%" class="text-center bold">
+                                                    <A href="/?m=eventinfo&id={$event.id}">({$event.id})</A>
+			</TD>
+			<TD width="15%" class="text-right bold">
+                                                    {trans("Subject:")}<BR>
+                                                    {$event.title}
+                                                </TD>
+                                                {if $event.closed}
+			<TD width="10%" class="text-right blend">
+                                                    <B>{trans("Created by:")}</B><BR><A href="/?m=userinfo&id={$event.userid}">{$event.username}</A><BR>
+                                                </TD>
+                                                <TD width="10%" class="text-right">
+                                                    <B>{trans("Closed by")}:</B><BR><A href="/?m=userinfo&id={$event.closeduserid}">{$event.closedusername}</A>
+			</TD>
+                                                {else}
+                                                <TD width="10%" class="text-right">
+                                                    <B>{trans("Created by:")}</B><BR><A href="/?m=userinfo&id={$event.userid}">{$event.username}</A>
+			</TD>
+                                                <TD></TD>
+                                                {/if}
+                                                <TD width="20%" class="nobr text-center">
+                                                    <B>{trans("From:")}</B> {$event.date|date_format:"%x (%A)"}
+                                                    {math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}<BR>
+                                                    <B>{trans("To:")}</B> {if $event.enddate}
+                                                        {$event.enddate|date_format:"%x (%A)"}
+                                                    {else}
+                                                        {$event.date|date_format:"%x (%A)"}
+                                                    {/if}
+                                                    {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
+                                                </TD>
+			<TD width="44%" class="nobr text-right valign-center">
+                                                    <A href='?m=eventlist&day={$event.date|date_format:"%d"}&month={$event.date|date_format:"%m"}&year={$event.date|date_format:"%Y"}'>
+                                                        <IMG src="/img/schedule.png" alt="" title="{trans("View Timetable at event add date")}"> {trans("Timetable")}</A>&nbsp; &nbsp;
+                                                </TD>
+                                                <TD width="2%" class="nobr text-right valign-center">
+                                                    <A href="?m=eventinfo&id={$event.id}&action=open">
+                                                    <IMG src="img/helpdesk.png" alt="{trans("Details")}" title="{trans("Details")}"> {trans("Details")}</A>&nbsp; &nbsp;
+                                                </TD>
+                                                <TD width="2%" class="nobr text-right valign-center">
+                                                    {if $event.closed}
+                                                    <A href="?m=eventedit&id={$event.id}&action=open">
+                                                    <IMG src="img/resolved.gif" alt="[ {trans("Open")} ]" title="[ {trans("Open")} ]"> {trans("Open")}</A>&nbsp; &nbsp;
+                                                    {else}
+                                                    <A href="?m=eventedit&id={$event.id}&action=close">
+                                                    <IMG src="img/open.gif" alt="[ {trans("Close")} ]" title="[ {trans("Close")} ]"> {trans("Close")}</A>&nbsp; &nbsp;
+                                                    {/if}
+                                                <TD width="2%" class="nobr text-left valign-center">
+                                                    <A href="?m=eventedit&id={$event.id}">
+                                                    <IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"> {trans("Edit")}</A>&nbsp; &nbsp;
+                                                </TD>
+                                        </TR>
+                        <TR class="{if $event.closed=="1"}blend{/if}">
+                            <TD class="superlight text-center"> 
+                                {$_EVENTTYPES[$event.type]}
+                            </TD>
+                            <TD colspan="9" class="superlight">
+                            <IMG src="/img/info1.gif"> {$event.description}
+                            {if $event.note}<BR /><IMG src="/img/note.gif"> {$event.note}{/if}
+                            </TD>
+                        </TR>
+                        {/foreach}
+                        </TD>
+                        </TR>
+                        <TR>
+                            <TD class="fall text-center" colspan="9">
+                                {if !empty($ticket.next_ticketid)}
+                                        <A href="?m=rtticketview&id={$ticket.prev_ticketid}">&laquo;&laquo;&laquo;&nbsp;{trans("Previous ticket")}</A>
+                                        <A href="?m=rtticketview&id={$ticket.next_ticketid}">&nbsp;&nbsp; {trans("Next ticket")}&nbsp;&raquo;&raquo;&raquo;</A>
+		{else}
+                                        &nbsp;&nbsp;{trans("Next ticket")}&raquo;&raquo;&raquo;
+                                        &laquo;&laquo;&nbsp;{trans("Previous ticket")}
+		{/if}
+                            </TD>
+                        </TR>
+</TABLE>

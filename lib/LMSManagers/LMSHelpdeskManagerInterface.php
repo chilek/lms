@@ -70,6 +70,10 @@ interface LMSHelpdeskManagerInterface
 
     public function GetQueueByTicketId($id);
 
+    public function GetEventsByTicketId($id);
+
+    public function GetQueueNameByTicketId($id);
+
     public function TicketExists($id);
 
     public function TicketAdd($ticket, $files = NULL);

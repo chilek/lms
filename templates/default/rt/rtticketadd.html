@@ -86,7 +86,7 @@
 				{foreach from=$categories item=category}
 				<TR>
 					<TD style="width: 1%;" class="text-center">
-						<INPUT type="checkbox" name="ticket[categories][{$category.id}]" ID="cat{$category.id}" value="1" {if $category.checked > 0}checked{/if}>
+						<INPUT type="checkbox" name="ticket[categories][{$category.id}]" id="cat{$category.id}" value="1" {if $category.checked > 0}checked{/if}>
 					</TD>
 					<TD style="width: 99%;">
 						<label for="cat{$category.id}">{$category.name}</label>
