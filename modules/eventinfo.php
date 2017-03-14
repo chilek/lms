@@ -35,7 +35,8 @@ $event = $DB->GetRow('SELECT events.id AS id, title, description, note, userid, 
 			    vusers.name AS username, events.moddate, events.moduserid, events.closeddate, events.closeduserid, nodes.location AS location, '
 			    .$DB->Concat('c.city',"', '",'c.address').' AS customerlocation,
 			    (SELECT name FROM vusers WHERE id=events.moduserid) AS modusername,
-			    (SELECT name FROM vusers WHERE id=events.closeduserid) AS closedusername
+			    (SELECT name FROM vusers WHERE id=events.closeduserid) AS closedusername,
+				ticketid
 			    FROM events
 			    LEFT JOIN vnodes nodes ON (nodeid = nodes.id)
 			    LEFT JOIN customerview c ON (c.id = customerid)

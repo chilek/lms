@@ -7,7 +7,7 @@
 	<COLGROUP>
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
-		<COL style="width: 95%;">
+		<COL style="width: 96%;">
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
 	</COLGROUP>
@@ -102,6 +102,7 @@
 							<COL style="width: 1%;">
 							<COL style="width: 95%;">
 							<COL style="width: 1%;">
+							<COL style="width: 1%;">        
 							<COL style="width: 1%;" class="no-print">
 						</COLGROUP>
                         <THEAD>
@@ -110,7 +111,7 @@
                                     <IMG src="img/calendar.gif" alt="">
                                     {$daylist[daylist]|date_format:"%A"}
                                 </TD>
-                                <TD colspan="2">
+                                <TD colspan="3">
 									<span class="bold">({$daylist[daylist]|date_format:"%x"})</span>
 									{if $getHolidays[$daylist[daylist]]}
 									<span class="red">{trans("Holiday:")} {$getHolidays[$daylist[daylist]]}</span>
@@ -133,7 +134,7 @@
                             <TR class="highlight {cycle}{if $eventlist[eventlist].closed} blend{/if}"  >
                                 <TD style="min-width: 70px; {if isset($_EVENTSTYLES[$eventlist[eventlist].type])} {$_EVENTSTYLES[$eventlist[eventlist].type]}{/if}" class="text-center bold">
                                 	{$_EVENTTYPES[$eventlist[eventlist].type]}
-                                </td>
+                                </TD>
                                 <TD class="text-left nobr" onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
                                         <span class="bold">
                                         {math equation="floor(x/100)" x=$eventlist[eventlist].begintime format="%02d"}:{math equation="x % 100" x=$eventlist[eventlist].begintime format="%02d"}
@@ -148,6 +149,9 @@
                                         <IMG src="img/calendar.gif" alt=""> <span class="bold">{$eventlist[eventlist].title}</span><BR>
                                         {if $eventlist[eventlist].description != ''}<IMG src="img/info1.gif" alt=""> {$eventlist[eventlist].description}{/if}<br/>
                                         {if $eventlist[eventlist].note != ''}<span{if !$eventlist[eventlist].closed} style="color: red;"{/if}><IMG src="img/note.gif" alt="" /> {$eventlist[eventlist].note}</span>{/if}
+                                </TD>
+                                <TD class="text-center">
+                                        {if $eventlist[eventlist].ticketid>0}<A href="?m=rtticketview&id={$eventlist[eventlist].ticketid}"><IMG src="img/ticket.gif" alt="" title="{trans("Request Number")}"> #{$eventlist[eventlist].ticketid}</A>{/if}
                                 </TD>
                                 <TD class="nobr">
                                         {if $eventlist[eventlist].customername}

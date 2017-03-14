@@ -3613,4 +3613,15 @@ $_LANG['If set to "true" then logout confirmation is required. Default "false"']
 
 $_LANG['SMS from $a'] = 'SMS od $a';
 
+$_LANG['Add new request to Helpdesk'] = 'Dodaj nowe zgłoszenie do Helpdesk';
+$_LANG['Request Number'] = 'Nr zgłoszenia';
+$_LANG['Timetable assigned events'] = 'Przypisane zdarzenia w terminarzu';
+$_LANG['Add new event to request:'] = 'Dodaj nowe zdarzenie do zgłoszenia:';
+$_LANG['Close all events assigned to request:'] = 'Zamknij wszystkie zdarzenia przypisane do zgłoszenia:';
+$_LANG['Assign this event to Helpdesk request'] = 'Przypisz zdarzenie do zgłoszenia w Helpdesk:';
+$_LANG['Request not assigned to any event.'] = 'Zgłoszenie nie przypisane do żadnego zdarzenia.';
+$_LANG['Helpdesk assignment:'] = 'Przypisanie do Helpdesk:';
+$_LANG['This event is not assigned to any helpdesk request.'] = 'Zdarzenie nie jest przypisane do żadnego zgłoszenia w helpdesk.';
+$_LANG['Request not assigned to any customer.'] = 'Zgłoszenie nie jest przypisane do żadnego klienta.';
+$_LANG['Request not assigned to any customer location.'] = 'Zgłoszenie nie jest przypisane do żadnej lokalizacji klienta.';
 ?>
