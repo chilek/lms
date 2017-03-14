@@ -276,16 +276,21 @@
      */
     $( '#set_gps' ).click( function() {
         var owner_id = $( '#ownerid_input' ).val();
-        var address_string = '';
+        var location = '';
 
         if ( owner_id != 'undefined' && owner_id > 0 && $( '#customer_addresses' ).val() > 0 ) {
-            address_string = $( '#customer_addresses option:selected' ).text();
+            location = $( '#customer_addresses option:selected' ).text();
         } else {
-            
+            var city   = $('[data-address="city"]'  ).val();
+            var street = $('[data-address="street"]').val();
+            var house  = $('[data-address="house"]' ).val();
+            var flat   = $('[data-address="flat"]'  ).val();
+
+            location = location_str( city, street, house, flat );
         }
 
-        if ( address_string.length > 0 ) {
-            setAddressLocation( address_string, "#latitude", "#longitude" );
+        if ( location.length > 0 ) {
+            setAddressLocation( location, "#latitude", "#longitude" );
         }
     });
 

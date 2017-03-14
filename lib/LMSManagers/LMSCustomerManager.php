@@ -813,7 +813,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $result = $this->db->GetAll("SELECT
                                         n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, nd.name as netdev_name,
                                         ipaddr_pub, n.authtype, inet_ntoa(ipaddr_pub) AS ip_pub,
-                                        passwd, access, warning, info, n.ownerid, lastonline, n.location,
+                                        passwd, access, warning, info, n.ownerid, lastonline, n.location, n.address_id,
                                         (SELECT COUNT(*)
                                         FROM nodegroupassignments
                                         WHERE nodeid = n.id) AS gcount,
@@ -835,6 +835,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             foreach ($result as $idx => $node) {
                 $ids[$node['id']] = $idx;
                 $result[$idx]['lastonlinedate'] = lastonline_date($node['lastonline']);
+
+                if ( !$result[$idx]['address_id'] ) {
+                    $result[$idx]['location'] = $this->getAddressForCustomerStuff( $customer_id );
+                }
 
                 if ($node['ipaddr_pub'])
                     foreach ($networks as $net)
