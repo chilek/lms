@@ -916,8 +916,12 @@ function setAddressLocation( address, latitude_id, longitude_id ) {
  * \param string latitude_id id of latitude input
  * \param string latitude_id id of longitude input
  */
-function location_str( city, street, house, flat ) {
+function location_str( city, street, house, flat, zip = undefined ) {
     var location = '';
+
+    if ( zip && zip.length > 0 ) {
+        location = zip + " ";
+    }
 
     if ( city.length > 0 && street.length > 0) {
         location += city + ", " + street;
