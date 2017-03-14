@@ -100,7 +100,7 @@ class LMSCustomerGroupManager extends LMSManager implements LMSCustomerGroupMana
     {
         if (!$this->CustomergroupWithCustomerGet($id)) {
             if ($this->syslog) {
-                $custassigns = $this->db->Execute('SELECT id, customerid, customergroupid FROM customerassignments
+                $custassigns = $this->db->GetAll('SELECT id, customerid, customergroupid FROM customerassignments
 					WHERE customergroupid = ?', array($id));
                 if (!empty($custassigns))
                     foreach ($custassigns as $custassign) {

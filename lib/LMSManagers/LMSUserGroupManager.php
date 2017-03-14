@@ -126,7 +126,7 @@ class LMSUserGroupManager extends LMSManager implements LMSUserGroupManagerInter
     public function UsergroupDelete($id){
         if (!$this->UsergroupWithUserGet($id)) {
             if ($this->syslog) {
-                $userassigns = $this->db->Execute('SELECT id, userid, usergroupid FROM userassignments WHERE usergroupid = ?', array($id));
+                $userassigns = $this->db->GetAll('SELECT id, userid, usergroupid FROM userassignments WHERE usergroupid = ?', array($id));
                 if (!empty($userassigns))
                     foreach ($userassigns as $userassign) {
                         $args = array(
