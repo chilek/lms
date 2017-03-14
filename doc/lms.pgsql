@@ -1738,7 +1738,7 @@ CREATE TABLE events (
 	ticketid integer DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT event_ticketid_rttickets_id_fk
-		FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 CREATE INDEX events_date_idx ON events(date);
 CREATE INDEX events_nodeid_idx ON events(nodeid);
