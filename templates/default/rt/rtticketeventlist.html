@@ -1,7 +1,7 @@
 <!-- $Id$ -->
 <TABLE class="lmsbox">
     <THEAD>
-    <TR class="valign-center">
+    <tr>
 	<TD width="1%" class="nobr bold" colspan="4">
 	    <IMG src="img/calendar.gif" alt=""> {trans("Timetable assigned events")}
 	</TD>
@@ -52,15 +52,15 @@
                                                     {/if}
                                                     {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
                                                 </TD>
-			<TD width="44%" class="nobr text-right valign-center">
+			<td width="44%" class="nobr text-right">
                                                     <A href='?m=eventlist&day={$event.date|date_format:"%d"}&month={$event.date|date_format:"%m"}&year={$event.date|date_format:"%Y"}'>
-                                                        <IMG src="/img/schedule.png" alt="" title="{trans("View Timetable at event add date")}"> {trans("Timetable")}</A>&nbsp; &nbsp;
+                                                        <img src="img/schedule.png" alt="" title="{trans("View Timetable at event add date")}"> {trans("Timetable")}</A>&nbsp; &nbsp;
                                                 </TD>
-                                                <TD width="2%" class="nobr text-right valign-center">
+                                                <td width="2%" class="nobr text-right">
                                                     <A href="?m=eventinfo&id={$event.id}&action=open">
                                                     <IMG src="img/helpdesk.png" alt="{trans("Details")}" title="{trans("Details")}"> {trans("Details")}</A>&nbsp; &nbsp;
                                                 </TD>
-                                                <TD width="2%" class="nobr text-right valign-center">
+                                                <td width="2%" class="nobr text-right">
                                                     {if $event.closed}
                                                     <A href="?m=eventedit&id={$event.id}&action=open">
                                                     <IMG src="img/resolved.gif" alt="[ {trans("Open")} ]" title="[ {trans("Open")} ]"> {trans("Open")}</A>&nbsp; &nbsp;
@@ -68,7 +68,7 @@
                                                     <A href="?m=eventedit&id={$event.id}&action=close">
                                                     <IMG src="img/open.gif" alt="[ {trans("Close")} ]" title="[ {trans("Close")} ]"> {trans("Close")}</A>&nbsp; &nbsp;
                                                     {/if}
-                                                <TD width="2%" class="nobr text-left valign-center">
+                                                <td width="2%" class="nobr">
                                                     <A href="?m=eventedit&id={$event.id}">
                                                     <IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"> {trans("Edit")}</A>&nbsp; &nbsp;
                                                 </TD>
@@ -77,14 +77,12 @@
                             <TD class="superlight text-center"> 
                                 {$_EVENTTYPES[$event.type]}
                             </TD>
-                            <TD colspan="9" class="superlight">
-                            <IMG src="/img/info1.gif"> {$event.description}
-                            {if $event.note}<BR /><IMG src="/img/note.gif"> {$event.note}{/if}
+                            <td colspan="8" class="superlight">
+                                <img src="img/info1.gif" alt=""> {$event.description}
+                                {if $event.note}<br><img src="img/note.gif" alt=""> {$event.note}{/if}
                             </TD>
                         </TR>
                         {/foreach}
-                        </TD>
-                        </TR>
                         <TR>
                             <TD class="fall text-center" colspan="9">
                                 {if !empty($ticket.next_ticketid)}
