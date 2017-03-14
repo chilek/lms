@@ -55,23 +55,23 @@
 			<td width="44%" class="nobr text-right">
                                                     <a href='?m=eventlist&day={$event.date|date_format:"%d"}&month={$event.date|date_format:"%m"}&year={$event.date|date_format:"%Y"}' title="{trans("Open timetable")}">
                                                         <img src="img/schedule.png" alt=""> {trans("Timetable")}
-                                                    </a>&nbsp; &nbsp;
+                                                    </a>
                                                 </TD>
                                                 <td width="2%" class="nobr text-right">
                                                     <A href="?m=eventinfo&id={$event.id}&action=open">
-                                                    <IMG src="img/helpdesk.png" alt="{trans("Details")}" title="{trans("Details")}"> {trans("Details")}</A>&nbsp; &nbsp;
+                                                    <IMG src="img/helpdesk.png" alt="{trans("Details")}" title="{trans("Details")}"> {trans("Details")}</A>&nbsp;
                                                 </TD>
                                                 <td width="2%" class="nobr text-right">
                                                     {if $event.closed}
                                                     <A href="?m=eventedit&id={$event.id}&action=open">
-                                                    <IMG src="img/resolved.gif" alt="[ {trans("Open")} ]" title="[ {trans("Open")} ]"> {trans("Open")}</A>&nbsp; &nbsp;
+                                                    <IMG src="img/resolved.gif" alt="[ {trans("Open")} ]" title="[ {trans("Open")} ]"> {trans("Open")}</A>&nbsp;
                                                     {else}
                                                     <A href="?m=eventedit&id={$event.id}&action=close">
-                                                    <IMG src="img/open.gif" alt="[ {trans("Close")} ]" title="[ {trans("Close")} ]"> {trans("Close")}</A>&nbsp; &nbsp;
+                                                    <IMG src="img/open.gif" alt="[ {trans("Close")} ]" title="[ {trans("Close")} ]"> {trans("Close")}</A>&nbsp;
                                                     {/if}
                                                 <td width="2%" class="nobr">
                                                     <A href="?m=eventedit&id={$event.id}">
-                                                    <IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"> {trans("Edit")}</A>&nbsp; &nbsp;
+                                                    <IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"> {trans("Edit")}</A>&nbsp;
                                                 </TD>
                                         </TR>
                         <TR class="{if $event.closed=="1"}blend{/if}">
