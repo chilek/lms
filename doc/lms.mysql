@@ -2086,7 +2086,8 @@ CREATE TABLE events (
     INDEX date (date),
     KEY nodeid (nodeid),
     FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT 'event_ticketid_ritickets_id_fk' FOREIGN KEY (ticketid) REFERENCES rttickets(id) ON DELETE SET NULL ON UPDATE CASCADE
+    CONSTRAINT `event_ticketid_rttickets_id_fk`
+    	FOREIGN KEY (ticketid) REFERENCES rttickets(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------

@@ -24,7 +24,7 @@
 $this->BeginTrans();
 
 $this->Execute("ALTER TABLE events ADD COLUMN ticketid integer");
-$this->Execute("ALTER TABLE events ADD CONSTRAINT event_ticketid_ritickets_id_fk REFERENCES rttickets (id) ON DELETE SET NULL ON UPDATE CASCADE");
+$this->Execute("ALTER TABLE events ADD CONSTRAINT event_ticketid_rttickets_id_fk FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON DELETE SET NULL ON UPDATE CASCADE");
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017031000', 'dbversion'));
 
 $this->CommitTrans();
