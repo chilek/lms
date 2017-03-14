@@ -116,7 +116,9 @@ $(function() {
      * \brief Remove address box.
      */
     $('body').on('click', '.delete-location-box', function() {
-        getLocationBox(this).closest('tr').remove();
+        if ( confirm(lmsMessages['Are you shure that you want to remove address?']) == true ) {
+            getLocationBox(this).closest('tr').remove();
+        }
     });
 
     /*!

@@ -2635,6 +2635,7 @@ $_LANG['last $a packages'] = 'ostatnie $a paczek';
 $_LANG['Packages:'] = 'Paczki:';
 $_LANG['Records:'] = 'Rekordy:';
 $_LANG['Removing package "$a"'] = 'Usuwanie paczki "$a"';
+$_LANG['Are you shure that you want to remove address?'] = 'Czy na pewno chcesz usunąć adres?';
 $_LANG['There are no packages in database.'] = 'Brak paczek w bazie danych.';
 $_LANG['period undefined'] = 'okres niezdefiniowany';
 $_LANG['Select time period of tariff accounting'] = 'Wybierz okres naliczania taryfy';
