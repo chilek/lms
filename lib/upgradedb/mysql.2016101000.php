@@ -44,7 +44,7 @@ $this->Execute("
 			GROUP BY customerid;
 ");
 
-$ims = $this->Execute("SELECT customerid, uid, type FROM imessengers");
+$ims = $this->GetAll("SELECT customerid, uid, type FROM imessengers");
 if (!empty($ims))
 	foreach ($ims as $im) {
 		switch ($im['type']) {
