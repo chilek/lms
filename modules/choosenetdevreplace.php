@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,8 +25,13 @@
  */
 
 $layout['pagetitle'] = trans('Select net device');
-$list = $DB->GetAll("SELECT n.name,n.id,n.producer,n.model,n.location FROM netdevices n WHERE n.id<>".$_GET['id']." ORDER BY NAME");
+
+$list = $DB->GetAll("SELECT n.name, n.id, n.producer, n.model, va.location
+	FROM netdevices n
+	LEFT JOIN vaddresses va ON va.id = n.address_id
+	WHERE n.id <> " . intval($_GET['id']) . " ORDER BY NAME");
 $list['total'] = count($list);
+
 $SMARTY->assign('netdevlist',$list);
 $SMARTY->assign('objectid',$_GET['id']);
 $SMARTY->display('choose/choosenetdevreplace.html');
