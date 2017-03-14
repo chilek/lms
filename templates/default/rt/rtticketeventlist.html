@@ -53,8 +53,9 @@
                                                     {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
                                                 </TD>
 			<td width="44%" class="nobr text-right">
-                                                    <A href='?m=eventlist&day={$event.date|date_format:"%d"}&month={$event.date|date_format:"%m"}&year={$event.date|date_format:"%Y"}'>
-                                                        <img src="img/schedule.png" alt="" title="{trans("View Timetable at event add date")}"> {trans("Timetable")}</A>&nbsp; &nbsp;
+                                                    <a href='?m=eventlist&day={$event.date|date_format:"%d"}&month={$event.date|date_format:"%m"}&year={$event.date|date_format:"%Y"}' title="{trans("Open timetable")}">
+                                                        <img src="img/schedule.png" alt=""> {trans("Timetable")}
+                                                    </a>&nbsp; &nbsp;
                                                 </TD>
                                                 <td width="2%" class="nobr text-right">
                                                     <A href="?m=eventinfo&id={$event.id}&action=open">

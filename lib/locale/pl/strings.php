@@ -1911,6 +1911,7 @@ $_LANG['Select request cause'] = 'Wybierz przyczynę zgłoszenia';
 $_LANG['unknown/other'] = 'nieznana/inna';
 $_LANG['unknown/other<!plural>'] = 'nieznane/inne';
 $_LANG['Go to $a page'] = 'Idź do $a strony';
+$_LANG['Open timetable'] = 'Otwórz terminarz';
 $_LANG['Requests causes (last year):'] = 'Przyczyny zgłoszeń (ostatni rok):';
 $_LANG['Adds helpdesk requests causes stats on ticket view and print pages. Default: true'] = 'Dodaje statystyki przyczyn zgłoszeń na stronie podglądu zgłoszenia oraz jego wydruku. Domyślnie: włączona';
 $_LANG['Enables page scroller designed for lists with very big number of pages. Default: false'] = 'Włącza formularz zmiany strony zaprojektowany z myślą o listach z bardzo dużą ilością stron. Domyślnie: wyłączona';
