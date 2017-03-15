@@ -125,9 +125,9 @@
 			{/if}
 			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</span>{/if}
 		</TD>
-		<TD class="nobr text-right bold" width="5%">
+		<TD class="text-right" width="5%">
 			{if $queue[ticket].eventcount == 0}
-			<IMG SRC="img/warningmix.gif" title="{trans("Request not assigned to any event.")}" alt="{trans("Request not assigned to any event.")}"></IMG>&nbsp;&nbsp{else}{$queue[ticket].eventcount}&nbsp&nbsp&nbsp&nbsp{/if};
+			<IMG SRC="img/warningmix.gif" title="{trans("Request not assigned to any event.")}" alt=""></IMG>&nbsp;&nbsp{else}{$queue[ticket].eventcount}&nbsp&nbsp&nbsp&nbsp{/if};
                 </TD>
 
 		<TD class="nobr" onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
