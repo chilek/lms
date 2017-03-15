@@ -109,8 +109,8 @@ $this->Execute("CREATE TABLE customer_addresses (
                     address_id  int(11),
                     type        smallint NULL,
                     PRIMARY KEY (id),
-                    CONSTRAINT `customer_addresses_customer_id_fk` FOREIGN KEY (customer_id) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-                    CONSTRAINT `customer_addresses_address_id_fk`  FOREIGN KEY (address_id)  REFERENCES addresses (id) ON DELETE CASCADE ON UPDATE CASCADE,
+                    CONSTRAINT customer_addresses_customer_id_fk FOREIGN KEY (customer_id) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+                    CONSTRAINT customer_addresses_address_id_fk  FOREIGN KEY (address_id)  REFERENCES addresses (id) ON DELETE CASCADE ON UPDATE CASCADE,
                     UNIQUE(customer_id, address_id)
                 ) ENGINE=InnoDB;");
 
@@ -461,16 +461,16 @@ unset( $customer_loc );
 /* --------------------------------
     REWRITE VIEWS AND TABLES WHO USING OLD LOCATION FIELDS
  -------------------------------- */
-$this->Execute("ALTER TABLE nodes DROP FOREIGN KEY `nodes_ibfk_1`;");
-$this->Execute("ALTER TABLE nodes DROP FOREIGN KEY `nodes_ibfk_2`;");
-$this->Execute("ALTER TABLE netdevices DROP FOREIGN KEY `netdevices_ibfk_1`;");
-$this->Execute("ALTER TABLE netdevices DROP FOREIGN KEY `netdevices_ibfk_2`;");
-$this->Execute("ALTER TABLE netnodes DROP FOREIGN KEY `netnodes_ibfk_2`;");
-$this->Execute("ALTER TABLE netnodes DROP FOREIGN KEY `netnodes_ibfk_3`;");
-$this->Execute("ALTER TABLE voipaccounts DROP FOREIGN KEY IF EXISTS `voipaccounts_ibfk_1`;");
-$this->Execute("ALTER TABLE voipaccounts DROP FOREIGN KEY IF EXISTS `voipaccounts_ibfk_2`;");
-$this->Execute("ALTER TABLE divisions DROP FOREIGN KEY `divisions_ibfk_1`;");
-$this->Execute("ALTER TABLE divisions DROP FOREIGN KEY `divisions_ibfk_2`;");
+$this->Execute("ALTER TABLE nodes DROP FOREIGN KEY nodes_ibfk_1;");
+$this->Execute("ALTER TABLE nodes DROP FOREIGN KEY nodes_ibfk_2;");
+$this->Execute("ALTER TABLE netdevices DROP FOREIGN KEY netdevices_ibfk_1;");
+$this->Execute("ALTER TABLE netdevices DROP FOREIGN KEY netdevices_ibfk_2;");
+$this->Execute("ALTER TABLE netnodes DROP FOREIGN KEY netnodes_ibfk_2;");
+$this->Execute("ALTER TABLE netnodes DROP FOREIGN KEY netnodes_ibfk_3;");
+$this->Execute("ALTER TABLE voipaccounts DROP FOREIGN KEY IF EXISTS voipaccounts_ibfk_1;");
+$this->Execute("ALTER TABLE voipaccounts DROP FOREIGN KEY IF EXISTS voipaccounts_ibfk_2;");
+$this->Execute("ALTER TABLE divisions DROP FOREIGN KEY divisions_ibfk_1;");
+$this->Execute("ALTER TABLE divisions DROP FOREIGN KEY divisions_ibfk_2;");
 
 $this->Execute("DROP INDEX IF EXISTS location_city   ON nodes;");
 $this->Execute("DROP INDEX IF EXISTS location_street ON nodes;");
