@@ -54,10 +54,9 @@ $LMS->InitXajax();
 $LMS->RegisterXajaxFunction(array('select_customer', 'getUsersForGroup'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
-if(empty($event['ticketid']) && !empty($_GET['ticketid']))
-{
-    $eventticketid = intval($_GET['ticketid']);
-    $tqname = $LMS->GetQueueNameByTicketId($eventticketid);
+if (!empty($_GET['ticketid'])) {
+	$eventticketid = intval($_GET['ticketid']);
+	$tqname = $LMS->GetQueueNameByTicketId($eventticketid);
 }
 
 if(isset($_POST['event']))
