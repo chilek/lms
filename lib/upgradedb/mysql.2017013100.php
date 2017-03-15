@@ -484,18 +484,18 @@ $this->Execute("DROP VIEW IF EXISTS vmacs;");
 $this->Execute("DROP VIEW IF EXISTS vnetworks;");
 $this->Execute("DROP VIEW IF EXISTS vnodes;");
 
-$this->Execute("ALTER TABLE customers  DROP IF EXISTS zip,           DROP IF EXISTS city,           DROP IF EXISTS building,  DROP IF EXISTS street,
-                                       DROP IF EXISTS apartment,     DROP IF EXISTS countryid,      DROP IF EXISTS post_name, DROP IF EXISTS post_street,
-                                       DROP IF EXISTS post_building, DROP IF EXISTS post_apartment, DROP IF EXISTS post_zip,  DROP IF EXISTS post_city,
-                                       DROP IF EXISTS post_countryid;");
+$this->Execute("ALTER TABLE customers  zip,           city,           building,  street,
+                                       apartment,     countryid,      post_name, post_street,
+                                       post_building, post_apartment, post_zip,  post_city,
+                                       post_countryid;");
 
-$this->Execute("ALTER TABLE nodes      DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat, DROP IF EXISTS location;");
-$this->Execute("ALTER TABLE netnodes   DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat, DROP IF EXISTS location;");
-$this->Execute("ALTER TABLE netdevices DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat, DROP IF EXISTS location;");
-$this->Execute("ALTER TABLE voipaccounts DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat, DROP IF EXISTS location;");
+$this->Execute("ALTER TABLE nodes      location_city, location_street, location_house, location_flat, location;");
+$this->Execute("ALTER TABLE netnodes   location_city, location_street, location_house, location_flat, location;");
+$this->Execute("ALTER TABLE netdevices location_city, location_street, location_house, location_flat, location;");
+$this->Execute("ALTER TABLE voipaccounts location_city, location_street, location_house, location_flat, location;");
 
-$this->Execute("ALTER TABLE divisions  DROP IF EXISTS location_city, DROP IF EXISTS location_street, DROP IF EXISTS location_house, DROP IF EXISTS location_flat, DROP IF EXISTS countryid,
-                                       DROP IF EXISTS address, DROP IF EXISTS city, DROP IF EXISTS zip;");
+$this->Execute("ALTER TABLE divisions  location_city, location_street, location_house, location_flat, countryid,
+                                       address, city, zip;");
 
 $this->Execute("
     CREATE VIEW customerview AS
