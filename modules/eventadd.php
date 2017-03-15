@@ -188,8 +188,8 @@ if (!ConfigHelper::checkConfig('phpui.big_networks'))
 $categories = $LMS->GetCategoryListByUser($AUTH->id);
 $SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
 $SMARTY->assign('userlist', $userlist);
-$SMARTY->assign('customerid',$event[customerid]);
-$SMARTY->assign('customername',$event[customername]);
+$SMARTY->assign('customerid',$event['customerid']);
+$SMARTY->assign('customername',$event['customername']);
 $SMARTY->assign('tqname',$tqname);
 $SMARTY->assign('eventticketid', $eventticketid);
 $SMARTY->assign('usergroups', $usergroups);
