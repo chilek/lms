@@ -173,14 +173,19 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 			$jpk_data .= "<JPK xmlns=\"http://jpk.mf.gov.pl/wzor/2016/10/26/10261/\" xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2016/01/25/eD/DefinicjeTypy/\">\n";
 
 		$divisionid = intval($_GET['divisionid']);
-		$division = $DB->GetRow("SELECT d.name, shortname, address, city, zip, countryid, ten, regon,
-				account, inv_header, inv_footer, inv_author, inv_cplace, location_city, location_street, tax_office_code,
-				lb.name AS borough, ld.name AS district, ls.name AS state FROM divisions d
-				LEFT JOIN location_cities lc ON lc.id = location_city
-				LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
-				LEFT JOIN location_districts ld ON ld.id = lb.districtid
-				LEFT JOIN location_states ls ON ls.id = ld.stateid
-				WHERE d.id = ?", array($divisionid));
+		$division = $DB->GetRow("SELECT d.name, shortname, a.location as address, 
+		                            a.city, a.zip, a.country_id as countryid, ten, regon,
+					    account, inv_header, inv_footer, inv_author, inv_cplace,
+					    a.city_id as location_city, a.street_id as location_street, 
+					    tax_office_code, lb.name AS borough, ld.name AS district,
+					    ls.name AS state 
+                                        FROM divisions d
+                                            LEFT JOIN vaddresses a ON d.address_id = a.id
+					    LEFT JOIN location_cities lc ON lc.id = a.city_id
+					    LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
+					    LEFT JOIN location_districts ld ON ld.id = lb.districtid
+					    LEFT JOIN location_states ls ON ls.id = ld.stateid
+					WHERE d.id = ?", array($divisionid));
 
 		// JPK header
 		$jpk_data .= "\t<Naglowek>\n";
