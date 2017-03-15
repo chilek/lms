@@ -137,7 +137,7 @@ if(isset($_POST['event']))
 					intval($event['custid']),
 					$event['type'],
 					$id,
-					$event['ticketid']
+					empty($event['ticketid']) ? null : $event['ticketid'],
 					));
 
 		if (!empty($event['userlist'])) {
