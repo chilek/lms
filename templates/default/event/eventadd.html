@@ -213,10 +213,10 @@
                     {foreach from=$queuelist item=item}
                         <OPTION value="{$item.id}" {if $item.id == '6'}SELECTED{/if}>{$item.name}</OPTION>
                     {/foreach}
+                    </SELECT>
                     {else}
                         {$tqname}
                     {/if}
-                    </SELECT>
                 </TD>
                 </TR>
                 {if empty($event.ticketid) && empty($event.customerid)}
