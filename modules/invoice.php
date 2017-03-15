@@ -174,12 +174,12 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
 		$divisionid = intval($_GET['divisionid']);
 		$division = $DB->GetRow("SELECT d.name, shortname, va.address, va.city,
-				va.zip, va.country_id AS countryid, ten, regon,
-				account, inv_header, inv_footer, inv_author, inv_cplace, va.city_id AS location_city,
-				va.street_id AS location_street, tax_office_code,
+				va.zip, va.countryid, ten, regon,
+				account, inv_header, inv_footer, inv_author, inv_cplace, va.location_city,
+				va.location_street, tax_office_code,
 				lb.name AS borough, ld.name AS district, ls.name AS state FROM divisions d
 				JOIN vaddresses va ON va.id = d.address_id
-				LEFT JOIN location_cities lc ON lc.id = va.city_id
+				LEFT JOIN location_cities lc ON lc.id = va.location_city
 				LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
 				LEFT JOIN location_states ls ON ls.id = ld.stateid
