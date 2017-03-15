@@ -142,12 +142,12 @@
 			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</span>{/if}
 		</TD>
 		<TD class="nobr text-right">
-			<A href="?m=rtticketprint&id={$queue[ticket].id}" target="_BLANK"><IMG src="img/print.gif" alt="[ {trans("Print")} ]" title="[ {trans("Print")} ]" title="[ {trans("Edit")} ]"> </A>
-			<A href="?m=rtticketdel&id={$queue[ticket].id}" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=rtticketedit&id={$queue[ticket].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"> </A>
-			<A href="?m=rtnoteadd&ticketid={$queue[ticket].id}"><IMG src="img/note.gif" alt="[ {trans("New Note")} ]" title="[ {trans("New Note")} ]"> </A>
-			<A href="?m=rtmessageadd&ticketid={$queue[ticket].id}"><IMG src="img/forward.gif" alt="[ {trans("New Message")} ]" title="[ {trans("New Message")} ]"> </A>
-			<A href="?m=rtticketview&id={$queue[ticket].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"> </A>
+			<a href="?m=rtticketprint&id={$queue[ticket].id}" target="_BLANK"><img src="img/print.gif" alt="" title="[ {trans("Print")} ]"> </a>
+			<a href="?m=rtticketdel&id={$queue[ticket].id}" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')"><img src="img/delete.gif" alt="" title="[ {trans("Delete")} ]"></a>
+			<a href="?m=rtticketedit&id={$queue[ticket].id}"><img src="img/edit.gif" alt="" title="[ {trans("Edit")} ]"> </a>
+			<a href="?m=rtnoteadd&ticketid={$queue[ticket].id}"><img src="img/note.gif" alt="" title="[ {trans("New Note")} ]"> </a>
+			<a href="?m=rtmessageadd&ticketid={$queue[ticket].id}"><img src="img/forward.gif" alt="" title="[ {trans("New Message")} ]"> </a>
+			<a href="?m=rtticketview&id={$queue[ticket].id}"><img src="img/info.gif" alt="" title="[ {trans("Info")} ]"> </a>
 		</TD>
 	</TR>
 	{sectionelse}
