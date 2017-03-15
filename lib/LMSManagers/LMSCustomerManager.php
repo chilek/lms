@@ -882,14 +882,15 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         $netdevs = $this->db->GetAllByKey('SELECT
                                               nd.id, nd.name, lc.name as location_city, lc.id as location_city_id, ls.name as location_street,
-                                              ls.id as location_street_id, nd.location_house, nd.location_flat, nd.description, nd.producer,
+                                              ls.id as location_street_id, va.house as location_house, va.flat as location_flat, nd.description, nd.producer,
                                               nd.model, nd.serialnumber, nd.ports, nd.purchasetime, nd.guaranteeperiod, nd.shortname, nd.nastype,
                                               nd.clients, nd.community, nd.channelid, nd.longitude, nd.latitude, nd.netnodeid, nd.invprojectid,
                                               nd.status, nd.netdevicemodelid, nd.ownerid, no.authtype
                                            FROM
                                               netdevices nd
-                                              LEFT JOIN location_cities lc ON nd.location_city = lc.id
-                                              LEFT JOIN location_streets ls ON nd.location_street = ls.id
+                                              LEFT JOIN vaddresses va ON nd.address_id = va.id
+                                              LEFT JOIN location_cities lc ON va.city_id = lc.id
+                                              LEFT JOIN location_streets ls ON va.street_id = ls.id
                                               LEFT JOIN nodes no ON nd.id = no.netdev
                                            WHERE
                                               nd.ownerid = ?', 'id', array($customer_id));
