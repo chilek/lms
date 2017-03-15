@@ -97,10 +97,10 @@ $this->Execute("CREATE TABLE addresses (
                     house      varchar(20) NULL,
                     flat       varchar(20) NULL,
                     PRIMARY KEY (id),
-                    CONSTRAINT `addresses_state_id_fk`   FOREIGN KEY (state_id)   REFERENCES location_states  (id) ON DELETE SET NULL ON UPDATE CASCADE,
-                    CONSTRAINT `addresses_city_id_fk`    FOREIGN KEY (city_id)    REFERENCES location_cities  (id) ON DELETE SET NULL ON UPDATE CASCADE,
-                    CONSTRAINT `addresses_street_id_fk`  FOREIGN KEY (street_id)  REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-                    CONSTRAINT `addresses_country_id_fk` FOREIGN KEY (country_id) REFERENCES countries        (id) ON DELETE SET NULL ON UPDATE CASCADE
+                    CONSTRAINT addresses_state_id_fk   FOREIGN KEY (state_id)   REFERENCES location_states  (id) ON DELETE SET NULL ON UPDATE CASCADE,
+                    CONSTRAINT addresses_city_id_fk    FOREIGN KEY (city_id)    REFERENCES location_cities  (id) ON DELETE SET NULL ON UPDATE CASCADE,
+                    CONSTRAINT addresses_street_id_fk  FOREIGN KEY (street_id)  REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+                    CONSTRAINT addresses_country_id_fk FOREIGN KEY (country_id) REFERENCES countries        (id) ON DELETE SET NULL ON UPDATE CASCADE
                 ) ENGINE=InnoDB;");
 
 $this->Execute("CREATE TABLE customer_addresses (
