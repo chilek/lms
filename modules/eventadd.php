@@ -64,7 +64,7 @@ if(isset($_POST['event']))
 {
 	$event = $_POST['event'];
 
-	if(count($event['categories'])==0)
+	if (!empty($event['helpdesk']) && !count($event['categories']))
 		$error['categories'] = trans('You have to select category!');
 
 	if (!isset($event['usergroup']))
@@ -110,7 +110,7 @@ if(isset($_POST['event']))
 
 		$event['nodeid'] = (isset($event['customer_location'])||is_null($event['nodeid'])) ? NULL : $event['nodeid'];
 
-                if(!empty($event['helpdesk']))
+                if (isset($event['helpdesk']))
                 {
                     $ticket['queue'] = $event['rtqueue'];
                     $ticket['customerid'] = $event['customerid'];
@@ -159,6 +159,8 @@ if(isset($_POST['event']))
 		unset($event['description']);
                                 unset($event['categories']);
 	}
+} else {
+	$event['helpdesk'] = ConfigHelper::checkConfig('phpui.default_event_ticket_assignment');
 }
 
 $event['date'] = isset($event['date']) ? $event['date'] : $SESSION->get('edate');
