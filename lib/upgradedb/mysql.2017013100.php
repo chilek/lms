@@ -467,8 +467,8 @@ $this->Execute("ALTER TABLE netdevices DROP FOREIGN KEY netdevices_ibfk_1;");
 $this->Execute("ALTER TABLE netdevices DROP FOREIGN KEY netdevices_ibfk_2;");
 $this->Execute("ALTER TABLE netnodes DROP FOREIGN KEY netnodes_ibfk_2;");
 $this->Execute("ALTER TABLE netnodes DROP FOREIGN KEY netnodes_ibfk_3;");
-$this->Execute("ALTER TABLE voipaccounts DROP FOREIGN KEY IF EXISTS voipaccounts_ibfk_1;");
-$this->Execute("ALTER TABLE voipaccounts DROP FOREIGN KEY IF EXISTS voipaccounts_ibfk_2;");
+$this->Execute("ALTER TABLE voipaccounts DROP FOREIGN KEY voipaccounts_ibfk_1;");
+$this->Execute("ALTER TABLE voipaccounts DROP FOREIGN KEY voipaccounts_ibfk_2;");
 $this->Execute("ALTER TABLE divisions DROP FOREIGN KEY divisions_ibfk_1;");
 $this->Execute("ALTER TABLE divisions DROP FOREIGN KEY divisions_ibfk_2;");
 
