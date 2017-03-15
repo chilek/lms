@@ -211,7 +211,7 @@
                     {if empty($event.ticketid) && empty($event.customerid)}
                     <SELECT size="1" name="event[rtqueue]" {tip text="Select queue" trigger="queue"}>
                     {foreach from=$queuelist item=item}
-                        <OPTION value="{$item.id}" {if $item.id == '6'}SELECTED{/if}>{$item.name}</OPTION>
+                        <OPTION value="{$item.id}"{if $item.id == $event.rtqueue} selected{/if}>{$item.name}</OPTION>
                     {/foreach}
                     </SELECT>
                     {else}
