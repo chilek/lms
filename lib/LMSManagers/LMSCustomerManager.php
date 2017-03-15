@@ -882,7 +882,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         $netdevs = $this->db->GetAllByKey('SELECT
                                               nd.id, nd.name, lc.name as location_city, lc.id as location_city_id, ls.name as location_street,
-                                              ls.id as location_street_id, va.house as location_house, va.flat as location_flat, nd.description, nd.producer,
+                                              ls.id as location_street_id, va.location_house, va.location_flat, nd.description, nd.producer,
                                               nd.model, nd.serialnumber, nd.ports, nd.purchasetime, nd.guaranteeperiod, nd.shortname, nd.nastype,
                                               nd.clients, nd.community, nd.channelid, nd.longitude, nd.latitude, nd.netnodeid, nd.invprojectid,
                                               nd.status, nd.netdevicemodelid, nd.ownerid, no.authtype
