@@ -40,28 +40,28 @@ $this->Execute("
         SELECT *, country_id AS countryid, city_id AS location_city, street_id AS location_street,
             house AS location_house, flat AS location_flat,
             (TRIM(both ' ' FROM
-                 (CASE WHEN street IS NOT NULL THEN street ELSE '' END)
-                 || (CASE WHEN house is NOT NULL
-                         THEN (CASE WHEN flat IS NOT NULL THEN ' ' || house || '/' || flat ELSE ' ' || house END)
-                         ELSE (CASE WHEN flat IS NOT NULL THEN ' ' || flat ELSE '' END)
-                    END)
+                 CONCAT((CASE WHEN street IS NOT NULL THEN street ELSE '' END),
+                 (CASE WHEN house is NOT NULL
+                         THEN (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', house, '/', flat) ELSE CONCAT(' ', house) END)
+                         ELSE (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', flat) ELSE '' END)
+                    END))
             )) AS address,
             (TRIM(both ' ' FROM
-                 (CASE WHEN zip IS NOT NULL THEN zip || ' ' ELSE '' END)
-                 || (CASE WHEN city IS NOT NULL
-                     THEN city || ', ' ||
-                         (CASE WHEN street IS NOT NULL THEN street ELSE '' END)
-                         || (CASE WHEN house is NOT NULL
-                                THEN (CASE WHEN flat IS NOT NULL THEN ' ' || house || '/' || flat ELSE ' ' || house END)
-                                ELSE (CASE WHEN flat IS NOT NULL THEN ' ' || flat ELSE '' END)
-                            END)
+                 CONCAT((CASE WHEN zip IS NOT NULL THEN CONCAT(zip, ' ') ELSE '' END),
+                 (CASE WHEN city IS NOT NULL
+                     THEN CONCAT(city, ', ',
+                         (CASE WHEN street IS NOT NULL THEN street ELSE '' END),
+                         (CASE WHEN house is NOT NULL
+                                THEN (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', house, '/', flat) ELSE CONCAT(' ', house) END)
+                                ELSE (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', flat) ELSE '' END)
+                            END))
                      ELSE
-                         (CASE WHEN street IS NOT NULL THEN street ELSE '' END)
-                         || (CASE WHEN house is NOT NULL
-                                 THEN (CASE WHEN flat IS NOT NULL THEN ' ' || house || '/' || flat ELSE ' ' || house END)
-                                 ELSE (CASE WHEN flat IS NOT NULL THEN ' ' || flat ELSE '' END)
-                            END)
-                 END)
+                         CONCAT((CASE WHEN street IS NOT NULL THEN street ELSE '' END),
+                         (CASE WHEN house is NOT NULL
+                                 THEN (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', house, '/', flat) ELSE CONCAT(' ', house) END)
+                                 ELSE (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', flat) ELSE '' END)
+                            END))
+                 END))
             )) AS location
         FROM addresses");
 
@@ -121,7 +121,7 @@ CREATE VIEW vmacs AS
 CREATE VIEW vnetworks AS
     SELECT h.name AS hostname, ne.*, no.ownerid, a.city_id as location_city,
         a.street_id as location_street, a.house as location_house, a.flat as location_flat,
-        no.chkmac, inet_ntoa(ne.address) || '/' || mask2prefix(inet_aton(ne.mask)) AS ip, 
+        no.chkmac, CONCAT(inet_ntoa(ne.address), '/', mask2prefix(inet_aton(ne.mask))) AS ip,
         no.id AS nodeid, a.location
     FROM nodes no
         LEFT JOIN networks ne ON (ne.id = no.netid)

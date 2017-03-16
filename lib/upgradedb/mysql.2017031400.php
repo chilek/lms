@@ -36,20 +36,20 @@ CREATE VIEW vaddresses AS
         city_id as location_city, street_id as location_street,
         house as location_house, flat as location_flat,
         ( trim(both ' ' from
-        CASE WHEN zip  is not null AND char_length(zip) > 0 THEN zip || ' ' ELSE '' END ||
-        CASE WHEN city is not null AND char_length(city) > 0
+        CONCAT((CASE WHEN zip  is not null AND char_length(zip) > 0 THEN CONCAT(zip, ' ') ELSE '' END),
+        (CASE WHEN city is not null AND char_length(city) > 0
             THEN
-                CASE WHEN street is not null AND char_length(street) > 0 THEN city || ', ' || street ELSE city END
+                CASE WHEN street is not null AND char_length(street) > 0 THEN CONCAT(city, ', ', street) ELSE city END
             ELSE
                 CASE WHEN street is not null AND char_length(street) > 0 THEN street ELSE '' END
-            END ||
-        CASE WHEN house is not null
+            END),
+        (CASE WHEN house is not null
             THEN
-                CASE WHEN flat is not null THEN ' ' || house || '/' || flat ELSE ' ' || house END
+                CASE WHEN flat is not null THEN CONCAT(' ', house, '/', flat) ELSE CONCAT(' ', house) END
             ELSE
-                CASE WHEN flat is not null THEN ' ' || flat ELSE '' END
+                CASE WHEN flat is not null THEN CONCAT(' ', flat) ELSE '' END
             END
-        )) AS location
+        ))) AS location
     FROM addresses;
 ");
 
