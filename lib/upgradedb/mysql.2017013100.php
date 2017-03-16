@@ -463,8 +463,13 @@ unset( $customer_loc );
  -------------------------------- */
 $this->Execute("ALTER TABLE nodes DROP FOREIGN KEY nodes_ibfk_1;");
 $this->Execute("ALTER TABLE nodes DROP FOREIGN KEY nodes_ibfk_2;");
+$this->Execute("ALTER TABLE nodes DROP FOREIGN KEY nodes_ibfk_3;");
+$this->Execute("ALTER TABLE nodes DROP FOREIGN KEY nodes_ibfk_4;");
 $this->Execute("ALTER TABLE netdevices DROP FOREIGN KEY netdevices_ibfk_1;");
 $this->Execute("ALTER TABLE netdevices DROP FOREIGN KEY netdevices_ibfk_2;");
+$this->Execute("ALTER TABLE netdevices DROP FOREIGN KEY netdevices_ibfk_3;");
+$this->Execute("ALTER TABLE netdevices DROP FOREIGN KEY netdevices_ibfk_4;");
+$this->Execute("ALTER TABLE netdevices DROP FOREIGN KEY netdevices_ibfk_5;");
 $this->Execute("ALTER TABLE netnodes DROP FOREIGN KEY netnodes_ibfk_2;");
 $this->Execute("ALTER TABLE netnodes DROP FOREIGN KEY netnodes_ibfk_3;");
 $this->Execute("ALTER TABLE voipaccounts DROP FOREIGN KEY voipaccounts_ibfk_1;");
