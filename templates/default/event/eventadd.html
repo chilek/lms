@@ -197,7 +197,7 @@
                     {trans("Add new request to Helpdesk")}
                 </TD>
                 <TD>
-                    <input type="checkbox" name="event[helpdesk]" value="1"{if isset($event['helpdesk'])} checked{/if}>
+                    <input type="checkbox" name="event[helpdesk]" value="1"{if !empty($event['helpdesk'])} checked{/if}>
                 </TD>
                 </TR>
                 {/if}
