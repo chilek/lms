@@ -2166,7 +2166,8 @@ CREATE VIEW vaddresses AS
                 END)
         )) AS address,
         (TRIM(both ' ' FROM
-             (CASE WHEN city IS NOT NULL
+             (CASE WHEN zip IS NOT NULL THEN zip || ' ' ELSE '' END)
+             || (CASE WHEN city IS NOT NULL
                  THEN city || ', ' ||
                      (CASE WHEN street IS NOT NULL THEN street ELSE '' END)
                      || (CASE WHEN house is NOT NULL
@@ -2875,4 +2876,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017031500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017031600');
