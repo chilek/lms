@@ -418,7 +418,7 @@
 {if $invoice.customerpin}
 	<BR><BR>
 	<B>{trans("Customer ID:")} {$invoice.customerid|string_format:"%04d"}</B><BR>
-	PIN: <CODE>{$invoice.customerpin|string_format:"%04d"}</CODE>
+	PIN: <CODE>{if strlen($invoice.customerpin) < 4}{$invoice.customerpin|string_format:"%04d"}{else}{$invoice.customerpin}{/if}</CODE>
 	<BR><BR>
 {/if}
 
