@@ -97,6 +97,8 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to assign events with helpdesk tickets [interduo]
   - improvement: phpui.default_event_ticket_assignment controls if event ticket
     assignment is checked by default [chilan]
+  - clarification: customer pin on html and tcpdf invoices are printed based on
+    the same common rules [chilan]
 
 version 1.11.21 (2016-10-14):
 
