@@ -31,6 +31,7 @@ $this->Execute("
 	DROP VIEW IF EXISTS vnetworks;
 	DROP VIEW IF EXISTS vnodes;
 	DROP VIEW IF EXISTS vaddresses;
+	DROP VIEW IF EXISTS vdivisions;
 ");
 
 $this->Execute("ALTER TABLE addresses ALTER COLUMN city TYPE varchar(100)");
@@ -137,6 +138,12 @@ CREATE VIEW vnodes AS
         LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid)
         LEFT JOIN vaddresses a ON n.address_id = a.id
     WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
+CREATE VIEW vdivisions AS
+    SELECT d.*,
+        a.country_id as countryid, a.zip as zip, a.city as city,
+        (CASE WHEN a.house IS NULL THEN a.street ELSE (CASE WHEN a.flat IS NULL THEN a.street || ' ' || a.house ELSE a.street || ' ' || a.house || '/' || a.flat END) END) as address
+    FROM divisions d
+        JOIN addresses a ON a.id = d.address_id;
 ");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017032000', 'dbversion'));
