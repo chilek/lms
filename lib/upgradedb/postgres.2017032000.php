@@ -33,7 +33,7 @@ $this->Execute("
 	DROP VIEW IF EXISTS vaddresses;
 ");
 
-$this->Execute("ALTER TABLE address ALTER COLUMN city TYPE varchar(100)");
+$this->Execute("ALTER TABLE addresses ALTER COLUMN city TYPE varchar(100)");
 
 $this->Execute("
     CREATE VIEW vaddresses AS
