@@ -140,7 +140,6 @@ try {
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
 
 $SYSLOG = SYSLOG::getInstance();
 
@@ -259,23 +258,33 @@ $stdout = fopen('php://stdout', 'w');
 
 define('PROGRESS_ROW_COUNT', 1000);
 
-if ( isset($options['list']) ) {
-
-    $state_list = array();
-    $options['list'] =  preg_replace('/[^0-9,]/i', '', $options['list']);
-
-    if ( strpos($options['list'], ',') ) {
-        $tmp = array_filter( explode(',', $options['list']) );
-
-        foreach ( $tmp as $v ) {
-            $state_list[ $v ] = 1;
-        }
-
-        unset( $tmp );
-    } else {
-        $state_list[ $options['list'] ] = 1;
-    }
+$states = ConfigHelper::getConfig('teryt.state_list', '', true);
+$teryt_dir = ConfigHelper::getConfig('teryt.dir', '', true);
+if (!empty($states)) {
+	if (!preg_match('/^([0-9]+,?)+$/', $states)) {
+		fwrite($stderr, "Invalid state list format in ini file!" . PHP_EOL);
+		die;
+	}
+	$states = explode(',', $states);
+	$state_list = array_combine($states, array_fill(0, count($states), '1'));
 }
+
+if ( isset($options['list']) ) {
+	if (!preg_match('/^([0-9]+,?)+$/', $options['list'])) {
+		fwrite($stderr, "Invalid state list format entered in command line!" . PHP_EOL);
+		die;
+	}
+	$states = explode(',', $options['list']);
+	$state_list = array_combine($states, array_fill(0, count($states), '1'));
+}
+
+if (empty($teryt_dir))
+	$teryt_dir = getcwd();
+else
+	if (!is_dir($teryt_dir)) {
+		fwrite($stderr, "Output directory specified in ini file does not exist!" . PHP_EOL);
+		die;
+	}
 
 // close below
 if ( isset($options['update']) ) {
@@ -325,7 +334,8 @@ if ( isset($options['fetch']) ) {
 
                             // save file
                             $file['name'] = strtolower($file['name']);
-                            file_put_contents($file['name'] . '.zip', fopen('http://www.stat.gov.pl/broker/access/prefile/downloadPreFile.jspa?id=' . $matches['file_id'], 'r'));
+                            file_put_contents($teryt_dir . DIRECTORY_SEPARATOR . $file['name'] . '.zip',
+                                fopen('http://www.stat.gov.pl/broker/access/prefile/downloadPreFile.jspa?id=' . $matches['file_id'], 'r'));
                         break;
                     }
                 }
@@ -355,7 +365,7 @@ foreach ( $teryt_files as $file ) {
     }
 
     if ($zip->open($file.'.zip') === TRUE) {
-        $zip->extractTo('./');
+        $zip->extractTo($teryt_dir . DIRECTORY_SEPARATOR);
     } else {
         fwrite($stderr, "Error: Can't unzip $file.zip or file doesn't exists. Try to use -f, --fetch to download." . PHP_EOL);
         die();
@@ -408,9 +418,9 @@ unset( $tmp_terc_data );
 // Read TERC xml file
 //==============================================================================
 
-$xml->open('TERC.xml');
+$xml->open($teryt_dir . DIRECTORY_SEPARATOR . 'TERC.xml');
 
-fwrite($stdout, 'Parse TERC.xml' . PHP_EOL);
+fwrite($stdout, 'Parsing TERC.xml' . PHP_EOL);
 
 $i = 0;
 $terc_insert = 0;
@@ -568,7 +578,7 @@ unset( $terc_insert, $terc_update, $terc_delete );
 // Get current SIMC from database
 //==============================================================================
 
-fwrite($stdout, 'Create SIMC cache' . PHP_EOL);
+fwrite($stdout, 'Creating SIMC cache' . PHP_EOL);
 
 $tmp_simc_data = $DB->GetAll("
     SELECT s.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
@@ -602,9 +612,9 @@ unset( $tmp_simc_data );
 // Read SIMC xml file
 //==============================================================================
 
-fwrite($stdout, 'Parse SIMC.xml' . PHP_EOL);
+fwrite($stdout, 'Parsing SIMC.xml' . PHP_EOL);
 
-$xml->open('SIMC.xml');
+$xml->open($teryt_dir . DIRECTORY_SEPARATOR . 'SIMC.xml');
 
 $i = 0;
 $cities_r    = array();
@@ -768,9 +778,9 @@ unset( $tmp_ulic );
 // Read ULIC xml file
 //==============================================================================
 
-fwrite($stdout, 'Parse ULIC.xml' . PHP_EOL);
+fwrite($stdout, 'Parsing ULIC.xml' . PHP_EOL);
 
-$xml->open('ULIC.xml');
+$xml->open($teryt_dir . DIRECTORY_SEPARATOR . 'ULIC.xml');
 
 $i = 0;
 $ulic_insert = 0;
@@ -863,14 +873,14 @@ if ( isset($options['basepoint']) ) {
 
 if ( isset($options['fetch']) ) {
     // download point address base (pobranie bazy punktów adresowych)
-    fwrite($stdout, 'Start download files.' . PHP_EOL);
-    file_put_contents('pointaddress.zip', fopen('https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2016.zip', 'r'));
+    fwrite($stdout, 'Downloading files.' . PHP_EOL);
+    file_put_contents($teryt_dir . DIRECTORY_SEPARATOR . 'pointaddress.zip', fopen('https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2016.zip', 'r'));
 }
 
 fwrite($stdout, 'Unzip files' . PHP_EOL);
 $zip = new ZipArchive;
 
-if ($zip->open('pointaddress.zip') === TRUE) {
+if ($zip->open($teryt_dir . DIRECTORY_SEPARATOR . 'pointaddress.zip') === TRUE) {
     $numFiles = $zip->numFiles;
 
     if ( $numFiles == 1 ) {
@@ -886,10 +896,10 @@ if ($zip->open('pointaddress.zip') === TRUE) {
         $basepoint_name = 'baza_punktow_adresowych_2016.csv';
     }
 
-    $zip->extractTo('./');
+    $zip->extractTo($teryt_dir . DIRECTORY_SEPARATOR);
     unset( $numFiles );
 } else {
-    fwrite($stderr, 'Error: Can\'t unzip pointaddress.zip or file doesn\'t exists. Try to use -f, --fetch to download.' . PHP_EOL);
+    fwrite($stderr, 'Error: Can\'t unzip pointaddress.zip or file doesn\'t exist. Try to use -f, --fetch to download.' . PHP_EOL);
     die();
 }
 
@@ -1011,7 +1021,7 @@ if ($fh) {
         ++$i;
     }
 
-    fwrite($stdout, 'Remove old buildings' . PHP_EOL);
+    fwrite($stdout, 'Removing old buildings' . PHP_EOL);
 
     $DB->Execute('DELETE FROM location_buildings WHERE updated = 0;');
     $DB->Execute('UPDATE location_buildings SET updated = 0;');
@@ -1036,7 +1046,7 @@ if ($fh) {
 //==============================================================================
 
 if ( isset($options['merge']) ) {
-    fwrite($stdout, 'Merge TERYT with LMS database' . PHP_EOL);
+    fwrite($stdout, 'Merging TERYT with LMS database' . PHP_EOL);
     $merge_update = 0;
 
     $addresses = $DB->GetAll("
@@ -1083,19 +1093,19 @@ if ( isset($options['merge']) ) {
 //==============================================================================
 
 if ( isset($options['delete']) ) {
-    fwrite($stdout, 'Delete downloaded files' . PHP_EOL);
+    fwrite($stdout, 'Deleting downloaded files' . PHP_EOL);
 
     if ( !empty($basepoint_name) ) {
-        unlink('./' . $basepoint_name );
+        unlink($teryt_dir . DIRECTORY_SEPARATOR . $basepoint_name );
     }
 
-    unlink('./pointaddress.zip');
-    unlink('./simc.zip');
-    unlink('./SIMC.xml');
-    unlink('./ulic.zip');
-    unlink('./ULIC.xml');
-    unlink('./terc.zip');
-    unlink('./TERC.xml');
+    unlink($teryt_dir . DIRECTORY_SEPARATOR . 'pointaddress.zip');
+    unlink($teryt_dir . DIRECTORY_SEPARATOR . 'simc.zip');
+    unlink($teryt_dir . DIRECTORY_SEPARATOR . 'SIMC.xml');
+    unlink($teryt_dir . DIRECTORY_SEPARATOR . 'ulic.zip');
+    unlink($teryt_dir . DIRECTORY_SEPARATOR . 'ULIC.xml');
+    unlink($teryt_dir . DIRECTORY_SEPARATOR . 'terc.zip');
+    unlink($teryt_dir . DIRECTORY_SEPARATOR . 'TERC.xml');
 }
 
 fclose($stderr);
