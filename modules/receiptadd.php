@@ -162,13 +162,14 @@ function GetCashRegistries($cid = null) {
 	return $result;
 }
 
-function GetCashRegistriesXajax($cid) {
+function GetCashRegistriesXajax($cid, $regid) {
 	global $SMARTY;
 
 	$result = new xajaxResponse();
 
 	$cashreglist = GetCashRegistries($cid);
 	$SMARTY->assign('cashreglist', $cashreglist);
+	$SMARTY->assign('regid', $regid);
 	$contents = $SMARTY->fetch('receipt/receiptcashregistries.html');
 	$result->assign('cashregistries', 'innerHTML', $contents);
 
