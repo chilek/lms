@@ -135,7 +135,7 @@ $this->Execute("
 	        a.house as location_house, a.flat as location_flat,
 	        a.location
 	    FROM nodes n
-	        LEFT JOIN (SELECT nodeid, array_to_string(array_agg(mac), ',') AS mac FROM macs GROUP BY nodeid) m ON (n.id = m.nodeid)
+	        LEFT JOIN vnodes_mac m ON m.nodeid = n.id
 	        LEFT JOIN vaddresses a ON n.address_id = a.id
 	    WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0
 ");
