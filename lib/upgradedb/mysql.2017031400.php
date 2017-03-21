@@ -50,7 +50,7 @@ CREATE VIEW vaddresses AS
             ELSE
                 CASE WHEN flat is not null THEN CONCAT(' ', flat) ELSE '' END
             END
-        ))) AS location
+        )))) AS location
     FROM addresses;
 ");
 
