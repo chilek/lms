@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,7 +33,8 @@ $parameters = array(
 	'h' => 'help',
 	'v' => 'version',
 	'u' => 'update',
-	'U' => 'update_netdevices',
+	'U' => 'update-netdevices',
+	'N' => 'update-netnodes',
 );
 
 foreach ($parameters as $key => $val) {
@@ -51,7 +52,7 @@ foreach ($short_to_longs as $short => $long)
 if (array_key_exists('version', $options)) {
 	print <<<EOF
 lms-gps.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2017 LMS Developers
 
 EOF;
 	exit(0);
@@ -60,11 +61,12 @@ EOF;
 if (array_key_exists('help', $options)) {
 	print <<<EOF
 lms-gps.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2017 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -u, --update                    update nodes GPS coordinates using Google Maps API ;
--U, --update_netdevices         update netdevices GPS coordinates using Google Maps API;
+-U, --update-netdevices         update netdevices GPS coordinates using Google Maps API;
+-N, --update-netnodes           update netnodes GPS coordinates using Google Maps API;
 -h, --help                      print this help and exit;
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors;
@@ -77,7 +79,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
 	print <<<EOF
 lms-gps.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2017 LMS Developers
 
 EOF;
 }
@@ -90,8 +92,13 @@ else
 if (!$quiet)
 	echo "Using file ".$CONFIG_FILE." as config." . PHP_EOL;
 
-$update_netdevices = array_key_exists('update_netdevices', $options);
-$update = array_key_exists('update', $options);
+$update_types = array();
+if (isset($options['update-netdevices']))
+	$update_types['netdevices'] = 'netdevices';
+if (isset($options['update-netnodes']))
+	$update_types['netnodes'] = 'netnodes';
+if (isset($options['update']))
+	$update_types['nodes'] = 'vnodes';
 
 if (!is_readable($CONFIG_FILE))
 	die("Unable to read configuration file [".$CONFIG_FILE."]!" . PHP_EOL);
@@ -132,7 +139,6 @@ try {
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
 
 $SYSLOG = SYSLOG::getInstance();
 
@@ -149,48 +155,29 @@ if (!$_APIKEY)
 	die("Unable to read apikey from configuration file." . PHP_EOL);
 */
 
-if ($update) {
-        $loc = $DB->GetAll("SELECT id, location FROM vnodes WHERE longitude IS NULL AND latitude IS NULL AND location IS NOT NULL AND location_house IS NOT NULL AND location !='' AND location_house !=''");
-        if ($loc) {
-                foreach($loc as $row) {
-                        $address = urlencode($row['location']." Poland");
-                        $link = "http://maps.googleapis.com/maps/api/geocode/json?address=".$address."&sensor=false";
-                        $page = json_decode(file_get_contents($link), true);
-                        $latitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lat"]);
-                        $longitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lng"]);
-                        $status = $page["status"];
-                        $accuracy = $page["results"][0]["geometry"]["location_type"];
-                        if (($status == "OK") && ($accuracy == "ROOFTOP")) {
-                                $DB->Execute("UPDATE nodes SET latitude = ?, longitude = ? WHERE id = ?", array($latitude, $longitude, $row['id']));
-                                echo $row['id']." - OK - Accuracy: ".$accuracy." (lat.: ".$latitude." long.: ".$longitude.")" . PHP_EOL;
-                        } else {
-                                echo $row['id']." - ERROR - Accuracy: ".$accuracy." (lat.: ".$latitude." long.: ".$longitude.")" . PHP_EOL;
-                        }
-                        sleep(2);
-                }
-        }
+foreach ($update_types as $update_resource => $select_resource) {
+	$locations = $DB->GetAll("SELECT id, location FROM " . $select_resource . "
+		WHERE longitude IS NULL AND latitude IS NULL AND location IS NOT NULL
+			AND location_house IS NOT NULL AND location <> '' AND location_house <> ''");
+	if (!empty($locations)) {
+		foreach ($locations as $row) {
+			$address = urlencode($row['location']." Poland");
+			$link = "http://maps.googleapis.com/maps/api/geocode/json?address=".$address."&sensor=false";
+			$page = json_decode(file_get_contents($link), true);
+			$latitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lat"]);
+			$longitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lng"]);
+			$status = $page["status"];
+			$accuracy = $page["results"][0]["geometry"]["location_type"];
+			if (($status == "OK") && ($accuracy == "ROOFTOP")) {
+				$DB->Execute("UPDATE " . $update_resource . " SET latitude = ?, longitude = ? WHERE id = ?", array($latitude, $longitude, $row['id']));
+				echo $row['id']." - OK - Accuracy: ".$accuracy." (lat.: ".$latitude." long.: ".$longitude.")" . PHP_EOL;
+			} else {
+				echo $row['id']." - ERROR - Accuracy: ".$accuracy." (lat.: ".$latitude." long.: ".$longitude.")" . PHP_EOL;
+			}
+			sleep(2);
+		}
+	}
 }
 
-if ($update_netdevices) {
-        $loc = $DB->GetAll("SELECT id,location FROM netdevices WHERE longitude IS NULL AND latitude IS NULL AND location IS NOT NULL AND location_house IS NOT NULL AND location !='' AND location_house !=''");
-        if ($loc) {
-                foreach($loc as $row) {
-                        $address = urlencode($row['location']." Poland");
-                        $link = "http://maps.googleapis.com/maps/api/geocode/json?address=".$address."&sensor=false";
-                        $page = json_decode(file_get_contents($link), true);
-                        $latitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lat"]);
-                        $longitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lng"]);
-                        $status = $page["status"];
-                        $accuracy = $page["results"][0]["geometry"]["location_type"];
-                        if (($status == "OK") && ($accuracy == "ROOFTOP")) {
-                                $DB->Execute("UPDATE netdevices SET latitude = ?, longitude = ? WHERE id = ?", array($latitude, $longitude, $row['id']));
-                                echo $row['id']." - OK - Accuracy: ".$accuracy." (lat.: ".$latitude." long.: ".$longitude.")" . PHP_EOL;
-                        } else {
-                                echo $row['id']." - ERROR - Accuracy: ".$accuracy." (lat.: ".$latitude." long.: ".$longitude.")" . PHP_EOL;
-                        }
-                        sleep(2);
-                }
-        }
-}
 
 ?>
