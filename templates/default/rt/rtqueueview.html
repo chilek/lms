@@ -14,7 +14,7 @@
 			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=subject{if $queuedata.direction == "asc" && $queuedata.order == "subject"},desc{/if}"><B>{trans("Subject:")}</B></A> {if $queuedata.order == "subject"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=requestor{if $queuedata.direction == "asc" && $queuedata.order == "requestor"},desc{/if}">{trans("Submitter:")}</A> {if $queuedata.order == "requestor"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD WIDTH="1%>&nbsp;</TD>
+		<TD WIDTH="1%">&nbsp;</TD>
 		<TD WIDTH="1%" class="nobr">
 			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=owner{if $queuedata.direction == "asc" && $queuedata.order == "owner"},desc{/if}"><B>{trans("Owner")}</B></A>{if $queuedata.order == "owner"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}:<BR>
 			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=lastmodified{if $queuedata.direction == "asc" && $queuedata.order == "lastmodified"},desc{/if}">{trans("Last modified:")}</A> {if $queuedata.order == "lastmodified"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
