@@ -351,7 +351,7 @@
 			<INPUT type="checkbox" name="original"{if preg_match('/original/i', $default_printpage)} checked{/if}> <A HREF="javascript:setType('original');">{trans("original")}</A>
 	        <INPUT type="checkbox" name="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}> <A HREF="javascript:setType('copy');">{trans("copy")}</A>
 			<INPUT type="checkbox" name="duplicate"{if preg_match('/duplicate/i', $default_printpage)} checked{/if}> <A HREF="javascript:setType('duplicate');">{trans("duplicate")}</A>&nbsp;
-			<A HREF="?m=invoicelist">{trans("Cancel")} <IMG src="img/cancel.gif"></A> 
+			<A HREF="?m=invoicelist{if $invoice.proforma}&proforma=1{/if}">{trans("Cancel")} <IMG src="img/cancel.gif"></A> 
 			{if !$customer}
 			<A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
 			<A HREF="javascript:alert('{trans("Customer not selected!")}');">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>

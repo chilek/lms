@@ -29,14 +29,14 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'invoicexajax.inc.php');
 $taxeslist = $LMS->GetTaxes();
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
-if(isset($_GET['id']) && $action == 'edit')
+if(isset($_GET['id']) && ($action == 'edit' || $action == 'convert'))
 {
 	if ($LMS->isDocumentPublished($_GET['id']) && !ConfigHelper::checkConfig('privileges.superuser'))
 		return;
 
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
 
-	$invoice['proforma'] = isset($_GET['proforma']) ? 1 : null;
+	$invoice['proforma'] = isset($_GET['proforma']) ? $action : null;
 
 	$SESSION->remove('invoicecontents');
 	$SESSION->remove('invoicecustomer');
@@ -70,7 +70,7 @@ if(isset($_GET['id']) && $action == 'edit')
 	$invoice['oldnumber'] = $invoice['number'];
 	$invoice['oldnumberplanid'] = $invoice['numberplanid'];
 
-	if ($invoice['proforma']) {
+	if ($invoice['proforma'] == 'convert') {
 		$currtime = time();
 		$invoice['cdate'] = $currtime;
 		$invoice['sdate'] = $currtime;
@@ -105,7 +105,7 @@ $ntempl = docnumber(array(
 	'cdate' => $invoice['cdate'],
 	'customerid' => $invoice['customerid'],
 ));
-if (isset($invoice['proforma']))
+if (isset($invoice['proforma']) && $invoice['proforma'] == 'convert')
 	$layout['pagetitle'] = trans('Conversion Pro Forma Invoice $a To Invoice', $ntempl);
 elseif($invoice['doctype'] == DOC_INVOICE_PRO)
 	$layout['pagetitle'] = trans('Pro Forma Invoice Edit: $a', $ntempl);
@@ -268,10 +268,10 @@ switch($action)
 		if ($invoice['number']) {
 			if (!preg_match('/^[0-9]+$/', $invoice['number']))
 				$error['number'] = trans('Invoice number must be integer!');
-			elseif (($invoice['proforma'] || $invoice['oldnumber'] != $invoice['number']
+			elseif (($invoice['oldnumber'] != $invoice['number']
 				|| $invoice['oldnumberplanid'] != $invoice['numberplanid']) && $LMS->DocumentExists(array(
 					'number' => $invoice['number'],
-					'doctype' => $invoice['proforma'] ? DOC_INVOICE_PRO : DOC_INVOICE,
+					'doctype' => $invoice['proforma'] == 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
 					'planid' => $invoice['numberplanid'],
 					'cdate' => $invoice['cdate'],
 					'customerid' => $cid,
@@ -325,7 +325,7 @@ switch($action)
 
 		if (!$invoice['number'])
 			$invoice['number'] = $LMS->GetNewDocumentNumber(array(
-				'doctype' => DOC_INVOICE,
+				'doctype' => $invoice['proforma'] == 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
 				'planid' => $invoice['numberplanid'],
 				'cdate' => $invoice['cdate'],
 			));
@@ -335,7 +335,7 @@ switch($action)
 			elseif (($invoice['number'] != $invoice['oldnumber'] || $invoice['numberplanid'] != $invoice['oldnumberplanid'])
 				&& $LMS->DocumentExists(array(
 					'number' => $invoice['number'],
-					'doctype' => DOC_INVOICE,
+					'doctype' => $invoice['proforma'] == 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
 					'planid' => $invoice['numberplanid'],
 					'cdate' => $invoice['cdate'],
 				)))
@@ -343,7 +343,7 @@ switch($action)
 
 			if ($error) {
 				$invoice['number'] = $LMS->GetNewDocumentNumber(array(
-					'doctype' => DOC_INVOICE,
+					'doctype' => $invoice['proforma'] == 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
 					'planid' => $invoice['numberplanid'],
 					'cdate' => $invoice['cdate'],
 				));
@@ -379,7 +379,7 @@ switch($action)
 			'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
 		);
 
-		$args['type'] = DOC_INVOICE;
+		$args['type'] = $invoice['proforma'] == 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE;
 		$args['number'] = $invoice['number'];
 		if ($invoice['numberplanid'])
 			$args['fullnumber'] = docnumber(array(
@@ -455,7 +455,7 @@ switch($action)
 					$SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);
 				}
 
-				if ($invoice['doctype'] == DOC_INVOICE || isset($invoice['proforma']))
+				if ($invoice['doctype'] == DOC_INVOICE || $invoice['proforma'] == 'convert')
 					$LMS->AddBalance(array(
 						'time' => $cdate,
 						'value' => $item['valuebrutto']*$item['count']*-1,
@@ -491,7 +491,7 @@ switch($action)
 			'copy' => !empty($_GET['copy']) ? 1 : 0,
 				'duplicate' => !empty($_GET['duplicate']) ? 1 : 0));
 
-		$SESSION->redirect('?m=invoicelist');
+		$SESSION->redirect('?m=invoicelist' . (isset($invoice['proforma']) && $invoice['proforma'] == 'edit' ? '&proforma=1' : ''));
 	break;
 }
 

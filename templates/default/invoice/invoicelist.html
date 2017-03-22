@@ -163,7 +163,7 @@ window.open('?m=invoice&amp;id={$invoice.invoice}&amp;original={$invoice.origina
 			<A href="{$link.url}" rel="external"{if isset($link.onclick)} onclick="{$link.onclick}"{/if}>{if isset($link.icon)}<IMG src="{$link.icon}" alt="[ {$link.label} ]" {$link.tip}>{else}{$link.label}{/if}</A>
 			{/foreach}
 			{if $invoice.type == $smarty.const.DOC_INVOICE_PRO}
-			<A href="?m=invoiceedit&id={$invoice.id}&action=edit&proforma=1"><IMG src="img/reload.gif" alt="[ {trans("Convert to invoice")} ]" title="[ {trans("Convert to invoice")} ]"></A>
+			<A href="?m=invoiceedit&id={$invoice.id}&action=convert&proforma=1"><IMG src="img/reload.gif" alt="[ {trans("Convert to invoice")} ]" title="[ {trans("Convert to invoice")} ]"></A>
 			{/if}
 			{if $invoice.sendinvoices && ($invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_CNOTE || $invoice.type == $smarty.const.DOC_INVOICE_PRO)}
 			<A href="?m=invoicesend&id={$invoice.id}" target="_blank" OnClick="return confirmLink(this, '{t a=$invoice.name|escape:"javascript"|escape:"html"}Are you sure, you want to send invoice to customer \'$a\'?{/t}');"><IMG src="img/mail.gif" alt="[ {trans("Send invoice")} ]" title="[ {trans("Send invoice")} ]"></A>
@@ -189,10 +189,10 @@ window.open('?m=invoice&amp;id={$invoice.invoice}&amp;original={$invoice.origina
 				{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type == $smarty.const.DOC_INVOICE_PRO}
 				{if $invoice.type == $smarty.const.DOC_INVOICE}
 				{if !$invoice.published || ConfigHelper::checkConfig('privileges.superuser')}
-				<A HREF="?m=invoiceedit&id={$invoice.id}&action=edit"{if $invoice.published} onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}')"{/if}><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+				<A HREF="?m=invoiceedit&id={$invoice.id}&action=edit{if $invoice.type == $smarty.const.DOC_INVOICE_PRO}&proforma=1{/if}"{if $invoice.published} onclick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}')"{/if}><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 				{/if}
 				{else}
-				<A HREF="?m=invoiceedit&id={$invoice.id}&action=edit"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+				<A HREF="?m=invoiceedit&id={$invoice.id}&action=edit{if $invoice.type == $smarty.const.DOC_INVOICE_PRO}&proforma=1{/if}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 				{/if}
 				{elseif $invoice.type == $smarty.const.DOC_CNOTE}
 				{if !$invoice.published || ConfigHelper::checkConfig('privileges.superuser')}
