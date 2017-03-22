@@ -99,6 +99,8 @@ version ?.??.?? (????-??-??):
     assignment is checked by default [chilan]
   - clarification: customer pin on html and tcpdf invoices are printed based on
     the same common rules [chilan]
+  - improvement: lms-gps.php script allows to automatically determine netnodes gps
+    coordinates [chilan]
 
 version 1.11.21 (2016-10-14):
 
