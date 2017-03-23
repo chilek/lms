@@ -338,12 +338,12 @@ $(function() {
 			});
 			$('thead input', elem).on('keyup change search', function() {
 				$(elem).DataTable().column($(this).parent().index() + ':visible')
-					.search(this.value).draw();
+					.search(this.value.length ? '^' + this.value + '$' : '', true).draw();
 			});
 			$('thead select', elem).on('change', function() {
 				var value = this.value;
 				$(elem).DataTable().column($(this).parent().index() + ':visible')
-					.search(value).draw();
+					.search(value.length ? '^' + value + '$' : '', true).draw();
 			});
 		}
 
@@ -362,10 +362,11 @@ $(function() {
 						return;
 					}
 					if (typeof searchColumns[index].search === 'undefined') {
-						$(searchFields[i]).val(state.columns[index].search.search);
+						$(searchFields[i]).val(state.columns[index].search.search.replace(/[\^\$]/g, ''));
 					} else {
-						$(searchFields[i]).val(searchColumns[index].search);
-						api.column(index).search(searchColumns[index].search).draw();
+						$(searchFields[i]).val(searchColumns[index].search.replace(/[\^\$]/g, ''));
+						api.column(index).search(
+							searchColumns[index].search.length ? '^' + searchColumns[index].search + '$' : '', true).draw();
 					}
 					i++;
 				});
