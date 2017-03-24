@@ -37,7 +37,8 @@ $parameters = array(
     'u'  => 'update',
     'm'  => 'merge',
     'd'  => 'delete',
-    'b'  => 'buildings'
+    'b'  => 'buildings',
+    'o'  => 'only-unique-city-matches',
 );
 
 foreach ($parameters as $key => $val) {
@@ -76,6 +77,7 @@ lms-teryt.php
 -d, --delete                       delete downloaded teryt files after merge/update
 -b, --buildings                    analyze building base and load it into database
 -l, --list                         state ids who will be taken into account
+-o, --only-unique-city-matches     update TERYT location only if city matches uniquely
 
 EOF;
     exit(0);
@@ -202,14 +204,13 @@ function parse_teryt_xml_row( $xml_string ) {
  * \param  string $street street name
  * \return array  $ident  LMS location id's
  */
-function getIdents( $city = null, $street = null ) {
+function getIdents( $city = null, $street = null, $only_unique_city_matches = false ) {
     $street = trim( preg_replace('/$(ul\.|pl\.|al\.|bulw\.|os\.|wyb\.|plac|skwer|rondo|park|rynek|szosa|droga|ogród|wyspa)/i', '', $street) );
-    $idents = array();
 
 	$DB = LMSDB::getInstance();
 
     if ( $city && $street ) {
-        $idents = $DB->GetRow("
+        $idents = $DB->GetAll("
             SELECT s.id as streetid, s.cityid
             FROM location_streets s
                 JOIN location_cities c ON (s.cityid = c.id)
@@ -218,19 +219,24 @@ function getIdents( $city = null, $street = null ) {
                 AND c.name ?LIKE? ?
             ORDER BY c.cityid", array($street, $street, $city));
 
-    } elseif ( $city ) {
-        $idents['cityid'] = $DB->GetOne('SELECT name FROM location_cities WHERE name ?LIKE? ?;', array($city));
-    }
-
-    if ( isset($idents['cityid']) && !is_numeric($idents['cityid']) ) {
-        $idents['cityid'] = null;
-    }
-
-    if ( isset($idents['streetid']) && !is_numeric($idents['streetid']) ) {
-        $idents['streetid'] = null;
-    }
-
-    return $idents;
+		if (empty($idents))
+			return array();
+		if (($only_unique_city_matches && count($idents) == 1) || !$only_unique_city_matches)
+			return $idents[0];
+		else
+			return array();
+	} elseif ( $city ) {
+		$cityids = $DB->GetCol("SELECT id FROM location_cities WHERE name ?LIKE? ?", array($city));
+		if (empty($cityids))
+			return array();
+		if (($only_unique_city_matches && count($cityids) == 1) || !$only_unique_city_matches)
+			return array(
+				'cityid' => $cityids[0],
+			);
+		else
+			return array();
+	} else
+		return array();
 }
 
 ini_set('memory_limit', '512M');
@@ -240,6 +246,8 @@ define('PROGRESS_ROW_COUNT', 1000);
 define('BUILDING_BASE_ZIP_NAME', 'baza_punktow_adresowych_2016.zip');
 define('BUILDING_BASE_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2016.zip');
 $building_base_name = 'baza_punktow_adresowych_2016.csv';
+
+$only_unique_city_matches = isset($options['only-unique-city-matches']);
 
 $states = ConfigHelper::getConfig('teryt.state_list', '', true);
 $teryt_dir = ConfigHelper::getConfig('teryt.dir', '', true);
@@ -1073,15 +1081,12 @@ if ( isset($options['buildings']) ) {
 
 if ( isset($options['merge']) ) {
 	if (!$quiet)
-		echo 'Merging TERYT with LMS database' . PHP_EOL;
+		echo 'Merging TERYT with LMS database...' . PHP_EOL;
     $updated = 0;
 
-    $addresses = $DB->GetAll("
-        SELECT id, city, city_id, street, street_id
+    $addresses = $DB->GetAll("SELECT id, city, street
         FROM addresses
-        WHERE
-            city_id IS NULL AND street_id IS NULL AND
-            (city IS NOT NULL OR street IS NOT NULL)");
+        WHERE city IS NOT NULL AND (city_id IS NULL OR (street IS NOT NULL AND street_id IS NULL))");
 
     if ( !$addresses ) {
         $addresses = array();
@@ -1090,27 +1095,38 @@ if ( isset($options['merge']) ) {
     $location_cache = array();
 
     foreach ( $addresses as $a ) {
-        if ( empty($ident['streetid']) && empty($ident['cityid']) ) {
-            continue;
-        }
+		$city = empty($a['city']) ? '-' : $a['city'];
+		$street = empty($a['street']) ? '-' : $a['street'];
 
-        $key = strtolower($a['city']).':'.strtolower($a['street']);
+		if (!$quiet)
+			printf("City '%s', Street: '%s': ", $city, $street);
+
+        $key = strtolower($city) . ':' . strtolower($street);
 
         if ( isset($location_cache[$key]) ) {
-            $ident = $location_cache[$key];
+            $idents = $location_cache[$key];
         } else {
-            $ident = getIdents( $a['city'], $a['street'] );
-            $location_cache[$key] = $ident;
+            $idents = getIdents( $city, $street, $only_unique_city_matches );
+            $location_cache[$key] = $idents;
         }
 
-        $DB->Execute('UPDATE addresses SET city_id=?, street_id=? WHERE id=?',
-                      array($ident['cityid'], $ident['streetid'], $a['id']));
+		if (empty($idents)) {
+			if (!$quiet)
+				echo 'not found' . PHP_EOL;
+			continue;
+		}
+
+		if (!$quiet)
+			echo 'found' . PHP_EOL;
+
+        $DB->Execute("UPDATE addresses SET city_id = ?, street_id = ? WHERE id = ?",
+                      array($idents['cityid'], $idents['streetid'], $a['id']));
 
         $updated++;
     }
 
 	if (!$quiet)
-		echo 'Matched TERYT addresses = ' . $updated . PHP_EOL;
+		echo 'Matched TERYT addresses: ' . $updated . PHP_EOL;
     unset( $addresses, $updated, $location_cache );
 }
 
