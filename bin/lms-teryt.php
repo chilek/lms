@@ -362,8 +362,8 @@ if ( isset($options['fetch']) ) {
 		echo 'Unzipping TERYT files...' . PHP_EOL;
 
 	foreach ( $teryt_files as $file ) {
-		$file = $teryt_dir . DIRECTORY_SEPARATOR . $file . $teryt_filename_suffix . '.zip';
-	    if ($zip->open($file) === TRUE) {
+		$filename = $teryt_dir . DIRECTORY_SEPARATOR . $file . $teryt_filename_suffix . '.zip';
+	    if ($zip->open($filename) === TRUE) {
 	        $zip->extractTo($teryt_dir . DIRECTORY_SEPARATOR);
 	    } else {
 	        fwrite($stderr, "Error: Can't unzip $file or file doesn't exist." . PHP_EOL);
@@ -402,6 +402,8 @@ if ( isset($options['fetch']) ) {
 	    fprintf($stderr, "Error: Can't unzip %s or file doesn't exist." . PHP_EOL, BASEPOINT_ZIP_NAME);
 	    die;
 	}
+
+	unset($zip);
 }
 
 if ( isset($options['update']) ) {
