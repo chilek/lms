@@ -92,13 +92,13 @@ else
 if (!$quiet)
 	echo "Using file ".$CONFIG_FILE." as config." . PHP_EOL;
 
-$update_types = array();
+$types = array();
 if (isset($options['update-netdevices']))
-	$update_types['netdevices'] = 'netdevices';
+	$types[] = 'netdevices';
 if (isset($options['update-netnodes']))
-	$update_types['netnodes'] = 'netnodes';
+	$types[] = 'netnodes';
 if (isset($options['update']))
-	$update_types['nodes'] = 'vnodes';
+	$types[] = 'nodes';
 
 if (!is_readable($CONFIG_FILE))
 	die("Unable to read configuration file [".$CONFIG_FILE."]!" . PHP_EOL);
@@ -155,13 +155,20 @@ if (!$_APIKEY)
 	die("Unable to read apikey from configuration file." . PHP_EOL);
 */
 
-foreach ($update_types as $update_resource => $select_resource) {
-	$locations = $DB->GetAll("SELECT id, location FROM " . $select_resource . "
+foreach ($types as $type) {
+	$locations = $DB->GetAll("SELECT t.id, va.location, ls.name AS state_name,
+			ld.name AS distict_name, lb.name AS borough_name FROM " . $type . " t
+		LEFT JOIN vaddresses va ON va.id = t.address_id
+		LEFT JOIN location_cities lc ON lc.id = va.city_id
+		LEFT JOIN location_boroughs lb ON lb.id = lc_boroughid
+		LEFT JOIN location_districts ld ON ld.id = lb.districtid
+		LEFT JOIN location_states ls ON ls.id = ld.stateid
 		WHERE longitude IS NULL AND latitude IS NULL AND location IS NOT NULL
 			AND location_house IS NOT NULL AND location <> '' AND location_house <> ''");
 	if (!empty($locations)) {
 		foreach ($locations as $row) {
-			$address = urlencode($row['location']." Poland");
+			$address = urlencode((empty($row['state_name']) ? '' : $row['state_name'] . ', ' . $row['district_name'] . ', ' . $row['borough_name'])
+				. $row['location'] . " Poland");
 			$link = "http://maps.googleapis.com/maps/api/geocode/json?address=".$address."&sensor=false";
 			$page = json_decode(file_get_contents($link), true);
 			$latitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lat"]);

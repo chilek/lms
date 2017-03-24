@@ -101,6 +101,8 @@ version ?.??.?? (????-??-??):
     the same common rules [chilan]
   - improvement: lms-gps.php script allows to automatically determine netnodes gps
     coordinates [chilan]
+  - improvement: lms-gps.php script can search for more exact locations if resource
+    address is teritied [chilan]
 
 version 1.11.21 (2016-10-14):
 
