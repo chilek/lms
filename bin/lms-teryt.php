@@ -289,7 +289,7 @@ else
 
 if ( isset($options['fetch']) ) {
 	if (!$quiet)
-		echo 'Starting download files.' . PHP_EOL;
+		echo 'Downloading TERRIT files...' . PHP_EOL;
 
     $page_content = file_get_contents('http://www.stat.gov.pl/broker/access/prefile/listPreFiles.jspa', 'r');
     $file_counter = 0;
@@ -333,7 +333,7 @@ if ( isset($options['fetch']) ) {
 	$teryt_files = array('ulic', 'terc', 'simc');
 
 	if (!$quiet)
-		echo 'Unzipping files' . PHP_EOL;
+		echo 'Unzipping TERRIT files...' . PHP_EOL;
 
 	foreach ( $teryt_files as $file ) {
 	    if ($zip->open($file.'.zip') === TRUE) {
@@ -348,11 +348,11 @@ if ( isset($options['fetch']) ) {
 
 	 // download point address base (pobranie bazy punktów adresowych)
 	if (!$quiet)
-		echo 'Downloading files.' . PHP_EOL;
+		echo 'Downloading ' . BASEPOINT_ZIP_URL . ' file...' . PHP_EOL;
 	file_put_contents($teryt_dir . DIRECTORY_SEPARATOR . BASEPOINT_ZIP_NAME, fopen(BASEPOINT_ZIP_URL, 'r'));
 
 	if (!$quiet)
-		echo 'Unzip files' . PHP_EOL;
+		echo 'Unzipping ' . BASEPOINT_ZIP_NAME . ' file...' . PHP_EOL;
 	$zip = new ZipArchive;
 
 	if ($zip->open($teryt_dir . DIRECTORY_SEPARATOR . BASEPOINT_ZIP_NAME) === TRUE) {
