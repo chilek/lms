@@ -1145,11 +1145,8 @@ if ( isset($options['delete']) ) {
     }
 
     unlink($teryt_dir . DIRECTORY_SEPARATOR . BUILDING_BASE_ZIP_NAME);
-    unlink($teryt_dir . DIRECTORY_SEPARATOR . 'simc.zip');
     unlink($teryt_dir . DIRECTORY_SEPARATOR . 'SIMC.xml');
-    unlink($teryt_dir . DIRECTORY_SEPARATOR . 'ulic.zip');
     unlink($teryt_dir . DIRECTORY_SEPARATOR . 'ULIC.xml');
-    unlink($teryt_dir . DIRECTORY_SEPARATOR . 'terc.zip');
     unlink($teryt_dir . DIRECTORY_SEPARATOR . 'TERC.xml');
 }
 
