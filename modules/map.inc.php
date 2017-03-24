@@ -24,13 +24,14 @@
  *  $Id$
  */
 
-$devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, '.$DB->GroupConcat('INET_NTOA(CASE WHEN vnodes.ownerid = 0 THEN vnodes.ipaddr ELSE NULL END)', ',', true)
+$devices = $DB->GetAllByKey('SELECT n.id, n.name, va.location, '.$DB->GroupConcat('INET_NTOA(CASE WHEN vnodes.ownerid = 0 THEN vnodes.ipaddr ELSE NULL END)', ',', true)
 				.' AS ipaddr, '.$DB->GroupConcat('CASE WHEN vnodes.ownerid = 0 THEN vnodes.id ELSE NULL END', ',', true).' AS nodeid,
 				MAX(lastonline) AS lastonline,
 				(CASE WHEN nn.latitude IS NOT NULL AND n.netnodeid > 0 THEN nn.latitude ELSE n.latitude END) AS lat,
 				(CASE WHEN nn.longitude IS NOT NULL AND n.netnodeid > 0 THEN nn.longitude ELSE n.longitude END) AS lon,
 				' . $DB->GroupConcat('rs.id') . ' AS radiosectors, n.ownerid
-				FROM vnetdevices n
+				FROM netdevices n
+				LEFT JOIN vaddresses va ON va.id = n.address_id
 				LEFT JOIN netnodes nn ON nn.id = n.netnodeid
 				LEFT JOIN vnodes ON n.id = vnodes.netdev
 				LEFT JOIN netradiosectors rs ON rs.netdev = n.id
