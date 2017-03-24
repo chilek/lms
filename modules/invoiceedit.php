@@ -517,7 +517,7 @@ $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('taxeslist', $taxeslist);
 
 $args = array(
-	'doctype' => DOC_INVOICE,
+	'doctype' => isset($invoice['proforma']) && $invoice['proforma'] == 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
 	'cdate' => date('Y/m', $invoice['cdate']),
 );
 if (isset($customer) && !empty($customer)) {
