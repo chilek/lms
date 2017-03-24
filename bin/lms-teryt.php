@@ -143,13 +143,6 @@ include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
 
 $SYSLOG = SYSLOG::getInstance();
 
-// Initialize Session, Auth and LMS classes
-
-$AUTH = NULL;
-$LMS = new LMS($DB, $AUTH, $SYSLOG);
-$LMS->ui_lang = $_ui_language;
-$LMS->lang = $_language;
-
 /* ********************************************************************
    We should have all hard work here which is being done by our script!
    ********************************************************************/
@@ -254,9 +247,11 @@ function getIdents( $city = null, $street = null ) {
 
 ini_set('memory_limit', '512M');
 $stderr = fopen('php://stderr', 'w');
-$stdout = fopen('php://stdout', 'w');
 
 define('PROGRESS_ROW_COUNT', 1000);
+define('BASEPOINT_ZIP_NAME', 'baza_punktow_adresowych_2016.zip');
+define('BASEPOINT_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2016.zip');
+$basepoint_name = 'baza_punktow_adresowych_2016.csv';
 
 $states = ConfigHelper::getConfig('teryt.state_list', '', true);
 $teryt_dir = ConfigHelper::getConfig('teryt.dir', '', true);
@@ -286,26 +281,6 @@ else
 		die;
 	}
 
-// close below
-if ( isset($options['update']) ) {
-
-//==============================================================================
-// Create object to read XML files
-//
-// DOCUMENTATION
-// http://php.net/manual/en/book.xmlreader.php
-//
-// INSTALATION
-// http://php.net/manual/en/xmlreader.setup.php
-//==============================================================================
-
-if ( ! class_exists('XMLReader') ) {
-    fwrite($stderr, "Error: XMLReader class not found." . PHP_EOL);
-    die();
-}
-
-$xml = new XMLReader();
-
 //==============================================================================
 // Download required files
 //
@@ -313,7 +288,8 @@ $xml = new XMLReader();
 //==============================================================================
 
 if ( isset($options['fetch']) ) {
-    fwrite($stdout, 'Start download files.' . PHP_EOL);
+	if (!$quiet)
+		echo 'Starting download files.' . PHP_EOL;
 
     $page_content = file_get_contents('http://www.stat.gov.pl/broker/access/prefile/listPreFiles.jspa', 'r');
     $file_counter = 0;
@@ -345,521 +321,586 @@ if ( isset($options['fetch']) ) {
 
     if ( $file_counter != 3 ) {
         fwrite($stderr, 'Error: Downloaded files: ' . $file_counter . '. Three expected.' . PHP_EOL);
-        die();
+        die;
     }
 
     unset( $page_content, $file_counter, $headers, $matches, $file );
+
+	//==============================================================================
+	// Unzip teryt files
+	//==============================================================================
+	$zip = new ZipArchive;
+	$teryt_files = array('ulic', 'terc', 'simc');
+
+	if (!$quiet)
+		echo 'Unzipping files' . PHP_EOL;
+
+	foreach ( $teryt_files as $file ) {
+	    if ($zip->open($file.'.zip') === TRUE) {
+	        $zip->extractTo($teryt_dir . DIRECTORY_SEPARATOR);
+	    } else {
+	        fwrite($stderr, "Error: Can't unzip $file.zip or file doesn't exist." . PHP_EOL);
+	        die;
+	    }
+	}
+
+	unset( $zip, $teryt_files );
+
+	 // download point address base (pobranie bazy punktów adresowych)
+	if (!$quiet)
+		echo 'Downloading files.' . PHP_EOL;
+	file_put_contents($teryt_dir . DIRECTORY_SEPARATOR . BASEPOINT_ZIP_NAME, fopen(BASEPOINT_ZIP_URL, 'r'));
+
+	if (!$quiet)
+		echo 'Unzip files' . PHP_EOL;
+	$zip = new ZipArchive;
+
+	if ($zip->open($teryt_dir . DIRECTORY_SEPARATOR . BASEPOINT_ZIP_NAME) === TRUE) {
+	    $numFiles = $zip->numFiles;
+
+	    if ( $numFiles == 1 ) {
+	        $basepoint_name = $zip->getNameIndex(0);
+	    } else if ( $numFiles > 1 ) {
+	        for ($i = 0; $i < $numFiles; ++$i) {
+	            if ( preg_match('/baza_punktow_adresowych/', $v) ) {
+	                $basepoint_name = $v;
+	                break;
+	            }
+	        }
+	    }
+
+	    $zip->extractTo($teryt_dir . DIRECTORY_SEPARATOR);
+	    unset( $numFiles );
+	} else {
+	    fprintf($stderr, "Error: Can't unzip %s or file doesn't exist." . PHP_EOL, BASEPOINT_ZIP_NAME);
+	    die;
+	}
 }
 
-//==============================================================================
-// Unzip teryt files
-//==============================================================================
-$zip = new ZipArchive;
-$teryt_files = array('ulic', 'terc', 'simc');
-
-fwrite($stdout, 'Unzip files' . PHP_EOL);
-
-foreach ( $teryt_files as $file ) {
-    if ( file_exists(strtoupper($file).'.xml') && !isset($options['fetch']) ) {
-        continue; // file already unziped, nothing to do
-    }
-
-    if ($zip->open($file.'.zip') === TRUE) {
-        $zip->extractTo($teryt_dir . DIRECTORY_SEPARATOR);
-    } else {
-        fwrite($stderr, "Error: Can't unzip $file.zip or file doesn't exists. Try to use -f, --fetch to download." . PHP_EOL);
-        die();
-    }
-}
-
-unset( $zip, $teryt_files, $scandir );
-
-//==============================================================================
-// Get current TERC from database
-//==============================================================================
-
-fwrite($stdout, 'Create TERC cache' . PHP_EOL);
-
-$tmp_terc_data = $DB->GetAll("
-    SELECT ident AS woj, '0' AS pow, '0' AS gmi, 0 AS rodz,
-        UPPER(name) AS nazwa, id, 'WOJ' AS type
-    FROM location_states
-    UNION
-    SELECT s.ident AS woj, d.ident AS pow, '0' AS gmi, 0 AS rodz,
-        d.name AS nazwa, d.id, 'POW' AS type
-    FROM location_districts d
-    JOIN location_states s ON (d.stateid = s.id)
-    UNION
-    SELECT s.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz,
-        b.name AS nazwa, b.id, 'GMI' AS type
-    FROM location_boroughs b
-    JOIN location_districts d ON (b.districtid = d.id)
-    JOIN location_states s ON (d.stateid = s.id);");
-
-$terc = array();
-
-if ( $tmp_terc_data ) {
-    foreach ( $tmp_terc_data as $k=>$v ) {
-        $key = $v['woj'].':'.$v['pow'].':'.$v['gmi'].':'.$v['rodz'];
-
-        $terc[ $key ] = array(
-            'id'    => $v['id'],
-            'nazwa' => $v['nazwa'],
-            'type'  => $v['type']
-        );
-
-        unset( $tmp_terc_data[$k] );
-    }
-}
-
-unset( $tmp_terc_data );
-
-//==============================================================================
-// Read TERC xml file
-//==============================================================================
-
-$xml->open($teryt_dir . DIRECTORY_SEPARATOR . 'TERC.xml');
-
-fwrite($stdout, 'Parsing TERC.xml' . PHP_EOL);
-
-$i = 0;
-$terc_insert = 0;
-$terc_update = 0;
-$terc_delete = 0;
-
-while( $xml->read() ) {
-    if ( $xml->nodeType != XMLReader::ELEMENT || $xml->name != 'row' ) {
-        continue;
-    }
-
-    if ( !(++$i % PROGRESS_ROW_COUNT) ) {
-        fwrite($stdout, 'Loaded ' . $i . PHP_EOL);
-    }
-
-    $row = parse_teryt_xml_row( $xml->readInnerXML() );
-
-    if ( isset($state_list) && !isset($state_list[$row['woj']]) ) {
-        continue;
-    }
-
-    $key  = $row['woj'].':'.$row['pow'].':'.$row['gmi'].':'.$row['rodz'];
-    $data = $terc[$key];
-
-    // if $row['pow'] is empty then this row contains state
-    if ( !$row['pow'] ) {
-
-        // if state already exists then try update
-        if ( $data ) {
-            if ( $data['nazwa'] != $row['nazwa'] ) {
-                $DB->Execute('UPDATE location_states SET name = ? WHERE id = ?;',
-                              array(strtolower($row['nazwa']), $data['id']));
-
-                ++$terc_update;
-            }
-
-            $terc[$key]['valid'] = 1;
-        }
-        // else insert new state
-        else {
-            $DB->Execute('INSERT INTO location_states (name,ident) VALUES (?,?);',
-                          array(strtolower($row['nazwa']), $row['woj']));
-
-            ++$terc_insert;
-            $insertid = $DB->GetLastInsertID('location_states');
-            $terc[$key] = array(
-                'id'    => $insertid,
-                'nazwa' => $row['nazwa'],
-                'type'  => 'WOJ',
-                'valid' => 1
-            );
-        }
-    }
-    // if $row['gmi'] is empty then this row contains district
-    else if ( !$row['gmi'] ) {
-        $statekey = $row['woj'] . ':0:0:0';
-
-        // if district already exists then try update
-        if ( $data ) {
-            if ( $data['nazwa'] != $row['nazwa'] ) {
-                $DB->Execute('UPDATE location_districts SET stateid=?, name=? WHERE id=?;',
-                              array($terc[$statekey]['id'], $row['nazwa'], $data['id']));
-
-                ++$terc_update;
-            }
-
-            $terc[$key]['valid'] = 1;
-        }
-        // else insert new state
-        else {
-            $DB->Execute('INSERT INTO location_districts (stateid, name, ident) VALUES (?,?,?);',
-                          array($terc[$statekey]['id'], $row['nazwa'], $row['pow']));
-
-            ++$terc_insert;
-            $insertid = $DB->GetLastInsertID('location_districts');
-            $terc[$key] = array(
-                'id'    => $insertid,
-                'nazwa' => $row['nazwa'],
-                'type'  => 'POW',
-                'valid' => 1
-            );
-        }
-    }
-    // else row contains brough
-    else {
-        $districtkey = $row['woj'] . ':' . $row['pow'] . ':0:0';
-
-        // if district already exists then try update
-        if ( $data ) {
-            if ( $data['nazwa'] != $row['nazwa'] ) {
-                $DB->Execute('UPDATE location_boroughs SET districtid=?, name=? WHERE id=?;',
-                              array($terc[$districtkey]['id'], $row['nazwa'], $data['id']));
-
-                ++$terc_update;
-            }
-
-            $terc[$key]['valid'] = 1;
-        }
-        // else insert new state
-        else {
-            $DB->Execute('INSERT INTO location_boroughs (districtid, name, ident, type) VALUES (?,?,?,?);',
-                          array($terc[$districtkey]['id'], $row['nazwa'], $row['gmi'], $row['rodz']));
-
-            ++$terc_insert;
-            $insertid = $DB->GetLastInsertID('location_boroughs');
-            $terc[$key] = array(
-                'id'    => $insertid,
-                'nazwa' => $row['nazwa'],
-                'type'  => 'GMI',
-                'valid' => 1
-            );
-        }
-    }
-}
-
-if ( $i % PROGRESS_ROW_COUNT ) {
-    fwrite($stdout, 'Loaded ' . $i . PHP_EOL);
-}
-
-foreach ( $terc as $k=>$v ) {
-    if ( $v['valid'] ) {
-        continue;
-    }
-
-    ++$terc_delete;
-
-    switch ( strtolower($v['type']) ) {
-        case 'gmi':
-            $DB->Execute('DELETE FROM location_boroughs WHERE id=?;', array($v['id']));
-        break;
-
-        case 'pow':
-            $DB->Execute('DELETE FROM location_districts WHERE id=?;', array($v['id']));
-        break;
-
-        case 'woj':
-            $DB->Execute('DELETE FROM location_states WHERE id=?;', array($v['id']));
-        break;
-
-        default:
-            --$terc_delete;
-    }
-}
-
-//==============================================================================
-// Print TERC stats
-//==============================================================================
-
-fwrite($stdout, 'TERC insert/update/delete = '.$terc_insert.'/'.$terc_update.'/'.$terc_delete . PHP_EOL);
-fwrite($stdout, '---' . PHP_EOL);
-
-unset( $terc_insert, $terc_update, $terc_delete );
-
-//==============================================================================
-// Get current SIMC from database
-//==============================================================================
-
-fwrite($stdout, 'Creating SIMC cache' . PHP_EOL);
-
-$tmp_simc_data = $DB->GetAll("
-    SELECT s.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
-        c.ident AS sym, c.name AS nazwa, c.id,
-       (CASE WHEN cc.ident IS NOT NULL THEN cc.ident ELSE c.ident END) AS sympod
-    FROM location_cities c
-        JOIN location_boroughs b ON (c.boroughid = b.id)
-        JOIN location_districts d ON (b.districtid = d.id)
-        JOIN location_states s ON (d.stateid = s.id)
-        LEFT JOIN location_cities cc ON (c.cityid = cc.id)");
-
-$simc = array();
-
-if ( $tmp_simc_data ) {
-    foreach ( $tmp_simc_data as $k=>$v ) {
-        $simc[$v['sym']] = array(
-            'id'     => $v['id'],
-            'key'    => $v['woj'].':'.$v['pow'].':'.$v['gmi'].':'.$v['rodz_gmi'],
-            'nazwa'  => $v['nazwa'],
-            'sym'    => $v['sym'],
-            'sympod' => $v['sympod'],
-        );
-
-        unset( $tmp_simc_data[$k] );
-    }
-}
-
-unset( $tmp_simc_data );
-
-//==============================================================================
-// Read SIMC xml file
-//==============================================================================
-
-fwrite($stdout, 'Parsing SIMC.xml' . PHP_EOL);
-
-$xml->open($teryt_dir . DIRECTORY_SEPARATOR . 'SIMC.xml');
-
-$i = 0;
-$cities_r    = array();
-$cities      = array();
-$simc_insert = 0;
-$simc_update = 0;
-$simc_delete = 0;
-
-while( $xml->read() ) {
-    if ( $xml->nodeType != XMLReader::ELEMENT || $xml->name != 'row' ) {
-        continue;
-    }
-
-    if ( !(++$i % PROGRESS_ROW_COUNT) ) {
-        fwrite($stdout, 'Loaded ' . $i . PHP_EOL);
-    }
-
-    $row = parse_teryt_xml_row( $xml->readInnerXML() );
-
-    if ( isset($state_list) && !isset($state_list[$row['woj']]) ) {
-        continue;
-    }
-
-    $key   = $row['woj'].':'.$row['pow'].':'.$row['gmi'].':'.$row['rodz_gmi'];
-    $data  = $simc[$row['sym']];
-    $refid = $row['sympod'];
-    $id    = $row['sym'];
-
-    if ( !$terc[$key] ) {
-        fwrite($stdout, 'Not recognised TERYT-TERC key: ' . $key . PHP_EOL);
-    }
-
-    if ( $refid == $id ) {
-        $refid = null;
-    }
-    // refid not found (refered city is below this one), process later
-    else if ( !$simc[$refid] ) {
-        $cities_r[$refid][] = array(
-            'key'   => $key,
-            'nazwa' => $row['nazwa'],
-            'sym'   => $row['sym']
-        );
-    } else {
-        $refid = $simc[$refid]['id'];
-    }
-
-    // entry exists
-    if ( $data ) {
-        if ( $data['nazwa'] != $row['nazwa'] || $data['sympod'] != $row['sympod'] || $data['key'] != $key ) {
-            $DB->Execute('UPDATE location_cities SET boroughid=?, name=?, cityid=? WHERE id=?',
-                          array($terc[$key]['id'], $row['nazwa'], $refid, $data['id']));
-
-            ++$simc_update;
-        }
-
-        // mark data as valid
-        $simc[$id]['valid'] = 1;
-        $cities[$id] = $data['id'];
-    }
-    // add new city
-    else if ( !$refid || $simc[$row['sympod']] ) {
-        $DB->Execute('INSERT INTO location_cities (boroughid, name, cityid, ident) VALUES (?,?,?,?)',
-                      array($terc[$key]['id'], $row['nazwa'], $refid, $id));
-
-        ++$simc_insert;
-        $insertid = $DB->GetLastInsertID('location_cities');
-
-        $simc[$id] = array(
-             'key'    => $key,
-             'nazwa'  => $row['nazwa'],
-             'sym'    => $id,
-             'sympod' => $refid,
-             'id'     => $insertid,
-             'valid'  => 1,
-        );
-
-        $cities[$row['sym']] = $insertid;
-    }
-
-    // process references
-    if ( isset($cities_r[$id]) ) {
-        while ( $elem = array_pop($cities_r[$id]) ) {
-            $rid  = $elem['sym'];
-            $data = $simc[$rid];
-
-            // entry exists
-            if ( $data ) {
-                if ( $data['nazwa'] != $elem['nazwa'] || $data['sympod'] != $id || $data['key'] != $key ) {
-                    $DB->Execute('UPDATE location_cities SET boroughid=?, name=?, cityid=? WHERE id=?',
-                                  array($terc[$key]['id'], $elem['nazwa'], $cities[$id], $data['id']));
-
-                    ++$simc_update;
-                }
-
-                // mark data as valid
-                $simc[$rid]['valid'] = 1;
-                $cities[$rid] = $rid;
-            }
-            // add new city
-            else {
-                $DB->Execute('INSERT INTO location_cities (boroughid, name, cityid, ident) VALUES (?,?,?,?)',
-                              array($terc[$key]['id'], $elem['nazwa'], $cities[$id], $rid));
-
-                ++$simc_insert;
-                $insertid = $DB->GetLastInsertID('location_cities');
-                $cities[$rid] = $insertid;
-            }
-        }
-    }
-}
-
-if ( $i % PROGRESS_ROW_COUNT ) {
-    fwrite($stdout, 'Loaded ' . $i . PHP_EOL);
-}
-
-foreach ( $simc as $k=>$v ) {
-    if ( !$v['valid'] ) {
-        $DB->Execute('DELETE FROM location_cities WHERE id=?;', array($v['id']));
-        ++$simc_delete;
-    }
-}
-
-unset( $terc, $simc, $cities_r );
-
-//==============================================================================
-// Print SIMC stats
-//==============================================================================
-
-fwrite($stdout, 'SIMC insert/update/delete = '.$simc_insert.'/'.$simc_update.'/'.$simc_delete . PHP_EOL);
-fwrite($stdout, '---' . PHP_EOL);
-
-unset( $simc_insert, $simc_update, $simc_delete );
-
-//==============================================================================
-// Get current ULIC from database
-//==============================================================================
-
-$str_types = $DB->GetAllByKey('SELECT id, name FROM location_street_types', 'name');
-
-$tmp_ulic = $DB->GetAll("
-    SELECT s.id, s.ident, s.name, s.name2, s.typeid, c.ident AS city
-    FROM location_streets s
-    JOIN location_cities c ON (s.cityid = c.id)");
-
-$ulic = array();
-
-if ( $tmp_ulic ) {
-    foreach ( $tmp_ulic as $k=>$v ) {
-        $ulic[$v['ident'] . ':' . $v['city']] = array(
-            'id'     => $v['id'],
-            'nazwa'  => $v['name'],
-            'nazwa2' => $v['name2'],
-            'typeid' => $v['typeid']
-        );
-    }
-}
-
-unset( $tmp_ulic );
-
-//==============================================================================
-// Read ULIC xml file
-//==============================================================================
-
-fwrite($stdout, 'Parsing ULIC.xml' . PHP_EOL);
-
-$xml->open($teryt_dir . DIRECTORY_SEPARATOR . 'ULIC.xml');
-
-$i = 0;
-$ulic_insert = 0;
-$ulic_update = 0;
-$ulic_delete = 0;
-
-while( $xml->read() ) {
-    if ( $xml->nodeType != XMLReader::ELEMENT || $xml->name != 'row' ) {
-        continue;
-    }
-
-    if ( !(++$i % PROGRESS_ROW_COUNT) ) {
-        fwrite($stdout, 'Loaded ' . $i . PHP_EOL);
-    }
-
-    $row = parse_teryt_xml_row( $xml->readInnerXML() );
-
-    if ( isset($state_list) && !isset($state_list[$row['woj']]) || !isset($row['nazwa_1']) ) {
-        continue;
-    }
-
-    $key    = $row['sym_ul'].':'.$row['sym'];
-    $data   = $ulic[$key];
-    $typeid = intval( $str_types[$row['cecha']] );
-
-    if ( !$str_types[$row['cecha']] ) {
-         $DB->Execute('INSERT INTO location_street_types (name) VALUES (?);',
-                       array( strtolower($row['cecha']) ));
-
-         $insertid = $DB->GetLastInsertID('location_street_types');
-         $str_types[$row['cecha']] = $typeid = $insertid;
-         unset($insertid);
-         ++$ulic_insert;
-    }
-
-    // entry exists
-    if ( $data ) {
-        if ( $data['nazwa'] != $row['nazwa_1'] || (isset($row['nazwa_2']) && (!isset($data['nazwa2']) || $data['nazwa2'] != $row['nazwa_2'])) || $data['typeid'] != $typeid ) {
-            $DB->Execute('UPDATE location_streets
-                          SET cityid = ?, name = ?, name2 = ?, typeid = ?
-                          WHERE id = ?',
-                          array($cities[$row['sym']], $row['nazwa_1'], $row['nazwa_2'], $typeid, $data['id']));
-
-            ++$ulic_update;
-        }
-
-        // mark data as valid
-        $ulic[$key]['valid'] = 1;
-    }
-    // add new street
-    else {
-        $DB->Execute('INSERT INTO location_streets (cityid, name, name2, typeid, ident) VALUES (?,?,?,?,?)',
-                      array($cities[$row['sym']], $row['nazwa_1'], $row['nazwa_2'], $typeid, $row['sym_ul']));
-
-        ++$ulic_insert;
-    }
-}
-
-if ( $i % PROGRESS_ROW_COUNT ) {
-    fwrite($stdout, 'Loaded ' . $i . PHP_EOL);
-}
-
-foreach ( $ulic as $k=>$v ) {
-    if ( !$v['valid'] ) {
-        $DB->Execute('DELETE FROM location_streets WHERE id=?;', array($v['id']));
-    }
-}
-
-//==============================================================================
-// Print ULIC stats
-//==============================================================================
-
-fwrite($stdout, 'ULIC insert/update/delete = '.$ulic_insert.'/'.$ulic_update.'/'.$ulic_delete . PHP_EOL);
-fwrite($stdout, '---' . PHP_EOL);
-
-unset( $ulic, $str_types, $cities, $ulic_insert, $ulic_update, $ulic_delete );
-
-$xml->close();
-unset( $xml );
+if ( isset($options['update']) ) {
+	//==============================================================================
+	// Get current TERC from database
+	//==============================================================================
+
+	if (!$quiet)
+		echo 'Creating TERC cache' . PHP_EOL;
+
+	$tmp_terc_data = $DB->GetAll("
+	    SELECT ident AS woj, '0' AS pow, '0' AS gmi, 0 AS rodz,
+	        UPPER(name) AS nazwa, id, 'WOJ' AS type
+	    FROM location_states
+	    UNION
+	    SELECT s.ident AS woj, d.ident AS pow, '0' AS gmi, 0 AS rodz,
+	        d.name AS nazwa, d.id, 'POW' AS type
+	    FROM location_districts d
+	    JOIN location_states s ON (d.stateid = s.id)
+	    UNION
+	    SELECT s.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz,
+	        b.name AS nazwa, b.id, 'GMI' AS type
+	    FROM location_boroughs b
+	    JOIN location_districts d ON (b.districtid = d.id)
+	    JOIN location_states s ON (d.stateid = s.id);");
+
+	$terc = array();
+
+	if ( $tmp_terc_data ) {
+	    foreach ( $tmp_terc_data as $k=>$v ) {
+	        $key = $v['woj'].':'.$v['pow'].':'.$v['gmi'].':'.$v['rodz'];
+
+	        $terc[ $key ] = array(
+	            'id'    => $v['id'],
+	            'nazwa' => $v['nazwa'],
+	            'type'  => $v['type']
+	        );
+
+	        unset( $tmp_terc_data[$k] );
+	    }
+	}
+
+	unset( $tmp_terc_data );
+
+	//==============================================================================
+	// Create object to read XML files
+	//
+	// DOCUMENTATION
+	// http://php.net/manual/en/book.xmlreader.php
+	//
+	// INSTALATION
+	// http://php.net/manual/en/xmlreader.setup.php
+	//==============================================================================
+
+	if ( ! class_exists('XMLReader') ) {
+	    fwrite($stderr, "Error: XMLReader class not found." . PHP_EOL);
+	    die;
+	}
+
+	$xml = new XMLReader();
+
+	//==============================================================================
+	// Read TERC xml file
+	//==============================================================================
+
+	if ($xml->open($teryt_dir . DIRECTORY_SEPARATOR . 'TERC.xml') === false) {
+		fwrite($stderr, "Error: can't open TERC.xml file." . PHP_EOL);
+		die;
+	}
+
+	if (!$quiet)
+		echo 'Parsing TERC.xml' . PHP_EOL;
+
+	$i = 0;
+	$terc_insert = 0;
+	$terc_update = 0;
+	$terc_delete = 0;
+
+	while( $xml->read() ) {
+	    if ( $xml->nodeType != XMLReader::ELEMENT || $xml->name != 'row' ) {
+	        continue;
+	    }
+
+		if ( !(++$i % PROGRESS_ROW_COUNT) && !$quiet) {
+			echo 'Loaded ' . $i . PHP_EOL;
+		}
+
+	    $row = parse_teryt_xml_row( $xml->readInnerXML() );
+
+	    if ( isset($state_list) && !isset($state_list[$row['woj']]) ) {
+	        continue;
+	    }
+
+	    $key  = $row['woj'].':'.$row['pow'].':'.$row['gmi'].':'.$row['rodz'];
+	    $data = $terc[$key];
+
+	    // if $row['pow'] is empty then this row contains state
+	    if ( !$row['pow'] ) {
+
+	        // if state already exists then try update
+	        if ( $data ) {
+	            if ( $data['nazwa'] != $row['nazwa'] ) {
+	                $DB->Execute('UPDATE location_states SET name = ? WHERE id = ?;',
+	                              array(strtolower($row['nazwa']), $data['id']));
+
+	                ++$terc_update;
+	            }
+
+	            $terc[$key]['valid'] = 1;
+	        }
+	        // else insert new state
+	        else {
+	            $DB->Execute('INSERT INTO location_states (name,ident) VALUES (?,?);',
+	                          array(strtolower($row['nazwa']), $row['woj']));
+
+	            ++$terc_insert;
+	            $insertid = $DB->GetLastInsertID('location_states');
+	            $terc[$key] = array(
+	                'id'    => $insertid,
+	                'nazwa' => $row['nazwa'],
+	                'type'  => 'WOJ',
+	                'valid' => 1
+	            );
+	        }
+	    }
+	    // if $row['gmi'] is empty then this row contains district
+	    else if ( !$row['gmi'] ) {
+	        $statekey = $row['woj'] . ':0:0:0';
+
+	        // if district already exists then try update
+	        if ( $data ) {
+	            if ( $data['nazwa'] != $row['nazwa'] ) {
+	                $DB->Execute('UPDATE location_districts SET stateid=?, name=? WHERE id=?;',
+	                              array($terc[$statekey]['id'], $row['nazwa'], $data['id']));
+
+	                ++$terc_update;
+	            }
+
+	            $terc[$key]['valid'] = 1;
+	        }
+	        // else insert new state
+	        else {
+	            $DB->Execute('INSERT INTO location_districts (stateid, name, ident) VALUES (?,?,?);',
+	                          array($terc[$statekey]['id'], $row['nazwa'], $row['pow']));
+
+	            ++$terc_insert;
+	            $insertid = $DB->GetLastInsertID('location_districts');
+	            $terc[$key] = array(
+	                'id'    => $insertid,
+	                'nazwa' => $row['nazwa'],
+	                'type'  => 'POW',
+	                'valid' => 1
+	            );
+	        }
+	    }
+	    // else row contains brough
+	    else {
+	        $districtkey = $row['woj'] . ':' . $row['pow'] . ':0:0';
+
+	        // if district already exists then try update
+	        if ( $data ) {
+	            if ( $data['nazwa'] != $row['nazwa'] ) {
+	                $DB->Execute('UPDATE location_boroughs SET districtid=?, name=? WHERE id=?;',
+	                              array($terc[$districtkey]['id'], $row['nazwa'], $data['id']));
+
+	                ++$terc_update;
+	            }
+
+	            $terc[$key]['valid'] = 1;
+	        }
+	        // else insert new state
+	        else {
+	            $DB->Execute('INSERT INTO location_boroughs (districtid, name, ident, type) VALUES (?,?,?,?);',
+	                          array($terc[$districtkey]['id'], $row['nazwa'], $row['gmi'], $row['rodz']));
+
+	            ++$terc_insert;
+	            $insertid = $DB->GetLastInsertID('location_boroughs');
+	            $terc[$key] = array(
+	                'id'    => $insertid,
+	                'nazwa' => $row['nazwa'],
+	                'type'  => 'GMI',
+	                'valid' => 1
+	            );
+	        }
+	    }
+	}
+
+	if ( $i % PROGRESS_ROW_COUNT && !$quiet) {
+	    echo 'Loaded ' . $i . PHP_EOL;
+	}
+
+	foreach ( $terc as $k=>$v ) {
+	    if ( $v['valid'] ) {
+	        continue;
+	    }
+
+	    ++$terc_delete;
+
+	    switch ( strtolower($v['type']) ) {
+	        case 'gmi':
+	            $DB->Execute('DELETE FROM location_boroughs WHERE id=?;', array($v['id']));
+	        break;
+
+	        case 'pow':
+	            $DB->Execute('DELETE FROM location_districts WHERE id=?;', array($v['id']));
+	        break;
+
+	        case 'woj':
+	            $DB->Execute('DELETE FROM location_states WHERE id=?;', array($v['id']));
+	        break;
+
+	        default:
+	            --$terc_delete;
+	    }
+	}
+
+	//==============================================================================
+	// Print TERC stats
+	//==============================================================================
+
+	if (!$quiet) {
+		echo 'TERC insert/update/delete = '.$terc_insert.'/'.$terc_update.'/'.$terc_delete . PHP_EOL;
+		echo '---' . PHP_EOL;
+	}
+
+	unset( $terc_insert, $terc_update, $terc_delete );
+
+	//==============================================================================
+	// Get current SIMC from database
+	//==============================================================================
+
+	if (!$quiet)
+		echo 'Creating SIMC cache' . PHP_EOL;
+
+	$tmp_simc_data = $DB->GetAll("
+	    SELECT s.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
+	        c.ident AS sym, c.name AS nazwa, c.id,
+	       (CASE WHEN cc.ident IS NOT NULL THEN cc.ident ELSE c.ident END) AS sympod
+	    FROM location_cities c
+	        JOIN location_boroughs b ON (c.boroughid = b.id)
+	        JOIN location_districts d ON (b.districtid = d.id)
+	        JOIN location_states s ON (d.stateid = s.id)
+	        LEFT JOIN location_cities cc ON (c.cityid = cc.id)");
+
+	$simc = array();
+
+	if ( $tmp_simc_data ) {
+	    foreach ( $tmp_simc_data as $k=>$v ) {
+	        $simc[$v['sym']] = array(
+	            'id'     => $v['id'],
+	            'key'    => $v['woj'].':'.$v['pow'].':'.$v['gmi'].':'.$v['rodz_gmi'],
+	            'nazwa'  => $v['nazwa'],
+	            'sym'    => $v['sym'],
+	            'sympod' => $v['sympod'],
+	        );
+
+	        unset( $tmp_simc_data[$k] );
+	    }
+	}
+
+	unset( $tmp_simc_data );
+
+	//==============================================================================
+	// Read SIMC xml file
+	//==============================================================================
+
+	if (!$quiet)
+		echo 'Parsing SIMC.xml' . PHP_EOL;
+
+	if ($xml->open($teryt_dir . DIRECTORY_SEPARATOR . 'SIMC.xml') === false) {
+		fwrite($stderr, "Error: can't open SIMC.xml file." . PHP_EOL);
+		die;
+	}
+
+	$i = 0;
+	$cities_r    = array();
+	$cities      = array();
+	$simc_insert = 0;
+	$simc_update = 0;
+	$simc_delete = 0;
+
+	while( $xml->read() ) {
+	    if ( $xml->nodeType != XMLReader::ELEMENT || $xml->name != 'row' ) {
+	        continue;
+	    }
+
+	    if ( !(++$i % PROGRESS_ROW_COUNT) && !$quiet) {
+	        echo 'Loaded ' . $i . PHP_EOL;
+	    }
+
+	    $row = parse_teryt_xml_row( $xml->readInnerXML() );
+
+	    if ( isset($state_list) && !isset($state_list[$row['woj']]) ) {
+	        continue;
+	    }
+
+	    $key   = $row['woj'].':'.$row['pow'].':'.$row['gmi'].':'.$row['rodz_gmi'];
+	    $data  = $simc[$row['sym']];
+	    $refid = $row['sympod'];
+	    $id    = $row['sym'];
+
+	    if ( !$terc[$key] && !$quiet) {
+	        echo 'Not recognised TERYT-TERC key: ' . $key . PHP_EOL;
+	    }
+
+	    if ( $refid == $id ) {
+	        $refid = null;
+	    }
+	    // refid not found (refered city is below this one), process later
+	    else if ( !$simc[$refid] ) {
+	        $cities_r[$refid][] = array(
+	            'key'   => $key,
+	            'nazwa' => $row['nazwa'],
+	            'sym'   => $row['sym']
+	        );
+	    } else {
+	        $refid = $simc[$refid]['id'];
+	    }
+
+	    // entry exists
+	    if ( $data ) {
+	        if ( $data['nazwa'] != $row['nazwa'] || $data['sympod'] != $row['sympod'] || $data['key'] != $key ) {
+	            $DB->Execute('UPDATE location_cities SET boroughid=?, name=?, cityid=? WHERE id=?',
+	                          array($terc[$key]['id'], $row['nazwa'], $refid, $data['id']));
+
+	            ++$simc_update;
+	        }
+
+	        // mark data as valid
+	        $simc[$id]['valid'] = 1;
+	        $cities[$id] = $data['id'];
+	    }
+	    // add new city
+	    else if ( !$refid || $simc[$row['sympod']] ) {
+	        $DB->Execute('INSERT INTO location_cities (boroughid, name, cityid, ident) VALUES (?,?,?,?)',
+	                      array($terc[$key]['id'], $row['nazwa'], $refid, $id));
+
+	        ++$simc_insert;
+	        $insertid = $DB->GetLastInsertID('location_cities');
+
+	        $simc[$id] = array(
+	             'key'    => $key,
+	             'nazwa'  => $row['nazwa'],
+	             'sym'    => $id,
+	             'sympod' => $refid,
+	             'id'     => $insertid,
+	             'valid'  => 1,
+	        );
+
+	        $cities[$row['sym']] = $insertid;
+	    }
+
+	    // process references
+	    if ( isset($cities_r[$id]) ) {
+	        while ( $elem = array_pop($cities_r[$id]) ) {
+	            $rid  = $elem['sym'];
+	            $data = $simc[$rid];
+
+	            // entry exists
+	            if ( $data ) {
+	                if ( $data['nazwa'] != $elem['nazwa'] || $data['sympod'] != $id || $data['key'] != $key ) {
+	                    $DB->Execute('UPDATE location_cities SET boroughid=?, name=?, cityid=? WHERE id=?',
+	                                  array($terc[$key]['id'], $elem['nazwa'], $cities[$id], $data['id']));
+
+	                    ++$simc_update;
+	                }
+
+	                // mark data as valid
+	                $simc[$rid]['valid'] = 1;
+	                $cities[$rid] = $rid;
+	            }
+	            // add new city
+	            else {
+	                $DB->Execute('INSERT INTO location_cities (boroughid, name, cityid, ident) VALUES (?,?,?,?)',
+	                              array($terc[$key]['id'], $elem['nazwa'], $cities[$id], $rid));
+
+	                ++$simc_insert;
+	                $insertid = $DB->GetLastInsertID('location_cities');
+	                $cities[$rid] = $insertid;
+	            }
+	        }
+	    }
+	}
+
+	if ( $i % PROGRESS_ROW_COUNT && !$quiet) {
+	    echo 'Loaded ' . $i . PHP_EOL;
+	}
+
+	foreach ( $simc as $k=>$v ) {
+	    if ( !$v['valid'] ) {
+	        $DB->Execute('DELETE FROM location_cities WHERE id=?;', array($v['id']));
+	        ++$simc_delete;
+	    }
+	}
+
+	unset( $terc, $simc, $cities_r );
+
+	//==============================================================================
+	// Print SIMC stats
+	//==============================================================================
+
+	if (!$quiet) {
+		echo 'SIMC insert/update/delete = '.$simc_insert.'/'.$simc_update.'/'.$simc_delete . PHP_EOL;
+		echo '---' . PHP_EOL;
+	}
+
+	unset( $simc_insert, $simc_update, $simc_delete );
+
+	//==============================================================================
+	// Get current ULIC from database
+	//==============================================================================
+
+	$str_types = $DB->GetAllByKey('SELECT id, name FROM location_street_types', 'name');
+
+	$tmp_ulic = $DB->GetAll("
+	    SELECT s.id, s.ident, s.name, s.name2, s.typeid, c.ident AS city
+	    FROM location_streets s
+	    JOIN location_cities c ON (s.cityid = c.id)");
+
+	$ulic = array();
+
+	if ( $tmp_ulic ) {
+	    foreach ( $tmp_ulic as $k=>$v ) {
+	        $ulic[$v['ident'] . ':' . $v['city']] = array(
+	            'id'     => $v['id'],
+	            'nazwa'  => $v['name'],
+	            'nazwa2' => $v['name2'],
+	            'typeid' => $v['typeid']
+	        );
+	    }
+	}
+
+	unset( $tmp_ulic );
+
+	//==============================================================================
+	// Read ULIC xml file
+	//==============================================================================
+
+	if (!$quiet)
+		echo 'Parsing ULIC.xml' . PHP_EOL;
+
+	if ($xml->open($teryt_dir . DIRECTORY_SEPARATOR . 'ULIC.xml') === false) {
+		fwrite($stderr, "Error: can't open ULIC.xml file." . PHP_EOL);
+		die;
+	}
+
+	$i = 0;
+	$ulic_insert = 0;
+	$ulic_update = 0;
+	$ulic_delete = 0;
+
+	while( $xml->read() ) {
+	    if ( $xml->nodeType != XMLReader::ELEMENT || $xml->name != 'row' ) {
+	        continue;
+	    }
+
+	    if ( !(++$i % PROGRESS_ROW_COUNT) && !$quiet) {
+	        echo 'Loaded ' . $i . PHP_EOL;
+	    }
+
+	    $row = parse_teryt_xml_row( $xml->readInnerXML() );
+
+	    if ( isset($state_list) && !isset($state_list[$row['woj']]) || !isset($row['nazwa_1']) ) {
+	        continue;
+	    }
+
+	    $key    = $row['sym_ul'].':'.$row['sym'];
+	    $data   = $ulic[$key];
+	    $typeid = intval( $str_types[$row['cecha']] );
+
+	    if ( !$str_types[$row['cecha']] ) {
+	         $DB->Execute('INSERT INTO location_street_types (name) VALUES (?);',
+	                       array( strtolower($row['cecha']) ));
+
+	         $insertid = $DB->GetLastInsertID('location_street_types');
+	         $str_types[$row['cecha']] = $typeid = $insertid;
+	         unset($insertid);
+	         ++$ulic_insert;
+	    }
+
+	    // entry exists
+	    if ( $data ) {
+	        if ( $data['nazwa'] != $row['nazwa_1'] || (isset($row['nazwa_2']) && (!isset($data['nazwa2']) || $data['nazwa2'] != $row['nazwa_2'])) || $data['typeid'] != $typeid ) {
+	            $DB->Execute('UPDATE location_streets
+	                          SET cityid = ?, name = ?, name2 = ?, typeid = ?
+	                          WHERE id = ?',
+	                          array($cities[$row['sym']], $row['nazwa_1'], $row['nazwa_2'], $typeid, $data['id']));
+
+	            ++$ulic_update;
+	        }
+
+	        // mark data as valid
+	        $ulic[$key]['valid'] = 1;
+	    }
+	    // add new street
+	    else {
+	        $DB->Execute('INSERT INTO location_streets (cityid, name, name2, typeid, ident) VALUES (?,?,?,?,?)',
+	                      array($cities[$row['sym']], $row['nazwa_1'], $row['nazwa_2'], $typeid, $row['sym_ul']));
+
+	        ++$ulic_insert;
+	    }
+	}
+
+	if ( $i % PROGRESS_ROW_COUNT && !$quiet) {
+	    echo 'Loaded ' . $i . PHP_EOL;
+	}
+
+	foreach ( $ulic as $k=>$v ) {
+	    if ( !$v['valid'] ) {
+	        $DB->Execute('DELETE FROM location_streets WHERE id=?;', array($v['id']));
+	    }
+	}
+
+	//==============================================================================
+	// Print ULIC stats
+	//==============================================================================
+
+	if (!$quiet) {
+		echo 'ULIC insert/update/delete = '.$ulic_insert.'/'.$ulic_update.'/'.$ulic_delete . PHP_EOL;
+		echo '---' . PHP_EOL;
+	}
+
+	unset( $ulic, $str_types, $cities, $ulic_insert, $ulic_update, $ulic_delete );
+
+	$xml->close();
+	unset( $xml );
 
 } // close if ( isset($option['update']) )
 
@@ -870,44 +911,12 @@ unset( $xml );
 //==============================================================================
 
 if ( isset($options['basepoint']) ) {
+	$fh = fopen($basepoint_name, "r");
+	if ($fh === null) {
+		fprintf($stderr, "Error: can't open %s file." . PHP_EOL, $basepoint_name);
+		die;
+	}
 
-if ( isset($options['fetch']) ) {
-    // download point address base (pobranie bazy punktów adresowych)
-    fwrite($stdout, 'Downloading files.' . PHP_EOL);
-    file_put_contents($teryt_dir . DIRECTORY_SEPARATOR . 'pointaddress.zip', fopen('https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2016.zip', 'r'));
-}
-
-fwrite($stdout, 'Unzip files' . PHP_EOL);
-$zip = new ZipArchive;
-
-if ($zip->open($teryt_dir . DIRECTORY_SEPARATOR . 'pointaddress.zip') === TRUE) {
-    $numFiles = $zip->numFiles;
-
-    if ( $numFiles == 1 ) {
-        $basepoint_name = $zip->getNameIndex(0);
-    } else if ( $numFiles > 1 ) {
-        for ($i = 0; $i < $numFiles; ++$i) {
-            if ( preg_match('/$baza_punktow_adresowych/', $v) ) {
-                $basepoint_name = $v;
-                break;
-            }
-        }
-    } else {
-        $basepoint_name = 'baza_punktow_adresowych_2016.csv';
-    }
-
-    $zip->extractTo($teryt_dir . DIRECTORY_SEPARATOR);
-    unset( $numFiles );
-} else {
-    fwrite($stderr, 'Error: Can\'t unzip pointaddress.zip or file doesn\'t exist. Try to use -f, --fetch to download.' . PHP_EOL);
-    die();
-}
-
-unset( $zip );
-
-$fh = fopen($basepoint_name, "r");
-
-if ($fh) {
     if ( isset($state_list) ) {
         $state_name_to_ident = $DB->GetAllByKey('SELECT ident, name FROM location_states', 'name');
 
@@ -925,10 +934,11 @@ if ($fh) {
     // create location cache
     $location_cache = new LocationCache('full');
 
-    fwrite($stdout, 'Parsing file' . PHP_EOL);
+	if (!$quiet)
+		echo 'Parsing file' . PHP_EOL;
 
     while ( !feof($fh) ) {
-        $lines = explode("\n", fread($fh, 4096));
+        $lines = preg_split('/\r?\n/', fread($fh, 4096));
         $lines = str_replace("'", '', $lines);
 
         // try to join previous line
@@ -1017,11 +1027,13 @@ if ($fh) {
         }
 
         // location buildings progres
-        fwrite($stdout, "$i/$steps" . PHP_EOL);
+		if (!$quiet)
+			echo "$i/$steps" . PHP_EOL;
         ++$i;
     }
 
-    fwrite($stdout, 'Removing old buildings' . PHP_EOL);
+	if (!$quiet)
+		echo 'Removing old buildings' . PHP_EOL;
 
     $DB->Execute('DELETE FROM location_buildings WHERE updated = 0;');
     $DB->Execute('UPDATE location_buildings SET updated = 0;');
@@ -1032,9 +1044,6 @@ if ($fh) {
         $street, $building, $simc, $city, $k, $previous_line, $lines, $steps,
         $state_name_to_ident, $state_ident
     );
-} else {
-    fwrite($stderr, "File $basepoint_name not exists or name isn't correct." . PHP_EOL);
-}
 
 } // close if ( isset($options['basepoint']) ) {
 
@@ -1046,7 +1055,8 @@ if ($fh) {
 //==============================================================================
 
 if ( isset($options['merge']) ) {
-    fwrite($stdout, 'Merging TERYT with LMS database' . PHP_EOL);
+	if (!$quiet)
+		echo 'Merging TERYT with LMS database' . PHP_EOL;
     $merge_update = 0;
 
     $addresses = $DB->GetAll("
@@ -1082,7 +1092,8 @@ if ( isset($options['merge']) ) {
         ++$merge_update;
     }
 
-    fwrite($stdout, 'Matched TERYT addresses = ' . $merge_update . PHP_EOL);
+	if (!$quiet)
+		echo 'Matched TERYT addresses = ' . $merge_update . PHP_EOL;
     unset( $addresses, $merge_update, $location_cache );
 }
 
@@ -1093,13 +1104,14 @@ if ( isset($options['merge']) ) {
 //==============================================================================
 
 if ( isset($options['delete']) ) {
-    fwrite($stdout, 'Deleting downloaded files' . PHP_EOL);
+	if (!$quiet)
+		echo 'Deleting downloaded files' . PHP_EOL;
 
-    if ( !empty($basepoint_name) ) {
+    if ( !empty($basepoint_name) && file_exists($basepoint_name)) {
         unlink($teryt_dir . DIRECTORY_SEPARATOR . $basepoint_name );
     }
 
-    unlink($teryt_dir . DIRECTORY_SEPARATOR . 'pointaddress.zip');
+    unlink($teryt_dir . DIRECTORY_SEPARATOR . BASEPOINT_ZIP_NAME);
     unlink($teryt_dir . DIRECTORY_SEPARATOR . 'simc.zip');
     unlink($teryt_dir . DIRECTORY_SEPARATOR . 'SIMC.xml');
     unlink($teryt_dir . DIRECTORY_SEPARATOR . 'ulic.zip');
@@ -1109,6 +1121,5 @@ if ( isset($options['delete']) ) {
 }
 
 fclose($stderr);
-fclose($stdout);
 
 ?>
