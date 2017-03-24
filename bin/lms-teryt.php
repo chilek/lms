@@ -341,7 +341,7 @@ if ( isset($options['fetch']) ) {
 		echo 'Unzipping TERYT files...' . PHP_EOL;
 
 	foreach ( $teryt_files as $file ) {
-		$file .= $teryt_dir . DIRECTORY_SEPARATOR . $file . $teryt_filename_suffix . '.zip';
+		$file = $teryt_dir . DIRECTORY_SEPARATOR . $file . $teryt_filename_suffix . '.zip';
 	    if ($zip->open($file) === TRUE) {
 	        $zip->extractTo($teryt_dir . DIRECTORY_SEPARATOR);
 	    } else {
