@@ -326,6 +326,11 @@ if ( isset($options['fetch']) ) {
 
     unset( $page_content, $file_counter, $headers, $matches, $file );
 
+	if ( ! class_exists('ZipArchive') ) {
+		fwrite($stderr, "Error: ZipArchive class not found." . PHP_EOL);
+		die;
+	}
+
 	//==============================================================================
 	// Unzip teryt files
 	//==============================================================================
