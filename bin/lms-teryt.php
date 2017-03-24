@@ -289,10 +289,11 @@ else
 
 if ( isset($options['fetch']) ) {
 	if (!$quiet)
-		echo 'Downloading TERRIT files...' . PHP_EOL;
+		echo 'Downloading TERYT files...' . PHP_EOL;
 
     $page_content = file_get_contents('http://www.stat.gov.pl/broker/access/prefile/listPreFiles.jspa', 'r');
     $file_counter = 0;
+	$teryt_filename_suffix = '_' . strftime('%d%m%Y');
 
     foreach (preg_split("/((\r?\n)|(\r\n?))/", $page_content) as $line){
         if ( preg_match('/downloadPreFile\.jspa;.*id=(?<file_id>[0-9]*)"/', $line, $matches) && $matches['file_id'] ) {
@@ -309,8 +310,7 @@ if ( isset($options['fetch']) ) {
                             ++$file_counter;
 
                             // save file
-                            $file['name'] = strtolower($file['name']);
-                            file_put_contents($teryt_dir . DIRECTORY_SEPARATOR . $file['name'] . '.zip',
+                            file_put_contents($teryt_dir . DIRECTORY_SEPARATOR . $file['name'] . $teryt_filename_suffix . '.zip',
                                 fopen('http://www.stat.gov.pl/broker/access/prefile/downloadPreFile.jspa?id=' . $matches['file_id'], 'r'));
                         break;
                     }
@@ -330,16 +330,17 @@ if ( isset($options['fetch']) ) {
 	// Unzip teryt files
 	//==============================================================================
 	$zip = new ZipArchive;
-	$teryt_files = array('ulic', 'terc', 'simc');
+	$teryt_files = array('ULIC', 'TERC', 'SIMC');
 
 	if (!$quiet)
-		echo 'Unzipping TERRIT files...' . PHP_EOL;
+		echo 'Unzipping TERYT files...' . PHP_EOL;
 
 	foreach ( $teryt_files as $file ) {
-	    if ($zip->open($file.'.zip') === TRUE) {
+		$file .= $teryt_filename_suffix . '.zip';
+	    if ($zip->open($file) === TRUE) {
 	        $zip->extractTo($teryt_dir . DIRECTORY_SEPARATOR);
 	    } else {
-	        fwrite($stderr, "Error: Can't unzip $file.zip or file doesn't exist." . PHP_EOL);
+	        fwrite($stderr, "Error: Can't unzip $file or file doesn't exist." . PHP_EOL);
 	        die;
 	    }
 	}
