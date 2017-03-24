@@ -26,13 +26,17 @@
 
 $devices = $DB->GetAllByKey('SELECT n.id, n.name, n.location, '.$DB->GroupConcat('INET_NTOA(CASE WHEN vnodes.ownerid = 0 THEN vnodes.ipaddr ELSE NULL END)', ',', true)
 				.' AS ipaddr, '.$DB->GroupConcat('CASE WHEN vnodes.ownerid = 0 THEN vnodes.id ELSE NULL END', ',', true).' AS nodeid,
-				MAX(lastonline) AS lastonline, n.latitude AS lat, n.longitude AS lon,
+				MAX(lastonline) AS lastonline,
+				(CASE WHEN nn.latitude IS NOT NULL AND n.netnodeid > 0 THEN nn.latitude ELSE n.latitude END) AS lat,
+				(CASE WHEN nn.longitude IS NOT NULL AND n.netnodeid > 0 THEN nn.longitude ELSE n.longitude END) AS lon,
 				' . $DB->GroupConcat('rs.id') . ' AS radiosectors, n.ownerid
 				FROM vnetdevices n
+				LEFT JOIN netnodes nn ON nn.id = n.netnodeid
 				LEFT JOIN vnodes ON n.id = vnodes.netdev
 				LEFT JOIN netradiosectors rs ON rs.netdev = n.id
-				WHERE n.latitude IS NOT NULL AND n.longitude IS NOT NULL
-				GROUP BY n.id, n.name, n.latitude, n.longitude, n.ownerid', 'id');
+				WHERE ((nn.latitude IS NULL AND n.latitude IS NOT NULL) OR nn.latitude IS NOT NULL)
+					AND ((nn.longitude IS NULL AND n.longitude IS NOT NULL) OR nn.latitude IS NOT NULL)
+				GROUP BY n.id, n.name, n.latitude, n.longitude, nn.latitude, nn.longitude, n.ownerid', 'id');
 
 if ($devices) {
 	$time_now = time();
@@ -40,6 +44,7 @@ if ($devices) {
 	foreach ($devices as $devidx => $device) {
 		if (empty($device['location']) &&  $acc['ownerid'])
 			$devices[$devidx]['location'] = $LMS->getAddressForCustomerStuff( $acc['ownerid'] );
+		$devices[$devidx]['name'] = trim($device['name'], ' "');
 		if ($device['lastonline'])
 			if ($time_now - $device['lastonline'] > ConfigHelper::getConfig('phpui.lastonline_limit'))
 				$devices[$devidx]['state'] = 2;
