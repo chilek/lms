@@ -37,7 +37,7 @@ $parameters = array(
     'u'  => 'update',
     'm'  => 'merge',
     'd'  => 'delete',
-    'b'  => 'basepoint'
+    'b'  => 'buildings'
 );
 
 foreach ($parameters as $key => $val) {
@@ -74,6 +74,7 @@ lms-teryt.php
 -u, --update                       update LMS database
 -m, --merge                        try join current addresses with teryt locations
 -d, --delete                       delete downloaded teryt files after merge/update
+-b, --buildings                    analyze building base and load it into database
 -l, --list                         state ids who will be taken into account
 
 EOF;
@@ -205,32 +206,19 @@ function getIdents( $city = null, $street = null ) {
     $street = trim( preg_replace('/$(ul\.|pl\.|al\.|bulw\.|os\.|wyb\.|plac|skwer|rondo|park|rynek|szosa|droga|ogród|wyspa)/i', '', $street) );
     $idents = array();
 
-    global $DB;
+	$DB = LMSDB::getInstance();
 
     if ( $city && $street ) {
-        switch ( strtolower($DB->GetDbType()) ) {
-            case 'postgres':
-                $condition = "CASE WHEN s.name2 IS NULL THEN s.name ELSE s.name2 || ' ' || s.name END";
-            break;
-
-            case 'mysql':
-                $condition = "CASE WHEN s.name2 IS NULL THEN s.name ELSE CONCAT(s.name2, ' ', s.name) END";
-            break;
-
-            default:
-                return array();
-        }
-
         $idents = $DB->GetRow("
             SELECT s.id as streetid, s.cityid
             FROM location_streets s
                 JOIN location_cities c ON (s.cityid = c.id)
             WHERE
-                (" . $condition . " ?LIKE? ? OR s.name ?LIKE? ? ) AND
-                c.name ?LIKE? ?
+                ((CASE WHEN s.name2 IS NULL THEN s.name ELSE " . $DB->Concat('s.name2', "' '", 's.name') . " END) ?LIKE? ? OR s.name ?LIKE? ? )
+                AND c.name ?LIKE? ?
             ORDER BY c.cityid", array($street, $street, $city));
 
-    } else if ( $city ) {
+    } elseif ( $city ) {
         $idents['cityid'] = $DB->GetOne('SELECT name FROM location_cities WHERE name ?LIKE? ?;', array($city));
     }
 
@@ -249,9 +237,9 @@ ini_set('memory_limit', '512M');
 $stderr = fopen('php://stderr', 'w');
 
 define('PROGRESS_ROW_COUNT', 1000);
-define('BASEPOINT_ZIP_NAME', 'baza_punktow_adresowych_2016.zip');
-define('BASEPOINT_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2016.zip');
-$basepoint_name = 'baza_punktow_adresowych_2016.csv';
+define('BUILDING_BASE_ZIP_NAME', 'baza_punktow_adresowych_2016.zip');
+define('BUILDING_BASE_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2016.zip');
+$building_base_name = 'baza_punktow_adresowych_2016.csv';
 
 $states = ConfigHelper::getConfig('teryt.state_list', '', true);
 $teryt_dir = ConfigHelper::getConfig('teryt.dir', '', true);
@@ -375,22 +363,22 @@ if ( isset($options['fetch']) ) {
 
 	 // download point address base (pobranie bazy punktów adresowych)
 	if (!$quiet)
-		echo 'Downloading ' . BASEPOINT_ZIP_URL . ' file...' . PHP_EOL;
-	file_put_contents($teryt_dir . DIRECTORY_SEPARATOR . BASEPOINT_ZIP_NAME, fopen(BASEPOINT_ZIP_URL, 'r', false, $ctx));
+		echo 'Downloading ' . BUILDING_BASE_ZIP_URL . ' file...' . PHP_EOL;
+	file_put_contents($teryt_dir . DIRECTORY_SEPARATOR . BUILDING_BASE_ZIP_NAME, fopen(BUILDING_BASE_ZIP_URL, 'r', false, $ctx));
 
 	if (!$quiet)
-		echo "\rUnzipping " . BASEPOINT_ZIP_NAME . ' file...' . PHP_EOL;
+		echo "\rUnzipping " . BUILDING_BASE_ZIP_NAME . ' file...' . PHP_EOL;
 	$zip = new ZipArchive;
 
-	if ($zip->open($teryt_dir . DIRECTORY_SEPARATOR . BASEPOINT_ZIP_NAME) === TRUE) {
+	if ($zip->open($teryt_dir . DIRECTORY_SEPARATOR . BUILDING_BASE_ZIP_NAME) === TRUE) {
 	    $numFiles = $zip->numFiles;
 
 	    if ( $numFiles == 1 ) {
-	        $basepoint_name = $zip->getNameIndex(0);
+	        $building_base_name = $zip->getNameIndex(0);
 	    } else if ( $numFiles > 1 ) {
 	        for ($i = 0; $i < $numFiles; ++$i) {
 	            if ( preg_match('/baza_punktow_adresowych/', $v) ) {
-	                $basepoint_name = $v;
+	                $building_base_name = $v;
 	                break;
 	            }
 	        }
@@ -399,7 +387,7 @@ if ( isset($options['fetch']) ) {
 	    $zip->extractTo($teryt_dir . DIRECTORY_SEPARATOR);
 	    unset( $numFiles );
 	} else {
-	    fprintf($stderr, "Error: Can't unzip %s or file doesn't exist." . PHP_EOL, BASEPOINT_ZIP_NAME);
+	    fprintf($stderr, "Error: Can't unzip %s or file doesn't exist." . PHP_EOL, BUILDING_BASE_ZIP_NAME);
 	    die;
 	}
 
@@ -936,13 +924,13 @@ if ( isset($options['update']) ) {
 //==============================================================================
 // Read address point csv file
 //
-// -b, --basepoint
+// -b, --buildings
 //==============================================================================
 
-if ( isset($options['basepoint']) ) {
-	$fh = fopen($basepoint_name, "r");
+if ( isset($options['buildings']) ) {
+	$fh = fopen($building_base_name, "r");
 	if ($fh === null) {
-		fprintf($stderr, "Error: can't open %s file." . PHP_EOL, $basepoint_name);
+		fprintf($stderr, "Error: can't open %s file." . PHP_EOL, $building_base_name);
 		die;
 	}
 
@@ -954,7 +942,7 @@ if ( isset($options['basepoint']) ) {
         }
     }
 
-    $steps = ceil( filesize($basepoint_name) / 4096 );
+    $steps = ceil( filesize($building_base_name) / 4096 );
     $i = 1;
     $to_update = array();
     $to_insert = array();
@@ -964,7 +952,7 @@ if ( isset($options['basepoint']) ) {
     $location_cache = new LocationCache('full');
 
 	if (!$quiet)
-		echo 'Parsing file' . PHP_EOL;
+		echo 'Parsing file...' . PHP_EOL;
 
     while ( !feof($fh) ) {
         $lines = preg_split('/\r?\n/', fread($fh, 4096));
@@ -1074,7 +1062,7 @@ if ( isset($options['basepoint']) ) {
         $state_name_to_ident, $state_ident
     );
 
-} // close if ( isset($options['basepoint']) ) {
+} // close if ( isset($options['buildings']) ) {
 
 //==============================================================================
 // Merge TERYT with LMS database.
@@ -1086,14 +1074,14 @@ if ( isset($options['basepoint']) ) {
 if ( isset($options['merge']) ) {
 	if (!$quiet)
 		echo 'Merging TERYT with LMS database' . PHP_EOL;
-    $merge_update = 0;
+    $updated = 0;
 
     $addresses = $DB->GetAll("
         SELECT id, city, city_id, street, street_id
         FROM addresses
         WHERE
             city_id IS NULL AND street_id IS NULL AND
-            (city IS NOT NULL OR street IS NOT NULL);");
+            (city IS NOT NULL OR street IS NOT NULL)");
 
     if ( !$addresses ) {
         $addresses = array();
@@ -1115,15 +1103,15 @@ if ( isset($options['merge']) ) {
             $location_cache[$key] = $ident;
         }
 
-        $DB->Execute('UPDATE addresses SET city_id=?, street_id=? WHERE id=?;',
+        $DB->Execute('UPDATE addresses SET city_id=?, street_id=? WHERE id=?',
                       array($ident['cityid'], $ident['streetid'], $a['id']));
 
-        ++$merge_update;
+        $updated++;
     }
 
 	if (!$quiet)
-		echo 'Matched TERYT addresses = ' . $merge_update . PHP_EOL;
-    unset( $addresses, $merge_update, $location_cache );
+		echo 'Matched TERYT addresses = ' . $updated . PHP_EOL;
+    unset( $addresses, $updated, $location_cache );
 }
 
 //==============================================================================
@@ -1134,13 +1122,13 @@ if ( isset($options['merge']) ) {
 
 if ( isset($options['delete']) ) {
 	if (!$quiet)
-		echo 'Deleting downloaded files' . PHP_EOL;
+		echo 'Deleting downloaded files...' . PHP_EOL;
 
-    if ( !empty($basepoint_name) && file_exists($basepoint_name)) {
-        unlink($teryt_dir . DIRECTORY_SEPARATOR . $basepoint_name );
+    if ( !empty($building_base_name) && file_exists($building_base_name)) {
+        unlink($teryt_dir . DIRECTORY_SEPARATOR . $building_base_name );
     }
 
-    unlink($teryt_dir . DIRECTORY_SEPARATOR . BASEPOINT_ZIP_NAME);
+    unlink($teryt_dir . DIRECTORY_SEPARATOR . BUILDING_BASE_ZIP_NAME);
     unlink($teryt_dir . DIRECTORY_SEPARATOR . 'simc.zip');
     unlink($teryt_dir . DIRECTORY_SEPARATOR . 'SIMC.xml');
     unlink($teryt_dir . DIRECTORY_SEPARATOR . 'ulic.zip');
