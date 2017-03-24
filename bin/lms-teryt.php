@@ -602,7 +602,7 @@ if ( isset($options['update']) ) {
 	//==============================================================================
 
 	if (!$quiet) {
-		echo 'TERC insert/update/delete = '.$terc_insert.'/'.$terc_update.'/'.$terc_delete . PHP_EOL;
+		echo 'TERC inserted/updated/deleted = '.$terc_insert.'/'.$terc_update.'/'.$terc_delete . PHP_EOL;
 		echo '---' . PHP_EOL;
 	}
 
@@ -783,7 +783,7 @@ if ( isset($options['update']) ) {
 	//==============================================================================
 
 	if (!$quiet) {
-		echo 'SIMC insert/update/delete = '.$simc_insert.'/'.$simc_update.'/'.$simc_delete . PHP_EOL;
+		echo 'SIMC inserted/updated/deleted = '.$simc_insert.'/'.$simc_update.'/'.$simc_delete . PHP_EOL;
 		echo '---' . PHP_EOL;
 	}
 
@@ -899,7 +899,7 @@ if ( isset($options['update']) ) {
 	//==============================================================================
 
 	if (!$quiet) {
-		echo 'ULIC insert/update/delete = '.$ulic_insert.'/'.$ulic_update.'/'.$ulic_delete . PHP_EOL;
+		echo 'ULIC inserted/updated/deleted = '.$ulic_insert.'/'.$ulic_update.'/'.$ulic_delete . PHP_EOL;
 		echo '---' . PHP_EOL;
 	}
 
