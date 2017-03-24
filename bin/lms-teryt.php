@@ -288,8 +288,29 @@ else
 //==============================================================================
 
 if ( isset($options['fetch']) ) {
-	if (!$quiet)
+	function stream_notification_callback($notification_code, $severity, $message, $message_code, $bytes_transferred, $bytes_max) {
+		static $filesize = null;
+
+		switch($notification_code) {
+			case STREAM_NOTIFY_CONNECT:
+				$filesize = null;
+				break;
+			case STREAM_NOTIFY_FILE_SIZE_IS:
+				$filesize = $bytes_max;
+				break;
+			case STREAM_NOTIFY_PROGRESS:
+				if (isset($filesize))
+					printf("%d%%         \r", ($bytes_transferred * 100) / $filesize);
+				break;
+		}
+	}
+
+	$ctx = stream_context_create();
+
+	if (!$quiet) {
 		echo 'Downloading TERYT files...' . PHP_EOL;
+		stream_context_set_params($ctx, array("notification" => "stream_notification_callback"));
+	}
 
     $page_content = file_get_contents('http://www.stat.gov.pl/broker/access/prefile/listPreFiles.jspa', 'r');
     $file_counter = 0;
@@ -311,7 +332,7 @@ if ( isset($options['fetch']) ) {
 
                             // save file
                             file_put_contents($teryt_dir . DIRECTORY_SEPARATOR . $file['name'] . $teryt_filename_suffix . '.zip',
-                                fopen('http://www.stat.gov.pl/broker/access/prefile/downloadPreFile.jspa?id=' . $matches['file_id'], 'r'));
+                                fopen('http://www.stat.gov.pl/broker/access/prefile/downloadPreFile.jspa?id=' . $matches['file_id'], 'r', false, $ctx));
                         break;
                     }
                 }
@@ -355,10 +376,10 @@ if ( isset($options['fetch']) ) {
 	 // download point address base (pobranie bazy punktów adresowych)
 	if (!$quiet)
 		echo 'Downloading ' . BASEPOINT_ZIP_URL . ' file...' . PHP_EOL;
-	file_put_contents($teryt_dir . DIRECTORY_SEPARATOR . BASEPOINT_ZIP_NAME, fopen(BASEPOINT_ZIP_URL, 'r'));
+	file_put_contents($teryt_dir . DIRECTORY_SEPARATOR . BASEPOINT_ZIP_NAME, fopen(BASEPOINT_ZIP_URL, 'r', false, $ctx));
 
 	if (!$quiet)
-		echo 'Unzipping ' . BASEPOINT_ZIP_NAME . ' file...' . PHP_EOL;
+		echo "\rUnzipping " . BASEPOINT_ZIP_NAME . ' file...' . PHP_EOL;
 	$zip = new ZipArchive;
 
 	if ($zip->open($teryt_dir . DIRECTORY_SEPARATOR . BASEPOINT_ZIP_NAME) === TRUE) {
