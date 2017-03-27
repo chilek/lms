@@ -103,6 +103,8 @@ version ?.??.?? (????-??-??):
     coordinates [chilan]
   - improvement: lms-gps.php script can search for more exact locations if resource
     address is teritied [chilan]
+  - enhancement: lms-gps.php allows to use two different sources of gps coordinates:
+    google and siis [chilan]
 
 version 1.11.21 (2016-10-14):
 
