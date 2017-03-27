@@ -200,7 +200,8 @@ class LocationCache {
 	 */
 	public function buildingExists( $cityid, $streetid, $building_num ) {
 		if ( !isset($this->buildings[ $cityid ]) ) {
-			$tmp = $this->DB->GetAllByKey("SELECT (city_id || '|' || case when street_id is null then '' else '' || street_id end || '|' || building_num) as lms_building_key,
+			$tmp = $this->DB->GetAllByKey("SELECT (" . $DB->Concat('city_id', "'|'", '(CASE WHEN street_id IS NULL THEN '' ELSE street_id END)', "'|'", 'building_num') . ")
+												AS lms_building_key,
 											longitude, latitude, id
 											FROM location_buildings lb
 											WHERE city_id = ?", 'lms_building_key', array($cityid));
@@ -228,7 +229,7 @@ class LocationCache {
                 $this->city_by_ident[ $v['ident'] ] = $v;
             }
 		} else {
-			$this->city_by_ident = $this->DB->GetAllByKey('SELECT id, ident, cityid FROM location_cities;', 'ident');
+			$this->city_by_ident = $this->DB->GetAllByKey('SELECT id, ident, cityid FROM location_cities', 'ident');
 		}
 
     	$this->city_by_ident_loaded = true;
@@ -244,7 +245,7 @@ class LocationCache {
                 $this->city_by_id[ $v['id'] ] = $v;
             }
 		} else {
-			$this->city_by_id = $this->DB->GetAllByKey('SELECT id, ident, cityid FROM location_cities;', 'id');
+			$this->city_by_id = $this->DB->GetAllByKey('SELECT id, ident, cityid FROM location_cities', 'id');
 		}
 
     	$this->city_by_id_loaded = true;
