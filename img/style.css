@@ -1286,9 +1286,11 @@ img.lms-ui-quick-search {
   user-select: none;
 }
 input.lms-ui-quick-search {
-  display: none;
+  width: 20px;
+  display: inline-block;
 }
 input.lms-ui-quick-search.lms-ui-quick-search-active {
+  width: 100px;
   display: inline-block;
 }
 .lms-ui-icon-administration {

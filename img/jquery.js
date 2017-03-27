@@ -781,22 +781,12 @@ $(function() {
 			'?m=quicksearch&ajax=1&mode=' + $(input).attr('data-mode') + '&what=', lmsSettings.quickSearchAutoSubmit);
 	});
 
-	qs_inputs.prev().addClass('lms-ui-quick-search')
-		.on('mouseenter click', function(e) {
-		if (e.type == 'mouseenter') {
-			if (qs_timer != null) {
-				clearTimeout(qs_timer);
-			}
-			var qs_img = this;
-			qs_timer = setTimeout(function() {
-				('input.lms-ui-quick-search-active', qs_inputs).removeClass('lms-ui-quick-search-active');
-				$(qs_img).next().addClass('lms-ui-quick-search-active').focus();
-				qs_timer = null;
-			}, 300);
-		} else {
-			('input.lms-ui-quick-search-active', qs_inputs).removeClass('lms-ui-quick-search-active');
-			$(this).next().addClass('lms-ui-quick-search-active').focus();
-		}
+	qs_inputs.on('click', function(e) {
+		('input.lms-ui-quick-search-active', qs_inputs).removeClass('lms-ui-quick-search-active');
+		$(this).addClass('lms-ui-quick-search-active').focus();
+	}).prev().on('click', function(e) {
+		('input.lms-ui-quick-search-active', qs_inputs).removeClass('lms-ui-quick-search-active');
+		$(this).next().addClass('lms-ui-quick-search-active').focus();
 	});
 	qs_inputs.first().addClass('lms-ui-quick-search-active').focus();
 
