@@ -1142,7 +1142,7 @@ if ( isset($options['delete']) ) {
 		echo 'Deleting downloaded files...' . PHP_EOL;
 
     if ( !empty($building_base_name) && file_exists($building_base_name)) {
-        unlink($teryt_dir . DIRECTORY_SEPARATOR . $building_base_name );
+        unlink($building_base_name);
     }
 
     unlink($teryt_dir . DIRECTORY_SEPARATOR . BUILDING_BASE_ZIP_NAME);
