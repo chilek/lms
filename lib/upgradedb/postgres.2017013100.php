@@ -445,109 +445,109 @@ if ( $customers_loc ) {
         $any_to_up = false;
 
         if ( $v['post_name'] ) {
-            $post_name = "'".$v['post_name']."'";
+            $post_name = $v['post_name'];
             $any_to_up = true;
         } else {
-            $post_name = 'null';
+            $post_name = null;
         }
 
         if ( $v['post_street'] ) {
-            $post_street = "'".$v['post_street']."'";
+            $post_street = $v['post_street'];
             $any_to_up = true;
         } else {
-            $post_street = 'null';
+            $post_street = null;
         }
 
         if ( $v['post_building'] ) {
-            $post_building = "'".$v['post_building']."'";
+            $post_building = $v['post_building'];
             $any_to_up = true;
         } else {
-            $post_building = 'null';
+            $post_building = null;
         }
 
         if ( $v['post_apartment'] ) {
-            $post_apartment = "'".$v['post_apartment']."'";
+            $post_apartment = $v['post_apartment'];
             $any_to_up = true;
         } else {
-            $post_apartment = 'null';
+            $post_apartment = null;
         }
 
         if ( $v['post_zip'] ) {
-            $post_zip = "'".$v['post_zip']."'";
+            $post_zip = $v['post_zip'];
             $any_to_up = true;
         } else {
-            $post_zip = 'null';
+            $post_zip = null;
         }
 
         if ( $v['post_city'] ) {
-            $post_city = "'".$v['post_city']."'";
+            $post_city = $v['post_city'];
             $any_to_up = true;
         } else {
-            $post_city = 'null';
+            $post_city = null;
         }
 
         if ( $v['post_countryid'] ) {
             $post_countryid = $v['post_countryid'];
             $any_to_up = true;
         } else {
-            $post_countryid = 'null';
+            $post_countryid = null;
         }
 
         if ( $any_to_up === true ) {
             $this->Execute('INSERT INTO addresses (name, city, street, zip, country_id, house, flat)
-                            VALUES (' . "$post_name,$post_city,$post_street,$post_zip,$post_countryid,$post_building,$post_apartment" . ');');
+                            VALUES (?, ?, ?, ?, ?, ?, ?)', array($post_name,$post_city,$post_street,$post_zip,$post_countryid,$post_building,$post_apartment));
 
-            $this->Execute('INSERT INTO customer_addresses (customer_id,address_id, type) VALUES (?,?,?);', array($v['id'], $this->GetLastInsertID('addresses'), POSTAL_ADDRESS));
+            $this->Execute('INSERT INTO customer_addresses (customer_id,address_id, type) VALUES (?,?,?)', array($v['id'], $this->GetLastInsertID('addresses'), POSTAL_ADDRESS));
         }
 
         /* --- BILLING ADDRESS --- */
         $any_to_up = false;
 
         if ( $v['street'] ) {
-            $street = "'".$v['street']."'";
+            $street = $v['street'];
             $any_to_up = true;
         } else {
-            $street = 'null';
+            $street = null;
         }
 
         if ( $v['building'] ) {
-            $building = "'".$v['building']."'";
+            $building = $v['building'];
             $any_to_up = true;
         } else {
-            $building = 'null';
+            $building = null;
         }
 
         if ( $v['apartment'] ) {
-            $apartment = "'".$v['apartment']."'";
+            $apartment = $v['apartment'];
             $any_to_up = true;
         } else {
-            $apartment = 'null';
+            $apartment = null;
         }
 
         if ( $v['zip'] ) {
-            $zip = "'".$v['zip']."'";
+            $zip = $v['zip'];
             $any_to_up = true;
         } else {
-            $zip = 'null';
+            $zip = null;
         }
 
         if ( $v['city'] ) {
-            $city = "'".$v['city']."'";
+            $city = $v['city'];
             $any_to_up = true;
         } else {
-            $city = 'null';
+            $city = null;
         }
 
         if ( $v['countryid'] ) {
             $countryid = $v['countryid'];
             $any_to_up = true;
         } else {
-            $countryid = 'null';
+            $countryid = null;
         }
 
         if ( $any_to_up === true ) {
             $this->Execute('INSERT INTO addresses (city, street, zip, country_id, house, flat)
-                            VALUES (' . "$city,$street,$zip,$countryid,$building,$apartment" . ');');
+                            VALUES (?, ?, ?, ?, ?, ?)', array($city,$street,$zip,$countryid,$building,$apartment));
 
             $address_id = $this->GetLastInsertID('addresses');
 
