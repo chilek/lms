@@ -245,7 +245,6 @@ $stderr = fopen('php://stderr', 'w');
 define('PROGRESS_ROW_COUNT', 1000);
 define('BUILDING_BASE_ZIP_NAME', 'baza_punktow_adresowych_2016.zip');
 define('BUILDING_BASE_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2016.zip');
-$building_base_name = 'baza_punktow_adresowych_2016.csv';
 
 $only_unique_city_matches = isset($options['only-unique-city-matches']);
 
@@ -276,6 +275,8 @@ else
 		fwrite($stderr, "Output directory specified in ini file does not exist!" . PHP_EOL);
 		die;
 	}
+
+$building_base_name = $teryt_dir . DIRECTORY_SEPARATOR . 'baza_punktow_adresowych_2016.csv';
 
 //==============================================================================
 // Download required files
