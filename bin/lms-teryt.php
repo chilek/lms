@@ -1052,9 +1052,9 @@ if ( isset($options['buildings']) ) {
             $to_update = array();
         }
 
-        // location buildings progres
+        // location building database creation progress
 		if (!$quiet)
-			echo "$i/$steps" . PHP_EOL;
+			printf("\r%.2f%%", ($i * 100) / $steps);
         ++$i;
     }
 
