@@ -41,7 +41,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 				LEFT JOIN addresses addr ON n.address_id = addr.id
 				LEFT JOIN invprojects p ON n.invprojectid = p.id
 				LEFT JOIN divisions d ON d.id = n.divisionid
-				LEFT JOIN location_cities lc ON lc.id = addr_city_id
+				LEFT JOIN location_cities lc ON lc.id = addr.city_id
 				LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
 				LEFT JOIN location_states ls ON ls.id = ld.stateid
