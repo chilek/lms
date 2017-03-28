@@ -867,8 +867,8 @@ if ( isset($options['update']) ) {
 	        continue;
 	    }
 
-        $row['nazwa1'] = trim($row['nazwa1']);
-        $row['nazwa2'] = trim($row['nazwa2']);
+        $row['nazwa_1'] = trim($row['nazwa_1']);
+        $row['nazwa_2'] = trim($row['nazwa_2']);
 	    $key    = $row['sym_ul'].':'.$row['sym'];
 	    $data   = $ulic[$key];
 	    $typeid = intval( $str_types[$row['cecha']] );
