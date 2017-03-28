@@ -30,7 +30,7 @@ if (empty($id)) {
     $id = intval($_POST['id']);
 }
 
-if (!$DB->GetOne('SELECT * FROM netnodes WHERE id=?',array($id)))
+if (!$LMS->NetNodeExists($id))
 	$SESSION->redirect('?m=netnodelist');
 
 if (isset($_POST['netnode'])) {
@@ -59,13 +59,10 @@ if (isset($_POST['netnode'])) {
 	}
 
 	if (!$error) {
-		$ipi = $netnodedata['invprojectid'];
-		if ($ipi == '-1') {
-			$DB->BeginTrans();
+		if (intval($netnodedata['invprojectid']) == -1) {
 			$DB->Execute("INSERT INTO invprojects (name, type) VALUES (?, ?)",
 				array($netnodedata['projectname'], INV_PROJECT_REGULAR));
-			$ipi = $DB->GetLastInsertID('invprojects');
-			$DB->CommitTrans();
+			$netnodedata['invprojectid'] = $DB->GetLastInsertID('invprojects');
 		}
 
 		$args = array(
@@ -79,24 +76,12 @@ if (isset($_POST['netnode'])) {
 			'uip'             => $netnodedata['uip'],
 			'miar'            => $netnodedata['miar'],
 			'divisionid'      => $netnodedata['divisionid'],
-			'invprojectid'    => $netnodedata['invprojectid'] == '-1' || intval($ipi) > 0 ? intval($ipi) : null
+			'invprojectid'    => $netnodedata['invprojectid'] ? $netnodedata['invprojectid'] : null,
 		);
 
-		// if address_id is set then update
-		if ( isset($netnodedata['address_id']) ) {
-			$LMS->UpdateAddress( $netnodedata );
-		} else {
-		// else insert new address
-			$addr_id = $LMS->InsertAddress( $netnodedata );
-
-			if ( $addr_id && $addr_id >= 0 ) {
-				$args['address_id'] = $addr_id;
-			}
-		}
-
-		$DB->Execute('UPDATE netnodes SET ' . implode(' = ?, ', array_keys($args)) . ' = ? WHERE id = ?',
-			array_merge(array_values($args), array($id)));
+		$LMS->NetNodeUpdate($netnodedata);
 		$LMS->CleanupInvprojects();
+
 		$SESSION->redirect('?m=netnodeinfo&id=' . $id);
 	}
 } else {

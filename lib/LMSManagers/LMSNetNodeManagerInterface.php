@@ -28,4 +28,12 @@ interface LMSNetNodeManagerInterface {
 	public function GetNetNode($id);
 
 	public function GetNetNodeList($search, $order);
+
+	public function NetNodeAdd($netnodedata);
+
+	public function NetNodeExists($id);
+
+	public function NetNodeDelete($id);
+
+	public function NetNodeUpdate($netnodedata);
 }

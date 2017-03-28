@@ -1303,6 +1303,30 @@ class LMS
         return $manager->GetNetNodeList($search, $order);
     }
 
+    public function NetNodeAdd($netnodedata)
+    {
+        $manager = $this->getNetNodeManager();
+        return $manager->NetNodeAdd($netnodedata);
+    }
+
+    public function NetNodeExists($id)
+    {
+        $manager = $this->getNetNodeManager();
+        return $manager->NetNodeExists($id);
+    }
+
+    public function NetNodeDelete($id)
+    {
+        $manager = $this->getNetNodeManager();
+        return $manager->NetNodeDelete($id);
+    }
+
+    public function NetNodeUpdate($netnodedata)
+    {
+        $manager = $this->getNetNodeManager();
+        return $manager->NetNodeUpdate($netnodedata);
+    }
+
     public function GetUnlinkedNodes()
     {
         $manager = $this->getNetworkManager();

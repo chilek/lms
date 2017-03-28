@@ -136,4 +136,82 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 		return $nlist;
 	}
 
+	public function NetNodeAdd($netnodedata) {
+		$location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+
+		$address_id = $location_manager->InsertAddress( $netnodedata );
+
+		$args = array(
+			'name'            => $netnodedata['name'],
+			'type'            => $netnodedata['type'],
+			'status'          => $netnodedata['status'],
+			'longitude'       => !empty($netnodedata['longitude']) ? str_replace(',', '.', $netnodedata['longitude']) : null,
+			'latitude'        => !empty($netnodedata['latitude'])  ? str_replace(',', '.', $netnodedata['latitude'])  : null,
+			'ownership'       => $netnodedata['ownership'],
+			'coowner'         => $netnodedata['coowner'],
+			'uip'             => $netnodedata['uip'],
+			'miar'            => $netnodedata['miar'],
+			'divisionid'      => !empty($netnodedata['divisionid']) ? $netnodedata['divisionid'] : null,
+			'address_id'      => ($address_id >= 0 ? $address_id : null)
+			);
+
+		if ($netnodedata['invprojectid'] > -1) {
+			$args['invprojectid'] = $netnodedata['invprojectid'];
+			$fields = 'name,type,status,longitude,latitude,ownership,coowner,uip,miar,divisionid,address_id,invprojectid';
+			$values = "?,?,?,?,?,?,?,?,?,?,?,?";
+		} else {
+			$fields = 'name,type,status,longitude,latitude,ownership,coowner,uip,miar,divisionid,address_id';
+			$values = "?,?,?,?,?,?,?,?,?,?,?";
+		}
+
+		$this->db->Execute("INSERT INTO netnodes (".$fields.") VALUES (".$values.")",array_values($args));
+
+		return $netnodeid = $this->db->GetLastInsertID('netnodes');
+	}
+
+	public function NetNodeExists($id) {
+		return $this->db->GetOne('SELECT id FROM netnodes WHERE id = ?', array($id)) > 0;
+	}
+
+	public function NetNodeDelete($id) {
+		$addr_id = $DB->GetOne('SELECT address_id FROM netnodes WHERE id = ?', array($id));
+
+		if (!empty($addr_id)) {
+			$this->db->Execute('DELETE FROM addresses WHERE id = ?', array($addr_id));
+		}
+
+		$this->db->Execute("DELETE FROM netnodes WHERE id=?", array($id));
+	}
+
+	public function NetNodeUpdate($netnodedata) {
+		$location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+
+		$args = array(
+			'name'            => $netnodedata['name'],
+			'type'            => $netnodedata['type'],
+			'status'          => $netnodedata['status'],
+			'longitude'       => !empty($netnodedata['longitude']) ? str_replace(',', '.', $netnodedata['longitude']) : null,
+			'latitude'        => !empty($netnodedata['latitude'])  ? str_replace(',', '.', $netnodedata['latitude'])  : null,
+			'ownership'       => $netnodedata['ownership'],
+			'coowner'         => $netnodedata['coowner'],
+			'uip'             => $netnodedata['uip'],
+			'miar'            => $netnodedata['miar'],
+			'divisionid'      => $netnodedata['divisionid'],
+			'invprojectid'    => $netnodedata['invprojectid'] ? $netnodedata['invprojectid'] : null,
+		);
+
+		// if address_id is set then update
+		if ( isset($netnodedata['address_id']) ) {
+			$location_manager->UpdateAddress( $netnodedata );
+		} else {
+		// else insert new address
+			$addr_id = $location_manager->InsertAddress( $netnodedata );
+
+			if ($addr_id >= 0)
+				$args['address_id'] = $addr_id;
+		}
+
+		$this->db->Execute('UPDATE netnodes SET ' . implode(' = ?, ', array_keys($args)) . ' = ? WHERE id = ?',
+			array_merge(array_values($args), array($netnodedata['id'])));
+	}
 }

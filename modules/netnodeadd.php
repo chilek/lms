@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -54,43 +54,14 @@ if (isset($_POST['netnode']))
 	}
 
     if (!$error) {
-		$ipi = $netnodedata['invprojectid'];
-		if ($ipi == '-1') {
-			$DB->BeginTrans();
+		if (intval($netnodedata['invprojectid']) == -1) {
 			$DB->Execute("INSERT INTO invprojects (name, type) VALUES (?, ?)",
 				array($netnodedata['projectname'], INV_PROJECT_REGULAR));
-			$ipi = $DB->GetLastInsertID('invprojects');
-			$DB->CommitTrans();
+			$netnodedata['invprojectid'] = $DB->GetLastInsertID('invprojects');
 		}
 
-		$address_id = $LMS->InsertAddress( $netnodedata );
-
-		$args = array(
-			'name'            => $netnodedata['name'],
-			'type'            => $netnodedata['type'],
-			'status'          => $netnodedata['status'],
-			'longitude'       => !empty($netnodedata['longitude']) ? str_replace(',', '.', $netnodedata['longitude']) : null,
-			'latitude'        => !empty($netnodedata['latitude'])  ? str_replace(',', '.', $netnodedata['latitude'])  : null,
-			'ownership'       => $netnodedata['ownership'],
-			'coowner'         => $netnodedata['coowner'],
-			'uip'             => $netnodedata['uip'],
-			'miar'            => $netnodedata['miar'],
-			'divisionid'      => !empty($netnodedata['divisionid']) ? $netnodedata['divisionid'] : null,
-			'address_id'      => ($address_id >= 0 ? $address_id : null)
-			);
-
-		if ($netnodedata['invprojectid'] == '-1' || intval($ipi)>0) {
-			$args['invprojectid'] = intval($ipi);
-			$fields = 'name,type,status,longitude,latitude,ownership,coowner,uip,miar,divisionid,address_id,invprojectid';
-			$values = "?,?,?,?,?,?,?,?,?,?,?,?";
-		} else {
-			$fields = 'name,type,status,longitude,latitude,ownership,coowner,uip,miar,divisionid,address_id';
-			$values = "?,?,?,?,?,?,?,?,?,?,?";
-		}
-
-		$DB->Execute("INSERT INTO netnodes (".$fields.") VALUES (".$values.")",array_values($args));
-		$netnodeid = $DB->GetLastInsertID('netnodes');
-		$SESSION->redirect('?m=netnodeinfo&id='.$netnodeid);
+		$netnodeid = $LMS->NetNodeAdd($netnodedata);
+		$SESSION->redirect('?m=netnodeinfo&id=' . $netnodeid);
 	}
 
 	$SMARTY->assign('error', $error);
