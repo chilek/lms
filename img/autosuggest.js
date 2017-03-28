@@ -17,7 +17,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	//A reference to the element we're binding the list to.
 	this.elem = elem;
 
-	this.request_delay = 200; // time in milliseconds
+	this.request_delay = 250; // time in milliseconds
 	this.timer;               // delay handler
 
 	if (/autosuggest-(left|top|right|bottom)/i.exec(elem.className) !== null)
@@ -73,7 +73,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	********************************************************/
 	elem.onkeydown = function(ev) {
 		var key = me.getKeyCode(ev);
-		
+
 		if (/autosuggest-(left|top|right|bottom)/i.exec(elem.className) !== null)
 			var suggest = RegExp.$1;
 		else
@@ -164,6 +164,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 		default:
 
 			if (this.value != me.inputText && this.value.length > 0) {
+				clearTimeout(me.timer);
 				me.timer = setTimeout(function(){ me.HTTPpreload(); }, me.request_delay);
 			} else {
 				me.hideDiv();
