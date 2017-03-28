@@ -106,6 +106,7 @@ version ?.??.?? (????-??-??):
   - enhancement: lms-gps.php allows to use two different sources of gps coordinates:
     google and siis [chilan]
   - enhancement: restore old-style quick search panel behavior [chilan]
+  - enhancement: added potential ranges for UKE report [kosa/chilan]
 
 version 1.11.21 (2016-10-14):
 

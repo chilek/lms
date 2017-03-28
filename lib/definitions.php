@@ -373,10 +373,14 @@ $DAYS = array(
 	DAY_SUNDAY	=> trans('Sun'),
 );
 
+define('LINKTYPE_WIRE'    , 0);
+define('LINKTYPE_WIRELESS', 1);
+define('LINKTYPE_FIBER'   , 2);
+
 $LINKTYPES = array(
-	0		=> trans('wire'),
-	1		=> trans('wireless'),
-	2		=> trans('fiber'),
+    LINKTYPE_WIRE     => trans('wire'),
+    LINKTYPE_WIRELESS => trans('wireless'),
+    LINKTYPE_FIBER    => trans('fiber'),
 );
 
 $LINKTECHNOLOGIES = array(
