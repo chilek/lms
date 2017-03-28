@@ -54,17 +54,16 @@ $LMS->InitXajax();
 $LMS->RegisterXajaxFunction(array('select_customer', 'getUsersForGroup'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
-if(empty($event['ticketid']) && !empty($_GET['ticketid']))
-{
-    $eventticketid = intval($_GET['ticketid']);
-    $tqname = $LMS->GetQueueNameByTicketId($eventticketid);
+if (!empty($_GET['ticketid'])) {
+	$eventticketid = intval($_GET['ticketid']);
+	$tqname = $LMS->GetQueueNameByTicketId($eventticketid);
 }
 
 if(isset($_POST['event']))
 {
 	$event = $_POST['event'];
 
-	if(count($event['categories'])==0)
+	if (!empty($event['helpdesk']) && !count($event['categories']))
 		$error['categories'] = trans('You have to select category!');
 
 	if (!isset($event['usergroup']))
@@ -110,7 +109,7 @@ if(isset($_POST['event']))
 
 		$event['nodeid'] = (isset($event['customer_location'])||is_null($event['nodeid'])) ? NULL : $event['nodeid'];
 
-                if(!empty($event['helpdesk']))
+                if (isset($event['helpdesk']))
                 {
                     $ticket['queue'] = $event['rtqueue'];
                     $ticket['customerid'] = $event['customerid'];
@@ -138,7 +137,7 @@ if(isset($_POST['event']))
 					intval($event['custid']),
 					$event['type'],
 					$id,
-					$event['ticketid']
+					empty($event['ticketid']) ? null : $event['ticketid'],
 					));
 
 		if (!empty($event['userlist'])) {
@@ -159,6 +158,8 @@ if(isset($_POST['event']))
 		unset($event['description']);
                                 unset($event['categories']);
 	}
+} else {
+	$event['helpdesk'] = ConfigHelper::checkConfig('phpui.default_event_ticket_assignment');
 }
 
 $event['date'] = isset($event['date']) ? $event['date'] : $SESSION->get('edate');
@@ -185,13 +186,13 @@ if (!isset($event['usergroup']))
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 
+if (isset($eventticketid))
+	$event['ticketid'] = $eventticketid;
+
 $categories = $LMS->GetCategoryListByUser($AUTH->id);
 $SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
 $SMARTY->assign('userlist', $userlist);
-$SMARTY->assign('customerid',$event[customerid]);
-$SMARTY->assign('customername',$event[customername]);
 $SMARTY->assign('tqname',$tqname);
-$SMARTY->assign('eventticketid', $eventticketid);
 $SMARTY->assign('usergroups', $usergroups);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('event', $event);

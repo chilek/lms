@@ -38,11 +38,11 @@
 //-->
 </SCRIPT>
 
-{if empty($eventticketid)}<H1>{$layout.pagetitle}</H1>{else}<H1>{trans("Add new event to request:")} #{$eventticketid} {/if}</H1>
+{if empty($event.ticketid)}<H1>{$layout.pagetitle}</H1>{else}<H1>{trans("Add new event to request:")} #{$event.ticketid} {/if}</H1>
 
 <P class="text-center" >
 <FORM method="POST" action="?m=eventadd" name="event" id="event">
-<INPUT type="text" name="event[ticketid]" id="event[ticketid]" value="{$eventticketid}" style="display: none">
+<INPUT type="hidden" name="event[ticketid]" value="{$event.ticketid}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
     <THEAD>
@@ -127,11 +127,12 @@
 			{trans("Customer:")}
 		</TD>
 		<TD width="98%" class="nobr">
-			{if empty($eventticketid) && empty($customerid)}
+			{if empty($event.ticketid) && empty($event.customerid)}
                                                         {customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer(this);"}
                                                 {else}
-                                                    {if $customerid != 0}
-                                                        {$customerlist[$customerid].customername}:({$customerid})
+                                                    {if $event.customerid != 0}
+                                                        {$customerlist[$event.customerid].customername}:({$event.customerid})
+                                                        <input type="hidden" name="event[customerid]" value="{$event.customerid}">
                                                     {else}
                                                         {trans("Request not assigned to any customer.")}
                                                     {/if}
@@ -146,7 +147,7 @@
 			{trans("Node:")}
 		</TD>
 		<TD width="98%" class="nobr">
-                                {if empty($eventticketid) && empty($customerid)}
+                                {if empty($event.ticketid) && empty($event.customerid)}
 		    <select id="nodes_location_sel" name="event[nodeid]" {tip text="Select node location"}>
 			{foreach from=$nodes_location item=item}
 			    <option value="{$item.id}"{if $item.id == $data.nodeid} selected{/if}>{$item.location}</option>
@@ -187,7 +188,7 @@
 			</div>
 		</TD>
 	</TR>
-                {if empty($eventticketid) && empty($customerid)}
+                {if empty($event.ticketid) && empty($event.customerid)}
 	<TR>
                 <TD>
                     <IMG src="img/ticket.gif" alt="">
@@ -196,7 +197,7 @@
                     {trans("Add new request to Helpdesk")}
                 </TD>
                 <TD>
-                    <input type="checkbox" name="event[helpdesk]" value="1" checked="checked" />
+                    <input type="checkbox" name="event[helpdesk]" value="1"{if isset($event['helpdesk'])} checked{/if}>
                 </TD>
                 </TR>
                 {/if}
@@ -208,23 +209,23 @@
                     {trans("Queue:")}
                 </TD>
                 <TD>
-                    {if empty($eventticketid) && empty($customerid)}
+                    {if empty($event.ticketid) && empty($event.customerid)}
                     <SELECT size="1" name="event[rtqueue]" {tip text="Select queue" trigger="queue"}>
                     {foreach from=$queuelist item=item}
-                        <OPTION value="{$item.id}" {if $item.id == '6'}SELECTED{/if}>{$item.name}</OPTION>
+                        <OPTION value="{$item.id}"{if $item.id == $event.rtqueue} selected{/if}>{$item.name}</OPTION>
                     {/foreach}
+                    </SELECT>
                     {else}
                         {$tqname}
                     {/if}
-                    </SELECT>
                 </TD>
                 </TR>
-                {if empty($eventticketid) && empty($customerid)}
+                {if empty($event.ticketid) && empty($event.customerid)}
 	<TR {tip trigger="categories"}>
-                    <TD width='1%'>
+                    <TD width="1%">
                         <IMG src="img/queue.gif" alt="">
                     </TD>
-                    <TD class='bold' width='1%'>
+                    <TD class="bold" width="1%">
                         {trans("Categories:")}
                     </TD>
                     <TD>

@@ -2286,23 +2286,32 @@ END
 ' LANGUAGE SQL;
 
 CREATE VIEW vaddresses AS
-SELECT *,
-    ( trim(both ' ' from
-        CASE WHEN zip  is not null AND char_length(zip) > 0 THEN zip || ' ' ELSE '' END ||
-        CASE WHEN city is not null AND char_length(city) > 0
-            THEN
-                CASE WHEN street is not null AND char_length(street) > 0 THEN city || ', ' || street ELSE city END
-            ELSE
-                CASE WHEN street is not null AND char_length(street) > 0 THEN street ELSE '' END
-            END ||
-        CASE WHEN house is not null
-            THEN
-               CASE WHEN flat is not null THEN ' ' || house || '/' || flat ELSE ' ' || house END
-            ELSE
-               CASE WHEN flat is not null THEN ' ' || flat ELSE '' END
-            END
-)) AS location
-FROM addresses;
+    SELECT *, country_id AS countryid, city_id AS location_city, street_id AS location_street,
+        house AS location_house, flat AS location_flat,
+        (TRIM(both ' ' FROM
+             (CASE WHEN street IS NOT NULL THEN street ELSE '' END)
+             || (CASE WHEN house is NOT NULL
+                     THEN (CASE WHEN flat IS NOT NULL THEN ' ' || house || '/' || flat ELSE ' ' || house END)
+                     ELSE (CASE WHEN flat IS NOT NULL THEN ' ' || flat ELSE '' END)
+                END)
+        )) AS address,
+        (TRIM(both ' ' FROM
+             (CASE WHEN city IS NOT NULL
+                 THEN city || ', ' ||
+                     (CASE WHEN street IS NOT NULL THEN street ELSE '' END)
+                     || (CASE WHEN house is NOT NULL
+                            THEN (CASE WHEN flat IS NOT NULL THEN ' ' || house || '/' || flat ELSE ' ' || house END)
+                            ELSE (CASE WHEN flat IS NOT NULL THEN ' ' || flat ELSE '' END)
+                        END)
+                 ELSE
+                     (CASE WHEN street IS NOT NULL THEN street ELSE '' END)
+                     || (CASE WHEN house is NOT NULL
+                             THEN (CASE WHEN flat IS NOT NULL THEN ' ' || house || '/' || flat ELSE ' ' || house END)
+                             ELSE (CASE WHEN flat IS NOT NULL THEN ' ' || flat ELSE '' END)
+                        END)
+             END)
+        )) AS location
+    FROM addresses;
 
 CREATE VIEW vnetworks AS
     SELECT h.name AS hostname, ne.*, no.ownerid, a.city_id as location_city,
@@ -2936,6 +2945,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017031400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017031500');
 
 COMMIT;

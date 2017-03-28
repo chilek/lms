@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE voip_numbers ADD COLUMN index smallint");
+$this->Execute("ALTER TABLE voip_numbers ADD COLUMN `index` smallint");
 
 $numbers_list = $this->GetAll("SELECT voip_account_id, phone FROM voip_numbers ORDER BY id");
 $counter = array();
@@ -35,15 +35,15 @@ if ($numbers_list) {
 
 		if (isset($counter[$vaccid])) {
 			++$counter[$vaccid];
-			$this->Execute("UPDATE voip_numbers SET index = ? WHERE phone ?LIKE? ?", array($counter[$vaccid], $phone));
+			$this->Execute("UPDATE voip_numbers SET `index` = ? WHERE phone ?LIKE? ?", array($counter[$vaccid], $phone));
 		} else {
 			$counter[$vaccid] = 1;
-			$this->Execute("UPDATE voip_numbers SET index = 1 WHERE phone ?LIKE? ?", array($phone));
+			$this->Execute("UPDATE voip_numbers SET `index` = 1 WHERE phone ?LIKE? ?", array($phone));
 		}
 	}
 }
 
-$this->Execute("ALTER TABLE voip_numbers ADD CONSTRAINT vn_uniq_index UNIQUE (voip_account_id, index)");
+$this->Execute("ALTER TABLE voip_numbers ADD CONSTRAINT vn_uniq_index UNIQUE (voip_account_id, `index`)");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2016100500', 'dbversion'));
 

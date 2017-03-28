@@ -95,6 +95,8 @@ version ?.??.?? (????-??-??):
   - improvement: hosts are automatically reloaded after one click if there is only
     one host in database [chilan]
   - enhancement: allow to assign events with helpdesk tickets [interduo]
+  - improvement: phpui.default_event_ticket_assignment controls if event ticket
+    assignment is checked by default [chilan]
 
 version 1.11.21 (2016-10-14):
 
