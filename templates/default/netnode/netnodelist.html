@@ -20,7 +20,7 @@
 			<A href="?m=netnodelist&o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">{trans("Location:")}</A> {if $listdata.order == "location"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} 
 		</TD>
 		<TD width="15%">
-		   	<A href="?m=netnodelist&o=project{if $listdata.direction == "asc" && $listdata.order == "project"},desc{/if}">{trans("Project:")}</A> {if $listdata.order == "project"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} 
+		   	<A href="?m=netnodelist&o=invprojectid{if $listdata.direction == "asc" && $listdata.order == "invprojectid"},desc{/if}">{trans("Project:")}</A> {if $listdata.order == "invprojectid"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} 
 		</TD>
 		<TD width="1%" align="right" valign="top">
 			<A href="?m=netnodelist&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">ID:</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
@@ -94,7 +94,7 @@
 			<IMG src="img/producer.gif" ALT=""> {$_NETELEMENTTYPES[$nlist[nlist].type]} / {$_NETELEMENTSTATUSES[$nlist[nlist].status]}
 		</TD>
 		<TD nowrap>
-			{$nlist[nlist].location}{if $nlist[nlist].borough_name} ({$nlist[nlist].state_name} / {$nlist[nlist].district_name} / {$_BOROUGHTYPES[$nlist[nlist].borough_type]} {$nlist[nlist].borough_name}){/if}
+			{$nlist[nlist].location}{if $nlist[nlist].location_borough_name} ({$nlist[nlist].location_state_name} / {$nlist[nlist].location_district_name} / {$_BOROUGHTYPES[$nlist[nlist].location_borough_type]} {$nlist[nlist].location_borough_name}){/if}
 		</TD>
 		<TD>
 			{if ($nlist[nlist].invprojectid==1)} DD {else} {$nlist[nlist].project} {/if}

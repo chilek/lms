@@ -26,4 +26,6 @@
 
 interface LMSNetNodeManagerInterface {
 	public function GetNetNode($id);
+
+	public function GetNetNodeList($search, $order);
 }

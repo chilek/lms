@@ -1297,6 +1297,11 @@ class LMS
         return $manager->GetNetNode($id);
     }
 
+    public function GetNetNodeList($search, $order)
+    {
+        $manager = $this->getNetNodeManager();
+        return $manager->GetNetNodeList($search, $order);
+    }
 
     public function GetUnlinkedNodes()
     {

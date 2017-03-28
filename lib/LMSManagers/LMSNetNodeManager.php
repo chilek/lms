@@ -48,4 +48,92 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			WHERE n.id=?", array($id));
 	}
 
+	public function GetNetNodeList($search, $order) {
+		list ($order, $dir) = sscanf($order, '%[^,],%s');
+		($dir == 'desc') ? $dir = 'desc' : $dir = 'asc';
+
+		switch ($order) {
+			case 'id':
+				$ostr = 'ORDER BY n.id';
+				break;
+			case 'name':
+				$ostr = 'ORDER BY n.name';
+				break;
+			case 'type':
+				$ostr = 'ORDER BY n.type';
+				break;
+			case 'status':
+				$ostr = 'ORDER BY n.status';
+				break;
+			default:
+				$ostr = 'ORDER BY n.name';
+				break;
+		}
+
+		$where = array();
+		foreach ($search as $key => $value) {
+			$val = intval($value);
+			if (!$val)
+				continue;
+			switch ($key) {
+				case 'type':
+					if ($val != -1)
+						$where[] = 'n.type = ' . $val;
+					break;
+				case 'status':
+					if ($val != -1)
+						$where[] = 'n.status = ' . $val;
+					break;
+				case 'invprojectid':
+					if ($val == -2)
+						$where[] = 'n.invprojectid IS NULL';
+					elseif ($val != -1)
+						$where[] = 'n.invprojectid = ' . $val;
+					break;
+				case 'ownership':
+					if ($val != -1)
+						$where[] = 'n.ownership = ' . $val;
+					break;
+				case 'divisionid':
+					if ($val != -1)
+						$where[] = 'n.divisionid = ' . $val;
+			}
+		}
+
+		$nlist = $this->db->GetAll('SELECT n.id, n.name, n.type, n.status, n.invprojectid, p.name AS project,
+				n.divisionid,
+				lb.id AS location_borough, lb.name AS location_borough_name, lb.type AS location_borough_type,
+				ld.id AS location_district, ld.name AS location_district_name,
+				ls.id AS location_state, ls.name AS location_state_name,
+				addr.name as location_name,
+				addr.city as location_city_name, addr.street as location_street_name,
+				addr.city_id as location_city, addr.street_id as location_street,
+				addr.house as location_house, addr.flat as location_flat
+			FROM netnodes n
+				LEFT JOIN addresses addr        ON addr.id = n.address_id
+				LEFT JOIN invprojects p         ON (n.invprojectid = p.id)
+				LEFT JOIN location_cities lc    ON lc.id = addr.city_id
+				LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
+				LEFT JOIN location_districts ld ON ld.id = lb.districtid
+				LEFT JOIN location_states ls    ON ls.id = ld.stateid '
+			. (empty($where) ? '' : ' WHERE ' . implode(' AND ', $where)) . ' ' . $ostr . ' ' . $dir);
+
+		if ( $nlist ) {
+			foreach ($nlist as &$netnode)
+				$netnode['location'] = location_str(
+					array('city_name'      => $netnode['location_city_name'],
+						'location_house' => $netnode['location_house'],
+						'location_flat'  => $netnode['location_flat'],
+						'street_name'    => $netnode['location_street_name'])
+				);
+			unset($netnode);
+		}
+
+		$nlist['total']        = sizeof($nlist);
+		$nlist['order']        = $order;
+		$nlist['direction']    = $dir;
+
+		return $nlist;
+	}
+
 }
