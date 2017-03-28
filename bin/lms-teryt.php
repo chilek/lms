@@ -792,9 +792,13 @@ while( $xml->read() ) {
         continue;
     }
 
-    $key    = $row['sym_ul'].':'.$row['sym'];
-    $data   = $ulic[$key];
-    $typeid = intval( $str_types[$row['cecha']] );
+    $row['nazwa_1'] = trim($row['nazwa_1']);
+    $row['nazwa_2'] = trim($row['nazwa_2']);
+    $row['nazwa_2'] = $row['nazwa_2'] ? $row['nazwa_2'] : null;
+
+    $key            = $row['sym_ul'].':'.$row['sym'];
+    $data           = $ulic[$key];
+    $typeid         = intval( $str_types[$row['cecha']] );
 
     if ( !$str_types[$row['cecha']] ) {
          $DB->Execute('INSERT INTO location_street_types (name) VALUES (?);',

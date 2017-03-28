@@ -1265,22 +1265,22 @@
 </FORM>
 {/if}
 {if $printmenu=="netdev"}
-<FORM method="post" name="printnetdev" id="printnetdev" action="?m=netdevprint&type=uke">
-<INPUT type="submit" class="hiddenbtn">
-<TABLE class="lmsbox">
-    <COLGROUP>
-        <COL style="width: 1%;">
-        <COL style="width: 99%;">
-    </COLGROUP>
-    <THEAD>
-	<TR>
-		<TH scope="col" colspan="2" class="bold nobr">
-		    <IMG src="img/netdev.gif" alt=""> {trans("UKE report")}
-		</TH>
-	</TR>
-    </THEAD>
-    <TBODY>
-	<TR>
+<form method="post" name="printnetdev" id="printnetdev" action="?m=netdevprint&type=uke">
+<input type="submit" class="hiddenbtn">
+<table class="lmsbox">
+    <colgroup>
+        <col style="width: 1%;">
+        <col style="width: 1%;">
+        <col style="width: 99%;">
+    </colgroup>
+    <thead>
+	<tr>
+		<th scope="col" colspan="3" class="bold nobr">
+		    <img src="img/netdev.gif" alt=""> {trans("UKE report")}
+		</th>
+	</tr>
+    </thead>
+    <tbody>
 {*
 		<TD class="fleft container">
 			<TABLE width="100%" cellpadding="3">
@@ -1307,57 +1307,93 @@
 			</TABLE>
 		</TD>
 *}
-		<TD class="fleft container">
-			<TABLE width="100%" cellpadding="3">
-				<TR>
-					<TD style="width: 1%;">
-						<IMG src="img/edit.gif" alt="">
-					</TD>
-					<TD style="width: 1%;" class="bold nobr">
-						{trans("Format type:")}
-					</TD>
-					<TD style="width: 98%;" class="nobr">
-						<INPUT type="radio" name="format" value="1" id="format1"> <label for="format1">{trans("multi file zip archive (lms legacy format)")}</label><br>
-						<INPUT type="radio" name="format" value="2" id="format2" checked> <label for="format2">{trans("single csv file (uke siis format)")}</label>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-		<TD class="fright container">
-			<TABLE width="100%" cellpadding="3">
-				<TR>
-					<TD style="width: 1%;">
-						<IMG src="img/docum.gif" alt="">
-					</TD>
-					<TD style="width: 1%;" class="bold nobr">
-						{trans("Exported sheets:")}
-					</TD>
-					<TD style="width: 98%;">
-						{*<INPUT type="checkbox" name="sheets[dp]" id="sheets_dp" value="1" checked> <label for="sheets_dp">DP</label> *}
-						<INPUT type="checkbox" name="sheets[proj]" id="sheets_proj" value="1" checked> <label for="sheets_proj">PROJ</label>
-						<INPUT type="checkbox" name="sheets[ob]" id="sheets_ob" value="1" checked> <label for="sheets_ob">OB</label>
-						<INPUT type="checkbox" name="sheets[ww]" id="sheets_ww" value="1" checked> <label for="sheets_ww">WW</label>
-						<INPUT type="checkbox" name="sheets[wo]" id="sheets_wo" value="1" checked> <label for="sheets_wo">WO</label>
-						<INPUT type="checkbox" name="sheets[int]" id="sheets_int" value="1" checked> <label for="sheets_int">INT</label>
-						<INPUT type="checkbox" name="sheets[sr]" id="sheets_sr" value="1" checked> <label for="sheets_sr">SR</label>
-						<INPUT type="checkbox" name="sheets[ps]" id="sheets_ps" value="1" checked> <label for="sheets_ps">PS</label>
-						<INPUT type="checkbox" name="sheets[lp]" id="sheets_lp" value="1" checked> <label for="sheets_lp">LP</label>
-						<INPUT type="checkbox" name="sheets[rl]" id="sheets_rl" value="1" checked> <label for="sheets_rl">RL</label>
-						<INPUT type="checkbox" name="sheets[pol]" id="sheets_pol" value="1" checked> <label for="sheets_pol">POL</label>
-						<INPUT type="checkbox" name="sheets[zas]" id="sheets_zas" value="1" checked> <label for="sheets_zas">ZAS</label>
-						<INPUT type="checkbox" name="sheets[us]" id="sheets_us" value="1" checked> <label for="sheets_us">US</label>
-					</TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD style="width: 100%;" colspan="2" align="right">
-			<A href="javascript:document.printnetdev.submit();">{trans("Save")} <IMG src="img/save.gif" alt="" hspace="2"></A>
-		</TD>
-	</TR>
-    </TBODY>
-</TABLE>
+	<tr>
+		<td><img src="img/edit.gif" alt=""></td>
+		<td class="bold nobr">
+			{trans("Format type:")}
+		</td>
+		<td class="nobr">
+			<input type="radio" name="format" value="1" id="format1"> <label for="format1">{trans("multi file zip archive (lms legacy format)")}</label><br>
+			<input type="radio" name="format" value="2" id="format2" checked> <label for="format2">{trans("single csv file (uke siis format)")}</label>
+		</td>
+	</tr>
+
+	<tr class="space_row">
+		<td>
+			<img src="img/docum.gif" alt="">
+		</td>
+		<td class="bold nobr">
+			{trans("Exported sheets:")}
+		</td>
+		<td style="width: 98%;">
+			{*<input type="checkbox" name="sheets[dp]" id="sheets_dp" value="1" checked> <label for="sheets_dp">DP</label> *}
+			<input type="checkbox" name="sheets[proj]" id="sheets_proj" value="1" checked> <label for="sheets_proj">PROJ</label>
+			<input type="checkbox" name="sheets[ob]" id="sheets_ob" value="1" checked> <label for="sheets_ob">OB</label>
+			<input type="checkbox" name="sheets[ww]" id="sheets_ww" value="1" checked> <label for="sheets_ww">WW</label>
+			<input type="checkbox" name="sheets[wo]" id="sheets_wo" value="1" checked> <label for="sheets_wo">WO</label>
+			<input type="checkbox" name="sheets[int]" id="sheets_int" value="1" checked> <label for="sheets_int">INT</label>
+			<input type="checkbox" name="sheets[sr]" id="sheets_sr" value="1" checked> <label for="sheets_sr">SR</label>
+			<input type="checkbox" name="sheets[ps]" id="sheets_ps" value="1" checked> <label for="sheets_ps">PS</label>
+			<input type="checkbox" name="sheets[lp]" id="sheets_lp" value="1" checked> <label for="sheets_lp">LP</label>
+			<input type="checkbox" name="sheets[rl]" id="sheets_rl" value="1" checked> <label for="sheets_rl">RL</label>
+			<input type="checkbox" name="sheets[pol]" id="sheets_pol" value="1" checked> <label for="sheets_pol">POL</label>
+			<input type="checkbox" name="sheets[zas]" id="sheets_zas" value="1" checked> <label for="sheets_zas">ZAS</label>
+			<input type="checkbox" name="sheets[us]" id="sheets_us" value="1" checked> <label for="sheets_us">US</label>
+		</td>
+	</tr>
+
+	{if $linktypes}
+	<tr class="space_row">
+		<td class="valign-top"><img src="img/view.gif" alt=""></td>
+		<td class="bold valign-top">{trans('Potential range')}:</td>
+		<td>
+			{$def_vals = json_decode(ConfigHelper::getConfig("phpui.linktype_ranges", '{"0":100,"1":2000,"2":300}'), true)}
+			{$i = 0}
+
+			<table>
+				{foreach $linktypes as $l_id=>$l_name}
+				<tr class="blend">
+					<td>
+						<label>
+							<input type="checkbox" class="range_chk" name="uke[linktypes][{$i}][id]" value="{$l_id}">{$l_name}
+						</label>
+					</td>
+					<td>
+						<input type="number" min="0" name="uke[linktypes][{$i}][range]" {if $def_vals[$l_id]}value="{$def_vals[$l_id]}"{/if} style="width: 50px;" disabled> {trans('meters')}
+					</td>
+				</tr>
+				{$i = $i+1}
+				{/foreach}
+			</table>
+		</td>
+	</tr>
+	{/if}
+
+	<tr>
+		<td style="width: 100%;" colspan="3" align="right">
+			<a href="javascript:document.printnetdev.submit();">{trans("Save")} <img src="img/save.gif" alt=""></a>
+		</td>
+	</tr>
+    </tbody>
+</table>
+
+<script>
+	$( function() {
+		$( '.range_chk' ).click( function() {
+			var tr  = $(this).closest('tr');
+			var inp = tr.find('input[type=number]');
+
+			tr.toggleClass('blend');
+
+			if ( inp.attr('disabled') ) {
+				inp.attr('disabled', false);
+			} else {
+				inp.attr('disabled', true);
+			}
+		});
+	});
+</script>
+
 </FORM>
 {/if}
 {/block}
