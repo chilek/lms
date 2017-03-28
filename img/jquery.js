@@ -338,7 +338,7 @@ $(function() {
 			});
 			$('thead input', elem).on('keyup change search', function() {
 				$(elem).DataTable().column($(this).parent().index() + ':visible')
-					.search(this.value.length ? '^' + this.value + '$' : '', true).draw();
+					.search(this.value.length ? this.value : '', true).draw();
 			});
 			$('thead select', elem).on('change', function() {
 				var value = this.value;
@@ -358,6 +358,7 @@ $(function() {
 				var searchFields = $('thead input[type="search"],thead select', elem);
 				api.columns().every(function(index) {
 					var columnState = state.columns[index];
+					var searchValue = '';
 					if (!columnState.visible) {
 						return;
 					}
@@ -365,8 +366,15 @@ $(function() {
 						$(searchFields[i]).val(state.columns[index].search.search.replace(/[\^\$]/g, ''));
 					} else {
 						$(searchFields[i]).val(searchColumns[index].search.replace(/[\^\$]/g, ''));
-						api.column(index).search(
-							searchColumns[index].search.length ? '^' + searchColumns[index].search + '$' : '', true).draw();
+						if (searchColumns[index].search.length) {
+							if ($(searchFields[i]).is('thead select')) {
+								searchValue = '^' + searchColumns[index].search + '$';
+							} else {
+								searchValue = searchColumns[index].search;
+							}
+						}
+						console.log(searchValue);
+						api.column(index).search(searchValue, true).draw();
 					}
 					i++;
 				});
