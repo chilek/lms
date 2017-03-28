@@ -100,17 +100,7 @@ if (isset($_POST['netnode'])) {
 		$SESSION->redirect('?m=netnodeinfo&id=' . $id);
 	}
 } else {
-	$netnodedata = $DB->GetRow("SELECT n.*,p.name AS projectname,
-									addr.name as location_name, addr.id as address_id,
-									addr.state as location_state_name, addr.state_id as location_state,
-									addr.zip as location_zip, addr.country_id as location_country,
-									addr.city as location_city_name, addr.street as location_street_name,
-									addr.city_id as location_city, addr.street_id as location_street,
-									addr.house as location_house, addr.flat as location_flat
-								FROM netnodes n
-									LEFT JOIN addresses addr ON n.address_id = addr.id
-									LEFT JOIN invprojects p ON n.invprojectid=p.id
-								WHERE n.id=?", array($id));
+	$netnodedata = $LMS->GetNetNode($id);
 
 	if ($netnodedata['location_city'] || $netnodedata['location_street']) {
 		$netnodedata['teryt'] = true;

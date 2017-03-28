@@ -26,22 +26,7 @@
 
 $id = intval($_GET['id']);
 
-$result = $DB->GetRow('SELECT n.*, p.name AS projectname,
-							lb.name AS borough_name, lb.type AS borough_type,
-							ld.name AS district_name, ls.name AS state_name,
-							(SELECT d.shortname FROM divisions d WHERE d.id = n.divisionid) AS division,
-							addr.name as location_name,
-							addr.city as location_city_name, addr.street as location_street_name,
-							addr.city_id as location_city, addr.street_id as location_street,
-							addr.house as location_house, addr.flat as location_flat
-						FROM netnodes n
-							LEFT JOIN addresses addr        ON addr.id = n.address_id
-							LEFT JOIN invprojects p         ON n.invprojectid = p.id
-							LEFT JOIN location_cities lc    ON lc.id = addr.city_id
-							LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
-							LEFT JOIN location_districts ld ON ld.id = lb.districtid
-							LEFT JOIN location_states ls    ON ls.id = ld.stateid
-						WHERE n.id=? ',array($id));
+$result = $LMS->GetNetNode($id);
 
 if (!$result)
 	$SESSION->redirect('?m=netnodelist');

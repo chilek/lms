@@ -50,6 +50,7 @@ class LMS
     protected $node_manager;
     protected $node_group_manager;
     protected $net_dev_manager;
+    protected $net_node_manager;
     protected $helpdesk_manager;
     protected $finance_manager;
     protected $event_manager;
@@ -1290,6 +1291,13 @@ class LMS
         return $manager->NetDevUnLink($dev1, $dev2);
     }
 
+    public function GetNetNode($id)
+    {
+        $manager = $this->getNetNodeManager();
+        return $manager->GetNetNode($id);
+    }
+
+
     public function GetUnlinkedNodes()
     {
         $manager = $this->getNetworkManager();
@@ -2521,6 +2529,19 @@ class LMS
             $this->net_dev_manager = new LMSNetDevManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
         }
         return $this->net_dev_manager;
+    }
+
+    /**
+     * Returns net node manager
+     * 
+     * @return LMSNetNodeManagerInterface Net node manager
+     */
+    protected function getNetNodeManager()
+    {
+        if (!isset($this->net_node_manager)) {
+            $this->net_node_manager = new LMSNetNodeManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+        }
+        return $this->net_node_manager;
     }
 
     /**
