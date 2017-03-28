@@ -58,8 +58,8 @@ elseif (isset($_POST['customerdata']))
 
 	// check addresses
 	foreach ( $customerdata['addresses'] as $k=>$v ) {
-		if ( $v['location_address_type'] == BILLING_ADDRESS && !$v['location_street_name'] ) {
-			$error['customerdata[addresses][' . $k . '][location_street_name]'] = trans('Street name required!');
+		if ( $v['location_address_type'] == BILLING_ADDRESS && !$v['location_city_name'] ) {
+			$error['customerdata[addresses][' . $k . '][location_city_name]'] = trans('City name required!');
 			$customerdata['addresses'][ $k ]['show'] = true;
 		}
 

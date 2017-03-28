@@ -3360,6 +3360,7 @@ $_LANG['Apartment:'] = 'Lokal:';
 $_LANG['Postal address'] = 'Adres korespondencyjny';
 
 $_LANG['Street name required!'] = 'Wymagana nazwa ulicy!';
+$_LANG['City name required!'] = 'Wymagana nazwa miejscowości!';
 $_LANG['Building number required!'] = 'Wymagany numer budynku!';
 
 $_LANG['External system identifier:'] = 'Identyfikator w systemie zewnętrznym:';

@@ -97,6 +97,15 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to assign events with helpdesk tickets [interduo]
   - improvement: phpui.default_event_ticket_assignment controls if event ticket
     assignment is checked by default [chilan]
+  - clarification: customer pin on html and tcpdf invoices are printed based on
+    the same common rules [chilan]
+  - improvement: lms-gps.php script allows to automatically determine netnodes gps
+    coordinates [chilan]
+  - improvement: lms-gps.php script can search for more exact locations if resource
+    address is teritied [chilan]
+  - enhancement: lms-gps.php allows to use two different sources of gps coordinates:
+    google and siis [chilan]
+  - enhancement: restore old-style quick search panel behavior [chilan]
 
 version 1.11.21 (2016-10-14):
 

@@ -445,22 +445,26 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
 	public function _driver_resourceexists($name, $type) {
 		switch ($type) {
 			case LMSDB::RESOURCE_TYPE_TABLE:
-				$table_type = 'BASE TABLE';
-				break;
 			case LMSDB::RESOURCE_TYPE_VIEW:
-				$table_type = 'VIEW';
+				if ($type == LMSDB::RESOURCE_TYPE_TABLE)
+					$table_type = 'BASE TABLE';
+				else
+					$table_type = 'VIEW';
+				return $this->GetOne('SELECT COUNT(*) FROM information_schema.tables
+					WHERE table_catalog=? AND table_name=? AND table_type=?',
+					array($this->_dbname, $name, $table_type)) > 0;
 				break;
 			case LMSDB::RESOURCE_TYPE_COLUMN:
 				list ($table_name, $column_name) = explode('.', $name);
+				return $this->GetOne('SELECT COUNT(*) FROM information_schema.columns
+					WHERE table_catalog = ? AND table_name = ? AND column_name = ?',
+					array($this->_dbname, $table_name, $column_name)) > 0;
+				break;
+			case LMSDB::RESOURCE_TYPE_CONSTRAINT:
+				return $this->GetOne('SELECT COUNT(*) FROM information_schema.table_constraints
+					WHERE table_catalog = ? AND constraint_name = ?',
+					array($this->_dbname, $name)) > 0;
 				break;
 		}
-		if (isset($table_name))
-			return $this->GetOne('SELECT COUNT(*) FROM information_schema.columns
-				WHERE table_catalog = ? AND table_name = ? AND column_name = ?',
-				array($this->_dbname, $table_name, $column_name)) > 0;
-		else
-			return $this->GetOne('SELECT COUNT(*) FROM information_schema.tables
-				WHERE table_catalog=? AND table_name=? AND table_type=?',
-				array($this->_dbname, $name, $table_type)) > 0;
 	}
 }

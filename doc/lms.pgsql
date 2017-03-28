@@ -2296,7 +2296,8 @@ CREATE VIEW vaddresses AS
                 END)
         )) AS address,
         (TRIM(both ' ' FROM
-             (CASE WHEN city IS NOT NULL
+             (CASE WHEN zip IS NOT NULL THEN zip || ' ' ELSE '' END)
+             || (CASE WHEN city IS NOT NULL
                  THEN city || ', ' ||
                      (CASE WHEN street IS NOT NULL THEN street ELSE '' END)
                      || (CASE WHEN house is NOT NULL
@@ -2331,7 +2332,7 @@ CREATE VIEW customerview AS
         a2.country_id as post_countryid, a2.zip as post_zip,
         a2.city as post_city, a2.street as post_street, a2.name as post_name,
         a2.house as post_building, a2.flat as post_apartment,
-        a1.location as address, a2.location as post_address
+        a1.address as address, a2.address as post_address
     FROM customers c
         JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
@@ -2349,7 +2350,7 @@ CREATE VIEW contractorview AS
         a1.house as building, a1.flat as apartment, a2.country_id as post_countryid,
         a2.zip as post_zip, a2.city as post_city, a2.street as post_street,
         a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
-        a1.location as address, a2.location as post_address
+        a1.address as address, a2.address as post_address
     FROM customers c
         JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
@@ -2363,7 +2364,7 @@ CREATE VIEW customeraddressview AS
         a1.house as building, a1.flat as apartment, a2.country_id as post_countryid,
         a2.zip as post_zip, a1.city as post_city, a2.street as post_street,
         a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
-        a1.location as address, a2.location as post_address
+        a1.address as address, a2.address as post_address
     FROM customers c
         JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
@@ -2945,6 +2946,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017031500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017032200');
 
 COMMIT;

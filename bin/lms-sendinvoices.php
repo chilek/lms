@@ -220,8 +220,8 @@ $smtp_auth = empty($smtp_auth) ? ConfigHelper::getConfig('mail.smtp_auth_type') 
 if (!empty($smtp_auth) && !preg_match('/^LOGIN|PLAIN|CRAM-MD5|NTLM$/i', $smtp_auth))
 	die("Fatal error: smtp_auth setting not supported! Can't continue, exiting." . PHP_EOL);
 
-$fakedate = (array_key_exists('fakedate', $options) ? $options['fakedate'] : NULL);
-$fakehour = (array_key_exists('fakedate', $options) ? $options['fakehour'] : NULL);
+$fakedate = isset($options['fakedate']) ? $options['fakedate'] : null;
+$fakehour = isset($options['fakehour']) ? $options['fakehour'] : null;
 
 $extrafile = (array_key_exists('extra-file', $options) ? $options['extra-file'] : NULL);
 if ($extrafile && !is_readable($extrafile))
@@ -236,7 +236,7 @@ function localtime2() {
 		return time();
 }
 
-if (!empty($fakehour))
+if (isset($fakehour))
 	$curr_h = intval($fakehour);
 else
 	$curr_h = intval(date('H', time()));

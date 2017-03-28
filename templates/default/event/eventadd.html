@@ -5,6 +5,16 @@
 {$xajax}
 <SCRIPT type="text/javascript">
 <!--
+
+$(function() {
+    $('#helpdesk-on').change(function () {
+        if (!this.checked) 
+            $('#row').fadeOut('fast');
+        else 
+            $('#row').fadeIn('fast');
+    });
+});
+
 	function SetEndtime()
 	{
 		box = document.forms['event'].elements['event[begintime]'];
@@ -101,7 +111,7 @@
 			{trans("Status:")}
 		</TD>
 		<TD width="98%" class="nobr">
-			<INPUT type="checkbox" name="event[status]" id="event_status" value="1" {tip text="Select event's status"}{if $event.status}CHECKED{/if}> <label for="event_status">{trans("private")}</label>
+			<INPUT type="checkbox" name="event[status]" id="event_status" {tip text="Select event's status"}{if $event.status}CHECKED{/if}> <label for="event_status">{trans("private")}</label>
 		</TD>
 	</TR>
 	<TR>
@@ -197,10 +207,28 @@
                     {trans("Add new request to Helpdesk")}
                 </TD>
                 <TD>
-                    <input type="checkbox" name="event[helpdesk]" value="1"{if isset($event['helpdesk'])} checked{/if}>
+                    <input type="checkbox" name="event[helpdesk]" {if !empty($event['helpdesk'])} checked{/if} id="helpdesk-on">
                 </TD>
                 </TR>
                 {/if}
+		<TR>
+			<TD colspan="2"></TD>
+			<TD class="text-right">
+				<A href="javascript:document.event.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
+				<A href="?m=eventlist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A><BR>
+                        <INPUT type="checkbox" name="event[reuse]" id="reuse" {if $event.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when this event is saved")}</label>
+			</TD>
+		</TR>
+</TBODY>
+</TABLE>
+
+<TABLE class="lmsbox" id="row" style="display:none;">
+	<THEAD>
+		<TR>
+			<TD class="bold" colspan="3"><IMG SRC="/img/ticket.gif" ALT=""> {trans("Add new request to Helpdesk")}</TD>
+		</TR>
+	</THEAD>
+	<TBODY>
                 <TR>
                 <TD>
                     <IMG src="img/queue.gif" alt="">
@@ -237,33 +265,27 @@
                     </TD>
 	</TR>
                 <TR>
-                    <TD rowspan="4" class="valign-top"><IMG src="img/name.gif" alt=""></TD>
-                    <TD class="bold">{trans("Submitter:")}</TD>
-                    <TD></TD>
-                </TR>
+                    <TD class="bold"><IMG src="img/name.gif" alt=""></TD>
+                    <TD colspan="3" class="bold">{trans("Submitter:")}</TD>
+		</TR>
                 <TR>
+		    <TD> </TD>
                     <TD width="1%">{trans("Name/Surname:")}</TD>
                     <TD width="99%">
                         <INPUT type="text" name="event[surname]" value="{$ticket.surname}" {tip text="Select customer from list or enter his data if is not a customer" trigger="surname"}>
                     </TD>
                 </TR>
                 <TR>
+		    <TD> </TD>
                     <TD width="1%">{trans("Firstname")}:</TD>
                     <TD width="99%"><INPUT type="text" name="event[name]" value="{$ticket.name}" {tip text="select customer from list or enter his data if is not a customer"}></TD>
                 </TR>
                 <TR>
+		    <TD></TD>
                     <TD width="1%">{trans("E-mail:")}</TD>
                     <TD width="99%"><INPUT type="text" name="event[email]" value="{$ticket.email}" {tip trigger="email" text="select customer from list or enter his data if is not a customer"}></TD>
                 </TR>
                 {/if}
-                <TR>
-                    <TD colspan="2"></TD>
-                    <TD class="text-right">
-                        <A href="javascript:document.event.submit();" accesskey="s"><IMG src="img/save.gif" alt=""> {trans("Submit")}</A>
-                        <A href="?m=eventlist"><IMG src="img/cancel.gif" alt=""> {trans("Cancel")}</A><BR>
-                        <INPUT type="checkbox" name="event[reuse]" id="reuse" value="ON" {if $event.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when this event is saved")}</label>
-                    </TD>
-	</TR>
     </TBODY>
 </TABLE>
 </form>

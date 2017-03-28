@@ -39,26 +39,26 @@ $this->Execute("
         SELECT *, country_id AS countryid, city_id AS location_city, street_id AS location_street,
             house AS location_house, flat AS location_flat,
             (TRIM(both ' ' FROM
-                 (CASE WHEN street IS NOT NULL THEN street ELSE '' END)
-                 || (CASE WHEN house is NOT NULL
-                         THEN (CASE WHEN flat IS NOT NULL THEN ' ' || house || '/' || flat ELSE ' ' || house END)
-                         ELSE (CASE WHEN flat IS NOT NULL THEN ' ' || flat ELSE '' END)
+                 CONCAT((CASE WHEN street IS NOT NULL THEN street ELSE '' END),
+                 (CASE WHEN house is NOT NULL
+                         THEN (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', house, '/', flat) ELSE CONCAT(' ', house) END)
+                         ELSE (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', flat) ELSE '' END)
                     END)
-            )) AS address,
+            ))) AS address,
             (TRIM(both ' ' FROM
                  (CASE WHEN city IS NOT NULL
-                     THEN city || ', ' ||
-                         (CASE WHEN street IS NOT NULL THEN street ELSE '' END)
-                         || (CASE WHEN house is NOT NULL
-                                THEN (CASE WHEN flat IS NOT NULL THEN ' ' || house || '/' || flat ELSE ' ' || house END)
-                                ELSE (CASE WHEN flat IS NOT NULL THEN ' ' || flat ELSE '' END)
-                            END)
+                     THEN CONCAT(city, ', ',
+                         (CASE WHEN street IS NOT NULL THEN street ELSE '' END),
+                         (CASE WHEN house is NOT NULL
+                                THEN (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', house, '/', flat) ELSE CONCAT(' ', house) END)
+                                ELSE (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', flat) ELSE '' END)
+                            END))
                      ELSE
-                         (CASE WHEN street IS NOT NULL THEN street ELSE '' END)
-                         || (CASE WHEN house is NOT NULL
-                                 THEN (CASE WHEN flat IS NOT NULL THEN ' ' || house || '/' || flat ELSE ' ' || house END)
-                                 ELSE (CASE WHEN flat IS NOT NULL THEN ' ' || flat ELSE '' END)
-                            END)
+                         CONCAT((CASE WHEN street IS NOT NULL THEN street ELSE '' END),
+                         (CASE WHEN house is NOT NULL
+                                 THEN (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', house, '/', flat) ELSE CONCAT(' ', house) END)
+                                 ELSE (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', flat) ELSE '' END)
+                            END))
                  END)
             )) AS location
         FROM addresses

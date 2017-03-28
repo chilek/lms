@@ -167,8 +167,8 @@ if (isset($_POST['customeradd'])) {
 	
 	// check addresses
 	foreach ( $customeradd['addresses'] as $k=>$v ) {
-		if ( $v['location_address_type'] == BILLING_ADDRESS && !$v['location_street_name'] ) {
-			$error['customeradd[addresses][' . $k . '][location_street_name]'] = trans('Street name required!');
+		if ( $v['location_address_type'] == BILLING_ADDRESS && !$v['location_city_name'] ) {
+			$error['customeradd[addresses][' . $k . '][location_city_name]'] = trans('City name required!');
 			$customeradd['addresses'][ $k ]['show'] = true;
 		}
 

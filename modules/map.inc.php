@@ -24,40 +24,28 @@
  *  $Id$
  */
 
-$devices = $DB->GetAllByKey('SELECT n.id, n.name, '.$DB->GroupConcat('INET_NTOA(CASE WHEN vnodes.ownerid = 0 THEN vnodes.ipaddr ELSE NULL END)', ',', true)
+$devices = $DB->GetAllByKey('SELECT n.id, n.name, va.location, '.$DB->GroupConcat('INET_NTOA(CASE WHEN vnodes.ownerid = 0 THEN vnodes.ipaddr ELSE NULL END)', ',', true)
 				.' AS ipaddr, '.$DB->GroupConcat('CASE WHEN vnodes.ownerid = 0 THEN vnodes.id ELSE NULL END', ',', true).' AS nodeid,
-				MAX(lastonline) AS lastonline, n.latitude AS lat, n.longitude AS lon,
-				' . $DB->GroupConcat('rs.id') . ' AS radiosectors, n.ownerid,
-					a.city as location_city_name, a.street as location_street_name,
-					a.house as location_house, a.flat as location_flat
+				MAX(lastonline) AS lastonline,
+				(CASE WHEN nn.latitude IS NOT NULL AND n.netnodeid > 0 THEN nn.latitude ELSE n.latitude END) AS lat,
+				(CASE WHEN nn.longitude IS NOT NULL AND n.netnodeid > 0 THEN nn.longitude ELSE n.longitude END) AS lon,
+				' . $DB->GroupConcat('rs.id') . ' AS radiosectors, n.ownerid
 				FROM netdevices n
-					LEFT JOIN addresses a ON n.address_id = a.id
-					LEFT JOIN vnodes ON n.id = vnodes.netdev
-					LEFT JOIN netradiosectors rs ON rs.netdev = n.id
-				WHERE n.latitude IS NOT NULL AND n.longitude IS NOT NULL
-				GROUP BY n.id, n.name, n.latitude, n.longitude, n.ownerid, a.city, a.street, a.house, a.flat', 'id');
-
-if ($devices) {
-	foreach ($devices as $k=>$acc) {
-		$tmp = array('city_name'     => $acc['location_city_name'],
-					'location_house' => $acc['location_house'],
-					'location_flat'  => $acc['location_flat'],
-					'street_name'    => $acc['location_street_name']);
-
-		$location = location_str( $tmp );
-
-		if ( $location ) {
-			$devices[$k]['location'] = $location;
-		} else if ( $acc['ownerid'] ) {
-			$devices[$k]['location'] = $LMS->getAddressForCustomerStuff( $acc['ownerid'] );
-		}
-	}
-}
+				LEFT JOIN vaddresses va ON va.id = n.address_id
+				LEFT JOIN netnodes nn ON nn.id = n.netnodeid
+				LEFT JOIN vnodes ON n.id = vnodes.netdev
+				LEFT JOIN netradiosectors rs ON rs.netdev = n.id
+				WHERE ((nn.latitude IS NULL AND n.latitude IS NOT NULL) OR nn.latitude IS NOT NULL)
+					AND ((nn.longitude IS NULL AND n.longitude IS NOT NULL) OR nn.latitude IS NOT NULL)
+				GROUP BY n.id, n.name, va.location, n.latitude, n.longitude, nn.latitude, nn.longitude, n.ownerid', 'id');
 
 if ($devices) {
 	$time_now = time();
 
 	foreach ($devices as $devidx => $device) {
+		if (empty($device['location']) &&  $acc['ownerid'])
+			$devices[$devidx]['location'] = $LMS->getAddressForCustomerStuff( $acc['ownerid'] );
+		$devices[$devidx]['name'] = trim($device['name'], ' "');
 		if ($device['lastonline'])
 			if ($time_now - $device['lastonline'] > ConfigHelper::getConfig('phpui.lastonline_limit'))
 				$devices[$devidx]['state'] = 2;
