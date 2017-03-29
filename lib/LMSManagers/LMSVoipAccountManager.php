@@ -515,7 +515,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
     /**
      * Returns VoIP billing list.
      *
-     * @param  array $p      Array with parameters
+     * @param  array $params Array with parameters
      * @return array $result Array with billings
      */
     public function getVoipBillings(array $params) {
