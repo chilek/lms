@@ -1048,12 +1048,12 @@ if ( isset($options['buildings']) ) {
 
         // location building database creation progress
 		if (!$quiet)
-			printf("\r%.2f%%", ($i * 100) / $steps);
+			printf("%.2f%%\r", ($i * 100) / $steps);
         ++$i;
     }
 
 	if (!$quiet)
-		echo PHP_EOL . 'Removing old buildings...' . PHP_EOL;
+		echo 'Removing old buildings...' . PHP_EOL;
 
     $DB->Execute('DELETE FROM location_buildings WHERE updated = 0;');
     $DB->Execute('UPDATE location_buildings SET updated = 0;');
