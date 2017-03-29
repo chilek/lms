@@ -222,7 +222,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     public function GetNetworkList( $search = 'id,asc' )
     {
 		if( is_array($search) )
-			$order = array_key_exists($search['order']) ? $search['order'] : 'id,asc';
+			$order = array_key_exists('order', $search) ? $search['order'] : 'id,asc';
 		else if( $search == '' )
 			$order = 'id,asc';
 		else
