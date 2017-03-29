@@ -131,7 +131,7 @@ function check_ipv6($ip)
 {
         // fast exit for localhost
 	if (strlen($ip) < 3)
-	        return $IP == '::';
+	        return $ip == '::';
 	
 	// Check if part is in IPv4 format
 	if (strpos($ip, '.')) {
