@@ -646,7 +646,7 @@ if ($netdevices)
 					}
 
 				if ( $linktype == LINKTYPE_WIRELESS ) {
-					$netnodes[$netnodename]['tech'][LINKTYPE_WIRELESS] = 1;
+					$netnodes[$netnodename]['tech'][LINKTYPE_WIRELESS] = true;
 				}
 
 				if (!empty($linkfrequency))
@@ -1160,6 +1160,8 @@ foreach ($netnodes as $netnodename => &$netnode) {
 		if (empty($nodes))
 			continue;
 
+		$netnode['tech'][$range['linktype']] = true;
+
 		// check if this is range with the same location as owning network node
 		if ($range['location_city'] == $netnode['location_city']
 			&& $range['location_street'] == $netnode['location_street']
@@ -1251,12 +1253,6 @@ foreach ($netnodes as $netnodename => &$netnode) {
 					'zas_ltech' => $linktechnology,
 				);
 
-				switch ( strtolower($data['zas_tech']) ) {
-					case 'światłowodowe'           : $netnode['tech'][LINKTYPE_FIBER]    = 1; break;
-					case 'kablowe parowe miedziane': $netnode['tech'][LINKTYPE_WIRE]     = 1; break;
-					case 'wifi'                    : $netnode['tech'][LINKTYPE_WIRELESS] = 1; break;
-				}
-
 				$allservices = array();
 
 				foreach (array_unique(array_merge(array_keys($personalnodes), array_keys($commercialnodes))) as $servicetype) {
@@ -1343,12 +1339,6 @@ foreach ($netnodes as $netnodename => &$netnode) {
 
 				if ( array_search('TEL', $allservices) ) {
 					$netnode['tel_avible'] = 1;
-				}
-
-				switch ( strtolower($data['zas_tech']) ) {
-					case 'światłowodowe'           : $netnode['tech'][LINKTYPE_FIBER]    = 1; break;
-					case 'kablowe parowe miedziane': $netnode['tech'][LINKTYPE_WIRE]     = 1; break;
-					case 'wifi'                    : $netnode['tech'][LINKTYPE_WIRELESS] = 1; break;
 				}
 
 				$data = array_merge($data, array(
@@ -1490,26 +1480,17 @@ if ( $max_range > 0 ) {
         array($left, $right, $top, $bottom)
     );
 
-    // LMS doesn't contains priorities for link types
-    // if contains then fix code below
+    // LMS doesn't contain priorities for link types
+    // if it contains then fix code below
+    $linktype_priorities = array(
+        LINKTYPE_FIBER => 0,
+        LINKTYPE_WIRE => 1,
+        LINKTYPE_WIRELESS => 2,
+    );
     $link_orderlist = array();
     foreach ( $_POST['uke']['linktypes'] as $link ) {
-        switch ( $link['id'] ) {
-            case LINKTYPE_FIBER   :
-                $link_orderlist[0] = $link;
-                $link_orderlist[0]['zas_tech'] = 'światłowodowe';
-            break;
-
-            case LINKTYPE_WIRE    :
-                $link_orderlist[1] = $link;
-                $link_orderlist[1]['zas_tech'] = 'kablowe parowe miedziane';
-            break;
-
-            case LINKTYPE_WIRELESS:
-                $link_orderlist[2] = $link;
-                $link_orderlist[2]['zas_tech'] = 'radiowe';
-            break;
-        }
+        $link_orderlist[$linktype_priorities[$link['id']]] = $link;
+        $link_orderlist[$linktype_priorities[$link['id']]]['zas_tech'] = $linktypes[$link['id']]['technologia_dostepu'];
     }
 
     ksort($link_orderlist);
