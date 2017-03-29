@@ -6,8 +6,7 @@
  */
 class SqlProvider extends VoipDataProvider {
 
-    private static $instance = NULL;
-    private $DB              = NULL;
+    private static $instance = null;
 
     /*!
      * \brief Array with cache for SqlProvider::getGroupByPrefix() method.
@@ -28,7 +27,7 @@ class SqlProvider extends VoipDataProvider {
      * \brief Function return instance of SQL provider.
      */
     public static function getInstance() {
-        if ($instance === NULL) {
+        if ( self::$instance === null ) {
             self::$instance = new SqlProvider();
         }
 

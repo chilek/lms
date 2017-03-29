@@ -62,7 +62,7 @@
 					</TD>
 					<TD colspan="2">
 						{if !empty($othercustomergroups)}
-						<SELECT SIZE="1" NAME="customergroupid[]" class="lms-ui-multiselect" {tip text="Select group to attribute to customer"} multiple>
+						<SELECT SIZE="1" NAME="customergroupid[]" {tip text="Select group to attribute to customer" class="lms-ui-multiselect"} multiple>
 							{foreach $othercustomergroups as $customergroup}
 							<OPTION VALUE="{$customergroup.id}">{$customergroup.name} ({$customergroup.id|string_format:"%04d"})</OPTION>
 							{/foreach}
@@ -77,33 +77,35 @@
 						</label>
 					</TD>
 				</TR>
-				<script type="text/javascript">
-				<!--
-					$(function() {
-						{if !empty($othercustomergroups)}
-						$('#add-groups').click(function() {
-							if ($("input[name='customergroupid[]']").filter(':checked').length)
-								$('form#customergroupassignment').submit();
-							else
-								return false;
-						});
-						{/if}
-						$('#delete-groups').click(function() {
-							if (!$(this).closest('tbody.lms-ui-multi-check').find('input:checked').length
-								|| !confirm('{trans("Are you sure, you want to remove customer from selected groups?")}'))
-								return false;
-							$('form#customergroupassignment').attr('action', '?m=customergroup&action=delete&id={$customerinfo.id}&is_sure=1');
-							$('form#customergroupassignment').submit();
-						});
-					});
-				//-->
-				</script>
 				</TBODY>
 			</TABLE>
 		</TD>
 	</TR>
 	</TBODY>
 </TABLE>
+
+<script type="text/javascript">
+<!--
+	$(function() {
+		{if !empty($othercustomergroups)}
+		$('#add-groups').click(function() {
+			if ($("input[name='customergroupid[]']").filter(':checked').length)
+				$('form#customergroupassignment').submit();
+			else
+				return false;
+		});
+		{/if}
+		$('#delete-groups').click(function() {
+			if (!$(this).closest('tbody.lms-ui-multi-check').find('input:checked').length
+			|| !confirm('{trans("Are you sure, you want to remove customer from selected groups?")}'))
+				return false;
+			$('form#customergroupassignment').attr('action', '?m=customergroup&action=delete&id={$customerinfo.id}&is_sure=1');
+			$('form#customergroupassignment').submit();
+		});
+	});
+//-->
+</script>
+
 </FORM>
 </div>
 <SCRIPT type="text/javascript">

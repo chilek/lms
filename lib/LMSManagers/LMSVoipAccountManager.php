@@ -131,8 +131,9 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
 		if (!empty($voipaccountlist)) {
 			foreach ($voipaccountlist as &$voipaccount)
-				if (isset($phone_list[$v['id']]))
-					$voipaccount['phone'] = $phone_list[$v['id']];
+				if ( isset($phone_list[$voipaccount['id']]) ) {
+					$voipaccount['phone'] = $phone_list[$voipaccount['id']];
+				}
 			unset($voipaccount);
 		}
 
@@ -407,6 +408,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      * Updates VoIP account data
      *
      * @param type $voipaccountdata New VoIP account data
+     * @return boolean
      */
     public function voipAccountUpdate($data) {
         $this->db->BeginTrans();
@@ -467,7 +469,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             return TRUE;
         }
 
-        $this->RollbackTrans();
+        $this->db->RollbackTrans();
         return FALSE;
     }
 
@@ -513,7 +515,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
     /**
      * Returns VoIP billing list.
      *
-     * @param  array $p      Array with parameters
+     * @param  array $params Array with parameters
      * @return array $result Array with billings
      */
     public function getVoipBillings(array $params) {

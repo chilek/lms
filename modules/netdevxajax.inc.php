@@ -315,7 +315,7 @@ function delRadioSector($id) {
 }
 
 function updateRadioSector($rsid, $params) {
-	global $DB;
+	global $DB, $SYSLOG;
 
 	$result = new xajaxResponse();
 

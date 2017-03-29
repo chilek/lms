@@ -339,7 +339,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
             // INSERT ADDRESSES
             foreach ( $customeradd['addresses'] as $v ) {
-                $a = $location_manager->InsertCustomerAddress( $id, $v );
+                $location_manager->InsertCustomerAddress( $id, $v );
 
                 // update country states
                 if ( $v['location_zip'] && $v['location_state'] ) {

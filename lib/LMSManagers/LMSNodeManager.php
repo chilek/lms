@@ -787,7 +787,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             $SYSLOG->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
         }
 
-        if (!$error) {
+        if ( !$error_msg ) {
             $this->db->Execute('UPDATE nodes SET ' . $field . ' = ? WHERE id = ?;', array($value, $nodeid));
         } else {
             return $error_msg;

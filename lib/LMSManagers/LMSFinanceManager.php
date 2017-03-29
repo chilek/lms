@@ -260,7 +260,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     if (!$period)
                         $period = $data['period'];
 
-                    $datefrom  = $_datefrom ? $_datefrom : $datefrom;
+                    $datefrom  = !empty($_datefrom) ? $_datefrom : $datefrom;
                     $_datefrom = 0;
                     $at        = $this->CalcAt($period, $datefrom);
                     $length    = $data_schema[$idx - 1];
@@ -846,6 +846,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetNoteContent($id)
     {
+		global $LMS;
+
         if ($result = $this->db->GetRow('SELECT d.id, d.number, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
 				d.ten, d.ssn, d.cdate, d.numberplanid, d.closed, d.published, d.divisionid, d.paytime,

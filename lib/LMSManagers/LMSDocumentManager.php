@@ -53,6 +53,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 					WHERE docid = ? ORDER BY main DESC, filename', array($doc['docid']));
             if ($limit) {
                 $index = (sizeof($list) - $limit) > 0 ? sizeof($list) - $limit : 0;
+                $result = array();
+
                 for ($i = $index; $i < sizeof($list); $i++)
                     $result[] = $list[$i];
 
@@ -212,7 +214,6 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $end = mktime(0, 0, 0, date('n', $cdate) + 1, 1, date('Y', $cdate));
                 break;
             case QUARTERLY:
-                $currmonth = date('n');
                 switch (date('n')) {
                     case 1: case 2: case 3: $startq = 1;
                         break;
@@ -227,7 +228,6 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $end = mktime(0, 0, 0, $startq + 3, 1, date('Y', $cdate));
                 break;
             case HALFYEARLY:
-                $currmonth = date('n');
                 switch (date('n')) {
                     case 1: case 2: case 3: case 4: case 5: case 6: $startq = 1;
                         break;
@@ -304,7 +304,6 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $end = mktime(0, 0, 0, date('n', $cdate) + 1, 1, date('Y', $cdate));
                 break;
             case QUARTERLY:
-                $currmonth = date('n');
                 switch (date('n')) {
                     case 1: case 2: case 3: $startq = 1;
                         break;
@@ -319,15 +318,14 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $end = mktime(0, 0, 0, $startq + 3, 1, date('Y', $cdate));
                 break;
             case HALFYEARLY:
-                $currmonth = date('n');
                 switch (date('n')) {
                     case 1: case 2: case 3: case 4: case 5: case 6: $startq = 1;
                         break;
                     case 7: case 8: case 9: case 10: case 11: case 12: $startq = 7;
                         break;
                 }
-                $start = mktime(0, 0, 0, $starthy, 1, date('Y', $cdate));
-                $end = mktime(0, 0, 0, $starthy + 6, 1, date('Y', $cdate));
+                $start = mktime(0, 0, 0, $startq, 1, date('Y', $cdate));
+                $end = mktime(0, 0, 0, $startq + 6, 1, date('Y', $cdate));
                 break;
             case YEARLY:
                 $start = mktime(0, 0, 0, 1, 1, date('Y', $cdate));
