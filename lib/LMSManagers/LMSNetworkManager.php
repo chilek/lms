@@ -545,6 +545,8 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
             if ($value)
                 $destnodes[] = $network['dest']['nodes']['addresslong'][$idx];
 
+        $counter = 0;
+
         for ($i = $address; $i < $broadcast; $i++) {
             if (!sizeof($nodes))
                 break;
