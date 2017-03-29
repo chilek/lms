@@ -408,6 +408,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      * Updates VoIP account data
      *
      * @param type $voipaccountdata New VoIP account data
+     * @return boolean
      */
     public function voipAccountUpdate($data) {
         $this->db->BeginTrans();
