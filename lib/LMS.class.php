@@ -874,6 +874,11 @@ class LMS
         return $manager->updateNodeField($nodeid, $field, $value);
     }
 
+    public function GetUniqueNodeLocations($customerid) {
+        $manager = $this->getNodeManager();
+        return $manager->GetUniqueNodeLocations( $customerid );
+    }
+
     /*
      *  Tarrifs and finances
      */

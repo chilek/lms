@@ -80,4 +80,6 @@ interface LMSNodeManagerInterface
     public function SetNodeLinkType($node, $link = NULL);
 
     public function updateNodeField($nodeid, $field, $value);
+
+    public function GetUniqueNodeLocations($customerid);
 }

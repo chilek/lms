@@ -255,8 +255,7 @@ if (($fh = fopen($message_file, "r")) != NULL) {
 					address, zip, city FROM customeraddressview c WHERE c.id = ?", array($customer['cid']));
 			$info['contacts'] = $DB->GetAll("SELECT contact, name, type FROM customercontacts
 				WHERE customerid = ?", array($customer['cid']));
-			$info['locations'] = $DB->GetCol("SELECT DISTINCT location FROM vnodes WHERE ownerid = ?",
-				array($customer['cid']));
+			$info['locations'] = $LMS->GetUniqueNodeLocations($customer['cid']);
 
 			$emails = array();
 			$phones = array();
