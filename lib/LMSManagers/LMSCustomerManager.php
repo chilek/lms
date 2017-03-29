@@ -394,11 +394,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         extract($params);
 
-        if(is_null($order))
+        if(isset($order) && is_null($order))
             $order = 'customername,asc';
-        if(is_null($sqlskey))
+        if(isset($sqlskey) && is_null($sqlskey))
             $sqlskey = 'AND';
-        if(is_null($count))
+        if(isset($count) && is_null($count))
             $count = FALSE;
 
         list($order, $direction) = sscanf($order, '%[^,],%s');
