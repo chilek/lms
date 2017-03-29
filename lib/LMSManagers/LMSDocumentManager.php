@@ -53,6 +53,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 					WHERE docid = ? ORDER BY main DESC, filename', array($doc['docid']));
             if ($limit) {
                 $index = (sizeof($list) - $limit) > 0 ? sizeof($list) - $limit : 0;
+                $result = array();
+
                 for ($i = $index; $i < sizeof($list); $i++)
                     $result[] = $list[$i];
 
