@@ -73,7 +73,6 @@ function save_producer($forms) {
 
 	$form = $forms['produceredit'];
 	$formid = $form['id'];
-	$pid = $form['pid'];
 	$error = false;
 
 	$obj->script("removeClass(xajax.$('id_producername'),'alert');");
