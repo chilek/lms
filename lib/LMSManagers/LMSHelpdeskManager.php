@@ -486,27 +486,26 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }else
             $props['customerid'] = $ticket['customerid'];
 
-        if($type){
-        		($state == 2 ? $resolvetime = time() : $resolvetime = 0);
-
-        		if($props['state'] == RT_RESOLVED) {
-        		    if ($this->db->GetOne('SELECT owner FROM rttickets WHERE id=?', array($ticketid))){
-                    $this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, resolvetime=?, subject = ?, customerid = ? WHERE id = ?', array(
-            	         $props['queueid'], $props['owner'], $props['cause'], $props['state'], $resolvetime, $props['subject'], $props['customerid'], $ticketid));
-                    $this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
-                        VALUES(?, ?, ?, ?, ?NOW?)', array($this->auth->id, $ticketid, $type, $note));
-        		    } else {
-                    $this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, resolvetime = ?, subject = ?, customerid = ?  WHERE id = ?', array(
-            	         $props['queueid'], $this->auth->id, $props['cause'], $props['state'], $resolvetime, $props['subject'], $props['customerid'], $ticketid));
-                    $this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
-                        VALUES(?, ?, ?, ?, ?NOW?)', array($this->auth->id, $ticketid, $type, $note));
-					 }
-        		} else {
-                $this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, subject = ?, customerid = ?  WHERE id = ?', array(
-            	     $props['queueid'], $props['owner'], $props['cause'], $props['state'], $props['subject'], $props['customerid'], $ticketid));
-                $this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
-                    VALUES(?, ?, ?, ?, ?NOW?)', array($this->auth->id, $ticketid, $type, $note));
-            }
-        }
+		if ($type) {
+			if ($props['state'] == RT_RESOLVED) {
+				$resolvetime = time();
+				if ($this->db->GetOne('SELECT owner FROM rttickets WHERE id=?', array($ticketid))) {
+					$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, resolvetime=?, subject = ?, customerid = ? WHERE id = ?', array(
+						$props['queueid'], $props['owner'], $props['cause'], $props['state'], $resolvetime, $props['subject'], $props['customerid'], $ticketid));
+					$this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
+						VALUES(?, ?, ?, ?, ?NOW?)', array($this->auth->id, $ticketid, $type, $note));
+				} else {
+					$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, resolvetime = ?, subject = ?, customerid = ?  WHERE id = ?', array(
+						$props['queueid'], $this->auth->id, $props['cause'], $props['state'], $resolvetime, $props['subject'], $props['customerid'], $ticketid));
+					$this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
+						VALUES(?, ?, ?, ?, ?NOW?)', array($this->auth->id, $ticketid, $type, $note));
+				}
+			} else {
+				$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, subject = ?, customerid = ?  WHERE id = ?', array(
+					$props['queueid'], $props['owner'], $props['cause'], $props['state'], $props['subject'], $props['customerid'], $ticketid));
+				$this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
+					VALUES(?, ?, ?, ?, ?NOW?)', array($this->auth->id, $ticketid, $type, $note));
+			}
+		}
     }
 }
