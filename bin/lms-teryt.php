@@ -1053,7 +1053,7 @@ if ( isset($options['buildings']) ) {
     }
 
 	if (!$quiet)
-		echo 'Removing old buildings' . PHP_EOL;
+		echo PHP_EOL . 'Removing old buildings...' . PHP_EOL;
 
     $DB->Execute('DELETE FROM location_buildings WHERE updated = 0;');
     $DB->Execute('UPDATE location_buildings SET updated = 0;');
