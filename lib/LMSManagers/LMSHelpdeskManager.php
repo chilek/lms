@@ -260,8 +260,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				FROM rtcategories ORDER BY name')) {
             if ($stats)
                 foreach ($result as $idx => $row)
-                    foreach ($this->GetCategoryStats($row['id']) as $sidx => $row)
-                        $result[$idx][$sidx] = $row;
+                    foreach ($this->GetCategoryStats($row['id']) as $sidx => $row2)
+                        $result[$idx][$sidx] = $row2;
             foreach ($result as $idx => $category)
                 $result[$idx]['owners'] = $this->db->GetAll('SELECT u.id, name FROM rtcategoryusers cu
 				LEFT JOIN vusers u ON cu.userid = u.id
