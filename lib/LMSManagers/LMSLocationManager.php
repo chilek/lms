@@ -296,7 +296,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
      * \return boolean
      */
     public function ValidAddress( $args ) {
-        if ( !empty($args['location_country']) && $addr['location_country'] < 1 ) {
+        if ( !empty($args['location_country']) && $args['location_country'] < 1 ) {
             $args['location_country'] = null;
         }
 
