@@ -57,7 +57,7 @@ function edit_producer($id) {
 
 	$obj->script("xajax.$('div_produceredit').style.display='';");
 	$obj->script("removeClass(xajax.$('id_producername'),'alert');");
-	$obj->assign("id_action_name","innerHTML", trans("Producer edit: $a", $producer['name']));
+	$obj->assign("id_action_name","innerHTML", trans('Producer edit: $a', $producer['name']));
 
 	$obj->assign("id_producer","value", $producer['id']);
 	$obj->assign("id_producername","value", $producer['name']);
