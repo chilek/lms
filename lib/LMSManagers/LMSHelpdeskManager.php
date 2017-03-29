@@ -156,8 +156,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					WHERE r.rights <> 0 AND r.userid = ?' : '') . ' ORDER BY name', array($this->auth->id))) {
             if ($stats)
                 foreach ($result as $idx => $row)
-                    foreach ($this->GetQueueStats($row['id']) as $sidx => $row)
-                        $result[$idx][$sidx] = $row;
+                    foreach ($this->GetQueueStats($row['id']) as $sidx => $row2)
+                        $result[$idx][$sidx] = $row2;
         }
         return $result;
     }
