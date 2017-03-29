@@ -63,86 +63,24 @@ else
 	$d = $_GET['d'];
 $SESSION->save('ndfd', $d);
 
+$search = array(
+	'status' => $s,
+	'type' => $t,
+	'invprojectid' => $p,
+	'ownership' => $w,
+	'divisionid' => $d,
+);
+$nlist = $LMS->GetNetNodeList($search, $o);
 
+$listdata = $search;
 
-list($order,$dir) = sscanf($o,'%[^,],%s');
-($dir == 'desc') ? $dir='desc' : $dir='asc';
-switch ($order) {
-	case 'id':
-		$ostr = 'ORDER BY id';
-		break;
-	case 'name':
-		$ostr = 'ORDER BY name';
-		break;
-	case 'type':
-		$ostr = 'ORDER BY type';
-		break;
-	case 'status':
-		$ostr = 'ORDER BY status';
-		break;
-	default:
-		$ostr = 'ORDER BY name';
-		break;
-}
+$listdata['total'] = $nlist['total'];
+$listdata['order'] = $nlist['order'];
+$listdata['direction'] = $nlist['direction'];
 
-$warr = array();
-if (strlen(trim($t)) && $t!=-1) {
-	$warr[] = "n.type=$t";
-}
-if (strlen(trim($s)) && $s!=-1) {
-	$warr[] = "n.status=$s";
-}
-if (strlen(trim($p))) {
-	if ($p == -2)
-		$warr[] = "n.invprojectid IS NULL";
-	elseif ($p != -1)
-		$warr[] = "n.invprojectid=$p";
-}
-if (strlen(trim($w)) && $w!=-1) {
-	$warr[] = "n.ownership=$w";
-}
-
-if (strlen(trim($d)) && $d!=-1) {
-	$warr[] = "n.divisionid=$d";
-}
-
-$fstr = empty($warr) ? '' : ' WHERE ' . implode(' AND ', $warr);
-
-$nlist = $DB->GetAll('SELECT n.id, n.name, n.type, n.status, n.invprojectid, p.name AS project,
-		n.divisionid,
-		lb.name AS borough_name, lb.type AS borough_type,
-		ld.name AS district_name, ls.name AS state_name,
-		addr.name as location_name,
-        addr.city as location_city_name, addr.street as location_street_name,
-        addr.city_id as location_city, addr.street_id as location_street,
-        addr.house as location_house, addr.flat as location_flat
-	FROM netnodes n
-		LEFT JOIN addresses addr        ON addr.id = n.address_id
-		LEFT JOIN invprojects p         ON (n.invprojectid = p.id)
-		LEFT JOIN location_cities lc    ON lc.id = addr.city_id
-		LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
-		LEFT JOIN location_districts ld ON ld.id = lb.districtid
-		LEFT JOIN location_states ls    ON ls.id = ld.stateid ' . $fstr . ' ' . $ostr . ' ' . $dir);
-
-if ( $nlist ) {
-    foreach ($nlist as $k=>$v) {
-        $tmp = array('city_name'      => $v['location_city_name'],
-                     'location_house' => $v['location_house'],
-                     'location_flat'  => $v['location_flat'],
-                     'street_name'    => $v['location_street_name']);
-
-        $nlist[$k]['location'] = location_str( $tmp );
-    }
-}
-
-$listdata['total']        = sizeof($nlist);
-$listdata['order']        = $order;
-$listdata['direction']    = $dir;
-$listdata['status']       = $s;
-$listdata['type']         = $t;
-$listdata['invprojectid'] = $p;
-$listdata['ownership']    = $w;
-$listdata['divisionid']   = $d;
+unset($nlist['total']);
+unset($nlist['order']);
+unset($nlist['direction']);
 
 if (!isset($_GET['page']))
 	$SESSION->restore('ndlp', $_GET['page']);

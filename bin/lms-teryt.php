@@ -157,21 +157,10 @@ $SYSLOG = SYSLOG::getInstance();
  * \return array       associative array with paremeters
  */
 function parse_teryt_building_row( $row ) {
-    $pattern = '(?<id>.*);(?<woj>.*);(?<powiat>.*);(?<gmina>.*);' .
-               '(?<terc>.*);(?<miejscowosc>.*);(?<simc>.*);' .
-               '(?<ulica>.*);(?<ulic>.*);(?<building_num>.*);' .
-               '(?<longitude>.*);(?<latitude>.*)';
+	static $column_names = array('id', 'woj', 'powiat', 'gmina', 'terc', 'miejscowosc',
+		'simc', 'ulica', 'ulic', 'building_num', 'longitude', 'latitude');
 
-    $row = str_replace("\r", '', $row);
-    preg_match('/^'.$pattern.'$/', $row, $matches);
-
-    foreach ( $matches as $k=>$v ) {
-        if ( is_numeric($k) ) {
-            unset( $matches[$k] );
-        }
-    }
-
-    return $matches;
+	return array_combine($column_names, explode(';', str_replace("\r", '', $row)));
 }
 
 /*!
@@ -181,12 +170,15 @@ function parse_teryt_building_row( $row ) {
  * \return array
  */
 function parse_teryt_xml_row( $xml_string ) {
+    static $column_names = array('WOJ' => true, 'POW' => true, 'GMI' => true,
+        'RODZ' => true, 'RODZ_GMI' => true, 'SYM' => true, 'SYMPOD' => true, 'SYM_UL' => true);
+
     $row = array();
     $tmp = explode( "\n", trim($xml_string) );
 
     foreach ( $tmp as $col ) {
         if ( preg_match('/^<col name="(?<key>[_a-zA-Z0-9]+)"\/?>((?<val>[^<]+)<\/col>)?/', $col, $matches) ) {
-            if ( in_array( $matches['key'], array('WOJ','POW','GMI','RODZ','RODZ_GMI','SYM','SYMPOD','SYM_UL') ) ) {
+            if ( isset( $column_names[$matches['key']]) ) {
                 $matches['val'] = intval($matches['val']);
             }
 
@@ -1056,12 +1048,12 @@ if ( isset($options['buildings']) ) {
 
         // location building database creation progress
 		if (!$quiet)
-			printf("\r%.2f%%", ($i * 100) / $steps);
+			printf("%.2f%%\r", ($i * 100) / $steps);
         ++$i;
     }
 
 	if (!$quiet)
-		echo 'Removing old buildings' . PHP_EOL;
+		echo 'Removing old buildings...' . PHP_EOL;
 
     $DB->Execute('DELETE FROM location_buildings WHERE updated = 0;');
     $DB->Execute('UPDATE location_buildings SET updated = 0;');

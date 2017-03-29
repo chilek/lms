@@ -107,6 +107,7 @@ version ?.??.?? (????-??-??):
     google and siis [chilan]
   - enhancement: restore old-style quick search panel behavior [chilan]
   - enhancement: added potential ranges for UKE report [kosa/chilan]
+  - improvement: show unique customer node locations in helpdesk notification footer [chilan]
 
 version 1.11.21 (2016-10-14):
 

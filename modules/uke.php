@@ -27,6 +27,36 @@
 $customers = array();
 
 /*!
+ * \brief Parse network speed
+ */
+function parseNetworkSpeed( $s ) {
+	$s = round($s / 1000, 2);
+
+	if ($s <= 1) return 1;
+	if ($s <= 2) return 2;
+	if ($s <= 4) return 4;
+	if ($s <= 6) return 6;
+	if ($s <= 8) return 8;
+	if ($s <= 10) return 10;
+	if ($s <= 20) return 20;
+	if ($s <= 30) return 30;
+	if ($s <= 40) return 40;
+	if ($s <= 60) return 60;
+	if ($s <= 80) return 80;
+	if ($s <= 100) return 100;
+	if ($s <= 120) return 120;
+	if ($s <= 150) return 150;
+	if ($s <= 250) return 250;
+	if ($s <= 500) return 500;
+	if ($s <= 1000) return 1000;
+	if ($s <= 2500) return 2500;
+	if ($s <= 10000) return 10000;
+	if ($s <= 40000) return 40000;
+	
+	return 100000;
+}
+
+/*!
  * \brief Change meters to GPS(dd) distance.
  *
  * \param  int   $m      distance
@@ -616,7 +646,7 @@ if ($netdevices)
 					}
 
 				if ( $linktype == LINKTYPE_WIRELESS ) {
-					$netnodes[$netnodename]['tech'][LINKTYPE_WIRELESS] = 1;
+					$netnodes[$netnodename]['tech'][LINKTYPE_WIRELESS] = true;
 				}
 
 				if (!empty($linkfrequency))
@@ -1130,6 +1160,8 @@ foreach ($netnodes as $netnodename => &$netnode) {
 		if (empty($nodes))
 			continue;
 
+		$netnode['tech'][$range['linktype']] = true;
+
 		// check if this is range with the same location as owning network node
 		if ($range['location_city'] == $netnode['location_city']
 			&& $range['location_street'] == $netnode['location_street']
@@ -1221,12 +1253,6 @@ foreach ($netnodes as $netnodename => &$netnode) {
 					'zas_ltech' => $linktechnology,
 				);
 
-				switch ( strtolower($data['zas_tech']) ) {
-					case 'światłowodowe'           : $netnode['tech'][LINKTYPE_FIBER]    = 1; break;
-					case 'kablowe parowe miedziane': $netnode['tech'][LINKTYPE_WIRE]     = 1; break;
-					case 'wifi'                    : $netnode['tech'][LINKTYPE_WIRELESS] = 1; break;
-				}
-
 				$allservices = array();
 
 				foreach (array_unique(array_merge(array_keys($personalnodes), array_keys($commercialnodes))) as $servicetype) {
@@ -1299,51 +1325,8 @@ foreach ($netnodes as $netnodename => &$netnode) {
 				}
 
 				$allservices = array_unique($allservices);
-
-				$maxdownstream = round($maxdownstream / 1000, 2);
-				if ($maxdownstream <= 1)
-					$maxdownstream = 1;
-				elseif ($maxdownstream <= 2)
-					$maxdownstream = 2;
-				elseif ($maxdownstream <= 4)
-					$maxdownstream = 4;
-				elseif ($maxdownstream <= 6)
-					$maxdownstream = 6;
-				elseif ($maxdownstream <= 8)
-					$maxdownstream = 8;
-				elseif ($maxdownstream <= 10)
-					$maxdownstream = 10;
-				elseif ($maxdownstream <= 20)
-					$maxdownstream = 20;
-				elseif ($maxdownstream <= 30)
-					$maxdownstream = 30;
-				elseif ($maxdownstream <= 40)
-					$maxdownstream = 40;
-				elseif ($maxdownstream <= 60)
-					$maxdownstream = 60;
-				elseif ($maxdownstream <= 80)
-					$maxdownstream = 80;
-				elseif ($maxdownstream <= 100)
-					$maxdownstream = 100;
-				elseif ($maxdownstream <= 120)
-					$maxdownstream = 120;
-				elseif ($maxdownstream <= 150)
-					$maxdownstream = 150;
-				elseif ($maxdownstream <= 250)
-					$maxdownstream = 250;
-				elseif ($maxdownstream <= 500)
-					$maxdownstream = 500;
-				elseif ($maxdownstream <= 1000)
-					$maxdownstream = 1000;
-				elseif ($maxdownstream <= 2500)
-					$maxdownstream = 2500;
-				elseif ($maxdownstream <= 10000)
-					$maxdownstream = 10000;
-				elseif ($maxdownstream <= 40000)
-					$maxdownstream = 40000;
-				else
-					$maxdownstream = 100000;
-
+				$maxdownstream = parseNetworkSpeed($maxdownstream);
+				
 				if ($maxdownstream > $range_maxdownstream) {
 					$range_maxdownstream = $maxdownstream;
 					$range_technology = $technology;
@@ -1356,12 +1339,6 @@ foreach ($netnodes as $netnodename => &$netnode) {
 
 				if ( array_search('TEL', $allservices) ) {
 					$netnode['tel_avible'] = 1;
-				}
-
-				switch ( strtolower($data['zas_tech']) ) {
-					case 'światłowodowe'           : $netnode['tech'][LINKTYPE_FIBER]    = 1; break;
-					case 'kablowe parowe miedziane': $netnode['tech'][LINKTYPE_WIRE]     = 1; break;
-					case 'wifi'                    : $netnode['tech'][LINKTYPE_WIRELESS] = 1; break;
 				}
 
 				$data = array_merge($data, array(
@@ -1378,7 +1355,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
 					'zas_invstatus' => strlen($prj) ? $NETELEMENTSTATUSES[$status] : '',
 				));
 
-				$customers[ strtolower($data['zas_city'] . '|' . $data['zas_street'] . '|' . $teryt['zas_house']) ] = 1;
+				$customers[ strtolower($data['zas_city'] . '|' . $data['zas_street'] . '|' . $data['zas_house']) ] = 1;
 
 				if (in_array('zas', $sheets))
 					if ($format == 2)
@@ -1424,6 +1401,9 @@ foreach ($netnodes as $netnodename => &$netnode) {
 			'zas_invproject' => '',
 			'zas_invstatus' => '',
 		);
+
+		$customers[ strtolower($data['zas_city'] . '|' . $data['zas_street'] . '|' . $data['zas_house']) ] = 1;
+
 		if (in_array('zas', $sheets))
 			if ($format == 2)
 				$buffer .= 'ZS,' . to_csv($data) . EOL;
@@ -1500,26 +1480,17 @@ if ( $max_range > 0 ) {
         array($left, $right, $top, $bottom)
     );
 
-    // LMS doesn't contains priorities for link types
-    // if contains then fix code below
+    // LMS doesn't contain priorities for link types
+    // if it contains then fix code below
+    $linktype_priorities = array(
+        LINKTYPE_FIBER => 0,
+        LINKTYPE_WIRE => 1,
+        LINKTYPE_WIRELESS => 2,
+    );
     $link_orderlist = array();
     foreach ( $_POST['uke']['linktypes'] as $link ) {
-        switch ( $link['id'] ) {
-            case LINKTYPE_FIBER   :
-                $link_orderlist[0] = $link;
-                $link_orderlist[0]['zas_tech'] = 'światłowodowe';
-            break;
-
-            case LINKTYPE_WIRE    :
-                $link_orderlist[1] = $link;
-                $link_orderlist[1]['zas_tech'] = 'kablowe parowe miedziane';
-            break;
-
-            case LINKTYPE_WIRELESS:
-                $link_orderlist[2] = $link;
-                $link_orderlist[2]['zas_tech'] = 'radiowe';
-            break;
-        }
+        $link_orderlist[$linktype_priorities[$link['id']]] = $link;
+        $link_orderlist[$linktype_priorities[$link['id']]]['zas_tech'] = $linktypes[$link['id']]['technologia_dostepu'];
     }
 
     ksort($link_orderlist);
@@ -1582,7 +1553,7 @@ if ( $max_range > 0 ) {
                             'zas_internetmobile'     => 'Nie',
                             'zas_tv'                 => isset($node['tv_avible']) ? 'Tak' : 'Nie',
                             'zas_other'              => '',
-                            'zas_stationarymaxspeed' => $max_speed / 1000,
+                            'zas_stationarymaxspeed' => parseNetworkSpeed($max_speed),
                             'zas_mobilemaxspeed'     => 0,
                             'zas_invproject'         => '',
                             'zas_invstatus'          => ''

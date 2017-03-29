@@ -276,6 +276,7 @@ if(isset($_POST['message']))
 							address, zip, city FROM customeraddressview WHERE id = ?', array($cid));
 					$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
 						WHERE customerid = ?', array($cid));
+					$info['locations'] = $LMS->GetUniqueNodeLocations($cid);
 
 					$emails = array();
 					$phones = array();
@@ -291,7 +292,9 @@ if(isset($_POST['message']))
 					$body .= "\n\n-- \n";
 					$body .= trans('Customer:').' '.$info['customername']."\n";
 					$body .= trans('ID:').' '.sprintf('%04d', $cid)."\n";
-					$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
+					$body .= trans('Address:').' ' . (empty($info['locations']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
+						: implode(', ', $info['locations'])) . "\n";
+
 					if (!empty($phones))
 						$body .= trans('Phone:').' ' . implode(', ', $phones) . "\n";
 					if (!empty($emails))
@@ -323,7 +326,8 @@ if(isset($_POST['message']))
 					$sms_body .= "\n";
 					$sms_body .= trans('Customer:').' '.$info['customername'];
 					$sms_body .= ' '.sprintf('(%04d)', $cid).'. ';
-					$sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'];
+					$sms_body .= (empty($info['locations']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
+						: implode(', ', $info['locations']));
 					if (!empty($phones))
 						$sms_body .= '. ' . trans('Phone:') . ' ' . preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones));
 				}

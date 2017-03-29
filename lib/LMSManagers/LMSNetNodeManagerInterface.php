@@ -1,9 +1,9 @@
 <?php
 
 /*
- * LMS version 1.11-git
+ *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  Copyright (C) 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,19 +24,16 @@
  *  $Id$
  */
 
-$id = intval($_GET['id']);
+interface LMSNetNodeManagerInterface {
+	public function GetNetNode($id);
 
-if (!$LMS->NetNodeExists($id))
-	$SESSION->redirect('?m=netnodelist');
+	public function GetNetNodeList($search, $order);
 
-$DB->BeginTrans();
+	public function NetNodeAdd($netnodedata);
 
-$LMS->NetNodeDelete($id);
+	public function NetNodeExists($id);
 
-$LMS->CleanupInvprojects();
+	public function NetNodeDelete($id);
 
-$DB->CommitTrans();
-
-$SESSION->redirect('?m=netnodelist');
-
-?>
+	public function NetNodeUpdate($netnodedata);
+}

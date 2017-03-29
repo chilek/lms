@@ -126,8 +126,7 @@ elseif(isset($_POST['note']))
 						address, zip, city FROM customeraddressview WHERE id = ?', array($cid));
 				$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
 					WHERE customerid = ?', array($cid));
-				$info['locations'] = $DB->GetCol('SELECT DISTINCT location FROM vnodes
-					WHERE ownerid = ?', array($cid));
+				$info['locations'] = $LMS->GetUniqueNodeLocations($cid);
 
 				$emails = array();
 				$phones = array();

@@ -84,6 +84,9 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND')
 				case 'ports':
 				        $searchargs[] = "ports = ".intval($value);
 				break;
+				case 'location':
+					$searchargs[] = "UPPER(a.$idx) ?LIKE? UPPER(".$DB->Escape("%$value%").')';
+					break;
 				default:
 					// UPPER here is a postgresql ILIKE bug workaround
 					$searchargs[] = "UPPER(d.$idx) ?LIKE? UPPER(".$DB->Escape("%$value%").')';
