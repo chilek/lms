@@ -846,6 +846,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetNoteContent($id)
     {
+		global $LMS;
+
         if ($result = $this->db->GetRow('SELECT d.id, d.number, d.name, d.customerid,
 				d.userid, d.address, d.zip, d.city, d.countryid, cn.name AS country,
 				d.ten, d.ssn, d.cdate, d.numberplanid, d.closed, d.published, d.divisionid, d.paytime,
