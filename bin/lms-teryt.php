@@ -157,21 +157,10 @@ $SYSLOG = SYSLOG::getInstance();
  * \return array       associative array with paremeters
  */
 function parse_teryt_building_row( $row ) {
-    $pattern = '(?<id>.*);(?<woj>.*);(?<powiat>.*);(?<gmina>.*);' .
-               '(?<terc>.*);(?<miejscowosc>.*);(?<simc>.*);' .
-               '(?<ulica>.*);(?<ulic>.*);(?<building_num>.*);' .
-               '(?<longitude>.*);(?<latitude>.*)';
+	static $column_names = array('id', 'woj', 'powiat', 'gmina', 'terc', 'miejscowosc',
+		'simc', 'ulica', 'ulic', 'building_num', 'longitude', 'latitude');
 
-    $row = str_replace("\r", '', $row);
-    preg_match('/^'.$pattern.'$/', $row, $matches);
-
-    foreach ( $matches as $k=>$v ) {
-        if ( is_numeric($k) ) {
-            unset( $matches[$k] );
-        }
-    }
-
-    return $matches;
+	return array_combine($column_names, explode(';', str_replace("\r", '', $row)));
 }
 
 /*!
@@ -181,12 +170,15 @@ function parse_teryt_building_row( $row ) {
  * \return array
  */
 function parse_teryt_xml_row( $xml_string ) {
+    static $column_names = array('WOJ' => true, 'POW' => true, 'GMI' => true,
+        'RODZ' => true, 'RODZ_GMI' => true, 'SYM' => true, 'SYMPOD' => true, 'SYM_UL' => true);
+
     $row = array();
     $tmp = explode( "\n", trim($xml_string) );
 
     foreach ( $tmp as $col ) {
         if ( preg_match('/^<col name="(?<key>[_a-zA-Z0-9]+)"\/?>((?<val>[^<]+)<\/col>)?/', $col, $matches) ) {
-            if ( in_array( $matches['key'], array('WOJ','POW','GMI','RODZ','RODZ_GMI','SYM','SYMPOD','SYM_UL') ) ) {
+            if ( isset( $column_names[$matches['key']]) ) {
                 $matches['val'] = intval($matches['val']);
             }
 
