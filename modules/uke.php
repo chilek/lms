@@ -1502,9 +1502,9 @@ if ( $max_range > 0 ) {
     foreach ( $link_orderlist as $link ) {
         $kd->clear();
 
-        foreach ($netnodes as $k=>$v) {
-            if ( isset($v['tech'][$link['type']]) ) {
-                $kd->insert( array(floatval($v['longitude']), floatval($v['latitude']), 'netnode'=>$k) );
+        foreach ($netnodes as $k=>$netnode) {
+            if ( isset($netnode['tech'][$link['type']]) ) {
+                $kd->insert( array(floatval($netnode['longitude']), floatval($netnode['latitude']), 'netnode'=>$k) );
             }
         }
 
