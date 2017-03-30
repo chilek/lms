@@ -137,11 +137,29 @@ $(function() {
 
                 case 'text':
                 case 'hidden':
-                    $(this).val('')
+                    if (!$(this).is('[data-address="address_type"]')) {
+                        $(this).val('')
                            .removeAttr('readonly');
+                    }
                 break;
             }
         });
+
+        // clear state of location image if it was default location so far
+        var address_type = box.find('input[data-address="address_type"]');
+        if (address_type.val() == 3) {
+            $('.location-box-image', box.closest('tr'))
+                .attr('src', _lms_ui_address_ico)
+                .tooltip().tooltip('destroy')
+                .attr('title', lmsMessages['locationRecipientAddress'])
+                .tooltip();
+            address_type.val(2)
+                .closest('tr')
+                .find('.address-full')
+                .tooltip().tooltip('destroy')
+                .attr('title', lmsMessages['locationRecipientAddress'])
+                .tooltip();
+        }
 
         // clear location address text
         box.find('.address-full').text('...');
