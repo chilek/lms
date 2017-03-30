@@ -987,52 +987,92 @@
 	</THEAD>
 	<TBODY>
 	<TR>
-		<TD style="width: 100%;" class="container" colspan="2">
+		<TD class="container" colspan="2">
 			<TABLE width="100%" cellpadding="3">
 				<TR>
 					<TD style="width: 1%;">
-						<IMG src="img/customer.gif" alt="">
-					</TD>
-					<TD style="width: 1%;" class="bold nobr">
-						{trans("Customer:")}
-					</TD>
-					<TD style="width: 1%;" class="nobr">
-						{customerlist form="liabilityreport" customers=$customers selectname="cust" inputname="customer" firstoption="- all customers -" inputtip="Enter customer ID or leave empty for all customers"}
-					</TD>
-					<TD style="width: 1%;">
-						<IMG src="img/calendar.gif" alt="">
-					</TD>
-					<TD style="width: 1%;" class="bold nobr">
-						{trans("Day:")}&nbsp;
-						<INPUT type="text" name="day" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
-					</TD>
-					<TD style="width: 1%;">
-						<IMG src="img/view.gif" alt="">
-					</TD>
-					<TD style="width: 1%;" class="bold nobr">
-						{trans("Sorting:")}
-					</TD>
-					<TD style="width: 93%;" {tip text="Select sorting direction and criteria"}>
-						<TABLE width="100%">
+						<table width="100%">
+							<COLGROUP>
+								<COL style="width: 1%;">
+								<COL style="width: 1%;">
+								<COL style="width: 98%;">
+							</COLGROUP>
 							<TR>
-								<TD style="width: 100%;" class="nobr">
-									<SELECT size="1" name="order">
-										<OPTION value="customername" selected>{trans("First/last or Company name")}</OPTION>
-										<OPTION value="grossvalue">{trans("Gross value")}</OPTION>
+								<TD>
+									<IMG src="img/division.gif" alt="">
+								</TD>
+								<TD class="bold nobr">
+									{trans("Division")}:
+								</TD>
+								<TD class="nobr">
+									<SELECT size="1" name="division" {tip text="Select division"}>
+										<OPTION value="0">- {trans("all")} -</OPTION>
+										{foreach $divisions as $division}
+										<OPTION value="{$division.id}">{$division.shortname}</OPTION>
+										{/foreach}
 									</SELECT>
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 100%;" class="nobr">
-									<SELECT SIZE="1" name="direction">
-										<OPTION value="asc" selected>{trans("ascending")}</OPTION>
-										<OPTION value="desc">{trans("descending")}</OPTION>
-									</SELECT>
+								<TD>
+									<IMG src="img/customer.gif" alt="">
+								</TD>
+								<TD class="bold nobr">
+									{trans("Customer:")}
+								</TD>
+								<TD class="nobr">
+									{customerlist form="liabilityreport" customers=$customers selectname="cust" inputname="customer" firstoption="- all customers -" inputtip="Enter customer ID or leave empty for all customers"}
 								</TD>
 							</TR>
-						</TABLE>
-					</TD>
-				</TR>
+						</table>
+					</td>
+					<td style="width: 99%;">
+						<table width="100%">
+							<COLGROUP>
+								<COL style="width: 1%;">
+								<COL style="width: 1%;">
+								<COL style="width: 1%;">
+								<COL style="width: 1%;">
+								<COL style="width: 96%;">
+							</COLGROUP>
+							<TR>
+								<TD>
+									<IMG src="img/calendar.gif" alt="">
+								</TD>
+								<TD class="bold nobr">
+									{trans("Day:")}&nbsp;
+									<INPUT type="text" name="day" size="10" maxlength="10" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format (empty field means current date) or click to choose it from calendar"}>
+								</TD>
+								<TD>
+									<IMG src="img/view.gif" alt="">
+								</TD>
+								<TD class="bold nobr">
+									{trans("Sorting:")}
+								</TD>
+								<TD {tip text="Select sorting direction and criteria"}>
+									<TABLE width="100%">
+										<TR>
+											<TD style="width: 100%;" class="nobr">
+												<SELECT size="1" name="order">
+													<OPTION value="customername" selected>{trans("First/last or Company name")}</OPTION>
+													<OPTION value="grossvalue">{trans("Gross value")}</OPTION>
+												</SELECT>
+											</TD>
+										</TR>
+										<TR>
+											<TD style="width: 100%;" class="nobr">
+												<SELECT SIZE="1" name="direction">
+													<OPTION value="asc" selected>{trans("ascending")}</OPTION>
+													<OPTION value="desc">{trans("descending")}</OPTION>
+												</SELECT>
+											</TD>
+										</TR>
+									</TABLE>
+								</TD>
+							</TR>
+						</table>
+					</td>
+				</tr>
 			</TABLE>
 		</TD>
 	</TR>

@@ -505,6 +505,7 @@ switch($type)
 
 		$order = $_POST['order'];
 		$direction = $_POST['direction'];
+		$divisionid = (isset($_POST['division']) ? intval($_POST['division']) : 0);
 		$customerid = (isset($_POST['customer']) ? intval($_POST['customer']) : 0);
 
 		$year = date('Y', $reportday);
@@ -568,8 +569,9 @@ switch($type)
 						OR (a.period='.QUARTERLY.' AND a.at=?)
 						OR (a.period='.HALFYEARLY.' AND a.at=?)
 						OR (a.period='.YEARLY.' AND a.at=?)) '
-					.($customerid ? 'AND a.customerid='.$customerid : '').
-					' GROUP BY a.customerid, lastname, c.name, city, address, ten ', 'id',
+					. ($customerid ? ' AND a.customerid=' . $customerid : '')
+					. ($divisionid ? ' AND c.divisionid=' . $divisionid : '')
+					. ' GROUP BY a.customerid, lastname, c.name, city, address, ten ', 'id',
 					array($tax['id'], $reportday, $reportday, $today, $weekday, $monthday, $quarterday, $halfyear, $yearday));
 
 				$list2 = $DB->GetAllByKey('SELECT a.customerid AS id, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername, '
