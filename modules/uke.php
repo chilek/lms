@@ -389,8 +389,6 @@ $netdevs    = array();
 $foreigners = array();
 $netnodeid = 1;
 
-global $LMS;
-
 if ($netdevices)
 	foreach ($netdevices as $netdevid => $netdevice) {
 
@@ -1326,7 +1324,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
 
 				$allservices = array_unique($allservices);
 				$maxdownstream = parseNetworkSpeed($maxdownstream);
-				
+
 				if ($maxdownstream > $range_maxdownstream) {
 					$range_maxdownstream = $maxdownstream;
 					$range_technology = $technology;
@@ -1334,11 +1332,11 @@ foreach ($netnodes as $netnodename => &$netnode) {
 				}
 
 				if ( array_search('TV', $allservices) ) {
-					$netnode['tv_avible'] = 1;
+					$netnode['tv_avible'] = true;
 				}
 
 				if ( array_search('TEL', $allservices) ) {
-					$netnode['tel_avible'] = 1;
+					$netnode['tel_avible'] = true;
 				}
 
 				$data = array_merge($data, array(
@@ -1412,6 +1410,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
 		$netbuildingid++;
 	}
 }
+unset($netnode);
 
 $max_range = 0;
 
@@ -1488,9 +1487,11 @@ if ( $max_range > 0 ) {
         LINKTYPE_WIRELESS => 2,
     );
     $link_orderlist = array();
-    foreach ( $_POST['uke']['linktypes'] as $link ) {
-        $link_orderlist[$linktype_priorities[$link['id']]] = $link;
-        $link_orderlist[$linktype_priorities[$link['id']]]['zas_tech'] = $linktypes[$link['id']]['technologia_dostepu'];
+    foreach ( $_POST['uke']['linktypes'] as $linktypeindex => $link ) {
+        $link_orderlist[$linktype_priorities[$linktypeindex]] = array(
+             'type' => $link['type'],
+             'range' => $link['range'],
+        );
     }
 
     ksort($link_orderlist);
@@ -1502,7 +1503,7 @@ if ( $max_range > 0 ) {
         $kd->clear();
 
         foreach ($netnodes as $k=>$v) {
-            if ( isset($v['tech'][$link['id']]) ) {
+            if ( isset($v['tech'][$link['type']]) ) {
                 $kd->insert( array(floatval($v['longitude']), floatval($v['latitude']), 'netnode'=>$k) );
             }
         }
@@ -1525,7 +1526,7 @@ if ( $max_range > 0 ) {
                         $b['street_ident'] = "99999";
                     }
 
-                    foreach ( $node['linkmaxspeed'][$link['id']] as $tech=>$max_speed ) {
+                    foreach ( $node['linkmaxspeed'][$link['type']] as $tech=>$max_speed ) {
                         $data = array(
                             'zas_id'                 => $netbuildingid,
                             'zas_ownership'          => 'Własna',
@@ -1544,8 +1545,8 @@ if ( $max_range > 0 ) {
                             'zas_zip'                => $node['location_zip'],
                             'zas_latitude'           => $b[1],
                             'zas_longitude'          => $b[0],
-                            'zas_tech'               => $link['zas_tech'],
-                            'zas_ltech'              => $LINKTECHNOLOGIES[$link['id']][$tech],
+                            'zas_tech'               => $linktypes[$link['type']]['technologia'],
+                            'zas_ltech'              => $LINKTECHNOLOGIES[$link['type']][$tech],
                             'zas_phonepots'          => 'Nie',
                             'zas_phonevoip'          => 'Nie',
                             'zas_phonemobile'        => 'Nie',
