@@ -29,7 +29,9 @@ $id = intval($_GET['id']);
 if (isset($_GET['is_sure']) && $_GET['is_sure'] == 1 && $id) {
 	if ($DB->GetOne('SELECT COUNT(*) FROM divisions', array($id)) != 1) {
 		if ($SYSLOG) {
-			$countryid = $DB->GetOne('SELECT countryid FROM divisions WHERE id = ?', array($id));
+			$countryid = $DB->GetOne('SELECT country_id FROM divisions d
+				JOIN addresses a ON a.id = d.address_id
+				WHERE d.id = ?', array($id));
 			$args = array(
 				SYSLOG::RES_DIV => $id,
 				SYSLOG::RES_COUNTRY => $countryid
