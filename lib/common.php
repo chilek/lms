@@ -1154,3 +1154,24 @@ function trim_rec( $data ) {
         return trim($data);
     }
 }
+
+function geocode($location) {
+	$api_key = ConfigHelper::getConfig('phpui.googlemaps_api_key', '', true);
+	$address = urlencode($location);
+	$link = "http://maps.googleapis.com/maps/api/geocode/json?address=" . $address . "&sensor=false"
+		. (empty($api_key) ? '' : 'key=' . $api_key);
+	$page = json_decode(file_get_contents($link), true);
+	$latitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lat"]);
+	$longitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lng"]);
+	$status = $page["status"];
+	$accuracy = $page["results"][0]["geometry"]["location_type"];
+	return array(
+		'status' => $status,
+		'accuracy' => $accuracy,
+		'latitude' => $latitude,
+		'longitude' => $longitude,
+		'raw-result' => $page,
+	);
+}
+
+?>

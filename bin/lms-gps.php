@@ -165,6 +165,8 @@ if (isset($options['sources'])) {
 if (empty($sources))
 	$sources['google'] = true;
 
+$google_api_key = ConfigHelper::getConfig('phpui.googlemaps_api_key', '', true);
+
 $lc = new LocationCache('full');
 
 foreach ($types as $label => $type) {
@@ -183,26 +185,23 @@ foreach ($types as $label => $type) {
 		foreach ($locations as $row)
 			foreach ($sources as $source => $true)
 				if ($source == 'google') {
-					$address = urlencode((empty($row['state_name']) ? '' : $row['state_name'] . ', ' . $row['district_name'] . ', ' . $row['borough_name'])
+					$res = geocode((empty($row['state_name']) ? '' : $row['state_name'] . ', ' . $row['district_name'] . ', ' . $row['borough_name'])
 						. $row['location'] . " Poland");
-					$link = "http://maps.googleapis.com/maps/api/geocode/json?address=".$address."&sensor=false";
-					$page = json_decode(file_get_contents($link), true);
-					$latitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lat"]);
-					$longitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lng"]);
-					$status = $page["status"];
-					$accuracy = $page["results"][0]["geometry"]["location_type"];
-					if (($status == "OK") && ($accuracy == "ROOFTOP")) {
+					if (($res['status'] == "OK") && ($res['accuracy'] == "ROOFTOP")) {
 						if (!$debug)
-							$DB->Execute("UPDATE " . $type . " SET latitude = ?, longitude = ? WHERE id = ?", array($latitude, $longitude, $row['id']));
+							$DB->Execute("UPDATE " . $type . " SET latitude = ?, longitude = ? WHERE id = ?", array($res['latitude'], $res['longitude'], $row['id']));
 						if (!$quiet)
-							echo $row['id']." - OK - Accuracy: ".$accuracy." (lat.: ".$latitude." long.: ".$longitude.")" . PHP_EOL;
+							echo $row['id']." - OK - Accuracy: ".$res['accuracy']." (lat.: ".$res['latitude']." long.: ".$res['longitude'].")" . PHP_EOL;
 						sleep(2);
 						break;
 					} else {
 						if (!$quiet)
-							echo $row['id']." - ERROR - Accuracy: ".$accuracy." (lat.: ".$latitude." long.: ".$longitude.")" . PHP_EOL;
+							echo $row['id']." - ERROR - Accuracy: ".$res['accuracy']." (lat.: ".$res['latitude']." long.: ".$res['longitude'].")" . PHP_EOL;
 					}
-					sleep(2);
+					if (empty($google_api_key))
+						sleep(2);
+					else
+						usleep(50000);
 				} elseif ($source == 'siis' && !empty($row['state_name'])) {
 					if (($building = $lc->buildingExists($row['city_id'], empty($row['street_id']) ? 'null' : $row['street_id'], $row['house']))
 						&& !empty($building['longitude']) && !empty($building['latitude'])) {
