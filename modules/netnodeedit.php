@@ -65,20 +65,6 @@ if (isset($_POST['netnode'])) {
 			$netnodedata['invprojectid'] = $DB->GetLastInsertID('invprojects');
 		}
 
-		$args = array(
-			'name'            => $netnodedata['name'],
-			'type'            => $netnodedata['type'],
-			'status'          => $netnodedata['status'],
-			'longitude'       => !empty($netnodedata['longitude']) ? str_replace(',', '.', $netnodedata['longitude']) : null,
-			'latitude'        => !empty($netnodedata['latitude'])  ? str_replace(',', '.', $netnodedata['latitude'])  : null,
-			'ownership'       => $netnodedata['ownership'],
-			'coowner'         => $netnodedata['coowner'],
-			'uip'             => $netnodedata['uip'],
-			'miar'            => $netnodedata['miar'],
-			'divisionid'      => $netnodedata['divisionid'],
-			'invprojectid'    => $netnodedata['invprojectid'] ? $netnodedata['invprojectid'] : null,
-		);
-
 		$LMS->NetNodeUpdate($netnodedata);
 		$LMS->CleanupInvprojects();
 

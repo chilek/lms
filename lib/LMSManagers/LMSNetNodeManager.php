@@ -152,19 +152,12 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			'uip'             => $netnodedata['uip'],
 			'miar'            => $netnodedata['miar'],
 			'divisionid'      => !empty($netnodedata['divisionid']) ? $netnodedata['divisionid'] : null,
-			'address_id'      => ($address_id >= 0 ? $address_id : null)
+			'address_id'      => ($address_id >= 0 ? $address_id : null),
+			'invprojectid'    => intval($netnodedata['invprojectid']) > 0 ? $netnodedata['invprojectid'] : null,
 			);
 
-		if ($netnodedata['invprojectid'] > -1) {
-			$args['invprojectid'] = $netnodedata['invprojectid'];
-			$fields = 'name,type,status,longitude,latitude,ownership,coowner,uip,miar,divisionid,address_id,invprojectid';
-			$values = "?,?,?,?,?,?,?,?,?,?,?,?";
-		} else {
-			$fields = 'name,type,status,longitude,latitude,ownership,coowner,uip,miar,divisionid,address_id';
-			$values = "?,?,?,?,?,?,?,?,?,?,?";
-		}
-
-		$this->db->Execute("INSERT INTO netnodes (".$fields.") VALUES (".$values.")",array_values($args));
+		$this->db->Execute("INSERT INTO netnodes (" . implode(', ', array_keys($args))
+			. ") VALUES (" . implode(', ', array_fill(0, count($args), '?')) . ")", array_values($args));
 
 		return $netnodeid = $this->db->GetLastInsertID('netnodes');
 	}
@@ -197,7 +190,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			'uip'             => $netnodedata['uip'],
 			'miar'            => $netnodedata['miar'],
 			'divisionid'      => $netnodedata['divisionid'],
-			'invprojectid'    => $netnodedata['invprojectid'] ? $netnodedata['invprojectid'] : null,
+			'invprojectid'    => intval($netnodedata['invprojectid']) > 0 ? $netnodedata['invprojectid'] : null,
 		);
 
 		// if address_id is set then update
