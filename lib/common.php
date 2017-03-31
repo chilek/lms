@@ -1155,12 +1155,21 @@ function trim_rec( $data ) {
     }
 }
 
+/*!
+ * \brief Google Maps Geocode service function
+ *
+ * \param $location string location formatted human-friendly
+ * \return mixed Result in associative array or null on error
+ */
+
 function geocode($location) {
 	$api_key = ConfigHelper::getConfig('phpui.googlemaps_api_key', '', true);
 	$address = urlencode($location);
 	$link = "http://maps.googleapis.com/maps/api/geocode/json?address=" . $address . "&sensor=false"
 		. (empty($api_key) ? '' : 'key=' . $api_key);
-	$page = json_decode(file_get_contents($link), true);
+	if (($res = @file_get_contents($link)) === false)
+		return null;
+	$page = json_decode($res, true);
 	$latitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lat"]);
 	$longitude = str_replace(',', '.', $page["results"][0]["geometry"]["location"]["lng"]);
 	$status = $page["status"];
