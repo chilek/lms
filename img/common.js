@@ -894,19 +894,25 @@ function _getAddressList( action, v ) {
 /*!
  * \brief Put address coordinates to inputs by single address string.
  *
- * \param string address     address string
+ * \param string address_str address string
  * \param string latitude_id id of latitude input
  * \param string latitude_id id of longitude input
  */
-function setAddressLocation( address, latitude_id, longitude_id ) {
-    var geocoder = new google.maps.Geocoder();
+function setAddressLocation( address_str, latitude_id, longitude_id ) {
+    var address = null;
 
-    geocoder.geocode( { 'address':address }, function(results, status) {
-        if (status == google.maps.GeocoderStatus.OK) {
-            $( latitude_id  ).val( results[0].geometry.location.lat() );
-            $( longitude_id ).val( results[0].geometry.location.lng() )
+    $.ajax({
+        url    : "?m=customeraddresses&action=geocode&address=" + address_str,
+        async  : false,
+        success: function(data) {
+            address = JSON.parse( data );
         }
     });
+
+    if ( address['accuracy'] == 'ROOFTOP' ) {
+        $(longitude_id).val(address['longitude']);
+        $(latitude_id).val(address['latitude']);
+    }
 }
 
 /*!
@@ -916,11 +922,15 @@ function setAddressLocation( address, latitude_id, longitude_id ) {
  * \param string latitude_id id of latitude input
  * \param string latitude_id id of longitude input
  */
-function location_str( city, street, house, flat, zip = undefined ) {
+function location_str( city, street, house, flat, zip = undefined, state = undefined ) {
     var location = '';
 
+    if ( state && state.length > 0 ) {
+        location = state + ", ";
+    }
+
     if ( zip && zip.length > 0 ) {
-        location = zip + " ";
+        location += zip + " ";
     }
 
     if ( city.length > 0 && street.length > 0) {

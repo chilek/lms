@@ -135,6 +135,12 @@ switch ( strtolower($_GET['action']) ) {
         die();
     break;
 
+    case 'geocode':
+        if ( !empty($_GET['address']) ) {
+            die( json_encode( geocode(trim($_GET['address'])) ) );
+        }
+    break;
+
     default:
         return 0;
 }
