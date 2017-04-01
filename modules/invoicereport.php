@@ -36,6 +36,16 @@ function set_taxes($taxid)
 $from = $_POST['from'];
 $to = $_POST['to'];
 
+switch ( intval($_POST['customer_type']) ) {
+	case CTYPES_PRIVATE:
+	case CTYPES_COMPANY:
+		$ctype = $_POST['customer_type'];
+	break;
+
+	default:
+		$ctype = -1; //all
+}
+
 // date format 'yyyy/mm/dd'
 if($from) {
 	list($year, $month, $day) = explode('/',$from);
@@ -149,11 +159,13 @@ $items = $DB->GetAll('SELECT c.docid, c.itemid,' . ($doctype == 'invoices' ? ' c
 	    FROM documents d
 		' . ($doctype == 'invoices' ? 'LEFT JOIN invoicecontents c ON c.docid = d.id'
 			: 'LEFT JOIN debitnotecontents c ON c.docid = d.id') . '
-	    LEFT JOIN numberplans n ON d.numberplanid = n.id
-	    WHERE cancelled = 0 AND (d.type = ? OR d.type = ?) AND (' . $wherecol . ' BETWEEN ? AND ?) '
+	    LEFT JOIN numberplans n ON d.numberplanid = n.id' .
+	    ( $ctype != -1 ? ' LEFT JOIN customers cu ON d.customerid = cu.id ' : '' )
+	    . ' WHERE cancelled = 0 AND (d.type = ? OR d.type = ?) AND (' . $wherecol . ' BETWEEN ? AND ?) '
 	    .(isset($numberplans) ? 'AND d.numberplanid IN (' . $numberplans . ')' : '')
 	    .(isset($divwhere) ? $divwhere : '')
 	    .(isset($groupwhere) ? $groupwhere : '')
+		.( $ctype != -1 ? ' AND cu.type = ' . $ctype : '')
 	    .' AND NOT EXISTS (
                 	    SELECT 1 FROM customerassignments a
 			    JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
