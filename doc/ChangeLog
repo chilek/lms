@@ -109,6 +109,7 @@ version ?.??.?? (????-??-??):
   - enhancement: added potential ranges for UKE report [kosa/chilan]
   - improvement: show unique customer node locations in helpdesk notification footer [chilan]
   - improvement: allow to select division for liability report [chilan]
+  - improvement: added select by customer type for sale registry [kosa]
 
 version 1.11.21 (2016-10-14):
 

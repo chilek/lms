@@ -281,12 +281,14 @@
         if ( owner_id != 'undefined' && owner_id > 0 && $( '#customer_addresses' ).val() > 0 ) {
             location = $( '#customer_addresses option:selected' ).text();
         } else {
+            var state  = $('[data-address="state"]' ).val();
+            var zip    = $('[data-address="zip"]'   ).val();
             var city   = $('[data-address="city"]'  ).val();
             var street = $('[data-address="street"]').val();
             var house  = $('[data-address="house"]' ).val();
             var flat   = $('[data-address="flat"]'  ).val();
 
-            location = location_str( city, street, house, flat );
+            location = location_str( city, street, house, flat, zip, state );
         }
 
         if ( location.length > 0 ) {

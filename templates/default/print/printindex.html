@@ -468,6 +468,17 @@
 							</SELECT>
 						    </TD>
 						</TR>
+						<tr>
+							<td><img src="img/customer.gif" alt=""></td>
+							<td class="bold">{trans("Customers")}:</td>
+							<td>
+								<select name="customer_type">
+									<option value="-1">{trans("- all customers -")}</option>
+									<option value="{$smarty.const.CTYPES_PRIVATE}">{trans("private person")}</option>
+									<option value="{$smarty.const.CTYPES_COMPANY}">{trans("legal entity")}</option>
+								</select>
+							</td>
+						</tr>
 						<TR>
 						    <TD style="width: 1%;">
 							<IMG src="img/group.gif" alt="">
