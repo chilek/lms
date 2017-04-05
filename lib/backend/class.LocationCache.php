@@ -70,6 +70,15 @@ class LocationCache {
 		}
 	}
 
+	private function tercToKey($terc) {
+		sscanf($terc, "%02d%02d%02d%01d", $woj, $pow, $gm, $gmtyp);
+		return $woj . '|' . $pow . '|' . $gm . '|' . $gmtyp;
+	}
+
+	private function simcToKey($simc) {
+		return ltrim($simc, '0');
+	}
+
 	/*!
 	 * \brief Return row from location_cities by id.
 	 * equals to:
@@ -99,7 +108,14 @@ class LocationCache {
 				if ( isset( $this->city_by_id[ $id ] ) ) {
 			        return $this->city_by_id[ $id ];
 			    } else {
-			    	$this->city_by_id = $this->DB->GetAllByKey('SELECT id, ident, cityid FROM location_cities WHERE id = ?', 'id', array( $id ));
+					$this->city_by_id = $this->DB->GetAllByKey(
+						'SELECT lc.id, ' . $this->DB->Concat('ls.ident', "'|'", 'ld.ident', "'|'", 'lb.ident', "'|'", 'lb.type', "'|'", 'lc.ident') . ' AS terc_simc,
+							lc.cityid FROM location_cities lc
+						JOIN location_boroughs lb ON lb.id = lc.boroughid
+						JOIN location_districts ld ON ld.id = lb.districtid
+						JOIN location_states ls ON ls.id = ld.stateid
+						WHERE lc.id = ?',
+						'id', array( $id ));
 
 			    	if ( isset( $this->city_by_id[ $id ] ) ) {
 			        	return $this->city_by_id[ $id ];
@@ -112,15 +128,18 @@ class LocationCache {
 	}
 
 	/*!
-	 * \brief Return row from location_cities by id.
+	 * \brief Return row from location_cities by terc and ident.
 	 * equals to:
 	 * SELECT * FROM location_cities WHERE ident like 'x';
 	 *
-	 * \param int   $ident row ident
+	 * \param int   $terc terc ident
+	 * \param int   $simc city row ident
 	 * \param array if record was found
 	 * \param null  if record wasn't found
 	 */
-	public function getCityByIdent( $ident ) {
+	public function getCityByIdent($terc, $simc) {
+		$terc = $this->tercToKey($terc);
+		$simc = $this->simcToKey($simc);
 
 	    switch ( $this->load_policy ) {
 			case self::LOAD_FULL:
@@ -128,21 +147,28 @@ class LocationCache {
 					$this->initCityByIdentCache();
 				}
 
-			    if ( isset( $this->city_by_ident[ $ident ] ) ) {
-			        return $this->city_by_ident[ $ident ];
+			    if ( isset( $this->city_by_ident[ $terc . '|' . $simc ] ) ) {
+			        return $this->city_by_ident[ $terc . '|' . $simc ];
 			    } else {
 			    	return null;
 			    }
 			break;
 
 			case self::LOAD_ONE:
-				if ( isset( $this->city_by_ident[ $ident ] ) ) {
-			        return $this->city_by_ident[ $ident ];
+				if ( isset( $this->city_by_ident[ $terc . '|' . $simc ] ) ) {
+			        return $this->city_by_ident[ $terc . '|' . $simc ];
 			    } else {
-			    	$this->city_by_ident = $this->DB->GetAllByKey('SELECT id, ident, cityid FROM location_cities WHERE ident = ?', 'ident', array( (string) $ident ));
+					$this->city_by_ident = $this->DB->GetAllByKey(
+						'SELECT lc.id, ' . $this->DB->Concat('ls.ident', "'|'", 'ld.ident', "'|'", 'lb.ident', "'|'", 'lb.type', "'|'", 'lc.ident') . ' AS terc_simc,
+							lc.cityid FROM location_cities lc
+						JOIN location_boroughs lb ON lb.id = lc.boroughid
+						JOIN location_districts ld ON ld.id = lb.districtid
+						JOIN location_states ls ON ls.id = ld.stateid
+						WHERE lc.ident = ?',
+						'terc_simc', array( (string) $simc ));
 
-			    	if ( isset( $this->city_by_ident[ $ident ] ) ) {
-			        	return $this->city_by_ident[ $ident ];
+			    	if ( isset( $this->city_by_ident[ $terc . '|' . $simc ] ) ) {
+			        	return $this->city_by_ident[ $terc . '|' . $simc ];
 			    	} else {
 				    	return null;
 				    }
@@ -152,36 +178,39 @@ class LocationCache {
 	}
 
 	/*!
-	 * \brief Return row from location streets by ident.
+	 * \brief Return row from location streets by cityid and ident.
 	 * Equals to:
 	 * SELECT * FROM location_streets WHERE ident like 'x';
 	 *
-	 * \param $ident row ident number
+	 * \param $cityid city id in database
+	 * \param $street_ident street_ident in database
 	 * \param array  if record was found
 	 * \param null   if record wasn't found
 	 */
-	public function getStreetByIdent( $cityid, $ident ) {
+	public function getStreetByIdent( $cityid, $street_ident ) {
 	    switch ( $this->load_policy ) {
 	    	case self::LOAD_FULL:
 				if ( $this->streets_loaded == false ) {
-					$this->streets = $this->DB->getAllByKey('SELECT id, ident FROM location_streets', 'ident');
+					$this->streets = $this->DB->getAllByKey('SELECT id, ' . $this->DB->Concat('cityid', "'|'", 'ident') . ' AS cityid_ident,
+						ident FROM location_streets', 'cityid_ident');
 					$this->streets_loaded = true;
 				}
 
-				if ( isset($this->streets[$ident]) ) {
-					return $this->streets[$ident];
+				if ( isset($this->streets[$cityid . '|' . $street_ident]) ) {
+					return $this->streets[$cityid . '|' . $street_ident];
 				} else {
 					return null;
 				}
 	    	break;
 
 	        case self::LOAD_ONE:
-	        	if ( !isset($this->streets[ $ident ]) ) {
-					$this->streets = $this->DB->getAllByKey('SELECT id, ident FROM location_streets WHERE cityid = ?', 'ident', array( $cityid ));
+	        	if ( !isset($this->streets[$cityid . '|' . $street_ident]) ) {
+					$this->streets = $this->DB->getAllByKey('SELECT id, ' . $this->DB->Concat('cityid', "'|'", 'ident') . ' AS cityid_ident,
+						ident FROM location_streets WHERE cityid = ?', 'cityid_ident', array( $cityid ));
 				}
 
-				if ( isset($this->streets[$ident]) ) {
-					return $this->streets[$ident];
+				if ( isset($this->streets[$cityid . '|' . $street_ident]) ) {
+					return $this->streets[$cityid . '|' . $street_ident];
 				} else {
 					return null;
 				}
@@ -226,10 +255,16 @@ class LocationCache {
 
     	if ( $this->city_by_id_loaded == true ) {
             foreach ($this->city_by_id as $v) {
-                $this->city_by_ident[ $v['ident'] ] = $v;
+                $this->city_by_ident[ $v['terc_simc'] ] = $v;
             }
 		} else {
-			$this->city_by_ident = $this->DB->GetAllByKey('SELECT id, ident, cityid FROM location_cities', 'ident');
+			$this->city_by_ident = $this->DB->GetAllByKey('SELECT lc.id, '
+					. $this->DB->Concat('ls.ident', "'|'", 'ld.ident', "'|'", 'lb.ident', "'|'", 'lb.type', "'|'", 'lc.ident')
+					. ' AS terc_simc, lc.cityid FROM location_cities lc
+				JOIN location_boroughs lb ON lb.id = lc.boroughid
+				JOIN location_districts ld ON ld.id = lb.districtid
+				JOIN location_states ls ON ls.id = ld.stateid',
+				'terc_simc');
 		}
 
     	$this->city_by_ident_loaded = true;
@@ -245,7 +280,13 @@ class LocationCache {
                 $this->city_by_id[ $v['id'] ] = $v;
             }
 		} else {
-			$this->city_by_id = $this->DB->GetAllByKey('SELECT id, ident, cityid FROM location_cities', 'id');
+			$this->city_by_id = $this->DB->GetAllByKey('SELECT lc.id, '
+					. $this->DB->Concat('ls.ident', "'|'", 'ld.ident', "'|'", 'lb.ident', "'|'", 'lb.type', "'|'", 'lc.ident')
+					. ' AS terc_simc, lc.cityid FROM location_cities lc
+				JOIN location_boroughs lb ON lb.id = lc.boroughid
+				JOIN location_districts ld ON ld.id = lb.districtid
+				JOIN location_states ls ON ls.id = ld.stateid',
+				'id');
 		}
 
     	$this->city_by_id_loaded = true;

@@ -1001,12 +1001,13 @@ if ( isset($options['buildings']) ) {
                 continue;
             }
 
-            $v['simc'] = ltrim($v['simc'], '0');
-            $simc      = $v['simc'];
-            $city      = $location_cache->getCityByIdent( $simc );
+            $terc = $v['terc'];
+            $simc = $v['simc'];
+
+            $city = $location_cache->getCityByIdent($terc, $simc);
 
             if ( !$city ) {
-                fwrite($stderr, 'warning: teryt city id '.$v['simc'].' was\'t found in database' . PHP_EOL);
+                fwrite($stderr, 'warning: teryt terc ' . $terc . ' with simc ' . $simc . ' wasn\'t found in database' . PHP_EOL);
                 continue;
             }
 
