@@ -200,7 +200,7 @@ class LocationCache {
 	 */
 	public function buildingExists( $cityid, $streetid, $building_num ) {
 		if ( !isset($this->buildings[ $cityid ]) ) {
-			$tmp = $this->DB->GetAllByKey("SELECT (" . $this->DB->Concat('city_id', "'|'", "(CASE WHEN street_id IS NULL THEN '' ELSE street_id END)", "'|'", 'building_num') . ")
+			$tmp = $this->DB->GetAllByKey("SELECT (" . $this->DB->Concat('city_id', "'|'", "(CASE WHEN street_id IS NOT NULL THEN street_id END)", "'|'", 'building_num') . ")
 												AS lms_building_key,
 											longitude, latitude, id
 											FROM location_buildings lb
