@@ -160,7 +160,13 @@ function parse_teryt_building_row( $row ) {
 	static $column_names = array('id', 'woj', 'powiat', 'gmina', 'terc', 'miejscowosc',
 		'simc', 'ulica', 'ulic', 'building_num', 'longitude', 'latitude');
 
-	return array_combine($column_names, explode(';', str_replace("\r", '', $row)));
+	$exp_row = explode(';', str_replace("\r", '', $row));
+
+	if ( count($column_names) == count($exp_row) ) {
+        return array_combine($column_names, $exp_row);
+    } else {
+	    return null;
+    }
 }
 
 /*!
@@ -977,17 +983,17 @@ if ( isset($options['buildings']) ) {
         foreach ( $lines as $k=>$l ) {
             $v = parse_teryt_building_row( $l );
 
+            if ( !$v ) {
+                fwrite($stderr, 'error: can\'t parse row ' . $l . PHP_EOL);
+                continue;
+            }
+
             if ( isset($state_list) ) {
                 $state_ident = $state_name_to_ident[$v['woj']];
 
                 if ( !isset($state_list[$state_ident]) ) {
                     continue;
                 }
-            }
-
-            if ( !$v ) {
-                fwrite($stderr, 'error: can\'t parse row '.$l . PHP_EOL);
-                continue;
             }
 
             if ( !preg_match('/^[0-9a-zA-Z \/łŁ]*$/', $v['building_num']) ) {
