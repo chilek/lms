@@ -79,6 +79,10 @@ class LocationCache {
 		return ltrim($simc, '0');
 	}
 
+	private function ulicToKey($ulic) {
+		return ltrim($ulic, '0');
+	}
+
 	/*!
 	 * \brief Return row from location_cities by id.
 	 * equals to:
@@ -183,11 +187,13 @@ class LocationCache {
 	 * SELECT * FROM location_streets WHERE ident like 'x';
 	 *
 	 * \param $cityid city id in database
-	 * \param $street_ident street_ident in database
+	 * \param $ulic  street ident in database
 	 * \param array  if record was found
 	 * \param null   if record wasn't found
 	 */
-	public function getStreetByIdent( $cityid, $street_ident ) {
+	public function getStreetByIdent( $cityid, $ulic ) {
+		$ulic = $this->ulicToKey($ulic);
+
 	    switch ( $this->load_policy ) {
 	    	case self::LOAD_FULL:
 				if ( $this->streets_loaded == false ) {
@@ -196,21 +202,21 @@ class LocationCache {
 					$this->streets_loaded = true;
 				}
 
-				if ( isset($this->streets[$cityid . '|' . $street_ident]) ) {
-					return $this->streets[$cityid . '|' . $street_ident];
+				if ( isset($this->streets[$cityid . '|' . $ulic]) ) {
+					return $this->streets[$cityid . '|' . $ulic];
 				} else {
 					return null;
 				}
 	    	break;
 
 	        case self::LOAD_ONE:
-	        	if ( !isset($this->streets[$cityid . '|' . $street_ident]) ) {
+	        	if ( !isset($this->streets[$cityid . '|' . $ulic]) ) {
 					$this->streets = $this->DB->getAllByKey('SELECT id, ' . $this->DB->Concat('cityid', "'|'", 'ident') . ' AS cityid_ident,
 						ident FROM location_streets WHERE cityid = ?', 'cityid_ident', array( $cityid ));
 				}
 
-				if ( isset($this->streets[$cityid . '|' . $street_ident]) ) {
-					return $this->streets[$cityid . '|' . $street_ident];
+				if ( isset($this->streets[$cityid . '|' . $ulic]) ) {
+					return $this->streets[$cityid . '|' . $ulic];
 				} else {
 					return null;
 				}
@@ -229,7 +235,7 @@ class LocationCache {
 	 */
 	public function buildingExists( $cityid, $streetid, $building_num ) {
 		if ( !isset($this->buildings[ $cityid ]) ) {
-			$tmp = $this->DB->GetAllByKey("SELECT (" . $this->DB->Concat('city_id', "'|'", "(CASE WHEN street_id IS NOT NULL THEN street_id END)", "'|'", 'building_num') . ")
+			$tmp = $this->DB->GetAllByKey("SELECT (" . $this->DB->Concat('city_id', "'|'", "(CASE WHEN street_id IS NULL THEN 0 ELSE street_id END)", "'|'", 'building_num') . ")
 												AS lms_building_key,
 											longitude, latitude, id
 											FROM location_buildings lb
