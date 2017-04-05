@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -28,9 +28,11 @@ if (!$LMS->NetDevExists($_GET['id'])) {
 	$SESSION->redirect('?m=netdevlist');
 }
 
-include(MODULES_DIR . '/netdevxajax.inc.php');
+$LMS->InitXajax();
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'netdevxajax.inc.php');
+$SMARTY->assign('xajax', $LMS->RunXajax());
 
-if (! array_key_exists('xjxfun', $_POST)) {                  // xajax was called and handled by netdevxajax.inc.php
+if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled by netdevxajax.inc.php
 	$netdevinfo = $LMS->GetNetDev($_GET['id']);
 	$netdevconnected = $LMS->GetNetDevConnectedNames($_GET['id']);
 	$netcomplist = $LMS->GetNetdevLinkedNodes($_GET['id']);
@@ -112,4 +114,5 @@ if (! array_key_exists('xjxfun', $_POST)) {                  // xajax was called
 		$SMARTY->display('netdev/netdevinfo.html');
 	}
 }
+
 ?>

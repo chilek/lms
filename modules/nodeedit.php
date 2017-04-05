@@ -288,7 +288,9 @@ include(MODULES_DIR . '/customer.inc.php');
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 
-include(MODULES_DIR . '/nodexajax.inc.php');
+$LMS->InitXajax();
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'nodexajax.inc.php');
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'geocodexajax.inc.php');
 
 $nodeinfo = $LMS->ExecHook('node_edit_init', $nodeinfo);
 

@@ -333,4 +333,15 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             return false;
         }
     }
+
+	public function GetAddress($address_id) {
+		return $this->db->GetRow('SELECT a.*, ls.name AS state_name,
+				ld.name AS district_name, lb.name AS borough_name,
+				lc.name AS city_name FROM addresses a
+			LEFT JOIN location_cities lc ON lc.id = a.city_id
+			LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
+			LEFT JOIN location_districts ld ON ld.id = lb.districtid
+			LEFT JOIN location_states ls ON ls.id = ld.stateid
+			WHERE a.id = ?', array($address_id));
+	}
 }

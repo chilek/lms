@@ -354,27 +354,33 @@
     /*
      * \brief Update address location coordinates. Require google API key.
      */
-    $( '#set_gps' ).click( function() {
-        var owner_id = $( '#ownerid_input' ).val();
-        var location = '';
+	$( '#set_gps' ).click( function() {
+		var owner_id = $( '#ownerid_input' ).val();
+		var location = null;
 
-        if ( owner_id != 'undefined' && owner_id > 0 && $( '#customer_addresses' ).val() > 0 ) {
-            location = $( '#customer_addresses option:selected' ).text();
-        } else {
-            var state  = $('[data-address="state"]').val();
-            var zip    = $('[data-address="zip"]').val();
-            var city   = $('[data-address="city"]').val();
-            var street = $('[data-address="street"]').val();
-            var house  = $('[data-address="house"]').val();
-            var flat   = $('[data-address="flat"]').val();
+		if ( owner_id != 'undefined' && owner_id > 0 && $( '#customer_addresses' ).val() > 0 ) {
+			location = {
+				address_id: $( '#customer_addresses' ).val()
+			}
+		} else if ($('[data-address="city"]').val().length) {
+			location = {
+				street:	$('[data-address="street"]').val(),
+				house:	$('[data-address="house"]' ).val(),
+				flat:	$('[data-address="flat"]'  ).val()
+			}
+			if ($('[data-address="teryt-checkbox"]').prop('checked') && $('[data-address="city-hidden"]').val() > 0) {
+				location.city_id = $('[data-address="city-hidden"]').val();
+			} else {
+				location.state = $('[data-address="state"]' ).val();
+				location.zip = $('[data-address="zip"]'   ).val();
+				location.city = $('[data-address="city"]'  ).val();
+			}
+		}
 
-            location = location_str( city, street, house, flat, zip, state );
-        }
-
-        if ( location.length > 0 ) {
-            setAddressLocation( location, "#latitude", "#longitude" );
-        }
-    });
+		if ( location ) {
+			xajax_get_gps_coordinates(location, 'latitude', 'longitude');
+		}
+	});
 
     /*!
      * \brief Show / hide location choose box.

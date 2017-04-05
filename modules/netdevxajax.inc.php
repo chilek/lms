@@ -407,12 +407,10 @@ function getFirstFreeAddress($netid, $elemid) {
 	return $result;
 }
 
-$LMS->InitXajax();
 $LMS->RegisterXajaxFunction(array(
 	'getManagementUrls','addManagementUrl', 'delManagementUrl', 'updateManagementUrl',
 	'getRadioSectors', 'addRadioSector', 'delRadioSector', 'updateRadioSector',
 	'getRadioSectorsForNetdev', 'getFirstFreeAddress'
 ));
-$SMARTY->assign('xajax', $LMS->RunXajax());
 
 ?>

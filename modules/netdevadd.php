@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -23,6 +23,10 @@
  *
  *  $Id$
  */
+
+$LMS->InitXajax();
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'geocodexajax.inc.php');
+$SMARTY->assign('xajax', $LMS->RunXajax());
 
 if (isset($_POST['netdev'])) {
 	$netdevdata = $_POST['netdev'];

@@ -24,6 +24,10 @@
  *  $Id$
  */
 
+$LMS->InitXajax();
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'geocodexajax.inc.php');
+$SMARTY->assign('xajax', $LMS->RunXajax());
+
 if (isset($_POST['netnode']))
 {
 	$netnodedata = $_POST['netnode'];

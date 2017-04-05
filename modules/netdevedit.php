@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -719,7 +719,10 @@ $SMARTY->assign('nastype'              , $LMS->GetNAStypes());
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
 
-include(MODULES_DIR . '/netdevxajax.inc.php');
+$LMS->InitXajax();
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'netdevxajax.inc.php');
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'geocodexajax.inc.php');
+$SMARTY->assign('xajax', $LMS->RunXajax());
 
 switch ($edit) {
 	case 'data':

@@ -109,7 +109,8 @@ if ($authtype != 0) {
 	$nodeauthtype['eap'] = ($authtype & 4);
 }
 
-include(MODULES_DIR . '/nodexajax.inc.php');
+$LMS->InitXajax();
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'nodexajax.inc.php');
 
 $nodeinfo = $LMS->ExecHook('node_info_init', $nodeinfo);
 
