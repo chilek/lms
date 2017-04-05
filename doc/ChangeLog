@@ -112,6 +112,8 @@ version ?.??.?? (????-??-??):
   - improvement: added select by customer type for sale registry [kosa]
   - enhancement: auto gps coordinates detection in UI uses territory units if they are
     defined [chilan]
+  - improvement: phpui.gps_coordinate_providers specifies which gps providers are used
+    (google,siis by default) [chilan]
 
 version 1.11.21 (2016-10-14):
 

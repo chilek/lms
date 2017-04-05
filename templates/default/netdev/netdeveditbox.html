@@ -370,6 +370,7 @@
 			}
 			if ($('[data-address="teryt-checkbox"]').prop('checked') && $('[data-address="city-hidden"]').val() > 0) {
 				location.city_id = $('[data-address="city-hidden"]').val();
+				location.street_id = $('[data-address="street-hidden"]').val();
 			} else {
 				location.state = $('[data-address="state"]' ).val();
 				location.zip = $('[data-address="zip"]'   ).val();

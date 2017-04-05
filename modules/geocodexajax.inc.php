@@ -24,8 +24,18 @@
  *  $Id$
  */
 
+function array_provider_filter($provider) {
+	static $all_providers = array(
+		'google' => true,
+		'siis' => true,
+	);
+	return isset($all_providers[$provider]);
+}
+
 function get_gps_coordinates($location, $callback) {
+
 	global $LMS;
+
 	$DB = LMSDB::getInstance();
 
 	$result = new xajaxResponse();
@@ -38,11 +48,12 @@ function get_gps_coordinates($location, $callback) {
 	} elseif (isset($location['city_id'])) {
 		$address = $DB->GetRow('SELECT ls.name AS state_name,
 				ld.name AS district_name, lb.name AS borough_name,
-				lc.name AS city_name FROM location_cities lc
+				lc.id AS city_id, lc.name AS city_name FROM location_cities lc
 			JOIN location_boroughs lb ON lb.id = lc.boroughid
 			JOIN location_districts ld ON ld.id = lb.districtid
 			JOIN location_states ls ON ls.id = ld.stateid
 			WHERE lc.id = ?', array($location['city_id']));
+		$address['street_id'] = $location['street_id'];
 	} else {
 		$address = array(
 			'city_name' => $location['city'],
@@ -51,18 +62,41 @@ function get_gps_coordinates($location, $callback) {
 			$address['state_name'] = $location['state'];
 	}
 
-	$location_string = (isset($address['state_name']) && !empty($address['state_name']) ? $address['state_name'] . ', ' : '')
-		. (isset($address['district_name']) && !empty($address['district_name']) ? $address['district_name'] . ', ' : '')
-		. (isset($address['borough_name']) && !empty($address['borough_name']) ? $address['borough_name'] . ', ' : '')
-		. $address['city_name']
-		. (isset($location['street']) && !empty($location['street']) ? ', ' . $location['street'] : '')
-		. (isset($location['house']) && mb_strlen($location['house']) ? ' ' . $location['house'] : '')
-		. (isset($location['flat']) && mb_strlen($location['flat']) ? '/' . $location['flat'] : '');
-	$geocode = geocode($location_string);
-	if ($geocode['status'] == 'OK' && $geocode['accuracy'] == 'ROOFTOP') {
-		$result->assign('latitude', 'value', $geocode['latitude']);
-		$result->assign('longitude', 'value', $geocode['longitude']);
-	}
+	$providers = trim(ConfigHelper::getConfig('phpui.gps_coordinate_providers', 'google,siis'));
+	$providers = preg_split('/\s*[,|]\s*/', $providers);
+	$providers = array_filter($providers, 'array_provider_filter');
+
+	foreach ($providers as $provider)
+		if ($provider == 'google') {
+			$location_string = (isset($address['state_name']) && !empty($address['state_name']) ? $address['state_name'] . ', ' : '')
+				. (isset($address['district_name']) && !empty($address['district_name']) ? $address['district_name'] . ', ' : '')
+				. (isset($address['borough_name']) && !empty($address['borough_name']) ? $address['borough_name'] . ', ' : '')
+				. $address['city_name']
+				. (isset($location['street']) && !empty($location['street']) ? ', ' . $location['street'] : '')
+				. (isset($location['house']) && mb_strlen($location['house']) ? ' ' . $location['house'] : '')
+				. (isset($location['flat']) && mb_strlen($location['flat']) ? '/' . $location['flat'] : '');
+			$geocode = geocode($location_string);
+			if ($geocode['status'] == 'OK' && $geocode['accuracy'] == 'ROOFTOP') {
+				$result->assign('latitude', 'value', $geocode['latitude']);
+				$result->assign('longitude', 'value', $geocode['longitude']);
+				break;
+			}
+		} elseif ($provider == 'siis' && isset($address) && isset($address['city_id'])
+			&& !empty($address['city_id']) && $DB->GetOne('SELECT id FROM location_buildings LIMIT 1')) {
+			$args = array(
+				'city_id' => $address['city_id'],
+			);
+			if (!empty($address['street_id']))
+				$args['street_id'] = $address['street_id'];
+			if (!empty($location['house']))
+				$args['building_num'] = $location['house'];
+			$buildings = $DB->GetAll('SELECT * FROM location_buildings
+				WHERE ' . implode(' = ? AND ', array_keys($args)) . ' = ?', array_values($args));
+			if (empty($buildings) || count($buildings) > 1)
+				break;
+			$result->assign('latitude', 'value', $buildings[0]['latitude']);
+			$result->assign('longitude', 'value', $buildings[0]['longitude']);
+		}
 
 	return $result;
 }
