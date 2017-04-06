@@ -35,6 +35,7 @@ $parameters = array(
 	'd'  => 'debug',
 	'e:' => 'callee:',
 	'f:' => 'file:',
+	'i'  => 'stdin',
 	'l:' => 'calltime:',
 	'o:' => 'totaltime:',
 	'r:' => 'caller:',
@@ -76,6 +77,9 @@ lms-billing.php
 -v, --version                   print version info and exit;
 -q, --quiet                     suppress any output, except errors
 -c, --cache-dir=<cache-directory>       explicitly sets cache directory
+-f, --file=<file>               get billing records from csv file
+-i, --stdin                     get billing records from standard input
+-a, --action=<estimate|account> action which script should take
 
 EOF;
 	exit(0);
@@ -171,7 +175,7 @@ switch (strtolower($options['action'])) {
     break;
 
     case 'account':
-        if (isset($options['file'])) {
+        if (isset($options['file']) || isset($options['stdin'])) {
             $fh    = (isset($options['file'])) ? fopen($options['file'], 'r') : fopen('php://stdin', 'r');
             $error = array();
             $i     = 0;
