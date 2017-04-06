@@ -37,7 +37,7 @@ class VoipDbBuffor {
         $this->provider = $p;
         $this->estimate = new Estimate($p);
 
-        $this->pattern = '/^' . ConfigHelper('voip.cdr_billing_record_format', '"(?<caller>(?:\+?[0-9]*|unavailable.*|anonymous.*))",' .
+        $this->pattern = '/^' . ConfigHelper::getConfig('voip.cdr_billing_record_format', '"(?<caller>(?:\+?[0-9]*|unavailable.*|anonymous.*))",' .
                          '"(.*)",' .
                          '"(?<callee>[0-9]*)",' .
                          '"(?<call_type>(?:incoming.*|outgoing.*))",' .
