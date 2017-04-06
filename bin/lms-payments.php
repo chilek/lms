@@ -371,11 +371,11 @@ $query = 'SELECT
 		    ROUND((SELECT
 			          CASE WHEN sum(price) IS NULL THEN 0 ELSE sum(price) END
 			       FROM
-			          voip_cdr vc LEFT JOIN voipaccounts va ON vc.callervoipaccountid = va.id
+			          voip_cdr vc
+			       JOIN voipaccounts va ON vc.callervoipaccountid = va.id AND va.ownerid = a.customerid
+			       JOIN voip_numbers vn ON vn.voip_account_id = va.id AND vn.phone = vc.caller
+			       JOIN voip_number_assignments vna ON vna.number_id = vn.id AND vna.assignment_id = a.id
 			       WHERE
-			          a.id in (SELECT assignment_id FROM voip_number_assignments vna
-                               LEFT JOIN voip_numbers vn ON vna.number_id = vn.id WHERE vn.phone = vc.caller) AND
-			          va.ownerid = a.customerid AND
 			          vc.call_start_time >= (CASE a.period
 				                               WHEN " . YEARLY     . ' THEN ' . mktime(0, 0, 0, $month  , 1, $year-1) . '
 				                               WHEN ' . HALFYEARLY . ' THEN ' . mktime(0, 0, 0, $month-6, 1, $year)   . '

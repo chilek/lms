@@ -78,9 +78,10 @@ class SqlProvider extends VoipDataProvider {
                             t.voip_tariff_rule_id as tariffruleid, va.flags
                           FROM
                             voipaccounts va
-                            LEFT JOIN assignments a on va.ownerid = a.customerid
-                            LEFT JOIN tariffs t on t.id = a.tariffid
-                            LEFT JOIN voip_numbers vn on vn.voip_account_id = va.id
+                            JOIN voip_numbers vn ON vn.voip_account_id = va.id
+                            JOIN assignments a ON a.customerid = va.ownerid
+                            JOIN tariffs t ON t.id = a.tariffid
+                            JOIN voip_number_assignments vna ON vna.number_id = vn.id AND vna.assignment_id = a.id
                           WHERE
                             vn.phone ?LIKE? ? AND
                             t.type = ?',
