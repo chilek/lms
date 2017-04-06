@@ -128,7 +128,11 @@ class VoipDbBuffor {
 
         foreach ($this->cdr_container as $c) {
             $caller    = $P->getCustomerByPhone($c['caller']);
+            if (empty($caller))
+                $caller['phone'] = $c['caller'];
             $callee    = $P->getCustomerByPhone($c['callee']);
+            if (empty($callee))
+                $callee['phone'] = $c['callee'];
             $caller_gr = $P->getPrefixGroupName($caller['phone'], $caller['tariffid']);
             $callee_gr = $P->getPrefixGroupName($callee['phone'], $caller['tariffid']);
 
