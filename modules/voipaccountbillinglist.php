@@ -81,7 +81,7 @@ if (!empty($params['ftype']))
 		break;
 	}
 
-$voipaccountlist = $LMS->GetVoipAccountList($o, NULL, NULL);
+$voipaccountlist = $LMS->GetVoipAccountList('owner', NULL, NULL);
 unset($voipaccountlist['total']);
 unset($voipaccountlist['order']);
 unset($voipaccountlist['direction']);
