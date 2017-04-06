@@ -92,9 +92,9 @@
 		<td class="bold">{trans("Customer:")}</td>
 		<td>
 			{if isset($netdevinfo.ownerid)}
-				{customerlist form="netdevedit" customers=$customers selected=$netdevinfo.ownerid selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input"}
+				{customerlist form="netdevedit" customers=$customers selected=$netdevinfo.ownerid selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
 			{else}
-				{customerlist form="netdevedit" customers=$customers selected="" selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input"}
+				{customerlist form="netdevedit" customers=$customers selected="" selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
 			{/if}
 		</td>
 	</tr>
@@ -348,7 +348,6 @@
 <script type="text/javascript">
 <!--
     var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
-    var timer;
     setNNProject();
 
     /*
@@ -400,43 +399,15 @@
         }
     }
 
-    /*!
-     * \brief Update customer addresses list on input change.
-     */
-    $( '#ownerid_input' ).on('keyup input paste', function() {
-        var id = $(this).val();
-
-        updateLocationBoxesDisplay( id );
-
-        if ( id != 'undefined' && id > 0 ) {
-            // delay for send request, 300ms
-            clearTimeout( timer );
-            timer = setTimeout( function() { customer_addresses.setAddressList( getCustomerAddresses(id) ); }, 300);
-        }
-    });
-
-    /*!
-     * \brief On keydown, clear the countdown.
-     */
-    $( '#ownerid_input' ).on('keydown', function () {
-        clearTimeout(timer);
-    });
-
-    {if !ConfigHelper::checkConfig('phpui.big_networks')}
-    /*!
-     * \brief Update customer addresses list on select change.
-     * Using when big_networks is set as false.
-     */
-    $( '#ownerid_select' ).change( function() {
-        var id = $(this).val();
+    function customerChanged() {
+        var id = $('#ownerid_input').val();
 
         updateLocationBoxesDisplay( id );
 
         if ( id != 'undefined' && id > 0 ) {
             customer_addresses.setAddressList( getCustomerAddresses(id) );
         }
-    });
-    {/if}
+    }
 
     updateLocationBoxesDisplay( {intval($netdevinfo.ownerid)} );
 
