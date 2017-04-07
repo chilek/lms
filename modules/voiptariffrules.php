@@ -232,14 +232,17 @@ else if ($rule) {
 
         if (!$rule_id) {
 	        $DB->Execute('INSERT INTO voip_rule_groups (name, description) VALUES (?, ?)', array($rule['name'], $rule['description']));
-            $rule['id'] = $rule_id = $DB->GetOne("SELECT id FROM voip_rule_groups WHERE name = ?", array($rule['name']));
+            $rule['id'] = $rule_id = $DB->GetLastInsertID('voip_rule_groups');
 
   	    	foreach($rule['group'] as $v) {
   	            $settings = serializeRuleParams($v);
 	       	    $new_groups[] = "($rule_id, " . $v['groupid'] . ",'$settings')";
 	   		}
 	    } else {
-	        $dbrules = $DB->GetALLbyKey('SELECT id, rule_group_id, prefix_group_id, settings
+			$DB->Execute('UPDATE voip_rule_groups SET name = ?, description = ? WHERE id = ?',
+				array($rule['name'], $rule['description'], $rule_id));
+
+	        $dbrules = $DB->GetAllByKey('SELECT id, rule_group_id, prefix_group_id, settings
 	                                     FROM voip_rules
 	                                     WHERE rule_group_id = ?', 'id', array($rule_id));
 
