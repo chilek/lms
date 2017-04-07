@@ -167,8 +167,11 @@ switch (strtolower($options['action'])) {
         try {
             $call_time = $estimate->getMaxCallTime($options['caller'], $options['callee']);
 
+			// if call time is longer then one month then we limit it to one month
+			if ($call_time > 31 * 24 * 60 * 60)
+				$call_time = 31 * 24 * 60 * 60;
             // if debug mode is set print value else change to miliseconds before print
-            echo (array_key_exists('debug', $options)) ? $call_time.PHP_EOL : $call_time*1000;
+            printf("%.0f", isset($options['debug']) ? $call_time . PHP_EOL : $call_time * 1000);
         } catch (Exception $e) {
             echo $e->getMessage();
         }
