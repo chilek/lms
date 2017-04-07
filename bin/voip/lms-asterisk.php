@@ -149,10 +149,11 @@ if (!empty($records))
 
 $accounts = $DB->GetAll("SELECT a.login, a.passwd, " . $DB->GroupConcat("n.phone") . " AS phones, a.flags, lc.boroughid
 	FROM voipaccounts a
+	LEFT JOIN vaddresses va ON va.id = a.address_id
 	LEFT JOIN (
 		SELECT voip_account_id, phone FROM voip_numbers ORDER BY voip_account_id, number_index
 	) n ON n.voip_account_id = a.id
-	LEFT JOIN location_cities lc ON lc.id = a.location_city
+	LEFT JOIN location_cities lc ON lc.id = location_city
 	GROUP BY a.login, a.passwd, a.flags, lc.boroughid");
 
 $fhs = fopen($sip_config_file, "w+");
