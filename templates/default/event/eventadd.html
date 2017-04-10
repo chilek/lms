@@ -160,7 +160,7 @@ $(function() {
                                 {if empty($event.ticketid) && empty($event.customerid)}
 		    <select id="nodes_location_sel" name="event[nodeid]" {tip text="Select node location"}>
 			{foreach from=$nodes_location item=item}
-			    <option value="{$item.id}"{if $item.id == $data.nodeid} selected{/if}>{$item.location}</option>
+			    <option value="{$item.id}"{if $item.id == $data.nodeid} selected{/if}>{$item.name}: {$item.location}</option>
 			{/foreach}
 		    </select>
 		    <label>{trans("Use customer location:")} <input type="checkbox" name="event[customer_location]"></label>

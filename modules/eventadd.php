@@ -24,13 +24,15 @@
  *  $Id$
  */
 
+function GetNodesLocation($customerid) {
+	return LMSDB::getInstance()->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY n.name ASC', array($customerid));
+}
+
 function select_customer($id)
 {
     $JSResponse = new xajaxResponse();
-	if (!empty($id)) {
-		$nodes_location = LMSDB::getInstance()->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY n.name ASC', array($id));
-		$JSResponse->call('update_nodes_location', (array)$nodes_location);
-	}
+	if (!empty($id))
+		$JSResponse->call('update_nodes_location', (array)GetNodesLocation($id));
     return $JSResponse;
 }
 
@@ -163,8 +165,10 @@ if(isset($_POST['event']))
 }
 
 $event['date'] = isset($event['date']) ? $event['date'] : $SESSION->get('edate');
-if(empty($event['customerid']) && !empty($_GET['customerid']))
+if(empty($event['customerid']) && !empty($_GET['customerid'])) {
 	$event['customerid'] = intval($_GET['customerid']);
+	$SMARTY->assign('nodes_location', GetNodesLocation($event['customerid']));
+}
 
 if(isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year']))
 {
