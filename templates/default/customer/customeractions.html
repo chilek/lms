@@ -21,7 +21,7 @@
 			<INPUT type="hidden" name="m" value="customercutoffstop">
 			<INPUT type="hidden" name="customerid" value="{$customerinfo.id}">
 			<TABLE class="lmsbox-inner">
-                            <TBODY>
+				<tbody>
 				<TR>
 					<TD width="1%">
 					    <IMG src="img/options.gif" alt="">
@@ -34,11 +34,11 @@
 						</label>&nbsp;
 						<INPUT type="text" name="cutoffstop" id="cutoffstop" {if $customerinfo.cutoffstop == intval(pow(2, 31) - 1)}style="display: none;"{elseif $customerinfo.cutoffstop}value="{$customerinfo.cutoffstop|date_format:"%Y/%m/%d"}"{/if} size="10" {tip class="calendar" text="Select date of cutoff suspending (optional)" trigger="cutoffstop"}>
 					</TD>
-					<TD width="1%" NOWRAP align="RIGHT">
+					<TD width="1%" class="nobr text-right">
 						<A href="javascript:document.cutoffstopaction.submit()">{trans("Submit")} <img src="img/save.gif" alt=""></a>
 					</TD>
 				</TR>
-			    <tbody>
+				</tbody>
 			</table>
 		    </FORM>
 		    <FORM method="POST" name="warningaction" action="?m=customerwarn">
@@ -55,7 +55,7 @@
 					    <INPUT TYPE="checkbox" NAME="setwarnings[warnon]" ID="warnon" onchange="switchbox('warnon');"><label for="warnon">{trans("Enable")}</label>
 					    <INPUT TYPE="checkbox" NAME="setwarnings[warnoff]" ID="warnoff" onchange="switchbox('warnoff');"><label for="warnoff">{trans("Disable")}</label>
 					</TD>
-					<TD width="1%" NOWRAP align="RIGHT">
+					<TD width="1%" class="nobr text-right">
 						<A href="javascript:document.warningaction.submit()">{trans("Submit")} <img src="img/save.gif" alt=""></a>
 					</TD>
 				</TR>
