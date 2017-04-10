@@ -194,11 +194,11 @@
     $( function() {
         $('#voip-login').focus();
 
-        $i = {if !isset($phone_next_index)}0{else}{$phone_next_index}{/if};
+        var i = {if !isset($phone_next_index)}0{else}{$phone_next_index}{/if};
 
         $('#add_number').on('click', function () {
-            ++$i;
-            var phone_number_input = '<input type="tel" name="voipaccountdata[phone]['+$i+']" {tip trigger="phone'+i+'"}>';
+            ++i;
+            var phone_number_input = '<input type="tel" name="voipaccountdata[phone]['+i+']" {tip trigger="phone'+i+'"}>';
             $('#phone_numbers_table').append('<tr class="row"><td>' + phone_number_input + '</td><td><div>' + pool_number_select + ' ' + remove_number + '</div></td></tr>');
             if ($('#phone_numbers_table .remove-number').length < 2)
                 $('#phone_numbers_table .remove-number').addClass('lms-ui-visibility-hidden');
