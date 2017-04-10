@@ -165,7 +165,7 @@ switch($type)
 		$list = $DB->GetAllByKey('SELECT rttickets.id, createtime, customerid, subject, requestor, '
 			.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername '
 			.(!empty($_POST['contacts']) || !empty($_GET['contacts'])
-				? ', address, (SELECT ' . $DB->GroupConcat('contact', ',', true) . '
+				? ', city, address, (SELECT ' . $DB->GroupConcat('contact', ',', true) . '
 					FROM customercontacts WHERE customerid = c.id AND (customercontacts.type & '. (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE) .' > 0 ) GROUP BY customerid) AS phones,
 					(SELECT ' . $DB->GroupConcat('contact', ',', true) . '
 					FROM customercontacts WHERE customerid = c.id AND (customercontacts.type & ' . CONTACT_EMAIL .' = '. CONTACT_EMAIL .

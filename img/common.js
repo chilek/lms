@@ -892,30 +892,6 @@ function _getAddressList( action, v ) {
 }
 
 /*!
- * \brief Put address coordinates to inputs by single address string.
- *
- * \param string address_str address string
- * \param string latitude_id id of latitude input
- * \param string latitude_id id of longitude input
- */
-function setAddressLocation( address_str, latitude_id, longitude_id ) {
-    var address = null;
-
-    $.ajax({
-        url    : "?m=customeraddresses&action=geocode&address=" + address_str,
-        async  : false,
-        success: function(data) {
-            address = JSON.parse( data );
-        }
-    });
-
-    if ( address['accuracy'] == 'ROOFTOP' ) {
-        $(longitude_id).val(address['longitude']);
-        $(latitude_id).val(address['latitude']);
-    }
-}
-
-/*!
  * \brief Concatenate address fields to one string.
  *
  * \param string address

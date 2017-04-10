@@ -568,9 +568,13 @@
     /*
      * \brief Update address location update. Require google API key.
      */
-    $( '#set_gps' ).click( function() {
-        setAddressLocation( $("#customer_addresses option:selected").text(), "#latitude", "#longitude" );
-    });
+	$( '#set_gps' ).click( function() {
+		if ($('#customer_addresses').val()) {
+			xajax_get_gps_coordinates({
+					address_id: $('#customer_addresses').val()
+				}, 'latitude', 'longitude');
+		}
+	});
 
     /*!
      * \brief Update addresses list on customer input change.

@@ -36,9 +36,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function GetCustomerTariffsValue($id)
     {
         return $this->db->GetOne('SELECT SUM(tariffs.value)
-		    FROM assignments, tariffs
+		    FROM assignments a, tariffs
 			WHERE tariffid = tariffs.id AND customerid = ? AND suspended = 0
-			    AND datefrom <= ?NOW? AND (dateto > ?NOW? OR dateto = 0)', array($id));
+			    AND a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)', array($id));
     }
 
     public function GetCustomerAssignments($id, $show_expired = false)

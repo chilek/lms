@@ -34,6 +34,8 @@ if (isset($_GET['ajax'])) {
 
 	$customernames = array();
 	foreach ($ids as $id) {
+		if (!($id = intval($id)))
+			continue;
 		$customername = $LMS->GetCustomerName($id);
 		if (!empty($customername))
 			$customernames[$id] = $customername;

@@ -2276,6 +2276,11 @@ class LMS
         return $manager->CopyAddress( $address_id );
     }
 
+    public function GetAddress( $address_id ) {
+        $manager = $this->getLocationManager();
+        return $manager->GetAddress( $address_id );
+    }
+
     public function GetNAStypes()
     {
         return $this->DB->GetAllByKey('SELECT id, name FROM nastypes ORDER BY name', 'id');

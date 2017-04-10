@@ -2,6 +2,7 @@
 {block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
 {block name=module_content}
 <!--// $Id$ //-->
+{$xajax}
 <script type="text/javascript" src="img/netnodehelper.js"></script>
 {include file="google-maps.html"}
 <H1>{$layout.pagetitle}</H1>
@@ -87,9 +88,9 @@
 								<td><img src="img/customer.gif" alt=""> {trans("Owner:")}</td>
 								<td>
 									{if isset($customer.id)}
-										{customerlist form="netdevadd" customers=$customers selected=$customer.id selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input"}
+										{customerlist form="netdevadd" customers=$customers selected=$customer.id selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
 									{else}
-										{customerlist form="netdevadd" customers=$customers selected=$note.customerid selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input"}
+										{customerlist form="netdevadd" customers=$customers selected=$note.customerid selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
 									{/if}
 								</td>
 							</tr>
@@ -266,7 +267,6 @@
 <script type="text/javascript">
 <!--
     var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
-    var timer;
 
     document.forms['netdevadd'].elements['netdev[name]'].focus();
     setNNProject();
@@ -274,27 +274,34 @@
     /*
      * \brief Update address location coordinates. Require google API key.
      */
-    $( '#set_gps' ).click( function() {
-        var owner_id = $( '#ownerid_input' ).val();
-        var location = '';
+	$( '#set_gps' ).click( function() {
+		var owner_id = $( '#ownerid_input' ).val();
+		var location = null;
 
-        if ( owner_id != 'undefined' && owner_id > 0 && $( '#customer_addresses' ).val() > 0 ) {
-            location = $( '#customer_addresses option:selected' ).text();
-        } else {
-            var state  = $('[data-address="state"]' ).val();
-            var zip    = $('[data-address="zip"]'   ).val();
-            var city   = $('[data-address="city"]'  ).val();
-            var street = $('[data-address="street"]').val();
-            var house  = $('[data-address="house"]' ).val();
-            var flat   = $('[data-address="flat"]'  ).val();
+		if ( owner_id != 'undefined' && owner_id > 0 && $( '#customer_addresses' ).val() > 0 ) {
+			location = {
+				address_id: $( '#customer_addresses' ).val()
+			}
+		} else if ($('[data-address="city"]').val().length) {
+			location = {
+				street:	$('[data-address="street"]').val(),
+				house:	$('[data-address="house"]' ).val(),
+				flat:	$('[data-address="flat"]'  ).val()
+			}
+			if ($('[data-address="teryt-checkbox"]').prop('checked') && $('[data-address="city-hidden"]').val() > 0) {
+				location.city_id = $('[data-address="city-hidden"]').val();
+				location.street_id = $('[data-address="street-hidden"]').val();
+			} else {
+				location.state = $('[data-address="state"]' ).val();
+				location.zip = $('[data-address="zip"]'   ).val();
+				location.city = $('[data-address="city"]'  ).val();
+			}
+		}
 
-            location = location_str( city, street, house, flat, zip, state );
-        }
-
-        if ( location.length > 0 ) {
-            setAddressLocation( location, "#latitude", "#longitude" );
-        }
-    });
+		if ( location ) {
+			xajax_get_gps_coordinates(location, 'latitude', 'longitude');
+		}
+	});
 
     $( function() {
         $( "#modelselect" ).click( function() {
@@ -323,40 +330,15 @@
     /*!
      * \brief Update customer addresses list on input change.
      */
-    $( '#ownerid_input' ).on('input', function() {
-        var id = $(this).val();
-
-        updateLocationBoxesDisplay( id );
-
-        if ( id != 'undefined' && id > 0 ) {
-            // delay for send request, 300ms
-            clearTimeout(timer);
-            timer = setTimeout( function() { customer_addresses.setAddressList( getCustomerAddresses(id) ); }, 300);
-        }
-    });
-
-    /*!
-     * \brief On keydown, clear the countdown.
-     */
-    $( '#ownerid_input' ).on('keydown', function () {
-        clearTimeout(timer);
-    });
-
-    {if !ConfigHelper::checkConfig('phpui.big_networks')}
-    /*!
-     * \brief Update customer addresses list on select change.
-     * Using when big_networks is set as false.
-     */
-    $( '#ownerid_select' ).change( function() {
-        var id = $(this).val();
+    function customerChanged() {
+        var id = $('#ownerid_input').val();
 
         updateLocationBoxesDisplay( id );
 
         if ( id != 'undefined' && id > 0 ) {
             customer_addresses.setAddressList( getCustomerAddresses(id) );
         }
-    });
-    {/if}
+    };
 
     updateLocationBoxesDisplay( {intval($netdevinfo.ownerid)} );
 

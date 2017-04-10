@@ -272,7 +272,9 @@ $nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name"
 	array(INV_PROJECT_SYSTEM));
 $SMARTY->assign('NNprojects',$nprojects);
 
-include(MODULES_DIR . '/nodexajax.inc.php');
+$LMS->InitXajax();
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'nodexajax.inc.php');
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'geocodexajax.inc.php');
 
 $nodedata = $LMS->ExecHook('node_add_init', $nodedata);
 

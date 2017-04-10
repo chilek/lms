@@ -52,4 +52,6 @@ interface LMSLocationManagerInterface
     public function ValidAddress( $args );
 
     public function CopyAddress( $address_id );
+
+    public function GetAddress( $address_id );
 }

@@ -28,7 +28,9 @@ global $LMS,$SESSION;
 
 $customer = $LMS->GetCustomer($SESSION->id);
 $division = $LMS->DB->GetRow('SELECT account, name, address, zip, city
-	FROM divisions WHERE id = ?', array($customer['divisionid']));
+	FROM divisions
+	JOIN vaddresses va ON va.id = divisions.address_id
+	WHERE divisions.id = ?', array($customer['divisionid']));
 
 //  NRB 26 cyfr: 2 kontrolne, 8 nr banku, 16 nr konta 
 $KONTO_DO = bankaccount($customer['id'], $division['account']);
