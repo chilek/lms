@@ -173,7 +173,7 @@
 			<IMG src="img/pin.gif" alt="">
 		</TD>
 		<TD style="width: 98%;">
-			<INPUT type="number" pattern="{literal}[0-9]{4,6}{/literal}" required name="customerdata[pin]" value="{if $customerinfo.pin}{$customerinfo.pin}{/if}" size="6" title="{trans("Enter 4 to 6 digits PIN number (optional)")}" {tip text="Enter 4 to 6 digits PIN number (optional)" trigger="pin"}>&nbsp;
+			<INPUT type="number" pattern="{literal}[0-9]{4,6}{/literal}" required name="customerdata[pin]" value="{if $customerinfo.pin}{$customerinfo.pin}{/if}" size="6" title="{trans("Enter 4 to 6 digits PIN number")}" {tip text="Enter 4 to 6 digits PIN number" trigger="pin"}>&nbsp;
 			<A href="javascript:randomize()" {tip text="Generate PIN"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
