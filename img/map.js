@@ -752,7 +752,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				else 
 					featureLonLat = map.getLonLatFromViewPortPx(this.handlers.feature.evt.xy);
 				var features = findFeaturesIntersection(this, feature, featureLonLat);
-				if (features.length > 1 || features[0].geometry.CLASS_NAME == "OpenLayers.Geometry.Point") {
+				if (features.length > 1 || (features.length == 1 && features[0].geometry.CLASS_NAME == "OpenLayers.Geometry.Point")) {
 					var featurepopup = new OpenLayers.Popup(null, featureLonLat, new OpenLayers.Size(10, 10));
 					featurepopup.setOpacity(0.9);
 					//featurepopup.closeOnMove = true;
