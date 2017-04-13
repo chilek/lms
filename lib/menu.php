@@ -334,6 +334,12 @@ $menu = array(
 					'tip' => trans('Allows you to search for IP address pools'),
 					'prio' => 30,
 				),
+                array(
+                    'name' => trans('Network map'),
+                    'link' => '?m=netmap',
+                    'tip' => trans('Allows you to print IP addresses from whole network.'),
+                    'prio' => 40,
+                ),
 			),
 		),
 
