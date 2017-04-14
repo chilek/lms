@@ -18,7 +18,7 @@
 				<tr>
 					<td>{$assignment.name}</td>
 					<td>{$assignment.value|money_format}</td>
-					<td>{if $assignment.discount > 0}{$assignment.discount}%{/if}</td>
+					<td>{if $assignment.pdiscount > 0}{$assignment.pdiscount}%{else}{if $assignment.vdiscount > 0}{$assignment.vdiscount|money_format}{else}-{/if}{/if}</td>
 					<td>{$assignment.payday}</td>
 					<td>{math equation="x / 1024" x=$assignment.downceil} Mb/s</td>
 					<td>{math equation="x / 1024" x=$assignment.upceil} Mb/s</td>
