@@ -77,17 +77,17 @@ switch ($mode) {
 	case 'customer':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, address, post_name, post_address, deleted,
+			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, location AS address, post_name, post_location AS post_address, deleted,
 			    ".$DB->Concat('UPPER(lastname)',"' '",'c.name')." AS username
 				FROM customerview c
 				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & " . CONTACT_EMAIL . " = " . CONTACT_EMAIL . ")    
 				WHERE ".(preg_match('/^[0-9]+$/', $search) ? 'c.id = '.intval($search).' OR ' : '')."
 					LOWER(".$DB->Concat('lastname',"' '",'c.name').") ?LIKE? LOWER($sql_search)
-					OR LOWER(address) ?LIKE? LOWER($sql_search)
+					OR LOWER(location) ?LIKE? LOWER($sql_search)
 					OR LOWER(post_name) ?LIKE? LOWER($sql_search)
-					OR LOWER(post_address) ?LIKE? LOWER($sql_search)
+					OR LOWER(post_location) ?LIKE? LOWER($sql_search)
 					OR LOWER(cc.contact) ?LIKE? LOWER($sql_search)
-				ORDER by deleted, username, cc.contact, address
+				ORDER by deleted, username, cc.contact, location
 				LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
 			$eglible=array(); $actions=array(); $descriptions=array();
@@ -166,12 +166,12 @@ switch ($mode) {
 	case 'phone':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
-			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS phone, address, post_name, post_address, deleted,
+			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS phone, location AS address, post_name, post_location AS post_address, deleted,
 			    ".$DB->Concat('UPPER(lastname)',"' '",'c.name')." AS username
 				FROM customerview c
 				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & " . (CONTACT_LANDLINE | CONTACT_MOBILE | CONTACT_FAX) . " > 0)
 				WHERE REPLACE(REPLACE(cc.contact, '-', ''), ' ', '') ?LIKE? $sql_search
-				ORDER by deleted, username, cc.contact, address
+				ORDER by deleted, username, cc.contact, location
 				LIMIT ?", array(intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
 			$eglible=array(); $actions=array(); $descriptions=array();
