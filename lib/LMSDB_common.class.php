@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-define('DBVERSION', '2017041800'); // here should be always the newest version of database!
+define('DBVERSION', '2017041801'); // here should be always the newest version of database!
 				 // it placed here to avoid read disk every time when we call this file.
 
 /**
