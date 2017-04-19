@@ -24,6 +24,18 @@
  *  $Id$
  */
 
+if ( isset($_GET['pre_ip']) ) {
+    $netadd['address'] = $_GET['pre_ip'];
+}
+
+if ( isset($_GET['pre_prefix']) ) {
+    $netadd['prefix'] = $_GET['pre_prefix'];
+}
+
+if ( !empty($netadd) ) {
+    $SMARTY->assign('netadd', $netadd);
+}
+
 if (isset($_POST['netadd']))
 {
 	$netadd = $_POST['netadd'];

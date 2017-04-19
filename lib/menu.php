@@ -335,8 +335,8 @@ $menu = array(
 					'prio' => 30,
 				),
                 array(
-                    'name' => trans('Network map'),
-                    'link' => '?m=netmap',
+                    'name' => trans('Network usage'),
+                    'link' => '?m=netusage',
                     'tip' => trans('Allows you to print IP addresses from whole network.'),
                     'prio' => 40,
                 ),

@@ -1,0 +1,53 @@
+{if !$pool}
+    <div class="network-container">
+        <span class="net-name close" alt="">
+            {$ip}{if !$nomask} / {$mask}{/if}
+        </span>
+
+        <div class="net-data" data-ip="{$ip}" data-mask="{$mask}"
+            {if $network}data-network="1"{/if}
+            {if $broadcast}data-broadcast="1"{/if}
+            style="display: none;">
+        </div>
+    </div>
+{else}
+    <div class="network-container auto-column">
+        {if $network}
+            <div class="ip-address blend bold">
+                <img src="img/network.gif" alt=""> NETWORK
+            </div>
+
+            {$pool['start'] = $pool['start'] + 1}
+        {/if}
+
+        {if $broadcast}
+            {$pool['end'] = $pool['end'] - 1}
+        {/if}
+
+        {for $i=$pool['start'] to $pool['end']}
+        <div class="ip-address highlight">
+            {if isset($used_ips[$i])}
+                {if $used_ips[$i]['netdev_name']}
+                    <a href="?m=netdevinfo&id={$pool['used'][$i]['id']}" class="blend">
+                        <img src="img/netdev.gif" alt=""> {$used_ips[$i]['netdev_name']}
+                    </a>
+                {else}
+                    <a href="?m=nodeinfo&id={$pool['used'][$i]['id']}" class="blend">
+                        <img src="img/node.gif" alt=""> {$used_ips[$i]['name']}
+                    </a>
+                {/if}
+            {else}
+                {$tmp = long2ip($i)}
+
+                <a href="?m=nodeadd&preip={$tmp}">{$tmp}</a>
+            {/if}
+        </div>
+        {/for}
+
+        {if $broadcast}
+            <div class="ip-address blend bold">
+                <img src="img/network.gif" alt=""> BROADCAST
+            </div>
+        {/if}
+    </div>
+{/if}
