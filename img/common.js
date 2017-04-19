@@ -922,6 +922,8 @@ function location_str( city, street, house, flat, zip = undefined, state = undef
     }
     else if ( city.length > 0 ) {
         location += city;
+        if (!street.length)
+            location += ", " + city;
     }
     else if ( street.length > 0 ) {
         location += street;

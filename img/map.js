@@ -259,8 +259,8 @@ function findFeaturesIntersection(selectFeature, feature, featureLonLat)
 		var layer = selectFeature.layers[i];
 		for (var j in layer.features) {
 			var currentFeature = layer.features[j];
-			// position feature is not needed - we detect it by nullified style
-			if (currentFeature.style != null)
+			// position feature is not needed - we detect it by non-null style and point geometry
+			if (currentFeature.style != null && currentFeature.geometry.CLASS_NAME == 'OpenLayers.Geometry.Point')
 				continue;
 			if (currentFeature.getVisibility() && currentFeature.onScreen()) {
 				var currentLonLat = new OpenLayers.LonLat(
@@ -272,8 +272,8 @@ function findFeaturesIntersection(selectFeature, feature, featureLonLat)
 			}
 		}
 	}
-	// position feature is not needed - we detect it by nullified style
-	if (!features.length && feature.style == null)
+	// position feature is not needed - we detect it by non-null style and geometry other than line
+	if (!features.length && (feature.style == null || feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString'))
 		features.push(feature);
 	return features;
 }
@@ -684,33 +684,35 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 						mapLonLat.transform(map.getProjectionObject(), lmsProjection).transform(lmsProjection, map.getProjectionObject());
 					}
 					var features = findFeaturesIntersection(this, feature, featureLonLat);
-					var content = '<div class="lmsMapPopupContents">';
-					for (var i in features) {
-						if (features[i].geometry.CLASS_NAME == "OpenLayers.Geometry.Point")
-							content += '<div class="lmsMapPopupName">' + features[i].data.name + '</div>'
-								+ (features[i].data.ipaddr.length ? 
-									'<div class="lmsMapPopupAddress">' + features[i].data.ipaddr.replace(/,/g, 
-										'</div><div class="lmsMapPopupAddress">') + '</div>'
-									: '');
-						else
-							content += '<span class="bold">' + features[i].data.typename + '<br>'
-								+ (features[i].data.technologyname.length ? '<span class="bold">' + features[i].data.technologyname + '<br>' : '')
-								+ features[i].data.speedname + '</span>';
+					if (features.length) {
+						var content = '<div class="lmsMapPopupContents">';
+						for (var i in features) {
+							if (features[i].geometry.CLASS_NAME == "OpenLayers.Geometry.Point")
+								content += '<div class="lmsMapPopupName">' + features[i].data.name + '</div>'
+									+ (features[i].data.ipaddr.length ? 
+										'<div class="lmsMapPopupAddress">' + features[i].data.ipaddr.replace(/,/g, 
+											'</div><div class="lmsMapPopupAddress">') + '</div>'
+										: '');
+							else
+								content += '<span class="bold">' + features[i].data.typename + '<br>'
+									+ (features[i].data.technologyname.length ? '<span class="bold">' + features[i].data.technologyname + '<br>' : '')
+									+ features[i].data.speedname + '</span>';
+						}
+						content += '</div>';
+						mappopup = new OpenLayers.Popup.Anchored(null, mapLonLat, new OpenLayers.Size(10, 10), content);
+						mappopup.setOpacity(0.8);
+						mappopup.closeOnMove = true;
+						map.addPopup(mappopup);
+						mappopup.div.style.overflow = 'visible';
+						mappopup.div.style.width = 'auto';
+						mappopup.div.style.height = 'auto';
+						mappopup.groupDiv.style.overflow = 'visible';
+						mappopup.groupDiv.style.width = 'auto';
+						mappopup.groupDiv.style.height = 'auto';
+						mappopup.contentDiv.style.width = 'auto';
+						mappopup.contentDiv.style.heigh = 'auto';
+						//mappopup.updateSize();
 					}
-					content += '</div>';
-					mappopup = new OpenLayers.Popup.Anchored(null, mapLonLat, new OpenLayers.Size(10, 10), content);
-					mappopup.setOpacity(0.8);
-					mappopup.closeOnMove = true;
-					map.addPopup(mappopup);
-					mappopup.div.style.overflow = 'visible';
-					mappopup.div.style.width = 'auto';
-					mappopup.div.style.height = 'auto';
-					mappopup.groupDiv.style.overflow = 'visible';
-					mappopup.groupDiv.style.width = 'auto';
-					mappopup.groupDiv.style.height = 'auto';
-					mappopup.contentDiv.style.width = 'auto';
-					mappopup.contentDiv.style.heigh = 'auto';
-					//mappopup.updateSize();
 				}
 				OpenLayers.Event.stop(e);
 			},
@@ -752,7 +754,7 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 				else 
 					featureLonLat = map.getLonLatFromViewPortPx(this.handlers.feature.evt.xy);
 				var features = findFeaturesIntersection(this, feature, featureLonLat);
-				if (features.length > 1 || features[0].geometry.CLASS_NAME == "OpenLayers.Geometry.Point") {
+				if (features.length > 1 || (features.length == 1 && features[0].geometry.CLASS_NAME == "OpenLayers.Geometry.Point")) {
 					var featurepopup = new OpenLayers.Popup(null, featureLonLat, new OpenLayers.Size(10, 10));
 					featurepopup.setOpacity(0.9);
 					//featurepopup.closeOnMove = true;
