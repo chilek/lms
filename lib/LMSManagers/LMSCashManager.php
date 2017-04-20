@@ -338,7 +338,9 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 								WHERE d.customerid = ?
 						) x ORDER BY x.cdate',
 						array($balance['customerid'], DOC_INVOICE, $balance['customerid']))) {
-						foreach ($invoices as $inv)
+
+					    $sum = 0;
+					    foreach ($invoices as $inv)
 							$sum += $inv['value'];
 
 						$bval = $customer_manager->GetCustomerBalance($balance['customerid']);
