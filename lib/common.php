@@ -181,6 +181,14 @@ function check_mask($mask)
 	}
 }
 
+/*!
+ * \brief Returns network broadcast address by IP and mask.
+ *
+ * \param  string  $ip   IP address 192.168.0.0, 10.0.0.4, etc.
+ * \param  string  $mask Network mask 255.255.255.000, etc.
+ * \return longint       Network broadcast address
+ * \return false         Incorrect IP or Mask
+ */
 function getbraddr($ip,$mask)
 {
 	if(check_ip($ip) && check_mask($mask))
@@ -194,6 +202,14 @@ function getbraddr($ip,$mask)
 		return false;
 }
 
+/*!
+ * \brief Returns network address by IP and mask.
+ *
+ * \param  string  $ip   IP address 192.168.0.0, 10.0.0.4, etc.
+ * \param  string  $mask Network mask 255.255.255.000, etc.
+ * \return longint       Network IP
+ * \return false         Incorrect IP or Mask
+ */
 function getnetaddr($ip,$mask)
 {
 	if(check_ip($ip) && check_mask($mask))
