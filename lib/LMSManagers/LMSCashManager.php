@@ -182,9 +182,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 
 			if (!empty($pattern['comment_replace']))
 				$comment = preg_replace($pattern['comment_replace']['from'], $pattern['comment_replace']['to'], $comment);
-			$cid = $id;
-			if (empty($cid))
-				$cid = '-';
+
 			foreach (array('srcaccount', 'dstaccount', 'customername', 'cid') as $replace_symbol) {
 				$variable = $$replace_symbol;
 				$variable = empty($variable) ? trans('none') : $variable;
