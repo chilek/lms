@@ -210,24 +210,28 @@ if($entity->mime_type =~ m|multipart/|i) # if we deal with multipart message...
 		elsif(($body->mime_type =~ m/multipart\/alternative/i) && $mailbody eq '')
 		{
 			# Outlook's nasty multipart/alternative message
-			my $newbody = join '', @{$body->body};
-			my @newbody = split /------=_NextPart_\S*\n/, $newbody;
-			$newbody = $newbody[1]; # text message part
-			my $tmp_body = $newbody;
-			# now we need to remove leading headers from body
-			$newbody =~ s/Content-Type.*Content-Transfer-Encoding.*?\n+//is; 
-			$mailbody = $newbody;
-			if($tmp_body =~ m|Content-Transfer-Encoding: quoted-printable|i)
-			{
-				$mailbody = decode_qp($mailbody);
+			my $content_type = '';
+			my $content_transfer_encoding = '';
+			for (my $subpartnum = 0; $subpartnum < $body->parts; $subpartnum++) {
+				if ($body->parts($subpartnum)->mime_type eq 'text/plain') {
+					my $subbody = $body->parts($subpartnum);
+					$mailbody = $subbody->bodyhandle->as_string;
+					if ($subbody->head->count('Content-Type')) {
+						$content_type = $subbody->head->get('Content-Type');
+						$content_type =~ s/\n+//s;
+					}
+					if ($subbody->head->count('Content-Transfer-Encoding')) {
+						$content_transfer_encoding = $subbody->head->get('Content-Transfer-Encoding');
+						$content_transfer_encoding =~ s/\n+//s;
+					}
+					if ($content_transfer_encoding =~ m|quoted-printable|i) {
+						$mailbody = decode_qp($mailbody);
+					} elsif ($content_transfer_encoding =~ m|base64|i) {
+						$mailbody = decode_base64($mailbody);
+					}
+				}
 			}
-			elsif($tmp_body =~ m|Content-Transfer-Encoding: base64|i)
-			{
-				$mailbody = decode_base64($mailbody);
-			}
-		}
-		else
-		{
+		} else {
 			# push entity index into table with attachements
 			push @attachments, $partnum;
 		}
