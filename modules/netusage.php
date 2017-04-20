@@ -191,6 +191,9 @@ if ( isset($_POST['ip']) && isset($_POST['mask']) ) {
 }
 
 $layout['pagetitle'] = trans('IP Network Search');
+
+$SMARTY->assign('mask', mask2prefix($_POST['mask']));
+$SMARTY->assign('ip'  , $_POST['ip']);
 $SMARTY->display('net/netusage.html');
 
 ?>
