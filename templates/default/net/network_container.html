@@ -1,7 +1,7 @@
 {if !$pool}
     <div class="network-container">
-        <span class="net-name close" alt="">
-            {$ip}{if !$nomask} / {$mask}{/if}
+        <span class="net-name close">
+            {$ip} / {$mask}
         </span>
 
         <div class="net-data" data-ip="{$ip}" data-mask="{$mask}"

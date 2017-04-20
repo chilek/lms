@@ -84,23 +84,23 @@
         </td>
         <td>
             <select name="mask">
-                <option value="255.255.0.0">/16 (255.255.0.0)</option>
-                <option value="255.255.128.0">/17 (255.255.128.0)</option>
-                <option value="255.255.192.0">/18 (255.255.192.0)</option>
-                <option value="255.255.224.0">/19 (255.255.224.0)</option>
-                <option value="255.255.240.0">/20 (255.255.240.0)</option>
-                <option value="255.255.248.0">/21 (255.255.248.0)</option>
-                <option value="255.255.252.0">/22 (255.255.252.0)</option>
-                <option value="255.255.254.0">/23 (255.255.254.0)</option>
-                <option value="255.255.255.0" selected>/24 (255.255.255.0)</option>
-                <option value="255.255.255.128">/25 (255.255.255.128)</option>
-                <option value="255.255.255.192">/26 (255.255.255.192)</option>
-                <option value="255.255.255.224">/27 (255.255.255.224)</option>
-                <option value="255.255.255.240">/28 (255.255.255.240)</option>
-                <option value="255.255.255.248">/29 (255.255.255.248)</option>
-                <option value="255.255.255.252">/30 (255.255.255.252)</option>
-                <option value="255.255.255.254">/31 (255.255.255.254)</option>
-                <option value="255.255.255.255">/32 (255.255.255.255)</option>
+                <option value="255.255.0.0"{if $mask == 16} selected{/if}>/16 (255.255.0.0)</option>
+                <option value="255.255.128.0"{if $mask == 17} selected{/if}>/17 (255.255.128.0)</option>
+                <option value="255.255.192.0"{if $mask == 18} selected{/if}>/18 (255.255.192.0)</option>
+                <option value="255.255.224.0"{if $mask == 19} selected{/if}>/19 (255.255.224.0)</option>
+                <option value="255.255.240.0"{if $mask == 20} selected{/if}>/20 (255.255.240.0)</option>
+                <option value="255.255.248.0"{if $mask == 21} selected{/if}>/21 (255.255.248.0)</option>
+                <option value="255.255.252.0"{if $mask == 22} selected{/if}>/22 (255.255.252.0)</option>
+                <option value="255.255.254.0"{if $mask == 23} selected{/if}>/23 (255.255.254.0)</option>
+                <option value="255.255.255.0"{if !$mask || $mask == 24} selected{/if}>/24 (255.255.255.0)</option>
+                <option value="255.255.255.128"{if $mask == 25} selected{/if}>/25 (255.255.255.128)</option>
+                <option value="255.255.255.192"{if $mask == 26} selected{/if}>/26 (255.255.255.192)</option>
+                <option value="255.255.255.224"{if $mask == 27} selected{/if}>/27 (255.255.255.224)</option>
+                <option value="255.255.255.240"{if $mask == 28} selected{/if}>/28 (255.255.255.240)</option>
+                <option value="255.255.255.248"{if $mask == 29} selected{/if}>/29 (255.255.255.248)</option>
+                <option value="255.255.255.252"{if $mask == 30} selected{/if}>/30 (255.255.255.252)</option>
+                <option value="255.255.255.254"{if $mask == 31} selected{/if}>/31 (255.255.255.254)</option>
+                <option value="255.255.255.255"{if $mask == 32} selected{/if}>/32 (255.255.255.255)</option>
             </select>
         </td>
     </tr>

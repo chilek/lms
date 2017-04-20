@@ -41,8 +41,6 @@ function smarty_function_location_box_expandable( $params = array(), $template )
 
     echo '<div class="location-box-expandable">';
 
-    $i = 0;
-
     $uid = uniqid();
     $location_str = $params['data']['location'] ? $params['data']['location'] : '...';
 
@@ -81,8 +79,6 @@ function smarty_function_location_box_expandable( $params = array(), $template )
     } else {
         echo '<input type="hidden" value="' . LOCATION_ADDRESS .                          '" name="' . $params['data']['prefix'] . '[location_address_type]" data-address="address_type">';
     }
-
-    ++$i;
 
     smarty_function_location_box( $params['data'], $template );
 

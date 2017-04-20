@@ -144,7 +144,6 @@ if ( isset($_GET['ajax']) ) {
             $SMARTY->assign('ip'       , long2ip(ip2long($ip) + $i * 256));
             $SMARTY->assign('network'  , $i == 0        ? true : false);
             $SMARTY->assign('broadcast', $i == $counter ? true : false);
-            $SMARTY->assign('nomask'   , true);
 
             $html .= $SMARTY->fetch('net/network_container.html');
         }
@@ -192,6 +191,9 @@ if ( isset($_POST['ip']) && isset($_POST['mask']) ) {
 }
 
 $layout['pagetitle'] = trans('IP Network Search');
+
+$SMARTY->assign('mask', mask2prefix($_POST['mask']));
+$SMARTY->assign('ip'  , $_POST['ip']);
 $SMARTY->display('net/netusage.html');
 
 ?>
