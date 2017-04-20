@@ -1782,7 +1782,10 @@ class LMS
 
 			foreach (array('X-LMS-Message-Item-id', 'References', 'In-Reply-To', 'Message-ID') as $header_name)
 				if (isset($headers[$header_name]))
-					$this->mail_object->addCustomHeader($header_name . ': ' . $headers[$header_name]);
+					if ($header_name == 'Message-ID')
+						$this->mail_object->MessageID = $headers[$header_name];
+					else
+						$this->mail_object->addCustomHeader($header_name . ': ' . $headers[$header_name]);
 
 			if (isset($headers['Disposition-Notification-To']))
 				$this->mail_object->ConfirmReadingTo = $headers['Disposition-Notification-To'];
