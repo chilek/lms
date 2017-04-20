@@ -3637,6 +3637,6 @@ $_LANG['This event is not assigned to any helpdesk request.'] = 'Zdarzenie nie j
 $_LANG['Request not assigned to any customer.'] = 'Zgłoszenie nie jest przypisane do żadnego klienta.';
 $_LANG['Request not assigned to any customer location.'] = 'Zgłoszenie nie jest przypisane do żadnej lokalizacji klienta.';
 
-$_LANG['Result:'] = 'Wynik';
+$_LANG['Result:'] = 'Wynik:';
 
 ?>
