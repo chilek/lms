@@ -73,8 +73,8 @@ function matchNetwork( &$networks, $n ) {
 }
 
 function getNetworks( $ip, $br ) {
-    $ip_long = ip2long($ip); // network address
-    $br_long = ip2long($br); // broadcast address
+    $ip_long = ip_long($ip); // network address
+    $br_long = ip_long($br); // broadcast address
 
     $networks = LMSDB::GetInstance()->GetAllByKey('
         SELECT address as ip_long, mask as mask_ip
@@ -85,7 +85,7 @@ function getNetworks( $ip, $br ) {
 
     foreach ( $networks as $k=>$v ) {
         $networks[$k]['ip']      = long2ip($networks[$k]['ip_long']);
-        $networks[$k]['br_long'] = ip2long(getbraddr(long2ip($v['ip_long']), $v['mask_ip']));
+        $networks[$k]['br_long'] = ip_long(getbraddr(long2ip($v['ip_long']), $v['mask_ip']));
         $networks[$k]['mask']    = mask2prefix($v['mask_ip']);
         $networks[$k]['state']   = NETUSAGE_STATE_USED;
     }
@@ -141,14 +141,14 @@ if ( isset($_GET['ajax']) ) {
 
         $counter = 2 * pow(2, 24-$mask-1) - 1;
         for ($i=0; $i<=$counter; ++$i) {
-            $SMARTY->assign('ip'       , long2ip(ip2long($ip) + $i * 256));
+            $SMARTY->assign('ip'       , long2ip(ip_long($ip) + $i * 256));
             $SMARTY->assign('network'  , $i == 0        ? true : false);
             $SMARTY->assign('broadcast', $i == $counter ? true : false);
 
             $html .= $SMARTY->fetch('net/network_container.html');
         }
     } else {
-        $ip_start = ip2long($ip);
+        $ip_start = ip_long($ip);
         $ip_end   = $ip_start + pow(2, 32-$mask) - 1;
 
         $used_ips = $DB->GetAllByKey('
