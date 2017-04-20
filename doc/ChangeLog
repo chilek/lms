@@ -115,6 +115,8 @@ version ?.??.?? (????-??-??):
   - improvement: phpui.gps_coordinate_providers specifies which gps providers are used
     (google,siis by default) [chilan]
   - improvement: added support for polish mazovia encoding for cash import files [chilan]
+  - improvement: added support of References, In-Reply-To and Message-ID headers
+    for phpmailer mail backend [chilan]
 
 version 1.11.21 (2016-10-14):
 
