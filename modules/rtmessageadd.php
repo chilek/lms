@@ -284,9 +284,9 @@ if(isset($_POST['message']))
 					if (!empty($info['contacts']))
 						foreach ($info['contacts'] as $contact) {
 							$target = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
-							if ($contact['type'] & CONTACT_EMAIL )
+							if ($contact['type'] & CONTACT_EMAIL)
 								$emails[] = $target;
-							else
+							elseif ($contact['type'] & (CONTACT_LANDLINE | CONTACT_MOBILE))
 								$phones[] = $target;
 						}
 

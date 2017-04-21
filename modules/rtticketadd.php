@@ -126,7 +126,7 @@ if(isset($_POST['ticket']))
 							$target = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
 							if ($contact['type'] & CONTACT_EMAIL)
 								$emails[] = $target;
-							else
+							elseif ($contact['type'] & (CONTACT_LANDLINE | CONTACT_MOBILE))
 								$phones[] = $target;
 						}
 
