@@ -3639,4 +3639,6 @@ $_LANG['Request not assigned to any customer location.'] = 'Zgłoszenie nie jest
 
 $_LANG['Result:'] = 'Wynik:';
 
+$_LANG['(no subject)'] = '(brak tematu)';
+
 ?>
