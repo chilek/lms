@@ -193,7 +193,6 @@ if(isset($_POST['message']))
 			$headers['Message-Id'] = $message['messageid'];
 			$headers['Reply-To'] = $headers['From'];
 
-			print_r($message);die;
 			$body = $message['body'];
 			if ($message['destination'] == $queue['email'] || $message['destination'] == $user['email'])
 				$body .= "\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
