@@ -66,22 +66,26 @@ if ($id && !isset($_POST['ticket'])) {
 								WHERE customerid = c.id AND (type & ?) > 0) AS phones
 							FROM customeraddressview c
 							WHERE id = ?', array(CONTACT_EMAIL, (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE), $ticket['customerid']));
-					$custmail_subject = $queue['resolveticketsubject'];
-					$custmail_subject = str_replace('%tid', $id, $custmail_subject);
-					$custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
-					$custmail_body = $queue['resolveticketbody'];
-					$custmail_body = str_replace('%tid', $id, $custmail_body);
-					$custmail_body = str_replace('%cid', $info['id'], $custmail_body);
-					$custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
-					$custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
-					$custmail_body = str_replace('%title', $ticket['subject'], $custmail_body);
-					$custmail_headers = array(
-						'From' => $from,
-						'To' => '<' . $info['email'] . '>',
-						'Reply-To' => $from,
-						'Subject' => $custmail_subject,
-					);
-					$LMS->SendMail($info['emails'], $custmail_headers, $custmail_body);
+					if (!empty($info['emails'])) {
+						$custmail_subject = $queue['resolveticketsubject'];
+						$custmail_subject = str_replace('%tid', $id, $custmail_subject);
+						$custmail_subject = str_replace('%title', $ticket['subject'], $custmail_subject);
+						$custmail_body = $queue['resolveticketbody'];
+						$custmail_body = str_replace('%tid', $id, $custmail_body);
+						$custmail_body = str_replace('%cid', $info['id'], $custmail_body);
+						$custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
+						$custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
+						$custmail_body = str_replace('%title', $ticket['subject'], $custmail_body);
+						$custmail_headers = array(
+							'From' => $from,
+							'Reply-To' => $from,
+							'Subject' => $custmail_subject,
+						);
+						foreach (explode(',', $info['emails']) as $email) {
+							$custmail_headers['To'] = '<' . $email . '>';
+							$LMS->SendMail($email, $custmail_headers, $custmail_body);
+						}
+					}
 				}
 			}
 		}

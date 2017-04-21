@@ -155,11 +155,13 @@ if(isset($_POST['ticket']))
 						$custmail_body = str_replace('%title', $ticket['subject'], $custmail_body);
 						$custmail_headers = array(
 							'From' => $headers['From'],
-							'To' => '<' . $info['email'] . '>',
 							'Reply-To' => $headers['From'],
 							'Subject' => $custmail_subject,
 						);
-						$LMS->SendMail(implode(',', $emails), $custmail_headers, $custmail_body);
+						foreach ($emails as $email) {
+							$custmail_headers['To'] = '<' . $info['email'] . '>';
+							$LMS->SendMail($email, $custmail_headers, $custmail_body);
+						}
 					}
 
 					$sms_body .= "\n";
