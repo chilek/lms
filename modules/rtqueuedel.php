@@ -49,7 +49,7 @@ else
             if ($tickets = $DB->GetCol('SELECT id FROM rttickets WHERE queueid = ?', array($queue)))
             {
                 foreach ($tickets as $ticket) {
-                    rmdir($mail_dir.sprintf('/%06d', $ticket));
+                    rrmdir($mail_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $ticket));
                 }
             }
         }

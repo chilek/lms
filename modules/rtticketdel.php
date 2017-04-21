@@ -40,7 +40,7 @@ $DB->Execute('DELETE FROM rttickets WHERE id = ?', array($ticket));
 
 $mail_dir = ConfigHelper::getConfig('rt.mail_dir');
 if (!empty($mail_dir))
-	rmdir($mail_dir.sprintf('/%06d', $ticket));
+	rrmdir($mail_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $ticket));
 
 header('Location: ?m=rtqueueview&id='.$queue);
 

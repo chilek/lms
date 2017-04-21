@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,7 +29,8 @@ if(isset($_GET['file']))
 	$filename = urldecode($_GET['file']);
 	if($attach = $DB->GetRow('SELECT * FROM rtattachments WHERE messageid = ? AND filename = ?', array(intval($_GET['mid']), $filename)))
 	{
-		$file = ConfigHelper::getConfig('rt.mail_dir').sprintf("/%06d/%06d/%s",$_GET['tid'],$_GET['mid'],$filename);
+		$file = ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d' . DIRECTORY_SEPARATOR . '%s',
+			$_GET['tid'], $_GET['mid'], $filename);
 		if(file_exists($file))
 		{
 			$size = @filesize($file);
@@ -59,7 +60,8 @@ if($message['customerid'])
 if(sizeof($message['attachments']))
 	foreach($message['attachments'] as $key => $val) 
 	{
-		list($size, $unit) = setunits(@filesize(ConfigHelper::getConfig('rt.mail_dir').sprintf("/%06d/%06d/%s",$message['ticketid'],$message['id'],$val['filename'])));
+		list($size, $unit) = setunits(@filesize(ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR
+			. sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d' . DIRECTORY_SEPARATOR . '%s', $message['ticketid'], $message['id'], $val['filename'])));
 		$message['attachments'][$key]['size'] = $size;
 		$message['attachments'][$key]['unit'] = $unit;
 	}

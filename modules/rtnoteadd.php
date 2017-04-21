@@ -67,11 +67,12 @@ elseif(isset($_POST['note']))
 		$mail_dir = ConfigHelper::getConfig('rt.mail_dir');
 		if (!empty($files) && !empty($mail_dir)) {
 			$id = $DB->GetLastInsertId('rtmessages');
-			$dir = $mail_dir . sprintf('/%06d/%06d', $note['ticketid'], $id);
-			@mkdir($mail_dir . sprintf('/%06d', $note['ticketid']), 0700);
-			@mkdir($dir, 0700);
+			$mail_dir_permission = intval(ConfigHelper::getConfig('rt.mail_dir_permission', '0700'), 8);
+			$dir = $mail_dir . DIRECTORY_SEPARATOR . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d', $note['ticketid'], $id);
+			@mkdir($mail_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $note['ticketid']), $mail_dir_permission);
+			@mkdir($dir, $mail_dir_permission);
 			foreach ($files as $file) {
-				$newfile = $dir . '/' . $file['name'];
+				$newfile = $dir . DIRECTORY_SEPARATOR . $file['name'];
 				if (@rename($tmppath . DIRECTORY_SEPARATOR . $file['name'], $newfile))
 					$DB->Execute('INSERT INTO rtattachments (messageid, filename, contenttype)
 							VALUES (?, ?, ?)', array($id, $file['name'], $file['type']));
