@@ -537,6 +537,7 @@ switch($type)
 
 		$suspension_percentage = ConfigHelper::getConfig('finances.suspension_percentage');
 
+		$reportlist = array();
 		if ($taxes = $LMS->GetTaxes($reportday, $reportday))
 		{
 			foreach($taxes as $taxidx => $tax)
