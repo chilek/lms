@@ -373,7 +373,7 @@ $(function() {
 								searchValue = searchColumns[index].search;
 							}
 						}
-						console.log(searchValue);
+						//console.log(searchValue);
 						api.column(index).search(searchValue, true).draw();
 					}
 					i++;
@@ -502,7 +502,6 @@ $(function() {
 				if (!Array.isArray(stateSaveProps)) {
 					return;
 				}
-				console.log(data);
 				for (var property in data) {
 					if (data.hasOwnProperty(property)) {
 						if (property == "time" || stateSaveProps.indexOf(property) >= 0) {
@@ -511,7 +510,6 @@ $(function() {
 						delete data[property];
 					}
 				}
-				console.log(data);
 			}
 		})
 		.on('mouseenter', 'tbody > tr', function() {
