@@ -1693,6 +1693,8 @@ class LMS
 				$smtp_username = ConfigHelper::getConfig('mail.smtp_username');
 				if (!empty($smtp_username) || isset($smtp_options['user'])) {
 					$params['auth'] = (!isset($smtp_options['auth']) ? ConfigHelper::getConfig('mail.smtp_auth_type', true) : $smtp_options['auth']);
+					if ($params['auth'] == 'false')
+						$params['auth'] = false;
 					$params['username'] = (!isset($smtp_options['user']) ? $smtp_username : $smtp_options['user']);
 					$params['password'] = (!isset($smtp_options['pass']) ? ConfigHelper::getConfig('mail.smtp_password') : $smtp_options['pass']);
 				} else
