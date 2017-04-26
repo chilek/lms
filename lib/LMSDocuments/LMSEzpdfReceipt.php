@@ -191,8 +191,7 @@ class LMSEzpdfReceipt extends LMSDocument {
 		$y -= 16;
 
 		$this->backend->text_align_left($x+2,$y,8, trans('In words:'));
-		$y = $this->backend->text_wrap($x+40,$y,300,$font_size-2, trans('$a dollars $b cents',
-			to_words(floor($this->data['total'])), to_words($this->data['totalg'])),'');
+		$y = $this->backend->text_wrap($x+40,$y,300,$font_size-2, moneyf_in_words($this->data['total'] + ($this->data['totalg'] / 100)), '');
 		$y -= 8;
 
 		$y += $font_size/2;

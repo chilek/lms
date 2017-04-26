@@ -545,6 +545,11 @@ function moneyf($value)
 	return sprintf($LANGDEFS[$_language]['money_format'], $value);
 }
 
+function moneyf_in_words($value) {
+	global $LANGDEFS, $_language;
+	return sprintf($LANGDEFS[$_language]['money_format_in_words'], to_words(floor($value)), to_words(round(($value - floor($value)) * 100)));
+}
+
 if (!function_exists('bcmod'))
 {
     function bcmod( $x, $y )

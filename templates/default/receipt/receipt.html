@@ -82,7 +82,7 @@
 					{if ConfigHelper::checkConfig('phpui.to_words_short_version')}
 						{$receipt.total|string_format:"%d"|to_words:0:"":1} {$receipt.totalg|string_format:"%02d"}/100
 					{else}
-						{t a=$receipt.total|string_format:"%d"|to_words b=$receipt.totalg|to_words}$a dollars $b cents{/t}
+						{moneyf_in_words($receipt.total+($receipt.totalg/100))}
 					{/if}</b>
 				</td>
 			    </tr>
@@ -224,7 +224,7 @@
 					{if ConfigHelper::checkConfig('phpui.to_words_short_version')}
 						{$receipt.total|string_format:"%d"|to_words:0:"":1} {$receipt.totalg|string_format:"%02d"}/100
 					{else}
-						{t a=$receipt.total|string_format:"%d"|to_words b=$receipt.totalg|to_words}$a dollars $b cents{/t}
+						{moneyf_in_words($receipt.total+($receipt.totalg/100))}
 					{/if}</b>
 				</td>
 			    </tr>

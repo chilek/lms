@@ -70,7 +70,7 @@ else
 {
 	$KWOTA_ZL = to_words(floor($KWOTA_NR));
 	$KWOTA_GR = to_words($KWOTA_GR);
-	$KWOTA_X = trans('$a dollars $b cents', $KWOTA_ZL, $KWOTA_GR);
+	$KWOTA_X = moneyf_in_words($KWOTA_ZL + ($KWOTA_GR / 100));
 }
 
 ?>

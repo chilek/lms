@@ -516,7 +516,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		else
 			$value = $this->data['value'];
 		$this->backend->Text(142, 224, moneyf($value));
-		$this->backend->Text(67, 233, trans('$a dollars $b cents', to_words(floor($value)), to_words(round(($value - floor($value)) * 100))));
+		$this->backend->Text(67, 233, moneyf_in_words($value));
 
 		/* customer name */
 		$this->backend->SetFont('arial', '', 9);
@@ -727,7 +727,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			$this->backend->writeHTMLCell(0, 0, '', '', trans('To pay:') . ' ' . moneyf($this->data['value']), 0, 1, 0, true, 'L');
 
 		$this->backend->SetFont('arial', '', 10);
-		$this->backend->writeHTMLCell(0, 6, '', '', trans('In words:') . ' ' . trans('$a dollars $b cents', to_words(floor($this->data['value'])), to_words(round(($this->data['value'] - floor($this->data['value'])) * 100))), 0, 1, 0, true, 'L');
+		$this->backend->writeHTMLCell(0, 6, '', '', trans('In words:') . ' ' . moneyf_in_words($this->data['value']), 0, 1, 0, true, 'L');
 	}
 
 	protected function invoice_balance() {

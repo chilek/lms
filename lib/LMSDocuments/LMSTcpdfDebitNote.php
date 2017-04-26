@@ -190,7 +190,7 @@ class LMSTcpdfDebitNote extends LMSTcpdfInvoice {
 		$this->backend->writeHTMLCell(0, 0, '', '', trans('To pay:') . ' ' . moneyf($this->data['value']), 0, 1, 0, true, 'R');
 
 		$this->backend->SetFont('arial', '', 10);
-		$this->backend->writeHTMLCell(0, 6, '', '', trans('In words:') . ' ' . trans('$a dollars $b cents', to_words(floor($this->data['value'])), to_words(round(($this->data['value'] - floor($this->data['value'])) * 100))), 0, 1, 0, true, 'R');
+		$this->backend->writeHTMLCell(0, 6, '', '', trans('In words:') . ' ' . moneyf_in_words($this->data['value']), 0, 1, 0, true, 'R');
 	}
 
 	public function Draw($note) {

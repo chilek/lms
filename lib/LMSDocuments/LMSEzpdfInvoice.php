@@ -110,7 +110,8 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			$value = $this->data['customerbalance'] * -1;
 		else
 			$value = $this->data['total'];
-		$this->backend->text_autosize(15*$scale+$x,434*$scale+$y,30*$scale, trans('$a dollars $b cents',to_words(floor($value)),to_words(round(($value-floor($value))*100))),950*$scale);
+		$this->backend->text_autosize(15*$scale+$x,434*$scale+$y,30*$scale,
+			moneyf_in_words($value), 950*$scale);
 		$this->backend->text_autosize(15*$scale+$x,372*$scale+$y,30*$scale, $this->data['name'],950*$scale);
 		$this->backend->text_autosize(15*$scale+$x,312*$scale+$y,30*$scale, $this->data['address']." ".$this->data['zip']." ".$this->data['city'],950*$scale);
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false)))
@@ -839,7 +840,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			$y = $y - $this->backend->text_align_left($x,$y,14, trans('To repay:') . ' ' . moneyf($this->data['value']));
 		else
 			$y = $y - $this->backend->text_align_left($x,$y,14, trans('To pay:') . ' ' . moneyf($this->data['value']));
-		$y = $y - $this->backend->text_align_left($x,$y,10, trans('In words:') . ' ' . trans('$a dollars $b cents', to_words(floor($this->data['value'])), to_words(round(($this->data['value']-floor($this->data['value']))*100))));
+		$y = $y - $this->backend->text_align_left($x,$y,10, trans('In words:') . ' ' . moneyf_in_words($this->data['value']));
 		return $y;
 	}
 
