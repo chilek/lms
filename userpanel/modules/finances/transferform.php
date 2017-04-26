@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,7 +27,7 @@
 global $LMS,$SESSION;
 
 $customer = $LMS->GetCustomer($SESSION->id);
-$division = $LMS->DB->GetRow('SELECT account, name, address, zip, city
+$division = $LMS->DB->GetRow('SELECT account, divisions.name, address, zip, city
 	FROM divisions
 	JOIN vaddresses va ON va.id = divisions.address_id
 	WHERE divisions.id = ?', array($customer['divisionid']));
