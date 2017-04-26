@@ -893,7 +893,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                               LEFT JOIN location_streets ls ON va.street_id = ls.id
                                               LEFT JOIN nodes no ON nd.id = no.netdev
                                            WHERE
-                                              nd.ownerid = ?', 'id', array($customer_id));
+                                              nd.ownerid = ?', 'id', array(intval($customer_id)));
 
         return $netdevs;
     }

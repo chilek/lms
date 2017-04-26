@@ -74,6 +74,11 @@
 	<tr> 
 		<TD class="bold nobr"><img src="img/host.gif" alt="">{trans("Host:")}</td>
 		<td>
+			{* if only one host was created then select him *}
+			{if count($hostlist) == 1}
+				{$netadd.hostid = $hostlist[0]['id']}
+			{/if}
+
 			<select size="1" name="netadd[hostid]" {tip text="Select host" trigger="hostid"}>
 				<option value="0">{trans("- none -")}</option>
 				{foreach $hostlist as $host}
