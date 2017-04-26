@@ -25,16 +25,9 @@
  */
 
 function smarty_function_network_container( $params = array(), $template ) {
-    $ip        = !empty($params['ip'])   ? $params['ip']   : 0;
-    $mask      = !empty($params['mask']) ? $params['mask'] : 0;
-
-    if ( $mask == 24 ) {
-        $template->assign('network'  , true);
-        $template->assign('broadcast', true);
-    }
-
-    $template->assign('ip'  , $ip);
-    $template->assign('mask', $mask);
+    $template->assign('ip'   , !empty($params['ip'])    ? $params['ip']    : 0);
+    $template->assign('mask' , !empty($params['mask'])  ? $params['mask']  : 0);
+    $template->assign('hosts', !empty($params['hosts']) ? $params['hosts'] : array());
 
     return $template->fetch('net/network_container.html');
 }

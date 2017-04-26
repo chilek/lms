@@ -3,7 +3,7 @@
 {block name=title}::: LMS :{$layout.pagetitle|striphtml} :::{/block}
 {block name=module_content}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<h1>{$layout.pagetitle}</h1>
 
 <style>
     .network {
@@ -16,9 +16,18 @@
     .net-name:hover {
         cursor: pointer;
     }
-
-    .close::before   { content: '\2795'; color: black; font-size: 0.8em; }
-    .open::before    { content: '\2796'; color: black; font-size: 0.8em; }
+    .ip-address {
+        padding-top: 3px;
+    }
+    .plus .net-name::before {
+        content: '\2795'; color: black; font-size: 0.8em;
+    }
+    .net-name::before {
+        content: '\2796'; color: black; font-size: 0.8em;
+    }
+    .plus .net-data {
+        display: none;
+    }
 
     {$col_count  = 16}
     {$col_width  = '13em'}
@@ -35,17 +44,11 @@
         -ms-column-width: {$col_width};
         -ms-column-gap: 1em;
         -ms-column-rule: {$col_border};
-        -ms-column-count: 2;
+        -ms-column-count: {$col_count};
         column-width: {$col_width};
         column-gap: 1em;
         column-rule: {$col_border};
         column-count: {$col_count};
-    }
-    .inline {
-        display: inline-block;
-    }
-    .ip-address {
-        padding-top: 3px;
     }
 </style>
 
@@ -63,7 +66,7 @@
         </td>
     </tr>
     </thead>
-    <tr>
+    <tbody>
     <tr>
         <td>
             <img src="img/ip.gif" alt="">
@@ -92,7 +95,7 @@
                 <option value="255.255.248.0"{if $mask == 21} selected{/if}>/21 (255.255.248.0)</option>
                 <option value="255.255.252.0"{if $mask == 22} selected{/if}>/22 (255.255.252.0)</option>
                 <option value="255.255.254.0"{if $mask == 23} selected{/if}>/23 (255.255.254.0)</option>
-                <option value="255.255.255.0"{if !$mask || $mask == 24} selected{/if}>/24 (255.255.255.0)</option>
+                <option value="255.255.255.0"{if $mask == 24} selected{/if}>/24 (255.255.255.0)</option>
                 <option value="255.255.255.128"{if $mask == 25} selected{/if}>/25 (255.255.255.128)</option>
                 <option value="255.255.255.192"{if $mask == 26} selected{/if}>/26 (255.255.255.192)</option>
                 <option value="255.255.255.224"{if $mask == 27} selected{/if}>/27 (255.255.255.224)</option>
@@ -104,11 +107,33 @@
             </select>
         </td>
     </tr>
+
+    {if $host_list && count($host_list) > 1}
+        <tr>
+            <td>
+                <img src="img/host.gif" alt="">
+            </td>
+            <td class="bold nobr">
+                {trans("Host")}:
+            </td>
+            <td>
+                <select name="host">
+                    <option value="">{trans('all')}</option>
+
+                    {foreach $host_list as $h}
+                    <option{if $h.name == $selected_host} selected{/if}>{$h.name}</option>
+                    {/foreach}
+                </select>
+            </td>
+        </tr>
+    {/if}
+
     <tr>
         <td class="buttons" colspan="3">
             <a href="javascript:document.search.submit();">{trans("Search")} <img src="img/search.gif" alt=""></a>
         </td>
     </tr>
+
     {if $network_list}
         <tr>
             <td>
@@ -123,9 +148,7 @@
             <td colspan="3">
             {foreach $network_list as $v}
                 <div class="network">
-                    {if $v.state == $smarty.const.NETUSAGE_STATE_USED}
-                        {network_container ip=$v.ip mask=$v.mask}
-                    {else}
+                    {if !$v.hosts}
                         <div class="network-container">
                             <div style="margin-left: 14px;">
                                 <a href="?m=netadd&pre_ip={$v.ip}&pre_prefix={$v.mask}" alt="" style="color: darkgreen;" title="{trans('Click to add.')}">
@@ -133,6 +156,8 @@
                                 </a>
                             </div>
                         </div>
+                    {else}
+                        {network_container ip=$v.ip mask=$v.mask hosts=$v.hosts}
                     {/if}
                 </div>
             {/foreach}
@@ -148,28 +173,40 @@
         $( document ).on('click', '.net-name', function() {
             var net_container = $(this).closest('.network-container');
             var net_data      = net_container.find('.net-data').first();
-            var net_name      = net_container.find('.net-name').first();
 
-            if ( net_data.attr('data-status') != 'loaded' ) {
-                loadNetwork(net_data);
-                net_data.attr('data-status', 'loaded');
-            }
+            net_container.toggleClass('plus');
+            net_data.attr('data-host', net_container.find('.host-select').val());
 
-            net_name.toggleClass('open');
-            net_name.toggleClass('close');
-            net_data.toggle();
+            loadNetwork(net_data);
+        });
+
+        $( document ).on('change', '.host-select', function() {
+            var net_container = $(this).closest('.network-container');
+            var net_data      = net_container.find('.net-data').first();
+
+            net_data.attr('data-host'   , net_container.find('.host-select').val());
+            net_data.attr('data-netname', net_container.find('.host-select :selected').attr('data-netname'));
+            net_data.removeAttr('data-status');
+
+            loadNetwork(net_data);
         });
     });
 
     function loadNetwork( net_data ) {
+        if ( net_data.attr('data-status') == 'loaded' ) {
+            return true;
+        }
+
+        net_data.attr('data-status', 'loaded');
+
         $.ajax({
             type: "POST",
             url : "?m=netusage&ajax",
             data: {
-                ip       : net_data.attr('data-ip'),
-                mask     : net_data.attr('data-mask'),
-                network  : net_data.attr('data-network'),
-                broadcast: net_data.attr('data-broadcast')
+                ip     : net_data.attr('data-ip'),
+                mask   : net_data.attr('data-mask'),
+                host   : net_data.attr('data-host'),
+                netname: net_data.attr('data-netname')
             },
             success: function(ret) {
                 net_data.html(ret);

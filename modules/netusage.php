@@ -24,114 +24,146 @@
  *  $Id$
  */
 
-define('NETUSAGE_STATE_FREE', 0);
-define('NETUSAGE_STATE_USED', 1);
+class NetContainer {
+    private $networks;
 
-// network_size => mask
-$netsize2mask = array(
-    65536 => 16,
-    32768 => 17,
-    16384 => 18,
-    8192  => 19,
-    4096  => 20,
-    2048  => 21,
-    1024  => 22,
-    512   => 23,
-    256   => 24,
-    128   => 25,
-    64    => 26,
-    32    => 27,
-    16    => 28,
-    8     => 29,
-    4     => 30
-);
+    private $ip_start;
+    private $ip_end;
+    private $netsize2mask;
 
-function matchNetwork( &$networks, $n ) {
-    global $netsize2mask;
-    $size = $n['br_long'] - $n['ip_long'] + 1;
-    $curr_ip = $n['ip_long'];
-    $matched_masks = array();
+    public function __construct( $ip_start, $ip_end ) {
+        $this->networks = array();
+        $this->networks[$ip_start] = array();
 
-    foreach ( $netsize2mask as $s => $m ) {
-        if ( $size < $s ) {
-            continue;
-        }
+        $this->ip_start = $ip_start;
+        $this->ip_end   = $ip_end;
 
-        $size -= $s;
-        $matched_masks[] = array('mask'=>$m, 'size'=>$s);
+        $this->netsize2mask = array(
+            65536 => 16,
+            32768 => 17,
+            16384 => 18,
+            8192  => 19,
+            4096  => 20,
+            2048  => 21,
+            1024  => 22,
+            512   => 23,
+            256   => 24,
+            128   => 25,
+            64    => 26,
+            32    => 27,
+            16    => 28,
+            8     => 29,
+            4     => 30
+        );
     }
 
-    foreach ( array_reverse($matched_masks) as $v ) {
-        $networks[$curr_ip] = array(
-            'ip'    => long2ip($curr_ip),
-            'mask'  => $v['mask'],
-            'state' => NETUSAGE_STATE_FREE
-        );
+    public function add( array $n ) {
+        for ( $i=$n['ip_long']; $i<=$n['br_long']; ++$i ) {
+            if ( isset($this->networks[$i]) ) {
+                $this->networks[$i][] = array('host'=>$n['host'], 'net_name'=>$n['net_name']);
+            } else {
+                $this->networks[$i] = array(array('host'=>$n['host'], 'net_name'=>$n['net_name']));
+            }
+        }
+    }
 
-        $curr_ip += $v['size'];
+    public function fetchNetworks() {
+        ksort($this->networks);
+
+        $spaces  = array();
+        $curr_ip = $this->ip_start;
+        $end     = $this->ip_end + 1;
+
+        for ( $i=$this->ip_start+1; $i<=$end; ++$i ) {
+            if ( $this->networks[$i-1] != $this->networks[$i] || $i==$end ) {
+                $size          = $i - $curr_ip;
+                $matched_masks = array();
+
+                foreach ( $this->netsize2mask as $s=>$m ) {
+                    if ( $size < $s ) {
+                        continue;
+                    }
+
+                    $size -= $s;
+                    $matched_masks[] = array('mask'=>$m, 'size'=>$s);
+
+                    if ( $size == 0 ) {
+                        break;
+                    }
+                }
+
+                foreach ( array_reverse($matched_masks) as $v ) {
+                    $spaces[] = array(
+                        'ip'    => long2ip($curr_ip),
+                        'mask'  => $v['mask'],
+                        'hosts' => $this->networks[$i-1]
+                    );
+
+                    $curr_ip += $v['size'];
+                }
+            }
+        }
+
+        return $spaces;
     }
 }
 
-function getNetworks( $ip, $br ) {
+/*!
+ * \brief Function return netwoks by ip and broadcast address.
+ *
+ * \param  string $ip   IP address (192.168.0.0 etc.)
+ * \param  string $br   Broadcast address (255.255.255.0 etc.)
+ * \param  string $host Optional parameter for narrow netowrks to single host.
+ * \return array
+ */
+function getNetworks( $ip, $br, $host = null ) {
     $ip_long = ip_long($ip); // network address
     $br_long = ip_long($br); // broadcast address
 
-    $networks = LMSDB::GetInstance()->GetAllByKey('
-        SELECT address as ip_long, mask as mask_ip
-        FROM networks
-        WHERE address >= ? AND address < ?
-        ORDER BY ip_long;', 'ip_long', array($ip_long, $br_long)
+    if ( $host ) {
+        $sql  = 'AND h.name ILIKE ?';
+        $data =  array($ip_long, $br_long, $host);
+    } else {
+        $sql  = '';
+        $data =  array($ip_long, $br_long);
+    }
+
+    $networks = LMSDB::GetInstance()->GetAll('
+        SELECT
+            n.address as ip_long, n.mask as mask_ip, 
+            h.name as host, h.id as host_id, n.name as net_name                  
+        FROM networks n
+            LEFT JOIN hosts h ON n.hostid = h.id
+        WHERE address >= ? AND address < ? ' . $sql . '
+        ORDER BY ip_long;', $data
     );
 
     foreach ( $networks as $k=>$v ) {
         $networks[$k]['ip']      = long2ip($networks[$k]['ip_long']);
         $networks[$k]['br_long'] = ip_long(getbraddr(long2ip($v['ip_long']), $v['mask_ip']));
-        $networks[$k]['mask']    = mask2prefix($v['mask_ip']);
-        $networks[$k]['state']   = NETUSAGE_STATE_USED;
-    }
 
-    $spaces  = array();
-    $counter = -1;
+        if ( $v['ip_long'] < $ip_long ) {
+            $ip_long = $v['ip_long'];
+        }
 
-    // find leaks in network range
-    //
-    for ( $i=$ip_long; $i<=$br_long; ++$i) {
-        if ( isset($networks[$i]) ) {
-            if ( $counter != -1 ) {
-                $spaces[] = array(
-                    'ip_long' => $counter,
-                    'br_long' => $i-1,
-                    'state'   => NETUSAGE_STATE_FREE);
-            }
-
-            $i = $networks[$i]['br_long'];
-            $counter = -1;
-        } else if ( $counter == -1 ) {
-            $counter = $i;
-        } else if ( $i == $br_long ) {
-            $spaces[] = array(
-                'ip_long' => $counter,
-                'br_long' => $i,
-                'state'   => NETUSAGE_STATE_FREE);
+        if ( $networks[$k]['br_long'] > $br_long ) {
+            $br_long = $networks[$k]['br_long'];
         }
     }
 
-    // foreach by every leak and explode to single networks
-    //
-    foreach ( $spaces as $v ) {
-        matchNetwork( $networks, $v);
+    $nc = new NetContainer($ip_long, $br_long);
+
+    foreach ($networks as $v) {
+        $nc->add($v);
     }
 
-    // sort asc
-    //
-    ksort($networks);
-
-    return $networks;
+    return $nc->fetchNetworks();;
 }
 
 if ( isset($_GET['ajax']) ) {
     $ip   = $_POST['ip'];
     $mask = intval($_POST['mask']);
+    $host = empty($_POST['host']) ? null : trim($_POST['host']);
     $html = '';
 
     $SMARTY->assign('ip', $ip);
@@ -141,32 +173,42 @@ if ( isset($_GET['ajax']) ) {
 
         $counter = 2 * pow(2, 24-$mask-1) - 1;
         for ($i=0; $i<=$counter; ++$i) {
-            $SMARTY->assign('ip'       , long2ip(ip_long($ip) + $i * 256));
-            $SMARTY->assign('network'  , $i == 0        ? true : false);
-            $SMARTY->assign('broadcast', $i == $counter ? true : false);
+            $SMARTY->assign('ip'   , long2ip(ip_long($ip) + $i * 256));
+            $SMARTY->assign('hosts', array(array('host'=>$host, 'net_name'=>$_POST['netname'])));
 
             $html .= $SMARTY->fetch('net/network_container.html');
         }
     } else {
         $ip_start = ip_long($ip);
         $ip_end   = $ip_start + pow(2, 32-$mask) - 1;
+        $data     = array($ip_start , $ip_end);
+
+        // if host is set then get only networks for specified host
+        if ( $host ) {
+            $data[] = $host;
+        }
 
         $used_ips = $DB->GetAllByKey('
             SELECT
-                ipaddr as ip, n.name, nd.name as netdev_name,
-                CASE WHEN n.ownerid = 0 THEN nd.id ELSE n.id END as id
+                ipaddr as ip, nod.name, nd.name as netdev_name,
+                CASE WHEN nod.ownerid = 0 THEN nd.id ELSE nod.id END as id
             FROM
-                nodes n
-                LEFT JOIN netdevices nd ON n.ownerid = 0 AND nd.id = n.netdev
+                nodes nod
+                LEFT JOIN netdevices nd ON nod.ownerid = 0 AND nd.id = nod.netdev
+                LEFT JOIN networks net  ON net.id = nod.netid
+                LEFT JOIN hosts h       ON h.id = net.hostid
             WHERE
-                n.ipaddr >= ? AND
-                n.ipaddr <= ?;', 'ip', array($ip_start , $ip_end)
+                nod.ipaddr >= ? AND
+                nod.ipaddr <= ? ' . ($host ? ' AND h.name ILIKE ?' : ''), 'ip', $data
         );
 
+        $full_network = $DB->GetRow('SELECT * FROM networks WHERE name ILIKE ?', array($_POST['netname']));
+
         $SMARTY->assign('used_ips' , $used_ips);
-        $SMARTY->assign('network'  , isset($_POST['network'])   ? true : false);
-        $SMARTY->assign('broadcast', isset($_POST['broadcast']) ? true : false);
         $SMARTY->assign('pool'     , array('start'=>$ip_start, 'end'=>$ip_end));
+        $SMARTY->assign('network'  , $ip_start == $full_network['address'] ? 1 : 0);
+        $SMARTY->assign('broadcast', long2ip($ip_end) == getbraddr(long2ip($ip_start), $full_network['mask']) ? 1 : 0);
+        $SMARTY->assign('hostid'   , $full_network['id'] );
 
         $html .= $SMARTY->fetch('net/network_container.html');
     }
@@ -175,25 +217,25 @@ if ( isset($_GET['ajax']) ) {
 }
 
 if ( isset($_POST['ip']) && isset($_POST['mask']) ) {
-    $ip = getnetaddr($_POST['ip'], $_POST['mask']);
-    $br = getbraddr($_POST['ip'], $_POST['mask']);
+    $ip   = getnetaddr($_POST['ip'], $_POST['mask']);
+    $br   = getbraddr($_POST['ip'], $_POST['mask']);
+    $host = isset($_POST['host']) ? trim($_POST['host']) : null;
 
     if ( !$ip ) {
         $error['ip'] = trans('Incorrect IP address or mask');
-    }
-
-    if ( $error ) {
         $SMARTY->assign('error', $error);
     } else {
-        $SMARTY->assign('ip', $ip);
-        $SMARTY->assign('network_list', getNetworks($ip, $br));
+        $SMARTY->assign('network_list', getNetworks($ip, $br, $host));
     }
 }
 
 $layout['pagetitle'] = trans('IP Network Search');
 
-$SMARTY->assign('mask', mask2prefix($_POST['mask']));
-$SMARTY->assign('ip'  , $_POST['ip']);
+$SMARTY->assign('host_list'    , $DB->GetAll('SELECT name FROM hosts;'));
+$SMARTY->assign('selected_host', $_POST['host']);
+$SMARTY->assign('mask'         , isset($_POST['mask']) ? mask2prefix($_POST['mask']) : 24 );
+$SMARTY->assign('ip'           , !empty($ip) ? $ip : $_POST['ip']);
+
 $SMARTY->display('net/netusage.html');
 
 ?>

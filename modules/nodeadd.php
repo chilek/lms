@@ -43,6 +43,9 @@ if (isset($_GET['ownerid']))
 if (isset($_GET['preip']))
 	$nodedata['ipaddr'] = $_GET['preip'];
 
+if (isset($_GET['prenetwork']))
+    $nodedata['netid'] = $_GET['prenetwork'];
+
 if (isset($_GET['premac']))
 	$nodedata['macs'][] = $_GET['premac'];
 
