@@ -119,6 +119,7 @@ version ?.??.?? (????-??-??):
     for phpmailer mail backend [chilan]
   - improvement: complete rewrite of lms-rtparser script to php [chilan]
   - bugfix: money quotes printed in words use system locales instead ui locales [chilan]
+  - enhancement: added network usage module for print list of used IP addresses [kosa/chilan]
 
 version 1.11.21 (2016-10-14):
 
