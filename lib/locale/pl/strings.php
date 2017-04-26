@@ -1019,6 +1019,7 @@ $_LANG['Network map type. Use "flash" if you have Ming library or "gd" if your P
 $_LANG['Network name:'] = 'Nazwa sieci:';
 $_LANG['Network name contains forbidden characters!'] = 'Nazwa sieci zawiera niedozwolone znaki!';
 $_LANG['Network name is required!'] = 'Nazwa sieci jest wymagana!';
+$_LANG['Network name already exists!'] = 'Nazwa sieci jest obecnie używana!';
 $_LANG['Host/network/prefix (interface):'] = 'Host/sieć/prefiks (interfejs):';
 $_LANG['networks and devices management'] = 'zarządzanie sieciami i urządzeniami';
 $_LANG['Network size:'] = 'Rozmiar sieci:';
