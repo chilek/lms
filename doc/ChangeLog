@@ -118,6 +118,7 @@ version ?.??.?? (????-??-??):
   - improvement: added support of References, In-Reply-To and Message-ID headers
     for phpmailer mail backend [chilan]
   - improvement: complete rewrite of lms-rtparser script to php [chilan]
+  - bugfix: money quotes printed in words use system locales instead ui locales [chilan]
 
 version 1.11.21 (2016-10-14):
 
