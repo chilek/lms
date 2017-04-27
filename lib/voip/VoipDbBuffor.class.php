@@ -283,57 +283,53 @@ class VoipDbBuffor {
     /*!
      * \brief Valid array with cdr data.
      *
-     * \param  array   cdr record
-     * \return boolean when all good
-     * \return string  first founded error description
+     * \param  array  $r cdr record
+     * \return true      when everything is fine
+     * \return string    first founded error description
      */
     private function validRecord($r) {
-        $error = '';
 
-        if (!isset($r['caller']))
-            $error = "Caller phone number isn't set.";
+        if (empty($r['caller']))
+            return "Caller phone number isn't set.";
         if (!preg_match("/([0-9]+|anonymous|unavailable)/", $r['caller']))
-            $error = "Caller phone number has incorrect format.";
+            return "Caller phone number has incorrect format.";
 
-        if (!isset($r['callee']))
-            $error = "Callee phone number isn't set.";
+        if (empty($r['callee']))
+            return "Callee phone number isn't set.";
         if (!is_numeric($r['callee']))
-            $error = "Callee phone number has incorrect format.";
+            return "Callee phone number has incorrect format.";
 
-        if (!isset($r['call_type']))
-            $error = "Call type isn't set.";
+        if (empty($r['call_type']))
+            return "Call type isn't set.";
         else if (!is_int($r['call_type']))
-            $error = "Call type has incorrect format.";
+            return "Call type has incorrect format.";
 
         if (!isset($r['call_start']))
-            $error = "Call start isn't set.";
+            return "Call start isn't set.";
         else if (!is_numeric($r['call_start']))
-            $error = "Call start time has incorrect format.";
+            return "Call start time has incorrect format.";
 
         if (!isset($r['totaltime']))
-            $error = "Totaltime isn't set.";
+            return "Totaltime isn't set.";
         else if (!is_numeric($r['totaltime']))
-            $error = "Totaltime has incorrect format.";
+            return "Totaltime has incorrect format.";
 
         if (!isset($r['billedtime']))
-            $error = "Billedtime isn't set.";
+            return "Billedtime isn't set.";
         else if (!is_numeric($r['billedtime']))
-            $error = "Billedtime has incorract format.";
+            return "Billedtime has incorract format.";
 
-        if (!isset($r['uniqueid']))
-            $error = "Call unique id isn't set.";
+        if (empty($r['uniqueid']))
+            return "Call unique id isn't set.";
         else if (!preg_match("/[0-9]*\.[0-9]*/i", $r['uniqueid']))
-            $error = "Call unique id has incorrect format.";
+            return "Call unique id has incorrect format.";
 
         if (!isset($r['price']))
-            $error = "Price ist't set.";
+            return "Price ist't set.";
         else if (!is_numeric($r['price']))
-            $error = "Price has incorrect format.";
+            return "Price has incorrect format.";
 
-        if ($error)
-            return $error;
-
-        return TRUE;
+        return true;
     }
 }
 
