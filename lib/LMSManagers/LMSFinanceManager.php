@@ -1489,40 +1489,49 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $res;
     }
 
-    public function GetHostingLimits($customerid)
-    {
-        $result = array('alias_limit' => 0,
-            'domain_limit' => 0,
-            'sh_limit' => 0,
-            'www_limit' => 0,
-            'ftp_limit' => 0,
-            'mail_limit' => 0,
-            'sql_limit' => 0,
-            'quota_sh_limit' => 0,
-            'quota_www_limit' => 0,
-            'quota_ftp_limit' => 0,
-            'quota_mail_limit' => 0,
-            'quota_sql_limit' => 0,
-        );
+	public function GetHostingLimits($customerid) {
+		global $ACCOUNTTYPES;
 
-        if ($limits = $this->db->GetAll('SELECT alias_limit, domain_limit, sh_limit,
-			www_limit, mail_limit, sql_limit, ftp_limit, quota_sh_limit,
+		$result = array(
+			'alias_limit' => 0,
+			'domain_limit' => 0,
+			'count' => array(),
+			'quota' => array(),
+		);
+		foreach ($ACCOUNTTYPES as $typeidx => $type) {
+			$result['count'][$typeidx] = 0;
+			$result['quota'][$typeidx] = 0;
+		}
+
+		if ($limits = $this->db->GetAll('SELECT alias_limit, domain_limit,
+			sh_limit, www_limit, mail_limit, sql_limit, ftp_limit, quota_sh_limit,
 			quota_www_limit, quota_mail_limit, quota_sql_limit, quota_ftp_limit
-	                FROM tariffs WHERE id IN (SELECT tariffid FROM assignments
-				WHERE customerid = ? AND tariffid != 0
+			FROM tariffs WHERE type = ? AND id IN (SELECT tariffid FROM assignments
+			WHERE customerid = ? AND tariffid != 0
 				AND (dateto > ?NOW? OR dateto = 0)
-				AND (datefrom < ?NOW? OR datefrom = 0))', array($customerid))) {
-            foreach ($limits as $row)
-                foreach ($row as $idx => $val)
-                    if ($val === NULL || $result[$idx] === NULL) {
-                        $result[$idx] = NULL; // no limit
-                    } else {
-                        $result[$idx] += $val;
-                    }
-        }
+				AND (datefrom < ?NOW? OR datefrom = 0))', array(TARIFF_HOSTING, $customerid))) {
+			foreach ($limits as $row) {
+				foreach ($row as $idx => $val)
+					if ($idx == 'alias_limit' || $idx == 'domain_limit')
+						if ($val === NULL || $result[$idx] === NULL)
+							$result[$idx] = NULL; // no limit
+						else
+							$result[$idx] += $val;
+				foreach ($ACCOUNTTYPES as $typeidx => $type) {
+					if ($row[$type['alias'] . '_limit'] === null || $result['count'][$typeidx] === null)
+						$result['count'][$typeidx] = null;
+					else
+						$result['count'][$typeidx] += $row[$type['alias'] . '_limit'];
+					if ($row['quota_' . $type['alias'] . '_limit'] === null || $result['quota'][$typeidx] === null)
+						$result['quota'][$typeidx] = null;
+					else
+						$result['quota'][$typeidx] += $row['quota_' . $type['alias'] . '_limit'];
+				}
+			}
+		}
 
-        return $result;
-    }
+		return $result;
+	}
 
     public function GetTaxes($from = NULL, $to = NULL)
     {

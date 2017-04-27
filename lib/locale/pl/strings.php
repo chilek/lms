@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -509,7 +509,7 @@ $_LANG['End of DHCP range:'] = 'Koniec zakresu DHCP:';
 $_LANG['End of DHCP range has to be equal or greater than start!'] = 'Koniec zakresu DHCP musi być równy lub większy niż jego początek!';
 $_LANG['End time must not precede start time!'] = 'Czas zakończenia musi być późniejszy niż czas rozpoczęcia!';
 $_LANG['Enter 4 to 6 digits PIN number'] = 'Wprowadź 4 do 6-u cyfr numeru PIN';
-$_LANG['Enter account quota in MB'] = 'Wprowadź quotę dla konta w MB';
+$_LANG['Enter account quota in MB'] = 'Wprowadź limit dla konta w MB';
 $_LANG['Enter account name'] = 'Wprowadź nazwę konta';
 $_LANG['Enter additional information'] = 'Wprowadź dodatkowe informacje';
 $_LANG['Enter additional information (optional)'] = 'Wprowadź dodatkowe informacje (opcjonalnie)';
@@ -1230,7 +1230,7 @@ $_LANG['Queues List'] = 'Lista kolejek';
 $_LANG['Queue with specified name already exists!'] = 'Kolejka o podanej nazwie już istnieje!';
 $_LANG['Tariff rule with specified name already exists!'] = 'Reguła taryfikacyjna o podanej nazwie już istnieje!';
 $_LANG['Price list with specified name already exists!'] = 'Cennik o podanej nazwie już istnieje!';
-$_LANG['Quota (sh/mail/www/ftp/sql):'] = 'Limit (sh/mail/www/ftp/sql):';
+$_LANG['Quota (sh/mail/www/ftp/sql/cloud):'] = 'Limit (sh/mail/www/ftp/sql/chmura):';
 $_LANG['Read'] = 'Odczyt';
 $_LANG['recorded call available for customer'] = 'nagranie dostępne dla klienta';
 $_LANG['recorded call unavailable for customer'] = 'nagranie niedostępne dla klienta';
@@ -1498,8 +1498,8 @@ $_LANG['Total Invoiceless Income'] = 'Łączny przychód bezrachunkowy';
 $_LANG['Total Invoiceless Income ($a to $b)'] = 'Łączny przychód bezrachunkowy ($a do $b)';
 $_LANG['Total Tax'] = 'Suma PTU';
 $_LANG['Type:'] = 'Typ:';
-$_LANG['Type/Quota:'] = 'Typ/Quota:';
-$_LANG['Type (sh/mail/www/ftp/sql):'] = 'Typ (sh/mail/www/ftp/sql):';
+$_LANG['Type/Quota:'] = 'Typ/Limit:';
+$_LANG['Type (sh/mail/www/ftp/sql/cloud):'] = 'Typ (sh/mail/www/ftp/sql/chmura):';
 $_LANG['configuration'] = 'konfiguracja interfejsu użytkownika';
 $_LANG['uncompressed'] = 'nieskompresowaną';
 $_LANG['Unit:'] = 'JM:';
@@ -2126,11 +2126,13 @@ $_LANG['Enter limit of ftp accounts'] = 'Wprowadź limit liczby kont ftp';
 $_LANG['Enter limit of shell accounts'] = 'Wprowadź limit liczby kont shellowych';
 $_LANG['Enter limit of sql accounts'] = 'Wprowadź limit liczby kont sql';
 $_LANG['Enter limit of www accounts'] = 'Wprowadź limit liczby kont www';
+$_LANG['Enter limit of cloud accounts'] = 'Wprowadź limit liczby kont w chmurze';
 $_LANG['Enter quota limit of e-mail account'] = 'Wprowadź limit rozmiaru konta e-mail';
 $_LANG['Enter quota limit of ftp account'] = 'Wprowadź limit rozmiaru konta ftp';
 $_LANG['Enter quota limit of shell account'] = 'Wprowadź limit rozmiaru konta shellowego';
 $_LANG['Enter quota limit of sql account'] = 'Wprowadź limit rozmiaru konta sql';
 $_LANG['Enter quota limit of www account'] = 'Wprowadź limit rozmiaru konta www';
+$_LANG['Enter quota limit of cloud account'] = 'Wprowadź limit rozmiaru konta w chmurze';
 $_LANG['Forward e-mail:'] = 'E-mail przekierowania:';
 $_LANG['Hosting:'] = 'Hosting:';
 $_LANG['Limit of account aliases:'] = 'Limit liczby aliasów:';
@@ -2140,12 +2142,14 @@ $_LANG['Limit of ftp accounts:'] = 'Limit liczby kont ftp:';
 $_LANG['Limit of shell accounts:'] = 'Limit liczby kont shellowych:';
 $_LANG['Limit of sql accounts:'] = 'Limit liczby kont sql:';
 $_LANG['Limit of www accounts:'] = 'Limit liczby kont www:';
+$_LANG['Limit of cloud accounts:'] = 'Limit liczby kont w chmurze:';
 $_LANG['not expire'] = 'nie wygasa';
 $_LANG['Quota limit of e-mail account:'] = 'Limit rozmiaru konta e-mail:';
 $_LANG['Quota limit of ftp account:'] = 'Limit rozmiaru konta ftp:';
 $_LANG['Quota limit of shell account:'] = 'Limit rozmiaru konta shellowego:';
 $_LANG['Quota limit of sql account:'] = 'Limit rozmiaru konta sql:';
 $_LANG['Quota limit of www account:'] = 'Limit rozmiaru konta www:';
+$_LANG['Quota limit of cloud account:'] = 'Limit rozmiaru konta w chmurze:';
 $_LANG['Exceeded \'$a\' accounts limit of selected customer ($b)!'] = 'Przekroczony limit liczby kont typu \'$a\' dla wybranego klienta ($b)!';
 $_LANG['Exceeded \'$a\' account quota limit of selected customer ($b)!'] = 'Przekroczony limit rozmiaru konta typu \'$a\' dla wybranego klienta ($b)!';
 $_LANG['Exceeded aliases limit of selected customer ($a)!'] = 'Przekroczony limit liczby aliasów dla wybranego klienta ($a)!';
@@ -3641,5 +3645,7 @@ $_LANG['Request not assigned to any customer location.'] = 'Zgłoszenie nie jest
 $_LANG['Result:'] = 'Wynik:';
 
 $_LANG['(no subject)'] = '(brak tematu)';
+
+$_LANG['cloud'] = 'chmura';
 
 ?>

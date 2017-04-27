@@ -892,11 +892,13 @@ CREATE TABLE tariffs (
 	mail_limit integer	DEFAULT NULL,
 	ftp_limit integer	DEFAULT NULL,
 	sql_limit integer	DEFAULT NULL,
+	cloud_limit integer	DEFAULT NULL,
 	quota_sh_limit integer	DEFAULT NULL,
 	quota_www_limit integer	DEFAULT NULL,
 	quota_mail_limit integer DEFAULT NULL,
 	quota_ftp_limit integer	DEFAULT NULL,
 	quota_sql_limit integer	DEFAULT NULL,
+	quota_cloud_limit integer DEFAULT NULL,
 	description text	DEFAULT '' NOT NULL,
 	disabled smallint 	DEFAULT 0 NOT NULL,
 	voip_tariff_id integer      DEFAULT NULL
@@ -1581,6 +1583,7 @@ CREATE TABLE passwd (
 	quota_www integer	DEFAULT 0 NOT NULL,
 	quota_ftp integer	DEFAULT 0 NOT NULL,
 	quota_sql integer	DEFAULT 0 NOT NULL,
+	quota_cloud integer	DEFAULT 0 NOT NULL,
 	mail_forward varchar(255) DEFAULT '' NOT NULL,
 	mail_bcc varchar(255) 	DEFAULT '' NOT NULL,
 	description text	DEFAULT '' NOT NULL,
@@ -2941,6 +2944,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017041801');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017042700');
 
 COMMIT;

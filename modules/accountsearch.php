@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,7 +26,7 @@
 
 function GetAccountList($order='login,asc', $search, $customer=NULL, $type=NULL, $kind=NULL, $domain='')
 {
-	global $DB;
+	global $DB, $ACCOUNTTYPES;
 
 	list($order,$direction) = sscanf($order, '%[^,],%s');
 
@@ -75,12 +75,14 @@ function GetAccountList($order='login,asc', $search, $customer=NULL, $type=NULL,
 
 	$where = isset($where) ? 'WHERE '.implode(' AND ', $where) : '';
 
-	$list = $DB->GetAll('SELECT p.id, p.ownerid, p.login, p.lastlogin, 
-			p.expdate, d.name AS domain, p.type, 
-			p.quota_www, p.quota_sh, p.quota_mail, p.quota_ftp, p.quota_sql, '
+	$quota_fields = array();
+	foreach ($ACCOUNTTYPES as $typeidx => $atype)
+		$quota_fields[] = 'p.quota_' . $atype['alias'];
+	$list = $DB->GetAll('SELECT p.id, p.ownerid, p.login, p.lastlogin,
+			p.expdate, d.name AS domain, p.type, ' . implode(', ', $quota_fields) . ', '
 			.$DB->Concat('c.lastname', "' '",'c.name').' AS customername 
 		FROM passwd p
-		LEFT JOIN customers c ON (c.id = p.ownerid) 
+		LEFT JOIN customers c ON (c.id = p.ownerid)
 		LEFT JOIN domains d ON (d.id = p.domainid) '
 		.$where
 		.($sqlord != '' ? $sqlord : '')

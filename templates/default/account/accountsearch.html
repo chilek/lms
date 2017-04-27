@@ -36,12 +36,10 @@
 		</TD>
 		<TD WIDTH="99%">
 			<SELECT SIZE="1" NAME="search[type]" {tip text="Select account type"}>
-    				<OPTION VALUE="0">{trans("- all types -")}</OPTION>
-				<OPTION VALUE="1">{trans("shell")}</OPTION>
-				<OPTION VALUE="2">{trans("mail")}</OPTION>
-				<OPTION VALUE="4">{trans("www")}</OPTION>
-				<OPTION VALUE="8">{trans("ftp")}</OPTION>
-				<OPTION VALUE="16">{trans("sql")}</OPTION>
+				<OPTION VALUE="0">{trans("- all types -")}</OPTION>
+				{foreach $_ACCOUNTTYPES as $typeidx => $type}
+				<OPTION VALUE="{$typeidx}">{$type.label}</OPTION>
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>
