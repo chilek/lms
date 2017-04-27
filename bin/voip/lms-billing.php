@@ -192,7 +192,7 @@ switch (strtolower($options['action'])) {
             }
 
             if ($error) {
-                echo 'Failed loaded CDR records: ' . count($error['errors']) . PHP_EOL;
+                echo 'Failed loaded CDR records: ' . count($error) . PHP_EOL;
                 // do somethink with errors here
             }
 
