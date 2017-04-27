@@ -228,7 +228,7 @@ class VoipDbBuffor {
         if (preg_match("/outgoing/i", $type))
             return CALL_OUTGOING;
 
-        return 'incorect';
+        return 'incorrect';
     }
 
     /*!
