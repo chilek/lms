@@ -1506,10 +1506,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		if ($limits = $this->db->GetAll('SELECT alias_limit, domain_limit,
 			sh_limit, www_limit, mail_limit, sql_limit, ftp_limit, quota_sh_limit,
 			quota_www_limit, quota_mail_limit, quota_sql_limit, quota_ftp_limit
-			FROM tariffs WHERE type = ? AND id IN (SELECT tariffid FROM assignments
+			FROM tariffs WHERE type <> ? AND type <> ? AND type <> ? AND id IN (SELECT tariffid FROM assignments
 			WHERE customerid = ? AND tariffid != 0
 				AND (dateto > ?NOW? OR dateto = 0)
-				AND (datefrom < ?NOW? OR datefrom = 0))', array(TARIFF_HOSTING, $customerid))) {
+				AND (datefrom < ?NOW? OR datefrom = 0))', array(TARIFF_INTERNET, TARIFF_PHONE, TARIFF_TV, $customerid))) {
 			foreach ($limits as $row) {
 				foreach ($row as $idx => $val)
 					if ($idx == 'alias_limit' || $idx == 'domain_limit')
