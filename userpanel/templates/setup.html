@@ -141,6 +141,16 @@
 			<TD class="text-center bold">{trans("Enabled")}</TD>
 		</TR>
 	</THEAD>
+	<TFOOT>
+		<TR>
+			<TD colspan="5" class="ftop bold text-center">
+				{trans("Total:")} {$total}
+			</TD>
+			<TD style="width: 2%;" class="ftop buttons nobr">
+				<A HREF="javascript:document.config.submit();" accesskey="S">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+			</TD>
+		</TR>
+	</TFOOT>
 	<TBODY>
 		{foreach $menu as $menuitem}
 		<TR class="{if !in_array($menuitem.module, $enabled_modules)}blend {/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" data-module="{$menuitem.module}">
@@ -165,16 +175,6 @@
 		</TR>
 		{/foreach}
 	</TBODY>
-	<TFOOT>
-		<TR>
-			<TD colspan="5" class="ftop bold text-center">
-				{trans("Total:")} {$total}
-			</TD>
-			<TD style="width: 2%;" class="ftop buttons nobr">
-				<A HREF="javascript:document.config.submit();" accesskey="S">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			</TD>
-		</TR>
-	</TFOOT>
 </table>
 </FORM>
 <script type="text/javascript">
