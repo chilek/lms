@@ -36,16 +36,28 @@ if (isset($_GET['netdevid']))
 
 if (isset($_POST['searchnetdev']) && $_POST['searchnetdev']) {
 	$search = $_POST['searchnetdev'];
-	if ($netdevices = $DB->GetAll('SELECT id, name, location, producer, ports
+
+    $netdevices = $DB->GetAll('
+		SELECT n.id, n.name, va.location, n.producer, n.ports, n.ownerid
 		FROM netdevices n
-		WHERE (name ?LIKE? '.$DB->Escape('%'.$search.'%').' OR location ?LIKE? '.$DB->Escape('%'.$search.'%').' OR producer ?LIKE? '.$DB->Escape('%'.$search.'%').')
-			' . (isset($netdevid) ? ' AND id <> ' . intval($netdevid)
-				. ' AND NOT EXISTS (SELECT id FROM netlinks WHERE (n.id = dst AND src = ' . intval($netdevid) . ')
+			LEFT JOIN vaddresses va ON n.address_id = va.id
+		WHERE (n.name ?LIKE? '.$DB->Escape('%'.$search.'%').' OR va.location ?LIKE? '.$DB->Escape('%'.$search.'%').' OR n.producer ?LIKE? '.$DB->Escape('%'.$search.'%').')
+			' . (isset($netdevid) ? ' AND n.id <> ' . intval($netdevid)
+            . ' AND NOT EXISTS (SELECT n.id FROM netlinks WHERE (n.id = dst AND src = ' . intval($netdevid) . ')
 					OR (n.id = src AND dst = ' . intval($netdevid) . '))'
-				: '') . '
-		ORDER BY name'))
-		foreach ($netdevices as $k => $netdevice)
-			$netdevices[$k]['ports'] = $netdevice['ports'] - $LMS->CountNetDevLinks($netdevice['id']);
+            : '') . '
+		ORDER BY n.name'
+	);
+
+	if ( $netdevices ) {
+        foreach ($netdevices as $k => $nd) {
+            $netdevices[$k]['ports'] = $nd['ports'] - $LMS->CountNetDevLinks($nd['id']);
+
+            if ( !empty($nd['ownerid']) ) {
+            	$netdevices[$k]['location'] = $LMS->getAddressForCustomerStuff($nd['ownerid']);
+			}
+        }
+    }
 
 	$SMARTY->assign('searchnetdev', $search);
 	$SMARTY->assign('netdevices', $netdevices);
