@@ -38,7 +38,7 @@ if (isset($_POST['searchnetdev']) && $_POST['searchnetdev']) {
 	$search = $_POST['searchnetdev'];
 
     $netdevices = $DB->GetAll('
-		SELECT n.id, n.name, va.location, n.producer, n.ports, n.ownerid
+		SELECT n.id, n.name, va.location, n.producer, n.ports, n.ownerid, n.address_id
 		FROM netdevices n
 			LEFT JOIN vaddresses va ON n.address_id = va.id
 		WHERE (n.name ?LIKE? '.$DB->Escape('%'.$search.'%').' OR va.location ?LIKE? '.$DB->Escape('%'.$search.'%').' OR n.producer ?LIKE? '.$DB->Escape('%'.$search.'%').')
@@ -53,7 +53,7 @@ if (isset($_POST['searchnetdev']) && $_POST['searchnetdev']) {
         foreach ($netdevices as $k => $nd) {
             $netdevices[$k]['ports'] = $nd['ports'] - $LMS->CountNetDevLinks($nd['id']);
 
-            if ( !empty($nd['ownerid']) ) {
+            if ( !empty($nd['ownerid']) && empty($nd['address_id']) ) {
             	$netdevices[$k]['location'] = $LMS->getAddressForCustomerStuff($nd['ownerid']);
 			}
         }
