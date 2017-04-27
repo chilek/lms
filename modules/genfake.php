@@ -1894,7 +1894,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 				'location_city_name'   => 'Mahagonny',
 				'location_street_name' => $streets[ array_rand( $streets ) ],
 				'location_flat'        => mt_rand(1,300),
-				'location_zip'         => '03-7'.sprintf('%02d',$street),
+				'location_zip'         => generateRandomPostcode(),
 			);
 
 	$DB->Execute('INSERT INTO divisions (name, shortname, address_id) VALUES(?,?,?)', array('default', 'default', $LMS->InsertAddress( $addr )));
@@ -1997,7 +1997,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		$customeradd['addresses'][0]['location_street_name']  = $streets[$street];
 		$customeradd['addresses'][0]['location_house']        = mt_rand(1,50);
 		$customeradd['addresses'][0]['location_flat']         = mt_rand(1,300);
-		$customeradd['addresses'][0]['location_zip']          = '03-7'.sprintf('%02d',$street);
+		$customeradd['addresses'][0]['location_zip']          = generateRandomPostcode();
 
 		if ( mt_rand(1, 4) == 1 ) {
 			$customeradd['addresses'][1]['location_address_type'] = POSTAL_ADDRESS;
@@ -2005,7 +2005,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			$customeradd['addresses'][1]['location_street_name']  = $streets[$street];
 			$customeradd['addresses'][1]['location_house']        = mt_rand(1,50);
 			$customeradd['addresses'][1]['location_flat']         = mt_rand(1,300);
-			$customeradd['addresses'][1]['location_zip']          = '03-7'.sprintf('%02d',$street);
+			$customeradd['addresses'][1]['location_zip']          = generateRandomPostcode();
 		}
 
 		$customeradd['email'] = preg_replace('/[^0-9a-z@.]/i', '', strtolower($customeradd['name']).'.'.strtolower($customeradd['lastname']).'@'.$emaildomains[mt_rand(0,$esize-1)]);
@@ -2186,10 +2186,10 @@ else
 	echo '<form method="get" action="?">';
 	echo '<input type="hidden" name="m" value="genfake">';
 	echo '<input type="submit" class="hiddenbtn">';
-	echo '<font class="alert bold">'.trans('WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!').'</font><p>';
+	echo '<span class="alert bold">'.trans('WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!').'</span><p>';
 	echo trans('How many customers? (max.65000):').' <input type="text" name="l" size="5"><br>';
 	echo trans('How many invoices for each customer? (max.100):').' <input type="text" name="i" size="5">';
-	echo '<br><input type="submit" value="'.trans('Generate').'"></form>';
+	echo '<br><input type="submit" value="'.trans('Generate').'"></p></form>';
 	$SMARTY->display('footer.html');
 }
 
