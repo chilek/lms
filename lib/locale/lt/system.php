@@ -137,7 +137,7 @@ function getHolidays($year = null) {
 }
 
 /*!
- * \brief Generate radnom postcode
+ * \brief Generate random postcode
  *
  * \return string
  */

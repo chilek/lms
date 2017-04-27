@@ -2186,10 +2186,10 @@ else
 	echo '<form method="get" action="?">';
 	echo '<input type="hidden" name="m" value="genfake">';
 	echo '<input type="submit" class="hiddenbtn">';
-	echo '<font class="alert bold">'.trans('WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!').'</font><p>';
+	echo '<span class="alert bold">'.trans('WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!').'</span><p>';
 	echo trans('How many customers? (max.65000):').' <input type="text" name="l" size="5"><br>';
 	echo trans('How many invoices for each customer? (max.100):').' <input type="text" name="i" size="5">';
-	echo '<br><input type="submit" value="'.trans('Generate').'"></form>';
+	echo '<br><input type="submit" value="'.trans('Generate').'"></p></form>';
 	$SMARTY->display('footer.html');
 }
 
