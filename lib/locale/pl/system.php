@@ -163,4 +163,13 @@ function getHolidays($year = null) {
 	return $days;
 }
 
+/*!
+ * \brief Generate radnom postcode
+ *
+ * \return string
+ */
+function generateRandomPostcode() {
+    return sprintf("%02d", rand(0, 99)) . '-' . sprintf("%03d", rand(0, 999));
+}
+
 ?>
