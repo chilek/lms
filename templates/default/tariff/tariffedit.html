@@ -218,46 +218,20 @@
                                 <TD>{trans("Limit of account aliases:")}</TD>
                                 <TD>{hosting_restrictions var=$tariff v="alias_limit" tip="Enter limit of account aliases"}</TD>
                             </TR>
+                            {foreach $_ACCOUNTTYPES as $typeid => $type}
                             <TR>
-                                <TD>{trans("Limit of e-mail accounts:")}</TD>
-                                <TD>{hosting_restrictions var=$tariff v="mail_limit" tip="Enter limit of e-mail accounts"}</TD>
+                                <TD>{$type.accountlimitlabel}</TD>
+                                {$alias=$type.alias|cat:"_limit"}
+                                <TD>{hosting_restrictions var=$tariff v=$alias tip=$type.accountlimittip}</TD>
                             </TR>
+                            {/foreach}
+                            {foreach $_ACCOUNTTYPES as $typeid => $type}
                             <TR>
-                                <TD>{trans("Limit of shell accounts:")}</TD>
-                                <TD>{hosting_restrictions var=$tariff v="sh_limit" tip="Enter limit of shell accounts"}</TD>
+                                <TD>{$type.accountquotalabel}</TD>
+                                {$alias="quota_"|cat:$type.alias|cat:"_limit"}
+                                <TD>{hosting_restrictions var=$tariff v=$alias tip=$type.accountquotatip}</TD>
                             </TR>
-                            <TR>
-                                <TD>{trans("Limit of www accounts:")}</TD>
-                                <TD>{hosting_restrictions var=$tariff v="www_limit" tip="Enter limit of www accounts"}</TD>
-                            </TR>
-                            <TR>
-                                <TD>{trans("Limit of ftp accounts:")}</TD>
-                                <TD>{hosting_restrictions var=$tariff v="ftp_limit" tip="Enter limit of ftp accounts"}</TD>
-                            </TR>
-                            <TR>
-                                <TD>{trans("Limit of sql accounts:")}</TD>
-                                <TD>{hosting_restrictions var=$tariff v="sql_limit" tip="Enter limit of sql accounts"}</TD>
-                            </TR>
-                            <TR>
-                                <TD>{trans("Quota limit of e-mail account:")}</TD>
-                                <TD>{hosting_restrictions var=$tariff v="quota_mail_limit" tip="Enter quota limit of e-mail account"}</TD>
-                            </TR>
-                            <TR>
-                                <TD>{trans("Quota limit of shell account:")}</TD>
-                                <TD>{hosting_restrictions var=$tariff v="quota_sh_limit" tip="Enter quota limit of shell account"}</TD>
-                            </TR>
-                            <TR>
-                                <TD>{trans("Quota limit of www account:")}</TD>
-                                <TD>{hosting_restrictions var=$tariff v="quota_www_limit" tip="Enter quota limit of www account"}</TD>
-                            </TR>
-                            <TR>
-                                <TD>{trans("Quota limit of ftp account:")}</TD>
-                                <TD>{hosting_restrictions var=$tariff v="quota_ftp_limit" tip="Enter quota limit of ftp account"}</TD>
-                            </TR>
-                            <TR>
-                                <TD>{trans("Quota limit of sql account:")}</TD>
-                                <TD>{hosting_restrictions var=$tariff v="quota_sql_limit" tip="Enter quota limit of sql account"}</TD>
-                            </TR>
+                            {/foreach}
                         </TABLE>
                     </TD>
                 <TR>

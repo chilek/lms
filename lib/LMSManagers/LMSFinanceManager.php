@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2016 LMS Developers
+ *  Copyright (C) 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -925,6 +925,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function TariffAdd($tariff)
     {
+		global $ACCOUNTTYPES;
+
         $args = array(
             'name' => $tariff['name'],
             'description' => $tariff['description'],
@@ -949,26 +951,21 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'plimit_n' => $tariff['plimit_n'],
             'dlimit' => $tariff['dlimit'],
             'type' => $tariff['type'],
-            'sh_limit' => $tariff['sh_limit'],
-            'www_limit' => $tariff['www_limit'],
-            'mail_limit' => $tariff['mail_limit'],
-            'sql_limit' => $tariff['sql_limit'],
-            'ftp_limit' => $tariff['ftp_limit'],
-            'quota_sh_limit' => $tariff['quota_sh_limit'],
-            'quota_www_limit' => $tariff['quota_www_limit'],
-            'quota_mail_limit' => $tariff['quota_mail_limit'],
-            'quota_sql_limit' => $tariff['quota_sql_limit'],
-            'quota_ftp_limit' => $tariff['quota_ftp_limit'],
             'domain_limit' => $tariff['domain_limit'],
-            'alias_limit' => $tariff['alias_limit'],
+            'alias_limit' => $tariff['alias_limit']
         );
+        $args2 = array();
+        foreach ($ACCOUNTTYPES as $typeidx => $type) {
+            $args2[$type['alias'] . '_limit'] = $tariff[$type['alias'] . '_limit'];
+            $args2['quota_' . $type['alias'] . '_limit'] = $tariff['quota_' . $type['alias'] . '_limit'];
+        }
         $result = $this->db->Execute('INSERT INTO tariffs (name, description, value,
 				period, taxid, numberplanid, datefrom, dateto, prodid, uprate, downrate, upceil, downceil, climit,
 				plimit, uprate_n, downrate_n, upceil_n, downceil_n, climit_n,
-				plimit_n, dlimit, type, sh_limit, www_limit, mail_limit, sql_limit,
-				ftp_limit, quota_sh_limit, quota_www_limit, quota_mail_limit,
-				quota_sql_limit, quota_ftp_limit, domain_limit, alias_limit)
-				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', array_values($args));
+				plimit_n, dlimit, type, domain_limit, alias_limit, '
+				. implode(', ', array_keys($args2)) . ')
+				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,' . implode(',', array_fill(0, count($args2), '?')) . ')',
+				array_values(array_merge($args, $args2)));
         if ($result) {
             $id = $this->db->GetLastInsertID('tariffs');
             if ($this->syslog) {
@@ -982,6 +979,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function TariffUpdate($tariff)
     {
+		global $ACCOUNTTYPES;
+
         $args = array(
             'name' => $tariff['name'],
             'description' => $tariff['description'],
@@ -1005,31 +1004,26 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'climit_n' => $tariff['climit_n'],
             'plimit_n' => $tariff['plimit_n'],
             'dlimit' => $tariff['dlimit'],
-            'sh_limit' => $tariff['sh_limit'],
-            'www_limit' => $tariff['www_limit'],
-            'mail_limit' => $tariff['mail_limit'],
-            'sql_limit' => $tariff['sql_limit'],
-            'ftp_limit' => $tariff['ftp_limit'],
-            'quota_sh_limit' => $tariff['quota_sh_limit'],
-            'quota_www_limit' => $tariff['quota_www_limit'],
-            'quota_mail_limit' => $tariff['quota_mail_limit'],
-            'quota_sql_limit' => $tariff['quota_sql_limit'],
-            'quota_ftp_limit' => $tariff['quota_ftp_limit'],
             'domain_limit' => $tariff['domain_limit'],
             'alias_limit' => $tariff['alias_limit'],
             'type' => $tariff['type'],
             'voip_tariff_id' => (!empty($tariff['voip_pricelist'])) ? $tariff['voip_pricelist'] : NULL,
             'voip_tariff_rule_id' => (!empty($tariff['voip_tariffrule'])) ? $tariff['voip_tariffrule'] : NULL,
-            SYSLOG::RES_TARIFF => $tariff['id']
         );
-        $res = $this->db->Execute('UPDATE tariffs SET name=?, description=?, value=?,
-				period=?, taxid=?, numberplanid=?, datefrom=?, dateto=?, prodid=?, uprate=?, downrate=?, upceil=?, downceil=?,
-				climit=?, plimit=?, uprate_n=?, downrate_n=?, upceil_n=?, downceil_n=?,
-				climit_n=?, plimit_n=?, dlimit=?, sh_limit=?, www_limit=?, mail_limit=?,
-				sql_limit=?, ftp_limit=?, quota_sh_limit=?, quota_www_limit=?,
-				quota_mail_limit=?, quota_sql_limit=?, quota_ftp_limit=?,
-				domain_limit=?, alias_limit=?, type=?, voip_tariff_id=?, voip_tariff_rule_id=?
-				WHERE id=?', array_values($args));
+        $args2 = array();
+        foreach ($ACCOUNTTYPES as $typeidx => $type) {
+            $args2[$type['alias'] . '_limit'] = $tariff[$type['alias'] . '_limit'];
+            $args2['quota_' . $type['alias'] . '_limit'] = $tariff['quota_' . $type['alias'] . '_limit'];
+        }
+        $fields = array_keys($args2);
+        $args = array_merge($args, $args2);
+        $args[SYSLOG::RES_TARIFF] = $tariff['id'];
+        $res = $this->db->Execute('UPDATE tariffs SET name = ?, description = ?, value = ?,
+            period = ?, taxid = ?, numberplanid = ?, datefrom = ?, dateto = ?, prodid = ?,
+            uprate = ?, downrate = ?, upceil = ?, downceil = ?, climit = ?, plimit = ?,
+            uprate_n = ?, downrate_n = ?, upceil_n = ?, downceil_n = ?, climit_n = ?, plimit_n = ?,
+            dlimit = ?, domain_limit = ?, alias_limit = ?, type = ?, voip_tariff_id = ?, voip_tariff_rule_id = ?, '
+            . implode(' = ?, ', $fields) . ' = ? WHERE id=?', array_values($args));
         if ($res && $this->syslog)
             $this->syslog->AddMessage(SYSLOG::RES_TARIFF, SYSLOG::OPER_UPDATE, $args);
         return $res;

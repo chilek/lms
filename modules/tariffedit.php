@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -126,10 +126,11 @@ if(isset($_POST['tariff']))
 	if(!isset($tariff['taxid']))
 		$tariff['taxid'] = 0;
 
-    $items = array('domain_limit', 'alias_limit', 'sh_limit', 'mail_limit',
-                   'www_limit', 'ftp_limit', 'sql_limit', 'quota_sh_limit',
-                   'quota_mail_limit', 'quota_www_limit', 'quota_ftp_limit',
-                   'quota_sql_limit');
+	$items = array('domain_limit', 'alias_limit');
+	foreach ($ACCOUNTTYPES as $typeidx => $type) {
+		$items[] = $type['alias'] . '_limit';
+		$items[] = 'quota_' . $type['alias'] . '_limit';
+	}
 
 	foreach ($items as $item) {
 	    if(isset($limit[$item]))

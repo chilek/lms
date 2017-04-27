@@ -221,46 +221,20 @@
                     <TD>{trans("Limit of account aliases:")}</TD>
                     <TD>{user_restrictions limit=$tariff.alias_limit}</TD>
                 </TR>
+                {foreach $_ACCOUNTTYPES as $typeidx => $type}
                 <TR>
-                    <TD>{trans("Limit of e-mail accounts:")}</TD>
-                    <TD>{user_restrictions limit=$tariff.mail_limit}</TD>
+                    <TD>{$type.accountlimitlabel}</TD>
+                    {$alias=$type.alias|cat:"_limit"}
+                    <TD>{user_restrictions limit=$tariff[$alias]}</TD>
                 </TR>
+                {/foreach}
+                {foreach $_ACCOUNTTYPES as $typeidx => $type}
                 <TR>
-                    <TD>{trans("Limit of shell accounts:")}</TD>
-                    <TD>{user_restrictions limit=$tariff.sh_limit}</TD>
+                    <TD>{$type.accountquotalabel}</TD>
+                    {$alias="quota_"|cat:$type.alias|cat:"_limit"}
+                    <TD>{user_restrictions limit=$tariff[$alias]}</TD>
                 </TR>
-                <TR>
-                    <TD>{trans("Limit of www accounts:")}</TD>
-                    <TD>{user_restrictions limit=$tariff.www_limit}</TD>
-                </TR>
-                <TR>
-                    <TD>{trans("Limit of ftp accounts:")}</TD>
-                    <TD>{user_restrictions limit=$tariff.ftp_limit}</TD>
-                </TR>
-                <TR>
-                    <TD>{trans("Limit of sql accounts:")}</TD>
-                    <TD>{user_restrictions limit=$tariff.sql_limit}</TD>
-                </TR>
-                <TR>
-                    <TD>{trans("Quota limit of e-mail account:")}</TD>
-                    <TD>{user_restrictions limit=$tariff.quota_mail_limit}</TD>
-                </TR>
-                <TR>
-                    <TD>{trans("Quota limit of shell account:")}</TD>
-                    <TD>{user_restrictions limit=$tariff.quota_sh_limit}</TD>
-                </TR>
-                <TR>
-                    <TD>{trans("Quota limit of www account:")}</TD>
-                    <TD>{user_restrictions limit=$tariff.quota_www_limit}</TD>
-                </TR>
-                <TR>
-                    <TD>{trans("Quota limit of ftp account:")}</TD>
-                    <TD>{user_restrictions limit=$tariff.quota_ftp_limit}</TD>
-                </TR>
-                <TR>
-                    <TD>{trans("Quota limit of sql account:")}</TD>
-                    <TD>{user_restrictions limit=$tariff.quota_sql_limit}</TD>
-                </TR>
+                {/foreach}
             </TABLE>
         </TD>
     </TR>
