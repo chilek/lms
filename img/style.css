@@ -1119,6 +1119,14 @@ table.dataTable thead tr:last-child th {
 .address-full:hover {
   cursor: pointer;
 }
+.lms-address-select {
+  background-color: #ebe4d6;
+  border-radius: 0 !important;
+  color: black;
+  padding-left: 4px;
+  padding-right: 4px;
+  height: 13px;
+}
 .lms-ui-cursor-pointer:hover {
   cursor: pointer;
 }
