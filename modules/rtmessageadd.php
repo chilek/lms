@@ -287,7 +287,7 @@ if(isset($_POST['message']))
 							$phones[] = $target;
 					}
 
-				if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo'))
+				if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
 					$info['locations'] = $LMS->GetUniqueNodeLocations($cid);
 					$body .= "\n\n-- \n";
 					$body .= trans('Customer:').' '.$info['customername']."\n";
