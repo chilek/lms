@@ -142,7 +142,7 @@ if(isset($_POST['ticket']))
 						$body .= trans('E-mail:') . ' ' . implode(', ', $emails);
 
 					$queuedata = $LMS->GetQueue($queue);
-					if (!empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody'])
+					if (isset($ticket['customernotify']) && !empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody'])
 						&& !empty($emails)) {
 						$custmail_subject = $queuedata['newticketsubject'];
 						$custmail_subject = str_replace('%tid', $id, $custmail_subject);
@@ -260,7 +260,7 @@ if(isset($ticket['customerid']) && $ticket['customerid'])
 }
 
 $SMARTY->assign('queue', $queue);
-$SMARTY->assign('queuelist', $LMS->GetQueueNames());
+$SMARTY->assign('queuelist', $LMS->GetQueueList(false));
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('customerid', $ticket['customerid']);
 $SMARTY->assign('userlist', $LMS->GetUserNames());

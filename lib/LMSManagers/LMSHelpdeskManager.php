@@ -150,7 +150,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function GetQueueList($stats = true)
     {
-        if ($result = $this->db->GetAll('SELECT q.id, name, email, description
+        if ($result = $this->db->GetAll('SELECT q.id, name, email, description, newticketsubject, newticketbody,
+					newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody
 				FROM rtqueues q'
                 . (!ConfigHelper::checkConfig('privileges.superuser') ? ' JOIN rtrights r ON r.queueid = q.id
 					WHERE r.rights <> 0 AND r.userid = ?' : '') . ' ORDER BY name', array($this->auth->id))) {
