@@ -388,13 +388,13 @@ if(isset($_POST['message']))
 }
 else
 {
-	if($_GET['ticketid'])
-	{
+	if ($_GET['ticketid']) {
 		$queue = $LMS->GetQueueByTicketId($_GET['ticketid']);
 		$message = $DB->GetRow('SELECT id AS ticketid, state, cause, queueid, owner FROM rttickets WHERE id = ?', array($_GET['ticketid']));
-                if(ConfigHelper::checkConfig('phpui.helpdesk_notify')){
-                    $message['notify'] = TRUE;
-                }
+		if ($queue['newmessagesubject'] && $queue['newmessagebody'])
+			$message['customernotify'] = 1;
+		if (ConfigHelper::checkConfig('phpui.helpdesk_notify'))
+			$message['notify'] = TRUE;
 	}
 
 	$user = $LMS->GetUserInfo($AUTH->id);
@@ -446,7 +446,7 @@ $SMARTY->assign('message', $message);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('ticket', $LMS->GetTicketContents($message['ticketid']));
 $SMARTY->assign('userlist', $LMS->GetUserNames());
-$SMARTY->assign('queuelist', $LMS->GetQueueNames());
+$SMARTY->assign('queuelist', $LMS->GetQueueList(false));
 $SMARTY->display('rt/rtmessageadd.html');
 
 ?>

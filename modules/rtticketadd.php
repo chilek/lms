@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -223,8 +223,20 @@ if(isset($_POST['ticket']))
 
 		$SESSION->redirect('?m=rtticketview&id='.$id);
 	}
-	$SMARTY->assign('ticket', $ticket);
 	$SMARTY->assign('error', $error);
+
+	$queuelist = $LMS->GetQueueList(false);
+} else {
+	$queuelist = $LMS->GetQueueList(false);
+	if (!$queue && !empty($queuelist)) {
+		$firstqueue = reset($queuelist);
+		if ($firstqueue['newticketsubject'] && $firstqueue['newticketbody'])
+			$ticket['customernotify'] = 1;
+	} elseif ($queue) {
+		$queuedata = $LMS->GetQueue($queue);
+		if ($queuedata['newticketsubject'] && $queuedata['newticketbody'])
+			$ticket['customernotify'] = 1;
+	}
 }
 
 $categories = $LMS->GetCategoryListByUser($AUTH->id);
@@ -258,8 +270,9 @@ if(isset($ticket['customerid']) && $ticket['customerid'])
 	$SMARTY->assign('customerinfo', $LMS->GetCustomer($ticket['customerid']));
 }
 
+$SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queue', $queue);
-$SMARTY->assign('queuelist', $LMS->GetQueueList(false));
+$SMARTY->assign('queuelist', $queuelist);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('customerid', $ticket['customerid']);
 $SMARTY->assign('userlist', $LMS->GetUserNames());

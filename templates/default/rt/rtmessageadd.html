@@ -87,6 +87,15 @@
 			<INPUT type="checkbox" name="message[notify]" id="notify" value="1"{if $message.notify} CHECKED{/if}>
 		</TD>
 	</TR>
+	<TR id="customernotify-row">
+		<TD class="bold nobr">
+			<IMG src="img/mail.gif" alt="">
+			<label for="customernotify">{trans("Notify customer:")}</label>
+		</TD>
+		<TD>
+			<INPUT type="checkbox" name="message[customernotify]" id="customernotify" value="1"{if isset($message.customernotify)} checked{/if}>
+		</TD>
+	</TR>
 	{if $message.phonefrom}
 	<TR>
 		<TD class="bold nobr">
@@ -128,8 +137,8 @@
 		</TD>
 		<TD>
 			<SELECT size="1" name="message[queueid]" {tip text="Select queue" trigger="queue"}>
-			{foreach from=$queuelist item=item}
-			<OPTION value="{$item.id}" {if $item.id == $message.queueid}SELECTED{/if}>{$item.name}</OPTION>
+			{foreach $queuelist as $item}
+			<OPTION value="{$item.id}"{if $item.newmessagesubject && $item.newmessagebody} data-newmessage-notify="1"{/if}{if $item.id == $message.queueid} selected{/if}>{$item.name}</OPTION>
 			{/foreach}
 			</SELECT>
 		</TD>
@@ -160,6 +169,24 @@
 <!--
 $(function() {
 	$('form[name="message"] [name="message[subject]"]').focus();
+
+	$('[name="message[queueid]"]').change(function() {
+		var newmessage_notify = $(this).find(':selected').attr('data-newmessage-notify');
+		if (newmessage_notify === undefined) {
+			$('#customernotify-row').hide();
+			$('#customernotify').attr('checked', false);
+		} else {
+			$('#customernotify-row').show();
+			$('#customernotify').attr('checked', true);
+		}
+	});
+
+	var newmessage_notify = $('[name="message[queueid]"]').find(':selected').attr('data-newmessage-notify');
+	if (newmessage_notify === undefined) {
+		$('#customernotify-row').hide();
+	} else {
+		$('#customernotify-row').show();
+	}
 });
 //-->
 </SCRIPT>
