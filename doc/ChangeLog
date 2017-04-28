@@ -121,6 +121,8 @@ version ?.??.?? (????-??-??):
   - bugfix: money quotes printed in words use system locales instead ui locales [chilan]
   - enhancement: added network usage module for print list of used IP addresses [kosa/chilan]
   - enhancement: added cloud account type for hosting and refactored account code [chilan]
+  - improvement: allow to decide if customer notifications are sent after new ticket
+    / new message creation [chilan]
 
 version 1.11.21 (2016-10-14):
 
