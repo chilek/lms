@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -270,26 +270,25 @@ if(isset($_POST['message']))
 				.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$message['ticketid'];
 
-			if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo'))
-				if ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid'])))
-				{
-					$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-							address, zip, city FROM customeraddressview WHERE id = ?', array($cid));
-					$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
-						WHERE customerid = ?', array($cid));
+			if ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid']))) {
+				$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
+						address, zip, city FROM customeraddressview WHERE id = ?', array($cid));
+				$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
+					WHERE customerid = ?', array($cid));
+
+				$emails = array();
+				$phones = array();
+				if (!empty($info['contacts']))
+					foreach ($info['contacts'] as $contact) {
+						$target = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+						if ($contact['type'] & CONTACT_EMAIL)
+							$emails[] = $target;
+						elseif ($contact['type'] & (CONTACT_LANDLINE | CONTACT_MOBILE))
+							$phones[] = $target;
+					}
+
+				if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo'))
 					$info['locations'] = $LMS->GetUniqueNodeLocations($cid);
-
-					$emails = array();
-					$phones = array();
-					if (!empty($info['contacts']))
-						foreach ($info['contacts'] as $contact) {
-							$target = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
-							if ($contact['type'] & CONTACT_EMAIL)
-								$emails[] = $target;
-							elseif ($contact['type'] & (CONTACT_LANDLINE | CONTACT_MOBILE))
-								$phones[] = $target;
-						}
-
 					$body .= "\n\n-- \n";
 					$body .= trans('Customer:').' '.$info['customername']."\n";
 					$body .= trans('ID:').' '.sprintf('%04d', $cid)."\n";
@@ -301,31 +300,6 @@ if(isset($_POST['message']))
 					if (!empty($emails))
 						$body .= trans('E-mail:') . ' ' . implode(', ', $emails);
 
-					$queuedata = $LMS->GetQueueByTicketId($message['ticketid']);
-					if (!empty($queuedata['newmessagesubject']) && !empty($queuedata['newmessagebody'])
-						&& !empty($emails)) {
-						$title = $DB->GetOne('SELECT subject FROM rtmessages WHERE ticketid = ?
-							ORDER BY id LIMIT 1', array($message['ticketid']));
-						$custmail_subject = $queuedata['newmessagesubject'];
-						$custmail_subject = str_replace('%tid', $id, $custmail_subject);
-						$custmail_subject = str_replace('%title', $title, $custmail_subject);
-						$custmail_body = $queuedata['newmessagebody'];
-						$custmail_body = str_replace('%tid', $id, $custmail_body);
-						$custmail_body = str_replace('%cid', $cid, $custmail_body);
-						$custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
-						$custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
-						$custmail_body = str_replace('%title', $title, $custmail_body);
-						$custmail_headers = array(
-							'From' => $headers['From'],
-							'Reply-To' => $headers['From'],
-							'Subject' => $custmail_subject,
-						);
-						foreach ($emails as $email) {
-							$custmail_headers['To'] = '<' . $email . '>';
-							$LMS->SendMail($email, $custmail_headers, $custmail_body);
-						}
-					}
-
 					$sms_body .= "\n";
 					$sms_body .= trans('Customer:').' '.$info['customername'];
 					$sms_body .= ' '.sprintf('(%04d)', $cid).'. ';
@@ -334,14 +308,39 @@ if(isset($_POST['message']))
 					if (!empty($phones))
 						$sms_body .= '. ' . trans('Phone:') . ' ' . preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones));
 				}
-				elseif ($requestor = $DB->GetOne('SELECT requestor FROM rttickets WHERE id = ?', array($message['ticketid'])))
-				{
+
+				$queuedata = $LMS->GetQueueByTicketId($message['ticketid']);
+				if (!empty($queuedata['newmessagesubject']) && !empty($queuedata['newmessagebody'])
+					&& !empty($emails)) {
+					$title = $DB->GetOne('SELECT subject FROM rtmessages WHERE ticketid = ?
+						ORDER BY id LIMIT 1', array($message['ticketid']));
+					$custmail_subject = $queuedata['newmessagesubject'];
+					$custmail_subject = str_replace('%tid', $id, $custmail_subject);
+					$custmail_subject = str_replace('%title', $title, $custmail_subject);
+					$custmail_body = $queuedata['newmessagebody'];
+					$custmail_body = str_replace('%tid', $id, $custmail_body);
+					$custmail_body = str_replace('%cid', $cid, $custmail_body);
+					$custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
+					$custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
+					$custmail_body = str_replace('%title', $title, $custmail_body);
+					$custmail_headers = array(
+						'From' => $headers['From'],
+						'Reply-To' => $headers['From'],
+						'Subject' => $custmail_subject,
+					);
+					foreach ($emails as $email) {
+						$custmail_headers['To'] = '<' . $email . '>';
+						$LMS->SendMail($email, $custmail_headers, $custmail_body);
+					}
+				} elseif (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
+					&& $requestor = $DB->GetOne('SELECT requestor FROM rttickets WHERE id = ?', array($message['ticketid']))) {
 					$body .= "\n\n-- \n";
-					$body .= trans('Customer:').' '.$requestor;
+					$body .= trans('Customer:') . ' ' . $requestor;
 
 					$sms_body .= "\n";
-					$sms_body .= trans('Customer:').' '.$requestor;
+					$sms_body .= trans('Customer:') . ' ' . $requestor;
 				}
+			}
 
 			$notify_author = ConfigHelper::checkConfig('phpui.helpdesk_author_notify');
 			$args = array(
