@@ -3649,4 +3649,13 @@ $_LANG['(no subject)'] = '(brak tematu)';
 
 $_LANG['cloud'] = 'chmura';
 
+$_LANG['New ticket body should not be empty if you set new ticket subject!'] = 'Treść powiadomienia o nowym zgłoszeniu nie może być pusta w sytuacji, gdy ustawiono temat powiadomienia o nowym zgłoszeniu!';
+$_LANG['New ticket subject should not be empty if you set new ticket body!'] = 'Temat powiadomienia o nowym zgłoszeniu nie może być pusty w sytuacji, gdy ustawiono treść powiadomienia o nowym zgłoszeniu!';
+
+$_LANG['New message body should not be empty if you set new message subject!'] = 'Treść powiadomienia o nowej wiadomości nie może być pusta w sytuacji, gdy ustawiono temat powiadomienia o nowej wiadomości!';
+$_LANG['New message subject should not be empty if you set new message body!'] = 'Temat powiadomienia o nowej wiadomości nie może być pusty w sytuacji, gdy ustawiono treść powiadomienia o nowej wiadomości!';
+
+$_LANG['Resolve ticket body should not be empty if you set resolve ticket subject!'] = 'Treść powiadomienia o zamknięciu zgłoszenia nie może być pusta w sytuacji, gdy ustawiono temat powiadomienia o zamknięciu zgłoszenia!';
+$_LANG['Resolve ticket subject should not be empty if you set resolve ticket body!'] = 'Temat powiadomienia o zamknięciu zgłoszenia nie może być pusty w sytuacji, gdy ustawiono treść powiadomienia o zamknięciu zgłoszenia!';
+
 ?>

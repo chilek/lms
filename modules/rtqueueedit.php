@@ -45,6 +45,21 @@ if(isset($_POST['queue']))
 		foreach($queue['users'] as $key => $value)
 			$queue['rights'][] = array('id' => $key, 'rights' => array_sum($value), 'name' => $queue['usernames'][$key]);
 
+	if ($queue['newticketsubject'] && !$queue['newticketbody'])
+		$error['newticketbody'] = trans('New ticket body should not be empty if you set new ticket subject!');
+	elseif (!$queue['newticketsubject'] && $queue['newticketbody'])
+		$error['newticketsubject'] = trans('New ticket subject should not be empty if you set new ticket body!');
+
+	if ($queue['newmessagesubject'] && !$queue['newmessagebody'])
+		$error['newmessagebody'] = trans('New message body should not be empty if you set new message subject!');
+	elseif (!$queue['newmessagesubject'] && $queue['newmessagebody'])
+		$error['newmessagesubject'] = trans('New message subject should not be empty if you set new message body!');
+
+	if ($queue['resolveticketsubject'] && !$queue['resolveticketbody'])
+		$error['resolveticketbody'] = trans('Resolve ticket body should not be empty if you set resolve ticket subject!');
+	elseif (!$queue['resolveticketsubject'] && $queue['resolveticketbody'])
+		$error['resolveticketsubject'] = trans('Resolve ticket subject should not be empty if you set resolve ticket body!');
+
 	if (!$error) {
 		$DB->Execute('UPDATE rtqueues SET name=?, email=?, description=?,
 				newticketsubject=?, newticketbody=?,
