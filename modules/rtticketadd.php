@@ -57,22 +57,24 @@ if(isset($_POST['ticket']))
 	else
 		$ticket['customerid'] = $ticket['custid'] ? $ticket['custid'] : 0;
 
-	if($ticket['surname']=='' && $ticket['customerid']==0)
-		$error['surname'] = trans('Requester name required!');
-
-	$requestor  = ($ticket['surname'] ? $ticket['surname'].' ' : '');
-	$requestor .= ($ticket['name'] ? $ticket['name'].' ' : '');
-	$requestor .= ($ticket['email'] ? '<'.$ticket['email'].'>' : '');
-	$ticket['requestor'] = trim($requestor);
-	
-	$ticket['mailfrom'] = $ticket['email'] ? $ticket['email'] : '';
-
 	$result = handle_file_uploads('files', $error);
 	extract($result);
 	$SMARTY->assign('fileupload', $fileupload);
 
-	if (!$error)
-	{
+	if (!$error) {
+		if (!$ticket['customerid'] && $ticket['surname'] == '') {
+			$userinfo = $LMS->GetUserInfo(Auth::GetCurrentUser());
+			$ticket['surname'] = $userinfo['lastname'];
+			$ticket['name'] = $userinfo['firstname'];
+		}
+
+		$ticket['mailfrom'] = $ticket['email'] ? $ticket['email'] : '';
+
+		$requestor  = ($ticket['surname'] ? $ticket['surname'].' ' : '');
+		$requestor .= ($ticket['name'] ? $ticket['name'].' ' : '');
+		$requestor .= ($ticket['email'] ? '<'.$ticket['email'].'>' : '');
+		$ticket['requestor'] = trim($requestor);
+
 		$ticket['tmppath'] = $tmppath;
 		$id = $LMS->TicketAdd($ticket, $files);
 

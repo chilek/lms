@@ -1268,7 +1268,6 @@ $_LANG['Remove this item from list'] = 'Usuń tę pozycję z listy';
 $_LANG['Removing network $a'] = 'Usuń sieć $a';
 $_LANG['Repeat password:'] = 'Powtórz hasło:';
 $_LANG['Reply'] = 'Odpowiedź';
-$_LANG['Requester name required!'] = 'Nazwa lub nazwisko zgłaszającego jest wymagane!';
 $_LANG['Requests Tracking'] = 'System Obsługi Zgłoszeń';
 $_LANG['Resolve'] = 'Rozwiąż';
 $_LANG['resolved'] = 'rozwiązany';
