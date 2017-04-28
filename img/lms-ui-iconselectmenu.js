@@ -73,10 +73,7 @@ LmsUiIconSelectMenu.prototype.setAddressList = function( address_list ) {
     this._clearList();
 
     // insert new addresses
-    this._appendAddressList( address_list );
-
-    // refresh list
-    this.refresh();
+    this.appendAddressList( address_list );
 }
 
 /*!
