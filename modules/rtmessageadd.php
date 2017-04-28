@@ -310,7 +310,7 @@ if(isset($_POST['message']))
 				}
 
 				$queuedata = $LMS->GetQueueByTicketId($message['ticketid']);
-				if (!empty($queuedata['newmessagesubject']) && !empty($queuedata['newmessagebody'])
+				if (isset($message['customernotify']) && !empty($queuedata['newmessagesubject']) && !empty($queuedata['newmessagebody'])
 					&& !empty($emails)) {
 					$title = $DB->GetOne('SELECT subject FROM rtmessages WHERE ticketid = ?
 						ORDER BY id LIMIT 1', array($message['ticketid']));
