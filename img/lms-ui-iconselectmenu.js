@@ -60,7 +60,7 @@ LmsUiIconSelectMenu.prototype.init = function() {
         .iconselectmenu( 'menuWidget' );
 
     // rewrite jQuery UI styles
-    $( this.select_id+"-button" ).addClass('lms-address-select');
+    $( this.select_id+"-button" ).addClass('lms-ui-address-select');
 
     // mark select as ready to use refresh
     this.ready = 1;
