@@ -549,6 +549,12 @@ class LMS
         return $manager->getAddressForCustomerStuff( $customer_id );
     }
 
+    public function getFullAddressForCustomerStuff( $customer_id )
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getFullAddressForCustomerStuff( $customer_id );
+    }
+
     /*
      * Customer groups
      */
