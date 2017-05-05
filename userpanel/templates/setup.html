@@ -67,7 +67,7 @@
 			<label for="hide_nodes_modules">{trans("Disabling modules:")}</label>
 		</TD>
 		<TD>
-			<INPUT class="box light" type="checkbox" name="hide_nodes_modules" id="hide_nodes_modules" value="1"{if $hide_nodes_modules} checked{/if} {tip text="Hiding some modules useless when customer hasn't got any nodes"}>
+			<input type="checkbox" name="hide_nodes_modules" id="hide_nodes_modules" value="1"{if $hide_nodes_modules} checked{/if} {tip text="Hiding some modules useless when customer hasn't got any nodes" class="box light"}>
 		</TD>
 	</TR>
 	<TR>
@@ -104,7 +104,7 @@
 	</TR>
 	<TR>
 		<TD class="nobr">
-			<label for="auth_type">{trans("Authentication type:")}</label>
+			{trans("Authentication type:")}
 		</TD>
 		<TD>
 			<SELECT name="auth_type" {tip text="Userpanel authentication type"}>
@@ -119,7 +119,7 @@
 			<label for="force_ssl">{trans("Force SSL:")}</label>
 		</TD>
 		<TD>
-			<INPUT class="box light" type="checkbox" name="force_ssl" id="force_ssl" value="1"{if $force_ssl} checked{/if} {tip text="SSL Enforcing. Setting this option to 1 will effect with that LMS will enforce SSL connection with redirect to \'https://\'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every request without SSL. Default: 0 (off)."}>
+			<input type="checkbox" name="force_ssl" id="force_ssl" value="1"{if $force_ssl} checked{/if} {tip text="SSL Enforcing. Setting this option to 1 will effect with that LMS will enforce SSL connection with redirect to \'https://\'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every request without SSL. Default: 0 (off)." class="box light"}>
 		</TD>
 	</TR>
 	<TR>
@@ -141,11 +141,21 @@
 			<TD class="text-center bold">{trans("Enabled")}</TD>
 		</TR>
 	</THEAD>
+	<TFOOT>
+		<TR>
+			<TD colspan="5" class="ftop bold text-center">
+				{trans("Total:")} {$total}
+			</TD>
+			<TD style="width: 2%;" class="ftop buttons nobr">
+				<A HREF="javascript:document.config.submit();" accesskey="S">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+			</TD>
+		</TR>
+	</TFOOT>
 	<TBODY>
 		{foreach $menu as $menuitem}
 		<TR class="{if !in_array($menuitem.module, $enabled_modules)}blend {/if}" onmouseover="addClass(this, 'highlight')" onmouseout="removeClass(this, 'highlight')" data-module="{$menuitem.module}">
 			<td onClick="return self.location.href='?m=userpanel&module={$menuitem.module}';">
-				<img src="img/recover.gif">&nbsp;{$menuitem.module}
+				<img src="img/recover.gif" alt="">&nbsp;{$menuitem.module}
 			</td>
 			<td onClick="return self.location.href='?m=userpanel&module={$menuitem.module}';">
 				{$menuitem.name}
@@ -165,16 +175,6 @@
 		</TR>
 		{/foreach}
 	</TBODY>
-	<TFOOT>
-		<TR>
-			<TD colspan="5" class="ftop bold text-center">
-				{trans("Total:")} {$total}
-			</TD>
-			<TD style="width: 2%;" class="ftop buttons nobr">
-				<A HREF="javascript:document.config.submit();" accesskey="S">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
-			</TD>
-		</TR>
-	</TFOOT>
 </table>
 </FORM>
 <script type="text/javascript">

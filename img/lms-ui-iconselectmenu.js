@@ -59,6 +59,9 @@ LmsUiIconSelectMenu.prototype.init = function() {
         .iconselectmenu()
         .iconselectmenu( 'menuWidget' );
 
+    // rewrite jQuery UI styles
+    $( this.select_id+"-button" ).addClass('lms-ui-address-select');
+
     // mark select as ready to use refresh
     this.ready = 1;
 }
@@ -73,10 +76,7 @@ LmsUiIconSelectMenu.prototype.setAddressList = function( address_list ) {
     this._clearList();
 
     // insert new addresses
-    this._appendAddressList( address_list );
-
-    // refresh list
-    this.refresh();
+    this.appendAddressList( address_list );
 }
 
 /*!
