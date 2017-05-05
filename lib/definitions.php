@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -241,6 +241,7 @@ define('DOC_ANNEX', -2);
 define('DOC_PROTOCOL', -3);
 define('DOC_ORDER', -4);
 define('DOC_SHEET', -5);
+define('DOC_BREACH', -6);
 define('DOC_OTHER', -128);
 define('DOC_BILLING',-10);
 define('DOC_PRICELIST', -11);
@@ -263,7 +264,7 @@ $DOCTYPES = array(
     DOC_PROTOCOL        =>      trans('protocol'),
     DOC_ORDER       =>  trans('order'),
     DOC_SHEET       =>  trans('customer sheet'), // karta klienta
-    -6  =>      trans('contract termination'),
+    DOC_BREACH      =>  trans('contract termination'),
     -7  =>      trans('payments book'), // ksiazeczka oplat
     -8  =>      trans('payment summons'), // wezwanie do zapłaty
     -9  =>      trans('payment pre-summons'), // przedsądowe wezw. do zapłaty
