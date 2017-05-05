@@ -122,7 +122,7 @@
 		<TD style="width: 99%;">
 			<SELECT size="1" name="ticket[queue]" {tip text="Select queue" trigger="queue"}>
 				{foreach from=$queuelist item=item}
-				<OPTION value="{$item.id}" {if $item.id == $queue}SELECTED{/if}>{$item.name}</OPTION>
+				<OPTION value="{$item.id}"{if $item.newticketsubject && $item.newticketbody} data-newticket-notify="1"{/if}{if $item.id == $queue} selected{/if}>{$item.name}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
@@ -138,6 +138,17 @@
 				<OPTION value="1" {if $ticket.cause == 1}selected{/if}>{trans("customer's side")}</OPTION>
 				<OPTION value="2" {if $ticket.cause == 2}selected{/if}>{trans("company's side")}</OPTION>
 			</SELECT>
+		</TD>
+	</TR>
+	<TR id="customernotify-row">
+		<TD class="bold nobr">
+			<label for="customernotify">
+				<IMG src="img/mail.gif" alt="">
+				{trans("Notify customer:")}
+			</label>
+		</TD>
+		<TD>
+			<input type="checkbox" id="customernotify" name="ticket[customernotify]" value="1"{if isset($ticket.customernotify)} checked{/if}>
 		</TD>
 	</TR>
 
@@ -157,6 +168,27 @@
 <SCRIPT type="text/javascript">
 <!--
 document.forms['ticket'].elements['ticket[subject]'].focus();
+
+$(function() {
+	$('[name="ticket[queue]"]').change(function() {
+		var newticket_notify = $(this).find(':selected').attr('data-newticket-notify');
+		if (newticket_notify === undefined) {
+			$('#customernotify-row').hide();
+			$('#customernotify').attr('checked', false);
+		} else {
+			$('#customernotify-row').show();
+			$('#customernotify').attr('checked', true);
+		}
+	});
+
+	var newticket_notify = $('[name="ticket[queue]"]').find(':selected').attr('data-newticket-notify');
+	if (newticket_notify === undefined) {
+		$('#customernotify-row').hide();
+	} else {
+		$('#customernotify-row').show();
+	}
+});
+
 //-->
 </SCRIPT>
 {/block}

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -118,11 +118,11 @@ if(isset($_POST['tariff']))
 	if(!isset($tariff['taxid']))
 		$tariff['taxid'] = 0;
 
-	$items = array('domain_limit', 'alias_limit', 
-			'sh_limit', 'mail_limit', 'www_limit', 'ftp_limit', 'sql_limit', 
-			'quota_sh_limit', 'quota_mail_limit', 'quota_www_limit', 
-			'quota_ftp_limit', 'quota_sql_limit', 
-	);
+	$items = array('domain_limit', 'alias_limit');
+	foreach ($ACCOUNTTYPES as $typeidx => $type) {
+		$items[] = $type['alias'] . '_limit';
+		$items[] = 'quota_' . $type['alias'] . '_limit';
+	}
 
 	foreach($items as $item)
 	{
@@ -148,16 +148,10 @@ else
 {
 	$tariff['domain_limit'] = 0;
 	$tariff['alias_limit'] = 0;
-	$tariff['sh_limit'] = 0;
-	$tariff['www_limit'] = 0;
-	$tariff['mail_limit'] = 0;
-	$tariff['ftp_limit'] = 0;
-	$tariff['sql_limit'] = 0;
-	$tariff['quota_sh_limit'] = 0;
-	$tariff['quota_www_limit'] = 0;
-	$tariff['quota_mail_limit'] = 0;
-	$tariff['quota_ftp_limit'] = 0;
-	$tariff['quota_sql_limit'] = 0;
+	foreach ($ACCOUNTTYPES as $typeidx => $type) {
+		$tariff[$type['alias'] . '_limit'] = 0;
+		$tariff['quota_' . $type['alias'] . '_limit'] = 0;
+	}
 
 	$default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
 	if (!empty($default_assignment_period))

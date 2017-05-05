@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2016 LMS Developers
+ *  Copyright (C) 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -1316,6 +1316,25 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if ( isset($addresses[BILLING_ADDRESS]) ) {
             return $addresses[BILLING_ADDRESS]['location'];
+        }
+
+        return null;
+    }
+
+    public function getFullAddressForCustomerStuff( $customer_id ) {
+        $addresses = $this->db->GetAllByKey('SELECT
+                                                ca.address_id, ca.type, addr.location
+                                             FROM customer_addresses ca
+                                                LEFT JOIN vaddresses addr ON ca.address_id = addr.id
+                                             WHERE
+                                                ca.customer_id = ?', 'type', array($customer_id));
+
+        if ( isset($addresses[DEFAULT_LOCATION_ADDRESS]) ) {
+            return $addresses[DEFAULT_LOCATION_ADDRESS];
+        }
+
+        if ( isset($addresses[BILLING_ADDRESS]) ) {
+            return $addresses[BILLING_ADDRESS];
         }
 
         return null;

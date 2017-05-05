@@ -220,9 +220,10 @@ if (($fh = fopen($message_file, "r")) != NULL) {
 	foreach ($categories as $category)
 		if (($catid = $LMS->GetCategoryIdByName($category)) != null)
 			$cats[$catid] = $category;
+	$requestor = !empty($customer['name']) ? $customer['name'] : (empty($phone) ? '' : $formatted_phone);
 	$tid = $LMS->TicketAdd(array(
 		'queue' => $queueid,
-		'requestor' => !empty($customer['name']) ? $customer['name'] : (empty($phone) ? '' : $formatted_phone),
+		'requestor' => $requestor,
 		'subject' => trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
 		'customerid' => !empty($customer['cid']) ? $customer['cid'] : 0,
 		'body' => $message,
@@ -250,12 +251,11 @@ if (($fh = fopen($message_file, "r")) != NULL) {
 		if (!empty($lms_url))
 			$message = $message."\n\n" . $lms_url . '?m=rtticketview&id='.$tid;
 
-		if ($helpdesk_customerinfo && !empty($customer['cid'])) {
+		if (!empty($customer['cid'])) {
 			$info = $DB->GetRow("SELECT " . $DB->Concat('UPPER(lastname)',"' '",'c.name') . " AS customername,
 					address, zip, city FROM customeraddressview c WHERE c.id = ?", array($customer['cid']));
 			$info['contacts'] = $DB->GetAll("SELECT contact, name, type FROM customercontacts
 				WHERE customerid = ?", array($customer['cid']));
-			$info['locations'] = $LMS->GetUniqueNodeLocations($customer['cid']);
 
 			$emails = array();
 			$phones = array();
@@ -268,24 +268,54 @@ if (($fh = fopen($message_file, "r")) != NULL) {
 						$phones[] = $target;
 				}
 
+			if ($helpdesk_customerinfo) {
+				$info['locations'] = $LMS->GetUniqueNodeLocations($customer['cid']);
 
-			$message .= "\n\n-- \n";
-			$message .= trans('Customer:').' '.$info['customername']."\n";
-			$message .= trans('ID:').' '.sprintf('%04d', $customer['cid'])."\n";
-			$message .= trans('Address:') . ' ' . (empty($info['locations']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
-				: implode(', ', $info['locations'])) . "\n";
-			if (!empty($phones))
-				$message .= trans('Phone:').' ' . implode(', ', $phones) . "\n";
-			if (!empty($emails))
-				$message .= trans('E-mail:').' ' . implode(', ', $emails);
+				$message .= "\n\n-- \n";
+				$message .= trans('Customer:').' '.$info['customername']."\n";
+				$message .= trans('ID:').' '.sprintf('%04d', $customer['cid'])."\n";
+				$message .= trans('Address:') . ' ' . (empty($info['locations']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
+					: implode(', ', $info['locations'])) . "\n";
+				if (!empty($phones))
+					$message .= trans('Phone:').' ' . implode(', ', $phones) . "\n";
+				if (!empty($emails))
+					$message .= trans('E-mail:').' ' . implode(', ', $emails);
 
+				$sms_body .= "\n";
+				$sms_body .= trans('Customer:').' '.$info['customername'];
+				$sms_body .= ' '.sprintf('(%04d)', $customer['cid']).'. ';
+				$sms_body .= empty($info['locations']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
+					: implode(', ', $info['locations']);
+				if (!empty($phones))
+					$sms_body .= '. ' . trans('Phone:') . ' ' . preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones));
+			}
+
+			$queuedata = $LMS->GetQueue($queueid);
+			if (!empty($queuedata['newticketsubject']) && !empty($queuedata['newticketbody']) && !empty($emails)) {
+				$custmail_subject = $queuedata[$ticketsubject_variable];
+				$custmail_subject = str_replace('%tid', $ticket_id, $custmail_subject);
+				$custmail_subject = str_replace('%title', $mh_subject, $custmail_subject);
+				$custmail_body = $queuedata[$ticketbody_variable];
+				$custmail_body = str_replace('%tid', $ticket_id, $custmail_body);
+				$custmail_body = str_replace('%cid', $ticket['customerid'], $custmail_body);
+				$custmail_body = str_replace('%pin', $info['pin'], $custmail_body);
+				$custmail_body = str_replace('%customername', $info['customername'], $custmail_body);
+				$custmail_body = str_replace('%title', $mh_subject, $custmail_body);
+				$custmail_headers = array(
+					'From' => $headers['From'],
+					'Reply-To' => $headers['From'],
+					'Subject' => $custmail_subject,
+				);
+				foreach ($emails as $email) {
+					$custmail_headers['To'] = '<' . $email . '>';
+					$LMS->SendMail($email, $custmail_headers, $custmail_body);
+				}
+			}
+		} elseif ($helpdesk_customerinfo) {
+			$body .= "\n\n-- \n";
+			$body .= trans('Customer:') . ' ' . $requestor;
 			$sms_body .= "\n";
-			$sms_body .= trans('Customer:').' '.$info['customername'];
-			$sms_body .= ' '.sprintf('(%04d)', $customer['cid']).'. ';
-			$sms_body .= empty($info['locations']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
-				: implode(', ', $info['locations']);
-			if (!empty($phones))
-				$sms_body .= '. ' . trans('Phone:') . ' ' . preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones));
+			$sms_body .= trans('Customer:') . ' ' . $requestor;
 		}
 
 		// send email

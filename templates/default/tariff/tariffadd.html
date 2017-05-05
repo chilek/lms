@@ -219,76 +219,30 @@
 						    <input type="checkbox" value="1" id="alias_limit" name="limit[alias_limit]" onchange="checklimit(this)"{if $tariff.alias_limit===NULL} CHECKED{/if}><label for="alias_limit">{trans("no limit")}</label>
 						</TD>
 					    </TR>
-					    <TR>
-						<TD WIDTH="1%" NOWRAP>{trans("Limit of e-mail accounts:")}</TD>
-						<TD WIDTH="99%" NOWRAP>
-						    <INPUT TYPE="TEXT" NAME="tariff[mail_limit]" SIZE="5" VALUE="{$tariff.mail_limit}"{if $tariff.mail_limit === NULL} style="display:none"{/if} {tip text="Enter limit of e-mail accounts" trigger="mail_limit"}>
-						    <input type="checkbox" value="1" id="mail_limit" name="limit[mail_limit]" onchange="checklimit(this)"{if $tariff.mail_limit===NULL} CHECKED{/if}><label for="mail_limit">{trans("no limit")}</label>
-						</TD>
-					    </TR>
-					    <TR>
-						<TD WIDTH="1%" NOWRAP>{trans("Limit of shell accounts:")}</TD>
-						<TD WIDTH="99%" NOWRAP>
-						    <INPUT TYPE="TEXT" NAME="tariff[sh_limit]" SIZE="5" VALUE="{$tariff.sh_limit}"{if $tariff.sh_limit === NULL} style="display:none"{/if} {tip text="Enter limit of shell accounts" trigger="sh_limit"}>
-						    <input type="checkbox" value="1" id="sh_limit" name="limit[sh_limit]" onchange="checklimit(this)"{if $tariff.sh_limit===NULL} CHECKED{/if}><label for="sh_limit">{trans("no limit")}</label>
-						</TD>
-					    </TR>
-					    <TR>
-						<TD WIDTH="1%" NOWRAP>{trans("Limit of www accounts:")}</TD>
-						<TD WIDTH="99%" NOWRAP>
-						    <INPUT TYPE="TEXT" NAME="tariff[www_limit]" SIZE="5" VALUE="{$tariff.www_limit}"{if $tariff.www_limit === NULL} style="display:none"{/if} {tip text="Enter limit of www accounts" trigger="www_limit"}>
-						    <input type="checkbox" value="1" id="www_limit" name="limit[www_limit]" onchange="checklimit(this)"{if $tariff.www_limit===NULL} CHECKED{/if}><label for="www_limit">{trans("no limit")}</label>
-						</TD>
-					    </TR>
-					    <TR>
-						<TD WIDTH="1%" NOWRAP>{trans("Limit of ftp accounts:")}</TD>
-						<TD WIDTH="99%" NOWRAP>
-						    <INPUT TYPE="TEXT" NAME="tariff[ftp_limit]" SIZE="5" VALUE="{$tariff.ftp_limit}"{if $tariff.ftp_limit === NULL} style="display:none"{/if} {tip text="Enter limit of ftp accounts" trigger="ftp_limit"}>
-						    <input type="checkbox" value="1" id="ftp_limit" name="limit[ftp_limit]" onchange="checklimit(this)"{if $tariff.ftp_limit===NULL} CHECKED{/if}><label for="ftp_limit">{trans("no limit")}</label>
-						</TD>
-					    </TR>
-					    <TR>
-						<TD WIDTH="1%" NOWRAP>{trans("Limit of sql accounts:")}</TD>
-						<TD WIDTH="99%" NOWRAP>
-						    <INPUT TYPE="TEXT" NAME="tariff[sql_limit]" SIZE="5" VALUE="{$tariff.sql_limit}"{if $tariff.sql_limit === NULL} style="display:none"{/if} {tip text="Enter limit of sql accounts" trigger="sql_limit"}>
-						    <input type="checkbox" value="1" id="sql_limit" name="limit[sql_limit]" onchange="checklimit(this)"{if $tariff.sql_limit===NULL} CHECKED{/if}><label for="sql_limit">{trans("no limit")}</label>
-						</TD>
-					    </TR>
-					    <TR>
-						<TD WIDTH="1%" NOWRAP>{trans("Quota limit of e-mail account:")}</TD>
-						<TD WIDTH="99%" NOWRAP>
-						    <INPUT TYPE="TEXT" NAME="tariff[quota_mail_limit]" SIZE="5" VALUE="{$tariff.quota_mail_limit}"{if $tariff.quota_mail_limit === NULL} style="display:none"{/if} {tip text="Enter quota limit of e-mail account" trigger="quota_mail_limit"}>
-						    <input type="checkbox" value="1" id="quota_mail_limit" name="limit[quota_mail_limit]" onchange="checklimit(this)"{if $tariff.quota_mail_limit===NULL} CHECKED{/if}><label for="quota_mail_limit">{trans("no limit")}</label>
-						</TD>
-					    </TR>
-					    <TR>
-						<TD WIDTH="1%" NOWRAP>{trans("Quota limit of shell account:")}</TD>
-						<TD WIDTH="99%" NOWRAP>
-						    <INPUT TYPE="TEXT" NAME="tariff[quota_sh_limit]" SIZE="5" VALUE="{$tariff.quota_sh_limit}"{if $tariff.quota_sh_limit === NULL} style="display:none"{/if} {tip text="Enter quota limit of shell account" trigger="quota_sh_limit"}>
-						    <input type="checkbox" value="1" id="quota_sh_limit" name="limit[quota_sh_limit]" onchange="checklimit(this)"{if $tariff.quota_sh_limit===NULL} CHECKED{/if}><label for="quota_sh_limit">{trans("no limit")}</label>
-						</TD>
-					    </TR>
-					    <TR>
-						<TD WIDTH="1%" NOWRAP>{trans("Quota limit of www account:")}</TD>
-						<TD WIDTH="99%" NOWRAP>
-						    <INPUT TYPE="TEXT" NAME="tariff[quota_www_limit]" SIZE="5" VALUE="{$tariff.quota_www_limit}"{if $tariff.quota_www_limit === NULL} style="display:none"{/if} {tip text="Enter quota limit of www account" trigger="quota_www_limit"}>
-						    <input type="checkbox" value="1" id="quota_www_limit" name="limit[quota_www_limit]" onchange="checklimit(this)"{if $tariff.quota_www_limit===NULL} CHECKED{/if}><label for="quota_www_limit">{trans("no limit")}</label>
-						</TD>
-					    </TR>
-					    <TR>
-						<TD WIDTH="1%" NOWRAP>{trans("Quota limit of ftp account:")}</TD>
-						<TD WIDTH="99%" NOWRAP>
-						    <INPUT TYPE="TEXT" NAME="tariff[quota_ftp_limit]" SIZE="5" VALUE="{$tariff.quota_ftp_limit}"{if $tariff.quota_ftp_limit === NULL} style="display:none"{/if} {tip text="Enter quota limit of ftp account" trigger="quota_ftp_limit"}>
-						    <input type="checkbox" value="1" id="quota_ftp_limit" name="limit[quota_ftp_limit]" onchange="checklimit(this)"{if $tariff.quota_ftp_limit===NULL} CHECKED{/if}><label for="quota_ftp_limit">{trans("no limit")}</label>
-						</TD>
-					    </TR>
-					    <TR>
-						<TD WIDTH="1%" NOWRAP>{trans("Quota limit of sql account:")}</TD>
-						<TD WIDTH="99%" NOWRAP>
-						    <INPUT TYPE="TEXT" NAME="tariff[quota_sql_limit]" SIZE="5" VALUE="{$tariff.quota_sql_limit}"{if $tariff.quota_sql_limit === NULL} style="display:none"{/if} {tip text="Enter quota limit of sql account" trigger="quota_sql_limit"}>
-						    <input type="checkbox" value="1" id="quota_sql_limit" name="limit[quota_sql_limit]" onchange="checklimit(this)"{if $tariff.quota_sql_limit===NULL} CHECKED{/if}><label for="quota_sql_limit">{trans("no limit")}</label>
-						</TD>
-					    </TR>
+						{foreach $_ACCOUNTTYPES as $typeidx => $type}
+						<TR>
+							<TD style="width: 1%;" class="nobr">
+								{$type.accountlimitlabel}
+							</TD>
+							<TD style="width: 99%;" class="nobr">
+								{$alias=$type.alias|cat:"_limit"}
+								<INPUT TYPE="TEXT" NAME="tariff[{$alias}]" SIZE="5" VALUE="{$tariff[$alias]}"{if $tariff[$alias] === NULL} style="display:none"{/if} {tip text=$type.accountlimittip trigger=$alias}>
+								<input type="checkbox" value="1" id="{$alias}" name="limit[{$alias}]" onchange="checklimit(this)"{if $tariff[$alias]===NULL} CHECKED{/if}><label for="{$alias}">{trans("no limit")}</label>
+							</TD>
+						</TR>
+						{/foreach}
+						{foreach $_ACCOUNTTYPES as $typeidx => $type}
+						<TR>
+							<TD style="width: 1%;" class="nobr">
+								{$type.accountquotalabel}
+							</TD>
+							<TD style="width: 99%;" class="nobr">
+								{$alias="quota_"|cat:$type.alias|cat:"_limit"}
+								<INPUT TYPE="TEXT" NAME="tariff[{$alias}]" SIZE="5" VALUE="{$tariff[$alias]}"{if $tariff[$alias] === NULL} style="display:none"{/if} {tip text=$type.accountquotatip trigger=$alias}>
+								<input type="checkbox" value="1" id="{$alias}" name="limit[{$alias}]" onchange="checklimit(this)"{if $tariff[$alias]===NULL} CHECKED{/if}><label for="{$alias}">{trans("no limit")}</label>
+							</TD>
+						</TR>
+						{/foreach}
 					</TABLE>
 				    </TD>
 				</TR>

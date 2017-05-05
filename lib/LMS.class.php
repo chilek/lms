@@ -549,6 +549,12 @@ class LMS
         return $manager->getAddressForCustomerStuff( $customer_id );
     }
 
+    public function getFullAddressForCustomerStuff( $customer_id )
+    {
+        $manager = $this->getCustomerManager();
+        return $manager->getFullAddressForCustomerStuff( $customer_id );
+    }
+
     /*
      * Customer groups
      */
@@ -1764,8 +1770,20 @@ class LMS
 			if (!empty($smtp_username) || isset($smtp_options['user'])) {
 				$this->mail_object->Username = (!isset($smtp_options['user']) ? $smtp_username : $smtp_options['user']);
 				$this->mail_object->Password = (!isset($smtp_options['pass']) ? ConfigHelper::getConfig('mail.smtp_password') : $smtp_options['pass']);
-				$this->mail_object->SMTPAuth  = (!isset($smtp_options['auth']) ? ConfigHelper::getConfig('mail.smtp_auth_type', true) : $smtp_options['auth']);
-				$this->mail_object->SMTPSecure  = (!isset($smtp_options['auth']) ? ConfigHelper::getConfig('mail.smtp_secure', true) : $smtp_options['auth']);
+				$auth_type = isset($smtp_options['auth']) ? $smtp_options['auth'] : ConfigHelper::getConfig('mail.smtp_auth_type', true);
+				if (is_bool($auth_type))
+					$this->mail_object->SMTPAuth = $auth_type;
+				elseif ($auth_type == 'false')
+					$this->mail_object->SMTPAuth = false;
+				else {
+					$this->mail_object->SMTPAuth = true;
+					$this->mail_object->AuthType = $auth_type;
+				}
+				$this->mail_object->SMTPSecure = ConfigHelper::getConfig('mail.smtp_secure', '', true);
+				if ($this->mail_object->SMTPSecure == 'false') {
+					$this->mail_object->SMTPSecure = '';
+					$this->mail_object->SMTPAutoTLS = false;
+				}
 			}
 
 			$this->mail_object->SMTPOptions = array(
