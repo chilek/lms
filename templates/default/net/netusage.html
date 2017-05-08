@@ -50,6 +50,31 @@
         column-rule: {$col_border};
         column-count: {$col_count};
     }
+	.free-network-container .free-network {
+		margin-left: 14px;
+	}
+	.free-network-container .big-free-network {
+		cursor: pointer;
+	}
+	.free-network-container .big-free-network::before {
+		content: '\2796'; color: darkgreen; font-size: 0.8em;
+	}
+	.free-network-container.plus .big-free-network::before {
+		content: '\2795'; color: darkgreen; font-size: 0.8em;
+	}
+	.free-subnetwork-container {
+		display: none;
+	}
+	.free-subnetwork-container.free-subnetwork-container-expanded {
+	}
+	.free-subnetwork-container {
+		margin-left: 14px;
+		padding-left: 20px;
+		padding-top: 3px;
+	}
+	.free-subnetwork {
+		padding-top: 3px;
+	}
 </style>
 
 <form name="search" method="post" action="?m=netusage">
@@ -149,12 +174,24 @@
             {foreach $network_list as $v}
                 <div class="network">
                     {if !$v.hosts}
-                        <div class="network-container">
-                            <div style="margin-left: 14px;">
+                        <div class="network-container free-network-container{if $v.mask < 24} plus{/if}">
+                            <div class="{if $v.mask < 24}big-free-network{else}free-network{/if}">
                                 <a href="?m=netadd&pre_ip={$v.ip}&pre_prefix={$v.mask}" alt="" style="color: darkgreen;" title="{trans('Click to add.')}">
                                     {$v.ip} / {$v.mask}
                                 </a>
                             </div>
+                        </div>
+                        <div class="free-subnetwork-container">
+                            {$subnetworks=pow(2, 24-$v.mask)}
+                            {$octets=explode(".", $v.ip)}
+                            {for $subnet=0 to $subnetworks-1}
+                            {$subip=sprintf("%s.%s.%s.%s", $octets[0], $octets[1], $octets[2]+$subnet, $octets[3])}
+                            <div class="free-subnetwork">
+                                <a href="?m=netadd&pre_ip={$subip}&pre_prefix=24" alt="" style="color: darkgreen;" title="{trans('Click to add.')}">
+                                    {$subip} / 24
+                                </a>
+                            </div>
+                            {/for}
                         </div>
                     {else}
                         {network_container ip=$v.ip mask=$v.mask hosts=$v.hosts}
@@ -190,6 +227,13 @@
 
             loadNetwork(net_data);
         });
+
+		$( document ).on('click', '.free-network-container', function(e) {
+			if (e.target.className == 'big-free-network') {
+				$(this).siblings('.free-subnetwork-container').toggle();
+				$(this).toggleClass('plus');
+			}
+		});
     });
 
     function loadNetwork( net_data ) {
