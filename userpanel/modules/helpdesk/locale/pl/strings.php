@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$_LANG['Customer:'] = 'Klient:';
+
 $_LANG['Allows you to contact with network administrator'] = 'Pozwala Ci skontaktować się z administratorem';
 $_LANG['Body:'] = 'Treść:';
 $_LANG['Cancel'] = 'Anuluj';
