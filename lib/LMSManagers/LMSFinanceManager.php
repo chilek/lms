@@ -1134,7 +1134,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $result;
     }
 
-    public function GetTariffs()
+    public function GetTariffs($forced_id = null)
     {
         return $this->db->GetAllByKey('SELECT t.id, t.name, t.value, uprate, taxid,
 				datefrom, dateto, (CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid,
@@ -1142,7 +1142,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				taxes.label AS tax, t.period, t.type AS tarifftype
 				FROM tariffs t
 				LEFT JOIN taxes ON t.taxid = taxes.id
-				WHERE t.disabled = 0
+				WHERE t.disabled = 0' . (empty($forced_id) ? '' : ' OR t.id = ' . intval($forced_id)) . '
 				ORDER BY t.name, t.value DESC', 'id');
     }
 

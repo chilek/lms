@@ -973,10 +973,10 @@ class LMS
         return $manager->GetTariff($id, $network);
     }
 
-    public function GetTariffs()
+    public function GetTariffs($forced_id = null)
     {
         $manager = $this->getFinanaceManager();
-        return $manager->GetTariffs();
+        return $manager->GetTariffs($forced_id);
     }
 
     public function TariffSet($id)

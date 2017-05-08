@@ -60,7 +60,7 @@ interface LMSFinanceManagerInterface
 
     public function GetTariff($id, $network = NULL);
 
-    public function GetTariffs();
+    public function GetTariffs($forced_id = null);
 
     public function TariffSet($id);
 

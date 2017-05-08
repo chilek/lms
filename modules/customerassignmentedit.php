@@ -494,7 +494,7 @@ $SMARTY->assign('customernodes'      , $customerNodes);
 $SMARTY->assign('customernetdevnodes', $netdevnodes);
 $SMARTY->assign('customervoipaccs'   , $LMS->getCustomerVoipAccounts($customer['id']));
 $SMARTY->assign('customeraddresses'  , $LMS->getCustomerAddresses($customer['id']));
-$SMARTY->assign('tariffs'            , $LMS->GetTariffs());
+$SMARTY->assign('tariffs'            , $LMS->GetTariffs($a['tariffid']));
 $SMARTY->assign('taxeslist'          , $LMS->GetTaxes());
 $SMARTY->assign('expired'            , $expired);
 $SMARTY->assign('assignment'         , $a);
