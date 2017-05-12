@@ -720,7 +720,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
 				c.street, c.building, c.apartment,
 				c.post_street, c.post_building, c.post_apartment,
-				c.post_name, c.post_address, c.post_zip, c.post_city, c.post_countryid
+				c.post_name, c.post_address, c.post_zip, c.post_city, c.post_postoffice, c.post_countryid
 				FROM documents d
 				JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
@@ -862,7 +862,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
 				c.street, c.building, c.apartment,
 				c.post_street, c.post_building, c.post_apartment,
-				c.post_name, c.post_address, c.post_zip, c.post_city, c.post_countryid
+				c.post_name, c.post_address, c.post_zip, c.post_city, c.post_office, c.post_countryid
 				FROM documents d
 				JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
