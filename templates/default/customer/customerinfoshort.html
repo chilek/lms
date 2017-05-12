@@ -23,8 +23,8 @@
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
-			{$customerinfo.address}<BR>
-			{$customerinfo.zip} {$customerinfo.city}
+			{if $customerinfo.postoffice && $customerinfo.postoffice != $customerinfo.city && $customerinfo.street}{$customerinfo.city}, {/if}{$customerinfo.address}<BR>
+			{$customerinfo.zip} {if $customerinfo.postoffice}{$customerinfo.postoffice}{else}{$customerinfo.city}{/if}
 		</TD>
 	</TR>
 {if $customerinfo.post_name != "" || $customerinfo.post_address != ""}
@@ -34,8 +34,11 @@
 		</TD>
 		<TD WIDTH="99%" NOWRAP>
 			{if $customerinfo.post_name != ""}{$customerinfo.post_name}{/if}
-			{if $customerinfo.post_address != ""}<BR>{$customerinfo.post_address}{/if}
-			<BR>{$customerinfo.post_zip} {$customerinfo.post_city}
+			{if $customerinfo.post_address != ""}<BR>
+				{if $customerinfo.post_postoffice && $customerinfo.post_postoffice != $customerinfo.post_city && $customerinfo.post_street}{$customerinfo.post_city}, {/if}
+				{$customerinfo.post_address}
+			{/if}
+			<BR>{$customerinfo.post_zip} {if $customerinfo.post_postoffice}{$customerinfo.post_postoffice}{else}{$customerinfo.post_city}{/if}
 		</TD>
 	</TR>
 {/if}
