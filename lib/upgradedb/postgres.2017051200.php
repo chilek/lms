@@ -50,9 +50,9 @@ $this->Execute("
             (TRIM(both ' ' FROM
                  (CASE WHEN zip IS NOT NULL THEN zip || ' ' ELSE '' END)
                  || (CASE WHEN postoffice IS NOT NULL AND postoffice <> city THEN postoffice || ', ' ELSE '' END)
-                     || city || ', '
+                     || (CASE WHEN postoffice IS NULL OR postoffice = city OR street IS NOT NULL THEN city || ', ' ELSE '' END)
                      || (CASE WHEN street IS NOT NULL THEN street ELSE city END)
-                     || (CASE WHEN house is NOT NULL
+                     || (CASE WHEN house IS NOT NULL
                          THEN (CASE WHEN flat IS NOT NULL THEN ' ' || house || '/' || flat ELSE ' ' || house END)
                          ELSE (CASE WHEN flat IS NOT NULL THEN ' ' || flat ELSE '' END)
                          END)
