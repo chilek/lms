@@ -3657,4 +3657,6 @@ $_LANG['New message subject should not be empty if you set new message body!'] =
 $_LANG['Resolve ticket body should not be empty if you set resolve ticket subject!'] = 'Treść powiadomienia o zamknięciu zgłoszenia nie może być pusta w sytuacji, gdy ustawiono temat powiadomienia o zamknięciu zgłoszenia!';
 $_LANG['Resolve ticket subject should not be empty if you set resolve ticket body!'] = 'Temat powiadomienia o zamknięciu zgłoszenia nie może być pusty w sytuacji, gdy ustawiono treść powiadomienia o zamknięciu zgłoszenia!';
 
+$_LANG['Post office:'] = 'Poczta:';
+
 ?>

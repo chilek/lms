@@ -154,6 +154,7 @@ if ( typeof $ !== 'undefined' ) {
             if ( $( this ).is(':checked') ) {
                 $("#" + boxid + " input[type=text]").prop("readonly", true);
                 $("#" + boxid).find("input[data-address='zip']").attr('readonly', false);
+                $("#" + boxid).find("input[data-address='postoffice']").attr('readonly', false);
                 $("#" + boxid).find("input[data-address='location-name']").attr('readonly', false);
                 $("#" + boxid).find("select[data-address='state-select']").css('display', 'none').attr('disabled', true);
                 $("#" + boxid).find("input[data-address='state']").css('display', 'block').attr('disabled', false);

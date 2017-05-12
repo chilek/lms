@@ -74,6 +74,7 @@ $(function() {
         var house  = box.find('[data-address="house"]').val();
         var flat   = box.find('[data-address="flat"]').val();
         var zip    = box.find('[data-address="zip"]').val();
+        var postoffice = box.find('[data-address="postoffice"]').val();
         var adtype = box.find('[data-address="address_type"]').val();
 
         var location = location_str( city, street, house, flat, zip );

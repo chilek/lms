@@ -124,8 +124,8 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         if ( $this->ValidAddress($args) ) {
             $this->db->Execute('INSERT INTO addresses
                                   (name,state,state_id,city,city_id,street,
-                                  street_id,house,flat,zip,country_id)
-                                VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+                                  street_id,house,flat,zip,postoffice,country_id)
+                                VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
                                   array(
                                     $args['location_name']        ? $args['location_name']        : null,
                                     $args['location_state_name']  ? $args['location_state_name']  : null,
@@ -137,6 +137,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                                     $args['location_house']       ? $args['location_house']       : null,
                                     $args['location_flat']        ? $args['location_flat']        : null,
                                     $args['location_zip']         ? $args['location_zip']         : null,
+                                    $args['location_postoffice']  ? $args['location_postoffice']  : null,
                                     $args['location_country_id']  ? $args['location_country_id']  : null));
 
             return $this->db->GetLastInsertID('addresses');
@@ -225,7 +226,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
             $this->db->Execute('UPDATE addresses SET name = ?, state = ?,
                                    state_id = ?, city = ?, city_id = ?,
                                    street = ?, street_id = ?, house = ?,
-                                   flat = ?, zip = ?, country_id = ?
+                                   flat = ?, zip = ?, postoffice = ?, country_id = ?
                                 WHERE id = ?',
                                 array(
                                    $args['location_name']        ? $args['location_name']        : null,
@@ -238,6 +239,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
                                    $args['location_house']       ? $args['location_house']       : null,
                                    $args['location_flat']        ? $args['location_flat']        : null,
                                    $args['location_zip']         ? $args['location_zip']         : null,
+                                   $args['location_postoffice']  ? $args['location_postoffice']  : null,
                                    $args['location_country_id']  ? $args['location_country_id']  : null,
                                    $args['address_id']));
             return true;
@@ -303,7 +305,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
         $tmp = array($args['location_name']     , $args['location_state_name'], $args['location_state'],
                      $args['location_city_name'], $args['location_city']      , $args['location_street_name'],
                      $args['location_street']   , $args['location_house']     , $args['location_flat'],
-                     $args['location_zip']      , $args['location_country_id']);
+                     $args['location_zip']      , $args['location_postoffice'], $args['location_country_id']);
 
         if ( array_filter($tmp) ) {
             return true;
