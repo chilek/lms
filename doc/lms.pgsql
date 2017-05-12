@@ -248,6 +248,7 @@ CREATE TABLE addresses (
     state_id   integer REFERENCES location_states (id) ON DELETE SET NULL ON UPDATE CASCADE,
     city       varchar(32) NULL,
     city_id    integer REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    postoffice varchar(32) DEFAULT NULL,
     street     varchar(255) NULL,
     street_id  integer REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
     zip        varchar(10) NULL,
@@ -484,16 +485,6 @@ CREATE TABLE divisions (
 	PRIMARY KEY (id),
 	UNIQUE (shortname)
 );
-
-/* ---------------------------------------------------
- Structure of view "vdivisions"
-------------------------------------------------------*/
-CREATE VIEW vdivisions AS
-    SELECT d.*,
-        a.country_id as countryid, a.zip as zip, a.city as city,
-        (CASE WHEN a.house IS NULL THEN a.street ELSE (CASE WHEN a.flat IS NULL THEN a.street || ' ' || a.house ELSE a.street || ' ' || a.house || '/' || a.flat END) END) as address
-    FROM divisions d
-        JOIN addresses a ON a.id = d.address_id;
 
 /* ---------------------------------------------------
  Structure of table "invprojects"
@@ -2300,7 +2291,7 @@ CREATE VIEW vaddresses AS
         )) AS address,
         (TRIM(both ' ' FROM
              (CASE WHEN zip IS NOT NULL THEN zip || ' ' ELSE '' END)
-             || city || ', ' ||
+             || (CASE WHEN postoffice IS NULL OR postoffice = city THEN city ELSE postoffice || ', ' || city END) || ', ' ||
                  (CASE WHEN street IS NOT NULL THEN street ELSE city END)
                  || (CASE WHEN house is NOT NULL
                         THEN (CASE WHEN flat IS NOT NULL THEN ' ' || house || '/' || flat ELSE ' ' || house END)
@@ -2308,6 +2299,15 @@ CREATE VIEW vaddresses AS
                     END)
         )) AS location
     FROM addresses;
+
+/* ---------------------------------------------------
+ Structure of view "vdivisions"
+------------------------------------------------------*/
+CREATE VIEW vdivisions AS
+    SELECT d.*,
+        a.country_id as countryid, a.zip as zip, a.city as city, a.address
+    FROM divisions d
+        JOIN vaddresses a ON a.id = d.address_id;
 
 CREATE VIEW vnetworks AS
     SELECT h.name AS hostname, ne.*, no.ownerid, a.city_id as location_city,
@@ -2944,6 +2944,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017042700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017051200');
 
 COMMIT;
