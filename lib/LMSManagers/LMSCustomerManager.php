@@ -1273,7 +1273,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                           addr.state as location_state_name, addr.state_id as location_state,
                                           addr.city as location_city_name, addr.city_id as location_city,
                                           addr.street as location_street_name, addr.street_id as location_street,
-                                          addr.house as location_house, addr.zip as location_zip,
+                                          addr.house as location_house, addr.zip as location_zip, addr.postoffice AS location_postoffice,
                                           addr.country_id as location_country_id, addr.flat as location_flat,
                                           ca.type as location_address_type, addr.location,
                                           (CASE WHEN addr.city_id is not null THEN 1 ELSE 0 END) as teryt
