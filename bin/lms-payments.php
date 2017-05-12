@@ -541,7 +541,7 @@ foreach ($assigns as $assign) {
 				$itemid = 0;
 				$numbers[$plan]++;
 
-				$customer = $DB->GetRow("SELECT lastname, name, address, city, zip, ssn, ten, countryid, divisionid, paytime 
+				$customer = $DB->GetRow("SELECT lastname, name, address, city, zip, postoffice, ssn, ten, countryid, divisionid, paytime 
 						FROM customeraddressview WHERE id = $cid");
 
 				$division = $DB->GetRow("SELECT name, shortname, address, city, zip, countryid, ten, regon,
@@ -579,22 +579,24 @@ foreach ($assigns as $assign) {
 					array($numbers[$plan], $plan,
 					$customer['countryid'] ? $customer['countryid'] : 0,
 					$customer['divisionid'], $cid,
-					$customer['lastname']." ".$customer['name'], $customer['address'],
+					$customer['lastname']." ".$customer['name'],
+					($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
+						? $customer['city'] . ', ' : '') . $customer['address'],
 					$customer['zip'] ? $customer['zip'] : null,
-					$customer['city'] ? $customer['city'] : null,
+					$customer['postoffice'] ? $customer['postoffice'] : ($customer['city'] ? $customer['city'] : null),
 					$customer['ten'], $customer['ssn'], $currtime, $saledate, $paytime, $inv_paytype,
 					($division['name'] ? $division['name'] : ''),
 					($division['shortname'] ? $division['shortname'] : ''),
-					($division['address'] ? $division['address'] : ''), 
-					($division['city'] ? $division['city'] : ''), 
+					($division['address'] ? $division['address'] : ''),
+					($division['city'] ? $division['city'] : ''),
 					($division['zip'] ? $division['zip'] : ''),
 					($division['countryid'] ? $division['countryid'] : 0),
-					($division['ten'] ? $division['ten'] : ''), 
+					($division['ten'] ? $division['ten'] : ''),
 					($division['regon'] ? $division['regon'] : ''), 
 					($division['account'] ? $division['account'] : ''),
-					($division['inv_header'] ? $division['inv_header'] : ''), 
-					($division['inv_footer'] ? $division['inv_footer'] : ''), 
-					($division['inv_author'] ? $division['inv_author'] : ''), 
+					($division['inv_header'] ? $division['inv_header'] : ''),
+					($division['inv_footer'] ? $division['inv_footer'] : ''),
+					($division['inv_author'] ? $division['inv_author'] : ''),
 					($division['inv_cplace'] ? $division['inv_cplace'] : ''),
 					$fullnumber,
 					$recipient_address_id,
