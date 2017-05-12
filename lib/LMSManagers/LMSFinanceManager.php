@@ -536,11 +536,12 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             SYSLOG::RES_USER => $this->auth->id,
             SYSLOG::RES_CUST => $invoice['customer']['id'],
             'customername' => $invoice['customer']['customername'],
-            'address' => $invoice['customer']['address'],
+            'address' => ($invoice['customer']['postoffice'] && $invoice['customer']['postoffice'] != $invoice['customer']['city'] && $invoice['customer']['street']
+                ? $invoice['customer']['city'] . ', ' : '') . $invoice['customer']['address'],
             'ten' => $invoice['customer']['ten'],
             'ssn' => $invoice['customer']['ssn'],
             'zip' => $invoice['customer']['zip'],
-            'city' => $invoice['customer']['city'],
+            'city' => $invoice['customer']['postoffice'] ? $invoice['customer']['postoffice'] : $invoice['customer']['city'],
             SYSLOG::RES_COUNTRY => $invoice['customer']['countryid'] ? $invoice['customer']['countryid'] : 0,
             SYSLOG::RES_DIV => $invoice['customer']['divisionid'],
             'div_name' => ($division['name'] ? $division['name'] : ''),
@@ -862,7 +863,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
 				c.street, c.building, c.apartment,
 				c.post_street, c.post_building, c.post_apartment,
-				c.post_name, c.post_address, c.post_zip, c.post_city, c.post_office, c.post_countryid
+				c.post_name, c.post_address, c.post_zip, c.post_city, c.post_postoffice, c.post_countryid
 				FROM documents d
 				JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
