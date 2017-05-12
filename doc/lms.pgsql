@@ -2329,7 +2329,9 @@ CREATE VIEW customerview AS
         a2.city as post_city, a2.street as post_street, a2.name as post_name,
         a2.house as post_building, a2.flat as post_apartment,
         a1.address as address, a1.location AS full_address,
-        a2.address as post_address, a2.location AS post_full_address
+        a1.postoffice AS postoffice,
+        a2.address as post_address, a2.location AS post_full_address,
+        a2.postoffice AS post_postoffice
     FROM customers c
         JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
@@ -2348,7 +2350,9 @@ CREATE VIEW contractorview AS
         a2.zip as post_zip, a2.city as post_city, a2.street as post_street,
         a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
         a1.address as address, a1.location AS full_address,
-        a2.address as post_address, a2.location AS post_full_address
+        a1.postoffice AS postoffice,
+        a2.address as post_address, a2.location AS post_full_address,
+        a2.postoffice AS post_postoffice
     FROM customers c
         JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
@@ -2363,7 +2367,9 @@ CREATE VIEW customeraddressview AS
         a2.zip as post_zip, a1.city as post_city, a2.street as post_street,
         a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
         a1.address as address, a1.location AS full_address,
-        a2.address as post_address, a2.location AS post_full_address
+        a1.postoffice AS postoffice,
+        a2.address as post_address, a2.location AS post_full_address,
+        a2.postoffice AS post_postoffice
     FROM customers c
         JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
@@ -2945,6 +2951,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017051200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017051201');
 
 COMMIT;
