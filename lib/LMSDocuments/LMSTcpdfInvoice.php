@@ -703,13 +703,21 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			return 0;
 		}
 
-		$rec = '<b>' . trans('Recipient:') . '</b><br>';
-		$rec .= $this->data['rec_name'] . '<br>';
-		$rec .= $this->data['rec_street'] . ' ' . $this->data['rec_house'] . (($this->data['rec_flat']) ? '/'.$this->data['rec_flat'] : '') . '<br>';
-		$rec .= $this->data['rec_zip'] . " " . $this->data['rec_city']. '<br>';
-
 		$this->backend->SetFont('arial', '', 10);
-		$this->backend->writeHTMLCell(80, '', '', '', $rec, 0, 1, 0, true, 'L');
+
+		$this->backend->writeHTMLCell(80, '', '', '', '<b>' . trans('Recipient:') . '</b>', 0, 1, 0, true, 'L');
+
+		$rec_lines = document_address(array(
+			'name' => $this->data['rec_name'],
+			'address' => $this->data['rec_address'],
+			'street' => $this->data['rec_street'],
+			'zip' => $this->data['rec_zip'],
+			'postoffice' => $this->data['rec_postoffice'],
+			'city' => $this->data['rec_city'],
+		));
+
+		foreach ($rec_lines as $line)
+			$this->backend->writeHTMLCell(80, '', '', '', $line, 0, 1, 0, true, 'L');
 	}
 
 	protected function invoice_data() {

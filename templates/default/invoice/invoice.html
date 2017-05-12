@@ -3,9 +3,9 @@
 <TABLE WIDTH="100%" CELLSPACING="3">
 	<TR>
 		<TD WIDTH="98%" CLASS="hdf" VALIGN="TOP">
-			{number number=$invoice.number template=$invoice.template time=$invoice.cdate assign=number}
+			{number number=$invoice.number template=$invoice.template time=$invoice.cdate customerid=$invoice.customerid assign=number}
 			{if $invoice.invoice}
-			    {number number=$invoice.invoice.number template=$invoice.invoice.template time=$invoice.invoice.cdate assign=number_ref}
+			    {number number=$invoice.invoice.number template=$invoice.invoice.template time=$invoice.invoice.cdate customerid=$invoice.invoice.customerid assign=number_ref}
 			    <B>{t a=$number}Credit Note No. $a{/t}</B><BR>
 			    <B class="mdf">{t a=$number_ref}for Invoice No. $a{/t}</B><BR>
 			{elseif $invoice.doctype == $smarty.const.DOC_INVOICE_PRO}
@@ -69,12 +69,7 @@
 
 			{if $invoice.recipient_address_id}
 				<div class="address-header">{trans("Recipient:")}</div>
-				{if $invoice.rec_name}
-					{$invoice.rec_name}<BR>
-				{/if}
-
-				{$invoice.rec_street} {$invoice.rec_house}{if $invoice.rec_flat}/{$invoice.rec_flat}{/if}<BR>
-				{$invoice.rec_zip} {$invoice.rec_city}
+				{document_address name=$invoice.rec_name address=$invoice.rec_address street=$invoice.rec_street zip=$invoice.rec_zip postoffice=$invoice.rec_postoffice city=$invoice.rec_city}
 			{/if}
 		</TD>
 		<TD WIDTH="34%" VALIGN="TOP" CLASS="sdr">

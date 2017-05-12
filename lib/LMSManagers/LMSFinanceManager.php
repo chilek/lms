@@ -715,8 +715,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
 				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
 				d.recipient_address_id,
-				a.city as rec_city, a.street as rec_street, a.house as rec_house,
-				a.flat as rec_flat, a.zip as rec_zip, a.name as rec_name,
+				a.city as rec_city, a.zip as rec_zip, a.postoffice AS rec_postoffice,
+				a.name as rec_name, a.address AS rec_address,
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
 				c.street, c.building, c.apartment,
 				c.post_street, c.post_building, c.post_apartment,
@@ -725,7 +725,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
-				LEFT JOIN addresses a ON d.recipient_address_id = a.id
+				LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)', array($invoiceid, DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO))) {
 
 			$result['bankaccounts'] = $this->db->GetCol('SELECT contact FROM customercontacts

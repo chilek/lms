@@ -806,6 +806,23 @@ function location_str($data)
     return htmlentities($location, ENT_COMPAT, 'UTF-8', false);
 }
 
+function document_address($data) {
+	$lines = array();
+
+	if ($data['name'])
+		$lines[] = $data['name'];
+
+	if ($data['postoffice'] && $data['postoffice'] != $data['city']) {
+		$lines[] = ($data['street'] ? $data['city'] . ', ' : '') . $data['address'];
+		$lines[] .= $data['zip'] . ' ' . $data['postoffice'];
+	} else {
+		$lines[] = $data['address'];
+		$lines[] = $data['zip'] . ' ' . $data['city'];
+	}
+
+	return $lines;
+}
+
 function set_timer($label = 0)
 {
     $GLOBALS['lms_timer'][$label] = microtime(true);

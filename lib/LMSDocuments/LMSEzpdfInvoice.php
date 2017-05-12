@@ -224,12 +224,17 @@ class LMSEzpdfInvoice extends LMSInvoice {
 
 		$y -= $this->backend->text_align_left($x, $y, $font_size, '<b>' . trans('Recipient:') . '</b>');
 
-		if ( !empty($this->data['rec_name']) ) {
-			$y = $this->backend->text_wrap($x, $y, 160, $font_size, $this->data['rec_name'], 'left');
-		}
+		$rec_lines = document_address(array(
+			'name' => $this->data['rec_name'],
+			'address' => $this->data['rec_address'],
+			'street' => $this->data['rec_street'],
+			'zip' => $this->data['rec_zip'],
+			'postoffice' => $this->data['rec_postoffice'],
+			'city' => $this->data['rec_city'],
+		));
 
-		$y -= $this->backend->text_align_left($x, $y, $font_size, $this->data['rec_street'] . ' ' . $this->data['rec_house'] . (($this->data['rec_flat']) ? '/'.$this->data['rec_flat'] : ''));
-		$y -= $this->backend->text_align_left($x, $y, $font_size, $this->data['rec_zip'] . " " . $this->data['rec_city']);
+		foreach ($rec_lines as $line)
+			$y -= $this->backend->text_align_left($x, $y, $font_size, $line);
 
 		return $y;
 	}
