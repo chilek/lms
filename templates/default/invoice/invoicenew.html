@@ -59,6 +59,11 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 		document.additem.submit();
 	}
 
+	function saveinvoice() {
+		document.additem.action = "?m=invoicenew&action=save";
+		document.additem.submit();
+	}
+
 	function GetNumberPlans() {
 		xajax_GetNumberPlans('{$invoice.proforma}', {
 			number: $('form[name="setcustomer"] [name="invoice[number]"]').val(),
@@ -240,7 +245,7 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 	</FORM>
 {/if}
 {if $customer}
-<FORM method="post" action="?m=invoicenew&amp;action=additem" name="additem" id="additem">
+<FORM method="post" action="?m=invoicenew&action=additem" name="additem" id="additem">
 <table class="lmsbox">
 	<colgroup>
 		<col style="width: 1%;">
@@ -400,21 +405,32 @@ window.open('?m=invoice&id={$newinvoice.invoice}&original={$newinvoice.original}
 		</TD>
 	</TR>
 	<TR>
-		<TD colspan="9" class="text-right">
-			<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', $default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
-			<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>&nbsp;
-			<A href="?m=invoicelist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
-			<A href="?m=invoicenew&amp;action=init">{trans("Clear Contents")} <IMG src="img/delete.gif" alt=""></A>
-			{if !$customer}
-			<A href="javascript:alert('{trans("Customer not selected!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A href="javascript:alert('{trans("Customer not selected!")}');">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
-			{elseif !$contents}
-			<A href="javascript:alert('{trans("Invoice have no items!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A href="javascript:alert('{trans("Invoice have no items!")}');">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
-			{else}
-			<A href="?m=invoicenew&amp;action=save">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
-			<A href="javascript:printinvoice()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
-			{/if}
+		<TD colspan="9" class="text-right nobr">
+			<TABLE width="100%">
+				<TR>
+					<TD class="text-left nobr">
+						<label>
+							<INPUT type="checkbox" name="reuse" value="1"> {trans("Display this form again, when this invoice is saved")}
+						</label>
+					</TD>
+					<TD class="text-right">
+						<INPUT type="checkbox" name="original" id="original"{if preg_match('/original/i', $default_printpage)} checked{/if}><label for="original">{trans("original")}</label>
+						<INPUT type="checkbox" name="copy" id="copy"{if preg_match('/copy/i', $default_printpage)} checked{/if}><label for="copy">{trans("copy")}</label>&nbsp;
+						<A href="?m=invoicelist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
+						<A href="?m=invoicenew&action=init">{trans("Clear Contents")} <IMG src="img/delete.gif" alt=""></A>
+						{if !$customer}
+						<A href="javascript:alert('{trans("Customer not selected!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+						<A href="javascript:alert('{trans("Customer not selected!")}');">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+						{elseif !$contents}
+						<A href="javascript:alert('{trans("Invoice have no items!")}');">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+						<A href="javascript:alert('{trans("Invoice have no items!")}');">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+						{else}
+						<A href="javascript:saveinvoice()">{trans("Save")} <IMG src="img/save.gif" alt=""></A>
+						<A href="javascript:printinvoice()">{trans("Save & Print")} <IMG src="img/print.gif" alt=""></A>
+						{/if}
+					</TD>
+				</TR>
+			</TABLE>
 		</TD>
 	</TR>
 	</TFOOT>

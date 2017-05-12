@@ -464,6 +464,7 @@ $_LANG['Network map display'] = 'Wyświetla mapę sieci ';
 $_LANG['Display this form again, when this account is saved'] = 'Po utworzeniu konta wyświetl ten formularz ponownie';
 $_LANG['Display this form again, when this alias is saved'] = 'Po utworzeniu aliasu wyświetl ten formularz ponownie';
 $_LANG['Display this form again, when this customer is saved'] = 'Po dodaniu klienta wyświetl ten formularz ponownie';
+$_LANG['Display this form again, when this invoice is saved'] = 'Po dodaniu faktury wyświetl ten formularz ponownie';
 $_LANG['Display this form again, when this domain is saved'] = 'Po dodaniu domeny wyświetl ten formularz ponownie';
 $_LANG['Display this form again, when this event is saved'] = 'Po utworzeniu zdarzenia wyświetl ten formularz ponownie';
 $_LANG['Display this form again, when this node is saved'] = 'Po dodaniu komputera wyświetl ten formularz ponownie';

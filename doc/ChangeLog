@@ -125,6 +125,7 @@ version ?.??.?? (????-??-??):
     / new message creation [chilan]
   - improvement: if name of requestor was not specified for new ticket, we set it to
     current logged user name [chilan]
+  - enhancement: added post office property for addresses [chilan]
 
 version 1.11.21 (2016-10-14):
 
