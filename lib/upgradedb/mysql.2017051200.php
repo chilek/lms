@@ -41,7 +41,8 @@ $this->Execute("
             (TRIM(both ' ' FROM
                  CONCAT((CASE WHEN zip IS NOT NULL THEN CONCAT(zip, ' ') ELSE '' END),
                      CONCAT((CASE WHEN postoffice IS NOT NULL AND postoffice <> city THEN CONCAT(postoffice, ', ') ELSE '' END),
-                         (CASE WHEN street IS NOT NULL THEN CONCAT(city, ', ', street) ELSE city END),
+                         city, ', ',
+                         (CASE WHEN street IS NOT NULL THEN street ELSE city END),
                          (CASE WHEN house is NOT NULL
                              THEN (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', house, '/', flat) ELSE CONCAT(' ', house) END)
                              ELSE (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', flat) ELSE '' END)
