@@ -909,39 +909,55 @@ function _getAddressList( action, v ) {
  * \param string latitude_id id of latitude input
  * \param string latitude_id id of longitude input
  */
-function location_str( city, street, house, flat, zip = undefined, state = undefined ) {
-    var location = '';
+function location_str(data) {
+	city = data.city;
+	street = data.street;
+	house = data.house;
+	flat = data.flat;
+	if (data.hasOwnProperty('zip'))
+		zip = data.zip;
+	else
+		zip = null;
+	if (data.hasOwnProperty('postoffice'))
+		postoffice = data.postoffice;
+	else
+		postoffice = null;
+	if (data.hasOwnProperty('state'))
+		state = data.state;
+	else
+		state = null;
 
-    if ( state && state.length > 0 ) {
-        location = state + ", ";
-    }
+	var location = '';
 
-    if ( zip && zip.length > 0 ) {
-        location += zip + " ";
-    }
+	if (state && state.length) {
+		location = state + ", ";
+	}
 
-    if ( city.length > 0 && street.length > 0) {
-        location += city + ", " + street;
-    }
-    else if ( city.length > 0 ) {
-        location += city;
-        if (!street.length)
-            location += ", " + city;
-    }
-    else if ( street.length > 0 ) {
-        location += street;
-    }
+	if (zip && zip.length) {
+		location += zip + " ";
+	}
 
-    if ( location.length > 0  ) {
-        if ( house.length > 0 && flat.length > 0 ) {
-            location += " " + house + "/" + flat;
-        }
-        else if ( house.length > 0 ) {
-            location += " " + house;
-        }
-    }
+	if (postoffice && postoffice.length && postoffice != city) {
+		location += postoffice + ", ";
+	}
 
-    return location;
+	if (city.length && (!postoffice || !postoffice.length || postoffice == city || street.length)) {
+		location += city + ", ";
+	}
+	if (street.length) {
+		location += street;
+	} else
+		location += city;
+
+	if (location.length) {
+		if (house.length && flat.length) {
+			location += " " + house + "/" + flat;
+		} else if (house.length) {
+			location += " " + house;
+		}
+	}
+
+	return location;
 }
 
 /*!

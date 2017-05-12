@@ -77,7 +77,14 @@ $(function() {
         var postoffice = box.find('[data-address="postoffice"]').val();
         var adtype = box.find('[data-address="address_type"]').val();
 
-        var location = location_str( city, street, house, flat, zip );
+        var location = location_str({
+            city: city,
+            street: street,
+            house: house,
+            flat: flat,
+            zip: zip,
+            postoffice: postoffice
+        });
         location = location.length > 0 ? location : '...';
 
         box.find('[data-address="location"]').val( location );
