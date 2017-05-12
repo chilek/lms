@@ -658,12 +658,15 @@ class LMSTcpdfInvoice extends LMSInvoice {
 
 		$postbox = '';
 		if ($this->data['post_name'] || $this->data['post_address']) {
-			if ($this->data['post_name'])
-				$postbox .= $this->data['post_name'] . '<br>';
-			else
-				$postbox .= $this->data['name'] . '<br>';
-			$postbox .= $this->data['post_address'] . '<br>';
-			$postbox .= $this->data['post_zip'] . ' ' . $this->data['post_city'] . '<br>';
+			$lines = document_address(array(
+				'name' => $this->data['post_name'] ? $this->data['post_name'] : $this->data['name'],
+				'address' => $this->data['post_address'],
+				'street' => $this->data['post_street'],
+				'zip' => $this->data['post_zip'],
+				'postoffice' => $this->data['post_postoffice'],
+				'city' => $this->data['post_city'],
+			));
+			$postbox .= implode('<br>', $lines);
 		} else {
 			$postbox .= $this->data['name'] . '<br>';
 			$postbox .= $this->data['address'] . '<br>';

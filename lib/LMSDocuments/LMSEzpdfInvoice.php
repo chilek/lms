@@ -250,12 +250,20 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			$y = $y - $this->backend->text_align_left($x,$y,$font_size,"<b>".$line."</b>");
 */
 		if ($this->data['post_name'] || $this->data['post_address']) {
-			if ($this->data['post_name'])
-				$y = $this->backend->text_wrap($x, $y, 160, $font_size, '<b>' . $this->data['post_name'] . '</b>', 'left');
-			else
-				$y = $this->backend->text_wrap($x, $y, 160, $font_size, '<b>' . $this->data['name'] . '</b>', 'left');
-			$y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . $this->data['post_address'] . '</b>');
-			$y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . $this->data['post_zip'] . " " . $this->data['post_city'] . '</b>');
+			$lines = document_address(array(
+				'name' => $this->data['post_name'] ? $this->data['post_name'] : $this->data['name'],
+				'address' => $this->data['post_address'],
+				'street' => $this->data['post_street'],
+				'zip' => $this->data['post_zip'],
+				'postoffice' => $this->data['post_postoffice'],
+				'city' => $this->data['post_city'],
+			));
+			$i = 0;
+			foreach ($lines as $line)
+				if ($i)
+					$y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . $line . '</b>');
+				else
+					$y = $this->backend->text_wrap($x, $y, 160, $font_size, '<b>' . $line . '</b>', 'left');
 		} else {
 			$y = $this->backend->text_wrap($x, $y, 160, $font_size, '<b>' . $this->data['name'] . '</b>', 'left');
 			$y = $y - $this->backend->text_align_left($x, $y, $font_size, '<b>' . $this->data['address'] . '</b>');
