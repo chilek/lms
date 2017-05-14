@@ -2249,7 +2249,7 @@ CREATE VIEW customeraddressview AS
         a1.address as address, a1.location AS full_address,
         a1.postoffice AS postoffice,
         a2.address as post_address, a2.location AS post_full_address,
-        a2.postoffice AS post_postoffice,
+        a2.postoffice AS post_postoffice
     FROM customers c
         JOIN customer_addresses ca1 ON c.id = ca1.customer_id AND ca1.type = 1
         LEFT JOIN vaddresses a1 ON ca1.address_id = a1.id
