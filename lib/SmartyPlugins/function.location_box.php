@@ -84,7 +84,7 @@ function smarty_function_location_box( $params = array(), $template )
 
     echo '<table>';
 
-    echo '<tr>
+    echo '<tr' . (isset($params['hide_name']) ? ' style="display: none;"' : '') . '>
               <td>' . trans('Name') . '</td>
               <td>
                   <input type="text"   value="' . (!empty($params['location_name']) ? $params['location_name'] : '' ) . '" name="' . $input_name_location . '" size="' . INPUT_SIZE . '" data-address="location-name">

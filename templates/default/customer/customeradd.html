@@ -128,6 +128,7 @@
 								{$v.prefix = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
 								{$addr_counter = $addr_counter + 1}
 								{$addr_found = 1}
+								{$v.hide_name=true}
 								{location_box_expandable data=$v}
 							{/if}
 						{/foreach}
@@ -142,6 +143,7 @@
 							{$tmp['location_country_id'] = ConfigHelper::getConfig('phpui.default_countryid')}
 							{$addr_counter = $addr_counter + 1}
 
+							{$tmp.hide_name=true}
 							{location_box_expandable data=$tmp}
 							{$tmp = array()}
 						{/if}

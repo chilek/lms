@@ -110,6 +110,7 @@
 				{if $v.location_address_type == $smarty.const.BILLING_ADDRESS}
 					{$v.prefix = "customerdata[addresses]["|cat:$addr_counter|cat:"]"}
 					{$addr_counter = $addr_counter + 1}
+					{$v.hide_name=true}
 					{location_box_expandable data=$v}
 				{/if}
 			{/foreach}
