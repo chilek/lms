@@ -47,7 +47,7 @@ $.ajax("img/jquery-datatables-i18n/" + lmsSettings.language + ".json", {
 $(function() {
 	var autocomplete = "off";
 
-	$('.calendar').datepicker({
+	$('div.calendar input,input.calendar').datepicker({
 		dateFormat: "yy/mm/dd",
 		changeYear: true,
 		beforeShow: function(input, inst) {
@@ -65,7 +65,7 @@ $(function() {
 	.attr("autocomplete", autocomplete);
 
 	$.datetimepicker.setLocale(lmsSettings.language);
-	$('.calendar-time').datetimepicker({
+	$('div.calendar-time input,input.calendar-time').datetimepicker({
 		step: 30,
 		closeOnDateSelect: true
 	})
