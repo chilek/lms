@@ -938,6 +938,10 @@ html .ui-button.ui-state-disabled:active {
 .ui-datepicker-calendar {
   background-color: #CEBD9B;
 }
+.ui-datepicker .ui-datepicker-buttonpane {
+  border-top: 1px solid black;
+  margin-top: 0;
+}
 .ui-tooltip.voipaccountinfo,
 .ui-tooltip.invoiceinfo,
 .ui-tooltip.docnumber,
