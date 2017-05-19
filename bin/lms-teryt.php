@@ -203,7 +203,7 @@ function parse_teryt_xml_row( $xml_string ) {
  * \return array  $ident  LMS location id's
  */
 function getIdents( $city = null, $street = null, $only_unique_city_matches = false ) {
-    $street = trim( preg_replace('/$(ul\.|pl\.|al\.|bulw\.|os\.|wyb\.|plac|skwer|rondo|park|rynek|szosa|droga|ogród|wyspa)/i', '', $street) );
+    $street = trim( preg_replace('/^(ul\.|pl\.|al\.|bulw\.|os\.|wyb\.|plac|skwer|rondo|park|rynek|szosa|droga|ogród|wyspa)/i', '', $street) );
 
 	$DB = LMSDB::getInstance();
 
