@@ -1290,15 +1290,18 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             return array();
         }
 
+        $nd = $this->GetCustomerNetDevs($id);
+        $n  = $this->GetCustomerNodes($id);
+
         $tmp = array_merge(
-            $this->GetCustomerNetDevs($id),
-            $this->GetCustomerNodes($id)
+            $nd ? $nd : array(),
+            $n  ? $n  : array()
         );
 
         if ( $tmp ) {
             foreach ( $tmp as $nd ) {
                 if ( $nd['address_id'] ) {
-                    $data[$nd['address_id']]['use_counter'] = 1;
+                    $data[$nd['address_id']]['use_counter'] += 1;
                 }
             }
         }
