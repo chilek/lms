@@ -956,6 +956,7 @@ $_LANG['MAC address'] = 'Adres MAC';
 $_LANG['MAC address:'] = 'Adres MAC:';
 $_LANG['MAC address is in use!'] = 'Adres MAC jest już używany!';
 $_LANG['used'] = 'używany';
+$_LANG['<!addresses>used'] = 'użyty';
 $_LANG['MAC address is required!'] = 'Adres MAC jest wymagany!';
 $_LANG['mail'] = 'mail';
 $_LANG['Mailing Lists Archive'] = 'Archiwum list mailingowych';
