@@ -72,7 +72,10 @@ function smarty_function_location_box_expandable( $params = array(), $template )
         echo '&nbsp;&nbsp;<span class="lms-ui-button delete-location-box"><img src="img/delete.gif" alt="">' . trans('Delete') . '</span>';
     }
 
-    echo '<div style="position: absolute; right: 0; top: 7px;" class="bold">' . trans('<!addresses>used') . ': ' . $params['data']['use_counter'] . '</div>';
+    if ( isset($params['data']['use_counter']) ) {
+        echo '<div style="position: absolute; right: 0; top: 7px;" class="bold">' . trans('<!addresses>used') . ': ' . $params['data']['use_counter'] . '</div>';
+    }
+
     echo '</div>';
 
     if ( isset($params['data']['location_address_type']) ) {
