@@ -65,13 +65,14 @@ function smarty_function_location_box_expandable( $params = array(), $template )
         echo '<div id="' . $uid . '" style="display: none;">';
     }
 
-    echo '<div style="padding: 3px 0;">';
+    echo '<div style="padding: 3px 0; position: relative;">';
     echo '<span class="lms-ui-button clear-location-box"><img src="img/eraser.gif" alt="">' . trans('Clear') . '</span>';
 
     if ( isset($params['data']['clear_button']) ) {
         echo '&nbsp;&nbsp;<span class="lms-ui-button delete-location-box"><img src="img/delete.gif" alt="">' . trans('Delete') . '</span>';
     }
 
+    echo '<div style="position: absolute; right: 0; top: 7px;" class="bold">' . trans('<!addresses>used') . ': ' . $params['data']['use_counter'] . '</div>';
     echo '</div>';
 
     if ( isset($params['data']['location_address_type']) ) {

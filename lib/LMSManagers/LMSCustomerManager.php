@@ -885,7 +885,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                               ls.id as location_street_id, va.location_house, va.location_flat, nd.description, nd.producer,
                                               nd.model, nd.serialnumber, nd.ports, nd.purchasetime, nd.guaranteeperiod, nd.shortname, nd.nastype,
                                               nd.clients, nd.community, nd.channelid, nd.longitude, nd.latitude, nd.netnodeid, nd.invprojectid,
-                                              nd.status, nd.netdevicemodelid, nd.ownerid, no.authtype
+                                              nd.status, nd.netdevicemodelid, nd.ownerid, no.authtype, va.id as address_id
                                            FROM
                                               netdevices nd
                                               LEFT JOIN vaddresses va ON nd.address_id = va.id
@@ -1275,7 +1275,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                           addr.street as location_street_name, addr.street_id as location_street,
                                           addr.house as location_house, addr.zip as location_zip, addr.postoffice AS location_postoffice,
                                           addr.country_id as location_country_id, addr.flat as location_flat,
-                                          ca.type as location_address_type, addr.location,
+                                          ca.type as location_address_type, addr.location, 0 as use_counter,
                                           (CASE WHEN addr.city_id is not null THEN 1 ELSE 0 END) as teryt
                                        FROM
                                           customers cv
@@ -1288,6 +1288,19 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         if ( !$data ) {
             return array();
+        }
+
+        $tmp = array_merge(
+            $this->GetCustomerNetDevs($id),
+            $this->GetCustomerNodes($id)
+        );
+
+        if ( $tmp ) {
+            foreach ( $tmp as $nd ) {
+                if ( $nd['address_id'] ) {
+                    $data[$nd['address_id']]['use_counter'] = 1;
+                }
+            }
         }
 
         return $data;
