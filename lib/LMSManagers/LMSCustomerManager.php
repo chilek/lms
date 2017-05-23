@@ -1290,8 +1290,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             return array();
         }
 
-        $nd = $this->GetCustomerNetDevs($id);
-        $n  = $this->GetCustomerNodes($id);
+        $nd = $this->db->GetAll('SELECT address_id FROM netdevices WHERE ownerid = ?', array( $id ));
+        $n  = $this->db->GetAll('SELECT address_id FROM nodes WHERE ownerid = ?', array( $id ));
 
         $tmp = array_merge(
             $nd ? $nd : array(),
@@ -1299,9 +1299,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         );
 
         if ( $tmp ) {
-            foreach ( $tmp as $nd ) {
-                if ( $nd['address_id'] ) {
-                    $data[$nd['address_id']]['use_counter'] += 1;
+            foreach ( $tmp as $v ) {
+                if ( $v['address_id'] ) {
+                    $data[$v['address_id']]['use_counter'] += 1;
                 }
             }
         }
