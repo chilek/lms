@@ -73,7 +73,7 @@ function smarty_function_location_box_expandable( $params = array(), $template )
     }
 
     if ( isset($params['data']['use_counter']) ) {
-        echo '<div style="position: absolute; right: 0; top: 7px;" class="bold">' . trans('<!addresses>used') . ': ' . $params['data']['use_counter'] . '</div>';
+        echo '<div style="position: absolute; right: 0; top: 7px;">' . trans('assigned to <b>$a</b> nodes', $params['data']['use_counter']) . '</div>';
     }
 
     echo '</div>';
