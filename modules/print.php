@@ -428,7 +428,7 @@ switch($type)
 			.$type
 			.'&from='.$date['from']
 			.'&to='.$date['to']
-			. (!empty($_POST['withouteinvoice']) ? '&withouteinvoice=1' : '')
+			. (!empty($_POST['einvoice']) ? '&einvoice=' . intval($_POST['einvoice']) : '')
 			.(!empty($_POST['division']) ? '&divisionid='.intval($_POST['division']) : '')
 			.(!empty($_POST['customer']) ? '&customerid='.intval($_POST['customer']) : '')
 			.(!empty($_POST['group']) ? '&groupid='.intval($_POST['group']) : '')

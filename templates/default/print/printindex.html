@@ -827,8 +827,18 @@
 								</TD>
 							</TR>
 							<TR>
-								<TD style="width: 3%;" colspan="3">&nbsp;</TD>
-								<TD style="width: 97%;">
+								<TD>
+									<IMG src="img/options.gif" alt="">
+								</TD>
+								<TD colspan="2" class="bold nobr">
+									{trans("Agreement for an electronic invoice:")}
+									<select name="einvoice">
+										<option value="0">{trans("- all -")}</option>
+										<option value="1">{trans("yes")}</option>
+										<option value="2">{trans("no")}</option>
+									</select>
+								</TD>
+								<TD>
 									<label>
 										<input type="checkbox" name="autoissued">
 										{trans("only automatically issued")}
@@ -837,15 +847,6 @@
 									<label>
 										<input type="checkbox" name="manualissued">
 										{trans("only manually issued")}
-									</label>
-								</TD>
-							</TR>
-							<TR>
-								<TD style="width: 3%;" colspan="3">&nbsp;</TD>
-								<TD style="width: 97%;">
-									<label>
-										<input type="checkbox" name="withouteinvoice">
-										{trans("without agreement for an electronic invoice")}
 									</label>
 								</TD>
 							</TR>

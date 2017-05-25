@@ -133,9 +133,10 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	$offset = intval(date('Z'));
 	$datefrom = intval($_GET['from']);
 	$dateto = intval($_GET['to']);
+	$einvoice = intval($_GET['einvoice']);
 	$ids = $DB->GetCol('SELECT id FROM documents d
 				WHERE cdate >= ? AND cdate <= ? AND (type = ? OR type = ?) AND d.cancelled = 0'
-				. (!empty($_GET['withouteinvoice']) ? ' AND d.customerid IN (SELECT id FROM customers WHERE einvoice = 0 OR einvoice IS NULL)' : '')
+				. ($einvoice ? ' AND d.customerid IN (SELECT id FROM customers WHERE ' . ($einvoice == 1 ? 'einvoice = 1' : 'einvoice = 0 OR einvoice IS NULL') . ')' : '')
 				.(!empty($_GET['divisionid']) ? ' AND d.divisionid = ' . intval($_GET['divisionid']) : '')
 				.(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
 				.(!empty($_GET['numberplanid']) ? ' AND d.numberplanid = '.intval($_GET['numberplanid']) : '')
