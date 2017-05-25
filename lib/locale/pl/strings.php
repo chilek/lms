@@ -1562,6 +1562,7 @@ $_LANG['WINS server:'] = 'Serwer WINS:';
 $_LANG['wireless'] = 'bezprzewodowe';
 $_LANG['with invoice'] = 'z fakturą';
 $_LANG['without nodes'] = 'bez komputerów';
+$_LANG['without agreement for an electronic invoice'] = 'bez zgody na faktury elektroniczne';
 $_LANG['with warning'] = 'z ostrzeżeniem';
 $_LANG['With warning'] = 'Z ostrzeżeniem';
 $_LANG['Write down network address and select mask'] = 'Wpisz adres sieci i wybierz maskę';

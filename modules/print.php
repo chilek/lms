@@ -413,7 +413,7 @@ switch($type)
 			$date['from'] = mktime(0,0,0,$month,$day,$year);
 		} else {
 			$from = date('Y/m/d',time());
-			$date['from'] = mktime(0,0,0); //pocz�tek dnia dzisiejszego
+			$date['from'] = mktime(0,0,0); //początek dnia dzisiejszego
 		}
 
 		$type = '';
@@ -428,6 +428,7 @@ switch($type)
 			.$type
 			.'&from='.$date['from']
 			.'&to='.$date['to']
+			. (!empty($_POST['withouteinvoice']) ? '&withouteinvoice=1' : '')
 			.(!empty($_POST['division']) ? '&divisionid='.intval($_POST['division']) : '')
 			.(!empty($_POST['customer']) ? '&customerid='.intval($_POST['customer']) : '')
 			.(!empty($_POST['group']) ? '&groupid='.intval($_POST['group']) : '')
