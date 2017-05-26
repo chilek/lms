@@ -300,6 +300,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     {
         $location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
 
+		$capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
+
         $args = array(
             'extid'          => $customeradd['extid'],
             'name'           => $customeradd['name'],
@@ -332,7 +334,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         creatorid, info, notes, message, pin, regon, rbename, rbe,
                         icn, cutoffstop, consentdate, einvoice, divisionid, paytime, paytype,
                         invoicenotice, mailingnotice)
-                    VALUES (?, ?, UPPER(?), ?, ?, ?, ?, ?NOW?,
+                    VALUES (?, ?, ' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', ?, ?, ?, ?, ?NOW?,
                         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args))
         ) {
             $id = $this->db->GetLastInsertID('customers');
@@ -930,8 +932,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
 		require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
+		$capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
         if ($result = $this->db->GetRow('SELECT c.*, '
-                . $this->db->Concat('UPPER(c.lastname)', "' '", 'c.name') . ' AS customername,
+                . $this->db->Concat($capitalize_customer_names ? 'UPPER(c.lastname)' : 'c.lastname', "' '", 'c.name') . ' AS customername,
 			d.shortname AS division, d.account
 			FROM customer' . (defined('LMS-UI') ? '' : 'address') . 'view c
 			LEFT JOIN divisions d ON (d.id = c.divisionid)
@@ -1086,10 +1089,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             }
         }
 
+		$capitalize_customer_names = ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.capitalize_customer_names', true));
+
         // UPDATE CUSTOMER FIELDS
         $res = $this->db->Execute('UPDATE customers SET extid=?, status=?, type=?,
                                ten=?, ssn=?, moddate=?NOW?, modid=?,
-                               info=?, notes=?, lastname=UPPER(?), name=?,
+                               info=?, notes=?, lastname=' . ($capitalize_customer_names ? 'UPPER(?)' : '?') . ', name=?,
                                deleted=0, message=?, pin=?, regon=?, icn=?, rbename=?, rbe=?,
                                cutoffstop=?, consentdate=?, einvoice=?, invoicenotice=?, mailingnotice=?,
                                divisionid=?, paytime=?, paytype=?
