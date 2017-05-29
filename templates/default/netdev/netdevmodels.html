@@ -161,7 +161,9 @@
 		<td width="97%">{$modellist[modellist].alternative_name}</td>
 		<td width="1%" class="text-center nobr">{if $modellist[modellist].netdevcount}{$modellist[modellist].netdevcount}{/if}</td>
 		<td width="1%" class="fright text-right nobr">
+			{if !$modellist[modellist].netdevcount}
 			<img src="img/delete.gif" onclick="xajax_delete_model({$modelid});">
+			{/if}
 			<img src="img/edit.gif" onclick="xajax_edit_model({$modelid});">
 		</td>
 	</tr>

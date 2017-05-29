@@ -177,7 +177,7 @@ function edit_model($id) {
 }
 
 function save_model($forms) {
-	 global $DB;
+	$DB = LMSDB::getInstance();
 	$obj = new xajaxResponse();
 
 	$form = $forms['modeledit'];
@@ -232,7 +232,7 @@ function save_model($forms) {
 }
 
 function delete_model($id) {
-	global $DB;
+	$DB = LMSDB::getInstance();
 	$obj = new xajaxResponse();
 
 	$id = intval($id);
@@ -241,7 +241,8 @@ function delete_model($id) {
 		JOIN netdeviceproducers p ON (p.id = m.netdeviceproducerid) WHERE m.id = ?',
 		array($id));
 
-	$DB->Execute('DELETE FROM netdevicemodels WHERE id = ?', array($id));
+	if (!$DB->GetOne('SELECT COUNT(i.id) FROM netdevices i WHERE i.netdevicemodelid = ?', array($id)))
+		$DB->Execute('DELETE FROM netdevicemodels WHERE id = ?', array($id));
 
 	$obj->script("self.location.href='?m=netdevmodels&page=1&p_id=$pid';");
 
