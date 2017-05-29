@@ -122,6 +122,10 @@ switch ( strtolower($_GET['action']) ) {
             $params['data']['prefix'] = $_GET['prefix'];
         }
 
+        if ( !empty($_GET['show']) ) {
+            $params['data']['show'] = 1;
+        }
+
         if ( !empty($_GET['clear_button']) ) {
             $params['data']['clear_button'] = 1;
         }
