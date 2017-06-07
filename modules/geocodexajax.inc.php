@@ -76,10 +76,21 @@ function get_gps_coordinates($location, $callback) {
 				. (isset($location['house']) && mb_strlen($location['house']) ? ' ' . $location['house'] : '')
 				. (isset($location['flat']) && mb_strlen($location['flat']) ? '/' . $location['flat'] : '');
 			$geocode = geocode($location_string);
-			if ($geocode['status'] == 'OK' && $geocode['accuracy'] == 'ROOFTOP') {
-				$result->assign('latitude', 'value', $geocode['latitude']);
-				$result->assign('longitude', 'value', $geocode['longitude']);
-				break;
+			if ($geocode['status'] == 'OK') {
+				if ($geocode['accuracy'] == 'ROOFTOP') {
+					$result->assign('latitude', 'value', $geocode['latitude']);
+					$result->assign('longitude', 'value', $geocode['longitude']);
+					break;
+				} else {
+					$result->script('
+						var longitude = \'' . $geocode['longitude'] . '\';
+						var latitude = \'' . $geocode['latitude'] . '\';
+						if (confirm(\'' . trans('Determined gps coordinates are not precise.\nDo you still want to use them?') . '\')) {
+							$(\'#longitude\').val(longitude);
+							$(\'#latitude\').val(latitude);
+						}'
+					);
+				}
 			}
 		} elseif ($provider == 'siis' && isset($address) && isset($address['city_id'])
 			&& !empty($address['city_id']) && $DB->GetOne('SELECT id FROM location_buildings LIMIT 1')) {

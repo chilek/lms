@@ -3662,4 +3662,6 @@ $_LANG['Resolve ticket subject should not be empty if you set resolve ticket bod
 
 $_LANG['Post office:'] = 'Poczta:';
 
+$_LANG['Determined gps coordinates are not precise.\nDo you still want to use them?'] = 'Wyznaczone współrzędne gps nie są precyzyjne. Czy mimo tego chcesz je użyć?';
+
 ?>
