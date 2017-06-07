@@ -82,7 +82,7 @@
 					{if ConfigHelper::checkConfig('phpui.to_words_short_version')}
 						{$receipt.total|string_format:"%d"|to_words:0:"":1} {$receipt.totalg|string_format:"%02d"}/100
 					{else}
-						{moneyf_in_words($receipt.total+($receipt.totalg/100))}
+						{moneyf_in_words($receipt.total)}
 					{/if}</b>
 				</td>
 			    </tr>
