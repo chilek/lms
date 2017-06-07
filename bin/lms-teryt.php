@@ -324,7 +324,7 @@ function get_teryt_file($ch, $type, $outfile) {
 	if (empty($res))
 		return false;
 
-	$fh = fopen($outfile, 'w+');
+	$fh = fopen($outfile, 'w');
 	fwrite($fh, $res, strlen($res));
 	fclose($fh);
 	return true;
@@ -347,7 +347,7 @@ if ( isset($options['fetch']) ) {
 			$file_counter++;
 	}
 
-	curl_close($fh);
+	curl_close($ch);
 
     if ( $file_counter != 3 ) {
         fwrite($stderr, 'Error: Downloaded files: ' . $file_counter . '. Three expected.' . PHP_EOL);
@@ -384,8 +384,30 @@ if ( isset($options['fetch']) ) {
 	unset( $zip, $teryt_files );
 
 	 // download point address base (pobranie bazy punktów adresowych)
-	if (!$quiet)
+	function stream_notification_callback($notification_code, $severity, $message, $message_code, $bytes_transferred, $bytes_max) {
+		static $filesize = null;
+
+		switch ($notification_code) {
+			case STREAM_NOTIFY_CONNECT:
+				$filesize = null;
+				break;
+			case STREAM_NOTIFY_FILE_SIZE_IS:
+				$filesize = $bytes_max;
+				break;
+			case STREAM_NOTIFY_PROGRESS:
+				if (isset($filesize))
+					printf("%d%%         \r", ($bytes_transferred * 100) / $filesize);
+				break;
+		}
+	}
+
+	$ctx = stream_context_create();
+
+	if (!$quiet) {
 		echo 'Downloading ' . BUILDING_BASE_ZIP_URL . ' file...' . PHP_EOL;
+		stream_context_set_params($ctx, array("notification" => "stream_notification_callback"));
+	}
+
 	file_put_contents($teryt_dir . DIRECTORY_SEPARATOR . BUILDING_BASE_ZIP_NAME, fopen(BUILDING_BASE_ZIP_URL, 'r', false, $ctx));
 
 	if (!$quiet)
