@@ -282,65 +282,79 @@ $building_base_name = $teryt_dir . DIRECTORY_SEPARATOR . 'baza_punktow_adresowyc
 // -f, --fetch
 //==============================================================================
 
-if ( isset($options['fetch']) ) {
-	function stream_notification_callback($notification_code, $severity, $message, $message_code, $bytes_transferred, $bytes_max) {
-		static $filesize = null;
+function get_teryt_file($ch, $type, $outfile) {
+	static $month_names = array(
+		1 => 'stycznia',
+		2 => 'lutego',
+		3 => 'marca',
+		4 => 'kwietnia',
+		5 => 'maja',
+		6 => 'czerwca',
+		7 => 'lipca',
+		8 => 'sierpnia',
+		9 => 'września',
+		10 => 'października',
+		11 => 'listopada',
+		12 => 'grudnia',
+	);
+	$date = strftime('%d') . ' ' . $month_names[intval(strftime('%m'))] . ' ' . strftime('%Y');
 
-		switch($notification_code) {
-			case STREAM_NOTIFY_CONNECT:
-				$filesize = null;
-				break;
-			case STREAM_NOTIFY_FILE_SIZE_IS:
-				$filesize = $bytes_max;
-				break;
-			case STREAM_NOTIFY_PROGRESS:
-				if (isset($filesize))
-					printf("%d%%         \r", ($bytes_transferred * 100) / $filesize);
-				break;
-		}
+	switch ($type) {
+		case 'TERC':
+			$param = 'ctl00$body$BTERCUrzedowyPobierz';
+			break;
+		case 'SIMC':
+			$param = 'ctl00$body$BSIMCUrzedowyPobierz';
+			break;
+		case 'ULIC':
+			$param = 'ctl00$body$BULICUrzedowyPobierz';
+			break;
 	}
 
-	$ctx = stream_context_create();
+	curl_setopt_array($ch, array(
+		CURLOPT_URL => 'http://eteryt.stat.gov.pl/eTeryt/rejestr_teryt/udostepnianie_danych/baza_teryt/uzytkownicy_indywidualni/pobieranie/pliki_pelne.aspx',
+		CURLOPT_POST => true,
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_POSTFIELDS => array(
+			'__EVENTTARGET' => $param,
+			'ctl00$body$TBData' => $date,
+		),
+	));
+	$res = curl_exec($ch);
+	if (empty($res))
+		return false;
 
+	$fh = fopen($outfile, 'w+');
+	fwrite($fh, $res, strlen($res));
+	fclose($fh);
+	return true;
+}
+
+if ( isset($options['fetch']) ) {
 	if (!$quiet) {
 		echo 'Downloading TERYT files...' . PHP_EOL;
-		stream_context_set_params($ctx, array("notification" => "stream_notification_callback"));
 	}
 
-    $page_content = file_get_contents('http://www.stat.gov.pl/broker/access/prefile/listPreFiles.jspa', 'r');
-    $file_counter = 0;
+	$teryt_files = array('ULIC', 'TERC', 'SIMC');
+
+	$ch = curl_init();
+
+	$file_counter = 0;
 	$teryt_filename_suffix = '_' . strftime('%d%m%Y');
+	foreach ($teryt_files as $file) {
+		$res = get_teryt_file($ch, $file, $teryt_dir . DIRECTORY_SEPARATOR . $file . $teryt_filename_suffix . '.zip');
+		if ($res)
+			$file_counter++;
+	}
 
-    foreach (preg_split("/((\r?\n)|(\r\n?))/", $page_content) as $line){
-        if ( preg_match('/downloadPreFile\.jspa;.*id=(?<file_id>[0-9]*)"/', $line, $matches) && $matches['file_id'] ) {
-
-            $headers = get_headers('http://www.stat.gov.pl/broker/access/prefile/downloadPreFile.jspa?id=' . $matches['file_id']);
-
-            foreach ($headers as $tag) {
-                if ( preg_match('/filename=(?<full_name>(?<name>.*)_.*)/', $tag, $file) ) {
-                    switch ( strtolower($file['name']) ) {
-                        case 'ulic':
-                        case 'terc':
-                        case 'simc':
-                            // inserase counter
-                            ++$file_counter;
-
-                            // save file
-                            file_put_contents($teryt_dir . DIRECTORY_SEPARATOR . $file['name'] . $teryt_filename_suffix . '.zip',
-                                fopen('http://www.stat.gov.pl/broker/access/prefile/downloadPreFile.jspa?id=' . $matches['file_id'], 'r', false, $ctx));
-                        break;
-                    }
-                }
-            }
-        }
-    }
+	curl_close($fh);
 
     if ( $file_counter != 3 ) {
         fwrite($stderr, 'Error: Downloaded files: ' . $file_counter . '. Three expected.' . PHP_EOL);
         die;
     }
 
-    unset( $page_content, $file_counter, $headers, $matches, $file );
+    unset($file_counter);
 
 	if ( ! class_exists('ZipArchive') ) {
 		fwrite($stderr, "Error: ZipArchive class not found." . PHP_EOL);
@@ -351,7 +365,6 @@ if ( isset($options['fetch']) ) {
 	// Unzip teryt files
 	//==============================================================================
 	$zip = new ZipArchive;
-	$teryt_files = array('ULIC', 'TERC', 'SIMC');
 
 	if (!$quiet)
 		echo 'Unzipping TERYT files...' . PHP_EOL;
@@ -359,7 +372,9 @@ if ( isset($options['fetch']) ) {
 	foreach ( $teryt_files as $file ) {
 		$filename = $teryt_dir . DIRECTORY_SEPARATOR . $file . $teryt_filename_suffix . '.zip';
 	    if ($zip->open($filename) === TRUE) {
-	        $zip->extractTo($teryt_dir . DIRECTORY_SEPARATOR);
+	        $zip->extractTo($teryt_dir . DIRECTORY_SEPARATOR, array($file . '_Urzedowy_' . date('Y-m-d') . '.xml'));
+	        rename($teryt_dir . DIRECTORY_SEPARATOR . $file . '_Urzedowy_' . date('Y-m-d') . '.xml',
+	        	$teryt_dir . DIRECTORY_SEPARATOR . $file . '.xml');
 	    } else {
 	        fwrite($stderr, "Error: Can't unzip $file or file doesn't exist." . PHP_EOL);
 	        die;
