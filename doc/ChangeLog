@@ -130,6 +130,8 @@ version ?.??.?? (????-??-??):
     agreement for an electronic invoice [chilan]
   - improvement: phpui.capitalize_customer_names configuration variable settings decides
     if customer last names are automatically capitalized ('true' by default) [chilan]
+  - improvement: if gps coordinates determined by google api are not precise we show
+    javascript popup which allows user to decide if they should stored beside of this [chilan]
 
 version 1.11.21 (2016-10-14):
 
