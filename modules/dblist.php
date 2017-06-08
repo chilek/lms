@@ -88,7 +88,7 @@ if ($handle = opendir(ConfigHelper::getConfig('directories.backup_dir')))
 }
 
 if(isset($dblist['time']))
-	array_multisort($dblist['time'],$dblist['size'],$dblist['type'],$dblist['dbv'],$dblist['name']);
+	array_multisort($dblist['time'],$dblist['size'],$dblist['type'],$dblist['dbv'],$dblist['name'],$dblist['hsize']);
 
 $dblist['total'] = isset($dblist['time']) ? sizeof($dblist['time']) : 0;
 
