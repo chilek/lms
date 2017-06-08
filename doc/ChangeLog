@@ -1,5 +1,10 @@
 $Id$
 
+version ?.??.?? (????-??-??):
+
+  - improvement: create db dumps with multi records inserts statements which
+    dramatically reduces db restore time [chilan]
+
 version 1.11.22 (2017-06-08):
 
   - userpanel enhancement: show confirmed documents only checkbox decides if confirmed
