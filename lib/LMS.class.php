@@ -226,9 +226,16 @@ class LMS
 
             // Since we're using foreign keys, order of tables is important
             // Note: add all referenced tables to the list
-            $order = array('users', 'customers', 'customergroups', 'nodes', 'numberplans',
+            $order = array('users', 'customers', 'customergroups', 'hosts', 'networks',
+                'nodes', 'numberplans', 'tariffs', 'tarifftags', 'promotions', 'promotionschemas',
                 'assignments', 'rtqueues', 'rttickets', 'rtmessages', 'domains',
-                'cashsources', 'sourcefiles', 'ewx_channels', 'hosts');
+                'cashsources', 'sourcefiles', 'ewx_channels', 'location_states',
+                'location_boroughs', 'location_cities', 'location_street_types', 'location_streets',
+                'addresses', 'divisions', 'netdeviceproducers', 'netnodes', 'invprojects',
+                'netdevicemodels', 'netradiosectors', 'voip_rule_groups', 'voip_prefix_groups',
+                'voipaccounts', 'voip_rules', 'voip_tariffs', 'documents', 'rtattachments',
+                'rtcategories', 'netdevices', 'logtransactions', 'logmessages', 'usergroups',
+            );
 
             foreach ($tables as $idx => $table) {
                 if (in_array($table, $order)) {
