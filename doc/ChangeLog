@@ -1,6 +1,6 @@
 $Id$
 
-version ?.??.?? (????-??-??):
+version 1.11.22 (2017-06-08):
 
   - userpanel enhancement: show confirmed documents only checkbox decides if confirmed
     documents are only shown for customer [chilan]
