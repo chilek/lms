@@ -59,6 +59,8 @@ class LMS
     protected $config_manager;
     protected $user_group_manager;
 
+	const db_dump_multi_record_limit = 500;
+
     public function __construct(&$DB, &$AUTH, &$SYSLOG)
     { // class variables setting
         $this->DB = &$DB;
@@ -254,23 +256,33 @@ class LMS
                 if ($tablename == 'sessions' || ($tablename == 'stats' && $stats == FALSE))
                     continue;
 
+                $record = $this->DB->GetRow('SELECT * FROM ' . $tablename . ' LIMIT 1');
+                if (empty($record))
+                    continue;
+                $fields = array_keys($record);
+
+                $query = 'INSERT INTO ' . $tablename . ' (' . implode(',', $fields) . ') VALUES ';
+                $record_limit = self::db_dump_multi_record_limit;
+                $records = array();
                 $this->DB->Execute('SELECT * FROM ' . $tablename);
                 while ($row = $this->DB->_driver_fetchrow_assoc()) {
-                    fputs($dumpfile, "INSERT INTO $tablename (");
-                    foreach ($row as $field => $value) {
-                        $fields[] = $field;
+                    $values = array();
+                    foreach ($row as $value) {
                         if (isset($value))
                             $values[] = $value_prefix . "'" . addcslashes($value, "\r\n\'\"\\") . "'";
                         else
                             $values[] = 'NULL';
                     }
-                    fputs($dumpfile, implode(', ', $fields));
-                    fputs($dumpfile, ') VALUES (');
-                    fputs($dumpfile, implode(', ', $values));
-                    fputs($dumpfile, ");\n");
-                    unset($fields);
-                    unset($values);
+                    $records[] = '(' . implode(', ', $values) . ')';
+                    $record_limit--;
+                    if (!$record_limit) {
+                        fputs($dumpfile, $query . implode(',', $records) . ";\n");
+                        $records = array();
+                        $record_limit = self::db_dump_multi_record_limit;
+                    }
                 }
+                if ($record_limit < self::db_dump_multi_record_limit)
+                    fputs($dumpfile, $query . implode(',', $records) . ";\n");
             }
 
             if (preg_match('/^mysqli?$/', $dbtype))
