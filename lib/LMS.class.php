@@ -195,6 +195,8 @@ class LMS
 
     public function DBDump($filename = NULL, $gzipped = FALSE, $stats = FALSE)
     { // dump database to file
+        $dbtype = ConfigHelper::getConfig('database.type');
+
         if (!$filename)
             return FALSE;
 
@@ -206,13 +208,15 @@ class LMS
         if ($dumpfile) {
             $tables = $this->DB->ListTables();
 
-            switch (ConfigHelper::getConfig('database.type')) {
+            switch ($dbtype) {
                 case 'postgres':
                     fputs($dumpfile, "SET CONSTRAINTS ALL DEFERRED;\n");
+                    $value_prefix = 'E';
                     break;
                 case 'mysql':
                 case 'mysqli':
                     fputs($dumpfile, "SET foreign_key_checks = 0;\n");
+                    $value_prefix = '';
                     break;
             }
 
@@ -229,7 +233,7 @@ class LMS
             $order = array('users', 'customers', 'customergroups', 'hosts', 'networks',
                 'nodes', 'numberplans', 'tariffs', 'tarifftags', 'promotions', 'promotionschemas',
                 'assignments', 'rtqueues', 'rttickets', 'rtmessages', 'domains',
-                'cashsources', 'sourcefiles', 'ewx_channels', 'location_states',
+                'cashsources', 'sourcefiles', 'ewx_channels', 'countries', 'location_states',
                 'location_boroughs', 'location_cities', 'location_street_types', 'location_streets',
                 'addresses', 'divisions', 'netdeviceproducers', 'netnodes', 'invprojects',
                 'netdevicemodels', 'netradiosectors', 'voip_rule_groups', 'voip_prefix_groups',
@@ -256,7 +260,7 @@ class LMS
                     foreach ($row as $field => $value) {
                         $fields[] = $field;
                         if (isset($value))
-                            $values[] = "'" . addcslashes($value, "\r\n\'\"\\") . "'";
+                            $values[] = $value_prefix . "'" . addcslashes($value, "\r\n\'\"\\") . "'";
                         else
                             $values[] = 'NULL';
                     }
@@ -269,7 +273,7 @@ class LMS
                 }
             }
 
-            if (preg_match('/^mysqli?$/', ConfigHelper::getConfig('database.type')))
+            if (preg_match('/^mysqli?$/', $dbtype))
                 fputs($dumpfile, "SET foreign_key_checks = 1;\n");
 
             if ($gzipped && extension_loaded('zlib'))
