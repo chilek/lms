@@ -4,6 +4,9 @@ version ?.??.?? (????-??-??):
 
   - improvement: create db dumps with multi records inserts statements which
     dramatically reduces db restore time [chilan]
+  - enhancement: allow to backup all financial documents issued a given day
+    in selected output directory (--backup and --output-directory parameters
+    were introduced for lms-sendinvoices.php) [chilan]
 
 version 1.11.22 (2017-06-08):
 
