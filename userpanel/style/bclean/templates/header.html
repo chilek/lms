@@ -10,9 +10,29 @@
 		<script src="style/default/common.js"></script>
 		<script src="img/common.js"></script>
 		{include file="jquery.html" language=$_ui_language}
+{$hint_mode = ConfigHelper::getConfig('userpanel.hint')}
+{if $hint_mode != 'classic' && $hint_mode != 'none'}
+<script type="text/javascript" src="style/default/avatar.js"></script>
+    </head>
+    <body onload="javascript:draginit()">
+<div id="drag" class="drag" style="width:150px; position:absolute; left:350px; top:150px; visibility:hidden;">
+<div id ="hint" style="visibility:hidden; position:relative; top:70px;">
+<img src="style/default/note1.gif" style="vertical-align:bottom;" alt="" />
+<div style="background-image:url('style/default/note2.gif'); padding-left:5px; padding-right:5px; height:60px; text-align:center;">
+<table style="width:100%; height:100%;">
+<tr><td>
+<div id ="hinttext">TipInHere</div>
+</td></tr>
+</table>
+</div><img src="style/default/note3.gif" alt="" style="vertical-align:top; z-index:inherit;">
+</div>
+<img id="avatar" src="style/default/avatar.gif" alt="" style="cursor:move;">
+</div>
+{elseif $hint_mode == 'classic'}
     </head>
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:100;"></div>
 <script type="text/javascript" src="style/default/overlib.js"></script>
     <body>
+{/if}
         <div class="container-fluid">
             {body}
