@@ -3119,6 +3119,58 @@ class LMS
         return $manager->TarifftagGetAll();
     }
 
+	public function GetFinancialDocument($doc, $SMARTY) {
+		if ($doc['doctype'] == DOC_DNOTE) {
+			$type = ConfigHelper::getConfig('notes.type', '');
+			if ($type == 'pdf')
+				$document = new LMSTcpdfDebitNote(trans('Notes'));
+			else
+				$document = new LMSHtmlDebitNote($SMARTY);
+
+			$filename = ConfigHelper::getConfig('sendinvoices.debitnote_filename', 'dnote_%docid');
+
+			$data = $this->GetNoteContent($doc['id']);
+		} else {
+			$type = ConfigHelper::getConfig('invoices.type', '');
+			if ($type == 'pdf') {
+				$pdf_type = ConfigHelper::getConfig('invoices.pdf_type', 'tcpdf');
+				$pdf_type = ucwords($pdf_type);
+				$classname = 'LMS' . $pdf_type . 'Invoice';
+				$document = new $classname(trans('Invoices'));
+			} else
+				$document = new LMSHtmlInvoice($SMARTY);
+
+			$filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'invoice_%docid');
+
+			$data = $this->GetInvoiceContent($doc['id']);
+		}
+
+		if ($type == 'pdf')
+			$fext = 'pdf';
+		else
+			$fext = 'html';
+
+		$document_number = (!empty($doc['template']) ? $doc['template'] : '%N/LMS/%Y');
+		$document_number = docnumber(array(
+			'number' => $doc['number'],
+			'template' => $document_number,
+			'cdate' => $doc['cdate'] + date('Z'),
+			'customerid' => $doc['customerid'],
+		));
+
+		$filename = preg_replace('/%docid/', $doc['id'], $filename);
+		$filename = str_replace('%number', $document_number, $filename);
+		$filename = preg_replace('/[^[:alnum:]_\.]/i', '_', $filename);
+
+		$data['type'] = trans('ORIGINAL');
+		$document->Draw($data);
+
+		return array(
+			'filename' => $filename . '.' . $fext,
+			'data' => $document->WriteToString(),
+		);
+	}
+
 	public function SendInvoices($docs, $type, $params) {
 		extract($params);
 
@@ -3131,65 +3183,23 @@ class LMS
 		$day = sprintf('%02d', intval(date('d', $currtime)));
 		$year = sprintf('%04d', intval(date('Y', $currtime)));
 
-		if ($invoice_filetype == 'pdf') {
+		if ($invoice_filetype == 'pdf')
 			$invoice_ftype = 'application/pdf';
-			$invoice_fext = 'pdf';
-
-			$pdf_type = ConfigHelper::getConfig('invoices.pdf_type', 'tcpdf');
-			$pdf_type = ucwords($pdf_type);
-			$invoice_classname = 'LMS' . $pdf_type . 'Invoice';
-		} else {
+		else
 			$invoice_ftype = 'text/html';
-			$invoice_fext = 'html';
 
-			$invoice_classname = 'LMSHtmlInvoice';
-		}
-
-		if ($dnote_filetype == 'pdf') {
+		if ($dnote_filetype == 'pdf')
 			$dnote_ftype = 'application/pdf';
-			$dnote_fext = 'pdf';
-
-			$dnote_classname = 'LMSTcpdfDebitNote';
-		} else {
+		else
 			$dnote_ftype = 'text/html';
-			$dnote_fext = 'html';
-
-			$dnote_classname = 'LMSHtmlDebitNote';
-		}
 
 		$from = $sender_email;
 
 		if (!empty($sender_name))
 			$from = "$sender_name <$from>";
 
-		if (!isset($which) || empty($which))
-			$which = array(trans('ORIGINAL'));
-		$count = count($which);
-
 		foreach ($docs as $doc) {
-			if ($doc['doctype'] == DOC_DNOTE) {
-				if ($dnote_filetype == 'pdf')
-					$document = new $dnote_classname(trans('Notes'));
-				else
-					$document = new $dnote_classname($SMARTY);
-				$invoice = $this->GetNoteContent($doc['id']);
-			} else {
-				if ($invoice_filetype == 'pdf')
-					$document = new $invoice_classname(trans('Invoices'));
-				else
-					$document = new $invoice_classname($SMARTY);
-				$invoice = $this->GetInvoiceContent($doc['id']);
-			}
-
-			$i = 0;
-			foreach ($which as $doctype) {
-				$i++;
-				$invoice['type'] = $doctype;
-				$document->Draw($invoice);
-				if ($i < $count)
-					$document->NewPage();
-			}
-			$res = $document->WriteToString();
+			$document = $this->GetFinancialDocument($doc, $SMARTY);
 
 			$custemail = (!empty($debug_email) ? $debug_email : $doc['email']);
 			$invoice_number = (!empty($doc['template']) ? $doc['template'] : '%N/LMS/%Y');
@@ -3211,9 +3221,7 @@ class LMS
 			$body = preg_replace('/%today/', $year . '-' . $month . '-' . $day, $body);
 			$body = str_replace('\n', "\n", $body);
 			$subject = preg_replace('/%invoice/', $invoice_number, $subject);
-			$filename = preg_replace('/%docid/', $doc['id'], $doc['doctype'] == DOC_DNOTE ? $dnote_filename : $invoice_filename);
-			$filename = str_replace('%number', $invoice_number, $filename);
-			$filename = preg_replace('/[^[:alnum:]_\.]/i', '_', $filename);
+			$filename = $document['filename'];
 			$doc['name'] = '"' . $doc['name'] . '"';
 
 			$mailto = array();
@@ -3252,8 +3260,8 @@ class LMS
 				$files = array();
 				$files[] = array(
 					'content_type' => $doc['doctype'] == DOC_DNOTE ? $dnote_ftype : $invoice_ftype,
-					'filename' => $filename . '.' . ($doc['doctype'] == DOC_DNOTE ? $dnote_fext : $invoice_fext),
-					'data' => $res
+					'filename' => $filename,
+					'data' => $document['data'],
 				);
 
 				if ($extrafile) {
