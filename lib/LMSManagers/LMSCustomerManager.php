@@ -482,8 +482,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             case 69:
                     $withoutcity =1;
                     break;
-
-
         }
 
         switch($as){
