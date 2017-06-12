@@ -85,14 +85,15 @@ TD.flr {
   border-right-style: solid;
 }
 TD.head {
-  color: white;
+  color: black;
   background-color: lightgrey;
   font-weight: bold;
   border: 1pt solid black;
 }
 @media print {
   TD.head {
-    color: lightgrey;
+    color: black;
+    background-color: lightgrey;
   }
 }
 TD.headgrey {
