@@ -102,7 +102,7 @@
 							<COL style="width: 1%;">
 							<COL style="width: 95%;">
 							<COL style="width: 1%;">
-							<COL style="width: 1%;">        
+							<COL style="width: 1%;">
 							<COL style="width: 1%;" class="no-print">
 						</COLGROUP>
                         <THEAD>
@@ -116,6 +116,7 @@
 									{if $getHolidays[$daylist[daylist]]}
 									<span class="red">{trans("Holiday:")} {$getHolidays[$daylist[daylist]]}</span>
 									{/if}
+									<a href="?m=eventsearch&datefrom={$daylist[daylist]|date_format:"%Y/%m/%d"}&dateto={$daylist[daylist]|date_format:"%Y/%m/%d"}">&raquo;&raquo;&raquo;</a>
                                 </TD>
                                 <TD colspan="2" class="text-right nobr">
                                 	<div class="no-print">
@@ -146,7 +147,8 @@
 										{/foreach}
                                 </TD>
                                 <TD onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
-                                        <IMG src="img/calendar.gif" alt=""> <span class="bold">{$eventlist[eventlist].title}</span><BR>
+                                        <IMG src="img/calendar.gif" alt=""> <span class="bold">{$eventlist[eventlist].title}</span>
+                                        &nbsp;<a href="?m=eventinfo&id={$eventlist[eventlist].id}">&raquo;&raquo;&raquo;</a><BR>
                                         {if $eventlist[eventlist].description != ''}<IMG src="img/info1.gif" alt=""> {$eventlist[eventlist].description}{/if}<br/>
                                         {if $eventlist[eventlist].note != ''}<span{if !$eventlist[eventlist].closed} style="color: red;"{/if}><IMG src="img/note.gif" alt="" /> {$eventlist[eventlist].note}</span>{/if}
                                 </TD>

@@ -55,6 +55,7 @@
 											{if $getHolidays[$daylist[daylist]]}
 											<span class="red">{trans("Holiday:")} {$getHolidays[$daylist[daylist]]}</span>
 											{/if}
+											<a href="?m=eventsearch&datefrom={$daylist[daylist]|date_format:"%Y/%m/%d"}&dateto={$daylist[daylist]|date_format:"%Y/%m/%d"}">&raquo;&raquo;&raquo;</a>
                                     </TD>
                                     <TD colspan="2" class="text-right nobr">
                                             <A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.userid}" target="_BLANK">{trans("Print")} <IMG src="img/print.gif" alt=""></A>
@@ -84,7 +85,8 @@
                                         {/foreach}
                                 </TD>
                                 <TD class="valign-top" onClick="return self.location.href='?m=eventinfo&id={$eventlist[eventlist].id}'">
-                                        <IMG src="img/calendar.gif" alt=""> <span class="bold">{$eventlist[eventlist].title}</span><BR>
+                                        <IMG src="img/calendar.gif" alt=""> <span class="bold">{$eventlist[eventlist].title}</span>
+                                        &nbsp;<a href="?m=eventinfo&id={$eventlist[eventlist].id}">&raquo;&raquo;&raquo;</a><BR>
                                         <IMG src="img/info1.gif" alt=""> {$eventlist[eventlist].description}
                                 </TD>
                                 <TD class="text-right valign-top">
