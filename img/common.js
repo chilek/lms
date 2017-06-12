@@ -418,12 +418,12 @@ function multiselect(options) {
 
 		// add some mouse/key events handlers
 		li.click(function(e) {
-			if ($(e.target).is('input'))
-				return;
-
 			$(this).toggleClass('selected');
+
 			var box = $(':checkbox', this);
-			box.prop('checked', !box.prop('checked'));
+			if (!$(e.target).is('input')) {
+				box.prop('checked', !box.prop('checked'));
+			}
 
 			var optionValue = '';
 			if (/<span>(.*?)<\/span>/i.exec(this.innerHTML) !== null)
