@@ -473,6 +473,17 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             case 66:
             		$withoutinvoiceflag =1;
             		break;
+            case 67:
+                    $withoutbuildingnumber =1;
+                    break;
+            case 68:
+                    $withoutzip =1;
+                    break;
+            case 69:
+                    $withoutcity =1;
+                    break;
+
+
         }
 
         switch($as){
@@ -709,6 +720,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 . ($withnodes ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id)' : '')
                 . ($withoutnodes ? ' AND NOT EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id)' : '')
                 . ($withoutinvoiceflag ? ' AND c.id IN (SELECT DISTINCT customerid FROM assignments WHERE invoice = 0)' : '')
+                . ($withoutbuildingnumber ? ' AND c.building IS NULL' : '')
+                . ($withoutzip ? ' AND c.zip IS NULL' : '')
+                . ($withoutcity ? ' AND c.city IS NULL' : '')
                 . ($contracts == 1 ? ' AND d.customerid IS NULL' : '')
                 . ($assigment ? ' AND c.id IN ('.$assigment.')' : '')
                 . ($disabled ? ' AND s.ownerid IS NOT null AND s.account > s.acsum' : '')
