@@ -3570,6 +3570,10 @@ $_LANG['without gps coords'] = 'bez współrzędnych gps';
 
 $_LANG['without invoice flag'] = 'bez flagi z fakturą';
 
+$_LANG['without building number'] = 'bez numeru budynku';
+$_LANG['without zip'] = 'bez kodu pocztowego';
+$_LANG['without city'] = 'bez miasta';
+
 $_LANG['Instant messengers'] = 'Komunikatory internetowe';
 $_LANG['Enter IM uid (optional)'] = 'Podaj identyfikator użytkownika (opcjonalne)';
 $_LANG['Check if IM uid should be disabled'] = 'Oznacz, jeśli identyfikator użytkownika ma być wyłączony';
