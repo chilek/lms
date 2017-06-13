@@ -148,9 +148,13 @@ $CONFIG = (array) parse_ini_file($CONFIG_FILE, true);
 // Check for configuration vars and set default values
 $CONFIG['directories']['sys_dir'] = (!isset($CONFIG['directories']['sys_dir']) ? getcwd() : $CONFIG['directories']['sys_dir']);
 $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'lib' : $CONFIG['directories']['lib_dir']);
+$CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
+$CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
+define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
+define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
 
 // Load autoloader
 $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
@@ -235,7 +239,6 @@ $deadline = ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'language.php');
 include_once(LIB_DIR . DIRECTORY_SEPARATOR . 'definitions.php');
-require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'unstrip.php');
 
 $SYSLOG = SYSLOG::getInstance();
 
@@ -245,6 +248,9 @@ $AUTH = NULL;
 $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
+
+$plugin_manager = new LMSPluginManager();
+$LMS->setPluginManager($plugin_manager);
 
 if (!empty($mail_fname))
 	$mail_from = qp_encode($mail_fname) . ' <' . $mail_from . '>';
@@ -1256,6 +1262,10 @@ if (!empty($intersect)) {
 								}
 							}
 					}
+					$plugin_manager->executeHook('notification_blocks', array(
+						'customers' => $customers,
+						'actions' => $actions,
+					));
 					break;
 				case 'unblock':
 					if (empty($customers))
@@ -1356,6 +1366,10 @@ if (!empty($intersect)) {
 								}
 						}
 					}
+					$plugin_manager->executeHook('notification_unblocks', array(
+						'customers' => $customers,
+						'actions' => $actions,
+					));
 					break;
 			}
 }
