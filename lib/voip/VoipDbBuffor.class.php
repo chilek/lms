@@ -185,7 +185,7 @@ class VoipDbBuffor {
                                           voip_rule_states
                                         WHERE
                                              voip_account_id = ? AND
-                                             rule_id         = ?;',
+                                             rule_id         = ?',
                                         array($r['voip_acc_id'], $r['rule_id']));
 
                 if ($exists) {
@@ -193,7 +193,7 @@ class VoipDbBuffor {
                                   SET units_left = units_left - ?
                                   WHERE
                                       voip_account_id = ? AND
-                                      rule_id         = ?;',
+                                      rule_id         = ?',
                                   array($r['used_units'], $r['voip_acc_id'], $r['rule_id']));
                 } else {
                     $new_rules[] = '(' . $r['voip_acc_id'] . ','

@@ -788,7 +788,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
         }
 
         if ( !$error_msg ) {
-            $this->db->Execute('UPDATE nodes SET ' . $field . ' = ? WHERE id = ?;', array($value, $nodeid));
+            $this->db->Execute('UPDATE nodes SET ' . $field . ' = ? WHERE id = ?', array($value, $nodeid));
         } else {
             return $error_msg;
         }

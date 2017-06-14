@@ -232,7 +232,7 @@ if (isset($_POST['document'])) {
 
 			$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 				account, inv_header, inv_footer, inv_author, inv_cplace 
-				FROM vdivisions WHERE id = ? ;',array($gencust['divisionid']));
+				FROM vdivisions WHERE id = ?',array($gencust['divisionid']));
 
 			if ($customernumtemplate)
 				$document['number'] = $LMS->GetNewDocumentNumber(array(

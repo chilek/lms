@@ -516,7 +516,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
         $division = $this->db->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 				account, inv_header, inv_footer, inv_author, inv_cplace
-				FROM vdivisions WHERE id = ? ;', array($invoice['customer']['divisionid']));
+				FROM vdivisions WHERE id = ?', array($invoice['customer']['divisionid']));
 
 		if ($invoice['invoice']['recipient_address_id'] > 0) {
 			global $LMS;

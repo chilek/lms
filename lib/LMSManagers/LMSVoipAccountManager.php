@@ -118,7 +118,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             }
         }
 
-        $tmp_phone_list = $this->db->GetAll('SELECT voip_account_id, phone FROM voip_numbers;');
+        $tmp_phone_list = $this->db->GetAll('SELECT voip_account_id, phone FROM voip_numbers');
         $phone_list = array();
 		if (!empty($tmp_phone_list)) {
 			foreach ($tmp_phone_list as $k=>$v)
@@ -354,7 +354,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             $result['modifiedby']    = $user_manager->getUserName($result['modid']);
             $result['creationdateh'] = date('Y/m/d, H:i', $result['creationdate']);
             $result['moddateh']      = date('Y/m/d, H:i', $result['moddate']);
-            $result['phones']        = $this->db->GetAll('SELECT phone, number_index FROM voip_numbers WHERE voip_account_id = ?;', array($id));
+            $result['phones']        = $this->db->GetAll('SELECT phone, number_index FROM voip_numbers WHERE voip_account_id = ?', array($id));
             $result['owner']         = $customer_manager->getCustomerName($result['ownerid']);
             return $result;
         }
@@ -439,7 +439,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
 
         if ($result) {
             $this->db->Execute('UPDATE voip_numbers SET number_index = null WHERE voip_account_id = ?', array($data['id']));
-            $current_phones = $this->db->GetAllByKey('SELECT phone FROM voip_numbers WHERE voip_account_id = ?;', 'phone', array($data['id']));
+            $current_phones = $this->db->GetAllByKey('SELECT phone FROM voip_numbers WHERE voip_account_id = ?', 'phone', array($data['id']));
             $phone_index = 0;
 
             $phone_to_delete = array();
