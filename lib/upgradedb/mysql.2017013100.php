@@ -79,12 +79,12 @@ function parse_address($address) {
 }
 
 function moveTableLocation( $DB, $table ) {
-    $DB->Execute('ALTER TABLE ' . $table . ' ADD COLUMN address_id int(11), ADD FOREIGN KEY ' . $table . '_address_id_fk (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE;');
+    $DB->Execute('ALTER TABLE ' . $table . ' ADD COLUMN address_id int(11), ADD FOREIGN KEY ' . $table . '_address_id_fk (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE');
 
     $locations = $DB->GetAll('SELECT id, location_city, location_street, location_house, location_flat
                               FROM ' . $table . '
                               WHERE location_city is not null OR location_street is not null OR
-                                 location_house is not null OR location_flat is not null;');
+                                 location_house is not null OR location_flat is not null');
 
     if ( $locations ) {
         foreach ($locations as $v) {
@@ -94,7 +94,7 @@ function moveTableLocation( $DB, $table ) {
             $flat   = ($v['location_flat'])   ? $v['location_flat']  : null;
 
             $DB->Execute('INSERT INTO addresses (city_id, street_id, house, flat) VALUES (?, ?, ?, ?)', array($city,$street,$house,$flat));
-            $DB->Execute('UPDATE ' . $table . ' SET address_id = ? WHERE id = ?;', array( $DB->GetLastInsertID('addresses'), $v['id']));
+            $DB->Execute('UPDATE ' . $table . ' SET address_id = ? WHERE id = ?', array( $DB->GetLastInsertID('addresses'), $v['id']));
         }
     }
 }
@@ -142,8 +142,8 @@ $this->Execute("CREATE TABLE customer_addresses (
 /* --------------------------------
     NODES
  -------------------------------- */
-$this->Execute('ALTER TABLE nodes ADD COLUMN address_id integer NULL;');
-$this->Execute('ALTER TABLE nodes ADD CONSTRAINT nodes_address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE;');
+$this->Execute('ALTER TABLE nodes ADD COLUMN address_id integer NULL');
+$this->Execute('ALTER TABLE nodes ADD CONSTRAINT nodes_address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE');
 
 $locations = $this->GetAll('SELECT id, location, location_city, location_street, location_house, location_flat, ownerid
                             FROM nodes
@@ -151,7 +151,7 @@ $locations = $this->GetAll('SELECT id, location, location_city, location_street,
                                 location_city   is not null OR
                                 location_street is not null OR
                                 location_house  is not null OR
-                                location_flat   is not null;');
+                                location_flat   is not null');
 
 $customer_nodes = array();
 
@@ -205,15 +205,15 @@ if ( $locations ) {
             }
         }
 
-        $this->Execute('UPDATE nodes SET address_id = ? WHERE id = ?;', array( $addr_id, $v['id']));
+        $this->Execute('UPDATE nodes SET address_id = ? WHERE id = ?', array( $addr_id, $v['id']));
     }
 }
 
 /* --------------------------------
     NETNODES
  -------------------------------- */
-$this->Execute('ALTER TABLE netnodes ADD COLUMN address_id integer NULL;');
-$this->Execute('ALTER TABLE netnodes ADD CONSTRAINT netnodes_address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE;');
+$this->Execute('ALTER TABLE netnodes ADD COLUMN address_id integer NULL');
+$this->Execute('ALTER TABLE netnodes ADD CONSTRAINT netnodes_address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE');
 
 $locations = $this->GetAll('SELECT id, location, location_city, location_street, location_house, location_flat
                             FROM netnodes
@@ -221,7 +221,7 @@ $locations = $this->GetAll('SELECT id, location, location_city, location_street,
                                   location_city   is not null OR
                                   location_street is not null OR
                                   location_house  is not null OR
-                                  location_flat   is not null;');
+                                  location_flat   is not null');
 
 if ( $locations ) {
     foreach ($locations as $v) {
@@ -248,15 +248,15 @@ if ( $locations ) {
 		$this->Execute('INSERT INTO addresses (' . implode(', ', array_keys($args)) . ') VALUES
 			(' . implode(', ', array_fill(0, count(array_keys($args)), '?')) . ')', array_values($args));
 
-        $this->Execute('UPDATE netnodes SET address_id = ? WHERE id = ?;', array( $this->GetLastInsertID('addresses'), $v['id']));
+        $this->Execute('UPDATE netnodes SET address_id = ? WHERE id = ?', array( $this->GetLastInsertID('addresses'), $v['id']));
     }
 }
 
 /* --------------------------------
     NETDEVICES
  -------------------------------- */
-$this->Execute('ALTER TABLE netdevices ADD COLUMN address_id integer NULL;');
-$this->Execute('ALTER TABLE netdevices ADD CONSTRAINT netdevices_address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE;');
+$this->Execute('ALTER TABLE netdevices ADD COLUMN address_id integer NULL');
+$this->Execute('ALTER TABLE netdevices ADD CONSTRAINT netdevices_address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE');
 
 $locations = $this->GetAll('SELECT id, location, location_city, location_street, location_house, location_flat, ownerid
                             FROM netdevices
@@ -264,7 +264,7 @@ $locations = $this->GetAll('SELECT id, location, location_city, location_street,
                                   location_city   is not null OR
                                   location_street is not null OR
                                   location_house  is not null OR
-                                  location_flat   is not null;');
+                                  location_flat   is not null');
 
 if ( $locations ) {
     foreach ($locations as $v) {
@@ -312,18 +312,18 @@ if ( $locations ) {
             }
         }
 
-        $this->Execute('UPDATE netdevices SET address_id = ? WHERE id = ?;', array( $addr_id, $v['id']));
+        $this->Execute('UPDATE netdevices SET address_id = ? WHERE id = ?', array( $addr_id, $v['id']));
     }
 }
 
 /* --------------------------------
     DIVISIONS
  -------------------------------- */
-$this->Execute('ALTER TABLE divisions ADD COLUMN address_id integer NULL;');
-$this->Execute('ALTER TABLE divisions ADD CONSTRAINT divisions_address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE;');
+$this->Execute('ALTER TABLE divisions ADD COLUMN address_id integer NULL');
+$this->Execute('ALTER TABLE divisions ADD CONSTRAINT divisions_address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE');
 
 $locations = $this->GetAll('SELECT id, address, city, zip, countryid
-                            FROM divisions;');
+                            FROM divisions');
 
 if ( $locations ) {
     foreach ($locations as $v) {
@@ -352,15 +352,15 @@ if ( $locations ) {
 		$this->Execute('INSERT INTO addresses (' . implode(', ', array_keys($args)) . ') VALUES
 			(' . implode(', ', array_fill(0, count(array_keys($args)), '?')) . ')', array_values($args));
 
-        $this->Execute('UPDATE divisions SET address_id = ? WHERE id = ?;', array( $this->GetLastInsertID('addresses'), $v['id']));
+        $this->Execute('UPDATE divisions SET address_id = ? WHERE id = ?', array( $this->GetLastInsertID('addresses'), $v['id']));
     }
 }
 
 /* --------------------------------
     VOIPACCOUNTS
  -------------------------------- */
-$this->Execute('ALTER TABLE voipaccounts ADD COLUMN address_id integer NULL;');
-$this->Execute('ALTER TABLE voipaccounts ADD CONSTRAINT voipaccounts_address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE;');
+$this->Execute('ALTER TABLE voipaccounts ADD COLUMN address_id integer NULL');
+$this->Execute('ALTER TABLE voipaccounts ADD CONSTRAINT voipaccounts_address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE');
 
 $locations = $this->GetAll('SELECT id, location, location_city, location_street, location_house, location_flat, ownerid
                             FROM voipaccounts
@@ -368,7 +368,7 @@ $locations = $this->GetAll('SELECT id, location, location_city, location_street,
                                   location_city   is not null OR
                                   location_street is not null OR
                                   location_house  is not null OR
-                                  location_flat   is not null;');
+                                  location_flat   is not null');
 
 if ( $locations ) {
     foreach ($locations as $v) {
@@ -416,7 +416,7 @@ if ( $locations ) {
             }
         }
 
-        $this->Execute('UPDATE voipaccounts SET address_id = ? WHERE id = ?;', array( $addr_id, $v['id']));
+        $this->Execute('UPDATE voipaccounts SET address_id = ? WHERE id = ?', array( $addr_id, $v['id']));
     }
 }
 
@@ -430,7 +430,7 @@ if ( $locations ) {
 $customers_loc = $this->GetAll('SELECT id, zip, city, building, street, apartment, countryid,
                                    post_name, post_street, post_building, post_apartment, post_zip,
                                    post_city, post_countryid
-                                FROM customers;');
+                                FROM customers');
 
 if ( $customers_loc ) {
     foreach ($customers_loc as $v) {
@@ -488,9 +488,9 @@ if ( $customers_loc ) {
 
         if ( $any_to_up === true ) {
             $this->Execute('INSERT INTO addresses (name, city, street, zip, country_id, house, flat)
-                            VALUES (' . "$post_name,$post_city,$post_street,$post_zip,$post_countryid,$post_building,$post_apartment" . ');');
+                            VALUES (' . "$post_name,$post_city,$post_street,$post_zip,$post_countryid,$post_building,$post_apartment" . ')');
 
-            $this->Execute('INSERT INTO customer_addresses (customer_id,address_id, type) VALUES (?,?,?);', array($v['id'], $this->GetLastInsertID('addresses'), POSTAL_ADDRESS));
+            $this->Execute('INSERT INTO customer_addresses (customer_id,address_id, type) VALUES (?,?,?)', array($v['id'], $this->GetLastInsertID('addresses'), POSTAL_ADDRESS));
         }
 
         /* --- BILLING ADDRESS --- */
@@ -540,11 +540,11 @@ if ( $customers_loc ) {
 
         if ( $any_to_up === true ) {
             $this->Execute('INSERT INTO addresses (city, street, zip, country_id, house, flat)
-                            VALUES (' . "$city,$street,$zip,$countryid,$building,$apartment" . ');');
+                            VALUES (' . "$city,$street,$zip,$countryid,$building,$apartment" . ')');
 
             $address_id = $this->GetLastInsertID('addresses');
 
-            $this->Execute('INSERT INTO customer_addresses (customer_id,address_id,type) VALUES (?,?,?);', array($v['id'], $address_id, BILLING_ADDRESS));
+            $this->Execute('INSERT INTO customer_addresses (customer_id,address_id,type) VALUES (?,?,?)', array($v['id'], $address_id, BILLING_ADDRESS));
         }
     }
 }

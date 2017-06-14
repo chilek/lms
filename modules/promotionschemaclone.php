@@ -38,7 +38,7 @@ if($schema) {
     $DB->Execute('
         INSERT INTO promotionassignments (promotionschemaid, tariffid, data)
         SELECT ?, tariffid, data
-        FROM promotionassignments WHERE promotionschemaid = ?;', array($schemaid, $schema['id']));
+        FROM promotionassignments WHERE promotionschemaid = ?', array($schemaid, $schema['id']));
 	$SESSION->redirect('?m=promotioninfo&id=' . $schema['promotionid']);
 }
 

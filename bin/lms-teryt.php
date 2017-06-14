@@ -538,7 +538,7 @@ if ( isset($options['update']) ) {
 	        // if state already exists then try update
 	        if ( $data ) {
 	            if ( $data['nazwa'] != $row['nazwa'] ) {
-	                $DB->Execute('UPDATE location_states SET name = ? WHERE id = ?;',
+	                $DB->Execute('UPDATE location_states SET name = ? WHERE id = ?',
 	                              array(strtolower($row['nazwa']), $data['id']));
 
 	                ++$terc_update;
@@ -548,7 +548,7 @@ if ( isset($options['update']) ) {
 	        }
 	        // else insert new state
 	        else {
-	            $DB->Execute('INSERT INTO location_states (name,ident) VALUES (?,?);',
+	            $DB->Execute('INSERT INTO location_states (name,ident) VALUES (?,?)',
 	                          array(strtolower($row['nazwa']), $row['woj']));
 
 	            ++$terc_insert;
@@ -568,7 +568,7 @@ if ( isset($options['update']) ) {
 	        // if district already exists then try update
 	        if ( $data ) {
 	            if ( $data['nazwa'] != $row['nazwa'] ) {
-	                $DB->Execute('UPDATE location_districts SET stateid=?, name=? WHERE id=?;',
+	                $DB->Execute('UPDATE location_districts SET stateid=?, name=? WHERE id=?',
 	                              array($terc[$statekey]['id'], $row['nazwa'], $data['id']));
 
 	                ++$terc_update;
@@ -578,7 +578,7 @@ if ( isset($options['update']) ) {
 	        }
 	        // else insert new state
 	        else {
-	            $DB->Execute('INSERT INTO location_districts (stateid, name, ident) VALUES (?,?,?);',
+	            $DB->Execute('INSERT INTO location_districts (stateid, name, ident) VALUES (?,?,?)',
 	                          array($terc[$statekey]['id'], $row['nazwa'], $row['pow']));
 
 	            ++$terc_insert;
@@ -598,7 +598,7 @@ if ( isset($options['update']) ) {
 	        // if district already exists then try update
 	        if ( $data ) {
 	            if ( $data['nazwa'] != $row['nazwa'] ) {
-	                $DB->Execute('UPDATE location_boroughs SET districtid=?, name=? WHERE id=?;',
+	                $DB->Execute('UPDATE location_boroughs SET districtid=?, name=? WHERE id=?',
 	                              array($terc[$districtkey]['id'], $row['nazwa'], $data['id']));
 
 	                ++$terc_update;
@@ -608,7 +608,7 @@ if ( isset($options['update']) ) {
 	        }
 	        // else insert new state
 	        else {
-	            $DB->Execute('INSERT INTO location_boroughs (districtid, name, ident, type) VALUES (?,?,?,?);',
+	            $DB->Execute('INSERT INTO location_boroughs (districtid, name, ident, type) VALUES (?,?,?,?)',
 	                          array($terc[$districtkey]['id'], $row['nazwa'], $row['gmi'], $row['rodz']));
 
 	            ++$terc_insert;
@@ -636,15 +636,15 @@ if ( isset($options['update']) ) {
 
 	    switch ( strtolower($v['type']) ) {
 	        case 'gmi':
-	            $DB->Execute('DELETE FROM location_boroughs WHERE id=?;', array($v['id']));
+	            $DB->Execute('DELETE FROM location_boroughs WHERE id=?', array($v['id']));
 	        break;
 
 	        case 'pow':
-	            $DB->Execute('DELETE FROM location_districts WHERE id=?;', array($v['id']));
+	            $DB->Execute('DELETE FROM location_districts WHERE id=?', array($v['id']));
 	        break;
 
 	        case 'woj':
-	            $DB->Execute('DELETE FROM location_states WHERE id=?;', array($v['id']));
+	            $DB->Execute('DELETE FROM location_states WHERE id=?', array($v['id']));
 	        break;
 
 	        default:
@@ -826,7 +826,7 @@ if ( isset($options['update']) ) {
 
 	foreach ( $simc as $k=>$v ) {
 	    if ( !$v['valid'] ) {
-	        $DB->Execute('DELETE FROM location_cities WHERE id=?;', array($v['id']));
+	        $DB->Execute('DELETE FROM location_cities WHERE id=?', array($v['id']));
 	        ++$simc_delete;
 	    }
 	}
@@ -909,7 +909,7 @@ if ( isset($options['update']) ) {
 	    $typeid = intval( $str_types[$row['cecha']] );
 
 	    if ( !$str_types[$row['cecha']] ) {
-	         $DB->Execute('INSERT INTO location_street_types (name) VALUES (?);',
+	         $DB->Execute('INSERT INTO location_street_types (name) VALUES (?)',
 	                       array( strtolower($row['cecha']) ));
 
 	         $insertid = $DB->GetLastInsertID('location_street_types');
@@ -947,7 +947,7 @@ if ( isset($options['update']) ) {
 
 	foreach ( $ulic as $k=>$v ) {
 	    if ( !$v['valid'] ) {
-	        $DB->Execute('DELETE FROM location_streets WHERE id=?;', array($v['id']));
+	        $DB->Execute('DELETE FROM location_streets WHERE id=?', array($v['id']));
 	    }
 	}
 
@@ -1090,7 +1090,7 @@ if ( isset($options['buildings']) ) {
         }
 
         if ( $to_insert ) {
-            $DB->Execute('INSERT INTO location_buildings (city_id,street_id,building_num,latitude,longitude,updated) VALUES '.implode(',', $to_insert).';');
+            $DB->Execute('INSERT INTO location_buildings (city_id,street_id,building_num,latitude,longitude,updated) VALUES '.implode(',', $to_insert));
             $to_insert = array();
         }
 
@@ -1108,8 +1108,8 @@ if ( isset($options['buildings']) ) {
 	if (!$quiet)
 		echo 'Removing old buildings...' . PHP_EOL;
 
-    $DB->Execute('DELETE FROM location_buildings WHERE updated = 0;');
-    $DB->Execute('UPDATE location_buildings SET updated = 0;');
+    $DB->Execute('DELETE FROM location_buildings WHERE updated = 0');
+    $DB->Execute('UPDATE location_buildings SET updated = 0');
 
     fclose($fh);
     unset(

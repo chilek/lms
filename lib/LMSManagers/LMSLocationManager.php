@@ -322,7 +322,7 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
      * \return false     address id not found
      */
     public function CopyAddress( $address_id ) {
-        $addr = $this->db->GetRow('SELECT * FROM addresses WHERE id = ?;', array($address_id));
+        $addr = $this->db->GetRow('SELECT * FROM addresses WHERE id = ?', array($address_id));
 
         if ( $addr ) {
             unset($addr['id']);

@@ -73,7 +73,7 @@ switch ( strtolower($_GET['action']) ) {
                                  country_id as location_country_id, flat as location_flat,
                                  -1 as location_address_type
                              FROM addresses
-                             WHERE id = ?;', 'address_id',
+                             WHERE id = ?', 'address_id',
                              array((int) $_GET['id']));
 
         if ( !$addr ) {

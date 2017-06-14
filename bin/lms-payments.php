@@ -559,7 +559,7 @@ foreach ($assigns as $assign) {
 				));
 
 				if ( $assign['recipient_address_id'] ) {
-					$addr = $DB->GetRow('SELECT * FROM addresses WHERE id = ?;', array($assign['recipient_address_id']));
+					$addr = $DB->GetRow('SELECT * FROM addresses WHERE id = ?', array($assign['recipient_address_id']));
 					unset($addr['id']);
 
 					$copy_address_query = "INSERT INTO addresses (" . implode(",", array_keys($addr)) . ") VALUES (" . implode(",", array_fill(0, count($addr), '?'))  . ")";

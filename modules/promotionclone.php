@@ -28,7 +28,7 @@
 $id = ($_GET['id']);
 $DB->Execute('INSERT INTO promotions (name, description, disabled)
 	SELECT ' . $DB->Concat('name',"' (".trans('copy').")'"). ', description, disabled
-	FROM promotions WHERE id = ?;', array($id));
+	FROM promotions WHERE id = ?', array($id));
 $newid = $DB->GetLastInsertID('promotions');
 $schemas = $DB->GetAll('SELECT * FROM promotionschemas WHERE promotionid = ?', array($id));
 if($schemas) foreach ($schemas as $schema) {
@@ -41,7 +41,7 @@ if($schemas) foreach ($schemas as $schema) {
     $schemaid = $DB->GetLastInsertID('promotionschemas');
     $DB->Execute('INSERT INTO promotionassignments (promotionschemaid, tariffid, data)
         SELECT ?, tariffid, data
-        FROM promotionassignments WHERE promotionschemaid = ?;', array($schemaid, $schema['id']));
+        FROM promotionassignments WHERE promotionschemaid = ?', array($schemaid, $schema['id']));
 }
 
 $SESSION->redirect('?m=promotionlist');

@@ -291,17 +291,17 @@ switch($action)
 		$SESSION->restore('invoiceid', $invoice['id']);
 		$invoice['type'] = $invoice['doctype'];
 
-		$prev_rec_addr = $DB->GetOne('SELECT recipient_address_id FROM documents WHERE id = ?;', array($invoice['id']));
+		$prev_rec_addr = $DB->GetOne('SELECT recipient_address_id FROM documents WHERE id = ?', array($invoice['id']));
 		if (empty($prev_rec_addr))
 			$prev_rec_addr = -1;
 
 		if ( $prev_rec_addr != $invoice['recipient_address_id'] ) {
 			if ( $prev_rec_addr > 0) {
-				$DB->Execute('DELETE FROM addresses WHERE id = ?;', array($prev_rec_addr));
+				$DB->Execute('DELETE FROM addresses WHERE id = ?', array($prev_rec_addr));
 			}
 
 			if ($invoice['recipient_address_id'] > 0) {
-				$DB->Execute('UPDATE documents SET recipient_address_id = ? WHERE id = ?;',
+				$DB->Execute('UPDATE documents SET recipient_address_id = ? WHERE id = ?',
 							array(
 								$LMS->CopyAddress($invoice['recipient_address_id']),
 								$invoice['id']

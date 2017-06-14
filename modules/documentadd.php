@@ -200,7 +200,7 @@ if (isset($_POST['document'])) {
 								FROM
 									divisions d
 									LEFT JOIN addresses addr ON d.address_id = addr.id
-								WHERE d.id = ?;',array($customer['divisionid']));
+								WHERE d.id = ?',array($customer['divisionid']));
 
 		if ($division) {
 			$tmp = array('city_name'     => $division['city'],
