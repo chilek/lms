@@ -88,7 +88,17 @@ $(function() {
 	$.datetimepicker.setLocale(lmsSettings.language);
 	$('div.calendar-time input,input.calendar-time').datetimepicker({
 		step: 30,
-		closeOnDateSelect: true
+		closeOnDateSelect: true,
+		onShow: function(current_time, input) {
+			if ($(input).is('[data-tooltip]')) {
+				$(input).tooltip('disable');
+			}
+		},
+		onClose: function(current_time, input) {
+			if ($(input).is('[data-tooltip]')) {
+				$(input).tooltip('enable');
+			}
+		}
 	})
 	.attr("autocomplete", autocomplete);
 
