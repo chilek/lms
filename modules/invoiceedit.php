@@ -317,7 +317,7 @@ switch($action)
 		$iid   = $invoice['id'];
 
 		$DB->BeginTrans();
-		$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions'));
+		$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions'));
 
 		$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 			account, inv_header, inv_footer, inv_author, inv_cplace 

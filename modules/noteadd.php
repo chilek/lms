@@ -163,7 +163,7 @@ switch($action)
 		if($contents && $customer)
 		{
 			$DB->BeginTrans();
-			$DB->LockTables(array('documents', 'cash', 'debitnotecontents', 'numberplans', 'divisions'));
+			$DB->LockTables(array('documents', 'cash', 'debitnotecontents', 'numberplans', 'divisions', 'vdivisions'));
 
 			if(!$note['number'])
 				$note['number'] = $LMS->GetNewDocumentNumber(array(

@@ -336,6 +336,10 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
 
     }
 
+	private function _driver_locktables_filter_helper($table) {
+		return !$this->_driver_resourceexists($table, LMSDB::RESOURCE_TYPE_VIEW);
+	}
+
     /**
      * Locks table.
      * 
@@ -346,6 +350,7 @@ class LMSDB_driver_postgres extends LMSDB_common implements LMSDBDriverInterface
     public function _driver_locktables($table, $locktype = null)
     {
         if (is_array($table)) {
+            $table = array_filter($table, array($this, '_driver_locktables_filter_helper'));
             $this->Execute('LOCK ' . implode(', ', $table));
         } else {
             $this->Execute('LOCK ' . $table);

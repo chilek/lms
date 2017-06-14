@@ -269,7 +269,7 @@ switch($action)
 		$cnote['paytime'] = round(($cnote['deadline'] - $cnote['cdate']) / 86400);
 
 		$DB->BeginTrans();
-		$DB->LockTables(array('documents', 'numberplans', 'divisions'));
+		$DB->LockTables(array('documents', 'numberplans', 'divisions', 'vdivisions'));
 
 		if(!isset($cnote['number']) || !$cnote['number'])
 			$cnote['number'] = $LMS->GetNewDocumentNumber(array(

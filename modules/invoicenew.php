@@ -338,7 +338,7 @@ switch($action)
 			break;
 
 		$DB->BeginTrans();
-		$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions'));
+		$DB->LockTables(array('documents', 'cash', 'invoicecontents', 'numberplans', 'divisions', 'vdivisions'));
 
 		if(!$invoice['number'])
 			$invoice['number'] = $LMS->GetNewDocumentNumber(array(
