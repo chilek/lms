@@ -142,6 +142,7 @@ $s_comment = ConfigHelper::getConfig('payments.settlement_comment', ConfigHelper
 $suspension_description = ConfigHelper::getConfig('payments.suspension_description', '');
 $suspension_percentage = ConfigHelper::getConfig('finances.suspension_percentage', 0);
 $unit_name = trans(ConfigHelper::getConfig('payments.default_unit_name'));
+$check_invoices = ConfigHelper::checkConfig('payments.check_invoices');
 
 function localtime2() {
 	global $fakedate;
@@ -751,6 +752,22 @@ if (!empty($assigns))
 			array($currtime, $assign['value'], $assign['name']."/".$assign['creditor']));
 		if (!$quiet) print "CID:0\tVAL:".$assign['value']."\tDESC:".$assign['name']."/".$assign['creditor'] . PHP_EOL;
 	}
+
+// invoice auto-closes
+if ($check_invoices) {
+	$DB->Execute("UPDATE documents SET closed = 1
+		WHERE customerid IN (
+			SELECT c.customerid
+			FROM cash c
+			WHERE c.time <= ?NOW?
+				" . (!empty($groupnames) ? $customergroups : '') . "
+			GROUP BY c.customerid
+			HAVING SUM(c.value) >= 0
+		) AND type IN (?, ?, ?)
+			AND cdate <= ?NOW?
+			AND closed = 0",
+		array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE));
+}
 
 // delete old assignments
 $DB->Execute("DELETE FROM liabilities WHERE id IN ( 
