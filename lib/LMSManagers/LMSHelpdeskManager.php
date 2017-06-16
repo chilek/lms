@@ -514,4 +514,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			}
 		}
     }
+
+	public function GetQueueCategories($queueid) {
+		return $this->db->GetAllByKey('SELECT c.id, c.name
+			FROM rtqueuecategories qc
+			JOIN rtcategories c ON c.id = qc.categoryid
+			WHERE queueid = ?', 'id', array($queueid));
+	}
 }

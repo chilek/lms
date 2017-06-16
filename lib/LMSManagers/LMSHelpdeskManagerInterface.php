@@ -82,5 +82,7 @@ interface LMSHelpdeskManagerInterface
 
     public function GetMessage($id);
     
-    public function TicketChange($ticketid, array $props); 
+    public function TicketChange($ticketid, array $props);
+
+	public function GetQueueCategories($queueid);
 }

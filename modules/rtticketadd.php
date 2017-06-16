@@ -24,6 +24,31 @@
  *  $Id$
  */
 
+function GetCategories($queueid) {
+	global $LMS;
+
+	$DB = LMSDB::getInstance();
+	$result = new xajaxResponse();
+
+	if (empty($queueid))
+		return $result;
+
+	$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+	if (empty($categories))
+		return $result;
+
+	$queuecategories = $LMS->GetQueueCategories($queueid);
+
+	foreach ($categories as $category)
+		$result->assign('cat' . $category['id'], 'checked', isset($queuecategories[$category['id']]));
+
+	return $result;
+}
+
+$LMS->InitXajax();
+$LMS->RegisterXajaxFunction('GetCategories');
+$SMARTY->assign('xajax', $LMS->RunXajax());
+
 $queue = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $ticket['customerid'] = isset($_GET['customerid']) ? intval($_GET['customerid']) : 0;
 
@@ -40,7 +65,7 @@ if(isset($_POST['ticket']))
 	if(empty($ticket['categories']))
 		$error['categories'] = trans('You have to select category!');
 
-	if(($LMS->GetUserRightsRT($AUTH->id, $queue) & 2) != 2)
+	if(($LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queue) & 2) != 2)
 		$error['queue'] = trans('You have no privileges to this queue!');
 
 	if($ticket['subject'] == '')
@@ -79,7 +104,7 @@ if(isset($_POST['ticket']))
 		$id = $LMS->TicketAdd($ticket, $files);
 
 		if (ConfigHelper::checkConfig('phpui.newticket_notify')) {
-			$user = $LMS->GetUserInfo($AUTH->id);
+			$user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 
 			$helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
 			if (!empty($helpdesk_sender_name))
@@ -184,7 +209,7 @@ if(isset($_POST['ticket']))
 			$notify_author = ConfigHelper::checkConfig('phpui.helpdesk_author_notify');
 			$args = array(
 				'queue' => $queue,
-				'user' => $AUTH->id,
+				'user' => Auth::GetCurrentUser(),
 			);
 			if ($notify_author)
 				unset($args['user']);
@@ -241,7 +266,7 @@ if(isset($_POST['ticket']))
 	}
 }
 
-$categories = $LMS->GetCategoryListByUser($AUTH->id);
+$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 
 if (!$categories) {
     $SMARTY->display('noaccess.html');
