@@ -24,6 +24,22 @@
  *  $Id$
  */
 
+function GetSelectedCategories($queueid) {
+	global $LMS;
+
+	$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+	if (empty($categories))
+		return null;
+
+	$queuecategories = $LMS->GetQueueCategories($queueid);
+	foreach ($categories as &$category)
+		if (isset($queuecategories[$category['id']]))
+			$category['checked'] = 1;
+	unset($category);
+
+	return $categories;
+}
+
 function GetCategories($queueid) {
 	global $LMS;
 
@@ -257,6 +273,7 @@ if(isset($_POST['ticket']))
 	$queuelist = $LMS->GetQueueList(false);
 	if (!$queue && !empty($queuelist)) {
 		$firstqueue = reset($queuelist);
+		$queue = $firstqueue['id'];
 		if ($firstqueue['newticketsubject'] && $firstqueue['newticketbody'])
 			$ticket['customernotify'] = 1;
 	} elseif ($queue) {
@@ -266,7 +283,7 @@ if(isset($_POST['ticket']))
 	}
 }
 
-$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+$categories = GetSelectedCategories($queue);
 
 if (!$categories) {
     $SMARTY->display('noaccess.html');
@@ -278,12 +295,11 @@ if (!$categories) {
 if (isset($_GET['catid']) && intval($_GET['catid']))
 	$ticket['categories'][intval($_GET['catid'])] = true;
 
-if ($categories) foreach ($categories as $category)
-{
-	$category['checked'] = isset($ticket['categories'][$category['id']]) || count($categories) == 1;
-	$ncategories[] = $category;
+if ($categories) {
+	foreach ($categories as &$category)
+		$category['checked'] = isset($ticket['categories'][$category['id']]) || count($categories) == 1;
+	unset($category);
 }
-$categories = $ncategories;
 
 $layout['pagetitle'] = trans('New Ticket');
 
