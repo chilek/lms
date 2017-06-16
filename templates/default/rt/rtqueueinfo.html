@@ -94,9 +94,7 @@
 		</TD>
 		<TD>
 			<FIELDSET>
-				{foreach $queue.categories as $category}
-				{if !$category@first}, {/if}<a href="?m=rtqueueview&catid={$category.categoryid}">{$category.name}</a>
-				{/foreach}
+				{foreach $queue.categories as $category}{if !$category@first}, {/if}<a href="?m=rtqueueview&catid={$category.categoryid}">{$category.name}</a>{/foreach}
 			</FIELDSET>
 		 </TD>
 	</TR>

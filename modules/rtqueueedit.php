@@ -104,6 +104,11 @@ if(isset($_POST['queue']))
 } else {
 	$queue = $LMS->GetQueue($_GET['id']);
 	$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+	$queuecategories = $LMS->GetQueueCategories($_GET['id']);
+	foreach ($categories as &$category)
+		if (isset($queuecategories[$category['id']]))
+			$category['checked'] = 1;
+	unset($category);
 }
 
 $layout['pagetitle'] = trans('Queue Edit: $a', $queue['name']);
