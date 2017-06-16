@@ -24,30 +24,7 @@
  *  $Id$
  */
 
-function GetCategories($queueid) {
-	global $LMS;
-
-	$DB = LMSDB::getInstance();
-	$result = new xajaxResponse();
-
-	if (empty($queueid))
-		return $result;
-
-	$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
-	if (empty($categories))
-		return $result;
-
-	$queuecategories = $LMS->GetQueueCategories($queueid);
-
-	foreach ($categories as $category)
-		$result->assign('cat' . $category['id'], 'checked', isset($queuecategories[$category['id']]));
-
-	return $result;
-}
-
-$LMS->InitXajax();
-$LMS->RegisterXajaxFunction('GetCategories');
-$SMARTY->assign('xajax', $LMS->RunXajax());
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
 
 $queue = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $ticket['customerid'] = isset($_GET['customerid']) ? intval($_GET['customerid']) : 0;
