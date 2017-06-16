@@ -1550,6 +1550,16 @@ CREATE TABLE rtticketcategories (
 	CONSTRAINT rtticketcategories_ticketid_key UNIQUE (ticketid, categoryid)
 );
 
+DROP SEQUENCE IF EXISTS rtqueuecategories_id_seq;
+CREATE SEQUENCE rtqueuecategories_id_seq;
+DROP TABLE IF EXISTS rtqueuecategories CASCADE;
+CREATE TABLE rtqueuecategories (
+	id integer DEFAULT nextval('rtqueuecategories_id_seq'::text) NOT NULL,
+	queueid integer NOT NULL REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	categoryid integer NOT NULL REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id)
+);
+
 /* ---------------------------------------------------
  Structure of table "passwd" (accounts)
 ------------------------------------------------------*/
@@ -2951,6 +2961,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017051201');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017061600');
 
 COMMIT;

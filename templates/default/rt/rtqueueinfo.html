@@ -84,6 +84,23 @@
 		</TABLE>
 	    </TD>
 	</TR>
+	{if !empty($queue.categories)}
+	<TR>
+		<TD>
+			<IMG src="img/queue.gif" ALT="">
+		</TD>
+		<TD class="bold nobr">
+			{trans("Default categories:")}
+		</TD>
+		<TD>
+			<FIELDSET>
+				{foreach $queue.categories as $category}
+				{if !$category@first}, {/if}<a href="?m=rtqueueview&catid={$category.categoryid}">{$category.name}</a>
+				{/foreach}
+			</FIELDSET>
+		 </TD>
+	</TR>
+	{/if}
 	{if $queue.newticketsubject}
 	<TR>
 		<TD style="width: 1%;">

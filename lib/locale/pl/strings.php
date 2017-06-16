@@ -3668,4 +3668,6 @@ $_LANG['Post office:'] = 'Poczta:';
 
 $_LANG['Determined gps coordinates are not precise.\nDo you still want to use them?'] = 'Wyznaczone współrzędne gps nie są precyzyjne. Czy mimo tego chcesz je użyć?';
 
+$_LANG['Default categories'] = 'Domyślne kategorie';
+
 ?>

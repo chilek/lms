@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -40,6 +40,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $user['rights'] = $this->GetUserRightsRT($user['id'], $id);
                 $queue['rights'][] = $user;
             }
+            $queue['categories'] = $this->db->GetAll('SELECT categoryid, name
+                FROM rtqueuecategories
+                JOIN rtcategories c ON c.id = categoryid
+                WHERE queueid = ?', array($id));
             return $queue;
         } else
             return NULL;
