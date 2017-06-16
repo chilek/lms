@@ -10,6 +10,8 @@ version ?.??.?? (????-??-??):
   - enhancement: added payments.check_invoices ('false' by default) configuration
     variable support and its behavior is the same as deprecated daemon payments
     module configuration variable [chilan]
+  - enhancement: added support for default queue categories used during new ticket
+    creation [chilan]
 
 version 1.11.22 (2017-06-08):
 
