@@ -24,22 +24,6 @@
  *  $Id$
  */
 
-function GetSelectedCategories($queueid) {
-	global $LMS;
-
-	$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
-	if (empty($categories))
-		return null;
-
-	$queuecategories = $LMS->GetQueueCategories($queueid);
-	foreach ($categories as &$category)
-		if (isset($queuecategories[$category['id']]))
-			$category['checked'] = 1;
-	unset($category);
-
-	return $categories;
-}
-
 function GetCategories($queueid) {
 	global $LMS;
 
@@ -67,6 +51,13 @@ $SMARTY->assign('xajax', $LMS->RunXajax());
 
 $queue = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $ticket['customerid'] = isset($_GET['customerid']) ? intval($_GET['customerid']) : 0;
+
+$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+if (!$categories) {
+	$SMARTY->display('noaccess.html');
+	$SESSION->close();
+	die;
+}
 
 if(isset($_POST['ticket']))
 {
@@ -269,6 +260,10 @@ if(isset($_POST['ticket']))
 	$SMARTY->assign('error', $error);
 
 	$queuelist = $LMS->GetQueueList(false);
+
+	foreach ($categories as &$category)
+		$category['checked'] = isset($ticket['categories'][$category['id']]) || count($categories) == 1;
+	unset($category);
 } else {
 	$queuelist = $LMS->GetQueueList(false);
 	if (!$queue && !empty($queuelist)) {
@@ -281,23 +276,13 @@ if(isset($_POST['ticket']))
 		if ($queuedata['newticketsubject'] && $queuedata['newticketbody'])
 			$ticket['customernotify'] = 1;
 	}
-}
 
-$categories = GetSelectedCategories($queue);
-
-if (!$categories) {
-    $SMARTY->display('noaccess.html');
-    $SESSION->close();
-    die;
-}
-
-// handle category id got from welcome module so this category will be selected
-if (isset($_GET['catid']) && intval($_GET['catid']))
-	$ticket['categories'][intval($_GET['catid'])] = true;
-
-if ($categories) {
+	$queuecategories = $LMS->GetQueueCategories($queue);
 	foreach ($categories as &$category)
-		$category['checked'] = isset($ticket['categories'][$category['id']]) || count($categories) == 1;
+		if (isset($queuecategories[$category['id']]) || count($categories) == 1
+			// handle category id got from welcome module so this category will be selected
+			|| (isset($_GET['catid']) && $category['id'] == intval($_GET['catid'])))
+			$category['checked'] = 1;
 	unset($category);
 }
 
