@@ -12,6 +12,8 @@ version ?.??.?? (????-??-??):
     module configuration variable [chilan]
   - enhancement: added support for default queue categories used during new ticket
     creation [chilan]
+  - improvement: pdf ticket and document attachments are displayed in popup window
+    instead of forcing writing them to disk [chilan]
 
 version 1.11.22 (2017-06-08):
 
