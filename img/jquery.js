@@ -201,6 +201,12 @@ $(function() {
 			var videoelem = dialog.find('video').get(0);
 			videoelem.currentTime = 0;
 			videoelem.play();
+		} else if ($(this).hasClass('documentview-pdf')) {
+			window.open(url, '_blank', 'left=' + (window.screen.availWidth * 0.1)
+				+ ',top=' + (window.screen.availHeight * 0.1)
+				+ ',width=' + (window.screen.availWidth * 0.8)
+				+ ',height=' + (window.screen.availHeight * 0.8));
+			return false;
 		}
 		dialog.dialog('open');
 		return false;

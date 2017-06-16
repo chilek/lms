@@ -37,7 +37,7 @@ if(isset($_GET['file']))
 			header('Content-Length: '.$size.' bytes');
 			header('Content-Type: '.$attach['contenttype']);
 			header('Cache-Control: private');
-			header('Content-Disposition: attachment; filename='.$filename);
+			header('Content-Disposition: ' . ($attach['contenttype'] == 'application/pdf' ? 'inline' : 'attachment') . '; filename='.$filename);
 			@readfile($file);
 		}
 		$SESSION->close();

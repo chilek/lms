@@ -181,10 +181,19 @@ if (!empty($_POST['marks'])) {
 			else
 				html2pdf($htmlbuffer, $subject, $title, $doc['type'], $doc['id'], 'P', $margins, ($_GET['save'] == 1) ? true : false);
 		} else {
-			header('Content-Type: '.$doc['contenttype']);
+			header('Content-Type: ' . $doc['contenttype']);
 
-			if (!preg_match('/^text/i', $doc['contenttype']) || !empty($_GET['save'])) {
-				header('Content-Disposition: attachment; filename="'.$doc['filename'] . '"');
+			if (!preg_match('/^text/i', $doc['contenttype'])) {
+				$pdf = preg_match('/pdf/i', $doc['contenttype']);
+				if (empty($_GET['save']))
+					if ($pdf) {
+						header('Content-Disposition: inline; filename="'.$doc['filename'] . '"');
+						header('Content-Transfer-Encoding: binary');
+						header('Content-Length: ' . filesize($filename) . ' bytes');
+					} else
+						header('Content-Disposition: attachment; filename="'.$doc['filename'] . '"');
+				else
+					header('Content-Disposition: attachment; filename="'.$doc['filename'] . '"');
 				header('Pragma: public');
 			}
 
