@@ -23,6 +23,17 @@
 		document.documentgen.target = "_blank";
 		document.documentgen.submit();
 	}
+
+	function setnumberplans() {
+		reset_login_timeout();
+		xajax_GetNumberPlans(document.forms['documentadd'].elements['document[type]'].value,
+			document.forms['documentadd'].elements['document[numberplanid]'].value,
+			null);
+	}
+
+	function numberplans_received() {
+		gettemplates();
+	}
 //-->
 </SCRIPT>
 <FORM name="documentgen" method="POST" action="?m=documentgen" enctype="multipart/form-data">
@@ -56,7 +67,9 @@
 		</TD>
 		<TD>
 			<INPUT type="text" name="document[number]" value="{if $document.number}{$document.number}{/if}" size="15" {tip text="Enter document number (leave this field empty to obtain next number)" trigger="number"}>&nbsp;
+			<DIV id="numberplans" style="display: {if !$document.numberplanid}none{else}inline{/if};">
 			{include file="document/documentnumberplans.html" numberplanid=$document.numberplanid cdate=$document.cdate}
+			</DIV>
 		</TD>
 	</TR>
 	<TR>
@@ -90,7 +103,7 @@
 			{trans("Type:")}
 		</TD>
 		<TD>
-			<SELECT SIZE="1" NAME="document[type]" {tip text="Select document type" trigger="type"} onchange="gettemplates();">
+			<SELECT SIZE="1" NAME="document[type]" {tip text="Select document type" trigger="type"} onchange="setnumberplans();">
 				<OPTION VALUE="0">... {trans("select type")} ...</OPTION>
 				{foreach from=$_DOCTYPES key=key item=item}{if $key < 0 && in_array($key, $docrights)}
 				<OPTION VALUE="{$key}"{if $document.type==$key} SELECTED{/if}>{$item}</OPTION>

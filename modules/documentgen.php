@@ -358,12 +358,19 @@ if (!$rights) {
 if (!isset($document['numberplanid']))
 	$document['numberplanid'] = $DB->GetOne('SELECT id FROM numberplans WHERE doctype<0 AND isdefault=1 LIMIT 1');
 
+$allnumberplans = array();
 $numberplans = array();
 
 if ($templist = $LMS->GetNumberPlans(array()))
 	foreach ($templist as $item)
 		if ($item['doctype'] < 0)
-			$numberplans[] = $item;
+			$allnumberplans[] = $item;
+
+if (isset($document['type'])) {
+	foreach ($allnumberplans as $plan)
+		if ($plan['doctype'] == $document['type'])
+			$numberplans[] = $plan;
+}
 
 $SMARTY->assign('numberplans', $numberplans);
 
@@ -373,6 +380,7 @@ $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('error', $error);
 $SMARTY->assign('docrights', $rights);
+$SMARTY->assign('allnumberplans', $allnumberplans);
 $SMARTY->assign('docengines', $docengines);
 $SMARTY->assign('document', $document);
 $SMARTY->display('document/documentgen.html');
