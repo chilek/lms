@@ -207,7 +207,7 @@ CREATE TABLE customers (
   modid int(11) 	NOT NULL DEFAULT '0',
   deleted tinyint(1) 	NOT NULL DEFAULT '0',
   message text 		NOT NULL,
-  pin varchar(6)	NOT NULL DEFAULT '0',
+  pin varchar(30)	NOT NULL DEFAULT '0',
   cutoffstop int(11) 	NOT NULL DEFAULT '0',
   consentdate int(11)   NOT NULL DEFAULT '0',
   einvoice tinyint(1)   DEFAULT NULL,
@@ -2897,4 +2897,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017061900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017062000');

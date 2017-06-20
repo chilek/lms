@@ -694,6 +694,16 @@ function generate_random_string(length, characters) {
 	return randomString;
 }
 
+function validate_random_string(string, min_size, max_size, characters) {
+	if (string.length < min_size || string.length > max_size) {
+		return false;
+	}
+	for (var i = 0; i < characters.length; i++) {
+		string = string.split(characters[i]).join('');
+	}
+	return !string.length;
+}
+
 function get_size_unit(size) {
 	if (size > 10 * 1024 * 1024 * 1024)
 		return {
