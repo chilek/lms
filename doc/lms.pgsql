@@ -63,7 +63,7 @@ CREATE TABLE customers (
 	modid integer 		DEFAULT 0 NOT NULL,
 	deleted smallint 	DEFAULT 0 NOT NULL,
 	message text		DEFAULT '' NOT NULL,
-	pin varchar(30)		DEFAULT 0 NOT NULL,
+	pin varchar(255)		DEFAULT 0 NOT NULL,
 	cutoffstop integer	DEFAULT 0 NOT NULL,
 	consentdate integer	DEFAULT 0 NOT NULL,
 	einvoice smallint 	DEFAULT NULL,

@@ -25,7 +25,7 @@ $this->BeginTrans();
 
 $this->Execute("DROP VIEW customerview, contractorview, customeraddressview");
 
-$this->Execute("ALTER TABLE customers CHANGE pin pin varchar(30) DEFAULT 0 NOT NULL");
+$this->Execute("ALTER TABLE customers CHANGE pin pin varchar(255) DEFAULT 0 NOT NULL");
 
 $this->Execute("
 	CREATE VIEW customerview AS

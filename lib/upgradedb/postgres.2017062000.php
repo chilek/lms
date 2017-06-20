@@ -28,7 +28,7 @@ $this->Execute("
 	DROP VIEW contractorview;
 	DROP VIEW customeraddressview;
 
-	ALTER TABLE customers ALTER COLUMN pin TYPE varchar(30);
+	ALTER TABLE customers ALTER COLUMN pin TYPE varchar(255);
 
 	CREATE VIEW customerview AS
 		SELECT c.*,
