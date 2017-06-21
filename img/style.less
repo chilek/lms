@@ -163,13 +163,15 @@ INPUT[type="radio"] {
 INPUT {
 	font-size: 8pt;
 	font-family: @fonts;
-	&.alert {
+	&.alert,
+	&:invalid {
 		background-color: @alert;
 	}
 	&[type="checkbox"].alert {
 		outline: 2px solid #FF6060;
 	}
-	&[type="radio"].alert {
+	&[type="radio"].alert,
+	&[type="radio"]:invalid {
 		outline: 2px solid #FF6060;
 	}
 	&.hiddenbtn {
@@ -198,7 +200,8 @@ TEXTAREA {
 	border-width: 1pt;
 	background-color: @lucid;
 	vertical-align: middle;
-	&.alert {
+	&.alert,
+	&:invalid {
 		font-size: 8pt;
 		font-family: @fonts;
 		border-style: solid;
@@ -215,7 +218,8 @@ SELECT {
 	border-width: 1pt;
 	background-color: @lucid;
 	vertical-align: middle;
-	&.alert {
+	&.alert,
+	&:invalid {
 		font-size: 8pt;
 		font-family: @fonts;
 		border-style: solid;
@@ -379,7 +383,10 @@ div.lms-ui-multiselectlayer {
 .red		{ color: #FF0000; }
 .brown		{ color: #A52A2A; }
 .white		{ color: #FFFFFF; }
-.alert		{ color: #FF0000 !important; }
+.alert,
+input:invalid {
+	color: #FF0000 !important;
+}
 .alertblend	{ color: #FA8072; }
 .suspended	{ color: #30B6C6; }
 .bold		{ font-weight: bold; }

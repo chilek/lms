@@ -263,13 +263,15 @@ INPUT {
   font-size: 8pt;
   font-family: Arial, Helvetica, Verdana;
 }
-INPUT.alert {
+INPUT.alert,
+INPUT:invalid {
   background-color: #FF9B9B;
 }
 INPUT[type="checkbox"].alert {
   outline: 2px solid #FF6060;
 }
-INPUT[type="radio"].alert {
+INPUT[type="radio"].alert,
+INPUT[type="radio"]:invalid {
   outline: 2px solid #FF6060;
 }
 INPUT.hiddenbtn {
@@ -297,7 +299,8 @@ TEXTAREA {
   background-color: #EBE4D6;
   vertical-align: middle;
 }
-TEXTAREA.alert {
+TEXTAREA.alert,
+TEXTAREA:invalid {
   font-size: 8pt;
   font-family: Arial, Helvetica, Verdana;
   border-style: solid;
@@ -313,7 +316,8 @@ SELECT {
   background-color: #EBE4D6;
   vertical-align: middle;
 }
-SELECT.alert {
+SELECT.alert,
+SELECT:invalid {
   font-size: 8pt;
   font-family: Arial, Helvetica, Verdana;
   border-style: solid;
@@ -515,7 +519,8 @@ div.lms-ui-multiselectlayer ul span {
 .white {
   color: #FFFFFF;
 }
-.alert {
+.alert,
+input:invalid {
   color: #FF0000 !important;
 }
 .alertblend {
