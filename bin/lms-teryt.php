@@ -178,12 +178,11 @@ function parse_teryt_building_row( $row ) {
 function parse_teryt_xml_row($xml) {
 	$row = array();
 	$node = $xml->expand();
-	for ($i = 0; $i < $node->childNodes->length; $i++) {
-		$item = $node->childNodes->item($i);
-		if (empty($item->tagName))
+	foreach ($node->childNodes as $childNode) {
+		if (empty($childNode->tagName))
 			continue;
-		$value = trim($item->nodeValue);
-		$row[strtolower($item->tagName)] = empty($value) ? '0' : $value;
+		$value = trim($childNode->nodeValue);
+		$row[strtolower($childNode->tagName)] = empty($value) ? '0' : $value;
 	}
 	return $row;
 }
