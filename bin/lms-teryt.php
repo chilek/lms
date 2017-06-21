@@ -172,27 +172,20 @@ function parse_teryt_building_row( $row ) {
 /*!
  * \brief Translate XML element to asociative array.
  *
- * \param  string $xml_string
+ * \param  XMLReader $xml
  * \return array
  */
-function parse_teryt_xml_row( $xml_string ) {
-    static $column_names = array('WOJ' => true, 'POW' => true, 'GMI' => true,
-        'RODZ' => true, 'RODZ_GMI' => true, 'SYM' => true, 'SYMPOD' => true, 'SYM_UL' => true);
-
-    $row = array();
-    $tmp = explode( "\n", trim($xml_string) );
-
-    foreach ( $tmp as $col ) {
-        if ( preg_match('/^<col name="(?<key>[_a-zA-Z0-9]+)"\/?>((?<val>[^<]+)<\/col>)?/', $col, $matches) ) {
-            if ( isset( $column_names[$matches['key']]) ) {
-                $matches['val'] = intval($matches['val']);
-            }
-
-            $row[ strtolower($matches['key']) ] = $matches['val'];
-        }
-    }
-
-    return $row;
+function parse_teryt_xml_row($xml) {
+	$row = array();
+	$node = $xml->expand();
+	for ($i = 0; $i < $node->childNodes->length; $i++) {
+		$item = $node->childNodes->item($i);
+		if (empty($item->tagName))
+			continue;
+		$value = trim($item->nodeValue);
+		$row[strtolower($item->tagName)] = empty($value) ? '0' : $value;
+	}
+	return $row;
 }
 
 /*
@@ -523,7 +516,7 @@ if ( isset($options['update']) ) {
 			echo 'Loaded ' . $i . PHP_EOL;
 		}
 
-	    $row = parse_teryt_xml_row( $xml->readInnerXML() );
+		$row = parse_teryt_xml_row($xml);
 
 	    if ( isset($state_list) && !isset($state_list[$row['woj']]) ) {
 	        continue;
@@ -533,7 +526,7 @@ if ( isset($options['update']) ) {
 	    $data = $terc[$key];
 
 	    // if $row['pow'] is empty then this row contains state
-	    if ( !$row['pow'] ) {
+	    if (empty($row['pow'])) {
 
 	        // if state already exists then try update
 	        if ( $data ) {
@@ -562,7 +555,7 @@ if ( isset($options['update']) ) {
 	        }
 	    }
 	    // if $row['gmi'] is empty then this row contains district
-	    else if ( !$row['gmi'] ) {
+	    else if (empty($row['gmi'])) {
 	        $statekey = $row['woj'] . ':0:0:0';
 
 	        // if district already exists then try update
@@ -726,7 +719,7 @@ if ( isset($options['update']) ) {
 	        echo 'Loaded ' . $i . PHP_EOL;
 	    }
 
-	    $row = parse_teryt_xml_row( $xml->readInnerXML() );
+	    $row = parse_teryt_xml_row($xml);
 
 	    if ( isset($state_list) && !isset($state_list[$row['woj']]) ) {
 	        continue;
@@ -896,7 +889,7 @@ if ( isset($options['update']) ) {
 	        echo 'Loaded ' . $i . PHP_EOL;
 	    }
 
-	    $row = parse_teryt_xml_row( $xml->readInnerXML() );
+	    $row = parse_teryt_xml_row($xml);
 
 	    if ( isset($state_list) && !isset($state_list[$row['woj']]) || !isset($row['nazwa_1']) ) {
 	        continue;
@@ -915,7 +908,6 @@ if ( isset($options['update']) ) {
 	         $insertid = $DB->GetLastInsertID('location_street_types');
 	         $str_types[$row['cecha']] = $typeid = $insertid;
 	         unset($insertid);
-	         ++$ulic_insert;
 	    }
 
 	    // entry exists
