@@ -121,15 +121,24 @@ if (isset($_POST['nodedata']))
         $nodedata['ipaddr_pub'] = '0.0.0.0';
 
 	$macs = array();
-	foreach ($nodedata['macs'] as $key => $value)
+	$key = 0;
+	foreach ($nodedata['macs'] as $value) {
+		if (!$value)
+			continue;
+
 		if (check_mac($value)) {
 			if ($value != '00:00:00:00:00:00' && !ConfigHelper::checkConfig('phpui.allow_mac_sharing')) {
 				if ($LMS->GetNodeIDByMAC($value))
 					$error['mac' . $key] = trans('Specified MAC address is in use!');
 			}
-			$macs[] = $value;
-		} else if ($value != '')
+		} else {
 			$error['mac' . $key] = trans('Incorrect MAC address!');
+		}
+
+		$macs[$key] = $value;
+		++$key;
+	}
+
 	if (empty($macs))
 		$error['mac0'] = trans('MAC address is required!');
 	$nodedata['macs'] = $macs;
