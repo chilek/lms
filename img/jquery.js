@@ -499,14 +499,14 @@ $(function() {
 				return;
 			var api = $(this).data('api');
 			var searchValue = api.columns(column).search()[0];
-			var columnStates = api.state().columns;
+			var state = api.state();
+			var columnStates = state ? state.columns : null;
 			var i = 0;
 			api.columns().every(function(index) {
 				if (index == column) {
 					$('thead tr:last-child th:nth-child(' + (i + 1) + ') :input', elem).val(searchValue.replace(/[\^\$]/g, ''));
-					//console.log(i + ' ' + index + ' ' + column);
 				}
-				if (!columnStates[index].visible) {
+				if (columnStates && !columnStates[index].visible) {
 					return;
 				}
 				i++;
