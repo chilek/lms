@@ -500,6 +500,7 @@ $LINKSPEEDS = array(
 	300000		=> trans('300Mbit/s'),
 	1000000		=> trans('1Gbit/s'),
 	10000000	=> trans('10Gbit/s'),
+	40000000	=> trans('40Gbit/s'),
 );
 
 $BOROUGHTYPES = array(
