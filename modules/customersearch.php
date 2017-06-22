@@ -143,6 +143,10 @@ if(isset($_GET['search']))
 	if (isset($_GET['print']))
 		$SMARTY->display('print/printcustomerlist.html');
 	elseif (isset($_GET['export'])) {
+		$SMARTY->assign('contactlist', $DB->GetAllByKey('SELECT customerid, (' . $DB->GroupConcat('contact') . ') AS phone
+			FROM customercontacts WHERE contact <> \'\' AND type & ? > 0 GROUP BY customerid',
+				'customerid', array(CONTACT_MOBILE | CONTACT_LANDLINE | CONTACT_LINE)));
+
 		$filename = 'customers-' . date('YmdHis') . '.csv';
 		header('Content-Type: text/plain; charset=utf-8');
 		header('Content-Disposition: attachment; filename=' . $filename);
