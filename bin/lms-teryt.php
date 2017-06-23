@@ -517,7 +517,7 @@ if ( isset($options['update']) ) {
 
 		$row = parse_teryt_xml_row($xml);
 
-	    if ( isset($state_list) && !isset($state_list[$row['woj']]) ) {
+	    if ( isset($state_list) && !isset($state_list[intval($row['woj'])]) ) {
 	        continue;
 	    }
 
@@ -720,7 +720,7 @@ if ( isset($options['update']) ) {
 
 	    $row = parse_teryt_xml_row($xml);
 
-	    if ( isset($state_list) && !isset($state_list[$row['woj']]) ) {
+	    if ( isset($state_list) && !isset($state_list[intval($row['woj'])]) ) {
 	        continue;
 	    }
 
@@ -890,7 +890,7 @@ if ( isset($options['update']) ) {
 
 	    $row = parse_teryt_xml_row($xml);
 
-	    if ( isset($state_list) && !isset($state_list[$row['woj']]) || !isset($row['nazwa_1']) ) {
+	    if ( isset($state_list) && !isset($state_list[intval($row['woj'])]) || !isset($row['nazwa_1']) ) {
 	        continue;
 	    }
 
