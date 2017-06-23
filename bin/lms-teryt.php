@@ -1014,7 +1014,7 @@ if ( isset($options['buildings']) ) {
             if ( isset($state_list) ) {
                 $state_ident = $state_name_to_ident[$v['woj']];
 
-                if ( !isset($state_list[$state_ident]) ) {
+                if ( !isset($state_list[intval($state_ident)]) ) {
                     continue;
                 }
             }
