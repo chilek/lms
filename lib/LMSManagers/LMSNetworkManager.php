@@ -407,8 +407,9 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
     {
         if ($this->syslog) {
             $nodes = array_merge(
-                    (array) $this->db->GetAll('SELECT id, ownerid, ipaddr FROM vnodes
-					WHERE netid = ? AND ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($netid, $network, getbraddr($network, $mask))), (array) $this->db->GetAll('SELECT id, ownerid, ipaddr_pub FROM vnodes
+				(array) $this->db->GetAll('SELECT id, ownerid, ipaddr FROM vnodes
+					WHERE netid = ? AND ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($netid, $network, getbraddr($network, $mask))),
+				(array) $this->db->GetAll('SELECT id, ownerid, ipaddr_pub FROM vnodes
 					WHERE netid = ? AND ipaddr_pub >= inet_aton(?) AND ipaddr_pub <= inet_aton(?)', array($netid, $network, getbraddr($network, $mask)))
             );
             if (!empty($nodes))
@@ -426,8 +427,9 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 }
         }
         return ($this->db->Execute('UPDATE nodes SET ipaddr = ipaddr + ? 
-				WHERE ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($shift, $network, getbraddr($network, $mask))) + $this->db->Execute('UPDATE nodes SET ipaddr_pub = ipaddr_pub + ? 
-				WHERE ipaddr_pub >= inet_aton(?) AND ipaddr_pub <= inet_aton(?)', array($shift, $network, getbraddr($network, $mask))));
+				WHERE netid = ? AND ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($shift, $netid, $network, getbraddr($network, $mask)))
+			+ $this->db->Execute('UPDATE nodes SET ipaddr_pub = ipaddr_pub + ?
+				WHERE netid = ? AND ipaddr_pub >= inet_aton(?) AND ipaddr_pub <= inet_aton(?)', array($shift, $netid, $network, getbraddr($network, $mask))));
     }
 
     public function NetworkUpdate($networkdata)

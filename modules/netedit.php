@@ -174,7 +174,7 @@ if(isset($_POST['networkdata']))
 
 	if (!$error) {
 		if (isset($networkdata['needshft']) && $networkdata['needshft'])
-			$LMS->NetworkShift($network['hostid'], $network['address'], $network['mask'], $networkdata['addresslong'] - $network['addresslong']);
+			$LMS->NetworkShift($networkdata['id'], $network['address'], $network['mask'], $networkdata['addresslong'] - $network['addresslong']);
 
 		if($networkdata['ownerid'] != $network['ownerid']) {
 			$vnetwork = $DB->GetRow('SELECT nodeid, ownerid FROM vnetworks WHERE id = ?', array($networkdata['id']));
