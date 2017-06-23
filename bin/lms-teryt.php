@@ -531,7 +531,7 @@ if ( isset($options['update']) ) {
 	        if ( $data ) {
 	            if ( $data['nazwa'] != $row['nazwa'] ) {
 	                $DB->Execute('UPDATE location_states SET name = ? WHERE id = ?',
-	                              array(strtolower($row['nazwa']), $data['id']));
+	                              array(mb_strtolower($row['nazwa']), $data['id']));
 
 	                ++$terc_update;
 	            }
@@ -541,7 +541,7 @@ if ( isset($options['update']) ) {
 	        // else insert new state
 	        else {
 	            $DB->Execute('INSERT INTO location_states (name,ident) VALUES (?,?)',
-	                          array(strtolower($row['nazwa']), $row['woj']));
+	                          array(mb_strtolower($row['nazwa']), $row['woj']));
 
 	            ++$terc_insert;
 	            $insertid = $DB->GetLastInsertID('location_states');
@@ -902,7 +902,7 @@ if ( isset($options['update']) ) {
 
 	    if ( !$str_types[$row['cecha']] ) {
 	         $DB->Execute('INSERT INTO location_street_types (name) VALUES (?)',
-	                       array( strtolower($row['cecha']) ));
+	                       array( mb_strtolower($row['cecha']) ));
 
 	         $insertid = $DB->GetLastInsertID('location_street_types');
 	         $str_types[$row['cecha']] = $typeid = $insertid;
@@ -1140,7 +1140,7 @@ if ( isset($options['merge']) ) {
 		if (!$quiet)
 			printf("City '%s', Street: '%s': ", $city, $street);
 
-        $key = strtolower($city) . ':' . strtolower($street);
+        $key = mb_strtolower($city) . ':' . mb_strtolower($street);
 
         if ( isset($location_cache[$key]) ) {
             $idents = $location_cache[$key];
