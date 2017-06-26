@@ -17,6 +17,8 @@ version ?.??.?? (????-??-??):
   - improvement: phpui.pin_min_size, phpui.pin_max_size and phpui.pin_allowed_characters
     configurtion variables control customer pin constraints (by default: 4, 6 and
     '0123456789' respectively) [chilan]
+  - improvement: suppport for teryt locations where city consists of many sections/districts
+    [chilan]
 
 version 1.11.22 (2017-06-08):
 
