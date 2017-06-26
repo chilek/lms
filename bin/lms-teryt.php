@@ -915,7 +915,7 @@ if ( isset($options['update']) ) {
 	            $DB->Execute('UPDATE location_streets
 	                          SET cityid = ?, name = ?, name2 = ?, typeid = ?
 	                          WHERE id = ?',
-	                          array($cities[$row['sym']], $row['nazwa_1'], $row['nazwa_2'], $typeid, $data['id']));
+	                          array($cities[$row['sym']], $row['nazwa_1'], empty($row['nazwa_2']) ? null : $row['nazwa_2'], $typeid, $data['id']));
 
 	            ++$ulic_update;
 	        }
@@ -926,7 +926,7 @@ if ( isset($options['update']) ) {
 	    // add new street
 	    else {
 	        $DB->Execute('INSERT INTO location_streets (cityid, name, name2, typeid, ident) VALUES (?,?,?,?,?)',
-	                      array($cities[$row['sym']], $row['nazwa_1'], $row['nazwa_2'], $typeid, $row['sym_ul']));
+	                      array($cities[$row['sym']], $row['nazwa_1'], empty($row['nazwa_2']) ? null : $row['nazwa_2'], $typeid, $row['sym_ul']));
 
 	        ++$ulic_insert;
 	    }
