@@ -187,6 +187,48 @@ function parse_teryt_xml_row($xml) {
 	return $row;
 }
 
+function get_cities_with_sections() {
+	$DB = LMSDB::getInstance();
+
+	$cities = $DB->GetAllByKey("SELECT lb2.cityid, lb2.cityname AS cityname,
+			(" . $DB->GroupConcat('lc.id', ',', true) . ") AS citysections
+		FROM location_boroughs lb
+		JOIN location_cities lc ON lc.boroughid = lb.id
+		JOIN (SELECT lb.id, lb.districtid, lc.id AS cityid, lc.name AS cityname
+			FROM location_boroughs lb
+			JOIN location_cities lc ON lc.boroughid = lb.id
+			WHERE lb.type = 1
+		) lb2 ON lb2.districtid = lb.districtid
+		WHERE lb.type = 8 OR lb.type = 9
+		GROUP BY lb2.cityid, lb2.cityname", 'cityname');
+	if (empty($cities))
+		return array();
+	foreach ($cities as &$city)
+		$city['citysections'] = explode(',', $city['citysections']);
+	unset($city);
+	return $cities;
+}
+
+function getIdentsWithSubcities( $city, $street, $only_unique_city_matches, $subcities) {
+	$street = trim( preg_replace('/^(ul\.|pl\.|al\.|bulw\.|os\.|wyb\.|plac|skwer|rondo|park|rynek|szosa|droga|ogród|wyspa)/i', '', $street) );
+
+	$DB = LMSDB::getInstance();
+
+	$idents = $DB->GetAll("
+		SELECT s.id as streetid, " . $subcities['cityid'] . " AS cityid
+		FROM location_streets s WHERE
+			((CASE WHEN s.name2 IS NULL THEN s.name ELSE " . $DB->Concat('s.name2', "' '", 's.name') . " END) ?LIKE? ? OR s.name ?LIKE? ? )
+			AND s.cityid IN (" . implode(',', $subcities['citysections']) . ")",
+		array($street, $street));
+
+	if (empty($idents))
+		return array();
+	if (($only_unique_city_matches && count($idents) == 1) || !$only_unique_city_matches)
+		return $idents[0];
+	else
+		return array();
+}
+
 /*
  * \brief Find TERYT location for city/street.
  *
@@ -1133,21 +1175,26 @@ if ( isset($options['merge']) ) {
 
     $location_cache = array();
 
-    foreach ( $addresses as $a ) {
+	$cities_with_sections = get_cities_with_sections();
+
+	foreach ( $addresses as $a ) {
 		$city = empty($a['city']) ? '-' : $a['city'];
 		$street = empty($a['street']) ? '-' : $a['street'];
 
 		if (!$quiet)
 			printf("City '%s', Street: '%s': ", $city, $street);
 
-        $key = mb_strtolower($city) . ':' . mb_strtolower($street);
+		$key = mb_strtolower($city) . ':' . mb_strtolower($street);
 
-        if ( isset($location_cache[$key]) ) {
-            $idents = $location_cache[$key];
-        } else {
-            $idents = getIdents( $city, $street, $only_unique_city_matches );
-            $location_cache[$key] = $idents;
-        }
+		if ( isset($location_cache[$key]) ) {
+			$idents = $location_cache[$key];
+		} else {
+			if (isset($cities_with_sections[$city]) && $city != '-' && $street != '-')
+				$idents = getIdentsWithSubcities($city, $street, $only_unique_city_matches, $cities_with_sections[$city]);
+			else
+				$idents = getIdents($city == '-' ? null : $city, $street == '-' ? null : $street, $only_unique_city_matches );
+			$location_cache[$key] = $idents;
+		}
 
 		if (empty($idents)) {
 			if (!$quiet)
@@ -1158,11 +1205,11 @@ if ( isset($options['merge']) ) {
 		if (!$quiet)
 			echo 'found' . PHP_EOL;
 
-        $DB->Execute("UPDATE addresses SET city_id = ?, street_id = ? WHERE id = ?",
-                      array($idents['cityid'], $idents['streetid'], $a['id']));
+		$DB->Execute("UPDATE addresses SET city_id = ?, street_id = ? WHERE id = ?",
+			array($idents['cityid'], $idents['streetid'], $a['id']));
 
-        $updated++;
-    }
+		$updated++;
+	}
 
 	if (!$quiet)
 		echo 'Matched TERYT addresses: ' . $updated . PHP_EOL;
