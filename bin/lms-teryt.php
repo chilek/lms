@@ -209,7 +209,7 @@ function get_cities_with_sections() {
 	return $cities;
 }
 
-function getIdentsWithSubcities( $city, $street, $only_unique_city_matches, $subcities) {
+function getIdentsWithSubcities($subcities, $street, $only_unique_city_matches) {
 	$street = trim( preg_replace('/^(ul\.|pl\.|al\.|bulw\.|os\.|wyb\.|plac|skwer|rondo|park|rynek|szosa|droga|ogród|wyspa)/i', '', $street) );
 
 	$DB = LMSDB::getInstance();
@@ -1190,7 +1190,7 @@ if ( isset($options['merge']) ) {
 			$idents = $location_cache[$key];
 		} else {
 			if (isset($cities_with_sections[$city]) && $city != '-' && $street != '-')
-				$idents = getIdentsWithSubcities($city, $street, $only_unique_city_matches, $cities_with_sections[$city]);
+				$idents = getIdentsWithSubcities($cities_with_sections[$city], $street, $only_unique_city_matches);
 			else
 				$idents = getIdents($city == '-' ? null : $city, $street == '-' ? null : $street, $only_unique_city_matches );
 			$location_cache[$key] = $idents;
