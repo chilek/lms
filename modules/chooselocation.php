@@ -25,13 +25,33 @@
  */
 
 function get_loc_streets($cityid) {
-	global $DB;
+	$DB = LMSDB::getInstance();
 
-	$list = $DB->GetAll("SELECT s.id, (CASE WHEN s.name2 IS NOT NULL THEN " . $DB->Concat('s.name', "' '", 's.name2') . " ELSE s.name END) AS name, t.name AS typename
-		FROM location_streets s
-		LEFT JOIN location_street_types t ON (s.typeid = t.id)
-		WHERE s.cityid = ?
-		ORDER BY s.name", array($cityid));
+	$borough = $DB->GetRow("SELECT lb.id, lb.name, lb.districtid, ld.stateid FROM location_boroughs lb
+		JOIN location_cities lc ON lc.boroughid = lb.id
+		JOIN location_districts ld ON ld.id = lb.districtid
+		WHERE lb.type = 1 AND lc.id = ?", array($cityid));
+	if (!empty($borough)) {
+		$subcities = $DB->GetCol("SELECT lc.id FROM location_boroughs lb
+			JOIN location_cities lc ON lc.boroughid = lb.id
+			JOIN location_districts ld ON ld.id = lb.districtid
+			WHERE ld.stateid = ? AND lb.districtid = ? AND (lb.type = 8 OR lb.type = 9)",
+			array($borough['stateid'], $borough['districtid']));
+		if (!empty($subcities)) {
+			$list = $DB->GetAll("SELECT s.id, (CASE WHEN s.name2 IS NOT NULL THEN " . $DB->Concat('s.name', "' '", 's.name2') . " ELSE s.name END) AS name, t.name AS typename
+				FROM location_streets s
+				LEFT JOIN location_street_types t ON (s.typeid = t.id)
+				WHERE s.cityid IN (" . implode(',', $subcities) . ")
+				ORDER BY s.name");
+		}
+	}
+
+	if (!isset($list))
+		$list = $DB->GetAll("SELECT s.id, (CASE WHEN s.name2 IS NOT NULL THEN " . $DB->Concat('s.name', "' '", 's.name2') . " ELSE s.name END) AS name, t.name AS typename
+			FROM location_streets s
+			LEFT JOIN location_street_types t ON (s.typeid = t.id)
+			WHERE s.cityid = ?
+			ORDER BY s.name", array($cityid));
 
 	if ($list)
 		foreach ($list as $idx => $row) {
@@ -154,14 +174,16 @@ $cityid = isset($_GET['city']) ? intval($_GET['city']) : 0;
 $states = $DB->GetAll('SELECT id, name, ident
 	FROM location_states ORDER BY name');
 
-if ($streetid)
+if ($streetid) {
 	$data = $DB->GetRow('SELECT s.id AS streetid, s.cityid, b.districtid, d.stateid
 		FROM location_streets s
 		JOIN location_cities c ON (s.cityid = c.id)
 		JOIN location_boroughs b ON (c.boroughid = b.id)
 		JOIN location_districts d ON (b.districtid = d.id)
 		WHERE s.id = ?', array($streetid));
-else if ($cityid)
+	if ($data['cityid'] != $cityid)
+		$data['cityid'] = $cityid;
+} else if ($cityid)
 	$data = $DB->GetRow('SELECT c.id AS cityid, b.districtid, d.stateid
 		FROM location_cities c
 		JOIN location_boroughs b ON (c.boroughid = b.id)
