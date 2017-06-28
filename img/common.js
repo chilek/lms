@@ -177,7 +177,10 @@ function netdevmodelchoosewin(varname, formname, netdevmodelid, producer, model)
 
 function gpscoordschoosewin(formfield1, formfield2)
 {
-	return openSelectWindow2('?m=choosegpscoords', 'choosegpscoords', 450, 300, 'true', formfield1, formfield2);
+	return openSelectWindow2('?m=choosegpscoords', 'choosegpscoords',
+		window.screen.availWidth * 0.4,
+		window.screen.availHeight * 0.4,
+		'true', formfield1, formfield2);
 }
 
 function netdevfrommapchoosewin(netdevid)
