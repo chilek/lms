@@ -58,7 +58,7 @@ function autoiframe_setsize(id, width, height)
     var pos = get_object_pos(frame),
         parent_frame = doc.getElementById('overDiv'),
         dw = doc.body.offsetWidth,
-        dh = doc.body.offsetWidth;
+        dh = doc.body.offsetHeight;
 
     if (width < dw && pos.x + width > dw - 15) {
         parent_frame.style.left = (dw - width - 15) + 'px';
