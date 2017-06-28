@@ -132,7 +132,13 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks'
 
 	$receipt['last'] = true;
 	$receipt['first'] = true;
-	$receipt['which'] = isset($_GET['which']) ? $_GET['which'] : NULL;
+
+	$receipt['which'] = array();
+	if (isset($_GET['which']) && !empty($_GET['which']))
+		$receipt['which'] = explode(',', $_GET['which']);
+	if (empty($receipt['which']))
+		$receipt['which'] = explode(',', ConfigHelper::getConfig('receipts.default_printpage', 'original,copy'));
+
 	$document->Draw($receipt);
 }
 

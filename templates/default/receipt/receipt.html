@@ -1,6 +1,6 @@
 <!--// $Id$ //-->
 {if !$receipt.last}<div style="page-break-after: always;">{/if}
-{if !$type || $type == "original"}
+{if in_array("original", $type)}
 <div>
 <table width="100%">
 	<tr><td>
@@ -143,9 +143,9 @@
 	<tr><td style="border-top-width: 1pt; border-top-style: dashed;"></td></tr>
 </table>
 </div>
-{if !$type || $type == "copy"}<br><br>{/if}
+{if in_array("copy", $type)}<br><br>{/if}
 {/if}
-{if !$type || $type == "copy"}
+{if in_array("copy", $type)}
 <div>
 <table width="100%">
 	<tr><td>
