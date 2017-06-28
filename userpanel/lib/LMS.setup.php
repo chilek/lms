@@ -72,7 +72,7 @@ else {
 	$modulefile_include = ($module_dir !== null ? $module_dir . $module.'/functions.php' : NULL);
 }
 
-$SMARTY->setDefaultResourceType('file');
+$SMARTY->setDefaultResourceType('extendsall');
 
 if (isset($modulefile_include))
 {
