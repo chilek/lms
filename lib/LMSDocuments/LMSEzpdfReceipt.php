@@ -25,8 +25,6 @@
  */
 
 class LMSEzpdfReceipt extends LMSDocument {
-	protected $id;
-
 	public function __construct($title, $pagesize = 'A4', $orientation = 'portrait') {
 		parent::__construct('LMSEzpdfBackend', $title, $pagesize, $orientation);
 	}
@@ -216,7 +214,7 @@ class LMSEzpdfReceipt extends LMSDocument {
 			$y -= 20;
 		}
 		if (!$this->data['last'])
-			$this->id = $this->backend->newPage(1, $this->id);
+			$this->NewPage();
 	}
 }
 

@@ -102,7 +102,12 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached' && sizeof($_POST['marks'
 	sort($ids);
 
 	$layout['pagetitle'] = trans('Cash Receipts');
-	$type = !empty($_GET['which']) ? $_GET['which'] : '';
+
+	$type = array();
+	if (isset($_GET['which']) && !empty($_GET['which']))
+		$type = explode(',', $_GET['which']);
+	if (empty($type))
+		$type = explode(',', ConfigHelper::getConfig('receipts.default_printpage', 'original,copy'));
 
 	$i = 0;
 	$count = sizeof($ids);
