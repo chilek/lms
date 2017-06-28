@@ -21,6 +21,8 @@ version ?.??.?? (????-??-??):
     [chilan]
   - improvement: phpui.category_adjustments_in_ticketedit (false by default) controls if selected
     categories in ticket edit form are automatically adjusted with queue change [chilan]
+  - improvement: pdf and html unification of receipts.default_printpage ('original,copy' by
+    default) configuration variable support which controls how many receipts are printed [chilan]
 
 version 1.11.22 (2017-06-08):
 
