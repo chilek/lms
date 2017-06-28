@@ -19,6 +19,8 @@ version ?.??.?? (????-??-??):
     '0123456789' respectively) [chilan]
   - improvement: suppport for teryt locations where city consists of many sections/districts
     [chilan]
+  - improvement: phpui.category_adjustments_in_ticketedit (false by default) controls if selected
+    categories in ticket edit form are automatically adjusted with queue change [chilan]
 
 version 1.11.22 (2017-06-08):
 
