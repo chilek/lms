@@ -24,6 +24,7 @@ version ?.??.?? (????-??-??):
   - improvement: pdf and html unification of receipts.default_printpage ('original,copy' by
     default) configuration variable support which controls how many receipts are printed [chilan]
   - enhancement: log ticket category changes [chilan]
+  - enhancement: implemented helpdesk notification mail threading compatible with RFC5322 [chilan]
 
 version 1.11.22 (2017-06-08):
 
