@@ -145,6 +145,7 @@ define('RTMESSAGE_STATE_CHANGE', 8);
 define('RTMESSAGE_CAUSE_CHANGE', 16);
 define('RTMESSAGE_CUSTOMER_CHANGE', 32);
 define('RTMESSAGE_SUBJECT_CHANGE', 64);
+define('RTMESSAGE_CATEGORY_CHANGE', 128);
 
 // Messages status and type
 define('MSG_NEW', 1);

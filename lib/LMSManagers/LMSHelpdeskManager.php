@@ -447,7 +447,14 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         global $LMS, $RT_STATES, $RT_CAUSE;
 
-        $ticket = $this->db->GetRow('SELECT owner, queueid, cause, state, subject, customerid, requestor FROM rttickets WHERE id=?', array($ticketid));
+		$ticket = $this->db->GetRow('SELECT owner, queueid, cause, state, subject, customerid, requestor,
+			' . $this->db->GroupConcat('c.categoryid') . ' AS categories
+			FROM rttickets t
+			LEFT JOIN rtticketcategories c ON c.ticketid = t.id
+			WHERE t.id=?
+			GROUP BY owner, queueid, cause, state, subject, customerid, requestor',
+			array($ticketid));
+
         $note = "";
         $type = 0;
 
@@ -491,6 +498,22 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $type = $type | RTMESSAGE_CUSTOMER_CHANGE;
         }else
             $props['customerid'] = $ticket['customerid'];
+
+		if (isset($props['categories'])) {
+			$ticket['categories'] = empty($ticket['categories']) ? array() : explode(',', $ticket['categories']);
+			$categories = $this->db->GetAllByKey('SELECT id, name, description
+				FROM rtcategories', 'id');
+
+			$categories_added = array_diff($props['categories'], $ticket['categories']);
+			$categories_removed = array_diff($ticket['categories'], $props['categories']);
+			if (!empty($categories_added))
+				foreach ($categories_added as $category)
+					$note .= trans('Category $a has been added to ticket.', $categories[$category]['name']) . '<br>';
+			if (!empty($categories_removed))
+				foreach ($categories_removed as $category)
+					$note .= trans('Category $a has been removed from ticket.', $categories[$category]['name']) . '<br>';
+			$type = $type | RTMESSAGE_CATEGORY_CHANGE;
+		}
 
 		if ($type) {
 			if ($props['state'] == RT_RESOLVED) {

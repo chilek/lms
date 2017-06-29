@@ -3671,4 +3671,7 @@ $_LANG['Determined gps coordinates are not precise.\nDo you still want to use th
 
 $_LANG['Default categories'] = 'Domyślne kategorie';
 
+$_LANG['Category $a has been added to ticket.'] = 'Kategoria $a została dodana do zgłoszenia.';
+$_LANG['Category $a has been removed from ticket.'] = 'Kategoria $a została usunięta ze zgłoszenia.';
+
 ?>
