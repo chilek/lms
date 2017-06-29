@@ -461,6 +461,26 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		return $message;
 	}
 
+	public function GetFirstMessage($ticketid) {
+		$messageid = $this->db->GetOne('SELECT MIN(id) FROM rtmessages
+			WHERE ticketid = ? AND (type = ? OR type = ?)
+			GROUP BY ticketid', array($ticketid, RTMESSAGE_REGULAR, RTMESSAGE_NOTE));
+		if ($messageid)
+			return $this->GetMessage($messageid);
+		else
+			return null;
+	}
+
+	public function GetLastMessage($ticketid) {
+		$messageid = $this->db->GetOne('SELECT MAX(id) FROM rtmessages
+			WHERE ticketid = ? AND (type = ? OR type = ?)
+			GROUP BY ticketid', array($ticketid, RTMESSAGE_REGULAR, RTMESSAGE_NOTE));
+		if ($messageid)
+			return $this->GetMessage($messageid);
+		else
+			return null;
+	}
+
     public function TicketChange($ticketid, array $props)
     {
         global $LMS, $RT_STATES, $RT_CAUSE;

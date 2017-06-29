@@ -410,7 +410,7 @@ else
 	
 	if(isset($_GET['id']))
 	{
-		$reply = $LMS->GetMessage($_GET['id']); 
+		$reply = $LMS->GetMessage($_GET['id']);
 
 		if($reply['replyto'])
 			$message['destination'] = preg_replace('/^.* <(.+@.+)>/','\1',$reply['replyto']);
@@ -441,6 +441,10 @@ else
 
 		if(!preg_match('/\[RT#[0-9]{6}\]/i', $message['subject'])) 
 			$message['subject'] .= sprintf(' [RT#%06d]', $message['ticketid']); 
+	} else {
+		$reply = $LMS->GetFirstMessage($_GET['ticketid']);
+		$message['inreplyto'] = $reply['id'];
+		$message['references'] = implode(' ', $reply['references']);
 	}
 }
 

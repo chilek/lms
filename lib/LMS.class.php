@@ -1538,6 +1538,16 @@ class LMS
         return $manager->GetMessage($id);
     }
 
+	public function GetFirstMessage($ticketid) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->GetFirstMessage($ticketid);
+	}
+
+	public function GetLastMessage($ticketid) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->GetLastMessage($ticketid);
+	}
+
     /*
      *  LMS-UI configuration
      */

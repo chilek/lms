@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -36,6 +36,9 @@ if(isset($_GET['ticketid']))
 	}
 
 	$note = $DB->GetRow('SELECT id AS ticketid, state, cause, queueid, owner FROM rttickets WHERE id = ?', array($note['ticketid']));
+	$reply = $LMS->GetFirstMessage($note['ticketid']);
+	$note['inreplyto'] = $reply['id'];
+	$note['references'] = implode(' ', $reply['references']);
 
         if(ConfigHelper::checkConfig('phpui.helpdesk_notify')){
             $note['notify'] = TRUE;
@@ -115,6 +118,10 @@ elseif(isset($_POST['note']))
 			$headers['From'] = $mailfname.' <'.$mailfrom.'>';
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $note['ticketid'], $DB->GetOne('SELECT subject FROM rttickets WHERE id = ?', array($note['ticketid'])));
 			$headers['Reply-To'] = $headers['From'];
+			if ($note['references']) {
+				$headers['References'] = explode(' ', $note['references']);
+				$headers['In-Reply-To'] = array_pop(explode(' ', $note['references']));
+			}
 
 			$sms_body = $headers['Subject']."\n".$note['body'];
 			$body = $note['body']."\n\nhttp"

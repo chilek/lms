@@ -83,7 +83,11 @@ interface LMSHelpdeskManagerInterface
     public function GetTicketContents($id);
 
     public function GetMessage($id);
-    
+
+    public function GetFirstMessage($ticketid);
+
+    public function GetLastMessage($ticketid);
+
     public function TicketChange($ticketid, array $props);
 
 	public function GetQueueCategories($queueid);
