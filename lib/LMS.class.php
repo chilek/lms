@@ -1509,6 +1509,11 @@ class LMS
         return $manager->TicketAdd($ticket, $files);
     }
 
+	public function GetLastMessageID() {
+		$manager = $this->getHelpdeskManager();
+		return $manager->GetLastMessageID();
+	}
+
     public function GetTicketContents($id)
     {
         $manager = $this->getHelpdeskManager();

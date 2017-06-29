@@ -60,9 +60,11 @@ elseif(isset($_POST['note']))
 
 	if(!$error)
 	{
-		$DB->Execute('INSERT INTO rtmessages (userid, ticketid, body, createtime, type)
-			    VALUES(?, ?, ?, ?NOW?, ?)',
-			    array($AUTH->id, $note['ticketid'], $note['body'], RTMESSAGE_NOTE));
+		$messageid = '<msg.' . $ticket['queueid'] . '.' . $note['ticketid'] . '.'  . time() . '@rtsystem.' . gethostname() . '>';
+
+		$DB->Execute('INSERT INTO rtmessages (userid, ticketid, body, createtime, messageid, type)
+			    VALUES(?, ?, ?, ?NOW?, ?, ?)',
+			    array($AUTH->id, $note['ticketid'], $note['body'], $messageid, RTMESSAGE_NOTE));
 
 		$mail_dir = ConfigHelper::getConfig('rt.mail_dir');
 		if (!empty($files) && !empty($mail_dir)) {

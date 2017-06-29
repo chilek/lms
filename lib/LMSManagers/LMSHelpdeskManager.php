@@ -31,6 +31,7 @@
  */
 class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterface
 {
+	private $lastmessageid = null;
 
     public function GetQueue($id)
     {
@@ -363,16 +364,17 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $id = $this->db->GetLastInsertID('rttickets');
 
+		$this->lastmessageid = '<msg.' . $ticket['queue'] . '.' . $id . '.' . time() . '@rtsystem.' . gethostname() . '>';
+
         $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
-				subject, body, mailfrom, phonefrom)
-				VALUES (?, ?, ?NOW?, ?, ?, ?, ?)', array($id,
+				subject, body, mailfrom, phonefrom, messageid)
+				VALUES (?, ?, ?NOW?, ?, ?, ?, ?, ?)', array($id,
             $ticket['customerid'],
             $ticket['subject'],
             preg_replace("/\r/", "", $ticket['body']),
             empty($ticket['mailfrom']) ? '' : $ticket['mailfrom'],
-            empty($ticket['phonefrom']) ? '' : $ticket['phonefrom']));
-
-		$msgid = $this->db->GetLastInsertID('rtmessages');
+            empty($ticket['phonefrom']) ? '' : $ticket['phonefrom'],
+            $this->lastmessageid));
 
         foreach (array_keys($ticket['categories']) as $catid)
             $this->db->Execute('INSERT INTO rtticketcategories (ticketid, categoryid)
@@ -393,6 +395,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         return $id;
     }
+
+	public function GetLastMessageID() {
+		return $this->lastmessageid;
+	}
 
     public function GetTicketContents($id)
     {
@@ -436,12 +442,24 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return $ticket;
     }
 
-    public function GetMessage($id)
-    {
-        if ($message = $this->db->GetRow('SELECT * FROM rtmessages WHERE id=?', array($id)))
-            $message['attachments'] = $this->db->GetAll('SELECT * FROM rtattachments WHERE messageid = ?', array($id));
-        return $message;
-    }
+	public function GetMessage($id) {
+		if ($message = $this->db->GetRow('SELECT * FROM rtmessages WHERE id=?', array($id))) {
+			$message['attachments'] = $this->db->GetAll('SELECT * FROM rtattachments WHERE messageid = ?', array($id));
+
+			$references = array();
+			$reply = $message;
+			while ($reply['inreplyto']) {
+				if ($reply['messageid'])
+					$references[] = $reply['messageid'];
+				$reply = $this->db->GetRow('SELECT messageid, inreplyto FROM rtmessages WHERE id = ?',
+					array($reply['inreplyto']));
+			}
+			if ($reply['messageid'])
+				$references[] = $reply['messageid'];
+			$message['references'] = array_reverse($references);
+		}
+		return $message;
+	}
 
     public function TicketChange($ticketid, array $props)
     {

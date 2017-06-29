@@ -78,6 +78,8 @@ interface LMSHelpdeskManagerInterface
 
     public function TicketAdd($ticket, $files = NULL);
 
+	public function GetLastMessageID();
+
     public function GetTicketContents($id);
 
     public function GetMessage($id);

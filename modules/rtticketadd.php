@@ -112,6 +112,7 @@ if(isset($_POST['ticket']))
 			$headers['From'] = $mailfname.' <'.$mailfrom.'>';
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $id, $ticket['subject']);
 			$headers['Reply-To'] = $headers['From'];
+			$headers['Message-ID'] = $LMS->GetLastMessageID();
 
 			$sms_body = $headers['Subject']."\n".$ticket['body'];
 			$body = $ticket['body']."\n\nhttp"
