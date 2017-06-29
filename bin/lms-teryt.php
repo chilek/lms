@@ -1066,7 +1066,7 @@ if ( isset($options['buildings']) ) {
                 continue;
             }
 
-            if ( !preg_match('#^[0-9a-zA-Z /łŁ]*$#', $v['building_num']) ) {
+            if ( !preg_match('#^[0-9a-zA-Z- /łŁ]*$#', $v['building_num']) ) {
                 fwrite($stderr, 'warning: house number contains incorrect characters in row '.$l . PHP_EOL);
                 continue;
             }
