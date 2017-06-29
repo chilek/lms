@@ -72,15 +72,16 @@ class LocationCache {
 
 	private function tercToKey($terc) {
 		sscanf($terc, "%02d%02d%02d%01d", $woj, $pow, $gm, $gmtyp);
-		return $woj . '|' . $pow . '|' . $gm . '|' . $gmtyp;
+		return sprintf('%02d',$woj) . '|' . sprintf('%02d',$pow) . '|' .
+			sprintf('%02d',$gm) . '|' . sprintf('%01d',$gmtyp);
 	}
 
 	private function simcToKey($simc) {
-		return ltrim($simc, '0');
+		return sprintf('%07d',$simc);
 	}
 
 	private function ulicToKey($ulic) {
-		return ltrim($ulic, '0');
+		return sprintf('%05d',$ulic);
 	}
 
 	/*!
