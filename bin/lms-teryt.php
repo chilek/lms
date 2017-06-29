@@ -1053,17 +1053,20 @@ if ( isset($options['buildings']) ) {
         foreach ( $lines as $k=>$l ) {
             $v = parse_teryt_building_row( $l );
 
+            if ( !$v ) {
+                fwrite($stderr, 'error: can\'t parse row '.$l . PHP_EOL);
+                continue;
+            }
+
+			if ($v['id'] == 'ID')
+				continue;
+
             if ( isset($state_list) ) {
                 $state_ident = $state_name_to_ident[$v['woj']];
 
                 if ( !isset($state_list[intval($state_ident)]) ) {
                     continue;
                 }
-            }
-
-            if ( !$v ) {
-                fwrite($stderr, 'error: can\'t parse row '.$l . PHP_EOL);
-                continue;
             }
 
             if ( !preg_match('#^[0-9a-zA-Z- /łŁ]*$#', $v['building_num']) ) {
