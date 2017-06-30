@@ -38,7 +38,7 @@ foreach ($ident_lengths as $table => $length) {
 		continue;
 	foreach ($records as $id => $record)
 		$this->Execute("UPDATE $table SET ident = ? WHERE id = ?",
-			array(sprintf($sprintf, $record['ident']), $id));
+			array(sprintf('%0' . $length . 'd', $record['ident']), $id));
 }
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017063000', 'dbversion'));
