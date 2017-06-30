@@ -31,15 +31,9 @@ $ident_lengths = array(
 	'location_streets' => 5,
 );
 
-foreach ($ident_lengths as $table => $length) {
-	$records = $this->GetAllByKey("SELECT id, ident FROM $table WHERE LENGTH(ident) < ?",
-		'id', array($length));
-	if (empty($records))
-		continue;
-	foreach ($records as $id => $record)
-		$this->Execute("UPDATE $table SET ident = ? WHERE id = ?",
-			array(sprintf('%0' . $length . 'd', $record['ident']), $id));
-}
+foreach ($ident_lengths as $table => $length)
+	$this->Execute("UPDATE $table SET ident = LPAD(ident, ?, '0') WHERE LENGTH(ident) < ?",
+		array($length, $length));
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017063000', 'dbversion'));
 
