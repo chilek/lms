@@ -141,7 +141,7 @@ $(function() {
                                                         {customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer(this);"}
                                                 {else}
                                                     {if $event.customerid != 0}
-                                                        {$customerlist[$event.customerid].customername}:({$event.customerid})
+                                                        {$event.customername} ({$event.customerid})
                                                         <input type="hidden" name="event[customerid]" value="{$event.customerid}">
                                                     {else}
                                                         {trans("Request not assigned to any customer.")}
