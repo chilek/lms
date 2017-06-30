@@ -68,7 +68,7 @@
 			{/foreach}
 		</TD>
 		<TD class="valign-top text-center nobr">
-			{$event.customername|truncate:"40":"...":true}<BR>
+			{$event.customername|truncate:"40":"...":true}{if !empty($event.customerid)} ({$event.customerid}){/if}<BR>
 			{if isset($event.nodelocation)}
 			    {$event.nodelocation}
 			{else}
