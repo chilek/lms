@@ -148,7 +148,6 @@ if(isset($_POST['message']))
 
 				$body = $message['body'];
 
-				print_r($headers);die;
 				$attachments = NULL;
 				if (!empty($files))
 					foreach ($files as $file)
