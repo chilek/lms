@@ -47,7 +47,8 @@ $olddiv = $DB->GetRow('SELECT d.*,
 		addr.city_id as location_city, addr.street_id as location_street,
 		addr.house as location_house, addr.flat as location_flat,
 		addr.zip as location_zip, addr.state as location_state_name,
-		addr.state_id as location_state, addr.country_id as location_country_id
+		addr.state_id as location_state, addr.country_id as location_country_id,
+		addr.postoffice AS location_postoffice
 	FROM divisions d
 		LEFT JOIN addresses addr           ON addr.id = d.address_id
 		LEFT JOIN location_cities lc       ON lc.id = addr.city_id
@@ -130,6 +131,8 @@ if ( !empty($_POST['division']) ) {
 			inv_footer=?, inv_author=?, inv_cplace=?, inv_paytime=?,
 			inv_paytype=?, description=?, status=?, tax_office_code = ?
 			WHERE id=?', array_values($args));
+
+		$LMS->UpdateAddress($division);
 
 		if ($SYSLOG)
 			$SYSLOG->AddMessage(SYSLOG::RES_DIV, SYSLOG::OPER_UPDATE, $args);
