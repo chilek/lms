@@ -292,6 +292,7 @@ function get_period($period) {
 	return array('start' => $start, 'end' => $end);
 }
 
+$plans = array();
 $query = "SELECT n.id, n.period, COALESCE(a.divisionid, 0) AS divid, isdefault 
 		FROM numberplans n 
 		LEFT JOIN numberplanassignments a ON (a.planid = n.id) 
