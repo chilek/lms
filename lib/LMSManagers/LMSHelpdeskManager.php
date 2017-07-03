@@ -84,10 +84,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
         switch ($state) {
-            case '0':
-            case '1':
-            case '2':
-            case '3':
+            case RT_NEW:
+            case RT_OPEN:
+            case RT_RESOLVED:
+            case RT_DEAD:
                 $statefilter = ' AND state = ' . $state;
                 break;
             case '-1':
@@ -100,7 +100,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if ($result = $this->db->GetAll(
                 'SELECT DISTINCT t.id, t.customerid, c.address, vusers.name AS ownername,
-			    t.subject, state, owner AS ownerid, t.requestor AS req,
+			    t.subject, state, owner AS ownerid, t.requestor AS req, t.source,
 			    CASE WHEN customerid = 0 THEN t.requestor ELSE '
                 . $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor,
 			    t.createtime AS createtime, u.name AS creatorname,
