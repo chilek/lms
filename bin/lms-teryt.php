@@ -1017,7 +1017,7 @@ if ( isset($options['buildings']) ) {
         $state_name_to_ident = $DB->GetAllByKey('SELECT ident, name FROM location_states', 'name');
 
         foreach ( $state_name_to_ident as $k=>$v ) {
-            $state_name_to_ident[ strtoupper($k) ] = $v['ident'];
+            $state_name_to_ident[ mb_strtoupper($k) ] = $v['ident'];
         }
     }
 
