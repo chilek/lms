@@ -397,9 +397,9 @@ if (!$autoreply_from) {
 }
 
 if (!$prev_tid) { // generate new ticket if previous not found
-	$DB->Execute("INSERT INTO rttickets (queueid, requestor, customerid, subject, createtime)
-		VALUES (?, ?, ?, ?, ?)",
-		array($queue, $mh_from, $reqcustid, $mh_subject, $timestamp));
+	$DB->Execute("INSERT INTO rttickets (queueid, requestor, customerid, subject, createtime, source)
+		VALUES (?, ?, ?, ?, ?, ?)",
+		array($queue, $mh_from, $reqcustid, $mh_subject, $timestamp, RT_SOURCE_EMAIL));
 	$ticket_id = $DB->GetLastInsertID('rttickets');
 
 	$DB->Execute("INSERT INTO rtmessages (ticketid, mailfrom, replyto,
