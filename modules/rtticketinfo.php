@@ -40,7 +40,7 @@ if(!$rights || !$catrights)
 	die;
 }
 
-$ticket = $DB->GetRow('SELECT t.id, t.cause, t.creatorid, c.name AS creator, t.source
+$ticket = $DB->GetRow('SELECT t.id, t.cause, t.creatorid, c.name AS creator, t.source,
 		    t.createtime, t.resolvetime
 		    FROM rttickets t
 		    LEFT JOIN vusers c ON (t.creatorid = c.id)

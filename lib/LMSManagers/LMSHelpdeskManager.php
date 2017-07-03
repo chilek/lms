@@ -379,6 +379,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             empty($ticket['phonefrom']) ? '' : $ticket['phonefrom'],
             $this->lastmessageid));
 
+		$msgid = $this->db->GetLastInsertID('rtmessages');
+
 		foreach (array_keys($ticket['categories']) as $catid)
 			$this->db->Execute('INSERT INTO rtticketcategories (ticketid, categoryid)
 				VALUES (?, ?)', array($id, $catid));

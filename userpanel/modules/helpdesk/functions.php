@@ -152,6 +152,7 @@ function module_main() {
 				'queue' => $ticket['queue'],
 				'subject' => $ticket['subject'],
 				'customerid' => $SESSION->id,
+				'requestor' => $LMS->GetCustomerName($SESSION->id),
 				'createtime' => time(),
 				'body' => $ticket['body'],
 				'categories' => array_flip(explode(',', $ticket['categories'])),
@@ -181,6 +182,7 @@ function module_main() {
 				$headers['From'] = $mailfname.' <'.$mailfrom.'>';
 				$headers['Subject'] = sprintf("[RT#%06d] %s", $id, $ticket['subject']);
 				$headers['Reply-To'] = $headers['From'];
+				$headers['Message-ID'] = $LMS->GetLastMessageID();
 
 				$sms_body = $headers['Subject']."\n".$ticket['body'];
 				$body = $ticket['body']."\n\n".ConfigHelper::getConfig('userpanel.lms_url').'/?m=rtticketview&id='.$id;
