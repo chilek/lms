@@ -157,9 +157,7 @@ function module_main() {
 				'body' => $ticket['body'],
 				'categories' => array_flip(explode(',', $ticket['categories'])),
 				'mailfrom' => $ticket['mailfrom'],
-				'source' => RT_SOURCE_USERPANEL,
-				'files' => $files,
-			));
+				'source' => RT_SOURCE_USERPANEL), $files);
 
 			if (ConfigHelper::checkConfig('phpui.newticket_notify')) {
 				$user = $LMS->GetUserInfo(ConfigHelper::getConfig('userpanel.default_userid'));
