@@ -147,13 +147,14 @@ function module_main()
 			$ticket['email'] = $ticket['email'][0];
 		$ticket['mailfrom'] = $ticket['email'] ? $ticket['email'] : '';
 		$ts = time();
-		
-		$DB->Execute('INSERT INTO rttickets (queueid, customerid, subject, createtime)
-				VALUES (?, ?, ?, ?)',
+
+		$DB->Execute('INSERT INTO rttickets (queueid, customerid, subject, createtime, source)
+				VALUES (?, ?, ?, ?, ?)',
 				array($ticket['queue'],
-				        $SESSION->id,
+					$SESSION->id,
 					$ticket['subject'],
-					$ts
+					$ts,
+					RT_SOURCE_USERPANEL,
 				));
 
 		$id = $DB->GetLastInsertID('rttickets');
