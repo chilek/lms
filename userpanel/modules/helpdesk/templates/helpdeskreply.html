@@ -6,6 +6,7 @@
 <form method="post" action="?m=helpdesk&id={$ticket.id}" name="helpdesk" enctype="multipart/form-data">
 {box title="Message"}
 <input type="hidden" name="helpdesk[inreplyto]" value="{$helpdesk.inreplyto}" />
+<input type="hidden" name="helpdesk[references]" value ="{$helpdesk.references|escape|default:""}" />
 <table width="100%" cellpadding="3" class="light">
 	<tr class="light">
 		<td width="1%">

@@ -299,16 +299,21 @@ function module_main() {
 
 		if (!$error) {
 			$ticket['customerid'] = $SESSION->id;
+			$ticket['queue'] = $LMS->GetQueueByTicketId($ticket['id']);
 
 			// add message
-			$DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, customerid, inreplyto)
-					VALUES (?, ?NOW?, ?, ?, ?, ?)',
+			$ticket['messageid'] = '<msg.' . $ticket['queue']['id'] . '.' . $ticket['id'] . '.' . time()
+				. '@rtsystem.' . gethostname() . '>';
+
+			$DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, customerid, inreplyto, messageid)
+					VALUES (?, ?NOW?, ?, ?, ?, ?, ?)',
 				array(
 					$ticket['id'],
 					$ticket['subject'],
 					$ticket['body'],
 					$ticket['customerid'],
 					$ticket['inreplyto'],
+					$ticket['messageid'],
 				));
 
 			if (!empty($files) && ConfigHelper::getConfig('rt.mail_dir')) {
@@ -336,7 +341,6 @@ function module_main() {
 				array($ticket_change_state_map[$ticket['state']], $ticket['id']));
 
 			$user = $LMS->GetUserInfo(ConfigHelper::getConfig('userpanel.default_userid'));
-			$ticket['queue'] = $LMS->GetQueueByTicketId($ticket['id']);
 
 			if ($mailfname = ConfigHelper::getConfig('phpui.helpdesk_sender_name')) {
 				if ($mailfname == 'queue')
@@ -360,6 +364,11 @@ function module_main() {
 			$headers['From'] = $mailfname . ' <' . $mailfrom . '>';
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $ticket['id'], $ticket['subject']);
 			$headers['Reply-To'] = $headers['From'];
+			if ($ticket['references']) {
+				$headers['References'] = $ticket['references'];
+				$headers['In-Reply-To'] = array_pop(explode(' ', $ticket['references']));
+			}
+			$headers['Message-ID'] = $ticket['messageid'];
 
 			$sms_body = $headers['Subject'] . "\n" . $ticket['body'];
 			$body = $ticket['body']."\n\n".ConfigHelper::getConfig('userpanel.lms_url') . '/?m=rtticketview&id=' . $ticket['id'];
@@ -459,16 +468,23 @@ function module_main() {
 		if ($ticket['customerid'] == $SESSION->id && in_array($ticket['queueid'], $queues)
 			&& in_array($ticket['source'], $sources)) {
 			if (isset($_GET['msgid']) && intval($_GET['msgid'])) {
-				$helpdesk['subject'] = $DB->GetOne('SELECT subject FROM rtmessages
-					WHERE ticketid = ? AND id = ?', array($ticket['id'], $_GET['msgid']));
+				$reply = $LMS->GetMessage($_GET['msgid']);
 
+				$helpdesk['subject'] = $reply['subject'];
 				$helpdesk['subject'] = preg_replace('/^Re:\s*/', '', $helpdesk['subject']);
 				$helpdesk['subject'] = 'Re: '. $helpdesk['subject'];
-				$SMARTY->assign('helpdesk', $helpdesk);
+
+				$helpdesk['inreplyto'] = $reply['id'];
+				$helpdesk['references'] = implode(' ', $reply['references']);
+			} else {
+				$reply = $LMS->GetFirstMessage($_GET['id']);
+				$helpdesk['inreplyto'] = $reply['id'];
+				$helpdesk['references'] = implode(' ', $reply['references']);
 			}
+			$SMARTY->assign('helpdesk', $helpdesk);
 
 			$SMARTY->assign('title', trans('Request No. $a / Queue: $b',
-			sprintf('%06d',$ticket['ticketid']), $ticket['queuename']));
+				sprintf('%06d', $ticket['ticketid']), $ticket['queuename']));
 			if ($ticket['customerid'] == $SESSION->id) {
 				$SMARTY->assign('ticket', $ticket);
 				$SMARTY->display('module:helpdeskreply.html');
