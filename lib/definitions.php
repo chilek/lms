@@ -125,6 +125,25 @@ $RT_STATES = array(
     RT_DEAD     => trans('dead')
 );
 
+//Helpdesk ticket source
+define('RT_SOURCE_UNKNOWN', 0);
+define('RT_SOURCE_PHONE', 1);
+define('RT_SOURCE_EMAIL', 2);
+define('RT_SOURCE_EBOK', 3);
+define('RT_SOURCE_PERSONAL', 4);
+define('RT_SOURCE_MESSCHAT', 5);
+define('RT_SOURCE_PAPER', 6);
+
+$RT_SOURCES = array(
+	RT_SOURCE_UNKNOWN => trans('unknown/other'),
+	RT_SOURCE_PHONE => trans('Phone'),
+	RT_SOURCE_EMAIL => trans('e-mail'),
+	RT_SOURCE_EBOK => trans('userpanel'),
+	RT_SOURCE_PERSONAL => trans('eCSR'),
+	RT_SOURCE_MESSCHAT => trans('Instant messengers'),
+	RT_SOURCE_PAPER => trans('Letter complaint')
+);
+
 // Helpdesk cause type
 define('RT_CAUSE_OTHER', 0);
 define('RT_CAUSE_CUSTOMER', 1);
@@ -647,6 +666,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_GUARANTEEPERIODS', $GUARANTEEPERIODS);
 	$SMARTY->assign('_NUM_PERIODS', $NUM_PERIODS);
 	$SMARTY->assign('_RT_STATES', $RT_STATES);
+	$SMARTY->assign('_RT_SOURCES', $RT_SOURCES);
 	$SMARTY->assign('_CONFIG_TYPES', $CONFIG_TYPES);
 	$SMARTY->assign('_TARIFFTYPES', $TARIFFTYPES);
 	$SMARTY->assign('_PAYTYPES', $PAYTYPES);

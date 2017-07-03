@@ -839,6 +839,7 @@ CREATE TABLE rttickets (
   creatorid int(11) NOT NULL DEFAULT '0',
   createtime int(11) NOT NULL DEFAULT '0',
   resolvetime int(11) NOT NULL DEFAULT '0',
+  source tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   INDEX queueid (queueid),
   INDEX customerid (customerid),

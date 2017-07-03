@@ -1457,6 +1457,7 @@ CREATE TABLE rttickets (
   creatorid integer 	DEFAULT 0 NOT NULL,
   createtime integer 	DEFAULT 0 NOT NULL,
   resolvetime integer 	DEFAULT 0 NOT NULL,
+  source smallint	DEFAULT 0 NOT NULL,
   PRIMARY KEY (id)
 );
 
