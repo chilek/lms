@@ -2633,6 +2633,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('userpanel', 'auth_type', '1', '', 0),
 ('userpanel', 'show_confirmed_documents_only', 'false', '', 0),
 ('userpanel', 'module_order', '', '', 0),
+('userpanel', 'visible_ticket_sources', '0;1;2;3;4;5;6;7', '', 0),
 ('directories', 'userpanel_dir', 'userpanel', '', 0);
 
 INSERT INTO netdeviceproducers (id, name) VALUES
@@ -2962,6 +2963,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017063000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017070300');
 
 COMMIT;

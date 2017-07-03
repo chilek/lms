@@ -353,11 +353,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         $this->db->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject,
 				state, owner, createtime, cause, creatorid, source)
-				VALUES (?, ?, ?, ?, 0, ?, ?NOW?, ?, ?, ?)', array($ticket['queue'],
+				VALUES (?, ?, ?, ?, 0, ?, ?, ?, ?, ?)', array($ticket['queue'],
             $ticket['customerid'],
             $ticket['requestor'],
             $ticket['subject'],
             isset($ticket['owner']) ? $ticket['owner'] : 0,
+            isset($ticket['createtime']) $ticket['createtime'] : time(),
             isset($ticket['cause']) ? $ticket['cause'] : 0,
             isset($this->auth->id) ? $this->auth->id : 0,
             isset($ticket['source']) ? $ticket['source'] : 0
@@ -369,30 +370,35 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
 				subject, body, mailfrom, phonefrom, messageid)
-				VALUES (?, ?, ?NOW?, ?, ?, ?, ?, ?)', array($id,
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array($id,
             $ticket['customerid'],
+            isset($ticket['createtime']) ? $ticket['createtime'] : time(),
             $ticket['subject'],
             preg_replace("/\r/", "", $ticket['body']),
             empty($ticket['mailfrom']) ? '' : $ticket['mailfrom'],
             empty($ticket['phonefrom']) ? '' : $ticket['phonefrom'],
             $this->lastmessageid));
 
-        foreach (array_keys($ticket['categories']) as $catid)
-            $this->db->Execute('INSERT INTO rtticketcategories (ticketid, categoryid)
+		foreach (array_keys($ticket['categories']) as $catid)
+			$this->db->Execute('INSERT INTO rtticketcategories (ticketid, categoryid)
 				VALUES (?, ?)', array($id, $catid));
 
-        if (!empty($files) && ConfigHelper::getConfig('rt.mail_dir')) {
-            $dir = ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d', $id, $msgid);
-            $dir_permission = intval(ConfigHelper::getConfig('rt.mail_dir_permission', '0700'), 8);
-            @mkdir(ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR . sprintf('%06d', $id), $dir_permission);
-            @mkdir($dir, $dir_permission);
-            foreach ($files as $file) {
-                $newfile = $dir . DIRECTORY_SEPARATOR . $file['name'];
-                if (@rename($ticket['tmppath'] . DIRECTORY_SEPARATOR . $file['name'], $newfile))
-                    $this->db->Execute('INSERT INTO rtattachments (messageid, filename, contenttype)
-							VALUES (?,?,?)', array($msgid, $file['name'], $file['type']));
-            }
-        }
+		if (!empty($files) && ConfigHelper::getConfig('rt.mail_dir')) {
+			$dir = ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d', $id, $msgid);
+			$dir_permission = intval(ConfigHelper::getConfig('rt.mail_dir_permission', '0700'), 8);
+			@mkdir(ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR . sprintf('%06d', $id), $dir_permission);
+			@mkdir($dir, $dir_permission);
+			if (isset($ticket['tmppath']))
+				$tmppath = $ticket['tmppath'] . DIRECTORY_SEPARATOR;
+			else
+				$tmppath = null;
+			foreach ($files as $file) {
+				$newfile = $dir . DIRECTORY_SEPARATOR . $file['name'];
+				if (@rename(empty($tmppath) ? $file['tmp_name'] : $tmppath . $file['name'], $newfile))
+					$this->db->Execute('INSERT INTO rtattachments (messageid, filename, contenttype)
+						VALUES (?,?,?)', array($msgid, $file['name'], $file['type']));
+			}
+		}
 
         return $id;
     }

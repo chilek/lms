@@ -69,4 +69,7 @@ $_LANG['Show tickets from selected queues only:'] = 'Pokaż zgłoszenia jedynie 
 $_LANG['Allow message add to closed tickets:'] = 'Pozwól na dodawanie wiadomości do zamkniętych zgłoszeń:';
 $_LANG['Limit ticket movements to selected queues:'] = 'Ogranicz przesunięcia zgłoszenia do wybranych kolejek:';
 
+$_LANG['Visible ticket sources:'] = 'Źródła widocznych zgłoszeń:';
+$_LANG['Helpdesk visible ticket sources in Userpanel'] = 'Widoczne źródła zgłoszeń Helpdesku w Userpanelu';
+
 ?>
