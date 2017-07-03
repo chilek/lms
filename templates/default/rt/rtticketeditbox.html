@@ -140,6 +140,19 @@
 									</SELECT>
 								</TD>
 							</TR>
+                                                        <TR>
+                                                                <TD style="width: 1%;" class="bold nobr">
+                                                                        <IMG src="img/volcano.png" alt="">
+                                                                        {trans("Ticket source:")}
+                                                                </TD>
+                                                                <TD style="width: 1%;">
+									<SELECT size="1" name="ticket[source]" {tip text="Select request source" trigger="source"}>
+										{foreach $_RT_SOURCES as $sourceidx => $status}
+											<OPTION value="{$sourceidx}"{if $ticket.source == $sourceidx}selected {/if}>{$status}</OPTION>
+										{/foreach}
+									</SELECT>
+								</TD>
+                                                        </TR>
 						</TABLE>
 					</TD>
 				</TR>

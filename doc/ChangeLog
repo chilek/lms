@@ -25,6 +25,7 @@ version ?.??.?? (????-??-??):
     default) configuration variable support which controls how many receipts are printed [chilan]
   - enhancement: log ticket category changes [chilan]
   - enhancement: implemented helpdesk notification mail threading compatible with RFC5322 [chilan]
+  - enhancement: added ticket source information [interduo]
 
 version 1.11.22 (2017-06-08):
 
