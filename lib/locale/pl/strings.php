@@ -2761,6 +2761,7 @@ $_LANG['State'] = 'Województwo';
 $_LANG['Street'] = 'Ulica';
 $_LANG['street'] = 'ulica';
 $_LANG['TERRIT-DB'] = 'Baza TERYT';
+$_LANG['$a (TERRIT)'] = '$a (TERYT)';
 $_LANG['City has not been selected!'] = 'Nie wybrano miasta!';
 $_LANG['Flat number is too long (max. 8 characters)!'] = 'Numer mieszkania jest za długi (max. 8 znaków)!';
 $_LANG['Zip code is too long (max. 8 characters)!'] = 'Kod pocztowy jest za długi (max. 8 znaków)!';

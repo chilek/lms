@@ -44,11 +44,14 @@ switch ( strtolower($_GET['action']) ) {
             die( json_encode( array() ) );
         }
 
-        foreach ($caddr as $k=>$v) {
+        foreach ($caddr as $k => &$v) {
             if ( empty($v['location']) ) {
                 unset( $caddr[$k] );
+            } elseif ($v['teryt']) {
+                $v['location'] = trans('$a (TERRIT)', $v['location']);
             }
         }
+        unset($v);
 
         die( json_encode($caddr) );
     break;
