@@ -42,6 +42,7 @@ function get_gps_coordinates($location, $callback) {
 
 	if (isset($location['address_id'])) {
 		$address = $LMS->GetAddress($location['address_id']);
+		$address['city_name'] = $address['city'];
 		$location['street'] = $address['street'];
 		$location['house'] = $address['house'];
 		$location['flat'] = $address['flat'];
