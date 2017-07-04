@@ -88,6 +88,19 @@ function RTSearch($search, $order='createtime,desc')
 	if(isset($search['catids']))
 		$where[] = 'tc.categoryid IN ('.implode(',', $search['catids']).')';
 
+	if(!ConfigHelper::checkConfig('privileges.superuser'))
+		$where[] = 't.deleted = 0';
+	else
+	{
+		if(!empty($search['removed']))
+		{
+			if($search['removed'] == '-1')
+				$where[] = 't.deleted = 0';
+				else
+					$where[] = 't.deleted = 1';
+		}
+	}
+
 	if(isset($where))
 		$where = ' WHERE '.implode($op, $where);
 
@@ -95,7 +108,7 @@ function RTSearch($search, $order='createtime,desc')
 			vusers.name AS ownername, CASE WHEN customerid = 0 THEN t.requestor ELSE '
 			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').'
 			END AS requestor, t.requestor AS req, t.createtime,
-			(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified
+			(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified, t.deleted, t.deltime
 			FROM rttickets t
 			LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
 			LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid

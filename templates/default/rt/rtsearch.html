@@ -122,6 +122,21 @@
 			{/foreach}
 		</TD>
 	</TR>
+	{if ConfigHelper::checkConfig('privileges.superuser')}
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/dead.gif" alt="">
+			{trans("Removed:")}
+		</TD>
+		<TD>
+			<SELECT SIZE="1" name="search[removed]" {tip text="Select ticket status"}>
+				<OPTION value="" {if $search.remove==""}SELECTED{/if}>{trans("- all -")}</OPTION>
+				<OPTION value="-1" {if $search.remove=="-1"}SELECTED{/if}>{trans("Not removed")}</OPTION>
+				<OPTION value="1" {if $search.remove=="1"}SELECTED{/if}>{trans("Removed")}</OPTION>
+			</SELECT>
+		</TD>
+	</TR>
+	{/if}
 	<TR>
 		<TD class="buttons" colspan="2">
 			<A href="javascript:document.search.submit();" accesskey="s"><IMG src="img/search.gif" alt=""> {trans("Search")}</A>

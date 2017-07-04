@@ -54,6 +54,9 @@ $message = $LMS->GetMessage($_GET['id']);
 if($message['userid'])
 	$message['username'] = $LMS->GetUserName($message['userid']);
 
+if($message['deluserid'])
+	$message['delusername'] = $LMS->GetUserName($message['deluserid']);
+
 if($message['customerid'])
 	$message['customername'] = $LMS->GetCustomerName($message['customerid']);
 	

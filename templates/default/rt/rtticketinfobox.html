@@ -155,6 +155,26 @@
 									{else}{trans("unknown/other")}{/if}
 								</TD>
 							</TR>
+							{if $ticket.deleted == 1 && (ConfigHelper::checkConfig('privileges.superuser'))}
+							<TR>
+								<TD style="width: 1%;" class="bold nobr">
+									<IMG src="img/desc.gif" alt="">
+									{trans("Remover:")}
+								</TD>
+								<TD style="width: 99%;">
+									<A href="?m=userinfo&id={$ticket.deluserid}">{$ticket.delusername|escape}</A>
+								</TD>
+							</TR>
+							<TR>
+								<TD style="width: 1%;" class="bold nobr">
+									<IMG src="img/desc.gif" alt="">
+									{trans("Remove date:")}
+								</TD>
+								<TD style="width: 99%;">
+									{$ticket.deltime|date_format:"%Y/%m/%d %H:%M.%S"}
+								</TD>
+							</TR>
+							{/if}
 						</TABLE>
 					</TD>
 				</TR>

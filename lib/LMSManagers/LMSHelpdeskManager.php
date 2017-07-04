@@ -45,7 +45,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             return NULL;
     }
 
-    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $owner = 0, $catids = NULL)
+    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $owner = 0, $catids = NULL, $removed = NULL)
     {
         if (!$order)
             $order = 'createtime,desc';
@@ -93,12 +93,28 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 break;
         }
 
+        if(!ConfigHelper::checkConfig('privileges.superuser'))
+        $removedfilter = 'AND t.deleted = 0';
+        else {
+	        switch ($removed) {
+		        case '-1':
+			        $removedfilter = ' AND t.deleted = 0';
+			        break;
+		        case '1':
+			        $removedfilter = ' AND t.deleted = 1';
+			        break;
+		        default:
+			        $removedfilter = '';
+			        break;
+	        }
+        }
+
         if ($result = $this->db->GetAll(
                 'SELECT DISTINCT t.id, t.customerid, c.address, vusers.name AS ownername,
 			    t.subject, state, owner AS ownerid, t.requestor AS req,
 			    CASE WHEN customerid = 0 THEN t.requestor ELSE '
                 . $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor,
-			    t.createtime AS createtime, u.name AS creatorname,
+			    t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
 				(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified
 		    FROM rttickets t
 		    LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
@@ -111,6 +127,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
                 . $statefilter
                 . ($owner ? ' AND t.owner = ' . intval($owner) : '')
+                . $removedfilter
                 . ($sqlord != '' ? $sqlord . ' ' . $direction : ''))) {
             foreach ($result as $idx => $ticket) {
 		$ticket['eventcount'] = $this->db->GetOne('SELECT COUNT(id) FROM events WHERE ticketid = ?', array($ticket['id']));
@@ -129,6 +146,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $result['order'] = $order;
         $result['direction'] = $direction;
         $result['owner'] = $owner;
+        $result['removed'] = $removed;
 
         return $result;
     }
@@ -150,11 +168,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function GetQueueList($stats = true)
     {
+	$del = 0;
         if ($result = $this->db->GetAll('SELECT q.id, name, email, description, newticketsubject, newticketbody,
-					newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody
+				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody, deleted, deltime, deluserid
 				FROM rtqueues q'
-                . (!ConfigHelper::checkConfig('privileges.superuser') ? ' JOIN rtrights r ON r.queueid = q.id
-					WHERE r.rights <> 0 AND r.userid = ?' : '') . ' ORDER BY name', array($this->auth->id))) {
+				. (!ConfigHelper::checkConfig('privileges.superuser') ? ' JOIN rtrights r ON r.queueid = q.id
+				WHERE r.rights <> 0 AND r.userid = ? AND q.deleted = ?' : '') . ' ORDER BY name', array($this->auth->id, $del))) {
             if ($stats)
                 foreach ($result as $idx => $row)
                     foreach ($this->GetQueueStats($row['id']) as $sidx => $row2)
@@ -165,9 +184,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function GetQueueNames()
     {
-        return $this->db->GetAll('SELECT q.id, name FROM rtqueues q'
-                        . (!ConfigHelper::checkConfig('privileges.superuser') ? ' JOIN rtrights r ON r.queueid = q.id
-				WHERE r.rights <> 0 AND r.userid = ?' : '') . ' ORDER BY name', array($this->auth->id));
+	$del = 0;
+	return $this->db->GetAll('SELECT q.id, name FROM rtqueues q'
+			. (!ConfigHelper::checkConfig('privileges.superuser') ? ' JOIN rtrights r ON r.queueid = q.id
+			WHERE r.rights <> 0 AND r.userid = ? AND q.deleted = ?' : '') . ' ORDER BY name', array($this->auth->id, $del));
     }
 
     public function QueueExists($id)
@@ -395,27 +415,31 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         global $RT_STATES;
 
         $ticket = $this->db->GetRow('SELECT t.id AS ticketid, t.queueid, rtqueues.name AS queuename,
-				    t.requestor, t.state, t.owner, t.customerid, t.cause, t.creatorid, c.name AS creator, '
-                . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
-				    o.name AS ownername, t.createtime, t.resolvetime, t.subject
+				t.requestor, t.state, t.owner, t.customerid, t.cause, t.creatorid, c.name AS creator, '
+				. $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
+				o.name AS ownername, t.createtime, t.resolvetime, t.subject, t.deleted, t.deltime, t.deluserid
 				FROM rttickets t
 				LEFT JOIN rtqueues ON (t.queueid = rtqueues.id)
 				LEFT JOIN vusers o ON (t.owner = o.id)
 				LEFT JOIN vusers c ON (t.creatorid = c.id)
 				LEFT JOIN customers ON (customers.id = t.customerid)
-				WHERE t.id = ?', array($id));
+				WHERE 1=1 '
+				. (!ConfigHelper::checkConfig('privileges.superuser') ? ' AND t.deleted = 0' : '')
+				. ('AND t.id = ?'), array($id));
 
         $ticket['categories'] = $this->db->GetAllByKey('SELECT categoryid AS id FROM rtticketcategories WHERE ticketid = ?', 'id', array($id));
 
         $ticket['messages'] = $this->db->GetAll(
                 '(SELECT rtmessages.id AS id, phonefrom, mailfrom, subject, body, createtime, '
                 . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
-				    userid, vusers.name AS username, customerid, rtmessages.type
+				userid, vusers.name AS username, customerid, rtmessages.type, rtmessages.deleted, rtmessages.deltime, rtmessages.deluserid
 				FROM rtmessages
 				LEFT JOIN customers ON (customers.id = customerid)
 				LEFT JOIN vusers ON (vusers.id = userid)
-				WHERE ticketid = ?)
-				ORDER BY createtime ASC', array($id));
+				WHERE 1=1 '
+				. (!ConfigHelper::checkConfig('privileges.superuser') ? 'AND rtmessages.deleted = 0' : '')
+				. ('AND ticketid = ?)')
+				.('ORDER BY createtime ASC'), array($id));
 
         foreach ($ticket['messages'] as $idx => $message)
             $ticket['messages'][$idx]['attachments'] = $this->db->GetAll('SELECT filename, contenttype FROM rtattachments WHERE messageid = ?', array($message['id']));

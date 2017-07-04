@@ -36,6 +36,7 @@ switch($type)
 		$days  = !empty($_GET['days']) ? intval($_GET['days']) : intval($_POST['days']);
 		$times = !empty($_GET['times']) ? intval($_GET['times']) : intval($_POST['times']);
 		$queue = !empty($_GET['queue']) ? intval($_GET['queue']) : intval($_POST['queue']);
+		$removed = !empty($_GET['removed']) ? $_GET['removed'] : $_POST['removed'];
 		$categories = !empty($_GET['categories']) ? $_GET['categories'] : $_POST['categories'];
 		$datefrom  = !empty($_GET['datefrom']) ? $_GET['datefrom'] : $_POST['datefrom'];
 		$dateto  = !empty($_GET['dateto']) ? $_GET['dateto'] : $_POST['dateto'];
@@ -49,6 +50,19 @@ switch($type)
 			$where[] = 'tc.categoryid IN ('.implode(',', $catids).')';
 		else
 			$where[] = 'tc.categoryid IS NULL';
+
+		if(!ConfigHelper::checkConfig('privileges.superuser'))
+			$where[] = 'rttickets.deleted = 0';
+			else
+			{
+				if($removed != '')
+				{
+					if($removed == '-1')
+						$where[] = 'rttickets.deleted = 0';
+						else
+							$where[] = 'rttickets.deleted = 1';
+				}
+			}
 	
 		if($datefrom)
 		{
@@ -114,6 +128,7 @@ switch($type)
 		$customer = !empty($_GET['customer']) ? intval($_GET['customer']) : intval($_POST['customer']);
 		$queue 	  = !empty($_GET['queue']) ? intval($_GET['queue']) : intval($_POST['queue']);
 		$status   = isset($_GET['status']) ? $_GET['status'] : $_POST['status'];
+		$removed  = isset($_GET['removed']) ? $_GET['removed'] : $_POST['removed'];
 		$subject  = !empty($_GET['subject']) ? $_GET['subject'] : $_POST['subject'];
 		$extended = !empty($_GET['extended']) ? true : !empty($_POST['extended']) ? true : false;
 		$categories = !empty($_GET['categories']) ? $_GET['categories'] : $_POST['categories'];
@@ -141,6 +156,19 @@ switch($type)
 			else
     				$where[] = 'rttickets.state = '.intval($status);
 		}
+
+		if(!ConfigHelper::checkConfig('privileges.superuser'))
+			$where[] = 'rttickets.deleted = 0';
+			else
+			{
+				if($removed != '')
+				{
+					if($removed == '-1')
+						$where[] = 'rttickets.deleted = 0';
+						else
+							$where[] = 'rttickets.deleted = 1';
+				}
+			}
 
 		if($datefrom)
 		{
