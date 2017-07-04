@@ -151,19 +151,17 @@ $SYSLOG = SYSLOG::getInstance();
    ********************************************************************/
 
 /*!
- * \brief Change text to asociative array.
+ * \brief Change array to asociative array.
  *
- * \param  string $row single row to parse
+ * \param  array $row single row to parse
  * \return array       associative array with paremeters
  */
 function parse_teryt_building_row( $row ) {
 	static $column_names = array('id', 'woj', 'powiat', 'gmina', 'terc', 'miejscowosc',
 		'simc', 'ulica', 'ulic', 'building_num', 'longitude', 'latitude');
 
-	$exp_row = explode(';', str_replace("\r", '', $row));
-
-	if ( count($column_names) == count($exp_row) ) {
-        return array_combine($column_names, $exp_row);
+	if ( count($column_names) == count($row) ) {
+        return array_combine($column_names, $row);
     } else {
 	    return null;
     }
@@ -1033,28 +1031,13 @@ if ( isset($options['buildings']) ) {
 	if (!$quiet)
 		echo 'Parsing file...' . PHP_EOL;
 
-    while ( !feof($fh) ) {
-        $lines = preg_split('/\r?\n/', fread($fh, 4096));
-        $lines = str_replace("'", '', $lines);
-
-        // try to join previous line
-        if ( substr_count($lines[0], ';') == 11 && substr_count($previous_line, ';') == 11 ) {
-            array_unshift($lines, $previous_line);
-        } else {
-            $lines[0] = $previous_line . $lines[0];
-        }
-
-        end($lines);
-        $k = key($lines);
-        $previous_line = $lines[ $k ];
-        unset($lines[ $k ]);
-
+       while (($l = fgetcsv($fh, 1000, ';')) !== false) {
         // insert loaded data to database
-        foreach ( $lines as $k=>$l ) {
+//        foreach ( $lines as $k=>$l ) {
             $v = parse_teryt_building_row( $l );
 
             if ( !$v ) {
-                fwrite($stderr, 'error: can\'t parse row '.$l . PHP_EOL);
+                fwrite($stderr, 'error: can\'t parse row '. implode(';', $l) . PHP_EOL);
                 continue;
             }
 
@@ -1070,7 +1053,7 @@ if ( isset($options['buildings']) ) {
             }
 
             if ( !preg_match('#^[0-9a-zA-Z- /łŁ]*$#', $v['building_num']) ) {
-                fwrite($stderr, 'warning: house number contains incorrect characters in row '.$l . PHP_EOL);
+                fwrite($stderr, 'warning: house number contains incorrect characters in row ' . implode(';', $l) . PHP_EOL);
                 continue;
             }
 
@@ -1081,7 +1064,7 @@ if ( isset($options['buildings']) ) {
             $city = $location_cache->getCityByIdent($terc, $simc);
 
             if ( !$city ) {
-                fwrite($stderr, 'warning: teryt terc ' . $terc . ', simc ' . $simc . ' wasn\'t found in database in row ' . $l . PHP_EOL);
+                fwrite($stderr, 'warning: teryt terc ' . $terc . ', simc ' . $simc . ' wasn\'t found in database in row ' . implode(';', $l) . PHP_EOL);
                 continue;
             }
 
@@ -1090,7 +1073,7 @@ if ( isset($options['buildings']) ) {
 			else {
 				$street = $location_cache->getStreetByIdent( $city['id'], $ulic );
 				if (empty($street)) {
-					fwrite($stderr, 'warning: teryt terc ' . $terc . ', simc ' . $simc . ', ulic ' . $ulic . ' wasn\'t found in database in row ' . $l . PHP_EOL);
+					fwrite($stderr, 'warning: teryt terc ' . $terc . ', simc ' . $simc . ', ulic ' . $ulic . ' wasn\'t found in database in row ' . implode(';', $l) . PHP_EOL);
 					continue;
 				}
 			}
@@ -1123,7 +1106,7 @@ if ( isset($options['buildings']) ) {
 
                 $to_insert[] = '('.implode(',', $data).')';
             }
-        }
+//        }
 
         if ( $to_insert ) {
             $DB->Execute('INSERT INTO location_buildings (city_id,street_id,building_num,latitude,longitude,updated) VALUES '.implode(',', $to_insert));
