@@ -84,10 +84,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
 
         switch ($state) {
-            case RT_NEW:
-            case RT_OPEN:
-            case RT_RESOLVED:
-            case RT_DEAD:
+            case '0':
+            case '1':
+            case '2':
+            case '3':
                 $statefilter = ' AND state = ' . $state;
                 break;
             case '-1':
