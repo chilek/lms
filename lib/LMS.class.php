@@ -3305,6 +3305,9 @@ class LMS
 					$headers['Disposition-Notification-To'] = $mdn_email;
 				}
 
+				if (!empty($dsn_email))
+					$headers['Delivery-Status-Notification-To'] = $dsn_email;
+
 				if (!empty($notify_email))
 					$headers['Cc'] = $notify_email;
 
@@ -3329,8 +3332,8 @@ class LMS
 
 				foreach (explode(',', $custemail) as $email) {
 					if ($add_message && (!empty($dsn_email) || !empty($mdn_email))) {
-						if (!empty($dsn_email))
 						$headers['X-LMS-Message-Item-Id'] = $msgitems[$doc['customerid']][$email];
+						$headers['Message-ID'] = '<sendinvoice-' . $headers['X-LMS-Message-Item-Id'] . '@rtsystem.' . gethostname() . '>';
 					}
 
 					$res = $this->SendMail($email . ',' . $notify_email, $headers, $body,
