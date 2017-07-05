@@ -362,6 +362,24 @@ function get_teryt_file($ch, $type, $outfile) {
 	return true;
 }
 
+ // download point address base (pobranie bazy punktów adresowych)
+function stream_notification_callback($notification_code, $severity, $message, $message_code, $bytes_transferred, $bytes_max) {
+	static $filesize = null;
+
+	switch ($notification_code) {
+		case STREAM_NOTIFY_CONNECT:
+			$filesize = null;
+			break;
+		case STREAM_NOTIFY_FILE_SIZE_IS:
+			$filesize = $bytes_max;
+			break;
+		case STREAM_NOTIFY_PROGRESS:
+			if (isset($filesize))
+				printf("%d%%         \r", ($bytes_transferred * 100) / $filesize);
+			break;
+	}
+}
+
 if ( isset($options['fetch']) ) {
 	if (!$quiet) {
 		echo 'Downloading TERYT files...' . PHP_EOL;
@@ -414,24 +432,6 @@ if ( isset($options['fetch']) ) {
 	}
 
 	unset( $zip, $teryt_files );
-
-	 // download point address base (pobranie bazy punktów adresowych)
-	function stream_notification_callback($notification_code, $severity, $message, $message_code, $bytes_transferred, $bytes_max) {
-		static $filesize = null;
-
-		switch ($notification_code) {
-			case STREAM_NOTIFY_CONNECT:
-				$filesize = null;
-				break;
-			case STREAM_NOTIFY_FILE_SIZE_IS:
-				$filesize = $bytes_max;
-				break;
-			case STREAM_NOTIFY_PROGRESS:
-				if (isset($filesize))
-					printf("%d%%         \r", ($bytes_transferred * 100) / $filesize);
-				break;
-		}
-	}
 
 	$ctx = stream_context_create();
 
@@ -1005,7 +1005,12 @@ if ( isset($options['update']) ) {
 //==============================================================================
 
 if ( isset($options['buildings']) ) {
-	$fh = fopen($building_base_name, "r");
+
+	$ctx = stream_context_create();
+	if (!$quiet)
+		stream_context_set_params($ctx, array("notification" => "stream_notification_callback"));
+
+	$fh = fopen($building_base_name, "r", $ctx);
 	if ($fh === null) {
 		fprintf($stderr, "Error: can't open %s file." . PHP_EOL, $building_base_name);
 		die;
@@ -1019,8 +1024,6 @@ if ( isset($options['buildings']) ) {
         }
     }
 
-    $steps = ceil( filesize($building_base_name) / 4096 );
-    $i = 1;
     $to_update = array();
     $to_insert = array();
     $previous_line = '';
@@ -1117,12 +1120,9 @@ if ( isset($options['buildings']) ) {
             $DB->Execute('UPDATE location_buildings SET updated = 1 WHERE id in ('.implode(',', $to_update).')');
             $to_update = array();
         }
-
-        // location building database creation progress
-		if (!$quiet)
-			printf("%.2f%%\r", ($i * 100) / $steps);
-        ++$i;
     }
+
+	echo "\r";
 
 	if (!$quiet)
 		echo 'Removing old buildings...' . PHP_EOL;
