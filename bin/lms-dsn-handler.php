@@ -179,7 +179,7 @@ if (!empty($posts)) {
 			}
 		if (empty($msgitemid))
 			continue;
-		if (!empty($status) && !empty($diag_code)) {
+		if (!empty($status)) {
 			if ($status == 4)
 				continue;
 			switch ($status) {
@@ -191,7 +191,7 @@ if (!empty($posts)) {
 					break;
 			}
 			$DB->Execute('UPDATE messageitems SET status = ?, error = ? WHERE id = ?',
-				array($status, $status == MSG_ERROR ? $diag_code : null, $msgitemid));
+				array($status, $status == MSG_ERROR && !empty($diag_code) ? $diag_code : null, $msgitemid));
 		} elseif (!empty($disposition) && !empty($readdate))
 			$DB->Execute('UPDATE messageitems SET status = ?, lastreaddate = ? WHERE id = ?',
 				array(MSG_DELIVERED, $readdate, $msgitemid));
