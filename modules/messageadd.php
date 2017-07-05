@@ -464,8 +464,10 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 				if ($message['type'] == MSG_MAIL) {
 					if (isset($message['copytosender']))
 						$destination .= ',' . $message['sender'];
-					if (!empty($dsn_email) || !empty($mdn_email))
+					if (!empty($dsn_email) || !empty($mdn_email)) {
 						$headers['X-LMS-Message-Item-Id'] = $msgitems[$customerid][$orig_destination];
+						$headers['Message-ID'] = '<messageitem-' . $msgitems[$customerid][$orig_destination] . '@rtsystem.' . gethostname() . '>';
+					}
 					$result = $LMS->SendMail($destination, $headers, $body, $attachments);
 				} elseif ($message['type'] == MSG_WWW || $message['type'] == MSG_USERPANEL || $message['type'] == MSG_USERPANEL_URGENT)
 					$result = MSG_SENT;
