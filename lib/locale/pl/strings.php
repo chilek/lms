@@ -3675,6 +3675,13 @@ $_LANG['Post office:'] = 'Poczta:';
 
 $_LANG['Determined gps coordinates are not precise.\nDo you still want to use them?'] = 'Wyznaczone współrzędne gps nie są precyzyjne. Czy mimo tego chcesz je użyć?';
 
+
+$_LANG['Removed:'] = 'Usunięte:';
+$_LANG['Remover:'] = 'Usuwający:';
+$_LANG['Remove date:'] = 'Data usunięcia:';
+$_LANG['Not removed'] = 'nie usunięte';
+$_LANG['Removed'] = 'usunięte';
+
 $_LANG['Default categories'] = 'Domyślne kategorie';
 
 $_LANG['Category $a has been added to ticket.'] = 'Kategoria $a została dodana do zgłoszenia.';

@@ -136,6 +136,30 @@
 		</TD>
 	</TR>
 	{/if}
+	{if $message.deleted == 1 && (ConfigHelper::checkConfig('privileges.superuser'))}
+	<TR>
+		<TD style="width: 1%;" class="nobr">
+
+		</TD>
+		<TD style="width: 1%;" class="nobr">
+			<B>{trans("Remover:")}</B>
+		</TD>
+		<TD style="width: 98%;">
+			<A href="?m=userinfo&id={$message.deluserid}">{$message.delusername|escape}</A>
+		</TD>
+	</TR>
+	<TR>
+		<TD style="width: 1%;" class="nobr">
+
+		</TD>
+		<TD style="width: 1%;" class="nobr">
+			<B>{trans("Remove date:")}</B>
+		</TD>
+		<TD style="width: 98%;">
+			{$message.deltime|date_format:"%Y/%m/%d %H:%M.%S"}
+		</TD>
+	</TR>
+	{/if}
 	<TR>
 		<TD colspan="3" width="100%" align="right" NOWRAP>
 			<A href="?m=rtmessageadd&id={$message.id}&ticketid={$message.ticketid}"><IMG src="img/edit.gif" alt=""> {trans("Reply")}</A>

@@ -15,7 +15,8 @@ contrib/LMS2Nagios-php/generated/*
 lib/teryt/*
 img/xajax_js/deferred/*
 composer.lock
-
+.project
+rtattachments/*
 # Temporary files
 *~
 *.swp

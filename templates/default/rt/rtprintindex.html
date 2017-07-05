@@ -100,6 +100,24 @@
 					<TD width="10%" nowrap>
 					</TD>
 				</TR>
+				{if ConfigHelper::checkConfig('privileges.superuser')}
+				<TR>
+					<TD style="width: 1%;">
+						<IMG src="img/dead.gif" alt="">
+					</TD>
+					<TD style="width: 1%;">
+						<B>{trans("Removed:")}</B>
+					</TD>
+					<TD style="width: 1%;">
+						<SELECT size="1" name="removed" {tip text="You can select status to limit results"}>
+							<OPTION value="">- {trans("all")} -</OPTION>
+							<OPTION value="-1">{trans("Not removed")}</OPTION>
+							<OPTION value="1">{trans("Removed")}</OPTION>
+						</SELECT>
+					</TD>
+
+				</TR>
+				{/if}
 				<TR>
 					<TD width="1%" COLSPAN="2" NOWRAP>
 						<IMG src="img/queue.gif" alt=""><B>{trans("Categories:")}</B>
@@ -200,6 +218,24 @@
 						<B>{t a="<INPUT TYPE=\"text\" NAME=\"times\" SIZE=\"3\">" b="<INPUT TYPE=\"text\" NAME=\"days\" SIZE=\"3\">"}Customers requesting more than $a times in last $b days{/t}</B>
 					</TD>
 				</TR>
+				{if ConfigHelper::checkConfig('privileges.superuser')}
+				<TR>
+					<TD style="width: 1%;">
+						<IMG src="img/dead.gif" alt="">
+					</TD>
+					<TD style="width: 1%;">
+						<B>{trans("Removed:")}</B>
+					</TD>
+					<TD style="width: 1%;">
+						<SELECT size="1" name="removed" {tip text="You can select status to limit results"}>
+							<OPTION value="">- {trans("all")} -</OPTION>
+							<OPTION value="-1">{trans("Not removed")}</OPTION>
+							<OPTION value="1">{trans("Removed")}</OPTION>
+						</SELECT>
+					</TD>
+
+				</TR>
+				{/if}
 				<TR>
 					<TD width="1%" COLSPAN="2" NOWRAP>
 						<IMG src="img/queue.gif" alt=""><B>{trans("Categories:")}</B>
