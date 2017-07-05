@@ -1010,7 +1010,7 @@ if ( isset($options['buildings']) ) {
 	if (!$quiet)
 		stream_context_set_params($ctx, array("notification" => "stream_notification_callback"));
 
-	$fh = fopen($building_base_name, "r", $ctx);
+	$fh = fopen($building_base_name, "r", false, $ctx);
 	if ($fh === null) {
 		fprintf($stderr, "Error: can't open %s file." . PHP_EOL, $building_base_name);
 		die;
