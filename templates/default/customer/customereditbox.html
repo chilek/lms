@@ -1,4 +1,9 @@
 <!--// $Id$ //-->
+{if $pin_min_size == $pin_max_size}
+{$pin_tip=trans("Enter \$a characters PIN code", $pin_min_size)}
+{else}
+{$pin_tip=trans("Enter \$a to \$b characters PIN code", $pin_min_size, $pin_max_size)}
+{/if}
 <script type="text/javascript" src="img/location_box_expandable.js"></script>
 <SCRIPT type="text/javascript">
 <!--
@@ -8,7 +13,7 @@
 				return;
 
 		document.customeredit.elements['customerdata[pin]'].value =
-			generate_random_string(4 + Math.floor(Math.random() * 3), '0123456789');
+			generate_random_string({$pin_min_size} + Math.floor(Math.random() * {($pin_max_size-$pin_min_size)+1}), '{$pin_allowed_characters}');
 	}
 //-->
 </SCRIPT>
@@ -33,7 +38,7 @@
 							<TR>
 								<TD style="width: 1%;" class="bold">{trans("First name:")}</TD>
 								<TD style="width: 99%;">
-									<INPUT type="text" size="50" name="customerdata[name]" value="{$customerinfo.name|escape}" required {tip text="Enter first name of customer (optional)" trigger="name" bold=1}>
+									<INPUT type="text" size="50" name="customerdata[name]" value="{$customerinfo.name|escape}" {tip text="Enter first name of customer (optional)" trigger="name" bold=1}>
 								</TD>
 							</TR>
 						</TABLE>
@@ -174,7 +179,7 @@
 			<IMG src="img/pin.gif" alt="">
 		</TD>
 		<TD style="width: 98%;">
-			<INPUT type="number" pattern="{literal}[0-9]{4,6}{/literal}" required name="customerdata[pin]" value="{if $customerinfo.pin}{$customerinfo.pin}{/if}" size="6" title="{trans("Enter 4 to 6 digits PIN number")}" {tip text="Enter 4 to 6 digits PIN number" trigger="pin"}>&nbsp;
+			<INPUT type="text" required name="customerdata[pin]" size="{$pin_max_size}" value="{if $customerinfo.pin}{$customerinfo.pin}{/if}" {tip text=$pin_tip trigger="pin"}>&nbsp;
 			<A href="javascript:randomize()" {tip text="Generate PIN"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
@@ -387,7 +392,8 @@
 	</TR>
 	<TR>
 		<TD style="width: 100%;" class="text-right">
-			<A href="javascript:document.customeredit.submit();" accesskey="S">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
+			<input type="submit" style="display: none;" id="submitbtn">
+			<A href="#" id="submit" accesskey="S">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 			<A href="?m=customerinfo&amp;id={$customerinfo.id}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 		</TD>
 	</TR>
@@ -398,6 +404,18 @@
 <!--
 	$(function() {
 		$('form[name="customeredit"] [name="customerdata[lastname]"]').focus();
+
+		$('[name="customerdata[pin]"]').change(function() {
+			if (validate_random_string(this.value, {$pin_min_size}, {$pin_max_size}, '{$pin_allowed_characters}')) {
+				this.setCustomValidity('');
+			} else {
+				this.setCustomValidity('{$pin_tip}');
+			}
+		});
+
+		$('#submit').click(function() {
+			$('#submitbtn').click();
+		});
 	});
 //-->
 </SCRIPT>

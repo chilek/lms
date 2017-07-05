@@ -13,7 +13,7 @@
 	{
 		var add = "";
 		if(document.addbalance.original.checked && document.addbalance.copy.checked)
-			add = "";
+			add = "&which=original,copy";
 		else if(document.addbalance.original.checked && !document.addbalance.copy.checked)
 			add = "&which=original";
 		else if(!document.addbalance.original.checked && document.addbalance.copy.checked)

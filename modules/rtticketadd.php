@@ -24,8 +24,17 @@
  *  $Id$
  */
 
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
+
 $queue = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $ticket['customerid'] = isset($_GET['customerid']) ? intval($_GET['customerid']) : 0;
+
+$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+if (!$categories) {
+	$SMARTY->display('noaccess.html');
+	$SESSION->close();
+	die;
+}
 
 if(isset($_POST['ticket']))
 {
@@ -40,7 +49,7 @@ if(isset($_POST['ticket']))
 	if(empty($ticket['categories']))
 		$error['categories'] = trans('You have to select category!');
 
-	if(($LMS->GetUserRightsRT($AUTH->id, $queue) & 2) != 2)
+	if(($LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queue) & 2) != 2)
 		$error['queue'] = trans('You have no privileges to this queue!');
 
 	if($ticket['subject'] == '')
@@ -79,7 +88,7 @@ if(isset($_POST['ticket']))
 		$id = $LMS->TicketAdd($ticket, $files);
 
 		if (ConfigHelper::checkConfig('phpui.newticket_notify')) {
-			$user = $LMS->GetUserInfo($AUTH->id);
+			$user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 
 			$helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
 			if (!empty($helpdesk_sender_name))
@@ -103,6 +112,7 @@ if(isset($_POST['ticket']))
 			$headers['From'] = $mailfname.' <'.$mailfrom.'>';
 			$headers['Subject'] = sprintf("[RT#%06d] %s", $id, $ticket['subject']);
 			$headers['Reply-To'] = $headers['From'];
+			$headers['Message-ID'] = $LMS->GetLastMessageID();
 
 			$sms_body = $headers['Subject']."\n".$ticket['body'];
 			$body = $ticket['body']."\n\nhttp"
@@ -184,7 +194,7 @@ if(isset($_POST['ticket']))
 			$notify_author = ConfigHelper::checkConfig('phpui.helpdesk_author_notify');
 			$args = array(
 				'queue' => $queue,
-				'user' => $AUTH->id,
+				'user' => Auth::GetCurrentUser(),
 			);
 			if ($notify_author)
 				unset($args['user']);
@@ -228,10 +238,15 @@ if(isset($_POST['ticket']))
 	$SMARTY->assign('error', $error);
 
 	$queuelist = $LMS->GetQueueList(false);
+
+	foreach ($categories as &$category)
+		$category['checked'] = isset($ticket['categories'][$category['id']]) || count($categories) == 1;
+	unset($category);
 } else {
 	$queuelist = $LMS->GetQueueList(false);
 	if (!$queue && !empty($queuelist)) {
 		$firstqueue = reset($queuelist);
+		$queue = $firstqueue['id'];
 		if ($firstqueue['newticketsubject'] && $firstqueue['newticketbody'])
 			$ticket['customernotify'] = 1;
 	} elseif ($queue) {
@@ -239,26 +254,15 @@ if(isset($_POST['ticket']))
 		if ($queuedata['newticketsubject'] && $queuedata['newticketbody'])
 			$ticket['customernotify'] = 1;
 	}
+
+	$queuecategories = $LMS->GetQueueCategories($queue);
+	foreach ($categories as &$category)
+		if (isset($queuecategories[$category['id']]) || count($categories) == 1
+			// handle category id got from welcome module so this category will be selected
+			|| (isset($_GET['catid']) && $category['id'] == intval($_GET['catid'])))
+			$category['checked'] = 1;
+	unset($category);
 }
-
-$categories = $LMS->GetCategoryListByUser($AUTH->id);
-
-if (!$categories) {
-    $SMARTY->display('noaccess.html');
-    $SESSION->close();
-    die;
-}
-
-// handle category id got from welcome module so this category will be selected
-if (isset($_GET['catid']) && intval($_GET['catid']))
-	$ticket['categories'][intval($_GET['catid'])] = true;
-
-if ($categories) foreach ($categories as $category)
-{
-	$category['checked'] = isset($ticket['categories'][$category['id']]) || count($categories) == 1;
-	$ncategories[] = $category;
-}
-$categories = $ncategories;
 
 $layout['pagetitle'] = trans('New Ticket');
 

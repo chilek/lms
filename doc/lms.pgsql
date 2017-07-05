@@ -63,7 +63,7 @@ CREATE TABLE customers (
 	modid integer 		DEFAULT 0 NOT NULL,
 	deleted smallint 	DEFAULT 0 NOT NULL,
 	message text		DEFAULT '' NOT NULL,
-	pin varchar(6)		DEFAULT 0 NOT NULL,
+	pin varchar(255)		DEFAULT 0 NOT NULL,
 	cutoffstop integer	DEFAULT 0 NOT NULL,
 	consentdate integer	DEFAULT 0 NOT NULL,
 	einvoice smallint 	DEFAULT NULL,
@@ -1457,6 +1457,7 @@ CREATE TABLE rttickets (
   creatorid integer 	DEFAULT 0 NOT NULL,
   createtime integer 	DEFAULT 0 NOT NULL,
   resolvetime integer 	DEFAULT 0 NOT NULL,
+  source smallint	DEFAULT 0 NOT NULL,
   PRIMARY KEY (id)
 );
 
@@ -1548,6 +1549,16 @@ CREATE TABLE rtticketcategories (
 		REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	CONSTRAINT rtticketcategories_ticketid_key UNIQUE (ticketid, categoryid)
+);
+
+DROP SEQUENCE IF EXISTS rtqueuecategories_id_seq;
+CREATE SEQUENCE rtqueuecategories_id_seq;
+DROP TABLE IF EXISTS rtqueuecategories CASCADE;
+CREATE TABLE rtqueuecategories (
+	id integer DEFAULT nextval('rtqueuecategories_id_seq'::text) NOT NULL,
+	queueid integer NOT NULL REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	categoryid integer NOT NULL REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id)
 );
 
 /* ---------------------------------------------------
@@ -2364,7 +2375,7 @@ CREATE VIEW customeraddressview AS
     SELECT c.*,
         a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street,
         a1.house as building, a1.flat as apartment, a2.country_id as post_countryid,
-        a2.zip as post_zip, a1.city as post_city, a2.street as post_street,
+        a2.zip as post_zip, a2.city as post_city, a2.street as post_street,
         a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
         a1.address as address, a1.location AS full_address,
         a1.postoffice AS postoffice,
@@ -2622,6 +2633,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('userpanel', 'auth_type', '1', '', 0),
 ('userpanel', 'show_confirmed_documents_only', 'false', '', 0),
 ('userpanel', 'module_order', '', '', 0),
+('userpanel', 'visible_ticket_sources', '0;1;2;3;4;5;6;7', '', 0),
 ('directories', 'userpanel_dir', 'userpanel', '', 0);
 
 INSERT INTO netdeviceproducers (id, name) VALUES

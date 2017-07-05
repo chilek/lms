@@ -229,6 +229,7 @@ if (($fh = fopen($message_file, "r")) != NULL) {
 		'body' => $message,
 		'phonefrom' => empty($phone) ? '' : $phone,
 		'categories' => $cats,
+		'source' => RT_SOURCE_SMS,
 	));
 
 	if ($newticket_notify) {

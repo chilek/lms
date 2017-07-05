@@ -4,6 +4,8 @@
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
 <FORM method="POST" name="note" action="?m=rtnoteadd">
+<INPUT type="hidden" name="note[inreplyto]" value ="{$note.inreplyto|default:"0"}">
+<INPUT type="hidden" name="note[references]" value ="{$note.references|escape|default:""}">
 <INPUT type="hidden" name="note[ticketid]" value="{$note.ticketid}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">

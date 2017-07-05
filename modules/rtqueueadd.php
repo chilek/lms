@@ -61,6 +61,14 @@ if(isset($_POST['queue']))
 	elseif (!$queue['resolveticketsubject'] && $queue['resolveticketbody'])
 		$error['resolveticketsubject'] = trans('Resolve ticket subject should not be empty if you set resolve ticket body!');
 
+	$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+	if (isset($queue['categories'])) {
+		foreach ($categories as &$category)
+			if (isset($queue['categories'][$category['id']]))
+				$category['checked'] = 1;
+		unset($category);
+	}
+
 	if (!$error) {
 		$DB->Execute('INSERT INTO rtqueues (name, email, description, newticketsubject, newticketbody,
 				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody)
@@ -78,9 +86,15 @@ if(isset($_POST['queue']))
 					$DB->Execute('INSERT INTO rtrights(queueid, userid, rights) VALUES(?, ?, ?)', 
 						array($id, $right['id'], $right['rights']));
 
+		foreach ($categories as $category)
+			if ($category['checked'])
+				$DB->Execute('INSERT INTO rtqueuecategories (queueid, categoryid) VALUES (?, ?)',
+					array($id, $category['id']));
+
 		$SESSION->redirect('?m=rtqueueinfo&id='.$id);
 	}
-}
+} else
+	$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 
 $users = $LMS->GetUserNames();
 
@@ -96,6 +110,7 @@ $layout['pagetitle'] = trans('New Queue');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('queue', $queue);
+$SMARTY->assign('categories', $categories);
 $SMARTY->assign('error', $error);
 $SMARTY->display('rt/rtqueueadd.html');
 

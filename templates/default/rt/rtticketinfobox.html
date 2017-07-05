@@ -175,6 +175,16 @@
 								</TD>
 							</TR>
 							{/if}
+							<TR>
+                                                                <TD style="width: 1%;" class="bold nobr">
+                                                                        <IMG src="img/volcano.png" alt="">
+                                                                        {trans("Ticket source:")}
+                                                                </TD>
+                                                                <TD style="width: 99%;">
+								{$_RT_SOURCES[$ticket.source]}
+                                                                </TD>
+                                                        </TR>
+
 						</TABLE>
 					</TD>
 				</TR>

@@ -1509,6 +1509,11 @@ class LMS
         return $manager->TicketAdd($ticket, $files);
     }
 
+	public function GetLastMessageID() {
+		$manager = $this->getHelpdeskManager();
+		return $manager->GetLastMessageID();
+	}
+
     public function GetTicketContents($id)
     {
         $manager = $this->getHelpdeskManager();
@@ -1521,11 +1526,27 @@ class LMS
         return $manager->TicketChange($ticketid, $props);
     }
 
+    public function GetQueueCategories($queueid)
+    {
+        $manager = $this->getHelpdeskManager();
+        return $manager->GetQueueCategories($queueid);
+    }
+
     public function GetMessage($id)
     {
         $manager = $this->getHelpdeskManager();
         return $manager->GetMessage($id);
     }
+
+	public function GetFirstMessage($ticketid) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->GetFirstMessage($ticketid);
+	}
+
+	public function GetLastMessage($ticketid) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->GetLastMessage($ticketid);
+	}
 
     /*
      *  LMS-UI configuration

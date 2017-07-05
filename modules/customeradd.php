@@ -67,6 +67,16 @@ if (isset($_GET['ajax'])) {
 
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'customercontacttypes.php');
 
+$pin_min_size = intval(ConfigHelper::getConfig('phpui.pin_min_size', 4));
+if (!$pin_min_size)
+	$pin_min_size = 4;
+$pin_max_size = intval(ConfigHelper::getConfig('phpui.pin_max_size', 6));
+if (!$pin_max_size)
+	$pin_max_size = 6;
+if ($pin_min_size > $pin_max_size)
+	$pin_max_size = $pin_min_size;
+$pin_allowed_characters = ConfigHelper::getConfig('phpui.pin_allowed_characters', '0123456789');
+
 $customeradd = array();
 
 if (isset($_POST['customeradd'])) {
@@ -147,8 +157,8 @@ if (isset($_POST['customeradd'])) {
 
 	if ($customeradd['pin'] == '')
 		$error['pin'] = trans('PIN code is required!');
-    else if (!preg_match('/^[0-9]{4,6}$/', $customeradd['pin']))
-	    $error['pin'] = trans('Incorrect PIN code!');
+	elseif (!validate_random_string($customeradd['pin'], $pin_min_size, $pin_max_size, $pin_allowed_characters))
+		$error['pin'] = trans('Incorrect PIN code!');
 
 	$contacts = array();
 
@@ -273,6 +283,7 @@ $hook_data = $LMS->executeHook(
 $customeradd = $hook_data['customeradd'];
 
 $SMARTY->assign('xajax'        , $LMS->RunXajax());
+$SMARTY->assign(compact('pin_min_size', 'pin_max_size', 'pin_allowed_characters'));
 $SMARTY->assign('cstateslist'  , $LMS->GetCountryStates());
 $SMARTY->assign('countrieslist', $LMS->GetCountries());
 $SMARTY->assign('divisions'    , $DB->GetAll('SELECT id, shortname, status FROM divisions ORDER BY shortname'));

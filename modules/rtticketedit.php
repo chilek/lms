@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
+
 $id = intval($_GET['id']);
 if ($id && !isset($_POST['ticket'])) {
 	if(($LMS->GetUserRightsRT($AUTH->id, 0, $id) & 2) != 2 || !$LMS->GetUserRightsToCategory($AUTH->id, 0, $id))
@@ -171,7 +173,9 @@ if(isset($_POST['ticket']))
 			'cause' => $ticketedit['cause'],
 			'state' => $ticketedit['state'],
 			'subject' => $ticketedit['subject'],
-			'customerid' => $ticketedit['customerid'],			
+			'customerid' => $ticketedit['customerid'],
+			'categories' => isset($ticketedit['categories']) ? array_keys($ticketedit['categories']) : array(),
+			'source' => $ticketedit['source'],
 		);
 		$LMS->TicketChange($ticketedit['ticketid'], $props);
 

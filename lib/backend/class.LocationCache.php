@@ -13,6 +13,8 @@ class LocationCache {
     private $city_by_ident        = array();
     private $city_by_ident_loaded = false;
 
+    private $city_with_sections_by_id = array();
+
     // location buildings cache
     private $buildings            = array();
 
@@ -68,19 +70,6 @@ class LocationCache {
 			default:
 				throw new Exception('Illegal state exception. Incorrect load policy value.');
 		}
-	}
-
-	private function tercToKey($terc) {
-		sscanf($terc, "%02d%02d%02d%01d", $woj, $pow, $gm, $gmtyp);
-		return $woj . '|' . $pow . '|' . $gm . '|' . $gmtyp;
-	}
-
-	private function simcToKey($simc) {
-		return ltrim($simc, '0');
-	}
-
-	private function ulicToKey($ulic) {
-		return ltrim($ulic, '0');
 	}
 
 	/*!
@@ -142,10 +131,7 @@ class LocationCache {
 	 * \param null  if record wasn't found
 	 */
 	public function getCityByIdent($terc, $simc) {
-		$terc = $this->tercToKey($terc);
-		$simc = $this->simcToKey($simc);
-
-	    switch ( $this->load_policy ) {
+		switch ( $this->load_policy ) {
 			case self::LOAD_FULL:
 				if ( $this->city_by_ident_loaded == false ) {
 					$this->initCityByIdentCache();
@@ -163,7 +149,7 @@ class LocationCache {
 			        return $this->city_by_ident[ $terc . '|' . $simc ];
 			    } else {
 					$this->city_by_ident = $this->DB->GetAllByKey(
-						'SELECT lc.id, ' . $this->DB->Concat('ls.ident', "'|'", 'ld.ident', "'|'", 'lb.ident', "'|'", 'lb.type', "'|'", 'lc.ident') . ' AS terc_simc,
+						'SELECT lc.id, ' . $this->DB->Concat('ls.ident', 'ld.ident', 'lb.ident', 'lb.type', "'|'", 'lc.ident') . ' AS terc_simc,
 							lc.cityid FROM location_cities lc
 						JOIN location_boroughs lb ON lb.id = lc.boroughid
 						JOIN location_districts ld ON ld.id = lb.districtid
@@ -192,30 +178,52 @@ class LocationCache {
 	 * \param null   if record wasn't found
 	 */
 	public function getStreetByIdent( $cityid, $ulic ) {
-		$ulic = $this->ulicToKey($ulic);
-
 	    switch ( $this->load_policy ) {
 	    	case self::LOAD_FULL:
 				if ( $this->streets_loaded == false ) {
 					$this->streets = $this->DB->getAllByKey('SELECT id, ' . $this->DB->Concat('cityid', "'|'", 'ident') . ' AS cityid_ident,
 						ident FROM location_streets', 'cityid_ident');
+
+					foreach ($this->city_with_sections_by_id as &$city)
+						$city['streets'] = $this->DB->getAllByKey('SELECT id, ' . $this->DB->Concat('cityid', "'|'", 'ident') . ' AS cityid_ident,
+							ident FROM location_streets WHERE cityid IN (' . implode(',', $this->city_with_sections_by_id[$cityid]['citysections'])
+							. ')', 'ident');
+					unset($city);
+
 					$this->streets_loaded = true;
 				}
 
-				if ( isset($this->streets[$cityid . '|' . $ulic]) ) {
+				if (isset($this->city_with_sections_by_id[$cityid])) {
+					if (isset($this->city_with_sections_by_id[$cityid]['streets'][$ulic]))
+						return $this->city_with_sections_by_id[$cityid]['streets'][$ulic];
+					else
+						return null;
+				} elseif ( isset($this->streets[$cityid . '|' . $ulic]) ) {
 					return $this->streets[$cityid . '|' . $ulic];
 				} else {
 					return null;
 				}
 	    	break;
 
-	        case self::LOAD_ONE:
-	        	if ( !isset($this->streets[$cityid . '|' . $ulic]) ) {
+			case self::LOAD_ONE:
+				if ( !isset($this->streets[$cityid . '|' . $ulic]) ) {
 					$this->streets = $this->DB->getAllByKey('SELECT id, ' . $this->DB->Concat('cityid', "'|'", 'ident') . ' AS cityid_ident,
 						ident FROM location_streets WHERE cityid = ?', 'cityid_ident', array( $cityid ));
 				}
 
-				if ( isset($this->streets[$cityid . '|' . $ulic]) ) {
+				if (isset($this->city_with_sections_by_id[$cityid]) && !isset($this->city_with_sections_by_id[$cityid]['streets'])) {
+					$this->city_with_sections_by_id[$cityid]['streets'] =
+						$this->DB->getAllByKey('SELECT id, ' . $this->DB->Concat('cityid', "'|'", 'ident') . ' AS cityid_ident,
+							ident FROM location_streets WHERE cityid IN (' . implode(',', $this->city_with_sections_by_id[$cityid]['citysections'])
+							. ')', 'ident');
+				}
+
+				if (isset($this->city_with_sections_by_id[$cityid])) {
+					if (isset($this->city_with_sections_by_id[$cityid]['streets'][$ulic]))
+						return $this->city_with_sections_by_id[$cityid]['streets'][$ulic];
+					else
+						return null;
+				} elseif ( isset($this->streets[$cityid . '|' . $ulic]) ) {
 					return $this->streets[$cityid . '|' . $ulic];
 				} else {
 					return null;
@@ -254,6 +262,25 @@ class LocationCache {
 	    }
 	}
 
+	private function initCityWithSections() {
+		$this->city_with_sections_by_id = $this->DB->GetAllByKey("SELECT lb2.cityid, lb2.cityname AS cityname, lb2.cityident AS cityident,
+				(" . $this->DB->GroupConcat('lc.id', ',', true) . ") AS citysections
+			FROM location_boroughs lb
+			JOIN location_cities lc ON lc.boroughid = lb.id
+			JOIN (SELECT lb.id, lb.districtid, lc.id AS cityid, lc.name AS cityname, lc.ident AS cityident
+				FROM location_boroughs lb
+				JOIN location_cities lc ON lc.boroughid = lb.id
+				WHERE lb.type = 1
+			) lb2 ON lb2.districtid = lb.districtid
+			WHERE lb.type = 8 OR lb.type = 9
+			GROUP BY lb2.cityid, lb2.cityname, lb2.cityident", 'cityid');
+		if (empty($this->city_with_sections_by_id))
+			return array();
+		foreach ($this->city_with_sections_by_id as &$city)
+			$city['citysections'] = explode(',', $city['citysections']);
+		unset($city);
+	}
+
     /*
      * \brief Create cache array or try imitate from other cache file.
      */
@@ -265,12 +292,13 @@ class LocationCache {
             }
 		} else {
 			$this->city_by_ident = $this->DB->GetAllByKey('SELECT lc.id, '
-					. $this->DB->Concat('ls.ident', "'|'", 'ld.ident', "'|'", 'lb.ident', "'|'", 'lb.type', "'|'", 'lc.ident')
+					. $this->DB->Concat('ls.ident', 'ld.ident', 'lb.ident', 'lb.type', "'|'", 'lc.ident')
 					. ' AS terc_simc, lc.cityid FROM location_cities lc
 				JOIN location_boroughs lb ON lb.id = lc.boroughid
 				JOIN location_districts ld ON ld.id = lb.districtid
 				JOIN location_states ls ON ls.id = ld.stateid',
 				'terc_simc');
+			$this->initCityWithSections();
 		}
 
     	$this->city_by_ident_loaded = true;

@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -31,6 +31,7 @@
  */
 class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterface
 {
+	private $lastmessageid = null;
 
     public function GetQueue($id)
     {
@@ -40,6 +41,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 $user['rights'] = $this->GetUserRightsRT($user['id'], $id);
                 $queue['rights'][] = $user;
             }
+            $queue['categories'] = $this->db->GetAll('SELECT categoryid, name
+                FROM rtqueuecategories
+                JOIN rtcategories c ON c.id = categoryid
+                WHERE queueid = ?', array($id));
             return $queue;
         } else
             return NULL;
@@ -111,7 +116,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         if ($result = $this->db->GetAll(
                 'SELECT DISTINCT t.id, t.customerid, c.address, vusers.name AS ownername,
-			    t.subject, state, owner AS ownerid, t.requestor AS req,
+			    t.subject, state, owner AS ownerid, t.requestor AS req, t.source,
 			    CASE WHEN customerid = 0 THEN t.requestor ELSE '
                 . $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor,
 			    t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
@@ -367,55 +372,69 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     public function TicketAdd($ticket, $files = NULL)
     {
         $this->db->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject,
-				state, owner, createtime, cause, creatorid)
-				VALUES (?, ?, ?, ?, 0, ?, ?NOW?, ?, ?)', array($ticket['queue'],
+				state, owner, createtime, cause, creatorid, source)
+				VALUES (?, ?, ?, ?, 0, ?, ?, ?, ?, ?)', array($ticket['queue'],
             $ticket['customerid'],
             $ticket['requestor'],
             $ticket['subject'],
             isset($ticket['owner']) ? $ticket['owner'] : 0,
+            isset($ticket['createtime']) ? $ticket['createtime'] : time(),
             isset($ticket['cause']) ? $ticket['cause'] : 0,
-            isset($this->auth->id) ? $this->auth->id : 0
+            isset($this->auth->id) ? $this->auth->id : 0,
+            isset($ticket['source']) ? $ticket['source'] : 0
         ));
 
         $id = $this->db->GetLastInsertID('rttickets');
 
+		$this->lastmessageid = '<msg.' . $ticket['queue'] . '.' . $id . '.' . time() . '@rtsystem.' . gethostname() . '>';
+
         $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
-				subject, body, mailfrom, phonefrom)
-				VALUES (?, ?, ?NOW?, ?, ?, ?, ?)', array($id,
+				subject, body, mailfrom, phonefrom, messageid)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array($id,
             $ticket['customerid'],
+            isset($ticket['createtime']) ? $ticket['createtime'] : time(),
             $ticket['subject'],
             preg_replace("/\r/", "", $ticket['body']),
             empty($ticket['mailfrom']) ? '' : $ticket['mailfrom'],
-            empty($ticket['phonefrom']) ? '' : $ticket['phonefrom']));
+            empty($ticket['phonefrom']) ? '' : $ticket['phonefrom'],
+            $this->lastmessageid));
 
 		$msgid = $this->db->GetLastInsertID('rtmessages');
 
-        foreach (array_keys($ticket['categories']) as $catid)
-            $this->db->Execute('INSERT INTO rtticketcategories (ticketid, categoryid)
+		foreach (array_keys($ticket['categories']) as $catid)
+			$this->db->Execute('INSERT INTO rtticketcategories (ticketid, categoryid)
 				VALUES (?, ?)', array($id, $catid));
 
-        if (!empty($files) && ConfigHelper::getConfig('rt.mail_dir')) {
-            $dir = ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d', $id, $msgid);
-            $dir_permission = intval(ConfigHelper::getConfig('rt.mail_dir_permission', '0700'), 8);
-            @mkdir(ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR . sprintf('%06d', $id), $dir_permission);
-            @mkdir($dir, $dir_permission);
-            foreach ($files as $file) {
-                $newfile = $dir . DIRECTORY_SEPARATOR . $file['name'];
-                if (@rename($ticket['tmppath'] . DIRECTORY_SEPARATOR . $file['name'], $newfile))
-                    $this->db->Execute('INSERT INTO rtattachments (messageid, filename, contenttype)
-							VALUES (?,?,?)', array($msgid, $file['name'], $file['type']));
-            }
-        }
+		if (!empty($files) && ConfigHelper::getConfig('rt.mail_dir')) {
+			$dir = ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d', $id, $msgid);
+			$dir_permission = intval(ConfigHelper::getConfig('rt.mail_dir_permission', '0700'), 8);
+			@mkdir(ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR . sprintf('%06d', $id), $dir_permission);
+			@mkdir($dir, $dir_permission);
+			if (isset($ticket['tmppath']))
+				$tmppath = $ticket['tmppath'] . DIRECTORY_SEPARATOR;
+			else
+				$tmppath = null;
+			foreach ($files as $file) {
+				$newfile = $dir . DIRECTORY_SEPARATOR . $file['name'];
+				if (@rename(empty($tmppath) ? $file['tmp_name'] : $tmppath . $file['name'], $newfile))
+					$this->db->Execute('INSERT INTO rtattachments (messageid, filename, contenttype)
+						VALUES (?,?,?)', array($msgid, $file['name'], $file['type']));
+			}
+		}
 
         return $id;
     }
+
+	public function GetLastMessageID() {
+		return $this->lastmessageid;
+	}
 
     public function GetTicketContents($id)
     {
         global $RT_STATES;
 
         $ticket = $this->db->GetRow('SELECT t.id AS ticketid, t.queueid, rtqueues.name AS queuename,
-				t.requestor, t.state, t.owner, t.customerid, t.cause, t.creatorid, c.name AS creator, '
+				t.requestor, t.state, t.owner, t.customerid, t.cause, t.creatorid, c.name AS creator, t.source, '
 				. $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
 				o.name AS ownername, t.createtime, t.resolvetime, t.subject, t.deleted, t.deltime, t.deluserid
 				FROM rttickets t
@@ -456,18 +475,57 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return $ticket;
     }
 
-    public function GetMessage($id)
-    {
-        if ($message = $this->db->GetRow('SELECT * FROM rtmessages WHERE id=?', array($id)))
-            $message['attachments'] = $this->db->GetAll('SELECT * FROM rtattachments WHERE messageid = ?', array($id));
-        return $message;
-    }
+	public function GetMessage($id) {
+		if ($message = $this->db->GetRow('SELECT * FROM rtmessages WHERE id=?', array($id))) {
+			$message['attachments'] = $this->db->GetAll('SELECT * FROM rtattachments WHERE messageid = ?', array($id));
+
+			$references = array();
+			$reply = $message;
+			while ($reply['inreplyto']) {
+				if ($reply['messageid'])
+					$references[] = $reply['messageid'];
+				$reply = $this->db->GetRow('SELECT messageid, inreplyto FROM rtmessages WHERE id = ?',
+					array($reply['inreplyto']));
+			}
+			if ($reply['messageid'])
+				$references[] = $reply['messageid'];
+			$message['references'] = array_reverse($references);
+		}
+		return $message;
+	}
+
+	public function GetFirstMessage($ticketid) {
+		$messageid = $this->db->GetOne('SELECT MIN(id) FROM rtmessages
+			WHERE ticketid = ? AND (type = ? OR type = ?)
+			GROUP BY ticketid', array($ticketid, RTMESSAGE_REGULAR, RTMESSAGE_NOTE));
+		if ($messageid)
+			return $this->GetMessage($messageid);
+		else
+			return null;
+	}
+
+	public function GetLastMessage($ticketid) {
+		$messageid = $this->db->GetOne('SELECT MAX(id) FROM rtmessages
+			WHERE ticketid = ? AND (type = ? OR type = ?)
+			GROUP BY ticketid', array($ticketid, RTMESSAGE_REGULAR, RTMESSAGE_NOTE));
+		if ($messageid)
+			return $this->GetMessage($messageid);
+		else
+			return null;
+	}
 
     public function TicketChange($ticketid, array $props)
     {
-        global $LMS, $RT_STATES, $RT_CAUSE;
+        global $LMS, $RT_STATES, $RT_CAUSE, $RT_SOURCES;
 
-        $ticket = $this->db->GetRow('SELECT owner, queueid, cause, state, subject, customerid, requestor FROM rttickets WHERE id=?', array($ticketid));
+		$ticket = $this->db->GetRow('SELECT owner, queueid, cause, state, subject, customerid, requestor, source,
+			' . $this->db->GroupConcat('c.categoryid') . ' AS categories
+			FROM rttickets t
+			LEFT JOIN rtticketcategories c ON c.ticketid = t.id
+			WHERE t.id=?
+			GROUP BY owner, queueid, cause, state, subject, customerid, requestor, source',
+			array($ticketid));
+
         $note = "";
         $type = 0;
 
@@ -488,6 +546,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $type = $type | RTMESSAGE_CAUSE_CHANGE;
         } else
 			   $props['cause'] = $ticket['cause'];
+        
+	if($ticket['source'] != $props['source'] && isset($props['source'])) {
+            $note .= trans('Ticket\'s source has been changed from $a to $b.', $RT_SOURCES[$ticket['source']], $RT_SOURCES[$props['source']]) .'<br>';
+            $type = $type | RTMESSAGE_SOURCE_CHANGE;
+        } else
+			   $props['source'] = $ticket['source'];
 
         if($ticket['state'] != $props['state'] && isset($props['state'])) {
             $note .= trans('Ticket\'s state has been changed from $a to $b.', $RT_STATES[$ticket['state']], $RT_STATES[$props['state']]) .'<br>';
@@ -512,26 +576,49 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }else
             $props['customerid'] = $ticket['customerid'];
 
+		if (isset($props['categories'])) {
+			$ticket['categories'] = empty($ticket['categories']) ? array() : explode(',', $ticket['categories']);
+			$categories = $this->db->GetAllByKey('SELECT id, name, description
+				FROM rtcategories', 'id');
+
+			$categories_added = array_diff($props['categories'], $ticket['categories']);
+			$categories_removed = array_diff($ticket['categories'], $props['categories']);
+			if (!empty($categories_added))
+				foreach ($categories_added as $category)
+					$note .= trans('Category $a has been added to ticket.', $categories[$category]['name']) . '<br>';
+			if (!empty($categories_removed))
+				foreach ($categories_removed as $category)
+					$note .= trans('Category $a has been removed from ticket.', $categories[$category]['name']) . '<br>';
+			$type = $type | RTMESSAGE_CATEGORY_CHANGE;
+		}
+
 		if ($type) {
 			if ($props['state'] == RT_RESOLVED) {
 				$resolvetime = time();
 				if ($this->db->GetOne('SELECT owner FROM rttickets WHERE id=?', array($ticketid))) {
-					$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, resolvetime=?, subject = ?, customerid = ? WHERE id = ?', array(
-						$props['queueid'], $props['owner'], $props['cause'], $props['state'], $resolvetime, $props['subject'], $props['customerid'], $ticketid));
+					$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, resolvetime=?, subject = ?, customerid = ?, source = ? WHERE id = ?', array(
+						$props['queueid'], $props['owner'], $props['cause'], $props['state'], $resolvetime, $props['subject'], $props['customerid'], $props['source'], $ticketid));
 					$this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
 						VALUES(?, ?, ?, ?, ?NOW?)', array($this->auth->id, $ticketid, $type, $note));
 				} else {
-					$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, resolvetime = ?, subject = ?, customerid = ?  WHERE id = ?', array(
-						$props['queueid'], $this->auth->id, $props['cause'], $props['state'], $resolvetime, $props['subject'], $props['customerid'], $ticketid));
+					$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, resolvetime = ?, subject = ?, customerid = ?, source = ? WHERE id = ?', array(
+						$props['queueid'], $this->auth->id, $props['cause'], $props['state'], $resolvetime, $props['subject'], $props['customerid'], $props['source'], $ticketid));
 					$this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
 						VALUES(?, ?, ?, ?, ?NOW?)', array($this->auth->id, $ticketid, $type, $note));
 				}
 			} else {
-				$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, subject = ?, customerid = ?  WHERE id = ?', array(
-					$props['queueid'], $props['owner'], $props['cause'], $props['state'], $props['subject'], $props['customerid'], $ticketid));
+				$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, subject = ?, customerid = ?, source = ? WHERE id = ?', array(
+					$props['queueid'], $props['owner'], $props['cause'], $props['state'], $props['subject'], $props['customerid'], $props['source'], $ticketid));
 				$this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
 					VALUES(?, ?, ?, ?, ?NOW?)', array($this->auth->id, $ticketid, $type, $note));
 			}
 		}
     }
+
+	public function GetQueueCategories($queueid) {
+		return $this->db->GetAllByKey('SELECT c.id, c.name
+			FROM rtqueuecategories qc
+			JOIN rtcategories c ON c.id = qc.categoryid
+			WHERE queueid = ?', 'id', array($queueid));
+	}
 }

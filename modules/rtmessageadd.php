@@ -25,7 +25,9 @@
  */
 
 function MessageAdd($msg, $headers, $files = NULL) {
-	global $DB, $LMS, $tmppath;
+	global $LMS, $tmppath;
+
+	$DB = LMSDB::getInstance();
 	$time = time();
 
 	$head = '';
@@ -92,7 +94,8 @@ if(isset($_POST['message']))
 		$queue = $LMS->GetQueueByTicketId($message['ticketid']);
 		$user = $LMS->GetUserInfo($AUTH->id);
 
-		$message['messageid'] = '<msg.'.$message['ticketid'].'.'.$queue['id'].'.'.time().'@rtsystem.'.gethostbyaddr(gethostbyname($_SERVER['SERVER_NAME'])).'>';
+		$message['messageid'] = '<msg.' . $queue['id'] . '.' . $message['ticketid'] . '.' . time()
+			. '@rtsystem.' . gethostname() . '>';
 
 		if($message['sender']=='user')
 		{
@@ -124,6 +127,12 @@ if(isset($_POST['message']))
 		if (!ConfigHelper::checkConfig('phpui.helpdesk_backend_mode') || $message['destination'] == '') {
 			$headers = array();
 
+			if ($message['references']) {
+				$headers['References'] = $message['references'];
+				$headers['In-Reply-To'] = array_pop(explode(' ', $message['references']));
+			}
+			$headers['Message-ID'] = $message['messageid'];
+
 			if($message['destination'] && $message['userid']
 				&& ($user['email'] || $queue['email'])
 				&& $message['destination'] != $queue['email'])
@@ -135,11 +144,7 @@ if(isset($_POST['message']))
 				$headers['From'] = $mailfname.' <'.$message['mailfrom'].'>';
 				$headers['To'] = '<'.$message['destination'].'>';
 				$headers['Subject'] = $message['subject'];
-				$headers['Message-Id'] = $message['messageid'];
 				$headers['Reply-To'] = $headers['From'];
-
-				if ($message['references'])
-					$headers['References'] = $message['references'];
 
 				$body = $message['body'];
 
@@ -156,7 +161,6 @@ if(isset($_POST['message']))
 			}
 			else
 			{
-				$message['messageid'] = '';
 				if($message['customerid'] || $message['userid'])
 					$message['mailfrom'] = '';
 				$message['headers'] = '';
@@ -188,9 +192,11 @@ if(isset($_POST['message']))
 			$headers['From'] = $mailfname.' <'.$message['mailfrom'].'>';
 			$headers['To'] = '<'.$message['destination'].'>';
 			$headers['Subject'] = $message['subject'];
-			if ($message['references'])
+			if ($message['references']) {
 				$headers['References'] = $message['references'];
-			$headers['Message-Id'] = $message['messageid'];
+				$headers['In-Reply-To'] = array_pop(explode(' ', $message['references']));
+			}
+			$headers['Message-ID'] = $message['messageid'];
 			$headers['Reply-To'] = $headers['From'];
 
 			$body = $message['body'];
@@ -229,7 +235,6 @@ if(isset($_POST['message']))
 			'state' => $message['state']
 		);
 		$LMS->TicketChange($message['ticketid'], $props);
-		
 
 		$service = ConfigHelper::getConfig('sms.service');
 
@@ -404,7 +409,7 @@ else
 	
 	if(isset($_GET['id']))
 	{
-		$reply = $LMS->GetMessage($_GET['id']); 
+		$reply = $LMS->GetMessage($_GET['id']);
 
 		if($reply['replyto'])
 			$message['destination'] = preg_replace('/^.* <(.+@.+)>/','\1',$reply['replyto']);
@@ -425,7 +430,7 @@ else
 
 		$message['subject'] = 'Re: '.$reply['subject'];
 		$message['inreplyto'] = $reply['id'];
-		$message['references'] = $reply['messageid'];
+		$message['references'] = implode(' ', $reply['references']);
 
 		if (ConfigHelper::checkConfig('phpui.helpdesk_reply_body')) {
 			$body = explode("\n",textwrap(strip_tags($reply['body']),74));
@@ -435,6 +440,10 @@ else
 
 		if(!preg_match('/\[RT#[0-9]{6}\]/i', $message['subject'])) 
 			$message['subject'] .= sprintf(' [RT#%06d]', $message['ticketid']); 
+	} else {
+		$reply = $LMS->GetFirstMessage($_GET['ticketid']);
+		$message['inreplyto'] = $reply['id'];
+		$message['references'] = implode(' ', $reply['references']);
 	}
 }
 

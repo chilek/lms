@@ -114,7 +114,7 @@ if(isset($_POST['event']))
                 if (isset($event['helpdesk']))
                 {
                     $ticket['queue'] = $event['rtqueue'];
-                    $ticket['customerid'] = $event['customerid'];
+                    $ticket['customerid'] = isset($event['customerid']) ? $event['customerid'] : $event['custid'];
                     $ticket['requestor'] = $event['name']." ".$event['surname'];
                     $ticket['subject'] = $event['title'];
                     $ticket['mailfrom'] = $event['email'];
@@ -166,6 +166,7 @@ if(isset($_POST['event']))
 
 $event['date'] = isset($event['date']) ? $event['date'] : $SESSION->get('edate');
 if(empty($event['customerid']) && !empty($_GET['customerid'])) {
+	$event['customername'] = $LMS->GetCustomerName($_GET['customerid']);
 	$event['customerid'] = intval($_GET['customerid']);
 	$SMARTY->assign('nodes_location', GetNodesLocation($event['customerid']));
 }

@@ -207,7 +207,7 @@ CREATE TABLE customers (
   modid int(11) 	NOT NULL DEFAULT '0',
   deleted tinyint(1) 	NOT NULL DEFAULT '0',
   message text 		NOT NULL,
-  pin varchar(6)	NOT NULL DEFAULT '0',
+  pin varchar(255)	NOT NULL DEFAULT '0',
   cutoffstop int(11) 	NOT NULL DEFAULT '0',
   consentdate int(11)   NOT NULL DEFAULT '0',
   einvoice tinyint(1)   DEFAULT NULL,
@@ -839,6 +839,7 @@ CREATE TABLE rttickets (
   creatorid int(11) NOT NULL DEFAULT '0',
   createtime int(11) NOT NULL DEFAULT '0',
   resolvetime int(11) NOT NULL DEFAULT '0',
+  source tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   INDEX queueid (queueid),
   INDEX customerid (customerid),
@@ -937,6 +938,19 @@ CREATE TABLE rtticketcategories (
 	FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (categoryid) REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
+
+# --------------------------------------------------------
+#
+# Structure of table rtqueuecategories
+#
+CREATE TABLE rtqueuecategories (
+	id int(11) NOT NULL auto_increment,
+	queueid int(11) NOT NULL,
+	categoryid int(11) NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY (queueid) REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (categoryid) REFERENCES rtcategories (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 # --------------------------------------------------------
 #
@@ -2246,7 +2260,7 @@ CREATE VIEW customeraddressview AS
     SELECT c.*,
         a1.country_id as countryid, a1.zip as zip, a1.city as city, a1.street as street,
         a1.house as building, a1.flat as apartment, a2.country_id as post_countryid,
-        a2.zip as post_zip, a1.city as post_city, a2.street as post_street,
+        a2.zip as post_zip, a2.city as post_city, a2.street as post_street,
         a2.house as post_building, a2.flat as post_apartment, a2.name as post_name,
         a1.address as address, a1.location AS full_address,
         a1.postoffice AS postoffice,
@@ -2555,6 +2569,7 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('userpanel','auth_type','1','',0),
 ('userpanel', 'show_confirmed_documents_only', 'false', '', 0),
 ('userpanel', 'module_order', '', '', 0),
+('userpanel', 'visible_ticket_sources', '0;1;2;3;4;5;6;7', '', 0),
 ('directories','userpanel_dir','userpanel','',0);
 
 INSERT INTO netdeviceproducers (id, name) VALUES

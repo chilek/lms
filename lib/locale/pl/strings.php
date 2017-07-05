@@ -511,7 +511,8 @@ $_LANG['End:'] = 'Koniec:';
 $_LANG['End of DHCP range:'] = 'Koniec zakresu DHCP:';
 $_LANG['End of DHCP range has to be equal or greater than start!'] = 'Koniec zakresu DHCP musi być równy lub większy niż jego początek!';
 $_LANG['End time must not precede start time!'] = 'Czas zakończenia musi być późniejszy niż czas rozpoczęcia!';
-$_LANG['Enter 4 to 6 digits PIN number'] = 'Wprowadź 4 do 6-u cyfr numeru PIN';
+$_LANG['Enter $a characters PIN code'] = 'Wprowadź kod PIN o długości $a znaków';
+$_LANG['Enter $a to $b characters PIN code'] = 'Wprowadź kod PIN o długości od $a do $b znaków';
 $_LANG['Enter account quota in MB'] = 'Wprowadź limit dla konta w MB';
 $_LANG['Enter account name'] = 'Wprowadź nazwę konta';
 $_LANG['Enter additional information'] = 'Wprowadź dodatkowe informacje';
@@ -2760,6 +2761,7 @@ $_LANG['State'] = 'Województwo';
 $_LANG['Street'] = 'Ulica';
 $_LANG['street'] = 'ulica';
 $_LANG['TERRIT-DB'] = 'Baza TERYT';
+$_LANG['$a (TERRIT)'] = '$a (TERYT)';
 $_LANG['City has not been selected!'] = 'Nie wybrano miasta!';
 $_LANG['Flat number is too long (max. 8 characters)!'] = 'Numer mieszkania jest za długi (max. 8 znaków)!';
 $_LANG['Zip code is too long (max. 8 characters)!'] = 'Kod pocztowy jest za długi (max. 8 znaków)!';
@@ -3035,11 +3037,12 @@ $_LANG['no operation on message template'] = 'brak czynności na szablonie wiado
 
 $_LANG['Assign to me'] = 'Przypisz do mnie';
 $_LANG['Ticket has been assigned to user $a.'] = 'Zgłoszenie zostało przypisane do użytkownika $a.';
+$_LANG['Ticket\'s source has been changed from $a to $b.'] = 'Źródło zgłoszenia zostało zmienione z $a na $b.';
 $_LANG['Ticket has been moved from queue $a to queue $b.'] = 'Zgłoszenie zostało przeniesione z kolejki $a do kolejki $b.';
 
 $_LANG['www'] = 'www';
 $_LANG['any sms'] = 'dowolny sms';
-$_LANG['userpanel'] = 'panel abonencki';
+$_LANG['userpanel'] = 'Panel abonencki';
 $_LANG['userpanel urgent'] = 'panel abonencki (pilne)';
 $_LANG['I confirm reading'] = 'Zapoznałem się';
 $_LANG['Urgent'] = 'Pilna';
@@ -3322,6 +3325,7 @@ $_LANG['Payment for liabilities'] = 'Wpłata na poczet należności';
 
 $_LANG['Check if sent electronic invoices on this email'] = 'Zaznacz jeśli na ten adres e-mail mają być wysyłane elektroniczne faktury';
 $_LANG['Not visible by the customer in electronic Customer Service Representative'] = 'Niewidoczny dla klienta w elektronicznym biurze obsługi klienta';
+$_LANG['eCSR'] = 'eBOK';
 $_LANG['If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices'] = 'Jeśli klient chce otrzymywać fakturę elektroniczną musi zostać zaznaczony adres e-mail na który mają być wysyłane e-faktury';
 $_LANG['Cancellation of a traditional invoice (agreement on an electronic invoice):'] = 'Rezygnacja z faktury tradycyjnej (zgoda na fakturę elektroniczną):';
 $_LANG['Check if send notification'] = 'Zaznacz, jeżeli chcesz wysyłać powiadomienia';
@@ -3575,6 +3579,7 @@ $_LANG['without zip'] = 'bez kodu pocztowego';
 $_LANG['without city'] = 'bez miasta';
 
 $_LANG['Instant messengers'] = 'Komunikatory internetowe';
+$_LANG['Letter complaint'] = 'Pismo reklamacyjne';
 $_LANG['Enter IM uid (optional)'] = 'Podaj identyfikator użytkownika (opcjonalne)';
 $_LANG['Check if IM uid should be disabled'] = 'Oznacz, jeśli identyfikator użytkownika ma być wyłączony';
 $_LANG['IM uid is required!'] = 'Identyfikator użytkownika jest wymagany!';
@@ -3636,6 +3641,8 @@ $_LANG['duty'] = 'dyżur';
 $_LANG['If set to "true" then logout confirmation is required. Default "false"'] = 'Ustawienie opcji na "true" wymusza potwierdzenie wylogowania. Domyślnie wyłączone';
 
 $_LANG['SMS from $a'] = 'SMS od $a';
+$_LANG['Ticket source:'] = 'Źródło zgłoszenia:';
+$_LANG['Select request source'] = 'Wybierz źródło zgłoszenia';
 
 $_LANG['Add new request to Helpdesk'] = 'Dodaj nowe zgłoszenie do Helpdesk';
 $_LANG['Request Number'] = 'Nr zgłoszenia';
@@ -3668,10 +3675,16 @@ $_LANG['Post office:'] = 'Poczta:';
 
 $_LANG['Determined gps coordinates are not precise.\nDo you still want to use them?'] = 'Wyznaczone współrzędne gps nie są precyzyjne. Czy mimo tego chcesz je użyć?';
 
+
 $_LANG['Removed:'] = 'Usunięte:';
 $_LANG['Remover:'] = 'Usuwający:';
 $_LANG['Remove date:'] = 'Data usunięcia:';
 $_LANG['Not removed'] = 'nie usunięte';
 $_LANG['Removed'] = 'usunięte';
+
+$_LANG['Default categories'] = 'Domyślne kategorie';
+
+$_LANG['Category $a has been added to ticket.'] = 'Kategoria $a została dodana do zgłoszenia.';
+$_LANG['Category $a has been removed from ticket.'] = 'Kategoria $a została usunięta ze zgłoszenia.';
 
 ?>

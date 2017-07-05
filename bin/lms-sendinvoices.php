@@ -195,8 +195,6 @@ if ($invoice_filetype != 'pdf' || $dnote_filetype != 'pdf') {
 
 	$SMARTY->assignByRef('layout', $layout);
 	$SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
-	$SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
-	$SMARTY->assignByRef('_language', $LMS->lang);
 }
 
 if ($backup)
@@ -297,18 +295,23 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
+if ($invoice_filetype != 'pdf' || $dnote_filetype != 'pdf') {
+	$SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
+	$SMARTY->assignByRef('_language', $LMS->lang);
+}
+
 if ($backup)
-	$args = array(DOC_INVOICE, DOC_CNOTE, DOC_DNOTE);
+	$args = array(DOC_INVOICE, DOC_INVOICE_PRO, DOC_CNOTE, DOC_DNOTE);
 else
 	$args = array(CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED,
-		CONTACT_EMAIL | CONTACT_INVOICES, DOC_INVOICE, DOC_CNOTE, DOC_DNOTE);
+		CONTACT_EMAIL | CONTACT_INVOICES, DOC_INVOICE, DOC_INVOICE_PRO, DOC_CNOTE, DOC_DNOTE);
 $query = "SELECT d.id, d.number, d.cdate, d.name, d.customerid, d.type AS doctype, n.template" . ($backup ? '' : ', m.email') . "
 		FROM documents d
 		LEFT JOIN customers c ON c.id = d.customerid"
 		. ($backup ? '' : " JOIN (SELECT customerid, " . $DB->GroupConcat('contact') . " AS email
 				FROM customercontacts WHERE (type & ?) = ? GROUP BY customerid) m ON m.customerid = c.id")
 		. " LEFT JOIN numberplans n ON n.id = d.numberplanid 
-		WHERE c.deleted = 0 AND d.type IN (?, ?, ?)" . ($backup ? '' : " AND c.invoicenotice = 1") . "
+		WHERE c.deleted = 0 AND d.type IN (?, ?, ?, ?)" . ($backup ? '' : " AND c.invoicenotice = 1") . "
 			AND d.cdate >= $daystart AND d.cdate <= $dayend"
 			. (!empty($groupnames) ? $customergroups : "")
 		. " ORDER BY d.number" . (!empty($count_limit) ? " LIMIT $count_limit OFFSET $count_offset" : '');

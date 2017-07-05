@@ -201,6 +201,12 @@ $(function() {
 			var videoelem = dialog.find('video').get(0);
 			videoelem.currentTime = 0;
 			videoelem.play();
+		} else if ($(this).hasClass('documentview-pdf')) {
+			window.open(url, '_blank', 'left=' + (window.screen.availWidth * 0.1)
+				+ ',top=' + (window.screen.availHeight * 0.1)
+				+ ',width=' + (window.screen.availWidth * 0.8)
+				+ ',height=' + (window.screen.availHeight * 0.8));
+			return false;
 		}
 		dialog.dialog('open');
 		return false;
@@ -493,14 +499,14 @@ $(function() {
 				return;
 			var api = $(this).data('api');
 			var searchValue = api.columns(column).search()[0];
-			var columnStates = api.state().columns;
+			var state = api.state();
+			var columnStates = state ? state.columns : null;
 			var i = 0;
 			api.columns().every(function(index) {
 				if (index == column) {
 					$('thead tr:last-child th:nth-child(' + (i + 1) + ') :input', elem).val(searchValue.replace(/[\^\$]/g, ''));
-					//console.log(i + ' ' + index + ' ' + column);
 				}
-				if (!columnStates[index].visible) {
+				if (columnStates && !columnStates[index].visible) {
 					return;
 				}
 				i++;

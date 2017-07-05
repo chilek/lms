@@ -58,7 +58,7 @@ function autoiframe_setsize(id, width, height)
     var pos = get_object_pos(frame),
         parent_frame = doc.getElementById('overDiv'),
         dw = doc.body.offsetWidth,
-        dh = doc.body.offsetWidth;
+        dh = doc.body.offsetHeight;
 
     if (width < dw && pos.x + width > dw - 15) {
         parent_frame.style.left = (dw - width - 15) + 'px';
@@ -177,7 +177,10 @@ function netdevmodelchoosewin(varname, formname, netdevmodelid, producer, model)
 
 function gpscoordschoosewin(formfield1, formfield2)
 {
-	return openSelectWindow2('?m=choosegpscoords', 'choosegpscoords', 450, 300, 'true', formfield1, formfield2);
+	return openSelectWindow2('?m=choosegpscoords', 'choosegpscoords',
+		window.screen.availWidth * 0.4,
+		window.screen.availHeight * 0.4,
+		'true', formfield1, formfield2);
 }
 
 function netdevfrommapchoosewin(netdevid)
@@ -692,6 +695,16 @@ function generate_random_string(length, characters) {
 	for (var i = 0; i < length; i++)
 		randomString += characters[Math.floor(Math.random() * charactersLength)];
 	return randomString;
+}
+
+function validate_random_string(string, min_size, max_size, characters) {
+	if (string.length < min_size || string.length > max_size) {
+		return false;
+	}
+	for (var i = 0; i < characters.length; i++) {
+		string = string.split(characters[i]).join('');
+	}
+	return !string.length;
 }
 
 function get_size_unit(size) {

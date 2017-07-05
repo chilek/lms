@@ -44,7 +44,7 @@ function GetEvents($date=NULL, $userid=0, $customerid=0, $privacy = 0, $closed =
 
 	$enddate = $date + 86400;
 	$list = $DB->GetAll(
-	        'SELECT events.id AS id, title, note, description, date, begintime, enddate, endtime, closed, events.type,'
+	        'SELECT events.id AS id, title, note, description, date, begintime, enddate, endtime, closed, events.type, c.id AS customerid,'
 		.$DB->Concat('UPPER(c.lastname)',"' '",'c.name'). ' AS customername, '
 	        .$DB->Concat('c.city',"', '",'c.address').' AS customerlocation,
 		nodes.location AS nodelocation, cc.customerphone,

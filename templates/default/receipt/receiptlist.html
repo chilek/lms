@@ -15,7 +15,7 @@
 	{
 		var add = "";
 		if (document.page.original.checked && document.page.copy.checked)
-			add = "";
+			add = "&which=original,copy";
 		else if (document.page.original.checked && !document.page.copy.checked)
 			add = "&which=original";
 		else if (!document.page.original.checked && document.page.copy.checked)
