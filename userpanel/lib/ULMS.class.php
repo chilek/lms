@@ -80,6 +80,7 @@ class ULMS extends LMS {
 		$sources = str_replace(';', ',', ConfigHelper::getConfig('userpanel.visible_ticket_sources'));
 		$tickets = $this->DB->GetAll('SELECT * FROM rttickets WHERE customerid=?'
 			. (isset($queues) && !empty($queues) ? ' AND queueid IN (' . implode(',', $queues) . ')' : '')
+			. ('AND deleted = 0')
 			. ' AND source IN (' . $sources . ')'
 			. ' ORDER BY createtime DESC', array($id));
 		if (!empty($tickets))
@@ -107,7 +108,7 @@ class ULMS extends LMS {
 				FROM rtmessages
 				LEFT JOIN customers ON (customers.id = customerid)
 				LEFT JOIN vusers ON (vusers.id = userid)
-				WHERE ticketid = ? AND rtmessages.type = ? ORDER BY createtime ASC', array($id, RTMESSAGE_REGULAR));
+				WHERE ticketid = ? AND rtmessages.type = ? AND rtmessages.deleted = 0 ORDER BY createtime ASC', array($id, RTMESSAGE_REGULAR));
 
 		foreach ($ticket['messages'] as &$message)
 			$message['attachments'] = $this->DB->GetAll('SELECT filename, contenttype FROM rtattachments WHERE messageid = ?',

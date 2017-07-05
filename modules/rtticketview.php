@@ -46,11 +46,17 @@ if(!$rights || !$catrights)
 $ticket = $LMS->GetTicketContents($id);
 $categories = $LMS->GetCategoryListByUser($AUTH->id);
 
+if($ticket['deluserid'])
+	$ticket['delusername'] = $LMS->GetUserName($ticket['deluserid']);
+
 if ($ticket['customerid'] && ConfigHelper::checkConfig('phpui.helpdesk_stats')) {
 	$yearago = mktime(0, 0, 0, date('n'), date('j'), date('Y')-1);
+	//$del = 0;
 	$stats = $DB->GetAllByKey('SELECT COUNT(*) AS num, cause FROM rttickets 
-			    WHERE customerid = ? AND createtime >= ? 
-			    GROUP BY cause', 'cause', array($ticket['customerid'], $yearago));
+			    WHERE 1=1 '
+				. (!ConfigHelper::checkConfig('privileges.superuser') ? 'AND rttickets.deleted = 0' : '')
+				. ('AND customerid = ? AND createtime >= ?')
+			    . ('GROUP BY cause'), 'cause', array($ticket['customerid'], $yearago));
 
 	$SMARTY->assign('stats', $stats);
 }

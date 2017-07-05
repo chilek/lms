@@ -37,14 +37,19 @@ if (($rights & 4) != 4) {
 }
 
 $msg = intval($_GET['id']);
-if ($DB->GetOne('SELECT MIN(id) FROM rtmessages WHERE ticketid = ?', array($ticketid)) != $msg) {
-	$mail_dir = ConfigHelper::getConfig('rt.mail_dir');
-	if (!empty($mail_dir))
-		rrmdir($mail_dir . DIRECTORY_SEPARATOR . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d', $ticketid, $msg));
 
-	$DB->Execute('DELETE FROM rtmessages WHERE id = ? AND type = ?',
-		array($msg, RTMESSAGE_NOTE));
-}
+// if ($DB->GetOne('SELECT MIN(id) FROM rtmessages WHERE ticketid = ?', array($ticketid)) != $msg) {
+// 	       $mail_dir = ConfigHelper::getConfig('rt.mail_dir');
+// 	       if (!empty($mail_dir))
+// 		               rrmdir($mail_dir . DIRECTORY_SEPARATOR . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d', $ticketid, $msg));
+		
+// 		       $DB->Execute('DELETE FROM rtmessages WHERE id = ? AND type = ?',
+// 				               array($msg, RTMESSAGE_NOTE));
+// 		}
+
+$del = 1;
+$deltime = time();
+$DB->Execute('UPDATE rtmessages SET deleted=?, deltime=?, deluserid=? WHERE id = ? AND type = ?', array($del, $deltime, $AUTH->id, $msg,  RTMESSAGE_NOTE));
 
 $SESSION->redirect('?m=rtticketview&id=' . $ticketid);
 

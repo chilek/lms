@@ -62,6 +62,14 @@
 					 <OPTION value="{$users[users].id}"{if $users[users].id == $queuedata.owner} SELECTED{/if}>{$users[users].name|truncate:40:"...":true}</OPTION>
 					{/section}
 				</SELECT>
+				{if ConfigHelper::checkConfig('privileges.superuser')}
+				{trans("Removed:")}
+				<SELECT size="1" name="r" OnChange="document.filter.submit();">
+					<OPTION value=""{if $queuedata.removed == ""} SELECTED{/if}>- {trans("all")} -</OPTION>
+					<OPTION value="-1"{if $queuedata.removed == "-1"} SELECTED{/if}>{trans("Not removed")}</OPTION>
+					<OPTION value="1"{if $queuedata.removed == "1"} SELECTED{/if}>{trans("Removed")}</OPTION>
+				</SELECT>&nbsp;
+				{/if}
 			    </FORM>
 			    </TD>
 			    <TD width="98%" class="text-right">
@@ -82,7 +90,11 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=ticket loop=$queue start=$start max=$pagelimit}
+	{if $queue[ticket].deleted == 1 && $queue[ticket].deltime != 0}
+	<TR class="cancel">
+	{else}
 	<TR class="highlight {cycle}{if $queue[ticket].state == 2} blend{/if}"  >
+	{/if}
 		<TD onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
 			{if $queue[ticket].state == 0}
 				<IMG src="img/new.gif" alt="" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$queue[ticket].id}">
