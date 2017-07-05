@@ -35,6 +35,13 @@ if(($right & 4) != 4)
 	die;
 }
 
+// $DB->Execute('DELETE FROM rttickets WHERE id = ?', array($ticket));
+// //HINT: We delete messages connected with deleted ticket in database (ON DELETE CASCADE mechanism)
+
+// $mail_dir = ConfigHelper::getConfig('rt.mail_dir');
+// if (!empty($mail_dir))
+// 	       rrmdir($mail_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $ticket));
+
 $del = 1;
 $nodel = 0;
 $deltime = time();

@@ -34,6 +34,15 @@ if(($rights & 4) != 4)
 	$SESSION->close();
 	die;
 }
+// if($DB->GetOne('SELECT MIN(id) FROM rtmessages WHERE ticketid = ?', array($ticket)) != $msg)
+// 	{
+// 		       $mail_dir = ConfigHelper::getConfig('rt.mail_dir');
+// 		       if(!empty($mail_dir)) {
+// 			               rrmdir($mail_dir . DIRECTORY_SEPARATOR . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d', $ticket, $msg));
+// 			       }
+			
+// 			       $DB->Execute('DELETE FROM rtmessages WHERE id = ?', array($msg));
+// 			}
 
 $del = 1;
 $deltime = time();
