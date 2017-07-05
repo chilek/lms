@@ -141,7 +141,7 @@ if (!empty($posts)) {
 		$post = imap_fetchstructure($ih, $postid);
 		if ($post->subtype != 'REPORT')
 			continue;
-		if (count($post->parts) != 3)
+		if (count($post->parts) < 2 || count($post->parts) > 3)
 			continue;
 		$parts = $post->parts;
 
@@ -165,6 +165,8 @@ if (!empty($posts)) {
 					$body = imap_fetchbody($ih, $postid, $partid + 1);
 					if (preg_match('/Disposition:\s+(?<disposition>.+)\r\n?/', $body, $m))
 						$disposition = $m['disposition'];
+					if (preg_match('/Original-Message-ID:\s+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $body, $m))
+						$msgitemid = intval($m['msgitemid']);
 					$headers = imap_fetchheader($ih, $postid);
 					if (preg_match('/Date:\s+(?<date>.+)\r\n?/', $headers, $m))
 						$readdate = strtotime($m['date']);
