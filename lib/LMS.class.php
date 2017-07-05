@@ -1858,6 +1858,9 @@ class LMS
 
 			$this->mail_object->Dsn = isset($headers['Delivery-Status-Notification-To']);
 
+			if (isset($headers['Message-ID']))
+				$this->mail_object->MessageID = $headers['Message-ID'];
+
 			preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/A', $headers['From'], $from);
 			$this->mail_object->setFrom($from['mail'], isset($from['name']) ? trim($from['name'], "\"") : '');
 			$this->mail_object->addReplyTo($headers['Reply-To']);
