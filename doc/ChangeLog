@@ -28,6 +28,8 @@ version ?.??.?? (????-??-??):
   - enhancement: added ticket source information [interduo]
   - enhancement: allow to define ticket with which sources are visible in userpanel helpdesk
     module [chilan]
+  - enhancement: Fake delete operations in helpdesk to regular users. After deleting queue, ticket
+    or message regular user can't see deleted items, only superuser can see deleted items.
 
 version 1.11.22 (2017-06-08):
 
