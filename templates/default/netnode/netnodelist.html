@@ -9,9 +9,10 @@
 <INPUT type="hidden" NAME="page" VALUE="1">
 <TABLE class="lmsbox">
 	<COLGROUP>
-		<COL style="width: 67%;">
-		<COL style="width: 15%;">
-		<COL style="width: 15%;">
+		<COL style="width: 36%;">
+		<COL style="width: 30%;">
+		<COL style="width: 30%;">
+		<COL style="width: 1;">
 		<COL style="width: 1;">
 		<COL style="width: 1;">
 		<COL style="width: 1;">
@@ -29,10 +30,10 @@
 		<TD>
 		   	<A href="?m=netnodelist&o=invprojectid{if $listdata.direction == "asc" && $listdata.order == "invprojectid"},desc{/if}">{trans("Project:")}</A> {if $listdata.order == "invprojectid"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} 
 		</TD>
-		<TD class="valign-top text-right">
+		<TD>
 			<A href="?m=netnodelist&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">ID:</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD class="nobr">
+		<TD class="nobr" colspan="2">
 		 <!-- pozostałe pola -->
 		</TD>
 		<TD class="bold text-right nobr">
@@ -81,12 +82,16 @@
 				{/foreach}
 			</SELECT>
 		</TD>
+		<TD class="nobr">
+			<A href="/?m=netnodeadd"><IMG src="img/producer.gif" ALT="">{trans("Add network node:")}</A>
+		</TD>
 	</TR>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" colspan="6">
+		<TD class="pagination text-center" colspan="6">
 			{include file="scroller.html" loop=$nlist}
 		</TD>
+		<TD></TD>
 	</TR>
 	{/if}
     </THEAD>
@@ -109,12 +114,12 @@
 		<TD>
 			{if ($nlist[nlist].invprojectid==1)} DD {else} {$nlist[nlist].project} {/if}
 		</TD>
-		<TD onClick="return self.location.href='?m=netnodeinfo&id={$nlist[nlist].id}';" class="text-right valign-top">
+		<TD onClick="return self.location.href='?m=netnodeinfo&id={$nlist[nlist].id}';" class="text-right">
 			({$nlist[nlist].id|string_format:"%04d"})
 		</TD>
 		<TD onClick="return self.location.href='?m=netnodeinfo&id={$nlist[nlist].id}';" class="nobr">
 		</TD>
-		<TD class="text-right nobr">
+		<TD class="text-right nobr" colspan="2">
 			<a href="?m=netnodedel&id={$nlist[nlist].id}" onClick="return confirmLink(this, '{t a=$nlist[nlist].name}Are you sure, you want to remove net device node \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<a href="?m=netnodeedit&id={$nlist[nlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 			<a href="?m=netnodeinfo&id={$nlist[nlist].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
@@ -126,23 +131,18 @@
 		<TD colspan="6" class="empty-table">
 			<p>{trans("There are no device nodes in your database.")}</p>
 		</TD>
-	</TR>
 	{/section}
-
+	</TBODY>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination" colspan="6">
+		<TD class="pagination text-center" colspan="6">
 			{include file="scroller.html" loop=$nlist}
 		</TD>
-	</TR>
 	{/if}
-	<TR>
-		<TD COLSPAN="5" class="text-right bold">
+		<TD class="pagination text-right bold">
 			{trans("Total:")} {$listdata.total|default:"0"}
 		</TD>
-		<TD COLSPAN="1"></TD>
 	</TR>
-    </TBODY>
 </TABLE>
 </FORM>
 {/block}
