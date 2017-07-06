@@ -1594,6 +1594,7 @@ CREATE TABLE netnodes (
 	miar tinyint(1) DEFAULT 0,
 	divisionid int(11) DEFAULT NULL,
 	address_id int(11) DEFAULT NULL,
+	info text DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT `netnodes_address_id_fk` FOREIGN KEY (`address_id`) REFERENCES `addresses` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
 	FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
