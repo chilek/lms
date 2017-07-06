@@ -1844,7 +1844,7 @@ class LMS
 			if (isset($_SERVER['HTTP_USER_AGENT']))
 				$this->mail_object->addCustomHeader('X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']);
 
-			foreach (array('X-LMS-Message-Item-id', 'References', 'In-Reply-To', 'Message-ID') as $header_name)
+			foreach (array('X-LMS-Message-Item-Id', 'References', 'In-Reply-To', 'Message-ID') as $header_name)
 				if (isset($headers[$header_name]))
 					if ($header_name == 'Message-ID')
 						$this->mail_object->MessageID = $headers[$header_name];
@@ -1857,9 +1857,6 @@ class LMS
 				$this->mail_object->ConfirmReadingTo = $headers['Return-Receipt-To'];
 
 			$this->mail_object->Dsn = isset($headers['Delivery-Status-Notification-To']);
-
-			if (isset($headers['Message-ID']))
-				$this->mail_object->MessageID = $headers['Message-ID'];
 
 			preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/A', $headers['From'], $from);
 			$this->mail_object->setFrom($from['mail'], isset($from['name']) ? trim($from['name'], "\"") : '');
