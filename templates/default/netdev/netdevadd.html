@@ -90,7 +90,7 @@
 									{if isset($customer.id)}
 										{customerlist form="netdevadd" customers=$customers selected=$customer.id selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
 									{else}
-										{customerlist form="netdevadd" customers=$customers selected=$note.customerid selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
+										{customerlist form="netdevadd" customers=$customers selected=$netdev.ownerid selectname="customer" inputname="netdev[ownerid]" select_id="ownerid_select" input_id="ownerid_input" customOnChange="customerChanged()"}
 									{/if}
 								</td>
 							</tr>
