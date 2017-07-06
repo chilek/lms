@@ -206,6 +206,10 @@ elseif(isset($_POST['note']))
 					$LMS->SendSMS($phone, $sms_body);
 		}
 
+		if($ticket['owner'] == 0 and $note['owner'] == 0){
+                    $LMS->TicketChange($ticket['ticketid'], array('owner' => $AUTH->id));
+                }
+		
 		$SESSION->redirect('?m=rtticketview&id='.$note['ticketid']);
 	}
 }
