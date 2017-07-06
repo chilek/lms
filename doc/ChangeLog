@@ -32,6 +32,7 @@ version ?.??.?? (????-??-??):
     ticket or message regular user can't see deleted items, only superuser can see
     deleted items [ravvar/chilan]
   - enhancement: added support for array parameter to LMSDB class [kosa/chilan]
+  - improvement: allow to add new network device directly from customer box [chilan]
 
 version 1.11.22 (2017-06-08):
 
