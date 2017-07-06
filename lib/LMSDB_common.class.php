@@ -541,13 +541,11 @@ abstract class LMSDB_common implements LMSDBInterface
         $query = str_ireplace('?LIKE?', $this->_driver_like(), $query);
 
         if ($inputarray) {
-            reset($inputarray);
-            $queryelements = explode("\0", str_replace('?', "?\0", $query));
-            $query = '';
-
-            foreach ($queryelements as $v) {
-                $query .= str_replace('?', $this->_quote_value(array_shift($inputarray)), $v);
+            foreach ($inputarray as $k=>$v) {
+                $inputarray[$k] = $this->_quote_value($v);
             }
+
+            $query = vsprintf(str_replace('?','%s',$query), $inputarray);
         }
         return $query;
     }
