@@ -1005,137 +1005,161 @@ if ( isset($options['update']) ) {
 //==============================================================================
 
 if ( isset($options['buildings']) ) {
+
 	$fh = fopen($building_base_name, "r");
 	if ($fh === null) {
 		fprintf($stderr, "Error: can't open %s file." . PHP_EOL, $building_base_name);
 		die;
 	}
 
-    if ( isset($state_list) ) {
-        $state_name_to_ident = $DB->GetAllByKey('SELECT ident, name FROM location_states', 'name');
+	if ( isset($state_list) ) {
+		$state_name_to_ident = $DB->GetAllByKey('SELECT ident, name FROM location_states', 'name');
 
-        foreach ( $state_name_to_ident as $k=>$v ) {
-            $state_name_to_ident[ mb_strtoupper($k) ] = $v['ident'];
-        }
-    }
+		foreach ( $state_name_to_ident as $k=>$v ) {
+			$state_name_to_ident[ mb_strtoupper($k) ] = $v['ident'];
+		}
+	}
 
-    $steps = ceil( filesize($building_base_name) / 4096 );
-    $i = 1;
-    $to_update = array();
-    $to_insert = array();
-    $previous_line = '';
+	$steps = ceil( filesize($building_base_name) / 4096 );
+	$i = 0;
+	$to_update = array();
+	$to_insert = array();
+	$previous_line = '';
 
     // create location cache
-    $location_cache = new LocationCache(LocationCache::LOAD_FULL);
+	$location_cache = new LocationCache(LocationCache::LOAD_FULL);
 
 	if (!$quiet)
 		echo 'Parsing file...' . PHP_EOL;
 
-       while (($l = fgetcsv($fh, 1000, ';')) !== false) {
-        // insert loaded data to database
-//        foreach ( $lines as $k=>$l ) {
-            $v = parse_teryt_building_row( $l );
+	while (!feof($fh)) {
+		$lines = preg_split('/\r?\n/', fread($fh, 4096));
+		$lines = str_replace("'", '', $lines);
 
-            if ( !$v ) {
-                fwrite($stderr, 'error: can\'t parse row '. implode(';', $l) . PHP_EOL);
-                continue;
-            }
+		// try to join previous line
+		if ( substr_count($lines[0], ';') == 11 && substr_count($previous_line, ';') == 11 ) {
+			array_unshift($lines, $previous_line);
+		} else {
+			$lines[0] = $previous_line . $lines[0];
+		}
+
+		end($lines);
+		$k = key($lines);
+		$previous_line = $lines[ $k ];
+		unset($lines[ $k ]);
+
+		// insert loaded data to database
+		foreach ($lines as $line) {
+			$l = str_getcsv($line, ';');
+			if (empty($l)) {
+				fwrite($stderr, 'error: can\'t parse row '. $line . PHP_EOL);
+				continue;
+			}
+
+			$v = parse_teryt_building_row($l);
+
+			if (empty($v)) {
+				fwrite($stderr, 'error: can\'t parse row '. $line . PHP_EOL);
+				continue;
+			}
 
 			if ($v['id'] == 'ID')
 				continue;
 
-            if ( isset($state_list) ) {
-                $state_ident = $state_name_to_ident[$v['woj']];
+			if ( isset($state_list) ) {
+				$state_ident = $state_name_to_ident[$v['woj']];
 
-                if ( !isset($state_list[intval($state_ident)]) ) {
-                    continue;
-                }
-            }
+				if ( !isset($state_list[intval($state_ident)]) ) {
+				continue;
+				}
+			}
 
-            if ( !preg_match('#^[0-9a-zA-Z-, /łŁ]*$#', $v['building_num']) ) {
-                fwrite($stderr, 'warning: house number contains incorrect characters in row ' . implode(';', $l) . PHP_EOL);
-                continue;
-            }
+			if ( !preg_match('#^[0-9a-zA-Z-, /łŁ]*$#', $v['building_num']) ) {
+				fwrite($stderr, 'warning: house number contains incorrect characters in row ' . $line . PHP_EOL);
+				continue;
+			}
 
-            $terc = $v['terc'];
-            $simc = $v['simc'];
-            $ulic = $v['ulic'];
+			$terc = $v['terc'];
+			$simc = $v['simc'];
+			$ulic = $v['ulic'];
 
-            $city = $location_cache->getCityByIdent($terc, $simc);
+			$city = $location_cache->getCityByIdent($terc, $simc);
 
-            if ( !$city ) {
-                fwrite($stderr, 'warning: teryt terc ' . $terc . ', simc ' . $simc . ' wasn\'t found in database in row ' . implode(';', $l) . PHP_EOL);
-                continue;
-            }
+			if ( !$city ) {
+				fwrite($stderr, 'warning: teryt terc ' . $terc . ', simc ' . $simc . ' wasn\'t found in database in row ' . $line . PHP_EOL);
+				continue;
+			}
 
 			if ($ulic == '99999')
 				$street = array('id' => '0');
 			else {
 				$street = $location_cache->getStreetByIdent( $city['id'], $ulic );
 				if (empty($street)) {
-					fwrite($stderr, 'warning: teryt terc ' . $terc . ', simc ' . $simc . ', ulic ' . $ulic . ' wasn\'t found in database in row ' . implode(';', $l) . PHP_EOL);
+					fwrite($stderr, 'warning: teryt terc ' . $terc . ', simc ' . $simc . ', ulic ' . $ulic . ' wasn\'t found in database in row ' . $line . PHP_EOL);
 					continue;
 				}
 			}
 			$building = $location_cache->buildingExists( $city['id'], $street['id'], $v['building_num'] );
 
-            if ( $building ) {
-                $fields_to_update = array();
+			if ( $building ) {
+				$fields_to_update = array();
 
-                if ( $building['latitude'] != $v['latitude'] ) {
-                    $fields_to_update[] = 'latitude = ' . ($v['latitude'] ? $v['latitude'] : 'null');
-                }
+				if ( $building['latitude'] != $v['latitude'] ) {
+					$fields_to_update[] = 'latitude = ' . ($v['latitude'] ? $v['latitude'] : 'null');
+				}
 
-                if ( $building['longitude'] != $v['longitude'] ) {
-                    $fields_to_update[] = 'longitude = ' . ($v['longitude'] ? $v['longitude'] : 'null');
-                }
+				if ( $building['longitude'] != $v['longitude'] ) {
+					$fields_to_update[] = 'longitude = ' . ($v['longitude'] ? $v['longitude'] : 'null');
+				}
 
-                if ($fields_to_update) {
-                    $DB->Execute('UPDATE location_buildings SET updated = 1, '.implode(',', $fields_to_update).'WHERE id = '.$building['id']);
-                } else {
-                    $to_update[] = $building['id'];
-                }
-            } else {
-                $data = array();
-                $data[] = $city['id'];
-                $data[] = $street['id']      ? $street['id']              : 'null';
-                $data[] = $v['building_num'] ? "'".$v['building_num']."'" : 'null';
-                $data[] = $v['latitude']     ? $v['latitude']             : 'null';
-                $data[] = $v['longitude']    ? $v['longitude']            : 'null';
-                $data[] = 1;
+				if ($fields_to_update) {
+					$DB->Execute('UPDATE location_buildings SET updated = 1, '.implode(',', $fields_to_update).'WHERE id = '.$building['id']);
+				} else {
+					$to_update[] = $building['id'];
+				}
+			} else {
+				$data = array();
+				$data[] = $city['id'];
+				$data[] = $street['id']      ? $street['id']              : 'null';
+				$data[] = $v['building_num'] ? "'".$v['building_num']."'" : 'null';
+				$data[] = $v['latitude']     ? $v['latitude']             : 'null';
+				$data[] = $v['longitude']    ? $v['longitude']            : 'null';
+				$data[] = 1;
 
-                $to_insert[] = '('.implode(',', $data).')';
-            }
-//        }
+				$to_insert[] = '('.implode(',', $data).')';
+			}
+		}
 
-        if ( $to_insert ) {
-            $DB->Execute('INSERT INTO location_buildings (city_id,street_id,building_num,latitude,longitude,updated) VALUES '.implode(',', $to_insert));
-            $to_insert = array();
-        }
+		if ( $to_insert ) {
+			$DB->Execute('INSERT INTO location_buildings (city_id,street_id,building_num,latitude,longitude,updated) VALUES '.implode(',', $to_insert));
+			$to_insert = array();
+		}
 
-        if ( $to_update ) {
-            $DB->Execute('UPDATE location_buildings SET updated = 1 WHERE id in ('.implode(',', $to_update).')');
-            $to_update = array();
-        }
+		if ( $to_update ) {
+			$DB->Execute('UPDATE location_buildings SET updated = 1 WHERE id in ('.implode(',', $to_update).')');
+			$to_update = array();
+		}
 
-        // location building database creation progress
+		// location building database creation progress
 		if (!$quiet)
 			printf("%.2f%%\r", ($i * 100) / $steps);
-        ++$i;
-    }
+		$i++;
+	}
+
+	echo "\r";
 
 	if (!$quiet)
 		echo 'Removing old buildings...' . PHP_EOL;
 
-    $DB->Execute('DELETE FROM location_buildings WHERE updated = 0');
-    $DB->Execute('UPDATE location_buildings SET updated = 0');
+	$DB->Execute('DELETE FROM location_buildings WHERE updated = 0');
+	$DB->Execute('UPDATE location_buildings SET updated = 0');
 
-    fclose($fh);
-    unset(
-        $to_insert, $to_update, $data, $location_cache, $fields_to_update, $i,
-        $street, $building, $simc, $city, $k, $previous_line, $lines, $steps,
-        $state_name_to_ident, $state_ident
-    );
+	fclose($fh);
+	unset(
+		$to_insert, $to_update, $data, $location_cache, $fields_to_update, $i,
+		$street, $building, $simc, $city, $previous_line, $lines, $steps,
+		$state_name_to_ident, $state_ident
+	);
 
 } // close if ( isset($options['buildings']) ) {
 

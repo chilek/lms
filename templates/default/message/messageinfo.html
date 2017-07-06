@@ -170,7 +170,7 @@
 			{elseif $item.status == $smarty.const.MSG_ERROR}
 				{trans("errornous")}{if $item.error} ({$item.error|escape}){/if}
 			{elseif $item.status == $smarty.const.MSG_DELIVERED}
-				{trans("delivered")}
+				{trans("delivered")} ({$item.lastdate|date_format:"%Y/%m/%d %H:%M"})
 			{else}
 				{trans("waiting")}
 			{/if}
