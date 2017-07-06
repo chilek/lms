@@ -102,19 +102,17 @@ if(isset($_POST['event']))
 	if ($enddate && $date > $enddate)
 		$error['enddate'] = trans('End time must not precede start time!');
 
+	if (!isset($event['customerid']))
+		$event['customerid'] = $event['custid'];
+
 	if (!$error) {
 		$event['status'] = isset($event['status']) ? 1 : 0;
-		if (isset($event['customerid']))
-			$event['custid'] = $event['customerid'];
-		if ($event['custid'] == '')
-			$event['custid'] = 0;
-
 		$event['nodeid'] = (isset($event['customer_location'])||is_null($event['nodeid'])) ? NULL : $event['nodeid'];
 
                 if (isset($event['helpdesk']))
                 {
                     $ticket['queue'] = $event['rtqueue'];
-                    $ticket['customerid'] = isset($event['customerid']) ? $event['customerid'] : $event['custid'];
+                    $ticket['customerid'] = $event['customerid'];
                     $ticket['requestor'] = $event['name']." ".$event['surname'];
                     $ticket['subject'] = $event['title'];
                     $ticket['mailfrom'] = $event['email'];

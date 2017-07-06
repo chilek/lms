@@ -198,7 +198,7 @@ $(function() {
 			</div>
 		</TD>
 	</TR>
-                {if empty($event.ticketid) && empty($event.customerid)}
+                {if empty($event.ticketid)}
 	<TR>
                 <TD>
                     <IMG src="img/ticket.gif" alt="">
@@ -237,7 +237,7 @@ $(function() {
                     {trans("Queue:")}
                 </TD>
                 <TD>
-                    {if empty($event.ticketid) && empty($event.customerid)}
+                    {if empty($event.ticketid)}
                     <SELECT size="1" name="event[rtqueue]" {tip text="Select queue" trigger="queue"}>
                     {foreach from=$queuelist item=item}
                         <OPTION value="{$item.id}"{if $item.id == $event.rtqueue} selected{/if}>{$item.name}</OPTION>
@@ -248,7 +248,7 @@ $(function() {
                     {/if}
                 </TD>
                 </TR>
-                {if empty($event.ticketid) && empty($event.customerid)}
+                {if empty($event.ticketid)}
 	<TR {tip trigger="categories"}>
                     <TD width="1%">
                         <IMG src="img/queue.gif" alt="">
