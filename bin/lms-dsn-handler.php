@@ -171,23 +171,28 @@ if (!empty($posts)) {
 					$body = imap_fetchbody($ih, $postid, $partid + 1);
 					if (preg_match('/Disposition:\s+(?<disposition>.+)\r\n?/', $body, $m))
 						$disposition = $m['disposition'];
-					if (preg_match('/Original-Message-ID:\s+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $body, $m))
+					if (preg_match('/.*Message-ID:\s+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $body, $m))
 						$msgitemid = intval($m['msgitemid']);
 					$headers = imap_fetchheader($ih, $postid);
 					if (preg_match('/Date:\s+(?<date>.+)\r\n?/', $headers, $m))
 						$readdate = strtotime($m['date']);
 					break;
 				case 'RFC822-HEADERS':
+				case 'RFC822':
 					$body = imap_fetchbody($ih, $postid, $partid + 1);
 					if (preg_match('/X-LMS-Message-Item-Id:\s+(?<msgitemid>[0-9]+)/', $body, $m))
+						$msgitemid = intval($m['msgitemid']);
+					if (preg_match('/.*Message-ID:\s+<messageitem-(?<msgitemid>[0-9]+)@.+>/', $body, $m))
 						$msgitemid = intval($m['msgitemid']);
 					break;
 			}
 		if (empty($msgitemid))
 			continue;
 		if (!empty($status)) {
-			if ($status == 4)
+			if ($status == 4) {
+				$handled_posts[] = $postid;
 				continue;
+			}
 			switch ($status) {
 				case 2:
 					$status = MSG_DELIVERED;
