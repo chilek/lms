@@ -33,6 +33,7 @@ version ?.??.?? (????-??-??):
     deleted items [ravvar/chilan]
   - enhancement: added support for array parameter to LMSDB class [kosa/chilan]
   - improvement: allow to add new network device directly from customer box [chilan]
+  - enhancement: allow to quick search by external customer id fragment [chilan]
 
 version 1.11.22 (2017-06-08):
 

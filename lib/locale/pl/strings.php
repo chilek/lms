@@ -3690,4 +3690,6 @@ $_LANG['Add network node:'] = 'Dodaj węzeł sieciowy:';
 
 $_LANG['New device'] = 'Nowe urządzenie';
 
+$_LANG['Enter external customer ID fragment and press Enter'] = 'Podaj fragment identyfikatora kienta w systemie zewnętrznych i naciśnij Enter';
+
 ?>

@@ -163,6 +163,48 @@ switch ($mode) {
 		$target = '?m=customersearch&search=1';
 	break;
 
+	case 'customerext':
+		if(isset($_GET['ajax'])) // support for AutoSuggest
+		{
+			$candidates = $DB->GetAll("SELECT c.id, cc.contact AS email, full_address AS address, post_name, post_full_address AS post_address, deleted,
+			    ".$DB->Concat('UPPER(lastname)',"' '",'c.name')." AS username
+				FROM customerview c
+				LEFT JOIN customercontacts cc ON cc.customerid = c.id AND (cc.type & ?) > 0
+				WHERE LOWER(c.extid) ?LIKE? LOWER($sql_search)
+				ORDER by deleted, username, cc.contact, full_address
+				LIMIT ?", array(CONTACT_EMAIL, intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
+
+			$eglible=array(); $actions=array(); $descriptions=array();
+			if ($candidates)
+			foreach($candidates as $idx => $row) {
+				$actions[$row['id']] = '?m=customerinfo&id='.$row['id'];
+				$eglible[$row['id']] = escape_js(($row['deleted'] ? '<font class="blend">' : '')
+				 . truncate_str($row['username'], 50).($row['deleted'] ? '</font>' : ''));
+
+				if (preg_match("~^$search\$~i",$row['id'])) {
+					$descriptions[$row['id']] = escape_js(trans('Id:').' '.$row['id']);
+					continue;
+				}
+				$descriptions[$row['id']] = '';
+			}
+			header('Content-type: text/plain');
+			if ($eglible) {
+				print "this.eligible = [\"".implode('","',$eglible)."\"];\n";
+				print "this.descriptions = [\"".implode('","',$descriptions)."\"];\n";
+				print "this.actions = [\"".implode('","',$actions)."\"];\n";
+			} else {
+				print "false;\n";
+			}
+			$SESSION->close();
+			$DB->Destroy();
+			exit;
+		}
+
+		if (($customerids = $DB->GetCol("SELECT id FROM customerview WHERE LOWER(extid) ?LIKE? LOWER($sql_search)"))
+			&& count($customerids) == 1)
+			$target = '?m=customerinfo&id=' . $customerids[0];
+		break;
+
 	case 'phone':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
