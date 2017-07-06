@@ -2,7 +2,8 @@
 <div class="lms-ui-sortable" id="customerdevices">
 <TABLE class="lmsbox">
 	<COLGROUP>
-		<COL style="width: 100%;">
+		<COL style="width: 99%;">
+		<COL style="width: 1%;">
 	</COLGROUP>
 	<THEAD>
 	<TR class="hand lmsbox-titlebar" data-lmsbox-content="devicespanel">
@@ -10,11 +11,14 @@
 			<IMG src="img/netdev.gif" alt="">
 			{trans("Network Devices:")}
 		</TD>
+		<TD class="text-right nobr">
+			<A href="?m=netdevadd&customerid={$customerinfo.id}">{trans("New device")} &raquo;</A>
+		</TD>
 	</TR>
 	</THEAD>
 	<TBODY>
 	<TR id="devicespanel" style="display: none;">
-		<TD>
+		<TD colspan="2">
 			<TABLE class="lmsbox-inner">
 				<COLGROUP>
 					<COL style="width: 1%;">

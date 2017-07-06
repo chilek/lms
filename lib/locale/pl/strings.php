@@ -3688,4 +3688,6 @@ $_LANG['Category $a has been added to ticket.'] = 'Kategoria $a została dodana 
 $_LANG['Category $a has been removed from ticket.'] = 'Kategoria $a została usunięta ze zgłoszenia.';
 $_LANG['Add network node:'] = 'Dodaj węzeł sieciowy:';
 
+$_LANG['New device'] = 'Nowe urządzenie';
+
 ?>
