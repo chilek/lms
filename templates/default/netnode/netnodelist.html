@@ -128,17 +128,17 @@
 	{if $nlist[nlist.index_next].ownerid == $nlist[nlist].ownerid && $listdata.order == "owner"}{cycle print=false}{/if}
 	{sectionelse}
 	<TR>
-		<TD colspan="6" class="empty-table">
+		<TD colspan="7" class="empty-table">
 			<p>{trans("There are no device nodes in your database.")}</p>
 		</TD>
 	{/section}
 	</TBODY>
-	{if $listdata.total != 0}
 	<TR>
 		<TD class="pagination text-center" colspan="6">
+			{if $listdata.total != 0}
 			{include file="scroller.html" loop=$nlist}
+			{/if}
 		</TD>
-	{/if}
 		<TD class="pagination text-right bold">
 			{trans("Total:")} {$listdata.total|default:"0"}
 		</TD>

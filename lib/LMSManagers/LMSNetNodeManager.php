@@ -100,7 +100,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			}
 		}
 
-		$nlist = $this->db->GetAll('SELECT n.id, n.name, n.type, n.status, n.invprojectid, n.info p.name AS project,
+		$nlist = $this->db->GetAll('SELECT n.id, n.name, n.type, n.status, n.invprojectid, n.info, p.name AS project,
 				n.divisionid,
 				lb.id AS location_borough, lb.name AS location_borough_name, lb.type AS location_borough_type,
 				ld.id AS location_district, ld.name AS location_district_name,
