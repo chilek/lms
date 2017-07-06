@@ -365,6 +365,7 @@ function send_mail($msgid, $cid, $rmail, $rname, $subject, $body) {
 		if (!empty($dsn_email))
 			$headers['Delivery-Status-Notification-To'] = true;
 		$headers['X-LMS-Message-Item-Id'] = $msgitemid;
+		$headers['Message-ID'] = '<messageitem-' . $msgitemid . '@rtsystem.' . gethostname() . '>';
 	}
 
 	$result = $LMS->SendMail($rmail, $headers, $body, null, $smtp_options);

@@ -1383,10 +1383,10 @@ class LMS
         return $manager->GetQueue($id);
     }
 
-    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $owner = 0, $catids = NULL)
+    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $owner = 0, $catids = NULL, $removed = NULL)
     {
         $manager = $this->getHelpdeskManager();
-        return $manager->GetQueueContents($ids, $order, $state, $owner, $catids);
+        return $manager->GetQueueContents($ids, $order, $state, $owner, $catids, $removed);
     }
 
     public function GetUserRightsRT($user, $queue, $ticket = NULL)
@@ -1857,6 +1857,9 @@ class LMS
 				$this->mail_object->ConfirmReadingTo = $headers['Return-Receipt-To'];
 
 			$this->mail_object->Dsn = isset($headers['Delivery-Status-Notification-To']);
+
+			if (isset($headers['Message-ID']))
+				$this->mail_object->MessageID = $headers['Message-ID'];
 
 			preg_match('/^(?:(?<name>.*) )?<?(?<mail>[a-z0-9_\.-]+@[\da-z\.-]+\.[a-z\.]{2,6})>?$/A', $headers['From'], $from);
 			$this->mail_object->setFrom($from['mail'], isset($from['name']) ? trim($from['name'], "\"") : '');
@@ -3305,6 +3308,9 @@ class LMS
 					$headers['Disposition-Notification-To'] = $mdn_email;
 				}
 
+				if (!empty($dsn_email))
+					$headers['Delivery-Status-Notification-To'] = $dsn_email;
+
 				if (!empty($notify_email))
 					$headers['Cc'] = $notify_email;
 
@@ -3329,8 +3335,8 @@ class LMS
 
 				foreach (explode(',', $custemail) as $email) {
 					if ($add_message && (!empty($dsn_email) || !empty($mdn_email))) {
-						if (!empty($dsn_email))
 						$headers['X-LMS-Message-Item-Id'] = $msgitems[$doc['customerid']][$email];
+						$headers['Message-ID'] = '<messageitem-' . $headers['X-LMS-Message-Item-Id'] . '@rtsystem.' . gethostname() . '>';
 					}
 
 					$res = $this->SendMail($email . ',' . $notify_email, $headers, $body,

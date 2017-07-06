@@ -32,7 +32,14 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$queues item=queue}
+	{if $queue.deleted == 1 && !(ConfigHelper::checkConfig('privileges.superuser'))}
+	{continue}
+	{/if}
+	{if $queue.deleted == 1}
+	<TR class="cancel">
+	{else}
 	<TR class="highlight {cycle}"  >
+	{/if}
 		<TD onClick="return self.location.href='?m=rtqueueview&amp;id={$queue.id}';">
 			<IMG src="img/queue.gif" ALT="">
 			<B>{$queue.name}</B><BR>
