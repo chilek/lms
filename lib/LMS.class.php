@@ -1782,7 +1782,7 @@ class LMS
 				$buf .= "Content-Type: text/" . ($headers['X-LMS-Format'] == 'html' ? "html" : "plain") . "; charset=UTF-8\n\n";
 				$buf .= $body . "\n";
 				if ($files)
-					while (list(, $chunk) = each($files)) {
+					foreach ($files as $chunk) {
 						$buf .= '--' . $boundary . "\n";
 						$buf .= "Content-Transfer-Encoding: base64\n";
 						$buf .= "Content-Type: " . $chunk['content_type'] . "; name=\"" . $chunk['filename'] . "\"\n";
@@ -1877,7 +1877,7 @@ class LMS
 				$headers['Date'] = date('r');
 
 			if ($files)
-				while (list(, $chunk) = each($files))
+				foreach ($files as $chunk)
 					$this->mail_object->AddStringAttachment($chunk['data'],$chunk['filename'],'base64',$chunk['content_type']);
 
 			if ($headers['X-LMS-Format'] == 'html') {
