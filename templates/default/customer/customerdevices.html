@@ -40,7 +40,13 @@
 				<TR class="highlight {if $customerdevice@iteration is div by 2}light{else}lucid{/if}">
 					<TD class="bold nobr"><A href="?m=netdevinfo&id={$customerdevice.id}">{$customerdevice.name}</A></TD>
 					<TD>{$customerdevice.description}</TD>
-					<TD class="nobr">{$customerdevice.serialnumber}</TD>
+					<td class="nobr">
+						{if $customerdevice.serialnumber}
+							{$customerdevice.serialnumber}
+						{else}
+							&mdash;
+						{/if}
+					</td>
 					<TD class="nobr">
 						{foreach $customerdevice.ips as $v}
 							{$v.ip}

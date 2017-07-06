@@ -537,22 +537,19 @@ abstract class LMSDB_common implements LMSDBInterface
     protected function _query_parser($query, array $inputarray = NULL)
     {
         // replace metadata
-        $query = preg_replace('/\?NOW\?/i', $this->_driver_now(), $query);
-        $query = preg_replace('/\?LIKE\?/i', $this->_driver_like(), $query);
+        $query = str_ireplace('?NOW?', $this->_driver_now(), $query);
+        $query = str_ireplace('?LIKE?', $this->_driver_like(), $query);
 
         if ($inputarray) {
+            reset($inputarray);
             $queryelements = explode("\0", str_replace('?', "?\0", $query));
             $query = '';
-            foreach ($queryelements as $queryelement) {
-                if (strpos($queryelement, '?') !== FALSE) {
-                    list($key, $value) = each($inputarray);
-                    $queryelement = str_replace('?', $this->_quote_value($value), $queryelement);
-                }
-                $query .= $queryelement;
+
+            foreach ($queryelements as $v) {
+                $query .= str_replace('?', $this->_quote_value(array_shift($inputarray)), $v);
             }
         }
         return $query;
-
     }
 
     /**
@@ -570,10 +567,31 @@ abstract class LMSDB_common implements LMSDBInterface
             return 'NULL';
         } elseif (is_string($input)) {
             return '\'' . addcslashes($input, "'\\\0") . '\'';
+        } elseif (is_array($input)) {
+            return $this->_quote_array($input);
         } else {
             return $input;
         }
 
+    }
+
+    /**
+     * Quotes array.
+     *
+     * @param array $input
+     * @return string
+     */
+    protected function _quote_array(array $input)
+    {
+        if (!$input) {
+            return 'NULL';
+        }
+
+        foreach ($input as $k=>$v) {
+            $input[$k] = $this->_quote_value($v);
+        }
+
+        return '(' . implode(',', $input) . ')';
     }
 
     /**
