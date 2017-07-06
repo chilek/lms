@@ -524,6 +524,7 @@ CREATE TABLE netnodes (
 		REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	address_id integer
 		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	info text DEFAULT NULL,
 	PRIMARY KEY(id)
 );
 
