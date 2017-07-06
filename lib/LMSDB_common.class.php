@@ -545,8 +545,11 @@ abstract class LMSDB_common implements LMSDBInterface
                 $inputarray[$k] = $this->_quote_value($v);
             }
 
+            $query = str_replace('%', '%%', $query); //escape params like %some_value%
             $query = vsprintf(str_replace('?','%s',$query), $inputarray);
+            $query = str_replace('%%', '%', $query);
         }
+
         return $query;
     }
 
