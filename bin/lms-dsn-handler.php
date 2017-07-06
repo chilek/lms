@@ -149,9 +149,15 @@ if (!empty($posts)) {
 		$status = 0;
 		$diag_code = '';
 		$disposition = '';
+		$lastdate = '';
 		$readdate = '';
 		foreach ($parts as $partid => $part)
 			switch ($part->subtype) {
+				case 'PLAIN':
+					$headers = imap_fetchheader($ih, $postid);
+					if (preg_match('/Date:\s+(?<date>.+)\r\n?/', $headers, $m))
+						$lastdate = strtotime($m['date']);
+					break;
 				case 'DELIVERY-STATUS':
 					$body = imap_fetchbody($ih, $postid, $partid + 1);
 					if (preg_match('/Status:\s+(?<status>[0-9]+\.[0-9]+\.[0-9]+)/', $body, $m)) {
@@ -190,8 +196,11 @@ if (!empty($posts)) {
 					$status = MSG_ERROR;
 					break;
 			}
-			$DB->Execute('UPDATE messageitems SET status = ?, error = ? WHERE id = ?',
-				array($status, $status == MSG_ERROR && !empty($diag_code) ? $diag_code : null, $msgitemid));
+			if (empty($lastdate))
+				$lastdate = $DB->GetOne('SELECT lastdate FROM messageitems WHERE id = ?', array($msgitemid));
+			$DB->Execute('UPDATE messageitems SET status = ?, error = ?, lastdate = ? WHERE id = ?',
+				array($status, $status == MSG_ERROR && !empty($diag_code) ? $diag_code : null,
+					$lastdate, $msgitemid));
 		} elseif (!empty($disposition) && !empty($readdate))
 			$DB->Execute('UPDATE messageitems SET status = ?, lastreaddate = ? WHERE id = ?',
 				array(MSG_DELIVERED, $readdate, $msgitemid));
