@@ -1151,6 +1151,9 @@ table.dataTable thead tr:last-child th {
   color: white;
   background-color: #4a90d9 !important;
 }
+.ui-tooltip.lms-ui-tooltip-nodelist {
+  max-width: initial;
+}
 .lms-ui-cursor-pointer:hover {
   cursor: pointer;
 }
