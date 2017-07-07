@@ -38,7 +38,7 @@ $(function() {
 
 	function update_node_locations(data) {
 		var elem = $('[name="event[nodeid]"]');
-		elem.html'<option value="">{trans("- use customer location -")}</option>');
+		elem.html('<option value="">{trans("- use customer location -")}</option>');
 		data.forEach(function(option) {
 			elem.append('<option value="' + option.id + '">' + option.name + ': ' + option.location + '</option>');
 		});
