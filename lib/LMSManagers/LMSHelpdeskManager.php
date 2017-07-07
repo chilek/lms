@@ -369,35 +369,113 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return $ticket;
     }
 
-    public function TicketAdd($ticket, $files = NULL)
-    {
-        $this->db->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject,
+	// TODO: temporaily this function is public
+	public function SaveTicketMessageAttachments($ticketid, $messageid, $files, $cleanup = false) {
+		if (!empty($files) && ($dir = ConfigHelper::getConfig('rt.mail_dir'))) {
+			@umask(0007);
+			$dir_permission = intval(ConfigHelper::getConfig('rt.mail_dir_permission', '0700'), 8);
+			$dir = $dir . DIRECTORY_SEPARATOR . sprintf('%06d', $ticketid);
+			@mkdir($dir, $dir_permission);
+			$dir .= DIRECTORY_SEPARATOR . sprintf('%06d', $messageid);
+			@mkdir($dir, $dir_permission);
+
+			$dirs_to_be_deleted = array();
+			foreach ($files as $file) {
+				// handle spaces and unknown characters in filename
+				// on systems having problems with that
+				$filename = preg_replace('/[^\w\.-_]/', '_', basename($file['name']));
+				$dstfile = $dir . DIRECTORY_SEPARATOR . $filename;
+				if (isset($file['content'])) {
+					$fh = @fopen($dstfile, 'w');
+					if (empty($fh))
+						continue;
+					fwrite($fh, $file['content'], strlen($file['content']));
+					fclose($fh);
+				} else {
+					if ($cleanup)
+						$dirs_to_be_deleted = dirname($file['name']);
+					if (!@rename(isset($file['tmp_name']) ? $file['tmp_name'] : $file['name'], $dstfile))
+						continue;
+				}
+				$this->db->Execute('INSERT INTO rtattachments (messageid, filename, contenttype)
+					VALUES (?,?,?)', array($messageid, $filename, $file['type']));
+			}
+			if (!empty($dirs_to_be_deleted)) {
+				$dirs_to_be_deleted = array_unique($dirs_to_be_deleted);
+				foreach ($dirs_to_be_deleted as $dir)
+					rrmdir($dir);
+			}
+		}
+	}
+
+	public function TicketMessageAdd($message, $files = null) {
+		$headers = '';
+		if ($message['headers'])
+			if (is_array($message['headers']))
+				foreach ($message['headers'] as $name => $value)
+					$headers .= $name . ': ' . $value . "\n";
+			else
+				$headers = $message['headers'];
+
+		$this->lastmessageid = '<msg.' . $message['queue'] . '.' . $message['ticketid']
+			. '.' . time() . '@rtsystem.' . gethostname() . '>';
+
+		$this->db->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, userid, customerid, mailfrom,
+			inreplyto, messageid, replyto, headers, type)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			array(
+				$message['ticketid'],
+				isset($message['createtime']) ? $message['createtime'] : time(),
+				isset($message['subject']) ? $message['subject'] : '',
+				preg_replace("/\r/", "", $message['body']),
+				isset($message['userid']) ? $message['userid'] : (isset($this->auth->id) ? $this->auth->id : 0),
+				isset($message['customerid']) ? $message['customerid'] : 0,
+				isset($message['mailfrom']) ? $message['mailfrom'] : '',
+				isset($message['inreplyto']) ? $message['inreplyto'] : 0,
+				isset($message['messageid']) ? $message['messageid'] : $this->lastmessageid,
+				isset($message['replyto']) ? $message['replyto'] :
+					(isset($message['headers']['Reply-To']) ? $message['headers']['Reply-To'] : ''),
+				$headers,
+				isset($message['type']) ? $message['type'] : RTMESSAGE_REGULAR,
+		));
+		$msgid = $this->db->GetLastInsertID('rtmessages');
+
+		$LMS->SaveTicketMessageAttachments($message['ticketid'], $msgid, $files, true);
+
+		return $msgid;
+	}
+
+	public function TicketAdd($ticket, $files = NULL) {
+		$this->db->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject,
 				state, owner, createtime, cause, creatorid, source)
 				VALUES (?, ?, ?, ?, 0, ?, ?, ?, ?, ?)', array($ticket['queue'],
-            $ticket['customerid'],
-            $ticket['requestor'],
-            $ticket['subject'],
-            isset($ticket['owner']) ? $ticket['owner'] : 0,
-            isset($ticket['createtime']) ? $ticket['createtime'] : time(),
-            isset($ticket['cause']) ? $ticket['cause'] : 0,
-            isset($this->auth->id) ? $this->auth->id : 0,
-            isset($ticket['source']) ? $ticket['source'] : 0
-        ));
+			$ticket['customerid'],
+			$ticket['requestor'],
+			$ticket['subject'],
+			isset($ticket['owner']) ? $ticket['owner'] : 0,
+			isset($ticket['createtime']) ? $ticket['createtime'] : time(),
+			isset($ticket['cause']) ? $ticket['cause'] : 0,
+			isset($ticket['userid']) ? $ticket['userid'] : (isset($this->auth->id) ? $this->auth->id : 0),
+			isset($ticket['source']) ? $ticket['source'] : 0
+		));
 
-        $id = $this->db->GetLastInsertID('rttickets');
+		$id = $this->db->GetLastInsertID('rttickets');
 
 		$this->lastmessageid = '<msg.' . $ticket['queue'] . '.' . $id . '.' . time() . '@rtsystem.' . gethostname() . '>';
 
-        $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
-				subject, body, mailfrom, phonefrom, messageid)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array($id,
-            $ticket['customerid'],
-            isset($ticket['createtime']) ? $ticket['createtime'] : time(),
-            $ticket['subject'],
-            preg_replace("/\r/", "", $ticket['body']),
-            empty($ticket['mailfrom']) ? '' : $ticket['mailfrom'],
-            empty($ticket['phonefrom']) ? '' : $ticket['phonefrom'],
-            $this->lastmessageid));
+		$this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
+				subject, body, mailfrom, phonefrom, messageid, replyto)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array($id,
+			$ticket['customerid'],
+			isset($ticket['createtime']) ? $ticket['createtime'] : time(),
+			$ticket['subject'],
+			preg_replace("/\r/", "", $ticket['body']),
+			empty($ticket['mailfrom']) ? '' : $ticket['mailfrom'],
+			empty($ticket['phonefrom']) ? '' : $ticket['phonefrom'],
+			isset($ticket['messageid']) ? $ticket['messageid'] : $this->lastmessageid,
+			isset($ticket['replyto']) ? $ticket['replyto'] : '',
+			isset($ticket['headers']) ? $ticket['headers'] : '',
+		));
 
 		$msgid = $this->db->GetLastInsertID('rtmessages');
 
@@ -405,25 +483,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			$this->db->Execute('INSERT INTO rtticketcategories (ticketid, categoryid)
 				VALUES (?, ?)', array($id, $catid));
 
-		if (!empty($files) && ConfigHelper::getConfig('rt.mail_dir')) {
-			$dir = ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d', $id, $msgid);
-			$dir_permission = intval(ConfigHelper::getConfig('rt.mail_dir_permission', '0700'), 8);
-			@mkdir(ConfigHelper::getConfig('rt.mail_dir') . DIRECTORY_SEPARATOR . sprintf('%06d', $id), $dir_permission);
-			@mkdir($dir, $dir_permission);
-			if (isset($ticket['tmppath']))
-				$tmppath = $ticket['tmppath'] . DIRECTORY_SEPARATOR;
-			else
-				$tmppath = null;
-			foreach ($files as $file) {
-				$newfile = $dir . DIRECTORY_SEPARATOR . $file['name'];
-				if (@rename(empty($tmppath) ? $file['tmp_name'] : $tmppath . $file['name'], $newfile))
-					$this->db->Execute('INSERT INTO rtattachments (messageid, filename, contenttype)
-						VALUES (?,?,?)', array($msgid, $file['name'], $file['type']));
-			}
-		}
+		$this->SaveTicketMessageAttachments($id, $msgid, $files);
 
-        return $id;
-    }
+		return $id;
+	}
 
 	public function GetLastMessageID() {
 		return $this->lastmessageid;

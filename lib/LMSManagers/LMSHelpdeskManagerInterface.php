@@ -76,6 +76,10 @@ interface LMSHelpdeskManagerInterface
 
     public function TicketExists($id);
 
+	public function SaveTicketMessageAttachments($ticketid, $messageid, $files, $cleanup = false);
+
+	public function TicketMessageAdd($message, $files = null);
+
     public function TicketAdd($ticket, $files = NULL);
 
 	public function GetLastMessageID();

@@ -65,30 +65,20 @@ elseif(isset($_POST['note']))
 	{
 		$messageid = '<msg.' . $ticket['queueid'] . '.' . $note['ticketid'] . '.'  . time() . '@rtsystem.' . gethostname() . '>';
 
-		$DB->Execute('INSERT INTO rtmessages (userid, ticketid, body, createtime, messageid, type)
-			    VALUES(?, ?, ?, ?NOW?, ?, ?)',
-			    array($AUTH->id, $note['ticketid'], $note['body'], $messageid, RTMESSAGE_NOTE));
-
-		$mail_dir = ConfigHelper::getConfig('rt.mail_dir');
-		if (!empty($files) && !empty($mail_dir)) {
-			$id = $DB->GetLastInsertId('rtmessages');
-			$mail_dir_permission = intval(ConfigHelper::getConfig('rt.mail_dir_permission', '0700'), 8);
-			$dir = $mail_dir . DIRECTORY_SEPARATOR . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d', $note['ticketid'], $id);
-			@mkdir($mail_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $note['ticketid']), $mail_dir_permission);
-			@mkdir($dir, $mail_dir_permission);
-			foreach ($files as $file) {
-				$newfile = $dir . DIRECTORY_SEPARATOR . $file['name'];
-				if (@rename($tmppath . DIRECTORY_SEPARATOR . $file['name'], $newfile))
-					$DB->Execute('INSERT INTO rtattachments (messageid, filename, contenttype)
-							VALUES (?, ?, ?)', array($id, $file['name'], $file['type']));
-			}
-			rrmdir($tmppath);
-		}
+		foreach ($files as &$file)
+			$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
+		unset($file);
+		$msgid = $LMS->TicketMessageAdd(array(
+				'ticketid' => $note['ticketid'],
+				'messageid' => $messageid,
+				'body' => $note['body'],
+				'type' => RTMESSAGE_NOTE,
+			), $files);
 
 		// setting status and the ticket owner
 		$props = array(
-			'queueid' => $note['queueid'], 
-			'owner' => $note['owner'], 
+			'queueid' => $note['queueid'],
+			'owner' => $note['owner'],
 			'cause' => $note['cause'],
 			'state' => $note['state']
 		);
@@ -128,7 +118,7 @@ elseif(isset($_POST['note']))
 				.(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
 				.$_SERVER['HTTP_HOST']
 				.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
-				.'?m=rtticketview&id='.$note['ticketid'];
+				. '?m=rtticketview&id=' . $note['ticketid'] . (isset($msgid) ? '#rtmessage-' . $msgid : '');
 
 			if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
 				&& ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($note['ticketid'])))) {
@@ -206,7 +196,7 @@ elseif(isset($_POST['note']))
 					$LMS->SendSMS($phone, $sms_body);
 		}
 
-		$SESSION->redirect('?m=rtticketview&id='.$note['ticketid']);
+		$SESSION->redirect('?m=rtticketview&id=' . $note['ticketid'] . (isset($msgid) ? '#rtmessage-' . $msgid : ''));
 	}
 }
 else

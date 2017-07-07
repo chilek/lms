@@ -316,18 +316,7 @@ function module_main() {
 					$ticket['messageid'],
 				));
 
-			if (!empty($files) && ConfigHelper::getConfig('rt.mail_dir')) {
-				$msgid = $DB->GetLastInsertID('rtmessages');
-				$dir = ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d/%06d', $id, $msgid);
-				@mkdir(ConfigHelper::getConfig('rt.mail_dir') . sprintf('/%06d', $id), 0700);
-				@mkdir($dir, 0700);
-				foreach ($files as $file) {
-					$newfile = $dir . '/' . $file['name'];
-					if (@rename($file['tmp_name'], $newfile))
-						$DB->Execute('INSERT INTO rtattachments (messageid, filename, contenttype)
-							VALUES (?,?,?)', array($msgid, $file['name'], $file['type']));
-				}
-			}
+			$LMS->SaveTicketMessageAttachments($ticket['id'], $DB->GetLastInsertID('rtmessages'), $files);
 
 			// re-open ticket
 			static $ticket_change_state_map = array(

@@ -24,49 +24,6 @@
  *  $Id$
  */
 
-function MessageAdd($msg, $headers, $files = NULL) {
-	global $LMS, $tmppath;
-
-	$DB = LMSDB::getInstance();
-	$time = time();
-
-	$head = '';
-	if($headers)
-		foreach ($headers as $idx => $header)
-			$head .= $idx . ": " . $header . "\n";
-
-	$DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, userid, customerid, mailfrom, inreplyto, messageid, replyto, headers)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-			array(
-				$msg['ticketid'],
-				$time,
-				$msg['subject'],
-				preg_replace("/\r/", "", $msg['body']),
-				$msg['userid'],
-				$msg['customerid'],
-				$msg['mailfrom'],
-				$msg['inreplyto'],
-				$msg['messageid'],
-				(isset($msg['replyto']) ? $msg['replyto'] : $headers['Reply-To']),
-				$head));
-
-	$mail_dir = ConfigHelper::getConfig('rt.mail_dir');
-	if (!empty($files) && !empty($mail_dir)) {
-		$id = $DB->GetLastInsertId('rtmessages');
-		$mail_dir_permission = intval(ConfigHelper::getConfig('rt.mail_dir_permission', '0700'), 8);
-		$dir = $mail_dir . DIRECTORY_SEPARATOR . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d', $msg['ticketid'], $id);
-		@mkdir($mail_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $msg['ticketid']), $mail_dir_permission);
-		@mkdir($dir, $mail_dir_permission);
-		foreach ($files as $file) {
-			$newfile = $dir . DIRECTORY_SEPARATOR . $file['name'];
-			if (@rename($tmppath . DIRECTORY_SEPARATOR . $file['name'], $newfile))
-				$DB->Execute('INSERT INTO rtattachments (messageid, filename, contenttype)
-						VALUES (?,?,?)', array($id, $file['name'], $file['type']));
-		}
-		rrmdir($tmppath);
-	}
-}
-
 if(isset($_POST['message']))
 {
 	$message = $_POST['message'];
@@ -92,21 +49,19 @@ if(isset($_POST['message']))
 	if(!$error)
 	{
 		$queue = $LMS->GetQueueByTicketId($message['ticketid']);
-		$user = $LMS->GetUserInfo($AUTH->id);
+		$user = $LMS->GetUserInfo(Auth::GetCurrentUser());
+
+		$message['queue'] = $queue;
 
 		$message['messageid'] = '<msg.' . $queue['id'] . '.' . $message['ticketid'] . '.' . time()
 			. '@rtsystem.' . gethostname() . '>';
 
-		if($message['sender']=='user')
-		{
-			$message['userid'] = $AUTH->id;
+		if ($message['sender'] == 'user') {
+			$message['userid'] = Auth::GetCurrentUser();
 			$message['customerid'] = 0;
-		}
-		else
-		{
+		} else {
 			$message['userid'] = 0;
-			if(!$message['customerid']) 
-			{
+			if (!$message['customerid']) {
 				$req = $DB->GetOne('SELECT requestor FROM rttickets WHERE id = ?', array($message['ticketid']));
 				$message['mailfrom'] = preg_replace('/^.* <(.+@.+)>/','\1', $req);
 				if(!check_email($message['mailfrom']))
@@ -167,13 +122,17 @@ if(isset($_POST['message']))
 				$message['replyto'] = '';
 			}
 
-			MessageAdd($message, $headers, $files);
+			foreach ($files as &$file)
+				$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
+			unset($file);
+			$message['headers'] = $headers;
+			$msgid = $LMS->TicketMessageAdd($message, $files);
 		}
 		else //sending to backend
 		{
 			($message['destination']!='' ? $addmsg = 1 : $addmsg = 0);
 
-			if($message['destination']=='') 
+			if($message['destination']=='')
 				$message['destination'] = $queue['email'];
 			$recipients = $message['destination'];
 
@@ -199,11 +158,20 @@ if(isset($_POST['message']))
 			$headers['Message-ID'] = $message['messageid'];
 			$headers['Reply-To'] = $headers['From'];
 
+			// message to customer is written to database
+			if ($message['userid'] && $addmsg) {
+				foreach ($files as &$file)
+					$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
+				unset($file);
+				$message['headers'] = $headers;
+				$msgid = $LMS->TicketMessageAdd($message, $files);
+			}
+
 			$body = $message['body'];
 			if ($message['destination'] == $queue['email'] || $message['destination'] == $user['email'])
 				$body .= "\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
 					.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
-					.'?m=rtticketview&id='.$message['ticketid'];
+					. '?m=rtticketview&id=' . $message['ticketid'] . (isset($msgid) ? '#rtmessage-' . $msgid : '');
 			$attachments = NULL;
 			if (!empty($files))
 				foreach ($files as $file)
@@ -213,10 +181,6 @@ if(isset($_POST['message']))
 						'data' => file_get_contents($tmppath . DIRECTORY_SEPARATOR . $file['name']),
 					);
 			$LMS->SendMail($recipients, $headers, $body, $attachments);
-
-			// message to customer is written to database
-			if($message['userid'] && $addmsg) 
-				MessageAdd($message, $headers, $files);
 		}
 
 		// setting status and the ticket owner
@@ -226,11 +190,11 @@ if(isset($_POST['message']))
 			$message['state'] = RT_OPEN;
 		
 		if (!$DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($message['ticketid'])))
-			$message['owner'] = $AUTH->id;
+			$message['owner'] = Auth::GetCurrentUser();
 
 		$props = array(
-			'queueid' => $message['queueid'], 
-			'owner' => $message['owner'], 
+			'queueid' => $message['queueid'],
+			'owner' => $message['owner'],
 			'cause' => $message['cause'],
 			'state' => $message['state']
 		);
@@ -273,7 +237,7 @@ if(isset($_POST['message']))
 				.(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
 				.$_SERVER['HTTP_HOST']
 				.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
-				.'?m=rtticketview&id='.$message['ticketid'];
+				. '?m=rtticketview&id=' . $message['ticketid'] . (isset($msgid) ? '#rtmessage-' . $msgid : '');
 
 			if ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid']))) {
 				$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
@@ -350,7 +314,7 @@ if(isset($_POST['message']))
 			$notify_author = ConfigHelper::checkConfig('phpui.helpdesk_author_notify');
 			$args = array(
 				'queue' => $queue['id'],
-				'user' => $AUTH->id,
+				'user' => Auth::GetCurrentUser(),
 			);
 			if ($notify_author)
 				unset($args['user']);
@@ -388,7 +352,7 @@ if(isset($_POST['message']))
 			}
 		}
 
-		$SESSION->redirect('?m=rtticketview&id='.$message['ticketid']);
+		$SESSION->redirect('?m=rtticketview&id=' . $message['ticketid'] . (isset($msgid) ? '#rtmessage-' . $msgid : ''));
 	}
 }
 else
@@ -402,7 +366,7 @@ else
 			$message['notify'] = TRUE;
 	}
 
-	$user = $LMS->GetUserInfo($AUTH->id);
+	$user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 	
 	$message['ticketid'] = $_GET['ticketid'];
 	$message['customerid'] = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid']));

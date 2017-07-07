@@ -167,11 +167,13 @@ $smtp_options = array(
 );
 
 $save_path = ConfigHelper::getConfig('rt.mail_dir', '', true);
-$save_path_permission = ConfigHelper::getConfig('rt.mail_dir_permission', '0700');
+$save_path_permission = intval(ConfigHelper::getConfig('rt.mail_dir_permission', '0700'), 8);
 $queue = 0;
 if (isset($options['queue']))
 	$queue = intval($options['queue']);
 $queue = intval(ConfigHelper::getConfig('rt.default_queue', $queue));
+$categories = ConfigHelper::getConfig('rt.default_categories', 'default');
+$categories = preg_split('/\s*,\s*/', trim($categories));
 $auto_open = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.auto_open', '0'));
 //$tmp_dir = ConfigHelper::getConfig('rt.tmp_dir', '', true);
 $notify = ConfigHelper::checkValue(ConfigHelper::getConfig('rt.newticket_notify', '0'));
@@ -397,17 +399,24 @@ if (!$autoreply_from) {
 }
 
 if (!$prev_tid) { // generate new ticket if previous not found
-	$DB->Execute("INSERT INTO rttickets (queueid, requestor, customerid, subject, createtime, source)
-		VALUES (?, ?, ?, ?, ?, ?)",
-		array($queue, $mh_from, $reqcustid, $mh_subject, $timestamp, RT_SOURCE_EMAIL));
-	$ticket_id = $DB->GetLastInsertID('rttickets');
+	$cats = array();
+	foreach ($categories as $category)
+		if (($catid = $LMS->GetCategoryIdByName($category)) != null)
+			$cats[$catid] = $category;
 
-	$DB->Execute("INSERT INTO rtmessages (ticketid, mailfrom, replyto,
-		customerid, subject, messageid, headers, body, createtime)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-		array($ticket_id, $mh_from, $mh_replyto, $reqcustid, $mh_subject,
-			$mh_msgid, $mail_headers, $mail_body, $timestamp));
-	$rt_msgid = $DB->GetLastInsertID('rtmessages');
+	$ticket_id = $LMS->TicketAdd(array(
+		'queue' => $queue,
+		'requestor' => $mh_from,
+		'customerid' => $reqcustid,
+		'subject' => $mh_subject,
+		'createtime' => $timestamp,
+		'source' => RT_SOURCE_EMAIL,
+		'mailfrom' => $mh_from,
+		'replyto' => $mh_replyto,
+		'messageid' => $mh_msgid,
+		'headers' => $mail_headers,
+		'body' => $mail_body,
+		'categories' => $cats), $attachments);
 
 	if ($autoreply) {
 		$ticketid = sprintf("%06d", $ticket_id);
@@ -434,6 +443,7 @@ if (!$prev_tid) { // generate new ticket if previous not found
 		);
 		$LMS->SendMail($mailto, $headers, $autoreply_body, null, null, $smtp_options);
 	}
+
 	$new_ticket = true;
 } else {
 	// find userid
@@ -442,43 +452,25 @@ if (!$prev_tid) { // generate new ticket if previous not found
 	if (empty($requserid))
 		$requserid = 0;
 
-	$DB->Execute("INSERT INTO rtmessages (ticketid, mailfrom, customerid,
-		userid, subject, messageid, replyto, headers, body, inreplyto, createtime)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?)",
-		array($prev_tid, $mh_from, $reqcustid, $requserid, $mh_subject,
-			$mh_msgid, $mh_replyto, $mail_headers, $mail_body, $inreplytoid));
-	$rt_msgid = $DB->GetLastInsertID('rtmessages');
+	$msgid = $LMS->TicketMessageAdd(array(
+			'ticketid' => $prev_tid,
+			'mailfrom' => $mh_from,
+			'customerid' => $reqcustid,
+			'userid' => $requserid,
+			'subject' => $mh_subject,
+			'messageid' => $mh_msgid,
+			'replyto' => $mh_replyto,
+			'headers' => $mail_headers,
+			'body' => $mail_body,
+			'inreplyto' => $inreplytoid,
+		), $attachments);
 
 	if ($auto_open)
 		$DB->Execute("UPDATE rttickets SET state = ? WHERE id = ? AND state > ?",
 			array(RT_OPEN, $prev_tid, RT_OPEN));
 
 	$ticket_id = $prev_tid;
-	$ticketid = sprintf("%06d", $ticket_id);
 	$new_ticket = false;
-}
-
-if (!empty($save_path) && !empty($attachments)) {
-	@umask(0007);
-	@mkdir($save_path . DIRECTORY_SEPARATOR . sprintf('%06d', $ticket_id), intval($save_path_permission, 8));
-	@mkdir($save_path . DIRECTORY_SEPARATOR . sprintf('%06d', $ticket_id)
-		. DIRECTORY_SEPARATOR . sprintf('%06d', $rt_msgid), intval($save_path_permission, 8));
-	foreach ($attachments as $attachment) {
-		// handle spaces and unknown characters in filename
-		// on systems having problems with that
-		$filename = preg_replace('/[^\w\.-_]/', '_', $attachment['name']);
-
-		$fh = fopen($save_path . DIRECTORY_SEPARATOR . sprintf('%06d', $ticket_id)
-			. DIRECTORY_SEPARATOR . sprintf('%06d', $rt_msgid) . DIRECTORY_SEPARATOR . $filename, 'w');
-		if (empty($fh))
-			continue;
-		fwrite($fh, $attachment['content'], strlen($attachment['content']));
-		fclose($fh);
-
-		$DB->Execute("INSERT INTO rtattachments (messageid, filename,
-			contenttype) VALUES (?, ?, ?)",
-			array($rt_msgid, basename($filename), $attachment['type']));
-	}
 }
 
 if ($notify) {
@@ -500,7 +492,7 @@ if ($notify) {
 	$headers['Reply-To'] = $headers['From'];
 
 	$sms_body = $headers['Subject'] . "\n" . $mail_body;
-	$body = $mail_body . "\n\n" . $lms_url . '?m=rtticketview&id=' . $ticket_id;
+	$body = $mail_body . "\n\n" . $lms_url . '?m=rtticketview&id=' . $ticket_id . (isset($msgid) ? '#rtmessage-' . $msgid : '');
 
 	$ticket = $LMS->GetTicketContents($ticket_id);
 	if ($ticket['customerid'] && $reqcustid) {
