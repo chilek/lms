@@ -163,9 +163,11 @@ if(isset($_POST['event']))
 }
 
 $event['date'] = isset($event['date']) ? $event['date'] : $SESSION->get('edate');
-if(empty($event['customerid']) && !empty($_GET['customerid'])) {
-	$event['customername'] = $LMS->GetCustomerName($_GET['customerid']);
+
+if (isset($_GET['customerid']))
 	$event['customerid'] = intval($_GET['customerid']);
+if (isset($event['customerid'])) {
+	$event['customername'] = $LMS->GetCustomerName($event['customerid']);
 	$SMARTY->assign('nodes_location', GetNodesLocation($event['customerid']));
 }
 
