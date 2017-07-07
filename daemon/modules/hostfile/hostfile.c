@@ -77,7 +77,7 @@ void addrule(GLOBAL *g, FILE *fh, char *rule, struct host h)
 	g->str_replace(&s, "%i16", h.i16);
 	g->str_replace(&s, "%i", h.ip);
 	g->str_replace(&s, "%ms", h.macs);
-	g->str_replace(&s, "%m", h.mac);
+	g->str_replace(&s, "%m", h.mac ? h.mac : "00:00:00:00:00:00");
 	g->str_replace(&s, "%n", h.name);
 	g->str_replace(&s, "%l", h.location);
 	g->str_replace(&s, "%devl", h.devlocation);
