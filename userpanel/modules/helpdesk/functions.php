@@ -305,18 +305,14 @@ function module_main() {
 			$ticket['messageid'] = '<msg.' . $ticket['queue']['id'] . '.' . $ticket['id'] . '.' . time()
 				. '@rtsystem.' . gethostname() . '>';
 
-			$DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, customerid, inreplyto, messageid)
-					VALUES (?, ?NOW?, ?, ?, ?, ?, ?)',
-				array(
-					$ticket['id'],
-					$ticket['subject'],
-					$ticket['body'],
-					$ticket['customerid'],
-					$ticket['inreplyto'],
-					$ticket['messageid'],
-				));
-
-			$LMS->SaveTicketMessageAttachments($ticket['id'], $DB->GetLastInsertID('rtmessages'), $files);
+			$LMS->TicketMessageAdd(array(
+					'ticketid' => $ticket['id'],
+					'subject' => $ticket['subject'],
+					'body' => $ticket['body'],
+					'customerid' => $ticket['customerid'],
+					'inreplyto' => $ticket['inreplyto'],
+					'messageid' => $ticket['messageid'],
+				), $files);
 
 			// re-open ticket
 			static $ticket_change_state_map = array(
