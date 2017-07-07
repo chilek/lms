@@ -87,7 +87,7 @@ if(isset($_POST['ticket']))
 		foreach ($files as &$file)
 			$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
 		unset($file);
-		$id = $LMS->TicketAdd($ticket, $attachments);
+		$id = $LMS->TicketAdd($ticket, $files);
 
 		if (ConfigHelper::checkConfig('phpui.newticket_notify')) {
 			$user = $LMS->GetUserInfo(Auth::GetCurrentUser());

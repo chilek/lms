@@ -439,7 +439,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		));
 		$msgid = $this->db->GetLastInsertID('rtmessages');
 
-		$LMS->SaveTicketMessageAttachments($message['ticketid'], $msgid, $files, true);
+		$this->SaveTicketMessageAttachments($message['ticketid'], $msgid, $files, true);
 
 		return $msgid;
 	}
