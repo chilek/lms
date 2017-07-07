@@ -32,8 +32,8 @@ $(function() {
 		}
 	}
 
-	function change_customer(elem) {
-		xajax_select_customer(elem.value);
+	function change_customer() {
+		xajax_select_customer($('[name="event[custid]"]').val());
 	}
 
 	function update_nodes_location(data)
@@ -138,7 +138,7 @@ $(function() {
 		</TD>
 		<TD width="98%" class="nobr">
 			{if empty($event.ticketid) && empty($event.customerid)}
-                                                        {customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer(this);"}
+                                                        {customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer();"}
                                                 {else}
                                                     {if $event.customerid != 0}
                                                         {$event.customername} ({$event.customerid})
