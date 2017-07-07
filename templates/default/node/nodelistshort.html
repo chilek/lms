@@ -2,27 +2,20 @@
 <TABLE class="lmsbox-inner" id="table">
     <THEAD>
 	<TR>
-		<TD WIDTH="1%">
-			<IMG SRC="img/node.gif" alt="">
-		</TD>
-		<TD WIDTH="99%" NOWRAP>
+		<td class="nobr">
 		    {if $layout.module == 'ewxnodelist'}
 		    <B>{t a=$customernodes|@count|default:"0"}Channel Nodes ($a):{/t}</B>
 		    {else}
 			<B>{t a=$customernodes|@count|default:"0"}Customer Nodes ($a):{/t}</B>
 			{/if}
-		</TD>
+		</td>
 	</TR>
     </THEAD>
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=customernodes loop=$customernodes}
 	<tr class="highlight {cycle}{if ! $customernodes[customernodes].access} blend{/if}">
-		<TD WIDTH="1%">
-			<a href="?m=nodeset&amp;id={$customernodes[customernodes].id}&shortlist=1&popup=1"><IMG src="img/{if ! $customernodes[customernodes].access}no{/if}access.gif" ALT="[ {if ! $customernodes[customernodes].access}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]"></a>
-			<a href="?m=nodewarn&amp;id={$customernodes[customernodes].id}&shortlist=1&popup=1"><IMG src="img/warning{if ! $customernodes[customernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $customernodes[customernodes].warning}{trans("Enable notice")}{else}{trans("Disable notice")}{/if} ]"></a>
-		</TD>
-		<TD WIDTH="99%" onClick="parent.location.href='?m=nodeinfo&amp;id={$customernodes[customernodes].id}';">
+		<td onClick="parent.location.href='?m=nodeinfo&amp;id={$customernodes[customernodes].id}';">
 			{if $customernodes[customernodes].lastonline}
                                 {if ($smarty.now-$customernodes[customernodes].lastonline) > $lastonline_limit}
 				<img src="img/node_off.gif" ALT="" title="{t a=$customernodes[customernodes].lastonlinedate}Last online: $a{/t}">
@@ -39,9 +32,9 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD COLSPAN="2" class="empty-table">
+		<td class="empty-table">
 			<p>{trans("No nodes found in database.")}</p>
-		</TD>
+		</td>
 	</TR>
 	{/section}
     </TBODY>
