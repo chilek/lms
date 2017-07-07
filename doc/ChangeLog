@@ -34,6 +34,8 @@ version ?.??.?? (????-??-??):
   - enhancement: added support for array parameter to LMSDB class [kosa/chilan]
   - improvement: allow to add new network device directly from customer box [chilan]
   - enhancement: allow to quick search by external customer id fragment [chilan]
+  - improvement: all url in helpdesk notifications open ticket immediately
+    on comment added before the moment [chilan]
 
 version 1.11.22 (2017-06-08):
 

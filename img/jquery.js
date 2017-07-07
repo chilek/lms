@@ -44,6 +44,14 @@ $.ajax("img/jquery-datatables-i18n/" + lmsSettings.language + ".json", {
 	}
 });
 
+function show_pagecontent() {
+	$('div#lms-ui-spinner').hide();
+	$('div#pagecontent').show();
+	if (location.hash.length) {
+		$(location.hash)[0].scrollIntoView();
+	}
+}
+
 $(function() {
 	var autocomplete = "off";
 
@@ -490,8 +498,7 @@ $(function() {
 			if (elementsToInitiate > 0) {
 				elementsToInitiate--;
 				if (!elementsToInitiate) {
-					$('div#lms-ui-spinner').hide();
-					$('div#pagecontent').show();
+					show_pagecontent();
 				}
 			}
 		}).on('column-visibility.dt', function(e, settings, column, visible) {
@@ -769,8 +776,7 @@ $(function() {
 					if (elementsToInitiate > 0) {
 						elementsToInitiate--;
 						if (!elementsToInitiate) {
-							$('div#lms-ui-spinner').hide();
-							$('div#pagecontent').show();
+							show_pagecontent();
 						}
 					}
 				});
@@ -834,8 +840,7 @@ $(function() {
 	}
 
 	if (!elementsToInitiate) {
-		$('div#lms-ui-spinner').hide();
-		$('div#pagecontent').show();
+		show_pagecontent();
 	}
 
 	// quick search input auto show/hide support
@@ -854,7 +859,9 @@ $(function() {
 		('input.lms-ui-quick-search-active', qs_inputs).removeClass('lms-ui-quick-search-active');
 		$(this).next().addClass('lms-ui-quick-search-active').focus();
 	});
-	qs_inputs.first().addClass('lms-ui-quick-search-active').focus();
+	if (!location.hash.length) {
+		qs_inputs.first().addClass('lms-ui-quick-search-active').focus();
+	}
 
 	$(document).keydown(function(e) {
 		if (e.keyCode != 9)
