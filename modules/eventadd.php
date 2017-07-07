@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,16 +24,13 @@
  *  $Id$
  */
 
-function GetNodesLocation($customerid) {
-	return LMSDB::getInstance()->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY n.name ASC', array($customerid));
-}
+function select_customer($id) {
+	global $LMS;
 
-function select_customer($id)
-{
-    $JSResponse = new xajaxResponse();
+	$JSResponse = new xajaxResponse();
 	if (!empty($id))
-		$JSResponse->call('update_nodes_location', (array)GetNodesLocation($id));
-    return $JSResponse;
+		$JSResponse->call('update_node_locations', (array)$LMS->GetNodeLocations($id));
+	return $JSResponse;
 }
 
 function getUsersForGroup($groupid) {
@@ -106,7 +103,7 @@ if(isset($_POST['event']))
 		$event['customerid'] = $event['custid'];
 
 	$event['status'] = isset($event['status']) ? 1 : 0;
-	$event['nodeid'] = (isset($event['customer_location']) || is_null($event['nodeid'])) ? NULL : $event['nodeid'];
+	$event['nodeid'] = !isset($event['nodeid']) || empty($event['nodeid']) ? null : $event['nodeid'];
 
 	if (!$error) {
                 if (isset($event['helpdesk']))
@@ -168,7 +165,7 @@ if (isset($_GET['customerid']))
 	$event['customerid'] = intval($_GET['customerid']);
 if (isset($event['customerid'])) {
 	$event['customername'] = $LMS->GetCustomerName($event['customerid']);
-	$SMARTY->assign('nodes_location', GetNodesLocation($event['customerid']));
+	$SMARTY->assign('node_locations', $LMS->GetNodeLocations($event['customerid']));
 }
 
 if(isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year']))

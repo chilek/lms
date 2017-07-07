@@ -43,7 +43,7 @@
 									<BR>
 									{/if}
 									<span class="nobr">
-									{customerlist form="ticket" customers=$customerlist selected=$ticket.customerid selectname="ticket[customerid]" inputname="ticket[custid]"}
+									{customerlist form="ticket" customers=$customerlist selected=$ticket.customerid selectname="ticket[customerid]" inputname="ticket[custid]" customOnChange="change_customer();"}
 									</span>
 								</TD>
 							</TR>
@@ -140,19 +140,33 @@
 									</SELECT>
 								</TD>
 							</TR>
-                                                        <TR>
-                                                                <TD style="width: 1%;" class="bold nobr">
-                                                                        <IMG src="img/volcano.png" alt="">
-                                                                        {trans("Ticket source:")}
-                                                                </TD>
-                                                                <TD style="width: 1%;">
+							<TR>
+								<TD class="bold nobr">
+									<IMG src="img/volcano.png" alt="">
+									{trans("Ticket source:")}
+								</TD>
+								<TD>
 									<SELECT size="1" name="ticket[source]" {tip text="Select request source" trigger="source"}>
 										{foreach $_RT_SOURCES as $sourceidx => $status}
 											<OPTION value="{$sourceidx}"{if $ticket.source == $sourceidx}selected {/if}>{$status}</OPTION>
 										{/foreach}
 									</SELECT>
 								</TD>
-                                                        </TR>
+							</TR>
+							<TR>
+								<TD class="bold nobr">
+									<img src="img/node.gif" alt="">
+									{trans("Node:")}
+								</TD>
+								<TD class="nobr">
+									<select name="ticket[nodeid]" {tip text="Select node location"}>
+										<option value="">{trans("- use customer location -")}</option>
+										{foreach $node_locations as $node}
+										<option value="{$node.id}"{if $node.id == $ticket.nodeid} selected{/if}>{$node.name}: {$node.location}</option>
+										{/foreach}
+									</select>
+								</TD>
+							</TR>
 						</TABLE>
 					</TD>
 				</TR>
@@ -178,5 +192,21 @@ $(function() {
 	});
 	{/if}
 });
+
+function change_customer() {
+	xajax_select_customer($('[name="ticket[custid]"]').val());
+}
+
+function update_node_locations(data) {
+	var elem = $('[name="ticket[nodeid]"]');
+	elem.html('');
+	if (data.length) {
+		data.forEach(function(option) {
+			elem.append('<option value="' + option.id + '">' + option.name + ': ' + option.location + '</option>');
+		});
+	} else {
+		elem.append('<option value="">{trans("- none -")}</option>');
+	}
+}
 //-->
 </script>

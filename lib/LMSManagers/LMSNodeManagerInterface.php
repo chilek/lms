@@ -82,4 +82,6 @@ interface LMSNodeManagerInterface
     public function updateNodeField($nodeid, $field, $value);
 
     public function GetUniqueNodeLocations($customerid);
+
+	public function GetNodeLocations($customerid);
 }

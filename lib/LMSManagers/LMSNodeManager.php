@@ -811,4 +811,9 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				$locations[] = $node['location'];
 		return array_unique($locations);
 	}
+
+	public function GetNodeLocations($customerid) {
+		return $this->db->GetAllByKey('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY n.name ASC',
+			'id', array($customerid));
+	}
 }

@@ -45,8 +45,19 @@ function GetCategories($queueid) {
 	return $result;
 }
 
+function select_customer($id) {
+	global $LMS;
+
+	$JSResponse = new xajaxResponse();
+	if (!empty($id)) {
+		$node_locations = $LMS->GetNodeLocations($id);
+		$JSResponse->call('update_node_locations', (array)$node_locations);
+	}
+	return $JSResponse;
+}
+
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction('GetCategories');
+$LMS->RegisterXajaxFunction(array('GetCategories', 'select_customer'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 ?>

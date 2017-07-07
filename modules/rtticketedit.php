@@ -168,23 +168,17 @@ if(isset($_POST['ticket']))
 */
 		// setting status and the ticket owner
 		$props = array(
-			'queueid' => $ticketedit['queueid'], 
-			'owner' => $ticketedit['owner'], 
+			'queueid' => $ticketedit['queueid'],
+			'owner' => $ticketedit['owner'],
 			'cause' => $ticketedit['cause'],
 			'state' => $ticketedit['state'],
 			'subject' => $ticketedit['subject'],
 			'customerid' => $ticketedit['customerid'],
 			'categories' => isset($ticketedit['categories']) ? array_keys($ticketedit['categories']) : array(),
 			'source' => $ticketedit['source'],
+			'nodeid' => $ticketedit['nodeid'],
 		);
 		$LMS->TicketChange($ticketedit['ticketid'], $props);
-
-                foreach($categories as $category)
-                        $DB->Execute('DELETE FROM rtticketcategories WHERE ticketid = ? and categoryid = ?',
-				array($id, $category['id']));
-		foreach($ticketedit['categories'] as $categoryid => $val)
-			$DB->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) VALUES(?, ?)',
-				array($id, $categoryid));
 
 		// przy zmianie kolejki powiadamiamy o "nowym" zgloszeniu
 		$newticket_notify = ConfigHelper::getConfig('phpui.newticket_notify', false);
@@ -222,7 +216,7 @@ if(isset($_POST['ticket']))
 							address, zip, city FROM customeraddressview WHERE id = ?', array($ticketedit['customerid']));
 				$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
 					WHERE customerid = ?', array($ticketedit['customerid']));
-				$info['locations'] = $LMS->GetUniqueNodeLocations($ticketedit['customerid']);
+				$node_locations = $LMS->GetNodeLocations($ticketedit['customerid']);
 
 				$emails = array();
 				$phones = array();
@@ -237,8 +231,8 @@ if(isset($_POST['ticket']))
 
 				$body .= "\n\n-- \n";
 				$body .= trans('Customer:').' '.$info['customername']."\n";
-				$body .= trans('Address:') . ' ' . (empty($info['locations']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
-						: implode(', ', $info['locations'])) . "\n";
+				$body .= trans('Address:') . ' ' . (empty($ticketedit['nodeid']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
+						: $node_locations[$ticketedit['nodeid']]['location']) . "\n";
 				if (!empty($phones))
 					$body .= trans('Phone:').' ' . implode(', ', $phones) . "\n";
 				if (!empty($emails))
@@ -247,8 +241,8 @@ if(isset($_POST['ticket']))
 				$sms_body .= "\n";
 				$sms_body .= trans('Customer:').' '.$info['customername'];
 				$sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
-				$sms_body .= (empty($info['locations']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
-					: implode(', ', $info['locations']));
+				$sms_body .= (empty($ticketedit['nodeid']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
+					: $node_locations[$ticketedit['nodeid']]['location']);
 				if (!empty($phones))
 					$sms_body .= '. ' . trans('Phone:') . ' ' . preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones));
 			}
@@ -307,6 +301,7 @@ if(isset($_POST['ticket']))
 	$ticket['queueid'] = $ticketedit['queueid'];
 	$ticket['state'] = $ticketedit['state'];
 	$ticket['owner'] = $ticketedit['owner'];
+	$ticket['nodeid'] = $ticketedit['nodeid'];
 }
 else
 	$ticketedit['categories'] = $ticket['categories'];
@@ -335,6 +330,9 @@ if ((empty($userpanel_enabled_modules) || strpos('helpdesk', $userpanel_enabled_
 			if (!in_array($queue['id'], $selectedqueues))
 				unset($queuelist[$idx]);
 }
+
+if (isset($ticket['customerid']) && intval($ticket['customerid']))
+	$SMARTY->assign('node_locations', $LMS->GetNodeLocations($ticket['customerid']));
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queuelist', $queuelist);

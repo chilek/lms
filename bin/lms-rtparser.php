@@ -513,13 +513,13 @@ if ($notify) {
 			}
 
 		if ($customerinfo) {
-			$info['locations'] = $LMS->GetUniqueNodeLocations($ticket['customerid']);
+			$node_locations = $LMS->GetNodeLocations($ticket['customerid']);
 
 			$body .= "\n\n-- \n";
 			$body .= trans('Customer:') . ' ' . $info['customername'] . "\n";
 			$body .= trans('ID:') . ' ' . sprintf('%04d', $ticket['customerid']) . "\n";
-			$body .= trans('Address:') . ' ' . (empty($info['locations']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
-				: implode(', ', $info['locations'])) . "\n";
+			$body .= trans('Address:') . ' ' . (empty($ticket['nodeid']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
+				: $node_locations[$ticket['nodeid']]['location']) . "\n";
 
 			if (!empty($phones))
 				$body .= trans('Phone:').' ' . implode(', ', $phones) . "\n";
@@ -529,8 +529,8 @@ if ($notify) {
 			$sms_body .= "\n";
 			$sms_body .= trans('Customer:').' '.$info['customername'];
 			$sms_body .= ' ' . sprintf('(%04d)', $ticket['customerid']) . '. ';
-			$sms_body .= (empty($info['locations']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
-				: implode(', ', $info['locations']));
+			$sms_body .= (empty($ticket['nodeid']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
+				: $node_locations[$ticket['nodeid']]['location']);
 			if (!empty($phones))
 				$sms_body .= '. ' . trans('Phone:') . ' ' . preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones));
 		}

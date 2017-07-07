@@ -143,12 +143,12 @@ if(isset($_POST['ticket']))
 					}
 
 				if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
-					$info['locations'] = $LMS->GetUniqueNodeLocations($ticket['customerid']);
+					$node_locations = $LMS->GetNodeLocations($ticket['customerid']);
 					$body .= "\n\n-- \n";
 					$body .= trans('Customer:').' '.$info['customername']."\n";
 					$body .= trans('ID:').' '.sprintf('%04d', $ticket['customerid'])."\n";
-					$body .= trans('Address:') . ' ' . (empty($info['locations']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
-						: implode(', ', $info['locations'])) . "\n";
+					$body .= trans('Address:') . ' ' . (empty($ticket['nodeid']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
+						: $node_locations[$ticket['nodeid']]['location']) . "\n";
 
 					if (!empty($phones))
 						$body .= trans('Phone:').' ' . implode(', ', $phones) . "\n";
@@ -273,9 +273,9 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 
-if(isset($ticket['customerid']) && $ticket['customerid'])
-{
+if (isset($ticket['customerid']) && intval($ticket['customerid'])) {
 	$SMARTY->assign('customerinfo', $LMS->GetCustomer($ticket['customerid']));
+	$SMARTY->assign('node_locations', $LMS->GetNodeLocations($ticket['customerid']));
 }
 
 $SMARTY->assign('ticket', $ticket);

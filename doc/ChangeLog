@@ -36,6 +36,8 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to quick search by external customer id fragment [chilan]
   - improvement: all url in helpdesk notifications open ticket immediately
     on comment added before the moment [chilan]
+  - enhancement: helpdesk ticket <-> node assignments (this allows to assign locations
+    to tickets) [chilan]
 
 version 1.11.22 (2017-06-08):
 

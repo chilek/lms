@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,14 +24,13 @@
  *  $Id$
  */
 
-function select_customer($id)
-{
-    $JSResponse = new xajaxResponse();
-	if (!empty($id)) {
-		$nodes_location = LMSDB::getInstance()->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY n.name ASC', array($id));
-		$JSResponse->call('update_nodes_location', (array)$nodes_location);
-	}
-    return $JSResponse;
+function select_customer($id) {
+	global $LMS;
+
+	$JSResponse = new xajaxResponse();
+	if (!empty($id))
+		$JSResponse->call('update_node_locations', (array)$LMS->GetNodeLocations($id));
+	return $JSResponse;
 }
 
 function getUsersForGroup($groupid) {
@@ -134,7 +133,7 @@ if(isset($_POST['event']))
 			$event['custid'] = $event['customerid'];
 		if ($event['custid'] == '')
 			$event['custid'] = 0;
-		$event['nodeid'] = isset($event['customer_location']) ? NULL : $event['nodeid'];
+		$event['nodeid'] = !isset($event['nodeid']) || empty($event['nodeid']) ? null : $event['nodeid'];
 
 		$DB->BeginTrans();
 
@@ -167,14 +166,13 @@ $usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
 $userlist = $DB->GetAll('SELECT id, name FROM vusers
 	WHERE deleted = 0 AND vusers.access = 1 ORDER BY lastname ASC');
 
-if (empty($nodes_location))
-	$nodes_location = $DB->GetAll('SELECT n.id, n.name, location FROM vnodes n WHERE ownerid = ? ORDER BY name ASC', array($event['customerid']));
+if (isset($event['customerid']) || intval($event['customerid']))
+	$SMARTY->assign('node_locations', $LMS->GetNodeLocations($event['customerid']));
 
 if (!isset($event['usergroup']))
 	$SESSION->restore('eventgid', $event['usergroup']);
 
 $SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
-$SMARTY->assign('nodes_location', $nodes_location);
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 $SMARTY->assign('userlist', $userlist);

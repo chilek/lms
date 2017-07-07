@@ -47,7 +47,7 @@ if(isset($_GET['ticketid']))
 elseif(isset($_POST['note']))
 {
 	$note = $_POST['note'];
-	$ticket = $DB->GetRow('SELECT id AS ticketid, state, cause, queueid, owner FROM rttickets WHERE id = ?', array($note['ticketid']));
+	$ticket = $DB->GetRow('SELECT id AS ticketid, state, cause, queueid, owner, nodeid FROM rttickets WHERE id = ?', array($note['ticketid']));
 
 	if($note['body'] == '')
 		$error['body'] = trans('Note body not specified!');
@@ -126,7 +126,7 @@ elseif(isset($_POST['note']))
 						address, zip, city FROM customeraddressview WHERE id = ?', array($cid));
 				$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
 					WHERE customerid = ?', array($cid));
-				$info['locations'] = $LMS->GetUniqueNodeLocations($cid);
+				$node_locations = $LMS->GetNodeLocations($cid);
 
 				$emails = array();
 				$phones = array();
@@ -141,8 +141,8 @@ elseif(isset($_POST['note']))
 
 				$body .= "\n\n-- \n";
 				$body .= trans('Customer:').' '.$info['customername']."\n";
-				$body .= trans('Address:') . ' ' . (empty($info['locations']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
-					: implode(', ', $info['locations'])) . "\n";
+				$body .= trans('Address:') . ' ' . (empty($ticket['nodeid']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
+					: $node_locations[$ticket['nodeid']]['location']) . "\n";
 				if (!empty($phones))
 					$body .= trans('Phone:').' ' . implode(', ', $phones) . "\n";
 				if (!empty($emails))
@@ -151,8 +151,8 @@ elseif(isset($_POST['note']))
 				$sms_body .= "\n";
 				$sms_body .= trans('Customer:').' '.$info['customername'];
 				$sms_body .= ' '.sprintf('(%04d)', $cid).'. ';
-				$sms_body .= (empty($info['locations']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
-					: implode(', ', $info['locations']));
+				$sms_body .= (empty($ticket['nodeid']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
+					: $node_locations[$ticket['nodeid']]['location']);
 				if (!empty($phones))
 					$sms_body .= '. ' . trans('Phone:') . ' ' . preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones));
 			}

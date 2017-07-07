@@ -908,6 +908,11 @@ class LMS
         return $manager->GetUniqueNodeLocations( $customerid );
     }
 
+	public function GetNodeLocations($customerid) {
+		$manager = $this->getNodeManager();
+		return $manager->GetNodeLocations($customerid);
+	}
+
     /*
      *  Tarrifs and finances
      */

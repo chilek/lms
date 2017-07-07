@@ -41,7 +41,7 @@
 			<TABLE width="100%" cellpadding="1">
 				<TR>
 					<TD colspan="2" class="nobr">
-						{customerlist form="ticket" customers=$customerlist selected=$customerid selectname="ticket[customerid]" inputname="ticket[custid]" selecttip="Select customer from list or enter his data if is not a customer"}
+						{customerlist form="ticket" customers=$customerlist selected=$customerid selectname="ticket[customerid]" inputname="ticket[custid]" selecttip="Select customer from list or enter his data if is not a customer" customOnChange="change_customer();"}
 					</TD>
 				</TR>
 				<TR>
@@ -154,6 +154,20 @@
                         </SELECT>
                 </TD>
         </TR>
+	<TR>
+		<TD class="bold nobr">
+			<img src="img/node.gif" alt="">
+			{trans("Node:")}
+		</TD>
+		<TD class="nobr">
+			<select name="ticket[nodeid]" {tip text="Select node location"}>
+				<option value="">{trans("- use customer location -")}</option>
+				{foreach $node_locations as $node}
+				<option value="{$node.id}"{if $node.id == $ticket.nodeid} selected{/if}>{$node.name}: {$node.location}</option>
+				{/foreach}
+			</select>
+		</TD>
+	</TR>
 	<TR id="customernotify-row">
 		<TD class="bold nobr">
 			<label for="customernotify">
@@ -206,6 +220,22 @@ $(function() {
 		xajax_GetCategories($(this).val());
 	});
 });
+
+function change_customer() {
+	xajax_select_customer($('[name="ticket[custid]"]').val());
+}
+
+function update_node_locations(data) {
+	var elem = $('[name="ticket[nodeid]"]');
+	elem.html('');
+	if (data.length) {
+		data.forEach(function(option) {
+			elem.append('<option value="' + option.id + '">' + option.name + ': ' + option.location + '</option>');
+		});
+	} else {
+		elem.append('<option value="">{trans("- none -")}</option>');
+	}
+}
 
 //-->
 </SCRIPT>

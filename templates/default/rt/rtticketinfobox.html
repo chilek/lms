@@ -176,15 +176,27 @@
 							</TR>
 							{/if}
 							<TR>
-                                                                <TD style="width: 1%;" class="bold nobr">
-                                                                        <IMG src="img/volcano.png" alt="">
-                                                                        {trans("Ticket source:")}
-                                                                </TD>
-                                                                <TD style="width: 99%;">
-								{$_RT_SOURCES[$ticket.source]}
-                                                                </TD>
-                                                        </TR>
-
+								<TD class="bold nobr">
+									<IMG src="img/volcano.png" alt="">
+									{trans("Ticket source:")}
+								</TD>
+								<TD>
+									{$_RT_SOURCES[$ticket.source]}
+								</TD>
+							</TR>
+							{if $ticket.nodeid}
+							<TR>
+								<TD class="bold nobr">
+									<IMG src="img/node.gif" alt="">
+									{trans("Node:")}
+								</TD>
+								<TD>
+									<a href="?m=nodeinfo&id={$ticket.nodeid}">
+										{$ticket.node_name}: {$ticket.node_location} ({$ticket.nodeid})
+									</a>
+								</TD>
+							</TR>
+							{/if}
 						</TABLE>
 					</TD>
 				</TR>
