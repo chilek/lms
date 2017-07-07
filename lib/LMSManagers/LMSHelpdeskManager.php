@@ -136,6 +136,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . ($sqlord != '' ? $sqlord . ' ' . $direction : ''))) {
             foreach ($result as $idx => $ticket) {
 		$ticket['eventcount'] = $this->db->GetOne('SELECT COUNT(id) FROM events WHERE ticketid = ?', array($ticket['id']));
+		$ticket['delcount'] = $this->db->GetOne('SELECT COUNT(id) FROM rtmessages WHERE ticketid = ? AND deleted = 1', array($ticket['id']));
                 //$ticket['requestoremail'] = preg_replace('/^.*<(.*@.*)>$/', '\1',$ticket['requestor']);
                 //$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
                 if (!$ticket['customerid'])
