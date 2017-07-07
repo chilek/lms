@@ -84,6 +84,9 @@ if(isset($_POST['ticket']))
 		$requestor .= ($ticket['email'] ? '<'.$ticket['email'].'>' : '');
 		$ticket['requestor'] = trim($requestor);
 
+		if ($ticket['address_id'] == -1)
+			$ticket['address_id'] = null;
+
 		foreach ($files as &$file)
 			$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
 		unset($file);

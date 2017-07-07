@@ -176,7 +176,7 @@ if(isset($_POST['ticket']))
 			'customerid' => $ticketedit['customerid'],
 			'categories' => isset($ticketedit['categories']) ? array_keys($ticketedit['categories']) : array(),
 			'source' => $ticketedit['source'],
-			'address_id' => $ticketedit['address_id'],
+			'address_id' => $ticketedit['address_id'] == -1 ? null : $ticketedit['address_id'],
 		);
 		$LMS->TicketChange($ticketedit['ticketid'], $props);
 
