@@ -99,8 +99,30 @@ LmsUiIconSelectMenu.prototype._appendAddressList = function( address_list ) {
     var icon;
     var select_id = this.select_id; // can't use 'this' inside of each
 
-    $.each( address_list, function(index) {
-        switch ( this['location_address_type'] ) {
+	var addresses = [];
+	$.each( address_list, function(key, value) {
+		addresses.push(value);
+	});
+	addresses.sort(function(a, b) {
+		var a_city = a.location_city_name.toLowerCase(),
+			b_city = b.location_city_name.toLowerCase();
+		if (a_city > b_city) {
+			return 1;
+		} else if (a_city < b_city) {
+			return -1;
+		}
+		var a_street = a.location_street_name.toLowerCase(),
+			b_street = b.location_street_name.toLowerCase();
+		if (a_street > b_street) {
+			return 1;
+		} else if (a_street < b_street) {
+			return -1;
+		}
+		return 0;
+	});
+	console.log(addresses);
+    $.each( addresses, function() {
+        switch ( this.location_address_type ) {
             case "0": icon = "img/post.gif";     break; // postal address
             case "1": icon = "img/customer.gif"; break; // billing address
             case "2": icon = "img/location.png"; break; // location/recipient address
@@ -111,7 +133,11 @@ LmsUiIconSelectMenu.prototype._appendAddressList = function( address_list ) {
                 icon = "";
         }
 
-        $( select_id ).append( $('<option>', { value:this['address_id'], text:this['location'], 'data-style': "background-image: url("+icon+")" } ));
+        $( select_id ).append( $('<option>', {
+            value: this.address_id,
+            text: this.location,
+            'data-style': "background-image: url(" + icon + ")"
+        } ));
     });
 }
 
