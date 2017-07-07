@@ -840,12 +840,15 @@ CREATE TABLE rttickets (
   createtime int(11) NOT NULL DEFAULT '0',
   resolvetime int(11) NOT NULL DEFAULT '0',
   source tinyint(4) NOT NULL DEFAULT '0',
+  nodeid int(11) DEFAULT NULL,
   PRIMARY KEY (id),
   INDEX queueid (queueid),
   INDEX customerid (customerid),
   INDEX creatorid (creatorid),
   INDEX createtime (createtime),
-  FOREIGN KEY (queueid) REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (queueid) REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT rttickets_nodeid_nodes_id_fk
+    FOREIGN KEY (nodeid) REFERENCES nodes (id) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2900,4 +2903,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017070400');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017070700');
