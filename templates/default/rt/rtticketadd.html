@@ -156,15 +156,11 @@
         </TR>
 	<TR>
 		<TD class="bold nobr">
-			<img src="img/node.gif" alt="">
-			{trans("Node:")}
+			<img src="img/home.gif" alt="">
+			{trans("Location:")}
 		</TD>
 		<TD class="nobr">
-			<select name="ticket[nodeid]" {tip text="Select node location"}>
-				<option value="">{trans("- use customer location -")}</option>
-				{foreach $node_locations as $node}
-				<option value="{$node.id}"{if $node.id == $ticket.nodeid} selected{/if}>{$node.name}: {$node.location}</option>
-				{/foreach}
+			<select id="customer_addresses" name="ticket[address_id]" {tip trigger="address_id"}>
 			</select>
 		</TD>
 	</TR>
@@ -193,6 +189,7 @@
 </TABLE>
 </FORM>
 {if $customerinfo}{include file="customer/customerinfobox.html" info_link=true}{/if}
+<script type="text/javascript" src="img/lms-ui-iconselectmenu.js"></script>
 <SCRIPT type="text/javascript">
 <!--
 document.forms['ticket'].elements['ticket[subject]'].focus();
@@ -225,18 +222,19 @@ function change_customer() {
 	xajax_select_customer($('[name="ticket[custid]"]').val());
 }
 
-function update_node_locations(data) {
-	var elem = $('[name="ticket[nodeid]"]');
-	elem.html('');
-	if (data.length) {
-		data.forEach(function(option) {
-			elem.append('<option value="' + option.id + '">' + option.name + ': ' + option.location + '</option>');
-		});
-	} else {
-		elem.append('<option value="">{trans("- none -")}</option>');
-	}
+function update_locations(data) {
+	customer_addresses.setAddressList(data);
 }
 
+var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+
+customer_addresses.setAddressList( getCustomerAddresses( {intval($customerid)} ) );
+
+{if $ticket.address_id && $customerid}
+	$( '#customer_addresses' ).val( {$ticket.address_id} );
+{/if}
+
+customer_addresses.init();
 //-->
 </SCRIPT>
 {/block}

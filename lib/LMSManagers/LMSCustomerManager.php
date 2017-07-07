@@ -628,7 +628,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             	SUM(CASE WHEN b.value < 0 THEN b.value ELSE 0 END) AS below ';
         } else {
             $sql .= 'SELECT c.id AS id, ' . $this->db->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername,
-                status, address, zip, city, countryid, countries.name AS country, cc.email, ten, ssn, c.info AS info,
+                status, address, zip, city, countryid, countries.name AS country, cc.email, ccp.phone, ten, ssn, c.info AS info,
                 message, c.divisionid, c.paytime AS paytime, COALESCE(b.value, 0) AS balance,
                 COALESCE(t.value, 0) AS tariffvalue, s.account, s.warncount, s.online,
                 (CASE WHEN s.account = s.acsum THEN 1
@@ -639,7 +639,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
         $sql .= 'FROM customerview c
             LEFT JOIN (SELECT customerid, (' . $this->db->GroupConcat('contact') . ') AS email
-            FROM customercontacts WHERE (type & ' . CONTACT_EMAIL .' = '. CONTACT_EMAIL .') GROUP BY customerid) cc ON cc.customerid = c.id
+            FROM customercontacts WHERE (type & ' . CONTACT_EMAIL .' > 0) GROUP BY customerid) cc ON cc.customerid = c.id
+            LEFT JOIN (SELECT customerid, (' . $this->db->GroupConcat('contact') . ') AS phone
+            FROM customercontacts WHERE (type & ' . (CONTACT_MOBILE | CONTACT_LANDLINE) .' > 0) GROUP BY customerid) ccp ON ccp.customerid = c.id
             LEFT JOIN countries ON (c.countryid = countries.id) '
             . ($customergroup ? 'LEFT JOIN (SELECT customerassignments.customerid, COUNT(*) AS gcount
             	FROM customerassignments '
@@ -1286,7 +1288,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
     public function getCustomerAddresses($id, $hide_deleted = false ) {
 
         $data = $this->db->GetAllByKey('SELECT
-                                          addr.id as address_id, addr.name as location_name,
+                                          addr.id AS address_id, ca.id AS customer_address_id,
+                                          addr.name as location_name,
                                           addr.state as location_state_name, addr.state_id as location_state,
                                           addr.city as location_city_name, addr.city_id as location_city,
                                           addr.street as location_street_name, addr.street_id as location_street,

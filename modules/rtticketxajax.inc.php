@@ -50,8 +50,8 @@ function select_customer($id) {
 
 	$JSResponse = new xajaxResponse();
 	if (!empty($id)) {
-		$node_locations = $LMS->GetNodeLocations($id);
-		$JSResponse->call('update_node_locations', (array)$node_locations);
+		$locations = $LMS->getCustomerAddresses($id);
+		$JSResponse->call('update_locations', (array) $locations);
 	}
 	return $JSResponse;
 }

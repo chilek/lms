@@ -143,12 +143,12 @@ if(isset($_POST['ticket']))
 					}
 
 				if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
-					$node_locations = $LMS->GetNodeLocations($ticket['customerid']);
+					$locations = $LMS->getCustomerAddresses($ticket['customerid']);
 					$body .= "\n\n-- \n";
 					$body .= trans('Customer:').' '.$info['customername']."\n";
 					$body .= trans('ID:').' '.sprintf('%04d', $ticket['customerid'])."\n";
-					$body .= trans('Address:') . ' ' . (empty($ticket['nodeid']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
-						: $node_locations[$ticket['nodeid']]['location']) . "\n";
+					$body .= trans('Address:') . ' ' . (empty($ticket['address_id']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
+						: $locations[$ticket['address_id']]['location']) . "\n";
 
 					if (!empty($phones))
 						$body .= trans('Phone:').' ' . implode(', ', $phones) . "\n";
@@ -179,13 +179,15 @@ if(isset($_POST['ticket']))
 					}
 				}
 
-				$sms_body .= "\n";
-				$sms_body .= trans('Customer:').' '.$info['customername'];
-				$sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
-				$sms_body .= (empty($info['locations']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
-					: implode(', ', $info['locations']));
-				if (!empty($phones))
-					$sms_body .= '. ' . trans('Phone:') . ' ' . preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones));
+				if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+					$sms_body .= "\n";
+					$sms_body .= trans('Customer:').' '.$info['customername'];
+					$sms_body .= ' '.sprintf('(%04d)', $ticket['customerid']).'. ';
+					$sms_body .= (empty($ticket['address_id']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
+						: $locations[$ticket['address_id']]['location']);
+					if (!empty($phones))
+						$sms_body .= '. ' . trans('Phone:') . ' ' . preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones));
+				}
 			} elseif (!empty($requestor) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
 				$body .= "\n\n-- \n";
 				$body .= trans('Customer:').' '.$requestor;
@@ -273,10 +275,8 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 
-if (isset($ticket['customerid']) && intval($ticket['customerid'])) {
+if (isset($ticket['customerid']) && intval($ticket['customerid']))
 	$SMARTY->assign('customerinfo', $LMS->GetCustomer($ticket['customerid']));
-	$SMARTY->assign('node_locations', $LMS->GetNodeLocations($ticket['customerid']));
-}
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queue', $queue);

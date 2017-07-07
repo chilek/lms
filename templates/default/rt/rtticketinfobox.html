@@ -123,7 +123,11 @@
 									{trans("Owner:")}
 								</TD>
 								<TD style="width: 99%;">
-									<A href="?m=userinfo&amp;id={$ticket.owner}">{$ticket.ownername}</A>
+									{if $ticket.owner}
+									<A href="?m=userinfo&id={$ticket.owner}">{$ticket.ownername}</A>
+									{else}
+									{trans("none")}
+									{/if}
 								</TD>
 							</TR>
 							<TR>
@@ -184,16 +188,14 @@
 									{$_RT_SOURCES[$ticket.source]}
 								</TD>
 							</TR>
-							{if $ticket.nodeid}
+							{if $ticket.address_id}
 							<TR>
 								<TD class="bold nobr">
-									<IMG src="img/node.gif" alt="">
-									{trans("Node:")}
+									<IMG src="img/home.gif" alt="">
+									{trans("Location:")}
 								</TD>
 								<TD>
-									<a href="?m=nodeinfo&id={$ticket.nodeid}">
-										{$ticket.node_name}: {$ticket.node_location} ({$ticket.nodeid})
-									</a>
+									{$ticket.location}
 								</TD>
 							</TR>
 							{/if}

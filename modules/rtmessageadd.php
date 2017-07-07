@@ -257,14 +257,14 @@ if(isset($_POST['message']))
 					}
 
 				if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
-					$node_locations = $LMS->GetNodeLocations($cid);
-					$nodeid = $DB->GetOne('SELECT nodeid FROM rttickets WHERE id = ?', array($message['ticketid']));
+					$locations = $LMS->getCustomerAddresses($cid);
+					$address_id = $DB->GetOne('SELECT address_id FROM rttickets WHERE id = ?', array($message['ticketid']));
 
 					$body .= "\n\n-- \n";
 					$body .= trans('Customer:').' '.$info['customername']."\n";
 					$body .= trans('ID:').' '.sprintf('%04d', $cid)."\n";
-					$body .= trans('Address:').' ' . (empty($nodeid) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
-						: $node_locations[$nodeid]['location']) . "\n";
+					$body .= trans('Address:').' ' . (empty($address_id) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
+						: $locations[$address_id]['location']) . "\n";
 
 					if (!empty($phones))
 						$body .= trans('Phone:').' ' . implode(', ', $phones) . "\n";
@@ -274,8 +274,8 @@ if(isset($_POST['message']))
 					$sms_body .= "\n";
 					$sms_body .= trans('Customer:').' '.$info['customername'];
 					$sms_body .= ' '.sprintf('(%04d)', $cid).'. ';
-					$sms_body .= (empty($nodeid) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
-						: $node_locations[$nodeid]['location']);
+					$sms_body .= (empty($address_id) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
+						: $locations[$address_id]['location']);
 					if (!empty($phones))
 						$sms_body .= '. ' . trans('Phone:') . ' ' . preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones));
 				}

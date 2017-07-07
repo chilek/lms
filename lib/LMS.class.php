@@ -232,12 +232,14 @@ class LMS
 
             // Since we're using foreign keys, order of tables is important
             // Note: add all referenced tables to the list
-            $order = array('users', 'customers', 'customergroups', 'hosts', 'networks',
-                'nodes', 'numberplans', 'tariffs', 'tarifftags', 'promotions', 'promotionschemas',
-                'assignments', 'rtqueues', 'rttickets', 'rtmessages', 'domains',
-                'cashsources', 'sourcefiles', 'ewx_channels', 'countries', 'location_states', 'location_districts',
+            $order = array('location_states', 'location_districts',
                 'location_boroughs', 'location_cities', 'location_street_types', 'location_streets',
-                'addresses', 'divisions', 'netdeviceproducers', 'netnodes', 'invprojects',
+                'users', 'customers', 'customergroups', 'hosts', 'networks',
+                'nodes', 'numberplans', 'tariffs', 'tarifftags', 'promotions', 'promotionschemas',
+                'assignments', 'countries', 'addresses', 'customer_addresses',
+                'rtqueues', 'rttickets', 'rtmessages', 'domains',
+                'cashsources', 'sourcefiles', 'ewx_channels', 'countries',
+                'divisions', 'netdeviceproducers', 'netnodes', 'invprojects',
                 'netdevicemodels', 'netradiosectors', 'voip_rule_groups', 'voip_prefix_groups',
                 'voipaccounts', 'voip_rules', 'voip_tariffs', 'documents', 'rtattachments',
                 'rtcategories', 'netdevices', 'logtransactions', 'logmessages', 'usergroups',
