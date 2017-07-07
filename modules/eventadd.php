@@ -105,10 +105,10 @@ if(isset($_POST['event']))
 	if (!isset($event['customerid']))
 		$event['customerid'] = $event['custid'];
 
-	if (!$error) {
-		$event['status'] = isset($event['status']) ? 1 : 0;
-		$event['nodeid'] = (isset($event['customer_location'])||is_null($event['nodeid'])) ? NULL : $event['nodeid'];
+	$event['status'] = isset($event['status']) ? 1 : 0;
+	$event['nodeid'] = (isset($event['customer_location']) || is_null($event['nodeid'])) ? NULL : $event['nodeid'];
 
+	if (!$error) {
                 if (isset($event['helpdesk']))
                 {
                     $ticket['queue'] = $event['rtqueue'];
