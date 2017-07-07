@@ -120,7 +120,6 @@ LmsUiIconSelectMenu.prototype._appendAddressList = function( address_list ) {
 		}
 		return 0;
 	});
-	console.log(addresses);
     $.each( addresses, function() {
         switch ( this.location_address_type ) {
             case "0": icon = "img/post.gif";     break; // postal address
