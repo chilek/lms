@@ -166,8 +166,6 @@ $smtp_options = array(
 	'ssl_allow_self_signed' => $smtp_ssl_allow_self_signed,
 );
 
-$save_path = ConfigHelper::getConfig('rt.mail_dir', '', true);
-$save_path_permission = intval(ConfigHelper::getConfig('rt.mail_dir_permission', '0700'), 8);
 $queue = 0;
 if (isset($options['queue']))
 	$queue = intval($options['queue']);

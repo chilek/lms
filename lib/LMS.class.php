@@ -1503,10 +1503,12 @@ class LMS
         return $manager->TicketExists($id);
     }
 
+/*
 	public function SaveTicketMessageAttachments($ticketid, $messageid, $files, $cleanup = false) {
 		$manager = $this->getHelpdeskManager();
 		return $manager->SaveTicketMessageAttachments($ticketid, $messageid, $files, $cleanup);
 	}
+*/
 
 	public function TicketMessageAdd($message, $files = null) {
 		$manager = $this->getHelpdeskManager();

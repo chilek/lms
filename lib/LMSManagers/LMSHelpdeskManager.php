@@ -369,8 +369,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         return $ticket;
     }
 
-	// TODO: temporaily this function is public
-	public function SaveTicketMessageAttachments($ticketid, $messageid, $files, $cleanup = false) {
+	private function SaveTicketMessageAttachments($ticketid, $messageid, $files, $cleanup = false) {
 		if (!empty($files) && ($dir = ConfigHelper::getConfig('rt.mail_dir'))) {
 			@umask(0007);
 			$dir_permission = intval(ConfigHelper::getConfig('rt.mail_dir_permission', '0700'), 8);
