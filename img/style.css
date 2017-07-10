@@ -610,6 +610,12 @@ input:invalid {
 .lms-ui-button {
   color: #800000;
 }
+.lms-ui-deleted {
+  background: #ffb1b1;
+}
+.lms-ui-deleted-light {
+  background: #fccdcd;
+}
 .lms-ui-button:hover {
   color: #336600;
   cursor: pointer;

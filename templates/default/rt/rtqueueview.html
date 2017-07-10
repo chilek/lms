@@ -91,7 +91,7 @@
 	{cycle values="light,lucid" print=false}
 	{section name=ticket loop=$queue start=$start max=$pagelimit}
 	{if $queue[ticket].deleted == 1 && $queue[ticket].deltime != 0}
-	<TR class="cancel">
+	<TR class="lms-ui-deleted">
 	{else}
 	<TR class="highlight {cycle}{if $queue[ticket].state == 2} blend{/if}"  >
 	{/if}
@@ -106,7 +106,7 @@
 				<IMG src="img/dead.gif" alt="" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$queue[ticket].id}">
 			{/if}
 		</TD>
-		<TD class="nobr" onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
+		<TD class="nobr {if $queue[ticket].delcount != 0 && (ConfigHelper::checkConfig('privileges.superuser'))} lms-ui-deleted{/if}" onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
 			{if $queue[ticket].state == 0}
 				<span class="red">
 			{elseif $queue[ticket].state == 3}
