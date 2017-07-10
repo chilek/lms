@@ -243,7 +243,7 @@ function update_locations(data) {
 function update_nodes(data) {
 	var options = '<option value="">{trans("- none -")}</option>';
 	$.each(data, function(k, v) {
-		options += '<option value="' + k + '">' + v.name + ': ' + v.location + '</option>';
+		options += '<option value="' + v.id + '">' + v.name + ': ' + v.location + '</option>';
 	});
 	$('[name="ticket[nodeid]"]').html(options);
 	if (data.length) {
