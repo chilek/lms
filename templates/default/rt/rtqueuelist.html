@@ -32,15 +32,12 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$queues item=queue}
-	{if $queue.deleted == 1 && !(ConfigHelper::checkConfig('privileges.superuser'))}
-	{continue}
-	{/if}
 	{if $queue.deleted == 1}
 	<TR class="lms-ui-deleted">
 	{else}
 	<TR class="highlight {cycle}"  >
 	{/if}
-		<TD onClick="return self.location.href='?m=rtqueueview&amp;id={$queue.id}';">
+		<TD {if $queue.delcount != 0 && (ConfigHelper::checkConfig('privileges.superuser'))} class="lms-ui-deleted"{/if} onClick="return self.location.href='?m=rtqueueview&amp;id={$queue.id}';">
 			<IMG src="img/queue.gif" ALT="">
 			<B>{$queue.name}</B><BR>
 			{if $queue.description}
@@ -61,7 +58,12 @@
 		</TD>
 		<TD NOWRAP>
 			<A HREF="?m=rtqueueview&amp;id={$queue.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse")} ]" title="[ {trans("Browse")} ]"></A>
-			<A HREF="?m=rtqueuedel&amp;id={$queue.id}" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkConfig('privileges.superuser'))}
+			<A HREF="?m=rtqueuedel&amp;id={$queue.id}&amp;qaction=restore" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to restore queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/reload.gif" alt="[ {trans("Redo")} ]" title="[ {trans("Redo")} ]"></A>
+			<A HREF="?m=rtqueuedel&amp;id={$queue.id}&amp;qaction=delperm" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to permanently remove queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete permanently")} ]" title="[ {trans("Delete permanently")} ]"></A>
+			{else}
+			<A HREF="?m=rtqueuedel&amp;id={$queue.id}&amp;qaction=delete" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			{/if}
 			<A HREF="?m=rtqueueedit&amp;id={$queue.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
 			<A HREF="?m=rtqueueinfo&amp;id={$queue.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 		</TD>
