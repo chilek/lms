@@ -1438,6 +1438,9 @@ CREATE TABLE rtqueues (
   newmessagebody text NOT NULL DEFAULT '',
   resolveticketsubject varchar(255) NOT NULL DEFAULT '',
   resolveticketbody text NOT NULL DEFAULT '',
+  deleted smallint	DEFAULT 0 NOT NULL,
+  deltime integer	DEFAULT 0 NOT NULL,
+  deluserid integer	DEFAULT 0 NOT NULL,
   PRIMARY KEY (id),
   UNIQUE (name)
 );
@@ -1459,6 +1462,9 @@ CREATE TABLE rttickets (
   createtime integer 	DEFAULT 0 NOT NULL,
   resolvetime integer 	DEFAULT 0 NOT NULL,
   source smallint	DEFAULT 0 NOT NULL,
+  deleted smallint	DEFAULT 0 NOT NULL,
+  deltime integer	DEFAULT 0 NOT NULL,
+  deluserid integer	DEFAULT 0 NOT NULL,
   address_id integer	DEFAULT NULL
     CONSTRAINT rttickets_address_id_fk REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE CASCADE,
   PRIMARY KEY (id)
@@ -1487,7 +1493,10 @@ CREATE TABLE rtmessages (
   headers text 		DEFAULT '' NOT NULL,
   body text		DEFAULT '' NOT NULL,
   createtime integer	DEFAULT 0 NOT NULL,
-  type smallint			DEFAULT 0 NOT NULL,
+  type smallint		DEFAULT 0 NOT NULL,
+  deleted smallint	DEFAULT 0 NOT NULL,
+  deltime integer	DEFAULT 0 NOT NULL,
+  deluserid integer	DEFAULT 0 NOT NULL,
   PRIMARY KEY (id)
 );
 
