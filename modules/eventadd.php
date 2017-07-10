@@ -24,38 +24,7 @@
  *  $Id$
  */
 
-function select_customer($id) {
-	global $LMS;
-
-	$JSResponse = new xajaxResponse();
-	if (!empty($id)) {
-		$nodes = $LMS->GetNodeLocations($id);
-		if (empty($nodes))
-			$nodes = array();
-		$JSResponse->call('update_node_locations', array_values($nodes));
-	}
-	return $JSResponse;
-}
-
-function getUsersForGroup($groupid) {
-	$JSResponse = new xajaxResponse();
-
-	if (empty($groupid))
-		$users = null;
-	else
-		$users = LMSDB::getInstance()->GetCol('SELECT u.id FROM users u
-			JOIN userassignments ua ON ua.userid = u.id
-			WHERE u.deleted = 0 AND u.access = 1 AND ua.usergroupid = ?',
-			array($groupid));
-
-	$JSResponse->call('update_user_selection', $users);
-
-	return $JSResponse;
-}
-
-$LMS->InitXajax();
-$LMS->RegisterXajaxFunction(array('select_customer', 'getUsersForGroup'));
-$SMARTY->assign('xajax', $LMS->RunXajax());
+include(MODULES_DIR . DIRECTORY_SEPARATOR . 'eventxajax.inc.php');
 
 if (!empty($_GET['ticketid'])) {
 	$eventticketid = intval($_GET['ticketid']);
