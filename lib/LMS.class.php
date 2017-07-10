@@ -910,9 +910,9 @@ class LMS
         return $manager->GetUniqueNodeLocations( $customerid );
     }
 
-	public function GetNodeLocations($customerid) {
+	public function GetNodeLocations($customerid, $address_id = null) {
 		$manager = $this->getNodeManager();
-		return $manager->GetNodeLocations($customerid);
+		return $manager->GetNodeLocations($customerid, $address_id);
 	}
 
     /*

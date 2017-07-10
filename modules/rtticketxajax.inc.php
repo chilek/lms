@@ -56,8 +56,19 @@ function select_customer($id) {
 	return $JSResponse;
 }
 
+function select_location($customerid, $address_id) {
+	global $LMS;
+
+	$JSResponse = new xajaxResponse();
+	$nodes = $LMS->GetNodeLocations($customerid, !empty($address_id) && intval($address_id) > 0 ? $address_id : null);
+	if (empty($nodes))
+		$nodes = array();
+	$JSResponse->call('update_nodes', array_values($nodes));
+	return $JSResponse;
+}
+
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction(array('GetCategories', 'select_customer'));
+$LMS->RegisterXajaxFunction(array('GetCategories', 'select_customer', 'select_location'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 ?>

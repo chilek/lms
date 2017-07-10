@@ -168,6 +168,7 @@ define('RTMESSAGE_CUSTOMER_CHANGE', 32);
 define('RTMESSAGE_SUBJECT_CHANGE', 64);
 define('RTMESSAGE_CATEGORY_CHANGE', 128);
 define('RTMESSAGE_LOCATION_CHANGE', 256);
+define('RTMESSAGE_NODE_CHANGE', 512);
 
 // Messages status and type
 define('MSG_NEW', 1);

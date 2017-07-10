@@ -164,6 +164,22 @@
 			</select>
 		</TD>
 	</TR>
+	<TR id="node-row"{if empty($nodes)} style="display: none;"{/if}>
+		<TD class="bold nobr">
+			<img src="img/node.gif" alt="">
+			{trans("Node:")}
+		</TD>
+		<TD class="nobr">
+			<select name="ticket[nodeid]" {tip text="Select node" trigger="nodeid"}>
+				<option value="">{trans("- none -")}</option>
+				{if !empty($nodes)}
+				{foreach $nodes as $node}
+				<option value="{$node.id}"{if $node.id == $ticket.nodeid} selected{/if}>{$node.name}: {$node.location}</option>
+				{/foreach}
+				{/if}
+			</select>
+		</TD>
+	</TR>
 	<TR id="customernotify-row">
 		<TD class="bold nobr">
 			<label for="customernotify">
@@ -204,6 +220,7 @@ $(function() {
 			$('#customernotify-row').show();
 			$('#customernotify').attr('checked', true);
 		}
+		xajax_GetCategories($(this).val());
 	});
 
 	var newticket_notify = $('[name="ticket[queue]"]').find(':selected').attr('data-newticket-notify');
@@ -212,10 +229,6 @@ $(function() {
 	} else {
 		$('#customernotify-row').show();
 	}
-
-	$('[name="ticket[queue]"]').change(function() {
-		xajax_GetCategories($(this).val());
-	});
 });
 
 function change_customer() {
@@ -224,9 +237,27 @@ function change_customer() {
 
 function update_locations(data) {
 	customer_addresses.setAddressList(data);
+	xajax_select_location($('[name="ticket[custid]"]').val(), $('[name="ticket[address_id]"]').val());
 }
 
-var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+function update_nodes(data) {
+	var options = '<option value="">{trans("- none -")}</option>';
+	$.each(data, function(k, v) {
+		options += '<option value="' + k + '">' + v.name + ': ' + v.location + '</option>';
+	});
+	$('[name="ticket[nodeid]"]').html(options);
+	if (data.length) {
+		$('#node-row').show();
+	} else {
+		$('#node-row').hide();
+	}
+}
+
+var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses", {
+	change: function(event, ui) {
+		xajax_select_location($('[name="ticket[custid]"]').val(), $(this).val());
+	}
+});
 
 customer_addresses.setAddressList( getCustomerAddresses( {intval($customerid)} ) );
 

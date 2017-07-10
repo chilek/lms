@@ -87,6 +87,9 @@ if(isset($_POST['ticket']))
 		if ($ticket['address_id'] == -1)
 			$ticket['address_id'] = null;
 
+		if (empty($ticket['nodeid']))
+			$ticket['nodeid'] = null;
+
 		foreach ($files as &$file)
 			$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
 		unset($file);
@@ -278,8 +281,11 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 
-if (isset($ticket['customerid']) && intval($ticket['customerid']))
+if (isset($ticket['customerid']) && intval($ticket['customerid'])) {
+	$SMARTY->assign('nodes', $LMS->GetNodeLocations($ticket['customerid'],
+		isset($ticket['address_id']) && intval($ticket['address_id']) > 0 ? $ticket['address_id'] : null));
 	$SMARTY->assign('customerinfo', $LMS->GetCustomer($ticket['customerid']));
+}
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queue', $queue);

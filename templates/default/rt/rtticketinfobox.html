@@ -199,6 +199,19 @@
 								</TD>
 							</TR>
 							{/if}
+							{if $ticket.nodeid}
+							<TR>
+								<TD class="bold nobr">
+									<IMG src="img/node.gif" alt="">
+									{trans("Node:")}
+								</TD>
+								<TD>
+									<a href="?m=nodeinfo&id={$ticket.nodeid}">
+										{$ticket.node_name}: {$ticket.node_location} ({$ticket.nodeid})
+									</a>
+								</TD>
+							</TR>
+							{/if}
 						</TABLE>
 					</TD>
 				</TR>

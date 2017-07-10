@@ -44,9 +44,10 @@ $.widget( "custom.iconselectmenu", $.ui.selectmenu, {
 /*!
  * \brief Pseudo class for manage icon select menu.
  */
-function LmsUiIconSelectMenu( id ) {
+function LmsUiIconSelectMenu( id, options ) {
     // select id
     this.select_id = id;
+    this.options = options;
 
     // select is ready to refresh list?
     // 0 - no
@@ -56,7 +57,7 @@ function LmsUiIconSelectMenu( id ) {
 
 LmsUiIconSelectMenu.prototype.init = function() {
     $( this.select_id )
-        .iconselectmenu()
+        .iconselectmenu(this.options)
         .iconselectmenu( 'menuWidget' );
 
     // rewrite jQuery UI styles

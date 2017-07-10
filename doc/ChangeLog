@@ -38,6 +38,8 @@ version ?.??.?? (????-??-??):
     on comment added before the moment [chilan]
   - enhancement: helpdesk ticket <-> customer locations (this allows to assign locations
     to tickets) [chilan]
+  - enhancement: helpdesk ticket <-> customer nodes (only customer nodes which have the same
+    location as selected ticket customer location are displayed) [chilan]
 
 version 1.11.22 (2017-06-08):
 

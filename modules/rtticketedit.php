@@ -177,6 +177,7 @@ if(isset($_POST['ticket']))
 			'categories' => isset($ticketedit['categories']) ? array_keys($ticketedit['categories']) : array(),
 			'source' => $ticketedit['source'],
 			'address_id' => $ticketedit['address_id'] == -1 ? null : $ticketedit['address_id'],
+			'nodeid' => empty($ticketedit['nodeid']) ? null : $ticketedit['nodeid'],
 		);
 		$LMS->TicketChange($ticketedit['ticketid'], $props);
 
@@ -303,6 +304,7 @@ if(isset($_POST['ticket']))
 	$ticket['state'] = $ticketedit['state'];
 	$ticket['owner'] = $ticketedit['owner'];
 	$ticket['address_id'] = $ticketedit['address_id'];
+	$ticket['nodeid'] = $ticketedit['nodeid'];
 }
 else
 	$ticketedit['categories'] = $ticket['categories'];
@@ -331,6 +333,10 @@ if ((empty($userpanel_enabled_modules) || strpos('helpdesk', $userpanel_enabled_
 			if (!in_array($queue['id'], $selectedqueues))
 				unset($queuelist[$idx]);
 }
+
+if (!empty($ticket['customerid']))
+	$SMARTY->assign('nodes', $LMS->GetNodeLocations($ticket['customerid'],
+		isset($ticket['address_id']) && intval($ticket['address_id']) > 0 ? $ticket['address_id'] : null));
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queuelist', $queuelist);

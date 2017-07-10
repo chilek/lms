@@ -83,5 +83,5 @@ interface LMSNodeManagerInterface
 
     public function GetUniqueNodeLocations($customerid);
 
-	public function GetNodeLocations($customerid);
+	public function GetNodeLocations($customerid, $address_id = null);
 }
