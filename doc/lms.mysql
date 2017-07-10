@@ -819,6 +819,9 @@ CREATE TABLE rtqueues (
   newmessagebody text NOT NULL DEFAULT '',
   resolveticketsubject varchar(255) NOT NULL DEFAULT '',
   resolveticketbody text NOT NULL DEFAULT '',
+  deleted tinyint(1) NOT NULL DEFAULT '0',
+  deltime int(11) NOT NULL DEFAULT '0',
+  deluserid int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   UNIQUE KEY name (name)
 ) ENGINE=InnoDB;
@@ -840,6 +843,9 @@ CREATE TABLE rttickets (
   createtime int(11) NOT NULL DEFAULT '0',
   resolvetime int(11) NOT NULL DEFAULT '0',
   source tinyint(4) NOT NULL DEFAULT '0',
+  deleted tinyint(1) NOT NULL DEFAULT '0',
+  deltime int(11) NOT NULL DEFAULT '0',
+  deluserid int(11) NOT NULL DEFAULT '0',
   address_id int(11) DEFAULT NULL,
   PRIMARY KEY (id),
   INDEX queueid (queueid),
@@ -870,6 +876,9 @@ CREATE TABLE rtmessages (
   body mediumtext NOT NULL DEFAULT '',
   createtime int(11) NOT NULL DEFAULT '0',
   type smallint NOT NULL DEFAULT 0,
+  deleted tinyint(1) NOT NULL DEFAULT '0',
+  deltime int(11) NOT NULL DEFAULT '0',
+  deluserid int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   INDEX ticketid (ticketid),
   FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE
