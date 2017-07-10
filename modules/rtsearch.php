@@ -119,6 +119,7 @@ function RTSearch($search, $order='createtime,desc')
 	{
 		foreach($result as $idx => $ticket)
 		{
+			$ticket['delcount'] = $DB->GetOne('SELECT COUNT(id) FROM rtmessages m WHERE m.ticketid = ? AND m.deleted = 1', array($ticket['id']));
 			if(!$ticket['custid'])
 				list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['req'], "%[^<]<%[^>]");
 			else
