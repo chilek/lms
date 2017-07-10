@@ -136,7 +136,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . ($sqlord != '' ? $sqlord . ' ' . $direction : ''))) {
             foreach ($result as $idx => $ticket) {
 		$ticket['eventcount'] = $this->db->GetOne('SELECT COUNT(id) FROM events WHERE ticketid = ?', array($ticket['id']));
-		$ticket['delcount'] = $this->db->GetOne('SELECT COUNT(id) FROM rtmessages WHERE ticketid = ? AND deleted = 1', array($ticket['id']));
+		$ticket['delcount'] = $this->db->GetOne('SELECT COUNT(id) FROM rtmessages WHERE ticketid = ? AND deleted = 1 AND deltime != 0', array($ticket['id']));
                 //$ticket['requestoremail'] = preg_replace('/^.*<(.*@.*)>$/', '\1',$ticket['requestor']);
                 //$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
                 if (!$ticket['customerid'])
@@ -247,6 +247,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         }
         $stats['lastticket'] = $this->db->GetOne('SELECT createtime FROM rttickets
 			WHERE queueid = ? ORDER BY createtime DESC', array($id));
+        $stats['delcount'] = $this->db->GetOne('SELECT COUNT(id) FROM rttickets
+			WHERE queueid = ? AND deleted = 1', array($id));
 
         return $stats;
     }

@@ -154,7 +154,12 @@
 		</TD>
 		<TD class="nobr text-right">
 			<a href="?m=rtticketprint&id={$queue[ticket].id}" target="_BLANK"><img src="img/print.gif" alt="" title="[ {trans("Print")} ]"> </a>
-			<a href="?m=rtticketdel&id={$queue[ticket].id}" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')"><img src="img/delete.gif" alt="" title="[ {trans("Delete")} ]"></a>
+			{if $queue[ticket].deleted == 1 && $queue[ticket].deltime != 0 && (ConfigHelper::checkConfig('privileges.superuser'))}
+			<a href="?m=rtticketdel&id={$queue[ticket].id}&amp;taction=restore" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to restore ticket $a?{/t}')"><img src="img/reload.gif" alt="" title="[ {trans("Redo")} ]"></a>
+			<a href="?m=rtticketdel&id={$queue[ticket].id}&amp;taction=delperm" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to permanently remove ticket $a?{/t}')"><img src="img/delete.gif" alt="" title="[ {trans("Delete permanently")} ]"></a>
+			{else}
+			<a href="?m=rtticketdel&id={$queue[ticket].id}&amp;taction=delete" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')"><img src="img/delete.gif" alt="" title="[ {trans("Delete")} ]"></a>
+			{/if}
 			<a href="?m=rtticketedit&id={$queue[ticket].id}"><img src="img/edit.gif" alt="" title="[ {trans("Edit")} ]"> </a>
 			<a href="?m=rtnoteadd&ticketid={$queue[ticket].id}"><img src="img/note.gif" alt="" title="[ {trans("New Note")} ]"> </a>
 			<a href="?m=rtmessageadd&ticketid={$queue[ticket].id}"><img src="img/forward.gif" alt="" title="[ {trans("New Message")} ]"> </a>
