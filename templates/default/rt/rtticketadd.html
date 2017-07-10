@@ -232,11 +232,7 @@ $(function() {
 });
 
 function change_customer() {
-	xajax_select_customer($('[name="ticket[custid]"]').val());
-}
-
-function update_locations(data) {
-	customer_addresses.setAddressList(data);
+	customer_addresses.setAddressList( getCustomerAddresses( $('[name="ticket[custid]"]').val() ) );
 	xajax_select_location($('[name="ticket[custid]"]').val(), $('[name="ticket[address_id]"]').val());
 }
 

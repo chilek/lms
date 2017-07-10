@@ -45,17 +45,6 @@ function GetCategories($queueid) {
 	return $result;
 }
 
-function select_customer($id) {
-	global $LMS;
-
-	$JSResponse = new xajaxResponse();
-	if (!empty($id)) {
-		$locations = $LMS->getCustomerAddresses($id);
-		$JSResponse->call('update_locations', (array) $locations);
-	}
-	return $JSResponse;
-}
-
 function select_location($customerid, $address_id) {
 	global $LMS;
 
@@ -68,7 +57,7 @@ function select_location($customerid, $address_id) {
 }
 
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction(array('GetCategories', 'select_customer', 'select_location'));
+$LMS->RegisterXajaxFunction(array('GetCategories', 'select_location'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 ?>
