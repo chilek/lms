@@ -37,11 +37,11 @@ $(function() {
 	}
 
 	function update_node_locations(data) {
-		var elem = $('[name="event[nodeid]"]');
-		elem.html('<option value="">{trans("- use customer location -")}</option>');
-		data.forEach(function(option) {
-			elem.append('<option value="' + option.id + '">' + option.name + ': ' + option.location + '</option>');
+		var options = '<option value="">{trans("- use customer location -")}</option>';
+		$.each(data, function(key, value) {
+			options += '<option value="' + value.id + '">' + value.name + ': ' + value.location + '</option>';
 		});
+		$('[name="event[nodeid]"]').html(options);
 	}
 //-->
 </SCRIPT>

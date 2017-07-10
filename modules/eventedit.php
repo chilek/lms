@@ -28,8 +28,12 @@ function select_customer($id) {
 	global $LMS;
 
 	$JSResponse = new xajaxResponse();
-	if (!empty($id))
-		$JSResponse->call('update_node_locations', (array)$LMS->GetNodeLocations($id));
+	if (!empty($id)) {
+		$nodes = $LMS->GetNodeLocations($id);
+		if (empty($nodes))
+			$nodes = array();
+		$JSResponse->call('update_node_locations', array_values($nodes));
+	}
 	return $JSResponse;
 }
 
