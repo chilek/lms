@@ -616,6 +616,12 @@ input:invalid {
 .lms-ui-deleted-light {
   background: #fccdcd;
 }
+.lms-ui-deleted-striped {
+  background-image: repeating-linear-gradient(145deg, transparent, transparent 10px, #ffb1b1 10px, #ffb1b1 20px);
+}
+.lms-ui-deleted-striped-light {
+  background-image: repeating-linear-gradient(145deg, transparent, transparent 10px, #fccdcd 10px, #fccdcd 20px);
+}
 .lms-ui-button:hover {
   color: #336600;
   cursor: pointer;

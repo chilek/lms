@@ -1284,7 +1284,7 @@ $_LANG['resolved'] = 'rozwiązany';
 $_LANG['expand'] = 'rozwiń';
 $_LANG['Resolved:'] = 'Rozwiązane:';
 $_LANG['Restore'] = 'Odtwórz';
-$_LANG['Redo'] = 'Przywróć';
+$_LANG['Restore<!RT>'] = 'Przywróć';
 $_LANG['Romania'] = 'Rumunia';
 $_LANG['Sale date:'] = 'Data sprzedaży:';
 $_LANG['Sale date'] = 'Data sprzedaży';
@@ -3687,7 +3687,7 @@ $_LANG['Determined gps coordinates are not precise.\nDo you still want to use th
 $_LANG['Removed:'] = 'Usunięte:';
 $_LANG['Remover:'] = 'Usuwający:';
 $_LANG['Remove date:'] = 'Data usunięcia:';
-$_LANG['Not removed'] = 'nie usunięte';
+$_LANG['Not removed'] = 'nieusunięte';
 $_LANG['Removed'] = 'usunięte';
 
 $_LANG['Default categories'] = 'Domyślne kategorie';
