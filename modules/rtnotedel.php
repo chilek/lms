@@ -37,20 +37,37 @@ if (($rights & 4) != 4) {
 }
 
 $msg = intval($_GET['id']);
+$naction = ($_GET['naction']);
 
-// if ($DB->GetOne('SELECT MIN(id) FROM rtmessages WHERE ticketid = ?', array($ticketid)) != $msg) {
-// 	       $mail_dir = ConfigHelper::getConfig('rt.mail_dir');
-// 	       if (!empty($mail_dir))
-// 		               rrmdir($mail_dir . DIRECTORY_SEPARATOR . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d', $ticketid, $msg));
+if ($DB->GetOne('SELECT MIN(id) FROM rtmessages WHERE ticketid = ?', array($ticketid)) != $msg && $naction== 'delperm') {
+	       $mail_dir = ConfigHelper::getConfig('rt.mail_dir');
+	       if (!empty($mail_dir))
+		               rrmdir($mail_dir . DIRECTORY_SEPARATOR . sprintf('%06d' . DIRECTORY_SEPARATOR . '%06d', $ticketid, $msg));
 		
-// 		       $DB->Execute('DELETE FROM rtmessages WHERE id = ? AND type = ?',
-// 				               array($msg, RTMESSAGE_NOTE));
-// 		}
+		       $DB->Execute('DELETE FROM rtmessages WHERE id = ? AND type = ?',
+				               array($msg, RTMESSAGE_NOTE));
+		}
 
+if ($naction == 'delete')
+{
 $del = 1;
 $deltime = time();
-$DB->Execute('UPDATE rtmessages SET deleted=?, deltime=?, deluserid=? WHERE id = ? AND type = ?', array($del, $deltime, $AUTH->id, $msg,  RTMESSAGE_NOTE));
+$DB->Execute('UPDATE rtmessages SET deleted=?, deltime=?, deluserid=? WHERE id = ? AND type = ?', array($del, $deltime, $AUTH->id, $msg, RTMESSAGE_NOTE));
 
 $SESSION->redirect('?m=rtticketview&id=' . $ticketid);
+}
+
+if ($naction == 'restore')
+{
+	$del = 0;
+	$deltime = 0;
+	$deluserid = 0;
+	$DB->Execute('UPDATE rtmessages SET deleted=?, deltime=?, deluserid=? WHERE id = ? AND type = ?', array($del, $deltime, $deluserid, $msg, RTMESSAGE_NOTE));
+	
+	$SESSION->redirect('?m=rtticketview&id=' . $ticketid);
+}
+
+$SESSION->redirect('?m=rtticketview&id=' . $ticketid);
+
 
 ?>
