@@ -62,7 +62,7 @@ if(isset($_POST['ticket']))
 		$error['email'] = trans('Incorrect email!');
 
 	if ((isset($ticket['customerid']) && $ticket['customerid'] !=0 && $ticket['custid'] != $ticket['customerid'])
-		|| !$LMS->CustomerExists($ticket['custid']))
+		|| (intval($ticket['custid']) && !$LMS->CustomerExists($ticket['custid']))
 		$error['custid'] = trans('Specified ID is not proper or does not exist!');
 	else
 		$ticket['customerid'] = $ticket['custid'] ? $ticket['custid'] : 0;
