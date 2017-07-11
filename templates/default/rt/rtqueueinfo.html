@@ -187,7 +187,12 @@
 	    <TD width="100%" COLSPAN="3" ALIGN="RIGHT"> 
 	        <A HREF="?m=rtqueueview&id={$queue.id}"><IMG src="img/view.gif" alt=""> {trans("Browse")}</A>
 	    	<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG src="img/save.gif" alt=""> {trans("Edit")}</A>
-		<A HREF="?m=rtqueuedel&id={$queue.id}" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
+	    	{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkConfig('privileges.superuser'))}
+			<A HREF="?m=rtqueuedel&amp;id={$queue.id}&amp;qaction=restore" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to restore queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/reload.gif" alt="[ {trans("Restore<!RT>")} ]" title="[ {trans("Restore<!RT>")} ]"> {trans("Restore<!RT>")}</A>
+			<A HREF="?m=rtqueuedel&amp;id={$queue.id}&amp;qaction=delperm" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to permanently remove queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete permanently")} ]" title="[ {trans("Delete permanently")} ]"> {trans("Delete permanently")}</A>
+		{else}
+			<A HREF="?m=rtqueuedel&amp;id={$queue.id}&amp;qaction=delete" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to remove queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"> {trans("Delete")}</A>
+		{/if}
 	    </TD>
 	</TR>
     </TBODY>

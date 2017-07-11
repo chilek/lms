@@ -240,7 +240,12 @@
 			{if $ticket.state < 2}
 			<A href="?m=rtticketedit&amp;id={$ticket.ticketid}&amp;state=2"><IMG src="img/resolved.gif" alt=""> {trans("Resolve")}</A>&nbsp;
 			{/if}
-			<A href="?m=rtticketdel&amp;id={$ticket.ticketid}" onClick="return confirmLink(this, '{t a=$ticket.ticketid}Are you sure, you want to remove ticket $a?{/t}')"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
+			{if $ticket.deleted == 1 && $ticket.deltime != 0 && (ConfigHelper::checkConfig('privileges.superuser'))}
+			<a href="?m=rtticketdel&id={$ticket.id}&amp;taction=restore" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to restore ticket $a?{/t}')"><img src="img/reload.gif" alt="" title="[ {trans("Restore<!RT>")} ]"> {trans("Restore<!RT>")}</a>
+			<a href="?m=rtticketdel&id={$ticket.id}&amp;taction=delperm" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to permanently remove ticket $a?{/t}')"><img src="img/delete.gif" alt="" title="[ {trans("Delete permanently")} ]"> {trans("Delete permanently")}</a>
+			{else}
+			<a href="?m=rtticketdel&id={$ticket.id}&amp;taction=delete" onClick="return confirmLink(this, '{t a=$queue[ticket].id|string_format:"%06d"}Are you sure, you want to remove ticket $a?{/t}')"><img src="img/delete.gif" alt="" title="[{trans("Delete")} ]">{trans("Delete")}</a>
+			{/if}
 			<A href="?m=rtticketedit&amp;id={$ticket.ticketid}"><IMG src="img/edit.gif" alt=""> {trans("Edit")}</A>
 		</TD>
 	</TR>
