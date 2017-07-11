@@ -542,6 +542,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         $ticket['status'] = $RT_STATES[$ticket['state']];
         $ticket['uptime'] = uptimef($ticket['resolvetime'] ? $ticket['resolvetime'] - $ticket['createtime'] : time() - $ticket['createtime']);
 
+		if (!empty($ticket['nodeid']) && empty($ticket['node_location'])) {
+			$customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
+			$ticket['node_location'] = $customer_manager->getAddressForCustomerStuff($ticket['customerid']);
+		}
         return $ticket;
     }
 
