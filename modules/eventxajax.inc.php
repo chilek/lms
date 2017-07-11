@@ -24,16 +24,14 @@
  *  $Id$
  */
 
-function select_customer($id) {
+function select_location($customerid, $address_id) {
 	global $LMS;
 
 	$JSResponse = new xajaxResponse();
-	if (!empty($id)) {
-		$nodes = $LMS->GetNodeLocations($id);
-		if (empty($nodes))
-			$nodes = array();
-		$JSResponse->call('update_node_locations', array_values($nodes));
-	}
+	$nodes = $LMS->GetNodeLocations($customerid, !empty($address_id) && intval($address_id) > 0 ? $address_id : null);
+	if (empty($nodes))
+		$nodes = array();
+	$JSResponse->call('update_nodes', array_values($nodes));
 	return $JSResponse;
 }
 
@@ -54,7 +52,7 @@ function getUsersForGroup($groupid) {
 }
 
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction(array('select_customer', 'getUsersForGroup'));
+$LMS->RegisterXajaxFunction(array('select_location', 'getUsersForGroup'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 ?>

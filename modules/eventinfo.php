@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,35 +24,21 @@
  *  $Id$
  */
 
-if(!$_GET['id'])
-{
+if (!$_GET['id']) {
 	$SESSION->redirect('?m=eventlist');
 }
 
-$event = $DB->GetRow('SELECT events.id AS id, title, description, note, userid, events.creationdate,
-				customerid, date, begintime, enddate, endtime, private, closed, events.type, '
-			    .$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
-			    vusers.name AS username, events.moddate, events.moduserid, events.closeddate, events.closeduserid, nodes.location AS location, '
-			    .$DB->Concat('c.city',"', '",'c.address').' AS customerlocation,
-			    (SELECT name FROM vusers WHERE id=events.moduserid) AS modusername,
-			    (SELECT name FROM vusers WHERE id=events.closeduserid) AS closedusername,
-				ticketid
-			    FROM events
-			    LEFT JOIN vnodes nodes ON (nodeid = nodes.id)
-			    LEFT JOIN customerview c ON (c.id = customerid)
-			    LEFT JOIN vusers ON (vusers.id = userid)
-			    WHERE events.id = ?', array($_GET['id']));
-
-$event['userlist'] = $DB->GetAll('SELECT userid AS id, vusers.name
-					FROM vusers, eventassignments
-					WHERE vusers.id = userid
-					AND eventid = ?', array($event['id']));
+$event = $LMS->GetEvent($_GET['id']);
+$userlist = $DB->GetAllByKey('SELECT id, rname FROM vusers
+	WHERE deleted = 0 AND access = 1 ORDER BY lastname ASC', 'id');
 
 $layout['pagetitle'] = trans('Event Info');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('event', $event);
+$SMARTY->assign('userlist', $userlist);
+
 $SMARTY->display('event/eventinfo.html');
 
 ?>

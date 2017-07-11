@@ -40,6 +40,7 @@ version ?.??.?? (????-??-??):
     to tickets) [chilan]
   - enhancement: helpdesk ticket <-> customer nodes (only customer nodes which have the same
     location as selected ticket customer location are displayed) [chilan]
+  - enhancement: added support for event <-> customer location assignment [chilan]
 
 version 1.11.22 (2017-06-08):
 

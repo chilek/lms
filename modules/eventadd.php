@@ -76,57 +76,36 @@ if(isset($_POST['event']))
 		$event['customerid'] = $event['custid'];
 
 	$event['status'] = isset($event['status']) ? 1 : 0;
-	$event['nodeid'] = !isset($event['nodeid']) || empty($event['nodeid']) ? null : $event['nodeid'];
 
 	if (!$error) {
-                if (isset($event['helpdesk']))
-                {
-                    $ticket['queue'] = $event['rtqueue'];
-                    $ticket['customerid'] = $event['customerid'];
-                    $ticket['requestor'] = $event['name']." ".$event['surname'];
-                    $ticket['subject'] = $event['title'];
-                    $ticket['mailfrom'] = $event['email'];
-                    $ticket['categories'] = $event['categories'];
-                    $ticket['owner'] = '0';
-                    $event['ticketid'] = $LMS->TicketAdd($ticket);
-                }
+		$event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ? null : $event['address_id'];
+		$event['nodeid'] = !isset($event['nodeid']) || empty($event['nodeid']) ? null : $event['nodeid'];
 
-		$DB->BeginTrans();
-
-		$DB->Execute('INSERT INTO events (title, description, date, begintime, enddate,
-                                                endtime, userid, creationdate, private, customerid, type, nodeid, ticketid)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?)',
-				array($event['title'],
-					$event['description'],
-					$date,
-					$event['begintime'],
-					$enddate,
-					$event['endtime'],
-					$AUTH->id,
-					$event['status'],
-					intval($event['custid']),
-					$event['type'],
-					$id,
-					empty($event['ticketid']) ? null : $event['ticketid'],
-					));
-
-		if (!empty($event['userlist'])) {
-			$id = $DB->GetLastInsertID('events');
-			foreach($event['userlist'] as $userid)
-				$DB->Execute('INSERT INTO eventassignments (eventid, userid)
-					VALUES (?, ?)', array($id, $userid));
+		if (isset($event['helpdesk'])) {
+			$ticket['queue'] = $event['rtqueue'];
+			$ticket['customerid'] = $event['customerid'];
+			$ticket['requestor'] = $event['name']." ".$event['surname'];
+			$ticket['subject'] = $event['title'];
+			$ticket['mailfrom'] = $event['email'];
+			$ticket['categories'] = $event['categories'];
+			$ticket['owner'] = '0';
+			$ticket['address_id'] = $event['address_id'];
+			$ticket['nodeid'] = $event['nodeid'];
+			$event['ticketid'] = $LMS->TicketAdd($ticket);
 		}
 
-		$DB->CommitTrans();
+		$event['date'] = $date;
+		$event['enddate'] = $enddate;
 
-		if(!isset($event['reuse']))
-		{
+		$LMS->EventAdd($event);
+
+		if (!isset($event['reuse'])) {
 			$SESSION->redirect('?m=eventlist');
 		}
 
 		unset($event['title']);
 		unset($event['description']);
-                                unset($event['categories']);
+		unset($event['categories']);
 	}
 } else {
 	$event['helpdesk'] = ConfigHelper::checkConfig('phpui.default_event_ticket_assignment');
@@ -138,7 +117,8 @@ if (isset($_GET['customerid']))
 	$event['customerid'] = intval($_GET['customerid']);
 if (isset($event['customerid'])) {
 	$event['customername'] = $LMS->GetCustomerName($event['customerid']);
-	$SMARTY->assign('node_locations', $LMS->GetNodeLocations($event['customerid']));
+	$SMARTY->assign('nodes', $LMS->GetNodeLocations($event['customerid'],
+		isset($event['address_id']) && intval($event['address_id']) > 0 ? $event['address_id'] : null));
 }
 
 if(isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year']))

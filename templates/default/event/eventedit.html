@@ -21,18 +21,6 @@
 			end.value = start.options[start.selectedIndex].value;
 		}
 	}
-
-	function change_customer() {
-		xajax_select_customer($('[name="event[custid]"]').val());
-	}
-
-	function update_node_locations(data) {
-		var options = '<option value="">{trans("- use customer location -")}</option>';
-		$.each(data, function(key, value) {
-			options += '<option value="' + value.id + '">' + value.name + ': ' + value.location + '</option>';
-		});
-		$('[name="event[nodeid]"]').html(options);
-	}
 //-->
 </SCRIPT>
 <H1>{$layout.pagetitle}</H1>
@@ -126,20 +114,33 @@
                 </TD>
         </TR>
 	<TR>
-	<TD width="1%">
-	    <IMG src="img/node.gif" alt="">
-	</TD>
-	<TD width="1%">
-	    <B>{trans("Node:")}</B>
-	</TD>
-	<TD width="98%" nowrap>
-		<select name="event[nodeid]" {tip text="Select node location"}>
-			<option value="">{trans("- use customer location -")}</option>
-			{foreach $node_locations as $node}
-			<option value="{$node.id}"{if $node.id == $event.nodeid} selected{/if}>{$node.name}: {$node.location}</option>
-			{/foreach}
-		</select>
-	</TD>
+	<TR>
+		<TD>
+			<IMG src="img/home.gif" alt="">
+		</TD>
+		<TD class="bold">
+			{trans("Location:")}
+		</TD>
+		<TD class="nobr">
+			<select id="customer_addresses" name="event[address_id]" {tip trigger="address_id"}>
+			</select>
+		</TD>
+	</TR>
+	<TR id="node-row"{if empty($nodes)} style="display: none;"{/if}>
+		<TD>
+			<IMG src="img/node.gif" alt="">
+		</TD>
+		<TD class="bold">
+			{trans("Node:")}
+		</TD>
+		<TD class="nobr">
+			<select name="event[nodeid]" {tip text="Select node"}>
+				<option value="">{trans("- none -")}</option>
+				{foreach $nodes as $node}
+				<option value="{$node.id}"{if $node.id == $event.nodeid} selected{/if}>{$node.name}: {$node.location}</option>
+				{/foreach}
+			</select>
+		</TD>
 	</TR>
 	<TR>
 		<TD width="1%">
@@ -174,7 +175,7 @@
 		<TD style="width: 98%;" class="multiselect nobr">
 			<SELECT name="event[userlist][]" class="lms-ui-multiselect" multiple data-default-value="{trans("- select user -")}">
 				{foreach $userlist as $user}
-				<OPTION value="{$user.id}"{if !empty($event.userlist) && in_array($user.id, $event.userlist)} selected{/if}>{$user.name}</option>
+				<OPTION value="{$user.id}"{if !empty($event.userlist) && in_array($user.id, $event.userlist)} selected{/if}>{$user.rname}</option>
 				{/foreach}
 			</SELECT>
 
@@ -209,6 +210,7 @@
     </TBODY>
 </TABLE>
 </P>
+<script type="text/javascript" src="img/lms-ui-iconselectmenu.js"></script>
 <SCRIPT type="text/javascript">
 <!--
 $(function() {
@@ -223,6 +225,38 @@ function update_user_selection(users) {
 	userms.filterSelection(users);
 	{/if}
 }
+
+function change_customer() {
+	customer_addresses.setAddressList( getCustomerAddresses( $('[name="event[custid]"]').val() ) );
+	xajax_select_location($('[name="event[custid]"]').val(), $('[name="event[address_id]"]').val());
+}
+
+function update_nodes(data) {
+	var options = '<option value="">{trans("- none -")}</option>';
+	$.each(data, function(k, v) {
+		options += '<option value="' + v.id + '">' + v.name + ': ' + v.location + '</option>';
+	});
+	$('[name="event[nodeid]"]').html(options);
+	if (data.length) {
+		$('#node-row').show();
+	} else {
+		$('#node-row').hide();
+	}
+}
+
+var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses", {
+	change: function(event, ui) {
+		xajax_select_location($('[name="event[custid]"]').val(), $(this).val());
+	}
+});
+
+customer_addresses.setAddressList( getCustomerAddresses( {intval($event.customerid)} ) );
+
+{if $event.address_id && intval($event.customerid)}
+	$( '#customer_addresses' ).val( {$event.address_id} );
+{/if}
+
+customer_addresses.init();
 //-->
 </SCRIPT>
 {/block}

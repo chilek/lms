@@ -183,15 +183,28 @@
 	</TR>
 	<TR>
 		<TD>
-			<IMG src="img/node.gif" alt="">
+			<IMG src="img/home.gif" alt="">
 		</TD>
 		<TD class="bold">
 			{trans("Location:")}
 		</TD>
 		<TD class="nobr">
-			{if isset($event.location)}{$event.location}{else}{$event.customerlocation}{/if}
+			{if !empty($event.address_id)}{$event.location}{else}{$event.customerlocation}{/if}
 		</TD>
 	</TR>
+	{if !empty($event.nodeid)}
+	<TR>
+		<TD>
+			<IMG src="img/node.gif" alt="">
+		</TD>
+		<TD class="bold">
+			{trans("Node:")}
+		</TD>
+		<TD class="nobr">
+			<a href="?m=nodeinfo&id={$event.nodeid}">{$event.node_name}: {$event.node_location}</a>
+		</TD>
+	</TR>
+	{/if}
 {if $event.note}
 	<TR>
 		<TD>
@@ -220,8 +233,8 @@
 			{trans("Users:")}
 		</TD>
 		<TD class="nobr">
-			{foreach $event.userlist as $user}
-				<A href="?m=userinfo&id={$user.id}">{$user.name}</A><BR>
+			{foreach $event.userlist as $userid}
+				<A href="?m=userinfo&id={$userid}">{$userlist[$userid].rname}</A><BR>
 			{/foreach}
 		</TD>
 	</TR>

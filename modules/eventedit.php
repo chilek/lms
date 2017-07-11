@@ -42,26 +42,13 @@ elseif(isset($_GET['action']) && $_GET['action'] == 'close')
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-$event = $DB->GetRow('SELECT events.id AS id, title, description, note, events.type,
-			date, begintime, enddate, endtime, customerid, private, closed, '
-			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername, nodeid
-			FROM events LEFT JOIN customers ON (customers.id = customerid)
-			WHERE events.id = ?', array($_GET['id']));
+$event = $LMS->GetEvent($_GET['id']);
 
 $event['date'] = sprintf('%04d/%02d/%02d', date('Y',$event['date']),date('n',$event['date']),date('j',$event['date']));
 if (empty($event['enddate']))
 	$event['enddate'] = '';
 else
 	$event['enddate'] = sprintf('%04d/%02d/%02d', date('Y',$event['enddate']),date('n',$event['enddate']),date('j',$event['enddate']));
-
-$eventuserlist = $DB->GetCol('SELECT userid AS id
-				FROM users, eventassignments
-				WHERE users.id = userid
-				AND eventid = ?', array($event['id']));
-
-if ($eventuserlist === null) {
-    $eventuserlist = array();
-}
 
 if(isset($_POST['event']))
 {
@@ -106,41 +93,30 @@ if(isset($_POST['event']))
 			$event['custid'] = $event['customerid'];
 		if ($event['custid'] == '')
 			$event['custid'] = 0;
+
+		$event['address_id'] = !isset($event['address_id']) || $event['address_id'] == -1 ? null : $event['address_id'];
 		$event['nodeid'] = !isset($event['nodeid']) || empty($event['nodeid']) ? null : $event['nodeid'];
 
-		$DB->BeginTrans();
+		$event['date'] = $date;
+		$event['enddate'] = $enddate;
 
-		$DB->Execute('UPDATE events SET title=?, description=?, date=?, begintime=?, enddate=?, endtime=?, private=?, note=?, customerid=?, type=?, nodeid=?, ticketid=? WHERE id=?',
-				array($event['title'], $event['description'], $date, $event['begintime'], $enddate, $event['endtime'], $event['private'], $event['note'], $event['custid'], $event['type'],
-					$event['nodeid'], empty($event['helpdeskid']) ? null : $event['helpdeskid'], $event['id']));
-
-		if (!empty($event['userlist']) && is_array($event['userlist'])) {
-			$DB->Execute('DELETE FROM eventassignments WHERE eventid = ?', array($event['id']));
-			foreach ($event['userlist'] as $userid)
-				$DB->Execute('INSERT INTO eventassignments (eventid, userid) VALUES (?, ?)',
-					array($event['id'], $userid));
-		}
-
-		$DB->Execute('UPDATE events SET moddate=?, moduserid=? WHERE id=?',
-			array(time(), $AUTH->id, $event['id']));
-
-		$DB->CommitTrans();
+		$LMS->EventUpdate($event);
 
 		$SESSION->redirect('?m=eventlist');
 	}
-} else
-	$event['userlist'] = $eventuserlist;
+}
 
 $layout['pagetitle'] = trans('Event Edit');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
-$userlist = $DB->GetAll('SELECT id, name FROM vusers
+$userlist = $DB->GetAll('SELECT id, rname FROM vusers
 	WHERE deleted = 0 AND vusers.access = 1 ORDER BY lastname ASC');
 
 if (isset($event['customerid']) || intval($event['customerid']))
-	$SMARTY->assign('node_locations', $LMS->GetNodeLocations($event['customerid']));
+	$SMARTY->assign('nodes', $LMS->GetNodeLocations($event['customerid'],
+		isset($event['address_id']) && intval($event['address_id']) > 0 ? $event['address_id'] : null));
 
 if (!isset($event['usergroup']))
 	$SESSION->restore('eventgid', $event['usergroup']);

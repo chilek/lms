@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -2264,6 +2264,28 @@ class LMS
         $manager = $this->getFinanaceManager();
         return $manager->GetTaxes($from, $to);
     }
+
+    public function EventAdd($event)
+    {
+        $manager = $this->getEventManager();
+        return $manager->EventAdd($event);
+    }
+
+    public function EventUpdate($event)
+    {
+        $manager = $this->getEventManager();
+        return $manager->EventUpdate($event);
+    }
+
+	public function EventDelete($id) {
+		$manager = $this->getEventManager();
+		return $manager->EventDelete($id);
+	}
+
+	public function GetEvent($id) {
+		$manager = $this->getEventManager();
+		return $manager->GetEvent($id);
+	}
 
     public function EventSearch($search, $order = 'date,asc', $simple = false)
     {

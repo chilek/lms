@@ -31,18 +31,6 @@ $(function() {
 			end.value = start.options[start.selectedIndex].value;
 		}
 	}
-
-	function change_customer() {
-		xajax_select_customer($('[name="event[custid]"]').val());
-	}
-
-	function update_node_locations(data) {
-		var options = '<option value="">{trans("- use customer location -")}</option>';
-		$.each(data, function(key, value) {
-			options += '<option value="' + value.id + '">' + value.name + ': ' + value.location + '</option>';
-		});
-		$('[name="event[nodeid]"]').html(options);
-	}
 //-->
 </SCRIPT>
 
@@ -128,37 +116,53 @@ $(function() {
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
 			<IMG src="img/customer.gif" alt="">
 		</TD>
-		<TD width="1%" class="bold">
+		<TD class="bold">
 			{trans("Customer:")}
 		</TD>
-		<TD width="98%" class="nobr">
+		<TD class="nobr">
 			{if empty($event.ticketid) && empty($event.customerid)}
-                                                        {customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer();"}
-                                                {else}
-                                                    {if $event.customerid != 0}
-                                                        {$event.customername} ({$event.customerid})
-                                                        <input type="hidden" name="event[customerid]" value="{$event.customerid}">
-                                                    {else}
-                                                        {trans("Request not assigned to any customer.")}
-                                                    {/if}
-                                                {/if}
+				{customerlist form="event" customers=$customerlist selected=$event.customerid selectname="event[customerid]" inputname="event[custid]" customOnChange="change_customer();"}
+			{else}
+				{if $event.customerid != 0}
+					{$event.customername} ({$event.customerid})
+					<input type="hidden" name="event[custid]" value="{$event.customerid}">
+				{else}
+					{trans("Request not assigned to any customer.")}
+				{/if}
+			{/if}
 		</TD>
 	</TR>
 	<TR>
-		<TD width="1%">
+		<TD>
+			<IMG src="img/home.gif" alt="">
+		</TD>
+		<TD class="bold">
+			{trans("Location:")}
+		</TD>
+		<TD class="nobr">
+			{if empty($event.ticketid)}
+			<select id="customer_addresses" name="event[address_id]" {tip trigger="address_id"}>
+			</select>
+			{else}
+				{trans("Request not assigned to any customer location.")}
+			{/if}
+		</TD>
+	</TR>
+	<TR id="node-row"{if empty($nodes)} style="display: none;"{/if}>
+		<TD>
 			<IMG src="img/node.gif" alt="">
 		</TD>
-		<TD width="1%" class="bold">
+		<TD class="bold">
 			{trans("Node:")}
 		</TD>
-		<TD width="98%" class="nobr">
+		<TD class="nobr">
 			{if empty($event.ticketid)}
-			<select name="event[nodeid]" {tip text="Select node location"}>
-				<option value="">{trans("- use customer location -")}</option>
-				{foreach $node_locations as $node}
+			<select name="event[nodeid]" {tip text="Select node"}>
+				<option value="">{trans("- none -")}</option>
+				{foreach $nodes as $node}
 				<option value="{$node.id}"{if $node.id == $event.nodeid} selected{/if}>{$node.name}: {$node.location}</option>
 				{/foreach}
 			</select>
@@ -287,6 +291,7 @@ $(function() {
     </TBODY>
 </TABLE>
 </form>
+<script type="text/javascript" src="img/lms-ui-iconselectmenu.js"></script>
 <SCRIPT type="text/javascript">
 <!--
 $(function() {
@@ -301,6 +306,40 @@ function update_user_selection(users) {
 	userms.filterSelection(users);
 	{/if}
 }
+
+{if empty($event.ticketid)}
+function change_customer() {
+	customer_addresses.setAddressList( getCustomerAddresses( $('[name="event[custid]"]').val() ) );
+	xajax_select_location($('[name="event[custid]"]').val(), $('[name="event[address_id]"]').val());
+}
+
+function update_nodes(data) {
+	var options = '<option value="">{trans("- none -")}</option>';
+	$.each(data, function(k, v) {
+		options += '<option value="' + v.id + '">' + v.name + ': ' + v.location + '</option>';
+	});
+	$('[name="event[nodeid]"]').html(options);
+	if (data.length) {
+		$('#node-row').show();
+	} else {
+		$('#node-row').hide();
+	}
+}
+
+var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses", {
+	change: function(event, ui) {
+		xajax_select_location($('[name="event[custid]"]').val(), $(this).val());
+	}
+});
+
+customer_addresses.setAddressList( getCustomerAddresses( {intval($event.customerid)} ) );
+
+{if $event.address_id && intval($event.customerid)}
+	$( '#customer_addresses' ).val( {$event.address_id} );
+{/if}
+
+customer_addresses.init();
+{/if}
 //-->
 </SCRIPT>
 {/block}
