@@ -56,8 +56,9 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 		'SELECT events.id AS id, title, note, description, date, begintime, enddate, endtime, customerid, closed, events.type, '
 		.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
 		userid, vusers.name AS username, '.$DB->Concat('c.city',"', '",'c.address').' AS customerlocation,
-                                nodeid, vn.location AS location, ticketid
+		events.address_id, va.location, nodeid, vn.location AS nodelocation, ticketid
 		FROM events
+		LEFT JOIN vaddresses va ON va.id = events.address_id
 		LEFT JOIN vnodes as vn ON (nodeid = vn.id)
 		LEFT JOIN customerview c ON (customerid = c.id)
 		LEFT JOIN vusers ON (userid = vusers.id)

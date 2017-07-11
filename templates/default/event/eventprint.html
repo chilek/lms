@@ -69,10 +69,12 @@
 		</TD>
 		<TD class="valign-top text-center nobr">
 			{$event.customername|truncate:"40":"...":true}{if !empty($event.customerid)} ({$event.customerid}){/if}<BR>
-			{if isset($event.nodelocation)}
-			    {$event.nodelocation}
+			{if !empty($event.address_id)}
+				{$event.location}
+			{elseif !empty($event.nodeid)}
+				{$event.nodelocation}
 			{else}
-			    {$event.customerlocation}
+				{$event.customerlocation}
 			{/if}
 			<br>{$event.customerphone}
 		</TD>
