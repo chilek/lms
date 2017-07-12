@@ -615,10 +615,10 @@ input:invalid {
   cursor: pointer;
   text-decoration: underline;
 }
-.lms-ui-rt-deleted.light {
+.lms-ui-rt-deleted.light:not(:hover) {
   background-color: #ffb1b1;
 }
-.lms-ui-rt-deleted.lucid {
+.lms-ui-rt-deleted.lucid:not(:hover) {
   background-color: #fccdcd;
 }
 .lms-ui-rt-partly-deleted {
