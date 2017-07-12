@@ -134,19 +134,21 @@ div.lmsIpPopupLabel {
 div.lmsPingContentsFrame {
 	border: 1px solid black;
 	padding: 0px;
-	width: 450px; height: 300px;
+	width: 450px;
+	height: 300px;
 	background-color: #DFD5BD;
 }
 
 div.lmsPingContents {
 	position: absolute;
-	left: 0px; width: 100%;
-	top: 0px; bottom: 48px;
+	left: 0px;
+	top: 0px;
+	bottom: 48px;
+	width: 100%;
 	height: auto !important;
 	height: 250px;	/* IE fix */
 	overflow: auto;
 	padding: 0px;
-	margin-bottom: 5px;
 }
 
 div.olControlPanel {
