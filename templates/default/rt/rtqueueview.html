@@ -90,13 +90,8 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=ticket loop=$queue start=$start max=$pagelimit}
-	{if $queue[ticket].deleted == 1 && $queue[ticket].deltime != 0}
-	<TR class="highlight {cycle name=fulldeleted values="lms-ui-deleted,lms-ui-deleted-light"}">
-	{elseif $queue[ticket].delcount != 0 && (ConfigHelper::checkConfig('privileges.superuser'))}
-	<TR class="highlight {cycle name=partdeleted values="lms-ui-deleted-striped,lms-ui-deleted-striped-light"}">
-	{else}
-	<TR class="highlight {cycle}{if $queue[ticket].state == 2} blend{/if}">
-	{/if}
+	
+	<TR class="highlight lms-ui-rt{if $queue[ticket].deleted == 1 && $queue[ticket].deltime != 0}-deleted{elseif $queue[ticket].delcount && (ConfigHelper::checkConfig('privileges.superuser'))}-partly-deleted{/if}-{cycle} {if $queue[ticket].state == 2} blend{/if}">
 		<TD onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
 			{if $queue[ticket].state == 0}
 				<IMG src="img/new.gif" alt="" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$queue[ticket].id}">

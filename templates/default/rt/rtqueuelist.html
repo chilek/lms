@@ -32,13 +32,7 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$queues item=queue}
-	{if $queue.deleted == 1 && $queue.deltime != 0}
-	<TR class="highlight {cycle name=fulldeleted values="lms-ui-deleted,lms-ui-deleted-light"}">
-	{elseif $queue.delcount != 0 && (ConfigHelper::checkConfig('privileges.superuser'))}
-	<TR class="highlight {cycle name=partdeleted values="lms-ui-deleted-striped,lms-ui-deleted-striped-light"}">
-	{else}
-	<TR class="highlight {cycle}">
-	{/if}
+	<TR class="highlight lms-ui-rt{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkConfig('privileges.superuser'))}-partly-deleted{else}{/if}-{cycle}">
 		<TD onClick="return self.location.href='?m=rtqueueview&amp;id={$queue.id}';">
 			<IMG src="img/queue.gif" ALT="">
 			<B>{$queue.name}</B><BR>

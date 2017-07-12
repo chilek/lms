@@ -12,6 +12,8 @@
 @icon-size: 16px;
 @link: #800000;
 @linkhover: #336600;
+@red-light: #ffb1b1;
+@red-lucid: #fccdcd;
 
 .lms-ui-no-user-select {
 	-webkit-user-select: none;
@@ -471,10 +473,12 @@ input:invalid {
     }
 }
 
-.lms-ui-deleted { background: #ffb1b1; }
-.lms-ui-deleted-light { background: #fccdcd; }
-.lms-ui-deleted-striped { background-image: repeating-linear-gradient(145deg, transparent, transparent 10px, #ffb1b1 10px, #ffb1b1 20px); }
-.lms-ui-deleted-striped-light { background-image: repeating-linear-gradient(145deg, transparent, transparent 10px, #fccdcd 10px, #fccdcd 20px); }
+.lms-ui-rt-light { background-color: @light; }
+.lms-ui-rt-lucid { background-color: @lucid; }
+.lms-ui-rt-deleted-light { background-color: @red-light; }
+.lms-ui-rt-deleted-lucid { background-color: @red-lucid; }
+.lms-ui-rt-partly-deleted-light { background-color: @light; background-image: repeating-linear-gradient(145deg, transparent, transparent 10px, @red-light 10px, @red-light 20px); }
+.lms-ui-rt-partly-deleted-lucid { background-color: @lucid; background-image: repeating-linear-gradient(145deg, transparent, transparent 10px, @red-lucid 10px, @red-lucid 20px); }
 
 .lms-ui-multi-check-all {
 	.lms-ui-no-user-select;
