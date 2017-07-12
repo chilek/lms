@@ -615,24 +615,16 @@ input:invalid {
   cursor: pointer;
   text-decoration: underline;
 }
-.lms-ui-rt-light {
-  background-color: #DFD5BD;
-}
-.lms-ui-rt-lucid {
-  background-color: #EBE4D6;
-}
-.lms-ui-rt-deleted-light {
+.lms-ui-rt-deleted.light {
   background-color: #ffb1b1;
 }
-.lms-ui-rt-deleted-lucid {
+.lms-ui-rt-deleted.lucid {
   background-color: #fccdcd;
 }
-.lms-ui-rt-partly-deleted-light {
-  background-color: #DFD5BD;
+.lms-ui-rt-partly-deleted {
   background-image: repeating-linear-gradient(145deg, transparent, transparent 10px, #ffb1b1 10px, #ffb1b1 20px);
 }
-.lms-ui-rt-partly-deleted-lucid {
-  background-color: #EBE4D6;
+.lms-ui-rt-partly-deleted {
   background-image: repeating-linear-gradient(145deg, transparent, transparent 10px, #fccdcd 10px, #fccdcd 20px);
 }
 .lms-ui-multi-check-all {

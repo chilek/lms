@@ -32,7 +32,7 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$queues item=queue}
-	<TR class="highlight lms-ui-rt{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkConfig('privileges.superuser'))}-partly-deleted{else}{/if}-{cycle}">
+	<TR class="highlight {cycle} lms-ui-rt{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkConfig('privileges.superuser'))}-partly-deleted{else}{/if}">
 		<TD onClick="return self.location.href='?m=rtqueueview&amp;id={$queue.id}';">
 			<IMG src="img/queue.gif" ALT="">
 			<B>{$queue.name}</B><BR>

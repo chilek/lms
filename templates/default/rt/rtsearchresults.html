@@ -45,7 +45,7 @@
 	</TR>
 	{cycle values="light,lucid" print=false}
 	{section name=ticket loop=$queue start=$start max=$pagelimit}
-	<TR class="highlight lms-ui-rt{if $queue[ticket].deleted == 1 && $queue[ticket].deltime != 0}-deleted{elseif $queue[ticket].delcount != 0 && (ConfigHelper::checkConfig('privileges.superuser'))}-partly-deleted{/if}-{cycle}{if $queue[ticket].state == $smarty.const.RT_RESOLVED} blend{/if}">
+	<TR class="highlight {cycle} lms-ui-rt{if $queue[ticket].deleted == 1 && $queue[ticket].deltime != 0}-deleted{elseif $queue[ticket].delcount != 0 && (ConfigHelper::checkConfig('privileges.superuser'))}-partly-deleted{/if}{if $queue[ticket].state == $smarty.const.RT_RESOLVED} blend{/if}">
 		<TD onClick="return self.location.href='?m=rtticketview&id={$queue[ticket].id}';">
 			{if $queue[ticket].state == $smarty.const.RT_NEW}
 				<IMG src="img/new.gif" alt="" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$queue[ticket].id}">
