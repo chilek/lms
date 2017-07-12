@@ -3700,5 +3700,8 @@ $_LANG['New device'] = 'Nowe urządzenie';
 
 $_LANG['Enter external customer ID fragment and press Enter'] = 'Podaj fragment identyfikatora kienta w systemie zewnętrznych i naciśnij Enter';
 
+$_LANG['Customer count'] = 'Liczba klientów';
+$_LANG['Assignment count'] = 'Liczba zobowiązań';
+$_LANG['Active assignment count'] = 'Liczba aktywnych zobowiązań';
 
 ?>

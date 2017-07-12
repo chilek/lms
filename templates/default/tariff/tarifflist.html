@@ -145,8 +145,9 @@
 			{$tariff.tax}
 		</TD>
 		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&amp;id={$tariff.id}';" NOWRAP>
-			{$tariff.customerscount|default:0}
-			({$tariff.count|default:0},{$tariff.activecount|default:0})
+			<span title="<span class=&quot;bold&quot;</span>{trans("Customer count")}">{$tariff.customerscount|default:0}</span>
+			(<span title="<span class=&quot;bold&quot;</span>{trans("Assignment count")}">{$tariff.count|default:0}</span>,
+			<span title="<span class=&quot;bold&quot;>{trans("Active assignment count")}</span>">{$tariff.activecount|default:0}</span>)
 		</TD>
 		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=tariffinfo&amp;id={$tariff.id}';">
 			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_summaries')}
