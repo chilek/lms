@@ -45,6 +45,8 @@ if(!$rights || !$catrights)
 
 $ticket = $LMS->GetTicketContents($id);
 $categories = $LMS->GetCategoryListByUser($AUTH->id);
+if (empty($categories))
+	$categories = array();
 
 if($ticket['deluserid'])
 	$ticket['delusername'] = $LMS->GetUserName($ticket['deluserid']);
