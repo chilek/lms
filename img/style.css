@@ -621,10 +621,10 @@ input:invalid {
 .lms-ui-rt-deleted.lucid:not(:hover) {
   background-color: #fccdcd;
 }
-.lms-ui-rt-partly-deleted {
+.lms-ui-rt-partly-deleted.light {
   background-image: repeating-linear-gradient(145deg, transparent, transparent 10px, #ffb1b1 10px, #ffb1b1 20px);
 }
-.lms-ui-rt-partly-deleted {
+.lms-ui-rt-partly-deleted.lucid {
   background-image: repeating-linear-gradient(145deg, transparent, transparent 10px, #fccdcd 10px, #fccdcd 20px);
 }
 .lms-ui-multi-check-all {
