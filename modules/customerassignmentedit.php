@@ -490,6 +490,8 @@ $SMARTY->assign('customernetdevnodes', $netdevnodes);
 
 // -----
 
+$SMARTY->assign('tags', $LMS->TarifftagGetAll());
+
 $SMARTY->assign('customernodes'      , $customerNodes);
 $SMARTY->assign('customernetdevnodes', $netdevnodes);
 $SMARTY->assign('customervoipaccs'   , $LMS->getCustomerVoipAccounts($customer['id']));

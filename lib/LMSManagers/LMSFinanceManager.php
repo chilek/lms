@@ -1140,10 +1140,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $this->db->GetAllByKey('SELECT t.id, t.name, t.value, uprate, taxid,
 				datefrom, dateto, (CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid,
 				prodid, downrate, upceil, downceil, climit, plimit, taxes.value AS taxvalue,
-				taxes.label AS tax, t.period, t.type AS tarifftype
+				taxes.label AS tax, t.period, t.type AS tarifftype, ' . $this->db->GroupConcat('ta.tarifftagid') . ' AS tags
 				FROM tariffs t
+				LEFT JOIN tariffassignments ta ON ta.tariffid = t.id
 				LEFT JOIN taxes ON t.taxid = taxes.id
 				WHERE t.disabled = 0' . (empty($forced_id) ? '' : ' OR t.id = ' . intval($forced_id)) . '
+				GROUP BY t.id, t.name, t.value, uprate, taxid, datefrom, dateto, prodid, downrate, upceil, downceil, climit, plimit,
+					taxes.value, taxes.label, t.period, t.type
 				ORDER BY t.name, t.value DESC', 'id');
     }
 

@@ -41,6 +41,7 @@ version ?.??.?? (????-??-??):
   - enhancement: helpdesk ticket <-> customer nodes (only customer nodes which have the same
     location as selected ticket customer location are displayed) [chilan]
   - enhancement: added support for event <-> customer location assignment [chilan]
+  - enhancement: allow to filter tariffs by tags in customer assignment forms [chilan]
 
 version 1.11.22 (2017-06-08):
 
