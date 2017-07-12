@@ -103,6 +103,8 @@ if ($id && !isset($_POST['ticket'])) {
 
 $ticket = $LMS->GetTicketContents($id);
 $categories = $LMS->GetCategoryListByUser($AUTH->id);
+if (empty($categories))
+	$categories = array();
 
 if(isset($_POST['ticket']))
 {
