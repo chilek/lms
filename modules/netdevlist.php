@@ -110,12 +110,15 @@ $SESSION->save('ndlp', $page);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
+$netnodes = $LMS->GetNetNodeList(array(), 'name,ASC');
+unset($netnodes['total'], $netnodes['order'], $netnodes['direction']);
+$SMARTY->assign('netnodes', $netnodes);
+
 $SMARTY->assign('page',$page);
 $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);
 $SMARTY->assign('netdevlist',$netdevlist);
 $SMARTY->assign('listdata',$listdata);
-$SMARTY->assign('netnodes', $DB->GetAll("SELECT id, name FROM netnodes ORDER BY name"));
 $SMARTY->assign('NNprojects', $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
 	array(INV_PROJECT_SYSTEM)));
 $SMARTY->assign('producers', $producers);

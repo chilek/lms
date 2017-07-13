@@ -102,12 +102,20 @@
 		<TD onClick="return self.location.href='?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}';" class="nobr valign-top">
 			{if $netdevlist[netdevlist].location}
 				{$netdevlist[netdevlist].location}
-
 				{if $netdevlist[netdevlist].borough_name}
 					<div class="blend">
 						({$netdevlist[netdevlist].state_name} / {$netdevlist[netdevlist].district_name} / {$_BOROUGHTYPES[$netdevlist[netdevlist].borough_type]} {$netdevlist[netdevlist].borough_name})
 					</div>
 				{/if}
+			{elseif $netdevlist[netdevlist].netnodeid && $netnodes[$netdevlist[netdevlist].netnodeid].location}
+				{$netnodeid=$netdevlist[netdevlist].netnodeid}
+				{$netnodes[$netnodeid].location} {trans("(from network node)")}
+				{if $netnodes[$netnodeid].location_borough_name}
+					<div class="blend">
+						({$netnodes[$netnodeid].location_state_name} / {$netnodes[$netnodeid].location_district_name} / {$_BOROUGHTYPES[$netnodes[$netnodeid].location_borough_type]} {$netnodes[$netnodeid].location_borough_name})
+					</div>
+				{/if}
+
 			{/if}
 		</TD>
 		<TD onClick="return self.location.href='?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}';" class="nobr valign-top">
