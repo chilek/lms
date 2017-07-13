@@ -52,7 +52,7 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
 	$netdevinfo['id'] = $_GET['id'];
 
 	if ($netdevinfo['netnodeid']) {
-		$netnode = $DB->GetRow("SELECT * FROM netnodes WHERE id=".$netdevinfo['netnodeid']);
+		$netnode = $DB->GetRow("SELECT * FROM netnodes WHERE id=?", array($netdevinfo['netnodeid']));
 		if ($netnode) {
 			$netdevinfo['nodename'] = $netnode['name'];
 		}
