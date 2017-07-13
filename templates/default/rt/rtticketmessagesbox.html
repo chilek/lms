@@ -39,7 +39,7 @@
 				{foreach from=$ticket.messages item=message}
 				{if $message.type == $smarty.const.RTMESSAGE_REGULAR || $message.type == $smarty.const.RTMESSAGE_NOTE}
 				<THEAD>
-				<TR id="rtmessage-{$message.id}"{if $message.deleted == 1 && $message.deltime != 0} class="light lms-ui-rt-deleted"{/if}>
+				<TR id="rtmessage-{$message.id}"{if $message.deleted == 1 && $message.deltime != 0} class="light lms-ui-rtmessage-deleted"{/if}>
 					<TD style="width: 1%;" class="valign-top text-right bold nobr">
 						{$message.createtime|date_format:"%Y/%m/%d %H:%M"}
 					</TD>
@@ -104,7 +104,7 @@
 				</THEAD>
 				<TBODY>
 				<TR>
-					<TD colspan="4" {if $message.deleted == 1 && $message.deltime != 0} class="lucid lms-ui-rt-deleted fbt" {else} class="fbt superlight{if $message.type == $smarty.const.RTMESSAGE_NOTE} blend{/if}"{/if}>
+					<TD colspan="4" {if $message.deleted == 1 && $message.deltime != 0} class="lucid lms-ui-rtmessage-deleted fbt" {else} class="fbt superlight{if $message.type == $smarty.const.RTMESSAGE_NOTE} blend{/if}"{/if}>
 						{$message.body|escape|replace:"\n":"<BR>"}
 					</TD>
 				</TR>

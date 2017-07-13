@@ -473,10 +473,34 @@ input:invalid {
     }
 }
 
-.lms-ui-rt-deleted.light:not(:hover) { background-color: @red-light; }
-.lms-ui-rt-deleted.lucid:not(:hover) { background-color: @red-lucid; }
-.lms-ui-rt-partly-deleted.light { background-image: repeating-linear-gradient(145deg, transparent, transparent 10px, @red-light 10px, @red-light 20px); }
-.lms-ui-rt-partly-deleted.lucid { background-image: repeating-linear-gradient(145deg, transparent, transparent 10px, @red-lucid 10px, @red-lucid 20px); }
+.lms-ui-rt-deleted {
+	&.light {
+		&:not(:hover) {
+			background-color: @red-light;
+		}
+	}
+	&.lucid {
+		&:not(:hover) {
+			background-color: @red-lucid;
+		}
+	}
+}
+.lms-ui-rt-partly-deleted {
+	&.light {
+		background-image: repeating-linear-gradient(145deg, transparent, transparent 10px, @red-light 10px, @red-light 20px);
+	}
+	&.lucid {
+		background-image: repeating-linear-gradient(145deg, transparent, transparent 10px, @red-lucid 10px, @red-lucid 20px);
+	}
+}
+.lms-ui-rtmessage-deleted {
+	&.light {
+		background-color: @red-light;
+	}
+	&.lucid {
+		background-color: @red-lucid;
+	}
+}
 
 .lms-ui-multi-check-all {
 	.lms-ui-no-user-select;

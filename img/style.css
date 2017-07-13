@@ -627,6 +627,12 @@ input:invalid {
 .lms-ui-rt-partly-deleted.lucid {
   background-image: repeating-linear-gradient(145deg, transparent, transparent 10px, #fccdcd 10px, #fccdcd 20px);
 }
+.lms-ui-rtmessage-deleted.light {
+  background-color: #ffb1b1;
+}
+.lms-ui-rtmessage-deleted.lucid {
+  background-color: #fccdcd;
+}
 .lms-ui-multi-check-all {
   -webkit-user-select: none;
   -moz-user-select: none;
