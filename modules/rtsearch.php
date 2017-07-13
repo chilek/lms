@@ -88,7 +88,7 @@ function RTSearch($search, $order='createtime,desc')
 	if(isset($search['catids']))
 		$where[] = 'tc.categoryid IN ('.implode(',', $search['catids']).')';
 
-		if(!ConfigHelper::checkPrivilege('helpdesk_advanced_operation'))
+		if(!ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))
 		$where[] = 't.deleted = 0';
 	else
 	{

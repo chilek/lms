@@ -56,7 +56,7 @@ if ($ticket['customerid'] && ConfigHelper::checkConfig('phpui.helpdesk_stats')) 
 	//$del = 0;
 	$stats = $DB->GetAllByKey('SELECT COUNT(*) AS num, cause FROM rttickets 
 			    WHERE 1=1 '
-				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operation') ? 'AND rttickets.deleted = 0' : '')
+				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? 'AND rttickets.deleted = 0' : '')
 				. ('AND customerid = ? AND createtime >= ?')
 			    . ('GROUP BY cause'), 'cause', array($ticket['customerid'], $yearago));
 

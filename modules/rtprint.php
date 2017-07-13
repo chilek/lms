@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operation') && !ConfigHelper::checkPrivilege('reports'))
+if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') && !ConfigHelper::checkPrivilege('reports'))
 	access_denied();
 
 $type = isset($_GET['type']) ? $_GET['type'] : '';
@@ -51,7 +51,7 @@ switch($type)
 		else
 			$where[] = 'tc.categoryid IS NULL';
 
-			if(!ConfigHelper::checkPrivilege('helpdesk_advanced_operation'))
+			if(!ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))
 			$where[] = 'rttickets.deleted = 0';
 			else
 			{
@@ -157,7 +157,7 @@ switch($type)
     				$where[] = 'rttickets.state = '.intval($status);
 		}
 
-		if(!ConfigHelper::checkPrivilege('helpdesk_advanced_operation'))
+		if(!ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))
 			$where[] = 'rttickets.deleted = 0';
 			else
 			{

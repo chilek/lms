@@ -43,6 +43,9 @@ version ?.??.?? (????-??-??):
   - enhancement: added support for event <-> customer location assignment [chilan]
   - enhancement: allow to filter tariffs by tags in customer assignment forms [chilan]
   - improvement: added support for named state list in lms-teryt.php [chilan]
+  - improvement: added special user privilege which controls if helpdesk queues, tickets,
+    messages, notes are only archived (with permanent remove option) instead of removing
+    them [ravvar/chilan]
 
 version 1.11.22 (2017-06-08):
 

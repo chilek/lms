@@ -98,7 +98,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 break;
         }
 
-        if(!ConfigHelper::checkPrivilege('helpdesk_advanced_operation'))
+        if(!ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))
         $removedfilter = 'AND t.deleted = 0';
         else {
 	        switch ($removed) {
@@ -178,7 +178,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         if ($result = $this->db->GetAll('SELECT q.id, name, email, description, newticketsubject, newticketbody,
 				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody, deleted, deltime, deluserid
 				FROM rtqueues q'
-				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operation') ? ' JOIN rtrights r ON r.queueid = q.id
+				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' JOIN rtrights r ON r.queueid = q.id
 				WHERE r.rights <> 0 AND r.userid = ? AND q.deleted = ?' : '') . ' ORDER BY name', array($this->auth->id, $del))) {
             if ($stats)
                 foreach ($result as $idx => $row)
@@ -192,7 +192,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
 	$del = 0;
 	return $this->db->GetAll('SELECT q.id, name FROM rtqueues q'
-			. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operation') ? ' JOIN rtrights r ON r.queueid = q.id
+			. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' JOIN rtrights r ON r.queueid = q.id
 			WHERE r.rights <> 0 AND r.userid = ? AND q.deleted = ?' : '') . ' ORDER BY name', array($this->auth->id, $del));
     }
 
@@ -513,7 +513,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				LEFT JOIN vaddresses va ON va.id = t.address_id
 				LEFT JOIN vnodes n ON n.id = t.nodeid
 				WHERE 1=1 '
-				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operation') ? ' AND t.deleted = 0' : '')
+				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' AND t.deleted = 0' : '')
 				. ('AND t.id = ?'), array($id));
 
         $ticket['categories'] = $this->db->GetAllByKey('SELECT categoryid AS id FROM rtticketcategories WHERE ticketid = ?', 'id', array($id));
@@ -526,7 +526,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				LEFT JOIN customers ON (customers.id = customerid)
 				LEFT JOIN vusers ON (vusers.id = userid)
 				WHERE 1=1 '
-				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operation') ? 'AND rtmessages.deleted = 0' : '')
+				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? 'AND rtmessages.deleted = 0' : '')
 				. ('AND ticketid = ?)')
 				.('ORDER BY createtime ASC'), array($id));
 
