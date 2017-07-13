@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if (!ConfigHelper::checkConfig('privileges.superuser') && !ConfigHelper::checkConfig('privileges.reports'))
+if (!ConfigHelper::checkPrivilege('superuser') && !ConfigHelper::checkPrivilege('helpdesk_extend_operation') && !ConfigHelper::checkPrivilege('reports'))
 	access_denied();
 
 $type = isset($_GET['type']) ? $_GET['type'] : '';
@@ -51,7 +51,7 @@ switch($type)
 		else
 			$where[] = 'tc.categoryid IS NULL';
 
-		if(!ConfigHelper::checkConfig('privileges.superuser'))
+			if(!ConfigHelper::checkPrivilege('superuser') && !ConfigHelper::checkPrivilege('helpdesk_extend_operation'))
 			$where[] = 'rttickets.deleted = 0';
 			else
 			{
@@ -157,7 +157,7 @@ switch($type)
     				$where[] = 'rttickets.state = '.intval($status);
 		}
 
-		if(!ConfigHelper::checkConfig('privileges.superuser'))
+		if(!ConfigHelper::checkPrivilege('superuser') && !ConfigHelper::checkPrivilege('helpdesk_extend_operation'))
 			$where[] = 'rttickets.deleted = 0';
 			else
 			{

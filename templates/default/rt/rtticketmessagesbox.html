@@ -79,18 +79,18 @@
 						{/if}
 
 						{if $message.type == $smarty.const.RTMESSAGE_NOTE}
-							{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkConfig('privileges.superuser'))}
-								<A href="?m=rtnotedel&amp;id={$message.id}&amp;naction=restore" onClick="return confirmLink(this,'{trans("Are you sure, you want to restore that message?")}');"><IMG src="img/reload.gif" alt=""> {trans("Restore<!RT>")}</A>
-								<A href="?m=rtnotedel&amp;id={$message.id}&amp;naction=delperm" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete permanently")}</A>
+							{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('superuser') || ConfigHelper::checkPrivilege('helpdesk_extend_operation'))}
+								<A href="?m=rtrestore&amp;id={$message.id}&amp;maction=restore" onClick="return confirmLink(this,'{trans("Are you sure, you want to restore that message?")}');"><IMG src="img/reload.gif" alt=""> {trans("Restore<!RT>")}</A>
+								<A href="?m=rtremove&amp;id={$message.id}&amp;maction=delperm" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete permanently")}</A>
 							{else}
-								<A href="?m=rtnotedel&amp;id={$message.id}&amp;naction=delete" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
+								<A href="?m=rtmessagedel&amp;id={$message.id}&amp;maction=delete" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
 							{/if}
 						{else}
 							<A href="?m=rtmessageview&amp;id={$message.id}"><IMG src="img/view.gif" alt=""> {trans("Details")}</A>
 							{if $msgidx > 0}
-								{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkConfig('privileges.superuser'))}
-								<A href="?m=rtmessagedel&amp;id={$message.id}&amp;maction=restore" onClick="return confirmLink(this,'{trans("Are you sure, you want to restore that message?")}');"><IMG src="img/reload.gif" alt=""> {trans("Restore<!RT>")}</A>
-								<A href="?m=rtmessagedel&amp;id={$message.id}&amp;maction=delperm" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete permanently")}</A>
+								{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('superuser') || ConfigHelper::checkPrivilege('helpdesk_extend_operation'))}
+								<A href="?m=rtrestore&amp;id={$message.id}&amp;maction=restore" onClick="return confirmLink(this,'{trans("Are you sure, you want to restore that message?")}');"><IMG src="img/reload.gif" alt=""> {trans("Restore<!RT>")}</A>
+								<A href="?m=rtremove&amp;id={$message.id}&amp;maction=delperm" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete permanently")}</A>
 								{else}
 								<A href="?m=rtmessagedel&amp;id={$message.id}&amp;maction=delete" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete")}</A>
 								{/if}
