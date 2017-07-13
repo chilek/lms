@@ -76,7 +76,7 @@ lms-teryt.php
 -m, --merge                        try join current addresses with teryt locations
 -d, --delete                       delete downloaded teryt files after merge/update
 -b, --buildings                    analyze building base and load it into database
--l, --list                         state ids who will be taken into account
+-l, --list                         state names or ids who will be taken into account
 -o, --only-unique-city-matches     update TERYT location only if city matches uniquely
 
 EOF;
@@ -278,23 +278,46 @@ define('BUILDING_BASE_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-fil
 
 $only_unique_city_matches = isset($options['only-unique-city-matches']);
 
+$all_states = array(
+	'dolnoslaskie' => 2,
+	'kujawsko-pomorskie' => 4,
+	'lubelskie' => 6,
+	'lubuskie' => 8,
+	'lodzkie' => 10,
+	'malopolskie' => 12,
+	'mazowieckie' => 14,
+	'opolskie' => 16,
+	'podkarpackie' => 18,
+	'podlaskie' => 20,
+	'pomorskie' => 22,
+	'slaskie' => 24,
+	'swietokrzyskie' => 26,
+	'warmińsko-mazurskie' => 28,
+	'wielkopolskie' => 30,
+	'zachodniopomorskie' => 32,
+);
+
 $states = ConfigHelper::getConfig('teryt.state_list', '', true);
 $teryt_dir = ConfigHelper::getConfig('teryt.dir', '', true);
-if (!empty($states)) {
-	if (!preg_match('/^([0-9]+,?)+$/', $states)) {
-		fwrite($stderr, "Invalid state list format in ini file!" . PHP_EOL);
-		die;
-	}
-	$states = explode(',', $states);
-	$state_list = array_combine($states, array_fill(0, count($states), '1'));
-}
 
-if ( isset($options['list']) ) {
-	if (!preg_match('/^([0-9]+,?)+$/', $options['list'])) {
-		fwrite($stderr, "Invalid state list format entered in command line!" . PHP_EOL);
-		die;
+$state_lists = array();
+if (!empty($states))
+	$state_lists[$states] = "Invalid state list format in ini file!";
+if (isset($options['list']))
+	$state_lists[$options['list']] = "Invalid state list format entered in command line!";
+foreach ($state_lists as $states => $error_message) {
+	$states = explode(',', $states);
+	foreach ($states as &$state) {
+		if (preg_match('/^[0-9]+$/', $state))
+			continue;
+		$state = iconv('UTF-8', 'ASCII//TRANSLIT', $state);
+		if (!isset($all_states[$state])) {
+			fwrite($stderr,  $error_message . PHP_EOL);
+			die;
+		}
+		$state = $all_states[$state];
 	}
-	$states = explode(',', $options['list']);
+	unset($state);
 	$state_list = array_combine($states, array_fill(0, count($states), '1'));
 }
 
