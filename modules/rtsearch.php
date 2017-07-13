@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -88,7 +88,7 @@ function RTSearch($search, $order='createtime,desc')
 	if(isset($search['catids']))
 		$where[] = 'tc.categoryid IN ('.implode(',', $search['catids']).')';
 
-	if(!ConfigHelper::checkConfig('privileges.superuser'))
+		if(!ConfigHelper::checkPrivilege('helpdesk_advanced_operation'))
 		$where[] = 't.deleted = 0';
 	else
 	{

@@ -100,7 +100,7 @@
 					<TD width="10%" nowrap>
 					</TD>
 				</TR>
-				{if ConfigHelper::checkConfig('privileges.superuser')}
+				{if ConfigHelper::checkPrivilege('helpdesk_advanced_operation')}
 				<TR>
 					<TD style="width: 1%;">
 						<IMG src="img/dead.gif" alt="">
@@ -218,7 +218,7 @@
 						<B>{t a="<INPUT TYPE=\"text\" NAME=\"times\" SIZE=\"3\">" b="<INPUT TYPE=\"text\" NAME=\"days\" SIZE=\"3\">"}Customers requesting more than $a times in last $b days{/t}</B>
 					</TD>
 				</TR>
-				{if ConfigHelper::checkConfig('privileges.superuser')}
+				{if ConfigHelper::checkPrivilege('helpdesk_advanced_operation')}
 				<TR>
 					<TD style="width: 1%;">
 						<IMG src="img/dead.gif" alt="">
