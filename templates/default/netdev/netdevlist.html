@@ -143,6 +143,8 @@
 		</TD>
 	</TR>
 	{/section}
+    </TBODY>
+	<TFOOT>
 	{if $listdata.total != 0}
 	<TR>
 		<TD class="pagination" colspan="6">
@@ -155,7 +157,7 @@
 			{trans("Total:")} {$listdata.total|default:"0"}
 		</td>
 	</TR>
-    </TBODY>
+	</TFOOT>
 </TABLE>
 </FORM>
 {/block}
