@@ -42,6 +42,7 @@ version ?.??.?? (????-??-??):
     location as selected ticket customer location are displayed) [chilan]
   - enhancement: added support for event <-> customer location assignment [chilan]
   - enhancement: allow to filter tariffs by tags in customer assignment forms [chilan]
+  - improvement: added support for named state list in lms-teryt.php [chilan]
 
 version 1.11.22 (2017-06-08):
 
