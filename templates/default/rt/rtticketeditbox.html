@@ -18,7 +18,7 @@
 		<TD style="width: 100%;">
 			<TABLE width="100%" cellpadding="0">
 				<TR>
-					<TD style="width: 50%;">
+					<TD class="valign-top" style="width: 50%;">
 						<TABLE>
 							<TR>
 								<TD style="width: 1%;" class="bold nobr">
@@ -36,11 +36,11 @@
 								</TD>
 								<TD style="width: 99%;" class="nobr">
 									{if !$ticket.customerid}
-									{$ticket.requestor|escape} 
-									{if $ticket.requestoremail}
-									&lt;<A href="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;
-									{/if}
-									<BR>
+										{$ticket.requestor|escape}
+										{if $ticket.requestoremail}
+											&lt;<A href="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;
+											<BR>
+										{/if}
 									{/if}
 									<span class="nobr">
 									{customerlist form="ticket" customers=$customerlist selected=$ticket.customerid selectname="ticket[customerid]" inputname="ticket[custid]" customOnChange="change_customer();"}
