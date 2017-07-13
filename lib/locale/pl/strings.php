@@ -3704,4 +3704,6 @@ $_LANG['Customer count'] = 'Liczba klientów';
 $_LANG['Assignment count'] = 'Liczba zobowiązań';
 $_LANG['Active assignment count'] = 'Liczba aktywnych zobowiązań';
 
+$_LANG['(from network node)'] = '(z węzła sieciowego)';
+
 ?>

@@ -96,20 +96,25 @@
 		        {$netdevinfo.takenports}
 		</TD>
 	</TR>
-	{if $netdevinfo.location}
+	{if $netdevinfo.location || ($netdevinfo.netnodeid && $netdevinfo.netnode.location)}
 	<TR>
-		<TD WIDTH="1%">
+		<TD>
 			<IMG SRC="img/home.gif" ALT="">
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
-		        <B>{trans("Location:")}</B>
+		<TD class="bold nobr">
+			{trans("Location:")}
 		</TD>
-		<TD WIDTH="98%">
-		        {$netdevinfo.location}{if $netdevinfo.borough_name} ({$netdevinfo.state_name} / {$netdevinfo.district_name} / {$_BOROUGHTYPES[$netdevinfo.borough_type]} {$netdevinfo.borough_name}){/if}
+		<TD>
+			{if $netdevinfo.location}
+			{$netdevinfo.location}{if $netdevinfo.borough_name} ({$netdevinfo.state_name} / {$netdevinfo.district_name} / {$_BOROUGHTYPES[$netdevinfo.borough_type]} {$netdevinfo.borough_name}){/if}
+			{else}
+			{$netdevinfo.netnode.location}{if $netdevinfo.netnode.location_borough_name} ({$netdevinfo.netnode.location_state_name} / {$netdevinfo.netnode.location_district_name} / {$_BOROUGHTYPES[$netdevinfo.netnode.borough_type]} {$netdevinfo.netnode.location_borough_name}){/if}
+			{trans("(from network node)")}
+			{/if}
 		</TD>
 	</TR>
 	{/if}
-	{if $netdevinfo.longitude || $netdevinfo.latitude}
+	{if $netdevinfo.longitude || $netdevinfo.latitude || ($netdevinfo.netnodeid && ($netdevinfo.netnode.longitude || $netdevinfo.netnode.latitude))}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/home.gif" ALT="">
@@ -118,8 +123,13 @@
 			<B>{trans("GPS longitude:")}</B>
 		</TD>
 		<TD WIDTH="98%">
+			{if empty($netdevinfo.longitude)}
+			<INPUT ID="longitude" TYPE="hidden" VALUE="{$netdevinfo.netnode.longitude}">
+			{$netdevinfo.netnode.longitude}&nbsp;{trans("(from network node)")}
+			{else}
 			<INPUT ID="longitude" TYPE="hidden" VALUE="{$netdevinfo.longitude}">
 			{$netdevinfo.longitude}
+			{/if}
 		</TD>
 	</TR>
 	<TR>
@@ -130,8 +140,13 @@
 			<B>{trans("GPS latitude:")}</B>
 		</TD>
 		<TD WIDTH="98%">
+			{if empty($netdevinfo.latitude)}
+			<INPUT ID="longitude" TYPE="hidden" VALUE="{$netdevinfo.netnode.latitude}">
+			{$netdevinfo.netnode.latitude}&nbsp;{trans("(from network node)")}
+			{else}
 			<INPUT ID="latitude" TYPE="hidden" VALUE="{$netdevinfo.latitude}">
 			{$netdevinfo.latitude}
+			{/if}
 		</TD>
 	</TR>
 	<TR>
@@ -295,7 +310,7 @@
 			{trans("Net node:")}
 		</TD>
 		<TD>
-			<a href="?m=netnodeinfo&id={$netdevinfo.netnodeid}" class="bold">{$netdevinfo.nodename}</a>
+			<a href="?m=netnodeinfo&id={$netdevinfo.netnodeid}" class="bold">{$netdevinfo.netnode.name}</a>
 		</TD>
 	</TR>
 	{/if}

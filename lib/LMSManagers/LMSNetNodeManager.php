@@ -28,7 +28,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 
 	public function GetNetNode($id) {
 		return $this->db->GetRow("SELECT n.*, p.name AS projectname,
-				addr.name as location_name, addr.id as address_id,
+				addr.location, addr.name as location_name, addr.id as address_id,
 				addr.state as location_state_name, addr.state_id as location_state,
 				lb.name AS location_borough_name, lb.id AS location_borough, lb.type AS location_borough_type,
 				ld.name AS location_district_name, ld.id AS location_district,
@@ -38,7 +38,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 				addr.house as location_house, addr.flat as location_flat,
 				d.shortname AS division
 			FROM netnodes n
-				LEFT JOIN addresses addr ON n.address_id = addr.id
+				LEFT JOIN vaddresses addr ON n.address_id = addr.id
 				LEFT JOIN invprojects p ON n.invprojectid = p.id
 				LEFT JOIN divisions d ON d.id = n.divisionid
 				LEFT JOIN location_cities lc ON lc.id = addr.city_id
