@@ -79,7 +79,7 @@
 						{/if}
 
 						{if $message.type == $smarty.const.RTMESSAGE_NOTE}
-							{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('superuser') || ConfigHelper::checkPrivilege('helpdesk_extend_operation'))}
+							{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operation'))}
 								<A href="?m=rtrestore&amp;id={$message.id}&amp;maction=restore" onClick="return confirmLink(this,'{trans("Are you sure, you want to restore that message?")}');"><IMG src="img/reload.gif" alt=""> {trans("Restore<!RT>")}</A>
 								<A href="?m=rtremove&amp;id={$message.id}&amp;maction=delperm" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete permanently")}</A>
 							{else}
@@ -88,7 +88,7 @@
 						{else}
 							<A href="?m=rtmessageview&amp;id={$message.id}"><IMG src="img/view.gif" alt=""> {trans("Details")}</A>
 							{if $msgidx > 0}
-								{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('superuser') || ConfigHelper::checkPrivilege('helpdesk_extend_operation'))}
+								{if $message.deleted == 1 && $message.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operation'))}
 								<A href="?m=rtrestore&amp;id={$message.id}&amp;maction=restore" onClick="return confirmLink(this,'{trans("Are you sure, you want to restore that message?")}');"><IMG src="img/reload.gif" alt=""> {trans("Restore<!RT>")}</A>
 								<A href="?m=rtremove&amp;id={$message.id}&amp;maction=delperm" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that message?")}');"><IMG src="img/delete.gif" alt=""> {trans("Delete permanently")}</A>
 								{else}
