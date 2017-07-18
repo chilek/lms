@@ -105,6 +105,8 @@ if(isset($_POST['queue']))
 	$queue = $LMS->GetQueue($_GET['id']);
 	$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 	$queuecategories = $LMS->GetQueueCategories($_GET['id']);
+	if (empty($categories))
+		$categories = array();
 	foreach ($categories as &$category)
 		if (isset($queuecategories[$category['id']]))
 			$category['checked'] = 1;
