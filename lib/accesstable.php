@@ -72,8 +72,8 @@ $access_table = array(
 		'label' => trans('Helpdesk (RT) operation'),
 		'allow_regexp' => '^(rtsearch|rtqueue(list|info|view)|(rtticket|rtmessage|rtnote)(add|edit|info|view|del|print))$',
 	),
-	'helpdesk_advanced_operations' => array(
-			'label' => trans('Helpdesk (RT) advanced operations'),
+	'helpdesk_advanced_operation' => array(
+			'label' => trans('Helpdesk (RT) advanced operation'),
 			'allow_regexp' => '^(rtremove|rtrestore)$',
 	),
 	'hosting_management' => array(
