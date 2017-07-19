@@ -46,6 +46,7 @@ version ?.??.?? (????-??-??):
   - improvement: added special user privilege which controls if helpdesk queues, tickets,
     messages, notes are only archived (with permanent remove option) instead of removing
     them [ravvar/chilan]
+  - enhancement: tax rate reverse charge flag support added (JPK generators use it) [chilan]
 
 version 1.11.22 (2017-06-08):
 
