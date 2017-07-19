@@ -97,41 +97,46 @@
     </THEAD>
     <TBODY>
 	{cycle values="light,lucid" print=false}
-	{section name=nlist loop=$nlist start=$start max=$pagelimit}
+	{$prev_item=null}
+	{foreach $nlist as $item}
+	{if $item@iteration < $start || $item@iteration >= $start+$pagelimit}
+	{continue}
+	{/if}
+	{if $prev_item && $prev_item.ownerid && $prev_item.ownerid == $item.ownerid}{cycle print=false}{/if}
 	<TR class="highlight {cycle}">
-		<TD onClick="return self.location.href='?m=netnodeinfo&id={$nlist[nlist].id}';" class="valign-top">
-			<IMG src="img/netdev.gif" ALT=""> <a name="{$nlist[nlist].id}"><span class="bold">{$nlist[nlist].name}</span></A><BR>
-			<IMG src="img/producer.gif" ALT=""> {$_NETELEMENTTYPES[$nlist[nlist].type]} / {$_NETELEMENTSTATUSES[$nlist[nlist].status]}
+		<TD onClick="return self.location.href='?m=netnodeinfo&id={$item.id}';" class="valign-top">
+			<IMG src="img/netdev.gif" ALT=""> <a name="{$item.id}"><span class="bold">{$item.name}</span></A><BR>
+			<IMG src="img/producer.gif" ALT=""> {$_NETELEMENTTYPES[$item.type]} / {$_NETELEMENTSTATUSES[$item.status]}
 		</TD>
 		<TD class="nobr">
-			{$nlist[nlist].location}
-			{if $nlist[nlist].location_borough_name}
+			{$item.location}
+			{if $item.location_borough_name}
 				<div class="blend">
-				({$nlist[nlist].location_state_name} / {$nlist[nlist].location_district_name} / {$_BOROUGHTYPES[$nlist[nlist].location_borough_type]} {$nlist[nlist].location_borough_name})
+				({$item.location_state_name} / {$item.location_district_name} / {$_BOROUGHTYPES[$item.location_borough_type]} {$item.location_borough_name})
 				</div>
 			{/if}
 		</TD>
 		<TD>
-			{if ($nlist[nlist].invprojectid==1)} DD {else} {$nlist[nlist].project} {/if}
+			{if ($item.invprojectid==1)} DD {else} {$item.project} {/if}
 		</TD>
-		<TD onClick="return self.location.href='?m=netnodeinfo&id={$nlist[nlist].id}';" class="text-right">
-			({$nlist[nlist].id|string_format:"%04d"})
+		<TD onClick="return self.location.href='?m=netnodeinfo&id={$item.id}';" class="text-right">
+			({$item.id|string_format:"%04d"})
 		</TD>
-		<TD onClick="return self.location.href='?m=netnodeinfo&id={$nlist[nlist].id}';" class="nobr">
+		<TD onClick="return self.location.href='?m=netnodeinfo&id={$item.id}';" class="nobr">
 		</TD>
 		<TD class="text-right nobr" colspan="2">
-			<a href="?m=netnodedel&id={$nlist[nlist].id}" onClick="return confirmLink(this, '{t a=$nlist[nlist].name}Are you sure, you want to remove net device node \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<a href="?m=netnodeedit&id={$nlist[nlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<a href="?m=netnodeinfo&id={$nlist[nlist].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+			<a href="?m=netnodedel&id={$item.id}" onClick="return confirmLink(this, '{t a=$item.name}Are you sure, you want to remove net device node \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<a href="?m=netnodeedit&id={$item.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<a href="?m=netnodeinfo&id={$item.id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
 		</TD>
 	</TR>
-	{if $nlist[nlist.index_next].ownerid == $nlist[nlist].ownerid && $listdata.order == "owner"}{cycle print=false}{/if}
-	{sectionelse}
+	{$prev_item=$item}
+	{foreachelse}
 	<TR>
 		<TD colspan="7" class="empty-table">
 			<p>{trans("There are no device nodes in your database.")}</p>
 		</TD>
-	{/section}
+	{/foreach}
 	</TBODY>
 	<TR>
 		<TD class="pagination text-center" colspan="6">
