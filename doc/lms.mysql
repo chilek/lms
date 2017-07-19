@@ -1194,6 +1194,7 @@ CREATE TABLE taxes (
     label varchar(16) NOT NULL DEFAULT '',
     validfrom int(11) NOT NULL DEFAULT '0',
     validto int(11) NOT NULL DEFAULT '0',
+	reversecharge tinyint(1) NOT NULL DEFAULT '0',
     PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
@@ -2918,4 +2919,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017071100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017071900');

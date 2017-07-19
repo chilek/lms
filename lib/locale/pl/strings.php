@@ -3707,4 +3707,8 @@ $_LANG['Active assignment count'] = 'Liczba aktywnych zobowiązań';
 
 $_LANG['(from network node)'] = '(z węzła sieciowego)';
 
+$_LANG['Reverse charge:'] = 'Odwrócone obciążenie:';
+$_LANG['Check if reverse charge should be applied'] = 'Zaznacz, jeśli ma zostać zastosowane odrócone obciążenie';
+$_LANG['$a rc'] = '$a oo';
+
 ?>

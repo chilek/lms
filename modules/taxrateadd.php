@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -83,11 +83,12 @@ if(sizeof($taxrateadd))
 			'label' => $taxrateadd['label'],
 			'value' => $taxrateadd['value'],
 			'taxed' => $taxrateadd['taxed'],
+			'reversecharge' => isset($taxrateadd['reversecharge']) ? intval($taxrateadd['reversecharge']) : 0,
 			'validfrom' => $validfrom,
 			'validto' => $validto,
 		);
-		$DB->Execute('INSERT INTO taxes (label, value, taxed, validfrom, validto) 
-				VALUES (?,?,?,?,?)', array_values($args));
+		$DB->Execute('INSERT INTO taxes (label, value, taxed, reversecharge, validfrom, validto)
+				VALUES (?,?,?,?,?,?)', array_values($args));
 
 		if ($SYSLOG) {
 			$args[SYSLOG::RES_TAX] = $DB->GetLastInsertID('taxes');

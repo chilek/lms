@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -98,14 +98,15 @@ if(sizeof($taxrateedit))
 
 	if (!$error) {
 		$args = array(
-			'label' => $taxrateedit['label'], 
+			'label' => $taxrateedit['label'],
 			'value' => $taxrateedit['value'],
 			'taxed' => $taxrateedit['taxed'],
+			'reversecharge' => isset($taxrateedit['reversecharge']) ? intval($taxrateedit['reversecharge']) : 0,
 			'validfrom' => $validfrom,
 			'validto' => $validto,
 			SYSLOG::RES_TAX => $taxrateedit['id']
 		);
-		$DB->Execute('UPDATE taxes SET label=?, value=?, taxed=?,validfrom=?,validto=? WHERE id=?',
+		$DB->Execute('UPDATE taxes SET label=?, value=?, taxed=?, reversecharge=?, validfrom=?,validto=? WHERE id=?',
 			array_values($args));
 
 		if ($SYSLOG)
