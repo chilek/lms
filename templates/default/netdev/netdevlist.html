@@ -90,16 +90,17 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{section name=netdevlist loop=$netdevlist start=$start max=$pagelimit}
-	<TR class="highlight {cycle}">
-		<TD onClick="return self.location.href='?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}';" VALIGN="TOP">
-			<IMG src="img/netdev.gif" ALT=""> <a name="{$netdevlist[netdevlist].id}"><B>{$netdevlist[netdevlist].name}</B></A><BR>
+	<TR class="highlight {cycle}" onClick="return self.location.href='?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}';">
+		<TD class="valign-top">
+			<IMG src="img/netdev.gif" ALT=""> <a href="?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}" name="{$netdevlist[netdevlist].id}"><B>{$netdevlist[netdevlist].name}</B></A><BR>
 			{if $netdevlist[netdevlist].producer}
-				<IMG src="img/producer.gif" ALT=""> {$netdevlist[netdevlist].producer} {if $netdevlist[netdevlist].model}/ {$netdevlist[netdevlist].model}{/if}
+				<IMG src="img/producer.gif" ALT="">
+				{$netdevlist[netdevlist].producer} {if $netdevlist[netdevlist].model}/ {$netdevlist[netdevlist].model}{/if}
 			{else}
 				<br>
 			{/if}
 		</TD>
-		<TD onClick="return self.location.href='?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}';" class="nobr valign-top">
+		<TD class="nobr valign-top">
 			{if $netdevlist[netdevlist].location}
 				{$netdevlist[netdevlist].location}
 				{if $netdevlist[netdevlist].borough_name}
@@ -118,13 +119,13 @@
 
 			{/if}
 		</TD>
-		<TD onClick="return self.location.href='?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}';" class="nobr valign-top">
+		<TD class="nobr valign-top">
 			{if $netdevlist[netdevlist].netnode}<a href="?m=netnodeinfo&amp;id={$netdevlist[netdevlist].netnodeid}">{$netdevlist[netdevlist].netnode}</a>{/if}
 		</TD>
-		<TD onClick="return self.location.href='?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}';" align="right" VALIGN="TOP">
+		<TD class="text-right valign-top">
 			({$netdevlist[netdevlist].id|string_format:"%04d"})
 		</TD>
-		<TD onClick="return self.location.href='?m=netdevinfo&amp;id={$netdevlist[netdevlist].id}';" NOWRAP>
+		<TD class="nobr">
 			<IMG src="img/port.gif" ALT=""> {$netdevlist[netdevlist].ports} ({$netdevlist[netdevlist].takenports})<BR>
 			<IMG src="img/serialnumber.gif" ALT=""> {$netdevlist[netdevlist].serialnumber}
 		</TD>
