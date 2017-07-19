@@ -315,9 +315,9 @@ switch($action)
 			$fullnumber = null;
 
 		if ( !empty($invoice['recipient_address_id']) ) {
-			$invocie['recipient_address_id'] = $LMS->CopyAddress($invoice['recipient_address_id']);
+			$invoice['recipient_address_id'] = $LMS->CopyAddress($invoice['recipient_address_id']);
 		} else {
-			$invocie['recipient_address_id'] = null;
+			$invoice['recipient_address_id'] = null;
 		}
 
 		$args = array(
