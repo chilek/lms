@@ -754,7 +754,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
 
             if ($result['content'] = $this->db->GetAll('SELECT invoicecontents.value AS value,
-						itemid, taxid, (CASE WHEN taxes.taxed = 0 THEN -1 ELSE taxes.value END) AS taxvalue, taxes.label AS taxlabel,
+						itemid, taxid, (CASE WHEN taxes.reversecharge = 1 THEN -2 ELSE (
+								CASE WHEN taxes.taxed = 0 THEN -1 ELSE taxes.value END
+							) END) AS taxvalue, taxes.label AS taxlabel,
 						prodid, content, count, invoicecontents.description AS description,
 						tariffid, itemid, pdiscount, vdiscount
 						FROM invoicecontents
@@ -768,7 +770,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $row['count'] += $result['invoice']['content'][$idx]['count'];
                     }
 
-					if ($row['taxvalue'] == -1)
+					if ($row['taxvalue'] < 0)
 						$taxvalue = 0;
 					else
 						$taxvalue = $row['taxvalue'];

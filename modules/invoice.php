@@ -333,6 +333,10 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 						$jpk_data .= "\t\t<K_20>" . str_replace(',', '.', sprintf('%.2f', $invoice['taxest']['23.00']['tax']
 							- $invoice['invoice']['taxest']['23.00']['tax'])) . "</K_20>\n";
 					}
+
+					if (isset($invoice['taxest']['-2']))
+						$jpk_data .= "\t\t<K_31>" . str_replace(',', '.', sprintf('%.2f', $invoice['taxest']['-2']['base']
+							- $invoice['invoice']['taxest']['-2']['base'])) . "</K_31>\n";
 				} else {
 					if (isset($invoice['taxest']['-1'])) {
 						if ($ue || $foreign) {
@@ -369,6 +373,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 						$jpk_data .= "\t\t<K_19>" . str_replace(',', '.', sprintf('%.2f', $invoice['taxest']['23.00']['base'])) . "</K_19>\n";
 						$jpk_data .= "\t\t<K_20>" . str_replace(',', '.', sprintf('%.2f', $invoice['taxest']['23.00']['tax'])) . "</K_20>\n";
 					}
+
+					if (isset($invoice['taxest']['-2']))
+						$jpk_data .= "\t\t<K_31>" . str_replace(',', '.', sprintf('%.2f', $invoice['taxest']['-2']['base'])) . "</K_31>\n";
 				}
 
 				/*
@@ -474,7 +481,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 				}
 				$jpk_data .= "\t\t<P_16>false</P_16>\n";
 				$jpk_data .= "\t\t<P_17>false</P_17>\n";
-				$jpk_data .= "\t\t<P_18>false</P_18>\n";
+				$jpk_data .= "\t\t<P_18>" . (isset($invoice['taxest']['-2']['base']) ? 'true' : 'false') . "</P_18>\n";
 				$jpk_data .= "\t\t<P_19>false</P_19>\n";
 				$jpk_data .= "\t\t<P_20>false</P_20>\n";
 				$jpk_data .= "\t\t<P_21>false</P_21>\n";
@@ -549,8 +556,12 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 						$jpk_data .="\t\t<P_9A>" . str_replace(',', '.', sprintf('%.2f', $position['basevalue'])) . "</P_9A>\n";
 						$jpk_data .="\t\t<P_11>" . str_replace(',', '.', sprintf('%.2f', $position['totalbase'])) . "</P_11>\n";
 					}
-					$jpk_data .="\t\t<P_12>" . ($position['taxvalue'] == -1 ? 'zw' : str_replace(',', '.', round($position['taxvalue'])))
-						. "</P_12>\n";
+					if ($position['taxvalue'] >= 0)
+						$jpk_data .= "\t\t<P_12>" . str_replace(',', '.', round($position['taxvalue'])) . "</P_12>\n";
+					elseif ($position['taxvalue'] == -1)
+						$jpk_data .= "\t\t<P_12>zw</P_12>\n";
+					else
+						$jpk_data .= "\t\t<P_12>0</P_12>\n";
 					$jpk_data .="\t</FakturaWiersz>\n";
 					$positions++;
 				}
