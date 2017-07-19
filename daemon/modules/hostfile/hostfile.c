@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -354,8 +354,8 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		g->str_replace(&query, "%custjoin", hm->join_customers ?
 			"LEFT JOIN customers c ON (c.id = n.ownerid) " : "");
 		g->str_replace(&query, "%devjoin", hm->join_devices ? 
-			"LEFT JOIN netdevices d ON (d.id = n.netdev) " : "");
-		g->str_replace(&query, "%devloc", hm->join_devices ? "d.location" : "''");
+			"LEFT JOIN netdevices d ON (d.id = n.netdev) LEFT JOIN vaddresses va ON va.id = d.address_id " : "");
+		g->str_replace(&query, "%devloc", hm->join_devices ? "va.location" : "''");
 		g->str_replace(&query, "%custcols", hm->join_customers ?
 			", c.id AS cid, TRIM(%cfullname) AS customer " : "");
 
