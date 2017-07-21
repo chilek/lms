@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,8 +24,9 @@
  *  $Id$
  */
 
-if ($doc = $DB->GetRow('SELECT number, cdate, template, extnumber, paytime, paytype, customerid
-	FROM documents 
+if ($doc = $DB->GetRow('SELECT number, cdate, template, extnumber, paytime, paytype, customerid,
+		documents.type
+	FROM documents
 	LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 	WHERE documents.id = ?', array($_GET['id']))){
 		$doc['ntempl'] = docnumber(array(

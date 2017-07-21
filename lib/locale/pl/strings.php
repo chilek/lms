@@ -3608,6 +3608,8 @@ $_LANG['Are you sure, you want to remove pro forma invoice \\\'$a\\\' from datab
 $_LANG['Pro Forma Invoice No. $a for $b'] = 'Faktura pro forma nr $a dla $b';
 $_LANG['Convert to invoice'] = 'Przekształć w fakturę';
 $_LANG['Conversion Pro Forma Invoice $a To Invoice'] = 'Przekształcanie faktury pro forma $a w fakturę';
+$_LANG['About pro forma invoice:'] = 'O fakturze pro forma:';
+$_LANG['About invoice:'] = 'O fakturze:';
 
 $_LANG['Change the format of presentation of the MAC address.'] = 'Zmień format prezentacji adresu MAC.';
 
