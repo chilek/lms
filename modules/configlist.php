@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -305,6 +305,14 @@ function GetConfigList() {
 
 				case 'logout_confirmation':
 					$config[$idx]['description'] = trans('If set to "true" then logout confirmation is required. Default "false"');
+				break;
+
+				case 'helpdesk_msgsubject':
+					$config[$idx]['description'] = trans('Temaplate for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id');
+				break;
+
+				case 'helpdesk_msgbody':
+					$config[$idx]['description'] = trans('Temaplate for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id ; %url - ticket url');
 				break;
 
 				default:

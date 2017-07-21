@@ -228,16 +228,37 @@ if(isset($_POST['message']))
 
 			$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
 
+			$ticketdata = $LMS->GetTicketContents($message['ticketid']);
+			$ticketcat = $LMS->GetTicketCategories($message['ticketid']);
+			foreach ($ticketcat as $tcat)
+				$tcatname = $tcatname . $tcat['name'] .' ; ';
+
+			$helpdesk_msgsubject = ConfigHelper::getConfig('phpui.helpdesk_msgsubject');
+			$helpdesk_msgsubject = str_replace('%tid', str_pad($message['ticketid'],6,"0",STR_PAD_LEFT), $helpdesk_msgsubject);
+			$helpdesk_msgsubject = str_replace('%cid', str_pad($message['customerid'],4,"0",STR_PAD_LEFT), $helpdesk_msgsubject);
+			$helpdesk_msgsubject = str_replace('%status', $ticketdata['status'], $helpdesk_msgsubject);
+			$helpdesk_msgsubject = str_replace('%cat', $tcatname, $helpdesk_msgsubject);
+
 			$headers['From'] = $mailfname.' <'.$mailfrom.'>';
-			$headers['Subject'] = sprintf("[RT#%06d] %s", $message['ticketid'], $DB->GetOne('SELECT subject FROM rttickets WHERE id = ?', array($message['ticketid'])));
+// 			$headers['Subject'] = sprintf("[RT#%06d] %s", $message['ticketid'], $DB->GetOne('SELECT subject FROM rttickets WHERE id = ?', array($message['ticketid'])));
+			$headers['Subject'] = $helpdesk_msgsubject .' # '.$message['subject'];
 			$headers['Reply-To'] = $headers['From'];
 
+			$helpdesk_msgbody = ConfigHelper::getConfig('phpui.helpdesk_msgbody');
+			$helpdesk_msgbody = str_replace('%tid', str_pad($message['ticketid'],6,"0",STR_PAD_LEFT), $helpdesk_msgbody);
+			$helpdesk_msgbody = str_replace('%cid', str_pad($message['customerid'],4,"0",STR_PAD_LEFT), $helpdesk_msgbody);
+			$helpdesk_msgbody = str_replace('%status', $ticketdata['status'], $helpdesk_msgbody);
+			$helpdesk_msgbody = str_replace('%cat', $tcatname, $helpdesk_msgbody);
+			$url = 'http'
+					.(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
+					.$_SERVER['HTTP_HOST']
+					.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
+					.'?m=rtticketview&id=' . $message['ticketid'] . (isset($msgid) ? '#rtmessage-' . $msgid : '');
+			$helpdesk_msgbody = str_replace('%url', $url, $helpdesk_msgbody);
+
+			$body = $helpdesk_msgbody ."\n\n".$message['body'];
+
 			$sms_body = $headers['Subject']."\n".$message['body'];
-			$body = $message['body']."\n\nhttp"
-				.(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
-				.$_SERVER['HTTP_HOST']
-				.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
-				. '?m=rtticketview&id=' . $message['ticketid'] . (isset($msgid) ? '#rtmessage-' . $msgid : '');
 
 			if ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($message['ticketid']))) {
 				$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
@@ -404,8 +425,6 @@ else
 				$message['body'] .= '> '.$line."\n";
 		}
 
-		if(!preg_match('/\[RT#[0-9]{6}\]/i', $message['subject'])) 
-			$message['subject'] .= sprintf(' [RT#%06d]', $message['ticketid']); 
 	} else {
 		$reply = $LMS->GetFirstMessage($_GET['ticketid']);
 		$message['inreplyto'] = $reply['id'];

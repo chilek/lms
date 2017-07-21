@@ -741,4 +741,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			JOIN rtcategories c ON c.id = qc.categoryid
 			WHERE queueid = ?', 'id', array($queueid));
 	}
+
+	public function GetTicketCategories($ticketid) {
+		return $this->db->GetAllByKey('SELECT c.id, c.name
+			FROM rtticketcategories tc
+			JOIN rtcategories c ON c.id = tc.categoryid
+			WHERE ticketid = ?', 'id', array($ticketid));
+	}
 }

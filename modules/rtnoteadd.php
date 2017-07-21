@@ -105,20 +105,41 @@ elseif(isset($_POST['note']))
 
 			$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
 
+			$ticketdata = $LMS->GetTicketContents($note['ticketid']);
+			$ticketcat = $LMS->GetTicketCategories($note['ticketid']);
+			foreach ($ticketcat as $tcat)
+				$tcatname = $tcatname . $tcat['name'] .' ; ';
+
+			$helpdesk_msgsubject = ConfigHelper::getConfig('phpui.helpdesk_msgsubject');
+			$helpdesk_msgsubject = str_replace('%tid', str_pad($note['ticketid'],6,"0",STR_PAD_LEFT), $helpdesk_msgsubject);
+			$helpdesk_msgsubject = str_replace('%cid', str_pad($ticketdata['customerid'],4,"0",STR_PAD_LEFT), $helpdesk_msgsubject);
+			$helpdesk_msgsubject = str_replace('%status', $ticketdata['status'], $helpdesk_msgsubject);
+			$helpdesk_msgsubject = str_replace('%cat', $tcatname, $helpdesk_msgsubject);
+
 			$headers['From'] = $mailfname.' <'.$mailfrom.'>';
-			$headers['Subject'] = sprintf("[RT#%06d] %s", $note['ticketid'], $DB->GetOne('SELECT subject FROM rttickets WHERE id = ?', array($note['ticketid'])));
+			$headers['Subject'] = $helpdesk_msgsubject .' # ';
+// 			$headers['Subject'] = sprintf("[RT#%06d] %s", $note['ticketid'], $DB->GetOne('SELECT subject FROM rttickets WHERE id = ?', array($note['ticketid'])));
 			$headers['Reply-To'] = $headers['From'];
 			if ($note['references']) {
 				$headers['References'] = explode(' ', $note['references']);
 				$headers['In-Reply-To'] = array_pop(explode(' ', $note['references']));
 			}
 
+			$helpdesk_msgbody = ConfigHelper::getConfig('phpui.helpdesk_msgbody');
+			$helpdesk_msgbody = str_replace('%tid', str_pad($note['ticketid'],6,"0",STR_PAD_LEFT), $helpdesk_msgbody);
+			$helpdesk_msgbody = str_replace('%cid', str_pad($ticket['customerid'],4,"0",STR_PAD_LEFT), $helpdesk_msgbody);
+			$helpdesk_msgbody = str_replace('%status', $ticketdata['status'], $helpdesk_msgbody);
+			$helpdesk_msgbody = str_replace('%cat', $tcatname, $helpdesk_msgbody);
+			$url = 'http'
+					.(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
+							.$_SERVER['HTTP_HOST']
+							.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
+							.'?m=rtticketview&id=' . $note['ticketid'] . (isset($msgid) ? '#rtmessage-' . $msgid : '');
+			$helpdesk_msgbody = str_replace('%url', $url, $helpdesk_msgbody);
+
+			$body = $helpdesk_msgbody ."\n\n". $note['body'];
+
 			$sms_body = $headers['Subject']."\n".$note['body'];
-			$body = $note['body']."\n\nhttp"
-				.(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
-				.$_SERVER['HTTP_HOST']
-				.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
-				. '?m=rtticketview&id=' . $note['ticketid'] . (isset($msgid) ? '#rtmessage-' . $msgid : '');
 
 			if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
 				&& ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($note['ticketid'])))) {
