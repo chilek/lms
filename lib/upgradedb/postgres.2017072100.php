@@ -23,9 +23,11 @@
 
 $this->BeginTrans();
 
-$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'helpdesk_msgsubject', 'Status: %status / Kategorie: %cat / Zgłoszenie: %tid / IDklienta: %cid'));
+$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'helpdesk_notification_mail_subject', 'Status: %status / Kategorie: %cat / ID zgłoszenia: %tid / ID klienta: %cid'));
 
-$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'helpdesk_msgbody', 'Status: %status / Kategorie: %cat / Zgłoszenie: %tid / IDklienta: %cid / URL: %url'));
+$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'helpdesk_notification_mail_body', 'Status: %status / Kategorie: %cat / ID zgłoszenia: %tid / ID klienta: %cid / URL: %url'));
+
+$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'helpdesk_notification_sms_body', 'Status: %status / Kategorie: %cat / ID zgłoszenia: %tid / ID klienta: %cid'));
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017072100', 'dbversion'));
 

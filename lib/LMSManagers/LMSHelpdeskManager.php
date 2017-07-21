@@ -516,7 +516,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' AND t.deleted = 0' : '')
 				. ('AND t.id = ?'), array($id));
 
-        $ticket['categories'] = $this->db->GetAllByKey('SELECT categoryid AS id FROM rtticketcategories WHERE ticketid = ?', 'id', array($id));
+//         $ticket['categories'] = $this->db->GetAllByKey('SELECT categoryid AS id FROM rtticketcategories WHERE ticketid = ?', 'id', array($id));
+        $ticket['categories'] = $this->db->GetAllByKey('SELECT categoryid AS id, c.name
+								FROM rtticketcategories tc
+								JOIN rtcategories c ON c.id = tc.categoryid
+								WHERE ticketid = ?', 'id', array($id));
 
         $ticket['messages'] = $this->db->GetAll(
                 '(SELECT rtmessages.id AS id, phonefrom, mailfrom, subject, body, createtime, '
@@ -740,12 +744,5 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			FROM rtqueuecategories qc
 			JOIN rtcategories c ON c.id = qc.categoryid
 			WHERE queueid = ?', 'id', array($queueid));
-	}
-
-	public function GetTicketCategories($ticketid) {
-		return $this->db->GetAllByKey('SELECT c.id, c.name
-			FROM rtticketcategories tc
-			JOIN rtcategories c ON c.id = tc.categoryid
-			WHERE ticketid = ?', 'id', array($ticketid));
 	}
 }

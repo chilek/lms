@@ -299,7 +299,7 @@ function GetConfigList() {
 					$config[$idx]['description'] = trans('Default ping type. You can use "1" for ping or "2" for arping. Default: 1.');
 				break;
 				
-                                case 'default_teryt_city':
+				case 'default_teryt_city':
 					$config[$idx]['description'] = trans('Default City in TERYT. Set city id in TERYT.');
 				break;
 
@@ -307,12 +307,16 @@ function GetConfigList() {
 					$config[$idx]['description'] = trans('If set to "true" then logout confirmation is required. Default "false"');
 				break;
 
-				case 'helpdesk_msgsubject':
+				case 'helpdesk_notification_mail_subject':
 					$config[$idx]['description'] = trans('Temaplate for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id');
 				break;
 
-				case 'helpdesk_msgbody':
+				case 'helpdesk_notification_mail_body':
 					$config[$idx]['description'] = trans('Temaplate for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id ; %url - ticket url');
+				break;
+
+				case 'helpdesk_notification_sms_body':
+					$config[$idx]['description'] = trans('Temaplate for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id');
 				break;
 
 				default:
