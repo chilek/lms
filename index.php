@@ -178,7 +178,7 @@ $layout['smarty_version'] = SMARTY_VERSION;
 $layout['hostname'] = hostname();
 $layout['lmsv'] = $LMS->_version;
 $layout['lmsvr'] = $LMS->_revision;
-$layout['dberrors'] = $DB->GetErrors();
+$layout['dberrors'] = &$DB->GetErrors();
 $layout['dbdebug'] = isset($_DBDEBUG) ? $_DBDEBUG : false;
 $layout['popup'] = isset($_GET['popup']) ? true : false;
 

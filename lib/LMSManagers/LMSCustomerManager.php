@@ -220,7 +220,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $result = array();
 
         $result['list'] = $this->db->GetAll(
-            'SELECT cash.id AS id, time, cash.type AS type,
+            '(SELECT cash.id AS id, time, cash.type AS type,
                 cash.value AS value, taxes.label AS tax, cash.customerid AS customerid,
                 comment, docid, vusers.name AS username,
                 documents.type AS doctype, documents.closed AS closed,
@@ -230,9 +230,20 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             LEFT JOIN documents ON documents.id = docid
             LEFT JOIN taxes ON cash.taxid = taxes.id
             WHERE cash.customerid = ?'
-            . ($totime ? ' AND time <= ' . intval($totime) : '')
-            . ' ORDER BY time ' . $direction . ', cash.id',
-            array($id)
+            . ($totime ? ' AND time <= ' . intval($totime) : '') . ')
+            UNION
+            (SELECT ic.itemid AS id, d.cdate AS time, 0 AS type,
+            		-ic.value, NULL AS tax, d.customerid,
+            		ic.description AS comment, d.id AS docid, vusers.name AS username,
+            		d.type AS doctype, d.closed AS closed,
+            		d.published, NULL AS importid
+            	FROM documents d
+            	JOIN invoicecontents ic ON ic.docid = d.id
+            	LEFT JOIN vusers ON vusers.id = d.userid
+            	WHERE d.customerid = ? AND d.type = ?'
+            	. ($totime ? ' AND d.cdate <= ' . intval($totime) : '') . ')
+            ORDER BY time ' . $direction . ', id',
+            array($id, $id, DOC_INVOICE_PRO)
         );
 
         if (!empty($result['list'])) {
@@ -241,8 +252,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
             foreach ($result['list'] as &$row) {
                 $row['customlinks'] = array();
-                $row['after'] = round($result['balance'] + $row['value'], 2);
-                $result['balance'] += $row['value'];
+				if ($row['doctype'] == DOC_INVOICE_PRO)
+					$row['after'] = $result['balance'];
+				else {
+					$row['after'] = round($result['balance'] + $row['value'], 2);
+					$result['balance'] += $row['value'];
+				}
                 $row['date'] = date('Y/m/d H:i', $row['time']);
             }
 
