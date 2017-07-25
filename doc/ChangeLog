@@ -48,6 +48,9 @@ version ?.??.?? (????-??-??):
     them [ravvar/chilan]
   - enhancement: tax rate reverse charge flag support added (JPK generators use it) [chilan]
   - improvement: show invoice pro forma items in customer balance box [chilan]
+  - enhancement: phpui.proforma_invoice_generates_commitment configuration variable
+    ('false' by default) controls if related cash records are created for proforma
+    invoices [chilan]
 
 version 1.11.22 (2017-06-08):
 
