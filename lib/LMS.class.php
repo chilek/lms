@@ -1551,6 +1551,12 @@ class LMS
         return $manager->GetQueueCategories($queueid);
     }
 
+    public function GetTicketCategories($ticketid)
+    {
+	$manager = $this->getHelpdeskManager();
+	return $manager->GetTicketCategories($ticketid);
+    }
+
     public function GetMessage($id)
     {
         $manager = $this->getHelpdeskManager();

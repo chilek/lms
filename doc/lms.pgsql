@@ -2567,6 +2567,9 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui', 'helpdesk_backend_mode', 'false', '', 0),
 ('phpui', 'helpdesk_sender_name', '', '', 0),
 ('phpui', 'helpdesk_reply_body', 'false', '', 0),
+('phpui', 'helpdesk_notification_mail_subject', 'Status: %status / Kategorie: %cat / ID zgłoszenia: %tid / ID klienta: %cid', '', 0),
+('phpui', 'helpdesk_notification_mail_body', 'Status: %status / Kategorie: %cat / ID zgłoszenia: %tid / ID klienta: %cid / URL: %url', '', 0),
+('phpui', 'helpdesk_notification_sms_body', 'Status: %status / Kategorie: %cat / ID zgłoszenia: %tid / ID klienta: %cid', '', 0),
 ('phpui', 'use_invoices', 'false', '', 0),
 ('phpui', 'ticket_template_file', 'rtticketprint.html', '', 0),
 ('phpui', 'use_current_payday', 'false', '', 0),
@@ -2980,6 +2983,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017071900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017072100');
 
 COMMIT;

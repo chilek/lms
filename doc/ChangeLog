@@ -47,7 +47,12 @@ version ?.??.?? (????-??-??):
     messages, notes are only archived (with permanent remove option) instead of removing
     them [ravvar/chilan]
   - enhancement: tax rate reverse charge flag support added (JPK generators use it) [chilan]
+  - improvement: phpui.helpdesk_msgsubject and phpui.helpdesk_msgbody configurtion variables
+    control additional information in helpdesk ticket notice via templates [ravvar/chilan]
   - improvement: show invoice pro forma items in customer balance box [chilan]
+  - improvement: helpdesk_notification_mail_subject, helpdesk_notification_mail_body
+    and helpdesk_notification_sms_body configurtion variables control additional information
+    in helpdesk ticket notice via templates [ravvar/chilan]
 
 version 1.11.22 (2017-06-08):
 
