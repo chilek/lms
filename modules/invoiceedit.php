@@ -428,8 +428,7 @@ switch($action)
 				}
 			}
 			$DB->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($iid));
-			if ($invoice['doctype'] == DOC_INVOICE)
-				$DB->Execute('DELETE FROM cash WHERE docid = ?', array($iid));
+			$DB->Execute('DELETE FROM cash WHERE docid = ?', array($iid));
 
 			$itemid=0;
 			foreach ($contents as $idx => $item) {
@@ -456,7 +455,8 @@ switch($action)
 					$SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);
 				}
 
-				if ($invoice['doctype'] == DOC_INVOICE || $invoice['proforma'] == 'convert')
+				if ($invoice['doctype'] == DOC_INVOICE || ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')
+					|| $invoice['proforma'] == 'convert')
 					$LMS->AddBalance(array(
 						'time' => $cdate,
 						'value' => $item['valuebrutto']*$item['count']*-1,
@@ -467,7 +467,7 @@ switch($action)
 						'itemid' => $itemid
 						));
 			}
-		} elseif ($invoice['doctype'] == DOC_INVOICE) {
+		} elseif ($invoice['doctype'] == DOC_INVOICE || ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')) {
 			if ($SYSLOG) {
 				$cashids = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($iid));
 				foreach ($cashids as $cashid) {

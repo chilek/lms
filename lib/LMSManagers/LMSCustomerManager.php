@@ -240,7 +240,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             	FROM documents d
             	JOIN invoicecontents ic ON ic.docid = d.id
             	LEFT JOIN vusers ON vusers.id = d.userid
-            	WHERE d.customerid = ? AND d.type = ?'
+            	WHERE ' . (ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment') ? '1=0 AND' : '')
+            	. ' d.customerid = ? AND d.type = ?'
             	. ($totime ? ' AND d.cdate <= ' . intval($totime) : '') . ')
             ORDER BY time ' . $direction . ', id',
             array($id, $id, DOC_INVOICE_PRO)
@@ -252,7 +253,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
             foreach ($result['list'] as &$row) {
                 $row['customlinks'] = array();
-				if ($row['doctype'] == DOC_INVOICE_PRO)
+				if ($row['doctype'] == DOC_INVOICE_PRO && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment'))
 					$row['after'] = $result['balance'];
 				else {
 					$row['after'] = round($result['balance'] + $row['value'], 2);

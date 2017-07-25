@@ -607,7 +607,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $this->syslog->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);
             }
 
-			if ($type != DOC_INVOICE_PRO)
+			if ($type != DOC_INVOICE_PRO || ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment'))
 				$this->AddBalance(array(
 					'time' => $cdate,
 					'value' => $item['valuebrutto'] * $item['count'] * -1,
