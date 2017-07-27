@@ -264,6 +264,21 @@ if (isset($_POST['customeradd'])) {
 		$customeradd = $reuse;
 		$customeradd['reuse'] = '1';
 	}
+} else {
+	$customeradd['emails'] = array(
+		0 => array(
+			'contact' => '',
+			'name' => '',
+			'type' => CONTACT_LANDLINE
+		)
+	);
+	$customeradd['phones'] = array(
+		0 => array(
+			'contact' => '',
+			'name' => '',
+			'type' => ''
+		)
+	);
 }
 
 if (!isset($customeradd['cutoffstopindefinitely']))
