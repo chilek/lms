@@ -82,15 +82,13 @@
 						<td colspan="2">
 						</td>
 						<td>
-							<div style="float: left; padding-right: 5px;">
-								<label>
-									<input type="checkbox" name="assignment[alltariffs]" {tip text="Check if all tariffs should be displayed" trigger="alltariffs"}{if $assignment.alltariffs} checked{/if}>
-									{trans("show all tariffs")}
-								</label>
-								{if !empty($tags)}
-								&nbsp;&nbsp;{trans("Tags:")}
-								{/if}
-							</div>
+							<label>
+								<input type="checkbox" name="assignment[alltariffs]" {tip text="Check if all tariffs should be displayed" trigger="alltariffs"}{if $assignment.alltariffs} checked{/if}>
+								{trans("show all tariffs")}
+							</label>
+							{if !empty($tags)}
+							&nbsp;&nbsp;{trans("Tags:")}
+							{/if}
 							<SELECT size="5" id="assignment-tags" name="assignment[tags][]" class="lms-ui-multiselect" {tip text="Select tariff tags"} multiple onchange="javascript:update_tariffs();"{if empty($tags)} style="display: none;"{/if}>
 								{foreach $tags as $tag}
 								<OPTION value="{$tag.id}">{$tag.name}</OPTION>
