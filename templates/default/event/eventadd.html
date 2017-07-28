@@ -185,6 +185,7 @@ $(function() {
 				<OPTION value="{$user.id}"{if !empty($event.userlist) && in_array($user.id, $event.userlist)} selected{/if}>{$user.rname}</OPTION>
 				{/foreach}
 			</SELECT>
+			<br>
 			<label>
 				<input type="radio" name="event[usergroup]" id="usergroup_0" value="0" onChange="xajax_getUsersForGroup(0)"{if empty($event.usergroup)} checked{/if}>
 				{trans("All users")}<br>
