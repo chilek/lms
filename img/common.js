@@ -446,6 +446,7 @@ function multiselect(options) {
 				value: box.val(),
 				checked: box.is(':checked')
 			});
+			e.stopPropagation();
 		});
 		// TODO: keyboard events
 	});
