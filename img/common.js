@@ -384,11 +384,13 @@ function multiselect(options) {
 	new_element.data('data-multiselect-object', this)
 		.attr('style', old_element.attr('style'));
 	// save onchange event handler
-	if (typeof(onchange = old_element.prop('onchange')) == 'function')
+	var onchange = old_element.prop('onchange');
+	if (typeof(onchange) == 'function')
 		new_element.on('change', onchange);
 	// save onitemclick event handler
-	if (typeof(itemclick = old_element.prop('onitemclick')) == 'function')
-		new_element.on('itemclick', onchange);
+	var itemclick = old_element.prop('onitemclick');
+	if (typeof(itemclick) == 'function')
+		new_element.on('itemclick', itemclick);
 
 	// replace select with multiselect
 	old_element.replaceWith(new_element);
