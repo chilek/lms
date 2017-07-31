@@ -377,7 +377,8 @@ function multiselect(options) {
 			$(this).prop('selected') ? 1 : 0;
 	});
 
-	var old_selected = new_selected = generateSelectedString(elem);
+	var new_selected = generateSelectedString(elem);
+	var old_selected = new_selected;
 	if (!tiny)
 		new_element.html(old_selected);
 
