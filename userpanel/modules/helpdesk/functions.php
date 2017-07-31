@@ -72,7 +72,7 @@ if (defined('USERPANEL_SETUPMODE')) {
 }
 
 function module_main() {
-	global $SMARTY, $LMS, $SESSION;
+	global $SMARTY, $LMS, $SESSION , $RT_STATES;
 
 	$DB = LMSDB::getInstance();
 
@@ -176,14 +176,43 @@ function module_main() {
 				else
 					$mailfrom =  $ticket['mailfrom'];
 
+				$ticketdata = $LMS->GetTicketContents($id);
+				foreach ($ticketdata[categories] as $tcat)
+					$tcatname = $tcatname . $tcat['name'] .' ; ';
+
+				$helpdesk_notification_mail_subject = ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject');
+				$helpdesk_notification_mail_subject = str_replace('%tid', sprintf("%06d",$id), $helpdesk_notification_mail_subject);
+				$helpdesk_notification_mail_subject = str_replace('%cid', sprintf("%04d",$id['customerid']), $helpdesk_notification_mail_subject);
+				$helpdesk_notification_mail_subject = str_replace('%status', $RT_STATES[$ticketdata['state']], $helpdesk_notification_mail_subject);
+				$helpdesk_notification_mail_subject = str_replace('%cat', $tcatname, $helpdesk_notification_mail_subject);
+
 				$headers['Date'] = date('r');
 				$headers['From'] = $mailfname.' <'.$mailfrom.'>';
-				$headers['Subject'] = sprintf("[RT#%06d] %s", $id, $ticket['subject']);
+				$headers['Subject'] = $helpdesk_notification_mail_subject .' '.$ticket['subject'];
 				$headers['Reply-To'] = $headers['From'];
 				$headers['Message-ID'] = $LMS->GetLastMessageID();
 
-				$sms_body = $headers['Subject']."\n".$ticket['body'];
-				$body = $ticket['body']."\n\n".ConfigHelper::getConfig('userpanel.lms_url').'/?m=rtticketview&id='.$id;
+				$helpdesk_notification_mail_body = ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body');
+				$helpdesk_notification_mail_body = str_replace('%tid', sprintf("%06d",$id), $helpdesk_notification_mail_body);
+				$helpdesk_notification_mail_body = str_replace('%cid', sprintf("%04d",$id['customerid']), $helpdesk_notification_mail_body);
+				$helpdesk_notification_mail_body = str_replace('%status', $RT_STATES[$ticketdata['state']], $helpdesk_notification_mail_body);
+				$helpdesk_notification_mail_body = str_replace('%cat', $tcatname, $helpdesk_notification_mail_body);
+				$url = 'http'
+						.(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
+						.$_SERVER['HTTP_HOST']
+						.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
+						.'?m=rtticketview&id='.$id;
+				$helpdesk_notification_mail_body = str_replace('%url', $url, $helpdesk_notification_mail_body);
+
+				$body = $ticket['body']."\n\n".$helpdesk_notification_mail_body;
+
+				$helpdesk_notification_sms_body = ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body');
+				$helpdesk_notification_sms_body = str_replace('%tid', sprintf("%06d",$id), $helpdesk_notification_sms_body);
+				$helpdesk_notification_sms_body = str_replace('%cid', sprintf("%04d",$id['customerid']), $helpdesk_notification_sms_body);
+				$helpdesk_notification_sms_body = str_replace('%status', $RT_STATES[$ticketdata['state']], $helpdesk_notification_sms_body);
+				$helpdesk_notification_sms_body = str_replace('%cat', $tcatname, $helpdesk_notification_sms_body);
+
+				$sms_body = $helpdesk_notification_sms_body."\n".$ticket['body'];
 
 				$info = $DB->GetRow('SELECT id AS customerid, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
 					address, zip, city FROM customeraddressview WHERE id = ?', array($SESSION->id));
@@ -203,21 +232,28 @@ function module_main() {
 						}
 
 				if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
-					$body .= "\n\n-- \n";
-					$body .= trans('Customer:').' '.$info['customername']."\n";
-					$body .= trans('ID:').' '.sprintf('%04d', $info['customerid'])."\n";
-					$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
+
+					$helpdesk_customerinfo_mail_body = ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body');
+					$helpdesk_customerinfo_mail_body = str_replace('%custname', $info['customername'], $helpdesk_customerinfo_mail_body);
+					$helpdesk_customerinfo_mail_body = str_replace('%cid', sprintf("%04d",$info['customerid']), $helpdesk_customerinfo_mail_body);
+					$helpdesk_customerinfo_mail_body = str_replace('%address', $info['address'] . ', ' . $info['zip'] . ' ' . $info['city'], $helpdesk_customerinfo_mail_body);
 					if (!empty($phones))
-						$body .= trans('Phone:') . ' ' . implode(', ', $phones) . "\n";
+						$helpdesk_customerinfo_mail_body = str_replace('%phone', implode(', ', $phones), $helpdesk_customerinfo_mail_body);
 					if (!empty($emails))
-						$body .= trans('E-mail:') . ' ' . implode(', ', $emails);
+						$helpdesk_customerinfo_mail_body = str_replace('%email', implode(', ', $emails), $helpdesk_customerinfo_mail_body);
+
+					$body .= "\n\n-- \n";
+					$body .= $helpdesk_customerinfo_mail_body;
+
+					$helpdesk_customerinfo_sms_body = ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body');
+					$helpdesk_customerinfo_sms_body = str_replace('%custname', $info['customername'], $helpdesk_customerinfo_sms_body);
+					$helpdesk_customerinfo_sms_body = str_replace('%cid', sprintf("%04d",$info['customerid']), $helpdesk_customerinfo_sms_body);
+					$helpdesk_customerinfo_sms_body = str_replace('%address', $info['address'] . ', ' . $info['zip'] . ' ' . $info['city'], $helpdesk_customerinfo_sms_body);
+					if (!empty($phones))
+						$helpdesk_customerinfo_sms_body = str_replace('%phone', preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones)), $helpdesk_customerinfo_sms_body);
 
 					$sms_body .= "\n";
-					$sms_body .= trans('Customer:').' '.$info['customername'];
-					$sms_body .= ' '.sprintf('(%04d)', $info['customerid']).'. ';
-					$sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'].'. ';
-					if (!empty($phones))
-						$sms_body .= '. ' . trans('Phone:') . ' ' . preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones));
+					$sms_body .= $helpdesk_customerinfo_sms_body;
 				}
 
 				$queuedata = $LMS->GetQueue($ticket['queue']);
@@ -345,9 +381,19 @@ function module_main() {
 			else
 				$mailfrom = $ticket['mailfrom'];
 
+			$ticketdata = $LMS->GetTicketContents($ticket['id']);
+			foreach ($ticketdata[categories] as $tcat)
+				$tcatname = $tcatname . $tcat['name'] .' ; ';
+
+			$helpdesk_notification_mail_subject = ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject');
+			$helpdesk_notification_mail_subject = str_replace('%tid', sprintf("%06d",$ticket['id']), $helpdesk_notification_mail_subject);
+			$helpdesk_notification_mail_subject = str_replace('%cid', sprintf("%04d",$ticket['customerid']), $helpdesk_notification_mail_subject);
+			$helpdesk_notification_mail_subject = str_replace('%status', $RT_STATES[$ticketdata['state']], $helpdesk_notification_mail_subject);
+			$helpdesk_notification_mail_subject = str_replace('%cat', $tcatname, $helpdesk_notification_mail_subject);
+
 			$headers['Date'] = date('r');
 			$headers['From'] = $mailfname . ' <' . $mailfrom . '>';
-			$headers['Subject'] = sprintf("[RT#%06d] %s", $ticket['id'], $ticket['subject']);
+			$headers['Subject'] = $helpdesk_notification_mail_subject .' '.$ticket['subject'];
 			$headers['Reply-To'] = $headers['From'];
 			if ($ticket['references']) {
 				$headers['References'] = $ticket['references'];
@@ -355,8 +401,27 @@ function module_main() {
 			}
 			$headers['Message-ID'] = $ticket['messageid'];
 
-			$sms_body = $headers['Subject'] . "\n" . $ticket['body'];
-			$body = $ticket['body']."\n\n".ConfigHelper::getConfig('userpanel.lms_url') . '/?m=rtticketview&id=' . $ticket['id'];
+			$helpdesk_notification_mail_body = ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body');
+			$helpdesk_notification_mail_body = str_replace('%tid', sprintf("%06d",$ticket['id']), $helpdesk_notification_mail_body);
+			$helpdesk_notification_mail_body = str_replace('%cid', sprintf("%04d",$ticket['customerid']), $helpdesk_notification_mail_body);
+			$helpdesk_notification_mail_body = str_replace('%status', $ticketdata['status'], $helpdesk_notification_mail_body);
+			$helpdesk_notification_mail_body = str_replace('%cat', $tcatname, $helpdesk_notification_mail_body);
+			$url = 'http'
+					.(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
+					.$_SERVER['HTTP_HOST']
+					.substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
+					.'?m=rtticketview&id=' . $ticket['id'];
+			$helpdesk_notification_mail_body = str_replace('%url', $url, $helpdesk_notification_mail_body);
+
+			$body = $ticket['body']."\n\n".$helpdesk_notification_mail_body;
+
+			$helpdesk_notification_sms_body = ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body');
+			$helpdesk_notification_sms_body = str_replace('%tid', sprintf("%06d",$ticket['id']), $helpdesk_notification_sms_body);
+			$helpdesk_notification_sms_body = str_replace('%cid', sprintf("%04d",$ticket['customerid']), $helpdesk_notification_sms_body);
+			$helpdesk_notification_sms_body = str_replace('%status', $ticketdata['status'], $helpdesk_notification_sms_body);
+			$helpdesk_notification_sms_body = str_replace('%cat', $tcatname, $helpdesk_notification_sms_body);
+
+			$sms_body = $helpdesk_notification_sms_body."\n".$ticket['body'];
 
 			if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
 				$info = $DB->GetRow('SELECT c.id AS customerid, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,

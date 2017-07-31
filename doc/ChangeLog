@@ -53,6 +53,10 @@ version ?.??.?? (????-??-??):
     invoices [chilan]
   - enhancement: allow to view and search tickets from many queues and categories [chilan]
   - enhancement: allow to view and search events selecting many types and owners [chilan]
+  - improvement: helpdesk_notification_mail_subject, helpdesk_notification_mail_body
+    helpdesk_notification_sms_body, helpdesk_customerinfo_email_body and
+    helpdesk_customerinfo_sms_body configurtion variables control additional information
+    in helpdesk ticket notice via templates [ravvar/chilan]
 
 version 1.11.22 (2017-06-08):
 
