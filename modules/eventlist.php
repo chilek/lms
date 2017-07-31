@@ -64,11 +64,11 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 		LEFT JOIN vusers ON (userid = vusers.id)
 		WHERE ((date >= ? AND date < ?) OR (enddate <> 0 AND date < ? AND enddate >= ?)) AND ' . $privacy_condition
 		.($customerid ? ' AND customerid = '.intval($customerid) : '')
-		.($userid ? ' AND EXISTS (
+		.(!empty($userid) ? ' AND EXISTS (
 			SELECT 1 FROM eventassignments
-			WHERE eventid = events.id AND userid = '.intval($userid).'
+			WHERE eventid = events.id AND userid ' . (is_array($userid) ? 'IN (' . implode(',', array_filter($userid, 'intval')) . ')' : '=' . intval($userid)) . '
 			)' : '')
-		. ($type ? ' AND events.type = ' . intval($type) : '')
+		. (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', array_filter($type, 'intval')) . ')' : '=' . intval($type)) : '')
 		. ($closed != '' ? ' AND closed = ' . intval($closed) : '')
 		.' ORDER BY date, begintime',
 		 array($startdate, $enddate, $enddate, $startdate, $AUTH->id));

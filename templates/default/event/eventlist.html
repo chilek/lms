@@ -45,18 +45,16 @@
 				<INPUT type="HIDDEN" name="m" value="eventlist">
 				<span class="bold">{trans("Filter:")} </span>
 				{trans("Type:")}
-				<SELECT name="type" onchange="document.filter.submit();">
-					<OPTION value=""{if $listdata.type == ""} selected{/if}>{trans("- all -")}</OPTION>
+				<SELECT name="type[]" onchange="document.filter.submit();" class="lms-ui-multiselect" multiple>
 					{foreach $_EVENTTYPES as $id => $label}
-					<OPTION value="{$id}"{if $listdata.type == $id} selected{/if}>{$label}</OPTION>
+					<OPTION value="{$id}"{if in_array($id, $listdata.type)} selected{/if}>{$label}</OPTION>
 					{/foreach}
 				</SELECT>
 				{trans("User:")}
-				<SELECT size="1" name="a" OnChange="document.filter.submit();">
-					<OPTION value="0"{if $listdata.userid == ""} SELECTED{/if}>{trans("- all users -")}</OPTION>
-					{section name=userlist loop=$userlist}
-					    <OPTION value="{$userlist[userlist].id}"{if $userlist[userlist].id == $listdata.userid} SELECTED{/if}>{$userlist[userlist].name|truncate:40:"...":true}</OPTION>
-					{/section}
+				<SELECT size="1" name="a[]" OnChange="document.filter.submit();" class="lms-ui-multiselect" multiple>
+					{foreach $userlist as $user}
+					<OPTION value="{$user.id}"{if in_array($user.id, $listdata.userid)} SELECTED{/if}>{$user.name|truncate:40:"...":true}</OPTION>
+					{/foreach}
 				</SELECT>
 				{trans("Privacy:")}
 				<SELECT name="privacy" onchange="document.filter.submit();">
@@ -120,7 +118,7 @@
                                 </TD>
                                 <TD colspan="2" class="text-right nobr">
                                 	<div class="no-print">
-                                    <A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}&a={$listdata.userid}&closed={$listdata.closed}&privacy={$listdata.privacy}" target="_blank"><IMG src="img/print.gif" alt=""> {trans("Print")}</A>
+                                    <A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.customerid}{foreach $listdata.userid as $userid}&a[]={$userid}{/foreach}{foreach $listdata.type as $type}&t[]={$type}{/foreach}&closed={$listdata.closed}&privacy={$listdata.privacy}" target="_blank"><IMG src="img/print.gif" alt=""> {trans("Print")}</A>
                                     <A href="?m=eventadd&amp;day={$daylist[daylist]|date_format:"%d"}&amp;month={$daylist[daylist]|date_format:"%m"}&amp;year={$daylist[daylist]|date_format:"%Y"}"><IMG src="img/save.gif" alt=""> {trans("Add Event")}</A>&nbsp;
                                     </div>
                                 </TD>
