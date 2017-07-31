@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2014 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,32 +24,35 @@
  *  $Id$
  */
 
-if(isset($_GET['id']))
-	$queuedata['id'] = intval($_GET['id']);
-
-if(isset($_GET['catid']))
-	$queuedata['catid'] = intval($_GET['catid']);
-
-if(! $LMS->QueueExists($queuedata['id']) && $queuedata['id'] != 0)
-{
-	$SESSION->redirect('?m=rtqueuelist');
+if (isset($_GET['id'])) {
+	if (is_array($_GET['id']))
+		$queuedata['id'] = array_filter($_GET['id'], 'intval');
+	elseif (intval($_GET['id']))
+		$queuedata['id'] = array(intval($_GET['id']));
+	if (!isset($queuedata['id']) || empty($queuedata['id']))
+		$SESSION->redirect('?m=rtqueuelist');
+	if (isset($queuedata['id']))
+		$queuedata['id'] = array_filter($queuedata['id'], array($LMS, 'QueueExists'));
 }
 
+if (isset($_GET['catid'])) {
+	if (is_array($_GET['catid']))
+		$queuedata['catid'] = array_filter($_GET['catid'], 'intval');
+	elseif (intval($_GET['catid']))
+		$queuedata['catid'] = array(intval($_GET['catid']));
+}
 
-
-if($queuedata['id'])
-{
-	$right = $LMS->GetUserRightsRT($AUTH->id, $queuedata['id']);
-	if(!$right)
-	{
+if (!empty($queuedata['id'])) {
+	foreach ($queuedata['id'] as $queueidx => $queueid)
+		if (!$LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queueid))
+			unset($queuedata['id'][$queueidx]);
+	if (empty($queuedata['id'])) {
 		$SMARTY->display('noaccess.html');
 		$SESSION->close();
 		die;
 	}
-}
-else
-{
-	$queues = $DB->GetCol('SELECT queueid FROM rtrights WHERE userid=?', array($AUTH->id));
+} else {
+	$queues = $DB->GetCol('SELECT queueid FROM rtrights WHERE userid=?', array(Auth::GetCurrentUser()));
 
 	if (!$queues) {
 		$SMARTY->display('noaccess.html');
@@ -57,25 +60,22 @@ else
 		die;
 	}
 
-	if(sizeof($queues) != $DB->GetOne('SELECT COUNT(*) FROM rtqueues'))
+	if (count($queues) != $DB->GetOne('SELECT COUNT(*) FROM rtqueues'))
 		$queuedata['id'] = $queues;
 }
 
-if($queuedata['catid'])
-{
-	$catrights = $LMS->GetUserRightsToCategory($AUTH->id, $queuedata['catid']);
-
-	if(!$catrights)
-	{
+if (!empty($queuedata['catid'])) {
+	foreach ($queuedata['catid'] as $catidx => $catid)
+		if (!$LMS->GetUserRightsToCategory(Auth::GetCurrentUser(), $catid))
+			unset($queuedata['catid'][$catidx]);
+	if (empty($queuedata['catid'])) {
 		$SMARTY->display('noaccess.html');
 		$SESSION->close();
 		die;
 	}
-}
-else
-{
-	$categories = $DB->GetCol('SELECT categoryid FROM rtcategoryusers WHERE userid=?', array($AUTH->id));
-    $all_cat    = $DB->GetOne('SELECT COUNT(*) FROM rtcategories');
+} else {
+	$categories = $DB->GetCol('SELECT categoryid FROM rtcategoryusers WHERE userid=?', array(Auth::GetCurrentUser()));
+	$all_cat = $DB->GetOne('SELECT COUNT(*) FROM rtcategories');
 
 	if (!$categories && $all_cat) {
 		$SMARTY->display('noaccess.html');
@@ -83,7 +83,7 @@ else
 		die;
 	}
 
-	if(sizeof($categories) != $all_cat)
+	if (count($categories) != $all_cat)
 		$queuedata['catid'] = $categories;
 }
 
@@ -98,7 +98,6 @@ if(!isset($_GET['owner']))
 else
 	$owner = $_GET['owner'];
 $SESSION->save('rtowner', $owner);
-
 
 if(!isset($_GET['r']))
 	$SESSION->restore('rtr', $r);
@@ -116,8 +115,6 @@ $SESSION->save('rts', $s);
 
 $layout['pagetitle'] = trans('Tickets List');
 $queue = $LMS->GetQueueContents($queuedata['id'], $o, $s, $owner, $queuedata['catid'], $r);
-if(is_array($queuedata['id']))
-	$queuedata['id'] = 0;
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
@@ -138,22 +135,22 @@ unset($queue['direction']);
 unset($queue['owner']);
 unset($queue['removed']);
 
-$page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
+$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.ticketlist_pagelimit', $queuedata['total']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('rtp', $page);
 
 $queues = $LMS->GetQueueList(false);
-$categories = $LMS->GetCategoryListByUser($AUTH->id);
+$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 
 $SMARTY->assign('queues', $queues);
 $SMARTY->assign('categories', $categories);
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuedata', $queuedata);
-$SMARTY->assign('pagelimit',$pagelimit);
-$SMARTY->assign('page',$page);
-$SMARTY->assign('start',$start);
+$SMARTY->assign('pagelimit', $pagelimit);
+$SMARTY->assign('page', $page);
+$SMARTY->assign('start', $start);
 $SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->display('rt/rtqueueview.html');
 

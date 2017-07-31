@@ -136,7 +136,7 @@ function RTSearch($search, $order='createtime,desc')
 	return $result;
 }
 
-$categories = $LMS->GetCategoryListByUser($AUTH->id);
+$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 
 $layout['pagetitle'] = trans('Ticket Search');
 
@@ -148,8 +148,7 @@ elseif(isset($_GET['s']))
 if(isset($_GET['id']))
 	$search['custid'] = $_GET['id'];
 
-if(isset($_GET['state']))
-{
+if (isset($_GET['state']))
 	$search = array(
 		'state' => $_GET['state'],
 		'subject' => '',
@@ -160,8 +159,7 @@ if(isset($_GET['state']))
 		'queue' => '0',
 		'uptime' => '',
 		'catids' => NULL
-		);
-}
+	);
 
 if(!isset($_GET['o']))
 	$SESSION->restore('rto', $o);
@@ -178,7 +176,7 @@ if(isset($search) || isset($_GET['s']))
 	if(!isset($search['queue']) || $search['queue'] == 0)
 	{
 		// if user hasn't got rights for all queues...
-		$queues = $DB->GetCol('SELECT queueid FROM rtrights WHERE userid=?', array($AUTH->id));
+		$queues = $DB->GetCol('SELECT queueid FROM rtrights WHERE userid=?', array(Auth::GetCurrentUser()));
 		if(sizeof($queues) != $DB->GetOne('SELECT COUNT(*) FROM rtqueues'))
 			$search['queue'] = $queues;
 	}
@@ -186,11 +184,11 @@ if(isset($search) || isset($_GET['s']))
 		if (is_array($search['queue']))
 			foreach($search['queue'] as $queue)
 			{
-				if(!$LMS->GetUserRightsRT($AUTH->id, $queue))
+				if(!$LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queue))
 					$error['queue'] = trans('You have no privileges to review this queue!');
 			}
 		else
-			if(!$LMS->GetUserRightsRT($AUTH->id, $search['queue']))
+			if(!$LMS->GetUserRightsRT(Auth::GetCurrentUser(), $search['queue']))
 				$error['queue'] = trans('You have no privileges to review this queue!');
 
 	if(!isset($search['categories']))

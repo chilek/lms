@@ -24,57 +24,57 @@
 	</TR>
 	<TR>
 		<TD colspan="6">
-		    <TABLE cellpadding="0" cellspacing="0">
+		    <TABLE cellpadding="0" cellspacing="0" width="100%">
 			<TR>
-			    <TD width="1%" class="nobr">
-			    <FORM method="GET" action="?m=rtqueueview" name="filter">
-				<INPUT type="submit" class="hiddenbtn">
-				<INPUT type="HIDDEN" name="m" value="rtqueueview">
-				<INPUT type="HIDDEN" name="page" value="1">
-				<B>{trans("Filter:")}</B>
-				{trans("Queue:")}
-				<SELECT size="1" name="id" OnChange="document.filter.submit();">
-					<OPTION value="">- {trans("all")} -</OPTION>
-					{foreach from=$queues item=q}
-					<OPTION value="{$q.id}"{if $queuedata.id == $q.id} SELECTED{/if}>{$q.name}</OPTION>
-					{/foreach}
-				</SELECT>&nbsp;
-				{trans("Category:")}
-				<SELECT size="1" name="catid" OnChange="document.filter.submit();">
-					<OPTION value="">- {trans("all")} -</OPTION>
-					{foreach from=$categories item=q}
-					<OPTION value="{$q.id}"{if $queuedata.catid == $q.id} SELECTED{/if}>{$q.name}</OPTION>
-					{/foreach}
-				</SELECT>&nbsp;
-				{trans("Status:")}
-				<SELECT size="1" name="s" OnChange="document.filter.submit();">
-					<OPTION value=""{if $queuedata.state == ""} SELECTED{/if}>- {trans("all")} -</OPTION>
-					<OPTION value="0"{if $queuedata.state == "0"} SELECTED{/if}>{trans("new")}</OPTION>
-					<OPTION value="1"{if $queuedata.state == "1"} SELECTED{/if}>{trans("opened")}</OPTION>
-					<OPTION value="2"{if $queuedata.state == "2"} SELECTED{/if}>{trans("resolved")}</OPTION>
-					<OPTION value="3"{if $queuedata.state == "3"} SELECTED{/if}>{trans("dead")}</OPTION>
-					<OPTION value="-1"{if $queuedata.state == "-1"} SELECTED{/if}>{trans("not resolved")}</OPTION>
-				</SELECT>&nbsp;
-				{trans("Owner:")}
-				<SELECT size="1" name="owner" OnChange="document.filter.submit();">
-				        <OPTION value="">{trans("- all users -")}</OPTION>
-					{section name="users" loop=$users}
-					 <OPTION value="{$users[users].id}"{if $users[users].id == $queuedata.owner} SELECTED{/if}>{$users[users].name|truncate:40:"...":true}</OPTION>
-					{/section}
-				</SELECT>&nbsp;
-				{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
-				{trans("Removed:")}
-				<SELECT size="1" name="r" OnChange="document.filter.submit();">
-					<OPTION value=""{if $queuedata.removed == ""} SELECTED{/if}>- {trans("all")} -</OPTION>
-					<OPTION value="-1"{if $queuedata.removed == "-1"} SELECTED{/if}>{trans("Not removed")}</OPTION>
-					<OPTION value="1"{if $queuedata.removed == "1"} SELECTED{/if}>{trans("Removed")}</OPTION>
-				</SELECT>&nbsp;
-				{/if}
-			    </FORM>
-			    </TD>
-			    <TD width="98%" class="text-right">
-				<A HREF="?m=rtticketadd&id={$queuedata.id}"><IMG src="img/save.gif" ALT=""> {trans("New Ticket")}</A>
-			    </TD>
+				<TD width="1%" class="nobr">
+					<FORM method="GET" action="?m=rtqueueview" name="filter">
+					<INPUT type="submit" class="hiddenbtn">
+					<INPUT type="HIDDEN" name="m" value="rtqueueview">
+					<INPUT type="HIDDEN" name="page" value="1">
+					<span class="bold">{trans("Filter:")}</span>
+					{trans("Queue:")}
+					<SELECT size="1" name="id[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect">
+						{foreach $queues as $q}
+						<OPTION value="{$q.id}"{if in_array($q.id, $queuedata.id)} SELECTED{/if}>{$q.name}</OPTION>
+						{/foreach}
+					</SELECT>&nbsp;
+					{trans("Category:")}
+					<SELECT size="1" name="catid[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect">
+						{foreach $categories $c}
+						<OPTION value="{$c.id}"{if in_array($c.id, $queuedata.catid)} SELECTED{/if}>{$c.name}</OPTION>
+						{/foreach}
+					</SELECT>&nbsp;
+					{trans("Status:")}
+					<SELECT size="1" name="s" OnChange="document.filter.submit();">
+						<OPTION value=""{if $queuedata.state == ""} SELECTED{/if}>- {trans("all")} -</OPTION>
+						<OPTION value="0"{if $queuedata.state == "0"} SELECTED{/if}>{trans("new")}</OPTION>
+						<OPTION value="1"{if $queuedata.state == "1"} SELECTED{/if}>{trans("opened")}</OPTION>
+						<OPTION value="2"{if $queuedata.state == "2"} SELECTED{/if}>{trans("resolved")}</OPTION>
+						<OPTION value="3"{if $queuedata.state == "3"} SELECTED{/if}>{trans("dead")}</OPTION>
+						<OPTION value="-1"{if $queuedata.state == "-1"} SELECTED{/if}>{trans("not resolved")}</OPTION>
+					</SELECT>&nbsp;
+					{trans("Owner:")}
+					<SELECT size="1" name="owner" OnChange="document.filter.submit();">
+					        <OPTION value="">{trans("- all users -")}</OPTION>
+						{section name="users" loop=$users}
+						 <OPTION value="{$users[users].id}"{if $users[users].id == $queuedata.owner} SELECTED{/if}>{$users[users].name|truncate:40:"...":true}</OPTION>
+						{/section}
+					</SELECT>&nbsp;
+					{if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
+					{trans("Removed:")}
+					<SELECT size="1" name="r" OnChange="document.filter.submit();">
+						<OPTION value=""{if $queuedata.removed == ""} SELECTED{/if}>- {trans("all")} -</OPTION>
+						<OPTION value="-1"{if $queuedata.removed == "-1"} SELECTED{/if}>{trans("Not removed")}</OPTION>
+						<OPTION value="1"{if $queuedata.removed == "1"} SELECTED{/if}>{trans("Removed")}</OPTION>
+					</SELECT>&nbsp;
+					{/if}
+					</FORM>
+				</TD>
+				<TD width="99%" class="text-right">
+					{if count($queuedata.id) == 1}
+					<A HREF="?m=rtticketadd&id={$queuedata.id[0]}"><IMG src="img/save.gif" ALT=""> {trans("New Ticket")}</A>
+					{/if}
+				</TD>
 			</TR>
 		    </TABLE>
 		</TD>
@@ -180,7 +180,9 @@
 	{/if}
 	<TR>
 		<TD COLSPAN="6" class="text-right">
-			<A HREF="?m=rtticketadd&id={$queuedata.id}"><IMG src="img/save.gif" ALT=""> {trans("New Ticket")}</A>
+			{if count($queuedata.id) == 1}
+			<A HREF="?m=rtticketadd&id={$queuedata.id[0]}"><IMG src="img/save.gif" ALT=""> {trans("New Ticket")}</A>
+			{/if}
 		</TD>
 	</TR>
     </TFOOT>

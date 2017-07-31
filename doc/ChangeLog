@@ -51,6 +51,7 @@ version ?.??.?? (????-??-??):
   - enhancement: phpui.proforma_invoice_generates_commitment configuration variable
     ('false' by default) controls if related cash records are created for proforma
     invoices [chilan]
+  - enhancement: allow to view and search tickets from many queues and categories [chilan]
 
 version 1.11.22 (2017-06-08):
 

@@ -70,10 +70,9 @@
 			{trans("Queue:")}
 		</TD>
 		<TD>
-			<SELECT size="1" name="search[queue]" {tip text="Select queue" trigger="queue"}>
-				<OPTION value="0" SELECTED>{trans("- all -")}</OPTION>
+			<SELECT size="1" name="search[queue][]" {tip text="Select queue" class="lms-ui-multiselect" trigger="queue"} multiple>
 				{foreach $queuelist as $item}
-				<OPTION value="{$item.id}" {if $item.id == $search.queue}SELECTED{/if}>{$item.name}</OPTION>
+				<OPTION value="{$item.id}" {if in_array($item.id, $search.queue)}SELECTED{/if}>{$item.name}</OPTION>
 				{/foreach}
 			</SELECT>
 		</TD>
