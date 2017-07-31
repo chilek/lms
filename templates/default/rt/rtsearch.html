@@ -115,9 +115,10 @@
 		<TD class="nobr">
 			{foreach $categories as $category}
 			<label>
-				{$category.name}<BR>
 				<INPUT type="checkbox" name="search[categories][{$category.id}]" value="1"{if $category.checked > 0} checked{/if}>
+				{$category.name}
 			</label>
+			{if !$category@last}<br>{/if}
 			{/foreach}
 		</TD>
 	</TR>
