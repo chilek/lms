@@ -54,6 +54,7 @@ function show_pagecontent() {
 
 $(function() {
 	var autocomplete = "off";
+	var elementsToInitiate = 0;
 
 	$.datepicker._gotoToday = function(id) {
 		var target = $(id);
@@ -112,12 +113,20 @@ $(function() {
 
 	var multiselects = $('select.lms-ui-multiselect');
 	if (multiselects.length) {
-		$('<script/>').attr('src', 'img/lms-ui-multiselect.js').appendTo('head');
-		multiselects.each(function() {
-			multiselect({
-				id: $(this).uniqueId().attr('id'),
-				defaultValue: $(this).attr('data-default-value'),
-				type: $(this).attr('data-type')
+		elementsToInitiate += multiselects.length;
+		$.getScript('img/lms-ui-multiselect.js', function() {
+			multiselects.each(function() {
+				multiselect({
+					id: $(this).uniqueId().attr('id'),
+					defaultValue: $(this).attr('data-default-value'),
+					type: $(this).attr('data-type')
+				});
+				if (elementsToInitiate > 0) {
+					elementsToInitiate--;
+					if (!elementsToInitiate) {
+						show_pagecontent();
+					}
+				}
 			});
 		});
 	}
@@ -341,7 +350,6 @@ $(function() {
 	});
 
 	var dataTables = $('.lms-ui-datatable');
-	var elementsToInitiate = 0;
 	dataTables.each(function() {
 		var trStyle = $(this).closest('tr').attr('style');
 		if (trStyle === undefined || !trStyle.match(/display:\s*none/)) {
