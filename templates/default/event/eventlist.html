@@ -45,13 +45,13 @@
 				<INPUT type="HIDDEN" name="m" value="eventlist">
 				<span class="bold">{trans("Filter:")} </span>
 				{trans("Type:")}
-				<SELECT name="type[]" onchange="document.filter.submit();" class="lms-ui-multiselect" multiple>
+				<SELECT name="type[]" onchange="document.filter.submit();" class="lms-ui-multiselect" multiple data-default-value="{trans("- all -")}">
 					{foreach $_EVENTTYPES as $id => $label}
 					<OPTION value="{$id}"{if is_array($listdata.type) && in_array($id, $listdata.type)} selected{/if}>{$label}</OPTION>
 					{/foreach}
 				</SELECT>
 				{trans("User:")}
-				<SELECT size="1" name="a[]" OnChange="document.filter.submit();" class="lms-ui-multiselect" multiple>
+				<SELECT size="1" name="a[]" OnChange="document.filter.submit();" class="lms-ui-multiselect" multiple data-default-value="{trans("- all -")}">
 					{foreach $userlist as $user}
 					<OPTION value="{$user.id}"{if is_array($listdata.userid) && in_array($user.id, $listdata.userid)} SELECTED{/if}>{$user.name|truncate:40:"...":true}</OPTION>
 					{/foreach}
