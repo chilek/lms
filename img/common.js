@@ -638,8 +638,8 @@ window.onafterprint  = LMS_afterPrintEvent;
  * \return json     customer addresses
  * \return false    if id is incorrect
  */
-function getCustomerAddresses( id ) {
-    return _getAddressList( 'customeraddresses', id );
+function getCustomerAddresses( id, on_success ) {
+    return _getAddressList( 'customeraddresses', id, on_success );
 }
 
 /*!
@@ -649,25 +649,33 @@ function getCustomerAddresses( id ) {
  * \return json     address data
  * \return false    if id is incorrect
  */
-function getSingleAddress( address_id ) {
-    return _getAddressList( 'singleaddress', address_id );
+function getSingleAddress( address_id, on_success ) {
+    return _getAddressList( 'singleaddress', address_id, on_success );
 }
 
-function _getAddressList( action, v ) {
+function _getAddressList( action, v, on_success ) {
     action = action.toLowerCase();
+
+    var addresses = [];
+    var async = typeof on_success === 'function';
 
     // test to check if 'id' is integer
     if ( Math.floor(v) != v || !$.isNumeric(v) ) {
-        return false;
+        if (async) {
+            on_success(addresses);
+        }
+        return addresses;
     }
 
     // check id value
     if ( v <= 0 ) {
-        return [];
+        if (async) {
+            on_success(addresses);
+        }
+        return addresses;
     }
 
     var url;
-    var addresses = null;
 
     switch ( action ) {
         case 'customeraddresses':
@@ -679,25 +687,23 @@ function _getAddressList( action, v ) {
         break;
     }
 
+
     $.ajax({
         url    : url,
-        async  : false,
-        success: function(data) {
+        dataType: "json",
+        async  : async
+    }).done(function(data) {
+        $.each( data, function( i, v ) {
+            data[i]['location'] = $("<div/>").html( v['location'] ).text();
+        });
+        if (async) {
+            on_success(data);
+        } else {
             addresses = data;
         }
     });
 
-    if ( addresses !== null ) {
-        var json_addr = JSON.parse( addresses );
-
-        $.each( json_addr, function( i, v ) {
-            json_addr[i]['location'] = $("<div/>").html( v['location'] ).text();
-        });
-
-        return json_addr;
-    } else {
-        return [];
-    }
+    return addresses;
 }
 
 /*!

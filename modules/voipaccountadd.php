@@ -169,7 +169,8 @@ if (isset($_POST['voipaccountdata'])) {
 
 $layout['pagetitle'] = trans('New Voip Account');
 
-$customers = $LMS->GetCustomerNames();
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 
 if ($customerid = $voipaccountdata['ownerid']) {
 	include(MODULES_DIR.'/customer.inc.php');
@@ -185,7 +186,7 @@ $hook_data = $plugin_manager->executeHook(
 
 $voipaccountdata = $hook_data['voipaccountdata'];
 
-$SMARTY->assign('pool_list', $DB->GetAll("SELECT id,name FROM voip_pool_numbers;"));
+$SMARTY->assign('pool_list', $DB->GetAll("SELECT id,name FROM voip_pool_numbers"));
 $SMARTY->assign('customers', $customers);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('voipaccountdata', $voipaccountdata);

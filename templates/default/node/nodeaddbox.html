@@ -184,6 +184,7 @@
 				inputname  = "nodedata[ownerid]"
 				input_id   = "customerid_input"
 				selecttip  = "Assign node to customer"
+				customOnChange = "customer_change();"
 			}
 		</td>
 	</tr>
@@ -304,8 +305,6 @@
 <script type="text/javascript" src="img/lms-ui-iconselectmenu.js"></script>
 <script type="text/javascript">
 <!--
-	var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
-
 	$(function() {
 		$('form[name="nodeadd"] [name="nodedata[name]"]').focus();
 	});
@@ -413,33 +412,23 @@
 		}
 	});
 
+    var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+
     /*!
      * \brief Update addresses list on customer input change.
      */
-    $( '#customerid_input' ).on('input reset_customer', function() {
-        customer_addresses.setAddressList( getCustomerAddresses($(this).val()) );
-    });
+    function customer_change() {
+        getCustomerAddresses($("#customerid_input").val(), function(addresses) {
+            customer_addresses.setAddressList(addresses);
+        });
+    }
 
-    {if !ConfigHelper::checkConfig('phpui.big_networks')}
-    /*!
-     * \brief Update customer addresses list on select change.
-     * Using when big_networks is set as false.
-     */
-    $( '#customerid_select' ).on('change reset_customer', function() {
-        var id = $(this).val();
-
-        if ( id != 'undefined' && id > 0 ) {
-            customer_addresses.setAddressList( getCustomerAddresses(id) );
-        }
-    });
-    {/if}
-
-    customer_addresses.setAddressList( getCustomerAddresses( {intval($nodedata.ownerid)} ) );
-
-    {if $nodedata.address_id && $nodedata.ownerid}
+    getCustomerAddresses( {intval($nodedata.ownerid)}, function(addresses) {
+        customer_addresses.setAddressList( addresses );
+        {if $nodedata.address_id && $nodedata.ownerid}
         $( '#customer_addresses' ).val( {$nodedata.address_id} );
-    {/if}
-
-    customer_addresses.init();
+        {/if}
+        customer_addresses.init();
+    });
 //-->
 </script>

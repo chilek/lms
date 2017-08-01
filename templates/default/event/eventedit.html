@@ -225,7 +225,9 @@ function update_user_selection(users) {
 }
 
 function change_customer() {
-	customer_addresses.setAddressList( getCustomerAddresses( $('[name="event[custid]"]').val() ) );
+	getCustomerAddresses( $('[name="event[custid]"]').val(), function(addresses) {
+		customer_addresses.setAddressList( addresses );
+	});
 	xajax_select_location($('[name="event[custid]"]').val(), $('[name="event[address_id]"]').val());
 }
 
@@ -248,13 +250,14 @@ var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses", {
 	}
 });
 
-customer_addresses.setAddressList( getCustomerAddresses( {intval($event.customerid)} ) );
-
-{if $event.address_id && intval($event.customerid)}
+getCustomerAddresses( {intval($event.customerid)}, function(addresses) {
+	customer_addresses.setAddressList( addresses );
+	{if $event.address_id && intval($event.customerid)}
 	$( '#customer_addresses' ).val( {$event.address_id} );
-{/if}
+	{/if}
 
-customer_addresses.init();
+	customer_addresses.init();
+});
 //-->
 </SCRIPT>
 {/block}

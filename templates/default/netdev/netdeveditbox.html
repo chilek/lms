@@ -347,7 +347,6 @@
 <script type="text/javascript" src="img/lms-ui-iconselectmenu.js"></script>
 <script type="text/javascript">
 <!--
-    var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
     setNNProject();
 
     /*
@@ -399,26 +398,26 @@
         }
     }
 
+    var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses" );
+
     function customerChanged() {
         var id = $('#ownerid_input').val();
 
         updateLocationBoxesDisplay( id );
 
-        if ( id != 'undefined' && id > 0 ) {
-            customer_addresses.setAddressList( getCustomerAddresses(id) );
-        }
+        getCustomerAddresses(id, function(addresses) {
+            customer_addresses.setAddressList( addresses );
+        });
     }
 
     updateLocationBoxesDisplay( {intval($netdevinfo.ownerid)} );
 
-    {if $netdevinfo.ownerid}
-        customer_addresses.setAddressList( getCustomerAddresses( {intval($netdevinfo.ownerid)} ) );
-    {/if}
-
-    {if $netdevinfo.address_id && $netdevinfo.ownerid}
+    getCustomerAddresses( {intval($netdevinfo.ownerid)}, function(addresses) {
+        customer_addresses.setAddressList( addresses );
+        {if $netdevinfo.address_id && $netdevinfo.ownerid}
         $( '#customer_addresses' ).val( {$netdevinfo.address_id} );
-    {/if}
-
-    customer_addresses.init();
+        {/if}
+        customer_addresses.init();
+    });
 //-->
 </script>

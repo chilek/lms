@@ -133,11 +133,7 @@
                     {trans("Customer:")}
                 </td>
                 <td>
-                    <select name="voipaccountdata[ownerid]" {tip text="Assign voip account to customer" trigger="customer"} style="max-width:250px;" id="customer">
-                        {foreach from=$customers item=c}
-                        <option value="{$c.id}"{if $voipaccountdata.ownerid == $c.id} selected{/if}>{$c.customername|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</option>
-                        {/foreach}
-                    </select>
+                    {customerlist form="voipaccountadd" customers=$customers selected=$voipaccountdata.ownerid selectname="voipaccountdata[customerid]" inputname="voipaccountdata[ownerid]" selecttip="Assign voip account to customer" customOnChange="change_customer();"}
                 </td>
             </tr>
             {/block}
@@ -227,21 +223,25 @@
             }
         });
 
-        /*!
-         * \brief Update addresses list on customer change.
-         */
-        $( '#customer' ).change( function() {
-            customer_addresses.setAddressList( getCustomerAddresses($(this).val()) );
-        });
+    } );
 
-        // refresh customer addresses on page load
-        $( '#customer' ).trigger( 'change' );
+    /*!
+     * \brief Update addresses list on customer change.
+     */
+    function change_customer() {
+        getCustomerAddresses($('[name="voipaccountdata[ownerid]"]').val(), function(addresses) {
+            customer_addresses.setAddressList( addresses );
+        });
+    }
+
+    getCustomerAddresses( {intval($voipaccountdata.ownerid)}, function(addresses) {
+        customer_addresses.setAddressList( addresses );
 
         {if $voipaccountdata.address_id}
-            $( '#customer_addresses' ).val( {$voipaccountdata.address_id} );
+        $( '#customer_addresses' ).val( {$voipaccountdata.address_id} );
         {/if}
 
         customer_addresses.init();
-    } );
+    });
 //-->
 </SCRIPT>

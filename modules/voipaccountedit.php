@@ -149,7 +149,8 @@ if (isset($_POST['voipaccountedit'])) {
 	}
 }
 
-$customers = $LMS->GetCustomerNames();
+if (!ConfigHelper::checkConfig('phpui.big_networks'))
+	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 
 include(MODULES_DIR.'/customer.inc.php');
 

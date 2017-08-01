@@ -207,7 +207,9 @@ $(function() {
 });
 
 function change_customer() {
-	customer_addresses.setAddressList( getCustomerAddresses( $('[name="ticket[custid]"]').val() ) );
+	getCustomerAddresses( $('[name="ticket[custid]"]').val(), function(addresses) {
+		customer_addresses.setAddressList( addresses );
+	});
 	xajax_select_location($('[name="ticket[custid]"]').val(), $('[name="ticket[address_id]"]').val());
 }
 
@@ -230,12 +232,14 @@ var customer_addresses = new LmsUiIconSelectMenu( "#customer_addresses", {
 	}
 });
 
-customer_addresses.setAddressList( getCustomerAddresses( {intval($ticket.customerid)} ) );
+getCustomerAddresses( {intval($ticket.customerid)}, function(addresses) {
+	customer_addresses.setAddressList( addresses );
 
-{if $ticket.address_id && $ticket.customerid}
+	{if $ticket.address_id && $ticket.customerid}
 	$( '#customer_addresses' ).val( {$ticket.address_id} );
-{/if}
+	{/if}
 
-customer_addresses.init();
+	customer_addresses.init();
+});
 //-->
 </script>
