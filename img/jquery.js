@@ -110,13 +110,17 @@ $(function() {
 	})
 	.attr("autocomplete", autocomplete);
 
-	$('select.lms-ui-multiselect').each(function() {
-		multiselect({
-			id: $(this).uniqueId().attr('id'),
-			defaultValue: $(this).attr('data-default-value'),
-			type: $(this).attr('data-type')
+	var multiselects = $('select.lms-ui-multiselect');
+	if (multiselects.length) {
+		$('<script/>').attr('src', 'img/lms-ui-multiselect.js').appendTo('head');
+		multiselects.each(function() {
+			multiselect({
+				id: $(this).uniqueId().attr('id'),
+				defaultValue: $(this).attr('data-default-value'),
+				type: $(this).attr('data-type')
+			});
 		});
-	});
+	}
 
 	$('[title]').each(function() {
 		$(this).one('mouseenter', function() {
