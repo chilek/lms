@@ -31,7 +31,7 @@ if ($kind == 2)
 		COALESCE(SUM(cash.value), 0.00) AS balance
 		FROM customerview c 
 		LEFT JOIN cash ON (c.id = cash.customerid)
-		LEFT JOIN divisions d ON (d.id = c.divisionid)
+		LEFT JOIN vdivisions d ON (d.id = c.divisionid)
 		WHERE deleted = 0'
 		. ($customer ? ' AND c.id = '.$customer : '')
 		. ($group ?
