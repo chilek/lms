@@ -44,6 +44,15 @@ $.ajax("img/jquery-datatables-i18n/" + lmsSettings.language + ".json", {
 	}
 });
 
+jQuery.cachedScript = function(url, options) {
+	options = $.extend( options || {}, {
+		dataType: "script",
+		cache: true,
+		url: url
+	});
+	return jQuery.ajax(options);
+}
+
 function show_pagecontent() {
 	$('div#lms-ui-spinner').hide();
 	$('div#pagecontent').show();
@@ -114,7 +123,7 @@ $(function() {
 	var multiselects = $('select.lms-ui-multiselect');
 	if (multiselects.length) {
 		elementsToInitiate += multiselects.length;
-		$.getScript('img/lms-ui-multiselect.js', function() {
+		$.cachedScript('img/lms-ui-multiselect.js').done(function() {
 			multiselects.each(function() {
 				multiselect({
 					id: $(this).uniqueId().attr('id'),
