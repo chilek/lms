@@ -105,15 +105,24 @@ LmsUiIconSelectMenu.prototype._appendAddressList = function( address_list ) {
 		addresses.push(value);
 	});
 	addresses.sort(function(a, b) {
-		var a_city = a.location_city_name.toLowerCase(),
-			b_city = b.location_city_name.toLowerCase();
+		var a_city = a.location_city_name.toLowerCase();
+		var b_city = b.location_city_name.toLowerCase();
 		if (a_city > b_city) {
 			return 1;
 		} else if (a_city < b_city) {
 			return -1;
 		}
-		var a_street = a.location_street_name.toLowerCase(),
-			b_street = b.location_street_name.toLowerCase();
+		var a_street = a.location_street_name;
+		var b_street = b.location_street_name;
+		if (a_street && !b_street) {
+			return -1;
+		} else if (b_street && !a_street) {
+			return 1;
+		} else if (!a_street && !b_street) {
+			return 0;
+		}
+		a_street = a_street.toLowerCase();
+		b_street = b_street.toLowerCase();
 		if (a_street > b_street) {
 			return 1;
 		} else if (a_street < b_street) {
