@@ -270,6 +270,7 @@ if(defined('USERPANEL_SETUPMODE'))
 
 		if (isset($_POST['userchanges'])) {
 			$args = array();
+			$addresses = array();
 			foreach ($_POST['userchanges'] as $changeid) {
 				$changes = $DB->GetRow('SELECT customerid, fieldname, fieldvalue FROM up_info_changes
 					WHERE id = ?', array($changeid));
@@ -314,16 +315,28 @@ if(defined('USERPANEL_SETUPMODE'))
 				switch ($changes['fieldname']) {
 					case 'name':
 					case 'lastname':
-					case 'street':
-					case 'building':
-					case 'apartment':
-					case 'zip':
-					case 'city':
 					case 'ssn':
 					case 'ten':
 						$DB->Execute('UPDATE customers SET '.$changes['fieldname'].' = ? WHERE id = ?',
 							array($changes['fieldvalue'], $changes['customerid']));
 						$args[$changes['customerid']][$changes['fieldname']] = $changes['fieldvalue'];
+						break;
+					case 'street':
+					case 'building':
+					case 'apartment':
+					case 'zip':
+					case 'city':
+						if ($changes['fieldname'] == 'building')
+							$changes['fieldname'] = 'house';
+						elseif ($changes['fieldname'] == 'apartment')
+							$changes['fieldname'] = 'flat';
+
+						if (!isset($addresses[$changes['customerid']]))
+							$addresses[$changes['customerid']] = $DB->GetOne('SELECT address_id FROM customer_addresses WHERE customer_id = ? AND type = ?',
+								array($changes['customerid'], BILLING_ADDRESS));
+
+						$DB->Execute('UPDATE addresses SET ' . $changes['fieldname'] . ' = ?
+							WHERE id = ?', array($changes['fieldvalue'], $addresses[$changes['customerid']]));
 						break;
 				}
 
