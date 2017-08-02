@@ -397,21 +397,25 @@
         $.each( recipient_addr, function( i, v ) {
             recipient_addr[i]['location_address_type'] = "{$smarty.const.RECIPIENT_ADDRESS}";
         });
-        $( '#customer_addresses' ).val( {$invoice.recipient_address_id} );
         customer_addresses.setAddressList( recipient_addr );
+
+        getCustomerAddresses( {intval($invoice.customerid)}, function(addresses) {
+            customer_addresses.appendAddressList( addresses );
+            $( '#customer_addresses' ).val( {$invoice.recipient_address_id} );
+            customer_addresses.init();
+        });
    });
 {else}
     customer_addresses.setAddressList();
-{/if}
 
     getCustomerAddresses( {intval($invoice.customerid)}, function(addresses) {
         customer_addresses.appendAddressList( addresses );
         customer_addresses.init();
     });
+{/if}
 
     $(function() {
         $('form[name="setcustomer"] [name="invoice[number]"]').focus();
-
     });
 //-->
 </SCRIPT>
