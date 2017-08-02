@@ -138,6 +138,9 @@ $(function() {
 				}
 			});
 		});
+	} else if ($('.lms-ui-datatable-column-toggle').length) {
+		$('<script/>').attr('src', 'img/lms-ui-multiselect.js').appendTo('head');
+		//$.cachedScript('img/lms-ui-multiselect.js');
 	}
 
 	$('[title]').each(function() {
