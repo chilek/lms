@@ -123,7 +123,7 @@ function smarty_function_location_box( $params = array(), $template )
     }
 
     echo '<input type="text"
-                 value="' . (!empty($params['location_state_name']) ? $params['location_state_name'] : '' ) . '"
+                 value="' . (!empty($params['location_state_name']) ? htmlspecialchars($params['location_state_name']) : '' ) . '"
                  size="' . INPUT_SIZE . '"
                  data-address="state"
                  name="' . $input_name_state . '"
@@ -152,12 +152,12 @@ function smarty_function_location_box( $params = array(), $template )
 
     echo '<tr>
               <td class="nobr">' . trans('House No.') . '</td>
-              <td><input type="text"   value="' . (!empty($params['location_house']) ? $params['location_house'] : '' ) . '" name="' . $input_name_house . '" data-address="house" size="7" maxlength="20"></td>
+              <td><input type="text"   value="' . (!empty($params['location_house']) ? htmlspecialchars($params['location_house']) : '' ) . '" name="' . $input_name_house . '" data-address="house" size="7" maxlength="20"></td>
           </tr>';
 
     echo '<tr>
               <td class="nobr">' . trans('Flat No.') . '</td>
-              <td><input type="text"   value="' . (!empty($params['location_flat']) ? $params['location_flat'] : '' ) . '" name="' . $input_name_flat . '" data-address="flat" size="7" maxlength="20"></td>
+              <td><input type="text"   value="' . (!empty($params['location_flat']) ? htmlspecialchars($params['location_flat']) : '' ) . '" name="' . $input_name_flat . '" data-address="flat" size="7" maxlength="20"></td>
           </tr>';
 
     echo '<tr>
@@ -167,7 +167,7 @@ function smarty_function_location_box( $params = array(), $template )
 
     echo '<tr>
               <td class="nobr">' . trans('Post office:') . '</td>
-              <td><input type="text"   value="' . (!empty($params['location_postoffice']) ? $params['location_postoffice'] : '' ) . '" size="' . INPUT_SIZE . '" name="' . $input_name_postoffice . '" data-address="postoffice" maxlength="32"></td>
+              <td><input type="text"   value="' . (!empty($params['location_postoffice']) ? htmlspecialchars($params['location_postoffice']) : '' ) . '" size="' . INPUT_SIZE . '" name="' . $input_name_postoffice . '" data-address="postoffice" maxlength="32"></td>
           </tr>';
 
     if ( empty($params['countryid']) ) {
