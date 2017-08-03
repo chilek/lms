@@ -51,8 +51,8 @@ function module_main()
 			$doc['attachments'] = $LMS->DB->GetAllBykey('SELECT * FROM documentattachments WHERE docid = ?
 				ORDER BY main DESC, filename', 'id', array($doc['id']));
 
-    $fields_changed = $LMS->DB->GetRow('SELECT id FROM up_info_changes WHERE customerid = ?', 
-    	array($SESSION->id));
+	$fields_changed = $LMS->DB->GetAllByKey('SELECT id, fieldname FROM up_info_changes WHERE customerid = ?',
+		'fieldname', array($SESSION->id));
 
     $SMARTY->assign('userinfo',$userinfo);
     $SMARTY->assign('usernodes',$usernodes);

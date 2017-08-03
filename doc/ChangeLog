@@ -57,6 +57,8 @@ version ?.??.?? (????-??-??):
     helpdesk_notification_sms_body, helpdesk_customerinfo_email_body and
     helpdesk_customerinfo_sms_body configurtion variables control additional information
     in helpdesk ticket notice via templates [ravvar/chilan]
+  - improvement: userpanel/info: customer properties which have pending value changes
+    assigned to them as presented in different color [chilan]
 
 version 1.11.22 (2017-06-08):
 

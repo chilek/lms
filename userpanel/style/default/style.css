@@ -173,3 +173,7 @@ TEXTAREA.alert 	{ border-width: 1pt; border-color: #000000; border-style: solid;
 .billing-tab tr:nth-child(n+2):nth-last-child(n+2):hover {
     background-color: #a6a6a6;
 }
+
+.lms-ui-customer-property-changed {
+	color: red;
+}

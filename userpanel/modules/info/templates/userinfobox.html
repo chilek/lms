@@ -13,7 +13,7 @@
 			{img src="person.gif" alt=""}
 		</td>
 		<td width="99%" colspan="2">
-			<b>{$userinfo.customername} ({$userinfo.id|string_format:"%04d"})</b>
+			<b><span{if isset($fields_changed.lastname) || isset($fields_changed.name)} class="lms-ui-customer-property-changed"{/if}>{$userinfo.customername}</span> ({$userinfo.id|string_format:"%04d"})</b>
 		</td>
 	</tr>
 {if $userinfo.emails}
@@ -23,7 +23,8 @@
 		</td>
 		<td width="99%" colspan="2">
 			{foreach $userinfo.emails as $email}
-				{$email.email}{if !$email@last}<BR />{/if}
+				{$emailid='email'|cat:$email.id}
+				<span{if isset($fields_changed[$emailid])} class="lms-ui-customer-property-changed"{/if}>{$email.email}</span>{if !$email@last}<BR />{/if}
 			{/foreach}
 		</td>
 	</tr>
@@ -33,8 +34,9 @@
 			{img src="address.gif" alt=""}
 		</td>
 		<td width="99%" colspan="2">
-			{$userinfo.address}<br/>
-			{$userinfo.zip} {$userinfo.city}
+			<span{if isset($fields_changed.street) || isset($fields_changed.building) || isset($fields_changed.apartment)} class="lms-ui-customer-property-changed"{/if}>{$userinfo.address}</span><br/>
+			<span{if isset($fields_changed.zip)} class="lms-ui-customer-property-changed"{/if}>{$userinfo.zip}</span>
+			<span{if isset($fields_changed.city)} class="lms-ui-customer-property-changed"{/if}>{$userinfo.city}</span>
 		</td>
 	</tr>
 {if $userinfo.contacts}
@@ -43,9 +45,10 @@
 			{img src="phone.gif" alt=""}
 		</td>
 		<td width="99%" colspan="2">
-			{foreach from=$userinfo.contacts item=item}
-        			{if $item.phone}{$item.phone}<BR />{/if}
-	        	{/foreach}
+			{foreach $userinfo.contacts as $item}
+				{$phoneid='phone'|cat:$item.id}
+				<span{if isset($fields_changed[$phoneid])} class="lms-ui-customer-property-changed"{/if}>{$item.phone}</span>{if !$item@last}<BR />{/if}
+			{/foreach}
 		</td>
 	</tr>
 {/if}
@@ -61,7 +64,8 @@
 			{/if}
 		</td>
 		<td width="99%" colspan="2">
-			{$item.uid}
+			{$imid='im'|cat:$item.id}
+			<span{if isset($fields_changed[$imid])} class="lms-ui-customer-property-changed"{/if}>{$item.uid}</span>
 		</td>
 	</tr>
 {/foreach}
@@ -71,7 +75,7 @@
 			<b>{trans("TEN")}</b>
 		</td>
 		<td width="99%" colspan="2">
-			{$userinfo.ten}
+			<span{if isset($fields_changed.ten)} class="lms-ui-customer-property-changed"{/if}>{$userinfo.ten}</span>
 		</td>
 	</tr>
 {/if}
@@ -81,7 +85,7 @@
 			<b>{trans("SSN")}</b>
 		</td>
 		<td width="99%" colspan="2">
-			{$userinfo.ssn}
+			<span{if isset($fields_changed.ssn)} class="lms-ui-customer-property-changed"{/if}>{$userinfo.ssn}</span>
 		</td>
 	</tr>
 {/if}
