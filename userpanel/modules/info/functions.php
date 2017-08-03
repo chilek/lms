@@ -131,11 +131,13 @@ function module_updateusersave()
 					array($id, $v, CONTACT_LANDLINE));
 			    
 			    $userinfo[$type][$i][$checked_property] = $v;
-			}
-			elseif(isset($right['edit_contact_ack']) && ($v || isset($userinfo[$type][$i])))
-				if(!isset($userinfo[$type][$i]) || $userinfo[$type][$i][$checked_property] != $v)
-					$LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue) 
-						VALUES(?, ?, ?)', array($id, $field.$i, $v));
+			} elseif (isset($right['edit_contact_ack']) && ($v || isset($userinfo[$type][$i])))
+				if (!isset($userinfo[$type][$i]) || $userinfo[$type][$i][$checked_property] != $v) {
+					$LMS->DB->Execute('DELETE FROM up_info_changes WHERE customerid = ? AND fieldname = ?',
+						array($id, $field . $i));
+					$LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue)
+						VALUES(?, ?, ?)', array($id, $field . $i, $v));
+				}
 		    }
 		    continue;
 	    }
@@ -153,10 +155,12 @@ function module_updateusersave()
 			if(isset($right['edit_addr'])) {
 				$userinfo[$field] = $val;
 				$needupdate = 1;
-			}
-			elseif(isset($right['edit_addr_ack']))
-				$LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue) 
+			} elseif(isset($right['edit_addr_ack'])) {
+				$LMS->DB->Execute('DELETE FROM up_info_changes WHERE customerid = ? AND fieldname = ?',
+					array($id, $field));
+				$LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue)
 					VALUES(?, ?, ?)', array($id, $field, $val));
+			}
 			break;
 		case 'email':
 			if($val!='' && !check_email($val)) {
@@ -167,10 +171,12 @@ function module_updateusersave()
 				if(isset($right['edit_contact'])) {
 					$userinfo[$field] = $val;
 					$needupdate = 1;
-				}
-				elseif(isset($right['edit_contact_ack']))
-					$LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue) 
+				} elseif(isset($right['edit_contact_ack'])) {
+					$LMS->DB->Execute('DELETE FROM up_info_changes WHERE customerid = ? AND fieldname = ?',
+						array($id, $field));
+					$LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue)
 						VALUES(?, ?, ?)', array($id, $field, $val));
+				}
 			}
 			break;
 		case 'ten':
@@ -182,10 +188,12 @@ function module_updateusersave()
 				if(isset($right['edit_addr'])) {
 					$userinfo[$field] = $val;
 					$needupdate = 1;
-				}
-				elseif(isset($right['edit_addr_ack']))
-					$LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue) 
+				} elseif(isset($right['edit_addr_ack'])) {
+					$LMS->DB->Execute('DELETE FROM up_info_changes WHERE customerid = ? AND fieldname = ?',
+						array($id, $field));
+					$LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue)
 						VALUES(?, ?, ?)', array($id, $field, $val));
+				}
 			}
 			break;
 		case 'ssn':
@@ -197,10 +205,12 @@ function module_updateusersave()
 				if(isset($right['edit_addr'])) {
 					$userinfo[$field] = $val;
 					$needupdate = 1;
-				}
-				elseif(isset($right['edit_addr_ack']))
-					$LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue) 
+				} elseif(isset($right['edit_addr_ack'])) {
+					$LMS->DB->Execute('DELETE FROM up_info_changes WHERE customerid = ? AND fieldname = ?',
+						array($id, $field));
+					$LMS->DB->Execute('INSERT INTO up_info_changes(customerid, fieldname, fieldvalue)
 						VALUES(?, ?, ?)', array($id, $field, $val));
+				}
 			}
 			break;
 		default:
