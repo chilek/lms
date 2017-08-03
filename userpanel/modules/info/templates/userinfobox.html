@@ -13,7 +13,12 @@
 			{img src="person.gif" alt=""}
 		</td>
 		<td width="99%" colspan="2">
-			<b><span{if isset($fields_changed.lastname) || isset($fields_changed.name)} class="lms-ui-customer-property-changed"{/if}>{$userinfo.customername}</span> ({$userinfo.id|string_format:"%04d"})</b>
+			<b>{$userinfo.customername}
+			{if isset($fields_changed.lastname) || isset($fields_changed.name)}
+			({if isset($fields_changed.lastname) && $fields_changed.lastname.fieldvalue != $userinfo.lastname}<span class="lms-ui-customer-property-changed">{$fields_changed.lastname.fieldvalue}</span>{else}{$userinfo.lastname}{/if}
+			{if isset($fields_changed.name) && $fields_changed.name.fieldvalue != $userinfo.name}<span class="lms-ui-customer-property-changed">{$fields_changed.name.fieldvalue}</span>{else}{$userinfo.name}{/if})
+			{/if}
+			({$userinfo.id|string_format:"%04d"})</b>
 		</td>
 	</tr>
 {if $userinfo.emails}
@@ -24,7 +29,9 @@
 		<td width="99%" colspan="2">
 			{foreach $userinfo.emails as $email}
 				{$emailid='email'|cat:$email.id}
-				<span{if isset($fields_changed[$emailid])} class="lms-ui-customer-property-changed"{/if}>{$email.email}</span>{if !$email@last}<BR />{/if}
+				{$email.email}
+				{if isset($fields_changed[$emailid])} <span class="lms-ui-customer-property-changed">({$fields_changed[$emailid].fieldvalue})</span>{/if}
+				{if !$email@last}<BR />{/if}
 			{/foreach}
 		</td>
 	</tr>
@@ -34,9 +41,17 @@
 			{img src="address.gif" alt=""}
 		</td>
 		<td width="99%" colspan="2">
-			<span{if isset($fields_changed.street) || isset($fields_changed.building) || isset($fields_changed.apartment)} class="lms-ui-customer-property-changed"{/if}>{$userinfo.address}</span><br/>
-			<span{if isset($fields_changed.zip)} class="lms-ui-customer-property-changed"{/if}>{$userinfo.zip}</span>
-			<span{if isset($fields_changed.city)} class="lms-ui-customer-property-changed"{/if}>{$userinfo.city}</span>
+			{$userinfo.address}
+			{if isset($fields_changed.street) || isset($fields_changed.building) || isset($fields_changed.apartment)}
+				({if isset($fields_changed.street)}<span class="lms-ui-customer-property-changed">{$fields_changed.street.fieldvalue}</span>{else}{$userinfo.street}{/if}
+				{if isset($fields_changed.building)}<span class="lms-ui-customer-property-changed">{$fields_changed.building.fieldvalue}</span>{else}{$userinfo.building}{/if}{if isset($fields_changed.apartment)}<span class="lms-ui-customer-property-changed">/{$fields_changed.apartment.fieldvalue}</span>{else}/{$userinfo.apartment}{/if})
+			{/if}
+			<br/>
+			{$userinfo.zip} {$userinfo.city}
+			{if isset($fields_changed.zip) || isset($fields_changed.city)}
+			({if isset($fields_changed.zip)}<span class="lms-ui-customer-property-changed">{$fields_changed.zip.fieldvalue}</span>{else}{$userinfo.zip}{/if}
+			{if isset($fields_changed.city)}<span class="lms-ui-customer-property-changed">{$fields_changed.city.fieldvalue}</span>{else}{$userinfo.city}{/if})
+			{/if}
 		</td>
 	</tr>
 {if $userinfo.contacts}
@@ -47,7 +62,7 @@
 		<td width="99%" colspan="2">
 			{foreach $userinfo.contacts as $item}
 				{$phoneid='phone'|cat:$item.id}
-				<span{if isset($fields_changed[$phoneid])} class="lms-ui-customer-property-changed"{/if}>{$item.phone}</span>{if !$item@last}<BR />{/if}
+				{$item.phone}{if isset($fields_changed[$phoneid])} <span class="lms-ui-customer-property-changed">({$fields_changed[$phoneid].fieldvalue})</span>{/if}{if !$item@last}<BR />{/if}
 			{/foreach}
 		</td>
 	</tr>
@@ -65,7 +80,7 @@
 		</td>
 		<td width="99%" colspan="2">
 			{$imid='im'|cat:$item.id}
-			<span{if isset($fields_changed[$imid])} class="lms-ui-customer-property-changed"{/if}>{$item.uid}</span>
+			{$item.uid}{if isset($fields_changed[$imid])} <span class="lms-ui-customer-property-changed">({$fields_changed[$imid].fieldvalue})</span>{/if}
 		</td>
 	</tr>
 {/foreach}
@@ -75,7 +90,7 @@
 			<b>{trans("TEN")}</b>
 		</td>
 		<td width="99%" colspan="2">
-			<span{if isset($fields_changed.ten)} class="lms-ui-customer-property-changed"{/if}>{$userinfo.ten}</span>
+			{$userinfo.ten}{if isset($fields_changed.ten)} <span class="lms-ui-customer-property-changed">({$fields_changed.ten.fieldvalue})</span>{/if}
 		</td>
 	</tr>
 {/if}
@@ -85,7 +100,7 @@
 			<b>{trans("SSN")}</b>
 		</td>
 		<td width="99%" colspan="2">
-			<span{if isset($fields_changed.ssn)} class="lms-ui-customer-property-changed"{/if}>{$userinfo.ssn}</span>
+			{$userinfo.ssn}{if isset($fields_changed.ssn)} <span class="lms-ui-customer-property-changed">({$fields_changed.ssn.fieldvalue})</span>{/if}
 		</td>
 	</tr>
 {/if}
