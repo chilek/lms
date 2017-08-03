@@ -148,3 +148,7 @@ TEXTAREA.alert  { background-color: #FFFF99;}
 .billing-tab tr:nth-child(n+2):nth-last-child(n+2):hover {
     background-color: #d6c28f;
 }
+
+.lms-ui-customer-property-changed {
+	color: red;
+}
