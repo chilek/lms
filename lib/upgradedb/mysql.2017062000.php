@@ -23,7 +23,9 @@
 
 $this->BeginTrans();
 
-$this->Execute("DROP VIEW customerview, contractorview, customeraddressview");
+$this->Execute("DROP VIEW IF EXISTS customerview;");
+$this->Execute("DROP VIEW IF EXISTS contractorview;");
+$this->Execute("DROP VIEW IF EXISTS customeraddressview;");
 
 $this->Execute("ALTER TABLE customers CHANGE pin pin varchar(255) DEFAULT 0 NOT NULL");
 

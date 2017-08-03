@@ -23,7 +23,13 @@
 
 $this->BeginTrans();
 
-$this->Execute("DROP VIEW customerview, contractorview, customeraddressview, vmacs, vnetworks, vnodes, vaddresses");
+$this->Execute("DROP VIEW IF EXISTS vnetworks;");
+$this->Execute("DROP VIEW IF EXISTS vmacs;");
+$this->Execute("DROP VIEW IF EXISTS vnodes;");
+$this->Execute("DROP VIEW IF EXISTS customeraddressview;");
+$this->Execute("DROP VIEW IF EXISTS contractorview;");
+$this->Execute("DROP VIEW IF EXISTS customerview;");
+$this->Execute("DROP VIEW IF EXISTS vaddresses;");
 
 $this->Execute("UPDATE addresses SET zip = NULL WHERE zip IS NOT NULL AND char_length(zip) = 0");
 
