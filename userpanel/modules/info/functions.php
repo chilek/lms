@@ -253,8 +253,8 @@ if(defined('USERPANEL_SETUPMODE'))
 			foreach($userchanges as $key => $change)
 			{
 				if (preg_match('/phone([0-9]+)/', $change['fieldname'], $matches))
-					$old = $DB->GetOne('SELECT contact AS phone FROM customercontacts WHERE id = ? AND type < ?',
-						array($matches[1], CONTACT_MOBILE));
+					$old = $DB->GetOne('SELECT contact AS phone FROM customercontacts WHERE id = ? AND type & ? > 0',
+						array($matches[1], CONTACT_MOBILE|CONTACT_LANDLINE));
 				elseif (preg_match('/email([0-9]+)/', $change['fieldname'], $matches))
 					$old = $DB->GetOne('SELECT contact AS email FROM customercontacts WHERE id = ? AND type & ? > 0',
 						array($matches[1], (CONTACT_EMAIL|CONTACT_INVOICES|CONTACT_NOTIFICATIONS)));
