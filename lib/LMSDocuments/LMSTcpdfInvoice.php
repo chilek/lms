@@ -621,7 +621,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 	}
 
 	protected function invoice_seller() {
-		$this->backend->SetFont('arial', '', 10);
+		$this->backend->SetFont('arial', '', 8);
 		$seller = '<b>' . trans('Seller:') . '</b><br>';
 		$tmp = $this->data['division_header'];
 
@@ -651,7 +651,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			$buyer .= trans('TEN') . ': ' . $this->data['ten'] . '<br>';
 		elseif ($this->data['ssn'])
 			$buyer .= trans('SSN') . ': ' . $this->data['ssn'] . '<br>';
-		$this->backend->SetFont('arial', '', 10);
+		$this->backend->SetFont('arial', '', 8);
 		$this->backend->writeHTMLCell(80, '', '', '', $buyer, 0, 1, 0, true, 'L');
 
 		$y = $this->backend->GetY();
@@ -706,7 +706,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			return 0;
 		}
 
-		$this->backend->SetFont('arial', '', 10);
+		$this->backend->SetFont('arial', '', 8);
 
 		$this->backend->writeHTMLCell(80, '', '', '', '<b>' . trans('Recipient:') . '</b>', 0, 1, 0, true, 'L');
 
