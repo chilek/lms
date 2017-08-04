@@ -31,7 +31,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 
 	protected function Table() {
 		/* set the line width and headers font */
-		$this->backend->SetFillColor(200, 200, 200);
+		$this->backend->SetFillColor(255, 255, 255);
 		$this->backend->SetTextColor(0);
 		$this->backend->SetDrawColor(0, 0, 0);
 		$this->backend->SetLineWidth(0.3);
