@@ -456,7 +456,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 
 		/* account */
 		$this->backend->SetFont('arial', 'B', 9);
-		$this->backend->Text(7, 219, bankaccount($this->data['customerid'], $this->data['account']));
+		$this->backend->Text(6, 219, bankaccount($this->data['customerid'], $this->data['account']));
 
 		/* customer name */
 		$this->backend->SetFont('arial', '', 9);
@@ -501,7 +501,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->backend->Text(67, 206, $this->data['division_address'] . ', ' . $this->data['division_zip'] . ' ' . $this->data['division_city']);
 
 		/* account */
-		$this->backend->SetFont('arial', 'B', 9);
+		$this->backend->SetFont('arial', 'B', 8);
 		$this->backend->Text(67, 215, format_bankaccount(bankaccount($this->data['customerid'], $this->data['account'])));
 
 		/* currency */
@@ -576,7 +576,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 	}
 
 	protected function invoice_date() {
-		$this->backend->SetFont('arial', '', 10);
+		$this->backend->SetFont('arial', '', 8);
 		$this->backend->writeHTMLCell(0, 0, '', 20, trans('Settlement date:') . ' <b>' . date("d.m.Y", $this->data['cdate']) . '</b>', 0, 1, 0, true, 'R');
 		$this->backend->writeHTMLCell(0, 0, '', '', trans('Sale date:') . ' <b>' . date("d.m.Y", $this->data['sdate']) . '</b>', 0, 1, 0, true, 'R');
 	}
