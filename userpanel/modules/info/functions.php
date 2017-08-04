@@ -369,13 +369,13 @@ if(defined('USERPANEL_SETUPMODE'))
 							WHERE id = ?', array($changes['fieldvalue'], $addresses[$changes['customerid']]));
 						break;
 				}
-
-				if ($LMS->SYSLOG && !empty($args))
-					foreach ($args as $customerid => $fields)
-						if (count($fields) > 2)
-							$LMS->SYSLOG->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE, $fields);
 				$DB->Execute('DELETE FROM up_info_changes WHERE id = ?', array($changeid));
 			}
+
+			if ($LMS->SYSLOG && !empty($args))
+				foreach ($args as $customerid => $fields)
+					if (count($fields) > 2)
+						$LMS->SYSLOG->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE, $fields);
 		}
 
 		module_changes();
