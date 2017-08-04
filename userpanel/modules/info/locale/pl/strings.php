@@ -91,4 +91,14 @@ $_LANG['building'] = 'budynek';
 $_LANG['apartment'] = 'lokal';
 $_LANG['lastname'] = 'nazwa/nazwisko';
 
+$_LANG['Customer data change notifications'] = 'Powiadomienia o zmianie danych klienta';
+$_LANG['Mail sender:'] = 'Nadawca listu:';
+$_LANG['Enter customer data change notification mail sender'] = 'Wprowadź nadawcę listu z powiadomieniem o zmianie danych klienta';
+$_LANG['Mail recipient:'] = 'Odbiorca listu:';
+$_LANG['Enter customer data change notification mail recipient'] = 'Wprowadź odbiorcę listu z powiadomieniem o zmianie danych klienta';
+$_LANG['Mail subject:'] = 'Temat listu:';
+$_LANG['Enter customer data change notification mail subject'] = 'Wprowadź temat listu z powiadomieniem o zmianie danych klienta';
+$_LANG['Mail body:'] = 'Treść listu:';
+$_LANG['Enter customer data change notification mail body'] = 'Wprowadź treść listu z powiadomieniem o zmianie danych klienta';
+
 ?>

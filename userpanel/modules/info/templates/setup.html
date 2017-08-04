@@ -30,6 +30,51 @@
 				<TEXTAREA NAME="consent_text" rows="4" cols="50" {tip text="Enter text of agreement for personal data processing"}>{$consent_text}</TEXTAREA>
 			</TD>
 		</TR>
+
+		<TR>
+			<TD class="nobr" colspan="2">
+				<fieldset>
+					<legend class="bold">
+						{trans("Customer data change notifications")}
+					</legend>
+					<table>
+						<TR>
+							<TD class="nobr">
+								<label for="change_notification_mail_sender">{trans("Mail sender:")}</label>
+							</TD>
+							<TD>
+								<INPUT type="text" size="50" name="change_notification_mail_sender" id="change_notification_mail_sender" value="{$change_notification_mail_sender}" {tip text="Enter customer data change notification mail sender"}>
+							</TD>
+						</TR>
+						<TR>
+							<TD class="nobr">
+								<label for="change_notification_mail_recipient">{trans("Mail recipient:")}</label>
+							</TD>
+							<TD>
+								<INPUT type="text" size="50" name="change_notification_mail_recipient" id="change_notification_mail_recipient" value="{$change_notification_mail_recipient}" {tip text="Enter customer data change notification mail recipient"}>
+							</TD>
+						</TR>
+						<TR>
+							<TD class="nobr">
+								<label for="change_notification_mail_subject">{trans("Mail subject:")}</label>
+							</TD>
+							<TD>
+								<INPUT type="text" size="50" name="change_notification_mail_subject" id="change_notification_mail_subject" value="{$change_notification_mail_subject}" {tip text="Enter customer data change notification mail subject"}>
+							</TD>
+						</TR>
+						<TR>
+							<TD class="nobr">
+								<label for="change_notification_mail_body">{trans("Mail body:")}</label>
+							</TD>
+							<TD>
+								<TEXTAREA name="change_notification_mail_body" id="change_notification_mail_body" cols="60" rows="7" {tip text="Enter customer data change notification mail body"}>{$change_notification_mail_body}</TEXTAREA>
+							</TD>
+						</TR>
+					</table>
+				</fieldset>
+			</TD>
+		</TR>
+
 	</TABLE>
 	<p align="right">
 		<A HREF="?m=userpanel">{trans("Cancel")} <IMG SRC="img/cancel.gif" ALT=""></A>
