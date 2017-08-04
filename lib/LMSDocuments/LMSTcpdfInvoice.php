@@ -35,7 +35,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->backend->SetTextColor(0);
 		$this->backend->SetDrawColor(0, 0, 0);
 		$this->backend->SetLineWidth(0.1);
-		$this->backend->SetFont('arial', 'B', 8);
+		$this->backend->SetFont('arial', 'B', 7);
 
 		$margins = $this->backend->getMargins();
 		$table_width = $this->backend->getPageWidth() - ($margins['left'] + $margins['right']);
