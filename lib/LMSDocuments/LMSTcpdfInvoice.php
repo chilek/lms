@@ -123,7 +123,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			$this->backend->MultiCell($h_width[$item], $h_head, $heads[$item], 1, 'C', true, 0, '', '', true, 0, false, false, $h_head, 'M');
 
 		$this->backend->Ln();
-		$this->backend->SetFont('arial', '', 8);
+		$this->backend->SetFont('arial', '', 7);
 
 		/* invoice correction data */
 		if (isset($this->data['invoice'])) {
