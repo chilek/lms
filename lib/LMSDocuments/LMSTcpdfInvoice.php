@@ -549,7 +549,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			);
 			$this->backend->StartTransform();
 			$this->backend->TranslateX(55);
-			$this->backend->write1DBarcode($barcode, 'C128', '', 263, 60, 5, 0.3, $style, '');
+			$this->backend->write1DBarcode($barcode, 'C128', '', 263, 45, 5, 0.3, $style, '');
 			$this->backend->StopTransform();
 		}
 
