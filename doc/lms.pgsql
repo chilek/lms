@@ -2660,6 +2660,10 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('userpanel', 'change_notification_mail_recipient', '', '', 0),
 ('userpanel', 'change_notification_mail_subject', '', '', 0),
 ('userpanel', 'change_notification_mail_body', '', '', 0),
+('userpanel', 'change_confirmation_mail_subject', '', '', 0),
+('userpanel', 'change_confirmation_mail_body', '', '', 0),
+('userpanel', 'change_rejection_mail_subject', '', '', 0),
+('userpanel', 'change_rejection_mail_body', '', '', 0),
 ('directories', 'userpanel_dir', 'userpanel', '', 0);
 
 INSERT INTO netdeviceproducers (id, name) VALUES
@@ -2989,6 +2993,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017080500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017080600');
 
 COMMIT;

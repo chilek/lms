@@ -91,7 +91,7 @@ $_LANG['building'] = 'budynek';
 $_LANG['apartment'] = 'lokal';
 $_LANG['lastname'] = 'nazwa/nazwisko';
 
-$_LANG['Customer data change notifications'] = 'Powiadomienia o zmianie danych klienta';
+$_LANG['Customer data change notifications sent to operator'] = 'Powiadomienia o zmianie danych klienta wysyłane do operatora';
 $_LANG['Mail sender:'] = 'Nadawca listu:';
 $_LANG['Enter customer data change notification mail sender'] = 'Wprowadź nadawcę listu z powiadomieniem o zmianie danych klienta';
 $_LANG['Mail recipient:'] = 'Odbiorca listu:';
@@ -101,9 +101,14 @@ $_LANG['Enter customer data change notification mail subject'] = 'Wprowadź tema
 $_LANG['Mail body:'] = 'Treść listu:';
 $_LANG['Enter customer data change notification mail body'] = 'Wprowadź treść listu z powiadomieniem o zmianie danych klienta';
 
-$_LANG['The following changes were confirmed:'] = 'Następujące zmiany zostały potwierdzone:';
-$_LANG['data change confirmation'] = 'potwierdzenie zmiany danych';
-$_LANG['The following changes were rejected:'] = 'Następujące zmiany zostały odrzucone:';
-$_LANG['data change rejection'] = 'odrzucenie zmiany danych';
+$_LANG['Customer data change notifications sent to customer'] = 'Powiadomienia o zmianie danych klienta wysyłane do klienta';
+$_LANG['Confirmation mail subject:'] = 'Temat listu z potwierdzeniem:';
+$_LANG['Enter customer data change confirmation mail subject'] = 'Wprowadź temat listu z potwierdzeniem o zmianie danych klienta';
+$_LANG['Confirmation mail body:'] = 'Treść listu z potwierdzeniem:';
+$_LANG['Enter customer data change confirmation mail body'] = 'Wprowadź treść listu z potwierdzeniem o zmianie danych klienta';
+$_LANG['Rejection mail subject:'] = 'Temat listu z odmową:';
+$_LANG['Enter customer data change rejection mail subject'] = 'Wprowadź temat listu z odmową zmiany danych klienta';
+$_LANG['Rejection mail body:'] = 'Treść listu z odmową:';
+$_LANG['Enter customer data change rejection mail body'] = 'Wprowadź treść listu z odmową zmiany danych klienta';
 
 ?>

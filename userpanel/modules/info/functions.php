@@ -293,6 +293,10 @@ if(defined('USERPANEL_SETUPMODE'))
 		$SMARTY->display('module:info:setup_changes.html');
 	}
 
+	function parse_customer_mail($text, $params) {
+		return str_replace('%changes%', implode(', ', array_map('trans', $params['changes'])), $text);
+	}
+
 	function module_submit_changes_save() {
 		global $LMS;
 
@@ -385,7 +389,9 @@ if(defined('USERPANEL_SETUPMODE'))
 					if (count($fields) > 2)
 						$LMS->SYSLOG->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE, $fields);
 
-			if (!empty($confirmed_changes)) {
+			$mail_subject = ConfigHelper::getConfig('userpanel.change_confirmation_mail_subject');
+			$mail_body = ConfigHelper::getConfig('userpanel.change_confirmation_mail_body');
+			if (!empty($mail_subject) && !empty($mail_body) && !empty($confirmed_changes)) {
 				$mail_sender = ConfigHelper::getConfig('userpanel.change_notification_mail_sender', ConfigHelper::getConfig('mail.smtp_username'));
 				foreach ($confirmed_changes as $customerid => $changes)
 					if (!empty($changes)) {
@@ -396,14 +402,15 @@ if(defined('USERPANEL_SETUPMODE'))
 								$mail_recipients[] = $email['contact'];
 
 						if (!empty($mail_recipients)) {
-							$mail_body = trans("The following changes were confirmed:") . "\n"
-								. implode(', ', array_map('trans', $changes));
+							$subject = parse_customer_mail($mail_subject, array('changes' => $changes));
+							$body = parse_customer_mail($mail_body, array('changes' => $changes));
+
 							foreach ($mail_recipients as $mail_recipient) {
 								$LMS->SendMail($mail_recipient, array(
 										'From' => $mail_sender,
 										'To' => $mail_recipient,
-										'Subject' => trans("data change confirmation"),
-									), $mail_body);
+										'Subject' => $subject,
+									), $body);
 							}
 						}
 					}
@@ -428,7 +435,9 @@ if(defined('USERPANEL_SETUPMODE'))
 				$rejected_changes[$change['customerid']][] = $change['fieldname'];
 				$DB->Execute('DELETE FROM up_info_changes WHERE id = ?', array($changeid));
 			}
-			if (!empty($rejected_changes)) {
+			$mail_subject = ConfigHelper::getConfig('userpanel.change_rejection_mail_subject');
+			$mail_body = ConfigHelper::getConfig('userpanel.change_rejection_mail_body');
+			if (!empty($mail_subject) && !empty($mail_body) && !empty($rejected_changes)) {
 				$mail_sender = ConfigHelper::getConfig('userpanel.change_notification_mail_sender', ConfigHelper::getConfig('mail.smtp_username'));
 				foreach ($rejected_changes as $customerid => $changes)
 					if (!empty($changes)) {
@@ -439,14 +448,15 @@ if(defined('USERPANEL_SETUPMODE'))
 								$mail_recipients[] = $email['contact'];
 
 						if (!empty($mail_recipients)) {
-							$mail_body = trans("The following changes were rejected:") . "\n"
-								. implode(', ', array_map('trans', $changes));
+							$subject = parse_customer_mail($mail_subject, array('changes' => $changes));
+							$body = parse_customer_mail($mail_body, array('changes' => $changes));
+
 							foreach ($mail_recipients as $mail_recipient) {
 								$LMS->SendMail($mail_recipient, array(
 										'From' => $mail_sender,
 										'To' => $mail_recipient,
-										'Subject' => trans("data change rejection"),
-									), $mail_body);
+										'Subject' => $subject,
+									), $body);
 							}
 						}
 					}
@@ -466,6 +476,10 @@ if(defined('USERPANEL_SETUPMODE'))
 		$SMARTY->assign('change_notification_mail_recipient', ConfigHelper::getConfig('userpanel.change_notification_mail_recipient'));
 		$SMARTY->assign('change_notification_mail_subject', ConfigHelper::getConfig('userpanel.change_notification_mail_subject'));
 		$SMARTY->assign('change_notification_mail_body', ConfigHelper::getConfig('userpanel.change_notification_mail_body'));
+		$SMARTY->assign('change_confirmation_mail_subject', ConfigHelper::getConfig('userpanel.change_confirmation_mail_subject'));
+		$SMARTY->assign('change_confirmation_mail_body', ConfigHelper::getConfig('userpanel.change_confirmation_mail_body'));
+		$SMARTY->assign('change_rejection_mail_subject', ConfigHelper::getConfig('userpanel.change_rejection_mail_subject'));
+		$SMARTY->assign('change_rejection_mail_body', ConfigHelper::getConfig('userpanel.change_rejection_mail_body'));
 
 		$SMARTY->display('module:info:setup.html');
 	}
@@ -487,6 +501,14 @@ if(defined('USERPANEL_SETUPMODE'))
 			array($_POST['change_notification_mail_subject'], 'userpanel', 'change_notification_mail_subject'));
 		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
 			array($_POST['change_notification_mail_body'], 'userpanel', 'change_notification_mail_body'));
+		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+			array($_POST['change_confirmation_mail_subject'], 'userpanel', 'change_confirmation_mail_subject'));
+		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+			array($_POST['change_confirmation_mail_body'], 'userpanel', 'change_confirmation_mail_body'));
+		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+			array($_POST['change_rejection_mail_subject'], 'userpanel', 'change_rejection_mail_subject'));
+		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+			array($_POST['change_rejection_mail_body'], 'userpanel', 'change_rejection_mail_body'));
 
 		header('Location: ?m=userpanel&module=info');
 	}

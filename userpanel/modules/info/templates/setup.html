@@ -35,7 +35,7 @@
 			<TD class="nobr" colspan="2">
 				<fieldset>
 					<legend class="bold">
-						{trans("Customer data change notifications")}
+						{trans("Customer data change notifications sent to operator")}
 					</legend>
 					<table>
 						<TR>
@@ -74,6 +74,51 @@
 				</fieldset>
 			</TD>
 		</TR>
+
+		<TR>
+			<TD class="nobr" colspan="2">
+				<fieldset>
+					<legend class="bold">
+						{trans("Customer data change notifications sent to customer")}
+					</legend>
+					<table>
+						<TR>
+							<TD class="nobr">
+								<label for="customer_change_confirmation_mail_subject">{trans("Confirmation mail subject:")}</label>
+							</TD>
+							<TD>
+								<INPUT type="text" size="50" name="change_confirmation_mail_subject" id="change_confirmation_mail_subject" value="{$change_confirmation_mail_subject}" {tip text="Enter customer data change confirmation mail subject"}>
+							</TD>
+						</TR>
+						<TR>
+							<TD class="nobr">
+								<label for="change_confirmation_mail_body">{trans("Confirmation mail body:")}</label>
+							</TD>
+							<TD>
+								<TEXTAREA name="change_confirmation_mail_body" id="change_confirmation_mail_body" cols="60" rows="7" {tip text="Enter customer data change confirmation mail body"}>{$change_confirmation_mail_body}</TEXTAREA>
+							</TD>
+						</TR>
+						<TR>
+							<TD class="nobr">
+								<label for="change_rejection_mail_subject">{trans("Rejection mail subject:")}</label>
+							</TD>
+							<TD>
+								<INPUT type="text" size="50" name="change_rejection_mail_subject" id="change_rejection_mail_subject" value="{$change_rejection_mail_subject}" {tip text="Enter customer data change rejection mail subject"}>
+							</TD>
+						</TR>
+						<TR>
+							<TD class="nobr">
+								<label for="change_rejection_mail_body">{trans("Rejection mail body:")}</label>
+							</TD>
+							<TD>
+								<TEXTAREA name="change_rejection_mail_body" id="change_rejection_mail_body" cols="60" rows="7" {tip text="Enter customer data change rejection mail body"}>{$change_rejection_mail_body}</TEXTAREA>
+							</TD>
+						</TR>
+					</table>
+				</fieldset>
+			</TD>
+		</TR>
+
 
 	</TABLE>
 	<p align="right">
