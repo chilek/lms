@@ -301,16 +301,20 @@ if(defined('USERPANEL_SETUPMODE'))
 		if (isset($_POST['userchanges'])) {
 			$args = array();
 			$addresses = array();
+			$confirmed_changes = array();
 			foreach ($_POST['userchanges'] as $changeid) {
 				$changes = $DB->GetRow('SELECT customerid, fieldname, fieldvalue FROM up_info_changes
 					WHERE id = ?', array($changeid));
-				if (!isset($args[$changes['customerid']]))
+				if (!isset($args[$changes['customerid']])) {
 					$args[$changes['customerid']] = array(
 						SYSLOG::RES_CUST => $changes['customerid'],
 						SYSLOG::RES_USER => $LMS->AUTH->id,
 					);
+					$confirmed_changes[$changes['customerid']] = array();
+				}
 
 				if (preg_match('/(phone|email|im)([0-9]+)/', $changes['fieldname'], $matches)) {
+					$confirmed_changes[$changes['customerid']][] = $matches[1];
 					if ($matches[2]) {
 						$fields = array(
 							SYSLOG::RES_CUST => $changes['customerid'],
@@ -347,6 +351,8 @@ if(defined('USERPANEL_SETUPMODE'))
 					case 'lastname':
 					case 'ssn':
 					case 'ten':
+						$confirmed_changes[$changes['customerid']][] = $changes['fieldname'];
+
 						$DB->Execute('UPDATE customers SET '.$changes['fieldname'].' = ? WHERE id = ?',
 							array($changes['fieldvalue'], $changes['customerid']));
 						$args[$changes['customerid']][$changes['fieldname']] = $changes['fieldvalue'];
@@ -356,6 +362,8 @@ if(defined('USERPANEL_SETUPMODE'))
 					case 'apartment':
 					case 'zip':
 					case 'city':
+						$confirmed_changes[$changes['customerid']][] = $changes['fieldname'];
+
 						if ($changes['fieldname'] == 'building')
 							$changes['fieldname'] = 'house';
 						elseif ($changes['fieldname'] == 'apartment')
@@ -376,18 +384,74 @@ if(defined('USERPANEL_SETUPMODE'))
 				foreach ($args as $customerid => $fields)
 					if (count($fields) > 2)
 						$LMS->SYSLOG->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE, $fields);
+
+			if (!empty($confirmed_changes)) {
+				$mail_sender = ConfigHelper::getConfig('userpanel.change_notification_mail_sender', ConfigHelper::getConfig('mail.smtp_username'));
+				foreach ($confirmed_changes as $customerid => $changes)
+					if (!empty($changes)) {
+						$customerinfo = $LMS->GetCustomer($customerid);
+						$mail_recipients = array();
+						foreach ($customerinfo['emails'] as $email)
+							if (($email['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS)
+								$mail_recipients[] = $email['contact'];
+
+						if (!empty($mail_recipients)) {
+							$mail_body = trans("The following changes were confirmed:") . "\n"
+								. implode(', ', array_map('trans', $changes));
+							foreach ($mail_recipients as $mail_recipient) {
+								$LMS->SendMail($mail_recipient, array(
+										'From' => $mail_sender,
+										'To' => $mail_recipient,
+										'Subject' => trans("data change confirmation"),
+									), $mail_body);
+							}
+						}
+					}
+			}
 		}
 
 		module_changes();
 	}
 
-	function module_submit_changes_delete()
-	{
-		global $DB;
+	function module_submit_changes_delete() {
+		global $LMS;
 
-		if(isset($_POST['userchanges']))
-			foreach($_POST['userchanges'] as $changeid)
+		$DB = LMSDB::getInstance();
+
+		if (isset($_POST['userchanges'])) {
+			$rejected_changes = array();
+			foreach ($_POST['userchanges'] as $changeid) {
+				$change = $DB->GetRow('SELECT customerid, fieldname FROM up_info_changes WHERE id = ?',
+					array($changeid));
+				if (!isset($rejected_changes[$change['customerid']]))
+					$rejected_changes[$change['customerid']] = array();
+				$rejected_changes[$change['customerid']][] = $change['fieldname'];
 				$DB->Execute('DELETE FROM up_info_changes WHERE id = ?', array($changeid));
+			}
+			if (!empty($rejected_changes)) {
+				$mail_sender = ConfigHelper::getConfig('userpanel.change_notification_mail_sender', ConfigHelper::getConfig('mail.smtp_username'));
+				foreach ($rejected_changes as $customerid => $changes)
+					if (!empty($changes)) {
+						$customerinfo = $LMS->GetCustomer($customerid);
+						$mail_recipients = array();
+						foreach ($customerinfo['emails'] as $email)
+							if (($email['type'] & (CONTACT_NOTIFICATIONS | CONTACT_DISABLED)) == CONTACT_NOTIFICATIONS)
+								$mail_recipients[] = $email['contact'];
+
+						if (!empty($mail_recipients)) {
+							$mail_body = trans("The following changes were rejected:") . "\n"
+								. implode(', ', array_map('trans', $changes));
+							foreach ($mail_recipients as $mail_recipient) {
+								$LMS->SendMail($mail_recipient, array(
+										'From' => $mail_sender,
+										'To' => $mail_recipient,
+										'Subject' => trans("data change rejection"),
+									), $mail_body);
+							}
+						}
+					}
+			}
+		}
 
 		module_changes();
 	}
