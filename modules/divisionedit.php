@@ -28,7 +28,7 @@ $id = intval($_GET['id']);
 
 if (!empty($_GET['changestatus'])) {
 	if ($SYSLOG) {
-		$div = $DB->GetRow('SELECT countryid, status FROM divisions WHERE id = ?', array($id));
+		$div = $DB->GetRow('SELECT countryid, status FROM vdivisions WHERE id = ?', array($id));
 		$args = array(
 			SYSLOG::RES_DIV => $id,
 			SYSLOG::RES_COUNTRY => $div['countryid'],
