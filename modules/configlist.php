@@ -308,15 +308,15 @@ function GetConfigList() {
 				break;
 
 				case 'helpdesk_notification_mail_subject':
-					$config[$idx]['description'] = trans('Temaplate for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id');
+					$config[$idx]['description'] = trans('Template for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id ; %subject - ticket subject ; %body - ticket body');
 				break;
 
 				case 'helpdesk_notification_mail_body':
-					$config[$idx]['description'] = trans('Temaplate for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id ; %url - ticket url');
+					$config[$idx]['description'] = trans('Template for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id ; %subject - ticket subject ; %body - ticket body ; %url - ticket url');
 				break;
 
 				case 'helpdesk_notification_sms_body':
-					$config[$idx]['description'] = trans('Temaplate for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id');
+					$config[$idx]['description'] = trans('Template for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id ; %subject - ticket subject ; %body - ticket body');
 				break;
 
 				case 'helpdesk_customerinfo_mail_body':

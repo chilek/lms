@@ -2569,9 +2569,11 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui', 'helpdesk_backend_mode', 'false', '', 0),
 ('phpui', 'helpdesk_sender_name', '', '', 0),
 ('phpui', 'helpdesk_reply_body', 'false', '', 0),
-('phpui', 'helpdesk_notification_mail_subject', '[RT#%tid]', '', 0),
-('phpui', 'helpdesk_notification_mail_body', 'URL: %url', '', 0),
-('phpui', 'helpdesk_notification_sms_body', '[RT#%tid]', '', 0),
+('phpui', 'helpdesk_notification_mail_subject', '[RT#%tid] %subject', '', 0),
+('phpui', 'helpdesk_notification_mail_body', '%body
+
+URL: %url', '', 0),
+('phpui', 'helpdesk_notification_sms_body', '[RT#%tid] %subject: %body', '', 0),
 ('phpui', 'use_invoices', 'false', '', 0),
 ('phpui', 'ticket_template_file', 'rtticketprint.html', '', 0),
 ('phpui', 'use_current_payday', 'false', '', 0),
