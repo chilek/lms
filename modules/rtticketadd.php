@@ -91,9 +91,11 @@ if(isset($_POST['ticket']))
 		if (empty($ticket['nodeid']))
 			$ticket['nodeid'] = null;
 
-		foreach ($files as &$file)
-			$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
-		unset($file);
+		if (!empty($files)) {
+			foreach ($files as &$file)
+				$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
+			unset($file);
+		}
 		$id = $LMS->TicketAdd($ticket, $files);
 
 		if (ConfigHelper::checkConfig('phpui.newticket_notify')) {
