@@ -487,22 +487,8 @@ if ($notify) {
 
 	$ticket = $LMS->GetTicketContents($ticket_id);
 
-	$params = array(
-		'id' => $ticket_id,
-		'messageid' => isset($msgid) ? $msgid : null,
-		'customerid' => $ticket['customerid'] && $reqcustid ? $ticket['customerid'] : null,
-		'status' => $ticket['status'],
-		'categories' => $ticket['categorynames'],
-		'subject' => $mh_subject,
-		'body' => $mail_body,
-	);
-
 	$headers['From'] = $mailfname . ' <' . $mailfrom . '>';
-	$headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
 	$headers['Reply-To'] = $headers['From'];
-
-	$body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
-	$sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
 
 	if ($ticket['customerid'] && $reqcustid) {
 		$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
@@ -531,10 +517,8 @@ if ($notify) {
 				'emails' => $emails,
 				'phones' => $phones,
 			);
-
-			$body .= $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
-
-			$sms_body .= $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
+			$mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
+			$sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
 		}
 
 		$queuedata = $LMS->GetQueue($queue);
@@ -566,11 +550,24 @@ if ($notify) {
 			}
 		}
 	} elseif ($customerinfo && !empty($fromname)) {
-		$body .= "\n\n-- \n";
-		$body .= trans('Customer:') . ' ' . $fromname;
-		$sms_body .= "\n";
-		$sms_body .= trans('Customer:') . ' ' . $fromname;
+		$mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $fromname;
+		$sms_customerinfo = "\n" . trans('Customer:') . ' ' . $fromname;
 	}
+
+	$params = array(
+		'id' => $ticket_id,
+		'messageid' => isset($msgid) ? $msgid : null,
+		'customerid' => $ticket['customerid'] && $reqcustid ? $ticket['customerid'] : null,
+		'status' => $ticket['status'],
+		'categories' => $ticket['categorynames'],
+		'subject' => $mh_subject,
+		'body' => $mail_body,
+	);
+	$headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
+	$params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
+	$body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
+	$params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
+	$sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
 
 	$args = array(
 		'queue' => $queue,

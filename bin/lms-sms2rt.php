@@ -244,23 +244,8 @@ if (($fh = fopen($message_file, "r")) != NULL) {
 		else
 			$mailfrom = $default_mail_from;
 
-		$params = array(
-			'id' => $tid,
-			'messageid' => isset($msgid) ? $msgid : null,
-			'customerid' => $customer['cid'],
-			'status' => $RT_STATES[RT_NEW],
-			'categories' => implode(' ; ', $categories),
-			'subject' => trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
-			'body' => $message,
-			'url' => $lms_url . '?m=rtticketview&id=',
-		);
-
 		$headers['From'] = $mailfname.' <'.$mailfrom.'>';
-		$headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
 		$headers['Reply-To'] = $headers['From'];
-
-		$message = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
-		$sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
 
 		if (!empty($customer['cid'])) {
 			$info = $DB->GetRow("SELECT " . $DB->Concat('UPPER(lastname)',"' '",'c.name') . " AS customername,
@@ -287,10 +272,8 @@ if (($fh = fopen($message_file, "r")) != NULL) {
 					'emails' => $emails,
 					'phones' => $phones,
 				);
-
-				$body .= $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
-
-				$sms_body .= $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
+				$mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
+				$sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
 			}
 
 			$queuedata = $LMS->GetQueue($queueid);
@@ -315,11 +298,25 @@ if (($fh = fopen($message_file, "r")) != NULL) {
 				}
 			}
 		} elseif ($helpdesk_customerinfo) {
-			$body .= "\n\n-- \n";
-			$body .= trans('Customer:') . ' ' . $requestor;
-			$sms_body .= "\n";
-			$sms_body .= trans('Customer:') . ' ' . $requestor;
+			$mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $requestor;
+			$sms_customerinfo = "\n" . trans('Customer:') . ' ' . $requestor;
 		}
+
+		$params = array(
+			'id' => $tid,
+			'messageid' => isset($msgid) ? $msgid : null,
+			'customerid' => $customer['cid'],
+			'status' => $RT_STATES[RT_NEW],
+			'categories' => implode(' ; ', $categories),
+			'subject' => trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
+			'body' => $message,
+			'url' => $lms_url . '?m=rtticketview&id=',
+		);
+		$headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
+		$params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
+		$message = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
+		$params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
+		$sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
 
 		// send email
 		if($recipients = $DB->GetCol("SELECT DISTINCT email

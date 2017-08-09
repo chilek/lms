@@ -2503,23 +2503,23 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui','short_pagescroller','false','',0),
 ('phpui','helpdesk_stats','true','',0),
 ('phpui','helpdesk_customerinfo','true','',0),
-('phpui','helpdesk_customerinfo_mail_body','
-
---
+('phpui','helpdesk_customerinfo_mail_body','--
 Klient: %custname ID: %cid
 Adres: %address
 E-mail: %email
 Telefon: %phone','',0),
-('phpui','helpdesk_customerinfo_sms_body','
-Klient: %custname ID: %cid Adres: %address Telefon: %phone','',0),
+('phpui','helpdesk_customerinfo_sms_body','Klient: %custname ID: %cid Adres: %address Telefon: %phone','',0),
 ('phpui','helpdesk_backend_mode','false','',0),
 ('phpui','helpdesk_sender_name','','',0),
 ('phpui','helpdesk_reply_body','false','',0),
 ('phpui','helpdesk_notification_mail_subject','[RT#%tid] %subject','',0),
 ('phpui','helpdesk_notification_mail_body','%body
 
-URL: %url','',0),
-('phpui','helpdesk_notification_sms_body','[RT#%tid] %subject: %body','',0),
+URL: %url
+
+%customerinfo','',0),
+('phpui','helpdesk_notification_sms_body','[RT#%tid] %subject: %body
+%customerinfo','',0),
 ('phpui','use_invoices','false','',0),
 ('phpui','ticket_template_file','rtticketprint.html','',0),
 ('phpui','use_current_payday','false','',0),

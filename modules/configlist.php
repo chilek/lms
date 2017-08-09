@@ -308,23 +308,17 @@ function GetConfigList() {
 				break;
 
 				case 'helpdesk_notification_mail_subject':
-					$config[$idx]['description'] = trans('Template for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id ; %subject - ticket subject ; %body - ticket body');
-				break;
-
 				case 'helpdesk_notification_mail_body':
-					$config[$idx]['description'] = trans('Template for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id ; %subject - ticket subject ; %body - ticket body ; %url - ticket url');
-				break;
-
 				case 'helpdesk_notification_sms_body':
-					$config[$idx]['description'] = trans('Template for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id ; %subject - ticket subject ; %body - ticket body');
+					$config[$idx]['description'] = trans('Template for user notice relevant to ticket in Helpdesk. %status - ticket status ; %cat - ticket categories ; %tid - ticket id ; %cid - customer id ; %subject - ticket subject ; %body - ticket body ; %url - ticket url ; %customerinfo - customer information');
 				break;
 
 				case 'helpdesk_customerinfo_mail_body':
-					$config[$idx]['description'] = trans('Temaplate for user email notice relevant to customer info in ticket in Helpdesk. %custname - customer name ; %cid  - customer id ; %address - address ; %email - e-mail ; %phone - phones');
+					$config[$idx]['description'] = trans('Template for user email notice relevant to customer info in ticket in Helpdesk. %custname - customer name ; %cid  - customer id ; %address - address ; %email - e-mails ; %phone - phones');
 					break;
 
 				case 'helpdesk_customerinfo_sms_body':
-					$config[$idx]['description'] = trans('Temaplate for user sms notice relevant to customer info in ticket in Helpdesk. %custname - customer name ; %cid  - customer id ; %address - address ; %phone - phones');
+					$config[$idx]['description'] = trans('Template for user sms notice relevant to customer info in ticket in Helpdesk. %custname - customer name ; %cid  - customer id ; %address - address ; %email - e-mails ; %phone - phones');
 					break;
 
 				default:

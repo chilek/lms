@@ -107,6 +107,46 @@ elseif(isset($_POST['note']))
 
 			$ticketdata = $LMS->GetTicketContents($note['ticketid']);
 
+			$headers['From'] = $mailfname.' <'.$mailfrom.'>';
+			$headers['Reply-To'] = $headers['From'];
+			if ($note['references']) {
+				$headers['References'] = explode(' ', $note['references']);
+				$headers['In-Reply-To'] = array_pop(explode(' ', $note['references']));
+			}
+
+			if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo') {
+				if ($ticketdata['customerid']) {
+					$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
+							address, zip, city FROM customeraddressview WHERE id = ?', array($ticketdata['customerid']));
+					$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
+						WHERE customerid = ?', array($ticketdata['customerid']));
+
+					$emails = array();
+					$phones = array();
+					if (!empty($info['contacts']))
+						foreach ($info['contacts'] as $contact) {
+							$target = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+							if ($contact['type'] & CONTACT_EMAIL)
+								$emails[] = $target;
+							elseif ($contact['type'] & (CONTACT_LANDLINE | CONTACT_MOBILE))
+								$phones[] = $target;
+						}
+
+					$params = array(
+						'id' => $note['ticketid'],
+						'customerid' => $ticket['customerid'],
+						'customer' => $info,
+						'emails' => $emails,
+						'phones' => $phones,
+					);
+					$mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
+					$sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
+				} else {
+					$mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $ticketdata['requestor'];
+					$sms_customerinfo = "\n" . trans('Customer:') . ' ' . $ticketdata['requestor'];
+				}
+			}
+
 			$params = array(
 				'id' => $note['ticketid'],
 				'messageid' => isset($msgid) ? $msgid : null,
@@ -116,48 +156,11 @@ elseif(isset($_POST['note']))
 				'subject' => $ticketdata['subject'],
 				'body' => $note['body'],
 			);
-
-			$headers['From'] = $mailfname.' <'.$mailfrom.'>';
 			$headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
-			$headers['Reply-To'] = $headers['From'];
-			if ($note['references']) {
-				$headers['References'] = explode(' ', $note['references']);
-				$headers['In-Reply-To'] = array_pop(explode(' ', $note['references']));
-			}
-
+			$params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
 			$body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
+			$params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
 			$sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
-
-			if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')
-				&& ($cid = $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($note['ticketid'])))) {
-				$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-						address, zip, city FROM customeraddressview WHERE id = ?', array($cid));
-				$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
-					WHERE customerid = ?', array($cid));
-
-				$emails = array();
-				$phones = array();
-				if (!empty($info['contacts']))
-					foreach ($info['contacts'] as $contact) {
-						$target = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
-						if ($contact['type'] & CONTACT_EMAIL)
-							$emails[] = $target;
-						elseif ($contact['type'] & (CONTACT_LANDLINE | CONTACT_MOBILE))
-							$phones[] = $target;
-					}
-
-				$params = array(
-					'id' => $note['ticketid'],
-					'customerid' => $ticket['customerid'],
-					'customer' => $info,
-					'emails' => $emails,
-					'phones' => $phones,
-				);
-
-				$body .= $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
-
-				$sms_body .= $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
-			}
 
 			$notify_author = ConfigHelper::checkConfig('phpui.helpdesk_author_notify');
 			$args = array(
