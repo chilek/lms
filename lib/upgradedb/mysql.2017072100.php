@@ -25,13 +25,22 @@ $this->BeginTrans();
 
 $this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'helpdesk_notification_mail_subject', '[RT#%tid] %subject'));
 
-$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'helpdesk_notification_mail_body', 'URL: %url'));
+$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'helpdesk_notification_mail_body', '%body
+
+URL: %url'));
 
 $this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'helpdesk_notification_sms_body', '[RT#%tid] %subject: %body'));
 
-$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'helpdesk_customerinfo_mail_body', 'Klient: %custname ID: %cid Adres: %address E-mail: %email Telefon: %phone'));
+$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'helpdesk_customerinfo_mail_body', '
 
-$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'helpdesk_customerinfo_sms_body', 'Klient: %custname ID: %cid Adres: %address Telefon: %phone'));
+--
+Klient: %custname ID: %cid
+Adres: %address
+E-mail: %email
+Telefon: %phone'));
+
+$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'helpdesk_customerinfo_sms_body', '
+Klient: %custname ID: %cid Adres: %address Telefon: %phone'));
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017072100', 'dbversion'));
 

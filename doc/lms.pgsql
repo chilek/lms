@@ -2564,8 +2564,15 @@ INSERT INTO uiconfig (section, var, value, description, disabled) VALUES
 ('phpui', 'short_pagescroller', 'false', '', 0),
 ('phpui', 'helpdesk_stats', 'true', '', 0),
 ('phpui', 'helpdesk_customerinfo', 'true', '', 0),
-('phpui', 'helpdesk_customerinfo_mail_body', 'Klient: %custname ID: %cid Adres: %address E-mail: %email Telefon: %phone', '', 0),
-('phpui', 'helpdesk_customerinfo_sms_body', 'Klient: %custname ID: %cid Adres: %address Telefon: %phone', '', 0),
+('phpui', 'helpdesk_customerinfo_mail_body', '
+
+--
+Klient: %custname ID: %cid
+Adres: %address
+E-mail: %email
+Telefon: %phone', '', 0),
+('phpui', 'helpdesk_customerinfo_sms_body', '
+Klient: %custname ID: %cid Adres: %address Telefon: %phone', '', 0),
 ('phpui', 'helpdesk_backend_mode', 'false', '', 0),
 ('phpui', 'helpdesk_sender_name', '', '', 0),
 ('phpui', 'helpdesk_reply_body', 'false', '', 0),

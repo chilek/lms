@@ -532,9 +532,9 @@ if ($notify) {
 				'phones' => $phones,
 			);
 
-			$body .= "\n\n-- \n" . $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
+			$body .= $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
 
-			$sms_body .= "\n" . $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
+			$sms_body .= $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
 		}
 
 		$queuedata = $LMS->GetQueue($queue);
