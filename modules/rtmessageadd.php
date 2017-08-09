@@ -265,32 +265,17 @@ if(isset($_POST['message']))
 					}
 
 				if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
-					$locations = $LMS->getCustomerAddresses($cid);
-					$address_id = $DB->GetOne('SELECT address_id FROM rttickets WHERE id = ?', array($message['ticketid']));
+					$params = array(
+						'id' => $message['ticketid'],
+						'customerid' => $cid,
+						'customer' => $info,
+						'emails' => $emails,
+						'phones' => $phones,
+					);
 
-					$helpdesk_customerinfo_mail_body = ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body');
-					$helpdesk_customerinfo_mail_body = str_replace('%custname', $info['customername'], $helpdesk_customerinfo_mail_body);
-					$helpdesk_customerinfo_mail_body = str_replace('%cid', sprintf("%04d",$cid), $helpdesk_customerinfo_mail_body);
-					$helpdesk_customerinfo_mail_body = str_replace('%address', (empty($address_id) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
-							: $locations[$address_id]['location']), $helpdesk_customerinfo_mail_body);
-					if (!empty($phones))
-					$helpdesk_customerinfo_mail_body = str_replace('%phone', implode(', ', $phones), $helpdesk_customerinfo_mail_body);
-					if (!empty($emails))
-						$helpdesk_customerinfo_mail_body = str_replace('%email', implode(', ', $emails), $helpdesk_customerinfo_mail_body);
+					$body .= "\n\n-- \n" . $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
 
-					$body .= "\n\n-- \n";
-					$body .= $helpdesk_customerinfo_mail_body;
-
-					$helpdesk_customerinfo_sms_body = ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body');
-					$helpdesk_customerinfo_sms_body = str_replace('%custname', $info['customername'], $helpdesk_customerinfo_sms_body);
-					$helpdesk_customerinfo_sms_body = str_replace('%cid', sprintf("%04d",$cid), $helpdesk_customerinfo_sms_body);
-					$helpdesk_customerinfo_sms_body = str_replace('%address', (empty($address_id) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
-							: $locations[$address_id]['location']), $helpdesk_customerinfo_sms_body);
-					if (!empty($phones))
-						$helpdesk_customerinfo_sms_body = str_replace('%phone', preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones)), $helpdesk_customerinfo_sms_body);
-
-					$sms_body .= "\n";
-					$sms_body .= $helpdesk_customerinfo_sms_body;
+					$sms_body .= "\n" . $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
 				}
 
 				$queuedata = $LMS->GetQueueByTicketId($message['ticketid']);

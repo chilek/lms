@@ -524,26 +524,17 @@ if ($notify) {
 			}
 
 		if ($customerinfo) {
-			$locations = $LMS->getCustomerAddresses($ticket['customerid']);
+			$params = array(
+				'id' => $ticket_id,
+				'customerid' => $ticket['customerid'],
+				'customer' => $info,
+				'emails' => $emails,
+				'phones' => $phones,
+			);
 
-			$body .= "\n\n-- \n";
-			$body .= trans('Customer:') . ' ' . $info['customername'] . "\n";
-			$body .= trans('ID:') . ' ' . sprintf('%04d', $ticket['customerid']) . "\n";
-			$body .= trans('Address:') . ' ' . (empty($ticket['address_id']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
-				: $locations[$ticket['address_id']]['location']) . "\n";
+			$body .= "\n\n-- \n" . $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
 
-			if (!empty($phones))
-				$body .= trans('Phone:').' ' . implode(', ', $phones) . "\n";
-			if (!empty($emails))
-				$body .= trans('E-mail:') . ' ' . implode(', ', $emails);
-
-			$sms_body .= "\n";
-			$sms_body .= trans('Customer:').' '.$info['customername'];
-			$sms_body .= ' ' . sprintf('(%04d)', $ticket['customerid']) . '. ';
-			$sms_body .= (empty($ticket['address_id']) ? $info['address'] . ', ' . $info['zip'] . ' ' . $info['city']
-				: $locations[$ticket['address_id']]['location']);
-			if (!empty($phones))
-				$sms_body .= '. ' . trans('Phone:') . ' ' . preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones));
+			$sms_body .= "\n" . $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
 		}
 
 		$queuedata = $LMS->GetQueue($queue);

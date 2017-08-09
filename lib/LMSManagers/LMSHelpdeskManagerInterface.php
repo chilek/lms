@@ -97,4 +97,6 @@ interface LMSHelpdeskManagerInterface
 	public function GetQueueCategories($queueid);
 
 	public function ReplaceNotificationSymbols($text, array $params);
+
+	public function ReplaceNotificationCustomerSymbols($text, array $params);
 }

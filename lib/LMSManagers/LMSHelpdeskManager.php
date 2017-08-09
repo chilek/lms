@@ -766,4 +766,21 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 		return $text;
 	}
+
+	public function ReplaceNotificationCustomerSymbols($text, array $params) {
+		$location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+		$locations = $location_manager->getCustomerAddresses($params['customerid']);
+		$address_id = $this->db->GetOne('SELECT address_id FROM rttickets WHERE id = ?', array($params['id']));
+
+		$text = str_replace('%custname', $params['customer']['customername'], $text);
+		$text = str_replace('%cid', sprintf("%04d", $params['customerid']), $text);
+		$text = str_replace('%address', (empty($address_id) ? $params['customer']['address'] . ', ' . $params['customer']['zip'] . ' ' . $params['customer']['city']
+			: $locations[$address_id]['location']), $text);
+		$text = str_replace('%phone', isset($params['phones']) && !empty($params['phones'])
+			? implode(', ', $params['phones']) : '', $text);
+		$text = str_replace('%email', isset($params['emails']) && !empty($params['emails'])
+		? implode(', ', $params['emails']) : '', $text);
+
+		return $text;
+	}
 }

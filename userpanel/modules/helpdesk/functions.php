@@ -214,28 +214,17 @@ function module_main() {
 						}
 
 				if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
+					$params = array(
+						'id' => $id,
+						'customerid' => $info['customerid'],
+						'customer' => $info,
+						'emails' => $emails,
+						'phones' => $phones,
+					);
 
-					$helpdesk_customerinfo_mail_body = ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body');
-					$helpdesk_customerinfo_mail_body = str_replace('%custname', $info['customername'], $helpdesk_customerinfo_mail_body);
-					$helpdesk_customerinfo_mail_body = str_replace('%cid', sprintf("%04d",$info['customerid']), $helpdesk_customerinfo_mail_body);
-					$helpdesk_customerinfo_mail_body = str_replace('%address', $info['address'] . ', ' . $info['zip'] . ' ' . $info['city'], $helpdesk_customerinfo_mail_body);
-					if (!empty($phones))
-						$helpdesk_customerinfo_mail_body = str_replace('%phone', implode(', ', $phones), $helpdesk_customerinfo_mail_body);
-					if (!empty($emails))
-						$helpdesk_customerinfo_mail_body = str_replace('%email', implode(', ', $emails), $helpdesk_customerinfo_mail_body);
+					$body .= "\n\n-- \n" . $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
 
-					$body .= "\n\n-- \n";
-					$body .= $helpdesk_customerinfo_mail_body;
-
-					$helpdesk_customerinfo_sms_body = ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body');
-					$helpdesk_customerinfo_sms_body = str_replace('%custname', $info['customername'], $helpdesk_customerinfo_sms_body);
-					$helpdesk_customerinfo_sms_body = str_replace('%cid', sprintf("%04d",$info['customerid']), $helpdesk_customerinfo_sms_body);
-					$helpdesk_customerinfo_sms_body = str_replace('%address', $info['address'] . ', ' . $info['zip'] . ' ' . $info['city'], $helpdesk_customerinfo_sms_body);
-					if (!empty($phones))
-						$helpdesk_customerinfo_sms_body = str_replace('%phone', preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones)), $helpdesk_customerinfo_sms_body);
-
-					$sms_body .= "\n";
-					$sms_body .= $helpdesk_customerinfo_sms_body;
+					$sms_body .= "\n" . $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
 				}
 
 				$queuedata = $LMS->GetQueue($ticket['queue']);
@@ -406,21 +395,17 @@ function module_main() {
 								$phones[] = $target;
 						}
 
-				$body .= "\n\n-- \n";
-				$body .= trans('Customer:').' '.$info['customername']."\n";
-				$body .= trans('ID:').' '.sprintf('%04d', $info['customerid'])."\n";
-				$body .= trans('Address:').' '.$info['address'].', '.$info['zip'].' '.$info['city']."\n";
-				if (!empty($phones))
-					$body .= trans('Phone:').' ' . implode(', ', $phones) . "\n";
-				if (!empty($emails))
-					$body .= trans('E-mail:') . ' ' . implode(', ', $emails);
+				$params = array(
+					'id' => $ticket['id'],
+					'customerid' => $info['customerid'],
+					'customer' => $info,
+					'emails' => $emails,
+					'phones' => $phones,
+				);
 
-				$sms_body .= "\n";
-				$sms_body .= trans('Customer:').' '.$info['customername'];
-				$sms_body .= ' '.sprintf('(%04d)', $info['customerid']).'. ';
-				$sms_body .= $info['address'].', '.$info['zip'].' '.$info['city'].'. ';
-				if (!empty($phones))
-					$sms_body .= '. ' . trans('Phone:') . ' ' . preg_replace('/([0-9])[\s-]+([0-9])/', '\1\2', implode(',', $phones));
+				$body .= "\n\n-- \n" . $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
+
+				$sms_body .= "\n" . $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
 			}
 
 			// send email
