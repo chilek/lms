@@ -792,7 +792,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$sms_service = ConfigHelper::getConfig('sms.service');
 
 		$args = array(
-			'queue' => $queue['id'],
+			'queue' => $params['queue'],
 		);
 		if (!$notify_author && $userid)
 			$args['user'] = $userid;
@@ -806,6 +806,17 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				. ($notify_author ? '' : ' AND users.id <> ?')
 				. ' AND (ntype & ?) > 0',
 			array_values($args))) {
+
+			if (isset($params['oldqueue'])) {
+				$oldrecipients = $this->db->GetCol('SELECT DISTINCT email
+					FROM users, rtrights
+					WHERE users.id=userid AND queueid = ? AND email != \'\'
+						AND (rtrights.rights & 8) > 0 AND deleted = 0
+						AND (ntype & ?) > 0',
+					array($params['oldqueue'], MSG_MAIL));
+				$recipients = array_diff($recipients, $oldrecipients);
+			}
+
 			foreach ($recipients as $email) {
 				$params['mail_headers']['To'] = '<' . $email . '>';
 				$LMS->SendMail($email, $params['mail_headers'], $params['mail_body']);
@@ -814,14 +825,26 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 		// send sms
 		$args['type'] = MSG_SMS;
-		if (!empty($sms_service) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
+		if (!empty($sms_service) && ($recipients = $this->db->GetCol('SELECT DISTINCT phone
 			FROM users, rtrights
 				WHERE users.id=userid AND queueid = ? AND phone != \'\'
 					AND (rtrights.rights & 8) > 0 AND deleted = 0'
 					. ($notify_author ? '' : ' AND users.id <> ?')
 					. ' AND (ntype & ?) > 0',
-				array_values($args))))
+				array_values($args)))) {
+
+			if (isset($params['oldqueue'])) {
+				$oldrecipients = $this->db->GetCol('SELECT DISTINCT phone
+					FROM users, rtrights
+					WHERE users.id=userid AND queueid = ? AND phone != \'\'
+						AND (rtrights.rights & 8) > 0 AND deleted = 0
+						AND (ntype & ?) > 0',
+					array($params['oldqueue'], MSG_SMS));
+				$recipients = array_diff($recipients, $oldrecipients);
+			}
+
 			foreach ($recipients as $phone)
 				$LMS->SendSMS($phone, $params['sms_body']);
+		}
 	}
 }

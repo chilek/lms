@@ -248,52 +248,13 @@ if(isset($_POST['ticket']))
 			$params['customerinfo'] =  isset($sms_customerinfo) ? $sms_customerinfo : null;
 			$sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
 
-			// send email
-			if($recipients = $DB->GetCol('SELECT DISTINCT email
-			        FROM users, rtrights
-					WHERE users.id=userid AND queueid = ? AND email != \'\'
-						AND (rtrights.rights & 8) = 8 AND users.id != ?
-						AND deleted = 0 AND (ntype & ?) = ?',
-					array($ticketedit['queueid'], $AUTH->id, MSG_MAIL, MSG_MAIL))
-			) {
-				$oldrecipients = $DB->GetCol('SELECT DISTINCT email
-				    FROM users, rtrights
-					WHERE users.id=userid AND queueid = ? AND email != \'\'
-						AND (rtrights.rights & 8) = 8 AND deleted = 0
-						AND (ntype & ?) = ?',
-					array($ticket['queueid'], MSG_MAIL, MSG_MAIL));
-
-				foreach($recipients as $email) {
-					if(in_array($email, (array)$oldrecipients)) continue;
-
-					$headers['To'] = '<'.$email.'>';
-					$LMS->SendMail($email, $headers, $body);
-					echo '<pre>'; print_r($headers); echo '</pre>';
-				}
-			}
-
-			// send sms
-			$service = ConfigHelper::getConfig('sms.service');
-			if (!empty($service) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
-			        FROM users, rtrights
-					WHERE users.id = userid AND queueid = ? AND phone != \'\'
-						AND (rtrights.rights & 8) = 8 AND users.id != ?
-						AND deleted = 0 AND (ntype & ?) = ?',
-					array($ticketedit['queueid'], $AUTH->id, MSG_SMS, MSG_SMS)))
-			) {
-				$oldrecipients = $DB->GetCol('SELECT DISTINCT phone
-				    FROM users, rtrights
-					WHERE users.id=userid AND queueid = ? AND phone != \'\'
-						AND (rtrights.rights & 8) = 8 AND deleted = 0
-						AND (ntype & ?) = ?',
-					array($ticket['queueid'], MSG_SMS, MSG_SMS));
-
-				foreach ($recipients as $phone) {
-					if (in_array($phone, (array)$oldrecipients)) continue;
-
-					$LMS->SendSMS($phone, $sms_body);
-				}
-			}
+			$LMS->NotifyUsers(array(
+				'queue' => $ticketedit['queueid'],
+				'oldqueue' => $ticket['queueid'],
+				'mail_headers' => $headers,
+				'mail_body' => $body,
+				'sms_body' => $sms_body,
+			));
 		}
 
 		$SESSION->redirect('?m=rtticketview&id='.$id);
