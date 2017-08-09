@@ -31,8 +31,7 @@ URL: %url
 
 %customerinfo'));
 
-$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'helpdesk_notification_sms_body', '[RT#%tid] %subject: %body
-%customerinfo'));
+$this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'helpdesk_notification_sms_body', '[RT#%tid] %subject: %body %customerinfo'));
 
 $this->Execute("INSERT INTO uiconfig (section, var, value) VALUES(?, ?, ?)", array('phpui', 'helpdesk_customerinfo_mail_body', '--
 Klient: %custname ID: %cid

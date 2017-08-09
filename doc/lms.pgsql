@@ -2579,8 +2579,7 @@ Telefon: %phone', '', 0),
 URL: %url
 
 %customerinfo', '', 0),
-('phpui', 'helpdesk_notification_sms_body', '[RT#%tid] %subject: %body
-%customerinfo', '', 0),
+('phpui', 'helpdesk_notification_sms_body', '[RT#%tid] %subject: %body %customerinfo', '', 0),
 ('phpui', 'use_invoices', 'false', '', 0),
 ('phpui', 'ticket_template_file', 'rtticketprint.html', '', 0),
 ('phpui', 'use_current_payday', 'false', '', 0),
