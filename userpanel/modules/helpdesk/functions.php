@@ -183,27 +183,19 @@ function module_main() {
 				$headers['Reply-To'] = $headers['From'];
 				$headers['Message-ID'] = $LMS->GetLastMessageID();
 
-				$info = $DB->GetRow('SELECT id AS customerid, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-					address, zip, city FROM customeraddressview WHERE id = ?', array($SESSION->id));
-				$info['contacts'] = $DB->GetAll('SELECT contact, name FROM customercontacts
-						WHERE customerid = ?', array($SESSION->id));
+				$info = $LMS->GetCustomer($SESSION->id, true);
 
-				$emails = array();
-				$phones = array();
-				if (!empty($info['contacts']))
-					foreach ($info['contacts'] as $contact)
-						if ($contact['type'] & CONTACT_NOTIFICATIONS) {
-							$contact = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
-							if ($contact['type'] & CONTACT_EMAIL)
-								$emails[] = $contact;
-							else
-								$phones[] = $contact;
-						}
+				$emails = array_map(function($contact) {
+						return $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+					}, $LMS->GetCustomerContacts($SESSION->id, CONTACT_EMAIL));
+				$phones = array_map(function($contact) {
+						return $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+					}, $LMS->GetCustomerContacts($SESSION->id, CONTACT_LANDLINE | CONTACT_MOBILE));
 
 				if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
 					$params = array(
 						'id' => $id,
-						'customerid' => $info['customerid'],
+						'customerid' => $SESSION->id,
 						'customer' => $info,
 						'emails' => $emails,
 						'phones' => $phones,
@@ -363,26 +355,18 @@ function module_main() {
 			$headers['Message-ID'] = $ticket['messageid'];
 
 			if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
-				$info = $DB->GetRow('SELECT c.id AS customerid, '.$DB->Concat('UPPER(lastname)',"' '",'c.name').' AS customername,
-					address, zip, city FROM customeraddressview c WHERE c.id = ?', array($SESSION->id));
-				$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
-						WHERE customerid = ?', array($SESSION->id));
+				$info = $LMS->GetCustomer($SESSION->id, true);
 
-				$emails = array();
-				$phones = array();
-				if (!empty($info['contacts']))
-					foreach ($info['contacts'] as $contact)
-						if ($contact['type'] & CONTACT_NOTIFICATIONS) {
-							$target = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
-							if ($contact['type'] & CONTACT_EMAIL)
-								$emails[] = $target;
-							else
-								$phones[] = $target;
-						}
+				$emails = array_map(function($contact) {
+						return $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+					}, $LMS->GetCustomerContacts($SESSION->id, CONTACT_EMAIL));
+				$phones = array_map(function($contact) {
+						return $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+					}, $LMS->GetCustomerContacts($SESSION->id, CONTACT_LANDLINE | CONTACT_MOBILE));
 
 				$params = array(
 					'id' => $ticket['id'],
-					'customerid' => $info['customerid'],
+					'customerid' => $SESSION->id,
 					'customer' => $info,
 					'emails' => $emails,
 					'phones' => $phones,

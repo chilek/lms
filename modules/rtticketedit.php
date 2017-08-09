@@ -210,21 +210,14 @@ if(isset($_POST['ticket']))
 
 			if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
 				if ($ticketedit['customerid']) {
-					$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-								address, zip, city FROM customeraddressview WHERE id = ?', array($ticketedit['customerid']));
-					$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
-						WHERE customerid = ?', array($ticketedit['customerid']));
+					$info = $LMS->GetCustomer($ticketedit['customerid'], true);
 
-					$emails = array();
-					$phones = array();
-					if (!empty($info['contacts']))
-						foreach ($info['contacts'] as $contact) {
-							$target = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
-							if ($contact['type'] & CONTACT_EMAIL)
-								$emails[] = $target;
-							else
-								$phones[] = $target;
-						}
+					$emails = array_map(function($contact) {
+							return $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+						}, $LMS->GetCustomerContacts($ticketedit['customerid'], CONTACT_EMAIL));
+					$phones = array_map(function($contact) {
+							return $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+						}, $LMS->GetCustomerContacts($ticketedit['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE));
 
 					$params = array(
 						'id' => $ticket['ticketid'],

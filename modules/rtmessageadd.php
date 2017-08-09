@@ -234,21 +234,14 @@ if(isset($_POST['message']))
 			$headers['Reply-To'] = $headers['From'];
 
 			if ($ticketdata['customerid']) {
-				$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-						address, zip, city FROM customeraddressview WHERE id = ?', array($ticketdata['customerid']));
-				$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
-					WHERE customerid = ?', array($ticketdata['customerid']));
+				$info = $LMS->GetCustomer($ticketdata['customerid'], true);
 
-				$emails = array();
-				$phones = array();
-				if (!empty($info['contacts']))
-					foreach ($info['contacts'] as $contact) {
-						$target = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
-						if ($contact['type'] & CONTACT_EMAIL)
-							$emails[] = $target;
-						elseif ($contact['type'] & (CONTACT_LANDLINE | CONTACT_MOBILE))
-							$phones[] = $target;
-					}
+				$emails = array_map(function($contact) {
+						return $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+					}, $LMS->GetCustomerContacts($ticketdata['customerid'], CONTACT_EMAIL));
+				$phones = array_map(function($contact) {
+						return $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+					}, $LMS->GetCustomerContacts($ticketdata['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE));
 
 				if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
 					$params = array(

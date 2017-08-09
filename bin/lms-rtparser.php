@@ -491,23 +491,14 @@ if ($notify) {
 	$headers['Reply-To'] = $headers['From'];
 
 	if ($ticket['customerid'] && $reqcustid) {
-		$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
-				address, zip, city FROM customeraddressview
-				WHERE id = ?', array($ticket['customerid']));
+		$info = $LMS->GetCustomer($ticket['customerid'], true);
 
-		$info['contacts'] = $DB->GetAll('SELECT contact, name, type FROM customercontacts
-			WHERE customerid = ?', array($ticket['customerid']));
-
-		$emails = array();
-		$phones = array();
-		if (!empty($info['contacts']))
-			foreach ($info['contacts'] as $contact) {
-				$target = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
-				if ($contact['type'] & CONTACT_EMAIL)
-					$emails[] = $target;
-				elseif ($contact['type'] & (CONTACT_LANDLINE | CONTACT_MOBILE))
-					$phones[] = $target;
-			}
+		$emails = array_map(function($contact) {
+				return $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+			}, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL));
+		$phones = array_map(function($contact) {
+				return $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+			}, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE));
 
 		if ($customerinfo) {
 			$params = array(
