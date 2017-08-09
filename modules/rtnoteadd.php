@@ -114,7 +114,7 @@ elseif(isset($_POST['note']))
 				$headers['In-Reply-To'] = array_pop(explode(' ', $note['references']));
 			}
 
-			if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo') {
+			if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
 				if ($ticketdata['customerid']) {
 					$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
 							address, zip, city FROM customeraddressview WHERE id = ?', array($ticketdata['customerid']));

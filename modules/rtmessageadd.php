@@ -286,7 +286,7 @@ if(isset($_POST['message']))
 						$LMS->SendMail($email, $custmail_headers, $custmail_body);
 					}
 				}
-			} elseif (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) }
+			} elseif (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
 				$mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $ticketdata['requestor'];
 				$sms_customerinfo = "\n" . trans('Customer:') . ' ' . $ticketdata['requestor'];
 			}
