@@ -175,7 +175,7 @@ if(isset($_POST['ticket']))
 
 			} elseif (!empty($requestor) && ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
 				$mail_customerinfo = "\n\n-- \n" . trans('Customer:') . ' ' . $requestor;
-				$sms_customerinfo .= "\n" . trans('Customer:') . ' ' . $requestor;
+				$sms_customerinfo = "\n" . trans('Customer:') . ' ' . $requestor;
 			}
 
 			$params = array(
