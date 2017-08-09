@@ -65,9 +65,11 @@ elseif(isset($_POST['note']))
 	{
 		$messageid = '<msg.' . $ticket['queueid'] . '.' . $note['ticketid'] . '.'  . time() . '@rtsystem.' . gethostname() . '>';
 
-		foreach ($files as &$file)
-			$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
-		unset($file);
+		if (!empty($files)) {
+			foreach ($files as &$file)
+				$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
+			unset($file);
+		|
 		$msgid = $LMS->TicketMessageAdd(array(
 				'ticketid' => $note['ticketid'],
 				'messageid' => $messageid,
