@@ -69,7 +69,7 @@ elseif(isset($_POST['note']))
 			foreach ($files as &$file)
 				$file['name'] = $tmppath . DIRECTORY_SEPARATOR . $file['name'];
 			unset($file);
-		|
+		}
 		$msgid = $LMS->TicketMessageAdd(array(
 				'ticketid' => $note['ticketid'],
 				'messageid' => $messageid,
