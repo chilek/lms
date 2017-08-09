@@ -188,7 +188,7 @@ if(isset($_POST['message']))
 			$message['state'] = RT_RESOLVED;
 		else if (!$DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($message['ticketid'])))
 			$message['state'] = RT_OPEN;
-		
+
 		if (!$DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($message['ticketid'])))
 			$message['owner'] = Auth::GetCurrentUser();
 
@@ -229,14 +229,12 @@ if(isset($_POST['message']))
 			$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
 
 			$ticketdata = $LMS->GetTicketContents($message['ticketid']);
-			foreach ($ticketdata['categories'] as $tcat)
-				$tcatname = $tcatname . $tcat['name'] .' ; ';
 
 			$params = array(
 				'id' => $message['ticketid'],
 				'customerid' => $message['customerid'],
 				'status' => $ticketdata['status'],
-				'categories' => $tcatname,
+				'categories' => $ticketdata['categorynames'],
 				'subject' => $message['subject'],
 				'body' => $message['body'],
 			);

@@ -177,14 +177,12 @@ function module_main() {
 					$mailfrom =  $ticket['mailfrom'];
 
 				$ticketdata = $LMS->GetTicketContents($id);
-				foreach ($ticketdata['categories'] as $tcat)
-					$tcatname = $tcatname . $tcat['name'] .' ; ';
 
 				$params = array(
 					'id' => $id,
 					'customerid' => $SESSION->id,
-					'status' => $RT_STATES[$ticketdata['state']],
-					'categories' => $tcatname,
+					'status' => $ticketdata['status'],
+					'categories' => $ticketdata['categorynames'],
 					'subject' => $ticket['subject'],
 					'body' => $ticket['body'],
 				);
@@ -366,14 +364,12 @@ function module_main() {
 				$mailfrom = $ticket['mailfrom'];
 
 			$ticketdata = $LMS->GetTicketContents($ticket['id']);
-			foreach ($ticketdata['categories'] as $tcat)
-				$tcatname = $tcatname . $tcat['name'] .' ; ';
 
 			$params = array(
 				'id' => $ticket['id'],
 				'customerid' => $SESSION->id,
-				'status' => $RT_STATES[$ticketdata['state']],
-				'categories' => $tcatname,
+				'status' => $ticketdata['status'],
+				'categories' => $ticketdata['categorynames'],
 				'subject' => $ticket['subject'],
 				'body' => $ticket['body'],
 			);

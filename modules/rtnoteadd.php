@@ -106,14 +106,12 @@ elseif(isset($_POST['note']))
 			$mailfrom = $user['email'] ? $user['email'] : $queue['email'];
 
 			$ticketdata = $LMS->GetTicketContents($note['ticketid']);
-			foreach ($ticketdata['categories'] as $tcat)
-				$tcatname = $tcatname . $tcat['name'] .' ; ';
 
 			$params = array(
 				'id' => $note['ticketid'],
 				'customerid' => $ticketdata['customerid'],
 				'status' => $ticketdata['status'],
-				'categories' => $tcatname,
+				'categories' => $ticketdata['categorynames'],
 				'subject' => $ticketdata['subject'],
 				'body' => $note['body'],
 			);

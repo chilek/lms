@@ -244,13 +244,23 @@ if (($fh = fopen($message_file, "r")) != NULL) {
 		else
 			$mailfrom = $default_mail_from;
 
+		$params = array(
+			'id' => $tid,
+			'messageid' => isset($msgid) ? $msgid : null,
+			'customerid' => $customer['cid'],
+			'status' => $RT_STATES[RT_NEW],
+			'categories' => implode(' ; ', $categories),
+			'subject' => trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
+			'body' => $message,
+			'url' => $lms_url . '?m=rtticketview&id=',
+		);
+
 		$headers['From'] = $mailfname.' <'.$mailfrom.'>';
-		$headers['Subject'] = sprintf("[RT#%06d] %s", $tid, trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)));
+		$headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
 		$headers['Reply-To'] = $headers['From'];
 
-		$sms_body = $headers['Subject']."\n".$message;
-		if (!empty($lms_url))
-			$message = $message."\n\n" . $lms_url . '?m=rtticketview&id='.$tid;
+		$message = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
+		$sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
 
 		if (!empty($customer['cid'])) {
 			$info = $DB->GetRow("SELECT " . $DB->Concat('UPPER(lastname)',"' '",'c.name') . " AS customername,

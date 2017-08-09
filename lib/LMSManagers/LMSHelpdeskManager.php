@@ -520,6 +520,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 								FROM rtticketcategories tc
 								JOIN rtcategories c ON c.id = tc.categoryid
 								WHERE ticketid = ?', 'id', array($id));
+		$ticket['categorynames'] = '';
+		if (!empty($ticket['categories']))
+			foreach ($ticket['categories'] as $category)
+				$ticket['categorynames'] .= $category['name'] . ' ; ';
 
         $ticket['messages'] = $this->db->GetAll(
                 '(SELECT rtmessages.id AS id, phonefrom, mailfrom, subject, body, createtime, '
@@ -747,16 +751,17 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 	public function ReplaceNotificationSymbols($text, array $params) {
 		$text = str_replace('%tid', sprintf("%06d", $params['id']), $text);
-		$text = str_replace('%cid', sprintf("%04d", $params['customerid']), $text);
+		$text = str_replace('%cid', isset($params['customerid']) ? sprintf("%04d", $params['customerid']) : '', $text);
 		$text = str_replace('%status', $params['status'], $text);
 		$text = str_replace('%cat', $params['categories'], $text);
 		$text = str_replace('%subject', $params['subject'], $text);
 		$text = str_replace('%body', $params['body'], $text);
-		$url = 'http'
-			. (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
+		$url = (isset($params['url']) && !empty($params['url']) ? $params['url']
+			: 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://'
 				. $_SERVER['HTTP_HOST']
 				. substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
-				. '?m=rtticketview&id=' . $params['id'];
+				. '?m=rtticketview&id=') . $params['id']
+				. (isset($params['messageid']) ? '#rtmessage-' . $params['messageid'] : '');
 		$text = str_replace('%url', $url, $text);
 
 		return $text;

@@ -485,14 +485,25 @@ if ($notify) {
 	else
 		$mailfrom = $autoreply_from;
 
+	$ticket = $LMS->GetTicketContents($ticket_id);
+
+	$params = array(
+		'id' => $ticket_id,
+		'messageid' => isset($msgid) ? $msgid : null,
+		'customerid' => $ticket['customerid'] && $reqcustid ? $ticket['customerid'] : null,
+		'status' => $ticket['status'],
+		'categories' => $ticket['categorynames'],
+		'subject' => $mh_subject,
+		'body' => $mail_body,
+	);
+
 	$headers['From'] = $mailfname . ' <' . $mailfrom . '>';
-	$headers['Subject'] = sprintf("[RT#%06d] %s", $ticket_id, $mh_subject);
+	$headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
 	$headers['Reply-To'] = $headers['From'];
 
-	$sms_body = $headers['Subject'] . "\n" . $mail_body;
-	$body = $mail_body . "\n\n" . $lms_url . '?m=rtticketview&id=' . $ticket_id . (isset($msgid) ? '#rtmessage-' . $msgid : '');
+	$body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
+	$sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
 
-	$ticket = $LMS->GetTicketContents($ticket_id);
 	if ($ticket['customerid'] && $reqcustid) {
 		$info = $DB->GetRow('SELECT id, pin, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername,
 				address, zip, city FROM customeraddressview

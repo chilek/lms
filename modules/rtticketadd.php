@@ -119,14 +119,12 @@ if(isset($_POST['ticket']))
 				$mailfrom =  $ticket['mailfrom'];
 
 			$ticketdata = $LMS->GetTicketContents($id);
-			foreach ($ticketdata['categories'] as $tcat)
-					$tcatname = $tcatname . $tcat['name'] .' ; ';
 
 			$params = array(
 				'id' => $id,
 				'customerid' => $ticket['customerid'],
 				'status' => $ticketdata['status'],
-				'categories' => $tcatname,
+				'categories' => $ticketdata['categorynames'],
 				'subject' => $ticket['subject'],
 				'body' => $ticket['body'],
 			);
