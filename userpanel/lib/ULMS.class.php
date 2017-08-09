@@ -102,6 +102,14 @@ class ULMS extends LMS {
 				LEFT JOIN customers ON (customers.id = customerid)
 				WHERE rttickets.id = ?', array($id));
 
+		$ticket['categories'] = $this->DB->GetAllByKey('SELECT categoryid AS id, c.name
+			FROM rtticketcategories tc
+			JOIN rtcategories c ON c.id = tc.categoryid
+			WHERE ticketid = ?', 'id', array($id));
+		$ticket['categorynames'] = empty($ticket['categories']) ? array() : array_map(function($elem) {
+				return $elem['name'];
+			}, $ticket['categories']);
+
 		$ticket['messages'] = $this->DB->GetAll('SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, '
 				    .$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername,
 				    userid, vusers.name AS username, customerid
