@@ -186,10 +186,10 @@ function module_main() {
 				$info = $LMS->GetCustomer($SESSION->id, true);
 
 				$emails = array_map(function($contact) {
-						return $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+						return $contact['fullname'];
 					}, $LMS->GetCustomerContacts($SESSION->id, CONTACT_EMAIL));
 				$phones = array_map(function($contact) {
-						return $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+						return $contact['fullname'];
 					}, $LMS->GetCustomerContacts($SESSION->id, CONTACT_LANDLINE | CONTACT_MOBILE));
 
 				if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
@@ -358,10 +358,10 @@ function module_main() {
 				$info = $LMS->GetCustomer($SESSION->id, true);
 
 				$emails = array_map(function($contact) {
-						return $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+						return $contact['fullname'];
 					}, $LMS->GetCustomerContacts($SESSION->id, CONTACT_EMAIL));
 				$phones = array_map(function($contact) {
-						return $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+						return $contact['fullname'];
 					}, $LMS->GetCustomerContacts($SESSION->id, CONTACT_LANDLINE | CONTACT_MOBILE));
 
 				$params = array(

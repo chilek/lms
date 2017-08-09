@@ -119,10 +119,10 @@ elseif(isset($_POST['note']))
 					$info = $LMS->GetCustomer($ticketdata['customerid'], true);
 
 					$emails = array_map(function($contact) {
-							return $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+							return $contact['fullname'];
 						}, $LMS->GetCustomerContacts($ticketdata['customerid'], CONTACT_EMAIL));
 					$phones = array_map(function($contact) {
-							return $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+							return $contact['fullname'];
 						}, $LMS->GetCustomerContacts($ticketdata['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE));
 
 					$params = array(

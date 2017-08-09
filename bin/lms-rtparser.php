@@ -494,10 +494,10 @@ if ($notify) {
 		$info = $LMS->GetCustomer($ticket['customerid'], true);
 
 		$emails = array_map(function($contact) {
-				return $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+				return $contact['fullname'];
 			}, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_EMAIL));
 		$phones = array_map(function($contact) {
-				return $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+				return $contact['fullname'];
 			}, $LMS->GetCustomerContacts($ticket['customerid'], CONTACT_LANDLINE | CONTACT_MOBILE));
 
 		if ($customerinfo) {

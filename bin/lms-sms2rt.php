@@ -251,10 +251,10 @@ if (($fh = fopen($message_file, "r")) != NULL) {
 			$info = $LMS->GetCustomer($customer['cid'], true);
 
 			$emails = array_map(function($contact) {
-					return $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+					return $contact['fullname'];
 				}, $LMS->GetCustomerContacts($customer['cid'], CONTACT_EMAIL));
 			$phones = array_map(function($contact) {
-					return $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
+					return $contact['fullname'];
 				}, $LMS->GetCustomerContacts($customer['cid'], CONTACT_LANDLINE | CONTACT_MOBILE));
 
 			if ($helpdesk_customerinfo) {
