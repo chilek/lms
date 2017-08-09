@@ -1567,6 +1567,11 @@ class LMS
 		return $manager->GetLastMessage($ticketid);
 	}
 
+	public function ReplaceNotificationSymbols($text, array $params) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->ReplaceNotificationSymbols($text, $params);
+	}
+
     /*
      *  LMS-UI configuration
      */
