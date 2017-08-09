@@ -49,6 +49,7 @@ if ($taction == 'delperm')
 {
 	$ticket = intval($_GET['id']);
 
+	$queue = $LMS->GetQueueByTicketId($ticket);
 	$DB->Execute('DELETE FROM rttickets WHERE id = ?', array($ticket));
 	//HINT: We delete messages connected with deleted ticket in database (ON DELETE CASCADE mechanism)
 	
@@ -56,7 +57,7 @@ if ($taction == 'delperm')
 	if (!empty($mail_dir))
 		rrmdir($mail_dir . DIRECTORY_SEPARATOR . sprintf('%06d', $ticket));
 
-	$SESSION->redirect('?m=rtqueueview&id=' . $queue);
+	$SESSION->redirect('?m=rtqueueview&id=' . $queue['id']);
 }
 
 if ($qaction == 'delperm')
