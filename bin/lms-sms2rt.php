@@ -311,30 +311,12 @@ if (($fh = fopen($message_file, "r")) != NULL) {
 		$params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
 		$sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
 
-		// send email
-		if($recipients = $DB->GetCol("SELECT DISTINCT email
-			FROM users, rtrights
-			WHERE users.id = userid AND queueid = ? AND email <> ''
-				AND (rtrights.rights & 8) > 0 AND deleted = 0
-				AND (ntype & ?) > 0",
-			array($queueid, MSG_MAIL)))
-		{
-			foreach($recipients as $email)
-			{
-				$headers['To'] = '<'.$email.'>';
-				$LMS->SendMail($email, $headers, $message);
-			}
-		}
-
-		// send sms
-		if (!empty($service) && ($recipients = $DB->GetCol("SELECT DISTINCT phone
-			FROM users, rtrights
-			WHERE users.id = userid AND queueid = ? AND phone <> ''
-				AND (rtrights.rights & 8) > 0 AND deleted = 0
-				AND (ntype & ?) > 0",
-			array($queueid, MSG_SMS))))
-			foreach ($recipients as $phone)
-				$LMS->SendSMS($phone, $sms_body);
+		$LMS->NotifyUsers(array(
+			'queue' => $queueid,
+			'mail_headers' => $headers,
+			'mail_body' => $message,
+			'sms_body' => $sms_body,
+		));
 	}
 } else
 	die("Message file doesn't exist!" . PHP_EOL);

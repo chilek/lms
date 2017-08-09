@@ -239,30 +239,12 @@ function module_main() {
 				$params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
 				$sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
 
-				// send email
-				if ($recipients = $DB->GetCol('SELECT DISTINCT email
-				    FROM users, rtrights
-				    WHERE users.id = userid AND email != \'\' AND (rtrights.rights & 8) = 8
-				        AND (ntype & ?) = ? AND queueid = ?',
-				    array(MSG_MAIL, MSG_MAIL, intval($ticket['queue'])))
-				) {
-					foreach($recipients as $email) {
-						$headers['To'] = '<'.$email.'>';
-
-						$LMS->SendMail($email, $headers, $body);
-					}
-				}
-
-				// send sms
-				$service = ConfigHelper::getConfig('sms.service');
-				if (!empty($service) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
-				    FROM users, rtrights
-				    WHERE users.id = userid AND phone != \'\' AND (rtrights.rights & 8) = 8
-				        AND (ntype & ?) = ? AND queueid = ?',
-				    array(MSG_SMS, MSG_SMS, intval($ticket['queue']))))
-				)
-					foreach($recipients as $phone)
-						$LMS->SendSMS($phone, $sms_body);
+				$LMS->NotifyUsers(array(
+					'queue' => $ticket['queue'],
+					'mail_headers' => $headers,
+					'mail_body' => $body,
+					'sms_body' => $sms_body,
+				));
 			}
 
 			header('Location: ?m=helpdesk&op=view&id=' . $id);
@@ -390,28 +372,12 @@ function module_main() {
 			$params['customerinfo'] = isset($sms_customerinfo) ? $sms_customerinfo : null;
 			$sms_body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_sms_body'), $params);
 
-			// send email
-			if ($recipients = $DB->GetCol('SELECT DISTINCT email
-				FROM users, rtrights
-				WHERE users.id = userid AND email != \'\' AND (rtrights.rights & 8) = 8
-					AND (ntype & ?) = ? AND queueid = ?',
-				array(MSG_MAIL, MSG_MAIL, intval($ticket['queue']['id'])))) {
-				foreach ($recipients as $email) {
-					$headers['To'] = '<' . $email . '>';
-					$LMS->SendMail($email, $headers, $body);
-				}
-			}
-
-			// send sms
-			$service = ConfigHelper::getConfig('sms.service');
-			if (!empty($service) && ($recipients = $DB->GetCol('SELECT DISTINCT phone
-				FROM users, rtrights
-				WHERE users.id = userid AND phone != \'\' AND (rtrights.rights & 8) = 8
-					AND (ntype & ?) = ? AND queueid = ?',
-				array(MSG_SMS, MSG_SMS, intval($ticket['queue']['id']))))) {
-				foreach ($recipients as $phone)
-					$LMS->SendSMS($phone, $sms_body);
-			}
+			$LMS->NotifyUsers(array(
+				'queue' => $ticket['queue']['id'],
+				'mail_headers' => $headers,
+				'mail_body' => $body,
+				'sms_body' => $sms_body,
+			));
 
 			header('Location: ?m=helpdesk&op=view&id='.$ticket['id']);
 			die;

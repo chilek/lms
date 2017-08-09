@@ -1583,6 +1583,11 @@ class LMS
 		return $manager->ReplaceNotificationCustomerSymbols($text, $params);
 	}
 
+	public function NotifyUsers($params) {
+		$manager = $this->getHelpdeskManager();
+		return $manager->NotifyUsers($params);
+	}
+
     /*
      *  LMS-UI configuration
      */

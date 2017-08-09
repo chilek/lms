@@ -99,4 +99,6 @@ interface LMSHelpdeskManagerInterface
 	public function ReplaceNotificationSymbols($text, array $params);
 
 	public function ReplaceNotificationCustomerSymbols($text, array $params);
+
+	public function NotifyUsers(array $params);
 }
