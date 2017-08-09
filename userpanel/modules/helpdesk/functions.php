@@ -323,7 +323,7 @@ function module_main() {
 			$ticket['messageid'] = '<msg.' . $ticket['queue']['id'] . '.' . $ticket['id'] . '.' . time()
 				. '@rtsystem.' . gethostname() . '>';
 
-			$LMS->TicketMessageAdd(array(
+			$msgid = $LMS->TicketMessageAdd(array(
 					'ticketid' => $ticket['id'],
 					'subject' => $ticket['subject'],
 					'body' => $ticket['body'],
@@ -367,6 +367,7 @@ function module_main() {
 
 			$params = array(
 				'id' => $ticket['id'],
+				'messageid' => isset($msgid) ? $msgid : null,
 				'customerid' => $SESSION->id,
 				'status' => $ticketdata['status'],
 				'categories' => $ticketdata['categorynames'],

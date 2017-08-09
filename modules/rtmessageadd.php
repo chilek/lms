@@ -232,6 +232,7 @@ if(isset($_POST['message']))
 
 			$params = array(
 				'id' => $message['ticketid'],
+				'messageid' => isset($msgid) ? $msgid : null,
 				'customerid' => $message['customerid'],
 				'status' => $ticketdata['status'],
 				'categories' => $ticketdata['categorynames'],

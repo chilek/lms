@@ -109,6 +109,7 @@ elseif(isset($_POST['note']))
 
 			$params = array(
 				'id' => $note['ticketid'],
+				'messageid' => isset($msgid) ? $msgid : null,
 				'customerid' => $ticketdata['customerid'],
 				'status' => $ticketdata['status'],
 				'categories' => $ticketdata['categorynames'],
