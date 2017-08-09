@@ -768,8 +768,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 	}
 
 	public function ReplaceNotificationCustomerSymbols($text, array $params) {
-		$location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
-		$locations = $location_manager->getCustomerAddresses($params['customerid']);
+		$customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
+		$locations = $customer_manager->getCustomerAddresses($params['customerid']);
 		$address_id = $this->db->GetOne('SELECT address_id FROM rttickets WHERE id = ?', array($params['id']));
 
 		$text = str_replace('%custname', $params['customer']['customername'], $text);
