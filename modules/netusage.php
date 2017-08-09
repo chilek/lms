@@ -121,7 +121,7 @@ function getNetworks( $ip, $br, $host = null ) {
     $br_long = ip_long($br); // broadcast address
 
     if ( $host ) {
-        $sql  = 'AND h.name ILIKE ?';
+        $sql  = 'AND h.name ?LIKE? ?';
         $data =  array($ip_long, $br_long, $host);
     } else {
         $sql  = '';
@@ -199,10 +199,10 @@ if ( isset($_GET['ajax']) ) {
                 LEFT JOIN hosts h       ON h.id = net.hostid
             WHERE
                 nod.ipaddr >= ? AND
-                nod.ipaddr <= ? ' . ($host ? ' AND h.name ILIKE ?' : ''), 'ip', $data
+                nod.ipaddr <= ? ' . ($host ? ' AND h.name ?LIKE? ?' : ''), 'ip', $data
         );
 
-        $full_network = $DB->GetRow('SELECT * FROM networks WHERE name ILIKE ?', array($_POST['netname']));
+        $full_network = $DB->GetRow('SELECT * FROM networks WHERE name ?LIKE? ?', array($_POST['netname']));
 
         $SMARTY->assign('used_ips' , $used_ips);
         $SMARTY->assign('pool'     , array('start'=>$ip_start, 'end'=>$ip_end));

@@ -62,7 +62,7 @@ if (isset($_POST['netadd']))
 		$error['name'] = trans('Network name is required!');
 	elseif (!preg_match('/^[._a-z0-9-]+$/i', $netadd['name']))
 		$error['name'] = trans('Network name contains forbidden characters!');
-	elseif ( strtoupper($netadd['name']) == $DB->GetOne('SELECT name FROM networks WHERE name ILIKE ?', array($netadd['name'])))
+	elseif ( strtoupper($netadd['name']) == $DB->GetOne('SELECT name FROM networks WHERE name ?LIKE? ?', array($netadd['name'])))
 		$error['name'] = trans('Network name already exists!');
 	
 	if ($netadd['domain'] != '' && !preg_match('/^[.a-z0-9-]+$/i', $netadd['domain']))
