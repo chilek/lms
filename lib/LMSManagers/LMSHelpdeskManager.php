@@ -777,9 +777,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$text = str_replace('%address', (empty($address_id) ? $params['customer']['address'] . ', ' . $params['customer']['zip'] . ' ' . $params['customer']['city']
 			: $locations[$address_id]['location']), $text);
 		$text = str_replace('%phone', isset($params['phones']) && !empty($params['phones'])
-			? implode(', ', $params['phones']) : '', $text);
+			? implode(', ', $params['phones']) : '-', $text);
 		$text = str_replace('%email', isset($params['emails']) && !empty($params['emails'])
-		? implode(', ', $params['emails']) : '', $text);
+		? implode(', ', $params['emails']) : '-', $text);
 
 		return $text;
 	}
