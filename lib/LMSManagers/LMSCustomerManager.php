@@ -1395,7 +1395,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 	public function GetCustomerContacts($id, $mask = null) {
 		$contacts = $this->db->GetAll('SELECT contact, name, type FROM customercontacts
 			WHERE customerid = ?' . (isset($mask) ? ' AND type & ' . intval($mask) . ' > 0' : ''),
-			array($customerid));
+			array($id));
 		if (empty($contacts))
 			return array();
 		foreach ($contacts as &$contact)
