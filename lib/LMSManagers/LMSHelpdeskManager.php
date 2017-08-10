@@ -814,7 +814,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 						AND (rtrights.rights & 8) > 0 AND deleted = 0
 						AND (ntype & ?) > 0',
 					array($params['oldqueue'], MSG_MAIL));
-				$recipients = array_diff($recipients, $oldrecipients);
+				if (!empty($oldrecipients))
+					$recipients = array_diff($recipients, $oldrecipients);
 			}
 
 			foreach ($recipients as $email) {
@@ -840,7 +841,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 						AND (rtrights.rights & 8) > 0 AND deleted = 0
 						AND (ntype & ?) > 0',
 					array($params['oldqueue'], MSG_SMS));
-				$recipients = array_diff($recipients, $oldrecipients);
+				if (!empty($oldrecipients))
+					$recipients = array_diff($recipients, $oldrecipients);
 			}
 
 			foreach ($recipients as $phone)
