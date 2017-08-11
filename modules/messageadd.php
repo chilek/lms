@@ -77,6 +77,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	$notindebted = ($group == 53) ? 1 : 0;
 	$indebted2 = ($group == 57) ? 1 : 0;
 	$indebted3 = ($group == 58) ? 1 : 0;
+	$opened_documents = ($group == 59) ? 1 : 0;
 
 	if ($group >= 50) $group = 0;
 
@@ -165,6 +166,9 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 		. ($indebted2 ? ' AND COALESCE(b.value, 0) < -t.value' : '')
 		. ($indebted3 ? ' AND COALESCE(b.value, 0) < -t.value * 2' : '')
 		.($notindebted ? ' AND COALESCE(b.value, 0) >= 0' : '')
+		. ($opened_documents ? ' AND c.id IN (SELECT DISTINCT customerid FROM documents
+			WHERE documents.closed = 0
+				AND documents.type NOT IN (' . DOC_INVOICE . ',' . DOC_CNOTE . ',' . DOC_DNOTE . '))' : '')
 		. ($tarifftype ? ' AND NOT EXISTS (SELECT id FROM assignments
 			WHERE customerid = c.id AND tariffid = 0 AND liabilityid = 0
 				AND (datefrom = 0 OR datefrom < ?NOW?)
@@ -226,7 +230,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 	if (!in_array($message['type'], array(MSG_MAIL, MSG_SMS, MSG_ANYSMS, MSG_WWW, MSG_USERPANEL)))
 		$message['type'] = MSG_USERPANEL_URGENT;
 
-	if (empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 58
+	if (empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 59
 		|| ($message['group'] > CSTATUS_LAST && $message['group'] < 50)))
 		$error['group'] = trans('Incorrect customers group!');
 
