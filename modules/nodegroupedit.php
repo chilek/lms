@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -48,7 +48,7 @@ if(isset($_POST['nodegroup']))
 	
 	if($nodegroupedit['name'] == '')
 		$error['name'] = trans('Group name required!');
-	elseif(strlen($nodegroupedit['name']) > 32)
+	elseif(strlen($nodegroupedit['name']) > 255)
 		$error['name'] = trans('Group name is too long!');
 	elseif(!preg_match('/^[._a-z0-9-]+$/i', $nodegroupedit['name']))
 		$error['name'] = trans('Invalid chars in group name!');
