@@ -63,6 +63,7 @@ version ?.??.?? (????-??-??):
     triggers mail notification [chilan]
   - enhancement: userpanel/info: customer data change confirmations and rejections are sent
     to customers [chilan]
+  - improvement: added customer status filter in message add form (opened documents) [chilan]
 
 version 1.11.22 (2017-06-08):
 
