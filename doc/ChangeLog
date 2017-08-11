@@ -64,6 +64,8 @@ version ?.??.?? (????-??-??):
   - enhancement: userpanel/info: customer data change confirmations and rejections are sent
     to customers [chilan]
   - improvement: added customer status filter in message add form (opened documents) [chilan]
+  - improvement: added lmsd systemd unit file which automatically restart lmsd process
+    when it fails [chilan]
 
 version 1.11.22 (2017-06-08):
 
