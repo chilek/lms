@@ -310,6 +310,5 @@ else
 }
 
 $SESSION->close();
-$DB->Destroy();
 
 ?>
