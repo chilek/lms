@@ -813,6 +813,8 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 	}
 
 	public function GetNodeLocations($customerid, $address_id = null) {
+		$customerid = intval($customerid);
+
 		$nodes = $this->db->GetAllByKey('SELECT n.id, n.name, location, address_id FROM vnodes n
 			WHERE ownerid = ?' . (empty($address_id) ? '' : ' AND (address_id IS NULL OR address_id = ' . intval($address_id) . ')')
 			. ' ORDER BY n.name ASC', 'id', array($customerid));
