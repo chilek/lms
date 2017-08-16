@@ -56,7 +56,7 @@
 		<tr>
 			<td style="width: 1%;"><img src="img/home.gif" alt="" title="{trans('billing address')}"></td>
 			<td style="width: 99%;">
-				<span title="{trans('billing address')}">{$v.location}</span>
+				<span title="{trans('billing address')}">{if $v.teryt}{t a=$v.location}$a (TERRIT){/t}{else}{$v.location}{/if}</span>
 			</td>
 		</tr>
 		{break}
@@ -68,7 +68,7 @@
 		<tr>
 			<td style="width: 1%;"><img src="img/post.gif" alt="" title="{trans('postal address')}"></td>
 			<td style="width: 99%;">
-				<span title="{trans('postal address')}">{$v.location}</span>
+				<span title="{trans('postal address')}">{if $v.teryt}{t a=$v.location}$a (TERRIT){/t}{else}{$v.location}{/if}</span>
 			</td>
 		</tr>
 		{break}
@@ -90,7 +90,7 @@
 				<img src="{$icon}" alt="" title="{$title}">
 			</td>
 			<td style="width: 99%;">
-				<span title="{$title}">{$v.location}</span>
+				<span title="{$title}">{if $v.teryt}{t a=$v.location}$a (TERRIT){/t}{else}{$v.location}{/if}</span>
 			</td>
 		</tr>
 		{/if}
