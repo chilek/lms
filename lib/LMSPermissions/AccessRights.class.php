@@ -63,6 +63,14 @@ class AccessRights {
 		return $perm;
 	}
 
+	public function removePermission($permname) {
+		if (isset($this->permissions[$permname])) {
+			unset($this->permissions[$permname]);
+			return true;
+		} else
+			return false;
+	}
+
 	public function checkRights($module, $rights, $global_allow = false) {
 		$allow = $deny = false;
 		foreach ($rights as $permname) {
