@@ -44,6 +44,8 @@ $params = array();
 $params['o']          = sessionHandler('o', 'vblo');
 $params['id']         = sessionHandler('fvoipaccid', 'vblfvoipaccid');
 $params['frangefrom'] = sessionHandler('frangefrom', 'vblfrangefrom');
+if (empty($params['frangefrom']))
+	$params['frangefrom'] = date('Y/m/01');
 $params['frangeto']   = sessionHandler('frangeto', 'vblfrangeto');
 $params['ftype']      = sessionHandler('ftype', 'vblftype');
 $params['fstatus']    = sessionHandler('fstatus', 'vblfstatus');
