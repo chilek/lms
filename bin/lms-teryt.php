@@ -188,7 +188,7 @@ function parse_teryt_xml_row($xml) {
 function get_cities_with_sections() {
 	$DB = LMSDB::getInstance();
 
-	$cities = $DB->GetAllByKey("SELECT lb2.cityid, lb2.cityname AS cityname,
+	$cities = $DB->GetAllByKey("SELECT lb2.cityid, LOWER(lb2.cityname) AS cityname,
 			(" . $DB->GroupConcat('lc.id', ',', true) . ") AS citysections
 		FROM location_boroughs lb
 		JOIN location_cities lc ON lc.boroughid = lb.id
@@ -198,7 +198,7 @@ function get_cities_with_sections() {
 			WHERE lb.type = 1
 		) lb2 ON lb2.districtid = lb.districtid
 		WHERE lb.type = 8 OR lb.type = 9
-		GROUP BY lb2.cityid, lb2.cityname", 'cityname');
+		GROUP BY lb2.cityid, LOWER(lb2.cityname)", 'cityname');
 	if (empty($cities))
 		return array();
 	foreach ($cities as &$city)
@@ -1217,7 +1217,9 @@ if ( isset($options['merge']) ) {
 		if (!$quiet)
 			printf("City '%s', Street: '%s': ", $city, $street);
 
-		$key = mb_strtolower($city) . ':' . mb_strtolower($street);
+		$city = mb_strtolower($city);
+		$street = mb_strtolower($street);
+		$key = $city . ':' . $street;
 
 		if ( isset($location_cache[$key]) ) {
 			$idents = $location_cache[$key];
