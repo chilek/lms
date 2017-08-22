@@ -577,12 +577,12 @@ class LMSTcpdfInvoice extends LMSInvoice {
 
 	protected function invoice_date() {
 		$this->backend->SetFont('arial', '', 8);
-		$this->backend->writeHTMLCell(0, 0, '', 20, trans('Settlement date:') . ' <b>' . date("d.m.Y", $this->data['cdate']) . '</b>', 0, 1, 0, true, 'R');
+		$this->backend->writeHTMLCell(0, 0, '', 10, trans('Settlement date:') . ' <b>' . date("d.m.Y", $this->data['cdate']) . '</b>', 0, 1, 0, true, 'R');
 		$this->backend->writeHTMLCell(0, 0, '', '', trans('Sale date:') . ' <b>' . date("d.m.Y", $this->data['sdate']) . '</b>', 0, 1, 0, true, 'R');
 	}
 
 	protected function invoice_title() {
-		$this->backend->SetY(30);
+		$this->backend->SetY(35);
 		$this->backend->SetFont('arial', 'B', 16);
 		$docnumber = docnumber(array(
 			'number' => $this->data['number'],
@@ -749,20 +749,12 @@ class LMSTcpdfInvoice extends LMSInvoice {
 	}
 
 	protected function invoice_dates() {
-		$y = $this->backend->GetY();
-
-		$paytype = $this->data['paytype'];
-		$this->backend->SetFont('arial', '', 8);
-		$this->backend->Ln();
+		$this->backend->SetFont('arial', '', 10);
 		if ($paytype != 8) {
-			$deadline = trans('Deadline:') . ' <b>' . date("d.m.Y", $this->data['pdate']) . '</b>';
-			$this->backend->writeHTMLCell(0, 0, '', '', $deadline, 0, 1, 0, true, 'L');
+		$this->backend->writeHTMLCell(0, 0, '', 19, trans('Deadline:') . '<b>' . date("d.m.Y", $this->data['pdate']) . '</b>', 0, 1, 0, true, 'R');
 		}
-		$payment = trans('Payment type:') . ' <b>' . $this->data['paytypename'] . '</b>';
-		$this->backend->writeHTMLCell(0, 0, '', '', $payment, 0, 1, 0, true, 'L');
-
-		$y = $this->backend->SetY($y);
-	}
+		$this->backend->writeHTMLCell(0, 0, '', '', trans('Payment type:') . '<b>' . $this->data['paytypename'] . '</b>', 0, 1, 0, true, 'R');
+}
 
 	protected function invoice_expositor() {
 		$expositor = isset($this->data['user']) ? $this->data['user'] : $this->data['division_author'];
@@ -772,7 +764,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 
 	protected function invoice_footnote() {
 		if (!empty($this->data['division_footer'])) {
-			$this->backend->Ln(7);
+			$this->backend->Ln(145);
 			//$this->backend->SetFont('arial', 'B', 10);
 			//$this->backend->Write(0, trans('Notes:'), '', 0, 'L', true, 0, false, false, 0);
 			$tmp = $this->data['division_footer'];
