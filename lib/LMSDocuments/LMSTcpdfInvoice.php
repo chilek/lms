@@ -582,7 +582,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 	}
 
 	protected function invoice_title() {
-		$this->backend->SetY(35);
+		$this->backend->SetY(29);
 		$this->backend->SetFont('arial', 'B', 16);
 		$docnumber = docnumber(array(
 			'number' => $this->data['number'],
@@ -787,7 +787,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$image_path = ConfigHelper::getConfig('invoices.header_image', '', true);
 		if (!file_exists($image_path))
 			return;
-		$this->backend->writeHTMLCell(40, 0, 15, 6, '<img src="' . $image_path . '">');
+		$this->backend->writeHTMLCell(40, 0, 12, 8, '<img src="' . $image_path . '">');
 	}
 
 	public function invoice_cancelled() {
