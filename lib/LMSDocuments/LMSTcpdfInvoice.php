@@ -455,8 +455,8 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->backend->Text(7, 209, $this->data['division_zip'] . ' ' . $this->data['division_city']);
 
 		/* account */
-		$this->backend->SetFont('arial', 'B', 9);
-		$this->backend->Text(6, 219, bankaccount($this->data['customerid'], $this->data['account']));
+		$this->backend->SetFont('arial', 'B', 8);
+		$this->backend->Text(7, 219, bankaccount($this->data['customerid'], $this->data['account']));
 
 		/* customer name */
 		$this->backend->SetFont('arial', '', 9);
@@ -549,18 +549,18 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			);
 			$this->backend->StartTransform();
 			$this->backend->TranslateX(55);
-			$this->backend->write1DBarcode($barcode, 'C128', '', 263, 45, 5, 0.3, $style, '');
+			$this->backend->write1DBarcode($barcode, 'C128', '', 262, 60, 8, 0.3, $style, '');
 			$this->backend->StopTransform();
 		}
 
 		if (ConfigHelper::checkValue(ConfigHelper::getConfig('invoices.customer_balance_in_form', false))) {
 			/* title */
-			$this->backend->SetFont('arial', '', 10);
-			$this->backend->Text(120, 264, trans('Payment for liabilities'));
+			$this->backend->SetFont('arial', '', 9);
+			$this->backend->Text(124, 264, trans('Payment for liabilities'));
 		} else {
 			/* title */
-			$this->backend->SetFont('arial', 'B', 10);
-			$this->backend->Text(120, 264, trans('Payment for invoice No. $a', $barcode));
+			$this->backend->SetFont('arial', 'B', 9);
+			$this->backend->Text(124, 264, trans('Payment for invoice No. $a', $barcode));
 		}
 
 		/* deadline */
@@ -582,7 +582,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 	}
 
 	protected function invoice_title() {
-		$this->backend->SetY(35);
+		$this->backend->SetY(29);
 		$this->backend->SetFont('arial', 'B', 16);
 		$docnumber = docnumber(array(
 			'number' => $this->data['number'],
@@ -787,7 +787,7 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$image_path = ConfigHelper::getConfig('invoices.header_image', '', true);
 		if (!file_exists($image_path))
 			return;
-		$this->backend->writeHTMLCell(40, 0, 15, 6, '<img src="' . $image_path . '">');
+		$this->backend->writeHTMLCell(40, 0, 12, 8, '<img src="' . $image_path . '">');
 	}
 
 	public function invoice_cancelled() {
