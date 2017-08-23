@@ -455,8 +455,8 @@ class LMSTcpdfInvoice extends LMSInvoice {
 		$this->backend->Text(7, 209, $this->data['division_zip'] . ' ' . $this->data['division_city']);
 
 		/* account */
-		$this->backend->SetFont('arial', 'B', 9);
-		$this->backend->Text(6, 219, bankaccount($this->data['customerid'], $this->data['account']));
+		$this->backend->SetFont('arial', 'B', 8);
+		$this->backend->Text(7, 219, bankaccount($this->data['customerid'], $this->data['account']));
 
 		/* customer name */
 		$this->backend->SetFont('arial', '', 9);
