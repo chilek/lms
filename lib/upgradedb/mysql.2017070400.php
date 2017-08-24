@@ -31,9 +31,9 @@ $this->Execute("ALTER TABLE rttickets ADD COLUMN deleted tinyint(1) NOT NULL DEF
 $this->Execute("ALTER TABLE rttickets ADD COLUMN deltime int(11) NOT NULL DEFAULT 0");
 $this->Execute("ALTER TABLE rttickets ADD COLUMN deluserid int(11) NOT NULL DEFAULT 0");
 
-$this->Execute("ALTER TABLE rtqueues ADD COLUMN deleted tinyint(1) NOT NULL DEFAULT 0");
-$this->Execute("ALTER TABLE rtqueues ADD COLUMN deltime int(11) NOT NULL DEFAULT 0");
-$this->Execute("ALTER TABLE rtqueues ADD COLUMN deluserid int(11) NOT NULL DEFAULT 0");
+$this->Execute("ALTER TABLE rtmessages ADD COLUMN deleted tinyint(1) NOT NULL DEFAULT 0");
+$this->Execute("ALTER TABLE rtmessages ADD COLUMN deltime int(11) NOT NULL DEFAULT 0");
+$this->Execute("ALTER TABLE rtmessages ADD COLUMN deluserid int(11) NOT NULL DEFAULT 0");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017070400', 'dbversion'));
 
