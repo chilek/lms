@@ -3056,6 +3056,7 @@ $_LANG['Ticket\'s node has been changed from $a ($b) to $c ($d).'] = 'Komputer p
 $_LANG['www'] = 'www';
 $_LANG['any sms'] = 'dowolny sms';
 $_LANG['userpanel'] = 'Panel abonencki';
+$_LANG['Userpanel'] = 'Panel abonencki';
 $_LANG['userpanel urgent'] = 'panel abonencki (pilne)';
 $_LANG['I confirm reading'] = 'Zapoznałem się';
 $_LANG['Urgent'] = 'Pilna';
@@ -3337,7 +3338,7 @@ $_LANG['Payment for liabilities'] = 'Wpłata na poczet należności';
 
 $_LANG['Check if sent electronic invoices on this email'] = 'Zaznacz jeśli na ten adres e-mail mają być wysyłane elektroniczne faktury';
 $_LANG['Not visible by the customer in electronic Customer Service Representative'] = 'Niewidoczny dla klienta w elektronicznym biurze obsługi klienta';
-$_LANG['eCSR'] = 'eBOK';
+$_LANG['Personal'] = 'Wizyta w biurze';
 $_LANG['If the customer wants to receive an electronic invoice must be checked e-mail address to which to send e-invoices'] = 'Jeśli klient chce otrzymywać fakturę elektroniczną musi zostać zaznaczony adres e-mail na który mają być wysyłane e-faktury';
 $_LANG['Cancellation of a traditional invoice (agreement on an electronic invoice):'] = 'Rezygnacja z faktury tradycyjnej (zgoda na fakturę elektroniczną):';
 $_LANG['Check if send notification'] = 'Zaznacz, jeżeli chcesz wysyłać powiadomienia';
