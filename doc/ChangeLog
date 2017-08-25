@@ -66,6 +66,9 @@ version ?.??.?? (????-??-??):
   - improvement: added customer status filter in message add form (opened documents) [chilan]
   - improvement: added lmsd systemd unit file which automatically restart lmsd process
     when it fails [chilan]
+  - improvement: minor tcpdf invoice look improvements [interduo]
+  - enancement: rewrite of old lms-makedhcpconf perl script in php; dhcp.use_authtype
+    configuration variable controls which networks are processes by default [chilan]
 
 version 1.11.22 (2017-06-08):
 
