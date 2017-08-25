@@ -67,8 +67,10 @@ version ?.??.?? (????-??-??):
   - improvement: added lmsd systemd unit file which automatically restart lmsd process
     when it fails [chilan]
   - improvement: minor tcpdf invoice look improvements [interduo]
-  - enancement: rewrite of old lms-makedhcpconf perl script in php; dhcp.use_network_authtype
+  - enhancement: rewrite of old lms-makedhcpconf perl script in php; dhcp.use_network_authtype
     configuration variable controls which networks are processes by default [chilan]
+  - enhancement: new lms-maketcnew.php backend script which allows to generate
+    almost any traffic shaper configuration [chilan]
 
 version 1.11.22 (2017-06-08):
 
