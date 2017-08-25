@@ -266,7 +266,7 @@ foreach ($networks as $networkid => $net) {
 
 	foreach ($nodes as $node) {
 		// get node configuration from database
-		if ($CONFIG['dhcp']['enable_option82'])
+		if ($enable_option82)
 			// get data for option 82
 			$dhcp_relay = $DB->GetRow("SELECT nd.id, m.mac, n.port
 						FROM netdevices d, nodes n, nodes nd, macs m
