@@ -405,8 +405,10 @@ foreach ($channels as $channel) {
 		// make rules...
 		// get first mac from the list
 		$mac = $host['mac'];
-		if (!$script_multi_mac)
-			$mac = array_shift(explode(',', $mac));
+		if (!$script_multi_mac) {
+			$mac = explode(',', $mac);
+			$mac = array_shift($mac);
+		}
 
 		$from = array("/\\\\n/", "/\%n/", "/\%if/", "/\%i16/", "/\%i/", "/\%ms/",
 			"/\%m/", "/\%x/", "/\%o1/", "/\%o2/", "/\%o3/", "/\%o4/",
