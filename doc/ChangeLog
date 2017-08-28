@@ -71,6 +71,7 @@ version ?.??.?? (????-??-??):
     configuration variable controls which networks are processes by default [chilan]
   - enhancement: new lms-maketcnew.php backend script which allows to generate
     almost any traffic shaper configuration [chilan]
+  - improvement: message send - allow to filter recipients by expired customer balances [chilan]
 
 version 1.11.22 (2017-06-08):
 
