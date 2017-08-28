@@ -79,6 +79,11 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 	$indebted3 = ($group == 58) ? 1 : 0;
 	$opened_documents = ($group == 59) ? 1 : 0;
 
+	$expired_indebted = ($group == 61) ? 1 : 0;
+	$expired_notindebted = ($group == 60) ? 1 : 0;
+	$expired_indebted2 = ($group == 62) ? 1 : 0;
+	$expired_indebted3 = ($group == 63) ? 1 : 0;
+
 	if ($group >= 50) $group = 0;
 
 	if($network)
@@ -108,6 +113,26 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 		) a ON a.customerid = c.id ';
 	}
 
+	$deadline = ConfigHelper::getConfig('payments.deadline', ConfigHelper::getConfig('invoices.paytime', 0));
+
+	if ($expired_indebted || $expired_indebted2 || $expired_indebted3 || $expired_notindebted)
+		$expired_debt_table = "
+			LEFT JOIN (
+				SELECT SUM(value) AS value, cash.customerid
+				FROM cash
+				JOIN customers c ON c.id = cash.customerid
+				LEFT JOIN divisions ON divisions.id = c.divisionid
+				LEFT JOIN documents d ON d.id = cash.docid
+				WHERE (cash.docid = 0 AND ((cash.type <> 0 AND cash.time < ?NOW?)
+						OR (cash.type = 0 AND cash.time + ((CASE c.paytime WHEN -1 THEN
+							(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE c.paytime END)) * 86400 < ?NOW?)))
+					OR (cash.docid <> 0 AND ((d.type IN (" . DOC_RECEIPT . ',' . DOC_CNOTE . ") AND cash.time < ?NOW?
+						OR (d.type IN (" . DOC_INVOICE . ',' . DOC_DNOTE . ") AND d.cdate + d.paytime * 86400 < ?NOW?))))
+				GROUP BY cash.customerid
+			) b2 ON (b2.customerid = c.id)";
+	else
+		$expired_debt_table = '';
+
 	$suspension_percentage = f_round(ConfigHelper::getConfig('finances.suspension_percentage'));
 
 	$recipients = $LMS->DB->GetAll('SELECT c.id, pin, '
@@ -120,6 +145,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 			SELECT SUM(value) AS value, customerid
 			FROM cash GROUP BY customerid
 		) b ON (b.customerid = c.id)
+		' . $expired_debt_table . '
 		LEFT JOIN (SELECT a.customerid,
 			SUM((CASE a.suspended
 				WHEN 0 THEN (((100 - a.pdiscount) * (CASE WHEN t.value IS null THEN l.value ELSE t.value END) / 100) - a.vdiscount)
@@ -162,10 +188,14 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 			WHERE linktype = ' . $linktype . ')' : '')
 		.($disabled ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE ownerid = c.id
 			GROUP BY ownerid HAVING (SUM(access) != COUNT(access)))' : '')
-		.($indebted ? ' AND COALESCE(b.value, 0) < 0' : '')
+		. ($indebted ? ' AND COALESCE(b.value, 0) < 0' : '')
 		. ($indebted2 ? ' AND COALESCE(b.value, 0) < -t.value' : '')
 		. ($indebted3 ? ' AND COALESCE(b.value, 0) < -t.value * 2' : '')
-		.($notindebted ? ' AND COALESCE(b.value, 0) >= 0' : '')
+		. ($notindebted ? ' AND COALESCE(b.value, 0) >= 0' : '')
+		. ($expired_indebted ? ' AND COALESCE(b2.value, 0) < 0' : '')
+		. ($expired_indebted2 ? ' AND COALESCE(b2.value, 0) < -t.value' : '')
+		. ($expired_indebted3 ? ' AND COALESCE(b2.value, 0) < -t.value * 2' : '')
+		. ($expired_notindebted ? ' AND COALESCE(b2.value, 0) >= 0' : '')
 		. ($opened_documents ? ' AND c.id IN (SELECT DISTINCT customerid FROM documents
 			WHERE documents.closed = 0
 				AND documents.type NOT IN (' . DOC_INVOICE . ',' . DOC_CNOTE . ',' . DOC_DNOTE . '))' : '')
@@ -230,7 +260,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 	if (!in_array($message['type'], array(MSG_MAIL, MSG_SMS, MSG_ANYSMS, MSG_WWW, MSG_USERPANEL)))
 		$message['type'] = MSG_USERPANEL_URGENT;
 
-	if (empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 59
+	if (empty($message['customerid']) && ($message['group'] < 0 || $message['group'] > 63
 		|| ($message['group'] > CSTATUS_LAST && $message['group'] < 50)))
 		$error['group'] = trans('Incorrect customers group!');
 
