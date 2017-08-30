@@ -252,6 +252,7 @@
 
 				<td align="right" class="nobr">
 					{if $billings[i].callanswertime && ($billings[i].caller_flags || $billings[i].callee_flags)}
+						<a href="?m=voipcallrecording&id={$billings[i].id}&download=1"><img src="img/save.gif"></a>
 						{documentview id="{$billings[i].id}"
 						              type="audio/mp3"
 						              name="{trans("ID:")} {$billings[i].id}, {trans("Date:")} {$billings[i].begintime|date_format:"%e %B %Y %H:%M:%S"}"
