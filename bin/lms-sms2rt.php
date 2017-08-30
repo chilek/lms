@@ -264,6 +264,7 @@ if (($fh = fopen($message_file, "r")) != NULL) {
 					'customer' => $info,
 					'emails' => $emails,
 					'phones' => $phones,
+					'categories' => $cats,
 				);
 				$mail_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_mail_body'), $params);
 				$sms_customerinfo = $LMS->ReplaceNotificationCustomerSymbols(ConfigHelper::getConfig('phpui.helpdesk_customerinfo_sms_body'), $params);
