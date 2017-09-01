@@ -23,9 +23,9 @@
 
 $this->BeginTrans();
 
-$this->Execute("DROP VIEW customerview");
-$this->Execute("DROP VIEW contractorview");
-$this->Execute("DROP VIEW customeraddressview");
+$this->Execute("DROP VIEW IF EXISTS customerview");
+$this->Execute("DROP VIEW IF EXISTS contractorview");
+$this->Execute("DROP VIEW IF EXISTS customeraddressview");
 
 $this->Execute("ALTER TABLE customers ADD COLUMN rbename varchar(255) NOT NULL DEFAULT ''");
 

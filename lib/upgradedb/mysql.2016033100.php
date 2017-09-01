@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-$this->Execute("DROP VIEW vnetworks");
+$this->Execute("DROP VIEW IF EXISTS vnetworks");
 
 $this->Execute("ALTER TABLE networks ADD COLUMN vlanid smallint");
 

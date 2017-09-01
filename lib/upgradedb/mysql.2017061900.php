@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-$this->Execute("DROP VIEW customeraddressview");
+$this->Execute("DROP VIEW IF EXISTS customeraddressview");
 
 $this->Execute("
 	CREATE VIEW customeraddressview AS

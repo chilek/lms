@@ -32,7 +32,7 @@ define('CONTACT_IM_SKYPE', 2048);
 
 $this->BeginTrans();
 
-$this->Execute("DROP VIEW customermailsview");
+$this->Execute("DROP VIEW IF EXISTS customermailsview");
 
 $this->Execute("ALTER TABLE customercontacts CHANGE type type int(11) DEFAULT NULL");
 

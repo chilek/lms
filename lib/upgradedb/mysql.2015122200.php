@@ -41,8 +41,8 @@ function parse_address_2015122200($address) {
 
 $this->BeginTrans();
 
-$this->Execute("DROP VIEW customersview");
-$this->Execute("DROP VIEW contractorview");
+$this->Execute("DROP VIEW IF EXISTS customersview");
+$this->Execute("DROP VIEW IF EXISTS contractorview");
 $this->Execute("ALTER TABLE customers ADD COLUMN street varchar(255) DEFAULT '' NOT NULL");
 $this->Execute("ALTER TABLE customers ADD COLUMN building varchar(20) DEFAULT NULL");
 $this->Execute("ALTER TABLE customers ADD COLUMN apartment varchar(20) DEFAULT NULL");

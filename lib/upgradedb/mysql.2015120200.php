@@ -23,8 +23,8 @@
 
 $this->BeginTrans();
 
-$this->Execute("DROP VIEW vnodes");
-$this->Execute("DROP VIEW vmacs");
+$this->Execute("DROP VIEW IF EXISTS vnodes");
+$this->Execute("DROP VIEW IF EXISTS vmacs");
 $this->Execute("DROP VIEW IF EXISTS vnetworks");
 
 $this->Execute("

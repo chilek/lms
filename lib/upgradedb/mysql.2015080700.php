@@ -47,8 +47,8 @@ if (!empty($customers)) {
 		$this->Execute("INSERT INTO customercontacts (customerid, contact, type) VALUES " . implode(',', $records));
 }
 
-$this->Execute("DROP VIEW customersview");
-$this->Execute("DROP VIEW contractorview");
+$this->Execute("DROP VIEW IF EXISTS customersview");
+$this->Execute("DROP VIEW IF EXISTS contractorview");
 $this->Execute("ALTER TABLE customers DROP COLUMN email");
 $this->Execute("CREATE VIEW customersview AS
 	SELECT c.* FROM customers c
