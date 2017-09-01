@@ -117,12 +117,16 @@ define('RT_NEW', 0);
 define('RT_OPEN', 1);
 define('RT_RESOLVED', 2);
 define('RT_DEAD', 3);
+define('RT_PLANNED', 4);
+define('RT_WAITING', 5);
 
 $RT_STATES = array(
     RT_NEW      => trans('new'),
     RT_OPEN     => trans('opened'),
     RT_RESOLVED => trans('resolved'),
-    RT_DEAD     => trans('dead')
+    RT_DEAD     => trans('dead'),
+    RT_SCHEDULED => trans('scheduled'),
+    RT_WAITING => trans('waiting')
 );
 
 //Helpdesk ticket source
