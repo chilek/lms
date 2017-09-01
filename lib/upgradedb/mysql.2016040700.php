@@ -25,7 +25,7 @@ define('CONTACT_EMAIL', 8);
 
 $this->BeginTrans();
 
-$this->Execute("DROP VIEW customermailsview");
+$this->Execute("DROP VIEW IF EXISTS customermailsview");
 $this->Execute("CREATE VIEW customermailsview AS
 		SELECT customerid, GROUP_CONCAT(contact SEPARATOR ',') AS email
 			FROM customercontacts

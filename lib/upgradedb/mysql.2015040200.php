@@ -40,8 +40,8 @@ $this->Execute("CREATE TABLE netradiosectors (
 	FOREIGN KEY (netdev) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB");
 
-$this->Execute("DROP VIEW vnodes");
-$this->Execute("DROP VIEW vmacs");
+$this->Execute("DROP VIEW IF EXISTS vnodes");
+$this->Execute("DROP VIEW IF EXISTS vmacs");
 $this->Execute("ALTER TABLE nodes ADD COLUMN linkradiosector int(11) DEFAULT NULL");
 $this->Execute("ALTER TABLE nodes ADD INDEX linkradiosector (linkradiosector)");
 $this->Execute("ALTER TABLE nodes ADD FOREIGN KEY (linkradiosector) REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE");

@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-$this->Execute("DROP VIEW vnetworks;");
+$this->Execute("DROP VIEW IF EXISTS vnetworks;");
 $this->Execute("
 	CREATE VIEW vnetworks AS
 		SELECT h.name AS hostname, ne.*, no.ownerid, no.location, no.location_city, no.location_street, no.location_house, no.location_flat, no.chkmac,
