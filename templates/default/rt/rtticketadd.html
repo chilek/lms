@@ -134,7 +134,7 @@
 			{trans("Cause:")}
 		</TD>
 		<TD style="width: 99%;">
-			<SELECT size="1" name="ticket[cause]" {tip text="Select request cause" trigger="cause"}>
+			<SELECT size="1" name="ticket[cause]" {tip text="Select ticket cause" trigger="cause"}>
 				<OPTION value="0" {if !$ticket.cause}selected{/if}>{trans("unknown/other")}</OPTION>
 				<OPTION value="1" {if $ticket.cause == 1}selected{/if}>{trans("customer's side")}</OPTION>
 				<OPTION value="2" {if $ticket.cause == 2}selected{/if}>{trans("company's side")}</OPTION>
@@ -144,10 +144,10 @@
         <TR>
                 <TD style="width: 1%;" class="bold nobr">
                         <IMG src="img/volcano.png" alt="">
-                        {trans("Ticket source:")}
+                        {trans("Ticket Source:")}
                 </TD>
                 <TD style="width: 99%;">
-			<SELECT size="1" name="ticket[source]" {tip text="Select request source" trigger="source"}>
+			<SELECT size="1" name="ticket[source]" {tip text="Select ticket source" trigger="source"}>
 				{foreach $_RT_SOURCES as $sourceidx => $status}
 					<OPTION value="{$sourceidx}"{if $ticket.source == $sourceidx}selected {/if}>{$status}</OPTION>
 				{/foreach}

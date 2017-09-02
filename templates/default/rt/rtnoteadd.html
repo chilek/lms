@@ -81,7 +81,7 @@
 			<IMG src="img/desc.gif" alt=""> {trans("Cause:")}
 		</TD>
 		<TD>
-			<SELECT SIZE="1" name="note[cause]" {tip text="Select request cause" trigger="cause"}>
+			<SELECT SIZE="1" name="note[cause]" {tip text="Select ticket cause" trigger="cause"}>
 				<OPTION value="0" {if !$note.cause}SELECTED{/if}>{trans("unknown/other")}</OPTION>
 				<OPTION value="1" {if $note.cause == 1}SELECTED{/if}>{trans("customer's side")}</OPTION>
 				<OPTION value="2" {if $note.cause == 2}SELECTED{/if}>{trans("company's side")}</OPTION>
