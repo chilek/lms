@@ -120,10 +120,9 @@
 								</TD>
 								<TD style="width: 99%;">
 									<SELECT size="1" name="ticket[state]" {tip text="Select status" trigger="state"}>
-										<OPTION value="0" {if $ticket.state == 0}selected{/if}>{trans("new")}</OPTION>
-										<OPTION value="1" {if $ticket.state == 1}selected{/if}>{trans("opened")}</OPTION>
-										<OPTION value="2" {if $ticket.state == 2}selected{/if}>{trans("resolved")}</OPTION>
-										<OPTION value="3" {if $ticket.state == 3}selected{/if}>{trans("dead")}</OPTION>
+										{foreach $_RT_STATES as $stateidx => $state}
+											<OPTION value="{$stateidx}"{if $ticket.state == "$stateidx"}selected{/if}>{$state}</OPTION>
+										{/foreach}
 									</SELECT>
 								</TD>
 							</TR>
