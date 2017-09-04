@@ -1931,7 +1931,7 @@ $_LANG['Enter customer ID'] = 'Wprowadź ID klienta';
 $_LANG['Enter customer ID (optional)'] = 'Wprowadź ID klienta (opcjonalnie)';
 $_LANG['Navigate to the customer'] = 'Przejdź na kartę klienta';
 $_LANG['Customer with the specified ID does not exist'] = 'Klient o podanym ID nie istnieje!';
-$_LANG['Select request cause'] = 'Wybierz przyczynę zgłoszenia';
+$_LANG['Select ticket cause'] = 'Wybierz przyczynę zgłoszenia';
 $_LANG['unknown/other'] = 'nieznana/inna';
 $_LANG['unknown/other<!plural>'] = 'nieznane/inne';
 $_LANG['Go to $a page'] = 'Idź do $a strony';
@@ -2456,7 +2456,7 @@ $_LANG['Edit price lists assigned to VoIP tariffs'] = 'Edycja cenników przypisy
 $_LANG['Import Sources'] = 'Źródła importu';
 $_LANG['Import Source:'] = 'Źródło importu:';
 $_LANG['List of Cash Import Sources'] = 'Lista źródeł importu płatności';
-$_LANG['Source:'] = 'Żródło:';
+$_LANG['Ticket Source:'] = 'Żródło:';
 $_LANG['Source name is required!'] = 'Nazwa źródła jest wymagana!';
 $_LANG['Source name is too long!'] = 'Nazwa źródła jest za długa!';
 $_LANG['Source with specified name exists!'] = 'Źródło o podanej nazwie już istnieje!';
@@ -3662,8 +3662,8 @@ $_LANG['duty'] = 'dyżur';
 $_LANG['If set to "true" then logout confirmation is required. Default "false"'] = 'Ustawienie opcji na "true" wymusza potwierdzenie wylogowania. Domyślnie wyłączone';
 
 $_LANG['SMS from $a'] = 'SMS od $a';
-$_LANG['Ticket source:'] = 'Źródło zgłoszenia:';
-$_LANG['Select request source'] = 'Wybierz źródło zgłoszenia';
+$_LANG['Source:'] = 'Źródło:';
+$_LANG['Select ticket source'] = 'Wybierz źródło zgłoszenia';
 
 $_LANG['Add new request to Helpdesk'] = 'Dodaj nowe zgłoszenie do Helpdesk';
 $_LANG['Request Number'] = 'Nr zgłoszenia';
@@ -3724,5 +3724,4 @@ $_LANG['Check if reverse charge should be applied'] = 'Zaznacz, jeśli ma zosta�
 $_LANG['$a rc'] = '$a oo';
 
 $_LANG['opened documents'] = 'otwarte dokumenty';
-
 ?>
