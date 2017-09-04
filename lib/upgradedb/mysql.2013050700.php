@@ -23,8 +23,8 @@
 
 $this->BeginTrans();
 
-$this->Execute("DROP VIEW IF EXIST vnodes");
-$this->Execute("DROP VIEW IF EXIST vmacs");
+$this->Execute("DROP VIEW IF EXISTS vnodes");
+$this->Execute("DROP VIEW IF EXISTS vmacs");
 
 $this->Execute("ALTER TABLE nodes ADD COLUMN netid int(11) NOT NULL DEFAULT '0'");
 
