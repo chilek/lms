@@ -207,6 +207,18 @@
 			<TEXTAREA id="info" TYPE="TEXT" NAME="netnode[info]" VALUE="{$netnode.info}" {tip text="Enter notes (optional)"} cols="50" rows="5">{$netnode.info}</TEXTAREA>
 		</TD>
 	</TR>
+        <TR>
+                <TD WIDTH="1%"><IMG SRC="img/calendar.gif" ALT=""></TD>
+                <TD width="1%" class="bold">{trans('Last inspection:')}</TD>
+                <TD width="98%">
+			<INPUT type="text" name="netnode[lastinspectiontime]" maxlength="10" VALUE="{$netnode.lastinspectiontime|date_format:'%Y/%m/%d'}" placeholder="{trans("yyyy/mm/dd")}" {tip class="calendar" text="Enter date in 'yyyy/mm/dd' format or click to choose it from calendar"}>
+		</TD>
+        </TR>
+	        <TR>
+                <TD WIDTH="1%"><IMG SRC="img/phone.gif" ALT=""></TD>
+                <TD width="1%" class="bold">{trans('Administrative contact:')}</TD>
+                <TD width="98%"><INPUT type="text" name="netnode[admcontact]" maxlenght="10" VALUE="{$netnode.admcontact}"></TD>
+        </TR>
  	</TABLE>
 	</TD>
 	</TR>

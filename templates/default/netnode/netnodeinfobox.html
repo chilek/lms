@@ -98,7 +98,6 @@
 		</TD>
 	</TR>
 	{/if}
-
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/producer.gif" ALT="">
@@ -131,9 +130,23 @@
 		<TD width="98%">{$nodeinfo.info}</TD>
 	</TR>
 	{/if}
-	                        	</TABLE>
+        <TR>
+                <TD WIDTH="1%"><IMG SRC="img/users.gif" ALT=""></TD>
+                <TD width="1%" class="bold">{trans('Created:')}</TD>
+                <TD width="98%">{$nodeinfo.createtime|date_format:"%x (%A)"}</TD>
+        </TR>
+        <TR>
+                <TD WIDTH="1%"><IMG SRC="img/calendar.gif" ALT=""></TD>
+                <TD width="1%" class="bold">{trans('Last inspection:')}</TD>
+                <TD width="98%">{$nodeinfo.lastinspectiontime|date_format:"%x (%A)"}</TD>
+        </TR>
+        <TR>
+                <TD WIDTH="1%"><IMG SRC="img/phone.gif" ALT=""></TD>
+                <TD width="1%" class="bold">{trans('Administrative contact:')}</TD>
+                <TD width="98%">{$nodeinfo.admcontact}</TD>
+        </TR>
+</TABLE>
 				</TD>
-				
 	</TR>
 			</TABLE>
 {if !$devicepanel}

@@ -9,13 +9,12 @@
 <INPUT type="hidden" NAME="page" VALUE="1">
 <TABLE class="lmsbox">
 	<COLGROUP>
-		<COL style="width: 36%;">
 		<COL style="width: 30%;">
-		<COL style="width: 30%;">
-		<COL style="width: 1;">
-		<COL style="width: 1;">
-		<COL style="width: 1;">
-		<COL style="width: 1;">
+		<COL style="width: 20%;">
+		<COL style="width: 10%;">
+		<COL style="width: 10%;">
+		<COL style="width: 20%;">
+		<COL style="width: 10%;">
 	</COLGROUP>
     <THEAD>
 	<TR {tip text="Click on column name to change sorting order"}>
@@ -24,24 +23,23 @@
 			<IMG src="img/producer.gif" ALT="">&nbsp;<A href="?m=netnodelist&o=type{if $listdata.direction == "asc" && $listdata.order == "type"},desc{/if}">{trans("Type:")}</A> {if $listdata.order == "type"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} / 
 			<A href="?m=netnodelist&o=status{if $listdata.direction == "asc" && $listdata.order == "status"},desc{/if}">{trans("Status:")}</A> {if $listdata.order == "status"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} 
 		</TD>
-		<TD>
+		<TD class="text-center">
 			<A href="?m=netnodelist&o=location{if $listdata.direction == "asc" && $listdata.order == "location"},desc{/if}">{trans("Location:")}</A> {if $listdata.order == "location"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} 
 		</TD>
-		<TD>
+		<TD class="text-center">
 		   	<A href="?m=netnodelist&o=invprojectid{if $listdata.direction == "asc" && $listdata.order == "invprojectid"},desc{/if}">{trans("Project:")}</A> {if $listdata.order == "invprojectid"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if} 
 		</TD>
-		<TD>
+		<TD class="text-center">
 			<A href="?m=netnodelist&o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}">ID:</A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD class="nobr" colspan="2">
-		 <!-- pozostałe pola -->
-		</TD>
-		<TD class="bold text-right nobr">
-			{trans("Total:")} {$listdata.total|default:"0"}
+                <TD class="text-center">
+                        <A href="?m=netnodelist&o=lastinspectiontime{if $listdata.direction == "asc" && $listdata.order == "lastinspectiontime"},desc{/if}">{trans("Last inspection:")}</A> {if $listdata.order == "lastinspectiontime"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+                </TD>
+		<TD class="nobr">
 		</TD>
 	</TR>
 	<TR>
-		<TD colspan="6" class="nobr">
+		<TD colspan="2" class="nobr">
 			<span class="bold">{trans("Filter:")}</span> 
 			{if $divisions}
 			{trans("Division:")}
@@ -81,17 +79,18 @@
 				<OPTION VALUE="{$idx}"{if $listdata.ownership == $idx} SELECTED {/if}>{$ownership}</OPTION>
 				{/foreach}
 			</SELECT>
-		</TD>
-		<TD class="nobr">
+		<TD class="text-right" colspan="4">
 			<A href="?m=netnodeadd"><IMG src="img/producer.gif" ALT="">{trans("Add network node:")}</A>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
 	<TR>
-		<TD class="pagination text-center" colspan="6">
+		<TD class="pagination text-center" colspan="5">
 			{include file="scroller.html" loop=$nlist}
 		</TD>
-		<TD></TD>
+                <TD class="pagination text-right bold">
+                        {trans("Total:")} {$listdata.total|default:"0"}
+                </TD>
 	</TR>
 	{/if}
     </THEAD>
@@ -116,14 +115,13 @@
 				</div>
 			{/if}
 		</TD>
-		<TD>
-			{if ($item.invprojectid==1)} DD {else} {$item.project} {/if}
+		<TD class="text-center">
+			{if ($item.invprojectid==1)} Brak {else}{$item.project}{/if}
 		</TD>
-		<TD onClick="return self.location.href='?m=netnodeinfo&id={$item.id}';" class="text-right">
+		<TD onClick="return self.location.href='?m=netnodeinfo&id={$item.id}';" class="nobr text-center">
 			({$item.id|string_format:"%04d"})
 		</TD>
-		<TD onClick="return self.location.href='?m=netnodeinfo&id={$item.id}';" class="nobr">
-		</TD>
+		<TD class="text-center">{$item.lastinspectiontime|date_format:"%x"}</TD>
 		<TD class="text-right nobr" colspan="2">
 			<a href="?m=netnodedel&id={$item.id}" onClick="return confirmLink(this, '{t a=$item.name}Are you sure, you want to remove net device node \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
 			<a href="?m=netnodeedit&id={$item.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
@@ -133,13 +131,13 @@
 	{$prev_item=$item}
 	{foreachelse}
 	<TR>
-		<TD colspan="7" class="empty-table">
+		<TD colspan="6" class="empty-table">
 			<p>{trans("There are no device nodes in your database.")}</p>
 		</TD>
 	{/foreach}
 	</TBODY>
 	<TR>
-		<TD class="pagination text-center" colspan="6">
+		<TD class="pagination text-center" colspan="5">
 			{if $listdata.total != 0}
 			{include file="scroller.html" loop=$nlist}
 			{/if}

@@ -62,6 +62,18 @@ if (isset($_POST['netnode'])) {
 		$error['netnode[location_zip]'] = trans('Incorrect ZIP code!');
 	}
 
+	if($netnodedata['lastinspectiontime'] == '')
+		$netnodedata['lastinspectiontime'] = "0";
+	else
+	{
+		$lit = date_to_timestamp($netnodedata['lastinspectiontime']);
+		if($lit != '')
+		{
+			if($lit > time())
+				$error['netnode[lastinspectiontime]'] = trans('Date from the future not allowed!');
+		}
+	}
+
 	if (!$error) {
 		if (intval($netnodedata['invprojectid']) == -1) {
 			$DB->Execute("INSERT INTO invprojects (name, type) VALUES (?, ?)",
