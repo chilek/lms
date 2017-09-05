@@ -73,6 +73,8 @@ version ?.??.?? (????-??-??):
     almost any traffic shaper configuration [chilan]
   - improvement: message send - allow to filter recipients by expired customer balances [chilan]
   - improvement: allow to download recorded voip calls [chilan]
+  - enhancement: sms.queue configuration variable allow to specify outgoing queue
+    for smstools service [chilan]
 
 version 1.11.22 (2017-06-08):
 
