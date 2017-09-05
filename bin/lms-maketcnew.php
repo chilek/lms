@@ -478,7 +478,7 @@ foreach ($channels as $channel) {
 		fwrite($fh_n, $h_up_night);
 
 		if ($channel['climit']) {
-			$cl = $climit;
+			$cl = $script_climit;
 
 			$from = array("/\\\\n/", "/\%climit/", "/\%n/", "/\%if/", "/\%i16/", "/\%i/",
 				"/\%ms/", "/\%m/", "/\%o1/", "/\%o2/", "/\%o3/", "/\%o4/",
@@ -492,7 +492,7 @@ foreach ($channels as $channel) {
 		}
 
 		if ($channel['plimit']) {
-			$pl = $plimit;
+			$pl = $script_plimit;
 
 			$from = array("/\\\\n/", "/\%plimit/", "/\%n/", "/\%if/", "/\%i16/", "/\%i/",
 				"/\%ms/", "/\%m/", "/\%o1/", "/\%o2/", "/\%o3/", "/\%o4/",
