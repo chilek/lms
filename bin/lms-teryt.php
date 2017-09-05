@@ -961,15 +961,19 @@ if ( isset($options['update']) ) {
         $row['nazwa_2'] = trim($row['nazwa_2']);
 	    $key    = $row['sym_ul'].':'.$row['sym'];
 	    $data   = $ulic[$key];
-	    $typeid = intval( $str_types[$row['cecha']] );
+		$row['cecha'] = mb_strtolower($row['cecha']);
 
-	    if ( !$str_types[$row['cecha']] ) {
+		if ( isset($str_types[$row['cecha']]) )
+			$typeid = intval( $str_types[$row['cecha']] );
+		else {
 	         $DB->Execute('INSERT INTO location_street_types (name) VALUES (?)',
-	                       array( mb_strtolower($row['cecha']) ));
+	                       array( $row['cecha'] ));
 
-	         $insertid = $DB->GetLastInsertID('location_street_types');
-	         $str_types[$row['cecha']] = $typeid = $insertid;
-	         unset($insertid);
+			$typeid = $DB->GetLastInsertID('location_street_types');
+			$str_types[$row['cecha']] = array(
+				'id' => $typeid,
+				'name' => $row['cecha'],
+			);
 	    }
 
 	    // entry exists
