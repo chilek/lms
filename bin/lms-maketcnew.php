@@ -159,6 +159,7 @@ $script_climit = ConfigHelper::getConfig('tcnew.climit', '', true);
 $script_plimit = ConfigHelper::getConfig('tcnew.plimit', '', true);
 $script_multi_mac = ConfigHelper::checkConfig('tcnew.multi_mac');
 $create_device_channels = ConfigHelper::checkConfig('tcnew.create_device_channels');
+$all_assignments = ConfigHelper::checkConfig('tcnew.all_assignments');
 
 $existing_networks = $DB->GetCol("SELECT name FROM networks");
 
@@ -187,14 +188,19 @@ else
 		WHERE UPPER(g.name) IN ('" . implode("','", array_map('mb_strtoupper', $customergroups)) . "')");
 
 // nodes
-$query = "SELECT t.downrate AS downrate, t.downceil AS downceil, t.uprate AS uprate, t.upceil AS upceil,
+if ($all_assignments)
+	$query = '(';
+else
+	$query = '';
+
+$query .= "SELECT t.downrate AS downrate, t.downceil AS downceil, t.uprate AS uprate, t.upceil AS upceil,
 	(CASE WHEN t.downrate_n IS NOT NULL THEN t.downrate_n ELSE t.downrate END) AS downrate_n,
 	(CASE WHEN t.downceil_n IS NOT NULL THEN t.downceil_n ELSE t.downceil END) AS downceil_n,
 	(CASE WHEN t.uprate_n IS NOT NULL THEN t.uprate_n ELSE t.uprate END) AS uprate_n,
 	(CASE WHEN t.upceil_n IS NOT NULL THEN t.upceil_n ELSE t.upceil END) AS upceil_n,
 	t.climit AS climit, t.plimit AS plimit,
 	n.id, n.ownerid, n.name, n.netid, INET_NTOA(n.ipaddr) AS ip, n.mac,
-	na.assignmentid,
+	na.assignmentid, a.customerid,
 	TRIM(" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS customer
 	FROM nodeassignments na
 	JOIN assignments a ON (na.assignmentid = a.id)
@@ -206,8 +212,41 @@ $query = "SELECT t.downrate AS downrate, t.downceil AS downceil, t.uprate AS upr
 		AND n.access = 1
 		AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
 		AND n.netid IN (" . implode(',', array_keys($networks)) . ")"
+		. (empty($customerids) ? '' : " AND c.id IN (" . implode(',', $customerids) . ")");
+
+if ($all_assignments)
+	$query .= ") UNION (
+	SELECT t.downrate, t.downceil, t.uprate, t.upceil,
+		(CASE WHEN t.downrate_n IS NOT NULL THEN t.downrate_n ELSE t.downrate END) AS downrate_n,
+		(CASE WHEN t.downceil_n IS NOT NULL THEN t.downceil_n ELSE t.downceil END) AS downceil_n,
+		(CASE WHEN t.uprate_n IS NOT NULL THEN t.uprate_n ELSE t.uprate END) AS uprate_n,
+		(CASE WHEN t.upceil_n IS NOT NULL THEN t.upceil_n ELSE t.upceil END) AS upceil_n,
+		t.climit, t.plimit,
+		n.id, n.ownerid, n.name, n.netid, INET_NTOA(n.ipaddr) AS ip, n.mac,
+		a.id AS assignmentid, a.customerid,
+		TRIM(" . $DB->Contact('lastname', "' '", 'c.name') . ") AS customer
+	FROM assignments a
+	JOIN tariffs t ON t.id = a.tariffid
+	JOIN customers c ON c.id = a.customerid
+	JOIN (
+		SELECT vn.id, vn.name, vn.netid, vn.ipaddr, vn.mac, vn.access,
+			(CASE WHEN nd.id IS NULL THEN vn.ownerid ELSE nd.ownerid END) AS ownerid
+		FROM vnodes vn
+			LEFT JOIN netdevices nd ON nd.id = vn.netdev AND vn.ownerid = 0 AND nd.ownerid IS NOT NULL
+		WHERE (vn.ownerid > 0 AND nd.id IS NULL)
+			OR (vn.ownerid = 0 AND nd.id IS NOT NULL)
+	) n ON n.ownerid = c.id
+	WHERE n.id NOT IN (SELECT DISTINCT nodeid FROM nodeassignments)
+		AND a.id NOT IN (SELECT DISTINCT assignmentid FROM nodeassignments)
+		AND a.datefrom <= ?NOW?
+		AND (a.dateto >= ?NOW? OR a.dateto = 0)
+		AND n.access = 1
+		AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
+		AND n.netid IN (" . implode(',', array_keys($networks)) . ")"
 		. (empty($customerids) ? '' : " AND c.id IN (" . implode(',', $customerids) . ")") . "
-	ORDER BY a.customerid, a.id";
+	) ORDER BY customerid, assignmentid";
+else
+	$query .= " ORDER BY a.customerid, na.assignmentid";
 
 $nodes = $DB->GetAll($query);
 if (empty($nodes))
@@ -305,7 +344,9 @@ foreach ($nodes as $node) {
 
 if ($create_device_channels) {
 	$devices = $DB->GetAll("SELECT n.id, INET_NTOA(n.ipaddr) AS ip, n.name, n.mac, n.netid
-		FROM vnodes n WHERE ownerid = 0
+		FROM vnodes n
+		JOIN netdevices nd ON nd.id = n.netdev AND n.ownerid = 0
+		WHERE nd.ownerid IS NULL
 			AND n.netid IN (" . implode(',', array_keys($networks)) . ")");
 
 	if (!empty($devices)) {
@@ -395,12 +436,12 @@ foreach ($channels as $channel) {
 		$h4 = sprintf("%02x", $o4); // last octet in hex
 		$h = sprintf("%x", $o4); // last octet in hex
 
-		$h_up = $filter_up;
-		$h_down = $filter_down;
-		$h_up_day = $filter_up_day;
-		$h_down_day = $filter_down_day;
-		$h_up_night = $filter_up_night;
-		$h_down_night = $filter_down_night;
+		$h_up = $script_filter_up;
+		$h_down = $script_filter_down;
+		$h_up_day = $script_filter_up_day;
+		$h_down_day = $script_filter_down_day;
+		$h_up_night = $script_filter_up_night;
+		$h_down_night = $script_filter_down_night;
 
 		// make rules...
 		// get first mac from the list
