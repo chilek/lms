@@ -2140,14 +2140,27 @@ class LMS
                 }
 
                 $filename = $dir . DIRECTORY_SEPARATOR . 'lms-' . $messageid . '-' . $number;
-                $latin1 = iconv('UTF-8', 'ASCII', $message);
-                $alphabet = '';
-                if (strlen($latin1) != mb_strlen($message, 'UTF-8')) {
-                    $alphabet = "Alphabet: UCS2\n";
-                    $message = iconv('UTF-8', 'UNICODEBIG', $message);
-                }
-                //$message = clear_utf($message);
-                $file = sprintf("To: %s\n%s\n%s", $number, $alphabet, $message);
+
+				$headers = array();
+				$headers['To'] = $number;
+
+				$latin1 = iconv('UTF-8', 'ASCII', $message);
+				if (strlen($latin1) != mb_strlen($message, 'UTF-8')) {
+					$headers['Alphabet'] = 'UCS2';
+					$message = iconv('UTF-8', 'UNICODEBIG', $message);
+				}
+
+				$queue = ConfigHelper::getConfig('sms.queue', '', true);
+				if (!empty($queue))
+					$headers['Queue'] = $queue;
+
+				$header = '';
+				array_walk($headers, function($value, $key) use (&$header) {
+						$header .= $key . ': ' . $value . "\n";
+					});
+
+				//$message = clear_utf($message);
+				$file = sprintf("%s\n%s", $header, $message);
 
                 if ($fp = fopen($filename, 'w')) {
                     fwrite($fp, $file);
