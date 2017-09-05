@@ -964,7 +964,7 @@ if ( isset($options['update']) ) {
 		$row['cecha'] = mb_strtolower($row['cecha']);
 
 		if ( isset($str_types[$row['cecha']]) )
-			$typeid = intval( $str_types[$row['cecha']] );
+			$typeid = intval( $str_types[$row['cecha']]['id'] );
 		else {
 	         $DB->Execute('INSERT INTO location_street_types (name) VALUES (?)',
 	                       array( $row['cecha'] ));
