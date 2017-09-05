@@ -580,9 +580,8 @@ if (isset($_POST['netdev'])) {
 
 	$netdevdata['clients'] = (empty($netdevdata['clients'])) ? 0 : intval($netdevdata['clients']);
 
-    if (!empty($netdevdata['ownerid']) && !$LMS->customerExists($netdevdata['ownerid'])) {
-        $error['ownerid'] = "doesnt exists";
-    }
+	if (!empty($netdevdata['ownerid']) && !$LMS->CustomerExists($netdevdata['ownerid']))
+		$error['ownerid'] = trans('Customer doesn\'t exist!');
 
 	$netdevdata['purchasetime'] = 0;
 	if ($netdevdata['purchasedate'] != '') {
@@ -631,11 +630,9 @@ if (isset($_POST['netdev'])) {
 
 		$ipi = $netdevdata['invprojectid'];
 		if ($ipi == '-1') {
-			$DB->BeginTrans();
 			$DB->Execute("INSERT INTO invprojects (name, type) VALUES (?, ?)",
 				array($netdevdata['projectname'], INV_PROJECT_REGULAR));
 			$ipi = $DB->GetLastInsertID('invprojects');
-			$DB->CommitTrans();
 		}
 
 		if ($netdevdata['invprojectid'] == '-1' || intval($ipi)>0) {

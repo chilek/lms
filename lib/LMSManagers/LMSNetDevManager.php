@@ -213,7 +213,8 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
     public function NetDevUpdate($data)
     {
-        global $LMS;
+		$old_ownerid = $this->db->GetOne('SELECT ownerid FROM netdevices WHERE id = ?', array($data['id']));
+		$ownerid = empty($data['ownerid']) ? NULL: intval($data['ownerid']);
 
         $args = array(
             'name'             => $data['name'],
@@ -236,7 +237,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
             'netnodeid'        => $data['netnodeid'],
             'status'           => $data['status'],
             'netdevicemodelid' => !empty($data['netdevicemodelid']) ? $data['netdevicemodelid'] : null,
-            'ownerid'          => (empty($data['ownerid'])) ? NULL: intval($data['ownerid']),
+            'ownerid'          => $ownerid,
             SYSLOG::RES_NETDEV => $data['id'],
         );
         $res = $this->db->Execute('UPDATE netdevices SET name=?, description=?, producer=?,
@@ -249,9 +250,11 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 			$data['address_id'] = null;
 		}
 
+		$location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+
 		if ( $data['ownerid'] ) {
 			if ( $data['address_id'] && !$this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id'])) ) {
-				$LMS->DeleteAddress( $data['address_id'] );
+				$location_manager->DeleteAddress( $data['address_id'] );
 			}
 
 			$this->db->Execute('UPDATE netdevices SET address_id = ? WHERE id = ?',
@@ -262,7 +265,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 								);
 		} else {
 			if ( !$data['address_id'] || $data['address_id'] && $this->db->GetOne('SELECT 1 FROM customer_addresses WHERE address_id = ?', array($data['address_id'])) ) {
-				$address_id = $LMS->InsertAddress($data);
+				$address_id = $location_manager->InsertAddress($data);
 
 				$this->db->Execute('UPDATE netdevices SET address_id = ? WHERE id = ?',
 									array(
@@ -271,13 +274,33 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 										)
 									);
 			} else {
-				$LMS->UpdateAddress($data);
+				$location_manager->UpdateAddress($data);
 			}
 		}
 
-        if ($this->syslog && $res) {
-            $this->syslog->AddMessage(SYSLOG::RES_NETDEV, SYSLOG::OPER_UPDATE, $args);
-        }
+		if ($this->syslog && $res) {
+			$this->syslog->AddMessage(SYSLOG::RES_NETDEV, SYSLOG::OPER_UPDATE, $args);
+
+			if ($old_ownerid != $ownerid) {
+				$nodeassigns = $this->db->GetAll('SELECT id, nodeid, assignmentid FROM nodeassignments
+					WHERE nodeid IN (SELECT id FROM nodes WHERE netdev = ? AND ownerid = 0)', array($data['id']));
+				if (!empty($nodeassigns))
+					foreach ($nodeassigns as $nodeassign) {
+						$args = array(
+							SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
+							SYSLOG::RES_NETDEV => $data['id'],
+							SYSLOG::RES_NODE => $nodedata['id'],
+							SYSLOG::RES_ASSIGN => $nodedata['assignmentid'],
+							SYSLOG::RES_CUST => $nodedata['ownerid']
+						);
+						$this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_DELETE, $args);
+					}
+			}
+		}
+
+		if ($old_ownerid != $ownerid)
+			$this->db->Execute('DELETE FROM nodeassignments
+				WHERE nodeid IN (SELECT id FROM nodes WHERE netdev = ? AND ownerid = 0)', array($data['id']));
     }
 
     public function NetDevAdd($data)

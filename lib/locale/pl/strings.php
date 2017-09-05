@@ -362,6 +362,7 @@ $_LANG['Customer Account:'] = 'Konto klienta:';
 $_LANG['Customer Balance: $a'] = 'Rachunek klienta: $a';
 $_LANG['Customer Balance Sheet'] = 'Historia operacji klienta';
 $_LANG['Customer cannot send message!'] = 'Klient nie może wysłać wiadomości!';
+$_LANG['Customer doesn\'t exist!'] = 'Klient nie istnieje!';
 $_LANG['Customer from outside'] = 'Klient z zewnątrz';
 $_LANG['customer from outside'] = 'klient z zewnątrz';
 $_LANG['Customer Edit: $a'] = 'Edycja klienta: $a';
