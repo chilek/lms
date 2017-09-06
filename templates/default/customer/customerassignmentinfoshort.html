@@ -29,8 +29,13 @@
 	</TR>
 	<TR>
 		<TD><IMG src="img/options.gif" ALT=""></TD>
-		<TD style="width: 1%; white-space: nowrap;">{trans("with invoice")}:</TD>
+		<TD style="width: 1%;" class="nobr">{trans("with invoice")}:</TD>
 		<TD>{if $assignment.invoice}{trans("yes")}{else}{trans("no")}{/if}</TD>
+	</TR>
+	<TR>
+		<TD><IMG src="img/options.gif" ALT=""></TD>
+		<TD style="width: 1%;" class="nobr">{trans("separate invoice")}:</TD>
+		<TD>{if $assignment.invoice == 2}{trans("yes")}{else}{trans("no")}{/if}</TD>
 	</TR>
 	<TR>
 		<TD><IMG src="img/options.gif" ALT=""></TD>

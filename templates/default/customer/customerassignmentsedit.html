@@ -385,7 +385,12 @@
 													<INPUT type="checkbox" name="assignment[invoice]" value="1"{if $assignment.invoice} checked{/if}>
 													{trans("with invoice")}
 												</label>
-
+												<br>
+												<label>
+													<input type="checkbox" name="assignment[separateinvoice]" value="1"{if $assignment.invoice == 2} checked{/if}>
+													{trans("separate invoice")}
+												</label>
+												<br>
 												<label>
 													<INPUT type="checkbox" name="assignment[settlement]" value="1"{if $assignment.settlement} checked{/if}>
 													{trans("with settlement of first deficient period")}

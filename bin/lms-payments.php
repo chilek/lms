@@ -477,9 +477,9 @@ foreach ($assigns as $assign) {
 	if ($suspension_percentage && ($assign['suspended'] || $assign['allsuspended']))
 		$desc .= " ".$suspension_description;
 
-	if (!array_key_exists($cid, $invoices)) $invoices[$cid] = 0;
-	if (!array_key_exists($cid, $paytypes)) $paytypes[$cid] = 0;
-	if (!array_key_exists($cid, $numberplans)) $numberplans[$cid] = 0;
+	if (!isset($invoices[$cid]) || $assign['invoice'] == 2) $invoices[$cid] = 0;
+	if (!isset($paytypes[$cid])) $paytypes[$cid] = 0;
+	if (!isset($numberplans[$cid])) $numberplans[$cid] = 0;
 
 	if ($assign['value'] != 0)
 	{

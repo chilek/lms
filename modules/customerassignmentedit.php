@@ -322,7 +322,7 @@ if (isset($_POST['assignment']))
 			'attribute' => !empty($a['attribute']) ? $a['attribute'] : NULL,
 			'period' => $period,
 			'at' => $at,
-			'invoice' => isset($a['invoice']) ? 1 : 0,
+			'invoice' => isset($a['separateinvoice']) ? 2 : (isset($a['invoice']) ? 1 : 0),
 			'settlement' => isset($a['settlement']) ? 1 : 0,
 			'datefrom' => $from,
 			'dateto' => $to,
