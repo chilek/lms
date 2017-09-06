@@ -418,7 +418,7 @@ switch($action)
 				'original' => !empty($_GET['original']) ? 1 : 0,
 				'copy' => !empty($_GET['copy']) ? 1 : 0));
 
-		if (isset($_POST['reuse']))
+		if (isset($_POST['reuse']) || isset($_GET['print']))
 			$SESSION->redirect('?m=invoicenew&action=init');
 		else
 			$SESSION->redirect('?' . $SESSION->get('backto'));
