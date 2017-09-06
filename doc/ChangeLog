@@ -75,6 +75,7 @@ version ?.??.?? (????-??-??):
   - improvement: allow to download recorded voip calls [chilan]
   - enhancement: sms.queue configuration variable allow to specify outgoing queue
     for smstools service [chilan]
+  - enhancement: allow to force separate invoice issuing for liabilities [chilan]
 
 version 1.11.22 (2017-06-08):
 
