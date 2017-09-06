@@ -410,7 +410,7 @@ switch($action)
 				if($row['reference'] && $receipt['type']=='in')
 				{
 					// get cnotes values if those values decreases invoice value
-					if($cnotes = $DB->GetAll('SELECT SUM(value) AS value, docid, cdate, number, template
+					if($cnotes = $DB->GetAll('SELECT SUM(value) AS value, docid, cdate, number, template,
 							d.customerid
 						FROM cash
 						LEFT JOIN documents d ON (docid = d.id)
