@@ -246,7 +246,7 @@ if(isset($_POST['message']))
 				if (ConfigHelper::checkConfig('phpui.helpdesk_customerinfo')) {
 					$params = array(
 						'id' => $message['ticketid'],
-						'customerid' => $ticketdata['customerinfo'],
+						'customerid' => $ticketdata['customerid'],
 						'customer' => $info,
 						'emails' => $emails,
 						'phones' => $phones,
@@ -287,7 +287,7 @@ if(isset($_POST['message']))
 			$params = array(
 				'id' => $message['ticketid'],
 				'messageid' => isset($msgid) ? $msgid : null,
-				'customerid' => $message['customerid'],
+				'customerid' => empty($message['customerid']) ? $ticketdata['customerid'] : $message['customerid'],
 				'status' => $ticketdata['status'],
 				'categories' => $ticketdata['categorynames'],
 				'subject' => $message['subject'],
