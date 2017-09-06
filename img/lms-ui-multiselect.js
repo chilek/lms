@@ -92,6 +92,12 @@ function multiselect(options) {
 			li.addClass('selected');
 		}
 
+		if ($(this).is(':disabled')) {
+			li.addClass('blend');
+			box.prop('disabled', true);
+			return;
+		}
+
 		// add some mouse/key events handlers
 		li.click(function(e) {
 			$(this).toggleClass('selected');
