@@ -129,7 +129,7 @@ elseif(isset($_POST['note']))
 
 					$params = array(
 						'id' => $note['ticketid'],
-						'customerid' => $ticket['customerid'],
+						'customerid' => $ticketdata['customerid'],
 						'customer' => $info,
 						'emails' => $emails,
 						'phones' => $phones,
