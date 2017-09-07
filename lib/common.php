@@ -1002,6 +1002,13 @@ function check_date($date) {
 	return preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $date);
 }
 
+function date_to_timestamp($date) {
+	if (!preg_match('/^(?<year>[0-9]{4})\/(?<month>[0-9]{2})\/(?<day>[0-9]{2})$/', $date, $m)
+		|| !checkdate($m['month'], $m['day'], $m['year']))
+		return null;
+	return mktime(0, 0, 0, $m['month'], $m['day'], $m['year']);
+}
+
 function getdir($pwd = './', $pattern = '^.*$') {
 	$files = array();
 	if ($handle = @opendir($pwd)) {

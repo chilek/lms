@@ -195,13 +195,9 @@ if (isset($_POST['customeradd'])) {
 		$cutoffstop = intval(pow(2, 31) - 1);
 	elseif ($customeradd['cutoffstop'] == '')
 		$cutoffstop = 0;
-	elseif (check_date($customeradd['cutoffstop'])) {
-			list ($y, $m, $d) = explode('/', $customeradd['cutoffstop']);
-			if (checkdate($m, $d, $y))
-				$cutoffstop = mktime(23, 59, 59, $m, $d, $y);
-			else
-				$error['cutoffstop'] = trans('Incorrect date of cutoff suspending!');
-	} else
+	elseif ($cutoffstop = date_to_timestamp($customeradd['cutoffstop']))
+		$cutoffstop += 86399;
+	else
 		$error['cutoffstop'] = trans('Incorrect date of cutoff suspending!');
 
         $hook_data = $LMS->executeHook(
