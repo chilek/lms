@@ -26,6 +26,7 @@
 
 $_LANG['documents'] = 'dokumenty';
 $_LANG['Check if contact should be printed on documents'] = 'Zaznacz jeśli kontakt powinien być drukowany na dokumentach';
+$_LANG['Check if would like to print cutomerlist as sending register'] = 'Zaznacz jeśli chcesz wydrukować listę klientów w formacie książki nadawczej';
 
 $_LANG['Are you sure you want to send messages to $a customer(s)?'] = 'Jesteś pewien, że chcesz wysłać wiadmości do $a klient(a/ów)?';
 
@@ -1003,6 +1004,7 @@ $_LANG['Name'] = 'Nazwa';
 $_LANG['Name:'] = 'Nazwa:';
 $_LANG['First/last name'] = 'Imię i nazwisko';
 $_LANG['First/last name:'] = 'Imię i nazwisko:';
++$_LANG['Sender First, Last name (name)'] = 'Imię i nazwisko nadawcy (nazwa)';
 $_LANG['Last and first name'] = 'Nazwisko i imię';
 $_LANG['Name contains forbidden characters!'] = 'Nazwisko zawiera niepoprawne znaki!';
 $_LANG['Name of messages sender or predefined variables: "queue" - queue name, "user" - logged user name. Default: none.'] = 'Nazwa nadawcy wiadomości lub jedna z predefiniowanych wartości: "queue" - nazwa kolejki, "user" - zalogowany użytkownik. Domyślnie: pusta.';
@@ -2394,6 +2396,13 @@ $_LANG['List of domains'] = 'Lista domen';
 $_LANG['Set notice content'] = 'Ustaw treść powiadomienia';
 $_LANG['Set notice for node'] = 'Ustaw powiadomienie dla komputera';
 $_LANG['Default service type for sending text messages.'] = 'Domyślny typ serwisu używanego do wysyłania wiadomości sms.';
+$_LANG['Sending register'] = 'Książka nadawcza';
+$_LANG['Sending register format'] = 'Szablon książki nadawczej';
+$_LANG['Mass'] = 'Waga';
+$_LANG['Sending number'] = 'Numer nadawczy';
+$_LANG['Charge'] = 'Opłata';
+$_LANG['Cash on delivery'] = 'Pobranie';
+$_LANG['Cash on delivery fee'] = 'Opłata za pobranie';
 $_LANG['Type of account you have at smscenter service. LMS will add sender at the end of message, when static type has been set. Correct values are: static and dynamic'] = 'Typ konta jakie posiadasz w smscenter, LMS automatycznie doda nadawcę na końcu wiadomości, jeżeli wybierzesz konto typu static. Poprawne wartości to: static lub dynamic';
 $_LANG['Username for smscenter service'] = 'Nazwa użytkownika w smscenter';
 $_LANG['Password for smscenter service'] = 'Hasło dla twojego użytkownika w smscenter';
