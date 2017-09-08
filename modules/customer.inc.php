@@ -35,6 +35,7 @@ if ($layout['module'] != 'customeredit') {
 }
 
 $expired              = !empty($_GET['expired']) ? true : false;
+$allevents            = isset($_GET['allevents']) && !empty($_GET['allevents']);
 $assignments          = $LMS->GetCustomerAssignments($customerid, !empty($expired) ? $expired : NULL);
 $customergroups       = $LMS->CustomergroupGetForCustomer($customerid);
 $othercustomergroups  = $LMS->GetGroupNamesWithoutCustomer($customerid);
@@ -44,7 +45,12 @@ $documents            = $LMS->GetDocuments($customerid, 10);
 $taxeslist            = $LMS->GetTaxes();
 $allnodegroups        = $LMS->GetNodeGroupNames();
 $messagelist          = $LMS->GetMessages($customerid);
-$eventlist            = $LMS->EventSearch(array('customerid' => $customerid), 'date,desc', true);
+$params = array(
+	'customerid' => $customerid,
+);
+if ($allevents)
+	$params['closed'] = '';
+$eventlist            = $LMS->EventSearch($params, 'date,desc', true);
 $customernodes        = $LMS->GetCustomerNodes($customerid);
 $customernetworks     = $LMS->GetCustomerNetworks($customerid, 10);
 $customerstats = array(
@@ -82,7 +88,8 @@ if(!empty($documents)) {
 }
 
 $SMARTY->assign(array(
-	'expired' => $expired, 
+	'expired' => $expired,
+	'allevents' => $allevents,
 	'time' => $SESSION->get('addbt'),
 	'taxid' => $SESSION->get('addbtax'),
 	'comment' => $SESSION->get('addbc'),
