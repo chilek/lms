@@ -2226,6 +2226,35 @@ CREATE VIEW vnodes AS
         LEFT JOIN vaddresses a ON n.address_id = a.id
     WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
 
+
+CREATE VIEW vnodetariffs_allsuspended AS
+	SELECT customerid, COUNT(id) AS allsuspended FROM assignments
+	WHERE tariffid = 0 AND liabilityid = 0
+		AND datefrom <= UNIX_TIMESTAMP()
+		AND (dateto = 0 OR dateto > UNIX_TIMESTAMP())
+	GROUP BY customerid;
+
+CREATE VIEW vnodetariffs_tariffs AS
+	SELECT n.id AS nodeid,
+		SUM(t.downrate) AS downrate,
+		SUM(t.downceil) AS downceil,
+		SUM(t.uprate) AS uprate,
+		SUM(t.upceil) AS upceil,
+		SUM(COALESCE(t.downrate_n, t.downrate)) AS downrate_n,
+		SUM(COALESCE(t.downceil_n, t.downceil)) AS downceil_n,
+		SUM(COALESCE(t.uprate_n, t.uprate)) AS uprate_n,
+		SUM(COALESCE(t.upceil_n, t.upceil)) AS upceil_n
+	FROM nodes n
+	JOIN nodeassignments na ON na.nodeid = n.id
+	JOIN assignments a ON a.id = na.assignmentid
+	JOIN tariffs t ON t.id = a.tariffid
+	LEFT JOIN vnodetariffs_allsuspended s ON s.customerid = n.ownerid
+	WHERE s.allsuspended IS NULL AND a.suspended = 0
+		AND a.datefrom <= UNIX_TIMESTAMP()
+		AND (a.dateto = 0 OR a.dateto >= UNIX_TIMESTAMP())
+		AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
+	GROUP BY n.id;
+
 CREATE VIEW vnodetariffs AS
 	SELECT n.*,
 		t.downrate, t.downceil,
@@ -2237,40 +2266,37 @@ CREATE VIEW vnodetariffs AS
 		a.house as location_house, a.flat as location_flat,
 		a.location
 	FROM nodes n
-	LEFT JOIN (
-		SELECT nodeid, GROUP_CONCAT(mac SEPARATOR ',') AS mac
-		FROM macs
-		GROUP BY nodeid
-	) m ON (n.id = m.nodeid)
+	JOIN vnodes_mac m ON m.nodeid = n.id
 	LEFT JOIN vaddresses a ON n.address_id = a.id
-	JOIN (
-		SELECT n.id AS nodeid,
-			SUM(t.downrate) AS downrate,
-			SUM(t.downceil) AS downceil,
-			SUM(t.uprate) AS uprate,
-			SUM(t.upceil) AS upceil,
-			SUM(COALESCE(t.downrate_n, t.downrate)) AS downrate_n,
-			SUM(COALESCE(t.downceil_n, t.downceil)) AS downceil_n,
-			SUM(COALESCE(t.uprate_n, t.uprate)) AS uprate_n,
-			SUM(COALESCE(t.upceil_n, t.upceil)) AS upceil_n
-		FROM nodes n
-		JOIN nodeassignments na ON na.nodeid = n.id
-		JOIN assignments a ON a.id = na.assignmentid
-		JOIN tariffs t ON t.id = a.tariffid
-		LEFT JOIN (
-			SELECT customerid, COUNT(id) AS allsuspended FROM assignments
-			WHERE tariffid = 0 AND liabilityid = 0
-				AND datefrom <= UNIX_TIMESTAMP()
-				AND (dateto = 0 OR dateto > UNIX_TIMESTAMP())
-			GROUP BY customerid
-		) s ON s.customerid = n.ownerid
-		WHERE s.allsuspended IS NULL AND a.suspended = 0
-			AND a.datefrom <= UNIX_TIMESTAMP()
-			AND (a.dateto = 0 OR a.dateto >= UNIX_TIMESTAMP())
-			AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
-		GROUP BY n.id
-	) t ON t.nodeid = n.id
+	JOIN vnodetariffs_tariffs t ON t.nodeid = n.id
 	WHERE n.ipaddr <> 0 OR n.ipaddr_pub <> 0;
+
+CREATE VIEW vnodealltariffs_nodes AS
+	SELECT vn.id,
+		(CASE WHEN nd.id IS NULL THEN vn.ownerid ELSE nd.ownerid END) AS ownerid
+	FROM vnodes vn
+	LEFT JOIN netdevices nd ON nd.id = vn.netdev AND vn.ownerid = 0 AND nd.ownerid IS NOT NULL
+	WHERE (vn.ownerid > 0 AND nd.id IS NULL)
+		OR (vn.ownerid = 0 AND nd.id IS NOT NULL);
+
+CREATE VIEW vnodealltariffs_tariffs AS
+	SELECT n.id AS nodeid, SUM(t.downrate) AS downrate, SUM(t.downceil) AS downceil,
+		SUM(t.uprate) AS uprate, SUM(t.upceil) AS upceil,
+		SUM(COALESCE(t.downrate_n, t.downrate)) AS downrate_n,
+		SUM(COALESCE(t.downceil_n, t.downceil)) AS downceil_n,
+		SUM(COALESCE(t.uprate_n, t.uprate)) AS uprate_n,
+		SUM(COALESCE(t.upceil_n, t.upceil)) AS upceil_n
+	FROM assignments a
+	JOIN tariffs t ON t.id = a.tariffid
+	JOIN vnodealltariffs_nodes n ON n.ownerid = a.customerid
+	LEFT JOIN vnodetariffs_allsuspended s ON s.customerid = a.customerid
+	WHERE s.allsuspended IS NULL AND a.suspended = 0
+		AND a.datefrom <= UNIX_TIMESTAMP()
+		AND (a.dateto = 0 OR a.dateto >= UNIX_TIMESTAMP())
+		AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
+		AND n.id NOT IN (SELECT nodeid FROM nodeassignments)
+		AND a.id NOT IN (SELECT assignmentid FROM nodeassignments)
+	GROUP BY n.id;
 
 CREATE VIEW vnodealltariffs AS
 	SELECT n.*,
@@ -2287,68 +2313,10 @@ CREATE VIEW vnodealltariffs AS
 		a.house as location_house, a.flat as location_flat,
 		a.location
 	FROM nodes n
-	LEFT JOIN (
-		SELECT nodeid, GROUP_CONCAT(mac SEPARATOR ',') AS mac
-		FROM macs
-		GROUP BY nodeid
-	) m ON n.id = m.nodeid
+	JOIN vnodes_mac m ON m.nodeid = n.id
 	LEFT JOIN vaddresses a ON a.id = n.address_id
-	LEFT JOIN (
-		SELECT n.id AS nodeid, SUM(t.downrate) AS downrate, SUM(t.downceil) AS downceil,
-			SUM(t.uprate) AS uprate, SUM(t.upceil) AS upceil,
-			SUM(COALESCE(t.downrate_n, t.downrate)) AS downrate_n,
-			SUM(COALESCE(t.downceil_n, t.downceil)) AS downceil_n,
-			SUM(COALESCE(t.uprate_n, t.uprate)) AS uprate_n,
-			SUM(COALESCE(t.upceil_n, t.upceil)) AS upceil_n
-		FROM nodes n
-		JOIN nodeassignments na ON na.nodeid = n.id
-		JOIN assignments a ON a.id = na.assignmentid
-		JOIN tariffs t ON t.id = a.tariffid
-		LEFT JOIN (
-			SELECT customerid, COUNT(id) AS allsuspended FROM assignments
-			WHERE tariffid = 0 AND liabilityid = 0
-				AND datefrom <= UNIX_TIMESTAMP()
-				AND (dateto = 0 OR dateto > UNIX_TIMESTAMP())
-			GROUP BY customerid
-		) s ON s.customerid = n.ownerid
-		WHERE s.allsuspended IS NULL AND a.suspended = 0
-			AND a.datefrom <= UNIX_TIMESTAMP()
-			AND (a.dateto = 0 OR a.dateto >= UNIX_TIMESTAMP())
-			AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
-		GROUP BY n.id
-	) t1 ON t1.nodeid = n.id
-	LEFT JOIN (
-		SELECT n.id AS nodeid, SUM(t.downrate) AS downrate, SUM(t.downceil) AS downceil,
-			SUM(t.uprate) AS uprate, SUM(t.upceil) AS upceil,
-			SUM(CASE WHEN t.downrate_n IS NOT NULL THEN t.downrate_n ELSE t.downrate END) AS downrate_n,
-			SUM(CASE WHEN t.downceil_n IS NOT NULL THEN t.downceil_n ELSE t.downceil END) AS downceil_n,
-			SUM(CASE WHEN t.uprate_n IS NOT NULL THEN t.uprate_n ELSE t.uprate END) AS uprate_n,
-			SUM(CASE WHEN t.upceil_n IS NOT NULL THEN t.upceil_n ELSE t.upceil END) AS upceil_n
-		FROM assignments a
-		JOIN tariffs t ON t.id = a.tariffid
-		JOIN (
-			SELECT vn.id,
-				(CASE WHEN nd.id IS NULL THEN vn.ownerid ELSE nd.ownerid END) AS ownerid
-			FROM vnodes vn
-			LEFT JOIN netdevices nd ON nd.id = vn.netdev AND vn.ownerid = 0 AND nd.ownerid IS NOT NULL
-			WHERE (vn.ownerid > 0 AND nd.id IS NULL)
-				OR (vn.ownerid = 0 AND nd.id IS NOT NULL)
-		) n ON n.ownerid = a.customerid
-		LEFT JOIN (
-			SELECT customerid, COUNT(id) AS allsuspended FROM assignments
-			WHERE tariffid = 0 AND liabilityid = 0
-				AND datefrom <= UNIX_TIMESTAMP()
-				AND (dateto = 0 OR dateto > UNIX_TIMESTAMP())
-			GROUP BY customerid
-		) s ON s.customerid = a.customerid
-		WHERE s.allsuspended IS NULL AND a.suspended = 0
-			AND a.datefrom <= UNIX_TIMESTAMP()
-			AND (a.dateto = 0 OR a.dateto >= UNIX_TIMESTAMP())
-			AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
-			AND n.id NOT IN (SELECT nodeid FROM nodeassignments)
-			AND a.id NOT IN (SELECT assignmentid FROM nodeassignments)
-		GROUP BY n.id
-	) t2 ON t2.nodeid = n.id
+	JOIN vnodetariffs_tariffs t1 ON t1.nodeid = n.id
+	LEFT JOIN vnodealltariffs_tariffs t2 ON t2.nodeid = n.id
 	WHERE (n.ipaddr <> 0 OR n.ipaddr_pub <> 0)
 		AND ((t1.nodeid IS NOT NULL AND t2.nodeid IS NULL)
 			OR (t1.nodeid IS NULL AND t2.nodeid IS NOT NULL)
