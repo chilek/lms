@@ -3,22 +3,6 @@
 function multiselect(options) {
 	var multiselect_obj = this;
 
-	this.get_object_pos = function(obj) {
-		// get old element size/position
-		var x = obj.offsetLeft;
-		var y = obj.offsetTop;
-
-		// calculate element position
-		var elm = obj.offsetParent;
-		while (elm && window.getComputedStyle(elm).position != 'relative') {
-			x += elm.offsetLeft;
-			y += elm.offsetTop;
-			elm = elm.offsetParent;
-		}
-
-		return { x: x, y: y };
-	}
-
 	var elemid = options.id;
 	var def = typeof options.defaultValue !== 'undefined' ? options.defaultValue : '';
 	var tiny = typeof options.type !== 'undefined' && options.type == 'tiny';
@@ -134,7 +118,7 @@ function multiselect(options) {
 	new_element.click(function() {
 		var list = $('#' + this.id + '-layer');
 		if (!list.is(':visible')) {
-			var pos = multiselect_obj.get_object_pos(this);
+			var pos = get_object_pos(this);
 			list.css('left', (pos.x + this.offsetWidth) + 'px')
 				.css('top', pos.y + 'px').show();
 /*
