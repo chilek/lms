@@ -1117,7 +1117,8 @@ function handle_file_uploads($elemid, &$error) {
 		if (empty($tmpdir)) {
 			$tmpdir = uniqid('lms-fileupload-');
 			$tmppath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tmpdir;
-			if (is_dir($tmppath) || !@mkdir($tmppath))
+			if (isset($_FILES[$elemid]) && !empty($_FILES[$elemid]['tmp_name'][0])
+				&& (is_dir($tmppath) || !@mkdir($tmppath)))
 				$tmpdir = '';
 		} elseif (preg_match('/^lms-fileupload-[0-9a-f]+$/', $tmpdir)) {
 			$tmppath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tmpdir;

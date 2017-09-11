@@ -395,7 +395,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					fclose($fh);
 				} else {
 					if ($cleanup)
-						$dirs_to_be_deleted = dirname($file['name']);
+						$dirs_to_be_deleted[] = dirname($file['name']);
 					if (!@rename(isset($file['tmp_name']) ? $file['tmp_name'] : $file['name'], $dstfile))
 						continue;
 				}
@@ -442,7 +442,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		));
 		$msgid = $this->db->GetLastInsertID('rtmessages');
 
-		$this->SaveTicketMessageAttachments($message['ticketid'], $msgid, $files, true);
+		$this->SaveTicketMessageAttachments($message['ticketid'], $msgid, $files);
 
 		return $msgid;
 	}

@@ -436,13 +436,17 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 		if($message['type'] == MSG_MAIL)
 		{
 			$attachments = NULL;
-			if (!empty($files))
+			if (!empty($files)) {
 				foreach ($files as $file)
 					$attachments[] = array(
 						'content_type' => $file['type'],
 						'filename' => $file['name'],
 						'data' => file_get_contents($tmppath . DIRECTORY_SEPARATOR . $file['name']),
 					);
+
+				// deletes uploaded files
+				rrmdir($tmppath);
+			}
 
 			$debug_email = ConfigHelper::getConfig('mail.debug_email');
 			if(!empty($debug_email))

@@ -183,6 +183,10 @@ if(isset($_POST['message']))
 			$LMS->SendMail($recipients, $headers, $body, $attachments);
 		}
 
+		// deletes uploaded files
+		if (!empty($files))
+			rrmdir($tmppath);
+
 		// setting status and the ticket owner
 		if (isset($message['state']))
 			$message['state'] = RT_RESOLVED;
