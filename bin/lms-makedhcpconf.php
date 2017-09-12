@@ -136,12 +136,12 @@ $config_owneruid = ConfigHelper::getConfig('dhcp.config_owneruid', 0, true);
 $config_ownergid = ConfigHelper::getConfig('dhcp.config_ownergid', 0, true);
 $config_permission = ConfigHelper::getConfig('dhcp.config_permission', "0644");
 $config_file = ConfigHelper::getConfig('dhcp.config_file', "/etc/dhcpd.conf");
-$config_begin = ConfigHelper::getConfig('dhcp.begin',
-	"ddns-update-style none;\nlog-facility local6;\n");
 $default_lease_time = ConfigHelper::getConfig('dhcp.default_lease_time', 86400);
 $max_lease_time = ConfigHelper::getConfig('dhcp.max_lease_time', 86400);
 $enable_option82 = ConfigHelper::checkConfig('dhcp.enable_option82');
 $use_network_authtype = ConfigHelper::checkConfig('dhcp.use_network_authtype');
+$config_begin = ConfigHelper::getConfig('dhcp.begin',
+	"ddns-update-style none;\nlog-facility local6;\ndefault-lease-time = $default_lease_time;\nmax-lease-time = $max_lease_time;\n");
 
 // we're looking for dhcp-mac config sections
 $config_macs = array();
@@ -237,9 +237,7 @@ foreach ($networks as $networkid => $net) {
 	}
 
 	$net_prefix .= "\n\tsubnet " . long2ip($net['address']) . " netmask " . long2ip($net['mask'])
-			. " { # Network " . $net['name'] . " (ID: " . $net['id'] . ")\n";
-	$net_prefix .= "\t\tdefault-lease-time " . $default_lease . ";\n"
-		. "\t\tmax-lease-time " . $max_lease . ";\n"
+		. " { # Network " . $net['name'] . " (ID: " . $net['id'] . ")\n"
 		. (!empty($net['dhcpstart']) ? "\t\trange " . $net['dhcpstart'] . " " . $net['dhcpend'] . ";\n" : "");
 	foreach ($options as $name => $value)
 		$net_prefix .= "\t\toption " . $name . " " . $value . ";\n";
