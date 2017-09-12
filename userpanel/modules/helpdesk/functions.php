@@ -383,7 +383,8 @@ function module_main() {
 			die;
 		} else {
 			$SMARTY->assign('error', $error);
-			$SMARTY->assign('helpdesk', $ticket);
+			$helpdesk = $ticket;
+			$SMARTY->assign('helpdesk', $helpdesk);
 			$_GET['op'] = 'message';
 		}
 	}
