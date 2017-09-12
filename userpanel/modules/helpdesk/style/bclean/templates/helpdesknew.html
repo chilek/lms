@@ -23,12 +23,12 @@
 
 					<div class="form-group">
 						<label for="subject">{trans("Subject:")}</label>
-						<input class="form-control" type="text" name="helpdesk[subject]" value="{$helpdesk.subject}" placeholder="{trans("Enter request subject")}" required />
+						<input class="form-control" type="text" name="helpdesk[subject]" value="{$helpdesk.subject}" {userpaneltip text="Enter request subject" trigger="subject"} placeholder="{trans("Enter request subject")}" required />
 					</div>
 
 					<div class="form-group">
 						<label for="body">{trans("Body:")}</label>
-						<textarea class="form-control" name="helpdesk[body]" placeholder="{trans("Enter request contents")}" required>{$helpdesk.body}</textarea>
+						<textarea class="form-control" name="helpdesk[body]" {userpaneltip text="Enter request contents" trigger="body"} placeholder="{trans("Enter request contents")}" required>{$helpdesk.body}</textarea>
 					</div>
 
 					<div class="form-group">
