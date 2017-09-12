@@ -40,9 +40,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">{trans("Close")}</button>
-				{if $rights.info.edit_addr || $rights.info.edit_addr_ack || $rights.info.edit_contact || $rights.info.edit_contact_ack}
-					<a class="btn btn-danger" formnovalidate href="javascript:document.helpdesk.submit()" accesskey="S">{trans("Submit")}</a>
-				{/if}
+				<a class="btn btn-danger" formnovalidate href="javascript:document.helpdesk.submit()" accesskey="S">{trans("Submit")}</a>
 				<input type="hidden" name="wyslane" value="1">
 			</div>
 		</div>
