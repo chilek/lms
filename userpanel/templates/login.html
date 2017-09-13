@@ -7,7 +7,17 @@
 <link type="text/css" rel="stylesheet" href="{stylefile}" />
 {$google_recaptcha_sitekey = ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey')}
 {if !empty($google_recaptcha_sitekey)}
-<script src='https://www.google.com/recaptcha/api.js'></script>
+<script src="https://www.google.com/recaptcha/api.js?onload=recaptchaOnLoad&render=explicit" async defer></script>
+<script>
+	function recaptchaOnLoad() {
+		grecaptcha.render('login-recaptcha', {
+			'sitekey' : '{$google_recaptcha_sitekey}'
+		});
+		grecaptcha.render('remind-recaptcha', {
+			'sitekey' : '{$google_recaptcha_sitekey}'
+		});
+	}
+</script>
 {/if}
 </head>
 <body>
@@ -122,6 +132,13 @@
 						<input type="text" name="remindform[ten]" style="width: 120pt;" />
 					</td>
 				</tr>
+				{if !empty($google_recaptcha_sitekey)}
+				<tr>
+					<td colspan="2">
+						<div class="g-recaptcha" data-sitekey="{$google_recaptcha_sitekey}"></div>
+					</td>
+				</tr>
+				{/if}
 				<tr>
 					<td colspan="2" class="text-center">
 						<br /><input type="submit" name="remindform[submit]" class="bold" value="{trans("Remind")}" />

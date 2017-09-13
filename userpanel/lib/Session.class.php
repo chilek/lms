@@ -50,6 +50,9 @@ class Session {
 			$remindform = $_POST['remindform'];
 
 		if (isset($remindform)) {
+			if (isset($_POST['g-recaptcha-response']) && !$this->ValidateRecaptchaResponse())
+				return;
+
 			$ten = preg_replace('/-/', '', $remindform['ten']);
 			$params = array($ten, $ten);
 			switch ($remindform['type']) {

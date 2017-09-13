@@ -9,7 +9,17 @@
         <link type="text/css" rel="stylesheet" href="{stylefile}">
         {$google_recaptcha_sitekey = ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey')}
         {if !empty($google_recaptcha_sitekey)}
-        <script src='https://www.google.com/recaptcha/api.js'></script>
+        <script src="https://www.google.com/recaptcha/api.js?onload=recaptchaOnLoad&render=explicit" async defer></script>
+        <script>
+            function recaptchaOnLoad() {
+				grecaptcha.render('login-recaptcha', {
+					'sitekey' : '{$google_recaptcha_sitekey}'
+				});
+				grecaptcha.render('remind-recaptcha', {
+					'sitekey' : '{$google_recaptcha_sitekey}'
+				});
+            }
+        </script>
         {/if}
         <style>
             .form-signin {
@@ -83,7 +93,7 @@
                             <input type="password" name="loginform[pwd]" id="inputPassword" class="form-control" required>
                         </fieldset>
                         {if !empty($google_recaptcha_sitekey)}
-                        <div class="g-recaptcha" data-sitekey="{$google_recaptcha_sitekey}"></div>
+                        <div id="login-recaptcha" class="g-recaptcha"></div>
                         {/if}
                         <button class="btn btn-lg btn-primary btn-block" name="loginform[submit]" type="submit">{trans('Login')}</button>
                         <a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
@@ -111,6 +121,9 @@
                         <fieldset class="form-group">
                             <label>{trans('SSN or TEN:')} <input type="text" name="remindform[ten]" id="inputSsnOrTen" class="form-control"></label>
                         </fieldset>
+                        {if !empty($google_recaptcha_sitekey)}
+                        <div id="remind-recaptcha" class="g-recaptcha"></div>
+                        {/if}
                         <button class="btn btn-lg btn-primary btn-block" type="submit" name="remindform[submit]" value="{trans('Remind')}">{trans('Remind')}</button>
                         <p><a href="javascript:switch_form('login');">{trans('Login form')}</a></p>
                     </form>
