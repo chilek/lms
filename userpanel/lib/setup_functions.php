@@ -40,6 +40,8 @@ function module_setup()
     $SMARTY->assign('reminder_sms_body', ConfigHelper::getConfig('userpanel.reminder_sms_body', "ID: %id, PIN: %pin"));
     $SMARTY->assign('auth_type', ConfigHelper::getConfig('userpanel.auth_type', 1));
     $SMARTY->assign('force_ssl', ConfigHelper::getConfig('userpanel.force_ssl', ConfigHelper::getConfig('phpui.force_ssl', 1)));
+    $SMARTY->assign('google_recaptcha_sitekey', ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey', ''));
+	$SMARTY->assign('google_recaptcha_secret', ConfigHelper::getConfig('userpanel.google_recaptcha_secret', ''));
 	$enabled_modules = ConfigHelper::getConfig('userpanel.enabled_modules', null, true);
 	if (is_null($enabled_modules)) {
 		$enabled_modules = array();
@@ -117,6 +119,16 @@ function module_submit_setup()
         $DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'force_ssl'", array(isset($_POST['force_ssl']) ? 1 : 0));
     else
         $DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'force_ssl', ?)", array(isset($_POST['force_ssl']) ? 1 : 0));
+
+	if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'google_recaptcha_sitekey'"))
+		$DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'google_recaptcha_sitekey'", array($_POST['google_recaptcha_sitekey']));
+	else
+		$DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'google_recaptcha_sitekey', ?)", array($_POST['google_recaptcha_sitekey']));
+
+	if ($DB->GetOne("SELECT 1 FROM uiconfig WHERE section = 'userpanel' AND var = 'google_recaptcha_secret'"))
+		$DB->Execute("UPDATE uiconfig SET value = ? WHERE section = 'userpanel' AND var = 'google_recaptcha_secret'", array($_POST['google_recaptcha_secret']));
+	else
+		$DB->Execute("INSERT INTO uiconfig (section, var, value) VALUES('userpanel', 'google_recaptcha_secret', ?)", array($_POST['google_recaptcha_secret']));
 
 	if (isset($_POST['enabled_modules']))
 		$enabled_modules = implode(',', array_keys($_POST['enabled_modules']));

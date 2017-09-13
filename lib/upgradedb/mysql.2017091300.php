@@ -1,9 +1,9 @@
+<?php
+
 /*
  * LMS version 1.11-git
  *
  *  (C) Copyright 2001-2017 LMS Developers
- *
- *  Please, see the doc/AUTHORS for more information about authors!
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -19,17 +19,17 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
  */
 
-INPUT.alert,
-INPUT.alert:focus,
-TEXTAREA.alert,
-TEXTAREA.alert:focus {
-	background-color: #FF9B9B;
-}
+$this->BeginTrans();
 
-div.g-recaptcha > div {
-    margin: 0 auto 20px;
-    display: table;
-}
+$this->Execute("INSERT INTO uiconfig (section, var, value)
+	VALUES (?, ?, ?)", array('userpanel', 'google_recaptcha_sitekey', ''));
+$this->Execute("INSERT INTO uiconfig (section, var, value)
+	VALUES (?, ?, ?)", array('userpanel', 'google_recaptcha_secret', ''));
+
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017091300', 'dbversion'));
+
+$this->CommitTrans();
+
+?>

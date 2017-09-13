@@ -152,3 +152,7 @@ TEXTAREA.alert  { background-color: #FFFF99;}
 .lms-ui-customer-property-changed {
 	color: red;
 }
+
+div.g-recaptcha {
+    margin: 20px 10px 0px 10px;
+}

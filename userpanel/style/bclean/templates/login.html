@@ -6,6 +6,11 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <title>{trans('Virtual Customer Service')}</title>
         <link rel="stylesheet" href="style/bclean/vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
+        <link type="text/css" rel="stylesheet" href="{stylefile}">
+        {$google_recaptcha_sitekey = ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey')}
+        {if !empty($google_recaptcha_sitekey)}
+        <script src='https://www.google.com/recaptcha/api.js'></script>
+        {/if}
         <style>
             .form-signin {
                 max-width: 400px;
@@ -77,6 +82,9 @@
                             <label for="inputPassword">{trans('PIN:')}</label>
                             <input type="password" name="loginform[pwd]" id="inputPassword" class="form-control" required>
                         </fieldset>
+                        {if !empty($google_recaptcha_sitekey)}
+                        <div class="g-recaptcha" data-sitekey="{$google_recaptcha_sitekey}"></div>
+                        {/if}
                         <button class="btn btn-lg btn-primary btn-block" name="loginform[submit]" type="submit">{trans('Login')}</button>
                         <a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
                     </form>
