@@ -110,7 +110,7 @@ class Session {
 		}
 
 		$authdata = null;
-		if (ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey')) {
+		if (isset($loginform) && ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey')) {
 			if ($this->ValidateRecaptchaResponse())
 				$authdata = $this->VerifyPassword();
 		} else
