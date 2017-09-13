@@ -96,7 +96,9 @@ function _smarty_function_userpaneltip($params, $template)
 			$result = ' onmouseover="return overlib(\'<b><font color=red>' . $error . '</font></b>\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();" ';
 		elseif ($params['text'] != '')
 			$result = 'onmouseover="return overlib(\'' . $text . '\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onmouseout="nd();"';
-		$result .= ($tpl[$params['trigger']] ? ($params['bold'] ? ' CLASS="alert bold" ' : ' CLASS="alert" ') : ($params['bold'] ? ' CLASS="bold" ' : ''));
+		$result .= ' class="' . (empty($class) ? '' : $class)
+			. ($tpl[$params['trigger']] ? ($params['bold'] ? ' alert bold' : ' alert') : ($params['bold'] ? ' bold' : ''))
+			. '" ';
 	} elseif (ConfigHelper::getConfig('userpanel.hint') == 'none') {
 		$result = "";
 	} else {
