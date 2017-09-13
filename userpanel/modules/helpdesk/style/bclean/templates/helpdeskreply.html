@@ -11,7 +11,7 @@
 					{trans("Subject:")}
 				</th>
 				<td>
-					<input type="text" class="form-control" name="helpdesk[subject]" value="{$helpdesk.subject}" {userpaneltip text="Enter message subject" trigger="subject"} />
+					<input type="text" name="helpdesk[subject]" value="{$helpdesk.subject}" {userpaneltip class="form-control" text="Enter message subject" trigger="subject"} />
 				</td>
 			</tr>
 			<tr>
@@ -19,7 +19,7 @@
 					{trans("Body:")}
 				</th>
 				<td>
-					<textarea class="form-control" name="helpdesk[body]" {userpaneltip text="Enter message content" trigger="body"}>{$helpdesk.body}</textarea>
+					<textarea name="helpdesk[body]" {userpaneltip class="form-control" text="Enter message content" trigger="body"}>{$helpdesk.body}</textarea>
 				</td>
 			</tr>
 			<tr>
@@ -27,7 +27,7 @@
 					{trans("Attachments:")}
 				</th>
 				<td>
-					<input type="file" class="form-control" name="files[]" {userpaneltip text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
+					<input type="file" name="files[]" {userpaneltip class="form-control" text="Enter path to file or click 'Browse' button" trigger="files"} multiple />
 				</td>
 			</tr>
 			<tr>
