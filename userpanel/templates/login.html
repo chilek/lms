@@ -13,13 +13,19 @@
 		grecaptcha.render('login-recaptcha', {
 			'sitekey' : '{$google_recaptcha_sitekey}',
 			'callback': function() {
-				$('[name="loginform[submit]"]').removeAttr('disabled');
+				$('[name="loginform[submit]"]').prop('disabled', false);
+			},
+			'expired-callback': function() {
+				$('[name="loginform[submit]"]').prop('disabled', true);
 			}
 		});
 		grecaptcha.render('remind-recaptcha', {
 			'sitekey' : '{$google_recaptcha_sitekey}',
 			'callback': function() {
-				$('[name="remindform[submit]"]').removeAttr('disabled');
+				$('[name="remindform[submit]"]').prop('disabled', false);
+			},
+			'expired-callback': function() {
+				$('[name="remindform[submit]"]').prop('disabled', true);
 			}
 		});
 	}

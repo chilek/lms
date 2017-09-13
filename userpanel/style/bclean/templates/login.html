@@ -15,14 +15,20 @@
 				grecaptcha.render('login-recaptcha', {
 					'sitekey' : '{$google_recaptcha_sitekey}',
 					'callback': function() {
-						$('[name="loginform[submit]"]').removeClass('disabled');
+						$('[name="loginform[submit]"]').removeClass('disabled').prop('disabled', false);
+					},
+					'expired-callback': function() {
+						$('[name="loginform[submit]"]').addClass('disabled').prop('disabled', true);
 					}
 				});
 				grecaptcha.render('remind-recaptcha', {
 					'sitekey' : '{$google_recaptcha_sitekey}',
 					'callback': function() {
-						$('[name="remindform[submit]"]').removeClass('disabled');
-					}
+						$('[name="remindform[submit]"]').removeClass('disabled').prop('disabled', false);
+					},
+					'expired-callback': function() {
+						$('[name="remindform[submit]"]').addClass('disabled').prop('disabled', true);
+                    }
 				});
 			}
         </script>
@@ -102,7 +108,7 @@
                         {if $google_recaptcha_sitekey}
                         <div id="login-recaptcha" class="g-recaptcha"></div>
                         {/if}
-                        <button class="btn btn-lg btn-primary btn-block{if $google_recaptcha_sitekey} disabled{/if}" name="loginform[submit]" type="submit">{trans('Login')}</button>
+                        <button class="btn btn-lg btn-primary btn-block{if $google_recaptcha_sitekey} disabled{/if}" name="loginform[submit]" type="submit"{if $google_recaptcha_sitekey} disabled{/if}>{trans('Login')}</button>
                         <a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
                     </form>
                     <form id="remind" class="form-signin" method="post" action="{$target}" style="display:none;">
@@ -131,7 +137,7 @@
                         {if $google_recaptcha_sitekey}
                         <div id="remind-recaptcha" class="g-recaptcha"></div>
                         {/if}
-                        <button class="btn btn-lg btn-primary btn-block{if $google_recaptcha_sitekey} disabled{/if}" type="submit" name="remindform[submit]" value="{trans('Remind')}">{trans('Remind')}</button>
+                        <button class="btn btn-lg btn-primary btn-block{if $google_recaptcha_sitekey} disabled{/if}" type="submit" name="remindform[submit]" value="{trans('Remind')}"{if $google_recaptcha_sitekey} disabled{/if}>{trans('Remind')}</button>
                         <p><a href="javascript:switch_form('login');">{trans('Login form')}</a></p>
                     </form>
                 </div>
