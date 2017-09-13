@@ -50,7 +50,7 @@ class Session {
 			$remindform = $_POST['remindform'];
 
 		if (isset($remindform)) {
-			if (isset($_POST['g-recaptcha-response']) && !$this->ValidateRecaptchaResponse())
+			if (ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey') && !$this->ValidateRecaptchaResponse())
 				return;
 
 			$ten = preg_replace('/-/', '', $remindform['ten']);
@@ -110,7 +110,7 @@ class Session {
 		}
 
 		$authdata = null;
-		if (isset($_POST['g-recaptcha-response'])) {
+		if (ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey')) {
 			if ($this->ValidateRecaptchaResponse())
 				$authdata = $this->VerifyPassword();
 		} else
@@ -184,6 +184,9 @@ class Session {
 	}
 
 	private function ValidateRecaptchaResponse() {
+		if (!isset($_POST['g-recaptcha-response']))
+			return false;
+
 		if (!function_exists('curl_init'))
 			die('PHP cURL exension is not installed!');
 
