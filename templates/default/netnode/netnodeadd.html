@@ -196,6 +196,16 @@
 			<INPUT TYPE="RADIO" NAME="netnode[miar]" VALUE="0" id="miar_no"{if ($netnode['miar']==0)} checked{/if}><label for="miar_no">{trans("No")}</label>
 		</TD>
 	</TR>
+        <TR>
+                <TD WIDTH="1%"><IMG SRC="img/note.gif" ALT=""></TD>
+                <TD width="1%" class="bold">{trans('Note:')}</TD>
+                <TD width="98%"><TEXTAREA type="text" name="info"></TEXTAREA></TD>
+        </TR>
+        <TR>
+		<TD WIDTH="1%"><IMG SRC="img/phone.gif" ALT=""></TD>
+		<TD width="1%" class="bold">{trans('Administrative contact:')}</TD>
+		<TD width="98%"><INPUT type="text" name="admcontact" maxlenght="10"></TD>
+        </TR>
  	</TABLE>
 	</TD>
 	</TR>

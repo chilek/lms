@@ -25,6 +25,7 @@
  */
 
 $_LANG['documents'] = 'dokumenty';
+$_LANG['Administrative contact:'] = 'Kontakt administracyjny:';
 $_LANG['Check if contact should be printed on documents'] = 'Zaznacz jeśli kontakt powinien być drukowany na dokumentach';
 
 $_LANG['Are you sure you want to send messages to $a customer(s)?'] = 'Jesteś pewien, że chcesz wysłać wiadmości do $a klient(a/ów)?';
@@ -907,6 +908,7 @@ $_LANG['Last month stats for all networks'] = 'Statystyki z ostatniego miesiąca
 $_LANG['last online:'] = 'ostatnio włączony:';
 $_LANG['Last online:'] = 'Ostatnio włączony:';
 $_LANG['Last online: $a'] = 'Ostatnio włączony: $a';
+$_LANG['Last inspection:'] = 'Czas ostatniego przeglądu:';
 $_LANG['Last Reload:'] = 'Ostatnie przeładowanie:';
 $_LANG['Last year stats for all networks'] = 'Statystyki z ostatniego roku dla wszystkich sieci';
 $_LANG['Length of (auto-generated) node password. Max.32. Default: 16.'] = 'Długość (automatycznie generowanego) hasła komputera. Max.32. Domyślnie: 16.';

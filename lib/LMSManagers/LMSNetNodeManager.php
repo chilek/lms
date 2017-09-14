@@ -65,6 +65,8 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			case 'status':
 				$ostr = 'ORDER BY n.status';
 				break;
+			case 'lastinspectiontime':
+				$ostr = 'ORDER BY n.lastinspectiontime';
 			default:
 				$ostr = 'ORDER BY n.name';
 				break;
@@ -100,7 +102,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			}
 		}
 
-		$nlist = $this->db->GetAllByKey('SELECT n.id, n.name, n.type, n.status, n.invprojectid, n.info, p.name AS project,
+		$nlist = $this->db->GetAllByKey('SELECT n.id, n.name, n.type, n.status, n.invprojectid, n.info, n.lastinspectiontime, p.name AS project,
 				n.divisionid,
 				lb.id AS location_borough, lb.name AS location_borough_name, lb.type AS location_borough_type,
 				ld.id AS location_district, ld.name AS location_district_name,
@@ -152,10 +154,13 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			'coowner'         => $netnodedata['coowner'],
 			'uip'             => $netnodedata['uip'],
 			'miar'            => $netnodedata['miar'],
+			'createtime'      => time(),
 			'divisionid'      => !empty($netnodedata['divisionid']) ? $netnodedata['divisionid'] : null,
 			'address_id'      => ($address_id >= 0 ? $address_id : null),
 			'invprojectid'    => intval($netnodedata['invprojectid']) > 0 ? $netnodedata['invprojectid'] : null,
 			'info'		  => $netnodedata['info'],
+			'admcontact' => $netnodedata['admcontact'],
+			'lastinspectiontime' => $netnodedata['lastinspectiontime']
 			);
 
 		$this->db->Execute("INSERT INTO netnodes (" . implode(', ', array_keys($args))
@@ -194,6 +199,8 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			'divisionid'      => $netnodedata['divisionid'],
 			'invprojectid'    => intval($netnodedata['invprojectid']) > 0 ? $netnodedata['invprojectid'] : null,
 			'info'         	  => $netnodedata['info'],
+			'admcontact'      => $netnodedata['admcontact'],
+			'lastinspectiontime' => $netnodedata['lastinspectiontime'],
 		);
 
 		// if address_id is set then update

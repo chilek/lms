@@ -520,6 +520,9 @@ CREATE TABLE netnodes (
 	coowner varchar(255) DEFAULT '',
 	uip smallint DEFAULT 0,
 	miar smallint DEFAULT 0,
+	createtime integer,
+	lastinspectiontime integer DEFAULT NULL,
+	admcontact text DEFAULT NULL,
 	divisionid integer
 		REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	address_id integer
