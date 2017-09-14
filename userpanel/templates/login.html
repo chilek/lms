@@ -64,12 +64,18 @@
 	    <table>
 		<tr>
 		    <td>
-			{img src="logo.jpg" alt=""}
+		    {if $company_logo}
+		    {$logo=$company_logo}
+		    {else}
+		    {$logo="logo.jpg"}
+		    {/if}
+			{img src=$logo alt=""}
 		    </td>
 		    <td>&nbsp;</td>
 		    <td align="center">
 			{box title="VCS"}
-			<div class="text-center bold nobr">{trans("Virtual Customer Service")}</div><br />
+			<div class="text-center bold nobr">{if $page_header}{$page_header}{else}{trans("Virtual Customer Service")}{/if}</div>
+			<br />
 			{if $error}<div style="color: red;" class="text-center bold">{$error}</div>{else}&nbsp;{/if}
 			<br /><br />
 			<form id="login" method="post" action="{$target}">

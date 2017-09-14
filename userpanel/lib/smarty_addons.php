@@ -128,6 +128,8 @@ function _smarty_function_img($params, $template)
 	    $file = 'style/'.$style.'/'.$params['src'];
     elseif(file_exists('style/default/'.$params['src']))
     	    $file = 'style/default/'.$params['src'];
+	elseif (preg_match('/^https?:\/\//i', $params['src']))
+		$file = $params['src'];
 	else
 		$file = 'img/' . $params['src'];
 

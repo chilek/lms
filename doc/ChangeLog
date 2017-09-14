@@ -78,6 +78,7 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to force separate invoice issuing for liabilities [chilan]
   - enhancement: optional support of Google reCAPTCHA mechanism for userpanel logins and
     credential reminders [chilan]
+  - improvement: all userpanel styles/themes have the same features [chilan]
 
 version 1.11.22 (2017-06-08):
 
