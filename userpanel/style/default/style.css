@@ -177,3 +177,7 @@ TEXTAREA.alert 	{ border-width: 1pt; border-color: #000000; border-style: solid;
 .lms-ui-customer-property-changed {
 	color: red;
 }
+
+div.g-recaptcha {
+    margin: 20px 10px 0px 10px;
+}

@@ -5,6 +5,33 @@
   <meta content="text/html; charset={$LANGDEFS.$_ui_language.charset}" http-equiv="content-type" />
   <title>{trans("Virtual Customer Service")}</title>
 <link type="text/css" rel="stylesheet" href="{stylefile}" />
+{include file="jquery.html" language=$_ui_language}
+{$google_recaptcha_sitekey = ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey')}
+{if !empty($google_recaptcha_sitekey)}
+<script>
+	function recaptchaOnLoad() {
+		grecaptcha.render('login-recaptcha', {
+			'sitekey' : '{$google_recaptcha_sitekey}',
+			'callback': function() {
+				$('[name="loginform[submit]"]').prop('disabled', false);
+			},
+			'expired-callback': function() {
+				$('[name="loginform[submit]"]').prop('disabled', true);
+			}
+		});
+		grecaptcha.render('remind-recaptcha', {
+			'sitekey' : '{$google_recaptcha_sitekey}',
+			'callback': function() {
+				$('[name="remindform[submit]"]').prop('disabled', false);
+			},
+			'expired-callback': function() {
+				$('[name="remindform[submit]"]').prop('disabled', true);
+			}
+		});
+	}
+</script>
+<script src="https://www.google.com/recaptcha/api.js?onload=recaptchaOnLoad&render=explicit" async defer></script>
+{/if}
 </head>
 <body>
 <script type="text/javascript">
@@ -37,12 +64,18 @@
 	    <table>
 		<tr>
 		    <td>
-			{img src="logo.jpg" alt=""}
+		    {if $company_logo}
+		    {$logo=$company_logo}
+		    {else}
+		    {$logo="logo.jpg"}
+		    {/if}
+			{img src=$logo alt=""}
 		    </td>
 		    <td>&nbsp;</td>
 		    <td align="center">
 			{box title="VCS"}
-			<div class="text-center bold nobr">{trans("Virtual Customer Service")}</div><br />
+			<div class="text-center bold nobr">{if $page_header}{$page_header}{else}{trans("Virtual Customer Service")}{/if}</div>
+			<br />
 			{if $error}<div style="color: red;" class="text-center bold">{$error}</div>{else}&nbsp;{/if}
 			<br /><br />
 			<form id="login" method="post" action="{$target}">
@@ -63,9 +96,16 @@
 						<input type="password" name="loginform[pwd]" style="width: 100pt;" />
 					</td>
 				</tr>
+				{if !empty($google_recaptcha_sitekey)}
+				<tr>
+					<td colspan="2">
+						<div id="login-recaptcha" class="g-recaptcha"></div>
+					</td>
+				</tr>
+				{/if}
 				<tr>
 					<td colspan="2" class="text-center">
-						<br /><input type="submit" name="loginform[submit]" class="bold" value="{trans("Login")}" />
+						<br /><input type="submit" name="loginform[submit]" class="bold" value="{trans("Login")}"{if $google_recaptcha_sitekey} disabled{/if} />
 					</td>
 				</tr>
 				<tr>
@@ -111,9 +151,16 @@
 						<input type="text" name="remindform[ten]" style="width: 120pt;" />
 					</td>
 				</tr>
+				{if !empty($google_recaptcha_sitekey)}
+				<tr>
+					<td colspan="2">
+						<div id="remind-recaptcha" class="g-recaptcha"></div>
+					</td>
+				</tr>
+				{/if}
 				<tr>
 					<td colspan="2" class="text-center">
-						<br /><input type="submit" name="remindform[submit]" class="bold" value="{trans("Remind")}" />
+						<br /><input type="submit" name="remindform[submit]" class="bold" value="{trans("Remind")}"{if $google_recaptcha_sitekey} disabled{/if} />
 					</td>
 				</tr>
 				<tr>

@@ -50,6 +50,9 @@ class Session {
 			$remindform = $_POST['remindform'];
 
 		if (isset($remindform)) {
+			if (ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey') && !$this->ValidateRecaptchaResponse())
+				return;
+
 			$ten = preg_replace('/-/', '', $remindform['ten']);
 			$params = array($ten, $ten);
 			switch ($remindform['type']) {
@@ -106,7 +109,12 @@ class Session {
 			$this->id = isset($_SESSION['session_id']) ? $_SESSION['session_id'] : 0;
 		}
 
-		$authdata = $this->VerifyPassword();
+		$authdata = null;
+		if (isset($loginform) && ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey')) {
+			if ($this->ValidateRecaptchaResponse())
+				$authdata = $this->VerifyPassword();
+		} else
+			$authdata = $this->VerifyPassword();
 
 		if ($authdata != NULL) {
 			$authinfo = $this->GetCustomerAuthInfo($authdata['id']);
@@ -173,6 +181,38 @@ class Session {
 			
 			$this->LogOut();
 		}
+	}
+
+	private function ValidateRecaptchaResponse() {
+		if (!isset($_POST['g-recaptcha-response']))
+			return false;
+
+		if (!function_exists('curl_init'))
+			die('PHP cURL exension is not installed!');
+
+		$ch = curl_init('https://www.google.com/recaptcha/api/siteverify');
+
+		$post_fields = array(
+			'secret' => urlencode(ConfigHelper::getConfig('userpanel.google_recaptcha_secret')),
+			'response' => urlencode($_POST['g-recaptcha-response']),
+			'ip' => $this->ip,
+		);
+
+		curl_setopt_array($ch, array(
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_POST => true,
+			CURLOPT_POSTFIELDS => http_build_query($post_fields),
+		));
+
+		$res = curl_exec($ch);
+		if ($res !== false && ($res = json_decode($res, true)) !== null && $res['success']) {
+			curl_close($ch);
+			return true;
+		}
+
+		curl_close($ch);
+
+		return false;
 	}
 
 	public function _postinit() {

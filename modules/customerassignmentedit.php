@@ -453,6 +453,11 @@ else
 
 	// phone numbers assignments
 	$a['phones'] = $DB->GetCol('SELECT number_id FROM voip_number_assignments WHERE assignment_id=?', array($a['id']));
+
+	if ($a['invoice'] == 2) {
+		$a['invoice'] = 1;
+		$a['separateinvoice'] = 1;
+	}
 }
 
 $expired = isset($_GET['expired']) ? $_GET['expired'] : false;

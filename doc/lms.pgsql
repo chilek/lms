@@ -2799,6 +2799,8 @@ URL: %url
 ('userpanel', 'change_confirmation_mail_body', '', '', 0),
 ('userpanel', 'change_rejection_mail_subject', '', '', 0),
 ('userpanel', 'change_rejection_mail_body', '', '', 0),
+('userpanel', 'google_recaptcha_sitekey', '', '', 0),
+('userpanel', 'google_recaptcha_secret', '', '', 0),
 ('directories', 'userpanel_dir', 'userpanel', '', 0);
 
 INSERT INTO netdeviceproducers (id, name) VALUES
@@ -3128,6 +3130,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017090800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017091300');
 
 COMMIT;

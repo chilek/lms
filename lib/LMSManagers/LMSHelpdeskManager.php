@@ -395,7 +395,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					fclose($fh);
 				} else {
 					if ($cleanup)
-						$dirs_to_be_deleted = dirname($file['name']);
+						$dirs_to_be_deleted[] = dirname($file['name']);
 					if (!@rename(isset($file['tmp_name']) ? $file['tmp_name'] : $file['name'], $dstfile))
 						continue;
 				}
@@ -442,7 +442,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		));
 		$msgid = $this->db->GetLastInsertID('rtmessages');
 
-		$this->SaveTicketMessageAttachments($message['ticketid'], $msgid, $files, true);
+		$this->SaveTicketMessageAttachments($message['ticketid'], $msgid, $files);
 
 		return $msgid;
 	}
@@ -671,13 +671,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			if (!empty($categories_removed))
 				foreach ($categories_removed as $category) {
 					$this->db->Execute('DELETE FROM rtticketcategories WHERE ticketid = ? AND categoryid = ?',
-						array($id, $category['id']));
+						array($ticketid, $category));
 					$note .= trans('Category $a has been removed from ticket.', $categories[$category]['name']) . '<br>';
 				}
 			if (!empty($categories_added))
 				foreach ($categories_added as $category) {
 					$this->db->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)',
-						array($id, $category));
+						array($ticketid, $category));
 					$note .= trans('Category $a has been added to ticket.', $categories[$category]['name']) . '<br>';
 				}
 			$type = $type | RTMESSAGE_CATEGORY_CHANGE;

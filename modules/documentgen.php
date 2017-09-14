@@ -323,6 +323,10 @@ if (isset($_POST['document'])) {
 			$SMARTY->display('footer.html');
 		}
 
+		// deletes uploaded files
+		if (!empty($attachments))
+			rrmdir($tmppath);
+
 		die;
 	} else {
 		$document['fromdate'] = $oldfromdate;

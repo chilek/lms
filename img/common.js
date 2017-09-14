@@ -31,6 +31,22 @@ function removeClass(theElem, theClass)
 	theElem.className = str.replace(regexp, '');
 }
 
+function get_object_pos(obj) {
+	// get old element size/position
+	var x = obj.offsetLeft;
+	var y = obj.offsetTop;
+
+	// calculate element position
+	var elm = obj.offsetParent;
+	while (elm && window.getComputedStyle(elm).position != 'relative') {
+		x += elm.offsetLeft;
+		y += elm.offsetTop;
+		elm = elm.offsetParent;
+	}
+
+	return { x: x, y: y };
+}
+
 // LMS: function to autoresize iframe and parent div container (overlib)
 function autoiframe_setsize(id, width, height)
 {

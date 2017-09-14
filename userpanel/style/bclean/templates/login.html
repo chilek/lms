@@ -6,6 +6,34 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <title>{trans('Virtual Customer Service')}</title>
         <link rel="stylesheet" href="style/bclean/vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
+        <link type="text/css" rel="stylesheet" href="{stylefile}">
+        {include file="jquery.html" language=$_ui_language}
+        {$google_recaptcha_sitekey = ConfigHelper::getConfig('userpanel.google_recaptcha_sitekey')}
+        {if $google_recaptcha_sitekey}
+        <script>
+			function recaptchaOnLoad() {
+				grecaptcha.render('login-recaptcha', {
+					'sitekey' : '{$google_recaptcha_sitekey}',
+					'callback': function() {
+						$('[name="loginform[submit]"]').removeClass('disabled').prop('disabled', false);
+					},
+					'expired-callback': function() {
+						$('[name="loginform[submit]"]').addClass('disabled').prop('disabled', true);
+					}
+				});
+				grecaptcha.render('remind-recaptcha', {
+					'sitekey' : '{$google_recaptcha_sitekey}',
+					'callback': function() {
+						$('[name="remindform[submit]"]').removeClass('disabled').prop('disabled', false);
+					},
+					'expired-callback': function() {
+						$('[name="remindform[submit]"]').addClass('disabled').prop('disabled', true);
+                    }
+				});
+			}
+        </script>
+        <script src="https://www.google.com/recaptcha/api.js?onload=recaptchaOnLoad&render=explicit" async defer></script>
+        {/if}
         <style>
             .form-signin {
                 max-width: 400px;
@@ -77,7 +105,10 @@
                             <label for="inputPassword">{trans('PIN:')}</label>
                             <input type="password" name="loginform[pwd]" id="inputPassword" class="form-control" required>
                         </fieldset>
-                        <button class="btn btn-lg btn-primary btn-block" name="loginform[submit]" type="submit">{trans('Login')}</button>
+                        {if $google_recaptcha_sitekey}
+                        <div id="login-recaptcha" class="g-recaptcha"></div>
+                        {/if}
+                        <button class="btn btn-lg btn-primary btn-block{if $google_recaptcha_sitekey} disabled{/if}" name="loginform[submit]" type="submit"{if $google_recaptcha_sitekey} disabled{/if}>{trans('Login')}</button>
                         <a href="javascript:switch_form('remind');">{trans("Remind credentials")}</a>
                     </form>
                     <form id="remind" class="form-signin" method="post" action="{$target}" style="display:none;">
@@ -103,7 +134,10 @@
                         <fieldset class="form-group">
                             <label>{trans('SSN or TEN:')} <input type="text" name="remindform[ten]" id="inputSsnOrTen" class="form-control"></label>
                         </fieldset>
-                        <button class="btn btn-lg btn-primary btn-block" type="submit" name="remindform[submit]" value="{trans('Remind')}">{trans('Remind')}</button>
+                        {if $google_recaptcha_sitekey}
+                        <div id="remind-recaptcha" class="g-recaptcha"></div>
+                        {/if}
+                        <button class="btn btn-lg btn-primary btn-block{if $google_recaptcha_sitekey} disabled{/if}" type="submit" name="remindform[submit]" value="{trans('Remind')}"{if $google_recaptcha_sitekey} disabled{/if}>{trans('Remind')}</button>
                         <p><a href="javascript:switch_form('login');">{trans('Login form')}</a></p>
                     </form>
                 </div>

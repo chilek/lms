@@ -383,27 +383,29 @@ function module_main() {
 			die;
 		} else {
 			$SMARTY->assign('error', $error);
-			$SMARTY->assign('helpdesk', $ticket);
+			$helpdesk = $ticket;
+			$SMARTY->assign('helpdesk', $helpdesk);
 			$_GET['op'] = 'message';
 		}
 	}
 
 	if (isset($_GET['op']) && $_GET['op'] == 'view') {
-		if (intval($_GET['id']))
+		if ($LMS->TicketExists($_GET['id'])) {
 			$ticket = $LMS->GetTicketContents($_GET['id']);
 
-		$ticket['id'] = $_GET['id'];
+			$ticket['id'] = $_GET['id'];
 
-		$queues = explode(';', ConfigHelper::getConfig('userpanel.queues'));
-		$sources = explode(';', ConfigHelper::getConfig('userpanel.visible_ticket_sources'));
-		if ($ticket['customerid'] == $SESSION->id && in_array($ticket['queueid'], $queues)
-			&& in_array($ticket['source'], $sources)) {
-			$SMARTY->assign('title', trans('Request No. $a / Queue: $b',
-				sprintf('%06d',$ticket['ticketid']), $ticket['queuename']));
+			$queues = explode(';', ConfigHelper::getConfig('userpanel.queues'));
+			$sources = explode(';', ConfigHelper::getConfig('userpanel.visible_ticket_sources'));
+			if ($ticket['customerid'] == $SESSION->id && in_array($ticket['queueid'], $queues)
+				&& in_array($ticket['source'], $sources)) {
+				$SMARTY->assign('title', trans('Request No. $a / Queue: $b',
+					sprintf('%06d', $ticket['ticketid']), $ticket['queuename']));
 
-			$SMARTY->assign('ticket', $ticket);
-			$SMARTY->display('module:helpdeskview.html');
-			die;
+				$SMARTY->assign('ticket', $ticket);
+				$SMARTY->display('module:helpdeskview.html');
+				die;
+			}
 		}
 	} elseif(isset($_GET['op']) && $_GET['op'] == 'message') {
 		if (intval($_GET['id']))
