@@ -134,7 +134,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
         $dateto = intval($search['dateto']);
 
         $list = $this->db->GetAll(
-                'SELECT events.id AS id, title, description, date, begintime, enddate, endtime, customerid, closed, events.type, '
+                'SELECT events.id AS id, title, description, date, begintime, enddate, endtime, customerid, closed, events.type, events.ticketid,'
                 . $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername
 			FROM events
 			LEFT JOIN customers ON (customerid = customers.id)
