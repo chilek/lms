@@ -671,13 +671,13 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			if (!empty($categories_removed))
 				foreach ($categories_removed as $category) {
 					$this->db->Execute('DELETE FROM rtticketcategories WHERE ticketid = ? AND categoryid = ?',
-						array($id, $category['id']));
+						array($ticketid, $category));
 					$note .= trans('Category $a has been removed from ticket.', $categories[$category]['name']) . '<br>';
 				}
 			if (!empty($categories_added))
 				foreach ($categories_added as $category) {
 					$this->db->Execute('INSERT INTO rtticketcategories (ticketid, categoryid) VALUES (?, ?)',
-						array($id, $category));
+						array($ticketid, $category));
 					$note .= trans('Category $a has been added to ticket.', $categories[$category]['name']) . '<br>';
 				}
 			$type = $type | RTMESSAGE_CATEGORY_CHANGE;
