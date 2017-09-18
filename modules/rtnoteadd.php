@@ -155,6 +155,10 @@ elseif(isset($_POST['note']))
 				'subject' => $ticketdata['subject'],
 				'body' => $note['body'],
 			);
+
+			if(ConfigHelper::checkConfig('rt.note_send_re_in_subject'))
+				$params['subject'] = 'Re: '.$ticketdata['subject'];
+
 			$headers['Subject'] = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_subject'), $params);
 			$params['customerinfo'] = isset($mail_customerinfo) ? $mail_customerinfo : null;
 			$body = $LMS->ReplaceNotificationSymbols(ConfigHelper::getConfig('phpui.helpdesk_notification_mail_body'), $params);
