@@ -42,7 +42,7 @@ $reglist = $DB->GetAll('SELECT cashregs.id AS id, cashregs.name AS name,
 			(SELECT template FROM numberplans 
 				WHERE out_numberplanid = numberplans.id) AS out_template
 		FROM cashregs
-		' . ($allowed ? '' : 'JOIN cashrights r ON r.regid = cashregs.id AND r.userid = ?') . '
+		' . ($allowed ? '' : 'JOIN cashrights r ON r.regid = cashregs.id AND (r.rights & 1) > 0 AND r.userid = ?') . '
 		ORDER BY cashregs.name', $args);
 
 $listdata['sum'] = 0;
