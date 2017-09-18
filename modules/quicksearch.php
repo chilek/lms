@@ -94,41 +94,51 @@ switch ($mode) {
 				LIMIT ?", array(LOCATION_ADDRESS, CONTACT_EMAIL, intval(ConfigHelper::getConfig('phpui.quicksearch_limit', 15))));
 
 			$eglible=array(); $actions=array(); $descriptions=array();
-			if ($candidates)
-			foreach($candidates as $idx => $row) {
-				$actions[$row['id']] = '?m=customerinfo&id='.$row['id'];
-				$eglible[$row['id']] = escape_js(($row['deleted'] ? '<font class="blend">' : '')
-				    .truncate_str($row['username'], 50).($row['deleted'] ? '</font>' : ''));
+			if ($candidates) {
+				$customer_count = array();
+				foreach ($candidates as $idx => $row) {
+					$customername = $row['username'];
+					if (!isset($customer_count[$customername]))
+						$customer_count[$customername] = 0;
+					$customer_count[$customername]++;
+				}
+				foreach ($candidates as $idx => $row) {
+					$actions[$row['id']] = '?m=customerinfo&id=' . $row['id'];
+					$eglible[$row['id']] = escape_js(($row['deleted'] ? '<font class="blend">' : '')
+						. truncate_str($row['username'], 50) . ($row['deleted'] ? '</font>' : ''));
 
-				if (preg_match("~^$search\$~i",$row['id'])) {
-				    $descriptions[$row['id']] = escape_js(trans('Id:').' '.$row['id']);
-				    continue;
+					if ($customer_count[$row['username']] > 1) {
+						$descriptions[$row['id']] = escape_js(trans('Address:') . ' ' . $row['address']);
+						continue;
+					}
+
+					if (preg_match("~^$search\$~i", $row['id'])) {
+						$descriptions[$row['id']] = escape_js(trans('Id:') . ' ' . $row['id']);
+						continue;
+					}
+					if (preg_match("~$search~i", $row['username'])) {
+						$descriptions[$row['id']] = '';
+						continue;
+					}
+					if (preg_match("~$search~i", $row['address'])) {
+						$descriptions[$row['id']] = escape_js(trans('Address:') . ' ' . $row['address']);
+						continue;
+					} else if (preg_match("~$search~i", $row['post_name'])) {
+						$descriptions[$row['id']] = escape_js(trans('Name:') . ' ' . $row['post_name']);
+						continue;
+					} else if (preg_match("~$search~i", $row['post_address'])) {
+						$descriptions[$row['id']] = escape_js(trans('Address:') . ' ' . $row['post_address']);
+						continue;
+					} else if (preg_match("~$search~i", $row['location_address'])) {
+						$descriptions[$row['id']] = escape_js(trans('Address:') . ' ' . $row['location_address']);
+						continue;
+					}
+					if (preg_match("~$search~i", $row['email'])) {
+						$descriptions[$row['id']] = escape_js(trans('E-mail:') . ' ' . $row['email']);
+						continue;
+					}
+					$descriptions[$row['id']] = '';
 				}
-				if (preg_match("~$search~i",$row['username'])) {
-				    $descriptions[$row['id']] = '';
-				    continue;
-				}
-				if (preg_match("~$search~i",$row['address'])) {
-				    $descriptions[$row['id']] = escape_js(trans('Address:').' '.$row['address']);
-				    continue;
-				}
-				else if (preg_match("~$search~i",$row['post_name'])) {
-				    $descriptions[$row['id']] = escape_js(trans('Name:').' '.$row['post_name']);
-				    continue;
-				}
-				else if (preg_match("~$search~i",$row['post_address'])) {
-				    $descriptions[$row['id']] = escape_js(trans('Address:').' '.$row['post_address']);
-				    continue;
-				}
-				else if (preg_match("~$search~i",$row['location_address'])) {
-				    $descriptions[$row['id']] = escape_js(trans('Address:').' '.$row['location_address']);
-				    continue;
-				}
-				if (preg_match("~$search~i",$row['email'])) {
-				    $descriptions[$row['id']] = escape_js(trans('E-mail:').' '.$row['email']);
-				    continue;
-				}
-				$descriptions[$row['id']] = '';
 			}
 			header('Content-type: text/plain');
 			if ($eglible) {
@@ -138,8 +148,8 @@ switch ($mode) {
 			} else {
 				print "false;\n";
 			}
-                        $SESSION->close();
-                        $DB->Destroy();
+			$SESSION->close();
+			$DB->Destroy();
 			exit;
 		}
 
