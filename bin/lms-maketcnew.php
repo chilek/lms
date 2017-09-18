@@ -224,7 +224,7 @@ if ($all_assignments)
 		t.climit, t.plimit,
 		n.id, n.ownerid, n.name, n.netid, INET_NTOA(n.ipaddr) AS ip, n.mac,
 		a.id AS assignmentid, a.customerid,
-		TRIM(" . $DB->Contact('lastname', "' '", 'c.name') . ") AS customer
+		TRIM(" . $DB->Concat('lastname', "' '", 'c.name') . ") AS customer
 	FROM assignments a
 	JOIN tariffs t ON t.id = a.tariffid
 	JOIN customers c ON c.id = a.customerid
