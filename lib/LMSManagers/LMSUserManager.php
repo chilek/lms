@@ -264,7 +264,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
      */
     public function getUserInfo($id)
     {
-        $userinfo = $this->db->GetRow('SELECT * FROM users WHERE id = ?', array($id));
+        $userinfo = $this->db->GetRow('SELECT * FROM vusers WHERE id = ?', array($id));
         if ($userinfo) {
             $this->cache->setCache('users', $id, null, $userinfo);
 
