@@ -79,6 +79,8 @@ version ?.??.?? (????-??-??):
   - enhancement: optional support of Google reCAPTCHA mechanism for userpanel logins and
     credential reminders [chilan]
   - improvement: all userpanel styles/themes have the same features [chilan]
+  - improvement: quicksearch: if many customers with the same full name has been found,
+    we add their billing/main addresses as description [chilan]
 
 version 1.11.22 (2017-06-08):
 
