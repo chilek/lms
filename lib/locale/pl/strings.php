@@ -731,6 +731,7 @@ $_LANG['Generating network...'] = 'Generuję sieć...';
 $_LANG['Generating network hardware and connections...'] = 'Generuję sprzęt i połączenia...';
 $_LANG['Generating payments...'] = 'Generuję płatności...';
 $_LANG['Generating random data'] = 'Generowanie danych losowych';
+$_LANG['get source registry balance'] = 'wstaw saldo rejestru źródłowego';
 $_LANG['Price:'] = 'Cena:';
 $_LANG['Price'] = 'Cena';
 $_LANG['price'] = 'cena';

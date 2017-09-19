@@ -270,19 +270,32 @@
 <BR>
 <FORM name="movecash" method="POST" action="?m=receiptadd&amp;action=movecash">
 <TABLE class="lmsbox">
+	<COLGROUP>
+		<COL style="width: 1%;">
+		<COL style="width: 99%;">
+	</COLGROUP>
     <THEAD>
 	<TR>
-		<TD WIDTH="100%">
-			<B>{trans("Moving assets:")}</B>
+		<TD colspan="2" class="bold">
+			{trans("Moving assets:")}
 		</TD>
 	</TR>
     </THEAD>
     <TBODY>
 	<TR>
-		<TD nowrap>
-			<B>{trans("Value:")}</B>
+		<TD class="nobr">
+            <span class="bold">{trans("Value:")}</span>
 			<INPUT TYPE="TEXT" NAME="value" VALUE="" SIZE="10" {tip text="Enter value"}>
-			<B>{trans("Cash Registry:")}
+			<br>
+			<a href="javascript:GetCashRegistryBalance();">{trans("get source registry balance")}</a>
+            <script>
+                function GetCashRegistryBalance() {
+                    xajax_GetCashRegistryBalance($('[name="receipt[regid]"]').val());
+				}
+            </script>
+		</TD>
+		<TD class="bold nobr valign-top">
+			{trans("Cash Registry:")}
 			<SELECT SIZE="1" NAME="registry" {tip text="Select cash registry"}>
 				<OPTION VALUE="0">{trans("- select registry -")}</OPTION>
 				{foreach from=$cashreglist item=c}
@@ -290,11 +303,11 @@
 				<OPTION VALUE="{$c.id}">{$c.name|truncate:40:"...":true} ({$c.id|string_format:"%04d"})</OPTION>
 				{/if}
 				{/foreach}
-	    		</SELECT>
+			</SELECT>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="100%" ALIGN="right">
+		<TD class="buttons" colspan="2">
 			<A HREF="javascript:document.movecash.submit();">{trans("Save & Print")} <IMG SRC="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>

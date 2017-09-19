@@ -176,8 +176,21 @@ function GetCashRegistriesXajax($cid, $regid) {
 	return $result;
 }
 
+function GetCashRegistryBalance($regid) {
+	$result = new xajaxResponse();
+
+	$DB = LMSDB::getInstance();
+
+	$balance = $DB->GetOne('SELECT SUM(value) FROM receiptcontents
+				WHERE regid = ?', array($regid));
+
+	$result->script("$('form[name=\"movecash\"] input[name=\"value\"]').val(" . $balance . ")");
+
+	return $result;
+}
+
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction(array('GetCashRegistriesXajax'));
+$LMS->RegisterXajaxFunction(array('GetCashRegistriesXajax', 'GetCashRegistryBalance'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 // receipt positions adding with double click protection
