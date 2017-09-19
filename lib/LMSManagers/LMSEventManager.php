@@ -74,12 +74,11 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 				$event['nodeid'], !isset($event['helpdeskid']) || empty($event['helpdeskid']) ? null : $event['helpdeskid'],
 				$event['id']));
 
-		if (!empty($event['userlist']) && is_array($event['userlist'])) {
-			$this->db->Execute('DELETE FROM eventassignments WHERE eventid = ?', array($event['id']));
+		$this->db->Execute('DELETE FROM eventassignments WHERE eventid = ?', array($event['id']));
+		if (!empty($event['userlist']) && is_array($event['userlist']))
 			foreach ($event['userlist'] as $userid)
 				$this->db->Execute('INSERT INTO eventassignments (eventid, userid) VALUES (?, ?)',
 					array($event['id'], $userid));
-		}
 
 		$this->db->Execute('UPDATE events SET moddate=?NOW?, moduserid=? WHERE id=?',
 			array(Auth::GetCurrentUser(), $event['id']));
