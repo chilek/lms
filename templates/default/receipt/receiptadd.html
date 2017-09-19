@@ -131,7 +131,10 @@
 			{if  $cashregcount > 1 && $receipt.type=="out"}
 			<TR>
 			    <TD width="100%" colspan="2" nowrap>
-				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="move" {if $receipt.o_type=="move"} checked{/if}> {trans("assets move")}
+					<label>
+						<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="move" {if $receipt.o_type=="move"} checked{/if}>
+						{trans("assets move")}
+					</label>
 			    </TD>
 			</TR>
 			{/if}
@@ -140,7 +143,10 @@
 			{if $receipt.type=="out"}
 			<TR>
 			    <TD width="1%" nowrap>
-				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="advance" id="radio_advance" {if $receipt.o_type=="advance"} checked{/if}> <label="radio_advance">{trans("advance")}:</label>
+					<label>
+						<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="advance" id="radio_advance" {if $receipt.o_type=="advance"} checked{/if}>
+						{trans("advance")}:
+					</label>
 			    </TD>
 			    <TD width="99%">
 				<INPUT TYPE="text" NAME="receipt[adv_name]" VALUE="{$receipt.adv_name}" SIZE="70" {tip text="Enter recipient" trigger="adv_name"} onclick="document.getElementById('radio_advance').checked=true">
@@ -151,7 +157,10 @@
 		    {if ($rights & 16)==16}
 			<TR>
 			    <TD width="1%" nowrap>
-				<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" id="radio_other" {if $receipt.o_type=="other"} checked{/if}> <label for="radio_other">{trans("other")}:</label>
+					<label>
+						<INPUT TYPE="radio" NAME="receipt[o_type]" VALUE="other" id="radio_other" {if $receipt.o_type=="other"} checked{/if}>
+						{trans("other")}:
+					</label>
 			    </TD>
 			    <TD width="99%">
 				<INPUT TYPE="text" NAME="receipt[other_name]" VALUE="{$receipt.other_name}" SIZE="70" {if $receipt.type=="out"}{tip text="Enter recipient" trigger="o_name"}{else}{tip text="Enter payer" trigger="other_name"}{/if} onclick="document.getElementById('radio_other').checked=true">
