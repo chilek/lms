@@ -200,7 +200,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			'invprojectid'    => intval($netnodedata['invprojectid']) > 0 ? $netnodedata['invprojectid'] : null,
 			'info'         	  => $netnodedata['info'],
 			'admcontact'      => empty($netnodedata['admcontact']) ? null : $netnodedata['admcontact'],
-			'lastinspectiontime' => $netnodedata['lastinspectiontime'],
+			'lastinspectiontime' => date_to_timestamp($netnodedata['lastinspectiontime']),
 		);
 
 		// if address_id is set then update
