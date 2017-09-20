@@ -31,6 +31,9 @@
 					<TD style="width: 1%;" class="nobr">
 						{trans("Type:")}
 					</TD>
+					<TD style="width: 1%;" class="nobr">
+						{trans("ID:")}
+					</TD>
 					<TD style="width: 40%;" class="bold nobr">
 						{trans("Title:")}
 					</TD>
@@ -43,17 +46,20 @@
 				<TBODY>
 				{cycle values="light,lucid" print=false name=events}
 				{section name=eventlist loop=$eventlist max=$limit }
-				<TR class="highlight {cycle name=events}{if $eventlist[eventlist].closed} blend{/if}"  >
-					<TD style="width: 1%;" class="nobr" onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
+				<TR class="highlight {cycle name=events}{if $eventlist[eventlist].closed} blend{/if}" onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
+					<TD style="width: 1%;" class="nobr">
 						{$eventlist[eventlist].date|date_format:"%Y/%m/%d"}
 					</TD>
-					<TD style="width: 1%;" align="center" class="nobr" onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
+					<TD style="width: 1%;" align="center" class="nobr">
 						{$_EVENTTYPES[$eventlist[eventlist].type]}
 					</TD>
-					<TD style="width: 40%;" class="bold" onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
+					<TD style="width: 1%;" class="bold">
+						<A href="?m=rtticketview&id={$eventlist[eventlist].ticketid}">{$eventlist[eventlist].ticketid}</A>
+					</TD>
+					<TD style="width: 40%;" class="bold">
 						{$eventlist[eventlist].title}
 					</TD>
-					<TD style="width: 49%;" onClick="return self.location.href='?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
+					<TD style="width: 49%;">
 						{$eventlist[eventlist].description}
 					</TD>
 					<TD style="width: 1%;" class="text-right nobr">
