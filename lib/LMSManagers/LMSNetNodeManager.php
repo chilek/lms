@@ -159,7 +159,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			'address_id'      => ($address_id >= 0 ? $address_id : null),
 			'invprojectid'    => intval($netnodedata['invprojectid']) > 0 ? $netnodedata['invprojectid'] : null,
 			'info'		  => $netnodedata['info'],
-			'admcontact' => $netnodedata['admcontact'],
+			'admcontact' => empty($netnodedata['admcontact']) ? null : $netnodedata['admcontact'],
 			'lastinspectiontime' => $netnodedata['lastinspectiontime']
 			);
 
@@ -199,7 +199,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			'divisionid'      => $netnodedata['divisionid'],
 			'invprojectid'    => intval($netnodedata['invprojectid']) > 0 ? $netnodedata['invprojectid'] : null,
 			'info'         	  => $netnodedata['info'],
-			'admcontact'      => $netnodedata['admcontact'],
+			'admcontact'      => empty($netnodedata['admcontact']) ? null : $netnodedata['admcontact'],
 			'lastinspectiontime' => $netnodedata['lastinspectiontime'],
 		);
 
