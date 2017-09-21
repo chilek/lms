@@ -439,9 +439,9 @@ if (empty($types) || in_array('timetable', $types)) {
 
 		$contents = '';
 		$events = $DB->GetAll("SELECT DISTINCT title, description, begintime, endtime,
-			customerid, UPPER(lastname) AS lastname, customers.name AS name, address
+			customerid, UPPER(lastname) AS lastname, c.name AS name, address
 			FROM events
-			LEFT JOIN customeraddressview ON (customers.id = customerid)
+			LEFT JOIN customeraddressview c ON (c.id = customerid)
 			LEFT JOIN eventassignments ON (events.id = eventassignments.eventid)
 			WHERE date=? AND
 			((private=1 AND (events.userid=? OR eventassignments.userid=?)) OR
