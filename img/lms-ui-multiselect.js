@@ -15,9 +15,11 @@ function multiselect(options) {
 	if (!old_element.length || !form.length)
 		return 0;
 
+	var old_class = $(old_element).removeClass('lms-ui-multiselect').attr('class');
+	var new_class = 'lms-ui-multiselect' + (tiny ? '-tiny' : '') + ' ' + old_class;
 	// create new multiselect div
 	var new_element = $('<div/>', {
-		class: 'lms-ui-multiselect' + (tiny ? '-tiny' : ''),
+		class: new_class,
 		id: elemid,
 		// save title for tooltips
 		title: old_element.attr('title')

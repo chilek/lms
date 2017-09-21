@@ -350,6 +350,9 @@ div.lms-ui-multiselect {
   min-width: 200px;
   display: inline-block;
 }
+div.lms-ui-multiselect.lms-ui-multiselect-filter {
+  min-width: 100px;
+}
 div.lms-ui-multiselect-tiny {
   overflow: hidden;
   vertical-align: middle;
