@@ -439,9 +439,9 @@ if (empty($types) || in_array('timetable', $types)) {
 
 		$contents = '';
 		$events = $DB->GetAll("SELECT DISTINCT title, description, begintime, endtime,
-			customerid, UPPER(lastname) AS lastname, customers.name AS name, street, city, zip
+			customerid, UPPER(lastname) AS lastname, customers.name AS name, address
 			FROM events
-			LEFT JOIN customers ON (customers.id = customerid)
+			LEFT JOIN customeraddressview ON (customers.id = customerid)
 			LEFT JOIN eventassignments ON (events.id = eventassignments.eventid)
 			WHERE date=? AND
 			((private=1 AND (events.userid=? OR eventassignments.userid=?)) OR
@@ -472,9 +472,9 @@ if (empty($types) || in_array('timetable', $types)) {
 				$sms_contents .=  ' (' . $event['description'] . ')';
 				if ($event['customerid']) {
 					$mail_contents .= trans('Customer:') . "\t" . $event['lastname'] . " " . $event['name']
-						. ", " . $event['zip'] . " " . $event['city'] . " " . $event['street'] . PHP_EOL;
+						. ", " . $event['address'] . PHP_EOL;
 					$sms_contents .= trans('Customer:') . ' ' . $event['lastname'] . " " . $event['name']
-						. ", " . $event['zip'] . " " . $event['city'] . " " . $event['street'];
+						. ", " . $event['address'];
 					$contacts = $DB->GetCol("SELECT contact FROM customercontacts
 						WHERE customerid = ? AND (type & ?) = 0 AND (type & ?) > 0",
 						array($event['customerid'], CONTACT_DISABLED, (CONTACT_MOBILE | CONTACT_FAX | CONTACT_LANDLINE)));
