@@ -104,28 +104,27 @@ $(function() {
 	.attr("autocomplete", autocomplete);
 
 	$.datetimepicker.setLocale(lmsSettings.language);
-	$('div.calendar-time input,input.calendar-time').datetimepicker({
-		onGenerate: function(ct, elem) {
-			if ($(elem).hasClass('calendar-time-seconds')) {
-				this.setOptions({
-					format: "Y/m/d H:i:s"
-				});
-			}
-		},
+	var datetimepickeroptions = {
 		step: 30,
 		closeOnDateSelect: true,
-		onShow: function(current_time, input) {
+		onShow: function (current_time, input) {
 			if ($(input).is('[data-tooltip]')) {
 				$(input).tooltip('disable');
 			}
 		},
-		onClose: function(current_time, input) {
+		onClose: function (current_time, input) {
 			if ($(input).is('[data-tooltip]')) {
 				$(input).tooltip('enable');
 			}
 		}
-	})
-	.attr("autocomplete", autocomplete);
+	};
+	$('div.calendar-time input,input.calendar-time').each(function() {
+		$(this).datetimepicker(Object.assign(datetimepickeroptions,
+			$(this).hasClass('calendar-time-seconds') ? {
+				format: "Y/m/d H:i:s"
+			} : datetimepickeroptions))
+		.attr("autocomplete", autocomplete);
+	});
 
 	var multiselects = $('select.lms-ui-multiselect');
 	if (multiselects.length) {
