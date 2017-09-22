@@ -1010,10 +1010,12 @@ function date_to_timestamp($date) {
 }
 
 function datetime_to_timestamp($datetime) {
-	if (!preg_match('/^(?<year>[0-9]{4})\/(?<month>[0-9]{2})\/(?<day>[0-9]{2})\s+(?<hour>[0-9]{2}):(?<minute>[0-9]{2})$/', $datetime, $m)
-		|| !checkdate($m['month'], $m['day'], $m['year']) || $m['hour'] > 23 || $m['minute'] > 59)
+	if (!preg_match('/^(?<year>[0-9]{4})\/(?<month>[0-9]{2})\/(?<day>[0-9]{2})\s+(?<hour>[0-9]{2}):(?<minute>[0-9]{2})(?::(?<second>[0-9]{2}))?$/', $datetime, $m)
+		|| !checkdate($m['month'], $m['day'], $m['year']) || $m['hour'] > 23 || $m['minute'] > 59 || (isset($m['second']) && $m['second'] > 59))
 		return null;
-	return mktime($m['hour'], $m['minute'], 0, $m['month'], $m['day'], $m['year']);
+	if (!isset($m['second']))
+		$m['second'] = 0;
+	return mktime($m['hour'], $m['minute'], $m['second'], $m['month'], $m['day'], $m['year']);
 }
 
 function getdir($pwd = './', $pattern = '^.*$') {
