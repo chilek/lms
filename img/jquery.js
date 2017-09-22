@@ -105,6 +105,13 @@ $(function() {
 
 	$.datetimepicker.setLocale(lmsSettings.language);
 	$('div.calendar-time input,input.calendar-time').datetimepicker({
+		onGenerate: function(ct, elem) {
+			if ($(elem).hasClass('calendar-time-seconds')) {
+				this.setOptions({
+					format: "Y/m/d H:i:s"
+				});
+			}
+		},
 		step: 30,
 		closeOnDateSelect: true,
 		onShow: function(current_time, input) {
