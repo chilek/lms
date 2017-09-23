@@ -305,6 +305,8 @@ function GetConfigList() {
 
 				case 'logout_confirmation':
 					$config[$idx]['description'] = trans('If set to "true" then logout confirmation is required. Default "false"');
+				case 'show_old_events':
+					$config[$idx]['description'] = trans('Show outdated events in events tab. Default true');
 				break;
 
 				case 'helpdesk_notification_mail_subject':
