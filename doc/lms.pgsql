@@ -1473,6 +1473,7 @@ CREATE TABLE rttickets (
     CONSTRAINT rttickets_address_id_fk REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE CASCADE,
   nodeid integer	DEFAULT NULL
     CONSTRAINT rttickets_nodeid_fk REFERENCES nodes (id) ON UPDATE CASCADE ON DELETE CASCADE,
+  netnodeid integer	DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
