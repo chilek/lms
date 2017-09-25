@@ -21,6 +21,9 @@
 			<SPAN class="nobr"><IMG src="img/info2.gif" alt=""> {trans("First/last name")}</SPAN>
 		</TH>
 		<TH scope="col">
+			<SPAN class="nobr"><IMG src="img/phone.gif" alt=""> {trans("Phone")}</SPAN>
+		</TH>
+		<TH scope="col">
                         <SPAN class="nobr"><img src="img/calendar.gif" alt=""> {trans("Active from:")}</SPAN>
 		</TH>
 		<TH scope="col">
@@ -44,6 +47,9 @@
 		</TD>
 		<TD class="nobr" onClick="return self.location.href='?m=userinfo&amp;id={$userslist[userslist].id}';">
 			<IMG src="img/info2.gif" alt=""> {$userslist[userslist].name}
+		</TD>
+		<TD class="nobr" onClick="return self.location.href='?m=userinfo&amp;id={$userslist[userslist].id}';">
+			<IMG src="img/phone.gif" alt=""> {if $userslist[userslist].phone}{$userslist[userslist].phone}{else} - {/if}
 		</TD>
 		<td class="nobr" onclick="return self.location.href='?m=userinfo&amp;id={$userslist[userslist].id}';">
 			<img src="img/calendar.gif" alt=""> {$userslist[userslist].accessfrom}
