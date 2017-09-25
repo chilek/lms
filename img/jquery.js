@@ -56,7 +56,7 @@ jQuery.cachedScript = function(url, options) {
 function show_pagecontent() {
 	$('div#lms-ui-spinner').hide();
 	$('div#pagecontent').show();
-	if (location.hash.length) {
+	if (location.hash.length && $(location.hash).length) {
 		$(location.hash)[0].scrollIntoView();
 	}
 }
