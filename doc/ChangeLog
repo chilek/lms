@@ -83,6 +83,8 @@ version ?.??.?? (????-??-??):
     we add their billing/main addresses as description [chilan]
   - improvement: receipt with cash move allows to get total balance of source cash
     registry [chilan]
+  - enhancement: allow to filter customer list by assignments to one or more from many
+    customergroups [chilan]
 
 version 1.11.22 (2017-06-08):
 

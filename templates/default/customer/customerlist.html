@@ -88,14 +88,16 @@
 
 			{if count($customergroups) > 0}
 				{trans("Group:")}
-				<SELECT SIZE="1" NAME="g" ONCHANGE="document.choosefilter.submit();">
-					<OPTION value="" {if !$listdata.customergroup} SELECTED {/if}>{trans("- all groups -")}</OPTION>
-					{section name=customergroups loop=$customergroups}
-					<OPTION value="{$customergroups[customergroups].id}" {if $listdata.customergroup == $customergroups[customergroups].id} SELECTED {/if}>{$customergroups[customergroups].name|truncate:30:"...":true}</OPTION>
-					{/section}
+				<input type="hidden" name="g[]" value="">
+				<SELECT SIZE="1" NAME="g[]" onChange="document.choosefilter.submit();" class="lms-ui-multiselect lms-ui-multiselect-filter" multiple data-default-value="{trans("- all groups -")}">
+					{foreach $customergroups as $customergroup}
+					<OPTION value="{$customergroup.id}"
+						{if (is_array($listdata.customergroup) && in_array($customergroup.id, $listdata.customergroup))
+							|| (!is_array($listdata.customergroup) && $listdata.customergroup == $customergroup.id)} selected{/if}>{$customergroup.name|truncate:30:"...":true}</OPTION>
+					{/foreach}
 				</SELECT>
 			{else}
-			      <input type="hidden" name="g" value="">
+			      <input type="hidden" name="g[]" value="">
 			{/if}
 
 			{if count($nodegroups) > 0}

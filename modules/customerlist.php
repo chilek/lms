@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
+ *  $Id: 90aade022d5282cf48e1eb3626f98400ffb5246e $
  */
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
@@ -46,10 +46,10 @@ else
 	$network = $_GET['n'];
 $SESSION->save('cln', $network);
 
-if(!isset($_GET['g']))
+if (!isset($_GET['g']))
 	$SESSION->restore('clg', $customergroup);
 else
-	$customergroup = $_GET['g'];
+	$customergroup = array_filter($_GET['g'], 'intval');
 $SESSION->save('clg', $customergroup);
 
 if(!isset($_GET['ng']))
