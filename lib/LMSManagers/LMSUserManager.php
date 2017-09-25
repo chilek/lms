@@ -94,7 +94,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
     public function getUserList()
     {
         $userlist = $this->db->GetAll(
-            'SELECT id, login, name, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access, accessfrom, accessto
+            'SELECT id, login, name, phone, lastlogindate, lastloginip, passwdexpiration, passwdlastchange, access, accessfrom, accessto
             FROM vusers
             WHERE deleted=0
             ORDER BY login ASC'
