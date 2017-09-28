@@ -145,7 +145,7 @@
 									{trans("Status:")}
 								</TD>
 								<TD style="width: 99%;">
-									{$ticket.status}
+									{$_RT_STATES[$ticket.state]}
 								</TD>
 							</TR>
 							<TR>
@@ -212,6 +212,17 @@
 								</TD>
 							</TR>
 							{/if}
+							{if $ticket.netnodeid}
+                                                        <TR>
+                                                                <TD class="bold nobr">
+                                                                        <IMG src="img/netdev.gif" alt="">
+                                                                        {trans("Network Device Node:")}
+                                                                </TD>
+                                                                <TD>
+                                                                        <A href="?m=netnodeinfo&id={$ticket.netnodeid}">{$ticket.netnode_name}</A>
+                                                                </TD>
+                                                        </TR>
+                                                        {/if}
 						</TABLE>
 					</TD>
 				</TR>

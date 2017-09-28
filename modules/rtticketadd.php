@@ -36,6 +36,11 @@ if (!$categories) {
 	die;
 }
 
+$netnodelist = $LMS->GetNetNodeList(array(),name);
+unset($netnodelist['total']);
+unset($netnodelist['order']);
+unset($netnodelist['direction']);
+
 if(isset($_POST['ticket']))
 {
 	$ticket = $_POST['ticket'];
@@ -90,6 +95,9 @@ if(isset($_POST['ticket']))
 
 		if (empty($ticket['nodeid']))
 			$ticket['nodeid'] = null;
+
+		if (empty($ticket['netnodeid']))
+			$ticket['netnodeid'] = null;
 
 		if (!empty($files)) {
 			foreach ($files as &$file)
@@ -252,6 +260,7 @@ $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuelist', $queuelist);
 $SMARTY->assign('categories', $categories);
+$SMARTY->assign('netnodelist', $netnodelist);
 $SMARTY->assign('customerid', $ticket['customerid']);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->display('rt/rtticketadd.html');

@@ -138,6 +138,16 @@
 	</TR>
 	{/if}
 	<TR>
+        <TD class="bold nobr"><img src="img/netdev.gif" alt=""> {trans("Network Device Node:")}</TD>
+	<TD class="nobr">
+		<SELECT name="search[netnodeid]" {tip text="Select Netnode" trigger="netnodeid"}>
+			<OPTION value="">{trans("- none -")}</OPTION>
+			{foreach $netnodelist as $idx=>$n}
+				<OPTION value="{$idx}"> {$n.name} ({$n.id})</OPTION>
+			{/foreach}
+		</SELECT>
+	</TR>
+	<TR>
 		<TD class="buttons" colspan="2">
 			<A href="javascript:document.search.submit();" accesskey="s"><IMG src="img/search.gif" alt=""> {trans("Search")}</A>
 		</TD>

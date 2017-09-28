@@ -101,6 +101,9 @@ function RTSearch($search, $order='createtime,desc')
 		}
 	}
 
+	if(!empty($search['netnodeid']))
+		$where[] = 'netnodeid = '.intval($search['netnodeid']);
+
 	if(isset($where))
 		$where = ' WHERE '.implode($op, $where);
 
@@ -137,6 +140,11 @@ function RTSearch($search, $order='createtime,desc')
 }
 
 $categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
+
+$netnodelist = $LMS->GetNetNodeList(array(),name);
+unset($netnodelist['total']);
+unset($netnodelist['order']);
+unset($netnodelist['direction']);
 
 $layout['pagetitle'] = trans('Ticket Search');
 
@@ -242,6 +250,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->assign('categories', $categories);
+$SMARTY->assign('netnodelist', $netnodelist);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());
 $SMARTY->assign('search', isset($search) ? $search : NULL);
