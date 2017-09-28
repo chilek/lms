@@ -4,27 +4,38 @@
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
+        <COLGROUP>
+                <COL style="width: 25%;">
+                <COL style="width: 71%;">
+                <COL style="width: 1%;">
+                <COL style="width: 1%;">
+                <COL style="width: 1%;">
+                <COL style="width: 1%;">
+                <COL style="width: 1%;">
+        </COLGROUP>
     <THEAD>
 	<TR>
-		<TD WIDTH="95%">
+		<TD class="bold nobr">
 			<IMG src="img/queue.gif" ALT="">
-			<B>{trans("Queue")}:</B><BR>
+			{trans("Queue")}:
+		</TD>
+		<TD>
 			<IMG src="img/info1.gif" ALT="">
 			{trans("Description")}:
 		</TD>
-		<TD WIDTH="1%" align="right" NOWRAP>
-			<B>{trans("E-mail:")}</B>
+		<TD class="text-right nobr bold">
+			{trans("E-mail:")}
 		</TD>
-		<TD align="right"  WIDTH="1%">
+		<TD class="text-right">
 			{trans("New:")}
 		</TD>
-		<TD align="right" WIDTH="1%">
+		<TD class="text-right">
 			{trans("Opened:")}
 		</TD>
-		<TD align="right" WIDTH="1%">
+		<TD class="text-right">
 			{trans("Last:")}
 		</TD>
-		<TD WIDTH="1%">
+		<TD>
 			&nbsp;
 		</TD>
 	</TR>
@@ -32,27 +43,28 @@
     <TBODY>
 	{cycle values="light,lucid" print=false}
 	{foreach from=$queues item=queue}
-	<TR class="highlight {cycle} lms-ui-rt{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{else}{/if}">
-		<TD onClick="return self.location.href='?m=rtqueueview&amp;id={$queue.id}';">
+	<TR class="highlight {cycle} lms-ui-rt{if $queue.deleted == 1 && $queue.deltime != 0}-deleted{elseif $queue.delcount != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}-partly-deleted{else}{/if}" onClick="return self.location.href='?m=rtqueueview&amp;id={$queue.id}';">
+		<TD class="nobr bold">
 			<IMG src="img/queue.gif" ALT="">
-			<B>{$queue.name}</B><BR>
+			&nbsp;{$queue.name}
+		</TD>
+		<TD>
 			{if $queue.description}
 				<IMG src="img/info1.gif" ALT=""> {$queue.description}
 			{/if}
-		</TD>
-		<TD  align="right">
+		<TD>
 			<A HREF="mailto:{$queue.email}">{$queue.email}</A>
 		</TD>
-		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&amp;id={$queue.id}';">
+		<TD class="text-center nobr">
 			{$queue.new|default:0}
 		</TD>
-		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&amp;id={$queue.id}';">
+		<TD class="text-center nobr">
 			{$queue.open|default:0}
 		</TD>
-		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&amp;id={$queue.id}';" NOWRAP>
+		<TD class="text-center nobr">
 			{if $queue.lastticket}{$queue.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
-		<TD NOWRAP>
+		<TD class="nobr">
 			<A HREF="?m=rtqueueview&amp;id={$queue.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse")} ]" title="[ {trans("Browse")} ]"></A>
 			{if $queue.deleted == 1 && $queue.deltime != 0 && (ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))}
 			<A HREF="?m=rtrestore&amp;id={$queue.id}&amp;qaction=restore" OnClick="return confirmLink(this, '{t a=$queue.name}Are you sure, you want to restore queue \'$a\' and all assigned tickets and messages?{/t}');"><IMG src="img/reload.gif" alt="[ {trans("Restore<!RT>")} ]" title="[ {trans("Restore<!RT>")} ]"></A>
@@ -66,7 +78,7 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD colspan="6" class="empty-table">
+		<TD colspan="7" class="empty-table">
 			<p>{trans("There are no queues.")} {trans('Click $a to create.', '<a href="?m=rtqueueadd">'|cat: trans('here')|cat: '</a>')} </p>
 		</TD>
 	</TR>
@@ -74,15 +86,15 @@
         </TBODY>
         <TFOOT>
 	<TR>
-		<TD COLSPAN="2" ALIGN="RIGHT">
+		<TD COLSPAN="3" class="text-right bold">
 			<IMG src="img/info2.gif" ALT="">
-			<B>{trans("Total:")}</B>
+			{trans("Total:")}
 		</TD>
-		<TD ALIGN="CENTER">
-			<B>{sum array=$queues column=new}</B>
+		<TD class="text-center bold">
+			{sum array=$queues column=new}
 		</TD>
-		<TD ALIGN="CENTER">
-			<B>{sum array=$queues column=open}</B>
+		<TD class="text-center bold">
+			{sum array=$queues column=open}
 		</TD>
 		<TD COLSPAN="2">
 			&nbsp;

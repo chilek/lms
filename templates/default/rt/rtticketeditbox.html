@@ -121,7 +121,7 @@
 								<TD style="width: 99%;">
 									<SELECT size="1" name="ticket[state]" {tip text="Select status" trigger="state"}>
 										{foreach $_RT_STATES as $stateidx => $state}
-											<OPTION value="{$stateidx}"{if $ticket.state == "$stateidx"}selected{/if}>{$state}</OPTION>
+											<OPTION value="{$stateidx}"{if $ticket.state == "$stateidx"}selected{/if}>{$state.label}</OPTION>
 										{/foreach}
 									</SELECT>
 								</TD>

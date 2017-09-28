@@ -1539,6 +1539,7 @@ CREATE TABLE rtcategories (
 	id integer		DEFAULT nextval('rtcategories_id_seq'::text) NOT NULL,
 	name varchar(255)	DEFAULT '' NOT NULL,
 	description text	DEFAULT '' NOT NULL,
+	style text	DEFAULT '',
 	PRIMARY KEY (id),
 	UNIQUE (name)
 );

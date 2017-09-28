@@ -42,6 +42,14 @@ if (isset($_GET['catid'])) {
 		$queuedata['catid'] = array(intval($_GET['catid']));
 }
 
+if (isset($_GET['s']))
+{
+	if(!empty($_GET['s']) AND !is_array($_GET['s']))
+		$queuedata['s'] = array(intval($_GET['s']));
+	else
+		$queuedata['s'] = $_GET['s'];
+}
+
 if (!empty($queuedata['id'])) {
 	foreach ($queuedata['id'] as $queueidx => $queueid)
 		if (!$LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queueid))
@@ -114,7 +122,7 @@ else
 $SESSION->save('rts', $s);
 
 $layout['pagetitle'] = trans('Tickets List');
-$queue = $LMS->GetQueueContents($queuedata['id'], $o, $s, $owner, $queuedata['catid'], $r);
+$queue = $LMS->GetQueueContents($queuedata['id'], $o, $queuedata['s'], $owner, $queuedata['catid'], $r);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

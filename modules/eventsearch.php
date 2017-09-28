@@ -34,6 +34,8 @@ if (!isset($_POST['event'])) {
                $event['datefrom'] = $_GET['datefrom'];
        if (isset($_GET['dateto']))
                $event['dateto'] = $_GET['dateto'];
+       if (isset($_GET['ticketid']))
+               $event['ticketid'] = $_GET['ticketid'];
        if (!empty($event))
                $_POST['event'] = $event;
 }
@@ -41,7 +43,10 @@ if (!isset($_POST['event'])) {
 if(isset($_POST['event']))
 {
 	$event = $_POST['event'];
-	
+
+	if ($event['ticketid'])
+		$event['ticketid'] = intval($event['ticketid']);
+
 	if($event['datefrom'])
 	{
 		list($year, $month, $day) = explode('/', $event['datefrom']);

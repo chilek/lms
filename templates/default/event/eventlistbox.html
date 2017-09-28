@@ -38,8 +38,9 @@
         {if $eventlist[eventlist].date == $daylist[daylist]}
         {math equation="x+1" x=$counter assign=counter}
         <TR class="highlight {cycle}{if $eventlist[eventlist].closed} blend{/if}"  >
-            <TD style="min-width: 70px; {if isset($_EVENTSTYLES[$eventlist[eventlist].type])} {$_EVENTSTYLES[$eventlist[eventlist].type]}{/if}" class="text-center bold">
-                {$_EVENTTYPES[$eventlist[eventlist].type]}
+            <TD style="min-width: 90px; {if isset($_EVENTSTYLES[$eventlist[eventlist].type])} {$_EVENTSTYLES[$eventlist[eventlist].type]}{/if}" class="text-center bold">
+                {$_EVENTTYPES[$eventlist[eventlist].type]}<BR>
+		{if $eventlist[eventlist].ticketid}<A href="/m=rtticketview&id={$eventlist[eventlist].ticketid}"><span style="color:white">{$eventlist[eventlist].ticketid|string_format:"%06d"}</span></A>{/if}
             </TD>
             <TD class="text-left nobr" onClick="return self.location.href = '?m=eventinfo&amp;id={$eventlist[eventlist].id}'">
                 <span class="bold">
@@ -57,10 +58,7 @@
                 {if $eventlist[eventlist].description != ''}<IMG src="img/info1.gif" alt=""> {$eventlist[eventlist].description}{/if}<br>
                 {if $eventlist[eventlist].note != ''}<span{if !$eventlist[eventlist].closed} style="color: red;"{/if}><IMG src="img/note.gif" alt=""> {$eventlist[eventlist].note}</span>{/if}
             </TD>
-            <TD class="text-center">
-                {if $eventlist[eventlist].ticketid>0}<A href="?m=rtticketview&id={$eventlist[eventlist].ticketid}"><IMG src="img/ticket.gif" alt="" title="{trans("Request Number")}"> #{$eventlist[eventlist].ticketid}</A>{/if}
-            </TD>
-            <TD class="nobr">
+            <TD class="nobr" colspan="2">
                 {if $eventlist[eventlist].customername}
                 <A href="?m=customerinfo&amp;id={$eventlist[eventlist].customerid}">{$eventlist[eventlist].customername|truncate:"30":"...":true}</A><br>
                 {if !empty($eventlist[eventlist].address_id)}

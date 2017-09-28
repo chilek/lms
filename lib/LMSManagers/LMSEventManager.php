@@ -131,6 +131,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 
         $datefrom = intval($search['datefrom']);
         $dateto = intval($search['dateto']);
+        $ticketid = intval($search['ticketid']);
 
         $list = $this->db->GetAll(
                 'SELECT events.id AS id, title, description, date, begintime, enddate, endtime, customerid, closed, events.type, events.ticketid,'
@@ -142,6 +143,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 . ($dateto ? " AND (date <= $dateto OR (enddate <> 0 AND enddate <= $dateto))" : '')
                 . (!empty($search['customerid']) ? ' AND customerid = ' . intval($search['customerid']) : '')
                 . (!empty($search['type']) ? ' AND events.type = ' . intval($search['type']) : '')
+                . ($ticketid ? " AND ticketid = " . $ticketid : '')
                 . (isset($search['closed']) ? ($search['closed'] == '' ? '' : ' AND closed = ' . intval($search['closed'])) : ' AND closed = 0')
                 . (!empty($search['title']) ? ' AND title ?LIKE? ' . $this->db->Escape('%' . $search['title'] . '%') : '')
                 . (!empty($search['description']) ? ' AND description ?LIKE? ' . $this->db->Escape('%' . $search['description'] . '%') : '')

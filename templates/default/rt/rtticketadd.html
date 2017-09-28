@@ -148,8 +148,8 @@
                 </TD>
                 <TD style="width: 99%;">
 			<SELECT size="1" name="ticket[source]" {tip text="Select ticket source" trigger="source"}>
-				{foreach $_RT_SOURCES as $sourceidx => $status}
-					<OPTION value="{$sourceidx}"{if $ticket.source == $sourceidx}selected {/if}>{$status}</OPTION>
+				{foreach $_RT_SOURCES as $sourceidx => $source}
+					<OPTION value="{$sourceidx}"{if $ticket.source == $sourceidx}selected {/if}>{$source}</OPTION>
 				{/foreach}
                         </SELECT>
                 </TD>

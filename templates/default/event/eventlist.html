@@ -55,6 +55,7 @@
 					{foreach $userlist as $user}
 					<OPTION value="{$user.id}"{if is_array($listdata.userid) && in_array($user.id, $listdata.userid)} SELECTED{/if}{if !$user.access} disabled{/if}>{$user.name|truncate:40:"...":true}</OPTION>
 					{/foreach}
+					<OPTION value="-1" {if is_array($listdata.userid) && in_array('-1', $listdata.userid)} selected{/if}><span class="brown">- {trans("Not assigned")} -</span></OPTION>
 				</SELECT>
 				{trans("Privacy:")}
 				<SELECT name="privacy" onchange="document.filter.submit();">

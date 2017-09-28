@@ -145,7 +145,7 @@
 									{trans("Status:")}
 								</TD>
 								<TD style="width: 99%;">
-									{$ticket.status}
+									{$_RT_STATES[$ticket.state].label}
 								</TD>
 							</TR>
 							<TR>

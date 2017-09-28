@@ -1554,6 +1554,7 @@ CREATE TABLE rtcategories (
 	id int(11)		NOT NULL auto_increment,
 	name varchar(255)	DEFAULT '' NOT NULL,
 	description text	DEFAULT '' NOT NULL,
+	style text	DEFAULT '',
 	PRIMARY KEY (id),
 	UNIQUE KEY (name)
 ) ENGINE=INNODB;
