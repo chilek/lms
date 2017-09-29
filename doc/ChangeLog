@@ -85,6 +85,19 @@ version ?.??.?? (????-??-??):
     registry [chilan]
   - enhancement: allow to filter customer list by assignments to so many customergroups
     as were selected [chilan]
+  - improvement: customerinfo: show assignmentid when more then one. show ticketid in eventspanel [interduo]
+  - enhancement: netnodes: added creationtime, administrative contact, lastinspectiontime [interduo]
+  - enhancement: customerraports: added sending book generator for sending letters/packages [interduo]
+  - improvement: show queue name in queuelist [interduo]
+  - improvement: show count of assigned events in rtqueueview [interduo]
+  - improvement: show categories in rtqueueview [interduo]
+  - improvement: lmsuser can define category color [interduo]
+  - improvement: rtmodule: more filtering options in "User"-->"no owner" [interduo]
+  - improvement: rtmodule: multiselect in filtering in status field [interduo]
+  - enhancement: rtmodule: if ticket status is waiting and has no opened events
+    show "+" image and link [interduo]
+  - improvement: eventsearch: added posibility to search by ticketid [interduo]
+  - improvement: event: id of ticket moved into more ui friendly place [interduo]
 
 version 1.11.22 (2017-06-08):
 

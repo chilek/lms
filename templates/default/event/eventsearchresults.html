@@ -7,8 +7,7 @@
 	<COLGROUP>
 		<COL style="width: 1%;">
 		<COL style="width: 1%;">
-		<COL style="width: 95%;">
-		<COL style="width: 1%;">
+		<COL style="width: 96%;">
 		<COL style="width: 1%;">
 	</COLGROUP>
     <THEAD>
@@ -27,31 +26,16 @@
 		<TD class="nobr">
 			<IMG src="img/customer.gif" alt=""> {trans("Customer:")}
 		</TD>
-		<TD class="nobr">
-		</TD>
 	</TR>
     </THEAD>
     <TBODY>
-	{cycle values="light,lucid" print=false}
-	{section name=daylist loop=$daylist}
-		{include file="event/eventlistbox.html"}
-	{sectionelse}
-	<TR>
-		<TD colspan="5" class="empty-table">
-			<p>{trans("No such events matching search criteria.")}</p>
-		</TD>
-	</TR>
-	{/section}
+	{include file="event/eventlistbox.html"}
     </TBODY>
 	<TFOOT>
-	<TR class="dark">
-		<TD colspan="5" class="bold text-right">
-			{trans("Total events:")}
-		</TD>
-		<TD class="bold">
-			{count($eventlist)}
-		</TD>
-	</TR>
+		<TR class="dark">
+			<TD colspan="3" class="bold text-right">{trans("Total events:")}</TD>
+			<TD class="bold">{count($eventlist)}</TD>
+		</TR>
 	</TFOOT>
 </TABLE>
 {/block}

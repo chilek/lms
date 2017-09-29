@@ -112,21 +112,58 @@ $CONFIG_TYPES = array(
 	CONFIG_TYPE_DATE_FORMAT => trans('date format'),
 );
 
+$CATEGORY_DEFAULT_STYLE = 'border: 1px black solid; color: black; background: #FFFFFF; padding: 2px; height: 40px;';
+
 // Helpdesk ticket status
 define('RT_NEW', 0);
 define('RT_OPEN', 1);
 define('RT_RESOLVED', 2);
 define('RT_DEAD', 3);
-define('RT_PLANNED', 4);
+define('RT_SCHEDULED', 4);
 define('RT_WAITING', 5);
 
 $RT_STATES = array(
-    RT_NEW      => trans('new'),
-    RT_OPEN     => trans('opened'),
-    RT_RESOLVED => trans('resolved'),
-    RT_DEAD     => trans('dead'),
-    RT_SCHEDULED => trans('scheduled'),
-    RT_WAITING => trans('waiting')
+	RT_NEW => array(
+		'label' => trans('new'),
+		'color' => 'red',
+		'img' => 'img/new.gif',
+		'name' => 'RT_NEW'
+	),
+
+	RT_OPEN => array(
+		'label' => trans('opened'),
+		'color' => 'black',
+		'img' => 'img/open.gif',
+		'name' => 'RT_OPEN'
+	),
+
+	RT_RESOLVED => array(
+		'label' => trans('resolved'),
+		'color' => 'grey',
+		'img' => 'img/resolved.gif',
+		'name' => 'RT_RESOLVED'
+	),
+
+	RT_DEAD => array(
+		'label' => trans('dead'),
+		'color' => '#8B0000',
+		'img' => 'img/dead.gif',
+		'name' => 'RT_DEAD'
+	),
+
+	RT_SCHEDULED => array(
+		'label' => trans('scheduled'),
+		'color' => '#4169E1',
+		'img' => 'img/calendar.gif',
+		'name' => 'RT_SCHEDULED'
+	),
+
+	RT_WAITING => array(
+		'label' => trans('waiting'),
+		'color' => '#b26b00',
+		'img' => 'img/calendar.gif',
+		'name' => 'RT_WAITING'
+	)
 );
 
 //Helpdesk ticket source
@@ -694,6 +731,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_EVENTTYPES', $EVENTTYPES);
 	$SMARTY->assign('_EVENTSTYLES', $EVENTSTYLES);
 	$SMARTY->assign('_SESSIONTYPES', $SESSIONTYPES);
+	$SMARTY->assign('_CATEGORY_DEFAULT_STYLE', $CATEGORY_DEFAULT_STYLE);
 }
 
 define('DEFAULT_NUMBER_TEMPLATE', '%N/LMS/%Y');

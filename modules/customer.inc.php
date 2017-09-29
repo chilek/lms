@@ -56,8 +56,8 @@ $customernetworks     = $LMS->GetCustomerNetworks($customerid, 10);
 $customerstats = array(
 		'tickets' => $DB->GetRow('SELECT COUNT(*) AS "all", SUM(CASE WHEN state < ? THEN 1 ELSE 0 END) AS notresolved
 		FROM rttickets WHERE 1=1 '
-			. (!ConfigHelper::checkConfig('privileges.superuser') ? 'AND rttickets.deleted = 0': '')
-			. ('AND customerid = ?'), array(RT_RESOLVED, $customerid)),
+			. (!ConfigHelper::checkConfig('privileges.superuser') ? ' AND rttickets.deleted = 0': '')
+			. (' AND customerid = ?'), array(RT_RESOLVED, $customerid)),
 		'domains' => $DB->GetOne('SELECT COUNT(*) FROM domains WHERE ownerid = ?', array($customerid)),
 		'accounts' => $DB->GetOne('SELECT COUNT(*) FROM passwd WHERE ownerid = ?', array($customerid))
 );

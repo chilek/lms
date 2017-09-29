@@ -84,6 +84,7 @@ if(isset($_POST['event']))
 		if (isset($event['helpdesk'])) {
 			$ticket['queue'] = $event['rtqueue'];
 			$ticket['customerid'] = $event['customerid'];
+			$ticket['body'] = $event['description'];
 			$ticket['requestor'] = $event['name']." ".$event['surname'];
 			$ticket['subject'] = $event['title'];
 			$ticket['mailfrom'] = $event['email'];

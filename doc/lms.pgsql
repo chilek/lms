@@ -1540,6 +1540,7 @@ CREATE TABLE rtcategories (
 	id integer		DEFAULT nextval('rtcategories_id_seq'::text) NOT NULL,
 	name varchar(255)	DEFAULT '' NOT NULL,
 	description text	DEFAULT '' NOT NULL,
+	style text	DEFAULT '',
 	PRIMARY KEY (id),
 	UNIQUE (name)
 );
@@ -3131,6 +3132,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017091300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017092800');
 
 COMMIT;

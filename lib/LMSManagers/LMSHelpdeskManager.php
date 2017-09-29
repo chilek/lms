@@ -50,7 +50,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             return NULL;
     }
 
-    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $owner = 0, $catids = NULL, $removed = NULL)
+    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $owner = NULL, $catids = NULL, $removed = NULL)
     {
         if (!$order)
             $order = 'createtime,desc';
@@ -78,28 +78,21 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             case 'creator':
                 $sqlord = ' ORDER BY creatorname';
                 break;
+            case 'queue':
+                $sqlord = ' ORDER BY rtqueues.name';
+                break;
             default:
                 $sqlord = ' ORDER BY t.createtime';
                 break;
         }
 
-        switch ($state) {
-            case '0':
-            case '1':
-            case '2':
-            case '3':
-                $statefilter = ' AND state = ' . $state;
-                break;
-            case '-1':
-                $statefilter = ' AND state != ' . RT_RESOLVED;
-                break;
-            default:
-                $statefilter = '';
-                break;
-        }
+	if(isset($state) && is_array($state))
+		$statefilter = ' AND t.state IN ('.implode(',', $state).')';
+	if(empty($state))
+		$statefilter = '';
 
         if(!ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))
-        $removedfilter = 'AND t.deleted = 0';
+        $removedfilter = ' AND t.deleted = 0';
         else {
 	        switch ($removed) {
 		        case '-1':
@@ -113,10 +106,25 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			        break;
 	        }
         }
+	$ownerfilter = '';
+	switch ($owner) {
+                        case '-1':
+                                $ownerfilter = '';
+                                break;
+                        case '0':
+                                $ownerfilter = ' AND t.owner = 0';
+                                break;
+                        case '-2':
+                                $ownerfilter = ' AND t.owner != 0';
+                                break;
+                        default:
+                                $ownerfilter = ' AND t.owner = '.intval($owner).' ';
+                                break;
+        }
 
         if ($result = $this->db->GetAll(
-                'SELECT DISTINCT t.id, t.customerid, c.address, vusers.name AS ownername,
-			    t.subject, state, owner AS ownerid, t.requestor AS req, t.source,
+                'SELECT DISTINCT t.id, t.customerid, t.address_id, va.name AS vaname, va.city AS vacity, va.street, va.house, va.flat, c.address, c.city, vusers.name AS ownername,
+			    t.subject, t.state, owner AS ownerid, t.requestor AS req, t.source, rtqueues.name,
 			    CASE WHEN customerid = 0 THEN t.requestor ELSE '
                 . $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor,
 			    t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
@@ -127,16 +135,21 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		    LEFT JOIN vusers ON (owner = vusers.id)
 		    LEFT JOIN customeraddressview c ON (t.customerid = c.id)
 		    LEFT JOIN vusers u ON (t.creatorid = u.id)
+		    LEFT JOIN rtqueues ON (rtqueues.id = t.queueid)
+		    LEFT JOIN vaddresses as va ON (t.address_id = va.id)
 		    WHERE 1=1 '
                 . (is_array($ids) ? ' AND t.queueid IN (' . implode(',', $ids) . ')' : ($ids != 0 ? ' AND t.queueid = ' . $ids : ''))
                 . (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
                 . $statefilter
-                . ($owner ? ' AND t.owner = ' . intval($owner) : '')
+                . $ownerfilter
                 . $removedfilter
                 . ($sqlord != '' ? $sqlord . ' ' . $direction : ''))) {
             foreach ($result as $idx => $ticket) {
-		$ticket['eventcount'] = $this->db->GetOne('SELECT COUNT(id) FROM events WHERE ticketid = ?', array($ticket['id']));
+		$ticket['eventcountopened'] = $this->db->GetOne('SELECT COUNT(id) FROM events WHERE closed=0 AND ticketid = ?', array($ticket['id']));
+		$ticket['eventcountclosed'] = $this->db->GetOne('SELECT COUNT(id) FROM events WHERE closed=1 AND ticketid = ?', array($ticket['id']));
 		$ticket['delcount'] = $this->db->GetOne('SELECT COUNT(id) FROM rtmessages WHERE ticketid = ? AND deleted = 1 AND deltime != 0', array($ticket['id']));
+		if (!ConfigHelper::checkConfig('rt.hide_ticket_categories_in_ticket_row'))
+			$ticket['categories'] = $this->db->GetAll('SELECT r.categoryid,c.name,c.description,c,style FROM rtticketcategories r LEFT JOIN rtcategories c on r.categoryid = c.id  where r.ticketid = ? AND r.categoryid IN (SELECT categoryid FROM rtcategoryusers WHERE userid = ?)', array($ticket['id'],Auth::GetCurrentUser()));
                 //$ticket['requestoremail'] = preg_replace('/^.*<(.*@.*)>$/', '\1',$ticket['requestor']);
                 //$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
                 if (!$ticket['customerid'])
@@ -214,8 +227,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function GetEventsByTicketId($id)
     {
-        return $this->db->GetAll('SELECT events.id as id, title, description, note, date, begintime, endtime, '
-                . 'userid, userid AS uad, customerid, private, closed, closeduserid, events.type, '
+        $events = $this->db->GetAll('SELECT events.id as id, title, description, note, date, begintime, endtime, '
+                . 'userid, customerid, private, closed, closeduserid, events.type, ticketid, '
                 . ''.$this->db->Concat('customers.name',"' '",'customers.lastname').' AS customername, '
                 . ''.$this->db->Concat('users.firstname',"' '",'users.lastname').' AS username, '
                 . ''.$this->db->Concat('u.firstname',"' '",'u.lastname').' AS closedusername '
@@ -224,6 +237,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
                 . 'LEFT JOIN users ON (userid = users.id) '
                 . 'LEFT JOIN users u ON (closeduserid = u.id) '
                 . 'WHERE ticketid = ? ORDER BY events.id ASC', array($id));
+
+	if(is_array($events))
+		foreach($events as $idx=>$row)
+			$events[$idx][ul] = $this->db->GetAll("SELECT vu.name,userid AS ul FROM eventassignments AS e LEFT JOIN vusers vu ON vu.id = e.userid WHERE eventid = $row[id]");
+
+	return $events;
     }
 
     public function GetQueueName($id)
@@ -285,7 +304,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function GetCategoryList($stats = true)
     {
-        if ($result = $this->db->GetAll('SELECT id, name, description
+        if ($result = $this->db->GetAll('SELECT id, name, description, style
 				FROM rtcategories ORDER BY name')) {
             if ($stats)
                 foreach ($result as $idx => $row)
@@ -516,7 +535,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				LEFT JOIN netnodes nn ON nn.id = t.netnodeid
 				WHERE 1=1 '
 				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' AND t.deleted = 0' : '')
-				. ('AND t.id = ?'), array($id));
+				. (' AND t.id = ?'), array($id));
 
         $ticket['categories'] = $this->db->GetAllByKey('SELECT categoryid AS id, c.name
 								FROM rtticketcategories tc
@@ -533,10 +552,10 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				FROM rtmessages
 				LEFT JOIN customers ON (customers.id = customerid)
 				LEFT JOIN vusers ON (vusers.id = userid)
-				WHERE 1=1 '
-				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? 'AND rtmessages.deleted = 0' : '')
-				. ('AND ticketid = ?)')
-				.('ORDER BY createtime ASC'), array($id));
+				WHERE 1=1'
+				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' AND rtmessages.deleted = 0' : '')
+				. (' AND ticketid = ?)')
+				.(' ORDER BY createtime ASC'), array($id));
 
         foreach ($ticket['messages'] as $idx => $message)
             $ticket['messages'][$idx]['attachments'] = $this->db->GetAll('SELECT filename, contenttype FROM rtattachments WHERE messageid = ?', array($message['id']));

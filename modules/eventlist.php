@@ -52,6 +52,18 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 	$startdate = mktime(0,0,0, $month, $day, $year);
 	$enddate = mktime(0,0,0, $month, $day+$forward, $year);
 
+	if(!isset($userid) && empty($userid))
+		$userfilter = '';
+	else
+	{
+		if(is_array($userid))
+		{
+			$userfilter = ' AND EXISTS ( SELECT 1 FROM eventassignments WHERE eventid = events.id AND userid IN ('.implode(',', $userid).'))';
+			if(in_array('-1', $userid))
+				$userfilter = ' AND NOT EXISTS (SELECT 1 FROM eventassignments WHERE eventid = events.id)';
+		}
+	}
+
 	$list = $DB->GetAll(
 		'SELECT events.id AS id, title, note, description, date, begintime, enddate, endtime, customerid, closed, events.type, '
 		.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername,
@@ -64,10 +76,7 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 		LEFT JOIN vusers ON (userid = vusers.id)
 		WHERE ((date >= ? AND date < ?) OR (enddate <> 0 AND date < ? AND enddate >= ?)) AND ' . $privacy_condition
 		.($customerid ? ' AND customerid = '.intval($customerid) : '')
-		.(!empty($userid) ? ' AND EXISTS (
-			SELECT 1 FROM eventassignments
-			WHERE eventid = events.id AND userid ' . (is_array($userid) ? 'IN (' . implode(',', array_filter($userid, 'intval')) . ')' : '=' . intval($userid)) . '
-			)' : '')
+		. $userfilter
 		. (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', array_filter($type, 'intval')) . ')' : '=' . intval($type)) : '')
 		. ($closed != '' ? ' AND closed = ' . intval($closed) : '')
 		.' ORDER BY date, begintime',
