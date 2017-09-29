@@ -100,6 +100,8 @@ version ?.??.?? (????-??-??):
   - improvement: event: id of ticket moved into more ui friendly place [interduo]
   - enhancement: reference documents were introduced - it allows to create
     document chains [chilan]
+  - enhancement: document templates support reference_types and references_templates properties
+    which define to which document given template can refer to [chilan]
 
 version 1.11.22 (2017-06-08):
 

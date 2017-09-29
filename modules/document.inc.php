@@ -44,7 +44,7 @@ if (isset($_GET['template'])) {
 	die;
 }
 
-function _plugin($template, $customer, $JSResponse) {
+function GetPlugin($template, $customer, $JSResponse) {
 	global $documents_dirs;
 	
 	$result = '';
@@ -74,14 +74,6 @@ function _plugin($template, $customer, $JSResponse) {
 
 	$JSResponse->assign('plugin', 'innerHTML', $result);
 	$JSResponse->assign('title', 'value', isset($engine['form_title']) ? $engine['form_title'] : $engine['title']);
-}
-
-function plugin($template, $customer) {
-	$JSResponse = new xajaxResponse();
-
-	_plugin($template, $customer, $JSResponse);
-
-	return $JSResponse;
 }
 
 function GetDocumentTemplates($rights, $type = NULL) {
@@ -186,12 +178,46 @@ function GetNumberPlans($doctype, $numberplanid, $customerid) {
 	return $JSResponse;
 }
 
-function GetReferenceDocuments($customerid, $JSResponse) {
-	global $SMARTY, $LMS;
+function GetReferenceDocuments($doctemplate, $customerid, $JSResponse) {
+	global $SMARTY, $LMS, $documents_dirs;
 
 	$SMARTY->assign('cid', $customerid);
 	$SMARTY->assign('document', array('reference' => ''));
-	$SMARTY->assign('references', $LMS->GetDocuments($customerid));
+
+	$references = $LMS->GetDocuments($customerid);
+
+	if (!empty($doctemplate)) {
+		ob_start();
+		foreach ($documents_dirs as $doc_dir) {
+			$infofile = $doc_dir . '/templates/' . $doctemplate . '/info.php';
+			if (file_exists($infofile)) {
+				include($infofile);
+				if (isset($engine['reference_templates'])) {
+					if (is_array($engine['reference_templates']))
+						$reference_templates = $engine['reference_templates'];
+					else
+						$reference_templates = array($engine['reference_templates']);
+					foreach ($references as $idx => $reference)
+						if (!empty($reference['doctemplate']) && !in_array($reference['doctemplate'], $reference_templates))
+							unset($references[$idx]);
+				}
+				if (isset($engine['reference_types'])) {
+					if (is_array($engine['reference_types']))
+						$reference_types = $engine['reference_types'];
+					else
+						$reference_types = array($engine['reference_types']);
+					foreach ($references as $idx => $reference)
+						if (!in_array($reference['doctype'], $reference_types))
+							unset($references[$idx]);
+				}
+				break;
+			}
+		}
+		ob_end_clean();
+	}
+
+	$SMARTY->assign('references', $references);
+
 	$template = $SMARTY->fetch('document/documentreference.html');
 
 	$JSResponse->assign('referencedocument', 'innerHTML', $template);
@@ -200,25 +226,36 @@ function GetReferenceDocuments($customerid, $JSResponse) {
 function CustomerChanged($doctype, $doctemplate, $numberplanid, $customerid) {
 	$JSResponse = new XajaxResponse();
 
-	_plugin($doctemplate, $customerid, $JSResponse);
+	GetPlugin($doctemplate, $customerid, $JSResponse);
 	_GetNumberPlans($doctype, $numberplanid, $customerid, $JSResponse);
 	GetTemplates($doctype, $doctemplate, $JSResponse);
-	GetReferenceDocuments($customerid, $JSResponse);
+	GetReferenceDocuments($doctemplate, $customerid, $JSResponse);
 
 	return $JSResponse;
 }
 
-function DocTypeChanged($doctype, $doctemplate, $numberplanid, $customerid) {
+function DocTypeChanged($doctype, $numberplanid, $customerid) {
 	$JSResponse = new XajaxResponse();
 
 	_GetNumberPlans($doctype, $numberplanid, $customerid, $JSResponse);
-	GetTemplates($doctype, $doctemplate, $JSResponse);
+	GetTemplates($doctype, null, $JSResponse);
+	GetReferenceDocuments(null, $customerid, $JSResponse);
 
 	return $JSResponse;
 }
 
+function DocTemplateChanged($doctype, $doctemplate, $customerid) {
+	$JSResponse = new XajaxResponse();
+
+	GetPlugin($doctemplate, $customerid, $JSResponse);
+	GetReferenceDocuments($doctemplate, $customerid, $JSResponse);
+
+	return $JSResponse;
+}
+
+
 $LMS->InitXajax();
-$LMS->RegisterXajaxFunction(array('plugin', 'GetNumberPlans', 'DocTypeChanged', 'CustomerChanged'));
+$LMS->RegisterXajaxFunction(array('GetNumberPlans', 'DocTypeChanged', 'DocTemplateChanged', 'CustomerChanged'));
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
 ?>

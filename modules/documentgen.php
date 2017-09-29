@@ -249,8 +249,8 @@ if (isset($_POST['document'])) {
 			));
 			$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, customerid, userid, divisionid, name, address, zip, city, ten, ssn, closed,
 					div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
-					div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($document['type'],
+					div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber, template)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($document['type'],
 					$document['number'],
 					$document['numberplanid'],
 					$time,
@@ -278,6 +278,7 @@ if (isset($_POST['document'])) {
 					($division['inv_author'] ? $division['inv_author'] : ''), 
 					($division['inv_cplace'] ? $division['inv_cplace'] : ''),
 					$fullnumber,
+					empty($document['templ']) ? null : $document['templ'],
 			));
 
 			$docid = $DB->GetLastInsertID('documents');

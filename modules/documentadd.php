@@ -224,8 +224,8 @@ if (isset($_POST['document'])) {
 			customerid, userid, name, address, zip, city, ten, ssn, divisionid, 
 			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, closed, fullnumber,
-			reference)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($document['type'],
+			reference, template)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($document['type'],
 				$document['number'],
 				$document['numberplanid'],
 				$time,
@@ -256,6 +256,7 @@ if (isset($_POST['document'])) {
 				isset($document['closed']) ? 1 : 0,
 				$fullnumber,
 				!isset($document['reference']) || empty($document['reference']) ? 0 : $document['reference'],
+				empty($document['templ']) ? null : $document['templ'],
 		));
 
 		$docid = $DB->GetLastInsertID('documents');

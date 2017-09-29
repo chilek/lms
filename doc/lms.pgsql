@@ -321,6 +321,7 @@ CREATE TABLE documents (
 	cuserid integer		DEFAULT 0 NOT NULL,
 	recipient_address_id integer DEFAULT NULL
 		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	template varchar(255) DEFAULT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX documents_cdate_idx ON documents(cdate);
@@ -3137,6 +3138,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017092900');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017092901');
 
 COMMIT;

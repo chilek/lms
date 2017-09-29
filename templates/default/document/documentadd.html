@@ -6,9 +6,11 @@
 {$xajax}
 <script type="text/javascript">
 <!--
-	function getplugin() {
+	function DocTemplateChanged() {
 		reset_login_timeout();
-		xajax_plugin(document.forms['documentadd'].elements['document[templ]'].value, document.forms['documentadd'].elements['customerid'].value);
+		xajax_DocTemplateChanged($('[name="document[type]"]').val(),
+			$('[name="document[templ]"]').val(),
+            $('[name="customerid"]').val());
 	}
 
 	function print_document()
@@ -20,12 +22,12 @@
 	function DocTypeChanged() {
 		reset_login_timeout();
 		xajax_DocTypeChanged($('[name="document[type]"]').val(),
-			$('[name="document[numberplanid]"').val(),
+			$('[name="document[numberplanid]"]').val(),
 			$('[name="customerid"]').val());
 	}
 
 	function show_templates() {
-	    document.getElementById("templates").style.display = "table-row";
+		$('#templates').css('display', 'table-row');
 	}
 
 	function CustomerChanged() {
@@ -71,9 +73,6 @@
 			{customerlist form="documentadd" customers=$customers selected=$cid selectname="customer" inputname="customerid" customOnChange="CustomerChanged();"}
 		</TD>
 	</TR>
-	<tr id="referencedocument">
-		{include file="document/documentreference.html"}
-	</tr>
 	<TR>
 		<TD>
 			<IMG src="img/calendar.gif" alt="">
@@ -121,7 +120,7 @@
 			{trans("Template:")}
 		</TD>
 		<TD>
-			<SELECT SIZE="1" NAME="document[templ]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="templ"} id="templ" onchange="getplugin();">
+			<SELECT SIZE="1" NAME="document[templ]" {tip text="Select template to generate new document if you haven't got prepared file" trigger="templ"} id="templ" onchange="DocTemplateChanged();">
 				<OPTION VALUE="">... {trans("select template")} ...</OPTION>
 				{foreach $docengines as $docengine}
 				<OPTION VALUE="{$docengine.name}"{if $document.templ==$docengine.name} SELECTED{/if}>{$docengine.title}</OPTION>
@@ -129,6 +128,9 @@
 			</SELECT>
 		</TD>
 	</TR>
+	<tr id="referencedocument">
+		{include file="document/documentreference.html"}
+	</tr>
 	<TR>
 		<TD>
 			<IMG src="img/save.gif" alt="">
