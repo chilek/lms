@@ -99,7 +99,8 @@ function GetDocumentList($order='cdate,asc', $search) {
 	}
 
 	$list = $DB->GetAll('SELECT docid, d.number, d.type, title, d.cdate, u.name AS username, u.lastname, fromdate, todate, description, 
-				template, d.closed, d.name, d.customerid, d.sdate, d.cuserid, u2.name AS cusername, u2.lastname AS clastname
+				template, d.closed, d.name, d.customerid, d.sdate, d.cuserid, u2.name AS cusername, u2.lastname AS clastname,
+				d.reference
 			FROM documentcontents
 			JOIN documents d ON (d.id = documentcontents.docid)
 			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1) = 1)
@@ -122,9 +123,14 @@ function GetDocumentList($order='cdate,asc', $search) {
 			.$sqlord, array($AUTH->id));
 
 	if (!empty($list))
-		foreach ($list as &$document)
+		foreach ($list as &$document) {
 			$document['attachments'] = $DB->GetAll('SELECT id, filename, md5sum, contenttype, main
 				FROM documentattachments WHERE docid = ? ORDER BY main DESC, filename', array($document['docid']));
+			if (!empty($document['reference'])) {
+				$document['reference'] = $DB->GetRow('SELECT id, type, fullnumber, cdate FROM documents
+					WHERE id = ?', array($document['reference']));
+			}
+		}
 
 	$list['total'] = sizeof($list);
 	$list['direction'] = $direction;

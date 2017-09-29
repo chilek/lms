@@ -3755,6 +3755,6 @@ $_LANG['opened documents'] = 'otwarte dokumenty';
 
 $_LANG['Select reference document'] = 'Wybierz dokument odniesienia';
 $_LANG['Reference document:'] = 'Dokument odniesienia:';
-$_LANG['$a no. $b issued on $c'] = '$a nr $b wystawione $c';
+$_LANG['$a no. $b issued on $c'] = '$a nr $b z dnia $c';
 
 ?>

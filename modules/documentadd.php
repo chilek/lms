@@ -107,6 +107,9 @@ if (isset($_POST['document'])) {
 		// read template information
 		include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] . DIRECTORY_SEPARATOR . 'info.php');
 		// set some variables (needed in e.g. plugin)
+		if ($document['reference'])
+			$document['reference'] = $DB->GetRow('SELECT id, type, fullnumber, cdate FROM documents
+				WHERE id = ?', array($document['reference']));
 		$SMARTY->assignByRef('document', $document);
 		// call plugin
 		if (!empty($engine['plugin']) && file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR

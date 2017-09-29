@@ -85,7 +85,11 @@
 			/ <A href="?m=documentlist&o=cuser{if $listdata.direction == "asc" && $listdata.order == "cuser"},desc{/if}">{trans("Confirmed by<!document>")}:</A>{if $listdata.order == "cuser"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 			<BR><A href="?m=documentlist&o=type{if $listdata.direction == "asc" && $listdata.order == "type"},desc{/if}"><B>{trans("Type:")}</B></A>{if $listdata.order == "type"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</TD>
-		<TD class="nobr"> <A href="?m=documentlist&amp;o=title{if $listdata.direction == "asc" && $listdata.order == "title"},desc{/if}">{trans("Title:")}</A>{if $listdata.order == "title"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>{trans("Period:")}</TD>
+		<TD class="nobr">
+			<A href="?m=documentlist&amp;o=title{if $listdata.direction == "asc" && $listdata.order == "title"},desc{/if}">{trans("Title:")}</A>{if $listdata.order == "title"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<BR>{trans("Period:")}
+			<BR>{trans("Reference document:")}
+		</TD>
 		<TD class="nobr"> <A href="?m=documentlist&amp;o=customer{if $listdata.direction == "asc" && $listdata.order == "customer"},desc{/if}">{trans("Customer:")}</A>{if $listdata.order == "customer"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}</TD>
 		<TD class="text-right nobr">
 			<A href="?m=documentadd&amp;cid={$listdata.customer}&amp;typeOD={$listdata.type}">{trans("New Document")}</A> <IMG src="img/save.gif" alt="">
@@ -179,6 +183,11 @@
 			{if $doc.fromdate || $doc.todate}<BR>
 			    {if $doc.fromdate}{trans("from")} {$doc.fromdate|date_format:"%Y/%m/%d"}{/if}
 			    {if $doc.todate}{trans("to")} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
+			{/if}
+			{if $doc.reference}<br>
+			<a href="?m=documentview&id={$doc.reference.id}" rel="external">
+				{t a=$_DOCTYPES[$doc.reference.type] b=$doc.reference.fullnumber c=$doc.reference.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}
+			</a>
 			{/if}
 		</TD>
 		<TD class="nobr"><A href="?m=customerinfo&amp;id={$doc.customerid}">{$doc.name|truncate:40:"...":true}</A></TD>
