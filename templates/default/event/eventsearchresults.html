@@ -4,38 +4,18 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <TABLE class="lmsbox">
-	<COLGROUP>
-		<COL style="width: 1%;">
-		<COL style="width: 1%;">
-		<COL style="width: 96%;">
-		<COL style="width: 1%;">
-	</COLGROUP>
+    <COLGROUP>
+        <COL style="width: 1%;">
+        <COL style="width: 1%;">
+        <COL style="width: 96%;">
+        <COL style="width: 1%;">
+    </COLGROUP>
     <THEAD>
-	<TR>
-		<TD class="nobr" style="min-width: 70px;">
-			<IMG src="img/desc.gif" alt=""> {trans("Type:")}
-		</TD>
-		<TD class="nobr">
-			<IMG src="img/time.gif" alt=""> <span class="bold">{trans("Time:")}</span><br>
-			<IMG src="img/users.gif" alt=""> {trans("User:")}
-		</TD>
-		<TD class="nobr">
-			<IMG src="img/calendar.gif" alt=""> <span class="bold">{trans("Title:")}</span><BR>
-			<IMG src="img/info1.gif" alt=""> {trans("Description:")}
-		</TD>
-		<TD class="nobr">
-			<IMG src="img/customer.gif" alt=""> {trans("Customer:")}
-		</TD>
-	</TR>
+        {include file="event/eventlistheader.html"}
     </THEAD>
     <TBODY>
-	{include file="event/eventlistbox.html"}
+        {include file="event/eventlistbox.html"}
     </TBODY>
-	<TFOOT>
-		<TR class="dark">
-			<TD colspan="3" class="bold text-right">{trans("Total events:")}</TD>
-			<TD class="bold">{count($eventlist)}</TD>
-		</TR>
-	</TFOOT>
 </TABLE>
+<H2>{trans("Total events:")} {count($eventlist)}</H2>
 {/block}
