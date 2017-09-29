@@ -71,7 +71,9 @@
 			{customerlist form="documentadd" customers=$customers selected=$cid selectname="customer" inputname="customerid" customOnChange="CustomerChanged();"}
 		</TD>
 	</TR>
-	{include file="document/documentreference.html"}
+	<tr id="referencedocument">
+		{include file="document/documentreference.html"}
+	</tr>
 	<TR>
 		<TD>
 			<IMG src="img/calendar.gif" alt="">
