@@ -3752,4 +3752,9 @@ $_LANG['Check if reverse charge should be applied'] = 'Zaznacz, jeÅ›li ma zostaÄ
 $_LANG['$a rc'] = '$a oo';
 
 $_LANG['opened documents'] = 'otwarte dokumenty';
+
+$_LANG['Select reference document'] = 'Wybierz dokument odniesienia';
+$_LANG['Reference document:'] = 'Dokument odniesienia:';
+$_LANG['$a no. $b issued on $c'] = '$a nr $b wystawione $c';
+
 ?>

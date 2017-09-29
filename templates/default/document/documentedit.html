@@ -3,16 +3,14 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+{$xajax}
 <script type="text/javascript">
 <!--
 	function setnumberplans() {
 		reset_login_timeout();
-		xajax_GetNumberPlans(document.forms['documenteditd'].elements['document[type]'].value,
+		xajax_GetNumberPlans(document.forms['documentedit'].elements['document[type]'].value,
 			document.forms['documentedit'].elements['document[numberplanid]'].value,
-			document.forms['documentedit'].elements['customerid'].value);
-	}
-
-	function numberplans_received() {
+			{$document.customerid});
 	}
 //-->
 </script>
@@ -177,7 +175,6 @@
 	$(function() {
 		$('form[name="documentedit"] [name="document[title]"]').focus();
 	});
-	setnumberplans();
 //-->
 </SCRIPT>
 {/block}

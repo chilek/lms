@@ -1,4 +1,4 @@
 <OPTION value="">... {trans("select template")} ...</OPTION>
-{foreach $docengines as $docengine}
-<OPTION value="{$docengine.name}">{$docengine.title}</OPTION>
+{foreach $docengines as $templatename => $docengine}
+<OPTION value="{$docengine.name}"{if $templatename == $doctemplate} selected{/if}>{$docengine.title}</OPTION>
 {/foreach}
