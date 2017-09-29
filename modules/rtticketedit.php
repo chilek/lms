@@ -106,6 +106,11 @@ $categories = $LMS->GetCategoryListByUser($AUTH->id);
 if (empty($categories))
 	$categories = array();
 
+$netnodelist = $LMS->GetNetNodeList(array(),name);
+unset($netnodelist['total']);
+unset($netnodelist['order']);
+unset($netnodelist['direction']);
+
 if(isset($_POST['ticket']))
 {
 	$ticketedit = $_POST['ticket'];
@@ -180,6 +185,7 @@ if(isset($_POST['ticket']))
 			'source' => $ticketedit['source'],
 			'address_id' => $ticketedit['address_id'] == -1 ? null : $ticketedit['address_id'],
 			'nodeid' => empty($ticketedit['nodeid']) ? null : $ticketedit['nodeid'],
+			'netnodeid' => $ticketedit['netnodeid']
 		);
 		$LMS->TicketChange($ticketedit['ticketid'], $props);
 
@@ -266,6 +272,7 @@ if(isset($_POST['ticket']))
 	$ticket['owner'] = $ticketedit['owner'];
 	$ticket['address_id'] = $ticketedit['address_id'];
 	$ticket['nodeid'] = $ticketedit['nodeid'];
+	$ticket['netnodeid'] = $ticketedit['netnodeid'];
 }
 else
 	$ticketedit['categories'] = $ticket['categories'];
@@ -302,6 +309,7 @@ if (!empty($ticket['customerid']))
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queuelist', $queuelist);
 $SMARTY->assign('categories', $categories);
+$SMARTY->assign('netnodelist', $netnodelist);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('error', $error);
 $SMARTY->display('rt/rtticketedit.html');

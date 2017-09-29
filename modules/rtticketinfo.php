@@ -40,11 +40,7 @@ if(!$rights || !$catrights)
 	die;
 }
 
-$ticket = $DB->GetRow('SELECT t.id, t.cause, t.creatorid, c.name AS creator, t.source,
-		    t.createtime, t.resolvetime
-		    FROM rttickets t
-		    LEFT JOIN vusers c ON (t.creatorid = c.id)
-		    WHERE t.id = ?', array($id));
+$ticket = $LMS->GetTicketContents($id);
 
 $ticket['message'] = $DB->GetOne('SELECT body FROM rtmessages
 		    WHERE ticketid = ?

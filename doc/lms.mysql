@@ -1480,6 +1480,7 @@ CREATE TABLE rttickets (
   deluserid int(11) NOT NULL DEFAULT '0',
   address_id int(11) DEFAULT NULL,
   nodeid int(11) DEFAULT NULL,
+  netnodeid int(11) DEFAULT NULL,
   PRIMARY KEY (id),
   INDEX queueid (queueid),
   INDEX customerid (customerid),
