@@ -92,6 +92,12 @@ function multiselect(options) {
 			if (!$(e.target).is('input')) {
 				box.prop('checked', !box.prop('checked'));
 			}
+			if (e.shiftKey) {
+				checkElements(box);
+			} else {
+				ul.find('[data-prev-checked]:checkbox').removeAttr('data-prev-checked');
+				box.attr('data-prev-checked', box.prop('checked'));
+			}
 
 			var optionValue = '';
 			if (/<span>(.*?)<\/span>/i.exec(this.innerHTML) !== null)
@@ -160,6 +166,32 @@ function multiselect(options) {
 	});
 
 	// TODO: keyboard events
+
+	function checkElements(checkbox) {
+		var allcheckboxes = ul.find(':checkbox');
+		var i = allcheckboxes.index(allcheckboxes.filter('[data-prev-checked]')),
+			j = allcheckboxes.index(checkbox);
+		if (i > -1) {
+			var checked = $(allcheckboxes[i]).attr('data-prev-checked') == 'true' ? true : false;
+			var start = Math.min(i, j);
+			var stop = Math.max(i, j);
+			for (i = start; i <= stop; i++) {
+				var li = $(allcheckboxes[i]).closest('li');
+				var optionValue = '';
+				if (/<span>(.*?)<\/span>/i.exec(li.get(0).innerHTML) !== null)
+					optionValue = RegExp.$1;
+
+				if (checked) {
+					li.addClass('selected');
+					elem[optionValue] = 1; //mark option as selected
+				} else {
+					li.removeClass('selected');
+					elem[optionValue] = 0; //mark option as unselected
+				}
+				$(allcheckboxes[i]).prop('checked', checked);
+			}
+		}
+	}
 
 	function generateSelectedString(objArray) {
 		var selected = [];
