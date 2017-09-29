@@ -125,17 +125,17 @@ DROP TABLE IF EXISTS location_boroughs;
 DROP TABLE IF EXISTS location_districts;
 DROP TABLE IF EXISTS location_states;
 DROP TABLE IF EXISTS location_buildings;
-DROP TABLE IF EXISTS receiptcontents;
-DROP TABLE IF EXISTS documentattachments;
-DROP TABLE IF EXISTS documentcontents;
-DROP TABLE IF EXISTS documents;
-DROP TABLE IF EXISTS debitnotecontents;
-DROP TABLE IF EXISTS invoicecontents;
 DROP TABLE IF EXISTS numberplanassignments;
 DROP TABLE IF EXISTS dbinfo;
 DROP TABLE IF EXISTS cash;
 DROP TABLE IF EXISTS taxes;
 DROP TABLE IF EXISTS assignments;
+DROP TABLE IF EXISTS receiptcontents;
+DROP TABLE IF EXISTS debitnotecontents;
+DROP TABLE IF EXISTS invoicecontents;
+DROP TABLE IF EXISTS documentattachments;
+DROP TABLE IF EXISTS documentcontents;
+DROP TABLE IF EXISTS documents;
 DROP TABLE IF EXISTS numberplans;
 DROP TABLE IF EXISTS customers;
 DROP TABLE IF EXISTS users;
@@ -401,6 +401,143 @@ CREATE TABLE customer_addresses (
 
 # --------------------------------------------------------
 #
+# Structure of table documents
+#
+CREATE TABLE documents (
+	id int(11) NOT NULL auto_increment,
+	type tinyint NOT NULL DEFAULT '0',
+	number int(11) NOT NULL DEFAULT '0',
+	numberplanid int(11) NOT NULL DEFAULT '0',
+	extnumber varchar(255) NOT NULL DEFAULT '',
+	cdate int(11) NOT NULL DEFAULT '0',
+	sdate int(11) NOT NULL DEFAULT '0',
+	customerid int(11) NOT NULL DEFAULT '0',
+	userid int(11) NOT NULL DEFAULT '0',
+	divisionid int(11) NOT NULL DEFAULT '0',
+	name varchar(255) NOT NULL DEFAULT '',
+	address varchar(255) NOT NULL DEFAULT '',
+	zip varchar(10) NULL DEFAULT NULL,
+	city varchar(32) NULL DEFAULT NULL,
+	countryid int(11) NOT NULL DEFAULT '0',
+	ten varchar(16) NOT NULL DEFAULT '',
+	ssn varchar(11) NOT NULL DEFAULT '',
+	paytime smallint NOT NULL DEFAULT '0',
+	paytype smallint DEFAULT NULL,
+	closed tinyint(1) NOT NULL DEFAULT '0',
+	reference int(11) NOT NULL DEFAULT '0',
+	reason varchar(255) NOT NULL DEFAULT '',
+	div_name text NOT NULL DEFAULT '',
+	div_shortname text NOT NULL DEFAULT '',
+	div_address varchar(255) NOT NULL DEFAULT '',
+	div_city varchar(255) NOT NULL DEFAULT '',
+	div_zip varchar(255) NOT NULL DEFAULT '',
+	div_countryid int(11) NOT NULL DEFAULT '0',
+	div_ten varchar(255) NOT NULL DEFAULT '',
+	div_regon varchar(255) NOT NULL DEFAULT '',
+	div_account varchar(48) NOT NULL DEFAULT '',
+	div_inv_header text NOT NULL DEFAULT '',
+	div_inv_footer text NOT NULL DEFAULT '',
+	div_inv_author text NOT NULL DEFAULT '',
+	div_inv_cplace text NOT NULL DEFAULT '',
+	fullnumber varchar(50) DEFAULT NULL,
+	cancelled smallint DEFAULT 0 NOT NULL,
+	published tinyint(1) NOT NULL DEFAULT 0,
+	cuserid int(11) NOT NULL DEFAULT '0',
+	recipient_address_id int(11),
+	PRIMARY KEY (id),
+	INDEX cdate (cdate),
+	INDEX numberplanid (numberplanid),
+	INDEX customerid (customerid),
+	INDEX closed (closed),
+	INDEX reference (reference),
+	FOREIGN KEY recipient_address_id_fk(recipient_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table documentcontents
+#
+CREATE TABLE documentcontents (
+	docid int(11) NOT NULL,
+	title text DEFAULT '' NOT NULL,
+	fromdate int(11) DEFAULT '0' NOT NULL,
+	todate int(11) DEFAULT '0' NOT NULL,
+	description text DEFAULT '' NOT NULL,
+	INDEX fromdate (fromdate),
+	INDEX todate (todate),
+	UNIQUE KEY docid (docid),
+	FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table documentattachments
+#
+CREATE TABLE documentattachments (
+	id int(11) NOT NULL AUTO_INCREMENT,
+	docid int(11) NOT NULL,
+	filename varchar(255) NOT NULL,
+	contenttype varchar(255) NOT NULL,
+	md5sum varchar(32) NOT NULL,
+	main smallint DEFAULT 1 NOT NULL,
+	PRIMARY KEY (id),
+	INDEX md5sum (md5sum),
+	UNIQUE KEY docid (docid, md5sum),
+	FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table receiptcontents
+#
+CREATE TABLE receiptcontents (
+	docid int(11) 		NOT NULL,
+	itemid 			TINYINT NOT NULL DEFAULT '0',
+	value decimal(9,2) 	NOT NULL DEFAULT '0',
+	description text 	NOT NULL DEFAULT '',
+	regid int(11)		NOT NULL DEFAULT '0',
+	INDEX docid (docid),
+	INDEX regid (regid),
+	FOREIGN KEY receiptcontents_docid_fk (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table  invoicecontents
+#
+CREATE TABLE invoicecontents (
+	docid int(11) NOT NULL,
+	itemid smallint NOT NULL DEFAULT '0',
+	value decimal(12,5) NOT NULL DEFAULT '0',
+	pdiscount decimal(4,2) NOT NULL DEFAULT '0',
+	vdiscount decimal(9,2) NOT NULL DEFAULT '0',
+	taxid int(11) NOT NULL DEFAULT '0',
+	prodid varchar(255) NOT NULL DEFAULT '',
+	content varchar(16) NOT NULL DEFAULT '',
+	count decimal(9,2) NOT NULL DEFAULT '0',
+	description text NOT NULL DEFAULT '',
+	tariffid int(11) NOT NULL DEFAULT '0',
+	INDEX docid (docid),
+	FOREIGN KEY invoicecontents_docid_fk (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table debitnotecontents
+#
+CREATE TABLE debitnotecontents (
+	id int(11) NOT NULL auto_increment,
+	docid int(11) NOT NULL,
+	itemid smallint NOT NULL DEFAULT '0',
+	value decimal(9,2) NOT NULL DEFAULT '0',
+	description text NOT NULL DEFAULT '',
+	PRIMARY KEY (id),
+	UNIQUE KEY docid (docid, itemid),
+	FOREIGN KEY debitnotecontents_docid_fk (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table  assignments
 #
 CREATE TABLE assignments (
@@ -421,13 +558,15 @@ CREATE TABLE assignments (
   numberplanid int(11) DEFAULT NULL,
   attribute varchar(255) DEFAULT NULL,
   recipient_address_id int(11),
+  docid int(11) DEFAULT NULL,
   PRIMARY KEY (id),
   INDEX tariffid (tariffid),
   INDEX customerid (customerid),
   INDEX numberplanid (numberplanid),
   FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY recipient_address_id_fk2(recipient_address_id) REFERENCES addresses(id) ON DELETE SET NULL ON UPDATE CASCADE
+  FOREIGN KEY recipient_address_id_fk2(recipient_address_id) REFERENCES addresses(id) ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY assignments_docid_fk(docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1199,140 +1338,6 @@ CREATE TABLE taxes (
     validto int(11) NOT NULL DEFAULT '0',
 	reversecharge tinyint(1) NOT NULL DEFAULT '0',
     PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table documents
-#
-CREATE TABLE documents (
-	id int(11) NOT NULL auto_increment,
-	type tinyint NOT NULL DEFAULT '0',
-	number int(11) NOT NULL DEFAULT '0',
-	numberplanid int(11) NOT NULL DEFAULT '0',
-	extnumber varchar(255) NOT NULL DEFAULT '',
-	cdate int(11) NOT NULL DEFAULT '0',
-	sdate int(11) NOT NULL DEFAULT '0',
-	customerid int(11) NOT NULL DEFAULT '0',
-	userid int(11) NOT NULL DEFAULT '0',
-	divisionid int(11) NOT NULL DEFAULT '0',
-	name varchar(255) NOT NULL DEFAULT '',
-	address varchar(255) NOT NULL DEFAULT '',
-	zip varchar(10) NULL DEFAULT NULL,
-	city varchar(32) NULL DEFAULT NULL,
-	countryid int(11) NOT NULL DEFAULT '0',
-	ten varchar(16) NOT NULL DEFAULT '',
-	ssn varchar(11) NOT NULL DEFAULT '',
-	paytime smallint NOT NULL DEFAULT '0',
-	paytype smallint DEFAULT NULL,
-	closed tinyint(1) NOT NULL DEFAULT '0',
-	reference int(11) NOT NULL DEFAULT '0',
-	reason varchar(255) NOT NULL DEFAULT '',
-	div_name text NOT NULL DEFAULT '',
-	div_shortname text NOT NULL DEFAULT '',
-	div_address varchar(255) NOT NULL DEFAULT '',
-	div_city varchar(255) NOT NULL DEFAULT '',
-	div_zip varchar(255) NOT NULL DEFAULT '',
-	div_countryid int(11) NOT NULL DEFAULT '0',
-	div_ten varchar(255) NOT NULL DEFAULT '',
-	div_regon varchar(255) NOT NULL DEFAULT '',
-	div_account varchar(48) NOT NULL DEFAULT '',
-	div_inv_header text NOT NULL DEFAULT '',
-	div_inv_footer text NOT NULL DEFAULT '',
-	div_inv_author text NOT NULL DEFAULT '',
-	div_inv_cplace text NOT NULL DEFAULT '',
-	fullnumber varchar(50) DEFAULT NULL,
-	cancelled smallint DEFAULT 0 NOT NULL,
-	published tinyint(1) NOT NULL DEFAULT 0,
-	cuserid int(11) NOT NULL DEFAULT '0',
-	recipient_address_id int(11),
-	PRIMARY KEY (id),
-	INDEX cdate (cdate),
-	INDEX numberplanid (numberplanid),
-	INDEX customerid (customerid),
-	INDEX closed (closed),
-	INDEX reference (reference),
-	FOREIGN KEY recipient_address_id_fk(recipient_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table documentcontents
-#
-CREATE TABLE documentcontents (
-	docid int(11) NOT NULL,
-	title text DEFAULT '' NOT NULL,
-	fromdate int(11) DEFAULT '0' NOT NULL,
-	todate int(11) DEFAULT '0' NOT NULL,
-	description text DEFAULT '' NOT NULL,
-	INDEX fromdate (fromdate),
-	INDEX todate (todate),
-	UNIQUE KEY docid (docid),
-	FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table documentattachments
-#
-CREATE TABLE documentattachments (
-	id int(11) NOT NULL AUTO_INCREMENT,
-	docid int(11) NOT NULL,
-	filename varchar(255) NOT NULL,
-	contenttype varchar(255) NOT NULL,
-	md5sum varchar(32) NOT NULL,
-	main smallint DEFAULT 1 NOT NULL,
-	PRIMARY KEY (id),
-	INDEX md5sum (md5sum),
-	UNIQUE KEY docid (docid, md5sum),
-	FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table receiptcontents
-#
-CREATE TABLE receiptcontents (
-	docid int(11) 		NOT NULL DEFAULT '0',
-	itemid 			TINYINT NOT NULL DEFAULT '0',
-	value decimal(9,2) 	NOT NULL DEFAULT '0',
-	description text 	NOT NULL DEFAULT '',
-	regid int(11)		NOT NULL DEFAULT '0',
-	INDEX docid (docid),
-	INDEX regid (regid)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table  invoicecontents
-#
-CREATE TABLE invoicecontents (
-  docid int(11) NOT NULL DEFAULT '0',
-  itemid smallint NOT NULL DEFAULT '0',
-  value decimal(12,5) NOT NULL DEFAULT '0',
-  pdiscount decimal(4,2) NOT NULL DEFAULT '0',
-  vdiscount decimal(9,2) NOT NULL DEFAULT '0',
-  taxid int(11) NOT NULL DEFAULT '0',
-  prodid varchar(255) NOT NULL DEFAULT '',
-  content varchar(16) NOT NULL DEFAULT '',
-  count decimal(9,2) NOT NULL DEFAULT '0',
-  description text NOT NULL DEFAULT '',
-  tariffid int(11) NOT NULL DEFAULT '0',
-  INDEX docid (docid)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table debitnotecontents
-#
-CREATE TABLE debitnotecontents (
-	id int(11) NOT NULL auto_increment,
-	docid int(11) NOT NULL DEFAULT '0',
-	itemid smallint NOT NULL DEFAULT '0',
-        value decimal(9,2) NOT NULL DEFAULT '0',
-	description text NOT NULL DEFAULT '',
-	PRIMARY KEY (id),
-	UNIQUE KEY docid (docid, itemid)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -3043,4 +3048,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017092800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017092900');

@@ -236,12 +236,12 @@ class LMS
                 'location_boroughs', 'location_cities', 'location_street_types', 'location_streets',
                 'users', 'customers', 'customergroups', 'hosts', 'networks',
                 'nodes', 'numberplans', 'tariffs', 'tarifftags', 'promotions', 'promotionschemas',
-                'assignments', 'countries', 'addresses', 'customer_addresses',
+                'documents', 'assignments', 'countries', 'addresses', 'customer_addresses',
                 'rtqueues', 'rttickets', 'rtmessages', 'domains',
                 'cashsources', 'sourcefiles', 'ewx_channels', 'countries',
                 'divisions', 'netdeviceproducers', 'netnodes', 'invprojects',
                 'netdevicemodels', 'netradiosectors', 'voip_rule_groups', 'voip_prefix_groups',
-                'voipaccounts', 'voip_rules', 'voip_tariffs', 'documents', 'rtattachments',
+                'voipaccounts', 'voip_rules', 'voip_tariffs', 'rtattachments',
                 'rtcategories', 'netdevices', 'logtransactions', 'logmessages', 'usergroups',
             );
 

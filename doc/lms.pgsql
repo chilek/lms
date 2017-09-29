@@ -273,6 +273,149 @@ CREATE TABLE customer_addresses (
     UNIQUE(customer_id, address_id)
 );
 
+/* --------------------------------------------------------
+  Structure of table "documents"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS documents_id_seq;
+CREATE SEQUENCE documents_id_seq;
+DROP TABLE IF EXISTS documents CASCADE;
+CREATE TABLE documents (
+	id integer DEFAULT nextval('documents_id_seq'::text) NOT NULL,
+	type smallint		DEFAULT 0 NOT NULL,
+	number integer		DEFAULT 0 NOT NULL,
+	numberplanid integer	DEFAULT 0 NOT NULL,
+	extnumber varchar(255)	DEFAULT '' NOT NULL,
+	cdate integer		DEFAULT 0 NOT NULL,
+	sdate integer		DEFAULT 0 NOT NULL,
+	customerid integer	DEFAULT 0 NOT NULL,
+	userid integer		DEFAULT 0 NOT NULL,
+	divisionid integer	DEFAULT 0 NOT NULL,
+	name varchar(255)	DEFAULT '' NOT NULL,
+	address varchar(255)	DEFAULT '' NOT NULL,
+	zip varchar(10)		NULL DEFAULT NULL,
+	city varchar(32)	NULL DEFAULT NULL,
+	countryid integer	DEFAULT 0 NOT NULL,
+	ten varchar(16)		DEFAULT '' NOT NULL,
+	ssn varchar(11)		DEFAULT '' NOT NULL,
+	paytime smallint	DEFAULT 0 NOT NULL,
+	paytype smallint	DEFAULT NULL,
+	closed smallint		DEFAULT 0 NOT NULL,
+	reference integer	DEFAULT 0 NOT NULL,
+	reason varchar(255)	DEFAULT '' NOT NULL,
+	div_name text		DEFAULT '' NOT NULL,
+	div_shortname text	DEFAULT '' NOT NULL,
+	div_address varchar(255) DEFAULT '' NOT NULL,
+	div_city varchar(255)	DEFAULT '' NOT NULL,
+	div_zip varchar(255)	DEFAULT '' NOT NULL,
+	div_countryid integer	DEFAULT 0 NOT NULL,
+	div_ten varchar(255)	DEFAULT '' NOT NULL,
+	div_regon varchar(255)	DEFAULT '' NOT NULL,
+	div_account varchar(48)	DEFAULT '' NOT NULL,
+	div_inv_header text	DEFAULT '' NOT NULL,
+	div_inv_footer text	DEFAULT '' NOT NULL,
+	div_inv_author text	DEFAULT '' NOT NULL,
+	div_inv_cplace text	DEFAULT '' NOT NULL,
+	fullnumber varchar(50)	DEFAULT NULL,
+	cancelled smallint	DEFAULT 0 NOT NULL,
+	published smallint	DEFAULT 0 NOT NULL,
+	cuserid integer		DEFAULT 0 NOT NULL,
+	recipient_address_id integer DEFAULT NULL
+		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	PRIMARY KEY (id)
+);
+CREATE INDEX documents_cdate_idx ON documents(cdate);
+CREATE INDEX documents_numberplanid_idx ON documents(numberplanid);
+CREATE INDEX documents_customerid_idx ON documents(customerid);
+CREATE INDEX documents_closed_idx ON documents(closed);
+CREATE INDEX documents_reference_idx ON documents(reference);
+
+/* --------------------------------------------------------
+  Structure of table "documentcontents"
+-------------------------------------------------------- */
+DROP TABLE IF EXISTS documentcontents CASCADE;
+CREATE TABLE documentcontents (
+	docid integer		NOT NULL
+		REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	title text 		DEFAULT '' NOT NULL,
+	fromdate integer 	DEFAULT 0 NOT NULL,
+	todate integer 		DEFAULT 0 NOT NULL,
+	description text 	DEFAULT '' NOT NULL,
+	UNIQUE (docid)
+);
+CREATE INDEX documentcontents_todate_idx ON documentcontents (todate);
+CREATE INDEX documentcontents_fromdate_idx ON documentcontents (fromdate);
+
+/* --------------------------------------------------------
+  Structure of table "documentattachments"
+-------------------------------------------------------- */
+DROP SEQUENCE IF EXISTS documentattachments_id_seq;
+CREATE SEQUENCE documentattachments_id_seq;
+DROP TABLE IF EXISTS documentattachments CASCADE;
+CREATE TABLE documentattachments (
+	id integer DEFAULT nextval('documentattachments_id_seq'::text) NOT NULL,
+	docid integer NOT NULL
+		REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	filename varchar(255) NOT NULL,
+	contenttype varchar(255) NOT NULL,
+	md5sum varchar(32) NOT NULL,
+	main smallint DEFAULT 1 NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (docid, md5sum)
+);
+CREATE INDEX documentattachments_md5sum_idx ON documentattachments (md5sum);
+
+/* --------------------------------------------------------
+  Structure of table "receiptcontents"
+-------------------------------------------------------- */
+DROP TABLE IF EXISTS receiptcontents CASCADE;
+CREATE TABLE receiptcontents (
+	docid integer		NOT NULL
+		CONSTRAINT receiptcontents_docid_fk REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	itemid smallint		DEFAULT 0 NOT NULL,
+	value numeric(9,2)	DEFAULT 0 NOT NULL,
+	regid integer		DEFAULT 0 NOT NULL,
+	description text 	DEFAULT '' NOT NULL
+);
+CREATE INDEX receiptcontents_docid_idx ON receiptcontents(docid);
+CREATE INDEX receiptcontents_regid_idx ON receiptcontents(regid);
+
+/* --------------------------------------------------------
+  Structure of table "invoicecontents"
+-------------------------------------------------------- */
+DROP TABLE IF EXISTS invoicecontents CASCADE;
+CREATE TABLE invoicecontents (
+	docid integer 		NOT NULL
+		CONSTRAINT invoicecontents_docid_fk REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	itemid smallint		DEFAULT 0 NOT NULL,
+	value numeric(12,5) 	DEFAULT 0 NOT NULL,
+	taxid integer 		DEFAULT 0 NOT NULL,
+	prodid varchar(255) 	DEFAULT '' NOT NULL,
+	content varchar(16) 	DEFAULT '' NOT NULL,
+	count numeric(9,2) 	DEFAULT 0 NOT NULL,
+	description text 	DEFAULT '' NOT NULL,
+	tariffid integer 	DEFAULT 0 NOT NULL,
+	pdiscount numeric(4,2) DEFAULT 0 NOT NULL,
+	vdiscount numeric(9,2) DEFAULT 0 NOT NULL
+);
+CREATE INDEX invoicecontents_docid_idx ON invoicecontents (docid);
+
+/* --------------------------------------------------------
+  Structure of table "debitnotecontents"
+-------------------------------------------------------- */
+DROP TABLE IF EXISTS debitnotecontents CASCADE;
+DROP SEQUENCE IF EXISTS debitnotecontents_id_seq;
+CREATE SEQUENCE debitnotecontents_id_seq;
+CREATE TABLE debitnotecontents (
+	id integer 		DEFAULT nextval('debitnotecontents_id_seq'::text) NOT NULL,
+	docid integer           NOT NULL
+		CONSTRAINT debitnotecontents_docid_fk REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	itemid smallint         DEFAULT 0 NOT NULL,
+	value numeric(9,2)      DEFAULT 0 NOT NULL,
+	description text 	DEFAULT '' NOT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT debitnotecontents_docid_key UNIQUE (docid, itemid)
+);
+
 /* ----------------------------------------------------
  Structure of table "assignments"
 ---------------------------------------------------*/
@@ -300,6 +443,8 @@ CREATE TABLE assignments (
 	attribute varchar(255) DEFAULT NULL,
 	recipient_address_id integer DEFAULT NULL
 		CONSTRAINT recipient_address_id_fk2 REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	docid integer DEFAULT NULL
+		CONSTRAINT assignments_docid_fk REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id)
 );
 CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
@@ -1142,145 +1287,6 @@ CREATE TABLE taxes (
 );
 
 /* --------------------------------------------------------
-  Structure of table "documents"
--------------------------------------------------------- */
-DROP SEQUENCE IF EXISTS documents_id_seq;
-CREATE SEQUENCE documents_id_seq;
-DROP TABLE IF EXISTS documents CASCADE;
-CREATE TABLE documents (
-	id integer DEFAULT nextval('documents_id_seq'::text) NOT NULL,
-	type smallint		DEFAULT 0 NOT NULL,
-	number integer		DEFAULT 0 NOT NULL,
-	numberplanid integer	DEFAULT 0 NOT NULL,
-	extnumber varchar(255)	DEFAULT '' NOT NULL,
-	cdate integer		DEFAULT 0 NOT NULL,
-	sdate integer		DEFAULT 0 NOT NULL,
-	customerid integer	DEFAULT 0 NOT NULL,
-	userid integer		DEFAULT 0 NOT NULL,
-	divisionid integer	DEFAULT 0 NOT NULL,
-	name varchar(255)	DEFAULT '' NOT NULL,
-	address varchar(255)	DEFAULT '' NOT NULL,
-	zip varchar(10)		NULL DEFAULT NULL,
-	city varchar(32)	NULL DEFAULT NULL,
-	countryid integer	DEFAULT 0 NOT NULL,
-	ten varchar(16)		DEFAULT '' NOT NULL,
-	ssn varchar(11)		DEFAULT '' NOT NULL,
-	paytime smallint	DEFAULT 0 NOT NULL,
-	paytype smallint	DEFAULT NULL,
-	closed smallint		DEFAULT 0 NOT NULL,
-	reference integer	DEFAULT 0 NOT NULL,
-	reason varchar(255)	DEFAULT '' NOT NULL,
-	div_name text		DEFAULT '' NOT NULL,
-	div_shortname text	DEFAULT '' NOT NULL,
-	div_address varchar(255) DEFAULT '' NOT NULL,
-	div_city varchar(255)	DEFAULT '' NOT NULL,
-	div_zip varchar(255)	DEFAULT '' NOT NULL,
-	div_countryid integer	DEFAULT 0 NOT NULL,
-	div_ten varchar(255)	DEFAULT '' NOT NULL,
-	div_regon varchar(255)	DEFAULT '' NOT NULL,
-	div_account varchar(48)	DEFAULT '' NOT NULL,
-	div_inv_header text	DEFAULT '' NOT NULL,
-	div_inv_footer text	DEFAULT '' NOT NULL,
-	div_inv_author text	DEFAULT '' NOT NULL,
-	div_inv_cplace text	DEFAULT '' NOT NULL,
-	fullnumber varchar(50)	DEFAULT NULL,
-	cancelled smallint	DEFAULT 0 NOT NULL,
-	published smallint	DEFAULT 0 NOT NULL,
-	cuserid integer		DEFAULT 0 NOT NULL,
-	recipient_address_id integer DEFAULT NULL
-        REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	PRIMARY KEY (id)
-);
-CREATE INDEX documents_cdate_idx ON documents(cdate);
-CREATE INDEX documents_numberplanid_idx ON documents(numberplanid);
-CREATE INDEX documents_customerid_idx ON documents(customerid);
-CREATE INDEX documents_closed_idx ON documents(closed);
-CREATE INDEX documents_reference_idx ON documents(reference);
-
-/* --------------------------------------------------------
-  Structure of table "documentcontents"
--------------------------------------------------------- */
-DROP TABLE IF EXISTS documentcontents CASCADE;
-CREATE TABLE documentcontents (
-	docid integer		NOT NULL
-		REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	title text 		DEFAULT '' NOT NULL,
-	fromdate integer 	DEFAULT 0 NOT NULL,
-	todate integer 		DEFAULT 0 NOT NULL,
-	description text 	DEFAULT '' NOT NULL,
-	UNIQUE (docid)
-);
-CREATE INDEX documentcontents_todate_idx ON documentcontents (todate);
-CREATE INDEX documentcontents_fromdate_idx ON documentcontents (fromdate);
-
-/* --------------------------------------------------------
-  Structure of table "documentattachments"
--------------------------------------------------------- */
-DROP SEQUENCE IF EXISTS documentattachments_id_seq;
-CREATE SEQUENCE documentattachments_id_seq;
-DROP TABLE IF EXISTS documentattachments CASCADE;
-CREATE TABLE documentattachments (
-	id integer DEFAULT nextval('documentattachments_id_seq'::text) NOT NULL,
-	docid integer NOT NULL
-		REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	filename varchar(255) NOT NULL,
-	contenttype varchar(255) NOT NULL,
-	md5sum varchar(32) NOT NULL,
-	main smallint DEFAULT 1 NOT NULL,
-	PRIMARY KEY (id),
-	UNIQUE (docid, md5sum)
-);
-CREATE INDEX documentattachments_md5sum_idx ON documentattachments (md5sum);
-
-/* --------------------------------------------------------
-  Structure of table "receiptcontents"
--------------------------------------------------------- */
-DROP TABLE IF EXISTS receiptcontents CASCADE;
-CREATE TABLE receiptcontents (
-	docid integer		DEFAULT 0 NOT NULL,
-	itemid smallint		DEFAULT 0 NOT NULL,
-	value numeric(9,2)	DEFAULT 0 NOT NULL,
-	regid integer		DEFAULT 0 NOT NULL,
-	description text 	DEFAULT '' NOT NULL
-);
-CREATE INDEX receiptcontents_docid_idx ON receiptcontents(docid);
-CREATE INDEX receiptcontents_regid_idx ON receiptcontents(regid);
-
-/* --------------------------------------------------------
-  Structure of table "invoicecontents"
--------------------------------------------------------- */
-DROP TABLE IF EXISTS invoicecontents CASCADE;
-CREATE TABLE invoicecontents (
-	docid integer 		DEFAULT 0 NOT NULL,
-	itemid smallint		DEFAULT 0 NOT NULL,
-	value numeric(12,5) 	DEFAULT 0 NOT NULL,
-	taxid integer 		DEFAULT 0 NOT NULL,
-	prodid varchar(255) 	DEFAULT '' NOT NULL,
-	content varchar(16) 	DEFAULT '' NOT NULL,
-	count numeric(9,2) 	DEFAULT 0 NOT NULL,
-	description text 	DEFAULT '' NOT NULL,
-	tariffid integer 	DEFAULT 0 NOT NULL,
-	pdiscount numeric(4,2) DEFAULT 0 NOT NULL,
-	vdiscount numeric(9,2) DEFAULT 0 NOT NULL
-);
-CREATE INDEX invoicecontents_docid_idx ON invoicecontents (docid);
-
-/* --------------------------------------------------------
-  Structure of table "debitnotecontents"
--------------------------------------------------------- */
-DROP TABLE IF EXISTS debitnotecontents CASCADE;
-DROP SEQUENCE IF EXISTS debitnotecontents_id_seq;
-CREATE SEQUENCE debitnotecontents_id_seq;
-CREATE TABLE debitnotecontents (
-	id integer 		DEFAULT nextval('debitnotecontents_id_seq'::text) NOT NULL,
-        docid integer           DEFAULT 0 NOT NULL,
-	itemid smallint         DEFAULT 0 NOT NULL,
-	value numeric(9,2)      DEFAULT 0 NOT NULL,
-        description text 	DEFAULT '' NOT NULL,
-	PRIMARY KEY (id),
-	CONSTRAINT debitnotecontents_docid_key UNIQUE (docid, itemid)
-);
-/* --------------------------------------------------------
   Structure of table "numberplanassignments"
 -------------------------------------------------------- */
 DROP SEQUENCE IF EXISTS numberplanassignments_id_seq;
@@ -1762,10 +1768,9 @@ CREATE TABLE events (
 		REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	address_id integer DEFAULT NULL
 		CONSTRAINT events_address_id_fk REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE CASCADE,
-	ticketid integer DEFAULT NULL,
-	PRIMARY KEY (id),
-	CONSTRAINT event_ticketid_rttickets_id_fk
-		FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON DELETE SET NULL ON UPDATE CASCADE
+	ticketid integer DEFAULT NULL
+		CONSTRAINT events_ticketid_fk REFERENCES rttickets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	PRIMARY KEY (id)
 );
 CREATE INDEX events_date_idx ON events(date);
 CREATE INDEX events_nodeid_idx ON events(nodeid);
@@ -3132,6 +3137,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017092800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017092900');
 
 COMMIT;
