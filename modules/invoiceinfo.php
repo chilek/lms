@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if ($doc = $DB->GetRow('SELECT number, cdate, template, extnumber, paytime, paytype, customerid,
+if ($doc = $DB->GetRow('SELECT number, cdate, numberplans.template, extnumber, paytime, paytype, customerid,
 		documents.type
 	FROM documents
 	LEFT JOIN numberplans ON (numberplanid = numberplans.id)

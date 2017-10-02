@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -68,7 +68,7 @@ if(isset($_GET['type']) && $_GET['type'] == 'cash')
 	if($list = $DB->GetAll(
     		'SELECT d.id AS id, value, number, cdate, customerid, 
 		d.name AS customer, address, zip, city, ten, ssn, userid,
-		template, extnumber, receiptcontents.description, 
+		numberplans.template, extnumber, receiptcontents.description, 
 		cashregs.name AS cashreg
 		FROM documents d
 		LEFT JOIN receiptcontents ON (d.id = docid)
@@ -225,7 +225,8 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 		ORDER BY cdate, docid', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));
 
 	// get documents data
-	$docs = $DB->GetAllByKey('SELECT documents.id AS id, number, cdate, customerid, userid, name, address, zip, city, ten, ssn, template, reference, extnumber, paytime, closed
+	$docs = $DB->GetAllByKey('SELECT documents.id AS id, number, cdate, customerid, userid, name, address, zip, city, ten, ssn,
+			numberplans.template, reference, extnumber, paytime, closed
 		FROM documents 
 	        LEFT JOIN numberplans ON numberplanid = numberplans.id
 		WHERE (type = ? OR type = ?) AND (cdate BETWEEN ? AND ?) ', 'id', array(DOC_INVOICE, DOC_CNOTE, $unixfrom, $unixto));

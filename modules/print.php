@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -726,7 +726,7 @@ switch($type)
 
 		if($list = $DB->GetAll(
 	    		'SELECT d.id AS id, SUM(value) AS value, number, cdate, customerid,
-				d.name, address, zip, city, template, extnumber, closed,
+				d.name, address, zip, city, numberplans.template, extnumber, closed,
 				MIN(description) AS title, COUNT(*) AS posnumber
 			FROM documents d
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
@@ -737,7 +737,7 @@ switch($type)
 					SELECT 1 FROM customerassignments a
 					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 					WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)
-			GROUP BY d.id, number, cdate, customerid, d.name, address, zip, city, template, extnumber, closed
+			GROUP BY d.id, number, cdate, customerid, d.name, address, zip, city, numberplans.template, extnumber, closed
 			ORDER BY cdate, d.id', array(DOC_RECEIPT)))
 		{
 			foreach($list as $idx => $row)

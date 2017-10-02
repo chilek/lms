@@ -28,7 +28,7 @@
 // Extending LMS class for Userpanel-specific functions
 class ULMS extends LMS {
 	public function docnumber($id) {
-		if($doc = $this->DB->GetRow('SELECT number, cdate, template
+		if($doc = $this->DB->GetRow('SELECT number, cdate, numberplans.template
 					FROM documents
 					LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 					WHERE documents.id = ?', array($id)))

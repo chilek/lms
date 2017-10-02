@@ -60,12 +60,12 @@ function GetCustomerCovenants($id)
 			if($row['reference'])
 			{
 				// get cnotes values if those values decreases invoice value
-				if($cnotes = $DB->GetAll('SELECT SUM(value) AS value, cdate, number, template, d.customerid
+				if($cnotes = $DB->GetAll('SELECT SUM(value) AS value, cdate, number, numberplans.template, d.customerid
 						FROM cash
 						LEFT JOIN documents d ON (docid = d.id)
 						LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 						WHERE reference = ? AND d.closed = 0
-						GROUP BY docid, cdate, number, template, d.customerid',
+						GROUP BY docid, cdate, number, numberplans.template, d.customerid',
 						array($row['id'])))
 				{
 					$invoicelist[$idx]['number'] .= ' (';
@@ -118,12 +118,12 @@ function GetCustomerNotes($id)
 
 	if(!$id) return NULL;
 
-	if($invoicelist = $DB->GetAll('SELECT docid AS id, cdate, SUM(value) AS value, number, template, documents.customerid
+	if($invoicelist = $DB->GetAll('SELECT docid AS id, cdate, SUM(value) AS value, number, numberplans.template, documents.customerid
 			FROM cash
 			LEFT JOIN documents ON (docid = documents.id)
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 			WHERE cash.customerid = ? AND documents.type = ? AND documents.closed = 0
-			GROUP BY docid, cdate, number, template, documents.customerid
+			GROUP BY docid, cdate, number, numberplans.template, documents.customerid
 			HAVING SUM(value) > 0
 			ORDER BY cdate DESC', array($id, DOC_CNOTE)))
 	{
@@ -386,13 +386,13 @@ switch($action)
 
 			foreach($_POST['marks'] as $id)
 			{
-				$row = $DB->GetRow('SELECT SUM(value) AS value, number, cdate, template, documents.type AS type, documents.customerid,
+				$row = $DB->GetRow('SELECT SUM(value) AS value, number, cdate, numberplans.template, documents.type AS type, documents.customerid,
 						    (SELECT dd.id FROM documents dd WHERE dd.reference = docid AND dd.closed = 0 LIMIT 1) AS reference
 						    FROM cash 
 						    LEFT JOIN documents ON (docid = documents.id)
 						    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 						    WHERE docid = ?
-						    GROUP BY docid, number, cdate, template, documents.type, documents.customerid', array($id));
+						    GROUP BY docid, number, cdate, numberplans.template, documents.type, documents.customerid', array($id));
 
 				$itemdata['value'] = $receipt['type']=='in' ? -$row['value'] : $row['value'];
 				$itemdata['docid'] = $id;
@@ -423,13 +423,13 @@ switch($action)
 				if($row['reference'] && $receipt['type']=='in')
 				{
 					// get cnotes values if those values decreases invoice value
-					if($cnotes = $DB->GetAll('SELECT SUM(value) AS value, docid, cdate, number, template,
+					if($cnotes = $DB->GetAll('SELECT SUM(value) AS value, docid, cdate, number, numberplans.template,
 							d.customerid
 						FROM cash
 						LEFT JOIN documents d ON (docid = d.id)
 						LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 						WHERE reference = ? AND d.closed = 0
-						GROUP BY docid, cdate, number, template, d.customerid',
+						GROUP BY docid, cdate, number, numberplans.template, d.customerid',
 						array($id)))
 					{
 						$itemdata['description'] .= ' (';

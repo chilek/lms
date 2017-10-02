@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -34,8 +34,8 @@ if(isset($_GET['id']))
 	        die;
 	}			
 
-	$receipt = $DB->GetRow('SELECT documents.*, template 
-			    FROM documents 
+	$receipt = $DB->GetRow('SELECT documents.*, numberplans.template
+			    FROM documents
 			    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 			    WHERE documents.id = ? AND type = ?', array($_GET['id'], DOC_RECEIPT));
 

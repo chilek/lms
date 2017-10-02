@@ -45,7 +45,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'confirm')
 
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'document.inc.php');
 
-$document = $DB->GetRow('SELECT documents.id AS id, closed, type, number, template,
+$document = $DB->GetRow('SELECT documents.id AS id, closed, type, number, numberplans.template,
 	cdate, sdate, cuserid, numberplanid, title, fromdate, todate, description, divisionid, documents.customerid
 	FROM documents
 	JOIN docrights r ON (r.doctype = documents.type)

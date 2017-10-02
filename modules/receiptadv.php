@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -36,10 +36,10 @@ if(isset($_GET['id']))
 	        die;
 	}			
 
-	$record = $DB->GetRow('SELECT documents.*, template 
-			    FROM documents 
+	$record = $DB->GetRow('SELECT documents.*, numberplans.template
+			    FROM documents
 			    LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-			    WHERE documents.id = ? AND type = ? AND closed = 0', 
+			    WHERE documents.id = ? AND type = ? AND closed = 0',
 			    array($id, DOC_RECEIPT));
 
 	if(!$record)
