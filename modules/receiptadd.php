@@ -30,14 +30,14 @@ function GetCustomerCovenants($id)
 
 	if(!$id) return NULL;
 
-	if($invoicelist = $DB->GetAllByKey('SELECT docid AS id, cdate, SUM(value)*-1 AS value, number, template,
+	if($invoicelist = $DB->GetAllByKey('SELECT docid AS id, cdate, SUM(value)*-1 AS value, number, numberplans.template,
 				d.customerid, reference AS ref,
 				(SELECT dd.id FROM documents dd WHERE dd.reference = docid AND dd.closed = 0 LIMIT 1) AS reference
 			FROM cash
 			LEFT JOIN documents d ON (docid = d.id)
 			LEFT JOIN numberplans ON (numberplanid = numberplans.id)
 			WHERE cash.customerid = ? AND d.type IN (?,?) AND d.closed = 0
-			GROUP BY docid, cdate, number, template, reference, d.customerid
+			GROUP BY docid, cdate, number, numberplans.template, reference, d.customerid
 			HAVING SUM(value) < 0
 			ORDER BY cdate DESC', 'id', array($id, DOC_INVOICE, DOC_CNOTE)))
 	{
@@ -89,7 +89,7 @@ function GetCustomerCovenants($id)
 		$invoicelist = array();
 
 	if($notelist = $DB->GetAllByKey('
-		SELECT d.id, d.cdate, number, template, d.customerid, SUM(value) AS value
+		SELECT d.id, d.cdate, number, np.template, d.customerid, SUM(value) AS value
 		FROM documents d
 		LEFT JOIN debitnotecontents n ON (n.docid = d.id)
 		LEFT JOIN numberplans np ON (numberplanid = np.id)
