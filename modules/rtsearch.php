@@ -108,13 +108,14 @@ function RTSearch($search, $order='createtime,desc')
 		$where = ' WHERE '.implode($op, $where);
 
 	if($result = $DB->GetAll('SELECT DISTINCT t.id, t.customerid, t.subject, t.state, t.owner AS ownerid,
-			vusers.name AS ownername, CASE WHEN customerid = 0 THEN t.requestor ELSE '
+			vusers.name AS ownername, rtqueues.name as name, CASE WHEN customerid = 0 THEN t.requestor ELSE '
 			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').'
 			END AS requestor, t.requestor AS req, t.createtime,
 			(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified, t.deleted, t.deltime
 			FROM rttickets t
 			LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
 			LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
+			LEFT JOIN rtqueues ON (rtqueues.id = t.queueid)
 			LEFT JOIN vusers ON (t.owner = vusers.id)
 			LEFT JOIN customers ON (t.customerid = customers.id)'
 			.(isset($where) ? $where : '')
