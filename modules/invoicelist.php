@@ -98,7 +98,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 		$where .= ' AND closed = 0';
 
 	if($res = $DB->Exec('SELECT d.id AS id, number, cdate, type,
-			d.customerid, d.name, address, zip, city, countries.name AS country, template, closed, cancelled, published,
+			d.customerid, d.name, address, zip, city, countries.name AS country, numberplans.template, closed, cancelled, published,
 			CASE reference WHEN 0 THEN
 			    SUM(a.value*a.count) 
 			ELSE
@@ -130,7 +130,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 			            SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group['group']).'
 			            AND customerid = d.customerid)' : '')
 			.' GROUP BY d.id, number, cdate, d.customerid, 
-			d.name, address, zip, city, template, closed, type, reference, countries.name, cancelled, published, sendinvoices '
+			d.name, address, zip, city, numberplans.template, closed, type, reference, countries.name, cancelled, published, sendinvoices '
 			.(isset($having) ? $having : '')
 			.$sqlord.' '.$direction))
 	{
