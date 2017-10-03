@@ -686,7 +686,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			   $props['source'] = $ticket['source'];
 
         if($ticket['state'] != $props['state'] && isset($props['state'])) {
-            $note .= trans('Ticket\'s state has been changed from $a to $b.', $RT_STATES[$ticket['state']], $RT_STATES[$props['state']]) .'<br>';
+            $note .= trans('Ticket\'s state has been changed from $a to $b.', $RT_STATES[$ticket['state']]['label'], $RT_STATES[$props['state']]['label']) .'<br>';
             $type = $type | RTMESSAGE_STATE_CHANGE;
         }else
             $props['state'] = $ticket['state'];
