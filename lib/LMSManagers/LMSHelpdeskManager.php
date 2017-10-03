@@ -140,8 +140,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			LEFT JOIN rtqueues ON (rtqueues.id = t.queueid)
 			LEFT JOIN vaddresses as va ON (t.address_id = va.id)
 			LEFT JOIN (
-				SELECT COUNT(CASE WHEN closed = 0 THEN 1 ELSE 0 END) AS eventcountopened,
-					COUNT(CASE WHEN closed = 1 THEN 1 ELSE 0 END) AS eventcountclosed,
+				SELECT SUM(CASE WHEN closed = 0 THEN 1 ELSE 0 END) AS eventcountopened,
+					SUM(CASE WHEN closed = 1 THEN 1 ELSE 0 END) AS eventcountclosed,
 					ticketid FROM events
 				WHERE ticketid IS NOT NULL
 				GROUP BY ticketid
