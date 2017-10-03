@@ -128,37 +128,64 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			    CASE WHEN customerid = 0 THEN t.requestor ELSE '
                 . $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor,
 			    t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
-				(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified
-		    FROM rttickets t
-		    LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
-		    LEFT JOIN rtticketcategories tc ON (t.id = tc.ticketid)
-		    LEFT JOIN vusers ON (owner = vusers.id)
-		    LEFT JOIN customeraddressview c ON (t.customerid = c.id)
-		    LEFT JOIN vusers u ON (t.creatorid = u.id)
-		    LEFT JOIN rtqueues ON (rtqueues.id = t.queueid)
-		    LEFT JOIN vaddresses as va ON (t.address_id = va.id)
-		    WHERE 1=1 '
-                . (is_array($ids) ? ' AND t.queueid IN (' . implode(',', $ids) . ')' : ($ids != 0 ? ' AND t.queueid = ' . $ids : ''))
-                . (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
-                . $statefilter
-                . $ownerfilter
-                . $removedfilter
-                . ($sqlord != '' ? $sqlord . ' ' . $direction : ''))) {
-            foreach ($result as $idx => $ticket) {
-		$ticket['eventcountopened'] = $this->db->GetOne('SELECT COUNT(id) FROM events WHERE closed=0 AND ticketid = ?', array($ticket['id']));
-		$ticket['eventcountclosed'] = $this->db->GetOne('SELECT COUNT(id) FROM events WHERE closed=1 AND ticketid = ?', array($ticket['id']));
-		$ticket['delcount'] = $this->db->GetOne('SELECT COUNT(id) FROM rtmessages WHERE ticketid = ? AND deleted = 1 AND deltime != 0', array($ticket['id']));
-		if (!ConfigHelper::checkConfig('rt.hide_ticket_categories_in_ticket_row'))
-			$ticket['categories'] = $this->db->GetAll('SELECT r.categoryid,c.name,c.description,c,style FROM rtticketcategories r LEFT JOIN rtcategories c on r.categoryid = c.id  where r.ticketid = ? AND r.categoryid IN (SELECT categoryid FROM rtcategoryusers WHERE userid = ?)', array($ticket['id'],Auth::GetCurrentUser()));
-                //$ticket['requestoremail'] = preg_replace('/^.*<(.*@.*)>$/', '\1',$ticket['requestor']);
-                //$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
-                if (!$ticket['customerid'])
-                    list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['req'], "%[^<]<%[^>]");
-                else
-                    list($ticket['requestoremail']) = sscanf($ticket['req'], "<%[^>]");
-                $result[$idx] = $ticket;
-            }
-        }
+				(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified,
+				eventcountopened, eventcountclosed, delcount, tc2.categories
+			FROM rttickets t
+			LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
+			LEFT JOIN rtticketcategories tc ON (t.id = tc.ticketid)
+			LEFT JOIN vusers ON (owner = vusers.id)
+			LEFT JOIN customeraddressview c ON (t.customerid = c.id)
+			LEFT JOIN vusers u ON (t.creatorid = u.id)
+			LEFT JOIN rtqueues ON (rtqueues.id = t.queueid)
+			LEFT JOIN vaddresses as va ON (t.address_id = va.id)
+			LEFT JOIN (
+				SELECT COUNT(CASE WHEN closed = 0 THEN 1 ELSE 0 END) AS eventcountopened,
+					COUNT(CASE WHEN closed = 1 THEN 1 ELSE 0 END) AS eventcountclosed,
+					ticketid FROM events
+				WHERE ticketid IS NOT NULL
+				GROUP BY ticketid
+			) ev ON ev.ticketid = t.id
+			LEFT JOIN (
+				SELECT COUNT(id) AS delcount, ticketid FROM rtmessages
+				WHERE deleted = 1 AND deltime <> 0
+				GROUP BY ticketid
+			) dm ON dm.ticketid = t.id
+			LEFT JOIN (
+				SELECT ' . $this->db->GroupConcat('categoryid') . ' AS categories, ticketid
+				FROM rtticketcategories
+				GROUP BY ticketid
+			) tc2 ON tc2.ticketid = t.id
+			WHERE 1=1 '
+				. (is_array($ids) ? ' AND t.queueid IN (' . implode(',', $ids) . ')' : ($ids != 0 ? ' AND t.queueid = ' . $ids : ''))
+				. (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
+				. $statefilter
+				. $ownerfilter
+				. $removedfilter
+				. ($sqlord != '' ? $sqlord . ' ' . $direction : ''))) {
+			$ticket_categories = $this->db->GetAllByKey('SELECT c.id AS categoryid, c.name, c.description, c.style
+				FROM rtcategories c
+				JOIN rtcategoryusers cu ON cu.categoryid = c.id
+				WHERE cu.userid = ?', 'categoryid', array(Auth::GetCurrentUser()));
+			foreach ($result as $idx => $ticket) {
+				if (!ConfigHelper::checkConfig('rt.hide_ticket_categories_in_ticket_row')) {
+					$categories = explode(',', $ticket['categories']);
+					if (!empty($categories))
+						foreach ($categories as $idx2 => $categoryid)
+							if (isset($ticket_categories[$categoryid]))
+								$categories[$idx2] = $ticket_categories[$categoryid];
+							else
+								unset($categories[$idx2]);
+					$ticket['categories'] = $categories;
+				}
+				//$ticket['requestoremail'] = preg_replace('/^.*<(.*@.*)>$/', '\1',$ticket['requestor']);
+				//$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
+				if (!$ticket['customerid'])
+					list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['req'], "%[^<]<%[^>]");
+				else
+					list($ticket['requestoremail']) = sscanf($ticket['req'], "<%[^>]");
+				$result[$idx] = $ticket;
+			}
+		}
 
         $result['total'] = sizeof($result);
         $result['state'] = $state;
