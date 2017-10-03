@@ -42,14 +42,6 @@ if (isset($_GET['catid'])) {
 		$queuedata['catid'] = array(intval($_GET['catid']));
 }
 
-if (isset($_GET['s']))
-{
-	if(!empty($_GET['s']) AND !is_array($_GET['s']))
-		$queuedata['s'] = array(intval($_GET['s']));
-	else
-		$queuedata['s'] = $_GET['s'];
-}
-
 if (!empty($queuedata['id'])) {
 	foreach ($queuedata['id'] as $queueidx => $queueid)
 		if (!$LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queueid))
@@ -115,18 +107,21 @@ else
 	$r = $_GET['r'];
 	$SESSION->save('rtr', $r);
 
-if(isset($_GET['s']))
-	$s = $_GET['s'];
-elseif($SESSION->is_set('rts'))
+if (isset($_GET['s'])) {
+	if (is_array($_GET['s']))
+		$s = $_GET['s'];
+	elseif ($_GET['s'] == -1)
+		$s = -1;
+	else
+		$s = array(intval($_GET['s']));
+} elseif ($SESSION->is_set('rts'))
 	$SESSION->restore('rts', $s);
 else
 	$s = ConfigHelper::getConfig('phpui.ticketlist_status');
 $SESSION->save('rts', $s);
-if (!isset($queuedata['s']))
-	$queuedata['s'] = $s;
 
 $layout['pagetitle'] = trans('Tickets List');
-$queue = $LMS->GetQueueContents($queuedata['id'], $o, $queuedata['s'], $owner, $queuedata['catid'], $r);
+$queue = $LMS->GetQueueContents($queuedata['id'], $o, $s, $owner, $queuedata['catid'], $r);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
