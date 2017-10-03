@@ -26,12 +26,12 @@
             </SELECT>
             {trans("Owner:")}
             <SELECT size="1" name="owner" OnChange="document.filter.submit();">
-                <OPTION value="-1">- {trans("No filter")} -</OPTION>
-                <OPTION value="0">- {trans("No owner")} -</OPTION>
-                <OPTION value="-2">- {trans("With owner")} -</OPTION>
-                {section name="users" loop=$users}
-                <OPTION value="{$users[users].id}"{if $users[users].id == $queuedata.owner} SELECTED{/if}>{$users[users].name|truncate:40:"...":true}</OPTION>
-                {/section}
+                <OPTION value="-1"{if $queuedata.owner == -1} selected{/if}>- {trans("No filter")} -</OPTION>
+                <OPTION value="0"{if $queuedata.owner == 0} selected{/if}>- {trans("No owner")} -</OPTION>
+                <OPTION value="-2"{if $queuedata.owner == -2} selected{/if}>- {trans("With owner")} -</OPTION>
+                {foreach $users as $user}
+                <OPTION value="{$user.id}"{if $user.id == $queuedata.owner} SELECTED{/if}>{$user.name|truncate:40:"...":true}</OPTION>
+                {/foreach}
             </SELECT>
             {if ConfigHelper::checkPrivilege('helpdesk_advanced_operations')}
             {trans("Removed:")}

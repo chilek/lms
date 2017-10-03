@@ -50,84 +50,85 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             return NULL;
     }
 
-    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $owner = NULL, $catids = NULL, $removed = NULL)
-    {
-        if (!$order)
-            $order = 'createtime,desc';
+    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $owner = NULL, $catids = NULL, $removed = NULL) {
+		if (!$order)
+			$order = 'createtime,desc';
 
-        list($order, $direction) = sscanf($order, '%[^,],%s');
+		list($order, $direction) = sscanf($order, '%[^,],%s');
 
-        ($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
+		($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 
-        switch ($order) {
-            case 'ticketid':
-                $sqlord = ' ORDER BY t.id';
-                break;
-            case 'subject':
-                $sqlord = ' ORDER BY t.subject';
-                break;
-            case 'requestor':
-                $sqlord = ' ORDER BY requestor';
-                break;
-            case 'owner':
-                $sqlord = ' ORDER BY ownername';
-                break;
-            case 'lastmodified':
-                $sqlord = ' ORDER BY lastmodified';
-                break;
-            case 'creator':
-                $sqlord = ' ORDER BY creatorname';
-                break;
-            case 'queue':
-                $sqlord = ' ORDER BY rtqueues.name';
-                break;
-            default:
-                $sqlord = ' ORDER BY t.createtime';
-                break;
-        }
+		switch ($order) {
+			case 'ticketid':
+				$sqlord = ' ORDER BY t.id';
+				break;
+			case 'subject':
+				$sqlord = ' ORDER BY t.subject';
+				break;
+			case 'requestor':
+				$sqlord = ' ORDER BY requestor';
+				break;
+			case 'owner':
+				$sqlord = ' ORDER BY ownername';
+				break;
+			case 'lastmodified':
+				$sqlord = ' ORDER BY lastmodified';
+				break;
+			case 'creator':
+				$sqlord = ' ORDER BY creatorname';
+				break;
+			case 'queue':
+				$sqlord = ' ORDER BY rtqueues.name';
+				break;
+			default:
+				$sqlord = ' ORDER BY t.createtime';
+				break;
+		}
 
-	if(isset($state) && is_array($state))
-		$statefilter = ' AND t.state IN ('.implode(',', $state).')';
-	if(empty($state))
-		$statefilter = '';
+		if (isset($state) && is_array($state))
+			$statefilter = ' AND t.state IN (' . implode(',', $state) . ')';
+		elseif ($state == -1)
+			$statefilter = ' AND t.state <> ' . RT_RESOLVED;
+		elseif (empty($state))
+			$statefilter = '';
 
-        if(!ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))
-        $removedfilter = ' AND t.deleted = 0';
-        else {
-	        switch ($removed) {
-		        case '-1':
-			        $removedfilter = ' AND t.deleted = 0';
-			        break;
-		        case '1':
-			        $removedfilter = ' AND t.deleted = 1';
-			        break;
-		        default:
-			        $removedfilter = '';
-			        break;
-	        }
-        }
-	$ownerfilter = '';
-	switch ($owner) {
-                        case '-1':
-                                $ownerfilter = '';
-                                break;
-                        case '0':
-                                $ownerfilter = ' AND t.owner = 0';
-                                break;
-                        case '-2':
-                                $ownerfilter = ' AND t.owner != 0';
-                                break;
-                        default:
-                                $ownerfilter = ' AND t.owner = '.intval($owner).' ';
-                                break;
-        }
+		if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))
+			$removedfilter = ' AND t.deleted = 0';
+		else {
+			switch ($removed) {
+				case '-1':
+					$removedfilter = ' AND t.deleted = 0';
+					break;
+				case '1':
+					$removedfilter = ' AND t.deleted = 1';
+					break;
+				default:
+					$removedfilter = '';
+					break;
+			}
+		}
 
-        if ($result = $this->db->GetAll(
-                'SELECT DISTINCT t.id, t.customerid, t.address_id, va.name AS vaname, va.city AS vacity, va.street, va.house, va.flat, c.address, c.city, vusers.name AS ownername,
-			    t.subject, t.state, owner AS ownerid, t.requestor AS req, t.source, rtqueues.name,
-			    CASE WHEN customerid = 0 THEN t.requestor ELSE '
-                . $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor,
-			    t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
+		switch ($owner) {
+			case '-1':
+				$ownerfilter = '';
+				break;
+			case '0':
+				$ownerfilter = ' AND t.owner = 0';
+				break;
+			case '-2':
+				$ownerfilter = ' AND t.owner != 0';
+				break;
+			default:
+				$ownerfilter = ' AND t.owner = ' . intval($owner) . ' ';
+				break;
+		}
+
+		if ($result = $this->db->GetAll(
+			'SELECT DISTINCT t.id, t.customerid, t.address_id, va.name AS vaname, va.city AS vacity, va.street, va.house, va.flat, c.address, c.city, vusers.name AS ownername,
+				t.subject, t.state, owner AS ownerid, t.requestor AS req, t.source, rtqueues.name,
+				CASE WHEN customerid = 0 THEN t.requestor ELSE '
+			. $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor,
+				t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
 				(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified,
 				eventcountopened, eventcountclosed, delcount, tc2.categories
 			FROM rttickets t
@@ -156,12 +157,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				GROUP BY ticketid
 			) tc2 ON tc2.ticketid = t.id
 			WHERE 1=1 '
-				. (is_array($ids) ? ' AND t.queueid IN (' . implode(',', $ids) . ')' : ($ids != 0 ? ' AND t.queueid = ' . $ids : ''))
-				. (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
-				. $statefilter
-				. $ownerfilter
-				. $removedfilter
-				. ($sqlord != '' ? $sqlord . ' ' . $direction : ''))) {
+			. (is_array($ids) ? ' AND t.queueid IN (' . implode(',', $ids) . ')' : ($ids != 0 ? ' AND t.queueid = ' . $ids : ''))
+			. (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
+			. $statefilter
+			. $ownerfilter
+			. $removedfilter
+			. ($sqlord != '' ? $sqlord . ' ' . $direction : ''))) {
 			$ticket_categories = $this->db->GetAllByKey('SELECT c.id AS categoryid, c.name, c.description, c.style
 				FROM rtcategories c
 				JOIN rtcategoryusers cu ON cu.categoryid = c.id
@@ -187,15 +188,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			}
 		}
 
-        $result['total'] = sizeof($result);
-        $result['state'] = $state;
-        $result['order'] = $order;
-        $result['direction'] = $direction;
-        $result['owner'] = $owner;
-        $result['removed'] = $removed;
+		$result['total'] = sizeof($result);
+		$result['state'] = $state;
+		$result['order'] = $order;
+		$result['direction'] = $direction;
+		$result['owner'] = $owner;
+		$result['removed'] = $removed;
 
-        return $result;
-    }
+		return $result;
+	}
 
     public function GetUserRightsRT($user, $queue, $ticket = NULL)
     {

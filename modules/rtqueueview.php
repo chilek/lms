@@ -106,6 +106,8 @@ if(!isset($_GET['owner']))
 else
 	$owner = $_GET['owner'];
 $SESSION->save('rtowner', $owner);
+if (is_null($owner))
+	$owner = -1;
 
 if(!isset($_GET['r']))
 	$SESSION->restore('rtr', $r);
@@ -120,6 +122,8 @@ elseif($SESSION->is_set('rts'))
 else
 	$s = ConfigHelper::getConfig('phpui.ticketlist_status');
 $SESSION->save('rts', $s);
+if (!isset($queuedata['s']))
+	$queuedata['s'] = $s;
 
 $layout['pagetitle'] = trans('Tickets List');
 $queue = $LMS->GetQueueContents($queuedata['id'], $o, $queuedata['s'], $owner, $queuedata['catid'], $r);
