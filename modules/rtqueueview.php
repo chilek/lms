@@ -111,7 +111,7 @@ if (isset($_GET['s'])) {
 	if (is_array($_GET['s']))
 		$s = $_GET['s'];
 	elseif ($_GET['s'] == -1)
-		$s = -1;
+		$s = null;
 	else
 		$s = array(intval($_GET['s']));
 } elseif ($SESSION->is_set('rts'))
