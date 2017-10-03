@@ -78,6 +78,9 @@ try {
 // Initialize templates engine
 $SMARTY = new Smarty;
 
+// add LMS's custom plugins directory
+$SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
+
 // Include required files (including sequence is important)
 
 require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'common.php');
