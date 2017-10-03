@@ -254,6 +254,8 @@ foreach ($posts as $postid) {
 
 	if ($cashimport_use_seen_flag)
 		imap_setflag_full($ih, $postid, "\\Seen");
+	else
+		imap_clearflag_full($ih, $postid, "\\Seen");
 
 	if (empty($files))
 		continue;
