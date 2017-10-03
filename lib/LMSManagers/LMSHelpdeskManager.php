@@ -87,8 +87,6 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 		if (isset($state) && is_array($state))
 			$statefilter = ' AND t.state IN (' . implode(',', $state) . ')';
-		elseif ($state == -1)
-			$statefilter = ' AND t.state <> ' . RT_RESOLVED;
 		elseif (empty($state))
 			$statefilter = '';
 
