@@ -17,6 +17,16 @@
     </COLGROUP>
     <THEAD>
         {include file="rt/rtfilter.html"}
+        {if $queuedata.total != 0}
+        <TR>
+            <TD class="pagination text-center" colspan="8">
+                {include file="scroller.html" listdata=$queuedata loop=$queue}
+            </TD>
+            <TD class="pagination text-right">
+                <A HREF="?m=rtticketadd&id={$queuedata.id[0]}"><IMG src="img/save.gif" ALT=""> {trans("Create")}</A>
+            </TD>
+        </TR>
+        {/if}
         {include file="rt/rtheader.html"}
     </THEAD>
     <TBODY>
