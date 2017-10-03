@@ -55,7 +55,7 @@ $layout['pagetitle'] = trans('Invoice No. $a', $docnumber);
 $invoice['last'] = true;
 $invoice['type'] = trans('ORIGINAL');
 
-$document->DrawInvoice($invoice);
+$document->Draw($invoice);
 
 if (!is_null($attachment_name)) {
 	$attachment_name = str_replace('%number', $docnumber, $attachment_name);
