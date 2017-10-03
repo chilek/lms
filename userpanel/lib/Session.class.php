@@ -30,6 +30,7 @@ class Session {
 	private $passwd;
 	private $ip;
 	private $db;
+	private $pin_allowed_characters;
 	public $islogged = false;
 	public $error;
 
@@ -40,6 +41,7 @@ class Session {
 
 		session_start();
 		$this->db = &$DB;
+		$this->pin_allowed_characters = ConfigHelper::getConfig('phpui.pin_allowed_characters', '0123456789');
 		$this->ip = str_replace('::ffff:', '', $_SERVER['REMOTE_ADDR']);
 
 		if (isset($_GET['override']))
@@ -238,9 +240,8 @@ class Session {
 		}
 	}
 
-	private function GetCustomerIDByPhoneAndPIN()
-	{
-		if(!preg_match('/^[0-9]+$/', $this->passwd))
+	private function GetCustomerIDByPhoneAndPIN() {
+		if (!preg_match('/^[' . $this->pin_allowed_characters . ']+$/', $this->passwd))
 			return null;
 
 		$authinfo['id'] = $this->db->GetOne('SELECT c.id FROM customers c, customercontacts cc
@@ -256,9 +257,8 @@ class Session {
 		return $authinfo;
 	}
 
-	private function GetCustomerIDByIDAndPIN()
-	{
-		if(!preg_match('/^[0-9]+$/', $this->passwd) || !preg_match('/^[0-9]+$/', $this->login))
+	private function GetCustomerIDByIDAndPIN() {
+		if (!preg_match('/^[' . $this->pin_allowed_characters . ']+$/', $this->passwd) || !preg_match('/^[0-9]+$/', $this->login))
 			return null;
 
 		$authinfo['id'] = $this->db->GetOne('SELECT id FROM customers
@@ -273,9 +273,8 @@ class Session {
 		return $authinfo;
 	}
 
-	private function GetCustomerIDByDocumentAndPIN()
-	{
-		if(!preg_match('/^[0-9]+$/', $this->passwd))
+	private function GetCustomerIDByDocumentAndPIN() {
+		if (!preg_match('/^[' . $this->pin_allowed_characters . ']+$/', $this->passwd))
 			return null;
 
 		$authinfo['id'] = $this->db->GetOne('SELECT c.id FROM customers c
@@ -292,9 +291,8 @@ class Session {
 		return $authinfo;
 	}
 
-	private function GetCustomerIDByEmailAndPIN()
-	{
-		if (!preg_match('/^[0-9]+$/', $this->passwd))
+	private function GetCustomerIDByEmailAndPIN() {
+		if (!preg_match('/^[' . $this->pin_allowed_characters . ']+$/', $this->passwd))
 			return null;
 
 		$authinfo['id'] = $this->db->GetOne('SELECT c.id FROM customers c, customercontacts cc
