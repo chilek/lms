@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -43,7 +43,8 @@ if($id)
 	session_start();
 	$_SESSION['uid'] = $id;
 
-	$SMARTY->assign('customerinfo',$LMS->GetCustomer($id));
+	$customerinfo = $LMS->GetCustomer($id);
+	$SMARTY->assign('customerinfo', $customerinfo);
 	$SMARTY->assign('balancelist',$LMS->GetCustomerBalanceList($id));
 	$SMARTY->assign('limit',15);
 	$SMARTY->assign('account_no',ConfigHelper::getConfig('finances.account'));
