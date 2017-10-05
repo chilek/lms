@@ -65,9 +65,18 @@
 			{trans("Content:")}
 		</TD>
 		<TD style="width: 99%;">
-			<TEXTAREA name="ticket[body]" cols="50" rows="5" {tip text="Enter ticker content" trigger="body"} >{$ticket.body}</TEXTAREA>
+			<TEXTAREA name="ticket[body]" cols="50" rows="5" {tip text="Enter ticket content" trigger="body"} >{$ticket.body}</TEXTAREA>
 		</TD>
 	</TR>
+	<TR>
+                <TD style="width: 1%;" class="bold nobr">
+                        <IMG src="img/note.gif" alt="">
+                        {trans("Note:")}
+                </TD>
+                <TD style="width: 99%;">
+                        <TEXTAREA name="ticket[note]" cols="50" rows="5" {tip text="Enter ticket content" trigger="body"} >{$ticket.note}</TEXTAREA>
+                </TD>
+        </TR>
 	<TR>
 		<TD style="width: 1%;" class="bold nobr valign-top">
 			<IMG src="img/attach.gif" alt="">

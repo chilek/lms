@@ -526,8 +526,25 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			isset($ticket['replyto']) ? $ticket['replyto'] : '',
 			isset($ticket['headers']) ? $ticket['headers'] : '',
 		));
+		
+		if($ticket['note']) {
+	                $this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
+                        subject, body, mailfrom, phonefrom, messageid, replyto, type)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)', array($id,
+                        $ticket['customerid'],
+                        isset($ticket['createtime']) ? $ticket['createtime'] : time(),
+                        $ticket['subject'],
+                        preg_replace("/\r/", "", $ticket['note']),
+                        empty($ticket['mailfrom']) ? '' : $ticket['mailfrom'],
+                        empty($ticket['phonefrom']) ? '' : $ticket['phonefrom'],
+                        isset($ticket['messageid']) ? $ticket['messageid'] : $this->lastmessageid,
+                        isset($ticket['replyto']) ? $ticket['replyto'] : '',
+                        isset($ticket['headers']) ? $ticket['headers'] : '',
+                ));
+		}
 
-		$msgid = $this->db->GetLastInsertID('rtmessages');
+                $msgid = $this->db->GetLastInsertID('rtmessages');
+		
 
 		foreach (array_keys($ticket['categories']) as $catid)
 			$this->db->Execute('INSERT INTO rtticketcategories (ticketid, categoryid)
