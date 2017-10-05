@@ -175,7 +175,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 							else
 								unset($categories[$idx2]);
 					$ticket['categories'] = $categories;
-				}
+				} else
+					unset($ticket['categories']);
 				//$ticket['requestoremail'] = preg_replace('/^.*<(.*@.*)>$/', '\1',$ticket['requestor']);
 				//$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
 				if (!$ticket['customerid'])
