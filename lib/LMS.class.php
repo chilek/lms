@@ -83,7 +83,7 @@ class LMS
         // set current user
         switch (ConfigHelper::getConfig('database.type')) {
             case 'postgres':
-                $this->DB->Execute('SELECT set_config(\'lms.current_user\', ?, false)', array($this->AUTH->id));
+                $this->DB->Execute('SELECT set_config(\'lms.current_user\', ?, false)', array(strval($this->AUTH->id)));
                 break;
             case 'mysql':
             case 'mysqli':
