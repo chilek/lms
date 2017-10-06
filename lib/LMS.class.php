@@ -3389,6 +3389,16 @@ class LMS
 				if (isset($mail_format) && $mail_format == 'html')
 					$headers['X-LMS-Format'] = 'html';
 
+                $data = array(
+                    'body' => $body,
+                    'doc' => $doc,
+                    'mail_format' => $mail_format,
+                    'headers' => $headers
+                );
+                $data = $this->executeHook('invoice_email_before_send', $data);
+                $body = $data['body'];
+                $headers = $data['headers'];
+
 				if ($add_message) {
 					$this->DB->Execute('INSERT INTO messages (subject, body, cdate, type, userid)
 						VALUES (?, ?, ?NOW?, ?, ?)',
