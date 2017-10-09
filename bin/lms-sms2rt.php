@@ -301,7 +301,7 @@ if (($fh = fopen($message_file, "r")) != NULL) {
 			'messageid' => isset($msgid) ? $msgid : null,
 			'customerid' => $customer['cid'],
 			'status' => $RT_STATES[RT_NEW],
-			'categories' => implode(' ; ', $categories),
+			'categories' => $cats,
 			'subject' => trans('SMS from $a', (empty($phone) ? trans("unknown") : $formatted_phone)),
 			'body' => $message,
 			'url' => $lms_url . '?m=rtticketview&id=',
