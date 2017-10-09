@@ -103,6 +103,7 @@ version ?.??.?? (????-??-??):
     document chains [chilan]
   - enhancement: document templates support reference_types and references_templates properties
     which define to which document given template can refer to [chilan]
+  - improvement: allow to sort customer by external id [chilan]
 
 version 1.11.22 (2017-06-08):
 
