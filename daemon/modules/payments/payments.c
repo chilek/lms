@@ -561,7 +561,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 		"JOIN customeraddressview c ON (a.customerid = c.id) "
 		"LEFT JOIN tariffs t ON (a.tariffid = t.id) "
 		"LEFT JOIN liabilities li ON (a.liabilityid = li.id) "
-		"LEFT JOIN divisions d ON (d.id = c.divisionid) "
+		"LEFT JOIN vdivisions d ON (d.id = c.divisionid) "
 		"WHERE c.status = 3 AND c.deleted = 0 "
 		    "AND ("
 		        "(a.period="_DISPOSABLE_" AND at=?) "
