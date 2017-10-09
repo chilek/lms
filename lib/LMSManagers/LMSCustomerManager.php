@@ -436,6 +436,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             case 'tariff':
                 $sqlord = ' ORDER BY tariffvalue';
                 break;
+			case 'extid':
+				$sqlord = ' ORDER BY extid';
+				break;
             default:
                 $sqlord = ' ORDER BY customername';
                 break;
@@ -645,7 +648,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         } else {
             $sql .= 'SELECT c.id AS id, ' . $this->db->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername,
                 status, address, zip, city, countryid, countries.name AS country, cc.email, ccp.phone, ten, ssn, c.info AS info,
-                message, c.divisionid, c.paytime AS paytime, COALESCE(b.value, 0) AS balance,
+                extid, message, c.divisionid, c.paytime AS paytime, COALESCE(b.value, 0) AS balance,
                 COALESCE(t.value, 0) AS tariffvalue, s.account, s.warncount, s.online,
                 (CASE WHEN s.account = s.acsum THEN 1
                     WHEN s.acsum > 0 THEN 2 ELSE 0 END) AS nodeac,

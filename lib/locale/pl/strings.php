@@ -3757,4 +3757,7 @@ $_LANG['Select reference document'] = 'Wybierz dokument odniesienia';
 $_LANG['Reference document:'] = 'Dokument odniesienia:';
 $_LANG['$a no. $b issued on $c'] = '$a nr $b z dnia $c';
 
+$_LANG['External ID:'] = 'Id zewnętrzne:';
+$_LANG['External ID'] = 'Id zewnętrzne';
+
 ?>

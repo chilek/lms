@@ -24,8 +24,11 @@
 			<img src="img/customer.gif" alt=""> <a href="?m={$layout.module}&amp;s={$listdata.state}&amp;o=customername{if $listdata.direction == "asc" && $listdata.order == "customername"},desc{/if}">{trans("First/last or Company name")}</A> {if $listdata.order == "customername"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
 			<img src="img/home.gif" alt=""> <a href="?m={$layout.module}&amp;s={$listdata.state}&amp;o=address{if $listdata.direction == "asc" && $listdata.order == "address"},desc{/if}">{trans("Address:")}</A> {if $listdata.order == "address"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
 		</td>
-		<td scope="col" class="text-right">
-			<a href="?m={$layout.module}&amp;s={$listdata.state}&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}"><span class="bold">{trans("ID:")}</span></A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<BR>
+		<td scope="col" class="text-right nobr">
+			<a href="?m={$layout.module}&amp;s={$listdata.state}&amp;o=extid{if $listdata.direction == "asc" && $listdata.order == "extid"},desc{/if}"><span class="bold">{trans("External ID:")}</span></A> {if $listdata.order == "extid"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			/
+			<a href="?m={$layout.module}&amp;s={$listdata.state}&amp;o=id{if $listdata.direction == "asc" && $listdata.order == "id"},desc{/if}"><span class="bold">{trans("ID:")}</span></A> {if $listdata.order == "id"}<IMG src="img/{if $listdata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+			<BR>
 			{trans("Services:")}
 		</td>
 		<td scope="col" class="text-right">
@@ -179,8 +182,8 @@
 			<IMG src="img/{$_CSTATUSES[$customerlist[customerlist].status].img}" alt="">{if $customerlist[customerlist].info}&nbsp;<img src="img/info1.gif" alt="" {tip text=$customerlist[customerlist].info}>{/if}<A name="{$customerlist[customerlist].id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customerlist[customerlist].id}">&nbsp;<span class="bold">{$customerlist[customerlist].customername|escape}</span></A><BR>
 			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].address}{if $customerlist[customerlist].city != ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].country != ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
 		</TD>
-		<TD class="text-right">
-			({$customerlist[customerlist].id|string_format:"%04d"})
+		<TD class="text-right nobr">
+			({if $customerlist[customerlist].extid}{$customerlist[customerlist].extid} / {/if}{$customerlist[customerlist].id|string_format:"%04d"})
 			<BR>
 			{if $customerlist[customerlist].account}
 			<IMG src="img/node{if !$customerlist[customerlist].online}_off{/if}.gif" alt="" class="lms-ui-tooltip-nodelist" data-resourceid="{$customerlist[customerlist].id}">

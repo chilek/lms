@@ -18,8 +18,9 @@
 		<TD WIDTH="15" ALIGN="CENTER" CLASS="HEAD">
 			{trans("No.")}
 		</TD>
-		<TD WIDTH="30" CLASS="HEAD" ALIGN="CENTER">
-			{trans("ID")}
+		<TD WIDTH="30" CLASS="HEAD nobr" ALIGN="CENTER">
+			{trans("ID")}<br>
+			{trans("External ID")}
 		</TD>
 		<TD WIDTH="400" CLASS="HEAD">
 			<B>{trans("First/last name")} / {trans("Name")}</B><BR>
@@ -45,6 +46,7 @@
 		</TD>
 		<TD ALIGN="CENTER">
 			{$customerlist[customerlist].id|string_format:"%04d"}
+			{if $customerlist[customerlist].extid}<br>{$customerlist[customerlist].extid}{/if}
 		</TD>
 		<TD>
 			<B>{$customerlist[customerlist].customername}</B><BR>
