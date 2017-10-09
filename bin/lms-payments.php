@@ -436,6 +436,7 @@ $invoices = array();
 $paytypes = array();
 $addresses = array();
 $numberplans = array();
+$divisions = array();
 
 foreach ($assigns as $assign) {
 	$cid = $assign['customerid'];
@@ -543,9 +544,11 @@ foreach ($assigns as $assign) {
 				$customer = $DB->GetRow("SELECT lastname, name, address, city, zip, postoffice, ssn, ten, countryid, divisionid, paytime 
 						FROM customeraddressview WHERE id = $cid");
 
-				$division = $DB->GetRow("SELECT name, shortname, address, city, zip, countryid, ten, regon,
+				if (!isset($divisions[$customer['divisionid']]))
+					$divisions[$customer['divisionid']] = $DB->GetRow("SELECT name, shortname, address, city, zip, countryid, ten, regon,
 						account, inv_header, inv_footer, inv_author, inv_cplace
 						FROM vdivisions WHERE id = ?", array($customer['divisionid']));
+				$division = $divisions[$customer['divisionid']];
 
 				$paytime = $customer['paytime'];
 				if ($paytime == -1) $paytime = $deadline;
