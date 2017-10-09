@@ -91,7 +91,7 @@ if (!isset($_GET['sent']) && isset($_SERVER['HTTP_REFERER']) && !preg_match('/m=
 			LEFT JOIN numberplans n ON n.id = d.numberplanid
 			WHERE d.type IN (?, ?, ?, ?) AND d.id IN (" . implode(',', $docids) . ")
 			ORDER BY d.number",
-			array(CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_INVOICES,
+			array(CONTACT_EMAIL | CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_EMAIL | CONTACT_INVOICES,
 				DOC_INVOICE, DOC_CNOTE, DOC_DNOTE, DOC_INVOICE_PRO));
 
 		if (!empty($docs)) {
