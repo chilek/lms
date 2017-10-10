@@ -47,10 +47,16 @@ if (isset($_GET['prenetwork']))
     $nodedata['netid'] = $_GET['prenetwork'];
 
 if (isset($_GET['premac']))
-	$nodedata['macs'][] = $_GET['premac'];
+	if (is_array($_GET['premac']))
+		$nodedata['macs'] = $_GET['premac'];
+	else
+		$nodedata['macs'][] = $_GET['premac'];
 
 if (isset($_GET['prename']))
 	$nodedata['name'] = $_GET['prename'];
+
+if (isset($_GET['pre_address_id']))
+	$nodedata['address_id'] = $_GET['pre_address_id'];
 
 if (isset($_POST['nodedata']))
 {
