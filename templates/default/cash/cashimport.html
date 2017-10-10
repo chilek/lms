@@ -255,7 +255,7 @@
 					<TD class="text-center nobr">{$item.username}</TD>
 					<TD class="text-center">{$item.count|default:0}</TD>
 					<TD class="text-right">
-						<A onclick="return confirmLink(this, '{trans("Are you sure, you want to delete this package and related operations?")}')" href="?m=cashpackagedel&id={$item.id}"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+						<A onclick="return confirmLink(this, '{trans("Are you sure, you want to delete this package and related operations?")}')" href="?m=cashpackagedel&id={$item.id}"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 					</TD>
 				</TR>
 				{foreachelse}

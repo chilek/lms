@@ -155,7 +155,7 @@
 	<TR>
 	        <TD WIDTH="100%" COLSPAN="2" ALIGN="RIGHT">
 {/if}
-			<A href="?m=netnodeedit&id={$nodeinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" ALT="[ {trans("Edit")} ]"></A>
+			<A href="?m=netnodeedit&id={$nodeinfo.id}" ACCESSKEY="E">{trans("Edit")} <IMG src="img/edit.gif" ALT="{trans("Edit")}"></A>
 			<A href="?m=netnodedel&id={$nodeinfo.id}" OnClick="return confirmLink(this, '{t a=$nodeinfo.name}Are you sure, you want to remove net device node \'$a\' from database?{/t}');">{trans("Delete")} <img src="img/delete.gif" ALT=""></A>
 		</TD>
 	</TR>

@@ -62,10 +62,10 @@
 	</TD>
 	<TD class="text-right nobr">
 		{if ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.network_management')}
-		<A HREF="javascript:toggleEditRadioSector({$rsid});" id="edit_button_{$rsid}"{if $edit} style="display: none;"{/if}><IMG SRC="img/edit.gif" ALT="[ {trans("Edit")} ]" {tip text="Edit radio sector"}></A>
-		<A HREF="javascript:updateRadioSector({$rsid});" id="save_button_{$rsid}"{if !$edit} style="display: none;"{/if}><IMG SRC="img/save.gif" ALT="[ {trans("Save")} ]" {tip text="Save"}></A>
-		<A HREF="javascript:toggleEditRadioSector({$rsid});" id="cancel_button_{$rsid}"{if !$edit} style="display: none;"{/if}><IMG SRC="img/cancel.gif" ALT="[ {trans("Cancel")} ]" {tip text="Cancel"}></A>
-		<A HREF="javascript:delRadioSector({$rsid});" id="delete_button_{$rsid}"><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]" {tip text="Remove radio sector"}></A>
+		<A HREF="javascript:toggleEditRadioSector({$rsid});" id="edit_button_{$rsid}"{if $edit} style="display: none;"{/if}><IMG SRC="img/edit.gif" ALT="{trans("Edit")}" {tip text="Edit radio sector"}></A>
+		<A HREF="javascript:updateRadioSector({$rsid});" id="save_button_{$rsid}"{if !$edit} style="display: none;"{/if}><IMG SRC="img/save.gif" ALT="{trans("Save")}" {tip text="Save"}></A>
+		<A HREF="javascript:toggleEditRadioSector({$rsid});" id="cancel_button_{$rsid}"{if !$edit} style="display: none;"{/if}><IMG SRC="img/cancel.gif" ALT="{trans("Cancel")}" {tip text="Cancel"}></A>
+		<A HREF="javascript:delRadioSector({$rsid});" id="delete_button_{$rsid}"><IMG SRC="img/delete.gif" ALT="{trans("Delete")}" {tip text="Remove radio sector"}></A>
 		{/if}
 	</TD>
 </TR>
@@ -110,8 +110,8 @@
 		<input type="text" size="10" name="bandwidth" id="bandwidth" value="{$formdata.bandwidth}" {tip text="Enter bandwidth in MHz" trigger="bandwidth"}>
 	</TD>
 	<TD class="text-right nobr" colspan="2">
-		<A HREF="javascript:addRadioSector();" id="save_new_radiosector_button"><IMG SRC="img/save.gif" ALT="[ {trans("Save")} ]" {tip text="Save"}></A>
-		<A HREF="javascript:hideAddRadioSector();" id="cancel_new_radiosector_button"><IMG SRC="img/cancel.gif" ALT="[ {trans("Cancel")} ]" {tip text="Cancel"}></A>
+		<A HREF="javascript:addRadioSector();" id="save_new_radiosector_button"><IMG SRC="img/save.gif" ALT="{trans("Save")}" {tip text="Save"}></A>
+		<A HREF="javascript:hideAddRadioSector();" id="cancel_new_radiosector_button"><IMG SRC="img/cancel.gif" ALT="{trans("Cancel")}" {tip text="Cancel"}></A>
 	</TD>
 </TR>
 </form>

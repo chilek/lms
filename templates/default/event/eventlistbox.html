@@ -74,16 +74,16 @@
                 <div class="no-print">
                     {if ConfigHelper::checkPrivilege('timetable_management')}
                     {if $eventlist[eventlist].closed}
-                    <A href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=open"><IMG src="img/resolved.gif" alt="[ {trans("Open")} ]" title="[&nbsp;{trans("Open")}&nbsp;]"></A>
+                    <A href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=open"><IMG src="img/resolved.gif" alt="{trans("Open")}"title="&nbsp;{trans("Open")}&nbsp;"></A>
                     {else}
-                    <A href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=close"><IMG src="img/open.gif" alt="[ {trans("Close")} ]" title="[&nbsp;{trans("Close")}&nbsp;]"></A>
+                    <A href="?m=eventedit&amp;id={$eventlist[eventlist].id}&amp;action=close"><IMG src="img/open.gif" alt="{trans("Close")}"title="&nbsp;{trans("Close")}&nbsp;"></A>
                     {/if}
-                    <A href="?m=eventdel&amp;id={$eventlist[eventlist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[&nbsp;{trans("Delete")}&nbsp;]"></A>&nbsp;
-                    <A href="?m=eventedit&amp;id={$eventlist[eventlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[&nbsp;{trans("Edit")}&nbsp;]"></A>
+                    <A href="?m=eventdel&amp;id={$eventlist[eventlist].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')"><IMG src="img/delete.gif" alt="{trans("Delete")}"title="&nbsp;{trans("Delete")}&nbsp;"></A>&nbsp;
+                    <A href="?m=eventedit&amp;id={$eventlist[eventlist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}"title="&nbsp;{trans("Edit")}&nbsp;"></A>
                     {/if}
                     {if $eventlist[eventlist].note == ''}
                     {foreach item=user from=$eventlist[eventlist].userlist}
-                    {if $layout.logid == $user.id}<A href="?m=eventnote&id={$eventlist[eventlist].id}"><IMG src="img/note.gif" alt="[ {trans("Add Note")} ]" title="[ {trans("Add Note")} ]"></A>{/if}
+                    {if $layout.logid == $user.id}<A href="?m=eventnote&id={$eventlist[eventlist].id}"><IMG src="img/note.gif" alt="{trans("Add Note")} ]" title="[ {trans("Add Note")}"></A>{/if}
                     {/foreach}
                     {/if}
                 </div>

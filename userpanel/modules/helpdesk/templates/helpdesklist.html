@@ -13,7 +13,7 @@
 	{section name=helpdesklist loop=$helpdesklist start=$limit}
 	<tr class="dark{if $helpdesklist[helpdesklist].state == $smarty.const.RT_RESOLVED} blend{else}{if $helpdesklist[helpdesklist].state == $smarty.const.RT_NEW} red{/if}{/if}" {userpaneltip text="Click icon on the left to see request details"}>
 		<td width="1%">
-			<a href="?m=helpdesk&amp;op=view&amp;id={$helpdesklist[helpdesklist].id}">{img src="ticket.gif" alt="[ Details ]"}</a>
+			<a href="?m=helpdesk&amp;op=view&amp;id={$helpdesklist[helpdesklist].id}">{img src="ticket.gif" alt="Details"}</a>
 		</td>
 		<td width="1%" class="bold">{$helpdesklist[helpdesklist].id|string_format:"%06d"}</td>
 		<td width="1%" class="nobr">{$helpdesklist[helpdesklist].createtime|date_format:"%Y/%m/%d %H:%M"}</td>

@@ -30,10 +30,10 @@
 		</TD>
 		<TD width="1%" class="fright">
 			<nobr>
-			<a href="?m=users&a=passwd&id={$userslist[userslist].id}"><img src="modules/users/img/keys.gif" alt="[ {t}Change password{/t} ]"></A>
-			{if $userslist[userslist].id neq $layout.logid}<a href="?m=users&a=delete&id={$userslist[userslist].id}" onClick="return confirmLink(this, '{t}Are you sure, you want to irreversibly delete that user account?{/t}');">{/if}<img src="img/delete.gif" alt="[ {t}Delete{/t} ]"></A>
-			<a href="?m=users&a=edit&id={$userslist[userslist].id}"><img src="img/edit.gif" alt="[ {t}Edit{/t} ]"></A>
-			<a href="?m=users&a=info&id={$userslist[userslist].id}"><img src="img/info.gif" alt="[ {t}Info{/t} ]"></A>
+			<a href="?m=users&a=passwd&id={$userslist[userslist].id}"><img src="modules/users/img/keys.gif" alt="{t}Change password{/t}"></A>
+			{if $userslist[userslist].id neq $layout.logid}<a href="?m=users&a=delete&id={$userslist[userslist].id}" onClick="return confirmLink(this, '{t}Are you sure, you want to irreversibly delete that user account?{/t}');">{/if}<img src="img/delete.gif" alt="{t}Delete{/t}"></A>
+			<a href="?m=users&a=edit&id={$userslist[userslist].id}"><img src="img/edit.gif" alt="{t}Edit{/t}"></A>
+			<a href="?m=users&a=info&id={$userslist[userslist].id}"><img src="img/info.gif" alt="{t}Info{/t}"></A>
 		</TD>
 	</TR>
 	{/if}{/section}

@@ -47,11 +47,11 @@
 							{$network.hostname}
 						</TD>
 						<TD class="nobr">
-							<A href="?m=netedit&networkset&amp;id={$network.id}"><IMG src="img/{if $network.disabled}no{/if}access.gif" alt="[ {if $network.disabled}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]" title="[ {if $network.disabled}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]"></A>
+							<A href="?m=netedit&networkset&amp;id={$network.id}"><IMG src="img/{if $network.disabled}no{/if}access.gif" alt="{if $network.disabled}{trans("Connect")}{else}{trans("Disconnect")}{/if} ]" title="[ {if $network.disabled}{trans("Connect")}{else}{trans("Disconnect")}{/if}"></A>
 
-							<A href="?m=netdel&amp;id={$network.id}" onClick="return confirmLink(this, '{t a=$network.name}Are you sure, you want to remove network \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-							<A href="?m=netedit&amp;id={$network.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-							<A href="?m=netinfo&amp;id={$network.id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>&nbsp;
+							<A href="?m=netdel&amp;id={$network.id}" onClick="return confirmLink(this, '{t a=$network.name}Are you sure, you want to remove network \'$a\' from database?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+							<A href="?m=netedit&amp;id={$network.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+							<A href="?m=netinfo&amp;id={$network.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>&nbsp;
 						</TD>
 					</TR>
 					{foreachelse}

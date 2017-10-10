@@ -26,7 +26,7 @@
 		{if $doc.closed}
 			{foreach $doc.attachments as $docattach}
 			<a href="?m=info&f=docview&id={$doc.id}&attachmentid={$docattach.id}" target="_blank">
-				{if $docattach.main}{trans("View")}{else}{$docattach.filename}{/if} {img src="view.gif" alt="[ View ]"}
+				{if $docattach.main}{trans("View")}{else}{$docattach.filename}{/if} {img src="view.gif" alt="View"}
 			</a>
 			<br>
 			{/foreach}

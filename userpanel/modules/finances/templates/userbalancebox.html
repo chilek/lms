@@ -24,11 +24,11 @@
 		{if !$disable_invoices}
 		<td width="1%" class="nobr">
 			{foreach $item.customlinks as $link}
-			<a {if isset($link.url)}href="{$link.url}"{/if} target="_blank" {if isset($link.onclick)}onclick="{$link.onclick}"{/if}>{if isset($link.icon)}{img src="`$link.icon`" alt="[ `$link.label` ]" text=$link.tip}{else}{$link.label}{/if}</a>
+			<a {if isset($link.url)}href="{$link.url}"{/if} target="_blank" {if isset($link.onclick)}onclick="{$link.onclick}"{/if}>{if isset($link.icon)}{img src="`$link.icon`" alt="`$link.label`" text=$link.tip}{else}{$link.label}{/if}</a>
 			{if isset($link.extra)}{$link.extra}{/if}
 			{/foreach}
 			{if $item.doctype == 1 || $item.doctype == 3}
-			<a href="?m=finances&amp;f=invoice&amp;id={$item.docid}" target="_blank">{img src="print.gif" alt="[ Print ]" text=$item.number}</a><input style="vertical-align: middle" type="checkbox" name="inv[{$item.docid}]" value="1" />
+			<a href="?m=finances&amp;f=invoice&amp;id={$item.docid}" target="_blank">{img src="print.gif" alt="Print" text=$item.number}</a><input style="vertical-align: middle" type="checkbox" name="inv[{$item.docid}]" value="1" />
 			{else}
 			&nbsp;
 			{/if}
@@ -50,7 +50,7 @@
 			<table width="100%" cellpadding="0" cellspacing="0">
 			    <tr>
 				<td width="50%">
-				{img src="print.gif" alt="[ Print ]"} <a href="javascript:document.invoices.submit()">{trans("Print selected")}</a>
+				{img src="print.gif" alt="Print"} <a href="javascript:document.invoices.submit()">{trans("Print selected")}</a>
 				</td>
 				<td width="50%" align="right">
 				<label for="allbox">{trans("Check all")}</label><input style="vertical-align: middle" type="checkbox" name="allbox" id="allbox" onchange="CheckAll('invoices', this)" value="1" />

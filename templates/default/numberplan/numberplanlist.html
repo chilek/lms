@@ -51,8 +51,8 @@
 			{if $numberplanlist[numberplanlist].isdefault}{trans("yes")}{/if}
 		</TD>
 		<TD align="right" NOWRAP>
-			<A href="?m=numberplandel&amp;id={$numberplanlist[numberplanlist].id}" OnClick="return confirmLink(this, '{t a=$numberplanlist[numberplanlist].template}Are you sure, you want to delete numberplan \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+			<A href="?m=numberplandel&amp;id={$numberplanlist[numberplanlist].id}" OnClick="return confirmLink(this, '{t a=$numberplanlist[numberplanlist].template}Are you sure, you want to delete numberplan \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A href="?m=numberplanedit&amp;id={$numberplanlist[numberplanlist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 		</TD>
 	</TR>
 	{sectionelse}

@@ -53,9 +53,9 @@
 			{$cashreglog[cashreglog].description|replace:"\n":"<BR>"}
 		</TD>
 		<TD align="right" NOWRAP>
-			<A href="?m=cashregloginfo&id={$cashreglog[cashreglog].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
-			<A href="?m=cashreglogedit&id={$cashreglog[cashreglog].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A href="?m=cashreglogdel&id={$cashreglog[cashreglog].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete selected entry?")}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A href="?m=cashregloginfo&id={$cashreglog[cashreglog].id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
+			<A href="?m=cashreglogedit&id={$cashreglog[cashreglog].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<A href="?m=cashreglogdel&id={$cashreglog[cashreglog].id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete selected entry?")}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 		</TD>
 	</TR>
 	{sectionelse}

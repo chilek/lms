@@ -49,8 +49,8 @@
 			{$invproject.netnodes}
 		</TD>
 		<TD align="right" NOWRAP>
-			<A HREF="?m=invprojectedit&id={$invproject.id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A HREF="?m=invprojectdel&id={$invproject.id}" OnClick="return confirmLink(this, '{t a=$invproject.name}Are you sure, you want to remove investment project \'$a\' ?{/t}');"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
+			<A HREF="?m=invprojectedit&id={$invproject.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<A HREF="?m=invprojectdel&id={$invproject.id}" OnClick="return confirmLink(this, '{t a=$invproject.name}Are you sure, you want to remove investment project \'$a\' ?{/t}');"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 		</TD>
 	</TR>
 	{foreachelse}
