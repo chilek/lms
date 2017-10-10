@@ -8,7 +8,7 @@
 	function DeleteMarked()
 	{
 		if ($('tr[data-published="1"] :checked').length) {
-			{if ConfigHelper::checkConfig('privileges.superuser')}
+			{if ConfigHelper::checkPrivilege('published_document_modification')}
 			if (!confirm('{trans("Some documents have been published already! Are you sure you want to delete them despite this?")}')) {
 				return;
 			}
@@ -198,19 +198,19 @@
 		<TD class="text-right nobr">
 			{if $balancelist[balancelist].docid}
 				{if $balancelist[balancelist].doctype==$smarty.const.DOC_INVOICE}
-				{if !$balancelist[balancelist].published || ConfigHelper::checkConfig('privileges.superuser')}
+				{if !$balancelist[balancelist].published || ConfigHelper::checkPrivilege('published_document_modification')}
 				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/view.gif" ALT="[ {trans("View")} ]"></A>
 				{/if}
 				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/print.gif" ALT="[ {trans("Invoice")} ]"></A>
 				{elseif $balancelist[balancelist].doctype==$smarty.const.DOC_CNOTE}
-				{if !$balancelist[balancelist].published || ConfigHelper::checkConfig('privileges.superuser')}
+				{if !$balancelist[balancelist].published || ConfigHelper::checkPrivilege('published_document_modification')}
 				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/view.gif" ALT="[ {trans("View")} ]"></A>
 				{/if}
 				<A HREF="?m=invoice&id={$balancelist[balancelist].docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/printn.gif" ALT="[ {trans("Credit note")} ]"></A>
 				{elseif $balancelist[balancelist].doctype==$smarty.const.DOC_RECEIPT}
 				<A HREF="?m=receipt&id={$balancelist[balancelist].docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/printr.gif" ALT="[ {trans("Cash receipt")} ]"></A>
 				{elseif $balancelist[balancelist].doctype==$smarty.const.DOC_DNOTE}
-				{if !$balancelist[balancelist].published || ConfigHelper::checkConfig('privileges.superuser')}
+				{if !$balancelist[balancelist].published || ConfigHelper::checkPrivilege('published_document_modification')}
 				<A HREF="?m=note&id={$balancelist[balancelist].docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/view.gif" ALT="[ {trans("View")} ]"></A>
 				{/if}
 				<A HREF="?m=note&id={$balancelist[balancelist].docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$balancelist[balancelist].docid}" rel="external"><IMG SRC="img/printd.gif" ALT="[ {trans("Debit note")} ]"></A>

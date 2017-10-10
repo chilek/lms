@@ -3760,4 +3760,6 @@ $_LANG['$a no. $b issued on $c'] = '$a nr $b z dnia $c';
 $_LANG['External ID:'] = 'Id zewnętrzne:';
 $_LANG['External ID'] = 'Id zewnętrzne';
 
+$_LANG['published document modification'] = 'modyfikowanie upublicznionych dokumentów';
+
 ?>

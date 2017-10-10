@@ -27,7 +27,7 @@
 $id = intval($_GET['id']);
 
 if ($id && $_GET['is_sure'] == '1') {
-	if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkConfig('privileges.superuser'))
+	if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkPrivilege('published_document_modification'))
 		return;
 	$LMS->InvoiceDelete($id);
 }
