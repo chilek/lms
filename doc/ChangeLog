@@ -90,7 +90,7 @@ version ?.??.?? (????-??-??):
   - enhancement: customerraports: added sending book generator for sending letters/packages [interduo]
   - improvement: show queue name in queuelist [interduo]
   - improvement: show count of assigned events in rtqueueview [interduo]
-  - improvement: show categories in rtqueueview (rt.hide_ticket_categories_in_ticket_row configuration
+  - improvement: show categories in rtqueueview (rt.show_ticket_categories configuration
     variable allows to control their visiblity) [interduo]
   - improvement: lmsuser can define category color [interduo]
   - improvement: rtmodule: more filtering options in "User"-->"no owner" [interduo]
