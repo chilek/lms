@@ -106,6 +106,7 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to sort customer by external id [chilan]
   - improvement: published_document_modification privilege controls if user can modify/delete
     published documents [chilan]
+  - enhancement: allow to add new note for created helpdesk ticket [interduo]
 
 version 1.11.22 (2017-06-08):
 
