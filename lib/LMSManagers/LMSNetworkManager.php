@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2016 LMS Developers
+ *  Copyright (C) 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,7 +27,6 @@
 /**
  * LMSNetworkManager
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 {
@@ -207,7 +206,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
         return $this->db->GetAll('SELECT n.*, inet_ntoa(n.ipaddr) AS ip, net.name AS netname
 			FROM vnodes n
 			JOIN networks net ON net.id = n.netid
-			WHERE netdev=0 ORDER BY name ASC');
+			WHERE netdev IS NULL ORDER BY name ASC');
     }
 
     public function GetNetDevIPs($id)
@@ -606,7 +605,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 				SELECT id, name, ipaddr, ownerid, netdev 
 				FROM vnodes WHERE netid = ? AND ipaddr > ? AND ipaddr < ?
 				UNION ALL
-				SELECT id, name, ipaddr_pub AS ipaddr, ownerid, netdev 
+				SELECT id, name, ipaddr_pub AS ipaddr, ownerid, netdev
 				FROM vnodes WHERE ipaddr_pub > ? AND ipaddr_pub < ?', 'ipaddr', array($id, $network['addresslong'], ip_long($network['broadcast']),
             $network['addresslong'], ip_long($network['broadcast'])));
 
