@@ -23,6 +23,9 @@
 
 $this->BeginTrans();
 
+$this->Execute("ALTER TABLE nodes MODIFY netdev int(11) NULL");
+$this->Execute("ALTER TABLE nodes ALTER COLUMN netdev SET DEFAULT NULL");
+
 $netdevids = $this->GetCol("SELECT id FROM netdevices");
 if (!empty($netdevids)) {
 	$sql_netdevids = implode(',', $netdevids);
@@ -30,8 +33,6 @@ if (!empty($netdevids)) {
 	$this->Execute("DELETE FROM netlinks WHERE src NOT IN (" . $sql_netdevids . ") OR dst NOT IN (" . $sql_netdevids . ")");
 }
 
-$this->Execute("ALTER TABLE nodes MODIFY netdev int(11) NULL");
-$this->Execute("ALTER TABLE nodes ALTER COLUMN netdev SET DEFAULT NULL");
 $this->Execute("ALTER TABLE nodes ADD CONSTRAINT nodes_netdev_fkey
 	FOREIGN KEY (netdev) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE");
 

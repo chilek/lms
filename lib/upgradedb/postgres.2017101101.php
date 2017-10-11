@@ -23,6 +23,11 @@
 
 $this->BeginTrans();
 
+$this->Execute("
+	ALTER TABLE nodes ALTER COLUMN netdev DROP NOT NULL;
+	ALTER TABLE nodes ALTER COLUMN netdev SET DEFAULT NULL
+");
+
 $netdevids = $this->GetCol("SELECT id FROM netdevices");
 if (!empty($netdevids)) {
 	$sql_netdevids = implode(',', $netdevids);
@@ -31,13 +36,8 @@ if (!empty($netdevids)) {
 }
 
 $this->Execute("
-	ALTER TABLE nodes ALTER COLUMN netdev DROP NOT NULL;
-	ALTER TABLE nodes ALTER COLUMN netdev SET DEFAULT NULL;
 	ALTER TABLE nodes ADD CONSTRAINT nodes_netdev_fkey
-		FOREIGN KEY (netdev) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE
-");
-
-$this->Execute("
+		FOREIGN KEY (netdev) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE;
 	ALTER TABLE netlinks ALTER COLUMN src DROP DEFAULT;
 	ALTER TABLE netlinks ADD CONSTRAINT netlinks_src_fkey
 		FOREIGN KEY (src) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE;
