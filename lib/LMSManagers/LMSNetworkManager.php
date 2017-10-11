@@ -216,7 +216,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
 			ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, access, info, port, n.netid, net.name AS netname, n.authtype
 			FROM vnodes n
 			JOIN networks net ON net.id = n.netid
-			WHERE ownerid = 0 AND netdev = ?', array($id));
+			WHERE ownerid IS NULL AND netdev = ?', array($id));
     }
 
     public function GetNetworkList( $search = 'id,asc' )

@@ -194,7 +194,7 @@ switch($type)
 		$customerslist = $DB->GetAllByKey('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS customername FROM customers','id');
 
 		if(isset($date['from']))
-			$lastafter = $DB->GetOne('SELECT SUM(CASE WHEN c.customerid!=0 AND type=0 THEN 0 ELSE value END)
+			$lastafter = $DB->GetOne('SELECT SUM(CASE WHEN c.customerid IS NOT NULL AND type=0 THEN 0 ELSE value END)
 					FROM cash c '
 					.($group ? 'LEFT JOIN customerassignments a ON (c.customerid = a.customerid) ' : '')
 					.'WHERE time<?'

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -295,7 +295,7 @@ $nodemap = array();
 
 if(!$mini && ($nodes = $DB->GetAll('SELECT id, linktype, netdev 
 			FROM vnodes 
-			WHERE ownerid > 0 AND netdev > 0 
+			WHERE ownerid IS NOT NULL AND netdev > 0
 			ORDER BY name ASC')))
 {
 	foreach($nodes as $idx => $node)
@@ -617,7 +617,7 @@ elseif ($graph == 'flash')
 		$i->moveTo($px,$py);
 
 		if($devip = $DB->GetCol('SELECT INET_NTOA(ipaddr) 
-				    FROM vnodes WHERE ownerid = 0 AND netdev = ? 
+				    FROM vnodes WHERE ownerid IS NULL AND netdev = ? 
 				    ORDER BY ipaddr LIMIT 4', array($deviceid)))
 		{
 			if(isset($devip[0])) drawtext($px + 16, $py - (isset($devip[1])?16:8), $devip[0], 0,0,255);
@@ -794,8 +794,8 @@ else
 		} else 
 			imagecopy($im,$im_d_unk,$px,$py,0,0,16,16);
 		
-		if($devip = $DB->GetCol('SELECT INET_NTOA(ipaddr) FROM vnodes 
-				    WHERE ownerid = 0 AND netdev = ? 
+		if($devip = $DB->GetCol('SELECT INET_NTOA(ipaddr) FROM vnodes
+				    WHERE ownerid IS NULL AND netdev = ?
 				    ORDER BY ipaddr LIMIT 4', array($deviceid)))
 		{
 			if(isset($devip[0])) pngdrawtext($im, 1, $px + 20, $py - (isset($devip[1])?17:8), $devip[0], $blue, $lightbrown);

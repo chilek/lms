@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$devices = $DB->GetAllByKey('SELECT n.id, n.name, va.location, '.$DB->GroupConcat('INET_NTOA(CASE WHEN vnodes.ownerid = 0 THEN vnodes.ipaddr ELSE NULL END)', ',', true)
-				.' AS ipaddr, '.$DB->GroupConcat('CASE WHEN vnodes.ownerid = 0 THEN vnodes.id ELSE NULL END', ',', true).' AS nodeid,
+$devices = $DB->GetAllByKey('SELECT n.id, n.name, va.location, '.$DB->GroupConcat('INET_NTOA(CASE WHEN vnodes.ownerid IS NULL THEN vnodes.ipaddr ELSE NULL END)', ',', true)
+				.' AS ipaddr, '.$DB->GroupConcat('CASE WHEN vnodes.ownerid IS NULL THEN vnodes.id ELSE NULL END', ',', true).' AS nodeid,
 				MAX(lastonline) AS lastonline,
 				(CASE WHEN nn.latitude IS NOT NULL AND n.netnodeid > 0 THEN nn.latitude ELSE n.latitude END) AS lat,
 				(CASE WHEN nn.longitude IS NOT NULL AND n.netnodeid > 0 THEN nn.longitude ELSE n.longitude END) AS lon,
@@ -110,7 +110,7 @@ if ($nodes) {
 
 	if ($devices) {
 		$nodelinks = $DB->GetAll('SELECT n.id AS nodeid, netdev, linktype AS type, linktechnology AS technology,
-			linkspeed AS speed FROM vnodes n WHERE netdev > 0 AND ownerid > 0 
+			linkspeed AS speed FROM vnodes n WHERE netdev > 0 AND ownerid IS NOT NULL
 			AND n.id IN ('.$nodeids.') AND netdev IN ('.$devids.')');
 		if ($nodelinks)
 			foreach ($nodelinks as $nodelinkidx => $nodelink) {

@@ -110,6 +110,7 @@ version ?.??.?? (????-??-??):
   - improvement: allow to fast-clone existing customer node to new one [chilan]
   - enhancement: introduced payments_before_assignment_loop plugin hook in lms-payments.php backend script;
     it has potential to be used for now at least by Adescom plugin [chilan]
+  - cleanup: all customerid, ownerid, customer_id columns in database are foreign keys [chilan]
 
 version 1.11.22 (2017-06-08):
 

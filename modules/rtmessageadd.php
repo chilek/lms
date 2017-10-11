@@ -58,7 +58,7 @@ if(isset($_POST['message']))
 
 		if ($message['sender'] == 'user') {
 			$message['userid'] = Auth::GetCurrentUser();
-			$message['customerid'] = 0;
+			$message['customerid'] = null;
 		} else {
 			$message['userid'] = 0;
 			if (!$message['customerid']) {

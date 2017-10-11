@@ -298,7 +298,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 		$imports = $this->db->GetAll('SELECT i.*, f.idate
 			FROM cashimport i
 			LEFT JOIN sourcefiles f ON (f.id = i.sourcefileid)
-			WHERE i.closed = 0 AND i.customerid <> 0');
+			WHERE i.closed = 0 AND i.customerid IS NOT NULL');
 
 		if (!empty($imports)) {
 			$idate  = ConfigHelper::checkConfig('finances.cashimport_use_idate');

@@ -248,7 +248,7 @@ foreach ($networks as $networkid => $net) {
 	$nodes = $DB->GetAll("SELECT n.id, n.name, mac, INET_NTOA(ipaddr) AS ip,
 			INET_NTOA(ipaddr_pub) AS ip_pub, ownerid FROM vnodes n
 		WHERE netid = ?
-		" . (empty($customerids) ? '' : " AND (n.ownerid = 0 OR n.ownerid IN (" . implode(',', $customerids) . "))") . "
+		" . (empty($customerids) ? '' : " AND (n.ownerid IS NULL OR n.ownerid IN (" . implode(',', $customerids) . "))") . "
 		ORDER BY ipaddr", array($networkid));
 
 	if (empty($nodes)) {
@@ -269,7 +269,7 @@ foreach ($networks as $networkid => $net) {
 			$dhcp_relay = $DB->GetRow("SELECT nd.id, m.mac, n.port
 						FROM netdevices d, nodes n, nodes nd, macs m
 						WHERE n.id = ? AND n.netdev = d.id
-						AND d.id = nd.netdev AND nd.ownerid = 0
+						AND d.id = nd.netdev AND nd.ownerid IS NULL
 						AND nd.id = m.nodeid",
 						array($node['id']));
 		else

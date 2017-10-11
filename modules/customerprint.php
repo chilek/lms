@@ -146,7 +146,8 @@ switch($type)
 		}
 
 		$SMARTY->assign('contactlist', $DB->GetAllByKey('SELECT customerid, MIN(contact) AS phone
-				FROM customercontacts WHERE contact <> \'\' AND type & 7 > 0 GROUP BY customerid',
+				FROM customercontacts WHERE contact <> \'\' AND type & ' . (CONTACT_MOBILE | CONTACT_FAX | CONTACT_LANDLINE) . ' > 0
+				GROUP BY customerid',
 				'customerid', array()));
 
 		if ($sendingregister)

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -42,7 +42,7 @@ else
 if (!$LMS->NodeExists($nodeid)) {
 	if (isset($_GET['ownerid']))
 		$SESSION->redirect('?m=customerinfo&id=' . $_GET['ownerid']);
-	else if ($DB->GetOne('SELECT 1 FROM vnodes WHERE id = ? AND ownerid = 0', array($nodeid)))
+	else if ($DB->GetOne('SELECT 1 FROM vnodes WHERE id = ? AND ownerid IS NULL', array($nodeid)))
 		$SESSION->redirect('?m=netdevinfo&ip=' . $nodeid . '&id=' . $LMS->GetNetDevIDByNode($nodeid));
 	else
 		$SESSION->redirect('?m=nodelist');

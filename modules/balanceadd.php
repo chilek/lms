@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
+ *  $Id: 6e70ce491793915f20304fc291211ebd78873916 $
  */
 
 $addbalance = $_POST['addbalance'];
@@ -112,7 +112,7 @@ elseif(isset($addbalance['customerid']))
 }
 else
 {
-	$addbalance['customerid'] = '0';
+	$addbalance['customerid'] = null;
 	$addbalance['taxid'] = '0';
 	$addbalance['type'] = '1';
 	

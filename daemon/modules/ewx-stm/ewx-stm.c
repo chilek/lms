@@ -798,7 +798,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 						{
 							if( // komputer nalezy do innego kanalu
 							    ((x && channels[x].customerid != channels[j].customerid) || 
-								    channels[j].customerid == 0)
+								    !channels[j].customerid)
 							    || // zmiana ID
 							    (c.hosts[n].id != channels[j].hosts[k].id)
 							)
@@ -883,7 +883,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 								    ) 
 								{
 									// komputer byl w kanale
-									if( (channels[j].customerid != 0) 
+									if( (channels[j].customerid)
 									    || // lub zmiana ID
 									    (c.hosts[k].id != channels[j].hosts[n].id))
 									{
@@ -893,7 +893,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 									}
 							
 									// jesli komputer nie byl w kanale, mozemy go zaktualizowac bez usuwania
-									if( (channels[j].customerid == 0 &&
+									if( (!channels[j].customerid &&
 									    (c.hosts[k].uprate != channels[j].hosts[n].uprate ||
 									    c.hosts[k].upceil != channels[j].hosts[n].upceil ||
 									    c.hosts[k].downrate != channels[j].hosts[n].downrate ||
@@ -938,7 +938,7 @@ void reload(GLOBAL *g, struct ewx_module *ewx)
 					deleted++;
 				}
 
-			if(deleted == channels[i].no && channels[i].customerid != 0)
+			if(deleted == channels[i].no && channels[i].customerid)
 				del_channel(g, ewx, sh, &channels[i]);
 		}
 	

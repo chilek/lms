@@ -266,7 +266,8 @@ CREATE SEQUENCE customer_addresses_id_seq;
 DROP TABLE IF EXISTS customer_addresses CASCADE;
 CREATE TABLE customer_addresses (
     id          integer DEFAULT nextval('customer_addresses_id_seq'::text) NOT NULL,
-    customer_id integer REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    customer_id integer
+    	CONSTRAINT customer_addresses_customer_id_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
     address_id  integer REFERENCES addresses (id) ON DELETE CASCADE ON UPDATE CASCADE,
     type        smallint NULL,
     PRIMARY KEY (id),
@@ -287,7 +288,8 @@ CREATE TABLE documents (
 	extnumber varchar(255)	DEFAULT '' NOT NULL,
 	cdate integer		DEFAULT 0 NOT NULL,
 	sdate integer		DEFAULT 0 NOT NULL,
-	customerid integer	DEFAULT 0 NOT NULL,
+	customerid integer	DEFAULT NULL
+		CONSTRAINT documents_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	userid integer		DEFAULT 0 NOT NULL,
 	divisionid integer	DEFAULT 0 NOT NULL,
 	name varchar(255)	DEFAULT '' NOT NULL,
@@ -428,7 +430,7 @@ CREATE TABLE assignments (
 	tariffid integer 	DEFAULT 0 NOT NULL,
 	liabilityid integer 	DEFAULT 0 NOT NULL,
 	customerid integer	NOT NULL
-	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT assignments_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	period smallint 	DEFAULT 0 NOT NULL,
 	at integer 		DEFAULT 0 NOT NULL,
 	datefrom integer	DEFAULT 0 NOT NULL,
@@ -465,7 +467,8 @@ CREATE TABLE cash (
 	userid integer 		DEFAULT 0 NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
 	taxid integer		DEFAULT 0 NOT NULL,
-	customerid integer 	DEFAULT 0 NOT NULL,
+	customerid integer 	DEFAULT NULL
+		CONSTRAINT cash_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	comment text 		DEFAULT '' NOT NULL,
 	docid integer 		DEFAULT 0 NOT NULL,
 	itemid smallint		DEFAULT 0 NOT NULL,
@@ -741,9 +744,9 @@ CREATE TABLE netdevices (
 	netdevicemodelid integer DEFAULT NULL
 		REFERENCES netdevicemodels (id) ON UPDATE CASCADE ON DELETE SET NULL,
 	ownerid integer DEFAULT NULL
-		REFERENCES customers (id) ON UPDATE CASCADE ON DELETE SET NULL,
+		CONSTRAINT netdevices_ownerid_fkey REFERENCES customers (id) ON UPDATE CASCADE ON DELETE SET NULL,
 	address_id integer DEFAULT NULL
-		REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE SET NULL,
+		CONSTRAINT netdevices_address_id_fkey REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE SET NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX netdevices_channelid_idx ON netdevices (channelid);
@@ -784,7 +787,8 @@ CREATE TABLE nodes (
 	ipaddr bigint 		DEFAULT 0 NOT NULL,
 	ipaddr_pub bigint 	DEFAULT 0 NOT NULL,
 	passwd varchar(32)	DEFAULT '' NOT NULL,
-	ownerid integer 	DEFAULT 0 NOT NULL,
+	ownerid integer 	DEFAULT NULL
+		CONSTRAINT nodes_ownerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	netdev integer 		DEFAULT 0 NOT NULL,
 	linktype smallint	DEFAULT 0 NOT NULL,
 	linkradiosector integer DEFAULT NULL
@@ -908,7 +912,8 @@ CREATE SEQUENCE voipaccounts_id_seq;
 DROP TABLE IF EXISTS voipaccounts CASCADE;
 CREATE TABLE voipaccounts (
 	id		integer		NOT NULL DEFAULT nextval('voipaccounts_id_seq'::text),
-	ownerid		integer		NOT NULL DEFAULT 0,
+	ownerid		integer		DEFAULT NULL,
+		CONSTRAINT voipaccounts_ownerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	login		varchar(255)	NOT NULL DEFAULT '',
 	passwd		varchar(255)	NOT NULL DEFAULT '',
 	phone		varchar(255)	NOT NULL DEFAULT '',
@@ -1327,7 +1332,7 @@ CREATE TABLE customerassignments (
 	customergroupid integer NOT NULL
 	    REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	customerid integer NOT NULL
-	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	    CONSTRAINT customerassignments_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	CONSTRAINT customerassignments_customergroupid_key UNIQUE (customergroupid, customerid)
 );
@@ -1357,7 +1362,8 @@ CREATE SEQUENCE nodesessions_id_seq;
 DROP TABLE IF EXISTS nodesessions CASCADE;
 CREATE TABLE nodesessions (
 	id integer		DEFAULT nextval('nodesessions_id_seq'::text) NOT NULL,
-	customerid integer	DEFAULT 0 NOT NULL,
+	customerid integer	DEFAULT NULL
+		CONSTRAINT nodesessions_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	nodeid integer		DEFAULT 0 NOT NULL,
 	ipaddr bigint		DEFAULT 0 NOT NULL,
 	mac varchar(17)		DEFAULT '' NOT NULL,
@@ -1468,7 +1474,8 @@ CREATE TABLE rttickets (
   state smallint 	DEFAULT 0 NOT NULL,
   cause smallint	DEFAULT 0 NOT NULL,
   owner integer 	DEFAULT 0 NOT NULL,
-  customerid integer 	DEFAULT 0 NOT NULL,
+  customerid integer 	DEFAULT NULL
+    CONSTRAINT rttickets_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
   creatorid integer 	DEFAULT 0 NOT NULL,
   createtime integer 	DEFAULT 0 NOT NULL,
   resolvetime integer 	DEFAULT 0 NOT NULL,
@@ -1477,9 +1484,9 @@ CREATE TABLE rttickets (
   deltime integer	DEFAULT 0 NOT NULL,
   deluserid integer	DEFAULT 0 NOT NULL,
   address_id integer	DEFAULT NULL
-    CONSTRAINT rttickets_address_id_fk REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT rttickets_address_id_fkey REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE CASCADE,
   nodeid integer	DEFAULT NULL
-    CONSTRAINT rttickets_nodeid_fk REFERENCES nodes (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT rttickets_nodeid_fkey REFERENCES nodes (id) ON UPDATE CASCADE ON DELETE CASCADE,
   netnodeid integer	DEFAULT NULL,
   PRIMARY KEY (id)
 );
@@ -1497,7 +1504,8 @@ CREATE TABLE rtmessages (
   ticketid integer 	NOT NULL
     REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
   userid integer 	DEFAULT 0 NOT NULL,
-  customerid integer 	DEFAULT 0 NOT NULL,
+  customerid integer 	DEFAULT NULL
+    CONSTRAINT rtmessages_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
   phonefrom varchar(20)	DEFAULT '' NOT NULL,
   mailfrom varchar(255) DEFAULT '' NOT NULL,
   subject varchar(255) 	DEFAULT '' NOT NULL,
@@ -1596,7 +1604,8 @@ CREATE SEQUENCE passwd_id_seq;
 DROP TABLE IF EXISTS passwd CASCADE;
 CREATE TABLE passwd (
         id integer DEFAULT nextval('passwd_id_seq'::text) NOT NULL,
-	ownerid integer 	DEFAULT 0 NOT NULL,
+	ownerid integer 	DEFAULT NULL
+		CONSTRAINT passwd_ownerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	login varchar(200) 	DEFAULT '' NOT NULL,
 	password varchar(200) 	DEFAULT '' NOT NULL,
 	lastlogin integer 	DEFAULT 0 NOT NULL,
@@ -1629,7 +1638,8 @@ CREATE SEQUENCE domains_id_seq;
 DROP TABLE IF EXISTS domains CASCADE;
 CREATE TABLE domains (
 	id integer DEFAULT nextval('domains_id_seq'::text) NOT NULL,
-	ownerid integer 	DEFAULT 0 NOT NULL,
+	ownerid integer 	DEFAULT NULL
+		CONSTRAINT domains_ownerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	name varchar(255) 	DEFAULT '' NOT NULL,
 	description text 	DEFAULT '' NOT NULL,
 	master varchar(128) 	DEFAULT NULL,
@@ -1756,7 +1766,8 @@ CREATE TABLE events (
 	enddate 	integer 	DEFAULT 0 NOT NULL,
 	endtime 	smallint 	DEFAULT 0 NOT NULL,
 	userid 		integer 	DEFAULT 0 NOT NULL,
-	customerid 	integer 	DEFAULT 0 NOT NULL,
+	customerid 	integer 	DEFAULT NULL
+		CONSTRAINT events_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	private 	smallint 	DEFAULT 0 NOT NULL,
 	closed 		smallint 	DEFAULT 0 NOT NULL,
 	closeddate	integer		DEFAULT 0 NOT NULL,
@@ -1847,7 +1858,7 @@ CREATE TABLE cashimport (
     customer text		DEFAULT '' NOT NULL,
     description text	DEFAULT '' NOT NULL,
     customerid integer 		DEFAULT NULL
-	    REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT cashimport_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
     hash varchar(50) 		DEFAULT '' NOT NULL,
     closed smallint 		DEFAULT 0 NOT NULL,
     sourceid integer		DEFAULT NULL
@@ -1998,7 +2009,7 @@ DROP TABLE IF EXISTS customercontacts CASCADE;
 CREATE TABLE customercontacts (
     id 		integer 	DEFAULT nextval('customercontacts_id_seq'::text) NOT NULL,
     customerid 	integer 	NOT NULL
-	    REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT customercontacts_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
     name 	varchar(255) 	NOT NULL DEFAULT '',
     contact	varchar(255) 	NOT NULL DEFAULT '',
     type    integer         DEFAULT NULL,
@@ -2066,7 +2077,8 @@ CREATE SEQUENCE messageitems_id_seq;
 CREATE TABLE messageitems (
         id 		integer 	DEFAULT nextval('messageitems_id_seq'::text) NOT NULL,
 	messageid 	integer		DEFAULT 0 NOT NULL,
-	customerid 	integer 	DEFAULT 0 NOT NULL,
+	customerid 	integer 	DEFAULT NULL
+		CONSTRAINT messageitems_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	destination 	varchar(255) 	DEFAULT '' NOT NULL,
 	lastdate 	integer		DEFAULT 0 NOT NULL,
 	status 		smallint	DEFAULT 0 NOT NULL,
@@ -2255,8 +2267,9 @@ CREATE SEQUENCE up_rights_assignments_id_seq;
 DROP TABLE IF EXISTS up_rights_assignments CASCADE;
 CREATE TABLE up_rights_assignments (
 	id integer 		DEFAULT nextval('up_rights_assignments_id_seq'::text) NOT NULL,
-	customerid integer 	DEFAULT 0 NOT NULL,
-        rightid integer 	DEFAULT 0 NOT NULL,
+	customerid integer DEFAULT NULL
+		CONSTRAINT up_rights_assignments_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	rightid integer 	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT up_rights_assignments_customerid_key UNIQUE (customerid, rightid)
 );
@@ -2269,7 +2282,8 @@ CREATE SEQUENCE up_customers_id_seq;
 DROP TABLE IF EXISTS up_customers CASCADE;
 CREATE TABLE up_customers (
 	id integer 		        DEFAULT nextval('up_customers_id_seq'::text) NOT NULL,
-    customerid integer 	    DEFAULT 0 NOT NULL,
+    customerid integer 	    DEFAULT NULL
+		CONSTRAINT up_customers_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	lastlogindate integer 	DEFAULT 0 NOT NULL,
 	lastloginip varchar(16) DEFAULT '' NOT NULL,
 	failedlogindate integer DEFAULT 0 NOT NULL,
@@ -2300,7 +2314,8 @@ CREATE SEQUENCE up_info_changes_id_seq;
 DROP TABLE IF EXISTS up_info_changes CASCADE;
 CREATE TABLE up_info_changes (
 	id integer 		DEFAULT nextval('up_info_changes_id_seq'::text) NOT NULL,
-	customerid integer 	DEFAULT 0 NOT NULL,
+	customerid integer 	DEFAULT NULL
+		CONSTRAINT up_info_changes_customerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	fieldname varchar(255) 	DEFAULT 0 NOT NULL,
 	fieldvalue varchar(255) DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
@@ -2546,9 +2561,9 @@ CREATE VIEW vnodealltariffs AS
 			SELECT vn.id,
 				(CASE WHEN nd.id IS NULL THEN vn.ownerid ELSE nd.ownerid END) AS ownerid
 			FROM vnodes vn
-			LEFT JOIN netdevices nd ON nd.id = vn.netdev AND vn.ownerid = 0 AND nd.ownerid IS NOT NULL
-			WHERE (vn.ownerid > 0 AND nd.id IS NULL)
-				OR (vn.ownerid = 0 AND nd.id IS NOT NULL)
+			LEFT JOIN netdevices nd ON nd.id = vn.netdev AND vn.ownerid IS NULL AND nd.ownerid IS NOT NULL
+			WHERE (vn.ownerid IS NOT NULL AND nd.id IS NULL)
+				OR (vn.ownerid IS NULL AND nd.id IS NOT NULL)
 		) n ON n.ownerid = a.customerid
 		LEFT JOIN (
 			SELECT customerid, COUNT(id) AS allsuspended FROM assignments
@@ -3138,6 +3153,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017092901');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101100');
 
 COMMIT;

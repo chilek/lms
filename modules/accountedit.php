@@ -93,7 +93,7 @@ if(isset($_POST['account']))
 	}
 
 	if($account['domainid'] && $account['ownerid'])
-		if(!$DB->GetOne('SELECT 1 FROM domains WHERE id=? AND (ownerid=0 OR ownerid=?)', array($account['domainid'], $account['ownerid'])))
+		if(!$DB->GetOne('SELECT 1 FROM domains WHERE id=? AND (ownerid IS NULL OR ownerid=?)', array($account['domainid'], $account['ownerid'])))
         		$error['domainid'] = trans('Selected domain has other owner!');
 
 	foreach ($ACCOUNTTYPES as $idx => $type)

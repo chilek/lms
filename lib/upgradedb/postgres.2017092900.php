@@ -24,22 +24,22 @@
 $this->BeginTrans();
 
 $this->Execute("ALTER TABLE assignments ADD COLUMN docid integer DEFAULT NULL");
-$this->Execute("ALTER TABLE assignments ADD CONSTRAINT assignments_docid_fk
+$this->Execute("ALTER TABLE assignments ADD CONSTRAINT assignments_docid_fkey
 	FOREIGN KEY (docid) REFERENCES documents (id) ON UPDATE CASCADE ON DELETE CASCADE");
 
 $this->Execute("ALTER TABLE receiptcontents ALTER COLUMN docid DROP DEFAULT");
 $this->Execute("DELETE FROM receiptcontents WHERE docid NOT IN (SELECT id FROM documents)");
-$this->Execute("ALTER TABLE receiptcontents ADD CONSTRAINT receiptcontents_docid_fk
+$this->Execute("ALTER TABLE receiptcontents ADD CONSTRAINT receiptcontents_docid_fkey
 	FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE");
 
 $this->Execute("ALTER TABLE invoicecontents ALTER COLUMN docid DROP DEFAULT");
 $this->Execute("DELETE FROM invoicecontents WHERE docid NOT IN (SELECT id FROM documents)");
-$this->Execute("ALTER TABLE invoicecontents ADD CONSTRAINT invoicecontents_docid_fk
+$this->Execute("ALTER TABLE invoicecontents ADD CONSTRAINT invoicecontents_docid_fkey
 	FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE");
 
 $this->Execute("ALTER TABLE debitnotecontents ALTER COLUMN docid DROP DEFAULT");
 $this->Execute("DELETE FROM debitnotecontents WHERE docid NOT IN (SELECT id FROM documents)");
-$this->Execute("ALTER TABLE debitnotecontents ADD CONSTRAINT debitnotecontents_docid_fk
+$this->Execute("ALTER TABLE debitnotecontents ADD CONSTRAINT debitnotecontents_docid_fkey
 	FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017092900', 'dbversion'));

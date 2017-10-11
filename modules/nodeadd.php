@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -160,9 +160,9 @@ if (isset($_POST['nodedata']))
 	else
 	{
 		$status = $LMS->GetCustomerStatus($nodedata['ownerid']);
-		if ($status == 1) // unknown (interested)
+		if ($status == CSTATUS_INTERESTED) // unknown (interested)
 			$error['ownerid'] = trans('Selected customer is not connected!');
-		else if ($status == 2 && $nodedata['access']) // awaiting
+		else if ($status == CSTATUS_WAITING && $nodedata['access']) // awaiting
 	        $error['access'] = trans('Node owner is not connected!');
 	}
 
@@ -177,7 +177,7 @@ if (isset($_POST['nodedata']))
 			if (!preg_match('/^[0-9]+$/', $nodedata['port']) || $nodedata['port'] > $ports) {
 				$error['port'] = trans('Incorrect port number!');
 			}
-			else if ($DB->GetOne('SELECT id FROM vnodes WHERE netdev=? AND port=? AND ownerid>0',
+			else if ($DB->GetOne('SELECT id FROM vnodes WHERE netdev=? AND port=? AND ownerid IS NOT NULL',
 					array($nodedata['netdev'], $nodedata['port']))
 			        || $DB->GetOne('SELECT 1 FROM netlinks WHERE (src = ? OR dst = ?)
 			        AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?',

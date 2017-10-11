@@ -60,7 +60,7 @@ switch ($action) {
 			UNION
 				(SELECT linktype AS type, linkradiosector AS srcradiosector, NULL AS dstradiosector,
 				linktechnology AS technology, linkspeed AS speed, id, port AS srcport, NULL AS dstport
-				FROM nodes WHERE netdev = ? AND ownerid > 0)
+				FROM nodes WHERE netdev = ? AND ownerid IS NOT NULL)
 			ORDER BY srcport', array($dev1['id'], $dev1['id'], $dev1['id'], $dev1['id'], $dev1['id'],
 					$dev1['id'], $dev1['id'], $dev1['id']));
 
@@ -75,7 +75,7 @@ switch ($action) {
 			UNION
 				(SELECT linktype AS type, linkradiosector AS srcradiosector, NULL AS dstradiosector,
 					linktechnology AS technology, linkspeed AS speed, id, port AS srcport, NULL AS dstport
-					FROM nodes WHERE netdev = ? AND ownerid > 0)
+					FROM nodes WHERE netdev = ? AND ownerid IS NOT NULL)
 			ORDER BY srcport', array($dev2['id'], $dev2['id'], $dev2['id'], $dev2['id'], $dev2['id'],
 					$dev2['id'], $dev2['id'], $dev2['id']));
 
@@ -214,7 +214,7 @@ switch ($action) {
 			if ($dev['srcport']) {
 				if (!preg_match('/^[0-9]+$/', $dev['srcport']) || $dev['srcport'] > $ports2) {
 					$error['srcport'] = trans('Incorrect port number!');
-				} elseif ($DB->GetOne('SELECT id FROM vnodes WHERE netdev=? AND port=? AND ownerid>0', array($dev['id'], $dev['srcport']))
+				} elseif ($DB->GetOne('SELECT id FROM vnodes WHERE netdev=? AND port=? AND ownerid IS NOT NULL', array($dev['id'], $dev['srcport']))
 						|| $DB->GetOne('SELECT 1 FROM netlinks WHERE (src = ? OR dst = ?)
 					AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?', array($dev['id'], $dev['id'], $dev['id'], $dev['srcport']))) {
 					$error['srcport'] = trans('Selected port number is taken by other device or node!');
@@ -224,7 +224,7 @@ switch ($action) {
 			if ($dev['dstport']) {
 				if (!preg_match('/^[0-9]+$/', $dev['dstport']) || $dev['dstport'] > $ports1) {
 					$error['dstport'] = trans('Incorrect port number!');
-				} elseif ($DB->GetOne('SELECT id FROM vnodes WHERE netdev=? AND port=? AND ownerid>0', array($_GET['id'], $dev['dstport']))
+				} elseif ($DB->GetOne('SELECT id FROM vnodes WHERE netdev=? AND port=? AND ownerid IS NOT NULL', array($_GET['id'], $dev['dstport']))
 						|| $DB->GetOne('SELECT 1 FROM netlinks WHERE (src = ? OR dst = ?)
 					AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?', array($_GET['id'], $_GET['id'], $_GET['id'], $dev['dstport']))) {
 					$error['dstport'] = trans('Selected port number is taken by other device or node!');
@@ -272,7 +272,7 @@ switch ($action) {
 		elseif ($node['port']) {
 			if (!preg_match('/^[0-9]+$/', $node['port']) || $node['port'] > $ports) {
 				$error['port'] = trans('Incorrect port number!');
-			} elseif ($DB->GetOne('SELECT id FROM vnodes WHERE netdev=? AND port=? AND ownerid>0', array($_GET['id'], $node['port']))
+			} elseif ($DB->GetOne('SELECT id FROM vnodes WHERE netdev=? AND port=? AND ownerid IS NOT NULL', array($_GET['id'], $node['port']))
 					|| $DB->GetOne('SELECT 1 FROM netlinks WHERE (src = ? OR dst = ?)
 				AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?', array($_GET['id'], $_GET['id'], $_GET['id'], $node['port']))) {
 				$error['port'] = trans('Selected port number is taken by other device or node!');
@@ -330,7 +330,7 @@ switch ($action) {
 				);
 				$SYSLOG->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
 			}
-			$DB->Execute('DELETE FROM nodes WHERE id = ? AND ownerid = 0', array($_GET['ip']));
+			$DB->Execute('DELETE FROM nodes WHERE id = ? AND ownerid IS NULL', array($_GET['ip']));
 		}
 
 		$SESSION->redirect('?m=netdevinfo&id=' . $_GET['id']);
@@ -338,7 +338,7 @@ switch ($action) {
 	case 'ipset':
 		if (!empty($_GET['ip'])) {
 			if ($SYSLOG) {
-				$access = $DB->GetOne('SELECT access FROM vnodes WHERE id = ? AND ownerid = 0',
+				$access = $DB->GetOne('SELECT access FROM vnodes WHERE id = ? AND ownerid IS NULL',
 					array($_GET['ip']));
 				$args = array(
 					SYSLOG::RES_NODE => $_GET['ip'],
@@ -348,7 +348,7 @@ switch ($action) {
 				$SYSLOG->AddMessage(SYSLOG::RES_NODE, SYSLOG::OPER_UPDATE, $args);
 			}
 			$DB->Execute('UPDATE nodes SET access = (CASE access WHEN 1 THEN 0 ELSE 1 END)
-			WHERE id = ? AND ownerid = 0', array($_GET['ip']));
+				WHERE id = ? AND ownerid IS NULL', array($_GET['ip']));
 		} else
 			$LMS->IPSetU($_GET['id'], $_GET['access']);
 
@@ -358,7 +358,7 @@ switch ($action) {
 	case 'formaddip':
 		$subtitle = trans('New IP address');
 		$nodeipdata = $_POST['ipadd'];
-		$nodeipdata['ownerid'] = 0;
+		$nodeipdata['ownerid'] = null;
 		foreach ($nodeipdata['macs'] as $key => $value)
 			$nodeipdata['macs'][$key] = str_replace('-', ':', $value);
 
@@ -450,7 +450,7 @@ switch ($action) {
 
 		$subtitle = trans('IP address edit');
 		$nodeipdata = $_POST['ipadd'];
-		$nodeipdata['ownerid'] = 0;
+		$nodeipdata['ownerid'] = null;
 		foreach ($nodeipdata['macs'] as $key => $value)
 			$nodeipdata['macs'][$key] = str_replace('-', ':', $value);
 

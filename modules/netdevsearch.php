@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -100,11 +100,11 @@ function NetDevSearch($order='name,asc', $search=NULL, $sqlskey='AND')
 
 	$netdevlist = $DB->GetAll('SELECT DISTINCT d.id, d.name, a.location, d.description, d.producer,
 					d.model, d.serialnumber, d.ports,
-					(SELECT COUNT(*) FROM vnodes WHERE netdev = d.id AND ownerid > 0)
+					(SELECT COUNT(*) FROM vnodes WHERE netdev = d.id AND ownerid IS NOT NULL)
 					+ (SELECT COUNT(*) FROM netlinks WHERE src = d.id OR dst = d.id) AS takenports
 				FROM netdevices d
 					LEFT JOIN vaddresses a ON d.address_id = a.id'
-				.(isset($nodes) ? ' LEFT JOIN vnodes n ON (netdev = d.id AND n.ownerid = 0)' : '')
+				.(isset($nodes) ? ' LEFT JOIN vnodes n ON (netdev = d.id AND n.ownerid IS NULL)' : '')
 				.(isset($searchargs) ? $searchargs : '')
 				.($sqlord != '' ? $sqlord.' '.$direction : ''));
 

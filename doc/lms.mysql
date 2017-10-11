@@ -394,7 +394,7 @@ CREATE TABLE customer_addresses (
 	address_id  int(11),
 	type        smallint NULL,
 	PRIMARY KEY (id),
-	CONSTRAINT `customer_addresses_customer_id_fk` FOREIGN KEY (customer_id) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT `customer_addresses_customer_id_fkey` FOREIGN KEY (customer_id) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT `customer_addresses_address_id_fk`  FOREIGN KEY (address_id)  REFERENCES addresses (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	UNIQUE(customer_id, address_id)
 ) ENGINE=InnoDB;
@@ -411,7 +411,7 @@ CREATE TABLE documents (
 	extnumber varchar(255) NOT NULL DEFAULT '',
 	cdate int(11) NOT NULL DEFAULT '0',
 	sdate int(11) NOT NULL DEFAULT '0',
-	customerid int(11) NOT NULL DEFAULT '0',
+	customerid int(11) DEFAULT NULL,
 	userid int(11) NOT NULL DEFAULT '0',
 	divisionid int(11) NOT NULL DEFAULT '0',
 	name varchar(255) NOT NULL DEFAULT '',
@@ -451,7 +451,10 @@ CREATE TABLE documents (
 	INDEX customerid (customerid),
 	INDEX closed (closed),
 	INDEX reference (reference),
-	FOREIGN KEY recipient_address_id_fk(recipient_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE
+	CONSTRAINT documents_recipient_address_id_fkey
+		FOREIGN KEY (recipient_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT documents_customerid_fkey
+		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -564,10 +567,14 @@ CREATE TABLE assignments (
   INDEX tariffid (tariffid),
   INDEX customerid (customerid),
   INDEX numberplanid (numberplanid),
-  FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY recipient_address_id_fk2(recipient_address_id) REFERENCES addresses(id) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY assignments_docid_fk(docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT assignments_customerid_fkey
+  	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT assignments_numberplanid
+  	FOREIGN KEY (numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT assignments_recipient_address_id_fkey
+  	FOREIGN KEY (recipient_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT assignments_docid_fkey
+  	FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -581,7 +588,7 @@ CREATE TABLE cash (
   userid int(11) NOT NULL DEFAULT '0',
   value decimal(9,2) NOT NULL DEFAULT '0',
   taxid int(11) NOT NULL DEFAULT '0',
-  customerid int(11) NOT NULL DEFAULT '0',
+  customerid int(11) DEFAULT NULL,
   comment text NOT NULL DEFAULT '',
   docid int(11) NOT NULL DEFAULT '0',
   itemid smallint NOT NULL DEFAULT '0',
@@ -592,7 +599,9 @@ CREATE TABLE cash (
   INDEX docid (docid),
   INDEX time (time),
   INDEX importid (importid),
-  INDEX sourceid (sourceid)
+  INDEX sourceid (sourceid),
+  CONSTRAINT cash_customerid_fkey
+  	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -826,7 +835,8 @@ CREATE TABLE netdevices (
   FOREIGN KEY (netnodeid) REFERENCES netnodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (netdevicemodelid) REFERENCES netdevicemodels (id) ON UPDATE CASCADE ON DELETE SET NULL,
-  FOREIGN KEY (ownerid) REFERENCES customers (id) ON UPDATE CASCADE ON DELETE SET NULL
+  CONSTRAINT netdevices_ownerid_fkey
+    FOREIGN KEY (ownerid) REFERENCES customers (id) ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -862,7 +872,7 @@ CREATE TABLE nodes (
   ipaddr int(16) unsigned NOT NULL DEFAULT '0',
   ipaddr_pub int(16) unsigned NOT NULL DEFAULT '0',
   passwd varchar(32) NOT NULL DEFAULT '',
-  ownerid int(11) NOT NULL DEFAULT '0',
+  ownerid int(11) DEFAULT NULL,
   creationdate int(11) NOT NULL DEFAULT '0',
   moddate int(11) NOT NULL DEFAULT '0',
   creatorid int(11) NOT NULL DEFAULT '0',
@@ -894,10 +904,13 @@ CREATE TABLE nodes (
   INDEX ipaddr_pub (ipaddr_pub),
   INDEX linkradiosector (linkradiosector),
   INDEX authtype (authtype),
-  CONSTRAINT `nodes_address_id_fk` FOREIGN KEY (`address_id`) REFERENCES `addresses` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT nodes_address_id_fkey
+    FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY (linkradiosector) REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE
+  FOREIGN KEY (linkradiosector) REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT nodes_ownerid_fkey
+    FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -973,7 +986,7 @@ CREATE TABLE nodeassignments (
 #
 CREATE TABLE voipaccounts (
 	id 		        int(11) 	  NOT NULL auto_increment,
-	ownerid 	    int(11) 	  NOT NULL DEFAULT 0,
+	ownerid 	    int(11) 	  DEFAULT NULL,
 	login		    varchar(255)  NOT NULL DEFAULT '',
 	passwd		    varchar(255)  NOT NULL DEFAULT '',
 	access          tinyint(1)    NOT NULL DEFAULT '1',
@@ -986,7 +999,10 @@ CREATE TABLE voipaccounts (
 	cost_limit		decimal(12,2) NULL DEFAULT NULL,
 	address_id      int(11)       NULL DEFAULT NULL,
 	PRIMARY KEY (id),
-	CONSTRAINT `voipaccounts_address_id_fk` FOREIGN KEY (`address_id`) REFERENCES `addresses` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+	CONSTRAINT voipaccounts_address_id_fkey
+		FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT voipaccounts_ownerid_fkey
+		FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1377,8 +1393,10 @@ CREATE TABLE customerassignments (
   PRIMARY KEY (id),
   UNIQUE KEY customerassignment (customergroupid, customerid),
   INDEX customerid (customerid),
-  FOREIGN KEY (customergroupid) REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT customerassignments_customergroupid_fkey
+  	FOREIGN KEY (customergroupid) REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT customerassignments_customerid_fkey
+  	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1402,7 +1420,7 @@ CREATE TABLE stats (
 #
 CREATE TABLE nodesessions (
 	id int(11)		NOT NULL auto_increment,
-	customerid int(11)	NOT NULL DEFAULT '0',
+	customerid int(11)	DEFAULT NULL,
 	nodeid int(11)		NOT NULL DEFAULT '0',
 	ipaddr int(16) unsigned NOT NULL DEFAULT '0',
 	mac varchar(17)		NOT NULL DEFAULT '',
@@ -1416,7 +1434,9 @@ CREATE TABLE nodesessions (
 	PRIMARY KEY (id),
 	INDEX customerid (customerid),
 	INDEX nodeid (nodeid),
-	INDEX tag (tag)
+	INDEX tag (tag),
+	CONSTRAINT nodesessions_customerid_fkey
+		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1476,7 +1496,7 @@ CREATE TABLE rttickets (
   state tinyint(4) NOT NULL DEFAULT '0',
   cause tinyint(4) NOT NULL DEFAULT '0',
   owner int(11) NOT NULL DEFAULT '0',
-  customerid int(11) NOT NULL DEFAULT '0',
+  customerid int(11) DEFAULT NULL,
   creatorid int(11) NOT NULL DEFAULT '0',
   createtime int(11) NOT NULL DEFAULT '0',
   resolvetime int(11) NOT NULL DEFAULT '0',
@@ -1492,11 +1512,14 @@ CREATE TABLE rttickets (
   INDEX customerid (customerid),
   INDEX creatorid (creatorid),
   INDEX createtime (createtime),
-  FOREIGN KEY (queueid) REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `rttickets_address_id_fk`
+  CONSTRAINT rttickets_queueid_fkey
+    FOREIGN KEY (queueid) REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT rttickets_address_id_fkey
     FOREIGN KEY (address_id) REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT `rttickets_nodeid_fk`
-    FOREIGN KEY (nodeid) REFERENCES nodes (id) ON UPDATE CASCADE ON DELETE CASCADE
+  CONSTRAINT rttickets_nodeid_fkey
+    FOREIGN KEY (nodeid) REFERENCES nodes (id) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT rttickets_customerid_fkey
+    FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1507,7 +1530,7 @@ CREATE TABLE rtmessages (
   id int(11) NOT NULL auto_increment,
   ticketid int(11) NOT NULL,
   userid int(11) NOT NULL DEFAULT '0',
-  customerid int(11) NOT NULL DEFAULT '0',
+  customerid int(11) DEFAULT NULL,
   phonefrom varchar(20) NOT NULL DEFAULT '',
   mailfrom varchar(255) NOT NULL DEFAULT '',
   subject varchar(255) NOT NULL DEFAULT '',
@@ -1523,7 +1546,10 @@ CREATE TABLE rtmessages (
   deluserid int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY  (id),
   INDEX ticketid (ticketid),
-  FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT rtmessages_ticketid_fkey
+    FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT rtmessages_customerid_fkey
+    FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1613,7 +1639,7 @@ CREATE TABLE rtqueuecategories (
 #
 CREATE TABLE passwd (
     id int(11) NOT NULL auto_increment,
-    ownerid int(11) NOT NULL DEFAULT 0,
+    ownerid int(11) DEFAULT NULL,
     login varchar(200) NOT NULL DEFAULT '',
     password varchar(200) NOT NULL DEFAULT '',
     lastlogin int(11) NOT NULL DEFAULT 0,
@@ -1635,7 +1661,9 @@ CREATE TABLE passwd (
     description text NOT NULL DEFAULT '',
     PRIMARY KEY (id),
     UNIQUE KEY (login, domainid),
-    INDEX ownerid (ownerid)
+    INDEX ownerid (ownerid),
+	CONSTRAINT passwd_ownerid_fkey
+		FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1644,7 +1672,7 @@ CREATE TABLE passwd (
 #
 CREATE TABLE domains (
     id int(11) NOT NULL auto_increment,
-    ownerid int(11) NOT NULL DEFAULT 0,
+    ownerid int(11) DEFAULT NULL,
     name varchar(255) NOT NULL DEFAULT '',
     description text NOT NULL DEFAULT '',
     master VARCHAR(128) DEFAULT NULL,
@@ -1655,7 +1683,9 @@ CREATE TABLE domains (
     mxbackup tinyint(1) NOT NULL DEFAULT '0',
     PRIMARY KEY (id),
     UNIQUE KEY (name),
-    INDEX ownerid (ownerid)
+    INDEX ownerid (ownerid),
+	CONSTRAINT domains_ownerid_fkey
+		FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1761,7 +1791,7 @@ CREATE TABLE events (
     enddate int(11) NOT NULL DEFAULT '0',
     endtime smallint(4) NOT NULL DEFAULT '0',
     userid int(11) NOT NULL DEFAULT '0',
-    customerid int(11) NOT NULL DEFAULT '0',
+    customerid int(11) DEFAULT NULL,
     private tinyint(1) NOT NULL DEFAULT '0',
     closed tinyint(1) NOT NULL DEFAULT '0',
     closeddate int(11) NOT NULL DEFAULT '0',
@@ -1776,11 +1806,14 @@ CREATE TABLE events (
     PRIMARY KEY (id),
     INDEX date (date),
     KEY nodeid (nodeid),
-    FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT event_ticketid_rttickets_id_fk
-		FOREIGN KEY (ticketid) REFERENCES rttickets(id) ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT events_address_id_fk
-		FOREIGN KEY (address_id) REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE CASCADE
+	CONSTRAINT events_nodeid_fkey
+		FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT events_ticketid_fkey
+		FOREIGN KEY (ticketid) REFERENCES rttickets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT events_address_id_fkey
+		FOREIGN KEY (address_id) REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT events_customerid_fkey
+		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1856,9 +1889,12 @@ CREATE TABLE cashimport (
     INDEX customerid (customerid),
     INDEX sourceid (sourceid),
     INDEX sourcefileid (sourcefileid),
-    FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    FOREIGN KEY (sourceid) REFERENCES cashsources (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    FOREIGN KEY (sourcefileid) REFERENCES sourcefiles (id) ON DELETE SET NULL ON UPDATE CASCADE
+    CONSTRAINT cashimport_customerid_fkey
+      FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT cashimport_sourceid_fkey
+      FOREIGN KEY (sourceid) REFERENCES cashsources (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT cashimport_sourcefileid_fkey
+      FOREIGN KEY (sourcefileid) REFERENCES sourcefiles (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1983,7 +2019,8 @@ CREATE TABLE customercontacts (
 	PRIMARY KEY (id),
 	INDEX customerid (customerid),
 	INDEX contact (contact),
-	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
+	CONSTRAINT customercontacts_customerid_fkey
+		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2036,7 +2073,7 @@ CREATE TABLE messages (
 CREATE TABLE messageitems (
         id 		int(11) 	NOT NULL auto_increment,
 	messageid 	int(11)		DEFAULT '0' NOT NULL,
-	customerid 	int(11) 	DEFAULT '0' NOT NULL,
+	customerid 	int(11) 	DEFAULT NULL,
 	destination 	varchar(255) 	DEFAULT '' NOT NULL,
 	lastdate 	int(11)		DEFAULT '0' NOT NULL,
 	status 		smallint	DEFAULT '0' NOT NULL,
@@ -2045,7 +2082,9 @@ CREATE TABLE messageitems (
 	externalmsgid	int(6)		DEFAULT '0' NOT NULL,
         PRIMARY KEY (id),
 	INDEX messageid (messageid),
-	INDEX customerid (customerid)
+	INDEX customerid (customerid),
+	CONSTRAINT messageitems_customerid_fkey
+		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2286,9 +2325,9 @@ CREATE VIEW vnodealltariffs_nodes AS
 	SELECT vn.id,
 		(CASE WHEN nd.id IS NULL THEN vn.ownerid ELSE nd.ownerid END) AS ownerid
 	FROM vnodes vn
-	LEFT JOIN netdevices nd ON nd.id = vn.netdev AND vn.ownerid = 0 AND nd.ownerid IS NOT NULL
-	WHERE (vn.ownerid > 0 AND nd.id IS NULL)
-		OR (vn.ownerid = 0 AND nd.id IS NOT NULL);
+	LEFT JOIN netdevices nd ON nd.id = vn.netdev AND vn.ownerid IS NULL AND nd.ownerid IS NOT NULL
+	WHERE (vn.ownerid IS NOT NULL AND nd.id IS NULL)
+		OR (vn.ownerid IS NULL AND nd.id IS NOT NULL);
 
 CREATE VIEW vnodealltariffs_tariffs AS
 	SELECT n.id AS nodeid, SUM(t.downrate) AS downrate, SUM(t.downceil) AS downceil,
@@ -2484,10 +2523,12 @@ CREATE TABLE up_rights (
 #
 CREATE TABLE up_rights_assignments (
 	id int(11) NOT NULL auto_increment,
-	customerid int(11) NOT NULL DEFAULT '0',
+	customerid int(11) DEFAULT NULL,
 	rightid int(11) NOT NULL DEFAULT '0',
 	PRIMARY KEY (id),
-	UNIQUE KEY up_right_assignment (customerid, rightid)
+	UNIQUE KEY up_right_assignment (customerid, rightid),
+	CONSTRAINT up_rights_assignments_customerid_fkey
+		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2496,13 +2537,15 @@ CREATE TABLE up_rights_assignments (
 #
 CREATE TABLE up_customers (
         id int(11) NOT NULL auto_increment,
-	customerid int(11) NOT NULL DEFAULT '0',
+	customerid int(11) DEFAULT NULL,
 	lastlogindate int(11) NOT NULL DEFAULT '0',
 	lastloginip varchar(16) NOT NULL DEFAULT '',
 	failedlogindate int(11) NOT NULL DEFAULT '0',
 	failedloginip varchar(16) NOT NULL DEFAULT '',
 	enabled int(10) NOT NULL DEFAULT '0',
-	PRIMARY KEY (id)
+	PRIMARY KEY (id),
+	CONSTRAINT up_customers_customerid_fkey
+		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2523,10 +2566,12 @@ CREATE TABLE up_help (
 #
 CREATE TABLE up_info_changes (
         id int(11) NOT NULL auto_increment,
-	customerid int(11) NOT NULL,
+	customerid int(11) DEFAULT NULL,
 	fieldname varchar(255) NOT NULL DEFAULT '',
 	fieldvalue varchar(255) NOT NULL DEFAULT '',
-	PRIMARY KEY (id)
+	PRIMARY KEY (id),
+	CONSTRAINT up_info_changes_customerid_fkey
+		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 INSERT INTO rtcategories (name, description)

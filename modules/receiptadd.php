@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -230,7 +230,7 @@ switch($action)
 		// get default receipt's numberplanid and next number
 		$receipt['regid'] = isset($_GET['regid']) ? $_GET['regid'] : $oldreg;
 		$receipt['type'] = isset($_GET['type']) ? $_GET['type'] : (isset($_POST['type']) ? $_POST['type'] : 0);
-		$receipt['customerid'] = isset($_GET['customerid']) ? $_GET['customerid'] : 0;
+		$receipt['customerid'] = isset($_GET['customerid']) ? $_GET['customerid'] : null;
 
 		$cashreglist = GetCashRegistries($receipt['customerid']);
 
@@ -322,7 +322,7 @@ switch($action)
 
 		// get default receipt's numberplanid and next number
 		$receipt = ($_POST['receipt']) ? $_POST['receipt'] : NULL;
-		$receipt['customerid'] = isset($_POST['customerid']) ? $_POST['customerid'] : 0;
+		$receipt['customerid'] = isset($_POST['customerid']) ? $_POST['customerid'] : null;
 		$receipt['type'] = isset($receipt['type']) ? $receipt['type'] : $_POST['type'];
 
 		if(!$receipt['regid'])
@@ -567,7 +567,7 @@ switch($action)
 
 		if($receipt['o_type'] != 'customer')
 		{
-			$receipt['customerid'] = 0;
+			$receipt['customerid'] = null;
 
 			switch($receipt['o_type'])
 			{
@@ -589,7 +589,7 @@ switch($action)
 		if(isset($_GET['customerid']) && $_GET['customerid'] != '')
 			$cid = intval($_GET['customerid']);
 		else
-			$cid = isset($_POST['customerid']) ? intval($_POST['customerid']) : 0;
+			$cid = isset($_POST['customerid']) ? intval($_POST['customerid']) : null;
 
 		$receipt['customerid'] = $cid;
 

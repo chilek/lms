@@ -232,9 +232,9 @@ if ($all_assignments)
 		SELECT vn.id, vn.name, vn.netid, vn.ipaddr, vn.mac, vn.access,
 			(CASE WHEN nd.id IS NULL THEN vn.ownerid ELSE nd.ownerid END) AS ownerid
 		FROM vnodes vn
-			LEFT JOIN netdevices nd ON nd.id = vn.netdev AND vn.ownerid = 0 AND nd.ownerid IS NOT NULL
+			LEFT JOIN netdevices nd ON nd.id = vn.netdev AND vn.ownerid IS NULL AND nd.ownerid IS NOT NULL
 		WHERE (vn.ownerid > 0 AND nd.id IS NULL)
-			OR (vn.ownerid = 0 AND nd.id IS NOT NULL)
+			OR (vn.ownerid IS NULL AND nd.id IS NOT NULL)
 	) n ON n.ownerid = c.id
 	WHERE n.id NOT IN (SELECT DISTINCT nodeid FROM nodeassignments)
 		AND a.id NOT IN (SELECT DISTINCT assignmentid FROM nodeassignments)
@@ -345,7 +345,7 @@ foreach ($nodes as $node) {
 if ($create_device_channels) {
 	$devices = $DB->GetAll("SELECT n.id, INET_NTOA(n.ipaddr) AS ip, n.name, n.mac, n.netid
 		FROM vnodes n
-		JOIN netdevices nd ON nd.id = n.netdev AND n.ownerid = 0
+		JOIN netdevices nd ON nd.id = n.netdev AND n.ownerid IS NULL
 		WHERE nd.ownerid IS NULL
 			AND n.netid IN (" . implode(',', array_keys($networks)) . ")");
 

@@ -570,11 +570,11 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     public function IPSetU($netdev, $access = FALSE)
     {
         if ($access)
-            $res = $this->db->Execute('UPDATE nodes SET access=1 WHERE netdev=? AND ownerid=0', array($netdev));
+            $res = $this->db->Execute('UPDATE nodes SET access=1 WHERE netdev=? AND ownerid IS NULL', array($netdev));
         else
-            $res = $this->db->Execute('UPDATE nodes SET access=0 WHERE netdev=? AND ownerid=0', array($netdev));
+            $res = $this->db->Execute('UPDATE nodes SET access=0 WHERE netdev=? AND ownerid IS NULL', array($netdev));
         if ($this->syslog && $res) {
-            $nodes = $this->db->GetCol('SELECT id FROM vnodes WHERE netdev=? AND ownerid=0', array($netdev));
+            $nodes = $this->db->GetCol('SELECT id FROM vnodes WHERE netdev=? AND ownerid IS NULL', array($netdev));
             foreach ($nodes as $node) {
                 $args = array(
                     SYSLOG::RES_NODE => $node,
@@ -676,7 +676,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
     public function NodeExists($id)
     {
         return ($this->db->GetOne('SELECT n.id FROM vnodes n
-			WHERE n.id = ? AND n.ownerid > 0 AND NOT EXISTS (
+			WHERE n.id = ? AND n.ownerid IS NOT NULL AND NOT EXISTS (
 		        	SELECT 1 FROM customerassignments a
 			        JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 				WHERE e.userid = lms_current_user() AND a.customerid = n.ownerid)'
@@ -693,7 +693,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				COUNT(CASE WHEN warning = 1 THEN 1 END) AS withwarning
 				FROM vnodes
 				JOIN customerview c ON c.id = ownerid
-				WHERE ownerid > 0', array(ConfigHelper::getConfig('phpui.lastonline_limit')));
+				WHERE ownerid IS NOT NULL', array(ConfigHelper::getConfig('phpui.lastonline_limit')));
 
         $result['total'] = $result['connected'] + $result['disconnected'];
         return $result;

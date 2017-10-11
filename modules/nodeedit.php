@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -199,7 +199,7 @@ if (isset($_POST['nodeedit'])) {
 
 			if (!preg_match('/^[0-9]+$/', $nodeedit['port']) || $nodeedit['port'] > $ports) {
 				$error['port'] = trans('Incorrect port number!');
-			} elseif ($DB->GetOne('SELECT id FROM vnodes WHERE netdev=? AND port=? AND ownerid>0', array($nodeedit['netdev'], $nodeedit['port']))
+			} elseif ($DB->GetOne('SELECT id FROM vnodes WHERE netdev=? AND port=? AND ownerid IS NOT NULL', array($nodeedit['netdev'], $nodeedit['port']))
 					|| $DB->GetOne('SELECT 1 FROM netlinks WHERE (src = ? OR dst = ?)
 			                AND (CASE src WHEN ? THEN srcport ELSE dstport END) = ?', array($nodeedit['netdev'], $nodeedit['netdev'], $nodeedit['netdev'], $nodeedit['port']))) {
 				$error['port'] = trans('Selected port number is taken by other device or node!');

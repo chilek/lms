@@ -191,10 +191,10 @@ if ( isset($_GET['ajax']) ) {
         $used_ips = $DB->GetAllByKey('
             SELECT
                 ipaddr as ip, nod.name, nd.name as netdev_name,
-                CASE WHEN nod.ownerid = 0 THEN nd.id ELSE nod.id END as id
+                CASE WHEN nod.ownerid IS NULL THEN nd.id ELSE nod.id END as id
             FROM
                 nodes nod
-                LEFT JOIN netdevices nd ON nod.ownerid = 0 AND nd.id = nod.netdev
+                LEFT JOIN netdevices nd ON nod.ownerid IS NULL AND nd.id = nod.netdev
                 LEFT JOIN networks net  ON net.id = nod.netid
                 LEFT JOIN hosts h       ON h.id = net.hostid
             WHERE

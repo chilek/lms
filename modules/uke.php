@@ -1057,7 +1057,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
 			a.city_id as location_city, a.street_id as location_street, a.house as location_house
 		FROM nodes n
 			LEFT JOIN addresses a ON n.address_id = a.id
-		WHERE n.ownerid > 0 AND a.city_id <> 0 AND n.netdev IN (" . implode(',', $netnode['netdevices']) . ")
+		WHERE n.ownerid IS NOT NULL AND a.city_id <> 0 AND n.netdev IN (" . implode(',', $netnode['netdevices']) . ")
 		GROUP BY n.linktype, n.linktechnology, a.street_id, a.city_id, a.house");
 	if (empty($ranges))
 		continue;
@@ -1147,7 +1147,7 @@ foreach ($netnodes as $netnodename => &$netnode) {
 					AND (aa.dateto > ?NOW? OR aa.dateto = 0) GROUP BY aa.customerid)
 				AS allsuspended ON allsuspended.cid = c.id
 			JOIN netdevices nd ON nd.id = n.netdev
-			WHERE n.ownerid > 0 AND n.netdev > 0 AND n.linktype = ? AND n.linktechnology = ? AND addr.city_id = ?
+			WHERE n.ownerid IS NOT NULL AND n.netdev > 0 AND n.linktype = ? AND n.linktechnology = ? AND addr.city_id = ?
 				AND (addr.street_id = ? OR addr.street_id IS NULL) AND addr.house = ?
 				AND a.suspended = 0 AND a.period IN (".implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)).")
 				AND (a.datefrom = 0 OR a.datefrom < ?NOW?) AND (a.dateto = 0 OR a.dateto > ?NOW?)

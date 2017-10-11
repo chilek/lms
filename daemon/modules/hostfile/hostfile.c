@@ -317,9 +317,9 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 				"FROM %nodes n "
 				"LEFT JOIN (SELECT netdev, MIN(ipaddr_pub) AS ipaddr_pub "
 					"FROM nodes "
-					"WHERE ownerid = 0 AND ipaddr_pub != 0 AND netdev != 0 "
+					"WHERE ownerid IS NULL AND ipaddr_pub != 0 AND netdev != 0 "
 					"GROUP BY netdev "
-				") s ON (s.netdev = n.netdev AND n.ownerid = 0) "
+				") s ON (s.netdev = n.netdev AND n.ownerid IS NULL) "
 				"%custjoin"
 				"%devjoin"
 				"WHERE %where "
@@ -338,9 +338,9 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 				"ORDER BY ipaddr");
 
 		if(hm->skip_dev_ips)
-			g->str_replace(&query, "%where", "n.ownerid > 0");
+			g->str_replace(&query, "%where", "n.ownerid IS NOT NULL");
 		else if(hm->skip_host_ips)
-			g->str_replace(&query, "%where", "n.ownerid = 0");
+			g->str_replace(&query, "%where", "n.ownerid IS NULL");
 		else
 			g->str_replace(&query, "%where", "1 = 1");
 

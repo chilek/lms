@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -220,7 +220,7 @@ function getRadioSectors($formdata = NULL, $result = NULL) {
 		FROM netradiosectors s
 		LEFT JOIN (
 			SELECT linkradiosector AS rs, COUNT(*) AS computers
-			FROM nodes n WHERE n.ownerid > 0 AND linkradiosector IS NOT NULL
+			FROM nodes n WHERE n.ownerid IS NOT NULL AND linkradiosector IS NOT NULL
 			GROUP BY rs
 		) n ON n.rs = s.id
 		LEFT JOIN (

@@ -124,7 +124,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		if ($result = $this->db->GetAll(
 			'SELECT DISTINCT t.id, t.customerid, t.address_id, va.name AS vaname, va.city AS vacity, va.street, va.house, va.flat, c.address, c.city, vusers.name AS ownername,
 				t.subject, t.state, owner AS ownerid, t.requestor AS req, t.source, rtqueues.name,
-				CASE WHEN customerid = 0 THEN t.requestor ELSE '
+				CASE WHEN customerid IS NULL THEN t.requestor ELSE '
 			. $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor,
 				t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
 				(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified,
@@ -477,7 +477,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				isset($message['subject']) ? $message['subject'] : '',
 				preg_replace("/\r/", "", $message['body']),
 				isset($message['userid']) ? $message['userid'] : (isset($this->auth->id) ? $this->auth->id : 0),
-				isset($message['customerid']) ? $message['customerid'] : 0,
+				isset($message['customerid']) ? $message['customerid'] : null,
 				isset($message['mailfrom']) ? $message['mailfrom'] : '',
 				isset($message['inreplyto']) ? $message['inreplyto'] : 0,
 				isset($message['messageid']) ? $message['messageid'] : $this->lastmessageid,

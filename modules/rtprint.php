@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -89,7 +89,7 @@ switch($type)
 		               	    FROM rttickets
 		               	    LEFT JOIN rtticketcategories tc ON tc.ticketid = rttickets.id
 				    LEFT JOIN customers ON (customerid = customers.id)
-				    WHERE customerid != 0'
+				    WHERE customerid IS NOT NULL'
 				    .(isset($where) ? ' AND '.implode(' AND ', $where) : '')
 				    .' GROUP BY customerid, customers.lastname, customers.name'
 				    .($times ? ' HAVING COUNT(*) > '.$times : '')
@@ -110,7 +110,7 @@ switch($type)
 			
 			foreach($list as $idx => $row)
 			{
-				$list[$idx]['customer'] = isset($customer[$row['customerid']]) ? $customer[$row['customerid']]['total'] : 0;
+				$list[$idx]['customer'] = isset($customer[$row['customerid']]) ? $customer[$row['customerid']]['total'] : null;
 				$list[$idx]['company'] = isset($company[$row['customerid']]) ? $company[$row['customerid']]['total'] : 0;
 				$list[$idx]['other'] = $list[$idx]['total'] - $list[$idx]['customer'] - $list[$idx]['company'];
 			}
@@ -174,10 +174,10 @@ switch($type)
 		{
         		if (check_date($datefrom)) {
                 		list ($year, $month, $day) = explode('/', $datefrom);
-                		$datefrom = mktime(0, 0, 0, $month, $day, $year);  
+                		$datefrom = mktime(0, 0, 0, $month, $day, $year);
         		} else
                 		$datefrom = 0;
-			$where[] = 'rttickets.createtime >= '.$datefrom;	                                                                
+			$where[] = 'rttickets.createtime >= '.$datefrom;
 		}
 
 		if($dateto)
@@ -186,8 +186,8 @@ switch($type)
                 		list ($year, $month, $day) = explode('/', $dateto);
                 		$dateto = mktime(0, 0, 0, $month, $day, $year);  
         		} else
-                		$dateto = 0;	                                                                
-			$where[] = 'rttickets.createtime <= '.$dateto;	                                                                
+                		$dateto = 0;
+			$where[] = 'rttickets.createtime <= '.$dateto;
 		}
 
 		$list = $DB->GetAllByKey('SELECT rttickets.id, createtime, customerid, subject, requestor, '
@@ -196,8 +196,8 @@ switch($type)
 				? ', city, address, (SELECT ' . $DB->GroupConcat('contact', ',', true) . '
 					FROM customercontacts WHERE customerid = c.id AND (customercontacts.type & '. (CONTACT_MOBILE|CONTACT_FAX|CONTACT_LANDLINE) .' > 0 ) GROUP BY customerid) AS phones,
 					(SELECT ' . $DB->GroupConcat('contact', ',', true) . '
-					FROM customercontacts WHERE customerid = c.id AND (customercontacts.type & ' . CONTACT_EMAIL .' = '. CONTACT_EMAIL .
-                                        ') GROUP BY customerid) AS emails ' : '')
+					FROM customercontacts WHERE customerid = c.id AND (customercontacts.type & ' . CONTACT_EMAIL .' > 0)
+					GROUP BY customerid) AS emails ' : '')
 			.'FROM rttickets
 			LEFT JOIN rtticketcategories tc ON tc.ticketid = rttickets.id
 			LEFT JOIN customeraddressview c ON (customerid = c.id)
