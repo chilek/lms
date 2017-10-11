@@ -877,7 +877,7 @@ CREATE TABLE nodes (
   moddate int(11) NOT NULL DEFAULT '0',
   creatorid int(11) NOT NULL DEFAULT '0',
   modid int(11) NOT NULL DEFAULT '0',
-  netdev int(11) NOT NULL DEFAULT '0',
+  netdev int(11) DEFAULT NULL,
   linktype tinyint(1) NOT NULL DEFAULT '0',
   linkradiosector int(11) DEFAULT NULL,
   linkspeed int(11) NOT NULL DEFAULT '100000',
@@ -904,6 +904,8 @@ CREATE TABLE nodes (
   INDEX ipaddr_pub (ipaddr_pub),
   INDEX linkradiosector (linkradiosector),
   INDEX authtype (authtype),
+  CONSTRAINT nodes_netdev_fkey
+    FOREIGN KEY (netdev) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT nodes_address_id_fkey
     FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1445,8 +1447,8 @@ CREATE TABLE nodesessions (
 #
 CREATE TABLE netlinks (
   id int(11) NOT NULL auto_increment,
-  src int(11) NOT NULL DEFAULT '0',
-  dst int(11) NOT NULL DEFAULT '0',
+  src int(11) NOT NULL,
+  dst int(11) NOT NULL,
   type tinyint(1) NOT NULL DEFAULT '0',
   speed int(11) NOT NULL DEFAULT '100000',
   technology int(11) NOT NULL DEFAULT '0',
@@ -1459,7 +1461,11 @@ CREATE TABLE netlinks (
   INDEX srcradiosector (srcradiosector),
   INDEX dstradiosector (dstradiosector),
   FOREIGN KEY (srcradiosector) REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY (dstradiosector) REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE
+  FOREIGN KEY (dstradiosector) REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT netlinks_src_fkey
+    FOREIGN KEY (src) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT netlinks_dst_fkey
+    FOREIGN KEY (dst) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -3094,4 +3100,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017092901');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101101');

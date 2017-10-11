@@ -789,7 +789,8 @@ CREATE TABLE nodes (
 	passwd varchar(32)	DEFAULT '' NOT NULL,
 	ownerid integer 	DEFAULT NULL
 		CONSTRAINT nodes_ownerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	netdev integer 		DEFAULT 0 NOT NULL,
+	netdev integer 		DEFAULT NULL
+		CONSTRAINT nodes_netdev_fkey REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	linktype smallint	DEFAULT 0 NOT NULL,
 	linkradiosector integer DEFAULT NULL
 		REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -1388,8 +1389,10 @@ CREATE SEQUENCE netlinks_id_seq;
 DROP TABLE IF EXISTS netlinks CASCADE;
 CREATE TABLE netlinks (
 	id integer default nextval('netlinks_id_seq'::text) NOT NULL,
-	src integer 		DEFAULT 0 NOT NULL,
-	dst integer 		DEFAULT 0 NOT NULL,
+	src integer 		NOT NULL
+		CONSTRAINT netlinks_src_fkey REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	dst integer 		NOT NULL
+		CONSTRAINT netlinks_dst_fkey REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	type smallint		DEFAULT 0 NOT NULL,
 	speed integer		DEFAULT 100000 NOT NULL,
 	technology integer	DEFAULT 0 NOT NULL,
@@ -3153,6 +3156,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101101');
 
 COMMIT;

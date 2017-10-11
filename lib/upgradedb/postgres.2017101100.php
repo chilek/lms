@@ -105,7 +105,6 @@ $cids = $this->GetCol("SELECT id FROM customers");
 if (!empty($cids)) {
 	$cid_string = implode(',', $cids);
 	foreach ($sql_tables as $sql_table => $props) {
-		$this->Execute("ALTER TABLE " . $sql_table . " ALTER COLUMN " . $props['column'] . " DROP DEFAULT");
 		$this->Execute("ALTER TABLE " . $sql_table . " ALTER COLUMN " . $props['column'] . " DROP NOT NULL");
 		$this->Execute("ALTER TABLE " . $sql_table . " ALTER COLUMN " . $props['column'] . " SET DEFAULT NULL");
 		$this->Execute("UPDATE " . $sql_table . " SET " . $props['column'] . " = NULL WHERE " . $props['column'] . " = 0
