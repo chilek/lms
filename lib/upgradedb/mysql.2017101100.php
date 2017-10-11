@@ -110,7 +110,7 @@ if (!empty($cids)) {
 		$this->Execute("ALTER TABLE " . $sql_table . " ALTER COLUMN " . $props['column'] . " DROP DEFAULT");
 		$this->Execute("ALTER TABLE " . $sql_table . " MODIFY " . $props['column'] . " int(11) NULL");
 		$this->Execute("ALTER TABLE " . $sql_table . " ALTER COLUMN " . $props['column'] . " SET DEFAULT NULL");
-		$this->Execute("UPDATE " . $sql_table . " SET customerid = NULL WHERE " . $props['column'] . " = 0
+		$this->Execute("UPDATE " . $sql_table . " SET " . $props['column'] . " = NULL WHERE " . $props['column'] . " = 0
 			OR " . $props['column'] . " NOT IN (" . $cid_string . ")");
 		$this->Execute("ALTER TABLE " . $sql_table . " ADD CONSTRAINT " . $sql_table . "_" . $props['column'] . "_fkey
 			FOREIGN KEY (" . $props['column'] . ") REFERENCES customers (id) ON DELETE " . $props['ondelete'] . " ON UPDATE " . $props['onupdate']);
