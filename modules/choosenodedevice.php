@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2016 LMS Developers
+ *  Copyright (C) 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -37,12 +37,13 @@ if (isset($_POST['searchnodedev']) && $_POST['searchnodedev']) {
 											n.id, n.name, n.lastonline, inet_ntoa(n.ipaddr) as ipaddr, inet_ntoa(n.ipaddr_pub) as ipaddr_pub,
 											c.name as customername, c.lastname, c.street, c.building, c. apartment
 										FROM
-											nodes n left join customers c on n.ownerid = c.id
+											nodes n
+										LEFT JOIN customers c ON n.ownerid = c.id
 										WHERE
 											(n.name ?LIKE? ' . $DB->Escape('%'.$search.'%') . ' OR
 											inet_ntoa(n.ipaddr) ?LIKE? ' . $DB->Escape('%'.$search.'%') . ' OR
 											inet_ntoa(n.ipaddr_pub) ?LIKE? ' . $DB->Escape('%'.$search.'%') . ')
-											AND n.netdev = 0
+											AND n.netdev IS NULL
 										ORDER BY
 											n.name');
 

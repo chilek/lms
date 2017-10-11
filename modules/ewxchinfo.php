@@ -62,7 +62,7 @@ if ($channel['id']) {
 	    FROM netdevices WHERE id IN (
             SELECT netdev
             FROM vnodes
-            WHERE netdev > 0 AND id IN (
+            WHERE netdev IS NOT NULL AND id IN (
                 SELECT nodeid
                 FROM ewx_stm_nodes
                 WHERE channelid IN (SELECT id FROM ewx_stm_channels

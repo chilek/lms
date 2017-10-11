@@ -293,9 +293,9 @@ $nodelist = array();
 $devicelinks = array();
 $nodemap = array();
 
-if(!$mini && ($nodes = $DB->GetAll('SELECT id, linktype, netdev 
-			FROM vnodes 
-			WHERE ownerid IS NOT NULL AND netdev > 0
+if(!$mini && ($nodes = $DB->GetAll('SELECT id, linktype, netdev
+			FROM vnodes
+			WHERE ownerid IS NOT NULL AND netdev IS NOT NULL
 			ORDER BY name ASC')))
 {
 	foreach($nodes as $idx => $node)

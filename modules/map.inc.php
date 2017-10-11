@@ -110,7 +110,7 @@ if ($nodes) {
 
 	if ($devices) {
 		$nodelinks = $DB->GetAll('SELECT n.id AS nodeid, netdev, linktype AS type, linktechnology AS technology,
-			linkspeed AS speed FROM vnodes n WHERE netdev > 0 AND ownerid IS NOT NULL
+			linkspeed AS speed FROM vnodes n WHERE netdev IS NOT NULL AND ownerid IS NOT NULL
 			AND n.id IN ('.$nodeids.') AND netdev IN ('.$devids.')');
 		if ($nodelinks)
 			foreach ($nodelinks as $nodelinkidx => $nodelink) {

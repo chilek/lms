@@ -317,7 +317,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 				"FROM %nodes n "
 				"LEFT JOIN (SELECT netdev, MIN(ipaddr_pub) AS ipaddr_pub "
 					"FROM nodes "
-					"WHERE ownerid IS NULL AND ipaddr_pub != 0 AND netdev != 0 "
+					"WHERE ownerid IS NULL AND ipaddr_pub != 0 AND netdev IS NOT NULL "
 					"GROUP BY netdev "
 				") s ON (s.netdev = n.netdev AND n.ownerid IS NULL) "
 				"%custjoin"
