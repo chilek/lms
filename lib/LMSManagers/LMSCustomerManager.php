@@ -750,7 +750,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 		AND (netid = ' . $network . '
                 		OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')))
                 	OR EXISTS (SELECT 1 FROM netdevices
-                		JOIN vnodes ON vnodes.netdev = netdevices.id AND vnodes.ownerid = 0
+                		JOIN vnodes ON vnodes.netdev = netdevices.id AND vnodes.ownerid IS NULL
                 		WHERE netdevices.ownerid = c.id AND (netid = ' . $network . '
                 		OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . '))))' : '')
                 . (!empty($customergroup) ? ' AND ca.gcount = ' . (is_array($customergroup) ? count($customergroup) : 1) : '')
