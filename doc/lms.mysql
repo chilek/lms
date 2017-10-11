@@ -905,7 +905,7 @@ CREATE TABLE nodes (
   INDEX linkradiosector (linkradiosector),
   INDEX authtype (authtype),
   CONSTRAINT nodes_netdev_fkey
-    FOREIGN KEY (netdev) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (netdev) REFERENCES netdevices (id) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT nodes_address_id_fkey
     FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (netid) REFERENCES networks (id) ON DELETE CASCADE ON UPDATE CASCADE,

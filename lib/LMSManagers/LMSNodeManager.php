@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2016 LMS Developers
+ *  Copyright (C) 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -45,7 +45,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'ipaddr_pub'        => $nodedata['ipaddr_pub'],
             'ipaddr'            => $nodedata['ipaddr'],
             'passwd'            => $nodedata['passwd'],
-            SYSLOG::RES_NETDEV  => $nodedata['netdev'],
+            SYSLOG::RES_NETDEV  => empty($nodedata['netdev']) ? null : $nodedata['netdev'],
             SYSLOG::RES_USER    => $this->auth->id,
             'access'            => $nodedata['access'],
             'warning'           => $nodedata['warning'],
@@ -393,7 +393,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 						AND a.datefrom <= ?NOW? AND (a.dateto = 0 OR a.dateto >= ?NOW?)
 					)' : '')
 				. ($status == 5 ? ' AND n.location_city IS NULL' : '')
-				. ($status == 6 ? ' AND n.netdev = 0' : '')
+				. ($status == 6 ? ' AND n.netdev IS NULL' : '')
 				. ($status == 7 ? ' AND n.warning = 1' : '')
 				. ($status == 8 ? ' AND (n.latitude IS NULL OR n.longitude IS NULL)' : '')
 				. ($customergroup ? ' AND customergroupid = ' . intval($customergroup) : '')
@@ -600,7 +600,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'access'            => $nodedata['access'],
             'warning'           => $nodedata['warning'],
             'info'              => $nodedata['info'],
-            SYSLOG::RES_NETDEV  => $nodedata['netdev'],
+            SYSLOG::RES_NETDEV  => empty($nodedata['netdev']) ? null : $nodedata['netdev'],
             'linktype'          => isset($nodedata['linktype']) ? intval($nodedata['linktype']) : 0,
             'linkradiosector'   => (isset($nodedata['linktype']) && intval($nodedata['linktype']) == 1 ?
         (isset($nodedata['radiosector']) && intval($nodedata['radiosector']) ? intval($nodedata['radiosector']) : null) : null),
@@ -689,7 +689,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				COUNT(CASE WHEN access=0 THEN 1 END) AS disconnected,
 				COUNT(CASE WHEN ?NOW?-lastonline < ? THEN 1 END) AS online,
 				COUNT(CASE WHEN location_city IS NULL THEN 1 END) AS withoutterryt,
-				COUNT(CASE WHEN netdev = 0 THEN 1 END) AS withoutnetdev,
+				COUNT(CASE WHEN netdev IS NULL THEN 1 END) AS withoutnetdev,
 				COUNT(CASE WHEN warning = 1 THEN 1 END) AS withwarning
 				FROM vnodes
 				JOIN customerview c ON c.id = ownerid

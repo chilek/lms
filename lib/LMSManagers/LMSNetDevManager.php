@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2016 LMS Developers
+ *  Copyright (C) 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,7 +27,6 @@
 /**
  * LMSNetDevManager
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 {
@@ -646,7 +645,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
                 }
         }
         $this->db->Execute('DELETE FROM netlinks WHERE src=? OR dst=?', array($id, $id));
-        $this->db->Execute('UPDATE nodes SET netdev=0, port=0
+        $this->db->Execute('UPDATE nodes SET netdev = NULL, port=0
 				WHERE netdev=? AND ownerid IS NOT NULL', array($id));
     }
 
@@ -706,7 +705,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
         $this->db->Execute('DELETE FROM netlinks WHERE src=? OR dst=?', array($id, $id));
         $this->db->Execute('DELETE FROM nodes WHERE ownerid IS NULL AND netdev=?', array($id));
-        $this->db->Execute('UPDATE nodes SET netdev=0 WHERE netdev=?', array($id));
+        $this->db->Execute('UPDATE nodes SET netdev = NULL WHERE netdev=?', array($id));
         $this->db->Execute('DELETE FROM netdevices WHERE id=?', array($id));
         $this->db->CommitTrans();
     }

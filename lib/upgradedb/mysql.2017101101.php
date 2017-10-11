@@ -34,7 +34,7 @@ if (!empty($netdevids)) {
 }
 
 $this->Execute("ALTER TABLE nodes ADD CONSTRAINT nodes_netdev_fkey
-	FOREIGN KEY (netdev) REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE");
+	FOREIGN KEY (netdev) REFERENCES netdevices (id) ON DELETE SET NULL ON UPDATE CASCADE");
 
 $this->Execute("ALTER TABLE netlinks ALTER COLUMN src DROP DEFAULT");
 $this->Execute("ALTER TABLE netlinks ADD CONSTRAINT netlinks_src_fkey

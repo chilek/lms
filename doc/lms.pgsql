@@ -790,7 +790,7 @@ CREATE TABLE nodes (
 	ownerid integer 	DEFAULT NULL
 		CONSTRAINT nodes_ownerid_fkey REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	netdev integer 		DEFAULT NULL
-		CONSTRAINT nodes_netdev_fkey REFERENCES netdevices (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT nodes_netdev_fkey REFERENCES netdevices (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	linktype smallint	DEFAULT 0 NOT NULL,
 	linkradiosector integer DEFAULT NULL
 		REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
