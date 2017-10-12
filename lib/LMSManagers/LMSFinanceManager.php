@@ -333,7 +333,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                 // Create assignment
                 $args = array(
-                    SYSLOG::RES_TARIFF  => $tariffid,
+                    SYSLOG::RES_TARIFF  => empty($tariffid) ? null : $tariffid,
                     SYSLOG::RES_CUST    => $data['customerid'],
                     'period'            => $period,
                     'at'                => $at,
@@ -422,7 +422,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 'pdiscount'         => str_replace(',', '.', $data['pdiscount']),
                 'vdiscount'         => str_replace(',', '.', $data['vdiscount']),
                 'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
-                SYSLOG::RES_LIAB    => isset($lid) ? $lid : 0,
+                SYSLOG::RES_LIAB    => isset($lid) ? $lid : null,
                 'recipient_address_id' => $data['recipient_address_id'] >= 0 ? $data['recipient_address_id'] : NULL
             );
 
@@ -595,7 +595,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 'pdiscount' => $item['pdiscount'],
                 'vdiscount' => $item['vdiscount'],
                 'description' => $item['name'],
-                SYSLOG::RES_TARIFF => $item['tariffid'],
+                SYSLOG::RES_TARIFF => empty($item['tariffid']) ? null : $item['tariffid'],
             );
             $this->db->Execute('INSERT INTO invoicecontents (docid, itemid,
 				value, taxid, prodid, content, count, pdiscount, vdiscount, description, tariffid)
@@ -1099,7 +1099,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			            OR EXISTS (
 			                    SELECT 1 FROM assignments b
 					    WHERE b.customerid = a.customerid
-						    AND liabilityid = 0 AND tariffid = 0
+						    AND liabilityid IS NULL AND tariffid IS NULL
 						    AND b.datefrom <= ?NOW? AND (b.dateto > ?NOW? OR b.dateto = 0)
 				    )
 			)', array($id));
@@ -1506,7 +1506,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			sh_limit, www_limit, mail_limit, sql_limit, ftp_limit, quota_sh_limit,
 			quota_www_limit, quota_mail_limit, quota_sql_limit, quota_ftp_limit
 			FROM tariffs WHERE type <> ? AND type <> ? AND type <> ? AND id IN (SELECT tariffid FROM assignments
-			WHERE customerid = ? AND tariffid != 0
+			WHERE customerid = ? AND tariffid IS NOT NULL
 				AND (dateto > ?NOW? OR dateto = 0)
 				AND (datefrom < ?NOW? OR datefrom = 0))', array(TARIFF_INTERNET, TARIFF_PHONE, TARIFF_TV, $customerid))) {
 			foreach ($limits as $row) {

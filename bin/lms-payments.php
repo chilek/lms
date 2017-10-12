@@ -339,28 +339,28 @@ if (!empty($groupsql))
 
 # let's go, fetch *ALL* assignments in given day
 $query = "SELECT a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id,
-		a.period, a.at, a.suspended, a.settlement, a.datefrom, a.pdiscount, a.vdiscount, 
-		a.invoice, t.description AS description, a.id AS assignmentid, 
+		a.period, a.at, a.suspended, a.settlement, a.datefrom, a.pdiscount, a.vdiscount,
+		a.invoice, t.description AS description, a.id AS assignmentid,
 		c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
 		d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
-		(CASE a.liabilityid WHEN 0 THEN t.type ELSE -1 END) AS tarifftype, 
-		(CASE a.liabilityid WHEN 0 THEN t.name ELSE l.name END) AS name, 
-		(CASE a.liabilityid WHEN 0 THEN t.taxid ELSE l.taxid END) AS taxid, 
-		(CASE a.liabilityid WHEN 0 THEN t.prodid ELSE l.prodid END) AS prodid, 
-		ROUND(((((100 - a.pdiscount) * (CASE a.liabilityid WHEN 0 THEN t.value ELSE l.value END)) / 100) - a.vdiscount) *
+		(CASE WHEN a.liabilityid IS NULL THEN t.type ELSE -1 END) AS tarifftype,
+		(CASE WHEN a.liabilityid IS NULL THEN t.name ELSE l.name END) AS name,
+		(CASE WHEN a.liabilityid IS NULL THEN t.taxid ELSE l.taxid END) AS taxid,
+		(CASE WHEN a.liabilityid IS NULL THEN t.prodid ELSE l.prodid END) AS prodid,
+		ROUND(((((100 - a.pdiscount) * (CASE WHEN a.liabilityid IS NULL THEN t.value ELSE l.value END)) / 100) - a.vdiscount) *
 			(CASE a.suspended WHEN 0
 				THEN 1.0
 				ELSE $suspension_percentage / 100
 			END), 2) AS value,
-		(SELECT COUNT(id) FROM assignments 
-			WHERE customerid = c.id AND tariffid = 0 AND liabilityid = 0 
+		(SELECT COUNT(id) FROM assignments
+			WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL
 			AND datefrom <= $currtime
-			AND (dateto > $currtime OR dateto = 0)) AS allsuspended 
-	FROM assignments a 
-	JOIN customers c ON (a.customerid = c.id) 
-	LEFT JOIN tariffs t ON (a.tariffid = t.id) 
-	LEFT JOIN liabilities l ON (a.liabilityid = l.id) 
-	LEFT JOIN divisions d ON (d.id = c.divisionid) 
+			AND (dateto > $currtime OR dateto = 0)) AS allsuspended
+	FROM assignments a
+	JOIN customers c ON (a.customerid = c.id)
+	LEFT JOIN tariffs t ON (a.tariffid = t.id)
+	LEFT JOIN liabilities l ON (a.liabilityid = l.id)
+	LEFT JOIN divisions d ON (d.id = c.divisionid)
 	WHERE (c.status = ? OR c.status = ?)
 		AND ((a.period = ? AND at = ?)
 			OR ((a.period = ?
@@ -794,11 +794,11 @@ if ($check_invoices) {
 }
 
 // delete old assignments
-$DB->Execute("DELETE FROM liabilities WHERE id IN ( 
-	SELECT liabilityid FROM assignments 
-	WHERE dateto < ?NOW? - 86400 * 30 AND dateto <> 0 AND at < $today - 86400 * 30 
-		AND liabilityid != 0)");
-$DB->Execute("DELETE FROM assignments 
+$DB->Execute("DELETE FROM liabilities WHERE id IN (
+	SELECT liabilityid FROM assignments
+	WHERE dateto < ?NOW? - 86400 * 30 AND dateto <> 0 AND at < $today - 86400 * 30
+		AND liabilityid IS NOT NULL)");
+$DB->Execute("DELETE FROM assignments
 	WHERE dateto < ?NOW? - 86400 * 30 AND dateto <> 0 AND at < $today - 86400 * 30");
 
 // clear voip tariff rule states

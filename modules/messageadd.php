@@ -200,7 +200,7 @@ function GetRecipients($filter, $type = MSG_MAIL) {
 			WHERE documents.closed = 0
 				AND documents.type NOT IN (' . DOC_INVOICE . ',' . DOC_CNOTE . ',' . DOC_DNOTE . '))' : '')
 		. ($tarifftype ? ' AND NOT EXISTS (SELECT id FROM assignments
-			WHERE customerid = c.id AND tariffid = 0 AND liabilityid = 0
+			WHERE customerid = c.id AND tariffid IS NULL AND liabilityid IS NULL
 				AND (datefrom = 0 OR datefrom < ?NOW?)
 				AND (dateto = 0 OR dateto > ?NOW?))' : '')
 		.' ORDER BY customername');

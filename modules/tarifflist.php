@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -142,7 +142,7 @@ function GetTariffList($order = 'name,asc', $type = NULL, $customergroupid = NUL
 					OR EXISTS (
 						SELECT 1 FROM assignments b
 						WHERE b.customerid = a.customerid
-							AND liabilityid = 0 AND tariffid = 0
+							AND liabilityid IS NULL AND tariffid IS NULL
 							AND b.datefrom <= ?NOW? AND (b.dateto > ?NOW? OR b.dateto = 0)
 					)
 				)'

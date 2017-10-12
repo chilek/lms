@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -51,7 +51,7 @@ if (isset($_POST['assignment']))
 
 	$a['id'] = $_GET['id'];
 	$a['customerid'] = $customer['id'];
-	$a['liabilityid'] = isset($_GET['lid']) ? $_GET['lid'] : 0;
+	$a['liabilityid'] = isset($_GET['lid']) ? $_GET['lid'] : null;
 
 	$period = sprintf('%d',$a['period']);
 
@@ -271,7 +271,7 @@ if (isset($_POST['assignment']))
 							SYSLOG::RES_CUST => $customer['id']);
 						$SYSLOG->AddMessage(SYSLOG::RES_LIAB, SYSLOG::OPER_DELETE, $args);
 					}
-					$a['liabilityid'] = 0;
+					$a['liabilityid'] = null;
 				}
 				else {
 					$args = array(
@@ -317,7 +317,7 @@ if (isset($_POST['assignment']))
 		}
 
 		$args = array(
-			SYSLOG::RES_TARIFF => intval($a['tariffid']),
+			SYSLOG::RES_TARIFF => empty($a['tariffid']) ? null : intval($a['tariffid']),
 			SYSLOG::RES_CUST => $customer['id'],
 			'attribute' => !empty($a['attribute']) ? $a['attribute'] : NULL,
 			'period' => $period,
@@ -402,7 +402,7 @@ else
 	$a = $DB->GetRow('SELECT a.id AS id, a.customerid, a.tariffid, a.period,
 				a.at, a.datefrom, a.dateto, a.numberplanid, a.paytype,
 				a.invoice, a.settlement, a.pdiscount, a.vdiscount, a.attribute, a.liabilityid,
-				(CASE liabilityid WHEN 0 THEN tariffs.name ELSE liabilities.name END) AS name,
+				(CASE WHEN liabilityid IS NULL THEN tariffs.name ELSE liabilities.name END) AS name,
 				liabilities.value AS value, liabilities.prodid AS prodid, liabilities.taxid AS taxid,
 				recipient_address_id
 				FROM assignments a

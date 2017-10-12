@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -201,7 +201,7 @@ if (isset($_POST['assignment'])) {
 		switch ($a['tariffid']) {
 			// suspending
 			case -1:
-				$a['tariffid']  = 0;
+				$a['tariffid']  = null;
 				$a['discount']  = 0;
 				$a['pdiscount'] = 0;
 				$a['vdiscount'] = 0;

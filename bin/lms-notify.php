@@ -1211,7 +1211,7 @@ if (!empty($intersect)) {
 					}
 					if (in_array('assignment-invoice', $actions)) {
 						$assigns = $DB->GetAll("SELECT id, customerid FROM assignments
-							WHERE invoice = ? AND (tariffid <> 0 OR liabilityid <> 0)
+							WHERE invoice = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
 								AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
 								AND customerid IN (" . implode(',', $customers) . ")",
 							array(1));
@@ -1247,14 +1247,14 @@ if (!empty($intersect)) {
 							SYSLOG::RES_ASSIGN => null,
 							SYSLOG::RES_CUST => null,
 							'datefrom' => time(),
-							SYSLOG::RES_TARIFF => 0,
-							SYSLOG::RES_LIAB => 0,
+							SYSLOG::RES_TARIFF => null,
+							SYSLOG::RES_LIAB => null,
 						);
 						foreach ($customers as $cid)
-							if (!$DB->GetOne("SELECT id FROM assignments WHERE customerid = ? AND tariffid = 0 AND liabilityid = 0",
+							if (!$DB->GetOne("SELECT id FROM assignments WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL",
 								array($cid))) {
 								$DB->Execute("INSERT INTO assignments (customerid, datefrom, tariffid, liabilityid)
-									VALUES (?, ?, 0, 0)", array($cid, $args['datefrom']));
+									VALUES (?, ?, NULL, NULL)", array($cid, $args['datefrom']));
 								if ($SYSLOG) {
 									$SYSLOG->NewTransaction('lms-notify.php');
 									$args[SYSLOG::RES_ASSIGN] = $DB->GetLastInsertID('assignments');
@@ -1294,7 +1294,7 @@ if (!empty($intersect)) {
 					}
 					if (in_array('assignment-invoice', $actions)) {
 						$assigns = $DB->GetAll("SELECT id, customerid FROM assignments
-							WHERE invoice = ? AND (tariffid <> 0 OR liabilityid <> 0)
+							WHERE invoice = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
 								AND datefrom <= ?NOW? AND (dateto = 0 OR dateto >= ?NOW?)
 								AND customerid IN (" . implode(',', $customers) . ")",
 							array(0));
@@ -1335,13 +1335,13 @@ if (!empty($intersect)) {
 						foreach ($customers as $cid) {
 							if ($SYSLOG)
 								$SYSLOG->NewTransaction('lms-notify.php');
-							if ($datefrom = $DB->GetOne("SELECT datefrom FROM assignments WHERE customerid = ? AND tariffid = 0 AND liabilityid = 0",
+							if ($datefrom = $DB->GetOne("SELECT datefrom FROM assignments WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL",
 								array($cid))) {
 								$year = intval(strftime('%Y', $datefrom));
 								$month = intval(strftime('%m', $datefrom));
 								if ($year < $current_year || ($year == $current_year && $month < $current_month)) {
 									$aids = $DB->GetCol("SELECT id FROM assignments
-										WHERE customerid = ? AND (tariffid <> 0 OR liabilityid <> 0)
+										WHERE customerid = ? AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL)
 											AND datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?)",
 										array($cid));
 									if (!empty($aids))
@@ -1357,7 +1357,7 @@ if (!empty($intersect)) {
 								}
 							}
 							$aids = $DB->GetCol("SELECT id FROM assignments
-								WHERE customerid = ? AND tariffid = 0 AND liabilityid = 0", array($cid));
+								WHERE customerid = ? AND tariffid IS NULL AND liabilityid IS NULL", array($cid));
 							if (!empty($aids))
 								foreach ($aids as $aid) {
 									$DB->Execute("DELETE FROM assignments WHERE id = ?", array($aid));

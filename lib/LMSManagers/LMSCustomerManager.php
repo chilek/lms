@@ -764,10 +764,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     WHERE a.customerid = c.id
                         AND datefrom <= ?NOW?
                         AND (dateto >= ?NOW? OR dateto = 0)
-                        AND (tariffid != 0 OR liabilityid != 0))' : '')
+                        AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL))' : '')
                 . ($suspended ? ' AND EXISTS (SELECT 1 FROM assignments a
                     WHERE a.customerid = c.id AND (
-                        (tariffid = 0 AND liabilityid = 0
+                        (tariffid IS NULL AND liabilityid IS NULL
                             AND datefrom <= ?NOW?
                             AND (dateto >= ?NOW? OR dateto = 0))
                         OR (datefrom <= ?NOW?
@@ -1211,7 +1211,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 }
         }
 
-        $liabs = $this->db->GetCol('SELECT liabilityid FROM assignments WHERE liabilityid <> 0 AND customerid = ?', array($id));
+        $liabs = $this->db->GetCol('SELECT liabilityid FROM assignments WHERE liabilityid IS NOT NULL AND customerid = ?', array($id));
         if (!empty($liabs))
             $this->db->Execute('DELETE FROM liabilities WHERE id IN (' . implode(',', $liabs) . ')');
 

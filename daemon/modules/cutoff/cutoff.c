@@ -1,7 +1,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -204,7 +204,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 		            		"WHERE customerid = a.customerid "
 				        "AND (datefrom <= %NOW% OR datefrom = 0) "
 					"AND (dateto >= %NOW% OR dateto = 0) "
-					"AND tariffid = 0 AND liabilityid = 0 "
+					"AND tariffid IS NULL AND liabilityid IS NULL "
 				")";   
 	else
 		suspended = "";
@@ -242,7 +242,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 					"WHERE nodeid = n.id AND assignmentid = a.id "
 						"AND (datefrom <= %NOW% OR datefrom = 0) "
 						"AND (dateto >= %NOW% OR dateto = 0) "
-						"AND (tariffid != 0 OR liabilityid != 0) "
+						"AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL) "
 						"%suspended"
 				")"
 				"%groups%egroups%nets%enets"
@@ -288,7 +288,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 					"WHERE a.customerid = c.id "
 						"AND (datefrom <= %NOW% OR datefrom = 0) "
 						"AND (dateto >= %NOW% OR dateto = 0) "
-						"AND (tariffid != 0 OR liabilityid != 0) "
+						"AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL) "
 						"%suspended"
 					")"
 				"%groups%egroups%nets%enets"

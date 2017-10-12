@@ -453,7 +453,7 @@ if ($netdevices)
 							AND (a.datefrom = 0 OR a.datefrom < ?NOW?) AND (a.dateto = 0 OR a.dateto > ?NOW?))
 				AND NOT EXISTS
 					(SELECT id FROM assignments aa
-						WHERE aa.customerid = c.id AND aa.tariffid = 0 AND aa.liabilityid = 0
+						WHERE aa.customerid = c.id AND aa.tariffid IS NULL AND aa.liabilityid IS NULL
 							AND (aa.datefrom < ?NOW? OR aa.datefrom = 0)
 							AND (aa.dateto > ?NOW? OR aa.dateto = 0))
 			GROUP BY linktype, linktechnology, linkspeed, rs.frequency, c.type
@@ -1142,8 +1142,8 @@ foreach ($netnodes as $netnodename => &$netnode) {
 			JOIN tariffs t           ON t.id = a.tariffid
 			JOIN customers c ON c.id = n.ownerid
 			LEFT JOIN (SELECT aa.customerid AS cid, COUNT(id) AS total FROM assignments aa
-				WHERE aa.tariffid = 0 AND aa.liabilityid = 0
-					AND (aa.datefrom < ?NOW? OR aa.datefrom = 0)
+				WHERE aa.tariffid IS NULL AND aa.liabilityid IS NULL
+					AND aa.datefrom < ?NOW?
 					AND (aa.dateto > ?NOW? OR aa.dateto = 0) GROUP BY aa.customerid)
 				AS allsuspended ON allsuspended.cid = c.id
 			JOIN netdevices nd ON nd.id = n.netdev
