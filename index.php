@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -172,7 +172,7 @@ $SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
 $SMARTY->debugging = ConfigHelper::checkConfig('phpui.smarty_debug');
 
 $layout['logname'] = $AUTH->logname;
-$layout['logid'] = $AUTH->id;
+$layout['logid'] = Auth::GetCurrentUser();
 $layout['lmsdbv'] = $DB->GetVersion();
 $layout['smarty_version'] = SMARTY_VERSION;
 $layout['hostname'] = hostname();
@@ -230,7 +230,7 @@ if ($AUTH->islogged) {
 	LMSConfig::getConfig(array(
 		'force' => true,
 		'force_user_rights_only' => true,
-		'user_id' => $AUTH->id,
+		'user_id' => Auth::GetCurrentUser(),
 	));
 
 	$module = isset($_GET['m']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_GET['m']) : '';
@@ -259,9 +259,9 @@ if ($AUTH->islogged) {
 
 	if ($module_dir !== null)
 	{
-		$global_allow = !$AUTH->id || (!empty($global_access_regexp) && preg_match('/' . $global_access_regexp . '/i', $module));
+		$global_allow = !Auth::GetCurrentUser() || (!empty($global_access_regexp) && preg_match('/' . $global_access_regexp . '/i', $module));
 
-		if ($AUTH->id && ($rights = $LMS->GetUserRights($AUTH->id)))
+		if (Auth::GetCurrentUser() && ($rights = $LMS->GetUserRights(Auth::GetCurrentUser())))
 			$allow = $access->checkRights($module, $rights, $global_allow);
 
 		if ($SYSLOG)
@@ -286,7 +286,7 @@ if ($AUTH->islogged) {
 		} else {
 			if ($SYSLOG)
 				$SYSLOG->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_USERNOACCESS,
-					array(SYSLOG::RES_USER => $AUTH->id));
+					array(SYSLOG::RES_USER => Auth::GetCurrentUser()));
 			$SMARTY->display('noaccess.html');
 		}
 	}

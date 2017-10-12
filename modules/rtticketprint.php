@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,7 +29,7 @@ if(! $LMS->TicketExists($_GET['id']))
 	$SESSION->redirect('?m=rtqueuelist');
 }
 
-if(! $LMS->GetUserRightsRT($AUTH->id, 0, $_GET['id']))
+if(! $LMS->GetUserRightsRT(Auth::GetCurrentUser(), 0, $_GET['id']))
 {
 	$SMARTY->display('noaccess.html');
 	$SESSION->close();

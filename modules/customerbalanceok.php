@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -35,8 +35,8 @@ if($LMS->CustomerExists($customerid))
 		$DB->BeginTrans();
 
 		$DB->Execute('INSERT INTO cash (time, type, userid, value, customerid, comment)
-			VALUES (?NOW?, 1, ?, ?, ?, ?)', 
-			array($AUTH->id, 
+			VALUES (?NOW?, 1, ?, ?, ?, ?)',
+			array(Auth::GetCurrentUser(),
 				str_replace(',','.', $balance*-1),
 				$customerid,
 				trans('Accounted')));

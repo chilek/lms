@@ -83,11 +83,11 @@ class LMS
         // set current user
         switch (ConfigHelper::getConfig('database.type')) {
             case 'postgres':
-                $this->DB->Execute('SELECT set_config(\'lms.current_user\', ?, false)', array(strval($this->AUTH->id)));
+                $this->DB->Execute('SELECT set_config(\'lms.current_user\', ?, false)', array(strval(Auth::GetCurrentUser())));
                 break;
             case 'mysql':
             case 'mysqli':
-                $this->DB->Execute('SET @lms_current_user=?', array($this->AUTH->id));
+                $this->DB->Execute('SET @lms_current_user=?', array(Auth::GetCurrentUser()));
                 break;
         }
     }
@@ -139,7 +139,7 @@ class LMS
       if( $loglevel <= ConfigHelper::getConfig('phpui.loglevel') && $message )
       {
       $this->DB->Execute('INSERT INTO syslog (time, userid, level, message)
-      VALUES (?NOW?, ?, ?, ?)', array($this->AUTH->id, $loglevel, $message));
+      VALUES (?NOW?, ?, ?, ?)', array(Auth::GetCurrentUser(), $loglevel, $message));
       }
       }
      */
@@ -3402,7 +3402,7 @@ class LMS
 				if ($add_message) {
 					$this->DB->Execute('INSERT INTO messages (subject, body, cdate, type, userid)
 						VALUES (?, ?, ?NOW?, ?, ?)',
-						array($subject, $body, MSG_MAIL, empty($this->AUTH) ? 0 : $this->AUTH->id));
+						array($subject, $body, MSG_MAIL, Auth::GetCurrentUser()));
 					$msgid = $this->DB->GetLastInsertID('messages');
 					foreach (explode(',', $custemail) as $email) {
 						$this->DB->Execute('INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)

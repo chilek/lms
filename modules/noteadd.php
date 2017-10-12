@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -227,7 +227,7 @@ switch($action)
 				SYSLOG::RES_NUMPLAN => !empty($note['numberplanid']) ? $note['numberplanid'] : 0,
 				'type' => DOC_DNOTE,
 				'cdate' => $cdate,
-				SYSLOG::RES_USER => $AUTH->id,
+				SYSLOG::RES_USER => Auth::GetCurrentUser(),
 				SYSLOG::RES_CUST => $customer['id'],
 				'name' => $customer['customername'],
 				'address' => ($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']

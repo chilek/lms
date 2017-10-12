@@ -145,7 +145,7 @@ if (!ConfigHelper::checkConfig('phpui.big_networks'))
 if (isset($eventticketid))
 	$event['ticketid'] = $eventticketid;
 
-$categories = $LMS->GetCategoryListByUser($AUTH->id);
+$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 $SMARTY->assign('max_userlist_size', ConfigHelper::getConfig('phpui.event_max_userlist_size'));
 $SMARTY->assign('userlist', $userlist);
 $SMARTY->assign('tqname',$tqname);

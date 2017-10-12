@@ -28,7 +28,7 @@ if(isset($_GET['ticketid']))
 {
 	$note['ticketid'] = intval($_GET['ticketid']);
 
-	if(($LMS->GetUserRightsRT($AUTH->id, 0, $note['ticketid']) & 2) != 2)
+	if(($LMS->GetUserRightsRT(Auth::GetCurrentUser(), 0, $note['ticketid']) & 2) != 2)
         {
 	        $SMARTY->display('noaccess.html');
 	        $SESSION->close();
@@ -92,7 +92,7 @@ elseif(isset($_POST['note']))
 
 		if(isset($note['notify']))
 		{
-			$user = $LMS->GetUserInfo($AUTH->id);
+			$user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 			$queue = $LMS->GetQueueByTicketId($note['ticketid']);
 			$mailfname = '';
 

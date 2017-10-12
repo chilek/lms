@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -48,7 +48,7 @@ if($id && $_GET['is_sure'] == '1') {
 			$args = array(
 				SYSLOG::RES_DOC => $document['id'],
 				SYSLOG::RES_CUST => $document['customerid'],
-				SYSLOG::RES_USER => $AUTH->id
+				SYSLOG::RES_USER => Auth::GetCurrentUser()
 			);
 			$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
 		}
@@ -62,7 +62,7 @@ if($id && $_GET['is_sure'] == '1') {
 			$args = array(
 				SYSLOG::RES_DOC => $document['id'],
 				SYSLOG::RES_CUST => $document['customerid'],
-				SYSLOG::RES_USER => $AUTH->id
+				SYSLOG::RES_USER => Auth::GetCurrentUser()
 			);
 			$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
 		}

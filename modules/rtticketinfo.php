@@ -31,8 +31,8 @@ if(! $LMS->TicketExists($id))
 	$SESSION->redirect('?m=rtqueuelist');
 }
 
-$rights = $LMS->GetUserRightsRT($AUTH->id, 0, $id);
-$catrights = $LMS->GetUserRightsToCategory($AUTH->id, 0, $id);
+$rights = $LMS->GetUserRightsRT(Auth::GetCurrentUser(), 0, $id);
+$catrights = $LMS->GetUserRightsToCategory(Auth::GetCurrentUser(), 0, $id);
 if(!$rights || !$catrights)
 {
 	$SMARTY->display('noaccess.html');

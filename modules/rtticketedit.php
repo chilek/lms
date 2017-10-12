@@ -28,7 +28,8 @@ include(MODULES_DIR . DIRECTORY_SEPARATOR . 'rtticketxajax.inc.php');
 
 $id = intval($_GET['id']);
 if ($id && !isset($_POST['ticket'])) {
-	if(($LMS->GetUserRightsRT($AUTH->id, 0, $id) & 2) != 2 || !$LMS->GetUserRightsToCategory($AUTH->id, 0, $id))
+	if(($LMS->GetUserRightsRT(Auth::GetCurrentUser(), 0, $id) & 2) != 2
+		|| !$LMS->GetUserRightsToCategory(Auth::GetCurrentUser(), 0, $id))
 	{
 		$SMARTY->display('noaccess.html');
 		$SESSION->close();
@@ -44,7 +45,7 @@ if ($id && !isset($_POST['ticket'])) {
 			if (!empty($queue['resolveticketsubject']) && !empty($queue['resolveticketbody'])) {
 				$ticket = $DB->GetRow('SELECT * FROM rttickets WHERE id = ?', array($id));
 				if (!empty($ticket['customerid'])) {
-					$user = $LMS->GetUserInfo($AUTH->id);
+					$user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 					$mailfname = '';
 
 					$helpdesk_sender_name = ConfigHelper::getConfig('phpui.helpdesk_sender_name');
@@ -96,13 +97,13 @@ if ($id && !isset($_POST['ticket'])) {
 	}
 
 	if (isset($_GET['assign'])) {
-		$LMS->TicketChange($id, array('owner' => $AUTH->id));
+		$LMS->TicketChange($id, array('owner' => Auth::GetCurrentUser()));
 		$SESSION->redirect('?m=rtticketview&id=' . $id);
 	}
 }
 
 $ticket = $LMS->GetTicketContents($id);
-$categories = $LMS->GetCategoryListByUser($AUTH->id);
+$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 if (empty($categories))
 	$categories = array();
 
@@ -119,7 +120,7 @@ if(isset($_POST['ticket']))
 	if(!count($ticketedit['categories']))
 		$error['categories'] = trans('You have to select category!');
 
-	if(($LMS->GetUserRightsRT($AUTH->id, $ticketedit['queueid']) & 2) != 2)
+	if(($LMS->GetUserRightsRT(Auth::GetCurrentUser(), $ticketedit['queueid']) & 2) != 2)
 		$error['queue'] = trans('You have no privileges to this queue!');
 	
 	if($ticketedit['subject'] == '')
@@ -193,7 +194,7 @@ if(isset($_POST['ticket']))
 		$newticket_notify = ConfigHelper::getConfig('phpui.newticket_notify', false);
 		if ($ticket['queueid'] != $ticketedit['queueid']
 			&& !empty($newticket_notify)) {
-			$user = $LMS->GetUserInfo($AUTH->id);
+			$user = $LMS->GetUserInfo(Auth::GetCurrentUser());
 			$queue = $LMS->GetQueueByTicketId($ticket['ticketid']);
 			$mailfname = '';
 

@@ -380,7 +380,7 @@ switch ($mode) {
 	case 'ticket':
 		if(isset($_GET['ajax'])) // support for AutoSuggest
 		{
-			$categories = $LMS->GetCategoryListByUser($AUTH->id);
+			$categories = $LMS->GetCategoryListByUser(Auth::GetCurrentUser());
 			foreach($categories as $category)
 				$catids[] = $category['id'];
 			$candidates = $DB->GetAll("SELECT t.id, t.subject, t.requestor, c.name, c.lastname 

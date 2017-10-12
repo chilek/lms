@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,7 +30,7 @@ if ($_GET['is_sure'] == '1') {
 			$docid = $DB->GetCol('SELECT d.id FROM documents d
 				JOIN docrights r ON (r.doctype = d.type)
 				WHERE d.id = ? AND r.userid = ? AND (r.rights & 16) = 16',
-				array($id, $AUTH->id));
+				array($id, Auth::GetCurrentUser()));
 			if (!$docid)
 				continue;
 
@@ -50,7 +50,7 @@ if ($_GET['is_sure'] == '1') {
 		$docid = $DB->GetOne('SELECT d.id FROM documents d
 			JOIN docrights r ON (r.doctype = d.type)
 			WHERE d.id = ? AND r.userid = ? AND (r.rights & 16) = 16',
-			array($_GET['id'], $AUTH->id));
+			array($_GET['id'], Auth::GetCurrentUser()));
 		if (!$docid) {
 			$SMARTY->display('noaccess.html');
 			die;

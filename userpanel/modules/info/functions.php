@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -312,7 +312,7 @@ if(defined('USERPANEL_SETUPMODE'))
 				if (!isset($args[$changes['customerid']])) {
 					$args[$changes['customerid']] = array(
 						SYSLOG::RES_CUST => $changes['customerid'],
-						SYSLOG::RES_USER => $LMS->AUTH->id,
+						SYSLOG::RES_USER => Auth::GetCurrentUser(),
 					);
 					$confirmed_changes[$changes['customerid']] = array();
 				}

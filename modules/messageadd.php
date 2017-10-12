@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -399,7 +399,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 				$message['type'],
 				$message['subject'],
 				$message['body'],
-				$AUTH->id,
+				Auth::GetCurrentUser(),
 				$message['type'] == MSG_MAIL ? '"' . $message['from'] . '" <' . $message['sender'] . '>' : '',
 			));
 
@@ -621,7 +621,7 @@ $SMARTY->assign('messagetemplates', $LMS->GetMessageTemplates($msgtmpltype));
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
-$SMARTY->assign('userinfo', $LMS->GetUserInfo($AUTH->id));
+$SMARTY->assign('userinfo', $LMS->GetUserInfo(Auth::GetCurrentUser()));
 $SMARTY->assign('users', $DB->GetAll('SELECT name, phone FROM vusers WHERE phone <> \'\' ORDER BY name'));
 $SMARTY->display('message/messageadd.html');
 
