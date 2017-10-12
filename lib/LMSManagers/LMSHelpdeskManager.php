@@ -496,7 +496,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$this->db->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject,
 				state, owner, createtime, cause, creatorid, source, address_id, nodeid, netnodeid)
 				VALUES (?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, ?)', array($ticket['queue'],
-			$ticket['customerid'],
+			empty($ticket['customerid']) ? null : $ticket['customerid'],
 			$ticket['requestor'],
 			$ticket['subject'],
 			isset($ticket['owner']) ? $ticket['owner'] : 0,
