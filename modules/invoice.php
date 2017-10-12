@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -140,8 +140,8 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 				.(!empty($_GET['divisionid']) ? ' AND d.divisionid = ' . intval($_GET['divisionid']) : '')
 				.(!empty($_GET['customerid']) ? ' AND d.customerid = '.intval($_GET['customerid']) : '')
 				.(!empty($_GET['numberplanid']) ? ' AND d.numberplanid = '.intval($_GET['numberplanid']) : '')
-				.(!empty($_GET['autoissued']) ? ' AND d.userid = 0' : '')
-				.(!empty($_GET['manualissued']) ? ' AND d.userid > 0' : '')
+				.(!empty($_GET['autoissued']) ? ' AND d.userid IS NULL' : '')
+				.(!empty($_GET['manualissued']) ? ' AND d.userid IS NOT NULL' : '')
 				.(!empty($_GET['groupid']) ?
 				' AND '.(!empty($_GET['groupexclude']) ? 'NOT' : '').'
 					EXISTS (SELECT 1 FROM customerassignments a

@@ -120,7 +120,7 @@ function GetDocumentList($order='cdate,asc', $search) {
 			.($from ? ' AND ' . $datefield . ' >= '.intval($from) : '')
 			.($to ? ' AND ' . $datefield . ' <= '.intval($to) : '')
 			.($status == -1 ? '' : ' AND d.closed = ' . intval($status))
-			.$sqlord, array($AUTH->id));
+			.$sqlord, array(Auth::GetCurrentUser()));
 
 	if (!empty($list))
 		foreach ($list as &$document) {
@@ -272,7 +272,7 @@ if($docid = $SESSION->get('documentprint'))
 if($listdata['total'])
 {
 	$SMARTY->assign('docrights', $DB->GetAllByKey('SELECT doctype, rights
-			FROM docrights WHERE userid = ? AND rights > 1', 'doctype', array($AUTH->id)));
+			FROM docrights WHERE userid = ? AND rights > 1', 'doctype', array(Auth::GetCurrentUser())));
 }
 
 if (!ConfigHelper::checkConfig('phpui.big_networks'))

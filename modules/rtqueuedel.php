@@ -34,12 +34,12 @@ if ($qaction == 'delete')
 	$nodel = 0;
 	$deltime = time();
 	$DB->BeginTrans();
-	$DB->Execute('UPDATE rtqueues SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($del, $deltime, $AUTH->id, $queue));
-	$DB->Execute('UPDATE rttickets SET deleted=?, deluserid=? WHERE deleted=? and queueid = ?', array($del, $AUTH->id, $nodel, $queue));
+	$DB->Execute('UPDATE rtqueues SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($del, $deltime, Auth::GetCurrentUser(), $queue));
+	$DB->Execute('UPDATE rttickets SET deleted=?, deluserid=? WHERE deleted=? and queueid = ?', array($del, Auth::GetCurrentUser(), $nodel, $queue));
 	if ($deltickets = $DB->GetCol('SELECT id FROM rttickets WHERE queueid = ?', array($queue)))
 	{
 		foreach ($deltickets as $delticket) {
-			$DB->Execute('UPDATE rtmessages SET deleted=?, deluserid=? WHERE deleted=? and ticketid = ?', array($del, $AUTH->id, $nodel, $delticket));
+			$DB->Execute('UPDATE rtmessages SET deleted=?, deluserid=? WHERE deleted=? and ticketid = ?', array($del, Auth::GetCurrentUser(), $nodel, $delticket));
 		}
 	}
 	$DB->CommitTrans();

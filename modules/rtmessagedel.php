@@ -27,7 +27,7 @@
 $msg = intval($_GET['id']);
 $maction = ($_GET['maction']);
 $ticket = $DB->GetOne('SELECT ticketid FROM rtmessages WHERE id = ?', array($msg));
-$rights = $LMS->GetUserRightsRT($AUTH->id, 0, $ticket);
+$rights = $LMS->GetUserRightsRT(Auth::GetCurrentUser(), 0, $ticket);
 
 if(($rights & 4) != 4)
 {
@@ -40,7 +40,7 @@ if ($maction == 'delete')
 {
 	$del = 1;
 	$deltime = time();
-	$DB->Execute('UPDATE rtmessages SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($del, $deltime, $AUTH->id, $msg));
+	$DB->Execute('UPDATE rtmessages SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($del, $deltime, Auth::GetCurrentUser(), $msg));
 }
 
 $SESSION->redirect('?m=rtticketview&id=' . $ticket);

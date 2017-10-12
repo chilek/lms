@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,8 +30,8 @@ if(!$regid)
 {
         $SESSION->redirect('?m=cashreglist');
 }
-	
-if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid))<2)
+
+if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $regid))<2)
 {
         $SMARTY->display('noaccess.html');
         $SESSION->close();
@@ -91,7 +91,7 @@ if(isset($_POST['reglog']))
 			'description' => $reglog['description'],
 			'value' => $reglog['value'],
 			SYSLOG::RES_CASHREG => $regid,
-			SYSLOG::RES_USER => $AUTH->id,
+			SYSLOG::RES_USER => Auth::GetCurrentUser(),
 			'snapshot' => str_replace(',','.',floatval($snapshot))
 		);
 		$DB->Execute('INSERT INTO cashreglog (time, description, value, regid, userid, snapshot)

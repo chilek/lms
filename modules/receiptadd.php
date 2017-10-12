@@ -327,7 +327,7 @@ switch($action)
 
 		if(!$receipt['regid'])
 			$error['regid'] = trans('Registry not selected!');
-		else if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $receipt['regid']))<=1)
+		else if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $receipt['regid']))<=1)
 			$error['regid'] = trans('You have no write rights to selected registry!');
 
 		if(isset($error)) break;
@@ -548,7 +548,7 @@ switch($action)
 			if(strpos($DB->GetOne('SELECT template FROM numberplans WHERE id=?', array($receipt['numberplanid'])), '%I')!==FALSE)
 				$receipt['extended'] = TRUE;
 
-		$rights = $DB->GetOne('SELECT rights FROM cashrights WHERE regid=? AND userid=?', array($receipt['regid'], $AUTH->id));
+		$rights = $DB->GetOne('SELECT rights FROM cashrights WHERE regid=? AND userid=?', array($receipt['regid'], Auth::GetCurrentUser()));
 
 		if(isset($receipt['o_type'])) switch($receipt['o_type'])
 		{
@@ -716,7 +716,7 @@ switch($action)
 				SYSLOG::RES_NUMPLAN => $receipt['numberplanid'],
 				'cdate' => $receipt['cdate'],
 				SYSLOG::RES_CUST => $customer['id'],
-				SYSLOG::RES_USER => $AUTH->id,
+				SYSLOG::RES_USER => Auth::GetCurrentUser(),
 				'name' => $customer['customername'],
 				'address' => ($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
 					? $customer['city'] . ', ' : '') . $customer['address'],
@@ -766,7 +766,7 @@ switch($action)
 					'itemid' => $iid,
 					'value' => $value,
 					'comment' => $item['description'],
-					SYSLOG::RES_USER => $AUTH->id,
+					SYSLOG::RES_USER => Auth::GetCurrentUser(),
 					SYSLOG::RES_CUST => $customer['id'],
 				);
 				$DB->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid, customerid)
@@ -861,7 +861,7 @@ switch($action)
 				'extnumber' => isset($receipt['extnumber']) ? $receipt['extnumber'] : '',
 				SYSLOG::RES_NUMPLAN => $receipt['numberplanid'],
 				'cdate' => $receipt['cdate'],
-				SYSLOG::RES_USER => $AUTH->id,
+				SYSLOG::RES_USER => Auth::GetCurrentUser(),
 				'name' => $receipt['o_type'] == 'advance' ? $receipt['adv_name'] : $receipt['other_name'],
 				'closed' => $receipt['o_type'] == 'advance' ? 0 : 1,
 				'fullnumber' => $fullnumber,
@@ -906,7 +906,7 @@ switch($action)
 						'itemid' => $iid,
 						'value' => $value,
 						'comment' => $item['description'],
-						SYSLOG::RES_USER => $AUTH->id,
+						SYSLOG::RES_USER => Auth::GetCurrentUser(),
 					);
 					$DB->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid)
 						VALUES(?, ?, ?, ?, ?, ?, ?)', array_values($args));
@@ -996,7 +996,7 @@ switch($action)
 				'extnumber' => isset($receipt['extnumber']) ? $receipt['extnumber'] : '',
 				SYSLOG::RES_NUMPLAN => $receipt['numberplanid'],
 				'cdate' => $receipt['cdate'],
-				SYSLOG::RES_USER => $AUTH->id,
+				SYSLOG::RES_USER => Auth::GetCurrentUser(),
 				'name' => '',
 				'closed' => 1,
 				'fullnumber' => $fullnumber,
@@ -1058,7 +1058,7 @@ switch($action)
 				'number' => $number,
 				SYSLOG::RES_NUMPLAN => $numberplan ? $numberplan : 0,
 				'cdate' => $receipt['cdate'],
-				SYSLOG::RES_USER => $AUTH->id,
+				SYSLOG::RES_USER => Auth::GetCurrentUser(),
 				'closed' => 1,
 				'fullnumber' => $fullnumber,
 			);
@@ -1153,7 +1153,7 @@ if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customerlist', $LMS->GetCustomerNames());
 
 $SMARTY->assign('invoicelist', $invoicelist);
-$SMARTY->assign('rights', $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $receipt['regid'])));
+$SMARTY->assign('rights', $DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $receipt['regid'])));
 $SMARTY->assign('cashreglist', $cashreglist);
 $SMARTY->assign('cashregcount', sizeof($cashreglist));
 $SMARTY->assign('contents', $contents);

@@ -29,7 +29,7 @@ if(isset($_GET['id']))
 	$id = intval($_GET['id']);
 	$regid = $DB->GetOne('SELECT DISTINCT regid FROM receiptcontents WHERE docid=?', array($id));
 
-	if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array($AUTH->id, $regid))<256)
+	if($DB->GetOne('SELECT rights FROM cashrights WHERE userid=? AND regid=?', array(Auth::GetCurrentUser(), $regid))<256)
 	{
 	        $SMARTY->display('noaccess.html');
 	        $SESSION->close();
@@ -209,7 +209,7 @@ if(isset($_POST['receipt']))
 						$in_extnumber,
 						$in_plan,
 						$receipt['cdate'],
-						$AUTH->id,
+						Auth::GetCurrentUser(),
 						$record['name'],
 						$fullnumber,
 						));
@@ -239,7 +239,7 @@ if(isset($_POST['receipt']))
 						isset($receipt['out_extnumber']) ? $receipt['out_extnumber'] : '',
 						$record['numberplanid'],
 						$receipt['cdate'],
-						$AUTH->id,
+						Auth::GetCurrentUser(),
 						$receipt['name'],
 						$fullnumber,
 						));
@@ -247,42 +247,42 @@ if(isset($_POST['receipt']))
 			$rid2 = $DB->GetLastInsertId('documents');
 		}
 		
-		$DB->UnLockTables();				
+		$DB->UnLockTables();
 			
 		$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
-					VALUES(?, 1, ?, ?, ?)', 
-					array($rid, 
-						str_replace(',', '.', $record['value'] * -1), 
+					VALUES(?, 1, ?, ?, ?)',
+					array($rid,
+						str_replace(',', '.', $record['value'] * -1),
 						trans('Advance return').' - '.$titlenumber,
 						$regid
 					));
 
 		$DB->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid)
-					VALUES(?, 1, ?, 1, ?, ?, ?)', 
+					VALUES(?, 1, ?, 1, ?, ?, ?)',
 					array($receipt['cdate'],
-						$rid, 
-						str_replace(',', '.', $record['value'] * -1), 
+						$rid,
+						str_replace(',', '.', $record['value'] * -1),
 						trans('Advance return').' - '.$titlenumber,
-						$AUTH->id
+						Auth::GetCurrentUser()
 					));
 
 		if($receipt['type'] == 'settle')
 		{
 			$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
-					VALUES(?, 1, ?, ?, ?)', 
+					VALUES(?, 1, ?, ?, ?)',
 					array($rid2, 
-						str_replace(',', '.', $value * -1), 
+						str_replace(',', '.', $value * -1),
 						$receipt['description'],
 						$regid
 					));
 
 			$DB->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid)
-					VALUES(?, 1, ?, 1, ?, ?, ?)', 
+					VALUES(?, 1, ?, 1, ?, ?, ?)',
 					array($receipt['cdate'],
-						$rid, 
-						str_replace(',', '.', $value * -1), 
+						$rid,
+						str_replace(',', '.', $value * -1),
 						$receipt['description'],
-						$AUTH->id
+						Auth::GetCurrentUser()
 					));
 		}
 

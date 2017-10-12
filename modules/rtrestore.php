@@ -33,7 +33,7 @@ if ($maction == 'restore')
 	$ticket = $DB->GetOne('SELECT ticketid FROM rtmessages WHERE id = ?', array($msg));
 	$del = 0;
 	$deltime = 0;
-	$deluserid = 0;
+	$deluserid = null;
 	$DB->Execute('UPDATE rtmessages SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($del, $deltime, $deluserid, $msg));
 
 	$SESSION->redirect('?m=rtticketview&id=' . $ticket);
@@ -46,7 +46,7 @@ if ($taction == 'restore')
 	$del = 1;
 	$nodel = 0;
 	$deltime = 0;
-	$deluserid = 0;
+	$deluserid = null;
 	// We use incomplete cascaderestore. This means that we restore only ticket, but not restore deleted messages inside ticket which were deleted before restore operation.
 	$DB->BeginTrans();
 	$DB->Execute('UPDATE rttickets SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($nodel, $deltime, $deluserid, $ticket));
@@ -62,7 +62,7 @@ if ($qaction == 'restore')
 	$del = 1;
 	$nodel = 0;
 	$deltime = 0;
-	$deluserid = 0;
+	$deluserid = null;
 	$DB->BeginTrans();
 	$DB->Execute('UPDATE rtqueues SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($nodel, $deltime, $deluserid, $queue));
 	$DB->Execute('UPDATE rttickets SET deleted=?, deluserid=? WHERE deleted=? and deltime = ? and queueid = ?', array($nodel, $deluserid, $del, $deltime, $queue));

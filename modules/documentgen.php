@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -255,7 +255,7 @@ if (isset($_POST['document'])) {
 					$document['numberplanid'],
 					$time,
 					$document['customerid'],
-					$AUTH->id,
+					Auth::GetCurrentUser(),
 					$gencust['divisionid'],
 					$gencust['customername'],
 					$gencust['address'] ? $gencust['address'] : '',
@@ -353,7 +353,7 @@ $SMARTY->setDefaultResourceType('extendsall');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$rights = $DB->GetCol('SELECT doctype FROM docrights WHERE userid = ? AND (rights & 2) = 2', array($AUTH->id));
+$rights = $DB->GetCol('SELECT doctype FROM docrights WHERE userid = ? AND (rights & 2) = 2', array(Auth::GetCurrentUser()));
 
 if (!$rights) {
 	$SMARTY->display('noaccess.html');

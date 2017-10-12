@@ -27,7 +27,7 @@
 $ticket = intval($_GET['id']);
 $taction = ($_GET['taction']);
 $queue = $DB->GetOne('SELECT queueid FROM rttickets WHERE id = ?', array($ticket));
-$right = $LMS->GetUserRightsRT($AUTH->id, $queue);
+$right = $LMS->GetUserRightsRT(Auth::GetCurrentUser(), $queue);
 
 if(($right & 4) != 4)
 {
@@ -43,8 +43,8 @@ if ($taction == 'delete')
 	$deltime = time();
 	// We use incomplete cascade delete. This means that we delete only messages tah weren't deleted before ticket delete operation.
 	$DB->BeginTrans();
-	$DB->Execute('UPDATE rttickets SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($del, $deltime, $AUTH->id, $ticket));
-	$DB->Execute('UPDATE rtmessages SET deleted=?, deluserid=? WHERE deleted=? and ticketid = ?', array($del, $AUTH->id, $nodel, $ticket));
+	$DB->Execute('UPDATE rttickets SET deleted=?, deltime=?, deluserid=? WHERE id = ?', array($del, $deltime, Auth::GetCurrentUser(), $ticket));
+	$DB->Execute('UPDATE rtmessages SET deleted=?, deluserid=? WHERE deleted=? and ticketid = ?', array($del, Auth::GetCurrentUser(), $nodel, $ticket));
 	$DB->CommitTrans();
 }
 $SESSION->redirect('?m=rtqueueview&id='.$queue);

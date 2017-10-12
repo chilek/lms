@@ -60,7 +60,7 @@ if(isset($_POST['message']))
 			$message['userid'] = Auth::GetCurrentUser();
 			$message['customerid'] = null;
 		} else {
-			$message['userid'] = 0;
+			$message['userid'] = null;
 			if (!$message['customerid']) {
 				$req = $DB->GetOne('SELECT requestor FROM rttickets WHERE id = ?', array($message['ticketid']));
 				$message['mailfrom'] = preg_replace('/^.* <(.+@.+)>/','\1', $req);

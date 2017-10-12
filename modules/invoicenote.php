@@ -328,7 +328,7 @@ switch($action)
 			'sdate' => $cnote['sdate'],
 			'paytime' => $cnote['paytime'],
 			'paytype' => $cnote['paytype'],
-			SYSLOG::RES_USER => $AUTH->id,
+			SYSLOG::RES_USER => Auth::GetCurrentUser(),
 			SYSLOG::RES_CUST => $invoice['customerid'],
 			'name' => $invoice['name'],
 			'address' => $invoice['address'],
@@ -407,7 +407,7 @@ switch($action)
 			if (isset($item['cash']) && $item['cash'] != 0) {
 				$args = array(
 					'time' => $cnote['cdate'],
-					SYSLOG::RES_USER => $AUTH->id,
+					SYSLOG::RES_USER => Auth::GetCurrentUser(),
 					'value' => str_replace(',','.',$item['cash']),
 					SYSLOG::RES_TAX => $item['taxid'],
 					SYSLOG::RES_CUST => $invoice['customerid'],

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -85,7 +85,7 @@ function authorize($module, $action)
 
 // first reading user access rights (and marging with defaults)
 
-if($rights = $DB->GetOne('SELECT data FROM rights WHERE userid = ?', array($AUTH->id)))
+if($rights = $DB->GetOne('SELECT data FROM rights WHERE userid = ?', array(Auth::GetCurrentUser())))
 {
 	$rights = unserialize($rights);
 	foreach($rights as $mod => $mod_val)
@@ -113,7 +113,7 @@ if($rights = $DB->GetOne('SELECT data FROM rights WHERE userid = ?', array($AUTH
 
 $noaccess = FALSE;
 
-if($ExecStack->moduleExists($ExecStack->module) 
+if($ExecStack->moduleExists($ExecStack->module)
     && $ExecStack->moduleIsPublic($ExecStack->module)
     && $ExecStack->actionExists($ExecStack->module, $ExecStack->action)
     && $ExecStack->actionIsPublic($ExecStack->module, $ExecStack->action)

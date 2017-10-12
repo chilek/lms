@@ -32,13 +32,13 @@ function GetEvents($date=NULL, $userid=0, $type = 0, $customerid=0, $privacy = 0
 
 	switch ($privacy) {
 		case 0:
-			$privacy_condition = '(private = 0 OR (private = 1 AND userid = ' . intval($AUTH->id) . '))';
+			$privacy_condition = '(private = 0 OR (private = 1 AND userid = ' . intval(Auth::GetCurrentUser()) . '))';
 			break;
 		case 1:
 			$privacy_condition = 'private = 0';
 			break;
 		case 2:
-			$privacy_condition = 'private = 1 AND userid = ' . intval($AUTH->id);
+			$privacy_condition = 'private = 1 AND userid = ' . intval(Auth::GetCurrentUser());
 			break;
 	}
 

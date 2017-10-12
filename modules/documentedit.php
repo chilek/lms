@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$userid = Auth::GetCurrentUser();
+
 if(isset($_GET['action']) && $_GET['action'] == 'confirm')
 {
 	if(!empty($_POST['marks']))
@@ -32,13 +34,13 @@ if(isset($_GET['action']) && $_GET['action'] == 'confirm')
 			$DB->Execute('UPDATE documents SET sdate=?NOW?, cuserid=?, closed=1 WHERE id=?
 				AND EXISTS (SELECT 1 FROM docrights r WHERE r.userid = ?
 					AND r.doctype = documents.type AND (r.rights & 4) = 4)',
-				array($AUTH->id, $mark, $AUTH->id));
+				array($userid, $mark, $userid));
 	}
 	else
 		$DB->Execute('UPDATE documents SET sdate=?NOW?, cuserid=?, closed=1 WHERE id=?
 			AND EXISTS (SELECT 1 FROM docrights r WHERE r.userid = ?
 				AND r.doctype = documents.type AND (r.rights & 4) = 4)',
-			array($AUTH->id, $_GET['id'], $AUTH->id));
+			array($userid, $_GET['id'], $userid));
 
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
@@ -51,7 +53,7 @@ $document = $DB->GetRow('SELECT documents.id AS id, closed, type, number, number
 	JOIN docrights r ON (r.doctype = documents.type)
 	LEFT JOIN documentcontents ON (documents.id = docid)
 	LEFT JOIN numberplans ON (numberplanid = numberplans.id)
-	WHERE documents.id = ? AND r.userid = ? AND (r.rights & 8) = 8', array($_GET['id'], $AUTH->id));
+	WHERE documents.id = ? AND r.userid = ? AND (r.rights & 8) = 8', array($_GET['id'], $userid));
 if (empty($document)) {
 	$SMARTY->display('noaccess.html');
 	die;
@@ -187,7 +189,7 @@ if(isset($_POST['document']))
 				array(	$documentedit['type'],
 					$documentedit['closed'],
 					$documentedit['closed'] ? ($document['closed'] ? $document['sdate'] : time()) : 0,
-					$documentedit['closed'] ? ($document['closed'] ? $document['cuserid'] : $AUTH->id) : 0,
+					$documentedit['closed'] ? ($document['closed'] ? $document['cuserid'] : $userid) : null,
 					$documentedit['number'],
 					$documentedit['numberplanid'],
 					$fullnumber,
@@ -250,11 +252,11 @@ else
 }
 
 $rights = $DB->GetCol('SELECT doctype FROM docrights
-	WHERE userid = ? AND (rights & 2) = 2', array($AUTH->id));
+	WHERE userid = ? AND (rights & 2) = 2', array($userid));
 
 if(!$rights || !$DB->GetOne('SELECT 1 FROM docrights
 	WHERE userid = ? AND doctype = ? AND (rights & 8) = 8',
-	array($AUTH->id, $document['type'])))
+	array($userid, $document['type'])))
 {
         $SMARTY->display('noaccess.html');
         die;

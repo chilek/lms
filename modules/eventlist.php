@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -39,13 +39,13 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 
 	switch ($privacy) {
 		case 0:
-			$privacy_condition = '(private = 0 OR (private = 1 AND userid = ' . intval($AUTH->id) . '))';
+			$privacy_condition = '(private = 0 OR (private = 1 AND userid = ' . intval(Auth::GetCurrentUser()) . '))';
 			break;
 		case 1:
 			$privacy_condition = 'private = 0';
 			break;
 		case 2:
-			$privacy_condition = 'private = 1 AND userid = ' . intval($AUTH->id);
+			$privacy_condition = 'private = 1 AND userid = ' . intval(Auth::GetCurrentUser());
 			break;
 	}
 
@@ -80,7 +80,7 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $customeri
 		. (!empty($type) ? ' AND events.type ' . (is_array($type) ? 'IN (' . implode(',', array_filter($type, 'intval')) . ')' : '=' . intval($type)) : '')
 		. ($closed != '' ? ' AND closed = ' . intval($closed) : '')
 		.' ORDER BY date, begintime',
-		 array($startdate, $enddate, $enddate, $startdate, $AUTH->id));
+		 array($startdate, $enddate, $enddate, $startdate, Auth::GetCurrentUser()));
 
 	$list2 = array();
 	if ($list)

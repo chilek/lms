@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -33,7 +33,7 @@ if (!empty($_POST['marks'])) {
 		JOIN documents d ON (d.id = c.docid)
 		JOIN docrights r ON (r.doctype = d.type)
 		WHERE c.docid IN ('.implode(',', $marks).')
-			AND r.userid = ? AND (r.rights & 1) = 1', array($AUTH->id))) {
+			AND r.userid = ? AND (r.rights & 1) = 1', array(Auth::GetCurrentUser()))) {
 
 		$list = $DB->GetAll('SELECT filename, contenttype, md5sum FROM documentattachments
 			WHERE docid IN (' . implode(',', $list) . ')');
@@ -130,7 +130,7 @@ if (!empty($_POST['marks'])) {
 	FROM documents d
 	LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 	JOIN docrights r ON (r.doctype = d.type)
-	WHERE d.id = ? AND r.userid = ? AND (r.rights & 1) = 1', array($_GET['id'], $AUTH->id))) {
+	WHERE d.id = ? AND r.userid = ? AND (r.rights & 1) = 1', array($_GET['id'], Auth::GetCurrentUser()))) {
 
 	$docattachments = $DB->GetAllByKey('SELECT * FROM documentattachments WHERE docid = ?
 		ORDER BY main DESC', 'id', array($_GET['id']));

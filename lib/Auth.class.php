@@ -53,7 +53,7 @@ class Auth {
 	public static function GetCurrentUser() {
 		if (self::$auth)
 			return self::$auth->id;
-		return 0;
+		return null;
 	}
 
 	public function __construct(&$DB, &$SESSION) {
