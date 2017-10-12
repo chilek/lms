@@ -516,7 +516,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$this->db->Execute('INSERT INTO rtmessages (ticketid, customerid, createtime,
 				subject, body, mailfrom, phonefrom, messageid, replyto)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array($id,
-			$ticket['customerid'],
+			empty($ticket['customerid']) ? null : $ticket['customerid'],
 			isset($ticket['createtime']) ? $ticket['createtime'] : time(),
 			$ticket['subject'],
 			preg_replace("/\r/", "", $ticket['body']),
