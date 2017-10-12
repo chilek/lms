@@ -70,7 +70,7 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 		}
 
         $args = array(
-            SYSLOG::RES_NETDEV => $devid,
+            SYSLOG::RES_NETDEV => empty($devid) ? null : $devid,
             'linktype'         => $type,
             'linkradiosector'  => $radiosector,
             'linktechnology'   => $technology,
