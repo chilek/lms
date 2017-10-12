@@ -203,8 +203,8 @@ CREATE TABLE customers (
   notes text 		NOT NULL DEFAULT '',
   creationdate int(11) 	NOT NULL DEFAULT '0',
   moddate int(11) 	NOT NULL DEFAULT '0',
-  creatorid int(11) 	NOT NULL DEFAULT '0',
-  modid int(11) 	NOT NULL DEFAULT '0',
+  creatorid int(11) DEFAULT NULL,
+  modid int(11) 	DEFAULT NULL,
   deleted tinyint(1) 	NOT NULL DEFAULT '0',
   message text 		NOT NULL,
   pin varchar(255)	NOT NULL DEFAULT '0',
@@ -217,7 +217,11 @@ CREATE TABLE customers (
   paytime smallint	NOT NULL DEFAULT '-1',
   paytype smallint  DEFAULT NULL,
   PRIMARY KEY  (id),
-  INDEX name (lastname, name)
+  INDEX name (lastname, name),
+  CONSTRAINT customers_creatorid_fkey
+		FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT customers_modid_fkey
+		FOREIGN KEY (modid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -881,8 +885,8 @@ CREATE TABLE nodes (
   ownerid int(11) DEFAULT NULL,
   creationdate int(11) NOT NULL DEFAULT '0',
   moddate int(11) NOT NULL DEFAULT '0',
-  creatorid int(11) NOT NULL DEFAULT '0',
-  modid int(11) NOT NULL DEFAULT '0',
+  creatorid int(11) DEFAULT NULL,
+  modid int(11) DEFAULT NULL,
   netdev int(11) DEFAULT NULL,
   linktype tinyint(1) NOT NULL DEFAULT '0',
   linkradiosector int(11) DEFAULT NULL,
@@ -918,7 +922,11 @@ CREATE TABLE nodes (
   FOREIGN KEY (invprojectid) REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE,
   FOREIGN KEY (linkradiosector) REFERENCES netradiosectors (id) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT nodes_ownerid_fkey
-    FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT nodes_creatorid_fkey
+	FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT nodes_modid_fkey
+  	FOREIGN KEY (modid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1000,8 +1008,8 @@ CREATE TABLE voipaccounts (
 	access          tinyint(1)    NOT NULL DEFAULT '1',
 	creationdate	int(11)		  NOT NULL DEFAULT 0,
 	moddate		    int(11)		  NOT NULL DEFAULT 0,
-	creatorid	    int(11)		  NOT NULL DEFAULT 0,
-	modid		    int(11)		  NOT NULL DEFAULT 0,
+	creatorid	    int(11)		  DEFAULT NULL,
+	modid		    int(11)		  DEFAULT NULL,
 	balance			decimal(12,5) NOT NULL DEFAULT 0,
 	flags			smallint      NOT NULL DEFAULT 0,
 	cost_limit		decimal(12,2) NULL DEFAULT NULL,
@@ -1010,7 +1018,11 @@ CREATE TABLE voipaccounts (
 	CONSTRAINT voipaccounts_address_id_fkey
 		FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT voipaccounts_ownerid_fkey
-		FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT voipaccounts_creatorid_fkey
+		FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT voipaccounts_modid_fkey
+		FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1511,7 +1523,7 @@ CREATE TABLE rttickets (
   cause tinyint(4) NOT NULL DEFAULT '0',
   owner int(11) NOT NULL DEFAULT '0',
   customerid int(11) DEFAULT NULL,
-  creatorid int(11) NOT NULL DEFAULT '0',
+  creatorid int(11) DEFAULT NULL,
   createtime int(11) NOT NULL DEFAULT '0',
   resolvetime int(11) NOT NULL DEFAULT '0',
   source tinyint(4) NOT NULL DEFAULT '0',
@@ -1535,7 +1547,9 @@ CREATE TABLE rttickets (
   CONSTRAINT rttickets_customerid_fkey
     FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT rttickets_deluserid_fkey
-	FOREIGN KEY (deluserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+	FOREIGN KEY (deluserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT rttickets_creatorid_fkey
+	FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -3136,4 +3150,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101201');

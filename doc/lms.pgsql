@@ -59,8 +59,10 @@ CREATE TABLE customers (
 	notes text		DEFAULT '' NOT NULL,
 	creationdate integer 	DEFAULT 0 NOT NULL,
 	moddate integer 	DEFAULT 0 NOT NULL,
-	creatorid integer 	DEFAULT 0 NOT NULL,
-	modid integer 		DEFAULT 0 NOT NULL,
+	creatorid integer 	DEFAULT NULL
+		CONSTRAINT customers_creatorid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	modid integer 		DEFAULT 0 NOT NULL
+		CONSTRAINT customers_modid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	deleted smallint 	DEFAULT 0 NOT NULL,
 	message text		DEFAULT '' NOT NULL,
 	pin varchar(255)		DEFAULT 0 NOT NULL,
@@ -802,8 +804,10 @@ CREATE TABLE nodes (
 	port smallint		DEFAULT 0 NOT NULL,
 	creationdate integer 	DEFAULT 0 NOT NULL,
 	moddate integer 	DEFAULT 0 NOT NULL,
-	creatorid integer 	DEFAULT 0 NOT NULL,
-	modid integer 		DEFAULT 0 NOT NULL,
+	creatorid integer 	DEFAULT NULL
+		CONSTRAINT nodes_creatorid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	modid integer 		DEFAULT NULL
+		CONSTRAINT nodes_modid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	access smallint 	DEFAULT 1 NOT NULL,
 	warning smallint 	DEFAULT 0 NOT NULL,
 	authtype smallint 	DEFAULT 0 NOT NULL,
@@ -924,8 +928,10 @@ CREATE TABLE voipaccounts (
 	access      smallint        NOT NULL DEFAULT 1,
 	creationdate	integer		NOT NULL DEFAULT 0,
 	moddate		integer		NOT NULL DEFAULT 0,
-	creatorid	integer		NOT NULL DEFAULT 0,
-	modid		integer		NOT NULL DEFAULT 0,
+	creatorid	integer		DEFAULT NULL
+		CONSTRAINT voipaccounts_creatorid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	modid		integer		DEFAULT NULL
+		CONSTRAINT voipaccounts_modid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	balance		numeric(12,5) NOT NULL DEFAULT 0,
 	flags		smallint NOT NULL DEFAULT 0,
 	cost_limit	numeric(12,2) NULL DEFAULT NULL,
@@ -1483,7 +1489,8 @@ CREATE TABLE rttickets (
   owner integer 	DEFAULT 0 NOT NULL,
   customerid integer 	DEFAULT NULL
     CONSTRAINT rttickets_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  creatorid integer 	DEFAULT 0 NOT NULL,
+  creatorid integer 	DEFAULT NULL
+	CONSTRAINT rttickets_creatorid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   createtime integer 	DEFAULT 0 NOT NULL,
   resolvetime integer 	DEFAULT 0 NOT NULL,
   source smallint	DEFAULT 0 NOT NULL,
@@ -3173,6 +3180,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101201');
 
 COMMIT;
