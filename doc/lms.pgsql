@@ -290,7 +290,8 @@ CREATE TABLE documents (
 	sdate integer		DEFAULT 0 NOT NULL,
 	customerid integer	DEFAULT NULL
 		CONSTRAINT documents_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	userid integer		DEFAULT 0 NOT NULL,
+	userid integer		DEFAULT NULL
+		CONSTRAINT documents_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	divisionid integer	DEFAULT 0 NOT NULL,
 	name varchar(255)	DEFAULT '' NOT NULL,
 	address varchar(255)	DEFAULT '' NOT NULL,
@@ -320,7 +321,8 @@ CREATE TABLE documents (
 	fullnumber varchar(50)	DEFAULT NULL,
 	cancelled smallint	DEFAULT 0 NOT NULL,
 	published smallint	DEFAULT 0 NOT NULL,
-	cuserid integer		DEFAULT 0 NOT NULL,
+	cuserid integer		DEFAULT NULL
+		CONSTRAINT documents_cuserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	recipient_address_id integer DEFAULT NULL
 		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	template varchar(255) DEFAULT NULL,
@@ -464,7 +466,8 @@ CREATE TABLE cash (
 	id integer 		DEFAULT nextval('cash_id_seq'::text) NOT NULL,
 	time integer 		DEFAULT 0 NOT NULL,
 	type smallint 		DEFAULT 0 NOT NULL,
-	userid integer 		DEFAULT 0 NOT NULL,
+	userid integer 		DEFAULT NULL
+		CONSTRAINT cash_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
 	taxid integer		DEFAULT 0 NOT NULL,
 	customerid integer 	DEFAULT NULL
@@ -1460,7 +1463,8 @@ CREATE TABLE rtqueues (
   resolveticketbody text NOT NULL DEFAULT '',
   deleted smallint	DEFAULT 0 NOT NULL,
   deltime integer	DEFAULT 0 NOT NULL,
-  deluserid integer	DEFAULT 0 NOT NULL,
+  deluserid integer	DEFAULT NULL
+	CONSTRAINT rtqueues_deluserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   PRIMARY KEY (id),
   UNIQUE (name)
 );
@@ -1485,7 +1489,8 @@ CREATE TABLE rttickets (
   source smallint	DEFAULT 0 NOT NULL,
   deleted smallint	DEFAULT 0 NOT NULL,
   deltime integer	DEFAULT 0 NOT NULL,
-  deluserid integer	DEFAULT 0 NOT NULL,
+  deluserid integer	DEFAULT NULL
+	CONSTRAINT rttickets_deluserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   address_id integer	DEFAULT NULL
     CONSTRAINT rttickets_address_id_fkey REFERENCES addresses (id) ON UPDATE CASCADE ON DELETE CASCADE,
   nodeid integer	DEFAULT NULL
@@ -1506,7 +1511,8 @@ CREATE TABLE rtmessages (
   id integer default nextval('rtmessages_id_seq'::text) NOT NULL,
   ticketid integer 	NOT NULL
     REFERENCES rttickets (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  userid integer 	DEFAULT 0 NOT NULL,
+  userid integer 	DEFAULT NULL
+	CONSTRAINT rtmessages_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   customerid integer 	DEFAULT NULL
     CONSTRAINT rtmessages_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
   phonefrom varchar(20)	DEFAULT '' NOT NULL,
@@ -1521,7 +1527,8 @@ CREATE TABLE rtmessages (
   type smallint		DEFAULT 0 NOT NULL,
   deleted smallint	DEFAULT 0 NOT NULL,
   deltime integer	DEFAULT 0 NOT NULL,
-  deluserid integer	DEFAULT 0 NOT NULL,
+  deluserid integer	DEFAULT NULL
+	CONSTRAINT rtmessages_deluserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   PRIMARY KEY (id)
 );
 
@@ -1768,16 +1775,19 @@ CREATE TABLE events (
 	begintime 	smallint 	DEFAULT 0 NOT NULL,
 	enddate 	integer 	DEFAULT 0 NOT NULL,
 	endtime 	smallint 	DEFAULT 0 NOT NULL,
-	userid 		integer 	DEFAULT 0 NOT NULL,
+	userid 		integer 	DEFAULT NULL
+		CONSTRAINT events_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	customerid 	integer 	DEFAULT NULL
 		CONSTRAINT events_customerid_fkey REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	private 	smallint 	DEFAULT 0 NOT NULL,
 	closed 		smallint 	DEFAULT 0 NOT NULL,
 	closeddate	integer		DEFAULT 0 NOT NULL,
-	closeduserid	integer		DEFAULT 0 NOT NULL,
+	closeduserid	integer		DEFAULT NULL
+		CONSTRAINT events_closeduserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	creationdate	integer		DEFAULT 0 NOT NULL,
 	moddate		integer		DEFAULT 0 NOT NULL,
-	moduserid	integer		DEFAULT 0 NOT NULL,
+	moduserid	integer		DEFAULT NULL
+		CONSTRAINT events_moduserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	type		smallint	DEFAULT 1 NOT NULL,
 	nodeid		integer		DEFAULT NULL
 		REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -1796,7 +1806,8 @@ CREATE INDEX events_nodeid_idx ON events(nodeid);
 DROP TABLE IF EXISTS eventassignments CASCADE;
 CREATE TABLE eventassignments (
 	eventid 	integer 	DEFAULT 0 NOT NULL,
-	userid 		integer 	DEFAULT 0 NOT NULL,
+	userid 		integer 	NOT NULL
+		CONSTRAINT eventassignments_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT eventassignments_eventid_key UNIQUE (eventid, userid)
 );
 
@@ -1919,7 +1930,8 @@ CREATE SEQUENCE docrights_id_seq;
 DROP TABLE IF EXISTS docrights CASCADE;
 CREATE TABLE docrights (
     id          integer         DEFAULT nextval('docrights_id_seq'::text) NOT NULL,
-    userid      integer         DEFAULT 0 NOT NULL,
+    userid      integer         NOT NULL
+		CONSTRAINT docrights_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
     doctype     integer         DEFAULT 0 NOT NULL,
     rights      integer         DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
@@ -1934,7 +1946,8 @@ CREATE SEQUENCE cashrights_id_seq;
 DROP TABLE IF EXISTS cashrights CASCADE;
 CREATE TABLE cashrights (
     id 		integer 	DEFAULT nextval('cashrights_id_seq'::text) NOT NULL,
-    userid 	integer 	DEFAULT 0 NOT NULL,
+    userid 	integer 	NOT NULL
+		CONSTRAINT cashrights_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
     regid 	integer 	DEFAULT 0 NOT NULL,
     rights 	integer 	DEFAULT 0 NOT NULL,
     PRIMARY KEY (id),
@@ -1967,7 +1980,8 @@ DROP TABLE IF EXISTS cashreglog CASCADE;
 CREATE TABLE cashreglog (
     id 		integer 	DEFAULT nextval('cashreglog_id_seq'::text) NOT NULL,
     regid 	integer         DEFAULT 0 NOT NULL,
-    userid 	integer		DEFAULT 0 NOT NULL,
+    userid 	integer		DEFAULT NULL
+		CONSTRAINT cashreglog_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
     time 	integer		DEFAULT 0 NOT NULL,
     value 	numeric(9,2)    DEFAULT 0 NOT NULL,
     snapshot 	numeric(9,2)    DEFAULT 0 NOT NULL,
@@ -2031,7 +2045,8 @@ CREATE TABLE excludedgroups (
 	id 		integer NOT NULL DEFAULT nextval('excludedgroups_id_seq'::text),
 	customergroupid integer NOT NULL
 	    REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	userid 		integer NOT NULL DEFAULT 0,
+	userid 		integer NOT NULL
+		CONSTRAINT excludedgroups_userid_fkey REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	CONSTRAINT excludedgroups_userid_key UNIQUE (userid, customergroupid)
 );
@@ -2063,7 +2078,8 @@ CREATE TABLE messages (
 	body 	text		DEFAULT '' NOT NULL,
 	cdate 	integer		DEFAULT 0 NOT NULL,
 	type 	smallint	DEFAULT 0 NOT NULL,
-	userid 	integer		DEFAULT 0 NOT NULL,
+	userid 	integer		DEFAULT NULL
+		CONSTRAINT messages_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	sender 	varchar(255) 	DEFAULT NULL,
         PRIMARY KEY (id)
 );
@@ -2132,7 +2148,8 @@ CREATE SEQUENCE logtransactions_id_seq;
 DROP TABLE IF EXISTS logtransactions CASCADE;
 CREATE TABLE logtransactions (
 	id integer		DEFAULT nextval('logtransactions_id_seq'::text) NOT NULL,
-	userid integer		DEFAULT 0 NOT NULL,
+	userid integer		DEFAULT NULL
+		CONSTRAINT logtransactions REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	time integer		DEFAULT 0 NOT NULL,
 	module varchar(50)	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id)
@@ -3156,6 +3173,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101101');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101200');
 
 COMMIT;
