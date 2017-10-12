@@ -476,7 +476,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				isset($message['subject']) ? $message['subject'] : '',
 				preg_replace("/\r/", "", $message['body']),
 				isset($message['userid']) ? $message['userid'] : Auth::GetCurrentUser(),
-				isset($message['customerid']) ? $message['customerid'] : null,
+				empty($message['customerid']) ? null : $message['customerid'],
 				isset($message['mailfrom']) ? $message['mailfrom'] : '',
 				isset($message['inreplyto']) ? $message['inreplyto'] : 0,
 				isset($message['messageid']) ? $message['messageid'] : $this->lastmessageid,
