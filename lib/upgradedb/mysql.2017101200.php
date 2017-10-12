@@ -26,35 +26,35 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE documents ALTER COLUMN userid DROP NOT NULL");
+$this->Execute("ALTER TABLE documents MODIFY userid int(11) NULL");
 $this->Execute("ALTER TABLE documents ALTER COLUMN userid SET DEFAULT NULL");
-$this->Execute("ALTER TABLE documents ALTER COLUMN cuserid DROP NOT NULL");
+$this->Execute("ALTER TABLE documents MODIFY cuserid int(11) NULL");
 $this->Execute("ALTER TABLE documents ALTER COLUMN cuserid SET DEFAULT NULL");
-$this->Execute("ALTER TABLE cash ALTER COLUMN userid DROP NOT NULL");
+$this->Execute("ALTER TABLE cash MODIFY userid int(11) NULL");
 $this->Execute("ALTER TABLE cash ALTER COLUMN userid SET DEFAULT NULL");
-$this->Execute("ALTER TABLE rtqueues ALTER COLUMN deluserid DROP NOT NULL");
+$this->Execute("ALTER TABLE rtqueues MODIFY deluserid int(11) NULL");
 $this->Execute("ALTER TABLE rtqueues ALTER COLUMN deluserid SET DEFAULT NULL");
-$this->Execute("ALTER TABLE rttickets ALTER COLUMN deluserid DROP NOT NULL");
+$this->Execute("ALTER TABLE rttickets MODIFY deluserid int(11) NULL");
 $this->Execute("ALTER TABLE rttickets ALTER COLUMN deluserid SET DEFAULT NULL");
-$this->Execute("ALTER TABLE rtmessages ALTER COLUMN userid DROP NOT NULL");
+$this->Execute("ALTER TABLE rtmessages MODIFY userid int(11) NULL");
 $this->Execute("ALTER TABLE rtmessages ALTER COLUMN userid SET DEFAULT NULL");
-$this->Execute("ALTER TABLE rtmessages ALTER COLUMN deluserid DROP NOT NULL");
+$this->Execute("ALTER TABLE rtmessages MODIFY deluserid int(11) NULL");
 $this->Execute("ALTER TABLE rtmessages ALTER COLUMN deluserid SET DEFAULT NULL");
-$this->Execute("ALTER TABLE events ALTER COLUMN userid DROP NOT NULL");
+$this->Execute("ALTER TABLE events MODIFY userid int(11) NULL");
 $this->Execute("ALTER TABLE events ALTER COLUMN userid SET DEFAULT NULL");
-$this->Execute("ALTER TABLE events ALTER COLUMN closeduserid DROP NOT NULL");
+$this->Execute("ALTER TABLE events MODIFY closeduserid int(11) NULL");
 $this->Execute("ALTER TABLE events ALTER COLUMN closeduserid SET DEFAULT NULL");
-$this->Execute("ALTER TABLE events ALTER COLUMN moduserid DROP NOT NULL");
+$this->Execute("ALTER TABLE events MODIFY moduserid int(11) NULL");
 $this->Execute("ALTER TABLE events ALTER COLUMN moduserid SET DEFAULT NULL");
 $this->Execute("ALTER TABLE eventassignments ALTER COLUMN userid DROP DEFAULT");
 $this->Execute("ALTER TABLE docrights ALTER COLUMN userid DROP DEFAULT");
 $this->Execute("ALTER TABLE cashrights ALTER COLUMN userid DROP DEFAULT");
-$this->Execute("ALTER TABLE cashreglog ALTER COLUMN userid DROP NOT NULL");
+$this->Execute("ALTER TABLE cashreglog MODIFY userid int(11) NULL");
 $this->Execute("ALTER TABLE cashreglog ALTER COLUMN userid SET DEFAULT NULL");
 $this->Execute("ALTER TABLE excludedgroups ALTER COLUMN userid DROP DEFAULT");
-$this->Execute("ALTER TABLE messages ALTER COLUMN userid DROP NOT NULL");
+$this->Execute("ALTER TABLE messages MODIFY userid int(11) NULL");
 $this->Execute("ALTER TABLE messages ALTER COLUMN userid SET DEFAULT NULL");
-$this->Execute("ALTER TABLE logtransactions ALTER COLUMN userid DROP NOT NULL");
+$this->Execute("ALTER TABLE logtransactions MODIFY userid int(11) NULL");
 $this->Execute("ALTER TABLE logtransactions ALTER COLUMN userid SET DEFAULT NULL");
 
 $userids = $this->GetCol("SELECT id FROM users");
