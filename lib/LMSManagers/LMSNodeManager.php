@@ -203,7 +203,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 
     public function GetNode($id)
     {
-        if ($result = $this->db->GetRow('SELECT n.*, rs.name AS linkradiosectorname,
+        if ($result = $this->db->GetRow('SELECT n.*, COALESCE(n.netdev, 0) AS netdev, rs.name AS linkradiosectorname,
 				inet_ntoa(n.ipaddr) AS ip, inet_ntoa(n.ipaddr_pub) AS ip_pub,
 				lc.name AS city_name,
 				(CASE WHEN ls.name2 IS NOT NULL THEN ' . $this->db->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END) AS street_name,
