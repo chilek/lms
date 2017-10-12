@@ -44,7 +44,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 					$event['endtime'],
 					Auth::GetCurrentUser(),
 					$event['status'],
-					intval($event['custid']),
+					empty($event['custid']) ? null : $event['custid'],
 					$event['type'],
 					$event['address_id'],
 					$event['nodeid'],
