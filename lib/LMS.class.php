@@ -232,18 +232,35 @@ class LMS
 
             // Since we're using foreign keys, order of tables is important
             // Note: add all referenced tables to the list
-            $order = array('location_states', 'location_districts',
-                'location_boroughs', 'location_cities', 'location_street_types', 'location_streets',
-                'users', 'customers', 'customergroups', 'hosts', 'networks',
-                'nodes', 'numberplans', 'tariffs', 'tarifftags', 'promotions', 'promotionschemas',
-                'documents', 'assignments', 'countries', 'addresses', 'customer_addresses',
-                'rtqueues', 'rttickets', 'rtmessages', 'domains',
-                'cashsources', 'sourcefiles', 'ewx_channels', 'countries',
-                'divisions', 'netdeviceproducers', 'netnodes', 'invprojects',
-                'netdevicemodels', 'netradiosectors', 'voip_rule_groups', 'voip_prefix_groups',
-                'voipaccounts', 'voip_rules', 'voip_tariffs', 'rtattachments',
-                'rtcategories', 'netdevices', 'logtransactions', 'logmessages', 'usergroups',
-            );
+            $order = array(
+				'users', 'countries', 'location_states', 'location_districts',
+				'location_boroughs', 'location_cities', 'location_street_types',
+				'location_streets', 'location_buildings', 'addresses', 'divisions',
+				'customers', 'numberplans', 'states', 'zipcodes', 'customer_addresses',
+				'documents', 'documentcontents', 'documentattachments', 'cashregs',
+				'receiptcontents', 'taxes', 'voipaccounts', 'voip_rule_groups',
+				'voip_prefix_groups', 'voip_rules', 'voip_tariffs', 'voip_rule_states',
+				'voip_prefixes', 'voip_cdr', 'voip_price_groups', 'tariffs', 'voip_numbers',
+				'voip_pool_numbers', 'voip_emergency_numbers', 'liabilities', 'assignments',
+				'voip_number_assignments', 'invoicecontents', 'debitnotecontents',
+				'cashsources', 'sourcefiles', 'cashimport', 'cash', 'pna', 'ewx_stm_nodes',
+				'ewx_stm_channels', 'ewx_channels', 'hosts', 'networks', 'invprojects',
+				'netnodes', 'netdeviceproducers', 'netdevicemodels', 'netdevices',
+				'netradiosectors', 'nodes', 'nodelocks', 'macs', 'nodegroups',
+				'nodegroupassignments', 'nodeassignments', 'tarifftags', 'tariffassignments',
+				'promotions', 'promotionschemas', 'promotionassignments', 'payments',
+				'numberplanassignments', 'customergroups', 'customerassignments', 'stats',
+				'nodesessions', 'netlinks', 'rtqueues', 'rttickets', 'rtmessages', 'rtrights',
+				'rtattachments', 'rtcategories', 'rtcategoryusers', 'rtticketcategories',
+				'rtqueuecategories', 'domains', 'passwd', 'records', 'domainmetadata',
+				'supermasters', 'aliases', 'aliasassignments', 'uiconfig', 'events',
+				'eventassignments', 'sessions', 'daemoninstances', 'daemonconfig', 'docrights',
+				'cashrights', 'cashreglog', 'ewx_pt_config', 'dbinfo', 'customercontacts',
+				'excludedgroups', 'messages', 'messageitems', 'nastypes', 'managementurls',
+				'logtransactions', 'logmessages', 'logmessagekeys', 'logmessagedata',
+				'templates', 'usergroups', 'userassignments', 'passwdhistory', 'up_rights',
+				'up_rights_assignments', 'up_customers', 'up_help', 'up_info_changes'
+			);
 
             foreach ($tables as $idx => $table) {
                 if (in_array($table, $order)) {

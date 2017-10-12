@@ -20,20 +20,6 @@ DROP VIEW IF EXISTS nas;
 DROP VIEW IF EXISTS vusers;
 DROP VIEW IF EXISTS vdivisions;
 
-DROP TABLE IF EXISTS voip_emergency_numbers;
-DROP TABLE IF EXISTS voip_numbers;
-DROP TABLE IF EXISTS voip_price_groups;
-DROP TABLE IF EXISTS voip_rules;
-DROP TABLE IF EXISTS voip_cdr;
-DROP TABLE IF EXISTS voip_tariff_rules;
-DROP TABLE IF EXISTS voip_tariffs;
-DROP TABLE IF EXISTS voip_prefixes;
-DROP TABLE IF EXISTS voip_prefix_groups;
-DROP TABLE IF EXISTS voip_rule_groups;
-DROP TABLE IF EXISTS voip_rule_states;
-DROP TABLE IF EXISTS voip_pool_numbers;
-DROP TABLE IF EXISTS voip_number_assignments;
-
 DROP TABLE IF EXISTS up_info_changes;
 DROP TABLE IF EXISTS up_help;
 DROP TABLE IF EXISTS up_customers;
@@ -42,9 +28,6 @@ DROP TABLE IF EXISTS up_rights;
 DROP TABLE IF EXISTS passwdhistory;
 DROP TABLE IF EXISTS userassignments;
 DROP TABLE IF EXISTS usergroups;
-DROP TABLE IF EXISTS supermasters;
-DROP TABLE IF EXISTS domainmetadata;
-DROP TABLE IF EXISTS records;
 DROP TABLE IF EXISTS templates;
 DROP TABLE IF EXISTS logmessagedata;
 DROP TABLE IF EXISTS logmessagekeys;
@@ -54,93 +37,109 @@ DROP TABLE IF EXISTS managementurls;
 DROP TABLE IF EXISTS nastypes;
 DROP TABLE IF EXISTS messageitems;
 DROP TABLE IF EXISTS messages;
-DROP TABLE IF EXISTS voipaccounts;
 DROP TABLE IF EXISTS excludedgroups;
-DROP TABLE IF EXISTS zipcodes;
-DROP TABLE IF EXISTS countries;
-DROP TABLE IF EXISTS states;
 DROP TABLE IF EXISTS customercontacts;
+DROP TABLE IF EXISTS dbinfo;
+DROP TABLE IF EXISTS ewx_pt_config;
 DROP TABLE IF EXISTS cashreglog;
-DROP TABLE IF EXISTS cashregs;
 DROP TABLE IF EXISTS cashrights;
 DROP TABLE IF EXISTS docrights;
 DROP TABLE IF EXISTS daemonconfig;
 DROP TABLE IF EXISTS daemoninstances;
-DROP TABLE IF EXISTS cashimport;
-DROP TABLE IF EXISTS sourcefiles;
-DROP TABLE IF EXISTS cashsources;
 DROP TABLE IF EXISTS sessions;
 DROP TABLE IF EXISTS eventassignments;
 DROP TABLE IF EXISTS events;
 DROP TABLE IF EXISTS uiconfig;
 DROP TABLE IF EXISTS aliasassignments;
 DROP TABLE IF EXISTS aliases;
-DROP TABLE IF EXISTS domains;
+DROP TABLE IF EXISTS supermasters;
+DROP TABLE IF EXISTS domainmetadata;
+DROP TABLE IF EXISTS records;
 DROP TABLE IF EXISTS passwd;
-DROP TABLE IF EXISTS customerassignments;
-DROP TABLE IF EXISTS customergroups;
-DROP TABLE IF EXISTS liabilities;
-DROP TABLE IF EXISTS promotionassignments;
-DROP TABLE IF EXISTS promotionschemas;
-DROP TABLE IF EXISTS promotions;
-DROP TABLE IF EXISTS tariffs;
-DROP TABLE IF EXISTS tarifftags;
-DROP TABLE IF EXISTS tariffassignments;
-DROP TABLE IF EXISTS nodesessions;
-DROP TABLE IF EXISTS stats;
+DROP TABLE IF EXISTS domains;
+DROP TABLE IF EXISTS rtqueuecategories;
 DROP TABLE IF EXISTS rtticketcategories;
 DROP TABLE IF EXISTS rtcategoryusers;
 DROP TABLE IF EXISTS rtcategories;
-DROP TABLE IF EXISTS rtrights;
 DROP TABLE IF EXISTS rtattachments;
+DROP TABLE IF EXISTS rtrights;
 DROP TABLE IF EXISTS rtmessages;
 DROP TABLE IF EXISTS rttickets;
 DROP TABLE IF EXISTS rtqueues;
+DROP TABLE IF EXISTS netlinks;
+DROP TABLE IF EXISTS nodesessions;
+DROP TABLE IF EXISTS stats;
+DROP TABLE IF EXISTS customerassignments;
+DROP TABLE IF EXISTS customergroups;
+DROP TABLE IF EXISTS numberplanassignments;
 DROP TABLE IF EXISTS payments;
+DROP TABLE IF EXISTS promotionassignments;
+DROP TABLE IF EXISTS promotionschemas;
+DROP TABLE IF EXISTS promotions;
+DROP TABLE IF EXISTS tariffassignments;
+DROP TABLE IF EXISTS tarifftags;
 DROP TABLE IF EXISTS nodeassignments;
 DROP TABLE IF EXISTS nodegroupassignments;
 DROP TABLE IF EXISTS nodegroups;
 DROP TABLE IF EXISTS macs;
 DROP TABLE IF EXISTS nodelocks;
 DROP TABLE IF EXISTS nodes;
-DROP TABLE IF EXISTS networks;
-DROP TABLE IF EXISTS hosts;
-DROP TABLE IF EXISTS netlinks;
 DROP TABLE IF EXISTS netradiosectors;
 DROP TABLE IF EXISTS netdevices;
 DROP TABLE IF EXISTS netdevicemodels;
 DROP TABLE IF EXISTS netdeviceproducers;
 DROP TABLE IF EXISTS netnodes;
 DROP TABLE IF EXISTS invprojects;
-DROP TABLE IF EXISTS divisions;
+DROP TABLE IF EXISTS networks;
+DROP TABLE IF EXISTS hosts;
 DROP TABLE IF EXISTS ewx_channels;
-DROP TABLE IF EXISTS ewx_pt_config;
 DROP TABLE IF EXISTS ewx_stm_channels;
 DROP TABLE IF EXISTS ewx_stm_nodes;
 DROP TABLE IF EXISTS pna;
+DROP TABLE IF EXISTS cash;
+DROP TABLE IF EXISTS cashimport;
+DROP TABLE IF EXISTS sourcefiles;
+DROP TABLE IF EXISTS cashsources;
+DROP TABLE IF EXISTS debitnotecontents;
+DROP TABLE IF EXISTS invoicecontents;
+DROP TABLE IF EXISTS voip_number_assignments;
+DROP TABLE IF EXISTS assignments;
+DROP TABLE IF EXISTS liabilities;
+DROP TABLE IF EXISTS voip_emergency_numbers;
+DROP TABLE IF EXISTS voip_pool_numbers;
+DROP TABLE IF EXISTS voip_numbers;
+DROP TABLE IF EXISTS tariffs;
+DROP TABLE IF EXISTS voip_price_groups;
+DROP TABLE IF EXISTS voip_cdr;
+DROP TABLE IF EXISTS voip_prefixes;
+DROP TABLE IF EXISTS voip_rule_states;
+DROP TABLE IF EXISTS voip_tariffs;
+DROP TABLE IF EXISTS voip_rules;
+DROP TABLE IF EXISTS voip_prefix_groups;
+DROP TABLE IF EXISTS voip_rule_groups;
+DROP TABLE IF EXISTS voipaccounts;
+DROP TABLE IF EXISTS taxes;
+DROP TABLE IF EXISTS receiptcontents;
+DROP TABLE IF EXISTS cashregs;
+DROP TABLE IF EXISTS documentattachments;
+DROP TABLE IF EXISTS documentcontents;
+DROP TABLE IF EXISTS documents;
+DROP TABLE IF EXISTS customer_addresses;
+DROP TABLE IF EXISTS zipcodes;
+DROP TABLE IF EXISTS states;
+DROP TABLE IF EXISTS numberplans;
+DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS divisions;
+DROP TABLE IF EXISTS addresses;
+DROP TABLE IF EXISTS location_buildings;
 DROP TABLE IF EXISTS location_streets;
 DROP TABLE IF EXISTS location_street_types;
 DROP TABLE IF EXISTS location_cities;
 DROP TABLE IF EXISTS location_boroughs;
 DROP TABLE IF EXISTS location_districts;
 DROP TABLE IF EXISTS location_states;
-DROP TABLE IF EXISTS location_buildings;
-DROP TABLE IF EXISTS numberplanassignments;
-DROP TABLE IF EXISTS dbinfo;
-DROP TABLE IF EXISTS cash;
-DROP TABLE IF EXISTS taxes;
-DROP TABLE IF EXISTS assignments;
-DROP TABLE IF EXISTS receiptcontents;
-DROP TABLE IF EXISTS debitnotecontents;
-DROP TABLE IF EXISTS invoicecontents;
-DROP TABLE IF EXISTS documentattachments;
-DROP TABLE IF EXISTS documentcontents;
-DROP TABLE IF EXISTS documents;
-DROP TABLE IF EXISTS numberplans;
-DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS countries;
 DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS customer_addresses;
-DROP TABLE IF EXISTS addresses;
 
 SET FOREIGN_KEY_CHECKS = 1;
 SET SESSION sql_mode   = '';
@@ -184,65 +183,10 @@ CREATE VIEW vusers AS
 
 # --------------------------------------------------------
 #
-# Structure of table customers (customers)
-#
-CREATE TABLE customers (
-  id int(11) 		NOT NULL auto_increment,
-  extid varchar(32)	NOT NULL DEFAULT '',
-  lastname varchar(128) NOT NULL DEFAULT '',
-  name varchar(128) 	NOT NULL DEFAULT '',
-  status smallint 	NOT NULL DEFAULT '0',
-  type smallint		NOT NULL DEFAULT '0',
-  ten varchar(16) 	NOT NULL DEFAULT '',
-  ssn varchar(11) 	NOT NULL DEFAULT '',
-  regon varchar(255) 	NOT NULL DEFAULT '',
-  rbe varchar(255)	NOT NULL DEFAULT '',
-  rbename varchar(255)	NOT NULL DEFAULT '',
-  icn varchar(255) 	NOT NULL DEFAULT '',
-  info text 		NOT NULL,
-  notes text 		NOT NULL DEFAULT '',
-  creationdate int(11) 	NOT NULL DEFAULT '0',
-  moddate int(11) 	NOT NULL DEFAULT '0',
-  creatorid int(11) DEFAULT NULL,
-  modid int(11) 	DEFAULT NULL,
-  deleted tinyint(1) 	NOT NULL DEFAULT '0',
-  message text 		NOT NULL,
-  pin varchar(255)	NOT NULL DEFAULT '0',
-  cutoffstop int(11) 	NOT NULL DEFAULT '0',
-  consentdate int(11)   NOT NULL DEFAULT '0',
-  einvoice tinyint(1)   DEFAULT NULL,
-  invoicenotice tinyint(1)   DEFAULT NULL,
-  mailingnotice tinyint(1)   DEFAULT NULL,
-  divisionid int(11)   	NOT NULL DEFAULT '0',
-  paytime smallint	NOT NULL DEFAULT '-1',
-  paytype smallint  DEFAULT NULL,
-  PRIMARY KEY  (id),
-  INDEX name (lastname, name),
-  CONSTRAINT customers_creatorid_fkey
-		FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT customers_modid_fkey
-		FOREIGN KEY (modid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table numberplans
-#
-CREATE TABLE numberplans (
-	id int(11) NOT NULL auto_increment,
-	template varchar(255) NOT NULL DEFAULT '',
-	period smallint NOT NULL DEFAULT '0',
-	doctype int(11) NOT NULL DEFAULT '0',
-	isdefault tinyint(1) NOT NULL DEFAULT '0',
-	PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
 # Structure of table countries
 #
 CREATE TABLE countries (
-    	id 		int(11) 	NOT NULL auto_increment,
+	id 		int(11) 	NOT NULL auto_increment,
 	name 		varchar(255) 	NOT NULL DEFAULT '',
 	PRIMARY KEY (id),
 	UNIQUE KEY name (name)
@@ -250,27 +194,14 @@ CREATE TABLE countries (
 
 # --------------------------------------------------------
 #
-# Structure of table zipcodes
-#
-CREATE TABLE zipcodes (
-    	id 		int(11) 	NOT NULL auto_increment,
-	zip 		varchar(10) 	NOT NULL DEFAULT '',
-	stateid 	int(11) 	NOT NULL DEFAULT '0',
-	PRIMARY KEY (id),
-	UNIQUE KEY zip (zip),
-	INDEX stateid (stateid)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
 # Structure of table location_states
 #
 CREATE TABLE location_states (
-    id int(11)          NOT NULL auto_increment,
-    ident varchar(8)    NOT NULL, -- TERYT: WOJ
-    name varchar(64)    NOT NULL, -- TERYT: NAZWA
-    PRIMARY KEY (id),
-    UNIQUE KEY name (name)
+	id int(11)          NOT NULL auto_increment,
+	ident varchar(8)    NOT NULL, -- TERYT: WOJ
+	name varchar(64)    NOT NULL, -- TERYT: NAZWA
+	PRIMARY KEY (id),
+	UNIQUE KEY name (name)
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -278,13 +209,13 @@ CREATE TABLE location_states (
 # Structure of table location_districts
 #
 CREATE TABLE location_districts (
-    id int(11)          NOT NULL auto_increment,
-    name varchar(64)    NOT NULL, -- TERYT: NAZWA
-    ident varchar(8)    NOT NULL, -- TERYT: POW
-    stateid int(11)     NOT NULL,  -- TERYT: WOJ
-    PRIMARY KEY (id),
-    UNIQUE KEY stateid (stateid, name),
-    FOREIGN KEY (stateid) REFERENCES location_states (id) ON DELETE CASCADE ON UPDATE CASCADE
+	id int(11)          NOT NULL auto_increment,
+	name varchar(64)    NOT NULL, -- TERYT: NAZWA
+	ident varchar(8)    NOT NULL, -- TERYT: POW
+	stateid int(11)     NOT NULL,  -- TERYT: WOJ
+	PRIMARY KEY (id),
+	UNIQUE KEY stateid (stateid, name),
+	FOREIGN KEY (stateid) REFERENCES location_states (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -292,14 +223,14 @@ CREATE TABLE location_districts (
 # Structure of table location_boroughs
 #
 CREATE TABLE location_boroughs (
-    id int(11)          NOT NULL auto_increment,
-    name varchar(64)    NOT NULL, -- TERYT: NAZWA
-    ident varchar(8)    NOT NULL, -- TERYT: GMI
-    districtid int(11)  NOT NULL,
-    type smallint       NOT NULL, -- TERYT: RODZ
-    PRIMARY KEY (id),
-    UNIQUE KEY districtid (districtid, name, type),
-    FOREIGN KEY (districtid) REFERENCES location_districts (id) ON DELETE CASCADE ON UPDATE CASCADE
+	id int(11)          NOT NULL auto_increment,
+	name varchar(64)    NOT NULL, -- TERYT: NAZWA
+	ident varchar(8)    NOT NULL, -- TERYT: GMI
+	districtid int(11)  NOT NULL,
+	type smallint       NOT NULL, -- TERYT: RODZ
+	PRIMARY KEY (id),
+	UNIQUE KEY districtid (districtid, name, type),
+	FOREIGN KEY (districtid) REFERENCES location_districts (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -307,15 +238,15 @@ CREATE TABLE location_boroughs (
 # Structure of table location_cities
 #
 CREATE TABLE location_cities (
-    id int(11)          NOT NULL auto_increment,
-    ident varchar(8)    NOT NULL, -- TERYT: SYM / SYMPOD
-    name varchar(64)    NOT NULL, -- TERYT: NAZWA
-    cityid int(11)      DEFAULT NULL,
-    boroughid int(11)   DEFAULT NULL,
-    PRIMARY KEY (id),
-    INDEX cityid (cityid),
-    INDEX boroughid (boroughid, name),
-    FOREIGN KEY (boroughid) REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE
+	id int(11)          NOT NULL auto_increment,
+	ident varchar(8)    NOT NULL, -- TERYT: SYM / SYMPOD
+	name varchar(64)    NOT NULL, -- TERYT: NAZWA
+	cityid int(11)      DEFAULT NULL,
+	boroughid int(11)   DEFAULT NULL,
+	PRIMARY KEY (id),
+	INDEX cityid (cityid),
+	INDEX boroughid (boroughid, name),
+	FOREIGN KEY (boroughid) REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -323,9 +254,9 @@ CREATE TABLE location_cities (
 # Structure of table location_street_types
 #
 CREATE TABLE location_street_types (
-    id int(11)          NOT NULL auto_increment,
-    name varchar(8)     NOT NULL, -- TERYT: CECHA
-    PRIMARY KEY (id)
+	id int(11)          NOT NULL auto_increment,
+	name varchar(8)     NOT NULL, -- TERYT: CECHA
+	PRIMARY KEY (id)
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
@@ -333,34 +264,34 @@ CREATE TABLE location_street_types (
 # Structure of table location_streets
 #
 CREATE TABLE location_streets (
-    id int(11)          NOT NULL auto_increment,
-    name varchar(128)   NOT NULL, -- TERYT: NAZWA_1
-    name2 varchar(128)  DEFAULT NULL, -- TERYT: NAZWA_2
-    ident varchar(8)    NOT NULL, -- TERYT: SYM_UL
-    typeid int(11)      DEFAULT NULL,
-    cityid int(11)      NOT NULL,
-    PRIMARY KEY (id),
-    UNIQUE KEY (cityid, name, ident),
-    FOREIGN KEY (typeid) REFERENCES location_street_types (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    FOREIGN KEY (cityid) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE
+	id int(11)          NOT NULL auto_increment,
+	name varchar(128)   NOT NULL, -- TERYT: NAZWA_1
+	name2 varchar(128)  DEFAULT NULL, -- TERYT: NAZWA_2
+	ident varchar(8)    NOT NULL, -- TERYT: SYM_UL
+	typeid int(11)      DEFAULT NULL,
+	cityid int(11)      NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE KEY (cityid, name, ident),
+	FOREIGN KEY (typeid) REFERENCES location_street_types (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	FOREIGN KEY (cityid) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=INNODB;
 
 # --------------------------------------------------------
 #
-# Structure of table location_streets
+# Structure of table location_buildings
 #
 CREATE TABLE location_buildings (
-    id           int(11) auto_increment,
-    city_id      int(11) NOT NULL,
-    street_id    int(11) NULL,
-    building_num varchar(20) NULL,
-    latitude     numeric(10,6) NULL,
-    longitude    numeric(10,6) NULL,
-    updated      smallint DEFAULT 0,
-    PRIMARY KEY (id),
-    FOREIGN KEY (city_id) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (street_id) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    INDEX location_cityid_index (city_id)
+	id           int(11) auto_increment,
+	city_id      int(11) NOT NULL,
+	street_id    int(11) NULL,
+	building_num varchar(20) NULL,
+	latitude     numeric(10,6) NULL,
+	longitude    numeric(10,6) NULL,
+	updated      smallint DEFAULT 0,
+	PRIMARY KEY (id),
+	FOREIGN KEY (city_id) REFERENCES location_cities (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (street_id) REFERENCES location_streets (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	INDEX location_cityid_index (city_id)
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -390,6 +321,118 @@ CREATE TABLE addresses (
 
 # --------------------------------------------------------
 #
+# Structure of table divisions
+#
+CREATE TABLE divisions (
+	id 		int(11) 	NOT NULL auto_increment,
+	shortname       varchar(255) 	NOT NULL DEFAULT '',
+	name        	text    	NOT NULL DEFAULT '',
+	ten		varchar(16)	NOT NULL DEFAULT '',
+	regon		varchar(255)	NOT NULL DEFAULT '',
+	rbe			varchar(255)	NOT NULL DEFAULT '',
+	rbename		varchar(255)	NOT NULL DEFAULT '',
+	account         varchar(48) 	NOT NULL DEFAULT '',
+	inv_header      text    	NOT NULL DEFAULT '',
+	inv_footer      text    	NOT NULL DEFAULT '',
+	inv_author      text    	NOT NULL DEFAULT '',
+	inv_cplace      text    	NOT NULL DEFAULT '',
+	inv_paytime 	smallint         DEFAULT NULL,
+	inv_paytype 	smallint    DEFAULT NULL,
+	description     text    	NOT NULL DEFAULT '',
+	status 		tinyint(1) 	NOT NULL DEFAULT 0,
+	tax_office_code varchar(8) DEFAULT NULL,
+	address_id int(11),
+	PRIMARY KEY (id),
+	UNIQUE KEY shortname (shortname),
+	CONSTRAINT `divisions_address_id_fk` FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table customers (customers)
+#
+CREATE TABLE customers (
+  id int(11) 		NOT NULL auto_increment,
+  extid varchar(32)	NOT NULL DEFAULT '',
+  lastname varchar(128) NOT NULL DEFAULT '',
+  name varchar(128) 	NOT NULL DEFAULT '',
+  status smallint 	NOT NULL DEFAULT '0',
+  type smallint		NOT NULL DEFAULT '0',
+  ten varchar(16) 	NOT NULL DEFAULT '',
+  ssn varchar(11) 	NOT NULL DEFAULT '',
+  regon varchar(255) 	NOT NULL DEFAULT '',
+  rbe varchar(255)	NOT NULL DEFAULT '',
+  rbename varchar(255)	NOT NULL DEFAULT '',
+  icn varchar(255) 	NOT NULL DEFAULT '',
+  info text 		NOT NULL,
+  notes text 		NOT NULL DEFAULT '',
+  creationdate int(11) 	NOT NULL DEFAULT '0',
+  moddate int(11) 	NOT NULL DEFAULT '0',
+  creatorid int(11) DEFAULT NULL,
+  modid int(11) 	DEFAULT NULL,
+  deleted tinyint(1) 	NOT NULL DEFAULT '0',
+  message text 		NOT NULL,
+  pin varchar(255)	NOT NULL DEFAULT '0',
+  cutoffstop int(11) 	NOT NULL DEFAULT '0',
+  consentdate int(11)   NOT NULL DEFAULT '0',
+  einvoice tinyint(1)   DEFAULT NULL,
+  invoicenotice tinyint(1)   DEFAULT NULL,
+  mailingnotice tinyint(1)   DEFAULT NULL,
+  divisionid int(11)   	DEFAULT NULL,
+  paytime smallint	NOT NULL DEFAULT '-1',
+  paytype smallint  DEFAULT NULL,
+  PRIMARY KEY  (id),
+  INDEX name (lastname, name),
+  CONSTRAINT customers_creatorid_fkey
+		FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT customers_modid_fkey
+		FOREIGN KEY (modid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT customers_divisionid_fkey
+		FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table numberplans
+#
+CREATE TABLE numberplans (
+	id int(11) NOT NULL auto_increment,
+	template varchar(255) NOT NULL DEFAULT '',
+	period smallint NOT NULL DEFAULT '0',
+	doctype int(11) NOT NULL DEFAULT '0',
+	isdefault tinyint(1) NOT NULL DEFAULT '0',
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table states
+#
+CREATE TABLE states (
+	id 		int(11) 	NOT NULL auto_increment,
+	name 		varchar(255) 	NOT NULL DEFAULT '',
+	description 	text 		NOT NULL DEFAULT '',
+	PRIMARY KEY (id),
+	UNIQUE KEY name (name)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table zipcodes
+#
+CREATE TABLE zipcodes (
+    	id 		int(11) 	NOT NULL auto_increment,
+	zip 		varchar(10) 	NOT NULL DEFAULT '',
+	stateid 	int(11) 	DEFAULT NULL,
+	PRIMARY KEY (id),
+	UNIQUE KEY zip (zip),
+	INDEX stateid (stateid),
+	CONSTRAINT zipcodes_stateid_fkey
+		FOREIGN KEY (stateid) REFERENCES states (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table customer_addresses
 #
 CREATE TABLE customer_addresses (
@@ -411,31 +454,31 @@ CREATE TABLE documents (
 	id int(11) NOT NULL auto_increment,
 	type tinyint NOT NULL DEFAULT '0',
 	number int(11) NOT NULL DEFAULT '0',
-	numberplanid int(11) NOT NULL DEFAULT '0',
+	numberplanid int(11) DEFAULT NULL,
 	extnumber varchar(255) NOT NULL DEFAULT '',
 	cdate int(11) NOT NULL DEFAULT '0',
 	sdate int(11) NOT NULL DEFAULT '0',
 	customerid int(11) DEFAULT NULL,
 	userid int(11) DEFAULT NULL,
-	divisionid int(11) NOT NULL DEFAULT '0',
+	divisionid int(11) DEFAULT NULL,
 	name varchar(255) NOT NULL DEFAULT '',
 	address varchar(255) NOT NULL DEFAULT '',
 	zip varchar(10) NULL DEFAULT NULL,
 	city varchar(32) NULL DEFAULT NULL,
-	countryid int(11) NOT NULL DEFAULT '0',
+	countryid int(11) DEFAULT NULL,
 	ten varchar(16) NOT NULL DEFAULT '',
 	ssn varchar(11) NOT NULL DEFAULT '',
 	paytime smallint NOT NULL DEFAULT '0',
 	paytype smallint DEFAULT NULL,
 	closed tinyint(1) NOT NULL DEFAULT '0',
-	reference int(11) NOT NULL DEFAULT '0',
+	reference int(11) DEFAULT NULL,
 	reason varchar(255) NOT NULL DEFAULT '',
 	div_name text NOT NULL DEFAULT '',
 	div_shortname text NOT NULL DEFAULT '',
 	div_address varchar(255) NOT NULL DEFAULT '',
 	div_city varchar(255) NOT NULL DEFAULT '',
 	div_zip varchar(255) NOT NULL DEFAULT '',
-	div_countryid int(11) NOT NULL DEFAULT '0',
+	div_countryid int(11) DEFAULT NULL,
 	div_ten varchar(255) NOT NULL DEFAULT '',
 	div_regon varchar(255) NOT NULL DEFAULT '',
 	div_account varchar(48) NOT NULL DEFAULT '',
@@ -456,13 +499,23 @@ CREATE TABLE documents (
 	INDEX closed (closed),
 	INDEX reference (reference),
 	CONSTRAINT documents_recipient_address_id_fkey
-		FOREIGN KEY (recipient_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	FOREIGN KEY (recipient_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT documents_customerid_fkey
-		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT documents_userid_fkey
-		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT documents_cuserid_fkey
-		FOREIGN KEY (cuserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+	FOREIGN KEY (cuserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT documents_numberplanid_fkey
+	FOREIGN KEY (numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT documents_divisionid_fkey
+	FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT documents_countryid_fkey
+	FOREIGN KEY (countryid) REFERENCES countries (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT documents_reference_fkey
+	FOREIGN KEY (reference) REFERENCES documents (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT documents_div_countryid_fkey
+	FOREIGN KEY (div_countryid) REFERENCES countries (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -500,6 +553,25 @@ CREATE TABLE documentattachments (
 
 # --------------------------------------------------------
 #
+# Structure of table cashregs
+#
+CREATE TABLE cashregs (
+	id int(11)              NOT NULL auto_increment,
+	name varchar(255)       DEFAULT '' NOT NULL,
+	description text        DEFAULT '' NOT NULL,
+	in_numberplanid int(11) DEFAULT NULL,
+	out_numberplanid int(11) DEFAULT NULL,
+	disabled tinyint(1)     DEFAULT '0' NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE KEY name (name),
+	CONSTRAINT cashregs_in_numberplanid_fkey
+		FOREIGN KEY (in_numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT cashregs_out_numberplanid_fkey
+		FOREIGN KEY (out_numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table receiptcontents
 #
 CREATE TABLE receiptcontents (
@@ -507,10 +579,344 @@ CREATE TABLE receiptcontents (
 	itemid 			TINYINT NOT NULL DEFAULT '0',
 	value decimal(9,2) 	NOT NULL DEFAULT '0',
 	description text 	NOT NULL DEFAULT '',
-	regid int(11)		NOT NULL DEFAULT '0',
+	regid int(11)		DEFAULT NULL,
 	INDEX docid (docid),
 	INDEX regid (regid),
-	FOREIGN KEY receiptcontents_docid_fk (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
+	CONSTRAINT receiptcontents_docid_fkey
+		FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT receiptcontents_regid_fkey
+		FOREIGN KEY (regid) REFERENCES cashregs (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table taxes
+#
+CREATE TABLE taxes (
+	id int(11) NOT NULL auto_increment,
+	value decimal(4,2) NOT NULL DEFAULT '0',
+	taxed tinyint NOT NULL DEFAULT '0',
+	label varchar(16) NOT NULL DEFAULT '',
+	validfrom int(11) NOT NULL DEFAULT '0',
+	validto int(11) NOT NULL DEFAULT '0',
+	reversecharge tinyint(1) NOT NULL DEFAULT '0',
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table voipaccounts
+#
+CREATE TABLE voipaccounts (
+	id 		        int(11) 	  NOT NULL auto_increment,
+	ownerid 	    int(11) 	  DEFAULT NULL,
+	login		    varchar(255)  NOT NULL DEFAULT '',
+	passwd		    varchar(255)  NOT NULL DEFAULT '',
+	access          tinyint(1)    NOT NULL DEFAULT '1',
+	creationdate	int(11)		  NOT NULL DEFAULT 0,
+	moddate		    int(11)		  NOT NULL DEFAULT 0,
+	creatorid	    int(11)		  DEFAULT NULL,
+	modid		    int(11)		  DEFAULT NULL,
+	balance			decimal(12,5) NOT NULL DEFAULT 0,
+	flags			smallint      NOT NULL DEFAULT 0,
+	cost_limit		decimal(12,2) NULL DEFAULT NULL,
+	address_id      int(11)       NULL DEFAULT NULL,
+	PRIMARY KEY (id),
+	CONSTRAINT voipaccounts_address_id_fkey
+	FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT voipaccounts_ownerid_fkey
+	FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT voipaccounts_creatorid_fkey
+	FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT voipaccounts_modid_fkey
+	FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table voip_rule_groups
+#
+CREATE TABLE voip_rule_groups (
+	id integer NOT NULL AUTO_INCREMENT,
+	name text NOT NULL,
+	description text NULL,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table voip_prefix_groups
+#
+CREATE TABLE voip_prefix_groups (
+	id int(11) AUTO_INCREMENT,
+	name text NOT NULL,
+	description text NULL,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table voip_rules
+#
+CREATE TABLE voip_rules (
+	id              integer NOT NULL AUTO_INCREMENT,
+	rule_group_id   integer NOT NULL,
+	prefix_group_id integer NOT NULL,
+	settings        text    NULL,
+	FOREIGN KEY (rule_group_id)   REFERENCES voip_rule_groups(id)   ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (prefix_group_id) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table voip_tariffs
+#
+CREATE TABLE voip_tariffs (
+	id          int(11)      NOT NULL AUTO_INCREMENT,
+	name        varchar(100) NOT NULL,
+	description text         NULL DEFAULT NULL,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table voip_rule_states
+#
+CREATE TABLE voip_rule_states (
+	id              int(11) NOT NULL AUTO_INCREMENT,
+	voip_account_id int(11) NOT NULL
+		REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	rule_id         int(11) NOT NULL
+		REFERENCES voip_rules (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	units_left      int(11) NOT NULL,
+	PRIMARY KEY(id),
+	UNIQUE(voip_account_id, rule_id)
+);
+
+# --------------------------------------------------------
+#
+# Structure of table voip_prefixes
+#
+CREATE TABLE voip_prefixes (
+	id int(11) AUTO_INCREMENT,
+	prefix varchar(30) NOT NULL,
+	groupid int(11) NOT NULL,
+	UNIQUE (prefix, groupid),
+	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table voip_cdr
+#
+CREATE TABLE voip_cdr (
+	id int(11) AUTO_INCREMENT,
+	caller              varchar(20)   NOT NULL,
+	callee              varchar(20)   NOT NULL,
+	call_start_time     int(11)       NOT NULL,
+	totaltime           int(11)       NOT NULL,
+	billedtime          int(11)       NOT NULL,
+	price               decimal(12,5) NOT NULL,
+	status              smallint      NOT NULL,
+	type                smallint      NOT NULL,
+	callervoipaccountid int(11)       NULL,
+	calleevoipaccountid int(11)       NULL,
+	caller_flags        smallint      NOT NULL DEFAULT '0',
+	callee_flags        smallint      NOT NULL DEFAULT '0',
+	caller_prefix_group varchar(100)  NULL,
+	callee_prefix_group varchar(100)  NULL,
+	uniqueid            varchar(20)   NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE KEY (uniqueid),
+	FOREIGN KEY (callervoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	FOREIGN KEY (calleevoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table voip_price_groups
+#
+CREATE TABLE voip_price_groups (
+	id              int(11)       NOT NULL AUTO_INCREMENT,
+	voip_tariff_id  int(11)       NOT NULL,
+	prefix_group_id int(11)       NOT NULL,
+	price           decimal(12,5) DEFAULT 0 NOT NULL,
+	unitsize        smallint      DEFAULT 0 NOT NULL,
+	FOREIGN KEY (voip_tariff_id)  REFERENCES voip_tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (prefix_group_id) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table tariffs
+#
+CREATE TABLE tariffs (
+	id int(11) 		NOT NULL auto_increment,
+	name varchar(255) 	NOT NULL DEFAULT '',
+	type tinyint 		NOT NULL DEFAULT '1',
+	value decimal(9,2) 	NOT NULL DEFAULT '0',
+	taxid int(11) 	NOT NULL,
+	numberplanid integer DEFAULT NULL,
+	period smallint   DEFAULT NULL,
+	prodid varchar(255) 	NOT NULL DEFAULT '',
+	uprate int(11) 	NOT NULL DEFAULT '0',
+	upceil int(11) 	NOT NULL DEFAULT '0',
+	downrate int(11) 	NOT NULL DEFAULT '0',
+	downceil int(11) 	NOT NULL DEFAULT '0',
+	climit int(11) 	NOT NULL DEFAULT '0',
+	plimit int(11) 	NOT NULL DEFAULT '0',
+	dlimit int(11) 	NOT NULL DEFAULT '0',
+	uprate_n int(11)        	DEFAULT NULL,
+	upceil_n int(11)        	DEFAULT NULL,
+	downrate_n int(11)      	DEFAULT NULL,
+	downceil_n int(11)     	DEFAULT NULL,
+	climit_n int(11)      	DEFAULT NULL,
+	plimit_n int(11)        	DEFAULT NULL,
+	domain_limit int(11)  	DEFAULT NULL,
+	alias_limit int(11)		DEFAULT NULL,
+	sh_limit int(11)      	DEFAULT NULL,
+	www_limit int(11)     	DEFAULT NULL,
+	mail_limit int(11)    	DEFAULT NULL,
+	ftp_limit int(11)     	DEFAULT NULL,
+	sql_limit int(11)     	DEFAULT NULL,
+	cloud_limit int(11)     	DEFAULT NULL,
+	quota_sh_limit int(11)  	DEFAULT NULL,
+	quota_www_limit int(11) 	DEFAULT NULL,
+	quota_mail_limit int(11) 	DEFAULT NULL,
+	quota_ftp_limit int(11) 	DEFAULT NULL,
+	quota_sql_limit int(11) 	DEFAULT NULL,
+	quota_cloud_limit int(11) 	DEFAULT NULL,
+	description text 	NOT NULL,
+	disabled tinyint  NOT NULL DEFAULT '0',
+	voip_tariff_id      int(11) DEFAULT NULL,
+	voip_tariff_rule_id int(11) DEFAULT NULL,
+	datefrom            int(11) NOT NULL DEFAULT '0',
+	dateto              int(11) NOT NULL DEFAULT '0',
+	PRIMARY KEY  (id),
+	UNIQUE KEY name (name, value, period),
+	INDEX type (type),
+	FOREIGN KEY (numberplanid)        REFERENCES numberplans  (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (voip_tariff_id)      REFERENCES voip_tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rules   (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT tariffs_taxid_fkey
+		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table voip_numbers
+#
+CREATE TABLE voip_numbers (
+	id int(11) AUTO_INCREMENT,
+	voip_account_id int(11) NOT NULL,
+	phone varchar(20) NOT NULL,
+	number_index smallint NULL,
+	tariff_id int(11),
+	UNIQUE(phone),
+	UNIQUE(voip_account_id, number_index),
+	FOREIGN KEY (voip_account_id) REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (tariff_id)       REFERENCES tariffs (id)      ON DELETE SET NULL ON UPDATE CASCADE,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table voip_pool_numbers
+#
+CREATE TABLE voip_pool_numbers (
+	id int(11) NOT NULL AUTO_INCREMENT ,
+	disabled smallint DEFAULT 0,
+	name varchar(30) NOT NULL,
+	poolstart varchar(20) NOT NULL,
+	poolend varchar(20) NOT NULL,
+	description text,
+	type smallint NOT NULL DEFAULT 1,
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table voip_emergency_numbers
+#
+CREATE TABLE voip_emergency_numbers (
+	location_borough int(11) NOT NULL,
+	number int(11) NOT NULL,
+	fullnumber varchar(20) NOT NULL,
+	INDEX voip_emergency_numbers_number_idx (number),
+	UNIQUE KEY number (location_borough, number),
+	FOREIGN KEY (location_borough) REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+--------------------------------------------------------
+#
+# Structure of table liabilities
+#
+CREATE TABLE liabilities (
+	id int(11)              NOT NULL auto_increment,
+	value decimal(9,2)      NOT NULL DEFAULT '0',
+	name text               NOT NULL DEFAULT '',
+	taxid int(11)           NOT NULL,
+	prodid varchar(255)     NOT NULL DEFAULT '',
+	PRIMARY KEY (id),
+	CONSTRAINT liabilities_taxid_fkey
+		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table  assignments
+#
+CREATE TABLE assignments (
+	id int(11) NOT NULL auto_increment,
+	tariffid int(11) DEFAULT NULL,
+	liabilityid int(11) DEFAULT NULL,
+	customerid int(11) NOT NULL,
+	period smallint NOT NULL DEFAULT '0',
+	at int(11) NOT NULL DEFAULT '0',
+	datefrom int(11) NOT NULL DEFAULT '0',
+	dateto int(11) NOT NULL DEFAULT '0',
+	invoice tinyint(1) NOT NULL DEFAULT '0',
+	suspended tinyint(1) NOT NULL DEFAULT '0',
+	settlement tinyint(1) NOT NULL DEFAULT '0',
+	pdiscount decimal(4,2) NOT NULL DEFAULT '0',
+	vdiscount decimal(9,2) NOT NULL DEFAULT '0',
+	paytype smallint DEFAULT NULL,
+	numberplanid int(11) DEFAULT NULL,
+	attribute varchar(255) DEFAULT NULL,
+	recipient_address_id int(11),
+	docid int(11) DEFAULT NULL,
+	PRIMARY KEY (id),
+	INDEX tariffid (tariffid),
+	INDEX customerid (customerid),
+	INDEX numberplanid (numberplanid),
+	CONSTRAINT assignments_customerid_fkey
+		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT assignments_numberplanid
+		FOREIGN KEY (numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT assignments_recipient_address_id_fkey
+		FOREIGN KEY (recipient_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT assignments_docid_fkey
+		FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT assignments_tariffid_fkey
+		FOREIGN KEY (tariffid) REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT assignments_liabilityid_fkey
+		FOREIGN KEY (liabilityid) REFERENCES liabilities (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table voip_number_assignments
+#
+CREATE TABLE voip_number_assignments (
+	id            int(11) NOT NULL auto_increment,
+	number_id     int(11) NOT NULL,
+	assignment_id int(11) NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY (number_id)     REFERENCES voip_numbers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (assignment_id) REFERENCES assignments  (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -523,14 +929,19 @@ CREATE TABLE invoicecontents (
 	value decimal(12,5) NOT NULL DEFAULT '0',
 	pdiscount decimal(4,2) NOT NULL DEFAULT '0',
 	vdiscount decimal(9,2) NOT NULL DEFAULT '0',
-	taxid int(11) NOT NULL DEFAULT '0',
+	taxid int(11) NOT NULL,
 	prodid varchar(255) NOT NULL DEFAULT '',
 	content varchar(16) NOT NULL DEFAULT '',
 	count decimal(9,2) NOT NULL DEFAULT '0',
 	description text NOT NULL DEFAULT '',
-	tariffid int(11) NOT NULL DEFAULT '0',
+	tariffid int(11) DEFAULT NULL,
 	INDEX docid (docid),
-	FOREIGN KEY invoicecontents_docid_fk (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
+	CONSTRAINT invoicecontents_docid_fkey
+		FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT invoicecontents_taxid_fkey
+		FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT invoicecontents_tariffid_fkey
+		FOREIGN KEY (tariffid) REFERENCES tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -545,44 +956,65 @@ CREATE TABLE debitnotecontents (
 	description text NOT NULL DEFAULT '',
 	PRIMARY KEY (id),
 	UNIQUE KEY docid (docid, itemid),
-	FOREIGN KEY debitnotecontents_docid_fk (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
+	CONSTRAINT debitnotecontents_docid_fkey
+		FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
 #
-# Structure of table  assignments
+# Structure of table cashsources
 #
-CREATE TABLE assignments (
-  id int(11) NOT NULL auto_increment,
-  tariffid int(11) NOT NULL DEFAULT '0',
-  liabilityid int(11) NOT NULL DEFAULT '0',
-  customerid int(11) NOT NULL,
-  period smallint NOT NULL DEFAULT '0',
-  at int(11) NOT NULL DEFAULT '0',
-  datefrom int(11) NOT NULL DEFAULT '0',
-  dateto int(11) NOT NULL DEFAULT '0',
-  invoice tinyint(1) NOT NULL DEFAULT '0',
-  suspended tinyint(1) NOT NULL DEFAULT '0',
-  settlement tinyint(1) NOT NULL DEFAULT '0',
-  pdiscount decimal(4,2) NOT NULL DEFAULT '0',
-  vdiscount decimal(9,2) NOT NULL DEFAULT '0',
-  paytype smallint DEFAULT NULL,
-  numberplanid int(11) DEFAULT NULL,
-  attribute varchar(255) DEFAULT NULL,
-  recipient_address_id int(11),
-  docid int(11) DEFAULT NULL,
-  PRIMARY KEY (id),
-  INDEX tariffid (tariffid),
-  INDEX customerid (customerid),
-  INDEX numberplanid (numberplanid),
-  CONSTRAINT assignments_customerid_fkey
-  	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT assignments_numberplanid
-  	FOREIGN KEY (numberplanid) REFERENCES numberplans (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT assignments_recipient_address_id_fkey
-  	FOREIGN KEY (recipient_address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT assignments_docid_fkey
-  	FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE
+CREATE TABLE cashsources (
+	id      int(11)         NOT NULL auto_increment,
+	name	varchar(32)     DEFAULT '' NOT NULL,
+	description text		DEFAULT NULL,
+	account varchar(48)     NOT NULL DEFAULT '',
+	deleted smallint		NOT NULL DEFAULT 0,
+	PRIMARY KEY (id),
+	UNIQUE KEY name (name)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table sourcefiles
+#
+CREATE TABLE sourcefiles (
+	id      int(11)         NOT NULL auto_increment,
+	userid integer     DEFAULT NULL,
+	name	varchar(255)    NOT NULL,
+	idate	int(11)	        NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE KEY idate (idate, name),
+	INDEX userid (userid),
+	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table cashimport
+#
+CREATE TABLE cashimport (
+	id int(11) NOT NULL auto_increment,
+	date int(11) NOT NULL DEFAULT '0',
+	value decimal(9,2) NOT NULL DEFAULT '0',
+	customer text NOT NULL DEFAULT '',
+	description text NOT NULL DEFAULT '',
+	customerid int(11) DEFAULT NULL,
+	hash varchar(50) NOT NULL DEFAULT '',
+	closed tinyint(1) NOT NULL DEFAULT '0',
+	sourceid int(11) DEFAULT NULL,
+	sourcefileid int(11) DEFAULT NULL,
+	PRIMARY KEY (id),
+	INDEX hash (hash),
+	INDEX customerid (customerid),
+	INDEX sourceid (sourceid),
+	INDEX sourcefileid (sourcefileid),
+	CONSTRAINT cashimport_customerid_fkey
+	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT cashimport_sourceid_fkey
+	FOREIGN KEY (sourceid) REFERENCES cashsources (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT cashimport_sourcefileid_fkey
+	FOREIGN KEY (sourcefileid) REFERENCES sourcefiles (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -595,10 +1027,10 @@ CREATE TABLE cash (
   type smallint NOT NULL DEFAULT '0',
   userid int(11) DEFAULT NULL,
   value decimal(9,2) NOT NULL DEFAULT '0',
-  taxid int(11) NOT NULL DEFAULT '0',
+  taxid int(11) DEFAULT NULL,
   customerid int(11) DEFAULT NULL,
   comment text NOT NULL DEFAULT '',
-  docid int(11) NOT NULL DEFAULT '0',
+  docid int(11) DEFAULT NULL,
   itemid smallint NOT NULL DEFAULT '0',
   importid int(11) DEFAULT NULL,
   sourceid int(11) DEFAULT NULL,
@@ -611,7 +1043,15 @@ CREATE TABLE cash (
   CONSTRAINT cash_customerid_fkey
   	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT cash_userid_fkey
-	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT cash_taxid_fkey
+	FOREIGN KEY (taxid) REFERENCES taxes (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT cash_docid_fkey
+	FOREIGN KEY (docid) REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT cash_importid_fkey
+	FOREIGN KEY (importid) REFERENCES cashimport (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT cash_sourceid_fkey
+	FOREIGN KEY (sourceid) REFERENCES cashsources (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -713,34 +1153,6 @@ CREATE TABLE networks (
   UNIQUE KEY name (name),
   UNIQUE KEY address (address, hostid),
   FOREIGN KEY (hostid) REFERENCES hosts (id) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table divisions
-#
-CREATE TABLE divisions (
-    id 		int(11) 	NOT NULL auto_increment,
-	shortname       varchar(255) 	NOT NULL DEFAULT '',
-    name        	text    	NOT NULL DEFAULT '',
-	ten		varchar(16)	NOT NULL DEFAULT '',
-	regon		varchar(255)	NOT NULL DEFAULT '',
-	rbe			varchar(255)	NOT NULL DEFAULT '',
-	rbename		varchar(255)	NOT NULL DEFAULT '',
-	account         varchar(48) 	NOT NULL DEFAULT '',
-	inv_header      text    	NOT NULL DEFAULT '',
-	inv_footer      text    	NOT NULL DEFAULT '',
-	inv_author      text    	NOT NULL DEFAULT '',
-	inv_cplace      text    	NOT NULL DEFAULT '',
-	inv_paytime 	smallint         DEFAULT NULL,
-	inv_paytype 	smallint    DEFAULT NULL,
-	description     text    	NOT NULL DEFAULT '',
-	status 		tinyint(1) 	NOT NULL DEFAULT 0,
-	tax_office_code varchar(8) DEFAULT NULL,
-	address_id int(11),
-	PRIMARY KEY (id),
-	UNIQUE KEY shortname (shortname),
-	CONSTRAINT `divisions_address_id_fk` FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -974,11 +1386,15 @@ CREATE TABLE nodegroups (
 # Structure of table nodegroupassignments
 #
 CREATE TABLE nodegroupassignments (
-        id              int(11)         NOT NULL auto_increment,
-        nodegroupid     int(11)         NOT NULL DEFAULT 0,
-	nodeid          int(11)         NOT NULL DEFAULT 0,
+	id              int(11)         NOT NULL auto_increment,
+	nodegroupid     int(11)         NOT NULL,
+	nodeid          int(11)         NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE KEY nodeid (nodeid, nodegroupid)
+	UNIQUE KEY nodeid (nodeid, nodegroupid),
+	CONSTRAINT nodegroupassignments_nodegroupid_fkey
+		FOREIGN KEY (nodegroupid) REFERENCES nodegroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT nodegroupassignments_nodeid_fkey
+		FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -994,264 +1410,6 @@ CREATE TABLE nodeassignments (
     INDEX assignmentid (assignmentid),
     FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (assignmentid) REFERENCES assignments (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table voipaccounts
-#
-CREATE TABLE voipaccounts (
-	id 		        int(11) 	  NOT NULL auto_increment,
-	ownerid 	    int(11) 	  DEFAULT NULL,
-	login		    varchar(255)  NOT NULL DEFAULT '',
-	passwd		    varchar(255)  NOT NULL DEFAULT '',
-	access          tinyint(1)    NOT NULL DEFAULT '1',
-	creationdate	int(11)		  NOT NULL DEFAULT 0,
-	moddate		    int(11)		  NOT NULL DEFAULT 0,
-	creatorid	    int(11)		  DEFAULT NULL,
-	modid		    int(11)		  DEFAULT NULL,
-	balance			decimal(12,5) NOT NULL DEFAULT 0,
-	flags			smallint      NOT NULL DEFAULT 0,
-	cost_limit		decimal(12,2) NULL DEFAULT NULL,
-	address_id      int(11)       NULL DEFAULT NULL,
-	PRIMARY KEY (id),
-	CONSTRAINT voipaccounts_address_id_fkey
-		FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT voipaccounts_ownerid_fkey
-		FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT voipaccounts_creatorid_fkey
-		FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT voipaccounts_modid_fkey
-		FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table voip_rule_groups
-#
-CREATE TABLE voip_rule_groups (
-	id integer NOT NULL AUTO_INCREMENT,
-	name text NOT NULL,
-	description text NULL,
-	PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table voip_prefix_groups
-#
-CREATE TABLE voip_prefix_groups (
-	id int(11) AUTO_INCREMENT,
-	name text NOT NULL,
-	description text NULL,
-	PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table voip_rules
-#
-CREATE TABLE voip_rules (
-	id              integer NOT NULL AUTO_INCREMENT,
-	rule_group_id   integer NOT NULL,
-	prefix_group_id integer NOT NULL,
-	settings        text    NULL,
-	FOREIGN KEY (rule_group_id)   REFERENCES voip_rule_groups(id)   ON DELETE CASCADE ON UPDATE CASCADE,
-	FOREIGN KEY (prefix_group_id) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table voip_rule_states
-#
-CREATE TABLE voip_rule_states (
-    id              int(11) NOT NULL AUTO_INCREMENT,
-    voip_account_id int(11) NOT NULL
-        REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    rule_id         int(11) NOT NULL
-        REFERENCES voip_rules (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    units_left      int(11) NOT NULL,
-    PRIMARY KEY(id),
-    UNIQUE(voip_account_id, rule_id)
-);
-
-# --------------------------------------------------------
-#
-# Structure of table voip_prefixes
-#
-CREATE TABLE voip_prefixes (
-	id int(11) AUTO_INCREMENT,
-	prefix varchar(30) NOT NULL,
-	groupid int(11) NOT NULL,
-	UNIQUE (prefix, groupid),
-	FOREIGN KEY (groupid) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE,
-	PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table voip_tariffs
-#
-CREATE TABLE voip_tariffs (
-    id          int(11)      NOT NULL AUTO_INCREMENT,
-    name        varchar(100) NOT NULL,
-    description text         NULL DEFAULT NULL,
-    PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table tariffs
-#
-CREATE TABLE tariffs (
-  id int(11) 		NOT NULL auto_increment,
-  name varchar(255) 	NOT NULL DEFAULT '',
-  type tinyint 		NOT NULL DEFAULT '1',
-  value decimal(9,2) 	NOT NULL DEFAULT '0',
-  taxid int(11) 	NOT NULL DEFAULT '0',
-  numberplanid integer DEFAULT NULL,
-  period smallint   DEFAULT NULL,
-  prodid varchar(255) 	NOT NULL DEFAULT '',
-  uprate int(11) 	NOT NULL DEFAULT '0',
-  upceil int(11) 	NOT NULL DEFAULT '0',
-  downrate int(11) 	NOT NULL DEFAULT '0',
-  downceil int(11) 	NOT NULL DEFAULT '0',
-  climit int(11) 	NOT NULL DEFAULT '0',
-  plimit int(11) 	NOT NULL DEFAULT '0',
-  dlimit int(11) 	NOT NULL DEFAULT '0',
-  uprate_n int(11)        	DEFAULT NULL,
-  upceil_n int(11)        	DEFAULT NULL,
-  downrate_n int(11)      	DEFAULT NULL,
-  downceil_n int(11)     	DEFAULT NULL,
-  climit_n int(11)      	DEFAULT NULL,
-  plimit_n int(11)        	DEFAULT NULL,
-  domain_limit int(11)  	DEFAULT NULL,
-  alias_limit int(11)		DEFAULT NULL,
-  sh_limit int(11)      	DEFAULT NULL,
-  www_limit int(11)     	DEFAULT NULL,
-  mail_limit int(11)    	DEFAULT NULL,
-  ftp_limit int(11)     	DEFAULT NULL,
-  sql_limit int(11)     	DEFAULT NULL,
-  cloud_limit int(11)     	DEFAULT NULL,
-  quota_sh_limit int(11)  	DEFAULT NULL,
-  quota_www_limit int(11) 	DEFAULT NULL,
-  quota_mail_limit int(11) 	DEFAULT NULL,
-  quota_ftp_limit int(11) 	DEFAULT NULL,
-  quota_sql_limit int(11) 	DEFAULT NULL,
-  quota_cloud_limit int(11) 	DEFAULT NULL,
-  description text 	NOT NULL,
-  disabled tinyint  NOT NULL DEFAULT '0',
-  voip_tariff_id      int(11) DEFAULT NULL,
-  voip_tariff_rule_id int(11) DEFAULT NULL,
-  datefrom            int(11) NOT NULL DEFAULT '0',
-  dateto              int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY  (id),
-  UNIQUE KEY name (name, value, period),
-  INDEX type (type),
-  FOREIGN KEY (numberplanid)        REFERENCES numberplans  (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (voip_tariff_id)      REFERENCES voip_tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY (voip_tariff_rule_id) REFERENCES voip_rules   (id) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table voip_cdr
-#
-CREATE TABLE voip_cdr (
-	id int(11) AUTO_INCREMENT,
-	caller              varchar(20)   NOT NULL,
-	callee              varchar(20)   NOT NULL,
-	call_start_time     int(11)       NOT NULL,
-	totaltime           int(11)       NOT NULL,
-	billedtime          int(11)       NOT NULL,
-	price               decimal(12,5) NOT NULL,
-	status              smallint      NOT NULL,
-	type                smallint      NOT NULL,
-	callervoipaccountid int(11)       NULL,
-	calleevoipaccountid int(11)       NULL,
-	caller_flags        smallint      NOT NULL DEFAULT '0',
-	callee_flags        smallint      NOT NULL DEFAULT '0',
-	caller_prefix_group varchar(100)  NULL,
-	callee_prefix_group varchar(100)  NULL,
-	uniqueid            varchar(20)   NOT NULL,
-	PRIMARY KEY (id),
-	UNIQUE KEY (uniqueid),
-	FOREIGN KEY (callervoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE,
-	FOREIGN KEY (calleevoipaccountid) REFERENCES voipaccounts(id) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table voip_price_groups
-#
-CREATE TABLE voip_price_groups (
-    id              int(11)       NOT NULL AUTO_INCREMENT,
-    voip_tariff_id  int(11)       NOT NULL,
-    prefix_group_id int(11)       NOT NULL,
-    price           decimal(12,5) DEFAULT 0 NOT NULL,
-    unitsize        smallint      DEFAULT 0 NOT NULL,
-    FOREIGN KEY (voip_tariff_id)  REFERENCES voip_tariffs(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (prefix_group_id) REFERENCES voip_prefix_groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table voip_numbers
-#
-CREATE TABLE voip_numbers (
-    id int(11) AUTO_INCREMENT,
-    voip_account_id int(11) NOT NULL,
-    phone varchar(20) NOT NULL,
-    number_index smallint NULL,
-    tariff_id int(11),
-    UNIQUE(phone),
-    UNIQUE(voip_account_id, number_index),
-    FOREIGN KEY (voip_account_id) REFERENCES voipaccounts (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (tariff_id)       REFERENCES tariffs (id)      ON DELETE SET NULL ON UPDATE CASCADE,
-    PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table voip_pool_numbers
-#
-CREATE TABLE voip_pool_numbers (
-    id int(11) NOT NULL AUTO_INCREMENT ,
-    disabled smallint DEFAULT 0,
-    name varchar(30) NOT NULL,
-    poolstart varchar(20) NOT NULL,
-    poolend varchar(20) NOT NULL,
-    description text,
-    type smallint NOT NULL DEFAULT 1,
-	PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table voip_emergency_numbers
-#
-CREATE TABLE voip_emergency_numbers (
-	location_borough int(11) NOT NULL,
-	number int(11) NOT NULL,
-	fullnumber varchar(20) NOT NULL,
-	INDEX voip_emergency_numbers_number_idx (number),
-	UNIQUE KEY number (location_borough, number),
-	FOREIGN KEY (location_borough) REFERENCES location_boroughs (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table voip_number_assignments
-#
-CREATE TABLE voip_number_assignments (
-    id            int(11) NOT NULL auto_increment,
-    number_id     int(11) NOT NULL,
-    assignment_id int(11) NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (number_id)     REFERENCES voip_numbers (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (assignment_id) REFERENCES assignments  (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1334,20 +1492,7 @@ CREATE TABLE promotionassignments (
     FOREIGN KEY (tariffid) REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-# --------------------------------------------------------
-#
-# Structure of table liabilities
-#
-CREATE TABLE liabilities (
-    id int(11)              NOT NULL auto_increment,
-    value decimal(9,2)      NOT NULL DEFAULT '0',
-    name text               NOT NULL DEFAULT '',
-    taxid int(11)           NOT NULL DEFAULT '0',
-    prodid varchar(255)     NOT NULL DEFAULT '',
-    PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
+## --------------------------------------------------------
 #
 # Structure of table  payments
 #
@@ -1364,30 +1509,19 @@ CREATE TABLE payments (
 
 # --------------------------------------------------------
 #
-# Structure of table taxes
-#
-CREATE TABLE taxes (
-    id int(11) NOT NULL auto_increment,
-    value decimal(4,2) NOT NULL DEFAULT '0',
-    taxed tinyint NOT NULL DEFAULT '0',
-    label varchar(16) NOT NULL DEFAULT '',
-    validfrom int(11) NOT NULL DEFAULT '0',
-    validto int(11) NOT NULL DEFAULT '0',
-	reversecharge tinyint(1) NOT NULL DEFAULT '0',
-    PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
 # Structure of table numberplanassignments
 #
 CREATE TABLE numberplanassignments (
 	id int(11) NOT NULL auto_increment,
-	planid int(11) NOT NULL DEFAULT '0',
-	divisionid int(11) NOT NULL DEFAULT '0',
+	planid int(11) NOT NULL,
+	divisionid int(11) NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY planid (planid, divisionid),
-	INDEX divisionid (divisionid)
+	INDEX divisionid (divisionid),
+	CONSTRAINT numberplanassignments_planid_fkey
+		FOREIGN KEY (planid) REFERENCES numberplans (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT numberplanassignments_divisionid_fkey
+		FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1424,14 +1558,18 @@ CREATE TABLE customerassignments (
 # Structure of table stats
 #
 CREATE TABLE stats (
-	nodeid int(11)		NOT NULL DEFAULT '0',
+	nodeid int(11)		DEFAULT NULL,
 	dt int(11)		NOT NULL DEFAULT '0',
 	upload bigint		DEFAULT '0',
 	download bigint		DEFAULT '0',
-	nodesessionid int(11)	NOT NULL DEFAULT '0',
+	nodesessionid int(11)	DEFAULT NULL,
 	UNIQUE KEY nodeid (nodeid, dt),
 	INDEX dt (dt),
-	INDEX nodesessionid (nodesessionid)
+	INDEX nodesessionid (nodesessionid),
+	CONSTRAINT stats_nodesessionid_fkey
+		FOREIGN KEY (nodesessionid) REFERENCES nodesessions (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT stats_nodeid_fkey
+		FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1441,7 +1579,7 @@ CREATE TABLE stats (
 CREATE TABLE nodesessions (
 	id int(11)		NOT NULL auto_increment,
 	customerid int(11)	DEFAULT NULL,
-	nodeid int(11)		NOT NULL DEFAULT '0',
+	nodeid int(11)		DEFAULT NULL,
 	ipaddr int(16) unsigned NOT NULL DEFAULT '0',
 	mac varchar(17)		NOT NULL DEFAULT '',
 	start int(11)		NOT NULL DEFAULT '0',
@@ -1456,7 +1594,9 @@ CREATE TABLE nodesessions (
 	INDEX nodeid (nodeid),
 	INDEX tag (tag),
 	CONSTRAINT nodesessions_customerid_fkey
-		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
+		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT nodesessions_nodeid_fkey
+		FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1521,7 +1661,7 @@ CREATE TABLE rttickets (
   subject varchar(255) NOT NULL DEFAULT '',
   state tinyint(4) NOT NULL DEFAULT '0',
   cause tinyint(4) NOT NULL DEFAULT '0',
-  owner int(11) NOT NULL DEFAULT '0',
+  owner int(11) DEFAULT NULL,
   customerid int(11) DEFAULT NULL,
   creatorid int(11) DEFAULT NULL,
   createtime int(11) NOT NULL DEFAULT '0',
@@ -1549,7 +1689,9 @@ CREATE TABLE rttickets (
   CONSTRAINT rttickets_deluserid_fkey
 	FOREIGN KEY (deluserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT rttickets_creatorid_fkey
-	FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+	FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT rttickets_owner_fkey
+	FOREIGN KEY (owner) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1565,7 +1707,7 @@ CREATE TABLE rtmessages (
   mailfrom varchar(255) NOT NULL DEFAULT '',
   subject varchar(255) NOT NULL DEFAULT '',
   messageid varchar(255) NOT NULL DEFAULT '',
-  inreplyto int(11) NOT NULL DEFAULT '0',
+  inreplyto int(11) DEFAULT NULL,
   replyto text NOT NULL DEFAULT '',
   headers text NOT NULL DEFAULT '',
   body mediumtext NOT NULL DEFAULT '',
@@ -1583,7 +1725,9 @@ CREATE TABLE rtmessages (
   CONSTRAINT rtmessages_userid_fkey
 	FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT rtmessages_deluserid_fkey
-    FOREIGN KEY (deluserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+    FOREIGN KEY (deluserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT rtmessages_inreplyto_fkey
+	FOREIGN KEY (inreplyto) REFERENCES rtmessages (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1671,6 +1815,28 @@ CREATE TABLE rtqueuecategories (
 
 # --------------------------------------------------------
 #
+# Structure of table domains
+#
+CREATE TABLE domains (
+	id int(11) NOT NULL auto_increment,
+	ownerid int(11) DEFAULT NULL,
+	name varchar(255) NOT NULL DEFAULT '',
+	description text NOT NULL DEFAULT '',
+	master VARCHAR(128) DEFAULT NULL,
+	last_check INT(11) DEFAULT NULL,
+	type VARCHAR(6) NOT NULL,
+	notified_serial INT(11) DEFAULT NULL,
+	account VARCHAR(40) DEFAULT NULL,
+	mxbackup tinyint(1) NOT NULL DEFAULT '0',
+	PRIMARY KEY (id),
+	UNIQUE KEY (name),
+	INDEX ownerid (ownerid),
+	CONSTRAINT domains_ownerid_fkey
+	FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
 # Structure of table passwd
 #
 CREATE TABLE passwd (
@@ -1683,7 +1849,7 @@ CREATE TABLE passwd (
     home varchar(255) NOT NULL DEFAULT '',
     type smallint NOT NULL DEFAULT 0,
     expdate int(11) NOT NULL DEFAULT 0,
-    domainid int(11) NOT NULL DEFAULT 0,
+    domainid int(11) NOT NULL,
     quota_sh int(11) NOT NULL DEFAULT 0,
     quota_mail int(11) NOT NULL DEFAULT 0,
     quota_www int(11) NOT NULL DEFAULT 0,
@@ -1699,29 +1865,9 @@ CREATE TABLE passwd (
     UNIQUE KEY (login, domainid),
     INDEX ownerid (ownerid),
 	CONSTRAINT passwd_ownerid_fkey
-		FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table domains
-#
-CREATE TABLE domains (
-    id int(11) NOT NULL auto_increment,
-    ownerid int(11) DEFAULT NULL,
-    name varchar(255) NOT NULL DEFAULT '',
-    description text NOT NULL DEFAULT '',
-    master VARCHAR(128) DEFAULT NULL,
-    last_check INT(11) DEFAULT NULL,
-    type VARCHAR(6) NOT NULL,
-    notified_serial INT(11) DEFAULT NULL,
-    account VARCHAR(40) DEFAULT NULL,
-    mxbackup tinyint(1) NOT NULL DEFAULT '0',
-    PRIMARY KEY (id),
-    UNIQUE KEY (name),
-    INDEX ownerid (ownerid),
-	CONSTRAINT domains_ownerid_fkey
-		FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
+		FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT passwd_domainid_fkey
+		FOREIGN KEY (domainid) REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1753,7 +1899,7 @@ CREATE TABLE records (
 CREATE TABLE domainmetadata (
 	id int(11) NOT NULL auto_increment,
 	domain_id int(11) NOT NULL,
-	kind varchar(32),
+	kind varchar(32),+
 	content text,
 	PRIMARY KEY (id),
 	INDEX domainmetadata (domain_id, kind),
@@ -1779,9 +1925,11 @@ CREATE TABLE supermasters (
 CREATE TABLE aliases (
     id int(11) NOT NULL auto_increment,
     login varchar(255) NOT NULL DEFAULT '',
-    domainid int(11) NOT NULL DEFAULT '0',
+    domainid int(11) NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE KEY (login, domainid)
+    UNIQUE KEY (login, domainid),
+	CONSTRAINT aliases_domainid_fkey
+		FOREIGN KEY (domainid) REFERENCES domains (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1790,11 +1938,15 @@ CREATE TABLE aliases (
 #
 CREATE TABLE aliasassignments (
     id              int(11)         NOT NULL auto_increment,
-    aliasid         int(11)         DEFAULT '0' NOT NULL,
-    accountid       int(11)         DEFAULT '0' NOT NULL,
+    aliasid         int(11)         NOT NULL,
+    accountid       int(11)         NOT NULL,
     mail_forward    varchar(255)    DEFAULT '' NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE KEY aliasid (aliasid, accountid, mail_forward)
+    UNIQUE KEY aliasid (aliasid, accountid, mail_forward),
+	CONSTRAINT aliasassignments_aliasid_fkey
+		FOREIGN KEY (aliasid) REFERENCES aliases (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT aliasassignments_accountid_fkey
+		FOREIGN KEY (accountid) REFERENCES passwd (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1863,11 +2015,13 @@ CREATE TABLE events (
 # Structure of table eventassignments
 #
 CREATE TABLE eventassignments (
-    eventid int(11) NOT NULL DEFAULT '0',
+    eventid int(11) NOT NULL,
     userid int(11) NOT NULL,
     UNIQUE (eventid, userid),
 	CONSTRAINT eventassignments_userid_fkey
-		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT eventassignments_eventid_fkey
+		FOREIGN KEY (eventid) REFERENCES events (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1886,75 +2040,20 @@ CREATE TABLE sessions (
 
 # --------------------------------------------------------
 #
-# Structure of table cashsources
-#
-CREATE TABLE cashsources (
-    id      int(11)         NOT NULL auto_increment,
-    name	varchar(32)     DEFAULT '' NOT NULL,
-    description text		DEFAULT NULL,
-    account varchar(48)     NOT NULL DEFAULT '',
-    deleted smallint		NOT NULL DEFAULT 0,
-    PRIMARY KEY (id),
-    UNIQUE KEY name (name)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table sourcefiles
-#
-CREATE TABLE sourcefiles (
-    id      int(11)         NOT NULL auto_increment,
-    userid integer     DEFAULT NULL,
-    name	varchar(255)    NOT NULL,
-    idate	int(11)	        NOT NULL,
-    PRIMARY KEY (id),
-    UNIQUE KEY idate (idate, name),
-    INDEX userid (userid),
-    FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table cashimport
-#
-CREATE TABLE cashimport (
-    id int(11) NOT NULL auto_increment,
-    date int(11) NOT NULL DEFAULT '0',
-    value decimal(9,2) NOT NULL DEFAULT '0',
-    customer text NOT NULL DEFAULT '',
-    description text NOT NULL DEFAULT '',
-    customerid int(11) DEFAULT NULL,
-    hash varchar(50) NOT NULL DEFAULT '',
-    closed tinyint(1) NOT NULL DEFAULT '0',
-    sourceid int(11) DEFAULT NULL,
-    sourcefileid int(11) DEFAULT NULL,
-    PRIMARY KEY (id),
-    INDEX hash (hash),
-    INDEX customerid (customerid),
-    INDEX sourceid (sourceid),
-    INDEX sourcefileid (sourcefileid),
-    CONSTRAINT cashimport_customerid_fkey
-      FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT cashimport_sourceid_fkey
-      FOREIGN KEY (sourceid) REFERENCES cashsources (id) ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT cashimport_sourcefileid_fkey
-      FOREIGN KEY (sourcefileid) REFERENCES sourcefiles (id) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
 # Structure of table daemoninstances (lmsd configuration)
 #
 CREATE TABLE daemoninstances (
     id int(11) 			NOT NULL auto_increment,
     name varchar(255) 		DEFAULT '' NOT NULL,
-    hostid int(11) 		DEFAULT '0' NOT NULL,
+    hostid int(11) 		NOT NULL,
     module varchar(255) 	DEFAULT '' NOT NULL,
     crontab varchar(255) 	DEFAULT '' NOT NULL,
     priority int(11) 		DEFAULT '0' NOT NULL,
     description text 		DEFAULT '' NOT NULL,
     disabled tinyint(1) 	DEFAULT '0' NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+	CONSTRAINT daemoninstances_hostid_fkey
+		FOREIGN KEY (hostid) REFERENCES hosts (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1963,13 +2062,15 @@ CREATE TABLE daemoninstances (
 #
 CREATE TABLE daemonconfig (
     id int(11) 		NOT NULL auto_increment,
-    instanceid int(11) 	DEFAULT '0' NOT NULL,
+    instanceid int(11)  NOT NULL,
     var varchar(64) 	DEFAULT '' NOT NULL,
     value text 		DEFAULT '' NOT NULL,
     description text 	DEFAULT '' NOT NULL,
     disabled tinyint(1) DEFAULT '0' NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE KEY instanceid (instanceid, var)
+    UNIQUE KEY instanceid (instanceid, var),
+	CONSTRAINT daemonconfig_instanceid_fkey
+		FOREIGN KEY (instanceid) REFERENCES daemonconfig (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1995,26 +2096,13 @@ CREATE TABLE cashrights (
     id int(11)      NOT NULL auto_increment,
     userid int(11)  NOT NULL,
     regid int(11)   DEFAULT '0' NOT NULL,
-    rights int(11)  DEFAULT '0' NOT NULL,
+    rights int(11)  NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY userid (userid, regid),
 	CONSTRAINT cashrights_userid_fkey
-		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table cashregs
-#
-CREATE TABLE cashregs (
-    id int(11)              NOT NULL auto_increment,
-    name varchar(255)       DEFAULT '' NOT NULL,
-    description text        DEFAULT '' NOT NULL,
-    in_numberplanid int(11) DEFAULT '0' NOT NULL,
-    out_numberplanid int(11) DEFAULT '0' NOT NULL,
-    disabled tinyint(1)     DEFAULT '0' NOT NULL,
-    PRIMARY KEY (id),
-    UNIQUE KEY name (name)
+		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT cashrights_regid_fkey
+		FOREIGN KEY (regid) REFERENCES cashregs (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2023,7 +2111,7 @@ CREATE TABLE cashregs (
 #
 CREATE TABLE cashreglog (
     id int(11) 			NOT NULL auto_increment,
-    regid int(11)          	DEFAULT '0' NOT NULL,
+    regid int(11)          	NOT NULL,
     userid int(11)		DEFAULT NULL,
     time int(11)		DEFAULT '0' NOT NULL,
     value decimal(9,2)      	DEFAULT '0' NOT NULL,
@@ -2032,18 +2120,22 @@ CREATE TABLE cashreglog (
     PRIMARY KEY (id),
     UNIQUE KEY regid (regid, time),
 	CONSTRAINT cashreglog_userid_fkey
-		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT cashreglog_regid_fkey
+		FOREIGN KEY (regid) REFERENCES cashregs (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE ewx_pt_config (
         id int(11)              NOT NULL auto_increment,
-	nodeid int(11)          DEFAULT '0' NOT NULL,
+	nodeid int(11)          DEFAULT NULL,
 	name varchar(32)        DEFAULT '' NOT NULL,
 	mac varchar(20)         DEFAULT '' NOT NULL,
 	ipaddr int(16) unsigned DEFAULT '0' NOT NULL,
 	passwd varchar(32)      DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
-	UNIQUE KEY nodeid (nodeid)
+	UNIQUE KEY nodeid (nodeid),
+	CONSTRAINT ewx_pt_config_nodeid_fkey
+		FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2091,18 +2183,6 @@ CREATE TABLE excludedgroups (
 
 # --------------------------------------------------------
 #
-# Structure of table states
-#
-CREATE TABLE states (
-    	id 		int(11) 	NOT NULL auto_increment,
-	name 		varchar(255) 	NOT NULL DEFAULT '',
-	description 	text 		NOT NULL DEFAULT '',
-	PRIMARY KEY (id),
-	UNIQUE KEY name (name)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
 # Structure of table messages
 #
 CREATE TABLE messages (
@@ -2126,7 +2206,7 @@ CREATE TABLE messages (
 #
 CREATE TABLE messageitems (
         id 		int(11) 	NOT NULL auto_increment,
-	messageid 	int(11)		DEFAULT '0' NOT NULL,
+	messageid 	int(11)		NOT NULL,
 	customerid 	int(11) 	DEFAULT NULL,
 	destination 	varchar(255) 	DEFAULT '' NOT NULL,
 	lastdate 	int(11)		DEFAULT '0' NOT NULL,
@@ -2138,7 +2218,9 @@ CREATE TABLE messageitems (
 	INDEX messageid (messageid),
 	INDEX customerid (customerid),
 	CONSTRAINT messageitems_customerid_fkey
-		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE
+		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT messageitems_messageid_fkey
+		FOREIGN KEY (messageid) REFERENCES messages (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -2279,44 +2361,116 @@ CREATE TABLE passwdhistory (
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
+# --------------------------------------------------------
+#
+# Structure of table up_rights (Userpanel)
+#
+CREATE TABLE up_rights (
+	id int(11) NOT NULL auto_increment,
+	module varchar(255) NOT NULL DEFAULT '',
+	name varchar(255) NOT NULL DEFAULT '',
+	description varchar(255) DEFAULT '',
+	setdefault tinyint(1) NOT NULL DEFAULT '0',
+	PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table up_rights_assignments (Userpanel)
+#
+CREATE TABLE up_rights_assignments (
+	id int(11) NOT NULL auto_increment,
+	customerid int(11) DEFAULT NULL,
+	rightid int(11) NOT NULL DEFAULT '0',
+	PRIMARY KEY (id),
+	UNIQUE KEY up_right_assignment (customerid, rightid),
+	CONSTRAINT up_rights_assignments_customerid_fkey
+	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table up_customers (Userpanel)
+#
+CREATE TABLE up_customers (
+	id int(11) NOT NULL auto_increment,
+	customerid int(11) DEFAULT NULL,
+	lastlogindate int(11) NOT NULL DEFAULT '0',
+	lastloginip varchar(16) NOT NULL DEFAULT '',
+	failedlogindate int(11) NOT NULL DEFAULT '0',
+	failedloginip varchar(16) NOT NULL DEFAULT '',
+	enabled int(10) NOT NULL DEFAULT '0',
+	PRIMARY KEY (id),
+	CONSTRAINT up_customers_customerid_fkey
+	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table up_help (Userpanel)
+#
+CREATE TABLE up_help (
+	id int(11) NOT NULL auto_increment,
+	reference int(11) DEFAULT NULL,
+	title varchar(128) NOT NULL DEFAULT '',
+	body text NOT NULL DEFAULT '',
+	PRIMARY KEY id (id),
+	CONSTRAINT up_help_reference_fkey
+		FOREIGN KEY (reference) REFERENCES up_help (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table up_info_changes (Userpanel)
+#
+CREATE TABLE up_info_changes (
+	id int(11) NOT NULL auto_increment,
+	customerid int(11) DEFAULT NULL,
+	fieldname varchar(255) NOT NULL DEFAULT '',
+	fieldvalue varchar(255) NOT NULL DEFAULT '',
+	PRIMARY KEY (id),
+	CONSTRAINT up_info_changes_customerid_fkey
+	FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Functions and Views
+#
 CREATE VIEW nas AS
-    SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
-	d.clients AS ports, d.secret, d.community, d.description
-        FROM nodes n
-        JOIN netdevices d ON (n.netdev = d.id)
-        WHERE n.nas = 1;
+	SELECT n.id, inet_ntoa(n.ipaddr) AS nasname, d.shortname, d.nastype AS type,
+				 d.clients AS ports, d.secret, d.community, d.description
+	FROM nodes n
+		JOIN netdevices d ON (n.netdev = d.id)
+	WHERE n.nas = 1;
 
 CREATE VIEW vnodes_mac AS
 	SELECT nodeid, GROUP_CONCAT(mac SEPARATOR ',') AS mac
 	FROM macs GROUP BY nodeid;
 
 CREATE VIEW vaddresses AS
-    SELECT *, country_id AS countryid, city_id AS location_city, street_id AS location_street,
-        house AS location_house, flat AS location_flat,
-        (TRIM(both ' ' FROM
-             CONCAT((CASE WHEN street IS NOT NULL THEN street ELSE city END),
-             (CASE WHEN house is NOT NULL
-                     THEN (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', house, '/', flat) ELSE CONCAT(' ', house) END)
-                     ELSE (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', flat) ELSE '' END)
-                END))
-        )) AS address,
-        (TRIM(both ' ' FROM
-             CONCAT((CASE WHEN zip IS NOT NULL THEN CONCAT(zip, ' ') ELSE '' END),
-                 (CASE WHEN postoffice IS NOT NULL AND postoffice <> city THEN CONCAT(postoffice, ', ') ELSE '' END),
-                 (CASE WHEN postoffice IS NULL OR postoffice = city OR street IS NOT NULL THEN CONCAT(city, ', ') ELSE '' END),
-                 (CASE WHEN street IS NOT NULL THEN street ELSE city END),
-                 (CASE WHEN house is NOT NULL
-                        THEN (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', house, '/', flat) ELSE CONCAT(' ', house) END)
-                        ELSE (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', flat) ELSE '' END)
-                    END)
-             )
-        )) AS location
-    FROM addresses;
+	SELECT *, country_id AS countryid, city_id AS location_city, street_id AS location_street,
+			  house AS location_house, flat AS location_flat,
+			  (TRIM(both ' ' FROM
+					CONCAT((CASE WHEN street IS NOT NULL THEN street ELSE city END),
+						   (CASE WHEN house is NOT NULL
+							   THEN (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', house, '/', flat) ELSE CONCAT(' ', house) END)
+							ELSE (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', flat) ELSE '' END)
+							END))
+			  )) AS address,
+			  (TRIM(both ' ' FROM
+					CONCAT((CASE WHEN zip IS NOT NULL THEN CONCAT(zip, ' ') ELSE '' END),
+						   (CASE WHEN postoffice IS NOT NULL AND postoffice <> city THEN CONCAT(postoffice, ', ') ELSE '' END),
+						   (CASE WHEN postoffice IS NULL OR postoffice = city OR street IS NOT NULL THEN CONCAT(city, ', ') ELSE '' END),
+						   (CASE WHEN street IS NOT NULL THEN street ELSE city END),
+						   (CASE WHEN house is NOT NULL
+							   THEN (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', house, '/', flat) ELSE CONCAT(' ', house) END)
+							ELSE (CASE WHEN flat IS NOT NULL THEN CONCAT(' ', flat) ELSE '' END)
+							END)
+					)
+			  )) AS location
+	FROM addresses;
 
-# --------------------------------------------------------
-#
-# Structure of view vdivisions
-#
 CREATE VIEW vdivisions AS
     SELECT d.*,
         a.country_id as countryid, a.zip as zip, a.city as city, a.address
@@ -2335,7 +2489,7 @@ CREATE VIEW vnodes AS
 
 CREATE VIEW vnodetariffs_allsuspended AS
 	SELECT customerid, COUNT(id) AS allsuspended FROM assignments
-	WHERE tariffid = 0 AND liabilityid = 0
+	WHERE tariffid IS NULL AND liabilityid IS NULL
 		AND datefrom <= UNIX_TIMESTAMP()
 		AND (dateto = 0 OR dateto > UNIX_TIMESTAMP())
 	GROUP BY customerid;
@@ -2559,76 +2713,6 @@ RETURN address + (pow(2, (32-mask2prefix(mask)))-1);
 DROP FUNCTION IF EXISTS int2txt;
 CREATE FUNCTION int2txt(num bigint) RETURNS char(20) DETERMINISTIC
 RETURN CAST(num AS char(20));
-
-# --------------------------------------------------------
-#
-# Structure of table up_rights (Userpanel)
-#
-CREATE TABLE up_rights (
-    	id int(11) NOT NULL auto_increment,
-	module varchar(255) NOT NULL DEFAULT '',
-	name varchar(255) NOT NULL DEFAULT '',
-	description varchar(255) DEFAULT '',
-	setdefault tinyint(1) NOT NULL DEFAULT '0',
-	PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table up_rights_assignments (Userpanel)
-#
-CREATE TABLE up_rights_assignments (
-	id int(11) NOT NULL auto_increment,
-	customerid int(11) DEFAULT NULL,
-	rightid int(11) NOT NULL DEFAULT '0',
-	PRIMARY KEY (id),
-	UNIQUE KEY up_right_assignment (customerid, rightid),
-	CONSTRAINT up_rights_assignments_customerid_fkey
-		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table up_customers (Userpanel)
-#
-CREATE TABLE up_customers (
-        id int(11) NOT NULL auto_increment,
-	customerid int(11) DEFAULT NULL,
-	lastlogindate int(11) NOT NULL DEFAULT '0',
-	lastloginip varchar(16) NOT NULL DEFAULT '',
-	failedlogindate int(11) NOT NULL DEFAULT '0',
-	failedloginip varchar(16) NOT NULL DEFAULT '',
-	enabled int(10) NOT NULL DEFAULT '0',
-	PRIMARY KEY (id),
-	CONSTRAINT up_customers_customerid_fkey
-		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table up_help (Userpanel)
-#
-CREATE TABLE up_help (
-        id int(11) NOT NULL auto_increment,
-	reference int(11) NOT NULL DEFAULT '0',
-	title varchar(128) NOT NULL DEFAULT '',
-	body text NOT NULL DEFAULT '',
-	PRIMARY KEY id (id)
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
-# Structure of table up_info_changes (Userpanel)
-#
-CREATE TABLE up_info_changes (
-        id int(11) NOT NULL auto_increment,
-	customerid int(11) DEFAULT NULL,
-	fieldname varchar(255) NOT NULL DEFAULT '',
-	fieldvalue varchar(255) NOT NULL DEFAULT '',
-	PRIMARY KEY (id),
-	CONSTRAINT up_info_changes_customerid_fkey
-		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB;
 
 INSERT INTO rtcategories (name, description)
 	VALUES ('default', 'default category');
@@ -3150,4 +3234,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101201');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101202');
