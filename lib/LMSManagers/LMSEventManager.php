@@ -69,7 +69,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 		$this->db->Execute('UPDATE events SET title=?, description=?, date=?, begintime=?, enddate=?, endtime=?, private=?,
 				note=?, customerid=?, type=?, address_id=?, nodeid=?, ticketid=? WHERE id=?',
 			array($event['title'], $event['description'], $event['date'], $event['begintime'], $event['enddate'], $event['endtime'],
-				$event['private'], $event['note'], $event['custid'], $event['type'], $event['address_id'],
+				$event['private'], $event['note'], empty($event['custid']) ? null : $event['custid'], $event['type'], $event['address_id'],
 				$event['nodeid'], !isset($event['helpdeskid']) || empty($event['helpdeskid']) ? null : $event['helpdeskid'],
 				$event['id']));
 
