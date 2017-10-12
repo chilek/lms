@@ -27,7 +27,6 @@
 /**
  * LMSNodeManager
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 {
@@ -46,7 +45,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'ipaddr'            => $nodedata['ipaddr'],
             'passwd'            => $nodedata['passwd'],
             SYSLOG::RES_NETDEV  => empty($nodedata['netdev']) ? null : $nodedata['netdev'],
-            SYSLOG::RES_USER    => $this->auth->id,
+            SYSLOG::RES_USER    => Auth::GetCurrentUser(),
             'access'            => $nodedata['access'],
             'warning'           => $nodedata['warning'],
             SYSLOG::RES_CUST    => $nodedata['ownerid'],
@@ -596,7 +595,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             'ipaddr_pub'        => $nodedata['ipaddr_pub'],
             SYSLOG::RES_CUST    => $nodedata['ownerid'],
             'passwd'            => $nodedata['passwd'],
-            SYSLOG::RES_USER    => $this->auth->id,
+            SYSLOG::RES_USER    => Auth::GetCurrentUser(),
             'access'            => $nodedata['access'],
             'warning'           => $nodedata['warning'],
             'info'              => $nodedata['info'],

@@ -212,7 +212,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 						$args = array(
 							'name' => $filename,
 							'idate' => time(),
-							SYSLOG::RES_USER => $this->auth->id,
+							SYSLOG::RES_USER => Auth::GetCurrentUser(),
 						);
 						$this->db->Execute('INSERT INTO sourcefiles (name, idate, userid)
 							VALUES (?, ?, ?)', array_values($args));
@@ -319,7 +319,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 				$balance['comment'] = $import['description'];
 				$balance['importid'] = $import['id'];
 				$balance['sourceid'] = $import['sourceid'];
-				$balance['userid'] = 0;
+				$balance['userid'] = null;
 
 				if ($import['value'] > 0 && $icheck) {
 					if ($invoices = $this->db->GetAll('SELECT x.id, x.value FROM (

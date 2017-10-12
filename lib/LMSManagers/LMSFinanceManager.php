@@ -27,8 +27,6 @@
 /**
  * LMSFinanceManager
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
- * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 {
@@ -533,7 +531,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'sdate' => $sdate,
             'paytime' => $invoice['invoice']['paytime'],
             'paytype' => $invoice['invoice']['paytype'],
-            SYSLOG::RES_USER => $this->auth->id,
+            SYSLOG::RES_USER => Auth::GetCurrentUser(),
             SYSLOG::RES_CUST => $invoice['customer']['id'],
             'customername' => $invoice['customer']['customername'],
             'address' => ($invoice['customer']['postoffice'] && $invoice['customer']['postoffice'] != $invoice['customer']['city'] && $invoice['customer']['street']
@@ -1306,7 +1304,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         $args = array(
             'time' => isset($addbalance['time']) ? $addbalance['time'] : time(),
-            SYSLOG::RES_USER => isset($addbalance['userid']) ? $addbalance['userid'] : $this->auth->id,
+            SYSLOG::RES_USER => isset($addbalance['userid']) ? $addbalance['userid'] : Auth::GetCurrentUser(),
             'value' => str_replace(',', '.', round($addbalance['value'], 2)),
             'type' => isset($addbalance['type']) ? $addbalance['type'] : 0,
             SYSLOG::RES_TAX => isset($addbalance['taxid']) ? $addbalance['taxid'] : 0,

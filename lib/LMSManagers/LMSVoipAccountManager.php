@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,7 +27,6 @@
 /**
  * LMSVoipAccountManager
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerInterface
 {
@@ -254,7 +253,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 $voipaccountdata['ownerid'],
                 $voipaccountdata['login'],
                 $voipaccountdata['passwd'],
-                $this->auth->id,
+                Auth::GetCurrentUser(),
                 $voipaccountdata['access'],
                 $voipaccountdata['balance']    ? $voipaccountdata['balance']    : ConfigHelper::getConfig('voip.default_cost_limit', 200),
                 $voipaccountdata['flags']      ? $voipaccountdata['flags']      : ConfigHelper::getConfig('voip.default_account_flags', 0),
@@ -427,7 +426,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
                 $data['login'],
                 $data['passwd'],
                 $data['access'],
-                $this->auth->id,
+                Auth::GetCurrentUser(),
                 $data['ownerid'],
                 $data['flags']      ? $data['flags']      : ConfigHelper::getConfig('voip.default_account_flags', 0),
                 $data['balance']    ? $data['balance']    : 0,

@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2016 LMS Developers
+ *  Copyright (C) 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,8 +27,6 @@
 /**
  * LMSDocumentManager
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
- * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterface
 {
@@ -48,7 +46,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 			LEFT JOIN vusers u2 ON u2.id = d.cuserid
 			LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 			WHERE d.customerid = ?
-			ORDER BY cdate', array($this->auth->id, $customerid))) {
+			ORDER BY cdate', array(Auth::GetCurrentUser(), $customerid))) {
 			foreach ($list as &$doc) {
 				$doc['attachments'] = $this->db->GetAll('SELECT * FROM documentattachments
 					WHERE docid = ? ORDER BY main DESC, filename', array($doc['docid']));

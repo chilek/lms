@@ -27,7 +27,6 @@
 /**
  * LMSHelpdeskManager
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterface
 {
@@ -219,7 +218,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				newmessagesubject, newmessagebody, resolveticketsubject, resolveticketbody, deleted, deltime, deluserid
 				FROM rtqueues q'
 				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' JOIN rtrights r ON r.queueid = q.id
-				WHERE r.rights <> 0 AND r.userid = ? AND q.deleted = ?' : '') . ' ORDER BY name', array($this->auth->id, $del))) {
+				WHERE r.rights <> 0 AND r.userid = ? AND q.deleted = ?' : '') . ' ORDER BY name', array(Auth::GetCurrentUser(), $del))) {
             if ($stats)
                 foreach ($result as $idx => $row)
                     foreach ($this->GetQueueStats($row['id']) as $sidx => $row2)
@@ -233,7 +232,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 	$del = 0;
 	return $this->db->GetAll('SELECT q.id, name FROM rtqueues q'
 			. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' JOIN rtrights r ON r.queueid = q.id
-			WHERE r.rights <> 0 AND r.userid = ? AND q.deleted = ?' : '') . ' ORDER BY name', array($this->auth->id, $del));
+			WHERE r.rights <> 0 AND r.userid = ? AND q.deleted = ?' : '') . ' ORDER BY name', array(Auth::GetCurrentUser(), $del));
     }
 
     public function QueueExists($id)
@@ -384,7 +383,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
     public function RTStats()
     {
-        $categories = $this->GetCategoryListByUser($this->auth->id);
+        $categories = $this->GetCategoryListByUser(Auth::GetCurrentUser());
         if (empty($categories))
             return NULL;
         foreach ($categories as $category)
@@ -476,7 +475,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				isset($message['createtime']) ? $message['createtime'] : time(),
 				isset($message['subject']) ? $message['subject'] : '',
 				preg_replace("/\r/", "", $message['body']),
-				isset($message['userid']) ? $message['userid'] : (isset($this->auth->id) ? $this->auth->id : 0),
+				isset($message['userid']) ? $message['userid'] : Auth::GetCurrentUser(),
 				isset($message['customerid']) ? $message['customerid'] : null,
 				isset($message['mailfrom']) ? $message['mailfrom'] : '',
 				isset($message['inreplyto']) ? $message['inreplyto'] : 0,
@@ -503,7 +502,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			isset($ticket['owner']) ? $ticket['owner'] : 0,
 			isset($ticket['createtime']) ? $ticket['createtime'] : time(),
 			isset($ticket['cause']) ? $ticket['cause'] : 0,
-			isset($ticket['userid']) ? $ticket['userid'] : (isset($this->auth->id) ? $this->auth->id : 0),
+			isset($ticket['userid']) ? $ticket['userid'] : Auth::GetCurrentUser(),
 			isset($ticket['source']) ? $ticket['source'] : 0,
 			isset($ticket['address_id']) && !empty($ticket['address_id']) ? $ticket['address_id'] : null,
 			isset($ticket['nodeid']) && !empty($ticket['nodeid']) ? $ticket['nodeid'] : null,
@@ -790,15 +789,15 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 						$props['customerid'], $props['source'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $ticketid));
 					if (!empty($note))
 						$this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
-							VALUES(?, ?, ?, ?, ?NOW?)', array($this->auth->id, $ticketid, $type, $note));
+							VALUES(?, ?, ?, ?, ?NOW?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note));
 				} else {
 					$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, resolvetime = ?, subject = ?,
 						customerid = ?, source = ?, address_id = ?, nodeid = ?, netnodeid = ? WHERE id = ?', array(
-						$props['queueid'], $this->auth->id, $props['cause'], $props['state'], $resolvetime, $props['subject'],
+						$props['queueid'], Auth::GetCurrentUser(), $props['cause'], $props['state'], $resolvetime, $props['subject'],
 						$props['customerid'], $props['source'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $ticketid));
 					if (!empty($note))
 						$this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
-							VALUES(?, ?, ?, ?, ?NOW?)', array($this->auth->id, $ticketid, $type, $note));
+							VALUES(?, ?, ?, ?, ?NOW?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note));
 				}
 			} else {
 				$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, subject = ?,
@@ -807,7 +806,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					$props['customerid'], $props['source'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $ticketid));
 				if (!empty($note))
 					$this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
-						VALUES(?, ?, ?, ?, ?NOW?)', array($this->auth->id, $ticketid, $type, $note));
+						VALUES(?, ?, ?, ?, ?NOW?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note));
 			}
 		}
     }

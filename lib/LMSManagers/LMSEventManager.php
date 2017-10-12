@@ -27,7 +27,6 @@
 /**
  * LMSEventManager
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 {
@@ -148,7 +147,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
                 . (!empty($search['title']) ? ' AND title ?LIKE? ' . $this->db->Escape('%' . $search['title'] . '%') : '')
                 . (!empty($search['description']) ? ' AND description ?LIKE? ' . $this->db->Escape('%' . $search['description'] . '%') : '')
                 . (!empty($search['note']) ? ' AND note ?LIKE? ' . $this->db->Escape('%' . $search['note'] . '%') : '')
-                . $sqlord, array($this->auth->id));
+                . $sqlord, array(Auth::GetCurrentUser()));
 
         if ($search['userid'])
             if (is_array($search['userid']))

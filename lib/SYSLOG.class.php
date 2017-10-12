@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -222,7 +222,7 @@ class SYSLOG {
 	private static $syslog = null;
 
 	private $DB;
-	private $userid = 0;
+	private $userid = null;
 	private $transid = 0;
 	private $module = '';
 
@@ -305,7 +305,7 @@ class SYSLOG {
 		$value = (isset($params['value']) && preg_match('/^[0-9]+$/', $params['value']) ? $params['value'] : '');
 		$propname = (isset($params['propname']) && !empty($params['propname']) ? $params['propname'] : '');
 		$propvalue = (isset($params['propvalue']) ? $params['propvalue'] : '');
-		$userid = (isset($params['userid']) && !empty($params['userid']) ? intval($params['userid']) : 0);
+		$userid = (isset($params['userid']) && !empty($params['userid']) ? intval($params['userid']) : null);
 		$offset = (isset($params['offset']) && !empty($params['offset']) ? intval($params['offset']) : 0);
 		$limit = (isset($params['limit']) && !empty($params['limit']) ? intval($params['limit']) : 20);
 		$order = (isset($params['order']) && preg_match('/ASC/i', $params['order']) ? 'ASC' : 'DESC');

@@ -26,7 +26,7 @@
 
 class Auth {
 
-	public $id = 0;
+	public $id = null;
 	public $login;
 	public $logname;
 	public $passwd;

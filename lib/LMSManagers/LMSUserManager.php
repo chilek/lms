@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2016 LMS Developers
+ *  Copyright (C) 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,7 +27,6 @@
 /**
  * LMSUserManager
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 class LMSUserManager extends LMSManager implements LMSUserManagerInterface
 {
@@ -60,13 +59,13 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
      */
     public function getUserName($id = null) {
         if ($id === null) {
-            $id = $this->auth->id;
+            $id = Auth::GetCurrentUser();
         } else if (!$id) {
             return '';
         }
 
         if (!($name = $this->cache->getCache('users', $id, 'name'))) {
-            if ($this->auth && $this->auth->id == $id) {
+            if ($this->auth && Auth::GetCurrentUser() == $id) {
                 $name = $this->auth->logname;
             } else {
                 $name = $this->db->GetOne('SELECT name FROM vusers WHERE id=?', array($id));
@@ -101,7 +100,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         );
         if ($userlist) {
             foreach ($userlist as $idx => $row) {
-                if ($row['id'] == $this->auth->id) {
+                if ($row['id'] == Auth::GetCurrentUser()) {
                     $row['lastlogindate'] = $this->auth->last;
                     $userlist[$idx]['lastlogindate'] = $this->auth->last;
                     $row['lastloginip'] = $this->auth->lastip;
@@ -268,7 +267,7 @@ class LMSUserManager extends LMSManager implements LMSUserManagerInterface
         if ($userinfo) {
             $this->cache->setCache('users', $id, null, $userinfo);
 
-            if ($userinfo['id'] == $this->auth->id) {
+            if ($userinfo['id'] == Auth::GetCurrentUser()) {
                 $userinfo['lastlogindate'] = $this->auth->last;
                 $userinfo['lastloginip'] = $this->auth->lastip;
             }

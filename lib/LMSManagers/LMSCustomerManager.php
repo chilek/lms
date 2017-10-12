@@ -326,7 +326,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'ten'            => $customeradd['ten'],
             'ssn'            => $customeradd['ssn'],
             'status'         => $customeradd['status'],
-            SYSLOG::RES_USER => $this->auth->id,
+            SYSLOG::RES_USER => Auth::GetCurrentUser(),
             'info'           => $customeradd['info'],
             'notes'          => $customeradd['notes'],
             'message'        => $customeradd['message'],
@@ -1074,7 +1074,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             'type'           => empty($customerdata['type']) ? 0 : 1,
             'ten'            => $customerdata['ten'],
             'ssn'            => $customerdata['ssn'],
-            SYSLOG::RES_USER => isset($this->auth->id) ? $this->auth->id : 0,
+            SYSLOG::RES_USER => Auth::GetCurrentUser(),
             'info'           => $customerdata['info'],
             'notes'          => $customerdata['notes'],
             'lastname'       => $customerdata['lastname'],
@@ -1161,7 +1161,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $this->db->BeginTrans();
 
         $this->db->Execute('UPDATE customers SET deleted=1, moddate=?NOW?, modid=?
-                WHERE id=?', array($this->auth->id, $id));
+                WHERE id=?', array(Auth::GetCurrentUser(), $id));
 
         if ($this->syslog) {
             $this->syslog->AddMessage(SYSLOG::RES_CUST, SYSLOG::OPER_UPDATE,
