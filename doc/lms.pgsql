@@ -1511,7 +1511,7 @@ CREATE TABLE stats (
 	download bigint 	DEFAULT 0,
 	nodesessionid integer	DEFAULT NULL
 		CONSTRAINT stats_nodesessionid_fkey REFERENCES nodesessions (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	PRIMARY KEY (nodeid, dt)
+	CONSTRAINT stats_nodeid_dt_key UNIQUE (nodeid, dt)
 );
 CREATE INDEX stats_dt_idx ON stats(dt);
 CREATE INDEX stats_nodesessionid_idx ON stats(nodesessionid);
