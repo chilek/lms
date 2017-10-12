@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -55,7 +55,7 @@ foreach ($short_to_longs as $short => $long)
 if (array_key_exists('version', $options)) {
 	print <<<EOF
 lms-notify.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2017 LMS Developers
 
 EOF;
 	exit(0);
@@ -64,7 +64,7 @@ EOF;
 if (array_key_exists('help', $options)) {
 	print <<<EOF
 lms-notify.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2017 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini      alternate config file (default: /etc/lms/lms.ini);
 -h, --help                      print this help and exit;
@@ -90,7 +90,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
 	print <<<EOF
 lms-notify.php
-(C) 2001-2016 LMS Developers
+(C) 2001-2017 LMS Developers
 
 EOF;
 }
@@ -981,7 +981,7 @@ if (empty($types) || in_array('warnings', $types)) {
 if (empty($types) || in_array('events', $types)) {
 	$time = intval(strftime('%H%M'));
 	$events = $DB->GetAll("SELECT id, title, description, customerid, userid FROM events
-		WHERE (customerid IS NOT NULL OR userid <> 0) AND closed = 0 AND date <= ? AND enddate >= ?
+		WHERE (customerid IS NOT NULL OR userid IS NOT NULL) AND closed = 0 AND date <= ? AND enddate >= ?
 			AND begintime <= ? AND (endtime = 0 OR endtime >= ?)",
 		array($daystart, $dayend, $time, $time));
 

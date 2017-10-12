@@ -343,7 +343,7 @@ if (!$prev_tid && preg_match('/RT#(?<ticketid>[0-9]{6,})/', $mh_subject, $matche
 
 $mail_mh_subject = $mh_subject;
 $reqcustid = 0;
-$requserid = 0;
+$requserid = null;
 
 if (preg_match('/^(?<display>.*)<(?<address>.+@.+)>$/', $mh_replyto, $m)) {
 	$replytoname = $m['display'];
@@ -448,7 +448,7 @@ if (!$prev_tid) { // generate new ticket if previous not found
 	$requserid = $DB->GetOne("SELECT id FROM vusers WHERE email = ? AND email <> ''",
 		array($fromemail));
 	if (empty($requserid))
-		$requserid = 0;
+		$requserid = null;
 
 	$msgid = $LMS->TicketMessageAdd(array(
 			'ticketid' => $prev_tid,
