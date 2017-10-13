@@ -1899,7 +1899,7 @@ CREATE TABLE records (
 CREATE TABLE domainmetadata (
 	id int(11) NOT NULL auto_increment,
 	domain_id int(11) NOT NULL,
-	kind varchar(32),+
+	kind varchar(32),
 	content text,
 	PRIMARY KEY (id),
 	INDEX domainmetadata (domain_id, kind),
