@@ -49,7 +49,7 @@ CREATE TABLE countries (
 	UNIQUE (name)
 );
 
-* --------------------------------------------------------
+/* --------------------------------------------------------
 Structure of table "location_states"
 -------------------------------------------------------- */
 DROP SEQUENCE IF EXISTS location_states_id_seq;
