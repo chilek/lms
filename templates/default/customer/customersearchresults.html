@@ -93,11 +93,11 @@
 			{if $customerlist[customerlist].account}
 				{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
 					{if $customerlist[customerlist].nodeac == 1}
-						<A href="?m=nodeset&ownerid={$customerlist[customerlist].id}"><IMG src="img/access.gif" alt="{trans("Disconnect All")} ]" title="[ {trans("Disconnect All")}"></A>
+						<A href="?m=nodeset&ownerid={$customerlist[customerlist].id}"><IMG src="img/access.gif" alt="{trans("Disconnect All")}" title="{trans("Disconnect All")}"></A>
 					{else}
 						{if $customerlist[customerlist].nodeac == 2}
-							<A href="?m=nodeset&ownerid={$customerlist[customerlist].id}"><IMG src="img/mixaccess.gif" alt="{trans("Disconnect All")} ]" title="[ {trans("Disconnect All")}"></A>
-						{else}<A href="?m=nodeset&ownerid={$customerlist[customerlist].id}&access=1"><IMG src="img/noaccess.gif" alt="{trans("Connect All")} ]" title="[ {trans("Connect All")}"></A>
+							<A href="?m=nodeset&ownerid={$customerlist[customerlist].id}"><IMG src="img/mixaccess.gif" alt="{trans("Disconnect All")}" title="{trans("Disconnect All")}"></A>
+						{else}<A href="?m=nodeset&ownerid={$customerlist[customerlist].id}&access=1"><IMG src="img/noaccess.gif" alt="{trans("Connect All")}" title="{trans("Connect All")}"></A>
 						{/if}
 					{/if}
 				{/if}
@@ -105,11 +105,11 @@
 			{if $customerlist[customerlist].warncount}
 				{if $customerlist[customerlist].status == $smarty.const.CSTATUS_CONNECTED}
 					{if $customerlist[customerlist].nodewarn == 1}
-						<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningon.gif" alt="{trans("Disable notices for all")} ]" title="[ {trans("Disable notices for all")}"></A>
+						<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningon.gif" alt="{trans("Disable notices for all")}" title="{trans("Disable notices for all")}"></A>
 					{else}
 						{if $customerlist[customerlist].nodewarn == 2}
-							<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningmix.gif" alt="{trans("Disable notices for all")} ]" title="[ {trans("Disable notices for all")}"></A>
-						{else}<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}&warning=1" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningoff.gif" alt="{trans("Enable notices for all")} ]" title="[ {trans("Enable notices for all")}"></A>
+							<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningmix.gif" alt="{trans("Disable notices for all")}" title="{trans("Disable notices for all")}"></A>
+						{else}<A href="?m=nodewarn&ownerid={$customerlist[customerlist].id}&warning=1" {if $customerlist[customerlist].message}{tip text=$customerlist[customerlist].message}{/if}><IMG SRC="img/warningoff.gif" alt="{trans("Enable notices for all")}" title="{trans("Enable notices for all")}"></A>
 						{/if}
 					{/if}
 				{/if}
