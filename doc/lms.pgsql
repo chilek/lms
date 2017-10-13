@@ -1500,23 +1500,6 @@ CREATE TABLE customerassignments (
 CREATE INDEX customerassignments_customerid_idx ON customerassignments (customerid);
 
 /* --------------------------------------------------------
-  Structure of table "stats"
--------------------------------------------------------- */
-DROP TABLE IF EXISTS stats CASCADE;
-CREATE TABLE stats (
-	nodeid integer 		DEFAULT NULL
-		CONSTRAINT stats_nodeid_fkey REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	dt integer 		DEFAULT 0 NOT NULL,
-	upload bigint 		DEFAULT 0,
-	download bigint 	DEFAULT 0,
-	nodesessionid integer	DEFAULT NULL
-		CONSTRAINT stats_nodesessionid_fkey REFERENCES nodesessions (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT stats_nodeid_dt_key UNIQUE (nodeid, dt)
-);
-CREATE INDEX stats_dt_idx ON stats(dt);
-CREATE INDEX stats_nodesessionid_idx ON stats(nodesessionid);
-
-/* --------------------------------------------------------
   Structure of table "nodesessions"
 -------------------------------------------------------- */
 DROP SEQUENCE IF EXISTS nodesessions_id_seq;
@@ -1542,6 +1525,23 @@ CREATE TABLE nodesessions (
 CREATE INDEX nodesessions_customerid_idx ON nodesessions(customerid);
 CREATE INDEX nodesessions_nodeid_idx ON nodesessions(nodeid);
 CREATE INDEX nodesessions_tag_idx ON nodesessions(tag);
+
+/* --------------------------------------------------------
+  Structure of table "stats"
+-------------------------------------------------------- */
+DROP TABLE IF EXISTS stats CASCADE;
+CREATE TABLE stats (
+	nodeid integer 		DEFAULT NULL
+		CONSTRAINT stats_nodeid_fkey REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	dt integer 		DEFAULT 0 NOT NULL,
+	upload bigint 		DEFAULT 0,
+	download bigint 	DEFAULT 0,
+	nodesessionid integer	DEFAULT NULL
+		CONSTRAINT stats_nodesessionid_fkey REFERENCES nodesessions (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT stats_nodeid_dt_key UNIQUE (nodeid, dt)
+);
+CREATE INDEX stats_dt_idx ON stats(dt);
+CREATE INDEX stats_nodesessionid_idx ON stats(nodesessionid);
 
 /* ---------------------------------------------------
  Structure of table "netlinks"

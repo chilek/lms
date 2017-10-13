@@ -67,8 +67,8 @@ DROP TABLE IF EXISTS rtmessages;
 DROP TABLE IF EXISTS rttickets;
 DROP TABLE IF EXISTS rtqueues;
 DROP TABLE IF EXISTS netlinks;
-DROP TABLE IF EXISTS nodesessions;
 DROP TABLE IF EXISTS stats;
+DROP TABLE IF EXISTS nodesessions;
 DROP TABLE IF EXISTS customerassignments;
 DROP TABLE IF EXISTS customergroups;
 DROP TABLE IF EXISTS numberplanassignments;
@@ -1555,25 +1555,6 @@ CREATE TABLE customerassignments (
 
 # --------------------------------------------------------
 #
-# Structure of table stats
-#
-CREATE TABLE stats (
-	nodeid int(11)		DEFAULT NULL,
-	dt int(11)		NOT NULL DEFAULT '0',
-	upload bigint		DEFAULT '0',
-	download bigint		DEFAULT '0',
-	nodesessionid int(11)	DEFAULT NULL,
-	UNIQUE KEY nodeid (nodeid, dt),
-	INDEX dt (dt),
-	INDEX nodesessionid (nodesessionid),
-	CONSTRAINT stats_nodesessionid_fkey
-		FOREIGN KEY (nodesessionid) REFERENCES nodesessions (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT stats_nodeid_fkey
-		FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
-# --------------------------------------------------------
-#
 # Structure of table nodesessions
 #
 CREATE TABLE nodesessions (
@@ -1596,6 +1577,25 @@ CREATE TABLE nodesessions (
 	CONSTRAINT nodesessions_customerid_fkey
 		FOREIGN KEY (customerid) REFERENCES customers (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT nodesessions_nodeid_fkey
+		FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table stats
+#
+CREATE TABLE stats (
+	nodeid int(11)		DEFAULT NULL,
+	dt int(11)		NOT NULL DEFAULT '0',
+	upload bigint		DEFAULT '0',
+	download bigint		DEFAULT '0',
+	nodesessionid int(11)	DEFAULT NULL,
+	UNIQUE KEY nodeid (nodeid, dt),
+	INDEX dt (dt),
+	INDEX nodesessionid (nodesessionid),
+	CONSTRAINT stats_nodesessionid_fkey
+		FOREIGN KEY (nodesessionid) REFERENCES nodesessions (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT stats_nodeid_fkey
 		FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
