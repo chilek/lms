@@ -145,7 +145,7 @@ CREATE TABLE location_streets (
 	UNIQUE (cityid, name, ident)
 );
 
-//* --------------------------------------------------------
+/* --------------------------------------------------------
   Structure of table "location_buildings"
 -------------------------------------------------------- */
 DROP SEQUENCE IF EXISTS location_buildings_id_seq;
