@@ -582,7 +582,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $item['discount'] = str_replace(',', '.', $item['discount']);
             $item['pdiscount'] = str_replace(',', '.', $item['pdiscount']);
             $item['vdiscount'] = str_replace(',', '.', $item['vdiscount']);
-            $item['taxid'] = isset($item['taxid']) ? $item['taxid'] : 0;
+            $item['taxid'] = isset($item['taxid']) ? $item['taxid'] : null;
 
             $args = array(
                 SYSLOG::RES_DOC => $iid,
@@ -1307,10 +1307,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             SYSLOG::RES_USER => isset($addbalance['userid']) ? $addbalance['userid'] : Auth::GetCurrentUser(),
             'value' => str_replace(',', '.', round($addbalance['value'], 2)),
             'type' => isset($addbalance['type']) ? $addbalance['type'] : 0,
-            SYSLOG::RES_TAX => isset($addbalance['taxid']) ? $addbalance['taxid'] : 0,
+            SYSLOG::RES_TAX => isset($addbalance['taxid']) ? $addbalance['taxid'] : null,
             SYSLOG::RES_CUST => $addbalance['customerid'],
             'comment' => $addbalance['comment'],
-            SYSLOG::RES_DOC => isset($addbalance['docid']) ? $addbalance['docid'] : 0,
+            SYSLOG::RES_DOC => isset($addbalance['docid']) ? $addbalance['docid'] : null,
             'itemid' => isset($addbalance['itemid']) ? $addbalance['itemid'] : 0,
             SYSLOG::RES_CASHIMPORT => !empty($addbalance['importid']) ? $addbalance['importid'] : NULL,
             SYSLOG::RES_CASHSOURCE => !empty($addbalance['sourceid']) ? $addbalance['sourceid'] : NULL,

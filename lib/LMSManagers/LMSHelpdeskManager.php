@@ -478,7 +478,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				isset($message['userid']) ? $message['userid'] : Auth::GetCurrentUser(),
 				empty($message['customerid']) ? null : $message['customerid'],
 				isset($message['mailfrom']) ? $message['mailfrom'] : '',
-				isset($message['inreplyto']) ? $message['inreplyto'] : 0,
+				isset($message['inreplyto']) ? $message['inreplyto'] : null,
 				isset($message['messageid']) ? $message['messageid'] : $this->lastmessageid,
 				isset($message['replyto']) ? $message['replyto'] :
 					(isset($message['headers']['Reply-To']) ? $message['headers']['Reply-To'] : ''),
@@ -499,7 +499,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			empty($ticket['customerid']) ? null : $ticket['customerid'],
 			$ticket['requestor'],
 			$ticket['subject'],
-			isset($ticket['owner']) ? $ticket['owner'] : 0,
+			isset($ticket['owner']) ? $ticket['owner'] : null,
 			isset($ticket['createtime']) ? $ticket['createtime'] : time(),
 			isset($ticket['cause']) ? $ticket['cause'] : 0,
 			isset($ticket['userid']) ? $ticket['userid'] : Auth::GetCurrentUser(),
