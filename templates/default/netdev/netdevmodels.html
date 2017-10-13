@@ -72,12 +72,12 @@
 					</option>
 					{/section}
 				</select>
-				{if $producerinfo.alternative_name}<span title="[ Alternatywna nazwa producenta ]">{$producerinfo.alternative_name}</span>{/if}
+				{if $producerinfo.alternative_name}<span title="Alternatywna nazwa producenta">{$producerinfo.alternative_name}</span>{/if}
 			</td>
 			<td width="1%" class="fright nobr text-right">
 				{if $listdata.pid}
-				<a href="javascript:void(0);" onclick="delproducer({$listdata.pid});"><img src="img/delete.gif" alt="[ {trans("Remove")} ]"></a>
-				<a href="javascript:void(0);" onclick="xajax_edit_producer({$listdata.pid});"><img src="img/edit.gif" alt="[ {trans("Edit")} ]"></a>
+				<a href="javascript:void(0);" onclick="delproducer({$listdata.pid});"><img src="img/delete.gif" alt="{trans("Remove")}"></a>
+				<a href="javascript:void(0);" onclick="xajax_edit_producer({$listdata.pid});"><img src="img/edit.gif" alt="{trans("Edit")}"></a>
 				{/if}
 			</td>
 		</tr>

@@ -24,10 +24,10 @@
 	</TD>
 	<TD class="text-right nobr">
 		{if ConfigHelper::checkConfig('privileges.superuser') || ConfigHelper::checkConfig('privileges.network_management')}
-		<A HREF="javascript:toggleEditManagementUrl({$urlid});" id="edit_button_{$urlid}"{if $edit} style="display: none;"{/if}><IMG SRC="img/edit.gif" ALT="[ {trans("Edit")} ]" {tip text="Edit management URL"}></A>
-		<A HREF="javascript:updateManagementUrl({$urlid});" id="save_button_{$urlid}"{if !$edit} style="display: none;"{/if}><IMG SRC="img/save.gif" ALT="[ {trans("Save")} ]" {tip text="Save"}></A>
-		<A HREF="javascript:toggleEditManagementUrl({$urlid});" id="cancel_button_{$urlid}"{if !$edit} style="display: none;"{/if}><IMG SRC="img/cancel.gif" ALT="[ {trans("Cancel")} ]" {tip text="Cancel"}></A>
-		<A HREF="javascript:delManagementUrl({$urlid});" id="delete_button_{$urlid}"><IMG SRC="img/delete.gif" ALT="[ {trans("Delete")} ]" {tip text="Remove management URL"}></A>
+		<A HREF="javascript:toggleEditManagementUrl({$urlid});" id="edit_button_{$urlid}"{if $edit} style="display: none;"{/if}><IMG SRC="img/edit.gif" ALT="{trans("Edit")}" {tip text="Edit management URL"}></A>
+		<A HREF="javascript:updateManagementUrl({$urlid});" id="save_button_{$urlid}"{if !$edit} style="display: none;"{/if}><IMG SRC="img/save.gif" ALT="{trans("Save")}" {tip text="Save"}></A>
+		<A HREF="javascript:toggleEditManagementUrl({$urlid});" id="cancel_button_{$urlid}"{if !$edit} style="display: none;"{/if}><IMG SRC="img/cancel.gif" ALT="{trans("Cancel")}" {tip text="Cancel"}></A>
+		<A HREF="javascript:delManagementUrl({$urlid});" id="delete_button_{$urlid}"><IMG SRC="img/delete.gif" ALT="{trans("Delete")}" {tip text="Remove management URL"}></A>
 		{/if}
 	</TD>
 </TR>
@@ -47,8 +47,8 @@
 		<input type="text" size="40" name="comment" id="comment" value="{if !$formdata.urlid}{$formdata.comment}{/if}" {tip text="Enter URL comment" trigger="comment"}>
 	</TD>
 	<TD class="text-right nobr" ROWSPAN="2">
-		<A HREF="javascript:addManagementUrl();" id="cancel_new_radiosector_button" {tip text="Add new management URL"}> <IMG SRC="img/save.gif" alt="[ {trans("Add")} ]"></A>
-		<A HREF="javascript:hideAddManagementUrl();" id="cancel_new_radiosector_button"><IMG SRC="img/cancel.gif" ALT="[ {trans("Cancel")} ]" {tip text="Cancel"}></A>
+		<A HREF="javascript:addManagementUrl();" id="cancel_new_radiosector_button" {tip text="Add new management URL"}> <IMG SRC="img/save.gif" alt="{trans("Add")}"></A>
+		<A HREF="javascript:hideAddManagementUrl();" id="cancel_new_radiosector_button"><IMG SRC="img/cancel.gif" ALT="{trans("Cancel")}" {tip text="Cancel"}></A>
 		
 	</TD>
 <TR>

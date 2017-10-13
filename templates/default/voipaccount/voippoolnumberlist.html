@@ -6,10 +6,10 @@
 
 <P STYLE="display: none;"><INPUT TYPE="submit" CLASS="hiddenbtn"></P>
 
-{assign var='bulb_off' value='<img class="bulb lms-ui-cursor-pointer" src="img/noaccess.gif" alt="[&nbsp;'|cat:trans("Connect")|cat:'&nbsp;]" title="[&nbsp;'|cat:trans("Connect")|cat:'&nbsp;]">'}
-{assign var='bulb_on' value='<img class="bulb lms-ui-cursor-pointer" src="img/access.gif" alt="[&nbsp;'|cat:trans("Disconnect")|cat:'&nbsp;]" title="[&nbsp;'|cat:trans("Disconnect")|cat:'&nbsp;]">'}
-{assign var='edit_ico' value='<img class="edit-pool lms-ui-cursor-pointer" src="img/edit.gif" alt="[&nbsp;'|cat:trans("Edit")|cat:'&nbsp;]" title="[&nbsp;'|cat:trans("Edit")|cat:'&nbsp;]">'}
-{assign var='delete_ico' value='<img class="delete-pool lms-ui-cursor-pointer" src="img/delete.gif" alt="[&nbsp;'|cat:trans("Delete")|cat:'&nbsp;]" title="[&nbsp;'|cat:trans("Delete")|cat:'&nbsp;]">'}
+{assign var='bulb_off' value='<img class="bulb lms-ui-cursor-pointer" src="img/noaccess.gif" alt="[&nbsp;'|cat:trans("Connect")|cat:'&nbsp;]"title="&nbsp;'|cat:trans("Connect")|cat:'&nbsp;">'}
+{assign var='bulb_on' value='<img class="bulb lms-ui-cursor-pointer" src="img/access.gif" alt="[&nbsp;'|cat:trans("Disconnect")|cat:'&nbsp;]"title="&nbsp;'|cat:trans("Disconnect")|cat:'&nbsp;">'}
+{assign var='edit_ico' value='<img class="edit-pool lms-ui-cursor-pointer" src="img/edit.gif" alt="[&nbsp;'|cat:trans("Edit")|cat:'&nbsp;]"title="&nbsp;'|cat:trans("Edit")|cat:'&nbsp;">'}
+{assign var='delete_ico' value='<img class="delete-pool lms-ui-cursor-pointer" src="img/delete.gif" alt="[&nbsp;'|cat:trans("Delete")|cat:'&nbsp;]"title="&nbsp;'|cat:trans("Delete")|cat:'&nbsp;">'}
 
 <TABLE id="poolnumbers" class="lmsbox lms-ui-datatable">
     <COLGROUP>
@@ -101,12 +101,12 @@ $( function() {
 
                 if (state) {
                     $(bulb_handler).attr("src"  ,"img/noaccess.gif")
-                                   .attr("title","[ {trans("Connect")} ]")
-                                   .attr("alt"  ,"[ {trans("Connect")} ]");
+                                   .attr("title","{trans("Connect")}")
+                                   .attr("alt"  ,"{trans("Connect")}");
                 } else {
                     $(bulb_handler).attr("src"  ,"img/access.gif")
-                                   .attr("title","[ {trans("Disconnect")} ]")
-                                   .attr("alt"  ,"[ {trans("Disconnect")} ]");
+                                   .attr("title","{trans("Disconnect")}")
+                                   .attr("alt"  ,"{trans("Disconnect")}");
                 }
             }
 

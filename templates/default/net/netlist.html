@@ -73,10 +73,10 @@
 			{if $netlist[netlist].dhcpstart}<IMG src="img/dhcpstart.gif" alt=""> {$netlist[netlist].dhcpstart}<BR><IMG src="img/dhcpend.gif" alt=""> {$netlist[netlist].dhcpend}{/if}
 		</TD>
 		<TD class="nobr">
-			<A href="?m=netedit&amp;networkset&amp;id={$netlist[netlist].id}">{if $netlist[netlist].disabled}<IMG src="img/noaccess.gif" alt="[ {trans("Enable")} ]" title="[ {trans("Enable")} ]">{else}<IMG src="img/access.gif" alt="[ {trans("Disable")} ]" title="[ {trans("Disable")} ]">{/if}</A>
-			<a href="?m=netdel&amp;id={$netlist[netlist].id}" onClick="return confirmLink(this,'{t a=$netlist[netlist].name}Are you sure, you want to remove network \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Remove")} ]" title="[ {trans("Remove")} ]"></A>
-			<A href="?m=netedit&amp;id={$netlist[netlist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A href="?m=netinfo&amp;id={$netlist[netlist].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+			<A href="?m=netedit&amp;networkset&amp;id={$netlist[netlist].id}">{if $netlist[netlist].disabled}<IMG src="img/noaccess.gif" alt="{trans("Enable")}" title="{trans("Enable")}">{else}<IMG src="img/access.gif" alt="{trans("Disable")}" title="{trans("Disable")}">{/if}</A>
+			<a href="?m=netdel&amp;id={$netlist[netlist].id}" onClick="return confirmLink(this,'{t a=$netlist[netlist].name}Are you sure, you want to remove network \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="{trans("Remove")}" title="{trans("Remove")}"></A>
+			<A href="?m=netedit&amp;id={$netlist[netlist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<A href="?m=netinfo&amp;id={$netlist[netlist].id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
 	</TR>
 	{sectionelse}

@@ -150,15 +150,15 @@
 		<TD WIDTH="1%" ALIGN="right" class="nobr">
 				<a href="?m=tariffedit&amp;set&amp;id={$tariff.id}">
 					{if $tariff.disabled == 0}
-						<img src="img/access.gif" alt="[ {t}Disable{/t} ]" title="[ {t}Disable{/t} ]" />
+						<img src="img/access.gif" alt="{t}Disable{/t} ]" title="[ {t}Disable{/t}" />
 					{else}
-						<img src="img/noaccess.gif" alt="[ {t}Enable{/t} ]" title="[ {t}Enable{/t} ]" />
+						<img src="img/noaccess.gif" alt="{t}Enable{/t} ]" title="[ {t}Enable{/t}" />
 					{/if}
 				</a>
-				{if $tariff.customers}<A HREF="javascript:alert('{trans("Subscription with assigned customers cannot be deleted!")}');">{else}<A HREF="?m=tariffdel&amp;id={$tariff.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that tariff?")}');">{/if}<IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-				<A HREF="?m=tariffedit&amp;id={$tariff.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-				<A HREF="?m=tariffadd&amp;id={$tariff.id}"><IMG SRC="img/clone.gif" alt="[ {trans("Clone")} ]" title="[ {trans("Clone")} ]"></A>
-				<A HREF="?m=tariffinfo&amp;id={$tariff.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+				{if $tariff.customers}<A HREF="javascript:alert('{trans("Subscription with assigned customers cannot be deleted!")}');">{else}<A HREF="?m=tariffdel&amp;id={$tariff.id}" onClick="return confirmLink(this,'{trans("Are you sure, you want to delete that tariff?")}');">{/if}<IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+				<A HREF="?m=tariffedit&amp;id={$tariff.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+				<A HREF="?m=tariffadd&amp;id={$tariff.id}"><IMG SRC="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
+				<A HREF="?m=tariffinfo&amp;id={$tariff.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
 	</TR>
 	{foreachelse}

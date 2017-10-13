@@ -53,9 +53,9 @@
 		<TD align="left" NOWRAP onclick="return location.href='?m=recordedit&id={$recordslist[recordslist].id}'">{$recordslist[recordslist].content}</TD>
 		<TD class="nobr text-right">			
 			{if $showaddedit}
-			<A href="?m=recordedit&id={$recordslist[recordslist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A> 
+			<A href="?m=recordedit&id={$recordslist[recordslist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			{if $recordslist[recordslist].type != "SOA"}
-			<A href="?m=recorddel&id={$recordslist[recordslist].id}" OnClick="return confirmLink(this, '{t a=$account}Are you sure you want to delete this record?{/t}')"><IMG src="img/delete.gif" title="[ {trans("Delete")} ]" alt="[ {trans("Delete")} ]"></A> 
+			<A href="?m=recorddel&id={$recordslist[recordslist].id}" OnClick="return confirmLink(this, '{t a=$account}Are you sure you want to delete this record?{/t}')"><IMG src="img/delete.gif" title="{trans("Delete")}" alt="{trans("Delete")}"></A>
 			{/if}
 			{/if}
 		</TD>

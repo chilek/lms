@@ -60,10 +60,10 @@
 			{$reg.description}
 		</TD>
 		<TD class="text-right nobr">
-			<A HREF="?m=receiptlist&amp;regid={$reg.id}"><IMG SRC="img/view.gif" alt="[ {trans("Browse")} ]" title="[ {trans("Browse")} ]"></A>
-			<A HREF="?m=cashregdel&amp;id={$reg.id}" OnClick="return confirmLink(this, '{t a=$reg.name}Are you sure, you want to remove registry \'$a\' and all assigned receipts?{/t}');"><IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A HREF="?m=cashregedit&amp;id={$reg.id}"><IMG SRC="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
-			<A HREF="?m=cashreginfo&amp;id={$reg.id}"><IMG SRC="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A>
+			<A HREF="?m=receiptlist&amp;regid={$reg.id}"><IMG SRC="img/view.gif" alt="{trans("Browse")}" title="{trans("Browse")}"></A>
+			<A HREF="?m=cashregdel&amp;id={$reg.id}" OnClick="return confirmLink(this, '{t a=$reg.name}Are you sure, you want to remove registry \'$a\' and all assigned receipts?{/t}');"><IMG SRC="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A HREF="?m=cashregedit&amp;id={$reg.id}"><IMG SRC="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<A HREF="?m=cashreginfo&amp;id={$reg.id}"><IMG SRC="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
 		</TD>
 	</TR>
 	{foreachelse}

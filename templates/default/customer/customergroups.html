@@ -42,7 +42,7 @@
 					<TD class="nobr">({$customergroup.id|string_format:"%04d"})</TD>
 					<TD class="text-right nobr">
 						<A onClick="return confirmLink(this, '{trans("Are you sure, you want to remove customer from group?")}')" href="?m=customergroup&customergroupid={$customergroup.id}&action=delete&id={$customerinfo.id}" {tip text="Remove customer from group"}>
-							<IMG src="img/delete.gif" ALT="[ {trans("Delete")} ]">
+							<IMG src="img/delete.gif" ALT="{trans("Delete")}">
 						</A>
 						<input type="checkbox" name="markedcustomergroupid[{$customergroup.id}]" value="{$customergroup.id}" class="lms-ui-multi-check">
 					</TD>

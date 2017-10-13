@@ -81,9 +81,9 @@
 		<TD class="text-right">
 			{assign var=alias value="`$aliaslist[aliaslist].login`@`$aliaslist[aliaslist].domain`"}
                         <SPAN class="nobr">
-			<A href="?m=aliasdel&id={$aliaslist[aliaslist].id}" OnClick="return confirmLink(this, '{t a=$alias}Are you sure, you want to delete alias: \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="[ {trans("Delete")} ]" title="[ {trans("Delete")} ]"></A>
-			<A href="?m=aliasedit&id={$aliaslist[aliaslist].id}"><IMG src="img/edit.gif" alt="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A> 
-			<A href="?m=aliasinfo&id={$aliaslist[aliaslist].id}"><IMG src="img/info.gif" alt="[ {trans("Info")} ]" title="[ {trans("Info")} ]"></A> 
+			<A href="?m=aliasdel&id={$aliaslist[aliaslist].id}" OnClick="return confirmLink(this, '{t a=$alias}Are you sure, you want to delete alias: \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A href="?m=aliasedit&id={$aliaslist[aliaslist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+			<A href="?m=aliasinfo&id={$aliaslist[aliaslist].id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
                         </SPAN>
 		</TD>
 	</TR>

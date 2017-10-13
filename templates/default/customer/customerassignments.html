@@ -110,14 +110,14 @@
 						{if ($a.tariffid || $a.liabilityid) && (($a.dateto > $today || !$a.dateto) || ($a.liabilityid && $a.at > $today))}
 						<A href="?m=customerassignmentedit&action=suspend&id={$a.id}&suspend={if $a.suspended}0{else}1{/if}"
 							{tip text="Enable/disable accounting of selected liability"}>
-							<IMG SRC="img/wait.gif" alt="[ {if $a.suspended}{trans("Restore")}{else}{trans("Suspend")}{/if} ]">
+							<IMG SRC="img/wait.gif" alt="{if $a.suspended}{trans("Restore")}{else}{trans("Suspend")}{/if}">
 						</A>
 						{/if}
 						<A onClick="return confirmLink(this, '{trans("Are you sure, you want to delete this liability?")}')"
 							href="?m=customerassignmentdel&id={$a.id}" {tip text="Delete customer's liability"}>
-							<IMG SRC="img/delete.gif" alt="[ {trans("Delete")} ]">
+							<IMG SRC="img/delete.gif" alt="{trans("Delete")}">
 						</A>
-						<A href="?m=customerassignmentedit&id={$a.id}"><IMG SRC="img/edit.gif" ALT="[ {trans("Edit")} ]" title="[ {trans("Edit")} ]"></A>
+						<A href="?m=customerassignmentedit&id={$a.id}"><IMG SRC="img/edit.gif" ALT="{trans("Edit")}" title="{trans("Edit")}"></A>
 						<input type="checkbox" name="customerassignments[{$a.id}]" value="{$a.id}" class="lms-ui-multi-check">
 					</TD>
 				</TR>
