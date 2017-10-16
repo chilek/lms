@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -146,7 +146,7 @@ else
 			WHERE p.id IN (SELECT accountid FROM aliasassignments
 				WHERE aliasid = ? AND mail_forward=\'\')', 'id', array($alias['id'])); 
 	$mailforwards = $DB->GetAllByKey('SELECT mail_forward
-			FROM aliasassignments WHERE aliasid = ? AND accountid = 0 AND mail_forward <> \'\' 
+			FROM aliasassignments WHERE aliasid = ? AND accountid IS NULL AND mail_forward <> \'\' 
 			ORDER BY mail_forward',
 			'mail_forward', array($alias['id']));
 	$alias['mailforwards'] = array();
