@@ -207,7 +207,7 @@
 					</TD>
 					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 					    {assign var=name value="`$alias.login`@`$alias.domain`"}
-					    <A href="?m=aliasedit&id={$alias.id}&delaccount={$account.id}" OnClick="return confirmLink(this, '{t a=$name}Are you sure, you want to delete assignment with alias: \'$a\'?{/t}')"><IMG src="img/eraser.gif" alt="{trans("Delete assignment")} ]" title="[ {trans("Delete assignment")}"></A>
+					    <A href="?m=aliasedit&id={$alias.id}&delaccount={$account.id}" OnClick="return confirmLink(this, '{t a=$name}Are you sure, you want to delete assignment with alias: \'$a\'?{/t}')"><IMG src="img/eraser.gif" alt="{trans("Delete assignment")}" title="{trans("Delete assignment")}"></A>
 					    <A href="?m=aliasdel&id={$alias.id}" OnClick="return confirmLink(this, '{t a=$name}Are you sure, you want to delete alias: \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
 					    <A href="?m=aliasedit&id={$alias.id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 					    <A href="?m=aliasinfo&id={$alias.id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
