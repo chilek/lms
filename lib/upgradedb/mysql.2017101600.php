@@ -29,7 +29,7 @@ $this->Execute("ALTER TABLE ewx_stm_nodes ALTER COLUMN channelid SET DEFAULT NUL
 $this->Execute("UPDATE ewx_stm_channels SET channelid = NULL WHERE channelid = 0");
 $ids = $this->GetCol("SELECT id FROM ewx_stm_channels");
 if (empty($ids))
-	$this->Execute("UPDATE ewx_stm_nodes SET channelid = NULL AND channelid IS NOT NULL");
+	$this->Execute("UPDATE ewx_stm_nodes SET channelid = NULL WHERE channelid IS NOT NULL");
 else {
 	$sql_ids = implode(',', $ids);
 	$this->Execute("UPDATE ewx_stm_nodes SET channelid = NULL
