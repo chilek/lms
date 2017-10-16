@@ -93,8 +93,8 @@ DROP TABLE IF EXISTS invprojects;
 DROP TABLE IF EXISTS networks;
 DROP TABLE IF EXISTS hosts;
 DROP TABLE IF EXISTS ewx_channels;
-DROP TABLE IF EXISTS ewx_stm_channels;
 DROP TABLE IF EXISTS ewx_stm_nodes;
+DROP TABLE IF EXISTS ewx_stm_channels;
 DROP TABLE IF EXISTS pna;
 DROP TABLE IF EXISTS cash;
 DROP TABLE IF EXISTS cashimport;
@@ -1076,21 +1076,6 @@ CREATE TABLE pna (
 #
 # Structure of tables ewx_* (EtherWerX(R))
 #
-CREATE TABLE ewx_stm_nodes (
-	id int(11)              NOT NULL auto_increment,
-	nodeid int(11)          DEFAULT '0' NOT NULL,
-	mac varchar(20)         DEFAULT '' NOT NULL,
-	ipaddr int(16) unsigned DEFAULT '0' NOT NULL,
-	channelid int(11)       DEFAULT '0' NOT NULL,
-	uprate int(11)          DEFAULT '0' NOT NULL,
-	upceil int(11)          DEFAULT '0' NOT NULL,
-	downrate int(11)        DEFAULT '0' NOT NULL,
-	downceil int(11)        DEFAULT '0' NOT NULL,
-	halfduplex tinyint(1)   DEFAULT '0' NOT NULL,
-	PRIMARY KEY (id),
-	UNIQUE KEY nodeid (nodeid)
-    ) ENGINE=InnoDB;
-
 CREATE TABLE ewx_stm_channels (
 	id int(11)              NOT NULL auto_increment,
 	cid int(11)             DEFAULT '0' NOT NULL,
@@ -1099,6 +1084,23 @@ CREATE TABLE ewx_stm_channels (
 	halfduplex tinyint(1)   DEFAULT NULL,
 	PRIMARY KEY (id),
 	UNIQUE KEY cid (cid)
+) ENGINE=InnoDB;
+
+CREATE TABLE ewx_stm_nodes (
+	id int(11)              NOT NULL auto_increment,
+	nodeid int(11)          DEFAULT '0' NOT NULL,
+	mac varchar(20)         DEFAULT '' NOT NULL,
+	ipaddr int(16) unsigned DEFAULT '0' NOT NULL,
+	channelid int(11)       DEFAULT NULL,
+	uprate int(11)          DEFAULT '0' NOT NULL,
+	upceil int(11)          DEFAULT '0' NOT NULL,
+	downrate int(11)        DEFAULT '0' NOT NULL,
+	downceil int(11)        DEFAULT '0' NOT NULL,
+	halfduplex tinyint(1)   DEFAULT '0' NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE KEY nodeid (nodeid),
+	CONSTRAINT ewx_stm_nodes_channelid_fkey
+		FOREIGN KEY (channelid) REFERENCES ewx_stm_channels (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE ewx_channels (
@@ -3234,4 +3236,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101203');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101600');
