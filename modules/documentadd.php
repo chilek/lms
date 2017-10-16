@@ -227,7 +227,7 @@ if (isset($_POST['document'])) {
 			reference, template)
 			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($document['type'],
 				$document['number'],
-				$document['numberplanid'],
+				empty($document['numberplanid']) ? null : $document['numberplanid'],
 				$time,
 				isset($document['closed']) ? $time : 0,
 				isset($document['closed']) ? Auth::GetCurrentUser() : null,
@@ -255,7 +255,7 @@ if (isset($_POST['document'])) {
 				($division['inv_cplace'] ? $division['inv_cplace'] : ''),
 				isset($document['closed']) ? 1 : 0,
 				$fullnumber,
-				!isset($document['reference']) || empty($document['reference']) ? 0 : $document['reference'],
+				!isset($document['reference']) || empty($document['reference']) ? null : $document['reference'],
 				empty($document['templ']) ? null : $document['templ'],
 		));
 
