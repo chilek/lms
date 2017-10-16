@@ -1307,7 +1307,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             SYSLOG::RES_USER => isset($addbalance['userid']) ? $addbalance['userid'] : Auth::GetCurrentUser(),
             'value' => str_replace(',', '.', round($addbalance['value'], 2)),
             'type' => isset($addbalance['type']) ? $addbalance['type'] : 0,
-            SYSLOG::RES_TAX => isset($addbalance['taxid']) ? $addbalance['taxid'] : null,
+            SYSLOG::RES_TAX => isset($addbalance['taxid']) && !empty($addbalance['taxid']) ? $addbalance['taxid'] : null,
             SYSLOG::RES_CUST => $addbalance['customerid'],
             'comment' => $addbalance['comment'],
             SYSLOG::RES_DOC => isset($addbalance['docid']) ? $addbalance['docid'] : null,
