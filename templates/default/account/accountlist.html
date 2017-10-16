@@ -124,8 +124,8 @@
 		<TD class="text-right">
 			{assign var=account value="`$accountlist[accountlist].login`@`$accountlist[accountlist].domain`"}
 			<SPAN class="nobr">
-			<A href="?m=accountpasswd&id={$accountlist[accountlist].id}"><IMG src="img/pass.gif" alt="{trans("Change password")} ]" title="[ {trans("Change password")}"></A> 
-			<A href="?m=aliasadd&accountid={$accountlist[accountlist].id}"><IMG src="img/alias.gif" alt="{trans("Create alias")} ]" title="[ {trans("Create alias")}"></A> 
+			<A href="?m=accountpasswd&id={$accountlist[accountlist].id}"><IMG src="img/pass.gif" alt="{trans("Change password")}" title="{trans("Change password")}"></A> 
+			<A href="?m=aliasadd&accountid={$accountlist[accountlist].id}"><IMG src="img/alias.gif" alt="{trans("Create alias")}" title="{trans("Create alias")}"></A> 
 			<A href="?m=accountdel&id={$accountlist[accountlist].id}" OnClick="return confirmLink(this, '{t a=$account}Are you sure, you want to delete account \'$a\' and all assigned to them aliases?{/t}')"><IMG src="img/delete.gif" title="{trans("Delete")}" alt="{trans("Delete")}"></A>
 			<A href="?m=accountedit&id={$accountlist[accountlist].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 			<A href="?m=accountinfo&id={$accountlist[accountlist].id}"><IMG src="img/info.gif" alt="{trans("Info")}" title="{trans("Info")}"></A>
