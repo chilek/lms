@@ -196,7 +196,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 			$numtemplate = $numplan['template'];
 			$period = $numplan['period'];
 		} else {
-			$planid = 0;
+			$planid = null;
 		}
 
         $period = isset($period) ? $period : YEARLY;
@@ -245,11 +245,11 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $end = mktime(0, 0, 0, 1, 1, date('Y', $cdate) + 1);
                 break;
             case CONTINUOUS:
-                $number = $this->db->GetOne('SELECT MAX(number) FROM documents 
-					WHERE type = ? AND numberplanid = ?'
+                $number = $this->db->GetOne('SELECT MAX(number) FROM documents
+					WHERE type = ? AND ' . ($planid ? 'numberplanid = ' . intval($planid) : 'numberplanid IS NULL')
 					. (!isset($numtemplate) || strpos($numtemplate, '%C') === false || empty($customerid)
 						? '' : ' AND customerid = ' . intval($customerid)),
-					array($doctype, $planid));
+					array($doctype));
 
                 return $number ? ++$number : 1;
                 break;
@@ -258,7 +258,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         $number = $this->db->GetOne('
 				SELECT MAX(number) 
 				FROM documents 
-				WHERE cdate >= ? AND cdate < ? AND type = ? AND numberplanid = ?'
+				WHERE cdate >= ? AND cdate < ? AND type = ? AND ' . ($planid ? 'numberplanid = ' . intval($planid) : 'numberplanid IS NULL')
 				. (!isset($numtemplate) || strpos($numtemplate, '%C') === false || empty($customerid)
 					? '' : ' AND customerid = ' . intval($customerid)),
 				array($start, $end, $doctype, $planid));
