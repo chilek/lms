@@ -83,7 +83,7 @@
                     {/if}
                     {if $eventlist[eventlist].note == ''}
                     {foreach item=user from=$eventlist[eventlist].userlist}
-                    {if $layout.logid == $user.id}<A href="?m=eventnote&id={$eventlist[eventlist].id}"><IMG src="img/note.gif" alt="{trans("Add Note")} ]" title="[ {trans("Add Note")}"></A>{/if}
+                    {if $layout.logid == $user.id}<A href="?m=eventnote&id={$eventlist[eventlist].id}"><IMG src="img/note.gif" alt="{trans("Add Note")}" title="{trans("Add Note")}"></A>{/if}
                     {/foreach}
                     {/if}
                 </div>

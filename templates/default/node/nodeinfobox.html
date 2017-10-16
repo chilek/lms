@@ -410,7 +410,7 @@
 	<tr>
 		<td style="width: 100%; text-align: right;" colspan="3">
 			{block name="nodeinfobox-buttons"}
-			<a href="?m=nodeadd&ownerid={$nodeinfo.ownerid}&premac[]={implode('&premac[]=', $macs)}&prename={t a=$nodeinfo.name}$a_clone{/t}{if $nodeinfo.address_id}&pre_address_id={$nodeinfo.address_id}{/if}">{trans("Clone")} <img src="img/clone.gif" alt="[ {trans("Clone")} ]" title="[ {trans("Clone")} ]"></a>
+			<a href="?m=nodeadd&ownerid={$nodeinfo.ownerid}&premac[]={implode('&premac[]=', $macs)}&prename={t a=$nodeinfo.name}$a_clone{/t}{if $nodeinfo.address_id}&pre_address_id={$nodeinfo.address_id}{/if}">{trans("Clone")} <img src="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></a>
 			<a href="?m=nodeedit&amp;id={$nodeinfo.id}" ACCESSKEY="E">{trans("Edit")} <img src="img/edit.gif" alt=""></A>
 			<a href="?m=nodedel&amp;id={$nodeinfo.id}" onClick="return confirmLink(this, '{t a=$nodeinfo.name}Are you sure, you want to remove node \'$a\' from database?{/t}')">
 				{trans("Delete")}
