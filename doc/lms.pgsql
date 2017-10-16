@@ -998,28 +998,6 @@ CREATE TABLE ewx_stm_channels (
 );
 
 /* ---------------------------------------------------
- Structure of table "ewx_stm_nodes" (EtherWerX(R))
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS ewx_stm_nodes_id_seq;
-CREATE SEQUENCE ewx_stm_nodes_id_seq;
-DROP TABLE IF EXISTS ewx_stm_nodes CASCADE;
-CREATE TABLE ewx_stm_nodes (
-	id 		integer		DEFAULT nextval('ewx_stm_nodes_id_seq'::text) NOT NULL,
-	nodeid 		integer         DEFAULT 0 NOT NULL,
-	mac 		varchar(20)     DEFAULT '' NOT NULL,
-	ipaddr 		bigint          DEFAULT 0 NOT NULL,
-	channelid 	integer       	DEFAULT NULL
-		CONSTRAINT ewx_stm_nodes_channelid_fkey REFERENCES ewx_stm_channels (id) ON DELETE SET NULL ON DELETE CASCADE,
-	uprate 		integer         DEFAULT 0 NOT NULL,
-	upceil 		integer         DEFAULT 0 NOT NULL,
-	downrate 	integer        	DEFAULT 0 NOT NULL,
-	downceil 	integer        	DEFAULT 0 NOT NULL,
-	halfduplex 	smallint     	DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id),
-	UNIQUE (nodeid)
-);
-
-/* ---------------------------------------------------
  Structure of table "hosts"
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS hosts_id_seq;
@@ -1259,6 +1237,29 @@ CREATE INDEX nodes_ownerid_idx ON nodes (ownerid);
 CREATE INDEX nodes_ipaddr_pub_idx ON nodes (ipaddr_pub);
 CREATE INDEX nodes_linkradiosector_idx ON nodes (linkradiosector);
 CREATE INDEX nodes_authtype_idx ON nodes (authtype);
+
+/* ---------------------------------------------------
+ Structure of table "ewx_stm_nodes" (EtherWerX(R))
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS ewx_stm_nodes_id_seq;
+CREATE SEQUENCE ewx_stm_nodes_id_seq;
+DROP TABLE IF EXISTS ewx_stm_nodes CASCADE;
+CREATE TABLE ewx_stm_nodes (
+	id 		integer		DEFAULT nextval('ewx_stm_nodes_id_seq'::text) NOT NULL,
+	nodeid 		integer         DEFAULT NULL
+		CONSTRAINT ewx_stm_nodes_nodeid_fkey REFERENCES nodes (id) ON DELETE SET NULL ON DELETE CASCADE,
+	mac 		varchar(20)     DEFAULT '' NOT NULL,
+	ipaddr 		bigint          DEFAULT 0 NOT NULL,
+	channelid 	integer       	DEFAULT NULL
+		CONSTRAINT ewx_stm_nodes_channelid_fkey REFERENCES ewx_stm_channels (id) ON DELETE SET NULL ON DELETE CASCADE,
+	uprate 		integer         DEFAULT 0 NOT NULL,
+	upceil 		integer         DEFAULT 0 NOT NULL,
+	downrate 	integer        	DEFAULT 0 NOT NULL,
+	downceil 	integer        	DEFAULT 0 NOT NULL,
+	halfduplex 	smallint     	DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (nodeid)
+);
 
 /* ----------------------------------------------------
  Structure of table "nodelocks"
@@ -3255,6 +3256,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101601');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101602');
 
 COMMIT;

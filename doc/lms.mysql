@@ -83,6 +83,7 @@ DROP TABLE IF EXISTS nodegroupassignments;
 DROP TABLE IF EXISTS nodegroups;
 DROP TABLE IF EXISTS macs;
 DROP TABLE IF EXISTS nodelocks;
+DROP TABLE IF EXISTS ewx_stm_nodes;
 DROP TABLE IF EXISTS nodes;
 DROP TABLE IF EXISTS netradiosectors;
 DROP TABLE IF EXISTS netdevices;
@@ -92,7 +93,6 @@ DROP TABLE IF EXISTS netnodes;
 DROP TABLE IF EXISTS invprojects;
 DROP TABLE IF EXISTS networks;
 DROP TABLE IF EXISTS hosts;
-DROP TABLE IF EXISTS ewx_stm_nodes;
 DROP TABLE IF EXISTS ewx_stm_channels;
 DROP TABLE IF EXISTS ewx_channels;
 DROP TABLE IF EXISTS pna;
@@ -1100,23 +1100,6 @@ CREATE TABLE ewx_stm_channels (
 		FOREIGN KEY (cid) REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
-CREATE TABLE ewx_stm_nodes (
-	id int(11)              NOT NULL auto_increment,
-	nodeid int(11)          DEFAULT '0' NOT NULL,
-	mac varchar(20)         DEFAULT '' NOT NULL,
-	ipaddr int(16) unsigned DEFAULT '0' NOT NULL,
-	channelid int(11)       DEFAULT NULL,
-	uprate int(11)          DEFAULT '0' NOT NULL,
-	upceil int(11)          DEFAULT '0' NOT NULL,
-	downrate int(11)        DEFAULT '0' NOT NULL,
-	downceil int(11)        DEFAULT '0' NOT NULL,
-	halfduplex tinyint(1)   DEFAULT '0' NOT NULL,
-	PRIMARY KEY (id),
-	UNIQUE KEY nodeid (nodeid),
-	CONSTRAINT ewx_stm_nodes_channelid_fkey
-		FOREIGN KEY (channelid) REFERENCES ewx_stm_channels (id) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB;
-
 # --------------------------------------------------------
 #
 # Structure of table hosts
@@ -1343,6 +1326,29 @@ CREATE TABLE nodes (
 	FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT nodes_modid_fkey
   	FOREIGN KEY (modid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+# --------------------------------------------------------
+#
+# Structure of table ewx_stm_nodes (EtherWerX(R))
+#
+CREATE TABLE ewx_stm_nodes (
+	id int(11)              NOT NULL auto_increment,
+	nodeid int(11)          DEFAULT NULL,
+	mac varchar(20)         DEFAULT '' NOT NULL,
+	ipaddr int(16) unsigned DEFAULT '0' NOT NULL,
+	channelid int(11)       DEFAULT NULL,
+	uprate int(11)          DEFAULT '0' NOT NULL,
+	upceil int(11)          DEFAULT '0' NOT NULL,
+	downrate int(11)        DEFAULT '0' NOT NULL,
+	downceil int(11)        DEFAULT '0' NOT NULL,
+	halfduplex tinyint(1)   DEFAULT '0' NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE KEY nodeid (nodeid),
+	CONSTRAINT ewx_stm_nodes_nodeid_fkey
+		FOREIGN KEY (nodeid) REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT ewx_stm_nodes_channelid_fkey
+		FOREIGN KEY (channelid) REFERENCES ewx_stm_channels (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -3238,4 +3244,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101601');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101602');
