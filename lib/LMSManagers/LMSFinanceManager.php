@@ -409,7 +409,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
 
             $args = array(
-                SYSLOG::RES_TARIFF  => intval($data['tariffid']),
+                SYSLOG::RES_TARIFF  => empty($data['tariffid']) ? null : intval($data['tariffid']),
                 SYSLOG::RES_CUST    => $data['customerid'],
                 'period'            => $data['period'],
                 'at'                => $data['at'],
