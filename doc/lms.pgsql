@@ -963,6 +963,24 @@ CREATE TABLE pna (
 );
 
 /* ---------------------------------------------------
+ Structure of table "ewx_channels" (EtherWerX(R))
+------------------------------------------------------*/
+DROP SEQUENCE IF EXISTS ewx_channels_id_seq;
+CREATE SEQUENCE ewx_channels_id_seq;
+DROP TABLE IF EXISTS ewx_channels CASCADE;
+CREATE TABLE ewx_channels (
+    id 		integer 	DEFAULT nextval('ewx_channels_id_seq'::text) NOT NULL,
+    name 	varchar(32)     DEFAULT '' NOT NULL,
+    upceil 	integer         DEFAULT 0 NOT NULL,
+    downceil 	integer        	DEFAULT 0 NOT NULL,
+    upceil_n 	integer         DEFAULT NULL,
+    downceil_n 	integer        	DEFAULT NULL,
+    halfduplex  smallint    DEFAULT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (name)
+);
+
+/* ---------------------------------------------------
  Structure of table "ewx_stm_channels" (EtherWerX(R))
 ------------------------------------------------------*/
 DROP SEQUENCE IF EXISTS ewx_stm_channels_id_seq;
@@ -970,7 +988,8 @@ CREATE SEQUENCE ewx_stm_channels_id_seq;
 DROP TABLE IF EXISTS ewx_stm_channels CASCADE;
 CREATE TABLE ewx_stm_channels (
     id 		integer 	DEFAULT nextval('ewx_stm_channels_id_seq'::text) NOT NULL,
-    cid 	integer      	DEFAULT 0 NOT NULL,
+    cid 	integer      	DEFAULT NULL
+    	CONSTRAINT ewx_stm_channels_cid_fkey REFERENCES ewx_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
     upceil 	integer         DEFAULT 0 NOT NULL,
     downceil 	integer        	DEFAULT 0 NOT NULL,
     halfduplex  smallint    DEFAULT NULL,
@@ -999,25 +1018,6 @@ CREATE TABLE ewx_stm_nodes (
 	PRIMARY KEY (id),
 	UNIQUE (nodeid)
 );
-
-/* ---------------------------------------------------
- Structure of table "ewx_channels" (EtherWerX(R))
-------------------------------------------------------*/
-DROP SEQUENCE IF EXISTS ewx_channels_id_seq;
-CREATE SEQUENCE ewx_channels_id_seq;
-DROP TABLE IF EXISTS ewx_channels CASCADE;
-CREATE TABLE ewx_channels (
-    id 		integer 	DEFAULT nextval('ewx_channels_id_seq'::text) NOT NULL,
-    name 	varchar(32)     DEFAULT '' NOT NULL,
-    upceil 	integer         DEFAULT 0 NOT NULL,
-    downceil 	integer        	DEFAULT 0 NOT NULL,
-    upceil_n 	integer         DEFAULT NULL,
-    downceil_n 	integer        	DEFAULT NULL,
-    halfduplex  smallint    DEFAULT NULL,
-    PRIMARY KEY (id),
-    UNIQUE (name)
-);
-
 
 /* ---------------------------------------------------
  Structure of table "hosts"
@@ -3255,6 +3255,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101601');
 
 COMMIT;
