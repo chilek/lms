@@ -80,7 +80,8 @@ $this->Execute("ALTER TABLE rtmessages ALTER COLUMN inreplyto SET DEFAULT NULL")
 $this->Execute("ALTER TABLE passwd ALTER COLUMN domainid DROP DEFAULT");
 $this->Execute("ALTER TABLE aliases ALTER COLUMN domainid DROP DEFAULT");
 $this->Execute("ALTER TABLE aliasassignments ALTER COLUMN aliasid DROP DEFAULT");
-$this->Execute("ALTER TABLE aliasassignments ALTER COLUMN accountid DROP DEFAULT");
+$this->Execute("ALTER TABLE aliasassignments MODIFY accountid int(11) NULL");
+$this->Execute("ALTER TABLE aliasassignments ALTER COLUMN accountid SET DEFAULT NULL");
 $this->Execute("ALTER TABLE eventassignments ALTER COLUMN eventid DROP DEFAULT");
 $this->Execute("ALTER TABLE daemoninstances ALTER COLUMN hostid DROP DEFAULT");
 $this->Execute("ALTER TABLE daemonconfig ALTER COLUMN instanceid DROP DEFAULT");
@@ -316,13 +317,13 @@ if (empty($ids)) {
 	$this->Execute("DELETE FROM aliases WHERE domainid NOT IN (" . $sql_ids . ")");
 }
 
-$this->Execute("DELETE FROM aliasassignments WHERE accountid = 0");
+$this->Execute("DELETE FROM aliasassignments WHERE accountid = 0 AND mail_forward = ''");
 $ids = $this->GetCol("SELECT id FROM passwd");
 if (empty($ids)) {
-	$this->Execute("DELETE FROM aliasassignments");
+	$this->Execute("DELETE FROM aliasassignments WHERE mail_forward = ''");
 } else {
 	$sql_ids = implode(',', $ids);
-	$this->Execute("DELETE FROM aliasassignments WHERE accountid NOT IN (" . $sql_ids . ")");
+	$this->Execute("DELETE FROM aliasassignments WHERE mail_forward = '' AND accountid NOT IN (" . $sql_ids . ")");
 }
 
 $this->Execute("DELETE FROM aliasassignments WHERE aliasid = 0");
