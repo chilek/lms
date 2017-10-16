@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -67,8 +67,8 @@ function GetBalanceList($search=NULL, $cat=NULL, $group=NULL, $pagelimit=100, $p
 	{
 		switch($cat)
 		{
-			case 'documented': $where = ' AND cash.docid > 0'; break;
-			case 'notdocumented': $where = ' AND cash.docid = 0'; break;
+			case 'documented': $where = ' AND cash.docid IS NOT NULL'; break;
+			case 'notdocumented': $where = ' AND cash.docid IS NULL'; break;
 		}
 	}
 

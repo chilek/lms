@@ -198,7 +198,7 @@ switch($type)
 					FROM cash c '
 					.($group ? 'LEFT JOIN customerassignments a ON (c.customerid = a.customerid) ' : '')
 					.'WHERE time<?'
-					.($docs ? ($docs == 'documented' ? ' AND c.docid > 0' : ' AND c.docid = 0') : '')
+					.($docs ? ($docs == 'documented' ? ' AND c.docid IS NOT NULL' : ' AND c.docid IS NULL') : '')
 					.($source ? ' AND c.sourceid = '.intval($source) : '')
 					.($group ? ' AND a.customergroupid = '.$group : '')
 					.($net ? ' AND EXISTS (SELECT 1 FROM vnodes WHERE c.customerid = ownerid AND ((ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') OR (ipaddr_pub > '.$net['address'].' AND ipaddr_pub < '.$net['broadcast'].')))' : '')
@@ -218,7 +218,7 @@ switch($type)
 					LEFT JOIN taxes ON (taxid = taxes.id) '
 					.($group ? 'LEFT JOIN customerassignments a ON (c.customerid = a.customerid)  ' : '')
 					.'WHERE time <= ? '
-					.($docs ? ($docs == 'documented' ? ' AND c.docid > 0' : ' AND c.docid = 0') : '')
+					.($docs ? ($docs == 'documented' ? ' AND c.docid IS NOT NULL' : ' AND c.docid IS NULL') : '')
 					.($source ? ($source == -1 ? ' AND c.sourceid IS NULL' : ' AND c.sourceid = '.intval($source)) : '')
 					.(isset($date['from']) ? ' AND time >= '.$date['from'] : '')
 					.($group ? ' AND a.customergroupid = '.$group : '')
@@ -327,7 +327,7 @@ switch($type)
 
 		$incomelist = $DB->GetAll('SELECT floor(time/86400)*86400 AS date, SUM(value) AS value
 			FROM cash c
-			WHERE value>0 AND time>=? AND time<=? AND docid=0
+			WHERE value>0 AND time>=? AND time<=? AND docid IS NULL
 				AND NOT EXISTS (
 			        	SELECT 1 FROM customerassignments a
 					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)

@@ -38,7 +38,7 @@ function GetCustomerCovenants($customerid)
 			ROUND(c.value / (taxes.value/100+1), 2)*-1 AS net
 			FROM cash c
 			LEFT JOIN taxes ON (c.taxid = taxes.id)
-			WHERE c.customerid = ? AND c.docid = 0 AND c.value < 0
+			WHERE c.customerid = ? AND c.docid IS NULL AND c.value < 0
 			ORDER BY time', array($customerid));
 }
 

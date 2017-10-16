@@ -597,10 +597,10 @@ if (empty($types) || in_array('debtors', $types)) {
 			GROUP BY customerid
 		) x ON (x.customerid = c.id)
 		LEFT JOIN documents d ON d.id = cash.docid
-		WHERE c.cutoffstop < $currtime AND ((cash.docid = 0 AND ((cash.type <> 0 AND cash.time < $currtime)
+		WHERE c.cutoffstop < $currtime AND ((cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < $currtime)
 			OR (cash.type = 0 AND cash.time + ((CASE c.paytime WHEN -1 THEN
 				(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE c.paytime END) + ?) * 86400 < $currtime)))
-			OR (cash.docid <> 0 AND ((d.type IN (?, ?) AND cash.time < $currtime
+			OR (cash.docid IS NOT NULL AND ((d.type IN (?, ?) AND cash.time < $currtime
 				OR (d.type IN (?, ?) AND d.cdate + (d.paytime + ?) * 86400 < $currtime)))))
 		GROUP BY c.id, c.pin, c.lastname, c.name, b.balance, m.email, x.phone, divisions.account
 		HAVING SUM(value) < ?", array(
@@ -682,10 +682,10 @@ if (empty($types) || in_array('reminder', $types)) {
 			LEFT JOIN documents ON documents.id = cash.docid
 			JOIN customers c ON c.id = cash.customerid
 			LEFT JOIN divisions ON divisions.id = c.divisionid
-			WHERE (cash.docid = 0 AND ((cash.type <> 0 AND cash.time < $dayend)
+			WHERE (cash.docid IS NULL AND ((cash.type <> 0 AND cash.time < $dayend)
 				OR (cash.type = 0 AND cash.time + ((CASE c.paytime WHEN -1 THEN
 				(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE c.paytime END) + ?) * 86400 < $dayend)))
-				OR (cash.docid <> 0 AND ((documents.type IN (?, ?) AND cash.time < $dayend)
+				OR (cash.docid IS NOT NULL AND ((documents.type IN (?, ?) AND cash.time < $dayend)
 					OR (documents.type IN (?, ?) AND ((documents.cdate / 86400) + documents.paytime - ?) * 86400 < $dayend)))
 			GROUP BY cash.customerid
 		) ca ON (ca.customerid = d.customerid)
