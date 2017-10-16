@@ -23,7 +23,7 @@
 
 $this->BeginTrans();
 
-$this->Execute("ALTER TABLE ewx_stm_nodes ALTER COLUMN nodeid DROP NOT NULL");
+$this->Execute("ALTER TABLE ewx_stm_nodes MODIFY nodeid int(11) NULL");
 $this->Execute("ALTER TABLE ewx_stm_nodes ALTER COLUMN nodeid SET DEFAULT NULL");
 
 $this->Execute("UPDATE ewx_stm_nodes SET nodeid = NULL WHERE nodeid = 0");
