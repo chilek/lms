@@ -499,7 +499,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			empty($ticket['customerid']) ? null : $ticket['customerid'],
 			$ticket['requestor'],
 			$ticket['subject'],
-			isset($ticket['owner']) ? $ticket['owner'] : null,
+			isset($ticket['owner']) && !empty($ticket['owner']) ? $ticket['owner'] : null,
 			isset($ticket['createtime']) ? $ticket['createtime'] : time(),
 			isset($ticket['cause']) ? $ticket['cause'] : 0,
 			isset($ticket['userid']) ? $ticket['userid'] : Auth::GetCurrentUser(),
