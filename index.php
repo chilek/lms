@@ -96,33 +96,37 @@ try {
 	die("Fatal error: cannot connect to database!<BR>");
 }
 
-// Call any of upgrade process before anything else
+$api = isset($_GET['api']);
 
-$layout['dbschversion'] = $DB->UpgradeDb();
+if (!$api) {
+	// Call any of upgrade process before anything else
 
-// Initialize templates engine (must be before locale settings)
-$SMARTY = new LMSSmarty;
+	$layout['dbschversion'] = $DB->UpgradeDb();
 
-// test for proper version of Smarty
+	// Initialize templates engine (must be before locale settings)
+	$SMARTY = new LMSSmarty;
 
-if (defined('Smarty::SMARTY_VERSION'))
-	$ver_chunks = preg_split('/[- ]/', preg_replace('/^smarty-/i', '', Smarty::SMARTY_VERSION), -1, PREG_SPLIT_NO_EMPTY);
-else
-	$ver_chunks = NULL;
-if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0)
-	die('<B>Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.1.</B>');
+	// test for proper version of Smarty
 
-define('SMARTY_VERSION', $ver_chunks[0]);
+	if (defined('Smarty::SMARTY_VERSION'))
+		$ver_chunks = preg_split('/[- ]/', preg_replace('/^smarty-/i', '', Smarty::SMARTY_VERSION), -1, PREG_SPLIT_NO_EMPTY);
+	else
+		$ver_chunks = NULL;
+	if (count($ver_chunks) < 1 || version_compare('3.1', $ver_chunks[0]) > 0)
+		die('<B>Wrong version of Smarty engine! We support only Smarty-3.x greater than 3.1.</B>');
 
-// add LMS's custom plugins directory
-$SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
+	define('SMARTY_VERSION', $ver_chunks[0]);
 
-$SMARTY->setMergeCompiledIncludes(true);
+	// add LMS's custom plugins directory
+	$SMARTY->addPluginsDir(LIB_DIR . DIRECTORY_SEPARATOR . 'SmartyPlugins');
 
-$SMARTY->setDefaultResourceType('extendsall');
+	$SMARTY->setMergeCompiledIncludes(true);
 
-// uncomment this line if you're not gonna change template files no more
-//$SMARTY->compile_check = false;
+	$SMARTY->setDefaultResourceType('extendsall');
+
+	// uncomment this line if you're not gonna change template files no more
+	//$SMARTY->compile_check = false;
+}
 
 // Redirect to SSL
 
@@ -153,28 +157,32 @@ $LMS->lang = $_language;
 
 $plugin_manager = new LMSPluginManager();
 $LMS->setPluginManager($plugin_manager);
-$SMARTY->setPluginManager($plugin_manager);
 
-// Set some template and layout variables
+if (!$api) {
+	$SMARTY->setPluginManager($plugin_manager);
 
-$SMARTY->setTemplateDir(null);
-$custom_templates_dir = ConfigHelper::getConfig('phpui.custom_templates_dir');
-if (!empty($custom_templates_dir) && file_exists(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir)
-	&& !is_file(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir))
-	$SMARTY->AddTemplateDir(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir);
-$SMARTY->AddTemplateDir(
-	array(
-		SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . 'default',
-		SMARTY_TEMPLATES_DIR,
-	)
-);
-$SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
-$SMARTY->debugging = ConfigHelper::checkConfig('phpui.smarty_debug');
+	// Set some template and layout variables
+
+	$SMARTY->setTemplateDir(null);
+	$custom_templates_dir = ConfigHelper::getConfig('phpui.custom_templates_dir');
+	if (!empty($custom_templates_dir) && file_exists(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir)
+		&& !is_file(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir))
+		$SMARTY->AddTemplateDir(SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . $custom_templates_dir);
+	$SMARTY->AddTemplateDir(
+		array(
+			SMARTY_TEMPLATES_DIR . DIRECTORY_SEPARATOR . 'default',
+			SMARTY_TEMPLATES_DIR,
+		)
+	);
+	$SMARTY->setCompileDir(SMARTY_COMPILE_DIR);
+	$SMARTY->debugging = ConfigHelper::checkConfig('phpui.smarty_debug');
+
+	$layout['smarty_version'] = SMARTY_VERSION;
+}
 
 $layout['logname'] = $AUTH->logname;
 $layout['logid'] = Auth::GetCurrentUser();
 $layout['lmsdbv'] = $DB->GetVersion();
-$layout['smarty_version'] = SMARTY_VERSION;
 $layout['hostname'] = hostname();
 $layout['lmsv'] = $LMS->_version;
 $layout['lmsvr'] = $LMS->_revision;
@@ -182,21 +190,22 @@ $layout['dberrors'] = &$DB->GetErrors();
 $layout['dbdebug'] = isset($_DBDEBUG) ? $_DBDEBUG : false;
 $layout['popup'] = isset($_GET['popup']) ? true : false;
 
-$SMARTY->assignByRef('layout', $layout);
-$SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
-$SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
-$SMARTY->assignByRef('_language', $LMS->lang);
+if (!$api) {
+	$SMARTY->assignByRef('layout', $layout);
+	$SMARTY->assignByRef('LANGDEFS', $LANGDEFS);
+	$SMARTY->assignByRef('_ui_language', $LMS->ui_lang);
+	$SMARTY->assignByRef('_language', $LMS->lang);
+}
 
 $error = NULL; // initialize error variable needed for (almost) all modules
 
 // Load menu
 
-if(!$layout['popup'])
-{
+if (!$layout['popup'] && !$api) {
 	require_once(LIB_DIR . DIRECTORY_SEPARATOR . 'menu.php');
-        
-        $menu = $plugin_manager->executeHook('menu_initialized', $menu);
-        
+
+	$menu = $plugin_manager->executeHook('menu_initialized', $menu);
+
 	$SMARTY->assign('newmenu', $menu);
 }
 
@@ -207,14 +216,16 @@ $modules_dirs = $plugin_manager->executeHook('modules_dir_initialized', $modules
 
 $plugin_manager->executeHook('lms_initialized', $LMS);
 
-$plugin_manager->executeHook('smarty_initialized', $SMARTY);
+if (!$api)
+	$plugin_manager->executeHook('smarty_initialized', $SMARTY);
 
 $documents_dirs = array(DOC_DIR);
 $documents_dirs = $plugin_manager->executeHook('documents_dir_initialized', $documents_dirs);
 
 // Check privileges and execute modules
 if ($AUTH->islogged) {
-	$SMARTY->assign('main_menu_sortable_order', $SESSION->get_persistent_setting('main-menu-order'));
+	if (!$api)
+		$SMARTY->assign('main_menu_sortable_order', $SESSION->get_persistent_setting('main-menu-order'));
 
 	// Load plugin files and register hook callbacks
 	$plugins = $plugin_manager->getAllPluginInfo(LMSPluginManager::OLD_STYLE);
@@ -257,8 +268,7 @@ if ($AUTH->islogged) {
 			break;
 		}
 
-	if ($module_dir !== null)
-	{
+	if ($module_dir !== null) {
 		$global_allow = !Auth::GetCurrentUser() || (!empty($global_access_regexp) && preg_match('/' . $global_access_regexp . '/i', $module));
 
 		if (Auth::GetCurrentUser() && ($rights = $LMS->GetUserRights(Auth::GetCurrentUser())))
@@ -275,11 +285,13 @@ if ($AUTH->islogged) {
 			try {
 				include($module_dir . DIRECTORY_SEPARATOR . $module . '.php');
 			} catch (Exception $e) {
-				$SMARTY->display('header.html');
-				echo '<div class="bold">' . $e->getFile() . '[' . $e->getLine() . ']: <span class="red">'
-					. str_replace("\n", '<br>', $e->getMessage())
-					. '</span></div>';
-				$SMARTY->display('footer.html');
+				if (!$api) {
+					$SMARTY->display('header.html');
+					echo '<div class="bold">' . $e->getFile() . '[' . $e->getLine() . ']: <span class="red">'
+						. str_replace("\n", '<br>', $e->getMessage())
+						. '</span></div>';
+					$SMARTY->display('footer.html');
+				}
 				die;
 			}
 
@@ -287,26 +299,28 @@ if ($AUTH->islogged) {
 			if ($SYSLOG)
 				$SYSLOG->AddMessage(SYSLOG::RES_USER, SYSLOG::OPER_USERNOACCESS,
 					array(SYSLOG::RES_USER => Auth::GetCurrentUser()));
-			$SMARTY->display('noaccess.html');
+			if (!$api)
+				$SMARTY->display('noaccess.html');
 		}
-	}
-	else
-	{
+	} else {
 		$layout['module'] = 'notfound';
 		$layout['pagetitle'] = trans('Error!');
-		$SMARTY->assign('layout', $layout);
-		$SMARTY->assign('server', $_SERVER);
-		$SMARTY->display('notfound.html');
+
+		if (!$api) {
+			$SMARTY->assign('layout', $layout);
+			$SMARTY->assign('server', $_SERVER);
+			$SMARTY->display('notfound.html');
+		}
 	}
 
 	if($SESSION->get('lastmodule') != $module)
 		$SESSION->save('lastmodule', $module);
-}
-else
-{
-	$SMARTY->assign('error', $AUTH->error);
-	$SMARTY->assign('target','?'.$_SERVER['QUERY_STRING']);
-	$SMARTY->display('login.html');
+} else {
+	if (!$api) {
+		$SMARTY->assign('error', $AUTH->error);
+		$SMARTY->assign('target','?'.$_SERVER['QUERY_STRING']);
+		$SMARTY->display('login.html');
+	}
 }
 
 $SESSION->close();
