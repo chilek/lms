@@ -1247,11 +1247,11 @@ DROP TABLE IF EXISTS ewx_stm_nodes CASCADE;
 CREATE TABLE ewx_stm_nodes (
 	id 		integer		DEFAULT nextval('ewx_stm_nodes_id_seq'::text) NOT NULL,
 	nodeid 		integer         DEFAULT NULL
-		CONSTRAINT ewx_stm_nodes_nodeid_fkey REFERENCES nodes (id) ON DELETE SET NULL ON DELETE CASCADE,
+		CONSTRAINT ewx_stm_nodes_nodeid_fkey REFERENCES nodes (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	mac 		varchar(20)     DEFAULT '' NOT NULL,
 	ipaddr 		bigint          DEFAULT 0 NOT NULL,
 	channelid 	integer       	DEFAULT NULL
-		CONSTRAINT ewx_stm_nodes_channelid_fkey REFERENCES ewx_stm_channels (id) ON DELETE SET NULL ON DELETE CASCADE,
+		CONSTRAINT ewx_stm_nodes_channelid_fkey REFERENCES ewx_stm_channels (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	uprate 		integer         DEFAULT 0 NOT NULL,
 	upceil 		integer         DEFAULT 0 NOT NULL,
 	downrate 	integer        	DEFAULT 0 NOT NULL,
