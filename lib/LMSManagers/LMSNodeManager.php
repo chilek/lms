@@ -48,7 +48,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
             SYSLOG::RES_USER    => Auth::GetCurrentUser(),
             'access'            => $nodedata['access'],
             'warning'           => $nodedata['warning'],
-            SYSLOG::RES_CUST    => $nodedata['ownerid'],
+            SYSLOG::RES_CUST    => empty($nodedata['ownerid']) ? null : $nodedata['ownerid'],
             'info'              => $nodedata['info'],
             'chkmac'            => $nodedata['chkmac'],
             'halfduplex'        => $nodedata['halfduplex'],
