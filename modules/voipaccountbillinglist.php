@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -112,10 +112,10 @@ if ($SESSION->is_set('valp') && !isset($_GET['page']))
 $SESSION->save('valp', $page);
 
 $billing_stats = $DB->GetRow('SELECT
-                                 sum(price) as price,
-                                 sum(totaltime) as call,
-                                 sum(billedtime) as answer,
-                                 count(*) as count
+                                 SUM(price) AS price,
+                                 SUM(totaltime) AS totaltime,
+                                 SUM(billedtime) AS billedtime,
+                                 COUNT(*) AS cnt
                               FROM
                                  voip_cdr');
 

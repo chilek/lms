@@ -298,12 +298,12 @@
             </td>
             <td>
                 {gmdate("H:i:s", $call_time)}<br>
-                {gmdate("H:i:s", $stats.call)}
+                {gmdate("H:i:s", $stats.totaltime)}
             </td>
 
             <td>
                 {gmdate("H:i:s", $call_talk)}<br>
-                {gmdate("H:i:s", $stats.answer)}
+                {gmdate("H:i:s", $stats.billedtime)}
             </td>
             <td colspan="3" class="text-right">
                 {$sum|money_format}<br>
@@ -311,7 +311,7 @@
             </td>
             <td class="bold text-center">
                 {if $total}{$total}{else}0{/if}<br>
-                {intval($stats.count)}
+                {intval($stats.cnt)}
             </td>
         </tr>
     </tfoot>
