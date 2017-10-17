@@ -593,7 +593,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
                 ? strtoupper($nodedata['name']) : $nodedata['name'],
             'ipaddr'            => $nodedata['ipaddr'],
             'ipaddr_pub'        => $nodedata['ipaddr_pub'],
-            SYSLOG::RES_CUST    => $nodedata['ownerid'],
+            SYSLOG::RES_CUST    => empty($nodedata['ownerid']) ? null : $nodedata['ownerid'],
             'passwd'            => $nodedata['passwd'],
             SYSLOG::RES_USER    => Auth::GetCurrentUser(),
             'access'            => $nodedata['access'],
