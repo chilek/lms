@@ -1749,23 +1749,71 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 	}
 
 	public function GetOpenedLiabilities($customerid) {
+		static $document_descriptions = array(
+			DOC_INVOICE => 'Invoice No. $a',
+			DOC_CNOTE => 'Credit Note No. $a',
+			DOC_DNOTE => 'Debit Note No. $a',
+		);
+
 		$customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
 
 		$result = array();
 
-		$liabilities = $this->db->GetAll('SELECT cash.id, cash.time, cash.comment,
-				SUM(cash.value + (CASE WHEN cashr.value IS NULL THEN 0 ELSE cashr.value END)) AS value
-			FROM cash
-			LEFT JOIN documents d ON d.id = cash.docid
-			LEFT JOIN documents dr ON dr.reference = d.id
-			LEFT JOIN cash cashr ON cashr.docid = dr.id AND cashr.itemid = cash.itemid
-			WHERE cash.customerid = ? AND cash.type = 0 AND d.reference IS NULL
-			GROUP BY cash.id, cash.time, cash.comment
-			ORDER BY cash.time DESC, cash.itemid DESC', array($customerid));
-		$balance = $customer_manager->GetCustomerBalance($customerid, time());
+		$liabilities = $this->db->GetAll('(
+				SELECT NULL AS docid, comment, time AS cdate, NULL AS doctype, NULL AS number, NULL AS template,
+					0 AS reference, value
+				FROM cash
+				WHERE docid IS NULL AND customerid = ? AND cash.type = 0
+			) UNION (
+				SELECT cash.docid, NULL AS comment, d.cdate, d.type AS doctype, d.number, np.template,
+					(CASE WHEN dr.id IS NOT NULL THEN 1 ELSE 0 END) AS reference,
+					SUM(cash.value + (CASE WHEN cashr.value IS NULL THEN 0 ELSE cashr.value END)) AS value
+				FROM cash
+				JOIN documents d ON d.id = cash.docid
+				LEFT JOIN numberplans np ON np.id = d.numberplanid
+				LEFT JOIN documents dr ON dr.reference = d.id
+				LEFT JOIN cash cashr ON cashr.docid = dr.id
+				WHERE cash.customerid = ? AND d.reference IS NULL
+				GROUP BY cash.docid, d.cdate, d.type, d.number, np.template, dr.id
+			) ORDER BY cdate DESC',
+			array($customerid, $customerid));
 
 		if (empty($liabilities))
 			return $result;
+
+		foreach ($liabilities as &$liability) {
+			$liability['comment'] = trans($document_descriptions[$liability['doctype']], docnumber(array(
+				'number' => $liability['number'],
+				'template' => $liability['template'],
+				'cdate' => $liability['cdate'],
+				'customerid' => $customerid,
+			)));
+			$liability['references'] = array();
+
+			// get cnotes values if those values decreases invoice value
+			if ($cnotes = $this->db->GetAll('SELECT d.id, cdate, number, np.template
+					FROM documents d
+					LEFT JOIN numberplans np ON np.id = d.numberplanid
+					WHERE d.reference = ?', array($liability['docid']))) {
+				$liability['comment'] .= ' (';
+				foreach ($cnotes as $cidx => $cnote) {
+					$liability['comment'] .= docnumber(array(
+						'number' => $cnote['number'],
+						'template' => $cnote['template'],
+						'cdate' => $cnote['cdate'],
+						'customerid' => $customerid,
+					));
+					$liability['references'][] = $cnote['id'];
+					if ($cidx < count($cnotes)-1)
+						$liability['comment'] .= ', ';
+				}
+				$liability['comment'] .= ')';
+			}
+
+		}
+		unset($liability);
+
+		$balance = $customer_manager->GetCustomerBalance($customerid, time());
 
 		foreach ($liabilities as $liability) {
 			if ($balance - $liability['value'] <= 0)
