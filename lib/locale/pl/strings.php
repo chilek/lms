@@ -3066,6 +3066,11 @@ $_LANG['log out<!syslog>'] = 'wylogowanie';
 $_LANG['Choose network'] = 'Wybierz sieć';
 $_LANG['- automatic selection -'] = '- wybór automatyczny -';
 
+$_LANG['Address type:'] = 'Typ adresu:';
+$_LANG['settlement<!addresstype>'] = 'rozliczeniowy';
+$_LANG['localisation<!addresstype>'] = 'lokalizacyjny';
+$_LANG['postal'] = 'korespondencyjny';
+
 $_LANG['Invoice send'] = 'Wysyłka faktur';
 $_LANG['Send invoice'] = 'Wyślij fakturę';
 $_LANG['Are you sure, you want to send invoice to customer \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz wysłać fakturę do klienta \\\'$a\\\'?';

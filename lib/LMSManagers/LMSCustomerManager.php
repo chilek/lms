@@ -551,10 +551,22 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         case 'zip':
                         case 'city':
                         case 'address':
-                            // UPPER here is a workaround for postgresql ILIKE bug
-                            $searchargs[] = "(UPPER($key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")
-								OR UPPER(post_$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . '))';
-                            break;
+							// UPPER here is a workaround for postgresql ILIKE bug
+							if (!isset($search['addresstype']) || !strlen($search['addresstype']))
+								$searchargs[] = "(UPPER($key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")
+									OR UPPER(post_$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")
+									OR EXISTS (SELECT 1 FROM customer_addresses ca
+									JOIN vaddresses va ON va.id = ca.address_id AND ca.customer_id = c.id
+									WHERE UPPER(va.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")))";
+							elseif ($search['addresstype'] == BILLING_ADDRESS)
+								$searchargs[] = "UPPER($key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
+							elseif ($search['addresstype'] == LOCATION_ADDRESS)
+								$searchargs[] = "EXISTS (SELECT 1 FROM customer_addresses ca
+									JOIN vaddresses va ON va.id = ca.address_id AND ca.customer_id = c.id
+									WHERE UPPER(va.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . "))";
+							else
+								$searchargs[] = "UPPER(post_$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
+							break;
                         case 'customername':
                             // UPPER here is a workaround for postgresql ILIKE bug
                             $searchargs[] = $this->db->Concat('UPPER(c.lastname)', "' '", 'UPPER(c.name)') . ' ?LIKE? UPPER(' . $this->db->Escape("%$value%") . ')';
@@ -620,6 +632,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 							AND (dateto >= ?NOW? OR dateto = 0)
 							AND (tariffid IN (' . $value . ')))';
                             break;
+						case 'addresstype':
+							break;
                         case 'tarifftype':
                             $searchargs[] = 'EXISTS (SELECT 1 FROM assignments a
 							JOIN tariffs t ON t.id = a.tariffid
