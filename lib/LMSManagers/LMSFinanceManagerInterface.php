@@ -97,4 +97,6 @@ interface LMSFinanceManagerInterface
     public function CalcAt($period, $date);
 
 	public function isDocumentPublished($id);
+
+	public function AddReceipt(array $receipt);
 }

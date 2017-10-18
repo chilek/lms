@@ -1574,4 +1574,155 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 	public function isDocumentPublished($id) {
 		return $this->db->GetOne('SELECT published FROM documents WHERE id = ?', array($id)) == 1;
 	}
+
+	public function AddReceipt(array $receipt) {
+		$this->db->BeginTrans();
+		$this->db->LockTables(array('documents', 'numberplans'));
+
+		$SYSLOG = SYSLOG::getInstance();
+		$document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+		$error = array();
+
+		$customer = isset($receipt['customer']) ? $receipt['customer'] : null;
+		$contents = $receipt['contents'];
+
+		if (!$receipt['number'])
+			$receipt['number'] = $document_manager->GetNewDocumentNumber(array(
+				'doctype' => DOC_RECEIPT,
+				'planid' => $receipt['numberplanid'],
+				'cdate' => $receipt['cdate'],
+				'customerid' => $customer ? $customer['id'] : null,
+			));
+		else {
+			if (!preg_match('/^[0-9]+$/', $receipt['number']))
+				$error['number'] = trans('Receipt number must be integer!');
+			elseif ($document_manager->DocumentExists(array(
+				'number' => $receipt['number'],
+				'doctype' => DOC_RECEIPT,
+				'planid' => $receipt['numberplanid'],
+				'cdate' => $receipt['cdate'],
+				'customerid' => $customer ? $customer['id'] : null,
+			)))
+				$error['number'] = trans('Receipt number $a already exists!', $receipt['number']);
+
+			if($error)
+				$receipt['number'] = $document_manager->GetNewDocumentNumber(array(
+					'doctype' => DOC_RECEIPT,
+					'planid' => $receipt['numberplanid'],
+					'cdate' => $receipt['cdate'],
+					'customerid' => $customer ? $customer['id'] : null,
+				));
+		}
+
+		$fullnumber = docnumber(array(
+			'number' => $receipt['number'],
+			'template' => $this->db->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
+			'cdate' => $receipt['cdate'],
+			'customerid' => $customer ? $customer['id'] : null,
+		));
+
+		$args = array(
+			'type' => DOC_RECEIPT,
+			'number' => $receipt['number'],
+			'extnumber' => isset($receipt['extnumber']) ? $receipt['extnumber'] : '',
+			SYSLOG::RES_NUMPLAN => $receipt['numberplanid'],
+			'cdate' => $receipt['cdate'],
+			SYSLOG::RES_CUST => $customer ? $customer['id'] : null,
+			SYSLOG::RES_USER => Auth::GetCurrentUser(),
+			'name' => $customer ? $customer['customername'] :
+				($receipt['o_type'] == 'advance' ? $receipt['adv_name'] : $receipt['other_name']),
+			'address' => $customer ? (($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
+					? $customer['city'] . ', ' : '') . $customer['address']) : '',
+			'zip' => $customer ? $customer['zip'] : '',
+			'city' => $customer ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city']) : '',
+			'closed' => $customer || $receipt['o_type'] != 'advance' ? 1 : 0,
+			'fullnumber' => $fullnumber,
+		);
+		$this->db->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid, name, address, zip, city, closed,
+					fullnumber)
+					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+		$this->db->UnLockTables();
+
+		$rid = $this->db->GetLastInsertId('documents');
+
+		if ($SYSLOG) {
+			$args[SYSLOG::RES_DOC] = $rid;
+			unset($args[SYSLOG::RES_USER]);
+			$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_ADD, $args);
+		}
+
+		$iid = 0;
+		foreach ($contents as $item) {
+			$iid++;
+
+			if ($receipt['type'] == 'in')
+				$value = str_replace(',', '.', $item['value']);
+			else
+				$value = str_replace(',', '.', $item['value'] * -1);
+
+			$args = array(
+				SYSLOG::RES_DOC => $rid,
+				'itemid' =>  $iid,
+				'value' => $value,
+				'description' => $item['description'],
+				SYSLOG::RES_CASHREG => $receipt['regid'],
+			);
+			$this->db->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
+					VALUES(?, ?, ?, ?, ?)', array_values($args));
+			if ($SYSLOG)
+				$SYSLOG->AddMessage(SYSLOG::RES_RECEIPTCONT, SYSLOG::OPER_ADD, $args);
+
+			$args = array(
+				'time' => $receipt['cdate'],
+				'type' => 1,
+				SYSLOG::RES_DOC => $rid,
+				'itemid' => $iid,
+				'value' => $value,
+				'comment' => $item['description'],
+				SYSLOG::RES_USER => Auth::GetCurrentUser(),
+				SYSLOG::RES_CUST => $customer ? $customer['id'] : null,
+			);
+			$this->db->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid, customerid)
+						VALUES(?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			if ($SYSLOG) {
+				$args[SYSLOG::RES_CASH] = $this->db->GetLastInsertID('cash');
+				unset($args[SYSLOG::RES_USER]);
+				$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_ADD, $args);
+			}
+
+			if (isset($item['docid'])) {
+				$this->db->Execute('UPDATE documents SET closed=1 WHERE id=?', array($item['docid']));
+				if ($SYSLOG) {
+					list ($customerid, $numplanid) = array_values($this->db->GetRow('SELECT customerid, numberplanid
+							FROM documents WHERE id = ?', array($item['docid'])));
+					$args = array(
+						SYSLOG::RES_DOC => $item['docid'],
+						SYSLOG::RES_NUMPLAN => $numplanid,
+						SYSLOG::RES_CUST => $customerid,
+						'closed' => 1,
+					);
+					$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
+				}
+			}
+			if (isset($item['references']))
+				foreach ($item['references'] as $ref) {
+					$this->db->Execute('UPDATE documents SET closed=1 WHERE id=?', array($ref));
+					if ($SYSLOG) {
+						list ($customerid, $numplanid) = array_values($this->db->GetRow('SELECT customerid, numberplanid
+								FROM documents WHERE id = ?', array($ref)));
+						$args = array(
+							SYSLOG::RES_DOC => $ref,
+							SYSLOG::RES_NUMPLAN => $numplanid,
+							SYSLOG::RES_CUST => $customerid,
+							'closed' => 1,
+						);
+						$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
+					}
+				}
+		}
+
+		$this->db->CommitTrans();
+
+		return empty($error) ? $rid : $error;
+	}
 }

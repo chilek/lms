@@ -668,147 +668,16 @@ switch($action)
 
 	case 'save':
 
-		if($contents && $customer)
-		{
-			$DB->BeginTrans();
-			$DB->LockTables(array('documents', 'numberplans'));
-
-			if(!$receipt['number'])
-				$receipt['number'] = $LMS->GetNewDocumentNumber(array(
-					'doctype' => DOC_RECEIPT,
-					'planid' => $receipt['numberplanid'],
-					'cdate' => $receipt['cdate'],
-					'customerid' => $customer['id'],
-				));
+		if ($contents && $customer) {
+			$receipt['customer'] = $customer;
+			$receipt['contents'] = $contents;
+			$result = $LMS->AddReceipt($receipt);
+			if (is_array($result))
+				$error = array_merge($error, $result);
 			else
-			{
-				if(!preg_match('/^[0-9]+$/', $receipt['number']))
-					$error['number'] = trans('Receipt number must be integer!');
-				elseif($LMS->DocumentExists(array(
-						'number' => $receipt['number'],
-						'doctype' => DOC_RECEIPT,
-						'planid' => $receipt['numberplanid'],
-						'cdate' => $receipt['cdate'],
-						'customerid' => $customer['id'],
-					)))
-					$error['number'] = trans('Receipt number $a already exists!', $receipt['number']);
+				$rid = $result;
 
-				if($error)
-					$receipt['number'] = $LMS->GetNewDocumentNumber(array(
-						'doctype' => DOC_RECEIPT,
-						'planid' => $receipt['numberplanid'],
-						'cdate' => $receipt['cdate'],
-						'customerid' => $customer['id'],
-					));
-			}
 
-			$fullnumber = docnumber(array(
-				'number' => $receipt['number'],
-				'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
-				'cdate' => $receipt['cdate'],
-				'customerid' => $customer['id'],
-			));
-
-			$args = array(
-				'type' => DOC_RECEIPT,
-				'number' => $receipt['number'],
-				'extnumber' => isset($receipt['extnumber']) ? $receipt['extnumber'] : '',
-				SYSLOG::RES_NUMPLAN => $receipt['numberplanid'],
-				'cdate' => $receipt['cdate'],
-				SYSLOG::RES_CUST => $customer['id'],
-				SYSLOG::RES_USER => Auth::GetCurrentUser(),
-				'name' => $customer['customername'],
-				'address' => ($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
-					? $customer['city'] . ', ' : '') . $customer['address'],
-				'zip' => $customer['zip'],
-				'city' => $customer['postoffice'] ? $customer['postoffice'] : $customer['city'],
-				'fullnumber' => $fullnumber,
-			);
-			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, customerid, userid, name, address, zip, city, closed,
-					fullnumber)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)', array_values($args));
-			$DB->UnLockTables();
-
-			$rid = $DB->GetLastInsertId('documents');
-
-			if ($SYSLOG) {
-				$args[SYSLOG::RES_DOC] = $rid;
-				$args['closed'] = 1;
-				unset($args[SYSLOG::RES_USER]);
-				$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_ADD, $args);
-			}
-
-			$iid = 0;
-			foreach ($contents as $item) {
-				$iid++;
-
-				if ($receipt['type'] == 'in')
-					$value = str_replace(',', '.', $item['value']);
-				else
-					$value = str_replace(',', '.', $item['value'] * -1);
-
-				$args = array(
-					SYSLOG::RES_DOC => $rid,
-					'itemid' =>  $iid,
-					'value' => $value,
-					'description' => $item['description'],
-					SYSLOG::RES_CASHREG => $receipt['regid'],
-				);
-				$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
-					VALUES(?, ?, ?, ?, ?)', array_values($args));
-				if ($SYSLOG)
-					$SYSLOG->AddMessage(SYSLOG::RES_RECEIPTCONT, SYSLOG::OPER_ADD, $args);
-
-				$args = array(
-					'time' => $receipt['cdate'],
-					'type' => 1,
-					SYSLOG::RES_DOC => $rid,
-					'itemid' => $iid,
-					'value' => $value,
-					'comment' => $item['description'],
-					SYSLOG::RES_USER => Auth::GetCurrentUser(),
-					SYSLOG::RES_CUST => $customer['id'],
-				);
-				$DB->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid, customerid)
-						VALUES(?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
-				if ($SYSLOG) {
-					$args[SYSLOG::RES_CASH] = $DB->GetLastInsertID('cash');
-					unset($args[SYSLOG::RES_USER]);
-					$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_ADD, $args);
-				}
-
-				if (isset($item['docid'])) {
-					$DB->Execute('UPDATE documents SET closed=1 WHERE id=?', array($item['docid']));
-					if ($SYSLOG) {
-						list ($customerid, $numplanid) = array_values($DB->GetRow('SELECT customerid, numberplanid
-							FROM documents WHERE id = ?', array($item['docid'])));
-						$args = array(
-							SYSLOG::RES_DOC => $item['docid'],
-							SYSLOG::RES_NUMPLAN => $numplanid,
-							SYSLOG::RES_CUST => $customerid,
-							'closed' => 1,
-						);
-						$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
-					}
-				}
-				if (isset($item['references']))
-					foreach ($item['references'] as $ref) {
-						$DB->Execute('UPDATE documents SET closed=1 WHERE id=?', array($ref));
-						if ($SYSLOG) {
-							list ($customerid, $numplanid) = array_values($DB->GetRow('SELECT customerid, numberplanid
-								FROM documents WHERE id = ?', array($ref)));
-							$args = array(
-								SYSLOG::RES_DOC => $ref,
-								SYSLOG::RES_NUMPLAN => $numplanid,
-								SYSLOG::RES_CUST => $customerid,
-								'closed' => 1,
-							);
-							$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args);
-						}
-					}
-			}
-
-			$DB->CommitTrans();
 			$hook_data = $LMS->executeHook(
 				'receiptadd_after_submit',
 				array(
@@ -816,108 +685,14 @@ switch($action)
 				)
 			);
 			$print = TRUE;
-		}
-		elseif($contents && ($receipt['o_type'] == 'other' || $receipt['o_type'] == 'advance'))
-		{
-			$DB->BeginTrans();
-			$DB->LockTables(array('documents', 'numberplans'));
-
-			if(!$receipt['number'])
-				$receipt['number'] = $LMS->GetNewDocumentNumber(array(
-					'doctype' => DOC_RECEIPT,
-					'planid' => $receipt['numberplanid'],
-					'cdate' => $receipt['cdate'],
-				));
+		} elseif ($contents && ($receipt['o_type'] == 'other'
+				|| $receipt['o_type'] == 'advance')) {
+			$receipt['contents'] = $contents;
+			$result = $LMS->AddReceipt($receipt);
+			if (is_array($result))
+				$error = array_merge($error, $result);
 			else
-			{
-				if(!preg_match('/^[0-9]+$/', $receipt['number']))
-					$error['number'] = trans('Receipt number must be integer!');
-				elseif($LMS->DocumentExists(array(
-						'number' => $receipt['number'],
-						'doctype' => DOC_RECEIPT,
-						'planid' => $receipt['numberplanid'],
-						'cdate' => $receipt['cdate'],
-					)))
-					$error['number'] = trans('Receipt number $a already exists!', $receipt['number']);
-
-				if($error)
-					$receipt['number'] = $LMS->GetNewDocumentNumber(array(
-						'doctype' => DOC_RECEIPT,
-						'planid' => $receipt['numberplanid'],
-						'cdate' => $receipt['cdate'],
-					));
-			}
-
-			$fullnumber = docnumber(array(
-				'number' => $receipt['number'],
-				'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($receipt['numberplanid'])),
-				'cdate' => $receipt['cdate'],
-				'customerid' => $customer['id'],
-			));
-
-			$args = array(
-				'type' => DOC_RECEIPT,
-				'number' => $receipt['number'],
-				'extnumber' => isset($receipt['extnumber']) ? $receipt['extnumber'] : '',
-				SYSLOG::RES_NUMPLAN => $receipt['numberplanid'],
-				'cdate' => $receipt['cdate'],
-				SYSLOG::RES_USER => Auth::GetCurrentUser(),
-				'name' => $receipt['o_type'] == 'advance' ? $receipt['adv_name'] : $receipt['other_name'],
-				'closed' => $receipt['o_type'] == 'advance' ? 0 : 1,
-				'fullnumber' => $fullnumber,
-			);
-			$DB->Execute('INSERT INTO documents (type, number, extnumber, numberplanid, cdate, userid, name, closed, fullnumber)
-					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
-			$DB->UnLockTables();
-
-			$rid = $DB->GetLastInsertId('documents');
-
-			if ($SYSLOG) {
-				$args[SYSLOG::RES_DOC] = $rid;
-				unset($args[SYSLOG::RES_USER]);
-				$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_ADD, $args);
-			}
-
-			$iid = 0;
-			foreach ($contents as $item) {
-				$iid++;
-
-				if($receipt['type'] == 'in')
-					$value = str_replace(',','.',$item['value']);
-				else
-					$value = str_replace(',','.',$item['value']*-1);
-
-					$args = array(
-						SYSLOG::RES_DOC => $rid,
-						'itemid' => $iid, 
-						'value' => $value, 
-						'description' => $item['description'],
-						SYSLOG::RES_CASHREG => $receipt['regid'],
-					);
-					$DB->Execute('INSERT INTO receiptcontents (docid, itemid, value, description, regid)
-						VALUES(?, ?, ?, ?, ?)', array_values($args));
-					if ($SYSLOG)
-						$SYSLOG->AddMessage(SYSLOG::RES_RECEIPTCONT, SYSLOG::OPER_ADD, $args);
-
-					$args = array(
-						'cdate' => $receipt['cdate'],
-						'type' => 1,
-						SYSLOG::RES_DOC => $rid,
-						'itemid' => $iid,
-						'value' => $value,
-						'comment' => $item['description'],
-						SYSLOG::RES_USER => Auth::GetCurrentUser(),
-					);
-					$DB->Execute('INSERT INTO cash (time, type, docid, itemid, value, comment, userid)
-						VALUES(?, ?, ?, ?, ?, ?, ?)', array_values($args));
-					if ($SYSLOG) {
-						$args[SYSLOG::RES_CASH] = $DB->GetLastInsertID('cash');
-						unset($args[SYSLOG::RES_USER]);
-						$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_ADD, $args);
-					}
-			}
-
-			$DB->CommitTrans();
+				$rid = $result;
 
 			$print = TRUE;
 		}

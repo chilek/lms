@@ -2452,13 +2452,19 @@ class LMS
         return $manager->CalcAt($period, $date);
     }
 
-    public function isDocumentPublished($id)
-    {
-        $manager = $this->getFinanaceManager();
-        return $manager->isDocumentPublished($id);
-    }
+	public function isDocumentPublished($id)
+	{
+		$manager = $this->getFinanaceManager();
+		return $manager->isDocumentPublished($id);
+	}
 
-    /**
+	public function AddReceipt(array $receipt)
+	{
+		$manager = $this->getFinanaceManager();
+		return $manager->AddReceipt($receipt);
+	}
+
+	/**
      * VoIP functions
      */
     public function GetVoipAccountList($order = 'login,asc', $search = NULL, $sqlskey = 'AND')
