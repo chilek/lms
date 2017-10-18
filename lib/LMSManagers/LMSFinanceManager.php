@@ -1725,4 +1725,37 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
 		return empty($error) ? $rid : $error;
 	}
+
+	public function GetOpenedLiabilities($customerid) {
+		$customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
+
+		$result = array();
+
+		$liabilities = $this->db->GetAll('SELECT cash.id, cash.time, cash.comment,
+				SUM(cash.value + (CASE WHEN cashr.value IS NULL THEN 0 ELSE cashr.value END)) AS value
+			FROM cash
+			LEFT JOIN documents d ON d.id = cash.docid
+			LEFT JOIN documents dr ON dr.reference = d.id
+			LEFT JOIN cash cashr ON cashr.docid = dr.id AND cashr.itemid = cash.itemid
+			WHERE cash.customerid = ? AND cash.type = 0 AND d.reference IS NULL
+			GROUP BY cash.id, cash.time, cash.comment
+			ORDER BY time DESC', array($customerid));
+		$balance = $customer_manager->GetCustomerBalance($customerid, time());
+
+		if (empty($liabilities))
+			return $result;
+
+		foreach ($liabilities as $liability) {
+			if ($balance - $liability['value'] <= 0)
+				$result[] = $liability;
+			elseif ($balance < 0) {
+				$liability['value'] = $balance;
+				$result[] = $liability;
+				break;
+			}
+			$balance -= $liability['value'];
+		}
+
+		return array_reverse($result);
+	}
 }

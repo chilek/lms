@@ -2470,6 +2470,11 @@ class LMS
 		return $manager->AddReceipt($receipt);
 	}
 
+	public function GetOpenedLiabilities($customerid) {
+		$manager = $this->getFinanaceManager();
+		return $manager->GetOpenedLiabilities($customerid);
+	}
+
 	/**
      * VoIP functions
      */
