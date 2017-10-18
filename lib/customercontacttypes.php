@@ -69,7 +69,7 @@ function validate_customer_phones(&$customerdata, &$contacts, &$error) {
 		$phone = trim($val['contact']);
 		$name = trim($val['name']);
 		$type = !empty($val['type']) ? array_sum($val['type']) : NULL;
-		if ($type == CONTACT_DISABLED)
+		if (!($type & CONTACT_MOBILE))
 			$type |= CONTACT_LANDLINE;
 
 		$val['type'] = $type;
