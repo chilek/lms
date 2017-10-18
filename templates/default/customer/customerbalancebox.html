@@ -1,4 +1,7 @@
 <!--// $Id$ //-->
+{if $receipt.receipt}
+<SCRIPT type="text/javascript">window.open('?m=receipt&id={$receipt.receipt}&which={$receipt.which}');</SCRIPT>
+{/if}
 <SCRIPT type="text/javascript">
 	<!--
 	function AddBalance()
@@ -319,6 +322,14 @@
 						{/if}
 					</TD>
 					<TD class="text-right" colspan="2">
+						{if $cashregistry && $cashregistry.in_numberplanid}
+						<label>
+							{trans("instant receipt issue")}
+							<input type="checkbox" name="addbalance[receipt_issue]" value="1">
+							<input type="hidden" name="addbalance[cashregistry][id]" value="{$cashregistry.id}">
+							<input type="hidden" name="addbalance[cashregistry][numberplanid]" value="{$cashregistry.in_numberplanid}">
+						</label>
+						{/if}
 						<A href="javascript:AddBalance();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 					</TD>
 				</TR>

@@ -115,6 +115,7 @@ version ?.??.?? (????-??-??):
   - enhancement: when application is called with api GET parameter we avoid running some code which
     is needed only for webui [chilan]
   - improvement: allow to search customers by different address types [chilan]
+  - enhancement: instant receipt issuing is possible during customer balance add [chilan]
 
 version 1.11.22 (2017-06-08):
 

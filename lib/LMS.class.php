@@ -2470,6 +2470,11 @@ class LMS
 		return $manager->AddReceipt($receipt);
 	}
 
+	public function GetCashRegistries($cid = null) {
+		$manager = $this->getFinanaceManager();
+		return $manager->GetCashRegistries($cid);
+	}
+
 	public function GetOpenedLiabilities($customerid) {
 		$manager = $this->getFinanaceManager();
 		return $manager->GetOpenedLiabilities($customerid);

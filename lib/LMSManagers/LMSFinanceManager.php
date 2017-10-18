@@ -1738,11 +1738,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			$where = ' AND npa.divisionid = ' . intval($divisionid);
 		}
 
-		$result = $this->db->GetAllByKey('SELECT r.id, name FROM cashregs r
-		JOIN cashrights cr ON regid = r.id
-		' . $join . '
-		WHERE rights > 1 AND userid = ? ' . $where . '
-		ORDER BY name', 'id', array($userid));
+		$result = $this->db->GetAllByKey('SELECT r.id, name,
+				in_numberplanid, out_numberplanid
+			FROM cashregs r
+			JOIN cashrights cr ON regid = r.id
+			' . $join . '
+			WHERE rights > 1 AND userid = ? ' . $where . '
+			ORDER BY name', 'id', array($userid));
 		return $result;
 	}
 

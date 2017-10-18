@@ -3770,4 +3770,6 @@ $_LANG['External ID'] = 'Id zewnętrzne';
 $_LANG['published document modification'] = 'modyfikowanie upublicznionych dokumentów';
 $_LANG['$a_clone'] = '$a_klon';
 
+$_LANG['instant receipt issue'] = 'szybkie wystawienie dokumentu kasowego';
+
 ?>

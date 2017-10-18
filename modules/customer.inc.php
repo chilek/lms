@@ -87,6 +87,19 @@ if(!empty($documents)) {
         FROM docrights WHERE userid = ? AND rights > 1', 'doctype', array(Auth::GetCurrentUser())));
 }
 
+// try to determine preselected cash registry numberplan for instant cash receipt creations
+$cashregistries = $LMS->GetCashRegistries($customerid);
+if (!empty($cashregistries) && count($cashregistries) == 1) {
+	$cashregistry = reset($cashregistries);
+	$SMARTY->assign('cashregistry', $cashregistry);
+}
+
+// prepare saved receipt to print
+if ($receipt = $SESSION->get('receiptprint')) {
+	$SMARTY->assign('receipt', $receipt);
+	$SESSION->remove('receiptprint');
+}
+
 $SMARTY->assign(array(
 	'expired' => $expired,
 	'allevents' => $allevents,

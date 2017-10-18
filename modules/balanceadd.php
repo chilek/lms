@@ -101,17 +101,56 @@ if(isset($addbalance['mcustomerid']))
 			if($addbalance['value'] != 0)
 				$LMS->AddBalance($addbalance);
 		}
-}
-elseif(isset($addbalance['customerid']))
-{
-	if($LMS->CustomerExists($addbalance['customerid']))
-	{
-		if($addbalance['value'] != 0)
-			$LMS->AddBalance($addbalance);
+} elseif(isset($addbalance['customerid'])) {
+	if ($LMS->CustomerExists($addbalance['customerid'])) {
+		if ($addbalance['value'] != 0) {
+			if ($addbalance['value'] > 0 && $addbalance['type'] == 1 && isset($addbalance['receipt_issue'])) {
+				$cashregistries = $LMS->GetCashRegistries($addbalance['customerid']);
+				if (isset($cashregistries[$addbalance['cashregistry']['numberplanid']])
+					&& ($liabilities = $LMS->GetOpenedLiabilities($addbalance['customerid']))) {
+					// issues instant receipts
+					$value = $addbalance['value'];
+					$payments = array();
+					foreach ($liabilities as $liability) {
+						$value_to_pay = $liability['value'] * -1;
+						$liability['value'] = min($value, $value_to_pay);
+						$liability['description'] = $liability['comment'];
+						$payments[] = $liability;
+						$value -= $value_to_pay;
+						if ($value <= 0)
+							break;
+					}
+					if ($value > 0) {
+						$payments[] = array(
+							'description' => $addbalance['comment'],
+							'value' => $value,
+						);
+					}
+					$receipt = array(
+						'number' => 0,
+						'numberplanid' => intval($addbalance['cashregistry']['numberplanid']),
+						'regid' => intval($addbalance['cashregistry']['id']),
+						'cdate' => time(),
+						'type' => 'in',
+						'customer' => $LMS->GetCustomer($addbalance['customerid'], true),
+						'contents' => $payments,
+					);
+					$rid = $LMS->AddReceipt($receipt);
+					if (!empty($rid)) {
+						$which = array();
+						if (!empty($_POST['original'])) $which[] = 'original';
+						if (!empty($_POST['copy'])) $which[] = 'copy';
+						$SESSION->save('receiptprint', array(
+							'receipt' => $rid,
+							'which' => implode(',', $which),
+						));
+					}
+				}
+			} else
+				$LMS->AddBalance($addbalance);
+		}
 	}
-}
-else
-{
+} else {
 	$addbalance['customerid'] = null;
 	$addbalance['taxid'] = '0';
 	$addbalance['type'] = '1';
