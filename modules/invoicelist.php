@@ -99,8 +99,8 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 
 	if($res = $DB->Exec('SELECT d.id AS id, number, cdate, type,
 			d.customerid, d.name, address, zip, city, countries.name AS country, numberplans.template, closed, cancelled, published,
-			CASE reference WHEN 0 THEN
-			    SUM(a.value*a.count) 
+			CASE WHEN reference IS NULL THEN
+			    SUM(a.value*a.count)
 			ELSE
 			    SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
 			END AS value, 
