@@ -1739,7 +1739,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			LEFT JOIN cash cashr ON cashr.docid = dr.id AND cashr.itemid = cash.itemid
 			WHERE cash.customerid = ? AND cash.type = 0 AND d.reference IS NULL
 			GROUP BY cash.id, cash.time, cash.comment
-			ORDER BY time DESC', array($customerid));
+			ORDER BY cash.time DESC, cash.itemid DESC', array($customerid));
 		$balance = $customer_manager->GetCustomerBalance($customerid, time());
 
 		if (empty($liabilities))
