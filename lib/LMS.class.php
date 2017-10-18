@@ -1946,6 +1946,12 @@ class LMS
 			foreach (explode(",", $recipients) as $recipient)
 				$this->mail_object->addAddress($recipient);
 
+			foreach ($headers as $name => $value) {
+				if (strpos(strtolower($name), 'x') === 0) {
+					$this->mail_object->addCustomHeader($name, $value);
+				}
+			}
+
 			// setup your cert & key file
 			$cert = LIB_DIR . DIRECTORY_SEPARATOR . 'lms-mail.cert';
 			$key = LIB_DIR . DIRECTORY_SEPARATOR . 'lms.key';
