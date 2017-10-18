@@ -114,6 +114,7 @@ version ?.??.?? (????-??-??):
   - cleanup: all columns in database related to other tables are foreign keys [chilan]
   - enhancement: when application is called with api GET parameter we avoid running some code which
     is needed only for webui [chilan]
+  - improvement: allow to search customers by different address types [chilan]
 
 version 1.11.22 (2017-06-08):
 
