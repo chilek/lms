@@ -141,33 +141,12 @@ function GetCustomerNotes($id)
 	}
 }
 
-function GetCashRegistries($cid = null) {
-	$DB = LMSDB::getInstance();
-	$userid = Auth::GetCurrentUser();
-
-	if (empty($cid)) {
-		$where = '';
-		$join = '';
-	} else {
-		$divisionid = $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($cid));
-		$join = ' JOIN numberplanassignments npa ON npa.planid = in_numberplanid ';;
-		$where = ' AND npa.divisionid = ' . intval($divisionid);
-	}
-
-	$result = $DB->GetAllByKey('SELECT r.id, name FROM cashregs r
-		JOIN cashrights cr ON regid = r.id
-		' . $join . '
-		WHERE rights > 1 AND userid = ? ' . $where . '
-		ORDER BY name', 'id', array($userid));
-	return $result;
-}
-
 function GetCashRegistriesXajax($cid, $regid) {
-	global $SMARTY;
+	global $LMS, $SMARTY;
 
 	$result = new xajaxResponse();
 
-	$cashreglist = GetCashRegistries($cid);
+	$cashreglist = $LMS->GetCashRegistries($cid);
 	$SMARTY->assign('cashreglist', $cashreglist);
 	$SMARTY->assign('regid', $regid);
 	$contents = $SMARTY->fetch('receipt/receiptcashregistries.html');
@@ -232,7 +211,7 @@ switch($action)
 		$receipt['type'] = isset($_GET['type']) ? $_GET['type'] : (isset($_POST['type']) ? $_POST['type'] : 0);
 		$receipt['customerid'] = isset($_GET['customerid']) ? $_GET['customerid'] : null;
 
-		$cashreglist = GetCashRegistries($receipt['customerid']);
+		$cashreglist = $LMS->GetCashRegistries($receipt['customerid']);
 
 		// when registry is not selected but we've got only one registry in database
 		if(!$receipt['regid'] && count($cashreglist) == 1)
@@ -877,7 +856,7 @@ switch($action)
 }
 
 if (!isset($cashreglist))
-	$cashreglist = GetCashRegistries($receipt['customerid']);
+	$cashreglist = $LMS->GetCashRegistries($receipt['customerid']);
 
 $SESSION->save('receipt', $receipt);
 $SESSION->save('receiptregid', $receipt['regid']);

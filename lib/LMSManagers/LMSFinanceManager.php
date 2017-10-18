@@ -1726,6 +1726,26 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		return empty($error) ? $rid : $error;
 	}
 
+	public function GetCashRegistries($cid = null) {
+		$userid = Auth::GetCurrentUser();
+
+		if (empty($cid)) {
+			$where = '';
+			$join = '';
+		} else {
+			$divisionid = $this->db->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($cid));
+			$join = ' JOIN numberplanassignments npa ON npa.planid = in_numberplanid ';;
+			$where = ' AND npa.divisionid = ' . intval($divisionid);
+		}
+
+		$result = $this->db->GetAllByKey('SELECT r.id, name FROM cashregs r
+		JOIN cashrights cr ON regid = r.id
+		' . $join . '
+		WHERE rights > 1 AND userid = ? ' . $where . '
+		ORDER BY name', 'id', array($userid));
+		return $result;
+	}
+
 	public function GetOpenedLiabilities($customerid) {
 		$customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
 
