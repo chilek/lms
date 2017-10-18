@@ -107,6 +107,7 @@ version ?.??.?? (????-??-??):
   - improvement: published_document_modification privilege controls if user can modify/delete
     published documents [chilan]
   - enhancement: allow to add new note for created helpdesk ticket [interduo]
+  - introduced: rt: requestor_phone, requestor_mail in rtticketadd [interduo]
   - improvement: allow to fast-clone existing customer node to new one [chilan]
   - enhancement: introduced payments_before_assignment_loop plugin hook in lms-payments.php backend script;
     it has potential to be used for now at least by Adescom plugin [chilan]

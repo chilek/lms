@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$_LANG['Unassigned'] = 'Nieprzypisany';
+$_LANG['Requestor:'] = 'Zgłaszający';
 $_LANG['documents'] = 'dokumenty';
 $_LANG['Administrative contact:'] = 'Kontakt administracyjny:';
 $_LANG['Check if contact should be printed on documents'] = 'Zaznacz jeśli kontakt powinien być drukowany na dokumentach';

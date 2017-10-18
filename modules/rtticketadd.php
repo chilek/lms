@@ -63,8 +63,12 @@ if(isset($_POST['ticket']))
 	if($ticket['body'] == '')
 		$error['body'] = trans('Ticket must have its body!');
 
-	if($ticket['email']!='' && !check_email($ticket['email']))
-		$error['email'] = trans('Incorrect email!');
+	if($ticket['mail']!='' && !check_email($ticket['mail']))
+		$error['mail'] = trans('Incorrect email!');
+
+	if(!empty($ticket['requestor_phone']))
+		if(strlen($ticket['requestor_phone']) > 32 )
+			$error['phone'] = trans('Specified phone number is not correct!');
 
 	if ((isset($ticket['customerid']) && $ticket['customerid'] !=0 && $ticket['custid'] != $ticket['customerid'])
 		|| (intval($ticket['custid']) && !$LMS->CustomerExists($ticket['custid'])))
@@ -77,17 +81,16 @@ if(isset($_POST['ticket']))
 	$SMARTY->assign('fileupload', $fileupload);
 
 	if (!$error) {
-		if (!$ticket['customerid'] && $ticket['surname'] == '') {
-			$userinfo = $LMS->GetUserInfo(Auth::GetCurrentUser());
-			$ticket['surname'] = $userinfo['lastname'];
-			$ticket['name'] = $userinfo['firstname'];
+		if (!$ticket['customerid']) {
+			if ($ticket['surname'] == '' && $ticket['phone'] == '' && $ticket['mail'] == '')
+				$userinfo = $LMS->GetUserInfo(Auth::GetCurrentUser());
+				$ticket['requestor_userid'] = $userinfo['id'];
 		}
 
-		$ticket['mailfrom'] = $ticket['email'] ? $ticket['email'] : '';
+		$ticket['mailfrom'] = $ticket['mail'] ? $ticket['mail'] : '';
 
 		$requestor  = ($ticket['surname'] ? $ticket['surname'].' ' : '');
 		$requestor .= ($ticket['name'] ? $ticket['name'].' ' : '');
-		$requestor .= ($ticket['email'] ? '<'.$ticket['email'].'>' : '');
 		$ticket['requestor'] = trim($requestor);
 
 		if ($ticket['address_id'] == -1)
@@ -98,6 +101,18 @@ if(isset($_POST['ticket']))
 
 		if (empty($ticket['netnodeid']))
 			$ticket['netnodeid'] = null;
+		else
+			if($ticket['netnodeid'] = 0)
+				$ticket['netnodeid'] = null;
+
+		if (empty($ticket['requestor_mail']))
+			$ticket['requestor_mail'] = null;
+
+		if (empty($ticket['requestor_phone']))
+			$ticket['requestor_phone'] = null;
+
+		if (empty($ticket['requestor_userid']))
+			$ticket['requestor_userid'] = null;
 
 		if (!empty($files)) {
 			foreach ($files as &$file)

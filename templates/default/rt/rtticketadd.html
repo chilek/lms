@@ -35,7 +35,7 @@
 				<TR>
 		<TD style="width: 1%;" class="bold nobr">
 			<IMG src="img/customer.gif" alt="">
-			{trans("Submitter:")}
+			{trans("Requestor:")}
 		</TD>
 		<TD style="width: 99%;">
 			<TABLE width="100%" cellpadding="1">
@@ -54,7 +54,11 @@
 				</TR>
 				<TR>
 					<TD style="width: 1%;">{trans("E-mail:")}</TD>
-					<TD style="width: 99%;"><INPUT type="text" name="ticket[email]" value="{$ticket.email}" {tip trigger="email" text="select customer from list or enter his data if is not a customer"}></TD>
+					<TD style="width: 99%;"><INPUT type="text" name="ticket[requestor_mail]" value="{$ticket.requestor_mail}" {tip trigger="email" text="select customer from list or enter his data if is not a customer"}></TD>
+				</TR>
+				<TR>
+					<TD style="width: 1%;">{trans("Phone:")}</TD>
+					<TD style="width: 99%;"><INPUT type="text" name="ticket[requestor_phone]" value="{$ticket.requestor_phone}" {tip trigger="phone" text="select customer from list or enter his data if is not a customer"}></TD>
 				</TR>
 			</TABLE>
 		</TD>

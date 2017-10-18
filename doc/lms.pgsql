@@ -1638,6 +1638,10 @@ CREATE TABLE rttickets (
   queueid integer 	NOT NULL
     REFERENCES rtqueues (id) ON DELETE CASCADE ON UPDATE CASCADE,
   requestor varchar(255) DEFAULT '' NOT NULL,
+  requestor_mail varchar(255) DEFAULT NULL,
+  requestor_phone varchar(32) DEFAULT NULL,
+  requestor_userid integer DEFAULT NULL
+	CONSTRAINT rttickets_requestor_userid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   subject varchar(255) 	DEFAULT '' NOT NULL,
   state smallint 	DEFAULT 0 NOT NULL,
   cause smallint	DEFAULT 0 NOT NULL,
@@ -3256,6 +3260,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101602');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101800');
 
 COMMIT;

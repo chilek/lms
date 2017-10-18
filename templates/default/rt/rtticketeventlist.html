@@ -46,14 +46,14 @@
             </TD>
             {if $event.closed}
             <TD class="nobr text-right blend bold">
-                {trans("Created by:")}<BR><A href="/?m=userinfo&id={$event.userid}">{$event.username}</A>
+                {trans("Created by:")}<BR><A href="?m=userinfo&id={$event.userid}">{$event.username}</A>
             </TD>
             <TD class="nobr text-right bold">
-                {trans("Closed by")}:<BR><A href="/?m=userinfo&id={$event.closeduserid}">{$event.closedusername}</A>
+                {trans("Closed by")}:<BR><A href="?m=userinfo&id={$event.closeduserid}">{$event.closedusername}</A>
             </TD>
             {else}
             <TD class="nobr text-right" colspan="2">
-                <B>{trans("Created by:")}</B><BR><A href="/?m=userinfo&id={$event.userid}">{$event.username}</A>
+                <B>{trans("Created by:")}</B><BR><A href="?m=userinfo&id={$event.userid}">{$event.username}</A>
             </TD>
             {/if}
             <TD class="nobr text-center">

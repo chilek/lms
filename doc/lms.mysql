@@ -1668,6 +1668,9 @@ CREATE TABLE rttickets (
   id int(11) NOT NULL auto_increment,
   queueid int(11) NOT NULL,
   requestor varchar(255) NOT NULL DEFAULT '',
+  requestor_mail varchar(255) DEFAULT NULL,
+  requestor_phone varchar(32) DEFAULT NULL,
+  requestor_userid int(11) DEFAULT NULL,
   subject varchar(255) NOT NULL DEFAULT '',
   state tinyint(4) NOT NULL DEFAULT '0',
   cause tinyint(4) NOT NULL DEFAULT '0',
@@ -1701,7 +1704,9 @@ CREATE TABLE rttickets (
   CONSTRAINT rttickets_creatorid_fkey
 	FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT rttickets_owner_fkey
-	FOREIGN KEY (owner) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+	FOREIGN KEY (owner) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT rttickets_requestor_userid_fkey
+	FOREIGN KEY (requestor_userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -3244,4 +3249,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101602');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101800');

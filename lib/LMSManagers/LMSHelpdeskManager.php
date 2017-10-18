@@ -122,7 +122,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 		if ($result = $this->db->GetAll(
 			'SELECT DISTINCT t.id, t.customerid, t.address_id, va.name AS vaname, va.city AS vacity, va.street, va.house, va.flat, c.address, c.city, vusers.name AS ownername,
-				t.subject, t.state, owner AS ownerid, t.requestor AS req, t.source, rtqueues.name,
+				t.subject, t.state, owner AS ownerid, t.requestor AS req, t.source, rtqueues.name, t.requestor_phone, t.requestor_mail, t.requestor_userid,
 				CASE WHEN customerid IS NULL THEN t.requestor ELSE '
 			. $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor,
 				t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
@@ -176,12 +176,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 					$ticket['categories'] = $categories;
 				} else
 					unset($ticket['categories']);
-				//$ticket['requestoremail'] = preg_replace('/^.*<(.*@.*)>$/', '\1',$ticket['requestor']);
-				//$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
-				if (!$ticket['customerid'])
-					list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['req'], "%[^<]<%[^>]");
-				else
-					list($ticket['requestoremail']) = sscanf($ticket['req'], "<%[^>]");
+			
 				$result[$idx] = $ticket;
 			}
 		}
@@ -493,11 +488,14 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 	}
 
 	public function TicketAdd($ticket, $files = NULL) {
-		$this->db->Execute('INSERT INTO rttickets (queueid, customerid, requestor, subject,
-				state, owner, createtime, cause, creatorid, source, address_id, nodeid, netnodeid)
-				VALUES (?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, ?)', array($ticket['queue'],
+		$this->db->Execute('INSERT INTO rttickets (queueid, customerid, requestor, requestor_mail, requestor_phone,
+			requestor_userid, subject, state, owner, createtime, cause, creatorid, source, address_id, nodeid, netnodeid)
+				VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, ?)', array($ticket['queue'],
 			empty($ticket['customerid']) ? null : $ticket['customerid'],
 			$ticket['requestor'],
+			$ticket['requestor_mail'],
+			$ticket['requestor_phone'],
+			isset($ticket['requestor_userid']) ? $ticket['requestor_userid'] : null,
 			$ticket['subject'],
 			isset($ticket['owner']) && !empty($ticket['owner']) ? $ticket['owner'] : null,
 			isset($ticket['createtime']) ? $ticket['createtime'] : time(),
@@ -563,8 +561,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         global $RT_STATES;
 
-        $ticket = $this->db->GetRow('SELECT t.id AS ticketid, t.queueid, rtqueues.name AS queuename,
-				t.requestor, t.state, t.owner, t.customerid, t.cause, t.creatorid, c.name AS creator, t.source, '
+        $ticket = $this->db->GetRow('SELECT t.id AS ticketid, t.queueid, rtqueues.name AS queuename, t.requestor, t.requestor_phone, t.requestor_mail,
+				t.requestor_userid, d.name AS requestor_username, t.state, t.owner, t.customerid, t.cause, t.creatorid, c.name AS creator,
+				t.source, '
 				. $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
 				o.name AS ownername, t.createtime, t.resolvetime, t.subject, t.deleted, t.deltime, t.deluserid,
 				t.address_id, va.location, t.nodeid, n.name AS node_name, n.location AS node_location, t.netnodeid, nn.name AS netnode_name
@@ -572,6 +571,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				LEFT JOIN rtqueues ON (t.queueid = rtqueues.id)
 				LEFT JOIN vusers o ON (t.owner = o.id)
 				LEFT JOIN vusers c ON (t.creatorid = c.id)
+				LEFT JOIN vusers d ON (t.requestor_userid = d.id)
 				LEFT JOIN customers ON (customers.id = t.customerid)
 				LEFT JOIN vaddresses va ON va.id = t.address_id
 				LEFT JOIN vnodes n ON n.id = t.nodeid
@@ -603,12 +603,6 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
         foreach ($ticket['messages'] as $idx => $message)
             $ticket['messages'][$idx]['attachments'] = $this->db->GetAll('SELECT filename, contenttype FROM rtattachments WHERE messageid = ?', array($message['id']));
 
-        if (!$ticket['customerid'])
-            list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['requestor'], "%[^<]<%[^>]");
-        else
-            list($ticket['requestoremail']) = sscanf($ticket['requestor'], "<%[^>]");
-//	$ticket['requestoremail'] = preg_replace('/^.* <(.+@.+)>$/', '\1',$ticket['requestor']);
-//      $ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
         $ticket['status'] = $RT_STATES[$ticket['state']];
         $ticket['uptime'] = uptimef($ticket['resolvetime'] ? $ticket['resolvetime'] - $ticket['createtime'] : time() - $ticket['createtime']);
 

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-define('DBVERSION', '2017101602'); // here should be always the newest version of database!
+define('DBVERSION', '2017101800'); // here should be always the newest version of database!
 				 // it placed here to avoid read disk every time when we call this file.
 
 /**
@@ -785,3 +785,4 @@ abstract class LMSDB_common implements LMSDBInterface
 	}
 
 }
+
