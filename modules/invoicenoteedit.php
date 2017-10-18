@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -314,7 +314,7 @@ switch ($action) {
 					'pdiscount' => str_replace(',', '.', $item['pdiscount']),
 					'vdiscount' => str_replace(',', '.', $item['vdiscount']),
 					'name' => $item['name'],
-					SYSLOG::RES_TARIFF => $item['tariffid'],
+					SYSLOG::RES_TARIFF => empty($item['tariffid']) ? null : $item['tariffid'],
 				);
 				$DB->Execute('INSERT INTO invoicecontents (docid, itemid, value,
 					taxid, prodid, content, count, pdiscount, vdiscount, description, tariffid)

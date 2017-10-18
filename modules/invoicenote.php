@@ -395,7 +395,7 @@ switch($action)
 				'pdiscount' => $item['pdiscount'],
 				'vdiscount' => $item['vdiscount'],
 				'description' => $item['name'],
-				SYSLOG::RES_TARIFF => $item['tariffid'],
+				SYSLOG::RES_TARIFF => empty($item['tariffid']) ? null : $item['tariffid'],
 			);
 			$DB->Execute('INSERT INTO invoicecontents (docid, itemid, value, taxid, prodid, content, count, pdiscount, vdiscount, description, tariffid)
 					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));

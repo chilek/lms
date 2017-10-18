@@ -650,7 +650,7 @@ foreach ($assigns as $assign) {
 					content, count, description, tariffid, itemid, pdiscount, vdiscount) 
 					VALUES (?, $val, ?, ?, ?, 1, ?, ?, $itemid, ?, ?)",
 					array($invoices[$cid], $assign['taxid'], $assign['prodid'], $unit_name,
-					$desc, $assign['tariffid'], $assign['pdiscount'], $assign['vdiscount']));
+					$desc, empty($assign['tariffid']) ? null : $assign['tariffid'], $assign['pdiscount'], $assign['vdiscount']));
 				$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) 
 					VALUES ($currtime, $val * -1, ?, $cid, ?, ?, $itemid)",
 					array($assign['taxid'], $desc, $invoices[$cid]));
@@ -742,7 +742,7 @@ foreach ($assigns as $assign) {
 						content, count, description, tariffid, itemid, pdiscount, vdiscount) 
 						VALUES (?, $value, ?, ?, ?, 1, ?, ?, $itemid, ?, ?)",
 						array($invoices[$cid], $assign['taxid'], $assign['prodid'], $unit_name,
-						$sdesc, $assign['tariffid'], $assign['pdiscount'], $assign['vdiscount']));
+						$sdesc, empty($assign['tariffid']) ? null : $assign['tariffid'], $assign['pdiscount'], $assign['vdiscount']));
 					$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) 
 						VALUES($currtime, $value * -1, ?, $cid, ?, ?, $itemid)",
 						array($assign['taxid'], $sdesc, $invoices[$cid]));
