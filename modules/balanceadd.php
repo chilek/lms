@@ -24,7 +24,7 @@
  *  $Id: 6e70ce491793915f20304fc291211ebd78873916 $
  */
 
-$addbalance = $_POST['addbalance'];
+$addbalance = isset($_POST['addbalance']) ? $_POST['addbalance'] : $_POST['instantpayment'];
 
 foreach($addbalance as $key=>$value)
 	if(!is_array($value))
@@ -69,7 +69,9 @@ else
 	$currenttime = true;
 }
 
-$SESSION->save('addbc', $addbalance['comment']);
+if (isset($_POST['addbalance']))
+	$SESSION->save('addbc', $addbalance['comment']);
+
 if ($currenttime)
 	$SESSION->remove('addbt');
 else
@@ -106,10 +108,10 @@ if(isset($addbalance['mcustomerid']))
 		if ($addbalance['value'] != 0) {
 			if ($addbalance['value'] > 0 && $addbalance['type'] == 1 && isset($_GET['receipt'])) {
 				$cashregistries = $LMS->GetCashRegistries($addbalance['customerid']);
-				if (isset($cashregistries[$addbalance['cashregistry']['numberplanid']])
+				if (!empty($cashregistries) && count($cashregistries) == 1
 					&& ($liabilities = $LMS->GetOpenedLiabilities($addbalance['customerid']))) {
-
-					// issues instant receipts
+					// issues instant receipt
+					$cashregistry = reset($cashregistries);
 					$value = $addbalance['value'];
 					$payments = array();
 					foreach ($liabilities as $liability) {
@@ -129,8 +131,8 @@ if(isset($addbalance['mcustomerid']))
 					}
 					$receipt = array(
 						'number' => 0,
-						'numberplanid' => intval($addbalance['cashregistry']['numberplanid']),
-						'regid' => intval($addbalance['cashregistry']['id']),
+						'numberplanid' => intval($cashregistry['in_numberplanid']),
+						'regid' => intval($cashregistry['id']),
 						'cdate' => time(),
 						'type' => 'in',
 						'customer' => $LMS->GetCustomer($addbalance['customerid'], true),
@@ -141,10 +143,11 @@ if(isset($addbalance['mcustomerid']))
 						$which = array();
 						if (!empty($_POST['original'])) $which[] = 'original';
 						if (!empty($_POST['copy'])) $which[] = 'copy';
-						$SESSION->save('receiptprint', array(
-							'receipt' => $rid,
-							'which' => implode(',', $which),
-						));
+						if (!empty($which))
+							$SESSION->save('receiptprint', array(
+								'receipt' => $rid,
+								'which' => implode(',', $which),
+							));
 					}
 				}
 			} else

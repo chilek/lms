@@ -116,6 +116,7 @@ version ?.??.?? (????-??-??):
     is needed only for webui [chilan]
   - improvement: allow to search customers by different address types [chilan]
   - enhancement: instant receipt issuing is possible during customer balance add [chilan]
+  - enhancement: allow to create receipt with one click near customer balance info [chilan]
 
 version 1.11.22 (2017-06-08):
 

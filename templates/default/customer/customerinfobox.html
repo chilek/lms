@@ -351,7 +351,28 @@
 			<B>{trans("Balance:")}</B>
 		</TD>
 		<TD WIDTH="98%">
-			{if $customerinfo.balance < 0}<span class="alert">{$customerinfo.balance|money_format}</span>{else}{$customerinfo.balance|default:"0"|money_format}{/if}
+			{if $customerinfo.balance < 0}
+			<span class="alert">{$customerinfo.balance|money_format}</span>
+			{if $instantpayment}
+			<FORM name="instantpayment" method="POST" action="?m=balanceadd&id={$customerinfo.id}&receipt=1">
+				<script type="text/javascript">
+					<!--
+					function AddInstantPayment() {
+						document.instantpayment.submit();
+					}
+					//-->
+				</script>
+				<input type="hidden" name="instantpayment[customerid]" value="{$customerinfo.id}">
+				<input type="hidden" name="instantpayment[value]" value="{$customerinfo.balance*-1}">
+				<input type="hidden" name="instantpayment[type]" value="1">
+				<input type="hidden" name="instantpayment[sourceid]" value="0">
+				<input type="hidden" name="instantpayment[comment]" value="{trans("instant payment")}">
+				<a href="javascript:AddInstantPayment()"><img src="img/printr.gif"> {trans("instant payment")}</a>
+			</FORM>
+			{/if}
+			{else}
+			{$customerinfo.balance|default:"0"|money_format}
+			{/if}
 		</TD>
 	</TR>
 	{/if}

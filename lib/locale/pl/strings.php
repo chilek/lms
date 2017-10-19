@@ -3771,5 +3771,6 @@ $_LANG['published document modification'] = 'modyfikowanie upublicznionych dokum
 $_LANG['$a_clone'] = '$a_klon';
 
 $_LANG['Instant receipt'] = 'Szybki dokument kasowy';
+$_LANG['instant payment'] = 'szybka wpłata';
 
 ?>

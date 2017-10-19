@@ -327,9 +327,7 @@
 						{/if}
 					</TD>
 					<TD class="text-right" colspan="2">
-						{if $cashregistry && $cashregistry.in_numberplanid}
-						<input type="hidden" name="addbalance[cashregistry][id]" value="{$cashregistry.id}">
-						<input type="hidden" name="addbalance[cashregistry][numberplanid]" value="{$cashregistry.in_numberplanid}">
+						{if $instantpayment}
 						<a href="javascript:AddReceipt();">{trans("Instant receipt")} <img src="img/printr.gif"></a>
 						{/if}
 						<A href="javascript:AddBalance();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
