@@ -108,9 +108,9 @@ if(isset($addbalance['mcustomerid']))
 		if ($addbalance['value'] != 0) {
 			if ($addbalance['value'] > 0 && $addbalance['type'] == 1 && isset($_GET['receipt'])) {
 				$cashregistries = $LMS->GetCashRegistries($addbalance['customerid']);
-				if (!empty($cashregistries) && count($cashregistries) == 1
-					&& ($liabilities = $LMS->GetOpenedLiabilities($addbalance['customerid']))) {
+				if (!empty($cashregistries) && count($cashregistries) == 1) {
 					// issues instant receipt
+					$liabilities = $LMS->GetOpenedLiabilities($addbalance['customerid']);
 					$cashregistry = reset($cashregistries);
 					$value = $addbalance['value'];
 					$payments = array();
