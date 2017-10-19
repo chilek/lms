@@ -143,7 +143,7 @@ if(isset($addbalance['mcustomerid']))
 						$which = array();
 						if (!empty($_POST['original'])) $which[] = 'original';
 						if (!empty($_POST['copy'])) $which[] = 'copy';
-						if (!empty($which))
+						if (!empty($which) || isset($addbalance['print']))
 							$SESSION->save('receiptprint', array(
 								'receipt' => $rid,
 								'which' => implode(',', $which),

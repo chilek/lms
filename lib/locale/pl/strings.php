@@ -3772,5 +3772,6 @@ $_LANG['$a_clone'] = '$a_klon';
 
 $_LANG['Instant receipt'] = 'Szybki dokument kasowy';
 $_LANG['instant payment'] = 'szybka wpłata';
+$_LANG['print'] = 'drukuj';
 
 ?>

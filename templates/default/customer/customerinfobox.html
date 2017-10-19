@@ -368,6 +368,10 @@
 				<input type="hidden" name="instantpayment[sourceid]" value="0">
 				<input type="hidden" name="instantpayment[comment]" value="{trans("instant payment")}">
 				<a href="javascript:AddInstantPayment()"><img src="img/printr.gif"> {trans("instant payment")}</a>
+				<label>
+					<input type="checkbox" name="instantpayment[print]" value="1">
+					{trans("print")}
+				</label>
 			</FORM>
 			{/if}
 			{else}
