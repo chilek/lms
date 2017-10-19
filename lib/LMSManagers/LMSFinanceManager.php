@@ -1734,7 +1734,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			$join = '';
 		} else {
 			$divisionid = $this->db->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($cid));
-			$join = ' JOIN numberplanassignments npa ON npa.planid = in_numberplanid ';;
+			$join = ' JOIN numberplanassignments npa ON npa.planid = in_numberplanid ';
 			$where = ' AND npa.divisionid = ' . intval($divisionid);
 		}
 
@@ -1773,10 +1773,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				LEFT JOIN numberplans np ON np.id = d.numberplanid
 				LEFT JOIN documents dr ON dr.reference = d.id
 				LEFT JOIN cash cashr ON cashr.docid = dr.id
-				WHERE cash.customerid = ? AND d.reference IS NULL
+				WHERE cash.customerid = ? AND d.reference IS NULL AND d.type IN (?, ?)
 				GROUP BY cash.docid, d.cdate, d.type, d.number, np.template, dr.id
 			) ORDER BY cdate DESC',
-			array($customerid, $customerid));
+			array($customerid, $customerid, DOC_INVOICE, DOC_DNOTE));
 
 		if (empty($liabilities))
 			return $result;
