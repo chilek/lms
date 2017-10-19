@@ -242,7 +242,7 @@ CREATE TABLE customers (
 	moddate integer 	DEFAULT 0 NOT NULL,
 	creatorid integer 	DEFAULT NULL
 		CONSTRAINT customers_creatorid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	modid integer 		DEFAULT 0 NOT NULL
+	modid integer 		DEFAULT NULL
 		CONSTRAINT customers_modid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	deleted smallint 	DEFAULT 0 NOT NULL,
 	message text		DEFAULT '' NOT NULL,
