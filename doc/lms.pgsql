@@ -823,7 +823,7 @@ CREATE TABLE invoicecontents (
 	content varchar(16) 	DEFAULT '' NOT NULL,
 	count numeric(9,2) 	DEFAULT 0 NOT NULL,
 	description text 	DEFAULT '' NOT NULL,
-	tariffid integer 	DEFAULT 0 NOT NULL
+	tariffid integer 	DEFAULT NULL
 		CONSTRAINT invoicecontents_tariffid_fkey REFERENCES tariffs (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	pdiscount numeric(4,2) DEFAULT 0 NOT NULL,
 	vdiscount numeric(9,2) DEFAULT 0 NOT NULL
