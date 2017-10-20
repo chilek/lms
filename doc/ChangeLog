@@ -117,6 +117,8 @@ version ?.??.?? (????-??-??):
   - improvement: allow to search customers by different address types [chilan]
   - enhancement: instant receipt issuing is possible during customer balance add [chilan]
   - enhancement: allow to create receipt with one click near customer balance info [chilan]
+  - improvement: added support for mail.reply_email configuration variable which controls
+    what email address is set in Reply-To header in messageadd [chilan]
 
 version 1.11.22 (2017-06-08):
 
