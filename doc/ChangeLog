@@ -121,6 +121,8 @@ version ?.??.?? (????-??-??):
     what email address is set in Reply-To header in messageadd [chilan]
   - improvement: phpui.promotion_activation_at_next_day configuration variable controls
     if activation assignment is setup to next day [chilan]
+  - improvement: receipts.instant_payment_print variable controls if instant payment
+    is marked for printing by default [interduo]
 
 version 1.11.22 (2017-06-08):
 

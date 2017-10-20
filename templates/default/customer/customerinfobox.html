@@ -369,7 +369,7 @@
 				<input type="hidden" name="instantpayment[comment]" value="{trans("instant payment")}">
 				<a href="javascript:AddInstantPayment()"><img src="img/printr.gif"> {trans("instant payment")}</a>
 				<label>
-					<input type="checkbox" name="instantpayment[print]" value="1">
+					<input type="checkbox" name="instantpayment[print]" value="1" {if ConfigHelper::checkConfig('receipts.instant_payment_print')} checked{/if}>
 					{trans("print")}
 				</label>
 			</FORM>
