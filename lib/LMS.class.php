@@ -944,127 +944,127 @@ class LMS
 
     public function GetCustomerTariffsValue($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetCustomerTariffsValue($id);
     }
 
     public function GetCustomerAssignments($id, $show_expired = false)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetCustomerAssignments($id, $show_expired);
     }
 
     public function DeleteAssignment($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->DeleteAssignment($id);
     }
 
     public function AddAssignment($data)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->AddAssignment($data);
     }
 
     public function SuspendAssignment($id, $suspend = TRUE)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->SuspendAssignment($id, $suspend);
     }
 
     public function AddInvoice($invoice)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->AddInvoice($invoice);
     }
 
     public function InvoiceDelete($invoiceid)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->InvoiceDelete($invoiceid);
     }
 
     public function InvoiceContentDelete($invoiceid, $itemid = 0)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->InvoiceContentDelete($invoiceid, $itemid);
     }
 
     public function GetInvoiceContent($invoiceid)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetInvoiceContent($invoiceid);
     }
 
     public function GetNoteContent($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetNoteContent($id);
     }
 
     public function TariffAdd($tariff)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->TariffAdd($tariff);
     }
 
     public function TariffUpdate($tariff)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->TariffUpdate($tariff);
     }
 
     public function TariffDelete($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->TariffDelete($id);
     }
 
     public function GetTariff($id, $network = NULL)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetTariff($id, $network);
     }
 
     public function GetTariffs($forced_id = null)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetTariffs($forced_id);
     }
 
     public function TariffSet($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->TariffSet($id);
     }
 
     public function TariffExists($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->TariffExists($id);
     }
 
     public function ReceiptContentDelete($docid, $itemid = 0)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->ReceiptContentDelete($docid, $itemid);
     }
 
     public function DebitNoteContentDelete($docid, $itemid = 0)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->DebitNoteContentDelete($docid, $itemid);
     }
 
     public function AddBalance($addbalance)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->AddBalance($addbalance);
     }
 
     public function DelBalance($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->DelBalance($id);
     }
 
@@ -1074,49 +1074,49 @@ class LMS
 
     public function GetPaymentList()
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetPaymentList();
     }
 
     public function GetPayment($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetPayment($id);
     }
 
     public function GetPaymentName($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetPaymentName($id);
     }
 
     public function GetPaymentIDByName($name)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetPaymentIDByName($name);
     }
 
     public function PaymentExists($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->PaymentExists($id);
     }
 
     public function PaymentAdd($paymentdata)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->PaymentAdd($paymentdata);
     }
 
     public function PaymentDelete($id)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->PaymentDelete($id);
     }
 
     public function PaymentUpdate($paymentdata)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->PaymentUpdate($paymentdata);
     }
 
@@ -1633,7 +1633,7 @@ class LMS
 
     public function GetHostingLimits($customerid)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetHostingLimits($customerid);
     }
 
@@ -2318,7 +2318,7 @@ class LMS
 
     public function GetTaxes($from = NULL, $to = NULL)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->GetTaxes($from, $to);
     }
 
@@ -2454,29 +2454,29 @@ class LMS
 
     public function CalcAt($period, $date)
     {
-        $manager = $this->getFinanaceManager();
+        $manager = $this->getFinanceManager();
         return $manager->CalcAt($period, $date);
     }
 
 	public function isDocumentPublished($id)
 	{
-		$manager = $this->getFinanaceManager();
+		$manager = $this->getFinanceManager();
 		return $manager->isDocumentPublished($id);
 	}
 
 	public function AddReceipt(array $receipt)
 	{
-		$manager = $this->getFinanaceManager();
+		$manager = $this->getFinanceManager();
 		return $manager->AddReceipt($receipt);
 	}
 
 	public function GetCashRegistries($cid = null) {
-		$manager = $this->getFinanaceManager();
+		$manager = $this->getFinanceManager();
 		return $manager->GetCashRegistries($cid);
 	}
 
 	public function GetOpenedLiabilities($customerid) {
-		$manager = $this->getFinanaceManager();
+		$manager = $this->getFinanceManager();
 		return $manager->GetOpenedLiabilities($customerid);
 	}
 
@@ -2783,7 +2783,7 @@ class LMS
      * 
      * @return LMSFinanceManagerInterface Finance manager
      */
-    protected function getFinanaceManager()
+    protected function getFinanceManager()
     {
         if (!isset($this->finance_manager)) {
             $this->finance_manager = new LMSFinanceManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
