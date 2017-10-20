@@ -3,6 +3,13 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+{if $receipt.receipt}
+<SCRIPT type="text/javascript">
+<!--
+	window.open('?m=receipt&id={$receipt.receipt}&which={$receipt.which}');
+//-->
+</SCRIPT>
+{/if}
 <div id="customerinfo-sortable" class="lms-ui-sortable-persistent">
 {block name="customerinfobox"}
 	{include file="customer/customerinfobox.html"}
