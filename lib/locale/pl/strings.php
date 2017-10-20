@@ -666,6 +666,7 @@ $_LANG['Enter ticket content'] = 'Wprowadź treść zgłoszenia';
 $_LANG['Enter ticket subject'] = 'Wprowadź temat zgłoszenia';
 $_LANG['Enter transaction time in \'yyyy/mm/dd hh:mm\' format (empty field means current time). Click to select date from calendar.'] = 'Wprowadź czas transakcji w formacie \'rrrr/mm/dd gg:mm\' (puste pole oznacza obecną chwilę). Kliknij by wybrać datę z kalendarza.';
 $_LANG['Enter transaction value'] = 'Wprowadź wartość operacji';
+$_LANG['Enter transaction comment'] = 'Wprowadź komentarz do operacji';
 $_LANG['Enter value'] = 'Podaj kwotę';
 $_LANG['Enter value of operation'] = 'Podaj kwotę operacji';
 $_LANG['Enter value of searching data and select category'] = 'Wprowadź szukane dane i wybierz kategorię';

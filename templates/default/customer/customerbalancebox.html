@@ -4,16 +4,17 @@
 {/if}
 <SCRIPT type="text/javascript">
 	<!--
-	function AddBalance()
-	{
-		if(document.forms['addbalance'].elements['addbalance[value]'].value != '')
-			document.addbalance.submit();
-		else
+	function AddBalance(with_receipt) {
+		if (document.forms['addbalance'].elements['addbalance[value]'].value == '') {
 			alert('{trans("Enter transaction value")}!');
-	}
-
-	function AddReceipt() {
-		document.addbalance.action += '&receipt=1';
+			return;
+		}
+		if (document.forms['addbalance'].elements['addbalance[comment]'].value == '') {
+			alert('{trans("Enter transaction comment")}!');
+			return;
+		}
+		if (typeof(with_receipt) == 'boolean' && with_receipt)
+			document.addbalance.action += '&receipt=1';
 		document.addbalance.submit();
 	}
 
@@ -328,7 +329,7 @@
 					</TD>
 					<TD class="text-right" colspan="2">
 						{if $instantpayment}
-						<a href="javascript:AddReceipt();">{trans("Instant receipt")} <img src="img/printr.gif"></a>
+						<a href="javascript:AddBalance(true);">{trans("Instant receipt")} <img src="img/printr.gif"></a>
 						{/if}
 						<A href="javascript:AddBalance();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>
 					</TD>
