@@ -126,21 +126,30 @@
 		</TR>
 	
 		<TR id="a_schematariff">
-			<TD></TD>
-			<TD></TD>
+			<TD colspan="2"></TD>
 			<TD>
-				{foreach $promotions as $p}
-                	{foreach $p as $k=>$items}
-                    	<table id="{$k}" class="promotionstable">
+				{foreach $promotions as $promotion => $p}
+                	{foreach $p as $schema => $items}
+                    	<table class="promotionstable" id="schema{$schema}">
                             {if isset($items.single)}
                                 {foreach $items.single as $v}
                                     {if $v.optional == 1}
-                                        <tr><td><label><input type="checkbox" name="assignment[stariffid][]" value="{$v.tariffid}"> {$v.tariff}</label></td></tr>
+                                        <tr>
+											<td>
+												<label>
+													<input type="checkbox" name="assignment[stariffid][{$schema}][]" value="{$v.tariffid}"{if in_array($v.tariffid, $assignment.stariffid[$schema])} checked{/if}>
+													{$v.tariff}
+												</label>
+											</td>
+										</tr>
                                     {else}
                                         <tr>
                                             <td class="blend">
-                                                <label><input type="checkbox" data-mandatory="true" checked disabled> {$v.tariff}</label>
-                                                <input type="hidden" name="assignment[stariffid][]" value="{$v.tariffid}">
+                                                <label>
+													<input type="checkbox" data-mandatory="true" checked disabled>
+													{$v.tariff}
+												</label>
+                                                <input type="hidden" name="assignment[stariffid][{$schema}][]" value="{$v.tariffid}">
                                             </td>
                                         </tr>
                                     {/if}
@@ -151,10 +160,12 @@
                                 {foreach $items.lists as $v}
                                     <tr>
                                         <td>
-                                            <select id="{key($v)}" name="assignment[stariffid][]">
-                                                {if !isset($v.required)}<option value="0">-- wybierz --</option>{/if}
+                                            <select id="{key($v)}" name="assignment[stariffid][{$schema}][]">
+                                                {if !isset($v.required)}
+												<option value="0">{trans("- none -")}</option>
+												{/if}
                                                 {foreach $v.items as $item}
-                                                     <option value="{$item.tariffid}">{$item.tariff}</option>
+                                                     <option value="{$item.tariffid}"{if in_array($item.tariffid, $assignment.stariffid[$schema])} selected{/if}>{$item.tariff}</option>
                                                 {/foreach}
                                             </select>
                                         </td>
@@ -571,12 +582,12 @@
 
 	$( '#promotionselect' ).change( function() {
 		updatePromotionsTable();
-		
-		var t = $(this).find('option:selected').text();
+
+		var t = $(this).find('option:selected').val();
 			
-		$("[id='" + t + "']").css('display', 'table');
+		$("#schema" + t).css('display', 'table');
 	
-		$.each( $("[id='" + t + "']").find( 'input, select' ), function() {
+		$.each( $("#schema" + t).find( 'input, select' ), function() {
 			if ( $( this ).attr('data-mandatory') == undefined ) {
 				$( this ).attr('disabled', false);
 			}

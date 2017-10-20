@@ -216,10 +216,11 @@ if (isset($_POST['assignment'])) {
 				if (!$from) {
 					$error['datefrom'] = trans('Promotion start date is required!');
 				} else {
-					if (count($a['stariffid']) == 1) {
-						$a['promotiontariffid'] = $a['stariffid'][0];
+					$schemaid = isset($a['schemaid']) ? intval($a['schemaid']) : 0;
+					if (count($a['stariffid'][$schemaid]) == 1) {
+						$a['promotiontariffid'] = $a['stariffid'][$schemaid][0];
 					} else {
-						$a['promotiontariffid'] = $a['stariffid'];
+						$a['promotiontariffid'] = $a['stariffid'][$schemaid];
 					}
 
 					$a['value']     = 0;
@@ -266,10 +267,10 @@ if (isset($_POST['assignment'])) {
 
 		$DB->BeginTrans();
 
-		if (is_array($a['stariffid'])) {
+		if (is_array($a['stariffid'][$schemaid])) {
 			$copy_a = $a;
 		
-			foreach ($a['stariffid'] as $v) {
+			foreach ($a['stariffid'][$schemaid] as $v) {
 				if (!$v)
 					continue;
 
@@ -351,8 +352,10 @@ $LMS->executeHook(
 );
 
 $tmp_promo_list = $DB->GetAll('SELECT
-		   	  		              p.name as promotion_name, ps.name as schema_name, t.name as tariff_name, pa.optional,
-		   	  		              selectionid, t.id as tariffid
+									p.id AS promotion_id, p.name as promotion_name,
+									ps.id AS schema_id, ps.name as schema_name,
+									t.name as tariff_name, pa.optional,
+									selectionid, t.id as tariffid
 						       FROM promotions p
 						       	  LEFT JOIN promotionschemas ps ON p.id = ps.promotionid
 							      LEFT JOIN promotionassignments pa ON ps.id = pa.promotionschemaid
@@ -363,23 +366,25 @@ $tmp_promo_list = $DB->GetAll('SELECT
 $promotions = array();
 if (!empty($tmp_promo_list)) {
     foreach ($tmp_promo_list as $v) {
-        $p   = $v['promotion_name'];
-        $s   = $v['schema_name'];
-        $sid = $v['selectionid'];
+        $pid = $v['promotion_id'];
+    	$pn   = $v['promotion_name'];
+    	$sid = $v['schema_id'];
+        $sn   = $v['schema_name'];
+        $selid = $v['selectionid'];
 
         $promotion_item = array('tariffid' => $v['tariffid'],
         						'tariff'   => $v['tariff_name'],
                                 'value'    => $v['value'],
                                 'optional' => $v['optional'] );
 
-        if (!empty($sid)) {
+        if (!empty($selid)) {
             if ($v['optional'] == 0) {
-                $promotions[$p][$s]['lists'][$sid]['required'] = 1;
+                $promotions[$pid][$sid]['lists'][$selid]['required'] = 1;
             }
 
-            $promotions[$p][$s]['lists'][$sid]['items'][] = $promotion_item;
+            $promotions[$pid][$sid]['lists'][$selid]['items'][] = $promotion_item;
         } else {
-            $promotions[$p][$s]['single'][] = $promotion_item;
+            $promotions[$pid][$sid]['single'][] = $promotion_item;
         }
     }
 }
