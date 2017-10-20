@@ -119,6 +119,8 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to create receipt with one click near customer balance info [chilan]
   - improvement: added support for mail.reply_email configuration variable which controls
     what email address is set in Reply-To header in messageadd [chilan]
+  - improvement: phpui.promotion_activation_at_next_day configuration variable controls
+    if activation assignment is setup to next day [chilan]
 
 version 1.11.22 (2017-06-08):
 
