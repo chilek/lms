@@ -3771,7 +3771,7 @@ $_LANG['External ID'] = 'Id zewnętrzne';
 $_LANG['published document modification'] = 'modyfikowanie upublicznionych dokumentów';
 $_LANG['$a_clone'] = '$a_klon';
 
-$_LANG['Instant receipt'] = 'Szybki dokument kasowy';
+$_LANG['Instant payment'] = 'Szybka wpłata';
 $_LANG['instant payment'] = 'szybka wpłata';
 $_LANG['print'] = 'drukuj';
 
