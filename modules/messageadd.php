@@ -454,7 +454,10 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 
 			$headers['From'] = '"' . qp_encode($message['from']) . '"' . ' <' . $message['sender'] . '>';
 			$headers['Subject'] = $message['subject'];
-			$headers['Reply-To'] = $headers['From'];
+
+			$reply_email = ConfigHelper::getConfig('mail.reply_email');
+			$headers['Reply-To'] = empty($reply_email) ? $headers['From'] : $reply_email;
+
 			if (isset($message['copytosender']))
 				$headers['Cc'] = $headers['From'];
 			if (!empty($message['wysiwyg']))
