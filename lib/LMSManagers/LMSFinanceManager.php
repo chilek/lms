@@ -280,7 +280,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         							   		period = ?
                         							   LIMIT 1',
 							                           array( $tariff['name'],
-                                                              str_replace(',', '.', $value),
+                                                              empty($value) ? 0 : str_replace(',', '.', $value),
                                                               $tariff['period'] ) );
 
                     } else {
@@ -290,7 +290,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                             LIMIT 1',
                             array(
                                 $tariff['name'],
-                                str_replace(',', '.', $value),
+                                empty($value) ? 0 : str_replace(',', '.', $value),
                             )
                         );
                     }
