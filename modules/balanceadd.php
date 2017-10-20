@@ -139,15 +139,16 @@ if(isset($addbalance['mcustomerid']))
 						'contents' => $payments,
 					);
 					$rid = $LMS->AddReceipt($receipt);
-					if (!empty($rid)) {
+					if (!empty($rid) && (isset($addbalance['print']) || ConfigHelper::checkConfig('receipts.instant_payment_print'))) {
 						$which = array();
 						if (!empty($_POST['original'])) $which[] = 'original';
 						if (!empty($_POST['copy'])) $which[] = 'copy';
-						if (!empty($which) || isset($addbalance['print']))
-							$SESSION->save('receiptprint', array(
-								'receipt' => $rid,
-								'which' => implode(',', $which),
-							));
+						if (empty($which))
+							$which = explode(',', ConfigHelper::getConfig('receipts.default_printpage', 'original,copy'));
+						$SESSION->save('receiptprint', array(
+							'receipt' => $rid,
+							'which' => implode(',', $which),
+						));
 					}
 				}
 			} else
