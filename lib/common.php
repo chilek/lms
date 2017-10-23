@@ -1140,7 +1140,7 @@ function handle_file_uploads($elemid, &$error) {
 			$files = array();
 			if (isset($_FILES[$elemid]))
 				foreach ($_FILES[$elemid]['name'] as $fileidx => $filename) {
-					if (preg_match('/(\.\.|\/)/', $filename))
+					if (preg_match('/(\/\.\.|^\.\.$|\.\.\/|\/)/', $filename))
 						continue;
 					if (!empty($filename)) {
 						if (is_uploaded_file($_FILES[$elemid]['tmp_name'][$fileidx]) && $_FILES[$elemid]['size'][$fileidx]) {
