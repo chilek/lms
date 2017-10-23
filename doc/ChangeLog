@@ -125,6 +125,8 @@ version ?.??.?? (????-??-??):
     is marked for printing by default [interduo]
   - improvement: show/hide customer credentials on debit notes - notes.customer_credentials
     configuration variable [interduo]
+  - improvement: phpui.promotion_preserve_at_day configuration variable controls if assignments added
+    from promotion scheme have at day the same as given assignment day [chilan]
 
 version 1.11.22 (2017-06-08):
 
