@@ -1156,11 +1156,28 @@ function handle_file_uploads($elemid, &$error) {
 							else
 								$error[$elemid] = '';
 							switch ($_FILES[$elemid]['error'][$fileidx]) {
-								case 1:
-								case 2: $error[$elemid] .= trans('File is too large: $a', $filename); break;
-								case 3: $error[$elemid] .= trans('File upload has finished prematurely: $a', $filename); break;
-								case 4: $error[$elemid] .= trans('Path to file was not specified: $a', $filename); break;
-								default: $error[$elemid] .= trans('Problem during file upload: $a', $filename); break;
+								case UPLOAD_ERR_INI_SIZE:
+								case UPLOAD_ERR_FORM_SIZE:
+									$error[$elemid] .= trans('File is too large: $a', $filename);
+									break;
+								case UPLOAD_ERR_PARTIAL:
+									$error[$elemid] .= trans('File upload has finished prematurely: $a', $filename);
+									break;
+								case UPLOAD_ERR_NO_FILE:
+									$error[$elemid] .= trans('Path to file was not specified: $a', $filename);
+									break;
+								case UPLOAD_ERR_NO_TMP_DIR:
+									$error[$elemid] .= trans('No temporary directory for file: $a', $filename);
+									break;
+								case UPLOAD_ERR_CANT_WRITE:
+									$error[$elemid] .= trans('Unable to write file: $a', $filename);
+									break;
+								case UPLOAD_ERR_EXTENSION:
+									$error[$elemid] .= trans('File upload has finished unexpectedly: $a', $filename);
+									break;
+								default:
+									$error[$elemid] .= trans('Problem during file upload: $a', $filename);
+									break;
 							}
 						}
 					}
