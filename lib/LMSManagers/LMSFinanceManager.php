@@ -263,7 +263,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
                     $datefrom  = !empty($_datefrom) ? $_datefrom : $datefrom;
                     $_datefrom = 0;
-                    $at        = $this->CalcAt($period, $datefrom);
+                    $at        = (ConfigHelper::checkConfig('phpui.promotion_preserve_at_day') && !empty($data['at'])
+                                               ? $data['at'] : $this->CalcAt($period, $datefrom));
                     $length    = $data_schema[$idx - 1];
                     $month     = date('n', $datefrom);
                     $year      = date('Y', $datefrom);
@@ -374,7 +375,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         SYSLOG::RES_TARIFF  => $t,
                         SYSLOG::RES_CUST    => $data['customerid'],
                         'period'            => $data['period'],
-                        'at'                => $this->CalcAt($data['period'], $datefrom),
+                        'at'                => (ConfigHelper::checkConfig('phpui.promotion_preserve_at_day') && !empty($data['at'])
+                                                       ? $data['at'] : $this->CalcAt($data['period'], $datefrom)),
                         'invoice'           => !empty($data['invoice']) ? (isset($data['separateinvoice']) ? 2 : 1) : 0,
                         'settlement'        => !empty($data['settlement']) ? 1 : 0,
                         SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
