@@ -123,6 +123,8 @@ version ?.??.?? (????-??-??):
     if activation assignment is setup to next day [chilan]
   - improvement: receipts.instant_payment_print variable controls if instant payment
     is marked for printing by default [interduo]
+  - improvement: show/hide customer credentials on debit notes - notes.customer_credentials
+    configuration variable [interduo]
 
 version 1.11.22 (2017-06-08):
 
