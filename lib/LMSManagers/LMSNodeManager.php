@@ -388,7 +388,7 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				. ($status == 4 ? ' AND n.id NOT IN (
 					SELECT DISTINCT nodeid FROM nodeassignments na
 					JOIN assignments a ON a.id = na.assignmentid
-					WHERE a.suspended = 0 AND a.period IN (' . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ')
+					WHERE a.suspended = 0 AND a.commited = 1 AND a.period IN (' . implode(',', array(YEARLY, HALFYEARLY, QUARTERLY, MONTHLY, DISPOSABLE)) . ')
 						AND a.datefrom <= ?NOW? AND (a.dateto = 0 OR a.dateto >= ?NOW?)
 					)' : '')
 				. ($status == 5 ? ' AND n.location_city IS NULL' : '')

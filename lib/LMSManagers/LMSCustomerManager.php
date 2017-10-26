@@ -511,17 +511,17 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         switch($as){
             case 7: case 14: case 30:
                 $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE '
-		    .'a.suspended = 0 AND a.dateto > '.time(). ' AND a.dateto <= '. (time() + ($as*86400))
+		    .'a.suspended = 0 AND a.commited = 1 AND a.dateto > '.time(). ' AND a.dateto <= '. (time() + ($as*86400))
 		    .' AND NOT EXISTS (SELECT 1 FROM assignments aa WHERE aa.customerid = a.customerid AND aa.datefrom > a.dateto LIMIT 1)';
                 break;
             case -1:
-                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.dateto = 0';
+                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 AND a.dateto = 0';
                 break;
             case -2:
-                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND (a.dateto = 0 OR a.dateto > ' . time() . ')';
+                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended = 0 AND a.commited = 1 AND (a.dateto = 0 OR a.dateto > ' . time() . ')';
                 break;
             case -3:
-                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.invoice = 1 AND a.suspended = 0 AND (a.dateto = 0 OR a.dateto > ' . time() . ')';
+                $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.invoice = 1 AND a.suspended = 0 AND a.commited = 1 AND (a.dateto = 0 OR a.dateto > ' . time() . ')';
                 break;
             case -4:
                 $assigment = 'SELECT DISTINCT(a.customerid) FROM assignments a WHERE a.suspended != 0';
@@ -710,7 +710,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     FROM assignments a
                     LEFT JOIN tariffs t ON (t.id = a.tariffid)
                     LEFT JOIN liabilities l ON (l.id = a.liabilityid AND a.period != ' . DISPOSABLE . ')
-                    WHERE a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)
+                    WHERE a.commited = 1 AND a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)
                     GROUP BY a.customerid
                 ) t ON (t.customerid = c.id)
                 LEFT JOIN (SELECT ownerid,
@@ -758,7 +758,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 . ($withactivenodes ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id AND access = 1)' : '')
                 . ($withnodes ? ' AND EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id)' : '')
                 . ($withoutnodes ? ' AND NOT EXISTS (SELECT 1 FROM nodes WHERE ownerid = c.id)' : '')
-                . ($withoutinvoiceflag ? ' AND c.id IN (SELECT DISTINCT customerid FROM assignments WHERE invoice = 0)' : '')
+                . ($withoutinvoiceflag ? ' AND c.id IN (SELECT DISTINCT customerid FROM assignments WHERE invoice = 0 AND commited = 1)' : '')
                 . ($withoutbuildingnumber ? ' AND c.building IS NULL' : '')
                 . ($withoutzip ? ' AND c.zip IS NULL' : '')
                 . ($withoutcity ? ' AND c.city IS NULL' : '')
@@ -781,6 +781,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     WHERE c.id = a.customerid)' : '')
                 . ($tariffless ? ' AND NOT EXISTS (SELECT 1 FROM assignments a
                     WHERE a.customerid = c.id
+                    	AND a.commited = 1
                         AND datefrom <= ?NOW?
                         AND (dateto >= ?NOW? OR dateto = 0)
                         AND (tariffid IS NOT NULL OR liabilityid IS NOT NULL))' : '')
@@ -791,7 +792,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                             AND (dateto >= ?NOW? OR dateto = 0))
                         OR (datefrom <= ?NOW?
                             AND (dateto >= ?NOW? OR dateto = 0)
-                            AND suspended = 1)
+                            AND suspended = 1 AND commited = 1)
                         ))' : '')
                 . (isset($sqlsarg) ? ' AND (' . $sqlsarg . ')' : '')
                 . ($sqlord != ''  && !$count ? $sqlord . ' ' . $direction : '')

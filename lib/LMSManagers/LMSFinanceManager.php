@@ -35,7 +35,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     {
         return $this->db->GetOne('SELECT SUM(tariffs.value)
 		    FROM assignments a, tariffs
-			WHERE tariffid = tariffs.id AND customerid = ? AND suspended = 0
+			WHERE tariffid = tariffs.id AND customerid = ? AND suspended = 0 AND commited = 1
 			    AND a.datefrom <= ?NOW? AND (a.dateto > ?NOW? OR a.dateto = 0)', array($id));
     }
 
@@ -55,7 +55,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                             assignments a
                                             LEFT JOIN tariffs t     ON (a.tariffid = t.id)
                                             LEFT JOIN liabilities l ON (a.liabilityid = l.id)
-                                          WHERE a.customerid=? '
+                                          WHERE a.customerid=? AND a.commited = 1 '
                                             . (!$show_expired ? 'AND (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531)' : '') . '
                                           ORDER BY
                                             a.datefrom, t.name, value', array($id));
@@ -190,6 +190,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     public function AddAssignment($data)
     {
         $result = array();
+
+		$commited = (!isset($data['commited']) || $data['commited'] ? 1 : 0);
 
         // Create assignments according to promotion schema
         if (!empty($data['promotiontariffid']) && !empty($data['schemaid'])) {
@@ -387,7 +389,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'vdiscount'         => 0,
                         'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
                         SYSLOG::RES_LIAB    => null,
-                        'recipient_address_id' => $data['recipient_address_id'] >= 0 ? $data['recipient_address_id'] : NULL
+                        'recipient_address_id' => $data['recipient_address_id'] >= 0 ? $data['recipient_address_id'] : NULL,
+                        'commited'			=> $commited,
                     );
 
                     $result[] = $this->insertAssignment( $args );
@@ -471,8 +474,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     private function insertAssignment($args) {
     	$this->db->Execute('INSERT INTO assignments
     							(tariffid, customerid, period, at, invoice, settlement, numberplanid,
-    							paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid, recipient_address_id)
-					        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    							paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid, recipient_address_id,
+    							commited)
+					        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					        array_values($args));
 
         $id = $this->db->GetLastInsertID('assignments');
@@ -1076,7 +1080,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 . ($network ? ', COUNT(vnodes.id) AS nodescount ' : '')
                 . 'FROM assignments, customerview c '
                 . ($network ? 'LEFT JOIN vnodes ON (c.id = vnodes.ownerid) ' : '')
-                . 'WHERE c.id = customerid AND deleted = 0 AND tariffid = ? '
+                . 'WHERE c.id = customerid AND commited = 1 AND deleted = 0 AND tariffid = ? '
                 . ($network ? 'AND ((ipaddr > ' . $net['address'] . ' AND ipaddr < ' . $net['broadcast'] . ') OR (ipaddr_pub > '
                         . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . ')) ' : '')
                 . 'GROUP BY c.id, c.lastname, c.name ORDER BY c.lastname, c.name', array($id));
@@ -1097,7 +1101,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				END) AS value
 			FROM assignments a
 			JOIN tariffs t ON (t.id = a.tariffid)
-			WHERE t.id = ? AND (
+			WHERE t.id = ? AND a.commited = 1 AND (
 			            a.suspended = 1
 			            OR a.datefrom > ?NOW?
 			            OR (a.dateto <= ?NOW? AND a.dateto != 0)
@@ -1125,7 +1129,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				 END) AS value
 			FROM assignments a
 			JOIN tariffs t ON (t.id = a.tariffid)
-			WHERE tariffid = ?', array($id));
+			WHERE tariffid = ? AND commited = 1', array($id));
 
         // count of all customers with that tariff
         $result['customerscount'] = sizeof($result['customers']);
@@ -1512,6 +1516,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			quota_www_limit, quota_mail_limit, quota_sql_limit, quota_ftp_limit
 			FROM tariffs WHERE type <> ? AND type <> ? AND type <> ? AND id IN (SELECT tariffid FROM assignments
 			WHERE customerid = ? AND tariffid IS NOT NULL
+				AND commited = 1
 				AND (dateto > ?NOW? OR dateto = 0)
 				AND (datefrom < ?NOW? OR datefrom = 0))', array(TARIFF_INTERNET, TARIFF_PHONE, TARIFF_TV, $customerid))) {
 			foreach ($limits as $row) {
