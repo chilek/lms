@@ -238,6 +238,16 @@ if (isset($_POST['assignment']))
 			$error['value'] = trans('Liability value is required!');
 		elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']))
 			$error['value'] = trans('Incorrect value!');
+		elseif ($a['discount_type'] == 2 && $a['discount'] && $a['value'] - $a['discount'] < 0) {
+			$error['value'] = trans('Value less than discount are not allowed!');
+			$error['discount'] = trans('Value less than discount are not allowed!');
+		}
+	} else {
+		if ($a['discount_type'] == 2 && $a['discount']
+			&& $DB->GetOne('SELECT value FROM tariffs WHERE id = ?', array($a['tariffid'])) - $a['discount'] < 0) {
+			$error['value'] = trans('Value less than discount are not allowed!');
+			$error['discount'] = trans('Value less than discount are not allowed!');
+		}
 	}
 
 	if ($a['tarifftype'] == TARIFF_PHONE) {
