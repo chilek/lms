@@ -888,6 +888,7 @@ CREATE TABLE assignments (
 	attribute varchar(255) DEFAULT NULL,
 	recipient_address_id int(11),
 	docid int(11) DEFAULT NULL,
+	commited tinyint(1) NOT NULL DEFAULT '1',
 	PRIMARY KEY (id),
 	INDEX tariffid (tariffid),
 	INDEX customerid (customerid),
@@ -2524,7 +2525,7 @@ CREATE VIEW vnodetariffs_tariffs AS
 	JOIN assignments a ON a.id = na.assignmentid
 	JOIN tariffs t ON t.id = a.tariffid
 	LEFT JOIN vnodetariffs_allsuspended s ON s.customerid = n.ownerid
-	WHERE s.allsuspended IS NULL AND a.suspended = 0
+	WHERE s.allsuspended IS NULL AND a.suspended = 0 AND a.commited = 1
 		AND a.datefrom <= UNIX_TIMESTAMP()
 		AND (a.dateto = 0 OR a.dateto >= UNIX_TIMESTAMP())
 		AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
@@ -2565,7 +2566,7 @@ CREATE VIEW vnodealltariffs_tariffs AS
 	JOIN tariffs t ON t.id = a.tariffid
 	JOIN vnodealltariffs_nodes n ON n.ownerid = a.customerid
 	LEFT JOIN vnodetariffs_allsuspended s ON s.customerid = a.customerid
-	WHERE s.allsuspended IS NULL AND a.suspended = 0
+	WHERE s.allsuspended IS NULL AND a.suspended = 0 AND a.commited = 1
 		AND a.datefrom <= UNIX_TIMESTAMP()
 		AND (a.dateto = 0 OR a.dateto >= UNIX_TIMESTAMP())
 		AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
@@ -3249,4 +3250,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017102600');

@@ -789,6 +789,7 @@ CREATE TABLE assignments (
 		CONSTRAINT assignments_recipient_address_id_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	docid integer DEFAULT NULL
 		CONSTRAINT assignments_docid_fkey REFERENCES documents (id) ON DELETE CASCADE ON UPDATE CASCADE,
+	commited smallint DEFAULT 1 NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
@@ -2602,7 +2603,7 @@ CREATE VIEW vnodetariffs AS
 				AND (dateto = 0 OR dateto > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer)
 			GROUP BY customerid
 		) s ON s.customerid = n.ownerid
-		WHERE s.allsuspended IS NULL AND a.suspended = 0
+		WHERE s.allsuspended IS NULL AND a.suspended = 0 AND a.commited = 1
 			AND a.datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
 			AND (a.dateto = 0 OR a.dateto >= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer)
 			AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
@@ -2649,7 +2650,7 @@ CREATE VIEW vnodealltariffs AS
 				AND (dateto = 0 OR dateto > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer)
 			GROUP BY customerid
 		) s ON s.customerid = n.ownerid
-		WHERE s.allsuspended IS NULL AND a.suspended = 0
+		WHERE s.allsuspended IS NULL AND a.suspended = 0 AND a.commited = 1
 			AND a.datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
 			AND (a.dateto = 0 OR a.dateto >= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer)
 			AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
@@ -2679,7 +2680,7 @@ CREATE VIEW vnodealltariffs AS
 				AND (dateto = 0 OR dateto > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer)
 			GROUP BY customerid
 		) s ON s.customerid = a.customerid
-		WHERE s.allsuspended IS NULL AND a.suspended = 0
+		WHERE s.allsuspended IS NULL AND a.suspended = 0 AND a.commited = 1
 			AND a.datefrom <= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer
 			AND (a.dateto = 0 OR a.dateto >= EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))::integer)
 			AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
@@ -3260,6 +3261,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017101800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017102600');
 
 COMMIT;

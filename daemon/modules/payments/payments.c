@@ -563,6 +563,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 		"LEFT JOIN liabilities li ON (a.liabilityid = li.id) "
 		"LEFT JOIN vdivisions d ON (d.id = c.divisionid) "
 		"WHERE c.status = 3 AND c.deleted = 0 "
+			"AND a.commited = 1 "
 		    "AND ("
 		        "(a.period="_DISPOSABLE_" AND at=?) "
 		        "OR (("

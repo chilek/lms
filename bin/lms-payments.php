@@ -362,6 +362,7 @@ $query = "SELECT a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id
 	LEFT JOIN liabilities l ON (a.liabilityid = l.id)
 	LEFT JOIN divisions d ON (d.id = c.divisionid)
 	WHERE (c.status = ? OR c.status = ?)
+		AND a.commited = 1
 		AND ((a.period = ? AND at = ?)
 			OR ((a.period = ?
 			OR (a.period = ? AND at = ?)
@@ -423,6 +424,7 @@ $query = "SELECT
 	    WHERE
 	      (c.status  = ? OR c.status = ?) AND
 	      t.type = ? AND
+	      a.comitted = 1 AND
 		  ((a.period = ? AND at = ?) OR
 		  ((a.period = ? OR
 		  (a.period  = ? AND at = ?) OR
