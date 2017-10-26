@@ -32,6 +32,7 @@ $_LANG['Check if contact should be printed on documents'] = 'Zaznacz jeśli kont
 $_LANG['Check if would like to print cutomerlist as sending register'] = 'Zaznacz jeśli chcesz wydrukować listę klientów w formacie książki nadawczej';
 
 $_LANG['Are you sure you want to send messages to $a customer(s)?'] = 'Jesteś pewien, że chcesz wysłać wiadmości do $a klient(a/ów)?';
+$_LANG['Are you sure, you want to make instant payment for customer \\\'$a\\\'?'] = 'Czy jesteś pewien, że chcesz wykonać szybką płatność dla klienta \\\'$a\\\'?';
 
 $_LANG['Export to JPK-FA format'] = 'Eksport do formatu JPK-FA';
 $_LANG['Export to JPK-VAT format'] = 'Eksport do formatu JPK-VAT';

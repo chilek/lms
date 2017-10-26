@@ -39,7 +39,7 @@
 				<td width="1%" valign="top" nowrap>
 					{if $receipt.type == "out"}{trans("To whom:")}{else}{trans("From who:")}{/if}
 				</td>
-				<td width="99%" class="sdr"><b>{$receipt.name}<br>{$receipt.zip} {$receipt.city}, {$receipt.address}</b></td>
+				<td width="99%" class="sdr"><b>{$receipt.name}{if $receipt.address}<br>{$receipt.zip} {$receipt.city}, {$receipt.address}{/if}</b></td>
 			    </tr>
 			</table>
 		</td>
@@ -183,7 +183,7 @@
 			    <tr>
 				<td width="1%" valign="top" nowrap>
 					{if $receipt.type == "out"}{trans("To whom:")}{else}{trans("From who:")}{/if}</td>
-				<td width="99%" class="sdr"><b>{$receipt.name}<br>{$receipt.zip} {$receipt.city} {$receipt.address}</b></td>
+				<td width="99%" class="sdr"><b>{$receipt.name}{if $receipt.address}<br>{$receipt.zip} {$receipt.city}, {$receipt.address}{/if}</b></td>
 			    </tr>
 			</table>
 		</td>
