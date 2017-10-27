@@ -7,9 +7,13 @@
 	</COLGROUP>
 	<THEAD>
 	<TR class="hand lmsbox-titlebar" data-lmsbox-content="customerassignmentpanel">
-		<TD class="bold">
+		<TD>
 			<IMG src="img/money.gif" alt="">
-			{trans("Customer Liabilities:")}
+			<span class="bold">{trans("Customer Liabilities:")}</span>
+			{trans("Type:")}
+			<select id="assignment_type">
+				<option value="">{trans("- all -")}</option>
+			</select>
 		</TD>
 		<TD class="text-right nobr">
 			{if !$customerinfo.deleted}
@@ -64,7 +68,8 @@
 				{foreach $assignments as $a}
 				{block name="customerassignments-list-row"}
 				<TR class="highlight {cycle name=assign}
-					{if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today && $a.at > 365)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) && !($a.suspended)} alertblend{elseif ($a.suspended)}suspended{/if}">
+					{if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today && $a.at > 365)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) && !($a.suspended)} alertblend{elseif ($a.suspended)}suspended{/if}"
+					data-tariff-type="{$a.tarifftype}">
 					{if !$a.tariffid && !$a.liabilityid}
 					<TD colspan="7" class="bold" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
 						{trans("Suspending of all liabilities")}
@@ -135,19 +140,11 @@
 				{block name="customerassignments-list-footer"}
 				<TR>
 					<TD class="ftop text-right bold">{trans("Total:")}</TD>
-					<TD class="ftop text-right nobr">
-						{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-						{sum array=$assignments column="real_value" string_format=$LANGDEFS.$_language.money_format}
-						{/if}
-					</TD>
-					<TD class="ftop text-left nobr">
-						{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-						({sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format})
-						{/if}
-					</TD>
+					<TD class="ftop text-right nobr" id="total-value"></TD>
+					<TD class="ftop text-left nobr" id="total-disc-value"></TD>
 					<TD class="ftop">&nbsp;</TD>
-					<TD class="ftop text-right nobr">{sum array=$assignments column="real_downceil" assign=downceilsum}{if $downceilsum}{$downceilsum} kbit/s{/if}</TD>
-					<TD class="ftop text-right nobr">{sum array=$assignments column="real_upceil" assign=upceilsum}{if $upceilsum}{$upceilsum} kbit/s{/if}</TD>
+					<TD class="ftop text-right nobr" id="total-downceil"></TD>
+					<TD class="ftop text-right nobr" id="total-upceil"></TD>
 					<TD class="ftop text-right nobr" colspan="3">
 						<A id="delete-assignments">{trans("Delete")} <img src="img/delete.gif" alt="{trans("Delete")}"></A>
 						<label>
@@ -182,5 +179,116 @@
 <!--
 	if (getCookie('customerassignmentpanel') == '1')
 		document.getElementById('customerassignmentpanel').style.display = '';
+
+	var tariff_types = [];
+	{foreach $_TARIFFTYPES as $type => $name}
+	tariff_types[{$type}] = '{$name}';
+	{/foreach}
+
+	{$total_downceils=array()}
+	{$total_upceils=array()}
+	{$total_values=array()}
+	{$total_disc_values=array()}
+	{foreach $assignments as $a}
+		{if !isset($total_downceils[$a.tarifftype])}
+		{$total_downceils[$a.tarifftype] = 0}
+		{/if}
+		{$total_downceils[$a.tarifftype] = $total_downceils[$a.tarifftype] + $a.real_downceil}
+
+		{if !isset($total_upceils[$a.tarifftype])}
+		{$total_upceils[$a.tarifftype] = 0}
+		{/if}
+		{$total_upceils[$a.tarifftype] = $total_upceils[$a.tarifftype] + $a.real_upceil}
+
+		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+
+		{if !isset($total_values[$a.tarifftype])}
+		{$total_values[$a.tarifftype] = 0}
+		{/if}
+		{$total_values[$a.tarifftype] = $total_values[$a.tarifftype] + $a.real_value}
+
+		{if !isset($total_disc_values[$a.tarifftype])}
+		{$total_disc_values[$a.tarifftype] = 0}
+		{/if}
+		{$total_disc_values[$a.tarifftype] = $total_disc_values[$a.tarifftype] + $a.real_disc_value}
+
+		{/if}
+	{/foreach}
+
+	var total_downceil = '{sum array=$assignments column="real_downceil" assign=downceilsum}{if $downceilsum}{$downceilsum} kbit/s{/if}';
+	$('#total-downceil').html(total_downceil);
+
+	var total_downceils = [];
+	{foreach $total_downceils as $tarifftype => $downceil}
+	total_downceils[{$tarifftype}] = '{if $downceil}{$downceil} kbit/s{/if}';
+	{/foreach}
+
+	var total_upceil = '{sum array=$assignments column="real_upceil" assign=upceilsum}{if $upceilsum}{$upceilsum} kbit/s{/if}';
+	$('#total-upceil').html(total_upceil);
+
+	var total_upceils = [];
+	{foreach $total_upceils as $tarifftype => $upceil}
+	total_upceils[{$tarifftype}] = '{if $upceil}{$upceil} kbit/s{/if}';
+	{/foreach}
+
+
+	{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+
+	var total_value = '{sum array=$assignments column="real_value" string_format=$LANGDEFS.$_language.money_format}';
+	$('#total-value').html(total_value);
+
+	var total_values = [];
+	{foreach $total_values as $tarifftype => $value}
+	total_values[{$tarifftype}] = '{sprintf($LANGDEFS.$_language.money_format, $value)}';
+	{/foreach}
+
+	var total_disc_value = '({sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format})';
+	$('#total-disc-value').html(total_disc_value);
+
+	var total_disc_values = [];
+	{foreach $total_disc_values as $tarifftype => $value}
+	total_disc_values[{$tarifftype}] = '({sprintf($LANGDEFS.$_language.money_format, $value)})';
+	{/foreach}
+
+	{/if}
+
+
+	var assignment_types = [];
+	$('tr[data-tariff-type]').each(function() {
+		var tariff_type = $(this).attr('data-tariff-type');
+		if (assignment_types.indexOf(tariff_type) == -1)
+			assignment_types.push(tariff_type);
+	});
+
+	$.each(assignment_types, function(key, value) {
+		$('#assignment_type').append('<option value="' + value + '">' + tariff_types[value] + '</option>');
+	});
+
+	$('#assignment_type').change(function() {
+		var type = $(this).val();
+		if (type.length) {
+			$('tr[data-tariff-type]').hide();
+			$('tr[data-tariff-type="' + type + '"]').show();
+			$('#total-downceil').html(total_downceils[type]);
+			$('#total-upceil').html(total_upceils[type]);
+			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+			$('#total-value').html(total_values[type]);
+			$('#total-disc-value').html(total_disc_values[type]);
+			{/if}
+		} else {
+			$('tr[data-tariff-type]').show();
+			$('#total-downceil').html(total_downceil);
+			$('#total-upceil').html(total_upceil);
+			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+			$('#total-value').html(total_value);
+			$('#total-disc-value').html(total_disc_value);
+			{/if}
+		}
+		var backgrounds = ['lucid', 'light'];
+		$('tr[data-tariff-type]').removeClass(backgrounds.join(' '));
+		$('tr[data-tariff-type]:visible').each(function(key, value) {
+			$(this).addClass(backgrounds[key & 1]);
+		});
+	});
 //-->
 </SCRIPT>

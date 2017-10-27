@@ -131,6 +131,7 @@ version ?.??.?? (????-??-??):
   - enhancement: assignments can be commited together with document closing/commiting [chilan]
   - improvement: if there is only one division in database we use its properties
     for receipt division header [chilan]
+  - enhancement: allow to visually filter customer assignments by tariff type [chilan]
 
 version 1.11.22 (2017-06-08):
 
