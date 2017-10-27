@@ -128,6 +128,7 @@ version ?.??.?? (????-??-??):
   - improvement: phpui.promotion_preserve_at_day configuration variable controls if assignments added
     from promotion scheme have at day the same as given assignment day [chilan]
   - improvement: downrates and uprates don't need upper limit [chilan]
+  - enhancement: assignments can be commited together with document closing/commiting [chilan]
 
 version 1.11.22 (2017-06-08):
 
