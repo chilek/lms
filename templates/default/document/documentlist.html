@@ -97,61 +97,79 @@
 	</TR>
 	<TR>
 		<TD colspan="5">
-				<span class="bold">{trans("Filter:")}</span> {trans("Customer:")}
-					{customerlist form="page" customers=$customers selected=$listdata.customer selectname="customer" inputname="c" firstoption="- all customers -"}
-				&nbsp;{trans("Type:")}
-				<SELECT size="1" name="t" ONCHANGE="filter()">
-					<OPTION value="0"{if !$listdata.type} SELECTED {/if}>{trans("- all -")}</OPTION>
-					{foreach from=$_DOCTYPES key=key item=item}{if $key < 0}
-					<OPTION VALUE="{$key}"{if $listdata.type==$key} SELECTED{/if}>{$item}</OPTION>
-					{/if}{/foreach}
-				</SELECT>&nbsp;
-				{trans("User:")}&nbsp;
-				{if empty($users)}
-				<input type="hidden" name="usertype" value="">
-				<input type="hidden" name="u" value="">
-				{else}
-				<SELECT name="usertype" onchange="filter()">
-					<option value="creator"{if empty($listdata.usertype) || $listdata.usertype == 'creator'} selected{/if}>{trans("creator")}</option>
-					<option value="authorising"{if $listdata.usertype == 'authorising'} selected{/if}>{trans("authorising")}</option>
-				</SELECT>&nbsp;
-				<SELECT name="u" onchange="filter()">
-					<option value=""{if empty($listdata.userid)} selected{/if}>{trans("- all -")}</option>
-					{foreach $users as $user}
-					<option value="{$user.id}"{if $user.id == $listdata.userid} selected{/if}>{$user.name}</option>
-					{/foreach}
-				</SELECT>
-				{/if}
-				<span class="bold">{trans("Period:")}</span>&nbsp;
-				<SELECT name="periodtype" ONCHANGE="filter()">
-					<OPTION value="creationdate"{if empty($listdata.periodtype) || $listdata.periodtype == 'creationdate'} selected{/if}>{trans("creation date")}</OPTION>
-					<OPTION value="confirmationdate"{if $listdata.periodtype == 'confirmationdate'} selected{/if}>{trans("confirmation date")}</OPTION>
-					<OPTION value="fromdate"{if $listdata.periodtype == 'fromdate'} selected{/if}>{trans("'from' date")}</OPTION>
-					<OPTION value="todate"{if $listdata.periodtype == 'todate'} selected{/if}>{trans("'to' date")}</OPTION>
-				</SELECT>
-				{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
-				{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
+			<table>
+				<tr>
+					<td>
+						<table>
+							<tr>
+								<td>
+									<span class="bold">{trans("Filter:")}</span> {trans("Customer:")}
+										{customerlist form="page" customers=$customers selected=$listdata.customer selectname="customer" inputname="c" firstoption="- all customers -"}
+									&nbsp;{trans("Type:")}
+									<SELECT size="1" name="t" ONCHANGE="filter()">
+										<OPTION value="0"{if !$listdata.type} SELECTED {/if}>{trans("- all -")}</OPTION>
+										{foreach from=$_DOCTYPES key=key item=item}{if $key < 0}
+										<OPTION VALUE="{$key}"{if $listdata.type==$key} SELECTED{/if}>{$item}</OPTION>
+										{/if}{/foreach}
+									</SELECT>&nbsp;
+									{trans("User:")}&nbsp;
+									{if empty($users)}
+									<input type="hidden" name="usertype" value="">
+									<input type="hidden" name="u" value="">
+									{else}
+									<SELECT name="usertype" onchange="filter()">
+										<option value="creator"{if empty($listdata.usertype) || $listdata.usertype == 'creator'} selected{/if}>{trans("creator")}</option>
+										<option value="authorising"{if $listdata.usertype == 'authorising'} selected{/if}>{trans("authorising")}</option>
+									</SELECT>&nbsp;
+									<SELECT name="u" onchange="filter()">
+										<option value=""{if empty($listdata.userid)} selected{/if}>{trans("- all -")}</option>
+										{foreach $users as $user}
+										<option value="{$user.id}"{if $user.id == $listdata.userid} selected{/if}>{$user.name}</option>
+										{/foreach}
+									</SELECT>
+									{/if}
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span class="bold">{trans("Period:")}</span>&nbsp;
+									<SELECT name="periodtype" ONCHANGE="filter()">
+										<OPTION value="creationdate"{if empty($listdata.periodtype) || $listdata.periodtype == 'creationdate'} selected{/if}>{trans("creation date")}</OPTION>
+										<OPTION value="confirmationdate"{if $listdata.periodtype == 'confirmationdate'} selected{/if}>{trans("confirmation date")}</OPTION>
+										<OPTION value="fromdate"{if $listdata.periodtype == 'fromdate'} selected{/if}>{trans("'from' date")}</OPTION>
+										<OPTION value="todate"{if $listdata.periodtype == 'todate'} selected{/if}>{trans("'to' date")}</OPTION>
+									</SELECT>
+									{trans("from")}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" maxlength="10" value="{if $listdata.from > 0}{$listdata.from|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>
+									{trans("to")}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" maxlength="10" value="{if $listdata.to > 0}{$listdata.to|date_format:"%Y/%m/%d"}{/if}" {tip class="calendar" text="Enter date in YYYY/MM/DD format (empty field means no limit) or click to choose it from calendar"}>&nbsp;
 
-				{if count($numberplans) > 0}
-					{trans("Number plan:")}
-					<SELECT name="p" onChange="filter()" {tip text="Select numbering plan"}>
-						<OPTION value="0">- {trans("all")} -</OPTION>
-						{foreach $numberplans as $plan}
-						{$period = $plan.period}
-						<OPTION value="{$plan.id}"{if $listdata.numberplan == $plan.id} selected{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate customerid=$listdata.customer} ({$_NUM_PERIODS.$period})</OPTION>
-						{/foreach}
-					</SELECT>&nbsp;
-				{else}
-					<input type="hidden" name="p" value="0">
-				{/if}
+									{if count($numberplans) > 0}
+									{trans("Number plan:")}
+									<SELECT name="p" onChange="filter()" {tip text="Select numbering plan"}>
+										<OPTION value="0">- {trans("all")} -</OPTION>
+										{foreach $numberplans as $plan}
+										{$period = $plan.period}
+										<OPTION value="{$plan.id}"{if $listdata.numberplan == $plan.id} selected{/if}>{number number=$plan.next template=$plan.template time=$invoice.cdate customerid=$listdata.customer} ({$_NUM_PERIODS.$period})</OPTION>
+										{/foreach}
+									</SELECT>&nbsp;
+									{else}
+									<input type="hidden" name="p" value="0">
+									{/if}
 
-				{trans("Status:")}
-				<SELECT name="s" onChange="filter()" {tip text="Select document status"}>
-					<OPTION value="-1">- {trans("all")} - </OPTION>
-					<OPTION value="0"{if $listdata.status == 0} selected{/if}>{trans("unconfirmed")}</OPTION>
-					<OPTION value="1"{if $listdata.status == 1} selected{/if}>{trans("confirmed")}</OPTION>
-				</SELECT>&nbsp;
-				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>&nbsp;
+									{trans("Status:")}
+									<SELECT name="s" onChange="filter()" {tip text="Select document status"}>
+										<OPTION value="-1">- {trans("all")} - </OPTION>
+										<OPTION value="0"{if $listdata.status == 0} selected{/if}>{trans("unconfirmed")}</OPTION>
+										<OPTION value="1"{if $listdata.status == 1} selected{/if}>{trans("confirmed")}</OPTION>
+									</SELECT>&nbsp;
+								</td>
+							</tr>
+						</table>
+					</td>
+					<td>
+						<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>&nbsp;
+					</td>
+				</tr>
+			</table>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
