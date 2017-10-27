@@ -366,6 +366,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 		if (empty($docs))
 			return;
 
+		$this->db->BeginTrans();
+
 		foreach ($docs as $docid => $doc) {
 			$this->db->Execute('UPDATE documents SET sdate=?NOW?, cuserid=?, closed=1 WHERE id=?',
 				array($userid, $docid));
@@ -390,6 +392,8 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 			$this->db->Execute('UPDATE assignments SET commited = 1 WHERE docid = ? AND commited = 0',
 				array($docid));
 		}
+
+		$this->db->CommitTrans();
 	}
 
 }
