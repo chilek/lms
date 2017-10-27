@@ -358,9 +358,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 		if (empty($ids))
 			return;
 
-		$docs = $this->db->GetAllByKey('SELECT d.id, dc.datefrom, d.reference FROM documents d
+		$docs = $this->db->GetAllByKey('SELECT d.id, dc.fromdate AS datefrom, d.reference FROM documents d
 				JOIN documentcontents dc ON dc.docid = d.id
-				JOIN docrights r ON r.doctype = d.doctype
+				JOIN docrights r ON r.doctype = d.type
 				WHERE d.id IN (' . implode(',', $ids) . ') AND r.userid = ? AND (r.rights & 4) > 0',
 			'id', array($userid));
 		if (empty($docs))
