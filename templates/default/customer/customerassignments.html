@@ -190,6 +190,10 @@
 	{$total_values=array()}
 	{$total_disc_values=array()}
 	{foreach $assignments as $a}
+		{if $a.tarifftype == ''}
+		{continue}
+		{/if}
+		
 		{if !isset($total_downceils[$a.tarifftype])}
 		{$total_downceils[$a.tarifftype] = 0}
 		{/if}
@@ -256,7 +260,7 @@
 	var assignment_types = [];
 	$('tr[data-tariff-type]').each(function() {
 		var tariff_type = $(this).attr('data-tariff-type');
-		if (assignment_types.indexOf(tariff_type) == -1)
+		if (tariff_type.length && assignment_types.indexOf(tariff_type) == -1)
 			assignment_types.push(tariff_type);
 	});
 
