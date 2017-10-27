@@ -50,7 +50,7 @@
 	<TR>
 		<TD><IMG src="img/docum.gif" ALT=""></TD>
 		<TD class="nobr">{trans("Reference document:")}</TD>
-		<TD class="nobr">{if $assignment.document}{$assignment.document}{else}{trans("none")}{/if}</TD>
+		<TD>{if $assignment.document}{$assignment.document}{else}{trans("none")}{/if}</TD>
 	</TR>
     </TBODY>
 </TABLE>
