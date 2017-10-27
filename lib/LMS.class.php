@@ -2379,6 +2379,11 @@ class LMS
         return $manager->DocumentExists($properties);
     }
 
+	public function CommitDocuments(array $ids) {
+		$manager = $this->getDocumentManager();
+		return $manager->CommitDocuments($ids);
+	}
+
     /*
      *  Location
      */

@@ -351,4 +351,17 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 			array($start, $end, $doctype, $number, $planid)) ? true : false;
     }
 
+    public function CommitDocuments(array $ids) {
+		$userid = Auth::GetCurrentUser();
+
+		foreach ($ids as $id) {
+			$this->db->Execute('UPDATE documents SET sdate=?NOW?, cuserid=?, closed=1 WHERE id=?
+			AND EXISTS (SELECT 1 FROM docrights r WHERE r.userid = ?
+				AND r.doctype = documents.type AND (r.rights & 4) > 0)',
+				array($userid, $id, $userid));
+			$this->db->Execute('UPDATE assignments SET commited = 1 WHERE docid = ? AND commited = 0',
+				array($id));
+		}
+	}
+
 }

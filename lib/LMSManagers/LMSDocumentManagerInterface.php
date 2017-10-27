@@ -39,4 +39,6 @@ interface LMSDocumentManagerInterface
     public function GetNewDocumentNumber($properties);
 
     public function DocumentExists($properties);
+
+	public function CommitDocuments(array $ids);
 }

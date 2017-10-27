@@ -26,21 +26,18 @@
 
 $userid = Auth::GetCurrentUser();
 
-if(isset($_GET['action']) && $_GET['action'] == 'confirm')
-{
-	if(!empty($_POST['marks']))
-	{
-	        foreach($_POST['marks'] as $id => $mark)
-			$DB->Execute('UPDATE documents SET sdate=?NOW?, cuserid=?, closed=1 WHERE id=?
-				AND EXISTS (SELECT 1 FROM docrights r WHERE r.userid = ?
-					AND r.doctype = documents.type AND (r.rights & 4) = 4)',
-				array($userid, $mark, $userid));
-	}
+if (isset($_GET['action']) && $_GET['action'] == 'confirm') {
+	if (!empty($_POST['marks']))
+		$ids = $_POST['marks'];
 	else
+		$ids = array($_GET['id']);
+
+	$LMS->CommitDocuments($ids);
+	foreach ($ids as $id)
 		$DB->Execute('UPDATE documents SET sdate=?NOW?, cuserid=?, closed=1 WHERE id=?
 			AND EXISTS (SELECT 1 FROM docrights r WHERE r.userid = ?
 				AND r.doctype = documents.type AND (r.rights & 4) = 4)',
-			array($userid, $_GET['id'], $userid));
+			array($userid, $id, $userid));
 
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
