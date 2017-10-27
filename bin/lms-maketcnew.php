@@ -206,7 +206,7 @@ $query .= "SELECT t.downrate AS downrate, t.downceil AS downceil, t.uprate AS up
 	JOIN assignments a ON (na.assignmentid = a.id)
 	LEFT JOIN (
 		SELECT customerid, COUNT(id) AS allsuspended FROM assignments
-		WHERE a.tariffid IS NULL AND a.liabilityid IS NULL
+		WHERE tariffid IS NULL AND liabilityid IS NULL
 			AND datefrom <= ?NOW? AND (dateto = 0 OR dateto > ?NOW?)
 		GROUP BY customerid
 	) s ON s.customerid = a.customerid
@@ -234,7 +234,7 @@ if ($all_assignments)
 	FROM assignments a
 	LEFT JOIN (
 		SELECT customerid, COUNT(id) AS allsuspended FROM assignments
-		WHERE a.tariffid IS NULL AND a.liabilityid IS NULL
+		WHERE tariffid IS NULL AND liabilityid IS NULL
 			AND datefrom <= ?NOW? AND (dateto = 0 OR dateto > ?NOW?)
 		GROUP BY customerid
 	) s ON s.customerid = a.customerid
