@@ -230,10 +230,10 @@ if (empty($ids)) {
 
 $ids = $this->GetCol("SELECT id FROM cashimport");
 if (empty($ids)) {
-	$this->Execute("DELETE FROM cash");
+	$this->Execute("DELETE FROM cash WHERE importid > 0");
 } else {
 	$sql_ids = implode(',', $ids);
-	$this->Execute("DELETE FROM cash WHERE importid NOT IN (" . $sql_ids . ")");
+	$this->Execute("DELETE FROM cash WHERE importid > 0 AND importid NOT IN (" . $sql_ids . ")");
 }
 
 $ids = $this->GetCol("SELECT id FROM cashsources");
