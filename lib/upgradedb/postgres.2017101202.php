@@ -233,12 +233,13 @@ if (empty($ids)) {
 		WHERE liabilityid IS NOT NULL AND liabilityid NOT IN (" . $sql_ids . ")");
 }
 
+$this->Execute("UPDATE cash SET importid = NULL WHERE importid = 0");
 $ids = $this->GetCol("SELECT id FROM cashimport");
 if (empty($ids)) {
-	$this->Execute("DELETE FROM cash WHERE importid > 0");
+	$this->Execute("DELETE FROM cash WHERE importid IS NOT NULL");
 } else {
 	$sql_ids = implode(',', $ids);
-	$this->Execute("DELETE FROM cash WHERE importid > 0 AND importid NOT IN (" . $sql_ids . ")");
+	$this->Execute("DELETE FROM cash WHERE importid IS NOT NULL AND importid NOT IN (" . $sql_ids . ")");
 }
 
 $ids = $this->GetCol("SELECT id FROM cashsources");
