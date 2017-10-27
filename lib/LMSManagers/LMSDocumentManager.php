@@ -358,7 +358,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 		if (empty($ids))
 			return;
 
-		$docs = $this->db->GetAllByKey('SELECT d.id, dc.fromdate AS datefrom, d.reference FROM documents d
+		$docs = $this->db->GetAllByKey('SELECT d.id, d.customerid, dc.fromdate AS datefrom, d.reference FROM documents d
 				JOIN documentcontents dc ON dc.docid = d.id
 				JOIN docrights r ON r.doctype = d.type
 				WHERE d.id IN (' . implode(',', $ids) . ') AND r.userid = ? AND (r.rights & 4) > 0',
@@ -374,20 +374,21 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 
 			$reference = $doc['reference'];
 			$datefrom = $doc['datefrom'];
+			$customerid = $doc['customerid'];
 
 			// usunięcie dotychczasowych zobowiązań, które zaczynają obowiązywać
 			// po dacie rozpoczęcia nowej umowy
 			$this->db->Execute('DELETE FROM assignments
-				WHERE commited = 1 AND datefrom > ?' . (empty($reference) ? '' : ' AND docid = ' . $reference),
-				array($datefrom));
+				WHERE customerid = ? AND commited = 1 AND datefrom > ?' . (empty($reference) ? '' : ' AND docid = ' . $reference),
+				array($customerid, $datefrom));
 
 			// uaktualnienie dotychczasowych zobowiązań, które zaczynają obowiązywać
 			// przed datą rozpoczęcia nowej umowy, a przestają obowiązywać po dacie
 			// rozpoczęcia nowej umowy
 			$this->db->Execute('UPDATE assignments SET dateto = ?
-				WHERE commited = 1 AND datefrom < ? AND (dateto > ? OR dateto = 0)'
+				WHERE customerid = ? AND commited = 1 AND datefrom < ? AND (dateto > ? OR dateto = 0)'
 				. (empty($reference) ? '' : ' AND docid = ' . $reference),
-				array($datefrom - 86400, $datefrom, $datefrom));
+				array($datefrom - 86400, $customerid, $datefrom, $datefrom));
 
 			$this->db->Execute('UPDATE assignments SET commited = 1 WHERE docid = ? AND commited = 0',
 				array($docid));

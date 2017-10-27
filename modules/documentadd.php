@@ -255,7 +255,7 @@ if (isset($_POST['document'])) {
 				($division['inv_cplace'] ? $division['inv_cplace'] : ''),
 				isset($document['closed']) ? 1 : 0,
 				$fullnumber,
-				!isset($document['reference']) || empty($document['reference']) ? null : $document['reference'],
+				!isset($document['reference']) || empty($document['reference']) ? null : $document['reference']['id'],
 				empty($document['templ']) ? null : $document['templ'],
 		));
 
