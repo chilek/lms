@@ -204,11 +204,17 @@ $query .= "SELECT t.downrate AS downrate, t.downceil AS downceil, t.uprate AS up
 	TRIM(" . $DB->Concat('c.lastname', "' '", 'c.name') . ") AS customer
 	FROM nodeassignments na
 	JOIN assignments a ON (na.assignmentid = a.id)
+	LEFT JOIN (
+		SELECT customerid, COUNT(id) AS allsuspended FROM assignments
+		WHERE a.tariffid IS NULL AND a.liabilityid IS NULL
+			AND datefrom <= ?NOW? AND (dateto = 0 OR dateto > ?NOW?)
+		GROUP BY customerid
+	) s ON s.customerid = a.customerid
 	JOIN tariffs t ON (a.tariffid = t.id)
 	JOIN vnodes n ON (na.nodeid = n.id)
 	JOIN customers c ON (a.customerid = c.id)
-	WHERE a.datefrom <= ?NOW?
-		AND (a.dateto >= ?NOW? OR a.dateto = 0)
+	WHERE s.allsuspended IS NULL AND a.suspended = 0 AND a.commited = 1
+		AND a.datefrom <= ?NOW? AND (a.dateto >= ?NOW? OR a.dateto = 0)
 		AND n.access = 1
 		AND (t.downrate > 0 OR t.downceil > 0 OR t.uprate > 0 OR t.upceil > 0)
 		AND n.netid IN (" . implode(',', array_keys($networks)) . ")"
@@ -226,6 +232,12 @@ if ($all_assignments)
 		a.id AS assignmentid, a.customerid,
 		TRIM(" . $DB->Concat('lastname', "' '", 'c.name') . ") AS customer
 	FROM assignments a
+	LEFT JOIN (
+		SELECT customerid, COUNT(id) AS allsuspended FROM assignments
+		WHERE a.tariffid IS NULL AND a.liabilityid IS NULL
+			AND datefrom <= ?NOW? AND (dateto = 0 OR dateto > ?NOW?)
+		GROUP BY customerid
+	) s ON s.customerid = a.customerid
 	JOIN tariffs t ON t.id = a.tariffid
 	JOIN customers c ON c.id = a.customerid
 	JOIN (
@@ -236,7 +248,8 @@ if ($all_assignments)
 		WHERE (vn.ownerid > 0 AND nd.id IS NULL)
 			OR (vn.ownerid IS NULL AND nd.id IS NOT NULL)
 	) n ON n.ownerid = c.id
-	WHERE n.id NOT IN (SELECT DISTINCT nodeid FROM nodeassignments)
+	WHERE s.allsuspended IS NULL AND a.suspended = 0 AND a.commited = 1
+		AND n.id NOT IN (SELECT DISTINCT nodeid FROM nodeassignments)
 		AND a.id NOT IN (SELECT DISTINCT assignmentid FROM nodeassignments)
 		AND a.datefrom <= ?NOW?
 		AND (a.dateto >= ?NOW? OR a.dateto = 0)
