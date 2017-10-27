@@ -354,13 +354,40 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
     public function CommitDocuments(array $ids) {
 		$userid = Auth::GetCurrentUser();
 
-		foreach ($ids as $id) {
-			$this->db->Execute('UPDATE documents SET sdate=?NOW?, cuserid=?, closed=1 WHERE id=?
-			AND EXISTS (SELECT 1 FROM docrights r WHERE r.userid = ?
-				AND r.doctype = documents.type AND (r.rights & 4) > 0)',
-				array($userid, $id, $userid));
+		$ids = array_filter($ids, 'intval');
+		if (empty($ids))
+			return;
+
+		$docs = $this->db->GetAllByKey('SELECT d.id, dc.datefrom, d.reference FROM documents d
+				JOIN documentcontents dc ON dc.docid = d.id
+				JOIN docrights r ON r.doctype = d.doctype
+				WHERE d.id IN (' . implode(',', $ids) . ') AND r.userid = ? AND (r.rights & 4) > 0',
+			'id', array($userid));
+		if (empty($docs))
+			return;
+
+		foreach ($docs as $docid => $doc) {
+			$this->db->Execute('UPDATE documents SET sdate=?NOW?, cuserid=?, closed=1 WHERE id=?',
+				array($userid, $docid));
 			$this->db->Execute('UPDATE assignments SET commited = 1 WHERE docid = ? AND commited = 0',
-				array($id));
+				array($docid));
+
+			$reference = $doc['reference'];
+			$datefrom = $doc['datefrom'];
+
+			// usunięcie dotychczasowych zobowiązań, które zaczynają obowiązywać
+			// po dacie rozpoczęcia nowej umowy
+			$this->db->Execute('DELETE FROM assignments
+				WHERE datefrom > ?' . (empty($reference) ? '' : ' AND docid = ' . $reference),
+				array($datefrom));
+
+			// uaktualnienie dotychczasowych zobowiązań, które zaczynają obowiązywać
+			// przed datą rozpoczęcia nowej umowy, a przestają obowiązywać po dacie
+			// rozpoczęcia nowej umowy
+			$this->db->Execute('UPDATE assignments SET dateto = ?
+				WHERE datefrom < ? AND (dateto > ? OR dateto = 0)'
+				. (empty($reference) ? '' : ' AND docid = ' . $reference),
+				array($datefrom - 86400, $datefrom, $datefrom));
 		}
 	}
 
