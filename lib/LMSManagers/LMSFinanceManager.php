@@ -50,11 +50,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                             a.attribute, a.liabilityid, t.uprate, t.upceil,
                                             t.downceil, t.downrate,
                                             (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) AS value,
-                                            (CASE WHEN t.name IS NULL THEN l.name ELSE t.name END) AS name
+                                            (CASE WHEN t.name IS NULL THEN l.name ELSE t.name END) AS name,
+                                            d.number AS docnumber, d.type AS doctype, d.cdate, np.template
                                           FROM
                                             assignments a
                                             LEFT JOIN tariffs t     ON (a.tariffid = t.id)
                                             LEFT JOIN liabilities l ON (a.liabilityid = l.id)
+                                            LEFT JOIN documents d ON d.id = a.docid
+                                            LEFT JOIN numberplans np ON np.id = d.numberplanid
                                           WHERE a.customerid=? AND a.commited = 1 '
                                             . (!$show_expired ? 'AND (a.dateto > ' . $now . ' OR a.dateto = 0) AND (a.at >= ' . $now . ' OR a.at < 531)' : '') . '
                                           ORDER BY
@@ -96,6 +99,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         $row['period'] = trans('yearly');
                         break;
                 }
+
+				$row['docnumber'] = docnumber(array(
+					'number' => $row['docnumber'],
+					'template' => $row['numtemplate'],
+					'cdate' => $row['cdate'],
+					'customerid' => $id,
+				));
 
                 $assignments[$idx] = $row;
 
