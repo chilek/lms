@@ -369,8 +369,6 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 		foreach ($docs as $docid => $doc) {
 			$this->db->Execute('UPDATE documents SET sdate=?NOW?, cuserid=?, closed=1 WHERE id=?',
 				array($userid, $docid));
-			$this->db->Execute('UPDATE assignments SET commited = 1 WHERE docid = ? AND commited = 0',
-				array($docid));
 
 			$reference = $doc['reference'];
 			$datefrom = $doc['datefrom'];
@@ -378,16 +376,19 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 			// usunięcie dotychczasowych zobowiązań, które zaczynają obowiązywać
 			// po dacie rozpoczęcia nowej umowy
 			$this->db->Execute('DELETE FROM assignments
-				WHERE datefrom > ?' . (empty($reference) ? '' : ' AND docid = ' . $reference),
+				WHERE commited = 1 AND datefrom > ?' . (empty($reference) ? '' : ' AND docid = ' . $reference),
 				array($datefrom));
 
 			// uaktualnienie dotychczasowych zobowiązań, które zaczynają obowiązywać
 			// przed datą rozpoczęcia nowej umowy, a przestają obowiązywać po dacie
 			// rozpoczęcia nowej umowy
 			$this->db->Execute('UPDATE assignments SET dateto = ?
-				WHERE datefrom < ? AND (dateto > ? OR dateto = 0)'
+				WHERE commited = 1 AND datefrom < ? AND (dateto > ? OR dateto = 0)'
 				. (empty($reference) ? '' : ' AND docid = ' . $reference),
 				array($datefrom - 86400, $datefrom, $datefrom));
+
+			$this->db->Execute('UPDATE assignments SET commited = 1 WHERE docid = ? AND commited = 0',
+				array($docid));
 		}
 	}
 
