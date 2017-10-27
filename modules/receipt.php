@@ -36,6 +36,12 @@ function GetReceipt($id) {
 				LEFT JOIN customers c ON (d.customerid = c.id)
 				LEFT JOIN vdivisions ds ON (ds.id = c.divisionid)
 				WHERE d.type = 2 AND d.id = ?', array($id))) {
+		// if division for receipt is not defined and there is only one division in database
+		// we try to use this division
+		if (empty($receipt['d_name']) && $db->GetOne('SELECT COUNT(*) FROM divisions') == 1)
+			$receipt = array_merge($receipt, $db->GetRow('SELECT name AS d_name, address AS d_address,
+				zip AS d_zip, city AS d_city FROM vdivisions'));
+
 		$receipt['contents'] = $db->GetAll('SELECT * FROM receiptcontents WHERE docid = ? ORDER BY itemid', array($id));
 		$receipt['total'] = 0;
 
