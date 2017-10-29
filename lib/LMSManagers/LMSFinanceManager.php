@@ -30,6 +30,11 @@
  */
 class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 {
+    public function GetPromotionNameBySchemaID($id)
+    {
+        return $this->db->GetOne('SELECT p.name FROM promotionschemas AS s
+		LEFT JOIN promotions AS p ON s.promotionid = p.id WHERE s.id = ?', array($id));
+    }
     public function GetPromotionNameByID($id)
     {
         return $this->db->GetOne('SELECT name FROM promotions WHERE id=?', array($id));

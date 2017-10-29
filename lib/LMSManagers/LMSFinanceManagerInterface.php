@@ -32,6 +32,8 @@
  */
 interface LMSFinanceManagerInterface
 {
+    public function GetPromotionNameBySchemaID($id);
+
     public function GetPromotionNameByID($id);
 
     public function GetCustomerTariffsValue($id);
