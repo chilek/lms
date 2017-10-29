@@ -942,6 +942,12 @@ class LMS
      *  Tarrifs and finances
      */
 
+    public function GetPromotionNameByID($id)
+    {
+        $manager = $this->getFinanceManager();
+        return $manager->GetPromotionNameByID($id);
+    }
+
     public function GetCustomerTariffsValue($id)
     {
         $manager = $this->getFinanceManager();

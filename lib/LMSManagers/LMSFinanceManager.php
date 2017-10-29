@@ -30,6 +30,10 @@
  */
 class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 {
+    public function GetPromotionNameByID($id)
+    {
+        return $this->db->GetOne('SELECT name FROM promotions WHERE id=?', array($id));
+    }
 
     public function GetCustomerTariffsValue($id)
     {
