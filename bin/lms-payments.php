@@ -604,7 +604,7 @@ foreach ($assigns as $assign) {
 					recipient_address_id)
 					VALUES(?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 					array($numbers[$plan], $plan,
-					$customer['countryid'] ? $customer['countryid'] : 0,
+					$customer['countryid'] ? $customer['countryid'] : null,
 					$customer['divisionid'], $cid,
 					$customer['lastname']." ".$customer['name'],
 					($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
@@ -617,7 +617,7 @@ foreach ($assigns as $assign) {
 					($division['address'] ? $division['address'] : ''),
 					($division['city'] ? $division['city'] : ''),
 					($division['zip'] ? $division['zip'] : ''),
-					($division['countryid'] ? $division['countryid'] : 0),
+					($division['countryid'] ? $division['countryid'] : null),
 					($division['ten'] ? $division['ten'] : ''),
 					($division['regon'] ? $division['regon'] : ''), 
 					($division['account'] ? $division['account'] : ''),
