@@ -99,7 +99,7 @@ if(isset($_POST['domain']))
 			master = ?, last_check = ?, type = ?, notified_serial = ?,
 			account = ?, mxbackup = ? WHERE id = ?', 
 			array(	$domain['name'],
-				$domain['ownerid'],
+				empty($domain['ownerid']) ? null : $domain['ownerid'],
 				$domain['description'],
 				$domain['master'],
 				$domain['last_check'],
