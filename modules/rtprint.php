@@ -64,25 +64,21 @@ switch($type)
 				}
 			}
 	
-		if($datefrom)
+		if(!empty($datefrom))
 		{
-        		if (check_date($datefrom)) {
-                		list ($year, $month, $day) = explode('/', $datefrom);
-                		$datefrom = mktime(0, 0, 0, $month, $day, $year);  
-        		} else
-                		$datefrom = 0;
-			$where[] = 'rttickets.createtime >= '.$datefrom;	                                                                
+			$datefrom=date_to_timestamp($datefrom);
+			$where[] = 'rttickets.createtime >= '.$datefrom;
 		}
+		else
+			$datefrom = 0;
 
-		if($dateto)
+		if(!empty($dateto))
 		{
-        		if (check_date($dateto)) {
-                		list ($year, $month, $day) = explode('/', $dateto);
-                		$dateto = mktime(0, 0, 0, $month, $day, $year);  
-        		} else
-                		$dateto = 0;	                                                                
-			$where[] = 'rttickets.createtime <= '.$dateto;	                                                                
+			$dateto=date_to_timestamp($dateto);
+			$where[] = 'rttickets.createtime <= '.$dateto;
 		}
+		else
+			$dateto = 0;
 
     		if($list = $DB->GetAll('SELECT COUNT(*) AS total, customerid, '
 				    .$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername
@@ -169,26 +165,21 @@ switch($type)
 							$where[] = 'rttickets.deleted = 1';
 				}
 			}
+		if(!empty($datefrom))
+                {
+                        $datefrom=date_to_timestamp($datefrom);
+                        $where[] = 'rttickets.createtime >= '.$datefrom;
+                }
+		else
+			$datefrom = 0;
 
-		if($datefrom)
-		{
-        		if (check_date($datefrom)) {
-                		list ($year, $month, $day) = explode('/', $datefrom);
-                		$datefrom = mktime(0, 0, 0, $month, $day, $year);
-        		} else
-                		$datefrom = 0;
-			$where[] = 'rttickets.createtime >= '.$datefrom;
-		}
-
-		if($dateto)
-		{
-        		if (check_date($dateto)) {
-                		list ($year, $month, $day) = explode('/', $dateto);
-                		$dateto = mktime(0, 0, 0, $month, $day, $year);  
-        		} else
-                		$dateto = 0;
-			$where[] = 'rttickets.createtime <= '.$dateto;
-		}
+                if(!empty($dateto))
+                {
+                        $dateto=date_to_timestamp($dateto);
+                        $where[] = 'rttickets.createtime <= '.$dateto;
+                }
+		else
+			$dateto = 0;
 
 		$list = $DB->GetAllByKey('SELECT rttickets.id, createtime, customerid, subject, requestor, '
 			.$DB->Concat('UPPER(c.lastname)',"' '",'c.name').' AS customername '

@@ -63,31 +63,23 @@ if(sizeof($useradd))
 	elseif (!check_password_strength($useradd['password']))
 		$error['password'] = trans('The password should contain at least one capital letter, one lower case letter, one digit and should consist of at least 8 characters!');
 
-	if($useradd['accessfrom'] == '')
-		$accessfrom = 0;
-	elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/',$useradd['accessfrom']))
+	if(!empty($useradd['accessfrom']))
 	{
-		list($y, $m, $d) = explode('/', $useradd['accessfrom']);
-		if(checkdate($m, $d, $y))
-			$accessfrom = mktime(0, 0, 0, $m, $d, $y);
-		else
+		$accessfrom=date_to_timestamp($useradd['accessfrom']);
+		if(empty($accessfrom))
 			$error['accessfrom'] = trans('Incorrect charging time!');
 	}
 	else
-		$error['accessfrom'] = trans('Incorrect charging time!');
+		$accessfrom = 0;
 
-	if($useradd['accessto'] == '')
-		$accessto = 0;
-	elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $useradd['accessto']))
+	if(!empty($useradd['accessto']))
 	{
-		list($y, $m, $d) = explode('/', $useradd['accessto']);
-		if(checkdate($m, $d, $y))
-			$accessto = mktime(23, 59, 59, $m, $d, $y);
-		else
+		$accessto=date_to_timestamp($useradd['accessto']);
+		if(empty($accessto))
 			$error['accessto'] = trans('Incorrect charging time!');
 	}
 	else
-		$error['accessto'] = trans('Incorrect charging time!');
+		$accessto = 0;
 
 	if($accessto < $accessfrom && $accessto != 0 && $accessfrom != 0)
 		$error['accessto'] = trans('Incorrect date range!');

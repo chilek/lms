@@ -54,31 +54,23 @@ if($userinfo)
 	if($userinfo['email']!='' && !check_email($userinfo['email']))
 		$error['email'] = trans('E-mail isn\'t correct!');
 
-	if($userinfo['accessfrom'] == '')
-		$accessfrom = 0;
-	elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/',$userinfo['accessfrom']))
+	if(!empty($userinfo['accessfrom']))
 	{
-		list($y, $m, $d) = explode('/', $userinfo['accessfrom']);
-		if(checkdate($m, $d, $y))
-			$accessfrom = mktime(0, 0, 0, $m, $d, $y);
-		else
+		$accessfrom=date_to_timestamp($userinfo['accessfrom']);
+		if(empty($accessfrom))
 			$error['accessfrom'] = trans('Incorrect charging time!');
 	}
 	else
-		$error['accessfrom'] = trans('Incorrect charging time!');
+		$accessfrom = 0;
 
-	if($userinfo['accessto'] == '')
-		$accessto = 0;
-	elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $userinfo['accessto']))
+	if(!empty($userinfo['accessto']))
 	{
-		list($y, $m, $d) = explode('/', $userinfo['accessto']);
-		if(checkdate($m, $d, $y))
-			$accessto = mktime(23, 59, 59, $m, $d, $y);
-		else
+		$accessto=date_to_timestamp($userinfo['accessto']);
+		if(empty($accessto))
 			$error['accessto'] = trans('Incorrect charging time!');
 	}
 	else
-		$error['accessto'] = trans('Incorrect charging time!');
+		$accessto = 0;
 
 	if($accessto < $accessfrom && $accessto != 0 && $accessfrom != 0)
 		$error['accessto'] = trans('Incorrect date range!');

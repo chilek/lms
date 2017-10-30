@@ -53,15 +53,11 @@ $params['fstatus']    = sessionHandler('fstatus', 'vblfstatus');
 $bill_list = $LMS->getVoipBillings($params);
 
 // CALL BILLING RANGE
-if (!empty($params['frangefrom'])) {
-	list($year, $month, $day) = explode('/', $params['frangefrom']);
-	$listdata['frangefrom'] = mktime(0,0,0, $month, $day, $year);
-}
+if (!empty($params['frangefrom']))
+	$listdata['frangefrom'] = date_to_timestamp($params['frangefrom']);
 
-if (!empty($params['frangeto'])) {
-	list($year, $month, $day) = explode('/', $params['frangeto']);
-	$listdata['frangeto'] = mktime(23,59,59, $month, $day, $year);
-}
+if (!empty($params['frangeto'])) 
+	$listdata['frangeto'] = date_to_timestamp($params['frangeto']);
 
 // CALL STATUS
 if (!empty($params['fstatus']))
