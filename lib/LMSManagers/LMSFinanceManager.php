@@ -363,7 +363,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'vdiscount'         => 0,
                     'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
                     SYSLOG::RES_LIAB    => empty($lid) ? null : $lid,
-                    'recipient_address_id' => $data['recipient_address_id'] >= 0 ? $data['recipient_address_id'] : NULL,
+                    'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : NULL,
                     'commited'			=> $commited,
                 );
 
@@ -400,7 +400,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'vdiscount'         => 0,
                         'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
                         SYSLOG::RES_LIAB    => null,
-                        'recipient_address_id' => $data['recipient_address_id'] >= 0 ? $data['recipient_address_id'] : NULL,
+                        'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : NULL,
                         'commited'			=> $commited,
                     );
 
@@ -442,7 +442,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 'vdiscount'         => str_replace(',', '.', $data['vdiscount']),
                 'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
                 SYSLOG::RES_LIAB    => !isset($lid) || empty($lid) ? null : $lid,
-                'recipient_address_id' => $data['recipient_address_id'] >= 0 ? $data['recipient_address_id'] : NULL,
+                'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : NULL,
                 'commited'			=> $commited,
             );
 
