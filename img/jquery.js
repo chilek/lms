@@ -329,7 +329,7 @@ $(function() {
 			if (checkall) {
 				if (allcheckboxes.filter(':checked').length == allcheckboxes.length) {
 					checkall.checked = true;
-				} else if (allcheckboxes.filter(':not(:checked)').length == allcheckboxes.length) {
+				} else if (allcheckboxes.filter(':not(:checked)').length) {
 					checkall.checked = false;
 				}
 			}
@@ -343,7 +343,7 @@ $(function() {
 					if ($(checkbox).is(':visible')) {
 						checkElements(checkbox);
 					}
-			} 	else {
+				} else {
 					checkbox.checked = !checkbox.checked;
 					allcheckboxes.filter('[data-prev-checked]').removeAttr('data-prev-checked');
 					$(checkbox).attr('data-prev-checked', checkbox.checked);
