@@ -92,7 +92,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 					SYSLOG::RES_TARIFF => $form['tariffid'],
 					SYSLOG::RES_PROMO => $promotionid,
 					'optional' => $optional,
-					'selectionid' => $selectionid,
+					'selectionid' => empty($selectionid) ? null : $selectionid,
 					'data' => $datastr
 				);
 				$SYSLOG->AddMessage(SYSLOG::RES_PROMOASSIGN, SYSLOG::OPER_UPDATE, $args);
@@ -102,7 +102,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 				SYSLOG::RES_PROMOSCHEMA => $schemaid,
 				SYSLOG::RES_TARIFF => intval($form['tariffid']),
 				'optional' => $optional,
-				'selectionid' => $selectionid,
+				'selectionid' => empty($selectionid) ? null : $selectionid,
 				'data' => $datastr
 			);
 			$DB->Execute('INSERT INTO promotionassignments

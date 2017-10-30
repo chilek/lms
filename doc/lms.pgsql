@@ -1430,7 +1430,7 @@ CREATE TABLE promotionassignments (
         REFERENCES tariffs (id) ON DELETE CASCADE ON UPDATE CASCADE,
     data text           DEFAULT NULL,
     optional smallint   DEFAULT 0 NOT NULL,
-    selectionid smallint DEFAULT 0 NOT NULL,
+    selectionid varchar(60) DEFAULT NULL,
     PRIMARY KEY (id),
     CONSTRAINT promotionassignments_promotionschemaid_key UNIQUE (promotionschemaid, tariffid)
 );
@@ -3261,6 +3261,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017102600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017103000');
 
 COMMIT;

@@ -381,7 +381,7 @@ if (!empty($tmp_promo_list)) {
     	$pn   = $v['promotion_name'];
     	$sid = $v['schema_id'];
         $sn   = $v['schema_name'];
-        $selid = $v['selectionid'];
+        $selid = empty($v['selectionid']) ? 0 $v['selectionid'];
 
         $promotion_item = array('tariffid' => $v['tariffid'],
         						'tariff'   => $v['tariff_name'],
