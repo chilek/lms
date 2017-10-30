@@ -301,14 +301,10 @@ $(function() {
 		} else {
 			checkall = null;
 		}
-		elem.updateCheckBoxes = function() {
-			var checked = $(this).find('tr[data-tariff-type]:not(:visible)').find(':checked');
-			if (checked.length) {
-				if (checkall) {
-					checkall.checked = false;
-				}
-				checked.prop('checked', false);
-			}
+
+		elem.updateCheckAll = function() {
+			allcheckboxes.filter(':not(:visible)').prop('checked', false);
+			updateCheckAll();
 		}
 
 		function checkElements(checkbox) {
@@ -327,9 +323,9 @@ $(function() {
 
 		function updateCheckAll() {
 			if (checkall) {
-				if (allcheckboxes.filter(':checked').length == allcheckboxes.length) {
+				if (allcheckboxes.filter(':visible:checked').length == allcheckboxes.filter(':visible').length) {
 					checkall.checked = true;
-				} else if (allcheckboxes.filter(':not(:checked)').length) {
+				} else {
 					checkall.checked = false;
 				}
 			}
