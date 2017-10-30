@@ -343,7 +343,7 @@ $(function() {
 					if ($(checkbox).is(':visible')) {
 						checkElements(checkbox);
 					}
-			} 	else {
+				} else {
 					checkbox.checked = !checkbox.checked;
 					allcheckboxes.filter('[data-prev-checked]').removeAttr('data-prev-checked');
 					$(checkbox).attr('data-prev-checked', checkbox.checked);
