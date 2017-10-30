@@ -329,7 +329,7 @@ $(function() {
 			if (checkall) {
 				if (allcheckboxes.filter(':checked').length == allcheckboxes.length) {
 					checkall.checked = true;
-				} else if (allcheckboxes.filter(':not(:checked)').length == allcheckboxes.length) {
+				} else if (allcheckboxes.filter(':not(:checked)').length) {
 					checkall.checked = false;
 				}
 			}
