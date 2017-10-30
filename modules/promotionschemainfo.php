@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
+ *  $Id: 5e4aad86360b9054e9d5c4ebac06acb28fb65e0d $
  */
 
 
@@ -69,14 +69,17 @@ $schema['tariffs'] = $DB->GetAll('SELECT t.name, t.value,
     ORDER BY t.name, t.value DESC', array($schema['id']));
 
 if (!empty($schema['tariffs'])) {
-    foreach ($schema['tariffs'] as $idx => $value) {
-        $tmp = explode(';', $value['data']);
-        $data = array();
-        foreach ($tmp as $didx => $d) {
-            list($data['value'][$didx], $data['period'][$didx]) = explode(':', $d);
-        }
-        $schema['tariffs'][$idx]['data'] = $data;
-    }
+	$schema['selections'] = array();
+	foreach ($schema['tariffs'] as $idx => $value) {
+		$tmp = explode(';', $value['data']);
+		$data = array();
+		foreach ($tmp as $didx => $d)
+			list($data['value'][$didx], $data['period'][$didx]) = explode(':', $d);
+		$schema['tariffs'][$idx]['data'] = $data;
+		if (!empty($value['selectionid']))
+			$schema['selections'][] = $value['selectionid'];
+	}
+	$schema['selections'] = array_unique($schema['selections']);
 }
 
 $tariffs = $DB->GetAll('SELECT t.name, t.value, t.id, t.upceil, t.downceil

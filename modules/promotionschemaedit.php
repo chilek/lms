@@ -69,8 +69,23 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 		} elseif (preg_match($regexp2, $key)) {
 			if (preg_match('/opt$/', $key) && intval($value))
 				$optional = 1;
-			elseif (preg_match('/sel$/', $key))
-				$selectionid = intval($value);
+			elseif (preg_match('/sel$/', $key)) {
+				if ($value == '-1') {
+					if ($key == 'tariffsel')
+						if (!strlen($form['tariffnewsel']))
+							$error['tariffnewsel'] = trans('Incorrect value!');
+						else
+							$selectionid = $form['tariffnewsel'];
+					elseif ($key == 'sel')
+						if (!strlen($form['newsel']))
+							$error['newsel'] = trans('Incorrect value!');
+						else
+							$selectionid = $form['newsel'];
+				} elseif ($value == '0')
+					$selectionid = null;
+				else
+					$selectionid = $value;
+			}
 		}
 	}
 

@@ -3780,4 +3780,9 @@ $_LANG['Instant payment'] = 'Szybka wpłata';
 $_LANG['instant payment'] = 'szybka wpłata';
 $_LANG['print'] = 'drukuj';
 
+$_LANG['<!promotionassignmentselectionid>- none -'] = '- żadna -';
+$_LANG['<!promotionassignmentselectionid>- new -'] = '- nowa -';
+$_LANG['Enter new selection list name'] = 'Wprowadź nazwę nowej listy wyboru';
+$_LANG['<!tariffselection>$a:'] = '$a:';
+
 ?>

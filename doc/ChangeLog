@@ -132,6 +132,7 @@ version ?.??.?? (????-??-??):
   - improvement: if there is only one division in database we use its properties
     for receipt division header [chilan]
   - enhancement: allow to visually filter customer assignments by tariff type [chilan]
+  - enhancement: promotion tariff selections are named selection lists [chilan]
 
 version 1.11.22 (2017-06-08):
 

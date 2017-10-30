@@ -135,6 +135,7 @@
                                 {foreach $items.single as $v}
                                     {if $v.optional == 1}
                                         <tr>
+											<td></td>
 											<td>
 												<label>
 													<input type="checkbox" name="assignment[stariffid][{$schema}][]" value="{$v.tariffid}"{if in_array($v.tariffid, $assignment.stariffid[$schema])} checked{/if}>
@@ -144,6 +145,7 @@
 										</tr>
                                     {else}
                                         <tr>
+											<td></td>
                                             <td class="blend">
                                                 <label>
 													<input type="checkbox" data-mandatory="true" checked disabled>
@@ -157,8 +159,11 @@
                             {/if}
 
                             {if isset($items.lists)}
-                                {foreach $items.lists as $v}
+                                {foreach $items.lists as $selid => $v}
                                     <tr>
+										<td>
+											{t a=$selid}<!tariffselection>$a:{/t}
+										</td>
                                         <td>
                                             <select id="{key($v)}" name="assignment[stariffid][{$schema}][]">
                                                 {if !isset($v.required)}
