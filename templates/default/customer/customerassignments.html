@@ -293,6 +293,8 @@
 		$('tr[data-tariff-type]:visible').each(function(key, value) {
 			$(this).addClass(backgrounds[key & 1]);
 		});
+
+		$('tr[data-tariff-type]').closest('tbody').get(0).updateCheckBoxes();
 	});
 //-->
 </SCRIPT>

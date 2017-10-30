@@ -293,13 +293,22 @@ $(function() {
 		if (checkall.length) {
 			checkall.parent().addClass('lms-ui-multi-check-all');
 			checkall.click(function(e) {
-				allcheckboxes.each(function(index, elem) {
+				allcheckboxes.filter(':visible').each(function(index, elem) {
 					this.checked = checkall.checked;
 				});
 			});
 			checkall = checkall.get(0);
 		} else {
 			checkall = null;
+		}
+		elem.updateCheckBoxes = function() {
+			var checked = $(this).find('tr[data-tariff-type]:not(:visible)').find(':checked');
+			if (checked.length) {
+				if (checkall) {
+					checkall.checked = false;
+				}
+				checked.prop('checked', false);
+			}
 		}
 
 		function checkElements(checkbox) {
@@ -331,7 +340,9 @@ $(function() {
 			var row = $(checkbox).closest('tr');
 			row.click(function(e) {
 				if (e.shiftKey) {
-					checkElements(checkbox);
+					if ($(checkbox).is(':visible')) {
+						checkElements(checkbox);
+					}
 			} 	else {
 					checkbox.checked = !checkbox.checked;
 					allcheckboxes.filter('[data-prev-checked]').removeAttr('data-prev-checked');
