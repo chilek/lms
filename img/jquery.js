@@ -308,7 +308,7 @@ $(function() {
 		}
 
 		function checkElements(checkbox) {
-			var i = allcheckboxes.index(allcheckboxes.filter('[data-prev-checked]')),
+			var i = allcheckboxes.index(allcheckboxes.filter('[data-prev-checked]:visible')),
 				j = allcheckboxes.index(checkbox);
 			if (i > -1) {
 				var checked = $(allcheckboxes[i]).attr('data-prev-checked') == 'true' ? true : false;
@@ -336,9 +336,7 @@ $(function() {
 			var row = $(checkbox).closest('tr');
 			row.click(function(e) {
 				if (e.shiftKey) {
-					if ($(checkbox).is(':visible')) {
-						checkElements(checkbox);
-					}
+					checkElements(checkbox);
 				} else {
 					checkbox.checked = !checkbox.checked;
 					allcheckboxes.filter('[data-prev-checked]').removeAttr('data-prev-checked');
