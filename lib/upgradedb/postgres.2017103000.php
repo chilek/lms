@@ -24,7 +24,7 @@
 $this->BeginTrans();
 
 $this->Execute("
-	ALTER TABLE promotionassignments ALTER COLUMN selectionid SET NULL;
+	ALTER TABLE promotionassignments ALTER COLUMN selectionid DROP NOT NULL;
 	ALTER TABLE promotionassignments ALTER COLUMN selectionid SET DEFAULT NULL;
 	UPDATE promotionassignments SET selectionid = NULL WHERE selectionid = 0;
 	ALTER TABLE promotionassignments ALTER COLUMN selectionid TYPE varchar(60);
