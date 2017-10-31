@@ -1044,13 +1044,23 @@ class LMS
         return $manager->TariffExists($id);
     }
 
-    public function ReceiptContentDelete($docid, $itemid = 0)
+	public function ReceiptDelete($docid) {
+		$manager = $this->getFinanceManager();
+		return $manager->ReceiptDelete($docid);
+	}
+
+	public function ReceiptContentDelete($docid, $itemid = 0)
     {
         $manager = $this->getFinanceManager();
         return $manager->ReceiptContentDelete($docid, $itemid);
     }
 
-    public function DebitNoteContentDelete($docid, $itemid = 0)
+	public function DebitNoteDelete($noteid) {
+		$manager = $this->getFinanceManager();
+		return $manager->DebitNoteDelete($noteid);
+	}
+
+	public function DebitNoteContentDelete($docid, $itemid = 0)
     {
         $manager = $this->getFinanceManager();
         return $manager->DebitNoteContentDelete($docid, $itemid);
@@ -2493,6 +2503,11 @@ class LMS
 	public function UpdateDocumentPostAddress($docid, $customerid) {
 		$manager = $this->getFinanceManager();
 		return $manager->UpdateDocumentPostAddress($docid, $customerid);
+	}
+
+	public function DeleteDocumentAddresses($docid) {
+		$manager = $this->getFinanceManager();
+		return $manager->DeleteDocumentAddresses($docid);
 	}
 
 	/**

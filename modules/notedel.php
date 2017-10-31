@@ -30,37 +30,7 @@ if ($id && $_GET['is_sure'] == '1') {
 	if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkConfig('privileges.superuser'))
 		return;
 
-	$DB->BeginTrans();
-	if ($SYSLOG) {
-		$customerid = $DB->GetOne('SELECT customerid FROM documents WHERE id = ?', array($id));
-		$args = array(
-			SYSLOG::RES_DOC => $id,
-			SYSLOG::RES_CUST => $customerid,
-		);
-		$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
-		$dnoteitems = $DB->GetCol('SELECT id FROM debitnotecontents WHERE docid = ?', array($id));
-		foreach ($dnoteitems as $item) {
-			$args = array(
-				SYSLOG::RES_DNOTECONT => $item,
-				SYSLOG::RES_DOC => $id,
-				SYSLOG::RES_CUST => $customerid,
-			);
-			$SYSLOG->AddMessage(SYSLOG::RES_DNOTECONT, SYSLOG::OPER_DELETE, $args);
-		}
-		$cashitems = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($id));
-		foreach ($cashitems as $item) {
-			$args = array(
-				SYSLOG::RES_CASH => $item,
-				SYSLOG::RES_DOC => $id,
-				SYSLOG::RES_CUST => $customerid,
-			);
-			$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
-		}
-	}
-	$DB->Execute('DELETE FROM documents WHERE id = ?', array($id));
-	$DB->Execute('DELETE FROM debitnotecontents WHERE docid = ?', array($id));
-	$DB->Execute('DELETE FROM cash WHERE docid = ?', array($id));
-	$DB->CommitTrans();
+	$LMS->DebitNoteDelete($id);
 }
 
 $SESSION->redirect('?m=notelist');

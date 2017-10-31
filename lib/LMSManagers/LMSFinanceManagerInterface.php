@@ -66,9 +66,13 @@ interface LMSFinanceManagerInterface
 
     public function TariffExists($id);
 
-    public function ReceiptContentDelete($docid, $itemid = 0);
+	public function ReceiptDelete($docid);
 
-    public function DebitNoteContentDelete($docid, $itemid = 0);
+	public function ReceiptContentDelete($docid, $itemid = 0);
+
+	public function DebitNoteDelete($noteid);
+
+	public function DebitNoteContentDelete($docid, $itemid = 0);
 
     public function AddBalance($addbalance);
 
@@ -103,4 +107,6 @@ interface LMSFinanceManagerInterface
 	public function GetOpenedLiabilities($customerid);
 
 	public function UpdateDocumentPostAddress($docid, $customerid);
+
+	public function DeleteDocumentAddresses($docid);
 }

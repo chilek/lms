@@ -34,34 +34,9 @@ if ($id && $_GET['is_sure'] == '1') {
 		die;
 	}
 
-	$customerid = $DB->GetOne('SELECT customerid FROM documents WHERE id = ?', array($id));
-	if ($DB->Execute('DELETE FROM documents WHERE id = ?', array($id))) {
-		if ($SYSLOG) {
-			$args = array(
-				SYSLOG::RES_DOC => $id,
-				SYSLOG::RES_CUST => $customerid,
-			);
-			$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_DELETE, $args);
-			$items = $DB->GetCol('SELECT itemid FROM receiptcontents WHERE docid = ?', array($id));
-			foreach ($items as $item) {
-				$args['itemid'] = $item;
-				$SYSLOG->AddMessage(SYSLOG::RES_RECEIPTCONT, SYSLOG::OPER_DELETE, $args);
-			}
-			$cashids = $DB->GetCol('SELECT id FROM cash WHERE docid = ?', array($id));
-			foreach ($cashids as $cashid) {
-				$args = array(
-					SYSLOG::RES_CASH => $cashid,
-					SYSLOG::RES_DOC => $id,
-					SYSLOG::RES_CUST => $customerid,
-				);
-				$SYSLOG->AddMessage(SYSLOG::RES_CASH, SYSLOG::OPER_DELETE, $args);
-			}
-		}
-		$DB->Execute('DELETE FROM receiptcontents WHERE docid = ?', array($id));
-		$DB->Execute('DELETE FROM cash WHERE docid = ?', array($id));
-	}
+	$LMS->ReceiptDelete($id);
 }
 
-header('Location: ?m=receiptlist');
+$SESSION->redirect('?m=receiptlist');
 
 ?>
