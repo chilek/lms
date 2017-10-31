@@ -340,6 +340,14 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $customernodes = $LMS->GetCustomerNodes($customer['id']);
 unset($customernodes['total']);
 
+$LMS->executeHook(
+    'customerassignmentadd_before_display',
+    array(
+        'a' => $a,
+        'smarty' => $SMARTY,
+    )
+);
+
 $schemas_only_names = $DB->GetAll('SELECT name,
 	(CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid
 	FROM promotions WHERE disabled <> 1');
@@ -354,15 +362,7 @@ $schemas = $DB->GetAll('SELECT p.name AS promotion, s.name, s.id,
 		WHERE promotionschemaid = s.id LIMIT 1)
 	ORDER BY p.name, s.name');
 
-$LMS->executeHook(
-    'customerassignmentadd_before_display',
-    array(
-        'a' => $a,
-        'smarty' => $SMARTY,
-    )
-);
-
-$tmp_promo_list = $DB->GetAll('SELECT
+$promotion_assignments = $DB->GetAll('SELECT
 									p.id AS promotion_id, p.name as promotion_name,
 									ps.id AS schema_id, ps.name as schema_name,
 									t.name as tariff_name, pa.optional,
@@ -372,32 +372,48 @@ $tmp_promo_list = $DB->GetAll('SELECT
 							      LEFT JOIN promotionassignments pa ON ps.id = pa.promotionschemaid
 							      LEFT JOIN tariffs t ON pa.tariffid = t.id
 							   ORDER BY
-							      p.name, ps.name, pa.optional ASC');
+							      p.name, ps.name, pa.orderid ASC');
 
 $promotions = array();
-if (!empty($tmp_promo_list)) {
-    foreach ($tmp_promo_list as $v) {
-        $pid = $v['promotion_id'];
-    	$pn   = $v['promotion_name'];
-    	$sid = $v['schema_id'];
-        $sn   = $v['schema_name'];
-        $selid = empty($v['selectionid']) ? 0 : $v['selectionid'];
+if (!empty($promotion_assignments)) {
+	$sid = 0;
+    foreach ($promotion_assignments as $assign) {
+        $pid = $assign['promotion_id'];
+    	$pn   = $assign['promotion_name'];
+    	if ($assign['schema_id'] != $sid) {
+			$sid = $assign['schema_id'];
+			$index = 0;
+			$selection_indexes = array();
+    	}
+        $sn   = $assign['schema_name'];
+        $selid = empty($assign['selectionid']) ? null : $assign['selectionid'];
 
-        $promotion_item = array('tariffid' => $v['tariffid'],
-        						'tariff'   => $v['tariff_name'],
-                                'value'    => $v['value'],
-                                'optional' => $v['optional'] );
+        if (!isset($promotions[$pid][$sid]))
+			$promotions[$pid][$sid] = array();
 
-        if (!empty($selid)) {
-            if ($v['optional'] == 0) {
-                $promotions[$pid][$sid]['lists'][$selid]['required'] = 1;
-            }
+        $promotion_item = array(
+			'tariffid' => $assign['tariffid'],
+			'tariff'   => $assign['tariff_name'],
+			'value'    => $assign['value'],
+			'optional' => $assign['optional'],
+		);
 
-            $promotions[$pid][$sid]['lists'][$selid]['items'][] = $promotion_item;
-        } else {
-            $promotions[$pid][$sid]['single'][] = $promotion_item;
-        }
-    }
+		if (!empty($selid)) {
+			if (!isset($selection_indexes[$selid]))
+				$selection_indexes[$selid] = $index++;
+
+			if (!isset($promotions[$pid][$sid][$selection_indexes[$selid]]['selection']))
+				$promotions[$pid][$sid][$selection_indexes[$selid]]['selection'] = array(
+				 	'items' => array(),
+					'id' => $selid,
+				);
+			$promotions[$pid][$sid][$selection_indexes[$selid]]['selection']['required'] =
+				empty($assign['optional']);
+
+			$promotions[$pid][$sid][$selection_indexes[$selid]]['selection']['items'][] = $promotion_item;
+		} else
+			$promotions[$pid][$sid][$index++]['single'] = $promotion_item;
+	}
 }
 
 // -----

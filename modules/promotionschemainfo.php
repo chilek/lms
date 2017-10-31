@@ -66,7 +66,7 @@ $schema['tariffs'] = $DB->GetAll('SELECT t.name, t.value,
     FROM promotionassignments a
     JOIN tariffs t ON (a.tariffid = t.id)
     WHERE a.promotionschemaid = ?
-    ORDER BY t.name, t.value DESC', array($schema['id']));
+    ORDER BY a.orderid', array($schema['id']));
 
 if (!empty($schema['tariffs'])) {
 	$schema['selections'] = array();

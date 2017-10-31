@@ -1431,6 +1431,7 @@ CREATE TABLE promotionassignments (
     data text           DEFAULT NULL,
     optional smallint   DEFAULT 0 NOT NULL,
     selectionid varchar(60) DEFAULT NULL,
+    orderid integer     NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     CONSTRAINT promotionassignments_promotionschemaid_key UNIQUE (promotionschemaid, tariffid)
 );
@@ -3261,6 +3262,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017103000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017103100');
 
 COMMIT;

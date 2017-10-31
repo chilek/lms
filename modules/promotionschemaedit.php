@@ -118,11 +118,13 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 				SYSLOG::RES_TARIFF => intval($form['tariffid']),
 				'optional' => $optional,
 				'selectionid' => empty($selectionid) ? null : $selectionid,
-				'data' => $datastr
+				'data' => $datastr,
+				'orderid' => $DB->GetOne('SELECT MAX(orderid) FROM promotionassignments
+					WHERE promotionschemaid = ?', array($schemaid)),
 			);
 			$DB->Execute('INSERT INTO promotionassignments
-				(promotionschemaid, tariffid, optional, selectionid, data)
-				VALUES (?, ?, ?, ?, ?)', array_values($args));
+				(promotionschemaid, tariffid, optional, selectionid, data, orderid)
+				VALUES (?, ?, ?, ?, ?, ?)', array_values($args));
 			if ($SYSLOG) {
 				$args[SYSLOG::RES_PROMO] = $promotionid;
 				$args[SYSLOG::RES_PROMOASSIGN] =
@@ -158,6 +160,24 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 	$DB->Execute('DELETE FROM promotionassignments WHERE id = ?', array($aid));
 
 	$SESSION->redirect('?m=promotionschemainfo&id='.intval($_GET['id']));
+} else if ($action == 'tariff-reorder') {
+	header('Content-Type: application/json');
+
+	if (!isset($_GET['id']) || !isset($_POST['assignments']))
+		$result = 'ERROR';
+	else {
+		$assignments = array_flip($DB->GetCol('SELECT id FROM promotionassignments
+			WHERE promotionschemaid = ?', array($_GET['id'])));
+		$orderid = 1;
+		foreach ($_POST['assignments'] as $a)
+			if (isset($assignments[$a]))
+				$DB->Execute('UPDATE promotionassignments SET orderid = ?
+					WHERE id = ?', array($orderid++, $a));
+		$result = 'OK';
+	}
+
+	echo json_encode(array('result' => $result));
+	die;
 }
 
 $oldschema = $DB->GetRow('SELECT * FROM promotionschemas WHERE id = ?',

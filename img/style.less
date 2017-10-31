@@ -531,12 +531,14 @@ table.lmsbox {
 	&>thead,
 	&>tfoot,
 	&>tbody,
-	&-inner>tfoot,
 	&-innerbox>thead,
 	&-innerbox>tfoot {
 		border-width: 1px;
 		border-style: solid;
 		border-color: black;
+	}
+	&-inner>tfoot {
+		border-top: 1px solid black;
 	}
 	&-inner {
 		td {

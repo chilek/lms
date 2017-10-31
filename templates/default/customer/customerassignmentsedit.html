@@ -131,53 +131,35 @@
 				{foreach $promotions as $promotion => $p}
                 	{foreach $p as $schema => $items}
                     	<table class="promotionstable" id="schema{$schema}">
-                            {if isset($items.single)}
-                                {foreach $items.single as $v}
-                                    {if $v.optional == 1}
-                                        <tr>
-											<td></td>
-											<td>
-												<label>
-													<input type="checkbox" name="assignment[stariffid][{$schema}][]" value="{$v.tariffid}"{if in_array($v.tariffid, $assignment.stariffid[$schema])} checked{/if}>
-													{$v.tariff}
-												</label>
-											</td>
-										</tr>
-                                    {else}
-                                        <tr>
-											<td></td>
-                                            <td class="blend">
-                                                <label>
-													<input type="checkbox" data-mandatory="true" checked disabled>
-													{$v.tariff}
-												</label>
-                                                <input type="hidden" name="assignment[stariffid][{$schema}][]" value="{$v.tariffid}">
-                                            </td>
-                                        </tr>
-                                    {/if}
-                                {/foreach}
-                            {/if}
-
-                            {if isset($items.lists)}
-                                {foreach $items.lists as $selid => $v}
-                                    <tr>
-										<td>
-											{t a=$selid}<!tariffselection>$a:{/t}
-										</td>
-                                        <td>
-                                            <select id="{key($v)}" name="assignment[stariffid][{$schema}][]">
-                                                {if !isset($v.required)}
-												<option value="0">{trans("- none -")}</option>
-												{/if}
-                                                {foreach $v.items as $item}
-                                                     <option value="{$item.tariffid}"{if in_array($item.tariffid, $assignment.stariffid[$schema])} selected{/if}>{$item.tariff}</option>
-                                                {/foreach}
-                                            </select>
-                                        </td>
-                                    </tr>
-                                {/foreach}
-                            {/if}
-                        </table>
+							{foreach $items as $item}
+							<tr>
+                            {if isset($item.single)}
+								<td></td>
+								<td{if !$item.single.optional} class="blend"{/if}>
+									<label>
+										<input type="checkbox" name="assignment[stariffid][{$schema}][]" value="{$item.single.tariffid}"
+											   {if in_array($item.single.tariffid, $assignment.stariffid[$schema]) || !$item.single.optional} checked{/if}{if !$item.single.optional} data-mandatory="true" disabled{/if}>
+										{$item.single.tariff}
+									</label>
+								</td>
+							{else}
+								<td>
+									{t a=$item.selection.id}<!tariffselection>$a:{/t}
+								</td>
+								<td>
+									<select id="{key($v)}" name="assignment[stariffid][{$schema}][]">
+										{if !$item.selection.required}
+										<option value="0">{trans("- none -")}</option>
+										{/if}
+										{foreach $item.selection.items as $item}
+										<option value="{$item.tariffid}"{if in_array($item.tariffid, $assignment.stariffid[$schema])} selected{/if}>{$item.tariff}</option>
+										{/foreach}
+									</select>
+								</td>
+							{/if}
+							</tr>
+							{/foreach}
+						</table>
                     {/foreach}
                 {/foreach}
 			</TD>

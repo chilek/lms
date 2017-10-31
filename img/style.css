@@ -667,12 +667,14 @@ table.lmsbox-inner > tbody {
 table.lmsbox > thead,
 table.lmsbox > tfoot,
 table.lmsbox > tbody,
-table.lmsbox-inner > tfoot,
 table.lmsbox-innerbox > thead,
 table.lmsbox-innerbox > tfoot {
   border-width: 1px;
   border-style: solid;
   border-color: black;
+}
+table.lmsbox-inner > tfoot {
+  border-top: 1px solid black;
 }
 table.lmsbox-inner td {
   border-spacing: 0px;
