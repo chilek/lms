@@ -538,8 +538,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				FROM vdivisions WHERE id = ?', array($invoice['customer']['divisionid']));
 
 		if ($invoice['invoice']['recipient_address_id'] > 0) {
-			global $LMS;
-			$invoice['invoice']['recipient_address_id'] = $LMS->CopyAddress( $invoice['invoice']['recipient_address_id'] );
+			$location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+			$invoice['invoice']['recipient_address_id'] = $location_manager->CopyAddress( $invoice['invoice']['recipient_address_id'] );
 		} else {
 			$invoice['invoice']['recipient_address_id'] = null;
 		}
