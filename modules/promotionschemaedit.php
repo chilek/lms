@@ -133,6 +133,8 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 				$SYSLOG->AddMessage(SYSLOG::RES_PROMOASSIGN, SYSLOG::OPER_ADD, $args);
 			}
 		}
+
+		$SESSION->redirect('?m=promotionschemainfo&id=' . $schemaid);
 	}
 
 	$data = $_POST['form'];
