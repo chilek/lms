@@ -113,14 +113,15 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 				$SYSLOG->AddMessage(SYSLOG::RES_PROMOASSIGN, SYSLOG::OPER_UPDATE, $args);
 			}
 		} else {
+			$orderid = $DB->GetOne('SELECT MAX(orderid) FROM promotionassignments
+				WHERE promotionschemaid = ?', array($schemaid));
 			$args =	array(
 				SYSLOG::RES_PROMOSCHEMA => $schemaid,
 				SYSLOG::RES_TARIFF => intval($form['tariffid']),
 				'optional' => $optional,
 				'selectionid' => empty($selectionid) ? null : $selectionid,
 				'data' => $datastr,
-				'orderid' => $DB->GetOne('SELECT MAX(orderid) FROM promotionassignments
-					WHERE promotionschemaid = ?', array($schemaid)),
+				'orderid' => empty($orderid) ? 1 : $orderid,
 			);
 			$DB->Execute('INSERT INTO promotionassignments
 				(promotionschemaid, tariffid, optional, selectionid, data, orderid)
