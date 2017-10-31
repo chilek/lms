@@ -679,7 +679,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 );
                 $this->syslog->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_DELETE, $args);
             }
-        }
+		}
+
+		// delete addresses records which are bound to deleted document
+		$addresses = $this->db->GetRow('SELECT recipient_address_id FROM documents WHERE id = ?', array($invoiceid));
+        if (!empty($addresses['recipient_address_id']))
+			$this->db->Execute('DELETE FROM addresses WHERE id = ?', array($addresses['recipient_address_id']));
+
         $this->db->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
         $this->db->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($invoiceid));
         $this->db->Execute('DELETE FROM cash WHERE docid = ?', array($invoiceid));
