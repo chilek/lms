@@ -33,7 +33,7 @@
 				{foreach from=$schema.tariffs item=tariff}
 				<TR id="row{$tariff.id}" class="highlight schematariff" data-assignment="{$tariff.id}">
 					<TD style="valign-top">
-						<img src="img/money.gif">&nbsp;<A href="?m=tariffinfo&amp;id={$tariff.tariffid}" class="bold">{$tariff.name}</A>
+						<img src="img/money.gif" class="drag-icon">&nbsp;<A href="?m=tariffinfo&amp;id={$tariff.tariffid}" class="bold">{$tariff.name}</A>
 					</TD>
 					<TD class="text-right valign-top bold nobr">
 						{$tariff.value|string_format:"%.2f"}
@@ -294,7 +294,7 @@ document.getElementById('del{$formdata.aid}').style.display = 'none';
 $(function () {
 	$('#schematariffs').sortable({
 		items: 'tbody > tr.schematariff',
-		handle: 'img',
+		handle: 'img.drag-icon',
 		opacity: 0.9,
 		axis: 'y',
 		placeholder: 'light',
