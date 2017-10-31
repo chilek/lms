@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2013 LMS Developers
+ *  Copyright (C) 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,7 +27,6 @@
 /**
  * LMSLocationManagerInterface
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 interface LMSLocationManagerInterface
 {
@@ -54,4 +53,6 @@ interface LMSLocationManagerInterface
     public function CopyAddress( $address_id );
 
     public function GetAddress( $address_id );
+
+	public function GetCustomerAddress($customer_id, $type = BILLING_ADDRESS);
 }

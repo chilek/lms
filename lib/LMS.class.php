@@ -2452,7 +2452,12 @@ class LMS
         return $manager->GetAddress( $address_id );
     }
 
-    public function GetNAStypes()
+	public function GetCustomerAddress( $customer_id, $type = BILLING_ADDRESS ) {
+		$manager = $this->getLocationManager();
+		return $manager->GetCustomerAddress( $customer_id, $type );
+	}
+
+	public function GetNAStypes()
     {
         return $this->DB->GetAllByKey('SELECT id, name FROM nastypes ORDER BY name', 'id');
     }
@@ -2483,6 +2488,11 @@ class LMS
 	public function GetOpenedLiabilities($customerid) {
 		$manager = $this->getFinanceManager();
 		return $manager->GetOpenedLiabilities($customerid);
+	}
+
+	public function UpdateDocumentPostAddress($docid, $customerid) {
+		$manager = $this->getFinanceManager();
+		return $manager->UpdateDocumentPostAddress($docid, $customerid);
 	}
 
 	/**

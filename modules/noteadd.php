@@ -264,6 +264,8 @@ switch($action)
 
 			$nid = $DB->GetLastInsertID('documents');
 
+			$LMS->UpdateDocumentPostAddress($nid, $customer['id']);
+
 			if ($SYSLOG) {
 				$args[SYSLOG::RES_DOC] = $nid;
 				unset($args[SYSLOG::RES_USER]);

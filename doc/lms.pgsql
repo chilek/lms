@@ -378,6 +378,8 @@ CREATE TABLE documents (
 		CONSTRAINT documents_cuserid_fkey REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	recipient_address_id integer DEFAULT NULL
 		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+	post_address_id integer DEFAULT NULL
+		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	template varchar(255) DEFAULT NULL,
 	PRIMARY KEY (id)
 );
@@ -3262,6 +3264,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017103100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017103101');
 
 COMMIT;

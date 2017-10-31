@@ -101,4 +101,6 @@ interface LMSFinanceManagerInterface
 	public function AddReceipt(array $receipt);
 
 	public function GetOpenedLiabilities($customerid);
+
+	public function UpdateDocumentPostAddress($docid, $customerid);
 }

@@ -537,11 +537,20 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				account, inv_header, inv_footer, inv_author, inv_cplace
 				FROM vdivisions WHERE id = ?', array($invoice['customer']['divisionid']));
 
+		$location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+
 		if ($invoice['invoice']['recipient_address_id'] > 0) {
-			$location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
 			$invoice['invoice']['recipient_address_id'] = $location_manager->CopyAddress( $invoice['invoice']['recipient_address_id'] );
 		} else {
 			$invoice['invoice']['recipient_address_id'] = null;
+		}
+
+		$post_address_id = $location_manager->GetCustomerAddress($invoice['customer']['id'], POSTAL_ADDRESS);
+
+		if (empty($post_address_id)) {
+			$invoice['invoice']['post_address_id'] = null;
+		} else {
+			$invoice['invoice']['post_address_id'] = $location_manager->CopyAddress( $post_address_id );
 		}
 
         $args = array(
@@ -577,7 +586,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
             'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
             'fullnumber' => $fullnumber,
-            'recipient_address_id' => $invoice['invoice']['recipient_address_id']
+            'recipient_address_id' => $invoice['invoice']['recipient_address_id'],
+			'post_address_id' => $invoice['invoice']['post_address_id'],
         );
 
         $this->db->Execute('INSERT INTO documents (number, numberplanid, type,
@@ -585,8 +595,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			ten, ssn, zip, city, countryid, divisionid,
 			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
-			recipient_address_id)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+			recipient_address_id, post_address_id)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
         $iid = $this->db->GetLastInsertID('documents');
         if ($this->syslog) {
             unset($args[SYSLOG::RES_USER]);
@@ -734,21 +744,33 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.div_ten AS division_ten, d.div_regon AS division_regon, d.div_account AS account,
 				d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
 				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
-				d.recipient_address_id,
+				d.recipient_address_id, d.post_address_id,
 				a.city as rec_city, a.zip as rec_zip, a.postoffice AS rec_postoffice,
 				a.name as rec_name, a.address AS rec_address,
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
 				c.street, c.building, c.apartment,
-				c.post_street, c.post_building, c.post_apartment,
-				c.post_name, c.post_address, c.post_zip, c.post_city, c.post_postoffice, c.post_countryid
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a2.street END) AS post_street,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a2.house END) AS post_building,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_apartment ELSE a2.flat END) AS post_apartment,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_name ELSE a2.name END) AS post_name,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_address ELSE a2.address END) AS post_address,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_zip ELSE a2.zip END) AS post_zip,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_city ELSE a2.city END) AS post_city,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_postoffice ELSE a2.postoffice END) AS post_postoffice,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_countryid ELSE a2.country_id END) AS post_countryid
 				FROM documents d
 				JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
+				LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)', array($invoiceid, DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO))) {
 
-			$result['bankaccounts'] = $this->db->GetCol('SELECT contact FROM customercontacts
+			if (!empty($result['post_address_id'])) {
+
+			}
+
+        	$result['bankaccounts'] = $this->db->GetCol('SELECT contact FROM customercontacts
 				WHERE customerid = ? AND (type & ?) = ?',
 				array($result['customerid'], CONTACT_BANKACCOUNT | CONTACT_INVOICES | CONTACT_DISABLED,
 					CONTACT_BANKACCOUNT | CONTACT_INVOICES));
@@ -881,14 +903,23 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				d.div_ten AS division_ten, d.div_regon AS division_regon, d.div_account AS account,
 				d.div_inv_header AS division_header, d.div_inv_footer AS division_footer,
 				d.div_inv_author AS division_author, d.div_inv_cplace AS division_cplace,
+				d.post_address_id,
 				c.pin AS customerpin, c.divisionid AS current_divisionid,
 				c.street, c.building, c.apartment,
-				c.post_street, c.post_building, c.post_apartment,
-				c.post_name, c.post_address, c.post_zip, c.post_city, c.post_postoffice, c.post_countryid
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_street ELSE a2.street END) AS post_street,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_building ELSE a2.house END) AS post_building,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_apartment ELSE a2.flat END) AS post_apartment,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_name ELSE a2.name END) AS post_name,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_address ELSE a2.address END) AS post_address,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_zip ELSE a2.zip END) AS post_zip,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_city ELSE a2.city END) AS post_city,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_postoffice ELSE a2.postoffice END) AS post_postoffice,
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_countryid ELSE a2.country_id END) AS post_countryid
 				FROM documents d
 				JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+				LEFT JOIN vaddresses a2 ON a2.id = d.post_address_id
 				WHERE d.id = ? AND d.type = ?', array($id, DOC_DNOTE))) {
 
 			$result['bankaccounts'] = $this->db->GetCol('SELECT contact FROM customercontacts
@@ -1849,5 +1880,21 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		}
 
 		return array_reverse($result);
+	}
+
+	public function UpdateDocumentPostAddress($docid, $customerid) {
+		$post_addr = $this->db->GetOne('SELECT post_address_id FROM documents WHERE id = ?', array($docid));
+		if ($post_addr)
+			$this->db->Execute('DELETE FROM addresses WHERE id = ?', array($post_addr));
+
+		$location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+
+		$post_addr = $location_manager->GetCustomerAddress($customerid, POSTAL_ADDRESS);
+		if (empty($post_addr))
+			$this->db->Execute("UPDATE documents SET post_address_id = NULL WHERE id = ?",
+				array($docid));
+		else
+			$this->db->Execute('UPDATE documents SET post_address_id = ? WHERE id = ?',
+				array($location_manager->CopyAddress($post_addr), $docid));
 	}
 }

@@ -202,6 +202,8 @@ switch($action)
 				div_inv_author = ?, div_inv_cplace = ?, fullnumber = ?
 				WHERE id = ?', array_values($args));
 
+			$LMS->UpdateDocumentPostAddress($note['id'], $customer['id']);
+
 			if ($SYSLOG) {
 				$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args,
 					array('div_' . SYSLOG::getResourceKey(SYSLOG::RES_COUNTRY)));

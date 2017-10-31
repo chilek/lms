@@ -630,6 +630,7 @@ foreach ($assigns as $assign) {
 					));
 
 				$invoices[$cid] = $DB->GetLastInsertID("documents");
+				$LMS->UpdateDocumentPostAddress($invoices[$cid], $cid);
 				$paytypes[$cid] = $inv_paytype;
 				$addresses[$cid] = $assign['recipient_address_id'];
 				$numberplans[$cid] = $plan;

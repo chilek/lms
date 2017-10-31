@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2016 LMS Developers
+ *  Copyright (C) 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,7 +27,6 @@
 /**
  * LMSLocationManager
  *
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
  */
 class LMSLocationManager extends LMSManager implements LMSLocationManagerInterface
 {
@@ -345,5 +344,10 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 			LEFT JOIN location_districts ld ON ld.id = lb.districtid
 			LEFT JOIN location_states ls ON ls.id = ld.stateid
 			WHERE a.id = ?', array($address_id));
+	}
+
+	public function GetCustomerAddress($customer_id, $type = BILLING_ADDRESS) {
+		return $this->db->GetOne('SELECT address_id FROM customer_addresses
+			WHERE customer_id = ? AND type = ?', array($customer_id, $type));
 	}
 }

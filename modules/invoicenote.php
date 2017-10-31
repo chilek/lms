@@ -320,6 +320,12 @@ switch($action)
 			$invoice['recipient_address_id'] = null;
 		}
 
+		if (empty($invoice['post_address_id'])) {
+			$invoice['post_address_id'] = null;
+		} else {
+			$invoice['post_address_id'] = $LMS->CopyAddress($invoice['post_address_id']);
+		}
+
 		$args = array(
 			'number' => $cnote['number'],
 			SYSLOG::RES_NUMPLAN => !empty($cnote['numberplanid']) ? $cnote['numberplanid'] : null,
@@ -355,15 +361,16 @@ switch($action)
 			'div_inv_author' => $division['inv_author'] ? $division['inv_author'] : '',
 			'div_inv_cplace' => $division['inv_cplace'] ? $division['inv_cplace'] : '',
 			'fullnumber' => $fullnumber,
-			'recipient_address_id' => $invoice['recipient_address_id']
+			'recipient_address_id' => $invoice['recipient_address_id'],
+			'post_address_id' => $invoice['post_address_id'],
 		);
 		$DB->Execute('INSERT INTO documents (number, numberplanid, type, cdate, sdate, paytime, paytype,
 				userid, customerid, name, address, ten, ssn, zip, city, countryid, reference, reason, divisionid,
 				div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 				div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
-				recipient_address_id)
+				recipient_address_id, post_address_id)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
 		$id = $DB->GetOne('SELECT id FROM documents WHERE number = ? AND cdate = ? AND type = ?',
 			array($cnote['number'], $cnote['cdate'], DOC_CNOTE));

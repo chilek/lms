@@ -134,6 +134,8 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to visually filter customer assignments by tariff type [chilan]
   - enhancement: promotion tariff selections are named selection lists [chilan]
   - enhancement: promotion schema tariffs can be ordered using drag & drop technique [chilan]
+  - enhancement: customer post addresses are stored within financial documents in the state
+    of issue time [chilan]
 
 version 1.11.22 (2017-06-08):
 

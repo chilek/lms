@@ -291,6 +291,7 @@ switch($action)
 		$SESSION->restore('invoiceid', $invoice['id']);
 		$invoice['type'] = $invoice['doctype'];
 
+		// updates customer recipient address stored in document
 		$prev_rec_addr = $DB->GetOne('SELECT recipient_address_id FROM documents WHERE id = ?', array($invoice['id']));
 		if (empty($prev_rec_addr))
 			$prev_rec_addr = -1;
@@ -308,6 +309,9 @@ switch($action)
 							));
 			}
 		}
+
+		// updates customer post address stored in document
+		$LMS->UpdateDocumentPostAddress($invoice['id'], $customer['id']);
 
 		$currtime = time();
 		$cdate = $invoice['cdate'] ? $invoice['cdate'] : $currtime;
