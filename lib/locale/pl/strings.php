@@ -3568,6 +3568,7 @@ $_LANG['Move tariffs to tag'] = 'Przenieś taryfy do tej etykiety';
 $_LANG['Select tag to which you want to move tariffs'] = 'Wybierz etykietę, do którego chcesz przenieść taryfy';
 $_LANG['Are you sure, you want to move tariffs to selected tag?'] = 'Czy jesteś pewien, że chcesz przenieść taryfy do wybranej etykiety?';
 $_LANG['Tags list'] = 'Lista etykiet';
+$_LANG['Allows you to add new tag'] = 'Pozwala dodać nową etykietę';
 $_LANG['New tag'] = 'Nowa etykieta';
 $_LANG['Add tag'] = 'Dodaj etykietę';
 $_LANG['Edit tag'] = 'Edytuj etykietę';
