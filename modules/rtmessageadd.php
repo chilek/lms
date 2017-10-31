@@ -198,7 +198,7 @@ if(isset($_POST['message']))
 
 		$props = array(
 			'queueid' => $message['queueid'],
-			'owner' => $message['owner'],
+			'owner' => empty($message['owner']) ? null : $message['owner'],
 			'cause' => $message['cause'],
 			'state' => $message['state']
 		);

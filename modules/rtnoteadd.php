@@ -84,7 +84,7 @@ elseif(isset($_POST['note']))
 		// setting status and the ticket owner
 		$props = array(
 			'queueid' => $note['queueid'],
-			'owner' => $note['owner'],
+			'owner' => empty($note['owner']) ? null : $note['owner'],
 			'cause' => $note['cause'],
 			'state' => $note['state']
 		);

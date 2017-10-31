@@ -177,7 +177,7 @@ if(isset($_POST['ticket']))
 		// setting status and the ticket owner
 		$props = array(
 			'queueid' => $ticketedit['queueid'],
-			'owner' => $ticketedit['owner'],
+			'owner' => empty($ticketedit['owner']) ? null : $ticketedit['owner'],
 			'cause' => $ticketedit['cause'],
 			'state' => $ticketedit['state'],
 			'subject' => $ticketedit['subject'],
