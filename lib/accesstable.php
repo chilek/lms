@@ -85,7 +85,7 @@ $access_table = array(
 	),
 	'configuration' => array(
 		'label' => trans('configuration'),
-		'allow_regexp' => '^(((host|config|numberplan|taxrate|state|division|cashsource)(list|edit|add|del|load))|((promotion|promotionschema)(list|edit|add|del|set|info)))$',
+		'allow_regexp' => '^(((host|config|numberplan|taxrate|state|division|cashsource)(list|edit|add|del|load|clone))|((promotion|promotionschema)(list|edit|add|del|set|info|clone)))$',
 	),
 	'network_management' => array(
 		'label' => trans('networks and devices management'),

@@ -2265,6 +2265,7 @@ $_LANG['nodes to groups assignment'] = 'przypisywanie komputerów do grup';
 $_LANG['Address is required!'] = 'Adres jest wymagany!';
 $_LANG['Add division'] = 'Nowa firma';
 $_LANG['Are you sure, you want to delete division \\\'$a\\\'?'] = 'Czy na pewno chcesz usunąć firmę \\\'$a\\\'?';
+$_LANG['Are you sure, you want to clone division \\\'$a\\\'?'] = 'Czy na pewno chcesz sklonować firmę \\\'$a\\\'?';
 $_LANG['Bank account:'] = 'Konto bankowe:';
 $_LANG['City is required!'] = 'Miasto jest wymagane!';
 $_LANG['Company Divisions Definitions'] = 'Definicje firm (oddziałów)';
