@@ -324,6 +324,7 @@ if (empty($ids)) {
 }
 
 $this->Execute("DELETE FROM aliasassignments WHERE accountid = 0 AND mail_forward=''");
+$this->Execute("UPDATE aliasassignments SET accountid = NULL WHERE accountid = 0 AND mail_forward<>''");
 $ids = $this->GetCol("SELECT id FROM passwd");
 if (empty($ids)) {
 	$this->Execute("DELETE FROM aliasassignments WHERE mail_forward=''");
