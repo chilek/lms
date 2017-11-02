@@ -39,6 +39,7 @@
 		<TD align="right" NOWRAP>
 			<A href="?m=divisionedit&amp;id={$divisionlist[list].id}&amp;changestatus=1"><IMG src="img/wait.gif" alt="{if $divisionlist[list].status}{trans("Unlock")}{else}{trans("Lock")}{/if}" title="{if $divisionlist[list].status}{trans("Unlock")}{else}{trans("Lock")}{/if}"></A>
 			<A href="?m=divisiondel&amp;id={$divisionlist[list].id}" OnClick="return confirmLink(this, '{t a=$divisionlist[list].name}Are you sure, you want to delete division \'$a\'?{/t}')"><IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
+			<A href="?m=divisionclone&amp;id={$divisionlist[list].id}" OnClick="return confirmLink(this, '{t a=$divisionlist[list].name}Are you sure, you want to clone division \'$a\'?{/t}')"><IMG src="img/clone.gif" alt="{trans("Clone")}" title="{trans("Clone")}"></A>
 			<A href="?m=divisionedit&amp;id={$divisionlist[list].id}"><IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
 		</TD>
 	</TR>
