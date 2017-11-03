@@ -136,6 +136,7 @@ version ?.??.?? (????-??-??):
   - enhancement: promotion schema tariffs can be ordered using drag & drop technique [chilan]
   - enhancement: customer post addresses are stored within financial documents in the state
     of issue time [chilan]
+  - enhancement: all promotion schema tariffs can have labels applied [chilan]
 
 version 1.11.22 (2017-06-08):
 
