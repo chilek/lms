@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id: 5e4aad86360b9054e9d5c4ebac06acb28fb65e0d $
+ *  $Id$
  */
 
 
@@ -62,7 +62,7 @@ foreach ($schema['data'] as $idx => $data) {
 $schema['data'] = implode(' &raquo; ', (array)$schema['data']);
 
 $schema['tariffs'] = $DB->GetAll('SELECT t.name, t.value,
-    a.tariffid, a.id, a.data, a.optional, a.selectionid
+    a.tariffid, a.id, a.data, a.optional, a.label
     FROM promotionassignments a
     JOIN tariffs t ON (a.tariffid = t.id)
     WHERE a.promotionschemaid = ?
@@ -76,8 +76,8 @@ if (!empty($schema['tariffs'])) {
 		foreach ($tmp as $didx => $d)
 			list($data['value'][$didx], $data['period'][$didx]) = explode(':', $d);
 		$schema['tariffs'][$idx]['data'] = $data;
-		if (!empty($value['selectionid']))
-			$schema['selections'][] = $value['selectionid'];
+		if (!empty($value['label']))
+			$schema['selections'][] = $value['label'];
 	}
 	$schema['selections'] = array_unique($schema['selections']);
 }

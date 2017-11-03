@@ -126,15 +126,25 @@
 		</TR>
 	
 		<TR id="a_schematariff">
-			<TD colspan="2"></TD>
-			<TD>
+			<TD></TD>
+			<TD colspan="2">
 				{foreach $promotions as $promotion => $p}
                 	{foreach $p as $schema => $items}
                     	<table class="promotionstable" id="schema{$schema}">
 							{foreach $items as $item}
 							<tr>
+								<td class="text-right">
+									{if isset($item.single)}
+										{if !empty($item.single.label)}
+										{t a=$item.single.label}<!tariffselection>$a:{/t}
+										{/if}
+									{else}
+										{if !empty($item.selection.label)}
+										{t a=$item.selection.label}<!tariffselection>$a:{/t}
+										{/if}
+									{/if}
+								</td>
                             {if isset($item.single)}
-								<td></td>
 								<td{if !$item.single.optional} class="blend"{/if}>
 									<label>
 										<input type="checkbox" name="assignment[stariffid][{$schema}][]" value="{$item.single.tariffid}"
@@ -143,9 +153,6 @@
 									</label>
 								</td>
 							{else}
-								<td>
-									{t a=$item.selection.id}<!tariffselection>$a:{/t}
-								</td>
 								<td>
 									<select id="{key($v)}" name="assignment[stariffid][{$schema}][]">
 										{if !$item.selection.required}

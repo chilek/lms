@@ -366,7 +366,7 @@ $promotion_assignments = $DB->GetAll('SELECT
 									p.id AS promotion_id, p.name as promotion_name,
 									ps.id AS schema_id, ps.name as schema_name,
 									t.name as tariff_name, pa.optional,
-									selectionid, t.id as tariffid
+									label, t.id as tariffid
 						       FROM promotions p
 						       	  LEFT JOIN promotionschemas ps ON p.id = ps.promotionid
 							      LEFT JOIN promotionassignments pa ON ps.id = pa.promotionschemaid
@@ -376,6 +376,16 @@ $promotion_assignments = $DB->GetAll('SELECT
 
 $promotions = array();
 if (!empty($promotion_assignments)) {
+	$promotion_schema_labels = $DB->GetAll('SELECT promotionschemaid AS schemaid,
+			label, COUNT(*) AS cnt FROM promotionassignments
+		WHERE label IS NOT NULL
+		GROUP BY promotionschemaid, label
+		HAVING COUNT(*) > 1');
+	$promotion_selections = array();
+	if (!empty($promotion_schema_labels))
+		foreach ($promotion_schema_labels as $label)
+			$promotion_selections[$label['schemaid']][$label['label']] = $label['cnt'];
+
 	$sid = 0;
     foreach ($promotion_assignments as $assign) {
         $pid = $assign['promotion_id'];
@@ -386,7 +396,8 @@ if (!empty($promotion_assignments)) {
 			$selection_indexes = array();
     	}
         $sn   = $assign['schema_name'];
-        $selid = empty($assign['selectionid']) ? null : $assign['selectionid'];
+        $selid = empty($assign['label']) || !isset($promotion_selections[$sid][$assign['label']])
+			? null : $assign['label'];
 
         if (!isset($promotions[$pid][$sid]))
 			$promotions[$pid][$sid] = array();
@@ -396,6 +407,7 @@ if (!empty($promotion_assignments)) {
 			'tariff'   => $assign['tariff_name'],
 			'value'    => $assign['value'],
 			'optional' => $assign['optional'],
+			'label'    => $assign['label'],
 		);
 
 		if (!empty($selid)) {
@@ -405,7 +417,7 @@ if (!empty($promotion_assignments)) {
 			if (!isset($promotions[$pid][$sid][$selection_indexes[$selid]]['selection']))
 				$promotions[$pid][$sid][$selection_indexes[$selid]]['selection'] = array(
 				 	'items' => array(),
-					'id' => $selid,
+					'label' => $selid,
 				);
 			$promotions[$pid][$sid][$selection_indexes[$selid]]['selection']['required'] =
 				empty($assign['optional']);

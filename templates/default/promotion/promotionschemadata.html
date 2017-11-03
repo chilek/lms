@@ -22,7 +22,7 @@
 					</TD>
 					<TD style="width: 1%;" class="text-right bold nobr">{trans("Value")}:</TD>
 					<TD style="width: 1%;" class="text-right nobr">{trans("Optional")}:</TD>
-					<TD style="width: 1%;" class="text-right nobr">{trans("Selection list")}:</TD>
+					<TD style="width: 1%;" class="text-right nobr">{trans("<!promotionassignment>Label")}:</TD>
 					{foreach from=$schema.periods item=period}
 					<TD style="width: 1%;" class="text-right nobr">{$period}:</TD>
 					{/foreach}
@@ -48,19 +48,19 @@
 					</TD>
 					<TD class="text-right valign-top nobr">
 						<SPAN id="tariffsel{$tariff.id}" class="tariffsel" {if $error && $formdata.aid == $tariff.id} style="display:none"{/if}>
-						{if $tariff.selectionid}{$tariff.selectionid}{/if}
+						{if $tariff.label}{$tariff.label}{/if}
 						</SPAN>
 						{if $error && $formdata.aid == $tariff.id}
 						<span id="tariffselection">
 						<SELECT name="form[tariffsel]" id="tariffsel" {tip text="Choose selection list" trigger="tariffsel"}>
-							<OPTION value="0" {if !$formdata.tariffsel}selected{/if}>{trans("<!promotionassignmentselectionid>- none -")}</OPTION>
-							<OPTION value="-1" {if $formdata.tariffsel == -1}selected{/if}>{trans("<!promotionassignmentselectionid>- new -")}</OPTION>
+							<OPTION value="0" {if !$formdata.tariffsel}selected{/if}>{trans("<!promotionassignment>- none -")}</OPTION>
+							<OPTION value="-1" {if $formdata.tariffsel == -1}selected{/if}>{trans("<!promotionassignment>- new -")}</OPTION>
 							{foreach $schema.selections as $selid}
 							<OPTION value="{$selid}"{if $selid == $formdata.tariffsel} selected{/if}>{$selid}</OPTION>
 							{/foreach}
 						</SELECT>
 						<br>
-						<input type="text" size="15" name="form[tariffnewsel]" id="tariffnewsel"{if $formdata.tariffsel != -1} style="display: none;"{/if} {tip text="Enter new selection list name" trigger="tariffnewsel"}
+						<input type="text" size="15" name="form[tariffnewsel]" id="tariffnewsel"{if $formdata.tariffsel != -1} style="display: none;"{/if} {tip text="<!promotionassignment>Enter new label" trigger="tariffnewsel"}
 						</span>
 						{/if}
 					</TD>
@@ -119,14 +119,14 @@
 					</TD>
 					<TD class="ftop text-right valign-top nobr">
 						<SELECT name="form[sel]" {tip text="Choose selection list" trigger="sel"}>
-							<OPTION value="0" {if !$formdata.sel}selected{/if}>{trans("<!promotionassignmentselectionid>- none -")}</OPTION>
-							<OPTION value="-1" {if $formdata.sel == -1}selected{/if}>{trans("<!promotionassignmentselectionid>- new -")}</OPTION>
+							<OPTION value="0" {if !$formdata.sel}selected{/if}>{trans("<!promotionassignment>- none -")}</OPTION>
+							<OPTION value="-1" {if $formdata.sel == -1}selected{/if}>{trans("<!promotionassignment>- new -")}</OPTION>
 							{foreach $schema.selections as $selid}
 							<OPTION value="{$selid}"{if $selid == $formdata.sel} selected{/if}>{$selid}</OPTION>
 							{/foreach}
 						</SELECT>
 						<br>
-						<input type="text" size="15" name="form[newsel]" id="newsel" style="display: none;" {tip text="Enter new selection list name" trigger="newsel"}
+						<input type="text" size="15" name="form[newsel]" id="newsel" style="display: none;" {tip text="<!promotionassignment>Enter new label" trigger="newsel"}
 					</TD>
 					{foreach from=$schema.periods item=period key=key}
 					<TD class="ftop text-right valign-top nobr">
@@ -216,13 +216,13 @@ function edit_tariff(id) {
 		} else if (/^tariffsel[0-9]+$/.test(this.id)) {
 			$(pn).append('<span id="tariffselection">'
 				+ '<SELECT name="form[tariffsel]" id="tariffsel">'
-				+ '<OPTION value="0">{trans("<!promotionassignmentselectionid>- none -")}</OPTION>'
-				+ '<OPTION value="-1">{trans("<!promotionassignmentselectionid>- new -")}</OPTION>'
+				+ '<OPTION value="0">{trans("<!promotionassignment>- none -")}</OPTION>'
+				+ '<OPTION value="-1">{trans("<!promotionassignment>- new -")}</OPTION>'
 				{foreach $schema.selections as $selid}
 				+ '<OPTION value="{$selid}"' + (v == '{$selid}' ? ' selected' : '') + '>{$selid}</OPTION>'
 				{/foreach}
 				+ '</SELECT><br>'
-				+ '<input type="text" size="15" name="form[tariffnewsel]" id="tariffnewsel" style="display: none;" {tip text="Enter new selection list name" trigger="tariffnewsel"}>'
+				+ '<input type="text" size="15" name="form[tariffnewsel]" id="tariffnewsel" style="display: none;" {tip text="<!promotionassignment>Enter new label" trigger="tariffnewsel"}>'
 				+ '</span>');
 			$('#tariffsel').change(function() {
 				if ($(this).val() == '-1') {

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -38,7 +38,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 	$schema = $DB->GetOne('SELECT data FROM promotionschemas WHERE id = ?', array($schemaid));
 	$schema = explode(';', $schema);
 
-	$optional = $selectionid = 0;
+	$optional = $label = 0;
 	foreach ($form as $key => $value) {
 		$form[$key] = trim($value);
 
@@ -75,16 +75,16 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 						if (!strlen($form['tariffnewsel']))
 							$error['tariffnewsel'] = trans('Incorrect value!');
 						else
-							$selectionid = $form['tariffnewsel'];
+							$label = $form['tariffnewsel'];
 					elseif ($key == 'sel')
 						if (!strlen($form['newsel']))
 							$error['newsel'] = trans('Incorrect value!');
 						else
-							$selectionid = $form['newsel'];
+							$label = $form['newsel'];
 				} elseif ($value == '0')
-					$selectionid = null;
+					$label = null;
 				else
-					$selectionid = $value;
+					$label = $value;
 			}
 		}
 	}
@@ -98,8 +98,8 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 			array($schemaid));
 		if (!empty($assignmentid)) {
 			$DB->Execute('UPDATE promotionassignments
-				SET optional = ?, selectionid = ?, data = ? WHERE id = ?',
-				array($optional, $selectionid, $datastr, $assignmentid));
+				SET optional = ?, label = ?, data = ? WHERE id = ?',
+				array($optional, $label, $datastr, $assignmentid));
 			if ($SYSLOG) {
 				$args = array(
 					SYSLOG::RES_PROMOASSIGN => $assignmentid,
@@ -107,7 +107,7 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 					SYSLOG::RES_TARIFF => $form['tariffid'],
 					SYSLOG::RES_PROMO => $promotionid,
 					'optional' => $optional,
-					'selectionid' => empty($selectionid) ? null : $selectionid,
+					'label' => empty($label) ? null : $label,
 					'data' => $datastr
 				);
 				$SYSLOG->AddMessage(SYSLOG::RES_PROMOASSIGN, SYSLOG::OPER_UPDATE, $args);
@@ -119,12 +119,12 @@ if ($action == 'tariff' && !empty($_POST['form'])) {
 				SYSLOG::RES_PROMOSCHEMA => $schemaid,
 				SYSLOG::RES_TARIFF => intval($form['tariffid']),
 				'optional' => $optional,
-				'selectionid' => empty($selectionid) ? null : $selectionid,
+				'label' => empty($label) ? null : $label,
 				'data' => $datastr,
 				'orderid' => empty($orderid) ? 1 : $orderid,
 			);
 			$DB->Execute('INSERT INTO promotionassignments
-				(promotionschemaid, tariffid, optional, selectionid, data, orderid)
+				(promotionschemaid, tariffid, optional, label, data, orderid)
 				VALUES (?, ?, ?, ?, ?, ?)', array_values($args));
 			if ($SYSLOG) {
 				$args[SYSLOG::RES_PROMO] = $promotionid;
