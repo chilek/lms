@@ -39,7 +39,7 @@ abstract class LMSDB_common implements LMSDBInterface
 {
 
     /** @var string LMS version * */
-    protected $_version = '1.11-git';
+    protected $_version = DBVERSION;
 
     /** @var string LMS revision * */
     protected $_revision = '$Revision$';
