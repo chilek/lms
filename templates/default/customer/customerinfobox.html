@@ -358,7 +358,9 @@
 				<script type="text/javascript">
 					<!--
 					function AddInstantPayment() {
-						document.instantpayment.submit();
+						if (confirm('{t a=$customerinfo.customername|escape:"javascript"|escape:"html"}{trans('Are you sure, you want to make instant payment for customer \\\'$a\\\'?')}{/t}')) {
+							document.instantpayment.submit();
+						}
 					}
 					//-->
 				</script>
@@ -367,7 +369,7 @@
 				<input type="hidden" name="instantpayment[type]" value="1">
 				<input type="hidden" name="instantpayment[sourceid]" value="0">
 				<input type="hidden" name="instantpayment[comment]" value="{trans("instant payment")}">
-				<a href="javascript:AddInstantPayment()" OnClick="return confirmLink(this, '{t a=$customerinfo.customername|escape:"javascript"|escape:"html"}{trans('Are you sure, you want to make instant payment for customer \\\'$a\\\'?')}{/t}');"><img src="img/printr.gif"> {trans("instant payment")}</a>
+				<a href="javascript:AddInstantPayment()"><img src="img/printr.gif"> {trans("instant payment")}</a>
 				<label>
 					<input type="checkbox" name="instantpayment[print]" value="1" {if ConfigHelper::checkConfig('receipts.instant_payment_print')} checked{/if}>
 					{trans("print")}
