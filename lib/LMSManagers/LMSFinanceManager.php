@@ -1857,12 +1857,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			return $result;
 
 		foreach ($liabilities as &$liability) {
-			$liability['comment'] = trans($document_descriptions[$liability['doctype']], docnumber(array(
-				'number' => $liability['number'],
-				'template' => $liability['template'],
-				'cdate' => $liability['cdate'],
-				'customerid' => $customerid,
-			)));
+			if (!empty($liability['docid']))
+				$liability['comment'] = trans($document_descriptions[$liability['doctype']], docnumber(array(
+					'number' => $liability['number'],
+					'template' => $liability['template'],
+					'cdate' => $liability['cdate'],
+					'customerid' => $customerid,
+				)));
 			$liability['references'] = array();
 
 			// get cnotes values if those values decreases invoice value
