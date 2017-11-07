@@ -180,7 +180,7 @@
 	<TR class="highlight {cycle}{if $customerlist[customerlist].account && !$customerlist[customerlist].nodeac} blend{/if}"  >
 		<TD onClick="return self.location.href='?m=customerinfo&amp;id={$customerlist[customerlist].id}';">
 			<IMG src="img/{$_CSTATUSES[$customerlist[customerlist].status].img}" alt="">{if $customerlist[customerlist].info}&nbsp;<img src="img/info1.gif" alt="" {tip text=$customerlist[customerlist].info}>{/if}<A name="{$customerlist[customerlist].id}" class="lms-ui-tooltip-customerinfo" data-resourceid="{$customerlist[customerlist].id}">&nbsp;<span class="bold">{$customerlist[customerlist].customername|escape}</span></A><BR>
-			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].address}{if $customerlist[customerlist].city != ""},{/if} {$customerlist[customerlist].zip} {$customerlist[customerlist].city}{if $customerlist[customerlist].country != ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
+			<IMG src="img/home.gif" alt="">&nbsp;{$customerlist[customerlist].full_address}{if $customerlist[customerlist].country != ""}, {t}{$customerlist[customerlist].country}{/t}{/if}
 		</TD>
 		<TD class="text-right nobr">
 			({if $customerlist[customerlist].extid}{$customerlist[customerlist].extid} / {/if}{$customerlist[customerlist].id|string_format:"%04d"})
