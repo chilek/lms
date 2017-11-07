@@ -138,6 +138,7 @@ class LMSPluginManager extends Subject implements SubjectInterface {
 	 * @param bool $enable enable plugin flag
 	 */
 	public function enablePlugin($name, $enable) {
+		$this->executeHook(($enable ? 'enable' : 'disable') .'_plugin', $name);
 		if (in_array($name, $this->new_style_plugins))
 			$this->new_style_plugins[$name]['enabled'] = $enable;
 		else
