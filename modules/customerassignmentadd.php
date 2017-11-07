@@ -348,11 +348,12 @@ $LMS->executeHook(
     )
 );
 
-$schemas_only_names = $DB->GetAll('SELECT name,
-	(CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid
+$promotions = $DB->GetAll('SELECT id, name,
+		(CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid
 	FROM promotions WHERE disabled <> 1');
-$schemas = $DB->GetAll('SELECT p.name AS promotion, s.name, s.id,
-	(SELECT '.$DB->GroupConcat('tariffid', ',').'
+
+$promotion_schemas = $DB->GetAll('SELECT p.id AS promotionid, p.name AS promotion, s.name, s.id,
+	(SELECT ' . $DB->GroupConcat('tariffid', ',') . '
 		FROM promotionassignments WHERE promotionschemaid = s.id
 	) AS tariffs
 	FROM promotions p
@@ -362,32 +363,33 @@ $schemas = $DB->GetAll('SELECT p.name AS promotion, s.name, s.id,
 		WHERE promotionschemaid = s.id LIMIT 1)
 	ORDER BY p.name, s.name');
 
-$promotion_assignments = $DB->GetAll('SELECT
-									p.id AS promotion_id, p.name as promotion_name,
-									ps.id AS schema_id, ps.name as schema_name,
-									t.name as tariff_name, pa.optional,
-									label, t.id as tariffid
-						       FROM promotions p
-						       	  LEFT JOIN promotionschemas ps ON p.id = ps.promotionid
-							      LEFT JOIN promotionassignments pa ON ps.id = pa.promotionschemaid
-							      LEFT JOIN tariffs t ON pa.tariffid = t.id
-							   ORDER BY
-							      p.name, ps.name, pa.orderid ASC');
+$promotion_schema_assignments = $DB->GetAll('SELECT
+		p.id AS promotion_id, p.name as promotion_name,
+		ps.id AS schema_id, ps.name as schema_name,
+		t.name as tariff_name, pa.optional,
+		label, t.id as tariffid
+	FROM promotions p
+	  LEFT JOIN promotionschemas ps ON p.id = ps.promotionid
+	  LEFT JOIN promotionassignments pa ON ps.id = pa.promotionschemaid
+	  LEFT JOIN tariffs t ON pa.tariffid = t.id
+	ORDER BY
+	  p.name, ps.name, pa.orderid ASC');
 
-$promotions = array();
-if (!empty($promotion_assignments)) {
-	$promotion_schema_labels = $DB->GetAll('SELECT promotionschemaid AS schemaid,
+$promotion_schema_items = array();
+
+if (!empty($promotion_schema_assignments)) {
+	$promotion_schema_assignment_labels = $DB->GetAll('SELECT promotionschemaid AS schemaid,
 			label, COUNT(*) AS cnt FROM promotionassignments
 		WHERE label IS NOT NULL
 		GROUP BY promotionschemaid, label
 		HAVING COUNT(*) > 1');
-	$promotion_selections = array();
-	if (!empty($promotion_schema_labels))
-		foreach ($promotion_schema_labels as $label)
-			$promotion_selections[$label['schemaid']][$label['label']] = $label['cnt'];
+	$promotion_schema_selections = array();
+	if (!empty($promotion_schema_assignment_labels))
+		foreach ($promotion_schema_assignment_labels as $label)
+			$promotion_schema_selections[$label['schemaid']][$label['label']] = $label['cnt'];
 
 	$sid = 0;
-    foreach ($promotion_assignments as $assign) {
+    foreach ($promotion_schema_assignments as $assign) {
         $pid = $assign['promotion_id'];
     	$pn   = $assign['promotion_name'];
     	if ($assign['schema_id'] != $sid) {
@@ -396,13 +398,13 @@ if (!empty($promotion_assignments)) {
 			$selection_indexes = array();
     	}
         $sn   = $assign['schema_name'];
-        $selid = empty($assign['label']) || !isset($promotion_selections[$sid][$assign['label']])
+        $selid = empty($assign['label']) || !isset($promotion_schema_selections[$sid][$assign['label']])
 			? null : $assign['label'];
 
-        if (!isset($promotions[$pid][$sid]))
-			$promotions[$pid][$sid] = array();
+        if (!isset($schemas[$pid][$sid]))
+			$schemas[$pid][$sid] = array();
 
-        $promotion_item = array(
+        $promotion_schema_item = array(
 			'tariffid' => $assign['tariffid'],
 			'tariff'   => $assign['tariff_name'],
 			'value'    => $assign['value'],
@@ -414,17 +416,18 @@ if (!empty($promotion_assignments)) {
 			if (!isset($selection_indexes[$selid]))
 				$selection_indexes[$selid] = $index++;
 
-			if (!isset($promotions[$pid][$sid][$selection_indexes[$selid]]['selection']))
-				$promotions[$pid][$sid][$selection_indexes[$selid]]['selection'] = array(
+			if (!isset($promotion_schema_items[$pid][$sid][$selection_indexes[$selid]]['selection']))
+				$promotion_schema_items[$pid][$sid][$selection_indexes[$selid]]['selection'] = array(
 				 	'items' => array(),
 					'label' => $selid,
 				);
-			$promotions[$pid][$sid][$selection_indexes[$selid]]['selection']['required'] =
+			$promotion_schema_items[$pid][$sid][$selection_indexes[$selid]]['selection']['required'] =
 				empty($assign['optional']);
 
-			$promotions[$pid][$sid][$selection_indexes[$selid]]['selection']['items'][] = $promotion_item;
+			$promotion_schema_items[$pid][$sid][$selection_indexes[$selid]]['selection']['items'][] =
+				$promotion_schema_item;
 		} else
-			$promotions[$pid][$sid][$index++]['single'] = $promotion_item;
+			$promotion_schema_items[$pid][$sid][$index++]['single'] = $promotion_schema_item;
 	}
 }
 
@@ -451,9 +454,11 @@ $SMARTY->assign('assignment'          , $a);
 $SMARTY->assign('customernodes'       , $customernodes);
 $SMARTY->assign('customervoipaccs'    , $LMS->getCustomerVoipAccounts($customer['id']));
 $SMARTY->assign('customeraddresses'   , $LMS->getCustomerAddresses($customer['id']));
-$SMARTY->assign('promotionschemanames', $schemas_only_names);
-$SMARTY->assign('promotionschemas'    , $schemas);
+
 $SMARTY->assign('promotions'          , $promotions);
+$SMARTY->assign('promotion_schemas'   , $promotion_schemas);
+$SMARTY->assign('promotion_schema_items' , $promotion_schema_items);
+
 $SMARTY->assign('tariffs'             , $LMS->GetTariffs());
 $SMARTY->assign('taxeslist'           , $LMS->GetTaxes());
 $SMARTY->assign('expired'             , $expired);

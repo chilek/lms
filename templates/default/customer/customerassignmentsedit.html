@@ -66,7 +66,7 @@
 								<option value=""   data-tarifftype="0" {if !$assignment.tariffid} selected{/if}>- {trans("tariffless liability")} -</option>
 								<option value="-1" data-tarifftype="0" {if $assignment.tariffid == -1} selected{/if}>{trans("- all liabilities suspended -")}</option>
 
-								{if $promotionschemas}
+								{if $promotion_schemas}
 									<option value="-2" data-tarifftype="0" {if $assignment.tariffid == -2} selected{/if}>- {trans("per promotion schema")} -</option>
 								{/if}
 
@@ -102,7 +102,7 @@
     </THEAD>
 
     <TBODY>
-		{if $promotionschemas}
+		{if $promotion_schemas}
 		<TR id="a_schema">
 			<TD>
 				<IMG src="img/promoschema.gif" alt="">
@@ -112,11 +112,11 @@
 			</TD>
 			<TD style="width: 98%;">
 				<SELECT size="1" name="assignment[schemaid]" id="promotionselect" {tip text="Select promotion schema"}>
-					{foreach $promotionschemanames as $schemaname}
-      	    	        <optgroup label="{$schemaname.name}" data-valid="{$schemaname.valid}"{if !$schemaname.valid} class="blend"{if !$assignment.alltariffs} style="display: none;"{/if}{/if}>
-                	        {foreach $promotionschemas as $schema}
-                    	        {if $schemaname.name == $schema.promotion}
-                        	        <OPTION value="{$schema.id}"{if $assignment.schemaid == $schema.id} SELECTED{/if} data-valid="{$schemaname.valid}"{if !$schemaname.valid} class="blend"{/if}>{$schema.name|truncate:40:"...":true}</OPTION>
+					{foreach $promotions as $promotion}
+      	    	        <optgroup label="{$promotion.name}" data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{if !$assignment.alltariffs} style="display: none;"{/if}{/if}>
+                	        {foreach $promotion_schemas as $schema}
+                    	        {if $schema.promotionid == $promotion.id}
+                        	        <OPTION value="{$schema.id}"{if $assignment.schemaid == $schema.id} SELECTED{/if} data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{/if}>{$schema.name|truncate:40:"...":true}</OPTION>
                                 {/if}
                             {/foreach}
                         </optgroup>
@@ -128,9 +128,9 @@
 		<TR id="a_schematariff">
 			<TD></TD>
 			<TD colspan="2">
-				{foreach $promotions as $promotion => $p}
-                	{foreach $p as $schema => $items}
-                    	<table class="promotionstable" id="schema{$schema}">
+				{foreach $promotion_schema_items as $promotionid => $schemas}
+                	{foreach $schemas as $schemaid => $items}
+                    	<table class="promotionstable" id="schema{$schemaid}">
 							{foreach $items as $item}
 							<tr>
 								<td class="text-right">
@@ -147,19 +147,19 @@
                             {if isset($item.single)}
 								<td{if !$item.single.optional} class="blend"{/if}>
 									<label>
-										<input type="checkbox" name="assignment[stariffid][{$schema}][]" value="{$item.single.tariffid}"
-											   {if in_array($item.single.tariffid, $assignment.stariffid[$schema]) || !$item.single.optional} checked{/if}{if !$item.single.optional} data-mandatory="true" disabled{/if}>
+										<input type="checkbox" name="assignment[stariffid][{$schemaid}][]" value="{$item.single.tariffid}"
+											   {if in_array($item.single.tariffid, $assignment.stariffid[$schemaid]) || !$item.single.optional} checked{/if}{if !$item.single.optional} data-mandatory="true" disabled{/if}>
 										{$item.single.tariff}
 									</label>
 								</td>
 							{else}
 								<td>
-									<select id="{key($v)}" name="assignment[stariffid][{$schema}][]">
+									<select name="assignment[stariffid][{$schemaid}][]">
 										{if !$item.selection.required}
 										<option value="0">{trans("- none -")}</option>
 										{/if}
 										{foreach $item.selection.items as $item}
-										<option value="{$item.tariffid}"{if in_array($item.tariffid, $assignment.stariffid[$schema])} selected{/if}>{$item.tariff}</option>
+										<option value="{$item.tariffid}"{if in_array($item.tariffid, $assignment.stariffid[$schemaid])} selected{/if}>{$item.tariff}</option>
 										{/foreach}
 									</select>
 								</td>
