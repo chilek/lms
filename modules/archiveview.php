@@ -92,22 +92,20 @@ if (isset($_POST['search'])) {
 	$SESSION->remove('arvpv');
 }
 
-if (isset($_POST['datefrom']))
-	if (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $_POST['datefrom'])) {
-		list ($year, $month, $day) = explode('/', $_POST['datefrom']);
-		$datefrom = mktime(0, 0, 0, $month, $day, $year);
-	} else
+if (isset($_POST['datefrom'])) {
+	$datefrom = date_to_timestamp($_POST['datefrom']);
+	if(empty($datefrom))
 		$datefrom = 0;
+}
 else
 	$SESSION->restore('arvdf', $datefrom);
 $SESSION->save('arvdf', $datefrom);
 
-if (isset($_POST['dateto']))
-	if (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $_POST['dateto'])) {
-		list ($year, $month, $day) = explode('/', $_POST['dateto']);
-		$dateto = mktime(0, 0, 0, $month, $day, $year);
-	} else
+if (isset($_POST['dateto'])) {
+	$dateto = date_to_timestamp($_POST['dateto']);
+	if(empty($dateto))
 		$dateto = 0;
+}
 else
 	$SESSION->restore('arvdt', $dateto);
 $SESSION->save('arvdt', $dateto);
