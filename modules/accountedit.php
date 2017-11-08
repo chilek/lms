@@ -81,16 +81,14 @@ if(isset($_POST['account']))
 	if($account['mail_bcc'] != '' && !check_email($account['mail_bcc']))
 	        $error['mail_bcc'] = trans('Incorrect email!');
 			
-	if($account['expdate'] == '')
-		$account['expdate'] = 0;
-	else
-	{
-		$date = explode('/',$account['expdate']);
-		if(!checkdate($date[1],$date[2],$date[0]))
-			$error['expdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-		elseif(!$error)
-			$account['expdate'] = mktime(0,0,0,$date[1],$date[2],$date[0]);
-	}
+        if($account['expdate'] == '')
+                $account['expdate'] = 0;
+        else
+        {
+                $date = date_to_timestamp($account['expdate']);
+                if(empty($date))
+                        $error['expdate'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+        }
 
 	if($account['domainid'] && $account['ownerid'])
 		if(!$DB->GetOne('SELECT 1 FROM domains WHERE id=? AND (ownerid IS NULL OR ownerid=?)', array($account['domainid'], $account['ownerid'])))
