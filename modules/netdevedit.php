@@ -583,24 +583,18 @@ if (isset($_POST['netdev'])) {
 	if (!empty($netdevdata['ownerid']) && !$LMS->CustomerExists($netdevdata['ownerid']))
 		$error['ownerid'] = trans('Customer doesn\'t exist!');
 
-	$netdevdata['purchasetime'] = 0;
-	if ($netdevdata['purchasedate'] != '') {
-		// date format 'yyyy/mm/dd'
-		if (!preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $netdevdata['purchasedate'])) {
-			$error['purchasedate'] = trans('Invalid date format!');
-		} else {
-			$date = explode('/', $netdevdata['purchasedate']);
-			if (checkdate($date[1], $date[2], (int) $date[0])) {
-				$tmpdate = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-				if (mktime(0, 0, 0) < $tmpdate)
-					$error['purchasedate'] = trans('Date from the future not allowed!');
-				else
-					$netdevdata['purchasetime'] = $tmpdate;
-			}
-			else
-				$error['purchasedate'] = trans('Invalid date format!');
-		}
-	}
+
+        if ($netdevdata['purchasedate'] != '')
+        {
+                $netdevdata['purchasetime'] = date_to_timestamp($netdevdata['purchasedate']);
+                if(empty($netdevdata['purchasetime']))
+                        $error['purchasedate'] = trans('Invalid date format!');
+                else
+                        if (time() < $netdevdata['purchasetime'])
+                                $error['purchasedate'] = trans('Date from the future not allowed!');
+        }
+        else
+                $netdevdata['purchasetime'] = 0;
 
 	if ($netdevdata['guaranteeperiod'] != 0 && $netdevdata['purchasedate'] == '') {
 		$error['purchasedate'] = trans('Purchase date cannot be empty when guarantee period is set!');
