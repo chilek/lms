@@ -57,24 +57,10 @@ if(isset($_POST['reglog']))
 	elseif(!preg_match('/^[-]?[0-9.,]+$/', $reglog['value']))
 	        $error['value'] = trans('Incorrect value!');
 
-	if($reglog['time'])
+	if(!empty($reglog['time']))
 	{
-		if(preg_match('/^([0-9]{4}\/[0-9]{2}\/[0-9]{2})\s+([0-9]{2}:[0-9]{2})$/', $reglog['time'], $matches))
-		{
-	    		// date format 'yyyy/mm/dd hh:mm'
-			$date = explode('/', $matches[1]);
-			$time = explode(':', $matches[2]);
-
-			if(checkdate($date[1],$date[2],(int)$date[0]))
-			{
-		    		if (!strlen($time[0]) || !strlen($time[1]))
-		    			$time[0] = $time[1] = 0;
-				$time = mktime($time[0],$time[1],0,$date[1],$date[2],$date[0]);
-			}
-			else
-				$error['time'] = trans('Wrong datetime format!');
-		}
-		else
+		$time = datetime_to_timestamp($reglog['time']);
+		if(empty($time))
 			$error['time'] = trans('Wrong datetime format!');
 	}
 	else
