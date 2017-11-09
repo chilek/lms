@@ -94,6 +94,16 @@ $(function() {
 				$(input).tooltip('disable');
 				$(this).data('tooltip', input);
 			}
+			setTimeout(function() {
+				var target = $(input);
+				var buttonPane = target.datepicker("widget").find(".ui-datepicker-buttonpane");
+				var btn = $('<button type="button" class="ui-datepicker-current ui-state-default ui-priority-secondary '
+					+ 'ui-corner-all">' + lmsMessages.datePickerClear + '</button>');
+				btn.unbind("click").bind("click", function () {
+					target.datepicker("setDate", new Date());
+				});
+				btn.appendTo(buttonPane);
+			}, 1);
 		},
 		onClose: function(dateText, inst) {
 			if ($(this).data('tooltip') !== undefined) {
