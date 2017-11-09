@@ -61,29 +61,29 @@ function show_pagecontent() {
 	}
 }
 
+$.datepicker._gotoToday = function(id) {
+	var target = $(id);
+	var inst = this._getInst(target[0]);
+	if (this._get(inst, 'gotoCurrent') && inst.currentDay) {
+		inst.selectedDay = inst.currentDay;
+		inst.drawMonth = inst.selectedMonth = inst.currentMonth;
+		inst.drawYear = inst.selectedYear = inst.currentYear;
+	} else {
+		var date = new Date();
+		inst.selectedDay = date.getDate();
+		inst.drawMonth = inst.selectedMonth = date.getMonth();
+		inst.drawYear = inst.selectedYear = date.getFullYear();
+		// the below two lines are new
+		this._setDateDatepicker(target, date);
+		this._selectDate(id, this._getDateDatepicker(target));
+	}
+	this._notifyChange(inst);
+	this._adjustDate(target);
+}
+
 $(function() {
 	var autocomplete = "off";
 	var elementsToInitiate = 0;
-
-	$.datepicker._gotoToday = function(id) {
-		var target = $(id);
-		var inst = this._getInst(target[0]);
-		if (this._get(inst, 'gotoCurrent') && inst.currentDay) {
-			inst.selectedDay = inst.currentDay;
-			inst.drawMonth = inst.selectedMonth = inst.currentMonth;
-			inst.drawYear = inst.selectedYear = inst.currentYear;
-		} else {
-			var date = new Date();
-			inst.selectedDay = date.getDate();
-			inst.drawMonth = inst.selectedMonth = date.getMonth();
-			inst.drawYear = inst.selectedYear = date.getFullYear();
-			// the below two lines are new
-			this._setDateDatepicker(target, date);
-			this._selectDate(id, this._getDateDatepicker(target));
-		}
-		this._notifyChange(inst);
-		this._adjustDate(target);
-	}
 
 	$('div.calendar input,input.calendar').datepicker({
 		showButtonPanel: true,
@@ -95,27 +95,61 @@ $(function() {
 				$(this).data('tooltip', input);
 			}
 			setTimeout(function() {
+				var btnHtml = '<button type="button" class="ui-datepicker-current ui-state-default ui-priority-secondary '
+					+ 'ui-corner-all lms-ui-datepicker-clear">' + lmsMessages.datePickerClear + '</button>';
 				var target = $(input);
-				var buttonPane = target.datepicker("widget").find(".ui-datepicker-buttonpane");
-				var btn = $('<button type="button" class="ui-datepicker-current ui-state-default ui-priority-secondary '
-					+ 'ui-corner-all">' + lmsMessages.datePickerClear + '</button>');
+				var widget = target.datepicker("widget");
+				var buttonPane = widget.find(".ui-datepicker-buttonpane");
+				if (buttonPane.find('.lms-ui-datepicker-clear').length) {
+					return;
+				}
+				var btn = $(btnHtml);
 				btn.appendTo(buttonPane);
-				btn.click(function() {
-					target.datepicker("setDate", new Date());
-				});
+
+				function click() {
+					target.datepicker("setDate", '');
+					setTimeout(function() {
+						var buttonPane = widget.find(".ui-datepicker-buttonpane");
+						if (buttonPane.find('.lms-ui-datepicker-clear').length) {
+							return;
+						}
+						var btn = $(btnHtml);
+						btn.appendTo(buttonPane);
+						btn.click(click);
+					}, 1);
+				}
+
+				btn.click(click);
 			}, 1);
 		},
 		onChangeMonthYear: function(year, month, instance) {
 			var input = this;
 			setTimeout(function() {
 				var target = $(input);
-				var buttonPane = target.datepicker("widget").find(".ui-datepicker-buttonpane");
-				var btn = $('<button type="button" class="ui-datepicker-current ui-state-default ui-priority-secondary '
-					+ 'ui-corner-all">' + lmsMessages.datePickerClear + '</button>');
+				var widget = target.datepicker("widget");
+				var buttonPane = widget.find(".ui-datepicker-buttonpane");
+				if (buttonPane.find('.lms-ui-datepicker-clear').length) {
+					return;
+				}
+				var btnHtml = '<button type="button" class="ui-datepicker-current ui-state-default ui-priority-secondary '
+					+ 'ui-corner-all lms-ui-datepicker-clear">' + lmsMessages.datePickerClear + '</button>';
+				var btn = $(btnHtml);
 				btn.appendTo(buttonPane);
-				btn.click(function() {
-					target.datepicker("setDate", new Date());
-				});
+
+				function click() {
+					target.datepicker("setDate", '');
+					setTimeout(function() {
+						var buttonPane = widget.find(".ui-datepicker-buttonpane");
+						if (buttonPane.find('.lms-ui-datepicker-clear').length) {
+							return;
+						}
+						var btn = $(btnHtml);
+						btn.appendTo(buttonPane);
+						btn.click(click);
+					}, 1);
+				}
+
+				btn.click(click);
 			}, 1);
 		},
 		onClose: function(dateText, inst) {
