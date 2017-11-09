@@ -99,10 +99,23 @@ $(function() {
 				var buttonPane = target.datepicker("widget").find(".ui-datepicker-buttonpane");
 				var btn = $('<button type="button" class="ui-datepicker-current ui-state-default ui-priority-secondary '
 					+ 'ui-corner-all">' + lmsMessages.datePickerClear + '</button>');
-				btn.unbind("click").bind("click", function () {
+				btn.appendTo(buttonPane);
+				btn.click(function() {
 					target.datepicker("setDate", new Date());
 				});
+			}, 1);
+		},
+		onChangeMonthYear: function(year, month, instance) {
+			var input = this;
+			setTimeout(function() {
+				var target = $(input);
+				var buttonPane = target.datepicker("widget").find(".ui-datepicker-buttonpane");
+				var btn = $('<button type="button" class="ui-datepicker-current ui-state-default ui-priority-secondary '
+					+ 'ui-corner-all">' + lmsMessages.datePickerClear + '</button>');
 				btn.appendTo(buttonPane);
+				btn.click(function() {
+					target.datepicker("setDate", new Date());
+				});
 			}, 1);
 		},
 		onClose: function(dateText, inst) {
