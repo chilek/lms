@@ -167,31 +167,42 @@ $SESSION->save('rlreg', $regid);
 
 if(isset($_POST['from']))
 {
-	if($_POST['from'] != '')
+	if(!empty($_POST['from']))
 	{
-		list($year, $month, $day) = explode('/', $_POST['from']);
-		$from = mktime(0,0,0, $month, $day, $year);
+		$from = date_to_timestamp($_POST['from']);
+		if(empty($from))
+			$error['datefrom'] = trans('Invalid date format!');
 	}
 }
 elseif($SESSION->is_set('rlf'))
 	$SESSION->restore('rlf', $from);
 else
-	$from = mktime(0,0,0);
-$SESSION->save('rlf', $from);
+	$from = 0;
 
 if(isset($_POST['to']))
 {
-	if($_POST['to'] != '')
-	{
-		list($year, $month, $day) = explode('/', $_POST['to']);
-		$to = mktime(23,59,59, $month, $day, $year);
-	}
+	if(!empty($_POST['to']))
+        {
+                $to = date_to_timestamp($_POST['to']);
+		if(empty($to))
+			$error['dateto'] = trans('Invalid date format!');
+        }
 }
 elseif($SESSION->is_set('rlt'))
 	$SESSION->restore('rlt', $to);
 else
-	$to = mktime(23,59,59);
-$SESSION->save('rlt', $to);
+	$to = 0;
+
+if($from!=0 && $from!=0)
+	if($from > $to) {
+		$error['datefrom'] = trans('Incorrect date range!');
+		$error['dateto'] = trans('Incorrect date range!');
+	}
+else
+{
+	$SESSION->save('rlf', $from);
+	$SESSION->save('rlt', $to);
+}
 
 if(isset($_POST['advances']))
 	$a = 1;
@@ -257,6 +268,8 @@ if($receipt = $SESSION->get('receiptprint'))
 	$SMARTY->assign('receipt', $receipt);
 	$SESSION->remove('receiptprint');
 }
+
+$SMARTY->assign('error',$error);
 $SMARTY->assign('logentry', $logentry);
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('pagelimit',$pagelimit);
