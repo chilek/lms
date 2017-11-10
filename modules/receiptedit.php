@@ -225,18 +225,21 @@ switch($action)
 			$receipt['number'] = 0;
 		}
 		
-                if(isset($receipt['cdate']))
-                {
-                        $cdate = date_to_timestamp($receipt['cdate']);
-                        if(empty($cdate)) {
-                                $error['cdate'] = trans('Incorrect date format!');
-                                $receipt['cdate'] = time();
-                                break;
-                        }
-                }
-                else
-                        $receipt['cdate'] = time();
-
+		if($receipt['cdate'])
+		{
+			list($year, $month, $day) = explode('/',$receipt['cdate']);
+			if(checkdate($month, $day, $year)) 
+			{
+				$receipt['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
+			}
+			else
+			{
+				$error['cdate'] = trans('Incorrect date format!');
+				$receipt['cdate'] = time();
+				break;
+			}
+		}
+		
 		$newday = date('Ymd',$receipt['cdate']);
 		$oldday = date('Ymd',$oldcdate);
 		if($newday != $oldday)
