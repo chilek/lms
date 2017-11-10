@@ -114,7 +114,7 @@ if(isset($addbalance['mcustomerid']))
 						'contents' => $payments,
 					);
 					$rid = $LMS->AddReceipt($receipt);
-					if (!empty($rid) && (isset($addbalance['print']) || ConfigHelper::checkConfig('receipts.instant_payment_print'))) {
+					if (!empty($rid) && isset($addbalance['print'])) {
 						$which = array();
 						if (!empty($_POST['original'])) $which[] = 'original';
 						if (!empty($_POST['copy'])) $which[] = 'copy';
