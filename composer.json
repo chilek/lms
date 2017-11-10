@@ -8,9 +8,9 @@
             "type": "package",
             "package": {
                 "name": "xdan/datetimepicker",
-                "version": "2.5.11",
+                "version": "2.5.12",
                 "dist": {
-                    "url": "https://github.com/xdan/datetimepicker/archive/2.5.11.zip",
+                    "url": "https://github.com/xdan/datetimepicker/archive/2.5.12.zip",
                     "type": "zip"
                 }
             }
