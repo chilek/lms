@@ -76,7 +76,7 @@ if ($promotion) {
 		$promotion['from'] = 0;
 	else
 	{
-		$from = date_to_timestamp($promotion['datefrom'])
+		$from = date_to_timestamp($promotion['datefrom']);
 		if(empty($from))
 			$error['datefrom'] = trans('Incorrect effective start time!');
 	}
@@ -85,7 +85,7 @@ if ($promotion) {
                 $promotion['to'] = 0;
         else
         {
-		$to = date_to_timestamp($promotion['dateto'])
+		$to = date_to_timestamp($promotion['dateto']);
 		if(empty($to))
 			$error['dateto'] = trans('Incorrect effective start time!');
         }

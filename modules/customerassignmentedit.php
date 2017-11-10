@@ -176,14 +176,14 @@ if (isset($_POST['assignment']))
 		break;
 	}
 
-        if (empty($a['datefrom'])) {
+        if (empty($a['datefrom']))
                 $from = 0;
         else
                 $from = date_to_timestamp($a['datefrom']);
                 if(empty($from))
                         $error['datefrom'] = trans('Incorrect charging time!');
 
-        if (empty($a['dateto'])) {
+        if (empty($a['dateto']))
                 $to = 0;
         else
                 $to = date_to_timestamp($a['dateto']);

@@ -89,7 +89,6 @@ if(isset($_POST['receipt']))
 		if(empty($cdate)) {
 			$error['cdate'] = trans('Incorrect date format!');
 			$receipt['cdate'] = time();
-			break;
 		}
 	}
 	else
