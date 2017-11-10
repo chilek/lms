@@ -94,6 +94,7 @@ if(isset($addbalance['mcustomerid']))
 						$liability['description'] = $liability['comment'];
 						$payments[] = $liability;
 						$value -= $value_to_pay;
+						$value = round($value, 2);
 						if ($value <= 0)
 							break;
 					}

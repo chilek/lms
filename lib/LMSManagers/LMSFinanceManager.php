@@ -1909,6 +1909,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				break;
 			}
 			$balance -= $liability['value'];
+			$balance = round($balance, 2);
+			if ($balance >= 0)
+				break;
 		}
 
 		return array_reverse($result);
