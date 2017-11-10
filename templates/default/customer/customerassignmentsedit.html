@@ -470,7 +470,7 @@
 										{/if}
 
 										{if count($customernodes) || count($customernetdevnodes)}
-										<tr>
+										<tr id="a_checkall">
 											<td colspan=2"></td>
 											<td>
 												<label>
@@ -537,28 +537,43 @@
 		document.getElementById('a_value').style.display     = val == '' ? ''     : 'none';
 		document.getElementById('a_productid').style.display = val == '' ? ''     : 'none';
 		document.getElementById('a_name').style.display      = val == '' ? ''     : 'none';
-        document.getElementById('a_attribute').style.display = val == '' ? 'none' : '';
-		document.getElementById('a_options').style.display   = val == -1 ? 'none' : '';
-		document.getElementById('a_day').style.display       = val == -1 ? 'none' : '';
+        document.getElementById('a_attribute').style.display = val == '' || val == -1 ? 'none' : '';
+
+		if (val == -1) {
+			$('#a_numberplan').hide();
+			$('#a_paytype').hide();
+			$('#a_address').hide();
+			$('#a_options').hide();
+			$('#a_day').hide();
+		} else {
+			$('#a_numberplan').show();
+			$('#a_paytype').show();
+			$('#a_address').show();
+			$('#a_options').show();
+			$('#a_day').show();
+		}
 
 		if (tarifftype == {$smarty.const.TARIFF_PHONE}) {
 			$('#a_phones'     ).show();
 			$('#a_nodes'      ).hide();
 			$('#a_netdevnodes').hide();
+			$('#a_checkall').show();
 		} else {
 			$('#a_phones').hide();
 			
 			if (val == -1) {
 				$('#a_nodes').hide();
 				$('#a_netdevnodes').hide();
+				$('#a_checkall').hide();
 			} else {
 				$('#a_nodes').show();
 				$('#a_netdevnodes').show();
+				$('#a_checkall').show();
 			}
 		}
 
 		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-		document.getElementById('a_discount').style.display = val < -1 ? 'none' : '';
+		document.getElementById('a_discount').style.display = val <= -1 ? 'none' : '';
 		{/if}
     });
 
