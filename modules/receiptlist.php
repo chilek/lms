@@ -165,35 +165,31 @@ else
 	$SESSION->restore('rlreg', $regid);
 $SESSION->save('rlreg', $regid);
 
-if(isset($_POST['from']))
-{
-	if(!empty($_POST['from']))
-	{
+if (isset($_POST['from'])) {
+	if (!empty($_POST['from'])) {
 		$from = date_to_timestamp($_POST['from']);
-		if(empty($from))
+		if (empty($from))
 			$error['datefrom'] = trans('Invalid date format!');
 	}
-}
-elseif($SESSION->is_set('rlf'))
+} elseif ($SESSION->is_set('rlf'))
 	$SESSION->restore('rlf', $from);
 else
 	$from = 0;
 
-if(isset($_POST['to']))
-{
-	if(!empty($_POST['to']))
-        {
-                $to = date_to_timestamp($_POST['to']);
-		if(empty($to))
+if (isset($_POST['to'])) {
+	if (!empty($_POST['to'])) {
+		$to = date_to_timestamp($_POST['to']);
+		if (empty($to))
 			$error['dateto'] = trans('Invalid date format!');
-        }
-}
-elseif($SESSION->is_set('rlt'))
+		else
+			$to += 86399;
+	}
+} elseif ($SESSION->is_set('rlt'))
 	$SESSION->restore('rlt', $to);
 else
 	$to = 0;
 
-if($from!=0 && $from!=0)
+if ($from && $to)
 	if($from > $to) {
 		$error['datefrom'] = trans('Incorrect date range!');
 		$error['dateto'] = trans('Incorrect date range!');
