@@ -482,13 +482,14 @@ switch($action)
 		}
 
 		if (isset($receipt['cdate']) && $receipt['cdate']) {
-			$cdate = date_to_timestamp($receipt['cdate']);
-			if (empty($cdate)) {
+			list($year, $month, $day) = explode('/',$receipt['cdate']);
+			if (checkdate($month, $day, $year)) {
+				$receipt['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
+			} else {
 				$error['cdate'] = trans('Incorrect date format!');
 				$receipt['cdate'] = time();
-			} else
-				$cdate = mktime(date('G', time()),date('i', time()),date('s', time()),
-					date('m', $cdate), date('j', $cdate), date('Y', $cdate));
+				break;
+			}
 		} else
 			$receipt['cdate'] = time();
 
