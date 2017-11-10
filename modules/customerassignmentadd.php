@@ -143,29 +143,46 @@ if (isset($_POST['assignment'])) {
 
 		default: // DISPOSABLE
 			$period = DISPOSABLE;
-			$timeat = date_to_timestamp($a['at']);
 
-			if(empty($timeat))
+			if(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
+				list($y, $m, $d) = explode('/', $a['at']);
+				if (checkdate($m, $d, $y)) {
+					$at = mktime(0, 0, 0, $m, $d, $y);
+
+					if ($at < mktime(0, 0, 0) && !$a['atwarning']) {
+						$a['atwarning'] = TRUE;
+						$error['at'] = trans('Incorrect date!');
+					}
+				} else
+					$error['at'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+			} else
 				$error['at'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-			elseif($timeat < time ())
-				$a['atwarning'] = TRUE;
-				$error['at'] = trans('Incorrect date!');
 		break;
 	}
 
-	if (empty($a['datefrom']))
+	if ($a['datefrom'] == '') {
 		$from = 0;
-	else
-		$from = date_to_timestamp($a['datefrom']);
-		if(empty($from))
-			$error['datefrom'] = trans('Incorrect charging time!');
+	} elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/',$a['datefrom'])) {
+		list($y, $m, $d) = explode('/', $a['datefrom']);
 
-	if (empty($a['dateto']))
+		if (checkdate($m, $d, $y))
+			$from = mktime(0, 0, 0, $m, $d, $y);
+		else
+			$error['datefrom'] = trans('Incorrect charging time!');
+	} else
+		$error['datefrom'] = trans('Incorrect charging time!');
+
+	if ($a['dateto'] == '') {
 		$to = 0;
-	else
-		$to = date_to_timestamp($a['dateto']);
-		if(empty($to))
+	} elseif(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['dateto'])) {
+		list($y, $m, $d) = explode('/', $a['dateto']);
+
+		if (checkdate($m, $d, $y))
+			$to = mktime(23, 59, 59, $m, $d, $y);
+		else
 			$error['dateto'] = trans('Incorrect charging time!');
+	} else
+		$error['dateto'] = trans('Incorrect charging time!');
 
 	if ($to < $from && $to != 0 && $from != 0)
 		$error['dateto'] = trans('Incorrect date range!');
