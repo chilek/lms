@@ -84,8 +84,6 @@ if(isset($_GET['type']) && $_GET['type'] == 'cash')
 	{
 		$record = '';
 		$i = 0;
-		$maz_from = array(chr(161),chr(198),chr(202),chr(163),chr(209),chr(211),chr(166),chr(172),chr(175),chr(177),chr(230),chr(234),chr(179),chr(241),chr(243),chr(182),chr(188),chr(191));
-		$maz_to = array(chr(143),chr(149),chr(144),chr(156),chr(165),chr(163),chr(152),chr(160),chr(161),chr(134),chr(141),chr(145),chr(146),chr(164),chr(162),chr(158),chr(166),chr(167));
 
 		if(is_array($cash_record))
 			foreach($cash_record as $r)
@@ -171,10 +169,7 @@ if(isset($_GET['type']) && $_GET['type'] == 'cash')
 			{
 				if(strtoupper($encoding)=='MAZOVIA')
 				{
-					// iconv don't support Mazovia standard, but some 
-					// old Polish programs need it
-					$line = iconv('UTF-8', 'ISO-8859-2//TRANSLIT', $line);
-					$line = str_replace($maz_from, $maz_to, $line);
+					$line = mazovia_to_utf8($line);
 				}
 				else
 					$line = iconv('UTF-8', $encoding.'//TRANSLIT', $line);
@@ -241,8 +236,6 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 		// get taxes for calculations
 		$taxes = $LMS->GetTaxes();
 		$i = 0;
-		$maz_from = array(chr(161),chr(198),chr(202),chr(163),chr(209),chr(211),chr(166),chr(172),chr(175),chr(177),chr(230),chr(234),chr(179),chr(241),chr(243),chr(182),chr(188),chr(191));
-		$maz_to = array(chr(143),chr(149),chr(144),chr(156),chr(165),chr(163),chr(152),chr(160),chr(161),chr(134),chr(141),chr(145),chr(146),chr(164),chr(162),chr(158),chr(166),chr(167));
 
 		if(is_array($inv_record))
 			foreach($inv_record as $r)
@@ -382,10 +375,7 @@ elseif(isset($_GET['type']) && $_GET['type'] == 'invoices')
 				{
 					if(strtoupper($encoding)=='MAZOVIA')
 					{
-						// iconv don't support Mazovia standard, but some 
-						// old Polish programs need it
-						$line = iconv('UTF-8', 'ISO-8859-2//TRANSLIT', $line);
-						$line = str_replace($maz_from, $maz_to, $line);
+						$line = mazovia_to_utf8($line);
 					}
 					else
 						$line = iconv('UTF-8', $encoding.'//TRANSLIT', $line);
