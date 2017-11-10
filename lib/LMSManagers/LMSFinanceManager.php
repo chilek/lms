@@ -1865,7 +1865,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		if (empty($liabilities))
 			return $result;
 
-		foreach ($liabilities as &$liability) {
+		$balance = $customer_manager->GetCustomerBalance($customerid, time());
+
+		foreach ($liabilities as $liability) {
 			if (!empty($liability['docid']))
 				$liability['comment'] = trans($document_descriptions[$liability['doctype']], docnumber(array(
 					'number' => $liability['number'],
@@ -1895,12 +1897,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				$liability['comment'] .= ')';
 			}
 
-		}
-		unset($liability);
-
-		$balance = $customer_manager->GetCustomerBalance($customerid, time());
-
-		foreach ($liabilities as $liability) {
 			if ($balance - $liability['value'] <= 0)
 				$result[] = $liability;
 			elseif ($balance < 0) {
