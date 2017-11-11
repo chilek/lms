@@ -129,7 +129,7 @@ if(isset($_POST['account']))
 		$DB->BeginTrans();
 
 		$args = array(
-			'ownerid' => $account['ownerid'],
+			'ownerid' => empty($account['ownerid']) ? null : $account['ownerid'],
 			'login' => $account['login'],
 			'password' => crypt($account['passwd1']),
 			'home' => $account['home'],

@@ -131,7 +131,7 @@ if(isset($_POST['account']))
 
 	if (!$error) {
 		$args = array(
-			'ownerid' => $account['ownerid'],
+			'ownerid' => empty($account['ownerid']) ? null : $account['ownerid'],
 			'login' => $account['login'],
 			'realname' => $account['realname'],
 			'home' => $account['home'],
