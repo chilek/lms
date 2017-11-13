@@ -3789,4 +3789,7 @@ $_LANG['<!promotionassignment>Label'] = 'Etykieta';
 $_LANG['<!tariffselection>$a:'] = '$a:';
 $_LANG['<!datepicker>Clear'] = 'Wyczyść';
 
+$_LANG['Access:'] = 'Dostęp:';
+$_LANG['<!access>- any -'] = '- dowolny -';
+
 ?>

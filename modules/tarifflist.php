@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetTariffList($order = 'name,asc', $type = NULL, $customergroupid = NULL, $promotionid = NULL, $state = NULL, $tags = null) {
+function GetTariffList($order = 'name,asc', $type = NULL, $access = 0, $customergroupid = NULL, $promotionid = NULL, $state = NULL, $tags = null) {
 	global $LMS;
 
 	$DB = LMSDB::getInstance();
@@ -108,6 +108,7 @@ function GetTariffList($order = 'name,asc', $type = NULL, $customergroupid = NUL
 			WHERE 1=1'
 			. (!empty($tags) ? ' AND t.id IN (SELECT DISTINCT tariffid FROM tariffassignments WHERE tarifftagid IN (' . implode(',', $tags) . '))' : '')
 			.($type ? ' AND t.type = '.intval($type) : '')
+			.($access ? ' AND t.authtype & ' . intval($access) . ' > 0' : '')
 			.($promotionid ? ' AND t.id IN (SELECT pa.tariffid
 				FROM promotionassignments pa
 			JOIN promotionschemas ps ON (ps.id = pa.promotionschemaid)
@@ -229,6 +230,14 @@ else
 	$t = $_POST['t'];
 $SESSION->save('tlt', $t);
 
+if (!isset($_POST['a']) && !isset($_GET['a']))
+	$SESSION->restore('tla', $a);
+elseif (isset($_GET['a']))
+	$a = $_GET['a'];
+else
+	$a = $_POST['a'];
+$SESSION->save('tla', $a);
+
 if (!isset($_POST['g']))
 	$SESSION->restore('tlg', $g);
 else
@@ -261,7 +270,7 @@ if (isset($_GET['tag'])) {
 }
 $SESSION->save('tltg', $tg);
 
-$tarifflist = GetTariffList($o, $t, $g, $p, $s, $tg);
+$tarifflist = GetTariffList($o, $t, $a, $g, $p, $s, $tg);
 
 $customergroups = $LMS->CustomergroupGetAll();
 $promotions = $DB->GetAll('SELECT id, name FROM promotions ORDER BY name');
@@ -272,6 +281,7 @@ $listdata['totalcustomers'] = $tarifflist['totalcustomers'];
 $listdata['totalcount'] = $tarifflist['totalcount'];
 $listdata['totalactivecount'] = $tarifflist['totalactivecount'];
 $listdata['type'] = $t;
+$listdata['access'] = $a;
 $listdata['customergroupid'] = $g;
 $listdata['promotionid'] = $p;
 $listdata['state'] = $s;
