@@ -373,6 +373,16 @@ if (empty($ids)) {
 	$this->Execute("DELETE FROM messageitems WHERE messageid NOT IN (" . $sql_ids . ")");
 }
 
+$this->Execute("UPDATE up_help SET reference = NULL WHERE reference = 0");
+$ids = $this->GetCol("SELECT id FROM up_help");
+if (empty($ids)) {
+	$this->Execute("UPDATE up_help SET reference = NULL WHERE reference IS NOT NULL");
+} else {
+	$sql_ids = implode(',', $ids);
+	$this->Execute("UPDATE up_help SET reference = NULL
+		WHERE reference IS NOT NULL AND reference NOT IN (" . $sql_ids . ")");
+}
+
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101202', 'dbversion'));
 
 $this->CommitTrans();
