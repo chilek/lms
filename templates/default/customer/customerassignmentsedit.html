@@ -105,6 +105,22 @@
 
     <TBODY>
 		{if $promotion_schemas}
+		<tr id="a_location">
+			<td>
+				<img src="img/location.png" alt="">
+			</td>
+			<td class="bold">
+				{trans("Location:")}
+			</td>
+			<td style="width: 98%;">
+				<select name="assignment[location]" id="locationselect" {tip text="Select promotion location"}>
+					<OPTION value="">{trans("- all -")}</OPTION>
+					{foreach $locations as $location}
+					<OPTION value="{$location}"{if $assignment.location == $location} selected{/if}>{$location}</OPTION>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
 		<TR id="a_schema">
 			<TD>
 				<IMG src="img/promoschema.gif" alt="">
@@ -174,7 +190,7 @@
 												{if $customernodes}
 												<span class="bold">{trans("Nodes:")}</span><br>
 												{foreach $customernodes as $customernode}
-												<span data-tariffaccess="{$customernode.authtype}">
+												<span data-tariffaccess="{$customernode.authtype}" data-location="{$customernode.location}">
 													{assign var=nodeid value=$customernode.id}
 													<label>
 														<input type="checkbox" name="assignment[snodes][{$schemaid}][{$label}][]" value="{$customernode.id}"{if in_array($nodeid, (array)$assignment.snodes[$schemaid][$label])} checked{/if}>
@@ -188,7 +204,7 @@
 												<br>
 												<span class="bold">{trans("Network Devices:")}</span><br>
 												{foreach $customernetdevnodes as $customernode}
-												<span data-tariffaccess="{$customernode.authtype}">
+												<span data-tariffaccess="{$customernode.authtype}" data-location="{$customernode.location}">
 													{assign var=nodeid value=$customernode.id}
 
 													<label>
@@ -580,9 +596,11 @@
 
 		{if $promotion_schemas}
 		if (val == -2) {
+			$('#a_location').show();
 			$('#a_schema').show();
 			$('#a_schematariff').show();
 		} else {
+			$('#a_location').hide();
 			$('#a_schema').hide();
 			$('#a_schematariff').hide();
 		}
@@ -670,14 +688,17 @@
 
 	$('.schema-tariff-selection').change(function() {
 		var tariffaccess = parseInt($(this).find(':selected').attr('data-tariffaccess'));
+		var locationselect = $('#locationselect').val();
 		var tr = $(this).closest('tr');
 		if (tariffaccess == -1) {
-			tr.find('.customernodes').hide();
+			tr.find('.customernodes').hide().find(':checkbox').prop('checked', false);
 		} else {
 			tr.find('.customernodes').show();
-			$(this).closest('tr').find('span[data-tariffaccess]').each(function(key, value) {
+			tr.find('span[data-tariffaccess]').each(function(key, value) {
 				var authtype = parseInt($(this).attr('data-tariffaccess'));
-				if ((authtype && (authtype & tariffaccess)) || !tariffaccess) {
+				var location = $(this).attr('data-location');
+				if (((authtype && (authtype & tariffaccess)) || !tariffaccess)
+					&& (location == locationselect || !locationselect.length)) {
 					$(this).show();
 				} else {
 					$(this).hide();
@@ -688,19 +709,35 @@
 	});
 
 	$('.schema-tariff-checkbox').change(function() {
+		var tariffaccess = parseInt($(this).find(':selected').attr('data-tariffaccess'));
+		var locationselect = $('#locationselect').val();
 		var tr = $(this).closest('tr');
-		if (this.checked) {
-			tr.find('.customernodes').show();
-		} else {
+		if (!this.checked) {
 			tr.find('.customernodes').hide().find(':checkbox').prop('checked', false);
+		} else {
+			tr.find('.customernodes').show();
+			tr.find('span[data-tariffaccess]').each(function(key, value) {
+				var authtype = parseInt($(this).attr('data-tariffaccess'));
+				var location = $(this).attr('data-location');
+				if (((authtype && (authtype & tariffaccess)) || !tariffaccess)
+					&& (location == locationselect || !locationselect.length)) {
+					$(this).show();
+				} else {
+					$(this).hide();
+					$(':checkbox', this).prop('checked', false);
+				}
+			});
 		}
 	});
 
-	$( '#promotionselect' ).trigger('change');
-	$( '#tariff_select'   ).trigger('change');
+	$('#locationselect').change(function() {
+		$('.schema-tariff-selection').trigger('change');
+		$('.schema-tariff-checkbox').trigger('change');
+	});
 
-	$('.schema-tariff-selection').trigger('change');
-	$('.schema-tariff-checkbox').trigger('change');
+	$('#promotionselect').trigger('change');
+	$('#locationselect').trigger('change');
+	$('#tariff_select').trigger('change');
 
 	function update_tariffs() {
 		var valid_checked = $('[name="assignment[alltariffs]"]').is(':checked');
