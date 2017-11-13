@@ -303,7 +303,7 @@ CREATE TABLE addresses (
 	name       text NULL,
 	state      varchar(64) NULL,
 	state_id   int(11) NULL,
-	city       varchar(32) NULL,
+	city       varchar(100) NULL,
 	city_id    int(11) NULL,
 	postoffice varchar(32) DEFAULT NULL,
 	street     varchar(255) NULL,
