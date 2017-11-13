@@ -138,6 +138,7 @@ version ?.??.?? (????-??-??):
     of issue time [chilan]
   - enhancement: all promotion schema tariffs can have labels applied [chilan]
   - enhancement: added clear date button in datepicker dialogs [chilan]
+  - enhancement: added auth/session type property for tariffs [chilan]
 
 version 1.11.22 (2017-06-08):
 

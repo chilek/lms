@@ -135,6 +135,26 @@
                             </TR>
                             {/if}
 
+                            {if $tariff.authtype}
+                            <TR>
+                                <TD>
+                                    <img src="img/netdev.gif">
+                                </TD>
+                                <TD>
+                                    {trans("Type:")}
+                                </TD>
+                                <TD>
+                                    <ol class="lms-inline-list">
+                                        {foreach $_SESSIONTYPES as $idx => $sessiontype}
+                                        {if $tariff.authtype & $idx}
+                                        <li>{$sessiontype.label}</li>
+                                        {/if}
+                                        {/foreach}
+                                    </ol>
+                                </TD>
+                            </TR>
+                            {/if}
+
                             {if $tariff.description}
                             <TR>
                                 <TD><IMG SRC="img/info1.gif" ALT=""></TD>

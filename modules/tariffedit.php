@@ -40,7 +40,8 @@ if(isset($_POST['tariff']))
 	$limit = isset($_POST['limit']) ? $_POST['limit'] : array();
 
 	foreach($tariff as $key => $value)
-		$tariff[$key] = trim($value);
+		if ($key != 'authtype')
+			$tariff[$key] = trim($value);
 
 	$tariff['id'] = $_GET['id'];
 	$tariff['value'] = str_replace(',','.',$tariff['value']);
@@ -62,17 +63,19 @@ if(isset($_POST['tariff']))
 
 	if (empty($tariff['datefrom']))
 		$tariff['from'] = 0;
-	else
+	else {
 		$tariff['from'] = date_to_timestamp($tariff['datefrom']);
-		if(empty($tariff['from']))
+		if (empty($tariff['from']))
 			$error['datefrom'] = trans('Incorrect effective start time!');
+	}
 
-        if (empty($tariff['dateto']))
-                $tariff['to'] = 0;
-        else
-                $tariff['to'] = date_to_timestamp($tariff['dateto']);
-                if(empty($tariff['to']))
-                        $error['dateto'] = trans('Incorrect effective start time!');
+	if (empty($tariff['dateto']))
+			$tariff['to'] = 0;
+	else {
+		$tariff['to'] = date_to_timestamp($tariff['dateto']);
+		if (empty($tariff['to']))
+			$error['dateto'] = trans('Incorrect effective start time!');
+	}
 
 	if ($tariff['to'] != 0 && $tariff['from'] != 0 && $tariff['to'] < $tariff['from'])
 		$error['dateto'] = trans('Incorrect date range!');
@@ -117,6 +120,12 @@ if(isset($_POST['tariff']))
 
 	if(!isset($tariff['taxid']))
 		$tariff['taxid'] = 0;
+
+	$authtype = 0;
+	if (isset($tariff['authtype']))
+		foreach ($tariff['authtype'] as $val)
+			$authtype |= intval($val);
+	$tariff['authtype'] = $authtype;
 
 	$items = array('domain_limit', 'alias_limit');
 	foreach ($ACCOUNTTYPES as $typeidx => $type) {

@@ -798,6 +798,7 @@ CREATE TABLE tariffs (
 	voip_tariff_rule_id int(11) DEFAULT NULL,
 	datefrom            int(11) NOT NULL DEFAULT '0',
 	dateto              int(11) NOT NULL DEFAULT '0',
+	authtype tinyint(1) NOT NULL DEFAULT '0',
 	PRIMARY KEY  (id),
 	UNIQUE KEY name (name, value, period),
 	INDEX type (type),
@@ -3254,4 +3255,4 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017110300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017111300');
