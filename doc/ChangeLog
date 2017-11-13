@@ -141,6 +141,7 @@ version ?.??.?? (????-??-??):
   - enhancement: added auth/session type property for tariffs [chilan]
   - enhancement: only nodes matched with selected tariff auth/session types are show
     for edited customer assignments [chilan]
+  - enhancement: nodes can be separately selected for all promotion schema tariffs [chilan]
 
 version 1.11.22 (2017-06-08):
 

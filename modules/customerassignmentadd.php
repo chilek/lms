@@ -280,12 +280,14 @@ if (isset($_POST['assignment'])) {
 
 		if (is_array($a['stariffid'][$schemaid])) {
 			$copy_a = $a;
-		
-			foreach ($a['stariffid'][$schemaid] as $v) {
+			$snodes = $a['snodes'][$schemaid];
+
+			foreach ($a['stariffid'][$schemaid] as $label => $v) {
 				if (!$v)
 					continue;
 
 			    $copy_a['promotiontariffid'] = $v;
+			    $copy_a['nodes'] = $snodes[$label];
 				$tariffid = $LMS->AddAssignment($copy_a);
 			}
 		} else {
@@ -367,7 +369,7 @@ $promotion_schema_assignments = $DB->GetAll('SELECT
 		p.id AS promotion_id, p.name as promotion_name,
 		ps.id AS schema_id, ps.name as schema_name,
 		t.name as tariff_name, pa.optional,
-		label, t.id as tariffid
+		label, t.id as tariffid, t.authtype
 	FROM promotions p
 	  LEFT JOIN promotionschemas ps ON p.id = ps.promotionid
 	  LEFT JOIN promotionassignments pa ON ps.id = pa.promotionschemaid
@@ -410,6 +412,7 @@ if (!empty($promotion_schema_assignments)) {
 			'value'    => $assign['value'],
 			'optional' => $assign['optional'],
 			'label'    => $assign['label'],
+			'authtype' => $assign['authtype'],
 		);
 
 		if (!empty($selid)) {

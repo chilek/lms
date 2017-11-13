@@ -377,7 +377,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'commited'			=> $commited,
                 );
 
-                $result[] = $this->insertAssignment( $args );
+                $result[] = $data['assignmentid'] = $this->insertAssignment( $args );
+
+				$this->insertNodeAssignments($data);
 
                 if ($idx) {
                     $datefrom = $dateto + 1;
@@ -414,12 +416,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'commited'			=> $commited,
                     );
 
-                    $result[] = $this->insertAssignment( $args );
-                }
+                    $result[] = $data['assignmentid'] = $this->insertAssignment( $args );
+
+					$this->insertNodeAssignments($data);
+				}
             }
-        }
+        } else {
         // Create one assignment record
-        else {
             if (!empty($data['value'])) {
                 $args = array(
                     'name' => $data['name'],
@@ -456,32 +459,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 'commited'			=> $commited,
             );
 
-            $result[] = $this->insertAssignment( $args );
-        }
+            $data['assignmentid'] = $this->insertAssignment($args);
 
-        if (!empty($result) && count($result = array_filter($result))) {
-            if (!empty($data['nodes'])) {
-                // Use multi-value INSERT query
-                $values = array();
-                foreach ((array) $data['nodes'] as $nodeid)
-                    foreach ($result as $aid)
-                        $values[] = sprintf('(%d, %d)', $nodeid, $aid);
-
-                $this->db->Execute('INSERT INTO nodeassignments (nodeid, assignmentid)
-					VALUES ' . implode(', ', $values));
-                if ($this->syslog) {
-                    $nodeassigns = $this->db->GetAll('SELECT id, nodeid FROM nodeassignments WHERE assignmentid = ?', array($aid));
-                    foreach ($nodeassigns as $nodeassign) {
-                        $args = array(
-                            SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
-                            SYSLOG::RES_CUST => $data['customerid'],
-                            SYSLOG::RES_NODE => $nodeassign['nodeid'],
-                            SYSLOG::RES_ASSIGN => $aid
-                        );
-                        $this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_ADD, $args);
-                    }
-                }
-            }
+            $this->insertNodeAssignments($data);
         }
 
         return $result;
@@ -511,8 +491,31 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $id;
     }
 
-    public function SuspendAssignment($id, $suspend = TRUE)
-    {
+	private function insertNodeAssignments($args) {
+		if (!empty($args['nodes'])) {
+			// Use multi-value INSERT query
+			$values = array();
+			foreach ($args['nodes'] as $nodeid)
+				$values[] = sprintf('(%d, %d)', $nodeid, $args['assignmentid']);
+
+			$this->db->Execute('INSERT INTO nodeassignments (nodeid, assignmentid)
+				VALUES ' . implode(', ', $values));
+			if ($this->syslog) {
+				$nodeassigns = $this->db->GetAll('SELECT id, nodeid FROM nodeassignments WHERE assignmentid = ?', array($args['assignmentid']));
+				foreach ($nodeassigns as $nodeassign) {
+					$args = array(
+						SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
+						SYSLOG::RES_CUST => $args['customerid'],
+						SYSLOG::RES_NODE => $nodeassign['nodeid'],
+						SYSLOG::RES_ASSIGN => $args['assignmentid'],
+					);
+					$this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_ADD, $args);
+				}
+			}
+		}
+	}
+
+	public function SuspendAssignment($id, $suspend = TRUE) {
         if ($this->syslog) {
             $assign = $this->db->GetRow('SELECT id, tariffid, liabilityid, customerid FROM assignments WHERE id = ?', array($id));
             $args = array(

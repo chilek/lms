@@ -137,35 +137,72 @@
 							<tr>
 								<td class="text-right">
 									{if isset($item.single)}
-										{if !empty($item.single.label)}
-										{t a=$item.single.label}<!tariffselection>$a:{/t}
-										{/if}
+										{$label=$item.single.label}
 									{else}
-										{if !empty($item.selection.label)}
-										{t a=$item.selection.label}<!tariffselection>$a:{/t}
-										{/if}
+										{$label=$item.selection.label}
+									{/if}
+									{if !empty($label)}
+									{t a=$label}<!tariffselection>$a:{/t}
 									{/if}
 								</td>
-                            {if isset($item.single)}
-								<td{if !$item.single.optional} class="blend"{/if}>
-									<label>
-										<input type="checkbox" name="assignment[stariffid][{$schemaid}][]" value="{$item.single.tariffid}"
-											   {if in_array($item.single.tariffid, $assignment.stariffid[$schemaid]) || !$item.single.optional} checked{/if}{if !$item.single.optional} data-mandatory="true" disabled{/if}>
-										{$item.single.tariff}
-									</label>
-								</td>
-							{else}
 								<td>
-									<select name="assignment[stariffid][{$schemaid}][]">
-										{if !$item.selection.required}
-										<option value="0">{trans("- none -")}</option>
-										{/if}
-										{foreach $item.selection.items as $item}
-										<option value="{$item.tariffid}"{if in_array($item.tariffid, $assignment.stariffid[$schemaid])} selected{/if}>{$item.tariff}</option>
-										{/foreach}
-									</select>
+									<table>
+										<tr>
+											{if isset($item.single)}
+											<td{if !$item.single.optional} class="blend"{/if}>
+												<label>
+													<input class="schema-tariff-checkbox" type="checkbox" name="assignment[stariffid][{$schemaid}][{$label}]" value="{$item.single.tariffid}"
+														{if isset($assignment.stariffid[$schemaid][$label]) || !$item.single.optional} checked{/if}
+														{if !$item.single.optional}data-mandatory="true" disabled{/if}
+														data-tariffaccess="{$item.single.authtype}">
+													{$item.single.tariff}
+												</label>
+											</td>
+											{else}
+											<td>
+												<select class="schema-tariff-selection" name="assignment[stariffid][{$schemaid}][{$label}]">
+													{if !$item.selection.required}
+													<option value="0" data-tariffaccess="-1">{trans("- none -")}</option>
+													{/if}
+													{foreach $item.selection.items as $item}
+													<option value="{$item.tariffid}" data-tariffaccess="{$item.authtype}"{if in_array($item.tariffid, $assignment.stariffid[$schemaid])} selected{/if}>{$item.tariff}</option>
+													{/foreach}
+												</select>
+											</td>
+											{/if}
+											<td class="customernodes">
+												{if $customernodes}
+												<span class="bold">{trans("Nodes:")}</span><br>
+												{foreach $customernodes as $customernode}
+												<span data-tariffaccess="{$customernode.authtype}">
+													{assign var=nodeid value=$customernode.id}
+													<label>
+														<input type="checkbox" name="assignment[snodes][{$schemaid}][{$label}][]" value="{$customernode.id}"{if in_array($nodeid, (array)$assignment.snodes[$schemaid][$label])} checked{/if}>
+														<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
+													</label>
+													<br>
+													</span>
+												{/foreach}
+												{/if}
+												{if $customernetdevnodes}
+												<br>
+												<span class="bold">{trans("Network Devices:")}</span><br>
+												{foreach $customernetdevnodes as $customernode}
+												<span data-tariffaccess="{$customernode.authtype}">
+													{assign var=nodeid value=$customernode.id}
+
+													<label>
+														<input type="checkbox" name="assignment[snodes][{$schemaid}][{$label}][]" value="{$customernode.id}"{if in_array($nodeid, (array)$assignment.snodes[$schemaid][$label])} checked{/if}>
+														<span class="bold">{$customernode.name}</span> {if !empty($customernode.netdev_name)} / {$customernode.netdev_name}{/if}  ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
+													</label>
+													<br>
+													</span>
+												{/foreach}
+												{/if}
+											</td>
+										</tr>
+									</table>
 								</td>
-							{/if}
 							</tr>
 							{/foreach}
 						</table>
@@ -415,7 +452,7 @@
 											</td>
 											<td class="nobr" id="nodeslist">
 												{foreach $customernodes as $customernode}
-													<span data-tariffaccess="{$customernode.authtype}">
+													<span data-tariffaccess="{$customernode.authtype}" class="global-node-checkbox">
 													{assign var=nodeid value=$customernode.id}
 
 													<label>
@@ -439,7 +476,7 @@
 											</td>
 											<td class="nobr" id="nodeslist">
 												{foreach $customernetdevnodes as $customernode}
-													<span data-tariffaccess="{$customernode.authtype}">
+													<span data-tariffaccess="{$customernode.authtype}" class="global-node-checkbox">
 													{assign var=nodeid value=$customernode.id}
 
 													<label>
@@ -542,8 +579,13 @@
 		$('#tarifftype').val( tarifftype );
 
 		{if $promotion_schemas}
-		document.getElementById('a_schema').style.display       = val == -2 ? '' : 'none';
-		document.getElementById('a_schematariff').style.display = val == -2 ? '' : 'none';
+		if (val == -2) {
+			$('#a_schema').show();
+			$('#a_schematariff').show();
+		} else {
+			$('#a_schema').hide();
+			$('#a_schematariff').hide();
+		}
 		{/if}
 
 		document.getElementById('a_tax').style.display       = val == '' ? ''     : 'none';
@@ -574,7 +616,7 @@
 		} else {
 			$('#a_phones').hide();
 			
-			if (val == -1) {
+			if (val == -1 || val == -2) {
 				$('#a_nodes').hide();
 				$('#a_netdevnodes').hide();
 				$('#a_checkall').hide();
@@ -589,14 +631,12 @@
 		document.getElementById('a_discount').style.display = val <= -1 ? 'none' : '';
 		{/if}
 
-		$('span[data-tariffaccess]').each(function(key, value) {
-			var authtype = $(this).attr('data-tariffaccess');
-			if ((authtype != 0 && (authtype & tariffaccess)) || !tariffaccess) {
+		$('span.global-node-checkbox').each(function(key, value) {
+			var authtype = parseInt($(this).attr('data-tariffaccess'));
+			if ((authtype && (authtype & tariffaccess)) || !tariffaccess) {
 				$(this).show();
-				console.log(tariffaccess + ':' + authtype);
 			} else {
 				$(this).hide();
-				console.log($(':checkbox', this));
 				$(':checkbox', this).prop('checked', false);
 			}
 		});
@@ -627,9 +667,40 @@
 			}
 		});
 	});
-	
+
+	$('.schema-tariff-selection').change(function() {
+		var tariffaccess = parseInt($(this).find(':selected').attr('data-tariffaccess'));
+		var tr = $(this).closest('tr');
+		if (tariffaccess == -1) {
+			tr.find('.customernodes').hide();
+		} else {
+			tr.find('.customernodes').show();
+			$(this).closest('tr').find('span[data-tariffaccess]').each(function(key, value) {
+				var authtype = parseInt($(this).attr('data-tariffaccess'));
+				if ((authtype && (authtype & tariffaccess)) || !tariffaccess) {
+					$(this).show();
+				} else {
+					$(this).hide();
+					$(':checkbox', this).prop('checked', false);
+				}
+			});
+		}
+	});
+
+	$('.schema-tariff-checkbox').change(function() {
+		var tr = $(this).closest('tr');
+		if (this.checked) {
+			tr.find('.customernodes').show();
+		} else {
+			tr.find('.customernodes').hide().find(':checkbox').prop('checked', false);
+		}
+	});
+
 	$( '#promotionselect' ).trigger('change');
 	$( '#tariff_select'   ).trigger('change');
+
+	$('.schema-tariff-selection').trigger('change');
+	$('.schema-tariff-checkbox').trigger('change');
 
 	function update_tariffs() {
 		var valid_checked = $('[name="assignment[alltariffs]"]').is(':checked');
