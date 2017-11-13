@@ -11,6 +11,8 @@
 	{/foreach}
 	
 	function assignment_submit() {
+		$('[data-mandatory]:checkbox').removeAttr('disabled');
+
 		{if ConfigHelper::checkConfig('phpui.node_assignment_warning')}
 		var tariffid = parseInt($('form[name="assignment"] select[name="assignment[tariffid]"]').val());
 		
