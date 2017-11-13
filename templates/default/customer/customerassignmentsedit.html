@@ -151,7 +151,7 @@
                     	<table class="promotionstable" id="schema{$schemaid}">
 							{foreach $items as $item}
 							<tr>
-								<td class="text-right">
+								<td class="valign-top text-right">
 									{if isset($item.single)}
 										{$label=$item.single.label}
 									{else}
@@ -161,11 +161,11 @@
 									{t a=$label}<!tariffselection>$a:{/t}
 									{/if}
 								</td>
-								<td>
+								<td class="valign-top" style="padding-bottom: 10px; padding-top: 0;">
 									<table>
 										<tr>
 											{if isset($item.single)}
-											<td{if !$item.single.optional} class="blend"{/if}>
+											<td class="valign-top{if !$item.single.optional} blend{/if}">
 												<label>
 													<input class="schema-tariff-checkbox" type="checkbox" name="assignment[stariffid][{$schemaid}][{$label}]" value="{$item.single.tariffid}"
 														{if isset($assignment.stariffid[$schemaid][$label]) || !$item.single.optional} checked{/if}
@@ -175,7 +175,7 @@
 												</label>
 											</td>
 											{else}
-											<td>
+											<td class="valign-top">
 												<select class="schema-tariff-selection" name="assignment[stariffid][{$schemaid}][{$label}]">
 													{if !$item.selection.required}
 													<option value="0" data-tariffaccess="-1">{trans("- none -")}</option>
@@ -186,7 +186,9 @@
 												</select>
 											</td>
 											{/if}
-											<td class="customernodes">
+										</tr>
+										<tr class="customernodes">
+											<td>
 												{if $customernodes}
 												<span class="bold">{trans("Nodes:")}</span><br>
 												{foreach $customernodes as $customernode}
@@ -689,11 +691,11 @@
 	$('.schema-tariff-selection').change(function() {
 		var tariffaccess = parseInt($(this).find(':selected').attr('data-tariffaccess'));
 		var locationselect = $('#locationselect').val();
-		var tr = $(this).closest('tr');
+		var tr = $(this).closest('tr').next('.customernodes');
 		if (tariffaccess == -1) {
-			tr.find('.customernodes').hide().find(':checkbox').prop('checked', false);
+			tr.hide().find(':checkbox').prop('checked', false);
 		} else {
-			tr.find('.customernodes').show();
+			tr.show();
 			tr.find('span[data-tariffaccess]').each(function(key, value) {
 				var authtype = parseInt($(this).attr('data-tariffaccess'));
 				var location = $(this).attr('data-location');
@@ -711,11 +713,11 @@
 	$('.schema-tariff-checkbox').change(function() {
 		var tariffaccess = parseInt($(this).find(':selected').attr('data-tariffaccess'));
 		var locationselect = $('#locationselect').val();
-		var tr = $(this).closest('tr');
+		var tr = $(this).closest('tr').next('.customernodes');
 		if (!this.checked) {
-			tr.find('.customernodes').hide().find(':checkbox').prop('checked', false);
+			tr.hide().find(':checkbox').prop('checked', false);
 		} else {
-			tr.find('.customernodes').show();
+			tr.show();
 			tr.find('span[data-tariffaccess]').each(function(key, value) {
 				var authtype = parseInt($(this).attr('data-tariffaccess'));
 				var location = $(this).attr('data-location');
