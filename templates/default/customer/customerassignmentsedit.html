@@ -71,7 +71,7 @@
 								{/if}
 
 								{foreach $tariffs as $tariff}
-									<option value="{$tariff.id}" data-tarifftype="{$tariff.tarifftype}" data-tarifftags="{$tariff.tags}" {if $tariff.id==$assignment.tariffid} selected{/if} data-valid="{$tariff.valid}"{if !$tariff.valid} class="blend"{if !$assignment.alltariffs} style="display: none;"{/if}{/if}>
+									<option value="{$tariff.id}" data-tarifftype="{$tariff.tarifftype}" data-tariffaccess="{$tariff.authtype}" data-tarifftags="{$tariff.tags}" {if $tariff.id==$assignment.tariffid} selected{/if} data-valid="{$tariff.valid}"{if !$tariff.valid} class="blend"{if !$assignment.alltariffs} style="display: none;"{/if}{/if}>
 									{$tariff.name} ({if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{$tariff.value|money_format}{/if}{if $tariff.upceil || $tariff.downceil}, {$tariff.downceil}/{$tariff.upceil} kbit/s{/if})
 									</option>
 								{/foreach}
@@ -413,6 +413,7 @@
 											</td>
 											<td class="nobr" id="nodeslist">
 												{foreach $customernodes as $customernode}
+													<span data-tariffaccess="{$customernode.authtype}">
 													{assign var=nodeid value=$customernode.id}
 
 													<label>
@@ -420,6 +421,7 @@
 														<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
 													</label>
 													<br>
+													</span>
 												{/foreach}
 											</td>
 										</tr>
@@ -435,6 +437,7 @@
 											</td>
 											<td class="nobr" id="nodeslist">
 												{foreach $customernetdevnodes as $customernode}
+													<span data-tariffaccess="{$customernode.authtype}">
 													{assign var=nodeid value=$customernode.id}
 
 													<label>
@@ -442,6 +445,7 @@
 														<span class="bold">{$customernode.name}</span> {if !empty($customernode.netdev_name)} / {$customernode.netdev_name}{/if}  ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
 													</label>
 													<br>
+													</span>
 												{/foreach}
 											</td>
 										</tr>
@@ -523,7 +527,14 @@
 	});
 
 	$( '#tariff_select' ).change( function() {
-		var tarifftype = $(this).find(':selected').attr('data-tarifftype');
+		var selected = $(this).find(':selected');
+		var tarifftype = selected.attr('data-tarifftype');
+		var tariffaccess = selected.attr('data-tariffaccess');
+		if (typeof(tariffaccess) == 'undefined') {
+			tariffaccess = 0;
+		} else {
+			tariffaccess = parseInt(tariffaccess);
+		}
 		var val = $(this).val();
 
 		$('#tarifftype').val( tarifftype );
@@ -575,6 +586,18 @@
 		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
 		document.getElementById('a_discount').style.display = val <= -1 ? 'none' : '';
 		{/if}
+
+		$('span[data-tariffaccess]').each(function(key, value) {
+			var authtype = $(this).attr('data-tariffaccess');
+			if ((authtype != 0 && (authtype & tariffaccess)) || !tariffaccess) {
+				$(this).show();
+				console.log(tariffaccess + ':' + authtype);
+			} else {
+				$(this).hide();
+				console.log($(':checkbox', this));
+				$(':checkbox', this).prop('checked', false);
+			}
+		});
     });
 
 	function updatePromotionsTable() {
