@@ -95,7 +95,8 @@ $this->Execute("
 	ALTER TABLE ewx_pt_config ALTER COLUMN nodeid SET DEFAULT NULL;
 	ALTER TABLE messageitems ALTER COLUMN messageid DROP DEFAULT;
 	ALTER TABLE up_help ALTER COLUMN reference DROP NOT NULL;
-	ALTER TABLE up_help ALTER COLUMN reference SET DEFAULT NULL
+	ALTER TABLE up_help ALTER COLUMN reference SET DEFAULT NULL;
+	UPDATE up_help SET reference = NULL WHERE reference = 0
 ");
 
 $this->Execute("UPDATE customers SET divisionid = NULL WHERE divisionid = 0");
