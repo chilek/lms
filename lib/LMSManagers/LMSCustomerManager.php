@@ -1354,21 +1354,20 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             return array();
         }
 
-        $nd = $this->db->GetAll('SELECT address_id FROM netdevices WHERE ownerid = ?', array( $id ));
-        $n  = $this->db->GetAll('SELECT address_id FROM nodes WHERE ownerid = ?', array( $id ));
+		$addresses = $this->db->GetAllByKey(
+			'(
+				SELECT DISTINCT address_id FROM netdevices
+				WHERE ownerid = ? AND address_id IS NOT NULL
+			) UNION (
+				SELECT DISTINCT address_id FROM nodes
+				WHERE ownerid = ? AND address_id IS NOT NULL
+			)',
+			'address_id', array($id, $id));
 
-        $tmp = array_merge(
-            $nd ? $nd : array(),
-            $n  ? $n  : array()
-        );
-
-        if ( $tmp ) {
-            foreach ( $tmp as $v ) {
-                if ( $v['address_id'] ) {
-                    $data[$v['address_id']]['use_counter'] += 1;
-                }
-            }
-        }
+		if ($addresses)
+			foreach ($addresses as $address_id)
+				if (isset($data[$address_id]))
+					$data[$address_id]['use_counter'] += 1;
 
         return $data;
     }
