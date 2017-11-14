@@ -248,7 +248,6 @@ function multiselect(options) {
 	}
 
 	this.getOptions = function() {
-		new_element.html('');
 		return $('li', div);
 	}
 
