@@ -1339,7 +1339,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                           addr.street as location_street_name, addr.street_id as location_street,
                                           addr.house as location_house, addr.zip as location_zip, addr.postoffice AS location_postoffice,
                                           addr.country_id as location_country_id, addr.flat as location_flat,
-                                          ca.type as location_address_type, addr.location, 0 as use_counter,
+                                          ca.type as location_address_type, addr.location, 0 AS use_counter,
                                           (CASE WHEN addr.city_id is not null THEN 1 ELSE 0 END) as teryt
                                        FROM
                                           customers cv
@@ -1354,20 +1354,21 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             return array();
         }
 
-		$addresses = $this->db->GetAllByKey(
-			'(
-				SELECT DISTINCT address_id FROM netdevices
-				WHERE ownerid = ? AND address_id IS NOT NULL
-			) UNION (
-				SELECT DISTINCT address_id FROM nodes
-				WHERE ownerid = ? AND address_id IS NOT NULL
-			)',
-			'address_id', array($id, $id));
+		$node_addresses = $this->db->GetAllByKey('SELECT address_id, COUNT(*) AS used FROM nodes
+			WHERE ownerid = ? AND address_id IS NOT NULL
+			GROUP BY address_id', 'address_id', array($id));
+		if (empty($node_addresses))
+			$node_addresses = array();
 
-		if ($addresses)
-			foreach ($addresses as $address_id)
-				if (isset($data[$address_id]))
-					$data[$address_id]['use_counter'] += 1;
+		$netdev_addresses = $this->db->GetAllByKey('SELECT address_id, COUNT(*) AS used FROM netdevices
+			WHERE ownerid = ? AND address_id IS NOT NULL
+			GROUP BY address_id', 'address_id', array($id));
+		if (empty($netdev_addresses))
+			$netdev_addresses = array();
+
+		foreach (array_merge($node_addresses, $netdev_addresses) as $address_id => $address)
+			if (isset($data[$address_id]))
+				$data[$address_id]['use_counter'] += $address['used'];
 
         return $data;
     }
