@@ -478,20 +478,7 @@ function check_email( $email )
 }
 
 function get_producer($mac) {
-	$mac = strtoupper(str_replace(':', '-', substr($mac, 0, 8)));
-
-	if (!$mac)
-		return '';
-
-	$maclines = @file(LIB_DIR . DIRECTORY_SEPARATOR . 'ethercodes.txt', FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
-	if (!empty($maclines))
-		foreach ($maclines as $line) {
-			list ($prefix, $producer) = explode(':', $line);
-			if ($mac == $prefix)
-				return $producer;
-		}
-
-	return '';
+	return EtherCodes::GetProducer($mac);
 }
 
 function setunits($data)  // for traffic data

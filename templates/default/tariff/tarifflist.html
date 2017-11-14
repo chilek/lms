@@ -58,6 +58,13 @@
 					<OPTION value="{$key}" {if $listdata.type == $key} SELECTED {/if}>{$item}</OPTION>
 					{/foreach}
 				</SELECT>
+				{trans("Access:")}
+				<SELECT size="1" name="a" onChange="document.choosefilter.submit();">
+					<OPTION value="0"{if $listdata.access} selected{/if}>{trans("<!access>- any -")}</OPTION>
+					{foreach $_SESSIONTYPES as $idx => $sessiontype}
+					<OPTION value="{$idx}"{if $listdata.access == $idx} selected{/if}>{$sessiontype.label}</OPTION>
+					{/foreach}
+				</SELECT>
 				{trans("Promotion:")}
 				<SELECT SIZE="1" NAME="p" ONCHANGE="document.choosefilter.submit();">
 					<OPTION value="0"{if !$listdata.promotionid} SELECTED{/if}>{trans("- all -")}</OPTION>

@@ -115,6 +115,22 @@
 				    </TD>
 				</TR>
 				<TR>
+					<TD>
+						<img src="img/netdev.gif" alt="">
+					</TD>
+					<TD class="nobr">
+						{trans("Type:")}
+					</TD>
+					<TD class="nobr">
+						{foreach $_SESSIONTYPES as $idx => $sessiontype}
+						<label>
+							<INPUT TYPE="checkbox" NAME="tariff[authtype][{$idx}]" value="{$idx}" id="authtype{$idx}" {tip text="`$sessiontype.tip`" trigger="authtype`$idx`"}{if ($tariff.authtype & $idx) == $idx} checked{/if}>
+							{$sessiontype.label}
+						</label><br>
+						{/foreach}
+					</TD>
+				</TR>
+				<TR>
 				    <TD WIDTH="1%">
 					<IMG SRC="img/info1.gif" ALT="">
 				    </TD>

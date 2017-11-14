@@ -137,6 +137,11 @@ version ?.??.?? (????-??-??):
   - enhancement: customer post addresses are stored within financial documents in the state
     of issue time [chilan]
   - enhancement: all promotion schema tariffs can have labels applied [chilan]
+  - enhancement: added clear date button in datepicker dialogs [chilan]
+  - enhancement: added auth/session type property for tariffs [chilan]
+  - enhancement: only nodes matched with selected tariff auth/session types are show
+    for edited customer assignments [chilan]
+  - enhancement: nodes can be separately selected for all promotion schema tariffs [chilan]
 
 version 1.11.22 (2017-06-08):
 

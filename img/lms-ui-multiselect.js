@@ -1,13 +1,12 @@
 // $Id$
 
 function multiselect(options) {
-	var multiselect_obj = this;
-
 	var elemid = options.id;
 	var def = typeof options.defaultValue !== 'undefined' ? options.defaultValue : '';
 	var tiny = typeof options.type !== 'undefined' && options.type == 'tiny';
 	var icon = typeof options.icon !== 'undefined' ? options.icon : 'img/settings.gif';
 	var label = typeof options.label !== 'undefined' ? options.label : '';
+	var separator = typeof options.separator !== 'undefined' ? options.separator : ', ';
 
 	var old_element = $('#' + elemid);
 	var form = old_element.closest('form');
@@ -29,8 +28,11 @@ function multiselect(options) {
 
 	var elem = [];
 	$('option', old_element).each(function(index) {
-		elem[$(this).text().replace(' ', '&nbsp;')] =
-			$(this).prop('selected') ? 1 : 0;
+		var text = $(this).attr('data-html-content');
+		if (!text) {
+			text = $(this).text();
+		}
+		elem[text] = $(this).prop('selected') ? 1 : 0;
 	});
 
 	var new_selected = generateSelectedString(elem);
@@ -38,7 +40,7 @@ function multiselect(options) {
 	if (!tiny)
 		new_element.html(old_selected);
 
-	new_element.data('data-multiselect-object', this)
+	new_element.data('multiselect-object', this)
 		.attr('style', old_element.attr('style'));
 	// save onchange event handler
 	var onchange = old_element.prop('onchange');
@@ -69,9 +71,15 @@ function multiselect(options) {
 			value: $(this).val()
 		}).appendTo(li);
 
-		var text = $(this).text().replace(' ', '&nbsp;');
-		var span = $('<span/>').html(text)
-			.appendTo(li);
+		var text = $(this).attr('data-html-content');
+		if (!text) {
+			text = $(this).text();
+		}
+		$('<span/>').html(text).appendTo(li);
+
+		$.each($(this).data(), function(key, value) {
+			li.attr('data-' + key, value);
+		});
 
 		if (elem[text]) {
 			box.prop('checked', true);
@@ -203,7 +211,7 @@ function multiselect(options) {
 		if (!selected.length)
 			return def;
 
-		return selected.join(', ');
+		return selected.join(separator);
 	}
 
 	this.updateSelection = function(idArray) {
@@ -219,7 +227,7 @@ function multiselect(options) {
 				elem[text] = 0;
 			}
 		});
-		new_selected = selected.join(', ');
+		new_selected = selected.join(separator);
 		if (!tiny)
 			new_element.html(new_selected);
 	}
@@ -239,8 +247,37 @@ function multiselect(options) {
 				elem[text] = 0;
 			}
 		});
-		new_selected = selected.join(', ');
+		new_selected = selected.join(separator);
 		if (!tiny)
 			new_element.html(new_selected);
+	}
+
+	var lis = $('li', div);
+
+	this.getOptions = function() {
+		return lis;
+	}
+
+	this.showOption = function(index) {
+		$(lis.get(index)).show();
+	}
+
+	this.hideOption = function(index) {
+		$(lis.get(index)).removeClass('selected').hide()
+			.find('input:checkbox').prop('checked', false);
+	}
+
+	this.refreshSelection = function() {
+		var selected = [];
+		$('input:checkbox', div).each(function() {
+			var text = $(this).siblings('span').html();
+			if ($(this).prop('checked')) {
+				selected.push(text);
+			}
+		});
+		new_selected = selected.join(separator);
+		if (!tiny) {
+			new_element.html(new_selected);
+		}
 	}
 }

@@ -105,6 +105,7 @@ if ($schema) {
 	}
 } else {
 	$schema['promotionid'] = $_GET['id'];
+	$schema['promotionname'] = $LMS->GetPromotionNameByID($schema['promotionid']);
 	$schema['continuation'] = 1;
 	$schema['periods'] = array(0);
 }

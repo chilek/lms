@@ -33,40 +33,14 @@ foreach($addbalance as $key=>$value)
 $addbalance['value'] = str_replace(',','.', $addbalance['value']);
 
 $currenttime = false;
-if(isset($addbalance['time']) && $addbalance['time'] != '' 
-	&& !preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}\s+[0-9]{2}:[0-9]{2}$/', $addbalance['time'])
-	&& !preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $addbalance['time']))
-{
-	// here we should throw error back to user about fucked up date format or something
-	// otherwise mktime invokes error about expected parameters
-}
-elseif(isset($addbalance['time']) && $addbalance['time']!='')
-{
-	// date format 'yyyy/mm/dd hh:mm'	
-	$date = preg_split('/\s+/', $addbalance['time']);
-	if(isset($date[1]))
-		$time = explode(':',$date[1]);
-	else {
-		$time[0] = $time[1] = 0;
-	}	
-	$date = explode('/',$date[0]);
-	
-	if(checkdate($date[1],$date[2],(int)$date[0])) //if date is wrong, set today's date
-	{
-		$addbalance['time'] = mktime($time[0],$time[1],0,$date[1],$date[2],$date[0]);
-	}
-	else
-	{
-		// here too. geez, what the matter with you guys? if($user==E_LAME){ we_know_better(); } ???
-		// pls, fix it
+if(isset($_POST['addbalance']) && !empty($addbalance['time'])) {
+    $addbalance['time'] = datetime_to_timestamp($addbalance['time']);
+	if(empty($addbalance['time']))
 		$addbalance['time'] = time();
-		$currenttime = true;
-	}
 }
-else
-{
-	$addbalance['time'] = time();
-	$currenttime = true;
+else {
+    $addbalance['time'] = time();
+    $currenttime = true;
 }
 
 if (isset($_POST['addbalance']))
@@ -120,6 +94,7 @@ if(isset($addbalance['mcustomerid']))
 						$liability['description'] = $liability['comment'];
 						$payments[] = $liability;
 						$value -= $value_to_pay;
+						$value = round($value, 2);
 						if ($value <= 0)
 							break;
 					}
@@ -139,7 +114,7 @@ if(isset($addbalance['mcustomerid']))
 						'contents' => $payments,
 					);
 					$rid = $LMS->AddReceipt($receipt);
-					if (!empty($rid) && (isset($addbalance['print']) || ConfigHelper::checkConfig('receipts.instant_payment_print'))) {
+					if (!empty($rid) && isset($addbalance['print'])) {
 						$which = array();
 						if (!empty($_POST['original'])) $which[] = 'original';
 						if (!empty($_POST['copy'])) $which[] = 'copy';

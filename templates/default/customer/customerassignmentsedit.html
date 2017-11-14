@@ -11,6 +11,8 @@
 	{/foreach}
 	
 	function assignment_submit() {
+		$('[data-mandatory]:checkbox').removeAttr('disabled');
+
 		{if ConfigHelper::checkConfig('phpui.node_assignment_warning')}
 		var tariffid = parseInt($('form[name="assignment"] select[name="assignment[tariffid]"]').val());
 		
@@ -66,12 +68,12 @@
 								<option value=""   data-tarifftype="0" {if !$assignment.tariffid} selected{/if}>- {trans("tariffless liability")} -</option>
 								<option value="-1" data-tarifftype="0" {if $assignment.tariffid == -1} selected{/if}>{trans("- all liabilities suspended -")}</option>
 
-								{if $promotionschemas}
+								{if $promotion_schemas}
 									<option value="-2" data-tarifftype="0" {if $assignment.tariffid == -2} selected{/if}>- {trans("per promotion schema")} -</option>
 								{/if}
 
 								{foreach $tariffs as $tariff}
-									<option value="{$tariff.id}" data-tarifftype="{$tariff.tarifftype}" data-tarifftags="{$tariff.tags}" {if $tariff.id==$assignment.tariffid} selected{/if} data-valid="{$tariff.valid}"{if !$tariff.valid} class="blend"{if !$assignment.alltariffs} style="display: none;"{/if}{/if}>
+									<option value="{$tariff.id}" data-tarifftype="{$tariff.tarifftype}" data-tariffaccess="{$tariff.authtype}" data-tarifftags="{$tariff.tags}" {if $tariff.id==$assignment.tariffid} selected{/if} data-valid="{$tariff.valid}"{if !$tariff.valid} class="blend"{if !$assignment.alltariffs} style="display: none;"{/if}{/if}>
 									{$tariff.name} ({if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}{$tariff.value|money_format}{/if}{if $tariff.upceil || $tariff.downceil}, {$tariff.downceil}/{$tariff.upceil} kbit/s{/if})
 									</option>
 								{/foreach}
@@ -102,7 +104,23 @@
     </THEAD>
 
     <TBODY>
-		{if $promotionschemas}
+		{if $promotion_schemas}
+		<tr id="a_location">
+			<td>
+				<img src="img/location.png" alt="">
+			</td>
+			<td class="bold">
+				{trans("Location:")}
+			</td>
+			<td style="width: 98%;">
+				<select name="assignment[location]" id="locationselect" {tip text="Select promotion location"}>
+					<OPTION value="">{trans("- all -")}</OPTION>
+					{foreach $locations as $location}
+					<OPTION value="{$location}"{if $assignment.location == $location} selected{/if}>{$location}</OPTION>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
 		<TR id="a_schema">
 			<TD>
 				<IMG src="img/promoschema.gif" alt="">
@@ -112,11 +130,11 @@
 			</TD>
 			<TD style="width: 98%;">
 				<SELECT size="1" name="assignment[schemaid]" id="promotionselect" {tip text="Select promotion schema"}>
-					{foreach $promotionschemanames as $schemaname}
-      	    	        <optgroup label="{$schemaname.name}" data-valid="{$schemaname.valid}"{if !$schemaname.valid} class="blend"{if !$assignment.alltariffs} style="display: none;"{/if}{/if}>
-                	        {foreach $promotionschemas as $schema}
-                    	        {if $schemaname.name == $schema.promotion}
-                        	        <OPTION value="{$schema.id}"{if $assignment.schemaid == $schema.id} SELECTED{/if} data-valid="{$schemaname.valid}"{if !$schemaname.valid} class="blend"{/if}>{$schema.name|truncate:40:"...":true}</OPTION>
+					{foreach $promotions as $promotion}
+      	    	        <optgroup label="{$promotion.name}" data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{if !$assignment.alltariffs} style="display: none;"{/if}{/if}>
+                	        {foreach $promotion_schemas as $schema}
+                    	        {if $schema.promotionid == $promotion.id}
+                        	        <OPTION value="{$schema.id}"{if $assignment.schemaid == $schema.id} SELECTED{/if} data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{/if}>{$schema.name|truncate:40:"...":true}</OPTION>
                                 {/if}
                             {/foreach}
                         </optgroup>
@@ -128,42 +146,76 @@
 		<TR id="a_schematariff">
 			<TD></TD>
 			<TD colspan="2">
-				{foreach $promotions as $promotion => $p}
-                	{foreach $p as $schema => $items}
-                    	<table class="promotionstable" id="schema{$schema}">
+				{foreach $promotion_schema_items as $promotionid => $schemas}
+                	{foreach $schemas as $schemaid => $items}
+                    	<table class="promotionstable" id="schema{$schemaid}">
 							{foreach $items as $item}
 							<tr>
-								<td class="text-right">
+								<td class="valign-top text-right">
 									{if isset($item.single)}
-										{if !empty($item.single.label)}
-										{t a=$item.single.label}<!tariffselection>$a:{/t}
-										{/if}
+										{$label=$item.single.label}
 									{else}
-										{if !empty($item.selection.label)}
-										{t a=$item.selection.label}<!tariffselection>$a:{/t}
-										{/if}
+										{$label=$item.selection.label}
+									{/if}
+									{if !empty($label)}
+									{t a=$label}<!tariffselection>$a:{/t}
 									{/if}
 								</td>
-                            {if isset($item.single)}
-								<td{if !$item.single.optional} class="blend"{/if}>
-									<label>
-										<input type="checkbox" name="assignment[stariffid][{$schema}][]" value="{$item.single.tariffid}"
-											   {if in_array($item.single.tariffid, $assignment.stariffid[$schema]) || !$item.single.optional} checked{/if}{if !$item.single.optional} data-mandatory="true" disabled{/if}>
-										{$item.single.tariff}
-									</label>
+								<td class="valign-top" style="padding-bottom: 10px; padding-top: 0;">
+									<table>
+										<tr>
+											{if isset($item.single)}
+											<td class="valign-top{if !$item.single.optional} blend{/if}">
+												<label>
+													<input class="schema-tariff-checkbox" type="checkbox" name="assignment[stariffid][{$schemaid}][{$label}]" value="{$item.single.tariffid}"
+														{if isset($assignment.stariffid[$schemaid][$label]) || !$item.single.optional} checked{/if}
+														{if !$item.single.optional}data-mandatory="true" disabled{/if}
+														data-tariffaccess="{$item.single.authtype}">
+													{$item.single.tariff}
+												</label>
+											</td>
+											{else}
+											<td class="valign-top">
+												<select class="schema-tariff-selection" name="assignment[stariffid][{$schemaid}][{$label}]">
+													{if !$item.selection.required}
+													<option value="0" data-tariffaccess="-1">{trans("- none -")}</option>
+													{/if}
+													{foreach $item.selection.items as $item}
+													<option value="{$item.tariffid}" data-tariffaccess="{$item.authtype}"{if in_array($item.tariffid, $assignment.stariffid[$schemaid])} selected{/if}>{$item.tariff}</option>
+													{/foreach}
+												</select>
+											</td>
+											{/if}
+										</tr>
+										<tr class="customernodes">
+											<td>
+												{if $customernodes}
+												<span class="bold">{trans("Nodes:")}</span><br>
+												<select name="assignment[snodes][{$schemaid}][{$label}][]" multiple class="lms-ui-multiselect" data-separator="<br>">
+													{foreach $customernodes as $customernode}
+													<option value="{$customernode.id}"{if in_array($customernode.id, $assignment.snodes[$schemaid][$label])} selected{/if}
+														data-tariffaccess="{$customernode.authtype}" data-location="{$customernode.location}"
+													data-html-content="<strong>{$customernode.name}</strong> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}"
+													>{$customernode.name} ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}</option>
+													{/foreach}
+												</select>
+												{/if}
+												{if $customernetdevnodes}
+												<br>
+												<span class="bold">{trans("Network Devices:")}</span><br>
+												<select name="assignment[snodes][{$schemaid}][{$label}][]" multiple class="lms-ui-multiselect" data-separator="<br>">
+													{foreach $customernetdevnodes as $customernode}
+													<option value="{$customernode.id}"{if in_array($customernode.id, $assignment.snodes[$schemaid][$label])} selected{/if}
+														data-html-content="<strong>{$customernode.name}</strong> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}"
+														data-tariffaccess="{$customernode.authtype}" data-location="{$customernode.location}"
+													>{$customernode.name} ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}</option>
+													{/foreach}
+												</select>
+												{/if}
+											</td>
+										</tr>
+									</table>
 								</td>
-							{else}
-								<td>
-									<select id="{key($v)}" name="assignment[stariffid][{$schema}][]">
-										{if !$item.selection.required}
-										<option value="0">{trans("- none -")}</option>
-										{/if}
-										{foreach $item.selection.items as $item}
-										<option value="{$item.tariffid}"{if in_array($item.tariffid, $assignment.stariffid[$schema])} selected{/if}>{$item.tariff}</option>
-										{/foreach}
-									</select>
-								</td>
-							{/if}
 							</tr>
 							{/foreach}
 						</table>
@@ -413,6 +465,7 @@
 											</td>
 											<td class="nobr" id="nodeslist">
 												{foreach $customernodes as $customernode}
+													<span data-tariffaccess="{$customernode.authtype}" class="global-node-checkbox">
 													{assign var=nodeid value=$customernode.id}
 
 													<label>
@@ -420,6 +473,7 @@
 														<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
 													</label>
 													<br>
+													</span>
 												{/foreach}
 											</td>
 										</tr>
@@ -435,6 +489,7 @@
 											</td>
 											<td class="nobr" id="nodeslist">
 												{foreach $customernetdevnodes as $customernode}
+													<span data-tariffaccess="{$customernode.authtype}" class="global-node-checkbox">
 													{assign var=nodeid value=$customernode.id}
 
 													<label>
@@ -442,6 +497,7 @@
 														<span class="bold">{$customernode.name}</span> {if !empty($customernode.netdev_name)} / {$customernode.netdev_name}{/if}  ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
 													</label>
 													<br>
+													</span>
 												{/foreach}
 											</td>
 										</tr>
@@ -470,7 +526,7 @@
 										{/if}
 
 										{if count($customernodes) || count($customernetdevnodes)}
-										<tr>
+										<tr id="a_checkall">
 											<td colspan=2"></td>
 											<td>
 												<label>
@@ -520,46 +576,89 @@
 				promoselect.trigger('change');
 			}
 		});
+
+		$('#promotionselect').trigger('change');
+		$('#locationselect').trigger('change');
+		$('#tariff_select').trigger('change');
 	});
 
 	$( '#tariff_select' ).change( function() {
-		var tarifftype = $(this).find(':selected').attr('data-tarifftype');
+		var selected = $(this).find(':selected');
+		var tarifftype = selected.attr('data-tarifftype');
+		var tariffaccess = selected.attr('data-tariffaccess');
+		if (typeof(tariffaccess) == 'undefined') {
+			tariffaccess = 0;
+		} else {
+			tariffaccess = parseInt(tariffaccess);
+		}
 		var val = $(this).val();
 
 		$('#tarifftype').val( tarifftype );
 
-		{if $promotionschemas}
-		document.getElementById('a_schema').style.display       = val == -2 ? '' : 'none';
-		document.getElementById('a_schematariff').style.display = val == -2 ? '' : 'none';
+		{if $promotion_schemas}
+		if (val == -2) {
+			$('#a_location').show();
+			$('#a_schema').show();
+			$('#a_schematariff').show();
+		} else {
+			$('#a_location').hide();
+			$('#a_schema').hide();
+			$('#a_schematariff').hide();
+		}
 		{/if}
 
 		document.getElementById('a_tax').style.display       = val == '' ? ''     : 'none';
 		document.getElementById('a_value').style.display     = val == '' ? ''     : 'none';
 		document.getElementById('a_productid').style.display = val == '' ? ''     : 'none';
 		document.getElementById('a_name').style.display      = val == '' ? ''     : 'none';
-        document.getElementById('a_attribute').style.display = val == '' ? 'none' : '';
-		document.getElementById('a_options').style.display   = val == -1 ? 'none' : '';
-		document.getElementById('a_day').style.display       = val == -1 ? 'none' : '';
+        document.getElementById('a_attribute').style.display = val == '' || val == -1 ? 'none' : '';
+
+		if (val == -1) {
+			$('#a_numberplan').hide();
+			$('#a_paytype').hide();
+			$('#a_address').hide();
+			$('#a_options').hide();
+			$('#a_day').hide();
+		} else {
+			$('#a_numberplan').show();
+			$('#a_paytype').show();
+			$('#a_address').show();
+			$('#a_options').show();
+			$('#a_day').show();
+		}
 
 		if (tarifftype == {$smarty.const.TARIFF_PHONE}) {
 			$('#a_phones'     ).show();
 			$('#a_nodes'      ).hide();
 			$('#a_netdevnodes').hide();
+			$('#a_checkall').show();
 		} else {
 			$('#a_phones').hide();
 			
-			if (val == -1) {
+			if (val == -1 || val == -2) {
 				$('#a_nodes').hide();
 				$('#a_netdevnodes').hide();
+				$('#a_checkall').hide();
 			} else {
 				$('#a_nodes').show();
 				$('#a_netdevnodes').show();
+				$('#a_checkall').show();
 			}
 		}
 
 		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-		document.getElementById('a_discount').style.display = val < -1 ? 'none' : '';
+		document.getElementById('a_discount').style.display = val <= -1 ? 'none' : '';
 		{/if}
+
+		$('span.global-node-checkbox').each(function(key, value) {
+			var authtype = parseInt($(this).attr('data-tariffaccess'));
+			if ((authtype && (authtype & tariffaccess)) || !tariffaccess) {
+				$(this).show();
+			} else {
+				$(this).hide();
+				$(':checkbox', this).prop('checked', false);
+			}
+		});
     });
 
 	function updatePromotionsTable() {
@@ -587,9 +686,57 @@
 			}
 		});
 	});
-	
-	$( '#promotionselect' ).trigger('change');
-	$( '#tariff_select'   ).trigger('change');
+
+	$('.schema-tariff-selection').change(function () {
+		var tariffaccess = parseInt($(this).find(':selected').attr('data-tariffaccess'));
+		var locationselect = $('#locationselect').val();
+		var tr = $(this).closest('tr').next('.customernodes');
+		var ms = tr.find('.lms-ui-multiselect').data('multiselect-object');
+		ms.getOptions().each(function(key) {
+			var authtype = parseInt($(this).attr('data-tariffaccess'));
+			var location = $(this).attr('data-location');
+			if (((authtype && (authtype & tariffaccess)) || !tariffaccess)
+				&& (location == locationselect || !locationselect.length)) {
+				ms.showOption(key);
+			} else {
+				ms.hideOption(key);
+			}
+		});
+		ms.refreshSelection();
+	});
+
+	$('.schema-tariff-checkbox').change(function() {
+		var tariffaccess = parseInt($(this).find(':selected').attr('data-tariffaccess'));
+		var locationselect = $('#locationselect').val();
+		var tr = $(this).closest('tr').next('.customernodes');
+		var ms = tr.find('.lms-ui-multiselect').data('multiselect-object');
+		var checked = this.checked;
+		ms.getOptions().each(function (key) {
+			if (checked) {
+				var authtype = parseInt($(this).attr('data-tariffaccess'));
+				var location = $(this).attr('data-location');
+				if (((authtype && (authtype & tariffaccess)) || !tariffaccess)
+					&& (location == locationselect || !locationselect.length)) {
+					ms.showOption(key);
+				} else {
+					ms.hideOption(key);
+				}
+			} else {
+				ms.hideOption(key);
+			}
+		});
+		ms.refreshSelection();
+		if (checked) {
+			tr.show();
+		} else {
+			tr.hide();
+		}
+	});
+
+	$('#locationselect').change(function() {
+		$('.schema-tariff-selection').trigger('change');
+		$('.schema-tariff-checkbox').trigger('change');
+	});
 
 	function update_tariffs() {
 		var valid_checked = $('[name="assignment[alltariffs]"]').is(':checked');

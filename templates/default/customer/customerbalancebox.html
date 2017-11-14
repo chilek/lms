@@ -228,6 +228,7 @@
 								<A href="?m=invoice&id={$item.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}" rel="external"><IMG src="img/printn.gif" alt="{trans("Credit note")}"></A>
 							{elseif $item.doctype == $smarty.const.DOC_RECEIPT}
 								<A href="?m=receipt&id={$item.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}" rel="external"><IMG src="img/printr.gif" alt="{trans("Cash receipt")}"></A>
+								<a href="?m=receiptedit&id={$item.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}" rel="external"><IMG src="img/edit.gif" alt="{trans("Cash receipt")}"></a>
 							{elseif $item.doctype == $smarty.const.DOC_DNOTE}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
 								<A href="?m=note&id={$item.docid}&dontpublish=1" class="lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}" rel="external"><img src="img/view.gif" alt="{trans("View")}"></A>
@@ -346,5 +347,7 @@
 	if (getCookie('customerbalancepanel') == '0')
 		document.getElementById('customerbalancepanel').style.display = 'none';
 {/if}
+
+new_doc_type_changed($("[name=newdocument]").val());
 //-->
 </SCRIPT>

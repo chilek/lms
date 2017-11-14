@@ -215,7 +215,7 @@ $(function() {
 });
 
 function update_user_selection(users) {
-	var userms = $('.lms-ui-multiselect').data('data-multiselect-object');
+	var userms = $('.lms-ui-multiselect').data('multiselect-object');
 	{if ConfigHelper::getConfig('phpui.event_usergroup_selection_type', 'update') == 'update'}
 	userms.updateSelection(users);
 	{else}

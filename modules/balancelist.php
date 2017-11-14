@@ -161,14 +161,6 @@ if(isset($_POST['search']))
         $s = $_POST['search'];
 else
 	$SESSION->restore('bls', $s);
-if(!isset($s))
-     {
-     $year=date("Y", time());
-     $month=date("m", time());
-     $day=date("d", time());
-     $s = $year.'/'.$month.'/'.$day;
-     }
-$SESSION->save('bls', $s);
 
 if(isset($_POST['cat']))
         $c = $_POST['cat'];
@@ -190,34 +182,43 @@ if(isset($_POST['group']))
 }
 $SESSION->save('blg', $g);
 $SESSION->save('blge', $ge);
-				
+
 if($c == 'cdate' && $s)
 {
-        list($year, $month, $day) = explode('/', $s);
-	$s = mktime(0,0,0, (int)$month, (int)$day, (int)$year);
+	$date = date_to_timestamp($s);
+	if(empty($date))
+		$s = date('Y/m/d', time());
 }
+$SESSION->save('bls', $s);
 
 if(!empty($_POST['from']))
 {
-	list($year, $month, $day) = explode('/', $_POST['from']);
-	$from = mktime(0,0,0, $month, $day, $year);
+	$from = datetime_to_timestamp($_POST['from']);
 }
 elseif($SESSION->is_set('blf'))
 	$SESSION->restore('blf', $from);
 else
 	$from = '';
-$SESSION->save('blf', $from);
 
 if(!empty($_POST['to']))
 {
-	list($year, $month, $day) = explode('/', $_POST['to']);
-	$to = mktime(23,59,59, $month, $day, $year);
+    $to = datetime_to_timestamp($_POST['to']);
 }
 elseif($SESSION->is_set('blt'))
 	$SESSION->restore('blt', $to);
 else
 	$to = '';
-$SESSION->save('blt', $to);
+
+if(!empty($from) && !empty($to)) {
+	if($from < $to) {
+    $SESSION->save('blf', $from);
+    $SESSION->save('blt', $to);
+}
+}
+elseif(!empty($from))
+	$SESSION->save('blf', $from);
+elseif(!empty($to))
+    $SESSION->save('blt', $to);
 
 $pagelimit = ConfigHelper::getConfig('phpui.balancelist_pagelimit');
 $page = (empty($_GET['page']) ? 0 : intval($_GET['page']));

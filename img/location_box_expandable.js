@@ -125,7 +125,7 @@ $(function() {
      * \brief Remove address box.
      */
     $('body').on('click', '.delete-location-box', function() {
-        if ( confirm(lmsMessages['Are you shure that you want to remove address?']) == true ) {
+        if ( confirm(lmsMessages.removeAddressConfirmation) == true ) {
             getLocationBox(this).closest('tr').remove();
         }
     });

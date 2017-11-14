@@ -72,29 +72,25 @@ if ($promotion) {
 		$error['name'] = trans('Specified name is in use!');
 	}
 
-	if ($promotion['datefrom'] == '')
+	if (empty($promotion['datefrom']))
 		$promotion['from'] = 0;
-	elseif (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $promotion['datefrom'])) {
-		list ($y, $m, $d) = explode('/', $promotion['datefrom']);
-		if (checkdate($m, $d, $y))
-			$promotion['from'] = mktime(0, 0, 0, $m, $d, $y);
-		else
+	else
+	{
+		$from = date_to_timestamp($promotion['datefrom']);
+		if(empty($from))
 			$error['datefrom'] = trans('Incorrect effective start time!');
-	} else
-		$error['datefrom'] = trans('Incorrect effective start time!');
+	}
 
-	if ($promotion['dateto'] == '')
-		$promotion['to'] = 0;
-	elseif (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $promotion['dateto'])) {
-		list ($y, $m, $d) = explode('/', $promotion['dateto']);
-		if (checkdate($m, $d, $y))
-			$promotion['to'] = mktime(23, 59, 59, $m, $d, $y);
-		else
-			$error['dateto'] = trans('Incorrect effective end time!');
-	} else
-		$error['dateto'] = trans('Incorrect effective end time!');
+        if (empty($promotion['dateto']))
+                $promotion['to'] = 0;
+        else
+        {
+		$to = date_to_timestamp($promotion['dateto']);
+		if(empty($to))
+			$error['dateto'] = trans('Incorrect effective start time!');
+        }
 
-	if ($promotion['to'] != 0 && $promotion['from'] != 0 && $promotion['to'] < $promotion['from'])
+	if ($promotion['to'] != 0 && $promotion['from'] != 0 && $to < $from)
 		$error['dateto'] = trans('Incorrect date range!');
 
 	if (!$error) {

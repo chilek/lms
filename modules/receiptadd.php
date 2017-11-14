@@ -481,21 +481,16 @@ switch($action)
 				$receipt['numberplanid'] = $DB->GetOne('SELECT out_numberplanid FROM cashregs WHERE id=?', array($receipt['regid']));
 		}
 
-		if(isset($receipt['cdate']) && $receipt['cdate'])
-		{
+		if (isset($receipt['cdate']) && $receipt['cdate']) {
 			list($year, $month, $day) = explode('/',$receipt['cdate']);
-			if(checkdate($month, $day, $year)) 
-			{
+			if (checkdate($month, $day, $year)) {
 				$receipt['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
-			}
-			else
-			{
+			} else {
 				$error['cdate'] = trans('Incorrect date format!');
 				$receipt['cdate'] = time();
 				break;
 			}
-		}
-		else
+		} else
 			$receipt['cdate'] = time();
 
 		if($receipt['cdate'] && !isset($receipt['cdatewarning']))

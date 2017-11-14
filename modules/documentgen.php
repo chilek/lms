@@ -252,7 +252,7 @@ if (isset($_POST['document'])) {
 					div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber, template)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($document['type'],
 					$document['number'],
-					$document['numberplanid'],
+					empty($document['numberplanid']) ? null : $document['numberplanid'],
 					$time,
 					$document['customerid'],
 					Auth::GetCurrentUser(),

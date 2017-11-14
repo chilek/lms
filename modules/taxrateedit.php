@@ -74,27 +74,23 @@ if(sizeof($taxrateedit))
 	if(!$taxrateedit['taxed'] && $taxrateedit['value']!=0)
 		$error['value'] = trans('Incorrect tax rate percentage value (non-zero value and taxing not checked)!');
 
-	if($taxrateedit['validfrom'] == '')
-		$validfrom = 0;
-	else
+	if(!empty($taxrateedit['validfrom']))
 	{
-		list($fyear, $fmonth, $fday) = explode('/',$taxrateedit['validfrom']);
-		if(!checkdate($fmonth, $fday, $fyear))
+		$validfrom = date_to_timestamp($taxrateedit['validfrom']);
+		if(empty($validfrom))
 			$error['validfrom'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-		else
-			$validfrom = mktime(0, 0, 0, $fmonth, $fday, $fyear);
 	}
-
-	if($taxrateedit['validto'] == '')
-		$validto = 0;
 	else
-	{
-		list($tyear, $tmonth, $tday) = explode('/',$taxrateedit['validto']);
-		if(!checkdate($tmonth, $tday, $tyear))
-			$error['validto'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-		else
-			$validto = mktime(23, 59, 59, $tmonth, $tday, $tyear);
-	}
+		$validfrom = 0;
+
+        if(!empty($taxrateedit['validto']))
+        {
+                $validto = date_to_timestamp($taxrateedit['validto']);
+                if(empty($validto))
+                        $error['validto'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+        }
+        else
+                $validto = 0;
 
 	if (!$error) {
 		$args = array(

@@ -2701,7 +2701,7 @@ $_LANG['last $a packages'] = 'ostatnie $a paczek';
 $_LANG['Packages:'] = 'Paczki:';
 $_LANG['Records:'] = 'Rekordy:';
 $_LANG['Removing package "$a"'] = 'Usuwanie paczki "$a"';
-$_LANG['Are you shure that you want to remove address?'] = 'Czy na pewno chcesz usunąć adres?';
+$_LANG['Are you sure that you want to remove address?'] = 'Czy na pewno chcesz usunąć adres?';
 $_LANG['There are no packages in database.'] = 'Brak paczek w bazie danych.';
 $_LANG['period undefined'] = 'okres niezdefiniowany';
 $_LANG['Select time period of tariff accounting'] = 'Wybierz okres naliczania taryfy';
@@ -2765,6 +2765,7 @@ $_LANG['Promotion start date is required!'] = 'Wymagana jest data początku prom
 $_LANG['Schema'] = 'Schemat';
 $_LANG['Select accounting period (optional) - overwrites customer liability\'s period'] = 'Wybierz okres rozliczeniowy (opcjonalnie) - zastępuje okres zobowiązania klienta';
 $_LANG['Select promotion schema'] = 'Wybierz schemat promocji';
+$_LANG['Select promotion location'] = 'Wybierz lokalizację promocji';
 $_LANG['per promotion schema'] = 'wg schematu promocji';
 $_LANG['Additional subscription after promotion period:'] = 'Dodatkowa taryfa po okresie promocji:';
 $_LANG['Additional subscription is useless when contract prolongation is not set!'] = 'Dodatkowa taryfa nie ma sensu gdy nie zaznaczono przedłużenia umowy!';
@@ -3787,5 +3788,9 @@ $_LANG['<!promotionassignment>- new -'] = '- nowa -';
 $_LANG['<!promotionassignment>Enter new label'] = 'Wprowadź nową etykietę';
 $_LANG['<!promotionassignment>Label'] = 'Etykieta';
 $_LANG['<!tariffselection>$a:'] = '$a:';
+$_LANG['<!datepicker>Clear'] = 'Wyczyść';
+
+$_LANG['Access:'] = 'Dostęp:';
+$_LANG['<!access>- any -'] = '- dowolny -';
 
 ?>

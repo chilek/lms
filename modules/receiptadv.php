@@ -83,21 +83,16 @@ if(isset($_POST['receipt']))
 	if($receipt['type'] == 'return')
 		$receipt['cdate'] = $_POST['receiptr']['cdate'];
 
-	if($receipt['cdate'])
+	if(isset($receipt['cdate']))
 	{
-	        list($year, $month, $day) = explode('/',$receipt['cdate']);
-		if(checkdate($month, $day, $year))
-		{
-		        $receipt['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
+		$cdate = date_to_timestamp($receipt['cdate']);
+		if(empty($cdate)) {
+			$error['cdate'] = trans('Incorrect date format!');
+			$receipt['cdate'] = time();
 		}
-		else
-		{
-		        $error['cdate'] = trans('Incorrect date format!');
-		        $receipt['cdate'] = time();
-                }
-        }
-        else
-        	$receipt['cdate'] = time();
+	}
+	else
+		$receipt['cdate'] = time();
 
 	$in_plan = $DB->GetOne('SELECT in_numberplanid FROM cashregs WHERE id = ?', array($regid));
 

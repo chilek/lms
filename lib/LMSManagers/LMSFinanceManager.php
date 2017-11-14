@@ -30,6 +30,15 @@
  */
 class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 {
+    public function GetPromotionNameBySchemaID($id)
+    {
+        return $this->db->GetOne('SELECT p.name FROM promotionschemas AS s
+		LEFT JOIN promotions AS p ON s.promotionid = p.id WHERE s.id = ?', array($id));
+    }
+    public function GetPromotionNameByID($id)
+    {
+        return $this->db->GetOne('SELECT name FROM promotions WHERE id=?', array($id));
+    }
 
     public function GetCustomerTariffsValue($id)
     {
@@ -318,7 +327,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                                   	  downceil, uprate, downrate, prodid, plimit, climit, dlimit, upceil_n,
                                                   	  downceil_n, uprate_n, downrate_n, domain_limit, alias_limit, sh_limit,
                                                   	  www_limit, ftp_limit, mail_limit, sql_limit, quota_sh_limit, quota_www_limit,
-                                                  	  quota_ftp_limit, quota_mail_limit, quota_sql_limit
+                                                  	  quota_ftp_limit, quota_mail_limit, quota_sql_limit. authtype
 												   FROM
 												   	  tariffs WHERE id = ?', array($tariff['id']));
 
@@ -334,9 +343,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         					   (name, value, period, type, upceil, downceil, uprate, downrate, prodid,
                         					   plimit, climit, dlimit, upceil_n, downceil_n, uprate_n, downrate_n,
 				   							   domain_limit, alias_limit, sh_limit, www_limit, ftp_limit, mail_limit, sql_limit,
-											   quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit, taxid)
+											   quota_sh_limit, quota_www_limit, quota_ftp_limit, quota_mail_limit, quota_sql_limit,
+											   authtype, taxid)
 							                VALUES
-							                   (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
+							                   (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array_values($args));
 
                         $tariffid = $this->db->GetLastInsertId('tariffs');
 
@@ -367,7 +377,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'commited'			=> $commited,
                 );
 
-                $result[] = $this->insertAssignment( $args );
+                $result[] = $data['assignmentid'] = $this->insertAssignment( $args );
+
+				$this->insertNodeAssignments($data);
 
                 if ($idx) {
                     $datefrom = $dateto + 1;
@@ -404,12 +416,13 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'commited'			=> $commited,
                     );
 
-                    $result[] = $this->insertAssignment( $args );
-                }
+                    $result[] = $data['assignmentid'] = $this->insertAssignment( $args );
+
+					$this->insertNodeAssignments($data);
+				}
             }
-        }
+        } else {
         // Create one assignment record
-        else {
             if (!empty($data['value'])) {
                 $args = array(
                     'name' => $data['name'],
@@ -446,32 +459,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 'commited'			=> $commited,
             );
 
-            $result[] = $this->insertAssignment( $args );
-        }
+            $data['assignmentid'] = $this->insertAssignment($args);
 
-        if (!empty($result) && count($result = array_filter($result))) {
-            if (!empty($data['nodes'])) {
-                // Use multi-value INSERT query
-                $values = array();
-                foreach ((array) $data['nodes'] as $nodeid)
-                    foreach ($result as $aid)
-                        $values[] = sprintf('(%d, %d)', $nodeid, $aid);
-
-                $this->db->Execute('INSERT INTO nodeassignments (nodeid, assignmentid)
-					VALUES ' . implode(', ', $values));
-                if ($this->syslog) {
-                    $nodeassigns = $this->db->GetAll('SELECT id, nodeid FROM nodeassignments WHERE assignmentid = ?', array($aid));
-                    foreach ($nodeassigns as $nodeassign) {
-                        $args = array(
-                            SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
-                            SYSLOG::RES_CUST => $data['customerid'],
-                            SYSLOG::RES_NODE => $nodeassign['nodeid'],
-                            SYSLOG::RES_ASSIGN => $aid
-                        );
-                        $this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_ADD, $args);
-                    }
-                }
-            }
+            $this->insertNodeAssignments($data);
         }
 
         return $result;
@@ -501,8 +491,31 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         return $id;
     }
 
-    public function SuspendAssignment($id, $suspend = TRUE)
-    {
+	private function insertNodeAssignments($args) {
+		if (!empty($args['nodes'])) {
+			// Use multi-value INSERT query
+			$values = array();
+			foreach ($args['nodes'] as $nodeid)
+				$values[] = sprintf('(%d, %d)', $nodeid, $args['assignmentid']);
+
+			$this->db->Execute('INSERT INTO nodeassignments (nodeid, assignmentid)
+				VALUES ' . implode(', ', $values));
+			if ($this->syslog) {
+				$nodeassigns = $this->db->GetAll('SELECT id, nodeid FROM nodeassignments WHERE assignmentid = ?', array($args['assignmentid']));
+				foreach ($nodeassigns as $nodeassign) {
+					$args = array(
+						SYSLOG::RES_NODEASSIGN => $nodeassign['id'],
+						SYSLOG::RES_CUST => $args['customerid'],
+						SYSLOG::RES_NODE => $nodeassign['nodeid'],
+						SYSLOG::RES_ASSIGN => $args['assignmentid'],
+					);
+					$this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_ADD, $args);
+				}
+			}
+		}
+	}
+
+	public function SuspendAssignment($id, $suspend = TRUE) {
         if ($this->syslog) {
             $assign = $this->db->GetRow('SELECT id, tariffid, liabilityid, customerid FROM assignments WHERE id = ?', array($id));
             $args = array(
@@ -1009,7 +1022,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'dlimit' => $tariff['dlimit'],
             'type' => $tariff['type'],
             'domain_limit' => $tariff['domain_limit'],
-            'alias_limit' => $tariff['alias_limit']
+            'alias_limit' => $tariff['alias_limit'],
+			'authtype' => $tariff['authtype'],
         );
         $args2 = array();
         foreach ($ACCOUNTTYPES as $typeidx => $type) {
@@ -1019,9 +1033,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
         $result = $this->db->Execute('INSERT INTO tariffs (name, description, value,
 				period, taxid, numberplanid, datefrom, dateto, prodid, uprate, downrate, upceil, downceil, climit,
 				plimit, uprate_n, downrate_n, upceil_n, downceil_n, climit_n,
-				plimit_n, dlimit, type, domain_limit, alias_limit, '
+				plimit_n, dlimit, type, domain_limit, alias_limit, authtype, '
 				. implode(', ', array_keys($args2)) . ')
-				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,' . implode(',', array_fill(0, count($args2), '?')) . ')',
+				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,' . implode(',', array_fill(0, count($args2), '?')) . ')',
 				array_values(array_merge($args, $args2)));
         if ($result) {
             $id = $this->db->GetLastInsertID('tariffs');
@@ -1066,6 +1080,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             'type' => $tariff['type'],
             'voip_tariff_id' => (!empty($tariff['voip_pricelist'])) ? $tariff['voip_pricelist'] : NULL,
             'voip_tariff_rule_id' => (!empty($tariff['voip_tariffrule'])) ? $tariff['voip_tariffrule'] : NULL,
+			'authtype' => $tariff['authtype'],
         );
         $args2 = array();
         foreach ($ACCOUNTTYPES as $typeidx => $type) {
@@ -1079,7 +1094,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             period = ?, taxid = ?, numberplanid = ?, datefrom = ?, dateto = ?, prodid = ?,
             uprate = ?, downrate = ?, upceil = ?, downceil = ?, climit = ?, plimit = ?,
             uprate_n = ?, downrate_n = ?, upceil_n = ?, downceil_n = ?, climit_n = ?, plimit_n = ?,
-            dlimit = ?, domain_limit = ?, alias_limit = ?, type = ?, voip_tariff_id = ?, voip_tariff_rule_id = ?, '
+            dlimit = ?, domain_limit = ?, alias_limit = ?, type = ?, voip_tariff_id = ?, voip_tariff_rule_id = ?, 
+            authtype = ?, '
             . implode(' = ?, ', $fields) . ' = ? WHERE id=?', array_values($args));
         if ($res && $this->syslog)
             $this->syslog->AddMessage(SYSLOG::RES_TARIFF, SYSLOG::OPER_UPDATE, $args);
@@ -1192,7 +1208,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function GetTariffs($forced_id = null)
     {
-        return $this->db->GetAllByKey('SELECT t.id, t.name, t.value, uprate, taxid,
+        return $this->db->GetAllByKey('SELECT t.id, t.name, t.value, uprate, taxid, t.authtype,
 				datefrom, dateto, (CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid,
 				prodid, downrate, upceil, downceil, climit, plimit, taxes.value AS taxvalue,
 				taxes.label AS tax, t.period, t.type AS tarifftype, ' . $this->db->GroupConcat('ta.tarifftagid') . ' AS tags
@@ -1856,7 +1872,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		if (empty($liabilities))
 			return $result;
 
-		foreach ($liabilities as &$liability) {
+		$balance = $customer_manager->GetCustomerBalance($customerid, time());
+
+		foreach ($liabilities as $liability) {
 			if (!empty($liability['docid']))
 				$liability['comment'] = trans($document_descriptions[$liability['doctype']], docnumber(array(
 					'number' => $liability['number'],
@@ -1886,12 +1904,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				$liability['comment'] .= ')';
 			}
 
-		}
-		unset($liability);
-
-		$balance = $customer_manager->GetCustomerBalance($customerid, time());
-
-		foreach ($liabilities as $liability) {
 			if ($balance - $liability['value'] <= 0)
 				$result[] = $liability;
 			elseif ($balance < 0) {
@@ -1900,6 +1912,9 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				break;
 			}
 			$balance -= $liability['value'];
+			$balance = round($balance, 2);
+			if ($balance >= 0)
+				break;
 		}
 
 		return array_reverse($result);
