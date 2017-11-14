@@ -266,7 +266,6 @@ function multiselect(options) {
 		$('input:checkbox', div).each(function() {
 			var text = $(this).siblings('span').html();
 			if ($(this).prop('checked')) {
-				elem[text] = 1;
 				selected.push(text);
 			}
 		});
