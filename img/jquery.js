@@ -189,7 +189,8 @@ $(function() {
 			new multiselect({
 				id: $(this).uniqueId().attr('id'),
 				defaultValue: $(this).attr('data-default-value'),
-				type: $(this).attr('data-type')
+				type: $(this).attr('data-type'),
+				separator: $(this).attr('data-separator')
 			});
 		});
 	}

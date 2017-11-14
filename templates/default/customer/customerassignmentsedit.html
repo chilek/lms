@@ -191,31 +191,24 @@
 											<td>
 												{if $customernodes}
 												<span class="bold">{trans("Nodes:")}</span><br>
-												{foreach $customernodes as $customernode}
-												<span data-tariffaccess="{$customernode.authtype}" data-location="{$customernode.location}">
-													{assign var=nodeid value=$customernode.id}
-													<label>
-														<input type="checkbox" name="assignment[snodes][{$schemaid}][{$label}][]" value="{$customernode.id}"{if in_array($nodeid, (array)$assignment.snodes[$schemaid][$label])} checked{/if}>
-														<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
-													</label>
-													<br>
-													</span>
-												{/foreach}
+												<select name="assignment[snodes][{$schemaid}][{$label}][]" multiple class="lms-ui-multiselect" data-separator="<br>">
+													{foreach $customernodes as $customernode}
+													<option value="{$customernode.id}"{if in_array($customernode.id, $assignment.snodes[$schemaid][$label])} selected{/if}
+														data-tariffaccess="{$customernode.authtype}" data-location="{$customernode.location}"
+													>{$customernode.name} ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}</option>
+													{/foreach}
+												</select>
 												{/if}
 												{if $customernetdevnodes}
 												<br>
 												<span class="bold">{trans("Network Devices:")}</span><br>
-												{foreach $customernetdevnodes as $customernode}
-												<span data-tariffaccess="{$customernode.authtype}" data-location="{$customernode.location}">
-													{assign var=nodeid value=$customernode.id}
-
-													<label>
-														<input type="checkbox" name="assignment[snodes][{$schemaid}][{$label}][]" value="{$customernode.id}"{if in_array($nodeid, (array)$assignment.snodes[$schemaid][$label])} checked{/if}>
-														<span class="bold">{$customernode.name}</span> {if !empty($customernode.netdev_name)} / {$customernode.netdev_name}{/if}  ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
-													</label>
-													<br>
-													</span>
-												{/foreach}
+												<select name="assignment[snodes][{$schemaid}][{$label}][]" multiple class="lms-ui-multiselect" data-separator="<br>">
+													{foreach $customernetdevnodes as $customernode}
+													<option value="{$customernode.id}"{if in_array($customernode.id, $assignment.snodes[$schemaid][$label])} selected{/if}
+														data-tariffaccess="{$customernode.authtype}" data-location="{$customernode.location}"
+													>{$customernode.name} ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}</option>
+													{/foreach}
+												</select>
 												{/if}
 											</td>
 										</tr>
@@ -581,6 +574,10 @@
 				promoselect.trigger('change');
 			}
 		});
+
+		$('#promotionselect').trigger('change');
+		$('#locationselect').trigger('change');
+		$('#tariff_select').trigger('change');
 	});
 
 	$( '#tariff_select' ).change( function() {
@@ -688,47 +685,49 @@
 		});
 	});
 
-	$('.schema-tariff-selection').change(function() {
+	$('.schema-tariff-selection').change(function () {
 		var tariffaccess = parseInt($(this).find(':selected').attr('data-tariffaccess'));
 		var locationselect = $('#locationselect').val();
 		var tr = $(this).closest('tr').next('.customernodes');
-		if (tariffaccess == -1) {
-			tr.hide().find(':checkbox').prop('checked', false);
-		} else {
-			tr.show();
-			tr.find('span[data-tariffaccess]').each(function(key, value) {
-				var authtype = parseInt($(this).attr('data-tariffaccess'));
-				var location = $(this).attr('data-location');
-				if (((authtype && (authtype & tariffaccess)) || !tariffaccess)
-					&& (location == locationselect || !locationselect.length)) {
-					$(this).show();
-				} else {
-					$(this).hide();
-					$(':checkbox', this).prop('checked', false);
-				}
-			});
-		}
+		var ms = tr.find('.lms-ui-multiselect').data('multiselect-object');
+		ms.getOptions().each(function(key) {
+			var authtype = parseInt($(this).attr('data-tariffaccess'));
+			var location = $(this).attr('data-location');
+			if (((authtype && (authtype & tariffaccess)) || !tariffaccess)
+				&& (location == locationselect || !locationselect.length)) {
+				ms.showOption(key);
+			} else {
+				ms.hideOption(key);
+			}
+		});
+		ms.refreshSelection();
 	});
 
 	$('.schema-tariff-checkbox').change(function() {
 		var tariffaccess = parseInt($(this).find(':selected').attr('data-tariffaccess'));
 		var locationselect = $('#locationselect').val();
 		var tr = $(this).closest('tr').next('.customernodes');
-		if (!this.checked) {
-			tr.hide().find(':checkbox').prop('checked', false);
-		} else {
-			tr.show();
-			tr.find('span[data-tariffaccess]').each(function(key, value) {
+		var ms = tr.find('.lms-ui-multiselect').data('multiselect-object');
+		var checked = this.checked;
+		ms.getOptions().each(function (key) {
+			if (checked) {
 				var authtype = parseInt($(this).attr('data-tariffaccess'));
 				var location = $(this).attr('data-location');
 				if (((authtype && (authtype & tariffaccess)) || !tariffaccess)
 					&& (location == locationselect || !locationselect.length)) {
-					$(this).show();
+					ms.showOption(key);
 				} else {
-					$(this).hide();
-					$(':checkbox', this).prop('checked', false);
+					ms.hideOption(key);
 				}
-			});
+			} else {
+				ms.hideOption(key);
+			}
+		});
+		ms.refreshSelection();
+		if (checked) {
+			tr.show();
+		} else {
+			tr.hide();
 		}
 	});
 
@@ -736,10 +735,6 @@
 		$('.schema-tariff-selection').trigger('change');
 		$('.schema-tariff-checkbox').trigger('change');
 	});
-
-	$('#promotionselect').trigger('change');
-	$('#locationselect').trigger('change');
-	$('#tariff_select').trigger('change');
 
 	function update_tariffs() {
 		var valid_checked = $('[name="assignment[alltariffs]"]').is(':checked');

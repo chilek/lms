@@ -1,13 +1,12 @@
 // $Id$
 
 function multiselect(options) {
-	var multiselect_obj = this;
-
 	var elemid = options.id;
 	var def = typeof options.defaultValue !== 'undefined' ? options.defaultValue : '';
 	var tiny = typeof options.type !== 'undefined' && options.type == 'tiny';
 	var icon = typeof options.icon !== 'undefined' ? options.icon : 'img/settings.gif';
 	var label = typeof options.label !== 'undefined' ? options.label : '';
+	var separator = typeof options.separator !== 'undefined' ? options.separator : ', ';
 
 	var old_element = $('#' + elemid);
 	var form = old_element.closest('form');
@@ -38,7 +37,7 @@ function multiselect(options) {
 	if (!tiny)
 		new_element.html(old_selected);
 
-	new_element.data('data-multiselect-object', this)
+	new_element.data('multiselect-object', this)
 		.attr('style', old_element.attr('style'));
 	// save onchange event handler
 	var onchange = old_element.prop('onchange');
@@ -70,8 +69,12 @@ function multiselect(options) {
 		}).appendTo(li);
 
 		var text = $(this).text().replace(' ', '&nbsp;');
-		var span = $('<span/>').html(text)
+		$('<span/>').html(text)
 			.appendTo(li);
+
+		$.each($(this).data(), function(key, value) {
+			li.attr('data-' + key, value);
+		});
 
 		if (elem[text]) {
 			box.prop('checked', true);
@@ -203,7 +206,7 @@ function multiselect(options) {
 		if (!selected.length)
 			return def;
 
-		return selected.join(', ');
+		return selected.join(separator);
 	}
 
 	this.updateSelection = function(idArray) {
@@ -219,7 +222,7 @@ function multiselect(options) {
 				elem[text] = 0;
 			}
 		});
-		new_selected = selected.join(', ');
+		new_selected = selected.join(separator);
 		if (!tiny)
 			new_element.html(new_selected);
 	}
@@ -239,8 +242,37 @@ function multiselect(options) {
 				elem[text] = 0;
 			}
 		});
-		new_selected = selected.join(', ');
+		new_selected = selected.join(separator);
 		if (!tiny)
 			new_element.html(new_selected);
+	}
+
+	this.getOptions = function() {
+		new_element.html('');
+		return $('li', div);
+	}
+
+	this.showOption = function(index) {
+		$($('li', div).get(index)).show();
+	}
+
+	this.hideOption = function(index) {
+		$($('li', div).get(index)).removeClass('selected').hide()
+			.find('input:checkbox').prop('checked', false);
+	}
+
+	this.refreshSelection = function() {
+		var selected = [];
+		$('input:checkbox', div).each(function() {
+			var text = $(this).siblings('span').html();
+			if ($(this).prop('checked')) {
+				elem[text] = 1;
+				selected.push(text);
+			}
+		});
+		new_selected = selected.join(separator);
+		if (!tiny) {
+			new_element.html(new_selected);
+		}
 	}
 }
