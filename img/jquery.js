@@ -186,7 +186,7 @@ $(function() {
 	var multiselects = $('select.lms-ui-multiselect');
 	if (multiselects.length) {
 		multiselects.each(function() {
-			multiselect({
+			new multiselect({
 				id: $(this).uniqueId().attr('id'),
 				defaultValue: $(this).attr('data-default-value'),
 				type: $(this).attr('data-type')
