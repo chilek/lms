@@ -339,9 +339,6 @@ $layout['pagetitle'] = trans('New Liability: $a', '<A href="?m=customerinfo&id='
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$customernodes = $LMS->GetCustomerNodes($customer['id']);
-unset($customernodes['total']);
-
 $LMS->executeHook(
     'customerassignmentadd_before_display',
     array(
@@ -350,9 +347,9 @@ $LMS->executeHook(
     )
 );
 
-$promotions = $DB->GetAll('SELECT id, name,
+$promotions = $DB->GetAllByKey('SELECT id, name,
 		(CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid
-	FROM promotions WHERE disabled <> 1');
+	FROM promotions WHERE disabled <> 1', 'id');
 
 $promotion_schemas = $DB->GetAll('SELECT p.id AS promotionid, p.name AS promotion, s.name, s.id,
 	(SELECT ' . $DB->GroupConcat('tariffid', ',') . '
@@ -393,6 +390,10 @@ if (!empty($promotion_schema_assignments)) {
 	$sid = 0;
     foreach ($promotion_schema_assignments as $assign) {
         $pid = $assign['promotion_id'];
+
+        if (empty($promotions[$pid]['valid']))
+        	continue;
+
     	$pn   = $assign['promotion_name'];
     	if ($assign['schema_id'] != $sid) {
 			$sid = $assign['schema_id'];
@@ -433,6 +434,9 @@ if (!empty($promotion_schema_assignments)) {
 			$promotion_schema_items[$pid][$sid][$index++]['single'] = $promotion_schema_item;
 	}
 }
+
+$customernodes = $LMS->GetCustomerNodes($customer['id']);
+unset($customernodes['total']);
 
 // -----
 // remove duplicated customer nodes

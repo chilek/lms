@@ -154,12 +154,13 @@
 								<td class="valign-top text-right">
 									{if isset($item.single)}
 										{$label=$item.single.label}
+										{if empty($label)}
+											{$label=trans("<!tariffselection>unlabeled_")|cat:$item.single.tariffid}
+										{/if}
 									{else}
 										{$label=$item.selection.label}
 									{/if}
-									{if !empty($label)}
 									{t a=$label}<!tariffselection>$a:{/t}
-									{/if}
 								</td>
 								<td class="valign-top" style="padding-bottom: 10px; padding-top: 0;">
 									<table>
@@ -167,7 +168,8 @@
 											{if isset($item.single)}
 											<td class="valign-top{if !$item.single.optional} blend{/if}">
 												<label>
-													<input class="schema-tariff-checkbox" type="checkbox" name="assignment[stariffid][{$schemaid}][{$label}]" value="{$item.single.tariffid}"
+													<input class="schema-tariff-checkbox" type="checkbox" name="assignment[stariffid][{$schemaid}][{$label}]"
+														value="{$item.single.tariffid}"
 														{if isset($assignment.stariffid[$schemaid][$label]) || !$item.single.optional} checked{/if}
 														{if !$item.single.optional}data-mandatory="true" disabled{/if}
 														data-tariffaccess="{$item.single.authtype}">
@@ -181,7 +183,8 @@
 													<option value="0" data-tariffaccess="-1">{trans("- none -")}</option>
 													{/if}
 													{foreach $item.selection.items as $item}
-													<option value="{$item.tariffid}" data-tariffaccess="{$item.authtype}"{if in_array($item.tariffid, $assignment.stariffid[$schemaid])} selected{/if}>{$item.tariff}</option>
+													<option value="{$item.tariffid}" data-tariffaccess="{$item.authtype}"
+														{if in_array($item.tariffid, $assignment.stariffid[$schemaid])} selected{/if}>{$item.tariff}</option>
 													{/foreach}
 												</select>
 											</td>
@@ -191,7 +194,7 @@
 											<td>
 												{if $customernodes}
 												<span class="bold">{trans("Nodes:")}</span><br>
-												<select name="assignment[snodes][{$schemaid}][{$label}][]" multiple class="lms-ui-multiselect" data-separator="<br>">
+												<select name="assignment[snodes][{$schemaid}][{$label}][]" multiple class="lms-ui-multiselect-deferred" data-separator="<br>">
 													{foreach $customernodes as $customernode}
 													<option value="{$customernode.id}"{if in_array($customernode.id, $assignment.snodes[$schemaid][$label])} selected{/if}
 														data-tariffaccess="{$customernode.authtype}" data-location="{$customernode.location}"
@@ -203,7 +206,7 @@
 												{if $customernetdevnodes}
 												<br>
 												<span class="bold">{trans("Network Devices:")}</span><br>
-												<select name="assignment[snodes][{$schemaid}][{$label}][]" multiple class="lms-ui-multiselect" data-separator="<br>">
+												<select name="assignment[snodes][{$schemaid}][{$label}][]" multiple class="lms-ui-multiselect-deferred" data-separator="<br>">
 													{foreach $customernetdevnodes as $customernode}
 													<option value="{$customernode.id}"{if in_array($customernode.id, $assignment.snodes[$schemaid][$label])} selected{/if}
 														data-html-content="<strong>{$customernode.name}</strong> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}"
@@ -578,7 +581,6 @@
 		});
 
 		$('#promotionselect').trigger('change');
-		$('#locationselect').trigger('change');
 		$('#tariff_select').trigger('change');
 	});
 
@@ -685,13 +687,29 @@
 				$( this ).attr('disabled', false);
 			}
 		});
+
+		init_multiselects('select.lms-ui-multiselect-deferred:visible');
+
+		$('#locationselect').trigger('change');
 	});
 
 	$('.schema-tariff-selection').change(function () {
 		var tariffaccess = parseInt($(this).find(':selected').attr('data-tariffaccess'));
 		var locationselect = $('#locationselect').val();
 		var tr = $(this).closest('tr').next('.customernodes');
+
+		if (tariffaccess == -1) {
+			tr.hide();
+		} else {
+			tr.show();
+		}
+
+		init_multiselects('select.lms-ui-multiselect-deferred:visible');
+
 		var ms = tr.find('.lms-ui-multiselect').data('multiselect-object');
+		if (!ms) {
+			return;
+		}
 		ms.getOptions().each(function(key) {
 			var authtype = parseInt($(this).attr('data-tariffaccess'));
 			var location = $(this).attr('data-location');
@@ -709,8 +727,20 @@
 		var tariffaccess = parseInt($(this).find(':selected').attr('data-tariffaccess'));
 		var locationselect = $('#locationselect').val();
 		var tr = $(this).closest('tr').next('.customernodes');
-		var ms = tr.find('.lms-ui-multiselect').data('multiselect-object');
+
 		var checked = this.checked;
+		if (checked) {
+			tr.show();
+		} else {
+			tr.hide();
+		}
+
+		init_multiselects('select.lms-ui-multiselect-deferred:visible');
+
+		var ms = tr.find('.lms-ui-multiselect').data('multiselect-object');
+		if (!ms) {
+			return;
+		}
 		ms.getOptions().each(function (key) {
 			if (checked) {
 				var authtype = parseInt($(this).attr('data-tariffaccess'));
@@ -726,11 +756,6 @@
 			}
 		});
 		ms.refreshSelection();
-		if (checked) {
-			tr.show();
-		} else {
-			tr.hide();
-		}
 	});
 
 	$('#locationselect').change(function() {
