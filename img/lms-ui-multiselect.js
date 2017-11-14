@@ -247,16 +247,18 @@ function multiselect(options) {
 			new_element.html(new_selected);
 	}
 
+	var lis = $('li', div);
+
 	this.getOptions = function() {
-		return $('li', div);
+		return lis;
 	}
 
 	this.showOption = function(index) {
-		$($('li', div).get(index)).show();
+		$(lis.get(index)).show();
 	}
 
 	this.hideOption = function(index) {
-		$($('li', div).get(index)).removeClass('selected').hide()
+		$(lis.get(index)).removeClass('selected').hide()
 			.find('input:checkbox').prop('checked', false);
 	}
 
