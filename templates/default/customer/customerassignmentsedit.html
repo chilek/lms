@@ -195,6 +195,7 @@
 													{foreach $customernodes as $customernode}
 													<option value="{$customernode.id}"{if in_array($customernode.id, $assignment.snodes[$schemaid][$label])} selected{/if}
 														data-tariffaccess="{$customernode.authtype}" data-location="{$customernode.location}"
+													data-html-content="<strong>{$customernode.name}</strong> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}"
 													>{$customernode.name} ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}</option>
 													{/foreach}
 												</select>
@@ -205,6 +206,7 @@
 												<select name="assignment[snodes][{$schemaid}][{$label}][]" multiple class="lms-ui-multiselect" data-separator="<br>">
 													{foreach $customernetdevnodes as $customernode}
 													<option value="{$customernode.id}"{if in_array($customernode.id, $assignment.snodes[$schemaid][$label])} selected{/if}
+														data-html-content="<strong>{$customernode.name}</strong> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}"
 														data-tariffaccess="{$customernode.authtype}" data-location="{$customernode.location}"
 													>{$customernode.name} ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}</option>
 													{/foreach}

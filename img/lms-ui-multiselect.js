@@ -28,8 +28,11 @@ function multiselect(options) {
 
 	var elem = [];
 	$('option', old_element).each(function(index) {
-		elem[$(this).text().replace(' ', '&nbsp;')] =
-			$(this).prop('selected') ? 1 : 0;
+		var text = $(this).attr('data-html-content');
+		if (!text) {
+			text = $(this).text();
+		}
+		elem[text] = $(this).prop('selected') ? 1 : 0;
 	});
 
 	var new_selected = generateSelectedString(elem);
@@ -68,9 +71,11 @@ function multiselect(options) {
 			value: $(this).val()
 		}).appendTo(li);
 
-		var text = $(this).text().replace(' ', '&nbsp;');
-		$('<span/>').html(text)
-			.appendTo(li);
+		var text = $(this).attr('data-html-content');
+		if (!text) {
+			text = $(this).text();
+		}
+		$('<span/>').html(text).appendTo(li);
 
 		$.each($(this).data(), function(key, value) {
 			li.attr('data-' + key, value);
