@@ -378,7 +378,7 @@ function AutoSuggest(form,elem,uri,autosubmit, onsubmit) {
 	this.HTTPpreload = function() {
 		xmlhttp=me.setXMLHTTP();
 		xmlhttp.onreadystatechange = this.HTTPloaded;
-		xmlhttp.open("GET", this.uri + encodeURI(this.elem.value), true);
+		xmlhttp.open("GET", this.uri + encodeURIComponent(this.elem.value), true);
 		xmlhttp.send(null);
 	}
 
