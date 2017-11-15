@@ -1366,9 +1366,10 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 		if (empty($netdev_addresses))
 			$netdev_addresses = array();
 
-		foreach (array_merge($node_addresses, $netdev_addresses) as $address_id => $address)
-			if (isset($data[$address_id]))
-				$data[$address_id]['use_counter'] += $address['used'];
+		foreach (array($node_addresses, $netdev_addresses) as $addresses)
+			foreach ($addresses as $address_id => $address)
+				if (isset($data[$address_id]))
+					$data[$address_id]['use_counter'] += $address['used'];
 
         return $data;
     }
