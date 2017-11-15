@@ -2116,8 +2116,8 @@ CREATE TABLE docrights (
 CREATE TABLE cashrights (
     id int(11)      NOT NULL auto_increment,
     userid int(11)  NOT NULL,
-    regid int(11)   DEFAULT '0' NOT NULL,
-    rights int(11)  NOT NULL,
+    regid int(11)   NOT NULL,
+    rights int(11)  DEFAULT '0' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY userid (userid, regid),
 	CONSTRAINT cashrights_userid_fkey
