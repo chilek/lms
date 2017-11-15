@@ -581,13 +581,24 @@
 			}
 		});
 
+		updateCheckAllNodes();
+
 		$('#promotion-select').trigger('change');
 		$('#tariff-select').trigger('change');
 	});
 
+	function updateCheckAllNodes() {
+		$('[name="allbox"]').prop('checked',
+			$('[name^="assignment[nodes]"]').length == $('[name^="assignment[nodes]"]:checked').length);
+	}
+
 	function checkAllNodes() {
 		$('[name^="assignment[nodes]"]').prop('checked', $('[name="allbox"]').prop('checked'));
 	}
+
+	$('[name^="assignment[nodes]"]').click(function() {
+		updateCheckAllNodes();
+	});
 
 	$( '#tariff-select' ).change( function() {
 		var selected = $(this).find(':selected');
