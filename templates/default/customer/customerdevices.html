@@ -9,7 +9,7 @@
 	<TR class="hand lmsbox-titlebar" data-lmsbox-content="devicespanel">
 		<TD class="bold">
 			<IMG src="img/netdev.gif" alt="">
-			{trans("Network Devices:")}
+			{t a=$customerdevices|@count|default:"0"}Network Devices ($a):{/t}
 		</TD>
 		<TD class="text-right nobr">
 			<A href="?m=netdevadd&customerid={$customerinfo.id}">{trans("New device")} &raquo;</A>
@@ -42,16 +42,20 @@
 				{$customer_netdev_id = $customerdevice.id}
 
 				<TR class="highlight {if $customerdevice@iteration is div by 2}light{else}lucid{/if}">
-					<TD class="bold nobr"><A href="?m=netdevinfo&id={$customerdevice.id}">{$customerdevice.name}</A></TD>
-					<TD>{$customerdevice.description}</TD>
-					<td class="nobr">
+					<TD class="bold nobr" onClick="return self.location.href='?m=netdevinfo&id={$customerdevice.id}';">
+						<img src="img/netdev.gif" alt="""> {$customerdevice.name}
+					</TD>
+					<TD onClick="return self.location.href='?m=netdevinfo&id={$customerdevice.id}';">
+						{$customerdevice.description}
+					</TD>
+					<td class="nobr" onClick="return self.location.href='?m=netdevinfo&id={$customerdevice.id}';">
 						{if $customerdevice.serialnumber}
 							{$customerdevice.serialnumber}
 						{else}
 							&mdash;
 						{/if}
 					</td>
-					<TD class="nobr">
+					<TD class="nobr" onClick="return self.location.href='?m=netdevinfo&id={$customerdevice.id}';">
 						{foreach $customerdevice.ips as $v}
 							{$v.ip}
 							(<a href="?m=netdevinfo&id={$customer_netdev_id}&ip={$v.id}">{$v.name}</a>)
@@ -60,15 +64,15 @@
 							&mdash;
 						{/foreach}
 					</TD>
-					<TD class="nobr">
+					<TD class="nobr" onClick="return self.location.href='?m=netdevinfo&id={$customerdevice.id}';">
 						{foreach $customerdevice.ips as $v}
 							{$v.mac}<br>
 						{foreachelse}
 							&mdash;
 						{/foreach}
 					</TD>
-					<TD>
-						<a href="?m=netdevinfo&id={$customerdevice.id}"><img src="img/view.gif" alt=""></a>
+					<TD class="nobr">
+						<a href="?m=netdevedit&id={$customerdevice.id}"><img src="img/edit.gif" alt=""></a>
 					</TD>
 				</TR>
 				{foreachelse}
