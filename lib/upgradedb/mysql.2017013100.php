@@ -143,7 +143,7 @@ $this->Execute("CREATE TABLE customer_addresses (
     NODES
  -------------------------------- */
 $this->Execute('ALTER TABLE nodes ADD COLUMN address_id integer NULL');
-$this->Execute('ALTER TABLE nodes ADD CONSTRAINT nodes_address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE');
+$this->Execute('ALTER TABLE nodes ADD CONSTRAINT nodes_address_id_fkey FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE');
 
 $locations = $this->GetAll('SELECT id, location, location_city, location_street, location_house, location_flat, ownerid
                             FROM nodes
@@ -213,7 +213,7 @@ if ( $locations ) {
     NETNODES
  -------------------------------- */
 $this->Execute('ALTER TABLE netnodes ADD COLUMN address_id integer NULL');
-$this->Execute('ALTER TABLE netnodes ADD CONSTRAINT netnodes_address_id_fk FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE');
+$this->Execute('ALTER TABLE netnodes ADD CONSTRAINT netnodes_address_id_fkey FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE');
 
 $locations = $this->GetAll('SELECT id, location, location_city, location_street, location_house, location_flat
                             FROM netnodes

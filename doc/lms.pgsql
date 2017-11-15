@@ -1088,7 +1088,7 @@ CREATE TABLE netnodes (
 	divisionid integer
 		REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	address_id integer
-		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT netnodes_address_id_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	info text DEFAULT NULL,
 	PRIMARY KEY(id)
 );
@@ -1231,7 +1231,7 @@ CREATE TABLE nodes (
 	invprojectid integer DEFAULT NULL
 		REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	address_id integer DEFAULT NULL
-		REFERENCES addresses(id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT nodes_address_id_fkey REFERENCES addresses(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	UNIQUE (name),
 	UNIQUE (ipaddr, netid)
