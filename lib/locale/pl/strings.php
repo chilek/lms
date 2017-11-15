@@ -3788,7 +3788,7 @@ $_LANG['<!promotionassignment>- none -'] = '- żadna -';
 $_LANG['<!promotionassignment>- new -'] = '- nowa -';
 $_LANG['<!promotionassignment>Enter new label'] = 'Wprowadź nową etykietę';
 $_LANG['<!promotionassignment>Label'] = 'Etykieta';
-$_LANG['<!tariffselection>unlabeled_'] = 'bez_etykiety_';
+$_LANG['<!tariffselection>unlabeled_$a'] = 'bez_etykiety_$a';
 $_LANG['<!tariffselection>$a:'] = '$a:';
 $_LANG['<!datepicker>Clear'] = 'Wyczyść';
 

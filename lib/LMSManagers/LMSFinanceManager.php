@@ -694,7 +694,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             }
 		}
 
-		$this->DeleteDocumentAddresses($invoiceid);
+		$document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+		$document_manager->DeleteDocumentAddresses($invoiceid);
 
         $this->db->Execute('DELETE FROM documents WHERE id = ?', array($invoiceid));
         $this->db->Execute('DELETE FROM invoicecontents WHERE docid = ?', array($invoiceid));
@@ -1339,7 +1340,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			}
 		}
 
-		$this->DeleteDocumentAddresses($noteid);
+		$document_manager = new LMSDocumentManager($this->db, $this->auth, $this->cache, $this->syslog);
+		$document_manager->DeleteDocumentAddresses($noteid);
 
 		$this->db->Execute('DELETE FROM documents WHERE id = ?', array($noteid));
 		$this->db->Execute('DELETE FROM debitnotecontents WHERE docid = ?', array($noteid));
@@ -1920,28 +1922,117 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 		return array_reverse($result);
 	}
 
-	public function UpdateDocumentPostAddress($docid, $customerid) {
-		$post_addr = $this->db->GetOne('SELECT post_address_id FROM documents WHERE id = ?', array($docid));
-		if ($post_addr)
-			$this->db->Execute('DELETE FROM addresses WHERE id = ?', array($post_addr));
+	public function GetPromotions() {
+		$promotions = $this->db->GetAllByKey('SELECT id, name,
+				(CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid
+			FROM promotions WHERE disabled <> 1', 'id');
 
-		$location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+		if (empty($promotions))
+			return array();
 
-		$post_addr = $location_manager->GetCustomerAddress($customerid, POSTAL_ADDRESS);
-		if (empty($post_addr))
-			$this->db->Execute("UPDATE documents SET post_address_id = NULL WHERE id = ?",
-				array($docid));
+		foreach ($promotions as $promotionid => &$promotion)
+			$promotion['schemas'] = array();
+		unset($promotion);
+
+		$promotion_schemas = $this->db->GetAll('SELECT p.id AS promotionid, p.name AS promotion, s.name, s.id,
+			(SELECT ' . $this->db->GroupConcat('tariffid', ',') . '
+				FROM promotionassignments WHERE promotionschemaid = s.id
+			) AS tariffs
+			FROM promotions p
+			JOIN promotionschemas s ON (p.id = s.promotionid)
+			WHERE p.disabled <> 1 AND s.disabled <> 1
+				AND EXISTS (SELECT 1 FROM promotionassignments
+				WHERE promotionschemaid = s.id LIMIT 1)
+			ORDER BY p.name, s.name');
+
+		if (empty($promotion_schemas))
+			return array();
 		else
-			$this->db->Execute('UPDATE documents SET post_address_id = ? WHERE id = ?',
-				array($location_manager->CopyAddress($post_addr), $docid));
-	}
+			foreach ($promotion_schemas as $promotion_schema)
+				$promotions[$promotion_schema['promotionid']]['schemas'][$promotion_schema['id']] =
+					array(
+						'id' => $promotion_schema['id'],
+						'name' => $promotion_schema['name'],
+						'tariffs' => $promotion_schema['tariffs'],
+						'items' => array(),
+					);
 
-	public function DeleteDocumentAddresses($docid) {
-		// deletes addresses' records which are bound to given document
-		$addresses = $this->db->GetRow('SELECT recipient_address_id, post_address_id FROM documents WHERE id = ?',
-			array($docid));
-		foreach ($addresses as $address_id)
-			if (!empty($address_id))
-				$this->db->Execute('DELETE FROM addresses WHERE id = ?', array($address_id));
+		$promotion_schema_assignments = $this->db->GetAll('SELECT
+				p.id AS promotion_id, ps.id AS schema_id,
+				t.name as tariff_name, pa.optional,
+				(CASE WHEN label IS NULL THEN ' . $this->db->Concat("'unlabeled_'", 't.id') . ' ELSE label END) AS label,
+				t.id as tariffid, t.value, t.authtype
+			FROM promotions p
+				LEFT JOIN promotionschemas ps ON p.id = ps.promotionid
+				LEFT JOIN promotionassignments pa ON ps.id = pa.promotionschemaid
+				LEFT JOIN tariffs t ON pa.tariffid = t.id
+			ORDER BY pa.orderid');
+
+		if (empty($promotion_schema_assignments))
+			return array();
+		else {
+			$single_labels = $this->db->GetAll('SELECT promotionschemaid AS schemaid,
+					label, COUNT(*) AS cnt
+				FROM promotionassignments
+				WHERE label IS NOT NULL
+				GROUP BY promotionschemaid, label');
+			if (empty($single_labels))
+				$single_labels = array();
+			$selection_labels = $this->db->GetAll('SELECT promotionschemaid AS schemaid,
+					(CASE WHEN label IS NULL THEN ' . $this->db->Concat("'unlabeled_'", 'tariffid') . ' ELSE label END) AS label,
+					1 AS cnt
+				FROM promotionassignments
+				WHERE label IS NULL');
+			if (empty($selection_labels))
+				$selection_labels = array();
+			$labels = array_merge($single_labels, $selection_labels);
+
+			$promotion_schema_selections = array();
+			if (!empty($labels)) {
+				foreach ($labels as &$label) {
+					if (preg_match('/^unlabeled_(?<tariffid>[0-9]+)$/', $label['label'], $m))
+						$label['label'] = trans('<!tariffselection>unlabeled_$a', $m['tariffid']);
+					$promotion_schema_selections[$label['schemaid']][$label['label']] = $label['cnt'];
+				}
+				unset($label);
+			}
+
+			foreach ($promotion_schema_assignments as $assign) {
+				$pid = $assign['promotion_id'];
+
+				if (empty($promotions[$pid]['valid']))
+					continue;
+
+				$sid = $assign['schema_id'];
+
+				$promotion_schema_item = array(
+					'tariffid' => $assign['tariffid'],
+					'tariff'   => $assign['tariff_name'],
+					'value'    => $assign['value'],
+					'optional' => $assign['optional'],
+					'authtype' => $assign['authtype'],
+				);
+
+				if (preg_match('/^unlabeled_(?<tariffid>[0-9]+)$/', $assign['label'], $m))
+					$label = trans('<!tariffselection>unlabeled_$a', $m['tariffid']);
+				else
+					$label = $assign['label'];
+
+				if ($promotion_schema_selections[$sid][$label] > 1) {
+					if (!isset($promotions[$pid]['schemas'][$sid]['items'][$label]['selection']))
+						$promotions[$pid]['schemas'][$sid]['items'][$label]['selection'] = array(
+							'items' => array(),
+						);
+					$promotions[$pid]['schemas'][$sid]['items'][$label]['selection']['required'] =
+						empty($assign['optional']);
+
+					$promotions[$pid]['schemas'][$sid]['items'][$label]['selection']['items'][] =
+						$promotion_schema_item;
+				} else
+					$promotions[$pid]['schemas'][$sid]['items'][$label]['single'] = $promotion_schema_item;
+			}
+		}
+
+		return $promotions;
 	}
 }

@@ -68,7 +68,7 @@
 								<option value=""   data-tarifftype="0" {if !$assignment.tariffid} selected{/if}>- {trans("tariffless liability")} -</option>
 								<option value="-1" data-tarifftype="0" {if $assignment.tariffid == -1} selected{/if}>{trans("- all liabilities suspended -")}</option>
 
-								{if $promotion_schemas}
+								{if !empty($promotions)}
 									<option value="-2" data-tarifftype="0" {if $assignment.tariffid == -2} selected{/if}>- {trans("per promotion schema")} -</option>
 								{/if}
 
@@ -105,7 +105,7 @@
 
     <TBODY>
 
-		{if $promotion_schemas}
+		{if !empty($promotions)}
 		<tr>
 			<td colspan="3" class="container">
 				<table id="a_promotions">
@@ -136,10 +136,8 @@
 							<SELECT size="1" name="assignment[schemaid]" id="promotion-select" {tip text="Select promotion schema"}>
 								{foreach $promotions as $promotion}
 									<optgroup label="{$promotion.name}" data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{if !$assignment.alltariffs} style="display: none;"{/if}{/if}>
-										{foreach $promotion_schemas as $schema}
-											{if $schema.promotionid == $promotion.id}
-												<OPTION value="{$schema.id}"{if $assignment.schemaid == $schema.id} SELECTED{/if} data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{/if}>{$schema.name|truncate:40:"...":true}</OPTION>
-											{/if}
+										{foreach $promotion.schemas as $schemaid => $schema}
+												<OPTION value="{$schemaid}"{if $assignment.schemaid == $schemaid} SELECTED{/if} data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{/if}>{$schema.name|truncate:40:"...":true}</OPTION>
 										{/foreach}
 									</optgroup>
 								{/foreach}
@@ -149,20 +147,12 @@
 					<TR>
 						<TD></TD>
 						<TD colspan="2">
-							{foreach $promotion_schema_items as $promotionid => $schemas}
-								{foreach $schemas as $schemaid => $items}
+							{foreach $promotions as $promotionid => $promotion}
+								{foreach $promotion.schemas as $schemaid => $schema}
 									<table class="promotion-table" id="schema{$schemaid}">
-										{foreach $items as $item}
+										{foreach $schema.items as $label => $item}
 										<tr>
 											<td class="valign-top text-right">
-												{if isset($item.single)}
-													{$label=$item.single.label}
-													{if empty($label)}
-														{$label=trans("<!tariffselection>unlabeled_")|cat:$item.single.tariffid}
-													{/if}
-												{else}
-													{$label=$item.selection.label}
-												{/if}
 												{t a=$label}<!tariffselection>$a:{/t}
 											</td>
 											<td class="valign-top" style="padding-bottom: 10px; padding-top: 0;">

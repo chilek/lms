@@ -347,93 +347,7 @@ $LMS->executeHook(
     )
 );
 
-$promotions = $DB->GetAllByKey('SELECT id, name,
-		(CASE WHEN datefrom < ?NOW? AND (dateto = 0 OR dateto > ?NOW?) THEN 1 ELSE 0 END) AS valid
-	FROM promotions WHERE disabled <> 1', 'id');
-
-$promotion_schemas = $DB->GetAll('SELECT p.id AS promotionid, p.name AS promotion, s.name, s.id,
-	(SELECT ' . $DB->GroupConcat('tariffid', ',') . '
-		FROM promotionassignments WHERE promotionschemaid = s.id
-	) AS tariffs
-	FROM promotions p
-	JOIN promotionschemas s ON (p.id = s.promotionid)
-	WHERE p.disabled <> 1 AND s.disabled <> 1
-		AND EXISTS (SELECT 1 FROM promotionassignments
-		WHERE promotionschemaid = s.id LIMIT 1)
-	ORDER BY p.name, s.name');
-
-$promotion_schema_assignments = $DB->GetAll('SELECT
-		p.id AS promotion_id, p.name as promotion_name,
-		ps.id AS schema_id, ps.name as schema_name,
-		t.name as tariff_name, pa.optional,
-		label, t.id as tariffid, t.authtype
-	FROM promotions p
-	  LEFT JOIN promotionschemas ps ON p.id = ps.promotionid
-	  LEFT JOIN promotionassignments pa ON ps.id = pa.promotionschemaid
-	  LEFT JOIN tariffs t ON pa.tariffid = t.id
-	ORDER BY
-	  p.name, ps.name, pa.orderid ASC');
-
-$promotion_schema_items = array();
-
-if (!empty($promotion_schema_assignments)) {
-	$promotion_schema_assignment_labels = $DB->GetAll('SELECT promotionschemaid AS schemaid,
-			label, COUNT(*) AS cnt FROM promotionassignments
-		WHERE label IS NOT NULL
-		GROUP BY promotionschemaid, label
-		HAVING COUNT(*) > 1');
-	$promotion_schema_selections = array();
-	if (!empty($promotion_schema_assignment_labels))
-		foreach ($promotion_schema_assignment_labels as $label)
-			$promotion_schema_selections[$label['schemaid']][$label['label']] = $label['cnt'];
-
-	$sid = 0;
-    foreach ($promotion_schema_assignments as $assign) {
-        $pid = $assign['promotion_id'];
-
-        if (empty($promotions[$pid]['valid']))
-        	continue;
-
-    	$pn   = $assign['promotion_name'];
-    	if ($assign['schema_id'] != $sid) {
-			$sid = $assign['schema_id'];
-			$index = 0;
-			$selection_indexes = array();
-    	}
-        $sn   = $assign['schema_name'];
-        $selid = empty($assign['label']) || !isset($promotion_schema_selections[$sid][$assign['label']])
-			? null : $assign['label'];
-
-        if (!isset($schemas[$pid][$sid]))
-			$schemas[$pid][$sid] = array();
-
-        $promotion_schema_item = array(
-			'tariffid' => $assign['tariffid'],
-			'tariff'   => $assign['tariff_name'],
-			'value'    => $assign['value'],
-			'optional' => $assign['optional'],
-			'label'    => $assign['label'],
-			'authtype' => $assign['authtype'],
-		);
-
-		if (!empty($selid)) {
-			if (!isset($selection_indexes[$selid]))
-				$selection_indexes[$selid] = $index++;
-
-			if (!isset($promotion_schema_items[$pid][$sid][$selection_indexes[$selid]]['selection']))
-				$promotion_schema_items[$pid][$sid][$selection_indexes[$selid]]['selection'] = array(
-				 	'items' => array(),
-					'label' => $selid,
-				);
-			$promotion_schema_items[$pid][$sid][$selection_indexes[$selid]]['selection']['required'] =
-				empty($assign['optional']);
-
-			$promotion_schema_items[$pid][$sid][$selection_indexes[$selid]]['selection']['items'][] =
-				$promotion_schema_item;
-		} else
-			$promotion_schema_items[$pid][$sid][$index++]['single'] = $promotion_schema_item;
-	}
-}
+$promotions = $LMS->GetPromotions();
 
 $customernodes = $LMS->GetCustomerNodes($customer['id']);
 unset($customernodes['total']);
@@ -463,9 +377,7 @@ $SMARTY->assign('locations'           , $LMS->GetUniqueNodeLocations($customer['
 $SMARTY->assign('customervoipaccs'    , $LMS->getCustomerVoipAccounts($customer['id']));
 $SMARTY->assign('customeraddresses'   , $LMS->getCustomerAddresses($customer['id']));
 
-$SMARTY->assign('promotions'          , $promotions);
-$SMARTY->assign('promotion_schemas'   , $promotion_schemas);
-$SMARTY->assign('promotion_schema_items' , $promotion_schema_items);
+$SMARTY->assign('promotions', $promotions);
 
 $SMARTY->assign('tariffs'             , $LMS->GetTariffs());
 $SMARTY->assign('taxeslist'           , $LMS->GetTaxes());
