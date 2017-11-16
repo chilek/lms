@@ -881,7 +881,7 @@
 						html += '<select name="assignment[snodes][' + schemaid + '][' + label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
 
 						var options = '';
-						$.each(data["customernodes"], function(key, node) {
+						$.each(data["netdevnodes"], function(key, node) {
 							var location = String(node["location"]);
 							if (location.length > 50) {
 								location.substr(0, 50) + '...';
