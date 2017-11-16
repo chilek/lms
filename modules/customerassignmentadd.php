@@ -350,12 +350,6 @@ $LMS->executeHook(
 $promotions = $LMS->GetPromotions();
 $SMARTY->assign('promotions', $promotions);
 
-$customernodes = $LMS->GetCustomerNodes($customer['id']);
-$SMARTY->assign('customernodes', $customernodes);
-
-$netdevnodes = $LMS->getCustomerNetDevNodes($customer['id']);
-$SMARTY->assign('customernetdevnodes' , $netdevnodes);
-
 $SMARTY->assign('tags', $LMS->TarifftagGetAll());
 
 $SMARTY->assign('assignment'          , $a);
