@@ -875,7 +875,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                         JOIN networks net ON net.id = n.netid
                                         " . ($type == 'netdev' ? '' : 'LEFT ') . "JOIN netdevices nd ON n.netdev = nd.id
                                      WHERE
-                                        " . ($type == 'netdev' ? 'nd.ownerid' : 'n.ownerid') . " = ?
+                                        " . ($type == 'netdev' ? 'nd.ownerid = ? AND n.ownerid IS NULL' : 'n.ownerid = ?') . "
                                      ORDER BY
                                         n.name ASC " . ($count ? 'LIMIT ' . $count : ''), array($customer_id));
 
