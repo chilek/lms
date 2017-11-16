@@ -856,8 +856,8 @@
 						var options = '';
 						$.each(data["customernodes"], function(key, node) {
 							var location = String(node["location"]);
-							if (location.length > 60) {
-								location.substr(0, 60) + '...';
+							if (location.length > 50) {
+								location.substr(0, 50) + '...';
 							}
 							var nodeid = String(node["id"]).lpad('0', 4);
 							options += '<option value="' + node["id"] + '"'
@@ -883,8 +883,8 @@
 						var options = '';
 						$.each(data["customernodes"], function(key, node) {
 							var location = String(node["location"]);
-							if (location.length > 60) {
-								location.substr(0, 60) + '...';
+							if (location.length > 50) {
+								location.substr(0, 50) + '...';
 							}
 							var nodeid = String(node["id"]).lpad('0', 4);
 							options += '<option value="' + node["id"] + '"'
@@ -893,7 +893,7 @@
 								+ ' data-tariffaccess="' + node["authtype"] + '"'
 								+ ' data-location="' + node["location"] + '"'
 								+ ' data-html-content="<strong>' + node["name"] + '</strong>'
-								+ ' (' + nodeid + ')' + (location.length ? ' / ' + location : '') + '"';
+								+ ' (' + nodeid + ')' + ' / ' + node["netdev_name"] + (location.length ? ' / ' + location : '') + '"';
 							options += '>';
 							options += node["name"] + ' (' + nodeid + ')'
 								+ (location.length ? ' / ' + location : '');
