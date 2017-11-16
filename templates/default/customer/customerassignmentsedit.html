@@ -10,37 +10,85 @@
 	tariffTypes[{$tariff.id}] = {$tariff.tarifftype};
 	{/foreach}
 	
-	function assignment_submit() {
-		$('.schema-tariff-checkbox:checkbox').removeAttr('disabled');
+	// +++ PROMOTION CODE
+	$(function() {
+		$('#assignment-submit').click(function () {
+			$('.schema-tariff-checkbox[data-mandatory]:checkbox').removeAttr('disabled');
+		});
+	});
+	// --- PROMOTION CODE
 
-		{if ConfigHelper::checkConfig('phpui.node_assignment_warning')}
-		var tariffid = parseInt($('form[name="assignment"] select[name="assignment[tariffid]"]').val());
-		
-		if (isNaN(tariffid)) {
-			document.assignment.submit();
-			return;
-		}
+	$(function() {
+		$('#assignment-submit').click(function(e) {
+			{if ConfigHelper::checkConfig('phpui.node_assignment_warning')}
+			var tariffid = parseInt($('form[name="assignment"] select[name="assignment[tariffid]"]').val());
 
-		switch (tariffid) {
-			case -1:
+			if (isNaN(tariffid)) {
 				document.assignment.submit();
 				return;
-			case -2:
-				tariffid = parseInt($('form[name="assignment"] select[name="assignment[stariffid]"]').val());
-				break;
-		}
+			}
 
-		if (tariffTypes[tariffid] == {$smarty.const.TARIFF_INTERNET} &&
-			!$('#nodelist :checked:not([name="allbox"])').length &&
-			!confirm('{trans("No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?")}')){
-			return false;
-		}
-		{/if}
+			switch (tariffid) {
+				case -1:
+					document.assignment.submit();
+					return;
+				case -2:
+					// +++ PROMOTION CODE
+					var schemaid = $('#promotion-select').val();
+					var tariffs = {};
+					$('[name^="assignment[stariffid][' + schemaid + ']"]').each(function () {
+						if ($(this).is('.schema-tariff-selection') || $(this).prop('checked')) {
+							if ($(this).val() > 0) {
+								tariffs[$(this).attr('data-label')] = $(this).val();
+							}
+						}
+					});
+					if ($.isEmptyObject(tariffs)) {
+						return;
+					}
+					var cancelled = 0;
+					$.each(tariffs, function(label, tariffid) {
+						if (cancelled) {
+							return;
+						}
+						if (tariffTypes[tariffid] == {$smarty.const.TARIFF_INTERNET}
+							&& !$('[name^="assignment[snodes][' + schemaid + '][' + label + ']"]:checked').length
+							&& !confirm('{trans("No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?")}')) {
+							cancelled = 1;
+						}
+					});
+					if (cancelled) {
+						e.stopImmediatePropagation();
+						$('.schema-tariff-checkbox[data-mandatory]:checkbox').attr('disabled', true);
+						return;
+					}
+					// --- PROMOTION CODE
+					break;
+				default:
+					if (tariffTypes[tariffid] == {$smarty.const.TARIFF_INTERNET}
+						&& !$('#nodelist :checked:not([name="allbox"])').length
+						&& !confirm('{trans("No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?")}')) {
+						e.stopImmediatePropagation();
+						return;
+					}
+					break;
+			}
+			{/if}
 
-		document.assignment.submit();
-	}
+			document.assignment.submit();
+		});
+	});
 //-->
 </SCRIPT>
+
+<!-- +++ PROMOTION CODE //-->
+<style>
+	div.lms-ui-multiselect hr {
+		margin-top: 0px;
+		margin-bottom: 0px;
+	}
+</style>
+<!-- --- PROMOTION CODE //-->
 
 <FORM method="POST" name="assignment" action="?m={$layout.module}{if $assignment.id}&id={$assignment.id}{if $assignment.liabilityid}&lid={$assignment.liabilityid}{/if}{else}&id={$customerinfo.id}{/if}">
 <INPUT type="submit" class="hiddenbtn">
@@ -105,6 +153,7 @@
 
     <TBODY>
 
+		<!-- +++ PROMOTION CODE //-->
 		{if !empty($promotions)}
 		<tr>
 			<td colspan="3" class="container">
@@ -162,15 +211,15 @@
 														<td class="valign-top{if !$item.single.optional} blend{/if}">
 															<label>
 																<input class="schema-tariff-checkbox" type="checkbox" name="assignment[stariffid][{$schemaid}][{$label}]"
-																	value="{$item.single.tariffid}"
+																	value="{$item.single.tariffid}" data-label="{$label}"
 																	{if isset($assignment.stariffid[$schemaid][$label]) || !$item.single.optional} checked{/if}
-																	{if !$item.single.optional} disabled{/if} data-tariffaccess="{$item.single.authtype}">
+																	{if !$item.single.optional} disabled data-mandatory="1"{/if} data-tariffaccess="{$item.single.authtype}">
 																{$item.single.tariff}
 															</label>
 														</td>
 														{else}
 														<td class="valign-top">
-															<select class="schema-tariff-selection" name="assignment[stariffid][{$schemaid}][{$label}]">
+															<select class="schema-tariff-selection" name="assignment[stariffid][{$schemaid}][{$label}]" data-label="{$label}">
 																{if !$item.selection.required}
 																<option value="0" data-tariffaccess="-1">{trans("- none -")}</option>
 																{/if}
@@ -186,7 +235,7 @@
 														<td>
 															{if $customernodes}
 															<span class="bold">{trans("Nodes:")}</span><br>
-															<select name="assignment[snodes][{$schemaid}][{$label}][]" multiple class="lms-ui-multiselect-deferred" data-separator="<br>">
+															<select name="assignment[snodes][{$schemaid}][{$label}][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">
 																{foreach $customernodes as $customernode}
 																<option value="{$customernode.id}"{if in_array($customernode.id, $assignment.snodes[$schemaid][$label])} selected{/if}
 																	data-tariffaccess="{$customernode.authtype}" data-location="{$customernode.location}"
@@ -198,7 +247,7 @@
 															{if $customernetdevnodes}
 															<br>
 															<span class="bold">{trans("Network Devices:")}</span><br>
-															<select name="assignment[snodes][{$schemaid}][{$label}][]" multiple class="lms-ui-multiselect-deferred" data-separator="<br>">
+															<select name="assignment[snodes][{$schemaid}][{$label}][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">
 																{foreach $customernetdevnodes as $customernode}
 																<option value="{$customernode.id}"{if in_array($customernode.id, $assignment.snodes[$schemaid][$label])} selected{/if}
 																	data-html-content="<strong>{$customernode.name}</strong> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}"
@@ -222,7 +271,8 @@
 			</td>
 		</tr>
 		{/if}
-	
+		<!-- --- PROMOTION CODE //-->
+
 		<TR>
 		    <TD colspan="3" class="container">
 		        <TABLE class="lmsbox-inner">
@@ -541,7 +591,7 @@
 
 		<TR>
 			<TD class="buttons" colspan="3">
-				<A href="#" onclick="return assignment_submit();">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>&nbsp;
+				<A href="#" id="assignment-submit">{trans("Submit")} <IMG src="img/save.gif" alt=""></A>&nbsp;
 				<A href="?m=customerinfo&id={$customerinfo.id}">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A>
 			</TD>
 		</TR>
@@ -559,6 +609,7 @@
 
 			var checked = this.checked;
 
+			// +++ PROMOTION CODE
 			var promotion_select = $('#promotion-select');
 			$('optgroup', promotion_select).each(function() {
 				if ($(this).attr('data-valid') == '0') {
@@ -569,12 +620,10 @@
 				promotion_select.val($('option[data-valid="1"]:nth(0)', promotion_select).val());
 				promotion_select.trigger('change');
 			}
+			// +++ PROMOTION CODE
 		});
 
 		updateCheckAllNodes();
-
-		$('#promotion-select').trigger('change');
-		$('#tariff-select').trigger('change');
 	});
 
 	function updateCheckAllNodes() {
@@ -667,7 +716,7 @@
 			tags.push(parseInt($(this).val()));
 		});
 
-		$('option', tariff-select).each(function() {
+		$('option', tariff_select).each(function() {
 			var option = $(this);
 
 			if (option.val() <= 0) {
@@ -706,6 +755,12 @@
 			tariff_select.val($('option:nth(0)').val());
 		}
 	}
+
+	// +++ PROMOTION CODE
+	$(function() {
+		$('#promotion-select').trigger('change');
+		$('#tariff-select').trigger('change');
+	});
 
 	$('#promotion-select').change(function() {
 		$('.promotion-table').hide();
@@ -788,6 +843,7 @@
 		$('.schema-tariff-selection').trigger('change');
 		$('.schema-tariff-checkbox').trigger('change');
 	});
+	// --- PROMOTION CODE
 //-->
 </SCRIPT>
 {/block}
