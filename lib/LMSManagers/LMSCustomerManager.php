@@ -861,14 +861,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     protected function customerNodesProvider( $customer_id, $type = '', $count = null ) {
         $type = strtolower($type);
-        switch ($type) {
-            case 'netdev':
-                $type = 'nd.ownerid = ?';
-            break;
-
-            default:
-                $type = 'n.ownerid = ?';
-        }
 
         $result = $this->db->GetAll("SELECT
                                         n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, nd.name as netdev_name,
@@ -881,9 +873,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                      FROM
                                         vnodes n
                                         JOIN networks net ON net.id = n.netid
-                                        LEFT JOIN netdevices nd ON n.netdev = nd.id
+                                        " . ($type == 'netdev' ? '' : 'LEFT ') . "JOIN netdevices nd ON n.netdev = nd.id
                                      WHERE
-                                        " . $type . "
+                                        " . ($type == 'netdev' ? 'nd.ownerid' : 'n.ownerid') . " = ?
                                      ORDER BY
                                         n.name ASC " . ($count ? 'LIMIT ' . $count : ''), array($customer_id));
 

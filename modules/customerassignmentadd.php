@@ -348,36 +348,20 @@ $LMS->executeHook(
 );
 
 $promotions = $LMS->GetPromotions();
+$SMARTY->assign('promotions', $promotions);
 
 $customernodes = $LMS->GetCustomerNodes($customer['id']);
-unset($customernodes['total']);
-
-// -----
-// remove duplicated customer nodes
-// -----
+$SMARTY->assign('customernodes', $customernodes);
 
 $netdevnodes = $LMS->getCustomerNetDevNodes($customer['id']);
-
-if ($customernodes) {
-	foreach ($customernodes as $v) {
-		if (isset($netdevnodes[$v['id']]))
-			unset($netdevnodes[$v['id']]);
-    }
-}
-
 $SMARTY->assign('customernetdevnodes' , $netdevnodes);
-
-// -----
 
 $SMARTY->assign('tags', $LMS->TarifftagGetAll());
 
 $SMARTY->assign('assignment'          , $a);
-$SMARTY->assign('customernodes'       , $customernodes);
 $SMARTY->assign('locations'           , $LMS->GetUniqueNodeLocations($customer['id']));
 $SMARTY->assign('customervoipaccs'    , $LMS->getCustomerVoipAccounts($customer['id']));
 $SMARTY->assign('customeraddresses'   , $LMS->getCustomerAddresses($customer['id']));
-
-$SMARTY->assign('promotions', $promotions);
 
 $SMARTY->assign('tariffs'             , $LMS->GetTariffs());
 $SMARTY->assign('taxeslist'           , $LMS->GetTaxes());
