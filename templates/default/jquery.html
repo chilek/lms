@@ -30,10 +30,11 @@
 		postalAddress           : '{trans('postal address')}',
 		defaultLocationAddress  : '{trans('default location address')}',
 		locationRecipientAddress: '{trans('location/recipient address')}',
-		removeAddressConfirmation: '{trans('Are you sure that you want to remove address?')}',
-		datePickerClear : '{trans('<!datepicker>Clear')}',
+        removeAddressConfirmation: '{trans('Are you sure that you want to remove address?')}',
+        datePickerClear : '{trans('<!datepicker>Clear')}',
         nodes: '{trans("Nodes:")}',
-        netdevices: '{trans("Network Devices:")}'
+        netdevices: '{trans("Network Devices:")}',
+        nodeAssignmentWarning: '{trans("No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?")}'
 	}
 
 	{if ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.disable_mobile_tooltips', true))}
