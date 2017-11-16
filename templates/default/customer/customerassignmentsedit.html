@@ -729,7 +729,7 @@
 	}
 
 	var customerid = {$customerinfo.id};
-	var selected = {json_encode($assignment.snodes)};
+	var selected = {if !empty($assignment.snodes)}{json_encode($assignment.snodes)}{else}{}{/if};
 
 	// +++ PROMOTION CODE
 	$(function() {
