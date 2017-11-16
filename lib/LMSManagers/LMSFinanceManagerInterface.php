@@ -110,7 +110,5 @@ interface LMSFinanceManagerInterface
 
 	public function GetOpenedLiabilities($customerid);
 
-	public function UpdateDocumentPostAddress($docid, $customerid);
-
-	public function DeleteDocumentAddresses($docid);
+	public function GetPromotions();
 }

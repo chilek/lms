@@ -626,13 +626,13 @@ CREATE TABLE voipaccounts (
 	address_id      int(11)       NULL DEFAULT NULL,
 	PRIMARY KEY (id),
 	CONSTRAINT voipaccounts_address_id_fkey
-	FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT voipaccounts_ownerid_fkey
-	FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		FOREIGN KEY (ownerid) REFERENCES customers (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT voipaccounts_creatorid_fkey
-	FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT voipaccounts_modid_fkey
-	FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+		FOREIGN KEY (modid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------
@@ -1183,7 +1183,8 @@ CREATE TABLE netnodes (
 	address_id int(11) DEFAULT NULL,
 	info text DEFAULT NULL,
 	PRIMARY KEY (id),
-	CONSTRAINT `netnodes_address_id_fk` FOREIGN KEY (`address_id`) REFERENCES `addresses` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT netnodes_address_id_fkey
+		FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	FOREIGN KEY (invprojectid) REFERENCES invprojects (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	FOREIGN KEY (divisionid) REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=INNODB;
@@ -1960,7 +1961,7 @@ CREATE TABLE aliases (
 CREATE TABLE aliasassignments (
     id              int(11)         NOT NULL auto_increment,
     aliasid         int(11)         NOT NULL,
-    accountid       int(11)         NOT NULL,
+    accountid       int(11)         DEFAULT NULL,
     mail_forward    varchar(255)    DEFAULT '' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY aliasid (aliasid, accountid, mail_forward),
@@ -2116,8 +2117,8 @@ CREATE TABLE docrights (
 CREATE TABLE cashrights (
     id int(11)      NOT NULL auto_increment,
     userid int(11)  NOT NULL,
-    regid int(11)   DEFAULT '0' NOT NULL,
-    rights int(11)  NOT NULL,
+    regid int(11)   NOT NULL,
+    rights int(11)  DEFAULT '0' NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY userid (userid, regid),
 	CONSTRAINT cashrights_userid_fkey
@@ -2198,7 +2199,7 @@ CREATE TABLE excludedgroups (
 	UNIQUE KEY userid (userid, customergroupid),
 	KEY customergroupid (customergroupid),
 	FOREIGN KEY (customergroupid) REFERENCES customergroups (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT excludedgroups_userid_key
+	CONSTRAINT excludedgroups_userid_fkey
 		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 

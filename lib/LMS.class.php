@@ -2406,9 +2406,19 @@ class LMS
 		return $manager->CommitDocuments($ids);
 	}
 
-    /*
-     *  Location
-     */
+	public function UpdateDocumentPostAddress($docid, $customerid) {
+		$manager = $this->getDocumentManager();
+		return $manager->UpdateDocumentPostAddress($docid, $customerid);
+	}
+
+	public function DeleteDocumentAddresses($docid) {
+		$manager = $this->getDocumentManager();
+		return $manager->DeleteDocumentAddresses($docid);
+	}
+
+	/*
+	 *  Location
+	 */
 
     public function GetCountryStates()
     {
@@ -2512,14 +2522,9 @@ class LMS
 		return $manager->GetOpenedLiabilities($customerid);
 	}
 
-	public function UpdateDocumentPostAddress($docid, $customerid) {
+	public function GetPromotions() {
 		$manager = $this->getFinanceManager();
-		return $manager->UpdateDocumentPostAddress($docid, $customerid);
-	}
-
-	public function DeleteDocumentAddresses($docid) {
-		$manager = $this->getFinanceManager();
-		return $manager->DeleteDocumentAddresses($docid);
+		return $manager->GetPromotions();
 	}
 
 	/**

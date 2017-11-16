@@ -1048,6 +1048,7 @@ $_LANG['Network address:'] = 'Adres sieci:';
 $_LANG['Network Balance Sheet'] = 'Historia operacji finansowych';
 $_LANG['Network Devices'] = 'Urządzenia sieciowe';
 $_LANG['Network Devices:'] = 'Urządzenia sieciowe:';
+$_LANG['Network Devices ($a):'] = 'Urządzenia sieciowe ($a):';
 $_LANG['Network devices list'] = 'Lista urządzeń sieciowych';
 $_LANG['Network Edit: $a'] = 'Edycja sieci: $a';
 $_LANG['Network usage'] = 'Wykorzystanie sieci';
@@ -3787,6 +3788,7 @@ $_LANG['<!promotionassignment>- none -'] = '- żadna -';
 $_LANG['<!promotionassignment>- new -'] = '- nowa -';
 $_LANG['<!promotionassignment>Enter new label'] = 'Wprowadź nową etykietę';
 $_LANG['<!promotionassignment>Label'] = 'Etykieta';
+$_LANG['<!tariffselection>unlabeled_$a'] = 'bez_etykiety_$a';
 $_LANG['<!tariffselection>$a:'] = '$a:';
 $_LANG['<!datepicker>Clear'] = 'Wyczyść';
 

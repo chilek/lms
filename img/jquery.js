@@ -81,6 +81,20 @@ $.datepicker._gotoToday = function(id) {
 	this._adjustDate(target);
 }
 
+function init_multiselects(selector) {
+	var multiselects = $(selector);
+	if (multiselects.length) {
+		multiselects.each(function() {
+			new multiselect({
+				id: $(this).uniqueId().attr('id'),
+				defaultValue: $(this).attr('data-default-value'),
+				type: $(this).attr('data-type'),
+				separator: $(this).attr('data-separator')
+			});
+		});
+	}
+}
+
 $(function() {
 	var autocomplete = "off";
 	var elementsToInitiate = 0;
@@ -183,17 +197,7 @@ $(function() {
 		.attr("autocomplete", autocomplete);
 	});
 
-	var multiselects = $('select.lms-ui-multiselect');
-	if (multiselects.length) {
-		multiselects.each(function() {
-			new multiselect({
-				id: $(this).uniqueId().attr('id'),
-				defaultValue: $(this).attr('data-default-value'),
-				type: $(this).attr('data-type'),
-				separator: $(this).attr('data-separator')
-			});
-		});
-	}
+	init_multiselects('select.lms-ui-multiselect');
 
 	$('[title]').each(function() {
 		$(this).one('mouseenter', function() {

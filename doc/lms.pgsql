@@ -1088,7 +1088,7 @@ CREATE TABLE netnodes (
 	divisionid integer
 		REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	address_id integer
-		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT netnodes_address_id_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	info text DEFAULT NULL,
 	PRIMARY KEY(id)
 );
@@ -1231,7 +1231,7 @@ CREATE TABLE nodes (
 	invprojectid integer DEFAULT NULL
 		REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	address_id integer DEFAULT NULL
-		REFERENCES addresses(id) ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT nodes_address_id_fkey REFERENCES addresses(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	UNIQUE (name),
 	UNIQUE (ipaddr, netid)
@@ -1912,7 +1912,7 @@ CREATE TABLE aliasassignments (
 	id              integer         DEFAULT nextval('passwd_id_seq'::text) NOT NULL,
 	aliasid         integer         NOT NULL
 		CONSTRAINT aliasassignments_aliasid_fkey REFERENCES aliases (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	accountid       integer         NOT NULL
+	accountid       integer         DEFAULT NULL
 		CONSTRAINT aliasassignments_accountid_fkey REFERENCES passwd (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	mail_forward    varchar(255)    DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),

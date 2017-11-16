@@ -397,4 +397,28 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 		$this->db->CommitTrans();
 	}
 
+	public function UpdateDocumentPostAddress($docid, $customerid) {
+		$post_addr = $this->db->GetOne('SELECT post_address_id FROM documents WHERE id = ?', array($docid));
+		if ($post_addr)
+			$this->db->Execute('DELETE FROM addresses WHERE id = ?', array($post_addr));
+
+		$location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
+
+		$post_addr = $location_manager->GetCustomerAddress($customerid, POSTAL_ADDRESS);
+		if (empty($post_addr))
+			$this->db->Execute("UPDATE documents SET post_address_id = NULL WHERE id = ?",
+				array($docid));
+		else
+			$this->db->Execute('UPDATE documents SET post_address_id = ? WHERE id = ?',
+				array($location_manager->CopyAddress($post_addr), $docid));
+	}
+
+	public function DeleteDocumentAddresses($docid) {
+		// deletes addresses' records which are bound to given document
+		$addresses = $this->db->GetRow('SELECT recipient_address_id, post_address_id FROM documents WHERE id = ?',
+			array($docid));
+		foreach ($addresses as $address_id)
+			if (!empty($address_id))
+				$this->db->Execute('DELETE FROM addresses WHERE id = ?', array($address_id));
+	}
 }

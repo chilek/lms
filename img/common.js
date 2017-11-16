@@ -535,7 +535,7 @@ function _getCustomerNames(ids, success) {
 	if (!ids || String(ids).length == 0)
 		return 0;
 
-	$.ajax('?m=customerinfo&ajax=1', {
+	$.ajax('?m=customerinfo&api=1&ajax=1', {
 		async: true,
 		method: 'POST',
 		data: {
@@ -695,11 +695,11 @@ function _getAddressList( action, v, on_success ) {
 
     switch ( action ) {
         case 'customeraddresses':
-            url = "?m=customeraddresses&action=getcustomeraddresses&id=" + v;
+            url = "?m=customeraddresses&action=getcustomeraddresses&api=1&id=" + v;
         break;
 
         case 'singleaddress':
-            url = "?m=customeraddresses&action=getsingleaddress&id=" + v;
+            url = "?m=customeraddresses&action=getsingleaddress&api=1&id=" + v;
         break;
     }
 

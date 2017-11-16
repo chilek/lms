@@ -861,14 +861,6 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
     protected function customerNodesProvider( $customer_id, $type = '', $count = null ) {
         $type = strtolower($type);
-        switch ($type) {
-            case 'netdev':
-                $type = 'nd.ownerid = ?';
-            break;
-
-            default:
-                $type = 'n.ownerid = ?';
-        }
 
         $result = $this->db->GetAll("SELECT
                                         n.id, n.name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, nd.name as netdev_name,
@@ -881,9 +873,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                      FROM
                                         vnodes n
                                         JOIN networks net ON net.id = n.netid
-                                        LEFT JOIN netdevices nd ON n.netdev = nd.id
+                                        " . ($type == 'netdev' ? '' : 'LEFT ') . "JOIN netdevices nd ON n.netdev = nd.id
                                      WHERE
-                                        " . $type . "
+                                        " . ($type == 'netdev' ? 'nd.ownerid' : 'n.ownerid') . " = ?
                                      ORDER BY
                                         n.name ASC " . ($count ? 'LIMIT ' . $count : ''), array($customer_id));
 
@@ -1339,7 +1331,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                                           addr.street as location_street_name, addr.street_id as location_street,
                                           addr.house as location_house, addr.zip as location_zip, addr.postoffice AS location_postoffice,
                                           addr.country_id as location_country_id, addr.flat as location_flat,
-                                          ca.type as location_address_type, addr.location, 0 as use_counter,
+                                          ca.type as location_address_type, addr.location, 0 AS use_counter,
                                           (CASE WHEN addr.city_id is not null THEN 1 ELSE 0 END) as teryt
                                        FROM
                                           customers cv
@@ -1354,21 +1346,22 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             return array();
         }
 
-        $nd = $this->db->GetAll('SELECT address_id FROM netdevices WHERE ownerid = ?', array( $id ));
-        $n  = $this->db->GetAll('SELECT address_id FROM nodes WHERE ownerid = ?', array( $id ));
+		$node_addresses = $this->db->GetAllByKey('SELECT address_id, COUNT(*) AS used FROM nodes
+			WHERE ownerid = ? AND address_id IS NOT NULL
+			GROUP BY address_id', 'address_id', array($id));
+		if (empty($node_addresses))
+			$node_addresses = array();
 
-        $tmp = array_merge(
-            $nd ? $nd : array(),
-            $n  ? $n  : array()
-        );
+		$netdev_addresses = $this->db->GetAllByKey('SELECT address_id, COUNT(*) AS used FROM netdevices
+			WHERE ownerid = ? AND address_id IS NOT NULL
+			GROUP BY address_id', 'address_id', array($id));
+		if (empty($netdev_addresses))
+			$netdev_addresses = array();
 
-        if ( $tmp ) {
-            foreach ( $tmp as $v ) {
-                if ( $v['address_id'] ) {
-                    $data[$v['address_id']]['use_counter'] += 1;
-                }
-            }
-        }
+		foreach (array($node_addresses, $netdev_addresses) as $addresses)
+			foreach ($addresses as $address_id => $address)
+				if (isset($data[$address_id]))
+					$data[$address_id]['use_counter'] += $address['used'];
 
         return $data;
     }

@@ -41,4 +41,8 @@ interface LMSDocumentManagerInterface
     public function DocumentExists($properties);
 
 	public function CommitDocuments(array $ids);
+
+	public function UpdateDocumentPostAddress($docid, $customerid);
+
+	public function DeleteDocumentAddresses($docid);
 }
