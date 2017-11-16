@@ -130,7 +130,6 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 } elseif (isset($_GET['fetchallinvoices'])) {
 	$layout['pagetitle'] = trans('Invoices');
 
-	$offset = intval(date('Z'));
 	$datefrom = intval($_GET['from']);
 	$dateto = intval($_GET['to']);
 	$einvoice = intval($_GET['einvoice']);
@@ -152,7 +151,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 					JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
 					WHERE e.userid = lms_current_user() AND a.customerid = d.customerid)'
 				.' ORDER BY CEIL(cdate/86400), id',
-				array($datefrom - $offset, $dateto - $offset, DOC_INVOICE, DOC_CNOTE));
+				array($datefrom, $dateto, DOC_INVOICE, DOC_CNOTE));
 	if (!$ids) {
 		$SESSION->close();
 		die;
