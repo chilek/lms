@@ -695,11 +695,11 @@ function _getAddressList( action, v, on_success ) {
 
     switch ( action ) {
         case 'customeraddresses':
-            url = "?m=customeraddresses&action=getcustomeraddresses&id=" + v;
+            url = "?m=customeraddresses&action=getcustomeraddresses&api=1&id=" + v;
         break;
 
         case 'singleaddress':
-            url = "?m=customeraddresses&action=getsingleaddress&id=" + v;
+            url = "?m=customeraddresses&action=getsingleaddress&api=1&id=" + v;
         break;
     }
 
