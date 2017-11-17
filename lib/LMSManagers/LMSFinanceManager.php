@@ -380,6 +380,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 $result[] = $data['assignmentid'] = $this->insertAssignment( $args );
 
 				$this->insertNodeAssignments($data);
+				$this->insertPhoneAssignments($data);
 
                 if ($idx) {
                     $datefrom = $dateto + 1;
@@ -419,6 +420,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     $result[] = $data['assignmentid'] = $this->insertAssignment( $args );
 
 					$this->insertNodeAssignments($data);
+					$this->insertPhoneAssignments($data);
 				}
             }
         } else {
@@ -462,6 +464,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             $data['assignmentid'] = $this->insertAssignment($args);
 
             $this->insertNodeAssignments($data);
+			$this->insertPhoneAssignments($data);
         }
 
         return $result;
@@ -512,6 +515,18 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 					$this->syslog->AddMessage(SYSLOG::RES_NODEASSIGN, SYSLOG::OPER_ADD, $args);
 				}
 			}
+		}
+	}
+
+	private function insertPhoneAssignments($args) {
+		if (!empty($args['phones'])) {
+			// Use multi-value INSERT query
+			$values = array();
+			foreach ($args['phones'] as $numberid)
+				$values[] = sprintf('(%d, %d)', $numberid, $args['assignmentid']);
+
+			$this->db->Execute('INSERT INTO voip_number_assignments (number_id, assignment_id)
+				VALUES ' . implode(', ', $values));
 		}
 	}
 

@@ -22,6 +22,12 @@ function Promotions(options) {
 			this.internetTariffType = 0;
 		}
 
+		if ('phoneTariffType' in options) {
+			this.phoneTariffType = options["phoneTariffType"];
+		} else {
+			this.phoneTariffType = 0;
+		}
+
 		if ('tariffTypes' in options) {
 			this.tariffTypes = options["tariffTypes"];
 		} else {
@@ -37,6 +43,7 @@ function Promotions(options) {
 		this.customerid = 0;
 		this.selected = {};
 		this.internetTariffType = 0;
+		this.phoneTariffType = 0;
 		this.tariffTypes = {};
 		this.variablePrefix = 'assignment';
     }
@@ -102,7 +109,9 @@ function Promotions(options) {
 	}
 
 	this.tariffSelectionHandler = function () {
-		var tariffaccess = parseInt($(this).find(':selected').attr('data-tariffaccess'));
+		var selected_tariff = $(this).find(':selected');
+		var tariffaccess = parseInt(selected_tariff.attr('data-tariffaccess'));
+		var tarifftype = parseInt(selected_tariff.attr('data-tarifftype'));
 		var location_select = $('#location-select').val();
 		var tr = $(this).closest('tr').next('.customerdevices');
 
@@ -112,9 +121,27 @@ function Promotions(options) {
 			tr.show();
 		}
 
+		switch (tarifftype) {
+			case promotion.internetTariffType:
+				tr.find('div.nodes,div.netdevnodes').show();
+				tr.find('div.phones').hide();
+				break;
+			case promotion.phoneTariffType:
+				tr.find('div.nodes,div.netdevnodes').hide();
+				tr.find('div.phones').show();
+				break;
+			default:
+				tr.find('div.nodes,div.netdevnodes,div.phones').hide();
+		}
+
 		init_multiselects('select.lms-ui-multiselect-deferred:visible');
 
-        var ms = tr.find('.lms-ui-multiselect').data('multiselect-object');
+		var ms;
+		if (tarifftype == promotion.phoneTariffType) {
+			ms = tr.find('div.phones .lms-ui-multiselect').data('multiselect-object');
+		} else {
+			ms = tr.find('div.nodes .lms-ui-multiselect,div.netdevnodes .lms-ui-multiselect').data('multiselect-object');
+		}
         if (!ms) {
 			return;
 		}
@@ -132,20 +159,36 @@ function Promotions(options) {
 	}
 
 	this.tariffCheckboxHandler = function() {
-		var tariffaccess = parseInt($(this).find(':selected').attr('data-tariffaccess'));
+		var checked = this.checked;
+		var tariffaccess = parseInt($(this).attr('data-tariffaccess'));
+		var tarifftype = parseInt($(this).attr('data-tarifftype'));
 		var location_select = $('#location-select').val();
 		var tr = $(this).closest('tr').next('.customerdevices');
 
-		var checked = this.checked;
 		if (checked) {
 			tr.show();
 		} else {
 			tr.hide();
 		}
 
+		switch (tarifftype) {
+			case promotion.phoneTariffType:
+				tr.find('div.nodes,div.netdevnodes').hide();
+				tr.find('div.phones').show();
+				break;
+			default:
+				tr.find('div.nodes,div.netdevnodes').show();
+				tr.find('div.phones').hide();
+		}
+
 		init_multiselects('select.lms-ui-multiselect-deferred:visible');
 
-		var ms = tr.find('.lms-ui-multiselect').data('multiselect-object');
+		var ms;
+		if (tarifftype == promotion.phoneTariffType) {
+			ms = tr.find('div.phones .lms-ui-multiselect').data('multiselect-object');
+		} else {
+			ms = tr.find('div.nodes .lms-ui-multiselect,div.netdevnodes .lms-ui-multiselect').data('multiselect-object');
+		}
 		if (!ms) {
 			return;
 		}
@@ -206,8 +249,10 @@ function Promotions(options) {
 					var label = $(this).attr('data-label');
 					var td = $('<td/>');
 					var html = '';
+
 					if (data["nodes"]) {
-						html += '<div class="nodes"><span class="bold">' + lmsMessages.nodes + '</span><br>';
+						html += '<div class="nodes"><img src="img/node.gif"> '
+							+ '<span class="bold">' + lmsMessages.nodes + '</span><br>';
 						html += '<select name="' + promotion.variablePrefix + '[snodes][' + schemaid + ']['
                             + label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
 
@@ -219,8 +264,8 @@ function Promotions(options) {
 							}
 							var nodeid = String(node["id"]).lpad('0', 4);
 							options += '<option value="' + node["id"] + '"'
-								+ ((schemaid in selected) && (label in selected[schemaid])
-								&& (selected[schemaid][label].indexOf(node["id"]) > -1) ? ' selected' : '')
+								+ (("snodes" in selected) && (schemaid in selected["snodes"]) && (label in selected["snodes"][schemaid])
+								&& (selected["snodes"][schemaid][label].indexOf(node["id"]) > -1) ? ' selected' : '')
 								+ ' data-tariffaccess="' + node["authtype"] + '"'
 								+ ' data-location="' + node["location"] + '"'
 								+ ' data-html-content="<strong>' + node["name"] + '</strong>'
@@ -234,8 +279,10 @@ function Promotions(options) {
 						html += options;
 						html += '</select></div>';
 					}
+
 					if (data["netdevnodes"]) {
-						html += '<div class="netdevnodes"><span class="bold">' + lmsMessages.netdevices + '</span><br>';
+						html += '<div class="netdevnodes"><ing src="img/netdev.gif"> '
+							+ '<span class="bold">' + lmsMessages.netdevices + '</span><br>';
 						html += '<select name="' + promotion.variablePrefix + '[snodes][' + schemaid + ']['
                             + label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
 
@@ -247,8 +294,8 @@ function Promotions(options) {
 							}
 							var nodeid = String(node["id"]).lpad('0', 4);
 							options += '<option value="' + node["id"] + '"'
-								+ ((schemaid in selected) && (label in selected[schemaid])
-								&& (selected[schemaid][label].indexOf(node["id"]) > -1) ? ' selected' : '')
+								+ (("snodes" in selected) && (schemaid in selected["snodes"]) && (label in selected["snodes"][schemaid])
+								&& (selected["snodes"][schemaid][label].indexOf(node["id"]) > -1) ? ' selected' : '')
 								+ ' data-tariffaccess="' + node["authtype"] + '"'
 								+ ' data-location="' + node["location"] + '"'
 								+ ' data-html-content="<strong>' + node["name"] + '</strong>'
@@ -262,6 +309,36 @@ function Promotions(options) {
 						html += options;
 						html += '</select></div>';
 					}
+
+					if (data["voipaccounts"]) {
+						html += '<div class="phones"><img src="img/voip.gif"> '
+							+ '<span class="bold">' + lmsMessages.voipAccounts + '</span><br>';
+						html += '<select name="' + promotion.variablePrefix + '[sphones][' + schemaid + ']['
+							+ label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
+
+						var options = '';
+						$.each(data["voipaccounts"], function(key, account) {
+							var location = String(account["location"]);
+							if (location.length > 50) {
+								location.substr(0, 50) + '...';
+							}
+							$.each(account["phones"], function(key, phone) {
+								options += '<option value="' + phone["id"] + '"'
+									+ (("sphones" in selected) && (schemaid in selected["sphones"]) && (label in selected["sphones"][schemaid])
+									&& (selected["sphones"][schemaid][label].indexOf(phone["id"]) > -1) ? ' selected' : '')
+									+ ' data-location="' + account["location"] + '"'
+									+ ' data-html-content="<strong>' + phone["phone"] + '</strong>'
+									+ ' / ' + account["login"] + (location.length ? ' / ' + location : '') + '"';
+								options += '>';
+								options += phone["phone"] + ' / ' + account["login"] + (location.length ? ' / ' + location : '');
+								options += '</option>';
+							});
+						});
+
+						html += options;
+						html += '</select></div>';
+					}
+
 					td.html(html).appendTo(this);
 				});
 

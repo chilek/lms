@@ -3,6 +3,12 @@
         margin-top: 0px;
         margin-bottom: 0px;
     }
+	div.nodes img,
+	div.netdevnodes img,
+	div.phones img {
+		padding-top: 5px;
+		padding-bottom: 5px;
+	}
 </style>
 
 <table id="a_promotions" style="display: none;">
@@ -62,7 +68,8 @@
 													value="{$item.single.tariffid}" data-label="{$label}"
 													data-tarifftype="{$item.single.type}"
 													{if isset($variables.stariffid[$schemaid][$label]) || !$item.single.optional} checked{/if}
-													{if !$item.single.optional} disabled data-mandatory="1"{/if} data-tariffaccess="{$item.single.authtype}">
+													{if !$item.single.optional} disabled data-mandatory="1"{/if}
+													data-tariffaccess="{$item.single.authtype}">
 												{$item.single.tariff}
 											</label>
 										</td>
@@ -70,7 +77,7 @@
 										<td class="valign-top">
 											<select class="schema-tariff-selection" name="{$variable_prefix}[stariffid][{$schemaid}][{$label}]" data-label="{$label}">
 												{if !$item.selection.required}
-												<option value="0" data-tariffaccess="-1">{trans("- none -")}</option>
+												<option value="0" data-tariffaccess="-1" data-tarifftype="0">{trans("- none -")}</option>
 												{/if}
 												{foreach $item.selection.items as $item}
 												<option value="{$item.tariffid}" data-tariffaccess="{$item.authtype}"

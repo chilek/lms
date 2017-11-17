@@ -359,7 +359,7 @@
 												{foreach $voipaccounts as $account}
 													{foreach $account.phones as $phone}
                                                         <label>
-															<input type="checkbox" name="assignment[phones][]" value="{$p.id}" {if !empty($assignment.phones) && in_array($p.id, $assignment.phones)} checked{/if}>
+															<input type="checkbox" name="assignment[phones][]" value="{$phone.id}" {if !empty($assignment.phones) && in_array($phone.id, $assignment.phones)} checked{/if}>
 															<span class="bold">{$phone.phone}</span> / {$account.login}
 														</label>
 														<br>
@@ -407,10 +407,19 @@
 	tariffTypes[{$tariff.id}] = {$tariff.tarifftype};
 	{/foreach}
 
+	var selected = {};
+	{if !empty($assignment.snodes)}
+	selected["snodes"] = {json_encode($assignment.snodes)};
+	{/if}
+	{if !empty($assignment.sphones)}
+	selected["sphones"] = {json_encode($assignment.sphones)};
+	{/if}
+
 	var promotions = new Promotions({
 		customerid: {$customerinfo.id},
-		selected: {if !empty($assignment.snodes)}{json_encode($assignment.snodes)}{else}{}{/if},
+		selected: selected,
 		internetTariffType: {$smarty.const.TARIFF_INTERNET},
+		phoneTariffType: {$smarty.const.TARIFF_PHONE},
 		tariffTypes: tariffTypes,
         variablePrefix: 'assignment'
 	});

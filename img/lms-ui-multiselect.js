@@ -1,6 +1,7 @@
 // $Id$
 
 function multiselect(options) {
+	var multiselect = this;
 	var elemid = options.id;
 	var def = typeof options.defaultValue !== 'undefined' ? options.defaultValue : '';
 	var tiny = typeof options.type !== 'undefined' && options.type == 'tiny';
@@ -26,20 +27,6 @@ function multiselect(options) {
 	if (tiny)
 		new_element.html('<img src="' + icon + '">&nbsp' + label);
 
-	var elem = [];
-	$('option', old_element).each(function(index) {
-		var text = $(this).attr('data-html-content');
-		if (!text) {
-			text = $(this).text();
-		}
-		elem[text] = $(this).prop('selected') ? 1 : 0;
-	});
-
-	var new_selected = generateSelectedString(elem);
-	var old_selected = new_selected;
-	if (!tiny)
-		new_element.html(old_selected);
-
 	new_element.data('multiselect-object', this)
 		.attr('style', old_element.attr('style'));
 	// save onchange event handler
@@ -61,6 +48,20 @@ function multiselect(options) {
 	}).hide().appendTo(form);
 	var ul = $('<ul/>').appendTo(div);
 
+	var new_selected;
+	var old_selected;
+
+	this.generateSelectedString = function() {
+		var selected = [];
+		$('input:checked', ul).next().each(function(key, value) {
+			selected.push($(this).html());
+		});
+		if (!selected.length) {
+			selected.push(def);
+		}
+		return selected.join(separator);
+	}
+
 	$('option', old_element).each(function(i) {
 		var li = $('<li/>').appendTo(ul);
 
@@ -81,9 +82,9 @@ function multiselect(options) {
 			li.attr('data-' + key, value);
 		});
 
-		if (elem[text]) {
-			box.prop('checked', true);
+		if ($(this).is(':selected')) {
 			li.addClass('selected');
+			box.prop('checked', true);
 		}
 
 		if ($(this).is(':disabled')) {
@@ -111,12 +112,7 @@ function multiselect(options) {
 			if (/<span>(.*?)<\/span>/i.exec(this.innerHTML) !== null)
 				optionValue = RegExp.$1;
 
-			if (box.is(':checked'))
-				elem[optionValue] = 1; //mark option as selected
-			else
-				elem[optionValue] = 0; //mark option as unselected
-
-			new_selected = generateSelectedString(elem);
+			new_selected = multiselect.generateSelectedString();
 			if (!tiny)
 				new_element.html(new_selected);
 
@@ -129,6 +125,11 @@ function multiselect(options) {
 		});
 		// TODO: keyboard events
 	});
+
+	new_selected = this.generateSelectedString();
+	old_selected = new_selected;
+	if (!tiny)
+		new_element.html(old_selected);
 
 	// add some mouse/key event handlers
 	new_element.click(function() {
@@ -191,27 +192,12 @@ function multiselect(options) {
 
 				if (checked) {
 					li.addClass('selected');
-					elem[optionValue] = 1; //mark option as selected
 				} else {
 					li.removeClass('selected');
-					elem[optionValue] = 0; //mark option as unselected
 				}
 				$(allcheckboxes[i]).prop('checked', checked);
 			}
 		}
-	}
-
-	function generateSelectedString(objArray) {
-		var selected = [];
-
-		for (var k in objArray)
-			if (objArray.hasOwnProperty(k) && objArray[k] == 1)
-				selected.push(k);
-
-		if (!selected.length)
-			return def;
-
-		return selected.join(separator);
 	}
 
 	this.updateSelection = function(idArray) {
@@ -221,13 +207,11 @@ function multiselect(options) {
 			if (idArray == null || idArray.indexOf($(this).val()) != -1) {
 				$(this).prop('checked', true).parent().addClass('selected');
 				selected.push(text);
-				elem[text] = 1;
 			} else {
 				$(this).prop('checked', false).parent().removeClass('selected');
-				elem[text] = 0;
 			}
 		});
-		new_selected = selected.join(separator);
+		new_selected = this.generateSelectedString();
 		if (!tiny)
 			new_element.html(new_selected);
 	}
@@ -239,15 +223,13 @@ function multiselect(options) {
 			if (idArray == null || idArray.indexOf($(this).val()) != -1) {
 				$(this).parent().show();
 				if ($(this).prop('checked')) {
-					elem[text] = 1;
 					selected.push(text);
 				}
 			} else {
 				$(this).prop('checked', false).parent().hide();
-				elem[text] = 0;
 			}
 		});
-		new_selected = selected.join(separator);
+		new_selected = this.generateSelectedString();
 		if (!tiny)
 			new_element.html(new_selected);
 	}
@@ -275,7 +257,7 @@ function multiselect(options) {
 				selected.push(text);
 			}
 		});
-		new_selected = selected.join(separator);
+		new_selected = this.generateSelectedString();
 		if (!tiny) {
 			new_element.html(new_selected);
 		}

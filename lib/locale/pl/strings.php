@@ -2341,6 +2341,7 @@ $_LANG['Voip account:'] = 'Konto VoIP:';
 $_LANG['Voip Account Info: $a'] = 'Informacje o koncie: $a';
 $_LANG['Voip Account Edit: $a'] = 'Edycja konta VoIP: $a';
 $_LANG['Voip Accounts ($a):'] = 'Konta VoIP ($a):';
+$_LANG['Voip Accounts:'] = 'Konta VoIP:';
 $_LANG['<!do>Import'] = 'Importuj';
 $_LANG['Download (CSV)'] = 'Pobierz (CSV)';
 $_LANG['Download all (TXT)'] = 'Pobierz wszystkie (TXT)';

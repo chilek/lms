@@ -476,10 +476,6 @@ $layout['pagetitle'] = trans('Liability Edit: $a', '<A href="?m=customerinfo&id=
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$customerNodes = $LMS->GetCustomerNodes( $customer['id']);
-
-unset($customernodes['total']);
-
 $LMS->executeHook(
     'customerassignmentedit_before_display',
     array(
@@ -488,28 +484,19 @@ $LMS->executeHook(
     )
 );
 
-// -----
-// remove duplicated customer nodes
-// -----
+$customernodes = $LMS->GetCustomerNodes($customer['id']);
+$SMARTY->assign('customernodes', $customernodes);
 
 $netdevnodes = $LMS->getCustomerNetDevNodes($customer['id']);
-
-if ($customerNodes) {
-    foreach ($customerNodes as $v) {
-        if (isset($netdevnodes[$v['id']]))
-            unset($netdevnodes[$v['id']]);
-    }
-}
-
 $SMARTY->assign('customernetdevnodes', $netdevnodes);
+
+$voipaccounts = $LMS->GetCustomerVoipAccounts($customer['id']);
+$SMARTY->assign('voipaccounts', $voipaccounts);
 
 // -----
 
 $SMARTY->assign('tags', $LMS->TarifftagGetAll());
 
-$SMARTY->assign('customernodes'      , $customerNodes);
-$SMARTY->assign('customernetdevnodes', $netdevnodes);
-$SMARTY->assign('customervoipaccs'   , $LMS->getCustomerVoipAccounts($customer['id']));
 $SMARTY->assign('customeraddresses'  , $LMS->getCustomerAddresses($customer['id']));
 $SMARTY->assign('tariffs'            , $LMS->GetTariffs($a['tariffid']));
 $SMARTY->assign('taxeslist'          , $LMS->GetTaxes());

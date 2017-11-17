@@ -281,6 +281,7 @@ if (isset($_POST['assignment'])) {
 		if (is_array($a['stariffid'][$schemaid])) {
 			$copy_a = $a;
 			$snodes = $a['snodes'][$schemaid];
+			$sphones = $a['sphones'][$schemaid];
 
 			foreach ($a['stariffid'][$schemaid] as $label => $v) {
 				if (!$v)
@@ -288,6 +289,7 @@ if (isset($_POST['assignment'])) {
 
 			    $copy_a['promotiontariffid'] = $v;
 			    $copy_a['nodes'] = $snodes[$label];
+				$copy_a['phones'] = $sphones[$label];
 				$tariffid = $LMS->AddAssignment($copy_a);
 			}
 		} else {
@@ -356,7 +358,7 @@ $SMARTY->assign('customernodes', $customernodes);
 $netdevnodes = $LMS->getCustomerNetDevNodes($customer['id']);
 $SMARTY->assign('customernetdevnodes', $netdevnodes);
 
-$voipaccounts = $LMS->getCustomerVoipAccounts($customer['id']);
+$voipaccounts = $LMS->GetCustomerVoipAccounts($customer['id']);
 $SMARTY->assign('voipaccounts', $voipaccounts);
 
 $SMARTY->assign('tags', $LMS->TarifftagGetAll());
