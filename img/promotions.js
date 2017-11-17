@@ -104,7 +104,7 @@ function Promotions(options) {
 	this.tariffSelectionHandler = function () {
 		var tariffaccess = parseInt($(this).find(':selected').attr('data-tariffaccess'));
 		var location_select = $('#location-select').val();
-		var tr = $(this).closest('tr').next('.customernodes');
+		var tr = $(this).closest('tr').next('.customerdevices');
 
 		if (tariffaccess == -1) {
 			tr.hide();
@@ -134,7 +134,7 @@ function Promotions(options) {
 	this.tariffCheckboxHandler = function() {
 		var tariffaccess = parseInt($(this).find(':selected').attr('data-tariffaccess'));
 		var location_select = $('#location-select').val();
-		var tr = $(this).closest('tr').next('.customernodes');
+		var tr = $(this).closest('tr').next('.customerdevices');
 
 		var checked = this.checked;
 		if (checked) {
@@ -198,10 +198,10 @@ function Promotions(options) {
 					return str;
 				}
 
-				var customernodes = $('.customernodes');
-				$('td', customernodes).remove();
+				var customerdevices = $('.customerdevices');
+				$('td', customerdevices).remove();
 
-				customernodes.each(function() {
+				customerdevices.each(function() {
 					var schemaid = $(this).attr('data-schemaid');
 					var label = $(this).attr('data-label');
 					var td = $('<td/>');
