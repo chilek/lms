@@ -94,7 +94,7 @@
 			
 									<TBODY>
 									
-										<TR id="a_name">
+										<TR id="a_name" style="display: none;">
 											<TD>
 												<IMG src="img/money.gif" alt="">
 											</TD>
@@ -106,7 +106,7 @@
 											</TD>
 										</TR>
 									
-										<TR id="a_attribute">
+										<TR id="a_attribute" style="display: none;">
 											<TD>
 												<IMG src="img/money.gif" alt="">
 											</TD>
@@ -118,7 +118,7 @@
 											</TD>
 										</TR>
 									
-										<TR id="a_day">
+										<TR id="a_day" style="display: none;">
 											<TD>
 												<IMG src="img/calendar.gif" alt="">
 											</TD>
@@ -139,7 +139,7 @@
 											</TD>
 										</TR>
 
-										<TR id="a_period">
+										<TR id="a_period" style="display: none;">
 											<TD>
 												<IMG src="img/calendar.gif" alt="">
 											</TD>
@@ -155,7 +155,7 @@
 											</TD>
 										</TR>
 									
-										<TR id="a_value">
+										<TR id="a_value" style="display: none;">
 											<TD>
 												<IMG src="img/value.gif" alt="">
 											</TD>
@@ -167,8 +167,7 @@
 											</TD>
 										</TR>
 
-
-										<TR id="a_discount">
+										<TR id="a_discount" style="display: none;">
 											<TD style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
 												<IMG src="img/value.gif" alt="">
 											</TD>
@@ -185,7 +184,7 @@
 											</TD>
 										</TR>
 
-										<TR id="a_tax">
+										<TR id="a_tax" style="display: none;">
 											<TD>
 												<IMG src="img/tax.gif" alt="">
 											</TD>
@@ -201,7 +200,7 @@
 											</TD>
 										</TR>
 
-										<TR id="a_productid">
+										<TR id="a_productid" style="display: none;">
 											<TD>
 												<IMG src="img/class.gif" alt="">
 											</TD>
@@ -213,7 +212,7 @@
 											</TD>
 										</TR>
 									
-										<TR id="a_numberplan">
+										<TR id="a_numberplan" style="display: none;">
 											<TD>
 												<IMG src="img/id.gif" alt="">
 											</TD>
@@ -232,7 +231,7 @@
 											</TD>
 										</TR>
 
-										<TR id="a_paytype">
+										<TR id="a_paytype" style="display: none;">
 											<TD>
 												<IMG src="img/print.gif" alt="">
 											</TD>
@@ -250,7 +249,7 @@
 											</TD>
 										</TR>
 
-										<tr id="a_address">
+										<tr id="a_address" style="display: none;">
 											<td>
 												<img src="img/info3.gif" alt="">
 											</td>
@@ -305,7 +304,7 @@
 										</TR>
 
 										{if $customernodes}
-										<tr id="a_nodes">
+										<tr id="a_nodes" style="display: none;">
 											<td>
 												<img src="img/node.gif" alt="">
 											</td>
@@ -327,7 +326,7 @@
 										{/if}
 
 										{if $customernetdevnodes}
-										<tr id="a_netdevnodes">
+										<tr id="a_netdevnodes" style="display: none;">
 											<td>
 												<img src="img/netdev.gif" alt="">
 											</td>
@@ -349,7 +348,7 @@
 										{/if}
 										
 										{if $customervoipaccs}
-										<tr id="a_phones">
+										<tr id="a_phones" style="display: none;">
 											<td>
 												<img src="img/voip.gif" alt="">
 											</td>
@@ -371,7 +370,7 @@
 										{/if}
 
 										{if count($customernodes) || count($customernetdevnodes)}
-										<tr id="a_checkall">
+										<tr id="a_checkall" style="display: none;">
 											<td colspan=2"></td>
 											<td>
 												<label>
