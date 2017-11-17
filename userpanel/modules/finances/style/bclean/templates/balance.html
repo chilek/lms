@@ -3,7 +3,7 @@
     <div class="col-md-12">
         {if $userinfo.balance < 0}
 			<h1>{trans("Current balance:")} <strong class="text-danger">{$userinfo.balance|money_format}</strong></h1>
-            {$billtech_balance_button}
+            {$custom_content}
 				{if !ConfigHelper::checkConfig('userpanel.disable_transferform')}
 				<br/><a class="btn btn-primary" href="?m=finances&amp;f=transferform" target="_blank">{trans("Click here to print payment form")}</a>
 			{/if}
