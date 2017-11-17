@@ -142,6 +142,7 @@ version ?.??.?? (????-??-??):
   - enhancement: only nodes matched with selected tariff auth/session types are show
     for edited customer assignments [chilan]
   - enhancement: nodes can be separately selected for all promotion schema tariffs [chilan]
+  - improvement: show location and device id on customer network device list [chilan]
 
 version 1.11.22 (2017-06-08):
 
