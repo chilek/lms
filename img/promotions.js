@@ -171,7 +171,7 @@ function Promotions(options) {
 		$('.schema-tariff-checkbox').trigger('change');
 	}
 
-	this.getCustomerNodes = function() {
+	this.updateNodes = function() {
 		if (typeof this.customerid === 'undefined') {
 			return;
 		}
@@ -185,8 +185,6 @@ function Promotions(options) {
 		} else {
 			selected = this.selected;
 		}
-
-		$('#a_promotions').hide();
 
 		$.ajax('?m=customernodes&api=1&customerid=' + customerid, {
 			async: true,
@@ -276,6 +274,14 @@ function Promotions(options) {
 		});
     }
 
-	this.getCustomerNodes();
+	this.setCustomer = function(customerid) {
+		this.customerid = customerid;
+		this.selected = {};
+		this.updateNodes();
+	}
+
+	$('#a_promotions').hide();
+
+	this.updateNodes();
 	this.initEventHandlers();
 }
