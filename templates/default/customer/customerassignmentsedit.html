@@ -3,93 +3,7 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<SCRIPT type="text/javascript">
-<!--
-	var tariffTypes = [];
-	{foreach $tariffs as $tariff}
-	tariffTypes[{$tariff.id}] = {$tariff.tarifftype};
-	{/foreach}
-	
-	// +++ PROMOTION CODE
-	$(function() {
-		$('#assignment-submit').click(function () {
-			$('.schema-tariff-checkbox[data-mandatory]:checkbox').removeAttr('disabled');
-		});
-	});
-	// --- PROMOTION CODE
-
-	$(function() {
-		$('#assignment-submit').click(function(e) {
-			{if ConfigHelper::checkConfig('phpui.node_assignment_warning')}
-			var tariffid = parseInt($('form[name="assignment"] select[name="assignment[tariffid]"]').val());
-
-			if (isNaN(tariffid)) {
-				document.assignment.submit();
-				return;
-			}
-
-			switch (tariffid) {
-				case -1:
-					document.assignment.submit();
-					return;
-				case -2:
-					// +++ PROMOTION CODE
-					var schemaid = $('#promotion-select').val();
-					var tariffs = {};
-					$('[name^="assignment[stariffid][' + schemaid + ']"]').each(function () {
-						if ($(this).is('.schema-tariff-selection') || $(this).prop('checked')) {
-							if ($(this).val() > 0) {
-								tariffs[$(this).attr('data-label')] = $(this).val();
-							}
-						}
-					});
-					if ($.isEmptyObject(tariffs)) {
-						return;
-					}
-					var cancelled = 0;
-					$.each(tariffs, function(label, tariffid) {
-						if (cancelled) {
-							return;
-						}
-						if (tariffTypes[tariffid] == {$smarty.const.TARIFF_INTERNET}
-							&& !$('[name^="assignment[snodes][' + schemaid + '][' + label + ']"]:checked').length
-							&& !confirm('{trans("No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?")}')) {
-							cancelled = 1;
-						}
-					});
-					if (cancelled) {
-						e.stopImmediatePropagation();
-						$('.schema-tariff-checkbox[data-mandatory]:checkbox').attr('disabled', true);
-						return;
-					}
-					// --- PROMOTION CODE
-					break;
-				default:
-					if (tariffTypes[tariffid] == {$smarty.const.TARIFF_INTERNET}
-						&& !$('#nodelist :checked:not([name="allbox"])').length
-						&& !confirm('{trans("No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?")}')) {
-						e.stopImmediatePropagation();
-						return;
-					}
-					break;
-			}
-			{/if}
-
-			document.assignment.submit();
-		});
-	});
-//-->
-</SCRIPT>
-
-<!-- +++ PROMOTION CODE //-->
-<style>
-	div.lms-ui-multiselect hr {
-		margin-top: 0px;
-		margin-bottom: 0px;
-	}
-</style>
-<!-- --- PROMOTION CODE //-->
-
+<script src="img/promotions.js"></script>
 <FORM method="POST" name="assignment" action="?m={$layout.module}{if $assignment.id}&id={$assignment.id}{if $assignment.liabilityid}&lid={$assignment.liabilityid}{/if}{else}&id={$customerinfo.id}{/if}">
 <INPUT type="submit" class="hiddenbtn">
 <TABLE class="lmsbox">
@@ -152,126 +66,13 @@
     </THEAD>
 
     <TBODY>
-
-		<!-- +++ PROMOTION CODE //-->
 		{if !empty($promotions)}
 		<tr>
 			<td colspan="3" class="container">
-				<table id="a_promotions">
-					<tr>
-						<td>
-							<img src="img/location.png" alt="">
-						</td>
-						<td class="bold">
-							{trans("Location:")}
-						</td>
-						<td style="width: 98%;">
-							<select name="assignment[location]" id="location-select" {tip text="Select promotion location"}>
-								<OPTION value="">{trans("- all -")}</OPTION>
-								{foreach $locations as $location}
-								<OPTION value="{$location}"{if $assignment.location == $location} selected{/if}>{$location}</OPTION>
-								{/foreach}
-							</select>
-						</td>
-					</tr>
-					<TR>
-						<TD>
-							<IMG src="img/promoschema.gif" alt="">
-						</TD>
-						<TD class="bold">
-							{trans("Schema")}:
-						</TD>
-						<TD style="width: 98%;">
-							<SELECT size="1" name="assignment[schemaid]" id="promotion-select" {tip text="Select promotion schema"}>
-								{foreach $promotions as $promotion}
-									<optgroup label="{$promotion.name}" data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{if !$assignment.alltariffs} style="display: none;"{/if}{/if}>
-										{foreach $promotion.schemas as $schemaid => $schema}
-												<OPTION value="{$schemaid}"{if $assignment.schemaid == $schemaid} SELECTED{/if} data-valid="{$promotion.valid}"{if !$promotion.valid} class="blend"{/if}>{$schema.name|truncate:40:"...":true}</OPTION>
-										{/foreach}
-									</optgroup>
-								{/foreach}
-							</SELECT>
-						</TD>
-					</TR>
-					<TR>
-						<TD></TD>
-						<TD colspan="2">
-							{foreach $promotions as $promotionid => $promotion}
-								{foreach $promotion.schemas as $schemaid => $schema}
-									<table class="promotion-table" id="schema{$schemaid}">
-										{foreach $schema.items as $label => $item}
-										<tr>
-											<td class="valign-top text-right">
-												{t a=$label}<!tariffselection>$a:{/t}
-											</td>
-											<td class="valign-top" style="padding-bottom: 10px; padding-top: 0;">
-												<table>
-													<tr>
-														{if isset($item.single)}
-														<td class="valign-top{if !$item.single.optional} blend{/if}">
-															<label>
-																<input class="schema-tariff-checkbox" type="checkbox" name="assignment[stariffid][{$schemaid}][{$label}]"
-																	value="{$item.single.tariffid}" data-label="{$label}"
-																	{if isset($assignment.stariffid[$schemaid][$label]) || !$item.single.optional} checked{/if}
-																	{if !$item.single.optional} disabled data-mandatory="1"{/if} data-tariffaccess="{$item.single.authtype}">
-																{$item.single.tariff}
-															</label>
-														</td>
-														{else}
-														<td class="valign-top">
-															<select class="schema-tariff-selection" name="assignment[stariffid][{$schemaid}][{$label}]" data-label="{$label}">
-																{if !$item.selection.required}
-																<option value="0" data-tariffaccess="-1">{trans("- none -")}</option>
-																{/if}
-																{foreach $item.selection.items as $item}
-																<option value="{$item.tariffid}" data-tariffaccess="{$item.authtype}"
-																	{if in_array($item.tariffid, $assignment.stariffid[$schemaid])} selected{/if}>{$item.tariff}</option>
-																{/foreach}
-															</select>
-														</td>
-														{/if}
-													</tr>
-													<tr class="customernodes">
-														<td>
-															{if $customernodes}
-															<span class="bold">{trans("Nodes:")}</span><br>
-															<select name="assignment[snodes][{$schemaid}][{$label}][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">
-																{foreach $customernodes as $customernode}
-																<option value="{$customernode.id}"{if in_array($customernode.id, $assignment.snodes[$schemaid][$label])} selected{/if}
-																	data-tariffaccess="{$customernode.authtype}" data-location="{$customernode.location}"
-																data-html-content="<strong>{$customernode.name}</strong> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}"
-																>{$customernode.name} ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}</option>
-																{/foreach}
-															</select>
-															{/if}
-															{if $customernetdevnodes}
-															<br>
-															<span class="bold">{trans("Network Devices:")}</span><br>
-															<select name="assignment[snodes][{$schemaid}][{$label}][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">
-																{foreach $customernetdevnodes as $customernode}
-																<option value="{$customernode.id}"{if in_array($customernode.id, $assignment.snodes[$schemaid][$label])} selected{/if}
-																	data-html-content="<strong>{$customernode.name}</strong> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}"
-																	data-tariffaccess="{$customernode.authtype}" data-location="{$customernode.location}"
-																>{$customernode.name} ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}</option>
-																{/foreach}
-															</select>
-															{/if}
-														</td>
-													</tr>
-												</table>
-											</td>
-										</tr>
-										{/foreach}
-									</table>
-								{/foreach}
-							{/foreach}
-						</TD>
-					</TR>
-				</table>
+				{include file="customer/customerpromotions.html" variable_prefix="assignment" variables=$assignment}
 			</td>
 		</tr>
 		{/if}
-		<!-- --- PROMOTION CODE //-->
 
 		<TR>
 		    <TD colspan="3" class="container">
@@ -601,9 +402,52 @@
 <BR>
 
 {include file="customer/customerassignments.html"}
-<SCRIPT type="text/javascript">
-<!--
+<SCRIPT>
+	var tariffTypes = [];
+	{foreach $tariffs as $tariff}
+	tariffTypes[{$tariff.id}] = {$tariff.tarifftype};
+	{/foreach}
+
+	var promotions = new Promotions({
+		customerid: {$customerinfo.id},
+		selected: {if !empty($assignment.snodes)}{json_encode($assignment.snodes)}{else}{}{/if},
+		internetTariffType: {$smarty.const.TARIFF_INTERNET},
+		tariffTypes: tariffTypes,
+        variablePrefix: 'assignment'
+	});
+
 	$(function() {
+		$('#assignment-submit').click(function(e) {
+			{if ConfigHelper::checkConfig('phpui.node_assignment_warning')}
+			var tariffid = parseInt($('form[name="assignment"] select[name="assignment[tariffid]"]').val());
+
+			if (isNaN(tariffid)) {
+				document.assignment.submit();
+				return;
+			}
+
+			switch (tariffid) {
+				case -1:
+					document.assignment.submit();
+					return;
+				case -2:
+                    if (!promotions.validate(e))
+                    	return;
+					break;
+				default:
+					if (tariffTypes[tariffid] == {$smarty.const.TARIFF_INTERNET}
+				        && !$('#nodelist :checked:not([name="allbox"])').length
+				        && !confirm('{trans("No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?")}')) {
+					    e.stopImmediatePropagation();
+					    return;
+				    }
+					break;
+			}
+			{/if}
+
+            document.assignment.submit();
+		});
+
 		$('[name="assignment[alltariffs]"]').click(function() {
 			updateTariffs();
 
@@ -755,95 +599,5 @@
 			tariff_select.val($('option:nth(0)').val());
 		}
 	}
-
-	// +++ PROMOTION CODE
-	$(function() {
-		$('#promotion-select').trigger('change');
-		$('#tariff-select').trigger('change');
-	});
-
-	$('#promotion-select').change(function() {
-		$('.promotion-table').hide();
-
-		var t = $(this).find('option:selected').val();
-			
-		$("#schema" + t).show();
-	
-		init_multiselects('select.lms-ui-multiselect-deferred:visible');
-
-		$('#location-select').trigger('change');
-	});
-
-	$('.schema-tariff-selection').change(function () {
-		var tariffaccess = parseInt($(this).find(':selected').attr('data-tariffaccess'));
-		var location_select = $('#location-select').val();
-		var tr = $(this).closest('tr').next('.customernodes');
-
-		if (tariffaccess == -1) {
-			tr.hide();
-		} else {
-			tr.show();
-		}
-
-		init_multiselects('select.lms-ui-multiselect-deferred:visible');
-
-		var ms = tr.find('.lms-ui-multiselect').data('multiselect-object');
-		if (!ms) {
-			return;
-		}
-		ms.getOptions().each(function(key) {
-			var authtype = parseInt($(this).attr('data-tariffaccess'));
-			var location = $(this).attr('data-location');
-			if (((authtype && (authtype & tariffaccess)) || !tariffaccess)
-				&& (location == location_select || !location_select.length)) {
-				ms.showOption(key);
-			} else {
-				ms.hideOption(key);
-			}
-		});
-		ms.refreshSelection();
-	});
-
-	$('.schema-tariff-checkbox').change(function() {
-		var tariffaccess = parseInt($(this).find(':selected').attr('data-tariffaccess'));
-		var location_select = $('#location-select').val();
-		var tr = $(this).closest('tr').next('.customernodes');
-
-		var checked = this.checked;
-		if (checked) {
-			tr.show();
-		} else {
-			tr.hide();
-		}
-
-		init_multiselects('select.lms-ui-multiselect-deferred:visible');
-
-		var ms = tr.find('.lms-ui-multiselect').data('multiselect-object');
-		if (!ms) {
-			return;
-		}
-		ms.getOptions().each(function (key) {
-			if (checked) {
-				var authtype = parseInt($(this).attr('data-tariffaccess'));
-				var location = $(this).attr('data-location');
-				if (((authtype && (authtype & tariffaccess)) || !tariffaccess)
-					&& (location == location_select || !location_select.length)) {
-					ms.showOption(key);
-				} else {
-					ms.hideOption(key);
-				}
-			} else {
-				ms.hideOption(key);
-			}
-		});
-		ms.refreshSelection();
-	});
-
-	$('#location-select').change(function() {
-		$('.schema-tariff-selection').trigger('change');
-		$('.schema-tariff-checkbox').trigger('change');
-	});
-	// --- PROMOTION CODE
-//-->
 </SCRIPT>
 {/block}
