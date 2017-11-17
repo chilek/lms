@@ -472,14 +472,16 @@
 
 	function updateCheckAllNodes() {
 		$('[name="allbox"]').prop('checked',
-			$('[name^="assignment[nodes]"]').length == $('[name^="assignment[nodes]"]:checked').length);
+			$('[name^="assignment[nodes]"]:visible,[name^="assignment[phones]"]:visible').length
+				== $('[name^="assignment[nodes]"]:visible:checked,[name^="assignment[phones]"]:visible:checked').length);
 	}
 
 	function checkAllNodes() {
-		$('[name^="assignment[nodes]"]').prop('checked', $('[name="allbox"]').prop('checked'));
+		$('[name^="assignment[nodes]"]:visible').prop('checked', $('[name="allbox"]').prop('checked'));
+		$('[name^="assignment[phones]"]:visible').prop('checked', $('[name="allbox"]').prop('checked'));
 	}
 
-	$('[name^="assignment[nodes]"]').click(function() {
+	$('[name^="assignment[nodes]"],[name^="assignment[phones]"]').click(function() {
 		updateCheckAllNodes();
 	});
 
@@ -528,6 +530,7 @@
 			if (val == -1 || val == -2) {
 				$('#a_nodes,#a_netdevnodes,#a_checkall').hide();
 			} else {
+				console.log('test');
 				$('#a_nodes,#a_netdevnodes,#a_checkall').show();
 			}
 		}
@@ -549,6 +552,8 @@
 				$(':checkbox', this).prop('checked', false);
 			}
 		});
+
+		updateCheckAllNodes();
     });
 
 	function updateTariffs() {
