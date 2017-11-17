@@ -280,8 +280,6 @@ function Promotions(options) {
 		this.updateNodes();
 	}
 
-	$('#a_promotions').hide();
-
 	this.updateNodes();
 	this.initEventHandlers();
 }
