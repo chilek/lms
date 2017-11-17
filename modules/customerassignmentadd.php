@@ -356,11 +356,13 @@ $SMARTY->assign('customernodes', $customernodes);
 $netdevnodes = $LMS->getCustomerNetDevNodes($customer['id']);
 $SMARTY->assign('customernetdevnodes', $netdevnodes);
 
+$voipaccounts = $LMS->getCustomerVoipAccounts($customer['id']);
+$SMARTY->assign('voipaccounts', $voipaccounts);
+
 $SMARTY->assign('tags', $LMS->TarifftagGetAll());
 
 $SMARTY->assign('assignment'          , $a);
 $SMARTY->assign('locations'           , $LMS->GetUniqueNodeLocations($customer['id']));
-$SMARTY->assign('customervoipaccs'    , $LMS->getCustomerVoipAccounts($customer['id']));
 $SMARTY->assign('customeraddresses'   , $LMS->getCustomerAddresses($customer['id']));
 
 $SMARTY->assign('tariffs'             , $LMS->GetTariffs());

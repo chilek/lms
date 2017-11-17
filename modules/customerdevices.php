@@ -24,17 +24,19 @@
  *  $Id$
  */
 
-$nodes = array(
-	'customernodes' => array(),
+$devices = array(
+	'nodes' => array(),
 	'netdevnodes' => array(),
+	'voipaccounts' => array(),
 );
 
 if (isset($_GET['customerid'])) {
-	$nodes['customernodes'] = $LMS->GetCustomerNodes($_GET['customerid']);
-	$nodes['netdevnodes'] = $LMS->getCustomerNetDevNodes($_GET['customerid']);
+	$devices['nodes'] = $LMS->GetCustomerNodes($_GET['customerid']);
+	$devices['netdevnodes'] = $LMS->getCustomerNetDevNodes($_GET['customerid']);
+	$devices['voipaccounts'] = $LMS->GetCustomerVoipAccounts($_GET['customerid']);
 }
 
 header('Content-Type: application/json');
-die(json_encode($nodes));
+die(json_encode($devices));
 
 ?>

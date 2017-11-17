@@ -347,7 +347,7 @@
 										</tr>
 										{/if}
 										
-										{if $customervoipaccs}
+										{if $voipaccounts}
 										<tr id="a_phones" style="display: none;">
 											<td>
 												<img src="img/voip.gif" alt="">
@@ -356,11 +356,11 @@
 												{trans("Phones:")}
 											</td>
 											<td class="nobr" id="nodelist">
-												{foreach $customervoipaccs.accounts as $acc}
-													{foreach $acc.phones as $p}
+												{foreach $voipaccounts as $account}
+													{foreach $account.phones as $phone}
                                                         <label>
 															<input type="checkbox" name="assignment[phones][]" value="{$p.id}" {if !empty($assignment.phones) && in_array($p.id, $assignment.phones)} checked{/if}>
-															<span class="bold">{$p.phone}</span> / {$acc.login}
+															<span class="bold">{$phone.phone}</span> / {$account.login}
 														</label>
 														<br>
 													{/foreach}
@@ -369,7 +369,7 @@
 										</tr>
 										{/if}
 
-										{if count($customernodes) || count($customernetdevnodes)}
+										{if count($customernodes) || count($customernetdevnodes) || count($voipaccounts)}
 										<tr id="a_checkall" style="display: none;">
 											<td colspan=2"></td>
 											<td>

@@ -171,7 +171,7 @@ function Promotions(options) {
 		$('.schema-tariff-checkbox').trigger('change');
 	}
 
-	this.updateNodes = function() {
+	this.updateDevices = function() {
 		if (typeof this.customerid === 'undefined') {
 			return;
 		}
@@ -186,7 +186,7 @@ function Promotions(options) {
 			selected = this.selected;
 		}
 
-		$.ajax('?m=customernodes&api=1&customerid=' + customerid, {
+		$.ajax('?m=customerdevices&api=1&customerid=' + customerid, {
 			async: true,
 			method: 'POST',
 			dataType: 'json',
@@ -206,13 +206,13 @@ function Promotions(options) {
 					var label = $(this).attr('data-label');
 					var td = $('<td/>');
 					var html = '';
-					if (data["customernodes"]) {
+					if (data["nodes"]) {
 						html += '<span class="bold">' + lmsMessages.nodes + '</span><br>';
 						html += '<select name="' + promotion.variablePrefix + '[snodes][' + schemaid + ']['
                             + label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
 
 						var options = '';
-						$.each(data["customernodes"], function(key, node) {
+						$.each(data["nodes"], function(key, node) {
 							var location = String(node["location"]);
 							if (location.length > 50) {
 								location.substr(0, 50) + '...';
@@ -277,9 +277,9 @@ function Promotions(options) {
 	this.setCustomer = function(customerid) {
 		this.customerid = customerid;
 		this.selected = {};
-		this.updateNodes();
+		this.updateDevices();
 	}
 
-	this.updateNodes();
+	this.updateDevices();
 	this.initEventHandlers();
 }
