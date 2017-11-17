@@ -479,7 +479,7 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
      * @return array VoIP accounts data
      */
     public function getCustomerVoipAccounts($id) {
-        $result['accounts'] = $this->db->GetAll(
+        $result = $this->db->GetAll(
             'SELECT v.id, login, passwd, ownerid, access,
                 lb.name AS borough_name, ld.name AS district_name,
                 lst.name AS state_name, lc.name AS city_name,
@@ -500,12 +500,11 @@ class LMSVoipAccountManager extends LMSManager implements LMSVoipAccountManagerI
             ORDER BY login ASC', array($id)
         );
 
-        if ( $result['accounts'] ) {
-            foreach ($result['accounts'] as $k=>$v) {
-                $result['accounts'][$k]['phones']   = $this->db->GetAll('SELECT * FROM voip_numbers WHERE voip_account_id = ?', array($v['id']) );
-            }
-
-            $result['total'] = count($result['accounts']);
+        if (!empty($result)) {
+            foreach ($result as &$account)
+                $account['phones'] = $this->db->GetAll('SELECT * FROM voip_numbers WHERE voip_account_id = ?',
+					array($account['id']));
+            unset($account);
         }
 
         return $result;

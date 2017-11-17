@@ -94,7 +94,7 @@
 			
 									<TBODY>
 									
-										<TR id="a_name">
+										<TR id="a_name" style="display: none;">
 											<TD>
 												<IMG src="img/money.gif" alt="">
 											</TD>
@@ -106,7 +106,7 @@
 											</TD>
 										</TR>
 									
-										<TR id="a_attribute">
+										<TR id="a_attribute" style="display: none;">
 											<TD>
 												<IMG src="img/money.gif" alt="">
 											</TD>
@@ -118,7 +118,7 @@
 											</TD>
 										</TR>
 									
-										<TR id="a_day">
+										<TR id="a_day" style="display: none;">
 											<TD>
 												<IMG src="img/calendar.gif" alt="">
 											</TD>
@@ -155,7 +155,7 @@
 											</TD>
 										</TR>
 									
-										<TR id="a_value">
+										<TR id="a_value" style="display: none;">
 											<TD>
 												<IMG src="img/value.gif" alt="">
 											</TD>
@@ -167,8 +167,7 @@
 											</TD>
 										</TR>
 
-
-										<TR id="a_discount">
+										<TR id="a_discount" style="display: none;">
 											<TD style="{if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')} display: none;{/if}">
 												<IMG src="img/value.gif" alt="">
 											</TD>
@@ -185,7 +184,7 @@
 											</TD>
 										</TR>
 
-										<TR id="a_tax">
+										<TR id="a_tax" style="display: none;">
 											<TD>
 												<IMG src="img/tax.gif" alt="">
 											</TD>
@@ -201,7 +200,7 @@
 											</TD>
 										</TR>
 
-										<TR id="a_productid">
+										<TR id="a_productid" style="display: none;">
 											<TD>
 												<IMG src="img/class.gif" alt="">
 											</TD>
@@ -213,7 +212,7 @@
 											</TD>
 										</TR>
 									
-										<TR id="a_numberplan">
+										<TR id="a_numberplan" style="display: none;">
 											<TD>
 												<IMG src="img/id.gif" alt="">
 											</TD>
@@ -232,7 +231,7 @@
 											</TD>
 										</TR>
 
-										<TR id="a_paytype">
+										<TR id="a_paytype" style="display: none;">
 											<TD>
 												<IMG src="img/print.gif" alt="">
 											</TD>
@@ -250,7 +249,7 @@
 											</TD>
 										</TR>
 
-										<tr id="a_address">
+										<tr id="a_address" style="display: none;">
 											<td>
 												<img src="img/info3.gif" alt="">
 											</td>
@@ -305,7 +304,7 @@
 										</TR>
 
 										{if $customernodes}
-										<tr id="a_nodes">
+										<tr id="a_nodes" style="display: none;">
 											<td>
 												<img src="img/node.gif" alt="">
 											</td>
@@ -327,7 +326,7 @@
 										{/if}
 
 										{if $customernetdevnodes}
-										<tr id="a_netdevnodes">
+										<tr id="a_netdevnodes" style="display: none;">
 											<td>
 												<img src="img/netdev.gif" alt="">
 											</td>
@@ -348,8 +347,8 @@
 										</tr>
 										{/if}
 										
-										{if $customervoipaccs}
-										<tr id="a_phones">
+										{if $voipaccounts}
+										<tr id="a_phones" style="display: none;">
 											<td>
 												<img src="img/voip.gif" alt="">
 											</td>
@@ -357,11 +356,11 @@
 												{trans("Phones:")}
 											</td>
 											<td class="nobr" id="nodelist">
-												{foreach $customervoipaccs.accounts as $acc}
-													{foreach $acc.phones as $p}
+												{foreach $voipaccounts as $account}
+													{foreach $account.phones as $phone}
                                                         <label>
 															<input type="checkbox" name="assignment[phones][]" value="{$p.id}" {if !empty($assignment.phones) && in_array($p.id, $assignment.phones)} checked{/if}>
-															<span class="bold">{$p.phone}</span> / {$acc.login}
+															<span class="bold">{$phone.phone}</span> / {$account.login}
 														</label>
 														<br>
 													{/foreach}
@@ -370,8 +369,8 @@
 										</tr>
 										{/if}
 
-										{if count($customernodes) || count($customernetdevnodes)}
-										<tr id="a_checkall">
+										{if count($customernodes) || count($customernetdevnodes) || count($voipaccounts)}
+										<tr id="a_checkall" style="display: none;">
 											<td colspan=2"></td>
 											<td>
 												<label>
@@ -472,14 +471,16 @@
 
 	function updateCheckAllNodes() {
 		$('[name="allbox"]').prop('checked',
-			$('[name^="assignment[nodes]"]').length == $('[name^="assignment[nodes]"]:checked').length);
+			$('[name^="assignment[nodes]"]:visible,[name^="assignment[phones]"]:visible').length
+				== $('[name^="assignment[nodes]"]:visible:checked,[name^="assignment[phones]"]:visible:checked').length);
 	}
 
 	function checkAllNodes() {
-		$('[name^="assignment[nodes]"]').prop('checked', $('[name="allbox"]').prop('checked'));
+		$('[name^="assignment[nodes]"]:visible').prop('checked', $('[name="allbox"]').prop('checked'));
+		$('[name^="assignment[phones]"]:visible').prop('checked', $('[name="allbox"]').prop('checked'));
 	}
 
-	$('[name^="assignment[nodes]"]').click(function() {
+	$('[name^="assignment[nodes]"],[name^="assignment[phones]"]').click(function() {
 		updateCheckAllNodes();
 	});
 
@@ -549,6 +550,8 @@
 				$(':checkbox', this).prop('checked', false);
 			}
 		});
+
+		updateCheckAllNodes();
     });
 
 	function updateTariffs() {

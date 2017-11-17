@@ -8,7 +8,7 @@
 	<TR class="hand lmsbox-titlebar" data-lmsbox-content="voipaccountspanel">
 		<TD class="bold">
 			<IMG src="img/voip.gif" alt="">
-			{t a=$customervoipaccounts.total|default:"0"}Voip Accounts ($a):{/t}
+			{t a=$customervoipaccounts|@count|default:"0"}Voip Accounts ($a):{/t}
 		</TD>
 		<TD class="text-right nobr">
 			{if $customerinfo.status != $smarty.const.CSTATUS_INTERESTED && !$customerinfo.deleted}<A href="?m=voipaccountadd&amp;ownerid={$customerinfo.id}">{trans("New Voip Account")} &raquo;</A>&nbsp;{/if}
@@ -39,7 +39,7 @@
 				</THEAD>
 				<TBODY>
 				{cycle name=voips values="light,lucid" print=false}
-				{foreach from=$customervoipaccounts.accounts item=voipaccount}
+				{foreach $customervoipaccounts as $voipaccount}
                                 {block name="customervoipaccountsbox-list-row"}
 				<TR class="highlight {cycle name=voips}"  >
 					<TD class="bold nobr" onclick="return self.location.href='?m=voipaccountinfo&amp;id={$voipaccount.id}'">
