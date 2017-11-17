@@ -1875,6 +1875,8 @@ class LMS
 				$buf = $body;
 			}
 
+			$this->executeHook('email_before_send', array('email' => $this->mail_object, 'backend' => 'pear'));
+
 			$error = $this->mail_object->send($recipients, $headers, $buf);
 			//if (PEAR::isError($error))
 			if (is_a($error, 'PEAR_Error'))
@@ -1981,6 +1983,8 @@ class LMS
 			// set email digital signature
 			if (file_exists($cert) && file_exists($key))
 				$this->mail_object->sign($cert, $key, null);
+
+			$this->executeHook('email_before_send', array('email' => $this->mail_object, 'backend' => 'phpmailer'));
 
 			if (!$this->mail_object->Send())
 				return "Mailer Error: " . $this->mail_object->ErrorInfo;
