@@ -1961,7 +1961,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				p.id AS promotion_id, ps.id AS schema_id,
 				t.name as tariff_name, pa.optional,
 				(CASE WHEN label IS NULL THEN ' . $this->db->Concat("'unlabeled_'", 't.id') . ' ELSE label END) AS label,
-				t.id as tariffid, t.value, t.authtype
+				t.id as tariffid, t.type AS tarifftype, t.value, t.authtype
 			FROM promotions p
 				LEFT JOIN promotionschemas ps ON p.id = ps.promotionid
 				LEFT JOIN promotionassignments pa ON ps.id = pa.promotionschemaid
@@ -2011,6 +2011,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 					'value'    => $assign['value'],
 					'optional' => $assign['optional'],
 					'authtype' => $assign['authtype'],
+					'type' => $assign['tarifftype'],
 				);
 
 				if (preg_match('/^unlabeled_(?<tariffid>[0-9]+)$/', $assign['label'], $m))

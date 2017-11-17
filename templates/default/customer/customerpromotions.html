@@ -60,6 +60,7 @@
 											<label>
 												<input class="schema-tariff-checkbox" type="checkbox" name="{$variable_prefix}[stariffid][{$schemaid}][{$label}]"
 													value="{$item.single.tariffid}" data-label="{$label}"
+													data-tarifftype="{$item.single.type}"
 													{if isset($variables.stariffid[$schemaid][$label]) || !$item.single.optional} checked{/if}
 													{if !$item.single.optional} disabled data-mandatory="1"{/if} data-tariffaccess="{$item.single.authtype}">
 												{$item.single.tariff}
@@ -73,6 +74,7 @@
 												{/if}
 												{foreach $item.selection.items as $item}
 												<option value="{$item.tariffid}" data-tariffaccess="{$item.authtype}"
+													data-tarifftype="{$item.type}"
 													{if in_array($item.tariffid, $variables.stariffid[$schemaid])} selected{/if}>{$item.tariff}</option>
 												{/foreach}
 											</select>

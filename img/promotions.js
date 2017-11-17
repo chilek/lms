@@ -207,7 +207,7 @@ function Promotions(options) {
 					var td = $('<td/>');
 					var html = '';
 					if (data["nodes"]) {
-						html += '<span class="bold">' + lmsMessages.nodes + '</span><br>';
+						html += '<div class="nodes"><span class="bold">' + lmsMessages.nodes + '</span><br>';
 						html += '<select name="' + promotion.variablePrefix + '[snodes][' + schemaid + ']['
                             + label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
 
@@ -232,10 +232,10 @@ function Promotions(options) {
 						});
 
 						html += options;
-						html += '</select>';
+						html += '</select></div>';
 					}
 					if (data["netdevnodes"]) {
-						html += '<br><br><span class="bold">' + lmsMessages.netdevices + '</span><br>';
+						html += '<div class="netdevnodes"><span class="bold">' + lmsMessages.netdevices + '</span><br>';
 						html += '<select name="' + promotion.variablePrefix + '[snodes][' + schemaid + ']['
                             + label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
 
@@ -260,7 +260,7 @@ function Promotions(options) {
 						});
 
 						html += options;
-						html += '</select>';
+						html += '</select></div>';
 					}
 					td.html(html).appendTo(this);
 				});
