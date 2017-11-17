@@ -38,7 +38,8 @@ if(isset($balance['docid']))
 				$balance['number'][$idx] = trans('Invoice No. $a', $number);
 		}
 	}
-$SMARTY->assign('custom_content', ConfigHelper::getConfig('phpui.finances_balance_custom_content'));
+
+$SMARTY->assign('custom_content');
 $SMARTY->assign('userinfo', $userinfo);
 $SMARTY->assign('balancelist', $balance);
 $SMARTY->assign('assignments', $assignments);
