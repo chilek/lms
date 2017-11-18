@@ -101,9 +101,9 @@ function CustomerAssignmentHelper(options) {
 
 	this.promotionSelectionHandler = function() {
 		if (parseInt($(this).val())) {
-			$('#a_location,#a_options,#a_properties').show();
+			$('#a_location,#a_options,#a_existingassignments,#a_properties').show();
 		} else {
-			$('#a_location,#a_options,#a_properties').hide();
+			$('#a_location,#a_options,#a_existingassignments,#a_properties').hide();
 		}
 
 		$('.promotion-table').hide();
@@ -349,25 +349,25 @@ function CustomerAssignmentHelper(options) {
 					td.html(html).appendTo(this);
 				});
 
+				var options = '<option value="">' + lmsMessages.allLocations + '</option>';
 				if (data["locations"]) {
-					var options = '<option value="">' + lmsMessages.allLocations + '</option>';
 					$.each(data["locations"], function(key, value) {
 						options += '<option value="' + value + '"'
 							+ (("location" in selected) && selected["location"] == value ? ' selected' : '') + '>'
 							+ value + '</option>';
 					});
-					$('#location-select').html(options);
 				}
+				$('#location-select').html(options);
 
+				var options = '<option value="-1">' + lmsMessages.noAddress + '</option>';
 				if (data["addresses"]) {
-					var options = '<option value="-1">' + lmsMessages.noAddress + '</option>';
 					$.each(data["addresses"], function(key, value) {
 						options += '<option value="' + value["address_id"] + '"'
 							+ (("recipient_address_id" in selected) && selected["recipient_address_id"] == value["address_id"] ? ' selected' : '') + '>'
 							+ value["location"] + '</option>';
 					});
-					$('#recipient-select').html(options);
 				}
+				$('#recipient-select').html(options);
 
 				$('#a_promotions').show();
 

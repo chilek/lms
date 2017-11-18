@@ -327,7 +327,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                                   	  downceil, uprate, downrate, prodid, plimit, climit, dlimit, upceil_n,
                                                   	  downceil_n, uprate_n, downrate_n, domain_limit, alias_limit, sh_limit,
                                                   	  www_limit, ftp_limit, mail_limit, sql_limit, quota_sh_limit, quota_www_limit,
-                                                  	  quota_ftp_limit, quota_mail_limit, quota_sql_limit. authtype
+                                                  	  quota_ftp_limit, quota_mail_limit, quota_sql_limit, authtype
 												   FROM
 												   	  tariffs WHERE id = ?', array($tariff['id']));
 
@@ -530,6 +530,305 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
 			$this->db->Execute('INSERT INTO voip_number_assignments (number_id, assignment_id)
 				VALUES ' . implode(', ', $values));
+		}
+	}
+
+	public function ValidateAssignment($data) {
+		$error = null;
+		$result = array();
+
+		$a = $data;
+
+		foreach ($a as $key => $val) {
+			if (!is_array($val))
+				$a[$key] = trim($val);
+		}
+
+		$period = sprintf('%d',$a['period']);
+
+		switch ($period) {
+			case DAILY:
+				$at = 0;
+				break;
+
+			case WEEKLY:
+				$at = sprintf('%d',$a['at']);
+
+				if (ConfigHelper::checkConfig('phpui.use_current_payday') && $at == 0)
+					$at = strftime('%u', time());
+
+				if ($at < 1 || $at > 7)
+					$error['at'] = trans('Incorrect day of week (1-7)!');
+				break;
+
+			case MONTHLY:
+				$at = sprintf('%d',$a['at']);
+
+				if (ConfigHelper::checkConfig('phpui.use_current_payday') && $at == 0)
+					$at = date('j', time());
+
+				if (!ConfigHelper::checkConfig('phpui.use_current_payday')
+					&& ConfigHelper::getConfig('phpui.default_monthly_payday') > 0 && $at == 0)
+					$at = ConfigHelper::getConfig('phpui.default_monthly_payday');
+
+				$a['at'] = $at;
+
+				if ($at > 28 || $at < 1)
+					$error['at'] = trans('Incorrect day of month (1-28)!');
+				break;
+
+			case QUARTERLY:
+				if (ConfigHelper::checkConfig('phpui.use_current_payday') && !$a['at']) {
+					$d = date('j', time());
+					$m = date('n', time());
+					$a['at'] = $d.'/'.$m;
+				} elseif (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
+					$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
+				} else {
+					list($d,$m) = explode('/',$a['at']);
+				}
+
+				if (!$error) {
+					if ($d>30 || $d<1 || ($d>28 && $m==2))
+						$error['at'] = trans('This month doesn\'t contain specified number of days');
+
+					if ($m>3 || $m<1)
+						$error['at'] = trans('Incorrect month number (max.3)!');
+
+					$at = ($m-1) * 100 + $d;
+				}
+				break;
+
+			case HALFYEARLY:
+				if (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at']) && $a['at'])
+					$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
+				elseif (ConfigHelper::checkConfig('phpui.use_current_payday') && !$a['at']) {
+					$d = date('j', time());
+					$m = date('n', time());
+					$a['at'] = $d.'/'.$m;
+				} else {
+					list($d,$m) = explode('/',$a['at']);
+				}
+
+				if (!$error) {
+					if ($d>30 || $d<1 || ($d>28 && $m==2))
+						$error['at'] = trans('This month doesn\'t contain specified number of days');
+
+					if ($m>6 || $m<1)
+						$error['at'] = trans('Incorrect month number (max.6)!');
+
+					$at = ($m-1) * 100 + $d;
+				}
+			break;
+
+			case YEARLY:
+				if (ConfigHelper::checkConfig('phpui.use_current_payday') && !$a['at']) {
+					$d = date('j', time());
+					$m = date('n', time());
+					$a['at'] = $d.'/'.$m;
+				} elseif (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
+					$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
+				} else {
+					list($d,$m) = explode('/',$a['at']);
+				}
+
+				if (!$error) {
+					if ($d>30 || $d<1 || ($d>28 && $m==2))
+						$error['at'] = trans('This month doesn\'t contain specified number of days');
+
+					if ($m>12 || $m<1)
+						$error['at'] = trans('Incorrect month number');
+
+					$ttime = mktime(12, 0, 0, $m, $d, 1990);
+					$at = date('z',$ttime) + 1;
+				}
+				break;
+
+			default: // DISPOSABLE
+				$period = DISPOSABLE;
+
+				if (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
+					list($y, $m, $d) = explode('/', $a['at']);
+					if (checkdate($m, $d, $y)) {
+						$at = mktime(0, 0, 0, $m, $d, $y);
+
+						if ($at < mktime(0, 0, 0) && !$a['atwarning']) {
+							$a['atwarning'] = TRUE;
+							$error['at'] = trans('Incorrect date!');
+						}
+					} else
+						$error['at'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+				} else
+					$error['at'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+				break;
+		}
+
+		if (isset($a['datefrom'])) {
+			if ($a['datefrom'] == '') {
+				$from = 0;
+			} elseif (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/',$a['datefrom'])) {
+				list($y, $m, $d) = explode('/', $a['datefrom']);
+
+				if (checkdate($m, $d, $y))
+					$from = mktime(0, 0, 0, $m, $d, $y);
+				else
+					$error['datefrom'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+			} else
+				$error['datefrom'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+		}
+
+		if (isset($a['dateto'])) {
+			if ($a['dateto'] == '') {
+				$to = 0;
+			} elseif (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['dateto'])) {
+				list($y, $m, $d) = explode('/', $a['dateto']);
+
+				if (checkdate($m, $d, $y))
+					$to = mktime(23, 59, 59, $m, $d, $y);
+				else
+					$error['dateto'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+			} else
+				$error['dateto'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
+		}
+
+		if (isset($from) && isset($to)) {
+			if ($to < $from && $to != 0 && $from != 0)
+				$error['dateto'] = trans('Start date can\'t be greater than end date!');
+		}
+
+		$a['discount'] = str_replace(',', '.', $a['discount']);
+		$a['pdiscount'] = 0;
+		$a['vdiscount'] = 0;
+		if (preg_match('/^[0-9]+(\.[0-9]+)*$/', $a['discount'])) {
+			$a['pdiscount'] = ($a['discount_type'] == DISCOUNT_PERCENTAGE ? floatval($a['discount']) : 0);
+			$a['vdiscount'] = ($a['discount_type'] == DISCOUNT_AMOUNT ? floatval($a['discount']) : 0);
+		}
+		if ($a['pdiscount'] < 0 || $a['pdiscount'] > 99.99)
+			$error['discount'] = trans('Wrong discount value!');
+
+		if (intval($a['tariffid']) <= 0)
+			switch ($a['tariffid']) {
+				// suspending
+				case -1:
+					$a['tariffid']  = null;
+					$a['discount']  = 0;
+					$a['pdiscount'] = 0;
+					$a['vdiscount'] = 0;
+					$a['value']     = 0;
+
+					unset($a['schemaid'], $a['stariffid'], $a['invoice'], $a['settlement'], $error['at']);
+					$at = 0;
+				break;
+
+				// promotion schema
+				case -2:
+					if (!$from) {
+						$error['datefrom'] = trans('Promotion start date is required!');
+					} else {
+						$schemaid = isset($a['schemaid']) ? intval($a['schemaid']) : 0;
+						if (count($a['stariffid'][$schemaid]) == 1) {
+							$a['promotiontariffid'] = $a['stariffid'][$schemaid][0];
+						} else {
+							$a['promotiontariffid'] = $a['stariffid'][$schemaid];
+						}
+
+						$a['value']     = 0;
+						$a['discount']  = 0;
+						$a['pdiscount'] = 0;
+						$a['vdiscount'] = 0;
+						// @TODO: handle other period/at values
+						$a['period'] = MONTHLY; // dont know why, remove if you are sure
+						$a['at'] = 1;
+					}
+				break;
+
+				// tariffless
+				default:
+					if (!$a['name'])
+						$error['name'] = trans('Liability name is required!');
+
+					if (!$a['value'])
+						$error['value'] = trans('Liability value is required!');
+					elseif (!preg_match('/^[-]?[0-9.,]+$/', $a['value']))
+						$error['value'] = trans('Incorrect value!');
+					elseif ($a['discount_type'] == 2 && $a['discount'] && $a['value'] - $a['discount'] < 0) {
+						$error['value'] = trans('Value less than discount are not allowed!');
+						$error['discount'] = trans('Value less than discount are not allowed!');
+					}
+
+					unset($a['schemaid'], $a['stariffid']);
+			}
+		else {
+			if ($a['discount_type'] == 2 && $a['discount']
+				&& $this->db->GetOne('SELECT value FROM tariffs WHERE id = ?', array($a['tariffid'])) - $a['discount'] < 0) {
+				$error['value'] = trans('Value less than discount are not allowed!');
+				$error['discount'] = trans('Value less than discount are not allowed!');
+			}
+
+			unset($a['schemaid'], $a['stariffid']);
+		}
+
+		if (isset($error['dateto']))
+			$error['todate'] = $error['dateto'];
+		if (isset($error['datefrom']))
+			$error['fromdate'] = $error['datefrom'];
+
+		$result['error'] = $error;
+		$result['a'] = $a;
+		$result = array_merge($result, compact('period', 'at', 'from', 'to', 'schemaid'));
+
+		return $result;
+	}
+
+	public function UpdateExistingAssignments($data) {
+		$refid = isset($data['reference']) && isset($data['existing_assignments']['reference_document_limit'])
+			? $data['reference'] : null;
+		switch ($data['existing_assignments']['operation']) {
+			case EXISTINGASSIGNMENT_DELETE:
+				$args = array(
+					'customerid' => $data['customerid'],
+				);
+				if ($refid)
+					$args['refid'] = $refid;
+				$aids = $this->db->GetCol('SELECT id FROM assignments WHERE customerid = ?'
+					. (isset($refid) ? ' AND docid = ?' : ''),
+					array_values($args));
+				if (!empty($aids))
+					foreach ($aids as $aid)
+						$this->DeleteAssignment($aid);
+				break;
+			case EXISTINGASSIGNMENT_CUT:
+				$args = array(
+					'customerid' => $data['customerid'],
+				);
+				if ($refid)
+					$args['refid'] = $refid;
+				if (empty($data['datefrom']))
+					list ($year, $month, $day) = explode('/', date('Y/m/d'));
+				else
+					list ($year, $month, $day) = explode('/', $data['datefrom']);
+				$args['datefrom'] = mktime(0, 0, 0, $month, $day, $year);
+
+				// delete assignments which start in future
+				$aids = $this->db->GetCol('SELECT id FROM assignments WHERE customerid = ?'
+					. (isset($refid) ? ' AND docid = ?' : '') . ' AND datefrom >= ?',
+					array_values($args));
+				if (!empty($aids))
+					foreach ($aids as $aid)
+						$this->DeleteAssignment($aid);
+
+				// cut assignment period end date to datefrom
+				$args['dateto'] = $args['datefrom'];
+				$args['at'] = $args['datefrom'];
+				$aids = $this->db->GetCol('SELECT id FROM assignments WHERE customerid = ?'
+					. (isset($refid) ? ' AND docid = ?' : '') . ' AND datefrom <= ? AND (dateto = 0 OR dateto > ?) AND at < ?',
+					array_values($args));
+				if (!empty($aids))
+					foreach ($aids as $aid)
+						$this->db->Execute('UPDATE assignments SET dateto = ? WHERE id = ?',
+							array($args['datefrom'] - 1, $aid));
+
+				break;
 		}
 	}
 

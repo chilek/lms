@@ -145,6 +145,8 @@ version ?.??.?? (????-??-??):
   - improvement: show location and device id on customer network device list [chilan]
   - enhancement: assignments can be created basing on promotion schema during document
     creation [chilan]
+  - enhancement: creating new assignment/document we can decide what should be applied
+    to already existing assignments [chilan]
 
 version 1.11.22 (2017-06-08):
 

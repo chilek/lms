@@ -983,7 +983,17 @@ class LMS
         return $manager->AddAssignment($data);
     }
 
-    public function SuspendAssignment($id, $suspend = TRUE)
+	public function ValidateAssignment($data) {
+		$manager = $this->getFinanceManager();
+		return $manager->ValidateAssignment($data);
+	}
+
+	public function UpdateExistingAssignments($data) {
+		$manager = $this->getFinanceManager();
+		return $manager->UpdateExistingAssignments($data);
+	}
+
+	public function SuspendAssignment($id, $suspend = TRUE)
     {
         $manager = $this->getFinanceManager();
         return $manager->SuspendAssignment($id, $suspend);

@@ -351,6 +351,27 @@
 					</TD>
 				</TR>
 
+				<TR id="a_existingassignments" style="display: none;">
+					<TD>
+						<IMG src="img/money.gif" alt="">
+					</TD>
+					<TD class="bold">
+						{trans("Existing assignments:")}
+					</TD>
+					<TD class="nobr">
+						<select name="{$variable_prefix}[existing_assignments][operation]">
+							{foreach $_EXISTINGASSIGNMENTS as $operid => $operation}
+							<option value="{$operid}"{if $variables.existing_assignments.operation == $operid} selected{/if}>{$operation}</option>
+							{/foreach}
+						</select>
+						<label id="a_reference_document_limit" style="display: none;">
+							<input type="checkbox" name="{$variable_prefix}[existing_assignments][reference_document_limit]"
+								value="1"{if isset($variables.existing_assignments.reference_document_limit)} checked{/if}>
+							{trans("limit to reference document")}
+						</label>
+					</TD>
+				</TR>
+
 				{if $customernodes}
 				<tr id="a_nodes" style="display: none;">
 					<td>

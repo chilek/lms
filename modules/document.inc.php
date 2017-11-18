@@ -221,6 +221,11 @@ function GetReferenceDocuments($doctemplate, $customerid, $JSResponse) {
 	$template = $SMARTY->fetch('document/documentreference.html');
 
 	$JSResponse->assign('referencedocument', 'innerHTML', $template);
+
+	$JSResponse->script('$(\'[name="document[reference]"]\').change(function() {'
+		. ' if (parseInt($(this).val())) { $("#a_reference_document_limit").show(); }'
+		. ' else { $("#a_reference_document_limit").hide(); }'
+		. '}).trigger("change")');
 }
 
 function CustomerChanged($doctype, $doctemplate, $numberplanid, $customerid) {
