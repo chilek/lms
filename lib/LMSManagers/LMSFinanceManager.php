@@ -810,12 +810,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				$args['datefrom'] = mktime(0, 0, 0, $month, $day, $year);
 
 				// delete assignments which start in future
+				$args['at'] = $args['datefrom'];
 				$aids = $this->db->GetCol('SELECT id FROM assignments WHERE customerid = ?'
-					. (isset($refid) ? ' AND docid = ?' : '') . ' AND datefrom >= ?',
+					. (isset($refid) ? ' AND docid = ?' : '') . ' AND (datefrom >= ? OR at >= ?)',
 					array_values($args));
 				if (!empty($aids))
 					foreach ($aids as $aid)
 						$this->DeleteAssignment($aid);
+				unset($args['at']);
 
 				// cut assignment period end date to datefrom
 				$args['dateto'] = $args['datefrom'];
