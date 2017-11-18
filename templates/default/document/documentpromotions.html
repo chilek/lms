@@ -18,7 +18,7 @@
 				<TBODY>
 				<TR>
 					<TD>
-						{include file="customer/customerassignment.html" variable_prefix="document[assignment]" variables=$document.assignment promotion_only=1}
+						{include file="customer/customerassignmenthelper.html" variable_prefix="document[assignment]" variables=$document.assignment promotion_only=1}
 					</TD>
 				</TR>
 				</TBODY>
@@ -53,9 +53,18 @@
 		hideFinances: {if !ConfigHelper::checkConfig('privileges.superuser') && ConfigHelper::checkConfig('privileges.hide_finances')}true{else}false{/if}
 	}
 
-	var promotions = new Promotions(assignment_settings);
+	var customer_assignment_helper = new CustomerAssignmentHelper(assignment_settings);
 
 	$('#a_period').remove();
+
+	$(function() {
+		$('#submit-button').click(function (e) {
+			if (!customer_assignment_helper.validate(e)) {
+				return;
+			}
+			document.documentadd.submit();
+		});
+	});
 
 	if (getCookie('documentpromotionpanel') == '1')
 		$('#documentpromotionpanel').show();

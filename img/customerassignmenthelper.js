@@ -1,7 +1,7 @@
 // $Id$
 
-function Promotions(options) {
-	var promotion = this;
+function CustomerAssignmentHelper(options) {
+	var helper = this;
 
 	if (typeof options === 'object') {
 		if ('customerid' in options) {
@@ -53,7 +53,7 @@ function Promotions(options) {
 	}
 
 	this.initEventHandlers = function() {
-		$('#assignment-submit').click(function () {
+		$('#asubmit-button').click(function () {
 			$('.schema-tariff-checkbox[data-mandatory]:checkbox').removeAttr('disabled');
 		});
 
@@ -67,7 +67,7 @@ function Promotions(options) {
 	this.validate = function(e) {
 		var schemaid = $('#promotion-select').val();
 		var tariffs = {};
-		$('[name^="' + promotion.variablePrefix + '[stariffid][' + schemaid + ']"]').each(function () {
+		$('[name^="' + helper.variablePrefix + '[stariffid][' + schemaid + ']"]').each(function () {
 			if ($(this).is('.schema-tariff-selection') || $(this).prop('checked')) {
 				if ($(this).val() > 0) {
 					tariffs[$(this).attr('data-label')] = $(this).val();
@@ -75,15 +75,15 @@ function Promotions(options) {
 			}
 		});
 		if ($.isEmptyObject(tariffs)) {
-			return false;
+			return confirm(lmsMessages.noAssignmentWarning);
 		}
 		var cancelled = 0;
 		$.each(tariffs, function (label, tariffid) {
 			if (cancelled) {
 				return false;
 			}
-			if (promotion.tariffTypes[tariffid] == promotion.internetTariffType
-		        && !$('[name^="' + promotion.variablePrefix + '[snodes][' + schemaid + '][' + label + ']"]:checked').length
+			if (helper.tariffTypes[tariffid] == helper.internetTariffType
+		        && !$('[name^="' + helper.variablePrefix + '[snodes][' + schemaid + '][' + label + ']"]:checked').length
 			    && !confirm(lmsMessages.nodeAssignmentWarning)) {
 				cancelled = 1;
 			}
@@ -122,11 +122,11 @@ function Promotions(options) {
 		}
 
 		switch (tarifftype) {
-			case promotion.internetTariffType:
+			case helper.internetTariffType:
 				tr.find('div.nodes,div.netdevnodes').show();
 				tr.find('div.phones').hide();
 				break;
-			case promotion.phoneTariffType:
+			case helper.phoneTariffType:
 				tr.find('div.nodes,div.netdevnodes').hide();
 				tr.find('div.phones').show();
 				break;
@@ -137,7 +137,7 @@ function Promotions(options) {
 		init_multiselects('select.lms-ui-multiselect-deferred:visible');
 
 		var ms;
-		if (tarifftype == promotion.phoneTariffType) {
+		if (tarifftype == helper.phoneTariffType) {
 			ms = tr.find('div.phones .lms-ui-multiselect').data('multiselect-object');
 		} else {
 			ms = tr.find('div.nodes .lms-ui-multiselect,div.netdevnodes .lms-ui-multiselect').data('multiselect-object');
@@ -172,7 +172,7 @@ function Promotions(options) {
 		}
 
 		switch (tarifftype) {
-			case promotion.phoneTariffType:
+			case helper.phoneTariffType:
 				tr.find('div.nodes,div.netdevnodes').hide();
 				tr.find('div.phones').show();
 				break;
@@ -184,7 +184,7 @@ function Promotions(options) {
 		init_multiselects('select.lms-ui-multiselect-deferred:visible');
 
 		var ms;
-		if (tarifftype == promotion.phoneTariffType) {
+		if (tarifftype == helper.phoneTariffType) {
 			ms = tr.find('div.phones .lms-ui-multiselect').data('multiselect-object');
 		} else {
 			ms = tr.find('div.nodes .lms-ui-multiselect,div.netdevnodes .lms-ui-multiselect').data('multiselect-object');
@@ -253,7 +253,7 @@ function Promotions(options) {
 					if (data["nodes"]) {
 						html += '<div class="nodes"><img src="img/node.gif"> '
 							+ '<span class="bold">' + lmsMessages.nodes + '</span><br>';
-						html += '<select name="' + promotion.variablePrefix + '[snodes][' + schemaid + ']['
+						html += '<select name="' + helper.variablePrefix + '[snodes][' + schemaid + ']['
                             + label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
 
 						var options = '';
@@ -283,7 +283,7 @@ function Promotions(options) {
 					if (data["netdevnodes"]) {
 						html += '<div class="netdevnodes"><ing src="img/netdev.gif"> '
 							+ '<span class="bold">' + lmsMessages.netdevices + '</span><br>';
-						html += '<select name="' + promotion.variablePrefix + '[snodes][' + schemaid + ']['
+						html += '<select name="' + helper.variablePrefix + '[snodes][' + schemaid + ']['
                             + label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
 
 						var options = '';
@@ -313,7 +313,7 @@ function Promotions(options) {
 					if (data["voipaccounts"]) {
 						html += '<div class="phones"><img src="img/voip.gif"> '
 							+ '<span class="bold">' + lmsMessages.voipAccounts + '</span><br>';
-						html += '<select name="' + promotion.variablePrefix + '[sphones][' + schemaid + ']['
+						html += '<select name="' + helper.variablePrefix + '[sphones][' + schemaid + ']['
 							+ label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
 
 						var options = '';
@@ -380,3 +380,92 @@ function Promotions(options) {
 	this.updateDevices();
 	this.initEventHandlers();
 }
+
+
+function checkAllNodes() {
+	$('[name^="assignment[nodes]"]:visible').prop('checked', $('[name="allbox"]').prop('checked'));
+	$('[name^="assignment[phones]"]:visible').prop('checked', $('[name="allbox"]').prop('checked'));
+}
+
+function updateCheckAllNodes() {
+	$('[name="allbox"]').prop('checked',
+		$('[name^="assignment[nodes]"]:visible,[name^="assignment[phones]"]:visible').length
+		== $('[name^="assignment[nodes]"]:visible:checked,[name^="assignment[phones]"]:visible:checked').length);
+}
+
+$('[name^="assignment[nodes]"],[name^="assignment[phones]"]').click(function() {
+	updateCheckAllNodes();
+});
+
+function tariffSelectionHandler() {
+	var tariff_select = $('#tariff-select');
+	var selected = tariff_select.find(':selected');
+	var tarifftype = selected.attr('data-tarifftype');
+	var tariffaccess = selected.attr('data-tariffaccess');
+	if (typeof(tariffaccess) == 'undefined') {
+		tariffaccess = 0;
+	} else {
+		tariffaccess = parseInt(tariffaccess);
+	}
+	var val = tariff_select.val();
+
+	$('#tarifftype').val(tarifftype);
+
+	if (val == -2) {
+		$('#a_promotions').show();
+	} else {
+		$('#a_promotions').hide();
+	}
+
+	if (val == '') {
+		$('#a_tax,#a_value,#a_productid,#a_name').show();
+		$('#a_attribute').hide();
+	} else {
+		$('#a_tax,#a_value,#a_productid,#a_name').hide();
+		if (val == -1) {
+			$('#a_attribute').hide();
+		} else {
+			$('#a_attribute').show();
+		}
+	}
+
+	if (val == -1) {
+		$('#a_numberplan,#a_paytype,#a_address,#a_options,#a_day').hide();
+	} else {
+		$('#a_numberplan,#a_paytype,#a_address,#a_options,#a_day').show();
+	}
+
+	if (tarifftype == assignment_settings.phoneTariffType) {
+		$('#a_phones,#a_checkall').show();
+		$('#a_nodes,#a_netdevnodes').hide();
+	} else {
+		$('#a_phones').hide();
+		if (val == -1 || val == -2) {
+			$('#a_nodes,#a_netdevnodes,#a_checkall').hide();
+		} else {
+			$('#a_nodes,#a_netdevnodes,#a_checkall').show();
+		}
+	}
+
+	if (!assignment_settings.hideFinances) {
+		if (val <= -1) {
+			$('#a_discount').hide();
+		} else {
+			$('#a_discount').show();
+		}
+	}
+
+	$('span.global-node-checkbox').each(function(key, value) {
+		var authtype = parseInt($(this).attr('data-tariffaccess'));
+		if ((authtype && (authtype & tariffaccess)) || !tariffaccess) {
+			$(this).show();
+		} else {
+			$(this).hide();
+			$(':checkbox', this).prop('checked', false);
+		}
+	});
+
+	updateCheckAllNodes();
+}
+
+$('#tariff-select').change(tariffSelectionHandler);

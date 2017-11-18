@@ -3635,6 +3635,7 @@ $_LANG['CANCELLED'] = 'ANULOWANO';
 $_LANG['NO ACCOUNTANT DOCUMENT'] = 'DOKUMENT NIEKSIĘGOWY';
 
 $_LANG['No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?'] = 'Nie przypisano żadnego komputera do zobowiązania, podczas gdy co najmniej jeden jest zalecany! Jesteś pewien, że chcesz kontynuować mimo tego?';
+$_LANG['No assignment selected, by at least one is recommended! Are you sure you want to continue despite of this?'] = 'Nie wybrano żadnego zobowiązania, podczas gdy co najmniej jedno jest zalecane! Jesteś pewien, że chcesz kontynuować mimo tego?';
 
 $_LANG['without gps coords'] = 'bez współrzędnych gps';
 
