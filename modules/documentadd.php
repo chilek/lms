@@ -297,6 +297,8 @@ if (isset($_POST['document'])) {
 		$a['docid'] = $docid;
 		$a['customerid'] = $document['customerid'];
 		$a['reference'] = $document['reference']['id'];
+		$a['datefrom'] = $from;
+		$a['dateto'] = $to;
 
 		if (isset($document['closed']))
 			$LMS->UpdateExistingAssignments($a);
@@ -305,8 +307,6 @@ if (isset($_POST['document'])) {
 			// create assignments basing on selected promotion schema
 			$a['period'] = $period;
 			$a['at'] = $at;
-			$a['datefrom'] = $from;
-			$a['dateto'] = $to;
 			$a['commited'] = isset($document['closed']) ? 1 : 0;
 
 			if (is_array($a['stariffid'][$schemaid])) {

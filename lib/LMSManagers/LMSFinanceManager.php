@@ -803,11 +803,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				);
 				if ($refid)
 					$args['refid'] = $refid;
-				if (empty($data['datefrom']))
+				if (empty($data['datefrom'])) {
 					list ($year, $month, $day) = explode('/', date('Y/m/d'));
-				else
-					list ($year, $month, $day) = explode('/', $data['datefrom']);
-				$args['datefrom'] = mktime(0, 0, 0, $month, $day, $year);
+					$args['datefrom'] = mktime(0, 0, 0, $month, $day, $year);
+				} else
+					$args['datefrom'] = $data['datefrom'];
 
 				// delete assignments which start in future
 				$args['at'] = $args['datefrom'];
