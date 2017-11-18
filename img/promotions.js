@@ -229,7 +229,7 @@ function Promotions(options) {
 			selected = this.selected;
 		}
 
-		$.ajax('?m=customerdevices&api=1&customerid=' + customerid, {
+		$.ajax('?m=customerassignmenthelper&api=1&customerid=' + customerid, {
 			async: true,
 			method: 'POST',
 			dataType: 'json',
@@ -342,11 +342,31 @@ function Promotions(options) {
 					td.html(html).appendTo(this);
 				});
 
+				if (data["locations"]) {
+					var options = '<option value="">' + lmsMessages.allLocations + '</option>';
+					$.each(data["locations"], function(key, value) {
+						options += '<option value="' + value + '"'
+							+ (("location" in selected) && selected["location"] == value ? ' selected' : '') + '>'
+							+ value + '</option>';
+					});
+					$('#location-select').html(options);
+				}
+
+				if (data["addresses"]) {
+					var options = '<option value="-1">' + lmsMessages.noAddress + '</option>';
+					$.each(data["addresses"], function(key, value) {
+						options += '<option value="' + value["address_id"] + '"'
+							+ (("recipient_address_id" in selected) && selected["recipient_address_id"] == value["address_id"] ? ' selected' : '') + '>'
+							+ value["location"] + '</option>';
+					});
+					$('#recipient-select').html(options);
+				}
+
 				$('#a_promotions').show();
                 init_multiselects('select.lms-ui-multiselect-deferred:visible');
 
 				$('#promotion-select').trigger('change');
-				$('#tariff-select').trigger('change');
+				tariffSelectionHandler();
             }
 		});
     }

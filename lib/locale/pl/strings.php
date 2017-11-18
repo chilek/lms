@@ -2769,6 +2769,7 @@ $_LANG['Select accounting period (optional) - overwrites customer liability\'s p
 $_LANG['Select promotion schema'] = 'Wybierz schemat promocji';
 $_LANG['Select promotion location'] = 'Wybierz lokalizację promocji';
 $_LANG['per promotion schema'] = 'wg schematu promocji';
+$_LANG['Promotion Schema:'] = 'Schemat promocyjny:';
 $_LANG['Additional subscription after promotion period:'] = 'Dodatkowa taryfa po okresie promocji:';
 $_LANG['Additional subscription is useless when contract prolongation is not set!'] = 'Dodatkowa taryfa nie ma sensu gdy nie zaznaczono przedłużenia umowy!';
 $_LANG['Contract prolongation after promotion period:'] = 'Przedłużenie umowy po okresie promocji:';

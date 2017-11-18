@@ -3,6 +3,8 @@
 {block name=module_content}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+<script src="img/promotions.js"></script>
+<script src="img/customerassignment.js"></script>
 {$xajax}
 <script type="text/javascript">
 <!--
@@ -36,6 +38,7 @@
 			$('[name="document[templ]"]').val(),
 			$('[name="document[numberplanid]"').val(),
 			$('[name="customerid"]').val());
+		promotions.setCustomer($('[name="customerid"]').val());
 	}
 //-->
 </script>
@@ -177,7 +180,12 @@
 	</TR>
     </TBODY>
 </TABLE>
-<BR><DIV id="plugin" name="plugin">{$plugin_result}</DIV>
+
+{block name="documentpromotions"}
+	{include file="document/documentpromotions.html"}
+{/block}
+
+<DIV id="plugin" name="plugin">{$plugin_result}</DIV>
 </FORM>
 <SCRIPT type="text/javascript">
 <!--

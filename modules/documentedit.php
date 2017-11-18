@@ -183,7 +183,7 @@ if(isset($_POST['document']))
 					$documentedit['closed'] ? ($document['closed'] ? $document['sdate'] : time()) : 0,
 					$documentedit['closed'] ? ($document['closed'] ? $document['cuserid'] : $userid) : null,
 					$documentedit['number'],
-					$documentedit['numberplanid'],
+					empty($documentedit['numberplanid']) ? null : $documentedit['numberplanid'],
 					$fullnumber,
 					$documentedit['id'],
 					));

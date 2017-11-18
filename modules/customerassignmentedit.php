@@ -484,31 +484,26 @@ $LMS->executeHook(
     )
 );
 
-$customernodes = $LMS->GetCustomerNodes($customer['id']);
-$SMARTY->assign('customernodes', $customernodes);
-
-$netdevnodes = $LMS->getCustomerNetDevNodes($customer['id']);
-$SMARTY->assign('customernetdevnodes', $netdevnodes);
-
-$voipaccounts = $LMS->GetCustomerVoipAccounts($customer['id']);
-$SMARTY->assign('voipaccounts', $voipaccounts);
-
-// -----
-
-$SMARTY->assign('tags', $LMS->TarifftagGetAll());
-
-$SMARTY->assign('customeraddresses'  , $LMS->getCustomerAddresses($customer['id']));
-$SMARTY->assign('tariffs'            , $LMS->GetTariffs($a['tariffid']));
-$SMARTY->assign('taxeslist'          , $LMS->GetTaxes());
-$SMARTY->assign('expired'            , $expired);
-$SMARTY->assign('assignment'         , $a);
-$SMARTY->assign('assignments'        , $LMS->GetCustomerAssignments($customer['id'], $expired));
+$SMARTY->assign('customernodes', $LMS->GetCustomerNodes($customer['id']));
+$SMARTY->assign('customernetdevnodes', $LMS->getCustomerNetDevNodes($customer['id']));
+$SMARTY->assign('voipaccounts', $LMS->GetCustomerVoipAccounts($customer['id']));
+$SMARTY->assign('customeraddresses', $LMS->getCustomerAddresses($customer['id']));
 $SMARTY->assign('numberplanlist'     , $LMS->GetNumberPlans(array(
 	'doctype' => DOC_INVOICE,
 	'cdate' => null,
 	'division' => $customer['divisionid'],
 	'next' => false,
 )));
+
+// -----
+
+$SMARTY->assign('tags', $LMS->TarifftagGetAll());
+
+$SMARTY->assign('tariffs'            , $LMS->GetTariffs($a['tariffid']));
+$SMARTY->assign('taxeslist'          , $LMS->GetTaxes());
+$SMARTY->assign('expired'            , $expired);
+$SMARTY->assign('assignment'         , $a);
+$SMARTY->assign('assignments'        , $LMS->GetCustomerAssignments($customer['id'], $expired));
 $SMARTY->assign('customerinfo', $customer);
 $SMARTY->display('customer/customerassignmentsedit.html');
 

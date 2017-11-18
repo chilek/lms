@@ -374,6 +374,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
                     SYSLOG::RES_LIAB    => empty($lid) ? null : $lid,
                     'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : NULL,
+                    'docid'				=> empty($data['docid']) ? null : $data['docid'],
                     'commited'			=> $commited,
                 );
 
@@ -414,6 +415,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
                         SYSLOG::RES_LIAB    => null,
                         'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : NULL,
+						'docid'				=> empty($data['docid']) ? null : $data['docid'],
                         'commited'			=> $commited,
                     );
 
@@ -458,6 +460,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 'attribute'         => !empty($data['attribute']) ? $data['attribute'] : NULL,
                 SYSLOG::RES_LIAB    => !isset($lid) || empty($lid) ? null : $lid,
                 'recipient_address_id' => $data['recipient_address_id'] > 0 ? $data['recipient_address_id'] : NULL,
+				'docid'				=> empty($data['docid']) ? null : $data['docid'],
                 'commited'			=> $commited,
             );
 
@@ -480,8 +483,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
     	$this->db->Execute('INSERT INTO assignments
     							(tariffid, customerid, period, at, invoice, settlement, numberplanid,
     							paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid, recipient_address_id,
-    							commited)
-					        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    							docid, commited)
+					        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					        array_values($args));
 
         $id = $this->db->GetLastInsertID('assignments');

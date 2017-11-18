@@ -83,4 +83,6 @@ interface LMSCustomerManagerInterface
     public function getFullAddressForCustomerStuff( $customer_id );
 
 	public function GetCustomerContacts($id, $mask = null);
+
+	public function GetCustomerDivision($id);
 }

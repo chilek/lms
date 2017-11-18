@@ -603,6 +603,11 @@ class LMS
         return $manager->GetCustomerContacts($id, $mask);
     }
 
+	public function GetCustomerDivision($id) {
+		$manager = $this->getCustomerManager();
+		return $manager->GetCustomerDivision($id);
+	}
+
     /*
      * Customer groups
      */
