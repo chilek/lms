@@ -82,8 +82,11 @@ function CustomerAssignmentHelper(options) {
 			if (cancelled) {
 				return false;
 			}
+			var selector  = '[name^="' + helper.variablePrefix + '[snodes][' + schemaid + '][' + label + ']"]';
 			if (helper.tariffTypes[tariffid] == helper.internetTariffType
-		        && !$('[name^="' + helper.variablePrefix + '[snodes][' + schemaid + '][' + label + ']"]:checked').length
+		        && (($('input' + selector).length && $('div#' + $(selector).closest('div').attr('id').replace('-layer', '') + ':visible').length
+						&& !$(selector + ':checked').length)
+					|| ($('select' + selector).length && !$(selector).val().length))
 			    && !confirm(lmsMessages.nodeAssignmentWarning)) {
 				cancelled = 1;
 			}

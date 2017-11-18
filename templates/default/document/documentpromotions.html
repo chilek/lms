@@ -64,6 +64,10 @@
 			}
 			document.documentadd.submit();
 		});
+
+		$('[data-lmsbox-content="documentpromotionpanel"]').click(function() {
+			init_multiselects('select.lms-ui-multiselect-deferred:visible');
+		});
 	});
 
 	if (getCookie('documentpromotionpanel') == '1')
