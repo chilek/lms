@@ -100,11 +100,15 @@ function CustomerAssignmentHelper(options) {
 	}
 
 	this.promotionSelectionHandler = function() {
+		if (parseInt($(this).val())) {
+			$('#a_location,#a_options,#a_properties').show();
+		} else {
+			$('#a_location,#a_options,#a_properties').hide();
+		}
+
 		$('.promotion-table').hide();
 
-		var t = $(this).find('option:selected').val();
-
-		$("#schema" + t).show();
+		$("#schema" + $(this).val()).show();
 
 		init_multiselects('select.lms-ui-multiselect-deferred:visible');
 
@@ -366,6 +370,7 @@ function CustomerAssignmentHelper(options) {
 				}
 
 				$('#a_promotions').show();
+
                 init_multiselects('select.lms-ui-multiselect-deferred:visible');
 
 				$('#promotion-select').trigger('change');
@@ -401,6 +406,7 @@ $('[name^="assignment[nodes]"],[name^="assignment[phones]"]').click(function() {
 });
 
 function tariffSelectionHandler() {
+	var promotion_select = parseInt($('#promotion-select').val());
 	var tariff_select = $('#tariff-select');
 	var selected = tariff_select.find(':selected');
 	var tarifftype = selected.attr('data-tarifftype');
@@ -433,9 +439,12 @@ function tariffSelectionHandler() {
 	}
 
 	if (val == -1) {
-		$('#a_numberplan,#a_paytype,#a_address,#a_options,#a_day').hide();
+		$('#a_numberplan,#a_paytype,#a_address,#a_day,#a_options').hide();
 	} else {
-		$('#a_numberplan,#a_paytype,#a_address,#a_options,#a_day').show();
+		$('#a_numberplan,#a_paytype,#a_address,#a_day').show();
+		if (promotion_select) {
+			$('#a_options').show();
+		}
 	}
 
 	if (tarifftype == assignment_settings.phoneTariffType) {

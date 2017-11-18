@@ -102,154 +102,155 @@ if (isset($_POST['document'])) {
 			$a[$key] = trim($val);
 	}
 
-	$period = sprintf('%d',$a['period']);
+	if ($a['schemaid']) {
+		$period = sprintf('%d', $a['period']);
 
-	switch($period) {
-		case DAILY:
-			$at = 0;
-			break;
+		switch ($period) {
+			case DAILY:
+				$at = 0;
+				break;
 
-		case WEEKLY:
-			$at = sprintf('%d',$a['at']);
+			case WEEKLY:
+				$at = sprintf('%d', $a['at']);
 
-			if (ConfigHelper::checkConfig('phpui.use_current_payday') && $at == 0)
-				$at = strftime('%u', time());
+				if (ConfigHelper::checkConfig('phpui.use_current_payday') && $at == 0)
+					$at = strftime('%u', time());
 
-			if ($at < 1 || $at > 7)
-				$error['at'] = trans('Incorrect day of week (1-7)!');
-			break;
+				if ($at < 1 || $at > 7)
+					$error['at'] = trans('Incorrect day of week (1-7)!');
+				break;
 
-		case MONTHLY:
-			$at = sprintf('%d',$a['at']);
+			case MONTHLY:
+				$at = sprintf('%d', $a['at']);
 
-			if (ConfigHelper::checkConfig('phpui.use_current_payday') && $at == 0)
-				$at = date('j', time());
+				if (ConfigHelper::checkConfig('phpui.use_current_payday') && $at == 0)
+					$at = date('j', time());
 
-			if (!ConfigHelper::checkConfig('phpui.use_current_payday')
-				&& ConfigHelper::getConfig('phpui.default_monthly_payday') > 0 && $at == 0)
-				$at = ConfigHelper::getConfig('phpui.default_monthly_payday');
+				if (!ConfigHelper::checkConfig('phpui.use_current_payday')
+					&& ConfigHelper::getConfig('phpui.default_monthly_payday') > 0 && $at == 0)
+					$at = ConfigHelper::getConfig('phpui.default_monthly_payday');
 
-			$a['at'] = $at;
+				$a['at'] = $at;
 
-			if($at > 28 || $at < 1)
-				$error['at'] = trans('Incorrect day of month (1-28)!');
-			break;
+				if ($at > 28 || $at < 1)
+					$error['at'] = trans('Incorrect day of month (1-28)!');
+				break;
 
-		case QUARTERLY:
-			if (ConfigHelper::checkConfig('phpui.use_current_payday') && !$a['at']) {
-				$d = date('j', time());
-				$m = date('n', time());
-				$a['at'] = $d.'/'.$m;
-			} elseif(!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
-				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
-			} else {
-				list($d,$m) = explode('/',$a['at']);
-			}
+			case QUARTERLY:
+				if (ConfigHelper::checkConfig('phpui.use_current_payday') && !$a['at']) {
+					$d = date('j', time());
+					$m = date('n', time());
+					$a['at'] = $d . '/' . $m;
+				} elseif (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
+					$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
+				} else {
+					list($d, $m) = explode('/', $a['at']);
+				}
 
-			if (!$error) {
-				if ($d>30 || $d<1 || ($d>28 && $m==2))
-					$error['at'] = trans('This month doesn\'t contain specified number of days');
+				if (!$error) {
+					if ($d > 30 || $d < 1 || ($d > 28 && $m == 2))
+						$error['at'] = trans('This month doesn\'t contain specified number of days');
 
-				if ($m>3 || $m<1)
-					$error['at'] = trans('Incorrect month number (max.3)!');
+					if ($m > 3 || $m < 1)
+						$error['at'] = trans('Incorrect month number (max.3)!');
 
-				$at = ($m-1) * 100 + $d;
-			}
-			break;
+					$at = ($m - 1) * 100 + $d;
+				}
+				break;
 
-		case HALFYEARLY:
-			if (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at']) && $a['at'])
-				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
-			elseif (ConfigHelper::checkConfig('phpui.use_current_payday') && !$a['at']) {
-				$d = date('j', time());
-				$m = date('n', time());
-				$a['at'] = $d.'/'.$m;
-			} else {
-				list($d,$m) = explode('/',$a['at']);
-			}
+			case HALFYEARLY:
+				if (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at']) && $a['at'])
+					$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
+				elseif (ConfigHelper::checkConfig('phpui.use_current_payday') && !$a['at']) {
+					$d = date('j', time());
+					$m = date('n', time());
+					$a['at'] = $d . '/' . $m;
+				} else {
+					list($d, $m) = explode('/', $a['at']);
+				}
 
-			if (!$error) {
-				if ($d>30 || $d<1 || ($d>28 && $m==2))
-					$error['at'] = trans('This month doesn\'t contain specified number of days');
+				if (!$error) {
+					if ($d > 30 || $d < 1 || ($d > 28 && $m == 2))
+						$error['at'] = trans('This month doesn\'t contain specified number of days');
 
-				if ($m>6 || $m<1)
-					$error['at'] = trans('Incorrect month number (max.6)!');
+					if ($m > 6 || $m < 1)
+						$error['at'] = trans('Incorrect month number (max.6)!');
 
-				$at = ($m-1) * 100 + $d;
-			}
-			break;
+					$at = ($m - 1) * 100 + $d;
+				}
+				break;
 
-		case YEARLY:
-			if (ConfigHelper::checkConfig('phpui.use_current_payday') && !$a['at']) {
-				$d = date('j', time());
-				$m = date('n', time());
-				$a['at'] = $d.'/'.$m;
-			} elseif(!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
-				$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
-			} else {
-				list($d,$m) = explode('/',$a['at']);
-			}
+			case YEARLY:
+				if (ConfigHelper::checkConfig('phpui.use_current_payday') && !$a['at']) {
+					$d = date('j', time());
+					$m = date('n', time());
+					$a['at'] = $d . '/' . $m;
+				} elseif (!preg_match('/^[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
+					$error['at'] = trans('Incorrect date format! Enter date in DD/MM format!');
+				} else {
+					list($d, $m) = explode('/', $a['at']);
+				}
 
-			if (!$error) {
-				if ($d>30 || $d<1 || ($d>28 && $m==2))
-					$error['at'] = trans('This month doesn\'t contain specified number of days');
+				if (!$error) {
+					if ($d > 30 || $d < 1 || ($d > 28 && $m == 2))
+						$error['at'] = trans('This month doesn\'t contain specified number of days');
 
-				if ($m>12 || $m<1)
-					$error['at'] = trans('Incorrect month number');
+					if ($m > 12 || $m < 1)
+						$error['at'] = trans('Incorrect month number');
 
-				$ttime = mktime(12, 0, 0, $m, $d, 1990);
-				$at = date('z',$ttime) + 1;
-			}
-			break;
+					$ttime = mktime(12, 0, 0, $m, $d, 1990);
+					$at = date('z', $ttime) + 1;
+				}
+				break;
 
-		default: // DISPOSABLE
-			$period = DISPOSABLE;
+			default: // DISPOSABLE
+				$period = DISPOSABLE;
 
-			if(preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
-				list($y, $m, $d) = explode('/', $a['at']);
-				if (checkdate($m, $d, $y)) {
-					$at = mktime(0, 0, 0, $m, $d, $y);
+				if (preg_match('/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}$/', $a['at'])) {
+					list($y, $m, $d) = explode('/', $a['at']);
+					if (checkdate($m, $d, $y)) {
+						$at = mktime(0, 0, 0, $m, $d, $y);
 
-					if ($at < mktime(0, 0, 0) && !$a['atwarning']) {
-						$a['atwarning'] = TRUE;
-						$error['at'] = trans('Incorrect date!');
-					}
+						if ($at < mktime(0, 0, 0) && !$a['atwarning']) {
+							$a['atwarning'] = TRUE;
+							$error['at'] = trans('Incorrect date!');
+						}
+					} else
+						$error['at'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
 				} else
 					$error['at'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-			} else
-				$error['at'] = trans('Incorrect date format! Enter date in YYYY/MM/DD format!');
-			break;
-	}
-
-	$a['discount'] = str_replace(',', '.', $a['discount']);
-	$a['pdiscount'] = 0;
-	$a['vdiscount'] = 0;
-	if (preg_match('/^[0-9]+(\.[0-9]+)*$/', $a['discount'])) {
-		$a['pdiscount'] = ($a['discount_type'] == DISCOUNT_PERCENTAGE ? floatval($a['discount']) : 0);
-		$a['vdiscount'] = ($a['discount_type'] == DISCOUNT_AMOUNT ? floatval($a['discount']) : 0);
-	}
-	if ($a['pdiscount'] < 0 || $a['pdiscount'] > 99.99)
-		$error['discount'] = trans('Wrong discount value!');
-
-	if (empty($document['fromdate'])) {
-		$error['fromdate'] = trans('Promotion start date is required!');
-	} else {
-		$schemaid = isset($a['schemaid']) ? intval($a['schemaid']) : 0;
-		if (count($a['stariffid'][$schemaid]) == 1) {
-			$a['promotiontariffid'] = $a['stariffid'][$schemaid][0];
-		} else {
-			$a['promotiontariffid'] = $a['stariffid'][$schemaid];
+				break;
 		}
 
-		$a['value']     = 0;
-		$a['discount']  = 0;
+		$a['discount'] = str_replace(',', '.', $a['discount']);
 		$a['pdiscount'] = 0;
 		$a['vdiscount'] = 0;
-		// @TODO: handle other period/at values
-		$a['period'] = MONTHLY; // dont know why, remove if you are sure
-		$a['at'] = 1;
-	}
+		if (preg_match('/^[0-9]+(\.[0-9]+)*$/', $a['discount'])) {
+			$a['pdiscount'] = ($a['discount_type'] == DISCOUNT_PERCENTAGE ? floatval($a['discount']) : 0);
+			$a['vdiscount'] = ($a['discount_type'] == DISCOUNT_AMOUNT ? floatval($a['discount']) : 0);
+		}
+		if ($a['pdiscount'] < 0 || $a['pdiscount'] > 99.99)
+			$error['discount'] = trans('Wrong discount value!');
 
+		if (empty($document['fromdate'])) {
+			$error['fromdate'] = trans('Promotion start date is required!');
+		} else {
+			$schemaid = isset($a['schemaid']) ? intval($a['schemaid']) : 0;
+			if (count($a['stariffid'][$schemaid]) == 1) {
+				$a['promotiontariffid'] = $a['stariffid'][$schemaid][0];
+			} else {
+				$a['promotiontariffid'] = $a['stariffid'][$schemaid];
+			}
+
+			$a['value'] = 0;
+			$a['discount'] = 0;
+			$a['pdiscount'] = 0;
+			$a['vdiscount'] = 0;
+			// @TODO: handle other period/at values
+			$a['period'] = MONTHLY; // dont know why, remove if you are sure
+			$a['at'] = 1;
+		}
+	}
 
 	$files = array();
 
@@ -440,28 +441,30 @@ if (isset($_POST['document'])) {
 			include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $engine['name']
 				. DIRECTORY_SEPARATOR . $engine['post-action'] . '.php');
 
-		// create assignments basing on selected promotion schema
-		$a['customerid'] = $document['customerid'];
-		$a['period']     = $period;
-		$a['at']         = $at;
-		$a['datefrom']   = $document['fromdate'];
-		$a['dateto']     = $document['todate'];
-		$a['commited'] = isset($document['closed']) ? 1 : 0;
-		$a['docid'] = $docid;
+		if ($a['schemaid']) {
+			// create assignments basing on selected promotion schema
+			$a['customerid'] = $document['customerid'];
+			$a['period'] = $period;
+			$a['at'] = $at;
+			$a['datefrom'] = $document['fromdate'];
+			$a['dateto'] = $document['todate'];
+			$a['commited'] = isset($document['closed']) ? 1 : 0;
+			$a['docid'] = $docid;
 
-		if (is_array($a['stariffid'][$schemaid])) {
-			$copy_a = $a;
-			$snodes = $a['snodes'][$schemaid];
-			$sphones = $a['sphones'][$schemaid];
+			if (is_array($a['stariffid'][$schemaid])) {
+				$copy_a = $a;
+				$snodes = $a['snodes'][$schemaid];
+				$sphones = $a['sphones'][$schemaid];
 
-			foreach ($a['stariffid'][$schemaid] as $label => $v) {
-				if (!$v)
-					continue;
+				foreach ($a['stariffid'][$schemaid] as $label => $v) {
+					if (!$v)
+						continue;
 
-				$copy_a['promotiontariffid'] = $v;
-				$copy_a['nodes'] = $snodes[$label];
-				$copy_a['phones'] = $sphones[$label];
-				$tariffid = $LMS->AddAssignment($copy_a);
+					$copy_a['promotiontariffid'] = $v;
+					$copy_a['nodes'] = $snodes[$label];
+					$copy_a['phones'] = $sphones[$label];
+					$tariffid = $LMS->AddAssignment($copy_a);
+				}
 			}
 		}
 
