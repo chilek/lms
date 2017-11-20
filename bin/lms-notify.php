@@ -258,10 +258,13 @@ if (!empty($mail_fname))
 //include(LIB_DIR . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'mtsms.php');
 
 function parse_customer_data($data, $row) {
+	global $LMS;
 	$DB = LMSDB::getInstance();
 
 	$amount = -$row['balance'];
 	$totalamount = -$row['totalbalance'];
+	$hook_data = $LMS->executeHook('notify_parse_customer_data', array('data' => $data, 'customer' => $row));
+	$data = $hook_data['data'];
 	$data = preg_replace("/\%bankaccount/",
 		format_bankaccount(bankaccount($row['id'], $row['account'])), $data);
 	$data = preg_replace("/\%b/", $amount, $data);
