@@ -227,6 +227,9 @@
 		$('#assignment_type').append('<option value="' + value + '"'
 			+ (parseInt(selected_type) == value ? ' selected' : '') + '>' + tariff_types[value] + '</option>');
 	});
+	if (assignment_types.length <= 1) {
+		$('#assignment_type_filter').hide();
+	}
 	$.each(documents, function(key, value) {
 		$('#document').append('<option value="' + value + '"'
 			+ (selected_document && selected_document.length && selected_document == value ? ' selected' : '') + '>'
@@ -234,6 +237,9 @@
 	});
 	if (documents.length <= 1) {
 		$('#document_filter').hide();
+	}
+	if (assignment_types.length <= 1 && documents.length <= 1) {
+		$('#clear_filter').hide();
 	}
 
 	function updateAssignments() {
