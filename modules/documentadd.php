@@ -48,7 +48,6 @@ if (isset($_POST['document'])) {
 	if (!$document['title'])
 		$error['title'] = trans('Document title is required!');
 
-
 	// check if selected customer can use selected numberplan
 	if ($document['numberplanid'] && $document['customerid']
 			&& !$DB->GetOne('SELECT 1 FROM numberplanassignments
@@ -94,6 +93,17 @@ if (isset($_POST['document'])) {
 
 	if ($document['fromdate'] > $document['todate'] && $document['todate'] != 0)
 		$error['todate'] = trans('Start date can\'t be greater than end date!');
+
+	// validate selected promotion schema properties
+	$a = $document['assignment'];
+	$a['datefrom'] = $oldfromdate;
+	$a['dateto'] = $oldtodate;
+
+	$result = $LMS->ValidateAssignment($a);
+	extract($result);
+
+	if (empty($from))
+		$error['fromdate'] = trans('Promotion start date is required!');
 
 	$files = array();
 
@@ -284,6 +294,38 @@ if (isset($_POST['document'])) {
 			include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $engine['name']
 				. DIRECTORY_SEPARATOR . $engine['post-action'] . '.php');
 
+		$a['docid'] = $docid;
+		$a['customerid'] = $document['customerid'];
+		$a['reference'] = $document['reference']['id'];
+		$a['datefrom'] = $from;
+		$a['dateto'] = $to;
+
+		if (isset($document['closed']))
+			$LMS->UpdateExistingAssignments($a);
+
+		if ($a['schemaid']) {
+			// create assignments basing on selected promotion schema
+			$a['period'] = $period;
+			$a['at'] = $at;
+			$a['commited'] = isset($document['closed']) ? 1 : 0;
+
+			if (is_array($a['stariffid'][$schemaid])) {
+				$copy_a = $a;
+				$snodes = $a['snodes'][$schemaid];
+				$sphones = $a['sphones'][$schemaid];
+
+				foreach ($a['stariffid'][$schemaid] as $label => $v) {
+					if (!$v)
+						continue;
+
+					$copy_a['promotiontariffid'] = $v;
+					$copy_a['nodes'] = $snodes[$label];
+					$copy_a['phones'] = $sphones[$label];
+					$tariffid = $LMS->AddAssignment($copy_a);
+				}
+			}
+		}
+
 		$DB->CommitTrans();
 
 		if (!isset($document['reuse'])) {
@@ -307,6 +349,19 @@ if (isset($_POST['document'])) {
 } else {
 	$document['customerid'] = isset($_GET['cid']) ? $_GET['cid'] : '';
 	$document['type'] = isset($_GET['type']) ? $_GET['type'] : '';
+
+	$default_assignment_invoice = ConfigHelper::getConfig('phpui.default_assignment_invoice');
+	if (!empty($default_assignment_invoice))
+		$document['assignment']['invoice'] = true;
+	$default_assignment_settlement = ConfigHelper::getConfig('phpui.default_assignment_settlement');
+	if (!empty($default_assignment_settlement))
+		$document['assignment']['settlement'] = true;
+	$default_assignment_period = ConfigHelper::getConfig('phpui.default_assignment_period');
+	if (!empty($default_assignment_period))
+		$document['assignment']['period'] = $default_assignment_period;
+	$default_assignment_at = ConfigHelper::getConfig('phpui.default_assignment_at');
+	if (!empty($default_assignment_at))
+		$document['assignment']['at'] = $default_assignment_at;
 }
 
 $SMARTY->setDefaultResourceType('extendsall');
@@ -336,6 +391,26 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customers', $LMS->GetCustomerNames());
+
+// +++ promotion support
+if (isset($document['customerid'])) {
+	$promotions = $LMS->GetPromotions();
+	$numberplans = $LMS->GetNumberPlans(array(
+		'doctype' => DOC_INVOICE,
+		'cdate' => null,
+		'division' => empty($document['customerid']) ? null : $LMS->GetCustomerDivision($document['customerid']),
+		'next' => false,
+	));
+} else {
+	$promotions = $numberplans = null;
+}
+
+$SMARTY->assign('promotions', $promotions);
+$SMARTY->assign('tariffs', $LMS->GetTariffs());
+$SMARTY->assign('numberplanlist', $numberplans);
+// --- promotion support
+
+$tariffs = $LMS->GetTariffs();
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('docrights', $rights);

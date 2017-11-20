@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -49,9 +49,12 @@ if ($_GET['is_sure'] == '1' && (isset($ids) || isset($cid))) {
 	if (!$customer)
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 
-	if (!empty($ids))
+	if (!empty($ids)) {
+		$DB->BeginTrans();
 		foreach ($ids as $id)
 			$LMS->DeleteAssignment($id);
+		$DB->CommitTrans();
+	}
 
 	$backto = $SESSION->get('backto');
 	// infinite loop prevention

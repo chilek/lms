@@ -36,6 +36,7 @@
 			$('[name="document[templ]"]').val(),
 			$('[name="document[numberplanid]"').val(),
 			$('[name="customerid"]').val());
+		customer_assignment_helper.setCustomer($('[name="customerid"]').val());
 	}
 //-->
 </script>
@@ -169,7 +170,7 @@
 	</TR>
 	<TR>
 		<TD colspan="3" class="buttons">
-			<A href="javascript: document.documentadd.submit();">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
+			<A href="#" id="submit-button">{trans("Submit")} <IMG SRC="img/save.gif" alt=""></A>
 			<A href="javascript: print_document();">{trans("Print")} <IMG SRC="img/print.gif" alt=""></A>
 			<A href="?m=documentlist">{trans("Cancel")} <IMG src="img/cancel.gif" alt=""></A><BR>
 			<INPUT type="checkbox" name="document[reuse]" ID="reuse" value="ON" {if $document.reuse}checked{/if}> <label for="reuse">{trans("Display this form again, when that document is saved")}</label>
@@ -177,7 +178,12 @@
 	</TR>
     </TBODY>
 </TABLE>
-<BR><DIV id="plugin" name="plugin">{$plugin_result}</DIV>
+
+{block name="documentpromotions"}
+	{include file="document/documentpromotions.html"}
+{/block}
+
+<DIV id="plugin" name="plugin">{$plugin_result}</DIV>
 </FORM>
 <SCRIPT type="text/javascript">
 <!--

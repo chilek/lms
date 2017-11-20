@@ -603,6 +603,11 @@ class LMS
         return $manager->GetCustomerContacts($id, $mask);
     }
 
+	public function GetCustomerDivision($id) {
+		$manager = $this->getCustomerManager();
+		return $manager->GetCustomerDivision($id);
+	}
+
     /*
      * Customer groups
      */
@@ -978,7 +983,17 @@ class LMS
         return $manager->AddAssignment($data);
     }
 
-    public function SuspendAssignment($id, $suspend = TRUE)
+	public function ValidateAssignment($data) {
+		$manager = $this->getFinanceManager();
+		return $manager->ValidateAssignment($data);
+	}
+
+	public function UpdateExistingAssignments($data) {
+		$manager = $this->getFinanceManager();
+		return $manager->UpdateExistingAssignments($data);
+	}
+
+	public function SuspendAssignment($id, $suspend = TRUE)
     {
         $manager = $this->getFinanceManager();
         return $manager->SuspendAssignment($id, $suspend);

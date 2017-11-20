@@ -1423,4 +1423,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 			$contact['fullname'] = $contact['contact'] . (strlen($contact['name']) ? ' (' . $contact['name'] . ')' : '');
 		return $contacts;
 	}
+
+	public function GetCustomerDivision($id) {
+		return $this->db->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($id));
+	}
 }

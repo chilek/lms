@@ -2341,6 +2341,7 @@ $_LANG['Voip account:'] = 'Konto VoIP:';
 $_LANG['Voip Account Info: $a'] = 'Informacje o koncie: $a';
 $_LANG['Voip Account Edit: $a'] = 'Edycja konta VoIP: $a';
 $_LANG['Voip Accounts ($a):'] = 'Konta VoIP ($a):';
+$_LANG['Voip Accounts:'] = 'Konta VoIP:';
 $_LANG['<!do>Import'] = 'Importuj';
 $_LANG['Download (CSV)'] = 'Pobierz (CSV)';
 $_LANG['Download all (TXT)'] = 'Pobierz wszystkie (TXT)';
@@ -2501,6 +2502,7 @@ $_LANG['You can select import source to limit results'] = 'Możesz wybrać źró
 $_LANG['- all sources -'] = '- wszystkie -';
 $_LANG['- auto -'] = '- automatycznie -';
 $_LANG['- none -'] = '- żadne -';
+$_LANG['<!promotionschema>- none -'] = '- żaden -';
 $_LANG['There are no types in database.'] = 'Brak typów w bazie danych.';
 $_LANG['Use current division data:'] = 'Zastosuj dane bieżącej firmy (oddziału):';
 $_LANG['Seller data change'] = 'Zmiana danych sprzedawcy';
@@ -2768,6 +2770,7 @@ $_LANG['Select accounting period (optional) - overwrites customer liability\'s p
 $_LANG['Select promotion schema'] = 'Wybierz schemat promocji';
 $_LANG['Select promotion location'] = 'Wybierz lokalizację promocji';
 $_LANG['per promotion schema'] = 'wg schematu promocji';
+$_LANG['Promotion Schema:'] = 'Schemat promocyjny:';
 $_LANG['Additional subscription after promotion period:'] = 'Dodatkowa taryfa po okresie promocji:';
 $_LANG['Additional subscription is useless when contract prolongation is not set!'] = 'Dodatkowa taryfa nie ma sensu gdy nie zaznaczono przedłużenia umowy!';
 $_LANG['Contract prolongation after promotion period:'] = 'Przedłużenie umowy po okresie promocji:';
@@ -3633,6 +3636,7 @@ $_LANG['CANCELLED'] = 'ANULOWANO';
 $_LANG['NO ACCOUNTANT DOCUMENT'] = 'DOKUMENT NIEKSIĘGOWY';
 
 $_LANG['No nodes has been selected for assignment, by at least one is recommended! Are you sure you want to continue despite of this?'] = 'Nie przypisano żadnego komputera do zobowiązania, podczas gdy co najmniej jeden jest zalecany! Jesteś pewien, że chcesz kontynuować mimo tego?';
+$_LANG['No assignment selected, by at least one is recommended! Are you sure you want to continue despite of this?'] = 'Nie wybrano żadnego zobowiązania, podczas gdy co najmniej jedno jest zalecane! Jesteś pewien, że chcesz kontynuować mimo tego?';
 
 $_LANG['without gps coords'] = 'bez współrzędnych gps';
 
@@ -3794,5 +3798,12 @@ $_LANG['<!datepicker>Clear'] = 'Wyczyść';
 
 $_LANG['Access:'] = 'Dostęp:';
 $_LANG['<!access>- any -'] = '- dowolny -';
+
+$_LANG['Existing assignments:'] = 'Istniejące zobowiązania:';
+$_LANG['<!existingassignment>keep'] = 'zachowaj';
+$_LANG['<!existingassignment>suspend'] = 'zawieś';
+$_LANG['<!existingassignment>cut'] = 'skróć';
+$_LANG['<!existingassignment>delete'] = 'usuń';
+$_LANG['limit to reference document'] = 'ogranicz do dokumentu odniesienia';
 
 ?>
