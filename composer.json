@@ -14,6 +14,17 @@
                     "type": "zip"
                 }
             }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "alexei/sprintf.js",
+                "version": "1.1.1",
+                "dist": {
+                    "url": "https://github.com/alexei/sprintf.js/archive/1.1.1.zip",
+                    "type": "zip"
+                }
+            }
         }
     ],
     "require": {
@@ -27,6 +38,7 @@
         "rospdf/pdf-php": "^0.12",
         "components/jqueryui": "^1",
         "xdan/datetimepicker": "^2",
+        "alexei/sprintf.js": "^1",
         "datatables/datatables": "^1.10",
         "setasign/fpdi-tcpdf": "^1.6",
         "pear/mail": "^1.3"

@@ -147,6 +147,7 @@ version ?.??.?? (????-??-??):
     creation [chilan]
   - enhancement: creating new assignment/document we can decide what should be applied
     to already existing assignments [chilan]
+  - enhancement: added document selection to filter on customer assignment list [chilan]
 
 version 1.11.22 (2017-06-08):
 

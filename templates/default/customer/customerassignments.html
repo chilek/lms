@@ -1,4 +1,5 @@
 <!--// $Id$ //-->
+<script src="img/sprintf.min.js"></script>
 {assign var=today value=$smarty.now|date_format:"%x 00:00:00"}{assign var=today value=$today|date_format:"%s"}
 <TABLE class="lmsbox lms-ui-sortable" id="customerassignments">
 	<COLGROUP>
@@ -10,10 +11,19 @@
 		<TD>
 			<IMG src="img/money.gif" alt="">
 			<span class="bold">{trans("Customer Liabilities:")}</span>
-			{trans("Type:")}
-			<select id="assignment_type">
-				<option value="">{trans("- all -")}</option>
-			</select>
+			<label id="assignment_type_filter">
+				{trans("Type:")}
+				<select id="assignment_type">
+					<option value="">{trans("- all -")}</option>
+				</select>
+			</label>
+			<label id="document_filter">
+				{trans("Document")}
+				<select id="document">
+					<option value="">{trans("- all -")}</option>
+				</select>
+			</label>
+			<a id="clear_filter" href="#"><img src="img/delete.gif"><a>
 		</TD>
 		<TD class="text-right nobr">
 			{if !$customerinfo.deleted}
@@ -64,12 +74,21 @@
 				</THEAD>
 				<TBODY class="lms-ui-multi-check">
 				<form method="post" name="customerassignments" action="?m=customerassignmentdel">
-				{cycle name=assign values="light,lucid" print=false}
+				{*cycle name=assign values="light,lucid" print=false*}
 				{foreach $assignments as $a}
 				{block name="customerassignments-list-row"}
-				<TR class="highlight {cycle name=assign}
+				<TR class="highlight {*cycle name=assign*}
 					{if ($a.dateto < $today && $a.dateto) || ($a.liabilityid && $a.at < $today && $a.at > 365)} blend{elseif ($a.datefrom > $today && $a.datefrom && $a.period) && !($a.suspended)} alertblend{elseif ($a.suspended)}suspended{/if}"
-					data-tariff-type="{$a.tarifftype}">
+					data-tariff-type="{$a.tarifftype}"
+					data-document="{if $a.doctype}{t a=$_DOCTYPES[$a.doctype] b=$a.fullnumber c=$a.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}{/if}"
+					{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+					data-value="{$a.real_value|default:"0"}"
+					{/if}
+					{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+					data-disc-value="{$a.real_disc_value|default:"0"}"
+					{/if}
+					data-downceil="{$a.real_downceil|default:"0"}"
+					data-upceil="{$a.real_upceil|default:"0"}">
 					{if !$a.tariffid && !$a.liabilityid}
 					<TD colspan="7" class="bold" OnClick="return self.location.href='?m=customerassignmentedit&id={$a.id}'">
 						{trans("Suspending of all liabilities")}
@@ -185,116 +204,95 @@
 	tariff_types[{$type}] = '{$name}';
 	{/foreach}
 
-	{$total_downceils=array()}
-	{$total_upceils=array()}
-	{$total_values=array()}
-	{$total_disc_values=array()}
-	{foreach $assignments as $a}
-		{if $a.tarifftype == ''}
-		{continue}
-		{/if}
-		
-		{if !isset($total_downceils[$a.tarifftype])}
-		{$total_downceils[$a.tarifftype] = 0}
-		{/if}
-		{$total_downceils[$a.tarifftype] = $total_downceils[$a.tarifftype] + $a.real_downceil}
-
-		{if !isset($total_upceils[$a.tarifftype])}
-		{$total_upceils[$a.tarifftype] = 0}
-		{/if}
-		{$total_upceils[$a.tarifftype] = $total_upceils[$a.tarifftype] + $a.real_upceil}
-
-		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-
-		{if !isset($total_values[$a.tarifftype])}
-		{$total_values[$a.tarifftype] = 0}
-		{/if}
-		{$total_values[$a.tarifftype] = $total_values[$a.tarifftype] + $a.real_value}
-
-		{if !isset($total_disc_values[$a.tarifftype])}
-		{$total_disc_values[$a.tarifftype] = 0}
-		{/if}
-		{$total_disc_values[$a.tarifftype] = $total_disc_values[$a.tarifftype] + $a.real_disc_value}
-
-		{/if}
-	{/foreach}
-
-	var total_downceil = '{sum array=$assignments column="real_downceil" assign=downceilsum}{if $downceilsum}{$downceilsum} kbit/s{/if}';
-	$('#total-downceil').html(total_downceil);
-
-	var total_downceils = [];
-	{foreach $total_downceils as $tarifftype => $downceil}
-	total_downceils[{$tarifftype}] = '{if $downceil}{$downceil} kbit/s{/if}';
-	{/foreach}
-
-	var total_upceil = '{sum array=$assignments column="real_upceil" assign=upceilsum}{if $upceilsum}{$upceilsum} kbit/s{/if}';
-	$('#total-upceil').html(total_upceil);
-
-	var total_upceils = [];
-	{foreach $total_upceils as $tarifftype => $upceil}
-	total_upceils[{$tarifftype}] = '{if $upceil}{$upceil} kbit/s{/if}';
-	{/foreach}
-
-
-	{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-
-	var total_value = '{sum array=$assignments column="real_value" string_format=$LANGDEFS.$_language.money_format}';
-	$('#total-value').html(total_value);
-
-	var total_values = [];
-	{foreach $total_values as $tarifftype => $value}
-	total_values[{$tarifftype}] = '{sprintf($LANGDEFS.$_language.money_format, $value)}';
-	{/foreach}
-
-	var total_disc_value = '({sum array=$assignments column="real_disc_value" string_format=$LANGDEFS.$_language.money_format})';
-	$('#total-disc-value').html(total_disc_value);
-
-	var total_disc_values = [];
-	{foreach $total_disc_values as $tarifftype => $value}
-	total_disc_values[{$tarifftype}] = '({sprintf($LANGDEFS.$_language.money_format, $value)})';
-	{/foreach}
-
-	{/if}
-
+	var money_format = '{$LANGDEFS.$_language.money_format}';
 
 	var assignment_types = [];
+	var documents = [];
 	$('tr[data-tariff-type]').each(function() {
 		var tariff_type = $(this).attr('data-tariff-type');
-		if (tariff_type.length && assignment_types.indexOf(tariff_type) == -1)
+		var document = $(this).attr('data-document');
+		if (tariff_type.length && assignment_types.indexOf(tariff_type) == -1) {
 			assignment_types.push(tariff_type);
+		}
+		if (document.length && documents.indexOf(document) == -1) {
+			documents.push(document);
+		}
 	});
+	documents.sort();
+
+	var selected_type = getCookie('customerassignment_tariff_type_{$customerinfo.id}');
+	var selected_document = getCookie('customerassignment_document_{$customerinfo.id}');
 
 	$.each(assignment_types, function(key, value) {
-		$('#assignment_type').append('<option value="' + value + '">' + tariff_types[value] + '</option>');
+		$('#assignment_type').append('<option value="' + value + '"'
+			+ (parseInt(selected_type) == value ? ' selected' : '') + '>' + tariff_types[value] + '</option>');
 	});
+	$.each(documents, function(key, value) {
+		$('#document').append('<option value="' + value + '"'
+			+ (selected_document && selected_document.length && selected_document == value ? ' selected' : '') + '>'
+			+ value + '</option>');
+	});
+	if (documents.length <= 1) {
+		$('#document_filter').hide();
+	}
 
-	$('#assignment_type').change(function() {
-		var type = $(this).val();
-		if (type.length) {
-			$('tr[data-tariff-type]').hide();
-			$('tr[data-tariff-type="' + type + '"]').show();
-			$('#total-downceil').html(total_downceils[type]);
-			$('#total-upceil').html(total_upceils[type]);
-			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-			$('#total-value').html(total_values[type]);
-			$('#total-disc-value').html(total_disc_values[type]);
-			{/if}
-		} else {
-			$('tr[data-tariff-type]').show();
-			$('#total-downceil').html(total_downceil);
-			$('#total-upceil').html(total_upceil);
-			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-			$('#total-value').html(total_value);
-			$('#total-disc-value').html(total_disc_value);
-			{/if}
+	function updateAssignments() {
+		var selected_type = $('#assignment_type').val();
+		var selected_document = $('#document').val();
+		var selector = '';
+		if (selected_type.length) {
+			selector += '[data-tariff-type="' + selected_type + '"]';
 		}
+		if (selected_document.length) {
+			selector += '[data-document="' + selected_document + '"]';
+		}
+		if (!selector.length) {
+			selector = '[data-tariff-type]';
+		}
+
+		$('tr[data-tariff-type]').hide();
+		$('tr' + selector).show();
+
+		var total_downceil = 0;
+		var total_upceil = 0;
+		var total_value = 0;
+		var total_disc_value = 0;
+		$('tr' + selector).each(function() {
+			total_downceil += parseInt($(this).attr('data-downceil'));
+			total_upceil += parseInt($(this).attr('data-upceil'));
+			{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+			total_value += parseFloat($(this).attr('data-value'));
+			total_disc_value += parseFloat($(this).attr('data-disc-value'));
+			{/if}
+			});
+
+		$('#total-downceil').html(total_downceil ? total_downceil + ' kbit/s' : '-');
+		$('#total-upceil').html(total_upceil ? total_upceil + ' kbit/s' : '-');
+		{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
+		$('#total-value').html(total_value ? sprintf(money_format, total_value) : '-');
+		$('#total-disc-value').html(total_disc_value ? sprintf(money_format, total_disc_value) : '-');
+		{/if}
+
 		var backgrounds = ['lucid', 'light'];
 		$('tr[data-tariff-type]').removeClass(backgrounds.join(' '));
-		$('tr[data-tariff-type]:visible').each(function(key, value) {
+		$('tr[data-tariff-type]:visible').each(function(key) {
 			$(this).addClass(backgrounds[key & 1]);
 		});
 
 		$('tr[data-tariff-type]').closest('tbody').get(0).updateCheckAll();
+
+		setCookie('customerassignment_tariff_type_{$customerinfo.id}', selected_type);
+		setCookie('customerassignment_document_{$customerinfo.id}', selected_document);
+	}
+
+	$(function() {
+		$('#assignment_type').change(updateAssignments).trigger('change');
+		$('#document').change(updateAssignments);
+		$('#clear_filter').click(function() {
+			$('#document').val('');
+			$('#assignment_type').val('').trigger('change');
+			return false;
+		});
 	});
 //-->
 </SCRIPT>

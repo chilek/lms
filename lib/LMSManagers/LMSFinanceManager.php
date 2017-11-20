@@ -60,7 +60,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                             t.downceil, t.downrate, t.type AS tarifftype,
                                             (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) AS value,
                                             (CASE WHEN t.name IS NULL THEN l.name ELSE t.name END) AS name,
-                                            d.number AS docnumber, d.type AS doctype, d.cdate, np.template
+                                            d.number AS docnumber, d.type AS doctype, d.cdate, np.template,
+                                            d.fullnumber
                                           FROM
                                             assignments a
                                             LEFT JOIN tariffs t     ON (a.tariffid = t.id)
