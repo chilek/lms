@@ -232,8 +232,9 @@ if ($items) {
 		}
 
 		$sum = $row['value'] * $row['count'];
-		$val = round($sum / ($taxes[$taxid]['value']+100) * 100, 2);
-		$tax = $sum - $val;
+		$val = ($sum / ($taxes[$taxid]['value'] + 100)) * 100;
+		$tax = round($sum - $val, 2);
+		$val = round($val, 2);
 
 		$invoicelist[$idx][$taxid]['tax'] += $tax;
 		$invoicelist[$idx][$taxid]['val'] += $val;
