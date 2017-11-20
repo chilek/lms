@@ -163,8 +163,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function DeleteAssignment($id)
     {
-        $this->db->BeginTrans();
-
         if ($this->syslog) {
             $custid = $this->db->GetOne('SELECT customerid FROM assignments WHERE id=?', array($id));
 
@@ -202,8 +200,6 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
             );
             $this->syslog->AddMessage(SYSLOG::RES_ASSIGN, SYSLOG::OPER_DELETE, $args);
         }
-
-        $this->db->CommitTrans();
     }
 
     public function AddAssignment($data)
