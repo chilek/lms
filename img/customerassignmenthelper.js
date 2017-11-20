@@ -288,7 +288,7 @@ function CustomerAssignmentHelper(options) {
 					}
 
 					if (data["netdevnodes"]) {
-						html += '<div class="netdevnodes"><ing src="img/netdev.gif"> '
+						html += '<div class="netdevnodes"><img src="img/netdev.gif"> '
 							+ '<span class="bold">' + lmsMessages.netdevices + '</span><br>';
 						html += '<select name="' + helper.variablePrefix + '[snodes][' + schemaid + ']['
                             + label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
