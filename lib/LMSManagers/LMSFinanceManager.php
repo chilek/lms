@@ -785,6 +785,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 			? $data['reference'] : null;
 		switch ($data['existing_assignments']['operation']) {
 			case EXISTINGASSIGNMENT_DELETE:
+			case EXISTINGASSIGNMENT_SUSPEND:
 				$args = array(
 					'customerid' => $data['customerid'],
 				);
@@ -795,7 +796,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 					array_values($args));
 				if (!empty($aids))
 					foreach ($aids as $aid)
-						$this->DeleteAssignment($aid);
+						if ($data['existing_assignments']['operation'] == EXISTINGASSIGNMENT_DELETE)
+							$this->DeleteAssignment($aid);
+						else
+							$this->SuspendAssignment($aid);
 				break;
 			case EXISTINGASSIGNMENT_CUT:
 				$args = array(

@@ -3801,6 +3801,7 @@ $_LANG['<!access>- any -'] = '- dowolny -';
 
 $_LANG['Existing assignments:'] = 'Istniejące zobowiązania:';
 $_LANG['<!existingassignment>keep'] = 'zachowaj';
+$_LANG['<!existingassignment>suspend'] = 'zawieś';
 $_LANG['<!existingassignment>cut'] = 'skróć';
 $_LANG['<!existingassignment>delete'] = 'usuń';
 $_LANG['limit to reference document'] = 'ogranicz do dokumentu odniesienia';
