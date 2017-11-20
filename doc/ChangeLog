@@ -148,6 +148,8 @@ version ?.??.?? (????-??-??):
   - enhancement: creating new assignment/document we can decide what should be applied
     to already existing assignments [chilan]
   - enhancement: added document selection to filter on customer assignment list [chilan]
+  - enhancement: option for new assignment to allow impact on existing assignments
+    with the same tariff type [chilan]
 
 version 1.11.22 (2017-06-08):
 

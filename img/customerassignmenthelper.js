@@ -420,6 +420,13 @@ function tariffSelectionHandler() {
 
 	$('#tarifftype').val(tarifftype);
 
+	if (parseInt(tarifftype) > 0) {
+		$('#assignment_type_limit').val(tarifftype);
+		$('#a_assignment_type_limit').show();
+	} else {
+		$('#a_assignment_type_limit').hide();
+	}
+
 	if (val == -2) {
 		$('#a_promotions').show();
 	} else {
