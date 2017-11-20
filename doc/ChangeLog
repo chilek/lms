@@ -150,6 +150,8 @@ version ?.??.?? (????-??-??):
   - enhancement: added document selection to filter on customer assignment list [chilan]
   - enhancement: option for new assignment to allow impact on existing assignments
     with the same tariff type [chilan]
+  - improvement: store commit flags for later use if created document is not closed
+    and then use it during document close process [chilan]
 
 version 1.11.22 (2017-06-08):
 

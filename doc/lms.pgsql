@@ -175,7 +175,7 @@ CREATE TABLE addresses (
 	name       text NULL,
 	state      varchar(64) NULL,
 	state_id   integer REFERENCES location_states (id) ON DELETE SET NULL ON UPDATE CASCADE,
-	city       varchar(100) NULL,
+	city       varchar(32) NULL,
 	city_id    integer REFERENCES location_cities (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	postoffice varchar(32) DEFAULT NULL,
 	street     varchar(255) NULL,
@@ -381,6 +381,7 @@ CREATE TABLE documents (
 	post_address_id integer DEFAULT NULL
 		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	template varchar(255) DEFAULT NULL,
+	commitflags smallint DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX documents_cdate_idx ON documents(cdate);
@@ -1088,7 +1089,7 @@ CREATE TABLE netnodes (
 	divisionid integer
 		REFERENCES divisions (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	address_id integer
-		CONSTRAINT netnodes_address_id_fkey REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
+		REFERENCES addresses (id) ON DELETE SET NULL ON UPDATE CASCADE,
 	info text DEFAULT NULL,
 	PRIMARY KEY(id)
 );
@@ -1231,7 +1232,7 @@ CREATE TABLE nodes (
 	invprojectid integer DEFAULT NULL
 		REFERENCES invprojects(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	address_id integer DEFAULT NULL
-		CONSTRAINT nodes_address_id_fkey REFERENCES addresses(id) ON DELETE SET NULL ON UPDATE CASCADE,
+		REFERENCES addresses(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	PRIMARY KEY (id),
 	UNIQUE (name),
 	UNIQUE (ipaddr, netid)
@@ -1912,7 +1913,7 @@ CREATE TABLE aliasassignments (
 	id              integer         DEFAULT nextval('passwd_id_seq'::text) NOT NULL,
 	aliasid         integer         NOT NULL
 		CONSTRAINT aliasassignments_aliasid_fkey REFERENCES aliases (id) ON DELETE CASCADE ON UPDATE CASCADE,
-	accountid       integer         DEFAULT NULL
+	accountid       integer         NOT NULL
 		CONSTRAINT aliasassignments_accountid_fkey REFERENCES passwd (id) ON DELETE CASCADE ON UPDATE CASCADE,
 	mail_forward    varchar(255)    DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
