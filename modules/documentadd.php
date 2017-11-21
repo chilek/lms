@@ -308,7 +308,7 @@ if (isset($_POST['document'])) {
 		$a['customerid'] = $document['customerid'];
 		$a['reference'] = $document['reference']['id'];
 		if (empty($from)) {
-			list ($year, $month, $day) = explode('/', date('Ymd'));
+			list ($year, $month, $day) = explode('/', date('Y/m/d'));
 			$a['datefrom'] = mktime(0, 0, 0, $month, $day, $year);
 		} else
 			$a['datefrom'] = $from;
