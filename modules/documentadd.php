@@ -102,9 +102,6 @@ if (isset($_POST['document'])) {
 	$result = $LMS->ValidateAssignment($a);
 	extract($result);
 
-	if (empty($from))
-		$error['fromdate'] = trans('Promotion start date is required!');
-
 	$files = array();
 
 	if ($document['templ']) {
@@ -310,7 +307,11 @@ if (isset($_POST['document'])) {
 		$a['docid'] = $docid;
 		$a['customerid'] = $document['customerid'];
 		$a['reference'] = $document['reference']['id'];
-		$a['datefrom'] = $from;
+		if (empty($from)) {
+			list ($year, $month, $day) = explode('/', date('Ymd'));
+			$a['datefrom'] = mktime(0, 0, 0, $month, $day, $year);
+		} else
+			$a['datefrom'] = $from;
 		$a['dateto'] = $to;
 
 		if (isset($document['closed']))
