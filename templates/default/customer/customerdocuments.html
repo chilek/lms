@@ -10,9 +10,31 @@
 		else
 			toggle.html('<img src="img/asc_order.gif">');
 	}
+
+	function delete_docs() {
+		if (!confirm('{trans("Are you sure, you want to delete selected documents?")}'))
+			return;
+
+		document.customerdocuments.action="?m=documentdel&is_sure=1";
+		document.customerdocuments.target="";
+		document.customerdocuments.submit();
+	}
+
+	function print_docs() {
+		document.customerdocuments.action="?m=documentview";
+		document.customerdocuments.target="_blank";
+		document.customerdocuments.submit();
+	}
+
+	function mark_docs() {
+		document.customerdocuments.action="?m=documentedit&action=confirm";
+		document.customerdocuments.target="";
+		document.customerdocuments.submit();
+	}
 //-->
 </script>
 <TABLE class="lmsbox lms-ui-sortable" id="customerdocuments">
+<form method="POST" name="customerdocuments">
 	<COLGROUP>
 		<COL style="width: 99%;">
 		<COL style="width: 1%;">
@@ -29,7 +51,7 @@
 		</TD>
 	</TR>
 	</THEAD>
-	<TBODY>
+	<TBODY class="lms-ui-multi-check">
 	<TR id="docpanel" style="display: none;">
 		<TD colspan="2">
 			<TABLE class="lmsbox-inner">
@@ -86,7 +108,7 @@
 							<img src="img/asc_order.gif">
 						</a>
 						{/if}
-						<INPUT TYPE="checkbox" NAME="marks[{$docid}]" VALUE="{$docid}"{if $marks.$docid}CHECKED{/if}>
+						<INPUT TYPE="checkbox" NAME="marks[{$doc.docid}]" class="lms-ui-multi-check" VALUE="{$doc.docid}">
 						<div id="allattachments-{$doc.docid}" style="display: none;">
 							{foreach $doc.attachments as $docattach}
 							{if $docattach@first && $docattach.main}{continue}{/if}
@@ -106,10 +128,34 @@
 				</TR>
 				{/foreach}
 				</TBODY>
+				<TFOOT>
+				<TR>
+					<TD COLSPAN="7">
+						{if count($documents)}
+						<TABLE WIDTH="100%">
+							<TR>
+								<TD class="nobr">
+									<A HREF="javascript:print_docs();">{trans("Print")} <IMG SRC="img/print.gif" ALT="{trans("Print")}"></A>&nbsp;
+									<A HREF="javascript:mark_docs();">{trans("Confirm")} <IMG SRC="img/confirm.gif" ALT="{trans("Confirm")}"></A>&nbsp;
+									<A HREF="javascript:delete_docs();">{trans("Delete")} <IMG SRC="img/delete.gif" ALT="{trans("Delete")}"></A>
+								</TD>
+								<TD class="text-right nobr">
+									<label>
+										{trans("Check All")}
+										<INPUT TYPE="checkbox" NAME="allbox" class="lms-ui-multi-check-all" VALUE="1">
+									</label>
+								</TD>
+							</TR>
+						</TABLE>
+						{/if}
+					</TD>
+				</TR>
+				</TFOOT>
 			</TABLE>
 		</TD>
 	</TR>
 	</TBODY>
+</form>
 </TABLE>
 <SCRIPT type="text/javascript">
 <!--

@@ -363,7 +363,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				FROM documents d
 				JOIN documentcontents dc ON dc.docid = d.id
 				JOIN docrights r ON r.doctype = d.type
-				WHERE d.id IN (' . implode(',', $ids) . ') AND r.userid = ? AND (r.rights & 4) > 0',
+				WHERE d.closed = 0 AND d.id IN (' . implode(',', $ids) . ') AND r.userid = ? AND (r.rights & 4) > 0',
 			'id', array($userid));
 		if (empty($docs))
 			return;

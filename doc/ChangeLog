@@ -152,6 +152,7 @@ version ?.??.?? (????-??-??):
     with the same tariff type [chilan]
   - improvement: store commit flags for later use if created document is not closed
     and then use it during document close process [chilan]
+  - enhancement: multi document operations are possible from customer document box [chilan]
 
 version 1.11.22 (2017-06-08):
 
