@@ -60,7 +60,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                                             t.downceil, t.downrate, t.type AS tarifftype,
                                             (CASE WHEN t.value IS NULL THEN l.value ELSE t.value END) AS value,
                                             (CASE WHEN t.name IS NULL THEN l.name ELSE t.name END) AS name,
-                                            d.number AS docnumber, d.type AS doctype, d.cdate, np.template
+                                            d.number AS docnumber, d.type AS doctype, d.cdate, np.template,
+                                            d.fullnumber
                                           FROM
                                             assignments a
                                             LEFT JOIN tariffs t     ON (a.tariffid = t.id)
@@ -779,16 +780,24 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 	public function UpdateExistingAssignments($data) {
 		$refid = isset($data['reference']) && isset($data['existing_assignments']['reference_document_limit'])
 			? $data['reference'] : null;
+		$assignment_type = isset($data['existing_assignments']['assignment_type_limit'])
+			? $data['existing_assignments']['assignment_type_limit'] : null;
+
 		switch ($data['existing_assignments']['operation']) {
 			case EXISTINGASSIGNMENT_DELETE:
 			case EXISTINGASSIGNMENT_SUSPEND:
 				$args = array(
 					'customerid' => $data['customerid'],
 				);
+				if ($assignment_type)
+					$args['tarifftype'] = $assignment_type;
 				if ($refid)
 					$args['refid'] = $refid;
-				$aids = $this->db->GetCol('SELECT id FROM assignments WHERE customerid = ?'
-					. (isset($refid) ? ' AND docid = ?' : ''),
+				$aids = $this->db->GetCol('SELECT a.id FROM assignments a'
+					. (isset($assignment_type) ? ' JOIN tariffs t ON t.id = a.tariffid' : '')
+					. ' WHERE commited = 1 AND customerid = ?'
+					. (isset($refid) ? ' AND docid = ?' : '')
+					. (isset($assignment_type) ? ' AND t.type = ?' : ''),
 					array_values($args));
 				if (!empty($aids))
 					foreach ($aids as $aid)
@@ -801,6 +810,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				$args = array(
 					'customerid' => $data['customerid'],
 				);
+				if ($assignment_type)
+					$args['tarifftype'] = $assignment_type;
 				if ($refid)
 					$args['refid'] = $refid;
 				if (empty($data['datefrom'])) {
@@ -808,22 +819,28 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 					$args['datefrom'] = mktime(0, 0, 0, $month, $day, $year);
 				} else
 					$args['datefrom'] = $data['datefrom'];
+				$args['at'] = $args['datefrom'];
 
 				// delete assignments which start in future
-				$args['at'] = $args['datefrom'];
-				$aids = $this->db->GetCol('SELECT id FROM assignments WHERE customerid = ?'
-					. (isset($refid) ? ' AND docid = ?' : '') . ' AND (datefrom >= ? OR at >= ?)',
+				$aids = $this->db->GetCol('SELECT a.id FROM assignments a'
+					. (isset($assignment_type) ? ' JOIN tariffs t ON t.id = a.tariffid' : '')
+					. ' WHERE commited = 1 AND customerid = ?'
+					. (isset($assignment_type) ? ' AND t.type = ?' : '')
+					. (isset($refid) ? ' AND docid = ?' : '') . ' AND (a.datefrom >= ? OR at >= ?)',
 					array_values($args));
 				if (!empty($aids))
 					foreach ($aids as $aid)
 						$this->DeleteAssignment($aid);
 				unset($args['at']);
-
-				// cut assignment period end date to datefrom
 				$args['dateto'] = $args['datefrom'];
 				$args['at'] = $args['datefrom'];
-				$aids = $this->db->GetCol('SELECT id FROM assignments WHERE customerid = ?'
-					. (isset($refid) ? ' AND docid = ?' : '') . ' AND datefrom <= ? AND (dateto = 0 OR dateto > ?) AND at < ?',
+
+				// cut assignment period end date to datefrom
+				$aids = $this->db->GetCol('SELECT a.id FROM assignments a'
+					. (isset($assignment_type) ? ' JOIN tariffs t ON t.id = a.tariffid' : '')
+					. ' WHERE commited = 1 AND customerid = ?'
+					. (isset($assignment_type) ? ' AND t.type = ?' : '')
+					. (isset($refid) ? ' AND docid = ?' : '') . ' AND a.datefrom <= ? AND (a.dateto = 0 OR a.dateto > ?) AND at < ?',
 					array_values($args));
 				if (!empty($aids))
 					foreach ($aids as $aid)

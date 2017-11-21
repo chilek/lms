@@ -230,12 +230,24 @@ if (isset($_POST['document'])) {
 			'cdate' => $time,
 			'customerid' => $document['customerid'],
 		));
+
+		// if document will not be closed now we should store commit flags in documents table
+		// to allow restore commit flags later during document close process
+		if (isset($document['closed']))
+			$commit_flags = 0;
+		else {
+			$commit_flags = $a['existing_assignments']['operation'];
+			if ($commit_flags && isset($a['existing_assignments']['reference_document_limit']))
+				$commit_flags += 16;
+		}
+
 		$DB->Execute('INSERT INTO documents (type, number, numberplanid, cdate, sdate, cuserid,
 			customerid, userid, name, address, zip, city, ten, ssn, divisionid, 
 			div_name, div_shortname, div_address, div_city, div_zip, div_countryid, div_ten, div_regon,
 			div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, closed, fullnumber,
-			reference, template)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($document['type'],
+			reference, template, commitflags)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			array($document['type'],
 				$document['number'],
 				empty($document['numberplanid']) ? null : $document['numberplanid'],
 				$time,
@@ -267,6 +279,7 @@ if (isset($_POST['document'])) {
 				$fullnumber,
 				!isset($document['reference']) || empty($document['reference']) ? null : $document['reference']['id'],
 				empty($document['templ']) ? null : $document['templ'],
+				$commit_flags,
 		));
 
 		$docid = $DB->GetLastInsertID('documents');

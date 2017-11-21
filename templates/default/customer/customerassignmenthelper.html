@@ -24,7 +24,7 @@
 	</COLGROUP>
 	<TBODY>
 	<tr>
-		<td>
+		<td class="valign-top">
 			<table width="100%;" cellpadding="3">
 				{if !empty($promotions)}
 				<tr>
@@ -368,6 +368,12 @@
 							<input type="checkbox" name="{$variable_prefix}[existing_assignments][reference_document_limit]"
 								value="1"{if isset($variables.existing_assignments.reference_document_limit)} checked{/if}>
 							{trans("limit to reference document")}
+						</label>
+						<label id="a_assignment_type_limit" style="display: none;">
+							<input type="checkbox" name="{$variable_prefix}[existing_assignments][assignment_type_limit]"
+								id="assignment_type_limit"
+								value="1"{if isset($variables.existing_assignments.assignment_type_limit)} checked{/if}>
+							{trans("limit to type")}
 						</label>
 					</TD>
 				</TR>

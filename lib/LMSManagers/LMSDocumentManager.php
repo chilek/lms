@@ -358,7 +358,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 		if (empty($ids))
 			return;
 
-		$docs = $this->db->GetAllByKey('SELECT d.id, d.customerid, dc.fromdate AS datefrom, d.reference FROM documents d
+		$docs = $this->db->GetAllByKey('SELECT d.id, d.customerid, dc.fromdate AS datefrom,
+					d.reference, d.commitflags
+				FROM documents d
 				JOIN documentcontents dc ON dc.docid = d.id
 				JOIN docrights r ON r.doctype = d.type
 				WHERE d.id IN (' . implode(',', $ids) . ') AND r.userid = ? AND (r.rights & 4) > 0',
@@ -366,29 +368,24 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 		if (empty($docs))
 			return;
 
+		$document_manager = new LMSFinanceManager($this->db, $this->auth, $this->cache, $this->syslog);
+
 		$this->db->BeginTrans();
 
 		foreach ($docs as $docid => $doc) {
 			$this->db->Execute('UPDATE documents SET sdate=?NOW?, cuserid=?, closed=1 WHERE id=?',
 				array($userid, $docid));
 
-			$reference = $doc['reference'];
-			$datefrom = $doc['datefrom'];
-			$customerid = $doc['customerid'];
-
-			// usunięcie dotychczasowych zobowiązań, które zaczynają obowiązywać
-			// po dacie rozpoczęcia nowej umowy
-			$this->db->Execute('DELETE FROM assignments
-				WHERE customerid = ? AND commited = 1 AND datefrom > ?' . (empty($reference) ? '' : ' AND docid = ' . $reference),
-				array($customerid, $datefrom));
-
-			// uaktualnienie dotychczasowych zobowiązań, które zaczynają obowiązywać
-			// przed datą rozpoczęcia nowej umowy, a przestają obowiązywać po dacie
-			// rozpoczęcia nowej umowy
-			$this->db->Execute('UPDATE assignments SET dateto = ?
-				WHERE customerid = ? AND commited = 1 AND datefrom < ? AND (dateto > ? OR dateto = 0)'
-				. (empty($reference) ? '' : ' AND docid = ' . $reference),
-				array($datefrom - 86400, $customerid, $datefrom, $datefrom));
+			$args = array(
+				'reference' => $doc['reference'],
+				'datefrom' => $doc['datefrom'],
+				'customerid' => $doc['customerid'],
+				'existing_assignments' => array(
+					'operation' => $doc['commitflags'] & 15,
+					'reference_document_limit' => $doc['commitflags'] & 16 ? 1 : null,
+				),
+			);
+			$document_manager->UpdateExistingAssignments($args);
 
 			$this->db->Execute('UPDATE assignments SET commited = 1 WHERE docid = ? AND commited = 0',
 				array($docid));

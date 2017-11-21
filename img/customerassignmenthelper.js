@@ -288,7 +288,7 @@ function CustomerAssignmentHelper(options) {
 					}
 
 					if (data["netdevnodes"]) {
-						html += '<div class="netdevnodes"><ing src="img/netdev.gif"> '
+						html += '<div class="netdevnodes"><img src="img/netdev.gif"> '
 							+ '<span class="bold">' + lmsMessages.netdevices + '</span><br>';
 						html += '<select name="' + helper.variablePrefix + '[snodes][' + schemaid + ']['
                             + label + '][]" multiple class="lms-ui-multiselect-deferred" data-separator="<hr>">';
@@ -419,6 +419,13 @@ function tariffSelectionHandler() {
 	var val = tariff_select.val();
 
 	$('#tarifftype').val(tarifftype);
+
+	if (parseInt(tarifftype) > 0) {
+		$('#assignment_type_limit').val(tarifftype);
+		$('#a_assignment_type_limit').show();
+	} else {
+		$('#a_assignment_type_limit').hide();
+	}
 
 	if (val == -2) {
 		$('#a_promotions').show();

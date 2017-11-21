@@ -268,7 +268,7 @@ function getCookie(name)
 			a[0] = a[0].trim();
 			a[1] = a[1].trim();
 			if (a[0] == name)
-				return unescape(a[1]);
+				return decodeURIComponent(a[1]);
 		}
 	}
 	return null;
@@ -276,7 +276,7 @@ function getCookie(name)
 
 function setCookie(name, value, permanent)
 {
-	var cookie = name + '=' + escape(value);
+	var cookie = name + '=' + encodeURIComponent(value);
 	if (permanent != null) {
 		var d = new Date();
 		d.setTime(d.getTime() + 365 * 24 * 3600 * 1000);
