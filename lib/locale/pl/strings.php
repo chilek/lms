@@ -3805,6 +3805,6 @@ $_LANG['<!existingassignment>suspend'] = 'zawieś';
 $_LANG['<!existingassignment>cut'] = 'skróć';
 $_LANG['<!existingassignment>delete'] = 'usuń';
 $_LANG['limit to reference document'] = 'ogranicz do dokumentu odniesienia';
-$_LANG['limit to assignment type'] = 'ogranicz do typu zobowiązania';
+$_LANG['limit to type'] = 'ogranicz do typu';
 
 ?>
