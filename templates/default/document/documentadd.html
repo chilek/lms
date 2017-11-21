@@ -36,7 +36,9 @@
 			$('[name="document[templ]"]').val(),
 			$('[name="document[numberplanid]"').val(),
 			$('[name="customerid"]').val());
-		customer_assignment_helper.setCustomer($('[name="customerid"]').val());
+		if (typeof customer_assignment_helper !== 'undefined') {
+			customer_assignment_helper.setCustomer($('[name="customerid"]').val());
+		}
 	}
 //-->
 </script>
@@ -179,9 +181,11 @@
     </TBODY>
 </TABLE>
 
+{if !empty($promotions)}
 {block name="documentpromotions"}
 	{include file="document/documentpromotions.html"}
 {/block}
+{/if}
 
 <DIV id="plugin" name="plugin">{$plugin_result}</DIV>
 </FORM>
@@ -189,6 +193,12 @@
 <!--
 	$(function() {
 		$('form[name="documentadd"] [name="document[title]"]').focus();
+
+		{if empty($promotions)}
+		$('#submit-button').click(function() {
+			document.documentadd.submit();
+		});
+		{/if}
 	});
 	//setnumberplans();
 //-->
