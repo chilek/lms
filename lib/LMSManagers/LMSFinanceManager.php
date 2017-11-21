@@ -719,24 +719,20 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
 				// promotion schema
 				case -2:
-					if (!$from) {
-						$error['datefrom'] = trans('Promotion start date is required!');
+					$schemaid = isset($a['schemaid']) ? intval($a['schemaid']) : 0;
+					if (count($a['stariffid'][$schemaid]) == 1) {
+						$a['promotiontariffid'] = $a['stariffid'][$schemaid][0];
 					} else {
-						$schemaid = isset($a['schemaid']) ? intval($a['schemaid']) : 0;
-						if (count($a['stariffid'][$schemaid]) == 1) {
-							$a['promotiontariffid'] = $a['stariffid'][$schemaid][0];
-						} else {
-							$a['promotiontariffid'] = $a['stariffid'][$schemaid];
-						}
-
-						$a['value']     = 0;
-						$a['discount']  = 0;
-						$a['pdiscount'] = 0;
-						$a['vdiscount'] = 0;
-						// @TODO: handle other period/at values
-						$a['period'] = MONTHLY; // dont know why, remove if you are sure
-						$a['at'] = 1;
+						$a['promotiontariffid'] = $a['stariffid'][$schemaid];
 					}
+
+					$a['value']     = 0;
+					$a['discount']  = 0;
+					$a['pdiscount'] = 0;
+					$a['vdiscount'] = 0;
+					// @TODO: handle other period/at values
+					$a['period'] = MONTHLY; // dont know why, remove if you are sure
+					$a['at'] = 1;
 				break;
 
 				// tariffless
