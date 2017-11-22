@@ -28,7 +28,7 @@
  * LMSDivisionManagerInterface
  * 
  */
-interface LMSEventManagerInterface {
+interface LMSDivisionManagerInterface {
 	public function GetDivision($id);
 
 	public function GetDivisions($params = array());
