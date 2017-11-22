@@ -56,7 +56,7 @@ $layout['pagetitle'] = trans('Edit investment project: $a', $oldinv['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('invprojectedit', !empty($invproject) ? $invproject : $oldinv);
-$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname, status FROM divisions ORDER BY shortname'));
+$SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('error', $error);
 $SMARTY->display('invproject/invprojectedit.html');
 

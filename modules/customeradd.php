@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -297,7 +297,7 @@ $SMARTY->assign('xajax'        , $LMS->RunXajax());
 $SMARTY->assign(compact('pin_min_size', 'pin_max_size', 'pin_allowed_characters'));
 $SMARTY->assign('cstateslist'  , $LMS->GetCountryStates());
 $SMARTY->assign('countrieslist', $LMS->GetCountries());
-$SMARTY->assign('divisions'    , $DB->GetAll('SELECT id, shortname, status FROM divisions ORDER BY shortname'));
+$SMARTY->assign('divisions'    , $LMS->GetDivisions());
 $SMARTY->assign('customeradd'  , $customeradd);
 if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.add_customer_group_required',false))) {
 		$SMARTY->assign('groups',$DB->GetAll('SELECT id,name FROM customergroups ORDER BY id'));

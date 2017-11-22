@@ -58,6 +58,7 @@ class LMS
     protected $massage_manager;
     protected $config_manager;
     protected $user_group_manager;
+    protected $division_manager;
 
 	const db_dump_multi_record_limit = 500;
 
@@ -3319,6 +3320,22 @@ class LMS
         $manager = $this->getTariffTagManager();
         return $manager->TarifftagGetAll();
     }
+
+	protected function getDivisionManager() {
+		if (!isset($this->division_manager))
+			$this->division_manager = new LMSDivisionManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+		return $this->division_manager;
+	}
+
+	public function GetDivision($id) {
+		$manager = $this->getDivisionManager();
+		return $manager->GetDivision($id);
+	}
+
+	public function GetDivisions($params = array()) {
+		$manager = $this->getDivisionManager();
+		return $manager->GetDivisions($params);
+	}
 
 	public function GetFinancialDocument($doc, $SMARTY) {
 		if ($doc['doctype'] == DOC_DNOTE) {

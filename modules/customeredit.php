@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2015 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -298,7 +298,7 @@ $SMARTY->assign(compact('pin_min_size', 'pin_max_size', 'pin_allowed_characters'
 $SMARTY->assign('customerinfo' , $customerinfo);
 $SMARTY->assign('cstateslist'  , $LMS->GetCountryStates());
 $SMARTY->assign('countrieslist', $LMS->GetCountries());
-$SMARTY->assign('divisions'    , $DB->GetAll('SELECT id, shortname, status FROM divisions ORDER BY shortname'));
+$SMARTY->assign('divisions'    , $LMS->GetDivisions());
 $SMARTY->assign('recover'      , ($action == 'recover' ? 1 : 0));
 $SMARTY->assign('customeredit_sortable_order', $SESSION->get_persistent_setting('customeredit-sortable-order'));
 $SMARTY->display('customer/customeredit.html');

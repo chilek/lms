@@ -238,7 +238,7 @@ elseif(isset($_GET['action']) && $_GET['action'] == 'txt')
 	}
 }
 
-$divisions = $DB->GetAllByKey('SELECT id, name FROM divisions ORDER BY name', 'id');
+$divisions = $LMS->GetDivisions(array('order' => 'name'));
 
 $divisions[0] = array('id' => 0, 'name' => '');
 

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -257,7 +257,7 @@ switch($type)
 		$SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 		$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 		$SMARTY->assign('cstateslist', $LMS->GetCountryStates());
-		$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
+		$SMARTY->assign('divisions', $LMS->GetDivisions());
 		$SMARTY->assign('printmenu', 'customer');
 		$SMARTY->display('print/printindex.html');
 	break;
