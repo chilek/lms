@@ -84,8 +84,9 @@
 			<B>{trans("Balance:")}<B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
-		<H2>	{if $customerinfo.balance < 0}<FONT COLOR="red"><B>{$customerinfo.balance|money_format}</B></FONT>{else}{$customerinfo.balance|money_format}{/if}</H2>
+		<H2>	{if $customerinfo.balance < 0}<FONT COLOR="red"><B>{$customerinfo.balance|money_format}</B></FONT>{else}{$customerinfo.balance|money_format}{/if}{$custombalancedata}</H2>
 		</TD>
+	</TR>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">

@@ -43,6 +43,8 @@ if($id)
 	session_start();
 	$_SESSION['uid'] = $id;
 
+	$LMS->executeHook('customer_otherip_before_display', array('smarty' => $SMARTY, 'customerid' => $id));
+
 	$customerinfo = $LMS->GetCustomer($id);
 	$SMARTY->assign('customerinfo', $customerinfo);
 	$SMARTY->assign('balancelist',$LMS->GetCustomerBalanceList($id));

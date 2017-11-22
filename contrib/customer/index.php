@@ -52,6 +52,8 @@ $CONFIG['directories']['lib_dir'] = (!isset($CONFIG['directories']['lib_dir']) ?
 $CONFIG['directories']['modules_dir'] = (!isset($CONFIG['directories']['modules_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'modules' : $CONFIG['directories']['modules_dir']);
 $CONFIG['directories']['smarty_compile_dir'] = (!isset($CONFIG['directories']['smarty_compile_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates_c' : $CONFIG['directories']['smarty_compile_dir']);
 $CONFIG['directories']['smarty_templates_dir'] = (!isset($CONFIG['directories']['smarty_templates_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'templates' : $CONFIG['directories']['smarty_templates_dir']);
+$CONFIG['directories']['plugin_dir'] = (!isset($CONFIG['directories']['plugin_dir']) ? $CONFIG['directories']['sys_dir'] . DIRECTORY_SEPARATOR . 'plugins' : $CONFIG['directories']['plugin_dir']);
+$CONFIG['directories']['plugins_dir'] = $CONFIG['directories']['plugin_dir'];
 
 define('SYS_DIR', $CONFIG['directories']['sys_dir']);
 define('LIB_DIR', $CONFIG['directories']['lib_dir']);
@@ -59,6 +61,8 @@ define('BACKUP_DIR', $CONFIG['directories']['backup_dir']);
 define('MODULES_DIR', $CONFIG['directories']['modules_dir']);
 define('SMARTY_COMPILE_DIR', $CONFIG['directories']['smarty_compile_dir']);
 define('SMARTY_TEMPLATES_DIR', $CONFIG['directories']['smarty_templates_dir']);
+define('PLUGIN_DIR', $CONFIG['directories']['plugin_dir']);
+define('PLUGINS_DIR', $CONFIG['directories']['plugin_dir']);
 
 // Load autloader
 $composer_autoload_path = SYS_DIR . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
@@ -101,6 +105,9 @@ $LMS = new LMS($DB, $AUTH, $SYSLOG);
 $LMS->ui_lang = $_ui_language;
 $LMS->lang = $_language;
 
+$plugin_manager = new LMSPluginManager();
+$LMS->setPluginManager($plugin_manager);
+
 // set some template and layout variables
 
 $SMARTY->assignByRef('_LANG', $_LANG);
@@ -115,6 +122,8 @@ $layout['lmsv'] = '1.11-git';
 
 $SMARTY->assignByRef('layout', $layout);
 
+$plugin_manager->executeHook('smarty_initialized', $SMARTY);
+
 header('X-Powered-By: LMS/'.$layout['lmsv']);
 
 $_SERVER['REMOTE_ADDR'] = str_replace('::ffff:','',$_SERVER['REMOTE_ADDR']);
@@ -126,6 +135,8 @@ if($customerid = $LMS->GetNodeOwner($LMS->GetNodeIDByIP($_SERVER['REMOTE_ADDR'])
 
     $customerinfo['tariffsvalue'] = $LMS->GetCustomerTariffsValue($customerid);
 }
+
+$LMS->executeHook('customer_before_display', array('smarty' => $SMARTY, 'customerid' => $customerid));
 
 $SMARTY->assign('customerinfo', $customerinfo);
 $SMARTY->assign('balance', $balance);
