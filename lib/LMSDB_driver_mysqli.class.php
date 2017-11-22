@@ -180,7 +180,7 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
     public function _driver_multi_execute($query)
     {
         $this->_query = $query;
-        $total_result = FALSE;
+        $total_result = TRUE;
         $db_errors = array();
 
         $queries = preg_split("/;+(?=([^'|^\\\']*['|\\\'][^'|^\\\']*['|\\\'])*[^'|^\\\']*[^'|^\\\']$)/", $query);
@@ -188,7 +188,7 @@ class LMSDB_driver_mysqli extends LMSDB_common implements LMSDBDriverInterface
             if (strlen(trim($q)) > 0) {
                 $this->_driver_execute($q);           // can not use mysqli_multi_query because it returns 'error 2014 - Commands out of sync; you can't run this command now'
                 if ($this->_error == TRUE) {
-                    $total_result = TRUE;
+                    $total_result = FALSE;
                     $db_errors = array_merge($db_errors, $this->errors);
                 }
             }
