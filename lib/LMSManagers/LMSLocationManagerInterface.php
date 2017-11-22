@@ -55,4 +55,6 @@ interface LMSLocationManagerInterface
     public function GetAddress( $address_id );
 
 	public function GetCustomerAddress($customer_id, $type = BILLING_ADDRESS);
+
+	public function TerytToIDs($terc, $simc, $ulic);
 }

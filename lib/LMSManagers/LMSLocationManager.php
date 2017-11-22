@@ -350,4 +350,19 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 		return $this->db->GetOne('SELECT address_id FROM customer_addresses
 			WHERE customer_id = ? AND type = ?', array($customer_id, $type));
 	}
+
+	public function TerytToIDs($terc, $simc, $ulic) {
+		list ($woj, $pow, $gmi, $rodz_gmi) = sscanf($terc,'%02d%02d%02d%d');
+    	$cityid = $this->db->GetOne('SELECT cityid FROM teryt_simc
+			WHERE woj = ? AND pow = ? AND gmi = ? AND rodz_gmi = ? AND sym = ?',
+			array($woj, $pow, $gmi, $rodz_gmi, $simc));
+		if (empty($cityid))
+			return null;
+		if (empty($ulic))
+			return compact('cityid');
+		$streetid = $this->db->GetRow('SELECT id AS streetid FROM teryt_ulic
+			WHERE woj = ? AND pow = ? AND gmi = ? AND rodz_gmi = ? AND sym = ? AND symul = ?',
+			array($woj, $pow, $gmi, $rodz_gmi, $simc, $ulic));
+		return compact('cityid', 'streetid');
+	}
 }
