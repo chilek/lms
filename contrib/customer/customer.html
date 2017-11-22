@@ -36,6 +36,7 @@
 					<TD ROWSPAN="5" WIDTH="45%" ALIGN="CENTER">
 						<H1>{trans("Balance:")}</H1>
 						<H1>{if $customerinfo.balance < 0}<FONT COLOR="RED"><B>{$customerinfo.balance|money_format}</B>{else}{$customerinfo.balance|money_format}{/if}</H1>
+						{$custombalancedata}
 					</TD>
 				</TR>
 				<TR>
