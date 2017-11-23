@@ -604,8 +604,7 @@ if (isset($_POST['netdev'])) {
 		if (!strlen(trim($netdevdata['projectname']))) {
 			$error['projectname'] = trans('Project name is required');
 		}
-		if ($DB->GetOne("SELECT id FROM invprojects WHERE name=? AND type<>?",
-			array($netdevdata['projectname'], INV_PROJECT_SYSTEM)))
+		if ($LMS->ProjectByNameExists($netdevdata['projectname']))
 			$error['projectname'] = trans('Project with that name already exists');
 	}
 
@@ -623,11 +622,8 @@ if (isset($_POST['netdev'])) {
 			$netdevdata['nastype'] = 0;
 
 		$ipi = $netdevdata['invprojectid'];
-		if ($ipi == '-1') {
-			$DB->Execute("INSERT INTO invprojects (name, type) VALUES (?, ?)",
-				array($netdevdata['projectname'], INV_PROJECT_REGULAR));
-			$ipi = $DB->GetLastInsertID('invprojects');
-		}
+		if ($ipi == '-1')
+			$ipi = $LMS->AddProject($netdevdata);
 
 		if ($netdevdata['invprojectid'] == '-1' || intval($ipi)>0) {
 			$netdevdata['invprojectid'] = intval($ipi);
@@ -641,7 +637,7 @@ if (isset($_POST['netdev'])) {
 		}
 
 		$LMS->NetDevUpdate($netdevdata);
-		$LMS->CleanupInvprojects();
+		$LMS->CleanupProjects();
 		$hook_data = $LMS->executeHook('netdevedit_after_update',
 			array(
 				'smarty' => $SMARTY,
@@ -680,9 +676,7 @@ if ($netdevdata['producer']) {
 if ($subtitle)
 	$layout['pagetitle'] .= ' - ' . $subtitle;
 
-$nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
-	array(INV_PROJECT_SYSTEM));
-$SMARTY->assign('NNprojects',$nprojects);
+$SMARTY->assign('NNprojects', $LMS->GetProjects());
 $netnodes = $DB->GetAll("SELECT * FROM netnodes ORDER BY name");
 $SMARTY->assign('NNnodes',$netnodes);
 

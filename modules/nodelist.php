@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -101,8 +101,7 @@ $SMARTY->assign('pagination',$pagination);
 $SMARTY->assign('networks',$LMS->GetNetworks());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
-$SMARTY->assign('NNprojects', $DB->GetAll("SELECT * FROM invprojects
-	WHERE type<>? ORDER BY name", array(INV_PROJECT_SYSTEM)));
+$SMARTY->assign('NNprojects', $LMS->GetProjects());
 
 $SMARTY->display('node/nodelist.html');
 

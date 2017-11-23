@@ -56,13 +56,12 @@ if (!isset($_POST['xjxfun'])) {                  // xajax was called and handled
 
 	$netdevinfo['projectname'] = trans('none');
 	if ($netdevinfo['invprojectid']) {
-		$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id = ?", array($netdevinfo['invprojectid']));
+		$prj = $LMS->GetProject($netdevinfo['invprojectid']);
 		if ($prj) {
 			if ($prj['type'] == INV_PROJECT_SYSTEM && intval($prj['id'])==1) {
 				/* inherited */
 				if ($netdevinfo['netnodeid']) {
-					$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id=?",
-						array($netnode['invprojectid']));
+					$prj = $LMS->GetProject($netnode['invprojectid']);
 					if ($prj)
 						$netdevinfo['projectname'] = trans('$a (from network node $b)', $prj['name'], $netdevinfo['netnode']['name']);
 				}

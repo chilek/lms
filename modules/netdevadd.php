@@ -1,4 +1,4 @@
-<?php
+3<?php
 
 /*
  * LMS version 1.11-git
@@ -66,11 +66,8 @@ if (isset($_POST['netdev'])) {
 			$error['projectname'] = trans('Project name is required');
 		}
 
-		$l = $DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>?", array($netdevdata['projectname'], INV_PROJECT_SYSTEM));
-
-		if (sizeof($l)>0) {
+		if ($LMS->ProjectByNameExists($netdevdata['projectname']))
 			$error['projectname'] = trans('Project with that name already exists');
-		}
 	}
 
     if (!$error) {
@@ -101,13 +98,8 @@ if (isset($_POST['netdev'])) {
         }
 
 		$ipi = $netdevdata['invprojectid'];
-		if ($ipi == '-1') {
-			$DB->BeginTrans();
-			$DB->Execute("INSERT INTO invprojects (name, type) VALUES (?, ?)",
-				array($netdevdata['projectname'], INV_PROJECT_REGULAR));
-			$ipi = $DB->GetLastInsertID('invprojects');
-			$DB->CommitTrans();
-		}
+		if ($ipi == '-1')
+			$ipi = $LMS->AddProject($netdevdata);
 
 		if ($netdevdata['invprojectid'] == '-1' || intval($ipi)>0)
 			$netdevdata['invprojectid'] = intval($ipi);
@@ -155,8 +147,7 @@ $layout['pagetitle'] = trans('New Device');
 
 $SMARTY->assign('nastype', $LMS->GetNAStypes());
 
-$nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name", array(INV_PROJECT_SYSTEM));
-$SMARTY->assign('NNprojects',$nprojects);
+$SMARTY->assign('NNprojects', $LMS->GetProjects());
 $netnodes = $DB->GetAll("SELECT * FROM netnodes ORDER BY name");
 $SMARTY->assign('NNnodes',$netnodes);
 

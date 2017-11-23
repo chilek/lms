@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -55,7 +55,7 @@ else
 	$LMS->executeHook('nodedel_before_submit', $plugin_data);
 
 	$LMS->DeleteNode($nodeid);
-	$LMS->CleanupInvprojects();
+	$LMS->CleanupProjects();
 
 	$LMS->ExecHook('node_del_after', $plugin_data);
 

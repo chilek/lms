@@ -249,7 +249,7 @@ $linktypes = array(
 		'jednostka' => "włókna")
 );
 
-$projects = $DB->GetAllByKey("SELECT id, name FROM invprojects WHERE type <> ?", "id", array(INV_PROJECT_SYSTEM));
+$projects = $LMS->GetProjects();
 if (!empty($invprojects))
 	foreach ($projects as $idx => $project)
 		if (!in_array($idx, $invprojects))

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -40,7 +40,7 @@ else
 		header('Location: ?m=netdevlist');
 		$body = '<P>' . trans('Device has been deleted.') . '</P>';
 		$LMS->DeleteNetDev($_GET['id']);
-		$LMS->CleanupInvprojects();
+		$LMS->CleanupProjects();
 	}
 
 $SMARTY->assign('body',$body);

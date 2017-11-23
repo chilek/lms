@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -119,8 +119,7 @@ $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);
 $SMARTY->assign('netdevlist',$netdevlist);
 $SMARTY->assign('listdata',$listdata);
-$SMARTY->assign('NNprojects', $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
-	array(INV_PROJECT_SYSTEM)));
+$SMARTY->assign('NNprojects', $LMS->GetProjects());
 $SMARTY->assign('producers', $producers);
 $SMARTY->assign('models', $models);
 $SMARTY->display('netdev/netdevlist.html');

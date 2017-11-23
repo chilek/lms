@@ -75,13 +75,12 @@ $layout['pagetitle'] = trans('Node Info: $a', $nodeinfo['name']);
 
 $nodeinfo['projectname'] = trans('none');
 if ($nodeinfo['invprojectid']) {
-	$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id=?", array($nodeinfo['invprojectid']));
+	$prj = $LMS->GetProject($nodeinfo['invprojectid']);
 	if ($prj) {
 		if ($prj['type'] == INV_PROJECT_SYSTEM && intval($prj['id']==1)) {
 			/* inherited */ 
 			if ($nodeinfo['netdev']) {
-				$prj = $DB->GetRow("SELECT * FROM invprojects WHERE id=?",
-					array($netdevices['invprojectid']));
+				$prj = $LMS->GetProject($netdevices['invprojectid']);
 				if ($prj) {
 					if ($prj['type'] == INV_PROJECT_SYSTEM && intval($prj['id'])==1) {
 						/* inherited */
