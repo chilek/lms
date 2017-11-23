@@ -26,17 +26,27 @@
 
 $id = intval($_GET['id']);
 
-if (!$LMS->NetNodeExists($id))
+if ($api) {
+	if (!$LMS->NetNodeExists($id))
+		die;
+} elseif (!$LMS->NetNodeExists($id))
 	$SESSION->redirect('?m=netnodelist');
 
 $DB->BeginTrans();
 
-$LMS->NetNodeDelete($id);
+$result = $LMS->NetNodeDelete($id);
 
-$LMS->CleanupInvprojects();
+$LMS->CleanupProjects();
 
 $DB->CommitTrans();
 
-$SESSION->redirect('?m=netnodelist');
+if ($api) {
+	if ($result) {
+		header('Content-Type: application/json');
+		echo json_encode(array('id' => $id));
+	}
+	die;
+} else
+	$SESSION->redirect('?m=netnodelist');
 
 ?>

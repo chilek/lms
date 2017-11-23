@@ -33,17 +33,14 @@ if(!empty($_POST['invprojectadd']))
 		$SESSION->redirect('?m=invprojectadd');
 	}
 
-	if($DB->GetOne('SELECT 1 FROM invprojects WHERE name = ?', array($invproject['name'])))
+	if ($LMS->ProjectByNameExists($invproject['name']))
 		$error['name'] = trans('Investment project with specified name already exists!');
 		
 	if (!$error) {
-		$args = array(
-			'name' => $invproject['name'],
+		$LMS->AddProject(array(
+			'projectname' => $invproject['name'],
 			'divisionid' => $invproject['divisionid'],
-			'type' => INV_PROJECT_REGULAR,
-		);
-		$DB->Execute('INSERT INTO invprojects (name, divisionid, type)
-			VALUES (?, ?, ?)', array_values($args));
+		));
 
 		if(!isset($invproject['reuse']))
 		{

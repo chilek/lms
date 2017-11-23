@@ -1,9 +1,9 @@
 <?php
 
 /*
- * LMS version 1.11-git
+ *  LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  Copyright (C) 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -24,11 +24,22 @@
  *  $Id$
  */
 
-$id = intval($_GET['id']);
+/**
+ * LMSProjectManagerInterface
+ * 
+ */
+interface LMSProjectManagerInterface {
+	public function CleanupProjects();
 
-if (isset($_GET['is_sure']) && $_GET['is_sure'] == 1 && $id)
-	$LMS->DeleteProject($id);
+	public function GetProjects();
 
-$SESSION->redirect('?'.$SESSION->get('backto'));
+	public function GetProject($id);
 
-?>
+	public function ProjectByNameExists($name);
+
+	public function AddProject($project);
+
+	public function DeleteProject($id);
+
+	public function UpdateProject($id, $project);
+}

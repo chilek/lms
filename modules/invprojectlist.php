@@ -25,12 +25,7 @@
  */
 
 
-$invprojectlist = $DB->GetAll('SELECT ip.id, ip.name, ip.divisionid, 
-                (SELECT COUNT(*) FROM nodes WHERE invprojectid = ip.id) AS nodes,
-                (SELECT COUNT(*) FROM netnodes WHERE invprojectid = ip.id) AS netnodes
-                FROM invprojects ip
-                WHERE ip.type <> ?
-                ORDER BY ip.name', array(INV_PROJECT_SYSTEM));
+$invprojectlist = $LMS->GetProjects();
 
 $listdata['total'] = sizeof($invprojectlist);
   

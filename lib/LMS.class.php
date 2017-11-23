@@ -59,6 +59,7 @@ class LMS
     protected $config_manager;
     protected $user_group_manager;
     protected $division_manager;
+    protected $project_manager;
 
 	const db_dump_multi_record_limit = 500;
 
@@ -331,16 +332,7 @@ class LMS
         return $res;
     }
 
-	public function CleanupInvprojects() {
-		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.auto_remove_investment_project', true)))
-			$this->DB->Execute("DELETE FROM invprojects WHERE type <> ? AND id NOT IN
-				(SELECT DISTINCT invprojectid FROM netdevices WHERE invprojectid IS NOT NULL
-					UNION SELECT DISTINCT invprojectid FROM vnodes WHERE invprojectid IS NOT NULL
-					UNION SELECT DISTINCT invprojectid FROM netnodes WHERE invprojectid IS NOT NULL)",
-				array(INV_PROJECT_SYSTEM));
-	}
-
-    /*
+	/*
      * Users
      */
 
@@ -3326,6 +3318,9 @@ class LMS
         return $manager->TarifftagGetAll();
     }
 
+	/*
+	 * divisions
+	 */
 	protected function getDivisionManager() {
 		if (!isset($this->division_manager))
 			$this->division_manager = new LMSDivisionManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
@@ -3340,6 +3335,50 @@ class LMS
 	public function GetDivisions($params = array()) {
 		$manager = $this->getDivisionManager();
 		return $manager->GetDivisions($params);
+	}
+
+	/*
+	 * projects
+	 */
+	protected function getProjectManager() {
+		if (!isset($this->project_manager))
+			$this->project_manager = new LMSProjectManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+		return $this->project_manager;
+	}
+
+	public function CleanupProjects() {
+		$manager = $this->getProjectManager();
+		$manager->CleanupProjects();
+	}
+
+	public function GetProjects() {
+		$manager = $this->getProjectManager();
+		return $manager->GetProjects();
+	}
+
+	public function GetProject($id) {
+		$manager = $this->getProjectManager();
+		return $manager->GetProject($id);
+	}
+
+	public function ProjectByNameExists($name) {
+		$manager = $this->getProjectManager();
+		return $manager->ProjectByNameExists($name);
+	}
+
+	public function AddProject($project) {
+		$manager = $this->getProjectManager();
+		return $manager->AddProject($project);
+	}
+
+	public function DeleteProject($id) {
+		$manager = $this->getProjectManager();
+		return $manager->DeleteProject($id);
+	}
+
+	public function UpdateProject($id, $project) {
+		$manager = $this->getProjectManager();
+		return $manager->UpdateProject($id, $project);
 	}
 
 	public function GetFinancialDocument($doc, $SMARTY) {

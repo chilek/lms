@@ -24,14 +24,21 @@
  *  $Id$
  */
 
-$LMS->InitXajax();
-include(MODULES_DIR . DIRECTORY_SEPARATOR . 'geocodexajax.inc.php');
-$SMARTY->assign('xajax', $LMS->RunXajax());
+if ($api) {
+	if (!isset($_POST['in']))
+		die;
+	$netnodedata = json_decode(base64_decode($_POST['in']), true);
+} else {
+	$LMS->InitXajax();
+	include(MODULES_DIR . DIRECTORY_SEPARATOR . 'geocodexajax.inc.php');
+	$SMARTY->assign('xajax', $LMS->RunXajax());
 
-if (isset($_POST['netnode']))
-{
-	$netnodedata = $_POST['netnode'];
+	if (isset($_POST['netnode']))
+		$netnodedata = $_POST['netnode'];
+}
 
+
+if (isset($netnodedata)) {
 	if ($netnodedata['name'] == '')
 		$error['name'] = trans('Net node name is required!');
 
@@ -42,8 +49,7 @@ if (isset($_POST['netnode']))
 		if (!strlen(trim($netnodedata['projectname']))) {
 		 $error['projectname'] = trans('Project name is required');
 		}
-		if ($DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>?",
-			array($netnodedata['projectname'], INV_PROJECT_SYSTEM)))
+		if ($LMS->ProjectByNameExists($netnodedata['projectname']))
 			$error['projectname'] = trans('Project with that name already exists');
 	}
 
@@ -58,14 +64,24 @@ if (isset($_POST['netnode']))
 	}
 
     if (!$error) {
-		if (intval($netnodedata['invprojectid']) == -1) {
-			$DB->Execute("INSERT INTO invprojects (name, type) VALUES (?, ?)",
-				array($netnodedata['projectname'], INV_PROJECT_REGULAR));
-			$netnodedata['invprojectid'] = $DB->GetLastInsertID('invprojects');
-		}
+		if (intval($netnodedata['invprojectid']) == -1)
+			$netnodedata['invprojectid'] = $LMS->AddProject($netnodedata);
 
 		$netnodeid = $LMS->NetNodeAdd($netnodedata);
+
+		if ($api) {
+			if ($netnodeid) {
+				header('Content-Type: application/json');
+				echo json_encode(array('id' => $netnodeid));
+			}
+			die;
+		}
+
 		$SESSION->redirect('?m=netnodeinfo&id=' . $netnodeid);
+	} elseif ($api) {
+		header('Content-Type: application/json');
+		echo json_encode($error);
+		die;
 	}
 
 	$SMARTY->assign('error', $error);
@@ -78,14 +94,11 @@ if (isset($_POST['netnode']))
 	$netnodedata['ownership'] = 0;
 }
 
+$layout['pagetitle'] = trans('New Net Device Node');
+
 $SMARTY->assign('netnode'  , $netnodedata);
 $SMARTY->assign('divisions', $LMS->GetDivisions());
-
-$nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
-	array(INV_PROJECT_SYSTEM));
-
-$layout['pagetitle'] = trans('New Net Device Node');
-$SMARTY->assign('NNprojects',$nprojects);
+$SMARTY->assign('NNprojects', $LMS->GetProjects());
 
 $SMARTY->display('netnode/netnodeadd.html');
 

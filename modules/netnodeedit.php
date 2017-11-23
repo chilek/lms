@@ -30,15 +30,26 @@ if (empty($id)) {
     $id = intval($_POST['id']);
 }
 
-if (!$LMS->NetNodeExists($id))
-	$SESSION->redirect('?m=netnodelist');
+if ($api) {
+	if (!$LMS->NetNodeExists($id))
+		die;
 
-$LMS->InitXajax();
-include(MODULES_DIR . DIRECTORY_SEPARATOR . 'geocodexajax.inc.php');
-$SMARTY->assign('xajax', $LMS->RunXajax());
+	if (!isset($_POST['in']))
+		die;
+	$netnodedata = json_decode(base64_decode($_POST['in']), true);
+} else {
+	if (!$LMS->NetNodeExists($id))
+		$SESSION->redirect('?m=netnodelist');
 
-if (isset($_POST['netnode'])) {
-	$netnodedata = $_POST['netnode'];
+	$LMS->InitXajax();
+	include(MODULES_DIR . DIRECTORY_SEPARATOR . 'geocodexajax.inc.php');
+	$SMARTY->assign('xajax', $LMS->RunXajax());
+
+	if (isset($_POST['netnode']))
+		$netnodedata = $_POST['netnode'];
+}
+
+if (isset($netnodedata)) {
 	$netnodedata['id'] = $id;
 	if ($netnodedata['name'] == '')
 		$error['name'] = trans('Net node name is required!');
@@ -47,8 +58,7 @@ if (isset($_POST['netnode'])) {
 		if (!strlen(trim($netnodedata['projectname']))) {
 		 $error['projectname'] = trans('Project name is required');
 		}
-		if ($DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>?",
-			array($netnodedata['projectname'], INV_PROJECT_SYSTEM)))
+		if ($LMS->ProjectByNameExists($netnodedata['projectname']))
 			$error['projectname'] = trans('Project with that name already exists');
 	}
 
@@ -75,16 +85,24 @@ if (isset($_POST['netnode'])) {
 	}
 
 	if (!$error) {
-		if (intval($netnodedata['invprojectid']) == -1) {
-			$DB->Execute("INSERT INTO invprojects (name, type) VALUES (?, ?)",
-				array($netnodedata['projectname'], INV_PROJECT_REGULAR));
-			$netnodedata['invprojectid'] = $DB->GetLastInsertID('invprojects');
-		}
+		if (intval($netnodedata['invprojectid']) == -1)
+			$netnodedata['invprojectid'] = $LMS->AddProject($netnodedata);
 
-		$LMS->NetNodeUpdate($netnodedata);
-		$LMS->CleanupInvprojects();
+		$result = $LMS->NetNodeUpdate($netnodedata);
+		$LMS->CleanupProjects();
 
-		$SESSION->redirect('?m=netnodeinfo&id=' . $id);
+		if ($api) {
+			if ($result) {
+				header('Content-Type: application-json');
+				echo json_encode(array('id' => $id));
+			}
+			die;
+		} else
+			$SESSION->redirect('?m=netnodeinfo&id=' . $id);
+	} elseif ($api) {
+		header('Content-Type: application-json');
+		echo json_encode($error);
+		die;
 	}
 } else {
 	$netnodedata = $LMS->GetNetNode($id);
@@ -103,11 +121,7 @@ $SMARTY->assign('error'    , $error);
 $SMARTY->assign('netnode'  , $netnodedata);
 $SMARTY->assign('objectid' , $netnodedata['id']);
 $SMARTY->assign('divisions', $LMS->GetDivisions());
-
-$nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
-	array(INV_PROJECT_SYSTEM));
-$SMARTY->assign('NNprojects',$nprojects);
-
+$SMARTY->assign('NNprojects', $LMS->GetProjects());
 
 $SMARTY->display('netnode/netnodeedit.html');
 
