@@ -2501,9 +2501,9 @@ class LMS
 		return $manager->GetCustomerAddress( $customer_id, $type );
 	}
 
-	public function TerytToIDs($terc, $simc, $ulic) {
+	public function TerytToLocation($terc, $simc, $ulic) {
 		$manager = $this->getLocationManager();
-		return $manager->TerytToIDs($terc, $simc, $ulic);
+		return $manager->TerytToLocation($terc, $simc, $ulic);
 	}
 
 	public function GetNAStypes()
