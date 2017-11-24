@@ -1192,8 +1192,8 @@ if (!empty($intersect)) {
 					if (empty($customers))
 						break;
 					$customers = $DB->GetCol("SELECT id FROM customers
-						WHERE status = ? AND id IN (" . implode(',', $customers) . ")",
-						array(CSTATUS_CONNECTED));
+						WHERE status IN (?, ?) AND id IN (" . implode(',', $customers) . ")",
+						array(CSTATUS_CONNECTED, CSTATUS_DEBT_COLLECTION));
 					if (empty($customers))
 						break;
 					if (in_array('node-access', $actions)) {
