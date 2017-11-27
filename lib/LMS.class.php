@@ -1933,7 +1933,7 @@ class LMS
 			if (isset($_SERVER['HTTP_USER_AGENT']))
 				$this->mail_object->addCustomHeader('X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']);
 
-			foreach (array('X-LMS-Message-Item-Id', 'References', 'In-Reply-To', 'Message-ID') as $header_name)
+			foreach (array('References', 'In-Reply-To', 'Message-ID') as $header_name)
 				if (isset($headers[$header_name]))
 					if ($header_name == 'Message-ID')
 						$this->mail_object->MessageID = $headers[$header_name];
