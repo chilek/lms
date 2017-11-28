@@ -31,5 +31,7 @@
 interface LMSDivisionManagerInterface {
 	public function GetDivision($id);
 
+	public function GetDivisionByName($name);
+
 	public function GetDivisions($params = array());
 }

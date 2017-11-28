@@ -54,6 +54,17 @@ if (isset($netnodedata)) {
 	if ($netnodedata['name'] == '')
 		$error['name'] = trans('Net node name is required!');
 
+	if ($api) {
+		if (isset($netnodedata['divisionname'])) {
+			$division = $LMS->GetDivisionByName($netnodedata['divisionname']);
+			if (empty($division))
+				$error['divisionid'] = trans('Division is required!');
+			else
+				$netnodedata['divisionid'] = $division['id'];
+		} else
+			$error['divisionid'] = trans('Division is required!');
+	}
+
 	if ($netnodedata['invprojectid'] == '-1') { // new project
 		if (!strlen(trim($netnodedata['projectname']))) {
 		 $error['projectname'] = trans('Project name is required');

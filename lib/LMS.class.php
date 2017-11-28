@@ -3332,6 +3332,11 @@ class LMS
 		return $manager->GetDivision($id);
 	}
 
+	public function GetDivisionByName($name) {
+		$manager = $this->getDivisionManager();
+		return $manager->GetDivisionByName($name);
+	}
+
 	public function GetDivisions($params = array()) {
 		$manager = $this->getDivisionManager();
 		return $manager->GetDivisions($params);

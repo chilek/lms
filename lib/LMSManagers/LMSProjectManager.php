@@ -39,10 +39,17 @@ class LMSProjectManager extends LMSManager implements LMSProjectManagerInterface
 	}
 
 	public function GetProjects() {
-		$this->db->GetAllByKey('SELECT ip.id, ip.name, ip.divisionid, 
-				(SELECT COUNT(*) FROM nodes WHERE invprojectid = ip.id) AS nodes,
-				(SELECT COUNT(*) FROM netnodes WHERE invprojectid = ip.id) AS netnodes
+		return $this->db->GetAllByKey('SELECT ip.id, ip.name, ip.divisionid, 
+				n.ncount AS nodes, nn.ncount AS netnodes
 			FROM invprojects ip
+			LEFT JOIN (
+				SELECT invprojectid, COUNT(*) AS ncount FROM nodes
+				GROUP BY invprojectid
+			) n ON n.invprojectid = ip.id
+			LEFT JOIN (
+				SELECT invprojectid, COUNT(*) AS ncount FROM netnodes
+				GROUP BY invprojectid
+			) nn ON n.invprojectid = ip.id
 			WHERE ip.type <> ?
 			ORDER BY ip.name', 'id', array(INV_PROJECT_SYSTEM));
 	}

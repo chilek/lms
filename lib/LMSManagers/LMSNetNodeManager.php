@@ -103,7 +103,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 		}
 
 		$nlist = $this->db->GetAllByKey('SELECT n.id, n.name, n.type, n.status, n.invprojectid, n.info, n.lastinspectiontime, p.name AS project,
-				n.divisionid, longitude, latitude, ownership, coowner, uip, miar,
+				n.divisionid, d.shortname AS division, longitude, latitude, ownership, coowner, uip, miar,
 				lc.ident AS location_city_ident, lst.ident AS location_street_ident,
 				lb.id AS location_borough, lb.name AS location_borough_name, lb.ident AS location_borough_ident,
 				lb.type AS location_borough_type,
@@ -114,6 +114,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 				addr.city_id as location_city, addr.street_id as location_street,
 				addr.house as location_house, addr.flat as location_flat
 			FROM netnodes n
+				LEFT JOIN divisions d ON d.id = n.divisionid
 				LEFT JOIN addresses addr        ON addr.id = n.address_id
 				LEFT JOIN invprojects p         ON (n.invprojectid = p.id)
 				LEFT JOIN location_streets lst  ON lst.id = addr.street_id
