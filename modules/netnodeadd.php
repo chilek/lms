@@ -63,6 +63,17 @@ if (isset($netnodedata)) {
 		}
 	}
 
+	if (isset($netnodedata['terc']) && isset($netnodedata['simc']) && isset($netnodedata['ulic'])) {
+		$teryt = $LMS->TerytToLocation($netnodedata['terc'], $netnodedata['simc'], $netnodedata['ulic']);
+		$netnodedata['teryt'] = 1;
+		$netnodedata['location_state'] = $teryt['location_state'];
+		$netnodedata['location_state_name'] = $teryt['location_state_name'];
+		$netnodedata['location_city'] = $teryt['location_city'];
+		$netnodedata['location_city_name'] = $teryt['location_city_name'];
+		$netnodedata['location_street'] = $teryt['location_street'];
+		$netnodedata['location_street_name'] = $teryt['location_street_name'];
+	}
+
     if (!$error) {
 		if (intval($netnodedata['invprojectid']) == -1)
 			$netnodedata['invprojectid'] = $LMS->AddProject($netnodedata);

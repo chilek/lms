@@ -356,26 +356,34 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 		$pow = substr($terc, 2, 2);
 		$gmi = substr($terc, 4, 2);
 		$rodz_gmi = $terc[6];
-    	$city = $this->db->GetRow('SELECT cityid, nazwa AS city FROM teryt_simc
+    	$result = $this->db->GetRow('SELECT ts.cityid AS location_city, ts.nazwa AS location_city_name,
+				lb.id AS location_borough, lb.name AS location_borough_name,
+				ld.id AS location_district, ld.name AS location_district_name,
+				ls.id AS location_state, ls.name AS location_state_name
+			FROM teryt_simc ts
+			JOIN location_cities lc ON lc.id = ts.cityid
+			JOIN location_boroughs lb ON lb.id = lc.boroughid
+			JOIN location_districts ld ON ld.id = lb.districtid
+			JOIN location_states ls ON ls.id = ld.stateid
 			WHERE woj = ? AND pow = ? AND gmi = ? AND rodz_gmi = ? AND sym = ?',
 			array($woj, $pow, $gmi, $rodz_gmi, $simc));
-		if (empty($city))
+		if (empty($result))
 			return null;
 		if (empty($ulic))
 			return compact('city');
-		$street = $this->db->GetRow('SELECT id AS streetid, cecha, nazwa_1, nazwa_2
+		$street = $this->db->GetRow('SELECT id AS location_street, cecha, nazwa_1, nazwa_2
 			FROM teryt_ulic
 			WHERE woj = ? AND pow = ? AND gmi = ? AND rodz_gmi = ? AND sym = ? AND sym_ul = ?',
 			array($woj, $pow, $gmi, $rodz_gmi, $simc, $ulic));
 		if (empty($street))
-			return compact('city');
+			return compact('result');
 		else {
 			$street_parts = array_splice($street, 1, 3);
 			if (empty($street_parts['nazwa_2']))
 				unset($street_parts['nazwa_2']);
-			$street['street'] = implode(' ', $street_parts);
+			$street['location_street_name'] = implode(' ', $street_parts);
 		}
-		$city = array_merge($city, $street);
-		return compact('city');
+		$result = array_merge($result, $street);
+		return compact('result');
 	}
 }
