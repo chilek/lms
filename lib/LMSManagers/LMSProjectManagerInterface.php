@@ -35,6 +35,8 @@ interface LMSProjectManagerInterface {
 
 	public function GetProject($id);
 
+	public function GetProjectByName($name);
+
 	public function ProjectByNameExists($name);
 
 	public function AddProject($project);

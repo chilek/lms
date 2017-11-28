@@ -3366,6 +3366,11 @@ class LMS
 		return $manager->GetProject($id);
 	}
 
+	public function GetProjectByName($name) {
+		$manager = $this->getProjectManager();
+		return $manager->GetProjectByName($name);
+	}
+
 	public function ProjectByNameExists($name) {
 		$manager = $this->getProjectManager();
 		return $manager->ProjectByNameExists($name);
