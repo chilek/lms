@@ -70,7 +70,7 @@ if (isset($netnodedata)) {
 	}
 
 	if ($netnodedata['location_zip'] && !check_zip($netnodedata['location_zip'])) {
-		$error['netnode[location_zip]'] = trans('Incorrect ZIP code!');
+		$error['location_zip'] = trans('Incorrect ZIP code!');
 	}
 
 	if (in_array($netnodedata['ownership'], array('1', '2'))) { // węzeł współdzielony lub obcy

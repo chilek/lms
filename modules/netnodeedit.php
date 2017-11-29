@@ -87,7 +87,7 @@ if (isset($netnodedata)) {
 	}
 
 	if ($netnodedata['location_zip'] && !check_zip($netnodedata['location_zip'])) {
-		$error['netnode[location_zip]'] = trans('Incorrect ZIP code!');
+		$error['location_zip'] = trans('Incorrect ZIP code!');
 	}
 
 	if (isset($netnodedata['terc']) && isset($netnodedata['simc']) && isset($netnodedata['ulic'])) {
@@ -109,7 +109,7 @@ if (isset($netnodedata)) {
 		if($lit != '')
 		{
 			if($lit > time())
-				$error['netnode[lastinspectiontime]'] = trans('Date from the future not allowed!');
+				$error['lastinspectiontime'] = trans('Date from the future not allowed!');
 		}
 	}
 
