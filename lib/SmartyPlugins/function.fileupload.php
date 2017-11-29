@@ -68,7 +68,7 @@ function smarty_function_fileupload($params, $template) {
 				var progresslabel = progressbar.find(".fileupload-progress-label");
 				var xhr;
 				elem.find("button").on("click", function() {
-					$(this).siblings("input[type=file]").click();
+					$(this).siblings("input[type=file]").val("").click();
 				});
 				elem.find("#' . $id . '-progress-dialog").dialog({
 					modal: true,
