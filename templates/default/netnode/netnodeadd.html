@@ -85,16 +85,16 @@
 		</TD>
 		<TD WIDTH="98%">
 			<SELECT NAME="netnode[invprojectid]" ID="NNproject" VALUE="{$netnode.invprojectid}" {tip text="Select project for this node"} onchange="setNNProject();">
-				<OPTION value="-2" {if ($netnode.invprojectid == '-2' ) } selected="selected" {/if} >- {trans("none")} -</OPTION>
-				<OPTION value="-1" {if ($netnode.invprojectid == '-1' ) } selected="selected" {/if}>{trans("New project")}</OPTION>
+				<OPTION value="-2"{if ($netnode.invprojectid == '-2')} selected{/if}>- {trans("none")} -</OPTION>
+				<OPTION value="-1"{if ($netnode.invprojectid == '-1')} selected{/if}>{trans("New project")}</OPTION>
 				<!--
-				<OPTION value="1" {if ($netnode.invprojectid == '1' ) } selected="selected" {/if}>{trans("Inherited from root device")}</OPTION>
+				<OPTION value="1"{if ($netnode.invprojectid == '1')} selected{/if}>{trans("Inherited from root device")}</OPTION>
 				-->
-				{section name=project loop=$NNprojects}
-				<OPTION VALUE="{$NNprojects[project].id}" {if ($netnode.invprojectid == $NNprojects[project].id ) } selected="selected" {/if} >{$NNprojects[project].name}</OPTION>
-				{/section}
+				{foreach $NNprojects as $project}
+				<OPTION VALUE="{$project.id}"{if ($netnode.invprojectid == $project.id)} selected{/if}>{$project.name}</OPTION>
+				{/foreach}
 			</SELECT>
-			<INPUT TYPE="TEXT" NAME="netnode[projectname]" VALUE="{$netnode.projectname}" {tip text="Enter new project name" trigger="projectname" } ID="NNprojectname" SIZE="35" />
+			<INPUT TYPE="TEXT" NAME="netnode[projectname]" VALUE="{$netnode.projectname}" {tip text="Enter new project name" trigger="projectname" } ID="NNprojectname" SIZE="35">
 			 
 		</TD>
 	</TR>
@@ -196,17 +196,17 @@
 			<INPUT TYPE="RADIO" NAME="netnode[miar]" VALUE="0" id="miar_no"{if ($netnode['miar']==0)} checked{/if}><label for="miar_no">{trans("No")}</label>
 		</TD>
 	</TR>
-        <TR>
-                <TD WIDTH="1%"><IMG SRC="img/note.gif" ALT=""></TD>
-                <TD width="1%" class="bold">{trans('Note:')}</TD>
-                <TD width="98%"><TEXTAREA type="text" name="info"></TEXTAREA></TD>
-        </TR>
-        <TR>
+	<TR>
+		<TD WIDTH="1%"><IMG SRC="img/note.gif" ALT=""></TD>
+		<TD width="1%" class="bold">{trans('Note:')}</TD>
+		<TD width="98%"><TEXTAREA type="text" name="netnode[info]"></TEXTAREA></TD>
+	</TR>
+	<TR>
 		<TD WIDTH="1%"><IMG SRC="img/phone.gif" ALT=""></TD>
 		<TD width="1%" class="bold">{trans('Administrative contact:')}</TD>
-		<TD width="98%"><INPUT type="text" name="admcontact" maxlenght="10"></TD>
-        </TR>
- 	</TABLE>
+		<TD width="98%"><INPUT type="text" name="netnode[admcontact]" maxlenght="10"></TD>
+	</TR>
+	</TABLE>
 	</TD>
 	</TR>
 	</TABLE>

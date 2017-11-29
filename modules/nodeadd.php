@@ -200,8 +200,7 @@ if (isset($_POST['nodedata']))
 		if (!strlen(trim($nodedata['projectname']))) {
 		 $error['projectname'] = trans('Project name is required');
 		}
-		if ($DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>?",
-			array($nodedata['projectname'], INV_PROJECT_SYSTEM)))
+		if ($LMS->ProjectByNameExists($nodedata['projectname']))
 			$error['projectname'] = trans('Project with that name already exists');
 	}
 
@@ -223,14 +222,9 @@ if (isset($_POST['nodedata']))
 	if (!$error) {
         $nodedata = $LMS->ExecHook('node_add_before', $nodedata);
 
-        $ipi = $nodedata['invprojectid'];
-        if ($ipi == '-1') {
-			$DB->BeginTrans();
-			$DB->Execute("INSERT INTO invprojects (name, type) VALUES (?, ?)",
-				array($nodedata['projectname'], INV_PROJECT_REGULAR));
-			$ipi = $DB->GetLastInsertID('invprojects');
-			$DB->CommitTrans();
-		}
+		$ipi = $nodedata['invprojectid'];
+		if ($ipi == '-1')
+			$ipi = $LMS->AddProject($nodedata);
 
 		if ($nodedata['invprojectid'] == '-1' || intval($ipi)>0)
 			$nodedata['invprojectid'] = intval($ipi);
@@ -288,9 +282,8 @@ else
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customers', $LMS->GetCustomerNames());
 
-$nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
-	array(INV_PROJECT_SYSTEM));
-$SMARTY->assign('NNprojects',$nprojects);
+$nprojects = $LMS->GetProjects();
+$SMARTY->assign('NNprojects', $nprojects);
 
 $LMS->InitXajax();
 include(MODULES_DIR . DIRECTORY_SEPARATOR . 'nodexajax.inc.php');

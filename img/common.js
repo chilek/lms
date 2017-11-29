@@ -511,12 +511,12 @@ function validate_random_string(string, min_size, max_size, characters) {
 function get_size_unit(size) {
 	if (size > 10 * 1024 * 1024 * 1024)
 		return {
-			size: (size / 1024 * 1024 * 1024).toFixed(2),
+			size: (size / (1024 * 1024 * 1024)).toFixed(2),
 			unit: 'GiB'
 		};
 	else if (size > 10 * 1024 * 1024)
 		return {
-			size: (size / 1024 * 1024).toFixed(2),
+			size: (size / (1024 * 1024)).toFixed(2),
 			unit: 'MiB'
 		};
 	else if (size > 10 * 1024)

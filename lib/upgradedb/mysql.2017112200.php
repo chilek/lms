@@ -3,9 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
- *
- *  Please, see the doc/AUTHORS for more information about authors!
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License Version 2 as
@@ -21,14 +19,26 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
  */
 
-$id = intval($_GET['id']);
+$this->BeginTrans();
 
-if (isset($_GET['is_sure']) && $_GET['is_sure'] == 1 && $id)
-	$LMS->DeleteProject($id);
+$this->Execute("DROP VIEW teryt_simc");
+$this->Execute("
+	CREATE VIEW teryt_simc AS
+		SELECT s.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
+			c.ident AS sym, c.id AS cityid, c.name AS nazwa,
+			COALESCE(cc.ident, c.ident) AS sympod,
+			COALESCE(cc.id, c.id) AS subcityid
+		FROM location_cities c
+		JOIN location_boroughs b ON (c.boroughid = b.id)
+		JOIN location_districts d ON (b.districtid = d.id)
+		JOIN location_states s ON (d.stateid = s.id)
+		LEFT JOIN location_cities cc ON (c.cityid = cc.id)
+");
 
-$SESSION->redirect('?'.$SESSION->get('backto'));
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017112200', 'dbversion'));
+
+$this->CommitTrans();
 
 ?>

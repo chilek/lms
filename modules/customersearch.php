@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -170,7 +170,7 @@ else
 	$SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
 	$SMARTY->assign('cstateslist', $LMS->GetCountryStates());
 	$SMARTY->assign('tariffs', $LMS->GetTariffs());
-	$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
+	$SMARTY->assign('divisions', $LMS->GetDivisions());
 	$SMARTY->assign('k', $sqlskey);
 	$SMARTY->display('customer/customersearch.html');
 }

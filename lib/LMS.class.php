@@ -58,6 +58,8 @@ class LMS
     protected $massage_manager;
     protected $config_manager;
     protected $user_group_manager;
+    protected $division_manager;
+    protected $project_manager;
 
 	const db_dump_multi_record_limit = 500;
 
@@ -330,16 +332,7 @@ class LMS
         return $res;
     }
 
-	public function CleanupInvprojects() {
-		if (ConfigHelper::checkValue(ConfigHelper::getConfig('phpui.auto_remove_investment_project', true)))
-			$this->DB->Execute("DELETE FROM invprojects WHERE type <> ? AND id NOT IN
-				(SELECT DISTINCT invprojectid FROM netdevices WHERE invprojectid IS NOT NULL
-					UNION SELECT DISTINCT invprojectid FROM vnodes WHERE invprojectid IS NOT NULL
-					UNION SELECT DISTINCT invprojectid FROM netnodes WHERE invprojectid IS NOT NULL)",
-				array(INV_PROJECT_SYSTEM));
-	}
-
-    /*
+	/*
      * Users
      */
 
@@ -1940,7 +1933,7 @@ class LMS
 			if (isset($_SERVER['HTTP_USER_AGENT']))
 				$this->mail_object->addCustomHeader('X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']);
 
-			foreach (array('X-LMS-Message-Item-Id', 'References', 'In-Reply-To', 'Message-ID') as $header_name)
+			foreach (array('References', 'In-Reply-To', 'Message-ID') as $header_name)
 				if (isset($headers[$header_name]))
 					if ($header_name == 'Message-ID')
 						$this->mail_object->MessageID = $headers[$header_name];
@@ -2506,6 +2499,11 @@ class LMS
 	public function GetCustomerAddress( $customer_id, $type = BILLING_ADDRESS ) {
 		$manager = $this->getLocationManager();
 		return $manager->GetCustomerAddress( $customer_id, $type );
+	}
+
+	public function TerytToLocation($terc, $simc, $ulic) {
+		$manager = $this->getLocationManager();
+		return $manager->TerytToLocation($terc, $simc, $ulic);
 	}
 
 	public function GetNAStypes()
@@ -3319,6 +3317,79 @@ class LMS
         $manager = $this->getTariffTagManager();
         return $manager->TarifftagGetAll();
     }
+
+	/*
+	 * divisions
+	 */
+	protected function getDivisionManager() {
+		if (!isset($this->division_manager))
+			$this->division_manager = new LMSDivisionManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+		return $this->division_manager;
+	}
+
+	public function GetDivision($id) {
+		$manager = $this->getDivisionManager();
+		return $manager->GetDivision($id);
+	}
+
+	public function GetDivisionByName($name) {
+		$manager = $this->getDivisionManager();
+		return $manager->GetDivisionByName($name);
+	}
+
+	public function GetDivisions($params = array()) {
+		$manager = $this->getDivisionManager();
+		return $manager->GetDivisions($params);
+	}
+
+	/*
+	 * projects
+	 */
+	protected function getProjectManager() {
+		if (!isset($this->project_manager))
+			$this->project_manager = new LMSProjectManager($this->DB, $this->AUTH, $this->cache, $this->SYSLOG);
+		return $this->project_manager;
+	}
+
+	public function CleanupProjects() {
+		$manager = $this->getProjectManager();
+		$manager->CleanupProjects();
+	}
+
+	public function GetProjects() {
+		$manager = $this->getProjectManager();
+		return $manager->GetProjects();
+	}
+
+	public function GetProject($id) {
+		$manager = $this->getProjectManager();
+		return $manager->GetProject($id);
+	}
+
+	public function GetProjectByName($name) {
+		$manager = $this->getProjectManager();
+		return $manager->GetProjectByName($name);
+	}
+
+	public function ProjectByNameExists($name) {
+		$manager = $this->getProjectManager();
+		return $manager->ProjectByNameExists($name);
+	}
+
+	public function AddProject($project) {
+		$manager = $this->getProjectManager();
+		return $manager->AddProject($project);
+	}
+
+	public function DeleteProject($id) {
+		$manager = $this->getProjectManager();
+		return $manager->DeleteProject($id);
+	}
+
+	public function UpdateProject($id, $project) {
+		$manager = $this->getProjectManager();
+		return $manager->UpdateProject($id, $project);
+	}
 
 	public function GetFinancialDocument($doc, $SMARTY) {
 		if ($doc['doctype'] == DOC_DNOTE) {

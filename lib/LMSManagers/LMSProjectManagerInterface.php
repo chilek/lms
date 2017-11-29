@@ -25,36 +25,23 @@
  */
 
 /**
- * LMSLocationManagerInterface
- *
+ * LMSProjectManagerInterface
+ * 
  */
-interface LMSLocationManagerInterface
-{
-    public function UpdateCountryState($zip, $stateid);
+interface LMSProjectManagerInterface {
+	public function CleanupProjects();
 
-    public function GetCountryStates();
+	public function GetProjects();
 
-    public function GetCountries();
+	public function GetProject($id);
 
-    public function GetCountryName($id);
+	public function GetProjectByName($name);
 
-    public function DeleteAddress( $address_id );
+	public function ProjectByNameExists($name);
 
-    public function InsertAddress( $args );
+	public function AddProject($project);
 
-    public function InsertCustomerAddress( $customer_id, $args );
+	public function DeleteProject($id);
 
-    public function UpdateAddress( $args );
-
-    public function UpdateCustomerAddress( $customer_id, $args );
-
-    public function ValidAddress( $args );
-
-    public function CopyAddress( $address_id );
-
-    public function GetAddress( $address_id );
-
-	public function GetCustomerAddress($customer_id, $type = BILLING_ADDRESS);
-
-	public function TerytToLocation($terc, $simc, $ulic);
+	public function UpdateProject($id, $project);
 }

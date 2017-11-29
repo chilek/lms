@@ -24,7 +24,7 @@
  */
 
 $id = intval($_GET['id']);
-$division = $DB->GetRow('SELECT * FROM divisions WHERE id = ?', array($id));
+$division = $LMS->GetDivision($id);
 
 $args = array(
 	'name'            => $division['name'],

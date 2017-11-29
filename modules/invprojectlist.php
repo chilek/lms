@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2016 LMS Developers
+ *  Copyright (C) 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,12 +25,7 @@
  */
 
 
-$invprojectlist = $DB->GetAll('SELECT ip.id, ip.name, ip.divisionid, 
-                (SELECT COUNT(*) FROM nodes WHERE invprojectid = ip.id) AS nodes,
-                (SELECT COUNT(*) FROM netnodes WHERE invprojectid = ip.id) AS netnodes
-                FROM invprojects ip
-                WHERE ip.type <> ?
-                ORDER BY ip.name', array(INV_PROJECT_SYSTEM));
+$invprojectlist = $LMS->GetProjects();
 
 $listdata['total'] = sizeof($invprojectlist);
   
@@ -51,7 +46,7 @@ $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('invprojectlist', $invprojectlist);
-$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
+$SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->display('invproject/invprojectlist.html');
 

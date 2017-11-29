@@ -354,30 +354,42 @@ function get_teryt_file($ch, $type, $outfile) {
 	);
 	$date = strftime('%d') . ' ' . $month_names[intval(strftime('%m'))] . ' ' . strftime('%Y');
 
-	switch ($type) {
-		case 'TERC':
-			$param = 'ctl00$body$BTERCUrzedowyPobierz';
-			break;
-		case 'SIMC':
-			$param = 'ctl00$body$BSIMCUrzedowyPobierz';
-			break;
-		case 'ULIC':
-			$param = 'ctl00$body$BULICUrzedowyPobierz';
-			break;
-	}
+	$continue = false;
+	do {
+		curl_setopt_array($ch, array(
+			CURLOPT_URL => 'http://eteryt.stat.gov.pl/eTeryt/rejestr_teryt/udostepnianie_danych/baza_teryt/uzytkownicy_indywidualni/pobieranie/pliki_pelne.aspx',
+			CURLOPT_POST => true,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_POSTFIELDS => array(
+				'__EVENTTARGET' => 'ctl00$body$B' . $type . 'UrzedowyPobierz',
+				'ctl00$body$TBData' => $date,
+			),
+		));
+		$res = curl_exec($ch);
+		if (empty($res))
+			return false;
 
-	curl_setopt_array($ch, array(
-		CURLOPT_URL => 'http://eteryt.stat.gov.pl/eTeryt/rejestr_teryt/udostepnianie_danych/baza_teryt/uzytkownicy_indywidualni/pobieranie/pliki_pelne.aspx',
-		CURLOPT_POST => true,
-		CURLOPT_RETURNTRANSFER => true,
-		CURLOPT_POSTFIELDS => array(
-			'__EVENTTARGET' => $param,
-			'ctl00$body$TBData' => $date,
-		),
-	));
-	$res = curl_exec($ch);
-	if (empty($res))
-		return false;
+		if (strlen($res) < 1000000) {
+			if (strpos($res, 'body_B' . $type . 'UrzedowyGeneruj') === false)
+				return false;
+			else {
+				curl_setopt_array($ch, array(
+					CURLOPT_URL => 'http://eteryt.stat.gov.pl/eTeryt/rejestr_teryt/udostepnianie_danych/baza_teryt/uzytkownicy_indywidualni/pobieranie/pliki_pelne.aspx',
+					CURLOPT_POST => true,
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_POSTFIELDS => array(
+						'__EVENTTARGET' => 'ctl00$body$B' . $type . 'UrzedowyGeneruj',
+						'ctl00$body$TBData' => $date,
+					),
+				));
+				$res = curl_exec($ch);
+				if (empty($res))
+					return false;
+
+				$continue = true;
+			}
+		}
+	} while ($continue);
 
 	$fh = fopen($outfile, 'w');
 	fwrite($fh, $res, strlen($res));

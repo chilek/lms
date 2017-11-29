@@ -217,8 +217,7 @@ if (isset($_POST['nodeedit'])) {
 		if (!strlen(trim($nodeedit['projectname']))) {
 		 $error['projectname'] = trans('Project name is required');
 		}
-		if ($DB->GetOne("SELECT * FROM invprojects WHERE name=? AND type<>?",
-			array($nodeedit['projectname'], INV_PROJECT_SYSTEM)))
+		if ($LMS->ProjectByNameExists($nodeedit['projectname']))
 			$error['projectname'] = trans('Project with that name already exists');
 	}
 	$authtype = 0;
@@ -240,20 +239,15 @@ if (isset($_POST['nodeedit'])) {
 		$nodeedit = $LMS->ExecHook('node_edit_before', $nodeedit);
 
 		$ipi = $nodeedit['invprojectid'];
-		if ($ipi == '-1') {
-			$DB->BeginTrans();
-			$DB->Execute("INSERT INTO invprojects (name, type) VALUES (?, ?)",
-				array($nodeedit['projectname'], INV_PROJECT_REGULAR));
-			$ipi = $DB->GetLastInsertID('invprojects');
-			$DB->CommitTrans();
-		}
+		if ($ipi == '-1')
+			$ipi = $LMS->AddProject($nodeedit);
 		if ($nodeedit['invprojectid'] == '-1' || intval($ipi)>0) {
 			$nodeedit['invprojectid'] = intval($ipi);
 		} else {
 			$nodeedit['invprojectid'] = NULL;
 		}
 		$LMS->NodeUpdate($nodeedit, ($customerid != $nodeedit['ownerid']));
-		$LMS->CleanupInvprojects();
+		$LMS->CleanupProjects();
 
 		$nodeedit = $LMS->ExecHook('node_edit_after', $nodeedit);
 
@@ -313,8 +307,7 @@ $nodeinfo = $hook_data['nodeedit'];
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
-$nprojects = $DB->GetAll("SELECT * FROM invprojects WHERE type<>? ORDER BY name",
-	array(INV_PROJECT_SYSTEM));
+$nprojects = $LMS->GetProjects();
 $SMARTY->assign('NNprojects',$nprojects);
 
 $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));

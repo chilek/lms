@@ -26,7 +26,7 @@
 
 $id = intval($_GET['id']);
 
-$oldinv = $DB->GetRow('SELECT * FROM invprojects WHERE id = ?', array($_GET['id']));
+$oldinv = $LMS->GetProject($id);
 
 if(!empty($_POST['invprojectedit'])) 
 {
@@ -35,19 +35,14 @@ if(!empty($_POST['invprojectedit']))
 			
 	if($invproject['name']=='')
 		$error['name'] = trans('Investment project name is required!');
-	elseif($oldinv['name'] != $invproject['name'] && $DB->GetOne('SELECT 1 FROM invprojects WHERE name = ?', array($invproject['name'])))
+	elseif($oldinv['name'] != $invproject['name'] && $LMS->ProjectByNameExists($invproject['name']))
 		$error['name'] = trans('Investment project with specified name already exists!');
 
 	if (!$error) {
-		$args = array(
-			'name' => $invproject['name'],
+		$LMS->UpdateProject($invproject['id'], array(
+			'projectname' => $invproject['name'],
 			'divisionid' => $invproject['divisionid'],
-			'type' => INV_PROJECT_REGULAR,
-			'id' => $invproject['id'],
-		);
-                $DB->Execute('UPDATE invprojects SET name=?, divisionid=?, type=?
-                        WHERE id=?', array_values($args));
-
+		));
 		$SESSION->redirect('?m=invprojectlist');
 	}
 }	
@@ -56,7 +51,7 @@ $layout['pagetitle'] = trans('Edit investment project: $a', $oldinv['name']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('invprojectedit', !empty($invproject) ? $invproject : $oldinv);
-$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname, status FROM divisions ORDER BY shortname'));
+$SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('error', $error);
 $SMARTY->display('invproject/invprojectedit.html');
 

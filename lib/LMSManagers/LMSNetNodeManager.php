@@ -103,17 +103,21 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 		}
 
 		$nlist = $this->db->GetAllByKey('SELECT n.id, n.name, n.type, n.status, n.invprojectid, n.info, n.lastinspectiontime, p.name AS project,
-				n.divisionid,
-				lb.id AS location_borough, lb.name AS location_borough_name, lb.type AS location_borough_type,
-				ld.id AS location_district, ld.name AS location_district_name,
-				ls.id AS location_state, ls.name AS location_state_name,
+				n.divisionid, d.shortname AS division, longitude, latitude, ownership, coowner, uip, miar,
+				lc.ident AS location_city_ident, lst.ident AS location_street_ident,
+				lb.id AS location_borough, lb.name AS location_borough_name, lb.ident AS location_borough_ident,
+				lb.type AS location_borough_type,
+				ld.id AS location_district, ld.name AS location_district_name, ld.ident AS location_district_ident,
+				ls.id AS location_state, ls.name AS location_state_name, ls.ident AS location_state_ident,
 				addr.name as location_name,
 				addr.city as location_city_name, addr.street as location_street_name,
 				addr.city_id as location_city, addr.street_id as location_street,
 				addr.house as location_house, addr.flat as location_flat
 			FROM netnodes n
+				LEFT JOIN divisions d ON d.id = n.divisionid
 				LEFT JOIN addresses addr        ON addr.id = n.address_id
 				LEFT JOIN invprojects p         ON (n.invprojectid = p.id)
+				LEFT JOIN location_streets lst  ON lst.id = addr.street_id
 				LEFT JOIN location_cities lc    ON lc.id = addr.city_id
 				LEFT JOIN location_boroughs lb  ON lb.id = lc.boroughid
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
@@ -122,13 +126,18 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			'id');
 
 		if ( $nlist ) {
-			foreach ($nlist as &$netnode)
+			foreach ($nlist as &$netnode) {
 				$netnode['location'] = location_str(
-					array('city_name'      => $netnode['location_city_name'],
+					array('city_name' => $netnode['location_city_name'],
 						'location_house' => $netnode['location_house'],
-						'location_flat'  => $netnode['location_flat'],
-						'street_name'    => $netnode['location_street_name'])
+						'location_flat' => $netnode['location_flat'],
+						'street_name' => $netnode['location_street_name'])
 				);
+				$netnode['terc'] = $netnode['location_state_ident'] . $netnode['location_district_ident']
+					. $netnode['location_borough_ident'] . $netnode['location_borough_type'];
+				$netnode['simc'] = $netnode['location_city_ident'];
+				$netnode['ulic'] = empty($netnode['location_street_ident']) ? null : $netnode['location_street_ident'];
+			}
 			unset($netnode);
 		}
 
@@ -180,7 +189,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 			$this->db->Execute('DELETE FROM addresses WHERE id = ?', array($addr_id));
 		}
 
-		$this->db->Execute("DELETE FROM netnodes WHERE id=?", array($id));
+		return $this->db->Execute("DELETE FROM netnodes WHERE id=?", array($id));
 	}
 
 	public function NetNodeUpdate($netnodedata) {
@@ -214,7 +223,7 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 				$args['address_id'] = $addr_id;
 		}
 
-		$this->db->Execute('UPDATE netnodes SET ' . implode(' = ?, ', array_keys($args)) . ' = ? WHERE id = ?',
+		return $this->db->Execute('UPDATE netnodes SET ' . implode(' = ?, ', array_keys($args)) . ' = ? WHERE id = ?',
 			array_merge(array_values($args), array($netnodedata['id'])));
 	}
 }

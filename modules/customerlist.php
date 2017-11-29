@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2013 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id: 90aade022d5282cf48e1eb3626f98400ffb5246e $
+ *  $Id$
  */
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
@@ -112,7 +112,7 @@ $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('customergroups', $LMS->CustomergroupGetAll());
 $SMARTY->assign('nodegroups', $LMS->GetNodeGroupNames());
-$SMARTY->assign('divisions', $DB->GetAll('SELECT id, shortname FROM divisions ORDER BY shortname'));
+$SMARTY->assign('divisions', $LMS->GetDivisions());
 $SMARTY->assign('pagination', $pagination);
 
 $SMARTY->display('customer/customerlist.html');

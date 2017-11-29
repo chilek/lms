@@ -53,8 +53,6 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 	public function CashImportParseFile($filename, $contents, $patterns, $quiet = true) {
 		global $LMS;
 
-		$customer_manager = new LMSCustomerManager($this->db, $this->auth, $this->cache, $this->syslog);
-
 		$file = preg_split('/\r?\n/', $contents);
 		$patterns_cnt = isset($patterns) ? sizeof($patterns) : 0;
 		$ln = 0;
@@ -168,7 +166,7 @@ class LMSCashManager extends LMSManager implements LMSCashManagerInterface
 				} else
 					$id = NULL;
 
-			if ($id && !$customer_manager->customerExists($id))
+			if ($id && !$this->db->GetOne('SELECT id FROM customers WHERE id = ?', array($id)))
 				$id = null;
 
 			if ($time) {

@@ -2716,8 +2716,9 @@ SELECT ident AS woj, 0::text AS pow, 0::text AS gmi, 0 AS rodz,
 
 CREATE VIEW teryt_simc AS
 SELECT s.ident AS woj, d.ident AS pow, b.ident AS gmi, b.type AS rodz_gmi,
-        c.ident AS sym, c.name AS nazwa,
-        (CASE WHEN cc.ident IS NOT NULL THEN cc.ident ELSE c.ident END) AS sympod
+        c.ident AS sym, c.id AS cityid, c.name AS nazwa,
+        COALESCE(cc.ident, c.ident) AS sympod,
+        COALESCE(cc.id, c.id) AS subcityid
     FROM location_cities c
     JOIN location_boroughs b ON (c.boroughid = b.id)
     JOIN location_districts d ON (b.districtid = d.id)
@@ -3266,6 +3267,6 @@ INSERT INTO netdevicemodels (name, alternative_name, netdeviceproducerid) VALUES
 ('XR7', 'XR7 MINI PCI PCBA', 2),
 ('XR9', 'MINI PCI 600MW 900MHZ', 2);
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017112100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2017112200');
 
 COMMIT;

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -121,7 +121,7 @@ $layout['pagetitle'] = trans('New Numbering Plan');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('numberplanadd', $numberplanadd);
-$SMARTY->assign('available', $DB->GetAllByKey('SELECT id, shortname AS name FROM divisions WHERE status = 0 ORDER BY shortname', 'id'));
+$SMARTY->assign('available', $LMS->GetDivisions(array('status' => 0)));
 $SMARTY->assign('error', $error);
 $SMARTY->display('numberplan/numberplanadd.html');
 

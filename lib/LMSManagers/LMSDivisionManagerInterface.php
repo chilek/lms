@@ -25,36 +25,13 @@
  */
 
 /**
- * LMSLocationManagerInterface
- *
+ * LMSDivisionManagerInterface
+ * 
  */
-interface LMSLocationManagerInterface
-{
-    public function UpdateCountryState($zip, $stateid);
+interface LMSDivisionManagerInterface {
+	public function GetDivision($id);
 
-    public function GetCountryStates();
+	public function GetDivisionByName($name);
 
-    public function GetCountries();
-
-    public function GetCountryName($id);
-
-    public function DeleteAddress( $address_id );
-
-    public function InsertAddress( $args );
-
-    public function InsertCustomerAddress( $customer_id, $args );
-
-    public function UpdateAddress( $args );
-
-    public function UpdateCustomerAddress( $customer_id, $args );
-
-    public function ValidAddress( $args );
-
-    public function CopyAddress( $address_id );
-
-    public function GetAddress( $address_id );
-
-	public function GetCustomerAddress($customer_id, $type = BILLING_ADDRESS);
-
-	public function TerytToLocation($terc, $simc, $ulic);
+	public function GetDivisions($params = array());
 }
