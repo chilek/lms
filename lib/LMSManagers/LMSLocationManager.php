@@ -383,7 +383,6 @@ class LMSLocationManager extends LMSManager implements LMSLocationManagerInterfa
 				unset($street_parts['nazwa_2']);
 			$street['location_street_name'] = implode(' ', $street_parts);
 		}
-		$result = array_merge($result, $street);
-		return compact('result');
+		return array_merge($result, $street);
 	}
 }
