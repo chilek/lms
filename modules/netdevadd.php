@@ -148,8 +148,7 @@ $layout['pagetitle'] = trans('New Device');
 $SMARTY->assign('nastypes', $LMS->GetNAStypes());
 
 $SMARTY->assign('NNprojects', $LMS->GetProjects());
-$netnodes = $DB->GetAll("SELECT * FROM netnodes ORDER BY name");
-$SMARTY->assign('NNnodes',$netnodes);
+$SMARTY->assign('NNnodes', $LMS->GetNetNodes());
 
 if (ConfigHelper::checkConfig('phpui.ewx_support'))
 	$SMARTY->assign('channels', $DB->GetAll('SELECT id, name FROM ewx_channels ORDER BY name'));

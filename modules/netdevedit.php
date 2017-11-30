@@ -677,8 +677,7 @@ if ($subtitle)
 	$layout['pagetitle'] .= ' - ' . $subtitle;
 
 $SMARTY->assign('NNprojects', $LMS->GetProjects());
-$netnodes = $DB->GetAll("SELECT * FROM netnodes ORDER BY name");
-$SMARTY->assign('NNnodes',$netnodes);
+$SMARTY->assign('NNnodes', $LMS->GetNetNodes());
 
 $SMARTY->assign('error'                , $error);
 $SMARTY->assign('netdevinfo'           , $netdevdata);
