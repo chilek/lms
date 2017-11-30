@@ -1,4 +1,4 @@
-3<?php
+<?php
 
 /*
  * LMS version 1.11-git
