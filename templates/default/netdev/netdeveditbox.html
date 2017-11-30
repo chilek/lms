@@ -194,8 +194,8 @@
 		<TD WIDTH="98%">
 			<SELECT NAME="netdev[nastype]" {tip text="Select type (optional)" trigger="nastype"}>
 			<OPTION VALUE="0"></OPTION>
-			{foreach from=$nastype item=item key=key}
-			<OPTION VALUE="{$key}" {if $key==$netdevinfo.nastype} SELECTED{/if}>{$item.name}</OPTION>
+			{foreach $nastypes as $key => $item}
+			<OPTION VALUE="{$key}"{if $key == $netdevinfo.nastype} selected{/if}>{$item.name}</OPTION>
 			{/foreach}
 			</SELECT>
 		</TD>
@@ -301,13 +301,13 @@
 			{trans("Investment project:")}
 		</TD>
 		<TD WIDTH="98%">
-			<SELECT NAME="netdev[invprojectid]" ID="NNproject" VALUE="{$netdevinfo.invprojectid}" {tip text="Select project for this node"} onchange="setNNProject();">
-				<OPTION value="-2" {if ($netdevinfo.invprojectid == '-2' ) } selected="selected" {/if} >- {trans("none")} -</OPTION>
-				<OPTION value="-1" {if ($netdevinfo.invprojectid == '-1' ) } selected="selected" {/if}>{trans("New project")}</OPTION>
-				<OPTION value="1" {if ($netdevinfo.invprojectid == '1' ) } selected="selected" {/if}>{trans("From root device")}</OPTION>
-				{section name=project loop=$NNprojects}
-				<OPTION VALUE="{$NNprojects[project].id}" {if ($netdevinfo.invprojectid == $NNprojects[project].id ) } selected="selected" {/if} >{$NNprojects[project].name}</OPTION>
-				{/section}
+			<SELECT NAME="netdev[invprojectid]" ID="NNproject" {tip text="Select project for this node"} onchange="setNNProject();">
+				<OPTION value="-2"{if ($netdevinfo.invprojectid == '-2')} selected{/if}>- {trans("none")} -</OPTION>
+				<OPTION value="-1"{if ($netdevinfo.invprojectid == '-1')} selected{/if}>{trans("New project")}</OPTION>
+				<OPTION value="1"{if ($netdevinfo.invprojectid == '1')} selected{/if}>{trans("From root device")}</OPTION>
+				{foreach $NNprojects as $project}
+				<OPTION VALUE="{$project.id}"{if ($netdevinfo.invprojectid == $project.id)} selected{/if}>{$project.name}</OPTION>
+				{/foreach}
 			</SELECT>
 			<INPUT TYPE="TEXT" NAME="netdev[projectname]" VALUE="{$netdevinfo.projectname}" {tip text="Enter new project name" trigger="projectname" } ID="NNprojectname">
 		</TD>
@@ -320,11 +320,11 @@
 			{trans("Net node:")}
 		</TD>
 		<TD WIDTH="98%">
-			<SELECT NAME="netdev[netnodeid]" VALUE="{$netdevinfo.netnodeid}" {tip text="Select node"} >
+			<SELECT NAME="netdev[netnodeid]" {tip text="Select node"}>
 				<OPTION VALUE="-1">{trans("None")}</OPTION>
-				{section name=nd loop=$NNnodes}
-				<OPTION VALUE="{$NNnodes[nd].id}" {if ($netdevinfo.netnodeid == $NNnodes[nd].id ) } selected="selected" {/if} >{$NNnodes[nd].name}</OPTION>
-				{/section}
+				{foreach $NNnodes as $node}
+				<OPTION VALUE="{$node.id}"{if ($netdevinfo.netnodeid == $node.id)} selected{/if}>{$node.name}</OPTION>
+				{/foreach}
 			</SELECT>
 		</TD>
 	</TR>

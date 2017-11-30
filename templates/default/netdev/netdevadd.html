@@ -156,8 +156,8 @@
 								<td>
 									<select name="netdev[nastype]" {tip text="Select type (optional)" trigger="nastype"}>
 										<option value="0"></option>
-										{foreach from=$nastype item=item key=key}
-										<option value="{$key}" {if $key==$netdevices.nastype} selected{/if}>{$item.name}</option>
+										{foreach $nastypes as $key => $item}
+										<option value="{$key}"{if $key == $netdev.nastype} selected{/if}>{$item.name}</option>
 										{/foreach}
 									</select>
 								</td>
@@ -224,25 +224,25 @@
 							<tr>
 								<td><img src="img/money.gif" alt=""> {trans("Investment project:")}</td>
 								<td>
-									<select name="netdev[invprojectid]" id="NNproject" value="{$netdevinfo.invprojectid}" {tip text="Select project for this node"} onchange="setNNProject();">
-										<option value="-2" {if ($netdevinfo.invprojectid == '-2' ) } selected="selected" {/if} >- {trans("none")} -</option>
-										<option value="-1" {if ($netdevinfo.invprojectid == '-1' ) } selected="selected" {/if}>{trans("New project")}</option>
-										<option value="1" {if ($netdevinfo.invprojectid == '1' ) } selected="selected" {/if}>{trans("From root device")}</option>
-										{section name=project loop=$NNprojects}
-										<option value="{$NNprojects[project].id}" {if ($netdevinfo.invprojectid == $NNprojects[project].id ) } selected="selected" {/if} >{$NNprojects[project].name}</option>
-										{/section}
+									<select name="netdev[invprojectid]" id="NNproject" {tip text="Select project for this node"} onchange="setNNProject();">
+										<option value="-2"{if ($netdev.invprojectid == '-2')} selected{/if}>- {trans("none")} -</option>
+										<option value="-1"{if ($netdev.invprojectid == '-1')} selected{/if}>{trans("New project")}</option>
+										<option value="1"{if ($netdev.invprojectid == '1')} selected{/if}>{trans("From root device")}</option>
+										{foreach $NNprojects as $project}
+										<option value="{$project.id}"{if ($netdev.invprojectid == $project.id)} selected{/if}>{$project.name}</option>
+										{/foreach}
 									</select>
-									<input type="text" name="netdev[projectname]" value="{$netdevinfo.projectname}" {tip text="Enter new project name" trigger="projectname" } id="NNprojectname">
+									<input type="text" name="netdev[projectname]" value="{$netdev.projectname}" {tip text="Enter new project name" trigger="projectname" } id="NNprojectname">
 								</td>
 							</tr>
 							<tr>
 								<td><img src="img/netdev.gif" alt=""> {trans("Net node:")}</td>
 								<td>
-									<select name="netdev[netnodeid]" value="{$netdevinfo.netnodeid}" {tip text="Select node"} >
+									<select name="netdev[netnodeid]" {tip text="Select node"}>
 										<option value="-1">{trans("None")}</option>
-										{section name=nd loop=$NNnodes}
-										<option value="{$NNnodes[nd].id}" {if ($netdevinfo.netnodeid == $NNnodes[nd].id ) } selected="selected" {/if} >{$NNnodes[nd].name}</option>
-										{/section}
+										{foreach $NNnodes as $node}
+										<option value="{$node.id}"{if ($netdev.netnodeid == $node.id)} selected{/if}>{$node.name}</option>
+										{/foreach}
 									</select>
 								</td>
 							</tr>
@@ -339,12 +339,12 @@
         });
     };
 
-    updateLocationBoxesDisplay( {intval($netdevinfo.ownerid)} );
+    updateLocationBoxesDisplay( {intval($netdev.ownerid)} );
 
-    getCustomerAddresses( {intval($netdevinfo.ownerid)}, function(addresses) {
+    getCustomerAddresses( {intval($netdev.ownerid)}, function(addresses) {
         customer_addresses.setAddressList( addresses );
-        {if $netdevinfo.address_id && $netdevinfo.ownerid}
-        $( '#customer_addresses' ).val( {$netdevinfo.address_id} );
+        {if $netdev.address_id && $netdev.ownerid}
+        $( '#customer_addresses' ).val( {$netdev.address_id} );
         {/if}
         customer_addresses.init();
         customer_addresses.refresh();

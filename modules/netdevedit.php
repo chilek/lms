@@ -699,7 +699,7 @@ $SMARTY->assign('nodelinktype'         , $SESSION->get('nodelinktype'));
 $SMARTY->assign('nodelinkradiosector'  , $SESSION->get('nodelinkradiosector'));
 $SMARTY->assign('nodelinktechnology'   , $SESSION->get('nodelinktechnology'));
 $SMARTY->assign('nodelinkspeed'        , $SESSION->get('nodelinkspeed'));
-$SMARTY->assign('nastype'              , $LMS->GetNAStypes());
+$SMARTY->assign('nastypes'             , $LMS->GetNAStypes());
 
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
     $SMARTY->assign('customers', $LMS->GetCustomerNames());
