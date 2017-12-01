@@ -95,7 +95,7 @@ if (isset($_POST['document'])) {
 		$error['todate'] = trans('Start date can\'t be greater than end date!');
 
 	// validate tariff selection list when promotions are active only
-	if (isset($document['assignment'])) {
+	if (isset($document['assignment']) && !empty($document['assignment']['schemaid'])) {
 		// validate selected promotion schema properties
 		$a = $document['assignment'];
 		$a['datefrom'] = $oldfromdate;
