@@ -114,7 +114,10 @@ if (isset($_POST['document'])) {
 				$doc_dir = $doc;
 				continue;
 			}
+
 		$result = '';
+		$script_result = '';
+
 		// read template information
 		include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] . DIRECTORY_SEPARATOR . 'info.php');
 		// set some variables (needed in e.g. plugin)
@@ -131,11 +134,12 @@ if (isset($_POST['document'])) {
 					. DIRECTORY_SEPARATOR . $engine['plugin'] . '.php');
 			if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
 				. $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js'))
-				$SMARTY->assign('script_result', '<script src="' . $_SERVER['REQUEST_URI'] . '&template=' . $engine['name'] . '"></script>');
+				$script_result = '<script src="' . $_SERVER['REQUEST_URI'] . '&template=' . $engine['name'] . '"></script>';
 		}
 		// get plugin content
 		$SMARTY->assign('plugin_result', $result);
-		
+		$SMARTY->assign('script_result', $script_result);
+
 		// run template engine
 		if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
 			. $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php'))

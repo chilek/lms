@@ -334,17 +334,35 @@ if (isset($_POST['document'])) {
 		$document['todate'] = $oldtodate;
 
 		if ($document['templ']) {
+			foreach ($documents_dirs as $doc)
+				if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] )) {
+					$doc_dir = $doc;
+					continue;
+				}
+
 			$result = '';
+			$script_result = '';
+
 			// read template information
-			include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ']
+			include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ']
 				 . DIRECTORY_SEPARATOR . 'info.php');
 			// set some variables
 			$SMARTY->assign('document', $document);
+
 			// call plugin
-			@include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $engine['name']
-				 . DIRECTORY_SEPARATOR . $engine['plugin'] . '.php');
+			if (!empty($engine['plugin'])) {
+				if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+					. $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.php'))
+					include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $engine['name']
+						. DIRECTORY_SEPARATOR . $engine['plugin'] . '.php');
+				if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+					. $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js'))
+					$script_result = '<script src="' . $_SERVER['REQUEST_URI'] . '&template=' . $engine['name'] . '"></script>';
+			}
+
 			// get plugin content
 			$SMARTY->assign('plugin_result', $result);
+			$SMARTY->assign('script_result', $script_result);
 		}
 	}
 }
