@@ -637,7 +637,7 @@ class LMSNetworkManager extends LMSManager implements LMSNetworkManagerInterface
                 $longip = (string) ($network['addresslong'] + $i + $start);
 
                 $network['nodes']['addresslong'][$i] = $longip;
-                $network['nodes']['address'][$i] = long2ip($longip);
+                $network['nodes']['address'][$i] = long_ip($longip);
 
                 if (isset($nodes[$longip])) {
                     $network['nodes']['id'][$i] = $nodes[$longip]['id'];

@@ -217,7 +217,7 @@ foreach ($networks as $networkid => $net) {
 	$default_lease = $default_lease_time;
 	$max_lease = $max_lease_time;
 	$options = array();
-	$options['subnet-mask'] = long2ip($net['mask']);
+	$options['subnet-mask'] = long_ip($net['mask']);
 	if (!empty($net['gateway']))
 		$options['routers'] = $net['gateway'];
 	if (!empty($net['dns']))
@@ -236,7 +236,7 @@ foreach ($networks as $networkid => $net) {
 			$options = array_merge($options, $CONFIG['dhcp-' . $net['name']]['options']);
 	}
 
-	$net_prefix .= "\n\tsubnet " . long2ip($net['address']) . " netmask " . long2ip($net['mask'])
+	$net_prefix .= "\n\tsubnet " . long_ip($net['address']) . " netmask " . long_ip($net['mask'])
 		. " { # Network " . $net['name'] . " (ID: " . $net['id'] . ")\n"
 		. (!empty($net['dhcpstart']) ? "\t\trange " . $net['dhcpstart'] . " " . $net['dhcpend'] . ";\n" : "");
 	foreach ($options as $name => $value)

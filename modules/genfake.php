@@ -2056,7 +2056,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			$cnt++;
 			$startip++;
 			$nodedata['netid'] = $netid;
-			$nodedata['ipaddr'] = long2ip($startip);
+			$nodedata['ipaddr'] = long_ip($startip);
 			$nodedata['ipaddr_pub'] = '0.0.0.0';
 			$nodedata['macs'] = (array) makemac();
 			$nodedata['ownerid'] = $id;
@@ -2111,7 +2111,7 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 		}
 /*
 		$ip['ownerid'] = 0;
-		$ip['ipaddr'] = long2ip($startip);
+		$ip['ipaddr'] = long_ip($startip);
 		$ip['ipaddr_pub'] = '0.0.0.0';
 		$ip['macs'] = (array) makemac();
 		$ip['name'] = 'SWITCH_'.$i;

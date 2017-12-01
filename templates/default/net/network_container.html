@@ -44,7 +44,7 @@
                         </a>
                     {/if}
                 {else}
-                    {$tmp = long2ip($i)}
+                    {$tmp = long_ip($i)}
 
                     <a href="?m=nodeadd&preip={$tmp}&prenetwork={$hostid}">{$tmp}</a>
                 {/if}

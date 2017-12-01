@@ -94,7 +94,7 @@ class NetContainer {
 
                 foreach ( array_reverse($matched_masks) as $v ) {
                     $spaces[] = array(
-                        'ip'    => long2ip($curr_ip),
+                        'ip'    => long_ip($curr_ip),
                         'mask'  => $v['mask'],
                         'hosts' => $this->networks[$i-1]
                     );
@@ -139,8 +139,8 @@ function getNetworks( $ip, $br, $host = null ) {
     );
 
     foreach ( $networks as $k=>$v ) {
-        $networks[$k]['ip']      = long2ip($networks[$k]['ip_long']);
-        $networks[$k]['br_long'] = ip_long(getbraddr(long2ip($v['ip_long']), $v['mask_ip']));
+        $networks[$k]['ip']      = long_ip($networks[$k]['ip_long']);
+        $networks[$k]['br_long'] = ip_long(getbraddr(long_ip($v['ip_long']), $v['mask_ip']));
 
         if ( $v['ip_long'] < $ip_long ) {
             $ip_long = $v['ip_long'];
@@ -173,7 +173,7 @@ if ( isset($_GET['ajax']) ) {
 
         $counter = 2 * pow(2, 24-$mask-1) - 1;
         for ($i=0; $i<=$counter; ++$i) {
-            $SMARTY->assign('ip'   , long2ip(ip_long($ip) + $i * 256));
+            $SMARTY->assign('ip'   , long_ip(ip_long($ip) + $i * 256));
             $SMARTY->assign('hosts', array(array('host'=>$host, 'net_name'=>$_POST['netname'])));
 
             $html .= $SMARTY->fetch('net/network_container.html');
@@ -207,7 +207,7 @@ if ( isset($_GET['ajax']) ) {
         $SMARTY->assign('used_ips' , $used_ips);
         $SMARTY->assign('pool'     , array('start'=>$ip_start, 'end'=>$ip_end));
         $SMARTY->assign('network'  , $ip_start == $full_network['address'] ? 1 : 0);
-        $SMARTY->assign('broadcast', long2ip($ip_end) == getbraddr(long2ip($ip_start), $full_network['mask']) ? 1 : 0);
+        $SMARTY->assign('broadcast', long_ip($ip_end) == getbraddr(long_ip($ip_start), $full_network['mask']) ? 1 : 0);
         $SMARTY->assign('hostid'   , $full_network['id'] );
 
         $html .= $SMARTY->fetch('net/network_container.html');

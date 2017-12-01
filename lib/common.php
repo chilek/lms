@@ -113,6 +113,13 @@ function hostname()
 	return $hostname;
 }
 
+function long_ip($ip) {
+	$ip = (float) $ip;
+	if ($ip > PHP_INT_MAX)
+		$ip = $ip - 2 - ((float) PHP_INT_MAX) * 2;
+	return long2ip($ip);
+}
+
 function ip_long($sip)
 {
 	if(check_ip($sip)){

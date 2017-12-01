@@ -111,7 +111,7 @@
 		<tr class="{cycle}">
 			<td class="fleft bold nobr">
 				{if $session.nodeid}<a href="?m=nodeinfo&id={$session.nodeid}">{/if}
-				{long2ip($session.ipaddr)}
+				{long_ip($session.ipaddr)}
 				{if $session.nodeid}</a>{/if}
 			</td>
 			<td class="nobr">
