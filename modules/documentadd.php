@@ -122,14 +122,20 @@ if (isset($_POST['document'])) {
 			$document['reference'] = $DB->GetRow('SELECT id, type, fullnumber, cdate FROM documents
 				WHERE id = ?', array($document['reference']));
 		$SMARTY->assignByRef('document', $document);
+
 		// call plugin
-		if (!empty($engine['plugin']) && file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+		if (!empty($engine['plugin'])) {
+			if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
 			. $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.php'))
-			include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $engine['name']
-				. DIRECTORY_SEPARATOR . $engine['plugin'] . '.php');
+				include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $engine['name']
+					. DIRECTORY_SEPARATOR . $engine['plugin'] . '.php');
+			if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+				. $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js'))
+				$SMARTY->assign('script_result', '<script src="' . $_SERVER['REQUEST_URI'] . '&template=' . $engine['name'] . '"></script>');
+		}
 		// get plugin content
 		$SMARTY->assign('plugin_result', $result);
-
+		
 		// run template engine
 		if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
 			. $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php'))
