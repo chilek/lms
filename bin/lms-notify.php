@@ -515,8 +515,8 @@ if (empty($types) || in_array('documents', $types)) {
 	$customers = $DB->GetAll("SELECT DISTINCT c.id, c.pin, c.lastname, c.name,
 			b.balance, m.email, x.phone
 		FROM customers c
-		JOIN (
-			SELECT customerid, SUM(value) FROM cash
+		LEFT JOIN (
+			SELECT customerid, SUM(value) AS balance FROM cash
 			GROUP BY customerid
 		) b ON b.customerid = c.id
 		JOIN documents d ON d.customerid = c.id
