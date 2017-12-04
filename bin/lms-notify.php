@@ -200,7 +200,8 @@ $script_service = ConfigHelper::getConfig($config_section . '.service', '', true
 if ($script_service)
 	LMSConfig::getConfig()->getSection('sms')->addVariable(new ConfigVariable('service', $script_service));
 
-// contracts - contracts being finished some day before notify
+// documents - contracts (or annexes) which expire some day before notify
+// contracts - contracts which customer assignment max(dateto) is some day before notify
 // debtors - debtors notify
 // reminder - reminder notify
 // invoices - new invoice notify
@@ -209,7 +210,7 @@ if ($script_service)
 // messages - send message to customers which have awaiting www messages
 // timetable - send event notify to users
 $notifications = array();
-foreach (array('contracts', 'debtors', 'reminder', 'invoices', 'notes', 'warnings', 'messages', 'timetable') as $type) {
+foreach (array('documents', 'contracts', 'debtors', 'reminder', 'invoices', 'notes', 'warnings', 'messages', 'timetable') as $type) {
 	$notifications[$type] = array();
 	$notifications[$type]['limit'] = intval(ConfigHelper::getConfig($config_section . '.' . $type . '_limit', 0));
 	$notifications[$type]['message'] = ConfigHelper::getConfig($config_section . '.' . $type . '_message', $type . ' notification');
@@ -503,6 +504,78 @@ if (empty($types) || in_array('timetable', $types)) {
 					printf("[timetable/sms] %s (%04d): %s" . PHP_EOL, $user['name'], $user['id'], $user['phone']);
 				if (!$debug)
 					send_sms_to_user($user['phone'], $sms_contents);
+			}
+		}
+	}
+}
+
+// documents
+if (empty($types) || in_array('documents', $types)) {
+	$days = $notifications['documents']['days'];
+	$customers = $DB->GetAll("SELECT DISTINCT c.id, c.pin, c.lastname, c.name,
+			b.balance, m.email, x.phone
+		FROM customers c
+		JOIN (
+			SELECT customerid, SUM(value) FROM cash
+			GROUP BY customerid
+		) b ON b.customerid = c.id
+		JOIN documents d ON d.customerid = c.id
+		JOIN documentcontents dc ON dc.docid = d.id
+		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS email, customerid
+			FROM customercontacts
+			WHERE (type & ?) = ?
+			GROUP BY customerid
+		) m ON (m.customerid = c.id)
+		LEFT JOIN (SELECT " . $DB->GroupConcat('contact') . " AS phone, customerid
+			FROM customercontacts
+			WHERE (type & ?) = ?
+			GROUP BY customerid
+		) x ON (x.customerid = c.id)
+		WHERE d.type IN (?, ?) AND dc.todate >= $daystart + ? * 86400
+			AND dc.todate < $daystart + (? + 1) * 86400",
+		array(CONTACT_EMAIL | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+			CONTACT_EMAIL | CONTACT_NOTIFICATIONS,
+			CONTACT_MOBILE | CONTACT_NOTIFICATIONS | CONTACT_DISABLED,
+			CONTACT_MOBILE | CONTACT_NOTIFICATIONS,
+			DOC_CONTRACT, DOC_ANNEX,
+			$days, $days));
+
+	if (!empty($customers)) {
+		$notifications['documents']['customers'] = array();
+		foreach ($customers as $row) {
+			$notifications['documents']['customers'][] = $row['id'];
+			$message = parse_customer_data($notifications['documents']['message'], $row);
+			$subject = parse_customer_data($notifications['documents']['subject'], $row);
+
+			$recipient_name = $row['lastname'] . ' ' . $row['name'];
+			$recipient_mails = ($debug_email ? explode(',', $debug_email) :
+				(!empty($row['email']) ? explode(',', trim($row['email'])) : null));
+			$recipient_phones = ($debug_phone ? explode(',', $debug_phone) :
+				(!empty($row['phone']) ? explode(',', trim($row['phone'])) : null));
+
+			if (!$quiet) {
+				if (in_array('mail', $channels) && !empty($recipient_mails))
+					foreach ($recipient_mails as $recipient_mail)
+						printf("[mail/documents] %s (%04d): %s" . PHP_EOL,
+							$recipient_name, $row['id'], $recipient_mail);
+				if (in_array('sms', $channels) && !empty($recipient_phones))
+					foreach ($recipient_phones as $recipient_phone)
+						printf("[sms/documents] %s (%04d): %s" . PHP_EOL,
+							$recipient_name, $row['id'], $recipient_phone);
+			}
+
+			if (!$debug) {
+				if (in_array('mail', $channels) && !empty($recipient_mails)) {
+					$msgid = create_message(MSG_MAIL, $subject, $message);
+					foreach ($recipient_mails as $recipient_mail)
+						send_mail($msgid, $row['id'], $recipient_mail, $recipient_name,
+							$subject, $message);
+				}
+				if (in_array('sms', $channels) && !empty($recipient_phones)) {
+					$msgid = create_message(MSG_SMS, $subject, $message);
+					foreach ($recipient_phones as $recipient_phone)
+						send_sms($msgid, $row['id'], $recipient_phone, $message);
+				}
 			}
 		}
 	}
