@@ -199,33 +199,49 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 	public function NetNodeUpdate($netnodedata) {
 		$location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
 
-		$args = array(
-			'name'            => $netnodedata['name'],
-			'type'            => $netnodedata['type'],
-			'status'          => $netnodedata['status'],
-			'longitude'       => !empty($netnodedata['longitude']) ? str_replace(',', '.', $netnodedata['longitude']) : null,
-			'latitude'        => !empty($netnodedata['latitude'])  ? str_replace(',', '.', $netnodedata['latitude'])  : null,
-			'ownership'       => $netnodedata['ownership'],
-			'coowner'         => $netnodedata['coowner'],
-			'uip'             => $netnodedata['uip'],
-			'miar'            => $netnodedata['miar'],
-			'divisionid'      => $netnodedata['divisionid'],
-			'invprojectid'    => intval($netnodedata['invprojectid']) > 0 ? $netnodedata['invprojectid'] : null,
-			'info'         	  => $netnodedata['info'],
-			'admcontact'      => empty($netnodedata['admcontact']) ? null : $netnodedata['admcontact'],
-			'lastinspectiontime' => date_to_timestamp($netnodedata['lastinspectiontime']),
-		);
+		$args = array();
+		if (isset($netnodedata['name']))
+			$args['name'] = $netnodedata['name'];
+		if (isset($netnodedata['type']))
+			$args['type'] = $netnodedata['type'];
+		if (isset($netnodedata['status']))
+			$args['status'] = $netnodedata['status'];
+		if (isset($netnodedata['longitude']))
+			$args['longitude'] = empty($netnodedata['longitude']) ? null : str_replace(',', '.', $netnodedata['longitude']);
+		if (isset($netnodedata['latitude']))
+			$args['latitude'] = empty($netnodedata['latitude']) ? null : str_replace(',', '.', $netnodedata['latitude']);
+		if (isset($netnodedata['ownership']))
+			$args['ownership'] = $netnodedata['ownership'];
+		if (isset($netnodedata['coowner']))
+			$args['coowner'] = $netnodedata['coowner'];
+		if (isset($netnodedata['uip']))
+			$args['uip'] = $netnodedata['uip'];
+		if (isset($netnodedata['miar']))
+			$args['miar'] = $netnodedata['miar'];
+		if (isset($netnodedata['divisionid']))
+			$args['divisionid'] = $netnodedata['divisionid'];
+		if (isset($netnodedata['invprojectid']))
+			$args['invprojectid'] = intval($netnodedata['invprojectid']) > 0 ? $netnodedata['invprojectid'] : null;
+		if (isset($netnodedata['info']))
+			$args['info'] = $netnodedata['info'];
+		if (isset($netnodedata['admcontact']))
+			$args['admcontact'] = empty($netnodedata['admcontact']) ? null : $netnodedata['admcontact'];
+		if (isset($netnodedata['lastinspectiontime']))
+			$args['lastinspectiontime'] = date_to_timestamp($netnodedata['lastinspectiontime']);
 
 		// if address_id is set then update
-		if ( isset($netnodedata['address_id']) ) {
+		if (isset($netnodedata['address_id']))
 			$location_manager->UpdateAddress( $netnodedata );
-		} else {
+		else {
 		// else insert new address
 			$addr_id = $location_manager->InsertAddress( $netnodedata );
 
 			if ($addr_id >= 0)
 				$args['address_id'] = $addr_id;
 		}
+
+		if (empty($args))
+			return null;
 
 		return $this->db->Execute('UPDATE netnodes SET ' . implode(' = ?, ', array_keys($args)) . ' = ? WHERE id = ?',
 			array_merge(array_values($args), array($netnodedata['id'])));

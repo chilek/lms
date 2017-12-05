@@ -102,17 +102,14 @@ if (isset($netnodedata)) {
 		$netnodedata['location_street_name'] = $teryt['location_street_name'];
 	}
 
-	if($netnodedata['lastinspectiontime'] == '')
-		$netnodedata['lastinspectiontime'] = "0";
-	else
-	{
-		$lit = date_to_timestamp($netnodedata['lastinspectiontime']);
-		if($lit != '')
-		{
-			if($lit > time())
+	if (isset($netnodedata['lastinspectiontime']))
+		if ($netnodedata['lastinspectiontime'] == '')
+			$netnodedata['lastinspectiontime'] = 0;
+		else {
+			$lit = date_to_timestamp($netnodedata['lastinspectiontime']);
+			if (!empty($lit) && $lit > time())
 				$error['lastinspectiontime'] = trans('Date from the future not allowed!');
 		}
-	}
 
 	if (!$error) {
 		if (intval($netnodedata['invprojectid']) == -1)
