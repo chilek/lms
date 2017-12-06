@@ -98,7 +98,7 @@ $this->Execute("
 	ALTER TABLE daemoninstances ADD CONSTRAINT daemoninstances_hostid_fkey
 		FOREIGN KEY (hostid) REFERENCES hosts (id) ON DELETE CASCADE ON UPDATE CASCADE;
 	ALTER TABLE daemonconfig ADD CONSTRAINT daemonconfig_instanceid_fkey
-		FOREIGN KEY (instanceid) REFERENCES daemonconfig (id) ON DELETE CASCADE ON UPDATE CASCADE;
+		FOREIGN KEY (instanceid) REFERENCES daemoninstances (id) ON DELETE CASCADE ON UPDATE CASCADE;
 	ALTER TABLE cashrights ADD CONSTRAINT cashrights_regid_fkey
 		FOREIGN KEY (regid) REFERENCES cashregs (id) ON DELETE CASCADE ON UPDATE CASCADE;
 	ALTER TABLE cashreglog ADD CONSTRAINT cashreglog_regid_fkey
