@@ -172,13 +172,14 @@ if (isset($_POST['document'])) {
 	extract($result);
 	$SMARTY->assign('fileupload', $fileupload);
 
-	if (!$error && !empty($attachments)) {
-		foreach ($attachments as $attachment) {
-			$attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
-			$attachment['md5sum'] = md5_file($attachment['tmpname']);
-			$attachment['main'] = false;
-			$files[] = $attachment;
-		}
+	if (!$error) {
+		if (!empty($attachments))
+			foreach ($attachments as $attachment) {
+				$attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
+				$attachment['md5sum'] = md5_file($attachment['tmpname']);
+				$attachment['main'] = false;
+				$files[] = $attachment;
+			}
 		if (isset($document['attachments']) && !empty($document['attachments']))
 			foreach ($document['attachments'] as $attachment => $value) {
 				$filename = $engine['attachments'][$attachment];

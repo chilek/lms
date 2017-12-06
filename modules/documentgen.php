@@ -123,17 +123,18 @@ if (isset($_POST['document'])) {
 	$SMARTY->assign('fileupload', $fileupload);
 
 	$globalfiles = array();
-	if (!$error && !empty($attachments)) {
-		foreach ($attachments as $attachment) {
-			$attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
-			$attachment['md5sum'] = md5_file($attachment['tmpname']);
-			$attachment['main'] = false;
-			$globalfiles[] = $attachment;
-		}
+	if (!$error) {
+		if (!empty($attachments))
+			foreach ($attachments as $attachment) {
+				$attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
+				$attachment['md5sum'] = md5_file($attachment['tmpname']);
+				$attachment['main'] = false;
+				$globalfiles[] = $attachment;
+			}
 		if (isset($document['attachments']) && !empty($document['attachments']))
 			foreach ($document['attachments'] as $attachment => $value) {
 				$filename = $engine['attachments'][$attachment];
-				$files[] = array(
+				$globalfiles[] = array(
 					'tmpname' => null,
 					'name' => $filename,
 					'type' => mime_content_type($filename),
@@ -228,7 +229,12 @@ if (isset($_POST['document'])) {
 				$files = array_merge($files, $globalfiles);
 				foreach ($files as $file) {
 					@mkdir($file['path'], 0700);
-					if (!file_exists($file['newfile']) && !@rename($file['tmpname'], $file['newfile'])) {
+					if (empty($file['tmpname'])) {
+						if (!@copy($file['name'], $file['newfile'])) {
+							$error['files'] = trans('Can\'t save file in "$a" directory!', $file['path']);
+							break;
+						}
+					} elseif (!file_exists($file['newfile']) && !@rename($file['tmpname'], $file['newfile'])) {
 						$error = trans('Can\'t save file in "$a" directory!', $file['path']);
 						break;
 					}
