@@ -53,21 +53,6 @@ if (!empty($userids)) {
 	$this->Execute("UPDATE rttickets SET creatorid = NULL WHERE creatorid = 0 OR creatorid NOT IN (" . $sql_userids . ")");
 }
 
-$this->Execute("ALTER TABLE customers ADD CONSTRAINT customers_creatorid_fkey
-	FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE");
-$this->Execute("ALTER TABLE customers ADD CONSTRAINT customers_modid_fkey
-	FOREIGN KEY (modid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE");
-$this->Execute("ALTER TABLE nodes ADD CONSTRAINT nodes_creatorid_fkey
-	FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE");
-$this->Execute("ALTER TABLE nodes ADD CONSTRAINT nodes_modid_fkey
-	FOREIGN KEY (modid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE");
-$this->Execute("ALTER TABLE voipaccounts ADD CONSTRAINT voipaccounts_creatorid_fkey
-	FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE");
-$this->Execute("ALTER TABLE voipaccounts ADD CONSTRAINT voipaccounts_modid_fkey
-	FOREIGN KEY (modid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE");
-$this->Execute("ALTER TABLE rttickets ADD CONSTRAINT rttickets_creatorid_fkey
-	FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE");
-
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101201', 'dbversion'));
 
 $this->CommitTrans();
