@@ -27,21 +27,33 @@
 $this->BeginTrans();
 
 $this->Execute("
-	ALTER TABLE customers ADD CONSTRAINT customers_creatorid_fkey
-		FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
-	ALTER TABLE customers ADD CONSTRAINT customers_modid_fkey
-		FOREIGN KEY (modid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
-	ALTER TABLE nodes ADD CONSTRAINT nodes_creatorid_fkey
-		FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
-	ALTER TABLE nodes ADD CONSTRAINT nodes_modid_fkey
-		FOREIGN KEY (modid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
-	ALTER TABLE voipaccounts ADD CONSTRAINT voipaccounts_creatorid_fkey
-		FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
-	ALTER TABLE voipaccounts ADD CONSTRAINT voipaccounts_modid_fkey
-		FOREIGN KEY (modid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
-	ALTER TABLE rttickets ADD CONSTRAINT rttickets_creatorid_fkey
-		FOREIGN KEY (creatorid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
+	ALTER TABLE customers ALTER COLUMN creatorid DROP NOT NULL;
+	ALTER TABLE customers ALTER COLUMN creatorid SET DEFAULT NULL;
+	ALTER TABLE customers ALTER COLUMN modid DROP NOT NULL;
+	ALTER TABLE customers ALTER COLUMN modid SET DEFAULT NULL;
+	ALTER TABLE nodes ALTER COLUMN creatorid DROP NOT NULL;
+	ALTER TABLE nodes ALTER COLUMN creatorid SET DEFAULT NULL;
+	ALTER TABLE nodes ALTER COLUMN modid DROP NOT NULL;
+	ALTER TABLE nodes ALTER COLUMN modid SET DEFAULT NULL;
+	ALTER TABLE voipaccounts ALTER COLUMN creatorid DROP NOT NULL;
+	ALTER TABLE voipaccounts ALTER COLUMN creatorid SET DEFAULT NULL;
+	ALTER TABLE voipaccounts ALTER COLUMN modid DROP NOT NULL;
+	ALTER TABLE voipaccounts ALTER COLUMN modid SET DEFAULT NULL;
+	ALTER TABLE rttickets ALTER COLUMN creatorid DROP NOT NULL;
+	ALTER TABLE rttickets ALTER COLUMN creatorid SET DEFAULT NULL;
 ");
+
+$userids = $this->GetCol("SELECT id FROM users");
+if (!empty($userids)) {
+	$sql_userids = implode(',', $userids);
+	$this->Execute("UPDATE customers SET creatorid = NULL WHERE creatorid = 0 OR creatorid NOT IN (" . $sql_userids . ")");
+	$this->Execute("UPDATE customers SET modid = NULL WHERE modid = 0 OR modid NOT IN (" . $sql_userids . ")");
+	$this->Execute("UPDATE nodes SET creatorid = NULL WHERE creatorid = 0 OR creatorid NOT IN (" . $sql_userids . ")");
+	$this->Execute("UPDATE nodes SET modid = NULL WHERE modid = 0 OR modid NOT IN (" . $sql_userids . ")");
+	$this->Execute("UPDATE voipaccounts SET creatorid = NULL WHERE creatorid = 0 OR creatorid NOT IN (" . $sql_userids . ")");
+	$this->Execute("UPDATE voipaccounts SET modid = NULL WHERE modid = 0 OR modid NOT IN (" . $sql_userids . ")");
+	$this->Execute("UPDATE rttickets SET creatorid = NULL WHERE creatorid = 0 OR creatorid NOT IN (" . $sql_userids . ")");
+}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101202', 'dbversion'));
 

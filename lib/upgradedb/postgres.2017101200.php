@@ -81,43 +81,6 @@ if (!empty($userids)) {
 	$this->Execute("UPDATE logtransactions SET userid = NULL WHERE userid = 0 OR userid NOT IN (" . $sql_userids . ")");
 }
 
-$this->Execute("
-	ALTER TABLE documents ADD CONSTRAINT documents_userid_fkey
-		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
-	ALTER TABLE documents ADD CONSTRAINT documents_cuserid_fkey
-		FOREIGN KEY (cuserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
-	ALTER TABLE cash ADD CONSTRAINT cash_userid_fkey
-		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
-	ALTER TABLE rtqueues ADD CONSTRAINT rtqueues_deluserid_fkey
-		FOREIGN KEY (deluserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
-	ALTER TABLE rttickets ADD CONSTRAINT rttickets_deluserid_fkey
-		FOREIGN KEY (deluserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
-	ALTER TABLE rtmessages ADD CONSTRAINT rtmessages_userid_fkey
-		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
-	ALTER TABLE rtmessages ADD CONSTRAINT rtmessages_deluserid_fkey
-		FOREIGN KEY (deluserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
-	ALTER TABLE events ADD CONSTRAINT events_userid_fkey
-		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
-	ALTER TABLE events ADD CONSTRAINT events_closeduserid_fkey
-		FOREIGN KEY (closeduserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
-	ALTER TABLE events ADD CONSTRAINT events_moduserid_fkey
-		FOREIGN KEY (moduserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
-	ALTER TABLE eventassignments ADD CONSTRAINT eventassignments_userid_fkey
-		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE;
-	ALTER TABLE docrights ADD CONSTRAINT docrights_userid_fkey
-		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE;
-	ALTER TABLE cashrights ADD CONSTRAINT cashrights_userid_fkey
-		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE;
-	ALTER TABLE cashreglog ADD CONSTRAINT cashreglog_userid_fkey
-		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
-	ALTER TABLE excludedgroups ADD CONSTRAINT excludedgroups_userid_fkey
-		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE;
-	ALTER TABLE messages ADD CONSTRAINT messages_userid_fkey
-		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
-	ALTER TABLE logtransactions ADD CONSTRAINT logtransactions_userid_fkey
-		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
-");
-
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101200', 'dbversion'));
 
 $this->CommitTrans();

@@ -27,33 +27,41 @@
 $this->BeginTrans();
 
 $this->Execute("
-	ALTER TABLE customers ALTER COLUMN creatorid DROP NOT NULL;
-	ALTER TABLE customers ALTER COLUMN creatorid SET DEFAULT NULL;
-	ALTER TABLE customers ALTER COLUMN modid DROP NOT NULL;
-	ALTER TABLE customers ALTER COLUMN modid SET DEFAULT NULL;
-	ALTER TABLE nodes ALTER COLUMN creatorid DROP NOT NULL;
-	ALTER TABLE nodes ALTER COLUMN creatorid SET DEFAULT NULL;
-	ALTER TABLE nodes ALTER COLUMN modid DROP NOT NULL;
-	ALTER TABLE nodes ALTER COLUMN modid SET DEFAULT NULL;
-	ALTER TABLE voipaccounts ALTER COLUMN creatorid DROP NOT NULL;
-	ALTER TABLE voipaccounts ALTER COLUMN creatorid SET DEFAULT NULL;
-	ALTER TABLE voipaccounts ALTER COLUMN modid DROP NOT NULL;
-	ALTER TABLE voipaccounts ALTER COLUMN modid SET DEFAULT NULL;
-	ALTER TABLE rttickets ALTER COLUMN creatorid DROP NOT NULL;
-	ALTER TABLE rttickets ALTER COLUMN creatorid SET DEFAULT NULL;
+	ALTER TABLE documents ADD CONSTRAINT documents_userid_fkey
+		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
+	ALTER TABLE documents ADD CONSTRAINT documents_cuserid_fkey
+		FOREIGN KEY (cuserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
+	ALTER TABLE cash ADD CONSTRAINT cash_userid_fkey
+		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
+	ALTER TABLE rtqueues ADD CONSTRAINT rtqueues_deluserid_fkey
+		FOREIGN KEY (deluserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
+	ALTER TABLE rttickets ADD CONSTRAINT rttickets_deluserid_fkey
+		FOREIGN KEY (deluserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
+	ALTER TABLE rtmessages ADD CONSTRAINT rtmessages_userid_fkey
+		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
+	ALTER TABLE rtmessages ADD CONSTRAINT rtmessages_deluserid_fkey
+		FOREIGN KEY (deluserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
+	ALTER TABLE events ADD CONSTRAINT events_userid_fkey
+		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
+	ALTER TABLE events ADD CONSTRAINT events_closeduserid_fkey
+		FOREIGN KEY (closeduserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
+	ALTER TABLE events ADD CONSTRAINT events_moduserid_fkey
+		FOREIGN KEY (moduserid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
+	ALTER TABLE eventassignments ADD CONSTRAINT eventassignments_userid_fkey
+		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE;
+	ALTER TABLE docrights ADD CONSTRAINT docrights_userid_fkey
+		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE;
+	ALTER TABLE cashrights ADD CONSTRAINT cashrights_userid_fkey
+		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE;
+	ALTER TABLE cashreglog ADD CONSTRAINT cashreglog_userid_fkey
+		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
+	ALTER TABLE excludedgroups ADD CONSTRAINT excludedgroups_userid_fkey
+		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE;
+	ALTER TABLE messages ADD CONSTRAINT messages_userid_fkey
+		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
+	ALTER TABLE logtransactions ADD CONSTRAINT logtransactions_userid_fkey
+		FOREIGN KEY (userid) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE;
 ");
-
-$userids = $this->GetCol("SELECT id FROM users");
-if (!empty($userids)) {
-	$sql_userids = implode(',', $userids);
-	$this->Execute("UPDATE customers SET creatorid = NULL WHERE creatorid = 0 OR creatorid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE customers SET modid = NULL WHERE modid = 0 OR modid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE nodes SET creatorid = NULL WHERE creatorid = 0 OR creatorid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE nodes SET modid = NULL WHERE modid = 0 OR modid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE voipaccounts SET creatorid = NULL WHERE creatorid = 0 OR creatorid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE voipaccounts SET modid = NULL WHERE modid = 0 OR modid NOT IN (" . $sql_userids . ")");
-	$this->Execute("UPDATE rttickets SET creatorid = NULL WHERE creatorid = 0 OR creatorid NOT IN (" . $sql_userids . ")");
-}
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2017101201', 'dbversion'));
 
