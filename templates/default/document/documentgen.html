@@ -129,6 +129,17 @@
 			{fileupload id="attachments" fileupload=$fileupload}
 		</TD>
 	</TR>
+	<TR id="attachment-row"{if !$attachment_result} style="display: none;"{/if}>
+		<TD class="valign-top">
+			<img src="img/attach.gif">
+		</TD>
+		<TD class="bold valign-top">
+			{trans("Document attachments:")}
+		</TD>
+		<TD id="attachment-cell">
+			{$attachment_result}
+		</TD>
+	</TR>
 	<TR>
 		<TD>
 			<IMG src="img/confirm.gif" ALT="">

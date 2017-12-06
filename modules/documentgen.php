@@ -123,13 +123,25 @@ if (isset($_POST['document'])) {
 	$SMARTY->assign('fileupload', $fileupload);
 
 	$globalfiles = array();
-	if (!$error && !empty($attachments))
+	if (!$error && !empty($attachments)) {
 		foreach ($attachments as $attachment) {
 			$attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
 			$attachment['md5sum'] = md5_file($attachment['tmpname']);
 			$attachment['main'] = false;
 			$globalfiles[] = $attachment;
 		}
+		if (isset($document['attachments']) && !empty($document['attachments']))
+			foreach ($document['attachments'] as $attachment => $value) {
+				$filename = $engine['attachments'][$attachment];
+				$files[] = array(
+					'tmpname' => null,
+					'name' => $filename,
+					'type' => mime_content_type($filename),
+					'md5sum' => md5_file($filename),
+					'main' => false,
+				);
+			}
+	}
 
 	if (empty($globalfiles) && empty($document['templ']))
 		$error['files'] = trans('You must to specify file for upload or select document template!');
@@ -294,7 +306,7 @@ if (isset($_POST['document'])) {
 			foreach ($files as $file)
 				$DB->Execute('INSERT INTO documentattachments (docid, filename, contenttype, md5sum, main)
 					VALUES (?, ?, ?, ?, ?)', array($docid,
-						$file['name'],
+						basename($file['name']),
 						$file['type'],
 						$file['md5sum'],
 						$file['main'] ? 1 : 0,
@@ -363,6 +375,8 @@ if (isset($_POST['document'])) {
 			// get plugin content
 			$SMARTY->assign('plugin_result', $result);
 			$SMARTY->assign('script_result', $script_result);
+			$SMARTY->assign('attachment_result', GenerateAttachmentHTML($engine,
+				isset($document['attachments']) ? $document['attachments'] : array()));
 		}
 	}
 }

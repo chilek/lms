@@ -139,7 +139,8 @@ if (isset($_POST['document'])) {
 		// get plugin content
 		$SMARTY->assign('plugin_result', $result);
 		$SMARTY->assign('script_result', $script_result);
-		$SMARTY->assign('attachment_result', GenerateAttachmentHTML($engine, $document['attachments']));
+		$SMARTY->assign('attachment_result', GenerateAttachmentHTML($engine,
+			isset($document['attachments']) ? $document['attachments'] : array()));
 
 		// run template engine
 		if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
@@ -171,14 +172,14 @@ if (isset($_POST['document'])) {
 	extract($result);
 	$SMARTY->assign('fileupload', $fileupload);
 
-	if (!$error && !empty($attachments))
+	if (!$error && !empty($attachments)) {
 		foreach ($attachments as $attachment) {
 			$attachment['tmpname'] = $tmppath . DIRECTORY_SEPARATOR . $attachment['name'];
 			$attachment['md5sum'] = md5_file($attachment['tmpname']);
 			$attachment['main'] = false;
 			$files[] = $attachment;
 		}
-		if (!empty($document['attachments']))
+		if (isset($document['attachments']) && !empty($document['attachments']))
 			foreach ($document['attachments'] as $attachment => $value) {
 				$filename = $engine['attachments'][$attachment];
 				$files[] = array(
@@ -189,6 +190,7 @@ if (isset($_POST['document'])) {
 					'main' => false,
 				);
 			}
+	}
 
 	if (empty($files) && empty($document['templ']))
 		$error['files'] = trans('You must to specify file for upload or select document template!');
