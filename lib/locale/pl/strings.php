@@ -3807,4 +3807,6 @@ $_LANG['<!existingassignment>delete'] = 'usuń';
 $_LANG['limit to reference document'] = 'ogranicz do dokumentu odniesienia';
 $_LANG['limit to type'] = 'ogranicz do typu';
 
+$_LANG['Document attachments:'] = 'Załączniki dokumentu:';
+
 ?>

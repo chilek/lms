@@ -44,6 +44,20 @@ if (isset($_GET['template'])) {
 	die;
 }
 
+function GenerateAttachmentHTML($engine, $selected) {
+	$output = array();
+	if (isset($engine['attachments']) && !empty($engine['attachments']) && is_array($engine['attachments']))
+		foreach ($engine['attachments'] as $label => $file)
+			if (is_readable($file)) {
+				$output[] = '<label>'
+					. '<input type="checkbox" value="1" name="document[attachments][' . $label . ']"'
+						. (isset($selected[$label]) ? ' checked' : '') . '>'
+					. $label
+					. '</label>';
+			}
+	return implode('<br>', $output);
+}
+
 function GetPlugin($template, $customer, $JSResponse) {
 	global $documents_dirs;
 	
@@ -71,6 +85,13 @@ function GetPlugin($template, $customer, $JSResponse) {
 			$JSResponse->includeScript($_SERVER['REQUEST_URI'] . '&template=' . $template);
 		}
 	}
+
+	$attachment_content = GenerateAttachmentHTML($engine, array());
+	$JSResponse->assign('attachment-cell', 'innerHTML', $attachment_content);
+	if (empty($attachment_content))
+		$JSResponse->script('$("#attachment-row").hide()');
+	else
+		$JSResponse->script('$("#attachment-row").show()');
 
 	$JSResponse->assign('plugin', 'innerHTML', $result);
 	$JSResponse->assign('title', 'value', isset($engine['form_title']) ? $engine['form_title'] : $engine['title']);
