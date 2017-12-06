@@ -109,6 +109,8 @@ if (!empty($cids)) {
 	foreach ($sql_tables as $sql_table => $props) {
 		$this->Execute("ALTER TABLE " . $sql_table . " MODIFY " . $props['column'] . " int(11) NULL");
 		$this->Execute("ALTER TABLE " . $sql_table . " ALTER COLUMN " . $props['column'] . " SET DEFAULT NULL");
+		$this->Execute("UPDATE " . $sql_table . " SET " . $props['column'] . " = NULL WHERE " . $props['column'] . " = 0
+			OR " . $props['column'] . " NOT IN (" . $cid_string . ")");
 	}
 }
 
