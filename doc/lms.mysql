@@ -2092,7 +2092,7 @@ CREATE TABLE daemonconfig (
     PRIMARY KEY (id),
     UNIQUE KEY instanceid (instanceid, var),
 	CONSTRAINT daemonconfig_instanceid_fkey
-		FOREIGN KEY (instanceid) REFERENCES daemonconfig (id) ON DELETE CASCADE ON UPDATE CASCADE
+		FOREIGN KEY (instanceid) REFERENCES daemoninstances (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 # --------------------------------------------------------

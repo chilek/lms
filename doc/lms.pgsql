@@ -2032,7 +2032,7 @@ DROP TABLE IF EXISTS daemonconfig CASCADE;
 CREATE TABLE daemonconfig (
     id 		integer 	DEFAULT nextval('daemonconfig_id_seq'::text) NOT NULL,
     instanceid 	integer 	NOT NULL
-		CONSTRAINT daemonconfig_instanceid_fkey REFERENCES daemonconfig (id) ON DELETE CASCADE ON UPDATE CASCADE,
+		CONSTRAINT daemonconfig_instanceid_fkey REFERENCES daemoninstances (id) ON DELETE CASCADE ON UPDATE CASCADE,
     var 	varchar(64) 	DEFAULT '' NOT NULL,
     value 	text 		DEFAULT '' NOT NULL,
     description text 		DEFAULT '' NOT NULL,
