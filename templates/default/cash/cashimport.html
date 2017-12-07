@@ -145,9 +145,9 @@
                             </THEAD>
                             <TBODY>
 				{cycle name=err values="light,lucid" print=false}
-				{foreach from=$error.lines key=key item=item}
+				{foreach $error.lines as $key => $item}
 				<TR class="{cycle name=err}">
-				    <TD>{$key}.</TD>
+				    <TD class="nobr">{$key}. <img src="img/{if is_array($item)}clone{else}warningon{/if}.gif"></TD>
 				    <TD>
 				    {if is_array($item)}
 				    <TABLE width="100%" class="red">
