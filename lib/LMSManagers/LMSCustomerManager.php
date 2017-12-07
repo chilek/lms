@@ -772,7 +772,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 		JOIN vnodes ON vnodes.netdev = netdevices.id AND vnodes.ownerid IS NULL
                 		WHERE netdevices.ownerid = c.id AND (netid = ' . $network . '
                 		OR (ipaddr_pub > ' . $net['address'] . ' AND ipaddr_pub < ' . $net['broadcast'] . '))))' : '')
-                . (!empty($customergroup) ? ' AND ca.gcount = ' . (is_array($customergroup) ? count($customergroup) : 1) : '')
+                . (!empty($customergroup) && $customergroup != -1 ? ' AND ca.gcount = ' . (is_array($customergroup) ? count($customergroup) : 1) : '')
                 . ($customergroup == -1 ? ' AND ca.gcount IS NULL ' : '')
                 . ($nodegroup ? ' AND EXISTS (SELECT 1 FROM nodegroupassignments na
                     JOIN vnodes n ON (n.id = na.nodeid)
