@@ -164,7 +164,7 @@
 
 													<select name="linktype" id="linktype" {tip trigger="linktype" text="Select link type"} onchange="change_linktype(this.options[this.selectedIndex].value)">
 														{foreach from=$_LINKTYPES item=item key=key}
-															<option value="{$key}">{$item}</option>
+															<option value="{$key}"{if $linktype == $key} selected{/if}>{$item}</option>
 														{/foreach}
 													</select>
 
@@ -174,14 +174,14 @@
 
 													<select name="linktechnology" id="linktechnology" {tip trigger="linktechnology" text="Select link technology"} onchange="change_linktechnology(this.options[this.selectedIndex].value)">
 														<option value="0">{trans("- unknown -")}</option>
-														{foreach $_LINKTECHNOLOGIES[0] as $linktechnologyidx => $linktechnology}
-															<option value="{$linktechnologyidx}">{$linktechnology}</option>
+														{foreach $_LINKTECHNOLOGIES[$linktype] as $linktechnologyidx => $linktechnology}
+															<option value="{$linktechnologyidx}"{if $linktechnology == $linktechnologyidx} selected{/if}>{$linktechnology}</option>
 														{/foreach}
 													</select>
 
 													<select name="linkspeed" id="linkspeed" {tip trigger="linkspeed" text="Select link speed"}>
 														{foreach from=$_LINKSPEEDS item=item key=key}
-															<option value="{$key}"{if $key==100000} selected{/if}>{$item}</option>
+															<option value="{$key}"{if $linkspeed == $key} selected{/if}>{$item}</option>
 														{/foreach}
 													</select>
 

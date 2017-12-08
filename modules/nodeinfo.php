@@ -123,6 +123,12 @@ $nodeinfo = $hook_data['nodeinfo'];
 
 $SMARTY->assign('xajax', $LMS->RunXajax());
 
+$SMARTY->assign(array(
+	'linktype' => intval(ConfigHelper::getConfig('phpui.default_linktype', LINKTYPE_WIRE)),
+	'linktechnology' => intval(ConfigHelper::getConfig('phpui.default_linktechnology', 0)),
+	'linkspeed' => intval(ConfigHelper::getConfig('phpui.default_linkspeed', 100000)),
+));
+
 $SMARTY->assign('nodesessions', $LMS->GetNodeSessions($nodeid));
 $SMARTY->assign('netdevices', $netdevices);
 $SMARTY->assign('nodeauthtype', $nodeauthtype);
