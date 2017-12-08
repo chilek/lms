@@ -95,11 +95,10 @@ function init_multiselects(selector) {
 	}
 }
 
-$(function() {
+function init_datepickers(selector) {
 	var autocomplete = "off";
-	var elementsToInitiate = 0;
-
-	$('div.calendar input,input.calendar').datepicker({
+	var elems = $(selector);
+	elems.datepicker({
 		showButtonPanel: true,
 		dateFormat: "yy/mm/dd",
 		changeYear: true,
@@ -171,8 +170,14 @@ $(function() {
 				$(this).tooltip('enable');
 			}
 		}
-	})
-	.attr("autocomplete", autocomplete);
+	}).attr("autocomplete", autocomplete);
+}
+
+$(function() {
+	var autocomplete = "off";
+	var elementsToInitiate = 0;
+
+	init_datepickers('div.calendar input,input.calendar');
 
 	$.datetimepicker.setLocale(lmsSettings.language);
 	var datetimepickeroptions = {
