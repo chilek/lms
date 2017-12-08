@@ -157,6 +157,8 @@ version ?.??.?? (????-??-??):
     dates into consideration [chilan]
   - enhancement: allow to select permanent attachments which are included with generated
     document [chilan]
+  - improvement: phpui.default_link{type,technology,speed} configuration variables allow to preselect
+    link properties for new and edited nodes [chilan]
 
 version 1.11.22 (2017-06-08):
 
