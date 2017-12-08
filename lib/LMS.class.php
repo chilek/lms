@@ -3404,7 +3404,7 @@ class LMS
 			else
 				$document = new LMSHtmlDebitNote($SMARTY);
 
-			$filename = ConfigHelper::getConfig('sendinvoices.debitnote_filename', 'dnote_%docid');
+			$filename = $doc['dnote_filename'];
 
 			$data = $this->GetNoteContent($doc['id']);
 		} else {
@@ -3417,7 +3417,7 @@ class LMS
 			} else
 				$document = new LMSHtmlInvoice($SMARTY);
 
-			$filename = ConfigHelper::getConfig('sendinvoices.invoice_filename', 'invoice_%docid');
+			$filename = $doc['invoice_filename'];
 
 			$data = $this->GetInvoiceContent($doc['id']);
 		}
@@ -3476,6 +3476,9 @@ class LMS
 			$from = "$sender_name <$from>";
 
 		foreach ($docs as $doc) {
+			$doc['invoice_filename'] = $invoice_filename;
+			$doc['dnote_filename'] = $dnote_filename;
+
 			$document = $this->GetFinancialDocument($doc, $SMARTY);
 
 			$custemail = (!empty($debug_email) ? $debug_email : $doc['email']);
