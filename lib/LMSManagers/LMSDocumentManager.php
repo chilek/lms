@@ -418,4 +418,9 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 			if (!empty($address_id))
 				$this->db->Execute('DELETE FROM addresses WHERE id = ?', array($address_id));
 	}
+
+	public function DocumentAttachmentExists($md5sum) {
+		return $this->db->GetOne('SELECT docid FROM documentattachments WHERE md5sum = ?',
+			array($md5sum));
+	}
 }

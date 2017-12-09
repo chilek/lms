@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2016 LMS Developers
+ *  (C) Copyright 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -29,11 +29,11 @@ if (isset($_GET['template'])) {
 	foreach ($documents_dirs as $doc)
 		if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $_GET['template'])) {
 			$doc_dir = $doc;
-			continue;
+			$template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $_GET['template'];
+			break;
 		}
 	// read template information
-	if (file_exists($file =  $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
-		. $_GET['template']  . DIRECTORY_SEPARATOR . 'info.php')) {
+	if (file_exists($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php')) {
 		include($file);
 		if (file_exists($file = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
 			. $engine['name'] . DIRECTORY_SEPARATOR . $engine['plugin'] . '.js')) {
@@ -44,10 +44,12 @@ if (isset($_GET['template'])) {
 	die;
 }
 
-function GenerateAttachmentHTML($engine, $selected) {
+function GenerateAttachmentHTML($template_dir, $engine, $selected) {
 	$output = array();
 	if (isset($engine['attachments']) && !empty($engine['attachments']) && is_array($engine['attachments']))
-		foreach ($engine['attachments'] as $label => $file)
+		foreach ($engine['attachments'] as $label => $file) {
+			if ($file[0] != DIRECTORY_SEPARATOR)
+				$file = $template_dir . DIRECTORY_SEPARATOR . $file;
 			if (is_readable($file)) {
 				$output[] = '<label>'
 					. '<input type="checkbox" value="1" name="document[attachments][' . $label . ']"'
@@ -55,6 +57,7 @@ function GenerateAttachmentHTML($engine, $selected) {
 					. $label
 					. '</label>';
 			}
+		}
 	return implode('<br>', $output);
 }
 
@@ -66,12 +69,12 @@ function GetPlugin($template, $customer, $JSResponse) {
 	foreach ($documents_dirs as $doc)
 		if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template)) {
 			$doc_dir = $doc;
-			continue;
+			$template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $template;
+			break;
 		}
 
 	// read template information
-	if (file_exists($file = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
-		. $template . DIRECTORY_SEPARATOR . 'info.php'))
+	if (file_exists($file = $template_dir . DIRECTORY_SEPARATOR . 'info.php'))
 		include($file);
 
 	// call plugin
@@ -86,7 +89,7 @@ function GetPlugin($template, $customer, $JSResponse) {
 		}
 	}
 
-	$attachment_content = GenerateAttachmentHTML($engine, array());
+	$attachment_content = GenerateAttachmentHTML($template_dir, $engine, array());
 	$JSResponse->assign('attachment-cell', 'innerHTML', $attachment_content);
 	if (empty($attachment_content))
 		$JSResponse->script('$("#attachment-row").hide()');
@@ -111,9 +114,10 @@ function GetDocumentTemplates($rights, $type = NULL) {
 
 	ob_start();
 	foreach ($documents_dirs as $doc_dir){
-		if ($dirs = getdir($doc_dir . '/templates', '^[a-z0-9_-]+$'))
+		if ($dirs = getdir($doc_dir . DIRECTORY_SEPARATOR . 'templates', '^[a-z0-9_-]+$'))
 			foreach ($dirs as $dir) {
-				$infofile = $doc_dir . '/templates/' . $dir . '/info.php';
+				$infofile = $doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+					. $dir . DIRECTORY_SEPARATOR . 'info.php';
 				if (file_exists($infofile)) {
 					unset($engine);
 					include($infofile);

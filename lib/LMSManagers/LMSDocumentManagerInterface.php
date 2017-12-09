@@ -3,7 +3,7 @@
 /*
  *  LMS version 1.11-git
  *
- *  Copyright (C) 2001-2016 LMS Developers
+ *  Copyright (C) 2001-2017 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -27,8 +27,6 @@
 /**
  * LMSDocumentManagerInterface
  * 
- * @author Maciej Lew <maciej.lew.1987@gmail.com>
- * @author Tomasz Chiliński <tomasz.chilinski@chilan.com>
  */
 interface LMSDocumentManagerInterface
 {
@@ -45,4 +43,6 @@ interface LMSDocumentManagerInterface
 	public function UpdateDocumentPostAddress($docid, $customerid);
 
 	public function DeleteDocumentAddresses($docid);
+
+	public function DocumentAttachmentExists($md5sum);
 }

@@ -2433,11 +2433,16 @@ class LMS
 		return $manager->DeleteDocumentAddresses($docid);
 	}
 
+	public function DocumentAttachmentExists($md5sum) {
+		$manager = $this->getDocumentManager();
+		return $manager->DocumentAttachmentExists($md5sum);
+	}
+
 	/*
 	 *  Location
 	 */
 
-    public function GetCountryStates()
+	public function GetCountryStates()
     {
         $manager = $this->getLocationManager();
         return $manager->GetCountryStates();

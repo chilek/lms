@@ -110,16 +110,17 @@ if (isset($_POST['document'])) {
 
 	if ($document['templ']) {
 		foreach ($documents_dirs as $doc)
-			if(file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] )) {
+			if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'])) {
 				$doc_dir = $doc;
-				continue;
+				$template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'];
+				break;
 			}
 
 		$result = '';
 		$script_result = '';
 
 		// read template information
-		include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] . DIRECTORY_SEPARATOR . 'info.php');
+		include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
 		// set some variables (needed in e.g. plugin)
 		if ($document['reference'])
 			$document['reference'] = $DB->GetRow('SELECT id, type, fullnumber, cdate FROM documents
@@ -139,7 +140,7 @@ if (isset($_POST['document'])) {
 		// get plugin content
 		$SMARTY->assign('plugin_result', $result);
 		$SMARTY->assign('script_result', $script_result);
-		$SMARTY->assign('attachment_result', GenerateAttachmentHTML($engine,
+		$SMARTY->assign('attachment_result', GenerateAttachmentHTML($template_dir, $engine,
 			isset($document['attachments']) ? $document['attachments'] : array()));
 
 		// run template engine
@@ -183,6 +184,8 @@ if (isset($_POST['document'])) {
 		if (isset($document['attachments']) && !empty($document['attachments']))
 			foreach ($document['attachments'] as $attachment => $value) {
 				$filename = $engine['attachments'][$attachment];
+				if ($filename[0] != DIRECTORY_SEPARATOR)
+					$filename = $template_dir . DIRECTORY_SEPARATOR . $filename;
 				$files[] = array(
 					'tmpname' => null,
 					'name' => $filename,
@@ -206,9 +209,10 @@ if (isset($_POST['document'])) {
 			// the new document file
 			// why? document attachment can be shared between different documents.
 			// we should rather use the other message digest in such case!
-			if ($DB->GetOne('SELECT docid FROM documentattachments WHERE md5sum = ?', array($file['md5sum']))
-				&& (filesize($file['newfile']) != filesize($file['tmpname'])
-					|| hash_file('sha256', $file['newfile']) != hash_file('sha256', $file['tmpname']))) {
+			$filename = empty($file['tmpname']) ? $file['name'] : $file['tmpname'];
+			if ($LMS->DocumentAttachmentExists($file['md5sum'])
+				&& (filesize($file['newfile']) != filesize($filename)
+					|| hash_file('sha256', $file['newfile']) != hash_file('sha256', $filename))) {
 				$error['files'] = trans('Specified file exists in database!');
 				break;
 			}
@@ -237,23 +241,7 @@ if (isset($_POST['document'])) {
 
 		$DB->BeginTrans();
 
-		$division = $DB->GetRow('SELECT d.name, d.shortname, d.ten, d.regon,
-									d.account, d.inv_header, d.inv_footer, d.inv_author, d.inv_cplace,
-									addr.country_id as countryid, addr.zip,
-									addr.city, addr.house, addr.flat, addr.street
-								FROM
-									divisions d
-									LEFT JOIN addresses addr ON d.address_id = addr.id
-								WHERE d.id = ?',array($customer['divisionid']));
-
-		if ($division) {
-			$tmp = array('city_name'     => $division['city'],
-						'location_house' => $division['house'],
-						'location_flat'  => $division['flat'],
-						'street_name'    => $division['street']);
-
-			$division['address'] = location_str( $tmp );
-		}
+		$division = $LMS->GetDivision($customer['divisionid']);
 
 		$fullnumber = docnumber(array(
 			'number' => $document['number'],

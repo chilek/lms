@@ -122,6 +122,14 @@ if (isset($_POST['document'])) {
 	extract($result);
 	$SMARTY->assign('fileupload', $fileupload);
 
+	if ($document['templ'])
+		foreach ($documents_dirs as $doc)
+			if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'])) {
+				$doc_dir = $doc;
+				$template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'];
+				break;
+			}
+
 	$globalfiles = array();
 	if (!$error) {
 		if (!empty($attachments))
@@ -134,6 +142,8 @@ if (isset($_POST['document'])) {
 		if (isset($document['attachments']) && !empty($document['attachments']))
 			foreach ($document['attachments'] as $attachment => $value) {
 				$filename = $engine['attachments'][$attachment];
+				if ($filename[0] != DIRECTORY_SEPARATOR)
+					$filename = $template_dir . DIRECTORY_SEPARATOR . $filename;
 				$globalfiles[] = array(
 					'tmpname' => null,
 					'name' => $filename,
@@ -157,9 +167,10 @@ if (isset($_POST['document'])) {
 			// the new document file
 			// why? document attachment can be shared between different documents.
 			// we should rather use the other message digest in such case!
-			if ($DB->GetOne('SELECT docid FROM documentattachments WHERE md5sum = ?', array($file['md5sum']))
-				&& (filesize($file['newfile']) != filesize($file['tmpname'])
-					|| hash_file('sha256', $file['newfile']) != hash_file('sha256', $file['tmpname']))) {
+			$filename = empty($file['tmpname']) ? $file['name'] : $file['tmpname'];
+			if ($LMS->DocumentAttachmentExists($file['md5sum'])
+				&& (filesize($file['newfile']) != filesize($filename)
+					|| hash_file('sha256', $file['newfile']) != hash_file('sha256', $filename))) {
 				$error['files'] = trans('Specified file exists in database!');
 				break;
 			}
@@ -179,7 +190,7 @@ if (isset($_POST['document'])) {
 
 		if ($document['templ'])
 			// read template information
-			include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] . DIRECTORY_SEPARATOR . 'info.php');
+			include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
 
 		foreach ($customerlist as $gencust) {
 			if (!is_array($gencust))
@@ -195,9 +206,9 @@ if (isset($_POST['document'])) {
 
 			if ($document['templ']) {
 				// run template engine
-				if (file_exists(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+				if (file_exists($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
 					. $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php'))
-					include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
+					include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR
 						. $engine['engine'] . DIRECTORY_SEPARATOR . 'engine.php');
 				else
 					include(DOC_DIR . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'default'
@@ -242,15 +253,13 @@ if (isset($_POST['document'])) {
 			}
 
 			if ($error) {
-				$genresult .= '<font class="alert">' . $error . '</font><br>';
+				$genresult .= '<span class="alert">' . $error . '</span><br>';
 				continue;
 			}
 
 			$DB->BeginTrans();
 
-			$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
-				account, inv_header, inv_footer, inv_author, inv_cplace 
-				FROM vdivisions WHERE id = ?',array($gencust['divisionid']));
+			$division = $LMS->GetDivision($gencust['divisionid']);
 
 			if ($customernumtemplate)
 				$document['number'] = $LMS->GetNewDocumentNumber(array(
@@ -353,17 +362,17 @@ if (isset($_POST['document'])) {
 
 		if ($document['templ']) {
 			foreach ($documents_dirs as $doc)
-				if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'] )) {
+				if (file_exists($doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'])) {
 					$doc_dir = $doc;
-					continue;
+					$template_dir = $doc . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ'];
+					break;
 				}
 
 			$result = '';
 			$script_result = '';
 
 			// read template information
-			include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $document['templ']
-				 . DIRECTORY_SEPARATOR . 'info.php');
+			include($template_dir . DIRECTORY_SEPARATOR . 'info.php');
 			// set some variables
 			$SMARTY->assign('document', $document);
 
@@ -381,7 +390,7 @@ if (isset($_POST['document'])) {
 			// get plugin content
 			$SMARTY->assign('plugin_result', $result);
 			$SMARTY->assign('script_result', $script_result);
-			$SMARTY->assign('attachment_result', GenerateAttachmentHTML($engine,
+			$SMARTY->assign('attachment_result', GenerateAttachmentHTML($template_dir, $engine,
 				isset($document['attachments']) ? $document['attachments'] : array()));
 		}
 	}
