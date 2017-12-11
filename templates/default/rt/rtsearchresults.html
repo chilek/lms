@@ -14,8 +14,11 @@
 	{include file="rt/rtheader.html"}
 	{if $queuedata.total != 0}
 	<TR>
-		<TD class="pagination" colspan="9">
+		<TD class="pagination" colspan="8">
 			{include file="scroller.html" loop=$queue listdata=$queuedata adlink="&s=1"}
+		</TD>
+		<TD>
+			<A HREF="?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$search.custid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
 		</TD>
 	</TR>
 	{/if}
@@ -23,11 +26,12 @@
     <TBODY>
 	{include file="rt/rtqueueviewbox.html"}
     </TBODY>
-<TFOOT>
-    <TD COLSPAN="9" class="buttons">
-        <A HREF="?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$search.custid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
-    </TD>
-</TR>
-</TFOOT>
+	<TFOOT>
+	<TR>
+		<TD COLSPAN="9" class="dark buttons">
+			<A HREF="?m=rtticketadd{if $queuedata.queue && !is_array($queuedata.queue)}&id={$queuedata.queue}{/if}&customerid={$search.custid}">{trans("New Ticket")} <IMG src="img/save.gif" ALT=""></A>
+		</TD>
+	</TR>
+	</TFOOT>
 </TABLE>
 {/block}
