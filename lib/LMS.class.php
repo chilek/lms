@@ -2438,6 +2438,11 @@ class LMS
 		return $manager->DocumentAttachmentExists($md5sum);
 	}
 
+	public function GetDocumentFullContents($id) {
+		$manager = $this->getDocumentManager();
+		return $manager->GetDocumentFullContents($id);
+	}
+
 	/*
 	 *  Location
 	 */

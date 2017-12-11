@@ -423,4 +423,52 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 		return $this->db->GetOne('SELECT docid FROM documentattachments WHERE md5sum = ?',
 			array($md5sum));
 	}
+
+	public function GetDocumentFullContents($id) {
+		global $DOCTYPES;
+
+		if ($document = $this->db->GetRow('SELECT d.id, d.number, d.cdate, d.type, d.customerid,
+				d.fullnumber, n.template
+			FROM documents d
+			LEFT JOIN numberplans n ON (d.numberplanid = n.id)
+			JOIN docrights r ON (r.doctype = d.type)
+			WHERE d.id = ? AND r.userid = ? AND (r.rights & 1) = 1', array($id, Auth::GetCurrentUser()))) {
+
+			$document['fullnumber'] = docnumber(array(
+				'number' => $document['number'],
+				'template' => $document['template'],
+				'cdate' => $document['cdate'],
+				'customerid' => $document['customerid'],
+			));
+
+			$document['title'] = trans('$a no. $b issued on $c',
+				$DOCTYPES[$document['type']], $document['fullnumber'], date('Y/m/d', $document['cdate']));
+
+			$document['attachments'] = $this->db->GetAllByKey('SELECT * FROM documentattachments WHERE docid = ?
+				ORDER BY main DESC', 'id', array($id));
+
+			foreach ($document['attachments'] as &$attachment) {
+				$filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($attachment['md5sum'],0,2)
+					. DIRECTORY_SEPARATOR . $attachment['md5sum'];
+				if (file_exists($filename . '.pdf')) {
+					// try to get file from pdf document cache
+					$contents = file_get_contents($filename . '.pdf');
+				} else {
+					$contents = file_get_contents($filename);
+					if ($attachment['main'] && preg_match('/html/i', $attachment['contenttype'])) {
+						$margins = explode(",", ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5'));
+						if (ConfigHelper::getConfig('phpui.cache_documents'))
+							$contents = html2pdf($contents, $document['title'], $document['title'], $document['type'], $id,
+								'P', $margins, 'S', false, $attachment['md5sum']);
+						else
+							$contents = html2pdf($contents, $document['title'], $document['title'], $document['type'], $id,
+								'P', $margins, 'S');
+					}
+				}
+				$attachment['contents'] = $contents;
+			}
+			unset($attachment);
+		}
+		return $document;
+	}
 }

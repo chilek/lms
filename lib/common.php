@@ -852,7 +852,7 @@ function register_plugin($handle, $plugin)
         $PLUGINS[$handle][] = $plugin;
 }
 
-function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $orientation='P', $margins=array(5, 10, 5, 10), $save=false, $copy=false, $md5sum = '')
+function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $orientation='P', $margins=array(5, 10, 5, 10), $dest = 'I', $copy=false, $md5sum = '')
 {
 	global $layout, $DB;
 
@@ -953,18 +953,29 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 
 	$html2pdf->pdf->SetProtection(array('modify', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', PASSWORD_CHANGEME, '1');
 
-        // cache pdf file
-	if($md5sum)
+	// cache pdf file
+	if ($md5sum)
 		$html2pdf->Output(DOC_DIR . DIRECTORY_SEPARATOR . substr($md5sum,0,2) . DIRECTORY_SEPARATOR . $md5sum.'.pdf', 'F');
 
-	if ($save) {
-		if (function_exists('mb_convert_encoding'))
-			$filename = mb_convert_encoding($title, "ISO-8859-2", "UTF-8");
-		else
-			$filename = iconv("UTF-8", "ISO-8859-2//TRANSLIT", $title);
-		$html2pdf->Output($filename.'.pdf', 'D');
-	} else {
-		$html2pdf->Output();
+	if ($dest === true)
+		$dest = 'D';
+	elseif ($dest === false)
+		$dest = 'I';
+
+	switch ($dest) {
+		case 'D':
+			if (function_exists('mb_convert_encoding'))
+				$filename = mb_convert_encoding($title, "ISO-8859-2", "UTF-8");
+			else
+				$filename = iconv("UTF-8", "ISO-8859-2//TRANSLIT", $title);
+			$html2pdf->Output($filename.'.pdf', 'D');
+			break;
+		case 'S':
+			return $html2pdf->Output('', 'S');
+			break;
+		default:
+			$html2pdf->Output();
+			break;
 	}
 }
 

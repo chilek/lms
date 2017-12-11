@@ -45,4 +45,6 @@ interface LMSDocumentManagerInterface
 	public function DeleteDocumentAddresses($docid);
 
 	public function DocumentAttachmentExists($md5sum);
+
+	public function GetDocumentFullContents($id);
 }
