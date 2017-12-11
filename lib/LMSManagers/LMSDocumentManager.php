@@ -448,14 +448,16 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 				ORDER BY main DESC', 'id', array($id));
 
 			foreach ($document['attachments'] as &$attachment) {
-				$filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($attachment['md5sum'],0,2)
+				$filename = DOC_DIR . DIRECTORY_SEPARATOR . substr($attachment['md5sum'], 0, 2)
 					. DIRECTORY_SEPARATOR . $attachment['md5sum'];
 				if (file_exists($filename . '.pdf')) {
 					// try to get file from pdf document cache
 					$contents = file_get_contents($filename . '.pdf');
+					$contenttype = 'application/pdf';
 				} else {
 					$contents = file_get_contents($filename);
-					if ($attachment['main'] && preg_match('/html/i', $attachment['contenttype'])) {
+					if (preg_match('/html/i', $attachment['contenttype'])
+						&& strtolower(ConfigHelper::getConfig('phpui.document_type')) == 'pdf') {
 						$margins = explode(",", ConfigHelper::getConfig('phpui.document_margins', '10,5,15,5'));
 						if (ConfigHelper::getConfig('phpui.cache_documents'))
 							$contents = html2pdf($contents, $document['title'], $document['title'], $document['type'], $id,
@@ -463,9 +465,12 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 						else
 							$contents = html2pdf($contents, $document['title'], $document['title'], $document['type'], $id,
 								'P', $margins, 'S');
-					}
+						$contenttype = 'application/pdf';
+					} else
+						$contenttype = $attachment['contenttype'];
 				}
 				$attachment['contents'] = $contents;
+				$attachment['contentype'] = $contenttype;
 			}
 			unset($attachment);
 		}
