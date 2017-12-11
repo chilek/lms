@@ -7,10 +7,8 @@
     <COLGROUP>
         <COL style="width: 1%;">
         <COL style="width: 1%;">
-        <COL style="width: 1%;">
-        <COL style="width: 92%;">
-        <COL style="width: 1%;">
-        <COL style="width: 1%;">
+        <COL style="width: 50%;">
+        <COL style="width: 45%;">
         <COL style="width: 1%;">
         <COL style="width: 1%;">
         <COL style="width: 1%;">
@@ -19,7 +17,7 @@
         {include file="rt/rtfilter.html"}
         {if $queuedata.total != 0}
         <TR>
-            <TD class="pagination text-center" colspan="8">
+            <TD class="pagination text-center" colspan="6">
                 {include file="scroller.html" listdata=$queuedata loop=$queue}
             </TD>
             <TD class="pagination text-right">
@@ -35,7 +33,7 @@
     <TFOOT>
         {if $queuedata.total != 0}
         <TR>
-            <TD class="pagination text-center" colspan="8">
+            <TD class="pagination text-center" colspan="6">
                 {include file="scroller.html" listdata=$queuedata loop=$queue}
             </TD>
             <TD class="pagination text-right">
