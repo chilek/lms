@@ -699,7 +699,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 						$this->db->Execute('INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
 							VALUES (?, ?, ?, ?NOW?, ?)',
 							array($msgid, $doc['customerid'], $email, MSG_NEW));
-						$msgitemid = $this->DB->GetLastInsertID('messageitems');
+						$msgitemid = $this->db->GetLastInsertID('messageitems');
 						if (!isset($msgitems[$doc['customerid']]))
 							$msgitems[$doc['customerid']] = array();
 						$msgitems[$doc['customerid']][$email] = $msgitemid;
