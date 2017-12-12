@@ -53,7 +53,7 @@ $access_table = array(
 	),
 	'customer_management' => array(
 		'label' => trans('customers management'),
-		'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|del|print|search|warn|cutoffstop|group)|customeraddresses|customerassignmenthelper|documentgen|documentview|nodewarn|choosenode)$',
+		'allow_regexp' => '^((customer|document)(add|edit|info|infoshort|list|del|print|search|warn|cutoffstop|group)|customeraddresses|customerassignmenthelper|documentsend|documentgen|documentview|nodewarn|choosenode)$',
 	),
 	'node_management' => array(
 		'label' => trans('nodes management'),
