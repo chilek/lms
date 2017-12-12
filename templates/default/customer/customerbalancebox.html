@@ -202,7 +202,7 @@
 							{/if}
 							{if ($customerinfo.sendinvoices || $balancelist.sendinvoices) && ($item.doctype == $smarty.const.DOC_INVOICE
 								|| $item.doctype == $smarty.const.DOC_CNOTE || $item.doctype == $smarty.const.DOC_INVOICE_PRO)}
-							<A href="?m=invoicesend&id={$item.docid}" rel="external" OnClick="return confirmLink(this, '{t a=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to send invoice to customer \'$a\'?{/t}');"><IMG src="img/mail.gif" alt="{trans("Send invoice")}" title="{trans("Send invoice")}"></A>
+							<A class="invoicesend" href="?m=invoicesend&id={$item.docid}"><IMG src="img/mail.gif" alt="{trans("Send invoice")}" title="{trans("Send invoice")}"></A>
 							{/if}
 							{if $item.doctype == $smarty.const.DOC_INVOICE}
 								<A HREF="?m=invoicenote&id={$item.docid}&action=init"><IMG src="img/eraser.gif" alt="{trans("Revise")}" title="{trans("Revise")}"></A>
@@ -351,6 +351,14 @@
 		document.getElementById('customerbalancepanel').style.display = 'none';
 {/if}
 
-new_doc_type_changed($("[name=newdocument]").val());
+	$('.invoicesend').click(function() {
+		if (!confirm('{t a=$customerinfo.customername|escape:"javascript"|escape:"html"}Are you sure, you want to send invoice to customer \'$a\'?{/t}')) {
+			return false;
+		}
+		window.open($(this).attr('href'));
+		return false;
+	});
+
+	new_doc_type_changed($("[name=newdocument]").val());
 //-->
 </SCRIPT>
