@@ -67,6 +67,122 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
         }
     }
 
+	public function GetDocumentList($order='cdate,asc', $search) {
+		$type = isset($search['type']) ? $search['type'] : NULL;
+		$customer = isset($search['customer']) ? $search['customer'] : NULL;
+		$numberplan = isset($search['numberplan']) ? $search['numberplan'] : NULL;
+		$usertype = isset($search['usertype']) ? $search['usertype'] : 'creator';
+		$userid = isset($search['userid']) ? $search['userid'] : NULL;
+		$periodtype = isset($search['periodtype']) ? $search['periodtype'] : 'creationdate';
+		$from = isset($search['from']) ? $search['from'] : 0;
+		$to = isset($search['to']) ? $search['to'] : 0;
+		$status = isset($search['status']) ? $search['status'] : -1;
+
+		if($order=='')
+			$order='cdate,asc';
+
+		list($order,$direction) = sscanf($order, '%[^,],%s');
+		($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
+
+		switch($order)
+		{
+			case 'type':
+				$sqlord = ' ORDER BY d.type '.$direction.', d.name';
+				break;
+			case 'title':
+				$sqlord = ' ORDER BY title '.$direction.', d.name';
+				break;
+			case 'customer':
+				$sqlord = ' ORDER BY d.name '.$direction.', title';
+				break;
+			case 'user':
+				$sqlord = ' ORDER BY u.lastname '.$direction.', title';
+				break;
+			case 'cuser':
+				$sqlord = ' ORDER BY u2.lastname '.$direction.', title';
+				break;
+			case 'sdate':
+				$sqlord = ' ORDER BY d.sdate '.$direction.', d.name';
+				break;
+			default:
+				$sqlord = ' ORDER BY d.cdate '.$direction.', d.name';
+				break;
+		}
+
+		switch ($usertype) {
+			case 'creator':
+				$userfield = 'd.userid';
+				break;
+			case 'authorising':
+				$userfield = 'd.cuserid';
+				break;
+			default:
+				$userfield = 'd.userid';
+		}
+
+		switch ($periodtype) {
+			case 'creationdate':
+				$datefield = 'd.cdate';
+				break;
+			case 'confirmationdate':
+				$datefield = 'd.sdate';
+				break;
+			case 'fromdate':
+				$datefield = 'documentcontents.fromdate';
+				break;
+			case 'todate':
+				$datefield = 'documentcontents.todate';
+				break;
+			default:
+				$datefield = 'd.cdate';
+		}
+
+		$list = $this->db->GetAll('SELECT docid, d.number, d.type, title, d.cdate, u.name AS username, u.lastname, fromdate, todate, description, 
+				numberplans.template, d.closed, d.name, d.customerid, d.sdate, d.cuserid, u2.name AS cusername, u2.lastname AS clastname,
+				d.reference, i.senddocuments
+			FROM documentcontents
+			JOIN documents d ON (d.id = documentcontents.docid)
+			JOIN docrights r ON (d.type = r.doctype AND r.userid = ? AND (r.rights & 1) = 1)
+			JOIN vusers u ON u.id = d.userid
+			LEFT JOIN vusers u2 ON u2.id = d.cuserid
+			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
+			LEFT JOIN (
+				SELECT DISTINCT c.id AS customerid, 1 AS senddocuments FROM customers c
+				JOIN customercontacts cc ON cc.customerid = c.id
+				WHERE cc.type & ' . (CONTACT_EMAIL | CONTACT_DOCUMENTS | CONTACT_DISABLED) . ' = ' . (CONTACT_EMAIL | CONTACT_DOCUMENTS) . '
+			) i ON i.customerid = d.customerid
+			LEFT JOIN (
+				SELECT DISTINCT a.customerid FROM customerassignments a
+				JOIN excludedgroups e ON (a.customergroupid = e.customergroupid)
+				WHERE e.userid = lms_current_user()
+			) e ON (e.customerid = d.customerid)
+			WHERE e.customerid IS NULL '
+			.($customer ? 'AND d.customerid = '.intval($customer) : '')
+			.($type ? ' AND d.type = '.intval($type) : '')
+			. ($userid ? ' AND ' . $userfield . ' = ' . intval($userid) : '')
+			. ($numberplan ? ' AND d.numberplanid = ' . intval($numberplan) : '')
+			.($from ? ' AND ' . $datefield . ' >= '.intval($from) : '')
+			.($to ? ' AND ' . $datefield . ' <= '.intval($to) : '')
+			.($status == -1 ? '' : ' AND d.closed = ' . intval($status))
+			.$sqlord, array(Auth::GetCurrentUser()));
+
+		if (!empty($list))
+			foreach ($list as &$document) {
+				$document['attachments'] = $this->db->GetAll('SELECT id, filename, md5sum, contenttype, main
+				FROM documentattachments WHERE docid = ? ORDER BY main DESC, filename', array($document['docid']));
+				if (!empty($document['reference'])) {
+					$document['reference'] = $this->db->GetRow('SELECT id, type, fullnumber, cdate FROM documents
+					WHERE id = ?', array($document['reference']));
+				}
+			}
+
+		$list['total'] = sizeof($list);
+		$list['direction'] = $direction;
+		$list['order'] = $order;
+
+		return $list;
+	}
+
 	/*
 	 \param array $properties - associative array with function parameters:
 		doctype: document type

@@ -215,7 +215,9 @@
 		</TD>
 		<TD class="nobr"><A href="?m=customerinfo&amp;id={$doc.customerid}">{$doc.name|truncate:40:"...":true}</A></TD>
 		<TD class="text-right nobr">
+			{if $doc.senddocuments}
 			<a class="documentsend" href="?m=documentsend&id={$doc.docid}"><img src="img/mail.gif" alt="{trans("Document send")}" title="{trans("Document send")}"></a>
+			{/if}
 			{assign var=type value=$doc.type}
 			<a href="?m=documentview&amp;id={$doc.docid}&amp;save=1"><img src="img/save.gif" alt="{trans("Save")}" title="{trans("Save")}"></a>
 			{if ! $doc.closed && ($docrights.$type.rights & 4)}

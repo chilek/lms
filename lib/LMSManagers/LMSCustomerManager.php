@@ -270,7 +270,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 			WHERE c.id = ? AND invoicenotice = 1 AND cc.type & ? = ?
 			LIMIT 1', array($id, CONTACT_INVOICES | CONTACT_DISABLED, CONTACT_INVOICES)) > 0);
 
-        $result['customerid'] = $id;
+		$result['customerid'] = $id;
         return $result;
     }
 
@@ -1037,6 +1037,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 					array($result['id'], $properties['flagmask']));
 
 			$result['sendinvoices'] = false;
+			$result['senddocuments'] = false;
 
 			foreach (array_keys($CUSTOMERCONTACTTYPES) as $ctype) {
 				$customercontacttype = $CUSTOMERCONTACTTYPES[$ctype];
@@ -1053,6 +1054,9 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 
 						if ($ctype == 'emails' && (($row['type'] & (CONTACT_INVOICES | CONTACT_DISABLED)) == CONTACT_INVOICES))
 							$result['sendinvoices'] = true;
+
+						if ($ctype == 'emails' && (($row['type'] & (CONTACT_DOCUMENTS | CONTACT_DISABLED)) == CONTACT_DOCUMENTS))
+							$result['senddocuments'] = true;
 
 						if ($types)
 							$result[$ctype][$idx]['typestr'] = implode('/', $types);

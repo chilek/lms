@@ -92,7 +92,9 @@
 						{if $doc.todate}{trans("to")} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
 					</TD>
 					<TD class="text-right nobr">
+						{if $customerinfo.senddocuments}
 						<a class="documentsend" href="?m=documentsend&id={$doc.docid}"><img src="img/mail.gif" alt="{trans("Document send")}" title="{trans("Document send")}"></a>
+						{/if}
 						{assign var=type value=$doc.type}
 						<a href="?m=documentview&amp;id={$doc.docid}&amp;save=1"><img src="img/save.gif" alt="{trans("Save")}" title="{trans("Save")}"></a>
 						{if ! $doc.closed && ($docrights.$type.rights & 4)}

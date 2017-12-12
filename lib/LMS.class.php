@@ -2355,7 +2355,12 @@ class LMS
         return $manager->GetDocuments($customerid, $limit);
     }
 
-    public function GetTaxes($from = NULL, $to = NULL)
+	public function GetDocumentList($order='cdate,asc', $search) {
+		$manager = $this->getDocumentManager();
+		return $manager->GetDocumentList($order, $search);
+	}
+
+	public function GetTaxes($from = NULL, $to = NULL)
     {
         $manager = $this->getFinanceManager();
         return $manager->GetTaxes($from, $to);
