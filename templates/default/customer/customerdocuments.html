@@ -31,6 +31,12 @@
 		document.customerdocuments.target="";
 		document.customerdocuments.submit();
 	}
+
+	function send_documents() {
+		document.customerdocuments.action="?m=documentsend";
+		document.customerdocuments.target="_blank";
+		document.customerdocuments.submit();
+	}
 //-->
 </script>
 <TABLE class="lmsbox lms-ui-sortable" id="customerdocuments">
@@ -86,6 +92,7 @@
 						{if $doc.todate}{trans("to")} {$doc.todate|date_format:"%Y/%m/%d"}{/if}
 					</TD>
 					<TD class="text-right nobr">
+						<a class="documentsend" href="?m=documentsend&id={$doc.docid}"><img src="img/mail.gif" alt="{trans("Document send")}" title="{trans("Document send")}"></a>
 						{assign var=type value=$doc.type}
 						<a href="?m=documentview&amp;id={$doc.docid}&amp;save=1"><img src="img/save.gif" alt="{trans("Save")}" title="{trans("Save")}"></a>
 						{if ! $doc.closed && ($docrights.$type.rights & 4)}
@@ -135,6 +142,7 @@
 						<TABLE WIDTH="100%">
 							<TR>
 								<TD class="nobr">
+									<A href="javascript:send_documents();" OnClick="return confirm('{trans("Are you sure, you want to send documents to customer?")}')">{trans("Send documents")} <IMG src="img/mail.gif" alt=""></A>&nbsp;
 									<A HREF="javascript:print_docs();">{trans("Print")} <IMG SRC="img/print.gif" ALT="{trans("Print")}"></A>&nbsp;
 									<A HREF="javascript:mark_docs();">{trans("Confirm")} <IMG SRC="img/confirm.gif" ALT="{trans("Confirm")}"></A>&nbsp;
 									<A HREF="javascript:delete_docs();">{trans("Delete")} <IMG SRC="img/delete.gif" ALT="{trans("Delete")}"></A>
@@ -161,5 +169,13 @@
 <!--
 	if (getCookie('docpanel') == '1')
 		document.getElementById('docpanel').style.display = '';
+
+	$('.documentsend').click(function() {
+		if (!confirm('{trans("Are you sure, you want to send document to customer?")}')) {
+			return false;
+		}
+		window.open($(this).attr('href'));
+		return false;
+	});
 //-->
 </SCRIPT>

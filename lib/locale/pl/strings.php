@@ -3809,4 +3809,11 @@ $_LANG['limit to type'] = 'ogranicz do typu';
 
 $_LANG['Document attachments:'] = 'Załączniki dokumentu:';
 
+$_LANG['Document send'] = 'Wysyłka dokumentów';
+$_LANG['Fatal error: No documents were selected!'] = 'Błąd krytyczny: nie wybrano żadnych dokumentów!';
+$_LANG['Are you sure, you want to send document to customer?'] = 'Jesteś pewien, że chcesz wysłać dokument do klienta?';
+$_LANG['Are you sure, you want to send documents to customer?'] = 'Jesteś pewien, że chcesz wysłać dokumenty do klienta?';
+$_LANG['Are you sure, you want to send documents to customers?'] = 'Jesteś pewien, że chcesz wysłać dokumenty do klientów?';
+$_LANG['Send documents'] = 'Wyślij dokumenty';
+
 ?>

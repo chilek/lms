@@ -454,6 +454,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 					// try to get file from pdf document cache
 					$contents = file_get_contents($filename . '.pdf');
 					$contenttype = 'application/pdf';
+					$contentname = str_replace('.html', '.pdf', $attachment['filename']);
 				} else {
 					$contents = file_get_contents($filename);
 					if (preg_match('/html/i', $attachment['contenttype'])
@@ -466,14 +467,162 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 							$contents = html2pdf($contents, $document['title'], $document['title'], $document['type'], $id,
 								'P', $margins, 'S');
 						$contenttype = 'application/pdf';
-					} else
+						$contentname = str_replace('.html', '.pdf', $attachment['filename']);
+					} else {
 						$contenttype = $attachment['contenttype'];
+						$contentname = $attachment['filename'];
+					}
 				}
 				$attachment['contents'] = $contents;
-				$attachment['contentype'] = $contenttype;
+				$attachment['contenttype'] = $contenttype;
+				$attachment['filename'] = $contentname;
 			}
 			unset($attachment);
 		}
 		return $document;
+	}
+
+	public function SendDocuments($docs, $type, $params) {
+		global $LMS;
+
+		extract($params);
+
+		if ($type == 'frontend')
+			$eol = '<br>';
+		else
+			$eol = PHP_EOL;
+
+		$month = sprintf('%02d', intval(date('m', $currtime)));
+		$day = sprintf('%02d', intval(date('d', $currtime)));
+		$year = sprintf('%04d', intval(date('Y', $currtime)));
+
+		$from = $sender_email;
+
+		if (!empty($sender_name))
+			$from = "$sender_name <$from>";
+
+		foreach ($docs as $doc) {
+			$document = $this->GetDocumentFullContents($doc['id']);
+			if (empty($document))
+				continue;
+
+			$custemail = (!empty($debug_email) ? $debug_email : $doc['email']);
+			$body = $mail_body;
+			$subject = $mail_subject;
+
+			$body = preg_replace('/%document/', $document['title'], $body);
+			$body = str_replace('\n', "\n", $body);
+			$body = preg_replace('/%today/', $year . '-' . $month . '-' . $day, $body);
+			$subject = preg_replace('/%document/', $document['title'], $subject);
+
+			$doc['name'] = '"' . $doc['name'] . '"';
+
+			$mailto = array();
+			$mailto_qp_encoded = array();
+			foreach (explode(',', $custemail) as $email) {
+				$mailto[] = $doc['name'] . " <$email>";
+				$mailto_qp_encoded[] = qp_encode($document['name']) . " <$email>";
+			}
+			$mailto = implode(', ', $mailto);
+			$mailto_qp_encoded = implode(', ', $mailto_qp_encoded);
+
+			if (!$quiet || $test) {
+				$msg = $document['title'] . ': ' . $mailto ;
+				if ($type == 'frontend') {
+					echo htmlspecialchars($msg) . $eol;
+					flush();
+					ob_flush();
+				} else
+					echo $msg . $eol;
+			}
+
+			if (!$test) {
+				$files = array();
+				foreach ($document['attachments'] as $attachment)
+					$files[] = array(
+						'content_type' => $attachment['contenttype'],
+						'filename' => $attachment['filename'],
+						'data' => $attachment['contents'],
+					);
+
+				if ($extrafile) {
+					$files[] = array(
+						'content_type' => mime_content_type($extrafile),
+						'filename' => basename($extrafile),
+						'data' => file_get_contents($extrafile)
+					);
+				}
+
+				$headers = array(
+					'From' => empty($dsn_email) ? $from : $dsn_email,
+					'To' => $mailto_qp_encoded,
+					'Subject' => $subject,
+					'Reply-To' => empty($reply_email) ? $sender_email : $reply_email,
+				);
+
+				if (!empty($mdn_email)) {
+					$headers['Return-Receipt-To'] = $mdn_email;
+					$headers['Disposition-Notification-To'] = $mdn_email;
+				}
+
+				if (!empty($dsn_email))
+					$headers['Delivery-Status-Notification-To'] = $dsn_email;
+
+				if (!empty($notify_email))
+					$headers['Cc'] = $notify_email;
+
+				if (isset($mail_format) && $mail_format == 'html')
+					$headers['X-LMS-Format'] = 'html';
+
+				if ($add_message) {
+					$this->db->Execute('INSERT INTO messages (subject, body, cdate, type, userid)
+						VALUES (?, ?, ?NOW?, ?, ?)',
+						array($subject, $body, MSG_MAIL, Auth::GetCurrentUser()));
+					$msgid = $this->db->GetLastInsertID('messages');
+					foreach (explode(',', $custemail) as $email) {
+						$this->db->Execute('INSERT INTO messageitems (messageid, customerid, destination, lastdate, status)
+							VALUES (?, ?, ?, ?NOW?, ?)',
+							array($msgid, $doc['customerid'], $email, MSG_NEW));
+						$msgitemid = $this->DB->GetLastInsertID('messageitems');
+						if (!isset($msgitems[$doc['customerid']]))
+							$msgitems[$doc['customerid']] = array();
+						$msgitems[$doc['customerid']][$email] = $msgitemid;
+					}
+				}
+
+				foreach (explode(',', $custemail) as $email) {
+					if ($add_message && (!empty($dsn_email) || !empty($mdn_email))) {
+						$headers['X-LMS-Message-Item-Id'] = $msgitems[$doc['customerid']][$email];
+						$headers['Message-ID'] = '<messageitem-' . $headers['X-LMS-Message-Item-Id'] . '@rtsystem.' . gethostname() . '>';
+					}
+
+					$res = $LMS->SendMail($email . ',' . $notify_email, $headers, $body,
+						$files, null, (isset($smtp_options) ? $smtp_options : null));
+
+					if (is_string($res)) {
+						$msg = trans('Error sending mail: $a', $res);
+						if ($type == 'backend')
+							fprintf(STDERR, $msg . $eol);
+						else {
+							echo '<span class="red">' . htmlspecialchars($msg) . '</span>' . $eol;
+							flush();
+						}
+						$status = MSG_ERROR;
+					} else {
+						$status = MSG_SENT;
+						$res = NULL;
+					}
+
+					if ($status == MSG_SENT) {
+						$this->db->Execute('UPDATE documents SET published = 1 WHERE id = ?', array($doc['id']));
+						$published = true;
+					}
+
+					if ($add_message)
+						$this->db->Execute('UPDATE messageitems SET status = ?, error = ?
+							WHERE id = ?', array($status, $res, $msgitems[$doc['customerid']][$email]));
+				}
+			}
+		}
 	}
 }

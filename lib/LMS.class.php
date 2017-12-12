@@ -2443,6 +2443,11 @@ class LMS
 		return $manager->GetDocumentFullContents($id);
 	}
 
+	public function SendDocuments($docs, $type, $params) {
+		$manager = $this->getDocumentManager();
+		return $manager->SendDocuments($docs, $type, $params);
+	}
+
 	/*
 	 *  Location
 	 */

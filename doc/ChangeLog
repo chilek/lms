@@ -161,6 +161,7 @@ version ?.??.?? (????-??-??):
     link properties for new and edited nodes [chilan]
   - improvement: negative credit notes are taken immediately to account, by for positive ones
     we wait for their pay time [chilan]
+  - enhancement: allow to send documents directly to mail [chilan]
 
 version 1.11.22 (2017-06-08):
 

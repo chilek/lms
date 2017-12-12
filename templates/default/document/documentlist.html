@@ -36,8 +36,13 @@
 		document.page.submit();
 	}
 
-	function filter()
-	{
+	function send_documents() {
+		document.page.action="?m=documentsend";
+		document.page.target="_blank";
+		document.page.submit();
+	}
+
+	function filter() {
 		// uncheck checkboxes, we don't need them in GET
 		for (var i=0; i<document.page.elements.length; i++)
 		{
@@ -210,6 +215,7 @@
 		</TD>
 		<TD class="nobr"><A href="?m=customerinfo&amp;id={$doc.customerid}">{$doc.name|truncate:40:"...":true}</A></TD>
 		<TD class="text-right nobr">
+			<a class="documentsend" href="?m=documentsend&id={$doc.docid}"><img src="img/mail.gif" alt="{trans("Document send")}" title="{trans("Document send")}"></a>
 			{assign var=type value=$doc.type}
 			<a href="?m=documentview&amp;id={$doc.docid}&amp;save=1"><img src="img/save.gif" alt="{trans("Save")}" title="{trans("Save")}"></a>
 			{if ! $doc.closed && ($docrights.$type.rights & 4)}
@@ -266,6 +272,7 @@
 			<TABLE WIDTH="100%">
 				<TR>
 					<TD class="nobr">
+						<A href="javascript:send_documents();" OnClick="return confirm('{trans("Are you sure, you want to send documents to customers?")}')">{trans("Send documents")} <IMG src="img/mail.gif" alt=""></A>&nbsp;
 						<A HREF="javascript:print_docs();">{trans("Print")} <IMG SRC="img/print.gif" ALT="{trans("Print")}"></A>&nbsp;
 						<A HREF="javascript:mark_docs();">{trans("Confirm")} <IMG SRC="img/confirm.gif" ALT="{trans("Confirm")}"></A>&nbsp;
 						<A HREF="javascript:delete_docs();">{trans("Delete")} <IMG SRC="img/delete.gif" ALT="{trans("Delete")}"></A>
@@ -284,4 +291,13 @@
     </TFOOT>
 </TABLE>
 </FORM>
+<script>
+	$('.documentsend').click(function() {
+		if (!confirm('{trans("Are you sure, you want to send document to customer?")}')) {
+			return false;
+		}
+		window.open($(this).attr('href'));
+		return false;
+	});
+</script>
 {/block}
