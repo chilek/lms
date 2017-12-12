@@ -674,7 +674,7 @@ if (empty($types) || in_array('debtors', $types)) {
 		) x ON (x.customerid = c.id)
 		LEFT JOIN documents d ON d.id = cash.docid
 		LEFT JOIN (
-			SUM(value) AS totalvalue, docid FROM cash
+			SELECT SUM(value) AS value, docid FROM cash
 			JOIN documents d2 ON d2.id = cash.docid
 			WHERE d2.type = ?
 			GROUP BY docid
@@ -683,8 +683,8 @@ if (empty($types) || in_array('debtors', $types)) {
 			OR (cash.type = 0 AND cash.time + ((CASE c.paytime WHEN -1 THEN
 				(CASE WHEN divisions.inv_paytime IS NULL THEN $deadline ELSE divisions.inv_paytime END) ELSE c.paytime END) + ?) * 86400 < $currtime)))
 			OR (cash.docid IS NOT NULL AND ((d.type = ? AND cash.time < $currtime)
-				OR (d.type = ? AND cash.time < $currtime AND tv.totalvalue >= 0)
-				OR (((d.type = ? AND tv.totalvalue < 0)
+				OR (d.type = ? AND cash.time < $currtime AND tv.value >= 0)
+				OR (((d.type = ? AND tv.value < 0)
 				    OR d.type IN (?, ?)) AND d.cdate + (d.paytime + ?) * 86400 < $currtime))))
 		GROUP BY c.id, c.pin, c.lastname, c.name, b.balance, m.email, x.phone, divisions.account
 		HAVING SUM(value) < ?", array(
