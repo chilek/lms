@@ -598,7 +598,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				WHERE 1=1'
 				. (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations') ? ' AND rtmessages.deleted = 0' : '')
 				. (' AND ticketid = ?)')
-				.(' ORDER BY createtime ASC'), array($id));
+				.(' ORDER BY createtime ASC, rtmessages.id'), array($id));
 
         foreach ($ticket['messages'] as $idx => $message)
             $ticket['messages'][$idx]['attachments'] = $this->db->GetAll('SELECT filename, contenttype FROM rtattachments WHERE messageid = ?', array($message['id']));
