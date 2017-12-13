@@ -951,7 +951,9 @@ function html2pdf($content, $subject=NULL, $title=NULL, $type=NULL, $id=NULL, $o
 		}
 	}
 
-	$html2pdf->pdf->SetProtection(array('modify', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', PASSWORD_CHANGEME, '1');
+	$password = ConfigHelper::getConfig('phpui.document_password', '', true);
+	if (!empty($password))
+		$html2pdf->pdf->SetProtection(array('modify', 'annot-forms', 'fill-forms', 'extract', 'assemble'), '', $password, '1');
 
 	// cache pdf file
 	if ($md5sum)
