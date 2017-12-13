@@ -162,6 +162,8 @@ version ?.??.?? (????-??-??):
   - improvement: negative credit notes are taken immediately to account, by for positive ones
     we wait for their pay time [chilan]
   - enhancement: allow to send documents directly to mail [chilan]
+  - enhancement: phpui.document_password configuration variable controls if documents generated
+    by html2pdf conversion are protected [chilan]
 
 version 1.11.22 (2017-06-08):
 
