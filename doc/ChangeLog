@@ -164,6 +164,7 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to send documents directly to mail [chilan]
   - enhancement: phpui.document_password configuration variable controls if documents generated
     by html2pdf conversion are protected [chilan]
+  - improvement: added support for CC header in mail backends [chilan]
 
 version 1.11.22 (2017-06-08):
 
