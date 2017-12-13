@@ -1861,8 +1861,12 @@ class LMS
 			if (!empty($debug_email)) {
 				$recipients = ConfigHelper::getConfig('mail.debug_email');
 				$headers['To'] = '<' . $recipients . '>';
-			} elseif (isset($headers['Cc']))
-				$recipients .= ',' . $headers['Cc'];
+			} else {
+				if (isset($headers['Cc']))
+					$recipients .= ',' . $headers['Cc'];
+				if (isset($headers['Bcc']))
+					$recipients .= ',' . $headers['Bcc'];
+			}
 
 			if (empty($headers['Date']))
 				$headers['Date'] = date('r');
@@ -1963,9 +1967,14 @@ class LMS
 			if (!empty($debug_email)) {
 				$this->mail_object->SMTPDebug = 2;
 				$recipients = ConfigHelper::getConfig('mail.debug_email');
-			} elseif (isset($headers['Cc']))
-				foreach (explode(',', $headers['Cc']) as $cc)
-					$this->mail_object->addCC($cc);
+			} else {
+				if (isset($headers['Cc']))
+					foreach (explode(',', $headers['Cc']) as $cc)
+						$this->mail_object->addCC($cc);
+				if (isset($headers['Bcc']))
+					foreach (explode(',', $headers['Bcc']) as $bcc)
+						$this->mail_object->addBCC($bcc);
+			}
 
 			if (empty($headers['Date']))
 				$headers['Date'] = date('r');
