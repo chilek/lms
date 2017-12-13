@@ -1861,7 +1861,8 @@ class LMS
 			if (!empty($debug_email)) {
 				$recipients = ConfigHelper::getConfig('mail.debug_email');
 				$headers['To'] = '<' . $recipients . '>';
-			}
+			} elseif (isset($headers['Cc']))
+				$recipients .= ',' . $headers['Cc'];
 
 			if (empty($headers['Date']))
 				$headers['Date'] = date('r');
@@ -1962,7 +1963,9 @@ class LMS
 			if (!empty($debug_email)) {
 				$this->mail_object->SMTPDebug = 2;
 				$recipients = ConfigHelper::getConfig('mail.debug_email');
-			}
+			} elseif (isset($headers['Cc']))
+				foreach (explode(',', $headers['Cc']) as $cc)
+					$this->mail_object->addCC($cc);
 
 			if (empty($headers['Date']))
 				$headers['Date'] = date('r');
@@ -3625,7 +3628,7 @@ class LMS
 						$headers['Message-ID'] = '<messageitem-' . $headers['X-LMS-Message-Item-Id'] . '@rtsystem.' . gethostname() . '>';
 					}
 
-					$res = $this->SendMail($email . ',' . $notify_email, $headers, $body,
+					$res = $this->SendMail($email, $headers, $body,
 						$files, null, (isset($smtp_options) ? $smtp_options : null));
 
 					if (is_string($res)) {
