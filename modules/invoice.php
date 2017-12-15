@@ -178,11 +178,20 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	$i = 0;
 
 	if ($jpk) {
+		if ($jpk_type == 'vat')
+			// if date from for report is earlier than 1 I 2018
+			//$jpk_vat_version = $datefrom < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
+			// if current date is earlier than 1 I 2018
+			$jpk_vat_version = time() < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
+
 		$jpk_data .= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 		if ($jpk_type == 'fa')
 			$jpk_data .= "<JPK xmlns=\"http://jpk.mf.gov.pl/wzor/2016/03/09/03095/\" xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2016/01/25/eD/DefinicjeTypy/\">\n";
 		else
-			$jpk_data .= "<JPK xmlns=\"http://jpk.mf.gov.pl/wzor/2016/10/26/10261/\" xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2016/01/25/eD/DefinicjeTypy/\">\n";
+			$jpk_data .= "<JPK xmlns=\""
+				. ($jpk_vat_version == 2 ? "http://jpk.mf.gov.pl/wzor/2016/10/26/10261/"
+					: "http://jpk.mf.gov.pl/wzor/2017/11/13/1113/")
+				. "\" xmlns:etd=\"http://crd.gov.pl/xml/schematy/dziedzinowe/mf/2016/01/25/eD/DefinicjeTypy/\">\n";
 
 		$divisionid = intval($_GET['divisionid']);
 		$division = $DB->GetRow("SELECT d.name, shortname, va.address, va.city,
@@ -200,46 +209,63 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 		// JPK header
 		$jpk_data .= "\t<Naglowek>\n";
 		if ($jpk_type == 'vat') {
-			$jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_VAT (2)\" wersjaSchemy=\"1-0\">JPK_VAT</KodFormularza>\n";
-			$jpk_data .= "\t\t<WariantFormularza>2</WariantFormularza>\n";
+			if ($jpk_vat_version == 2) {
+				$jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_VAT (2)\" wersjaSchemy=\"1-0\">JPK_VAT</KodFormularza>\n";
+				$jpk_data .= "\t\t<WariantFormularza>2</WariantFormularza>\n";
+			} else {
+				$jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_VAT (3)\" wersjaSchemy=\"1-1\">JPK_VAT</KodFormularza>\n";
+				$jpk_data .= "\t\t<WariantFormularza>3</WariantFormularza>\n";
+			}
 			$tns = '';
 		} else {
 			$jpk_data .= "\t\t<KodFormularza kodSystemowy=\"JPK_FA (1)\" wersjaSchemy=\"1-0\">JPK_FA</KodFormularza>\n";
 			$jpk_data .= "\t\t<WariantFormularza>1</WariantFormularza>\n";
 			$tns = 'etd:';
 		}
-		$jpk_data .= "\t\t<CelZlozenia>1</CelZlozenia>\n";
+		$jpk_data .= "\t\t<CelZlozenia>" . ($jpk_vat_version == 2 ? '1' : '0') . "</CelZlozenia>\n";
 		$jpk_data .= "\t\t<DataWytworzeniaJPK>" . strftime('%Y-%m-%dT%H:%M:%S') . "</DataWytworzeniaJPK>\n";
 		$jpk_data .= "\t\t<DataOd>" . strftime('%Y-%m-%d', $datefrom) . "</DataOd>\n";
 		$jpk_data .= "\t\t<DataDo>" . strftime('%Y-%m-%d', $dateto) . "</DataDo>\n";
-		$jpk_data .= "\t\t<DomyslnyKodWaluty>PLN</DomyslnyKodWaluty>\n";
-		$jpk_data .= "\t\t<KodUrzedu>" . (!empty($division['tax_office_code']) ? $division['tax_office_code']
-			: ConfigHelper::getConfig('jpk.tax_office_code', '', true)) . "</KodUrzedu>\n";
+
+		if ($jpk_type == 'fa' || $jpk_vat_version == 2) {
+			$jpk_data .= "\t\t<DomyslnyKodWaluty>PLN</DomyslnyKodWaluty>\n";
+			$jpk_data .= "\t\t<KodUrzedu>" . (!empty($division['tax_office_code']) ? $division['tax_office_code']
+				: ConfigHelper::getConfig('jpk.tax_office_code', '', true)) . "</KodUrzedu>\n";
+		} else
+			$jpk_data .= "\t\t<NazwaSystemu>LMS</NazwaSystemu>\n";
+
 		$jpk_data .= "\t</Naglowek>\n";
 
 		$jpk_data .= "\t<Podmiot1>\n";
-		$jpk_data .= "\t\t<IdentyfikatorPodmiotu>\n";
-		$jpk_data .= "\t\t\t<etd:NIP>" . preg_replace('/[\s\-]/', '', $division['ten']) . "</etd:NIP>\n";
-		$jpk_data .= "\t\t\t<etd:PelnaNazwa>" . str_replace('&', '&amp;', $division['name']) . "</etd:PelnaNazwa>\n";
-		$jpk_data .= "\t\t\t<etd:REGON>" . $division['regon'] . "</etd:REGON>\n";
-		$jpk_data .= "\t\t</IdentyfikatorPodmiotu>\n";
-		$jpk_data .= "\t\t<AdresPodmiotu>\n";
-		$jpk_data .= "\t\t\t<${tns}KodKraju>PL</${tns}KodKraju>\n";
-		$jpk_data .= "\t\t\t<${tns}Wojewodztwo>" . (!empty($division['state']) ? $division['state']
-			: ConfigHelper::getConfig('jpk.division_state', '', true)) . "</${tns}Wojewodztwo>\n";
-		$jpk_data .= "\t\t\t<${tns}Powiat>" . (!empty($division['district']) ? $division['district']
-			: ConfigHelper::getConfig('jpk.division_district', '', true)) . "</${tns}Powiat>\n";
-		$jpk_data .= "\t\t\t<${tns}Gmina>" . (!empty($division['borough']) ? $division['borough']
-			: ConfigHelper::getConfig('jpk.division_borough', '', true)) . "</${tns}Gmina>\n";
-		$address = parse_address($division['address']);
-		$jpk_data .= "\t\t\t<${tns}Ulica>" . $address['street'] . "</${tns}Ulica>\n";
-		$jpk_data .= "\t\t\t<${tns}NrDomu>" . $address['house'] . "</${tns}NrDomu>\n";
-		if (isset($address['flat']))
-			$jpk_data .= "\t\t\t<${tns}NrLokalu>" . $address['flat'] . "</${tns}NrLokalu>\n";
-		$jpk_data .= "\t\t\t<${tns}Miejscowosc>" . $division['city'] . "</${tns}Miejscowosc>\n";
-		$jpk_data .= "\t\t\t<${tns}KodPocztowy>" . $division['zip'] . "</${tns}KodPocztowy>\n";
-		$jpk_data .= "\t\t\t<${tns}Poczta>" . ConfigHelper::getConfig('jpk.division_postal_city', $division['city']) . "</${tns}Poczta>\n";
-		$jpk_data .= "\t\t</AdresPodmiotu>\n";
+
+		if ($jpk_type == 'fa' || $jpk_vat_version == 2) {
+			$jpk_data .= "\t\t<IdentyfikatorPodmiotu>\n";
+			$jpk_data .= "\t\t\t<etd:NIP>" . preg_replace('/[\s\-]/', '', $division['ten']) . "</etd:NIP>\n";
+			$jpk_data .= "\t\t\t<etd:PelnaNazwa>" . str_replace('&', '&amp;', $division['name']) . "</etd:PelnaNazwa>\n";
+			$jpk_data .= "\t\t\t<etd:REGON>" . $division['regon'] . "</etd:REGON>\n";
+			$jpk_data .= "\t\t</IdentyfikatorPodmiotu>\n";
+			$jpk_data .= "\t\t<AdresPodmiotu>\n";
+			$jpk_data .= "\t\t\t<${tns}KodKraju>PL</${tns}KodKraju>\n";
+			$jpk_data .= "\t\t\t<${tns}Wojewodztwo>" . (!empty($division['state']) ? $division['state']
+					: ConfigHelper::getConfig('jpk.division_state', '', true)) . "</${tns}Wojewodztwo>\n";
+			$jpk_data .= "\t\t\t<${tns}Powiat>" . (!empty($division['district']) ? $division['district']
+					: ConfigHelper::getConfig('jpk.division_district', '', true)) . "</${tns}Powiat>\n";
+			$jpk_data .= "\t\t\t<${tns}Gmina>" . (!empty($division['borough']) ? $division['borough']
+					: ConfigHelper::getConfig('jpk.division_borough', '', true)) . "</${tns}Gmina>\n";
+			$address = parse_address($division['address']);
+			$jpk_data .= "\t\t\t<${tns}Ulica>" . $address['street'] . "</${tns}Ulica>\n";
+			$jpk_data .= "\t\t\t<${tns}NrDomu>" . $address['house'] . "</${tns}NrDomu>\n";
+			if (isset($address['flat']))
+				$jpk_data .= "\t\t\t<${tns}NrLokalu>" . $address['flat'] . "</${tns}NrLokalu>\n";
+			$jpk_data .= "\t\t\t<${tns}Miejscowosc>" . $division['city'] . "</${tns}Miejscowosc>\n";
+			$jpk_data .= "\t\t\t<${tns}KodPocztowy>" . $division['zip'] . "</${tns}KodPocztowy>\n";
+			$jpk_data .= "\t\t\t<${tns}Poczta>" . ConfigHelper::getConfig('jpk.division_postal_city', $division['city']) . "</${tns}Poczta>\n";
+			$jpk_data .= "\t\t</AdresPodmiotu>\n";
+		} else {
+			$jpk_data .= "\t\t<NIP>" . preg_replace('/[\s\-]/', '', $division['ten']) . "</NIP>\n";
+			$jpk_data .= "\t\t<PelnaNazwa>" . str_replace('&', '&amp;', $division['name']) . "</PelnaNazwa>\n";
+		}
+
 		$jpk_data .= "\t</Podmiot1>\n";
 		$totalvalue = 0;
 		$totaltax = 0;
@@ -270,7 +296,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 
 			if ($jpk_type == 'vat') {
 				// JPK body positions (sale)
-				$jpk_data .= "\t<SprzedazWiersz typ=\"G\">\n";
+				$jpk_data .= "\t<SprzedazWiersz" . ($jpk_vat_version == 2 ? " typ=\"G\"" : '') . ">\n";
 
 				$jpk_data .= "\t\t<LpSprzedazy>" . ($idx + 1) . "</LpSprzedazy>\n";
 				if (empty($invoice['ten']))
