@@ -95,14 +95,15 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
+                    {$auth_type=ConfigHelper::getConfig('userpanel.auth_type', 1)}
                     <form id="login" class="form-signin" method="post" action="{$target}">
                         {if $error}<div class="alert alert-danger">{$error}</div>{/if}
                         <fieldset class="form-group">
-                            <label for="inputLogin">{$_USERPANEL_ID_TYPES[ConfigHelper::getConfig('userpanel.auth_type', 1)].label}</label>
+                            <label for="inputLogin">{$_USERPANEL_AUTH_TYPES[$auth_type].label}</label>
                             <input type="text"  name="loginform[login]" id="inputLogin" class="form-control" required autofocus>
                         </fieldset>
                         <fieldset class="form-group">
-                            <label for="inputPassword">{trans('PIN:')}</label>
+                            <label for="inputPassword">{$_USERPANEL_AUTH_TYPES[$auth_type].label_secret}</label>
                             <input type="password" name="loginform[pwd]" id="inputPassword" class="form-control" required>
                         </fieldset>
                         {if $google_recaptcha_sitekey}

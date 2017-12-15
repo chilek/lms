@@ -308,6 +308,23 @@ class Session {
 		return $authinfo;
 	}
 
+	private function GetCustomerIDByNodeNameAndPassword() {
+		if (!preg_match('/^[_a-z0-9-.]+$/i', $this->passwd) || !preg_match('/^[_a-z0-9-.]+$/i', $this->login))
+			return null;
+
+		$authinfo['id'] = $this->db->GetOne('SELECT ownerid FROM nodes
+			WHERE name = ?', array($this->login));
+
+		if (empty($authinfo['id']))
+			return null;
+
+		$authinfo['passwd'] = $this->db->GetOne('SELECT pin FROM customers c
+			JOIN nodes n ON c.id = n.ownerid
+			WHERE n.name = ? AND n.passwd = ?', array($this->login, $this->passwd));
+
+		return $authinfo;
+	}
+
 	private function GetCustomerAuthInfo($customerid)
 	{
 		return $this->db->GetRow('SELECT customerid AS id, lastlogindate, lastloginip, failedlogindate, failedloginip, enabled FROM up_customers WHERE customerid=?',
@@ -346,6 +363,9 @@ class Session {
 				break;
 			case 4:
 				$authinfo = $this->GetCustomerIDByEmailAndPIN();
+				break;
+			case 5:
+				$authinfo = $this->GetCustomerIDByNodeNameAndPassword();
 				break;
 		}
 

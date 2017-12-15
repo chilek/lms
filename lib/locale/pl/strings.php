@@ -3816,4 +3816,8 @@ $_LANG['Are you sure, you want to send documents to customer?'] = 'Jesteś pewie
 $_LANG['Are you sure, you want to send documents to customers?'] = 'Jesteś pewien, że chcesz wysłać dokumenty do klientów?';
 $_LANG['Send documents'] = 'Wyślij dokumenty';
 
+$_LANG['PPPoE login:'] = 'Login PPPoE:';
+$_LANG['PPPoE password:'] = 'Hasło PPPoE:';
+$_LANG['PPPoE login and password'] = 'Login i hasło PPPoE';
+
 ?>

@@ -108,8 +108,8 @@
             </TD>
             <TD scope="col">
                 <SELECT name="auth_type" {tip text="Userpanel authentication type" }>
-                    {foreach $_USERPANEL_ID_TYPES as $typeidx => $type}
-                    <OPTION value="{$typeidx}" {if $auth_type== $typeidx} selected{/if}>{$type.selection}</OPTION>
+                    {foreach $_USERPANEL_AUTH_TYPES as $typeidx => $type}
+                    <OPTION value="{$typeidx}" {if $auth_type == $typeidx} selected{/if}>{$type.selection}</OPTION>
                     {/foreach}
                 </SELECT>
             </TD>

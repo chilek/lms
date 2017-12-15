@@ -621,22 +621,31 @@ $NETELEMENTOWNERSHIPS = array(
 	2	=> 'Węzeł obcy',
 );
 
-$USERPANEL_ID_TYPES = array(
+$USERPANEL_AUTH_TYPES = array(
 	1	=> array(
 		'label' => trans('Customer ID:'),
+		'label_secret' => trans('PIN:'),
 		'selection' => trans('Customer ID and PIN'),
 	),
 	2	=> array(
 		'label' => trans('Phone number:'),
+		'label_secret' => trans('PIN:'),
 		'selection' => trans('Phone number and PIN'),
 	),
 	3	=> array(
 		'label' => trans('Document number:'),
+		'label_secret' => trans('PIN:'),
 		'selection' => trans('Document number and PIN'),
 	),
 	4	=> array(
 		'label' => trans('Customer e-mail:'),
+		'label_secret' => trans('PIN:'),
 		'selection' => trans('Customer e-mail and PIN'),
+	),
+	5	=> array(
+		'label' => trans('PPPoE login:'),
+		'label_secret' => trans('PPPoE password:'),
+		'selection' => trans('PPPoE login and password'),
 	),
 );
 
@@ -739,7 +748,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_NETELEMENTSTATUSES', $NETELEMENTSTATUSES);
 	$SMARTY->assign('_NETELEMENTTYPES', $NETELEMENTTYPES);
 	$SMARTY->assign('_NETELEMENTOWNERSHIPS', $NETELEMENTOWNERSHIPS);
-	$SMARTY->assign('_USERPANEL_ID_TYPES', $USERPANEL_ID_TYPES);
+	$SMARTY->assign('_USERPANEL_AUTH_TYPES', $USERPANEL_AUTH_TYPES);
 	$SMARTY->assign('_EVENTTYPES', $EVENTTYPES);
 	$SMARTY->assign('_EVENTSTYLES', $EVENTSTYLES);
 	$SMARTY->assign('_SESSIONTYPES', $SESSIONTYPES);

@@ -79,10 +79,11 @@
 			{if $error}<div style="color: red;" class="text-center bold">{$error}</div>{else}&nbsp;{/if}
 			<br /><br />
 			<form id="login" method="post" action="{$target}">
+			{$auth_type=ConfigHelper::getConfig('userpanel.auth_type', 1)}
 			<table id="logindata" style="height: 100%; width: 100%;">
 				<tr>
 					<td class="text-right bold nobr">
-						{$_USERPANEL_ID_TYPES[ConfigHelper::getConfig('userpanel.auth_type', 1)].label}
+						{$_USERPANEL_AUTH_TYPES[$auth_type].label}
 					</td>
 					<td class="text-left">
 						<input type="text" name="loginform[login]" style="width: 100pt;" />
@@ -90,7 +91,7 @@
 				</tr>
 				<tr>
 					<td class="text-right bold nobr">
-						{trans("PIN:")}
+						{$_USERPANEL_AUTH_TYPES[$auth_type].label_secret}
 					</td>
 					<td class="text-left">
 						<input type="password" name="loginform[pwd]" style="width: 100pt;" />
