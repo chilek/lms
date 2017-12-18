@@ -222,7 +222,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 			$jpk_data .= "\t\t<WariantFormularza>1</WariantFormularza>\n";
 			$tns = 'etd:';
 		}
-		$jpk_data .= "\t\t<CelZlozenia>" . ($jpk_vat_version == 2 ? '1' : '0') . "</CelZlozenia>\n";
+		$jpk_data .= "\t\t<CelZlozenia>" . ($jpk_vat_version == 2 || $jpk_type == 'fa' ? '1' : '0') . "</CelZlozenia>\n";
 		$jpk_data .= "\t\t<DataWytworzeniaJPK>" . strftime('%Y-%m-%dT%H:%M:%S') . "</DataWytworzeniaJPK>\n";
 		$jpk_data .= "\t\t<DataOd>" . strftime('%Y-%m-%d', $datefrom) . "</DataOd>\n";
 		$jpk_data .= "\t\t<DataDo>" . strftime('%Y-%m-%d', $dateto) . "</DataDo>\n";
