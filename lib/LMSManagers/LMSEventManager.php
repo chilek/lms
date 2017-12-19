@@ -70,8 +70,7 @@ class LMSEventManager extends LMSManager implements LMSEventManagerInterface
 				note=?, customerid=?, type=?, address_id=?, nodeid=?, ticketid=? WHERE id=?',
 			array($event['title'], $event['description'], $event['date'], $event['begintime'], $event['enddate'], $event['endtime'],
 				$event['private'], $event['note'], empty($event['custid']) ? null : $event['custid'], $event['type'], $event['address_id'],
-				$event['nodeid'], !isset($event['helpdeskid']) || empty($event['helpdeskid']) ? null : $event['helpdeskid'],
-				$event['id']));
+				$event['nodeid'], $event['helpdesk'], $event['id']));
 
 		$this->db->Execute('DELETE FROM eventassignments WHERE eventid = ?', array($event['id']));
 		if (!empty($event['userlist']) && is_array($event['userlist']))
