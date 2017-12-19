@@ -24,8 +24,21 @@
  *  $Id$
  */
 
-if (!$LMS->NetDevExists($_GET['id'])) {
-	$SESSION->redirect('?m=netdevlist');
+$id = intval($_GET['id']);
+
+if ($api) {
+	if (!$LMS->NetNodeExists($id))
+		die;
+
+	if (!isset($_POST['in']))
+		die;
+	$netdevdata = json_decode(base64_decode($_POST['in']), true);
+} else {
+	if (!$LMS->NetDevExists($id))
+		$SESSION->redirect('?m=netdevlist');
+
+	if (isset($_POST['netdev']))
+		$netdevdata = $_POST['netdev'];
 }
 
 $action = !empty($_GET['action']) ? $_GET['action'] : '';
@@ -564,9 +577,8 @@ switch ($action) {
 		break;
 }
 
-if (isset($_POST['netdev'])) {
-	$netdevdata = $_POST['netdev'];
-	$netdevdata['id'] = $_GET['id'];
+if (isset($netdevdata)) {
+	$netdevdata['id'] = $id;
 
 	if ($netdevdata['name'] == '')
 		$error['name'] = trans('Device name is required!');
@@ -575,51 +587,59 @@ if (isset($_POST['netdev'])) {
 
 	$netdevdata['ports'] = intval($netdevdata['ports']);
 
-	if ($netdevdata['ports'] < $LMS->CountNetDevLinks($_GET['id']))
+	if ($netdevdata['ports'] < $LMS->CountNetDevLinks($id))
 		$error['ports'] = trans('Connected devices number exceeds number of ports!');
-
-	$netdevdata['clients'] = (empty($netdevdata['clients'])) ? 0 : intval($netdevdata['clients']);
 
 	if (!empty($netdevdata['ownerid']) && !$LMS->CustomerExists($netdevdata['ownerid']))
 		$error['ownerid'] = trans('Customer doesn\'t exist!');
 
+	if (!$api) {
+		$netdevdata['clients'] = (empty($netdevdata['clients'])) ? 0 : intval($netdevdata['clients']);
 
-        if ($netdevdata['purchasedate'] != '')
-        {
-                $netdevdata['purchasetime'] = date_to_timestamp($netdevdata['purchasedate']);
-                if(empty($netdevdata['purchasetime']))
-                        $error['purchasedate'] = trans('Invalid date format!');
-                else
-                        if (time() < $netdevdata['purchasetime'])
-                                $error['purchasedate'] = trans('Date from the future not allowed!');
-        }
-        else
-                $netdevdata['purchasetime'] = 0;
+		if ($netdevdata['purchasedate'] != '') {
+			$netdevdata['purchasetime'] = date_to_timestamp($netdevdata['purchasedate']);
+			if (empty($netdevdata['purchasetime']))
+				$error['purchasedate'] = trans('Invalid date format!');
+			else
+				if (time() < $netdevdata['purchasetime'])
+					$error['purchasedate'] = trans('Date from the future not allowed!');
+		} else
+			$netdevdata['purchasetime'] = 0;
 
-	if ($netdevdata['guaranteeperiod'] != 0 && $netdevdata['purchasedate'] == '') {
-		$error['purchasedate'] = trans('Purchase date cannot be empty when guarantee period is set!');
+		if ($netdevdata['guaranteeperiod'] != 0 && $netdevdata['purchasedate'] == '')
+			$error['purchasedate'] = trans('Purchase date cannot be empty when guarantee period is set!');
 	}
 
-	if ($netdevdata['invprojectid'] == '-1') { // nowy projekt
-		if (!strlen(trim($netdevdata['projectname']))) {
+	if ($api && isset($netdevdata['project'])) {
+		$project = $LMS->GetProjectByName($netdevdata['project']);
+		if (empty($project)) {
+			$netdevdata['projectname'] = $netdevdata['project'];
+			$netdevdata['invprojectid'] = -1;
+		} else
+			$netdevdata['invprojectid'] = $project['id'];
+	}
+
+	if ($netdevdata['invprojectid'] == '-1') { // new investment project
+		if (!strlen(trim($netdevdata['projectname'])))
 			$error['projectname'] = trans('Project name is required');
-		}
 		if ($LMS->ProjectByNameExists($netdevdata['projectname']))
 			$error['projectname'] = trans('Project with that name already exists');
 	}
 
 	if (!$error) {
-		if ($netdevdata['guaranteeperiod'] == -1)
-			$netdevdata['guaranteeperiod'] = NULL;
+		if (!$api) {
+			if ($netdevdata['guaranteeperiod'] == -1)
+				$netdevdata['guaranteeperiod'] = NULL;
 
-		if (!isset($netdevdata['shortname']))
-			$netdevdata['shortname'] = '';
-		if (!isset($netdevdata['secret']))
-			$netdevdata['secret'] = '';
-		if (!isset($netdevdata['community']))
-			$netdevdata['community'] = '';
-		if (!isset($netdevdata['nastype']))
-			$netdevdata['nastype'] = 0;
+			if (!isset($netdevdata['shortname']))
+				$netdevdata['shortname'] = '';
+			if (!isset($netdevdata['secret']))
+				$netdevdata['secret'] = '';
+			if (!isset($netdevdata['community']))
+				$netdevdata['community'] = '';
+			if (!isset($netdevdata['nastype']))
+				$netdevdata['nastype'] = 0;
+		}
 
 		$ipi = $netdevdata['invprojectid'];
 		if ($ipi == '-1')
@@ -636,16 +656,29 @@ if (isset($_POST['netdev'])) {
 			$netdevdata['netnodeid'] = null;
 		}
 
-		$LMS->NetDevUpdate($netdevdata);
+		$result = $LMS->NetDevUpdate($netdevdata);
 		$LMS->CleanupProjects();
+
+		if ($api) {
+			if ($result) {
+				header('Content-Type: application-json');
+				echo json_encode(array('id' => $id));
+			}
+			die;
+		}
+
 		$hook_data = $LMS->executeHook('netdevedit_after_update',
 			array(
 				'smarty' => $SMARTY,
 			));
-		$SESSION->redirect('?m=netdevinfo&id=' . $_GET['id']);
+		$SESSION->redirect('?m=netdevinfo&id=' . $id);
+	} elseif ($api) {
+		header('Content-Type: application-json');
+		echo json_encode($error);
+		die;
 	}
 } else {
-	$netdevdata = $LMS->GetNetDev($_GET['id']);
+	$netdevdata = $LMS->GetNetDev($id);
 
 	if ($netdevdata['purchasetime'])
 		$netdevdata['purchasedate'] = date('Y/m/d', $netdevdata['purchasetime']);
@@ -655,13 +688,13 @@ if (isset($_POST['netdev'])) {
 	}
 }
 
-$netdevdata['id'] = $_GET['id'];
+$netdevdata['id'] = $id;
 
-$netdevips       = $LMS->GetNetDevIPs($_GET['id']);
+$netdevips       = $LMS->GetNetDevIPs($id);
 $nodelist        = $LMS->GetUnlinkedNodes();
-$netdevconnected = $LMS->GetNetDevConnectedNames($_GET['id']);
-$netcomplist     = $LMS->GetNetDevLinkedNodes($_GET['id']);
-$netdevlist      = $LMS->GetNotConnectedDevices($_GET['id']);
+$netdevconnected = $LMS->GetNetDevConnectedNames($id);
+$netcomplist     = $LMS->GetNetDevLinkedNodes($id);
+$netdevlist      = $LMS->GetNotConnectedDevices($id);
 
 unset($netdevlist['total']);
 unset($netdevlist['order']);

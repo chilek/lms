@@ -137,9 +137,10 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 						'location_flat' => $netnode['location_flat'],
 						'street_name' => $netnode['location_street_name'])
 				);
-				$netnode['terc'] = $netnode['location_state_ident'] . $netnode['location_district_ident']
-					. $netnode['location_borough_ident'] . $netnode['location_borough_type'];
-				$netnode['simc'] = $netnode['location_city_ident'];
+				$netnode['terc'] = empty($netnode['location_state_ident']) ? null
+					: $netnode['location_state_ident'] . $netnode['location_district_ident']
+						. $netnode['location_borough_ident'] . $netnode['location_borough_type'];
+				$netnode['simc'] = empty($netnode['location_city_ident']) ? null : $netnode['location_city_ident'];
 				$netnode['ulic'] = empty($netnode['location_street_ident']) ? null : $netnode['location_street_ident'];
 			}
 			unset($netnode);

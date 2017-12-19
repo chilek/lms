@@ -24,24 +24,51 @@
  *  $Id$
  */
 
-if (!$LMS->NetDevExists($_GET['id']))
+$id = intval($_GET['id']);
+
+if ($api) {
+	if (!$LMS->NetDevExists($id))
+		die;
+} elseif (!$LMS->NetDevExists($id))
 	$SESSION->redirect('?m=netdevlist');
 
-$layout['pagetitle'] = trans('Deletion of Device with ID: $a', sprintf('%04d', $_GET['id']));
-$SMARTY->assign('netdevid', $_GET['id']);
+if (!$api) {
+	$layout['pagetitle'] = trans('Deletion of Device with ID: $a', sprintf('%04d', $id));
+	$SMARTY->assign('netdevid', $id);
+}
 
-if ($LMS->CountNetDevLinks($_GET['id']) > 0)
-	$body = '<P>' . trans('Device connected to other device or node can\'t be deleted.') . '</P>';
-else
-	if ($_GET['is_sure'] != 1) {
+if ($LMS->CountNetDevLinks($id) > 0) {
+	if ($api)
+		$error['general'] = trans('Device connected to other device or node can\'t be deleted.');
+	else
+		$body = '<P>' . trans('Device connected to other device or node can\'t be deleted.') . '</P>';
+} else
+	if (!$api && $_GET['is_sure'] != 1) {
 		$body = '<P>' . trans('Are you sure, you want to delete that device?') . '</P>'; 
-		$body .= '<P><A HREF="?m=netdevdel&id=' . $_GET['id'] . '&is_sure=1">' . trans('Yes, I am sure.') . '</A></P>';
+		$body .= '<P><A HREF="?m=netdevdel&id=' . $id . '&is_sure=1">' . trans('Yes, I am sure.') . '</A></P>';
 	} else {
-		header('Location: ?m=netdevlist');
-		$body = '<P>' . trans('Device has been deleted.') . '</P>';
-		$LMS->DeleteNetDev($_GET['id']);
+		if (!$api) {
+			header('Location: ?m=netdevlist');
+			$body = '<P>' . trans('Device has been deleted.') . '</P>';
+		}
+		$result = $LMS->DeleteNetDev($id);
 		$LMS->CleanupProjects();
+		if ($api) {
+			if ($result) {
+				header('Content-Type: application/json');
+				echo json_encode(array('id' => $id));
+			}
+			die;
+		}
 	}
+
+if ($api) {
+	if (isset($error['general'])) {
+		header('Content-Type: application/json');
+		echo json_encode($error);
+	}
+	die;
+}
 
 $SMARTY->assign('body',$body);
 $SMARTY->display('dialog.html');

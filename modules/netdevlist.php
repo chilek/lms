@@ -24,83 +24,99 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Network Devices');
+if ($api) {
+	$search = array();
+	$order = 'id,asc';
+} else {
+	$layout['pagetitle'] = trans('Network Devices');
 
-if(!isset($_GET['o']))
-	$SESSION->restore('ndlo', $o);
-else
-	$o = $_GET['o'];
-$SESSION->save('ndlo', $o);
+	if (!isset($_GET['o']))
+		$SESSION->restore('ndlo', $o);
+	else
+		$o = $_GET['o'];
+	$SESSION->save('ndlo', $o);
 
-if(!isset($_GET['s']))
-	$SESSION->restore('ndfs', $s);
-else
-	$s = $_GET['s'];
-$SESSION->save('ndfs', $s);
+	if (!isset($_GET['s']))
+		$SESSION->restore('ndfs', $s);
+	else
+		$s = $_GET['s'];
+	$SESSION->save('ndfs', $s);
 
-if(!isset($_GET['p']))
-	$SESSION->restore('ndfp', $p);
-else
-	$p = $_GET['p'];
-$SESSION->save('ndfp', $p);
+	if (!isset($_GET['p']))
+		$SESSION->restore('ndfp', $p);
+	else
+		$p = $_GET['p'];
+	$SESSION->save('ndfp', $p);
 
-if(!isset($_GET['n']))
-	$SESSION->restore('ndfn', $n);
-else
-	$n = $_GET['n'];
-$SESSION->save('ndfn', $n);
+	if (!isset($_GET['n']))
+		$SESSION->restore('ndfn', $n);
+	else
+		$n = $_GET['n'];
+	$SESSION->save('ndfn', $n);
 
-if(!isset($_GET['producer']))
-	$SESSION->restore('ndfproducer', $producer);
-else
-	$producer = $_GET['producer'];
-$SESSION->save('ndfproducer', $producer);
+	if (!isset($_GET['producer']))
+		$SESSION->restore('ndfproducer', $producer);
+	else
+		$producer = $_GET['producer'];
+	$SESSION->save('ndfproducer', $producer);
 
-if(!isset($_GET['model']))
-	$SESSION->restore('ndfmodel', $model);
-else
-	$model = $_GET['model'];
-$SESSION->save('ndfmodel', $model);
+	if (!isset($_GET['model']))
+		$SESSION->restore('ndfmodel', $model);
+	else
+		$model = $_GET['model'];
+	$SESSION->save('ndfmodel', $model);
 
-if (empty($model))
-	$model = -1;
-if (empty($producer))
-	$producer = -1;
+	if (empty($model))
+		$model = -1;
+	if (empty($producer))
+		$producer = -1;
 
-$producers = $DB->GetCol("SELECT DISTINCT UPPER(TRIM(producer)) AS producer FROM netdevices WHERE producer <> '' ORDER BY producer");
-$models = $DB->GetCol("SELECT DISTINCT UPPER(TRIM(model)) AS model FROM netdevices WHERE model <> ''"
-	. ($producer != '-1' ? " AND UPPER(TRIM(producer)) = " . $DB->Escape($producer == '-2' ? '' : $producer) : '') . " ORDER BY model");
-if (!preg_match('/^-[0-9]+$/', $model) && !in_array($model, $models)) {
-	$SESSION->save('ndfmodel', '-1');
-	$SESSION->redirect('?' . preg_replace('/&model=[^&]+/', '', $_SERVER['QUERY_STRING']));
+	$producers = $DB->GetCol("SELECT DISTINCT UPPER(TRIM(producer)) AS producer FROM netdevices WHERE producer <> '' ORDER BY producer");
+	$models = $DB->GetCol("SELECT DISTINCT UPPER(TRIM(model)) AS model FROM netdevices WHERE model <> ''"
+		. ($producer != '-1' ? " AND UPPER(TRIM(producer)) = " . $DB->Escape($producer == '-2' ? '' : $producer) : '') . " ORDER BY model");
+	if (!preg_match('/^-[0-9]+$/', $model) && !in_array($model, $models)) {
+		$SESSION->save('ndfmodel', '-1');
+		$SESSION->redirect('?' . preg_replace('/&model=[^&]+/', '', $_SERVER['QUERY_STRING']));
+	}
+	if (!preg_match('/^-[0-9]+$/', $producer) && !in_array($producer, $producers)) {
+		$SESSION->save('ndfproducer', '-1');
+		$SESSION->redirect('?' . preg_replace('/&producer=[^&]+/', '', $_SERVER['QUERY_STRING']));
+	}
+
+	$search = array(
+		'status' => $s,
+		'project' => $p,
+		'netnode' => $n,
+		'producer' => $producer,
+		'model' => $model,
+	);
 }
-if (!preg_match('/^-[0-9]+$/', $producer) && !in_array($producer, $producers)) {
-	$SESSION->save('ndfproducer', '-1');
-	$SESSION->redirect('?' . preg_replace('/&producer=[^&]+/', '', $_SERVER['QUERY_STRING']));
-}
 
-$search = array(
-	'status' => $s,
-	'project' => $p,
-	'netnode' => $n,
-	'producer' => $producer,
-	'model' => $model,
-);
 $netdevlist = $LMS->GetNetDevList($o, $search);
-$listdata['total'] = $netdevlist['total'];
-$listdata['order'] = $netdevlist['order'];
-$listdata['direction'] = $netdevlist['direction'];
-$listdata['status'] = $s;
-$listdata['invprojectid'] = $p;
-$listdata['netnode'] = $n;
-$listdata['producer'] = $producer;
-$listdata['model'] = $model;
+
+if (!$api) {
+	$listdata['total'] = $netdevlist['total'];
+	$listdata['order'] = $netdevlist['order'];
+	$listdata['direction'] = $netdevlist['direction'];
+	$listdata['status'] = $s;
+	$listdata['invprojectid'] = $p;
+	$listdata['netnode'] = $n;
+	$listdata['producer'] = $producer;
+	$listdata['model'] = $model;
+}
+
 unset($netdevlist['total']);
 unset($netdevlist['order']);
 unset($netdevlist['direction']);
 
-if(!isset($_GET['page']))
-        $SESSION->restore('ndlp', $_GET['page']);
+if ($api) {
+	header('Content-Type: application/json');
+	echo json_encode(array_values($netdevlist));
+	die;
+}
+
+if (!isset($_GET['page']))
+	$SESSION->restore('ndlp', $_GET['page']);
 	
 $page = (! $_GET['page'] ? 1 : $_GET['page']);
 $pagelimit = ConfigHelper::getConfig('phpui.nodelist_pagelimit', $listdata['total']);

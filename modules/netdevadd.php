@@ -24,13 +24,20 @@
  *  $Id$
  */
 
-$LMS->InitXajax();
-include(MODULES_DIR . DIRECTORY_SEPARATOR . 'geocodexajax.inc.php');
-$SMARTY->assign('xajax', $LMS->RunXajax());
+if ($api) {
+	if (!isset($_POST['in']))
+		die;
+	$netdevdata = json_decode(base64_decode($_POST['in']), true);
+} else {
+	$LMS->InitXajax();
+	include(MODULES_DIR . DIRECTORY_SEPARATOR . 'geocodexajax.inc.php');
+	$SMARTY->assign('xajax', $LMS->RunXajax());
 
-if (isset($_POST['netdev'])) {
-	$netdevdata = $_POST['netdev'];
+	if (isset($_POST['netdev']))
+		$netdevdata = $_POST['netdev'];
+}
 
+if (isset($netdevdata)) {
 	$netdevdata['ports']   = ($netdevdata['ports'] == '')    ? 0 : intval($netdevdata['ports']);
 	$netdevdata['clients'] = (empty($netdevdata['clients'])) ? 0 : intval($netdevdata['clients']);
 	$netdevdata['ownerid'] = (empty($netdevdata['ownerid'])) ? 0 : intval($netdevdata['ownerid']);
@@ -52,22 +59,39 @@ if (isset($_POST['netdev'])) {
 	else
 		$netdevdata['purchasetime'] = 0;
 
-    if (!empty($netdevdata['ownerid']) && !$LMS->customerExists($netdevdata['ownerid'])) {
-        $error['ownerid'] = "doesnt exists";
-    }
+    if (!empty($netdevdata['ownerid']) && !$LMS->customerExists($netdevdata['ownerid']))
+        $error['ownerid'] = trans('Customer doesn\'t exist!');
 
 	if ($netdevdata['guaranteeperiod'] != 0 && $netdevdata['purchasedate'] == NULL) {
 		$error['purchasedate'] = trans('Purchase date cannot be empty when guarantee period is set!');
 	}
 
+	if ($api && isset($netdevdata['project'])) {
+		$project = $LMS->GetProjectByName($netdevdata['project']);
+		if (empty($project)) {
+			$netdevdata['projectname'] = $netdevdata['project'];
+			$netdevdata['invprojectid'] = -1;
+		} else
+			$netdevdata['invprojectid'] = $project['id'];
+	}
+
 	// new project
 	if ($netdevdata['invprojectid'] == '-1') {
-		if (!strlen(trim($netdevdata['projectname']))) {
+		if (!strlen(trim($netdevdata['projectname'])))
 			$error['projectname'] = trans('Project name is required');
-		}
-
 		if ($LMS->ProjectByNameExists($netdevdata['projectname']))
 			$error['projectname'] = trans('Project with that name already exists');
+	}
+
+	if (isset($netdevdata['terc']) && isset($netdevdata['simc']) && isset($netdevdata['ulic'])) {
+		$teryt = $LMS->TerytToLocation($netdevdata['terc'], $netdevdata['simc'], $netdevdata['ulic']);
+		$netdevdata['teryt'] = 1;
+		$netdevdata['location_state'] = $teryt['location_state'];
+		$netdevdata['location_state_name'] = $teryt['location_state_name'];
+		$netdevdata['location_city'] = $teryt['location_city'];
+		$netdevdata['location_city_name'] = $teryt['location_city_name'];
+		$netdevdata['location_street'] = $teryt['location_street'];
+		$netdevdata['location_street_name'] = $teryt['location_street_name'];
 	}
 
     if (!$error) {
@@ -124,8 +148,20 @@ if (isset($_POST['netdev'])) {
 
 		$netdevid = $LMS->NetDevAdd($netdevdata);
 
+		if ($api) {
+			if ($netdevid) {
+				header('Content-Type: application/json');
+				echo json_encode(array('id' => $netdevid));
+			}
+			die;
+		}
+
 		$SESSION->redirect('?m=netdevinfo&id='.$netdevid);
-    }
+    } elseif ($api) {
+		header('Content-Type: application/json');
+		echo json_encode($error);
+		die;
+	}
 
 	$SMARTY->assign('error', $error);
 	$SMARTY->assign('netdev', $netdevdata);
