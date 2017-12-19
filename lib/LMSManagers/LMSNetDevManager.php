@@ -258,15 +258,15 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 		if (isset($data['netdevicemodelid']))
 			$args['netdevicemodelid'] = !empty($data['netdevicemodelid']) ? $data['netdevicemodelid'] : null;
 		if (isset($data['ownerid']))
-			$args['ownerid'] = $data['ownerid'];
+			$args['ownerid'] = empty($data['ownerid']) ? null : $data['ownerid'];
 
 		if (empty($args))
 			return null;
 
-        $args[SYSLOG::RES_NETDEV] = $data['id'];
-
         $res = $this->db->Execute('UPDATE netdevices SET ' . implode(' = ?, ', array_keys($args)) . ' = ?
-        	WHERE id = ?', $args);
+        	WHERE id = ?', array_merge(array_values($args), array($data['id'])));
+
+        $args[SYSLOG::RES_NETDEV] = $data['id'];
 
 		if ($data['address_id'] && $data['address_id'] < 0)
 			$data['address_id'] = null;
