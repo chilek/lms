@@ -201,33 +201,33 @@ class LMSNetNodeManager extends LMSManager implements LMSNetNodeManagerInterface
 		$location_manager = new LMSLocationManager($this->db, $this->auth, $this->cache, $this->syslog);
 
 		$args = array();
-		if (isset($netnodedata['name']))
+		if (array_key_exists('name', $netnodedata))
 			$args['name'] = $netnodedata['name'];
-		if (isset($netnodedata['type']))
+		if (array_key_exists('type', $netnodedata))
 			$args['type'] = $netnodedata['type'];
-		if (isset($netnodedata['status']))
+		if (array_key_exists('status', $netnodedata))
 			$args['status'] = $netnodedata['status'];
-		if (isset($netnodedata['longitude']))
+		if (array_key_exists('longitude', $netnodedata))
 			$args['longitude'] = empty($netnodedata['longitude']) ? null : str_replace(',', '.', $netnodedata['longitude']);
-		if (isset($netnodedata['latitude']))
+		if (array_key_exists('latitude', $netnodedata))
 			$args['latitude'] = empty($netnodedata['latitude']) ? null : str_replace(',', '.', $netnodedata['latitude']);
-		if (isset($netnodedata['ownership']))
+		if (array_key_exists('ownership', $netnodedata))
 			$args['ownership'] = $netnodedata['ownership'];
-		if (isset($netnodedata['coowner']))
+		if (array_key_exists('coowner', $netnodedata))
 			$args['coowner'] = $netnodedata['coowner'];
-		if (isset($netnodedata['uip']))
+		if (array_key_exists('uip', $netnodedata))
 			$args['uip'] = $netnodedata['uip'];
-		if (isset($netnodedata['miar']))
+		if (array_key_exists('miar', $netnodedata))
 			$args['miar'] = $netnodedata['miar'];
-		if (isset($netnodedata['divisionid']))
+		if (array_key_exists('divisionid', $netnodedata))
 			$args['divisionid'] = $netnodedata['divisionid'];
-		if (isset($netnodedata['invprojectid']))
+		if (array_key_exists('invprojectid', $netnodedata))
 			$args['invprojectid'] = intval($netnodedata['invprojectid']) > 0 ? $netnodedata['invprojectid'] : null;
-		if (isset($netnodedata['info']))
+		if (array_key_exists('info', $netnodedata))
 			$args['info'] = $netnodedata['info'];
-		if (isset($netnodedata['admcontact']))
+		if (array_key_exists('admcontact', $netnodedata))
 			$args['admcontact'] = empty($netnodedata['admcontact']) ? null : $netnodedata['admcontact'];
-		if (isset($netnodedata['lastinspectiontime']))
+		if (array_key_exists('lastinspectiontime', $netnodedata))
 			$args['lastinspectiontime'] = date_to_timestamp($netnodedata['lastinspectiontime']);
 
 		// if address_id is set then update

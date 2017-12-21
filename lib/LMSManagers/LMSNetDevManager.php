@@ -217,47 +217,47 @@ class LMSNetDevManager extends LMSManager implements LMSNetDevManagerInterface
 
 		$args = array();
 
-		if (isset($data['name']))
+		if (array_key_exists('name', $data))
 			$args['name'] = $data['name'];
-		if (isset($data['description']))
+		if (array_key_exists('description', $data))
 			$args['description'] = $data['description'];
-		if (isset($data['producer']))
+		if (array_key_exists('producer', $data))
 			$args['producer'] = $data['producer'];
-		if (isset($data['model']))
+		if (array_key_exists('model', $data))
 			$args['model'] = $data['model'];
-		if (isset($data['serialnumber']))
+		if (array_key_exists('serialnumber', $data))
 			$args['serialnumber'] = $data['serialnumber'];
-		if (isset($data['ports']))
+		if (array_key_exists('ports', $data))
 			$args['ports'] = $data['ports'];
-		if (isset($data['purchasetime']))
+		if (array_key_exists('purchasetime', $data))
 			$args['purchasetime'] = $data['purchasetime'];
-		if (isset($data['guaranteeperiod']))
+		if (array_key_exists('guaranteeperiod', $data))
 			$args['guaranteeperiod'] = $data['guaranteeperiod'];
-		if (isset($data['shortname']))
+		if (array_key_exists('shortname', $data))
 			$args['shortname'] = $data['shortname'];
-		if (isset($data['nastype']))
+		if (array_key_exists('nastype', $data))
 			$args['nastype'] = $data['nastype'];
-		if (isset($data['clients']))
+		if (array_key_exists('clients', $data))
 			$args['clients'] = $data['clients'];
-		if (isset($data['secret']))
+		if (array_key_exists('secret', $data))
 			$args['secret'] = $data['secret'];
-		if (isset($data['community']))
+		if (array_key_exists('community', $data))
 			$args['community'] = $data['community'];
-		if (isset($data['channelid']))
+		if (array_key_exists('channelid', $data))
 			$args['channelid'] = !empty($data['channelid']) ? $data['channelid'] : NULL;
-		if (isset($data['longitude']))
+		if (array_key_exists('longitude', $data))
 			$args['longitude'] = !empty($data['longitude']) ? str_replace(',', '.', $data['longitude']) : null;
-		if (isset($data['latitude']))
+		if (array_key_exists('latitude', $data))
 			$args['latitude'] = !empty($data['latitude']) ? str_replace(',', '.', $data['latitude']) : null;
-		if (isset($data['invprojectid']))
+		if (array_key_exists('invprojectid', $data))
 			$args['invprojectid'] = $data['invprojectid'];
-		if (isset($data['netnodeid']))
+		if (array_key_exists('netnodeid', $data))
 			$args['netnodeid'] = $data['netnodeid'];
-		if (isset($data['status']))
+		if (array_key_exists('status', $data))
 			$args['status'] = $data['status'];
-		if (isset($data['netdevicemodelid']))
+		if (array_key_exists('netdevicemodelid', $data))
 			$args['netdevicemodelid'] = !empty($data['netdevicemodelid']) ? $data['netdevicemodelid'] : null;
-		if (isset($data['ownerid']))
+		if (array_key_exists('ownerid', $data))
 			$args['ownerid'] = empty($data['ownerid']) ? null : $data['ownerid'];
 
 		if (empty($args))
