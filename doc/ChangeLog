@@ -167,6 +167,8 @@ version ?.??.?? (????-??-??):
   - improvement: added support for CC and BCC headers in mail backends [chilan]
   - enhancement: new userpanel authentication type - node name and password
     (as pppoe login and password) [chilan]
+  - improvement: openlayers map: allow to copy gps coordinates of network devices from
+    coordinate selector popup [chilan]
 
 version 1.11.22 (2017-06-08):
 
