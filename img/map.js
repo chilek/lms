@@ -895,6 +895,21 @@ function createMap(deviceArray, devlinkArray, nodeArray, nodelinkArray, selectio
 		});
 		panel.addControls([checkbutton, centerbutton, refreshbutton]);
 		map.addControl(panel);
+	} else {
+		var selectlayer = new OpenLayers.Control.SelectFeature(highlightlayers, {
+			clickout: true, toggle: false,
+			multiple: true, hover: false,
+			toggleKey: "ctrlKey", // ctrl key removes from selection
+			multipleKey: "shiftKey", // shift key adds to selection
+			onSelect: function(feature) {
+				map.events.triggerEvent('feature_click', {
+					xy: new OpenLayers.LonLat(feature.data.lon, feature.data.lat),
+					feature: true
+				});
+			}
+		});
+		map.addControl(selectlayer);
+		selectlayer.activate();
 	}
 
 	map.addControl(new OpenLayers.Control.ScaleLine());

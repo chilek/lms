@@ -26,15 +26,21 @@
 		else
 			map = createMap(devices, devlinks, nodes, nodelinks, false);
 
-		map.events.register("click", map,
-			function(e) {
-				var lonlat = map.getLonLatFromViewPortPx(e.xy)
+		function click(e) {
+			var lonlat
+			if (typeof(e.feature) === 'undefined') {
+				lonlat = map.getLonLatFromViewPortPx(e.xy)
 					.transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
-				sendvalue(targetfield1, lonlat.lon);
-				sendvalue(targetfield2, lonlat.lat);
-				OpenLayers.Event.stop(e);
+			} else {
+				lonlat = e.xy;
 			}
-		);
+			sendvalue(targetfield1, lonlat.lon);
+			sendvalue(targetfield2, lonlat.lat);
+			OpenLayers.Event.stop(e);
+		}
+
+		map.events.register("click", map, click);
+		map.events.register("feature_click", map, click);
 
 		set_lastonline_limit({ConfigHelper::getConfig('phpui.lastonline_limit')});
 		setTimeout("netdevmap_refresh()", lastonline_limit * 1000);
