@@ -169,6 +169,9 @@ version ?.??.?? (????-??-??):
     (as pppoe login and password) [chilan]
   - improvement: openlayers map: allow to copy gps coordinates of network devices from
     coordinate selector popup [chilan]
+  - improvement: introduced 'mail' section configuration variables which allow to change
+    smtp ssl session behavior (mail.ssl_verify_peer, mail.ssl_verify_peer_name,
+    mail.ssl_allow_self_singed) [chilan]
 
 version 1.11.22 (2017-06-08):
 
