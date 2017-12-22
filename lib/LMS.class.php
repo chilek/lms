@@ -1932,11 +1932,11 @@ class LMS
 			$this->mail_object->SMTPOptions = array(
 				'ssl' => array(
 					'verify_peer' => isset($smtp_options['ssl_verify_peer']) ? $smtp_options['ssl_verify_peer']
-						: ConfigHelper::checkValue(ConfigHelper::getConfig('mail.smtp_ssl_verify_peer', true)),
+						: ConfigHelper::checkValue(ConfigHelper::getConfig('mail.smtp_ssl_verify_peer', false, true)),
 					'verify_peer_name' => isset($smtp_options['ssl_verify_peer_name']) ? $smtp_options['ssl_verify_peer_name']
-						: ConfigHelper::checkValue(ConfigHelper::getConfig('mail.smtp_ssl_verify_peer_name', true)),
+						: ConfigHelper::checkValue(ConfigHelper::getConfig('mail.smtp_ssl_verify_peer_name', false, true)),
 					'allow_self_signed' => isset($smtp_options['ssl_allow_self_signed']) ? $smtp_options['ssl_allow_self_signed']
-						: ConfigHelper::checkConfig('mail.smtp_ssl_allow_self_signed'),
+						: ConfigHelper::checkValue(ConfigHelper::checkConfig('mail.smtp_ssl_allow_self_signed', true)),
 				)
 			);
 
