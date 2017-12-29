@@ -27,7 +27,7 @@
 $id = intval($_GET['id']);
 
 if ($api) {
-	if (!$LMS->NetNodeExists($id))
+	if (!$LMS->NetDevExists($id))
 		die;
 
 	if (!isset($_POST['in']))
