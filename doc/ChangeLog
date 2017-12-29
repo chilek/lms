@@ -172,6 +172,8 @@ version ?.??.?? (????-??-??):
   - improvement: introduced 'mail' section configuration variables which allow to change
     smtp ssl session behavior (mail.ssl_verify_peer, mail.ssl_verify_peer_name,
     mail.ssl_allow_self_singed) [chilan]
+  - improvement: cashimport.folder configuration variable specifies which imap folder
+    to check for new cash import files [chilan]
 
 version 1.11.22 (2017-06-08):
 
