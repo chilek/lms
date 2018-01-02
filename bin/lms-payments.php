@@ -424,7 +424,7 @@ $query = "SELECT
 	    WHERE
 	      (c.status  = ? OR c.status = ?) AND
 	      t.type = ? AND
-	      a.comitted = 1 AND
+	      a.commited = 1 AND
 		  ((a.period = ? AND at = ?) OR
 		  ((a.period = ? OR
 		  (a.period  = ? AND at = ?) OR
