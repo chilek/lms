@@ -369,7 +369,7 @@ function get_teryt_file($ch, $type, $outfile) {
 		if (empty($res))
 			return false;
 
-		if (strlen($res) < 1000000) {
+		if (strlen($res) < 100000) {
 			if (strpos($res, 'body_B' . $type . 'UrzedowyGeneruj') === false)
 				return false;
 			else {
