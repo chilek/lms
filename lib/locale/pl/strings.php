@@ -3820,4 +3820,6 @@ $_LANG['PPPoE login:'] = 'Login PPPoE:';
 $_LANG['PPPoE password:'] = 'Hasło PPPoE:';
 $_LANG['PPPoE login and password'] = 'Login i hasło PPPoE';
 
+$_LANG['Customer has not checked \\\'electronic invoice\\\' consent and you are trying to mark this mail contact for invoice sending!'] = 'Klient nie ma zaznaczonej zgody na \\\'faktury elektroniczne\\\', podczas gdy próbujesz oznaczyć mail kontaktowy do wysyłki faktur!';
+
 ?>
