@@ -285,7 +285,9 @@
 			$(this).addClass(backgrounds[key & 1]);
 		});
 
-		$('tr[data-tariff-type]').closest('tbody').get(0).updateCheckAll();
+		if ($('tr[data-tariff-type]').length) {
+			$('tr[data-tariff-type]').closest('tbody').get(0).updateCheckAll();
+		}
 
 		setCookie('customerassignment_tariff_type_{$customerinfo.id}', selected_type);
 		setCookie('customerassignment_document_{$customerinfo.id}', selected_document);
