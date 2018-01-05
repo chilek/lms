@@ -310,7 +310,7 @@ function get_period($period) {
 }
 
 $plans = array();
-$query = "SELECT n.id, n.period, COALESCE(a.divisionid, 0) AS divid, isdefault 
+$query = "SELECT n.id, n.period, doctype, COALESCE(a.divisionid, 0) AS divid, isdefault 
 		FROM numberplans n 
 		LEFT JOIN numberplanassignments a ON (a.planid = n.id) 
 		WHERE doctype IN (?, ?)";
@@ -318,7 +318,7 @@ $results = $DB->GetAll($query, array(DOC_INVOICE, DOC_INVOICE_PRO));
 if (!empty($results))
 	foreach ($results as $row) {
 		if ($row['isdefault'])
-			$plans[$row['divid']] = $row['id'];
+			$plans[$row['divid']][$row['doctype']] = $row['id'];
 		$periods[$row['id']] = ($row['period'] ? $row['period'] : YEARLY);
 	}
 
@@ -553,22 +553,22 @@ foreach ($assigns as $assign) {
 			elseif ($assign['tariffnumberplanid'])
 				$plan = $assign['tariffnumberplanid'];
 			else
-				$plan = (array_key_exists($divid, $plans) ? $plans[$divid] : 0);
+				$plan = isset($plans[$divid][$assign['invoice']]) ? $plans[$divid][$assign['invoice']] : 0;
 
 			if ($invoices[$cid] == 0 || $doctypes[$cid] != $assign['invoice'] || $paytypes[$cid] != $inv_paytype
                 || $numberplans[$cid] != $plan || $assign['recipient_address_id'] != $addresses[$cid])
 			{
-				if (!isset($numbers[$plan]))
+				if (!isset($numbers[$assign['invoice']][$plan]))
 				{
 					$period = get_period($periods[$plan]);
-					$numbers[$plan] = (($number = $DB->GetOne("SELECT MAX(number) AS number FROM documents 
-							WHERE cdate >= ? AND cdate <= ? AND type = 1 AND numberplanid = ?",
-							array($period['start'], $period['end'], $plan))) != 0 ? $number : 0);
+					$numbers[$assign['invoice']][$plan] = (($number = $DB->GetOne("SELECT MAX(number) AS number FROM documents 
+							WHERE cdate >= ? AND cdate <= ? AND type = ? AND numberplanid = ?",
+							array($period['start'], $period['end'], $assign['invoice'], $plan))) != 0 ? $number : 0);
 					$numbertemplates[$plan] = $DB->GetOne("SELECT template FROM numberplans WHERE id = ?", array($plan));
 				}
 
 				$itemid = 0;
-				$numbers[$plan]++;
+				$numbers[$assign['invoice']][$plan]++;
 
 				$customer = $DB->GetRow("SELECT lastname, name, address, city, zip, postoffice, ssn, ten, countryid, divisionid, paytime 
 						FROM customeraddressview WHERE id = $cid");
@@ -583,7 +583,7 @@ foreach ($assigns as $assign) {
 				if ($paytime == -1) $paytime = $deadline;
 
 				$fullnumber = docnumber(array(
-					'number' => $numbers[$plan],
+					'number' => $numbers[$assign['invoice']][$plan],
 					'template' => $numbertemplates[$plan],
 					'cdate' => $currtime,
 					'customerid' => $cid,
@@ -607,8 +607,8 @@ foreach ($assigns as $assign) {
 					div_account, div_inv_header, div_inv_footer, div_inv_author, div_inv_cplace, fullnumber,
 					recipient_address_id)
 					VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-					array($numbers[$plan], $plan,
-					DOC_INVOICE,
+					array($numbers[$assign['invoice']][$plan], $plan ? $plan : null,
+					$assign['invoice'],
 					$customer['countryid'] ? $customer['countryid'] : null,
 					$customer['divisionid'], $cid,
 					$customer['lastname']." ".$customer['name'],
@@ -651,9 +651,7 @@ foreach ($assigns as $assign) {
                 if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment)
                     $DB->Execute("UPDATE cash SET value=value+($val*-1) 
                         WHERE docid = ? AND itemid = $tmp_itemid", array($invoices[$cid]));
-			}
-			else
-			{
+			} else {
 				$itemid++;
 
 				$DB->Execute("INSERT INTO invoicecontents (docid, value, taxid, prodid, 
@@ -744,9 +742,7 @@ foreach ($assigns as $assign) {
                         $DB->Execute("UPDATE cash SET value = value + ($value * -1) 
                             WHERE docid = ? AND itemid = $tmp_itemid",
                             array($invoices[$cid]));
-				}
-				else
-				{
+				} else {
 					$itemid++;
 
 					$DB->Execute("INSERT INTO invoicecontents (docid, value, taxid, prodid, 
