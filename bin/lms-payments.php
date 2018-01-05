@@ -159,6 +159,7 @@ $suspension_description = ConfigHelper::getConfig('payments.suspension_descripti
 $suspension_percentage = ConfigHelper::getConfig('finances.suspension_percentage', 0);
 $unit_name = trans(ConfigHelper::getConfig('payments.default_unit_name'));
 $check_invoices = ConfigHelper::checkConfig('payments.check_invoices');
+$proforma_generates_commitment = ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment');
 
 function localtime2() {
 	global $fakedate;
@@ -312,8 +313,8 @@ $plans = array();
 $query = "SELECT n.id, n.period, COALESCE(a.divisionid, 0) AS divid, isdefault 
 		FROM numberplans n 
 		LEFT JOIN numberplanassignments a ON (a.planid = n.id) 
-		WHERE doctype = ?";
-$results = $DB->GetAll($query, array(DOC_INVOICE));
+		WHERE doctype IN (?, ?)";
+$results = $DB->GetAll($query, array(DOC_INVOICE, DOC_INVOICE_PRO));
 if (!empty($results))
 	foreach ($results as $row) {
 		if ($row['isdefault'])
@@ -451,6 +452,7 @@ if (empty($assigns))
 
 $suspended = 0;
 $invoices = array();
+$doctypes = array();
 $paytypes = array();
 $addresses = array();
 $numberplans = array();
@@ -504,6 +506,7 @@ foreach ($assigns as $assign) {
 		$desc .= " ".$suspension_description;
 
 	if (!isset($invoices[$cid]) || $assign['separatedocument']) $invoices[$cid] = 0;
+	if (!isset($doctypes[$cid])) $doctypes[$cid] = 0;
 	if (!isset($paytypes[$cid])) $paytypes[$cid] = 0;
 	if (!isset($numberplans[$cid])) $numberplans[$cid] = 0;
 
@@ -552,7 +555,8 @@ foreach ($assigns as $assign) {
 			else
 				$plan = (array_key_exists($divid, $plans) ? $plans[$divid] : 0);
 
-			if ($invoices[$cid] == 0 || $paytypes[$cid] != $inv_paytype || $numberplans[$cid] != $plan || $assign['recipient_address_id'] != $addresses[$cid])
+			if ($invoices[$cid] == 0 || $doctypes[$cid] != $assign['invoice'] || $paytypes[$cid] != $inv_paytype
+                || $numberplans[$cid] != $plan || $assign['recipient_address_id'] != $addresses[$cid])
 			{
 				if (!isset($numbers[$plan]))
 				{
@@ -631,6 +635,7 @@ foreach ($assigns as $assign) {
 					));
 
 				$invoices[$cid] = $DB->GetLastInsertID("documents");
+				$doctypes[$cid] = $assign['invoice'];
 				$LMS->UpdateDocumentPostAddress($invoices[$cid], $cid);
 				$paytypes[$cid] = $inv_paytype;
 				$addresses[$cid] = $assign['recipient_address_id'];
@@ -643,8 +648,9 @@ foreach ($assigns as $assign) {
 				$DB->Execute("UPDATE invoicecontents SET count=count+1 
 					WHERE tariffid=? AND docid=? AND value=? AND description=? AND pdiscount=? AND vdiscount=?",
 					array($assign['tariffid'], $invoices[$cid], $assign['value'], $desc, $assign['pdiscount'], $assign['vdiscount']));
-				$DB->Execute("UPDATE cash SET value=value+($val*-1) 
-					WHERE docid = ? AND itemid = $tmp_itemid", array($invoices[$cid]));
+                if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment)
+                    $DB->Execute("UPDATE cash SET value=value+($val*-1) 
+                        WHERE docid = ? AND itemid = $tmp_itemid", array($invoices[$cid]));
 			}
 			else
 			{
@@ -655,12 +661,12 @@ foreach ($assigns as $assign) {
 					VALUES (?, $val, ?, ?, ?, 1, ?, ?, $itemid, ?, ?)",
 					array($invoices[$cid], $assign['taxid'], $assign['prodid'], $unit_name,
 					$desc, empty($assign['tariffid']) ? null : $assign['tariffid'], $assign['pdiscount'], $assign['vdiscount']));
-				$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) 
-					VALUES ($currtime, $val * -1, ?, $cid, ?, ?, $itemid)",
-					array($assign['taxid'], $desc, $invoices[$cid]));
+				if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment)
+                    $DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) 
+                        VALUES ($currtime, $val * -1, ?, $cid, ?, ?, $itemid)",
+                        array($assign['taxid'], $desc, $invoices[$cid]));
 			}
-		}
-		else
+		} else
 			$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment) 
 				VALUES ($currtime, $val * -1, ?, $cid, ?)", array($assign['taxid'], $desc));
 
@@ -734,9 +740,10 @@ foreach ($assigns as $assign) {
 						WHERE tariffid=? AND docid=? AND description=?",
 						array($assign['tariffid'], $invoices[$cid], $sdesc));
 
-					$DB->Execute("UPDATE cash SET value = value + ($value * -1) 
-						WHERE docid = ? AND itemid = $tmp_itemid",
-						array($invoices[$cid]));
+					if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment)
+                        $DB->Execute("UPDATE cash SET value = value + ($value * -1) 
+                            WHERE docid = ? AND itemid = $tmp_itemid",
+                            array($invoices[$cid]));
 				}
 				else
 				{
@@ -747,12 +754,12 @@ foreach ($assigns as $assign) {
 						VALUES (?, $value, ?, ?, ?, 1, ?, ?, $itemid, ?, ?)",
 						array($invoices[$cid], $assign['taxid'], $assign['prodid'], $unit_name,
 						$sdesc, empty($assign['tariffid']) ? null : $assign['tariffid'], $assign['pdiscount'], $assign['vdiscount']));
-					$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) 
-						VALUES($currtime, $value * -1, ?, $cid, ?, ?, $itemid)",
-						array($assign['taxid'], $sdesc, $invoices[$cid]));
+					if ($assign['invoice'] == DOC_INVOICE || $proforma_generates_commitment)
+                        $DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment, docid, itemid) 
+                            VALUES($currtime, $value * -1, ?, $cid, ?, ?, $itemid)",
+                            array($assign['taxid'], $sdesc, $invoices[$cid]));
 				}
-			}
-			else
+			} else
 				$DB->Execute("INSERT INTO cash (time, value, taxid, customerid, comment) 
 					VALUES ($currtime, $value * -1, ?, $cid, ?)", array($assign['taxid'], $sdesc));
 
