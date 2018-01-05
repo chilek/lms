@@ -1,114 +1,131 @@
 <!-- $Id$ -->
 <TABLE class="lmsbox">
     <COLGROUP>
-        <COL style="width: 1%;">
-        <COL style="width: 91%;">
-        <COL style="width: 1%;">
-        <COL style="width: 1%;">
-        <COL style="width: 1%;">
-        <COL style="width: 1%;">
-        <COL style="width: 1%;">
-        <COL style="width: 1%;">
-        <COL style="width: 1%;">
+        <COL style="width: 99%;">
         <COL style="width: 1%;">
     </COLGROUP>
     <THEAD>
-        <TR>
-            <TD class="bold" colspan="3">
-                <IMG src="img/calendar.gif" alt=""> {trans("Timetable assigned events")}
-            </TD>
-            <TD class="bold text-right nobr" colspan="8">
-                {if $ticket.state != 2}
-                {if $ticket.customerid }
-                <A href="?m=eventadd&ticketid={$ticket.ticketid}&customerid={$ticket.customerid}"><IMG src="img/event-add.png" alt=""> {trans("Add new")}</A>
-                <A href="?m=eventedit&id=6134&action=close&ticketid={$ticket.ticketid}"><IMG src="img/event-close.png" alt=""> {trans("Close all")}</A>
-                {else}
-                <A href="?m=eventadd&ticketid={$ticket.ticketid}"><IMG src="img/event-add.png" alt=""> {trans("Add new")}</A>
-                <A href="?m=eventedit&id=6134&action=close&ticketid={$ticket.ticketid}"><IMG src="img/event-close.png" alt=""> {trans("Close all")}</A>
-                {/if}
-                {/if}
-            </TD>
-        </TR>
+    <TR class="hand lmsbox-titlebar" data-lmsbox-content="eventpanel-{$layout.module}">
+        <TD class="bold">
+            <IMG src="img/calendar.gif" alt=""> {trans("Timetable assigned events:")}
+        </TD>
+        <TD class="text-right nobr">
+            {if $ticket.state != $smarty.const.RT_RESOLVED}
+            {if $ticket.customerid}
+            <A href="?m=eventadd&ticketid={$ticket.ticketid}&customerid={$ticket.customerid}"><IMG src="img/event-add.png" alt=""> {trans("Add new")}</A>
+            <A href="?m=eventedit&id=6134&action=close&ticketid={$ticket.ticketid}"><IMG src="img/event-close.png" alt=""> {trans("Close all")}</A>
+            {else}
+            <A href="?m=eventadd&ticketid={$ticket.ticketid}"><IMG src="img/event-add.png" alt=""> {trans("Add new")}</A>
+            <A href="?m=eventedit&id=6134&action=close&ticketid={$ticket.ticketid}"><IMG src="img/event-close.png" alt=""> {trans("Close all")}</A>
+            {/if}
+            {/if}
+        </TD>
+    </TR>
     </THEAD>
     <TBODY>
-        {counter start=0 skip=1 print=false assign=msgidx}
-        {foreach from=$assignedevents item=event}
-        <TR class="fall {if $event.closed==1}blend{/if}">
-            <TD class="text-center"><IMG src="img/schedule.png" alt=""></TD>
-            <TD class="nobr bold">
-                {trans("Subject:")}: {$event.title}
-            </TD>
-            <TD class="bold nobr text-right">{trans("Assigned to:")}</TD>
-            <TD class="nobr text-right">
-                {foreach $event.ul $u}
-                <A href="?m=userinfo&id={$u.ul}">{$u.name}</A><BR>
-                {/foreach}
-            </TD>
-            {if $event.closed}
-            <TD class="nobr text-right blend bold">
-                {trans("Created by:")}<BR><A href="?m=userinfo&id={$event.userid}">{$event.username}</A>
-            </TD>
-            <TD class="nobr text-right bold">
-                {trans("Closed by")}:<BR><A href="?m=userinfo&id={$event.closeduserid}">{$event.closedusername}</A>
-            </TD>
-            {else}
-            <TD class="nobr text-right" colspan="2">
-                <B>{trans("Created by:")}</B><BR><A href="?m=userinfo&id={$event.userid}">{$event.username}</A>
-            </TD>
-            {/if}
-            <TD class="nobr text-center">
-                <B>{trans("From:")}</B>{$event.date|date_format:"%x (%A)"}
-                {math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}<BR>
-                <B>{trans("To:")}</B>
-                {if $event.enddate}
-                {$event.enddate|date_format:"%x (%A)"}
-                {else}
-                {$event.date|date_format:"%x (%A)"}
-                {/if}
-                {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
-            </TD>
-            <TD class="nobr">
-                <a href='?m=eventlist&day={$event.date|date_format:"%d"}&month={$event.date|date_format:"%m"}&year={$event.date|date_format:"%Y"}' title="{trans("Open timetable")}">
-                   <img src="img/schedule.png" alt=""></a>
-            </TD>
-            <TD class="nobr">
-                <A href="?m=eventedit&id={$event.id}">
-                    <IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-            </TD>
-            <TD class="nobr">
-                <A href="?m=eventinfo&id={$event.id}&action=open">
-                    <IMG src="img/info.gif" alt="{trans("Details")}" title="{trans("Details")}"></A>
-            </TD>
-            <TD class="nobr">
-                {if $event.closed}
-                <A href="?m=eventedit&id={$event.id}&action=open">
-                    <IMG src="img/resolved.gif" alt="{trans("Open")}" title="{trans("Open")}"></A>
-                {else}
-                <A href="?m=eventedit&id={$event.id}&action=close">
-                    <IMG src="img/open.gif" alt="{trans("Close")}" title="{trans("Close")}"></A>
-                {/if}
-            </TD>
-        </TR>
-        <TR class="{if $event.closed=="1"}blend{/if}">
-            <TD class="superlight text-center bold" {if isset($_EVENTSTYLES[$event.type])}style="{$_EVENTSTYLES[$event.type]}"{/if}>
-            {$_EVENTTYPES[$event.type]}<BR>#{$event.id}
-            </TD>
-            <TD colspan="10" class="superlight">
-                <img src="img/info1.gif" alt=""><B> {$event.description}</B>
-                {if $event.note}<br><img src="img/note.gif" alt=""> {$event.note}{/if}
-            </TD>
-        </TR>
-        {/foreach}
-        <TR>
-            <TD class="fall text-center" colspan="11">
-                {if !empty($ticket.next_ticketid)}
-                <A href="?m=rtticketview&id={$ticket.prev_ticketid}">&laquo;&laquo;&laquo;&nbsp;{trans("Previous ticket")}</A>
-                <A href="?m=rtticketview&id={$ticket.next_ticketid}">&nbsp;&nbsp; {trans("Next ticket")}&nbsp;&raquo;&raquo;&raquo;</A>
-                {else}
-                &laquo;&laquo;&nbsp;{trans("Previous ticket")}
-                &nbsp;&nbsp;{trans("Next ticket")}&raquo;&raquo;&raquo;
-                {/if}
-            </TD>
-        </TR>
-    </TBODY>
+    <TR id="eventpanel-{$layout.module}" style="display: none;">
+        <TD colspan="2">
+            <table class="lmsbox-inner">
+                <COLGROUP>
+                    <COL style="width: 1%;">
+                    <COL style="width: 91%;">
+                    <COL style="width: 1%;">
+                    <COL style="width: 1%;">
+                    <COL style="width: 1%;">
+                    <COL style="width: 1%;">
+                    <COL style="width: 1%;">
+                    <COL style="width: 1%;">
+                    <COL style="width: 1%;">
+                    <COL style="width: 1%;">
+                </COLGROUP>
+                <TBODY>
+                    {counter start=0 skip=1 print=false assign=msgidx}
+                    {foreach from=$assignedevents item=event}
+                    <TR class="fall {if $event.closed==1}blend{/if}">
+                        <TD class="text-center"><IMG src="img/schedule.png" alt=""></TD>
+                        <TD class="nobr bold">
+                            {trans("Subject:")}: {$event.title}
+                        </TD>
+                        <TD class="bold nobr text-right">{trans("Assigned to:")}</TD>
+                        <TD class="nobr text-right">
+                            {foreach $event.ul $u}
+                            <A href="?m=userinfo&id={$u.ul}">{$u.name}</A><BR>
+                            {foreachelse}
+                            -
+                            {/foreach}
+                        </TD>
+                        {if $event.closed}
+                        <TD class="nobr text-right blend bold">
+                            {trans("Created by:")}<BR><A href="?m=userinfo&id={$event.userid}">{$event.username}</A>
+                        </TD>
+                        <TD class="nobr text-right bold">
+                            {trans("Closed by")}:<BR><A href="?m=userinfo&id={$event.closeduserid}">{$event.closedusername}</A>
+                        </TD>
+                        {else}
+                        <TD class="nobr text-right" colspan="2">
+                            <B>{trans("Created by:")}</B><BR><A href="?m=userinfo&id={$event.userid}">{$event.username}</A>
+                        </TD>
+                        {/if}
+                        <TD class="nobr text-center">
+                            <B>{trans("From:")}</B>{$event.date|date_format:"%x (%A)"}
+                            {math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}<BR>
+                            <B>{trans("To:")}</B>
+                            {if $event.enddate}
+                            {$event.enddate|date_format:"%x (%A)"}
+                            {else}
+                            {$event.date|date_format:"%x (%A)"}
+                            {/if}
+                            {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
+                        </TD>
+                        <TD class="nobr">
+                            <a href='?m=eventlist&day={$event.date|date_format:"%d"}&month={$event.date|date_format:"%m"}&year={$event.date|date_format:"%Y"}' title="{trans("Open timetable")}">
+                               <img src="img/schedule.png" alt=""></a>
+                        </TD>
+                        <TD class="nobr">
+                            <A href="?m=eventedit&id={$event.id}">
+                                <IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
+                        </TD>
+                        <TD class="nobr">
+                            <A href="?m=eventinfo&id={$event.id}&action=open">
+                                <IMG src="img/info.gif" alt="{trans("Details")}" title="{trans("Details")}"></A>
+                        </TD>
+                        <TD class="nobr">
+                            {if $event.closed}
+                            <A href="?m=eventedit&id={$event.id}&action=open">
+                                <IMG src="img/resolved.gif" alt="{trans("Open")}" title="{trans("Open")}"></A>
+                            {else}
+                            <A href="?m=eventedit&id={$event.id}&action=close">
+                                <IMG src="img/open.gif" alt="{trans("Close")}" title="{trans("Close")}"></A>
+                            {/if}
+                        </TD>
+                    </TR>
+                    <TR class="{if $event.closed=="1"}blend{/if}">
+                        <TD class="superlight text-center bold" {if isset($_EVENTSTYLES[$event.type])}style="{$_EVENTSTYLES[$event.type]}"{/if}>
+                        {$_EVENTTYPES[$event.type]}<BR>#{$event.id}
+                        </TD>
+                        <TD colspan="10" class="superlight">
+                            <img src="img/info1.gif" alt=""><B> {$event.description}</B>
+                            {if $event.note}<br><img src="img/note.gif" alt=""> {$event.note}{/if}
+                        </TD>
+                    </TR>
+                    {/foreach}
+                    <TR>
+                        <TD class="fall text-center" colspan="11">
+                            {if !empty($ticket.next_ticketid)}
+                            <A href="?m=rtticketview&id={$ticket.prev_ticketid}">&laquo;&laquo;&laquo;&nbsp;{trans("Previous ticket")}</A>
+                            <A href="?m=rtticketview&id={$ticket.next_ticketid}">&nbsp;&nbsp; {trans("Next ticket")}&nbsp;&raquo;&raquo;&raquo;</A>
+                            {else}
+                            &laquo;&laquo;&nbsp;{trans("Previous ticket")}
+                            &nbsp;&nbsp;{trans("Next ticket")}&raquo;&raquo;&raquo;
+                            {/if}
+                        </TD>
+                    </TR>
+                </TBODY>
+            </table>
+        </TD>
+    </TR>
 </TABLE>
+<SCRIPT type="text/javascript">
+	if (getCookie('eventpanel-{$layout.module}') == '1')
+		document.getElementById('eventpanel-{$layout.module}').style.display = '';
+</SCRIPT>

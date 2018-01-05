@@ -3716,7 +3716,7 @@ $_LANG['Select ticket source'] = 'Wybierz źródło zgłoszenia';
 
 $_LANG['Add new request to Helpdesk'] = 'Dodaj nowe zgłoszenie do Helpdesk';
 $_LANG['Request Number'] = 'Nr zgłoszenia';
-$_LANG['Timetable assigned events'] = 'Przypisane zdarzenia w terminarzu';
+$_LANG['Timetable assigned events:'] = 'Przypisane zdarzenia w terminarzu:';
 $_LANG['Add new'] = 'Dodaj nowe';
 $_LANG['Close all'] = 'Zamknij wszystkie';
 $_LANG['Assign this event to Helpdesk request'] = 'Przypisz zdarzenie do zgłoszenia w Helpdesk:';
