@@ -335,8 +335,12 @@
 					</TD>
 					<TD class="nobr">
 						<label>
-							<INPUT type="checkbox" name="{$variable_prefix}[invoice]" value="1"{if $variables.invoice} checked{/if}>
-							{trans("with invoice")}
+							{trans("document type:")}&nbsp;
+							<SELECT name="{$variable_prefix}[invoice]">
+								<OPTION value="0">{trans("without document")}</OPTION>
+								<OPTION value="{$smarty.const.DOC_INVOICE}"{if $variables.invoice == $smarty.const.DOC_INVOICE} selected{/if}>{trans("invoice")}</OPTION>
+								<OPTION value="{$smarty.const.DOC_INVOICE_PRO}"{if $variables.invoice == $smarty.const.DOC_INVOICE_PRO} selected{/if}>{trans("pro forma invoice")}</OPTION>
+							</SELECT>
 						</label>
 						<br>
 						<label>

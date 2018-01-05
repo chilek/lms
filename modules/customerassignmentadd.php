@@ -106,7 +106,7 @@ else
 {
 	$default_assignment_invoice = ConfigHelper::getConfig('phpui.default_assignment_invoice');
 	if (!empty($default_assignment_invoice))
-		$a['invoice'] = true;
+		$a['invoice'] = $default_assignment_invoice;
 	$default_assignment_settlement = ConfigHelper::getConfig('phpui.default_assignment_settlement');
 	if (!empty($default_assignment_settlement))
 		$a['settlement'] = true;
