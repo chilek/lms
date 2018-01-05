@@ -86,6 +86,7 @@ if(isset($_GET['id']) && ($action == 'edit' || $action == 'convert'))
 			'doctype' => DOC_INVOICE,
 			'planid' => $invoice['numberplanid'],
 			'cdate' => $invoice['cdate'],
+			'customerid' => $invoice['customerid'],
 		));
 	}
 
@@ -332,6 +333,7 @@ switch($action)
 				'doctype' => $invoice['proforma'] == 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
 				'planid' => $invoice['numberplanid'],
 				'cdate' => $invoice['cdate'],
+				'customerid' => $customer['id'],
 			));
 		else {
 			if(!preg_match('/^[0-9]+$/', $invoice['number']))
@@ -342,6 +344,7 @@ switch($action)
 					'doctype' => $invoice['proforma'] == 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
 					'planid' => $invoice['numberplanid'],
 					'cdate' => $invoice['cdate'],
+					'customerid' => $customer['id'],
 				)))
 				$error['number'] = trans('Invoice number $a already exists!', $invoice['number']);
 
@@ -350,6 +353,7 @@ switch($action)
 					'doctype' => $invoice['proforma'] == 'edit' ? DOC_INVOICE_PRO : DOC_INVOICE,
 					'planid' => $invoice['numberplanid'],
 					'cdate' => $invoice['cdate'],
+					'customerid' => $customer['id'],
 				));
 				$error = null;
 			}
