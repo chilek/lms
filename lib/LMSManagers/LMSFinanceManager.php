@@ -360,7 +360,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                     SYSLOG::RES_CUST    => $data['customerid'],
                     'period'            => $period,
                     'at'                => $at,
-                    'invoice'           => !empty($data['invoice']) ? (isset($data['separateinvoice']) ? 2 : 1) : 0,
+                    'invoice'           => isset($data['invoice']) ? 1 : 0,
+                    'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
                     'settlement'        => !empty($data['settlement']) ? 1 : 0,
                     SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
                     'paytype'           => !empty($data['paytype']) ? $data['paytype'] : NULL,
@@ -401,7 +402,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                         'period'            => $data['period'],
                         'at'                => (ConfigHelper::checkConfig('phpui.promotion_preserve_at_day') && !empty($data['at'])
                                                        ? $data['at'] : $this->CalcAt($data['period'], $datefrom)),
-                        'invoice'           => !empty($data['invoice']) ? (isset($data['separateinvoice']) ? 2 : 1) : 0,
+                        'invoice'           => isset($data['invoice']) ? 1 : 0,
+                        'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
                         'settlement'        => !empty($data['settlement']) ? 1 : 0,
                         SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
                         'paytype'           => !empty($data['paytype']) ? $data['paytype'] : NULL,
@@ -446,7 +448,8 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 SYSLOG::RES_CUST    => $data['customerid'],
                 'period'            => $data['period'],
                 'at'                => $data['at'],
-                'invoice'           => !empty($data['invoice']) ? (isset($data['separateinvoice']) ? 2 : 1) : 0,
+                'invoice'           => isset($data['invoice']) ? 1 : 0,
+                'separatedocument'  => isset($data['separatedocument']) ? 1 : 0,
                 'settlement'        => !empty($data['settlement']) ? 1 : 0,
                 SYSLOG::RES_NUMPLAN => !empty($data['numberplanid']) ? $data['numberplanid'] : NULL,
                 'paytype'           => !empty($data['paytype']) ? $data['paytype'] : NULL,
@@ -478,10 +481,10 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
      */
     private function insertAssignment($args) {
     	$this->db->Execute('INSERT INTO assignments
-    							(tariffid, customerid, period, at, invoice, settlement, numberplanid,
+    							(tariffid, customerid, period, at, invoice, separatedocument, settlement, numberplanid,
     							paytype, datefrom, dateto, pdiscount, vdiscount, attribute, liabilityid, recipient_address_id,
     							docid, commited)
-					        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+					        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 					        array_values($args));
 
         $id = $this->db->GetLastInsertID('assignments');

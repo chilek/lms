@@ -3,7 +3,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -332,7 +332,8 @@ if (isset($_POST['assignment']))
 			'attribute' => !empty($a['attribute']) ? $a['attribute'] : NULL,
 			'period' => $period,
 			'at' => $at,
-			'invoice' => isset($a['separateinvoice']) ? 2 : (isset($a['invoice']) ? 1 : 0),
+			'invoice' => isset($a['invoice']) ? 1 : 0,
+			'separatedocument' => isset($a['separatedocument']) ? 1 : 0,
 			'settlement' => isset($a['settlement']) ? 1 : 0,
 			'datefrom' => $from,
 			'dateto' => $to,
@@ -346,7 +347,7 @@ if (isset($_POST['assignment']))
 		);
 
 		$DB->Execute('UPDATE assignments SET tariffid=?, customerid=?, attribute=?, period=?, at=?,
-			invoice=?, settlement=?, datefrom=?, dateto=?, pdiscount=?, vdiscount=?,
+			invoice=?, separatedocument=?, settlement=?, datefrom=?, dateto=?, pdiscount=?, vdiscount=?,
 			liabilityid=?, numberplanid=?, paytype=?, recipient_address_id=?
 			WHERE id=?', array_values($args));
 		if ($SYSLOG) {
@@ -411,7 +412,7 @@ else
 {
 	$a = $DB->GetRow('SELECT a.id AS id, a.customerid, a.tariffid, a.period,
 				a.at, a.datefrom, a.dateto, a.numberplanid, a.paytype,
-				a.invoice, a.settlement, a.pdiscount, a.vdiscount, a.attribute, a.liabilityid,
+				a.invoice, a.separatedocument, a.settlement, a.pdiscount, a.vdiscount, a.attribute, a.liabilityid,
 				(CASE WHEN liabilityid IS NULL THEN tariffs.name ELSE liabilities.name END) AS name,
 				liabilities.value AS value, liabilities.prodid AS prodid, liabilities.taxid AS taxid,
 				recipient_address_id
@@ -463,11 +464,6 @@ else
 
 	// phone numbers assignments
 	$a['phones'] = $DB->GetCol('SELECT number_id FROM voip_number_assignments WHERE assignment_id=?', array($a['id']));
-
-	if ($a['invoice'] == 2) {
-		$a['invoice'] = 1;
-		$a['separateinvoice'] = 1;
-	}
 }
 
 $expired = isset($_GET['expired']) ? $_GET['expired'] : false;

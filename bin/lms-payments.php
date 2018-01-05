@@ -340,7 +340,7 @@ if (!empty($groupsql))
 # let's go, fetch *ALL* assignments in given day
 $query = "SELECT a.tariffid, a.liabilityid, a.customerid, a.recipient_address_id,
 		a.period, a.at, a.suspended, a.settlement, a.datefrom, a.pdiscount, a.vdiscount,
-		a.invoice, t.description AS description, a.id AS assignmentid,
+		a.invoice, a.separatedocument, t.description AS description, a.id AS assignmentid,
 		c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
 		d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 		(CASE WHEN a.liabilityid IS NULL THEN t.type ELSE -1 END) AS tarifftype,
@@ -381,7 +381,7 @@ $billing_invoice_description = ConfigHelper::getConfig('payments.billing_invoice
 
 $query = "SELECT
 			a.tariffid, a.customerid, a.period, a.at, a.suspended, a.settlement, a.datefrom,
-			a.pdiscount, a.vdiscount, a.invoice, t.description AS description, a.id AS assignmentid,
+			a.pdiscount, a.vdiscount, a.invoice, a.separatedocument, t.description AS description, a.id AS assignmentid,
 			c.divisionid, c.paytype, a.paytype AS a_paytype, a.numberplanid, a.attribute,
 			d.inv_paytype AS d_paytype, t.period AS t_period, t.numberplanid AS tariffnumberplanid,
 			t.type AS tarifftype, t.taxid AS taxid, '' as prodid, voipcost.value,
@@ -503,7 +503,7 @@ foreach ($assigns as $assign) {
 	if ($suspension_percentage && ($assign['suspended'] || $assign['allsuspended']))
 		$desc .= " ".$suspension_description;
 
-	if (!isset($invoices[$cid]) || $assign['invoice'] == 2) $invoices[$cid] = 0;
+	if (!isset($invoices[$cid]) || $assign['separatedocument']) $invoices[$cid] = 0;
 	if (!isset($paytypes[$cid])) $paytypes[$cid] = 0;
 	if (!isset($numberplans[$cid])) $numberplans[$cid] = 0;
 
