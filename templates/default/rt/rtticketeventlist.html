@@ -41,7 +41,7 @@
             <TD class="bold nobr text-right">{trans("Assigned to:")}</TD>
             <TD class="nobr text-right">
                 {foreach $event.ul $u}
-                <A href="/?m=userinfo&id={$u.ul}">{$u.name}</A><BR>
+                <A href="?m=userinfo&id={$u.ul}">{$u.name}</A><BR>
                 {/foreach}
             </TD>
             {if $event.closed}
