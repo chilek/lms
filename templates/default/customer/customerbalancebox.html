@@ -239,7 +239,7 @@
 								<A href="?m=note&id={$item.docid}" class="lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}" rel="external"><IMG src="img/printd.gif" alt="{trans("Debit note")}"></A>
 							{/if}
 						{/if}
-						<INPUT type="checkbox" NAME="marks{if $item.doctype == $smarty.const.DOC_INVOICE_PRO}[proforma][{$item.docid}]{/if}[{$item.id}]" value="{$item.id}" class="lms-ui-multi-check">
+						<INPUT type="checkbox" NAME="marks{if $item.doctype == $smarty.const.DOC_INVOICE_PRO && !ConfigHelper::checkConfig('phpui.proforma_invoice_generates_commitment')}[proforma][{$item.docid}]{/if}[{$item.id}]" value="{$item.id}" class="lms-ui-multi-check">
 					</TD>
 				</TR>
 				{foreachelse}

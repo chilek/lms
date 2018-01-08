@@ -1760,7 +1760,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 					LEFT JOIN documents ON (docid = documents.id)
 					WHERE cash.id = ?', array($id));
 
-        if ($row['doctype'] == DOC_INVOICE || $row['doctype'] == DOC_CNOTE)
+        if ($row['doctype'] == DOC_INVOICE || $row['doctype'] == DOC_INVOICE_PRO || $row['doctype'] == DOC_CNOTE)
             $this->InvoiceContentDelete($row['docid'], $row['itemid']);
         elseif ($row['doctype'] == DOC_RECEIPT)
             $this->ReceiptContentDelete($row['docid'], $row['itemid']);
