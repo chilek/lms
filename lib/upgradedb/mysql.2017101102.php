@@ -27,7 +27,9 @@ $this->Execute("ALTER TABLE nodes MODIFY netdev int(11) NULL");
 $this->Execute("ALTER TABLE nodes ALTER COLUMN netdev SET DEFAULT NULL");
 
 $netdevids = $this->GetCol("SELECT id FROM netdevices");
-if (!empty($netdevids)) {
+if (empty($netdevids)) {
+	$this->Execute("UPDATE nodes SET netdev = NULL");
+} else {
 	$sql_netdevids = implode(',', $netdevids);
 	$this->Execute("UPDATE nodes SET netdev = NULL WHERE netdev = 0 OR netdev NOT IN (" . $sql_netdevids . ")");
 	$this->Execute("DELETE FROM netlinks WHERE src NOT IN (" . $sql_netdevids . ") OR dst NOT IN (" . $sql_netdevids . ")");
