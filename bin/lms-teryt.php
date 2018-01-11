@@ -76,7 +76,7 @@ lms-teryt.php
 -m, --merge                        try join current addresses with teryt locations
 -d, --delete                       delete downloaded teryt files after merge/update
 -b, --buildings                    analyze building base and load it into database
--l, --list                         state names or ids who will be taken into account
+-l, --list                         state names or ids which will be taken into account
 -o, --only-unique-city-matches     update TERYT location only if city matches uniquely
 
 EOF;
@@ -292,7 +292,7 @@ $all_states = array(
 	'pomorskie' => 22,
 	'slaskie' => 24,
 	'swietokrzyskie' => 26,
-	'warmińsko-mazurskie' => 28,
+	'warminsko-mazurskie' => 28,
 	'wielkopolskie' => 30,
 	'zachodniopomorskie' => 32,
 );
