@@ -195,8 +195,11 @@ if (($fh = fopen($message_file, "r")) != NULL) {
 		if (empty($line) && !$body)
 			$body = TRUE;
 		else
-			if ($body)
+			if ($body) {
+				if ($ucs)
+					$line = preg_replace('/\x0$/', "\x0\n", $line);
 				$message .= $line;
+			}
 		next($lines);
 	}
 	if ($ucs)
