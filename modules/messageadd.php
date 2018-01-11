@@ -456,7 +456,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 			$headers['Subject'] = $message['subject'];
 
 			$reply_email = ConfigHelper::getConfig('mail.reply_email');
-			$headers['Reply-To'] = empty($reply_email) ? $headers['From'] : $reply_email;
+			$headers['Reply-To'] = empty($reply_email) ? $message['sender'] : $reply_email;
 
 			if (isset($message['copytosender']))
 				$headers['Cc'] = $headers['From'];
