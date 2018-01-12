@@ -167,6 +167,8 @@ if (isset($netdevdata)) {
 	$SMARTY->assign('netdev', $netdevdata);
 } elseif (isset($_GET['id'])) {
 	$netdevdata = $LMS->GetNetDev($_GET['id']);
+	if ($netdevdata['purchasetime'])
+		$netdevdata['purchasedate'] = date('Y/m/d', $netdevdata['purchasetime']);
 	$netdevdata['name'] = trans('$a (clone)', $netdevdata['name']);
 	$netdevdata['teryt'] = !empty($netdevdata['location_city']) && !empty($netdevdata['location_street']);
 	$SMARTY->assign('netdev', $netdevdata);
