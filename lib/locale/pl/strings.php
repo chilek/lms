@@ -3825,4 +3825,6 @@ $_LANG['Customer has not checked \\\'electronic invoice\\\' consent and you are 
 $_LANG['Add new event to request:'] = 'Przypisanie nowego zdarzenia do zgłoszenia:';
 $_LANG['document type:'] = 'typ dokumentu:';
 
+$_LANG['No address has been selected!'] = 'Nie wybrano adresu!';
+
 ?>

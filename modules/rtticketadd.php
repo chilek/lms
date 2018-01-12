@@ -73,8 +73,16 @@ if(isset($_POST['ticket']))
 	if ((isset($ticket['customerid']) && $ticket['customerid'] !=0 && $ticket['custid'] != $ticket['customerid'])
 		|| (intval($ticket['custid']) && !$LMS->CustomerExists($ticket['custid'])))
 		$error['custid'] = trans('Specified ID is not proper or does not exist!');
-	else
+	else {
 		$ticket['customerid'] = $ticket['custid'] ? $ticket['custid'] : 0;
+		if ($ticket['customerid'] && $ticket['address_id'] <= 0) {
+			$addresses = $LMS->getCustomerAddresses($ticket['customerid']);
+			if (count($addresses) > 2 && !$_POST['address_id_warning']) {
+				$error['address_id'] = trans('No address has been selected!');
+				$SMARTY->assign('address_id_warning', 1);
+			}
+		}
+	}
 
 	$result = handle_file_uploads('files', $error);
 	extract($result);
