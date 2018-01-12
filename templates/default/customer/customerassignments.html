@@ -82,10 +82,10 @@
 					data-tariff-type="{$a.tarifftype}"
 					data-document="{if $a.doctype}{t a=$_DOCTYPES[$a.doctype] b=$a.fullnumber c=$a.cdate|date_format:"%Y/%m/%d"}$a no. $b issued on $c{/t}{/if}"
 					{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-					data-value="{$a.real_value|default:"0"}"
+					data-value="{$a.real_value|default:"0"|replace:",":"."}"
 					{/if}
 					{if ConfigHelper::checkConfig('privileges.superuser') || !ConfigHelper::checkConfig('privileges.hide_finances')}
-					data-disc-value="{$a.real_disc_value|default:"0"}"
+					data-disc-value="{$a.real_disc_value|default:"0"|replace:",":"."}"
 					{/if}
 					data-downceil="{$a.real_downceil|default:"0"}"
 					data-upceil="{$a.real_upceil|default:"0"}">
