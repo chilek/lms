@@ -97,14 +97,14 @@ if (isset($_POST['document'])) {
 	// validate tariff selection list when promotions are active only
 	if (isset($document['assignment']) && !empty($document['assignment']['schemaid'])) {
 		// validate selected promotion schema properties
-		$a = $document['assignment'];
-		$a['datefrom'] = $oldfromdate;
-		$a['dateto'] = $oldtodate;
+		$selected_assignment = $document['assignment'];
+		$selected_assignment['datefrom'] = $oldfromdate;
+		$selected_assignment['dateto'] = $oldtodate;
 
-		$result = $LMS->ValidateAssignment($a);
+		$result = $LMS->ValidateAssignment($selected_assignment);
 		extract($result);
 	} else
-		$a = null;
+		$selected_assignment = null;
 
 	$files = array();
 
@@ -252,11 +252,11 @@ if (isset($_POST['document'])) {
 
 		// if document will not be closed now we should store commit flags in documents table
 		// to allow restore commit flags later during document close process
-		if (isset($document['closed']) || !isset($a))
+		if (isset($document['closed']) || !isset($selected_assignment))
 			$commit_flags = 0;
 		else {
-			$commit_flags = $a['existing_assignments']['operation'];
-			if ($commit_flags && isset($a['existing_assignments']['reference_document_limit']))
+			$commit_flags = $selected_assignment['existing_assignments']['operation'];
+			if ($commit_flags && isset($selected_assignment['existing_assignments']['reference_document_limit']))
 				$commit_flags += 16;
 		}
 
@@ -326,32 +326,32 @@ if (isset($_POST['document'])) {
 			include($doc_dir . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $engine['name']
 				. DIRECTORY_SEPARATOR . $engine['post-action'] . '.php');
 
-		if (isset($a)) {
-			$a['docid'] = $docid;
-			$a['customerid'] = $document['customerid'];
-			$a['reference'] = $document['reference']['id'];
+		if (isset($selected_assignment)) {
+			$selected_assignment['docid'] = $docid;
+			$selected_assignment['customerid'] = $document['customerid'];
+			$selected_assignment['reference'] = $document['reference']['id'];
 			if (empty($from)) {
 				list ($year, $month, $day) = explode('/', date('Y/m/d'));
-				$a['datefrom'] = mktime(0, 0, 0, $month, $day, $year);
+				$selected_assignment['datefrom'] = mktime(0, 0, 0, $month, $day, $year);
 			} else
-				$a['datefrom'] = $from;
-			$a['dateto'] = $to;
+				$selected_assignment['datefrom'] = $from;
+			$selected_assignment['dateto'] = $to;
 
 			if (isset($document['closed']))
-				$LMS->UpdateExistingAssignments($a);
+				$LMS->UpdateExistingAssignments($selected_assignment);
 
-			if ($a['schemaid']) {
+			if ($selected_assignment['schemaid']) {
 				// create assignments basing on selected promotion schema
-				$a['period'] = $period;
-				$a['at'] = $at;
-				$a['commited'] = isset($document['closed']) ? 1 : 0;
+				$selected_assignment['period'] = $period;
+				$selected_assignment['at'] = $at;
+				$selected_assignment['commited'] = isset($document['closed']) ? 1 : 0;
 
-				if (is_array($a['stariffid'][$schemaid])) {
-					$copy_a = $a;
-					$snodes = $a['snodes'][$schemaid];
-					$sphones = $a['sphones'][$schemaid];
+				if (is_array($selected_assignment['stariffid'][$schemaid])) {
+					$copy_a = $selected_assignment;
+					$snodes = $selected_assignment['snodes'][$schemaid];
+					$sphones = $selected_assignment['sphones'][$schemaid];
 
-					foreach ($a['stariffid'][$schemaid] as $label => $v) {
+					foreach ($selected_assignment['stariffid'][$schemaid] as $label => $v) {
 						if (!$v)
 							continue;
 
