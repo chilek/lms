@@ -532,7 +532,7 @@ if (isset($_POST['message']) && !isset($_GET['sent'])) {
 						array(
 							is_int($result) ? $result : MSG_ERROR,
 							is_int($result) ? null : $result,
-							$msgid
+							$msgid,
 							$orig_destination,
 						));
 			}
