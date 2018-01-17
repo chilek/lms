@@ -178,6 +178,7 @@ version ?.??.?? (????-??-??):
     mail contact as for invoice sending, we show alert popup [chilan]
   - enhancement: allow to select issued document type for assignments [chilan]
   - enhancement: helpdesk/rt: introduced ticket priorities [interduo]
+  - enhancement: allow to check all items with one click in lms-ui-multiselect [chilan]
 
 version 1.11.22 (2017-06-08):
 

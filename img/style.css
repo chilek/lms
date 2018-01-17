@@ -403,6 +403,12 @@ div.lms-ui-multiselectlayer ul li:hover {
 div.lms-ui-multiselectlayer ul span {
   padding-left: 3px;
 }
+div.lms-ui-multiselectlayer div {
+  border-left: solid 1px #888888;
+  border-right: solid 1px #888888;
+  border-bottom: solid 1px #888888;
+  background-color: #DFD5BD;
+}
 .click-menu {
   width: 150px;
   padding: 0px 0px;
