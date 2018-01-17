@@ -144,7 +144,7 @@ function multiselect(options) {
 			}
 
 			if (pos.top + $(this).outerHeight() + list.height() >= $(window).height()) {
-				pos.top -= list.height();
+				pos.top -= list.height() - $(this).outerHeight();
 			}
 
 			list.css({
