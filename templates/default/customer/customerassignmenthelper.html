@@ -393,12 +393,12 @@
 					<td class="nobr" id="nodelist">
 						{foreach $customernodes as $customernode}
 						<span data-tariffaccess="{$customernode.authtype}" class="global-node-checkbox">
-													<label>
-														<input type="checkbox" name="{$variable_prefix}[nodes][{counter}]" value="{$customernode.id}"{if in_array($customernode.id, (array)$variables.nodes)} checked{/if}>
-														<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
-													</label>
-													<br>
-													</span>
+							<label>
+								<input type="checkbox" name="{$variable_prefix}[nodes][{counter}]" value="{$customernode.id}"{if in_array($customernode.id, (array)$variables.nodes)} checked{/if}>
+								<span class="bold">{$customernode.name}</span> ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
+							</label>
+							<br>
+						</span>
 						{/foreach}
 					</td>
 				</tr>
@@ -415,12 +415,12 @@
 					<td class="nobr" id="nodelist">
 						{foreach $customernetdevnodes as $customernode}
 						<span data-tariffaccess="{$customernode.authtype}" class="global-node-checkbox">
-													<label>
-														<input type="checkbox" name="{$variable_prefix}[nodes][{counter}]" value="{$customernode.id}"{if in_array($customernode.id, (array)$variables.nodes)} checked{/if}>
-														<span class="bold">{$customernode.name}</span> {if !empty($customernode.netdev_name)} / {$customernode.netdev_name}{/if}  ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
-													</label>
-													<br>
-													</span>
+							<label>
+								<input type="checkbox" name="{$variable_prefix}[nodes][{counter}]" value="{$customernode.id}"{if in_array($customernode.id, (array)$variables.nodes)} checked{/if}>
+								<span class="bold">{$customernode.name}</span> {if !empty($customernode.netdev_name)} / {$customernode.netdev_name}{/if}  ({$customernode.id|string_format:"%04d"}){if $customernode.location} / {$customernode.location|truncate:"60":"...":true}{/if}
+							</label>
+							<br>
+						</span>
 						{/foreach}
 					</td>
 				</tr>
