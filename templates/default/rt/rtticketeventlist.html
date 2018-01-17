@@ -77,19 +77,15 @@
                             {/if}
                             {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
                         </TD>
-                        <TD class="nobr">
+                        <TD class="nobr" colspan="4">
                             <a href='?m=eventlist&day={$event.date|date_format:"%d"}&month={$event.date|date_format:"%m"}&year={$event.date|date_format:"%Y"}' title="{trans("Open timetable")}">
                                <img src="img/schedule.png" alt=""></a>
-                        </TD>
-                        <TD class="nobr">
+                            <a href="?m=eventdel&id={$event.id}" OnClick="return confirmLink(this, '{trans("Are you sure, you want to delete that event?")}')">
+                                <IMG src="img/delete.gif" alt="{trans("Delete")}" title="{trans("Delete")}"></A>
                             <A href="?m=eventedit&id={$event.id}">
                                 <IMG src="img/edit.gif" alt="{trans("Edit")}" title="{trans("Edit")}"></A>
-                        </TD>
-                        <TD class="nobr">
                             <A href="?m=eventinfo&id={$event.id}&action=open">
                                 <IMG src="img/info.gif" alt="{trans("Details")}" title="{trans("Details")}"></A>
-                        </TD>
-                        <TD class="nobr">
                             {if $event.closed}
                             <A href="?m=eventedit&id={$event.id}&action=open">
                                 <IMG src="img/resolved.gif" alt="{trans("Open")}" title="{trans("Open")}"></A>

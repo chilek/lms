@@ -29,6 +29,10 @@ $id = $_GET['id'];
 if ($id && $_GET['is_sure'] == '1')
 	$LMS->EventDelete($id);
 
+$backto = $SESSION->get('backto');
+if (!empty($backto) && preg_match('/^m=rtticketview/', $backto))
+	$SESSION->redirect('?' . $backto);
+
 header('Location: ?m=eventlist');
 
 ?>
