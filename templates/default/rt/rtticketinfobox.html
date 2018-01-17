@@ -198,6 +198,14 @@
 									{$_RT_SOURCES[$ticket.source]}
 								</TD>
 							</TR>
+							<TR>
+								<TD class="bold nobr">
+									<IMG src="img/report.gif" alt="">
+									{trans("Priority:")}
+								</TD>
+								<TD>
+									{$_RT_PRIORITIES[$ticket.priority]}
+								</TD>
 							{if $ticket.address_id}
 							<TR>
 								<TD class="bold nobr">

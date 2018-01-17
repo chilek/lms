@@ -177,6 +177,7 @@ version ?.??.?? (????-??-??):
   - improvement: when customer has 'electronic invoice' not checked and we are trying to mark
     mail contact as for invoice sending, we show alert popup [chilan]
   - enhancement: allow to select issued document type for assignments [chilan]
+  - enhancement: helpdesk/rt: introduced ticket priorities [interduo]
 
 version 1.11.22 (2017-06-08):
 

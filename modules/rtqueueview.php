@@ -120,8 +120,21 @@ else
 	$s = ConfigHelper::getConfig('phpui.ticketlist_status');
 $SESSION->save('rts', $s);
 
+if (isset($_GET['priority'])) {
+	if (is_array($_GET['priority']))
+		$priority = $_GET['priority'];
+	elseif ($_GET['priority'] == -1)
+		$priority = null;
+	else
+		$priority = array(intval($_GET['priority']));
+} elseif ($SESSION->is_set('rtprio'))
+	$SESSION->restore('rtprio', $priority);
+else
+	$priority = ConfigHelper::getConfig('phpui.ticketlist_priority');
+$SESSION->save('rtprio', $priority);
+
 $layout['pagetitle'] = trans('Tickets List');
-$queue = $LMS->GetQueueContents($queuedata['id'], $o, $s, $owner, $queuedata['catid'], $r);
+$queue = $LMS->GetQueueContents($queuedata['id'], $o, $s, $priority, $owner, $queuedata['catid'], $r);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
@@ -130,6 +143,7 @@ if ($SESSION->is_set('rtp') && !isset($_GET['page']))
 
 $queuedata['total'] = $queue['total'];
 $queuedata['state'] = $queue['state'];
+$queuedata['priority'] = $queue['priority'];
 $queuedata['order'] = $queue['order'];
 $queuedata['direction'] = $queue['direction'];
 $queuedata['owner'] = $queue['owner'];
@@ -137,6 +151,7 @@ $queuedata['removed'] = $queue['removed'];
 
 unset($queue['total']);
 unset($queue['state']);
+unset($queue['priority']);
 unset($queue['order']);
 unset($queue['direction']);
 unset($queue['owner']);

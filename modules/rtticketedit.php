@@ -184,6 +184,7 @@ if(isset($_POST['ticket']))
 			'customerid' => $ticketedit['customerid'],
 			'categories' => isset($ticketedit['categories']) ? array_keys($ticketedit['categories']) : array(),
 			'source' => $ticketedit['source'],
+			'priority' => $ticketedit['priority'],
 			'address_id' => $ticketedit['address_id'] == -1 ? null : $ticketedit['address_id'],
 			'nodeid' => empty($ticketedit['nodeid']) ? null : $ticketedit['nodeid'],
 			'netnodeid' => empty($ticketedit['netnodeid']) ? null : $ticketedit['netnodeid'],

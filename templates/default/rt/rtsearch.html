@@ -86,10 +86,23 @@
 			<SELECT SIZE="1" name="search[state]" {tip text="Select ticket status"}>
 				<OPTION value="" {if $search.state==""}SELECTED{/if}>{trans("- all -")}</OPTION>
 				<OPTION value="-1" {if $search.state=="-1"}SELECTED{/if}>{trans("not resolved")}</OPTION>
-				<OPTION value="{$smarty.const.RT_NEW}"{if $search.state == $smarty.const.RT_NEW} selected{/if}>{trans("new")}</OPTION>
-				<OPTION value="{$smarty.const.RT_OPEN}"{if $search.state == $smarty.const.RT_OPEN} selected{/if}>{trans("opened")}</OPTION>
-				<OPTION value="{$smarty.const.RT_RESOLVED}"{if $search.state == $smarty.const.RT_RESOLVED} selected{/if}>{trans("resolved")}</OPTION>
-				<OPTION value="{$smarty.const.RT_DEAD}"{if $search.state == $smarty.const.RT_DEAD} selected{/if}>{trans("dead")}</OPTION>
+			{foreach $_RT_STATES as $idx => $s}
+				<OPTION value="{$idx}" {if is_array($queuedata.state) && in_array($idx, $queuedata.state)} SELECTED{/if}>{$s.label}</OPTION>
+			{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/report.gif" alt="">
+			{trans("Priority:")}
+		</TD>
+		<TD>
+			<SELECT SIZE="1" name="search[priority]" {tip text="Select ticket priority"}>
+				<OPTION value="" {if $search.priority==""}SELECTED{/if}>{trans("- all -")}</OPTION>
+			{foreach $_RT_PRIORITIES as $idx => $priority}
+				<OPTION value="{$idx}" {if is_array($queuedata.priority) && in_array($idx, $queuedata.priority)} SELECTED{/if}>{$priority}</OPTION>
+			{/foreach}
 			</SELECT>
 		</TD>
 	</TR>

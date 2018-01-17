@@ -167,6 +167,19 @@
                         </SELECT>
                 </TD>
         </TR>
+        <TR>
+                <TD style="width: 1%;" class="bold nobr">
+                        <IMG src="img/report.gif" alt="">
+                        {trans("Priority:")}
+                </TD>
+                <TD style="width: 99%;">
+                        <SELECT size="1" name="ticket[priority]" {tip text="Set ticket priority" trigger="priority"}>
+                                {foreach $_RT_PRIORITIES as $priorityidx => $priority}
+                                        <OPTION value="{$priorityidx}"{if $ticket.priority == $priorityidx}selected {/if}>{$priority}</OPTION>
+                                {/foreach}
+                        </SELECT>
+                </TD>
+        </TR>
 	<TR>
 		<TD class="bold nobr">
 			<img src="img/home.gif" alt="">

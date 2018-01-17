@@ -43,6 +43,14 @@
 			{else}{trans("unknown/other")}{/if}
 		</TD>
 	</TR>
+	<TR>
+		<TD class="bold nobr">
+			<IMG src="img/report.gif" alt="">
+			{trans("Priority:")}
+		</TD>
+		<TD>
+			{$_RT_PRIORITIES[$ticket.priority]}
+		</TD>
 	{if $ticket.message}
 	<TR>
 		<TD class="bold nobr">

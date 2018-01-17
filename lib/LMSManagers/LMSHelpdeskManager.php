@@ -49,7 +49,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             return NULL;
     }
 
-    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $owner = NULL, $catids = NULL, $removed = NULL) {
+    public function GetQueueContents($ids, $order = 'createtime,desc', $state = NULL, $priority = NULL, $owner = NULL, $catids = NULL, $removed = NULL) {
 		if (!$order)
 			$order = 'createtime,desc';
 
@@ -89,6 +89,11 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		elseif (empty($state))
 			$statefilter = '';
 
+		if (isset($priority) && is_array($priority))
+			$priorityfilter = ' AND t.priority IN (' . implode(',', $priority) . ')';
+		elseif (empty($priority))
+			$priorityfilter = '';
+
 		if (!ConfigHelper::checkPrivilege('helpdesk_advanced_operations'))
 			$removedfilter = ' AND t.deleted = 0';
 		else {
@@ -122,7 +127,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 		if ($result = $this->db->GetAll(
 			'SELECT DISTINCT t.id, t.customerid, t.address_id, va.name AS vaname, va.city AS vacity, va.street, va.house, va.flat, c.address, c.city, vusers.name AS ownername,
-				t.subject, t.state, owner AS ownerid, t.requestor AS req, t.source, rtqueues.name, t.requestor_phone, t.requestor_mail, t.requestor_userid,
+				t.subject, t.state, owner AS ownerid, t.requestor AS req, t.source, t.priority, rtqueues.name, t.requestor_phone, t.requestor_mail, t.requestor_userid,
 				CASE WHEN customerid IS NULL THEN t.requestor ELSE '
 			. $this->db->Concat('c.lastname', "' '", 'c.name') . ' END AS requestor,
 				t.createtime AS createtime, u.name AS creatorname, t.deleted, t.deltime, t.deluserid,
@@ -157,6 +162,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			. (is_array($ids) ? ' AND t.queueid IN (' . implode(',', $ids) . ')' : ($ids != 0 ? ' AND t.queueid = ' . $ids : ''))
 			. (is_array($catids) ? ' AND tc.categoryid IN (' . implode(',', $catids) . ')' : ($catids != 0 ? ' AND tc.categoryid = ' . $catids : ''))
 			. $statefilter
+			. $priorityfilter
 			. $ownerfilter
 			. $removedfilter
 			. ($sqlord != '' ? $sqlord . ' ' . $direction : ''))) {
@@ -489,8 +495,8 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
 	public function TicketAdd($ticket, $files = NULL) {
 		$this->db->Execute('INSERT INTO rttickets (queueid, customerid, requestor, requestor_mail, requestor_phone,
-			requestor_userid, subject, state, owner, createtime, cause, creatorid, source, address_id, nodeid, netnodeid)
-				VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, ?)', array($ticket['queue'],
+			requestor_userid, subject, state, owner, createtime, cause, creatorid, source, priority, address_id, nodeid, netnodeid)
+				VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($ticket['queue'],
 			empty($ticket['customerid']) ? null : $ticket['customerid'],
 			$ticket['requestor'],
 			$ticket['requestor_mail'],
@@ -502,6 +508,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			isset($ticket['cause']) ? $ticket['cause'] : 0,
 			isset($ticket['userid']) ? $ticket['userid'] : Auth::GetCurrentUser(),
 			isset($ticket['source']) ? $ticket['source'] : 0,
+			isset($ticket['priority']) ? $ticket['priority'] : 0,
 			isset($ticket['address_id']) && !empty($ticket['address_id']) ? $ticket['address_id'] : null,
 			isset($ticket['nodeid']) && !empty($ticket['nodeid']) ? $ticket['nodeid'] : null,
 			isset($ticket['netnodeid']) && !empty($ticket['netnodeid']) ? $ticket['netnodeid'] : null,
@@ -563,7 +570,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 
         $ticket = $this->db->GetRow('SELECT t.id AS ticketid, t.queueid, rtqueues.name AS queuename, t.requestor, t.requestor_phone, t.requestor_mail,
 				t.requestor_userid, d.name AS requestor_username, t.state, t.owner, t.customerid, t.cause, t.creatorid, c.name AS creator,
-				t.source, '
+				t.source, t.priority, '
 				. $this->db->Concat('customers.lastname', "' '", 'customers.name') . ' AS customername,
 				o.name AS ownername, t.createtime, t.resolvetime, t.subject, t.deleted, t.deltime, t.deluserid,
 				t.address_id, va.location, t.nodeid, n.name AS node_name, n.location AS node_location, t.netnodeid, nn.name AS netnode_name
@@ -656,7 +663,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
     {
         global $LMS, $RT_STATES, $RT_CAUSE, $RT_SOURCES;
 
-		$ticket = $this->db->GetRow('SELECT owner, queueid, cause, t.state, subject, customerid, requestor, source,
+		$ticket = $this->db->GetRow('SELECT owner, queueid, cause, t.state, subject, customerid, requestor, source, priority,
 				' . $this->db->GroupConcat('c.categoryid') . ' AS categories, t.address_id, va.location, t.nodeid,
 				n.name AS node_name, n.location AS node_location, t.netnodeid
 			FROM rttickets t
@@ -665,7 +672,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			LEFT JOIN vaddresses va ON va.id = ca.address_id
 			LEFT JOIN vnodes n ON n.id = t.nodeid
 			WHERE t.id=?
-			GROUP BY owner, queueid, cause, t.state, subject, customerid, requestor, source, t.address_id, t.nodeid, va.location,
+			GROUP BY owner, queueid, cause, t.state, subject, customerid, requestor, source, priority, t.address_id, t.nodeid, va.location,
 				t.nodeid, n.name, n.location, t.netnodeid',
 			array($ticketid));
 
@@ -695,6 +702,12 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $type = $type | RTMESSAGE_SOURCE_CHANGE;
         } else
 			   $props['source'] = $ticket['source'];
+
+        if($ticket['priority'] != $props['priority'] && isset($props['priority'])) {
+            $note .= trans('Ticket\'s priority has been changed from $a to $b.', $RT_PRIORITIES[$ticket['priority']], $RT_PRIORITIES[$props['priority']]) .'<br>';
+            $type = $type | RTMESSAGE_PRIORITY_CHANGE;
+        } else
+                           $props['priority'] = $ticket['priority'];
 
         if($ticket['state'] != $props['state'] && isset($props['state'])) {
             $note .= trans('Ticket\'s state has been changed from $a to $b.', $RT_STATES[$ticket['state']]['label'], $RT_STATES[$props['state']]['label']) .'<br>';

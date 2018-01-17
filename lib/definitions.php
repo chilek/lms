@@ -187,6 +187,21 @@ $RT_SOURCES = array(
 	RT_SOURCE_SMS => trans('SMS'),
 );
 
+//Helpdesk ticket priority
+define('RT_PRIORITY_NORMAL', 0);
+define('RT_PRIORITY_VERYLOW', -1);
+define('RT_PRIORITY_IDLE', -2);
+define('RT_PRIORITY_URGENT', 1);
+define('RT_PRIORITY_CRITICAL', 2);
+
+$RT_PRIORITIES = array(
+        RT_PRIORITY_NORMAL => trans('Normal'),
+        RT_PRIORITY_LOW => trans('Low'),
+        RT_PRIORITY_VERYLOW => trans('Very low'),
+        RT_PRIORITY_URGENT => trans('URGENT'),
+        RT_PRIORITY_CRITICAL => trans('CRITICAL'),
+);
+
 // Helpdesk cause type
 define('RT_CAUSE_OTHER', 0);
 define('RT_CAUSE_CUSTOMER', 1);
@@ -740,6 +755,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_NUM_PERIODS', $NUM_PERIODS);
 	$SMARTY->assign('_RT_STATES', $RT_STATES);
 	$SMARTY->assign('_RT_SOURCES', $RT_SOURCES);
+	$SMARTY->assign('_RT_PRIORITIES', $RT_PRIORITIES);
 	$SMARTY->assign('_CONFIG_TYPES', $CONFIG_TYPES);
 	$SMARTY->assign('_TARIFFTYPES', $TARIFFTYPES);
 	$SMARTY->assign('_PAYTYPES', $PAYTYPES);

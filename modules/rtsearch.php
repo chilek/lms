@@ -73,6 +73,8 @@ function RTSearch($search, $order='createtime,desc')
 		else
 			$where[] = 'state = '.intval($search['state']);
 	}
+	if(!empty($search['priority']))
+		$where[] = 'priority = '.intval($search['priority']);
 	if(!empty($search['email']))
 		$where[] = 'requestor ?LIKE? '.$DB->Escape('%'.$search['email'].'%');
 	if(!empty($search['uptime']))
