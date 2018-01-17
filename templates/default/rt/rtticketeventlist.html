@@ -99,7 +99,7 @@
                         <TD class="superlight text-center bold" {if isset($_EVENTSTYLES[$event.type])}style="{$_EVENTSTYLES[$event.type]}"{/if}>
                         {$_EVENTTYPES[$event.type]}<BR>#{$event.id}
                         </TD>
-                        <TD colspan="10" class="superlight">
+                        <TD colspan="10" class="superlight" onClick="return self.location.href = '?m=eventinfo&id={$event.id}'">
                             <img src="img/info1.gif" alt=""><B> {$event.description}</B>
                             {if $event.note}<br><img src="img/note.gif" alt=""> {$event.note}{/if}
                         </TD>
