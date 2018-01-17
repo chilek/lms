@@ -195,11 +195,11 @@ define('RT_PRIORITY_URGENT', 1);
 define('RT_PRIORITY_CRITICAL', 2);
 
 $RT_PRIORITIES = array(
-        RT_PRIORITY_NORMAL => trans('normal'),
-        RT_PRIORITY_LOW => trans('low'),
-        RT_PRIORITY_VERYLOW => trans('very low'),
-        RT_PRIORITY_URGENT => trans('URGENT'),
-        RT_PRIORITY_CRITICAL => trans('CRITICAL'),
+	RT_PRIORITY_VERYLOW => trans('very low'),
+	RT_PRIORITY_LOW => trans('low'),
+	RT_PRIORITY_NORMAL => trans('normal'),
+	RT_PRIORITY_URGENT => trans('URGENT'),
+	RT_PRIORITY_CRITICAL => trans('CRITICAL'),
 );
 
 // Helpdesk cause type
