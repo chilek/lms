@@ -99,7 +99,7 @@ if(isset($_POST['event']))
 
 		$event['date'] = $date;
 		$event['enddate'] = $enddate;
-		$event['helpdesk'] = isset($event['helpdeskid']) || empty($event['helpdeskid']) ? null : $event['helpdeskid'];
+		$event['helpdesk'] = isset($event['helpdesk']) && !empty($event['helpdeskid']) ? $event['helpdeskid'] : null;
 		$LMS->EventUpdate($event);
 
 		$SESSION->redirect('?m=eventlist');
