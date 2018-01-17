@@ -101,6 +101,9 @@ if(isset($_POST['event']))
 		$LMS->EventAdd($event);
 
 		if (!isset($event['reuse'])) {
+			$backto = $SESSION->get('backto');
+			if (isset($backto) && preg_match('/m=rtticketview/', $backto))
+				$SESSION->redirect('?' . $backto);
 			$SESSION->redirect('?m=eventlist');
 		}
 
@@ -130,7 +133,8 @@ if(isset($_GET['day']) && isset($_GET['month']) && isset($_GET['year']))
 
 $layout['pagetitle'] = trans('New Event');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+if (!isset($_GET['ticketid']))
+	$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $usergroups = $DB->GetAll('SELECT id, name FROM usergroups');
 $userlist = $DB->GetAll('SELECT id, rname FROM vusers
