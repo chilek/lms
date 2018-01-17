@@ -392,6 +392,7 @@ $query = "SELECT
 				WHERE
 					customerid  = c.id    AND
 					tariffid    = 0       AND
+					liabilityid = 0       AND
 					datefrom <= $currtime AND
 					(dateto > $currtime OR dateto = 0)) AS allsuspended
 			FROM assignments a
