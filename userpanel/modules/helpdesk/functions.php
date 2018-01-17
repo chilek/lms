@@ -72,7 +72,7 @@ if (defined('USERPANEL_SETUPMODE')) {
 }
 
 function module_main() {
-	global $SMARTY, $LMS, $SESSION , $RT_STATES;
+	global $SMARTY, $LMS, $SESSION , $RT_STATES, $RT_PRIORITIES;
 
 	$DB = LMSDB::getInstance();
 
@@ -230,6 +230,7 @@ function module_main() {
 					'customerid' => $SESSION->id,
 					'status' => $ticketdata['status'],
 					'categories' => $ticketdata['categorynames'],
+					'priority' => $RT_PRIORITIES[$ticketdata['priority']],
 					'subject' => $ticket['subject'],
 					'body' => $ticket['body'],
 				);
@@ -363,6 +364,7 @@ function module_main() {
 				'customerid' => $SESSION->id,
 				'status' => $ticketdata['status'],
 				'categories' => $ticketdata['categorynames'],
+				'priority' => $RT_PRIORITIES[$ticketdata['priority']],
 				'subject' => $ticket['subject'],
 				'body' => $ticket['body'],
 			);

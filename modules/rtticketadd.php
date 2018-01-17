@@ -218,6 +218,7 @@ if(isset($_POST['ticket']))
 				'customerid' => $ticket['customerid'],
 				'status' => $ticketdata['status'],
 				'categories' => $ticketdata['categorynames'],
+				'priority' => $RT_PRIORITIES[$ticketdata['priority']],
 				'subject' => $ticket['subject'],
 				'body' => $ticket['body'],
 			);

@@ -152,6 +152,7 @@ elseif(isset($_POST['note']))
 				'customerid' => $ticketdata['customerid'],
 				'status' => $ticketdata['status'],
 				'categories' => $ticketdata['categorynames'],
+				'priority' => $RT_PRIORITIES[$ticketdata['priority']],
 				'subject' => $ticketdata['subject'],
 				'body' => $note['body'],
 			);

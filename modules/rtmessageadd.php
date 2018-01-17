@@ -294,6 +294,7 @@ if(isset($_POST['message']))
 				'customerid' => empty($message['customerid']) ? $ticketdata['customerid'] : $message['customerid'],
 				'status' => $ticketdata['status'],
 				'categories' => $ticketdata['categorynames'],
+				'priority' => $RT_PRIORITIES[$ticketdata['priority']],
 				'subject' => $message['subject'],
 				'body' => $message['body'],
 			);
