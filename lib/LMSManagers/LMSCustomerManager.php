@@ -665,7 +665,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             	SUM(CASE WHEN b.value > 0 THEN b.value ELSE 0 END) AS over,
             	SUM(CASE WHEN b.value < 0 THEN b.value ELSE 0 END) AS below ';
         } else {
-            $sql .= 'SELECT c.id AS id, ' . $this->db->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername,
+            $sql .= 'SELECT c.id AS id, c.lastname, c.name, ' . $this->db->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername,
+		c.type,
                 status, full_address, address, zip, city, countryid, countries.name AS country, cc.email, ccp.phone, ten, ssn, c.info AS info,
                 extid, message, c.divisionid, c.paytime AS paytime, COALESCE(b.value, 0) AS balance,
                 COALESCE(t.value, 0) AS tariffvalue, s.account, s.warncount, s.online,

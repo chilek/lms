@@ -24,66 +24,83 @@
  *  $Id$
  */
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+if ($api) {
+	$count = false;
+	$customerlist = $LMS->GetCustomerList(compact("count"));
+	if (empty($customerlist))
+		$customerlist = array();
+	else {
+		unset($customerlist['total']);
+		unset($customerlist['state']);
+		unset($customerlist['order']);
+		unset($customerlist['below']);
+		unset($customerlist['over']);
+		unset($customerlist['direction']);
+	}
+	header('Content-Type: application/json');
+	echo json_encode(array_values($customerlist));
+	die;
+} else {
+	$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$layout['pagetitle'] = trans('Customers List');
+	$layout['pagetitle'] = trans('Customers List');
 
-if(!isset($_GET['o']))
-	$SESSION->restore('clo', $order);
-else
-	$order = $_GET['o'];
-$SESSION->save('clo', $order);
+	if (!isset($_GET['o']))
+		$SESSION->restore('clo', $order);
+	else
+		$order = $_GET['o'];
+	$SESSION->save('clo', $order);
 
-if(!isset($_GET['s']))
-	$SESSION->restore('cls', $state);
-else
-	$state = $_GET['s'];
-$SESSION->save('cls', $state);
+	if (!isset($_GET['s']))
+		$SESSION->restore('cls', $state);
+	else
+		$state = $_GET['s'];
+	$SESSION->save('cls', $state);
 
-if(!isset($_GET['n']))
-	$SESSION->restore('cln', $network);
-else
-	$network = $_GET['n'];
-$SESSION->save('cln', $network);
+	if (!isset($_GET['n']))
+		$SESSION->restore('cln', $network);
+	else
+		$network = $_GET['n'];
+	$SESSION->save('cln', $network);
 
-if (!isset($_GET['g']))
-	$SESSION->restore('clg', $customergroup);
-else
-	$customergroup = array_filter($_GET['g'], 'intval');
-$SESSION->save('clg', $customergroup);
+	if (!isset($_GET['g']))
+		$SESSION->restore('clg', $customergroup);
+	else
+		$customergroup = array_filter($_GET['g'], 'intval');
+	$SESSION->save('clg', $customergroup);
 
-if(!isset($_GET['ng']))
-        $SESSION->restore('clng', $nodegroup);
-else
-        $nodegroup = $_GET['ng'];
-$SESSION->save('clng', $nodegroup);
+	if (!isset($_GET['ng']))
+		$SESSION->restore('clng', $nodegroup);
+	else
+		$nodegroup = $_GET['ng'];
+	$SESSION->save('clng', $nodegroup);
 
-if(!isset($_GET['d']))
-        $SESSION->restore('cld', $division);
-else
-        $division = $_GET['d'];
-$SESSION->save('cld', $division);
-		
-if (! isset($_GET['page']))
-	$SESSION->restore('clp', $_GET['page']);
+	if (!isset($_GET['d']))
+		$SESSION->restore('cld', $division);
+	else
+		$division = $_GET['d'];
+	$SESSION->save('cld', $division);
 
-if(!isset($_GET['assigments']))
-        $SESSION->restore('clas', $as);
-else
-        $as = $_GET['assigments'];
-$SESSION->save('clas', $as);
-	    
-$page = !$_GET['page'] ? 1 : intval($_GET['page']);
-$sqlskey = 'AND';
-$offset = NULL;
-$count = TRUE;
-$summary = $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division", "limit", "offset", "count", "as"));
-$total = intval($summary['total']);
-$limit = intval(ConfigHelper::getConfig('phpui.customerlist_pagelimit', 100));
-$offset = ($page - 1) * $limit;
-$count = FALSE;
-$customerlist = $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division", "limit", "offset", "count", "as"));
+	if (!isset($_GET['page']))
+		$SESSION->restore('clp', $_GET['page']);
 
+	if (!isset($_GET['assigments']))
+		$SESSION->restore('clas', $as);
+	else
+		$as = $_GET['assigments'];
+	$SESSION->save('clas', $as);
+
+	$page = !$_GET['page'] ? 1 : intval($_GET['page']);
+	$sqlskey = 'AND';
+	$offset = NULL;
+	$count = TRUE;
+	$summary = $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division", "limit", "offset", "count", "as"));
+	$total = intval($summary['total']);
+	$limit = intval(ConfigHelper::getConfig('phpui.customerlist_pagelimit', 100));
+	$offset = ($page - 1) * $limit;
+	$count = FALSE;
+	$customerlist = $LMS->GetCustomerList(compact("order", "state", "network", "customergroup", "search", "time", "sqlskey", "nodegroup", "division", "limit", "offset", "count", "as"));
+}
 $pagination = LMSPaginationFactory::getPagination($page, $total, $limit, ConfigHelper::checkConfig('phpui.short_pagescroller'));
 
 $listdata['below'] = $summary['below'];
