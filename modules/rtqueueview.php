@@ -123,7 +123,7 @@ $SESSION->save('rts', $s);
 if (isset($_GET['priority'])) {
 	if (is_array($_GET['priority']))
 		$priority = $_GET['priority'];
-	elseif ($_GET['priority'] == -1)
+	elseif ($_GET['priority'] == 'all')
 		$priority = null;
 	else
 		$priority = array(intval($_GET['priority']));

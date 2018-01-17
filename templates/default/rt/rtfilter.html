@@ -26,7 +26,7 @@
                 {/foreach}
             </SELECT>
             {trans("Priority:")}
-            <input type="hidden" name="priority[]" value="-1">
+            <input type="hidden" name="priority" value="all">
             <SELECT size="1" name="priority[]" OnChange="document.filter.submit();" multiple class="lms-ui-multiselect" data-default-value="{trans("- all -")}">
                 {foreach $_RT_PRIORITIES as $idx => $priority}
                     <OPTION value="{$idx}" {if is_array($queuedata.priority) && in_array($idx, $queuedata.priority)} SELECTED{/if}>{$priority}</OPTION>

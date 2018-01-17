@@ -193,6 +193,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 		$result['direction'] = $direction;
 		$result['owner'] = $owner;
 		$result['removed'] = $removed;
+		$result['priority'] = $priority;
 
 		return $result;
 	}
