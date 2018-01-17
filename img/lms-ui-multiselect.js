@@ -63,7 +63,7 @@ function multiselect(options) {
 	}
 
 	function updateCheckAll() {
-		var allcheckboxes = ul.find(':checkbox');
+		var allcheckboxes = ul.find(':checkbox:not(:disabled)');
 		ul.parent().find('input[name="checkall"]').prop('checked', allcheckboxes.filter(':checked').length == allcheckboxes.length);
 	}
 
@@ -130,7 +130,7 @@ function multiselect(options) {
 	});
 
 	function checkAllElements() {
-		var allcheckboxes = ul.find(':checkbox');
+		var allcheckboxes = ul.find(':checkbox:not(:disabled)');
 		var checked = ul.parent().find('input[name="checkall"]').prop('checked');
 		allcheckboxes.each(function() {
 			var li = $(this).closest('li');
