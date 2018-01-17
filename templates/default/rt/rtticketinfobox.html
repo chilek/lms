@@ -204,7 +204,7 @@
 									{trans("Priority:")}
 								</TD>
 								<TD>
-									{$_RT_PRIORITIES[$ticket.priority]}
+									<span class="{$_RT_PRIORITY_STYLES[$ticket.priority]}">{$_RT_PRIORITIES[$ticket.priority]}</span>
 								</TD>
 							{if $ticket.address_id}
 							<TR>
