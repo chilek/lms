@@ -1,7 +1,13 @@
 {block name="rtheader"}
 <TR {tip text="Click on column name to change sorting order"}>
-    <TD class="nobr bold" colspan="2">
-        <IMG src="img/ticket.gif" alt=""> <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if empty($queuedata.state)}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=ticketid{if $queuedata.direction == "asc" && $queuedata.order == "ticketid"},desc{/if}">{trans("ID:")}</A> {if $queuedata.order == "ticketid"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}<br>
+    <TD class="nobr bold">
+        <IMG src="img/ticket.gif" alt="">
+    </TD>
+    <TD>
+        <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if empty($queuedata.state)}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=ticketid{if $queuedata.direction == "asc" && $queuedata.order == "ticketid"},desc{/if}">{trans("ID:")}</A> {if $queuedata.order == "ticketid"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+        /
+        <IMG src="img/report.gif" alt=""> <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if empty($queuedata.state)}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=priority{if $queuedata.direction == "asc" && $queuedata.order == "priority"},desc{/if}">{trans("Priority:")}</A> {if $queuedata.order == "priority"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
+        <br>
         <img src="img/calendar.gif" alt=""> <a href="?m={$layout.module}{if !empty($queuedata.id)}&id[]={implode('&id[]=', $queuedata.id)}{/if}&{if empty($queuedata.state)}s=-1{else}s[]={implode('&s[]=', $queuedata.state)}{/if}&o=createtime{if $queuedata.direction == "asc" && $queuedata.order == "createtime"},desc{/if}"> {trans("Create time:")}</A>{if $queuedata.order == "createtime"}<IMG SRC="img/{if $queuedata.direction == "desc"}asc{else}desc{/if}_order.gif" alt="">{/if}
     </TD>
     <TD class="nobr bold">

@@ -265,7 +265,11 @@ if(isset($_POST['ticket']))
 			));
 		}
 
-		$SESSION->redirect('?m=rtticketview&id='.$id);
+		$backto = $SESSION->get('backto');
+		if (empty($backto))
+			$SESSION->redirect('?m=rtticketview&id='.$id);
+		else
+			$SESSION->redirect('?' . $backto);
 	}
 
 	$ticket['subject'] = $ticketedit['subject'];
@@ -287,8 +291,6 @@ foreach ($categories as $category)
 $categories = $ncategories;
 
 $layout['pagetitle'] = trans('Ticket Edit: $a',sprintf("%06d",$ticket['ticketid']));
-
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if (!ConfigHelper::checkConfig('phpui.big_networks'))
 	$SMARTY->assign('customerlist', $LMS->GetAllCustomerNames());

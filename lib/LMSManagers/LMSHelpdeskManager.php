@@ -79,6 +79,9 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 			case 'queue':
 				$sqlord = ' ORDER BY rtqueues.name';
 				break;
+			case 'priority':
+				$sqlord = ' ORDER BY t.priority';
+				break;
 			default:
 				$sqlord = ' ORDER BY t.createtime';
 				break;
@@ -708,7 +711,7 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
             $note .= trans('Ticket\'s priority has been changed from $a to $b.', $RT_PRIORITIES[$ticket['priority']], $RT_PRIORITIES[$props['priority']]) .'<br>';
             $type = $type | RTMESSAGE_PRIORITY_CHANGE;
         } else
-                           $props['priority'] = $ticket['priority'];
+            $props['priority'] = $ticket['priority'];
 
         if($ticket['state'] != $props['state'] && isset($props['state'])) {
             $note .= trans('Ticket\'s state has been changed from $a to $b.', $RT_STATES[$ticket['state']]['label'], $RT_STATES[$props['state']]['label']) .'<br>';
@@ -792,26 +795,26 @@ class LMSHelpdeskManager extends LMSManager implements LMSHelpdeskManagerInterfa
 				$resolvetime = time();
 				if ($this->db->GetOne('SELECT owner FROM rttickets WHERE id=?', array($ticketid))) {
 					$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, resolvetime=?, subject = ?,
-						customerid = ?, source = ?, address_id = ?, nodeid = ?, netnodeid = ? WHERE id = ?', array(
+						customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ? WHERE id = ?', array(
 						$props['queueid'], $props['owner'], $props['cause'], $props['state'], $resolvetime, $props['subject'],
-						$props['customerid'], $props['source'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $ticketid));
+						$props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $ticketid));
 					if (!empty($note))
 						$this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
 							VALUES(?, ?, ?, ?, ?NOW?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note));
 				} else {
 					$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, resolvetime = ?, subject = ?,
-						customerid = ?, source = ?, address_id = ?, nodeid = ?, netnodeid = ? WHERE id = ?', array(
+						customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ? WHERE id = ?', array(
 						$props['queueid'], Auth::GetCurrentUser(), $props['cause'], $props['state'], $resolvetime, $props['subject'],
-						$props['customerid'], $props['source'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $ticketid));
+						$props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $ticketid));
 					if (!empty($note))
 						$this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
 							VALUES(?, ?, ?, ?, ?NOW?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note));
 				}
 			} else {
 				$this->db->Execute('UPDATE rttickets SET queueid = ?, owner = ?, cause = ?, state = ?, subject = ?,
-					customerid = ?, source = ?, address_id = ?, nodeid = ?, netnodeid = ? WHERE id = ?', array(
+					customerid = ?, source = ?, priority = ?, address_id = ?, nodeid = ?, netnodeid = ? WHERE id = ?', array(
 					$props['queueid'], $props['owner'], $props['cause'], $props['state'], $props['subject'],
-					$props['customerid'], $props['source'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $ticketid));
+					$props['customerid'], $props['source'], $props['priority'], $props['address_id'], $props['nodeid'], $props['netnodeid'], $ticketid));
 				if (!empty($note))
 					$this->db->Execute('INSERT INTO rtmessages (userid, ticketid, type, body, createtime)
 						VALUES(?, ?, ?, ?, ?NOW?)', array(Auth::GetCurrentUser(), $ticketid, $type, $note));

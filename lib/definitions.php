@@ -188,9 +188,9 @@ $RT_SOURCES = array(
 );
 
 //Helpdesk ticket priority
+define('RT_PRIORITY_VERYLOW', -2);
+define('RT_PRIORITY_LOW', -1);
 define('RT_PRIORITY_NORMAL', 0);
-define('RT_PRIORITY_VERYLOW', -1);
-define('RT_PRIORITY_LOW', -2);
 define('RT_PRIORITY_URGENT', 1);
 define('RT_PRIORITY_CRITICAL', 2);
 
@@ -200,6 +200,14 @@ $RT_PRIORITIES = array(
 	RT_PRIORITY_NORMAL => trans('normal'),
 	RT_PRIORITY_URGENT => trans('URGENT'),
 	RT_PRIORITY_CRITICAL => trans('CRITICAL'),
+);
+
+$RT_PRIORITY_STYLES = array(
+	RT_PRIORITY_VERYLOW => 'background-color: lightgreen; color: black;',
+	RT_PRIORITY_LOW => 'background-color: yellow; color: black;',
+	RT_PRIORITY_NORMAL => 'background-color: transparent; color: black;',
+	RT_PRIORITY_URGENT => 'background-color: orange; color: white;',
+	RT_PRIORITY_CRITICAL => 'background-color: red; color: white;',
 );
 
 // Helpdesk cause type
@@ -756,6 +764,7 @@ if(isset($SMARTY))
 	$SMARTY->assign('_RT_STATES', $RT_STATES);
 	$SMARTY->assign('_RT_SOURCES', $RT_SOURCES);
 	$SMARTY->assign('_RT_PRIORITIES', $RT_PRIORITIES);
+	$SMARTY->assign('_RT_PRIORITY_STYLES', $RT_PRIORITY_STYLES);
 	$SMARTY->assign('_CONFIG_TYPES', $CONFIG_TYPES);
 	$SMARTY->assign('_TARIFFTYPES', $TARIFFTYPES);
 	$SMARTY->assign('_PAYTYPES', $PAYTYPES);

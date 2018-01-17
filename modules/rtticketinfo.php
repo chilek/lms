@@ -40,6 +40,8 @@ if(!$rights || !$catrights)
 	die;
 }
 
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+
 $ticket = $LMS->GetTicketContents($id);
 
 $ticket['message'] = $DB->GetOne('SELECT body FROM rtmessages
