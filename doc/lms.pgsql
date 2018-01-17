@@ -1694,7 +1694,7 @@ CREATE TABLE rtmessages (
   mailfrom varchar(255) DEFAULT '' NOT NULL,
   subject varchar(255) 	DEFAULT '' NOT NULL,
   messageid varchar(255) DEFAULT '' NOT NULL,
-  inreplyto integer 	DEFAULT 0 NOT NULL
+  inreplyto integer 	DEFAULT NULL
 	CONSTRAINT rtmessages_inreplyto_fkey REFERENCES rtmessages (id) ON DELETE SET NULL ON UPDATE CASCADE,
   replyto text 		DEFAULT '' NOT NULL,
   headers text 		DEFAULT '' NOT NULL,
