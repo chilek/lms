@@ -53,6 +53,9 @@ function RTSearch($search, $order='createtime,desc')
 		case 'lastmodified':
 			$sqlord = ' ORDER BY lastmodified';
 		break;
+		case 'priority':
+			$sqlord = ' ORDER BY priority';
+			break;
 		default:
 			$sqlord = ' ORDER BY t.createtime';
 		break;
@@ -113,7 +116,8 @@ function RTSearch($search, $order='createtime,desc')
 			vusers.name AS ownername, rtqueues.name as name, CASE WHEN customerid = 0 THEN t.requestor ELSE '
 			.$DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').'
 			END AS requestor, t.requestor AS req, t.createtime,
-			(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified, t.deleted, t.deltime
+			(CASE WHEN m.lastmodified IS NULL THEN 0 ELSE m.lastmodified END) AS lastmodified, t.deleted, t.deltime,
+			t.priority
 			FROM rttickets t
 			LEFT JOIN (SELECT MAX(createtime) AS lastmodified, ticketid FROM rtmessages GROUP BY ticketid) m ON m.ticketid = t.id
 			LEFT JOIN rtticketcategories tc ON t.id = tc.ticketid
