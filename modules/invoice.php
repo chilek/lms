@@ -180,9 +180,9 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 	if ($jpk) {
 		if ($jpk_type == 'vat')
 			// if date from for report is earlier than 1 I 2018
-			//$jpk_vat_version = $datefrom < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
+			$jpk_vat_version = $datefrom < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
 			// if current date is earlier than 1 I 2018
-			$jpk_vat_version = time() < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
+			//$jpk_vat_version = time() < mktime(0, 0, 0, 1, 1, 2018) ? 2 : 3;
 
 		$jpk_data .= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 		if ($jpk_type == 'fa')
