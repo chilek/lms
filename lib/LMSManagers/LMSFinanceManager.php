@@ -1109,18 +1109,16 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				(CASE WHEN d.post_address_id IS NULL THEN c.post_zip ELSE a2.zip END) AS post_zip,
 				(CASE WHEN d.post_address_id IS NULL THEN c.post_city ELSE a2.city END) AS post_city,
 				(CASE WHEN d.post_address_id IS NULL THEN c.post_postoffice ELSE a2.postoffice END) AS post_postoffice,
-				(CASE WHEN d.post_address_id IS NULL THEN c.post_countryid ELSE a2.country_id END) AS post_countryid
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_countryid ELSE a2.country_id END) AS post_countryid,
+				cp.name AS post_country
 				FROM documents d
 				JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				LEFT JOIN vaddresses a ON d.recipient_address_id = a.id
 				LEFT JOIN vaddresses a2 ON d.post_address_id = a2.id
+				LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
 				WHERE d.id = ? AND (d.type = ? OR d.type = ? OR d.type = ?)', array($invoiceid, DOC_INVOICE, DOC_CNOTE, DOC_INVOICE_PRO))) {
-
-			if (!empty($result['post_address_id'])) {
-
-			}
 
         	$result['bankaccounts'] = $this->db->GetCol('SELECT contact FROM customercontacts
 				WHERE customerid = ? AND (type & ?) = ?',
@@ -1266,12 +1264,14 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 				(CASE WHEN d.post_address_id IS NULL THEN c.post_zip ELSE a2.zip END) AS post_zip,
 				(CASE WHEN d.post_address_id IS NULL THEN c.post_city ELSE a2.city END) AS post_city,
 				(CASE WHEN d.post_address_id IS NULL THEN c.post_postoffice ELSE a2.postoffice END) AS post_postoffice,
-				(CASE WHEN d.post_address_id IS NULL THEN c.post_countryid ELSE a2.country_id END) AS post_countryid
+				(CASE WHEN d.post_address_id IS NULL THEN c.post_countryid ELSE a2.country_id END) AS post_countryid,
+				cp.name AS post_country
 				FROM documents d
 				JOIN customeraddressview c ON (c.id = d.customerid)
 				LEFT JOIN countries cn ON (cn.id = d.countryid)
 				LEFT JOIN numberplans n ON (d.numberplanid = n.id)
 				LEFT JOIN vaddresses a2 ON a2.id = d.post_address_id
+				LEFT JOIN countries cp ON (d.post_address_id IS NOT NULL AND cp.id = a2.country_id) OR (d.post_address_id IS NULL AND cp.id = c.post_countryid)
 				WHERE d.id = ? AND d.type = ?', array($id, DOC_DNOTE))) {
 
 			$result['bankaccounts'] = $this->db->GetCol('SELECT contact FROM customercontacts

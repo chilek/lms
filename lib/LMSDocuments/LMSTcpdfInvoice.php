@@ -648,7 +648,10 @@ class LMSTcpdfInvoice extends LMSInvoice {
 
 		$buyer .= $this->data['name'] . '<br>';
 		$buyer .= $this->data['address'] . '<br>';
-		$buyer .= $this->data['zip'] . ' ' . $this->data['city'] . '<br>';
+		$buyer .= $this->data['zip'] . ' ' . $this->data['city'];
+		if ($this->data['division_countryid'] && $this->data['countryid'] && $this->data['division_countryid'] != $this->data['countryid'])
+			$buyer .= ', ' . trans($this->data['country']);
+		$buyer .= '<br>';
 		if ($this->data['ten'])
 			$buyer .= trans('TEN') . ': ' . $this->data['ten'] . '<br>';
 		elseif ($this->data['ssn'])
@@ -675,8 +678,8 @@ class LMSTcpdfInvoice extends LMSInvoice {
 			$postbox .= $this->data['zip'] . ' ' . $this->data['city'] . '<br>';
 		}
 
-		if ($this->data['division_countryid'] && $this->data['countryid'] && $this->data['division_countryid'] != $this->data['countryid'])
-			$postbox .= trans($this->data['country']) . '<br>';
+		if ($this->data['division_countryid'] && $this->data['post_countryid'] && $this->data['division_countryid'] != $this->data['post_countryid'])
+			$postbox .= ', ' . trans($this->data['post_country']) . '<br>';
 
 		$this->backend->SetFont('arial', 'B', 10);
 		$this->backend->writeHTMLCell(80, '', 125, 50, $postbox, 0, 1, 0, true, 'L');
