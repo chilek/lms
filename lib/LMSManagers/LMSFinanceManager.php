@@ -464,7 +464,7 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
                 'commited'			=> $commited,
             );
 
-            $data['assignmentid'] = $this->insertAssignment($args);
+            $result[] = $data['assignmentid'] = $this->insertAssignment($args);
 
             $this->insertNodeAssignments($data);
 			$this->insertPhoneAssignments($data);
