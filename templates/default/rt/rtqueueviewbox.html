@@ -6,12 +6,13 @@
 		<IMG src="{$_RT_STATES[$queue[ticket].state].img}" alt="" class="lms-ui-tooltip-rtticketinfo" data-resourceid="{$queue[ticket].id}">
 	</TD>
 	<TD class="nobr">
+		<span class="bold" style="{$_RT_PRIORITY_STYLES[$queue[ticket].priority]}">{$queue[ticket].id|string_format:"%06d"}</span>
+		<br>
 		{if $queue[ticket].state == $smarty.const.RT_NEW}
 		<span class="red">
 		{elseif $queue[ticket].state == $smarty.const.RT_DEAD}
 		<span class="brown">
 		{/if}
-		<span class="bold">{$queue[ticket].id|string_format:"%06d"}</span><br>
 		{$queue[ticket].createtime|date_format:"%Y/%m/%d %H:%M:%S"}
 		{if $queue[ticket].state == $smarty.const.RT_NEW || $queue[ticket].state == $smarty.const.RT_DEAD}
 		</span>
