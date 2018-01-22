@@ -84,14 +84,15 @@ class ULMS extends LMS {
 			. ' AND source IN (' . $sources . ')'
 			. ' ORDER BY createtime DESC', array($id));
 		if (!empty($tickets))
-			foreach ($tickets as $idx => $ticket)
-				$tickets[$idx]['queuename'] = $this->DB->GetOne('SELECT name FROM rtqueues WHERE id = ?', array($ticket['queueid']));
+			foreach ($tickets as &$ticket) {
+				$ticket['queuename'] = $this->DB->GetOne('SELECT name FROM rtqueues WHERE id = ?', array($ticket['queueid']));
+				$ticket['lastmod'] = $this->DB->GetOne('SELECT MAX(createtime) FROM rtmessages WHERE ticketid = ?',
+					array($ticket['queueid']));
+			}
 		return $tickets;
 	}
 
 	public function GetTicketContents($id) {
-		global $RT_STATES;
-
 		$ticket = $this->DB->GetRow('SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename,
 				    requestor, state, owner, customerid, cause, source, '
 				    .$this->DB->Concat('UPPER(customers.lastname)',"' '",'customers.name').' AS customername,
@@ -123,6 +124,7 @@ class ULMS extends LMS {
 				array($message['id']));
 
 		$ticket['queuename'] = $this->DB->GetOne('SELECT name FROM rtqueues WHERE id = ?', array($ticket['queueid']));
+		$ticket['lastmod'] = $this->DB->GetOne('SELECT MAX(createtime) FROM rtmessages WHERE ticketid = ?', array($id));
 
 		list($ticket['requestoremail']) = sscanf($ticket['requestor'], "<%[^>]");
 

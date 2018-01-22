@@ -80,7 +80,7 @@ if (defined('USERPANEL_SETUPMODE')) {
 }
 
 function module_main() {
-	global $SMARTY, $LMS, $SESSION , $RT_STATES, $RT_PRIORITIES;
+	global $SMARTY, $LMS, $SESSION, $RT_PRIORITIES;
 
 	$DB = LMSDB::getInstance();
 
@@ -268,6 +268,14 @@ function module_main() {
 		&& $DB->GetOne('SELECT customerid FROM rttickets WHERE id = ?', array($id)) == $SESSION->id) {
 		$ticket = $_POST['helpdesk'];
 
+		$ticket['lastmod'] = $DB->GetOne('SELECT MAX(createtime) FROM rtmessages WHERE ticketid = ?',
+			array($id));
+		$allow_reopen_tickets_newer_than = intval(ConfigHelper::getConfig('userpanel.allow_reopen_tickets_newer_than'));
+		if ($allow_reopen_tickets_newer_than && time() - $allow_reopen_tickets_newer_than > $ticket['lastmod']) {
+			header('Location: ?m=helpdesk&op=view&id=' . $id);
+			die;
+		}
+
 		$ticket['body'] = strip_tags($ticket['body']);
 		$ticket['subject'] = strip_tags($ticket['subject']);
 		$ticket['inreplyto'] = intval($ticket['inreplyto']);
@@ -453,10 +461,7 @@ function module_main() {
 		}
 	}
 
-	if ($helpdesklist = $LMS->GetCustomerTickets($SESSION->id))
-		foreach ($helpdesklist as $idx => $key)
-			$helpdesklist[$idx]['lastmod'] = $LMS->DB->GetOne('SELECT MAX(createtime) FROM rtmessages WHERE ticketid = ?',
-				array($key['id']));
+	$helpdesklist = $LMS->GetCustomerTickets($SESSION->id);
 
 	$queues = $LMS->DB->GetAll('SELECT id, name FROM rtqueues WHERE id IN ('
 		. str_replace(';', ',', ConfigHelper::getConfig('userpanel.queues')) . ')');
