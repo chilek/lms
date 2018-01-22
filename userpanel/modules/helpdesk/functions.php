@@ -47,6 +47,12 @@ if (defined('USERPANEL_SETUPMODE')) {
 		$SMARTY->assign('default_userid', ConfigHelper::getConfig('userpanel.default_userid'));
 		$SMARTY->assign('lms_url', ConfigHelper::getConfig('userpanel.lms_url'));
 		$SMARTY->assign('categories', $categories);
+
+		$allow_reopen_tickets_newer_than = ConfigHelper::getConfig('userpanel.allow_reopen_tickets_newer_than');
+		if (empty($allow_reopen_tickets_newer_than))
+			$allow_reopen_tickets_newer_than = '';
+		$SMARTY->assign('allow_reopen_tickets_newer_than', $allow_reopen_tickets_newer_than);
+
 		$SMARTY->display('module:helpdesk:setup.html');
 	}
 
@@ -67,6 +73,8 @@ if (defined('USERPANEL_SETUPMODE')) {
 		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'lms_url\'',array($_POST['lms_url']));
 		$categories = array_keys((isset($_POST['lms_categories']) ? $_POST['lms_categories'] : array()));
 		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = \'userpanel\' AND var = \'default_categories\'', array(implode(',', $categories)));
+		$DB->Execute('UPDATE uiconfig SET value = ? WHERE section = ? AND var = ?',
+			array(intval($_POST['allow_reopen_tickets_newer_than']), 'userpanel' , 'allow_reopen_tickets_newer_than'));
 		header('Location: ?m=userpanel&module=helpdesk');
 	}
 }

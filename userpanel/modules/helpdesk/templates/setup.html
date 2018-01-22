@@ -86,6 +86,14 @@
 			{/foreach}
     		</TD>
 	    </TR>
+		<TR>
+			<TD width="1%" style="vertical-align: top;" nowrap>
+				{trans("Allow to reopen tickets newer than:")}
+			</TD>
+			<TD width="99%" nowrap>
+				<input type="text" name="allow_reopen_tickets_newer_than" value="{$allow_reopen_tickets_newer_than}"> {trans("[s]")}
+			</TD>
+		</TR>
 	</TABLE>
 	</FORM>
 	<p align="right">
