@@ -4,7 +4,7 @@
 /*
  * LMS version 1.11-git
  *
- *  (C) Copyright 2001-2017 LMS Developers
+ *  (C) Copyright 2001-2018 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -56,7 +56,7 @@ foreach ($short_to_longs as $short => $long)
 if (array_key_exists('version', $options)) {
     print <<<EOF
 lms-teryt.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2018 LMS Developers
 
 EOF;
     exit(0);
@@ -65,7 +65,7 @@ EOF;
 if (array_key_exists('help', $options)) {
     print <<<EOF
 lms-teryt.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2018 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini alternate config file (default: /etc/lms/lms.ini);
 -h, --help                         print this help and exit;
@@ -87,7 +87,7 @@ $quiet = array_key_exists('quiet', $options);
 if (!$quiet) {
     print <<<EOF
 lms-teryt.php
-(C) 2001-2017 LMS Developers
+(C) 2001-2018 LMS Developers
 
 EOF;
 }
@@ -156,15 +156,17 @@ $SYSLOG = SYSLOG::getInstance();
  * \param  array $row single row to parse
  * \return array       associative array with paremeters
  */
-function parse_teryt_building_row( $row ) {
-	static $column_names = array('id', 'woj', 'powiat', 'gmina', 'terc', 'miejscowosc',
+function parse_teryt_building_row($row) {
+	static $column_names = array('woj', 'powiat', 'gmina', 'terc', 'miejscowosc',
 		'simc', 'ulica', 'ulic', 'building_num', 'longitude', 'latitude');
 
-	if ( count($column_names) == count($row) ) {
-        return array_combine($column_names, $row);
-    } else {
-	    return null;
-    }
+	if (count($column_names) == count($row)) {
+		$result = array_combine($column_names, $row);
+		$result['longitude'] = str_replace(',', '.', $result['longitude']);
+		$result['latitude'] = str_replace(',', '.', $result['latitude']);
+		return $result;
+	} else
+		return null;
 }
 
 /*!
@@ -273,8 +275,8 @@ ini_set('memory_limit', '512M');
 $stderr = fopen('php://stderr', 'w');
 
 define('PROGRESS_ROW_COUNT', 1000);
-define('BUILDING_BASE_ZIP_NAME', 'baza_punktow_adresowych_2016.zip');
-define('BUILDING_BASE_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2016.zip');
+define('BUILDING_BASE_ZIP_NAME', 'baza_punktow_adresowych_2017.zip');
+define('BUILDING_BASE_ZIP_URL', 'https://form.teleinfrastruktura.gov.pl/help-files/baza_punktow_adresowych_2017.zip');
 
 $only_unique_city_matches = isset($options['only-unique-city-matches']);
 
@@ -329,7 +331,7 @@ else
 		die;
 	}
 
-$building_base_name = $teryt_dir . DIRECTORY_SEPARATOR . 'baza_punktow_adresowych_2016.csv';
+$building_base_name = $teryt_dir . DIRECTORY_SEPARATOR . 'siis_adresy_2018_v2.csv';
 
 //==============================================================================
 // Download required files
@@ -488,7 +490,7 @@ if ( isset($options['fetch']) ) {
 	        $building_base_name = $zip->getNameIndex(0);
 	    } else if ( $numFiles > 1 ) {
 	        for ($i = 0; $i < $numFiles; ++$i) {
-	            if ( preg_match('/baza_punktow_adresowych/', $v) ) {
+	            if ( preg_match('/siis_adresy/', $v) ) {
 	                $building_base_name = $v;
 	                break;
 	            }
