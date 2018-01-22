@@ -179,6 +179,9 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to select issued document type for assignments [chilan]
   - enhancement: helpdesk/rt: introduced ticket priorities [interduo]
   - enhancement: allow to check all items with one click in lms-ui-multiselect [chilan]
+  - enhacement: userpanel: allow to limit reopening helpdesk tickets to newer than
+    configured seconds (userpanel.allow_reopen_tickets_newer_than configuration variable)
+    [chilan]
 
 version 1.11.22 (2017-06-08):
 
