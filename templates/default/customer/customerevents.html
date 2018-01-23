@@ -15,7 +15,7 @@
 		</TD>
 		<TD class="text-right nobr">
 			<A href="?m=eventadd&customerid={$customerinfo.id}">{trans("New Event")} &raquo;</A>&nbsp;
-			<A href="?m={$layout.module}&id={$customerinfo.id}&allevents={if $allevents}0{else}1{/if}">{if $allevents}{trans("Hide closed")}{else}{trans("Show closed")}{/if} &raquo;</A>
+			<A href="?m={$layout.module}&id={if $nodeinfo.id}{$nodeinfo.id}{else}{$customerinfo.id}{/if}&allevents={if $allevents}0{else}1{/if}">{if $allevents}{trans("Hide closed")}{else}{trans("Show closed")}{/if} &raquo;</A>
 		</TD>
 	</TR>
 	</THEAD>
