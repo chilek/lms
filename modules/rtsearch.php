@@ -90,6 +90,8 @@ function RTSearch($search, $order='createtime,desc')
 		$where[] = 'queueid IN ('.implode(',', $search['queue']).')';
 	elseif(!empty($search['queue']))
 		$where[] = 'queueid = '.intval($search['queue']);
+	else
+		return null;
 	if(isset($search['catids']))
 		$where[] = 'tc.categoryid IN ('.implode(',', $search['catids']).')';
 
