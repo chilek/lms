@@ -166,6 +166,27 @@ if (isset($_POST['nodedata']))
 	        $error['access'] = trans('Node owner is not connected!');
 	}
 
+	// check if customer address is selected or if default location address exists
+	// if both are not fullfilled we generate user interface warning
+	$customer_addresses_warning = $_POST['customer_addresses_warning'];
+	if (!$customer_addresses_warning && isset($nodedata['address_id'])
+		&& $nodedata['address_id'] == -1 && !empty($nodedata['ownerid'])) {
+		$addresses = $LMS->getCustomerAddresses($nodedata['ownerid'], true);
+		if (count($addresses) > 1) {
+			$i = 0;
+			foreach ($addresses as $address) {
+				if ($address['location_address_type'] == DEFAULT_LOCATION_ADDRESS)
+					break;
+				$i++;
+			}
+			if ($i == count($addresses)) {
+				$customer_addresses_warning = 1;
+				$error['address_id'] = trans('No address has been selected!');
+			}
+		}
+	}
+	$SMARTY->assign('customer_addresses_warning', $customer_addresses_warning);
+
 	if ($nodedata['netdev']) {
 		$ports = $DB->GetOne('SELECT ports FROM netdevices WHERE id = ?', array($nodedata['netdev']));
 		$takenports = $LMS->CountNetDevLinks($nodedata['netdev']);
@@ -270,6 +291,22 @@ if (isset($_POST['nodedata']))
 	$nodedata['linktype'] = intval(ConfigHelper::getConfig('phpui.default_linktype', LINKTYPE_WIRE));
 	$nodedata['linktechnology'] = intval(ConfigHelper::getConfig('phpui.default_linktechnology', 0));
 	$nodedata['linkspeed'] = intval(ConfigHelper::getConfig('phpui.default_linkspeed', 100000));
+
+	// check if customer address is selected or if default location address exists
+	// if both are not fullfilled we generate user interface warning
+	if (isset($_GET['ownerid'])) {
+		$addresses = $LMS->getCustomerAddresses($_GET['ownerid'], true);
+		if (count($addresses) > 1) {
+			$i = 0;
+			foreach ($addresses as $address) {
+				if ($address['location_address_type'] == DEFAULT_LOCATION_ADDRESS)
+					break;
+				$i++;
+			}
+			if ($i == count($addresses))
+				$error['address_id'] = trans('No address has been selected!');
+		}
+	}
 }
 
 if (empty($nodedata['macs']))
