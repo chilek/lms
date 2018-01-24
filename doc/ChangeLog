@@ -182,6 +182,7 @@ version ?.??.?? (????-??-??):
   - enhacement: userpanel: allow to limit reopening helpdesk tickets to newer than
     configured seconds (userpanel.allow_reopen_tickets_newer_than configuration variable)
     [chilan]
+  - cleanup: mysql and mysqli database types point to mysqli php extension [chilan]
 
 version 1.11.22 (2017-06-08):
 
