@@ -91,8 +91,6 @@ class LMSDB
 
         switch ($dbtype) {
             case self::MYSQL:
-                $db = new LMSDB_driver_mysql($dbhost, $dbuser, $dbpasswd, $dbname);
-                break;
             case self::MYSQLI:
                 $db = new LMSDB_driver_mysqli($dbhost, $dbuser, $dbpasswd, $dbname);
                 break;
