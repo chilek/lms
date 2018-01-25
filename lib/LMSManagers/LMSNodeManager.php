@@ -368,12 +368,18 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 				inet_ntoa(n.ipaddr_pub) AS ip_pub, n.mac, n.name, n.ownerid, n.access, n.warning,
 				n.netdev, n.lastonline, n.info, '
 				. $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS owner, net.name AS netname, n.location,
-				lb.name AS borough_name, lb.type AS borough_type,
-				ld.name AS district_name, ls.name AS state_name ';
+				lc.ident AS city_ident,
+				lb.name AS borough_name, lb.ident AS borough_ident,
+				lb.type AS borough_type,
+				ld.name AS district_name, ld.ident AS district_ident,
+				ls.name AS state_name, ls.ident AS state_ident,
+				lst.ident AS street_ident,
+				n.location_house, n.location_flat ';
 		}
 		$sql .= 'FROM vnodes n 
 				JOIN customerview c ON (n.ownerid = c.id)
-				JOIN networks net ON net.id = n.netid 
+				JOIN networks net ON net.id = n.netid
+				LEFT JOIN location_streets lst ON lst.id = n.location_street
 				LEFT JOIN location_cities lc ON lc.id = n.location_city
 				LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
 				LEFT JOIN location_districts ld ON ld.id = lb.districtid
@@ -406,16 +412,23 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 			$nodelist = $this->db->GetAll($sql);
 
 			if (!empty($nodelist)) {
-				foreach ($nodelist as $idx => $row) {
+				foreach ($nodelist as &$row) {
 					($row['access']) ? $totalon++ : $totaloff++;
 
 					// if location is empty and owner is set then heirdom address from owner
 					if ( !$row['location'] && $row['ownerid'] ) {
 						global $LMS;
 
-						$nodelist[$idx]['location'] = $LMS->getAddressForCustomerStuff( $row['ownerid'] );
+						$row['location'] = $LMS->getAddressForCustomerStuff( $row['ownerid'] );
 					}
+
+					$row['terc'] = empty($row['state_ident']) ? null
+						: $row['state_ident'] . $row['district_ident']
+						. $row['borough_ident'] . $row['borough_type'];
+					$row['simc'] = empty($row['city_ident']) ? null : $row['city_ident'];
+					$row['ulic'] = empty($row['street_ident']) ? null : $row['street_ident'];
 				}
+				unset($row);
 
 				$nodelist['total'] = sizeof($nodelist);
 				$nodelist['order'] = $order;

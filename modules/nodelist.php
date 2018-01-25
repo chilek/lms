@@ -24,71 +24,88 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Nodes List');
+if ($api) {
+	$o = 'name,asc';
+	$search = null;
+	$n = $s = $g = $ng = $per_page = $offset = null;
+} else {
+	$layout['pagetitle'] = trans('Nodes List');
 
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+	$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if(!isset($_GET['o']))
-	$SESSION->restore('nlo', $o);
-else
-	$o = $_GET['o'];
-$SESSION->save('nlo', $o);
+	if (!isset($_GET['o']))
+		$SESSION->restore('nlo', $o);
+	else
+		$o = $_GET['o'];
+	$SESSION->save('nlo', $o);
 
-if(!isset($_GET['s']))
-	$SESSION->restore('nls', $s);
-else
-	$s = $_GET['s'];
-$SESSION->save('nls', $s);
+	if (!isset($_GET['s']))
+		$SESSION->restore('nls', $s);
+	else
+		$s = $_GET['s'];
+	$SESSION->save('nls', $s);
 
-if(!isset($_GET['n']))
-	$SESSION->restore('nln', $n);
-else
-	$n = $_GET['n'];
-$SESSION->save('nln', $n);
+	if (!isset($_GET['n']))
+		$SESSION->restore('nln', $n);
+	else
+		$n = $_GET['n'];
+	$SESSION->save('nln', $n);
 
-if(!isset($_GET['g']))
-	$SESSION->restore('nlg', $g);
-else
-	$g = $_GET['g'];
-$SESSION->save('nlg', $g);
+	if (!isset($_GET['g']))
+		$SESSION->restore('nlg', $g);
+	else
+		$g = $_GET['g'];
+	$SESSION->save('nlg', $g);
 
-if(!isset($_GET['ng']))
-	$SESSION->restore('nlng', $ng);
-else
-	$ng = $_GET['ng'];
-$SESSION->save('nlng', $ng);
+	if (!isset($_GET['ng']))
+		$SESSION->restore('nlng', $ng);
+	else
+		$ng = $_GET['ng'];
+	$SESSION->save('nlng', $ng);
 
-if(!isset($_GET['p']))
-	$SESSION->restore('nlfp', $p);
-else
-	$p = $_GET['p'];
-$SESSION->save('nlfp', $p);
+	if (!isset($_GET['p']))
+		$SESSION->restore('nlfp', $p);
+	else
+		$p = $_GET['p'];
+	$SESSION->save('nlfp', $p);
 
-$total = intval($LMS->GetNodeList($o, array('project' => $p), NULL, $n, $s, $g, $ng, null, null, true));
+	$search = array('project' => $p);
 
-$page = (!isset($_GET['page']) ? 1 : intval($_GET['page']));
-$per_page = intval(ConfigHelper::getConfig('phpui.nodelist_pagelimit', $total));
-$offset = ($page - 1) * $per_page;
+	$total = intval($LMS->GetNodeList($o, $search, NULL, $n, $s, $g, $ng, null, null, true));
 
-$nodelist = $LMS->GetNodeList($o, array('project' => $p), NULL, $n, $s, $g, $ng, $per_page, $offset);
-$pagination = LMSPaginationFactory::getPagination($page, $total, $per_page, ConfigHelper::checkConfig('phpui.short_pagescroller'));
+	$page = (!isset($_GET['page']) ? 1 : intval($_GET['page']));
+	$per_page = intval(ConfigHelper::getConfig('phpui.nodelist_pagelimit', $total));
+	$offset = ($page - 1) * $per_page;
+}
 
-$listdata['total'] = $nodelist['total'];
-$listdata['order'] = $nodelist['order'];
-$listdata['direction'] = $nodelist['direction'];
-$listdata['totalon'] = $nodelist['totalon'];
-$listdata['totaloff'] = $nodelist['totaloff'];
-$listdata['network'] = $n;
-$listdata['customergroup'] = $g;
-$listdata['nodegroup'] = $ng;
-$listdata['invprojectid'] = $p;
-$listdata['state'] = $s;
+$nodelist = $LMS->GetNodeList($o, $search, NULL, $n, $s, $g, $ng, $per_page, $offset);
+
+if (!$api) {
+	$pagination = LMSPaginationFactory::getPagination($page, $total, $per_page, ConfigHelper::checkConfig('phpui.short_pagescroller'));
+
+	$listdata['total'] = $nodelist['total'];
+	$listdata['order'] = $nodelist['order'];
+	$listdata['direction'] = $nodelist['direction'];
+	$listdata['totalon'] = $nodelist['totalon'];
+	$listdata['totaloff'] = $nodelist['totaloff'];
+	$listdata['network'] = $n;
+	$listdata['customergroup'] = $g;
+	$listdata['nodegroup'] = $ng;
+	$listdata['invprojectid'] = $p;
+	$listdata['state'] = $s;
+}
 
 unset($nodelist['total']);
 unset($nodelist['order']);
 unset($nodelist['direction']);
 unset($nodelist['totalon']);
 unset($nodelist['totaloff']);
+
+if ($api) {
+	header('Content-Type: application/json');
+	echo json_encode(array_values($nodelist));
+	die;
+}
 
 if ($SESSION->is_set('nlp') && !isset($_GET['page']))
 	$SESSION->restore('nlp', $_GET['page']);
