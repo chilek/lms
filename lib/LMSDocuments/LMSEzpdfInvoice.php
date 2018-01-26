@@ -651,7 +651,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		// table header
 		$this->backend->ezSetY($y);
 		$data = array(0=>$cols);
-		$y = $this->backend->ezTable($data, $cols, '', $params);
+		$y = $this->backend->ezTable($data, $cols, '', $params) - 2;
 		$data = array();
 
 		foreach ($cols as $name => $text) {
@@ -724,7 +724,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 			$data2[0]['total'] = moneyf($this->data['invoice']['total']);
 
 			$this->backend->ezSetY($y);
-			$y = $this->backend->ezTable($data2, NULL, '', $params2);
+			$y = $this->backend->ezTable($data2, NULL, '', $params2) - 2;
 			$data2 = array();
 
 			$fy = $y + $this->backend->GetFontHeight($font_size) / 2;
@@ -797,7 +797,7 @@ class LMSEzpdfInvoice extends LMSInvoice {
 		$data2[0]['total'] = moneyf($this->data['total']);
 
 		$this->backend->ezSetY($y);
-		$y = $this->backend->ezTable($data2, NULL, '', $params2);
+		$y = $this->backend->ezTable($data2, NULL, '', $params2) - 2;
 		$data2 = array();
 
 		$fy = $y + $this->backend->GetFontHeight($font_size) / 2;
