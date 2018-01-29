@@ -315,7 +315,7 @@ if (isset($_GET['print']) && $_GET['print'] == 'cached') {
 					$ten = str_replace('-', '', $invoice['ten']);
 					if (preg_match('/^[A-Z]{2}[0-9]+$/', $ten))
 						$ue = true;
-					elseif (!preg_match('/^[0-9]{10}$/', $ten))
+					elseif (!empty($invoice['countryid']) && !empty($invoice['division_countryid']) && $invoice['countryid'] != $invoice['division_countryid'])
 						$foreign = true;
 				}
 
