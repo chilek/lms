@@ -1266,8 +1266,8 @@ foreach ($netnodes as $netnodename => &$netnode) {
 					'zas_ulic' => sprintf("%05d", $teryt['address_symul']),
 					'zas_house' => $teryt['address_budynek'],
 					'zas_zip' => $teryt['location_zip'],
-					'zas_latitude' => empty($netrange['latitude']) ? $netnode['latitude'] : $netrange['latitude'],
-					'zas_longitude' => empty($netrange['longitude']) ? $netnode['longitude'] : $netrange['longitude'],
+					'zas_latitude' => empty($netrange['latitude']) ? $netnode['latitude'] : str_replace(',', '.', $netrange['latitude']),
+					'zas_longitude' => empty($netrange['longitude']) ? $netnode['longitude'] : str_replace(',', '.', $netrange['longitude']),
 					'zas_tech' => $technology,
 					'zas_ltech' => $linktechnology,
 				);
