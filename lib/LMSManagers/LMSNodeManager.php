@@ -367,7 +367,10 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 			$sql .= 'SELECT n.id AS id, n.ipaddr, inet_ntoa(n.ipaddr) AS ip, ipaddr_pub,
 				inet_ntoa(n.ipaddr_pub) AS ip_pub, n.mac, n.name, n.ownerid, n.access, n.warning,
 				n.netdev, n.lastonline, n.info, n.longitude, n.latitude, n.linktype, n.linktechnology, n.linkspeed,
-				p.name AS project, '
+				(CASE WHEN n.invprojectid = ' . INV_PROJECT_SYSTEM . ' THEN
+						(CASE WHEN nd.invprojectid = ' . INV_PROJECT_SYSTEM . ' THEN pnn.name ELSE pnd.name END)
+					ELSE p.name END) AS project,
+				nd.netnodeid AS netnodeid, '
 				. $this->db->Concat('c.lastname', "' '", 'c.name') . ' AS owner, net.name AS netname, n.location,
 				lc.ident AS city_ident,
 				lb.name AS borough_name, lb.ident AS borough_ident,
@@ -380,7 +383,11 @@ class LMSNodeManager extends LMSManager implements LMSNodeManagerInterface
 		$sql .= 'FROM vnodes n 
 				JOIN customerview c ON (n.ownerid = c.id)
 				JOIN networks net ON net.id = n.netid
+				LEFT JOIN netdevices nd ON nd.id = n.netdev
+				LEFT JOIN netnodes nn ON nn.id = nd.netnodeid
 				LEFT JOIN invprojects p ON p.id = n.invprojectid
+				LEFT JOIN invprojects pnd ON pnd.id = nd.invprojectid
+				LEFT JOIN invprojects pnn ON pnn.id = nn.invprojectid
 				LEFT JOIN location_streets lst ON lst.id = n.location_street
 				LEFT JOIN location_cities lc ON lc.id = n.location_city
 				LEFT JOIN location_boroughs lb ON lb.id = lc.boroughid
