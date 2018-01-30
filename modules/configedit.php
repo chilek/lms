@@ -24,15 +24,26 @@
  *  $Id$
  */
 
-function ConfigOptionExists($id) 
-{
-	global $DB;
-	return ($DB->GetOne('SELECT id FROM uiconfig WHERE id = ?', array($id)) ? TRUE : FALSE);
+function ConfigOptionExists($params) {
+	extract($params);
+	$DB = LMSDB::getInstance();
+	if (isset($section))
+		return $DB->GetOne('SELECT id FROM uiconfig WHERE section = ? AND var = ?',
+			array($section, $variable));
+	else
+		return $DB->GetOne('SELECT id FROM uiconfig WHERE id = ?', array($id));
 }
 
-$id = intval($_GET['id']);
+if (isset($_GET['s']) && isset($_GET['v']))
+	$params = array(
+		'section' => $_GET['s'],
+		'variable' => $_GET['v'],
+	);
+else
+	$params['id'] = $_GET['id'];
 
-if ($id && !ConfigOptionExists($id))
+$id = ConfigOptionExists($params);
+if (empty($id))
 	$SESSION->redirect('?m=configlist');
 
 if (isset($_GET['statuschange'])) {
