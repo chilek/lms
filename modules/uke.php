@@ -1541,9 +1541,6 @@ if ( $max_range > 0 ) {
                     $node = $netnodes[ $closest_p['netnode'] ];
 
                     if ( empty($b['street_ident'])) {
-                        $b['street']       = "ul. SPOZA ZAKRESU";
-                        $b['street_ident'] = "99998";
-                    } else if ( empty($b['street']) ) {
                         $b['street']       = "BRAK ULICY";
                         $b['street_ident'] = "99999";
                     }
