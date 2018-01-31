@@ -1480,7 +1480,7 @@ if ( $max_range > 0 ) {
     $left   = str_replace(',', '.', $left);
 
     $buildings = $DB->GetAll('
-        SELECT lc.name as city, building_num as house, longitude as "0", latitude as "1",
+        SELECT lc.name as city, building_num as house, longitude, latitude,
             ' . $DB->Concat('lst.name', "' '", 'CASE WHEN ls.name2 is NOT NULL THEN '
                 . $DB->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END') . ' AS street,
             ls.ident as street_ident, lc.ident as city_ident, lbor.name as borough, ldist.name as district,
@@ -1534,7 +1534,7 @@ if ( $max_range > 0 ) {
             foreach ( $buildings as $k=>$b ) {
                 $closest_p = $kd->findNN( $b );
 
-                $dist = getGPSdistance( $closest_p[0], $closest_p[1], $b[0], $b[1] );
+                $dist = getGPSdistance( $closest_p[0], $closest_p[1], $b['longitude'], $b['latitude'] );
                 $key  = strtolower( $b['city'] . '|' . $b['street'] . '|' . $b['house'] );
 
                 if ( $dist < $link['range'] && !isset($customers[$key]) ) {
@@ -1565,8 +1565,8 @@ if ( $max_range > 0 ) {
                             'zas_ulic'               => sprintf("%05d", $b['street_ident']),
                             'zas_house'              => $b['house'],
                             'zas_zip'                => $node['location_zip'],
-                            'zas_latitude'           => $b[1],
-                            'zas_longitude'          => $b[0],
+                            'zas_latitude'           => $b['latitude'],
+                            'zas_longitude'          => $b['longitude'],
                             'zas_tech'               => $linktypes[$link['type']]['technologia'],
                             'zas_ltech'              => $LINKTECHNOLOGIES[$link['type']][$tech],
                             'zas_phonepots'          => 'Nie',
