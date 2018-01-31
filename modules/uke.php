@@ -1481,7 +1481,8 @@ if ( $max_range > 0 ) {
 
     $buildings = $DB->GetAll('
         SELECT lc.name as city, building_num as house, longitude as "0", latitude as "1",
-            lst.name || \' \' || CASE WHEN ls.name2 is NOT NULL AND char_length(ls.name2) > 0 THEN ls.name2 || \' \' || ls.name ELSE ls.name END as street,
+            ' . $DB->Concat('lst.name', "' '", 'CASE WHEN ls.name2 is NOT NULL THEN '
+                . $DB->Concat('ls.name2', "' '", 'ls.name') . ' ELSE ls.name END') . ' AS street,
             ls.ident as street_ident, lc.ident as city_ident, lbor.name as borough, ldist.name as district,
             lsta.name as state, lsta.ident as state_ident, ldist.ident as district_ident, lbor.ident as borough_ident,
             lbor.type as borough_type
