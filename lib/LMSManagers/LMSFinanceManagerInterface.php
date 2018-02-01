@@ -108,6 +108,8 @@ interface LMSFinanceManagerInterface
 
 	public function isDocumentPublished($id);
 
+	public function isDocumentReferenced($id);
+
 	public function AddReceipt(array $receipt);
 
 	public function GetOpenedLiabilities($customerid);

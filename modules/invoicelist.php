@@ -43,7 +43,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 			$sqlord = ' ORDER BY d.cdate';
 		break;
 		case 'number':
-			$sqlord = ' ORDER BY number';
+			$sqlord = ' ORDER BY d.number';
 		break;
 		case 'value':
 			$sqlord = ' ORDER BY value';
@@ -52,7 +52,7 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 			$sqlord = ' ORDER BY count';
 		break;
 		case 'name':
-			$sqlord = ' ORDER BY name';
+			$sqlord = ' ORDER BY d.name';
 		break;
 	}
 	
@@ -63,17 +63,17 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 	        switch($cat)
 		{
 			case 'number':
-				$where = ' AND number = '.intval($search);
+				$where = ' AND d.number = '.intval($search);
 			break;
 			case 'cdate':
-				$where = ' AND cdate >= '.intval($search).' AND cdate < '.(intval($search)+86400);
+				$where = ' AND d.cdate >= '.intval($search).' AND d.cdate < '.(intval($search)+86400);
 			break;
 			case 'month':
 				$last = mktime(23,59,59, date('n', $search) + 1, 0, date('Y', $search));
-				$where = ' AND cdate >= '.intval($search).' AND cdate <= '.$last;
+				$where = ' AND d.cdate >= '.intval($search).' AND d.cdate <= '.$last;
 			break;
 			case 'ten':
-			        $where = ' AND ten = '.$DB->Escape($search);
+			        $where = ' AND d.ten = '.$DB->Escape($search);
 			break;
 			case 'customerid':
 				$where = ' AND d.customerid = '.intval($search);
@@ -82,10 +82,10 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 				$where = ' AND UPPER(d.name) ?LIKE? UPPER('.$DB->Escape('%'.$search.'%').')';
 			break;
 			case 'address':
-				$where = ' AND UPPER(address) ?LIKE? UPPER('.$DB->Escape('%'.$search.'%').')';
+				$where = ' AND UPPER(d.address) ?LIKE? UPPER('.$DB->Escape('%'.$search.'%').')';
 			break;
 			case 'value':
-				$having = ' HAVING CASE reference WHEN 0 THEN
+				$having = ' HAVING CASE d.reference WHEN 0 THEN
 					    SUM(a.value*a.count) 
 					    ELSE
 					    SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
@@ -97,17 +97,19 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 	if($hideclosed)
 		$where .= ' AND closed = 0';
 
-	if($res = $DB->Exec('SELECT d.id AS id, number, cdate, type,
-			d.customerid, d.name, address, zip, city, countries.name AS country, numberplans.template, closed, cancelled, published,
-			CASE WHEN reference IS NULL THEN
+	if($res = $DB->Exec('SELECT d.id AS id, d.number, d.cdate, d.type,
+			d.customerid, d.name, d.address, d.zip, d.city, countries.name AS country, numberplans.template, d.closed, d.cancelled, d.published,
+			CASE WHEN d.reference IS NULL THEN
 			    SUM(a.value*a.count)
 			ELSE
 			    SUM((a.value+b.value)*(a.count+b.count)) - SUM(b.value*b.count)
 			END AS value, 
 			COUNT(a.docid) AS count,
-			i.sendinvoices
+			i.sendinvoices,
+			(CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced 
 			FROM documents d
 			JOIN invoicecontents a ON (a.docid = d.id)
+			LEFT JOIN documents d2 ON d2.reference = d.id
 			LEFT JOIN invoicecontents b ON (d.reference = b.docid AND a.itemid = b.itemid)
 			LEFT JOIN countries ON (countries.id = d.countryid)
 			LEFT JOIN numberplans ON (d.numberplanid = numberplans.id)
@@ -122,15 +124,15 @@ function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL,
 				WHERE e.userid = lms_current_user()
 				) e ON (e.customerid = d.customerid) 
 			WHERE e.customerid IS NULL AND '
-				. ($proforma ? 'type = ' . DOC_INVOICE_PRO
-					: '(type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR type = '.DOC_INVOICE : '').')')
+				. ($proforma ? 'd.type = ' . DOC_INVOICE_PRO
+					: '(d.type = '.DOC_CNOTE.(($cat != 'cnotes') ? ' OR d.type = '.DOC_INVOICE : '').')')
 			.$where
 			.(!empty($group['group']) ?
 			            ' AND '.(!empty($group['exclude']) ? 'NOT' : '').' EXISTS (
 			            SELECT 1 FROM customerassignments WHERE customergroupid = '.intval($group['group']).'
 			            AND customerid = d.customerid)' : '')
-			.' GROUP BY d.id, number, cdate, d.customerid, 
-			d.name, address, zip, city, numberplans.template, closed, type, reference, countries.name, cancelled, published, sendinvoices '
+			.' GROUP BY d.id, d2.id, d.number, d.cdate, d.customerid, 
+			d.name, d.address, d.zip, d.city, numberplans.template, d.closed, d.type, d.reference, countries.name, d.cancelled, d.published, sendinvoices '
 			.(isset($having) ? $having : '')
 			.$sqlord.' '.$direction))
 	{

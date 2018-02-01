@@ -30,6 +30,9 @@ if ($id && $_GET['is_sure'] == '1') {
 	if ($LMS->isDocumentPublished($id) && !ConfigHelper::checkPrivilege('published_document_modification'))
 		return;
 
+	if ($LMS->isDocumentReferenced($_GET['id']))
+		return;
+
 	$LMS->InvoiceDelete($id);
 }
 

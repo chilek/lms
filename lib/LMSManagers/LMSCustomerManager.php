@@ -224,10 +224,12 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                 cash.value AS value, taxes.label AS tax, cash.customerid AS customerid,
                 comment, docid, vusers.name AS username,
                 documents.type AS doctype, documents.closed AS closed,
-                documents.published, cash.importid
+                documents.published, cash.importid,
+                (CASE WHEN d2.id IS NULL THEN 0 ELSE 1 END) AS referenced
             FROM cash
             LEFT JOIN vusers ON vusers.id = cash.userid
             LEFT JOIN documents ON documents.id = docid
+            LEFT JOIN documents d2 ON d2.reference = documents.id
             LEFT JOIN taxes ON cash.taxid = taxes.id
             WHERE cash.customerid = ?'
             . ($totime ? ' AND time <= ' . intval($totime) : '') . ')
@@ -236,7 +238,8 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             		-ic.value, NULL AS tax, d.customerid,
             		ic.description AS comment, d.id AS docid, vusers.name AS username,
             		d.type AS doctype, d.closed AS closed,
-            		d.published, NULL AS importid
+            		d.published, NULL AS importid,
+            		0 AS referenced
             	FROM documents d
             	JOIN invoicecontents ic ON ic.docid = d.id
             	LEFT JOIN vusers ON vusers.id = d.userid
@@ -666,7 +669,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
             	SUM(CASE WHEN b.value < 0 THEN b.value ELSE 0 END) AS below ';
         } else {
             $sql .= 'SELECT c.id AS id, c.lastname, c.name, ' . $this->db->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername,
-		c.type,
+            	c.type,
                 status, full_address, address, zip, city, countryid, countries.name AS country, cc.email, ccp.phone, ten, ssn, c.info AS info,
                 extid, message, c.divisionid, c.paytime AS paytime, COALESCE(b.value, 0) AS balance,
                 COALESCE(t.value, 0) AS tariffvalue, s.account, s.warncount, s.online,

@@ -28,7 +28,7 @@ $action = isset($_GET['action']) ? $_GET['action'] : NULL;
 
 if (isset($_GET['id']) && $action == 'init')
 {
-	if ($DB->GetOne('SELECT id FROM documents WHERE reference = ?', array($_GET['id'])))
+	if ($LMS->isDocumentReferenced($_GET['id']))
 		$SESSION->redirect('?m=invoicelist');
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
 

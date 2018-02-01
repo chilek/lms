@@ -1755,14 +1755,17 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
     public function DelBalance($id)
     {
-        $row = $this->db->GetRow('SELECT cash.customerid, docid, itemid, documents.type AS doctype, importid
+        $row = $this->db->GetRow('SELECT cash.customerid, docid, itemid, documents.type AS doctype, importid,
+						(CASE WHEN d2 IS NULL THEN 0 ELSE 1 END) AS referenced
 					FROM cash
 					LEFT JOIN documents ON (docid = documents.id)
+					LEFT JOIN documents d2 ON d2.reference = documents.id
 					WHERE cash.id = ?', array($id));
 
-        if ($row['doctype'] == DOC_INVOICE || $row['doctype'] == DOC_INVOICE_PRO || $row['doctype'] == DOC_CNOTE)
-            $this->InvoiceContentDelete($row['docid'], $row['itemid']);
-        elseif ($row['doctype'] == DOC_RECEIPT)
+        if ($row['doctype'] == DOC_INVOICE || $row['doctype'] == DOC_INVOICE_PRO || $row['doctype'] == DOC_CNOTE) {
+			if (!$row['referenced'])
+        		$this->InvoiceContentDelete($row['docid'], $row['itemid']);
+		} elseif ($row['doctype'] == DOC_RECEIPT)
             $this->ReceiptContentDelete($row['docid'], $row['itemid']);
         elseif ($row['doctype'] == DOC_DNOTE)
             $this->DebitNoteContentDelete($row['docid'], $row['itemid']);
@@ -2001,6 +2004,11 @@ class LMSFinanceManager extends LMSManager implements LMSFinanceManagerInterface
 
 	public function isDocumentPublished($id) {
 		return $this->db->GetOne('SELECT published FROM documents WHERE id = ?', array($id)) == 1;
+	}
+
+	public function isDocumentReferenced($id) {
+		return $this->db->GetOne('SELECT id FROM documents WHERE reference = ?', array($id)) > 0;
+
 	}
 
 	public function AddReceipt(array $receipt) {

@@ -34,6 +34,9 @@ if(isset($_GET['id']) && ($action == 'edit' || $action == 'convert'))
 	if ($LMS->isDocumentPublished($_GET['id']) && !ConfigHelper::checkConfig('privileges.superuser'))
 		return;
 
+	if ($LMS->isDocumentReferenced($_GET['id']))
+		return;
+
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
 
 	$invoice['proforma'] = isset($_GET['proforma']) ? $action : null;

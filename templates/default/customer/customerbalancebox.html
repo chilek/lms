@@ -205,12 +205,14 @@
 							<A class="invoicesend" href="?m=invoicesend&id={$item.docid}"><IMG src="img/mail.gif" alt="{trans("Send invoice")}" title="{trans("Send invoice")}"></A>
 							{/if}
 							{if $item.doctype == $smarty.const.DOC_INVOICE}
+								{if !$item.referenced}
 								<A HREF="?m=invoicenote&id={$item.docid}&action=init"><IMG src="img/eraser.gif" alt="{trans("Revise")}" title="{trans("Revise")}"></A>
+								{/if}
 								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
 								<A href="?m=invoice&id={$item.docid}&dontpublish=1" class="lms-ui-tooltip-invoiceinfo" data-resourceid="{$item.docid}" rel="external"><img src="img/view.gif" alt="{trans("View")}"></A>
 								{/if}
 								<A href="?m=invoice&id={$item.docid}" class="lms-ui-tooltip-invoiceinfo" data-resourceid="{$item.docid}" rel="external"><img src="img/print.gif" alt="{trans("Invoice")}"></A>
-								{if !$item.published || ConfigHelper::checkPrivilege('published_document_modification')}
+								{if !$item.referenced && (!$item.published || ConfigHelper::checkPrivilege('published_document_modification'))}
 								<A href="?m=invoiceedit&id={$item.docid}&action=edit" rel="external"{if $item.published} OnClick="return confirmLink(this, '{trans("Document has been published already! Are you sure you want to edit it despite this?")}');"{/if} class="lms-ui-tooltip-docnumber" data-resourceid="{$item.docid}"><IMG SRC="img/edit.gif" ALT="{trans("Invoice")}"></A>
 								{/if}
 							{elseif $item.doctype == $smarty.const.DOC_INVOICE_PRO}

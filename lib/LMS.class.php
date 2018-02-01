@@ -2563,6 +2563,11 @@ class LMS
 		return $manager->isDocumentPublished($id);
 	}
 
+	public function isDocumentReferenced($id) {
+		$manager = $this->getFinanceManager();
+		return $manager->isDocumentReferenced($id);
+	}
+
 	public function AddReceipt(array $receipt)
 	{
 		$manager = $this->getFinanceManager();
