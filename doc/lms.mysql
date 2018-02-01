@@ -2914,7 +2914,7 @@ URL: %url
 ('userpanel','lms_url','','',0),
 ('userpanel','hide_nodesbox','0','',0),
 ('userpanel','logout_url','','',0),
-('userpanel','owner_stats','0','',0),
+('userpanel','owner_stats','1','',0),
 ('userpanel','default_categories','1','',0),
 ('userpanel','auth_type','1','',0),
 ('userpanel', 'show_confirmed_documents_only', 'false', '', 0),
