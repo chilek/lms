@@ -157,10 +157,10 @@ window.open('?m=note&amp;id={$note}');
 
 			{if !$note.cancelled}
 			{if !$note.published || ConfigHelper::checkPrivilege('published_document_modification')}
-			<a onClick="{if $note.published}if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to cancel it despite this?")}')) return false;{/if}return confirmLink(this, '{t a=$number}Are you sure, you want to cancel debit note \'$a\' from database?{/t}')" href="?m=notecancel&id={$note.id}"><img src="img/cancel.gif" alt="{trans("Cancel")}"title="{trans("Cancel")}"></a>
+			<a onClick="{if $note.published}if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to cancel it despite this?")}')) return false;{/if}return confirmLink(this, '{t a=$number}Are you sure, you want to cancel debit note \'$a\'?{/t}')" href="?m=notecancel&id={$note.id}"><img src="img/cancel.gif" alt="{trans("Cancel")}"title="{trans("Cancel")}"></a>
 			{/if}
 			{else}
-			<a onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to recover cancelled debit note \'$a\' from database?{/t}')" href="?m=notecancel&id={$note.id}&recover=1"><img src="img/recover.gif" alt="{trans("Recover")}"title="{trans("Recover")}"></a>
+			<a onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to recover cancelled debit note \'$a\'?{/t}')" href="?m=notecancel&id={$note.id}&recover=1"><img src="img/recover.gif" alt="{trans("Recover")}"title="{trans("Recover")}"></a>
 			{/if}
 
 			{if !$note.published || ConfigHelper::checkPrivilege('published_document_modification')}

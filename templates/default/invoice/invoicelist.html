@@ -204,10 +204,10 @@ window.open('?m=invoice&id={$invoice.invoice}&original={$invoice.original}&copy=
 			{/if}
 			{if !$invoice.cancelled}
 				{if $invoice.type != $smarty.const.DOC_INVOICE_PRO && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}
-				<a onClick="{if $invoice.published}if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to cancel it despite this?")}')) return false;{/if}return confirmLink(this, '{t a=$number}Are you sure, you want to cancel invoice \'$a\' from database?{/t}')" href="?m=invoicecancel&id={$invoice.id}"><img src="img/cancel.gif" alt="{trans("Cancel")}"title="{trans("Cancel")}"></a>
+				<a onClick="{if $invoice.published}if (!confirmLink(this, '{trans("Document has been published already! Are you sure you want to cancel it despite this?")}')) return false;{/if}return confirmLink(this, '{t a=$number}Are you sure, you want to cancel invoice \'$a\'?{/t}')" href="?m=invoicecancel&id={$invoice.id}"><img src="img/cancel.gif" alt="{trans("Cancel")}"title="{trans("Cancel")}"></a>
 				{/if}
 			{elseif $invoice.cancelled}
-				<a onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to recover cancelled invoice \'$a\' from database?{/t}')" href="?m=invoicecancel&id={$invoice.id}&recover=1"><img src="img/recover.gif" alt="{trans("Recover")}"title="{trans("Recover")}"></a>
+				<a onClick="return confirmLink(this, '{t a=$number}Are you sure, you want to recover cancelled invoice \'$a\'?{/t}')" href="?m=invoicecancel&id={$invoice.id}&recover=1"><img src="img/recover.gif" alt="{trans("Recover")}"title="{trans("Recover")}"></a>
 			{/if}
 			{if $invoice.type == $smarty.const.DOC_INVOICE || $invoice.type ==  $smarty.const.DOC_INVOICE_PRO}
 			{if $invoice.type == $smarty.const.DOC_INVOICE && (!$invoice.published || ConfigHelper::checkPrivilege('published_document_modification'))}

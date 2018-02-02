@@ -3432,9 +3432,10 @@ $_LANG['Assign network to customer'] = 'Przypisz sieć do klienta';
 
 $_LANG['Automatically adjusts the size of the selection list to the number of users when set to 0.'] = 'Automatyczne dopasowanie wielkości listy wyboru do ilości użytkowników jeśli ustawione na 0.';
 
-$_LANG['Are you sure, you want to cancel invoice \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz anulować fakturę \\\'$a\\\' z bazy danych?';
-$_LANG['Are you sure, you want to cancel debit note \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz anulować notę obciążeniową \\\'$a\\\' z bazy danych?';
-$_LANG['Are you sure, you want to recover cancelled invoice \\\'$a\\\' from database?'] = 'Jesteś pewien, że chcesz przywrócić anulowaną fakturę \\\'$a\\\' z bazy danych?';
+$_LANG['Are you sure, you want to cancel invoice \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz anulować fakturę \\\'$a\\\'?';
+$_LANG['Are you sure, you want to cancel debit note \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz anulować notę obciążeniową \\\'$a\\\'?';
+$_LANG['Are you sure, you want to recover cancelled invoice \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz przywrócić anulowaną fakturę \\\'$a\\\'?';
+$_LANG['Are you sure, you want to recover cancelled debit note \\\'$a\\\'?'] = 'Jesteś pewien, że chcesz przywrócić anulowaną notę obciążeniową \\\'$a\\\'?';
 
 $_LANG['User groups'] = 'Grupy użytkowników';
 $_LANG['user group<!syslog>'] = 'grupa użytkowników';
