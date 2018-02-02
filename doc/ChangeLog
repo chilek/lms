@@ -183,7 +183,7 @@ version ?.??.?? (????-??-??):
     configured seconds (userpanel.allow_reopen_tickets_newer_than configuration variable)
     [chilan]
   - cleanup: mysql and mysqli database types point to mysqli php extension [chilan]
-  - enhancement: allow to modify cnote number during its edit [chilan]
+  - enhancement: allow to modify credit note and debit note numbers during their edits [chilan]
 
 version 1.11.22 (2017-06-08):
 
