@@ -184,6 +184,7 @@ version ?.??.?? (????-??-??):
     [chilan]
   - cleanup: mysql and mysqli database types point to mysqli php extension [chilan]
   - enhancement: allow to modify credit note and debit note numbers during their edits [chilan]
+  - enhancement: document cancellation support for debit notes [chilan]
 
 version 1.11.22 (2017-06-08):
 
