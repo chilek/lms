@@ -187,7 +187,6 @@
 						{/if}
 					</td>
 					<script type="text/javascript">
-						var formid = $('form[name="customeradd"]').get(0);
 						new AutoSuggest(formid, $('input[name="customeradd[addresses][1][location_street_name]"]').get(0),
 							'?m=customeradd&ajax=1&mode=street&what=', 0);
 						new AutoSuggest(formid, $('input[name="customeradd[addresses][1][location_city_name]"]').get(0),
@@ -209,11 +208,20 @@
 					</td>
 					<td style="width: 99%;">
 						{$v.prefix = "customeradd[addresses]["|cat:$addr_counter|cat:"]"}
+						{$address_idx = $addr_counter}
 						{$v.default_type = 1}
 						{$v.clear_button = 1}
 						{$addr_counter = $addr_counter + 1}
 						{location_box_expandable data=$v}
 					</td>
+					<script type="text/javascript">
+						new AutoSuggest(formid, $('input[name="customeradd[addresses][{$address_idx}][location_street_name]"]').get(0),
+							'?m=customeradd&ajax=1&mode=street&what=', 0);
+						new AutoSuggest(formid, $('input[name="customeradd[addresses][{$address_idx}][location_city_name]"]').get(0),
+							'?m=customeradd&ajax=1&mode=city&what=', 0);
+						new AutoSuggest(formid, $('input[name="customeradd[addresses][{$address_idx}][location_zip]"]').get(0),
+							'?m=customeradd&ajax=1&mode=zip&what=', 0);
+					</script>
 				</tr>
 				{/if}
 				{/foreach}
