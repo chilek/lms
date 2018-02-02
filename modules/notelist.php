@@ -95,7 +95,7 @@ function GetNotesList($search=NULL, $cat=NULL, $group=NULL, $hideclosed=NULL, $o
 	if($hideclosed)
 		$where .= ' AND closed = 0';
 
-	if($res = $DB->Exec('SELECT d.id AS id, number, cdate, d.template, closed, published,
+	if($res = $DB->Exec('SELECT d.id AS id, number, cdate, d.template, closed, published, cancelled,
 			d.customerid, d.name, address, zip, city, c.name AS country,
 			SUM(n.value) AS value, COUNT(n.docid) AS count
 			FROM documents d
