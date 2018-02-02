@@ -80,6 +80,9 @@ if (isset($_GET['id']) && $action == 'edit') {
 	$cnote['oldcdate'] = $cnote['cdate'];
 	$cnote['oldsdate'] = $cnote['sdate'];
 	$cnote['olddeadline'] = $cnote['deadline'] = $cnote['cdate'] + $cnote['paytime'] * 86400;
+	$cnote['oldnumber'] = $cnote['number'];
+	$cnote['oldnumberplanid'] = $cnote['numberplanid'];
+
 	$SESSION->save('cnote', $cnote);
 	$SESSION->save('cnoteid', $cnote['id']);
 }
@@ -111,6 +114,11 @@ switch ($action) {
 		break;
 
 	case 'setheader':
+
+		$oldcdate = $cnote['oldcdate'];
+		$oldnumber = $cnote['oldnumber'];
+		$oldnumberplanid = $cnote['oldnumberplanid'];
+
 		$oldcnote = $cnote;
 		$cnote = null;
 		$error = NULL;
@@ -118,6 +126,10 @@ switch ($action) {
 		if ($cnote = $_POST['cnote'])
 			foreach ($cnote as $key => $val)
 				$cnote[$key] = $val;
+
+		$cnote['oldcdate'] = $oldcdate;
+		$cnote['oldnumber'] = $oldnumber;
+		$cnote['oldnumberplanid'] = $oldnumberplanid;
 
 		$currtime = time();
 
@@ -162,6 +174,20 @@ switch ($action) {
 
 		if ($cnote['deadline'] < $cnote['cdate'])
 			$error['deadline'] = trans('Deadline date should be later than consent date!');
+
+		if ($cnote['number']) {
+			if (!preg_match('/^[0-9]+$/', $cnote['number']))
+				$error['number'] = trans('Credit note number must be integer!');
+			elseif (($cnote['oldcdate'] != $cnote['cdate'] || $cnote['oldnumber'] != $cnote['number']
+					|| $cnote['oldnumberplanid'] != $cnote['numberplanid']) && $LMS->DocumentExists(array(
+					'number' => $cnote['number'],
+					'doctype' => DOC_CNOTE,
+					'planid' => $cnote['numberplanid'],
+					'cdate' => $cnote['cdate'],
+					'customerid' => $cnote['customerid'],
+				)))
+				$error['number'] = trans('Credit note number $a already exists!', $cnote['number']);
+		}
 
 		$cnote = array_merge($oldcnote, $cnote);
 		break;
@@ -236,6 +262,37 @@ switch ($action) {
 			account, inv_header, inv_footer, inv_author, inv_cplace 
 			FROM vdivisions WHERE id = ?', array($customer['divisionid']));
 
+		if (!$cnote['number'])
+			$cnote['number'] = $LMS->GetNewDocumentNumber(array(
+				'doctype' => DOC_CNOTE,
+				'planid' => $cnote['numberplanid'],
+				'cdate' => $cnote['cdate'],
+				'customerid' => $customer['id'],
+			));
+		else {
+			if (!preg_match('/^[0-9]+$/', $cnote['number']))
+				$error['number'] = trans('Credit note number must be integer!');
+			elseif (($cnote['cdate'] != $cnote['oldcdate'] || $cnote['number'] != $cnote['oldnumber']
+				|| $cnote['numberplanid'] != $cnote['oldnumberplanid']) && $LMS->DocumentExists(array(
+					'number' => $cnote['number'],
+					'doctype' => DOC_CNOTE,
+					'planid' => $cnote['numberplanid'],
+					'cdate' => $cnote['cdate'],
+					'customerid' => $customer['id'],
+				)))
+				$error['number'] = trans('Credit note number $a already exists!', $cnote['number']);
+
+			if ($error) {
+				$cnote['number'] = $LMS->GetNewDocumentNumber(array(
+					'doctype' => DOC_CNOTE,
+					'planid' => $cnote['numberplanid'],
+					'cdate' => $cnote['cdate'],
+					'customerid' => $customer['id'],
+				));
+				$error = null;
+			}
+		}
+
 		$args = array(
 			'cdate' => $cdate,
 			'sdate' => $sdate,
@@ -263,13 +320,25 @@ switch ($action) {
 			'div_inv_footer' => ($division['inv_footer'] ? $division['inv_footer'] : ''),
 			'div_inv_author' => ($division['inv_author'] ? $division['inv_author'] : ''),
 			'div_inv_cplace' => ($division['inv_cplace'] ? $division['inv_cplace'] : ''),
-			SYSLOG::RES_DOC => $iid,
 		);
+		$args['number'] = $cnote['number'];
+		if ($cnote['numberplanid'])
+			$args['fullnumber'] = docnumber(array(
+				'number' => $cnote['number'],
+				'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($cnote['numberplanid'])),
+				'cdate' => $cnote['cdate'],
+				'customerid' => $customer['id'],
+			));
+		else
+			$args['fullnumber'] = null;
+		$args[SYSLOG::RES_NUMPLAN] = $cnote['numberplanid'];
+		$args[SYSLOG::RES_DOC] = $iid;
+
 		$DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, customerid = ?,
 				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, reason = ?, divisionid = ?,
 				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
 				div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
-				div_inv_author = ?, div_inv_cplace = ?
+				div_inv_author = ?, div_inv_cplace = ?, number = ?, fullnumber = ?, numberplanid = ?
 				WHERE id = ?', array_values($args));
 		if ($SYSLOG)
 			$SYSLOG->AddMessage(SYSLOG::RES_DOC, SYSLOG::OPER_UPDATE, $args,
@@ -373,6 +442,15 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('contents', $contents);
 $SMARTY->assign('cnote', $cnote);
 $SMARTY->assign('taxeslist', $taxeslist);
+
+$args = array(
+	'doctype' => DOC_CNOTE,
+	'cdate' => date('Y/m', $cnote['cdate']),
+	'customerid' => $cnote['customerid'],
+	'division' => $DB->GetOne('SELECT divisionid FROM customers WHERE id = ?', array($cnote['customerid'])),
+);
+$SMARTY->assign('numberplanlist', $LMS->GetNumberPlans($args));
+
 $SMARTY->display('invoice/invoicenoteedit.html');
 
 ?>
