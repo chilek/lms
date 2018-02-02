@@ -353,7 +353,7 @@ switch ($action) {
 		$DB->CommitTrans();
 
 		if (isset($_GET['print']))
-			$SESSION->save('invoiceprint', array('invoice' => $id,
+			$SESSION->save('invoiceprint', array('invoice' => $iid,
 				'original' => !empty($_GET['original']) ? 1 : 0,
 				'copy' => !empty($_GET['copy']) ? 1 : 0));
 
