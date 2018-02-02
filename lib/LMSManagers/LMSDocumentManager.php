@@ -452,7 +452,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 $end = mktime(0, 0, 0, 1, 1, date('Y', $cdate) + 1);
                 break;
             case CONTINUOUS:
-                return $this->db->GetOne('SELECT number FROM documents
+                return $this->db->GetOne('SELECT id FROM documents
 					WHERE type = ? AND number = ? AND numberplanid = ?'
 					. (!isset($numtemplate) || strpos($numtemplate, '%C') === false || empty($customerid)
 						? '' : ' AND customerid = ' . intval($customerid)),
@@ -460,7 +460,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
                 break;
         }
 
-		return $this->db->GetOne('SELECT number FROM documents
+		return $this->db->GetOne('SELECT id FROM documents
 			WHERE cdate >= ? AND cdate < ? AND type = ? AND number = ? AND numberplanid = ?'
 			. (!isset($numtemplate) || strpos($numtemplate, '%C') === false || empty($customerid)
 				? '' : ' AND customerid = ' . intval($customerid)),
