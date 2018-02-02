@@ -164,7 +164,7 @@ if (!empty($posts)) {
 						$code = explode('.', $m['status']);
 						$status = intval($code[0]);
 					}
-					if (preg_match('/Diagnostic-Code:\s+(?<code>.+)\r\n?/', $body, $m))
+					if (preg_match('/Diagnostic-Code:\s+(?<code>.+\r\n?(?:\s+[^\s]+.+\r\n?)*)/m', $body, $m))
 						$diag_code = $m['code'];
 					break;
 				case 'DISPOSITION-NOTIFICATION':
