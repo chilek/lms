@@ -141,7 +141,7 @@ $max_lease_time = ConfigHelper::getConfig('dhcp.max_lease_time', 86400);
 $enable_option82 = ConfigHelper::checkConfig('dhcp.enable_option82');
 $use_network_authtype = ConfigHelper::checkConfig('dhcp.use_network_authtype');
 $config_begin = ConfigHelper::getConfig('dhcp.begin',
-	"ddns-update-style none;\nlog-facility local6;\ndefault-lease-time = $default_lease_time;\nmax-lease-time = $max_lease_time;\n");
+	"ddns-update-style none;\nlog-facility local6;\ndefault-lease-time $default_lease_time;\nmax-lease-time $max_lease_time;\n");
 
 // we're looking for dhcp-mac config sections
 $config_macs = array();
