@@ -326,6 +326,10 @@ switch($action)
 			$invoice['post_address_id'] = $LMS->CopyAddress($invoice['post_address_id']);
 		}
 
+		$customer_data_update = isset($cnote['customer_data_update']);
+		if ($customer_data_update)
+			$customer = $LMS->GetCustomer($invoice['customerid']);
+
 		$args = array(
 			'number' => $cnote['number'],
 			SYSLOG::RES_NUMPLAN => !empty($cnote['numberplanid']) ? $cnote['numberplanid'] : null,
@@ -336,13 +340,14 @@ switch($action)
 			'paytype' => $cnote['paytype'],
 			SYSLOG::RES_USER => Auth::GetCurrentUser(),
 			SYSLOG::RES_CUST => $invoice['customerid'],
-			'name' => $invoice['name'],
-			'address' => $invoice['address'],
-			'ten' => $invoice['ten'],
-			'ssn' => $invoice['ssn'],
-			'zip' => $invoice['zip'],
-			'city' => $invoice['city'],
-			SYSLOG::RES_COUNTRY => !empty($invoice['countryid']) ? $invoice['countryid'] : null,
+			'name' => $customer_data_update ? $customer['customername'] : $invoice['name'],
+			'address' => $customer_data_update ? $customer['address'] : $invoice['address'],
+			'ten' => $customer_data_update ? $customer['ten'] : $invoice['ten'],
+			'ssn' => $customer_data_update ? $customer['ssn'] : $invoice['ssn'],
+			'zip' => $customer_data_update ? $customer['zip'] : $invoice['zip'],
+			'city' => $customer_data_update ? $customer['city'] : $invoice['city'],
+			SYSLOG::RES_COUNTRY => $customer_data_update ? (!empty($customer['countryid']) ? $customer['countryid'] : null)
+				: (!empty($invoice['countryid']) ? $invoice['countryid'] : null),
 			'reference' => $invoice['id'],
 			'reason' => $cnote['reason'],
 			SYSLOG::RES_DIV => !empty($cnote['use_current_division']) ? $invoice['current_divisionid']

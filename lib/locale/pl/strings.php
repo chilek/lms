@@ -3834,4 +3834,7 @@ $_LANG['document type:'] = 'typ dokumentu:';
 
 $_LANG['No address has been selected!'] = 'Nie wybrano adresu!';
 
+$_LANG['Customer data update:'] = 'Aktualizacja danych klienta:';
+$_LANG['Check it if you want to update customer data'] = 'Zaznacz, jeśli chcesz zaktualizować dane klienta';
+
 ?>

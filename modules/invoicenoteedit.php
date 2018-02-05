@@ -258,7 +258,9 @@ switch ($action) {
 
 		$DB->BeginTrans();
 
-		$customer = $LMS->GetCustomer($cnote['customerid']);
+		$customer_data_update = isset($cnote['customer_data_update']);
+		if ($customer_data_update)
+			$customer = $LMS->GetCustomer($cnote['customerid']);
 
 		$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 			account, inv_header, inv_footer, inv_author, inv_cplace 
@@ -269,7 +271,7 @@ switch ($action) {
 				'doctype' => DOC_CNOTE,
 				'planid' => $cnote['numberplanid'],
 				'cdate' => $cnote['cdate'],
-				'customerid' => $customer['id'],
+				'customerid' => $cnote['customerid'],
 			));
 		else {
 			if (!preg_match('/^[0-9]+$/', $cnote['number']))
@@ -280,7 +282,7 @@ switch ($action) {
 					'doctype' => DOC_CNOTE,
 					'planid' => $cnote['numberplanid'],
 					'cdate' => $cnote['cdate'],
-					'customerid' => $customer['id'],
+					'customerid' => $cnote['customerid'],
 				))) > 0 && $docid != $iid)
 				$error['number'] = trans('Credit note number $a already exists!', $cnote['number']);
 
@@ -289,7 +291,7 @@ switch ($action) {
 					'doctype' => DOC_CNOTE,
 					'planid' => $cnote['numberplanid'],
 					'cdate' => $cnote['cdate'],
-					'customerid' => $customer['id'],
+					'customerid' => $cnote['customerid'],
 				));
 				$error = null;
 			}
@@ -300,15 +302,17 @@ switch ($action) {
 			'sdate' => $sdate,
 			'paytime' => $paytime,
 			'paytype' => $cnote['paytype'],
-			SYSLOG::RES_CUST => $customer['id'],
-			'name' => $customer['customername'],
-			'address' => $customer['address'],
-			'ten' => $customer['ten'],
-			'ssn' => $customer['ssn'],
-			'zip' => $customer['zip'],
-			'city' => $customer['city'],
+			SYSLOG::RES_CUST => $cnote['customerid'],
+			'name' => $customer_data_update ? $customer['customername'] : $cnote['name'],
+			'address' => $customer_data_update ? $customer['address'] : $cnote['address'],
+			'ten' => $customer_data_update ? $customer['ten'] : $cnote['ten'],
+			'ssn' => $customer_data_update ? $customer['ssn'] : $cnote['ssn'],
+			'zip' => $customer_data_update ? $customer['zip'] : $cnote['zip'],
+			'city' => $customer_data_update ? $customer['city'] : $cnote['city'],
+			SYSLOG::RES_COUNTRY => $customer_data_update ? (!empty($customer['countryid']) ? $customer['countryid'] : null)
+				: (!empty($cnote['countryid']) ? $cnote['countryid'] : null),
 			'reason' => $cnote['reason'],
-			SYSLOG::RES_DIV => $customer['divisionid'],
+			SYSLOG::RES_DIV => $customer_data_update ? $customer['divisionid'] : $cnote['divisionid'],
 			'div_name' => ($division['name'] ? $division['name'] : ''),
 			'div_shortname' => ($division['shortname'] ? $division['shortname'] : ''),
 			'div_address' => ($division['address'] ? $division['address'] : ''), 
@@ -329,7 +333,7 @@ switch ($action) {
 				'number' => $cnote['number'],
 				'template' => $DB->GetOne('SELECT template FROM numberplans WHERE id = ?', array($cnote['numberplanid'])),
 				'cdate' => $cnote['cdate'],
-				'customerid' => $customer['id'],
+				'customerid' => $cnote['customerid'],
 			));
 		else
 			$args['fullnumber'] = null;
@@ -337,7 +341,7 @@ switch ($action) {
 		$args[SYSLOG::RES_DOC] = $iid;
 
 		$DB->Execute('UPDATE documents SET cdate = ?, sdate = ?, paytime = ?, paytype = ?, customerid = ?,
-				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, reason = ?, divisionid = ?,
+				name = ?, address = ?, ten = ?, ssn = ?, zip = ?, city = ?, countryid = ?, reason = ?, divisionid = ?,
 				div_name = ?, div_shortname = ?, div_address = ?, div_city = ?, div_zip = ?, div_countryid = ?,
 				div_ten = ?, div_regon = ?, div_account = ?, div_inv_header = ?, div_inv_footer = ?,
 				div_inv_author = ?, div_inv_cplace = ?, number = ?, fullnumber = ?, numberplanid = ?
