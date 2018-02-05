@@ -260,11 +260,11 @@ switch ($action) {
 
 		$customer_data_update = isset($cnote['customer_data_update']);
 		if ($customer_data_update)
-			$customer = $LMS->GetCustomer($cnote['customerid']);
+			$customer = $LMS->GetCustomer($cnote['customerid'], true);
 
 		$division = $DB->GetRow('SELECT name, shortname, address, city, zip, countryid, ten, regon,
 			account, inv_header, inv_footer, inv_author, inv_cplace 
-			FROM vdivisions WHERE id = ?', array($customer['divisionid']));
+			FROM vdivisions WHERE id = ?', array($customer_data_update ? $customer['divisionid'] : $cnote['divisionid']));
 
 		if (!$cnote['number'])
 			$cnote['number'] = $LMS->GetNewDocumentNumber(array(
@@ -304,13 +304,15 @@ switch ($action) {
 			'paytype' => $cnote['paytype'],
 			SYSLOG::RES_CUST => $cnote['customerid'],
 			'name' => $customer_data_update ? $customer['customername'] : $cnote['name'],
-			'address' => $customer_data_update ? $customer['address'] : $cnote['address'],
+			'address' => $customer_data_update ? (($customer['postoffice'] && $customer['postoffice'] != $customer['city'] && $customer['street']
+				? $customer['postoffice'] . ', ' : '') . $customer['address']) : $cnote['address'],
 			'ten' => $customer_data_update ? $customer['ten'] : $cnote['ten'],
 			'ssn' => $customer_data_update ? $customer['ssn'] : $cnote['ssn'],
 			'zip' => $customer_data_update ? $customer['zip'] : $cnote['zip'],
-			'city' => $customer_data_update ? $customer['city'] : $cnote['city'],
-			SYSLOG::RES_COUNTRY => $customer_data_update ? (!empty($customer['countryid']) ? $customer['countryid'] : null)
-				: (!empty($cnote['countryid']) ? $cnote['countryid'] : null),
+			'city' => $customer_data_update ? ($customer['postoffice'] ? $customer['postoffice'] : $customer['city'])
+				: $cnote['city'],
+			SYSLOG::RES_COUNTRY => $customer_data_update ? (empty($customer['countryid']) ? null : $customer['countryid'])
+				: (empty($cnote['countryid']) ? null : $cnote['countryid']),
 			'reason' => $cnote['reason'],
 			SYSLOG::RES_DIV => $customer_data_update ? $customer['divisionid'] : $cnote['divisionid'],
 			'div_name' => ($division['name'] ? $division['name'] : ''),
