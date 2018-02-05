@@ -560,18 +560,14 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                         case 'city':
                         case 'address':
 							// UPPER here is a workaround for postgresql ILIKE bug
-							if (!isset($search['addresstype']) || !strlen($search['addresstype']))
-								$searchargs[] = "(UPPER($key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")
+							if (!isset($search['type']) || !strlen($search['addresstype']))
+								$searchargs[] = "(UPPER(c.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")
 									OR UPPER(post_$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")
-									OR EXISTS (SELECT 1 FROM customer_addresses ca
-									JOIN vaddresses va ON va.id = ca.address_id AND ca.customer_id = c.id
-									WHERE UPPER(va.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")))";
+									OR UPPER(ca.%key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
 							elseif ($search['addresstype'] == BILLING_ADDRESS)
-								$searchargs[] = "UPPER($key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
+								$searchargs[] = "UPPER(c.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
 							elseif ($search['addresstype'] == LOCATION_ADDRESS)
-								$searchargs[] = "EXISTS (SELECT 1 FROM customer_addresses ca
-									JOIN vaddresses va ON va.id = ca.address_id AND ca.customer_id = c.id
-									WHERE UPPER(va.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . "))";
+								$searchargs[] = "UPPER(ca.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
 							else
 								$searchargs[] = "UPPER(post_$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
 							break;
@@ -664,13 +660,13 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
         $sql = '';
 
         if ($count) {
-            $sql .= 'SELECT COUNT(*) AS total,
+            $sql .= 'SELECT COUNT(DISTINCT c.id) AS total,
             	SUM(CASE WHEN b.value > 0 THEN b.value ELSE 0 END) AS over,
             	SUM(CASE WHEN b.value < 0 THEN b.value ELSE 0 END) AS below ';
         } else {
-            $sql .= 'SELECT c.id AS id, c.lastname, c.name, ' . $this->db->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername,
+            $sql .= 'SELECT DISTINCT c.id AS id, c.lastname, c.name, ' . $this->db->Concat('UPPER(lastname)', "' '", 'c.name') . ' AS customername,
             	c.type,
-                status, full_address, address, zip, city, countryid, countries.name AS country, cc.email, ccp.phone, ten, ssn, c.info AS info,
+                status, full_address, c.address, c.zip, c.city, countryid, countries.name AS country, cc.email, ccp.phone, ten, ssn, c.info AS info,
                 extid, message, c.divisionid, c.paytime AS paytime, COALESCE(b.value, 0) AS balance,
                 COALESCE(t.value, 0) AS tariffvalue, s.account, s.warncount, s.online,
                 (CASE WHEN s.account = s.acsum THEN 1
@@ -725,7 +721,11 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
                     FROM nodes
                     WHERE ownerid > 0 AND ipaddr <> 0
                     GROUP BY ownerid
-                ) s ON (s.ownerid = c.id) '
+                ) s ON (s.ownerid = c.id)
+		LEFT JOIN (
+			SELECT customer_id, address, zip, city FROM customer_addresses
+			JOIN vaddresses va ON va.id = address_id
+		) ca ON ca.customer_id = c.id '
                 . ($contracts == 1 ? '
                     LEFT JOIN (
                         SELECT COUNT(*), d.customerid FROM documents d
