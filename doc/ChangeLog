@@ -186,7 +186,7 @@ version ?.??.?? (????-??-??):
   - enhancement: allow to modify credit note and debit note numbers during their edits [chilan]
   - enhancement: document cancellation support for debit notes [chilan]
   - enhancement: allow to decide if customer data should be updated during
-    invoice note create and modify [chilan]
+    credit note creation, modification and invoice modification [chilan]
 
 version 1.11.22 (2017-06-08):
 

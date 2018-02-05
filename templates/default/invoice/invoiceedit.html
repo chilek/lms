@@ -164,6 +164,14 @@
 			{/if}
 		</TD>
 	</TR>
+	<TR>
+		<td class="bold nobr">
+			<label for="customer_data_update">{trans("Customer data update:")}</label>
+		</td>
+		<TD class="nobr">
+			<input type="checkbox" id="customer_data_update" name="invoice[customer_data_update]" value="1"{if $cnote.customer_data_update} checked{/if} {tip text="Check it if you want to update customer data"}>
+		</TD>
+	</TR>
 	<tr>
 		<td class="bold">{trans("Recipient address:")}</td>
 		<td>
