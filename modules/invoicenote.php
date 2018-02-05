@@ -257,11 +257,11 @@ switch($action)
 				$contents[$idx]['valuebrutto'] = 0;
 				$contents[$idx]['cash'] = round($item['valuebrutto'] * $item['count'],2);
 				$contents[$idx]['count'] = 0;
-			}
-			elseif ($contents[$idx]['count'] != $item['count']
+			} elseif ($contents[$idx]['count'] != $item['count']
 				|| $contents[$idx]['valuebrutto'] != $item['valuebrutto'])
 				$contents[$idx]['cash'] = round($item['valuebrutto'] * $item['count'] - $contents[$idx]['valuebrutto'] * $contents[$idx]['count'], 2);
-
+			else
+				$contents[$idx]['cash'] = 0;
 			$contents[$idx]['valuebrutto'] = $contents[$idx]['valuebrutto'] - $item['valuebrutto'];
 			$contents[$idx]['count'] = $contents[$idx]['count'] - $item['count'];
 		}
@@ -412,7 +412,7 @@ switch($action)
 				$SYSLOG->AddMessage(SYSLOG::RES_INVOICECONT, SYSLOG::OPER_ADD, $args);
 			}
 
-			if (isset($item['cash']) && $item['cash'] != 0) {
+			if (isset($item['cash'])) {
 				$args = array(
 					'time' => $cnote['cdate'],
 					SYSLOG::RES_USER => Auth::GetCurrentUser(),
