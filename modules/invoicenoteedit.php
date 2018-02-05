@@ -131,6 +131,8 @@ switch ($action) {
 		$cnote['oldnumber'] = $oldnumber;
 		$cnote['oldnumberplanid'] = $oldnumberplanid;
 
+		$SESSION->restore('cnoteid', $cnote['id']);
+
 		$currtime = time();
 
 		if ($cnote['sdate']) {

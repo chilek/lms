@@ -456,7 +456,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 					WHERE type = ? AND number = ? AND numberplanid = ?'
 					. (!isset($numtemplate) || strpos($numtemplate, '%C') === false || empty($customerid)
 						? '' : ' AND customerid = ' . intval($customerid)),
-					array($doctype, $number, $planid)) ? true : false;
+					array($doctype, $number, $planid));
                 break;
         }
 
@@ -464,7 +464,7 @@ class LMSDocumentManager extends LMSManager implements LMSDocumentManagerInterfa
 			WHERE cdate >= ? AND cdate < ? AND type = ? AND number = ? AND numberplanid = ?'
 			. (!isset($numtemplate) || strpos($numtemplate, '%C') === false || empty($customerid)
 				? '' : ' AND customerid = ' . intval($customerid)),
-			array($start, $end, $doctype, $number, $planid)) ? true : false;
+			array($start, $end, $doctype, $number, $planid));
     }
 
     public function CommitDocuments(array $ids) {
