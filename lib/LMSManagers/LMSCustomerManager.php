@@ -563,7 +563,7 @@ class LMSCustomerManager extends LMSManager implements LMSCustomerManagerInterfa
 							if (!isset($search['type']) || !strlen($search['addresstype']))
 								$searchargs[] = "(UPPER(c.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")
 									OR UPPER(post_$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")
-									OR UPPER(ca.%key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
+									OR UPPER(ca.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . "))";
 							elseif ($search['addresstype'] == BILLING_ADDRESS)
 								$searchargs[] = "UPPER(c.$key) ?LIKE? UPPER(" . $this->db->Escape("%$value%") . ")";
 							elseif ($search['addresstype'] == LOCATION_ADDRESS)
